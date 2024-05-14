@@ -55,7 +55,7 @@ function MainBody({ children }: { children: React.ReactNode }) {
     <body className={classNames('flex flex-col min-h-screen', bcsans.className)}>
       <Nav />
       <main className="flex-grow h-100">
-        <div className="mt-8 mb-8 h-full mx-4 lg:mx-20">{children}</div>
+        <div className="mt-2 mb-2 h-full mx-4 lg:mx-20">{children}</div>
       </main>
       <Footer />
     </body>

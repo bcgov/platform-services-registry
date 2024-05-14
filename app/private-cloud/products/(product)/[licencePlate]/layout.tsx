@@ -83,7 +83,7 @@ export default privateCloudProductSecurityACS(({ pathParams, queryParams, sessio
           canDelete={currentProduct?._permissions?.delete}
         />
       </Tabs>
-      <div className="mt-8">{children}</div>
+      <div className="mt-6">{children}</div>
       <ToastContainer />
     </div>
   );

@@ -7,32 +7,52 @@ export default function RequestBadge({
   data,
   className,
 }: {
-  data?: { licencePlate: string; type: $Enums.RequestType; active: boolean };
+  data?: { licencePlate: string; type: $Enums.RequestType; active: boolean; decisionStatus: $Enums.DecisionStatus };
   className?: string;
 }) {
   if (!data || !data.licencePlate) return null;
 
-  let color = 'gray';
+  let typeColor = 'gray';
 
   switch (data.type) {
     case $Enums.RequestType.CREATE:
-      color = 'green';
+      typeColor = 'green';
       break;
     case $Enums.RequestType.EDIT:
-      color = 'blue';
+      typeColor = 'blue';
       break;
     case $Enums.RequestType.DELETE:
-      color = 'red';
+      typeColor = 'red';
       break;
   }
 
-  const badge = (
+  let decisionColor = 'gray';
+
+  switch (data.decisionStatus) {
+    case $Enums.DecisionStatus.PENDING:
+      decisionColor = 'gray';
+      break;
+    case $Enums.DecisionStatus.APPROVED:
+      decisionColor = 'green';
+      break;
+    case $Enums.DecisionStatus.REJECTED:
+      decisionColor = 'red';
+      break;
+    case $Enums.DecisionStatus.PROVISIONED:
+      decisionColor = 'blue';
+      break;
+  }
+
+  const badges = (
     <>
-      <Badge color={color} radius="sm" className="ml-1">
+      <Badge color={typeColor} radius="sm" className="ml-1">
         {data.type}
       </Badge>
       <Badge color={data.active ? 'lime' : 'pink'} radius="sm" className="ml-1">
         {data.active ? 'ACTIVE' : 'INACTIVE'}
+      </Badge>
+      <Badge color={decisionColor} radius="sm" className="ml-1">
+        {data.decisionStatus}
       </Badge>
     </>
   );
@@ -44,7 +64,7 @@ export default function RequestBadge({
           {data.licencePlate}
         </Badge>
       </CopyableButton>
-      {badge}
+      {badges}
     </div>
   );
 }

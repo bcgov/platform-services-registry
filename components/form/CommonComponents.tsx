@@ -103,10 +103,10 @@ export default function CommonComponents({ disabled }: { disabled?: boolean }) {
 
   return (
     <div className="border-b border-gray-900/10 pb-14">
-      <h2 className="font-bcsans text-base lg:text-lg 2xl:text-2xl font-semibold leading-6 text-gray-900 2xl:mt-14">
+      <h2 className="text-base lg:text-lg 2xl:text-2xl font-semibold leading-6 text-gray-900 2xl:mt-14">
         3. Common Components
       </h2>
-      <p className="font-bcsans mt-4 text-base leading-6 text-gray-600">
+      <p className="mt-4 text-base leading-6 text-gray-600">
         Please indicate what services you expect to utilize as part of your product.
       </p>
       <div className="mt-12 space-y-10 ">
@@ -129,7 +129,7 @@ export default function CommonComponents({ disabled }: { disabled?: boolean }) {
             {commonComponents.map(({ name, label }) => (
               <div className="relative flex flex-col" key={name}>
                 <div className="text-sm leading-6">
-                  <label htmlFor={name} className="font-bcsans font-semibold text-base text-gray-900">
+                  <label htmlFor={name} className="font-semibold text-base text-gray-900">
                     {label}
                   </label>
                 </div>
@@ -169,7 +169,7 @@ export default function CommonComponents({ disabled }: { disabled?: boolean }) {
             ))}
           </div>
           <div className="col-span-full mt-10">
-            <label htmlFor="street-address" className="font-bcsans font-semibold text-base text-gray-900">
+            <label htmlFor="street-address" className="font-semibold text-base text-gray-900">
               Other
             </label>
             <div className="mt-2">

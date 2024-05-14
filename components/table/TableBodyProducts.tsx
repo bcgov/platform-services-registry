@@ -34,9 +34,9 @@ function EmptyBody() {
           height: 'auto',
         }}
       />
-      <span className="font-bcsans text-xl font-bold text-mediumgrey mt-4">There are no products to be displayed</span>
+      <span className="text-xl font-bold text-mediumgrey mt-4">There are no products to be displayed</span>
       <Link
-        className=" underline font-bcsans text-lg font-extralight text-linkblue mt-4"
+        className=" underline text-lg font-extralight text-linkblue mt-4"
         href={`/${pathname.split('/')[1]}/products/create`}
       >
         REQUEST A NEW PRODUCT

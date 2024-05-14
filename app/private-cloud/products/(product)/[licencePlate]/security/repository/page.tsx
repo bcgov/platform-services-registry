@@ -81,9 +81,7 @@ export default function Repository({ params }: { params: { licencePlate: string 
 
   return (
     <div>
-      <h2 className="font-bcsans text-base lg:text-lg 2xl:text-2xl font-semibold leading-6 text-gray-900 mb-2">
-        Repository URLs
-      </h2>
+      <h2 className="text-base lg:text-lg 2xl:text-2xl font-semibold leading-6 text-gray-900 mb-2">Repository URLs</h2>
       <form
         onSubmit={handleSubmit(async (data) => {
           await mutateAsync(data);
@@ -104,7 +102,7 @@ export default function Repository({ params }: { params: { licencePlate: string 
 
                 <button
                   type="button"
-                  className="ml-2 rounded-md bg-red-600 text-white px-4 py-2.5 font-bcsans text-sm tracking-[.2em] shadow-sm hover:brightness-110 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 w-32"
+                  className="ml-2 rounded-md bg-red-600 text-white px-4 py-2.5 text-sm tracking-[.2em] shadow-sm hover:brightness-110 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 w-32"
                   onClick={() => remove(index)}
                 >
                   Remove
@@ -120,7 +118,7 @@ export default function Repository({ params }: { params: { licencePlate: string 
         {values.repositories.length < 10 && (
           <button
             type="button"
-            className="rounded-md bg-blue-400 text-white px-4 py-2.5 font-bcsans text-sm tracking-[.2em] shadow-sm hover:brightness-110 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 w-32"
+            className="rounded-md bg-blue-400 text-white px-4 py-2.5 text-sm tracking-[.2em] shadow-sm hover:brightness-110 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 w-32"
             onClick={() => append({ url: 'https://' })}
           >
             Add New
@@ -129,7 +127,7 @@ export default function Repository({ params }: { params: { licencePlate: string 
 
         <button
           type="submit"
-          className="ml-2 rounded-md bg-green-600 text-white px-4 py-2.5 font-bcsans text-sm tracking-[.2em] shadow-sm hover:brightness-110 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 w-32"
+          className="ml-2 rounded-md bg-green-600 text-white px-4 py-2.5 text-sm tracking-[.2em] shadow-sm hover:brightness-110 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 w-32"
         >
           Submit
         </button>

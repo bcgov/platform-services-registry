@@ -76,12 +76,10 @@ export default publicCloudRequestRequest(({ pathParams, queryParams, session, ro
 
           {publicSnap.currentRequest.requestComment && (
             <div className="border-b border-gray-900/10 pb-14">
-              <h2 className="font-bcsans text-base lg:text-lg 2xl:text-2xl font-semibold leading-6 text-gray-900 2xl:mt-14">
+              <h2 className="text-base lg:text-lg 2xl:text-2xl font-semibold leading-6 text-gray-900 2xl:mt-14">
                 4. User Comments
               </h2>
-              <p className="font-bcsans mt-4 text-base leading-6 text-gray-600">
-                {publicSnap.currentRequest.requestComment}
-              </p>
+              <p className="mt-4 text-base leading-6 text-gray-600">{publicSnap.currentRequest.requestComment}</p>
             </div>
           )}
 

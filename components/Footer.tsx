@@ -21,14 +21,14 @@ export default function Footer() {
         <nav className="columns-2 lg:flex lg:justify-center lg:space-x-12" aria-label="Footer">
           {navigation.main.map((item) => (
             <div key={item.name} className="pb-6">
-              <a href={item.href} className="font-bcsans underline text-sm leading-6 text-white hover:text-bcgray">
+              <a href={item.href} className="underline text-sm leading-6 text-white hover:text-bcgray">
                 {item.name}
               </a>
             </div>
           ))}
           {appSnapshot.info.DEPLOYMENT_TAG && (
             <div className="pb-6">
-              <span className="font-bcsans text-sm leading-6 text-white hover:text-bcgray">
+              <span className="text-sm leading-6 text-white hover:text-bcgray">
                 App Version: {appSnapshot.info.DEPLOYMENT_TAG}
               </span>
             </div>

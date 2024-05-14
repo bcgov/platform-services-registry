@@ -86,7 +86,7 @@ export const UserProfilePopUp: FunctionComponent<UserProfilePopupProps> = ({ isO
                 </div>
                 <button
                   type="button"
-                  className="mt-4 inline-flex w-full justify-center rounded-md bg-bcorange px-4 py-2 text-sm font-bcsans text-bcblue shadow-sm hover:bg-bcorange-dark tracking-[.2em] focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-offset-2"
+                  className="mt-4 inline-flex w-full justify-center rounded-md bg-bcorange px-4 py-2 text-sm text-bcblue shadow-sm hover:bg-bcorange-dark tracking-[.2em] focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-offset-2"
                   onClick={onClose}
                 >
                   Close

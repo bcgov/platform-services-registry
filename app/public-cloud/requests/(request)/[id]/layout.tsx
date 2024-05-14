@@ -73,7 +73,7 @@ export default publicCloudProductSecurityACS(({ pathParams, queryParams, session
       <Tabs tabs={tabs}>
         <PublicCloudRequestOptions id={request.id} />
       </Tabs>
-      <div className="mt-8">{children}</div>
+      <div className="mt-6">{children}</div>
       <ToastContainer />
     </div>
   );

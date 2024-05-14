@@ -62,7 +62,7 @@ export default function Modal({
                     placeholder="Type in your comment..."
                   />
 
-                  <p className="font-bcsans text-sm text-gray-900 mt-4">
+                  <p className="text-sm text-gray-900 mt-4">
                     Also, look out for our notification emails, that will provide you with valuable information
                     regarding your product status and details.
                   </p>
@@ -70,7 +70,7 @@ export default function Modal({
                 <div className="mt-5 sm:mt-6 sm:grid sm:grid-flow-row-dense sm:grid-cols-2 sm:gap-3">
                   <button
                     type="button"
-                    className="px-12 rounded-md bg-white tracking-[.2em] py-2.5 text-sm font-bcsans text-bcblue shadow-sm ring-1 ring-inset ring-bcblue hover:bg-gray-50 mr-4"
+                    className="px-12 rounded-md bg-white tracking-[.2em] py-2.5 text-sm text-bcblue shadow-sm ring-1 ring-inset ring-bcblue hover:bg-gray-50 mr-4"
                     // "mt-3 inline-flex items-center justify-center -md bg-white text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50 sm:col-start-1 sm:mt-0"
                     onClick={() => setOpen(false)}
                     ref={cancelButtonRef}
@@ -82,7 +82,7 @@ export default function Modal({
                     disabled={comment.trim() === ''}
                     onClick={() => handleSubmit(comment)}
                     className={classNames(
-                      'inline-flex rounded-md shadow-sm px-4 py-2.5 font-bcsans text-sm tracking-[.2em]',
+                      'inline-flex rounded-md shadow-sm px-4 py-2.5 text-sm tracking-[.2em]',
                       isLoading
                         ? 'justify-center bg-bcorange/50 text-bcblue brightness-110 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 col-start-2'
                         : comment.trim() !== ''

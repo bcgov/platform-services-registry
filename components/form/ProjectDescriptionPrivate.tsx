@@ -53,11 +53,11 @@ export default function ProjectDescriptionPrivate({
           <ProductBadge data={privateSnap.currentProduct} className="ml-1" />
         )}
       </h1>
-      <h2 className="font-bcsans text-base lg:text-lg 2xl:text-2xl font-semibold leading-6 text-gray-900 2xl:mt-14">
+      <h2 className="text-base lg:text-lg 2xl:text-2xl font-semibold leading-6 text-gray-900 2xl:mt-14">
         1. Product Description
       </h2>
       {mode === 'create' && (
-        <p className="font-bcsans text-base leading-6 mt-5">
+        <p className="text-base leading-6 mt-5">
           If this is your first time on the <b>OpenShift platform</b> you need to book an alignment meeting with the
           Platform Services team. Reach out to{' '}
           <MailLink to="platformservicesteam@gov.bc.ca">PlatformServicesTeam@gov.bc.ca</MailLink> to get started.

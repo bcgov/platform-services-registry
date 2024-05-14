@@ -22,7 +22,7 @@ export default function CrumbsNav({ cloudLabel, previousLabel }: { cloudLabel: s
     <nav className="flex" aria-label="Breadcrumb">
       <ol className="flex items-center space-x-2">
         <li>
-          <div className="font-bcsans text-xl text-cloudgrey mr-4">{cloudLabel}</div>
+          <div className="text-xl text-cloudgrey mr-4">{cloudLabel}</div>
         </li>
         <li>
           <Link className="ml-4 mr-2" type="button" href={`/${backUrl}/products/all`}>
@@ -41,14 +41,14 @@ export default function CrumbsNav({ cloudLabel, previousLabel }: { cloudLabel: s
         </li>
         <li>
           <div className="flex items-center">
-            <div className="ml-1 text-gray-400  font-bcsans text-lg font-medium">{previousLabel}</div>
+            <div className="ml-1 text-gray-400  text-lg font-medium">{previousLabel}</div>
           </div>
         </li>
         {licencePlate && licencePlate !== 'create' && (
           <li>
             <div className="flex items-center">
               <ChevronRightIcon className="h-5 w-5 flex-shrink-0 text-gray-400" aria-hidden="true" />
-              <div className="flex ml-2 text-gray-400 font-bcsans text-lg font-medium">{licencePlate}</div>
+              <div className="flex ml-2 text-gray-400 text-lg font-medium">{licencePlate}</div>
               <DocumentDuplicateIcon
                 className="h-5 w-5 flex-none text-gray-400 cursor-pointer hover:bg-gray-50"
                 aria-hidden="true"
