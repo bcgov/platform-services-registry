@@ -114,7 +114,7 @@ export const sendRequestRejectionEmails = async (
     await sendEmail({
       body: email,
       to: [request.projectOwner.email, request.primaryTechnicalLead.email, request.secondaryTechnicalLead?.email],
-      subject: `'Request has been rejected for' ${request.name}`,
+      subject: `Request has been rejected for ${request.name}`,
     });
   } catch (error) {
     logger.log('sendRequestRejectionEmails:', error);
