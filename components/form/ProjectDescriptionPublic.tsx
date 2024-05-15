@@ -48,7 +48,7 @@ export default function ProjectDescriptionPublic({
       {mode === 'create' && (
         <p className="text-base leading-6 mt-5">
           If this is your first time on the Public Cloud Platform you need to book an alignment meeting with the Public
-          Cloud Accelerator Service team. Reach out to
+          Cloud Accelerator Service team. Reach out to{' '}
           {
             <a className="text-blue-600 dark:text-blue-500 hover:underline" href="mailto:cloud.pathfinder@gov.bc.ca">
               Cloud.Pathfinder@gov.bc.ca{' '}

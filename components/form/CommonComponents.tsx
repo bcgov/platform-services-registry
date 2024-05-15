@@ -36,7 +36,7 @@ const commonComponents = [
   },
 ];
 
-export default function CommonComponents({ disabled }: { disabled?: boolean }) {
+export default function CommonComponents({ disabled, number }: { disabled?: boolean; number: number }) {
   const {
     register,
     formState: { errors },
@@ -50,23 +50,13 @@ export default function CommonComponents({ disabled }: { disabled?: boolean }) {
 
   useEffect(() => {
     if (noServices) {
-      // set every common component to false
+      // Set every common component to false
       commonComponents.forEach(({ name }) => {
         setValue(`commonComponents.${name}.implemented`, false);
         setValue(`commonComponents.${name}.planningToUse`, false);
       });
     }
   }, [noServices, setValue]);
-
-  // const handleCheckboxChange = (name, field) => {
-  //   setValue(`commonComponents.${name}.${field}`, true);
-  //   setValue(
-  //     `commonComponents.${name}.${
-  //       field === "implemented" ? "planningToUse" : "implemented"
-  //     }`,
-  //     false
-  //   );
-  // };
 
   const handleCheckboxChange = (name: string, field: string, checked: boolean) => {
     setValue(`commonComponents.${name}.${field}`, checked, { shouldDirty: true });
@@ -80,31 +70,10 @@ export default function CommonComponents({ disabled }: { disabled?: boolean }) {
     clearErrors('commonComponents.noServices');
   };
 
-  // const watchedCommonComponents = watch("commonComponents");
-
-  // // Check whether "planningToUse" or "implemented" is checked and uncheck the other
-  // useEffect(() => {
-  //   commonComponents.forEach(({ name }) => {
-  //     const componentState = watchedCommonComponents?.[name];
-
-  //     console.log("componentState");
-  //     console.log(componentState);
-
-  //     if (componentState) {
-  //       if (componentState.planningToUse) {
-  //         setValue(`commonComponents.${name}.implemented`, false);
-  //       }
-  //       if (componentState.implemented) {
-  //         setValue(`commonComponents.${name}.planningToUse`, false);
-  //       }
-  //     }
-  //   });
-  // }, [watchedCommonComponents, setValue]);
-
   return (
     <div className="border-b border-gray-900/10 pb-14">
       <h2 className="text-base lg:text-lg 2xl:text-2xl font-semibold leading-6 text-gray-900 2xl:mt-14">
-        3. Common Components
+        {number}. Common Components
       </h2>
       <p className="mt-4 text-base leading-6 text-gray-600">
         Please indicate what services you expect to utilize as part of your product.

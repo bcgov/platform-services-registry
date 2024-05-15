@@ -137,7 +137,7 @@ export default privateCloudProductEdit(({ pathParams, queryParams, session }) =>
               disabled={isDisabled}
               currentProject={snap.currentProduct as PrivateCloudProject}
             />
-            <CommonComponents disabled={isDisabled} />
+            <CommonComponents disabled={isDisabled} number={4} />
           </div>
           <div className="mt-10 flex items-center justify-start gap-x-6">
             <PreviousButton />
