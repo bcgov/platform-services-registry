@@ -1,3 +1,20 @@
+## [0.23.9](https://github.com/bcgov/platform-services-registry/compare/v0.23.8...v0.23.9) (2024-05-15)
+
+### Features
+
+* **2698:** add an api endpoint to list all license plates ([3e13d88](https://github.com/bcgov/platform-services-registry/commit/3e13d8874b3ec7cb40964644c77a5e3f2393c684))
+* add a common component CopyableButton ([4084eab](https://github.com/bcgov/platform-services-registry/commit/4084eabafa90fd45ca6b90fb3526233305857d0b))
+* add confirmation in checkbox component ([4c51117](https://github.com/bcgov/platform-services-registry/commit/4c511172d407a5856e825a9e6b9f55e84be7c34c))
+* expand request pages ([0394b39](https://github.com/bcgov/platform-services-registry/commit/0394b3918f392d670ac26f80e018f19d37130b08))
+* update dashboard top sections ([715dd72](https://github.com/bcgov/platform-services-registry/commit/715dd7278e6ff4f31cd6c91ad75a2d0f8ed9b068))
+
+### Bug Fixes
+
+* remove user idir from the validation ([917c62c](https://github.com/bcgov/platform-services-registry/commit/917c62ca2220c7598b8ba6a6f37863a60f56f091))
+
+### Refactors
+
+* secure api endpoints with doc permissions ([5542b1f](https://github.com/bcgov/platform-services-registry/commit/5542b1fc13c0662abfdbd2354f3bf07797fecb4f))
 ## [0.23.8](https://github.com/bcgov/platform-services-registry/compare/v0.23.7...v0.23.8) (2024-05-15)
 ## [0.23.7](https://github.com/bcgov/platform-services-registry/compare/v0.23.6...v0.23.7) (2024-05-15)
 ## [0.23.6](https://github.com/bcgov/platform-services-registry/compare/v0.23.5...v0.23.6) (2024-05-15)
