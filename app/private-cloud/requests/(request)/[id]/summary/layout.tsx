@@ -42,7 +42,7 @@ export default Layout(({ pathParams, queryParams, session, router, children }) =
     <div>
       {privateCloudStateSnap.currentRequest?.decisionStatus === $Enums.DecisionStatus.PENDING && (
         <Alert variant="light" color="blue" title="" icon={<IconInfoCircle />}>
-          This request is under review by the admin.
+          This request is currently under admin review.
         </Alert>
       )}
 
