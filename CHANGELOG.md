@@ -1,3 +1,10 @@
+## [0.23.8](https://github.com/bcgov/platform-services-registry/compare/v0.23.7...v0.23.8) (2024-05-15)
+## [0.23.7](https://github.com/bcgov/platform-services-registry/compare/v0.23.6...v0.23.7) (2024-05-15)
+## [0.23.6](https://github.com/bcgov/platform-services-registry/compare/v0.23.5...v0.23.6) (2024-05-15)
+
+### Bug Fixes
+
+* public cloud user-roles link ([fdf3924](https://github.com/bcgov/platform-services-registry/commit/fdf392487e75410885cad3098595f192a9d2de5f))
 ## [0.23.5](https://github.com/bcgov/platform-services-registry/compare/v0.23.4...v0.23.5) (2024-05-14)
 
 ### Features
