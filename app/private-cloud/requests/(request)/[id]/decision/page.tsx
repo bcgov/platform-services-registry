@@ -49,12 +49,6 @@ export default privateCloudRequestDecision(({ pathParams, queryParams, session, 
 
   useEffect(() => {
     if (!privateCloudStateSnap.currentRequest) return;
-
-    if (!privateCloudStateSnap.currentRequest.active || !privateCloudStateSnap.currentRequest._permissions.review) {
-      router.push(`/private-cloud/requests/${privateCloudStateSnap.currentRequest.id}/view`);
-      return;
-    }
-
     if (privateCloudStateSnap.currentRequest.decisionData.secondaryTechnicalLead) {
       setSecondTechLead(true);
     }

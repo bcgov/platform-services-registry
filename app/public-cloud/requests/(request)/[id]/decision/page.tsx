@@ -52,11 +52,6 @@ export default publicCloudProductDecision(({ pathParams, queryParams, session, r
   useEffect(() => {
     if (!publicCloudStateSnap.currentRequest) return;
 
-    if (!publicCloudStateSnap.currentRequest.active || !publicCloudStateSnap.currentRequest._permissions.review) {
-      router.push(`/public-cloud/requests/${publicCloudStateSnap.currentRequest.id}/view`);
-      return;
-    }
-
     if (publicCloudStateSnap.currentRequest.decisionData.secondaryTechnicalLead) {
       setSecondTechLead(true);
     }
