@@ -1,21 +1,24 @@
 import Link from 'next/link';
 import classNames from '@/utils/classnames';
 import { usePathname } from 'next/navigation';
-import { extractPathSegments } from '@/helpers/path-segments';
 import { tabName } from '@/app/api/public-cloud/aws-roles/helpers';
+import { useSnapshot } from 'valtio';
+import { publicProductState } from '@/states/global';
 
 export default function PublicUsersTabs({ roles }: { roles: tabName[] }) {
+  const snap = useSnapshot(publicProductState);
   const pathname = usePathname();
   if (!roles) {
     return null;
   }
+
   return (
     <div>
       <span className="isolate inline-flex rounded-md shadow-sm py-2 px-4">
         {roles.map((role: tabName, index: number) => (
           <Link
             key={index}
-            href={`${extractPathSegments(pathname, 4)}/${role.href}`}
+            href={`/public-cloud/products/${snap.licencePlate}/aws-roles/${role.href}`}
             type="button"
             className={classNames(
               (pathname.split('/').includes(role.href) ? 'bg-gray-200 hover:none' : 'bg-white hover:bg-gray-100') +
