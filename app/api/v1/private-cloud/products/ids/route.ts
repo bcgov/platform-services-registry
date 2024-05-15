@@ -1,8 +1,8 @@
 import { $Enums } from '@prisma/client';
-import prisma from '@/core/prisma';
-import { z } from 'zod';
 import _isString from 'lodash-es/isString';
+import { z } from 'zod';
 import createApiHandler from '@/core/api-handler';
+import prisma from '@/core/prisma';
 import { OkResponse } from '@/core/responses';
 
 const queryParamSchema = z.object({
