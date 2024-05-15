@@ -1,6 +1,6 @@
 import { EllipsisHorizontalIcon, TrashIcon, PencilSquareIcon } from '@heroicons/react/20/solid';
 import { useMutation } from '@tanstack/react-query';
-import formatDistanceToNow from 'date-fns/formatDistanceToNow';
+import { formatDistanceToNow } from 'date-fns/formatDistanceToNow';
 import React, { useState, useRef, useEffect } from 'react';
 import { toast } from 'react-toastify';
 import { deletePrivateCloudComment, updatePrivateCloudComment } from '@/services/backend/private-cloud/products';
