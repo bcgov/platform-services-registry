@@ -1,3 +1,5 @@
+import { Alert } from '@mantine/core';
+import { IconInfoCircle } from '@tabler/icons-react';
 import { useFormContext } from 'react-hook-form';
 import BudgetInput from '@/components/form/BudgetInput';
 import ExternalLink from '@/components/generic/button/ExternalLink';
@@ -31,9 +33,11 @@ export default function Budget({ disabled }: { disabled?: boolean }) {
           the monthly spend reaches 80% of your estimated budget.
         </b>
       </p>
-      <p className="bg-blue-50 mt-8 py-2 px-5 rounded-3xl flex text-sm text-blue-700">
+
+      <Alert variant="light" color="blue" title="" icon={<IconInfoCircle />} className="mt-1">
         There will be a base charge of USD 200 to 300 per month for each project set created
-      </p>
+      </Alert>
+
       <div className="mt-5 grid grid-cols-1 gap-x-24 gap-y-6 sm:grid-cols-2">
         <BudgetInput
           disabled={disabled}

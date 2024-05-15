@@ -22,6 +22,11 @@ export function extractNumbers(inputString: string) {
   return [];
 }
 
+export function isEmail(email: string) {
+  const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  return regex.test(email);
+}
+
 export function camelCaseToWords(text: string) {
   return text
     .replace(/([A-Z])/g, ' $1')

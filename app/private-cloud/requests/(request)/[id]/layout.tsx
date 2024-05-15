@@ -43,7 +43,8 @@ export default privateCloudProductSecurityACS(({ pathParams, queryParams, sessio
     {
       label: 'SUMMARY',
       name: 'summary',
-      href: `/private-cloud/requests/${id}/summary`,
+      href: `/private-cloud/requests/${id}/summary/origin-request`,
+      ignoreSegments: 1,
     },
   ];
 

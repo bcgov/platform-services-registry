@@ -30,6 +30,7 @@ RUN mkdir -p .next/cache/images &&\
     chmod -R 777 .next/cache/images
 
 ENV NEXTAUTH_SECRET changeme
+ENV TZ America/Vancouver
 
 EXPOSE 3000
 CMD ["node_modules/.bin/next", "start"]
