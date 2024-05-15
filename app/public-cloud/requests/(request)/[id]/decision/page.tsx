@@ -17,7 +17,7 @@ export default publicCloudProductDecision(({ pathParams, queryParams, session, r
 
   useEffect(() => {
     router.push(`/public-cloud/requests/${requestId}/request`);
-  }, [router]);
+  }, [router, requestId]);
 
   return null;
 });
