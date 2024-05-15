@@ -1,6 +1,6 @@
 import { z } from 'zod';
-import createServerPage from '@/core/server-page';
 import prisma from '@/core/prisma';
+import createServerPage from '@/core/server-page';
 
 const pathParamSchema = z.object({
   licencePlate: z.string(),

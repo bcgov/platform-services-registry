@@ -1,5 +1,5 @@
-import { instance } from './axios';
 import { SecurityConfig, $Enums } from '@prisma/client';
+import { instance } from './axios';
 
 export async function getSecurityConfig(licencePlate: string, context: $Enums.ProjectContext) {
   const result = await instance.get(`/security-config/${licencePlate}?context=${context}`).then((res) => res.data);

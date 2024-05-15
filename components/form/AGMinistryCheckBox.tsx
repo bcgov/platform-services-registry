@@ -1,7 +1,7 @@
 import { useFormContext } from 'react-hook-form';
-import { AGMinistries } from '@/constants';
-import FormCheckbox from '@/components/generic/checkbox/FormCheckbox';
 import MailLink from '@/components/generic/button/MailLink';
+import FormCheckbox from '@/components/generic/checkbox/FormCheckbox';
+import { AGMinistries } from '@/constants';
 
 export default function AGMinistryCheckBox({ disabled }: { disabled?: boolean }) {
   const { watch, register, formState } = useFormContext();

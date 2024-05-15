@@ -1,9 +1,9 @@
+import jwt from 'jsonwebtoken';
 import { Account, AuthOptions, Session, User } from 'next-auth';
 import { JWT } from 'next-auth/jwt';
 import KeycloakProvider, { KeycloakProfile } from 'next-auth/providers/keycloak';
-import jwt from 'jsonwebtoken';
-import prisma from '@/core/prisma';
 import { IS_PROD, AUTH_SERVER_URL, AUTH_RELM, AUTH_RESOURCE, AUTH_SECRET } from '@/config';
+import prisma from '@/core/prisma';
 import { upsertUser } from '@/services/db/user';
 
 export async function generateSession({ session, token }: { session: Session; token?: JWT }) {
@@ -148,7 +148,7 @@ export async function generateSession({ session, token }: { session: Session; to
 
   session.permissions = {
     // Private Products
-    createPrivateCloudProducts: session.isUser,
+    createPrivateCloudProducts: session.isAdmin || session.isPrivateAdmin,
     viewAllPrivateCloudProducts:
       session.isAdmin ||
       session.isEditor ||
@@ -165,8 +165,13 @@ export async function generateSession({ session, token }: { session: Session; to
       session.isAdmin || session.isEditor || session.isPrivateAdmin || session.isPrivateEditor,
     reviewAllPrivateCloudRequests: session.isAdmin || session.isPrivateAdmin,
 
+    createPrivateCloudProductsAsAssignee: session.isUser,
+    viewAssignedPrivateCloudProducts: session.isUser,
+    editAssignedPrivateCloudProducts: session.isUser,
+    deleteAssignedPrivateCloudProducts: session.isUser,
+
     // Public Products
-    createPublicCloudProducts: session.isUser,
+    createPublicCloudProducts: session.isAdmin || session.isPublicAdmin,
     viewAllPublicCloudProducts:
       session.isAdmin ||
       session.isEditor ||
@@ -191,6 +196,11 @@ export async function generateSession({ session, token }: { session: Session; to
     viewAllPublicProductComments: session.isAdmin || session.isReader,
     editAllPublicProductComments: session.isAdmin,
     deleteAllPublicProductComments: session.isAdmin,
+
+    createPublicCloudProductsAsAssignee: session.isUser,
+    viewAssignedPublicCloudProducts: session.isUser,
+    editAssignedPublicCloudProducts: session.isUser,
+    deleteAssignedPublicCloudProducts: session.isUser,
 
     viewZapscanResults: session.isAdmin || session.isAnalyzer,
     viewSonarscanResults: session.isAdmin || session.isAnalyzer,

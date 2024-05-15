@@ -1,8 +1,8 @@
-import { $Enums, DecisionStatus, RequestType } from '@prisma/client';
+import { $Enums, DecisionStatus, Prisma, RequestType } from '@prisma/client';
 import prisma from '@/core/prisma';
+import { isQuotaUpgrade } from '@/helpers/quota-change';
 import { PrivateCloudEditRequestBody } from '@/schema';
 import { upsertUsers } from '@/services/db/user';
-import { isQuotaUpgrade } from '@/helpers/quota-change';
 
 export default async function editRequest(
   licencePlate: string,
@@ -68,39 +68,6 @@ export default async function editRequest(
       : undefined,
   };
 
-  const originalData = {
-    name: project.name,
-    description: project.description,
-    cluster: project.cluster,
-    ministry: project.ministry,
-    status: project.status,
-    licencePlate: project.licencePlate,
-    created: project.created,
-    projectOwner: {
-      connect: {
-        email: project.projectOwner.email,
-      },
-    },
-    primaryTechnicalLead: {
-      connect: {
-        email: project.primaryTechnicalLead.email,
-      },
-    },
-    secondaryTechnicalLead: project.secondaryTechnicalLead
-      ? {
-          connect: {
-            email: project.secondaryTechnicalLead.email,
-          },
-        }
-      : undefined,
-    commonComponents: project.commonComponents,
-    golddrEnabled: project.golddrEnabled,
-    productionQuota: project.productionQuota,
-    testQuota: project.testQuota,
-    toolsQuota: project.toolsQuota,
-    developmentQuota: project.developmentQuota,
-  };
-
   // The edit request will require manual admin approval if any of the quotas are being changed.
   const isNoQuotaChanged =
     JSON.stringify(formData.productionQuota) === JSON.stringify(project.productionQuota) &&
@@ -123,6 +90,20 @@ export default async function editRequest(
     decisionStatus = DecisionStatus.PENDING;
   }
 
+  // Retrieve the latest request data to acquire the decision data ID that can be assigned to the incoming request's original data.
+  const previousRequest = await prisma.privateCloudRequest.findFirst({
+    where: {
+      licencePlate: project.licencePlate,
+      active: false,
+    },
+    select: {
+      decisionDataId: true,
+    },
+    orderBy: {
+      updatedAt: Prisma.SortOrder.desc,
+    },
+  });
+
   return prisma.privateCloudRequest.create({
     data: {
       type: RequestType.EDIT,
@@ -133,7 +114,9 @@ export default async function editRequest(
       licencePlate: project.licencePlate,
       requestComment,
       originalData: {
-        create: originalData,
+        connect: {
+          id: previousRequest?.decisionDataId,
+        },
       },
       decisionData: {
         create: decisionData,

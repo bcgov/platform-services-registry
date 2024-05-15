@@ -1,9 +1,9 @@
-import { useEffect, useRef, useState } from 'react';
 import { ExclamationCircleIcon, CheckCircleIcon } from '@heroicons/react/24/outline';
-import classNames from '@/utils/classnames';
-import { checkPriviateCloudProductDeletionAvailability } from '@/services/backend/private-cloud/products';
+import { useEffect, useRef, useState } from 'react';
 import Modal from '@/components/generic/modal/Modal';
+import { checkPrivateCloudProductDeletionAvailability } from '@/services/backend/private-cloud/products';
 import { usePrivateProductState } from '@/states/global';
+import classNames from '@/utils/classnames';
 
 export default function PrivateCloudDeleteModal({
   open,
@@ -28,7 +28,7 @@ export default function PrivateCloudDeleteModal({
       const fetchDeletionCheck = async () => {
         try {
           setIsLoading(true);
-          const data = await checkPriviateCloudProductDeletionAvailability(
+          const data = await checkPrivateCloudProductDeletionAvailability(
             privateProductSnapshot.licencePlate as string,
           );
           setDeletionCheckData(data);
@@ -109,7 +109,7 @@ export default function PrivateCloudDeleteModal({
               <p className="text-sm text-gray-900 ml-2">{privateProductSnapshot.currentProduct?.name}</p>
             </span>
             <span className="flex">
-              <p className="text-sm font-medium text-gray-900">License Plate: </p>
+              <p className="text-sm font-medium text-gray-900">Licence Plate: </p>
               <p className="text-sm text-gray-900 ml-2">{privateProductSnapshot.currentProduct?.licencePlate}</p>
             </span>
             <span className="flex">
@@ -135,17 +135,17 @@ export default function PrivateCloudDeleteModal({
               </p>
 
               <div className="mt-4">
-                <label htmlFor="license-plate" className="sr-only">
-                  License Plate Number
+                <label htmlFor="licence-plate" className="sr-only">
+                  Licence Plate Number
                 </label>
                 <input
                   value={licencePlate}
                   onChange={(e) => setLicencePlate(e.target.value)}
                   type="text"
-                  name="license-plate"
-                  id="license-plate"
+                  name="licence-plate"
+                  id="licence-plate"
                   className="block w-1/2 rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
-                  placeholder="License Plate Number"
+                  placeholder="Licence Plate Number"
                 />
               </div>
 

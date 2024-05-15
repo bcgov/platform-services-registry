@@ -1,12 +1,12 @@
+import { useParams } from 'next/navigation';
 import { useState } from 'react';
+import DeleteButton from '@/components/buttons/DeleteButton';
+import ErrorModal from '@/components/modal/Error';
 import PublicCloudDeleteModal from '@/components/modal/PublicCloudDelete';
 import ReturnModal from '@/components/modal/Return';
-import { useParams } from 'next/navigation';
-import ErrorModal from '@/components/modal/Error';
 import { deletePublicCloudProject } from '@/services/backend/public-cloud/products';
-import DeleteButton from '@/components/buttons/DeleteButton';
 
-export default function Dropdown({ disabled = false }: { disabled?: boolean }) {
+export default function PublicCloudProductOptions({ disabled = false }: { disabled?: boolean }) {
   const [showModal, setShowModal] = useState(false);
   const [showReturnModal, setShowReturnModal] = useState(false);
   const [showErrorModal, setShowErrorModal] = useState(false);

@@ -1,6 +1,6 @@
 import crypto from 'crypto';
 
-const generateLicensePlate = (len = 6) => {
+const generateLicencePlate = (len = 6) => {
   const getRandomPrefix = (requiredLength: number) =>
     crypto
       .randomBytes(Math.ceil(requiredLength / 2))
@@ -17,4 +17,4 @@ const generateLicensePlate = (len = 6) => {
   return generatedNamespacePrefix;
 };
 
-export default generateLicensePlate;
+export default generateLicencePlate;

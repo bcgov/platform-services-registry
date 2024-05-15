@@ -1,29 +1,23 @@
-import { useState, Fragment } from 'react';
-import { toast } from 'react-toastify';
 import { Menu, Transition } from '@headlessui/react';
 import { ChevronDownIcon, TrashIcon, PlayCircleIcon } from '@heroicons/react/20/solid';
-import classNames from 'classnames';
 import { useMutation } from '@tanstack/react-query';
+import classNames from 'classnames';
+import { useParams } from 'next/navigation';
+import { useState, Fragment } from 'react';
+import { toast } from 'react-toastify';
+import DeleteButton from '@/components/buttons/DeleteButton';
+import ErrorModal from '@/components/modal/Error';
 import PrivateCloudDeleteModal from '@/components/modal/PrivateCloudDelete';
 import ReturnModal from '@/components/modal/Return';
-import { useParams } from 'next/navigation';
-import ErrorModal from '@/components/modal/Error';
-import {
-  deletePrivateCloudProject,
-  reprovisionPriviateCloudRequest,
-  resendPriviateCloudRequest,
-} from '@/services/backend/private-cloud/products';
-import DeleteButton from '@/components/buttons/DeleteButton';
+import { deletePrivateCloudProject, reprovisionPrivateCloudProduct } from '@/services/backend/private-cloud/products';
 
-export default function Dropdown({
-  licensePlace = '',
+export default function PrivateCloudProductOptions({
+  licencePlate = '',
   canReprovision = false,
-  canResend = false,
   canDelete = false,
 }: {
-  licensePlace?: string;
+  licencePlate?: string;
   canReprovision?: boolean;
-  canResend?: boolean;
   canDelete?: boolean;
 }) {
   const [showModal, setShowModal] = useState(false);
@@ -35,24 +29,12 @@ export default function Dropdown({
   const params = useParams();
 
   const {
-    mutateAsync: resend,
-    isPending: isResending,
-    isError: isResendError,
-    error: resendError,
-  } = useMutation({
-    mutationFn: () => resendPriviateCloudRequest(licensePlace),
-    onSuccess: () => {
-      toast.success('Successfully resent!');
-    },
-  });
-
-  const {
     mutateAsync: reprovision,
     isPending: isReprovisioning,
     isError: isReprovisionError,
     error: reprovisionError,
   } = useMutation({
-    mutationFn: () => reprovisionPriviateCloudRequest(licensePlace),
+    mutationFn: () => reprovisionPrivateCloudProduct(licencePlate),
     onSuccess: () => {
       toast.success('Successfully reprovisioned!');
     },
@@ -72,7 +54,7 @@ export default function Dropdown({
     }
   };
 
-  if (!canDelete && !canReprovision && !canResend) return null;
+  if (!canDelete && !canReprovision) return null;
 
   return (
     <>
@@ -117,29 +99,6 @@ export default function Dropdown({
           >
             <Menu.Items className="absolute right-0 z-10 mt-2 w-56 origin-top-right divide-y divide-gray-100 rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none">
               <div className="py-1">
-                {canResend && (
-                  <Menu.Item>
-                    {({ active }) => (
-                      <button
-                        disabled={!canResend}
-                        type="button"
-                        onClick={async () => {
-                          await resend();
-                        }}
-                        className={classNames(
-                          'group flex items-center px-4 py-2 text-sm w-full',
-                          active && canResend ? 'bg-gray-100 text-gray-900' : 'text-gray-700',
-                        )}
-                      >
-                        <PlayCircleIcon
-                          className="mr-3 h-5 w-5 text-gray-400 group-hover:text-gray-500"
-                          aria-hidden="true"
-                        />
-                        Resend
-                      </button>
-                    )}
-                  </Menu.Item>
-                )}
                 {canReprovision && (
                   <Menu.Item>
                     {({ active }) => (

@@ -1,5 +1,5 @@
-import NextAuth, { DefaultSession, JWT } from 'next-auth/jwt';
 import { User } from 'next-auth';
+import NextAuth, { DefaultSession, JWT } from 'next-auth/jwt';
 import { Permissions, PermissionKey } from './permissions';
 
 declare module 'next-auth' {
@@ -40,6 +40,10 @@ declare module 'next-auth' {
       editAllPrivateCloudProducts: boolean;
       deleteAllPrivateCloudProducts: boolean;
       reviewAllPrivateCloudRequests: boolean;
+      createPrivateCloudProductsAsAssignee: boolean;
+      viewAssignedPrivateCloudProducts: boolean;
+      editAssignedPrivateCloudProducts: boolean;
+      deleteAssignedPrivateCloudProducts: boolean;
 
       createPublicCloudProducts: boolean;
       viewAllPublicCloudProducts: boolean;
@@ -47,6 +51,10 @@ declare module 'next-auth' {
       editAllPublicCloudProducts: boolean;
       deleteAllPublicCloudProducts: boolean;
       reviewAllPublicCloudRequests: boolean;
+      createPublicCloudProductsAsAssignee: boolean;
+      viewAssignedPublicCloudProducts: boolean;
+      editAssignedPublicCloudProducts: boolean;
+      deleteAssignedPublicCloudProducts: boolean;
 
       createPrivateProductComments: boolean;
       viewAllPrivateProductComments: boolean;

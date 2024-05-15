@@ -1,10 +1,12 @@
-import { useSnapshot, subscribe } from 'valtio';
 import { $Enums, Prisma } from '@prisma/client';
-import { clusters, providers, productSorts, ministryOptions } from '@/constants';
 import { useEffect, useRef, useState } from 'react';
-import FormSelect from '@/components/generic/select/FormSelect';
+import { useSnapshot, subscribe } from 'valtio';
 import FormToggle from '@/components/generic/checkbox/FormToggle';
+import FormSelect from '@/components/generic/select/FormSelect';
+import { clusters, productSorts, ministryOptions } from '@/constants';
 import { pageState } from './state';
+
+const productSortsNoLicencePlate = productSorts.filter((v) => v.sortKey !== 'licencePlate');
 
 export default function FilterPanel() {
   const pageSnapshot = useSnapshot(pageState);
@@ -14,7 +16,9 @@ export default function FilterPanel() {
   const toggleText = 'Show Resolved Requests';
 
   const handleSortChange = (value: string) => {
-    const selectedOption = productSorts.find((privateSortName) => privateSortName.humanFriendlyName === value);
+    const selectedOption = productSortsNoLicencePlate.find(
+      (privateSortName) => privateSortName.humanFriendlyName === value,
+    );
     if (selectedOption) {
       pageState.sortKey = selectedOption.sortKey;
       pageState.sortOrder = selectedOption.sortOrder;
@@ -62,10 +66,14 @@ export default function FilterPanel() {
             ref={sortRef}
             id="id"
             label="Sort By"
-            options={productSorts.map((v) => ({ label: v.humanFriendlyName, value: v.humanFriendlyName }))}
+            options={productSortsNoLicencePlate.map((v) => ({
+              label: v.humanFriendlyName,
+              value: v.humanFriendlyName,
+            }))}
             defaultValue={
-              productSorts.find((v) => v.sortKey === pageSnapshot.sortKey && v.sortOrder === pageSnapshot.sortOrder)
-                ?.humanFriendlyName
+              productSortsNoLicencePlate.find(
+                (v) => v.sortKey === pageSnapshot.sortKey && v.sortOrder === pageSnapshot.sortOrder,
+              )?.humanFriendlyName
             }
             onChange={handleSortChange}
           />

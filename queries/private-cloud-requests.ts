@@ -1,8 +1,42 @@
 import { $Enums, Prisma } from '@prisma/client';
-import prisma from '@/core/prisma';
 import { Session } from 'next-auth';
+import prisma from '@/core/prisma';
 import { PrivateCloudRequestDecorate } from '@/types/doc-decorate';
 import { getMatchingUserIds } from './users';
+
+export type PrivateCloudRequestGetPayload = Prisma.PrivateCloudRequestGetPayload<{
+  include: {
+    project: {
+      include: {
+        projectOwner: true;
+        primaryTechnicalLead: true;
+        secondaryTechnicalLead: true;
+      };
+    };
+    originalData: {
+      include: {
+        projectOwner: true;
+        primaryTechnicalLead: true;
+        secondaryTechnicalLead: true;
+      };
+    };
+    requestData: {
+      include: {
+        projectOwner: true;
+        primaryTechnicalLead: true;
+        secondaryTechnicalLead: true;
+      };
+    };
+    decisionData: {
+      include: {
+        projectOwner: true;
+        primaryTechnicalLead: true;
+        secondaryTechnicalLead: true;
+      };
+    };
+  };
+}> &
+  PrivateCloudRequestDecorate;
 
 const defaultSortKey = 'updatedAt';
 
@@ -10,6 +44,7 @@ export async function searchPrivateCloudRequests({
   session,
   skip,
   take,
+  licencePlate,
   ministry,
   cluster,
   search,
@@ -20,6 +55,7 @@ export async function searchPrivateCloudRequests({
   session: Session;
   skip: number;
   take: number;
+  licencePlate?: string;
   ministry?: string;
   cluster?: string;
   search?: string;
@@ -53,6 +89,10 @@ export async function searchPrivateCloudRequests({
     ];
   }
 
+  if (licencePlate) {
+    decisionDatawhere.licencePlate = licencePlate;
+  }
+
   if (ministry) {
     decisionDatawhere.ministry = ministry as $Enums.Ministry;
   }
@@ -75,7 +115,21 @@ export async function searchPrivateCloudRequests({
       skip,
       take,
       include: {
+        originalData: {
+          include: {
+            projectOwner: true,
+            primaryTechnicalLead: true,
+            secondaryTechnicalLead: true,
+          },
+        },
         requestData: {
+          include: {
+            projectOwner: true,
+            primaryTechnicalLead: true,
+            secondaryTechnicalLead: true,
+          },
+        },
+        decisionData: {
           include: {
             projectOwner: true,
             primaryTechnicalLead: true,
@@ -98,7 +152,21 @@ export async function searchPrivateCloudRequests({
 export type PrivateCloudRequestSearchPayload = {
   docs: (Prisma.PrivateCloudRequestGetPayload<{
     include: {
+      originalData: {
+        include: {
+          projectOwner: true;
+          primaryTechnicalLead: true;
+          secondaryTechnicalLead: true;
+        };
+      };
       requestData: {
+        include: {
+          projectOwner: true;
+          primaryTechnicalLead: true;
+          secondaryTechnicalLead: true;
+        };
+      };
+      decisionData: {
         include: {
           projectOwner: true;
           primaryTechnicalLead: true;
@@ -110,3 +178,50 @@ export type PrivateCloudRequestSearchPayload = {
     PrivateCloudRequestDecorate)[];
   totalCount: number;
 };
+
+export async function getPrivateCloudRequest(session: Session, id?: string) {
+  if (!id) return null;
+
+  const request = await prisma.privateCloudRequest.findUnique({
+    where: {
+      id,
+    },
+    include: {
+      project: {
+        include: {
+          projectOwner: true,
+          primaryTechnicalLead: true,
+          secondaryTechnicalLead: true,
+        },
+      },
+      originalData: {
+        include: {
+          projectOwner: true,
+          primaryTechnicalLead: true,
+          secondaryTechnicalLead: true,
+        },
+      },
+      requestData: {
+        include: {
+          projectOwner: true,
+          primaryTechnicalLead: true,
+          secondaryTechnicalLead: true,
+        },
+      },
+      decisionData: {
+        include: {
+          projectOwner: true,
+          primaryTechnicalLead: true,
+          secondaryTechnicalLead: true,
+        },
+      },
+    },
+    session: session as never,
+  });
+
+  if (!request) {
+    return null;
+  }
+
+  return request as PrivateCloudRequestGetPayload;
+}

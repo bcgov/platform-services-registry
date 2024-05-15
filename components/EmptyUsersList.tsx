@@ -1,7 +1,7 @@
-import AddUserButton from '@/components/buttons/AddUserButton';
 import Image from 'next/image';
 import { usePathname } from 'next/navigation';
 import Empty from '@/components/assets/empty.svg';
+import AddUserButton from '@/components/buttons/AddUserButton';
 
 export default function EmptyBody({
   userRole,
@@ -25,8 +25,8 @@ export default function EmptyBody({
           height: 'auto',
         }}
       />
-      <span className="font-bcsans text-xl font-bold text-mediumgrey mt-4">There are no users to be displayed</span>
-      <span className="font-bcsans text-lg font-extralight text-mediumgrey mt-2">
+      <span className="text-xl font-bold text-mediumgrey mt-4">There are no users to be displayed</span>
+      <span className="text-lg font-extralight text-mediumgrey mt-2">
         You currently have no users for {userRole} role
       </span>
       <div className="pt-6">

@@ -1,11 +1,11 @@
 import { $Enums, DecisionStatus } from '@prisma/client';
-import prisma from '@/core/prisma';
 import { z } from 'zod';
 import createApiHandler from '@/core/api-handler';
-import { PrivateCloudRequestedProjectWithContacts } from '@/services/nats/private-cloud';
-import { sendProvisionedEmails, sendDeleteRequestApprovalEmails } from '@/services/ches/private-cloud/email-handler';
-import { NotFoundResponse, OkResponse } from '@/core/responses';
 import { logger } from '@/core/logging';
+import prisma from '@/core/prisma';
+import { NotFoundResponse, OkResponse } from '@/core/responses';
+import { sendProvisionedEmails, sendDeleteRequestApprovalEmails } from '@/services/ches/private-cloud/email-handler';
+import { PrivateCloudRequestedProjectWithContacts } from '@/services/nats/private-cloud';
 
 const pathParamSchema = z.object({
   licencePlate: z.string(),
@@ -30,7 +30,7 @@ export const PUT = apiHandler(async ({ pathParams }) => {
   });
 
   if (!request) {
-    return NotFoundResponse('No request found for this license plate.');
+    return NotFoundResponse('No request found for this licence plate.');
   }
 
   const updateRequest = prisma.privateCloudRequest.update({
@@ -59,7 +59,7 @@ export const PUT = apiHandler(async ({ pathParams }) => {
           create: decisionData,
         });
 
-  await prisma.$transaction([updateRequest, upsertProject]);
+  await Promise.all([updateRequest, upsertProject]);
 
   logger.info(`Successfully marked ${licencePlate} as provisioned.`);
 

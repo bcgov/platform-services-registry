@@ -1,14 +1,13 @@
-import { useState, useEffect } from 'react';
 import classNames from 'classnames';
-import { useFormContext, FieldValues } from 'react-hook-form';
-import { clusters, ministryOptions } from '@/constants';
 import { useSession } from 'next-auth/react';
+import { useState, useEffect } from 'react';
+import { useFormContext } from 'react-hook-form';
 import AGMinistryCheckBox from '@/components/form/AGMinistryCheckBox';
 import GolddrCheckbox from '@/components/form/GolddrCheckbox';
-import FormSelect from '@/components/generic/select/FormSelect';
 import ExternalLink from '@/components/generic/button/ExternalLink';
 import MailLink from '@/components/generic/button/MailLink';
-import ProductBadge from './ProductBadge';
+import FormSelect from '@/components/generic/select/FormSelect';
+import { clusters, ministryOptions } from '@/constants';
 
 export default function ProjectDescriptionPrivate({
   mode,
@@ -37,19 +36,13 @@ export default function ProjectDescriptionPrivate({
     }
   }, [session]);
 
-  const values = getValues();
-
   return (
-    <div className="border-b border-gray-900/10 pb-14">
-      <h1 className="font-bcsans text-xl lg:text-2xl 2xl:text-4xl font-semibold leading-7 text-gray-900 mb-8 lg:mt-4">
-        Private Cloud OpenShift Platform
-        <ProductBadge values={values} />
-      </h1>
-      <h2 className="font-bcsans text-base lg:text-lg 2xl:text-2xl font-semibold leading-6 text-gray-900 2xl:mt-14">
+    <div className="">
+      <h2 className="text-base lg:text-lg 2xl:text-2xl font-semibold leading-6 text-gray-900">
         1. Product Description
       </h2>
       {mode === 'create' && (
-        <p className="font-bcsans text-base leading-6 mt-5">
+        <p className="text-base leading-6 mt-5">
           If this is your first time on the <b>OpenShift platform</b> you need to book an alignment meeting with the
           Platform Services team. Reach out to{' '}
           <MailLink to="platformservicesteam@gov.bc.ca">PlatformServicesTeam@gov.bc.ca</MailLink> to get started.

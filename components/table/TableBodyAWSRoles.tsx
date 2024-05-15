@@ -1,7 +1,7 @@
-import Delete from '@/components/assets/delete.svg';
 import Image from 'next/image';
 import React from 'react';
 import { User } from '@/app/api/public-cloud/aws-roles/helpers';
+import Delete from '@/components/assets/delete.svg';
 
 const rowValue = (value: string, header: string, index: number): React.ReactNode => {
   return (

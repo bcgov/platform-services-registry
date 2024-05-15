@@ -1,6 +1,6 @@
-import { OkResponse } from '@/core/responses';
-import prisma from '@/core/prisma';
 import createApiHandler from '@/core/api-handler';
+import prisma from '@/core/prisma';
+import { OkResponse } from '@/core/responses';
 
 const apiHandler = createApiHandler({
   roles: ['admin'],

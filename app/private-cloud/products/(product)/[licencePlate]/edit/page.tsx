@@ -1,24 +1,24 @@
 'use client';
 
+import { zodResolver } from '@hookform/resolvers/zod';
+import { PrivateCloudProject } from '@prisma/client';
+import { useQuery, useMutation } from '@tanstack/react-query';
 import { useEffect, useState } from 'react';
 import { FormProvider, useForm } from 'react-hook-form';
-import { PrivateCloudEditRequestBodySchema } from '@/schema';
-import { zodResolver } from '@hookform/resolvers/zod';
+import { useSnapshot } from 'valtio';
+import { z } from 'zod';
 import PreviousButton from '@/components/buttons/Previous';
-import PrivateCloudEditModal from '@/components/modal/EditPrivateCloud';
-import ReturnModal from '@/components/modal/Return';
-import ProjectDescription from '@/components/form/ProjectDescriptionPrivate';
-import TeamContacts from '@/components/form/TeamContacts';
-import Quotas from '@/components/form/Quotas';
-import { useQuery, useMutation } from '@tanstack/react-query';
 import SubmitButton from '@/components/buttons/SubmitButton';
 import CommonComponents from '@/components/form/CommonComponents';
-import { PrivateCloudProject } from '@prisma/client';
+import ProjectDescription from '@/components/form/ProjectDescriptionPrivate';
+import Quotas from '@/components/form/Quotas';
+import TeamContacts from '@/components/form/TeamContacts';
+import PrivateCloudEditModal from '@/components/modal/EditPrivateCloud';
+import ReturnModal from '@/components/modal/Return';
 import { AGMinistries } from '@/constants';
-import { z } from 'zod';
-import { getPriviateCloudProject, editPriviateCloudProject } from '@/services/backend/private-cloud/products';
-import { useSnapshot } from 'valtio';
 import createClientPage from '@/core/client-page';
+import { PrivateCloudEditRequestBodySchema } from '@/schema';
+import { getPrivateCloudProject, editPrivateCloudProject } from '@/services/backend/private-cloud/products';
 import { privateProductState } from '@/states/global';
 
 const pathParamSchema = z.object({
@@ -45,7 +45,7 @@ export default privateCloudProductEdit(({ pathParams, queryParams, session }) =>
     isError: isEditError,
     error: editError,
   } = useMutation({
-    mutationFn: (data: any) => editPriviateCloudProject(licencePlate, data),
+    mutationFn: (data: any) => editPrivateCloudProject(licencePlate, data),
     onSuccess: () => {
       setOpenComment(false);
       setOpenReturn(true);
@@ -71,7 +71,7 @@ export default privateCloudProductEdit(({ pathParams, queryParams, session }) =>
       ),
     ),
     defaultValues: async () => {
-      const response = await getPriviateCloudProject(licencePlate);
+      const response = await getPrivateCloudProject(licencePlate);
       return { ...response, isAgMinistryChecked: true };
     },
   });
@@ -102,27 +102,29 @@ export default privateCloudProductEdit(({ pathParams, queryParams, session }) =>
 
   const isSubmitEnabled = formState.isDirty || isSecondaryTechLeadRemoved;
 
+  if (!snap.currentProduct) {
+    return null;
+  }
+
   return (
     <div>
       <FormProvider {...methods}>
         <form autoComplete="off" onSubmit={methods.handleSubmit(() => setOpenComment(true))}>
           <div className="mb-12 mt-8">
-            {isDisabled && (
-              <h3 className="font-bcsans text-base lg:text-md 2xl:text-lg text-gray-600 mb-5">
-                There is already an active request for this project. You can not edit this project at this time.
-              </h3>
-            )}
             <ProjectDescription disabled={isDisabled} clusterDisabled={true} mode="edit" />
+            <hr className="my-7" />
             <TeamContacts
               disabled={isDisabled}
               secondTechLead={secondTechLead}
               secondTechLeadOnClick={secondTechLeadOnClick}
             />
+            <hr className="my-7" />
             <Quotas
-              licensePlate={snap.currentProduct?.licencePlate as string}
+              licencePlate={snap.currentProduct?.licencePlate as string}
               disabled={isDisabled}
               currentProject={snap.currentProduct as PrivateCloudProject}
             />
+            <hr className="my-7" />
             <CommonComponents disabled={isDisabled} />
           </div>
           <div className="mt-10 flex items-center justify-start gap-x-6">
@@ -144,7 +146,7 @@ export default privateCloudProductEdit(({ pathParams, queryParams, session }) =>
       <ReturnModal
         open={openReturn}
         setOpen={setOpenReturn}
-        redirectUrl="/private-cloud/requests/active"
+        redirectUrl="/private-cloud/requests/all"
         modalTitle="Thank you! We have received your edit request."
         modalMessage="We have received your edit request for your product. The Product Owner and Technical Lead(s) will receive the approval/rejection decision via email."
       />

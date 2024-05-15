@@ -1,8 +1,8 @@
 'use client';
 
-import { ReactNode } from 'react';
-import { SessionProvider } from 'next-auth/react';
 import { QueryCache, QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { SessionProvider } from 'next-auth/react';
+import { ReactNode } from 'react';
 
 interface ProviderProps {
   children: ReactNode;

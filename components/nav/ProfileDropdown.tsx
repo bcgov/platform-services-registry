@@ -1,12 +1,12 @@
-import { Fragment, useEffect, useState } from 'react';
 import { Menu, Transition } from '@headlessui/react';
-import classNames from '@/utils/classnames';
-import { signIn, useSession } from 'next-auth/react';
 import Link from 'next/link';
-import ProfileImage from '../ProfileImage';
-import { useAppState } from '@/states/global';
+import { signIn, useSession } from 'next-auth/react';
+import { Fragment, useEffect, useState } from 'react';
+import UserProfile from '@/components/dropdowns/UserProfile';
 import { signOut } from '@/helpers/auth';
-import { UserProfilePopUp } from '@/components/dropdowns/UserProfile';
+import { useAppState } from '@/states/global';
+import classNames from '@/utils/classnames';
+import ProfileImage from '../ProfileImage';
 
 export default function ProfileDropdown() {
   const [appState, appSnapshot] = useAppState();
@@ -180,7 +180,7 @@ export default function ProfileDropdown() {
         </Menu.Items>
       </Transition>
       {userProfile && isProfileOpen && (
-        <UserProfilePopUp isOpen={isProfileOpen} onClose={handleCloseProfile} user={userProfile} />
+        <UserProfile isOpen={isProfileOpen} onClose={handleCloseProfile} user={userProfile} />
       )}
     </Menu>
   );

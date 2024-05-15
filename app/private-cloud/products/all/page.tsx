@@ -1,12 +1,12 @@
 'use client';
 
-import { proxy, useSnapshot } from 'valtio';
 import { useQuery } from '@tanstack/react-query';
-import createClientPage from '@/core/client-page';
+import { proxy, useSnapshot } from 'valtio';
 import Table from '@/components/generic/table/Table';
 import TableBody from '@/components/table/TableBodyProducts';
+import createClientPage from '@/core/client-page';
 import { privateCloudProjectDataToRow } from '@/helpers/row-mapper';
-import { searchPriviateCloudProducts, downloadPriviateCloudProducts } from '@/services/backend/private-cloud/products';
+import { searchPrivateCloudProducts, downloadPrivateCloudProducts } from '@/services/backend/private-cloud/products';
 import FilterPanel from './FilterPanel';
 import { pageState } from './state';
 
@@ -19,7 +19,7 @@ export default privateCloudProducts(({ pathParams, queryParams, session }) => {
 
   const { data, isLoading } = useQuery({
     queryKey: ['products', snap],
-    queryFn: () => searchPriviateCloudProducts(snap),
+    queryFn: () => searchPrivateCloudProducts(snap),
   });
 
   let products = [];
@@ -48,7 +48,7 @@ export default privateCloudProducts(({ pathParams, queryParams, session }) => {
           pageState.search = searchTerm;
         }}
         onExport={async () => {
-          const result = await downloadPriviateCloudProducts(snap);
+          const result = await downloadPrivateCloudProducts(snap);
           return result;
         }}
         filters={<FilterPanel />}

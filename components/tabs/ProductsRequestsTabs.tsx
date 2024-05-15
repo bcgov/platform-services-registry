@@ -10,13 +10,13 @@ export default function ProductsRequestsTabs({ context }: { context: 'private' |
     {
       label: 'Requests',
       name: 'in-progress',
-      href: `/${context}-cloud/requests/active`,
+      href: `/${context}-cloud/requests/all`,
     },
   ];
 
   return (
     <div>
-      <Tabs tabs={tabs} />
+      <Tabs tabs={tabs} className="mb-6" />
     </div>
   );
 }

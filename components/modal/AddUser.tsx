@@ -1,7 +1,7 @@
-import { Fragment, useState } from 'react';
 import { Dialog, Combobox, Transition } from '@headlessui/react';
-import { useQuery } from '@tanstack/react-query';
 import { CheckIcon } from '@heroicons/react/20/solid';
+import { useQuery } from '@tanstack/react-query';
+import { Fragment, useState } from 'react';
 import UserInfoField from '@/components/modal/AddUserFields';
 import { parseMinistryFromDisplayName } from '@/helpers/user';
 import { listUsersByEmail } from '@/services/backend/msal';
@@ -97,12 +97,10 @@ export default function AddUserModal({ open, setOpen, setUserPrincipalName, setU
                   <div className="mt-3 sm:mt-5">
                     <Dialog.Title
                       as="h3"
-                      className="font-bcsans text-base lg:text-xl 2xl:text-2xl font-semibold leading-6 text-gray-900 mb-5"
+                      className="text-base lg:text-xl 2xl:text-2xl font-semibold leading-6 text-gray-900 mb-5"
                     ></Dialog.Title>
                     <div className="mt-2">
-                      <p className="font-bcsans text-sm text-gray-900">
-                        Please enter email of a person you want to add.
-                      </p>
+                      <p className="text-sm text-gray-900">Please enter email of a person you want to add.</p>
                     </div>
                   </div>
                 </div>
@@ -182,7 +180,7 @@ export default function AddUserModal({ open, setOpen, setUserPrincipalName, setU
                 <div className="mt-5 sm:mt-6 sm:grid sm:grid-flow-row-dense sm:grid-cols-2 sm:gap-3">
                   <button
                     type="button"
-                    className="px-12 rounded-md bg-white tracking-[.2em] py-2.5 text-sm font-bcsans text-bcblue shadow-sm ring-1 ring-inset ring-bcblue hover:bg-gray-50 mr-4"
+                    className="px-12 rounded-md bg-white tracking-[.2em] py-2.5 text-sm text-bcblue shadow-sm ring-1 ring-inset ring-bcblue hover:bg-gray-50 mr-4"
                     onClick={() => {
                       setOpen(false);
                       setConfirm(false);
@@ -194,7 +192,7 @@ export default function AddUserModal({ open, setOpen, setUserPrincipalName, setU
                     disabled={!confirm}
                     type="button"
                     onClick={handleAddUserBtn}
-                    className={`inline-flex justify-center rounded-md px-4 py-2.5 font-bcsans text-bcblue text-sm tracking-[.2em] shadow-sm focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 col-start-2
+                    className={`inline-flex justify-center rounded-md px-4 py-2.5 text-bcblue text-sm tracking-[.2em] shadow-sm focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 col-start-2
                                             ${
                                               confirm
                                                 ? 'bg-bcorange hover:brightness-110'

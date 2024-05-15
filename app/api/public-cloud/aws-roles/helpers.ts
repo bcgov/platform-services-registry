@@ -1,8 +1,7 @@
-import _startCase from 'lodash-es/startCase';
-import _kebabCase from 'lodash-es/kebabCase';
-import { Credentials } from '@keycloak/keycloak-admin-client/lib/utils/auth';
 import KcAdminClient from '@keycloak/keycloak-admin-client';
-import { getUser } from '@/services/msgraph';
+import { Credentials } from '@keycloak/keycloak-admin-client/lib/utils/auth';
+import _kebabCase from 'lodash-es/kebabCase';
+import _startCase from 'lodash-es/startCase';
 import {
   AWS_ROLES_BASE_URL,
   AWS_ROLES_REALM_NAME,
@@ -11,6 +10,7 @@ import {
   AWS_ROLES_IDENTITY_PROVIDER,
 } from '@/config';
 import { logger } from '@/core/logging';
+import { getUser } from '@/services/msgraph';
 
 export interface Group {
   id: string;

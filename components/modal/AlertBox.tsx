@@ -1,5 +1,5 @@
-import React from 'react';
 import { Dialog, Transition } from '@headlessui/react';
+import React from 'react';
 
 interface AlertBoxProps {
   isOpen: boolean;
@@ -66,7 +66,7 @@ const AlertBox: React.FC<AlertBoxProps> = ({
                     {!singleButton && onCancel && (
                       <button
                         type="button"
-                        className="inline-flex w-full justify-center rounded-md border border-gray-300 bg-white px-4 py-2 text-sm font-bcsans text-bcblue shadow-sm hover:bg-gray-50 tracking-[.2em] focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
+                        className="inline-flex w-full justify-center rounded-md border border-gray-300 bg-white px-4 py-2 text-sm text-bcblue shadow-sm hover:bg-gray-50 tracking-[.2em] focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
                         onClick={onCancel}
                       >
                         {cancelButtonText}
@@ -75,7 +75,7 @@ const AlertBox: React.FC<AlertBoxProps> = ({
                     {singleButton && onCancel && (
                       <button
                         type="button"
-                        className="inline-flex w-full justify-center rounded-md bg-bcorange px-4 py-2 text-sm font-bcsans text-bcblue shadow-sm hover:bg-bcorange-dark tracking-[.2em] focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-offset-2"
+                        className="inline-flex w-full justify-center rounded-md bg-bcorange px-4 py-2 text-sm text-bcblue shadow-sm hover:bg-bcorange-dark tracking-[.2em] focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-offset-2"
                         onClick={onCancel}
                       >
                         {cancelButtonText}
@@ -84,7 +84,7 @@ const AlertBox: React.FC<AlertBoxProps> = ({
                     {!singleButton && onConfirm && (
                       <button
                         type="button"
-                        className="inline-flex w-full justify-center rounded-md bg-bcorange px-4 py-2 text-sm font-bcsans text-bcblue shadow-sm hover:bg-bcorange-dark tracking-[.2em] focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-offset-2"
+                        className="inline-flex w-full justify-center rounded-md bg-bcorange px-4 py-2 text-sm text-bcblue shadow-sm hover:bg-bcorange-dark tracking-[.2em] focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-offset-2"
                         onClick={onConfirm}
                       >
                         {confirmButtonText}

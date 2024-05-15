@@ -1,9 +1,9 @@
-import prisma from '@/core/prisma';
-import _compact from 'lodash-es/compact';
 import _castArray from 'lodash-es/castArray';
+import _compact from 'lodash-es/compact';
 import _forEach from 'lodash-es/forEach';
-import { getUserByEmail, getUserPhoto } from '@/services/msgraph';
 import { logger } from '@/core/logging';
+import prisma from '@/core/prisma';
+import { getUserByEmail, getUserPhoto } from '@/services/msgraph';
 import { arrayBufferToBase64 } from '@/utils/base64-arraybuffer';
 
 export async function upsertUser(email: string) {

@@ -1,9 +1,9 @@
-import * as React from 'react';
 import { Button, Heading, Text } from '@react-email/components';
-import { PublicCloudRequestWithRequestedProject } from '@/request-actions/public-cloud/decision-request';
+import * as React from 'react';
+import Layout from '@/emails/_components/layout/Layout';
 import ProductDetails from '@/emails/_components/ProductDetails';
 import ProviderDetails from '@/emails/_components/ProviderDetails';
-import Layout from '@/emails/_components/layout/Layout';
+import { PublicCloudRequestWithRequestedProject } from '@/request-actions/public-cloud/decision-request';
 
 interface EmailProp {
   request: PublicCloudRequestWithRequestedProject;
@@ -35,7 +35,7 @@ const NewRequestTemplate = ({ request }: EmailProp) => {
           any questions about the request, the PO and TL contact details are included below and in the Registry
         </Text>
         <Button
-          href="https://registry.developer.gov.bc.ca/public-cloud/requests/active"
+          href="https://registry.developer.gov.bc.ca/public-cloud/requests/all"
           className="bg-bcorange rounded-md px-4 py-2 text-white"
         >
           Review Request

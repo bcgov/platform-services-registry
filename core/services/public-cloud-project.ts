@@ -1,11 +1,12 @@
 import { Prisma, $Enums } from '@prisma/client';
-import prisma from '@/core/prisma';
 import { ModelService } from '@/core/model-service';
+import prisma from '@/core/prisma';
 import { PublicCloudProjectDecorate } from '@/types/doc-decorate';
 
 type PublicCloudProject = Prisma.PublicCloudProjectGetPayload<{
   select: {
     id: true;
+    status: true;
     projectOwnerId: true;
     primaryTechnicalLeadId: true;
     secondaryTechnicalLeadId: true;
@@ -49,18 +50,25 @@ export class PublicCloudProjectService extends ModelService<Prisma.PublicCloudPr
   }
 
   async decorate<T>(doc: T & PublicCloudProject & PublicCloudProjectDecorate) {
-    let hasActiveRequest = false;
+    let activeRequests = [];
+
     if (doc.requests) {
-      hasActiveRequest = doc.requests.some((req) => req.active);
+      activeRequests = doc.requests.filter((req) => req.active);
     } else {
-      const requestCount = await prisma.privateCloudRequest.count({ where: { projectId: doc.id } });
-      hasActiveRequest = requestCount > 0;
+      activeRequests = await prisma.publicCloudRequest.findMany({ where: { projectId: doc.id, active: true } });
     }
 
+    const isActive = doc.status === $Enums.ProjectStatus.ACTIVE;
+    const provisioningRequests = activeRequests.filter((req) => req.decisionStatus === $Enums.DecisionStatus.APPROVED);
+    const hasActiveRequest = activeRequests.length > 0;
+    const hasProvisioningRequest = provisioningRequests.length > 0;
+
     const canEdit =
-      this.session.permissions.editAllPublicCloudProducts ||
-      [doc.projectOwnerId, doc.primaryTechnicalLeadId, doc.secondaryTechnicalLeadId].includes(this.session.userId) ||
-      this.session.ministries.editor.includes(doc.ministry);
+      isActive &&
+      !hasActiveRequest &&
+      (this.session.permissions.editAllPublicCloudProducts ||
+        [doc.projectOwnerId, doc.primaryTechnicalLeadId, doc.secondaryTechnicalLeadId].includes(this.session.userId) ||
+        this.session.ministries.editor.includes(doc.ministry));
 
     const canView =
       this.session.permissions.viewAllPublicCloudProducts ||
@@ -71,11 +79,14 @@ export class PublicCloudProjectService extends ModelService<Prisma.PublicCloudPr
       this.session.permissions.viewAllPublicCloudProductsHistory ||
       this.session.ministries.editor.includes(doc.ministry);
 
+    const canReprovision = isActive && (this.session.isAdmin || this.session.isPublicAdmin);
+
     doc._permissions = {
       view: canView,
       viewHistory: canViewHistroy,
-      edit: canEdit && !hasActiveRequest,
-      delete: canEdit && !hasActiveRequest,
+      edit: canEdit,
+      delete: canEdit,
+      reprovision: canReprovision,
     };
 
     return doc;

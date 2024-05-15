@@ -1,7 +1,7 @@
 'use client';
 
-import { useTableState } from './Table';
 import LightButton from '../button/LightButton';
+import { useTableState } from './Table';
 
 export default function Pagination() {
   const { state, snapshot: snap } = useTableState();

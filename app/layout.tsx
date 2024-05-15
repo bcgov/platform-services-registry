@@ -1,20 +1,42 @@
 'use client';
 
-import './globals.css';
 import 'react-toastify/dist/ReactToastify.css';
-import { Inter } from 'next/font/google';
+import '@mantine/core/styles.css';
+import './globals.css';
+import { MantineProvider } from '@mantine/core';
 import { useQuery } from '@tanstack/react-query';
-import Provider from '@/components/Provider';
-import Nav from '@/components/nav/Nav';
-import classNames from '@/utils/classnames';
+import localFont from 'next/font/local';
+import { useEffect } from 'react';
 import Footer from '@/components/Footer';
+import Nav from '@/components/nav/Nav';
+import Provider from '@/components/Provider';
 import { getInfo } from '@/services/backend';
 import { useAppState } from '@/states/global';
-import { useEffect } from 'react';
+import classNames from '@/utils/classnames';
 
-const inter = Inter({
-  subsets: ['latin'],
-  display: 'swap',
+const bcsans = localFont({
+  src: [
+    {
+      path: '../fonts/bcsans-regular.woff',
+      weight: '400',
+      style: 'normal',
+    },
+    {
+      path: '../fonts/bcsans-regular.woff',
+      weight: '400',
+      style: 'italic',
+    },
+    {
+      path: '../fonts/bcsans-bold.woff',
+      weight: '700',
+      style: 'normal',
+    },
+    {
+      path: '../fonts/bcsans-bold.woff',
+      weight: '700',
+      style: 'italic',
+    },
+  ],
 });
 
 function MainBody({ children }: { children: React.ReactNode }) {
@@ -30,10 +52,10 @@ function MainBody({ children }: { children: React.ReactNode }) {
   }, [appState, info]);
 
   return (
-    <body className={classNames('flex flex-col min-h-screen', inter.className)}>
+    <body className={classNames('flex flex-col min-h-screen', bcsans.className)}>
       <Nav />
       <main className="flex-grow h-100">
-        <div className="mt-8 mb-8 h-full mx-4 lg:mx-20">{children}</div>
+        <div className="mt-2 mb-2 h-full mx-4 lg:mx-20">{children}</div>
       </main>
       <Footer />
     </body>
@@ -43,8 +65,11 @@ function MainBody({ children }: { children: React.ReactNode }) {
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en">
+      <head></head>
       <Provider>
-        <MainBody>{children}</MainBody>
+        <MainBody>
+          <MantineProvider theme={{}}>{children}</MantineProvider>
+        </MainBody>
       </Provider>
     </html>
   );

@@ -1,12 +1,12 @@
 import { DecisionStatus, ProjectStatus, RequestType } from '@prisma/client';
+import prisma from '@/core/prisma';
+import generateLicencePlate from '@/helpers/licence-plate';
 import {
   DefaultCpuOptionsSchema,
   DefaultMemoryOptionsSchema,
   DefaultStorageOptionsSchema,
   PrivateCloudCreateRequestBody,
 } from '@/schema';
-import prisma from '@/core/prisma';
-import generateLicensePlate from '@/helpers/license-plate';
 import { upsertUsers } from '@/services/db/user';
 
 const defaultQuota = {
@@ -16,7 +16,7 @@ const defaultQuota = {
 };
 
 export default async function createRequest(formData: PrivateCloudCreateRequestBody, authEmail: string) {
-  const licencePlate = generateLicensePlate();
+  const licencePlate = generateLicencePlate();
 
   await upsertUsers([
     formData.projectOwner.email,

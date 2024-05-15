@@ -1,8 +1,8 @@
 import createApiHandler from '@/core/api-handler';
 import { PrivateCloudEditRequestBodySchema } from '@/schema';
+import deleteOp from '../_operations/delete';
 import readOp from '../_operations/read';
 import updateOp from '../_operations/update';
-import deleteOp from '../_operations/delete';
 import { getPathParamSchema, putPathParamSchema, deletePathParamSchema } from './schema';
 
 export const GET = createApiHandler({

@@ -5,7 +5,7 @@ export default function Previous() {
 
   return (
     <button
-      className="px-12 rounded-md bg-white tracking-[.2em] py-2.5 text-sm font-bcsans text-bcblue shadow-sm ring-1 ring-inset ring-bcblue hover:bg-gray-50"
+      className="px-12 rounded-md bg-white tracking-[.2em] py-2.5 text-sm text-bcblue shadow-sm ring-1 ring-inset ring-bcblue hover:bg-gray-50"
       type="button"
       onClick={() => router.back()}
     >

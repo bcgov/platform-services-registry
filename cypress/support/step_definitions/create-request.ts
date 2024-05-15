@@ -1,6 +1,6 @@
 import { When, Then, Given } from '@badeball/cypress-cucumber-preprocessor';
-import { getISODate } from '../utils/getISODate';
 import { createRequest } from '../../e2e/create-test.cy';
+import { getISODate } from '../utils/getISODate';
 // prepare data for test
 const productName: string = 'Test Product Cypress ' + getISODate();
 const POEmail: string = Cypress.env('admin_login');

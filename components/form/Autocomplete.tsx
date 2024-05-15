@@ -1,6 +1,6 @@
-import { Fragment, useState } from 'react';
 import { Combobox, Transition } from '@headlessui/react';
 import { CheckIcon, ChevronUpDownIcon } from '@heroicons/react/20/solid';
+import { Fragment, useState } from 'react';
 
 type Person = {
   name: string;

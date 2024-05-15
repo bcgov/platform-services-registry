@@ -1,5 +1,5 @@
-import createApiHandler from '@/core/api-handler';
 import { requestDecisionTime } from '@/analytics/public-cloud/request-decision-time';
+import createApiHandler from '@/core/api-handler';
 import { CsvResponse } from '@/core/responses';
 
 const apiHandler = createApiHandler({

@@ -1,10 +1,10 @@
 import { Prisma, $Enums } from '@prisma/client';
-import { getServerSession } from 'next-auth/next';
-import { authOptions } from '@/core/auth-options';
 import { redirect } from 'next/navigation';
+import { getServerSession } from 'next-auth/next';
+import SonarScanResults from '@/components/sonarscan/SonarScanResults';
+import { authOptions } from '@/core/auth-options';
 import prisma from '@/core/prisma';
 import { parsePaginationParams } from '@/helpers/pagination';
-import SonarScanResults from '@/components/sonarscan/SonarScanResults';
 
 export default async function Page({
   searchParams,

@@ -1,10 +1,10 @@
-import { NotFoundResponse, OkResponse } from '@/core/responses';
 import { $Enums, DecisionStatus } from '@prisma/client';
-import prisma from '@/core/prisma';
 import { z } from 'zod';
-import { PublicCloudRequestedProjectWithContacts } from '@/services/nats/public-cloud';
-import { sendProvisionedEmails, sendDeleteRequestApprovalEmails } from '@/services/ches/public-cloud/email-handler';
 import createApiHandler from '@/core/api-handler';
+import prisma from '@/core/prisma';
+import { NotFoundResponse, OkResponse } from '@/core/responses';
+import { sendProvisionedEmails, sendDeleteRequestApprovalEmails } from '@/services/ches/public-cloud/email-handler';
+import { PublicCloudRequestedProjectWithContacts } from '@/services/nats/public-cloud';
 
 const pathParamSchema = z.object({
   licencePlate: z.string(),
@@ -59,7 +59,7 @@ export const PUT = apiHandler(async ({ pathParams }) => {
           create: decisionData,
         });
 
-  await prisma.$transaction([updateRequest, upsertProject]);
+  await Promise.all([updateRequest, upsertProject]);
 
   // Note: For some reason this information cannot be retrieved from the transaction above without failing the test
   const project = await prisma.publicCloudProject.findUnique({

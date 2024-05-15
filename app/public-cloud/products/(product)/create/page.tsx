@@ -1,23 +1,23 @@
 'use client';
 
-import { useState } from 'react';
-import { FormProvider, useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useMutation } from '@tanstack/react-query';
-import PreviousButton from '@/components/buttons/Previous';
 import { useSession } from 'next-auth/react';
-import CreatePublicCloud from '@/components/modal/CreatePublicCloud';
-import ReturnModal from '@/components/modal/Return';
-import { PublicCloudCreateRequestBodySchema } from '@/schema';
+import { useState } from 'react';
+import { FormProvider, useForm } from 'react-hook-form';
+import { z } from 'zod';
+import PreviousButton from '@/components/buttons/Previous';
+import AccountCoding from '@/components/form/AccountCoding';
+import Budget from '@/components/form/Budget';
+import ExpenseAuthority from '@/components/form/ExpenseAuthority';
 import ProjectDescription from '@/components/form/ProjectDescriptionPublic';
 import TeamContacts from '@/components/form/TeamContacts';
-import ExpenseAuthority from '@/components/form/ExpenseAuthority';
-import Budget from '@/components/form/Budget';
-import AccountCoding from '@/components/form/AccountCoding';
-import { createPublicCloudProject } from '@/services/backend/public-cloud/products';
+import CreatePublicCloud from '@/components/modal/CreatePublicCloud';
+import ReturnModal from '@/components/modal/Return';
 import { AGMinistries } from '@/constants';
-import { z } from 'zod';
 import createClientPage from '@/core/client-page';
+import { PublicCloudCreateRequestBodySchema } from '@/schema';
+import { createPublicCloudProject } from '@/services/backend/public-cloud/products';
 
 const publicCloudProductNew = createClientPage({
   roles: ['user'],
@@ -75,16 +75,20 @@ export default publicCloudProductNew(({ pathParams, queryParams, session }) => {
         <form autoComplete="off" onSubmit={methods.handleSubmit(() => setOpenCreate(true))}>
           <div className="space-y-12">
             <ProjectDescription mode="create" />
+            <hr className="my-7" />
             <TeamContacts secondTechLead={secondTechLead} secondTechLeadOnClick={secondTechLeadOnClick} />
+            <hr className="my-7" />
             <ExpenseAuthority />
+            <hr className="my-7" />
             <Budget />
+            <hr className="my-7" />
             <AccountCoding />
           </div>
           <div className="mt-10 flex items-center justify-start gap-x-6">
             <PreviousButton />
             <button
               type="submit"
-              className="flex mr-20 rounded-md bg-bcorange px-4 py-2.5 font-bcsans text-bcblue text-sm tracking-[.2em] shadow-sm hover:brightness-110 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+              className="flex mr-20 rounded-md bg-bcorange px-4 py-2.5 text-bcblue text-sm tracking-[.2em] shadow-sm hover:brightness-110 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
             >
               SUBMIT REQUEST
             </button>
@@ -101,7 +105,7 @@ export default publicCloudProductNew(({ pathParams, queryParams, session }) => {
         isPublicCreate
         open={openReturn}
         setOpen={setOpenReturn}
-        redirectUrl="/public-cloud/requests/active"
+        redirectUrl="/public-cloud/requests/all"
         modalTitle="Thank you! We have received your create request."
         modalMessage="We have received your create request for a new product. The Product Owner and Technical Lead(s) will receive the approval/rejection decision via email."
       />

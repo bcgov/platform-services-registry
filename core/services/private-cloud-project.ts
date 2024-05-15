@@ -1,11 +1,12 @@
 import { Prisma, $Enums } from '@prisma/client';
-import prisma from '@/core/prisma';
 import { ModelService } from '@/core/model-service';
+import prisma from '@/core/prisma';
 import { PrivateCloudProjectDecorate } from '@/types/doc-decorate';
 
 type PrivateCloudProject = Prisma.PrivateCloudProjectGetPayload<{
   select: {
     id: true;
+    status: true;
     projectOwnerId: true;
     primaryTechnicalLeadId: true;
     secondaryTechnicalLeadId: true;
@@ -57,14 +58,15 @@ export class PrivateCloudProjectService extends ModelService<Prisma.PrivateCloud
       activeRequests = await prisma.privateCloudRequest.findMany({ where: { projectId: doc.id, active: true } });
     }
 
-    const provisioningRequests = activeRequests.filter((req) => req.decisionStatus === $Enums.DecisionStatus.APPROVED);
+    const isActive = doc.status === $Enums.ProjectStatus.ACTIVE;
     const hasActiveRequest = activeRequests.length > 0;
-    const hasProvisioningRequest = provisioningRequests.length > 0;
 
     const canEdit =
-      this.session.permissions.editAllPrivateCloudProducts ||
-      [doc.projectOwnerId, doc.primaryTechnicalLeadId, doc.secondaryTechnicalLeadId].includes(this.session.userId) ||
-      this.session.ministries.editor.includes(doc.ministry);
+      isActive &&
+      !hasActiveRequest &&
+      (this.session.permissions.editAllPrivateCloudProducts ||
+        [doc.projectOwnerId, doc.primaryTechnicalLeadId, doc.secondaryTechnicalLeadId].includes(this.session.userId) ||
+        this.session.ministries.editor.includes(doc.ministry));
 
     const canView =
       this.session.permissions.viewAllPrivateCloudProducts ||
@@ -75,13 +77,14 @@ export class PrivateCloudProjectService extends ModelService<Prisma.PrivateCloud
       this.session.permissions.viewAllPrivateCloudProductsHistory ||
       this.session.ministries.editor.includes(doc.ministry);
 
+    const canReprovision = isActive && (this.session.isAdmin || this.session.isPrivateAdmin);
+
     doc._permissions = {
       view: canView,
       viewHistory: canViewHistroy,
-      edit: canEdit && !hasActiveRequest,
-      delete: canEdit && !hasActiveRequest,
-      resend: hasProvisioningRequest && (this.session.isAdmin || this.session.isPrivateAdmin),
-      reprovision: this.session.isAdmin || this.session.isPrivateAdmin,
+      edit: canEdit,
+      delete: canEdit,
+      reprovision: canReprovision,
     };
 
     return doc;

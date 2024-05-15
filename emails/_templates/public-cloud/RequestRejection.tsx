@@ -1,5 +1,5 @@
-import * as React from 'react';
 import { Button, Heading, Text } from '@react-email/components';
+import * as React from 'react';
 import Closing from '@/emails/_components/Closing';
 import Comment from '@/emails/_components/Comment';
 import Layout from '@/emails/_components/layout/Layout';
@@ -41,7 +41,7 @@ const RequestRejectionTemplate = ({ productName, decisionComment, product }: Ema
         <Comment decisionComment={decisionComment} />
         <Text>Log in to the registry and create a new request if the reason(s) above no longer apply.</Text>
         <Button
-          href="https://registry.developer.gov.bc.ca/public-cloud/requests/active"
+          href="https://registry.developer.gov.bc.ca/public-cloud/requests/all"
           className="bg-bcorange rounded-md px-4 py-2 text-white"
         >
           Log in to Registry

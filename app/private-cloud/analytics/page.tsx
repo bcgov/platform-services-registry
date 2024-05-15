@@ -1,16 +1,16 @@
-import CombinedAreaGraph from '@/components/analytics/CombinedAreaGraph';
-import LineGraph from '@/components/analytics/LineGraph';
-import Histogram from '@/components/analytics/Histogram';
-import { quotaEditRequests } from '@/analytics/private-cloud/quota-changes';
-import { combinedRequests } from '@/analytics/private-cloud/requests';
-import { numberOfProductsOverTime } from '@/analytics/private-cloud/products';
-import { requestDecisionTime } from '@/analytics/private-cloud/request-decision-time';
-import ExportCard from '@/components/analytics/ExportCard';
-import { getServerSession } from 'next-auth/next';
-import { authOptions } from '@/core/auth-options';
 import { redirect } from 'next/navigation';
+import { getServerSession } from 'next-auth/next';
 import { ministryDistributions } from '@/analytics/private-cloud/ministry-distributions';
+import { numberOfProductsOverTime } from '@/analytics/private-cloud/products';
+import { quotaEditRequests } from '@/analytics/private-cloud/quota-changes';
+import { requestDecisionTime } from '@/analytics/private-cloud/request-decision-time';
+import { combinedRequests } from '@/analytics/private-cloud/requests';
+import CombinedAreaGraph from '@/components/analytics/CombinedAreaGraph';
+import ExportCard from '@/components/analytics/ExportCard';
+import Histogram from '@/components/analytics/Histogram';
+import LineGraph from '@/components/analytics/LineGraph';
 import PieGraph from '@/components/analytics/PieGraph';
+import { authOptions } from '@/core/auth-options';
 import { ministryKeyToName } from '@/helpers/product';
 
 function mapMinistryDistributions(items: { _id: string; value: number }[]) {
@@ -37,7 +37,7 @@ export default async function AnalyticsDashboard() {
 
   return (
     <div className="">
-      <h1 className="font-bcsans text-xl lg:text-2xl 2xl:text-4xl font-semibold leading-7 text-gray-900">
+      <h1 className="text-xl lg:text-2xl 2xl:text-4xl font-semibold leading-7 text-gray-900">
         Private Cloud Data Analytics
       </h1>
       <div className="flex flex-col gap-y-12 mt-14">

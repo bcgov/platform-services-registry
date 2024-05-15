@@ -1,14 +1,14 @@
 import { Given, Then, When } from '@badeball/cypress-cucumber-preprocessor';
 import 'cypress-keycloak';
-import { getISODate } from '../../support/utils/getISODate';
 import { createRequest } from '../../e2e/create-test.cy';
+import { getISODate } from '../../support/utils/getISODate';
 
 const productName: string = 'Test Product Cypress ' + getISODate();
 const adminEmail: string = Cypress.env('admin_login');
 const userEmail: string = Cypress.env('user_login');
 const adminPassword: string = Cypress.env('admin_password');
 const userPassword: string = Cypress.env('user_password');
-let licensePlate: string = '';
+let licencePlate: string = '';
 
 Given('I am logged in to the Registry as a User', () => {
   cy.loginToRegistry(userEmail, userPassword);
@@ -48,15 +48,15 @@ When('I create a Delete Request', () => {
   cy.contains('span', productName).click();
   cy.contains('button', 'Options').click();
   cy.contains('button', 'Delete').click();
-  cy.contains('p', 'License Plate')
+  cy.contains('p', 'Licence Plate')
     .siblings('p')
     .eq(1)
     .invoke('text')
     .then((text) => {
       // Store the text content into a variable
-      licensePlate = text.trim();
+      licencePlate = text.trim();
     });
-  cy.get('input[id="license-plate"]').type(licensePlate);
+  cy.get('input[id="licence-plate"]').type(licencePlate);
   cy.get('input[id="owner-email"]').type(userEmail);
   cy.contains('button', 'Delete').click();
   cy.contains('button', 'Return to Dashboard').click();

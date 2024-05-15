@@ -1,7 +1,7 @@
-import { removeUserFromGroup } from '@/app/api/public-cloud/aws-roles/helpers';
-import { OkResponse } from '@/core/responses';
 import { z } from 'zod';
+import { removeUserFromGroup } from '@/app/api/public-cloud/aws-roles/helpers';
 import createApiHandler from '@/core/api-handler';
+import { OkResponse } from '@/core/responses';
 
 const queryParamSchema = z.object({
   userId: z.string(),

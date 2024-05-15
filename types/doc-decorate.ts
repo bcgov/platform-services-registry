@@ -5,16 +5,15 @@ export interface PrivateCloudProjectDecorate {
     edit: boolean;
     delete: boolean;
     reprovision: boolean;
-    resend: boolean;
   };
 }
 
 export interface PrivateCloudRequestDecorate {
-  _permissions: { view: boolean; edit: boolean; review: boolean; delete: boolean };
+  _permissions: { view: boolean; edit: boolean; review: boolean; delete: boolean; resend: boolean };
 }
 
 export interface PublicCloudProjectDecorate {
-  _permissions: { view: boolean; viewHistory: boolean; edit: boolean; delete: boolean };
+  _permissions: { view: boolean; viewHistory: boolean; edit: boolean; delete: boolean; reprovision: boolean };
 }
 
 export interface PublicCloudRequestDecorate {

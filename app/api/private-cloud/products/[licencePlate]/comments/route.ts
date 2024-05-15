@@ -1,9 +1,9 @@
+import { z } from 'zod';
 import createApiHandler from '@/core/api-handler';
+import { CreatedResponse, OkResponse } from '@/core/responses';
+import { PermissionsEnum } from '@/types/permissions';
 import { createOp } from './_operations/create';
 import { listOp } from './_operations/list';
-import { z } from 'zod';
-import { PermissionsEnum } from '@/types/permissions';
-import { CreatedResponse, OkResponse } from '@/core/responses';
 
 const CreateCommentBodySchema = z.object({
   text: z.string().min(1, 'The comment text must not be empty'),

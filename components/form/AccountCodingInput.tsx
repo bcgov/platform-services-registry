@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import InfoTooltip from '@/components/generic/InfoTooltip';
 
 export default function AccountCodingInput({
   title,
@@ -21,27 +22,11 @@ export default function AccountCodingInput({
   alphanumericRegex: RegExp;
   infoText: string;
 }) {
-  const [showInfo, setShowInfo] = useState(false);
   return (
     <div className="relative mb-3" data-te-input-wrapper-init>
       <label htmlFor="street-address" className="block text-sm font-medium leading-6 text-gray-900 mb-2">
         {title}
-        <span
-          className="ml-2 relative"
-          onMouseLeave={() => setShowInfo(false)}
-          onMouseOverCapture={() => setShowInfo(true)}
-        >
-          <span className="absolute bottom-0 left-0 bg-neutral-200 text-gray-400 py-0 px-2 border rounded-full border-solid border-gray-400">
-            ℹ️
-          </span>
-          <span
-            className={`absolute min-w-56 p-2 bottom-6 left-6 bg-neutral-200 text-gray-400 bottom-100 border rounded-md border-solid border-gray-400 ${
-              showInfo ? 'block' : 'hidden'
-            }`}
-          >
-            {infoText}
-          </span>
-        </span>
+        <InfoTooltip label={infoText} />
       </label>
       <input
         disabled={disabled}

@@ -1,8 +1,8 @@
 'use client';
 
-import ProductsRequestsTabs from '@/components/tabs/ProductsRequestsTabs';
 import CreateProduct from '@/components/buttons/CreateProduct';
 import Tabs, { ITab } from '@/components/generic/tabs/BasicTabs';
+import ProductsRequestsTabs from '@/components/tabs/ProductsRequestsTabs';
 
 export default function DashboardLayout({
   children,
@@ -31,7 +31,7 @@ export default function DashboardLayout({
       <Tabs tabs={tabs}>
         <CreateProduct context={context} />
       </Tabs>
-      <div className="mt-8">
+      <div className="mt-6">
         <ProductsRequestsTabs context={context} />
         {children}
       </div>

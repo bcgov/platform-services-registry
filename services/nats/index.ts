@@ -1,13 +1,13 @@
+import { PrivateCloudRequest, RequestType } from '@prisma/client';
 import { JSONCodec, StringCodec, connect } from 'nats';
+import { PRIVATE_NATS_HOST, PRIVATE_NATS_PORT, PUBLIC_NATS_HOST, PUBLIC_NATS_PORT } from '@/config';
+import { logger } from '@/core/logging';
+import openshiftDeletionCheck, { DeletableField } from '@/helpers/openshift';
 import createPrivateCloudNatsMessage, { PrivateCloudRequestedProjectWithContacts } from '@/services/nats/private-cloud';
 import createPublicCloudNatsMessage, {
   PublicCloudProjectWithContacts,
   PublicCloudRequestedProjectWithContacts,
 } from '@/services/nats/public-cloud';
-import openshiftDeletionCheck, { DeletableField } from '@/helpers/openshift';
-import { PrivateCloudRequest, RequestType } from '@prisma/client';
-import { PRIVATE_NATS_HOST, PRIVATE_NATS_PORT, PUBLIC_NATS_HOST, PUBLIC_NATS_PORT } from '@/config';
-import { logger } from '@/core/logging';
 
 const privateNatsUrl = `${PRIVATE_NATS_HOST}:${PRIVATE_NATS_PORT}`;
 const publicNatsUrl = `${PUBLIC_NATS_HOST}:${PUBLIC_NATS_PORT}`;

@@ -1,6 +1,6 @@
+import { $Enums } from '@prisma/client';
 import { useFormContext } from 'react-hook-form';
 import FormCheckbox from '@/components/generic/checkbox/FormCheckbox';
-import { $Enums } from '@prisma/client';
 
 export default function GolddrCheckbox({ disabled }: { disabled?: boolean }) {
   const { watch, register, formState } = useFormContext();
@@ -16,6 +16,7 @@ export default function GolddrCheckbox({ disabled }: { disabled?: boolean }) {
       inputProps={register('golddrEnabled')}
       disabled={disabled}
       className={{ label: 'text-sm' }}
+      showConfirm
     >
       <span>
         Please choose whether you&#39;d like to include the{' '}

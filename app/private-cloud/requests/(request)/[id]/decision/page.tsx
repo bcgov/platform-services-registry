@@ -1,21 +1,23 @@
 'use client';
 
-import { z } from 'zod';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { Alert } from '@mantine/core';
+import { $Enums, PrivateCloudProject } from '@prisma/client';
+import { IconInfoCircle } from '@tabler/icons-react';
+import { useQuery, useMutation } from '@tanstack/react-query';
 import { useEffect, useState } from 'react';
 import { FormProvider, useForm } from 'react-hook-form';
-import { useQuery, useMutation } from '@tanstack/react-query';
-import { zodResolver } from '@hookform/resolvers/zod';
-import { $Enums, PrivateCloudProject } from '@prisma/client';
-import { PrivateCloudDecisionRequestBodySchema } from '@/schema';
+import { z } from 'zod';
 import PreviousButton from '@/components/buttons/Previous';
-import ReturnModal from '@/components/modal/ReturnDecision';
-import Comment from '@/components/modal/Comment';
-import ProjectDescription from '@/components/form/ProjectDescriptionPrivate';
-import TeamContacts from '@/components/form/TeamContacts';
-import Quotas from '@/components/form/Quotas';
 import SubmitButton from '@/components/buttons/SubmitButton';
-import { makePriviateCloudRequestDecision } from '@/services/backend/private-cloud/requests';
+import ProjectDescription from '@/components/form/ProjectDescriptionPrivate';
+import Quotas from '@/components/form/Quotas';
+import TeamContacts from '@/components/form/TeamContacts';
+import Comment from '@/components/modal/Comment';
+import ReturnModal from '@/components/modal/ReturnDecision';
 import createClientPage from '@/core/client-page';
+import { PrivateCloudDecisionRequestBodySchema } from '@/schema';
+import { makePrivateCloudRequestDecision } from '@/services/backend/private-cloud/requests';
 import { usePrivateProductState } from '@/states/global';
 
 const pathParamSchema = z.object({
@@ -27,7 +29,7 @@ const privateCloudRequestDecision = createClientPage({
   validations: { pathParams: pathParamSchema },
 });
 export default privateCloudRequestDecision(({ pathParams, queryParams, session, router }) => {
-  const [privateCloudState, privateCloudStateSnap] = usePrivateProductState();
+  const [privateState, privateSnap] = usePrivateProductState();
   const { id } = pathParams;
   const [openReturn, setOpenReturn] = useState(false);
   const [openComment, setOpenComment] = useState(false);
@@ -40,7 +42,7 @@ export default privateCloudRequestDecision(({ pathParams, queryParams, session, 
     isError: isDecisionError,
     error: decisionError,
   } = useMutation({
-    mutationFn: (data: any) => makePriviateCloudRequestDecision(id, data),
+    mutationFn: (data: any) => makePrivateCloudRequestDecision(id, data),
     onSuccess: () => {
       setOpenComment(false);
       setOpenReturn(true);
@@ -48,21 +50,21 @@ export default privateCloudRequestDecision(({ pathParams, queryParams, session, 
   });
 
   useEffect(() => {
-    if (!privateCloudStateSnap.currentRequest) return;
+    if (!privateSnap.currentRequest) return;
 
-    if (!privateCloudStateSnap.currentRequest.active || !privateCloudStateSnap.currentRequest._permissions.review) {
-      router.push(`/private-cloud/requests/${privateCloudStateSnap.currentRequest.id}/view`);
+    if (privateSnap.currentRequest.active && !privateSnap.currentRequest._permissions.review) {
+      router.push(`/private-cloud/requests/${privateSnap.currentRequest.id}/summary`);
       return;
     }
 
-    if (privateCloudStateSnap.currentRequest.decisionData.secondaryTechnicalLead) {
+    if (privateSnap.currentRequest.decisionData.secondaryTechnicalLead) {
       setSecondTechLead(true);
     }
-  }, [privateCloudStateSnap.currentRequest, router]);
+  }, [privateSnap.currentRequest, router]);
 
   const methods = useForm({
     resolver: (...args) => {
-      const isDeleteRequest = privateCloudStateSnap.currentRequest?.type === $Enums.RequestType.DELETE;
+      const isDeleteRequest = privateSnap.currentRequest?.type === $Enums.RequestType.DELETE;
 
       // Ignore form validation if a DELETE request
       if (isDeleteRequest) {
@@ -77,8 +79,8 @@ export default privateCloudRequestDecision(({ pathParams, queryParams, session, 
     values: {
       decisionComment: '',
       decision: '',
-      type: privateCloudStateSnap.currentRequest?.type,
-      ...privateCloudStateSnap.currentRequest?.decisionData,
+      type: privateSnap.currentRequest?.type,
+      ...privateSnap.currentRequest?.decisionData,
     },
   });
 
@@ -93,11 +95,11 @@ export default privateCloudRequestDecision(({ pathParams, queryParams, session, 
     makeDecision({ ...methods.getValues(), decisionComment });
   };
 
-  if (!privateCloudStateSnap.currentRequest) {
+  if (!privateSnap.currentRequest) {
     return null;
   }
 
-  const isDisabled = !privateCloudStateSnap.currentRequest._permissions.edit;
+  const isDisabled = !privateSnap.currentRequest._permissions.edit;
 
   return (
     <div>
@@ -110,42 +112,37 @@ export default privateCloudRequestDecision(({ pathParams, queryParams, session, 
           })}
         >
           <div className="mb-12 mt-8">
-            {privateCloudStateSnap.currentRequest.decisionStatus !== 'PENDING' && (
-              <h3 className="font-bcsans text-base lg:text-md 2xl:text-lg text-gray-400 mb-3">
-                A decision has already been made for this product
-              </h3>
-            )}
             <ProjectDescription
               disabled={isDisabled}
-              clusterDisabled={privateCloudStateSnap.currentRequest.type !== 'CREATE'}
+              clusterDisabled={privateSnap.currentRequest.type !== 'CREATE'}
               mode="decision"
             />
+            <hr className="my-7" />
             <TeamContacts
               disabled={isDisabled}
               secondTechLead={secondTechLead}
               secondTechLeadOnClick={secondTechLeadOnClick}
             />
+            <hr className="my-7" />
             <Quotas
-              licensePlate={privateCloudStateSnap.currentRequest.licencePlate as string}
+              licencePlate={privateSnap.currentRequest.licencePlate as string}
               disabled={isDisabled}
-              currentProject={privateCloudStateSnap.currentRequest.project as PrivateCloudProject}
+              currentProject={privateSnap.currentRequest.project as PrivateCloudProject}
             />
           </div>
 
-          {privateCloudStateSnap.currentRequest.requestComment && (
+          {privateSnap.currentRequest.requestComment && (
             <div className="border-b border-gray-900/10 pb-14">
-              <h2 className="font-bcsans text-base lg:text-lg 2xl:text-2xl font-semibold leading-6 text-gray-900 2xl:mt-14">
+              <h2 className="text-base lg:text-lg 2xl:text-2xl font-semibold leading-6 text-gray-900 2xl:mt-14">
                 4. User Comments
               </h2>
-              <p className="font-bcsans mt-4 text-base leading-6 text-gray-600">
-                {privateCloudStateSnap.currentRequest.requestComment}
-              </p>
+              <p className="mt-4 text-base leading-6 text-gray-600">{privateSnap.currentRequest.requestComment}</p>
             </div>
           )}
 
           <div className="mt-10 flex items-center justify-start gap-x-6">
             <PreviousButton />
-            {privateCloudStateSnap.currentRequest._permissions.review && (
+            {privateSnap.currentRequest._permissions.review && (
               <div className="flex items-center justify-start gap-x-6">
                 <SubmitButton
                   text="REJECT REQUEST"
@@ -171,10 +168,10 @@ export default privateCloudRequestDecision(({ pathParams, queryParams, session, 
         setOpen={setOpenComment}
         onSubmit={setComment}
         isLoading={isMakingDecision}
-        type={privateCloudStateSnap.currentRequest.type}
+        type={privateSnap.currentRequest.type}
         action={currentAction}
       />
-      <ReturnModal open={openReturn} setOpen={setOpenReturn} redirectUrl="/private-cloud/requests/active" />
+      <ReturnModal open={openReturn} setOpen={setOpenReturn} redirectUrl="/private-cloud/requests/all" />
     </div>
   );
 });

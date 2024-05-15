@@ -37,11 +37,11 @@ export default function AccountCoding({
   }, [setValue, accountCoding]);
 
   return (
-    <div className="border-b border-gray-900/10 pb-14">
-      <h2 className="font-bcsans text-base lg:text-lg 2xl:text-2xl font-semibold leading-6 text-gray-900 2xl:mt-14">
+    <div className="">
+      <h2 className="text-base lg:text-lg 2xl:text-2xl font-semibold leading-6 text-gray-900">
         5. Billing (Account Coding)
       </h2>
-      <p className="font-bcsans text-base leading-6 mt-5">
+      <p className="text-base leading-6 mt-5">
         Please refer to the Memorandum of Understanding (MoU) signed for this project to enter the information required
         below. Please make sure that the information entered below matches the account coding on the MoU for this
         project.{' '}
@@ -113,7 +113,7 @@ export default function AccountCoding({
         <label htmlFor="street-address" className="block text-sm font-medium leading-6 text-gray-900 mb-2">
           Account Coding
         </label>
-        <p className="font-bcsans text-base leading-6 mb-2"></p>
+        <p className="text-base leading-6 mb-2"></p>
         <p className="bg-neutral-200 block w-full rounded-md py-1.5 text-gray-400 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6 pl-4 h-9">
           {Object.values(accountCoding).filter((i) => i !== '').length > 0
             ? Object.values(accountCoding).join(' ').toLocaleUpperCase()

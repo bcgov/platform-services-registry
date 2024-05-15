@@ -1,12 +1,19 @@
 'use client';
 
-import CrumbsNav from '@/components/nav/CrumbsNav';
+import { IconArrowBack } from '@tabler/icons-react';
+import { useRouter } from 'next/navigation';
+import LightButton from '@/components/generic/button/LightButton';
 
 export default function Layout({ children }: { children: React.ReactNode }) {
+  const router = useRouter();
+
   return (
     <div>
-      <CrumbsNav cloudLabel="PUBLIC CLOUD" previousLabel="Products" />
-      <div className="mt-12">{children}</div>
+      <LightButton onClick={() => router.push('/public-cloud/products/all')} className="my-2">
+        <IconArrowBack className="inline-block" />
+        Go to Products
+      </LightButton>
+      <div className="my-2">{children}</div>
     </div>
   );
 }

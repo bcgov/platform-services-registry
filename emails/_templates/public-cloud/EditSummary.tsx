@@ -1,12 +1,12 @@
-import * as React from 'react';
 import { Button, Heading, Text } from '@react-email/components';
-import { PublicCloudRequestWithProjectAndRequestedProject } from '@/request-actions/public-cloud/decision-request';
+import * as React from 'react';
 import Closing from '@/emails/_components/Closing';
-import { comparePublicCloudProjects } from '@/emails/_components/Edit/utils/compare-projects';
+import BudgetChanges from '@/emails/_components/Edit/BudgetChanges';
 import ContactChanges from '@/emails/_components/Edit/ContactChanges';
 import DescriptionChanges from '@/emails/_components/Edit/DescriptionChanges';
-import BudgetChanges from '@/emails/_components/Edit/BudgetChanges';
+import { comparePublicCloudProjects } from '@/emails/_components/Edit/utils/compare-projects';
 import Layout from '@/emails/_components/layout/Layout';
+import { PublicCloudRequestWithProjectAndRequestedProject } from '@/request-actions/public-cloud/decision-request';
 
 interface EmailProp {
   request: PublicCloudRequestWithProjectAndRequestedProject;
@@ -26,13 +26,13 @@ const EditSummaryTemplate = ({ request, comment, userName }: EmailProp) => {
         <Heading className="text-lg text-black">Your Edit Summary!</Heading>
         <Text>Hi Product Team, </Text>
         <Text className="">
-          You have edited your product in the Public Cloud Landing Zone with the license plate {request.licencePlate}.{' '}
+          You have edited your product in the Public Cloud Landing Zone with the licence plate {request.licencePlate}.{' '}
           <br />
           <br /> You can see a summary of the changes below in this email, or click the button to view them in the
           Product Registry.
         </Text>
         <Button
-          href={'https://registry.developer.gov.bc.ca/public-cloud/requests/active'}
+          href={'https://registry.developer.gov.bc.ca/public-cloud/requests/all'}
           className="bg-bcorange rounded-md px-4 py-2 text-white"
         >
           View changes

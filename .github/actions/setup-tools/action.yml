@@ -5,7 +5,7 @@ runs:
   using: composite
   steps:
   - name: Setup Tools
-    uses: egose/actions/asdf-tools@fc10f2556d8e479a692a1560eea078dacf12f68a
+    uses: egose/actions/asdf-tools@73f4988ba414d27e94f2d6e97d9b10f77a5128cd
     with:
       plugins: |
         sonarscanner=https://github.com/virtualstaticvoid/asdf-sonarscanner.git

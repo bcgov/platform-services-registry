@@ -1,9 +1,7 @@
-import { z, TypeOf, ZodType } from 'zod';
-import { Prisma } from '@prisma/client';
-import prisma from '@/core/prisma';
 import { Session } from 'next-auth';
-import { PublicCloudProjectDecorate } from '@/types/doc-decorate';
-import { OkResponse, NotFoundResponse } from '@/core/responses';
+import { z, TypeOf, ZodType } from 'zod';
+import { BadRequestResponse, OkResponse, UnauthorizedResponse } from '@/core/responses';
+import { getPublicCloudProduct } from '@/queries/public-cloud-products';
 import { getPathParamSchema } from '../[licencePlate]/schema';
 
 export default async function readOp({
@@ -15,42 +13,11 @@ export default async function readOp({
 }) {
   const { licencePlate } = pathParams;
 
-  const project = await prisma.publicCloudProject.findUnique({
-    where: {
-      licencePlate,
-    },
-    include: {
-      projectOwner: true,
-      primaryTechnicalLead: true,
-      secondaryTechnicalLead: true,
-      expenseAuthority: true,
-      requests: {
-        where: {
-          active: true,
-        },
-      },
-    },
-    session: session as never,
-  });
+  const product = await getPublicCloudProduct(session, licencePlate);
 
-  if (!project) {
-    return NotFoundResponse('No project found for this licence plate.');
+  if (!product?._permissions.view) {
+    return UnauthorizedResponse();
   }
 
-  return OkResponse(project);
+  return OkResponse(product);
 }
-
-export type PublicCloudProjectGetPayload = Prisma.PublicCloudProjectGetPayload<{
-  include: {
-    projectOwner: true;
-    primaryTechnicalLead: true;
-    secondaryTechnicalLead: true;
-    expenseAuthority: true;
-    requests: {
-      where: {
-        active: true;
-      };
-    };
-  };
-}> &
-  PublicCloudProjectDecorate;

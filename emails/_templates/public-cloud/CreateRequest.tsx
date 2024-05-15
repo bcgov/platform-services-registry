@@ -1,10 +1,10 @@
-import * as React from 'react';
 import { Button, Heading, Text } from '@react-email/components';
-import { PublicCloudRequestWithRequestedProject } from '@/request-actions/public-cloud/decision-request';
-import ProductDetails from '@/emails/_components/ProductDetails';
-import ProviderDetails from '@/emails/_components/ProviderDetails';
+import * as React from 'react';
 import Closing from '@/emails/_components/Closing';
 import Layout from '@/emails/_components/layout/Layout';
+import ProductDetails from '@/emails/_components/ProductDetails';
+import ProviderDetails from '@/emails/_components/ProviderDetails';
+import { PublicCloudRequestWithRequestedProject } from '@/request-actions/public-cloud/decision-request';
 
 interface EmailProp {
   request: PublicCloudRequestWithRequestedProject;
@@ -38,7 +38,7 @@ const NewRequestTemplate = ({ request, userName }: EmailProp) => {
           have been notified and will review your request.
         </Text>
         <Button
-          href="https://registry.developer.gov.bc.ca/public-cloud/requests/active"
+          href="https://registry.developer.gov.bc.ca/public-cloud/requests/all"
           className="bg-bcorange rounded-md px-4 py-2 text-white"
         >
           View request

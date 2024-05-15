@@ -1,9 +1,8 @@
 import { string, z } from 'zod';
-import openshiftDeletionCheck from '@/helpers/openshift';
-import { PrivateCloudProject } from '@prisma/client';
-import prisma from '@/core/prisma';
 import createApiHandler from '@/core/api-handler';
-import { BadRequestResponse, OkResponse } from '@/core/responses';
+import { BadRequestResponse, OkResponse, UnauthorizedResponse } from '@/core/responses';
+import openshiftDeletionCheck from '@/helpers/openshift';
+import { getPrivateCloudProduct } from '@/queries/private-cloud-products';
 
 export const fetchCache = 'force-no-store';
 
@@ -16,18 +15,15 @@ const apiHandler = createApiHandler({
   validations: { pathParams: pathParamSchema },
 });
 
-export const GET = apiHandler(async ({ pathParams }) => {
-  const project: PrivateCloudProject | null = await prisma.privateCloudProject.findUnique({
-    where: {
-      licencePlate: pathParams.licencePlate,
-    },
-  });
+export const GET = apiHandler(async ({ pathParams, session }) => {
+  const { licencePlate } = pathParams;
+  const product = await getPrivateCloudProduct(session, licencePlate);
 
-  if (!project) {
-    return BadRequestResponse('Product does not exist.');
+  if (!product?._permissions.view) {
+    return UnauthorizedResponse();
   }
 
-  const deleteCheckList = await openshiftDeletionCheck(pathParams.licencePlate, project.cluster);
+  const deleteCheckList = await openshiftDeletionCheck(pathParams.licencePlate, product.cluster);
 
   let result = 'NOT_DELETABLE';
 

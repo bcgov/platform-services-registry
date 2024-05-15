@@ -1,6 +1,6 @@
-import { Fragment, useRef } from 'react';
 import { Dialog, Transition } from '@headlessui/react';
 import { useRouter } from 'next/navigation';
+import { Fragment, useRef } from 'react';
 
 export default function Modal({
   open,
@@ -53,12 +53,12 @@ export default function Modal({
                   <div className="mt-3 sm:mt-5">
                     <Dialog.Title
                       as="h3"
-                      className="font-bcsans text-base lg:text-xl 2xl:text-2xl font-semibold leading-6 text-gray-900 mb-5"
+                      className="text-base lg:text-xl 2xl:text-2xl font-semibold leading-6 text-gray-900 mb-5"
                     >
                       An error has occurred: {errorMessage}
                     </Dialog.Title>
                     <div className="mt-2">
-                      <p className="font-bcsans text-sm text-gray-900">
+                      <p className="text-sm text-gray-900">
                         We can not complete your request at this time. Please contact the registry team or try again
                         later.
                       </p>
@@ -68,7 +68,7 @@ export default function Modal({
                 <div className="mt-5 sm:mt-6">
                   <button
                     type="button"
-                    className="inline-flex justify-center rounded-md bg-bcorange px-4 py-2.5 font-bcsans text-bcblue text-sm tracking-[.2em] shadow-sm hover:brightness-110 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 sm:col-start-2"
+                    className="inline-flex justify-center rounded-md bg-bcorange px-4 py-2.5 text-bcblue text-sm tracking-[.2em] shadow-sm hover:brightness-110 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 sm:col-start-2"
                     onClick={handleReturn}
                     ref={cancelButtonRef}
                   >

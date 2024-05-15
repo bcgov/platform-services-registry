@@ -1,17 +1,17 @@
 'use client';
 
-import { FormProvider, useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
+import { useQuery } from '@tanstack/react-query';
+import { FormProvider, useForm } from 'react-hook-form';
+import { z } from 'zod';
+import AccountCoding from '@/components/form/AccountCoding';
+import Budget from '@/components/form/Budget';
+import ExpenseAuthority from '@/components/form/ExpenseAuthority';
 import ProjectDescription from '@/components/form/ProjectDescriptionPublic';
 import TeamContacts from '@/components/form/TeamContacts';
-import { useQuery } from '@tanstack/react-query';
-import Budget from '@/components/form/Budget';
-import AccountCoding from '@/components/form/AccountCoding';
-import ExpenseAuthority from '@/components/form/ExpenseAuthority';
-import { z } from 'zod';
-import { getPublicCloudRequest } from '@/services/backend/public-cloud/requests';
-import { PublicCloudRequestDecisionBodySchema } from '@/schema';
 import createClientPage from '@/core/client-page';
+import { PublicCloudRequestDecisionBodySchema } from '@/schema';
+import { getPublicCloudRequest } from '@/services/backend/public-cloud/requests';
 
 const pathParamSchema = z.object({
   id: z.string(),
@@ -43,13 +43,17 @@ export default publicCloudRequest(({ pathParams }) => {
         <form autoComplete="off">
           <div className="mb-12">
             <ProjectDescription disabled={true} mode="decision" />
+            <hr className="my-7" />
             <TeamContacts
               disabled={true}
               secondTechLead={!!request.decisionData.secondaryTechnicalLeadId}
               secondTechLeadOnClick={() => {}}
             />
+            <hr className="my-7" />
             <ExpenseAuthority disabled={true} />
+            <hr className="my-7" />
             <Budget disabled={true} />
+            <hr className="my-7" />
             <AccountCoding accountCodingInitial={request.decisionData.accountCoding} disabled={true} />
           </div>
         </form>

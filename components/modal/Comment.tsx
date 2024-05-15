@@ -1,5 +1,5 @@
-import { Fragment, useRef, useState } from 'react';
 import { Dialog, Transition } from '@headlessui/react';
+import { Fragment, useRef, useState } from 'react';
 
 export default function Modal({
   open,
@@ -72,7 +72,7 @@ export default function Modal({
                 <div className="mt-3 sm:mt-5">
                   <Dialog.Title
                     as="h3"
-                    className="font-bcsans text-base lg:text-xl 2xl:text-2xl font-semibold leading-6 text-gray-900 mb-5"
+                    className="text-base lg:text-xl 2xl:text-2xl font-semibold leading-6 text-gray-900 mb-5"
                   >
                     {action === 'APPROVE'
                       ? `Are you sure you want to approve this ${type?.toLocaleLowerCase()} product request?`
@@ -81,10 +81,8 @@ export default function Modal({
                 </div>
                 {showCommentsBox() && (
                   <>
-                    <p className="pt-2 font-bcsans text-sm text-gray-900">
-                      Please provide your final comments to be shared.
-                    </p>
-                    <p className="mt-6 pb-2 font-bcsans text-sm text-gray-900 font-bold">Comments</p>
+                    <p className="pt-2 text-sm text-gray-900">Please provide your final comments to be shared.</p>
+                    <p className="mt-6 pb-2 text-sm text-gray-900 font-bold">Comments</p>
                     <textarea
                       onChange={handleCommentChange}
                       className="w-full border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-slate-300-500 focus:border-slate-300-500 block px-4 py-1.5  dark:border-gray-300 dark:placeholder-gray-400 dark:text-darkergrey dark:focus:ring-slate-300 dark:focus:border-slate-300 h-24"
@@ -95,7 +93,7 @@ export default function Modal({
                 <div className="mt-5 sm:mt-6 sm:grid sm:grid-flow-row-dense sm:grid-cols-2 sm:gap-3">
                   <button
                     type="button"
-                    className="px-12 rounded-md bg-white tracking-[.2em] py-2.5 text-sm font-bcsans text-bcblue shadow-sm ring-1 ring-inset ring-bcblue hover:bg-gray-50 mr-4"
+                    className="px-12 rounded-md bg-white tracking-[.2em] py-2.5 text-sm text-bcblue shadow-sm ring-1 ring-inset ring-bcblue hover:bg-gray-50 mr-4"
                     onClick={() => {
                       setOpen(false);
                     }}
@@ -107,7 +105,7 @@ export default function Modal({
                     <button
                       disabled
                       type="button"
-                      className="inline-flex justify-center rounded-md bg-bcorange/50 px-4 py-2.5 font-bcsans text-bcblue text-sm tracking-[.2em] shadow-sm brightness-110 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 col-start-2"
+                      className="inline-flex justify-center rounded-md bg-bcorange/50 px-4 py-2.5 text-bcblue text-sm tracking-[.2em] shadow-sm brightness-110 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 col-start-2"
                     >
                       <div
                         className="mr-2 mt-1 inline-block h-3 w-3 animate-spin rounded-full border-3 border-solid border-current border-r-transparent align-[-0.125em] text-primary motion-reduce:animate-[spin_1.5s_linear_infinite]"
@@ -122,7 +120,7 @@ export default function Modal({
                       disabled={!confirm}
                       type="button"
                       onClick={() => onSubmit(comment)}
-                      className={`inline-flex justify-center rounded-md bg-bcorange px-4 py-2.5 font-bcsans text-bcblue text-sm tracking-[.2em] shadow-sm hover:brightness-110 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 col-start-2`}
+                      className={`inline-flex justify-center rounded-md bg-bcorange px-4 py-2.5 text-bcblue text-sm tracking-[.2em] shadow-sm hover:brightness-110 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 col-start-2`}
                     >
                       {action === 'APPROVE' ? 'CONFIRM APPROVAL' : 'CONFIRM REJECTION'}
                     </button>

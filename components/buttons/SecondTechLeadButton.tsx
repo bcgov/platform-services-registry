@@ -1,6 +1,6 @@
 import Image from 'next/image';
-import Plus from '@/components/assets/plus.svg';
 import Minus from '@/components/assets/minus.svg';
+import Plus from '@/components/assets/plus.svg';
 
 export default function Button({ clicked, onClick }: { clicked: boolean; onClick: () => void }) {
   return (

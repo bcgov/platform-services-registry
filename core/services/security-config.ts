@@ -1,6 +1,6 @@
 import { Prisma, PrismaClient, $Enums } from '@prisma/client';
-import prisma from '@/core/prisma';
 import { ModelService } from '@/core/model-service';
+import prisma from '@/core/prisma';
 
 export class SecurityConfigService extends ModelService<Prisma.SecurityConfigWhereInput> {
   async readFilter() {
@@ -39,7 +39,7 @@ export class SecurityConfigService extends ModelService<Prisma.SecurityConfigWhe
   async decorate<T>(
     doc: { _permissions: { view: boolean; edit: boolean; delete: boolean } } & T & Record<string, any>,
   ) {
-    const query = { where: { licencePlate: doc.license }, session: this.session as never };
+    const query = { where: { licencePlate: doc.licencePlate }, session: this.session as never };
 
     const privateQuery = {
       ...query,

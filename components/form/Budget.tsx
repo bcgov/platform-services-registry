@@ -1,7 +1,7 @@
 import { useFormContext } from 'react-hook-form';
-import classNames from '@/utils/classnames';
 import BudgetInput from '@/components/form/BudgetInput';
 import ExternalLink from '@/components/generic/button/ExternalLink';
+import classNames from '@/utils/classnames';
 
 export default function Budget({ disabled }: { disabled?: boolean }) {
   const {
@@ -18,11 +18,9 @@ export default function Budget({ disabled }: { disabled?: boolean }) {
   const formattedTotalBudget = parseFloat(totalBudget.toFixed(2));
 
   return (
-    <div className="border-b border-gray-900/10 pb-14">
-      <h2 className="font-bcsans text-base lg:text-lg 2xl:text-2xl font-semibold leading-6 text-gray-900 2xl:mt-14">
-        4. Project Budget
-      </h2>
-      <p className="font-bcsans text-base leading-6 mt-5">
+    <div className="">
+      <h2 className="text-base lg:text-lg 2xl:text-2xl font-semibold leading-6 text-gray-900">4. Project Budget</h2>
+      <p className="text-base leading-6 mt-5">
         Please indicate your estimated monthly budget &#40;Try the{' '}
         <ExternalLink href="https://calculator.aws/#/">AWS Cost Calculator</ExternalLink> to get an estimate&#41;.
         Provide an estimated average monthly spend allocated to your cloud service usage for this project. As a part of
@@ -33,7 +31,7 @@ export default function Budget({ disabled }: { disabled?: boolean }) {
           the monthly spend reaches 80% of your estimated budget.
         </b>
       </p>
-      <p className="bg-blue-50 mt-8 py-2 px-5 rounded-3xl flex font-bcsans text-sm text-blue-700">
+      <p className="bg-blue-50 mt-8 py-2 px-5 rounded-3xl flex text-sm text-blue-700">
         There will be a base charge of USD 200 to 300 per month for each project set created
       </p>
       <div className="mt-5 grid grid-cols-1 gap-x-24 gap-y-6 sm:grid-cols-2">

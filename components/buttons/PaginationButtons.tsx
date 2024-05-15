@@ -1,7 +1,7 @@
 'use client';
 
-import { DetailedHTMLProps, HTMLAttributes, useTransition } from 'react';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
+import { DetailedHTMLProps, HTMLAttributes, useTransition } from 'react';
 import createQueryString from '@/utils/search-params';
 
 interface PaginationButtonProps extends DetailedHTMLProps<HTMLAttributes<HTMLDivElement>, HTMLDivElement> {

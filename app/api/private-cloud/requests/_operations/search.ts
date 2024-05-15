@@ -1,10 +1,11 @@
-import { Session } from 'next-auth';
 import { $Enums, Prisma } from '@prisma/client';
-import { searchPrivateCloudRequests } from '@/queries/private-cloud-requests';
+import { Session } from 'next-auth';
 import { parsePaginationParams } from '@/helpers/pagination';
+import { searchPrivateCloudRequests } from '@/queries/private-cloud-requests';
 
 export default async function searchOp({
   session,
+  licencePlate,
   search,
   page,
   pageSize,
@@ -15,6 +16,7 @@ export default async function searchOp({
   sortOrder,
 }: {
   session: Session;
+  licencePlate: string;
   search: string;
   page: number;
   pageSize: number;
@@ -30,6 +32,7 @@ export default async function searchOp({
     session: session as Session,
     skip,
     take,
+    licencePlate,
     ministry,
     cluster,
     search,

@@ -1,25 +1,33 @@
 'use client';
 
-import { proxy, useSnapshot } from 'valtio';
 import { useQuery } from '@tanstack/react-query';
-import createClientPage from '@/core/client-page';
+import { proxy, useSnapshot } from 'valtio';
+import { z } from 'zod';
 import Table from '@/components/generic/table/Table';
-import TableBody from '@/components/table/TableBodyProducts';
-import { publicCloudProjectDataToRow } from '@/helpers/row-mapper';
-import { searchPublicCloudRequests } from '@/services/backend/public-cloud/requests';
+import TableBody from '@/components/table/TableBodyRequests';
+import createClientPage from '@/core/client-page';
+import { privateCloudProjectDataToRow } from '@/helpers/row-mapper';
+import { searchPrivateCloudRequests } from '@/services/backend/private-cloud/requests';
 import FilterPanel from './FilterPanel';
 import { pageState } from './state';
 
-const publicCloudRequests = createClientPage({
-  roles: ['user'],
-  fallbackUrl: '/login?callbackUrl=/public-cloud/products/all',
+const pathParamSchema = z.object({
+  licencePlate: z.string(),
 });
-export default publicCloudRequests(({ pathParams, queryParams, session }) => {
+
+const privateCloudProductRequests = createClientPage({
+  roles: ['user'],
+  validations: { pathParams: pathParamSchema },
+  fallbackUrl: '/login?callbackUrl=/private-cloud/products/all',
+});
+export default privateCloudProductRequests(({ pathParams, queryParams, session }) => {
   const snap = useSnapshot(pageState);
+  const { licencePlate } = pathParams;
 
   const { data, isLoading } = useQuery({
     queryKey: ['requests', snap],
-    queryFn: () => searchPublicCloudRequests(snap),
+    queryFn: () => searchPrivateCloudRequests({ ...snap, licencePlate }),
+    enabled: !!licencePlate,
   });
 
   let requests = [];
@@ -34,14 +42,12 @@ export default publicCloudRequests(({ pathParams, queryParams, session }) => {
       id: request.id,
     }));
 
-    requests = transformActiveRequests.map(publicCloudProjectDataToRow);
+    requests = transformActiveRequests.map(privateCloudProjectDataToRow);
     totalCount = data.totalCount;
   }
 
   return (
     <Table
-      title="Products in Public Cloud OpenShift Platform"
-      description="Products with pending requests currently under admin review."
       totalCount={totalCount}
       page={snap.page}
       pageSize={snap.pageSize}
