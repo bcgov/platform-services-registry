@@ -75,7 +75,7 @@ export default privateCloudProductNew(({ pathParams, queryParams, session }) => 
             <hr className="my-7" />
             <TeamContacts secondTechLead={secondTechLead} secondTechLeadOnClick={secondTechLeadOnClick} />
             <hr className="my-7" />
-            <CommonComponents />
+            <CommonComponents number={3} />
           </div>
           <div className="mt-10 flex items-center justify-start gap-x-6">
             <PreviousButton />
