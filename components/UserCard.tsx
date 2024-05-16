@@ -20,8 +20,8 @@ export default function UserCard({
   const name = formatFullName(user);
 
   return (
-    <Group justify="center">
-      <HoverCard width={280} shadow="md" position="top">
+    <Group justify="left">
+      <HoverCard shadow="md" position="top">
         <HoverCard.Target>
           <div className={className} onMouseEnter={open} onMouseLeave={close}>
             <div className="text-base font-bold text-gray-700 group-hover:text-gray-900 truncate">{name}</div>
