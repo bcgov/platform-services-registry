@@ -105,6 +105,19 @@ export default function TableBodyPublicProducts({ rows, isLoading = false }: Tab
 
               <div className="md:col-span-1">
                 <CopyableButton>{row.licencePlate}</CopyableButton>
+                {row.type !== $Enums.RequestType.CREATE && (
+                  <button
+                    className="mt-1 text-sm italic text-blue-500 hover:underline"
+                    onClick={(event) => {
+                      event.preventDefault();
+                      event.stopPropagation();
+
+                      router.push(`/public-cloud/products/${row.licencePlate}/edit`);
+                    }}
+                  >
+                    Go to product
+                  </button>
+                )}
               </div>
             </div>
           </div>
