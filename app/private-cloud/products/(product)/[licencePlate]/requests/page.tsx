@@ -4,9 +4,10 @@ import { useQuery } from '@tanstack/react-query';
 import { proxy, useSnapshot } from 'valtio';
 import { z } from 'zod';
 import Table from '@/components/generic/table/Table';
-import TableBody from '@/components/table/TableBodyRequests';
+import TableBodyPrivateRequests from '@/components/table/TableBodyPrivateRequests';
 import createClientPage from '@/core/client-page';
-import { privateCloudProjectDataToRow } from '@/helpers/row-mapper';
+import { processPrivateCloudRequestData } from '@/helpers/row-mapper';
+import { PrivateCloudRequestSearchedItemPayload } from '@/queries/private-cloud-requests';
 import { searchPrivateCloudRequests } from '@/services/backend/private-cloud/requests';
 import FilterPanel from './FilterPanel';
 import { pageState } from './state';
@@ -30,19 +31,11 @@ export default privateCloudProductRequests(({ pathParams, queryParams, session }
     enabled: !!licencePlate,
   });
 
-  let requests = [];
+  let requests: PrivateCloudRequestSearchedItemPayload[] = [];
   let totalCount = 0;
 
   if (!isLoading && data) {
-    const transformActiveRequests = data.docs.map((request) => ({
-      ...request.requestData,
-      created: request.created,
-      updatedAt: request.updatedAt,
-      requests: [request],
-      id: request.id,
-    }));
-
-    requests = transformActiveRequests.map(privateCloudProjectDataToRow);
+    requests = data.docs.map(processPrivateCloudRequestData);
     totalCount = data.totalCount;
   }
 
@@ -63,7 +56,7 @@ export default privateCloudProductRequests(({ pathParams, queryParams, session }
       filters={<FilterPanel />}
       isLoading={isLoading}
     >
-      <TableBody rows={requests} isLoading={isLoading} />
+      <TableBodyPrivateRequests rows={requests} isLoading={isLoading} />
     </Table>
   );
 });

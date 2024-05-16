@@ -3,9 +3,10 @@
 import { useQuery } from '@tanstack/react-query';
 import { proxy, useSnapshot } from 'valtio';
 import Table from '@/components/generic/table/Table';
-import TableBody from '@/components/table/TableBodyProducts';
+import TableBodyPrivateProducts from '@/components/table/TableBodyPrivateProducts';
 import createClientPage from '@/core/client-page';
-import { privateCloudProjectDataToRow } from '@/helpers/row-mapper';
+import { processPrivateCloudProductData } from '@/helpers/row-mapper';
+import { PrivateCloudProjectGetPayloadWithActiveRequest } from '@/queries/private-cloud-products';
 import { searchPrivateCloudProducts, downloadPrivateCloudProducts } from '@/services/backend/private-cloud/products';
 import FilterPanel from './FilterPanel';
 import { pageState } from './state';
@@ -22,11 +23,11 @@ export default privateCloudProducts(({ pathParams, queryParams, session }) => {
     queryFn: () => searchPrivateCloudProducts(snap),
   });
 
-  let products = [];
+  let products: PrivateCloudProjectGetPayloadWithActiveRequest[] = [];
   let totalCount = 0;
 
   if (!isLoading && data) {
-    products = data.docs.map(privateCloudProjectDataToRow);
+    products = data.docs.map(processPrivateCloudProductData);
     totalCount = data.totalCount;
   }
 
@@ -54,7 +55,7 @@ export default privateCloudProducts(({ pathParams, queryParams, session }) => {
         filters={<FilterPanel />}
         isLoading={isLoading}
       >
-        <TableBody rows={products} isLoading={isLoading} />
+        <TableBodyPrivateProducts rows={products} isLoading={isLoading} />
       </Table>
     </>
   );

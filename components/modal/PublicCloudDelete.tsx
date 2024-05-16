@@ -1,8 +1,8 @@
 import { ExclamationTriangleIcon } from '@heroicons/react/24/outline';
+import classNames from 'classnames';
 import { Fragment, useEffect, useRef, useState } from 'react';
 import Modal from '@/components/generic/modal/Modal';
 import { usePublicProductState } from '@/states/global';
-import classNames from '@/utils/classnames';
 
 export default function PublicCloudDeleteModal({
   open,

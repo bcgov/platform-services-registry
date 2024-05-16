@@ -5,7 +5,7 @@ import createApiHandler from '@/core/api-handler';
 import { NoContent, CsvResponse } from '@/core/responses';
 import { ministryKeyToName } from '@/helpers/product';
 import { formatFullName } from '@/helpers/user';
-import formatDate from '@/utils/date';
+import { formatDateSimple } from '@/utils/date';
 import { extractNumbers } from '@/utils/string';
 import { processEnumString, processUpperEnumString } from '@/utils/zod';
 import searchOp from '../_operations/search';
@@ -62,8 +62,8 @@ export const POST = createApiHandler({
     'Primary Technical Lead Name': formatFullName(project.primaryTechnicalLead),
     'Secondary Technical Lead Email': project.secondaryTechnicalLead ? project.secondaryTechnicalLead.email : '',
     'Secondary Technical Lead Name': formatFullName(project.secondaryTechnicalLead),
-    'Create Date': formatDate(project.created),
-    'Updated Date': formatDate(project.updatedAt),
+    'Create Date': formatDateSimple(project.created),
+    'Updated Date': formatDateSimple(project.updatedAt),
     'Licence Plate': project.licencePlate,
     'Total Compute Quota (Cores)': getTotalQuota(
       project.developmentQuota.cpu,

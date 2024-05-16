@@ -5,7 +5,7 @@ import _isNumber from 'lodash-es/isNumber';
 import PagninationButtons from '@/components/buttons/PaginationButtons';
 import ExternalLink from '@/components/generic/button/ExternalLink';
 import TableTop from '@/components/table/TableTop';
-import formatDate from '@/utils/date';
+import { formatDateSimple } from '@/utils/date';
 import SearchPanel from './SearchPanel';
 
 type SonarScanResultRows = Prisma.SonarScanResultGetPayload<{
@@ -26,7 +26,7 @@ const processCell = (value: any, field: string, headerName: string, row: SonarSc
   if (!value) return null;
 
   if (field === 'scannedAt') {
-    return formatDate(value);
+    return formatDateSimple(value);
   }
 
   if (['bugs', 'codeSmells', 'vulnerabilities', 'securityRating', 'coverage', 'duplications'].includes(field)) {

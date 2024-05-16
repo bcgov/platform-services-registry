@@ -119,7 +119,23 @@ export async function searchPublicCloudRequests({
       skip,
       take,
       include: {
+        originalData: {
+          include: {
+            projectOwner: true,
+            primaryTechnicalLead: true,
+            secondaryTechnicalLead: true,
+            expenseAuthority: true,
+          },
+        },
         requestData: {
+          include: {
+            projectOwner: true,
+            primaryTechnicalLead: true,
+            secondaryTechnicalLead: true,
+            expenseAuthority: true,
+          },
+        },
+        decisionData: {
           include: {
             projectOwner: true,
             primaryTechnicalLead: true,
@@ -139,36 +155,38 @@ export async function searchPublicCloudRequests({
   return { docs, totalCount };
 }
 
-export type PublicCloudRequestSearchPayload = {
-  docs: (Prisma.PublicCloudRequestGetPayload<{
-    include: {
-      originalData: {
-        include: {
-          projectOwner: true;
-          primaryTechnicalLead: true;
-          secondaryTechnicalLead: true;
-          expenseAuthority: true;
-        };
-      };
-      requestData: {
-        include: {
-          projectOwner: true;
-          primaryTechnicalLead: true;
-          secondaryTechnicalLead: true;
-          expenseAuthority: true;
-        };
-      };
-      decisionData: {
-        include: {
-          projectOwner: true;
-          primaryTechnicalLead: true;
-          secondaryTechnicalLead: true;
-          expenseAuthority: true;
-        };
+export type PublicCloudRequestSearchedItemPayload = Prisma.PublicCloudRequestGetPayload<{
+  include: {
+    originalData: {
+      include: {
+        projectOwner: true;
+        primaryTechnicalLead: true;
+        secondaryTechnicalLead: true;
+        expenseAuthority: true;
       };
     };
-  }> &
-    PublicCloudRequestDecorate)[];
+    requestData: {
+      include: {
+        projectOwner: true;
+        primaryTechnicalLead: true;
+        secondaryTechnicalLead: true;
+        expenseAuthority: true;
+      };
+    };
+    decisionData: {
+      include: {
+        projectOwner: true;
+        primaryTechnicalLead: true;
+        secondaryTechnicalLead: true;
+        expenseAuthority: true;
+      };
+    };
+  };
+}> &
+  PublicCloudRequestDecorate;
+
+export type PublicCloudRequestSearchPayload = {
+  docs: PublicCloudRequestSearchedItemPayload[];
   totalCount: number;
 };
 

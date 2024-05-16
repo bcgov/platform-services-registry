@@ -18,6 +18,10 @@ export type PrivateCloudProjectGetPayload = Prisma.PrivateCloudProjectGetPayload
 }> &
   PrivateCloudProjectDecorate;
 
+export type PrivateCloudProjectGetPayloadWithActiveRequest = PrivateCloudProjectGetPayload & {
+  activeRequest: Prisma.PrivateCloudRequestGetPayload<null> | null;
+};
+
 export type PrivateCloudProductSearchPayload = {
   docs: PrivateCloudProjectGetPayload[];
   totalCount: number;

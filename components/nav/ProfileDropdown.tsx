@@ -1,11 +1,11 @@
 import { Menu, Transition } from '@headlessui/react';
+import classNames from 'classnames';
 import Link from 'next/link';
 import { signIn, useSession } from 'next-auth/react';
 import { Fragment, useEffect, useState } from 'react';
 import UserProfile from '@/components/dropdowns/UserProfile';
 import { signOut } from '@/helpers/auth';
 import { useAppState } from '@/states/global';
-import classNames from '@/utils/classnames';
 import ProfileImage from '../ProfileImage';
 
 export default function ProfileDropdown() {

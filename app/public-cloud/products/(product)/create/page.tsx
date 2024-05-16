@@ -71,6 +71,10 @@ export default publicCloudProductNew(({ pathParams, queryParams, session }) => {
 
   return (
     <div>
+      <h1 className="flex justify-between text-xl lg:text-2xl xl:text-4xl font-semibold leading-7 text-gray-900 mt-2 mb-4 lg:mt-4 lg:mb-8">
+        Public Cloud Landing Zone
+      </h1>
+
       <FormProvider {...methods}>
         <form autoComplete="off" onSubmit={methods.handleSubmit(() => setOpenCreate(true))}>
           <div className="space-y-12">
