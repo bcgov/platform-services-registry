@@ -68,18 +68,22 @@ function pickData(data: any, fields: string[]) {
 export type ProductChangeValueFormatter = ((resource: string) => ResourceObject) | null;
 export type ProductChangeValueFormatterKey = 'resource' | '';
 
-export interface ProductChange {
+export interface ProductDataChange {
+  path: (string | number)[];
+  loc: string;
+  formatterKey: ProductChangeValueFormatterKey;
+  oldVal: any;
+  newVal: any;
+}
+
+export type ProductDataChanges = ProductDataChange[];
+
+export interface PrivateProductChange {
   profileChanged: boolean;
   contactsChanged: boolean;
   quotasChanged: boolean;
   compChanged: boolean;
-  changes: {
-    path: (string | number)[];
-    loc: string;
-    formatterKey: ProductChangeValueFormatterKey;
-    oldVal: any;
-    newVal: any;
-  }[];
+  changes: ProductDataChanges;
 }
 
 export function diffProductData(data1: any, data2: any, fields: string[]) {
@@ -165,6 +169,93 @@ export function comparePrivateProductData(data1: any, data2: any) {
     contactsChanged,
     quotasChanged,
     compChanged,
+    changes: sortedChanges,
+  };
+}
+
+export interface PublicProductChange {
+  profileChanged: boolean;
+  contactsChanged: boolean;
+  budgetChanged: boolean;
+  billingChanged: boolean;
+  changes: {
+    path: (string | number)[];
+    loc: string;
+    formatterKey: ProductChangeValueFormatterKey;
+    oldVal: any;
+    newVal: any;
+  }[];
+}
+
+const publicDataFields = [
+  'name',
+  'description',
+  'ministry',
+  'accountCoding',
+  'budget',
+  'projectOwner.email',
+  'primaryTechnicalLead.email',
+  'secondaryTechnicalLead.email',
+  'expenseAuthority.email',
+];
+
+export function comparePublicProductData(data1: any, data2: any) {
+  const dffs = diffProductData(data1, data2, publicDataFields);
+
+  let profileChanged = false;
+  let contactsChanged = false;
+  let budgetChanged = false;
+  let billingChanged = false;
+
+  const changes = [];
+
+  for (const dff of dffs) {
+    if (dff.op !== 'replace') continue;
+
+    const formatterKey: ProductChangeValueFormatterKey = '';
+
+    switch (dff.path[0]) {
+      case 'name':
+      case 'description':
+      case 'ministry':
+        profileChanged = true;
+        break;
+
+      case 'projectOwner':
+      case 'primaryTechnicalLead':
+      case 'secondaryTechnicalLead':
+        contactsChanged = true;
+        break;
+
+      case 'budget':
+        budgetChanged = true;
+        break;
+
+      case 'accountCoding':
+        billingChanged = true;
+        break;
+    }
+
+    changes.push({
+      path: dff.path,
+      loc: dff.path.join('.'),
+      formatterKey,
+      oldVal: _get(data1, dff.path, null),
+      newVal: dff.value,
+    });
+  }
+
+  const sortedChanges = changes.sort((a, b) => {
+    const indexA = privateDataFields.indexOf(a.path[0].toString());
+    const indexB = privateDataFields.indexOf(b.path[0].toString());
+    return indexA - indexB;
+  });
+
+  return {
+    profileChanged,
+    contactsChanged,
+    budgetChanged,
+    billingChanged,
     changes: sortedChanges,
   };
 }

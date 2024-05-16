@@ -1,6 +1,7 @@
 'use client';
 
 import classnames from 'classnames';
+import { MouseEventHandler, MouseEvent, DetailedHTMLProps, ButtonHTMLAttributes } from 'react';
 
 export default function LightButton({
   disabled = false,
@@ -11,7 +12,7 @@ export default function LightButton({
 }: {
   disabled?: boolean;
   type?: 'button' | 'submit' | 'reset' | undefined;
-  onClick?: () => void;
+  onClick?: MouseEventHandler<HTMLButtonElement> | undefined;
   className?: string;
   children: React.ReactNode;
 }) {

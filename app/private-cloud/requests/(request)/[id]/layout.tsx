@@ -2,15 +2,17 @@
 
 import { Alert } from '@mantine/core';
 import { $Enums } from '@prisma/client';
-import { IconInfoCircle } from '@tabler/icons-react';
+import { IconArrowBack, IconInfoCircle, IconFile } from '@tabler/icons-react';
 import { useQuery } from '@tanstack/react-query';
 import { useEffect } from 'react';
 import { ToastContainer } from 'react-toastify';
 import { z } from 'zod';
 import PrivateCloudRequestOptions from '@/components/dropdowns/PrivateCloudRequestOptions';
 import RequestBadge from '@/components/form/RequestBadge';
+import LightButton from '@/components/generic/button/LightButton';
 import Tabs, { ITab } from '@/components/generic/tabs/BasicTabs';
 import createClientPage from '@/core/client-page';
+import { comparePrivateProductData } from '@/helpers/product';
 import { getPrivateCloudRequest } from '@/services/backend/private-cloud/requests';
 import { privateProductState } from '@/states/global';
 
@@ -23,7 +25,7 @@ const privateCloudProductSecurityACS = createClientPage({
   validations: { pathParams: pathParamSchema },
 });
 
-export default privateCloudProductSecurityACS(({ pathParams, queryParams, session, children }) => {
+export default privateCloudProductSecurityACS(({ pathParams, queryParams, session, children, router }) => {
   const { id } = pathParams;
 
   const { data: request, isLoading: isRequestLoading } = useQuery({
@@ -35,32 +37,46 @@ export default privateCloudProductSecurityACS(({ pathParams, queryParams, sessio
   useEffect(() => {
     if (request) {
       privateProductState.currentRequest = request;
-      privateProductState.licencePlate = request?.licencePlate;
+      privateProductState.licencePlate = request.licencePlate;
+
+      privateProductState.dataChangeOriginalRequest = comparePrivateProductData(
+        request.originalData,
+        request.requestData,
+      );
+      privateProductState.dataChangeRequestDecision = comparePrivateProductData(
+        request.requestData,
+        request.decisionData,
+      );
+      privateProductState.dataChangeOriginalDecision = comparePrivateProductData(
+        request.originalData,
+        request.decisionData,
+      );
     }
   }, [request]);
 
-  const tabs: ITab[] = [
+  const tabsByType = {
+    [$Enums.RequestType.CREATE]: ['summary', 'request', 'decision'],
+    [$Enums.RequestType.EDIT]: ['summary', 'original', 'request', 'decision'],
+    [$Enums.RequestType.DELETE]: ['decision'],
+  };
+
+  let tabs: ITab[] = [
     {
       label: 'SUMMARY',
       name: 'summary',
-      href: `/private-cloud/requests/${id}/summary/origin-request`,
-      ignoreSegments: 1,
+      href: `/private-cloud/requests/${id}/summary`,
     },
-  ];
-
-  if (request?.type !== $Enums.RequestType.CREATE) {
-    tabs.push({
+    {
       label: 'ORIGINAL',
       name: 'original',
       href: `/private-cloud/requests/${id}/original`,
-    });
-  }
-
-  tabs.push({
-    label: 'USER REQUEST',
-    name: 'request',
-    href: `/private-cloud/requests/${id}/request`,
-  });
+    },
+    {
+      label: 'USER REQUEST',
+      name: 'request',
+      href: `/private-cloud/requests/${id}/request`,
+    },
+  ];
 
   if (request?._permissions.review || !request?.active) {
     tabs.push({
@@ -70,10 +86,30 @@ export default privateCloudProductSecurityACS(({ pathParams, queryParams, sessio
     });
   }
 
+  tabs = tabs.filter((tab) => {
+    if (!request) return false;
+
+    return tabsByType[request.type].includes(tab.name);
+  });
+
   if (isRequestLoading || !request) return null;
 
   return (
     <div>
+      <div>
+        <LightButton onClick={() => router.push('/private-cloud/requests/all')} className="my-2">
+          <IconArrowBack className="inline-block" />
+          Go to Requests
+        </LightButton>
+        <LightButton
+          onClick={() => router.push(`/private-cloud/products/${request.licencePlate}/edit`)}
+          className="my-2 ml-1"
+        >
+          <IconFile className="inline-block" />
+          Go to Product
+        </LightButton>
+      </div>
+
       <h1 className="flex justify-between text-xl lg:text-2xl xl:text-4xl font-semibold leading-7 text-gray-900 my-2 lg:my-4">
         Private Cloud OpenShift Platform
         <RequestBadge data={request} />

@@ -1,6 +1,14 @@
 import { Tooltip, Badge, Indicator } from '@mantine/core';
 import { $Enums } from '@prisma/client';
-import { IconHourglass, IconPencil, IconTrash, IconFilePlus } from '@tabler/icons-react';
+import {
+  IconHourglass,
+  IconPencil,
+  IconTrash,
+  IconFilePlus,
+  IconConfetti,
+  IconCircleCheck,
+  IconPoint,
+} from '@tabler/icons-react';
 import { useRouter } from 'next/navigation';
 
 export default function ActiveRequestBox({
@@ -21,8 +29,36 @@ export default function ActiveRequestBox({
 
   if (!data) return null;
 
+  let path = 'summary';
+
+  if (data.cloud === 'private-cloud') {
+    switch (data.type) {
+      case $Enums.RequestType.CREATE:
+        path = 'decision';
+        break;
+      case $Enums.RequestType.EDIT:
+        path = 'decision';
+        break;
+      case $Enums.RequestType.DELETE:
+        path = 'decision';
+        break;
+    }
+  } else {
+    switch (data.type) {
+      case $Enums.RequestType.CREATE:
+        path = 'request';
+        break;
+      case $Enums.RequestType.EDIT:
+        path = 'request';
+        break;
+      case $Enums.RequestType.DELETE:
+        path = 'request';
+        break;
+    }
+  }
+
   let typeColor = 'gray';
-  let TypeIcon = null;
+  let TypeIcon = IconPoint;
 
   switch (data.type) {
     case $Enums.RequestType.CREATE:
@@ -41,25 +77,29 @@ export default function ActiveRequestBox({
 
   let decisionColor = 'gray';
   let decisionText = '';
+  let DecisionIcon = IconPoint;
 
   switch (data.decisionStatus) {
     case $Enums.DecisionStatus.PENDING:
-      decisionColor = 'teal';
+      decisionColor = 'blue';
       decisionText = 'Reviewing';
+      DecisionIcon = IconHourglass;
       break;
     case $Enums.DecisionStatus.APPROVED:
       decisionColor = 'lime';
       decisionText = 'Approved';
+      DecisionIcon = IconConfetti;
       break;
     case $Enums.DecisionStatus.PROVISIONED:
-      decisionColor = 'cyan';
+      decisionColor = 'green';
       decisionText = 'Provisioned';
+      DecisionIcon = IconCircleCheck;
       break;
   }
 
   const badges = (
     <>
-      <Badge
+      {/* <Badge
         leftSection={<TypeIcon className="h-6 w-6" />}
         color={typeColor}
         size="lg"
@@ -68,9 +108,9 @@ export default function ActiveRequestBox({
         className=""
       >
         {data.type}
-      </Badge>
+      </Badge> */}
       <Badge
-        leftSection={<IconHourglass className="h-6 w-6" />}
+        leftSection={<DecisionIcon className="h-6 w-6" />}
         color={decisionColor}
         size="lg"
         radius="sm"
@@ -91,17 +131,20 @@ export default function ActiveRequestBox({
           e.preventDefault();
           e.stopPropagation();
 
-          router.push(`/${data.cloud}/requests/${data.id}/decision`);
+          router.push(`/${data.cloud}/requests/${data.id}/${path}`);
         }}
       >
         <Indicator color={data.active ? 'lime' : 'red'}>
           <Badge autoContrast size="xl" color="rgba(200, 200, 200, 1)" radius="md" className="mb-1">
-            Active Request
+            <TypeIcon className="inline-block" />
+            {data.type} Request
           </Badge>
           <div>{badges}</div>
-          {/* <div className="text-center text-sm text-gray-400">
-          Submitted by <span>{data.createdByEmail}</span>
-        </div> */}
+          {data.createdByEmail && (
+            <div className="text-center text-sm text-gray-400">
+              Submitted by <span>{data.createdByEmail}</span>
+            </div>
+          )}
         </Indicator>
       </button>
     </Tooltip>
