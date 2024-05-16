@@ -14,7 +14,7 @@ export default async function Page({ params }: { params: { licencePlate: string 
   const session = await getServerSession(authOptions);
 
   if (!session) {
-    redirect('/login?callbackUrl=/private-cloud/products/all');
+    redirect('/login?callbackUrl=/home');
   }
 
   const acs = await prisma.acsResult.findFirst({ where: { licencePlate: params.licencePlate } });

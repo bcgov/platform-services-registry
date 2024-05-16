@@ -19,7 +19,7 @@ export default async function Page({
   const session = await getServerSession(authOptions);
 
   if (!session) {
-    redirect('/login?callbackUrl=/private-cloud/products/all');
+    redirect('/login?callbackUrl=/home');
   }
 
   const { page: pageStr, pageSize: pageSizeStr } = searchParams;

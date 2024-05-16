@@ -19,9 +19,9 @@ function mapProviderDistributions(items: { _id: string; value: number }[]) {
 export default async function AnalyticsDashboard() {
   const session = await getServerSession(authOptions);
   if (!session) {
-    redirect('/login?callbackUrl=/public-cloud/products/all');
+    redirect('/login?callbackUrl=/home');
   } else if (!session.permissions.viewPublicAnalytics) {
-    redirect('/public-cloud/products/all');
+    redirect('/home');
   }
 
   const requestsChartData = await combinedRequests();

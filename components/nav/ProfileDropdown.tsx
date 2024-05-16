@@ -16,19 +16,6 @@ export default function ProfileDropdown() {
   const handleOpenProfile = () => setProfileOpen(true);
   const handleCloseProfile = () => setProfileOpen(false);
 
-  const userProfile =
-    session && session.user
-      ? {
-          name: session.user.name,
-          email: session.user.email,
-          roles: session.roles || ['user'],
-          permissions: Object.keys(permissions || {}).filter((key) =>
-            permissions ? permissions[key as keyof typeof permissions] : false,
-          ),
-          image: session.user.image || undefined,
-        }
-      : undefined;
-
   return (
     <Menu as="div" className="relative ml-3">
       <div>
@@ -156,7 +143,7 @@ export default function ProfileDropdown() {
                     href="#"
                     onClick={() =>
                       signIn('keycloak', {
-                        callbackUrl: '/private-cloud/products/all',
+                        callbackUrl: '/home',
                       })
                     }
                     className={classNames(active ? 'bg-gray-100' : '', 'block px-4 py-2 text-sm text-gray-700')}
@@ -179,9 +166,7 @@ export default function ProfileDropdown() {
           </Menu.Item>
         </Menu.Items>
       </Transition>
-      {userProfile && isProfileOpen && (
-        <UserProfile isOpen={isProfileOpen} onClose={handleCloseProfile} user={userProfile} />
-      )}
+      {session && isProfileOpen && <UserProfile isOpen={isProfileOpen} onClose={handleCloseProfile} />}
     </Menu>
   );
 }
