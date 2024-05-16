@@ -4,7 +4,7 @@ import { IconChevronRight } from '@tabler/icons-react';
 import _isBoolean from 'lodash-es/isBoolean';
 import _isString from 'lodash-es/isString';
 import _startCase from 'lodash-es/startCase';
-import { ProductChange, parseResourceString, ProductChangeValueFormatterKey } from '@/helpers/product';
+import { ProductDataChanges, parseResourceString, ProductChangeValueFormatterKey } from '@/helpers/product';
 
 function ProductField({ path }: { path: (string | number)[] }) {
   return path.map((v, index) => {
@@ -64,7 +64,7 @@ function ProductValue({ value, formatterKey }: { value: any; formatterKey?: Prod
   return <span>{String(value)}</span>;
 }
 
-export default function ProductComparison({ data }: { data?: ProductChange }) {
+export default function ProductComparison({ data }: { data?: ProductDataChanges }) {
   if (!data) return null;
 
   return (
@@ -84,8 +84,8 @@ export default function ProductComparison({ data }: { data?: ProductChange }) {
           </tr>
         </thead>
         <tbody>
-          {data.changes.length > 0 ? (
-            data.changes.map((change, index) => {
+          {data.length > 0 ? (
+            data.map((change, index) => {
               return (
                 <tr key={index} className="bg-white border-b dark:bg-gray-800 dark:border-gray-700">
                   <td className="px-6 py-4">
