@@ -5,6 +5,7 @@ import '@mantine/core/styles.css';
 import './globals.css';
 import { MantineProvider } from '@mantine/core';
 import { useQuery } from '@tanstack/react-query';
+import classNames from 'classnames';
 import localFont from 'next/font/local';
 import { useEffect } from 'react';
 import Footer from '@/components/Footer';
@@ -12,7 +13,6 @@ import Nav from '@/components/nav/Nav';
 import Provider from '@/components/Provider';
 import { getInfo } from '@/services/backend';
 import { useAppState } from '@/states/global';
-import classNames from '@/utils/classnames';
 
 const bcsans = localFont({
   src: [

@@ -1,9 +1,9 @@
 import { Alert } from '@mantine/core';
 import { IconInfoCircle } from '@tabler/icons-react';
+import classNames from 'classnames';
 import { useFormContext } from 'react-hook-form';
 import BudgetInput from '@/components/form/BudgetInput';
 import ExternalLink from '@/components/generic/button/ExternalLink';
-import classNames from '@/utils/classnames';
 
 export default function Budget({ disabled }: { disabled?: boolean }) {
   const {

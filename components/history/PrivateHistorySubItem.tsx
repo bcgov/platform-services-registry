@@ -1,6 +1,6 @@
 import { $Enums } from '@prisma/client';
 import Link from 'next/link';
-import formatDate from '@/utils/date';
+import { formatDateSimple } from '@/utils/date';
 
 export default function PrivateHistorySubItem({
   id,
@@ -46,7 +46,7 @@ export default function PrivateHistorySubItem({
       </div>
       <div className="mx-auto my-0 w-[0.02rem] min-h-[3rem] flex p-0 items-center justify-center border-[0.1rem]  border-bcblue"></div>
       <div className="content-center w-auto">{comment}</div>
-      <div className="max-w-fit ml-auto mr-0 my-auto font-bold">{formatDate(data)}</div>
+      <div className="max-w-fit ml-auto mr-0 my-auto font-bold">{formatDateSimple(data)}</div>
       <div className="mx-auto my-0 w-[2rem] h-[2rem]  flex p-[0.2rem] items-center justify-center border-[0.7rem] rounded-full  border-bcblue"></div>
       <div className="content-center w-auto">
         {message}{' '}

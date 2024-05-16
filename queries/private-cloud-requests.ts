@@ -149,33 +149,35 @@ export async function searchPrivateCloudRequests({
   return { docs, totalCount };
 }
 
-export type PrivateCloudRequestSearchPayload = {
-  docs: (Prisma.PrivateCloudRequestGetPayload<{
-    include: {
-      originalData: {
-        include: {
-          projectOwner: true;
-          primaryTechnicalLead: true;
-          secondaryTechnicalLead: true;
-        };
-      };
-      requestData: {
-        include: {
-          projectOwner: true;
-          primaryTechnicalLead: true;
-          secondaryTechnicalLead: true;
-        };
-      };
-      decisionData: {
-        include: {
-          projectOwner: true;
-          primaryTechnicalLead: true;
-          secondaryTechnicalLead: true;
-        };
+export type PrivateCloudRequestSearchedItemPayload = Prisma.PrivateCloudRequestGetPayload<{
+  include: {
+    originalData: {
+      include: {
+        projectOwner: true;
+        primaryTechnicalLead: true;
+        secondaryTechnicalLead: true;
       };
     };
-  }> &
-    PrivateCloudRequestDecorate)[];
+    requestData: {
+      include: {
+        projectOwner: true;
+        primaryTechnicalLead: true;
+        secondaryTechnicalLead: true;
+      };
+    };
+    decisionData: {
+      include: {
+        projectOwner: true;
+        primaryTechnicalLead: true;
+        secondaryTechnicalLead: true;
+      };
+    };
+  };
+}> &
+  PrivateCloudRequestDecorate;
+
+export type PrivateCloudRequestSearchPayload = {
+  docs: PrivateCloudRequestSearchedItemPayload[];
   totalCount: number;
 };
 

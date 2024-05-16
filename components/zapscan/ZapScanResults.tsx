@@ -2,7 +2,7 @@ import { Prisma } from '@prisma/client';
 import PagninationButtons from '@/components/buttons/PaginationButtons';
 import ExternalLink from '@/components/generic/button/ExternalLink';
 import TableTop from '@/components/table/TableTop';
-import formatDate from '@/utils/date';
+import { formatDateSimple } from '@/utils/date';
 import SearchPanel from './SearchPanel';
 
 type ZapResultRows = Prisma.PrivateCloudProjectZapResultGetPayload<{
@@ -13,7 +13,7 @@ const processCell = (value: any, field: string, headerName: string, row: ZapResu
   if (!value) return null;
 
   if (field === 'scannedAt') {
-    return formatDate(value);
+    return formatDateSimple(value);
   }
 
   if (headerName === 'Total') {

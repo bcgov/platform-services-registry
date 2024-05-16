@@ -3,9 +3,10 @@
 import { useQuery } from '@tanstack/react-query';
 import { proxy, useSnapshot } from 'valtio';
 import Table from '@/components/generic/table/Table';
-import TableBody from '@/components/table/TableBodyRequests';
+import TableBodyPublicRequests from '@/components/table/TableBodyPublicRequests';
 import createClientPage from '@/core/client-page';
-import { publicCloudProjectDataToRow } from '@/helpers/row-mapper';
+import { processPublicCloudRequestData } from '@/helpers/row-mapper';
+import { PublicCloudRequestSearchedItemPayload } from '@/queries/public-cloud-requests';
 import { searchPublicCloudRequests } from '@/services/backend/public-cloud/requests';
 import FilterPanel from './FilterPanel';
 import { pageState } from './state';
@@ -22,19 +23,11 @@ export default publicCloudRequests(({ pathParams, queryParams, session }) => {
     queryFn: () => searchPublicCloudRequests(snap),
   });
 
-  let requests = [];
+  let requests: PublicCloudRequestSearchedItemPayload[] = [];
   let totalCount = 0;
 
   if (!isLoading && data) {
-    const transformActiveRequests = data.docs.map((request) => ({
-      ...request.requestData,
-      created: request.created,
-      updatedAt: request.updatedAt,
-      requests: [request],
-      id: request.id,
-    }));
-
-    requests = transformActiveRequests.map(publicCloudProjectDataToRow);
+    requests = data.docs.map(processPublicCloudRequestData);
     totalCount = data.totalCount;
   }
 
@@ -57,7 +50,7 @@ export default publicCloudRequests(({ pathParams, queryParams, session }) => {
       filters={<FilterPanel />}
       isLoading={isLoading}
     >
-      <TableBody rows={requests} isLoading={isLoading} />
+      <TableBodyPublicRequests rows={requests} isLoading={isLoading} />
     </Table>
   );
 });

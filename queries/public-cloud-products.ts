@@ -19,6 +19,10 @@ export type PublicCloudProjectGetPayload = Prisma.PublicCloudProjectGetPayload<{
 }> &
   PublicCloudProjectDecorate;
 
+export type PublicCloudProjectGetPayloadWithActiveRequest = PublicCloudProjectGetPayload & {
+  activeRequest: Prisma.PublicCloudRequestGetPayload<null> | null;
+};
+
 export type PublicCloudProductSearchPayload = {
   docs: PublicCloudProjectGetPayload[];
   totalCount: number;

@@ -2,7 +2,7 @@ import _get from 'lodash-es/get';
 import _isArray from 'lodash-es/isArray';
 import _isFunction from 'lodash-es/isFunction';
 import ExternalLink from '@/components/generic/button/ExternalLink';
-import formatDate from '@/utils/date';
+import { formatDateSimple } from '@/utils/date';
 
 type Process<T> = ({
   value,
@@ -38,7 +38,7 @@ function processCell<T>({ value, field, headerName, type, process, row }: CellPr
   if (!value) return null;
 
   if (type === 'Date') {
-    return formatDate(value);
+    return formatDateSimple(value);
   }
 
   if (_isFunction(process)) {
