@@ -239,8 +239,9 @@ export const authOptions: AuthOptions = {
     async signIn({ user, account, profile }) {
       const { given_name, family_name, email } = profile as KeycloakProfile;
       const loweremail = email.toLowerCase();
+      const lastSeen = new Date();
 
-      const upsertedUser = await upsertUser(loweremail);
+      const upsertedUser = await upsertUser(loweremail, { lastSeen });
       if (!upsertedUser) {
         const data = {
           firstName: given_name,
@@ -250,6 +251,7 @@ export const authOptions: AuthOptions = {
           idir: '',
           upn: '',
           image: '',
+          lastSeen,
         };
 
         await prisma.user.upsert({

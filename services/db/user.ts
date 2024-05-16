@@ -6,7 +6,7 @@ import prisma from '@/core/prisma';
 import { getUserByEmail, getUserPhoto } from '@/services/msgraph';
 import { arrayBufferToBase64 } from '@/utils/base64-arraybuffer';
 
-export async function upsertUser(email: string) {
+export async function upsertUser(email: string, extra = {}) {
   if (!email) return null;
 
   try {
@@ -24,6 +24,7 @@ export async function upsertUser(email: string) {
       idir: adUser.idir,
       upn: adUser.upn,
       image: adUserPhoto ? arrayBufferToBase64(adUserPhoto) : '',
+      ...extra,
     };
 
     return await prisma.user.upsert({

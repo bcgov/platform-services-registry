@@ -22,7 +22,8 @@ model User {
   ministry                                              String?
   archived                                              Boolean                        @default(false)
   created                                               DateTime                       @default(now())
-  lastSeen                                              DateTime                       @updatedAt
+  updatedAt                                             DateTime                       @updatedAt
+  lastSeen                                              DateTime                       @default(now())
   privateCloudProjectsAsProjectOwner                    PrivateCloudProject[]          @relation("projectOwner")
   privateCloudProjectsAsPrimaryTechnicalLead            PrivateCloudProject[]          @relation("primaryTechnicalLead")
   privateCloudProjectsAsSecondaryTechnicalLead          PrivateCloudProject[]          @relation("secondaryTechnicalLead")

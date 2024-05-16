@@ -7,8 +7,6 @@ export const up = async (db, client) => {
     idir: 'PLACEHOLDER',
     ministry: 'CITZ',
     archived: false,
-    created: new Date(),
-    lastSeen: new Date(),
   });
 
   const placeholderUserId = placeholderUser.insertedId;
