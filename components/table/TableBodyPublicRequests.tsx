@@ -56,7 +56,7 @@ export default function TableBodyPublicProducts({ rows, isLoading = false }: Tab
                         <Tooltip label={row.decisionData.description} offset={10}>
                           <span className="font-bold">{_truncate(row.decisionData.name, { length: 100 })}</span>
                         </Tooltip>
-                        {row.active && (
+                        {!row.active && (
                           <Badge color="red" radius="sm" className="ml-1">
                             {$Enums.ProjectStatus.INACTIVE}
                           </Badge>
