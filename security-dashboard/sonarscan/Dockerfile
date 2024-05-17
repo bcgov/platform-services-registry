@@ -1,4 +1,4 @@
-FROM sonarsource/sonar-scanner-cli:5.0.1
+FROM sonarsource/sonar-scanner-cli:10.0.0
 
 WORKDIR /opt/sonar
 
