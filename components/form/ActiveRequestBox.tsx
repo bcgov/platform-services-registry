@@ -8,6 +8,7 @@ import {
   IconConfetti,
   IconCircleCheck,
   IconPoint,
+  IconBan,
 } from '@tabler/icons-react';
 import { useRouter } from 'next/navigation';
 
@@ -89,6 +90,11 @@ export default function ActiveRequestBox({
       decisionColor = 'lime';
       decisionText = 'Approved';
       DecisionIcon = IconConfetti;
+      break;
+    case $Enums.DecisionStatus.REJECTED:
+      decisionColor = 'red';
+      decisionText = 'Rejected';
+      DecisionIcon = IconBan;
       break;
     case $Enums.DecisionStatus.PROVISIONED:
       decisionColor = 'green';
