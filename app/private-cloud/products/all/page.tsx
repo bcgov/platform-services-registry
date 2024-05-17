@@ -13,7 +13,7 @@ import { pageState } from './state';
 
 const privateCloudProducts = createClientPage({
   roles: ['user'],
-  fallbackUrl: '/login?callbackUrl=/private-cloud/products/all',
+  fallbackUrl: '/login?callbackUrl=/home',
 });
 export default privateCloudProducts(({ pathParams, queryParams, session }) => {
   const snap = useSnapshot(pageState);

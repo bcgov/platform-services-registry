@@ -4,7 +4,7 @@ const nextConfig = {
     return [
       {
         source: '/',
-        destination: '/private-cloud/products/all',
+        destination: '/home',
         permanent: true,
       },
       {

@@ -24,7 +24,7 @@ export default function UserCard({
       <HoverCard shadow="md" position="top">
         <HoverCard.Target>
           <div className={className} onMouseEnter={open} onMouseLeave={close}>
-            <div className="text-base font-bold text-gray-700 group-hover:text-gray-900 truncate">{name}</div>
+            <div className="text-base font-bold text-gray-700 group-hover:text-gray-900">{name}</div>
             {title && <div className="text-sm text-gray-400 group-hover:text-gray-700">{title}</div>}
           </div>
         </HoverCard.Target>

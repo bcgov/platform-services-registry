@@ -19,7 +19,7 @@ const pathParamSchema = z.object({
 const publicCloudRequests = createClientPage({
   roles: ['user'],
   validations: { pathParams: pathParamSchema },
-  fallbackUrl: '/login?callbackUrl=/public-cloud/products/all',
+  fallbackUrl: '/login?callbackUrl=/home',
 });
 export default publicCloudRequests(({ pathParams, queryParams, session }) => {
   const snap = useSnapshot(pageState);

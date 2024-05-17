@@ -21,7 +21,7 @@ export default async function AnalyticsDashboard() {
   const session = await getServerSession(authOptions);
 
   if (!session || !session.permissions.viewPrivateAnalytics) {
-    redirect('/login?callbackUrl=/private-cloud/products/all');
+    redirect('/login?callbackUrl=/home');
   }
 
   const quotaChangedChartData = await quotaEditRequests();

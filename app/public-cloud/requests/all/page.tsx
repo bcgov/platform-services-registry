@@ -13,7 +13,7 @@ import { pageState } from './state';
 
 const publicCloudRequests = createClientPage({
   roles: ['user'],
-  fallbackUrl: '/login?callbackUrl=/public-cloud/products/all',
+  fallbackUrl: '/login?callbackUrl=/home',
 });
 export default publicCloudRequests(({ pathParams, queryParams, session }) => {
   const snap = useSnapshot(pageState);
