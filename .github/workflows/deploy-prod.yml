@@ -39,3 +39,12 @@ jobs:
         NAMESPACE=${{ vars.OPENSHIFT_NAMESPACE }} \
         IMAGE_TAG=${vtag//v}
       working-directory: ./helm/main
+
+    - name: Notify RocketChat
+      if: success()
+      env:
+        ROCKETCHAT_WEBHOOK_URL: ${{ secrets.ROCKETCHAT_WEBHOOK_URL }}
+      run: |
+        curl -X POST -H "Content-Type: application/json" -d '{
+          "text": ":white_check_mark: Deployment to Prod was successful! Read the changes here [${{ github.event.release.tag_name }}](https://github.com/bcgov/platform-services-registry/blob/main/CHANGELOG.md#${{ github.event.release.tag_name }})"
+        }' $ROCKETCHAT_WEBHOOK_URL
