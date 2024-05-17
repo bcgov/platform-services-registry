@@ -3,6 +3,6 @@ python 3.12.1
 oc 4.13.3
 kubectl 1.30.1
 terraform 1.5.7
-helm 3.14.4
+helm 3.15.0
 sonarscanner 5.0.1.3006
 shfmt 3.8.0
