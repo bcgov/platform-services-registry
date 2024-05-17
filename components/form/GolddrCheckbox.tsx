@@ -17,11 +17,12 @@ export default function GolddrCheckbox({ disabled }: { disabled?: boolean }) {
       disabled={disabled}
       className={{ label: 'text-sm' }}
       showConfirm
+      confirmCheckedTitle="Are you sure you want to include GOLD DR ?"
+      confirmUncheckedTitle="Are you sure you want to remove GOLD DR ?"
+      confirmCheckedMessage="Include GOLD DR if you are ready to setup geographic failover for your application."
+      confirmUncheckedMessage="Removing GOLD DR will delete anything in the current GOLD DR namespace."
     >
-      <span>
-        Please choose whether you&#39;d like to include the{' '}
-        <span className="font-bold text-blue-600">Golddr cluster</span> alongside the Gold cluster.
-      </span>
+      <span>Include Gold DR</span>
     </FormCheckbox>
   );
 }
