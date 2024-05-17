@@ -11,7 +11,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
     <div>
       <LightButton onClick={() => router.push('/public-cloud/products/all')} className="my-2">
         <IconArrowBack className="inline-block" />
-        Go to Products
+        Back to Products
       </LightButton>
       <div className="my-2">{children}</div>
     </div>

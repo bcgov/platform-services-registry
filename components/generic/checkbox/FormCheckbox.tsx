@@ -20,8 +20,10 @@ export default function FormCheckbox({
   error,
   className,
   showConfirm = false,
-  confirmTitle = 'Status Change',
-  confirmMessage = 'Are you sure to change?',
+  confirmCheckedTitle = 'Status Change',
+  confirmUncheckedTitle = 'Status Change',
+  confirmCheckedMessage = 'Are you sure you want to change this ?',
+  confirmUncheckedMessage = 'Are you sure you want to change this ?',
 }: {
   id: string;
   label?: string;
@@ -38,8 +40,10 @@ export default function FormCheckbox({
     input?: string;
   };
   showConfirm?: boolean;
-  confirmTitle?: string;
-  confirmMessage?: string;
+  confirmCheckedTitle?: string;
+  confirmUncheckedTitle?: string;
+  confirmCheckedMessage?: string;
+  confirmUncheckedMessage?: string;
 }) {
   const _ref = useRef<HTMLInputElement>(null);
 
@@ -63,6 +67,8 @@ export default function FormCheckbox({
       handleChecked(e);
     }
   };
+  const confirmTitle = value ? confirmCheckedTitle : confirmUncheckedTitle;
+  const confirmMessage = value ? confirmCheckedMessage : confirmUncheckedMessage;
 
   return (
     <>
