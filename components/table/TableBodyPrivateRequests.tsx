@@ -107,7 +107,7 @@ export default function TableBodyPrivateRequests({ rows, isLoading = false }: Ta
 
               <div className="md:col-span-1">
                 <CopyableButton>{row.licencePlate}</CopyableButton>
-                {row.type !== $Enums.RequestType.CREATE && (
+                {row._permissions.viewProduct && (
                   <button
                     className="mt-1 text-sm italic text-blue-500 hover:underline"
                     onClick={(event) => {

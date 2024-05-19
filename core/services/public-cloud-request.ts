@@ -46,12 +46,16 @@ export class PublicCloudRequestService extends ModelService<Prisma.PublicCloudRe
 
     const canEdit = canReview && doc.type !== $Enums.RequestType.DELETE;
 
+    const hasProduct =
+      doc.type !== $Enums.RequestType.CREATE || doc.decisionStatus === $Enums.DecisionStatus.PROVISIONED;
+
     if (doc.type === $Enums.RequestType.CREATE) {
       doc._permissions = {
         view: this.session.permissions.viewAllPublicCloudProducts || doc.createdByEmail === this.session.user.email,
         edit: canEdit,
         review: canReview,
         delete: false,
+        viewProduct: hasProduct,
       };
 
       return doc;
@@ -71,6 +75,7 @@ export class PublicCloudRequestService extends ModelService<Prisma.PublicCloudRe
         edit: canEdit,
         review: canReview,
         delete: false,
+        viewProduct: hasProduct,
       };
     } else {
       // If a product isn't found, it indicates manual removal of the product.
@@ -79,6 +84,7 @@ export class PublicCloudRequestService extends ModelService<Prisma.PublicCloudRe
         edit: false,
         review: false,
         delete: false,
+        viewProduct: false,
       };
     }
 
