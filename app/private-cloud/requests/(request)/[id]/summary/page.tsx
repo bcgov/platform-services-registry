@@ -63,23 +63,29 @@ export default Layout(({ pathParams, queryParams, session, router, children }) =
       description: 'Data changes between the original data and the user requested data',
       data: privateCloudStateSnap.dataChangeOriginalRequest?.changes,
     },
-
-    {
-      id: 'request',
-      LeftIcon: IconCircleLetterR,
-      label: 'User Request Data to Admin Decision Data',
-      description: 'Data changes between the user requested data and the admin decision data',
-      data: privateCloudStateSnap.dataChangeRequestDecision?.changes,
-    },
-
-    {
-      id: 'decision',
-      LeftIcon: IconCircleLetterD,
-      label: 'Original Data to Admin Decision Data',
-      description: 'Data changes between the original data and the admin decision data',
-      data: privateCloudStateSnap.dataChangeOriginalDecision?.changes,
-    },
   ];
+
+  if (
+    privateCloudStateSnap.currentRequest?.decisionStatus === $Enums.DecisionStatus.APPROVED ||
+    privateCloudStateSnap.currentRequest?.decisionStatus === $Enums.DecisionStatus.PROVISIONED
+  ) {
+    dataSet.push(
+      {
+        id: 'request',
+        LeftIcon: IconCircleLetterR,
+        label: 'User Request Data to Admin Decision Data',
+        description: 'Data changes between the user requested data and the admin decision data',
+        data: privateCloudStateSnap.dataChangeRequestDecision?.changes,
+      },
+      {
+        id: 'decision',
+        LeftIcon: IconCircleLetterD,
+        label: 'Original Data to Admin Decision Data',
+        description: 'Data changes between the original data and the admin decision data',
+        data: privateCloudStateSnap.dataChangeOriginalDecision?.changes,
+      },
+    );
+  }
 
   dataSet = dataSet.filter((tab) => {
     if (!privateCloudStateSnap.currentRequest) return false;
