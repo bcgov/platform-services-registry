@@ -23,7 +23,7 @@ model User {
   archived                                              Boolean                        @default(false)
   created                                               DateTime                       @default(now())
   updatedAt                                             DateTime                       @updatedAt
-  lastSeen                                              DateTime                       @default(now())
+  lastSeen                                              DateTime?
   privateCloudProjectsAsProjectOwner                    PrivateCloudProject[]          @relation("projectOwner")
   privateCloudProjectsAsPrimaryTechnicalLead            PrivateCloudProject[]          @relation("primaryTechnicalLead")
   privateCloudProjectsAsSecondaryTechnicalLead          PrivateCloudProject[]          @relation("secondaryTechnicalLead")
