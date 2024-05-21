@@ -99,9 +99,9 @@ export default privateCloudProductSecurityACS(({ pathParams, queryParams, sessio
       <div>
         <LightButton onClick={() => router.push('/private-cloud/requests/all')} className="my-2">
           <IconArrowBack className="inline-block" />
-          Go to Requests
+          Back to Requests
         </LightButton>
-        {request.type !== $Enums.RequestType.CREATE && (
+        {request._permissions.viewProduct && (
           <LightButton
             onClick={() => router.push(`/private-cloud/products/${request.licencePlate}/edit`)}
             className="my-2 ml-1"

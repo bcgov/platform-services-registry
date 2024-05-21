@@ -82,7 +82,7 @@ export default publicCloudProductSecurityACS(({ pathParams, queryParams, session
       <div>
         <LightButton onClick={() => router.push('/public-cloud/requests/all')} className="my-2">
           <IconArrowBack className="inline-block" />
-          Go to Requests
+          Back to Requests
         </LightButton>
         {request.type !== $Enums.RequestType.CREATE && (
           <LightButton
