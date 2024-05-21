@@ -1,9 +1,7 @@
 'use client';
 
 import { zodResolver } from '@hookform/resolvers/zod';
-import { Alert } from '@mantine/core';
 import { $Enums, PrivateCloudProject } from '@prisma/client';
-import { IconInfoCircle } from '@tabler/icons-react';
 import { useQuery, useMutation } from '@tanstack/react-query';
 import { useEffect, useState } from 'react';
 import { FormProvider, useForm } from 'react-hook-form';
@@ -13,6 +11,7 @@ import SubmitButton from '@/components/buttons/SubmitButton';
 import ProjectDescription from '@/components/form/ProjectDescriptionPrivate';
 import Quotas from '@/components/form/Quotas';
 import TeamContacts from '@/components/form/TeamContacts';
+import FormErrorNotification from '@/components/generic/FormErrorNotification';
 import Comment from '@/components/modal/Comment';
 import ReturnModal from '@/components/modal/ReturnDecision';
 import createClientPage from '@/core/client-page';
@@ -104,6 +103,7 @@ export default privateCloudRequestDecision(({ pathParams, queryParams, session, 
   return (
     <div>
       <FormProvider {...methods}>
+        <FormErrorNotification />
         <form
           autoComplete="off"
           onSubmit={methods.handleSubmit(() => {

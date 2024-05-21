@@ -15,6 +15,7 @@ import Budget from '@/components/form/Budget';
 import ExpenseAuthority from '@/components/form/ExpenseAuthority';
 import ProjectDescription from '@/components/form/ProjectDescriptionPublic';
 import TeamContacts from '@/components/form/TeamContacts';
+import FormErrorNotification from '@/components/generic/FormErrorNotification';
 import Comment from '@/components/modal/Comment';
 import ReturnModal from '@/components/modal/ReturnDecision';
 import createClientPage from '@/core/client-page';
@@ -106,6 +107,7 @@ export default publicCloudProductRequest(({ pathParams, queryParams, session, ro
   return (
     <div>
       <FormProvider {...methods}>
+        <FormErrorNotification />
         <form
           autoComplete="off"
           onSubmit={methods.handleSubmit(() => {
