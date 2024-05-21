@@ -140,7 +140,7 @@ export default function ActiveRequestBox({
           router.push(`/${data.cloud}/requests/${data.id}/${path}`);
         }}
       >
-        <Indicator color={data.active ? 'lime' : 'red'}>
+        <Indicator color={data.active ? 'lime' : 'red'} zIndex={10}>
           <Badge autoContrast size="xl" color="rgba(200, 200, 200, 1)" radius="md" className="mb-1">
             <TypeIcon className="inline-block" />
             {data.type} Request

@@ -61,17 +61,20 @@ export class PrivateCloudProjectService extends ModelService<Prisma.PrivateCloud
     const isActive = doc.status === $Enums.ProjectStatus.ACTIVE;
     const hasActiveRequest = activeRequests.length > 0;
 
-    const canEdit =
-      isActive &&
-      !hasActiveRequest &&
-      (this.session.permissions.editAllPrivateCloudProducts ||
-        [doc.projectOwnerId, doc.primaryTechnicalLeadId, doc.secondaryTechnicalLeadId].includes(this.session.userId) ||
-        this.session.ministries.editor.includes(doc.ministry));
+    const isMyProduct = [doc.projectOwnerId, doc.primaryTechnicalLeadId, doc.secondaryTechnicalLeadId].includes(
+      this.session.userId,
+    );
 
     const canView =
       this.session.permissions.viewAllPrivateCloudProducts ||
-      canEdit ||
+      isMyProduct ||
       this.session.ministries.reader.includes(doc.ministry);
+
+    const canEdit =
+      isActive &&
+      !hasActiveRequest &&
+      canView &&
+      (this.session.permissions.editAllPrivateCloudProducts || this.session.ministries.editor.includes(doc.ministry));
 
     const canViewHistroy =
       this.session.permissions.viewAllPrivateCloudProductsHistory ||
