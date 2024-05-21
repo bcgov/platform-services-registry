@@ -20,13 +20,14 @@ import { PublicCloudRequestedProjectWithContacts } from '@/services/nats/public-
 
 export const sendCreateRequestEmails = async (request: PublicCloudRequestWithRequestedProject, userName: string) => {
   try {
-    const adminEmail = render(AdminCreateTemplate({ request }), { pretty: false });
+    const adminEmail = render(AdminCreateTemplate({ request, userName }), { pretty: false });
     const userEmail = render(CreateRequestTemplate({ request, userName }), { pretty: false });
 
     const admins = sendEmail({
       bodyType: 'html',
       body: adminEmail,
-      to: adminPublicEmails,
+      // to: adminPublicEmails,
+      to: ['zhanna.kolesnyk@gov.bc.ca'],
       subject: `New Provisioning request in Registry waiting for your approval`,
     });
 

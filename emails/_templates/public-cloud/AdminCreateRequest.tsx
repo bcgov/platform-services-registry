@@ -8,9 +8,10 @@ import { PublicCloudRequestWithRequestedProject } from '@/request-actions/public
 
 interface EmailProp {
   request: PublicCloudRequestWithRequestedProject;
+  userName: string;
 }
 
-export default function AdminCreateRequest({ request }: EmailProp) {
+export default function AdminCreateRequest({ request, userName }: EmailProp) {
   if (!request) return <></>;
 
   return (
@@ -44,6 +45,9 @@ export default function AdminCreateRequest({ request }: EmailProp) {
           accountCoding={request.decisionData.accountCoding}
           budget={request.decisionData.budget}
         />
+      </div>
+      <div className="pb-6 mt-4 mb-4 border-solid border-0 border-b-1 border-slate-300">
+        <Text>This create request was actioned by {userName}.</Text>
       </div>
       <div>
         <Closing />
