@@ -13,6 +13,7 @@ import Budget from '@/components/form/Budget';
 import ExpenseAuthority from '@/components/form/ExpenseAuthority';
 import ProjectDescription from '@/components/form/ProjectDescriptionPublic';
 import TeamContacts from '@/components/form/TeamContacts';
+import FormErrorNotification from '@/components/generic/FormErrorNotification';
 import PrivateCloudEditModal from '@/components/modal/EditPrivateCloud';
 import ReturnModal from '@/components/modal/Return';
 import { AGMinistries } from '@/constants';
@@ -107,6 +108,7 @@ export default publicCloudProductEdit(({ pathParams, queryParams, session }) => 
   return (
     <div>
       <FormProvider {...methods}>
+        <FormErrorNotification />
         <form autoComplete="off" onSubmit={methods.handleSubmit(() => setOpenComment(true))}>
           <div className="space-y-12">
             <ProjectDescription disabled={isDisabled} mode="edit" />

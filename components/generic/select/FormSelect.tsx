@@ -58,7 +58,7 @@ export default function FormSelect({
       >
         {options.map((option, index) => {
           return (
-            <option key={option.value} value={option.value} disabled={option.disabled === true}>
+            <option key={`${option.value}-${index}`} value={option.value} disabled={option.disabled === true}>
               {option.label}
             </option>
           );

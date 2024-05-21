@@ -2,8 +2,10 @@
 
 import 'react-toastify/dist/ReactToastify.css';
 import '@mantine/core/styles.css';
+import '@mantine/notifications/styles.css';
 import './globals.css';
 import { MantineProvider } from '@mantine/core';
+import { Notifications } from '@mantine/notifications';
 import { useQuery } from '@tanstack/react-query';
 import classNames from 'classnames';
 import localFont from 'next/font/local';
@@ -68,7 +70,10 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       <head></head>
       <Provider>
         <MainBody>
-          <MantineProvider theme={{}}>{children}</MantineProvider>
+          <MantineProvider theme={{}}>
+            <Notifications position="top-right" limit={5} autoClose={2500} />
+            {children}
+          </MantineProvider>
         </MainBody>
       </Provider>
     </html>

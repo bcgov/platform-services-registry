@@ -9,6 +9,7 @@ import PreviousButton from '@/components/buttons/Previous';
 import CommonComponents from '@/components/form/CommonComponents';
 import ProjectDescription from '@/components/form/ProjectDescriptionPrivate';
 import TeamContacts from '@/components/form/TeamContacts';
+import FormErrorNotification from '@/components/generic/FormErrorNotification';
 import CreateModal from '@/components/modal/CreatePrivateCloud';
 import ReturnModal from '@/components/modal/Return';
 import { AGMinistries } from '@/constants';
@@ -73,6 +74,7 @@ export default privateCloudProductNew(({ pathParams, queryParams, session }) => 
       </h1>
 
       <FormProvider {...methods}>
+        <FormErrorNotification />
         <form onSubmit={methods.handleSubmit(() => setOpenCreate(true))} autoComplete="off">
           <div className="space-y-12">
             <ProjectDescription mode="create" />
