@@ -35,9 +35,8 @@ const DeleteApprovalTemplate = ({ product }: EmailProp) => {
         </Heading>
         <Text>Hi Product Team,</Text>
         <Text className="">
-          We acknowledge the receipt of your deletion request for the Sample Project&apos;s project set. This request
-          has been communicated to our platform administrators, who will take the necessary actions to delete the
-          specified project set.
+          We acknowledge the receipt of your deletion request for {name} project set. This request has been communicated
+          to our platform administrators, who will take the necessary actions to delete the specified project set.
         </Text>
         <Text className="">
           Please be informed that until the deletion process is completed, the project set will continue to incur

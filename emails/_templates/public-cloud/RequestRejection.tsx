@@ -21,9 +21,6 @@ const RequestRejectionTemplate = ({ productName, decisionComment, product }: Ema
     primaryTechnicalLead,
     secondaryTechnicalLead,
     expenseAuthority,
-    provider,
-    accountCoding,
-    budget,
     licencePlate,
   } = product;
 
@@ -35,7 +32,7 @@ const RequestRejectionTemplate = ({ productName, decisionComment, product }: Ema
         <Heading className="text-lg text-black">Sorry, your request was rejected</Heading>
         <Text>Hi Product Team, </Text>
         <Text className="">
-          Your request for the product on the Public Cloud Landing Zone has been rejected due to the following
+          Your request for the product {name} on the Public Cloud Landing Zone has been rejected due to the following
           reason(s):
         </Text>
         <Comment decisionComment={decisionComment} />
