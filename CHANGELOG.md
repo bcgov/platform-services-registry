@@ -1,3 +1,8 @@
+## [0.24.1](https://github.com/bcgov/platform-services-registry/compare/v0.24.0...v0.24.1) (2024-05-21)
+
+### Features
+
+* display form errors via notifications ([cb25e36](https://github.com/bcgov/platform-services-registry/commit/cb25e36ed813dcc7dcc3a3de73e0ad3ccf130894))
 ## [0.24.0](https://github.com/bcgov/platform-services-registry/compare/v0.23.8...v0.24.0) (2024-05-21)
 
 ### Features
