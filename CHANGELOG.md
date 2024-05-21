@@ -1,3 +1,29 @@
+## [0.24.0](https://github.com/bcgov/platform-services-registry/compare/v0.23.8...v0.24.0) (2024-05-21)
+
+### Features
+
+* **2309:** add home page ([2fbea77](https://github.com/bcgov/platform-services-registry/commit/2fbea778f7edb0681abe7175f6fdbfc3cd7e9bdf))
+* **2698:** add an api endpoint to list all license plates ([3e13d88](https://github.com/bcgov/platform-services-registry/commit/3e13d8874b3ec7cb40964644c77a5e3f2393c684))
+* add a common component CopyableButton ([4084eab](https://github.com/bcgov/platform-services-registry/commit/4084eabafa90fd45ca6b90fb3526233305857d0b))
+* add a data migration script to populate update date ([3cd6458](https://github.com/bcgov/platform-services-registry/commit/3cd6458cea2f31566bb09abdb2211ef5962e2dff))
+* add confirmation in checkbox component ([4c51117](https://github.com/bcgov/platform-services-registry/commit/4c511172d407a5856e825a9e6b9f55e84be7c34c))
+* **ci-cd:** add RocketChat notification for successful prod deployment ([3353c86](https://github.com/bcgov/platform-services-registry/commit/3353c865e77a834beb8012a38262371fb175e08f))
+* display product change table in request summary tabs ([bf383fb](https://github.com/bcgov/platform-services-registry/commit/bf383fb7b259b715fbe6792fca25c0c10cf14318))
+* expand request pages ([0394b39](https://github.com/bcgov/platform-services-registry/commit/0394b3918f392d670ac26f80e018f19d37130b08))
+* update dashboard top sections ([715dd72](https://github.com/bcgov/platform-services-registry/commit/715dd7278e6ff4f31cd6c91ad75a2d0f8ed9b068))
+* use mail link in user card ([6cca8ef](https://github.com/bcgov/platform-services-registry/commit/6cca8ef8a3f7820038d514417d2d5e44a896f526))
+
+### Bug Fixes
+
+* **2813:** add dynamic numbering to Common Components section ([f124f60](https://github.com/bcgov/platform-services-registry/commit/f124f60cd30541b941a012a3b591a94939cbf3ee))
+* **2835:** add dynamic wording for gold dr check box ([c996027](https://github.com/bcgov/platform-services-registry/commit/c99602704919576138d2933b511262f627fa9df8))
+* display goto product link properly ([18f400b](https://github.com/bcgov/platform-services-registry/commit/18f400b0b7ad9c15f814b17c098042ad5198b46a))
+
+### Refactors
+
+* **2793:** cleanup table body components ([19c5706](https://github.com/bcgov/platform-services-registry/commit/19c5706b8c5f0fdd398a910e64bd8abff3f3f9be))
+* organize tabs and data changes ([b46834b](https://github.com/bcgov/platform-services-registry/commit/b46834bd85c605ad302209b335b1437f1809301b))
+* secure api endpoints with doc permissions ([5542b1f](https://github.com/bcgov/platform-services-registry/commit/5542b1fc13c0662abfdbd2354f3bf07797fecb4f))
 ## [0.23.8](https://github.com/bcgov/platform-services-registry/compare/v0.23.7...v0.23.8) (2024-05-15)
 ## [0.23.7](https://github.com/bcgov/platform-services-registry/compare/v0.23.6...v0.23.7) (2024-05-15)
 ## [0.23.6](https://github.com/bcgov/platform-services-registry/compare/v0.23.5...v0.23.6) (2024-05-15)
