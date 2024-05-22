@@ -10,6 +10,7 @@
    <ol type="a">
      <li>Product Details (Name, Description, Ministry, Contacts of PO/TL(s)/EA)</li>
      <li>Landing Zone Details (Provider, Budget details, Account Coding)</li>
+     <li>First/Last name of a user who actioned the request</li>
    </ol>
 2. **Notification sent to Product PO/TL(s)** containing:
     <ol type="a">
@@ -73,6 +74,7 @@
    <ol type="a">
       <li>Product Details (Name, Description, Ministry, Contacts of PO/TL(s))</li>
       <li>Landing Zone Details (Provider, Budget details, Account Coding)</li>
+      <li>First/Last name of a user who actioned the request</li>
    </ol>
 2. **A summary sent to PO/TLs** containing:
    <ol type="a">

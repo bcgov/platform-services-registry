@@ -20,14 +20,14 @@ import { PublicCloudRequestedProjectWithContacts } from '@/services/nats/public-
 
 export const sendCreateRequestEmails = async (request: PublicCloudRequestWithRequestedProject, userName: string) => {
   try {
-    const adminEmail = render(AdminCreateTemplate({ request }), { pretty: false });
+    const adminEmail = render(AdminCreateTemplate({ request, userName }), { pretty: false });
     const userEmail = render(CreateRequestTemplate({ request, userName }), { pretty: false });
 
     const admins = sendEmail({
       bodyType: 'html',
       body: adminEmail,
       to: adminPublicEmails,
-      subject: `New Provisioning request in Registry waiting for your approval`,
+      subject: `New Provisioning request for ${request.decisionData.name} in Registry waiting for your approval`,
     });
 
     const contacts = sendEmail({
@@ -38,7 +38,7 @@ export const sendCreateRequestEmails = async (request: PublicCloudRequestWithReq
         request.decisionData.primaryTechnicalLead.email,
         request.decisionData.secondaryTechnicalLead?.email,
       ],
-      subject: 'Provisioning request received',
+      subject: `Provisioning request for ${request.decisionData.name} received`,
     });
 
     await Promise.all([contacts, admins]);
@@ -47,9 +47,12 @@ export const sendCreateRequestEmails = async (request: PublicCloudRequestWithReq
   }
 };
 
-export const sendAdminDeleteRequestEmails = async (product: PublicCloudRequestedProjectWithContacts) => {
+export const sendAdminDeleteRequestEmails = async (
+  product: PublicCloudRequestedProjectWithContacts,
+  userName: string,
+) => {
   try {
-    const adminEmail = render(AdminDeleteRequestTemplate({ product }), { pretty: false });
+    const adminEmail = render(AdminDeleteRequestTemplate({ product, userName }), { pretty: false });
 
     await sendEmail({
       body: adminEmail,
@@ -78,7 +81,7 @@ export const sendEditRequestEmails = async (
         request.project?.primaryTechnicalLead.email,
         request.project?.secondaryTechnicalLead?.email,
       ].filter(Boolean),
-      subject: 'Edit summary',
+      subject: `Edit summary for ${request.decisionData.name}`,
     });
   } catch (error) {
     logger.log('sendEditRequestEmails:', error);
@@ -96,7 +99,7 @@ export const sendRequestApprovalEmails = async (request: PublicCloudRequestWithR
         request.decisionData.primaryTechnicalLead.email,
         request.decisionData.secondaryTechnicalLead?.email,
       ],
-      subject: 'Request has been approved',
+      subject: `Request for ${request.decisionData.name} has been approved`,
     });
   } catch (error) {
     logger.log('sendRequestApprovalEmails:', error);
@@ -128,7 +131,7 @@ export const sendDeleteRequestEmails = async (product: PublicCloudRequestedProje
     await sendEmail({
       body: email,
       to: [product.projectOwner.email, product.primaryTechnicalLead.email, product.secondaryTechnicalLead?.email],
-      subject: 'Request to delete product received',
+      subject: `Request to delete ${product.name} product received`,
     });
   } catch (error) {
     logger.log('sendDeleteRequestEmails:', error);
@@ -142,7 +145,7 @@ export const sendDeleteRequestApprovalEmails = async (product: PublicCloudReques
     await sendEmail({
       body: email,
       to: [product.projectOwner.email, product.primaryTechnicalLead.email, product.secondaryTechnicalLead?.email],
-      subject: 'Delete request has been approved',
+      subject: `Delete request for ${product.name} has been acknowledged`,
     });
   } catch (error) {
     logger.log('sendDeleteRequestApprovalEmails:', error);
@@ -155,7 +158,7 @@ export const sendProvisionedEmails = async (product: PublicCloudRequestedProject
     await sendEmail({
       body: email,
       to: [product.projectOwner.email, product.primaryTechnicalLead.email, product.secondaryTechnicalLead?.email],
-      subject: `Product has been provisioned`,
+      subject: `Product ${product.name} has been provisioned`,
     });
   } catch (error) {
     logger.log('sendProvisionedEmails:', error);

@@ -7,9 +7,10 @@ import { PublicCloudRequestWithRequestedProject } from '@/request-actions/public
 
 interface EmailProp {
   request: PublicCloudRequestWithRequestedProject;
+  userName: string;
 }
 
-const NewRequestTemplate = ({ request }: EmailProp) => {
+const NewRequestTemplate = ({ request, userName }: EmailProp) => {
   if (!request) return <></>;
 
   const {
@@ -55,6 +56,9 @@ const NewRequestTemplate = ({ request }: EmailProp) => {
       </div>
       <div>
         <ProviderDetails provider={provider} accountCoding={accountCoding} budget={budget} />
+      </div>
+      <div className="pb-6 mt-4 mb-4 border-solid border-0 border-b-1 border-slate-300">
+        <Text>This create request was actioned by {userName}.</Text>
       </div>
     </Layout>
   );

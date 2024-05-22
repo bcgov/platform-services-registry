@@ -53,8 +53,8 @@ export default function Modal({
                     All Set?
                   </Dialog.Title>
                   <p className="text-sm text-gray-900 font-medium mb-4">
-                    Tell us a little bit about why you are requesting a change. This will be taken into consideration
-                    when your request is reviewed.
+                    Tell us a little bit about why you are requesting a change. Your comment will be saved as part of
+                    the request history for future reference.
                   </p>
                   <textarea
                     onChange={handleCommentChange}

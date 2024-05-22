@@ -7,9 +7,10 @@ import { PublicCloudRequestedProjectWithContacts } from '@/services/nats/public-
 
 interface EmailProp {
   product: PublicCloudRequestedProjectWithContacts;
+  userName: string;
 }
 
-const AdminDeleteRequestTemplate = ({ product }: EmailProp) => {
+const AdminDeleteRequestTemplate = ({ product, userName }: EmailProp) => {
   if (!product) return <></>;
 
   const {
@@ -32,9 +33,9 @@ const AdminDeleteRequestTemplate = ({ product }: EmailProp) => {
         <Heading className="text-lg">New Delete Request!</Heading>
         <Text>Hi Public Cloud Team, </Text>
         <Text>
-          There is a new delete request that requires your attention. Log in to the Registry to review the details. If
-          you have any questions about the request, the PO and TL contact details are included below and in the
-          Registry.
+          There is a new delete request for {name} that requires your attention. Log in to the Registry to review the
+          details. If you have any questions about the request, the PO and TL contact details are included below and in
+          the Registry.
         </Text>
         <Button
           href="https://registry.developer.gov.bc.ca/public-cloud/requests/all"
@@ -57,6 +58,9 @@ const AdminDeleteRequestTemplate = ({ product }: EmailProp) => {
       </div>
       <div>
         <ProviderDetails provider={provider} accountCoding={accountCoding} budget={budget} />
+      </div>
+      <div className="pb-6 mt-4 mb-4 border-solid border-0 border-b-1 border-slate-300">
+        <Text>This create request was actioned by {userName}.</Text>
       </div>
     </Layout>
   );

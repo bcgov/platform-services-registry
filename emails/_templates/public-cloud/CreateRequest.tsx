@@ -11,7 +11,7 @@ interface EmailProp {
   userName: string;
 }
 
-const NewRequestTemplate = ({ request, userName }: EmailProp) => {
+const CreateRequestTemplate = ({ request, userName }: EmailProp) => {
   if (!request) return <></>;
 
   const {
@@ -68,4 +68,4 @@ const NewRequestTemplate = ({ request, userName }: EmailProp) => {
   );
 };
 
-export default NewRequestTemplate;
+export default CreateRequestTemplate;

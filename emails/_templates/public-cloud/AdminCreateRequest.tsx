@@ -8,9 +8,10 @@ import { PublicCloudRequestWithRequestedProject } from '@/request-actions/public
 
 interface EmailProp {
   request: PublicCloudRequestWithRequestedProject;
+  userName: string;
 }
 
-export default function AdminCreateRequest({ request }: EmailProp) {
+export default function AdminCreateRequest({ request, userName }: EmailProp) {
   if (!request) return <></>;
 
   return (
@@ -19,8 +20,9 @@ export default function AdminCreateRequest({ request }: EmailProp) {
         <Heading className="text-lg">New Request!</Heading>
         <Text>Hi Public Cloud Team, </Text>
         <Text className="">
-          There is a new request that requires your review. Log in to the Registry to review the details. If you have
-          any questions about the request, the PO and TL contact details are included below and in the Registry
+          There is a new request for {request.decisionData.name} that requires your review. Log in to the Registry to
+          review the details. If you have any questions about the request, the PO and TL contact details are included
+          below and in the Registry
         </Text>
         <Button href="https://registry.developer.gov.bc.ca/" className="bg-bcorange rounded-md px-4 py-2 text-white">
           Review Request
@@ -45,8 +47,8 @@ export default function AdminCreateRequest({ request }: EmailProp) {
           budget={request.decisionData.budget}
         />
       </div>
-      <div>
-        <Closing />
+      <div className="pb-6 mt-4 mb-4 border-solid border-0 border-b-1 border-slate-300">
+        <Text>This create request was actioned by {userName}.</Text>
       </div>
     </Layout>
   );
