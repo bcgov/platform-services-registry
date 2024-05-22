@@ -51,7 +51,7 @@ export default privateCloudRequestDecision(({ pathParams, queryParams, session, 
   useEffect(() => {
     if (!privateSnap.currentRequest) return;
 
-    if (privateSnap.currentRequest._permissions.viewDecision) {
+    if (!privateSnap.currentRequest._permissions.viewDecision) {
       router.push(`/private-cloud/requests/${id}/summary`);
       return;
     }
