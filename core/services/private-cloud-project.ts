@@ -73,7 +73,7 @@ export class PrivateCloudProjectService extends ModelService<Prisma.PrivateCloud
     const canEdit =
       isActive &&
       !hasActiveRequest &&
-      (this.session.permissions.editAllPublicCloudProducts ||
+      (this.session.permissions.editAllPrivateCloudProducts ||
         isMyProduct ||
         this.session.ministries.editor.includes(doc.ministry));
 

@@ -75,7 +75,7 @@ export class PublicCloudProjectService extends ModelService<Prisma.PublicCloudPr
     const canEdit =
       isActive &&
       !hasActiveRequest &&
-      (this.session.permissions.editAllPrivateCloudProducts ||
+      (this.session.permissions.editAllPublicCloudProducts ||
         isMyProduct ||
         this.session.ministries.editor.includes(doc.ministry));
 
