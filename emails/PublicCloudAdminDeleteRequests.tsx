@@ -6,5 +6,5 @@ export default function NewRequest() {
   // Assuming samplePublicRequest has a decisionData property of the correct type
   const product = samplePublicRequest.decisionData;
 
-  return <NewDeleteRequestTemplate product={product} />;
+  return <NewDeleteRequestTemplate product={product} userName={'Session User'} />;
 }
