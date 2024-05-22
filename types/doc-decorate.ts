@@ -15,6 +15,7 @@ export interface PrivateCloudRequestDecorate {
     review: boolean;
     delete: boolean;
     resend: boolean;
+    viewDecision: boolean;
     viewProduct: boolean;
   };
 }
