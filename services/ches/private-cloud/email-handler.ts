@@ -1,3 +1,4 @@
+import { $Enums } from '@prisma/client';
 import { render } from '@react-email/render';
 import { logger } from '@/core/logging';
 import AdminCreateTemplate from '@/emails/_templates/private-cloud/AdminCreateRequest';
@@ -107,17 +108,21 @@ export const sendRequestRejectionEmails = async (
   decisionComment?: string,
 ) => {
   try {
-    const email = render(RequestRejectionTemplate({ request, productName: request.project!.name, decisionComment }), {
+    const currentData = request.type === $Enums.RequestType.CREATE ? request.decisionData : request.project;
+    if (!currentData) throw Error('invalid request');
+
+    const email = render(RequestRejectionTemplate({ request, productName: currentData.name, decisionComment }), {
       pretty: true,
     });
+
     await sendEmail({
       body: email,
       to: [
-        request.project!.projectOwner.email,
-        request.project!.primaryTechnicalLead.email,
-        request.project!.secondaryTechnicalLead?.email,
+        currentData.projectOwner.email,
+        currentData.primaryTechnicalLead.email,
+        currentData.secondaryTechnicalLead?.email,
       ],
-      subject: `Request for ${request.project!.name} has been rejected`,
+      subject: `Request for ${currentData.name} has been rejected`,
     });
   } catch (error) {
     logger.error('sendRequestRejectionEmails:', error);
