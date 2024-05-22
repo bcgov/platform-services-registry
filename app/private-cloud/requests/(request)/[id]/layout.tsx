@@ -78,7 +78,7 @@ export default privateCloudProductSecurityACS(({ pathParams, queryParams, sessio
     },
   ];
 
-  if (request?._permissions.review || !request?.active) {
+  if (request?._permissions.viewDecision) {
     tabs.push({
       label: 'ADMIN DECISION',
       name: 'decision',
