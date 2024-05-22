@@ -78,7 +78,7 @@ export default function TableBodyPrivateRequests({ rows, isLoading = false }: Ta
                   </svg>
                   <div className="whitespace-nowrap">{row.decisionData.cluster}</div>
                 </div>
-                <div className="mt-1 text-xs text-gray-400">
+                <div className="mt-1 text-sm text-gray-400">
                   <div>
                     Created on <span>{formatDate(row.created)}</span>
                   </div>

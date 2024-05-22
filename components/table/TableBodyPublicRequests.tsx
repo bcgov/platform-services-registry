@@ -76,7 +76,7 @@ export default function TableBodyPublicProducts({ rows, isLoading = false }: Tab
                   </svg>
                   <div className="whitespace-nowrap">{row.decisionData.provider}</div>
                 </div>
-                <div className="mt-1 text-xs text-gray-400">
+                <div className="mt-1 text-sm text-gray-400">
                   <div>
                     Created on <span>{formatDate(row.created)}</span>
                   </div>
