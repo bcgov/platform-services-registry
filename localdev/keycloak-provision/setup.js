@@ -10,6 +10,8 @@ const clientId = process.env.CLIENT_ID;
 const clientSecret = process.env.CLIENT_SECRET;
 const gitOpsclientId = process.env.GITOPS_CLIENT_ID;
 const gitOpsclientSecret = process.env.GITOPS_CLIENT_SECRET;
+const adminclientId = process.env.ADMIN_CLIENT_ID;
+const adminclientSecret = process.env.ADMIN_CLIENT_SECRET;
 const clientScope = 'https://graph.microsoft.com/.default';
 
 const proxyUsers = mockFile.mocks.find((mock) => mock.request.url === 'https://graph.microsoft.com/v1.0/users?$filter*')
@@ -177,6 +179,45 @@ async function main() {
         },
       );
     }
+  })();
+
+  // Upsert Admin client
+  (async () => {
+    let adminClient = await findClient(adminclientId);
+    if (!adminClient) {
+      await kcAdminClient.clients.create({ realm: realmName, clientId: adminclientId });
+    }
+
+    adminClient = await findClient(adminclientId);
+    if (adminClient) {
+      await kcAdminClient.clients.update(
+        { realm: realmName, id: adminClient.id },
+        {
+          enabled: true,
+          publicClient: false,
+          serviceAccountsEnabled: true,
+          standardFlowEnabled: false,
+          implicitFlowEnabled: false,
+          directAccessGrantsEnabled: false,
+          secret: adminclientSecret,
+        },
+      );
+    }
+
+    const realmManagementClient = await findClient('realm-management');
+    const realmAdminRole = await kcAdminClient.clients.findRole({
+      realm: realmName,
+      id: realmManagementClient.id,
+      roleName: 'realm-admin',
+    });
+
+    const adminClientUser = await kcAdminClient.clients.getServiceAccountUser({ realm: realmName, id: adminClient.id });
+    await kcAdminClient.users.addClientRoleMappings({
+      realm: realmName,
+      id: adminClientUser.id,
+      clientUniqueId: realmManagementClient.id,
+      roles: [realmAdminRole],
+    });
   })();
 
   // Create Users
