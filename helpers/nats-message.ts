@@ -6,6 +6,7 @@ interface User {
   email?: string;
 }
 
+// TODO: refactor here to just take request as it will have original data available.
 export async function sendRequestNatsMessage(
   updatedRequest: PrivateCloudRequestWithProjectAndRequestedProject,
   updateData: {
