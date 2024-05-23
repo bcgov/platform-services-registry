@@ -16,7 +16,9 @@ export const { state: appState, useValtioState: useAppState } = createGlobalValt
     IS_DEV: boolean;
     IS_TEST: boolean;
     IS_PROD: boolean;
+    BASE_URL: string;
     LOGOUT_URL: string;
+    TOKEN_URL: string;
   };
 }>({
   cloud: null,
@@ -27,7 +29,9 @@ export const { state: appState, useValtioState: useAppState } = createGlobalValt
     IS_DEV: false,
     IS_TEST: false,
     IS_PROD: false,
+    BASE_URL: '',
     LOGOUT_URL: '',
+    TOKEN_URL: '',
   },
 });
 

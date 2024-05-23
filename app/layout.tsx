@@ -5,6 +5,7 @@ import '@mantine/core/styles.css';
 import '@mantine/notifications/styles.css';
 import './globals.css';
 import { MantineProvider } from '@mantine/core';
+import { ModalsProvider } from '@mantine/modals';
 import { Notifications } from '@mantine/notifications';
 import { useQuery } from '@tanstack/react-query';
 import classNames from 'classnames';
@@ -72,7 +73,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <MainBody>
           <MantineProvider theme={{}}>
             <Notifications position="top-right" limit={5} autoClose={2500} />
-            {children}
+            <ModalsProvider>{children}</ModalsProvider>
           </MantineProvider>
         </MainBody>
       </Provider>
