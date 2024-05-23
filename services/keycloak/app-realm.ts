@@ -6,6 +6,7 @@ import {
   KEYCLOAK_ADMIN_CLIENT_ID,
   KEYCLOAK_ADMIN_CLIENT_SECRET,
 } from '@/config';
+import { logger } from '@/core/logging';
 
 export async function getKcAdminClient() {
   const kcAdminClient = new KcAdminClient({
@@ -49,6 +50,13 @@ export async function findUser(userId: string, kcAdminClient?: KcAdminClient) {
     realm: AUTH_RELM,
     id: userId,
     clientUniqueId: authClient.id,
+  });
+
+  logger.info({
+    realm: AUTH_RELM,
+    id: userId,
+    clientUniqueId: authClient.id,
+    authRoles,
   });
 
   return { ...user, authRoleNames: authRoles.map((role) => role.name ?? '') };
