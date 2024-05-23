@@ -98,6 +98,7 @@ const projectData = [
       noServices: false,
     },
     golddrEnabled: true,
+    isTest: false,
   },
   {
     name: 'TestProject',
@@ -152,6 +153,7 @@ const projectData = [
       noServices: false,
     },
     golddrEnabled: true,
+    isTest: false,
   },
 ];
 
@@ -194,6 +196,7 @@ function createProjectObject(data: any, index: number) {
     },
     commonComponents: data.commonComponents,
     golddrEnabled: data.golddrEnabled,
+    isTest: data.isTest,
   };
 }
 

@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react';
 import { useFormContext } from 'react-hook-form';
 import AGMinistryCheckBox from '@/components/form/AGMinistryCheckBox';
 import GolddrCheckbox from '@/components/form/GolddrCheckbox';
+import IsTestCheckBox from '@/components/form/IsTestCheckBox';
 import ExternalLink from '@/components/generic/button/ExternalLink';
 import MailLink from '@/components/generic/button/MailLink';
 import FormSelect from '@/components/generic/select/FormSelect';
@@ -49,7 +50,9 @@ export default function ProjectDescriptionPrivate({
           Provisioning requests from new teams that have <b>not</b> had an onboarding meeting will not be approved.
         </p>
       )}
-
+      <div className="pt-5">
+        <IsTestCheckBox disabled={disabled} />
+      </div>
       <div className="mt-10 grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6">
         <div className="col-span-full">
           <label htmlFor="street-address" className="block text-sm font-medium leading-6 text-gray-900">

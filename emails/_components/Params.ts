@@ -373,6 +373,7 @@ export const samplePrivateRequest: PrivateCloudRequestWithRequestedProject = {
       noServices: false,
     },
     golddrEnabled: true,
+    isTest: false,
     id: 'f',
     name: '31.1',
     description: '1',
@@ -510,6 +511,7 @@ export const samplePrivateEditRequest: PrivateCloudRequestWithProjectAndRequeste
     },
     secondaryTechnicalLead: null,
     golddrEnabled: true,
+    isTest: false,
   },
   decisionData: {
     productionQuota: {
@@ -599,6 +601,7 @@ export const samplePrivateEditRequest: PrivateCloudRequestWithProjectAndRequeste
       idir: 'JDOE',
     },
     golddrEnabled: true,
+    isTest: false,
   },
 };
 
@@ -690,4 +693,5 @@ export const samplePrivateProduct: PrivateCloudRequestedProjectWithContacts = {
     idir: 'SWILLIAMS',
   },
   golddrEnabled: true,
+  isTest: false,
 };

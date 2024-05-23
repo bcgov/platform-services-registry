@@ -7,7 +7,7 @@ export default function ProductBadge({
   data,
   className,
 }: {
-  data?: { licencePlate: string; status: $Enums.ProjectStatus };
+  data?: { licencePlate: string; status: $Enums.ProjectStatus; isTest: boolean };
   className?: string;
 }) {
   if (!data || !data.licencePlate) return null;
@@ -29,6 +29,12 @@ export default function ProductBadge({
     </Badge>
   );
 
+  const badgeTest = data.isTest ? (
+    <Badge color="blue" radius="sm" className="ml-1">
+      Test
+    </Badge>
+  ) : null;
+
   return (
     <div className={classNames('inline-block', className)}>
       <CopyableButton value={data.licencePlate}>
@@ -37,6 +43,7 @@ export default function ProductBadge({
         </Badge>
       </CopyableButton>
       {badge}
+      {badgeTest}
     </div>
   );
 }
