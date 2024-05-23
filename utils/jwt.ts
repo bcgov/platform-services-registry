@@ -2,6 +2,7 @@ import axios from 'axios';
 import jwt, { VerifyOptions } from 'jsonwebtoken';
 import jwkToPem, { JWK } from 'jwk-to-pem';
 import jws from 'jws';
+import _isPlainObject from 'lodash-es/isPlainObject';
 import { logger } from '@/core/logging';
 
 const authHeaderPrefix = 'Bearer';
@@ -28,6 +29,7 @@ interface VerifyJwtTokenArgs {
   issuer?: string;
   audience?: string;
   authorizedPresenter?: string;
+  requiredClaims?: string[];
 }
 
 /**
@@ -37,7 +39,14 @@ interface VerifyJwtTokenArgs {
  * @returns {Promise<object>} - Promise resolving to the decoded JWT payload.
  * @throws {Error} - Throws an error if the JWT token is invalid or verification fails.
  */
-export async function verifyJwtToken({ jwksUri, jwtToken, issuer, audience, authorizedPresenter }: VerifyJwtTokenArgs) {
+export async function verifyJwtToken({
+  jwksUri,
+  jwtToken,
+  issuer,
+  audience,
+  authorizedPresenter,
+  requiredClaims,
+}: VerifyJwtTokenArgs) {
   // Check if JWT token is provided
   if (!jwtToken) {
     throw Error('invalid jwt token');
@@ -95,6 +104,16 @@ export async function verifyJwtToken({ jwksUri, jwtToken, issuer, audience, auth
       throw Error('authorized presenter does not match');
     }
 
+    if (requiredClaims && requiredClaims.length > 0) {
+      if (!_isPlainObject(jwtPayload)) {
+        throw Error('invalid JWT claims format: expected an object');
+      }
+
+      if (!requiredClaims.every((claim: string) => !!(jwtPayload as Record<string, any>)[claim])) {
+        throw Error('required claims are missing');
+      }
+    }
+
     // Return decoded JWT payload
     return jwtPayload;
   }
@@ -107,11 +126,12 @@ export async function verifyKeycloakJwtTokenSafe({
   jwtToken,
   audience,
   authorizedPresenter,
+  requiredClaims,
 }: Omit<VerifyJwtTokenArgs, 'jwksUri' | 'issuer'> & { authUrl: string; realm: string }) {
   try {
     const issuer = `${authUrl}/realms/${realm}`;
     const jwksUri = `${issuer}/protocol/openid-connect/certs`;
-    const result = await verifyJwtToken({ jwtToken, issuer, jwksUri, audience, authorizedPresenter });
+    const result = await verifyJwtToken({ jwtToken, issuer, jwksUri, audience, authorizedPresenter, requiredClaims });
     return result;
   } catch (error) {
     logger.error('verifyKeycloakJwtTokenSafe:', error);

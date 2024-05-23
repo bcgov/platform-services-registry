@@ -34,9 +34,9 @@ export async function generateSession({ session, token }: { session: Session; to
     image: '',
   };
 
-  // Send properties to the client, like an access_token from a provider.
   if (token) {
     session.idToken = token.idToken ?? '';
+    session.kcUserId = token.sub ?? '';
     session.user.name = token.name ?? '';
 
     if (token.email) {
@@ -270,6 +270,7 @@ export const authOptions: AuthOptions = {
         token.accessToken = account.access_token;
         token.idToken = account.id_token;
         token.roles = decodedToken?.resource_access?.pltsvc?.roles ?? [];
+        token.sub = decodedToken?.sub ?? '';
       }
 
       if (!token.roles) token.roles = [];

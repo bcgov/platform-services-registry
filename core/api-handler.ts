@@ -28,7 +28,8 @@ interface HandlerProps<TPathParams, TQueryParams, TBody> {
   keycloakOauth2?: {
     authUrl?: string;
     realm?: string;
-    clientId: string;
+    clientId?: string;
+    requiredClaims?: string[];
   };
 }
 
@@ -38,6 +39,7 @@ interface RouteProps<TPathParams, TQueryParams, TBody> {
   queryParams: TQueryParams;
   body: TBody;
   headers: Headers;
+  jwtData: any;
 }
 
 function createApiHandler<
@@ -65,22 +67,25 @@ function createApiHandler<
     ) {
       try {
         let session!: Session;
+        let jwtData!: any;
+
         if (keycloakOauth2) {
           const bearerToken = req.headers.get('authorization');
           if (!bearerToken) {
             return UnauthorizedResponse('not allowed to perform the task');
           }
 
-          const { authUrl = AUTH_SERVER_URL, realm = AUTH_RELM, clientId } = keycloakOauth2;
+          const { authUrl = AUTH_SERVER_URL, realm = AUTH_RELM, clientId, requiredClaims } = keycloakOauth2;
 
-          const payload = await verifyKeycloakJwtTokenSafe({
+          jwtData = await verifyKeycloakJwtTokenSafe({
             jwtToken: bearerToken,
             authUrl,
             realm,
             authorizedPresenter: clientId,
+            requiredClaims,
           });
 
-          if (!payload) {
+          if (!jwtData) {
             return UnauthorizedResponse('invalid token');
           }
         } else {
@@ -148,7 +153,7 @@ function createApiHandler<
           body = parsed.data;
         }
 
-        return await fn({ session, pathParams, queryParams, body, headers: req.headers });
+        return await fn({ session, pathParams, queryParams, body, headers: req.headers, jwtData });
       } catch (error) {
         logger.error('apiHandler:', error);
         return InternalServerErrorResponse(String(error));
