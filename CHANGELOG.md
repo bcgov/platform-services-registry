@@ -1,3 +1,8 @@
+## [0.24.4](https://github.com/bcgov/platform-services-registry/compare/v0.24.3...v0.24.4) (2024-05-23)
+
+### Bug Fixes
+
+* check the provision status for create requests ([63b49fa](https://github.com/bcgov/platform-services-registry/commit/63b49faf3c93a5dc249719b70b257e4232ed230b))
 ## [0.24.3](https://github.com/bcgov/platform-services-registry/compare/v0.24.2...v0.24.3) (2024-05-23)
 ## [0.24.2](https://github.com/bcgov/platform-services-registry/compare/v0.24.1...v0.24.2) (2024-05-22)
 ## [0.24.1](https://github.com/bcgov/platform-services-registry/compare/v0.24.0...v0.24.1) (2024-05-21)

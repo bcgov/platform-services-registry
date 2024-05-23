@@ -49,13 +49,13 @@ export class PublicCloudRequestService extends ModelService<Prisma.PublicCloudRe
     const hasProduct =
       doc.type !== $Enums.RequestType.CREATE || doc.decisionStatus === $Enums.DecisionStatus.PROVISIONED;
 
-    if (doc.type === $Enums.RequestType.CREATE) {
+    if (!hasProduct) {
       doc._permissions = {
         view: this.session.permissions.viewAllPublicCloudProducts || doc.createdByEmail === this.session.user.email,
         edit: canEdit,
         review: canReview,
         delete: false,
-        viewProduct: hasProduct,
+        viewProduct: false,
       };
 
       return doc;
