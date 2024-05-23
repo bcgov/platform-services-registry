@@ -72,6 +72,13 @@ export default async function makeRequestDecision(
           secondaryTechnicalLead: true,
         },
       },
+      originalData: {
+        include: {
+          projectOwner: true,
+          primaryTechnicalLead: true,
+          secondaryTechnicalLead: true,
+        },
+      },
     },
     data: {
       active: decision === DecisionStatus.APPROVED,
