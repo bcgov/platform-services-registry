@@ -41,9 +41,9 @@ export default async function updateOp({
 
   proms.push(
     sendRequestNatsMessage(request, {
-      projectOwner: { email: body.projectOwner.email },
-      primaryTechnicalLead: { email: body.primaryTechnicalLead.email },
-      secondaryTechnicalLead: { email: body.secondaryTechnicalLead?.email },
+      projectOwner: { email: request.originalData?.projectOwner.email },
+      primaryTechnicalLead: { email: request.originalData?.primaryTechnicalLead.email },
+      secondaryTechnicalLead: { email: request.originalData?.secondaryTechnicalLead?.email },
     }),
   );
 

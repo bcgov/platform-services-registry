@@ -39,9 +39,9 @@ export const POST = apiHandler(async ({ pathParams, body, session }) => {
 
   proms.push(
     sendRequestNatsMessage(request, {
-      projectOwner: { email: decisionDataFormData.projectOwner.email },
-      primaryTechnicalLead: { email: decisionDataFormData.primaryTechnicalLead.email },
-      secondaryTechnicalLead: { email: decisionDataFormData.secondaryTechnicalLead?.email },
+      projectOwner: { email: request.originalData?.projectOwner.email },
+      primaryTechnicalLead: { email: request.originalData?.primaryTechnicalLead.email },
+      secondaryTechnicalLead: { email: request.originalData?.secondaryTechnicalLead?.email },
     }),
   );
 
