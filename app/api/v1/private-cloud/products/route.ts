@@ -1,6 +1,7 @@
 import { Session } from 'next-auth';
 import createApiHandler from '@/core/api-handler';
 import { generateSession } from '@/core/auth-options';
+import { logger } from '@/core/logging';
 import prisma from '@/core/prisma';
 import { OkResponse, BadRequestResponse } from '@/core/responses';
 import { ministryKeyToName } from '@/helpers/product';
@@ -14,10 +15,13 @@ export const GET = apiHandler(async ({ queryParams, jwtData }) => {
   const kcUser = await findUser(kcUserId);
   if (!kcUser) return BadRequestResponse('keycloak user not found');
 
+  logger.info('/v1/private-cloud/products', { email: kcUser.email, roles: kcUser.authRoleNames });
   const session = await generateSession({
     session: {} as Session,
     token: { email: kcUser.email, roles: kcUser.authRoleNames },
   });
+
+  logger.info('/v1/private-cloud/products', session);
 
   const products = await prisma.privateCloudProject.findMany({
     where: {},

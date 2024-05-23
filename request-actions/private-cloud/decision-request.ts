@@ -65,6 +65,13 @@ export default async function makeRequestDecision(
           secondaryTechnicalLead: true,
         },
       },
+      originalData: {
+        include: {
+          projectOwner: true,
+          primaryTechnicalLead: true,
+          secondaryTechnicalLead: true,
+        },
+      },
       decisionData: {
         include: {
           projectOwner: true,
