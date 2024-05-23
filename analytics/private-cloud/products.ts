@@ -11,6 +11,7 @@ export async function productsCreatedPerMonth() {
     prisma.privateCloudProject.findMany({
       where: {
         cluster: { in: [$Enums.Cluster.SILVER, $Enums.Cluster.GOLD, $Enums.Cluster.EMERALD] },
+        isTest: false,
       },
       select: {
         licencePlate: true,

@@ -63,6 +63,7 @@ const createRequestBody: PrivateCloudCreateRequestBody = {
     noServices: false,
   },
   golddrEnabled: true,
+  isTest: false,
 };
 
 const quota = {

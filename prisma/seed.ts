@@ -135,6 +135,7 @@ async function main() {
           },
           commonComponents,
           golddrEnabled: true,
+          isTest: false,
         },
       });
     }

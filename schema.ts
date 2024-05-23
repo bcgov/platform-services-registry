@@ -110,6 +110,7 @@ export const PrivateCloudCreateRequestBodySchema = z.object({
   secondaryTechnicalLead: UserInputSchema.optional().nullable(),
   commonComponents: CommonComponentsInputSchema,
   golddrEnabled: z.preprocess(processBoolean, z.boolean()),
+  isTest: z.preprocess(processBoolean, z.boolean()),
 });
 
 export const PublicCloudCreateRequestBodySchema = z.object({

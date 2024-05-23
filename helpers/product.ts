@@ -97,6 +97,7 @@ const privateDataFields = [
   'description',
   'ministry',
   'golddrEnabled',
+  'isTest',
   'projectOwner.email',
   'primaryTechnicalLead.email',
   'secondaryTechnicalLead.email',
@@ -127,6 +128,7 @@ export function comparePrivateProductData(data1: any, data2: any) {
       case 'description':
       case 'ministry':
       case 'golddrEnabled':
+      case 'isTest':
         profileChanged = true;
         break;
 

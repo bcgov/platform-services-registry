@@ -72,6 +72,7 @@ model PrivateCloudProject {
   name                     String
   description              String
   status                   ProjectStatus
+  isTest                   Boolean               @default(false)
   created                  DateTime              @default(now())
   updatedAt                DateTime              @updatedAt
   projectOwnerId           String                @db.ObjectId
@@ -98,6 +99,7 @@ model PrivateCloudRequestedProject {
   description              String
   status                   ProjectStatus
   licencePlate             String
+  isTest                   Boolean               @default(false)
   created                  DateTime              @default(now())
   projectOwnerId           String                @db.ObjectId
   projectOwner             User                  @relation("projectOwner", fields: [projectOwnerId], references: [id])
