@@ -7,7 +7,7 @@ export default function ProductBadge({
   data,
   className,
 }: {
-  data?: { licencePlate: string; status: $Enums.ProjectStatus; isTest: boolean };
+  data?: { licencePlate: string; status: $Enums.ProjectStatus; isTest?: boolean };
   className?: string;
 }) {
   if (!data || !data.licencePlate) return null;
