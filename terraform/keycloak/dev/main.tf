@@ -64,6 +64,6 @@ resource "keycloak_openid_client" "pltsvc_admin_cli" {
 resource "keycloak_openid_client_service_account_role" "pltsvc_admin_cli_realm_admin" {
   realm_id                = data.keycloak_realm.pltsvc.id
   service_account_user_id = keycloak_openid_client.pltsvc_admin_cli.service_account_user_id
-  client_id               = keycloak_openid_client.pltsvc_admin_cli.id
+  client_id               = data.keycloak_openid_client.realm_management.id
   role                    = data.keycloak_role.realm_admin.name
 }
