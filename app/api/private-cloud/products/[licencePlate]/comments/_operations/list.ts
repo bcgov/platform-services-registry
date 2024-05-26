@@ -9,7 +9,7 @@ export async function listOp(licencePlate: string, requestId?: string) {
         requestId,
       },
       include: {
-        user: true, // Include related user information if needed
+        user: true,
       },
     });
   } else {
@@ -20,7 +20,7 @@ export async function listOp(licencePlate: string, requestId?: string) {
         },
       },
       include: {
-        user: true, // Include related user information if needed
+        user: true,
       },
     });
   }

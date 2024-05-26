@@ -20,8 +20,6 @@ export async function createOp(text: string, userId: string, projectId?: string,
     data.request = { connect: { id: requestId } };
   }
 
-  console.log('Creating comment with data:', data);
-
   const comment = await prisma.privateCloudComment.create({
     data,
   });

@@ -23,17 +23,9 @@ export const POST = createApiHandler({
     body: CreateCommentBodySchema,
   },
 })(async ({ session, body }) => {
-  try {
-    const userId = session!.userId!;
-    console.log('Received body:', body);
-
-    const comment = await createOp(body.text, userId, body.projectId, body.requestId);
-    return CreatedResponse(comment);
-  } catch (error) {
-    console.error('Error creating comment:', error);
-    const errorMessage = error instanceof Error ? error.message : 'Unknown error';
-    return BadRequestResponse(errorMessage);
-  }
+  const userId = session!.userId!;
+  const comment = await createOp(body.text, userId, body.projectId, body.requestId);
+  return CreatedResponse(comment);
 });
 
 const PathParamsSchema = z.object({
