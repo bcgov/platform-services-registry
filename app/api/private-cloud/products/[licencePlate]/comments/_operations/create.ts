@@ -1,12 +1,29 @@
 import prisma from '@/core/prisma';
 
-export async function createOp(text: string, projectId: string, userId: string) {
-  const comment = await prisma.privateCloudComment.create({
-    data: {
-      text,
-      userId,
-      projectId,
+export async function createOp(text: string, userId: string, projectId?: string, requestId?: string) {
+  if (!projectId && !requestId) {
+    throw new Error('Either projectId or requestId must be provided');
+  }
+
+  const data: any = {
+    text,
+    user: {
+      connect: { id: userId },
     },
+  };
+
+  if (projectId) {
+    data.project = { connect: { id: projectId } };
+  }
+
+  if (requestId) {
+    data.request = { connect: { id: requestId } };
+  }
+
+  console.log('Creating comment with data:', data);
+
+  const comment = await prisma.privateCloudComment.create({
+    data,
   });
 
   return comment;

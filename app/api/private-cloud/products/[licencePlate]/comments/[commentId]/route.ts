@@ -56,7 +56,7 @@ export const DELETE = createApiHandler({
 })(async ({ pathParams }) => {
   const { licencePlate, commentId } = pathParams;
   const result = await deleteOp(licencePlate, commentId);
-  if (!result) {
+  if (!result || result.count === 0) {
     return NotFoundResponse('Comment not found or deletion failed');
   }
 
