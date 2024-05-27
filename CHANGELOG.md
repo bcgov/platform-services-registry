@@ -1,3 +1,21 @@
+## [0.24.6](https://github.com/bcgov/platform-services-registry/compare/v0.24.4...v0.24.6) (2024-05-27)
+
+### Features
+
+* **2404:** add api account page with initial api endpoints ([ef7a74d](https://github.com/bcgov/platform-services-registry/commit/ef7a74d998b993ef46f59f94cb16837b3136e4f8))
+* **2404:** create admin cli to manage api accounts via keycloak ([dc007e2](https://github.com/bcgov/platform-services-registry/commit/dc007e2ae8848353441d61c5ec8a86c06f2e4412))
+* add isTest flag to private cloud product ([10e4b76](https://github.com/bcgov/platform-services-registry/commit/10e4b76ad8c5d646505daa5861c1a9e72f5aba78))
+* add isTest flag to private cloud product ([5f3abb7](https://github.com/bcgov/platform-services-registry/commit/5f3abb707513629d1f99ef955895540b5e6d56de))
+* add isTest flag to private cloud product and script add isTest field ([bfcfd77](https://github.com/bcgov/platform-services-registry/commit/bfcfd773ec890b1d53c2ab78330b8ab3df324874))
+* update api account endpoint spec & doc ([29cdfbc](https://github.com/bcgov/platform-services-registry/commit/29cdfbc5cac74e1e8e2395258547066b79cbe8be))
+
+### Bug Fixes
+
+* display comments for admin only ([074fbe2](https://github.com/bcgov/platform-services-registry/commit/074fbe2eb4361bacb4a47f0ae322e220a14b894f))
+
+### Refactors
+
+* increase the request list fetch performance ([e2c815b](https://github.com/bcgov/platform-services-registry/commit/e2c815b849a20909f9b64e0a65063e576ba7b03c))
 ## [0.24.4](https://github.com/bcgov/platform-services-registry/compare/v0.24.3...v0.24.4) (2024-05-23)
 
 ### Bug Fixes
