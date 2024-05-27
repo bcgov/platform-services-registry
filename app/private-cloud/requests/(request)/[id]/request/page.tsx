@@ -32,7 +32,7 @@ export default privateCloudRequestRequest(({ pathParams, queryParams, session, r
     if (privateSnap.currentRequest.requestData?.secondaryTechnicalLead) {
       setSecondTechLead(true);
     }
-  }, [privateSnap.currentRequest, router]);
+  }, [privateSnap.currentRequest]);
 
   const methods = useForm({
     values: {

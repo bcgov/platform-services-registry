@@ -56,15 +56,10 @@ export default publicCloudProductRequest(({ pathParams, queryParams, session, ro
   useEffect(() => {
     if (!publicSnap.currentRequest) return;
 
-    if (publicSnap.currentRequest.active && !publicSnap.currentRequest._permissions.review) {
-      router.push(`/public-cloud/requests/${publicSnap.currentRequest.id}/summary`);
-      return;
-    }
-
     if (publicSnap.currentRequest.decisionData.secondaryTechnicalLead) {
       setSecondTechLead(true);
     }
-  }, [publicSnap.currentRequest, router]);
+  }, [publicSnap.currentRequest]);
 
   const methods = useForm({
     resolver: (...args) => {
