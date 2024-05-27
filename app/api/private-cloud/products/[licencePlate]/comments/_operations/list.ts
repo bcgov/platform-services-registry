@@ -14,15 +14,16 @@ export async function listOp(licencePlate: string, requestId?: string) {
       },
     });
 
-    if (comments.length > 0) {
-      return comments;
-    }
+    return comments;
   }
 
   // Fetch the project by licencePlate
   const project = await prisma.privateCloudProject.findUnique({
     where: {
       licencePlate,
+    },
+    select: {
+      id: true,
     },
   });
 
