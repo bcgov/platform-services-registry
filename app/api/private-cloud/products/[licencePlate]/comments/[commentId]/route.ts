@@ -19,7 +19,7 @@ export const GET = createApiHandler({
   },
 })(async ({ pathParams }) => {
   const { licencePlate, commentId } = pathParams;
-  const comment = await readOp(licencePlate, commentId);
+  const comment = await readOp(commentId);
   if (!comment) {
     return NotFoundResponse('Comment not found');
   }
@@ -55,7 +55,7 @@ export const DELETE = createApiHandler({
   },
 })(async ({ pathParams }) => {
   const { licencePlate, commentId } = pathParams;
-  const result = await deleteOp(licencePlate, commentId);
+  const result = await deleteOp(commentId);
   if (!result) {
     return NotFoundResponse('Comment not found or deletion failed');
   }

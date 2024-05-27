@@ -64,6 +64,7 @@ model PrivateCloudRequest {
   requestData        PrivateCloudRequestedProject? @relation("requestData", fields: [requestDataId], references: [id])
   originalDataId     String?                       @db.ObjectId
   originalData       PrivateCloudRequestedProject? @relation("originalData", fields: [originalDataId], references: [id])
+  comments           PrivateCloudComment[]         @relation("request")
 }
 
 model PrivateCloudProject {
@@ -127,12 +128,15 @@ model PrivateCloudComment {
   text      String
   userId    String                @db.ObjectId
   user      User                  @relation("user", fields: [userId], references: [id])
-  projectId String                @db.ObjectId
+  projectId String?               @db.ObjectId
   project   PrivateCloudProject?  @relation("project", fields: [projectId], references: [id])
+  requestId String?               @db.ObjectId
+  request   PrivateCloudRequest?  @relation("request", fields: [requestId], references: [id])
   replies   PrivateCloudComment[] @relation("parent")
   parentId  String?               @db.ObjectId
   parent    PrivateCloudComment?  @relation("parent", fields: [parentId], references: [id], onDelete: NoAction, onUpdate: NoAction)
   reactions Reaction[]            @relation("comment")
+  pinned    Boolean               @default(false)
 }
 
 model Reaction {

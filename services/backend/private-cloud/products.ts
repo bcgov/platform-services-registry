@@ -94,13 +94,23 @@ export async function getPrivateCloudComment(licencePlate: string, commentId: st
   return response.data as PrivateCloudComment;
 }
 
-export async function getAllPrivateCloudComments(licencePlate: string) {
-  const response = await instance.get(`/${licencePlate}/comments`);
+export async function getAllPrivateCloudComments(licencePlate: string, requestId?: string) {
+  let url = `/${licencePlate}/comments`;
+  if (requestId) {
+    url += `?requestId={requestId}`;
+  }
+  const response = await instance.get(url);
   return response.data;
 }
 
-export async function createPrivateCloudComment(licencePlate: string, text: string, projectId: string, userId: string) {
-  const data = { text, projectId, userId };
+export async function createPrivateCloudComment(
+  licencePlate: string,
+  text: string,
+  userId: string,
+  projectId?: string,
+  requestId?: string,
+) {
+  const data = { text, userId, projectId, requestId };
   const response = await instance.post(`/${licencePlate}/comments`, data);
   return response.data as PrivateCloudComment;
 }
