@@ -50,19 +50,15 @@ export class PublicCloudProjectService extends ModelService<Prisma.PublicCloudPr
   }
 
   async decorate<T>(doc: T & PublicCloudProject & PublicCloudProjectDecorate) {
-    let activeRequests = [];
+    let hasActiveRequest = false;
 
     if (doc.requests) {
-      activeRequests = doc.requests.filter((req) => req.active);
+      hasActiveRequest = doc.requests.some((req) => req.active);
     } else {
-      activeRequests = await prisma.publicCloudRequest.findMany({ where: { projectId: doc.id, active: true } });
+      hasActiveRequest = (await prisma.publicCloudRequest.count({ where: { projectId: doc.id, active: true } })) > 0;
     }
 
     const isActive = doc.status === $Enums.ProjectStatus.ACTIVE;
-    const provisioningRequests = activeRequests.filter((req) => req.decisionStatus === $Enums.DecisionStatus.APPROVED);
-    const hasActiveRequest = activeRequests.length > 0;
-    const hasProvisioningRequest = provisioningRequests.length > 0;
-
     const isMyProduct = [doc.projectOwnerId, doc.primaryTechnicalLeadId, doc.secondaryTechnicalLeadId].includes(
       this.session.userId,
     );
