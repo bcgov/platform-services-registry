@@ -7,18 +7,10 @@ export async function createOp(text: string, userId: string, projectId?: string,
 
   const data: any = {
     text,
-    user: {
-      connect: { id: userId },
-    },
+    userId,
+    projectId: projectId || undefined,
+    requestId: requestId || undefined,
   };
-
-  if (projectId) {
-    data.project = { connect: { id: projectId } };
-  }
-
-  if (requestId) {
-    data.request = { connect: { id: requestId } };
-  }
 
   const comment = await prisma.privateCloudComment.create({
     data,

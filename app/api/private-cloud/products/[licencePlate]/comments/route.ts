@@ -5,7 +5,7 @@ import { PermissionsEnum } from '@/types/permissions';
 import { createOp } from './_operations/create';
 import { listOp } from './_operations/list';
 
-const CreateCommentBodySchema = z
+const createCommentBodySchema = z
   .object({
     text: z.string().min(1, 'The comment text must not be empty'),
     projectId: z.string().optional(),
@@ -20,19 +20,19 @@ export const POST = createApiHandler({
   roles: ['user'],
   permissions: [PermissionsEnum.CreatePrivateProductComments],
   validations: {
-    body: CreateCommentBodySchema,
+    body: createCommentBodySchema,
   },
 })(async ({ session, body }) => {
-  const userId = session!.userId!;
+  const userId = session.userId as string;
   const comment = await createOp(body.text, userId, body.projectId, body.requestId);
   return CreatedResponse(comment);
 });
 
-const PathParamsSchema = z.object({
+const pathParamsSchema = z.object({
   licencePlate: z.string(),
 });
 
-const QueryParamsSchema = z.object({
+const queryParamsSchema = z.object({
   requestId: z.string().optional(),
 });
 
@@ -40,8 +40,8 @@ export const GET = createApiHandler({
   roles: ['user'],
   permissions: [PermissionsEnum.ViewAllPrivateProductComments],
   validations: {
-    pathParams: PathParamsSchema,
-    queryParams: QueryParamsSchema,
+    pathParams: pathParamsSchema,
+    queryParams: queryParamsSchema,
   },
 })(async ({ pathParams, queryParams }) => {
   const { licencePlate } = pathParams;
