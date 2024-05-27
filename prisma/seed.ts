@@ -90,6 +90,12 @@ async function main() {
             prod: +faker.commerce.price(),
             tools: +faker.commerce.price(),
           },
+          environmentsEnabled: {
+            development: true,
+            test: true,
+            production: true,
+            tools: true,
+          },
         },
       });
     }
