@@ -21,6 +21,7 @@ export class PublicCloudRequestService extends ModelService<Prisma.PublicCloudRe
     const res = await prisma.publicCloudProject.findMany({
       select: { licencePlate: true },
       session: this.session as never,
+      skipPermissions: true as never,
     });
 
     const licencePlates = res.map(({ licencePlate }) => licencePlate);

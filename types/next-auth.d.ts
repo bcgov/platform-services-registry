@@ -75,6 +75,7 @@ declare module 'next-auth' {
     previews: {
       security: boolean;
       comments: boolean;
+      apiAccount: boolean;
     };
   }
 

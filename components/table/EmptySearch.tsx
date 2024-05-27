@@ -1,18 +1,10 @@
 'use client';
 
-import { Badge } from '@mantine/core';
-import { $Enums } from '@prisma/client';
 import _truncate from 'lodash-es/truncate';
 import Image from 'next/image';
 import Link from 'next/link';
 import React, { useState } from 'react';
 import Empty from '@/components/assets/empty.svg';
-import ActiveRequestBox from '@/components/form/ActiveRequestBox';
-import CopyableButton from '@/components/generic/button/CopyableButton';
-import UserCard from '@/components/UserCard';
-import { ministryKeyToName } from '@/helpers/product';
-import { PrivateCloudRequestSearchedItemPayload } from '@/queries/private-cloud-requests';
-import { formatDate } from '@/utils/date';
 
 export default function EmptySearch({
   cloud,
