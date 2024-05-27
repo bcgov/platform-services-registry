@@ -119,22 +119,6 @@ export async function searchPublicCloudRequests({
       skip,
       take,
       include: {
-        originalData: {
-          include: {
-            projectOwner: true,
-            primaryTechnicalLead: true,
-            secondaryTechnicalLead: true,
-            expenseAuthority: true,
-          },
-        },
-        requestData: {
-          include: {
-            projectOwner: true,
-            primaryTechnicalLead: true,
-            secondaryTechnicalLead: true,
-            expenseAuthority: true,
-          },
-        },
         decisionData: {
           include: {
             projectOwner: true,
@@ -157,22 +141,6 @@ export async function searchPublicCloudRequests({
 
 export type PublicCloudRequestSearchedItemPayload = Prisma.PublicCloudRequestGetPayload<{
   include: {
-    originalData: {
-      include: {
-        projectOwner: true;
-        primaryTechnicalLead: true;
-        secondaryTechnicalLead: true;
-        expenseAuthority: true;
-      };
-    };
-    requestData: {
-      include: {
-        projectOwner: true;
-        primaryTechnicalLead: true;
-        secondaryTechnicalLead: true;
-        expenseAuthority: true;
-      };
-    };
     decisionData: {
       include: {
         projectOwner: true;

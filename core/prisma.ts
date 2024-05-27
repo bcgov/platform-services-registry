@@ -32,7 +32,7 @@ const prisma =
           return query(args);
         }
 
-        const { session, ...validArgs } = args;
+        const { session, skipPermissions, ...validArgs } = args;
         if (session === undefined) return query(validArgs);
 
         const svc = getService(model, session);
@@ -56,6 +56,10 @@ const prisma =
         }
 
         if (operation === 'updateMany') {
+          return result;
+        }
+
+        if (skipPermissions) {
           return result;
         }
 

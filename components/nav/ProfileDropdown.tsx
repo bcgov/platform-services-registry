@@ -49,17 +49,19 @@ export default function ProfileDropdown() {
                   </button>
                 )}
               </Menu.Item>
-              <Menu.Item>
-                {({ active, close }) => (
-                  <Link
-                    href="/api-account"
-                    onClick={close}
-                    className={classNames(active ? 'bg-gray-100' : '', 'block px-4 py-2 text-sm text-gray-700')}
-                  >
-                    API Account
-                  </Link>
-                )}
-              </Menu.Item>
+              {session.previews.apiAccount && (
+                <Menu.Item>
+                  {({ active, close }) => (
+                    <Link
+                      href="/api-account"
+                      onClick={close}
+                      className={classNames(active ? 'bg-gray-100' : '', 'block px-4 py-2 text-sm text-gray-700')}
+                    >
+                      API Account
+                    </Link>
+                  )}
+                </Menu.Item>
+              )}
             </>
           )}
           {permissions?.viewZapscanResults && (

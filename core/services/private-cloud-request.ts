@@ -20,6 +20,7 @@ export class PrivateCloudRequestService extends ModelService<Prisma.PrivateCloud
     const res = await prisma.privateCloudProject.findMany({
       select: { licencePlate: true },
       session: this.session as never,
+      skipPermissions: true as never,
     });
 
     const licencePlates = res.map(({ licencePlate }) => licencePlate);
