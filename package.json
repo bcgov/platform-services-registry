@@ -1,6 +1,6 @@
 {
   "name": "pltsrv-registry",
-  "version": "0.24.4",
+  "version": "0.24.6",
   "private": true,
   "scripts": {
     "dev": "next dev",
