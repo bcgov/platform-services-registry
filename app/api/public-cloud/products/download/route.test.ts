@@ -89,6 +89,12 @@ function createProjectObject(data: any, index: number) {
     licencePlate: `LP${index}`,
     accountCoding: data.accountCoding,
     budget: data.budget,
+    environmentsEnabled: {
+      development: true,
+      test: true,
+      production: true,
+      tools: true,
+    },
     projectOwner: {
       connectOrCreate: {
         where: {

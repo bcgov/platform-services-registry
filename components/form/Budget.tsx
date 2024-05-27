@@ -1,6 +1,8 @@
 import { Alert } from '@mantine/core';
 import { IconInfoCircle } from '@tabler/icons-react';
 import classNames from 'classnames';
+import _sumBy from 'lodash-es/sumBy';
+import { useEffect } from 'react';
 import { useFormContext } from 'react-hook-form';
 import BudgetInput from '@/components/form/BudgetInput';
 import ExternalLink from '@/components/generic/button/ExternalLink';
@@ -12,10 +14,18 @@ export default function Budget({ disabled }: { disabled?: boolean }) {
   } = useFormContext();
 
   const budget = watch('budget', {});
+  const environmentsEnabled = watch('environmentsEnabled', {});
 
-  const totalBudget = [budget.dev, budget.test, budget.prod, budget.tools]
-    .map((value) => Number(value) || 0)
-    .reduce((sum, value) => sum + value, 0);
+  const values = [];
+  if (environmentsEnabled.development) values.push(budget.dev);
+  if (environmentsEnabled.test) values.push(budget.test);
+  if (environmentsEnabled.production) values.push(budget.prod);
+  if (environmentsEnabled.tools) values.push(budget.tools);
+
+  const totalBudget = _sumBy(values, (val) => {
+    const num = Number(val);
+    return isNaN(num) ? 0 : num;
+  });
 
   const formattedTotalBudget = parseFloat(totalBudget.toFixed(2));
 
@@ -40,22 +50,22 @@ export default function Budget({ disabled }: { disabled?: boolean }) {
 
       <div className="mt-5 grid grid-cols-1 gap-x-24 gap-y-6 sm:grid-cols-2">
         <BudgetInput
-          disabled={disabled}
+          disabled={disabled || !environmentsEnabled.development}
           title={'Estimated average monthly spend - Development Account'}
           name={'budget.dev'}
         />
         <BudgetInput
-          disabled={disabled}
+          disabled={disabled || !environmentsEnabled.test}
           title={'Estimated average monthly spend - Test Account'}
           name={'budget.test'}
         />
         <BudgetInput
-          disabled={disabled}
+          disabled={disabled || !environmentsEnabled.production}
           title={'Estimated average monthly spend - Production Account'}
           name={'budget.prod'}
         />
         <BudgetInput
-          disabled={disabled}
+          disabled={disabled || !environmentsEnabled.tools}
           title={'Estimated average monthly spend - Tool Account '}
           name={'budget.tools'}
         />

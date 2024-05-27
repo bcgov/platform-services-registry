@@ -5,9 +5,10 @@ import { FormProvider, useForm } from 'react-hook-form';
 import { z } from 'zod';
 import PreviousButton from '@/components/buttons/Previous';
 import AccountCoding from '@/components/form/AccountCoding';
+import AccountEnvironmentsPublic from '@/components/form/AccountEnvironmentsPublic';
 import Budget from '@/components/form/Budget';
 import ExpenseAuthority from '@/components/form/ExpenseAuthority';
-import ProjectDescription from '@/components/form/ProjectDescriptionPublic';
+import ProjectDescriptionPublic from '@/components/form/ProjectDescriptionPublic';
 import TeamContacts from '@/components/form/TeamContacts';
 import createClientPage from '@/core/client-page';
 import { usePublicProductState } from '@/states/global';
@@ -60,7 +61,9 @@ export default publicCloudRequestOriginal(({ pathParams, queryParams, session, r
       <FormProvider {...methods}>
         <form autoComplete="off">
           <div className="mb-12">
-            <ProjectDescription disabled={isDisabled} mode="decision" />
+            <ProjectDescriptionPublic disabled={isDisabled} mode="view" />
+            <hr className="my-7" />
+            <AccountEnvironmentsPublic disabled={isDisabled} mode="view" />
             <hr className="my-7" />
             <TeamContacts
               disabled={isDisabled}

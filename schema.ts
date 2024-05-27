@@ -132,6 +132,21 @@ export const PublicCloudCreateRequestBodySchema = z.object({
   secondaryTechnicalLead: UserInputSchema.optional().nullable(),
   expenseAuthority: UserInputSchema,
   requestComment: string().optional(),
+  environmentsEnabled: z
+    .object({
+      development: z.boolean(),
+      test: z.boolean(),
+      production: z.boolean(),
+      tools: z.boolean(),
+    })
+    .refine(
+      (obj) => {
+        return obj.development || obj.test || obj.production || obj.tools;
+      },
+      {
+        message: 'At least one environment must be selected.',
+      },
+    ),
 });
 
 export const PrivateCloudEditRequestBodySchema = PrivateCloudCreateRequestBodySchema.merge(
