@@ -11,9 +11,10 @@ import { z } from 'zod';
 import PreviousButton from '@/components/buttons/Previous';
 import SubmitButton from '@/components/buttons/SubmitButton';
 import AccountCoding from '@/components/form/AccountCoding';
+import AccountEnvironmentsPublic from '@/components/form/AccountEnvironmentsPublic';
 import Budget from '@/components/form/Budget';
 import ExpenseAuthority from '@/components/form/ExpenseAuthority';
-import ProjectDescription from '@/components/form/ProjectDescriptionPublic';
+import ProjectDescriptionPublic from '@/components/form/ProjectDescriptionPublic';
 import TeamContacts from '@/components/form/TeamContacts';
 import FormErrorNotification from '@/components/generic/FormErrorNotification';
 import Comment from '@/components/modal/Comment';
@@ -116,7 +117,9 @@ export default publicCloudProductRequest(({ pathParams, queryParams, session, ro
           })}
         >
           <div className="mb-12">
-            <ProjectDescription disabled={isDisabled} mode="decision" />
+            <ProjectDescriptionPublic disabled={isDisabled} mode="decision" />
+            <hr className="my-7" />
+            <AccountEnvironmentsPublic disabled={isDisabled} mode="decision" />
             <hr className="my-7" />
             <TeamContacts
               disabled={isDisabled}

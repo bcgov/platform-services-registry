@@ -7,10 +7,12 @@ import { FormProvider, useForm } from 'react-hook-form';
 import { z } from 'zod';
 import PreviousButton from '@/components/buttons/Previous';
 import AccountCoding from '@/components/form/AccountCoding';
+import AccountEnvironmentsPublic from '@/components/form/AccountEnvironmentsPublic';
 import Budget from '@/components/form/Budget';
 import ExpenseAuthority from '@/components/form/ExpenseAuthority';
-import ProjectDescription from '@/components/form/ProjectDescriptionPublic';
+import ProjectDescriptionPublic from '@/components/form/ProjectDescriptionPublic';
 import TeamContacts from '@/components/form/TeamContacts';
+import FormErrorNotification from '@/components/generic/FormErrorNotification';
 import CreatePublicCloud from '@/components/modal/CreatePublicCloud';
 import ReturnModal from '@/components/modal/Return';
 import { AGMinistries } from '@/constants';
@@ -55,6 +57,17 @@ export default publicCloudProductNew(({ pathParams, queryParams, session }) => {
         },
       ),
     ),
+    defaultValues: {
+      environmentsEnabled: {
+        production: true,
+      },
+      budget: {
+        dev: 50,
+        test: 50,
+        prod: 50,
+        tools: 50,
+      },
+    } as any,
   });
 
   const handleSubmit = async (data: any) => {
@@ -75,9 +88,12 @@ export default publicCloudProductNew(({ pathParams, queryParams, session }) => {
       </h1>
 
       <FormProvider {...methods}>
+        <FormErrorNotification />
         <form autoComplete="off" onSubmit={methods.handleSubmit(() => setOpenCreate(true))}>
           <div className="space-y-12">
-            <ProjectDescription mode="create" />
+            <ProjectDescriptionPublic mode="create" />
+            <hr className="my-7" />
+            <AccountEnvironmentsPublic mode="create" />
             <hr className="my-7" />
             <TeamContacts secondTechLead={secondTechLead} secondTechLeadOnClick={secondTechLeadOnClick} />
             <hr className="my-7" />

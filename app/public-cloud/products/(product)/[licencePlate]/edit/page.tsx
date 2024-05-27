@@ -9,9 +9,10 @@ import { z } from 'zod';
 import PreviousButton from '@/components/buttons/Previous';
 import SubmitButton from '@/components/buttons/SubmitButton';
 import AccountCoding from '@/components/form/AccountCoding';
+import AccountEnvironmentsPublic from '@/components/form/AccountEnvironmentsPublic';
 import Budget from '@/components/form/Budget';
 import ExpenseAuthority from '@/components/form/ExpenseAuthority';
-import ProjectDescription from '@/components/form/ProjectDescriptionPublic';
+import ProjectDescriptionPublic from '@/components/form/ProjectDescriptionPublic';
 import TeamContacts from '@/components/form/TeamContacts';
 import FormErrorNotification from '@/components/generic/FormErrorNotification';
 import PrivateCloudEditModal from '@/components/modal/EditPrivateCloud';
@@ -103,6 +104,7 @@ export default publicCloudProductEdit(({ pathParams, queryParams, session }) => 
     return null;
   }
 
+  console.log(formState);
   const isSubmitEnabled = formState.isDirty || isSecondaryTechLeadRemoved;
 
   return (
@@ -111,7 +113,9 @@ export default publicCloudProductEdit(({ pathParams, queryParams, session }) => 
         <FormErrorNotification />
         <form autoComplete="off" onSubmit={methods.handleSubmit(() => setOpenComment(true))}>
           <div className="space-y-12">
-            <ProjectDescription disabled={isDisabled} mode="edit" />
+            <ProjectDescriptionPublic mode="edit" />
+            <hr className="my-7" />
+            <AccountEnvironmentsPublic selected={snap.currentProduct.environmentsEnabled} mode="edit" />
             <hr className="my-7" />
             <TeamContacts
               disabled={isDisabled}

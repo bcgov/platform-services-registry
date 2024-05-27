@@ -22,6 +22,7 @@ export default async function createRequest(formData: PublicCloudCreateRequestBo
     ministry: formData.ministry,
     status: ProjectStatus.ACTIVE,
     licencePlate: licencePlate,
+    environmentsEnabled: formData.environmentsEnabled,
     projectOwner: {
       connectOrCreate: {
         where: {
