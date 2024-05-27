@@ -40,6 +40,7 @@ export async function searchPrivateCloudProducts({
   sortKey = defaultSortKey,
   sortOrder = Prisma.SortOrder.desc,
   extraFilter,
+  isTest,
 }: {
   session: Session;
   skip: number;
@@ -51,8 +52,11 @@ export async function searchPrivateCloudProducts({
   sortKey?: string;
   sortOrder?: Prisma.SortOrder;
   extraFilter?: Prisma.PrivateCloudProjectWhereInput;
+  isTest: boolean;
 }) {
-  const where: Prisma.PrivateCloudProjectWhereInput = extraFilter ?? {};
+  const where: Prisma.PrivateCloudProjectWhereInput = extraFilter ?? {
+    isTest: isTest,
+  };
   const orderBy = { [sortKey || defaultSortKey]: Prisma.SortOrder[sortOrder] };
 
   if (search === '*') search = '';

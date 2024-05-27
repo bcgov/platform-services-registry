@@ -20,6 +20,7 @@ export interface PrivateCloudProductAllCriteria {
   includeInactive: boolean;
   sortKey: string;
   sortOrder: string;
+  showTest: boolean;
 }
 
 export interface PrivateCloudProductSearchCriteria extends PrivateCloudProductAllCriteria {

@@ -11,7 +11,8 @@ export default function FilterPanel() {
   const clusterProviderRef = useRef<HTMLSelectElement>(null);
   const ministryRef = useRef<HTMLSelectElement>(null);
   const sortRef = useRef<HTMLSelectElement>(null);
-  const toggleText = 'Show Deleted Products';
+  const toggleDeletedProductsText = 'Show Deleted Products';
+  const toggleTestProductsText = 'Show Test Products';
 
   const handleSortChange = (value: string) => {
     const selectedOption = productSorts.find((privateSortName) => privateSortName.humanFriendlyName === value);
@@ -26,8 +27,13 @@ export default function FilterPanel() {
     pageState.page = 1;
   };
 
-  const handleToggleChange = () => {
+  const handleDeletedProductsToggleChange = () => {
     pageState.includeInactive = !pageSnapshot.includeInactive;
+    pageState.page = 1;
+  };
+
+  const handleTestProductsToggleChange = () => {
+    pageState.showTest = !pageSnapshot.showTest;
     pageState.page = 1;
   };
 
@@ -57,6 +63,7 @@ export default function FilterPanel() {
     pageState.sortKey = '';
     pageState.sortOrder = '';
     pageState.includeInactive = false;
+    pageState.showTest = false;
   };
 
   return (
@@ -99,12 +106,17 @@ export default function FilterPanel() {
             />
           </div>
         </fieldset>
-        <div></div>
         <FormToggle
           id="includeInactive"
-          label={toggleText}
+          label={toggleDeletedProductsText}
           checked={pageSnapshot.includeInactive}
-          onChange={handleToggleChange}
+          onChange={handleDeletedProductsToggleChange}
+        />
+        <FormToggle
+          id="showTest"
+          label={toggleTestProductsText}
+          checked={pageSnapshot.showTest}
+          onChange={handleTestProductsToggleChange}
         />
         <div className="mt-8 md:mt-7 md:ml-4">
           <button
