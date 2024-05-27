@@ -1,3 +1,9 @@
+## [0.25.0](https://github.com/bcgov/platform-services-registry/compare/v0.24.6...v0.25.0) (2024-05-27)
+
+### Features
+
+* **2597:** add accounts section in public product page ([7a3815a](https://github.com/bcgov/platform-services-registry/commit/7a3815aa4ce378b16ef407ec9e872fa27a3bda5e))
+* **2842:** add support for comments on request entity ([622e50a](https://github.com/bcgov/platform-services-registry/commit/622e50aa8735602c56fd8daa853e118d20bc61b4))
 ## [0.24.6](https://github.com/bcgov/platform-services-registry/compare/v0.24.4...v0.24.6) (2024-05-27)
 
 ### Features
