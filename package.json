@@ -46,7 +46,7 @@
     "@prisma/client": "^5.0.0",
     "@react-email/components": "^0.0.19",
     "@react-email/render": "0.0.15",
-    "@react-email/tailwind": "^0.0.17",
+    "@react-email/tailwind": "^0.0.18",
     "@tabler/icons-react": "^3.3.0",
     "@tailwindcss/forms": "^0.5.3",
     "@tanstack/react-query": "^5.4.3",
