@@ -104,7 +104,6 @@ export default publicCloudProductEdit(({ pathParams, queryParams, session }) => 
     return null;
   }
 
-  console.log(formState);
   const isSubmitEnabled = formState.isDirty || isSecondaryTechLeadRemoved;
 
   return (

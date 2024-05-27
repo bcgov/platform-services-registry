@@ -38,6 +38,8 @@ export default function createPublicCloudNatsMessage(
         dev: false,
         tools: false,
       },
+      current_environments: currentProject?.environmentsEnabled,
+      requested_environments: decisionData.environmentsEnabled,
       requested_product_owner: {
         name: `${decisionData.projectOwner.firstName} ${decisionData.projectOwner.lastName}`,
         email: decisionData.projectOwner.email,
