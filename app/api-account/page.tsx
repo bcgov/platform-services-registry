@@ -1,106 +1,13 @@
 'use client';
 
-import { Alert, Group, Avatar, Tabs, Code } from '@mantine/core';
-import { IconInfoCircle, IconCircleLetterR, IconCircleLetterD, IconProps, Icon } from '@tabler/icons-react';
+import { Alert } from '@mantine/core';
+import { IconInfoCircle } from '@tabler/icons-react';
 import { useQuery, useMutation } from '@tanstack/react-query';
-import CopyableButton from '@/components/generic/button/CopyableButton';
 import { openConfirmModal } from '@/components/generic/modal/ConfirmModal';
 import createClientPage from '@/core/client-page';
 import { getKeycloakApiAccount, createKeycloakApiAccount, deleteKeycloakApiAccount } from '@/services/backend/keycloak';
-import { useAppState } from '@/states/global';
-
-interface ApiAccount {
-  clientId: string;
-  secret: string;
-}
-
-function ApiAccountInfo({ apiAccount }: { apiAccount: ApiAccount }) {
-  const [appState, appSnap] = useAppState();
-
-  const privateProductsEndpoint = `${appSnap.info.BASE_URL}/api/v1/private-cloud/products`;
-  const publicProductsEndpoint = `${appSnap.info.BASE_URL}/api/v1/public-cloud/products`;
-
-  return (
-    <table className="w-full text-sm text-left rtl:text-right text-black">
-      <tbody>
-        <tr className="bg-white border-b">
-          <td className="px-6 py-3">Client ID</td>
-          <td className="px-6 py-3">
-            <CopyableButton value={apiAccount.clientId}>{apiAccount.clientId}</CopyableButton>
-          </td>
-        </tr>
-        <tr className="bg-white border-b">
-          <td className="px-6 py-3">Client Secret</td>
-          <td className="px-6 py-3">
-            <CopyableButton value={apiAccount.secret}>*************************</CopyableButton>
-          </td>
-        </tr>
-        <tr className="bg-white border-b">
-          <td className="px-6 py-3">Token Endpoint</td>
-          <td className="px-6 py-3">
-            <CopyableButton value={appSnap.info.TOKEN_URL}>{appSnap.info.TOKEN_URL}</CopyableButton>
-          </td>
-        </tr>
-        <tr className="bg-white border-b">
-          <td className="px-6 py-3">API Endpoint - Get Private Cloud Products</td>
-          <td className="px-6 py-3">
-            <CopyableButton value={privateProductsEndpoint}>{privateProductsEndpoint}</CopyableButton>
-          </td>
-        </tr>
-        <tr className="bg-white border-b">
-          <td className="px-6 py-3">API Endpoint - Get Public Cloud Products</td>
-          <td className="px-6 py-3">
-            <CopyableButton value={privateProductsEndpoint}>{publicProductsEndpoint}</CopyableButton>
-          </td>
-        </tr>
-      </tbody>
-    </table>
-  );
-}
-
-function ApiTabs({ apiAccount }: { apiAccount: ApiAccount }) {
-  const [appState, appSnap] = useAppState();
-
-  const privateProductsEndpoint = `${appSnap.info.BASE_URL}/api/v1/private-cloud/products`;
-
-  const usageCodeBlock = `
-  const tokenResponse = await fetch('${appSnap.info.TOKEN_URL}', {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/x-www-form-urlencoded',
-    },
-    body: new URLSearchParams({
-      grant_type: 'client_credentials',
-      client_id: '${apiAccount.clientId}',
-      client_secret: <YOUR_CLIENT_SECRET>,
-    }),
-  });
-
-  const { access_token } = await tokenResponse.json();
-
-  const dataResponse = await fetch('${privateProductsEndpoint}', {
-    method: 'GET',
-    headers: {
-      'Authorization': 'Bearer ' + access_token,
-      'Content-Type': 'application/json',
-    },
-  });
-
-  const data = await dataResponse.json();
-  `;
-
-  return (
-    <Tabs variant="outline" defaultValue="usage">
-      <Tabs.List>
-        <Tabs.Tab value="usage">Usage</Tabs.Tab>
-      </Tabs.List>
-
-      <Tabs.Panel value="usage">
-        <Code block>{usageCodeBlock}</Code>
-      </Tabs.Panel>
-    </Tabs>
-  );
-}
+import ApiAccountInfo from './ApiAccountInfo';
+import ApiTabs from './ApiTabs';
 
 const ApiAccountPage = createClientPage({
   roles: ['user'],
@@ -166,7 +73,7 @@ export default ApiAccountPage(({ session }) => {
             <ApiAccountInfo apiAccount={apiAccount} />
           </div>
 
-          <div className="mt-2">
+          <div className="mt-3">
             <ApiTabs apiAccount={apiAccount} />
           </div>
         </>

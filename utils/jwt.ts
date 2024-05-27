@@ -83,7 +83,8 @@ export async function verifyJwtToken({
     // Verification options
     const verifyOptions: VerifyOptions = {
       maxAge: '8h',
-      ignoreExpiration: true,
+      ignoreExpiration: false,
+      clockTolerance: 0,
     };
 
     // Set issuer if provided
