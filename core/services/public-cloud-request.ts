@@ -52,7 +52,7 @@ export class PublicCloudRequestService extends ModelService<Prisma.PublicCloudRe
 
     if (!hasProduct) {
       doc._permissions = {
-        view: this.session.permissions.viewAllPublicCloudProducts || doc.createdByEmail === this.session.user.email,
+        view: true,
         edit: canEdit,
         review: canReview,
         delete: false,
@@ -62,32 +62,13 @@ export class PublicCloudRequestService extends ModelService<Prisma.PublicCloudRe
       return doc;
     }
 
-    const res = await prisma.publicCloudProject.findFirst({
-      where: { licencePlate: doc.licencePlate },
-      select: { projectOwnerId: true, primaryTechnicalLeadId: true, secondaryTechnicalLeadId: true, ministry: true },
-      session: this.session as never,
-    });
-
-    const docWithPermissions = res as typeof res & PublicCloudProjectDecorate;
-
-    if (docWithPermissions) {
-      doc._permissions = {
-        view: docWithPermissions._permissions.view,
-        edit: canEdit,
-        review: canReview,
-        delete: false,
-        viewProduct: hasProduct,
-      };
-    } else {
-      // If a product isn't found, it indicates manual removal of the product.
-      doc._permissions = {
-        view: false,
-        edit: false,
-        review: false,
-        delete: false,
-        viewProduct: false,
-      };
-    }
+    doc._permissions = {
+      view: true,
+      edit: canEdit,
+      review: canReview,
+      delete: false,
+      viewProduct: hasProduct,
+    };
 
     return doc;
   }

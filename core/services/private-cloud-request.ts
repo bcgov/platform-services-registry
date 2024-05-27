@@ -55,7 +55,7 @@ export class PrivateCloudRequestService extends ModelService<Prisma.PrivateCloud
 
     if (!hasProduct) {
       doc._permissions = {
-        view: this.session.permissions.viewAllPrivateCloudProducts || doc.createdByEmail === this.session.user.email,
+        view: true,
         edit: canEdit,
         review: canReview,
         resend: canResend,
@@ -67,36 +67,15 @@ export class PrivateCloudRequestService extends ModelService<Prisma.PrivateCloud
       return doc;
     }
 
-    const res = await prisma.privateCloudProject.findFirst({
-      where: { licencePlate: doc.licencePlate },
-      select: { projectOwnerId: true, primaryTechnicalLeadId: true, secondaryTechnicalLeadId: true, ministry: true },
-      session: this.session as never,
-    });
-
-    const docWithPermissions = res as typeof res & PrivateCloudProjectDecorate;
-
-    if (docWithPermissions) {
-      doc._permissions = {
-        view: docWithPermissions._permissions.view,
-        edit: canEdit,
-        review: canReview,
-        resend: canResend,
-        delete: false,
-        viewDecision: canViewDecision,
-        viewProduct: hasProduct,
-      };
-    } else {
-      // If a product isn't found, it indicates manual removal of the product.
-      doc._permissions = {
-        view: false,
-        edit: false,
-        review: false,
-        resend: false,
-        delete: false,
-        viewDecision: false,
-        viewProduct: false,
-      };
-    }
+    doc._permissions = {
+      view: true,
+      edit: canEdit,
+      review: canReview,
+      resend: canResend,
+      delete: false,
+      viewDecision: canViewDecision,
+      viewProduct: hasProduct,
+    };
 
     return doc;
   }
