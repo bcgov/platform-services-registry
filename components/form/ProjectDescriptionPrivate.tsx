@@ -50,9 +50,13 @@ export default function ProjectDescriptionPrivate({
           Provisioning requests from new teams that have <b>not</b> had an onboarding meeting will not be approved.
         </p>
       )}
-      <div className="pt-5">
-        <IsTestCheckBox disabled={disabled} />
-      </div>
+
+      {session?.previews.testProduct && (
+        <div className="pt-5">
+          <IsTestCheckBox disabled={disabled} />
+        </div>
+      )}
+
       <div className="mt-10 grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6">
         <div className="col-span-full">
           <label htmlFor="street-address" className="block text-sm font-medium leading-6 text-gray-900">
