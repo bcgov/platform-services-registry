@@ -1,5 +1,6 @@
 import { format } from 'date-fns/format';
 import _isDate from 'lodash-es/isDate';
+import _toInteger from 'lodash-es/toInteger';
 
 export function formatDate(date: string | number | Date, formatStr = 'yyyy-MM-dd hh:mm:ss aa') {
   if (!date) return '';
@@ -44,4 +45,19 @@ export function compareYearMonth(date1: Date, date2: Date) {
   }
 
   return 1; // date1 is after date2
+}
+
+export function daysDifference(date: Date) {
+  const createDate = new Date(date);
+
+  if (!_isDate(date)) {
+    throw new Error('Invalid date format');
+  }
+
+  const currentDate = new Date();
+
+  const diffInMs = currentDate.getTime() - createDate.getTime();
+
+  const msInADay = 24 * 60 * 60 * 1000;
+  return _toInteger(diffInMs / msInADay);
 }

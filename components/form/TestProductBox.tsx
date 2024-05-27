@@ -1,5 +1,5 @@
 import { Tooltip, Badge } from '@mantine/core';
-import _toInteger from 'lodash-es/toInteger';
+import { daysDifference } from '@/utils/date';
 
 export default function TestProductBox({
   data,
@@ -12,18 +12,7 @@ export default function TestProductBox({
 }) {
   if (!data) return null;
   const createDate = new Date(data.created);
-
-  if (isNaN(createDate.getTime())) {
-    throw new Error('Invalid date format');
-  }
-
-  const currentDate = new Date();
-
-  const diffInMs = currentDate.getTime() - createDate.getTime();
-
-  const msInADay = 24 * 60 * 60 * 1000;
-  const diffInDays = _toInteger(30 - diffInMs / msInADay);
-
+  const diffInDays = 30 - daysDifference(createDate);
   return (
     <Tooltip label="Delete Product" position="top" offset={10} className={className}>
       <button
@@ -36,7 +25,7 @@ export default function TestProductBox({
         <Badge autoContrast size="xl" color="blue" radius="md" className="mb-1">
           Test
         </Badge>
-        <span className="text-red-600/100 font-black block">{diffInDays}</span>
+        <span className="text-red-600/100 font-black block text-lg">{diffInDays}</span>
         {diffInDays > 0 ? 'days until product deletion' : 'days ago product should be deleted'}
       </button>
     </Tooltip>
