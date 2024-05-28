@@ -1,8 +1,7 @@
-import Image from 'next/image';
+import { IconSearch } from '@tabler/icons-react';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import { useCallback, useEffect, useState, useTransition } from 'react';
 import { tabName } from '@/app/api/public-cloud/aws-roles/helpers';
-import Search from '@/components/assets/search.svg';
 import AddUserButton from '@/components/buttons/AddUserButton';
 import PublicUsersTabs from '@/components/tabs/PublicUsersTabs';
 import { useDebounce } from '@/utils/hooks';
@@ -72,16 +71,7 @@ export default function UserAWSRolesTableTop({
         <PublicUsersTabs roles={roles} />
         <div className="flex  items-center relative pr-4 ml-auto">
           <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
-            <Image
-              alt="Search"
-              src={Search}
-              width={15}
-              height={15}
-              style={{
-                maxWidth: '100%',
-                height: 'auto',
-              }}
-            />
+            <IconSearch size={20} />
           </div>
           <input
             type="text"

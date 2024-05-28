@@ -1,5 +1,5 @@
 import { Dialog, Combobox, Transition } from '@headlessui/react';
-import { CheckIcon } from '@heroicons/react/20/solid';
+import { IconCheck } from '@tabler/icons-react';
 import { useQuery } from '@tanstack/react-query';
 import { Fragment, useState } from 'react';
 import UserInfoField from '@/components/modal/AddUserFields';
@@ -156,7 +156,7 @@ export default function AddUserModal({ open, setOpen, setUserPrincipalName, setU
                                         active ? 'text-white' : 'text-teal-600'
                                       }`}
                                     >
-                                      <CheckIcon className="h-5 w-5" aria-hidden="true" />
+                                      <IconCheck className="inline-block" aria-hidden="true" />
                                     </span>
                                   ) : null}
                                 </>

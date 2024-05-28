@@ -1,5 +1,4 @@
-import Image from 'next/image';
-import Plus from '@/components/assets/plus.svg';
+import { IconCirclePlus } from '@tabler/icons-react';
 
 interface Props {
   setOpenAddUser: React.Dispatch<React.SetStateAction<boolean>>;
@@ -12,7 +11,7 @@ export default function AddUserButton({ setOpenAddUser }: Props) {
       type="button"
       onClick={() => setOpenAddUser(true)}
     >
-      <Image src={Plus} alt="plus" width={20} height={20} className="mr-2 mt-[3px]" />
+      <IconCirclePlus size={20} className="mr-2" />
       ADD A USER
     </button>
   );

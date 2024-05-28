@@ -1,13 +1,12 @@
 'use client';
 
+import { IconSearch } from '@tabler/icons-react';
 import _castArray from 'lodash-es/castArray';
 import _isEqual from 'lodash-es/isEqual';
 import _throttle from 'lodash-es/throttle';
-import Image from 'next/image';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import { useEffect, useState, useTransition, useRef } from 'react';
 import Select, { MultiValue } from 'react-select';
-import Search from '@/components/assets/search.svg';
 import { parseQueryString, stringifyQuery, isSearchQueryEqual } from '@/utils/query-string';
 
 export default function SearchPanel({ clusters, endPaths }: { clusters: string[]; endPaths: string }) {
@@ -62,16 +61,7 @@ export default function SearchPanel({ clusters, endPaths }: { clusters: string[]
       </div>
       <div className="col-span-2 relative">
         <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
-          <Image
-            alt="Search"
-            src={Search}
-            width={15}
-            height={15}
-            style={{
-              maxWidth: '100%',
-              height: 'auto',
-            }}
-          />
+          <IconSearch size={20} />
         </div>
         <input
           type="text"

@@ -1,6 +1,5 @@
-import Image from 'next/image';
+import { IconCirclePlus } from '@tabler/icons-react';
 import Link from 'next/link';
-import Plus from '@/components/assets/plus.svg';
 
 export default function CreateProduct({ context }: { context: 'private' | 'public' }) {
   return (
@@ -9,7 +8,7 @@ export default function CreateProduct({ context }: { context: 'private' | 'publi
       type="button"
       href={`/${context}-cloud/products/create`}
     >
-      <Image src={Plus} alt="plus" width={20} height={20} className="mr-4 mt-[3px]" />
+      <IconCirclePlus size={20} className="mr-2" />
       REQUEST A NEW PRODUCT
     </Link>
   );

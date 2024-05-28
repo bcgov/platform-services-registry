@@ -1,9 +1,7 @@
-import { Disclosure } from '@headlessui/react';
-import Image from 'next/image';
+import { Disclosure, DisclosureButton, DisclosurePanel } from '@headlessui/react';
+import { IconFilter, IconSearch } from '@tabler/icons-react';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import { useCallback, useEffect, useState } from 'react';
-import Filter from '@/components/assets/filter.svg';
-import Search from '@/components/assets/search.svg';
 import ExportButton from '@/components/buttons/ExportButton';
 import { useDebounce } from '@/utils/hooks';
 import LightButton from '../button/LightButton';
@@ -54,16 +52,7 @@ export default function SearchFilterExport({ initialSearch = '', onSearch, onExp
                 </label>
                 <div className="relative w-full">
                   <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
-                    <Image
-                      alt="Search"
-                      src={Search}
-                      width={15}
-                      height={15}
-                      style={{
-                        maxWidth: '100%',
-                        height: 'auto',
-                      }}
-                    />
+                    <IconSearch size={20} />
                   </div>
                   <input
                     type="text"
@@ -85,14 +74,14 @@ export default function SearchFilterExport({ initialSearch = '', onSearch, onExp
             )}
           </div>
           {children && (
-            <Disclosure.Button as={LightButton} type="button" onClick={handleDiscloserToggle} className="pr-6">
-              <Image alt="Filter" src={Filter} width={16} height={16} />
+            <DisclosureButton as={LightButton} type="button" onClick={handleDiscloserToggle} className="pr-6">
+              <IconFilter size={20} />
               Filter
-            </Disclosure.Button>
+            </DisclosureButton>
           )}
           {onExport && <ExportButton onExport={onExport} />}
         </div>
-        <Disclosure.Panel className="py-10 w-full flex justify-end ">{children}</Disclosure.Panel>
+        <DisclosurePanel className="py-10 w-full flex justify-end ">{children}</DisclosurePanel>
       </Disclosure>
     </div>
   );

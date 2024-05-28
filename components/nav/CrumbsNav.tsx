@@ -1,10 +1,8 @@
-import { ChevronRightIcon } from '@heroicons/react/20/solid';
-import { DocumentDuplicateIcon } from '@heroicons/react/24/outline';
+import { IconChevronRight, IconCopy, IconArrowBack } from '@tabler/icons-react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useState } from 'react';
-import Arrow from '@/components/assets/arrow.svg';
 import { copyToClipboard } from '@/utils/copy-to-clipboard';
 import { showTooltip } from '@/utils/show-tooltip';
 
@@ -26,17 +24,7 @@ export default function CrumbsNav({ cloudLabel, previousLabel }: { cloudLabel: s
         </li>
         <li>
           <Link className="ml-4 mr-2" type="button" href={`/${backUrl}/products/all`}>
-            <Image
-              alt="Arrow"
-              src={Arrow}
-              width={20}
-              height={20}
-              style={{
-                marginTop: '11px',
-                maxWidth: '100%',
-                height: 'auto',
-              }}
-            />
+            <IconArrowBack className="inline-block" />
           </Link>
         </li>
         <li>
@@ -47,9 +35,9 @@ export default function CrumbsNav({ cloudLabel, previousLabel }: { cloudLabel: s
         {licencePlate && licencePlate !== 'create' && (
           <li>
             <div className="flex items-center">
-              <ChevronRightIcon className="h-5 w-5 flex-shrink-0 text-gray-400" aria-hidden="true" />
+              <IconChevronRight className="h-5 w-5 flex-shrink-0 text-gray-400" aria-hidden="true" />
               <div className="flex ml-2 text-gray-400 text-lg font-medium">{licencePlate}</div>
-              <DocumentDuplicateIcon
+              <IconCopy
                 className="h-5 w-5 flex-none text-gray-400 cursor-pointer hover:bg-gray-50"
                 aria-hidden="true"
                 onClick={() => handleCopyToClipboard(licencePlate)}

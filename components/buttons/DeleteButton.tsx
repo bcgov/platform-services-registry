@@ -1,4 +1,4 @@
-import { TrashIcon } from '@heroicons/react/20/solid';
+import { IconTrash } from '@tabler/icons-react';
 import classNames from 'classnames';
 
 export default function DeleteButton({
@@ -20,7 +20,7 @@ export default function DeleteButton({
         active && canDelete ? 'bg-gray-100 text-gray-900' : 'text-gray-700',
       )}
     >
-      <TrashIcon className="mr-3 h-5 w-5 text-gray-400 group-hover:text-gray-500" aria-hidden="true" />
+      <IconTrash className="inlick-block mr-2" />
       Delete
     </button>
   );

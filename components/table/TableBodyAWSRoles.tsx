@@ -1,7 +1,6 @@
-import Image from 'next/image';
+import { IconTrash } from '@tabler/icons-react';
 import React from 'react';
 import { User } from '@/app/api/public-cloud/aws-roles/helpers';
-import Delete from '@/components/assets/delete.svg';
 
 const rowValue = (value: string, header: string, index: number): React.ReactNode => {
   return (
@@ -83,18 +82,7 @@ export default function TableBodyAWSRoles({ rows, userRole, setOpenDeleteUser, s
                     key={row.id}
                     className={`font-sans font-normal text-base pl-4 sm:pl-6 lg:pl-8 py-4 text-mediumgrey md:table-cell border-b-1`}
                   >
-                    <Image
-                      alt="Delete"
-                      src={Delete}
-                      width={20}
-                      height={20}
-                      style={{
-                        maxWidth: '100%',
-                        height: 'auto',
-                      }}
-                      className="hover:cursor-pointer"
-                      onClick={() => onDeleteClickHandler(row)}
-                    />
+                    <IconTrash className="hover:cursor-pointer" onClick={() => onDeleteClickHandler(row)} />
                   </td>
                 </tr>
               ))}

@@ -1,4 +1,4 @@
-import { EllipsisHorizontalIcon, TrashIcon, PencilSquareIcon } from '@heroicons/react/20/solid';
+import { IconTrash, IconPencil, IconDots } from '@tabler/icons-react';
 import { useMutation } from '@tanstack/react-query';
 import { formatDistanceToNow } from 'date-fns/formatDistanceToNow';
 import React, { useState, useRef, useEffect } from 'react';
@@ -148,7 +148,7 @@ const CommentBubble = ({
         </div>
         {isAuthor && (
           <button onClick={toggleMenu} className="p-1 rounded-full hover:bg-blue-200">
-            <EllipsisHorizontalIcon className="w-5 h-5 text-gray-500" />
+            <IconDots className="inline-block text-gray-500" />
           </button>
         )}
       </div>
@@ -158,7 +158,7 @@ const CommentBubble = ({
             onClick={handleEdit}
             className="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 w-full text-left"
           >
-            <PencilSquareIcon className="w-5 h-5 mr-2" />
+            <IconPencil className="inline-block mr-2" />
             Edit
           </button>
           <button
@@ -166,7 +166,7 @@ const CommentBubble = ({
             className="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 w-full text-left"
             aria-label="Delete comment"
           >
-            <TrashIcon className="w-5 h-5 mr-2" />
+            <IconTrash className="inline-block mr-2" />
             Delete
           </button>
         </div>
