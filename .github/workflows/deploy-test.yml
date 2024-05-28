@@ -34,8 +34,8 @@ jobs:
         registry-username: ${{ github.actor }}
         registry-password: ${{ secrets.GITHUB_TOKEN }}
         image-name: bcgov/pltsvc
-        docker-context: .
-        docker-file: Dockerfile
+        docker-context: app
+        docker-file: app/Dockerfile
         docker-args: |
           deployment_tag=${{ github.ref_name }}
         metadata-tags: |
@@ -64,8 +64,8 @@ jobs:
         registry-username: ${{ github.actor }}
         registry-password: ${{ secrets.GITHUB_TOKEN }}
         image-name: bcgov/pltsvc-pre-prisma
-        docker-context: .
-        docker-file: Dockerfile.db
+        docker-context: app
+        docker-file: app/Dockerfile.db
         metadata-tags: |
           type=semver,pattern={{version}}
           type=semver,pattern={{major}}.{{minor}}
@@ -120,8 +120,8 @@ jobs:
         registry-username: ${{ github.actor }}
         registry-password: ${{ secrets.GITHUB_TOKEN }}
         image-name: bcgov/pltsvc-email
-        docker-context: .
-        docker-file: Dockerfile.email
+        docker-context: app
+        docker-file: app/Dockerfile.email
         metadata-tags: |
           type=semver,pattern={{version}}
           type=semver,pattern={{major}}.{{minor}}

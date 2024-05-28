@@ -1,0 +1,70 @@
+{
+  "env": {
+    "browser": true,
+    "es2021": true
+  },
+  "extends": [
+    "next",
+    "plugin:react/recommended",
+    "airbnb-typescript",
+    "plugin:@typescript-eslint/recommended",
+    "plugin:n/recommended",
+    "plugin:import/recommended",
+    "plugin:react-hooks/recommended",
+    "plugin:jsx-a11y/recommended",
+    "plugin:prettier/recommended"
+  ],
+  "parser": "@typescript-eslint/parser",
+  "parserOptions": {
+    "ecmaFeatures": {
+      "jsx": true
+    },
+    "ecmaVersion": 12,
+    "sourceType": "module",
+    "project": ["./tsconfig.json", "./cypress/tsconfig.json"]
+  },
+  "plugins": ["react", "react-hooks", "jsx-a11y", "import", "@typescript-eslint", "prettier"],
+  "rules": {
+    "@typescript-eslint/no-explicit-any": "off",
+    "@typescript-eslint/no-unused-vars": "off",
+    "@typescript-eslint/ban-ts-comment": "off",
+    "@typescript-eslint/naming-convention": "off",
+    "@typescript-eslint/no-var-requires": "off",
+    "import/no-extraneous-dependencies": "off",
+    "import/named": "off",
+    "import/no-named-as-default": "off",
+    "import/no-unresolved": "error",
+    "import/order": [
+      "error",
+      {
+        "groups": ["builtin", "external", "internal", "parent", "sibling", "index", "unknown"],
+        "newlines-between": "never",
+        "alphabetize": {
+          "order": "asc",
+          "caseInsensitive": true
+        }
+      }
+    ],
+    "no-else-return": "error",
+    "no-nested-ternary": "off",
+    "no-unneeded-ternary": "error",
+    "no-process-env": "error",
+    "no-warning-comments": "off",
+    "n/no-missing-import": "off",
+    "n/no-extraneous-import": "off",
+    "n/no-process-exit": "off",
+    "n/no-unsupported-features/node-builtins": "off",
+    "react/react-in-jsx-scope": "off",
+    "prefer-destructuring": "off",
+    "sort-imports": "off",
+    "spaced-comment": ["error", "always", { "markers": ["/"] }]
+  },
+  "overrides": [
+    {
+      "files": ["config.ts"],
+      "rules": {
+        "no-process-env": "off"
+      }
+    }
+  ]
+}

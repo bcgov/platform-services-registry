@@ -1,0 +1,5 @@
+**/*.js
+**/*.jsx
+**/*.mjs
+localdev/mnt
+.react-email

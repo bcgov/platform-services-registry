@@ -14,6 +14,16 @@ runs:
       restore-keys: |
         ${{ runner.os }}-nextjs-${{ hashFiles('**/package-lock.json') }}-
 
-  - name: Install NPM packages
+  - name: Install Root NPM packages
     run: npm install
     shell: bash
+
+  - name: Install App NPM packages
+    run: npm install
+    shell: bash
+    working-directory: app
+
+  - name: Install Cypress NPM packages
+    run: npm install
+    shell: bash
+    working-directory: cypress

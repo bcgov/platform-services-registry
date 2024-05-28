@@ -1,3 +1,3 @@
 #!/bin/bash
 
-npx eslint --fix "$@"
+cd app && npx eslint --fix "$@"
