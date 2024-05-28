@@ -1,6 +1,15 @@
 name: 32.Run E2E Tests
 
-on: workflow_dispatch
+on:
+  push:
+    branches:
+    - cypress
+    paths-ignore:
+    - .github/workflows/cypress-e2e-test.yaml
+    - cypress/**
+    - cypress.config.ts
+
+  workflow_dispatch:
 
 jobs:
   e2e:
