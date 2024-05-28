@@ -1,3 +1,13 @@
+## [0.26.0](https://github.com/bcgov/platform-services-registry/compare/v0.25.0...v0.26.0) (2024-05-28)
+
+### Features
+
+* add test label, filtering, days until product deletion ([f8af1a8](https://github.com/bcgov/platform-services-registry/commit/f8af1a807aef73491c538b3bfa4a4344a7708d6e))
+* **ui:** update header menu design ([c5a281f](https://github.com/bcgov/platform-services-registry/commit/c5a281f0824714cc3df6d520ee41c69a218f2178))
+
+### Refactors
+
+* **2778:** clean up icons ([09eba1e](https://github.com/bcgov/platform-services-registry/commit/09eba1e6d6120afa9999538ec058c3384117bb9f))
 ## [0.25.0](https://github.com/bcgov/platform-services-registry/compare/v0.24.6...v0.25.0) (2024-05-27)
 
 ### Features
