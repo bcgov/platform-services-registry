@@ -3,6 +3,45 @@ import NextAuth, { DefaultSession, JWT } from 'next-auth/jwt';
 import { Permissions, PermissionKey } from './permissions';
 
 declare module 'next-auth' {
+  interface Permissions {
+    createPrivateCloudProducts: boolean;
+    viewAllPrivateCloudProducts: boolean;
+    viewAllPrivateCloudProductsHistory: boolean;
+    editAllPrivateCloudProducts: boolean;
+    deleteAllPrivateCloudProducts: boolean;
+    reviewAllPrivateCloudRequests: boolean;
+    createPrivateCloudProductsAsAssignee: boolean;
+    viewAssignedPrivateCloudProducts: boolean;
+    editAssignedPrivateCloudProducts: boolean;
+    deleteAssignedPrivateCloudProducts: boolean;
+
+    createPublicCloudProducts: boolean;
+    viewAllPublicCloudProducts: boolean;
+    viewAllPublicCloudProductsHistory: boolean;
+    editAllPublicCloudProducts: boolean;
+    deleteAllPublicCloudProducts: boolean;
+    reviewAllPublicCloudRequests: boolean;
+    createPublicCloudProductsAsAssignee: boolean;
+    viewAssignedPublicCloudProducts: boolean;
+    editAssignedPublicCloudProducts: boolean;
+    deleteAssignedPublicCloudProducts: boolean;
+
+    createPrivateProductComments: boolean;
+    viewAllPrivateProductComments: boolean;
+    editAllPrivateProductComments: boolean;
+    deleteAllPrivateProductComments: boolean;
+
+    createPublicProductComments: boolean;
+    viewAllPublicProductComments: boolean;
+    editAllPublicProductComments: boolean;
+    deleteAllPublicProductComments: boolean;
+
+    viewZapscanResults: boolean;
+    viewSonarscanResults: boolean;
+    viewPrivateAnalytics: boolean;
+    viewPublicAnalytics: boolean;
+  }
+
   interface Session extends DefaultSession {
     idToken: string;
     kcUserId: string;
@@ -34,44 +73,7 @@ declare module 'next-auth' {
       reader: string[];
       [key: string]: string[];
     };
-    permissions: {
-      createPrivateCloudProducts: boolean;
-      viewAllPrivateCloudProducts: boolean;
-      viewAllPrivateCloudProductsHistory: boolean;
-      editAllPrivateCloudProducts: boolean;
-      deleteAllPrivateCloudProducts: boolean;
-      reviewAllPrivateCloudRequests: boolean;
-      createPrivateCloudProductsAsAssignee: boolean;
-      viewAssignedPrivateCloudProducts: boolean;
-      editAssignedPrivateCloudProducts: boolean;
-      deleteAssignedPrivateCloudProducts: boolean;
-
-      createPublicCloudProducts: boolean;
-      viewAllPublicCloudProducts: boolean;
-      viewAllPublicCloudProductsHistory: boolean;
-      editAllPublicCloudProducts: boolean;
-      deleteAllPublicCloudProducts: boolean;
-      reviewAllPublicCloudRequests: boolean;
-      createPublicCloudProductsAsAssignee: boolean;
-      viewAssignedPublicCloudProducts: boolean;
-      editAssignedPublicCloudProducts: boolean;
-      deleteAssignedPublicCloudProducts: boolean;
-
-      createPrivateProductComments: boolean;
-      viewAllPrivateProductComments: boolean;
-      editAllPrivateProductComments: boolean;
-      deleteAllPrivateProductComments: boolean;
-
-      createPublicProductComments: boolean;
-      viewAllPublicProductComments: boolean;
-      editAllPublicProductComments: boolean;
-      deleteAllPublicProductComments: boolean;
-
-      viewZapscanResults: boolean;
-      viewSonarscanResults: boolean;
-      viewPrivateAnalytics: boolean;
-      viewPublicAnalytics: boolean;
-    };
+    permissions: Permissions;
     previews: {
       security: boolean;
       comments: boolean;
