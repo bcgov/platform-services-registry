@@ -46,10 +46,10 @@ const isDividerMenu = (menu: MenuType): menu is DividerMenu => 'divider' in menu
 const isLinkMenu = (menu: MenuType): menu is LinkMenu => 'href' in menu;
 const isClickMenu = (menu: MenuType): menu is ClickMenu => 'onClick' in menu;
 
-export default function ProfileDropdown() {
-  const [appState, appSnapshot] = useAppState();
+export default function UserMenu() {
+  const [, appSnapshot] = useAppState();
   const { data: session } = useSession();
-  const [isProfileOpen, setProfileOpen] = useState(false);
+  const [profileOpen, setProfileOpen] = useState(false);
 
   if (!session) return null;
   const { permissions } = session;
@@ -93,9 +93,7 @@ export default function ProfileDropdown() {
     {
       text: 'Sign Out',
       Icon: IconLogout,
-      onClick: async () => {
-        await signOut(appSnapshot.info.LOGOUT_URL, session.idToken);
-      },
+      onClick: () => signOut(appSnapshot.info.LOGOUT_URL, session.idToken),
     },
   ];
 
@@ -110,7 +108,7 @@ export default function ProfileDropdown() {
 
         <Menu.Dropdown>
           {menus.map((menu, index) => {
-            if (isDividerMenu(menu)) return <Menu.Divider key={index} />;
+            if (isDividerMenu(menu)) return <Menu.Divider key={`divider-${index}`} />;
             if (menu.permission && !permissions[menu.permission]) return null;
 
             if (isLinkMenu(menu)) {
@@ -133,7 +131,7 @@ export default function ProfileDropdown() {
           })}
         </Menu.Dropdown>
       </Menu>
-      {session && isProfileOpen && <UserProfile isOpen={isProfileOpen} onClose={() => setProfileOpen(false)} />}
+      {session && profileOpen && <UserProfile isOpen={profileOpen} onClose={() => setProfileOpen(false)} />}
     </>
   );
 }

@@ -28,8 +28,8 @@ export default function DashboardLayout({
   children,
   context,
 }: {
-  children: React.ReactNode;
-  context: 'private' | 'public';
+  readonly children: React.ReactNode;
+  readonly context: 'private' | 'public';
 }) {
   return (
     <div>
