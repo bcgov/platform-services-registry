@@ -12,6 +12,9 @@ export async function listOp(licencePlate: string, requestId?: string) {
       include: {
         user: true,
       },
+      orderBy: {
+        created: 'desc',
+      },
     });
 
     return comments;
@@ -37,6 +40,9 @@ export async function listOp(licencePlate: string, requestId?: string) {
     },
     include: {
       user: true,
+    },
+    orderBy: {
+      created: 'desc',
     },
   });
 

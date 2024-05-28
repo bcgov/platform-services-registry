@@ -6,6 +6,7 @@ interface CommentFormProps {
   licencePlate: string;
   userId: string;
   projectId: string;
+  // requestId: string;
   onCommentAdded: () => void;
 }
 
@@ -15,7 +16,7 @@ function CommentForm({ licencePlate, userId, projectId, onCommentAdded }: Commen
   const [showCommentBox, setShowCommentBox] = useState(false); // State to toggle comment box visibility
 
   const mutation = useMutation({
-    mutationFn: () => createPrivateCloudComment(licencePlate, text, projectId, userId),
+    mutationFn: () => createPrivateCloudComment(licencePlate, text, userId, projectId),
     onMutate: () => {
       setLoading(true);
     },
