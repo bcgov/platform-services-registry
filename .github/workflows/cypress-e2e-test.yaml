@@ -1,20 +1,14 @@
 name: 32.Run E2E Tests
 
-on:
-  workflow_dispatch:
-    inputs:
-      branch:
-        description: Branch to test
-        required: true
-        default: main
+on: workflow_dispatch
 
 jobs:
-  test:
+  e2e:
     runs-on: ubuntu-22.04
     timeout-minutes: 20
     steps:
     - uses: hmarr/debug-action@f7318c783045ac39ed9bb497e22ce835fdafbfe6
-    - uses: actions/checkout@b80ff79f1755d06ba70441c368a6fe801f5f3a62
+    - uses: actions/checkout@44c2b7a8a4ea60a981eaca3cf939b5f4305c123b
 
     - name: Setup Tools
       uses: ./.github/actions/setup-tools
@@ -22,25 +16,19 @@ jobs:
     - name: Setup NPM Packages
       uses: ./.github/actions/setup-npm
 
-    - name: Run lint
-      run: npm run lint
-
     - name: Run App build
       run: npm run build
-
-    - name: Run Email build
-      run: npm run email-build
 
     - name: Install Docker Compose v2
       # See https://docs.docker.com/compose/install/linux/
       run: |
         DOCKER_CONFIG=${DOCKER_CONFIG:-$HOME/.docker}
         mkdir -p $DOCKER_CONFIG/cli-plugins
-        curl -SL https://github.com/docker/compose/releases/download/v2.23.0/docker-compose-linux-x86_64 -o $DOCKER_CONFIG/cli-plugins/docker-compose
+        curl -SL https://github.com/docker/compose/releases/download/v2.27.0/docker-compose-linux-x86_64 -o $DOCKER_CONFIG/cli-plugins/docker-compose
         chmod +x $DOCKER_CONFIG/cli-plugins/docker-compose
         docker compose version
 
-    - name: Run E2E tests
+    - name: Setup Localdev Environment
       run: |
         mkdir -p ./localdev/mnt/mongodb
         mkdir -p ./localdev/mnt/postgres
@@ -49,7 +37,16 @@ jobs:
         ~/.docker/cli-plugins/docker-compose -f localdev/docker-compose.yml -f localdev/docker-compose-ci.yml up -d
         node_modules/.bin/wait-on http://localhost:8080/health/ready --timeout 120000
         cp .env.example .env.test
-        npx cypress run
 
+    - name: Run App
+      run: |
+        npm start &
+        node_modules/.bin/wait-on http://localhost:3000 --timeout 120000
+
+    - name: Cypress run
+      run: npx cypress run --headless
+
+    - name: Clean Up Localdev Environment
+      run: |
         ~/.docker/cli-plugins/docker-compose -f localdev/docker-compose.yml -f localdev/docker-compose-ci.yml down
         sudo rm -rf ./localdev/mnt
