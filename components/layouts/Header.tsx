@@ -5,9 +5,9 @@ import Link from 'next/link';
 import { useSession, signIn } from 'next-auth/react';
 import Logo from '@/components/assets/logo.svg';
 import LightButton from '@/components/generic/button/LightButton';
-import ProfileDropdown from '@/components/nav/ProfileDropdown';
+import UserMenu from '@/components/layouts/UserMenu';
 
-export default function NavBar() {
+export default function Header() {
   const { data: session } = useSession();
 
   return (
@@ -37,7 +37,7 @@ export default function NavBar() {
           </div>
           <div className="absolute inset-y-0 right-0 flex items-center pr-2 sm:static sm:inset-auto sm:ml-6 sm:pr-0">
             {session ? (
-              <ProfileDropdown />
+              <UserMenu />
             ) : (
               <LightButton onClick={() => signIn('keycloak', { callbackUrl: '/home' })}>Login</LightButton>
             )}

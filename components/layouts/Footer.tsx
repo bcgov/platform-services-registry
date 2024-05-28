@@ -13,7 +13,7 @@ const navigation = {
 };
 
 export default function Footer() {
-  const [appState, appSnapshot] = useAppState();
+  const [, appSnapshot] = useAppState();
 
   return (
     <footer className="bg-bcblue mt-auto inset-x-0 bottom-0">

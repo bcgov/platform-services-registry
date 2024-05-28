@@ -1,7 +1,6 @@
+import { IconCloudDownload } from '@tabler/icons-react';
 import classNames from 'classnames';
-import Image from 'next/image';
 import { useState } from 'react';
-import Export from '@/components/assets/export.svg';
 import AlertBox from '@/components/modal/AlertBox';
 import { instance } from '@/services/backend/axios';
 import { downloadFile } from '@/utils/file-download';
@@ -64,7 +63,7 @@ export default function ExportButton({
             />
           </svg>
         ) : (
-          <Image alt="Export" src={Export} width={16} height={16} />
+          <IconCloudDownload size={20} />
         )}
         <span className="md:inline hidden">Export</span>
       </LightButton>

@@ -1,5 +1,5 @@
 import { Combobox, Transition } from '@headlessui/react';
-import { CheckIcon, ChevronUpDownIcon } from '@heroicons/react/20/solid';
+import { IconCheck } from '@tabler/icons-react';
 import { useQuery } from '@tanstack/react-query';
 import classNames from 'classnames';
 import { Fragment, useEffect, useState } from 'react';
@@ -170,7 +170,7 @@ export default function AsyncAutocomplete({
                               active ? 'text-white' : 'text-teal-600'
                             }`}
                           >
-                            <CheckIcon className="h-5 w-5" aria-hidden="true" />
+                            <IconCheck className="h-5 w-5" aria-hidden="true" />
                           </span>
                         ) : null}
                       </>

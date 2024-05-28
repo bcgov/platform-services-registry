@@ -2,7 +2,7 @@
 
 import Tabs from '@/components/generic/tabs/BasicTabs';
 import Landing from '@/components/Landing';
-import { tabs } from '@/components/layouts/dashboard';
+import { tabs } from '@/components/layouts/DashboardLayout';
 import createClientPage from '@/core/client-page';
 
 const home = createClientPage({

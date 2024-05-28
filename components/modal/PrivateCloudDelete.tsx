@@ -1,4 +1,4 @@
-import { ExclamationCircleIcon, CheckCircleIcon } from '@heroicons/react/24/outline';
+import { IconExclamationCircle, IconCircleCheck } from '@tabler/icons-react';
 import classNames from 'classnames';
 import { useEffect, useRef, useState } from 'react';
 import Modal from '@/components/generic/modal/Modal';
@@ -84,7 +84,7 @@ export default function PrivateCloudDeleteModal({
           <div className="flex items-center justify-between">
             <span className="flex items-center text-sm text-red-600">
               <div className="flex">
-                <ExclamationCircleIcon className="h-5 w-5 mr-2 flex-shrink-0" aria-hidden="true" />
+                <IconExclamationCircle className="h-5 w-5 mr-2 flex-shrink-0" aria-hidden="true" />
                 Please remember to remove all pods and PVCs from all four namespaces before trying to delete again.
               </div>
             </span>
@@ -94,7 +94,7 @@ export default function PrivateCloudDeleteModal({
           <div className="flex items-center justify-between">
             <span className="flex items-center text-sm text-green-600">
               <div className="flex">
-                <CheckCircleIcon className="h-5 w-5 mr-2 flex-shrink-0" aria-hidden="true" />
+                <IconCircleCheck className="h-5 w-5 mr-2 flex-shrink-0" aria-hidden="true" />
                 Ready to Delete
               </div>
             </span>

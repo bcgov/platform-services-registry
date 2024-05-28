@@ -1,4 +1,4 @@
-import { ExclamationTriangleIcon } from '@heroicons/react/24/outline';
+import { IconExclamationCircle } from '@tabler/icons-react';
 import classNames from 'classnames';
 import { Fragment, useEffect, useRef, useState } from 'react';
 import Modal from '@/components/generic/modal/Modal';
@@ -41,7 +41,7 @@ export default function PublicCloudDeleteModal({
           <div className="flex items-center justify-between">
             <span className="flex items-center text-sm text-yellow-600">
               <div className="flex">
-                <ExclamationTriangleIcon className="h-5 w-5 mr-2 flex-shrink-0" aria-hidden="true" />
+                <IconExclamationCircle className="h-5 w-5 mr-2 flex-shrink-0" aria-hidden="true" />
                 Attention:
               </div>
             </span>
@@ -77,7 +77,7 @@ export default function PublicCloudDeleteModal({
             <div className="flex items-center justify-between">
               <span className="flex items-center text-sm text-yellow-600">
                 <div className="flex">
-                  <ExclamationTriangleIcon className="h-5 w-5 mr-2 flex-shrink-0" aria-hidden="true" />
+                  <IconExclamationCircle className="h-5 w-5 mr-2 flex-shrink-0" aria-hidden="true" />
                   This will permanently delete your product.
                 </div>
               </span>
