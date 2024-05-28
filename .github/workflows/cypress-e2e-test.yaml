@@ -4,7 +4,7 @@ on:
   push:
     branches:
     - cypress
-    paths-ignore:
+    paths:
     - .github/workflows/cypress-e2e-test.yaml
     - cypress/**
     - cypress.config.ts
