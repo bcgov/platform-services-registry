@@ -46,18 +46,3 @@ export function compareYearMonth(date1: Date, date2: Date) {
 
   return 1; // date1 is after date2
 }
-
-export function daysDifference(date: Date) {
-  const createDate = new Date(date);
-
-  if (!_isDate(date)) {
-    throw new Error('Invalid date format');
-  }
-
-  const currentDate = new Date();
-
-  const diffInMs = currentDate.getTime() - createDate.getTime();
-
-  const msInADay = 24 * 60 * 60 * 1000;
-  return _toInteger(diffInMs / msInADay);
-}

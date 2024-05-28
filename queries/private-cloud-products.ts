@@ -54,9 +54,7 @@ export async function searchPrivateCloudProducts({
   extraFilter?: Prisma.PrivateCloudProjectWhereInput;
   isTest: boolean;
 }) {
-  const where: Prisma.PrivateCloudProjectWhereInput = extraFilter ?? {
-    isTest: isTest,
-  };
+  const where: Prisma.PrivateCloudProjectWhereInput = extraFilter ?? {};
   const orderBy = { [sortKey || defaultSortKey]: Prisma.SortOrder[sortOrder] };
 
   if (search === '*') search = '';
@@ -90,6 +88,10 @@ export async function searchPrivateCloudProducts({
 
   if (active) {
     where.status = $Enums.ProjectStatus.ACTIVE;
+  }
+
+  if (isTest) {
+    where.isTest = isTest;
   }
 
   const [docs, totalCount] = await Promise.all([

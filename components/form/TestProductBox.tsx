@@ -1,5 +1,5 @@
 import { Tooltip, Badge } from '@mantine/core';
-import { daysDifference } from '@/utils/date';
+import { differenceInDays } from 'date-fns/differenceInDays';
 
 export default function TestProductBox({
   data,
@@ -11,8 +11,8 @@ export default function TestProductBox({
   className?: string;
 }) {
   if (!data) return null;
-  const createDate = new Date(data.created);
-  const diffInDays = 30 - daysDifference(createDate);
+  const diffInDays = 30 - differenceInDays(new Date(), new Date(data.created));
+
   return (
     <Tooltip label="Delete Product" position="top" offset={10} className={className}>
       <button
@@ -25,7 +25,7 @@ export default function TestProductBox({
         <Badge autoContrast size="xl" color="blue" radius="md" className="mb-1">
           Test
         </Badge>
-        <span className="text-red-600/100 font-black block text-lg">{diffInDays}</span>
+        <span className="text-red-600/100 font-black block text-lg">{Math.abs(diffInDays)}</span>
         {diffInDays > 0 ? 'days until product deletion' : 'days ago product should be deleted'}
       </button>
     </Tooltip>
