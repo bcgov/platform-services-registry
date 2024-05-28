@@ -24,6 +24,7 @@ type IconType = ForwardRefExoticComponent<IconProps & RefAttributes<Icon>>;
 
 interface DividerMenu {
   divider: boolean;
+  key: string;
 }
 
 interface LinkMenu {
@@ -36,7 +37,7 @@ interface LinkMenu {
 interface ClickMenu {
   text: string;
   Icon: IconType;
-  onClick?: () => void;
+  onClick?: () => void | Promise<void>;
   permission?: keyof Permissions;
 }
 
@@ -89,7 +90,7 @@ export default function UserMenu() {
       href: '/sonarscan/results',
       permission: 'viewSonarscanResults',
     },
-    { divider: true },
+    { divider: true, key: '1' },
     {
       text: 'Sign Out',
       Icon: IconLogout,
@@ -108,7 +109,7 @@ export default function UserMenu() {
 
         <Menu.Dropdown>
           {menus.map((menu, index) => {
-            if (isDividerMenu(menu)) return <Menu.Divider key={`divider-${index}`} />;
+            if (isDividerMenu(menu)) return <Menu.Divider key={`divider-${menu.key}`} />;
             if (menu.permission && !permissions[menu.permission]) return null;
 
             if (isLinkMenu(menu)) {
