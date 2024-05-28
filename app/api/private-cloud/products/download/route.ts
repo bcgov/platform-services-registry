@@ -27,13 +27,22 @@ const bodySchema = z.object({
   includeInactive: z.boolean().optional(),
   sortKey: z.string().optional(),
   sortOrder: z.preprocess(processEnumString, z.nativeEnum(Prisma.SortOrder).optional()),
+  showTest: z.boolean().default(false),
 });
 
 export const POST = createApiHandler({
   roles: ['user'],
   validations: { body: bodySchema },
 })(async ({ session, body }) => {
-  const { search = '', ministry = '', cluster = '', includeInactive = false, sortKey, sortOrder } = body;
+  const {
+    search = '',
+    ministry = '',
+    cluster = '',
+    includeInactive = false,
+    showTest = false,
+    sortKey,
+    sortOrder,
+  } = body;
 
   const { docs, totalCount } = await searchOp({
     session,
@@ -45,6 +54,7 @@ export const POST = createApiHandler({
     active: !includeInactive,
     sortKey: sortKey || undefined,
     sortOrder,
+    isTest: showTest,
   });
 
   if (docs.length === 0) {

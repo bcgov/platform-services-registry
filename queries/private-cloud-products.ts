@@ -40,6 +40,7 @@ export async function searchPrivateCloudProducts({
   sortKey = defaultSortKey,
   sortOrder = Prisma.SortOrder.desc,
   extraFilter,
+  isTest,
 }: {
   session: Session;
   skip: number;
@@ -51,6 +52,7 @@ export async function searchPrivateCloudProducts({
   sortKey?: string;
   sortOrder?: Prisma.SortOrder;
   extraFilter?: Prisma.PrivateCloudProjectWhereInput;
+  isTest: boolean;
 }) {
   const where: Prisma.PrivateCloudProjectWhereInput = extraFilter ?? {};
   const orderBy = { [sortKey || defaultSortKey]: Prisma.SortOrder[sortOrder] };
@@ -86,6 +88,10 @@ export async function searchPrivateCloudProducts({
 
   if (active) {
     where.status = $Enums.ProjectStatus.ACTIVE;
+  }
+
+  if (isTest) {
+    where.isTest = isTest;
   }
 
   const [docs, totalCount] = await Promise.all([
