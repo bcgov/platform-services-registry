@@ -43,6 +43,7 @@ export const GET = apiHandler(async ({ queryParams, jwtData }) => {
     skip,
     take,
     active: false,
+    isTest: false,
   });
 
   const data = docs.map((doc) => {

@@ -13,6 +13,7 @@ export default async function searchOp({
   active,
   sortKey,
   sortOrder,
+  isTest,
 }: {
   session: Session;
   search: string;
@@ -23,6 +24,7 @@ export default async function searchOp({
   active: boolean;
   sortKey?: string;
   sortOrder?: Prisma.SortOrder;
+  isTest: boolean;
 }) {
   const { skip, take } = parsePaginationParams(page, pageSize, 10);
 
@@ -36,6 +38,7 @@ export default async function searchOp({
     search,
     sortKey,
     sortOrder,
+    isTest,
   });
 
   return { docs, totalCount };

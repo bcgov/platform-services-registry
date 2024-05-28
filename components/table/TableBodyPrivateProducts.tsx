@@ -7,13 +7,13 @@ import _truncate from 'lodash-es/truncate';
 import { usePathname, useRouter } from 'next/navigation';
 import React, { useState } from 'react';
 import ActiveRequestBox from '@/components/form/ActiveRequestBox';
+import TestProductBox from '@/components/form/TestProductBox';
 import CopyableButton from '@/components/generic/button/CopyableButton';
 import UserCard from '@/components/UserCard';
 import { ministryKeyToName } from '@/helpers/product';
 import { PrivateCloudProjectGetPayloadWithActiveRequest } from '@/queries/private-cloud-products';
 import { formatDate } from '@/utils/date';
 import EmptySearch from './EmptySearch';
-
 interface TableProps {
   rows: PrivateCloudProjectGetPayloadWithActiveRequest[];
   isLoading: boolean;
@@ -47,7 +47,7 @@ export default function TableBodyPrivateProducts({ rows, isLoading = false }: Ta
             onClick={() => onRowClickHandler(row)}
             className="hover:bg-gray-100 transition-colors duration-200 grid grid-cols-1 md:grid-cols-6 lg:grid-cols-12 gap-4 px-4 py-3 sm:px-6 lg:px-8"
           >
-            <div className="md:col-span-2 lg:col-span-3">
+            <div className="md:col-span-2 lg:col-span-2">
               <div className="flex items-center gap-x-3">
                 <h2 className="min-w-0 text-base text-gray-700">
                   <div className="flex gap-x-2">
@@ -89,7 +89,9 @@ export default function TableBodyPrivateProducts({ rows, isLoading = false }: Ta
               {row.activeRequest && <ActiveRequestBox data={{ ...row.activeRequest, cloud: 'private-cloud' }} />}
             </div>
 
-            <div className="lg:col-span-1 hidden lg:block"></div>
+            <div className="md:col-span-2 lg:col-span-2">
+              {row.isTest && <TestProductBox data={{ created: row.created }} />}
+            </div>
 
             <div className="md:col-span-1 lg:col-span-2">
               <UserCard user={row.projectOwner} title="Product Owner" />
@@ -101,7 +103,6 @@ export default function TableBodyPrivateProducts({ rows, isLoading = false }: Ta
                 <UserCard user={row.secondaryTechnicalLead} title="Technical Lead" />
               </div>
             </div>
-
             <div className="md:col-span-1">
               <CopyableButton>{row.licencePlate}</CopyableButton>
             </div>

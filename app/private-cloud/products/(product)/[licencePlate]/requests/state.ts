@@ -11,4 +11,5 @@ export const pageState = proxy<Omit<PrivateCloudProductSearchCriteria, 'licenceP
   includeInactive: true,
   sortKey: '',
   sortOrder: Prisma.SortOrder.desc,
+  showTest: false,
 });
