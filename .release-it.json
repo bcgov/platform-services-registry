@@ -10,5 +10,20 @@
   "hooks": {
     "after:bump": "npm run changelog"
   },
-  "plugins": {}
+  "plugins": {
+    "@release-it/bumper": {
+      "out": [
+        {
+          "file": "package.json",
+          "path": "app",
+          "prefix": ""
+        },
+        {
+          "file": "VERSION",
+          "type": "text/plain",
+          "consumeWholeFile": true
+        }
+      ]
+    }
+  }
 }
