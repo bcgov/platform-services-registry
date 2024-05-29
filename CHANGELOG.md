@@ -1,3 +1,14 @@
+## [0.26.1](https://github.com/bcgov/platform-services-registry/compare/v0.26.0...v0.26.1) (2024-05-29)
+
+### Bug Fixes
+
+* **2844:** fix private cloud email bugs ([5f84b79](https://github.com/bcgov/platform-services-registry/commit/5f84b792ae34f8d59014f4f43d7690a6f9ddcfc1))
+
+### Refactors
+
+* **2832:** enable app eslint in pre-commit ([c8f753f](https://github.com/bcgov/platform-services-registry/commit/c8f753f4fc19b3ad426ac2d94b28fce984b75ff0))
+* **2832:** move application codebase to app directory ([7f86231](https://github.com/bcgov/platform-services-registry/commit/7f86231e2ff4983b4bc0baea1c7c3e84fa11fd50))
+* **ci:** separate build and test jobs for performance gain ([771b05b](https://github.com/bcgov/platform-services-registry/commit/771b05b0eef30a3052cfbc9a862cd4c5953fd492))
 ## [0.26.0](https://github.com/bcgov/platform-services-registry/compare/v0.25.0...v0.26.0) (2024-05-28)
 
 ### Features
