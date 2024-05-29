@@ -7,9 +7,10 @@ import { PrivateCloudRequestWithRequestedProject } from '@/request-actions/priva
 
 interface EmailProp {
   request: PrivateCloudRequestWithRequestedProject;
+  userName: string;
 }
 
-const NewRequestTemplate = ({ request }: EmailProp) => {
+const NewRequestTemplate = ({ request, userName }: EmailProp) => {
   if (!request) return <></>;
 
   return (
@@ -37,6 +38,8 @@ const NewRequestTemplate = ({ request }: EmailProp) => {
       </div>
       <div>
         <NamespaceDetails cluster={request.decisionData.cluster} showNamespaceDetailsTitle={false} />
+        <br></br>
+        <Text>This delete request was actioned by {userName}.</Text>
       </div>
     </Layout>
   );

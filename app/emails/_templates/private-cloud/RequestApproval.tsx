@@ -17,18 +17,21 @@ const RequestApprovalTemplate = ({ request }: EmailProp) => {
   const requested = request.decisionData;
   const changed = comparePrivateCloudProjects(current, requested);
 
+  const hasQuotaChanges =
+    changed.productionQuota || changed.testQuota || changed.developmentQuota || changed.toolsQuota;
+
   return (
     <Layout>
       <div className="pb-6 mt-4 mb-4 border-solid border-0 border-b-1 border-slate-300">
         <Heading className="text-lg text-black">Success! Your request was approved and completed!</Heading>
         <Text>Hi Product Team, </Text>
         <Text className="">
-          Your request for a resource quota has been completed for {request.decisionData.name} on the Private Cloud
-          OpenShift platform. You can now login to{' '}
+          Your request for {hasQuotaChanges ? 'a resource quota' : 'your product'} has been completed for{' '}
+          {request.decisionData.name} on the Private Cloud OpenShift platform. You can now login to{' '}
           <Link className="mt-0 h-4" href={`https://console.apps.${request.decisionData.cluster}.devops.gov.bc.ca/`}>
             OpenShift cluster console{' '}
           </Link>{' '}
-          and you will see your new resource quota values.
+          {hasQuotaChanges ? 'and you will see your new resource quota values.' : 'to manage your product.'}
         </Text>
         <Text className="">
           If you have any more questions, reach out to the Platform Services team in the Rocket.Chat channel{' '}
@@ -52,57 +55,58 @@ const RequestApprovalTemplate = ({ request }: EmailProp) => {
         />
       </div>
       <div className="pb-6 mt-4 mb-4 border-solid border-0 border-b-1 border-slate-300">
-        {(changed.productionQuota || changed.testQuota || changed.developmentQuota || changed.toolsQuota) && (
-          <h3 className="mb-0 text-black">Resource quota changes</h3>
+        {hasQuotaChanges && (
+          <>
+            <h3 className="mb-0 text-black">Resource quota changes</h3>
+            <div className="flex flex-row flex-wrap">
+              {changed.productionQuota && (
+                <QuotaChanges
+                  licencePlate={`${request.licencePlate}-prod`}
+                  quotaCurrent={current.productionQuota}
+                  quotaRequested={requested.productionQuota}
+                  type="Production"
+                  cluster={current.cluster}
+                  currentLabel="Previous"
+                  requestedLabel="Updated"
+                />
+              )}
+              {changed.testQuota && (
+                <QuotaChanges
+                  licencePlate={`${request.licencePlate}-test`}
+                  quotaCurrent={current.testQuota}
+                  quotaRequested={requested.testQuota}
+                  type="Test"
+                  cluster={current.cluster}
+                  currentLabel="Previous"
+                  requestedLabel="Updated"
+                />
+              )}
+              {changed.developmentQuota && (
+                <QuotaChanges
+                  licencePlate={`${request.licencePlate}-dev`}
+                  quotaCurrent={current.developmentQuota}
+                  quotaRequested={requested.developmentQuota}
+                  type="Development"
+                  cluster={current.cluster}
+                  currentLabel="Previous"
+                  requestedLabel="Updated"
+                />
+              )}
+              {changed.toolsQuota && (
+                <QuotaChanges
+                  licencePlate={`${request.licencePlate}-tools`}
+                  quotaCurrent={current.toolsQuota}
+                  quotaRequested={requested.toolsQuota}
+                  type="Tools"
+                  cluster={current.cluster}
+                  currentLabel="Previous"
+                  requestedLabel="Updated"
+                />
+              )}
+            </div>
+          </>
         )}
-        <div className="flex flex-row flex-wrap">
-          {changed.productionQuota && (
-            <QuotaChanges
-              licencePlate={`${request.licencePlate}-prod`}
-              quotaCurrent={current.productionQuota}
-              quotaRequested={requested.productionQuota}
-              type="Production"
-              cluster={current.cluster}
-              currentLabel="Previous"
-              requestedLabel="Updated"
-            />
-          )}
-          {changed.testQuota && (
-            <QuotaChanges
-              licencePlate={`${request.licencePlate}-test`}
-              quotaCurrent={current.testQuota}
-              quotaRequested={requested.testQuota}
-              type="Test"
-              cluster={current.cluster}
-              currentLabel="Previous"
-              requestedLabel="Updated"
-            />
-          )}
-          {changed.developmentQuota && (
-            <QuotaChanges
-              licencePlate={`${request.licencePlate}-dev`}
-              quotaCurrent={current.testQuota}
-              quotaRequested={requested.testQuota}
-              type="Development"
-              cluster={current.cluster}
-              currentLabel="Previous"
-              requestedLabel="Updated"
-            />
-          )}
-          {changed.toolsQuota && (
-            <QuotaChanges
-              licencePlate={`${request.licencePlate}-tools`}
-              quotaCurrent={current.testQuota}
-              quotaRequested={requested.testQuota}
-              type="Tools"
-              cluster={current.cluster}
-              currentLabel="Previous"
-              requestedLabel="Updated"
-            />
-          )}
-        </div>
       </div>
-
       <div>
         <Closing />
       </div>

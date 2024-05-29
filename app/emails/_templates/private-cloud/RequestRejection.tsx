@@ -5,6 +5,7 @@ import Comment from '@/emails/_components/Comment';
 import QuotaChanges from '@/emails/_components/Edit/QuotaChanges';
 import { comparePrivateCloudProjects } from '@/emails/_components/Edit/utils/compare-projects';
 import Layout from '@/emails/_components/layout/Layout';
+import ProductDetails from '@/emails/_components/ProductDetails';
 import { PrivateCloudRequestWithProjectAndRequestedProject } from '@/request-actions/private-cloud/decision-request';
 
 interface EmailProp {
@@ -33,6 +34,16 @@ const RequestRejectionTemplate = ({ request, productName, decisionComment }: Ema
         <Button href="https://registry.developer.gov.bc.ca/" className="bg-bcorange rounded-md px-4 py-2 text-white">
           Log in to Registry
         </Button>
+      </div>
+      <div className="pb-6 mt-4 mb-4 border-solid border-0 border-b-1 border-slate-300">
+        <ProductDetails
+          name={request.decisionData.name}
+          description={request.decisionData.description}
+          ministry={request.decisionData.ministry}
+          po={request.decisionData.projectOwner}
+          tl1={request.decisionData.primaryTechnicalLead}
+          tl2={request.decisionData.secondaryTechnicalLead}
+        />
       </div>
       <div className="flex flex-row flex-wrap">
         {changed.productionQuota && (

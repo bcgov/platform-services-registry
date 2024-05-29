@@ -10,6 +10,7 @@ This is assuming the user has already had an onboarding meeting, and meets the r
 1. **Notification sent to admins** containing:
    <ol type="a">
      <li>Product Details (Name, Description, Ministry, Contacts of PO/TL(s), Cluster)</li>
+     <li>Actioned by text (who submitted the request)</li>
    </ol>
 2. **Notification sent to Product PO/TL(s)** containing:
     <ol type="a">
@@ -52,6 +53,7 @@ flowchart LR
      <li>Contact Changes (Product Owner, Primary Technical Lead, Secondary Technical Lead)</li>
      <li>Comments by user</li>
      <li>Resource Quotas with Current and Requested</li>
+     <li>Actioned by text (who submitted the request)</li>
    </ol>
 2. **Notification sent to PO/TL(s)** containing:
    <ol type="a">
@@ -87,7 +89,7 @@ flowchart LR
 
 **Description**: When a PO/TLs of a product edit their product where there is no increase in resources requested, the following emails will trigger.
 
-1. **Summary of changes submitted sent to PO/TLs** mentionioning that a follow up email will be sent once the provisioning is complete authomatically and containing:
+1. **Summary of changes submitted sent to PO/TLs** mentionioning that a follow up email will be sent once the provisioning is complete automatically and containing:
    <ol type="a">
      <li>Comments by user</li>
      <li>Description Changes (Product Name, Description, Ministry)</li>
@@ -152,6 +154,7 @@ flowchart LR
 1. **A notification sent to admins** containing:
    <ol type="a">
       <li>Product Details (Name, Description, Ministry, Contacts of PO/TL(s))</li>
+      <li>Actioned by text (who submitted the request)</li>
    </ol>
 2. **A summary sent to PO/TLs** containing:
    <ol type="a">
