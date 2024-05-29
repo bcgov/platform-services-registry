@@ -58,7 +58,7 @@ export async function generateSession({ session, token }: { session: Session; to
       }
     }
 
-    session.roles = _uniq(session.roles);
+    session.roles = [..._uniq(session.roles)];
     session.roles.forEach((role) => {
       if (role === 'user') {
         session.isUser = true;
