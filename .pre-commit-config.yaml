@@ -30,6 +30,13 @@ repos:
     exclude: package.lock.json
 - repo: local
   hooks:
+  - id: eslint
+    name: eslint
+    entry: .bin/eslint.sh
+    language: script
+    files: ^(cypress|localdev)/.*\.(js|ts)$
+    verbose: true
+    pass_filenames: true
   - id: eslint-app
     name: eslint-app
     entry: .bin/eslint-app.sh

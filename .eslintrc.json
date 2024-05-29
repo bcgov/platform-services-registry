@@ -1,0 +1,42 @@
+{
+  "env": {
+    "es2021": true
+  },
+  "extends": [
+    "airbnb-base/legacy",
+    "plugin:@typescript-eslint/recommended",
+    "plugin:n/recommended",
+    "plugin:prettier/recommended"
+  ],
+  "parser": "@typescript-eslint/parser",
+  "parserOptions": {
+    "ecmaFeatures": {},
+    "ecmaVersion": 12,
+    "sourceType": "module",
+    "project": ["./tsconfig.json", "./cypress/tsconfig.json"]
+  },
+  "plugins": ["@typescript-eslint", "prettier"],
+  "rules": {
+    "@typescript-eslint/no-explicit-any": "off",
+    "@typescript-eslint/no-unused-vars": "off",
+    "@typescript-eslint/ban-ts-comment": "off",
+    "@typescript-eslint/naming-convention": "off",
+    "@typescript-eslint/no-var-requires": "off",
+    "no-await-in-loop": "off",
+    "no-else-return": "error",
+    "no-empty": "off",
+    "no-loop-func": "off",
+    "no-plusplus": "off",
+    "no-restricted-syntax": "off",
+    "no-underscore-dangle": "off",
+    "no-unneeded-ternary": "error",
+    "no-warning-comments": "off",
+    "n/no-missing-import": "off",
+    "n/no-extraneous-import": "off",
+    "n/no-process-exit": "off",
+    "n/no-unsupported-features/node-builtins": "off",
+    "prefer-destructuring": "off",
+    "sort-imports": "off",
+    "spaced-comment": ["error", "always", { "markers": ["/"] }]
+  }
+}

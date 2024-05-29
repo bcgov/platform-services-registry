@@ -1,0 +1,14 @@
+**/*.jsx
+**/*.tsx
+**/*.mjs
+**/*.yml
+**/*.md
+**/*.json
+.swc
+.vscode
+node_modules
+app
+docs
+helm
+terraform
+localdev/mnt

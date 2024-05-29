@@ -1,5 +1,6 @@
 **/*.js
 **/*.jsx
 **/*.mjs
-localdev/mnt
+node_modules
+.next
 .react-email
