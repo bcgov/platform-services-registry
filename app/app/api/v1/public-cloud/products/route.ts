@@ -1,3 +1,4 @@
+import { $Enums } from '@prisma/client';
 import { Session } from 'next-auth';
 import { z } from 'zod';
 import createApiHandler from '@/core/api-handler';
@@ -47,6 +48,7 @@ export const GET = apiHandler(async ({ queryParams, jwtData }) => {
 
   const data = docs.map((doc) => {
     return {
+      active: doc.status === $Enums.ProjectStatus.ACTIVE,
       licencePlate: doc.licencePlate,
       name: doc.name,
       description: doc.description,

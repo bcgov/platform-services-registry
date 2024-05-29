@@ -52,12 +52,5 @@ export async function findUser(userId: string, kcAdminClient?: KcAdminClient) {
     clientUniqueId: authClient.id,
   });
 
-  logger.info({
-    realm: AUTH_RELM,
-    id: userId,
-    clientUniqueId: authClient.id,
-    authRoles,
-  });
-
   return { ...user, authRoleNames: authRoles.map((role) => role.name ?? '') };
 }

@@ -1,11 +1,15 @@
 import { Session } from 'next-auth';
 import { AUTH_RELM } from '@/config';
-import { OkResponse } from '@/core/responses';
+import { OkResponse, BadRequestResponse } from '@/core/responses';
 import { getKcAdminClient, findClient } from '@/services/keycloak/app-realm';
 
 export default async function getOp({ session }: { session: Session }) {
+  if (!session.user.id) {
+    return BadRequestResponse('invalid session user');
+  }
+
   const kcAdminClient = await getKcAdminClient();
-  const clientId = `pltsvc-service-account-${session.user.id}`;
+  const clientId = `z_pltsvc-svc-${session.user.id}`;
 
   let client = await findClient(clientId, kcAdminClient);
   if (client) {
@@ -20,6 +24,7 @@ export default async function getOp({ session }: { session: Session }) {
       kcAdminClient.clients.update(
         { realm: AUTH_RELM, id: client.id },
         {
+          description: `Created by the Registry app as the service account for user (${session.user.email}).`,
           enabled: true,
           publicClient: false,
           serviceAccountsEnabled: true,

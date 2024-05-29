@@ -53,7 +53,10 @@ export default ApiAccountPage(({ session }) => {
       {apiAccount ? (
         <>
           <Alert variant="light" color="blue" title="" icon={<IconInfoCircle />}>
-            <p className="mb-2">A service account has been created for your use.</p>
+            <p className="mb-2">
+              A service account has been created for your use.{' '}
+              <span className="font-bold">Please keep it confidential and do not share it with others.</span>
+            </p>
             <button
               type="button"
               className="h-9 inline-flex items-center rounded-md bg-red-700 gap-x-2 px-4 py-1.5 text-sm font-semibold text-white shadow-sm ring-1 ring-inset ring-red-300"

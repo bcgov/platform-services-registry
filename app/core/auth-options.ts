@@ -1,4 +1,5 @@
 import jwt from 'jsonwebtoken';
+import _uniq from 'lodash-es/uniq';
 import { Account, AuthOptions, Session, User } from 'next-auth';
 import { JWT } from 'next-auth/jwt';
 import KeycloakProvider, { KeycloakProfile } from 'next-auth/providers/keycloak';
@@ -38,6 +39,7 @@ export async function generateSession({ session, token }: { session: Session; to
     session.idToken = token.idToken ?? '';
     session.kcUserId = token.sub ?? '';
     session.user.name = token.name ?? '';
+    session.roles = token.roles || [];
 
     if (token.email) {
       const user = await prisma.user.findFirst({
@@ -52,13 +54,11 @@ export async function generateSession({ session, token }: { session: Session; to
 
         session.userId = user.id;
         session.userEmail = user.email;
+        session.roles.push('user');
       }
     }
 
-    session.roles = token.roles || [];
-
-    session.roles.push('user');
-
+    session.roles = [..._uniq(session.roles)];
     session.roles.forEach((role) => {
       if (role === 'user') {
         session.isUser = true;

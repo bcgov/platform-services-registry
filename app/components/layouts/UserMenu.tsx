@@ -53,6 +53,11 @@ export default function UserMenu() {
   const [profileOpen, setProfileOpen] = useState(false);
 
   if (!session) return null;
+  if (!session.user.id) {
+    signOut(appSnapshot.info.LOGOUT_URL, session.idToken);
+    return;
+  }
+
   const { permissions } = session;
 
   const menus: MenuType[] = [
