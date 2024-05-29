@@ -2,4 +2,4 @@
 [codespell]
 # In the event of a false positive, add the problematic word, in all lowercase, to a comma-separated list here:
 ignore-words-list = afterall, pris
-skip = package-lock.json, ./app/package-lock.json, ./cypress/package-lock.json, ./app/.env.example
+skip = **/package-lock.json
