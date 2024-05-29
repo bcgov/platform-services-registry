@@ -9,7 +9,7 @@ export default async function getOp({ session }: { session: Session }) {
   }
 
   const kcAdminClient = await getKcAdminClient();
-  const clientId = `z_pltsvc-svc-${session.user.id}`;
+  const clientId = `z_pltsvc-sa-${session.user.id}`;
 
   const client = await findClient(clientId, kcAdminClient);
   if (client?.id) {
