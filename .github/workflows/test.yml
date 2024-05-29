@@ -7,7 +7,7 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  test:
+  build-app:
     runs-on: ubuntu-22.04
     timeout-minutes: 20
     steps:
@@ -20,17 +20,39 @@ jobs:
     - name: Setup NPM Packages
       uses: ./.github/actions/setup-npm
 
-    - name: Run lint
-      run: npm run lint
-      working-directory: app
-
     - name: Run App build
       run: npm run build
       working-directory: app
 
+  build-email:
+    runs-on: ubuntu-22.04
+    timeout-minutes: 20
+    steps:
+    - uses: hmarr/debug-action@f7318c783045ac39ed9bb497e22ce835fdafbfe6
+    - uses: actions/checkout@b80ff79f1755d06ba70441c368a6fe801f5f3a62
+
+    - name: Setup Tools
+      uses: ./.github/actions/setup-tools
+
+    - name: Setup NPM Packages
+      uses: ./.github/actions/setup-npm
+
     - name: Run Email build
       run: npm run email-build
       working-directory: app
+
+  test-app:
+    runs-on: ubuntu-22.04
+    timeout-minutes: 20
+    steps:
+    - uses: hmarr/debug-action@f7318c783045ac39ed9bb497e22ce835fdafbfe6
+    - uses: actions/checkout@b80ff79f1755d06ba70441c368a6fe801f5f3a62
+
+    - name: Setup Tools
+      uses: ./.github/actions/setup-tools
+
+    - name: Setup NPM Packages
+      uses: ./.github/actions/setup-npm
 
     - name: Install Docker Compose v2
       # See https://docs.docker.com/compose/install/linux/

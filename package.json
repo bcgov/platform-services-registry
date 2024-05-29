@@ -4,6 +4,8 @@
   "version": "0.26.0",
   "private": true,
   "scripts": {
+    "lint": "eslint --no-eslintrc --config .eslintrc.json .",
+    "lint-fix": "eslint --no-eslintrc --config .eslintrc.json --fix .",
     "release": "release-it",
     "changelog": "conventional-changelog -p conventionalcommits -i CHANGELOG.md -n .conventional-changelog.mjs -s -r 0 --skip-unstable",
     "knip": "knip"
@@ -12,8 +14,16 @@
     "node": ">=22.1.0"
   },
   "devDependencies": {
+    "@release-it/bumper": "^6.0.1",
+    "@typescript-eslint/eslint-plugin": "^7.0.0",
     "conventional-changelog-cli": "^5.0.0",
+    "eslint": "^8.57.0",
+    "eslint-config-airbnb-base": "^15.0.0",
+    "eslint-config-prettier": "^9.0.0",
+    "eslint-plugin-n": "^17.0.0",
+    "eslint-plugin-prettier": "^5.0.1",
     "release-it": "^17.0.0",
+    "typescript": "^5.3.3",
     "wait-on": "^7.0.1"
   }
 }

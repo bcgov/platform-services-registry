@@ -1,3 +1,3 @@
 #!/bin/bash
 
-cd app && npx eslint --fix "$@"
+npx eslint --no-eslintrc --config .eslintrc.json --fix "$@"

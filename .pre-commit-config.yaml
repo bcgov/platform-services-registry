@@ -30,13 +30,20 @@ repos:
     exclude: package.lock.json
 - repo: local
   hooks:
-  # - id: es-format
-  #   name: eslint
-  #   entry: .bin/eslint.sh
-  #   language: script
-  #   files: \.tsx?$
-  #   verbose: true
-  #   pass_filenames: true
+  - id: eslint
+    name: eslint
+    entry: .bin/eslint.sh
+    language: script
+    files: ^(cypress|localdev)/.*\.(js|ts)$
+    verbose: true
+    pass_filenames: true
+  - id: eslint-app
+    name: eslint-app
+    entry: .bin/eslint-app.sh
+    language: script
+    files: ^app/.*\.(ts|tsx)$
+    verbose: true
+    pass_filenames: true
   - id: python-format
     name: autopep8
     entry: .bin/autopep8.sh
@@ -69,9 +76,9 @@ repos:
   rev: v0.10.0
   hooks:
   - id: shellcheck
-# - repo: https://github.com/codespell-project/codespell
-#   rev: v2.2.6
-#   hooks:
-#   - id: codespell
+- repo: https://github.com/codespell-project/codespell
+  rev: v2.3.0
+  hooks:
+  - id: codespell
 
 exclude: ^(app/.react-email|CHANGELOG\.md)$
