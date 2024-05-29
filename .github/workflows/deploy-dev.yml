@@ -4,14 +4,9 @@ on:
   push:
     branches:
     - main
-    paths-ignore:
-    - CHANGELOG.md
-    - .pre-commit-config.yaml
-    - .conventional-changelog.mjs
-    - .release-it.json
-    - security-dashboard/**
-    - helm/secdash/**
-    - terraform/**
+    paths:
+    - app/**
+    - .github/workflows/deploy-dev.yml
 
 env:
   GITHUB_REGISTRY: ghcr.io
@@ -42,8 +37,8 @@ jobs:
         registry-username: ${{ github.actor }}
         registry-password: ${{ secrets.GITHUB_TOKEN }}
         image-name: bcgov/pltsvc
-        docker-context: .
-        docker-file: Dockerfile
+        docker-context: app
+        docker-file: app/Dockerfile
         docker-args: |
           deployment_tag=${{ github.sha }}
         metadata-tags: |
@@ -71,8 +66,8 @@ jobs:
         registry-username: ${{ github.actor }}
         registry-password: ${{ secrets.GITHUB_TOKEN }}
         image-name: bcgov/pltsvc-pre-prisma
-        docker-context: .
-        docker-file: Dockerfile.db
+        docker-context: app
+        docker-file: app/Dockerfile.db
         metadata-tags: |
           type=ref,event=branch
           type=sha,format=long,prefix=,suffix=
@@ -125,8 +120,8 @@ jobs:
         registry-username: ${{ github.actor }}
         registry-password: ${{ secrets.GITHUB_TOKEN }}
         image-name: bcgov/pltsvc-email
-        docker-context: .
-        docker-file: Dockerfile.email
+        docker-context: app
+        docker-file: app/Dockerfile.email
         metadata-tags: |
           type=ref,event=branch
           type=sha,format=long,prefix=,suffix=

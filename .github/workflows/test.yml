@@ -22,12 +22,15 @@ jobs:
 
     - name: Run lint
       run: npm run lint
+      working-directory: app
 
     - name: Run App build
       run: npm run build
+      working-directory: app
 
     - name: Run Email build
       run: npm run email-build
+      working-directory: app
 
     - name: Install Docker Compose v2
       # See https://docs.docker.com/compose/install/linux/
@@ -46,8 +49,8 @@ jobs:
         export MACHINE_HOST_IP=$(hostname -I | awk '{print $1}')
         ~/.docker/cli-plugins/docker-compose -f localdev/docker-compose.yml -f localdev/docker-compose-ci.yml up -d
         node_modules/.bin/wait-on http://localhost:8080/health/ready --timeout 120000
-        cp .env.example .env.test
-        npm run test
+        cp app/.env.example app/.env.test
+        npm run test --prefix app
 
         ~/.docker/cli-plugins/docker-compose -f localdev/docker-compose.yml -f localdev/docker-compose-ci.yml down
         sudo rm -rf ./localdev/mnt

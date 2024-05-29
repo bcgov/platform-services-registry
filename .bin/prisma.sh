@@ -1,3 +1,3 @@
 #!/bin/bash
 
-npx prisma format "$@"
+cd app && npx prisma format "$@"

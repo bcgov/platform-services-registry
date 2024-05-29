@@ -4,6 +4,17 @@
 /node_modules
 /.pnp
 .pnp.js
+.yarn/install-state.gz
+
+# testing
+/coverage
+
+# next.js
+/.next/
+/out/
+
+# production
+/build
 
 # misc
 .DS_Store
@@ -16,11 +27,15 @@ yarn-error.log*
 
 # local env files
 .env*.local
-.env
-.env.test
-.env.secret*
+
+# vercel
+.vercel
 
 # typescript
 *.tsbuildinfo
 next-env.d.ts
-mnt
+
+# react-email
+.react-email
+emails-export
+.scannerwork

@@ -30,13 +30,13 @@ repos:
     exclude: package.lock.json
 - repo: local
   hooks:
-  - id: es-format
-    name: eslint
-    entry: .bin/eslint.sh
-    language: script
-    files: \.tsx?$
-    verbose: true
-    pass_filenames: true
+  # - id: es-format
+  #   name: eslint
+  #   entry: .bin/eslint.sh
+  #   language: script
+  #   files: \.tsx?$
+  #   verbose: true
+  #   pass_filenames: true
   - id: python-format
     name: autopep8
     entry: .bin/autopep8.sh
@@ -60,16 +60,18 @@ repos:
     pass_filenames: true
   - id: knip
     name: knip
-    entry: node_modules/.bin/knip
-    language: system
+    entry: .bin/knip.sh
+    language: script
+    files: app/.*
+    verbose: true
     pass_filenames: false
 - repo: https://github.com/koalaman/shellcheck-precommit
   rev: v0.10.0
   hooks:
   - id: shellcheck
-- repo: https://github.com/codespell-project/codespell
-  rev: v2.2.6
-  hooks:
-  - id: codespell
+# - repo: https://github.com/codespell-project/codespell
+#   rev: v2.2.6
+#   hooks:
+#   - id: codespell
 
-exclude: ^(.react-email|CHANGELOG\.md)$
+exclude: ^(app/.react-email|CHANGELOG\.md)$

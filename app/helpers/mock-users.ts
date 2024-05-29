@@ -3,7 +3,7 @@ import { generateSession } from '@/core/auth-options';
 import prisma from '@/core/prisma';
 import { processMsUser } from '@/services/msgraph';
 import type { MsUser } from '@/types/user';
-const mockFile: MockFile = require('../localdev/m365proxy/mocks.json');
+const mockFile: MockFile = require('../../localdev/m365proxy/mocks.json');
 
 interface MockResponse {
   request: {
