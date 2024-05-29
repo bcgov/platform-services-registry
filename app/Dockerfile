@@ -5,7 +5,11 @@ FROM node:22.2.0-alpine3.19 as build
 
 WORKDIR /app
 
-COPY . .
+COPY app .
+COPY localdev/m365proxy/mocks.json /localdev/m365proxy/mocks.json
+COPY localdev/m365proxy/mocks.json /localdev/m365proxy/mocks.json
+COPY .prettierignore .
+COPY .prettierrc .
 
 ENV SECURE_HEADERS=true \
   DEPLOYMENT_TAG=${deployment_tag}
