@@ -109,13 +109,11 @@ export const sendRequestRejectionEmails = async (
 ) => {
   try {
     const currentData = request.type === $Enums.RequestType.CREATE ? request.decisionData : request.project;
-    logger.log('Current data:', currentData);
     if (!currentData) throw Error('invalid request');
 
     const email = render(RequestRejectionTemplate({ request, productName: currentData.name, decisionComment }), {
       pretty: false,
     });
-    logger.log('Email content:', email);
 
     await sendEmail({
       body: email,
