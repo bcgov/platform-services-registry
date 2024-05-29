@@ -21,7 +21,7 @@ import { PrivateCloudRequestedProjectWithContacts } from '@/services/nats/privat
 
 export const sendCreateRequestEmails = async (request: PrivateCloudRequestWithRequestedProject, userName: string) => {
   try {
-    const adminEmail = render(AdminCreateTemplate({ request }), { pretty: true });
+    const adminEmail = render(AdminCreateTemplate({ request, userName }), { pretty: true });
     const userEmail = render(CreateRequestTemplate({ request, userName }), { pretty: true });
 
     const admins = sendEmail({
@@ -57,7 +57,7 @@ export const sendEditRequestEmails = async (
     const userEmail = render(EditRequestTemplate({ request, userName }), { pretty: true });
     let admins;
     if (isAdminEmailSent) {
-      const adminEmail = render(AdminEditRequestTemplate({ request }), { pretty: true });
+      const adminEmail = render(AdminEditRequestTemplate({ request, userName }), { pretty: true });
       admins = sendEmail({
         bodyType: 'html',
         body: adminEmail,
@@ -112,7 +112,7 @@ export const sendRequestRejectionEmails = async (
     if (!currentData) throw Error('invalid request');
 
     const email = render(RequestRejectionTemplate({ request, productName: currentData.name, decisionComment }), {
-      pretty: true,
+      pretty: false,
     });
 
     await sendEmail({
@@ -131,7 +131,7 @@ export const sendRequestRejectionEmails = async (
 
 export const sendDeleteRequestEmails = async (request: PrivateCloudRequestWithRequestedProject, userName: string) => {
   try {
-    const adminEmail = render(AdminDeleteRequestTemplate({ request }), { pretty: true });
+    const adminEmail = render(AdminDeleteRequestTemplate({ request, userName }), { pretty: true });
     const userEmail = render(DeleteRequestTemplate({ request, userName }), { pretty: true });
 
     const admins = sendEmail({

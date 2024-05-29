@@ -38,7 +38,7 @@ const EditRequestTemplate = ({ request, userName }: EmailProp) => {
           {(changed.productionQuota || changed.testQuota || changed.developmentQuota || changed.toolsQuota) &&
           isQuotaUpgraded
             ? ' Our administrators have been notified and will review your request.'
-            : ' Your request will be reviewed authomatically. Once the provisioning is complete, you will receive a notification email with all the relevant details and updates regarding your request.'}
+            : ' Your request will be reviewed automatically. Once the provisioning is complete, you will receive a notification email with all the relevant details and updates regarding your request.'}
         </Text>
         <Button href={BASE_URL} className="bg-bcorange rounded-md px-4 py-2 text-white">
           View request

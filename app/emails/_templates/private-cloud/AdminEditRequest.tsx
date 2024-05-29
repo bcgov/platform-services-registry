@@ -10,9 +10,10 @@ import { PrivateCloudRequestWithProjectAndRequestedProject } from '@/request-act
 
 interface EmailProp {
   request: PrivateCloudRequestWithProjectAndRequestedProject;
+  userName: string;
 }
 
-const NewRequestTemplate = ({ request }: EmailProp) => {
+const NewRequestTemplate = ({ request, userName }: EmailProp) => {
   if (!request || !request.project || !request.decisionData) return <></>;
   const current = request.project;
   const requested = request.decisionData;
@@ -90,6 +91,7 @@ const NewRequestTemplate = ({ request }: EmailProp) => {
             />
           )}
         </div>
+        <Text>This edit request was actioned by {userName}.</Text>
       </div>
     </Layout>
   );
