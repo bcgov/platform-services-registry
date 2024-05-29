@@ -12,4 +12,4 @@ for file in "$@"; do
 done
 
 # shellcheck disable=SC2086
-cd app && npx eslint --fix $modified_files
+cd app && npx eslint --no-eslintrc --config .eslintrc.json --fix $modified_files

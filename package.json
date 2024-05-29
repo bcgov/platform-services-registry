@@ -4,8 +4,8 @@
   "version": "0.26.0",
   "private": true,
   "scripts": {
-    "lint": "eslint .",
-    "lint-fix": "eslint --fix .",
+    "lint": "eslint --no-eslintrc --config .eslintrc.json .",
+    "lint-fix": "eslint --no-eslintrc --config .eslintrc.json --fix .",
     "release": "release-it",
     "changelog": "conventional-changelog -p conventionalcommits -i CHANGELOG.md -n .conventional-changelog.mjs -s -r 0 --skip-unstable",
     "knip": "knip"
