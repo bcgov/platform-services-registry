@@ -1,0 +1,5 @@
+**/*
+!app
+!localdev/m365proxy/mocks.json
+!.prettierignore
+!.prettierrc
