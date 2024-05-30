@@ -19,6 +19,16 @@
           "prefix": ""
         },
         {
+          "file": "app/package-lock.json",
+          "path": "version",
+          "prefix": ""
+        },
+        {
+          "file": "app/package-lock.json",
+          "path": "packages..version",
+          "prefix": ""
+        },
+        {
           "file": "VERSION",
           "type": "text/plain",
           "consumeWholeFile": true
