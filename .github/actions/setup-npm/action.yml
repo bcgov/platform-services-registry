@@ -9,6 +9,7 @@ runs:
     with:
       path: |
         ~/.npm
+        ~/.cache/Cypress
         ${{ github.workspace }}/app/.next/cache
       key: ${{ runner.os }}-nextjs-${{ hashFiles('**/package-lock.json') }}-${{ hashFiles('**/*.js', '**/*.jsx', '**/*.ts', '**/*.tsx') }}
       restore-keys: |
