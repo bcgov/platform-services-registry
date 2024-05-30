@@ -39,6 +39,7 @@ export const PUT = apiHandler(async ({ pathParams }) => {
     },
     data: {
       decisionStatus: DecisionStatus.PROVISIONED,
+      provisionedDate: new Date(),
       active: false,
     },
   });
