@@ -9,7 +9,7 @@ export const up = async (db, client) => {
     'PublicCloudRequest',
     'PublicCloudProject',
     'PublicCloudRequestedProject',
-    'createdAt',
+    'AcsResultImage',
   ];
 
   const proms = [];
