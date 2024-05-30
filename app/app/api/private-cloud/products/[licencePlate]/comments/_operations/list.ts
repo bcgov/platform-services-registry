@@ -13,7 +13,7 @@ export async function listOp(licencePlate: string, requestId?: string) {
         user: true,
       },
       orderBy: {
-        created: 'desc',
+        createdAt: 'desc',
       },
     });
 
@@ -42,7 +42,7 @@ export async function listOp(licencePlate: string, requestId?: string) {
       user: true,
     },
     orderBy: {
-      created: 'desc',
+      createdAt: 'desc',
     },
   });
 

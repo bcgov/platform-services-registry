@@ -45,7 +45,7 @@ export const GET = apiHandler(async ({ pathParams, queryParams, session }) => {
       },
     },
     orderBy: {
-      created: 'desc',
+      createdAt: 'desc',
     },
     session: session as never,
   });

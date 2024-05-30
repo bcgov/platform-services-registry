@@ -76,7 +76,7 @@ export default function TableBodyPublicProducts({ rows, isLoading = false }: Tab
               </div>
               <div className="mt-1 text-sm text-gray-400">
                 <div>
-                  Created on <span>{formatDate(row.created)}</span>
+                  Created on <span>{formatDate(row.createdAt)}</span>
                 </div>
                 <div>
                   Updated on <span>{formatDate(row.updatedAt)}</span>

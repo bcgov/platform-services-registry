@@ -17,15 +17,15 @@ export async function combinedRequests() {
   const requests = await prisma.privateCloudRequest.findMany({
     where: { licencePlate: { in: prodClusterLicencePlates } },
     select: {
-      created: true,
+      createdAt: true,
       type: true,
     },
     orderBy: {
-      created: 'asc',
+      createdAt: 'asc',
     },
   });
 
-  const groupByDateKey = _groupBy(requests, (req) => createMonthKey(req.created));
+  const groupByDateKey = _groupBy(requests, (req) => createMonthKey(req.createdAt));
 
   return _map(groupByDateKey, (dateRequests, date) => {
     const result = {

@@ -22,7 +22,7 @@ export class UserService extends ModelService<Prisma.UserWhereInput> {
     if (!this.session.isAdmin) {
       baseFilter = {
         // Adding a dummy query to ensure no documents match
-        created: new Date(),
+        createdAt: new Date(),
       };
     }
 

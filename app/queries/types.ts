@@ -8,7 +8,7 @@ export interface Project {
   id: string;
   name: string;
   description: string;
-  created: ProjectCreated;
+  createdAt: ProjectCreated;
   updatedAt: ProjectCreated;
   licencePlate: string;
   ministry: string;

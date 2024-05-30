@@ -14,11 +14,11 @@ export async function requestDecisionTime() {
       licencePlate: { in: prodClusterLicencePlates },
     },
     select: {
-      created: true,
+      createdAt: true,
       decisionDate: true,
     },
     orderBy: {
-      created: 'asc',
+      createdAt: 'asc',
     },
   });
 
@@ -26,7 +26,7 @@ export async function requestDecisionTime() {
 
   requests.forEach((request) => {
     if (request.decisionDate) {
-      const duration = request.decisionDate.getTime() - request.created.getTime();
+      const duration = request.decisionDate.getTime() - request.createdAt.getTime();
       const durationInHours = convertMillisecondsToHours(duration);
 
       durations.push(durationInHours);

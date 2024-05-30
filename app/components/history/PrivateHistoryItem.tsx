@@ -20,7 +20,7 @@ export default function PrivateHistoryItem(request: Omit<PrivateCloudRequest, 'p
       key={request.id}
       id={request.id}
       comment={request.requestComment || ''}
-      data={request.created}
+      data={request.createdAt}
       type={request.type}
       status={request.decisionStatus}
       isDecision={false}

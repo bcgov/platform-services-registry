@@ -77,7 +77,7 @@ export default function TableBodyPrivateProducts({ rows, isLoading = false }: Ta
               </div>
               <div className="mt-1 text-sm text-gray-400">
                 <div>
-                  Created on <span>{formatDate(row.created)}</span>
+                  Created on <span>{formatDate(row.createdAt)}</span>
                 </div>
                 <div>
                   Updated on <span>{formatDate(row.updatedAt)}</span>
@@ -90,7 +90,7 @@ export default function TableBodyPrivateProducts({ rows, isLoading = false }: Ta
             </div>
 
             <div className="md:col-span-2 lg:col-span-2">
-              {row.isTest && <TestProductBox data={{ created: row.created }} />}
+              {row.isTest && <TestProductBox data={{ createdAt: row.createdAt }} />}
             </div>
 
             <div className="md:col-span-1 lg:col-span-2">

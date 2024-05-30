@@ -20,10 +20,10 @@ export async function combinedRequests() {
   const [requestsData, editRequestsData, createRequestsData, deleteRequestsData] = await Promise.all([
     prisma.publicCloudRequest.findMany({
       select: {
-        created: true,
+        createdAt: true,
       },
       orderBy: {
-        created: 'asc',
+        createdAt: 'asc',
       },
     }),
     prisma.publicCloudRequest.findMany({
@@ -31,10 +31,10 @@ export async function combinedRequests() {
         type: RequestType.EDIT,
       },
       select: {
-        created: true,
+        createdAt: true,
       },
       orderBy: {
-        created: 'asc',
+        createdAt: 'asc',
       },
     }),
     prisma.publicCloudRequest.findMany({
@@ -42,10 +42,10 @@ export async function combinedRequests() {
         type: RequestType.CREATE,
       },
       select: {
-        created: true,
+        createdAt: true,
       },
       orderBy: {
-        created: 'asc',
+        createdAt: 'asc',
       },
     }),
     prisma.publicCloudRequest.findMany({
@@ -53,10 +53,10 @@ export async function combinedRequests() {
         type: RequestType.DELETE,
       },
       select: {
-        created: true,
+        createdAt: true,
       },
       orderBy: {
-        created: 'asc',
+        createdAt: 'asc',
       },
     }),
   ]);
@@ -66,7 +66,7 @@ export async function combinedRequests() {
   const dateMap = new Map<string, number>();
 
   const combinedDates = [...requestsData, ...editRequestsData, ...createRequestsData, ...deleteRequestsData]
-    .map((request) => request.created)
+    .map((request) => request.createdAt)
     .sort((a, b) => (a > b ? 1 : -1));
 
   combinedDates.forEach((d) => {
@@ -76,10 +76,10 @@ export async function combinedRequests() {
   });
 
   dateMap.forEach((count, date) => {
-    const allCount = requestsData.filter((request) => createMonthKey(request.created) === date).length;
-    const editCount = editRequestsData.filter((request) => createMonthKey(request.created) === date).length;
-    const createCount = createRequestsData.filter((request) => createMonthKey(request.created) === date).length;
-    const deleteCount = deleteRequestsData.filter((request) => createMonthKey(request.created) === date).length;
+    const allCount = requestsData.filter((request) => createMonthKey(request.createdAt) === date).length;
+    const editCount = editRequestsData.filter((request) => createMonthKey(request.createdAt) === date).length;
+    const createCount = createRequestsData.filter((request) => createMonthKey(request.createdAt) === date).length;
+    const deleteCount = deleteRequestsData.filter((request) => createMonthKey(request.createdAt) === date).length;
 
     combinedRequestsData.push({
       date,

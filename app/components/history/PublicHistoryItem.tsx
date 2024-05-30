@@ -19,7 +19,7 @@ export default function PublicHistoryItem(request: Omit<PublicCloudRequest, 'pro
       key={request.decisionDataId}
       id={request.decisionDataId}
       comment={request.requestComment || ''}
-      data={request.created}
+      data={request.createdAt}
       type={request.type}
       status={request.decisionStatus}
       isDecision={false}

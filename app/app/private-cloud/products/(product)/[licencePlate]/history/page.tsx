@@ -45,7 +45,7 @@ export default privateCloudProductHistory(({ pathParams, queryParams, session })
           requestComment={request.requestComment}
           decisionComment={request.decisionComment}
           active={request.active}
-          created={request.created}
+          createdAt={request.createdAt}
           updatedAt={request.updatedAt}
           decisionDate={request.decisionDate}
           projectId={request.projectId}
