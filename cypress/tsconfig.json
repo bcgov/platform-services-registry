@@ -3,6 +3,7 @@
     "target": "es5",
     "lib": ["es5", "dom"],
     "types": ["cypress", "node"],
+    "baseUrl": ".",
     "paths": {
       "@badeball/cypress-cucumber-preprocessor/*": [
         "./node_modules/@badeball/cypress-cucumber-preprocessor/dist/subpath-entrypoints/*"

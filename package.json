@@ -6,6 +6,7 @@
   "scripts": {
     "lint": "eslint --no-eslintrc --config .eslintrc.root.json .",
     "lint-fix": "eslint --no-eslintrc --config .eslintrc.root.json --fix .",
+    "cypress-headless": "cypress run --headless",
     "release": "release-it",
     "changelog": "conventional-changelog -p conventionalcommits -i CHANGELOG.md -n .conventional-changelog.mjs -s -r 0 --skip-unstable",
     "knip": "knip"
@@ -24,6 +25,10 @@
     "eslint-plugin-prettier": "^5.0.1",
     "release-it": "^17.0.0",
     "typescript": "^5.3.3",
-    "wait-on": "^7.0.1"
+    "wait-on": "^7.0.1",
+    "@badeball/cypress-cucumber-preprocessor": "^20.0.2",
+    "@bahmutov/cypress-esbuild-preprocessor": "^2.2.0",
+    "cypress": "^12.17.4",
+    "cypress-keycloak": "^2.0.1"
   }
 }
