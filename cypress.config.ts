@@ -6,7 +6,7 @@ import { defineConfig } from 'cypress';
 export default defineConfig({
   e2e: {
     baseUrl: 'http://localhost:3000/',
-    specPattern: '**/*.feature',
+    specPattern: 'cypress/**/*.feature',
     async setupNodeEvents(
       on: Cypress.PluginEvents,
       config: Cypress.PluginConfigOptions,

@@ -23,8 +23,3 @@ runs:
     run: npm install
     shell: bash
     working-directory: app
-
-  - name: Install Cypress NPM packages
-    run: npm install
-    shell: bash
-    working-directory: cypress
