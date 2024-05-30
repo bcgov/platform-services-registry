@@ -9,7 +9,10 @@ runs:
     with:
       path: |
         ~/.npm
+        ${{ github.workspace }}/node_modules
+        ${{ github.workspace }}/app/node_modules
         ${{ github.workspace }}/app/.next/cache
+        ${{ github.workspace }}/cypress/node_modules
       key: ${{ runner.os }}-nextjs-${{ hashFiles('**/package-lock.json') }}-${{ hashFiles('**/*.js', '**/*.jsx', '**/*.ts', '**/*.tsx') }}
       restore-keys: |
         ${{ runner.os }}-nextjs-${{ hashFiles('**/package-lock.json') }}-
