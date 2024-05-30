@@ -1,7 +1,7 @@
 {
   "name": "pltsvc",
   "description": "B.C. Government's Platform Product Registry",
-  "version": "0.26.1",
+  "version": "0.26.2",
   "private": true,
   "scripts": {
     "lint": "eslint --no-eslintrc --config .eslintrc.json .",
@@ -26,5 +26,5 @@
     "typescript": "^5.3.3",
     "wait-on": "^7.0.1"
   },
-  "app": "0.26.1"
+  "app": "0.26.2"
 }
