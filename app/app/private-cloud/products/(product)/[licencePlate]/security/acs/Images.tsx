@@ -12,7 +12,7 @@ type Image = Prisma.AcsResultImageGetPayload<{
     components: true;
     cves: true;
     fixableCves: true;
-    created: true;
+    createdAt: true;
     lastUpdated: true;
     priority: true;
   };

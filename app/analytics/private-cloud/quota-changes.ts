@@ -56,7 +56,7 @@ export async function quotaEditRequests() {
       decisionStatus: { notIn: [$Enums.DecisionStatus.PENDING] },
     },
     select: {
-      created: true,
+      createdAt: true,
       decisionStatus: true,
     },
   });
@@ -64,7 +64,7 @@ export async function quotaEditRequests() {
   const result: QuotaChanges = {};
 
   for (const request of quotaChangedRequests) {
-    const date = parseDate(request.created);
+    const date = parseDate(request.createdAt);
     if (!result[date]) {
       result[date] = { all: 0, [$Enums.DecisionStatus.APPROVED]: 0, [$Enums.DecisionStatus.REJECTED]: 0 };
     }

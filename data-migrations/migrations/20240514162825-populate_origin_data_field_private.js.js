@@ -19,7 +19,7 @@ export const up = async (db, client) => {
           const privateCloudRequestsLicencePlate = await PrivateCloudRequest.find({
             licencePlate: requestsLicencePlate._id,
           })
-            .sort({ created: 1 })
+            .sort({ createdAt: 1 })
             .toArray();
 
           for (let index = 1; index < privateCloudRequestsLicencePlate.length; index++) {

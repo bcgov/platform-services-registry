@@ -50,7 +50,7 @@ export const POST = createApiHandler({
     'Primary Technical Lead Name': formatFullName(project.primaryTechnicalLead),
     'Secondary Technical Lead Email': project.secondaryTechnicalLead ? project.secondaryTechnicalLead.email : '',
     'Secondary Technical Lead Name': formatFullName(project.secondaryTechnicalLead),
-    'Create Date': formatDateSimple(project.created),
+    'Create Date': formatDateSimple(project.createdAt),
     'Update Date': formatDateSimple(project.updatedAt),
     'Licence Plate': project.licencePlate,
     Status: project.status,

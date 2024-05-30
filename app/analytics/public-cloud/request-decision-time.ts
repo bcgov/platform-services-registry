@@ -9,12 +9,12 @@ function convertMillisecondsToHours(milliseconds: number): number {
 export async function requestDecisionTime() {
   const requests = await prisma.publicCloudRequest.findMany({
     select: {
-      created: true,
+      createdAt: true,
       decisionDate: true,
     },
 
     orderBy: {
-      created: 'asc',
+      createdAt: 'asc',
     },
   });
 
@@ -22,7 +22,7 @@ export async function requestDecisionTime() {
 
   requests.forEach((request) => {
     if (request.decisionDate) {
-      const duration = request.decisionDate.getTime() - request.created.getTime();
+      const duration = request.decisionDate.getTime() - request.createdAt.getTime();
       const durationInHours = convertMillisecondsToHours(duration);
 
       durations.push(durationInHours);

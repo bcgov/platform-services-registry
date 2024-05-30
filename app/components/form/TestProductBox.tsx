@@ -6,12 +6,12 @@ export default function TestProductBox({
   className,
 }: {
   data?: {
-    created: Date;
+    createdAt: Date;
   };
   className?: string;
 }) {
   if (!data) return null;
-  const diffInDays = 30 - differenceInDays(new Date(), new Date(data.created));
+  const diffInDays = 30 - differenceInDays(new Date(), new Date(data.createdAt));
 
   return (
     <Tooltip label="Delete Product" position="top" offset={10} className={className}>

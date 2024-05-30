@@ -16,11 +16,11 @@ export async function productsCreatedPerMonth() {
       select: {
         licencePlate: true,
         cluster: true,
-        created: true,
+        createdAt: true,
         status: true,
       },
       orderBy: {
-        created: 'asc',
+        createdAt: 'asc',
       },
     }),
     prisma.privateCloudRequest.findMany({
@@ -30,7 +30,7 @@ export async function productsCreatedPerMonth() {
       },
       select: {
         licencePlate: true,
-        created: true,
+        createdAt: true,
       },
     }),
   ]);
@@ -44,16 +44,16 @@ export async function productsCreatedPerMonth() {
     };
   } = {};
 
-  const allShortDateStrs = _uniq(projects.map((proj) => dateToShortDateString(proj.created)));
+  const allShortDateStrs = _uniq(projects.map((proj) => dateToShortDateString(proj.createdAt)));
   const allDates = allShortDateStrs.map(shortDateStringToDate);
 
   _forEach(allDates, (dt, i) => {
     _forEach(projects, (proj) => {
-      if (compareYearMonth(dt, proj.created) < 0) return;
+      if (compareYearMonth(dt, proj.createdAt) < 0) return;
       const deleteRequest = deleteRequests.find((req) => req.licencePlate === proj.licencePlate);
 
       if (deleteRequest) {
-        if (compareYearMonth(dt, deleteRequest.created) === 1) {
+        if (compareYearMonth(dt, deleteRequest.createdAt) === 1) {
           return;
         }
       }

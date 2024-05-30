@@ -39,7 +39,7 @@ export default async function editRequest(
     licencePlate: project.licencePlate,
     status: project.status,
     cluster: project.cluster,
-    created: project.created,
+    createdAt: project.createdAt,
     projectOwner: {
       connectOrCreate: {
         where: {
