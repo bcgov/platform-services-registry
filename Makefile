@@ -8,3 +8,10 @@ localdev:
 .PHONY: dev
 dev:
 	npm run dev --prefix app
+
+.PHONY: install
+install:
+	npm install
+	npm install --prefix app
+	npm install --prefix cypress
+	npm install --prefix data-migrations
