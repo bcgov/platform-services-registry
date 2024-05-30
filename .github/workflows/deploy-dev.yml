@@ -6,6 +6,7 @@ on:
     - main
     paths:
     - app/**
+    - data-migrations/**
     - .github/workflows/deploy-dev.yml
 
 env:
