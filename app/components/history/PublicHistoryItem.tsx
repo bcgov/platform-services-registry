@@ -1,7 +1,7 @@
 import { PublicCloudRequest } from '@prisma/client';
 import PublicHistorySubItem from '@/components/history/PublicHistorySubItem';
 
-export default function PublicHistoryItem(request: PublicCloudRequest) {
+export default function PublicHistoryItem(request: Omit<PublicCloudRequest, 'provisionedDate'>) {
   return [
     request.decisionDate && (
       <PublicHistorySubItem
