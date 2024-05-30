@@ -14,8 +14,8 @@
     "@release-it/bumper": {
       "out": [
         {
-          "file": "package.json",
-          "path": "app",
+          "file": "app/package.json",
+          "path": "version",
           "prefix": ""
         },
         {
