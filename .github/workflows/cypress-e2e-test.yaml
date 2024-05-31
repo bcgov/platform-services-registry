@@ -49,13 +49,11 @@ jobs:
 
     - name: Run App
       run: |
-        npm start &
+        npm start --prefix app &
         node_modules/.bin/wait-on http://localhost:3000 --timeout 120000
-      working-directory: app
 
     - name: Cypress run
-      run: npx cypress run --headless
-      working-directory: cypress
+      run: npm run cypress-headless
 
     - name: Clean Up Localdev Environment
       run: |
