@@ -2,29 +2,23 @@ import { Badge } from '@mantine/core';
 import { $Enums } from '@prisma/client';
 import classNames from 'classnames';
 import CopyableButton from '@/components/generic/button/CopyableButton';
-
-interface DecisionData {
-  isTest?: boolean;
-}
+import { PrivateCloudRequestGetPayload } from '@/queries/private-cloud-requests';
+import { PublicCloudRequestGetPayload } from '@/queries/public-cloud-requests';
 
 export default function RequestBadge({
-  data,
+  request,
+  isTest,
   className,
 }: {
-  data?: {
-    licencePlate: string;
-    type: $Enums.RequestType;
-    active: boolean;
-    decisionStatus: $Enums.DecisionStatus;
-    decisionData?: DecisionData;
-  };
+  request: PrivateCloudRequestGetPayload | PublicCloudRequestGetPayload;
+  isTest?: boolean;
   className?: string;
 }) {
-  if (!data || !data.licencePlate) return null;
+  if (!request || !request.licencePlate) return null;
 
   let typeColor = 'gray';
 
-  switch (data.type) {
+  switch (request.type) {
     case $Enums.RequestType.CREATE:
       typeColor = 'green';
       break;
@@ -38,7 +32,7 @@ export default function RequestBadge({
 
   let decisionColor = 'gray';
 
-  switch (data.decisionStatus) {
+  switch (request.decisionStatus) {
     case $Enums.DecisionStatus.PENDING:
       decisionColor = 'gray';
       break;
@@ -56,27 +50,27 @@ export default function RequestBadge({
   const badges = (
     <>
       <Badge color={typeColor} radius="sm" className="ml-1">
-        {data.type}
+        {request.type}
       </Badge>
-      <Badge color={data.active ? 'lime' : 'pink'} radius="sm" className="ml-1">
-        {data.active ? 'ACTIVE' : 'INACTIVE'}
+      <Badge color={request.active ? 'lime' : 'pink'} radius="sm" className="ml-1">
+        {request.active ? 'ACTIVE' : 'INACTIVE'}
       </Badge>
       <Badge color={decisionColor} radius="sm" className="ml-1">
-        {data.decisionStatus}
+        {request.decisionStatus}
       </Badge>
-      {data.decisionData?.isTest ? (
+      {isTest && (
         <Badge color="blue" radius="sm" className="ml-1">
           Temp
         </Badge>
-      ) : null}
+      )}
     </>
   );
 
   return (
     <div className={classNames('inline-block', className)}>
-      <CopyableButton value={data.licencePlate}>
+      <CopyableButton value={request.licencePlate}>
         <Badge color="gray" radius="sm">
-          {data.licencePlate}
+          {request.licencePlate}
         </Badge>
       </CopyableButton>
       {badges}

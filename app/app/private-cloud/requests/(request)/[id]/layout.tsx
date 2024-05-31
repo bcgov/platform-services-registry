@@ -115,7 +115,7 @@ export default privateCloudProductSecurityACS(({ pathParams, queryParams, sessio
 
       <h1 className="flex justify-between text-xl lg:text-2xl xl:text-4xl font-semibold leading-7 text-gray-900 my-2 lg:my-4">
         Private Cloud OpenShift Platform
-        <RequestBadge data={request} />
+        <RequestBadge request={request} />
       </h1>
 
       {request.decisionStatus !== 'PENDING' && (
