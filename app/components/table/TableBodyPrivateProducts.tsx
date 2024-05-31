@@ -63,7 +63,9 @@ export default function TableBodyPrivateProducts({ rows, isLoading = false }: Ta
                     </span>
                   </div>
                 </h2>
+                {row.isTest && <TestProductBox data={{ createdAt: row.createdAt }} />}
               </div>
+
               <div className="mt-1 flex items-center gap-x-2.5 text-sm leading-5 text-gray-700">
                 <div className="whitespace-nowrap">
                   <Tooltip label={ministryKeyToName(row.ministry)} offset={10}>
@@ -89,9 +91,7 @@ export default function TableBodyPrivateProducts({ rows, isLoading = false }: Ta
               {row.activeRequest && <ActiveRequestBox data={{ ...row.activeRequest, cloud: 'private-cloud' }} />}
             </div>
 
-            <div className="md:col-span-2 lg:col-span-2">
-              {row.isTest && <TestProductBox data={{ createdAt: row.createdAt }} />}
-            </div>
+            <div className="lg:col-span-1 hidden lg:block"></div>
 
             <div className="md:col-span-1 lg:col-span-2">
               <UserCard user={row.projectOwner} title="Product Owner" />

@@ -14,6 +14,7 @@ export default async function searchOp({
   includeInactive = false,
   sortKey,
   sortOrder,
+  isTest,
 }: {
   session: Session;
   licencePlate: string;
@@ -25,6 +26,7 @@ export default async function searchOp({
   includeInactive: boolean;
   sortKey?: string;
   sortOrder?: Prisma.SortOrder;
+  isTest: boolean;
 }) {
   const { skip, take } = parsePaginationParams(page, pageSize, 10);
 
@@ -39,6 +41,7 @@ export default async function searchOp({
     sortKey,
     sortOrder,
     extraFilter: includeInactive ? {} : { active: true },
+    isTest,
   });
 
   return { docs, totalCount };

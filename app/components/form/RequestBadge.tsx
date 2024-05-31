@@ -7,7 +7,15 @@ export default function RequestBadge({
   data,
   className,
 }: {
-  data?: { licencePlate: string; type: $Enums.RequestType; active: boolean; decisionStatus: $Enums.DecisionStatus };
+  data?: {
+    licencePlate: string;
+    type: $Enums.RequestType;
+    active: boolean;
+    decisionStatus: $Enums.DecisionStatus;
+    decisionData: {
+      isTest: boolean;
+    };
+  };
   className?: string;
 }) {
   if (!data || !data.licencePlate) return null;
@@ -54,6 +62,11 @@ export default function RequestBadge({
       <Badge color={decisionColor} radius="sm" className="ml-1">
         {data.decisionStatus}
       </Badge>
+      {data.decisionData.isTest ? (
+        <Badge color="blue" radius="sm" className="ml-1">
+          Temp
+        </Badge>
+      ) : null}
     </>
   );
 

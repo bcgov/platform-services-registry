@@ -1,9 +1,9 @@
-import { $Enums, Prisma } from '@prisma/client';
-import { useEffect, useRef, useState } from 'react';
-import { useSnapshot, subscribe } from 'valtio';
+import { Prisma } from '@prisma/client';
+import { useRef } from 'react';
+import { useSnapshot } from 'valtio';
 import FormToggle from '@/components/generic/checkbox/FormToggle';
 import FormSelect from '@/components/generic/select/FormSelect';
-import { clusters, providers, productSorts, ministryOptions } from '@/constants';
+import { clusters, productSorts, ministryOptions } from '@/constants';
 import { pageState } from './state';
 
 export default function FilterPanel() {
@@ -12,7 +12,7 @@ export default function FilterPanel() {
   const ministryRef = useRef<HTMLSelectElement>(null);
   const sortRef = useRef<HTMLSelectElement>(null);
   const toggleDeletedProductsText = 'Show Deleted Products';
-  const toggleTestProductsText = 'Show Test Products';
+  const toggleTestProductsText = 'Filter Temp Products';
 
   const handleSortChange = (value: string) => {
     const selectedOption = productSorts.find((privateSortName) => privateSortName.humanFriendlyName === value);

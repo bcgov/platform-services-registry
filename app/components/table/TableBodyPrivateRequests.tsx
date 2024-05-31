@@ -1,15 +1,13 @@
 'use client';
 
-import path from 'path';
 import { Tooltip, Badge } from '@mantine/core';
 import { $Enums } from '@prisma/client';
 import _truncate from 'lodash-es/truncate';
-import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
 import React, { useState } from 'react';
 import ActiveRequestBox from '@/components/form/ActiveRequestBox';
+import TestProductBox from '@/components/form/TestProductBox';
 import CopyableButton from '@/components/generic/button/CopyableButton';
-import LightButton from '@/components/generic/button/LightButton';
 import UserCard from '@/components/UserCard';
 import { ministryKeyToName } from '@/helpers/product';
 import { PrivateCloudRequestSearchedItemPayload } from '@/queries/private-cloud-requests';
@@ -66,6 +64,7 @@ export default function TableBodyPrivateRequests({ rows, isLoading = false }: Ta
                       </span>
                     </div>
                   </h2>
+                  {row.decisionData.isTest && <TestProductBox data={{ createdAt: row.createdAt }} />}
                 </div>
                 <div className="mt-1 flex items-center gap-x-2.5 text-sm leading-5 text-gray-700">
                   <div className="whitespace-nowrap">
