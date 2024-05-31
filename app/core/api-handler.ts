@@ -4,6 +4,7 @@ import { getServerSession } from 'next-auth/next';
 import { z, TypeOf, ZodType } from 'zod';
 import { AUTH_SERVER_URL, AUTH_RELM } from '@/config';
 import { authOptions, generateSession } from '@/core/auth-options';
+import { findUser } from '@/services/keycloak/app-realm';
 import { arrayIntersection } from '@/utils/collection';
 import { verifyKeycloakJwtTokenSafe } from '@/utils/jwt';
 import { parseQueryString } from '@/utils/query-string';
@@ -31,6 +32,7 @@ interface HandlerProps<TPathParams, TQueryParams, TBody> {
     clientId?: string;
     requiredClaims?: string[];
   };
+  useServiceAccount?: boolean;
 }
 
 interface RouteProps<TPathParams, TQueryParams, TBody> {
@@ -46,7 +48,13 @@ function createApiHandler<
   TPathParams extends ZodType<any, any>,
   TQueryParams extends ZodType<any, any>,
   TBody extends ZodType<any, any>,
->({ roles, permissions, validations, keycloakOauth2 }: HandlerProps<TPathParams, TQueryParams, TBody>) {
+>({
+  roles,
+  permissions,
+  validations,
+  keycloakOauth2,
+  useServiceAccount,
+}: HandlerProps<TPathParams, TQueryParams, TBody>) {
   const {
     pathParams: pathParamVal = z.object({}),
     queryParams: queryParamVal = z.object({}),
@@ -89,7 +97,34 @@ function createApiHandler<
             return UnauthorizedResponse('invalid token');
           }
         } else {
-          session = (await getServerSession(authOptions)) || (await generateSession({ session: {} as Session }));
+          if (useServiceAccount) {
+            const bearerToken = req.headers.get('authorization');
+            if (!bearerToken) {
+              return UnauthorizedResponse('not allowed to perform the task');
+            }
+
+            jwtData = await verifyKeycloakJwtTokenSafe({
+              jwtToken: bearerToken,
+              authUrl: AUTH_SERVER_URL,
+              realm: AUTH_RELM,
+              requiredClaims: ['kc-userid'],
+            });
+
+            if (!jwtData) {
+              return UnauthorizedResponse('invalid token');
+            }
+
+            const kcUserId = jwtData['kc-userid'];
+            const kcUser = await findUser(kcUserId);
+            if (!kcUser) return BadRequestResponse('keycloak user not found');
+
+            session = await generateSession({
+              session: {} as Session,
+              token: { email: kcUser.email, roles: kcUser.authRoleNames },
+            });
+          } else {
+            session = (await getServerSession(authOptions)) || (await generateSession({ session: {} as Session }));
+          }
 
           // Validate user roles
           if (roles && roles.length > 0) {

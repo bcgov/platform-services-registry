@@ -12,6 +12,7 @@ jest.mock('@/services/mautic', () => ({
 
 // Mock Nats
 jest.mock('@/services/nats', () => ({
+  ...jest.requireActual('@/services/nats'),
   sendPrivateCloudNatsMessage: jest.fn(async () => [200, 200, 200]),
   sendPublicCloudNatsMessage: jest.fn(async () => [200, 200, 200]),
   sendNatsMessage: jest.fn(async () => [200, 200, 200]),
@@ -19,7 +20,7 @@ jest.mock('@/services/nats', () => ({
 
 // Mock CHES
 jest.mock('@/services/ches/private-cloud/email-handler', () => ({
-  ...jest.requireActual('@/services/ches/helpers'),
+  ...jest.requireActual('@/services/ches/private-cloud/email-handler'),
   sendCreateRequestEmails: jest.fn(async () => [200]),
   sendEditRequestEmails: jest.fn(async () => [200]),
   sendRequestApprovalEmails: jest.fn(async () => [200]),
@@ -29,15 +30,10 @@ jest.mock('@/services/ches/private-cloud/email-handler', () => ({
   sendProvisionedEmails: jest.fn(async () => [200]),
 }));
 
-jest.mock('@/services/ches/private-cloud/email-handler', () => ({
-  ...jest.requireActual('@/services/ches/helpers'),
-  sendCreateRequestEmails: jest.fn(async () => [200]),
-  sendEditRequestEmails: jest.fn(async () => [200]),
-  sendRequestApprovalEmails: jest.fn(async () => [200]),
-  sendRequestRejectionEmails: jest.fn(async () => [200]),
-  sendDeleteRequestEmails: jest.fn(async () => [200]),
-  sendDeleteRequestApprovalEmails: jest.fn(async () => [200]),
-  sendProvisionedEmails: jest.fn(async () => [200]),
+jest.mock('@/services/keycloak/app-realm', () => ({
+  getKcAdminClient: jest.fn(async () => null),
+  findClient: jest.fn(async () => null),
+  findUser: jest.fn(async () => null),
 }));
 
 export async function cleanUp() {

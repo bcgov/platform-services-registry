@@ -22,19 +22,11 @@ const queryParamSchema = z.object({
 });
 
 const apiHandler = createApiHandler({
-  keycloakOauth2: { requiredClaims: ['kc-userid'] },
+  roles: ['user'],
+  useServiceAccount: true,
   validations: { queryParams: queryParamSchema },
 });
-export const GET = apiHandler(async ({ queryParams, jwtData }) => {
-  const kcUserId = jwtData['kc-userid'];
-  const kcUser = await findUser(kcUserId);
-  if (!kcUser) return BadRequestResponse('keycloak user not found');
-
-  const session = await generateSession({
-    session: {} as Session,
-    token: { email: kcUser.email, roles: kcUser.authRoleNames },
-  });
-
+export const GET = apiHandler(async ({ queryParams, session }) => {
   const { page: _page, pageSize: _pageSize } = queryParams;
 
   const { skip, take, page } = parsePaginationParams(_page ?? defaultPage, _pageSize ?? defaultPageSize, 10);
