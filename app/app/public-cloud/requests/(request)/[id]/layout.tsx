@@ -13,8 +13,23 @@ import LightButton from '@/components/generic/button/LightButton';
 import Tabs, { ITab } from '@/components/generic/tabs/BasicTabs';
 import createClientPage from '@/core/client-page';
 import { comparePublicProductData } from '@/helpers/product';
+import { PublicCloudRequestGetPayload } from '@/queries/public-cloud-requests';
 import { getPublicCloudRequest } from '@/services/backend/public-cloud/requests';
 import { publicProductState } from '@/states/global';
+
+const mapToComponentData = (payload?: PublicCloudRequestGetPayload, isTest?: boolean) => {
+  if (!payload) {
+    return undefined;
+  }
+
+  return {
+    licencePlate: payload.licencePlate,
+    type: payload.type,
+    active: payload.active,
+    decisionStatus: payload.decisionStatus,
+    decisionData: { isTest },
+  };
+};
 
 const pathParamSchema = z.object({
   id: z.string(),
@@ -33,6 +48,10 @@ export default publicCloudProductSecurityACS(({ pathParams, queryParams, session
     queryFn: () => getPublicCloudRequest(id),
     enabled: !!id,
   });
+
+  const payload: PublicCloudRequestGetPayload | undefined = request;
+  const isTest = false;
+  const mappedData = mapToComponentData(payload, isTest);
 
   useEffect(() => {
     if (request) {
@@ -97,7 +116,7 @@ export default publicCloudProductSecurityACS(({ pathParams, queryParams, session
 
       <h1 className="flex justify-between text-xl lg:text-2xl xl:text-4xl font-semibold leading-7 text-gray-900 my-2 lg:my-4">
         Public Cloud Landing Zone
-        <RequestBadge data={request} />
+        <RequestBadge data={mappedData} />
       </h1>
 
       {request.decisionStatus !== 'PENDING' && (

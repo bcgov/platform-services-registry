@@ -3,6 +3,10 @@ import { $Enums } from '@prisma/client';
 import classNames from 'classnames';
 import CopyableButton from '@/components/generic/button/CopyableButton';
 
+interface DecisionData {
+  isTest?: boolean;
+}
+
 export default function RequestBadge({
   data,
   className,
@@ -12,9 +16,7 @@ export default function RequestBadge({
     type: $Enums.RequestType;
     active: boolean;
     decisionStatus: $Enums.DecisionStatus;
-    decisionData: {
-      isTest: boolean;
-    };
+    decisionData?: DecisionData;
   };
   className?: string;
 }) {
@@ -62,7 +64,7 @@ export default function RequestBadge({
       <Badge color={decisionColor} radius="sm" className="ml-1">
         {data.decisionStatus}
       </Badge>
-      {data.decisionData.isTest ? (
+      {data.decisionData?.isTest ? (
         <Badge color="blue" radius="sm" className="ml-1">
           Temp
         </Badge>
