@@ -3,6 +3,7 @@
 import { Alert } from '@mantine/core';
 import { IconInfoCircle } from '@tabler/icons-react';
 import { useQuery } from '@tanstack/react-query';
+import { differenceInDays } from 'date-fns/differenceInDays';
 import Link from 'next/link';
 import { useEffect } from 'react';
 import { ToastContainer } from 'react-toastify';
@@ -81,6 +82,7 @@ export default privateCloudProductSecurityACS(({ pathParams, queryParams, sessio
   if (!currentProduct) {
     return null;
   }
+  const diffInDays = 30 - differenceInDays(new Date(), new Date(currentProduct.createdAt));
 
   return (
     <div>
@@ -101,7 +103,12 @@ export default privateCloudProductSecurityACS(({ pathParams, queryParams, sessio
           for this product. You can not edit this product at this time.
         </Alert>
       )}
-
+      {currentProduct.isTest && (
+        <Alert variant="light" color="blue" title="" icon={<IconInfoCircle />}>
+          <span className="text-red-600/100 font-black text-lg">{Math.abs(diffInDays)}</span>
+          {diffInDays > 0 ? ' days until product deletion' : ' days overdue for automatic deletion'}
+        </Alert>
+      )}
       <Tabs tabs={tabs}>
         <PrivateCloudProductOptions
           licencePlate={currentProduct?.licencePlate}

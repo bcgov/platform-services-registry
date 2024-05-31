@@ -51,7 +51,7 @@ export default function ProjectDescriptionPrivate({
         </p>
       )}
 
-      {session?.previews.testProduct && (
+      {session?.previews.testProduct && mode === 'create' && (
         <div className="pt-5">
           <IsTestCheckBox disabled={disabled} />
         </div>

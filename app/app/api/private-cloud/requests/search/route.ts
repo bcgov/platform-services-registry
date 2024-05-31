@@ -16,6 +16,7 @@ const bodySchema = z.object({
   includeInactive: z.boolean().optional(),
   sortKey: z.string().optional(),
   sortOrder: z.preprocess(processEnumString, z.nativeEnum(Prisma.SortOrder).optional()),
+  showTest: z.boolean().default(false),
 });
 
 export const POST = createApiHandler({
@@ -32,6 +33,7 @@ export const POST = createApiHandler({
     includeInactive = false,
     sortKey,
     sortOrder,
+    showTest,
   } = body;
 
   const data = await searchOp({
@@ -45,6 +47,7 @@ export const POST = createApiHandler({
     includeInactive,
     sortKey: sortKey || undefined,
     sortOrder,
+    isTest: showTest,
   });
 
   return OkResponse(data);

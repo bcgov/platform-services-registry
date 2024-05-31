@@ -4,6 +4,7 @@ import { Alert } from '@mantine/core';
 import { $Enums } from '@prisma/client';
 import { IconArrowBack, IconInfoCircle, IconFile } from '@tabler/icons-react';
 import { useQuery } from '@tanstack/react-query';
+import { differenceInDays } from 'date-fns/differenceInDays';
 import { useEffect } from 'react';
 import { ToastContainer } from 'react-toastify';
 import { z } from 'zod';
@@ -93,7 +94,7 @@ export default privateCloudProductSecurityACS(({ pathParams, queryParams, sessio
   });
 
   if (isRequestLoading || !request) return null;
-
+  const diffInDays = 30 - differenceInDays(new Date(), new Date(request.createdAt));
   return (
     <div>
       <div>
@@ -114,7 +115,7 @@ export default privateCloudProductSecurityACS(({ pathParams, queryParams, sessio
 
       <h1 className="flex justify-between text-xl lg:text-2xl xl:text-4xl font-semibold leading-7 text-gray-900 my-2 lg:my-4">
         Private Cloud OpenShift Platform
-        <RequestBadge data={request} />
+        <RequestBadge request={request} />
       </h1>
 
       {request.decisionStatus !== 'PENDING' && (
@@ -122,7 +123,12 @@ export default privateCloudProductSecurityACS(({ pathParams, queryParams, sessio
           A decision has been made for this request.
         </Alert>
       )}
-
+      {request.decisionData.isTest && (
+        <Alert variant="light" color="blue" title="" icon={<IconInfoCircle />}>
+          <span className="text-red-600/100 font-black text-lg">{Math.abs(diffInDays)}</span>
+          {diffInDays > 0 ? ' days until product deletion' : ' days overdue for automatic deletion'}
+        </Alert>
+      )}
       <Tabs tabs={tabs}>
         <PrivateCloudRequestOptions id={request.id} canResend={request._permissions.resend} />
       </Tabs>

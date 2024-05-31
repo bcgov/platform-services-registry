@@ -51,6 +51,7 @@ export async function searchPrivateCloudRequests({
   sortKey = defaultSortKey,
   sortOrder = Prisma.SortOrder.desc,
   extraFilter,
+  isTest,
 }: {
   session: Session;
   skip: number;
@@ -62,8 +63,13 @@ export async function searchPrivateCloudRequests({
   sortKey?: string;
   sortOrder?: Prisma.SortOrder;
   extraFilter?: Prisma.PrivateCloudRequestWhereInput;
+  isTest: boolean;
 }) {
-  const decisionDatawhere: Prisma.PrivateCloudRequestedProjectWhereInput = {};
+  const decisionDatawhere: Prisma.PrivateCloudRequestedProjectWhereInput = isTest
+    ? {
+        isTest: isTest,
+      }
+    : {};
 
   const orderBy =
     sortKey === 'updatedAt'

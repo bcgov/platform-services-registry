@@ -31,7 +31,7 @@ export default function ProductBadge({
 
   const badgeTest = data.isTest ? (
     <Badge color="blue" radius="sm" className="ml-1">
-      Test
+      Temp
     </Badge>
   ) : null;
 

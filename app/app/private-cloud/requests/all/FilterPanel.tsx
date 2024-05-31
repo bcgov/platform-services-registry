@@ -1,9 +1,9 @@
-import { $Enums, Prisma } from '@prisma/client';
-import { useEffect, useRef, useState } from 'react';
-import { useSnapshot, subscribe } from 'valtio';
+import { Prisma } from '@prisma/client';
+import { useRef } from 'react';
+import { useSnapshot } from 'valtio';
 import FormToggle from '@/components/generic/checkbox/FormToggle';
 import FormSelect from '@/components/generic/select/FormSelect';
-import { clusters, providers, productSorts, ministryOptions } from '@/constants';
+import { clusters, productSorts, ministryOptions } from '@/constants';
 import { pageState } from './state';
 
 export default function FilterPanel() {
@@ -11,7 +11,8 @@ export default function FilterPanel() {
   const clusterProviderRef = useRef<HTMLSelectElement>(null);
   const ministryRef = useRef<HTMLSelectElement>(null);
   const sortRef = useRef<HTMLSelectElement>(null);
-  const toggleText = 'Show Resolved Requests';
+  const toggleResolvedRequestsText = 'Show Resolved Requests';
+  const toggleTestProductsText = 'Filter Temp Products Requests';
 
   const handleSortChange = (value: string) => {
     const selectedOption = productSorts.find((privateSortName) => privateSortName.humanFriendlyName === value);
@@ -24,8 +25,12 @@ export default function FilterPanel() {
     }
   };
 
-  const handleToggleChange = () => {
+  const handleResolvedRequestsToggleChange = () => {
     pageState.includeInactive = !pageSnapshot.includeInactive;
+  };
+
+  const handleTestProductsToggleChange = () => {
+    pageState.showTest = !pageSnapshot.showTest;
   };
 
   const handleClusterChange = (value: string) => {
@@ -94,12 +99,17 @@ export default function FilterPanel() {
             />
           </div>
         </fieldset>
-        <div></div>
         <FormToggle
           id="includeInactive"
-          label={toggleText}
+          label={toggleResolvedRequestsText}
           checked={pageSnapshot.includeInactive}
-          onChange={handleToggleChange}
+          onChange={handleResolvedRequestsToggleChange}
+        />
+        <FormToggle
+          id="showTest"
+          label={toggleTestProductsText}
+          checked={pageSnapshot.showTest}
+          onChange={handleTestProductsToggleChange}
         />
         <div className="mt-8 md:mt-7 md:ml-4">
           <button
