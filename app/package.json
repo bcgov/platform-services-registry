@@ -13,7 +13,7 @@
     "test": "dotenv -e .env.test -- jest -i",
     "prisma-generate": "prisma generate",
     "prisma-push": "prisma db push",
-    "migrate-data": "cat .env | grep DATABASE_URL > data-migrations/.env && cd data-migrations && npm install && npx migrate-mongo up",
+    "migrate-data": "cat .env | grep DATABASE_URL > ../data-migrations/.env && cd ../data-migrations && npm install && npx migrate-mongo up",
     "email": "dotenv -e .env -- email dev --dir emails --port 3001",
     "email-build": "email build",
     "email-start": "dotenv -e .env -- email start --port 3001",
