@@ -35,6 +35,11 @@ export default privateCloudProductSecurityACS(({ pathParams, queryParams, sessio
   });
 
   useEffect(() => {
+    console.log('Path Params:', pathParams);
+    console.log('Session:', session);
+    console.log('Request Data:', request);
+    console.log('Is Request Loading:', isRequestLoading);
+
     if (request) {
       privateProductState.currentRequest = request;
       privateProductState.licencePlate = request.licencePlate;
@@ -55,9 +60,9 @@ export default privateCloudProductSecurityACS(({ pathParams, queryParams, sessio
   }, [request]);
 
   const tabsByType = {
-    [$Enums.RequestType.CREATE]: ['summary', 'request', 'decision'],
-    [$Enums.RequestType.EDIT]: ['summary', 'original', 'request', 'decision'],
-    [$Enums.RequestType.DELETE]: ['decision'],
+    [$Enums.RequestType.CREATE]: ['summary', 'request', 'decision', 'comments'],
+    [$Enums.RequestType.EDIT]: ['summary', 'original', 'request', 'decision', 'comments'],
+    [$Enums.RequestType.DELETE]: ['decision', 'comments'],
   };
 
   let tabs: ITab[] = [
@@ -86,11 +91,21 @@ export default privateCloudProductSecurityACS(({ pathParams, queryParams, sessio
     });
   }
 
+  if (request?._permissions.viewDecision) {
+    tabs.push({
+      label: 'ADMIN COMMENTS',
+      name: 'comments',
+      href: `/private-cloud/requests/${id}/comments`,
+    });
+  }
+
   tabs = tabs.filter((tab) => {
     if (!request) return false;
 
     return tabsByType[request.type].includes(tab.name);
   });
+
+  console.log('Tabs:', tabs);
 
   if (isRequestLoading || !request) return null;
 

@@ -5,18 +5,18 @@ import { createPrivateCloudComment } from '@/services/backend/private-cloud/prod
 interface CommentFormProps {
   licencePlate: string;
   userId: string;
-  projectId: string;
-  // requestId: string;
+  projectId?: string;
+  requestId?: string;
   onCommentAdded: () => void;
 }
 
-function CommentForm({ licencePlate, userId, projectId, onCommentAdded }: CommentFormProps) {
+function CommentForm({ licencePlate, userId, projectId, requestId, onCommentAdded }: CommentFormProps) {
   const [text, setText] = useState('');
   const [isLoading, setLoading] = useState(false);
   const [showCommentBox, setShowCommentBox] = useState(false); // State to toggle comment box visibility
 
   const mutation = useMutation({
-    mutationFn: () => createPrivateCloudComment(licencePlate, text, userId, projectId),
+    mutationFn: () => createPrivateCloudComment(licencePlate, text, userId, projectId, requestId),
     onMutate: () => {
       setLoading(true);
     },

@@ -55,7 +55,7 @@ export default privateCloudProductSecurityACS(({ pathParams, queryParams, sessio
 
   if (session?.previews.comments && session?.permissions.viewAllPrivateProductComments) {
     tabs.push({
-      label: 'COMMENTS',
+      label: 'ADMIN NOTES',
       name: 'comments',
       href: `/private-cloud/products/${licencePlate}/comments`,
     });

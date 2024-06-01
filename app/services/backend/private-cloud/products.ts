@@ -98,7 +98,7 @@ export async function getPrivateCloudComment(licencePlate: string, commentId: st
 export async function getAllPrivateCloudComments(licencePlate: string, requestId?: string) {
   let url = `/${licencePlate}/comments`;
   if (requestId) {
-    url += `?requestId={requestId}`;
+    url += `?requestId=${requestId}`;
   }
   const response = await instance.get(url);
   return response.data;
