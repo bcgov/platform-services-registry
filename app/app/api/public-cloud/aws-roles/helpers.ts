@@ -12,12 +12,7 @@ import {
 import { logger } from '@/core/logging';
 import { getUser } from '@/services/msgraph';
 
-export interface Group {
-  id: string;
-  name: string;
-  path: string;
-  subGroups: Group[];
-}
+const PROJECT_GROUP = 'Project Team Groups';
 
 export interface User {
   id: string;
@@ -112,12 +107,6 @@ const roleToGroupName = (role: string): string => {
   return role.replace(/\s/g, '') + 's';
 };
 
-export const getGroups = async (): Promise<Group[]> => {
-  await kcAdminClient.auth(credentials);
-  const groups = await kcAdminClient.groups.find();
-  return groups as Group[];
-};
-
 export const getMembersByGroupId = async (groupId: string): Promise<User[]> => {
   await kcAdminClient.auth(credentials);
   const members = await kcAdminClient.groups.listMembers({ id: groupId });
@@ -172,23 +161,23 @@ export const removeUserFromGroup = async (userId: string, groupId: string) => {
   await kcAdminClient.users.delFromGroup({ id: userId, groupId: groupId });
 };
 
-const findObjectByValue = (array: Group[], key: keyof Group, value: any): Group[] => {
-  return array.filter((obj) => obj[key] === value);
-};
+async function findParentGroup(gorupName = PROJECT_GROUP) {
+  await kcAdminClient.auth(credentials);
+  const groups = await kcAdminClient.groups.find({ search: gorupName });
 
-const findObjectByValueSubstring = (array: Group[], key: keyof Group, value: any): Group[] => {
-  return array.filter((obj) => obj[key].includes(value));
-};
+  if (groups.length === 0) return null;
+  return groups.find((group) => group.name === gorupName);
+}
 
-async function getProductAWSRoles(licencePlate: string): Promise<Group[]> {
-  const keyClockGroups = await getGroups();
-  if (keyClockGroups) {
-    const projectTeamGroups = findObjectByValue(keyClockGroups, 'name', 'Project Team Groups');
-    if (projectTeamGroups.length > 0) {
-      return findObjectByValueSubstring(projectTeamGroups[0].subGroups, 'name', licencePlate);
-    }
-  }
-  return [];
+async function getProductRoleGroups(licencePlate: string) {
+  const projectTeamGroup = await findParentGroup();
+  if (!projectTeamGroup) return [];
+  if (projectTeamGroup.subGroups?.length === 0) return [];
+
+  const productGroup = projectTeamGroup.subGroups?.find((group) => group.name?.startsWith(licencePlate));
+  if (!productGroup) return [];
+
+  return productGroup.subGroups ?? [];
 }
 
 export async function getSubGroupMembersByLicencePlateAndName(
@@ -198,22 +187,24 @@ export async function getSubGroupMembersByLicencePlateAndName(
   pageSize: number,
   searchTerm: string,
 ): Promise<UsersTotal> {
-  const productRolesGroups: Group[] = await getProductAWSRoles(licencePlate);
+  const productRoleGroups = await getProductRoleGroups(licencePlate);
+
   let result: User[] = [];
   let groupId: string = '';
-  if (productRolesGroups.length > 0) {
-    productRolesGroups[0].subGroups.forEach((group) => {
-      if (group.name === roleToGroupName(role)) {
-        groupId = group.id;
-      }
-    });
-    if (groupId) {
-      const groupsUsers = await getMembersByGroupId(groupId);
-      if (groupsUsers) {
-        result = [...groupsUsers.map((user) => createUserRole(user))];
-      }
+
+  productRoleGroups.forEach((group) => {
+    if (group.name === roleToGroupName(role)) {
+      groupId = group.id as string;
+    }
+  });
+
+  if (groupId) {
+    const groupsUsers = await getMembersByGroupId(groupId);
+    if (groupsUsers) {
+      result = [...groupsUsers.map((user) => createUserRole(user))];
     }
   }
+
   if (searchTerm) {
     result = searchSubstringInArray(searchTerm, result);
   }
@@ -233,12 +224,7 @@ export async function addUserToGroupByEmail(userPrincipalName: string, userEmail
   }
 }
 
-export async function getGroupsNamesByLicencePlate(licencePlate: string): Promise<tabName[]> {
-  const productRolesGroups: Group[] = await getProductAWSRoles(licencePlate);
-  if (productRolesGroups && productRolesGroups.length > 0) {
-    return productRolesGroups[0].subGroups.map((subGroup) => {
-      return parseGroupNameToTab(subGroup.name);
-    });
-  }
-  return [];
+export async function getGroupsNamesByLicencePlate(licencePlate: string) {
+  const productRoleGroups = await getProductRoleGroups(licencePlate);
+  return productRoleGroups.map((group) => parseGroupNameToTab(group.name as string));
 }
