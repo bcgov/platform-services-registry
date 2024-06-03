@@ -43,18 +43,17 @@ export default function ProjectDescriptionPrivate({
         1. Product Description
       </h2>
       {mode === 'create' && (
-        <p className="text-base leading-6 mt-5">
-          If this is your first time on the <b>OpenShift platform</b> you need to book an alignment meeting with the
-          Platform Services team. Reach out to{' '}
-          <MailLink to="platformservicesteam@gov.bc.ca">PlatformServicesTeam@gov.bc.ca</MailLink> to get started.
-          Provisioning requests from new teams that have <b>not</b> had an onboarding meeting will not be approved.
-        </p>
-      )}
-
-      {session?.previews.testProduct && mode === 'create' && (
-        <div className="pt-5">
-          <IsTestCheckBox disabled={disabled} />
-        </div>
+        <>
+          <p className="text-base leading-6 mt-5">
+            If this is your first time on the <b>OpenShift platform</b> you need to book an alignment meeting with the
+            Platform Services team. Reach out to{' '}
+            <MailLink to="platformservicesteam@gov.bc.ca">PlatformServicesTeam@gov.bc.ca</MailLink> to get started.
+            Provisioning requests from new teams that have <b>not</b> had an onboarding meeting will not be approved.
+          </p>
+          <div className="pt-5">
+            <IsTestCheckBox disabled={disabled} />
+          </div>
+        </>
       )}
 
       <div className="mt-10 grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6">
