@@ -1,3 +1,19 @@
+## [0.26.4](https://github.com/bcgov/platform-services-registry/compare/v0.26.3...v0.26.4) (2024-06-03)
+
+### Features
+
+* **2914:** add provisioned date in request schemas ([dddd423](https://github.com/bcgov/platform-services-registry/commit/dddd423eff2969d70ad1e6c2dc8b31cc677fb77f))
+* label for private product and request dashboards, is test filter for private requests ([59d8315](https://github.com/bcgov/platform-services-registry/commit/59d8315e603958f78782140bed50f0904c3ded7d))
+
+### Bug Fixes
+
+* run build error with no isTest for public cloud products ([e20f903](https://github.com/bcgov/platform-services-registry/commit/e20f903ccf3c6603f1738718f53f6a8d0372772b))
+
+### Refactors
+
+* **2032:** move security dashboard to root directory ([3f969f8](https://github.com/bcgov/platform-services-registry/commit/3f969f82f92b401ccfe7d0c84ff378141189cc20))
+* **2404:** move service account verification logic into core ([288d0c6](https://github.com/bcgov/platform-services-registry/commit/288d0c6d13ed1550bc7083e416a06c94c245aff8))
+* **2832:** rename created to created in request schemas ([051a8ac](https://github.com/bcgov/platform-services-registry/commit/051a8ac4da15d641654d8ff7f065d7e32194a2d9))
 ## [0.26.3](https://github.com/bcgov/platform-services-registry/compare/v0.26.2...v0.26.3) (2024-05-30)
 ## [0.26.2](https://github.com/bcgov/platform-services-registry/compare/v0.26.1...v0.26.2) (2024-05-30)
 ## [0.26.1](https://github.com/bcgov/platform-services-registry/compare/v0.26.0...v0.26.1) (2024-05-29)
