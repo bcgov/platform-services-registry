@@ -471,4 +471,5 @@ enum Cluster {
 enum Provider {
   // GOOGLE
   AWS
+  AZURE
 }

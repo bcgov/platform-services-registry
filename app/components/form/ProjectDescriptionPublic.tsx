@@ -1,8 +1,9 @@
+import { $Enums } from '@prisma/client';
 import classNames from 'classnames';
 import { useFormContext } from 'react-hook-form';
 import AGMinistryCheckBox from '@/components/form/AGMinistryCheckBox';
 import FormSelect from '@/components/generic/select/FormSelect';
-import { providers, ministryOptions } from '@/constants';
+import { providers, ministryOptions, providerOptions } from '@/constants';
 
 function stripSpecialCharacters(text: string) {
   const pattern = /[^A-Za-z0-9///.:+=@_ ]/g;
@@ -112,7 +113,7 @@ export default function ProjectDescriptionPublic({
             id="provider"
             label="Cloud Service Provider"
             disabled={disabled || providerDisabled}
-            options={[{ label: 'Select Provider', value: '' }, ...providers.map((v) => ({ label: v, value: v }))]}
+            options={[{ label: 'Select Provider', value: '' }, ...providerOptions]}
             selectProps={register('provider')}
           />
           <p className={classNames(errors.provider ? 'text-red-400' : '', 'mt-3 text-sm leading-6 text-gray-600')}>
