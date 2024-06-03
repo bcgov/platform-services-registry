@@ -42,20 +42,17 @@ export default function ProjectDescriptionPrivate({
       <h2 className="text-base lg:text-lg 2xl:text-2xl font-semibold leading-6 text-gray-900">
         1. Product Description
       </h2>
-      {mode === 'create' && (
-        <p className="text-base leading-6 mt-5">
+      {mode === 'create' && [
+        <p className="text-base leading-6 mt-5" key="0">
           If this is your first time on the <b>OpenShift platform</b> you need to book an alignment meeting with the
           Platform Services team. Reach out to{' '}
           <MailLink to="platformservicesteam@gov.bc.ca">PlatformServicesTeam@gov.bc.ca</MailLink> to get started.
           Provisioning requests from new teams that have <b>not</b> had an onboarding meeting will not be approved.
-        </p>
-      )}
-
-      {session?.previews.testProduct && mode === 'create' && (
-        <div className="pt-5">
+        </p>,
+        <div className="pt-5" key="1">
           <IsTestCheckBox disabled={disabled} />
-        </div>
-      )}
+        </div>,
+      ]}
 
       <div className="mt-10 grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6">
         <div className="col-span-full">
