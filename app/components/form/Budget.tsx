@@ -1,8 +1,8 @@
 import { Alert } from '@mantine/core';
+import { $Enums } from '@prisma/client';
 import { IconInfoCircle } from '@tabler/icons-react';
 import classNames from 'classnames';
 import _sumBy from 'lodash-es/sumBy';
-import { useEffect } from 'react';
 import { useFormContext } from 'react-hook-form';
 import BudgetInput from '@/components/form/BudgetInput';
 import ExternalLink from '@/components/generic/button/ExternalLink';
@@ -13,6 +13,7 @@ export default function Budget({ disabled }: { disabled?: boolean }) {
     watch,
   } = useFormContext();
 
+  const provider = watch('provider', {});
   const budget = watch('budget', {});
   const environmentsEnabled = watch('environmentsEnabled', {});
 
@@ -29,15 +30,27 @@ export default function Budget({ disabled }: { disabled?: boolean }) {
 
   const formattedTotalBudget = parseFloat(totalBudget.toFixed(2));
 
+  let calculatorNote = null;
+  if (provider) {
+    const calculatorLink =
+      provider === $Enums.Provider.AWS ? (
+        <ExternalLink href="https://calculator.aws/#/">AWS Cost Calculator</ExternalLink>
+      ) : (
+        <ExternalLink href="https://azure.microsoft.com/en-ca/pricing/calculator">
+          Azure Pricing Calculator
+        </ExternalLink>
+      );
+
+    calculatorNote = <span>&nbsp;&#40;Try the {calculatorLink} to get an estimate&#41;</span>;
+  }
+
   return (
     <div className="">
       <h2 className="text-base lg:text-lg 2xl:text-2xl font-semibold leading-6 text-gray-900">5. Project Budget</h2>
       <p className="text-base leading-6 mt-5">
-        Please indicate your estimated monthly budget &#40;Try the{' '}
-        <ExternalLink href="https://calculator.aws/#/">AWS Cost Calculator</ExternalLink> to get an estimate&#41;.
-        Provide an estimated average monthly spend allocated to your cloud service usage for this project. As a part of
-        this request, you will be provisioned with four accounts - Dev, Test, Prod and Tools. Please specify the
-        estimate for each of these accounts.{' '}
+        Please indicate your estimated monthly budget{calculatorNote}. Provide an estimated average monthly spend
+        allocated to your cloud service usage for this project. As a part of this request, you will be provisioned with
+        four accounts - Dev, Test, Prod and Tools. Please specify the estimate for each of these accounts.{' '}
         <b>
           Please note that this estimate are projected numbers that will only be used to send your team a warning when
           the monthly spend reaches 80% of your estimated budget.

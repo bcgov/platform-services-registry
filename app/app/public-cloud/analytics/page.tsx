@@ -50,7 +50,7 @@ export default async function AnalyticsDashboard() {
           title={'Active Products'}
           subtitle={'This graph shows the cumulitive total of products provisioned through the registry'}
           chartData={projectsChartData}
-          categories={['AWS']}
+          categories={['AWS', 'AZURE']}
           exportApiEndpoint="/public-cloud/analytics/csv/products"
         />
         <Histogram

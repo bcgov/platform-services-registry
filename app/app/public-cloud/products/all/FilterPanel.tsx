@@ -3,7 +3,7 @@ import { useEffect, useRef, useState } from 'react';
 import { useSnapshot, subscribe } from 'valtio';
 import FormToggle from '@/components/generic/checkbox/FormToggle';
 import FormSelect from '@/components/generic/select/FormSelect';
-import { providers, productSorts, ministryOptions } from '@/constants';
+import { providers, productSorts, ministryOptions, providerOptions } from '@/constants';
 import { pageState } from './state';
 
 export default function FilterPanel() {
@@ -81,7 +81,7 @@ export default function FilterPanel() {
               ref={providerProviderRef}
               id="provider"
               label="Provider"
-              options={[{ label: 'All Providers', value: '' }, ...providers.map((v) => ({ label: v, value: v }))]}
+              options={[{ label: 'All Providers', value: '' }, ...providerOptions]}
               defaultValue={pageSnapshot.provider}
               onChange={handleProviderChange}
             />

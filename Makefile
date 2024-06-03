@@ -13,5 +13,4 @@ dev:
 install:
 	npm install
 	npm install --prefix app
-	npm install --prefix cypress
 	npm install --prefix data-migrations
