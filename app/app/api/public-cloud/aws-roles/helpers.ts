@@ -161,12 +161,12 @@ export const removeUserFromGroup = async (userId: string, groupId: string) => {
   await kcAdminClient.users.delFromGroup({ id: userId, groupId: groupId });
 };
 
-async function findParentGroup(gorupName = PROJECT_GROUP) {
+async function findParentGroup(groupName = PROJECT_GROUP) {
   await kcAdminClient.auth(credentials);
-  const groups = await kcAdminClient.groups.find({ search: gorupName });
+  const groups = await kcAdminClient.groups.find({ search: groupName });
 
   if (groups.length === 0) return null;
-  return groups.find((group) => group.name === gorupName);
+  return groups.find((group) => group.name === groupName);
 }
 
 async function getProductRoleGroups(licencePlate: string) {
