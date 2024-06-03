@@ -10,18 +10,21 @@ export const EMAIL_PREFIX = IS_PROD ? '' : `[${process.env.APP_ENV}] `;
 export const DEPLOYMENT_TAG = process.env.DEPLOYMENT_TAG || '';
 export const ENABLE_DELETION_CHECK = !['localdev', 'dev'].includes(APP_ENV);
 export const BASE_URL = process.env.BASE_URL || 'http://localhost:3000';
+
+// Keycloak environments
 export const AUTH_BASE_URL = process.env.AUTH_BASE_URL || 'http://localhost:8080';
-export const AUTH_SERVER_URL = process.env.AUTH_SERVER_URL || 'http://localhost:808';
+export const AUTH_SERVER_URL = process.env.AUTH_SERVER_URL || 'http://localhost:8080';
 export const AUTH_RELM = process.env.AUTH_RELM || 'platform-services';
 export const AUTH_RESOURCE = process.env.AUTH_RESOURCE || 'pltsvc';
 export const AUTH_SECRET = process.env.AUTH_SECRET || 'testsecret';
 export const KEYCLOAK_ADMIN_CLIENT_ID = process.env.KEYCLOAK_ADMIN_CLIENT_ID || 'pltsvc-admin-cli';
 export const KEYCLOAK_ADMIN_CLIENT_SECRET = process.env.KEYCLOAK_ADMIN_CLIENT_SECRET || 'testsecret';
-export const AWS_ROLES_BASE_URL = process.env.AWS_ROLES_BASE_URL || '';
-export const AWS_ROLES_REALM_NAME = process.env.AWS_ROLES_REALM_NAME || '';
-export const AWS_ROLES_CLIENT_ID = process.env.AWS_ROLES_CLIENT_ID || '';
-export const AWS_ROLES_CLIENT_SECRET = process.env.AWS_ROLES_CLIENT_SECRET || '';
-export const AWS_ROLES_IDENTITY_PROVIDER = process.env.AWS_ROLES_IDENTITY_PROVIDER || '';
+export const AWS_ROLES_BASE_URL = process.env.AWS_ROLES_BASE_URL || 'http://localhost:8080';
+export const AWS_ROLES_REALM_NAME = process.env.AWS_ROLES_REALM_NAME || 'public-cloud';
+export const AWS_ROLES_CLIENT_ID = process.env.AWS_ROLES_CLIENT_ID || 'roles';
+export const AWS_ROLES_CLIENT_SECRET = process.env.AWS_ROLES_CLIENT_SECRET || 'testsecret';
+export const AWS_ROLES_IDENTITY_PROVIDER = process.env.AWS_ROLES_IDENTITY_PROVIDER || 'azureidir';
+
 export const PRIVATE_ADMIN_EMAILS = process.env.PRIVATE_ADMIN_EMAILS || '';
 export const PUBLIC_ADMIN_EMAILS = process.env.PUBLIC_ADMIN_EMAILS || '';
 export const CHES_TOKEN_URL = process.env.CHES_TOKEN_URL || '';
