@@ -1,4 +1,5 @@
 import { $Enums, Prisma } from '@prisma/client';
+import { useSession } from 'next-auth/react';
 import { useEffect, useRef, useState } from 'react';
 import { useSnapshot, subscribe } from 'valtio';
 import FormToggle from '@/components/generic/checkbox/FormToggle';
@@ -7,6 +8,8 @@ import { providers, productSorts, ministryOptions, providerOptions } from '@/con
 import { pageState } from './state';
 
 export default function FilterPanel() {
+  const { data: session } = useSession();
+
   const pageSnapshot = useSnapshot(pageState);
   const providerProviderRef = useRef<HTMLSelectElement>(null);
   const ministryRef = useRef<HTMLSelectElement>(null);
@@ -81,7 +84,13 @@ export default function FilterPanel() {
               ref={providerProviderRef}
               id="provider"
               label="Provider"
-              options={[{ label: 'All Providers', value: '' }, ...providerOptions]}
+              options={[
+                { label: 'All Providers', value: '' },
+                ...providerOptions.filter((opt) => {
+                  if (session?.previews.azure !== true) return opt.value === $Enums.Provider.AWS;
+                  return true;
+                }),
+              ]}
               defaultValue={pageSnapshot.provider}
               onChange={handleProviderChange}
             />

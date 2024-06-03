@@ -1,5 +1,6 @@
 import { $Enums } from '@prisma/client';
 import classNames from 'classnames';
+import { useSession } from 'next-auth/react';
 import { useFormContext } from 'react-hook-form';
 import AGMinistryCheckBox from '@/components/form/AGMinistryCheckBox';
 import FormSelect from '@/components/generic/select/FormSelect';
@@ -19,6 +20,8 @@ export default function ProjectDescriptionPublic({
   disabled?: boolean;
   providerDisabled?: boolean;
 }) {
+  const { data: session } = useSession();
+
   const {
     register,
     formState: { errors },
@@ -113,7 +116,13 @@ export default function ProjectDescriptionPublic({
             id="provider"
             label="Cloud Service Provider"
             disabled={disabled || providerDisabled}
-            options={[{ label: 'Select Provider', value: '' }, ...providerOptions]}
+            options={[
+              { label: 'Select Provider', value: '' },
+              ...providerOptions.filter((opt) => {
+                if (session?.previews.azure !== true) return opt.value === $Enums.Provider.AWS;
+                return true;
+              }),
+            ]}
             selectProps={register('provider')}
           />
           <p className={classNames(errors.provider ? 'text-red-400' : '', 'mt-3 text-sm leading-6 text-gray-600')}>

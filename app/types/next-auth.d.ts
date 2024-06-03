@@ -79,6 +79,7 @@ declare module 'next-auth' {
       comments: boolean;
       apiAccount: boolean;
       testProduct: boolean;
+      azure: boolean;
     };
   }
 

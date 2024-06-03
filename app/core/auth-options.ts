@@ -146,6 +146,7 @@ export async function generateSession({ session, token }: { session: Session; to
     comments: !IS_PROD,
     apiAccount: !IS_PROD,
     testProduct: !IS_PROD,
+    azure: !IS_PROD,
   };
 
   session.permissions = {
