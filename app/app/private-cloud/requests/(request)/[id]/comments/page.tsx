@@ -6,10 +6,8 @@ import { z } from 'zod';
 import CommentBubble from '@/components/comments/CommentBubble';
 import CommentForm from '@/components/comments/CommentForm';
 import createClientPage from '@/core/client-page';
-import { PrivateCloudRequestGetPayload } from '@/queries/private-cloud-requests';
 import { getAllPrivateCloudComments } from '@/services/backend/private-cloud/products';
-import { getPrivateCloudRequest } from '@/services/backend/private-cloud/requests';
-import { privateProductState, usePrivateProductState } from '@/states/global';
+import { usePrivateProductState } from '@/states/global';
 
 interface User {
   firstName: string;
@@ -36,32 +34,9 @@ const privateCloudRequestComments = createClientPage({
 });
 
 export default privateCloudRequestComments(({ pathParams, session }) => {
-  const queryClient = useQueryClient();
-  const [privateState, privateSnap] = usePrivateProductState();
+  const [, privateSnap] = usePrivateProductState();
   const { id: requestId } = pathParams;
   const userId = session?.userId;
-
-  // Fetch the request details to ensure licencePlate is set
-  const {
-    data: request,
-    isLoading: requestLoading,
-    isError: requestError,
-    error: requestErrorDetails,
-  } = useQuery<PrivateCloudRequestGetPayload>({
-    queryKey: ['request', requestId],
-    queryFn: () => getPrivateCloudRequest(requestId),
-    enabled: !!requestId,
-  });
-
-  useEffect(() => {
-    if (request) {
-      privateProductState.currentRequest = request;
-      privateProductState.licencePlate = request.licencePlate;
-      queryClient.invalidateQueries({
-        queryKey: ['comments', request.licencePlate, requestId],
-      });
-    }
-  }, [request, requestId, queryClient]);
 
   // Query for comments
   const {
@@ -71,22 +46,19 @@ export default privateCloudRequestComments(({ pathParams, session }) => {
     error: commentsError,
     refetch: refetchComments,
   } = useQuery({
-    queryKey: ['comments', privateProductState.licencePlate, requestId],
-    queryFn: () => getAllPrivateCloudComments(privateProductState.licencePlate, requestId),
-    enabled: !!privateProductState.licencePlate && !!requestId,
+    queryKey: ['comments', privateSnap.licencePlate, requestId],
+    queryFn: () => getAllPrivateCloudComments(privateSnap.licencePlate, requestId),
+    enabled: !!privateSnap.licencePlate && !!requestId,
   });
 
   const handleCommentAdded = () => {
     refetchComments(); // Refresh the comments after adding a new one
   };
 
-  if (requestLoading) return <p>Loading request...</p>;
-  if (requestError) return <p>Error loading request: {requestErrorDetails.message}</p>;
-
   return (
     <div>
       <CommentForm
-        licencePlate={privateProductState.licencePlate}
+        licencePlate={privateSnap.licencePlate}
         requestId={requestId}
         userId={userId ?? ''}
         onCommentAdded={handleCommentAdded}
@@ -105,7 +77,7 @@ export default privateCloudRequestComments(({ pathParams, session }) => {
               lastName={comment.user.lastName}
               isAuthor={userId === comment.userId}
               commentId={comment.id}
-              licencePlate={privateProductState.licencePlate}
+              licencePlate={privateSnap.licencePlate}
               onDelete={refetchComments}
               email={session?.userEmail ?? ''}
               image={session?.user.image ?? ''}
