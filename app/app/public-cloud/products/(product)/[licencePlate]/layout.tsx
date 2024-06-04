@@ -1,5 +1,6 @@
 'use client';
 
+import { $Enums } from '@prisma/client';
 import { useQuery } from '@tanstack/react-query';
 import { useEffect } from 'react';
 import { ToastContainer } from 'react-toastify';
@@ -48,13 +49,16 @@ export default publicCloudProductSecurityACS(({ pathParams, queryParams, session
       name: 'requests',
       href: `/public-cloud/products/${licencePlate}/requests`,
     },
-    {
+  ];
+
+  if (currentProduct?.provider === $Enums.Provider.AWS) {
+    tabs.push({
       label: 'ROLES',
       name: 'aws-roles',
       href: `/public-cloud/products/${licencePlate}/aws-roles/admins`,
       ignoreSegments: 1,
-    },
-  ];
+    });
+  }
 
   if (currentProduct?._permissions.viewHistory) {
     tabs.push({
