@@ -1,3 +1,13 @@
+## [0.26.5](https://github.com/bcgov/platform-services-registry/compare/v0.26.4...v0.26.5) (2024-06-04)
+
+### Features
+
+* **2596:** add Azure as the second public cloud provider option ([1409f5e](https://github.com/bcgov/platform-services-registry/commit/1409f5e651c623c14a5b23a49d6fb4c04a226ac9))
+* **2596:** add Azure provider into public analystics dashboard ([9b6c628](https://github.com/bcgov/platform-services-registry/commit/9b6c6286f6266d559334e56c31a7e8732d97310d))
+
+### Refactors
+
+* **2808:** convert keycloak provision into typescript ([a546710](https://github.com/bcgov/platform-services-registry/commit/a546710fa7f08665aa2a210f5ad670fa47b2fee9))
 ## [0.26.4](https://github.com/bcgov/platform-services-registry/compare/v0.26.3...v0.26.4) (2024-06-03)
 
 ### Features
