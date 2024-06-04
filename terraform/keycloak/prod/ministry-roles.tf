@@ -1,5 +1,5 @@
 locals {
-  ministry_codes = ["ag", "pssg", "embc", "hous"]
+  ministry_codes = ["aest", "ag", "agri", "alc", "bcpc", "citz", "dbc", "eao", "educ", "embc", "empr", "env", "fin", "flnr", "hlth", "irr", "jedc", "lbr", "ldb", "mah", "mcf", "mmha", "psa", "pssg", "sdpr", "tca", "tran", "hous"]
 }
 
 resource "keycloak_role" "pltsvc_ministry_editor" {
