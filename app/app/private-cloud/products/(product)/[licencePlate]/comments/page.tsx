@@ -78,6 +78,8 @@ export default privateCloudProductComments(({ pathParams, queryParams, session }
               commentId={comment.id}
               licencePlate={licencePlate}
               onDelete={refetchComments}
+              email={session?.userEmail ?? ''}
+              image={session?.user.image ?? ''}
             />
           ))}
         </ul>

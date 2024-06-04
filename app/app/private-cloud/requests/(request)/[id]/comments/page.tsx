@@ -112,6 +112,8 @@ export default privateCloudRequestComments(({ pathParams, session }) => {
               commentId={comment.id}
               licencePlate={privateProductState.licencePlate}
               onDelete={refetchComments}
+              email={session?.userEmail ?? ''}
+              image={session?.user.image ?? ''}
             />
           ))}
         </ul>
