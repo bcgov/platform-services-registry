@@ -19,7 +19,7 @@ interface User {
 
 interface Comment {
   id: string;
-  created: Date;
+  createdAt: Date;
   updatedAt: Date;
   text: string;
   userId: string;
@@ -104,7 +104,7 @@ export default privateCloudRequestComments(({ pathParams, session }) => {
             <CommentBubble
               key={comment.id}
               text={comment.text}
-              timeStamp={new Date(comment.created)}
+              timeStamp={new Date(comment.createdAt)}
               updatedAt={new Date(comment.updatedAt)}
               firstName={comment.user.firstName}
               lastName={comment.user.lastName}

@@ -123,7 +123,7 @@ model PrivateCloudRequestedProject {
 
 model PrivateCloudComment {
   id        String                @id @default(auto()) @map("_id") @db.ObjectId
-  created   DateTime              @default(now())
+  createdAt DateTime              @default(now())
   updatedAt DateTime              @updatedAt
   text      String
   userId    String                @db.ObjectId
