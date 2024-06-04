@@ -48,7 +48,8 @@ const CommentBubble = ({
   }, [editMode]);
 
   const editMutation = useMutation({
-    mutationFn: () => updatePrivateCloudComment(licencePlate, commentId, editTextRef.current?.textContent || text),
+    mutationFn: () =>
+      updatePrivateCloudComment(licencePlate, commentId, editTextRef.current?.textContent || editedText),
     onSuccess: () => {
       toast.success('Comment edited successfully');
       setEditMode(false);
@@ -137,6 +138,10 @@ const CommentBubble = ({
 
   const toggleMenu = () => setMenuOpen(!menuOpen);
 
+  const convertNewLinesToBreaks = (inputText: string) => {
+    return inputText.replace(/\n/g, '<br />');
+  };
+
   return (
     <div className="relative justify-center items-center">
       <div className={bubbleStyles}>
@@ -188,16 +193,23 @@ const CommentBubble = ({
             </div>
           )}
           <div className={bodyStyles}>
-            <p
-              ref={editTextRef}
-              contentEditable={editMode}
-              suppressContentEditableWarning={true}
-              className={`transition duration-300 ease-in-out ${
-                editMode ? 'bg-gray-100 border-2 border-yellow-400 p-2 rounded' : ''
-              }`}
-            >
-              {text}
-            </p>
+            {editMode ? (
+              <p
+                ref={editTextRef}
+                contentEditable={editMode}
+                suppressContentEditableWarning={true}
+                className={`transition duration-300 ease-in-out ${
+                  editMode ? 'bg-gray-100 border-2 border-yellow-400 p-2 rounded' : ''
+                }`}
+              >
+                {editedText}
+              </p>
+            ) : (
+              <p
+                dangerouslySetInnerHTML={{ __html: convertNewLinesToBreaks(text) }}
+                className="transition duration-300 ease-in-out"
+              ></p>
+            )}
             {editMode && (
               <div className="flex justify-around p-2">
                 <button
