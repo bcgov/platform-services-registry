@@ -1,14 +1,13 @@
 'use client';
 
-import { useQuery } from '@tanstack/react-query';
-import React from 'react';
-import { useSnapshot } from 'valtio';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
+import React, { useEffect } from 'react';
 import { z } from 'zod';
 import CommentBubble from '@/components/comments/CommentBubble';
 import CommentForm from '@/components/comments/CommentForm';
 import createClientPage from '@/core/client-page';
 import { getAllPrivateCloudComments } from '@/services/backend/private-cloud/products';
-import { privateProductState } from '@/states/global';
+import { usePrivateProductState } from '@/states/global';
 
 interface User {
   firstName: string;
@@ -26,17 +25,17 @@ interface Comment {
 }
 
 const pathParamSchema = z.object({
-  licencePlate: z.string(),
+  id: z.string(),
 });
 
-const privateCloudProductComments = createClientPage({
+const privateCloudRequestComments = createClientPage({
   roles: ['user'],
   validations: { pathParams: pathParamSchema },
 });
-export default privateCloudProductComments(({ pathParams, queryParams, session }) => {
-  const snap = useSnapshot(privateProductState);
-  const { licencePlate } = pathParams;
 
+export default privateCloudRequestComments(({ pathParams, session }) => {
+  const [, privateSnap] = usePrivateProductState();
+  const { id: requestId } = pathParams;
   const userId = session?.userId;
 
   // Query for comments
@@ -47,9 +46,9 @@ export default privateCloudProductComments(({ pathParams, queryParams, session }
     error: commentsError,
     refetch: refetchComments,
   } = useQuery({
-    queryKey: ['comments', licencePlate],
-    queryFn: () => getAllPrivateCloudComments(licencePlate),
-    enabled: !!licencePlate,
+    queryKey: ['comments', privateSnap.licencePlate, requestId],
+    queryFn: () => getAllPrivateCloudComments(privateSnap.licencePlate, requestId),
+    enabled: !!privateSnap.licencePlate && !!requestId,
   });
 
   const handleCommentAdded = () => {
@@ -59,11 +58,13 @@ export default privateCloudProductComments(({ pathParams, queryParams, session }
   return (
     <div>
       <CommentForm
-        licencePlate={licencePlate}
-        projectId={snap.currentProduct?.id ?? ''}
+        licencePlate={privateSnap.licencePlate}
+        requestId={requestId}
         userId={userId ?? ''}
         onCommentAdded={handleCommentAdded}
       />
+      {commentsLoading && <p>Loading comments...</p>}
+      {commentsIsError && <p>Error loading comments: {commentsError.message}</p>}
       {comments?.length > 0 ? (
         <ul>
           {comments.map((comment: Comment) => (
@@ -76,7 +77,7 @@ export default privateCloudProductComments(({ pathParams, queryParams, session }
               lastName={comment.user.lastName}
               isAuthor={userId === comment.userId}
               commentId={comment.id}
-              licencePlate={licencePlate}
+              licencePlate={privateSnap.licencePlate}
               onDelete={refetchComments}
               email={session?.userEmail ?? ''}
               image={session?.user.image ?? ''}
@@ -84,7 +85,7 @@ export default privateCloudProductComments(({ pathParams, queryParams, session }
           ))}
         </ul>
       ) : (
-        <p>No comments found.</p>
+        !commentsLoading && <p>No comments found.</p>
       )}
     </div>
   );

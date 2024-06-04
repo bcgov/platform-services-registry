@@ -56,9 +56,9 @@ export default privateCloudProductSecurityACS(({ pathParams, queryParams, sessio
   }, [request]);
 
   const tabsByType = {
-    [$Enums.RequestType.CREATE]: ['summary', 'request', 'decision'],
-    [$Enums.RequestType.EDIT]: ['summary', 'original', 'request', 'decision'],
-    [$Enums.RequestType.DELETE]: ['decision'],
+    [$Enums.RequestType.CREATE]: ['summary', 'request', 'decision', 'comments'],
+    [$Enums.RequestType.EDIT]: ['summary', 'original', 'request', 'decision', 'comments'],
+    [$Enums.RequestType.DELETE]: ['decision', 'comments'],
   };
 
   let tabs: ITab[] = [
@@ -84,6 +84,14 @@ export default privateCloudProductSecurityACS(({ pathParams, queryParams, sessio
       label: 'ADMIN DECISION',
       name: 'decision',
       href: `/private-cloud/requests/${id}/decision`,
+    });
+  }
+
+  if (session?.previews.comments && session?.permissions.viewAllPrivateProductComments) {
+    tabs.push({
+      label: 'ADMIN COMMENTS',
+      name: 'comments',
+      href: `/private-cloud/requests/${id}/comments`,
     });
   }
 
