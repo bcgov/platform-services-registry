@@ -1,6 +1,7 @@
+import { Tooltip, UnstyledButton } from '@mantine/core';
 import { IconTrash, IconPencil, IconDots } from '@tabler/icons-react';
 import { useMutation } from '@tanstack/react-query';
-import { formatDistanceToNow } from 'date-fns';
+import { formatDistanceToNow, format } from 'date-fns';
 import React, { useState, useRef, useEffect } from 'react';
 import { toast } from 'react-toastify';
 import { deletePrivateCloudComment, updatePrivateCloudComment } from '@/services/backend/private-cloud/products';
@@ -127,10 +128,12 @@ const CommentBubble = ({
     : 'absolute top-0 -left-6 transform -translate-x-1/2';
 
   const timeAgo = formatDistanceToNow(timeStamp, { addSuffix: true });
+  const timeStampExact = format(new Date(timeStamp), 'PPpp');
 
   const wasEdited = new Date(timeStamp).getTime() !== new Date(updatedAt).getTime();
 
   const lastEdited = formatDistanceToNow(new Date(updatedAt), { addSuffix: true });
+  const lastEditedExact = format(new Date(updatedAt), 'PPpp');
 
   const toggleMenu = () => setMenuOpen(!menuOpen);
 
@@ -144,11 +147,19 @@ const CommentBubble = ({
                 {firstName} {lastName}
               </strong>{' '}
               <span className="commented-text text-gray-500">commented </span>
-              <span className="text-gray-500">{timeAgo}</span>
+              <Tooltip label={`Posted: ${timeStampExact}`}>
+                <UnstyledButton className="text-gray-500 cursor-help" style={{ fontSize: '0.75rem' }}>
+                  <span className="text-gray-500" style={{ fontSize: '0.75rem' }}>
+                    {timeAgo}
+                  </span>
+                </UnstyledButton>
+              </Tooltip>
               {wasEdited && (
-                <span title={`Last edited: ${lastEdited}`} className="text-gray-500 cursor-help">
-                  *
-                </span>
+                <Tooltip label={`Last edited: ${lastEdited} (${lastEditedExact})`}>
+                  <UnstyledButton className="text-gray-500 cursor-help">
+                    <IconPencil className="inline-block mr-1" style={{ fontSize: '0.75rem' }} />
+                  </UnstyledButton>
+                </Tooltip>
               )}
             </div>
             {isAuthor && (
