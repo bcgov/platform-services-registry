@@ -57,7 +57,7 @@ export default privateCloudProductComments(({ pathParams, queryParams, session }
   };
 
   return (
-    <div className="flex flex-col items-center">
+    <div>
       <CommentForm
         licencePlate={licencePlate}
         projectId={snap.currentProduct?.id ?? ''}
