@@ -6,7 +6,6 @@ import { useQuery } from '@tanstack/react-query';
 import { differenceInDays } from 'date-fns/differenceInDays';
 import Link from 'next/link';
 import { useEffect } from 'react';
-import { ToastContainer } from 'react-toastify';
 import { z } from 'zod';
 import PrivateCloudProductOptions from '@/components/dropdowns/PrivateCloudProductOptions';
 import ProductBadge from '@/components/form/ProductBadge';
@@ -117,7 +116,6 @@ export default privateCloudProductSecurityACS(({ pathParams, queryParams, sessio
         />
       </Tabs>
       <div className="mt-6">{children}</div>
-      <ToastContainer />
     </div>
   );
 });

@@ -3,7 +3,6 @@
 import { $Enums } from '@prisma/client';
 import { useQuery } from '@tanstack/react-query';
 import { useEffect } from 'react';
-import { ToastContainer } from 'react-toastify';
 import { z } from 'zod';
 import PublicCloudProductOptions from '@/components/dropdowns/PublicCloudProductOptions';
 import ProductBadge from '@/components/form/ProductBadge';
@@ -79,7 +78,6 @@ export default publicCloudProductSecurityACS(({ pathParams, queryParams, session
         <PublicCloudProductOptions disabled={!currentProduct?._permissions?.delete} />
       </Tabs>
       <div className="mt-14"> {children}</div>
-      <ToastContainer />
     </div>
   );
 });

@@ -1,9 +1,9 @@
 import { Tooltip, UnstyledButton } from '@mantine/core';
+import { notifications } from '@mantine/notifications';
 import { IconTrash, IconPencil, IconDots } from '@tabler/icons-react';
 import { useMutation } from '@tanstack/react-query';
 import { formatDistanceToNow, format } from 'date-fns';
 import React, { useState, useRef, useEffect } from 'react';
-import { toast } from 'react-toastify';
 import { deletePrivateCloudComment, updatePrivateCloudComment } from '@/services/backend/private-cloud/products';
 import AlertBox from '../modal/AlertBox';
 import ProfileImage from '../ProfileImage';
@@ -51,11 +51,21 @@ const CommentBubble = ({
     mutationFn: () =>
       updatePrivateCloudComment(licencePlate, commentId, editTextRef.current?.textContent || editedText),
     onSuccess: () => {
-      toast.success('Comment edited successfully');
+      notifications.show({
+        color: 'green',
+        title: 'Success',
+        message: 'Comment edited successfully',
+        autoClose: 5000,
+      });
       setEditMode(false);
     },
     onError: (error: Error) => {
-      toast.error(`Error updating comment: ${error.message}`);
+      notifications.show({
+        color: 'red',
+        title: 'Error',
+        message: `Error updating comment: ${error.message}`,
+        autoClose: 5000,
+      });
       setEditMode(false);
     },
   });
@@ -99,11 +109,21 @@ const CommentBubble = ({
     mutationFn: () => deletePrivateCloudComment(licencePlate, commentId),
     onSuccess: () => {
       onDelete();
-      toast.success('Comment deleted successfully');
+      notifications.show({
+        color: 'green',
+        title: 'Success',
+        message: 'Comment deleted successfully',
+        autoClose: 5000,
+      });
       setShowConfirm(false); // Close the confirmation modal
     },
     onError: (error: Error) => {
-      toast.error(`Error: ${error.message}`);
+      notifications.show({
+        color: 'red',
+        title: 'Error',
+        message: `Error: ${error.message}`,
+        autoClose: 5000,
+      });
     },
   });
 

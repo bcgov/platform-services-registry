@@ -1,13 +1,13 @@
 'use client';
 
 import { zodResolver } from '@hookform/resolvers/zod';
+import { notifications } from '@mantine/notifications';
 import { SecurityConfig, $Enums } from '@prisma/client';
 import { useQuery, useMutation } from '@tanstack/react-query';
 import classNames from 'classnames';
 import _get from 'lodash-es/get';
 import { useEffect } from 'react';
 import { useForm, useFieldArray } from 'react-hook-form';
-import { toast } from 'react-toastify';
 import { SecurityConfigRequestBodySchema } from '@/schema';
 import { getSecurityConfig, upsertSecurityConfig } from '@/services/backend/security-config';
 
@@ -85,7 +85,12 @@ export default function Repository({ params }: { params: { licencePlate: string 
       <form
         onSubmit={handleSubmit(async (data) => {
           await mutateAsync(data);
-          toast.success('Successfully updated!');
+          notifications.show({
+            color: 'green',
+            title: 'Success',
+            message: 'Successfully updated!',
+            autoClose: 5000,
+          });
         })}
       >
         <ul>

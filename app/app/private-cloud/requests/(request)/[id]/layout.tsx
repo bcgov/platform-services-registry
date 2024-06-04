@@ -6,7 +6,6 @@ import { IconArrowBack, IconInfoCircle, IconFile } from '@tabler/icons-react';
 import { useQuery } from '@tanstack/react-query';
 import { differenceInDays } from 'date-fns/differenceInDays';
 import { useEffect } from 'react';
-import { ToastContainer } from 'react-toastify';
 import { z } from 'zod';
 import PrivateCloudRequestOptions from '@/components/dropdowns/PrivateCloudRequestOptions';
 import RequestBadge from '@/components/form/RequestBadge';
@@ -141,7 +140,6 @@ export default privateCloudProductSecurityACS(({ pathParams, queryParams, sessio
         <PrivateCloudRequestOptions id={request.id} canResend={request._permissions.resend} />
       </Tabs>
       <div className="mt-6">{children}</div>
-      <ToastContainer />
     </div>
   );
 });

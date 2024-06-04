@@ -5,7 +5,6 @@ import { $Enums } from '@prisma/client';
 import { IconArrowBack, IconInfoCircle, IconFile } from '@tabler/icons-react';
 import { useQuery } from '@tanstack/react-query';
 import { useEffect } from 'react';
-import { ToastContainer } from 'react-toastify';
 import { z } from 'zod';
 import PublicCloudRequestOptions from '@/components/dropdowns/PublicCloudRequestOptions';
 import RequestBadge from '@/components/form/RequestBadge';
@@ -110,7 +109,6 @@ export default publicCloudProductSecurityACS(({ pathParams, queryParams, session
         <PublicCloudRequestOptions id={request.id} />
       </Tabs>
       <div className="mt-6">{children}</div>
-      <ToastContainer />
     </div>
   );
 });
