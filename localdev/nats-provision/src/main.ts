@@ -1,7 +1,8 @@
 import waitOn from 'wait-on';
 import { connect, JSONCodec } from 'nats';
+import { NATS_HOST, NATS_PORT, APP_URL } from './config.js';
 
-const natsServer = `${process.env.NATS_HOST}:${process.env.NATS_PORT}`;
+const natsServer = `${NATS_HOST}:${NATS_PORT}`;
 
 async function main() {
   console.log('Starting NATS Provision...');
@@ -15,9 +16,9 @@ async function main() {
   });
 
   // Wait for the application URL to be available
-  console.log('waiting for application URL...', process.env.APP_URL);
+  console.log('waiting for application URL...', APP_URL);
   await waitOn({
-    resources: [process.env.APP_URL],
+    resources: [APP_URL],
     delay: 1000,
     window: 100000,
   });
@@ -26,15 +27,15 @@ async function main() {
   const jc = JSONCodec();
 
   // Subscribe to NATS topics for private cloud provisioning
-  const proms = ['clab', 'klab', 'silver', 'gold', 'golddr', 'klab2', 'emerald'].map((cluster) => {
+  const privateProms = ['clab', 'klab', 'silver', 'gold', 'golddr', 'klab2', 'emerald'].map((cluster) => {
     const privateCloudSub = nc.subscribe(`registry_project_provisioning_${cluster}`);
     return (async () => {
       for await (const m of privateCloudSub) {
-        const data = jc.decode(m.data);
+        const data: any = jc.decode(m.data);
         console.log(`Received: ${JSON.stringify(data)}`);
 
         try {
-          const res = await fetch(`${process.env.APP_URL}/api/private-cloud/provision/${data.licencePlate}`, {
+          const res = await fetch(`${APP_URL}/api/private-cloud/provision/${data.licencePlate}`, {
             method: 'PUT',
             headers: {
               'Content-Type': 'application/json',
@@ -49,37 +50,34 @@ async function main() {
     })();
   });
 
-  // Subscribe to NATS topic for public cloud provisioning
-  const publicCloudSub = nc.subscribe('registry_project_provisioning_aws');
-  proms.push(
-    (async () => {
+  // Subscribe to NATS topics for public cloud provisioning
+  const publicProms = ['aws', 'azure'].map((provider) => {
+    const publicCloudSub = nc.subscribe(`registry_project_provisioning_${provider}`);
+    return (async () => {
       for await (const m of publicCloudSub) {
-        const data = jc.decode(m.data);
+        const data: any = jc.decode(m.data);
         console.log(`Received: ${JSON.stringify(data)}`);
 
         try {
-          const res = await fetch(
-            `${process.env.APP_URL}/api/public-cloud/provision/${data.project_set_info.licence_plate}`,
-            {
-              method: 'PUT',
-              headers: {
-                'Content-Type': 'application/json',
-              },
-              body: JSON.stringify({}),
+          const res = await fetch(`${APP_URL}/api/public-cloud/provision/${data.project_set_info.licence_plate}`, {
+            method: 'PUT',
+            headers: {
+              'Content-Type': 'application/json',
             },
-          );
+            body: JSON.stringify({}),
+          });
           console.log(res);
         } catch (error) {
           console.error(error);
         }
       }
-    })(),
-  );
+    })();
+  });
 
   // Monitor all subscriptions
   console.log('Monitoring all subscriptions');
 
-  await Promise.all(proms);
+  await Promise.all([...privateProms, ...publicProms]);
 }
 
 main().then(console.log).catch(console.error);

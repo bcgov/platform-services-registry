@@ -1,6 +1,6 @@
 import waitOn from 'wait-on';
 import mockFile from '../../m365proxy/mocks.json' with { type: 'json' };
-import { KcAdmin } from './core.js';
+import { KcAdmin } from '../../_packages/keycloak-admin/src/main.js';
 import {
   KEYCLOAK_URL,
   MASTER_ADMIN,
@@ -83,6 +83,10 @@ async function main() {
 
   // Create Auth Users with auth roles assigned
   await kc.upsertUsersWithClientRoles(AUTH_REALM_NAME, authClient?.id as string, authUsers);
+
+  // Create public cloud realm & client
+  await kc.upsertRealm(PUBLIC_CLOUD_REALM_NAME, { enabled: true });
+  await kc.createServiceAccount(PUBLIC_CLOUD_REALM_NAME, PUBLIC_CLOUD_CLIENT_ID, PUBLIC_CLOUD_CLIENT_SECRET);
 
   return {
     authRealm,
