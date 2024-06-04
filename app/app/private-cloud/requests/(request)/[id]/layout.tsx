@@ -35,11 +35,6 @@ export default privateCloudProductSecurityACS(({ pathParams, queryParams, sessio
   });
 
   useEffect(() => {
-    console.log('Path Params:', pathParams);
-    console.log('Session:', session);
-    console.log('Request Data:', request);
-    console.log('Is Request Loading:', isRequestLoading);
-
     if (request) {
       privateProductState.currentRequest = request;
       privateProductState.licencePlate = request.licencePlate;
@@ -104,8 +99,6 @@ export default privateCloudProductSecurityACS(({ pathParams, queryParams, sessio
 
     return tabsByType[request.type].includes(tab.name);
   });
-
-  console.log('Tabs:', tabs);
 
   if (isRequestLoading || !request) return null;
 

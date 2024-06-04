@@ -63,11 +63,6 @@ export default privateCloudRequestComments(({ pathParams, session }) => {
     }
   }, [request, requestId, queryClient]);
 
-  useEffect(() => {
-    console.log('Child Page Path Params:', pathParams);
-    console.log('Licence Plate:', privateProductState.licencePlate);
-  }, [pathParams]);
-
   // Query for comments
   const {
     data: comments,
