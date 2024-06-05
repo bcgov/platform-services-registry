@@ -1,3 +1,8 @@
+## [0.28.0](https://github.com/bcgov/platform-services-registry/compare/v0.27.0...v0.28.0) (2024-06-05)
+
+### Features
+
+* **3001:** add service API endpoint to accept both ID and license plate ([6e7446f](https://github.com/bcgov/platform-services-registry/commit/6e7446f40e190ba37916167d512326f3c1cb5d8b))
 ## [0.27.0](https://github.com/bcgov/platform-services-registry/compare/v0.26.5...v0.27.0) (2024-06-05)
 
 ### Features
