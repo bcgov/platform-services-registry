@@ -34,11 +34,15 @@ interface KcUser {
 
 // Keycloak Admin class to manage Keycloak administration tasks
 export class KcAdmin {
-  private _username: string;
+  private _username?: string;
 
-  private _password: string;
+  private _password?: string;
 
-  private _kcAdminClient: KcAdminClient;
+  private _clientId?: string;
+
+  private _clientSecret?: string;
+
+  private _cli: KcAdminClient;
 
   // Constructor to initialize the Keycloak Admin client
   constructor({
@@ -46,30 +50,39 @@ export class KcAdmin {
     realmName,
     username,
     password,
+    clientId,
+    clientSecret,
   }: {
     baseUrl: string;
     realmName: string;
-    username: string;
-    password: string;
+    username?: string;
+    password?: string;
+    clientId?: string;
+    clientSecret?: string;
   }) {
     this._username = username;
     this._password = password;
-    this._kcAdminClient = new KcAdminClient({
+    this._clientId = clientId;
+    this._clientSecret = clientSecret;
+    this._cli = new KcAdminClient({
       baseUrl,
       realmName,
     });
   }
 
   // Getter for the Keycloak Admin client
-  get kcAdminClient() {
-    return this._kcAdminClient;
+  get cli() {
+    return this._cli;
   }
 
   // Authenticate with Keycloak
   async auth() {
-    await this._kcAdminClient.auth({
-      grantType: 'password',
-      clientId: 'admin-cli',
+    const grantType = this._password ? 'password' : 'client_credentials';
+
+    await this._cli.auth({
+      grantType: grantType,
+      clientId: this._clientId ?? 'admin-cli',
+      clientSecret: this._clientSecret,
       username: this._username,
       password: this._password,
     });
@@ -77,7 +90,7 @@ export class KcAdmin {
 
   // Find a realm by its name
   async findRealm(realm: string) {
-    return this._kcAdminClient.realms.findOne({ realm });
+    return this._cli.realms.findOne({ realm });
   }
 
   // Create a new realm if it doesn't exist
@@ -85,20 +98,20 @@ export class KcAdmin {
     const _realm = await this.findRealm(realm);
     if (_realm) return _realm;
 
-    await this._kcAdminClient.realms.create({ realm, displayName: realm });
+    await this._cli.realms.create({ realm, displayName: realm });
     return this.findRealm(realm);
   }
 
   // Upsert a realm with the given payload
   async upsertRealm(realm: string, payload: RealmRepresentation) {
     await this.createRealm(realm);
-    await this._kcAdminClient.realms.update({ realm }, payload);
+    await this._cli.realms.update({ realm }, payload);
     return this.findRealm(realm);
   }
 
   // Find a client by its ID in a realm
   async findClient(realm: string, clientId: string) {
-    const _clients = await this._kcAdminClient.clients.find({ realm, clientId });
+    const _clients = await this._cli.clients.find({ realm, clientId });
     return _clients?.length > 0 ? _clients[0] : null;
   }
 
@@ -107,7 +120,7 @@ export class KcAdmin {
     const _client = await this.findClient(realm, clientId);
     if (_client) return _client;
 
-    await this._kcAdminClient.clients.create({ realm, clientId });
+    await this._cli.clients.create({ realm, clientId });
     return this.findClient(realm, clientId);
   }
 
@@ -115,7 +128,7 @@ export class KcAdmin {
   async upsertClient(realm: string, clientId: string, payload: ClientRepresentation) {
     const _client = await this.createClient(realm, clientId);
 
-    await this._kcAdminClient.clients.update({ realm, id: _client?.id as string }, payload);
+    await this._cli.clients.update({ realm, id: _client?.id as string }, payload);
     return this.findClient(realm, clientId);
   }
 
@@ -155,18 +168,18 @@ export class KcAdmin {
     const _client = await this.createServiceAccount(realm, clientId, clientSecret);
 
     const realmManagementClient = await this.findClient(realm, 'realm-management');
-    const realmAdminRole = await this._kcAdminClient.clients.findRole({
+    const realmAdminRole = await this._cli.clients.findRole({
       realm,
       id: realmManagementClient?.id as string,
       roleName: 'realm-admin',
     });
 
-    const adminClientUser = await this._kcAdminClient.clients.getServiceAccountUser({
+    const adminClientUser = await this._cli.clients.getServiceAccountUser({
       realm,
       id: _client?.id as string,
     });
 
-    await this._kcAdminClient.users.addClientRoleMappings({
+    await this._cli.users.addClientRoleMappings({
       realm,
       id: adminClientUser.id as string,
       clientUniqueId: realmManagementClient?.id as string,
@@ -176,10 +189,10 @@ export class KcAdmin {
 
   // Create a client scope in a realm
   async createRealmClientScope(realm: string, clientScope: string) {
-    let scope = await this._kcAdminClient.clientScopes.findOneByName({ realm, name: clientScope });
+    let scope = await this._cli.clientScopes.findOneByName({ realm, name: clientScope });
     if (scope) return scope;
 
-    const newscope = await this._kcAdminClient.clientScopes.create({
+    const newscope = await this._cli.clientScopes.create({
       realm,
       name: clientScope,
       protocol: 'openid-connect',
@@ -191,18 +204,18 @@ export class KcAdmin {
       },
     });
 
-    await this._kcAdminClient.clientScopes.addDefaultOptionalClientScope({
+    await this._cli.clientScopes.addDefaultOptionalClientScope({
       realm,
       id: newscope.id,
     });
 
-    scope = await this._kcAdminClient.clientScopes.findOneByName({ realm, name: clientScope });
+    scope = await this._cli.clientScopes.findOneByName({ realm, name: clientScope });
     return scope;
   }
 
   // Find a user by email in a realm
   async findUserByEmail(realm: string, email: string) {
-    const emailUsers = await this._kcAdminClient.users.find({ realm, email, exact: true });
+    const emailUsers = await this._cli.users.find({ realm, email, exact: true });
     const user = emailUsers.find((usr) => usr.username === email);
     return user;
   }
@@ -213,14 +226,14 @@ export class KcAdmin {
 
     // Catch an error if the user already exists
     try {
-      const user = await this._kcAdminClient.users.create({
+      const user = await this._cli.users.create({
         ...rest,
         enabled: true,
         realm,
         emailVerified: true,
       });
 
-      await this._kcAdminClient.users.resetPassword({
+      await this._cli.users.resetPassword({
         realm,
         id: user.id,
         credential: { temporary: false, type: 'password', value: password },
@@ -235,7 +248,7 @@ export class KcAdmin {
 
   // Find a client role by its name
   async findClinetRole(realm: string, clientUniqueId: string, roleName: string) {
-    const _role = await this._kcAdminClient.clients.findRole({
+    const _role = await this._cli.clients.findRole({
       realm,
       id: clientUniqueId,
       roleName,
@@ -250,7 +263,7 @@ export class KcAdmin {
     if (role) return role;
 
     try {
-      await this._kcAdminClient.clients.createRole({
+      await this._cli.clients.createRole({
         realm,
         id: clientUniqueId,
         name: roleName,
@@ -265,7 +278,7 @@ export class KcAdmin {
 
   // Upsert users with client roles in a realm
   async upsertUsersWithClientRoles(realm: string, clientUniqueId: string, users: KcUser[]) {
-    const allClientRoles = await this._kcAdminClient.clients.listRoles({
+    const allClientRoles = await this._cli.clients.listRoles({
       realm,
       id: clientUniqueId,
     });
@@ -278,7 +291,7 @@ export class KcAdmin {
         const currUser = await this.createUser(realm, { email, username, firstName, lastName, password, roles });
 
         // Revoke all client roles from the user
-        await this._kcAdminClient.users.delClientRoleMappings({
+        await this._cli.users.delClientRoleMappings({
           realm,
           id: currUser?.id as string,
           clientUniqueId,
@@ -287,7 +300,7 @@ export class KcAdmin {
 
         // Assign the new roles
         const newroles = await Promise.all(roles.map((role) => this.createClientRole(realm, clientUniqueId, role)));
-        await this._kcAdminClient.users.addClientRoleMappings({
+        await this._cli.users.addClientRoleMappings({
           realm,
           id: currUser?.id as string,
           clientUniqueId,
@@ -295,5 +308,40 @@ export class KcAdmin {
         });
       }),
     );
+  }
+
+  async findGroup(realm: string, name: string) {
+    const _groups = await this._cli.groups.find({ realm, search: name });
+    if (!_groups || _groups.length === 0) return null;
+
+    return _groups.find((grp) => grp.name === name) ?? null;
+  }
+
+  async createGroup(realm: string, name: string) {
+    const _group = await this.findGroup(realm, name);
+    if (_group) return _group;
+
+    await this._cli.groups.create({ realm, name });
+    return this.findGroup(realm, name);
+  }
+
+  async listChildGroups(realm: string, parentId: string) {
+    const parentGroup = await this._cli.groups.findOne({ realm, id: parentId });
+    if (!parentGroup || !parentGroup.subGroups) return [];
+
+    return parentGroup.subGroups;
+  }
+
+  async findChildGroup(realm: string, parentId: string, name: string) {
+    const subGroups = await this.listChildGroups(realm, parentId);
+    return subGroups.find((grp) => grp.name === name);
+  }
+
+  async createChildGroup(realm: string, parentId: string, name: string) {
+    const _group = await this.findChildGroup(realm, parentId, name);
+    if (_group) return _group;
+
+    await this._cli.groups.createChildGroup({ realm, id: parentId }, { name });
+    return this.findChildGroup(realm, parentId, name);
   }
 }
