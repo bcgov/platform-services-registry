@@ -6,7 +6,7 @@ import { BadRequestResponse, OkResponse } from '@/core/responses';
 import createPrivateCloudNatsMessage from '@/services/nats/private-cloud';
 
 const pathParamSchema = z.object({
-  id: z.string().min(1),
+  idOrLicencePlate: z.string().min(6),
 });
 
 const apiHandler = createApiHandler({
@@ -16,12 +16,12 @@ const apiHandler = createApiHandler({
   validations: { pathParams: pathParamSchema },
 });
 export const GET = apiHandler(async ({ pathParams, session }) => {
-  const { id } = pathParams;
+  const { idOrLicencePlate } = pathParams;
+
+  const where = idOrLicencePlate.length > 6 ? { id: idOrLicencePlate } : { licencePlate: idOrLicencePlate };
 
   const product = await prisma.privateCloudProject.findUnique({
-    where: {
-      id,
-    },
+    where,
     include: {
       projectOwner: true,
       primaryTechnicalLead: true,
@@ -30,7 +30,7 @@ export const GET = apiHandler(async ({ pathParams, session }) => {
   });
 
   if (!product) {
-    return BadRequestResponse(`there is no products associated with ID '${id}'`);
+    return BadRequestResponse(`there is no products associated with key '${idOrLicencePlate}'`);
   }
 
   const result = await createPrivateCloudNatsMessage(product.id, $Enums.RequestType.EDIT, product, false);
