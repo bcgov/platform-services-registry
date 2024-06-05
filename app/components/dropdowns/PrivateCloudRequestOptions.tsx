@@ -1,10 +1,10 @@
 import { Menu, MenuButton, MenuItems, MenuItem, Transition } from '@headlessui/react';
+import { notifications } from '@mantine/notifications';
 import { IconChevronDown, IconRepeat } from '@tabler/icons-react';
 import { useMutation } from '@tanstack/react-query';
 import classNames from 'classnames';
 import { useParams } from 'next/navigation';
 import { useState, Fragment } from 'react';
-import { toast } from 'react-toastify';
 import { resendPrivateCloudRequest } from '@/services/backend/private-cloud/requests';
 
 export default function PrivateCloudRequestOptions({
@@ -24,7 +24,12 @@ export default function PrivateCloudRequestOptions({
   } = useMutation({
     mutationFn: () => resendPrivateCloudRequest(id),
     onSuccess: () => {
-      toast.success('Successfully resent!');
+      notifications.show({
+        color: 'green',
+        title: 'Success',
+        message: 'Successfully resent!',
+        autoClose: 5000,
+      });
     },
   });
 

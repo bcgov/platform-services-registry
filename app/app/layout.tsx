@@ -1,6 +1,5 @@
 'use client';
 
-import 'react-toastify/dist/ReactToastify.css';
 import '@mantine/core/styles.css';
 import '@mantine/notifications/styles.css';
 import './globals.css';

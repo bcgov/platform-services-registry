@@ -1,6 +1,7 @@
 'use client';
 
 import { zodResolver } from '@hookform/resolvers/zod';
+import { notifications } from '@mantine/notifications';
 import { useMutation } from '@tanstack/react-query';
 import { useState } from 'react';
 import { FormProvider, useForm } from 'react-hook-form';
@@ -20,6 +21,7 @@ import { createPrivateCloudProject } from '@/services/backend/private-cloud/prod
 const privateCloudProductNew = createClientPage({
   roles: ['user'],
 });
+
 export default privateCloudProductNew(({ pathParams, queryParams, session }) => {
   const [openCreate, setOpenCreate] = useState(false);
   const [openReturn, setOpenReturn] = useState(false);
@@ -35,6 +37,24 @@ export default privateCloudProductNew(({ pathParams, queryParams, session }) => 
     onSuccess: () => {
       setOpenCreate(false);
       setOpenReturn(true);
+    },
+    onError: (error: any) => {
+      if (error.response?.status === 401) {
+        notifications.show({
+          title: 'Error',
+          message:
+            'You are not authorized to create this product. Please ensure you are mentioned in the product contacts to proceed.',
+          color: 'red',
+          autoClose: 5000,
+        });
+      } else {
+        notifications.show({
+          title: 'Error',
+          message: `Failed to create product: ${error.message}`,
+          color: 'red',
+          autoClose: 5000,
+        });
+      }
     },
   });
 
@@ -57,7 +77,7 @@ export default privateCloudProductNew(({ pathParams, queryParams, session }) => 
   });
 
   const handleSubmit = async (data: any) => {
-    createProject(data);
+    await createProject(data);
   };
 
   const secondTechLeadOnClick = () => {

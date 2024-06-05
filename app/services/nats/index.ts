@@ -67,7 +67,7 @@ export async function sendPublicCloudNatsMessage(
   decisionData: PublicCloudRequestedProjectWithContacts,
   currentProject?: PublicCloudProjectWithContacts | null,
 ) {
-  const natsSubject = 'registry_project_provisioning_aws';
+  const natsSubject = `registry_project_provisioning_${decisionData.provider.toLocaleLowerCase()}`;
 
   const messageBody = createPublicCloudNatsMessage(requestType, decisionData, currentProject);
 

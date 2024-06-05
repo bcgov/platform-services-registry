@@ -38,15 +38,18 @@ services:
       dockerfile: ./keycloak-provision/Dockerfile
     environment:
       KEYCLOAK_URL: http://keycloak:8080
-      KEYCLOAK_ADMIN: admin
-      KEYCLOAK_ADMIN_PASSWORD: password # pragma: allowlist secret
-      REALM_NAME: platform-services
-      CLIENT_ID: pltsvc
-      CLIENT_SECRET: testsecret # pragma: allowlist secret
+      MASTER_ADMIN: admin
+      MASTER_ADMIN_PASSWORD: password # pragma: allowlist secret
+      AUTH_REALM_NAME: platform-services
+      AUTH_CLIENT_ID: pltsvc
+      AUTH_CLIENT_SECRET: testsecret # pragma: allowlist secret
       GITOPS_CLIENT_ID: registry-gitops-ci
       GITOPS_CLIENT_SECRET: testsecret # pragma: allowlist secret
       ADMIN_CLIENT_ID: pltsvc-admin-cli
       ADMIN_CLIENT_SECRET: testsecret # pragma: allowlist secret
+      PUBLIC_CLOUD_REALM_NAME: public-cloud
+      PUBLIC_CLOUD_CLIENT_ID: roles
+      PUBLIC_CLOUD_CLIENT_SECRET: testsecret # pragma: allowlist secret
     depends_on:
     - keycloak
 
@@ -116,5 +119,9 @@ services:
       NATS_HOST: nats
       NATS_PORT: 4222
       APP_URL: http://${MACHINE_HOST_IP}:3000
+      KEYCLOAK_URL: http://keycloak:8080
+      PUBLIC_CLOUD_REALM_NAME: public-cloud
+      PUBLIC_CLOUD_CLIENT_ID: roles
+      PUBLIC_CLOUD_CLIENT_SECRET: testsecret # pragma: allowlist secret
     depends_on:
     - nats

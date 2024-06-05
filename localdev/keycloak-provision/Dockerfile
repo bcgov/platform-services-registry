@@ -1,13 +1,14 @@
 
-FROM node:22.2.0-alpine3.19
+FROM node:22.2.0-alpine3.19 as build
 
-WORKDIR /app
+WORKDIR /sandbox
 
-COPY ./keycloak-provision .
-COPY ./m365proxy/mocks.json mocks.json
+COPY ./keycloak-provision ./keycloak-provision
+COPY ./_packages ./_packages
+COPY ./m365proxy/mocks.json ./m365proxy/mocks.json
 
-RUN npm install --ignore-scripts
+RUN npm install --ignore-scripts --prefix keycloak-provision
+RUN npm run build --prefix keycloak-provision
 
 USER node
-
-CMD ["node", "setup.js"]
+CMD ["node", "keycloak-provision/build/keycloak-provision/src/main.js"]

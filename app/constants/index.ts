@@ -1,10 +1,15 @@
-import { Cluster, Ministry, Provider } from '@prisma/client';
+import { $Enums, Cluster, Ministry, Provider } from '@prisma/client';
 
 export const clusters = Object.values(Cluster).filter((cluster) => cluster !== 'GOLDDR');
 
 export const ministries = Object.values(Ministry);
 
 export const providers = Object.values(Provider);
+
+export const providerOptions = providers.map((v) => ({
+  label: v === $Enums.Provider.AZURE ? 'MS Azure' : v,
+  value: v,
+}));
 
 export const ministryOptions = [
   {

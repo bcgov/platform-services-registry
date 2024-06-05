@@ -30,7 +30,7 @@ function getAggByProvider(provider?: string) {
 }
 
 export async function ministryDistributions() {
-  const res = await Promise.all([getAggByProvider('AWS')]);
+  const res = await Promise.all([getAggByProvider('AWS'), getAggByProvider('AZURE')]);
 
   return res as unknown as { _id: string; value: number }[][];
 }

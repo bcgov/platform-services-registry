@@ -1,5 +1,5 @@
 {
-  "name": "keycloak-provision",
+  "name": "package-keycloak-admin",
   "version": "0.0.0",
   "description": "",
   "type": "module",
@@ -10,12 +10,10 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "@keycloak/keycloak-admin-client": "^24.0.0",
-    "wait-on": "^7.0.1"
+    "@keycloak/keycloak-admin-client": "^24.0.0"
   },
   "devDependencies": {
     "@types/node": "^20.14.1",
-    "@types/wait-on": "^5.3.4",
     "rimraf": "^5.0.7",
     "ts-node": "^10.9.2",
     "tsconfig-paths": "^4.2.0",

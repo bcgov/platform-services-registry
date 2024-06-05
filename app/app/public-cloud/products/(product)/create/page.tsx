@@ -1,6 +1,7 @@
 'use client';
 
 import { zodResolver } from '@hookform/resolvers/zod';
+import { notifications } from '@mantine/notifications';
 import { useMutation } from '@tanstack/react-query';
 import { useState } from 'react';
 import { FormProvider, useForm } from 'react-hook-form';
@@ -38,6 +39,24 @@ export default publicCloudProductNew(({ pathParams, queryParams, session }) => {
     onSuccess: () => {
       setOpenCreate(false);
       setOpenReturn(true);
+    },
+    onError: (error: any) => {
+      if (error.response?.status === 401) {
+        notifications.show({
+          title: 'Unauthorized',
+          message:
+            'You are not authorized to create this product. Please ensure you are mentioned in the product contacts to proceed.',
+          color: 'red',
+          autoClose: 5000,
+        });
+      } else {
+        notifications.show({
+          title: 'Error',
+          message: `Failed to create product: ${error.message}`,
+          color: 'red',
+          autoClose: 5000,
+        });
+      }
     },
   });
 

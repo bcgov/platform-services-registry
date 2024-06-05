@@ -1,16 +1,25 @@
 {
   "name": "nats-provision",
   "version": "0.0.0",
-  "type": "module",
   "description": "",
-  "main": "index.js",
+  "type": "module",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "build": "rimraf ./build && tsc",
+    "script": "_ () { ts-node -r tsconfig-paths/register src/$@; }; _"
   },
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@keycloak/keycloak-admin-client": "^24.0.5",
     "nats": "^2.19.0",
     "wait-on": "^7.0.1"
+  },
+  "devDependencies": {
+    "@types/node": "^20.14.1",
+    "@types/wait-on": "^5.3.4",
+    "rimraf": "^5.0.7",
+    "ts-node": "^10.9.2",
+    "tsconfig-paths": "^4.2.0",
+    "typescript": "^5.4.5"
   }
 }

@@ -1,6 +1,5 @@
 'use client';
 
-import { ToastContainer } from 'react-toastify';
 import SideTabs from '@/components/generic/tabs/SideTabs';
 
 export default function Layout({ params, children }: { params: { licencePlate: string }; children: React.ReactNode }) {
@@ -35,7 +34,6 @@ export default function Layout({ params, children }: { params: { licencePlate: s
         />
       </div>
       <div className="col-span-10">{children}</div>
-      <ToastContainer />
     </div>
   );
 }
