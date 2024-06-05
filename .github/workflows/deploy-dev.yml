@@ -172,7 +172,7 @@ jobs:
         registry-username: ${{ github.actor }}
         registry-password: ${{ secrets.GITHUB_TOKEN }}
         image-name: bcgov/pltsvc-localdev-nats-provision
-        docker-context: localdev/nats-provision
+        docker-context: localdev
         docker-file: localdev/nats-provision/Dockerfile
         metadata-tags: |
           type=ref,event=branch
