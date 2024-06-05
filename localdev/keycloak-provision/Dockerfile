@@ -7,6 +7,7 @@ COPY ./keycloak-provision ./keycloak-provision
 COPY ./_packages ./_packages
 COPY ./m365proxy/mocks.json ./m365proxy/mocks.json
 
+RUN npm install --ignore-scripts --prefix _packages
 RUN npm install --ignore-scripts --prefix keycloak-provision
 RUN npm run build --prefix keycloak-provision
 

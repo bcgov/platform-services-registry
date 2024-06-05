@@ -5,7 +5,7 @@
   "type": "module",
   "scripts": {
     "build": "rimraf ./build && tsc",
-    "script": "_ () { ts-node -r tsconfig-paths/register src/$@; }; _"
+    "start": "tsx src/main.ts"
   },
   "author": "",
   "license": "ISC",
@@ -17,8 +17,8 @@
     "@types/node": "^20.14.1",
     "@types/wait-on": "^5.3.4",
     "rimraf": "^5.0.7",
-    "ts-node": "^10.9.2",
     "tsconfig-paths": "^4.2.0",
+    "tsx": "^4.11.2",
     "typescript": "^5.4.5"
   }
 }

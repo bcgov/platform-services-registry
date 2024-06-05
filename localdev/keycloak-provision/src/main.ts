@@ -60,7 +60,7 @@ async function main() {
 
   const scope = await kc.createRealmClientScope(AUTH_REALM_NAME, clientScope);
 
-  kc.kcAdminClient.clients.addDefaultClientScope({
+  kc.cli.clients.addDefaultClientScope({
     realm: AUTH_REALM_NAME,
     id: authClient?.id as string,
     clientScopeId: scope?.id as string,
@@ -86,7 +86,7 @@ async function main() {
 
   // Create public cloud realm & client
   await kc.upsertRealm(PUBLIC_CLOUD_REALM_NAME, { enabled: true });
-  await kc.createServiceAccount(PUBLIC_CLOUD_REALM_NAME, PUBLIC_CLOUD_CLIENT_ID, PUBLIC_CLOUD_CLIENT_SECRET);
+  await kc.createRealmAdminServiceAccount(PUBLIC_CLOUD_REALM_NAME, PUBLIC_CLOUD_CLIENT_ID, PUBLIC_CLOUD_CLIENT_SECRET);
 
   return {
     authRealm,
