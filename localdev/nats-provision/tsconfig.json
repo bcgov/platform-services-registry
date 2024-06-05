@@ -3,7 +3,7 @@
     "target": "esnext",
     "module": "esnext",
     "moduleResolution": "node",
-    "rootDir": "src",
+    "rootDir": "../",
     "baseUrl": "src",
     "resolveJsonModule": true,
     "allowJs": true,

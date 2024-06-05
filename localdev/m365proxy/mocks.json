@@ -22,6 +22,7 @@
           "value": [
             {
               "id": "a008b857-36c8-4a17-a79a-518e33effeb0",
+              "extension_85cc52e9286540fcb1f97ed86114a0e5_bcgovGUID": "a008b85736c84a17a79a518e33effeb0",
               "onPremisesSamAccountName": "ADMINSYSTEM",
               "userPrincipalName": "admin.system@gov.bc.ca",
               "mail": "admin.system@gov.bc.ca",
@@ -32,6 +33,7 @@
             },
             {
               "id": "a008b857-36c8-4a17-a79a-518e33effec1",
+              "extension_85cc52e9286540fcb1f97ed86114a0e5_bcgovGUID": "a008b85736c84a17a79a518e33effec1",
               "onPremisesSamAccountName": "READER_SYSTEM",
               "userPrincipalName": "reader.system@gov.bc.ca",
               "mail": "reader.system@gov.bc.ca",
@@ -42,6 +44,7 @@
             },
             {
               "id": "a008b857-36c8-4a17-a79a-518e33effec2",
+              "extension_85cc52e9286540fcb1f97ed86114a0e5_bcgovGUID": "a008b85736c84a17a79a518e33effec2",
               "onPremisesSamAccountName": "PRIVATE_ADMIN_SYSTEM",
               "userPrincipalName": "private.admin.system@gov.bc.ca",
               "mail": "private.admin.system@gov.bc.ca",
@@ -52,6 +55,7 @@
             },
             {
               "id": "a008b857-36c8-4a17-a79a-518e33effec3",
+              "extension_85cc52e9286540fcb1f97ed86114a0e5_bcgovGUID": "a008b85736c84a17a79a518e33effec3",
               "onPremisesSamAccountName": "PRIVATE_READER_SYSTEM",
               "userPrincipalName": "private.reader.system@gov.bc.ca",
               "mail": "private.reader.system@gov.bc.ca",
@@ -62,6 +66,7 @@
             },
             {
               "id": "a008b857-36c8-4a17-a79a-518e33effec4",
+              "extension_85cc52e9286540fcb1f97ed86114a0e5_bcgovGUID": "a008b85736c84a17a79a518e33effec4",
               "onPremisesSamAccountName": "PUBLIC_ADMIN_SYSTEM",
               "userPrincipalName": "public.admin.system@gov.bc.ca",
               "mail": "public.admin.system@gov.bc.ca",
@@ -72,6 +77,7 @@
             },
             {
               "id": "a008b857-36c8-4a17-a79a-518e33effec5",
+              "extension_85cc52e9286540fcb1f97ed86114a0e5_bcgovGUID": "a008b85736c84a17a79a518e33effec5",
               "onPremisesSamAccountName": "PUBLIC_READER_SYSTEM",
               "userPrincipalName": "public.reader.system@gov.bc.ca",
               "mail": "public.reader.system@gov.bc.ca",
@@ -82,6 +88,7 @@
             },
             {
               "id": "a008b857-36c8-4a17-a79a-518e33effeb1",
+              "extension_85cc52e9286540fcb1f97ed86114a0e5_bcgovGUID": "a008b85736c84a17a79a518e33effeb1",
               "onPremisesSamAccountName": "JOHNDOE",
               "userPrincipalName": "john.doe@gov.bc.ca",
               "mail": "john.doe@gov.bc.ca",
@@ -92,6 +99,7 @@
             },
             {
               "id": "a008b857-36c8-4a17-a79a-518e33effeb2",
+              "extension_85cc52e9286540fcb1f97ed86114a0e5_bcgovGUID": "a008b85736c84a17a79a518e33effeb2",
               "onPremisesSamAccountName": "JAMESSMITH",
               "userPrincipalName": "james.smith@gov.bc.ca",
               "mail": "james.smith@gov.bc.ca",
@@ -102,6 +110,7 @@
             },
             {
               "id": "a008b857-36c8-4a17-a79a-518e33effeb3",
+              "extension_85cc52e9286540fcb1f97ed86114a0e5_bcgovGUID": "a008b85736c84a17a79a518e33effeb3",
               "onPremisesSamAccountName": "DAVIDJOHNSON",
               "userPrincipalName": "david.johnson@gov.bc.ca",
               "mail": "david.johnson@gov.bc.ca",
@@ -112,6 +121,7 @@
             },
             {
               "id": "a008b857-36c8-4a17-a79a-518e33effeb4",
+              "extension_85cc52e9286540fcb1f97ed86114a0e5_bcgovGUID": "a008b85736c84a17a79a518e33effeb4",
               "onPremisesSamAccountName": "SARAHWILLIAMS",
               "userPrincipalName": "sarah.williams@gov.bc.ca",
               "mail": "sarah.williams@gov.bc.ca",
@@ -122,6 +132,7 @@
             },
             {
               "id": "a008b857-36c8-4a17-a79a-518e33effeb5",
+              "extension_85cc52e9286540fcb1f97ed86114a0e5_bcgovGUID": "a008b85736c84a17a79a518e33effeb5",
               "onPremisesSamAccountName": "MICHAELBROWN",
               "userPrincipalName": "michael.brown@gov.bc.ca",
               "mail": "michael.brown@gov.bc.ca",
@@ -132,6 +143,7 @@
             },
             {
               "id": "a008b857-36c8-4a17-a79a-518e33effeb6",
+              "extension_85cc52e9286540fcb1f97ed86114a0e5_bcgovGUID": "a008b85736c84a17a79a518e33effeb6",
               "onPremisesSamAccountName": "JESSICADAVIS",
               "userPrincipalName": "jessica.davis@gov.bc.ca",
               "mail": "jessica.davis@gov.bc.ca",
@@ -142,6 +154,7 @@
             },
             {
               "id": "a008b857-36c8-4a17-a79a-518e33effeb7",
+              "extension_85cc52e9286540fcb1f97ed86114a0e5_bcgovGUID": "a008b85736c84a17a79a518e33effeb7",
               "onPremisesSamAccountName": "KEVINTAYLOR",
               "userPrincipalName": "kevin.taylor@gov.bc.ca",
               "mail": "kevin.taylor@gov.bc.ca",
@@ -152,6 +165,7 @@
             },
             {
               "id": "a008b857-36c8-4a17-a79a-518e33effeb8",
+              "extension_85cc52e9286540fcb1f97ed86114a0e5_bcgovGUID": "a008b85736c84a17a79a518e33effeb8",
               "onPremisesSamAccountName": "AMANDAWILSON",
               "userPrincipalName": "amanda.wilson@gov.bc.ca",
               "mail": "amanda.wilson@gov.bc.ca",
@@ -162,6 +176,7 @@
             },
             {
               "id": "a008b857-36c8-4a17-a79a-518e33effeb9",
+              "extension_85cc52e9286540fcb1f97ed86114a0e5_bcgovGUID": "a008b85736c84a17a79a518e33effeb9",
               "onPremisesSamAccountName": "JENNAANDERSON",
               "userPrincipalName": "jenna.anderson@gov.bc.ca",
               "mail": "jenna.anderson@gov.bc.ca",
@@ -172,6 +187,7 @@
             },
             {
               "id": "a008b857-36c8-4a17-a79a-518e33effec0",
+              "extension_85cc52e9286540fcb1f97ed86114a0e5_bcgovGUID": "a008b85736c84a17a79a518e33effec0",
               "onPremisesSamAccountName": "LAURAMARTINEZ",
               "userPrincipalName": "laura.martinez@gov.bc.ca",
               "mail": "laura.martinez@gov.bc.ca",
@@ -182,6 +198,7 @@
             },
             {
               "id": "bbb8b857-aaaa-4a17-a79a-518e33effccc",
+              "extension_85cc52e9286540fcb1f97ed86114a0e5_bcgovGUID": "bbb8b857aaaa4a17a79a518e33effccc",
               "onPremisesSamAccountName": "PLTSVCTEST",
               "userPrincipalName": "Platform.Services.Test.Account@gov.bc.ca",
               "mail": "Platform.Services.Test.Account@gov.bc.ca",
@@ -203,6 +220,7 @@
         "body": {
           "@odata.context": "https://graph.microsoft.com/v1.0/$metadata#users/$entity",
           "id": "a008b857-36c8-4a17-a79a-518e33effeb0",
+          "extension_85cc52e9286540fcb1f97ed86114a0e5_bcgovGUID": "a008b85736c84a17a79a518e33effeb0",
           "onPremisesSamAccountName": "ADMINSYSTEM",
           "userPrincipalName": "admin.system@gov.bc.ca",
           "mail": "admin.system@gov.bc.ca",
@@ -215,12 +233,113 @@
     },
     {
       "request": {
+        "url": "https://graph.microsoft.com/v1.0/users/reader.system@gov.bc.ca?*",
+        "method": "GET"
+      },
+      "response": {
+        "body": {
+          "@odata.context": "https://graph.microsoft.com/v1.0/$metadata#users/$entity",
+          "id": "a008b857-36c8-4a17-a79a-518e33effec1",
+          "extension_85cc52e9286540fcb1f97ed86114a0e5_bcgovGUID": "a008b85736c84a17a79a518e33effec1",
+          "onPremisesSamAccountName": "READER_SYSTEM",
+          "userPrincipalName": "reader.system@gov.bc.ca",
+          "mail": "reader.system@gov.bc.ca",
+          "displayName": "System, Reader CITZ:EX",
+          "givenName": "Reader",
+          "surname": "System",
+          "jobTitle": "reader"
+        }
+      }
+    },
+    {
+      "request": {
+        "url": "https://graph.microsoft.com/v1.0/users/private.admin.system@gov.bc.ca?*",
+        "method": "GET"
+      },
+      "response": {
+        "body": {
+          "@odata.context": "https://graph.microsoft.com/v1.0/$metadata#users/$entity",
+          "id": "a008b857-36c8-4a17-a79a-518e33effec2",
+          "extension_85cc52e9286540fcb1f97ed86114a0e5_bcgovGUID": "a008b85736c84a17a79a518e33effec2",
+          "onPremisesSamAccountName": "PRIVATE_ADMIN_SYSTEM",
+          "userPrincipalName": "private.admin.system@gov.bc.ca",
+          "mail": "private.admin.system@gov.bc.ca",
+          "displayName": "System, Private Admin CITZ:EX",
+          "givenName": "Private Admin",
+          "surname": "System",
+          "jobTitle": "private-admin"
+        }
+      }
+    },
+    {
+      "request": {
+        "url": "https://graph.microsoft.com/v1.0/users/private.reader.system@gov.bc.ca?*",
+        "method": "GET"
+      },
+      "response": {
+        "body": {
+          "@odata.context": "https://graph.microsoft.com/v1.0/$metadata#users/$entity",
+          "id": "a008b857-36c8-4a17-a79a-518e33effec3",
+          "extension_85cc52e9286540fcb1f97ed86114a0e5_bcgovGUID": "a008b85736c84a17a79a518e33effec3",
+          "onPremisesSamAccountName": "PRIVATE_READER_SYSTEM",
+          "userPrincipalName": "private.reader.system@gov.bc.ca",
+          "mail": "private.reader.system@gov.bc.ca",
+          "displayName": "System, Private Reader CITZ:EX",
+          "givenName": "Private Reader",
+          "surname": "System",
+          "jobTitle": "private-reader"
+        }
+      }
+    },
+    {
+      "request": {
+        "url": "https://graph.microsoft.com/v1.0/users/public.admin.system@gov.bc.ca?*",
+        "method": "GET"
+      },
+      "response": {
+        "body": {
+          "@odata.context": "https://graph.microsoft.com/v1.0/$metadata#users/$entity",
+          "id": "a008b857-36c8-4a17-a79a-518e33effec4",
+          "extension_85cc52e9286540fcb1f97ed86114a0e5_bcgovGUID": "a008b85736c84a17a79a518e33effec4",
+          "onPremisesSamAccountName": "PUBLIC_ADMIN_SYSTEM",
+          "userPrincipalName": "public.admin.system@gov.bc.ca",
+          "mail": "public.admin.system@gov.bc.ca",
+          "displayName": "System, Public Admin CITZ:EX",
+          "givenName": "Public Admin",
+          "surname": "System",
+          "jobTitle": "public-admin"
+        }
+      }
+    },
+    {
+      "request": {
+        "url": "https://graph.microsoft.com/v1.0/users/public.reader.system@gov.bc.ca?*",
+        "method": "GET"
+      },
+      "response": {
+        "body": {
+          "@odata.context": "https://graph.microsoft.com/v1.0/$metadata#users/$entity",
+          "id": "a008b857-36c8-4a17-a79a-518e33effec5",
+          "extension_85cc52e9286540fcb1f97ed86114a0e5_bcgovGUID": "a008b85736c84a17a79a518e33effec5",
+          "onPremisesSamAccountName": "PUBLIC_READER_SYSTEM",
+          "userPrincipalName": "public.reader.system@gov.bc.ca",
+          "mail": "public.reader.system@gov.bc.ca",
+          "displayName": "System, Public Reader CITZ:EX",
+          "givenName": "Public Reader",
+          "surname": "System",
+          "jobTitle": "public-reader"
+        }
+      }
+    },
+    {
+      "request": {
         "url": "https://graph.microsoft.com/v1.0/users/john.doe@gov.bc.ca?*",
         "method": "GET"
       },
       "response": {
         "@odata.context": "https://graph.microsoft.com/v1.0/$metadata#users/$entity",
         "id": "a008b857-36c8-4a17-a79a-518e33effeb1",
+        "extension_85cc52e9286540fcb1f97ed86114a0e5_bcgovGUID": "a008b85736c84a17a79a518e33effeb1",
         "onPremisesSamAccountName": "JOHNDOE",
         "userPrincipalName": "john.doe@gov.bc.ca",
         "mail": "john.doe@gov.bc.ca",
@@ -239,6 +358,7 @@
         "body": {
           "@odata.context": "https://graph.microsoft.com/v1.0/$metadata#users/$entity",
           "id": "a008b857-36c8-4a17-a79a-518e33effeb2",
+          "extension_85cc52e9286540fcb1f97ed86114a0e5_bcgovGUID": "a008b85736c84a17a79a518e33effeb2",
           "onPremisesSamAccountName": "JAMESSMITH",
           "userPrincipalName": "james.smith@gov.bc.ca",
           "mail": "james.smith@gov.bc.ca",
@@ -258,6 +378,7 @@
         "body": {
           "@odata.context": "https://graph.microsoft.com/v1.0/$metadata#users/$entity",
           "id": "a008b857-36c8-4a17-a79a-518e33effeb3",
+          "extension_85cc52e9286540fcb1f97ed86114a0e5_bcgovGUID": "a008b85736c84a17a79a518e33effeb3",
           "onPremisesSamAccountName": "DAVIDJOHNSON",
           "userPrincipalName": "david.johnson@gov.bc.ca",
           "mail": "david.johnson@gov.bc.ca",
@@ -277,6 +398,7 @@
         "body": {
           "@odata.context": "https://graph.microsoft.com/v1.0/$metadata#users/$entity",
           "id": "a008b857-36c8-4a17-a79a-518e33effeb4",
+          "extension_85cc52e9286540fcb1f97ed86114a0e5_bcgovGUID": "a008b85736c84a17a79a518e33effeb4",
           "onPremisesSamAccountName": "SARAHWILLIAMS",
           "userPrincipalName": "sarah.williams@gov.bc.ca",
           "mail": "sarah.williams@gov.bc.ca",
@@ -296,6 +418,7 @@
         "body": {
           "@odata.context": "https://graph.microsoft.com/v1.0/$metadata#users/$entity",
           "id": "a008b857-36c8-4a17-a79a-518e33effeb5",
+          "extension_85cc52e9286540fcb1f97ed86114a0e5_bcgovGUID": "a008b85736c84a17a79a518e33effeb5",
           "onPremisesSamAccountName": "MICHAELBROWN",
           "userPrincipalName": "michael.brown@gov.bc.ca",
           "mail": "michael.brown@gov.bc.ca",
@@ -315,6 +438,7 @@
         "body": {
           "@odata.context": "https://graph.microsoft.com/v1.0/$metadata#users/$entity",
           "id": "a008b857-36c8-4a17-a79a-518e33effeb6",
+          "extension_85cc52e9286540fcb1f97ed86114a0e5_bcgovGUID": "a008b85736c84a17a79a518e33effeb6",
           "onPremisesSamAccountName": "JESSICADAVIS",
           "userPrincipalName": "jessica.davis@gov.bc.ca",
           "mail": "jessica.davis@gov.bc.ca",
@@ -334,6 +458,7 @@
         "body": {
           "@odata.context": "https://graph.microsoft.com/v1.0/$metadata#users/$entity",
           "id": "a008b857-36c8-4a17-a79a-518e33effeb7",
+          "extension_85cc52e9286540fcb1f97ed86114a0e5_bcgovGUID": "a008b85736c84a17a79a518e33effeb7",
           "onPremisesSamAccountName": "KEVINTAYLOR",
           "userPrincipalName": "kevin.taylor@gov.bc.ca",
           "mail": "kevin.taylor@gov.bc.ca",
@@ -353,6 +478,7 @@
         "body": {
           "@odata.context": "https://graph.microsoft.com/v1.0/$metadata#users/$entity",
           "id": "a008b857-36c8-4a17-a79a-518e33effeb8",
+          "extension_85cc52e9286540fcb1f97ed86114a0e5_bcgovGUID": "a008b85736c84a17a79a518e33effeb8",
           "onPremisesSamAccountName": "AMANDAWILSON",
           "userPrincipalName": "amanda.wilson@gov.bc.ca",
           "mail": "amanda.wilson@gov.bc.ca",
@@ -372,6 +498,7 @@
         "body": {
           "@odata.context": "https://graph.microsoft.com/v1.0/$metadata#users/$entity",
           "id": "a008b857-36c8-4a17-a79a-518e33effeb9",
+          "extension_85cc52e9286540fcb1f97ed86114a0e5_bcgovGUID": "a008b85736c84a17a79a518e33effeb9",
           "onPremisesSamAccountName": "JENNAANDERSON",
           "userPrincipalName": "jenna.anderson@gov.bc.ca",
           "mail": "jenna.anderson@gov.bc.ca",
@@ -391,6 +518,7 @@
         "body": {
           "@odata.context": "https://graph.microsoft.com/v1.0/$metadata#users/$entity",
           "id": "a008b857-36c8-4a17-a79a-518e33effec0",
+          "extension_85cc52e9286540fcb1f97ed86114a0e5_bcgovGUID": "a008b85736c84a17a79a518e33effec",
           "onPremisesSamAccountName": "LAURAMARTINEZ",
           "userPrincipalName": "laura.martinez@gov.bc.ca",
           "mail": "laura.martinez@gov.bc.ca",
@@ -410,6 +538,7 @@
         "body": {
           "@odata.context": "https://graph.microsoft.com/v1.0/$metadata#users/$entity",
           "id": "bbb8b857-aaaa-4a17-a79a-518e33effccc",
+          "extension_85cc52e9286540fcb1f97ed86114a0e5_bcgovGUID": "bbb8b857aaaa4a17a79a518e33effccc",
           "onPremisesSamAccountName": "PLTSVCTEST",
           "userPrincipalName": "Platform.Services.Test.Account@gov.bc.ca",
           "mail": "Platform.Services.Test.Account@gov.bc.ca",

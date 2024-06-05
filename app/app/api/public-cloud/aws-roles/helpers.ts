@@ -132,6 +132,7 @@ export const createKeyCloakUser = async (userPrincipalName: string) => {
       logger.error(`createKeyCloakUser: user not found with ${userPrincipalName}`);
       return;
     }
+
     const userIdirGuid = appUser.idirGuid.toLowerCase();
     await kcAdminClient.auth(credentials);
     const userRes = await kcAdminClient.users.create({
@@ -175,9 +176,10 @@ async function getProductRoleGroups(licencePlate: string) {
   if (projectTeamGroup.subGroups?.length === 0) return [];
 
   const productGroup = projectTeamGroup.subGroups?.find((group) => group.name?.startsWith(licencePlate));
-  if (!productGroup) return [];
+  const productGroupWithChildren = await kcAdminClient.groups.findOne({ id: productGroup?.id as string });
+  if (!productGroupWithChildren) return [];
 
-  return productGroup.subGroups ?? [];
+  return productGroupWithChildren.subGroups ?? [];
 }
 
 export async function getSubGroupMembersByLicencePlateAndName(
