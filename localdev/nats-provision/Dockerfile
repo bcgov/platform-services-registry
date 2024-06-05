@@ -3,12 +3,14 @@ FROM node:22.2.0-alpine3.19
 RUN apk update && \
     apk add --no-cache curl
 
-WORKDIR /app
+WORKDIR /sandbox
 
-COPY . .
+COPY ./nats-provision ./nats-provision
+COPY ./_packages ./_packages
 
-RUN npm install --ignore-scripts
-RUN npm run build
+RUN npm install --ignore-scripts --prefix _packages
+RUN npm install --ignore-scripts --prefix nats-provision
+RUN npm run build --prefix nats-provision
 
 USER node
-CMD ["node", "build/main.js"]
+CMD ["node", "nats-provision/build/nats-provision/src/main.js"]

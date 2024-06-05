@@ -113,8 +113,8 @@ services:
     platform: linux/amd64
     container_name: nats-provision
     build:
-      context: ./nats-provision
-      dockerfile: Dockerfile
+      context: ./
+      dockerfile: ./nats-provision/Dockerfile
     environment:
       NATS_HOST: nats
       NATS_PORT: 4222
