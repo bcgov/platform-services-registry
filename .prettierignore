@@ -2,3 +2,4 @@
 **/*.yml
 .react-email
 localdev/keycloak-provision
+localdev/nats-provision

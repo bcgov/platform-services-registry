@@ -5,10 +5,10 @@ RUN apk update && \
 
 WORKDIR /app
 
-COPY ["package.json", "package-lock.json", "setup.js", "./"]
+COPY . .
 
 RUN npm install --ignore-scripts
+RUN npm run build
 
 USER node
-
-CMD ["node", "setup.js"]
+CMD ["node", "build/main.js"]

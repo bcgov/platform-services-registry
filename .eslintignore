@@ -13,3 +13,4 @@ helm
 terraform
 localdev/mnt
 localdev/keycloak-provision
+localdev/nats-provision

@@ -35,7 +35,9 @@ interface KcUser {
 // Keycloak Admin class to manage Keycloak administration tasks
 export class KcAdmin {
   private _username: string;
+
   private _password: string;
+
   private _kcAdminClient: KcAdminClient;
 
   // Constructor to initialize the Keycloak Admin client
@@ -201,13 +203,13 @@ export class KcAdmin {
   // Find a user by email in a realm
   async findUserByEmail(realm: string, email: string) {
     const emailUsers = await this._kcAdminClient.users.find({ realm, email, exact: true });
-    const user = emailUsers.find((user) => user.username === email);
+    const user = emailUsers.find((usr) => usr.username === email);
     return user;
   }
 
   // Create a new user in a realm
-  async createUser(realm: string, user: KcUser) {
-    const { password, roles, ...rest } = user;
+  async createUser(realm: string, kcuser: KcUser) {
+    const { password, roles, ...rest } = kcuser;
 
     // Catch an error if the user already exists
     try {
@@ -224,7 +226,7 @@ export class KcAdmin {
         credential: { temporary: false, type: 'password', value: password },
       });
     } catch (err) {
-      console.error('createUser:', user, err);
+      console.error('createUser:', kcuser, err);
     }
 
     const currUser = await this.findUserByEmail(realm, rest.email);
@@ -269,9 +271,9 @@ export class KcAdmin {
     });
 
     await Promise.all(
-      users.map(async ({ email, username, firstName, lastName, password, roles = [] }) => {
-        email = email.toLowerCase();
-        roles = uniq(castArray(roles)).filter(Boolean);
+      users.map(async ({ email: _email, username, firstName, lastName, password, roles: _roles }) => {
+        const email = _email.toLowerCase();
+        const roles = uniq(castArray(_roles || [])).filter(Boolean);
 
         const currUser = await this.createUser(realm, { email, username, firstName, lastName, password, roles });
 
@@ -284,12 +286,12 @@ export class KcAdmin {
         });
 
         // Assign the new roles
-        const _roles = await Promise.all(roles.map((role) => this.createClientRole(realm, clientUniqueId, role)));
+        const newroles = await Promise.all(roles.map((role) => this.createClientRole(realm, clientUniqueId, role)));
         await this._kcAdminClient.users.addClientRoleMappings({
           realm,
           id: currUser?.id as string,
           clientUniqueId,
-          roles: _roles as never as RoleMappingPayload[],
+          roles: newroles as never as RoleMappingPayload[],
         });
       }),
     );
