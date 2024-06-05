@@ -1,3 +1,20 @@
+## [0.27.0](https://github.com/bcgov/platform-services-registry/compare/v0.26.5...v0.27.0) (2024-06-05)
+
+### Features
+
+* **2808:** create Keycloak groups for AWS requests ([9d16fa7](https://github.com/bcgov/platform-services-registry/commit/9d16fa7652a779f2b1645b0eee8c869caf594935))
+* **2958:** add frontend support for admin comments on requests ([8f6634f](https://github.com/bcgov/platform-services-registry/commit/8f6634f388f7a71c03cbc64882b40349a5469ee4))
+* add all ministry specific roles ([e676af4](https://github.com/bcgov/platform-services-registry/commit/e676af43133ddc08813d23c035a6c057f8151674))
+
+### Bug Fixes
+
+* **2726:** add error handling and notifications for unauthorized product creation ([31a1979](https://github.com/bcgov/platform-services-registry/commit/31a1979c06f3fefef99be8db022cfad71e15cb71))
+
+### Refactors
+
+* **2596:** convert nats-provision into typescript ([2e5f1d1](https://github.com/bcgov/platform-services-registry/commit/2e5f1d120602b4890516d02dee2768422dbce708))
+* **2808:** move Keycloak admin core as the common package ([7f88cd9](https://github.com/bcgov/platform-services-registry/commit/7f88cd9dac6f46203bac988b9cda44713df286b9))
+* **2826:** deprecate react toastify and replace with mantine notifications ([156fbc1](https://github.com/bcgov/platform-services-registry/commit/156fbc18b5ac7648885e968db45a29fae47822a6))
 ## [0.26.5](https://github.com/bcgov/platform-services-registry/compare/v0.26.4...v0.26.5) (2024-06-04)
 
 ### Features
