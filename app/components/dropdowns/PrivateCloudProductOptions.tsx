@@ -1,10 +1,10 @@
 import { Menu, MenuItems, MenuItem, MenuButton, Transition } from '@headlessui/react';
+import { notifications } from '@mantine/notifications';
 import { IconRepeat, IconChevronDown } from '@tabler/icons-react';
 import { useMutation } from '@tanstack/react-query';
 import classNames from 'classnames';
 import { useParams } from 'next/navigation';
 import { useState, Fragment } from 'react';
-import { toast } from 'react-toastify';
 import DeleteButton from '@/components/buttons/DeleteButton';
 import ErrorModal from '@/components/modal/Error';
 import PrivateCloudDeleteModal from '@/components/modal/PrivateCloudDelete';
@@ -36,7 +36,12 @@ export default function PrivateCloudProductOptions({
   } = useMutation({
     mutationFn: () => reprovisionPrivateCloudProduct(licencePlate),
     onSuccess: () => {
-      toast.success('Successfully reprovisioned!');
+      notifications.show({
+        color: 'green',
+        title: 'Success',
+        message: 'Successfully reprovisioned!',
+        autoClose: 5000,
+      });
     },
   });
 
@@ -47,7 +52,23 @@ export default function PrivateCloudProductOptions({
       setShowModal(false);
       setShowReturnModal(true);
     } catch (error) {
-      setErrorMessage(String(error));
+      if (error instanceof Error) {
+        setErrorMessage(error.message);
+        notifications.show({
+          color: 'red',
+          title: 'Error',
+          message: `Failed to delete project: ${error.message}`,
+          autoClose: 5000,
+        });
+      } else {
+        setErrorMessage('An unknown error occurred');
+        notifications.show({
+          color: 'red',
+          title: 'Error',
+          message: 'An unknown error occurred',
+          autoClose: 5000,
+        });
+      }
       setIsSubmitLoading(false);
       setShowModal(false);
       setShowErrorModal(true);

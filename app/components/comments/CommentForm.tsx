@@ -1,4 +1,5 @@
-import { IconMessageCirclePlus, IconX, IconSend2 } from '@tabler/icons-react';
+import { notifications } from '@mantine/notifications';
+import { IconMessageCirclePlus, IconX, IconSend } from '@tabler/icons-react';
 import { useMutation } from '@tanstack/react-query';
 import React, { useState } from 'react';
 import { createPrivateCloudComment } from '@/services/backend/private-cloud/products';
@@ -26,10 +27,22 @@ function CommentForm({ licencePlate, userId, projectId, requestId, onCommentAdde
       setText('');
       setLoading(false);
       setShowCommentBox(false); // Hide the comment box after submitting
+      notifications.show({
+        color: 'green',
+        title: 'Success',
+        message: 'Comment added successfully',
+        autoClose: 5000,
+      });
     },
     onError: (error: Error) => {
       console.error('Failed to add comment:', error);
       setLoading(false);
+      notifications.show({
+        color: 'red',
+        title: 'Error',
+        message: `Failed to add comment: ${error.message}`,
+        autoClose: 5000,
+      });
     },
   });
 
@@ -79,7 +92,7 @@ function CommentForm({ licencePlate, userId, projectId, requestId, onCommentAdde
                 className="flex items-center px-5 py-2.5 bg-yellow-400 border-none rounded cursor-pointer transition-transform duration-500 ease-in-out transform hover:scale-105 hover:bg-yellow-500"
                 disabled={isLoading}
               >
-                <IconSend2 className="mr-2" />
+                <IconSend className="mr-2" />
                 Post Comment
               </button>
             </div>
