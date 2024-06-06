@@ -12,7 +12,7 @@ type Mock = {
     url: string;
   };
   response: {
-    statusCode: number;
+    statusCode?: number;
     body?: unknown;
   };
 };

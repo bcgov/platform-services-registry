@@ -4,7 +4,7 @@ WORKDIR /sandbox
 
 COPY ./_packages ./_packages
 COPY ./tsconfig.json ./tsconfig.json
-COPY ./m365proxy ./m365proxy
+COPY ./m365mock ./m365mock
 COPY ./src ./src
 
 RUN npm install
