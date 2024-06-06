@@ -1,6 +1,22 @@
 import express, { Request, Response } from 'express';
 import { readFileSync } from 'fs';
 
+const app = express();
+const port = 4040;
+
+type HttpMethod = 'get' | 'post' | 'put' | 'delete';
+
+type Mock = {
+  request: {
+    method: string;
+    url: string;
+  };
+  response: {
+    statusCode: number;
+    body?: unknown;
+  };
+};
+
 let mocks;
 
 try {
@@ -16,22 +32,25 @@ try {
   console.error('Error parsing JSON data:', error);
   process.exit(1);
 }
-const app = express();
-const port = 4040;
 
-app.get('/v1.0/users*', async (req: Request, res: Response) => {
-  const requestedPath = req.path;
-  const requestedQuery = req.query;
-  const filteredMocks = mocks.filter((mock: any) => {
-    return mock.request.url.includes(requestedPath) && mock.request.url.includes(Object.keys(requestedQuery)[0]);
+mocks.forEach((mock: Mock) => {
+  const method = mock.request.method.toLowerCase() as HttpMethod;
+  app[method]('/v1.0/users*', async (req: Request, res: Response) => {
+    const requestedPath = req.path;
+    const requestedQuery = req.query;
+    const filteredMocks = mocks.filter((mockFilter: Mock) => {
+      return (
+        mockFilter.request.url.includes(requestedPath) &&
+        mockFilter.request.url.includes(Object.keys(requestedQuery)[0])
+      );
+    });
+    if (filteredMocks.length > 0) {
+      const mockResponse = filteredMocks[0];
+      res.json(mockResponse.response.body);
+    } else {
+      res.status(404).send('Mock data not found');
+    }
   });
-
-  if (filteredMocks.length > 0) {
-    const mockResponse = filteredMocks[0];
-    res.json(mockResponse.response.body);
-  } else {
-    res.status(404).send('Mock data not found');
-  }
 });
 
 app.get('/', async (req: Request, res: Response) => {

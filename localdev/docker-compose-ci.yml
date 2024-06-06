@@ -14,3 +14,7 @@ services:
   nats-provision:
     image: ghcr.io/bcgov/pltsvc-localdev-nats-provision:latest
     build: {}
+
+  m365mock:
+    image: ghcr.io/bcgov/pltsvc-localdev-m365mock:latest
+    build: {}
