@@ -1,12 +1,12 @@
 import { MockedFunction } from 'jest-mock';
 import { NextRequest, NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth/next';
-import { POST as createRequest } from '@/app/api/private-cloud/products/route';
 import { PUT } from '@/app/api/private-cloud/provision/[licencePlate]/route';
 import { POST as decisionRequest } from '@/app/api/private-cloud/requests/[id]/decision/route';
 import prisma from '@/core/prisma';
 import { findMockUserByIDIR, generateTestSession } from '@/helpers/mock-users';
 import { DefaultCpuOptionsSchema, DefaultMemoryOptionsSchema, DefaultStorageOptionsSchema } from '@/schema';
+import { createPrivateCloudProject } from '@/services/api-test/private-cloud/products';
 
 const BASE_URL = 'http://localhost:3000';
 
@@ -88,8 +88,6 @@ const decisionBody = {
   ...adminChanges,
 };
 
-const adminRequestedProjectBody = { ...createRequestBody, ...adminChanges };
-
 const mockedGetServerSession = getServerSession as unknown as MockedFunction<typeof getServerSession>;
 
 jest.mock('next-auth/next', () => ({
@@ -117,13 +115,7 @@ describe('Create Private Cloud Request Route', () => {
     const mockSession = await generateTestSession('admin.system@gov.bc.ca');
     mockedGetServerSession.mockResolvedValue(mockSession);
 
-    // Make a create request
-    const createRequestObject = new NextRequest(`${BASE_URL}/api/private-cloud/products`, {
-      method: 'POST',
-      body: JSON.stringify(createRequestBody),
-    });
-
-    await createRequest(createRequestObject);
+    await createPrivateCloudProject(createRequestBody);
 
     // Get the request id
     const request = await prisma.privateCloudRequest.findFirst();
