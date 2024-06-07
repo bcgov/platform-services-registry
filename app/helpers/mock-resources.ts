@@ -1,19 +1,19 @@
+import { randomBytes } from 'crypto';
 import { faker } from '@faker-js/faker';
 import { Prisma, $Enums } from '@prisma/client';
 import { clusters, ministries } from '@/constants';
 import { findMockUserByIDIR, generateTestSession, proxyNoRoleIDIRs } from '@/helpers/mock-users';
 import { cpuOptions, memoryOptions, storageOptions } from '@/schema';
 
-function getRandomItem(arr: any[]) {
-  if (arr.length === 0) {
-    return null;
-  }
-  const randomIndex = Math.floor(Math.random() * arr.length);
+function getRandomItem<T>(arr: T[]): T {
+  const randomBytesBuffer = randomBytes(4);
+  const randomValue = randomBytesBuffer.readUInt32BE(0);
+  const randomIndex = randomValue % arr.length;
   return arr[randomIndex];
 }
 
 function getRandomBool() {
-  return getRandomItem([true, false]);
+  return getRandomItem<boolean>([true, false]);
 }
 
 export function createSamplePrivateCloudProductData(args?: {
@@ -21,7 +21,7 @@ export function createSamplePrivateCloudProductData(args?: {
 }) {
   const { data } = args ?? {};
 
-  const cluster = getRandomItem(clusters);
+  const cluster = getRandomItem<$Enums.Cluster>(clusters);
 
   const quota = {
     cpu: cpuOptions[0],
