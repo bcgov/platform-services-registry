@@ -1,3 +1,12 @@
+## [0.29.0](https://github.com/bcgov/platform-services-registry/compare/v0.28.0...v0.29.0) (2024-06-07)
+
+### Features
+
+* **3045:** encapsulate Next.js routes with parameters for reusability ([9153999](https://github.com/bcgov/platform-services-registry/commit/915399940ec23bf8b82af68f17214f7570b19c4e))
+
+### Bug Fixes
+
+* **3052:** add missing private cloud create requests ([fd8f9ba](https://github.com/bcgov/platform-services-registry/commit/fd8f9baa0bb90d5d30d077491b038f8e5ec8b17a))
 ## [0.28.0](https://github.com/bcgov/platform-services-registry/compare/v0.27.0...v0.28.0) (2024-06-05)
 
 ### Features
