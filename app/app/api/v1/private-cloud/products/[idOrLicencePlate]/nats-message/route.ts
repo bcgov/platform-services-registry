@@ -18,7 +18,7 @@ const apiHandler = createApiHandler({
 export const GET = apiHandler(async ({ pathParams, session }) => {
   const { idOrLicencePlate } = pathParams;
 
-  const where = idOrLicencePlate.length > 6 ? { id: idOrLicencePlate } : { licencePlate: idOrLicencePlate };
+  const where = idOrLicencePlate.length > 7 ? { id: idOrLicencePlate } : { licencePlate: idOrLicencePlate };
 
   const product = await prisma.privateCloudProject.findUnique({
     where,
