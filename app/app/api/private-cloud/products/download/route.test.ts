@@ -1,5 +1,6 @@
 import { expect } from '@jest/globals';
 import {
+  $Enums,
   Cluster,
   DecisionStatus,
   Ministry,
@@ -14,6 +15,7 @@ import { MockedFunction } from 'jest-mock';
 import { NextRequest, NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth/next';
 import prisma from '@/core/prisma';
+import { createSamplePrivateCloudProductData } from '@/helpers/mock-resources';
 import { findMockUserByIDIR, generateTestSession } from '@/helpers/mock-users';
 import { ministryKeyToName } from '@/helpers/product';
 import { createProxyUsers } from '@/queries/users';
@@ -45,116 +47,12 @@ const quota = {
 };
 
 const projectData = [
-  {
-    name: 'Sample Project',
-    description: 'This is a sample project description.',
-    cluster: Cluster.CLAB,
-    ministry: Ministry.AG,
-    projectOwner: findMockUserByIDIR('JOHNDOE'),
-    primaryTechnicalLead: findMockUserByIDIR('JAMESSMITH'),
-    secondaryTechnicalLead: findMockUserByIDIR('DAVIDJOHNSON'),
-    productionQuota: quota,
-    testQuota: quota,
-    toolsQuota: quota,
-    developmentQuota: quota,
-    commonComponents: {
-      addressAndGeolocation: {
-        planningToUse: true,
-        implemented: false,
-      },
-      workflowManagement: {
-        planningToUse: false,
-        implemented: true,
-      },
-      formDesignAndSubmission: {
-        planningToUse: true,
-        implemented: true,
-      },
-      identityManagement: {
-        planningToUse: false,
-        implemented: false,
-      },
-      paymentServices: {
-        planningToUse: true,
-        implemented: false,
-      },
-      documentManagement: {
-        planningToUse: false,
-        implemented: true,
-      },
-      endUserNotificationAndSubscription: {
-        planningToUse: true,
-        implemented: false,
-      },
-      publishing: {
-        planningToUse: false,
-        implemented: true,
-      },
-      businessIntelligence: {
-        planningToUse: true,
-        implemented: false,
-      },
-      other: 'Some other services',
-      noServices: false,
-    },
-    golddrEnabled: true,
-    isTest: false,
-  },
-  {
-    name: 'TestProject',
-    description: 'This is a test project description.',
-    cluster: Cluster.SILVER,
-    ministry: Ministry.AG,
-    projectOwner: findMockUserByIDIR('JOHNDOE'),
-    primaryTechnicalLead: findMockUserByIDIR('JAMESSMITH'),
-    secondaryTechnicalLead: findMockUserByIDIR('DAVIDJOHNSON'),
-    productionQuota: quota,
-    testQuota: quota,
-    toolsQuota: quota,
-    developmentQuota: quota,
-    commonComponents: {
-      addressAndGeolocation: {
-        planningToUse: true,
-        implemented: false,
-      },
-      workflowManagement: {
-        planningToUse: false,
-        implemented: true,
-      },
-      formDesignAndSubmission: {
-        planningToUse: true,
-        implemented: true,
-      },
-      identityManagement: {
-        planningToUse: false,
-        implemented: false,
-      },
-      paymentServices: {
-        planningToUse: true,
-        implemented: false,
-      },
-      documentManagement: {
-        planningToUse: false,
-        implemented: true,
-      },
-      endUserNotificationAndSubscription: {
-        planningToUse: true,
-        implemented: false,
-      },
-      publishing: {
-        planningToUse: false,
-        implemented: true,
-      },
-      businessIntelligence: {
-        planningToUse: true,
-        implemented: false,
-      },
-      other: 'Some other services',
-      noServices: false,
-    },
-    golddrEnabled: true,
-    isTest: false,
-  },
+  createSamplePrivateCloudProductData({
+    data: { name: 'Sample Project', ministry: $Enums.Ministry.AG, cluster: $Enums.Cluster.CLAB },
+  }),
+  createSamplePrivateCloudProductData({
+    data: { name: 'TestProject', ministry: $Enums.Ministry.AG, cluster: $Enums.Cluster.SILVER },
+  }),
 ];
 
 // Function to create a project object
@@ -228,6 +126,7 @@ describe('CSV Download Route', () => {
       const project = createProjectObject(projectData[i], i);
       await prisma.privateCloudProject.create({ data: project });
     }
+
     await prisma.privateCloudProject.findMany({});
   });
 
@@ -275,8 +174,8 @@ describe('CSV Download Route', () => {
 
     const req = generatePostRequest({
       search: 'TestProject',
-      ministry: 'AG',
-      cluster: 'SILVER',
+      ministry: $Enums.Ministry.AG,
+      cluster: $Enums.Cluster.SILVER,
       includeInactive: false,
     });
 

@@ -21,14 +21,15 @@ interface MockFile {
   mocks: MockResponse[];
 }
 
-export const proxyUsers = mockFile.mocks.find(
+export const proxyUsers: MsUser[] = mockFile.mocks.find(
   (mock: MockResponse) => mock.request.url === 'https://graph.microsoft.com/v1.0/users?$filter*',
 )?.response.body.value;
 
+export const proxyAllIDIRs = proxyUsers.map((usr) => usr.onPremisesSamAccountName);
+export const proxyNoRoleIDIRs = proxyUsers.filter((usr) => !usr.jobTitle).map((usr) => usr.onPremisesSamAccountName);
+
 export function findMockUserByIDIR(useridir: string) {
-  let user = proxyUsers.find(
-    ({ onPremisesSamAccountName }: { onPremisesSamAccountName: string }) => onPremisesSamAccountName === useridir,
-  );
+  let user = proxyUsers.find(({ onPremisesSamAccountName }) => onPremisesSamAccountName === useridir);
   if (!user) user = proxyUsers[0];
 
   const { firstName, lastName, email, ministry, idir, upn } = processMsUser(user);
