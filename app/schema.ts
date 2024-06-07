@@ -35,6 +35,10 @@ export const DefaultStorageOptionsSchema = z.enum([
   'STORAGE_512',
 ]);
 
+export const cpuOptions = Object.values(DefaultCpuOptionsSchema.enum);
+export const memoryOptions = Object.values(DefaultMemoryOptionsSchema.enum);
+export const storageOptions = Object.values(DefaultStorageOptionsSchema.enum);
+
 const CommonComponentsOptionsSchema = z.object({
   planningToUse: z.boolean(),
   implemented: z.boolean(),
