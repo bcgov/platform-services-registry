@@ -2,10 +2,12 @@ FROM node:22.2.0-alpine3.19
 
 WORKDIR /sandbox
 
-COPY ./_packages ./_packages
+COPY ./package.json ./package.json
+COPY ./package-lock.json ./package-lock.json
 COPY ./tsconfig.json ./tsconfig.json
-COPY ./m365mock ./m365mock
+COPY ../m365mock ./m365mock
 COPY ./src ./src
+
 
 RUN npm install
 
