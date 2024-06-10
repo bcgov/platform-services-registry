@@ -1,3 +1,4 @@
+import { $Enums } from '@prisma/client';
 import jwt from 'jsonwebtoken';
 import _uniq from 'lodash-es/uniq';
 import { Account, AuthOptions, Session, User } from 'next-auth';
@@ -5,6 +6,7 @@ import { JWT } from 'next-auth/jwt';
 import KeycloakProvider, { KeycloakProfile } from 'next-auth/providers/keycloak';
 import { IS_PROD, AUTH_SERVER_URL, AUTH_RELM, AUTH_RESOURCE, AUTH_SECRET } from '@/config';
 import prisma from '@/core/prisma';
+import { createEvent } from '@/mutations/events';
 import { upsertUser } from '@/services/db/user';
 
 export async function generateSession({ session, token }: { session: Session; token?: JWT }) {
@@ -279,5 +281,33 @@ export const authOptions: AuthOptions = {
       return token;
     },
     session: generateSession.bind(this),
+  },
+  events: {
+    async signIn({ user, account }: { user: User; account: Account | null }) {
+      if (!user?.email) return;
+
+      const loweremail = user.email.toLowerCase();
+      const loggedInUser = await prisma.user.findUnique({
+        where: { email: loweremail },
+        select: { id: true },
+      });
+
+      if (!loggedInUser) return;
+
+      await createEvent($Enums.EventType.LOGIN, loggedInUser.id);
+    },
+    async signOut({ session, token }: { session: Session; token: JWT }) {
+      if (!token?.email) return;
+
+      const loweremail = token.email.toLowerCase();
+      const loggedInUser = await prisma.user.findUnique({
+        where: { email: loweremail },
+        select: { id: true },
+      });
+
+      if (!loggedInUser) return;
+
+      await createEvent($Enums.EventType.LOGOUT, loggedInUser.id);
+    },
   },
 };
