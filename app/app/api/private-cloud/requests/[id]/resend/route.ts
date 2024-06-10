@@ -3,6 +3,7 @@ import { z } from 'zod';
 import createApiHandler from '@/core/api-handler';
 import { BadRequestResponse, OkResponse, UnauthorizedResponse } from '@/core/responses';
 import { hasContactsChanged } from '@/helpers/product';
+import { createEvent } from '@/mutations/events';
 import { getPrivateCloudRequest } from '@/queries/private-cloud-requests';
 import { sendPrivateCloudNatsMessage } from '@/services/nats';
 
@@ -37,6 +38,8 @@ export const GET = apiHandler(async ({ pathParams, session }) => {
       contactsChanged,
     );
   }
+
+  await createEvent($Enums.EventType.RESEND_PRIVATE_CLOUD_REQUEST, session.user.id, { requestId: request.id });
 
   return OkResponse(true);
 });

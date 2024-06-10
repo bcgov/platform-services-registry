@@ -1,5 +1,6 @@
 import { $Enums } from '@prisma/client';
 import { z } from 'zod';
+import { logger } from '@/core/logging';
 import prisma from '@/core/prisma';
 
 const validationSchemas = {
@@ -38,22 +39,26 @@ const validationSchemas = {
 const validationKeys = Object.keys(validationSchemas);
 
 export async function createEvent(type: $Enums.EventType, userId = '', payload = {}) {
-  if (validationKeys.includes(type)) {
-    const validationSchame = validationSchemas[type as keyof typeof validationSchemas];
+  try {
+    if (validationKeys.includes(type)) {
+      const validationSchame = validationSchemas[type as keyof typeof validationSchemas];
 
-    const parsed = validationSchame.safeParse(payload);
-    if (!parsed.success) {
-      throw Error(`invalid payload for event type ${type}: ${JSON.stringify(payload)}`);
+      const parsed = validationSchame.safeParse(payload);
+      if (!parsed.success) {
+        throw Error(`invalid payload for event type ${type}: ${JSON.stringify(payload)}`);
+      }
     }
+
+    const event = await prisma.event.create({
+      data: {
+        type,
+        userId,
+        payload,
+      },
+    });
+
+    return event;
+  } catch (error) {
+    logger.error('createEvent:', error);
   }
-
-  const event = await prisma.event.create({
-    data: {
-      type,
-      userId,
-      payload,
-    },
-  });
-
-  return event;
 }

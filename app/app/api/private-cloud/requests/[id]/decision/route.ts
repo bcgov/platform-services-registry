@@ -19,11 +19,10 @@ const apiHandler = createApiHandler({
   validations: { pathParams: pathParamSchema, body: PrivateCloudDecisionRequestBodySchema },
 });
 export const POST = apiHandler(async ({ pathParams, body, session }) => {
-  const { userEmail } = session;
   const { id } = pathParams;
   const { decision, decisionComment, ...decisionDataFormData } = body;
 
-  const request = await makeRequestDecision(id, decision, decisionComment, decisionDataFormData, userEmail as string);
+  const request = await makeRequestDecision(id, decision, decisionComment, decisionDataFormData, session);
 
   if (!request.decisionData) {
     return BadRequestResponse(`Error creating decision request for ${request.licencePlate}`);
