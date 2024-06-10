@@ -21,7 +21,7 @@ type Mock = {
 let mocks;
 
 try {
-  const jsonDataPath = join(__dirname, '../m365proxy/mocks.json');
+  const jsonDataPath = join(__dirname, './m365proxy/mocks.json');
   const jsonData = readFileSync(jsonDataPath, 'utf-8');
   const jsonDataObject = JSON.parse(jsonData);
 
