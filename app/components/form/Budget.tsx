@@ -13,7 +13,7 @@ export default function Budget({ disabled }: { disabled?: boolean }) {
     watch,
   } = useFormContext();
 
-  const provider = watch('provider', {});
+  const provider = watch('provider', null);
   const budget = watch('budget', {});
   const environmentsEnabled = watch('environmentsEnabled', {});
 
@@ -30,19 +30,23 @@ export default function Budget({ disabled }: { disabled?: boolean }) {
 
   const formattedTotalBudget = parseFloat(totalBudget.toFixed(2));
 
+  let calculatorLink = null;
   let calculatorNote = null;
-  if (provider) {
-    const calculatorLink =
-      provider === $Enums.Provider.AWS ? (
-        <ExternalLink href="https://calculator.aws/#/">AWS Cost Calculator</ExternalLink>
-      ) : (
+
+  switch (provider) {
+    case $Enums.Provider.AWS:
+      calculatorLink = <ExternalLink href="https://calculator.aws/#/">AWS Cost Calculator</ExternalLink>;
+      break;
+    case $Enums.Provider.AZURE:
+      calculatorLink = (
         <ExternalLink href="https://azure.microsoft.com/en-ca/pricing/calculator">
           Azure Pricing Calculator
         </ExternalLink>
       );
-
-    calculatorNote = <span>&nbsp;&#40;Try the {calculatorLink} to get an estimate&#41;</span>;
+      break;
   }
+
+  if (calculatorLink) calculatorNote = <span>&nbsp;&#40;Try the {calculatorLink} to get an estimate&#41;</span>;
 
   return (
     <div className="">
