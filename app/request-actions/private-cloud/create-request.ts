@@ -1,6 +1,8 @@
-import { DecisionStatus, ProjectStatus, RequestType } from '@prisma/client';
+import { $Enums, DecisionStatus, ProjectStatus, RequestType } from '@prisma/client';
+import { Session } from 'next-auth';
 import prisma from '@/core/prisma';
 import generateLicencePlate from '@/helpers/licence-plate';
+import { createEvent } from '@/mutations/events';
 import {
   DefaultCpuOptionsSchema,
   DefaultMemoryOptionsSchema,
@@ -15,7 +17,7 @@ const defaultQuota = {
   storage: DefaultStorageOptionsSchema.enum.STORAGE_1,
 };
 
-export default async function createRequest(formData: PrivateCloudCreateRequestBody, authEmail: string) {
+export default async function createRequest(formData: PrivateCloudCreateRequestBody, session: Session) {
   const licencePlate = generateLicencePlate();
 
   await upsertUsers([
@@ -66,12 +68,12 @@ export default async function createRequest(formData: PrivateCloudCreateRequestB
       : undefined,
   };
 
-  return prisma.privateCloudRequest.create({
+  const request = await prisma.privateCloudRequest.create({
     data: {
       type: RequestType.CREATE,
       decisionStatus: DecisionStatus.PENDING,
       active: true,
-      createdByEmail: authEmail,
+      createdByEmail: session.user.email,
       licencePlate,
       decisionData: {
         create: createRequestedProject,
@@ -97,4 +99,10 @@ export default async function createRequest(formData: PrivateCloudCreateRequestB
       },
     },
   });
+
+  if (request) {
+    await createEvent($Enums.EventType.CREATE_PRIVATE_CLOUD_PRODUCT, session.user.id, { requestId: request.id });
+  }
+
+  return request;
 }

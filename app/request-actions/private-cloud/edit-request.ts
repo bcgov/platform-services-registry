@@ -1,13 +1,15 @@
 import { $Enums, DecisionStatus, Prisma, RequestType } from '@prisma/client';
+import { Session } from 'next-auth';
 import prisma from '@/core/prisma';
 import { isQuotaUpgrade } from '@/helpers/quota-change';
+import { createEvent } from '@/mutations/events';
 import { PrivateCloudEditRequestBody } from '@/schema';
 import { upsertUsers } from '@/services/db/user';
 
 export default async function editRequest(
   licencePlate: string,
   formData: PrivateCloudEditRequestBody,
-  authEmail: string,
+  session: Session,
 ) {
   // Get the current project that we are creating an edit request for
   const project = await prisma.privateCloudProject.findUnique({
@@ -104,13 +106,13 @@ export default async function editRequest(
     },
   });
 
-  return prisma.privateCloudRequest.create({
+  const request = await prisma.privateCloudRequest.create({
     data: {
       type: RequestType.EDIT,
       decisionStatus,
       isQuotaChanged: !isNoQuotaChanged,
       active: true,
-      createdByEmail: authEmail,
+      createdByEmail: session.user.email,
       licencePlate: project.licencePlate,
       requestComment,
       originalData: {
@@ -154,4 +156,10 @@ export default async function editRequest(
       },
     },
   });
+
+  if (request) {
+    await createEvent($Enums.EventType.UPDATE_PRIVATE_CLOUD_PRODUCT, session.user.id, { requestId: request.id });
+  }
+
+  return request;
 }
