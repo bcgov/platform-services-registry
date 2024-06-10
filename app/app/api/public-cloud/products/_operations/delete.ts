@@ -76,11 +76,15 @@ export default async function deleteOp({
     },
   });
 
-  await Promise.all([
-    sendDeleteRequestEmails(request.decisionData, session.user.name),
-    sendAdminDeleteRequestEmails(request.decisionData, session.user.name),
-    createEvent($Enums.EventType.DELETE_PUBLIC_CLOUD_PRODUCT, session.user.id, { requestId: request.id }),
-  ]);
+  if (request) {
+    await Promise.all([
+      sendDeleteRequestEmails(request.decisionData, session.user.name),
+      sendAdminDeleteRequestEmails(request.decisionData, session.user.name),
+      createEvent($Enums.EventType.DELETE_PUBLIC_CLOUD_PRODUCT, session.user.id, { requestId: request.id }),
+    ]);
 
-  return OkResponse(true);
+    return OkResponse(true);
+  }
+
+  return OkResponse(false);
 }
