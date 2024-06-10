@@ -230,6 +230,14 @@ type EnvironmentsEnabled {
   tools       Boolean
 }
 
+model Event {
+  id        String    @id @default(auto()) @map("_id") @db.ObjectId
+  type      EventType
+  userId    String?
+  createdAt DateTime  @default(now())
+  payload   Json
+}
+
 model PrivateCloudProjectZapResult {
   id           String   @id @default(auto()) @map("_id") @db.ObjectId
   licencePlate String
@@ -472,4 +480,23 @@ enum Provider {
   // GOOGLE
   AWS
   AZURE
+}
+
+enum EventType {
+  LOGIN
+  LOGOUT
+  CREATE_API_TOKEN
+  DELETE_API_TOKEN
+  CREATE_PRIVATE_CLOUD_PRODUCT
+  UPDATE_PRIVATE_CLOUD_PRODUCT
+  DELETE_PRIVATE_CLOUD_PRODUCT
+  EXPORT_PRIVATE_CLOUD_PRODUCT
+  REVIEW_PRIVATE_CLOUD_REQUEST
+  RESEND_PRIVATE_CLOUD_REQUEST
+  REPROVISION_PRIVATE_CLOUD_PRODUCT
+  CREATE_PUBLIC_CLOUD_PRODUCT
+  UPDATE_PUBLIC_CLOUD_PRODUCT
+  DELETE_PUBLIC_CLOUD_PRODUCT
+  EXPORT_PUBLIC_CLOUD_PRODUCT
+  REVIEW_PUBLIC_CLOUD_REQUEST
 }
