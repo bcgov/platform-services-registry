@@ -1,12 +1,12 @@
 FROM alpine:latest as preparer
 WORKDIR /context
-COPY ../m365proxy/mocks.json ./mocks.json
+COPY m365proxy/mocks.json ./mocks.json
 
 FROM node:22.2.0-alpine3.19
 WORKDIR /sandbox
 
-COPY package.json package-lock.json tsconfig.json ./
-COPY src ./src
+COPY m365mock/package.json m365mock/package-lock.json m365mock/tsconfig.json ./
+COPY m365mock/src ./src
 
 COPY --from=preparer /context/mocks.json ./m365proxy/mocks.json
 
