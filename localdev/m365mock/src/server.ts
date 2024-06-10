@@ -1,5 +1,6 @@
 import express, { Request, Response } from 'express';
 import { readFileSync } from 'fs';
+import { join } from 'path';
 
 const app = express();
 const port = 4040;
@@ -20,7 +21,8 @@ type Mock = {
 let mocks;
 
 try {
-  const jsonData = readFileSync('../m365proxy/mocks.json', 'utf-8');
+  const jsonDataPath = join(__dirname, '../m365proxy/mocks.json');
+  const jsonData = readFileSync(jsonDataPath, 'utf-8');
   const jsonDataObject = JSON.parse(jsonData);
 
   if (!Array.isArray(jsonDataObject.mocks)) {
