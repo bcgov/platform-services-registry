@@ -1,10 +1,14 @@
-FROM node:22.2.0-alpine3.19
+FROM alpine:latest as preparer
+WORKDIR /context
+COPY ../m365proxy/mocks.json ./mocks.json
 
+FROM node:22.2.0-alpine3.19
 WORKDIR /sandbox
 
 COPY package.json package-lock.json tsconfig.json ./
-COPY ../m365proxy/mocks.json ./m365proxy/mocks.json
 COPY src ./src
+
+COPY --from=preparer /context/mocks.json ./m365proxy/mocks.json
 
 RUN npm install
 RUN npm run build
