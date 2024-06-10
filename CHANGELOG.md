@@ -1,3 +1,12 @@
+## [0.29.1](https://github.com/bcgov/platform-services-registry/compare/v0.29.0...v0.29.1) (2024-06-10)
+
+### Features
+
+* **3045:** add a func to create sample private cloud data ([3eab36d](https://github.com/bcgov/platform-services-registry/commit/3eab36d44334e3af9fde6a625d0edee844e17540))
+
+### Bug Fixes
+
+* **3061:** display cloud calculator correctly ([136ad72](https://github.com/bcgov/platform-services-registry/commit/136ad7286e66376152a570bb4d4e09bcd24c867b))
 ## [0.29.0](https://github.com/bcgov/platform-services-registry/compare/v0.28.0...v0.29.0) (2024-06-07)
 
 ### Features
