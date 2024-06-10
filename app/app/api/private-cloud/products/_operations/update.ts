@@ -28,7 +28,7 @@ export default async function updateOp({
     return UnauthorizedResponse();
   }
 
-  const request = await editRequest(licencePlate, body, user.email);
+  const request = await editRequest(licencePlate, body, session);
 
   if (request.decisionStatus !== DecisionStatus.APPROVED) {
     await sendEditRequestEmails(request, true, session.user.name);

@@ -1,10 +1,12 @@
-import { DecisionStatus, ProjectStatus, RequestType } from '@prisma/client';
+import { $Enums, DecisionStatus, ProjectStatus, RequestType } from '@prisma/client';
+import { Session } from 'next-auth';
 import prisma from '@/core/prisma';
 import generateLicencePlate from '@/helpers/licence-plate';
+import { createEvent } from '@/mutations/events';
 import { PublicCloudCreateRequestBody } from '@/schema';
 import { upsertUsers } from '@/services/db/user';
 
-export default async function createRequest(formData: PublicCloudCreateRequestBody, authEmail: string) {
+export default async function createRequest(formData: PublicCloudCreateRequestBody, session: Session) {
   const licencePlate = generateLicencePlate();
 
   await upsertUsers([
@@ -62,12 +64,12 @@ export default async function createRequest(formData: PublicCloudCreateRequestBo
       : undefined,
   };
 
-  return prisma.publicCloudRequest.create({
+  const request = await prisma.publicCloudRequest.create({
     data: {
       type: RequestType.CREATE,
       decisionStatus: DecisionStatus.PENDING,
       active: true,
-      createdByEmail: authEmail,
+      createdByEmail: session.user.email,
       licencePlate,
       decisionData: {
         create: createRequestedProject,
@@ -95,4 +97,10 @@ export default async function createRequest(formData: PublicCloudCreateRequestBo
       },
     },
   });
+
+  if (request) {
+    await createEvent($Enums.EventType.CREATE_PUBLIC_CLOUD_PRODUCT, session.user.id, { requestId: request.id });
+  }
+
+  return request;
 }

@@ -3,6 +3,7 @@ import { Session } from 'next-auth';
 import { z, TypeOf, ZodType } from 'zod';
 import prisma from '@/core/prisma';
 import { BadRequestResponse, OkResponse, UnauthorizedResponse } from '@/core/responses';
+import { createEvent } from '@/mutations/events';
 import { getPublicCloudProduct, excludeProductUsers } from '@/queries/public-cloud-products';
 import { sendDeleteRequestEmails, sendAdminDeleteRequestEmails } from '@/services/ches/public-cloud/email-handler';
 import { deletePathParamSchema } from '../[licencePlate]/schema';
@@ -25,7 +26,7 @@ export default async function deleteOp({
 
   const { id, requests, updatedAt, _permissions, ...rest } = product;
 
-  const createRequest = await prisma.publicCloudRequest.create({
+  const request = await prisma.publicCloudRequest.create({
     data: {
       type: $Enums.PublicCloudRequestType.DELETE,
       decisionStatus: $Enums.DecisionStatus.PENDING,
@@ -76,8 +77,9 @@ export default async function deleteOp({
   });
 
   await Promise.all([
-    sendDeleteRequestEmails(createRequest.decisionData, session.user.name),
-    sendAdminDeleteRequestEmails(createRequest.decisionData, session.user.name),
+    sendDeleteRequestEmails(request.decisionData, session.user.name),
+    sendAdminDeleteRequestEmails(request.decisionData, session.user.name),
+    createEvent($Enums.EventType.DELETE_PUBLIC_CLOUD_PRODUCT, session.user.id, { requestId: request.id }),
   ]);
 
   return OkResponse(true);

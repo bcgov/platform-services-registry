@@ -21,7 +21,7 @@ export default async function createOp({ session, body }: { session: Session; bo
     return UnauthorizedResponse();
   }
 
-  const request = await createRequest(body, user.email);
+  const request = await createRequest(body, session);
 
   await sendCreateRequestEmails(request, user.name);
 

@@ -4,6 +4,7 @@ import { z, TypeOf, ZodType } from 'zod';
 import prisma from '@/core/prisma';
 import { BadRequestResponse, OkResponse, UnauthorizedResponse } from '@/core/responses';
 import { isEligibleForDeletion } from '@/helpers/openshift';
+import { createEvent } from '@/mutations/events';
 import { getPrivateCloudProduct, excludeProductUsers } from '@/queries/private-cloud-products';
 import { sendDeleteRequestEmails } from '@/services/ches/private-cloud/email-handler';
 import { deletePathParamSchema } from '../[licencePlate]/schema';
@@ -33,7 +34,7 @@ export default async function deleteOp({
 
   const { id, requests, updatedAt, _permissions, ...rest } = product;
 
-  const createRequest = await prisma.privateCloudRequest.create({
+  const request = await prisma.privateCloudRequest.create({
     data: {
       type: $Enums.RequestType.DELETE,
       decisionStatus: $Enums.DecisionStatus.PENDING,
@@ -80,7 +81,14 @@ export default async function deleteOp({
     },
   });
 
-  await sendDeleteRequestEmails(createRequest, session.user.name);
+  if (request) {
+    await Promise.all([
+      createEvent($Enums.EventType.DELETE_PRIVATE_CLOUD_PRODUCT, session.user.id, { requestId: request.id }),
+      sendDeleteRequestEmails(request, session.user.name),
+    ]);
 
-  return OkResponse(true);
+    return OkResponse(true);
+  }
+
+  return OkResponse(false);
 }
