@@ -38,14 +38,14 @@ const validationSchemas = {
 
 const validationKeys = Object.keys(validationSchemas);
 
-export async function createEvent(type: $Enums.EventType, userId = '', payload = {}) {
+export async function createEvent(type: $Enums.EventType, userId = '', data = {}) {
   try {
     if (validationKeys.includes(type)) {
       const validationSchame = validationSchemas[type as keyof typeof validationSchemas];
 
-      const parsed = validationSchame.safeParse(payload);
+      const parsed = validationSchame.safeParse(data);
       if (!parsed.success) {
-        throw Error(`invalid payload for event type ${type}: ${JSON.stringify(payload)}`);
+        throw Error(`invalid data for event type ${type}: ${JSON.stringify(data)}`);
       }
     }
 
@@ -53,7 +53,7 @@ export async function createEvent(type: $Enums.EventType, userId = '', payload =
       data: {
         type,
         userId,
-        payload,
+        data,
       },
     });
 

@@ -309,5 +309,9 @@ export const authOptions: AuthOptions = {
 
       await createEvent($Enums.EventType.LOGOUT, loggedInUser.id);
     },
+    async session({ session, token }: { session: Session; token: JWT }) {
+      if (!session.user.id) return;
+      await prisma.user.update({ where: { id: session.user.id }, data: { lastSeen: new Date() } });
+    },
   },
 };
