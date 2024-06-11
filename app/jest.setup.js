@@ -4,6 +4,20 @@ import prisma from '@/core/prisma';
 
 jest.setTimeout(75000);
 
+jest.mock('next-auth/next', () => ({
+  getServerSession: jest.fn(),
+}));
+
+jest.mock('next-auth', () => ({
+  default: jest.fn(),
+  NextAuth: jest.fn(),
+}));
+
+jest.mock('@/app/api/auth/[...nextauth]/route', () => ({
+  GET: jest.fn(),
+  POST: jest.fn(),
+}));
+
 // Mock Mautic
 jest.mock('@/services/mautic', () => ({
   ...jest.requireActual('@/services/mautic'),

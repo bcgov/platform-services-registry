@@ -89,3 +89,19 @@ export function createSamplePrivateCloudProductData(args?: {
 
   return _data;
 }
+
+export function createSamplePrivateCloudRequestData(args?: {
+  product?: Prisma.PrivateCloudProjectGetPayload<null>;
+  data?: Partial<Prisma.PrivateCloudProjectGetPayload<null>>;
+}) {
+  const { product = {}, data } = args ?? {};
+  const newProduct = createSamplePrivateCloudProductData({ data });
+
+  const _data = {
+    ...newProduct,
+    ...product,
+    ...data,
+  };
+
+  return _data;
+}

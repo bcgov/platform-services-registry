@@ -1,4 +1,6 @@
+import { MockedFunction } from 'jest-mock';
 import { NextRequest } from 'next/server';
+import { getServerSession } from 'next-auth/next';
 import { BASE_URL } from '@/config';
 
 type Handler = (req: NextRequest, { params }?: { params: any }) => Promise<Response>;
@@ -67,3 +69,5 @@ export function createRoute(url: string) {
     },
   };
 }
+
+export const mockedGetServerSession = getServerSession as unknown as MockedFunction<typeof getServerSession>;

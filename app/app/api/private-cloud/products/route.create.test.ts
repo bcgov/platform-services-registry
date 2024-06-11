@@ -1,82 +1,15 @@
 import { expect } from '@jest/globals';
-import { PrivateCloudRequest } from '@prisma/client';
-import { MockedFunction } from 'jest-mock';
 import { NextRequest, NextResponse } from 'next/server';
-import { getServerSession } from 'next-auth/next';
 import { POST } from '@/app/api/private-cloud/products/route';
 import prisma from '@/core/prisma';
+import { createSamplePrivateCloudProductData } from '@/helpers/mock-resources';
 import { findMockUserByIDIR, generateTestSession } from '@/helpers/mock-users';
-import { PrivateCloudCreateRequestBody } from '@/schema';
+import { mockedGetServerSession } from '@/services/api-test/core';
 
 const BASE_URL = 'http://localhost:3000';
 const API_URL = `${BASE_URL}/api/private-cloud/create`;
 
-const createRequestBody: PrivateCloudCreateRequestBody = {
-  name: 'Sample Project',
-  description: 'This is a sample project description.',
-  cluster: 'SILVER', // Assuming CLUSTER_A is a valid enum value for Cluster
-  ministry: 'AGRI', // Assuming AGRI is a valid enum value for Ministry
-  projectOwner: findMockUserByIDIR('JOHNDOE'),
-  primaryTechnicalLead: findMockUserByIDIR('JAMESSMITH'),
-  commonComponents: {
-    addressAndGeolocation: {
-      planningToUse: true,
-      implemented: false,
-    },
-    workflowManagement: {
-      planningToUse: false,
-      implemented: true,
-    },
-    formDesignAndSubmission: {
-      planningToUse: true,
-      implemented: true,
-    },
-    identityManagement: {
-      planningToUse: false,
-      implemented: false,
-    },
-    paymentServices: {
-      planningToUse: true,
-      implemented: false,
-    },
-    documentManagement: {
-      planningToUse: false,
-      implemented: true,
-    },
-    endUserNotificationAndSubscription: {
-      planningToUse: true,
-      implemented: false,
-    },
-    publishing: {
-      planningToUse: false,
-      implemented: true,
-    },
-    businessIntelligence: {
-      planningToUse: true,
-      implemented: false,
-    },
-    other: 'Some other services',
-    noServices: false,
-  },
-  golddrEnabled: true,
-  isTest: false,
-};
-
-const mockedGetServerSession = getServerSession as unknown as MockedFunction<typeof getServerSession>;
-
-jest.mock('next-auth/next', () => ({
-  getServerSession: jest.fn(),
-}));
-
-jest.mock('next-auth', () => ({
-  default: jest.fn(), // for default export
-  NextAuth: jest.fn(), // for named export
-}));
-
-jest.mock('@/app/api/auth/[...nextauth]/route', () => ({
-  GET: jest.fn(),
-  POST: jest.fn(),
-}));
+const createRequestBody = createSamplePrivateCloudProductData();
 
 describe('Create Private Cloud Request Route', () => {
   test('should return 401 if user is not authenticated', async () => {
@@ -141,7 +74,7 @@ describe('Create Private Cloud Request Route', () => {
     expect(decisionData.primaryTechnicalLead.lastName).toBe(createRequestBody.primaryTechnicalLead.lastName);
     expect(decisionData.primaryTechnicalLead.email).toBe(createRequestBody.primaryTechnicalLead.email);
     expect(decisionData.primaryTechnicalLead.ministry).toBe(createRequestBody.primaryTechnicalLead.ministry);
-    expect(decisionData.secondaryTechnicalLead).toBeNull();
+    expect(decisionData.secondaryTechnicalLead?.email).toBe(createRequestBody.secondaryTechnicalLead.email);
     expect(decisionData.commonComponents.addressAndGeolocation.planningToUse).toBe(
       createRequestBody.commonComponents.addressAndGeolocation.planningToUse,
     );
@@ -158,7 +91,7 @@ describe('Create Private Cloud Request Route', () => {
       createRequestBody.commonComponents.formDesignAndSubmission.planningToUse,
     );
     expect(decisionData.commonComponents.publishing.implemented).toBe(
-      createRequestBody.commonComponents.formDesignAndSubmission.implemented,
+      createRequestBody.commonComponents.publishing.implemented,
     );
     expect(decisionData.commonComponents.identityManagement.planningToUse).toBe(
       createRequestBody.commonComponents.identityManagement.planningToUse,
