@@ -3,6 +3,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { POST as createRequest } from '@/app/api/private-cloud/products/route';
 import { POST } from '@/app/api/private-cloud/requests/[id]/decision/route';
 import prisma from '@/core/prisma';
+import { createSamplePrivateCloudRequestData } from '@/helpers/mock-resources';
 import { findMockUserByIDIR, generateTestSession } from '@/helpers/mock-users';
 import {
   DefaultCpuOptionsSchema,
@@ -14,56 +15,7 @@ import { mockedGetServerSession } from '@/services/api-test/core';
 
 const BASE_URL = 'http://localhost:3000';
 
-const createRequestBody: PrivateCloudCreateRequestBody = {
-  name: 'Sample Project',
-  description: 'This is a sample project description.',
-  cluster: 'SILVER', // Assuming CLUSTER_A is a valid enum value for Cluster
-  ministry: 'AGRI', // Assuming AGRI is a valid enum value for Ministry
-  projectOwner: findMockUserByIDIR('JOHNDOE'),
-  primaryTechnicalLead: findMockUserByIDIR('JAMESSMITH'),
-  commonComponents: {
-    addressAndGeolocation: {
-      planningToUse: true,
-      implemented: false,
-    },
-    workflowManagement: {
-      planningToUse: false,
-      implemented: true,
-    },
-    formDesignAndSubmission: {
-      planningToUse: true,
-      implemented: true,
-    },
-    identityManagement: {
-      planningToUse: false,
-      implemented: false,
-    },
-    paymentServices: {
-      planningToUse: true,
-      implemented: false,
-    },
-    documentManagement: {
-      planningToUse: false,
-      implemented: true,
-    },
-    endUserNotificationAndSubscription: {
-      planningToUse: true,
-      implemented: false,
-    },
-    publishing: {
-      planningToUse: false,
-      implemented: true,
-    },
-    businessIntelligence: {
-      planningToUse: true,
-      implemented: false,
-    },
-    other: 'Some other services',
-    noServices: false,
-  },
-  golddrEnabled: true,
-  isTest: false,
-};
+const createRequestBody = createSamplePrivateCloudRequestData();
 
 const quota = {
   cpu: DefaultCpuOptionsSchema.enum.CPU_REQUEST_0_5_LIMIT_1_5,
@@ -205,7 +157,7 @@ describe('Create Private Cloud Request Route', () => {
     expect(decisionData.primaryTechnicalLead.lastName).toBe(createRequestBody.primaryTechnicalLead.lastName);
     expect(decisionData.primaryTechnicalLead.email).toBe(createRequestBody.primaryTechnicalLead.email);
     expect(decisionData.primaryTechnicalLead.ministry).toBe(createRequestBody.primaryTechnicalLead.ministry);
-    expect(decisionData.secondaryTechnicalLead).toBeNull();
+    expect(decisionData.secondaryTechnicalLead?.email).toBe(createRequestBody.secondaryTechnicalLead.email);
     expect(decisionData.commonComponents.addressAndGeolocation.planningToUse).toBe(
       createRequestBody.commonComponents.addressAndGeolocation.planningToUse,
     );
@@ -296,7 +248,7 @@ describe('Create Private Cloud Request Route', () => {
     expect(decisionData.primaryTechnicalLead.lastName).toBe(decisionBody.primaryTechnicalLead.lastName);
     expect(decisionData.primaryTechnicalLead.email).toBe(decisionBody.primaryTechnicalLead.email);
     expect(decisionData.primaryTechnicalLead.ministry).toBe(decisionBody.primaryTechnicalLead.ministry);
-    expect(decisionData.secondaryTechnicalLead).toBeNull();
+    expect(decisionData.secondaryTechnicalLead?.email).toBe(decisionBody.secondaryTechnicalLead.email);
     expect(decisionData.commonComponents.addressAndGeolocation.planningToUse).toBe(
       decisionBody.commonComponents.addressAndGeolocation.planningToUse,
     );
