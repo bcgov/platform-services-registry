@@ -1,5 +1,7 @@
-import { DecisionStatus, Prisma, ProjectStatus } from '@prisma/client';
+import { $Enums, DecisionStatus, Prisma, ProjectStatus } from '@prisma/client';
+import { Session } from 'next-auth';
 import prisma from '@/core/prisma';
+import { createEvent } from '@/mutations/events';
 import { PublicCloudEditRequestBody } from '@/schema';
 
 export type PublicCloudRequestWithProjectAndRequestedProject = Prisma.PublicCloudRequestGetPayload<{
@@ -41,7 +43,7 @@ export default async function makeRequestDecision(
   decision: DecisionStatus,
   decisionComment: string | undefined,
   formData: PublicCloudEditRequestBody,
-  authEmail: string,
+  session: Session,
 ): Promise<PublicCloudRequestWithProjectAndRequestedProject> {
   const request = await prisma.publicCloudRequest.findUnique({
     where: {
@@ -55,7 +57,7 @@ export default async function makeRequestDecision(
     throw new Error('Request not found.');
   }
 
-  const updatedRequest = prisma.publicCloudRequest.update({
+  const updatedRequest = await prisma.publicCloudRequest.update({
     where: {
       id: request.id,
       active: true,
@@ -83,7 +85,7 @@ export default async function makeRequestDecision(
       decisionStatus: decision,
       decisionComment,
       decisionDate: new Date(),
-      decisionMakerEmail: authEmail,
+      decisionMakerEmail: session.user.email,
       decisionData: {
         update: {
           ...formData,
@@ -130,6 +132,10 @@ export default async function makeRequestDecision(
       },
     },
   });
+
+  if (updatedRequest) {
+    await createEvent($Enums.EventType.REVIEW_PUBLIC_CLOUD_REQUEST, session.user.id, { requestId: updatedRequest.id });
+  }
 
   return updatedRequest;
 }

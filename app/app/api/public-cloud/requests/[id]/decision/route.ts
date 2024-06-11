@@ -22,7 +22,6 @@ const apiHandler = createApiHandler({
 });
 
 export const POST = apiHandler(async ({ pathParams, body, session }) => {
-  const { userEmail } = session;
   const { id } = pathParams;
   const { decision, decisionComment, ...decisionDataFormData } = body;
 
@@ -31,7 +30,7 @@ export const POST = apiHandler(async ({ pathParams, body, session }) => {
     decision,
     decisionComment,
     decisionDataFormData,
-    userEmail as string,
+    session,
   );
 
   if (!request.decisionData) {
