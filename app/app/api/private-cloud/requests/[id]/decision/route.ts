@@ -20,9 +20,9 @@ const apiHandler = createApiHandler({
 });
 export const POST = apiHandler(async ({ pathParams, body, session }) => {
   const { id } = pathParams;
-  const { decision, decisionComment, ...decisionDataFormData } = body;
+  const { decision, decisionComment, ...formData } = body;
 
-  const request = await makeRequestDecision(id, decision, decisionComment, decisionDataFormData, session);
+  const request = await makeRequestDecision(id, decision, decisionComment, formData, session);
 
   if (!request.decisionData) {
     return BadRequestResponse(`Error creating decision request for ${request.licencePlate}`);
@@ -59,5 +59,5 @@ export const POST = apiHandler(async ({ pathParams, body, session }) => {
 
   await Promise.all(proms);
 
-  return OkResponse(`Decision request for ${request.licencePlate} successfully created.`);
+  return OkResponse(request);
 });

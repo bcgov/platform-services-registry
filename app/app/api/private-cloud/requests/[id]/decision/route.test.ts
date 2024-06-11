@@ -1,309 +1,144 @@
 import { expect } from '@jest/globals';
-import { NextRequest, NextResponse } from 'next/server';
-import { POST as createRequest } from '@/app/api/private-cloud/products/route';
-import { POST } from '@/app/api/private-cloud/requests/[id]/decision/route';
-import prisma from '@/core/prisma';
+import { $Enums } from '@prisma/client';
 import { createSamplePrivateCloudRequestData } from '@/helpers/mock-resources';
-import { findMockUserByIDIR, generateTestSession } from '@/helpers/mock-users';
-import {
-  DefaultCpuOptionsSchema,
-  DefaultMemoryOptionsSchema,
-  DefaultStorageOptionsSchema,
-  PrivateCloudCreateRequestBody,
-} from '@/schema';
-import { mockedGetServerSession } from '@/services/api-test/core';
+import { pickProductData } from '@/helpers/product';
+import { mockSessionByEmail, mockSessionByRole } from '@/services/api-test/core';
+import { createPrivateCloudProject } from '@/services/api-test/private-cloud/products';
+import { makePrivateCloudRequestDecision } from '@/services/api-test/private-cloud/requests';
 
-const BASE_URL = 'http://localhost:3000';
+const fieldsToCompare = [
+  'name',
+  'description',
+  'cluster',
+  'ministry',
+  'projectOwner',
+  'primaryTechnicalLead',
+  'secondaryTechnicalLead',
+  'developmentQuota',
+  'testQuota',
+  'productionQuota',
+  'toolsQuota',
+  'commonComponents',
+];
 
-const createRequestBody = createSamplePrivateCloudRequestData();
-
-const quota = {
-  cpu: DefaultCpuOptionsSchema.enum.CPU_REQUEST_0_5_LIMIT_1_5,
-  memory: DefaultMemoryOptionsSchema.enum.MEMORY_REQUEST_2_LIMIT_4,
-  storage: DefaultStorageOptionsSchema.enum.STORAGE_1,
+const requestDataSet = {
+  a: createSamplePrivateCloudRequestData(),
+  b: createSamplePrivateCloudRequestData(),
 };
 
-const adminChanges = {
-  name: 'New name from admin',
-  description: 'New description from admin',
-  projectOwner: findMockUserByIDIR('JOHNDOE'),
-  testQuota: {
-    cpu: 'CPU_REQUEST_8_LIMIT_16',
-    memory: 'MEMORY_REQUEST_4_LIMIT_8',
-    storage: 'STORAGE_3', // Custom Quota
-  },
+const requestDocSet = {
+  a: null as any,
+  b: null as any,
 };
 
-const decisionBody = {
-  decision: 'APPROVED',
-  decisionComment: 'Approved by admin',
-  ...createRequestBody,
-  productionQuota: quota,
-  toolsQuota: quota,
-  developmentQuota: quota,
-  ...adminChanges,
-};
+// TODO: add tests for ministry roles
+// TODO: test the emails templates if possible
+describe('Review Private Cloud Request - Permissions', () => {
+  it('should successfully create a request for PO requester', async () => {
+    await mockSessionByEmail(requestDataSet.a.projectOwner.email);
 
-const adminRequestedProjectBody = { ...createRequestBody, ...adminChanges };
+    const response = await createPrivateCloudProject(requestDataSet.a);
+    expect(response.status).toBe(200);
 
-describe('Create Private Cloud Request Route', () => {
-  let createRequestId: string;
-  let API_URL: string;
+    requestDocSet.a = await response.json();
+    const decisionData = requestDocSet.a.decisionData;
 
-  beforeAll(async () => {
-    // await cleanUp();
-    const mockSession = await generateTestSession(createRequestBody.projectOwner.email);
-    mockedGetServerSession.mockResolvedValue(mockSession);
-
-    const req = new NextRequest(`${BASE_URL}/api/private-cloud/create`, {
-      method: 'POST',
-      body: JSON.stringify(createRequestBody),
-    });
-
-    await createRequest(req);
-    const request = await prisma.privateCloudRequest.findFirst();
-
-    if (!request) {
-      throw new Error('Request not created. Issue in beforeAll');
-    }
-
-    createRequestId = request?.id;
-    API_URL = `${BASE_URL}/api/private-cloud/decision/${createRequestId}`;
+    expect(pickProductData(decisionData, fieldsToCompare)).toEqual(pickProductData(requestDataSet.a, fieldsToCompare));
   });
 
-  afterAll(async () => {
-    // await cleanUp();
-  });
+  it('should return 401 for unauthenticated user', async () => {
+    await mockSessionByEmail();
 
-  test('should return 401 if user is not authenticated', async () => {
-    mockedGetServerSession.mockResolvedValue(null);
-
-    const req = new NextRequest(API_URL, {
-      method: 'POST',
-      body: JSON.stringify({
-        decision: 'APPROVED',
-        decisionComment: 'Approved by admin',
-        ...adminRequestedProjectBody,
-      }),
-    });
-
-    const response = await POST(req, {
-      params: { id: createRequestId },
-    });
+    const response = await makePrivateCloudRequestDecision(
+      { ...requestDocSet.a.decisionData, decision: $Enums.DecisionStatus.APPROVED },
+      { pathParams: { id: requestDocSet.a.id } },
+    );
     expect(response.status).toBe(401);
   });
 
-  test('should return 403 if not an admin', async () => {
-    const mockSession = await generateTestSession(createRequestBody.projectOwner.email);
-    mockedGetServerSession.mockResolvedValue(mockSession);
+  it('should fail to review a request for PO requester', async () => {
+    await mockSessionByEmail(requestDataSet.a.projectOwner.email);
 
-    const req = new NextRequest(API_URL, {
-      method: 'POST',
-      body: JSON.stringify(createRequestBody),
-    });
-
-    const response = await POST(req, {
-      params: { id: createRequestId },
-    });
+    const response = await makePrivateCloudRequestDecision(
+      { ...requestDocSet.a.decisionData, decision: $Enums.DecisionStatus.APPROVED },
+      { pathParams: { id: requestDocSet.a.id } },
+    );
 
     expect(response.status).toBe(401);
+
+    const resData = await response.json();
+    expect(resData.success).toBe(false);
   });
 
-  test('should return 200 if decision request is successful', async () => {
-    const mockSession = await generateTestSession('admin.system@gov.bc.ca');
-    mockedGetServerSession.mockResolvedValue(mockSession);
+  it('should successfully review a request for global admin requester', async () => {
+    await mockSessionByRole('admin');
 
-    const req = new NextRequest(API_URL, {
-      method: 'POST',
-      body: JSON.stringify(decisionBody),
-    });
-
-    const response = await POST(req, {
-      params: { id: createRequestId },
-    });
+    const response = await makePrivateCloudRequestDecision(
+      { ...requestDocSet.a.decisionData, decision: $Enums.DecisionStatus.APPROVED },
+      { pathParams: { id: requestDocSet.a.id } },
+    );
 
     expect(response.status).toBe(200);
+
+    const resData = await response.json();
+    const decisionData = resData.decisionData;
+
+    expect(pickProductData(decisionData, fieldsToCompare)).toEqual(
+      pickProductData(requestDocSet.a.decisionData, fieldsToCompare),
+    );
   });
 
-  test('should create a request with the correct data in requestData', async () => {
-    const requests = await prisma.privateCloudRequest.findMany();
+  it('should fail to review a request already reviewed', async () => {
+    await mockSessionByRole('admin');
 
-    const request = requests[0];
+    const response = await makePrivateCloudRequestDecision(
+      { ...requestDocSet.a.decisionData, decision: $Enums.DecisionStatus.APPROVED },
+      { pathParams: { id: requestDocSet.a.id } },
+    );
 
-    const decisionData = await prisma.privateCloudRequestedProject.findUnique({
-      where: {
-        id: request.requestDataId || undefined,
-      },
-      include: {
-        projectOwner: true,
-        primaryTechnicalLead: true,
-        secondaryTechnicalLead: true,
-      },
-    });
+    expect(response.status).toBe(500);
 
-    if (!decisionData) {
-      throw new Error('Requested project not found.');
-    }
+    const resData = await response.json();
+    expect(resData.success).toBe(false);
+  });
+});
 
-    expect(decisionData.name).toBe(createRequestBody.name);
-    expect(decisionData.description).toBe(createRequestBody.description);
-    expect(decisionData.cluster).toBe(createRequestBody.cluster);
-    expect(decisionData.ministry).toBe(createRequestBody.ministry);
-    expect(decisionData.projectOwner.firstName).toBe(createRequestBody.projectOwner.firstName);
-    expect(decisionData.projectOwner.lastName).toBe(createRequestBody.projectOwner.lastName);
-    expect(decisionData.projectOwner.email).toBe(createRequestBody.projectOwner.email);
-    expect(decisionData.projectOwner.ministry).toBe(createRequestBody.projectOwner.ministry);
-    expect(decisionData.primaryTechnicalLead.firstName).toBe(createRequestBody.primaryTechnicalLead.firstName);
-    expect(decisionData.primaryTechnicalLead.lastName).toBe(createRequestBody.primaryTechnicalLead.lastName);
-    expect(decisionData.primaryTechnicalLead.email).toBe(createRequestBody.primaryTechnicalLead.email);
-    expect(decisionData.primaryTechnicalLead.ministry).toBe(createRequestBody.primaryTechnicalLead.ministry);
-    expect(decisionData.secondaryTechnicalLead?.email).toBe(createRequestBody.secondaryTechnicalLead.email);
-    expect(decisionData.commonComponents.addressAndGeolocation.planningToUse).toBe(
-      createRequestBody.commonComponents.addressAndGeolocation.planningToUse,
-    );
-    expect(decisionData.commonComponents.addressAndGeolocation.implemented).toBe(
-      createRequestBody.commonComponents.addressAndGeolocation.implemented,
-    );
-    expect(decisionData.commonComponents.workflowManagement.planningToUse).toBe(
-      createRequestBody.commonComponents.workflowManagement.planningToUse,
-    );
-    expect(decisionData.commonComponents.workflowManagement.implemented).toBe(
-      createRequestBody.commonComponents.workflowManagement.implemented,
-    );
-    expect(decisionData.commonComponents.formDesignAndSubmission.planningToUse).toBe(
-      createRequestBody.commonComponents.formDesignAndSubmission.planningToUse,
-    );
-    expect(decisionData.commonComponents.formDesignAndSubmission.implemented).toBe(
-      createRequestBody.commonComponents.formDesignAndSubmission.implemented,
-    );
-    expect(decisionData.commonComponents.identityManagement.planningToUse).toBe(
-      createRequestBody.commonComponents.identityManagement.planningToUse,
-    );
-    expect(decisionData.commonComponents.identityManagement.implemented).toBe(
-      createRequestBody.commonComponents.identityManagement.implemented,
-    );
-    expect(decisionData.commonComponents.paymentServices.planningToUse).toBe(
-      createRequestBody.commonComponents.paymentServices.planningToUse,
-    );
-    expect(decisionData.commonComponents.paymentServices.implemented).toBe(
-      createRequestBody.commonComponents.paymentServices.implemented,
-    );
-    expect(decisionData.commonComponents.documentManagement.planningToUse).toBe(
-      createRequestBody.commonComponents.documentManagement.planningToUse,
-    );
-    expect(decisionData.commonComponents.documentManagement.implemented).toBe(
-      createRequestBody.commonComponents.documentManagement.implemented,
-    );
-    expect(decisionData.commonComponents.endUserNotificationAndSubscription.planningToUse).toBe(
-      createRequestBody.commonComponents.endUserNotificationAndSubscription.planningToUse,
-    );
-    expect(decisionData.commonComponents.endUserNotificationAndSubscription.implemented).toBe(
-      createRequestBody.commonComponents.endUserNotificationAndSubscription.implemented,
-    );
-    expect(decisionData.commonComponents.publishing.planningToUse).toBe(
-      createRequestBody.commonComponents.publishing.planningToUse,
-    );
-    expect(decisionData.commonComponents.publishing.implemented).toBe(
-      createRequestBody.commonComponents.publishing.implemented,
-    );
-    expect(decisionData.commonComponents.businessIntelligence.planningToUse).toBe(
-      createRequestBody.commonComponents.businessIntelligence.planningToUse,
-    );
-    expect(decisionData.commonComponents.businessIntelligence.implemented).toBe(
-      createRequestBody.commonComponents.businessIntelligence.implemented,
-    );
-    expect(decisionData.commonComponents.other).toBe(createRequestBody.commonComponents.other);
-    expect(decisionData.commonComponents.noServices).toBe(createRequestBody.commonComponents.noServices);
+describe('Review Private Cloud Request - Validations', () => {
+  it('should successfully create a request for PO requester', async () => {
+    await mockSessionByEmail(requestDataSet.b.projectOwner.email);
+
+    const response = await createPrivateCloudProject(requestDataSet.b);
+    expect(response.status).toBe(200);
+
+    requestDocSet.b = await response.json();
+    const decisionData = requestDocSet.b.decisionData;
+
+    expect(pickProductData(decisionData, fieldsToCompare)).toEqual(pickProductData(requestDataSet.b, fieldsToCompare));
   });
 
-  test('should create a request with the correct data decisionData', async () => {
-    const requests = await prisma.privateCloudRequest.findMany();
+  it('should ignore the cluster change', async () => {
+    await mockSessionByRole('admin');
 
-    const request = requests[0];
+    const newName = requestDocSet.b.decisionData.name + '_suffix';
+    const newCluster =
+      requestDataSet.b.cluster === $Enums.Cluster.SILVER ? $Enums.Cluster.EMERALD : $Enums.Cluster.SILVER;
 
-    const decisionData = await prisma.privateCloudRequestedProject.findUnique({
-      where: {
-        id: request.decisionDataId || undefined,
+    const response = await makePrivateCloudRequestDecision(
+      {
+        ...requestDocSet.b.decisionData,
+        name: newName,
+        cluster: newCluster,
+        decision: $Enums.DecisionStatus.APPROVED,
       },
-      include: {
-        projectOwner: true,
-        primaryTechnicalLead: true,
-        secondaryTechnicalLead: true,
-      },
-    });
+      { pathParams: { id: requestDocSet.b.id } },
+    );
 
-    if (!decisionData) {
-      throw new Error('Requested project not found.');
-    }
+    expect(response.status).toBe(200);
 
-    expect(decisionData.name).toBe(decisionBody.name);
-    expect(decisionData.description).toBe(decisionBody.description);
-    expect(decisionData.cluster).toBe(decisionBody.cluster);
-    expect(decisionData.ministry).toBe(decisionBody.ministry);
-    expect(decisionData.projectOwner.firstName).toBe(decisionBody.projectOwner.firstName);
-    expect(decisionData.projectOwner.lastName).toBe(decisionBody.projectOwner.lastName);
-    expect(decisionData.projectOwner.email).toBe(decisionBody.projectOwner.email);
-    expect(decisionData.projectOwner.ministry).toBe(decisionBody.projectOwner.ministry);
-    expect(decisionData.primaryTechnicalLead.firstName).toBe(decisionBody.primaryTechnicalLead.firstName);
-    expect(decisionData.primaryTechnicalLead.lastName).toBe(decisionBody.primaryTechnicalLead.lastName);
-    expect(decisionData.primaryTechnicalLead.email).toBe(decisionBody.primaryTechnicalLead.email);
-    expect(decisionData.primaryTechnicalLead.ministry).toBe(decisionBody.primaryTechnicalLead.ministry);
-    expect(decisionData.secondaryTechnicalLead?.email).toBe(decisionBody.secondaryTechnicalLead.email);
-    expect(decisionData.commonComponents.addressAndGeolocation.planningToUse).toBe(
-      decisionBody.commonComponents.addressAndGeolocation.planningToUse,
-    );
-    expect(decisionData.commonComponents.addressAndGeolocation.implemented).toBe(
-      decisionBody.commonComponents.addressAndGeolocation.implemented,
-    );
-    expect(decisionData.commonComponents.workflowManagement.planningToUse).toBe(
-      decisionBody.commonComponents.workflowManagement.planningToUse,
-    );
-    expect(decisionData.commonComponents.workflowManagement.implemented).toBe(
-      decisionBody.commonComponents.workflowManagement.implemented,
-    );
-    expect(decisionData.commonComponents.formDesignAndSubmission.planningToUse).toBe(
-      decisionBody.commonComponents.formDesignAndSubmission.planningToUse,
-    );
-    expect(decisionData.commonComponents.formDesignAndSubmission.implemented).toBe(
-      decisionBody.commonComponents.formDesignAndSubmission.implemented,
-    );
-    expect(decisionData.commonComponents.identityManagement.planningToUse).toBe(
-      decisionBody.commonComponents.identityManagement.planningToUse,
-    );
-    expect(decisionData.commonComponents.identityManagement.implemented).toBe(
-      decisionBody.commonComponents.identityManagement.implemented,
-    );
-    expect(decisionData.commonComponents.paymentServices.planningToUse).toBe(
-      decisionBody.commonComponents.paymentServices.planningToUse,
-    );
-    expect(decisionData.commonComponents.paymentServices.implemented).toBe(
-      decisionBody.commonComponents.paymentServices.implemented,
-    );
-    expect(decisionData.commonComponents.documentManagement.planningToUse).toBe(
-      decisionBody.commonComponents.documentManagement.planningToUse,
-    );
-    expect(decisionData.commonComponents.documentManagement.implemented).toBe(
-      decisionBody.commonComponents.documentManagement.implemented,
-    );
-    expect(decisionData.commonComponents.endUserNotificationAndSubscription.planningToUse).toBe(
-      decisionBody.commonComponents.endUserNotificationAndSubscription.planningToUse,
-    );
-    expect(decisionData.commonComponents.endUserNotificationAndSubscription.implemented).toBe(
-      decisionBody.commonComponents.endUserNotificationAndSubscription.implemented,
-    );
-    expect(decisionData.commonComponents.publishing.planningToUse).toBe(
-      decisionBody.commonComponents.publishing.planningToUse,
-    );
-    expect(decisionData.commonComponents.publishing.implemented).toBe(
-      decisionBody.commonComponents.publishing.implemented,
-    );
-    expect(decisionData.commonComponents.businessIntelligence.planningToUse).toBe(
-      decisionBody.commonComponents.businessIntelligence.planningToUse,
-    );
-    expect(decisionData.commonComponents.businessIntelligence.implemented).toBe(
-      decisionBody.commonComponents.businessIntelligence.implemented,
-    );
-    expect(decisionData.commonComponents.other).toBe(decisionBody.commonComponents.other);
-    expect(decisionData.commonComponents.noServices).toBe(decisionBody.commonComponents.noServices);
+    const resData = await response.json();
+    const decisionData = resData.decisionData;
+
+    expect(decisionData.name).toBe(newName);
+    expect(decisionData.cluster).toBe(requestDataSet.b.cluster);
   });
 });

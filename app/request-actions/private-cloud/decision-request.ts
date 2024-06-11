@@ -46,8 +46,12 @@ export default async function makeRequestDecision(
     where: {
       id,
       active: true,
+      decisionStatus: $Enums.DecisionStatus.PENDING,
     },
-    select: { id: true, licencePlate: true },
+    include: {
+      project: { select: { cluster: true } },
+      decisionData: { select: { cluster: true } },
+    },
   });
 
   if (!request) {
@@ -93,6 +97,7 @@ export default async function makeRequestDecision(
           ...formData,
           status: ProjectStatus.ACTIVE,
           licencePlate: request.licencePlate,
+          cluster: request.project?.cluster ?? request.decisionData.cluster,
           projectOwner: {
             connectOrCreate: {
               where: {
