@@ -33,20 +33,6 @@ const decisionBody = {
 
 const mockedGetServerSession = getServerSession as unknown as MockedFunction<typeof getServerSession>;
 
-jest.mock('next-auth/next', () => ({
-  getServerSession: jest.fn(),
-}));
-
-jest.mock('next-auth', () => ({
-  default: jest.fn(), // for default export
-  NextAuth: jest.fn(), // for named export
-}));
-
-jest.mock('@/app/api/auth/[...nextauth]/route', () => ({
-  GET: jest.fn(),
-  POST: jest.fn(),
-}));
-
 describe('Create Private Cloud Request Route', () => {
   let createRequestId: string;
   let createRequestLicencePlate: string;

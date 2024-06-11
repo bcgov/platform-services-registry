@@ -36,10 +36,6 @@ const generatePostRequest = (data = {}) => {
   return new NextRequest(API_URL, { method: 'POST', body: JSON.stringify(data) });
 };
 
-jest.mock('next-auth/next', () => ({
-  getServerSession: jest.fn(),
-}));
-
 const quota = {
   cpu: DefaultCpuOptionsSchema.enum.CPU_REQUEST_0_5_LIMIT_1_5,
   memory: DefaultMemoryOptionsSchema.enum.MEMORY_REQUEST_2_LIMIT_4,
