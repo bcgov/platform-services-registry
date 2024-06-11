@@ -78,8 +78,8 @@ services:
     platform: linux/amd64
     container_name: m365mock
     build:
-      context: ./m365mock
-      dockerfile: Dockerfile
+      context: .
+      dockerfile: ./m365mock/Dockerfile
     stdin_open: true
     ports:
     - 4040:4040
