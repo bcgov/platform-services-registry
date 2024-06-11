@@ -2,7 +2,6 @@ import express, { Request, Response } from 'express';
 import { readFileSync } from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
-// import {MS_GRAPH_BASE_URL } from './config';
 
 const app = express();
 const port = 4040;
@@ -11,7 +10,7 @@ type HttpMethod = 'get' | 'post' | 'put' | 'delete';
 
 type Mock = {
   request: {
-    method: string;
+    method: HttpMethod;
     url: string;
   };
   response: {
@@ -41,18 +40,22 @@ try {
 
 mocks.forEach((mock: Mock) => {
   const method = mock.request.method.toLowerCase() as HttpMethod;
-  app[method]('/v1.0/users*', async (req: Request, res: Response) => {
+  const route = new URL(mock.request.url).pathname;
+
+  app[method](route, async (req: Request, res: Response) => {
     const requestedPath = req.path;
     const requestedQuery = req.query;
     const filteredMocks = mocks.filter((mockFilter: Mock) => {
+      const mockUrl = new URL(mockFilter.request.url);
       return (
-        mockFilter.request.url.includes(requestedPath) &&
-        mockFilter.request.url.includes(Object.keys(requestedQuery)[0])
+        mockUrl.pathname === requestedPath &&
+        Array.from(mockUrl.searchParams.keys()).every((key) => key in requestedQuery)
       );
     });
+
     if (filteredMocks.length > 0) {
       const mockResponse = filteredMocks[0];
-      res.json(mockResponse.response.body);
+      res.status(mockResponse.response.statusCode || 200).json(mockResponse.response.body);
     } else {
       res.status(404).send('Mock data not found');
     }
