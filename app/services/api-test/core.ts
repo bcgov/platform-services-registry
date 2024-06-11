@@ -2,6 +2,7 @@ import { MockedFunction } from 'jest-mock';
 import { NextRequest } from 'next/server';
 import { getServerSession } from 'next-auth/next';
 import { BASE_URL } from '@/config';
+import { generateTestSession, findMockUserbyRole } from '@/helpers/mock-users';
 
 type Handler = (req: NextRequest, { params }?: { params: any }) => Promise<Response>;
 
@@ -71,3 +72,25 @@ export function createRoute(url: string) {
 }
 
 export const mockedGetServerSession = getServerSession as unknown as MockedFunction<typeof getServerSession>;
+
+export async function mockSessionByEmail(email?: string) {
+  if (!email) {
+    mockedGetServerSession.mockResolvedValue(null);
+  } else {
+    const mockSession = await generateTestSession(email);
+    mockedGetServerSession.mockResolvedValue(mockSession);
+  }
+}
+
+export async function mockSessionByRole(role?: string) {
+  if (!role) {
+    mockedGetServerSession.mockResolvedValue(null);
+  } else {
+    const user = findMockUserbyRole(role);
+    if (!user) mockedGetServerSession.mockResolvedValue(null);
+    else {
+      const mockSession = await generateTestSession(user.email);
+      mockedGetServerSession.mockResolvedValue(mockSession);
+    }
+  }
+}

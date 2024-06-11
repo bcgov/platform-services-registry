@@ -1,135 +1,221 @@
 import { expect } from '@jest/globals';
-import { NextRequest, NextResponse } from 'next/server';
-import { POST } from '@/app/api/private-cloud/products/route';
-import prisma from '@/core/prisma';
-import { createSamplePrivateCloudProductData } from '@/helpers/mock-resources';
-import { findMockUserByIDIR, generateTestSession } from '@/helpers/mock-users';
-import { mockedGetServerSession } from '@/services/api-test/core';
+import { $Enums } from '@prisma/client';
+import { createSamplePrivateCloudRequestData } from '@/helpers/mock-resources';
+import { findOhterMockUsers } from '@/helpers/mock-users';
+import { pickProductData } from '@/helpers/product';
+import { mockSessionByEmail, mockSessionByRole } from '@/services/api-test/core';
+import { createPrivateCloudProject } from '@/services/api-test/private-cloud/products';
 
-const BASE_URL = 'http://localhost:3000';
-const API_URL = `${BASE_URL}/api/private-cloud/create`;
+const fieldsToCompare = [
+  'name',
+  'description',
+  'cluster',
+  'ministry',
+  'projectOwner',
+  'primaryTechnicalLead',
+  'secondaryTechnicalLead',
+  'commonComponents',
+];
 
-const createRequestBody = createSamplePrivateCloudProductData();
+// TODO: add tests for ministry roles
+// TODO: test the emails templates if possible
+describe('Create Private Cloud Request - Permissions', () => {
+  it('should return 401 for unauthenticated user', async () => {
+    await mockSessionByEmail();
 
-describe('Create Private Cloud Request Route', () => {
-  test('should return 401 if user is not authenticated', async () => {
-    mockedGetServerSession.mockResolvedValue(null);
-
-    const req = new NextRequest(API_URL, {
-      method: 'POST',
-      body: JSON.stringify(createRequestBody),
-    });
-
-    const response = await POST(req);
+    const requestData = createSamplePrivateCloudRequestData();
+    const response = await createPrivateCloudProject(requestData);
     expect(response.status).toBe(401);
   });
 
-  test('should return 200 if request is created', async () => {
-    const mockSession = await generateTestSession(createRequestBody.projectOwner.email);
-    mockedGetServerSession.mockResolvedValue(mockSession);
+  it('should successfully create a request for PO requester', async () => {
+    const requestData = createSamplePrivateCloudRequestData();
+    await mockSessionByEmail(requestData.projectOwner.email);
 
-    const requestsBefore = await prisma.privateCloudRequest.findMany();
-
-    const req = new NextRequest(API_URL, {
-      method: 'POST',
-      body: JSON.stringify(createRequestBody),
-    });
-
-    const response = await POST(req);
+    const response = await createPrivateCloudProject(requestData);
     expect(response.status).toBe(200);
 
-    const requestsAfter = await prisma.privateCloudRequest.findMany();
+    const resData = await response.json();
+    const decisionData = resData.decisionData;
 
-    expect(requestsAfter.length).toBe(requestsBefore.length + 1);
+    expect(pickProductData(decisionData, fieldsToCompare)).toEqual(pickProductData(requestData, fieldsToCompare));
   });
 
-  test('should create a request with the correct data', async () => {
-    const requests = await prisma.privateCloudRequest.findMany();
-    const request = requests[0];
+  it('should successfully create a request for TL1 requester', async () => {
+    const requestData = createSamplePrivateCloudRequestData();
+    await mockSessionByEmail(requestData.primaryTechnicalLead.email);
 
-    const decisionData = await prisma.privateCloudRequestedProject.findUnique({
-      where: {
-        id: request.decisionDataId,
-      },
-      include: {
-        projectOwner: true,
-        primaryTechnicalLead: true,
-        secondaryTechnicalLead: true,
-      },
-    });
+    const response = await createPrivateCloudProject(requestData);
+    expect(response.status).toBe(200);
 
-    if (!decisionData) {
-      throw new Error('Requested project not found.');
-    }
+    const resData = await response.json();
+    const decisionData = resData.decisionData;
 
-    expect(decisionData.name).toBe(createRequestBody.name);
-    expect(decisionData.description).toBe(createRequestBody.description);
-    expect(decisionData.cluster).toBe(createRequestBody.cluster);
-    expect(decisionData.ministry).toBe(createRequestBody.ministry);
-    expect(decisionData.projectOwner.firstName).toBe(createRequestBody.projectOwner.firstName);
-    expect(decisionData.projectOwner.lastName).toBe(createRequestBody.projectOwner.lastName);
-    expect(decisionData.projectOwner.email).toBe(createRequestBody.projectOwner.email);
-    expect(decisionData.projectOwner.ministry).toBe(createRequestBody.projectOwner.ministry);
-    expect(decisionData.primaryTechnicalLead.firstName).toBe(createRequestBody.primaryTechnicalLead.firstName);
-    expect(decisionData.primaryTechnicalLead.lastName).toBe(createRequestBody.primaryTechnicalLead.lastName);
-    expect(decisionData.primaryTechnicalLead.email).toBe(createRequestBody.primaryTechnicalLead.email);
-    expect(decisionData.primaryTechnicalLead.ministry).toBe(createRequestBody.primaryTechnicalLead.ministry);
-    expect(decisionData.secondaryTechnicalLead?.email).toBe(createRequestBody.secondaryTechnicalLead.email);
-    expect(decisionData.commonComponents.addressAndGeolocation.planningToUse).toBe(
-      createRequestBody.commonComponents.addressAndGeolocation.planningToUse,
-    );
-    expect(decisionData.commonComponents.addressAndGeolocation.implemented).toBe(
-      createRequestBody.commonComponents.addressAndGeolocation.implemented,
-    );
-    expect(decisionData.commonComponents.workflowManagement.planningToUse).toBe(
-      createRequestBody.commonComponents.workflowManagement.planningToUse,
-    );
-    expect(decisionData.commonComponents.workflowManagement.implemented).toBe(
-      createRequestBody.commonComponents.workflowManagement.implemented,
-    );
-    expect(decisionData.commonComponents.formDesignAndSubmission.planningToUse).toBe(
-      createRequestBody.commonComponents.formDesignAndSubmission.planningToUse,
-    );
-    expect(decisionData.commonComponents.publishing.implemented).toBe(
-      createRequestBody.commonComponents.publishing.implemented,
-    );
-    expect(decisionData.commonComponents.identityManagement.planningToUse).toBe(
-      createRequestBody.commonComponents.identityManagement.planningToUse,
-    );
-    expect(decisionData.commonComponents.identityManagement.implemented).toBe(
-      createRequestBody.commonComponents.identityManagement.implemented,
-    );
-    expect(decisionData.commonComponents.paymentServices.planningToUse).toBe(
-      createRequestBody.commonComponents.paymentServices.planningToUse,
-    );
-    expect(decisionData.commonComponents.paymentServices.implemented).toBe(
-      createRequestBody.commonComponents.paymentServices.implemented,
-    );
-    expect(decisionData.commonComponents.documentManagement.planningToUse).toBe(
-      createRequestBody.commonComponents.documentManagement.planningToUse,
-    );
-    expect(decisionData.commonComponents.documentManagement.implemented).toBe(
-      createRequestBody.commonComponents.documentManagement.implemented,
-    );
-    expect(decisionData.commonComponents.endUserNotificationAndSubscription.planningToUse).toBe(
-      createRequestBody.commonComponents.endUserNotificationAndSubscription.planningToUse,
-    );
-    expect(decisionData.commonComponents.endUserNotificationAndSubscription.implemented).toBe(
-      createRequestBody.commonComponents.endUserNotificationAndSubscription.implemented,
-    );
-    expect(decisionData.commonComponents.publishing.planningToUse).toBe(
-      createRequestBody.commonComponents.publishing.planningToUse,
-    );
-    expect(decisionData.commonComponents.publishing.implemented).toBe(
-      createRequestBody.commonComponents.publishing.implemented,
-    );
-    expect(decisionData.commonComponents.businessIntelligence.planningToUse).toBe(
-      createRequestBody.commonComponents.businessIntelligence.planningToUse,
-    );
-    expect(decisionData.commonComponents.businessIntelligence.implemented).toBe(
-      createRequestBody.commonComponents.businessIntelligence.implemented,
-    );
-    expect(decisionData.commonComponents.other).toBe(createRequestBody.commonComponents.other);
-    expect(decisionData.commonComponents.noServices).toBe(createRequestBody.commonComponents.noServices);
+    expect(pickProductData(decisionData, fieldsToCompare)).toEqual(pickProductData(requestData, fieldsToCompare));
+  });
+
+  it('should successfully create a request for TL2 requester', async () => {
+    const requestData = createSamplePrivateCloudRequestData();
+    await mockSessionByEmail(requestData.secondaryTechnicalLead.email);
+
+    const response = await createPrivateCloudProject(requestData);
+    expect(response.status).toBe(200);
+
+    const resData = await response.json();
+    const decisionData = resData.decisionData;
+
+    expect(pickProductData(decisionData, fieldsToCompare)).toEqual(pickProductData(requestData, fieldsToCompare));
+  });
+
+  it('should fail to create a request for a non-assigned requester', async () => {
+    const requestData = createSamplePrivateCloudRequestData();
+    const otherUsers = findOhterMockUsers([
+      requestData.projectOwner.email,
+      requestData.primaryTechnicalLead.email,
+      requestData.secondaryTechnicalLead.email,
+    ]);
+
+    await mockSessionByEmail(otherUsers[0].email);
+
+    const response = await createPrivateCloudProject(requestData);
+    expect(response.status).toBe(401);
+  });
+
+  it('should successfully create a request for global admin requester', async () => {
+    const requestData = createSamplePrivateCloudRequestData();
+    await mockSessionByRole('admin');
+
+    const response = await createPrivateCloudProject(requestData);
+    expect(response.status).toBe(200);
+
+    const resData = await response.json();
+    const decisionData = resData.decisionData;
+
+    expect(pickProductData(decisionData, fieldsToCompare)).toEqual(pickProductData(requestData, fieldsToCompare));
+  });
+
+  it('should fail to create a request for global reader requester', async () => {
+    const requestData = createSamplePrivateCloudRequestData();
+    await mockSessionByRole('reader');
+
+    const response = await createPrivateCloudProject(requestData);
+    expect(response.status).toBe(401);
+  });
+
+  it('should successfully create a request for private admin requester', async () => {
+    const requestData = createSamplePrivateCloudRequestData();
+    await mockSessionByRole('private-admin');
+
+    const response = await createPrivateCloudProject(requestData);
+    expect(response.status).toBe(200);
+
+    const resData = await response.json();
+    const decisionData = resData.decisionData;
+
+    expect(pickProductData(decisionData, fieldsToCompare)).toEqual(pickProductData(requestData, fieldsToCompare));
+  });
+});
+
+describe('Create Private Cloud Request - Validations', () => {
+  it('should fail to create a request due to an invalid name property', async () => {
+    const requestData = createSamplePrivateCloudRequestData();
+    await mockSessionByRole('admin');
+
+    requestData.name = '';
+
+    const response = await createPrivateCloudProject(requestData);
+    expect(response.status).toBe(400);
+
+    const resData = await response.json();
+    expect(resData.success).toBe(false);
+    expect(resData.message).toBe('Bad Request');
+    expect(resData.error.issues.find((iss: { path: string[] }) => iss.path[0] === 'name')).not.toBeUndefined();
+  });
+
+  it('should fail to create a request due to an invalid description property', async () => {
+    const requestData = createSamplePrivateCloudRequestData();
+    await mockSessionByRole('admin');
+
+    requestData.description = '';
+
+    const response = await createPrivateCloudProject(requestData);
+    expect(response.status).toBe(400);
+
+    const resData = await response.json();
+    expect(resData.success).toBe(false);
+    expect(resData.message).toBe('Bad Request');
+    expect(resData.error.issues.find((iss: { path: string[] }) => iss.path[0] === 'description')).not.toBeUndefined();
+  });
+
+  it('should fail to create a request due to an invalid cluster property', async () => {
+    const requestData = createSamplePrivateCloudRequestData();
+    await mockSessionByRole('admin');
+
+    requestData.cluster = 'INVALID' as $Enums.Cluster;
+
+    const response = await createPrivateCloudProject(requestData);
+    expect(response.status).toBe(400);
+
+    const resData = await response.json();
+    expect(resData.success).toBe(false);
+    expect(resData.message).toBe('Bad Request');
+    expect(resData.error.issues.find((iss: { path: string[] }) => iss.path[0] === 'cluster')).not.toBeUndefined();
+  });
+
+  it('should fail to create a request due to an invalid ministry property', async () => {
+    const requestData = createSamplePrivateCloudRequestData();
+    await mockSessionByRole('admin');
+
+    requestData.ministry = 'INVALID' as $Enums.Ministry;
+
+    const response = await createPrivateCloudProject(requestData);
+    expect(response.status).toBe(400);
+
+    const resData = await response.json();
+    expect(resData.success).toBe(false);
+    expect(resData.message).toBe('Bad Request');
+    expect(resData.error.issues.find((iss: { path: string[] }) => iss.path[0] === 'ministry')).not.toBeUndefined();
+  });
+
+  it('should fail to create a request due to an invalid projectOwner property', async () => {
+    const requestData = createSamplePrivateCloudRequestData();
+    await mockSessionByRole('admin');
+
+    requestData.projectOwner = null as any;
+
+    const response = await createPrivateCloudProject(requestData);
+    expect(response.status).toBe(400);
+
+    const resData = await response.json();
+    expect(resData.success).toBe(false);
+    expect(resData.message).toBe('Bad Request');
+    expect(resData.error.issues.find((iss: { path: string[] }) => iss.path[0] === 'projectOwner')).not.toBeUndefined();
+  });
+
+  it('should fail to create a request due to an invalid primaryTechnicalLead property', async () => {
+    const requestData = createSamplePrivateCloudRequestData();
+    await mockSessionByRole('admin');
+
+    requestData.primaryTechnicalLead = null as any;
+
+    const response = await createPrivateCloudProject(requestData);
+    expect(response.status).toBe(400);
+
+    const resData = await response.json();
+    expect(resData.success).toBe(false);
+    expect(resData.message).toBe('Bad Request');
+    expect(
+      resData.error.issues.find((iss: { path: string[] }) => iss.path[0] === 'primaryTechnicalLead'),
+    ).not.toBeUndefined();
+  });
+
+  it('should successfully create a request without an secondaryTechnicalLead property', async () => {
+    const requestData = createSamplePrivateCloudRequestData();
+    await mockSessionByRole('admin');
+
+    requestData.secondaryTechnicalLead = null as any;
+
+    const response = await createPrivateCloudProject(requestData);
+    expect(response.status).toBe(200);
   });
 });

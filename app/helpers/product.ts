@@ -4,6 +4,7 @@ import _isString from 'lodash-es/isString';
 import _mapValues from 'lodash-es/mapValues';
 import _pick from 'lodash-es/pick';
 import { ministryOptions } from '@/constants';
+import { pick } from '@/utils/object';
 import { isEmail } from '@/utils/string';
 
 export function ministryKeyToName(key: string) {
@@ -260,4 +261,20 @@ export function comparePublicProductData(data1: any, data2: any) {
     billingChanged,
     changes: sortedChanges,
   };
+}
+
+export function pickProductData(data: any, fields: string[]) {
+  const picked = pick(data, fields);
+
+  if (picked.projectOwner) {
+    picked.projectOwner = { email: picked.projectOwner.email };
+  }
+
+  if (picked.primaryTechnicalLead) {
+    picked.primaryTechnicalLead = { email: picked.primaryTechnicalLead.email };
+  }
+
+  if (picked.secondaryTechnicalLead) {
+    picked.secondaryTechnicalLead = { email: picked.secondaryTechnicalLead.email };
+  }
 }
