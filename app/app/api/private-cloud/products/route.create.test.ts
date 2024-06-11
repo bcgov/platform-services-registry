@@ -1,18 +1,15 @@
 import { expect } from '@jest/globals';
-import { MockedFunction } from 'jest-mock';
 import { NextRequest, NextResponse } from 'next/server';
-import { getServerSession } from 'next-auth/next';
 import { POST } from '@/app/api/private-cloud/products/route';
 import prisma from '@/core/prisma';
 import { createSamplePrivateCloudProductData } from '@/helpers/mock-resources';
 import { findMockUserByIDIR, generateTestSession } from '@/helpers/mock-users';
+import { mockedGetServerSession } from '@/services/api-test/core';
 
 const BASE_URL = 'http://localhost:3000';
 const API_URL = `${BASE_URL}/api/private-cloud/create`;
 
 const createRequestBody = createSamplePrivateCloudProductData();
-
-const mockedGetServerSession = getServerSession as unknown as MockedFunction<typeof getServerSession>;
 
 describe('Create Private Cloud Request Route', () => {
   test('should return 401 if user is not authenticated', async () => {

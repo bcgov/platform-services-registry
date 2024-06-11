@@ -10,20 +10,17 @@ import {
   User,
 } from '@prisma/client';
 import { parse } from 'csv-parse/sync';
-import { MockedFunction } from 'jest-mock';
 import { NextRequest, NextResponse } from 'next/server';
-import { getServerSession } from 'next-auth/next';
 import prisma from '@/core/prisma';
 import { findMockUserByIDIR, generateTestSession } from '@/helpers/mock-users';
 import { ministryKeyToName } from '@/helpers/product';
 import { createProxyUsers } from '@/queries/users';
 import { DefaultCpuOptionsSchema, DefaultMemoryOptionsSchema, DefaultStorageOptionsSchema } from '@/schema';
+import { mockedGetServerSession } from '@/services/api-test/core';
 import { POST as downloadCsv } from './route';
 
 const BASE_URL = 'http://localhost:3000';
 const API_URL = `${BASE_URL}/api/public-cloud/products/download`;
-
-const mockedGetServerSession = getServerSession as unknown as MockedFunction<typeof getServerSession>;
 
 const generatePostRequest = (data = {}) => {
   return new NextRequest(API_URL, { method: 'POST', body: JSON.stringify(data) });

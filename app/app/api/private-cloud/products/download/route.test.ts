@@ -1,36 +1,18 @@
 import { expect } from '@jest/globals';
-import {
-  $Enums,
-  Cluster,
-  DecisionStatus,
-  Ministry,
-  Prisma,
-  PrivateCloudProject,
-  ProjectStatus,
-  RequestType,
-  User,
-} from '@prisma/client';
+import { $Enums, ProjectStatus } from '@prisma/client';
 import { parse } from 'csv-parse/sync';
-import { MockedFunction } from 'jest-mock';
 import { NextRequest, NextResponse } from 'next/server';
-import { getServerSession } from 'next-auth/next';
 import prisma from '@/core/prisma';
 import { createSamplePrivateCloudProductData } from '@/helpers/mock-resources';
 import { findMockUserByIDIR, generateTestSession } from '@/helpers/mock-users';
 import { ministryKeyToName } from '@/helpers/product';
 import { createProxyUsers } from '@/queries/users';
-import {
-  DefaultCpuOptionsSchema,
-  DefaultMemoryOptionsSchema,
-  DefaultStorageOptionsSchema,
-  PrivateCloudCreateRequestBody,
-} from '@/schema';
+import { DefaultCpuOptionsSchema, DefaultMemoryOptionsSchema, DefaultStorageOptionsSchema } from '@/schema';
+import { mockedGetServerSession } from '@/services/api-test/core';
 import { POST as downloadCsv } from './route';
 
 const BASE_URL = 'http://localhost:3000';
 const API_URL = `${BASE_URL}/api/private-cloud/products/download`;
-
-const mockedGetServerSession = getServerSession as unknown as MockedFunction<typeof getServerSession>;
 
 const generatePostRequest = (data = {}) => {
   return new NextRequest(API_URL, { method: 'POST', body: JSON.stringify(data) });

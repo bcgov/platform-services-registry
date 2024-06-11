@@ -1,12 +1,11 @@
 import { PrivateCloudRequest } from '@prisma/client';
-import { MockedFunction } from 'jest-mock';
 import { NextRequest, NextResponse } from 'next/server';
-import { getServerSession } from 'next-auth/next';
 import { POST } from '@/app/api/private-cloud/products/route';
 import prisma from '@/core/prisma';
 import { findMockUserByIDIR, generateTestSession } from '@/helpers/mock-users';
 import { createProxyUsers } from '@/queries/users';
 import { PrivateCloudCreateRequestBody } from '@/schema';
+import { mockedGetServerSession } from '@/services/api-test/core';
 import createPrivateCloudNatsMessage from '@/services/nats/private-cloud';
 
 const BASE_URL = 'http://localhost:3000';
@@ -61,8 +60,6 @@ const createRequestBody: PrivateCloudCreateRequestBody = {
   golddrEnabled: true,
   isTest: false,
 };
-
-const mockedGetServerSession = getServerSession as unknown as MockedFunction<typeof getServerSession>;
 
 beforeAll(async () => {
   await createProxyUsers();

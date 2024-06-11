@@ -1,7 +1,5 @@
 import { expect } from '@jest/globals';
-import { MockedFunction } from 'jest-mock';
 import { NextRequest, NextResponse } from 'next/server';
-import { getServerSession } from 'next-auth/next';
 import { POST as createRequest } from '@/app/api/private-cloud/products/route';
 import { POST } from '@/app/api/private-cloud/requests/[id]/decision/route';
 import prisma from '@/core/prisma';
@@ -12,6 +10,7 @@ import {
   DefaultStorageOptionsSchema,
   PrivateCloudCreateRequestBody,
 } from '@/schema';
+import { mockedGetServerSession } from '@/services/api-test/core';
 
 const BASE_URL = 'http://localhost:3000';
 
@@ -94,8 +93,6 @@ const decisionBody = {
 };
 
 const adminRequestedProjectBody = { ...createRequestBody, ...adminChanges };
-
-const mockedGetServerSession = getServerSession as unknown as MockedFunction<typeof getServerSession>;
 
 describe('Create Private Cloud Request Route', () => {
   let createRequestId: string;

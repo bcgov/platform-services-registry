@@ -1,12 +1,11 @@
-import { MockedFunction } from 'jest-mock';
 import { NextRequest, NextResponse } from 'next/server';
-import { getServerSession } from 'next-auth/next';
 import { PUT } from '@/app/api/private-cloud/provision/[licencePlate]/route';
 import { POST as decisionRequest } from '@/app/api/private-cloud/requests/[id]/decision/route';
 import prisma from '@/core/prisma';
 import { createSamplePrivateCloudProductData } from '@/helpers/mock-resources';
 import { findMockUserByIDIR, generateTestSession } from '@/helpers/mock-users';
 import { cpuOptions, memoryOptions, storageOptions } from '@/schema';
+import { mockedGetServerSession } from '@/services/api-test/core';
 import { createPrivateCloudProject } from '@/services/api-test/private-cloud/products';
 
 const BASE_URL = 'http://localhost:3000';
@@ -30,8 +29,6 @@ const decisionBody = {
   decision: 'APPROVED',
   decisionComment: 'Approved by admin',
 };
-
-const mockedGetServerSession = getServerSession as unknown as MockedFunction<typeof getServerSession>;
 
 describe('Create Private Cloud Request Route', () => {
   let createRequestId: string;
