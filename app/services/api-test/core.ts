@@ -3,6 +3,7 @@ import { NextRequest } from 'next/server';
 import { getServerSession } from 'next-auth/next';
 import { BASE_URL } from '@/config';
 import { generateTestSession, findMockUserbyRole } from '@/helpers/mock-users';
+import { stringifyQuery } from '@/utils/query-string';
 
 type Handler = (req: NextRequest, { params }?: { params: any }) => Promise<Response>;
 
@@ -23,48 +24,54 @@ function template(templateString: string, data: Params) {
 
 function populatePathParams(url: string, paramData?: ParamData) {
   const { pathParams = {}, queryParams } = paramData ?? {};
+
+  let searchString = '';
+  if (queryParams) {
+    searchString = '?' + stringifyQuery(queryParams);
+  }
+
   const _url = template(url, pathParams);
 
   return {
-    url: `${BASE_URL}/api/${_url}`,
-    queryParams,
+    url: `${BASE_URL}/api/${_url}${searchString}`,
+    pathParams,
   };
 }
 
-export function createRoute(url: string) {
+export function createRoute(baseUrl: string) {
   return {
-    get: async function (handler: Handler, paramData?: ParamData) {
-      const { url: _url, queryParams } = populatePathParams(url, paramData);
+    get: async function (handler: Handler, url: string, paramData?: ParamData) {
+      const { url: _url, pathParams } = populatePathParams(`${baseUrl}/${url}`, paramData);
       const req = new NextRequest(_url, { method: 'GET' });
-      const res = await handler(req, { params: queryParams });
+      const res = await handler(req, { params: pathParams });
 
       return res;
     },
-    post: async function (handler: Handler, data: any, paramData?: ParamData) {
-      const { url: _url, queryParams } = populatePathParams(url, paramData);
+    post: async function (handler: Handler, url: string, data: any, paramData?: ParamData) {
+      const { url: _url, pathParams } = populatePathParams(`${baseUrl}/${url}`, paramData);
       const req = new NextRequest(_url, { method: 'POST', body: JSON.stringify(data) });
-      const res = await handler(req, { params: queryParams });
+      const res = await handler(req, { params: pathParams });
 
       return res;
     },
-    put: async function (handler: Handler, data: any, paramData?: ParamData) {
-      const { url: _url, queryParams } = populatePathParams(url, paramData);
+    put: async function (handler: Handler, url: string, data: any, paramData?: ParamData) {
+      const { url: _url, pathParams } = populatePathParams(`${baseUrl}/${url}`, paramData);
       const req = new NextRequest(_url, { method: 'PUT', body: JSON.stringify(data) });
-      const res = await handler(req, { params: queryParams });
+      const res = await handler(req, { params: pathParams });
 
       return res;
     },
-    patch: async function (handler: Handler, data: any, paramData?: ParamData) {
-      const { url: _url, queryParams } = populatePathParams(url, paramData);
+    patch: async function (handler: Handler, url: string, data: any, paramData?: ParamData) {
+      const { url: _url, pathParams } = populatePathParams(`${baseUrl}/${url}`, paramData);
       const req = new NextRequest(_url, { method: 'PATCH', body: JSON.stringify(data) });
-      const res = await handler(req, { params: queryParams });
+      const res = await handler(req, { params: pathParams });
 
       return res;
     },
-    delete: async function (handler: Handler, paramData?: ParamData) {
-      const { url: _url, queryParams } = populatePathParams(url, paramData);
+    delete: async function (handler: Handler, url: string, paramData?: ParamData) {
+      const { url: _url, pathParams } = populatePathParams(`${baseUrl}/${url}`, paramData);
       const req = new NextRequest(_url, { method: 'PATCH' });
-      const res = await handler(req, { params: queryParams });
+      const res = await handler(req, { params: pathParams });
 
       return res;
     },
