@@ -24,8 +24,8 @@ export const POST = apiHandler(async ({ pathParams, body, session }) => {
 
   const request = await makeRequestDecision(id, decision, decisionComment, formData, session);
 
-  if (!request.decisionData) {
-    return BadRequestResponse(`Error creating decision request for ${request.licencePlate}`);
+  if (!request || !request.decisionData) {
+    return BadRequestResponse(`Error creating decision request for ${id}`);
   }
 
   if (request.decisionStatus !== DecisionStatus.APPROVED) {
