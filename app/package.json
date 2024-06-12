@@ -10,7 +10,7 @@
     "postinstall": "npm run prisma-generate",
     "lint": "eslint --no-eslintrc --config .eslintrc.json .",
     "lint-fix": "eslint --no-eslintrc --config .eslintrc.json --fix .",
-    "test": "dotenv -e .env.test -- jest -i",
+    "test": "dotenv -e .env.test -- jest --runInBand",
     "prisma-generate": "prisma generate",
     "prisma-push": "prisma db push",
     "migrate-data": "cat .env | grep DATABASE_URL > ../data-migrations/.env && cd ../data-migrations && npm install && npx migrate-mongo up",

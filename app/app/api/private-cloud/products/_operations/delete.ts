@@ -86,9 +86,7 @@ export default async function deleteOp({
       createEvent($Enums.EventType.DELETE_PRIVATE_CLOUD_PRODUCT, session.user.id, { requestId: request.id }),
       sendDeleteRequestEmails(request, session.user.name),
     ]);
-
-    return OkResponse(true);
   }
 
-  return OkResponse(false);
+  return OkResponse(request);
 }

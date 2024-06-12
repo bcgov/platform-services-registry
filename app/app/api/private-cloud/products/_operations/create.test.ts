@@ -19,7 +19,7 @@ const fieldsToCompare = [
 
 // TODO: add tests for ministry roles
 // TODO: test the emails templates if possible
-describe('Create Private Cloud Request - Permissions', () => {
+describe('Create Private Cloud Product - Permissions', () => {
   it('should return 401 for unauthenticated user', async () => {
     await mockSessionByEmail();
 
@@ -28,7 +28,7 @@ describe('Create Private Cloud Request - Permissions', () => {
     expect(response.status).toBe(401);
   });
 
-  it('should successfully create a request for PO requester', async () => {
+  it('should successfully submit a create request for PO', async () => {
     const requestData = createSamplePrivateCloudRequestData();
     await mockSessionByEmail(requestData.projectOwner.email);
 
@@ -41,7 +41,7 @@ describe('Create Private Cloud Request - Permissions', () => {
     expect(pickProductData(decisionData, fieldsToCompare)).toEqual(pickProductData(requestData, fieldsToCompare));
   });
 
-  it('should successfully create a request for TL1 requester', async () => {
+  it('should successfully submit a create request for TL1', async () => {
     const requestData = createSamplePrivateCloudRequestData();
     await mockSessionByEmail(requestData.primaryTechnicalLead.email);
 
@@ -54,7 +54,7 @@ describe('Create Private Cloud Request - Permissions', () => {
     expect(pickProductData(decisionData, fieldsToCompare)).toEqual(pickProductData(requestData, fieldsToCompare));
   });
 
-  it('should successfully create a request for TL2 requester', async () => {
+  it('should successfully submit a create request for TL2', async () => {
     const requestData = createSamplePrivateCloudRequestData();
     await mockSessionByEmail(requestData.secondaryTechnicalLead.email);
 
@@ -67,7 +67,7 @@ describe('Create Private Cloud Request - Permissions', () => {
     expect(pickProductData(decisionData, fieldsToCompare)).toEqual(pickProductData(requestData, fieldsToCompare));
   });
 
-  it('should fail to create a request for a non-assigned requester', async () => {
+  it('should fail to submit a create request for a non-assigned user', async () => {
     const requestData = createSamplePrivateCloudRequestData();
     const otherUsers = findOhterMockUsers([
       requestData.projectOwner.email,
@@ -81,7 +81,7 @@ describe('Create Private Cloud Request - Permissions', () => {
     expect(response.status).toBe(401);
   });
 
-  it('should successfully create a request for global admin requester', async () => {
+  it('should successfully submit a create request for global admin', async () => {
     const requestData = createSamplePrivateCloudRequestData();
     await mockSessionByRole('admin');
 
@@ -94,7 +94,7 @@ describe('Create Private Cloud Request - Permissions', () => {
     expect(pickProductData(decisionData, fieldsToCompare)).toEqual(pickProductData(requestData, fieldsToCompare));
   });
 
-  it('should fail to create a request for global reader requester', async () => {
+  it('should fail to submit a create request for global reader', async () => {
     const requestData = createSamplePrivateCloudRequestData();
     await mockSessionByRole('reader');
 
@@ -102,7 +102,7 @@ describe('Create Private Cloud Request - Permissions', () => {
     expect(response.status).toBe(401);
   });
 
-  it('should successfully create a request for private admin requester', async () => {
+  it('should successfully submit a create request for private admin', async () => {
     const requestData = createSamplePrivateCloudRequestData();
     await mockSessionByRole('private-admin');
 
@@ -117,7 +117,7 @@ describe('Create Private Cloud Request - Permissions', () => {
 });
 
 describe('Create Private Cloud Request - Validations', () => {
-  it('should fail to create a request due to an invalid name property', async () => {
+  it('should fail to submit a create request due to an invalid name property', async () => {
     const requestData = createSamplePrivateCloudRequestData();
     await mockSessionByRole('admin');
 
@@ -132,7 +132,7 @@ describe('Create Private Cloud Request - Validations', () => {
     expect(resData.error.issues.find((iss: { path: string[] }) => iss.path[0] === 'name')).not.toBeUndefined();
   });
 
-  it('should fail to create a request due to an invalid description property', async () => {
+  it('should fail to submit a create request due to an invalid description property', async () => {
     const requestData = createSamplePrivateCloudRequestData();
     await mockSessionByRole('admin');
 
@@ -147,7 +147,7 @@ describe('Create Private Cloud Request - Validations', () => {
     expect(resData.error.issues.find((iss: { path: string[] }) => iss.path[0] === 'description')).not.toBeUndefined();
   });
 
-  it('should fail to create a request due to an invalid cluster property', async () => {
+  it('should fail to submit a create request due to an invalid cluster property', async () => {
     const requestData = createSamplePrivateCloudRequestData();
     await mockSessionByRole('admin');
 
@@ -162,7 +162,7 @@ describe('Create Private Cloud Request - Validations', () => {
     expect(resData.error.issues.find((iss: { path: string[] }) => iss.path[0] === 'cluster')).not.toBeUndefined();
   });
 
-  it('should fail to create a request due to an invalid ministry property', async () => {
+  it('should fail to submit a create request due to an invalid ministry property', async () => {
     const requestData = createSamplePrivateCloudRequestData();
     await mockSessionByRole('admin');
 
@@ -177,7 +177,7 @@ describe('Create Private Cloud Request - Validations', () => {
     expect(resData.error.issues.find((iss: { path: string[] }) => iss.path[0] === 'ministry')).not.toBeUndefined();
   });
 
-  it('should fail to create a request due to an invalid projectOwner property', async () => {
+  it('should fail to submit a create request due to an invalid projectOwner property', async () => {
     const requestData = createSamplePrivateCloudRequestData();
     await mockSessionByRole('admin');
 
@@ -192,7 +192,7 @@ describe('Create Private Cloud Request - Validations', () => {
     expect(resData.error.issues.find((iss: { path: string[] }) => iss.path[0] === 'projectOwner')).not.toBeUndefined();
   });
 
-  it('should fail to create a request due to an invalid primaryTechnicalLead property', async () => {
+  it('should fail to submit a create request due to an invalid primaryTechnicalLead property', async () => {
     const requestData = createSamplePrivateCloudRequestData();
     await mockSessionByRole('admin');
 

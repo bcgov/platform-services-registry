@@ -7,7 +7,7 @@ import { createSamplePrivateCloudProductData } from '@/helpers/mock-resources';
 import { findMockUserByIDIR, generateTestSession } from '@/helpers/mock-users';
 import { ministryKeyToName } from '@/helpers/product';
 import { createProxyUsers } from '@/queries/users';
-import { DefaultCpuOptionsSchema, DefaultMemoryOptionsSchema, DefaultStorageOptionsSchema } from '@/schema';
+import { QuotaCpuEnum, QuotaMemoryEnum, QuotaStorageEnum } from '@/schema';
 import { mockedGetServerSession } from '@/services/api-test/core';
 import { POST as downloadCsv } from './route';
 
@@ -19,9 +19,9 @@ const generatePostRequest = (data = {}) => {
 };
 
 const quota = {
-  cpu: DefaultCpuOptionsSchema.enum.CPU_REQUEST_0_5_LIMIT_1_5,
-  memory: DefaultMemoryOptionsSchema.enum.MEMORY_REQUEST_2_LIMIT_4,
-  storage: DefaultStorageOptionsSchema.enum.STORAGE_1,
+  cpu: QuotaCpuEnum.enum.CPU_REQUEST_0_5_LIMIT_1_5,
+  memory: QuotaMemoryEnum.enum.MEMORY_REQUEST_2_LIMIT_4,
+  storage: QuotaStorageEnum.enum.STORAGE_1,
 };
 
 const projectData = [

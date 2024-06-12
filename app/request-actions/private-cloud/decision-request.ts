@@ -55,7 +55,7 @@ export default async function makeRequestDecision(
   });
 
   if (!request) {
-    throw new Error('Request not found.');
+    return null;
   }
 
   const updatedRequest = await prisma.privateCloudRequest.update({

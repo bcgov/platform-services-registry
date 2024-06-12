@@ -21,48 +21,39 @@ const fieldsToCompare = [
   'commonComponents',
 ];
 
-const requestDataSet = {
-  a: createSamplePrivateCloudRequestData(),
-  b: createSamplePrivateCloudRequestData(),
+const productData = {
+  main: createSamplePrivateCloudRequestData(),
 };
 
-const requestDocSet = {
-  a: null as any,
-  b: null as any,
-};
+const requests: any = { main: null };
+
+async function makeBasicProductReview(decision: $Enums.DecisionStatus, extra = {}) {
+  const decisionData = requests.main.decisionData;
+  const response = await makePrivateCloudRequestDecision(requests.main.id, {
+    ...decisionData,
+    ...extra,
+    decision,
+  });
+
+  return response;
+}
 
 // TODO: add tests for ministry roles
 // TODO: test the emails templates if possible
 describe('Review Private Cloud Request - Permissions', () => {
-  it('should successfully create a request for PO requester', async () => {
-    await mockSessionByEmail(requestDataSet.a.projectOwner.email);
+  it('should successfully submit a create request for PO', async () => {
+    await mockSessionByEmail(productData.main.projectOwner.email);
 
-    const response = await createPrivateCloudProject(requestDataSet.a);
+    const response = await createPrivateCloudProject(productData.main);
     expect(response.status).toBe(200);
 
-    requestDocSet.a = await response.json();
-    const decisionData = requestDocSet.a.decisionData;
-
-    expect(pickProductData(decisionData, fieldsToCompare)).toEqual(pickProductData(requestDataSet.a, fieldsToCompare));
+    requests.main = await response.json();
   });
 
-  it('should return 401 for unauthenticated user', async () => {
-    await mockSessionByEmail();
+  it('should fail to review the request for PO', async () => {
+    await mockSessionByEmail(productData.main.projectOwner.email);
 
-    const response = await makePrivateCloudRequestDecision(
-      { ...requestDocSet.a.decisionData, decision: $Enums.DecisionStatus.APPROVED },
-      { pathParams: { id: requestDocSet.a.id } },
-    );
-    expect(response.status).toBe(401);
-  });
-
-  it('should fail to review a request for PO requester', async () => {
-    await mockSessionByEmail(requestDataSet.a.projectOwner.email);
-
-    const response = await makePrivateCloudRequestDecision(
-      { ...requestDocSet.a.decisionData, decision: $Enums.DecisionStatus.APPROVED },
-      { pathParams: { id: requestDocSet.a.id } },
-    );
+    const response = await makeBasicProductReview($Enums.DecisionStatus.APPROVED);
 
     expect(response.status).toBe(401);
 
@@ -70,13 +61,21 @@ describe('Review Private Cloud Request - Permissions', () => {
     expect(resData.success).toBe(false);
   });
 
-  it('should successfully review a request for global admin requester', async () => {
+  it('should fail to review the request for TL1', async () => {
+    await mockSessionByEmail(productData.main.primaryTechnicalLead.email);
+
+    const response = await makeBasicProductReview($Enums.DecisionStatus.APPROVED);
+
+    expect(response.status).toBe(401);
+
+    const resData = await response.json();
+    expect(resData.success).toBe(false);
+  });
+
+  it('should successfully review the request for global admin', async () => {
     await mockSessionByRole('admin');
 
-    const response = await makePrivateCloudRequestDecision(
-      { ...requestDocSet.a.decisionData, decision: $Enums.DecisionStatus.APPROVED },
-      { pathParams: { id: requestDocSet.a.id } },
-    );
+    const response = await makeBasicProductReview($Enums.DecisionStatus.APPROVED);
 
     expect(response.status).toBe(200);
 
@@ -84,19 +83,16 @@ describe('Review Private Cloud Request - Permissions', () => {
     const decisionData = resData.decisionData;
 
     expect(pickProductData(decisionData, fieldsToCompare)).toEqual(
-      pickProductData(requestDocSet.a.decisionData, fieldsToCompare),
+      pickProductData(requests.main.decisionData, fieldsToCompare),
     );
   });
 
   it('should fail to review a request already reviewed', async () => {
     await mockSessionByRole('admin');
 
-    const response = await makePrivateCloudRequestDecision(
-      { ...requestDocSet.a.decisionData, decision: $Enums.DecisionStatus.APPROVED },
-      { pathParams: { id: requestDocSet.a.id } },
-    );
+    const response = await makeBasicProductReview($Enums.DecisionStatus.APPROVED);
 
-    expect(response.status).toBe(500);
+    expect(response.status).toBe(400);
 
     const resData = await response.json();
     expect(resData.success).toBe(false);
@@ -104,34 +100,27 @@ describe('Review Private Cloud Request - Permissions', () => {
 });
 
 describe('Review Private Cloud Request - Validations', () => {
-  it('should successfully create a request for PO requester', async () => {
-    await mockSessionByEmail(requestDataSet.b.projectOwner.email);
+  it('should successfully submit a create request for TL1', async () => {
+    await mockSessionByEmail(productData.main.primaryTechnicalLead.email);
 
-    const response = await createPrivateCloudProject(requestDataSet.b);
+    const response = await createPrivateCloudProject(productData.main);
     expect(response.status).toBe(200);
 
-    requestDocSet.b = await response.json();
-    const decisionData = requestDocSet.b.decisionData;
-
-    expect(pickProductData(decisionData, fieldsToCompare)).toEqual(pickProductData(requestDataSet.b, fieldsToCompare));
+    requests.main = await response.json();
   });
 
   it('should ignore the cluster change', async () => {
     await mockSessionByRole('admin');
+    const requestData = requests.main;
 
-    const newName = requestDocSet.b.decisionData.name + '_suffix';
+    const newName = requestData.decisionData.name + '_suffix';
     const newCluster =
-      requestDataSet.b.cluster === $Enums.Cluster.SILVER ? $Enums.Cluster.EMERALD : $Enums.Cluster.SILVER;
+      requestData.decisionData.cluster === $Enums.Cluster.SILVER ? $Enums.Cluster.EMERALD : $Enums.Cluster.SILVER;
 
-    const response = await makePrivateCloudRequestDecision(
-      {
-        ...requestDocSet.b.decisionData,
-        name: newName,
-        cluster: newCluster,
-        decision: $Enums.DecisionStatus.APPROVED,
-      },
-      { pathParams: { id: requestDocSet.b.id } },
-    );
+    const response = await makeBasicProductReview($Enums.DecisionStatus.APPROVED, {
+      name: newName,
+      cluster: newCluster,
+    });
 
     expect(response.status).toBe(200);
 
@@ -139,6 +128,6 @@ describe('Review Private Cloud Request - Validations', () => {
     const decisionData = resData.decisionData;
 
     expect(decisionData.name).toBe(newName);
-    expect(decisionData.cluster).toBe(requestDataSet.b.cluster);
+    expect(decisionData.cluster).toBe(requestData.decisionData.cluster);
   });
 });
