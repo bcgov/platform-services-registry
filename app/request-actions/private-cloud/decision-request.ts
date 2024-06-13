@@ -1,5 +1,7 @@
-import { Cluster, DecisionStatus, Prisma, ProjectStatus } from '@prisma/client';
+import { $Enums, Cluster, DecisionStatus, Prisma, ProjectStatus } from '@prisma/client';
+import { Session } from 'next-auth';
 import prisma from '@/core/prisma';
+import { createEvent } from '@/mutations/events';
 import { PrivateCloudEditRequestBody } from '@/schema';
 
 export type PrivateCloudRequestWithRequestedProject = Prisma.PrivateCloudRequestGetPayload<{
@@ -38,18 +40,22 @@ export default async function makeRequestDecision(
   decision: DecisionStatus,
   decisionComment: string | undefined,
   formData: PrivateCloudEditRequestBody,
-  authEmail: string,
+  session: Session,
 ) {
   const request = await prisma.privateCloudRequest.findUnique({
     where: {
       id,
       active: true,
+      decisionStatus: $Enums.DecisionStatus.PENDING,
     },
-    select: { id: true, licencePlate: true },
+    include: {
+      project: { select: { cluster: true } },
+      decisionData: { select: { cluster: true } },
+    },
   });
 
   if (!request) {
-    throw new Error('Request not found.');
+    return null;
   }
 
   const updatedRequest = await prisma.privateCloudRequest.update({
@@ -85,12 +91,13 @@ export default async function makeRequestDecision(
       decisionStatus: decision,
       decisionComment,
       decisionDate: new Date(),
-      decisionMakerEmail: authEmail,
+      decisionMakerEmail: session.user.email,
       decisionData: {
         update: {
           ...formData,
           status: ProjectStatus.ACTIVE,
           licencePlate: request.licencePlate,
+          cluster: request.project?.cluster ?? request.decisionData.cluster,
           projectOwner: {
             connectOrCreate: {
               where: {
@@ -121,6 +128,10 @@ export default async function makeRequestDecision(
       },
     },
   });
+
+  if (updatedRequest) {
+    await createEvent($Enums.EventType.REVIEW_PRIVATE_CLOUD_REQUEST, session.user.id, { requestId: updatedRequest.id });
+  }
 
   return updatedRequest;
 }

@@ -19,7 +19,6 @@ export default async function updateOp({
   body: PrivateCloudEditRequestBody;
   pathParams: TypeOf<typeof putPathParamSchema>;
 }) {
-  const { user } = session;
   const { licencePlate } = pathParams;
 
   const product = await getPrivateCloudProduct(session, licencePlate);
@@ -28,13 +27,11 @@ export default async function updateOp({
     return UnauthorizedResponse();
   }
 
-  const request = await editRequest(licencePlate, body, user.email);
+  const request = await editRequest(licencePlate, body, session);
 
   if (request.decisionStatus !== DecisionStatus.APPROVED) {
     await sendEditRequestEmails(request, true, session.user.name);
-    return OkResponse(
-      'Successfully edited project, admin approval will be required for this request to be provisioned ',
-    );
+    return OkResponse(request);
   }
 
   const proms = [];
@@ -59,5 +56,5 @@ export default async function updateOp({
 
   await Promise.all(proms);
 
-  return OkResponse(true);
+  return OkResponse(request);
 }

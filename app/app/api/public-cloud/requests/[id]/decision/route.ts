@@ -22,16 +22,15 @@ const apiHandler = createApiHandler({
 });
 
 export const POST = apiHandler(async ({ pathParams, body, session }) => {
-  const { userEmail } = session;
   const { id } = pathParams;
-  const { decision, decisionComment, ...decisionDataFormData } = body;
+  const { decision, decisionComment, ...formData } = body;
 
   const request: PublicCloudRequestWithProjectAndRequestedProject = await makeRequestDecision(
     id,
     decision,
     decisionComment,
-    decisionDataFormData,
-    userEmail as string,
+    formData,
+    session,
   );
 
   if (!request.decisionData) {

@@ -1,6 +1,8 @@
+import { $Enums } from '@prisma/client';
 import { Session } from 'next-auth';
 import { AUTH_RELM } from '@/config';
 import { OkResponse, BadRequestResponse } from '@/core/responses';
+import { createEvent } from '@/mutations/events';
 import { getKcAdminClient, findClient } from '@/services/keycloak/app-realm';
 
 export default async function getOp({ session }: { session: Session }) {
@@ -17,6 +19,8 @@ export default async function getOp({ session }: { session: Session }) {
       realm: AUTH_RELM,
       id: client.id,
     });
+
+    await createEvent($Enums.EventType.DELETE_API_TOKEN, session.user.id);
 
     return OkResponse(true);
   }

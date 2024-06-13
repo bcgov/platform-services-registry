@@ -21,18 +21,37 @@ interface MockFile {
   mocks: MockResponse[];
 }
 
-export const proxyUsers = mockFile.mocks.find(
+export const proxyUsers: MsUser[] = mockFile.mocks.find(
   (mock: MockResponse) => mock.request.url === 'https://graph.microsoft.com/v1.0/users?$filter*',
 )?.response.body.value;
 
+export const proxyAllIDIRs = proxyUsers.map((usr) => usr.onPremisesSamAccountName);
+export const proxyNoRoleUsers = proxyUsers.filter((usr) => !usr.jobTitle);
+export const proxyNoRoleIDIRs = proxyNoRoleUsers.map((usr) => usr.onPremisesSamAccountName);
+
 export function findMockUserByIDIR(useridir: string) {
-  let user = proxyUsers.find(
-    ({ onPremisesSamAccountName }: { onPremisesSamAccountName: string }) => onPremisesSamAccountName === useridir,
-  );
+  let user = proxyUsers.find(({ onPremisesSamAccountName }) => onPremisesSamAccountName === useridir);
   if (!user) user = proxyUsers[0];
 
   const { firstName, lastName, email, ministry, idir, upn } = processMsUser(user);
   return { firstName, lastName, email, ministry, idir, upn };
+}
+
+export function findMockUserbyRole(role: string) {
+  const user = proxyUsers.find(({ jobTitle }) => jobTitle === role);
+  if (!user) return null;
+
+  const { firstName, lastName, email, ministry, idir, upn } = processMsUser(user);
+  return { firstName, lastName, email, ministry, idir, upn };
+}
+
+export function findOhterMockUsers(emails: string[]) {
+  return proxyNoRoleUsers
+    .filter((usr) => !emails.includes(usr.mail))
+    .map((usr) => {
+      const { firstName, lastName, email, ministry, idir, upn } = processMsUser(usr);
+      return { firstName, lastName, email, ministry, idir, upn };
+    });
 }
 
 export async function generateTestSession(testEmail: string) {

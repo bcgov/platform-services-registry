@@ -2,6 +2,7 @@ import { $Enums } from '@prisma/client';
 import { z } from 'zod';
 import createApiHandler from '@/core/api-handler';
 import { BadRequestResponse, OkResponse, UnauthorizedResponse } from '@/core/responses';
+import { createEvent } from '@/mutations/events';
 import { getPrivateCloudProduct } from '@/queries/private-cloud-products';
 import { sendPrivateCloudNatsMessage } from '@/services/nats';
 
@@ -35,6 +36,10 @@ export const GET = apiHandler(async ({ pathParams, session }) => {
       false,
     );
   }
+
+  await createEvent($Enums.EventType.REPROVISION_PRIVATE_CLOUD_PRODUCT, session.user.id, {
+    licencePlate: product.licencePlate,
+  });
 
   return OkResponse(true);
 });

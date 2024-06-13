@@ -2,7 +2,7 @@ import { Cluster, Ministry, Provider, $Enums } from '@prisma/client';
 import { string, z } from 'zod';
 import { processBoolean } from './utils/zod';
 
-export const DefaultCpuOptionsSchema = z.enum([
+export const QuotaCpuEnum = z.enum([
   'CPU_REQUEST_0_5_LIMIT_1_5',
   'CPU_REQUEST_1_LIMIT_2',
   'CPU_REQUEST_2_LIMIT_4',
@@ -13,7 +13,7 @@ export const DefaultCpuOptionsSchema = z.enum([
   'CPU_REQUEST_64_LIMIT_128',
 ]);
 
-export const DefaultMemoryOptionsSchema = z.enum([
+export const QuotaMemoryEnum = z.enum([
   'MEMORY_REQUEST_2_LIMIT_4',
   'MEMORY_REQUEST_4_LIMIT_8',
   'MEMORY_REQUEST_8_LIMIT_16',
@@ -23,7 +23,7 @@ export const DefaultMemoryOptionsSchema = z.enum([
   'MEMORY_REQUEST_128_LIMIT_256',
 ]);
 
-export const DefaultStorageOptionsSchema = z.enum([
+export const QuotaStorageEnum = z.enum([
   'STORAGE_1',
   'STORAGE_2',
   'STORAGE_4',
@@ -34,6 +34,10 @@ export const DefaultStorageOptionsSchema = z.enum([
   'STORAGE_256',
   'STORAGE_512',
 ]);
+
+export const cpuOptions = Object.values(QuotaCpuEnum.enum);
+export const memoryOptions = Object.values(QuotaMemoryEnum.enum);
+export const storageOptions = Object.values(QuotaStorageEnum.enum);
 
 const CommonComponentsOptionsSchema = z.object({
   planningToUse: z.boolean(),
@@ -76,9 +80,9 @@ export const CommonComponentsInputSchema = z
   );
 
 export const QuotaInputSchema = z.object({
-  cpu: z.union([DefaultCpuOptionsSchema, z.string().regex(/CPU_REQUEST_\d+(\.\d+)?_LIMIT_\d+(\.\d+)?/)]),
-  memory: z.union([DefaultMemoryOptionsSchema, z.string().regex(/MEMORY_REQUEST_\d+_LIMIT_\d+/)]),
-  storage: z.union([DefaultStorageOptionsSchema, z.string().regex(/STORAGE_\d+/)]),
+  cpu: z.union([QuotaCpuEnum, z.string().regex(/CPU_REQUEST_\d+(\.\d+)?_LIMIT_\d+(\.\d+)?/)]),
+  memory: z.union([QuotaMemoryEnum, z.string().regex(/MEMORY_REQUEST_\d+_LIMIT_\d+/)]),
+  storage: z.union([QuotaStorageEnum, z.string().regex(/STORAGE_\d+/)]),
 });
 
 export const DecisionOptionsSchema = z.enum(['APPROVED', 'REJECTED']);
@@ -203,5 +207,5 @@ export type PrivateCloudEditRequestBody = z.infer<typeof PrivateCloudEditRequest
 export type PublicCloudEditRequestBody = z.infer<typeof PublicCloudEditRequestBodySchema>;
 export type PublicCloudRequestDecisionBody = z.infer<typeof PublicCloudRequestDecisionBodySchema>;
 export type DecisionOptions = z.infer<typeof DecisionOptionsSchema>;
-export type DefaultCpuOptions = z.infer<typeof DefaultCpuOptionsSchema>;
-export type DefaultMemoryOptions = z.infer<typeof DefaultMemoryOptionsSchema>;
+export type DefaultCpuOptions = z.infer<typeof QuotaCpuEnum>;
+export type DefaultMemoryOptions = z.infer<typeof QuotaMemoryEnum>;

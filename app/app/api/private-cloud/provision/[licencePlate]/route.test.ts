@@ -1,110 +1,34 @@
-import { MockedFunction } from 'jest-mock';
 import { NextRequest, NextResponse } from 'next/server';
-import { getServerSession } from 'next-auth/next';
-import { POST as createRequest } from '@/app/api/private-cloud/products/route';
 import { PUT } from '@/app/api/private-cloud/provision/[licencePlate]/route';
 import { POST as decisionRequest } from '@/app/api/private-cloud/requests/[id]/decision/route';
 import prisma from '@/core/prisma';
+import { createSamplePrivateCloudProductData } from '@/helpers/mock-resources';
 import { findMockUserByIDIR, generateTestSession } from '@/helpers/mock-users';
-import { DefaultCpuOptionsSchema, DefaultMemoryOptionsSchema, DefaultStorageOptionsSchema } from '@/schema';
+import { cpuOptions, memoryOptions, storageOptions } from '@/schema';
+import { mockedGetServerSession } from '@/services/api-test/core';
+import { createPrivateCloudProject } from '@/services/api-test/private-cloud/products';
 
 const BASE_URL = 'http://localhost:3000';
 
-const createRequestBody = {
-  name: 'Sample Project',
-  description: 'This is a sample project description.',
-  cluster: 'SILVER', // Assuming CLUSTER_A is a valid enum value for Cluster
-  ministry: 'AGRI', // Assuming AGRI is a valid enum value for Ministry
-  projectOwner: findMockUserByIDIR('JOHNDOE'),
-  primaryTechnicalLead: findMockUserByIDIR('JAMESSMITH'),
-  commonComponents: {
-    addressAndGeolocation: {
-      planningToUse: true,
-      implemented: false,
-    },
-    workflowManagement: {
-      planningToUse: false,
-      implemented: true,
-    },
-    formDesignAndSubmission: {
-      planningToUse: true,
-      implemented: true,
-    },
-    identityManagement: {
-      planningToUse: false,
-      implemented: false,
-    },
-    paymentServices: {
-      planningToUse: true,
-      implemented: false,
-    },
-    documentManagement: {
-      planningToUse: false,
-      implemented: true,
-    },
-    endUserNotificationAndSubscription: {
-      planningToUse: true,
-      implemented: false,
-    },
-    publishing: {
-      planningToUse: false,
-      implemented: true,
-    },
-    businessIntelligence: {
-      planningToUse: true,
-      implemented: false,
-    },
-    other: 'Some other services',
-    noServices: false,
-  },
-  golddrEnabled: true,
-  isTest: false,
-};
-
-const quota = {
-  cpu: DefaultCpuOptionsSchema.enum.CPU_REQUEST_0_5_LIMIT_1_5,
-  memory: DefaultMemoryOptionsSchema.enum.MEMORY_REQUEST_2_LIMIT_4,
-  storage: DefaultStorageOptionsSchema.enum.STORAGE_1,
-};
+const createRequestBody = createSamplePrivateCloudProductData();
 
 const adminChanges = {
   name: 'New name from admin',
   description: 'New description from admin',
   projectOwner: findMockUserByIDIR('JOHNDOE'),
   testQuota: {
-    cpu: 'CPU_REQUEST_8_LIMIT_16',
-    memory: 'MEMORY_REQUEST_4_LIMIT_8',
-    storage: 'STORAGE_2',
+    cpu: cpuOptions[1],
+    memory: memoryOptions[1],
+    storage: storageOptions[1],
   },
 };
 
 const decisionBody = {
+  ...createRequestBody,
+  ...adminChanges,
   decision: 'APPROVED',
   decisionComment: 'Approved by admin',
-  ...createRequestBody,
-  productionQuota: quota,
-  toolsQuota: quota,
-  developmentQuota: quota,
-  ...adminChanges,
 };
-
-const adminRequestedProjectBody = { ...createRequestBody, ...adminChanges };
-
-const mockedGetServerSession = getServerSession as unknown as MockedFunction<typeof getServerSession>;
-
-jest.mock('next-auth/next', () => ({
-  getServerSession: jest.fn(),
-}));
-
-jest.mock('next-auth', () => ({
-  default: jest.fn(), // for default export
-  NextAuth: jest.fn(), // for named export
-}));
-
-jest.mock('@/app/api/auth/[...nextauth]/route', () => ({
-  GET: jest.fn(),
-  POST: jest.fn(),
-}));
 
 describe('Create Private Cloud Request Route', () => {
   let createRequestId: string;
@@ -117,13 +41,7 @@ describe('Create Private Cloud Request Route', () => {
     const mockSession = await generateTestSession('admin.system@gov.bc.ca');
     mockedGetServerSession.mockResolvedValue(mockSession);
 
-    // Make a create request
-    const createRequestObject = new NextRequest(`${BASE_URL}/api/private-cloud/products`, {
-      method: 'POST',
-      body: JSON.stringify(createRequestBody),
-    });
-
-    await createRequest(createRequestObject);
+    await createPrivateCloudProject(createRequestBody);
 
     // Get the request id
     const request = await prisma.privateCloudRequest.findFirst();
@@ -222,7 +140,7 @@ describe('Create Private Cloud Request Route', () => {
     expect(project.ministry).toBe(decisionBody.ministry);
     expect(project.projectOwner.email).toBe(decisionBody.projectOwner.email);
     expect(project.primaryTechnicalLead.email).toBe(decisionBody.primaryTechnicalLead.email);
-    expect(project.secondaryTechnicalLead).toBe(null);
+    expect(project.secondaryTechnicalLead?.email).toBe(decisionBody.secondaryTechnicalLead.email);
     expect(project.commonComponents).toBeTruthy();
     expect(project.testQuota).toStrictEqual(decisionBody.testQuota);
     expect(project.productionQuota).toStrictEqual(decisionBody.productionQuota);

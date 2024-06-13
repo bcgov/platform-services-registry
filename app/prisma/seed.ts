@@ -1,6 +1,6 @@
 import { faker } from '@faker-js/faker';
 import { Cluster, Ministry, PrismaClient, Provider } from '@prisma/client';
-import { DefaultCpuOptionsSchema, DefaultMemoryOptionsSchema, DefaultStorageOptionsSchema } from '@/schema';
+import { QuotaCpuEnum, QuotaMemoryEnum, QuotaStorageEnum } from '@/schema';
 
 const prisma = new PrismaClient();
 
@@ -120,24 +120,24 @@ async function main() {
           cluster: faker.helpers.arrayElement(Object.values(Cluster)),
           comments: { create: comments },
           productionQuota: {
-            cpu: faker.helpers.arrayElement(DefaultCpuOptionsSchema.options),
-            memory: faker.helpers.arrayElement(DefaultMemoryOptionsSchema.options),
-            storage: faker.helpers.arrayElement(DefaultStorageOptionsSchema.options),
+            cpu: faker.helpers.arrayElement(QuotaCpuEnum.options),
+            memory: faker.helpers.arrayElement(QuotaMemoryEnum.options),
+            storage: faker.helpers.arrayElement(QuotaStorageEnum.options),
           },
           testQuota: {
-            cpu: faker.helpers.arrayElement(DefaultCpuOptionsSchema.options),
-            memory: faker.helpers.arrayElement(DefaultMemoryOptionsSchema.options),
-            storage: faker.helpers.arrayElement(DefaultStorageOptionsSchema.options),
+            cpu: faker.helpers.arrayElement(QuotaCpuEnum.options),
+            memory: faker.helpers.arrayElement(QuotaMemoryEnum.options),
+            storage: faker.helpers.arrayElement(QuotaStorageEnum.options),
           },
           developmentQuota: {
-            cpu: faker.helpers.arrayElement(DefaultCpuOptionsSchema.options),
-            memory: faker.helpers.arrayElement(DefaultMemoryOptionsSchema.options),
-            storage: faker.helpers.arrayElement(DefaultStorageOptionsSchema.options),
+            cpu: faker.helpers.arrayElement(QuotaCpuEnum.options),
+            memory: faker.helpers.arrayElement(QuotaMemoryEnum.options),
+            storage: faker.helpers.arrayElement(QuotaStorageEnum.options),
           },
           toolsQuota: {
-            cpu: faker.helpers.arrayElement(DefaultCpuOptionsSchema.options),
-            memory: faker.helpers.arrayElement(DefaultMemoryOptionsSchema.options),
-            storage: faker.helpers.arrayElement(DefaultStorageOptionsSchema.options),
+            cpu: faker.helpers.arrayElement(QuotaCpuEnum.options),
+            memory: faker.helpers.arrayElement(QuotaMemoryEnum.options),
+            storage: faker.helpers.arrayElement(QuotaStorageEnum.options),
           },
           commonComponents,
           golddrEnabled: true,

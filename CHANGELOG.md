@@ -1,3 +1,21 @@
+## [0.29.1](https://github.com/bcgov/platform-services-registry/compare/v0.29.0...v0.29.1) (2024-06-10)
+
+### Features
+
+* **3045:** add a func to create sample private cloud data ([3eab36d](https://github.com/bcgov/platform-services-registry/commit/3eab36d44334e3af9fde6a625d0edee844e17540))
+
+### Bug Fixes
+
+* **3061:** display cloud calculator correctly ([136ad72](https://github.com/bcgov/platform-services-registry/commit/136ad7286e66376152a570bb4d4e09bcd24c867b))
+## [0.29.0](https://github.com/bcgov/platform-services-registry/compare/v0.28.0...v0.29.0) (2024-06-07)
+
+### Features
+
+* **3045:** encapsulate Next.js routes with parameters for reusability ([9153999](https://github.com/bcgov/platform-services-registry/commit/915399940ec23bf8b82af68f17214f7570b19c4e))
+
+### Bug Fixes
+
+* **3052:** add missing private cloud create requests ([fd8f9ba](https://github.com/bcgov/platform-services-registry/commit/fd8f9baa0bb90d5d30d077491b038f8e5ec8b17a))
 ## [0.28.0](https://github.com/bcgov/platform-services-registry/compare/v0.27.0...v0.28.0) (2024-06-05)
 
 ### Features
