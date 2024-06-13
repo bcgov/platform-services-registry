@@ -38,31 +38,27 @@ try {
   process.exit(1);
 }
 
-mocks.forEach((mock: Mock) => {
-  const method = mock.request.method.toLowerCase() as HttpMethod;
-  const route = new URL(mock.request.url).pathname;
-
-  app[method](route, async (req: Request, res: Response) => {
-    const requestedPath = req.path;
-    const requestedQuery = req.query;
-    const filteredMocks = mocks.filter((mockFilter: Mock) => {
-      const mockUrl = new URL(mockFilter.request.url);
-      return (
-        mockUrl.pathname === requestedPath &&
-        Array.from(mockUrl.searchParams.keys()).every((key) => key in requestedQuery)
-      );
-    });
-
-    if (filteredMocks.length > 0) {
-      const mockResponse = filteredMocks[0];
-      res.status(mockResponse.response.statusCode || 200).json(mockResponse.response.body);
-    } else {
-      res.status(404).send('Mock data not found');
-    }
-  });
+const mockMap = new Map<string, Mock>();
+mocks.forEach((mock) => {
+  const url = new URL(mock.request.url);
+  const route = `${mock.request.method.toLowerCase()}${url.pathname}`;
+  mockMap.set(route, mock);
 });
 
-app.get('/', async (req: Request, res: Response) => {
+app.all('*', (req: Request, res: Response) => {
+  const requestedPath = req.path;
+  const requestedMethod = req.method.toLowerCase() as HttpMethod;
+  const routeKey = `${requestedMethod}${requestedPath}`;
+
+  const mock = mockMap.get(routeKey);
+  if (mock) {
+    res.status(mock.response.statusCode || 200).json(mock.response.body);
+  } else {
+    res.status(404).send('Mock data not found');
+  }
+});
+
+app.get('/', (req: Request, res: Response) => {
   res.send('Hello, M365 Mock Server!');
 });
 
