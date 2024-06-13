@@ -1,78 +1,78 @@
 services:
-#   keycloak:
-#     platform: linux/amd64
-#     container_name: keycloak
-#     build:
-#       context: ./keycloak
-#       dockerfile: Dockerfile
-#     command:
-#     - start-dev
-#     environment:
-#       KC_DB: postgres
-#       KC_DB_URL_HOST: postgres
-#       KC_DB_URL_DATABASE: keycloak
-#       KC_DB_URL_PORT: 5432
-#       KC_DB_PASSWORD: postgres # pragma: allowlist secret
-#       KC_DB_USERNAME: postgres
-#       KC_HEALTH_ENABLED: 'true'
-#       KC_HTTP_ENABLED: 'true'
-#       KC_HTTP_PORT: 8080
-#       KC_METRICS_ENABLED: 'true'
-#       KC_HOSTNAME_STRICT_HTTPS: 'false'
-#       KEYCLOAK_ADMIN: admin
-#       KEYCLOAK_ADMIN_PASSWORD: password # pragma: allowlist secret
-#       KC_HTTPS_CERTIFICATE_FILE: /opt/keycloak/conf/server.crt.pem
-#       KC_HTTPS_CERTIFICATE_KEY_FILE: /opt/keycloak/conf/server.key.pem
-#       JAVA_OPTS_APPEND: -Dkeycloak.profile.feature.scripts=enabled
-#     ports:
-#     - 8080:8080
-#     - 8443:8443
-#     depends_on:
-#     - postgres
+  keycloak:
+    platform: linux/amd64
+    container_name: keycloak
+    build:
+      context: ./keycloak
+      dockerfile: Dockerfile
+    command:
+    - start-dev
+    environment:
+      KC_DB: postgres
+      KC_DB_URL_HOST: postgres
+      KC_DB_URL_DATABASE: keycloak
+      KC_DB_URL_PORT: 5432
+      KC_DB_PASSWORD: postgres # pragma: allowlist secret
+      KC_DB_USERNAME: postgres
+      KC_HEALTH_ENABLED: 'true'
+      KC_HTTP_ENABLED: 'true'
+      KC_HTTP_PORT: 8080
+      KC_METRICS_ENABLED: 'true'
+      KC_HOSTNAME_STRICT_HTTPS: 'false'
+      KEYCLOAK_ADMIN: admin
+      KEYCLOAK_ADMIN_PASSWORD: password # pragma: allowlist secret
+      KC_HTTPS_CERTIFICATE_FILE: /opt/keycloak/conf/server.crt.pem
+      KC_HTTPS_CERTIFICATE_KEY_FILE: /opt/keycloak/conf/server.key.pem
+      JAVA_OPTS_APPEND: -Dkeycloak.profile.feature.scripts=enabled
+    ports:
+    - 8080:8080
+    - 8443:8443
+    depends_on:
+    - postgres
 
-#   keycloak-provision:
-#     platform: linux/amd64
-#     container_name: keycloak-provision
-#     build:
-#       context: ./
-#       dockerfile: ./keycloak-provision/Dockerfile
-#     environment:
-#       KEYCLOAK_URL: http://keycloak:8080
-#       MASTER_ADMIN: admin
-#       MASTER_ADMIN_PASSWORD: password # pragma: allowlist secret
-#       AUTH_REALM_NAME: platform-services
-#       AUTH_CLIENT_ID: pltsvc
-#       AUTH_CLIENT_SECRET: testsecret # pragma: allowlist secret
-#       GITOPS_CLIENT_ID: registry-gitops-ci
-#       GITOPS_CLIENT_SECRET: testsecret # pragma: allowlist secret
-#       ADMIN_CLIENT_ID: pltsvc-admin-cli
-#       ADMIN_CLIENT_SECRET: testsecret # pragma: allowlist secret
-#       PUBLIC_CLOUD_REALM_NAME: public-cloud
-#       PUBLIC_CLOUD_CLIENT_ID: roles
-#       PUBLIC_CLOUD_CLIENT_SECRET: testsecret # pragma: allowlist secret
-#     depends_on:
-#     - keycloak
+  keycloak-provision:
+    platform: linux/amd64
+    container_name: keycloak-provision
+    build:
+      context: ./
+      dockerfile: ./keycloak-provision/Dockerfile
+    environment:
+      KEYCLOAK_URL: http://keycloak:8080
+      MASTER_ADMIN: admin
+      MASTER_ADMIN_PASSWORD: password # pragma: allowlist secret
+      AUTH_REALM_NAME: platform-services
+      AUTH_CLIENT_ID: pltsvc
+      AUTH_CLIENT_SECRET: testsecret # pragma: allowlist secret
+      GITOPS_CLIENT_ID: registry-gitops-ci
+      GITOPS_CLIENT_SECRET: testsecret # pragma: allowlist secret
+      ADMIN_CLIENT_ID: pltsvc-admin-cli
+      ADMIN_CLIENT_SECRET: testsecret # pragma: allowlist secret
+      PUBLIC_CLOUD_REALM_NAME: public-cloud
+      PUBLIC_CLOUD_CLIENT_ID: roles
+      PUBLIC_CLOUD_CLIENT_SECRET: testsecret # pragma: allowlist secret
+    depends_on:
+    - keycloak
 
-#   postgres:
-#     platform: linux/amd64
-#     container_name: postgres
-#     image: postgres:16.3
-#     healthcheck:
-#       test: [CMD, pg_isready, -q, -d, keycloak, -U, postgres]
-#       timeout: 45s
-#       interval: 10s
-#       retries: 10
-#     environment:
-#       POSTGRES_HOST: postgres
-#       POSTGRES_USER: postgres
-#       POSTGRES_PASSWORD: postgres # pragma: allowlist secret
-#       POSTGRES_DB: keycloak
-#     ports:
-#     - 5432:5432
-#     volumes:
-#     - type: bind
-#       source: ./mnt/postgres
-#       target: /var/lib/postgresql/data
+  postgres:
+    platform: linux/amd64
+    container_name: postgres
+    image: postgres:16.3
+    healthcheck:
+      test: [CMD, pg_isready, -q, -d, keycloak, -U, postgres]
+      timeout: 45s
+      interval: 10s
+      retries: 10
+    environment:
+      POSTGRES_HOST: postgres
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres # pragma: allowlist secret
+      POSTGRES_DB: keycloak
+    ports:
+    - 5432:5432
+    volumes:
+    - type: bind
+      source: ./mnt/postgres
+      target: /var/lib/postgresql/data
 
   m365mock:
     platform: linux/amd64
@@ -84,54 +84,54 @@ services:
     ports:
     - 4040:4040
 
-#   mongodb:
-#     platform: linux/amd64
-#     container_name: mongodb
-#     # See https://hub.docker.com/r/bitnami/mongodb/tags
-#     image: bitnami/mongodb:7.0.11-debian-12-r0
-#     environment:
-#     - MONGODB_ADVERTISED_HOSTNAME=127.0.0.1
-#     - MONGODB_REPLICA_SET_MODE=primary
-#     - MONGODB_ROOT_USER=mongodb
-#     - MONGODB_ROOT_PASSWORD=mongodb
-#     - MONGODB_REPLICA_SET_KEY=replicasetkey123
-#     ports:
-#     - 27017:27017
-#     volumes:
-#     - type: bind
-#       source: ./mnt/mongodb
-#       target: /data/db
+  mongodb:
+    platform: linux/amd64
+    container_name: mongodb
+    # See https://hub.docker.com/r/bitnami/mongodb/tags
+    image: bitnami/mongodb:7.0.11-debian-12-r0
+    environment:
+    - MONGODB_ADVERTISED_HOSTNAME=127.0.0.1
+    - MONGODB_REPLICA_SET_MODE=primary
+    - MONGODB_ROOT_USER=mongodb
+    - MONGODB_ROOT_PASSWORD=mongodb
+    - MONGODB_REPLICA_SET_KEY=replicasetkey123
+    ports:
+    - 27017:27017
+    volumes:
+    - type: bind
+      source: ./mnt/mongodb
+      target: /data/db
 
-#   m365proxy:
-#     platform: linux/amd64
-#     container_name: m365proxy
-#     build:
-#       context: ./m365proxy
-#       dockerfile: Dockerfile
-#     stdin_open: true
-#     ports:
-#     - 8000:8000
+  m365proxy:
+    platform: linux/amd64
+    container_name: m365proxy
+    build:
+      context: ./m365proxy
+      dockerfile: Dockerfile
+    stdin_open: true
+    ports:
+    - 8000:8000
 
-#   nats:
-#     platform: linux/amd64
-#     container_name: nats
-#     image: nats:2.10.16
-#     ports:
-#     - 4222:4222
+  nats:
+    platform: linux/amd64
+    container_name: nats
+    image: nats:2.10.16
+    ports:
+    - 4222:4222
 
-#   nats-provision:
-#     platform: linux/amd64
-#     container_name: nats-provision
-#     build:
-#       context: ./
-#       dockerfile: ./nats-provision/Dockerfile
-#     environment:
-#       NATS_HOST: nats
-#       NATS_PORT: 4222
-#       APP_URL: http://${MACHINE_HOST_IP}:3000
-#       KEYCLOAK_URL: http://keycloak:8080
-#       PUBLIC_CLOUD_REALM_NAME: public-cloud
-#       PUBLIC_CLOUD_CLIENT_ID: roles
-#       PUBLIC_CLOUD_CLIENT_SECRET: testsecret # pragma: allowlist secret
-#     depends_on:
-#     - nats
+  nats-provision:
+    platform: linux/amd64
+    container_name: nats-provision
+    build:
+      context: ./
+      dockerfile: ./nats-provision/Dockerfile
+    environment:
+      NATS_HOST: nats
+      NATS_PORT: 4222
+      APP_URL: http://${MACHINE_HOST_IP}:3000
+      KEYCLOAK_URL: http://keycloak:8080
+      PUBLIC_CLOUD_REALM_NAME: public-cloud
+      PUBLIC_CLOUD_CLIENT_ID: roles
+      PUBLIC_CLOUD_CLIENT_SECRET: testsecret # pragma: allowlist secret
+    depends_on:
+    - nats
