@@ -5,7 +5,7 @@ import { BASE_URL } from '@/config';
 import { generateTestSession, findMockUserbyRole } from '@/helpers/mock-users';
 import { stringifyQuery } from '@/utils/query-string';
 
-type Handler = (req: NextRequest, { params }?: { params: any }) => Promise<Response>;
+type Handler = (req: NextRequest, Options?: { params: any }) => Promise<Response>;
 
 interface Params {
   [key: string]: any;
