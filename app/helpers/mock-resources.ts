@@ -17,7 +17,13 @@ function getRandomBool() {
 }
 
 export function createSamplePrivateCloudProductData(args?: {
-  data?: Partial<Prisma.PrivateCloudProjectGetPayload<null>>;
+  data?: Partial<
+    Prisma.PrivateCloudProjectGetPayload<null> & {
+      projectOwner: any;
+      primaryTechnicalLead: any;
+      secondaryTechnicalLead: any;
+    }
+  >;
 }) {
   const { data } = args ?? {};
 
@@ -92,7 +98,13 @@ export function createSamplePrivateCloudProductData(args?: {
 
 export function createSamplePrivateCloudRequestData(args?: {
   product?: Prisma.PrivateCloudProjectGetPayload<null>;
-  data?: Partial<Prisma.PrivateCloudProjectGetPayload<null>>;
+  data?: Partial<
+    Prisma.PrivateCloudProjectGetPayload<null> & {
+      projectOwner: any;
+      primaryTechnicalLead: any;
+      secondaryTechnicalLead: any;
+    }
+  >;
 }) {
   const { product = {}, data } = args ?? {};
   const newProduct = createSamplePrivateCloudProductData({ data });

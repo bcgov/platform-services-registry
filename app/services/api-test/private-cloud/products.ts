@@ -7,23 +7,31 @@ import {
   GET as _listPrivateCloudProject,
   POST as _createPrivateCloudProject,
 } from '@/app/api/private-cloud/products/route';
-import { PrivateCloudEditRequestBody } from '@/schema';
+import { POST as _searchPrivateCloudProjects } from '@/app/api/private-cloud/products/search/route';
+import { PrivateCloudEditRequestBody, PrivateCloudSearchBody } from '@/schema';
 import { createRoute, ParamData } from '../core';
 
 const productCollectionRoute = createRoute('/private-cloud/products');
 
 export async function createPrivateCloudProject(data: any, paramData?: ParamData) {
-  const result = await productCollectionRoute.post(_createPrivateCloudProject, '', data, paramData);
+  const result = await productCollectionRoute.post(_createPrivateCloudProject, '', data);
   return result;
 }
 
-export async function listPrivateCloudProject(data: any, paramData?: ParamData) {
-  const result = await productCollectionRoute.post(_createPrivateCloudProject, '', data, paramData);
+export async function listPrivateCloudProject(data: any) {
+  const result = await productCollectionRoute.post(_createPrivateCloudProject, '', data);
   return result;
 }
 
-export async function getPrivateCloudProject(paramData?: ParamData) {
-  const result = await productCollectionRoute.get(_getPrivateCloudProject, '/{{licencePlate}}', paramData);
+export async function searchPrivateCloudProjects(data: Partial<PrivateCloudSearchBody>) {
+  const result = await productCollectionRoute.post(_searchPrivateCloudProjects, '/search', data);
+  return result;
+}
+
+export async function getPrivateCloudProject(licencePlate: string) {
+  const result = await productCollectionRoute.get(_getPrivateCloudProject, '/{{licencePlate}}', {
+    pathParams: { licencePlate },
+  });
   return result;
 }
 
