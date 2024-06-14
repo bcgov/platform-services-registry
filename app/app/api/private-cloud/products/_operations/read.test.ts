@@ -4,11 +4,8 @@ import { createSamplePrivateCloudRequestData } from '@/helpers/mock-resources';
 import { findOhterMockUsers } from '@/helpers/mock-users';
 import { pickProductData } from '@/helpers/product';
 import { mockSessionByEmail, mockSessionByRole } from '@/services/api-test/core';
-import {
-  createPrivateCloudProject,
-  getPrivateCloudProject,
-  provisionPrivateCloudProject,
-} from '@/services/api-test/private-cloud/products';
+import { provisionPrivateCloudProject } from '@/services/api-test/private-cloud';
+import { createPrivateCloudProject, getPrivateCloudProject } from '@/services/api-test/private-cloud/products';
 import { makePrivateCloudRequestDecision } from '@/services/api-test/private-cloud/requests';
 
 const fieldsToCompare = [
@@ -62,9 +59,7 @@ describe('Read Private Cloud Product - Permissions', () => {
   it('should return 401 for unauthenticated user', async () => {
     await mockSessionByEmail();
 
-    const response = await getPrivateCloudProject({
-      pathParams: { licencePlate: requests.create.decisionData.licencePlate },
-    });
+    const response = await getPrivateCloudProject(requests.create.decisionData.licencePlate);
 
     expect(response.status).toBe(401);
   });
@@ -72,9 +67,7 @@ describe('Read Private Cloud Product - Permissions', () => {
   it('should successfully read the product for admin', async () => {
     await mockSessionByRole('admin');
 
-    const response = await getPrivateCloudProject({
-      pathParams: { licencePlate: requests.create.decisionData.licencePlate },
-    });
+    const response = await getPrivateCloudProject(requests.create.decisionData.licencePlate);
 
     expect(response.status).toBe(200);
 
@@ -85,9 +78,7 @@ describe('Read Private Cloud Product - Permissions', () => {
   it('should successfully read the product for PO', async () => {
     await mockSessionByEmail(productData.main.projectOwner.email);
 
-    const response = await getPrivateCloudProject({
-      pathParams: { licencePlate: requests.create.decisionData.licencePlate },
-    });
+    const response = await getPrivateCloudProject(requests.create.decisionData.licencePlate);
 
     expect(response.status).toBe(200);
 
@@ -98,9 +89,7 @@ describe('Read Private Cloud Product - Permissions', () => {
   it('should successfully read the product for TL1', async () => {
     await mockSessionByEmail(productData.main.primaryTechnicalLead.email);
 
-    const response = await getPrivateCloudProject({
-      pathParams: { licencePlate: requests.create.decisionData.licencePlate },
-    });
+    const response = await getPrivateCloudProject(requests.create.decisionData.licencePlate);
 
     expect(response.status).toBe(200);
 
@@ -111,9 +100,7 @@ describe('Read Private Cloud Product - Permissions', () => {
   it('should successfully read the product for TL2', async () => {
     await mockSessionByEmail(productData.main.secondaryTechnicalLead.email);
 
-    const response = await getPrivateCloudProject({
-      pathParams: { licencePlate: requests.create.decisionData.licencePlate },
-    });
+    const response = await getPrivateCloudProject(requests.create.decisionData.licencePlate);
 
     expect(response.status).toBe(200);
 
@@ -130,9 +117,7 @@ describe('Read Private Cloud Product - Permissions', () => {
 
     await mockSessionByEmail(otherUsers[0].email);
 
-    const response = await getPrivateCloudProject({
-      pathParams: { licencePlate: requests.create.decisionData.licencePlate },
-    });
+    const response = await getPrivateCloudProject(requests.create.decisionData.licencePlate);
 
     expect(response.status).toBe(401);
   });

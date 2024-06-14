@@ -29,6 +29,11 @@ export const proxyAllIDIRs = proxyUsers.map((usr) => usr.onPremisesSamAccountNam
 export const proxyNoRoleUsers = proxyUsers.filter((usr) => !usr.jobTitle);
 export const proxyNoRoleIDIRs = proxyNoRoleUsers.map((usr) => usr.onPremisesSamAccountName);
 
+export const mockNoRoleUsers = proxyNoRoleUsers.map((usr) => {
+  const { firstName, lastName, email, ministry, idir, upn } = processMsUser(usr);
+  return { firstName, lastName, email, ministry, idir, upn };
+});
+
 export function findMockUserByIDIR(useridir: string) {
   let user = proxyUsers.find(({ onPremisesSamAccountName }) => onPremisesSamAccountName === useridir);
   if (!user) user = proxyUsers[0];

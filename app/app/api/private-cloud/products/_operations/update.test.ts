@@ -4,11 +4,8 @@ import { createSamplePrivateCloudRequestData } from '@/helpers/mock-resources';
 import { findOhterMockUsers } from '@/helpers/mock-users';
 import { QuotaCpuEnum, QuotaMemoryEnum, QuotaStorageEnum } from '@/schema';
 import { mockSessionByEmail, mockSessionByRole } from '@/services/api-test/core';
-import {
-  createPrivateCloudProject,
-  editPrivateCloudProject,
-  provisionPrivateCloudProject,
-} from '@/services/api-test/private-cloud/products';
+import { provisionPrivateCloudProject } from '@/services/api-test/private-cloud';
+import { createPrivateCloudProject, editPrivateCloudProject } from '@/services/api-test/private-cloud/products';
 import { makePrivateCloudRequestDecision } from '@/services/api-test/private-cloud/requests';
 
 const oldDevelopmentQuota = {
