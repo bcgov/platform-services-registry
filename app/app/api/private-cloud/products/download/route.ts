@@ -5,6 +5,7 @@ import createApiHandler from '@/core/api-handler';
 import { NoContent, CsvResponse } from '@/core/responses';
 import { ministryKeyToName } from '@/helpers/product';
 import { formatFullName } from '@/helpers/user';
+import { createEvent } from '@/mutations/events';
 import { formatDateSimple } from '@/utils/date';
 import { extractNumbers } from '@/utils/string';
 import { processEnumString, processUpperEnumString } from '@/utils/zod';
@@ -44,8 +45,7 @@ export const POST = createApiHandler({
     sortOrder,
   } = body;
 
-  const { docs, totalCount } = await searchOp({
-    session,
+  const searchProps = {
     search,
     page: 1,
     pageSize: 10000,
@@ -55,7 +55,9 @@ export const POST = createApiHandler({
     sortKey: sortKey || undefined,
     sortOrder,
     isTest: showTest,
-  });
+  };
+
+  const { docs, totalCount } = await searchOp({ ...searchProps, session });
 
   if (docs.length === 0) {
     return NoContent();
@@ -95,6 +97,8 @@ export const POST = createApiHandler({
     ),
     Status: project.status,
   }));
+
+  await createEvent($Enums.EventType.EXPORT_PRIVATE_CLOUD_PRODUCT, session.user.id, searchProps);
 
   return CsvResponse(formattedData, 'private-cloud-products.csv');
 });
