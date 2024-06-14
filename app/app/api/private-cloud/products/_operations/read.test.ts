@@ -4,11 +4,8 @@ import { createSamplePrivateCloudRequestData } from '@/helpers/mock-resources';
 import { findOhterMockUsers } from '@/helpers/mock-users';
 import { pickProductData } from '@/helpers/product';
 import { mockSessionByEmail, mockSessionByRole } from '@/services/api-test/core';
-import {
-  createPrivateCloudProject,
-  getPrivateCloudProject,
-  provisionPrivateCloudProject,
-} from '@/services/api-test/private-cloud/products';
+import { provisionPrivateCloudProject } from '@/services/api-test/private-cloud';
+import { createPrivateCloudProject, getPrivateCloudProject } from '@/services/api-test/private-cloud/products';
 import { makePrivateCloudRequestDecision } from '@/services/api-test/private-cloud/requests';
 
 const fieldsToCompare = [

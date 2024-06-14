@@ -3,11 +3,11 @@ import { $Enums } from '@prisma/client';
 import { createSamplePrivateCloudRequestData } from '@/helpers/mock-resources';
 import { findOhterMockUsers } from '@/helpers/mock-users';
 import { mockSessionByEmail, mockSessionByRole } from '@/services/api-test/core';
+import { provisionPrivateCloudProject } from '@/services/api-test/private-cloud';
 import {
   createPrivateCloudProject,
   getPrivateCloudProject,
   deletePrivateCloudProject,
-  provisionPrivateCloudProject,
 } from '@/services/api-test/private-cloud/products';
 import { makePrivateCloudRequestDecision } from '@/services/api-test/private-cloud/requests';
 
