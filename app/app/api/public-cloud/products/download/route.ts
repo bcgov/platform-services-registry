@@ -4,6 +4,7 @@ import createApiHandler from '@/core/api-handler';
 import { NoContent, CsvResponse } from '@/core/responses';
 import { ministryKeyToName } from '@/helpers/product';
 import { formatFullName } from '@/helpers/user';
+import { createEvent } from '@/mutations/events';
 import { formatDateSimple } from '@/utils/date';
 import { processEnumString, processUpperEnumString } from '@/utils/zod';
 import searchOp from '../_operations/search';
@@ -23,8 +24,7 @@ export const POST = createApiHandler({
 })(async ({ session, body }) => {
   const { search = '', ministry = '', provider = '', includeInactive = false, sortKey, sortOrder } = body;
 
-  const { docs, totalCount } = await searchOp({
-    session,
+  const searchProps = {
     search,
     page: 1,
     pageSize: 10000,
@@ -33,7 +33,9 @@ export const POST = createApiHandler({
     active: !includeInactive,
     sortKey: sortKey || undefined,
     sortOrder,
-  });
+  };
+
+  const { docs, totalCount } = await searchOp({ ...searchProps, session });
 
   if (docs.length === 0) {
     return NoContent();
@@ -55,6 +57,8 @@ export const POST = createApiHandler({
     'Licence Plate': project.licencePlate,
     Status: project.status,
   }));
+
+  await createEvent($Enums.EventType.EXPORT_PUBLIC_CLOUD_PRODUCT, session.user.id, searchProps);
 
   return CsvResponse(formattedData, 'public-cloud-products.csv');
 });
