@@ -80,6 +80,8 @@ services:
     build:
       context: .
       dockerfile: ./m365mock/Dockerfile
+    environment:
+      M365_URL: http://keycloak:4040
     stdin_open: true
     ports:
     - 4040:4040
