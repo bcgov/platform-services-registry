@@ -211,7 +211,7 @@ export type DecisionOptions = z.infer<typeof DecisionOptionsSchema>;
 export type DefaultCpuOptions = z.infer<typeof QuotaCpuEnum>;
 export type DefaultMemoryOptions = z.infer<typeof QuotaMemoryEnum>;
 
-export const privateCloudSearchBodySchema = z.object({
+export const privateCloudProductSearchBodySchema = z.object({
   search: z.string().optional(),
   page: z.number().optional(),
   pageSize: z.number().optional(),
@@ -223,4 +223,19 @@ export const privateCloudSearchBodySchema = z.object({
   showTest: z.boolean().default(false),
 });
 
-export type PrivateCloudSearchBody = z.infer<typeof privateCloudSearchBodySchema>;
+export type PrivateCloudProductSearchBody = z.infer<typeof privateCloudProductSearchBodySchema>;
+
+const privateCloudRequestSearchBodySchema = z.object({
+  licencePlate: z.string().optional(),
+  search: z.string().optional(),
+  page: z.number().optional(),
+  pageSize: z.number().optional(),
+  ministry: z.preprocess(processUpperEnumString, z.nativeEnum($Enums.Ministry).optional()),
+  cluster: z.preprocess(processUpperEnumString, z.nativeEnum($Enums.Cluster).optional()),
+  includeInactive: z.boolean().optional(),
+  sortKey: z.string().optional(),
+  sortOrder: z.preprocess(processEnumString, z.nativeEnum(Prisma.SortOrder).optional()),
+  showTest: z.boolean().default(false),
+});
+
+export type PrivateCloudRequestSearchBody = z.infer<typeof privateCloudRequestSearchBodySchema>;

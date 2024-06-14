@@ -8,7 +8,7 @@ import {
   POST as _createPrivateCloudProject,
 } from '@/app/api/private-cloud/products/route';
 import { POST as _searchPrivateCloudProjects } from '@/app/api/private-cloud/products/search/route';
-import { PrivateCloudEditRequestBody, PrivateCloudSearchBody } from '@/schema';
+import { PrivateCloudEditRequestBody, PrivateCloudProductSearchBody } from '@/schema';
 import { createRoute, ParamData } from '../core';
 
 const productCollectionRoute = createRoute('/private-cloud/products');
@@ -23,7 +23,7 @@ export async function listPrivateCloudProject(data: any) {
   return result;
 }
 
-export async function searchPrivateCloudProjects(data: Partial<PrivateCloudSearchBody>) {
+export async function searchPrivateCloudProjects(data: Partial<PrivateCloudProductSearchBody>) {
   const result = await productCollectionRoute.post(_searchPrivateCloudProjects, '/search', data);
   return result;
 }
