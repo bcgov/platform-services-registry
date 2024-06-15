@@ -13,6 +13,5 @@
     "strict": true,
     "noImplicitAny": true,
     "skipLibCheck": true
-  },
-  "include": ["src"]
+  }
 }
