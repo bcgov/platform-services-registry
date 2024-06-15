@@ -1,7 +1,7 @@
 from airflow import DAG
 from airflow.operators.python_operator import PythonOperator
 from datetime import datetime, timedelta
-from ..mark_provisioned_test import fetch_products_mark_completed_test
+from mark_provisioned import prepare_data_to_poll_provisioner
 
 MONGO_CONN_ID = 'pltsvc-test'
 
@@ -12,7 +12,7 @@ with DAG(
 ) as dag:
     t1 = PythonOperator(
         task_id='fetch-products-mark-completed-test',
-        python_callable=fetch_products_mark_completed_test,
+        python_callable=prepare_data_to_poll_provisioner,
         op_kwargs={'mongo_conn_id': MONGO_CONN_ID},
         provide_context=True,
         dag=dag
