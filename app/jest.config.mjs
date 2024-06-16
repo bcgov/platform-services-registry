@@ -13,7 +13,6 @@ const config = {
   modulePathIgnorePatterns: ['<rootDir>/.react-email'],
   moduleNameMapper: {
     '^@/(.*)$': '<rootDir>/$1',
-    'lodash-es': 'lodash',
   },
 };
 

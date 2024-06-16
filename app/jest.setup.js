@@ -1,6 +1,7 @@
 import 'isomorphic-fetch';
 import '@testing-library/jest-dom';
 import prisma from '@/core/prisma';
+import _ from 'lodash';
 
 jest.setTimeout(75000);
 
@@ -49,6 +50,25 @@ jest.mock('@/services/keycloak/app-realm', () => ({
   findClient: jest.fn(async () => null),
   findUser: jest.fn(async () => null),
 }));
+
+[
+  'uniq',
+  'castArray',
+  'compact',
+  'reduce',
+  'get',
+  'set',
+  'mapValues',
+  'pick',
+  'forEach',
+  'isDate',
+  'isBoolean',
+  'isArray',
+  'isEqual',
+  'isString',
+  'isPlainObject',
+  'isNumber',
+].forEach((fnName) => jest.mock(`lodash-es/${fnName}`, () => jest.fn(_[fnName])));
 
 export async function cleanUp() {
   // Delete related documents from referencing models first
