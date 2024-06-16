@@ -1,3 +1,4 @@
+import { GET as _listPrivateCloudProductRequests } from '@/app/api/private-cloud/products/[licencePlate]/requests/route';
 import {
   GET as _getPrivateCloudProject,
   PUT as _editPrivateCloudProject,
@@ -46,6 +47,18 @@ export async function deletePrivateCloudProject(licencePlate: string) {
   const result = await productCollectionRoute.delete(_deletePrivateCloudProject, '/{{licencePlate}}', {
     pathParams: { licencePlate },
   });
+
+  return result;
+}
+
+export async function listPrivateCloudProductRequests(licencePlate: string, active = false) {
+  const result = await productCollectionRoute.get(
+    _listPrivateCloudProductRequests,
+    `/{{licencePlate}}/requests?active=${active}`,
+    {
+      pathParams: { licencePlate },
+    },
+  );
 
   return result;
 }

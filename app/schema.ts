@@ -225,7 +225,7 @@ export const privateCloudProductSearchBodySchema = z.object({
 
 export type PrivateCloudProductSearchBody = z.infer<typeof privateCloudProductSearchBodySchema>;
 
-const privateCloudRequestSearchBodySchema = z.object({
+export const privateCloudRequestSearchBodySchema = z.object({
   licencePlate: z.string().optional(),
   search: z.string().optional(),
   page: z.number().optional(),
