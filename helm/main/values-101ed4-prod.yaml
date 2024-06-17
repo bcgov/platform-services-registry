@@ -22,7 +22,6 @@ app:
     "AWS_ROLES_BASE_URL": "https://loginproxy.gov.bc.ca/auth"
     "AWS_ROLES_IDENTITY_PROVIDER": "azureidir"
     "AWS_ROLES_REALM_NAME": "public-cloud"
-    "M365_URL": "https://graph.microsoft.com"
   route:
     enabled: true
     host: pltsvc.apps.silver.devops.gov.bc.ca
