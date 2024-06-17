@@ -211,10 +211,8 @@ export type DecisionOptions = z.infer<typeof DecisionOptionsSchema>;
 export type DefaultCpuOptions = z.infer<typeof QuotaCpuEnum>;
 export type DefaultMemoryOptions = z.infer<typeof QuotaMemoryEnum>;
 
-export const privateCloudProductSearchBodySchema = z.object({
+export const privateCloudProductSearchNoPaginationBodySchema = z.object({
   search: z.string().optional(),
-  page: z.number().optional(),
-  pageSize: z.number().optional(),
   ministry: z.preprocess(processUpperEnumString, z.nativeEnum($Enums.Ministry).optional()),
   cluster: z.preprocess(processUpperEnumString, z.nativeEnum($Enums.Cluster).optional()),
   includeInactive: z.boolean().optional(),
@@ -222,6 +220,15 @@ export const privateCloudProductSearchBodySchema = z.object({
   sortOrder: z.preprocess(processEnumString, z.nativeEnum(Prisma.SortOrder).optional()),
   showTest: z.boolean().default(false),
 });
+
+export type PrivateCloudProductSearchNoPaginationBody = z.infer<typeof privateCloudProductSearchNoPaginationBodySchema>;
+
+export const privateCloudProductSearchBodySchema = privateCloudProductSearchNoPaginationBodySchema.merge(
+  z.object({
+    page: z.number().optional(),
+    pageSize: z.number().optional(),
+  }),
+);
 
 export type PrivateCloudProductSearchBody = z.infer<typeof privateCloudProductSearchBodySchema>;
 
@@ -239,3 +246,37 @@ export const privateCloudRequestSearchBodySchema = z.object({
 });
 
 export type PrivateCloudRequestSearchBody = z.infer<typeof privateCloudRequestSearchBodySchema>;
+
+export const publicCloudProductSearchNoPaginationBodySchema = z.object({
+  search: z.string().optional(),
+  ministry: z.preprocess(processUpperEnumString, z.nativeEnum($Enums.Ministry).optional()),
+  provider: z.preprocess(processUpperEnumString, z.nativeEnum($Enums.Provider).optional()),
+  includeInactive: z.boolean().optional(),
+  sortKey: z.string().optional(),
+  sortOrder: z.preprocess(processEnumString, z.nativeEnum(Prisma.SortOrder).optional()),
+});
+
+export type PublicCloudProductSearchNoPaginationBody = z.infer<typeof publicCloudProductSearchNoPaginationBodySchema>;
+
+export const publicCloudProductSearchBodySchema = publicCloudProductSearchNoPaginationBodySchema.merge(
+  z.object({
+    page: z.number().optional(),
+    pageSize: z.number().optional(),
+  }),
+);
+
+export type PublicCloudProductSearchBody = z.infer<typeof publicCloudProductSearchBodySchema>;
+
+export const publicCloudRequestSearchBodySchema = z.object({
+  licencePlate: z.string().optional(),
+  search: z.string().optional(),
+  page: z.number().optional(),
+  pageSize: z.number().optional(),
+  ministry: z.preprocess(processUpperEnumString, z.nativeEnum($Enums.Ministry).optional()),
+  provider: z.preprocess(processUpperEnumString, z.nativeEnum($Enums.Provider).optional()),
+  includeInactive: z.boolean().optional(),
+  sortKey: z.string().optional(),
+  sortOrder: z.preprocess(processEnumString, z.nativeEnum(Prisma.SortOrder).optional()),
+});
+
+export type PublicCloudRequestSearchBody = z.infer<typeof publicCloudRequestSearchBodySchema>;
