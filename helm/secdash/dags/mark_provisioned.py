@@ -44,7 +44,7 @@ def fetch_products_mark_completed(provisioner_api_url, mark_provisioned_url, mon
             if request_phase == "Running":
                 continue
             elif request_phase == "Error" or request_phase == "Failed":
-                # TODO: add resend here in the future
+                # TODO: add resend logic here in the future
                 continue
             elif request_phase == "Succeeded":
                 # call the callback URL to mark the product Provisioned
