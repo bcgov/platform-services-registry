@@ -62,8 +62,6 @@ export const PUT = apiHandler(async ({ pathParams }) => {
 
   await Promise.all([updateRequest, upsertProject]);
 
-  logger.info(`Successfully marked ${licencePlate} as provisioned.`);
-
   // Note: For some reason this information cannot be retrieved from the transaction above without failing the test
   const project = await prisma.privateCloudProject.findUnique({
     where: {
@@ -82,5 +80,6 @@ export const PUT = apiHandler(async ({ pathParams }) => {
     await sendDeleteRequestApprovalEmails(project as PrivateCloudRequestedProjectWithContacts);
   }
 
+  logger.info(`Successfully marked ${licencePlate} as provisioned.`);
   return OkResponse(`Successfully marked ${licencePlate} as provisioned.`);
 });

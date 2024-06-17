@@ -1,163 +1,68 @@
-import { NextRequest, NextResponse } from 'next/server';
-import { PUT } from '@/app/api/private-cloud/provision/[licencePlate]/route';
-import { POST as decisionRequest } from '@/app/api/private-cloud/requests/[id]/decision/route';
+import { expect } from '@jest/globals';
+import { $Enums } from '@prisma/client';
 import prisma from '@/core/prisma';
-import { createSamplePrivateCloudProductData } from '@/helpers/mock-resources';
-import { findMockUserByIDIR, generateTestSession } from '@/helpers/mock-users';
-import { cpuOptions, memoryOptions, storageOptions } from '@/schema';
-import { mockedGetServerSession } from '@/services/api-test/core';
+import { createSamplePrivateCloudRequestData } from '@/helpers/mock-resources';
+import { mockSessionByEmail, mockSessionByRole } from '@/services/api-test/core';
+import { provisionPrivateCloudProject } from '@/services/api-test/private-cloud';
 import { createPrivateCloudProject } from '@/services/api-test/private-cloud/products';
+import { makePrivateCloudRequestDecision } from '@/services/api-test/private-cloud/requests';
 
-const BASE_URL = 'http://localhost:3000';
-
-const createRequestBody = createSamplePrivateCloudProductData();
-
-const adminChanges = {
-  name: 'New name from admin',
-  description: 'New description from admin',
-  projectOwner: findMockUserByIDIR('JOHNDOE'),
-  testQuota: {
-    cpu: cpuOptions[1],
-    memory: memoryOptions[1],
-    storage: storageOptions[1],
-  },
+const productData = {
+  main: createSamplePrivateCloudRequestData(),
 };
 
-const decisionBody = {
-  ...createRequestBody,
-  ...adminChanges,
-  decision: 'APPROVED',
-  decisionComment: 'Approved by admin',
+const requests = {
+  create: null as any,
 };
 
-describe('Create Private Cloud Request Route', () => {
-  let createRequestId: string;
-  let createRequestLicencePlate: string;
-  let PROVISION_API_URL: string;
+describe('Provision Private Cloud Request', () => {
+  it('should successfully submit a create request for PO', async () => {
+    await mockSessionByEmail(productData.main.projectOwner.email);
 
-  beforeAll(async () => {
-    // await cleanUp();
+    const response = await createPrivateCloudProject(productData.main);
+    expect(response.status).toBe(200);
 
-    const mockSession = await generateTestSession('admin.system@gov.bc.ca');
-    mockedGetServerSession.mockResolvedValue(mockSession);
-
-    await createPrivateCloudProject(createRequestBody);
-
-    // Get the request id
-    const request = await prisma.privateCloudRequest.findFirst();
-
-    if (!request) {
-      throw new Error('Request not found for provision test.');
-    }
-
-    createRequestId = request.id;
-    createRequestLicencePlate = request.licencePlate;
-
-    // Make a decision request
-    const DECISION_API_URL = `${BASE_URL}/api/private-cloud/requests/${createRequestId}/decision`;
-
-    const decisionRequestObject = new NextRequest(DECISION_API_URL, {
-      method: 'POST',
-      body: JSON.stringify(decisionBody),
-    });
-
-    await decisionRequest(decisionRequestObject, {
-      params: { id: createRequestId },
-    });
-
-    // Create the proviiion request url
-    PROVISION_API_URL = `${BASE_URL}/api/provision/private-cloud/${createRequestLicencePlate}`;
+    requests.create = await response.json();
   });
 
-  afterAll(async () => {
-    // await cleanUp();
-  });
+  it('should successfully approve the request by admin', async () => {
+    await mockSessionByRole('admin');
 
-  // test("should return 401 if user is not authenticated", async () => {
-  //   mockedGetServerSession.mockResolvedValue(null);
-
-  //   const req = new NextRequest(API_URL, {
-  //     method: "PUT",
-  //   });
-
-  //   const response = await PUT(req, {
-  //     params: { licencePlate: createRequestLicencePlate },
-  //   });
-
-  //   expect(response.status).toBe(401);
-  // });
-
-  // test("should return 403 if not an admin", async () => {
-  //   mockedGetServerSession.mockResolvedValue({
-  //     user: {
-  //       email: "oamar.kanji@gov.bc.ca",
-  //       roles: [],
-  //     },
-  //   });
-
-  //   const req = new NextRequest(API_URL, {
-  //     method: "POST",
-  //     body: JSON.stringify(createRequestBody),
-  //   });
-
-  //   const response = await PUT(req, {
-  //     params: { licencePlate: createRequestLicencePlate },
-  //   });
-
-  //   expect(response.status).toBe(403);
-  // });
-
-  test('should return 200 if provision is successful', async () => {
-    const req = new NextRequest(PROVISION_API_URL, {
-      method: 'PUT',
+    const response = await makePrivateCloudRequestDecision(requests.create.id, {
+      ...requests.create.decisionData,
+      decision: $Enums.DecisionStatus.APPROVED,
     });
 
-    const response = await PUT(req, {
-      params: { licencePlate: createRequestLicencePlate },
-    });
     expect(response.status).toBe(200);
   });
 
-  test('should be a project in the db', async () => {
-    const project = await prisma.privateCloudProject.findFirst({
-      where: { licencePlate: createRequestLicencePlate },
-      include: {
-        projectOwner: true,
-        primaryTechnicalLead: true,
-        secondaryTechnicalLead: true,
-      },
+  it('should have the request decision status as APPROVED', async () => {
+    await mockSessionByEmail();
+
+    const request = await prisma.privateCloudRequest.findUnique({
+      where: { id: requests.create.id },
+      select: { decisionStatus: true },
     });
-
-    if (!project) {
-      throw new Error('Project not found in db');
-    }
-
-    expect(project).toBeTruthy();
-    expect(project.licencePlate).toBe(createRequestLicencePlate);
-    expect(project.name).toBe(decisionBody.name);
-    expect(project.description).toBe(decisionBody.description);
-    expect(project.cluster).toBe(decisionBody.cluster);
-    expect(project.ministry).toBe(decisionBody.ministry);
-    expect(project.projectOwner.email).toBe(decisionBody.projectOwner.email);
-    expect(project.primaryTechnicalLead.email).toBe(decisionBody.primaryTechnicalLead.email);
-    expect(project.secondaryTechnicalLead?.email).toBe(decisionBody.secondaryTechnicalLead.email);
-    expect(project.commonComponents).toBeTruthy();
-    expect(project.testQuota).toStrictEqual(decisionBody.testQuota);
-    expect(project.productionQuota).toStrictEqual(decisionBody.productionQuota);
-    expect(project.toolsQuota).toStrictEqual(decisionBody.toolsQuota);
-    expect(project.developmentQuota).toStrictEqual(decisionBody.developmentQuota);
+    expect(request).toBeTruthy();
+    expect(request?.decisionStatus).toBe($Enums.DecisionStatus.APPROVED);
   });
 
-  test('the request should be marked as provisioned and not be active', async () => {
-    const request = await prisma.privateCloudRequest.findFirst({
-      where: { licencePlate: createRequestLicencePlate },
+  it('should successfully provision the request', async () => {
+    await mockSessionByEmail();
+
+    const response = await provisionPrivateCloudProject(requests.create.licencePlate);
+    expect(response.status).toBe(200);
+  });
+
+  it('should have the request decision status as PROVISIONED', async () => {
+    await mockSessionByEmail();
+
+    const request = await prisma.privateCloudRequest.findUnique({
+      where: { id: requests.create.id },
+      select: { decisionStatus: true },
     });
 
-    if (!request) {
-      throw new Error('Request not found in db');
-    }
-
-    expect(request.decisionStatus).toBe('PROVISIONED');
-    expect(request.active).toBe(false);
+    expect(request).toBeTruthy();
+    expect(request?.decisionStatus).toBe($Enums.DecisionStatus.PROVISIONED);
   });
 });

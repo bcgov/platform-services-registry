@@ -1,11 +1,12 @@
 import { diff } from 'just-diff';
+import forEach from 'lodash-es/forEach';
 import _get from 'lodash-es/get';
 import _isString from 'lodash-es/isString';
 import _mapValues from 'lodash-es/mapValues';
 import _pick from 'lodash-es/pick';
 import { ministryOptions } from '@/constants';
 import { pick } from '@/utils/object';
-import { isEmail } from '@/utils/string';
+import { isEmail, extractNumbers } from '@/utils/string';
 
 export function ministryKeyToName(key: string) {
   return ministryOptions.find((item) => item.value === key)?.label ?? '';
@@ -277,4 +278,20 @@ export function pickProductData(data: any, fields: string[]) {
   if (picked.secondaryTechnicalLead) {
     picked.secondaryTechnicalLead = { email: picked.secondaryTechnicalLead.email };
   }
+
+  if (picked.expenseAuthority) {
+    picked.expenseAuthority = { email: picked.expenseAuthority.email };
+  }
 }
+
+export function getTotalQuota(...quotaValues: string[]) {
+  let total = 0;
+  forEach(quotaValues, (val) => {
+    const nums = extractNumbers(val);
+    if (nums.length > 0) total += nums[0];
+  });
+
+  return total;
+}
+
+export const getTotalQuotaStr = (...values: string[]) => String(getTotalQuota(...values));
