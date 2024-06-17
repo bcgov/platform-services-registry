@@ -52,22 +52,23 @@ jest.mock('@/services/keycloak/app-realm', () => ({
 }));
 
 [
-  'uniq',
   'castArray',
   'compact',
-  'reduce',
+  'forEach',
   'get',
-  'set',
+  'isArray',
+  'isBoolean',
+  'isDate',
+  'isEqual',
+  'isNil',
+  'isNumber',
+  'isPlainObject',
+  'isString',
   'mapValues',
   'pick',
-  'forEach',
-  'isDate',
-  'isBoolean',
-  'isArray',
-  'isEqual',
-  'isString',
-  'isPlainObject',
-  'isNumber',
+  'reduce',
+  'set',
+  'uniq',
 ].forEach((fnName) => jest.mock(`lodash-es/${fnName}`, () => jest.fn(_[fnName])));
 
 export async function cleanUp() {
@@ -88,11 +89,11 @@ export async function cleanUp() {
   await prisma.user.deleteMany();
 }
 
+beforeAll(async () => {
+  await cleanUp();
+});
+
 afterAll(async () => {
   await cleanUp();
   await prisma.$disconnect();
 });
-
-// beforeAll(async () => {
-//   await cleanUp();
-// });
