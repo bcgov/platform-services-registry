@@ -40,6 +40,7 @@ export default async function editRequest(
     ...rest,
     licencePlate: project.licencePlate,
     status: project.status,
+    provider: project.provider,
     createdAt: project.createdAt,
     projectOwner: {
       connectOrCreate: {

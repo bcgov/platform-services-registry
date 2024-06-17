@@ -44,17 +44,21 @@ export default async function makeRequestDecision(
   decisionComment: string | undefined,
   formData: PublicCloudEditRequestBody,
   session: Session,
-): Promise<PublicCloudRequestWithProjectAndRequestedProject> {
+) {
   const request = await prisma.publicCloudRequest.findUnique({
     where: {
       id,
       active: true,
+      decisionStatus: $Enums.DecisionStatus.PENDING,
     },
-    select: { id: true, licencePlate: true },
+    include: {
+      project: { select: { provider: true } },
+      decisionData: { select: { provider: true } },
+    },
   });
 
   if (!request) {
-    throw new Error('Request not found.');
+    return null;
   }
 
   const updatedRequest = await prisma.publicCloudRequest.update({
@@ -64,6 +68,14 @@ export default async function makeRequestDecision(
     },
     include: {
       project: {
+        include: {
+          projectOwner: true,
+          primaryTechnicalLead: true,
+          secondaryTechnicalLead: true,
+          expenseAuthority: true,
+        },
+      },
+      originalData: {
         include: {
           projectOwner: true,
           primaryTechnicalLead: true,
@@ -91,6 +103,7 @@ export default async function makeRequestDecision(
           ...formData,
           status: ProjectStatus.ACTIVE,
           licencePlate: request.licencePlate,
+          provider: request.project?.provider ?? request.decisionData.provider,
           projectOwner: {
             connectOrCreate: {
               where: {
