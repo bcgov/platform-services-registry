@@ -53,7 +53,7 @@ export const POST = createApiHandler({
     'Secondary Technical Lead Email': project.secondaryTechnicalLead ? project.secondaryTechnicalLead.email : '',
     'Secondary Technical Lead Name': formatFullName(project.secondaryTechnicalLead),
     'Create Date': formatDateSimple(project.createdAt),
-    'Updated Date': formatDateSimple(project.updatedAt),
+    'Update Date': formatDateSimple(project.updatedAt),
     'Licence Plate': project.licencePlate,
     'Total Compute Quota (Cores)': getTotalQuotaStr(
       project.developmentQuota.cpu,

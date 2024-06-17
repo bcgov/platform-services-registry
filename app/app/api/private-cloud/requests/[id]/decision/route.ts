@@ -29,9 +29,8 @@ export const POST = apiHandler(async ({ pathParams, body, session }) => {
   }
 
   if (request.decisionStatus === DecisionStatus.REJECTED) {
-    // Send rejection email, message will need to be passed
     await sendRequestRejectionEmails(request, decisionComment);
-    return OkResponse(`Request for ${request.licencePlate} successfully created as rejected.`);
+    return OkResponse(request);
   }
 
   const proms = [];

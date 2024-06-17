@@ -19,7 +19,6 @@ export default async function updateOp({
   body: PublicCloudEditRequestBody;
   pathParams: TypeOf<typeof putPathParamSchema>;
 }) {
-  const { user } = session;
   const { licencePlate } = pathParams;
 
   const product = await getPublicCloudProduct(session, licencePlate);
@@ -49,5 +48,5 @@ export default async function updateOp({
 
   await Promise.all(proms);
 
-  return OkResponse('Successfully created and provisioned edit request ');
+  return OkResponse(request);
 }

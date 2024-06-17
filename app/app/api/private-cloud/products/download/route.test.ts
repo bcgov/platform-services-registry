@@ -100,7 +100,7 @@ describe('Download Private Cloud Products - Permissions', () => {
     expect(record1['Secondary Technical Lead Email']).toBe(project?.secondaryTechnicalLead?.email);
     expect(record1['Secondary Technical Lead Name']).toBe(formatFullName(project?.secondaryTechnicalLead));
     expect(record1['Create Date']).toBe(formatDateSimple(project?.createdAt ?? ''));
-    expect(record1['Updated Date']).toBe(formatDateSimple(project?.updatedAt ?? ''));
+    expect(record1['Update Date']).toBe(formatDateSimple(project?.updatedAt ?? ''));
     expect(record1['Licence Plate']).toBe(project?.licencePlate);
     expect(record1['Total Compute Quota (Cores)']).toBe(
       getTotalQuotaStr(

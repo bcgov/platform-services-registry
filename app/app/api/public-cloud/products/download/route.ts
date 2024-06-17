@@ -1,26 +1,16 @@
-import { $Enums, Prisma } from '@prisma/client';
-import { z } from 'zod';
+import { $Enums } from '@prisma/client';
 import createApiHandler from '@/core/api-handler';
 import { NoContent, CsvResponse } from '@/core/responses';
 import { ministryKeyToName } from '@/helpers/product';
 import { formatFullName } from '@/helpers/user';
 import { createEvent } from '@/mutations/events';
+import { publicCloudProductSearchNoPaginationBodySchema } from '@/schema';
 import { formatDateSimple } from '@/utils/date';
-import { processEnumString, processUpperEnumString } from '@/utils/zod';
 import searchOp from '../_operations/search';
-
-const bodySchema = z.object({
-  search: z.string().optional(),
-  ministry: z.preprocess(processUpperEnumString, z.nativeEnum($Enums.Ministry).optional()),
-  provider: z.preprocess(processUpperEnumString, z.nativeEnum($Enums.Provider).optional()),
-  includeInactive: z.boolean().optional(),
-  sortKey: z.string().optional(),
-  sortOrder: z.preprocess(processEnumString, z.nativeEnum(Prisma.SortOrder).optional()),
-});
 
 export const POST = createApiHandler({
   roles: ['user'],
-  validations: { body: bodySchema },
+  validations: { body: publicCloudProductSearchNoPaginationBodySchema },
 })(async ({ session, body }) => {
   const { search = '', ministry = '', provider = '', includeInactive = false, sortKey, sortOrder } = body;
 
