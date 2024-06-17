@@ -2,6 +2,7 @@ import express, { Request, Response } from 'express';
 import { readFileSync } from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
+import { M365_URL } from './config.js';
 
 const app = express();
 const port = 4040;
@@ -40,7 +41,7 @@ try {
 
 const mockMap = new Map<string, Mock>();
 mocks.forEach((mock) => {
-  const url = new URL(mock.request.url);
+  const url = new URL(mock.request.url.replace('https://graph.microsoft.com', M365_URL));
   const route = `${mock.request.method.toLowerCase()}${url.pathname}`;
   mockMap.set(route, mock);
 });

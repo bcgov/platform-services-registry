@@ -50,4 +50,5 @@ export const MS_GRAPH_API_AUTHORITY = process.env.MS_GRAPH_API_AUTHORITY || '';
 export const MS_GRAPH_API_CLIENT_ID = process.env.MS_GRAPH_API_CLIENT_ID || '';
 export const MS_GRAPH_API_CLIENT_SECRET = process.env.MS_GRAPH_API_CLIENT_SECRET || '';
 export const M365_PROXY_URL = process.env.M365_PROXY_URL || 'http://localhost:8000';
+export const M365_URL = process.env.M365_URL || 'http://localhost:4040';
 export const OIDC_AUTHORITY = process.env.OIDC_AUTHORITY || 'https://localhost:8443/realms/platform-services';

@@ -4,8 +4,8 @@
   "type": "module",
   "main": "index.js",
   "scripts": {
-    "start": "tsc && node dist/server.js",
-    "build": "tsc"
+    "build": "rimraf ./build && tsc",
+    "start": "tsx src/server.ts"
   },
   "keywords": [],
   "author": "",
@@ -17,8 +17,10 @@
     "node-fetch": "^3.3.2"
   },
   "devDependencies": {
-    "typescript": "^4.0.0",
     "@types/express": "^4.17.21",
-    "@types/node": "^20.14.1"
+    "@types/node": "^20.14.1",
+    "rimraf": "^5.0.7",
+    "tsx": "^4.15.4",
+    "typescript": "^5.4.5"
   }
 }
