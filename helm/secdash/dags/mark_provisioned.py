@@ -41,20 +41,18 @@ def fetch_products_mark_completed(provisioner_api_url, mark_provisioned_url, mon
             provisioner_workflow_url = f"{provisioner_api_url}/{workflow_name}"
             request_status_in_provisioner = requests.get(provisioner_workflow_url).json()
             request_phase = request_status_in_provisioner['metadata']['labels']['workflows.argoproj.io/phase']
-            label_completed = "workflows.argoproj.io/completed" in request_status_in_provisioner['metadata']['labels']
-            if request_phase != "Running" and label_completed:
-                request_completed = request_status_in_provisioner['metadata']['labels']['workflows.argoproj.io/completed']
-                if request_phase == "Error" or request_phase == "Failed":
+            if request_phase == "Running":
+                continue
+            elif request_phase == "Error" or request_phase == "Failed":
+                # TODO: add resend here in the future
+                continue
+            elif request_phase == "Succeeded":
+                # call the callback URL to mark the product Provisioned
+                mark_finished_url = f"{mark_provisioned_url}/{licence_plate}"
+                response = requests.put(mark_finished_url)
+                if response.status_code != 200:
                     print(
-                        f"Error: Provisioner workflow for project set {licence_plate} failed with status: {request_phase}")
-                    # add a notification here. UPD: we already have one in Provisioner channel
-                elif request_phase == "Succeeded" and request_completed == "true":
-                    # call the callback URL to mark the product Provisioned
-                    mark_finished_url = f"{mark_provisioned_url}/{licence_plate}"
-                    response = requests.put(mark_finished_url)
-                    if response.status_code != 200:
-                        print(
-                            f"Error while marking {licence_plate} as Provisioned: {response.status_code} - {response.reason}")
+                        f"Error while marking {licence_plate} as Provisioned: {response.status_code} - {response.reason}")
 
         client.close()
 
