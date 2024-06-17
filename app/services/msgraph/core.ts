@@ -1,14 +1,14 @@
 import { ConfidentialClientApplication } from '@azure/msal-node';
 import { HttpsProxyAgent } from 'https-proxy-agent';
 import fetch, { Headers, RequestInit } from 'node-fetch';
-import { IS_LOCAL, M365_PROXY_URL } from '@/config';
+import { M365_PROXY_URL, USE_M365_PROXY } from '@/config';
 import { logger } from '@/core/logging';
 import msalConfig from './config';
 
 let msalInstance!: ConfidentialClientApplication;
 
 // See https://learn.microsoft.com/en-us/microsoft-cloud/dev/dev-proxy/how-to/use-dev-proxy-with-nodejs
-const graphAPIProxy = IS_LOCAL ? new HttpsProxyAgent(M365_PROXY_URL) : null;
+const graphAPIProxy = USE_M365_PROXY ? new HttpsProxyAgent(M365_PROXY_URL) : null;
 
 export async function getAccessToken() {
   const request = {
