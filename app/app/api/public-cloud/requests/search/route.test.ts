@@ -192,7 +192,7 @@ describe('Search Public Cloud Requests - Validations', () => {
           decision: $Enums.DecisionStatus.APPROVED,
         });
 
-        provisionPublicCloudProject(dat1.licencePlate);
+        await provisionPublicCloudProject(dat1.licencePlate);
         return req;
       }),
     );
