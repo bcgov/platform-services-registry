@@ -1,5 +1,6 @@
 import 'isomorphic-fetch';
 import '@testing-library/jest-dom';
+import prisma from '@/core/prisma';
 import _ from 'lodash';
 
 jest.setTimeout(75000);
@@ -67,3 +68,30 @@ jest.mock('@/services/keycloak/app-realm', () => ({
   'set',
   'uniq',
 ].forEach((fnName) => jest.mock(`lodash-es/${fnName}`, () => jest.fn(_[fnName])));
+
+export async function cleanUp() {
+  // Delete related documents from referencing models first
+  await prisma.privateCloudRequest.deleteMany();
+  await prisma.publicCloudRequest.deleteMany();
+  await prisma.privateCloudComment.deleteMany();
+
+  // Delete projects
+  await prisma.privateCloudProject.deleteMany();
+  await prisma.publicCloudProject.deleteMany();
+
+  // Delete requested projects
+  await prisma.privateCloudRequestedProject.deleteMany();
+  await prisma.publicCloudRequestedProject.deleteMany();
+
+  // Now it should be safe to delete User documents
+  await prisma.user.deleteMany();
+  await prisma.event.deleteMany();
+}
+
+beforeAll(async () => {
+  await cleanUp();
+});
+
+afterAll(async () => {
+  await cleanUp();
+});
