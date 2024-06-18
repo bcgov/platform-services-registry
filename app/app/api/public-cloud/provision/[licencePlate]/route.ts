@@ -14,7 +14,6 @@ const apiHandler = createApiHandler({
   roles: [],
   validations: { pathParams: pathParamSchema },
 });
-
 export const PUT = apiHandler(async ({ pathParams }) => {
   const { licencePlate } = pathParams;
 
@@ -30,7 +29,7 @@ export const PUT = apiHandler(async ({ pathParams }) => {
   });
 
   if (!request) {
-    return NotFoundResponse('No requetst found for this licece plate.');
+    return NotFoundResponse('No request found for this licece plate.');
   }
 
   const updateRequest = prisma.publicCloudRequest.update({
@@ -64,9 +63,7 @@ export const PUT = apiHandler(async ({ pathParams }) => {
 
   // Note: For some reason this information cannot be retrieved from the transaction above without failing the test
   const project = await prisma.publicCloudProject.findUnique({
-    where: {
-      licencePlate,
-    },
+    where: filter,
     include: {
       projectOwner: true,
       primaryTechnicalLead: true,

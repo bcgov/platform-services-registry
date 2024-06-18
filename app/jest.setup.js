@@ -1,6 +1,7 @@
 import 'isomorphic-fetch';
 import '@testing-library/jest-dom';
 import prisma from '@/core/prisma';
+import { logger } from '@/core/logging';
 import _ from 'lodash';
 
 jest.setTimeout(75000);
@@ -22,10 +23,9 @@ jest.mock('@/app/api/auth/[...nextauth]/route', () => ({
 // Mock Mautic
 jest.mock('@/services/mautic', () => ({
   ...jest.requireActual('@/services/mautic'),
-  subscribeUsersToMautic: jest.fn(async () => [200, 200, 200]), // Mocked return value
+  subscribeUsersToMautic: jest.fn(async () => [200, 200, 200]),
 }));
 
-// Mock Nats
 jest.mock('@/services/nats', () => ({
   ...jest.requireActual('@/services/nats'),
   sendPrivateCloudNatsMessage: jest.fn(async () => [200, 200, 200]),
@@ -33,7 +33,6 @@ jest.mock('@/services/nats', () => ({
   sendNatsMessage: jest.fn(async () => [200, 200, 200]),
 }));
 
-// Mock CHES
 jest.mock('@/services/ches/private-cloud/email-handler', () => ({
   ...jest.requireActual('@/services/ches/private-cloud/email-handler'),
   sendCreateRequestEmails: jest.fn(async () => [200]),
@@ -86,7 +85,8 @@ export async function cleanUp() {
   await prisma.publicCloudRequestedProject.deleteMany();
 
   // Now it should be safe to delete User documents
-  await prisma.user.deleteMany();
+  // await prisma.user.deleteMany();
+  await prisma.event.deleteMany();
 }
 
 beforeAll(async () => {
@@ -95,5 +95,6 @@ beforeAll(async () => {
 
 afterAll(async () => {
   await cleanUp();
-  await prisma.$disconnect();
 });
+
+logger.transports[0].silent = true;
