@@ -21,8 +21,7 @@ export default function Landing() {
         Welcome to B.C. Gov&apos;s Platform Product Registry
       </h1>
       <p className="text-xl text-gray-700 mb-6">
-        Manage your applications on the Private Cloud OpenShift Platform and the B.C. Government Public Cloud Landing
-        Zone.
+        Manage your applications on the Private Cloud OpenShift Platform and the Public Cloud Landing Zone.
       </p>
 
       <section className="mb-6">
@@ -30,9 +29,9 @@ export default function Landing() {
           Make changes to an existing product
         </h2>
         <p className="text-gray-700 mb-4">
-          For existing applications hosted on the Private Cloud OpenShift Platform or B.C. Government Public Cloud
-          Landing Zone. You can update/change all product details, and manage product resource changes (including
-          CPU/RAM/Storage). Resource quota increases are subject to admin review.
+          For existing applications hosted on the Private Cloud OpenShift Platform or Public Cloud Landing Zone. You can
+          update/change all product details, and manage product resource changes (including CPU/RAM/Storage). Resource
+          quota increases are subject to admin review.
         </p>
       </section>
 
