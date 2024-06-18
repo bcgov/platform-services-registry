@@ -4,8 +4,6 @@ import { BadRequestResponse, OkResponse, UnauthorizedResponse } from '@/core/res
 import openshiftDeletionCheck from '@/helpers/openshift';
 import { getPrivateCloudProduct } from '@/queries/private-cloud-products';
 
-export const fetchCache = 'force-no-store';
-
 const pathParamSchema = z.object({
   licencePlate: string(),
 });

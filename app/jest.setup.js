@@ -1,6 +1,7 @@
 import 'isomorphic-fetch';
 import '@testing-library/jest-dom';
 import prisma from '@/core/prisma';
+import { logger } from '@/core/logging';
 import _ from 'lodash';
 
 jest.setTimeout(75000);
@@ -84,7 +85,7 @@ export async function cleanUp() {
   await prisma.publicCloudRequestedProject.deleteMany();
 
   // Now it should be safe to delete User documents
-  await prisma.user.deleteMany();
+  // await prisma.user.deleteMany();
   await prisma.event.deleteMany();
 }
 
@@ -95,3 +96,5 @@ beforeAll(async () => {
 afterAll(async () => {
   await cleanUp();
 });
+
+logger.transports[0].silent = true;

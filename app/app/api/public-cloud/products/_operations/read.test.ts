@@ -75,7 +75,9 @@ describe('Read Public Cloud Product - Permissions', () => {
     expect(response.status).toBe(200);
 
     const resData = await response.json();
-    expect(pickProductData(resData, fieldsToCompare)).toEqual(pickProductData(requests.create, fieldsToCompare));
+    expect(pickProductData(resData, fieldsToCompare)).toEqual(
+      pickProductData(requests.create.decisionData, fieldsToCompare),
+    );
   });
 
   it('should successfully read the product for PO', async () => {
@@ -86,7 +88,9 @@ describe('Read Public Cloud Product - Permissions', () => {
     expect(response.status).toBe(200);
 
     const resData = await response.json();
-    expect(pickProductData(resData, fieldsToCompare)).toEqual(pickProductData(requests.create, fieldsToCompare));
+    expect(pickProductData(resData, fieldsToCompare)).toEqual(
+      pickProductData(requests.create.decisionData, fieldsToCompare),
+    );
   });
 
   it('should successfully read the product for TL1', async () => {
@@ -97,7 +101,9 @@ describe('Read Public Cloud Product - Permissions', () => {
     expect(response.status).toBe(200);
 
     const resData = await response.json();
-    expect(pickProductData(resData, fieldsToCompare)).toEqual(pickProductData(requests.create, fieldsToCompare));
+    expect(pickProductData(resData, fieldsToCompare)).toEqual(
+      pickProductData(requests.create.decisionData, fieldsToCompare),
+    );
   });
 
   it('should successfully read the product for TL2', async () => {
@@ -108,7 +114,9 @@ describe('Read Public Cloud Product - Permissions', () => {
     expect(response.status).toBe(200);
 
     const resData = await response.json();
-    expect(pickProductData(resData, fieldsToCompare)).toEqual(pickProductData(requests.create, fieldsToCompare));
+    expect(pickProductData(resData, fieldsToCompare)).toEqual(
+      pickProductData(requests.create.decisionData, fieldsToCompare),
+    );
   });
 
   it('should fail to read the product for a non-assigned user', async () => {

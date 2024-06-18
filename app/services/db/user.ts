@@ -1,6 +1,7 @@
 import _castArray from 'lodash-es/castArray';
 import _compact from 'lodash-es/compact';
 import _forEach from 'lodash-es/forEach';
+import _uniq from 'lodash-es/uniq';
 import { logger } from '@/core/logging';
 import prisma from '@/core/prisma';
 import { getUserByEmail, getUserPhoto } from '@/services/msgraph';
@@ -39,7 +40,7 @@ export async function upsertUser(email: string, extra = {}) {
 }
 
 export async function upsertUsers(email: string | undefined | (string | undefined)[]) {
-  const emails = _compact(_castArray(email));
+  const emails = _uniq(_compact(_castArray(email)));
   const result = await Promise.all(emails.map(upsertUser));
   return result;
 }
