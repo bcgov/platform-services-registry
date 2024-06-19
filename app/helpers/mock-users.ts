@@ -2,7 +2,7 @@ import { Session } from 'next-auth';
 import { generateSession } from '@/core/auth-options';
 import prisma from '@/core/prisma';
 import { processMsUser } from '@/services/msgraph';
-import type { MsUser } from '@/types/user';
+import type { MsUser, AppUser } from '@/types/user';
 const mockFile: MockFile = require('../../localdev/m365proxy/mocks.json');
 
 interface MockResponse {
@@ -42,12 +42,20 @@ export function findMockUserByIDIR(useridir: string) {
   return { firstName, lastName, email, ministry, idir, upn };
 }
 
+export function findMockUserByEmail(_email: string) {
+  const user = proxyUsers.find(({ mail }) => mail === _email);
+  if (!user) return null;
+
+  const { firstName, lastName, email, ministry, idir, upn } = processMsUser(user);
+  return { firstName, lastName, email, ministry, idir, upn, roles: [user.jobTitle] };
+}
+
 export function findMockUserbyRole(role: string) {
   const user = proxyUsers.find(({ jobTitle }) => jobTitle === role);
   if (!user) return null;
 
   const { firstName, lastName, email, ministry, idir, upn } = processMsUser(user);
-  return { firstName, lastName, email, ministry, idir, upn };
+  return { firstName, lastName, email, ministry, idir, upn, roles: [user.jobTitle] };
 }
 
 export function findOhterMockUsers(emails: string[]) {
@@ -59,10 +67,7 @@ export function findOhterMockUsers(emails: string[]) {
     });
 }
 
-export async function generateTestSession(testEmail: string) {
-  const proxyUser = proxyUsers.find(({ mail }: { mail: string }) => mail === testEmail) as MsUser;
-  const user = processMsUser(proxyUser);
-
+export async function upsertMockUser(user: AppUser) {
   const data = {
     firstName: user.firstName,
     lastName: user.lastName,
@@ -73,11 +78,19 @@ export async function generateTestSession(testEmail: string) {
     image: '',
   };
 
-  await prisma.user.upsert({
+  const res = await prisma.user.upsert({
     where: { email: user.email },
     update: data,
     create: data,
   });
+
+  return res;
+}
+
+export async function generateTestSession(testEmail: string) {
+  const proxyUser = proxyUsers.find(({ mail }: { mail: string }) => mail === testEmail) as MsUser;
+  const user = processMsUser(proxyUser);
+  await upsertMockUser(user);
 
   const session = await generateSession({
     session: {} as Session,
