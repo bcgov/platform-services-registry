@@ -64,9 +64,7 @@ export const PUT = apiHandler(async ({ pathParams }) => {
 
   // Note: For some reason this information cannot be retrieved from the transaction above without failing the test
   const project = await prisma.privateCloudProject.findUnique({
-    where: {
-      licencePlate,
-    },
+    where: filter,
     include: {
       projectOwner: true,
       primaryTechnicalLead: true,

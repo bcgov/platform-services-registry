@@ -15,7 +15,6 @@ type PublicCloudRequest = Prisma.PublicCloudRequestGetPayload<{
 export class PublicCloudRequestService extends ModelService<Prisma.PublicCloudRequestWhereInput> {
   async readFilter() {
     if (!this.session?.userId) return false;
-
     if (this.session.permissions.viewAllPublicCloudProducts) return true;
 
     const res = await prisma.publicCloudProject.findMany({
@@ -46,7 +45,6 @@ export class PublicCloudRequestService extends ModelService<Prisma.PublicCloudRe
       doc.decisionStatus === $Enums.DecisionStatus.PENDING && this.session.permissions.reviewAllPublicCloudRequests;
 
     const canEdit = canReview && doc.type !== $Enums.RequestType.DELETE;
-
     const hasProduct =
       doc.type !== $Enums.RequestType.CREATE || doc.decisionStatus === $Enums.DecisionStatus.PROVISIONED;
 
