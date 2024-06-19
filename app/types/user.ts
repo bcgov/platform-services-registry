@@ -21,3 +21,7 @@ export interface AppUser {
   lastName: string;
   ministry: string;
 }
+
+export interface AppUserWithRoles extends AppUser {
+  roles: string[];
+}

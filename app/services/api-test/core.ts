@@ -82,8 +82,6 @@ export function createRoute(baseUrl: string) {
 
 export const mockedGetServerSession = getServerSession as unknown as MockedFunction<typeof getServerSession>;
 
-mockedGetServerSession.mockResolvedValue(null);
-
 export async function mockSessionByEmail(email?: string) {
   if (!email) {
     mockedGetServerSession.mockResolvedValue(null);
@@ -112,7 +110,7 @@ export async function mockUserServiceAccountByEmail(email?: string) {
     const mockUser = await findMockUserByEmail(email);
     if (mockUser) {
       mockedValue = { email: mockUser.email, authRoleNames: mockUser.roles.concat() };
-      await upsertMockUser(mockUser as unknown as AppUser);
+      await upsertMockUser(mockUser);
     }
   }
 
@@ -126,7 +124,7 @@ export async function mockUserServiceAccountByRole(role?: string) {
     const mockUser = findMockUserbyRole(role);
     if (mockUser) {
       mockedValue = { email: mockUser.email, authRoleNames: mockUser.roles.concat() };
-      await upsertMockUser(mockUser as unknown as AppUser);
+      await upsertMockUser(mockUser);
     }
   }
 
