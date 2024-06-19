@@ -1,4 +1,3 @@
-import { $Enums } from '@prisma/client';
 import { Link, Heading, Text } from '@react-email/components';
 import * as React from 'react';
 import Closing from '@/emails/_components/Closing';
@@ -50,7 +49,7 @@ const ProvisionedTemplate = ({ product }: EmailProp) => {
           their access to the Registry. The newly added Product Owner Technical Lead(s) on the product details page will
           then gain access to the registry and can manage access to the project set accounts in {provider}.
         </Text>
-        {$Enums.Provider.AZURE && (
+        {provider === 'AZURE' && (
           <Text className="">
             Your project in Azure will automatically be added to the Enterprise Support Plan (&quot;Unified&quot;) that
             BC Government has procured with Microsoft. Please wait 7 business days after your project has been
