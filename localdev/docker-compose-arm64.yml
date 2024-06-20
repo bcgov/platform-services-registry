@@ -4,6 +4,9 @@ services:
     # See https://github.com/zcube/bitnami-compat/pkgs/container/bitnami-compat%2Fmongodb
     image: ghcr.io/zcube/bitnami-compat/mongodb:6.0-debian-11-r64@sha256:2733db3d24c98ee9319f467174aad6e43950a49fd506be272af8671dd2a03e5b
 
+  keycloak:
+    platform: linux/arm64
+
   # m365proxy:
   #   platform: linux/arm64
   #   container_name: m365proxy
