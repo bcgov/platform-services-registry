@@ -1,6 +1,7 @@
 'use client';
 
 import { zodResolver } from '@hookform/resolvers/zod';
+import { notifications } from '@mantine/notifications';
 import { $Enums, PrivateCloudProject } from '@prisma/client';
 import { useQuery, useMutation } from '@tanstack/react-query';
 import { useEffect, useState } from 'react';
@@ -45,6 +46,14 @@ export default privateCloudRequestDecision(({ pathParams, queryParams, session, 
     onSuccess: () => {
       setOpenComment(false);
       setOpenReturn(true);
+    },
+    onError: (error: any) => {
+      notifications.show({
+        title: 'Error',
+        message: `Failed to make a decision: ${error.message}`,
+        color: 'red',
+        autoClose: 5000,
+      });
     },
   });
 

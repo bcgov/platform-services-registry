@@ -43,6 +43,14 @@ export default function PrivateCloudProductOptions({
         autoClose: 5000,
       });
     },
+    onError: (error: any) => {
+      notifications.show({
+        color: 'red',
+        title: 'Error',
+        message: `Failed to reprovision product: ${error.message}`,
+        autoClose: 5000,
+      });
+    },
   });
 
   const onSubmit = async () => {
