@@ -25,5 +25,5 @@ export default async function createOp({ session, body }: { session: Session; bo
 
   await sendCreateRequestEmails(request, user.name);
 
-  return OkResponse('Success creating request');
+  return OkResponse(request);
 }

@@ -65,6 +65,7 @@ app:
     "AWS_ROLES_BASE_URL": ""
     "AWS_ROLES_IDENTITY_PROVIDER": ""
     "AWS_ROLES_REALM_NAME": ""
+    "M365_URL": "https://graph.microsoft.com"
 
 email:
   enabled: true

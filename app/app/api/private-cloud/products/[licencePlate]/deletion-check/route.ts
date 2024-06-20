@@ -4,8 +4,6 @@ import { BadRequestResponse, OkResponse, UnauthorizedResponse } from '@/core/res
 import openshiftDeletionCheck from '@/helpers/openshift';
 import { getPrivateCloudProduct } from '@/queries/private-cloud-products';
 
-export const fetchCache = 'force-no-store';
-
 const pathParamSchema = z.object({
   licencePlate: string(),
 });
@@ -23,7 +21,7 @@ export const GET = apiHandler(async ({ pathParams, session }) => {
     return UnauthorizedResponse();
   }
 
-  const deleteCheckList = await openshiftDeletionCheck(pathParams.licencePlate, product.cluster);
+  const deleteCheckList = await openshiftDeletionCheck(licencePlate, product.cluster);
 
   let result = 'NOT_DELETABLE';
 

@@ -1,30 +1,20 @@
-import { $Enums, Prisma } from '@prisma/client';
-import { z } from 'zod';
+import { $Enums } from '@prisma/client';
 import createApiHandler from '@/core/api-handler';
 import { NoContent, CsvResponse } from '@/core/responses';
 import { ministryKeyToName } from '@/helpers/product';
 import { formatFullName } from '@/helpers/user';
+import { createEvent } from '@/mutations/events';
+import { publicCloudProductSearchNoPaginationBodySchema } from '@/schema';
 import { formatDateSimple } from '@/utils/date';
-import { processEnumString, processUpperEnumString } from '@/utils/zod';
 import searchOp from '../_operations/search';
-
-const bodySchema = z.object({
-  search: z.string().optional(),
-  ministry: z.preprocess(processUpperEnumString, z.nativeEnum($Enums.Ministry).optional()),
-  provider: z.preprocess(processUpperEnumString, z.nativeEnum($Enums.Provider).optional()),
-  includeInactive: z.boolean().optional(),
-  sortKey: z.string().optional(),
-  sortOrder: z.preprocess(processEnumString, z.nativeEnum(Prisma.SortOrder).optional()),
-});
 
 export const POST = createApiHandler({
   roles: ['user'],
-  validations: { body: bodySchema },
+  validations: { body: publicCloudProductSearchNoPaginationBodySchema },
 })(async ({ session, body }) => {
   const { search = '', ministry = '', provider = '', includeInactive = false, sortKey, sortOrder } = body;
 
-  const { docs, totalCount } = await searchOp({
-    session,
+  const searchProps = {
     search,
     page: 1,
     pageSize: 10000,
@@ -33,7 +23,9 @@ export const POST = createApiHandler({
     active: !includeInactive,
     sortKey: sortKey || undefined,
     sortOrder,
-  });
+  };
+
+  const { docs, totalCount } = await searchOp({ ...searchProps, session });
 
   if (docs.length === 0) {
     return NoContent();
@@ -55,6 +47,8 @@ export const POST = createApiHandler({
     'Licence Plate': project.licencePlate,
     Status: project.status,
   }));
+
+  await createEvent($Enums.EventType.EXPORT_PUBLIC_CLOUD_PRODUCT, session.user.id, searchProps);
 
   return CsvResponse(formattedData, 'public-cloud-products.csv');
 });

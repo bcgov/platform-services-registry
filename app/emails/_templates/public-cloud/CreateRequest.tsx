@@ -31,11 +31,13 @@ const CreateRequestTemplate = ({ request, userName }: EmailProp) => {
   return (
     <Layout>
       <div className="pb-6 mt-4 mb-4 border-solid border-0 border-b-1 border-slate-300">
-        <Heading className="text-lg">Provisioning request received for {name} on AWS</Heading>
+        <Heading className="text-lg">
+          Provisioning request received for {name} on {provider}
+        </Heading>
         <Text>Hi Product Team,</Text>
         <Text className="">
-          You have requested a new project set for {name} on the Public Cloud Landing Zone - AWS. Our administrators
-          have been notified and will review your request.
+          You have requested a new project set for {name} on the Public Cloud Landing Zone - {provider}. Our
+          administrators have been notified and will review your request.
         </Text>
         <Button
           href="https://registry.developer.gov.bc.ca/public-cloud/requests/all"

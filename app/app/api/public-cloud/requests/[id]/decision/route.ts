@@ -2,9 +2,7 @@ import { DecisionStatus, User } from '@prisma/client';
 import { z } from 'zod';
 import createApiHandler from '@/core/api-handler';
 import { BadRequestResponse, OkResponse, UnauthorizedResponse } from '@/core/responses';
-import makeRequestDecision, {
-  PublicCloudRequestWithProjectAndRequestedProject,
-} from '@/request-actions/public-cloud/decision-request';
+import makeRequestDecision from '@/request-actions/public-cloud/decision-request';
 import { PublicCloudRequestDecisionBodySchema } from '@/schema';
 import { sendExpenseAuthorityEmail, sendRequestRejectionEmails } from '@/services/ches/public-cloud/email-handler';
 import { subscribeUsersToMautic } from '@/services/mautic';
@@ -20,26 +18,19 @@ const apiHandler = createApiHandler({
   permissions: [PermissionsEnum.ReviewAllPublicCloudRequests],
   validations: { pathParams: pathParamSchema, body: PublicCloudRequestDecisionBodySchema },
 });
-
 export const POST = apiHandler(async ({ pathParams, body, session }) => {
   const { id } = pathParams;
   const { decision, decisionComment, ...formData } = body;
 
-  const request: PublicCloudRequestWithProjectAndRequestedProject = await makeRequestDecision(
-    id,
-    decision,
-    decisionComment,
-    formData,
-    session,
-  );
+  const request = await makeRequestDecision(id, decision, decisionComment, formData, session);
 
-  if (!request.decisionData) {
-    return BadRequestResponse(`Error creating decision request for ${request.licencePlate}`);
+  if (!request || !request.decisionData) {
+    return BadRequestResponse(`Error creating decision request for ${id}`);
   }
 
-  if (request.decisionStatus !== DecisionStatus.APPROVED) {
+  if (request.decisionStatus === DecisionStatus.REJECTED) {
     await sendRequestRejectionEmails(request.decisionData, decisionComment);
-    return OkResponse(`Request for ${request.licencePlate} successfully created as rejected.`);
+    return OkResponse(request);
   }
 
   const proms = [];
@@ -67,5 +58,5 @@ export const POST = apiHandler(async ({ pathParams, body, session }) => {
   // TODO: revisit to delete for good
   // sendRequestApprovalEmails(request);
 
-  return OkResponse(`Decision request for ${request.licencePlate} successfully created.`);
+  return OkResponse(request);
 });

@@ -1,3 +1,16 @@
+## [0.30.0](https://github.com/bcgov/platform-services-registry/compare/v0.29.1...v0.30.0) (2024-06-17)
+
+### Features
+
+* **3042:** add api token create & delete events ([7d5713e](https://github.com/bcgov/platform-services-registry/commit/7d5713e4fbb19877a04dbfacb03a7085f44ae3e1))
+* **3042:** add event schema ([942bcac](https://github.com/bcgov/platform-services-registry/commit/942bcace8a8215d3bed2534bc9757c6dea0d6960))
+* **3042:** add events on storing export products ([4c4684f](https://github.com/bcgov/platform-services-registry/commit/4c4684f0686ef407e621404781ec4c7085e22e36))
+* **3042:** add login & logout events ([2c7fce4](https://github.com/bcgov/platform-services-registry/commit/2c7fce40f57cd9dd404a2e1b1d18ee5a83450d05))
+* **3042:** add private & public request events ([86832d6](https://github.com/bcgov/platform-services-registry/commit/86832d646d5e308702dd74ddd398eb1cbfe472a5))
+* **3042:** add private & public review events ([1fabe27](https://github.com/bcgov/platform-services-registry/commit/1fabe27df2ed636d4f8e8ccf821d6951cfabf2fe))
+* **3042:** keep track of the last active datetime ([cd37498](https://github.com/bcgov/platform-services-registry/commit/cd37498091907d9d17edb730b367c20795679128))
+* **3046:** add API test script for private cloud product search endpoint ([7456d80](https://github.com/bcgov/platform-services-registry/commit/7456d80e514996ae4a9452a3af82cde30b694fda))
+* **3046:** add API test script for private cloud request search endpoint ([633660c](https://github.com/bcgov/platform-services-registry/commit/633660ce8f30ec34e3d67c565839898cffd41e87))
 ## [0.29.1](https://github.com/bcgov/platform-services-registry/compare/v0.29.0...v0.29.1) (2024-06-10)
 
 ### Features

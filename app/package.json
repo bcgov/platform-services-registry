@@ -1,7 +1,7 @@
 {
   "name": "pltsvc-app",
   "description": "B.C. Government's Platform Product Registry - App",
-  "version": "0.29.1",
+  "version": "0.30.0",
   "private": true,
   "scripts": {
     "dev": "next dev",
@@ -10,7 +10,7 @@
     "postinstall": "npm run prisma-generate",
     "lint": "eslint --no-eslintrc --config .eslintrc.json .",
     "lint-fix": "eslint --no-eslintrc --config .eslintrc.json --fix .",
-    "test": "dotenv -e .env.test -- jest --runInBand",
+    "test": "dotenv -e .env.test -- prisma db push && jest --runInBand",
     "prisma-generate": "prisma generate",
     "prisma-push": "prisma db push",
     "migrate-data": "cat .env | grep DATABASE_URL > ../data-migrations/.env && cd ../data-migrations && npm install && npx migrate-mongo up",
@@ -101,6 +101,7 @@
     "isomorphic-fetch": "^3.0.0",
     "jest": "^29.7.0",
     "knip": "^5.17.3",
+    "lodash": "^4.17.21",
     "prisma": "^5.0.0",
     "ts-jest": "^29.1.1",
     "ts-node": "^10.9.1",

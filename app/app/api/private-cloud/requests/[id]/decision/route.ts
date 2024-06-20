@@ -28,10 +28,9 @@ export const POST = apiHandler(async ({ pathParams, body, session }) => {
     return BadRequestResponse(`Error creating decision request for ${id}`);
   }
 
-  if (request.decisionStatus !== DecisionStatus.APPROVED) {
-    // Send rejection email, message will need to be passed
+  if (request.decisionStatus === DecisionStatus.REJECTED) {
     await sendRequestRejectionEmails(request, decisionComment);
-    return OkResponse(`Request for ${request.licencePlate} successfully created as rejected.`);
+    return OkResponse(request);
   }
 
   const proms = [];

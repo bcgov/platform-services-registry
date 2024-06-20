@@ -1,63 +1,45 @@
+import _compact from 'lodash-es/compact';
 import { Session } from 'next-auth';
 import { generateSession } from '@/core/auth-options';
 import prisma from '@/core/prisma';
 import { processMsUser } from '@/services/msgraph';
-import type { MsUser } from '@/types/user';
+import type { MsUser, AppUserWithRoles } from '@/types/user';
+import type { MockResponse, MockFile } from '../../localdev/m365proxy/types';
 const mockFile: MockFile = require('../../localdev/m365proxy/mocks.json');
-
-interface MockResponse {
-  request: {
-    url: string;
-    method?: string;
-  };
-  response: {
-    body?: any;
-    statusCode?: string;
-  };
-}
-
-interface MockFile {
-  $schema: string;
-  mocks: MockResponse[];
-}
 
 export const proxyUsers: MsUser[] = mockFile.mocks.find(
   (mock: MockResponse) => mock.request.url === 'https://graph.microsoft.com/v1.0/users?$filter*',
 )?.response.body.value;
 
-export const proxyAllIDIRs = proxyUsers.map((usr) => usr.onPremisesSamAccountName);
-export const proxyNoRoleUsers = proxyUsers.filter((usr) => !usr.jobTitle);
-export const proxyNoRoleIDIRs = proxyNoRoleUsers.map((usr) => usr.onPremisesSamAccountName);
+export const mockUsers = proxyUsers.map((usr) => {
+  const { firstName, lastName, email, ministry, idir, upn } = processMsUser(usr);
+  return { firstName, lastName, email, ministry, idir, upn, roles: _compact([usr.jobTitle]) } as AppUserWithRoles;
+});
 
-export function findMockUserByIDIR(useridir: string) {
-  let user = proxyUsers.find(({ onPremisesSamAccountName }) => onPremisesSamAccountName === useridir);
-  if (!user) user = proxyUsers[0];
+export const mockRoleUsers = mockUsers.filter((usr) => usr.roles.length > 0);
+export const mockNoRoleUsers = mockUsers.filter((usr) => usr.roles.length === 0);
 
-  const { firstName, lastName, email, ministry, idir, upn } = processMsUser(user);
-  return { firstName, lastName, email, ministry, idir, upn };
+export const mockIdirs = mockUsers.map((usr) => usr.idir);
+export const mockRoleIdirs = mockRoleUsers.map((usr) => usr.idir);
+export const mockNoRoleIdirs = mockNoRoleUsers.map((usr) => usr.idir);
+
+export function findMockUserByIdr(useridir: string) {
+  return mockUsers.find(({ idir }) => idir === useridir);
+}
+
+export function findMockUserByEmail(_email: string) {
+  return mockUsers.find(({ email }) => email === _email);
 }
 
 export function findMockUserbyRole(role: string) {
-  const user = proxyUsers.find(({ jobTitle }) => jobTitle === role);
-  if (!user) return null;
-
-  const { firstName, lastName, email, ministry, idir, upn } = processMsUser(user);
-  return { firstName, lastName, email, ministry, idir, upn };
+  return mockUsers.find(({ roles }) => roles.includes(role));
 }
 
 export function findOhterMockUsers(emails: string[]) {
-  return proxyNoRoleUsers
-    .filter((usr) => !emails.includes(usr.mail))
-    .map((usr) => {
-      const { firstName, lastName, email, ministry, idir, upn } = processMsUser(usr);
-      return { firstName, lastName, email, ministry, idir, upn };
-    });
+  return mockNoRoleUsers.filter((usr) => !emails.includes(usr.email));
 }
 
-export async function generateTestSession(testEmail: string) {
-  const proxyUser = proxyUsers.find(({ mail }: { mail: string }) => mail === testEmail) as MsUser;
-  const user = processMsUser(proxyUser);
-
+export async function upsertMockUser(user: AppUserWithRoles) {
   const data = {
     firstName: user.firstName,
     lastName: user.lastName,
@@ -68,15 +50,24 @@ export async function generateTestSession(testEmail: string) {
     image: '',
   };
 
-  await prisma.user.upsert({
+  const res = await prisma.user.upsert({
     where: { email: user.email },
     update: data,
     create: data,
   });
 
+  return res;
+}
+
+export async function generateTestSession(testEmail: string) {
+  const mockUser = findMockUserByEmail(testEmail);
+  if (!mockUser) return null;
+
+  await upsertMockUser(mockUser);
+
   const session = await generateSession({
     session: {} as Session,
-    token: { roles: [proxyUser.jobTitle], name: proxyUser.displayName, email: proxyUser.mail },
+    token: { roles: mockUser.roles, name: mockUser.displayName, email: mockUser.email },
   });
 
   return session;

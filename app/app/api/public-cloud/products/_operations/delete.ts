@@ -82,9 +82,7 @@ export default async function deleteOp({
       sendAdminDeleteRequestEmails(request.decisionData, session.user.name),
       createEvent($Enums.EventType.DELETE_PUBLIC_CLOUD_PRODUCT, session.user.id, { requestId: request.id }),
     ]);
-
-    return OkResponse(true);
   }
 
-  return OkResponse(false);
+  return OkResponse(request);
 }

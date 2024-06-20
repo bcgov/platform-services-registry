@@ -47,6 +47,14 @@ export default function Repository({ params }: { params: { licencePlate: string 
     error: updatingError,
   } = useMutation({
     mutationFn: upsertSecurityConfig,
+    onError: (error: any) => {
+      notifications.show({
+        title: 'Error',
+        message: `Failed to update security configuration: ${error.message}`,
+        color: 'red',
+        autoClose: 5000,
+      });
+    },
   });
 
   const { fields, append, remove } = useFieldArray({

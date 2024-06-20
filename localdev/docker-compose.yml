@@ -80,6 +80,8 @@ services:
     build:
       context: .
       dockerfile: ./m365mock/Dockerfile
+    environment:
+      M365_URL: http://localhost:4040
     stdin_open: true
     ports:
     - 4040:4040
@@ -88,7 +90,7 @@ services:
     platform: linux/amd64
     container_name: mongodb
     # See https://hub.docker.com/r/bitnami/mongodb/tags
-    image: bitnami/mongodb:7.0.11-debian-12-r0
+    image: bitnami/mongodb:7.0.11-debian-12-r1
     environment:
     - MONGODB_ADVERTISED_HOSTNAME=127.0.0.1
     - MONGODB_REPLICA_SET_MODE=primary

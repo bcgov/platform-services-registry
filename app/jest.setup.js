@@ -1,6 +1,9 @@
 import 'isomorphic-fetch';
 import '@testing-library/jest-dom';
 import prisma from '@/core/prisma';
+import { logger } from '@/core/logging';
+import _ from 'lodash';
+import { SERVICES_KEYCLOAK_APP_REALM } from './jest.mock';
 
 jest.setTimeout(75000);
 
@@ -18,13 +21,11 @@ jest.mock('@/app/api/auth/[...nextauth]/route', () => ({
   POST: jest.fn(),
 }));
 
-// Mock Mautic
 jest.mock('@/services/mautic', () => ({
   ...jest.requireActual('@/services/mautic'),
-  subscribeUsersToMautic: jest.fn(async () => [200, 200, 200]), // Mocked return value
+  subscribeUsersToMautic: jest.fn(async () => [200, 200, 200]),
 }));
 
-// Mock Nats
 jest.mock('@/services/nats', () => ({
   ...jest.requireActual('@/services/nats'),
   sendPrivateCloudNatsMessage: jest.fn(async () => [200, 200, 200]),
@@ -32,7 +33,6 @@ jest.mock('@/services/nats', () => ({
   sendNatsMessage: jest.fn(async () => [200, 200, 200]),
 }));
 
-// Mock CHES
 jest.mock('@/services/ches/private-cloud/email-handler', () => ({
   ...jest.requireActual('@/services/ches/private-cloud/email-handler'),
   sendCreateRequestEmails: jest.fn(async () => [200]),
@@ -47,8 +47,32 @@ jest.mock('@/services/ches/private-cloud/email-handler', () => ({
 jest.mock('@/services/keycloak/app-realm', () => ({
   getKcAdminClient: jest.fn(async () => null),
   findClient: jest.fn(async () => null),
-  findUser: jest.fn(async () => null),
+  findUser: jest.fn(async () => SERVICES_KEYCLOAK_APP_REALM.findUser),
 }));
+
+jest.mock('@/utils/jwt', () => ({
+  verifyKeycloakJwtTokenSafe: jest.fn(async () => ({})),
+}));
+
+[
+  'castArray',
+  'compact',
+  'forEach',
+  'get',
+  'isArray',
+  'isBoolean',
+  'isDate',
+  'isEqual',
+  'isNil',
+  'isNumber',
+  'isPlainObject',
+  'isString',
+  'mapValues',
+  'pick',
+  'reduce',
+  'set',
+  'uniq',
+].forEach((fnName) => jest.mock(`lodash-es/${fnName}`, () => jest.fn(_[fnName])));
 
 export async function cleanUp() {
   // Delete related documents from referencing models first
@@ -65,14 +89,16 @@ export async function cleanUp() {
   await prisma.publicCloudRequestedProject.deleteMany();
 
   // Now it should be safe to delete User documents
-  await prisma.user.deleteMany();
+  // await prisma.user.deleteMany();
+  await prisma.event.deleteMany();
 }
+
+beforeAll(async () => {
+  await cleanUp();
+});
 
 afterAll(async () => {
   await cleanUp();
-  await prisma.$disconnect();
 });
 
-// beforeAll(async () => {
-//   await cleanUp();
-// });
+logger.transports[0].silent = true;

@@ -1,38 +1,17 @@
-import { $Enums, Prisma } from '@prisma/client';
-import forEach from 'lodash-es/forEach';
-import { z } from 'zod';
+import { $Enums } from '@prisma/client';
 import createApiHandler from '@/core/api-handler';
 import { NoContent, CsvResponse } from '@/core/responses';
-import { ministryKeyToName } from '@/helpers/product';
+import { ministryKeyToName, getTotalQuotaStr } from '@/helpers/product';
 import { formatFullName } from '@/helpers/user';
+import { createEvent } from '@/mutations/events';
+import { privateCloudProductSearchNoPaginationBodySchema } from '@/schema';
+import { PrivateProductCsvRecord } from '@/types/csv';
 import { formatDateSimple } from '@/utils/date';
-import { extractNumbers } from '@/utils/string';
-import { processEnumString, processUpperEnumString } from '@/utils/zod';
 import searchOp from '../_operations/search';
-
-function getTotalQuota(...quotaValues: string[]) {
-  let total = 0;
-  forEach(quotaValues, (val) => {
-    const nums = extractNumbers(val);
-    if (nums.length > 0) total += nums[0];
-  });
-
-  return total;
-}
-
-const bodySchema = z.object({
-  search: z.string().optional(),
-  ministry: z.preprocess(processUpperEnumString, z.nativeEnum($Enums.Ministry).optional()),
-  cluster: z.preprocess(processUpperEnumString, z.nativeEnum($Enums.Cluster).optional()),
-  includeInactive: z.boolean().optional(),
-  sortKey: z.string().optional(),
-  sortOrder: z.preprocess(processEnumString, z.nativeEnum(Prisma.SortOrder).optional()),
-  showTest: z.boolean().default(false),
-});
 
 export const POST = createApiHandler({
   roles: ['user'],
-  validations: { body: bodySchema },
+  validations: { body: privateCloudProductSearchNoPaginationBodySchema },
 })(async ({ session, body }) => {
   const {
     search = '',
@@ -44,8 +23,7 @@ export const POST = createApiHandler({
     sortOrder,
   } = body;
 
-  const { docs, totalCount } = await searchOp({
-    session,
+  const searchProps = {
     search,
     page: 1,
     pageSize: 10000,
@@ -55,13 +33,15 @@ export const POST = createApiHandler({
     sortKey: sortKey || undefined,
     sortOrder,
     isTest: showTest,
-  });
+  };
+
+  const { docs, totalCount } = await searchOp({ ...searchProps, session });
 
   if (docs.length === 0) {
     return NoContent();
   }
 
-  const formattedData = docs.map((project) => ({
+  const formattedData: PrivateProductCsvRecord[] = docs.map((project) => ({
     Name: project.name,
     Description: project.description,
     Ministry: ministryKeyToName(project.ministry),
@@ -73,21 +53,21 @@ export const POST = createApiHandler({
     'Secondary Technical Lead Email': project.secondaryTechnicalLead ? project.secondaryTechnicalLead.email : '',
     'Secondary Technical Lead Name': formatFullName(project.secondaryTechnicalLead),
     'Create Date': formatDateSimple(project.createdAt),
-    'Updated Date': formatDateSimple(project.updatedAt),
+    'Update Date': formatDateSimple(project.updatedAt),
     'Licence Plate': project.licencePlate,
-    'Total Compute Quota (Cores)': getTotalQuota(
+    'Total Compute Quota (Cores)': getTotalQuotaStr(
       project.developmentQuota.cpu,
       project.testQuota.cpu,
       project.productionQuota.cpu,
       project.toolsQuota.cpu,
     ),
-    'Total Memory Quota (Gb)': getTotalQuota(
+    'Total Memory Quota (Gb)': getTotalQuotaStr(
       project.developmentQuota.memory,
       project.testQuota.memory,
       project.productionQuota.memory,
       project.toolsQuota.memory,
     ),
-    'Total Storage Quota (Gb)': getTotalQuota(
+    'Total Storage Quota (Gb)': getTotalQuotaStr(
       project.developmentQuota.storage,
       project.testQuota.storage,
       project.productionQuota.storage,
@@ -95,6 +75,8 @@ export const POST = createApiHandler({
     ),
     Status: project.status,
   }));
+
+  await createEvent($Enums.EventType.EXPORT_PRIVATE_CLOUD_PRODUCT, session.user.id, searchProps);
 
   return CsvResponse(formattedData, 'private-cloud-products.csv');
 });

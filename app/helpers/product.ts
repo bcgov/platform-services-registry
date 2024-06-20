@@ -1,11 +1,12 @@
-import { diff } from 'just-diff';
+import _forEach from 'lodash-es/forEach';
 import _get from 'lodash-es/get';
+import _isPlainObject from 'lodash-es/isPlainObject';
 import _isString from 'lodash-es/isString';
 import _mapValues from 'lodash-es/mapValues';
 import _pick from 'lodash-es/pick';
 import { ministryOptions } from '@/constants';
-import { pick } from '@/utils/object';
-import { isEmail } from '@/utils/string';
+import { diffExt, DiffChange } from '@/utils/diff';
+import { extractNumbers } from '@/utils/string';
 
 export function ministryKeyToName(key: string) {
   return ministryOptions.find((item) => item.value === key)?.label ?? '';
@@ -59,38 +60,12 @@ export function parseResourceString(resource: string): ResourceObject {
   return resourceObject;
 }
 
-function pickData(data: any, fields: string[]) {
-  return _mapValues(_pick(data || {}, fields), (val, key) => {
-    if (_isString(val) && isEmail(val)) return val.toLowerCase();
-    return val;
-  });
-}
-
-export type ProductChangeValueFormatter = ((resource: string) => ResourceObject) | null;
-export type ProductChangeValueFormatterKey = 'resource' | '';
-
-export interface ProductDataChange {
-  path: (string | number)[];
-  loc: string;
-  formatterKey: ProductChangeValueFormatterKey;
-  oldVal: any;
-  newVal: any;
-}
-
-export type ProductDataChanges = ProductDataChange[];
-
 export interface PrivateProductChange {
   profileChanged: boolean;
   contactsChanged: boolean;
   quotasChanged: boolean;
   compChanged: boolean;
-  changes: ProductDataChanges;
-}
-
-export function diffProductData(data1: any, data2: any, fields: string[]) {
-  const d1 = pickData(data1, fields);
-  const d2 = pickData(data2, fields);
-  return diff(d1, d2);
+  changes: DiffChange[];
 }
 
 const privateDataFields = [
@@ -110,21 +85,15 @@ const privateDataFields = [
 ];
 
 export function comparePrivateProductData(data1: any, data2: any) {
-  const dffs = diffProductData(data1, data2, privateDataFields);
+  const changes = diffExt(data1, data2, privateDataFields);
 
   let profileChanged = false;
   let contactsChanged = false;
   let quotasChanged = false;
   let compChanged = false;
 
-  const changes = [];
-
-  for (const dff of dffs) {
-    if (dff.op !== 'replace') continue;
-
-    let formatterKey: ProductChangeValueFormatterKey = '';
-
-    switch (dff.path[0]) {
+  for (const change of changes) {
+    switch (change.path[0]) {
       case 'name':
       case 'description':
       case 'ministry':
@@ -144,35 +113,21 @@ export function comparePrivateProductData(data1: any, data2: any) {
       case 'productionQuota':
       case 'toolsQuota':
         quotasChanged = true;
-        formatterKey = 'resource';
+        change.tag = 'resource';
         break;
 
       case 'commonComponents':
         compChanged = true;
         break;
     }
-
-    changes.push({
-      path: dff.path,
-      loc: dff.path.join('.'),
-      formatterKey,
-      oldVal: _get(data1, dff.path, null),
-      newVal: dff.value,
-    });
   }
-
-  const sortedChanges = changes.sort((a, b) => {
-    const indexA = privateDataFields.indexOf(a.path[0].toString());
-    const indexB = privateDataFields.indexOf(b.path[0].toString());
-    return indexA - indexB;
-  });
 
   return {
     profileChanged,
     contactsChanged,
     quotasChanged,
     compChanged,
-    changes: sortedChanges,
+    changes,
   };
 }
 
@@ -181,13 +136,7 @@ export interface PublicProductChange {
   contactsChanged: boolean;
   budgetChanged: boolean;
   billingChanged: boolean;
-  changes: {
-    path: (string | number)[];
-    loc: string;
-    formatterKey: ProductChangeValueFormatterKey;
-    oldVal: any;
-    newVal: any;
-  }[];
+  changes: DiffChange[];
 }
 
 const publicDataFields = [
@@ -203,21 +152,17 @@ const publicDataFields = [
 ];
 
 export function comparePublicProductData(data1: any, data2: any) {
-  const dffs = diffProductData(data1, data2, publicDataFields);
+  const changes = diffExt(data1, data2, publicDataFields);
 
   let profileChanged = false;
   let contactsChanged = false;
   let budgetChanged = false;
   let billingChanged = false;
 
-  const changes = [];
+  for (const change of changes) {
+    if (change.op !== 'replace') continue;
 
-  for (const dff of dffs) {
-    if (dff.op !== 'replace') continue;
-
-    const formatterKey: ProductChangeValueFormatterKey = '';
-
-    switch (dff.path[0]) {
+    switch (change.path[0]) {
       case 'name':
       case 'description':
       case 'ministry':
@@ -238,33 +183,19 @@ export function comparePublicProductData(data1: any, data2: any) {
         billingChanged = true;
         break;
     }
-
-    changes.push({
-      path: dff.path,
-      loc: dff.path.join('.'),
-      formatterKey,
-      oldVal: _get(data1, dff.path, null),
-      newVal: dff.value,
-    });
   }
-
-  const sortedChanges = changes.sort((a, b) => {
-    const indexA = privateDataFields.indexOf(a.path[0].toString());
-    const indexB = privateDataFields.indexOf(b.path[0].toString());
-    return indexA - indexB;
-  });
 
   return {
     profileChanged,
     contactsChanged,
     budgetChanged,
     billingChanged,
-    changes: sortedChanges,
+    changes,
   };
 }
 
 export function pickProductData(data: any, fields: string[]) {
-  const picked = pick(data, fields);
+  const picked = _pick(data, fields);
 
   if (picked.projectOwner) {
     picked.projectOwner = { email: picked.projectOwner.email };
@@ -277,4 +208,20 @@ export function pickProductData(data: any, fields: string[]) {
   if (picked.secondaryTechnicalLead) {
     picked.secondaryTechnicalLead = { email: picked.secondaryTechnicalLead.email };
   }
+
+  if (picked.expenseAuthority) {
+    picked.expenseAuthority = { email: picked.expenseAuthority.email };
+  }
 }
+
+export function getTotalQuota(...quotaValues: string[]) {
+  let total = 0;
+  _forEach(quotaValues, (val) => {
+    const nums = extractNumbers(val);
+    if (nums.length > 0) total += nums[0];
+  });
+
+  return total;
+}
+
+export const getTotalQuotaStr = (...values: string[]) => String(getTotalQuota(...values));

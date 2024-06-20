@@ -4,7 +4,8 @@ import { IconChevronRight } from '@tabler/icons-react';
 import _isBoolean from 'lodash-es/isBoolean';
 import _isString from 'lodash-es/isString';
 import _startCase from 'lodash-es/startCase';
-import { ProductDataChanges, parseResourceString, ProductChangeValueFormatterKey } from '@/helpers/product';
+import { parseResourceString } from '@/helpers/product';
+import { DiffChange } from '@/utils/diff';
 
 function ProductField({ path }: { path: (string | number)[] }) {
   return path.map((v, index) => {
@@ -17,7 +18,7 @@ function ProductField({ path }: { path: (string | number)[] }) {
   });
 }
 
-function ProductValue({ value, formatterKey }: { value: any; formatterKey?: ProductChangeValueFormatterKey }) {
+function ProductValue({ value, formatterKey }: { value: any; formatterKey?: string }) {
   if (formatterKey) {
     if (formatterKey === 'resource') {
       const ret = parseResourceString(value);
@@ -64,7 +65,7 @@ function ProductValue({ value, formatterKey }: { value: any; formatterKey?: Prod
   return <span>{String(value)}</span>;
 }
 
-export default function ProductComparison({ data }: { data?: ProductDataChanges }) {
+export default function ProductComparison({ data }: { data?: DiffChange[] }) {
   if (!data) return null;
 
   return (
@@ -92,10 +93,10 @@ export default function ProductComparison({ data }: { data?: ProductDataChanges 
                     <ProductField path={change.path} />
                   </td>
                   <td className="px-6 py-4">
-                    <ProductValue value={change.oldVal} formatterKey={change.formatterKey} />
+                    <ProductValue value={change.oldVal} formatterKey={change.tag} />
                   </td>
                   <td className="px-6 py-4">
-                    <ProductValue value={change.newVal} formatterKey={change.formatterKey} />
+                    <ProductValue value={change.newVal} formatterKey={change.tag} />
                   </td>
                 </tr>
               );

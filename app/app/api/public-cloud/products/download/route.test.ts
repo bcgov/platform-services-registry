@@ -1,266 +1,325 @@
 import { expect } from '@jest/globals';
-import {
-  Provider,
-  DecisionStatus,
-  Ministry,
-  Prisma,
-  PublicCloudProject,
-  ProjectStatus,
-  RequestType,
-  User,
-} from '@prisma/client';
+import { $Enums } from '@prisma/client';
 import { parse } from 'csv-parse/sync';
-import { NextRequest, NextResponse } from 'next/server';
 import prisma from '@/core/prisma';
-import { findMockUserByIDIR, generateTestSession } from '@/helpers/mock-users';
-import { ministryKeyToName } from '@/helpers/product';
-import { createProxyUsers } from '@/queries/users';
-import { QuotaCpuEnum, QuotaMemoryEnum, QuotaStorageEnum } from '@/schema';
-import { mockedGetServerSession } from '@/services/api-test/core';
-import { POST as downloadCsv } from './route';
+import { createSamplePublicCloudRequestData } from '@/helpers/mock-resources';
+import { mockNoRoleUsers, findMockUserByIdr, findOhterMockUsers } from '@/helpers/mock-users';
+import { ministryKeyToName, getTotalQuotaStr } from '@/helpers/product';
+import { formatFullName } from '@/helpers/user';
+import { mockSessionByEmail, mockSessionByRole } from '@/services/api-test/core';
+import { provisionPublicCloudProject } from '@/services/api-test/public-cloud';
+import { createPublicCloudProject, downloadPublicCloudProjects } from '@/services/api-test/public-cloud/products';
+import { makePublicCloudRequestDecision } from '@/services/api-test/public-cloud/requests';
+import { PublicProductCsvRecord } from '@/types/csv';
+import { formatDateSimple } from '@/utils/date';
 
-const BASE_URL = 'http://localhost:3000';
-const API_URL = `${BASE_URL}/api/public-cloud/products/download`;
+const PO = mockNoRoleUsers[0];
+const TL1 = mockNoRoleUsers[1];
+const TL2 = mockNoRoleUsers[2];
+const RANDOM1 = mockNoRoleUsers[3];
+const RANDOM2 = mockNoRoleUsers[4];
+const RANDOM3 = mockNoRoleUsers[5];
 
-const generatePostRequest = (data = {}) => {
-  return new NextRequest(API_URL, { method: 'POST', body: JSON.stringify(data) });
+const memberData = {
+  projectOwner: PO,
+  primaryTechnicalLead: TL1,
+  secondaryTechnicalLead: TL2,
 };
 
-const quota = {
-  cpu: QuotaCpuEnum.enum.CPU_REQUEST_0_5_LIMIT_1_5,
-  memory: QuotaMemoryEnum.enum.MEMORY_REQUEST_2_LIMIT_4,
-  storage: QuotaStorageEnum.enum.STORAGE_1,
+const randomMemberData = {
+  projectOwner: RANDOM1,
+  primaryTechnicalLead: RANDOM2,
+  secondaryTechnicalLead: RANDOM3,
 };
 
-const projectData = [
-  {
-    name: 'Sample Project',
-    description: 'This is a sample project description.',
-    provider: Provider.AWS, // Assuming CLUSTER_A is a valid enum value for Cluster
-    ministry: Ministry.AG, // Assuming AGRI is a valid enum value for Ministry
-    accountCoding: '123456789000000000000000',
-    budget: {
-      dev: 1000,
-      test: 2000,
-      prod: 3000,
-      tools: 4000,
-    },
-    projectOwner: findMockUserByIDIR('JOHNDOE'),
-    primaryTechnicalLead: findMockUserByIDIR('JAMESSMITH'),
-    secondaryTechnicalLead: findMockUserByIDIR('DAVIDJOHNSON'),
-    productionQuota: quota,
-    testQuota: quota,
-    toolsQuota: quota,
-    developmentQuota: quota,
-  },
-  {
-    name: 'TestProject',
-    description: 'This is a sample project description.',
-    provider: Provider.AWS, // Assuming CLUSTER_A is a valid enum value for Cluster
-    ministry: Ministry.AG, // Assuming AGRI is a valid enum value for Ministry
-    projectOwner: findMockUserByIDIR('SARAHWILLIAMS'),
-    primaryTechnicalLead: findMockUserByIDIR('MICHAELBROWN'),
-    secondaryTechnicalLead: findMockUserByIDIR('JESSICADAVIS'),
-    accountCoding: '123456789000000000000000',
-    budget: {
-      dev: 1000,
-      test: 2000,
-      prod: 3000,
-      tools: 4000,
-    },
-  },
-];
+const productData = {
+  one: createSamplePublicCloudRequestData({
+    data: { ...memberData },
+  }),
+  two: createSamplePublicCloudRequestData({
+    data: { ...randomMemberData },
+  }),
+};
 
-// Function to create a project object
-function createProjectObject(data: any, index: number) {
-  return {
-    name: data.name,
-    description: data.description,
-    provider: data.provider,
-    ministry: data.ministry,
-    status: ProjectStatus.ACTIVE,
-    licencePlate: `LP${index}`,
-    accountCoding: data.accountCoding,
-    budget: data.budget,
-    environmentsEnabled: {
-      development: true,
-      test: true,
-      production: true,
-      tools: true,
-    },
-    projectOwner: {
-      connectOrCreate: {
-        where: {
-          email: data.projectOwner.email,
-        },
-        create: data.projectOwner,
-      },
-    },
-    primaryTechnicalLead: {
-      connectOrCreate: {
-        where: {
-          email: data.primaryTechnicalLead.email,
-        },
-        create: data.primaryTechnicalLead,
-      },
-    },
-    secondaryTechnicalLead: {
-      connectOrCreate: {
-        where: {
-          email: data.secondaryTechnicalLead.email,
-        },
-        create: data.secondaryTechnicalLead,
-      },
-    },
-  };
-}
+const requests = {
+  one: null as any,
+  two: null as any,
+};
 
-interface CsvRecord {
-  Name: string;
-  Description: string;
-  Ministry: string;
-  Provider: string;
-  'Project Owner Email': string;
-  'Project Owner Name': string;
-  'Primary Technical Lead Email': string;
-  'Primary Technical Lead Name': string;
-  'Secondary Technical Lead Email': string;
-  'Secondary Technical Lead Name': string;
-  'Create Date': string;
-  'Update Date': string;
-  'Licence Plate': string;
-  Status: string;
-}
-
-describe('CSV Download Route', () => {
-  beforeAll(async () => {
-    console.log('Seeding database with projects');
-
-    await createProxyUsers();
-
-    for (let i = 0; i < projectData.length; i++) {
-      const project = createProjectObject(projectData[i], i);
-      await prisma.publicCloudProject.create({ data: project });
-    }
-
-    await prisma.publicCloudProject.findMany({});
+// TODO: add tests for ministry roles
+describe('Download Public Cloud Products - Permissions', () => {
+  it('should successfully delete all public cloud products', async () => {
+    await prisma.publicCloudProject.deleteMany();
   });
 
-  // Clean up database after tests are done
-  afterAll(async () => {
-    console.log('Cleaning up database');
-    await prisma.publicCloudProject.deleteMany({});
+  it('should successfully create a product by PO and approved by admin', async () => {
+    await mockSessionByEmail(PO.email);
+
+    const res1 = await createPublicCloudProject(productData.one);
+    const dat1 = await res1.json();
+    expect(res1.status).toBe(200);
+
+    await mockSessionByRole('admin');
+
+    const res2 = await makePublicCloudRequestDecision(dat1.id, {
+      ...dat1.decisionData,
+      decision: $Enums.DecisionStatus.APPROVED,
+    });
+    expect(res2.status).toBe(200);
+    requests.one = await res2.json();
+
+    const res3 = await provisionPublicCloudProject(dat1.licencePlate);
+    expect(res3.status).toBe(200);
   });
 
-  test('should return 401 if user is not authenticated', async () => {
-    mockedGetServerSession.mockResolvedValue(null);
+  it('should successfully download 1 project by PO', async () => {
+    await mockSessionByEmail(PO.email);
 
-    const req = generatePostRequest();
-    const response = await downloadCsv(req);
-    expect(response.status).toBe(401);
-  });
+    const res1 = await downloadPublicCloudProjects({});
+    expect(res1.status).toBe(200);
+    expect(res1.headers.get('Content-Type')).toBe('text/csv');
+    const csvContent = await res1.text();
+    const records = parse(csvContent, { columns: true, skip_empty_lines: true }) as PublicProductCsvRecord[];
 
-  test('should return CSV data for all projects', async () => {
-    const mockedSession = await generateTestSession('admin.system@gov.bc.ca');
-    mockedGetServerSession.mockResolvedValue(mockedSession);
+    expect(records.length).toBe(1);
 
-    const req = generatePostRequest();
-    const response = await downloadCsv(req);
-    expect(response.status).toBe(200);
-    expect(response.headers.get('Content-Type')).toBe('text/csv');
-  });
-
-  test('should handle invalid query params properly', async () => {
-    // Mock a valid session and an empty dataset scenario
-    const mockedSession = await generateTestSession('admin.system@gov.bc.ca');
-    mockedGetServerSession.mockResolvedValue(mockedSession);
-
-    // Simulate a request that would result in an empty dataset
-    const req = generatePostRequest({
-      search: 'NonExistentSearchTerm',
-      ministry: 'NonExistentMinsitry',
-      provider: 'NonExistentProvider',
+    const record1 = records[0];
+    const project = await prisma.publicCloudProject.findUnique({
+      where: { licencePlate: requests.one.licencePlate },
+      include: { projectOwner: true, primaryTechnicalLead: true, secondaryTechnicalLead: true },
     });
 
-    const response = await downloadCsv(req);
-    expect(response.status).toBe(400);
+    expect(record1.Name).toBe(project?.name);
+    expect(record1.Description).toBe(project?.description);
+    expect(record1.Ministry).toBe(ministryKeyToName(project?.ministry ?? ''));
+    expect(record1.Provider).toBe(project?.provider);
+    expect(record1['Project Owner Email']).toBe(project?.projectOwner.email);
+    expect(record1['Project Owner Name']).toBe(formatFullName(project?.projectOwner));
+    expect(record1['Primary Technical Lead Email']).toBe(project?.primaryTechnicalLead.email);
+    expect(record1['Primary Technical Lead Name']).toBe(formatFullName(project?.primaryTechnicalLead));
+    expect(record1['Secondary Technical Lead Email']).toBe(project?.secondaryTechnicalLead?.email);
+    expect(record1['Secondary Technical Lead Name']).toBe(formatFullName(project?.secondaryTechnicalLead));
+    expect(record1['Create Date']).toBe(formatDateSimple(project?.createdAt ?? ''));
+    expect(record1['Update Date']).toBe(formatDateSimple(project?.updatedAt ?? ''));
+    expect(record1['Licence Plate']).toBe(project?.licencePlate);
+    expect(record1.Status).toBe(project?.status);
   });
 
-  test('should return correct CSV data with all query parameters', async () => {
-    const mockedSession = await generateTestSession('admin.system@gov.bc.ca');
-    mockedGetServerSession.mockResolvedValue(mockedSession);
+  it('should successfully download 1 project by TL1', async () => {
+    await mockSessionByEmail(TL1.email);
 
-    const req = generatePostRequest({
-      search: 'TestProject',
-      ministry: 'AG',
-      provider: 'AWS',
-      includeInactive: false,
+    const res1 = await downloadPublicCloudProjects({});
+    expect(res1.status).toBe(200);
+    expect(res1.headers.get('Content-Type')).toBe('text/csv');
+    const csvContent = await res1.text();
+    const records = parse(csvContent, { columns: true, skip_empty_lines: true }) as PublicProductCsvRecord[];
+
+    expect(records.length).toBe(1);
+  });
+
+  it('should successfully download 1 project by TL2', async () => {
+    await mockSessionByEmail(TL2.email);
+
+    const res1 = await downloadPublicCloudProjects({});
+    expect(res1.status).toBe(200);
+    expect(res1.headers.get('Content-Type')).toBe('text/csv');
+    const csvContent = await res1.text();
+    const records = parse(csvContent, { columns: true, skip_empty_lines: true }) as PublicProductCsvRecord[];
+
+    expect(records.length).toBe(1);
+  });
+
+  it('should successfully create a product by a random user and approved by admin', async () => {
+    await mockSessionByEmail(RANDOM1.email);
+
+    const res1 = await createPublicCloudProject(productData.two);
+    const dat1 = await res1.json();
+    expect(res1.status).toBe(200);
+
+    await mockSessionByRole('admin');
+
+    const res2 = await makePublicCloudRequestDecision(dat1.id, {
+      ...dat1.decisionData,
+      decision: $Enums.DecisionStatus.APPROVED,
     });
+    expect(res2.status).toBe(200);
+    requests.two = await res2.json();
 
-    const response = await downloadCsv(req);
-    expect(response.status).toBe(200);
+    const res3 = await provisionPublicCloudProject(dat1.licencePlate);
+    expect(res3.status).toBe(200);
+  });
 
-    // Parse the CSV content
-    const csvContent = await response.text();
-    const records = parse(csvContent, { columns: true, skip_empty_lines: true }) as CsvRecord[];
+  it('should successfully download 1 project by the random user', async () => {
+    await mockSessionByEmail(RANDOM1.email);
 
-    // Check if CSV contains data related to 'TestProject', 'AG', 'AWS', and is active.
-    const relevantRecord = records.find(
-      (record: CsvRecord) =>
-        record.Name.includes('TestProject') && record.Ministry === ministryKeyToName('AG') && record.Provider === 'AWS',
+    const res1 = await downloadPublicCloudProjects({});
+    expect(res1.status).toBe(200);
+    expect(res1.headers.get('Content-Type')).toBe('text/csv');
+    const csvContent = await res1.text();
+    const records = parse(csvContent, { columns: true, skip_empty_lines: true }) as PublicProductCsvRecord[];
+
+    expect(records.length).toBe(1);
+  });
+
+  it('should successfully download 1 project by PO', async () => {
+    await mockSessionByEmail(PO.email);
+
+    const res1 = await downloadPublicCloudProjects({});
+    expect(res1.status).toBe(200);
+    expect(res1.headers.get('Content-Type')).toBe('text/csv');
+    const csvContent = await res1.text();
+    const records = parse(csvContent, { columns: true, skip_empty_lines: true }) as PublicProductCsvRecord[];
+
+    expect(records.length).toBe(1);
+  });
+
+  it('should successfully download 1 project by TL1', async () => {
+    await mockSessionByEmail(TL1.email);
+
+    const res1 = await downloadPublicCloudProjects({});
+    expect(res1.status).toBe(200);
+    expect(res1.headers.get('Content-Type')).toBe('text/csv');
+    const csvContent = await res1.text();
+    const records = parse(csvContent, { columns: true, skip_empty_lines: true }) as PublicProductCsvRecord[];
+
+    expect(records.length).toBe(1);
+  });
+
+  it('should successfully download 1 project by TL2', async () => {
+    await mockSessionByEmail(TL2.email);
+
+    const res1 = await downloadPublicCloudProjects({});
+    expect(res1.status).toBe(200);
+    expect(res1.headers.get('Content-Type')).toBe('text/csv');
+    const csvContent = await res1.text();
+    const records = parse(csvContent, { columns: true, skip_empty_lines: true }) as PublicProductCsvRecord[];
+
+    expect(records.length).toBe(1);
+  });
+
+  it('should successfully download 2 projects by admin', async () => {
+    await mockSessionByRole('admin');
+
+    const res1 = await downloadPublicCloudProjects({});
+    expect(res1.status).toBe(200);
+    expect(res1.headers.get('Content-Type')).toBe('text/csv');
+    const csvContent = await res1.text();
+    const records = parse(csvContent, { columns: true, skip_empty_lines: true }) as PublicProductCsvRecord[];
+
+    expect(records.length).toBe(2);
+  });
+});
+
+describe('Download Public Cloud Products - Validations', () => {
+  it('should successfully delete all public cloud products', async () => {
+    await prisma.publicCloudProject.deleteMany();
+  });
+
+  it('should successfully create products by admin', async () => {
+    await mockSessionByRole('admin');
+
+    const datasets = [];
+    datasets.push(
+      createSamplePublicCloudRequestData({ data: { ministry: $Enums.Ministry.AEST, provider: $Enums.Provider.AWS } }),
+      createSamplePublicCloudRequestData({ data: { ministry: $Enums.Ministry.AEST, provider: $Enums.Provider.AZURE } }),
+      createSamplePublicCloudRequestData({ data: { ministry: $Enums.Ministry.AEST, provider: $Enums.Provider.AWS } }),
+      createSamplePublicCloudRequestData({ data: { ministry: $Enums.Ministry.AEST, provider: $Enums.Provider.AZURE } }),
+      createSamplePublicCloudRequestData({ data: { ministry: $Enums.Ministry.AEST, provider: $Enums.Provider.AWS } }),
+      createSamplePublicCloudRequestData({ data: { ministry: $Enums.Ministry.CITZ, provider: $Enums.Provider.AZURE } }),
+      createSamplePublicCloudRequestData({ data: { ministry: $Enums.Ministry.CITZ, provider: $Enums.Provider.AWS } }),
+      createSamplePublicCloudRequestData({ data: { ministry: $Enums.Ministry.CITZ, provider: $Enums.Provider.AZURE } }),
+      createSamplePublicCloudRequestData({ data: { ministry: $Enums.Ministry.CITZ, provider: $Enums.Provider.AWS } }),
+      createSamplePublicCloudRequestData({
+        data: { ministry: $Enums.Ministry.CITZ, provider: $Enums.Provider.AZURE, name: '______name______' },
+      }),
     );
-    expect(relevantRecord).toBeDefined();
+
+    await Promise.all(
+      datasets.map(async (data) => {
+        const res1 = await createPublicCloudProject(data);
+        const dat1 = await res1.json();
+
+        await makePublicCloudRequestDecision(dat1.id, {
+          ...dat1.decisionData,
+          decision: $Enums.DecisionStatus.APPROVED,
+        });
+
+        await provisionPublicCloudProject(dat1.licencePlate);
+      }),
+    );
   });
 
-  test('should handle invalid query parameters correctly', async () => {
-    const mockedSession = await generateTestSession('admin.system@gov.bc.ca');
-    mockedGetServerSession.mockResolvedValue(mockedSession);
+  it('should successfully download 10 projects by admin', async () => {
+    await mockSessionByRole('admin');
 
-    // Create a request with invalid query parameters
-    const req = generatePostRequest({
-      search: '',
-      ministry: 'InvalidMinistry',
-      provider: 'InvalidProvider',
+    const res1 = await downloadPublicCloudProjects({});
+    expect(res1.status).toBe(200);
+    expect(res1.headers.get('Content-Type')).toBe('text/csv');
+    const csvContent = await res1.text();
+    const records = parse(csvContent, { columns: true, skip_empty_lines: true }) as PublicProductCsvRecord[];
+
+    expect(records.length).toBe(10);
+  });
+
+  it('should successfully download 5 projects by admin with search criteria', async () => {
+    await mockSessionByRole('admin');
+
+    const res1 = await downloadPublicCloudProjects({
+      ministry: $Enums.Ministry.AEST,
+      provider: $Enums.Provider.AWS,
       includeInactive: false,
     });
 
-    // Call the downloadCsv function with the request
-    const response = await downloadCsv(req);
-    expect(response.status).toBe(400);
+    expect(res1.status).toBe(200);
+    expect(res1.headers.get('Content-Type')).toBe('text/csv');
+    const csvContent = await res1.text();
+    const records = parse(csvContent, { columns: true, skip_empty_lines: true }) as PublicProductCsvRecord[];
+
+    expect(records.length).toBe(3);
   });
 
-  test('should return correct data for combined search and filter parameters', async () => {
-    const mockedSession = await generateTestSession('admin.system@gov.bc.ca');
-    mockedGetServerSession.mockResolvedValue(mockedSession);
+  it('should successfully download 1 project by admin with search criteria', async () => {
+    await mockSessionByRole('admin');
 
-    // Define different combinations of search and filter parameters
-    const testData = [
-      { search: 'Sample Project', ministry: 'AG', provider: 'AWS' },
-      { search: 'TestProject', ministry: 'AG', provider: 'AWS' },
-    ];
+    const res1 = await downloadPublicCloudProjects({
+      search: '______name______',
+    });
 
-    for (const tdata of testData) {
-      const req = generatePostRequest(tdata);
+    expect(res1.status).toBe(200);
+    expect(res1.headers.get('Content-Type')).toBe('text/csv');
+    const csvContent = await res1.text();
+    const records = parse(csvContent, { columns: true, skip_empty_lines: true }) as PublicProductCsvRecord[];
 
-      const response = await downloadCsv(req);
-      expect(response.status).toBe(200);
+    expect(records.length).toBe(1);
+  });
 
-      const csvContent = await response.text();
-      const records = parse(csvContent, { columns: true, skip_empty_lines: true }) as CsvRecord[];
+  it('should successfully download 0 project by admin with search criteria', async () => {
+    await mockSessionByRole('admin');
 
-      // Check if data matches the combination criteria
-      let found = false;
-      for (const record of records) {
-        if (
-          record.Name === tdata.search &&
-          record.Ministry === ministryKeyToName(tdata.ministry) &&
-          record.Provider === tdata.provider
-        ) {
-          found = true;
-          break;
-        }
-      }
-      expect(found).toBeTruthy(); // Verify that the expected record was found
-    }
+    const res1 = await downloadPublicCloudProjects({
+      search: '______nonexistent______',
+    });
+
+    expect(res1.status).toBe(204);
+  });
+
+  it('should fail to download projects by admin due to an invalid provider', async () => {
+    await mockSessionByRole('admin');
+
+    const res1 = await downloadPublicCloudProjects({
+      provider: 'INVALID' as $Enums.Provider,
+    });
+
+    expect(res1.status).toBe(400);
+  });
+
+  it('should fail to download projects by admin due to an invalid ministry', async () => {
+    await mockSessionByRole('admin');
+
+    const res1 = await downloadPublicCloudProjects({
+      ministry: 'INVALID' as $Enums.Ministry,
+    });
+
+    expect(res1.status).toBe(400);
   });
 });

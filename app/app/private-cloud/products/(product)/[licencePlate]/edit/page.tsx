@@ -1,6 +1,7 @@
 'use client';
 
 import { zodResolver } from '@hookform/resolvers/zod';
+import { notifications } from '@mantine/notifications';
 import { PrivateCloudProject } from '@prisma/client';
 import { useQuery, useMutation } from '@tanstack/react-query';
 import { useEffect, useState } from 'react';
@@ -50,6 +51,14 @@ export default privateCloudProductEdit(({ pathParams, queryParams, session }) =>
     onSuccess: () => {
       setOpenComment(false);
       setOpenReturn(true);
+    },
+    onError: (error: any) => {
+      notifications.show({
+        title: 'Error',
+        message: `Failed to edit product ${error.message}`,
+        color: 'red',
+        autoClose: 5000,
+      });
     },
   });
 
