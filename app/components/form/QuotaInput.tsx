@@ -52,20 +52,20 @@ export default function QuotaInput({
           Select the {quotaName} for the {nameSpace} namespace
         </p>
       )}
-      {quota ? (
+      {quota && !disabled && (
         <div>
           <p className="pt-3 text-sm leading-6 text-gray-700">
             <b>Current {quotaName}: </b>
             {selectOptions[quota || currentQuota]}
           </p>
-          {quota !== currentQuota && pathname.includes('decision') ? (
+          {quota !== currentQuota && pathname.includes('decision') && (
             <p className="pt-2 text-sm leading-6 text-gray-700">
               <b>Requested {quotaName}: </b>
               {selectOptions[currentQuota]}
             </p>
-          ) : null}
+          )}
         </div>
-      ) : null}
+      )}
     </div>
   );
 }
