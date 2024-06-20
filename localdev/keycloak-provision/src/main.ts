@@ -66,6 +66,41 @@ async function main() {
     clientScopeId: scope?.id as string,
   });
 
+  // Create ministry level roles
+  [
+    'aest',
+    'ag',
+    'agri',
+    'alc',
+    'bcpc',
+    'citz',
+    'dbc',
+    'eao',
+    'educ',
+    'embc',
+    'empr',
+    'env',
+    'fin',
+    'flnr',
+    'hlth',
+    'irr',
+    'jedc',
+    'lbr',
+    'ldb',
+    'mah',
+    'mcf',
+    'mmha',
+    'psa',
+    'pssg',
+    'sdpr',
+    'tca',
+    'tran',
+    'hous',
+  ].forEach(async (ministry) => {
+    await kc.createClientRole(AUTH_REALM_NAME, authClient?.id as string, `ministry-${ministry}-reader`);
+    await kc.createClientRole(AUTH_REALM_NAME, authClient?.id as string, `ministry-${ministry}-editor`);
+  });
+
   // Upsert GitOps client
   await kc.createServiceAccount(AUTH_REALM_NAME, GITOPS_CLIENT_ID, GITOPS_CLIENT_SECRET);
 
