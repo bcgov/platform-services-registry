@@ -53,7 +53,15 @@ export default function TableBodyPublicProducts({ rows, isLoading = false }: Tab
                   <h2 className="min-w-0 text-base text-gray-700">
                     <div className="flex gap-x-2">
                       <span className="">
-                        <Tooltip label={row.decisionData.description} offset={10}>
+                        <Tooltip
+                          label={
+                            <div style={{ whiteSpace: 'pre-wrap', maxWidth: '400px', wordWrap: 'break-word' }}>
+                              {_truncate(row.decisionData.description, { length: 300 })}
+                            </div>
+                          }
+                          position="top-start"
+                          withArrow
+                        >
                           <span className="font-bold">{_truncate(row.decisionData.name, { length: 100 })}</span>
                         </Tooltip>
                         {!row.active && (
