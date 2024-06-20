@@ -6,8 +6,8 @@ import { IconInfoCircle } from '@tabler/icons-react';
 import { z } from 'zod';
 import ProductComparison from '@/components/ProductComparison';
 import createClientPage from '@/core/client-page';
-import { ProductDataChanges } from '@/helpers/product';
 import { usePublicProductState } from '@/states/global';
+import { DiffChange } from '@/utils/diff';
 
 const pathParamSchema = z.object({
   id: z.string(),
@@ -33,7 +33,7 @@ export default Layout(({ pathParams, queryParams, session, router, children }) =
 
       {publicCloudStateSnap.currentRequest?.type !== $Enums.RequestType.CREATE && (
         <div className="py-2">
-          <ProductComparison data={publicCloudStateSnap.dataChangeOriginalRequest?.changes as ProductDataChanges} />
+          <ProductComparison data={publicCloudStateSnap.dataChangeOriginalRequest?.changes as DiffChange[]} />
         </div>
       )}
     </div>
