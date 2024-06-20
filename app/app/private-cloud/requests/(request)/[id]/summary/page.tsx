@@ -14,8 +14,8 @@ import { ForwardRefExoticComponent, RefAttributes } from 'react';
 import { z } from 'zod';
 import ProductComparison from '@/components/ProductComparison';
 import createClientPage from '@/core/client-page';
-import { ProductDataChanges } from '@/helpers/product';
 import { usePrivateProductState } from '@/states/global';
+import { DiffChange } from '@/utils/diff';
 
 const pathParamSchema = z.object({
   id: z.string(),
@@ -99,7 +99,7 @@ export default Layout(({ pathParams, queryParams, session, router, children }) =
         <AccordionLabel {...item} />
       </Accordion.Control>
       <Accordion.Panel>
-        <ProductComparison data={item.data as ProductDataChanges} />
+        <ProductComparison data={item.data as DiffChange[]} />
       </Accordion.Panel>
     </Accordion.Item>
   ));
