@@ -3,6 +3,7 @@ import '@testing-library/jest-dom';
 import prisma from '@/core/prisma';
 import { logger } from '@/core/logging';
 import _ from 'lodash';
+import { SERVICES_KEYCLOAK_APP_REALM } from './jest.mock';
 
 jest.setTimeout(75000);
 
@@ -20,7 +21,6 @@ jest.mock('@/app/api/auth/[...nextauth]/route', () => ({
   POST: jest.fn(),
 }));
 
-// Mock Mautic
 jest.mock('@/services/mautic', () => ({
   ...jest.requireActual('@/services/mautic'),
   subscribeUsersToMautic: jest.fn(async () => [200, 200, 200]),
@@ -47,7 +47,11 @@ jest.mock('@/services/ches/private-cloud/email-handler', () => ({
 jest.mock('@/services/keycloak/app-realm', () => ({
   getKcAdminClient: jest.fn(async () => null),
   findClient: jest.fn(async () => null),
-  findUser: jest.fn(async () => null),
+  findUser: jest.fn(async () => SERVICES_KEYCLOAK_APP_REALM.findUser),
+}));
+
+jest.mock('@/utils/jwt', () => ({
+  verifyKeycloakJwtTokenSafe: jest.fn(async () => ({})),
 }));
 
 [

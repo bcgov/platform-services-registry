@@ -2,7 +2,7 @@ import { randomBytes } from 'crypto';
 import { faker } from '@faker-js/faker';
 import { Prisma, $Enums } from '@prisma/client';
 import { clusters, ministries, providers } from '@/constants';
-import { findMockUserByIDIR, generateTestSession, proxyNoRoleIDIRs } from '@/helpers/mock-users';
+import { findMockUserByIdr, generateTestSession, mockNoRoleIdirs } from '@/helpers/mock-users';
 import { cpuOptions, memoryOptions, storageOptions } from '@/schema';
 
 function getRandomItem<T>(arr: T[]): T {
@@ -41,9 +41,9 @@ export function createSamplePrivateCloudProductData(args?: {
     description: faker.company.buzzPhrase(),
     cluster,
     ministry: getRandomItem(ministries),
-    projectOwner: findMockUserByIDIR(getRandomItem(proxyNoRoleIDIRs)),
-    primaryTechnicalLead: findMockUserByIDIR(getRandomItem(proxyNoRoleIDIRs)),
-    secondaryTechnicalLead: findMockUserByIDIR(getRandomItem(proxyNoRoleIDIRs)),
+    projectOwner: findMockUserByIdr(getRandomItem(mockNoRoleIdirs)),
+    primaryTechnicalLead: findMockUserByIdr(getRandomItem(mockNoRoleIdirs)),
+    secondaryTechnicalLead: findMockUserByIdr(getRandomItem(mockNoRoleIdirs)),
     productionQuota: quota,
     toolsQuota: quota,
     developmentQuota: quota,
@@ -138,10 +138,10 @@ export function createSamplePublicCloudProductData(args?: {
     description: faker.company.buzzPhrase(),
     provider,
     ministry: getRandomItem(ministries),
-    projectOwner: findMockUserByIDIR(getRandomItem(proxyNoRoleIDIRs)),
-    primaryTechnicalLead: findMockUserByIDIR(getRandomItem(proxyNoRoleIDIRs)),
-    secondaryTechnicalLead: findMockUserByIDIR(getRandomItem(proxyNoRoleIDIRs)),
-    expenseAuthority: findMockUserByIDIR(getRandomItem(proxyNoRoleIDIRs)),
+    projectOwner: findMockUserByIdr(getRandomItem(mockNoRoleIdirs)),
+    primaryTechnicalLead: findMockUserByIdr(getRandomItem(mockNoRoleIdirs)),
+    secondaryTechnicalLead: findMockUserByIdr(getRandomItem(mockNoRoleIdirs)),
+    expenseAuthority: findMockUserByIdr(getRandomItem(mockNoRoleIdirs)),
     accountCoding: '111222223333344445555555',
     budget: {
       dev: 50,
