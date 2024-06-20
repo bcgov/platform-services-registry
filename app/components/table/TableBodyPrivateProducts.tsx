@@ -15,7 +15,6 @@ import { PrivateCloudProjectGetPayloadWithActiveRequest } from '@/queries/privat
 import { formatDate } from '@/utils/date';
 import EmptySearch from './EmptySearch';
 import TruncatedTooltip from './TruncatedTooltip';
-import './styles.css';
 interface TableProps {
   rows: PrivateCloudProjectGetPayloadWithActiveRequest[];
   isLoading: boolean;
