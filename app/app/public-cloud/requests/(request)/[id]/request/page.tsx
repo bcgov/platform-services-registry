@@ -2,6 +2,7 @@
 
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Alert } from '@mantine/core';
+import { notifications } from '@mantine/notifications';
 import { $Enums } from '@prisma/client';
 import { IconInfoCircle } from '@tabler/icons-react';
 import { useQuery, useMutation } from '@tanstack/react-query';
@@ -50,6 +51,14 @@ export default publicCloudProductRequest(({ pathParams, queryParams, session, ro
     onSuccess: () => {
       setOpenReturn(true);
       setOpenComment(false);
+    },
+    onError: (error: any) => {
+      notifications.show({
+        title: 'Error',
+        message: `Failed to make decision: ${error.message}`,
+        color: 'red',
+        autoClose: 5000,
+      });
     },
   });
 

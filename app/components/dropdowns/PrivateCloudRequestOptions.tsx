@@ -31,6 +31,14 @@ export default function PrivateCloudRequestOptions({
         autoClose: 5000,
       });
     },
+    onError: (error: any) => {
+      notifications.show({
+        color: 'red',
+        title: 'Error',
+        message: `Failed to resend request: ${error.message}`,
+        autoClose: 5000,
+      });
+    },
   });
 
   if (!canResend) return null;
