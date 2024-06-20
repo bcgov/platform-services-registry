@@ -13,6 +13,7 @@ import { PublicCloudRequestSearchedItemPayload } from '@/queries/public-cloud-re
 import { formatDate } from '@/utils/date';
 import ActiveRequestBox from '../form/ActiveRequestBox';
 import EmptySearch from './EmptySearch';
+import TruncatedTooltip from './TruncatedTooltip';
 
 interface TableProps {
   rows: PublicCloudRequestSearchedItemPayload[];
@@ -53,17 +54,9 @@ export default function TableBodyPublicProducts({ rows, isLoading = false }: Tab
                   <h2 className="min-w-0 text-base text-gray-700">
                     <div className="flex gap-x-2">
                       <span className="">
-                        <Tooltip
-                          label={
-                            <div style={{ whiteSpace: 'pre-wrap', maxWidth: '400px', wordWrap: 'break-word' }}>
-                              {_truncate(row.decisionData.description, { length: 300 })}
-                            </div>
-                          }
-                          position="top-start"
-                          withArrow
-                        >
+                        <TruncatedTooltip label={row.decisionData.description}>
                           <span className="font-bold">{_truncate(row.decisionData.name, { length: 100 })}</span>
-                        </Tooltip>
+                        </TruncatedTooltip>
                         {!row.active && (
                           <Badge color="red" radius="sm" className="ml-1">
                             {$Enums.ProjectStatus.INACTIVE}
