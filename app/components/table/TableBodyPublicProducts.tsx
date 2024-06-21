@@ -12,6 +12,7 @@ import { ministryKeyToName } from '@/helpers/product';
 import { PublicCloudProjectGetPayloadWithActiveRequest } from '@/queries/public-cloud-products';
 import { formatDate } from '@/utils/date';
 import EmptySearch from './EmptySearch';
+import TruncatedTooltip from './TruncatedTooltip';
 
 interface TableProps {
   rows: PublicCloudProjectGetPayloadWithActiveRequest[];
@@ -51,9 +52,9 @@ export default function TableBodyPublicProducts({ rows, isLoading = false }: Tab
                 <h2 className="min-w-0 text-base text-gray-700">
                   <div className="flex gap-x-2">
                     <span className="">
-                      <Tooltip label={row.description} offset={10}>
+                      <TruncatedTooltip label={row.description}>
                         <span className="font-bold">{_truncate(row.name, { length: 100 })}</span>
-                      </Tooltip>
+                      </TruncatedTooltip>
                       {row.status === $Enums.ProjectStatus.INACTIVE && (
                         <Badge color="red" radius="sm" className="ml-1">
                           {$Enums.ProjectStatus.INACTIVE}

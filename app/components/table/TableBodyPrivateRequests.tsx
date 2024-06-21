@@ -13,6 +13,7 @@ import { ministryKeyToName } from '@/helpers/product';
 import { PrivateCloudRequestSearchedItemPayload } from '@/queries/private-cloud-requests';
 import { formatDate } from '@/utils/date';
 import EmptySearch from './EmptySearch';
+import TruncatedTooltip from './TruncatedTooltip';
 
 interface TableProps {
   rows: PrivateCloudRequestSearchedItemPayload[];
@@ -53,9 +54,9 @@ export default function TableBodyPrivateRequests({ rows, isLoading = false }: Ta
                   <h2 className="min-w-0 text-base text-gray-700">
                     <div className="flex gap-x-2">
                       <span className="">
-                        <Tooltip label={row.decisionData.description} offset={10}>
+                        <TruncatedTooltip label={row.decisionData.description}>
                           <span className="font-bold">{_truncate(row.decisionData.name, { length: 100 })}</span>
-                        </Tooltip>
+                        </TruncatedTooltip>
                         {!row.active && (
                           <Badge color="red" radius="sm" className="ml-1">
                             {$Enums.ProjectStatus.INACTIVE}
