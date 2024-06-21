@@ -205,3 +205,20 @@ export async function getPrivateCloudRequest(session: Session, id?: string) {
 
   return request as PrivateCloudRequestGetPayload;
 }
+
+export async function getLastClosedPrivateCloudRequest(licencePlate: string) {
+  const previousRequest = await prisma.privateCloudRequest.findFirst({
+    where: {
+      licencePlate,
+      active: false,
+    },
+    select: {
+      decisionDataId: true,
+    },
+    orderBy: {
+      updatedAt: Prisma.SortOrder.desc,
+    },
+  });
+
+  return previousRequest;
+}
