@@ -1,13 +1,5 @@
-import { Heading, Text } from '@react-email/components';
-
-type Budget = {
-  dev: number;
-  test: number;
-  prod: number;
-  tools: number;
-};
-
-type EnvironmentsEnabled = { production: boolean; test: boolean; development: boolean; tools: boolean };
+import { EnvironmentsEnabled, Budget } from '@prisma/client';
+import { Text } from '@react-email/components';
 
 export default function ProviderDetails({
   provider,
