@@ -1,4 +1,4 @@
-import { $Enums } from '@prisma/client';
+import { $Enums, Prisma } from '@prisma/client';
 import { Session } from 'next-auth';
 import { z, TypeOf, ZodType } from 'zod';
 import prisma from '@/core/prisma';
@@ -6,6 +6,7 @@ import { BadRequestResponse, OkResponse, UnauthorizedResponse } from '@/core/res
 import { isEligibleForDeletion } from '@/helpers/openshift';
 import { createEvent } from '@/mutations/events';
 import { getPrivateCloudProduct, excludeProductUsers } from '@/queries/private-cloud-products';
+import { getLastClosedPrivateCloudRequest } from '@/queries/private-cloud-requests';
 import { sendDeleteRequestEmails } from '@/services/ches/private-cloud/email-handler';
 import { deletePathParamSchema } from '../[licencePlate]/schema';
 
@@ -34,6 +35,9 @@ export default async function deleteOp({
 
   const { id, requests, updatedAt, _permissions, ...rest } = product;
 
+  // Retrieve the latest request data to acquire the decision data ID that can be assigned to the incoming request's original data.
+  const previousRequest = await getLastClosedPrivateCloudRequest(rest.licencePlate);
+
   const request = await prisma.privateCloudRequest.create({
     data: {
       type: $Enums.RequestType.DELETE,
@@ -42,7 +46,9 @@ export default async function deleteOp({
       createdByEmail: user.email,
       licencePlate: product.licencePlate,
       originalData: {
-        create: rest,
+        connect: {
+          id: previousRequest?.decisionDataId,
+        },
       },
       decisionData: {
         create: { ...rest, status: $Enums.ProjectStatus.INACTIVE },

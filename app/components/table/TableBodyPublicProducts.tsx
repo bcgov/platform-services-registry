@@ -6,6 +6,7 @@ import { $Enums } from '@prisma/client';
 import _truncate from 'lodash-es/truncate';
 import { usePathname, useRouter } from 'next/navigation';
 import React, { useState } from 'react';
+import ActiveRequestBox from '@/components/form/ActiveRequestBox';
 import CopyableButton from '@/components/generic/button/CopyableButton';
 import UserCard from '@/components/UserCard';
 import { ministryKeyToName } from '@/helpers/product';
@@ -85,7 +86,9 @@ export default function TableBodyPublicProducts({ rows, isLoading = false }: Tab
               </div>
             </div>
 
-            <div className="md:col-span-2 lg:col-span-3"></div>
+            <div className="md:col-span-2 lg:col-span-3">
+              {row.activeRequest && <ActiveRequestBox data={{ ...row.activeRequest, cloud: 'public-cloud' }} />}
+            </div>
 
             <div className="lg:col-span-1 hidden lg:block"></div>
 

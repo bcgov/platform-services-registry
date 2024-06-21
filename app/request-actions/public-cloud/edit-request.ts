@@ -2,6 +2,7 @@ import { $Enums, DecisionStatus, Prisma, RequestType } from '@prisma/client';
 import { Session } from 'next-auth';
 import prisma from '@/core/prisma';
 import { createEvent } from '@/mutations/events';
+import { getLastClosedPublicCloudRequest } from '@/queries/public-cloud-requests';
 import { PublicCloudEditRequestBody, UserInput } from '@/schema';
 import { upsertUsers } from '@/services/db/user';
 
@@ -13,7 +14,7 @@ export default async function editRequest(
   // Get the current project that we are creating an edit request for
   const project = await prisma.publicCloudProject.findUnique({
     where: {
-      licencePlate: licencePlate,
+      licencePlate,
     },
     include: {
       projectOwner: true,
@@ -82,18 +83,7 @@ export default async function editRequest(
   };
 
   // Retrieve the latest request data to acquire the decision data ID that can be assigned to the incoming request's original data.
-  const previousRequest = await prisma.publicCloudRequest.findFirst({
-    where: {
-      licencePlate: project.licencePlate,
-      active: false,
-    },
-    select: {
-      decisionDataId: true,
-    },
-    orderBy: {
-      updatedAt: Prisma.SortOrder.desc,
-    },
-  });
+  const previousRequest = await getLastClosedPublicCloudRequest(project.licencePlate);
 
   const request = await prisma.publicCloudRequest.create({
     data: {

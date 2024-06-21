@@ -5,6 +5,7 @@ import prisma from '@/core/prisma';
 import { BadRequestResponse, OkResponse, UnauthorizedResponse } from '@/core/responses';
 import { createEvent } from '@/mutations/events';
 import { getPublicCloudProduct, excludeProductUsers } from '@/queries/public-cloud-products';
+import { getLastClosedPublicCloudRequest } from '@/queries/public-cloud-requests';
 import { sendDeleteRequestEmails, sendAdminDeleteRequestEmails } from '@/services/ches/public-cloud/email-handler';
 import { deletePathParamSchema } from '../[licencePlate]/schema';
 
@@ -26,6 +27,9 @@ export default async function deleteOp({
 
   const { id, requests, updatedAt, _permissions, ...rest } = product;
 
+  // Retrieve the latest request data to acquire the decision data ID that can be assigned to the incoming request's original data.
+  const previousRequest = await getLastClosedPublicCloudRequest(rest.licencePlate);
+
   const request = await prisma.publicCloudRequest.create({
     data: {
       type: $Enums.PublicCloudRequestType.DELETE,
@@ -34,7 +38,9 @@ export default async function deleteOp({
       createdByEmail: user.email,
       licencePlate: product.licencePlate,
       originalData: {
-        create: rest,
+        connect: {
+          id: previousRequest?.decisionDataId,
+        },
       },
       decisionData: {
         create: { ...rest, status: $Enums.ProjectStatus.INACTIVE },

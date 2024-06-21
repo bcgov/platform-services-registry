@@ -3,6 +3,7 @@ import { Session } from 'next-auth';
 import prisma from '@/core/prisma';
 import { isQuotaUpgrade } from '@/helpers/quota-change';
 import { createEvent } from '@/mutations/events';
+import { getLastClosedPrivateCloudRequest } from '@/queries/private-cloud-requests';
 import { PrivateCloudEditRequestBody } from '@/schema';
 import { upsertUsers } from '@/services/db/user';
 
@@ -93,18 +94,7 @@ export default async function editRequest(
   }
 
   // Retrieve the latest request data to acquire the decision data ID that can be assigned to the incoming request's original data.
-  const previousRequest = await prisma.privateCloudRequest.findFirst({
-    where: {
-      licencePlate: project.licencePlate,
-      active: false,
-    },
-    select: {
-      decisionDataId: true,
-    },
-    orderBy: {
-      updatedAt: Prisma.SortOrder.desc,
-    },
-  });
+  const previousRequest = await getLastClosedPrivateCloudRequest(project.licencePlate);
 
   const request = await prisma.privateCloudRequest.create({
     data: {
