@@ -45,6 +45,7 @@ export default function AdminCreateRequest({ request, userName }: EmailProp) {
           provider={request.decisionData.provider}
           accountCoding={request.decisionData.accountCoding}
           budget={request.decisionData.budget}
+          environmentsEnabled={request.decisionData.environmentsEnabled}
         />
       </div>
       <div className="pb-6 mt-4 mb-4 border-solid border-0 border-b-1 border-slate-300">
