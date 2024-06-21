@@ -25,6 +25,7 @@ const RequestApprovalTemplate = ({ request }: EmailProp) => {
     accountCoding,
     budget,
     licencePlate,
+    environmentsEnabled,
   } = request.decisionData;
 
   return (
@@ -63,7 +64,12 @@ const RequestApprovalTemplate = ({ request }: EmailProp) => {
         />
       </div>
       <div className="pb-6 mt-4 mb-4 border-solid border-0 border-b-1 border-slate-300">
-        <ProviderDetails provider={provider} accountCoding={accountCoding} budget={budget} />
+        <ProviderDetails
+          provider={provider}
+          accountCoding={accountCoding}
+          budget={budget}
+          environmentsEnabled={environmentsEnabled}
+        />
       </div>
       <div className="pb-6 mt-4 mb-4 border-solid border-0 border-b-1 border-slate-300">
         <div>

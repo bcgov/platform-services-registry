@@ -22,6 +22,7 @@ const ProvisionedTemplate = ({ product }: EmailProp) => {
     accountCoding,
     budget,
     licencePlate,
+    environmentsEnabled,
   } = product;
 
   return (
@@ -77,7 +78,12 @@ const ProvisionedTemplate = ({ product }: EmailProp) => {
         />
       </div>
       <div className="pb-6 mt-4 mb-4 border-solid border-0 border-b-1 border-slate-300">
-        <ProviderDetails provider={provider} accountCoding={accountCoding} budget={budget} />
+        <ProviderDetails
+          provider={provider}
+          accountCoding={accountCoding}
+          budget={budget}
+          environmentsEnabled={environmentsEnabled}
+        />
       </div>
       <div>
         <Closing email="Cloud.Pathfinder@gov.bc.ca" team={'Cloud Pathfinder Team'} />
