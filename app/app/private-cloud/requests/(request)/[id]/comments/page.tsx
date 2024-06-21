@@ -13,6 +13,7 @@ interface User {
   firstName: string;
   lastName: string;
   email: string;
+  image: string;
 }
 
 interface Comment {
@@ -79,8 +80,8 @@ export default privateCloudRequestComments(({ pathParams, session }) => {
               commentId={comment.id}
               licencePlate={privateSnap.licencePlate}
               onDelete={refetchComments}
-              email={session?.userEmail ?? ''}
-              image={session?.user.image ?? ''}
+              email={comment.user.email}
+              image={comment.user.image}
             />
           ))}
         </ul>
