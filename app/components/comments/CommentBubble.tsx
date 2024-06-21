@@ -1,9 +1,9 @@
-import { Tooltip, UnstyledButton } from '@mantine/core';
+import { Tooltip, UnstyledButton, Textarea, Button } from '@mantine/core';
 import { notifications } from '@mantine/notifications';
 import { IconTrash, IconPencil, IconDots } from '@tabler/icons-react';
 import { useMutation } from '@tanstack/react-query';
 import { formatDistanceToNow, format } from 'date-fns';
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { deletePrivateCloudComment, updatePrivateCloudComment } from '@/services/backend/private-cloud/products';
 import AlertBox from '../modal/AlertBox';
 import ProfileImage from '../ProfileImage';
@@ -39,17 +39,9 @@ const CommentBubble = ({
   const [showConfirm, setShowConfirm] = useState(false);
   const [editMode, setEditMode] = useState(false);
   const [editedText, setEditedText] = useState(text);
-  const editTextRef = useRef<HTMLParagraphElement>(null);
-
-  useEffect(() => {
-    if (editMode) {
-      editTextRef.current?.focus();
-    }
-  }, [editMode]);
 
   const editMutation = useMutation({
-    mutationFn: () =>
-      updatePrivateCloudComment(licencePlate, commentId, editTextRef.current?.textContent || editedText),
+    mutationFn: () => updatePrivateCloudComment(licencePlate, commentId, editedText),
     onSuccess: () => {
       notifications.show({
         color: 'green',
@@ -58,6 +50,7 @@ const CommentBubble = ({
         autoClose: 5000,
       });
       setEditMode(false);
+      onDelete(); // Refresh the comments
     },
     onError: (error: Error) => {
       notifications.show({
@@ -73,36 +66,15 @@ const CommentBubble = ({
   const handleEdit = () => {
     setEditMode(true);
     setMenuOpen(false);
-    setTimeout(() => {
-      if (editTextRef.current) {
-        const range = document.createRange();
-        const sel = window.getSelection();
-        if (sel) {
-          range.selectNodeContents(editTextRef.current);
-          range.collapse(false);
-          sel.removeAllRanges();
-          sel.addRange(range);
-          editTextRef.current.focus();
-        }
-      }
-    }, 0);
   };
 
   const saveEdit = () => {
-    if (editTextRef.current) {
-      editMutation.mutate();
-    }
+    editMutation.mutate();
   };
 
   const cancelEdit = () => {
     setEditMode(false);
-    if (editTextRef.current) {
-      editTextRef.current.textContent = text; // Reset the text to original if the edit is cancelled
-    }
-  };
-
-  const handleTextChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
-    setEditedText(e.target.value);
+    setEditedText(text); // Reset the text to original if the edit is cancelled
   };
 
   const deleteMutation = useMutation({
@@ -172,7 +144,7 @@ const CommentBubble = ({
                 {firstName} {lastName}
               </strong>{' '}
               <span className="commented-text text-gray-500">commented </span>
-              <Tooltip label={`Posted: ${timeStampExact}`}>
+              <Tooltip label={`Posted on ${timeStampExact}`}>
                 <UnstyledButton className="text-gray-500 cursor-help" style={{ fontSize: '0.75rem' }}>
                   <span className="text-gray-500" style={{ fontSize: '0.75rem' }}>
                     {timeAgo}
@@ -180,7 +152,7 @@ const CommentBubble = ({
                 </UnstyledButton>
               </Tooltip>
               {wasEdited && (
-                <Tooltip label={`Last edited: ${lastEdited} (${lastEditedExact})`}>
+                <Tooltip label={`Last edited ${lastEdited} on ${lastEditedExact}`}>
                   <UnstyledButton className="text-gray-500 cursor-help">
                     <IconPencil className="inline-block mr-1" style={{ fontSize: '0.75rem' }} />
                   </UnstyledButton>
@@ -214,37 +186,31 @@ const CommentBubble = ({
           )}
           <div className={bodyStyles}>
             {editMode ? (
-              <p
-                ref={editTextRef}
-                contentEditable={editMode}
-                suppressContentEditableWarning={true}
-                className={`transition duration-300 ease-in-out ${
-                  editMode ? 'bg-gray-100 border-2 border-yellow-400 p-2 rounded' : ''
-                }`}
-              >
-                {editedText}
-              </p>
+              <>
+                <Textarea
+                  value={editedText}
+                  onChange={(event) => setEditedText(event.currentTarget.value)}
+                  autosize
+                  minRows={3}
+                />
+                <div className="flex justify-around p-2">
+                  <Button variant="outline" onClick={cancelEdit}>
+                    Cancel
+                  </Button>
+                  <Button
+                    variant="filled"
+                    onClick={saveEdit}
+                    disabled={editedText === text} // Disable the button if there are no changes
+                  >
+                    Save
+                  </Button>
+                </div>
+              </>
             ) : (
               <p
                 dangerouslySetInnerHTML={{ __html: convertNewLinesToBreaks(text) }}
                 className="transition duration-300 ease-in-out"
               ></p>
-            )}
-            {editMode && (
-              <div className="flex justify-around p-2">
-                <button
-                  className="border-gray-300 border rounded cursor-pointer transition-colors duration-200 hover:bg-gray-100 p-2"
-                  onClick={cancelEdit}
-                >
-                  Cancel
-                </button>
-                <button
-                  className="bg-yellow-400 rounded cursor-pointer transition-colors duration-200 hover:bg-yellow-500 p-2"
-                  onClick={saveEdit}
-                >
-                  Save
-                </button>
-              </div>
             )}
           </div>
         </div>
