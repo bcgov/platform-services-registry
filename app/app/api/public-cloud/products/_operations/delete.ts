@@ -7,7 +7,6 @@ import { createEvent } from '@/mutations/events';
 import { getPublicCloudProduct, excludeProductUsers } from '@/queries/public-cloud-products';
 import { getLastClosedPublicCloudRequest } from '@/queries/public-cloud-requests';
 import { sendDeleteRequestEmails, sendAdminDeleteRequestEmails } from '@/services/ches/public-cloud/email-handler';
-import { sendPublicCloudNatsMessage } from '@/services/nats';
 import { deletePathParamSchema } from '../[licencePlate]/schema';
 
 export default async function deleteOp({
