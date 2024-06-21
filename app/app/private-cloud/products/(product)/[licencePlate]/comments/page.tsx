@@ -14,6 +14,8 @@ interface User {
   firstName: string;
   lastName: string;
   email: string;
+  user: string;
+  image: string;
 }
 
 interface Comment {
@@ -78,8 +80,8 @@ export default privateCloudProductComments(({ pathParams, queryParams, session }
               commentId={comment.id}
               licencePlate={licencePlate}
               onDelete={refetchComments}
-              email={session?.userEmail ?? ''}
-              image={session?.user.image ?? ''}
+              email={comment.user.email}
+              image={comment.user.image}
             />
           ))}
         </ul>
