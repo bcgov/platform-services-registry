@@ -1,9 +1,9 @@
 'use client';
 
 import { IconChevronRight } from '@tabler/icons-react';
-import _isBoolean from 'lodash-es/isBoolean';
-import _isString from 'lodash-es/isString';
-import _startCase from 'lodash-es/startCase';
+import _isBoolean from 'lodash/isBoolean';
+import _isString from 'lodash/isString';
+import _startCase from 'lodash/startCase';
 import { parseResourceString } from '@/helpers/product';
 import { DiffChange } from '@/utils/diff';
 

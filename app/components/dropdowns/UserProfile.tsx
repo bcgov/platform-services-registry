@@ -1,8 +1,8 @@
-import _castArray from 'lodash-es/castArray';
-import _compact from 'lodash-es/compact';
-import _sortBy from 'lodash-es/sortBy';
-import _startCase from 'lodash-es/startCase';
-import _uniq from 'lodash-es/uniq';
+import _castArray from 'lodash/castArray';
+import _compact from 'lodash/compact';
+import _sortBy from 'lodash/sortBy';
+import _startCase from 'lodash/startCase';
+import _uniq from 'lodash/uniq';
 import { useSession } from 'next-auth/react';
 import Modal from '@/components/generic/modal/Modal';
 import ProfileImage from '../ProfileImage';

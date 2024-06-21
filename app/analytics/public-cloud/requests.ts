@@ -1,5 +1,5 @@
 import { RequestType } from '@prisma/client';
-import _isEqual from 'lodash-es/isEqual';
+import _isEqual from 'lodash/isEqual';
 import prisma from '@/core/prisma';
 
 interface CombinedDataPoint {

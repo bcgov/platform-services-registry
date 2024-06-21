@@ -1,6 +1,6 @@
 import { Alert } from '@mantine/core';
 import { IconInfoCircle } from '@tabler/icons-react';
-import _get from 'lodash-es/get';
+import _get from 'lodash/get';
 import { useFormContext } from 'react-hook-form';
 import FormCheckbox from '@/components/generic/checkbox/FormCheckbox';
 

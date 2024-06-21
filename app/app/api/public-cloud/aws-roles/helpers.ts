@@ -1,7 +1,7 @@
 import KcAdminClient from '@keycloak/keycloak-admin-client';
 import { Credentials } from '@keycloak/keycloak-admin-client/lib/utils/auth';
-import _kebabCase from 'lodash-es/kebabCase';
-import _startCase from 'lodash-es/startCase';
+import _kebabCase from 'lodash/kebabCase';
+import _startCase from 'lodash/startCase';
 import {
   AWS_ROLES_BASE_URL,
   AWS_ROLES_REALM_NAME,

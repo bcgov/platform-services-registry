@@ -1,5 +1,5 @@
 import { Cluster, Ministry, Provider, $Enums, Prisma } from '@prisma/client';
-import _isString from 'lodash-es/isString';
+import _isString from 'lodash/isString';
 import { string, z } from 'zod';
 import { processEnumString, processUpperEnumString, processBoolean } from '@/utils/zod';
 

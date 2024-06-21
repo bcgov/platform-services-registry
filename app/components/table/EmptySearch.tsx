@@ -1,6 +1,6 @@
 'use client';
 
-import _truncate from 'lodash-es/truncate';
+import _truncate from 'lodash/truncate';
 import Image from 'next/image';
 import Link from 'next/link';
 import React, { useState } from 'react';

@@ -1,4 +1,4 @@
-import _toUpper from 'lodash-es/toUpper';
+import _toUpper from 'lodash/toUpper';
 import { redirect, RedirectType } from 'next/navigation';
 import { getServerSession } from 'next-auth/next';
 import { ministryDistributions } from '@/analytics/public-cloud/ministry-distributions';

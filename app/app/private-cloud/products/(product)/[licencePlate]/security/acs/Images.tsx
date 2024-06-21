@@ -1,8 +1,8 @@
 import { Prisma } from '@prisma/client';
-import _get from 'lodash-es/get';
-import _isArray from 'lodash-es/isArray';
-import _lowerCase from 'lodash-es/lowerCase';
-import _startCase from 'lodash-es/startCase';
+import _get from 'lodash/get';
+import _isArray from 'lodash/isArray';
+import _lowerCase from 'lodash/lowerCase';
+import _startCase from 'lodash/startCase';
 import Table, { Header, CellProcess } from './Table';
 
 type Image = Prisma.AcsResultImageGetPayload<{

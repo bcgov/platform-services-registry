@@ -1,7 +1,7 @@
 'use client';
 
 import { Prisma } from '@prisma/client';
-import _isNumber from 'lodash-es/isNumber';
+import _isNumber from 'lodash/isNumber';
 import PagninationButtons from '@/components/buttons/PaginationButtons';
 import ExternalLink from '@/components/generic/button/ExternalLink';
 import TableTop from '@/components/table/TableTop';

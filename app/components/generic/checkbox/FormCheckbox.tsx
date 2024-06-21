@@ -1,7 +1,7 @@
 'use client';
 
 import classnames from 'classnames';
-import _isFunction from 'lodash-es/isFunction';
+import _isFunction from 'lodash/isFunction';
 import { InputHTMLAttributes, ChangeEvent, RefObject, ReactNode, useState, useRef } from 'react';
 import AlertBox from '@/components/modal/AlertBox';
 

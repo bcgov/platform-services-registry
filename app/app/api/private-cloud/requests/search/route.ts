@@ -1,4 +1,4 @@
-import _isString from 'lodash-es/isString';
+import _isString from 'lodash/isString';
 import createApiHandler from '@/core/api-handler';
 import { OkResponse } from '@/core/responses';
 import { privateCloudRequestSearchBodySchema } from '@/schema';

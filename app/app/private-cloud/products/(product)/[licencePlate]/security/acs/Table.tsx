@@ -1,6 +1,6 @@
-import _get from 'lodash-es/get';
-import _isArray from 'lodash-es/isArray';
-import _isFunction from 'lodash-es/isFunction';
+import _get from 'lodash/get';
+import _isArray from 'lodash/isArray';
+import _isFunction from 'lodash/isFunction';
 import ExternalLink from '@/components/generic/button/ExternalLink';
 import { formatDateSimple } from '@/utils/date';
 

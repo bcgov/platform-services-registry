@@ -1,6 +1,6 @@
 import classNames from 'classnames';
-import _lowerCase from 'lodash-es/lowerCase';
-import _startCase from 'lodash-es/startCase';
+import _lowerCase from 'lodash/lowerCase';
+import _startCase from 'lodash/startCase';
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
 import FormSelect from '@/components/generic/select/FormSelect';

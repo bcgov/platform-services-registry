@@ -1,9 +1,9 @@
 'use client';
 
 import { IconSearch } from '@tabler/icons-react';
-import _castArray from 'lodash-es/castArray';
-import _isEqual from 'lodash-es/isEqual';
-import _throttle from 'lodash-es/throttle';
+import _castArray from 'lodash/castArray';
+import _isEqual from 'lodash/isEqual';
+import _throttle from 'lodash/throttle';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import { useEffect, useState, useTransition, useRef } from 'react';
 import Select, { MultiValue } from 'react-select';

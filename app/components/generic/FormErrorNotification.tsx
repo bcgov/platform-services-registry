@@ -1,6 +1,6 @@
 import { notifications } from '@mantine/notifications';
 import { IconPoint } from '@tabler/icons-react';
-import _startCase from 'lodash-es/startCase';
+import _startCase from 'lodash/startCase';
 import React, { useEffect } from 'react';
 import { useFormContext } from 'react-hook-form';
 import { numberToWords } from '@/utils/number';

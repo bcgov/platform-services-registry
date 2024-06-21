@@ -1,5 +1,5 @@
 import { stringify } from 'csv-stringify/sync';
-import _isString from 'lodash-es/isString';
+import _isString from 'lodash/isString';
 import { NextResponse } from 'next/server';
 
 export function CsvResponse<T extends Record<string, any>>(data: T[], filename: string) {

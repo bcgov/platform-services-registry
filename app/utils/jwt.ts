@@ -2,7 +2,7 @@ import axios from 'axios';
 import jwt, { VerifyOptions } from 'jsonwebtoken';
 import jwkToPem, { JWK } from 'jwk-to-pem';
 import jws from 'jws';
-import _isPlainObject from 'lodash-es/isPlainObject';
+import _isPlainObject from 'lodash/isPlainObject';
 import { logger } from '@/core/logging';
 
 const authHeaderPrefix = 'Bearer';

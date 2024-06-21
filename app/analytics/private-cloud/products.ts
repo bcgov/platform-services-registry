@@ -1,6 +1,6 @@
 import { $Enums } from '@prisma/client';
-import _forEach from 'lodash-es/forEach';
-import _uniq from 'lodash-es/uniq';
+import _forEach from 'lodash/forEach';
+import _uniq from 'lodash/uniq';
 import prisma from '@/core/prisma';
 import { dateToShortDateString, shortDateStringToDate, compareYearMonth } from '@/utils/date';
 

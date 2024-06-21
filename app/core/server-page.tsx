@@ -1,4 +1,4 @@
-import _isUndefined from 'lodash-es/isUndefined';
+import _isUndefined from 'lodash/isUndefined';
 import { redirect } from 'next/navigation';
 import { Session, PermissionsKey } from 'next-auth';
 import { getServerSession } from 'next-auth/next';

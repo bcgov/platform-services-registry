@@ -1,5 +1,5 @@
 import { bin } from 'd3-array';
-import _isEqual from 'lodash-es/isEqual';
+import _isEqual from 'lodash/isEqual';
 import prisma from '@/core/prisma';
 
 function convertMillisecondsToHours(milliseconds: number): number {

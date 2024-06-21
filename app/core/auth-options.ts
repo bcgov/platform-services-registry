@@ -1,6 +1,6 @@
 import { $Enums } from '@prisma/client';
 import jwt from 'jsonwebtoken';
-import _uniq from 'lodash-es/uniq';
+import _uniq from 'lodash/uniq';
 import { Account, AuthOptions, Session, User } from 'next-auth';
 import { JWT } from 'next-auth/jwt';
 import KeycloakProvider, { KeycloakProfile } from 'next-auth/providers/keycloak';

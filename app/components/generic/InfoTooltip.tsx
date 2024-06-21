@@ -1,7 +1,7 @@
 import { Tooltip } from '@mantine/core';
 import { IconInfoSquareRounded } from '@tabler/icons-react';
 import classNames from 'classnames';
-import _isString from 'lodash-es/isString';
+import _isString from 'lodash/isString';
 import React from 'react';
 
 export default function InfoTooltip({ label, className }: { label: string; className?: string }) {

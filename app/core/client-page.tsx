@@ -1,6 +1,6 @@
 'use client';
 
-import _isUndefined from 'lodash-es/isUndefined';
+import _isUndefined from 'lodash/isUndefined';
 import { AppRouterInstance } from 'next/dist/shared/lib/app-router-context.shared-runtime';
 import { useRouter } from 'next/navigation';
 import { Session, PermissionsKey } from 'next-auth';

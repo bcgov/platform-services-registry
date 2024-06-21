@@ -1,4 +1,4 @@
-import _isNumber from 'lodash-es/isNumber';
+import _isNumber from 'lodash/isNumber';
 
 export function parsePaginationParams(
   page: string | number,

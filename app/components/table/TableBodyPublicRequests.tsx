@@ -3,7 +3,7 @@
 import path from 'path';
 import { Tooltip, Badge } from '@mantine/core';
 import { $Enums } from '@prisma/client';
-import _truncate from 'lodash-es/truncate';
+import _truncate from 'lodash/truncate';
 import { usePathname, useRouter } from 'next/navigation';
 import React from 'react';
 import CopyableButton from '@/components/generic/button/CopyableButton';

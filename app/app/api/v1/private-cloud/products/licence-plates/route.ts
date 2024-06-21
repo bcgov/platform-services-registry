@@ -1,5 +1,5 @@
 import { Prisma, $Enums } from '@prisma/client';
-import _isString from 'lodash-es/isString';
+import _isString from 'lodash/isString';
 import { z } from 'zod';
 import createApiHandler from '@/core/api-handler';
 import prisma from '@/core/prisma';

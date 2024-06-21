@@ -1,5 +1,5 @@
 import { Tooltip, TooltipProps } from '@mantine/core';
-import _truncate from 'lodash-es/truncate';
+import _truncate from 'lodash/truncate';
 import React from 'react';
 
 type TruncatedTooltipProps = TooltipProps & {

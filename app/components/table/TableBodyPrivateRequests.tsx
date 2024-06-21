@@ -2,7 +2,7 @@
 
 import { Tooltip, Badge } from '@mantine/core';
 import { $Enums } from '@prisma/client';
-import _truncate from 'lodash-es/truncate';
+import _truncate from 'lodash/truncate';
 import { usePathname, useRouter } from 'next/navigation';
 import React, { useState } from 'react';
 import ActiveRequestBox from '@/components/form/ActiveRequestBox';

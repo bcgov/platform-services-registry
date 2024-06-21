@@ -1,5 +1,5 @@
 import { bin, extent } from 'd3-array';
-import _isEqual from 'lodash-es/isEqual';
+import _isEqual from 'lodash/isEqual';
 import prisma from '@/core/prisma';
 import { getProdClusterLicencePlates } from './common';
 

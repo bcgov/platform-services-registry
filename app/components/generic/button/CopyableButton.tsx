@@ -2,7 +2,7 @@ import { Tooltip, UnstyledButton } from '@mantine/core';
 import { useClipboard } from '@mantine/hooks';
 import { IconClipboardCopy } from '@tabler/icons-react';
 import classNames from 'classnames';
-import _isString from 'lodash-es/isString';
+import _isString from 'lodash/isString';
 import React from 'react';
 
 export default function CopyableButton({ children, value }: { children: React.ReactNode; value?: string }) {

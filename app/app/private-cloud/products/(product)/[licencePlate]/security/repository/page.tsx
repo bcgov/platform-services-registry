@@ -5,7 +5,7 @@ import { notifications } from '@mantine/notifications';
 import { SecurityConfig, $Enums } from '@prisma/client';
 import { useQuery, useMutation } from '@tanstack/react-query';
 import classNames from 'classnames';
-import _get from 'lodash-es/get';
+import _get from 'lodash/get';
 import { useEffect } from 'react';
 import { useForm, useFieldArray } from 'react-hook-form';
 import { SecurityConfigRequestBodySchema } from '@/schema';

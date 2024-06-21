@@ -1,4 +1,4 @@
-import _compact from 'lodash-es/compact';
+import _compact from 'lodash/compact';
 import { Session } from 'next-auth';
 import { generateSession } from '@/core/auth-options';
 import prisma from '@/core/prisma';

@@ -1,5 +1,5 @@
 import { format } from 'date-fns/format';
-import _isDate from 'lodash-es/isDate';
+import _isDate from 'lodash/isDate';
 
 export function formatDate(date: string | number | Date, formatStr = 'yyyy-MM-dd hh:mm:ss aa') {
   if (!date) return '';

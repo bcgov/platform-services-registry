@@ -2,7 +2,7 @@ import { Alert } from '@mantine/core';
 import { $Enums } from '@prisma/client';
 import { IconInfoCircle } from '@tabler/icons-react';
 import classNames from 'classnames';
-import _sumBy from 'lodash-es/sumBy';
+import _sumBy from 'lodash/sumBy';
 import { useFormContext } from 'react-hook-form';
 import BudgetInput from '@/components/form/BudgetInput';
 import ExternalLink from '@/components/generic/button/ExternalLink';

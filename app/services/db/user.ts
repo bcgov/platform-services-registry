@@ -1,7 +1,7 @@
-import _castArray from 'lodash-es/castArray';
-import _compact from 'lodash-es/compact';
-import _forEach from 'lodash-es/forEach';
-import _uniq from 'lodash-es/uniq';
+import _castArray from 'lodash/castArray';
+import _compact from 'lodash/compact';
+import _forEach from 'lodash/forEach';
+import _uniq from 'lodash/uniq';
 import { logger } from '@/core/logging';
 import prisma from '@/core/prisma';
 import { getUserByEmail, getUserPhoto } from '@/services/msgraph';
