@@ -1,3 +1,4 @@
+import { Textarea } from '@mantine/core';
 import { notifications } from '@mantine/notifications';
 import { IconMessageCirclePlus, IconX, IconSend } from '@tabler/icons-react';
 import { useMutation } from '@tanstack/react-query';
@@ -63,9 +64,9 @@ function CommentForm({ licencePlate, userId, projectId, requestId, onCommentAdde
           <div className="flex justify-end mb-2 transition-opacity duration-500 ease-in-out">
             <button
               onClick={() => setShowCommentBox(true)} // Show the comment box
-              className="flex items-center px-5 py-2.5 bg-yellow-400 border-none rounded cursor-pointer transition-transform duration-500 ease-in-out transform hover:scale-105 hover:bg-yellow-500"
+              className="flex items-center px-5 py-2.5 bg-yellow-400 border-none rounded cursor-pointer transition-transform duration-500 ease-in-out transform hover:scale-105 hover:bg-yellow-500 text-black"
             >
-              <IconMessageCirclePlus className="mr-2" />
+              <IconMessageCirclePlus className="mr-2 text-black" />
               Add Comment
             </button>
           </div>
@@ -73,13 +74,16 @@ function CommentForm({ licencePlate, userId, projectId, requestId, onCommentAdde
 
         {showCommentBox && (
           <form onSubmit={handleSubmit} className="relative transition-opacity duration-500 ease-in-out opacity-100">
-            <textarea
+            <Textarea
               id="comment"
               name="comment box"
               value={text}
-              onChange={(e) => setText(e.target.value)}
+              onChange={(e) => setText(e.currentTarget.value)}
               placeholder="Leave a comment"
-              className="w-full h-40 p-2.5 pr-10 mb-2.5 resize-none border-2 border-blue-500 rounded"
+              autosize
+              resize="vertical"
+              minRows={3}
+              className="mb-2.5"
               required
             />
             <IconX
@@ -89,10 +93,10 @@ function CommentForm({ licencePlate, userId, projectId, requestId, onCommentAdde
             <div className="flex justify-end">
               <button
                 type="submit"
-                className="flex items-center px-5 py-2.5 bg-yellow-400 border-none rounded cursor-pointer transition-transform duration-500 ease-in-out transform hover:scale-105 hover:bg-yellow-500"
+                className="flex items-center px-5 py-2.5 bg-yellow-400 border-none rounded cursor-pointer transition-transform duration-500 ease-in-out transform hover:scale-105 hover:bg-yellow-500 text-black"
                 disabled={isLoading}
               >
-                <IconSend className="mr-2" />
+                <IconSend className="mr-2 text-black" />
                 Post Comment
               </button>
             </div>
