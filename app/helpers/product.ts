@@ -64,8 +64,9 @@ export interface PrivateProductChange {
   profileChanged: boolean;
   contactsChanged: boolean;
   quotasChanged: boolean;
-  compChanged: boolean;
+  commonComponentsChanged: boolean;
   changes: DiffChange[];
+  parentPaths: string[];
 }
 
 const privateDataFields = [
@@ -86,13 +87,16 @@ const privateDataFields = [
 
 export function comparePrivateProductData(data1: any, data2: any) {
   const changes = diffExt(data1, data2, privateDataFields);
+  const parentPaths = [];
 
   let profileChanged = false;
   let contactsChanged = false;
   let quotasChanged = false;
-  let compChanged = false;
+  let commonComponentsChanged = false;
 
   for (const change of changes) {
+    parentPaths.push(String(change.path[0]));
+
     switch (change.path[0]) {
       case 'name':
       case 'description':
@@ -117,7 +121,7 @@ export function comparePrivateProductData(data1: any, data2: any) {
         break;
 
       case 'commonComponents':
-        compChanged = true;
+        commonComponentsChanged = true;
         break;
     }
   }
@@ -126,7 +130,8 @@ export function comparePrivateProductData(data1: any, data2: any) {
     profileChanged,
     contactsChanged,
     quotasChanged,
-    compChanged,
+    commonComponentsChanged,
+    parentPaths,
     changes,
   };
 }
@@ -137,6 +142,7 @@ export interface PublicProductChange {
   budgetChanged: boolean;
   billingChanged: boolean;
   changes: DiffChange[];
+  parentPaths: string[];
 }
 
 const publicDataFields = [
@@ -153,6 +159,7 @@ const publicDataFields = [
 
 export function comparePublicProductData(data1: any, data2: any) {
   const changes = diffExt(data1, data2, publicDataFields);
+  const parentPaths = [];
 
   let profileChanged = false;
   let contactsChanged = false;
@@ -160,7 +167,7 @@ export function comparePublicProductData(data1: any, data2: any) {
   let billingChanged = false;
 
   for (const change of changes) {
-    if (change.op !== 'replace') continue;
+    parentPaths.push(String(change.path[0]));
 
     switch (change.path[0]) {
       case 'name':
@@ -190,6 +197,7 @@ export function comparePublicProductData(data1: any, data2: any) {
     contactsChanged,
     budgetChanged,
     billingChanged,
+    parentPaths,
     changes,
   };
 }
