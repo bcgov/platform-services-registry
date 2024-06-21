@@ -14,7 +14,6 @@ interface User {
   firstName: string;
   lastName: string;
   email: string;
-  user: string;
   image: string;
 }
 
