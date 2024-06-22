@@ -103,15 +103,12 @@ export const sendRequestApprovalEmails = async (request: PrivateCloudRequestWith
   }
 };
 
-export const sendRequestRejectionEmails = async (
-  request: PrivateCloudRequestWithProjectAndRequestedProject,
-  decisionComment?: string,
-) => {
+export const sendRequestRejectionEmails = async (request: PrivateCloudRequestWithProjectAndRequestedProject) => {
   try {
-    const currentData = request.type === $Enums.RequestType.CREATE ? request.decisionData : request.project;
+    const currentData = request.type === $Enums.RequestType.CREATE ? request.decisionData : request.originalData;
     if (!currentData) throw Error('invalid request');
 
-    const email = render(RequestRejectionTemplate({ request, productName: currentData.name, decisionComment }), {
+    const email = render(RequestRejectionTemplate({ request, currentData }), {
       pretty: false,
     });
 
