@@ -1,4 +1,4 @@
-import { $Enums, Prisma } from '@prisma/client';
+import { Prisma } from '@prisma/client';
 import { Button, Heading, Text } from '@react-email/components';
 import * as React from 'react';
 import Closing from '@/emails/_components/Closing';
@@ -6,7 +6,7 @@ import Comment from '@/emails/_components/Comment';
 import QuotaChanges from '@/emails/_components/Edit/QuotaChanges';
 import Layout from '@/emails/_components/layout/Layout';
 import ProductDetails from '@/emails/_components/ProductDetails';
-import { comparePrivateProductData } from '@/helpers/product';
+import { comparePrivateProductData } from '@/helpers/product-change';
 import { PrivateCloudRequestWithProjectAndRequestedProject } from '@/request-actions/private-cloud/decision-request';
 
 interface EmailProp {
@@ -24,9 +24,8 @@ const RequestRejectionTemplate = ({ request, currentData }: EmailProp) => {
   if (!request) return <></>;
 
   let changes = null;
-  if (request.type === $Enums.RequestType.EDIT && request.originalData) {
+  if (request.type === 'EDIT' && request.originalData) {
     const diffData = comparePrivateProductData(request.originalData, request.decisionData);
-
     changes = (
       <div className="flex flex-row flex-wrap">
         {diffData.parentPaths.includes('productionQuota') && (

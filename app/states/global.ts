@@ -1,4 +1,4 @@
-import { PrivateProductChange, PublicProductChange } from '@/helpers/product';
+import { PrivateProductChange, PublicProductChange } from '@/helpers/product-change';
 import { createGlobalValtio } from '@/helpers/valtio';
 import { PrivateCloudProjectGetPayload } from '@/queries/private-cloud-products';
 import { PrivateCloudRequestGetPayload } from '@/queries/private-cloud-requests';

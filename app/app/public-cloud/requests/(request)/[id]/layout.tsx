@@ -11,7 +11,7 @@ import RequestBadge from '@/components/form/RequestBadge';
 import LightButton from '@/components/generic/button/LightButton';
 import Tabs, { ITab } from '@/components/generic/tabs/BasicTabs';
 import createClientPage from '@/core/client-page';
-import { comparePublicProductData } from '@/helpers/product';
+import { comparePublicProductData } from '@/helpers/product-change';
 import { getPublicCloudRequest } from '@/services/backend/public-cloud/requests';
 import { publicProductState } from '@/states/global';
 
