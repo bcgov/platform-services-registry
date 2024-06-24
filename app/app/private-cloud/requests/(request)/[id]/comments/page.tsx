@@ -63,6 +63,9 @@ export default privateCloudRequestComments(({ pathParams, session }) => {
         requestId={requestId}
         userId={userId ?? ''}
         onCommentAdded={handleCommentAdded}
+        addButtonText="Add Comment"
+        postButtonText="Post Comment"
+        placeholderText="Leave a comment..."
       />
       {commentsLoading && <p>Loading comments...</p>}
       {commentsIsError && <p>Error loading comments: {commentsError.message}</p>}
@@ -79,7 +82,7 @@ export default privateCloudRequestComments(({ pathParams, session }) => {
               isAuthor={userId === comment.userId}
               commentId={comment.id}
               licencePlate={privateSnap.licencePlate}
-              onDelete={refetchComments}
+              refetchComments={refetchComments}
               email={comment.user.email}
               image={comment.user.image}
             />
