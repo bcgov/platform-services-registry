@@ -1,6 +1,6 @@
 import { expect } from '@jest/globals';
 import { $Enums } from '@prisma/client';
-import { createSamplePublicCloudRequestData } from '@/helpers/mock-resources';
+import { createSamplePublicCloudProductData } from '@/helpers/mock-resources';
 import { findOhterMockUsers } from '@/helpers/mock-users';
 import { pickProductData } from '@/helpers/product';
 import { mockSessionByEmail, mockSessionByRole } from '@/services/api-test/core';
@@ -23,7 +23,7 @@ const fieldsToCompare = [
 ];
 
 const productData = {
-  main: createSamplePublicCloudRequestData(),
+  main: createSamplePublicCloudProductData(),
 };
 
 const requests = {

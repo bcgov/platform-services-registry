@@ -1,7 +1,7 @@
 import { expect } from '@jest/globals';
 import { $Enums } from '@prisma/client';
 import prisma from '@/core/prisma';
-import { createSamplePrivateCloudRequestData } from '@/helpers/mock-resources';
+import { createSamplePrivateCloudProductData } from '@/helpers/mock-resources';
 import { mockNoRoleUsers, findMockUserByIdr, findOhterMockUsers } from '@/helpers/mock-users';
 import { mockSessionByEmail, mockSessionByRole } from '@/services/api-test/core';
 import { provisionPrivateCloudProject } from '@/services/api-test/private-cloud';
@@ -39,7 +39,7 @@ describe('Search Private Cloud Requests - Permissions', () => {
   it('should successfully create a product by PO and approved by admin', async () => {
     await mockSessionByEmail(PO.email);
 
-    const requestData = createSamplePrivateCloudRequestData({
+    const requestData = createSamplePrivateCloudProductData({
       data: { ...memberData, ministry: $Enums.Ministry.PSA, cluster: $Enums.Cluster.SILVER },
     });
     const res1 = await createPrivateCloudProject(requestData);
@@ -91,7 +91,7 @@ describe('Search Private Cloud Requests - Permissions', () => {
   it('should successfully create a product by a random user and approved by admin', async () => {
     await mockSessionByEmail(RANDOM1.email);
 
-    const requestData = createSamplePrivateCloudRequestData({
+    const requestData = createSamplePrivateCloudProductData({
       data: { ...randomMemberData, ministry: $Enums.Ministry.PSA, cluster: $Enums.Cluster.SILVER },
     });
     const res1 = await createPrivateCloudProject(requestData);
@@ -171,16 +171,16 @@ describe('Search Private Cloud Requests - Validations', () => {
 
     const datasets = [];
     datasets.push(
-      createSamplePrivateCloudRequestData({ data: { ministry: $Enums.Ministry.AEST, cluster: $Enums.Cluster.CLAB } }),
-      createSamplePrivateCloudRequestData({ data: { ministry: $Enums.Ministry.AEST, cluster: $Enums.Cluster.KLAB } }),
-      createSamplePrivateCloudRequestData({ data: { ministry: $Enums.Ministry.AEST, cluster: $Enums.Cluster.CLAB } }),
-      createSamplePrivateCloudRequestData({ data: { ministry: $Enums.Ministry.AEST, cluster: $Enums.Cluster.KLAB } }),
-      createSamplePrivateCloudRequestData({ data: { ministry: $Enums.Ministry.AEST, cluster: $Enums.Cluster.CLAB } }),
-      createSamplePrivateCloudRequestData({ data: { ministry: $Enums.Ministry.CITZ, cluster: $Enums.Cluster.KLAB } }),
-      createSamplePrivateCloudRequestData({ data: { ministry: $Enums.Ministry.CITZ, cluster: $Enums.Cluster.CLAB } }),
-      createSamplePrivateCloudRequestData({ data: { ministry: $Enums.Ministry.CITZ, cluster: $Enums.Cluster.KLAB } }),
-      createSamplePrivateCloudRequestData({ data: { ministry: $Enums.Ministry.CITZ, cluster: $Enums.Cluster.CLAB } }),
-      createSamplePrivateCloudRequestData({
+      createSamplePrivateCloudProductData({ data: { ministry: $Enums.Ministry.AEST, cluster: $Enums.Cluster.CLAB } }),
+      createSamplePrivateCloudProductData({ data: { ministry: $Enums.Ministry.AEST, cluster: $Enums.Cluster.KLAB } }),
+      createSamplePrivateCloudProductData({ data: { ministry: $Enums.Ministry.AEST, cluster: $Enums.Cluster.CLAB } }),
+      createSamplePrivateCloudProductData({ data: { ministry: $Enums.Ministry.AEST, cluster: $Enums.Cluster.KLAB } }),
+      createSamplePrivateCloudProductData({ data: { ministry: $Enums.Ministry.AEST, cluster: $Enums.Cluster.CLAB } }),
+      createSamplePrivateCloudProductData({ data: { ministry: $Enums.Ministry.CITZ, cluster: $Enums.Cluster.KLAB } }),
+      createSamplePrivateCloudProductData({ data: { ministry: $Enums.Ministry.CITZ, cluster: $Enums.Cluster.CLAB } }),
+      createSamplePrivateCloudProductData({ data: { ministry: $Enums.Ministry.CITZ, cluster: $Enums.Cluster.KLAB } }),
+      createSamplePrivateCloudProductData({ data: { ministry: $Enums.Ministry.CITZ, cluster: $Enums.Cluster.CLAB } }),
+      createSamplePrivateCloudProductData({
         data: { ministry: $Enums.Ministry.CITZ, cluster: $Enums.Cluster.KLAB, name: '______name______' },
       }),
     );

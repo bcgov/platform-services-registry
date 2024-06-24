@@ -2,7 +2,7 @@ import { expect } from '@jest/globals';
 import { $Enums } from '@prisma/client';
 import { parse } from 'csv-parse/sync';
 import prisma from '@/core/prisma';
-import { createSamplePrivateCloudRequestData } from '@/helpers/mock-resources';
+import { createSamplePrivateCloudProductData } from '@/helpers/mock-resources';
 import { mockNoRoleUsers, findMockUserByIdr, findOhterMockUsers } from '@/helpers/mock-users';
 import { ministryKeyToName, getTotalQuotaStr } from '@/helpers/product';
 import { formatFullName } from '@/helpers/user';
@@ -33,10 +33,10 @@ const randomMemberData = {
 };
 
 const productData = {
-  one: createSamplePrivateCloudRequestData({
+  one: createSamplePrivateCloudProductData({
     data: { ...memberData },
   }),
-  two: createSamplePrivateCloudRequestData({
+  two: createSamplePrivateCloudProductData({
     data: { ...randomMemberData },
   }),
 };
@@ -244,16 +244,16 @@ describe('Download Private Cloud Products - Validations', () => {
 
     const datasets = [];
     datasets.push(
-      createSamplePrivateCloudRequestData({ data: { ministry: $Enums.Ministry.AEST, cluster: $Enums.Cluster.CLAB } }),
-      createSamplePrivateCloudRequestData({ data: { ministry: $Enums.Ministry.AEST, cluster: $Enums.Cluster.KLAB } }),
-      createSamplePrivateCloudRequestData({ data: { ministry: $Enums.Ministry.AEST, cluster: $Enums.Cluster.CLAB } }),
-      createSamplePrivateCloudRequestData({ data: { ministry: $Enums.Ministry.AEST, cluster: $Enums.Cluster.KLAB } }),
-      createSamplePrivateCloudRequestData({ data: { ministry: $Enums.Ministry.AEST, cluster: $Enums.Cluster.CLAB } }),
-      createSamplePrivateCloudRequestData({ data: { ministry: $Enums.Ministry.CITZ, cluster: $Enums.Cluster.KLAB } }),
-      createSamplePrivateCloudRequestData({ data: { ministry: $Enums.Ministry.CITZ, cluster: $Enums.Cluster.CLAB } }),
-      createSamplePrivateCloudRequestData({ data: { ministry: $Enums.Ministry.CITZ, cluster: $Enums.Cluster.KLAB } }),
-      createSamplePrivateCloudRequestData({ data: { ministry: $Enums.Ministry.CITZ, cluster: $Enums.Cluster.CLAB } }),
-      createSamplePrivateCloudRequestData({
+      createSamplePrivateCloudProductData({ data: { ministry: $Enums.Ministry.AEST, cluster: $Enums.Cluster.CLAB } }),
+      createSamplePrivateCloudProductData({ data: { ministry: $Enums.Ministry.AEST, cluster: $Enums.Cluster.KLAB } }),
+      createSamplePrivateCloudProductData({ data: { ministry: $Enums.Ministry.AEST, cluster: $Enums.Cluster.CLAB } }),
+      createSamplePrivateCloudProductData({ data: { ministry: $Enums.Ministry.AEST, cluster: $Enums.Cluster.KLAB } }),
+      createSamplePrivateCloudProductData({ data: { ministry: $Enums.Ministry.AEST, cluster: $Enums.Cluster.CLAB } }),
+      createSamplePrivateCloudProductData({ data: { ministry: $Enums.Ministry.CITZ, cluster: $Enums.Cluster.KLAB } }),
+      createSamplePrivateCloudProductData({ data: { ministry: $Enums.Ministry.CITZ, cluster: $Enums.Cluster.CLAB } }),
+      createSamplePrivateCloudProductData({ data: { ministry: $Enums.Ministry.CITZ, cluster: $Enums.Cluster.KLAB } }),
+      createSamplePrivateCloudProductData({ data: { ministry: $Enums.Ministry.CITZ, cluster: $Enums.Cluster.CLAB } }),
+      createSamplePrivateCloudProductData({
         data: { ministry: $Enums.Ministry.CITZ, cluster: $Enums.Cluster.KLAB, name: '______name______' },
       }),
     );

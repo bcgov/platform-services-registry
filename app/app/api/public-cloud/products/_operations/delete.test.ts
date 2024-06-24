@@ -1,6 +1,6 @@
 import { expect } from '@jest/globals';
 import { $Enums } from '@prisma/client';
-import { createSamplePublicCloudRequestData } from '@/helpers/mock-resources';
+import { createSamplePublicCloudProductData } from '@/helpers/mock-resources';
 import { findOhterMockUsers } from '@/helpers/mock-users';
 import { mockSessionByEmail, mockSessionByRole } from '@/services/api-test/core';
 import { provisionPublicCloudProject } from '@/services/api-test/public-cloud';
@@ -8,7 +8,7 @@ import { createPublicCloudProject, deletePublicCloudProject } from '@/services/a
 import { makePublicCloudRequestDecision } from '@/services/api-test/public-cloud/requests';
 
 const productData = {
-  main: createSamplePublicCloudRequestData(),
+  main: createSamplePublicCloudProductData(),
 };
 
 const requests = {
@@ -117,7 +117,7 @@ describe('Delete Public Cloud Product - Permissions', () => {
   it('should fail to submit a delete request for unauthenticated user', async () => {
     await mockSessionByEmail();
 
-    const requestData = createSamplePublicCloudRequestData();
+    const requestData = createSamplePublicCloudProductData();
     const response = await createPublicCloudProject(requestData);
     expect(response.status).toBe(401);
   });

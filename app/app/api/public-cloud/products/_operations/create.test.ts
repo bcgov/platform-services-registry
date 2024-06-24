@@ -1,6 +1,6 @@
 import { expect } from '@jest/globals';
 import { $Enums } from '@prisma/client';
-import { createSamplePublicCloudRequestData } from '@/helpers/mock-resources';
+import { createSamplePublicCloudProductData } from '@/helpers/mock-resources';
 import { findOhterMockUsers } from '@/helpers/mock-users';
 import { pickProductData } from '@/helpers/product';
 import { mockSessionByEmail, mockSessionByRole } from '@/services/api-test/core';
@@ -26,13 +26,13 @@ describe('Create Public Cloud Product - Permissions', () => {
   it('should return 401 for unauthenticated user', async () => {
     await mockSessionByEmail();
 
-    const requestData = createSamplePublicCloudRequestData();
+    const requestData = createSamplePublicCloudProductData();
     const response = await createPublicCloudProject(requestData);
     expect(response.status).toBe(401);
   });
 
   it('should successfully submit a create request for PO', async () => {
-    const requestData = createSamplePublicCloudRequestData();
+    const requestData = createSamplePublicCloudProductData();
     await mockSessionByEmail(requestData.projectOwner.email);
 
     const response = await createPublicCloudProject(requestData);
@@ -45,7 +45,7 @@ describe('Create Public Cloud Product - Permissions', () => {
   });
 
   it('should successfully submit a create request for TL1', async () => {
-    const requestData = createSamplePublicCloudRequestData();
+    const requestData = createSamplePublicCloudProductData();
     await mockSessionByEmail(requestData.primaryTechnicalLead.email);
 
     const response = await createPublicCloudProject(requestData);
@@ -58,7 +58,7 @@ describe('Create Public Cloud Product - Permissions', () => {
   });
 
   it('should successfully submit a create request for TL2', async () => {
-    const requestData = createSamplePublicCloudRequestData();
+    const requestData = createSamplePublicCloudProductData();
     await mockSessionByEmail(requestData.secondaryTechnicalLead.email);
 
     const response = await createPublicCloudProject(requestData);
@@ -71,7 +71,7 @@ describe('Create Public Cloud Product - Permissions', () => {
   });
 
   it('should fail to submit a create request for a non-assigned user', async () => {
-    const requestData = createSamplePublicCloudRequestData();
+    const requestData = createSamplePublicCloudProductData();
     const otherUsers = findOhterMockUsers([
       requestData.projectOwner.email,
       requestData.primaryTechnicalLead.email,
@@ -85,7 +85,7 @@ describe('Create Public Cloud Product - Permissions', () => {
   });
 
   it('should successfully submit a create request for global admin', async () => {
-    const requestData = createSamplePublicCloudRequestData();
+    const requestData = createSamplePublicCloudProductData();
     await mockSessionByRole('admin');
 
     const response = await createPublicCloudProject(requestData);
@@ -98,7 +98,7 @@ describe('Create Public Cloud Product - Permissions', () => {
   });
 
   it('should fail to submit a create request for global reader', async () => {
-    const requestData = createSamplePublicCloudRequestData();
+    const requestData = createSamplePublicCloudProductData();
     await mockSessionByRole('reader');
 
     const response = await createPublicCloudProject(requestData);
@@ -106,7 +106,7 @@ describe('Create Public Cloud Product - Permissions', () => {
   });
 
   it('should successfully submit a create request for public admin', async () => {
-    const requestData = createSamplePublicCloudRequestData();
+    const requestData = createSamplePublicCloudProductData();
     await mockSessionByRole('public-admin');
 
     const response = await createPublicCloudProject(requestData);
@@ -121,7 +121,7 @@ describe('Create Public Cloud Product - Permissions', () => {
 
 describe('Create Public Cloud Request - Validations', () => {
   it('should fail to submit a create request due to an invalid name property', async () => {
-    const requestData = createSamplePublicCloudRequestData();
+    const requestData = createSamplePublicCloudProductData();
     await mockSessionByRole('admin');
 
     requestData.name = '';
@@ -136,7 +136,7 @@ describe('Create Public Cloud Request - Validations', () => {
   });
 
   it('should fail to submit a create request due to an invalid description property', async () => {
-    const requestData = createSamplePublicCloudRequestData();
+    const requestData = createSamplePublicCloudProductData();
     await mockSessionByRole('admin');
 
     requestData.description = '';
@@ -151,7 +151,7 @@ describe('Create Public Cloud Request - Validations', () => {
   });
 
   it('should fail to submit a create request due to an invalid provider property', async () => {
-    const requestData = createSamplePublicCloudRequestData();
+    const requestData = createSamplePublicCloudProductData();
     await mockSessionByRole('admin');
 
     requestData.provider = 'INVALID' as $Enums.Provider;
@@ -166,7 +166,7 @@ describe('Create Public Cloud Request - Validations', () => {
   });
 
   it('should fail to submit a create request due to an invalid ministry property', async () => {
-    const requestData = createSamplePublicCloudRequestData();
+    const requestData = createSamplePublicCloudProductData();
     await mockSessionByRole('admin');
 
     requestData.ministry = 'INVALID' as $Enums.Ministry;
@@ -181,7 +181,7 @@ describe('Create Public Cloud Request - Validations', () => {
   });
 
   it('should fail to submit a create request due to an invalid projectOwner property', async () => {
-    const requestData = createSamplePublicCloudRequestData();
+    const requestData = createSamplePublicCloudProductData();
     await mockSessionByRole('admin');
 
     requestData.projectOwner = null as any;
@@ -196,7 +196,7 @@ describe('Create Public Cloud Request - Validations', () => {
   });
 
   it('should fail to submit a create request due to an invalid primaryTechnicalLead property', async () => {
-    const requestData = createSamplePublicCloudRequestData();
+    const requestData = createSamplePublicCloudProductData();
     await mockSessionByRole('admin');
 
     requestData.primaryTechnicalLead = null as any;
@@ -213,7 +213,7 @@ describe('Create Public Cloud Request - Validations', () => {
   });
 
   it('should successfully create a request without an secondaryTechnicalLead property', async () => {
-    const requestData = createSamplePublicCloudRequestData();
+    const requestData = createSamplePublicCloudProductData();
     await mockSessionByRole('admin');
 
     requestData.secondaryTechnicalLead = null as any;
