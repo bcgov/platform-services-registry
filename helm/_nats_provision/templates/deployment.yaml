@@ -15,6 +15,18 @@ spec:
       {{- include "app.selectorLabels" . | nindent 6 }}
   template:
     metadata:
+      annotations:
+      {{- $podAnnotations := merge (.Values.podAnnotations | default dict) (.Values.global.vault.podAnnotations | default dict) -}}
+      {{- with $podAnnotations }}
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+        vault.hashicorp.com/role: {{ .Values.global.vault.role }}
+        vault.hashicorp.com/agent-inject-secret-secrets.env: {{ .Values.global.vault.role }}/{{ .Values.global.vault.subPath }}
+        vault.hashicorp.com/agent-inject-template-secrets.env: |
+          {{`{{ with secret "`}}{{ .Values.global.vault.role }}/{{ .Values.global.vault.subPath }}{{`" -}}
+            export PUBLIC_CLOUD_CLIENT_ID="{{ .Data.data.AWS_ROLES_CLIENT_ID }}"
+            export PUBLIC_CLOUD_CLIENT_SECRET="{{ .Data.data.AWS_ROLES_CLIENT_SECRET }}"
+          {{- end }}`}}
       labels:
         {{- include "app.labels" . | nindent 8 }}
         {{- with .Values.podLabels }}

@@ -159,6 +159,8 @@ nats-provision:
     "NATS_HOST": "pltsvc-mock-nats-client"
     "NATS_PORT": "4222"
     "APP_URL": "http://pltsvc-app:3000"
+    "KEYCLOAK_URL": ""
+    "PUBLIC_CLOUD_REALM_NAME": "public-cloud"
 
   # resources:
   #   limits:

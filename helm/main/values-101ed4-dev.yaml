@@ -48,6 +48,8 @@ nats:
 
 nats-provision:
   enabled: true
+  env:
+    "KEYCLOAK_URL": "https://dev.loginproxy.gov.bc.ca/auth"
 
 m365proxy:
   enabled: true

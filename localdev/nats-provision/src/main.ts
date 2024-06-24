@@ -19,9 +19,9 @@ async function main() {
   // Wait for external services to be available
   console.log('waiting for NATS server...', `tcp:${natsServer}`);
   await waitOn({
-    resources: [`tcp:${natsServer}`, `${KEYCLOAK_URL}/health/ready`, APP_URL],
+    resources: [`tcp:${natsServer}`, KEYCLOAK_URL, APP_URL],
     delay: 1000,
-    window: 100000,
+    window: 5000,
   });
 
   const nc = await connect({ servers: natsServer });
