@@ -64,6 +64,9 @@ export default privateCloudProductComments(({ pathParams, queryParams, session }
         projectId={snap.currentProduct?.id ?? ''}
         userId={userId ?? ''}
         onCommentAdded={handleCommentAdded}
+        addButtonText="Add Note"
+        postButtonText="Post Note"
+        placeholderText="Leave a note..."
       />
       {comments?.length > 0 ? (
         <ul>
@@ -78,7 +81,7 @@ export default privateCloudProductComments(({ pathParams, queryParams, session }
               isAuthor={userId === comment.userId}
               commentId={comment.id}
               licencePlate={licencePlate}
-              onDelete={refetchComments}
+              refetchComments={refetchComments}
               email={comment.user.email}
               image={comment.user.image}
             />
