@@ -34,8 +34,6 @@ async function main() {
     clientSecret: PUBLIC_CLOUD_CLIENT_SECRET,
   });
 
-  await kc.auth();
-
   // Subscribe to NATS topics for private cloud provisioning
   const privateProms = ['clab', 'klab', 'silver', 'gold', 'golddr', 'klab2', 'emerald'].map((cluster) => {
     const privateCloudSub = nc.subscribe(`registry_project_provisioning_${cluster}`);
@@ -72,6 +70,8 @@ async function main() {
 
         try {
           if (m.subject.endsWith('aws')) {
+            await kc.auth();
+
             const pgroup = await kc.createGroup(PUBLIC_CLOUD_REALM_NAME, 'Project Team Groups');
             const tgroup = await kc.createChildGroup(PUBLIC_CLOUD_REALM_NAME, pgroup?.id as string, licencePlate);
             await Promise.all(
