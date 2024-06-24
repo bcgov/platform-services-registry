@@ -19,3 +19,7 @@ install:
 	npm install
 	npm install --prefix app
 	npm install --prefix data-migrations
+
+.PHONY: copy-db
+copy-db:
+	./.bin/copy-db.sh
