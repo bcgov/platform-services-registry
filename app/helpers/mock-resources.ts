@@ -96,28 +96,6 @@ export function createSamplePrivateCloudProductData(args?: {
   return _data;
 }
 
-export function createSamplePrivateCloudRequestData(args?: {
-  product?: Prisma.PrivateCloudProjectGetPayload<null>;
-  data?: Partial<
-    Prisma.PrivateCloudProjectGetPayload<null> & {
-      projectOwner: any;
-      primaryTechnicalLead: any;
-      secondaryTechnicalLead: any;
-    }
-  >;
-}) {
-  const { product = {}, data } = args ?? {};
-  const newProduct = createSamplePrivateCloudProductData({ data });
-
-  const _data = {
-    ...newProduct,
-    ...product,
-    ...data,
-  };
-
-  return _data;
-}
-
 export function createSamplePublicCloudProductData(args?: {
   data?: Partial<
     Prisma.PublicCloudProjectGetPayload<null> & {
@@ -155,29 +133,6 @@ export function createSamplePublicCloudProductData(args?: {
       development: true,
       tools: true,
     },
-    ...data,
-  };
-
-  return _data;
-}
-
-export function createSamplePublicCloudRequestData(args?: {
-  product?: Prisma.PublicCloudProjectGetPayload<null>;
-  data?: Partial<
-    Prisma.PublicCloudProjectGetPayload<null> & {
-      projectOwner: any;
-      primaryTechnicalLead: any;
-      secondaryTechnicalLead: any;
-      expenseAuthority: any;
-    }
-  >;
-}) {
-  const { product = {}, data } = args ?? {};
-  const newProduct = createSamplePublicCloudProductData({ data });
-
-  const _data = {
-    ...newProduct,
-    ...product,
     ...data,
   };
 

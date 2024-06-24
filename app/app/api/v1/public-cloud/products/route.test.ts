@@ -1,6 +1,6 @@
 import { expect } from '@jest/globals';
 import { $Enums } from '@prisma/client';
-import { createSamplePublicCloudRequestData } from '@/helpers/mock-resources';
+import { createSamplePublicCloudProductData } from '@/helpers/mock-resources';
 import { mockNoRoleUsers, findMockUserByIdr, findOhterMockUsers } from '@/helpers/mock-users';
 import {
   mockSessionByEmail,
@@ -36,7 +36,7 @@ describe('API: List Public Cloud Products - Permissions', () => {
   it('should successfully create a product by PO and approved by admin', async () => {
     await mockSessionByEmail(PO.email);
 
-    const requestData = createSamplePublicCloudRequestData({
+    const requestData = createSamplePublicCloudProductData({
       data: { ...memberData },
     });
     const res1 = await createPublicCloudProject(requestData);
@@ -88,7 +88,7 @@ describe('API: List Public Cloud Products - Permissions', () => {
   it('should successfully create a product by a random user and approved by admin', async () => {
     await mockSessionByEmail(RANDOM1.email);
 
-    const requestData = createSamplePublicCloudRequestData({
+    const requestData = createSamplePublicCloudProductData({
       data: { ...randomMemberData },
     });
     const res1 = await createPublicCloudProject(requestData);

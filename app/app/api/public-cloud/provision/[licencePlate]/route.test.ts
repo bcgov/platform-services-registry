@@ -1,14 +1,14 @@
 import { expect } from '@jest/globals';
 import { $Enums } from '@prisma/client';
 import prisma from '@/core/prisma';
-import { createSamplePublicCloudRequestData } from '@/helpers/mock-resources';
+import { createSamplePublicCloudProductData } from '@/helpers/mock-resources';
 import { mockSessionByEmail, mockSessionByRole } from '@/services/api-test/core';
 import { provisionPublicCloudProject } from '@/services/api-test/public-cloud';
 import { createPublicCloudProject } from '@/services/api-test/public-cloud/products';
 import { makePublicCloudRequestDecision } from '@/services/api-test/public-cloud/requests';
 
 const productData = {
-  main: createSamplePublicCloudRequestData(),
+  main: createSamplePublicCloudProductData(),
 };
 
 const requests = {

@@ -1,6 +1,6 @@
 import { expect } from '@jest/globals';
 import { $Enums } from '@prisma/client';
-import { createSamplePublicCloudRequestData } from '@/helpers/mock-resources';
+import { createSamplePublicCloudProductData } from '@/helpers/mock-resources';
 import { findOhterMockUsers } from '@/helpers/mock-users';
 import { mockSessionByEmail, mockSessionByRole } from '@/services/api-test/core';
 import { provisionPublicCloudProject } from '@/services/api-test/public-cloud';
@@ -22,7 +22,7 @@ const newEnvironmentsEnabled = {
 };
 
 const productData = {
-  main: createSamplePublicCloudRequestData({
+  main: createSamplePublicCloudProductData({
     data: {
       environmentsEnabled: oldEnvironmentsEnabled,
     },
