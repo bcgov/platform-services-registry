@@ -1,6 +1,7 @@
 import { Prisma } from '@prisma/client';
-import { Button, Heading, Text } from '@react-email/components';
+import { Button, Heading, Text, Link } from '@react-email/components';
 import * as React from 'react';
+import { BASE_URL } from '@/config';
 import Closing from '@/emails/_components/Closing';
 import Comment from '@/emails/_components/Comment';
 import QuotaChanges from '@/emails/_components/Edit/QuotaChanges';
@@ -86,6 +87,10 @@ const RequestRejectionTemplate = ({ request, currentData }: EmailProp) => {
           rejected due to the following reason(s):
         </Text>
         <Comment decisionComment={request.decisionComment} />
+        <Text className="">
+          Here you can find request details{' '}
+          <Link href={`${BASE_URL}/private-cloud/requests/${request.id}/decision`}>Request Info</Link>
+        </Text>
         <Text>Log in to the registry and create a new request if the reason(s) above no longer apply.</Text>
         <Button href="https://registry.developer.gov.bc.ca/" className="bg-bcorange rounded-md px-4 py-2 text-white">
           Log in to Registry
