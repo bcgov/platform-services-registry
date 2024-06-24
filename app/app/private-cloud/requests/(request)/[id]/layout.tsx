@@ -12,7 +12,7 @@ import RequestBadge from '@/components/form/RequestBadge';
 import LightButton from '@/components/generic/button/LightButton';
 import Tabs, { ITab } from '@/components/generic/tabs/BasicTabs';
 import createClientPage from '@/core/client-page';
-import { comparePrivateProductData } from '@/helpers/product';
+import { comparePrivateProductData } from '@/helpers/product-change';
 import { getPrivateCloudRequest } from '@/services/backend/private-cloud/requests';
 import { privateProductState } from '@/states/global';
 

@@ -1,4 +1,4 @@
-import { $Enums, Cluster, DecisionStatus, User } from '@prisma/client';
+import { $Enums, DecisionStatus, User } from '@prisma/client';
 import { z } from 'zod';
 import createApiHandler from '@/core/api-handler';
 import { BadRequestResponse, OkResponse, UnauthorizedResponse } from '@/core/responses';
@@ -29,7 +29,7 @@ export const POST = apiHandler(async ({ pathParams, body, session }) => {
   }
 
   if (request.decisionStatus === DecisionStatus.REJECTED) {
-    await sendRequestRejectionEmails(request, decisionComment);
+    await sendRequestRejectionEmails(request);
     return OkResponse(request);
   }
 

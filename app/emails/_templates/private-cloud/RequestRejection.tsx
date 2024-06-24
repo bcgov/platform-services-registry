@@ -1,24 +1,80 @@
+import { Prisma } from '@prisma/client';
 import { Button, Heading, Text } from '@react-email/components';
 import * as React from 'react';
 import Closing from '@/emails/_components/Closing';
 import Comment from '@/emails/_components/Comment';
 import QuotaChanges from '@/emails/_components/Edit/QuotaChanges';
-import { comparePrivateCloudProjects } from '@/emails/_components/Edit/utils/compare-projects';
 import Layout from '@/emails/_components/layout/Layout';
 import ProductDetails from '@/emails/_components/ProductDetails';
+import { comparePrivateProductData } from '@/helpers/product-change';
 import { PrivateCloudRequestWithProjectAndRequestedProject } from '@/request-actions/private-cloud/decision-request';
 
 interface EmailProp {
-  productName: string;
-  decisionComment?: string;
   request: PrivateCloudRequestWithProjectAndRequestedProject;
+  currentData: Prisma.PrivateCloudRequestedProjectGetPayload<{
+    include: {
+      projectOwner: true;
+      primaryTechnicalLead: true;
+      secondaryTechnicalLead: true;
+    };
+  }>;
 }
 
-const RequestRejectionTemplate = ({ request, productName, decisionComment }: EmailProp) => {
-  if (!request || !request.project || !request.decisionData) return <></>;
-  const current = request.project;
-  const requested = request.decisionData;
-  const changed = comparePrivateCloudProjects(current, requested);
+const RequestRejectionTemplate = ({ request, currentData }: EmailProp) => {
+  if (!request) return <></>;
+
+  let changes = null;
+  if (request.type === 'EDIT' && request.originalData) {
+    const diffData = comparePrivateProductData(request.originalData, request.decisionData);
+    changes = (
+      <div className="flex flex-row flex-wrap">
+        {diffData.parentPaths.includes('productionQuota') && (
+          <QuotaChanges
+            licencePlate={`${request.licencePlate}-prod`}
+            quotaCurrent={request.originalData.productionQuota}
+            quotaRequested={request.decisionData.productionQuota}
+            type="Production"
+            cluster={currentData.cluster}
+            currentLabel="Current"
+            requestedLabel="Rejected"
+          />
+        )}
+        {diffData.parentPaths.includes('testQuota') && (
+          <QuotaChanges
+            licencePlate={`${request.licencePlate}-test`}
+            quotaCurrent={request.originalData.testQuota}
+            quotaRequested={request.decisionData.testQuota}
+            type="Test"
+            cluster={currentData.cluster}
+            currentLabel="Current"
+            requestedLabel="Rejected"
+          />
+        )}
+        {diffData.parentPaths.includes('developmentQuota') && (
+          <QuotaChanges
+            licencePlate={`${request.licencePlate}-dev`}
+            quotaCurrent={request.originalData.developmentQuota}
+            quotaRequested={request.decisionData.developmentQuota}
+            type="Development"
+            cluster={currentData.cluster}
+            currentLabel="Current"
+            requestedLabel="Rejected"
+          />
+        )}
+        {diffData.parentPaths.includes('toolsQuota') && (
+          <QuotaChanges
+            licencePlate={`${request.licencePlate}-tools`}
+            quotaCurrent={request.originalData.toolsQuota}
+            quotaRequested={request.decisionData.toolsQuota}
+            type="Tools"
+            cluster={currentData.cluster}
+            currentLabel="Current"
+            requestedLabel="Rejected"
+          />
+        )}
+      </div>
+    );
+  }
 
   return (
     <Layout>
@@ -26,10 +82,10 @@ const RequestRejectionTemplate = ({ request, productName, decisionComment }: Ema
         <Heading className="text-lg text-black">Sorry, your request was rejected</Heading>
         <Text>Hi Product Team, </Text>
         <Text className="">
-          Your request regarding the product {productName} on the Private Cloud Openshift platform has been rejected due
-          to the following reason(s):
+          Your request regarding the product {currentData.name} on the Private Cloud Openshift platform has been
+          rejected due to the following reason(s):
         </Text>
-        <Comment decisionComment={decisionComment} />
+        <Comment decisionComment={request.decisionComment} />
         <Text>Log in to the registry and create a new request if the reason(s) above no longer apply.</Text>
         <Button href="https://registry.developer.gov.bc.ca/" className="bg-bcorange rounded-md px-4 py-2 text-white">
           Log in to Registry
@@ -37,60 +93,16 @@ const RequestRejectionTemplate = ({ request, productName, decisionComment }: Ema
       </div>
       <div className="pb-6 mt-4 mb-4 border-solid border-0 border-b-1 border-slate-300">
         <ProductDetails
-          name={request.decisionData.name}
-          description={request.decisionData.description}
-          ministry={request.decisionData.ministry}
-          po={request.decisionData.projectOwner}
-          tl1={request.decisionData.primaryTechnicalLead}
-          tl2={request.decisionData.secondaryTechnicalLead}
+          name={currentData.name}
+          description={currentData.description}
+          ministry={currentData.ministry}
+          po={currentData.projectOwner}
+          tl1={currentData.primaryTechnicalLead}
+          tl2={currentData.secondaryTechnicalLead}
         />
       </div>
-      <div className="flex flex-row flex-wrap">
-        {changed.productionQuota && (
-          <QuotaChanges
-            licencePlate={`${request.licencePlate}-prod`}
-            quotaCurrent={current.productionQuota}
-            quotaRequested={requested.productionQuota}
-            type="Production"
-            cluster={current.cluster}
-            currentLabel="Current"
-            requestedLabel="Rejected"
-          />
-        )}
-        {changed.testQuota && (
-          <QuotaChanges
-            licencePlate={`${request.licencePlate}-test`}
-            quotaCurrent={current.testQuota}
-            quotaRequested={requested.testQuota}
-            type="Test"
-            cluster={current.cluster}
-            currentLabel="Current"
-            requestedLabel="Rejected"
-          />
-        )}
-        {changed.developmentQuota && (
-          <QuotaChanges
-            licencePlate={`${request.licencePlate}-dev`}
-            quotaCurrent={current.testQuota}
-            quotaRequested={requested.testQuota}
-            type="Development"
-            cluster={current.cluster}
-            currentLabel="Current"
-            requestedLabel="Rejected"
-          />
-        )}
-        {changed.toolsQuota && (
-          <QuotaChanges
-            licencePlate={`${request.licencePlate}-tools`}
-            quotaCurrent={current.testQuota}
-            quotaRequested={requested.testQuota}
-            type="Tools"
-            cluster={current.cluster}
-            currentLabel="Current"
-            requestedLabel="Rejected"
-          />
-        )}
-      </div>
+
+      {changes}
 
       <div>
         <Closing />

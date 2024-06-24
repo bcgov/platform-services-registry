@@ -25,6 +25,13 @@ export type PrivateCloudRequestWithProjectAndRequestedProject = Prisma.PrivateCl
         secondaryTechnicalLead: true;
       };
     };
+    originalData: {
+      include: {
+        projectOwner: true;
+        primaryTechnicalLead: true;
+        secondaryTechnicalLead: true;
+      };
+    };
     decisionData: {
       include: {
         projectOwner: true;
