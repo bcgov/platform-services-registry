@@ -53,3 +53,6 @@ export const M365_PROXY_URL = process.env.M365_PROXY_URL || 'http://localhost:80
 export const M365_URL = process.env.M365_URL || 'http://localhost:4040';
 export const USE_M365_PROXY = process.env.USE_M365_PROXY === 'true';
 export const OIDC_AUTHORITY = process.env.OIDC_AUTHORITY || 'https://localhost:8443/realms/platform-services';
+export const MAILCHIMP_SEGMENT_LIST_ID = process.env.MAILCHIMP_SEGMENT_LIST_ID || '';
+export const MAILCHIMP_SEGMENT_API_KEY = process.env.MAILCHIMP_SEGMENT_API_KEY || '';
+export const MAILCHIMP_SEGMENT_SERVER_PREFIX = process.env.MAILCHIMP_SEGMENT_SERVER_PREFIX || '';
