@@ -19,3 +19,11 @@ install:
 	npm install
 	npm install --prefix app
 	npm install --prefix data-migrations
+
+# To copy data from the live environment, please follow these steps:
+# 1. Log into the OCP API using the API token provided by the OCP console.
+# 2. Select the environment namespace with the command 'oc project abcdef-xxx'.
+# 3. Execute the following Make command:
+.PHONY: copy-db
+copy-db:
+	./.bin/copy-db.sh
