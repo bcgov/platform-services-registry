@@ -86,7 +86,7 @@ export default privateCloudProductSecurityACS(({ pathParams, queryParams, sessio
     });
   }
 
-  if (session?.previews.comments && session?.permissions.viewAllPrivateProductComments) {
+  if (session?.permissions.viewAllPrivateProductComments) {
     tabs.push({
       label: 'ADMIN COMMENTS',
       name: 'comments',
