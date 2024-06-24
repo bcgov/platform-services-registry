@@ -3,22 +3,11 @@ import { notifications } from '@mantine/notifications';
 import { RichTextEditor } from '@mantine/tiptap';
 import { IconMessageCirclePlus, IconX, IconSend, IconSourceCode } from '@tabler/icons-react';
 import { useMutation } from '@tanstack/react-query';
-import Blockquote from '@tiptap/extension-blockquote';
-import Bold from '@tiptap/extension-bold';
-import BulletList from '@tiptap/extension-bullet-list';
-import Code from '@tiptap/extension-code';
-import CodeBlock from '@tiptap/extension-code-block';
-import Link from '@tiptap/extension-link';
-import ListItem from '@tiptap/extension-list-item';
-import OrderedList from '@tiptap/extension-ordered-list';
 import Placeholder from '@tiptap/extension-placeholder';
-import Strike from '@tiptap/extension-strike';
-import Underline from '@tiptap/extension-underline';
 import { useEditor } from '@tiptap/react';
-import StarterKit from '@tiptap/starter-kit';
 import React, { useState, useEffect } from 'react';
-import './tiptap.css';
 import { createPrivateCloudComment } from '@/services/backend/private-cloud/products';
+import { commonExtensions } from './TiptapConfig';
 
 interface CommentFormProps {
   licencePlate: string;
@@ -42,36 +31,12 @@ function CommentForm({
   placeholderText,
 }: CommentFormProps) {
   const [isLoading, setLoading] = useState(false);
-  const [showCommentBox, setShowCommentBox] = useState(false); // State to toggle comment box visibility
+  const [showCommentBox, setShowCommentBox] = useState(false);
   const [isEditorEmpty, setIsEditorEmpty] = useState(true);
 
-  const commentEditor = useEditor({
+  const editorInstance = useEditor({
     extensions: [
-      StarterKit.configure({
-        history: {},
-      }),
-      CodeBlock,
-      Code,
-      Link,
-      Underline,
-      Strike,
-      Bold,
-      BulletList.configure({
-        HTMLAttributes: {
-          class: 'tiptap-list',
-        },
-        keepMarks: true,
-        keepAttributes: true,
-      }),
-      OrderedList.configure({
-        HTMLAttributes: {
-          class: 'tiptap-list',
-        },
-        keepMarks: true,
-        keepAttributes: true,
-      }),
-      Blockquote,
-      ListItem,
+      ...commonExtensions,
       Placeholder.configure({
         placeholder: placeholderText,
       }),
@@ -84,23 +49,23 @@ function CommentForm({
   });
 
   useEffect(() => {
-    if (commentEditor) {
-      const hasText = commentEditor.getText().trim().length > 0;
+    if (editorInstance) {
+      const hasText = editorInstance.getText().trim().length > 0;
       setIsEditorEmpty(!hasText);
     }
-  }, [commentEditor]);
+  }, [editorInstance?.state.doc.content.size, editorInstance]);
 
   const mutation = useMutation({
     mutationFn: () =>
-      createPrivateCloudComment(licencePlate, commentEditor?.getHTML() ?? '', userId, projectId, requestId),
+      createPrivateCloudComment(licencePlate, editorInstance?.getHTML() ?? '', userId, projectId, requestId),
     onMutate: () => {
       setLoading(true);
     },
     onSuccess: () => {
       onCommentAdded();
-      commentEditor?.commands.clearContent();
+      editorInstance?.commands.clearContent();
       setLoading(false);
-      setShowCommentBox(false); // Hide the comment box after submitting
+      setShowCommentBox(false);
       notifications.show({
         color: 'green',
         title: 'Success',
@@ -135,7 +100,7 @@ function CommentForm({
   };
 
   const handleCancel = () => {
-    commentEditor?.commands.clearContent();
+    editorInstance?.commands.clearContent();
     setShowCommentBox(false);
   };
 
@@ -145,7 +110,7 @@ function CommentForm({
         {!showCommentBox && (
           <div className="flex justify-end mb-2 transition-opacity duration-500 ease-in-out">
             <Button
-              onClick={() => setShowCommentBox(true)} // Show the comment box
+              onClick={() => setShowCommentBox(true)}
               className="flex items-center px-5 py-2.5 bg-yellow-400 border-none rounded cursor-pointer transition-transform duration-500 ease-in-out transform hover:scale-105 hover:bg-yellow-500 text-black hover:text-black font-normal"
               leftSection={<IconMessageCirclePlus className="mr-2 text-black" />}
             >
@@ -156,7 +121,7 @@ function CommentForm({
 
         {showCommentBox && (
           <form onSubmit={handleSubmit} className="relative transition-opacity duration-500 ease-in-out opacity-100">
-            <RichTextEditor editor={commentEditor} className="mb-2.5 tiptap">
+            <RichTextEditor editor={editorInstance} className="mb-2.5 tiptap">
               <RichTextEditor.Toolbar>
                 <RichTextEditor.ControlsGroup>
                   <RichTextEditor.Bold />

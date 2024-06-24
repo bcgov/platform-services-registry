@@ -31,19 +31,23 @@ const TiptapReadOnly: React.FC<TiptapReadOnlyProps> = ({ content }) => {
       Bold,
       BulletList.configure({
         HTMLAttributes: {
-          class: 'tiptap-list',
+          class: 'list-disc pl-6',
         },
         keepMarks: true,
         keepAttributes: true,
       }),
       OrderedList.configure({
         HTMLAttributes: {
-          class: 'tiptap-list',
+          class: 'list-decimal pl-6',
         },
         keepMarks: true,
         keepAttributes: true,
       }),
-      Blockquote,
+      Blockquote.configure({
+        HTMLAttributes: {
+          class: 'border-l-4 border-gray-300 pl-4 text-gray-600 bg-gray-100 rounded-md',
+        },
+      }),
       ListItem,
     ],
     content: content,
