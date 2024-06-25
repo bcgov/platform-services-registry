@@ -4,6 +4,7 @@ import _isPlainObject from 'lodash-es/isPlainObject';
 import _isString from 'lodash-es/isString';
 import _mapValues from 'lodash-es/mapValues';
 import _pick from 'lodash-es/pick';
+import _uniq from 'lodash-es/uniq';
 import { diffExt, DiffChange } from '@/utils/diff';
 
 export interface PrivateProductChange {
@@ -77,7 +78,7 @@ export function comparePrivateProductData(data1: any, data2: any) {
     contactsChanged,
     quotasChanged,
     commonComponentsChanged,
-    parentPaths,
+    parentPaths: _uniq(parentPaths),
     changes,
   };
 }
@@ -143,7 +144,7 @@ export function comparePublicProductData(data1: any, data2: any) {
     contactsChanged,
     budgetChanged,
     billingChanged,
-    parentPaths,
+    parentPaths: _uniq(parentPaths),
     changes,
   };
 }

@@ -1,6 +1,7 @@
-import { $Enums, DecisionStatus, Prisma, RequestType } from '@prisma/client';
+import { $Enums, DecisionStatus, Prisma, RequestType, EventType } from '@prisma/client';
 import { Session } from 'next-auth';
 import prisma from '@/core/prisma';
+import { comparePrivateProductData } from '@/helpers/product-change';
 import { isQuotaUpgrade } from '@/helpers/quota-change';
 import { createEvent } from '@/mutations/events';
 import { getLastClosedPrivateCloudRequest } from '@/queries/private-cloud-requests';
@@ -43,31 +44,10 @@ export default async function editRequest(
     status: project.status,
     cluster: project.cluster,
     createdAt: project.createdAt,
-    projectOwner: {
-      connectOrCreate: {
-        where: {
-          email: formData.projectOwner.email,
-        },
-        create: formData.projectOwner,
-      },
-    },
-    primaryTechnicalLead: {
-      connectOrCreate: {
-        where: {
-          email: formData.primaryTechnicalLead.email,
-        },
-        create: formData.primaryTechnicalLead,
-      },
-    },
+    projectOwner: { connect: { email: formData.projectOwner.email } },
+    primaryTechnicalLead: { connect: { email: formData.primaryTechnicalLead.email } },
     secondaryTechnicalLead: formData.secondaryTechnicalLead
-      ? {
-          connectOrCreate: {
-            where: {
-              email: formData.secondaryTechnicalLead.email,
-            },
-            create: formData.secondaryTechnicalLead,
-          },
-        }
+      ? { connect: { email: formData.secondaryTechnicalLead.email } }
       : undefined,
   };
 
@@ -96,6 +76,8 @@ export default async function editRequest(
   // Retrieve the latest request data to acquire the decision data ID that can be assigned to the incoming request's original data.
   const previousRequest = await getLastClosedPrivateCloudRequest(project.licencePlate);
 
+  const { changes, ...otherChangeMeta } = comparePrivateProductData(rest, previousRequest?.decisionData);
+
   const request = await prisma.privateCloudRequest.create({
     data: {
       type: RequestType.EDIT,
@@ -105,22 +87,11 @@ export default async function editRequest(
       createdByEmail: session.user.email,
       licencePlate: project.licencePlate,
       requestComment,
-      originalData: {
-        connect: {
-          id: previousRequest?.decisionDataId,
-        },
-      },
-      decisionData: {
-        create: decisionData,
-      },
-      requestData: {
-        create: decisionData,
-      },
-      project: {
-        connect: {
-          licencePlate: licencePlate,
-        },
-      },
+      changes: otherChangeMeta,
+      originalData: { connect: { id: previousRequest?.decisionDataId } },
+      decisionData: { create: decisionData },
+      requestData: { create: decisionData },
+      project: { connect: { licencePlate: project.licencePlate } },
     },
     include: {
       project: {
@@ -148,7 +119,7 @@ export default async function editRequest(
   });
 
   if (request) {
-    await createEvent($Enums.EventType.UPDATE_PRIVATE_CLOUD_PRODUCT, session.user.id, { requestId: request.id });
+    await createEvent(EventType.UPDATE_PRIVATE_CLOUD_PRODUCT, session.user.id, { requestId: request.id });
   }
 
   return request;
