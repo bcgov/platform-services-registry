@@ -1,7 +1,7 @@
 import { PrivateCloudRequest } from '@prisma/client';
 import PrivateHistorySubItem from '@/components/history/PrivateHistorySubItem';
 
-export default function PrivateHistoryItem(request: Omit<PrivateCloudRequest, 'provisionedDate'>) {
+export default function PrivateHistoryItem(request: Omit<PrivateCloudRequest, 'provisionedDate' | 'changes'>) {
   return [
     request.decisionDate && (
       <PrivateHistorySubItem

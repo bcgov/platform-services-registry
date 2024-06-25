@@ -1,6 +1,7 @@
-import { $Enums, DecisionStatus, Prisma, RequestType } from '@prisma/client';
+import { DecisionStatus, Prisma, RequestType, EventType } from '@prisma/client';
 import { Session } from 'next-auth';
 import prisma from '@/core/prisma';
+import { comparePublicProductData } from '@/helpers/product-change';
 import { createEvent } from '@/mutations/events';
 import { getLastClosedPublicCloudRequest } from '@/queries/public-cloud-requests';
 import { PublicCloudEditRequestBody, UserInput } from '@/schema';
@@ -34,6 +35,7 @@ export default async function editRequest(
     formData.projectOwner.email,
     formData.primaryTechnicalLead.email,
     formData.secondaryTechnicalLead?.email,
+    formData.expenseAuthority?.email,
   ]);
 
   // Merge the form data with the existing project data
@@ -43,47 +45,18 @@ export default async function editRequest(
     status: project.status,
     provider: project.provider,
     createdAt: project.createdAt,
-    projectOwner: {
-      connectOrCreate: {
-        where: {
-          email: formData.projectOwner.email,
-        },
-        create: formData.projectOwner,
-      },
-    },
-    primaryTechnicalLead: {
-      connectOrCreate: {
-        where: {
-          email: formData.primaryTechnicalLead.email,
-        },
-        create: formData.primaryTechnicalLead,
-      },
-    },
+    projectOwner: { connect: { email: formData.projectOwner.email } },
+    primaryTechnicalLead: { connect: { email: formData.primaryTechnicalLead.email } },
     secondaryTechnicalLead: formData.secondaryTechnicalLead
-      ? {
-          connectOrCreate: {
-            where: {
-              email: formData.secondaryTechnicalLead.email,
-            },
-            create: formData.secondaryTechnicalLead,
-          },
-        }
+      ? { connect: { email: formData.secondaryTechnicalLead.email } }
       : undefined,
-    expenseAuthority: formData.expenseAuthority
-      ? // this check until expenseAuthority field will be populated for every public cloud product
-        {
-          connectOrCreate: {
-            where: {
-              email: formData.expenseAuthority.email,
-            },
-            create: formData.expenseAuthority,
-          },
-        }
-      : undefined,
+    expenseAuthority: formData.expenseAuthority ? { connect: { email: formData.expenseAuthority.email } } : undefined,
   };
 
   // Retrieve the latest request data to acquire the decision data ID that can be assigned to the incoming request's original data.
   const previousRequest = await getLastClosedPublicCloudRequest(project.licencePlate);
+
+  const { changes, ...otherChangeMeta } = comparePublicProductData(rest, previousRequest?.decisionData);
 
   const request = await prisma.publicCloudRequest.create({
     data: {
@@ -93,22 +66,11 @@ export default async function editRequest(
       createdByEmail: session.user.email,
       licencePlate: project.licencePlate,
       requestComment,
-      originalData: {
-        connect: {
-          id: previousRequest?.decisionDataId,
-        },
-      },
-      decisionData: {
-        create: decisionData,
-      },
-      requestData: {
-        create: decisionData,
-      },
-      project: {
-        connect: {
-          licencePlate: licencePlate,
-        },
-      },
+      changes: otherChangeMeta,
+      originalData: { connect: { id: previousRequest?.decisionDataId } },
+      decisionData: { create: decisionData },
+      requestData: { create: decisionData },
+      project: { connect: { licencePlate: project.licencePlate } },
     },
     include: {
       project: {
@@ -124,6 +86,7 @@ export default async function editRequest(
           projectOwner: true,
           primaryTechnicalLead: true,
           secondaryTechnicalLead: true,
+          expenseAuthority: true,
         },
       },
       decisionData: {
@@ -138,7 +101,7 @@ export default async function editRequest(
   });
 
   if (request) {
-    await createEvent($Enums.EventType.UPDATE_PUBLIC_CLOUD_PRODUCT, session.user.id, { requestId: request.id });
+    await createEvent(EventType.UPDATE_PUBLIC_CLOUD_PRODUCT, session.user.id, { requestId: request.id });
   }
 
   return request;
