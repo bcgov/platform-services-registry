@@ -29,12 +29,12 @@ export const POST = apiHandler(async () => {
     },
   });
 
-  await Promise.all(
+  const results = await Promise.all(
     requests.map((req) => {
       const { changes, ...otherChangeMeta } = comparePrivateProductData(req.originalData, req.decisionData);
       return prisma.privateCloudRequest.update({ where: { id: req.id }, data: { changes: otherChangeMeta } });
     }),
   );
 
-  return OkResponse(true);
+  return OkResponse(results.map((ret) => ret.id));
 });
