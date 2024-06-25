@@ -12,7 +12,7 @@ const licencePlateSchema = z.object({
 });
 
 export const GET = createApiHandler({
-  roles: ['user'],
+  roles: ['admin', 'private-admin'],
   permissions: [PermissionsEnum.ViewAllPrivateProductComments],
   validations: {
     pathParams: licencePlateSchema,
@@ -31,7 +31,7 @@ const updateCommentBodySchema = z.object({
 });
 
 export const PUT = createApiHandler({
-  roles: ['user'],
+  roles: ['admin', 'private-admin'],
   permissions: [PermissionsEnum.EditAllPrivateProductComments],
   validations: {
     pathParams: licencePlateSchema,
@@ -48,7 +48,7 @@ export const PUT = createApiHandler({
 });
 
 export const DELETE = createApiHandler({
-  roles: ['user'],
+  roles: ['admin', 'private-admin'],
   permissions: [PermissionsEnum.DeleteAllPrivateProductComments],
   validations: {
     pathParams: licencePlateSchema,

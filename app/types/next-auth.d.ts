@@ -76,7 +76,6 @@ declare module 'next-auth' {
     permissions: Permissions;
     previews: {
       security: boolean;
-      comments: boolean;
       apiAccount: boolean;
       azure: boolean;
     };

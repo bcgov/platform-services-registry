@@ -145,7 +145,6 @@ export async function generateSession({ session, token }: { session: Session; to
 
   session.previews = {
     security: !IS_PROD,
-    comments: !IS_PROD,
     apiAccount: !IS_PROD,
     azure: !IS_PROD,
   };
