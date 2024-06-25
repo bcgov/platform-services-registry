@@ -1,3 +1,12 @@
+## [0.31.2](https://github.com/bcgov/platform-services-registry/compare/v0.31.1...v0.31.2) (2024-06-25)
+
+### Features
+
+* **2961:** store product change metadata in DB ([1af2295](https://github.com/bcgov/platform-services-registry/commit/1af2295f4dd884057ce0aacfbcbaad05aa0f2e0a))
+
+### Bug Fixes
+
+* **3215:** correct the roles for product comments to add private admin ([0f10486](https://github.com/bcgov/platform-services-registry/commit/0f10486a501423de2473d0e1533aa75272a94a80))
 ## [0.31.1](https://github.com/bcgov/platform-services-registry/compare/v0.31.0...v0.31.1) (2024-06-25)
 
 ### Features
