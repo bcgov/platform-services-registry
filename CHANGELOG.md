@@ -1,3 +1,10 @@
+## [0.31.1](https://github.com/bcgov/platform-services-registry/compare/v0.31.0...v0.31.1) (2024-06-25)
+
+### Features
+
+* **2961:** add a Make command to copy data from live environment ([901ba03](https://github.com/bcgov/platform-services-registry/commit/901ba03268eca72b00800a6b0622d0e034fbbc7e))
+* **3145:** integrate the provisioner script into Airflow DAGs ([617d805](https://github.com/bcgov/platform-services-registry/commit/617d805d4f4fe95627946ebd1ed466ca714c4935))
+* **3179:** add rich text editor to admin comments pages ([68691d9](https://github.com/bcgov/platform-services-registry/commit/68691d9cc149654ecd07a53c4d1e7980a06addc7))
 ## [0.31.0](https://github.com/bcgov/platform-services-registry/compare/v0.30.0...v0.31.0) (2024-06-24)
 
 ### Features
