@@ -191,12 +191,12 @@ export async function generateSession({ session, token }: { session: Session; to
     reviewAllPublicCloudRequests: session.isAdmin || session.isPublicAdmin,
 
     createPrivateProductComments: session.isAdmin,
-    viewAllPrivateProductComments: session.isAdmin || session.isReader,
+    viewAllPrivateProductComments: session.isAdmin,
     editAllPrivateProductComments: session.isAdmin,
     deleteAllPrivateProductComments: session.isAdmin,
 
     createPublicProductComments: session.isAdmin,
-    viewAllPublicProductComments: session.isAdmin || session.isReader,
+    viewAllPublicProductComments: session.isAdmin,
     editAllPublicProductComments: session.isAdmin,
     deleteAllPublicProductComments: session.isAdmin,
 
