@@ -1,6 +1,7 @@
 import _toUpper from 'lodash-es/toUpper';
 import { redirect, RedirectType } from 'next/navigation';
 import { getServerSession } from 'next-auth/next';
+import { contactChangeRequests } from '@/analytics/public-cloud/contact-changes';
 import { ministryDistributions } from '@/analytics/public-cloud/ministry-distributions';
 import { numberOfProductsOverTime } from '@/analytics/public-cloud/products';
 import { requestDecisionTime } from '@/analytics/public-cloud/request-decision-time';
@@ -25,6 +26,7 @@ export default async function AnalyticsDashboard() {
   }
 
   const requestsChartData = await combinedRequests();
+  const contactChangeData = await contactChangeRequests();
   const projectsChartData = await numberOfProductsOverTime();
   const requestDecisionTimeChartData = await requestDecisionTime();
   const ministryDistributionData = await ministryDistributions();
@@ -44,6 +46,14 @@ export default async function AnalyticsDashboard() {
           categories={['All requests', 'Edit requests', 'Create requests', 'Delete requests']}
           colors={['indigo', 'yellow', 'green', 'red']}
           exportApiEndpoint="/public-cloud/analytics/csv/requests"
+        />
+        <CombinedAreaGraph
+          title={'Contact change requests over time'}
+          subtitle={'This graph shows edit requests where contact change(s) was requested and the request decision'}
+          chartData={contactChangeData}
+          categories={['Contact changes']}
+          colors={['indigo']}
+          exportApiEndpoint=""
         />
         <LineGraph
           index="date"
