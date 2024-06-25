@@ -20,6 +20,7 @@ export const samplePublicRequest: PublicCloudRequestWithRequestedProject = {
   decisionStatus: 'PENDING', // or APPROVED, REJECTED, PROVISIONED
   requestComment: 'This is a sample request',
   decisionComment: 'This is a sample request',
+  changes: null,
   active: true,
   createdAt: new Date('2023-11-30T00:00:00Z'),
   updatedAt: new Date('2023-11-30T00:00:00Z'),
@@ -110,6 +111,7 @@ export const samplePublicEditRequest: PublicCloudRequestWithProjectAndRequestedP
   decisionStatus: 'PENDING', // or APPROVED, REJECTED, PROVISIONED
   requestComment: 'This is a sample request',
   decisionComment: 'This is a sample request',
+  changes: null,
   active: true,
   createdAt: new Date('2023-11-30T00:00:00Z'),
   updatedAt: new Date('2023-11-30T00:00:00Z'),

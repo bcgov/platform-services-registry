@@ -33,25 +33,7 @@ export default publicCloudProductHistory(({ pathParams }) => {
   return (
     <>
       {requests.map((request) => (
-        <PublicHistoryItem
-          key={request.id}
-          id={request.id}
-          licencePlate={request.licencePlate}
-          createdByEmail={request.createdByEmail}
-          decisionMakerEmail={request.decisionMakerEmail}
-          type={request.type}
-          decisionStatus={request.decisionStatus}
-          requestComment={request.requestComment}
-          decisionComment={request.decisionComment}
-          active={request.active}
-          createdAt={request.createdAt}
-          updatedAt={request.updatedAt}
-          decisionDate={request.decisionDate}
-          projectId={request.projectId}
-          decisionDataId={request.decisionDataId}
-          requestDataId={request.requestDataId}
-          originalDataId={request.originalDataId}
-        />
+        <PublicHistoryItem key={request.id} {...request} />
       ))}
     </>
   );
