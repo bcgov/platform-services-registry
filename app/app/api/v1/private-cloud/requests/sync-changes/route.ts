@@ -8,7 +8,7 @@ const apiHandler = createApiHandler({
   roles: ['admin'],
   useServiceAccount: true,
 });
-export const POST = apiHandler(async ({}) => {
+export const POST = apiHandler(async () => {
   const requests = await prisma.privateCloudRequest.findMany({
     where: { type: RequestType.EDIT },
     include: {

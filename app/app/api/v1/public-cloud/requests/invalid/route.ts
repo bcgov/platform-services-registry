@@ -7,7 +7,7 @@ const apiHandler = createApiHandler({
   roles: ['admin'],
   useServiceAccount: true,
 });
-export const GET = apiHandler(async ({}) => {
+export const GET = apiHandler(async () => {
   const rproducts = await prisma.publicCloudRequestedProject.findMany({ select: { id: true } });
   const rproductIds = rproducts.map((v) => v.id);
 

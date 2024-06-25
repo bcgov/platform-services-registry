@@ -5,10 +5,10 @@ import { OkResponse } from '@/core/responses';
 import { comparePublicProductData } from '@/helpers/product-change';
 
 const apiHandler = createApiHandler({
-  // roles: ['admin'],
-  // useServiceAccount: true,
+  roles: ['admin'],
+  useServiceAccount: true,
 });
-export const POST = apiHandler(async ({}) => {
+export const POST = apiHandler(async () => {
   const requests = await prisma.publicCloudRequest.findMany({
     where: { type: RequestType.EDIT },
     include: {
