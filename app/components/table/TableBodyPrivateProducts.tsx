@@ -5,13 +5,15 @@ import { Tooltip, Badge } from '@mantine/core';
 import { $Enums } from '@prisma/client';
 import _truncate from 'lodash-es/truncate';
 import { usePathname, useRouter } from 'next/navigation';
-import React, { useState } from 'react';
+import { useSession } from 'next-auth/react';
+import React, { useState, useEffect } from 'react';
 import ActiveRequestBox from '@/components/form/ActiveRequestBox';
 import TestProductBox from '@/components/form/TestProductBox';
 import CopyableButton from '@/components/generic/button/CopyableButton';
 import UserCard from '@/components/UserCard';
 import { ministryKeyToName } from '@/helpers/product';
 import { PrivateCloudProjectGetPayloadWithActiveRequest } from '@/queries/private-cloud-products';
+import { getAllPrivateCloudComments } from '@/services/backend/private-cloud/products';
 import { formatDate } from '@/utils/date';
 import EmptySearch from './EmptySearch';
 import TruncatedTooltip from './TruncatedTooltip';
@@ -24,6 +26,27 @@ export default function TableBodyPrivateProducts({ rows, isLoading = false }: Ta
   const router = useRouter();
   const pathname = usePathname();
   const cloud = pathname.split('/')[1];
+  const { data: session } = useSession();
+  const [commentCounts, setCommentCounts] = useState<{ [key: string]: number }>({});
+
+  useEffect(() => {
+    const fetchCommentCounts = async () => {
+      const counts = await Promise.all(
+        rows.map(async (row) => {
+          if (session?.permissions.viewAllPrivateProductComments && row.activeRequest) {
+            const comments = await getAllPrivateCloudComments(row.licencePlate, row.activeRequest.id);
+            return { [row.activeRequest.id]: comments.length };
+          }
+          return { [row.id]: 0 }; // Default to 0 if no active request or no permission
+        }),
+      );
+      setCommentCounts(Object.assign({}, ...counts));
+    };
+
+    if (session?.permissions.viewAllPrivateProductComments) {
+      fetchCommentCounts();
+    }
+  }, [rows, session]);
 
   if (isLoading) {
     return null;
@@ -39,7 +62,7 @@ export default function TableBodyPrivateProducts({ rows, isLoading = false }: Ta
 
   return (
     <div className="divide-y divide-grey-200/5">
-      {rows.map((row, index) => (
+      {rows.map((row) => (
         <div key={row.id}>
           <div
             tabIndex={0} // Make it focusable
@@ -88,7 +111,12 @@ export default function TableBodyPrivateProducts({ rows, isLoading = false }: Ta
               </div>
             </div>
             <div className="md:col-span-2 lg:col-span-3">
-              {row.activeRequest && <ActiveRequestBox data={{ ...row.activeRequest, cloud: 'private-cloud' }} />}
+              {row.activeRequest && (
+                <ActiveRequestBox
+                  data={{ ...row.activeRequest, cloud: 'private-cloud' }}
+                  commentCount={commentCounts[row.activeRequest.id]}
+                />
+              )}
             </div>
 
             <div className="lg:col-span-1 hidden lg:block"></div>
