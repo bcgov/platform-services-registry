@@ -369,6 +369,7 @@ export const samplePrivateRequest: PrivateCloudRequestWithRequestedProject = {
   requestDataId: 'e',
   originalDataId: 'c',
   decisionData: {
+    supportPhoneNumber: '+17777777777',
     productionQuota: {
       cpu: 'CPU_REQUEST_0_5_LIMIT_1_5',
       memory: 'MEMORY_REQUEST_2_LIMIT_4',
@@ -488,6 +489,7 @@ export const samplePrivateEditRequest: PrivateCloudRequestWithProjectAndRequeste
       memory: 'MEMORY_REQUEST_2_LIMIT_4',
       storage: 'STORAGE_1',
     },
+    supportPhoneNumber: '+17777777777',
     commonComponents: {
       addressAndGeolocation: { planningToUse: true, implemented: false },
       workflowManagement: { planningToUse: false, implemented: false },
@@ -579,6 +581,7 @@ export const samplePrivateEditRequest: PrivateCloudRequestWithProjectAndRequeste
       other: '',
       noServices: false,
     },
+    supportPhoneNumber: '+17777777777',
     id: 'f',
     name: 'CHANGED NAME',
     description: 'CHANGED DESC',
@@ -656,6 +659,7 @@ export const samplePrivateEditRequest: PrivateCloudRequestWithProjectAndRequeste
       memory: 'MEMORY_REQUEST_2_LIMIT_4',
       storage: 'STORAGE_1',
     },
+    supportPhoneNumber: '+17777777777',
     commonComponents: {
       addressAndGeolocation: { planningToUse: true, implemented: false },
       workflowManagement: { planningToUse: false, implemented: false },
@@ -751,6 +755,7 @@ export const samplePrivateProduct: PrivateCloudRequestedProjectWithContacts = {
     memory: 'MEMORY_REQUEST_2_LIMIT_4',
     storage: 'STORAGE_1',
   },
+  supportPhoneNumber: '+17777777777',
   commonComponents: {
     addressAndGeolocation: { planningToUse: true, implemented: false },
     workflowManagement: { planningToUse: false, implemented: false },
