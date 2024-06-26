@@ -53,7 +53,7 @@ export default async function AnalyticsDashboard() {
           chartData={contactChangeData}
           categories={['Contact changes']}
           colors={['indigo']}
-          exportApiEndpoint=""
+          exportApiEndpoint="/public-cloud/analytics/csv/contact-changes"
         />
         <LineGraph
           index="date"
