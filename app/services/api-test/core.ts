@@ -4,7 +4,6 @@ import { getServerSession } from 'next-auth/next';
 import { BASE_URL } from '@/config';
 import { generateTestSession, findMockUserbyRole, findMockUserByEmail, upsertMockUser } from '@/helpers/mock-users';
 import { SERVICES_KEYCLOAK_APP_REALM } from '@/jest.mock';
-import { AppUser } from '@/types/user';
 import { stringifyQuery } from '@/utils/query-string';
 
 type Handler = (req: NextRequest, Options?: { params: any }) => Promise<Response>;
