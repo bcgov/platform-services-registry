@@ -36,6 +36,8 @@ export const QuotaStorageEnum = z.enum([
   'STORAGE_512',
 ]);
 
+const phoneNumberRegex = /[2-9]\d{2}[2-9](?!11)\d{6}$/;
+
 export const cpuOptions = Object.values(QuotaCpuEnum.enum);
 export const memoryOptions = Object.values(QuotaMemoryEnum.enum);
 export const storageOptions = Object.values(QuotaStorageEnum.enum);
@@ -116,6 +118,21 @@ export const PrivateCloudCreateRequestBodySchema = z.object({
   commonComponents: CommonComponentsInputSchema,
   golddrEnabled: z.preprocess(processBoolean, z.boolean()),
   isTest: z.preprocess(processBoolean, z.boolean()),
+  supportPhoneNumber: z
+    .string()
+    .nullable()
+    .optional()
+    .refine(
+      (value) => {
+        if (value === null || value === undefined) {
+          return true;
+        }
+        return phoneNumberRegex.test(value);
+      },
+      {
+        message: 'Invalid phone number format. Expected format: +1 (xxx) xxx-xxxx',
+      },
+    ),
 });
 
 export const PublicCloudCreateRequestBodySchema = z.object({
