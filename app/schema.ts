@@ -120,7 +120,6 @@ export const PrivateCloudCreateRequestBodySchema = z.object({
   isTest: z.preprocess(processBoolean, z.boolean()),
   supportPhoneNumber: z
     .string()
-    .nullable()
     .optional()
     .refine(
       (value) => {

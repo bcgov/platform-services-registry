@@ -143,12 +143,7 @@ export default function TeamContacts({
             onAccept={handlePhoneNumberChange}
             placeholder="+1 (999) 999-9999"
           />
-          <p
-            className={classNames(
-              errors.supportPhoneNumber ? 'text-red-400' : '',
-              'mt-3 text-sm leading-6 text-gray-600',
-            )}
-          >
+          <p className="text-red-400 mt-3 text-sm leading-6 text-gray-600">
             {getErrorMessage(errors.supportPhoneNumber)}
           </p>
         </div>
