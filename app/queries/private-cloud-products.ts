@@ -1,4 +1,4 @@
-import { $Enums, Prisma } from '@prisma/client';
+import { Ministry, Cluster, ProjectStatus, Prisma } from '@prisma/client';
 import { Session } from 'next-auth';
 import prisma from '@/core/prisma';
 import { PrivateCloudProjectDecorate, PrivateCloudRequestDecorate } from '@/types/doc-decorate';
@@ -35,7 +35,7 @@ export async function searchPrivateCloudProducts({
   take,
   ministry,
   cluster,
-  active,
+  status,
   search,
   sortKey = defaultSortKey,
   sortOrder = Prisma.SortOrder.desc,
@@ -45,9 +45,9 @@ export async function searchPrivateCloudProducts({
   session: Session;
   skip: number;
   take: number;
-  active: boolean;
-  ministry?: string;
-  cluster?: string;
+  status?: ProjectStatus;
+  ministry?: Ministry;
+  cluster?: Cluster;
   search?: string;
   sortKey?: string;
   sortOrder?: Prisma.SortOrder;
@@ -79,15 +79,15 @@ export async function searchPrivateCloudProducts({
   }
 
   if (ministry) {
-    where.ministry = ministry as $Enums.Ministry;
+    where.ministry = ministry as Ministry;
   }
 
   if (cluster) {
-    where.cluster = cluster as $Enums.Cluster;
+    where.cluster = cluster as Cluster;
   }
 
-  if (active) {
-    where.status = $Enums.ProjectStatus.ACTIVE;
+  if (status) {
+    where.status = status;
   }
 
   if (isTest) {

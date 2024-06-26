@@ -1,4 +1,4 @@
-import { $Enums } from '@prisma/client';
+import { EventType, ProjectStatus } from '@prisma/client';
 import createApiHandler from '@/core/api-handler';
 import { NoContent, CsvResponse } from '@/core/responses';
 import { ministryKeyToName } from '@/helpers/product';
@@ -20,7 +20,7 @@ export const POST = createApiHandler({
     pageSize: 10000,
     ministry,
     provider,
-    active: !includeInactive,
+    status: includeInactive ? undefined : ProjectStatus.ACTIVE,
     sortKey: sortKey || undefined,
     sortOrder,
   };
@@ -48,7 +48,7 @@ export const POST = createApiHandler({
     Status: project.status,
   }));
 
-  await createEvent($Enums.EventType.EXPORT_PUBLIC_CLOUD_PRODUCT, session.user.id, searchProps);
+  await createEvent(EventType.EXPORT_PUBLIC_CLOUD_PRODUCT, session.user.id, searchProps);
 
   return CsvResponse(formattedData, 'public-cloud-products.csv');
 });
