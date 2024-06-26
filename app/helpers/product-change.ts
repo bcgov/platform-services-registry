@@ -30,6 +30,7 @@ const privateDataFields = [
   'productionQuota',
   'toolsQuota',
   'commonComponents',
+  'supportPhoneNumber',
 ];
 
 export function comparePrivateProductData(data1: any, data2: any) {
