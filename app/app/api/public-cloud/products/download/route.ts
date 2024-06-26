@@ -12,7 +12,7 @@ export const POST = createApiHandler({
   roles: ['user'],
   validations: { body: publicCloudProductSearchNoPaginationBodySchema },
 })(async ({ session, body }) => {
-  const { search = '', ministry = '', provider = '', includeInactive = false, sortKey, sortOrder } = body;
+  const { search = '', ministry, provider, includeInactive = false, sortKey, sortOrder } = body;
 
   const searchProps = {
     search,
