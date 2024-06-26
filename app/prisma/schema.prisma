@@ -100,6 +100,7 @@ model PrivateCloudProject {
   developmentQuota         Quota
   toolsQuota               Quota
   commonComponents         CommonComponents
+  supportPhoneNumber       String?
   requests                 PrivateCloudRequest[] @relation("project")
   comments                 PrivateCloudComment[] @relation("project")
 }
@@ -126,6 +127,7 @@ model PrivateCloudRequestedProject {
   developmentQuota         Quota
   toolsQuota               Quota
   commonComponents         CommonComponents
+  supportPhoneNumber       String?
   decisionRequests         PrivateCloudRequest[] @relation("decisionData")
   requestRequests          PrivateCloudRequest[] @relation("requestData")
   originalRequests         PrivateCloudRequest[] @relation("originalData")
