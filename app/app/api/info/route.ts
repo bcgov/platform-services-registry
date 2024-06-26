@@ -13,7 +13,7 @@ import createApiHandler from '@/core/api-handler';
 import { OkResponse } from '@/core/responses';
 
 const apiHandler = createApiHandler({});
-export const GET = apiHandler(async ({}) => {
+export const GET = apiHandler(async () => {
   const LOGOUT_URL = `${AUTH_SERVER_URL}/realms/${AUTH_RELM}/protocol/openid-connect/logout`;
   const TOKEN_URL = `${AUTH_SERVER_URL}/realms/${AUTH_RELM}/protocol/openid-connect/token`;
 
