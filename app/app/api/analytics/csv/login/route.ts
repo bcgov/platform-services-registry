@@ -9,7 +9,6 @@ const apiHandler = createApiHandler({
 
 export const GET = apiHandler(async () => {
   const data = await loginEvents();
-  if (!data) return NoContent();
 
   return CsvResponse(
     data.map((row) => {

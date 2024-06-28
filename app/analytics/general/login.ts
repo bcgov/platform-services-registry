@@ -41,5 +41,6 @@ export async function loginEvents() {
     },
   ];
 
-  return prisma.event.aggregateRaw({ pipeline });
+  const result = await prisma.event.aggregateRaw({ pipeline });
+  return result as never as { date: string; Logins: string }[];
 }
