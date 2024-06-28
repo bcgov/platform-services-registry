@@ -207,6 +207,7 @@ export async function generateSession({ session, token }: { session: Session; to
 
     viewZapscanResults: session.isAdmin || session.isAnalyzer,
     viewSonarscanResults: session.isAdmin || session.isAnalyzer,
+    viewGeneralAnalytics: session.isAdmin || session.isAnalyzer,
     viewPublicAnalytics: session.isAdmin || session.isAnalyzer || session.isPublicAnalyzer,
     viewPrivateAnalytics: session.isAdmin || session.isAnalyzer || session.isPrivateAnalyzer,
   };
