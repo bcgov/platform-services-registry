@@ -6,7 +6,7 @@ import { PermissionsEnum } from '@/types/permissions';
 const analyticsDashboard = createServerPage({
   permissions: [PermissionsEnum.ViewGeneralAnalytics],
 });
-export default analyticsDashboard(async ({}) => {
+export default analyticsDashboard(async () => {
   const loginEventData = await loginEvents();
 
   return (
