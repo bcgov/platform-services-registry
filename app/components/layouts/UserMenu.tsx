@@ -72,6 +72,12 @@ export default function UserMenu() {
       href: '/api-account',
     },
     {
+      text: 'General Analytics',
+      Icon: IconPresentationAnalytics,
+      href: '/analytics',
+      permission: 'viewPrivateAnalytics',
+    },
+    {
       text: 'Private Cloud Analytics',
       Icon: IconPresentationAnalytics,
       href: '/private-cloud/analytics',
