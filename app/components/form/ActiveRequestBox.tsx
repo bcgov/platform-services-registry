@@ -15,6 +15,8 @@ import { useRouter } from 'next/navigation';
 export default function ActiveRequestBox({
   data,
   className,
+  commentCount,
+  showCommentCount = true,
 }: {
   data?: {
     cloud: 'private-cloud' | 'public-cloud';
@@ -25,6 +27,8 @@ export default function ActiveRequestBox({
     createdByEmail: string;
   };
   className?: string;
+  commentCount?: number;
+  showCommentCount?: boolean;
 }) {
   const router = useRouter();
 
@@ -132,26 +136,37 @@ export default function ActiveRequestBox({
     <Tooltip label="View Request" position="top" offset={10} className={className}>
       <button
         type="button"
-        className="text-gray-900 bg-white border-solid border-2 border-gray-300 focus:outline-none hover:bg-gray-100 focus:ring-4 focus:ring-gray-100 font-medium rounded-lg text-sm px-5 py-2.5"
+        className="relative text-gray-900 bg-white border-solid border-2 border-gray-300 focus:outline-none hover:bg-gray-100 focus:ring-4 focus:ring-gray-100 font-medium rounded-lg text-sm px-5 py-2.5"
         onClick={(e) => {
           e.preventDefault();
           e.stopPropagation();
-
           router.push(`/${data.cloud}/requests/${data.id}/${path}`);
         }}
       >
-        <Indicator color={data.active ? 'lime' : 'red'} zIndex={10}>
-          <Badge autoContrast size="xl" color="rgba(200, 200, 200, 1)" radius="md" className="mb-1">
-            <TypeIcon className="inline-block" />
-            {data.type} Request
-          </Badge>
-          <div>{badges}</div>
-          {data.createdByEmail && (
-            <div className="text-center text-sm text-gray-400">
-              Submitted by <span>{data.createdByEmail}</span>
-            </div>
-          )}
-        </Indicator>
+        <div className="relative">
+          {showCommentCount && commentCount ? (
+            <Badge
+              color="blue"
+              size="md"
+              circle
+              className="absolute top-1 left-0 transform -translate-x-1/2 -translate-y-1/2"
+            >
+              {commentCount}
+            </Badge>
+          ) : null}
+          <Indicator color={data.active ? 'lime' : 'red'} zIndex={10}>
+            <Badge autoContrast size="xl" color="rgba(200, 200, 200, 1)" radius="md" className="mb-1">
+              <TypeIcon className="inline-block" />
+              {data.type} Request
+            </Badge>
+          </Indicator>
+        </div>
+        <div>{badges}</div>
+        {data.createdByEmail && (
+          <div className="text-center text-sm text-gray-400">
+            Submitted by <span>{data.createdByEmail}</span>
+          </div>
+        )}
       </button>
     </Tooltip>
   );
