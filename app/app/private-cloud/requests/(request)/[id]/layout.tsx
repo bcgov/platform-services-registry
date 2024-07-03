@@ -12,7 +12,7 @@ import RequestBadge from '@/components/form/RequestBadge';
 import LightButton from '@/components/generic/button/LightButton';
 import Tabs, { ITab } from '@/components/generic/tabs/BasicTabs';
 import createClientPage from '@/core/client-page';
-import { comparePrivateProductData } from '@/helpers/product';
+import { comparePrivateProductData } from '@/helpers/product-change';
 import { getPrivateCloudRequest } from '@/services/backend/private-cloud/requests';
 import { privateProductState } from '@/states/global';
 
@@ -86,7 +86,7 @@ export default privateCloudProductSecurityACS(({ pathParams, queryParams, sessio
     });
   }
 
-  if (session?.previews.comments && session?.permissions.viewAllPrivateProductComments) {
+  if (session?.permissions.viewAllPrivateProductComments) {
     tabs.push({
       label: 'ADMIN COMMENTS',
       name: 'comments',

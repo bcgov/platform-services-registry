@@ -17,7 +17,7 @@ const createCommentBodySchema = z
   });
 
 export const POST = createApiHandler({
-  roles: ['user'],
+  roles: ['admin', 'private-admin'],
   permissions: [PermissionsEnum.CreatePrivateProductComments],
   validations: {
     body: createCommentBodySchema,
@@ -37,7 +37,7 @@ const queryParamsSchema = z.object({
 });
 
 export const GET = createApiHandler({
-  roles: ['user'],
+  roles: ['admin', 'private-admin'],
   permissions: [PermissionsEnum.ViewAllPrivateProductComments],
   validations: {
     pathParams: pathParamsSchema,

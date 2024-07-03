@@ -215,8 +215,14 @@ export async function getLastClosedPublicCloudRequest(licencePlate: string) {
       licencePlate,
       active: false,
     },
-    select: {
-      decisionDataId: true,
+    include: {
+      decisionData: {
+        include: {
+          projectOwner: true,
+          primaryTechnicalLead: true,
+          secondaryTechnicalLead: true,
+        },
+      },
     },
     orderBy: {
       updatedAt: Prisma.SortOrder.desc,

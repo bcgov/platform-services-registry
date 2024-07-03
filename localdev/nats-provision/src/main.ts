@@ -19,9 +19,9 @@ async function main() {
   // Wait for external services to be available
   console.log('waiting for NATS server...', `tcp:${natsServer}`);
   await waitOn({
-    resources: [`tcp:${natsServer}`, `${KEYCLOAK_URL}/health/ready`, APP_URL],
+    resources: [`tcp:${natsServer}`, KEYCLOAK_URL, APP_URL],
     delay: 1000,
-    window: 100000,
+    window: 5000,
   });
 
   const nc = await connect({ servers: natsServer });
@@ -33,8 +33,6 @@ async function main() {
     clientId: PUBLIC_CLOUD_CLIENT_ID,
     clientSecret: PUBLIC_CLOUD_CLIENT_SECRET,
   });
-
-  await kc.auth();
 
   // Subscribe to NATS topics for private cloud provisioning
   const privateProms = ['clab', 'klab', 'silver', 'gold', 'golddr', 'klab2', 'emerald'].map((cluster) => {
@@ -72,6 +70,8 @@ async function main() {
 
         try {
           if (m.subject.endsWith('aws')) {
+            await kc.auth();
+
             const pgroup = await kc.createGroup(PUBLIC_CLOUD_REALM_NAME, 'Project Team Groups');
             const tgroup = await kc.createChildGroup(PUBLIC_CLOUD_REALM_NAME, pgroup?.id as string, licencePlate);
             await Promise.all(

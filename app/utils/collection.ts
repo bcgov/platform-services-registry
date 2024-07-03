@@ -1,3 +1,5 @@
+import { randomBytes } from 'crypto';
+
 export function arrayIntersection(arr1: string[], arr2: string[]) {
   if (!Array.isArray(arr1) || !Array.isArray(arr2)) {
     return [];
@@ -9,4 +11,11 @@ export function arrayIntersection(arr1: string[], arr2: string[]) {
   }
 
   return [];
+}
+
+export function getRandomItem<T>(arr: T[]): T {
+  const randomBytesBuffer = randomBytes(4);
+  const randomValue = randomBytesBuffer.readUInt32BE(0);
+  const randomIndex = randomValue % arr.length;
+  return arr[randomIndex];
 }

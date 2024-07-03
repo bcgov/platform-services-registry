@@ -1,20 +1,14 @@
-import { randomBytes } from 'crypto';
 import { faker } from '@faker-js/faker';
-import { Prisma, $Enums } from '@prisma/client';
+import { Prisma, Cluster, Provider } from '@prisma/client';
 import { clusters, ministries, providers } from '@/constants';
-import { findMockUserByIdr, generateTestSession, mockNoRoleIdirs } from '@/helpers/mock-users';
+import { findMockUserByIdr, mockNoRoleIdirs } from '@/helpers/mock-users';
 import { cpuOptions, memoryOptions, storageOptions } from '@/schema';
+import { getRandomItem } from '@/utils/collection';
 
-function getRandomItem<T>(arr: T[]): T {
-  const randomBytesBuffer = randomBytes(4);
-  const randomValue = randomBytesBuffer.readUInt32BE(0);
-  const randomIndex = randomValue % arr.length;
-  return arr[randomIndex];
-}
-
-function getRandomBool() {
-  return getRandomItem<boolean>([true, false]);
-}
+const getRandomBool = () => faker.helpers.arrayElement([true, false]);
+const getRandomMinistry = () => faker.helpers.arrayElement(ministries);
+const getRandomCluster = () => faker.helpers.arrayElement(clusters);
+const getRandomProvider = () => faker.helpers.arrayElement(providers);
 
 export function createSamplePrivateCloudProductData(args?: {
   data?: Partial<
@@ -27,7 +21,7 @@ export function createSamplePrivateCloudProductData(args?: {
 }) {
   const { data } = args ?? {};
 
-  const cluster = getRandomItem<$Enums.Cluster>(clusters);
+  const cluster = getRandomCluster();
 
   const quota = {
     cpu: cpuOptions[0],
@@ -38,9 +32,9 @@ export function createSamplePrivateCloudProductData(args?: {
   const _data = {
     licencePlate: faker.string.uuid().substring(0, 6),
     name: faker.company.name(),
-    description: faker.company.buzzPhrase(),
+    description: faker.lorem.sentence(),
     cluster,
-    ministry: getRandomItem(ministries),
+    ministry: getRandomMinistry(),
     projectOwner: findMockUserByIdr(getRandomItem(mockNoRoleIdirs)),
     primaryTechnicalLead: findMockUserByIdr(getRandomItem(mockNoRoleIdirs)),
     secondaryTechnicalLead: findMockUserByIdr(getRandomItem(mockNoRoleIdirs)),
@@ -91,29 +85,7 @@ export function createSamplePrivateCloudProductData(args?: {
     ...data,
   };
 
-  _data.golddrEnabled = cluster === $Enums.Cluster.GOLD ? getRandomBool() : false;
-
-  return _data;
-}
-
-export function createSamplePrivateCloudRequestData(args?: {
-  product?: Prisma.PrivateCloudProjectGetPayload<null>;
-  data?: Partial<
-    Prisma.PrivateCloudProjectGetPayload<null> & {
-      projectOwner: any;
-      primaryTechnicalLead: any;
-      secondaryTechnicalLead: any;
-    }
-  >;
-}) {
-  const { product = {}, data } = args ?? {};
-  const newProduct = createSamplePrivateCloudProductData({ data });
-
-  const _data = {
-    ...newProduct,
-    ...product,
-    ...data,
-  };
+  _data.golddrEnabled = cluster === Cluster.GOLD ? getRandomBool() : false;
 
   return _data;
 }
@@ -130,14 +102,14 @@ export function createSamplePublicCloudProductData(args?: {
 }) {
   const { data } = args ?? {};
 
-  const provider = getRandomItem<$Enums.Provider>(providers);
+  const provider = getRandomProvider();
 
   const _data = {
     licencePlate: faker.string.uuid().substring(0, 6),
     name: faker.string.alpha(10),
-    description: faker.company.buzzPhrase(),
+    description: faker.lorem.sentence(),
     provider,
-    ministry: getRandomItem(ministries),
+    ministry: getRandomMinistry(),
     projectOwner: findMockUserByIdr(getRandomItem(mockNoRoleIdirs)),
     primaryTechnicalLead: findMockUserByIdr(getRandomItem(mockNoRoleIdirs)),
     secondaryTechnicalLead: findMockUserByIdr(getRandomItem(mockNoRoleIdirs)),
@@ -155,29 +127,6 @@ export function createSamplePublicCloudProductData(args?: {
       development: true,
       tools: true,
     },
-    ...data,
-  };
-
-  return _data;
-}
-
-export function createSamplePublicCloudRequestData(args?: {
-  product?: Prisma.PublicCloudProjectGetPayload<null>;
-  data?: Partial<
-    Prisma.PublicCloudProjectGetPayload<null> & {
-      projectOwner: any;
-      primaryTechnicalLead: any;
-      secondaryTechnicalLead: any;
-      expenseAuthority: any;
-    }
-  >;
-}) {
-  const { product = {}, data } = args ?? {};
-  const newProduct = createSamplePublicCloudProductData({ data });
-
-  const _data = {
-    ...newProduct,
-    ...product,
     ...data,
   };
 

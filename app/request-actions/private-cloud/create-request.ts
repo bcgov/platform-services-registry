@@ -42,6 +42,7 @@ export default async function createRequest(formData: PrivateCloudCreateRequestB
       },
     },
     golddrEnabled: formData.golddrEnabled,
+    supportPhoneNumber: formData.supportPhoneNumber,
     isTest: formData.isTest,
     primaryTechnicalLead: {
       connectOrCreate: {

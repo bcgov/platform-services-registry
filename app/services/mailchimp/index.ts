@@ -1,80 +1,117 @@
-import { createHash } from 'crypto';
-import { IncomingMessage, RequestOptions } from 'http';
-import * as https from 'https';
-import { MAILCHIMP_SEGMENT_LIST_ID, MAILCHIMP_SEGMENT_API_KEY, MAILCHIMP_SEGMENT_SERVER_PREFIX } from '@/config';
+// import { createHash } from 'crypto';
+// import { IncomingMessage, RequestOptions } from 'http';
+// import * as https from 'https';
+// import { MAILCHIMP_LIST_ID, MAILCHIMP_API_KEY, MAILCHIMP_SERVER_PREFIX } from '@/config';
 
-const userEmail = 'test.email@gov.bc.ca';
-const userFname = 'Test';
-const userLname = 'Email';
+// import  {client} from '@mailchimp/mailchimp_marketing';
+const client = require('@mailchimp/mailchimp_marketing');
 
-const data = JSON.stringify({
-  email_address: userEmail,
-  status: 'subscribed',
-  merge_fields: {
-    FNAME: userFname,
-    LNAME: userLname,
-  },
+const MAILCHIMP_LIST_ID = '';
+const MAILCHIMP_API_KEY = '';
+const MAILCHIMP_SERVER_PREFIX = '';
+// const SEGMENT_ID = ""
+// const userEmail = 'test.email@gov.bc.ca';
+// const userFname = 'Test';
+// const userLname = 'Email';
+
+// const data = JSON.stringify({
+//   email_address: userEmail,
+//   status: 'subscribed',
+//   merge_fields: {
+//     FNAME: userFname,
+//     LNAME: userLname,
+//   },
+// });
+
+// const emailHash = createHash('md5').update(userEmail.toLowerCase()).digest('hex');
+
+client.setConfig({
+  apiKey: MAILCHIMP_API_KEY,
+  server: MAILCHIMP_SERVER_PREFIX,
 });
 
-const emailHash = createHash('md5').update(userEmail.toLowerCase()).digest('hex');
-
-const createOptions: RequestOptions = {
-  hostname: `${MAILCHIMP_SEGMENT_SERVER_PREFIX}.api.mailchimp.com`,
-  port: 443,
-  path: `/3.0/lists/${MAILCHIMP_SEGMENT_LIST_ID}/members`,
-  method: 'POST',
-  headers: {
-    'Content-Type': 'application/json',
-    Authorization: `Basic ${Buffer.from(`anystring:${MAILCHIMP_SEGMENT_API_KEY}`).toString('base64')}`,
-  },
+const run = async () => {
+  const response = await client.lists.listSegments(MAILCHIMP_LIST_ID);
+  console.log('response', response);
 };
 
-const updateOptions: RequestOptions = {
-  hostname: `${MAILCHIMP_SEGMENT_SERVER_PREFIX}.api.mailchimp.com`,
-  port: 443,
-  path: `/3.0/lists/${MAILCHIMP_SEGMENT_LIST_ID}/members/${emailHash}`,
-  method: 'PUT',
-  headers: {
-    'Content-Type': 'application/json',
-    Authorization: `Basic ${Buffer.from(`anystring:${MAILCHIMP_SEGMENT_API_KEY}`).toString('base64')}`,
-  },
-};
+run();
 
-const makeRequest = (options: RequestOptions, requestData: string) => {
-  return new Promise((resolve, reject) => {
-    const req = https.request(options, (res: IncomingMessage) => {
-      let body = '';
+// client.setConfig({
+//   apiKey: MAILCHIMP_API_KEY,
+//   server: MAILCHIMP_SERVER_PREFIX,
+// });
 
-      res.on('data', (chunk: any) => {
-        body += chunk;
-      });
+// const run = async () => {
+//   const response = await client.lists.batchSegmentMembers(
+//     {},
+//     MAILCHIMP_LIST_ID,
+//     SEGMENT_ID
+//   );
+//   console.log(response);
+// };
 
-      res.on('end', () => {
-        resolve({ statusCode: res.statusCode, body: JSON.parse(body) });
-      });
-    });
+// run();
 
-    req.on('error', (error: Error) => {
-      reject(error);
-    });
+// run();
 
-    req.write(requestData);
-    req.end();
-  });
-};
+// const createOptions: RequestOptions = {
+//   hostname: `${MAILCHIMP_SERVER_PREFIX}.api.mailchimp.com`,
+//   port: 443,
+//   path: `/3.0/lists/${MAILCHIMP_LIST_ID}/members`,
+//   method: 'POST',
+//   headers: {
+//     'Content-Type': 'application/json',
+//     Authorization: `Basic ${Buffer.from(`anystring:${MAILCHIMP_API_KEY}`).toString('base64')}`,
+//   },
+// };
 
-(async () => {
-  try {
-    const createResponse: any = await makeRequest(createOptions, data);
-    console.log('Create Response:', createResponse);
+// const updateOptions: RequestOptions = {
+//   hostname: `${MAILCHIMP_SERVER_PREFIX}.api.mailchimp.com`,
+//   port: 443,
+//   path: `/3.0/lists/${MAILCHIMP_LIST_ID}/members/${emailHash}`,
+//   method: 'PUT',
+//   headers: {
+//     'Content-Type': 'application/json',
+//     Authorization: `Basic ${Buffer.from(`anystring:${MAILCHIMP_API_KEY}`).toString('base64')}`,
+//   },
+// };
 
-    if (createResponse.statusCode === 400 && createResponse.body.title === 'Member Exists') {
-      const updateResponse: any = await makeRequest(updateOptions, data);
-      console.log('Update Response:', updateResponse);
-    } else {
-      console.log('Successfully created member.');
-    }
-  } catch (error) {
-    console.error('Error:', error);
-  }
-})();
+// const makeRequest = (options: RequestOptions, requestData: string) => {
+//   return new Promise((resolve, reject) => {
+//     const req = https.request(options, (res: IncomingMessage) => {
+//       let body = '';
+
+//       res.on('data', (chunk: any) => {
+//         body += chunk;
+//       });
+
+//       res.on('end', () => {
+//         resolve({ statusCode: res.statusCode, body: JSON.parse(body) });
+//       });
+//     });
+
+//     req.on('error', (error: Error) => {
+//       reject(error);
+//     });
+
+//     req.write(requestData);
+//     req.end();
+//   });
+// };
+
+// (async () => {
+//   try {
+//     const createResponse: any = await makeRequest(createOptions, data);
+//     console.log('Create Response:', createResponse);
+
+//     if (createResponse.statusCode === 400 && createResponse.body.title === 'Member Exists') {
+//       const updateResponse: any = await makeRequest(updateOptions, data);
+//       console.log('Update Response:', updateResponse);
+//     } else {
+//       console.log('Successfully created member.');
+//     }
+//   } catch (error) {
+//     console.error('Error:', error);
+//   }
+// })();

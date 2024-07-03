@@ -145,7 +145,6 @@ export async function generateSession({ session, token }: { session: Session; to
 
   session.previews = {
     security: !IS_PROD,
-    comments: !IS_PROD,
     apiAccount: !IS_PROD,
     azure: !IS_PROD,
   };
@@ -191,15 +190,15 @@ export async function generateSession({ session, token }: { session: Session; to
       session.isAdmin || session.isEditor || session.isPublicAdmin || session.isPublicEditor,
     reviewAllPublicCloudRequests: session.isAdmin || session.isPublicAdmin,
 
-    createPrivateProductComments: session.isAdmin,
-    viewAllPrivateProductComments: session.isAdmin || session.isReader,
-    editAllPrivateProductComments: session.isAdmin,
-    deleteAllPrivateProductComments: session.isAdmin,
+    createPrivateProductComments: session.isAdmin || session.isPrivateAdmin,
+    viewAllPrivateProductComments: session.isAdmin || session.isPrivateAdmin,
+    editAllPrivateProductComments: session.isAdmin || session.isPrivateAdmin,
+    deleteAllPrivateProductComments: session.isAdmin || session.isPrivateAdmin,
 
-    createPublicProductComments: session.isAdmin,
-    viewAllPublicProductComments: session.isAdmin || session.isReader,
-    editAllPublicProductComments: session.isAdmin,
-    deleteAllPublicProductComments: session.isAdmin,
+    createPublicProductComments: session.isAdmin || session.isPublicAdmin,
+    viewAllPublicProductComments: session.isAdmin || session.isPublicAdmin,
+    editAllPublicProductComments: session.isAdmin || session.isPublicAdmin,
+    deleteAllPublicProductComments: session.isAdmin || session.isPublicAdmin,
 
     createPublicCloudProductsAsAssignee: session.isUser,
     viewAssignedPublicCloudProducts: session.isUser,

@@ -1,6 +1,6 @@
 import { expect } from '@jest/globals';
 import { $Enums } from '@prisma/client';
-import { createSamplePrivateCloudRequestData } from '@/helpers/mock-resources';
+import { createSamplePrivateCloudProductData } from '@/helpers/mock-resources';
 import { pickProductData } from '@/helpers/product';
 import { QuotaCpuEnum, QuotaMemoryEnum, QuotaStorageEnum } from '@/schema';
 import { mockSessionByEmail, mockSessionByRole } from '@/services/api-test/core';
@@ -40,7 +40,7 @@ const newDevelopmentQuota = {
 };
 
 const productData = {
-  main: createSamplePrivateCloudRequestData({
+  main: createSamplePrivateCloudProductData({
     data: {
       developmentQuota: oldDevelopmentQuota,
     },

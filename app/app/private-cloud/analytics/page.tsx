@@ -1,5 +1,6 @@
 import { redirect } from 'next/navigation';
 import { getServerSession } from 'next-auth/next';
+import { contactChangeRequests } from '@/analytics/private-cloud/contact-changes';
 import { ministryDistributions } from '@/analytics/private-cloud/ministry-distributions';
 import { numberOfProductsOverTime } from '@/analytics/private-cloud/products';
 import { quotaEditRequests } from '@/analytics/private-cloud/quota-changes';
@@ -26,6 +27,7 @@ export default async function AnalyticsDashboard() {
 
   const quotaChangedChartData = await quotaEditRequests();
   const requestsChartData = await combinedRequests();
+  const contactChangeData = await contactChangeRequests();
   const projectsChartData = await numberOfProductsOverTime();
   const requestDecisionTimeChartData = await requestDecisionTime();
   const ministryDistributionData = await ministryDistributions();
@@ -56,6 +58,14 @@ export default async function AnalyticsDashboard() {
           categories={['All quota requests', 'Approved quota requests', 'Rejected quota requests']}
           colors={['indigo', 'green', 'red']}
           exportApiEndpoint="/private-cloud/analytics/csv/quota-requests"
+        />
+        <CombinedAreaGraph
+          title={'Contact change requests over time'}
+          subtitle={'This graph shows edit requests where contact change(s) was requested and the request decision'}
+          chartData={contactChangeData}
+          categories={['Contact changes']}
+          colors={['indigo']}
+          exportApiEndpoint="/private-cloud/analytics/csv/contact-changes"
         />
         <LineGraph
           index="date"

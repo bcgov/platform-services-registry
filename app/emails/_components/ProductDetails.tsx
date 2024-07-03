@@ -33,7 +33,7 @@ export default function ProductDetails({
         <Text className="mb-2 font-semibold h-4">Product Name: </Text>
         <Text className="mt-1 h-fit">{name}</Text>
         <Text className="mb-2 font-semibold h-4">Product Description: </Text>
-        <Text className="py-1 h-fit">{description}</Text>
+        <Text className="mt-1 h-fit">{description}</Text>
         {licencePlate && (
           <div>
             <Text className="mb-2 font-semibold h-4">Licence Plate: </Text>

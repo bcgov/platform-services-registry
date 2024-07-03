@@ -1,4 +1,4 @@
-import { $Enums, Prisma } from '@prisma/client';
+import { ProjectStatus, Ministry, Cluster, Prisma } from '@prisma/client';
 import { Session } from 'next-auth';
 import { parsePaginationParams } from '@/helpers/pagination';
 import { searchPrivateCloudProducts } from '@/queries/private-cloud-products';
@@ -10,7 +10,7 @@ export default async function searchOp({
   pageSize,
   ministry,
   cluster,
-  active,
+  status,
   sortKey,
   sortOrder,
   isTest,
@@ -19,9 +19,9 @@ export default async function searchOp({
   search: string;
   page: number;
   pageSize: number;
-  ministry: string;
-  cluster: string;
-  active: boolean;
+  ministry?: Ministry;
+  cluster?: Cluster;
+  status?: ProjectStatus;
   sortKey?: string;
   sortOrder?: Prisma.SortOrder;
   isTest: boolean;
@@ -34,7 +34,7 @@ export default async function searchOp({
     take,
     ministry,
     cluster,
-    active,
+    status,
     search,
     sortKey,
     sortOrder,

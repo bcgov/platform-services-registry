@@ -1,3 +1,4 @@
+import { ProjectStatus } from '@prisma/client';
 import _isString from 'lodash-es/isString';
 import createApiHandler from '@/core/api-handler';
 import { OkResponse } from '@/core/responses';
@@ -12,8 +13,8 @@ export const POST = createApiHandler({
     search = '',
     page = 1,
     pageSize = 5,
-    ministry = '',
-    cluster = '',
+    ministry,
+    cluster,
     includeInactive = false,
     sortKey,
     sortOrder,
@@ -27,7 +28,7 @@ export const POST = createApiHandler({
     pageSize,
     ministry,
     cluster,
-    active: !includeInactive,
+    status: includeInactive ? undefined : ProjectStatus.ACTIVE,
     sortKey: sortKey || undefined,
     sortOrder,
     isTest: showTest,

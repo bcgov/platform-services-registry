@@ -1,4 +1,4 @@
-import { $Enums } from '@prisma/client';
+import { EventType, ProjectStatus } from '@prisma/client';
 import createApiHandler from '@/core/api-handler';
 import { NoContent, CsvResponse } from '@/core/responses';
 import { ministryKeyToName, getTotalQuotaStr } from '@/helpers/product';
@@ -13,15 +13,7 @@ export const POST = createApiHandler({
   roles: ['user'],
   validations: { body: privateCloudProductSearchNoPaginationBodySchema },
 })(async ({ session, body }) => {
-  const {
-    search = '',
-    ministry = '',
-    cluster = '',
-    includeInactive = false,
-    showTest = false,
-    sortKey,
-    sortOrder,
-  } = body;
+  const { search = '', ministry, cluster, includeInactive = false, showTest = false, sortKey, sortOrder } = body;
 
   const searchProps = {
     search,
@@ -29,7 +21,7 @@ export const POST = createApiHandler({
     pageSize: 10000,
     ministry,
     cluster,
-    active: !includeInactive,
+    status: includeInactive ? undefined : ProjectStatus.ACTIVE,
     sortKey: sortKey || undefined,
     sortOrder,
     isTest: showTest,
@@ -76,7 +68,7 @@ export const POST = createApiHandler({
     Status: project.status,
   }));
 
-  await createEvent($Enums.EventType.EXPORT_PRIVATE_CLOUD_PRODUCT, session.user.id, searchProps);
+  await createEvent(EventType.EXPORT_PRIVATE_CLOUD_PRODUCT, session.user.id, searchProps);
 
   return CsvResponse(formattedData, 'private-cloud-products.csv');
 });

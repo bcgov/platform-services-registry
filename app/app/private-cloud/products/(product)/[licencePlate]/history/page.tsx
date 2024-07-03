@@ -2,7 +2,7 @@
 
 import { useQuery } from '@tanstack/react-query';
 import { z } from 'zod';
-import HistoryItem from '@/components/history/PrivateHistoryItem';
+import PrivateHistoryItem from '@/components/history/PrivateHistoryItem';
 import createClientPage from '@/core/client-page';
 import { getPrivateCloudProductRequests } from '@/services/backend/private-cloud/products';
 
@@ -33,26 +33,7 @@ export default privateCloudProductHistory(({ pathParams, queryParams, session })
   return (
     <>
       {requests.map((request) => (
-        <HistoryItem
-          key={request.id}
-          id={request.id}
-          licencePlate={request.licencePlate}
-          createdByEmail={request.createdByEmail}
-          decisionMakerEmail={request.decisionMakerEmail}
-          type={request.type}
-          decisionStatus={request.decisionStatus}
-          isQuotaChanged={request.isQuotaChanged}
-          requestComment={request.requestComment}
-          decisionComment={request.decisionComment}
-          active={request.active}
-          createdAt={request.createdAt}
-          updatedAt={request.updatedAt}
-          decisionDate={request.decisionDate}
-          projectId={request.projectId}
-          decisionDataId={request.decisionDataId}
-          requestDataId={request.requestDataId}
-          originalDataId={request.originalDataId}
-        />
+        <PrivateHistoryItem key={request.id} {...request} />
       ))}
     </>
   );

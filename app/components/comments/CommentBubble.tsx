@@ -1,12 +1,16 @@
-import { Tooltip, UnstyledButton, Textarea, Button } from '@mantine/core';
+import { Tooltip, UnstyledButton, Button } from '@mantine/core';
 import { notifications } from '@mantine/notifications';
-import { IconTrash, IconPencil, IconDots } from '@tabler/icons-react';
+import { RichTextEditor } from '@mantine/tiptap';
+import { IconTrash, IconPencil, IconDots, IconSourceCode } from '@tabler/icons-react';
 import { useMutation } from '@tanstack/react-query';
+import { useEditor } from '@tiptap/react';
 import { formatDistanceToNow, format } from 'date-fns';
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { deletePrivateCloudComment, updatePrivateCloudComment } from '@/services/backend/private-cloud/products';
 import AlertBox from '../modal/AlertBox';
 import ProfileImage from '../ProfileImage';
+import { commonExtensions } from './TiptapConfig';
+import TiptapReadOnly from './TiptapReadOnly';
 
 interface CommentBubbleProps {
   firstName: string;
@@ -17,7 +21,7 @@ interface CommentBubbleProps {
   isAuthor: boolean;
   commentId: string;
   licencePlate: string;
-  onDelete: () => void;
+  refetchComments: () => void;
   email: string;
   image: string;
 }
@@ -31,7 +35,7 @@ const CommentBubble = ({
   isAuthor,
   commentId,
   licencePlate,
-  onDelete,
+  refetchComments,
   email,
   image,
 }: CommentBubbleProps) => {
@@ -39,6 +43,15 @@ const CommentBubble = ({
   const [showConfirm, setShowConfirm] = useState(false);
   const [editMode, setEditMode] = useState(false);
   const [editedText, setEditedText] = useState(text);
+
+  const editEditor = useEditor({
+    extensions: commonExtensions,
+    content: text,
+    editable: true,
+    onUpdate: ({ editor }) => {
+      setEditedText(editor.getHTML());
+    },
+  });
 
   const editMutation = useMutation({
     mutationFn: () => updatePrivateCloudComment(licencePlate, commentId, editedText),
@@ -50,7 +63,7 @@ const CommentBubble = ({
         autoClose: 5000,
       });
       setEditMode(false);
-      onDelete(); // Refresh the comments
+      refetchComments(); // Refresh the comments
     },
     onError: (error: Error) => {
       notifications.show({
@@ -80,7 +93,7 @@ const CommentBubble = ({
   const deleteMutation = useMutation({
     mutationFn: () => deletePrivateCloudComment(licencePlate, commentId),
     onSuccess: () => {
-      onDelete();
+      refetchComments();
       notifications.show({
         color: 'green',
         title: 'Success',
@@ -130,10 +143,6 @@ const CommentBubble = ({
 
   const toggleMenu = () => setMenuOpen(!menuOpen);
 
-  const convertNewLinesToBreaks = (inputText: string) => {
-    return inputText.replace(/\n/g, '<br />');
-  };
-
   return (
     <div className="relative justify-center items-center">
       <div className={bubbleStyles}>
@@ -143,11 +152,10 @@ const CommentBubble = ({
               <strong>
                 {firstName} {lastName}
               </strong>{' '}
-              <span className="commented-text text-gray-500">commented </span>
               <Tooltip label={`Posted on ${timeStampExact}`}>
                 <UnstyledButton className="text-gray-500 cursor-help" style={{ fontSize: '0.75rem' }}>
                   <span className="text-gray-500" style={{ fontSize: '0.75rem' }}>
-                    {timeAgo}
+                    commented {timeAgo}
                   </span>
                 </UnstyledButton>
               </Tooltip>
@@ -187,12 +195,43 @@ const CommentBubble = ({
           <div className={bodyStyles}>
             {editMode ? (
               <>
-                <Textarea
-                  value={editedText}
-                  onChange={(event) => setEditedText(event.currentTarget.value)}
-                  autosize
-                  minRows={3}
-                />
+                <RichTextEditor editor={editEditor} className="mb-2.5 tiptap">
+                  {editEditor && (
+                    <RichTextEditor.Toolbar>
+                      <RichTextEditor.ControlsGroup>
+                        <RichTextEditor.Bold />
+                        <RichTextEditor.Underline />
+                        <RichTextEditor.Strikethrough />
+                        <RichTextEditor.Code />
+                      </RichTextEditor.ControlsGroup>
+
+                      <RichTextEditor.ControlsGroup>
+                        <RichTextEditor.CodeBlock
+                          icon={({ style }) => (
+                            <IconSourceCode style={{ ...style, strokeWidth: 1.5 }} className="text-xl" />
+                          )}
+                        />
+                        <RichTextEditor.Blockquote />
+                      </RichTextEditor.ControlsGroup>
+
+                      <RichTextEditor.ControlsGroup>
+                        <RichTextEditor.Link />
+                        <RichTextEditor.Unlink />
+                      </RichTextEditor.ControlsGroup>
+
+                      <RichTextEditor.ControlsGroup>
+                        <RichTextEditor.BulletList />
+                        <RichTextEditor.OrderedList />
+                      </RichTextEditor.ControlsGroup>
+
+                      <RichTextEditor.ControlsGroup>
+                        <RichTextEditor.Undo />
+                        <RichTextEditor.Redo />
+                      </RichTextEditor.ControlsGroup>
+                    </RichTextEditor.Toolbar>
+                  )}
+                  <RichTextEditor.Content />
+                </RichTextEditor>
                 <div className="flex justify-around p-2">
                   <Button variant="outline" onClick={cancelEdit}>
                     Cancel
@@ -207,10 +246,7 @@ const CommentBubble = ({
                 </div>
               </>
             ) : (
-              <p
-                dangerouslySetInnerHTML={{ __html: convertNewLinesToBreaks(text) }}
-                className="transition duration-300 ease-in-out"
-              ></p>
+              <TiptapReadOnly content={text} /> // Use the read-only Tiptap component to render the comment
             )}
           </div>
         </div>

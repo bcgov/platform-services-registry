@@ -65,7 +65,16 @@ model PrivateCloudRequest {
   requestData        PrivateCloudRequestedProject? @relation("requestData", fields: [requestDataId], references: [id])
   originalDataId     String?                       @db.ObjectId
   originalData       PrivateCloudRequestedProject? @relation("originalData", fields: [originalDataId], references: [id])
+  changes            PrivateCloudDataChanges?
   comments           PrivateCloudComment[]         @relation("request")
+}
+
+type PrivateCloudDataChanges {
+  profileChanged          Boolean
+  contactsChanged         Boolean
+  quotasChanged           Boolean
+  commonComponentsChanged Boolean
+  parentPaths             String[]
 }
 
 model PrivateCloudProject {
@@ -91,6 +100,7 @@ model PrivateCloudProject {
   developmentQuota         Quota
   toolsQuota               Quota
   commonComponents         CommonComponents
+  supportPhoneNumber       String?
   requests                 PrivateCloudRequest[] @relation("project")
   comments                 PrivateCloudComment[] @relation("project")
 }
@@ -117,6 +127,7 @@ model PrivateCloudRequestedProject {
   developmentQuota         Quota
   toolsQuota               Quota
   commonComponents         CommonComponents
+  supportPhoneNumber       String?
   decisionRequests         PrivateCloudRequest[] @relation("decisionData")
   requestRequests          PrivateCloudRequest[] @relation("requestData")
   originalRequests         PrivateCloudRequest[] @relation("originalData")
@@ -172,6 +183,15 @@ model PublicCloudRequest {
   requestData        PublicCloudRequestedProject? @relation("requestData", fields: [requestDataId], references: [id])
   originalDataId     String?                      @db.ObjectId
   originalData       PublicCloudRequestedProject? @relation("originalData", fields: [originalDataId], references: [id])
+  changes            PublicCloudDataChanges?
+}
+
+type PublicCloudDataChanges {
+  profileChanged  Boolean
+  contactsChanged Boolean
+  budgetChanged   Boolean
+  billingChanged  Boolean
+  parentPaths     String[]
 }
 
 model PublicCloudProject {

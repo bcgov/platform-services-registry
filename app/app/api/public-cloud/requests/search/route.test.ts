@@ -1,7 +1,7 @@
 import { expect } from '@jest/globals';
 import { $Enums } from '@prisma/client';
 import prisma from '@/core/prisma';
-import { createSamplePublicCloudRequestData } from '@/helpers/mock-resources';
+import { createSamplePublicCloudProductData } from '@/helpers/mock-resources';
 import { mockNoRoleUsers, findMockUserByIdr, findOhterMockUsers } from '@/helpers/mock-users';
 import { mockSessionByEmail, mockSessionByRole } from '@/services/api-test/core';
 import { provisionPublicCloudProject } from '@/services/api-test/public-cloud';
@@ -36,7 +36,7 @@ describe('Search Public Cloud Requests - Permissions', () => {
   it('should successfully create a product by PO and approved by admin', async () => {
     await mockSessionByEmail(PO.email);
 
-    const requestData = createSamplePublicCloudRequestData({
+    const requestData = createSamplePublicCloudProductData({
       data: { ...memberData, ministry: $Enums.Ministry.PSA, provider: $Enums.Provider.AWS },
     });
     const res1 = await createPublicCloudProject(requestData);
@@ -88,7 +88,7 @@ describe('Search Public Cloud Requests - Permissions', () => {
   it('should successfully create a product by a random user and approved by admin', async () => {
     await mockSessionByEmail(RANDOM1.email);
 
-    const requestData = createSamplePublicCloudRequestData({
+    const requestData = createSamplePublicCloudProductData({
       data: { ...randomMemberData, ministry: $Enums.Ministry.PSA, provider: $Enums.Provider.AWS },
     });
     const res1 = await createPublicCloudProject(requestData);
@@ -168,16 +168,16 @@ describe('Search Public Cloud Requests - Validations', () => {
 
     const datasets = [];
     datasets.push(
-      createSamplePublicCloudRequestData({ data: { ministry: $Enums.Ministry.AEST, provider: $Enums.Provider.AWS } }),
-      createSamplePublicCloudRequestData({ data: { ministry: $Enums.Ministry.AEST, provider: $Enums.Provider.AZURE } }),
-      createSamplePublicCloudRequestData({ data: { ministry: $Enums.Ministry.AEST, provider: $Enums.Provider.AWS } }),
-      createSamplePublicCloudRequestData({ data: { ministry: $Enums.Ministry.AEST, provider: $Enums.Provider.AZURE } }),
-      createSamplePublicCloudRequestData({ data: { ministry: $Enums.Ministry.AEST, provider: $Enums.Provider.AWS } }),
-      createSamplePublicCloudRequestData({ data: { ministry: $Enums.Ministry.CITZ, provider: $Enums.Provider.AZURE } }),
-      createSamplePublicCloudRequestData({ data: { ministry: $Enums.Ministry.CITZ, provider: $Enums.Provider.AWS } }),
-      createSamplePublicCloudRequestData({ data: { ministry: $Enums.Ministry.CITZ, provider: $Enums.Provider.AZURE } }),
-      createSamplePublicCloudRequestData({ data: { ministry: $Enums.Ministry.CITZ, provider: $Enums.Provider.AWS } }),
-      createSamplePublicCloudRequestData({
+      createSamplePublicCloudProductData({ data: { ministry: $Enums.Ministry.AEST, provider: $Enums.Provider.AWS } }),
+      createSamplePublicCloudProductData({ data: { ministry: $Enums.Ministry.AEST, provider: $Enums.Provider.AZURE } }),
+      createSamplePublicCloudProductData({ data: { ministry: $Enums.Ministry.AEST, provider: $Enums.Provider.AWS } }),
+      createSamplePublicCloudProductData({ data: { ministry: $Enums.Ministry.AEST, provider: $Enums.Provider.AZURE } }),
+      createSamplePublicCloudProductData({ data: { ministry: $Enums.Ministry.AEST, provider: $Enums.Provider.AWS } }),
+      createSamplePublicCloudProductData({ data: { ministry: $Enums.Ministry.CITZ, provider: $Enums.Provider.AZURE } }),
+      createSamplePublicCloudProductData({ data: { ministry: $Enums.Ministry.CITZ, provider: $Enums.Provider.AWS } }),
+      createSamplePublicCloudProductData({ data: { ministry: $Enums.Ministry.CITZ, provider: $Enums.Provider.AZURE } }),
+      createSamplePublicCloudProductData({ data: { ministry: $Enums.Ministry.CITZ, provider: $Enums.Provider.AWS } }),
+      createSamplePublicCloudProductData({
         data: { ministry: $Enums.Ministry.CITZ, provider: $Enums.Provider.AZURE, name: '______name______' },
       }),
     );

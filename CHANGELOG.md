@@ -1,3 +1,43 @@
+## [0.31.2](https://github.com/bcgov/platform-services-registry/compare/v0.31.1...v0.31.2) (2024-06-25)
+
+### Features
+
+* **2961:** store product change metadata in DB ([1af2295](https://github.com/bcgov/platform-services-registry/commit/1af2295f4dd884057ce0aacfbcbaad05aa0f2e0a))
+
+### Bug Fixes
+
+* **3215:** correct the roles for product comments to add private admin ([0f10486](https://github.com/bcgov/platform-services-registry/commit/0f10486a501423de2473d0e1533aa75272a94a80))
+## [0.31.1](https://github.com/bcgov/platform-services-registry/compare/v0.31.0...v0.31.1) (2024-06-25)
+
+### Features
+
+* **2961:** add a Make command to copy data from live environment ([901ba03](https://github.com/bcgov/platform-services-registry/commit/901ba03268eca72b00800a6b0622d0e034fbbc7e))
+* **3145:** integrate the provisioner script into Airflow DAGs ([617d805](https://github.com/bcgov/platform-services-registry/commit/617d805d4f4fe95627946ebd1ed466ca714c4935))
+* **3179:** add rich text editor to admin comments pages ([68691d9](https://github.com/bcgov/platform-services-registry/commit/68691d9cc149654ecd07a53c4d1e7980a06addc7))
+## [0.31.0](https://github.com/bcgov/platform-services-registry/compare/v0.30.0...v0.31.0) (2024-06-24)
+
+### Features
+
+* **3034:** hide current resource info on non-editable form ([e85ef64](https://github.com/bcgov/platform-services-registry/commit/e85ef648eeda12c97d5aa6367189c6cb20e31864))
+* **3046:** add API test script for private cloud product download ([5578c03](https://github.com/bcgov/platform-services-registry/commit/5578c0389f70fec4bc3ad1dc071c6f19bbcf45b7))
+* **3046:** add API test script for private cloud product requests ([80e50d2](https://github.com/bcgov/platform-services-registry/commit/80e50d20a9147d7f4c1b3202910975bb0f97ea1a))
+* **3047:** add API test scripts for public cloud routes ([a77fc65](https://github.com/bcgov/platform-services-registry/commit/a77fc65240650f5832ce4acfb8d95acdcbad9ec8))
+* **3048:** add API test scripts for user service account endpoints ([be31521](https://github.com/bcgov/platform-services-registry/commit/be31521db0e7e582cde36ddc3f9fc050a291e85d))
+* **3094:** display request box in public product table list ([0005186](https://github.com/bcgov/platform-services-registry/commit/00051868d993976f9d6ffb12a3c50ccba5ac3024))
+* **provisioner:** add backend logic to backup provisioner callback (remove 'completed' attribute) ([dce3c8e](https://github.com/bcgov/platform-services-registry/commit/dce3c8ec4ed5660bb13810d3302dd82516309935))
+
+### Bug Fixes
+
+* **2889:** update data diff common function ([c4c48e0](https://github.com/bcgov/platform-services-registry/commit/c4c48e0f5945a585d1c8f0ee03c77f9b8aad3cc6))
+* **2977:** update private cloud reject email to cover create request ([f8dc841](https://github.com/bcgov/platform-services-registry/commit/f8dc84195e240e8fd0b5961204cbbfb849589b8b))
+* **3093:** add word wrap and character limit to description tool tips ([6b37fc2](https://github.com/bcgov/platform-services-registry/commit/6b37fc26d3464583f125c487a163e656ce3bec97))
+* **3103:** give explicit view permission to ministry editor ([d5fe609](https://github.com/bcgov/platform-services-registry/commit/d5fe60946333454e3354e689c2d9a8f426a60971))
+* **3174:** fix newlines in edit text area and refetching of edited comments ([33e68cf](https://github.com/bcgov/platform-services-registry/commit/33e68cf06d56c750841494ba116d3566a8850f11))
+* show only requested environments budget ([32adb92](https://github.com/bcgov/platform-services-registry/commit/32adb92eea296a69911a2a39a27eb712c2c90d20))
+
+### Refactors
+
+* update landing page content ([193b33d](https://github.com/bcgov/platform-services-registry/commit/193b33d7ef62f04f5c637090fbdaefcb004389f1))
 ## [0.30.0](https://github.com/bcgov/platform-services-registry/compare/v0.29.1...v0.30.0) (2024-06-17)
 
 ### Features

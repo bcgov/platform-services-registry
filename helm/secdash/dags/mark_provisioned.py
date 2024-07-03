@@ -1,10 +1,10 @@
-import os
 import requests
-from pymongo import MongoClient
 from bson.objectid import ObjectId
+from projects import get_mongo_db
+from _utils import keys_exist
 
 
-def fetch_products_mark_completed(provisioner_api_url, mark_provisioned_url, mongo_connection_url):
+def fetch_products_mark_completed(provisioner_api_url, mark_provisioned_url, mongo_conn_id):
     """
     Fetches Approved Requests from MongoDB, makes call to the Provisioner by every of them
     and if labels completed = true and phase = Succeeded, makes a call to callback URL.
@@ -20,10 +20,9 @@ def fetch_products_mark_completed(provisioner_api_url, mark_provisioned_url, mon
 
     try:
         # Establish MongoDB connection
-        client = MongoClient(mongo_connection_url)
-        database = client["pltsvc"]
-        requests_collection = database["PrivateCloudRequest"]
-        requested_projects_collection = database["PrivateCloudRequestedProject"]
+        db = get_mongo_db(mongo_conn_id)
+        requests_collection = db["PrivateCloudRequest"]
+        requested_projects_collection = db["PrivateCloudRequestedProject"]
 
         product_requests = requests_collection.find({"decisionStatus": "APPROVED"}, projection={
                                                     "_id": True, "licencePlate": True, "decisionDataId": True})
@@ -40,6 +39,9 @@ def fetch_products_mark_completed(provisioner_api_url, mark_provisioned_url, mon
             workflow_name = f"{cluster}-{licence_plate}-{request_id}"
             provisioner_workflow_url = f"{provisioner_api_url}/{workflow_name}"
             request_status_in_provisioner = requests.get(provisioner_workflow_url).json()
+            if not keys_exist(request_status_in_provisioner, 'metadata', 'labels', 'workflows.argoproj.io/phase'):
+                continue
+
             request_phase = request_status_in_provisioner['metadata']['labels']['workflows.argoproj.io/phase']
             if request_phase == "Running":
                 continue
@@ -53,27 +55,8 @@ def fetch_products_mark_completed(provisioner_api_url, mark_provisioned_url, mon
                 if response.status_code != 200:
                     print(
                         f"Error while marking {licence_plate} as Provisioned: {response.status_code} - {response.reason}")
-
-        client.close()
+                else:
+                    print(f"Marked {licence_plate} as Provisioned")
 
     except Exception as e:
         print(f"[fetch_products_mark_completed] Error: {e}")
-
-
-def prepare_data_to_poll_provisioner(conn_id):
-    """
-    Fetches and assembles urls from environment variables and calls the function with fetching and marking logic.
-
-    Parameter:
-    - conn_id (str): used to find out which environment is needed (test or prod)
-    """
-    if conn_id == "pltsvc_test":
-        provisioner_api_url = os.environ["TEST_PROVISIONER_URL"]
-        mark_provisioned_url = os.environ["TEST_MARK_PROVISIONED_URL"]
-        mongo_connection_url = os.environ["MONGO_URL_TEST"]
-
-    elif conn_id == "pltsvc_prod":
-        provisioner_api_url = os.environ["PROD_PROVISIONER_URL"]
-        mark_provisioned_url = os.environ["PROD_MARK_PROVISIONED_URL"]
-        mongo_connection_url = os.environ["MONGO_URL_PROD"]
-    fetch_products_mark_completed(provisioner_api_url, mark_provisioned_url, mongo_connection_url)

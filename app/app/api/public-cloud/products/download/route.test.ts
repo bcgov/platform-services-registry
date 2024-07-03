@@ -2,7 +2,7 @@ import { expect } from '@jest/globals';
 import { $Enums } from '@prisma/client';
 import { parse } from 'csv-parse/sync';
 import prisma from '@/core/prisma';
-import { createSamplePublicCloudRequestData } from '@/helpers/mock-resources';
+import { createSamplePublicCloudProductData } from '@/helpers/mock-resources';
 import { mockNoRoleUsers, findMockUserByIdr, findOhterMockUsers } from '@/helpers/mock-users';
 import { ministryKeyToName, getTotalQuotaStr } from '@/helpers/product';
 import { formatFullName } from '@/helpers/user';
@@ -33,10 +33,10 @@ const randomMemberData = {
 };
 
 const productData = {
-  one: createSamplePublicCloudRequestData({
+  one: createSamplePublicCloudProductData({
     data: { ...memberData },
   }),
-  two: createSamplePublicCloudRequestData({
+  two: createSamplePublicCloudProductData({
     data: { ...randomMemberData },
   }),
 };
@@ -220,16 +220,16 @@ describe('Download Public Cloud Products - Validations', () => {
 
     const datasets = [];
     datasets.push(
-      createSamplePublicCloudRequestData({ data: { ministry: $Enums.Ministry.AEST, provider: $Enums.Provider.AWS } }),
-      createSamplePublicCloudRequestData({ data: { ministry: $Enums.Ministry.AEST, provider: $Enums.Provider.AZURE } }),
-      createSamplePublicCloudRequestData({ data: { ministry: $Enums.Ministry.AEST, provider: $Enums.Provider.AWS } }),
-      createSamplePublicCloudRequestData({ data: { ministry: $Enums.Ministry.AEST, provider: $Enums.Provider.AZURE } }),
-      createSamplePublicCloudRequestData({ data: { ministry: $Enums.Ministry.AEST, provider: $Enums.Provider.AWS } }),
-      createSamplePublicCloudRequestData({ data: { ministry: $Enums.Ministry.CITZ, provider: $Enums.Provider.AZURE } }),
-      createSamplePublicCloudRequestData({ data: { ministry: $Enums.Ministry.CITZ, provider: $Enums.Provider.AWS } }),
-      createSamplePublicCloudRequestData({ data: { ministry: $Enums.Ministry.CITZ, provider: $Enums.Provider.AZURE } }),
-      createSamplePublicCloudRequestData({ data: { ministry: $Enums.Ministry.CITZ, provider: $Enums.Provider.AWS } }),
-      createSamplePublicCloudRequestData({
+      createSamplePublicCloudProductData({ data: { ministry: $Enums.Ministry.AEST, provider: $Enums.Provider.AWS } }),
+      createSamplePublicCloudProductData({ data: { ministry: $Enums.Ministry.AEST, provider: $Enums.Provider.AZURE } }),
+      createSamplePublicCloudProductData({ data: { ministry: $Enums.Ministry.AEST, provider: $Enums.Provider.AWS } }),
+      createSamplePublicCloudProductData({ data: { ministry: $Enums.Ministry.AEST, provider: $Enums.Provider.AZURE } }),
+      createSamplePublicCloudProductData({ data: { ministry: $Enums.Ministry.AEST, provider: $Enums.Provider.AWS } }),
+      createSamplePublicCloudProductData({ data: { ministry: $Enums.Ministry.CITZ, provider: $Enums.Provider.AZURE } }),
+      createSamplePublicCloudProductData({ data: { ministry: $Enums.Ministry.CITZ, provider: $Enums.Provider.AWS } }),
+      createSamplePublicCloudProductData({ data: { ministry: $Enums.Ministry.CITZ, provider: $Enums.Provider.AZURE } }),
+      createSamplePublicCloudProductData({ data: { ministry: $Enums.Ministry.CITZ, provider: $Enums.Provider.AWS } }),
+      createSamplePublicCloudProductData({
         data: { ministry: $Enums.Ministry.CITZ, provider: $Enums.Provider.AZURE, name: '______name______' },
       }),
     );
