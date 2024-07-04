@@ -38,6 +38,7 @@ declare module 'next-auth' {
 
     viewZapscanResults: boolean;
     viewSonarscanResults: boolean;
+    viewGeneralAnalytics: boolean;
     viewPrivateAnalytics: boolean;
     viewPublicAnalytics: boolean;
   }

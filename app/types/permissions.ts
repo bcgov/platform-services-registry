@@ -25,6 +25,7 @@ export enum PermissionsEnum {
 
   ViewZapscanResults = 'viewZapscanResults',
   ViewSonarscanResults = 'viewSonarscanResults',
+  ViewGeneralAnalytics = 'viewGeneralAnalytics',
   ViewPrivateAnalytics = 'viewPrivateAnalytics',
   ViewPublicAnalytics = 'viewPublicAnalytics',
 }
