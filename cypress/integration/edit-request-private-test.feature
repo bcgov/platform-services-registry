@@ -2,7 +2,7 @@ Feature: Edit Request
   Background:
     Given User is assigned to Existing Product
 
-  Scenario: Create Edit Request and check visibility
+  Scenario: Create Private Cloud Edit Request and check visibility
     When User logs in as User
     And User navigates to Private Cloud tab
     And User navigates to Product Page

@@ -1,13 +1,13 @@
 Feature: New Request
 
-  Scenario: Create Request and check visibility
+  Scenario: Create Private Cloud Request and check visibility
     When User logs in as User
     And User navigates to Private Cloud tab
     And User clicks Request a New Product
     And User inputs Product Name
     And User inputs Description
     And User selects Ministry
-    And User inputs Hosting Tier
+    And User selects Hosting Tier
     And User inputs and selects PO contact
     And User inputs and selects Primary TL contact
     And User checks Does not Use Common Components
