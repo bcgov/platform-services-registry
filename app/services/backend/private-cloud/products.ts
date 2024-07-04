@@ -126,3 +126,14 @@ export async function deletePrivateCloudComment(licencePlate: string, commentId:
   const response = await instance.delete(`/${licencePlate}/comments/${commentId}`);
   return response.data as { success: boolean };
 }
+
+export async function getCommentCountsByRequest(licencePlate: string) {
+  const url = `/${licencePlate}/comments?countOnly=true`;
+  try {
+    const response = await instance.get(url);
+    return response.data;
+  } catch (error) {
+    console.error(`Error fetching comment counts for licencePlate ${licencePlate}:`, error);
+    throw error;
+  }
+}

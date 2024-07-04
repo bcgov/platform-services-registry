@@ -13,7 +13,7 @@ import CopyableButton from '@/components/generic/button/CopyableButton';
 import UserCard from '@/components/UserCard';
 import { ministryKeyToName } from '@/helpers/product';
 import { PrivateCloudProjectGetPayloadWithActiveRequest } from '@/queries/private-cloud-products';
-import { getAllPrivateCloudComments } from '@/services/backend/private-cloud/products';
+import { getCommentCountsByRequest } from '@/services/backend/private-cloud/products';
 import { formatDate } from '@/utils/date';
 import EmptySearch from './EmptySearch';
 import TruncatedTooltip from './TruncatedTooltip';
@@ -31,21 +31,30 @@ export default function TableBodyPrivateProducts({ rows, isLoading = false }: Ta
 
   useEffect(() => {
     const fetchCommentCounts = async () => {
-      const counts = await Promise.all(
-        rows.map(async (row) => {
-          if (session?.permissions.viewAllPrivateProductComments && row.activeRequest) {
-            const comments = await getAllPrivateCloudComments(row.licencePlate, row.activeRequest.id);
-            return { [row.activeRequest.id]: comments.length };
-          }
-          return { [row.id]: 0 }; // Default to 0 if no active request or no permission
-        }),
-      );
-      setCommentCounts(Object.assign({}, ...counts));
+      try {
+        if (session?.permissions.viewAllPrivateProductComments && rows.length > 0) {
+          console.log('Rows data:', rows);
+          const licencePlates = rows.map((row) => row.licencePlate);
+          console.log('Fetching comment counts for licencePlates:', licencePlates);
+
+          const countsArray = await Promise.all(
+            licencePlates.map(async (licencePlate) => {
+              const singleCounts = await getCommentCountsByRequest(licencePlate);
+              console.log(`Fetched comment counts for licencePlate ${licencePlate}:`, singleCounts);
+              return singleCounts;
+            }),
+          );
+
+          const mergedCounts = countsArray.reduce((acc, count) => ({ ...acc, ...count }), {});
+          console.log('Merged comment counts:', mergedCounts);
+          setCommentCounts(mergedCounts);
+        }
+      } catch (error) {
+        console.error('Error fetching comment counts:', error);
+      }
     };
 
-    if (session?.permissions.viewAllPrivateProductComments) {
-      fetchCommentCounts();
-    }
+    fetchCommentCounts();
   }, [rows, session]);
 
   if (isLoading) {
