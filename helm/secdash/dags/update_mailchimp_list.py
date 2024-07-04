@@ -156,11 +156,11 @@ def update_mailchimp_tag(api_key, server_prefix, list_id, tag_name, mongo_conn_i
         "server": server_prefix
     })
 
-    emails = fetch_unique_emails(mongo_conn_id)
-    add_emails_to_list(client, list_id, emails)
+    emails_db = fetch_unique_emails(mongo_conn_id)
+    add_emails_to_list(client, list_id, emails_db)
 
     members = filter_members_by_tag(client, list_id, tag_name)
-    emails = [member['email_address'] for member in members]
+    emails_mailchimp = [member['email_address'] for member in members]
 
-    remove_tag_from_emails(client, list_id, tag_name, emails)
-    add_tag_to_emails(client, list_id, tag_name, emails)
+    remove_tag_from_emails(client, list_id, tag_name, emails_mailchimp)
+    add_tag_to_emails(client, list_id, tag_name, emails_db)

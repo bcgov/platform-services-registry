@@ -8,7 +8,7 @@ MONGO_CONN_ID = 'pltsvc-test'
 MAILCHIMP_LIST_ID = os.getenv('MAILCHIMP_LIST_ID')
 MAILCHIMP_API_KEY = os.getenv('MAILCHIMP_API_KEY')
 MAILCHIMP_SERVER_PREFIX = os.getenv('MAILCHIMP_SERVER_PREFIX')
-MAILCHIMP_REGISTRY_TAG_NAME = os.getenv('MAILCHIMP_REGISTRY_TAG_NAME')
+MAILCHIMP_REGISTRY_PRIVATE_TAG_NAME = os.getenv('MAILCHIMP_REGISTRY_PRIVATE_TAG_NAME')
 
 with DAG(
     dag_id="mailchimp-test",
@@ -22,7 +22,9 @@ with DAG(
             'api_key': MAILCHIMP_API_KEY,
             'server_prefix': MAILCHIMP_SERVER_PREFIX,
             'list_id': MAILCHIMP_LIST_ID,
-            'tag_name': MAILCHIMP_REGISTRY_TAG_NAME,
+            'tag_name': MAILCHIMP_REGISTRY_PRIVATE_TAG_NAME,
             'mongo_conn_id': MONGO_CONN_ID
-        }
+        },
+        provide_context=True,
+        dag=dag
     )
