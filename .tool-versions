@@ -6,4 +6,4 @@ terraform 1.5.7
 helm 3.15.2
 sonarscanner 5.0.1.3006
 shfmt 3.8.0
-act 0.2.63
+act 0.2.64
