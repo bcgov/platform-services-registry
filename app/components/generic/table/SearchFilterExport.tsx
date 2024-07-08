@@ -1,7 +1,8 @@
 import { Disclosure, DisclosureButton, DisclosurePanel } from '@headlessui/react';
-import { IconFilter, IconSearch, IconSquareX } from '@tabler/icons-react';
+import { UnstyledButton, Tooltip } from '@mantine/core';
+import { IconFilter, IconSearch, IconCircleX } from '@tabler/icons-react';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useState, useRef } from 'react';
 import ExportButton from '@/components/buttons/ExportButton';
 import { useDebounce } from '@/utils/hooks';
 import LightButton from '../button/LightButton';
@@ -18,6 +19,7 @@ export default function SearchFilterExport({ initialSearch = '', onSearch, onExp
   const pathname = usePathname();
   const { replace } = useRouter();
   const searchParams = useSearchParams()!;
+  const searchRef = useRef<HTMLInputElement>(null);
 
   const { state, snapshot: snap } = useTableState();
   const [searchTerm, setSearchTerm] = useState<string>(initialSearch);
@@ -57,11 +59,13 @@ export default function SearchFilterExport({ initialSearch = '', onSearch, onExp
                   <input
                     type="text"
                     id="simple-search"
+                    ref={searchRef}
                     className="w-full h-9 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-slate-300-500 focus:border-slate-300-500 block px-9 py-1.5 dark:border-gray-300 dark:placeholder-gray-400 dark:text-darkergrey dark:focus:ring-slate-300 dark:focus:border-slate-300"
                     placeholder="Search"
                     onChange={(e) => setSearchTerm(e.target.value)}
                     // eslint-disable-next-line jsx-a11y/no-autofocus
                     autoFocus
+                    maxLength={30}
                     spellCheck={false}
                     value={searchTerm}
                     onKeyDown={(e) => {
@@ -69,9 +73,19 @@ export default function SearchFilterExport({ initialSearch = '', onSearch, onExp
                       if (e.key === 'Enter') e.preventDefault();
                     }}
                   />
-                  <div className="absolute inset-y-0 right-0 flex items-center pr-3 cursor-pointer">
-                    <IconSquareX size={20} onClick={() => setSearchTerm('')} />
-                  </div>
+                  {searchTerm && (
+                    <Tooltip label="Clear Search" offset={10}>
+                      <UnstyledButton
+                        className="absolute inset-y-0 right-0 pr-3"
+                        onClick={() => {
+                          setSearchTerm('');
+                          searchRef.current?.focus();
+                        }}
+                      >
+                        <IconCircleX size={20} />
+                      </UnstyledButton>
+                    </Tooltip>
+                  )}
                 </div>
               </form>
             )}
