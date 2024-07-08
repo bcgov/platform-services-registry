@@ -1,5 +1,5 @@
 import { Disclosure, DisclosureButton, DisclosurePanel } from '@headlessui/react';
-import { IconFilter, IconSearch } from '@tabler/icons-react';
+import { IconFilter, IconSearch, IconSquareX } from '@tabler/icons-react';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import { useCallback, useEffect, useState } from 'react';
 import ExportButton from '@/components/buttons/ExportButton';
@@ -57,7 +57,7 @@ export default function SearchFilterExport({ initialSearch = '', onSearch, onExp
                   <input
                     type="text"
                     id="simple-search"
-                    className="w-full h-9 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-slate-300-500 focus:border-slate-300-500 block pl-9 p-1.5 dark:border-gray-300 dark:placeholder-gray-400 dark:text-darkergrey dark:focus:ring-slate-300 dark:focus:border-slate-300"
+                    className="w-full h-9 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-slate-300-500 focus:border-slate-300-500 block px-9 py-1.5 dark:border-gray-300 dark:placeholder-gray-400 dark:text-darkergrey dark:focus:ring-slate-300 dark:focus:border-slate-300"
                     placeholder="Search"
                     onChange={(e) => setSearchTerm(e.target.value)}
                     // eslint-disable-next-line jsx-a11y/no-autofocus
@@ -69,6 +69,9 @@ export default function SearchFilterExport({ initialSearch = '', onSearch, onExp
                       if (e.key === 'Enter') e.preventDefault();
                     }}
                   />
+                  <div className="absolute inset-y-0 right-0 flex items-center pr-3 cursor-pointer">
+                    <IconSquareX size={20} onClick={() => setSearchTerm('')} />
+                  </div>
                 </div>
               </form>
             )}
