@@ -13,7 +13,7 @@ const defaultQuota = {
 };
 
 export default async function createRequest(formData: PrivateCloudCreateRequestBody, session: Session) {
-  const licencePlate = generateLicencePlate();
+  const licencePlate = await generateLicencePlate();
 
   await upsertUsers([
     formData.projectOwner.email,
