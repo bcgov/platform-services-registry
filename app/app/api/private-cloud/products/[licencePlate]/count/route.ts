@@ -23,6 +23,6 @@ export const GET = createApiHandler({
   const { licencePlate } = pathParams;
   const { requestId } = queryParams;
 
-  const commentCount = await getCommentCountOp(licencePlate, requestId);
-  return OkResponse(commentCount);
+  const res = await getCommentCountOp(licencePlate, requestId);
+  return OkResponse(res);
 });

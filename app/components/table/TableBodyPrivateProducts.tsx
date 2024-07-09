@@ -92,7 +92,7 @@ export default function TableBodyPrivateProducts({ rows, isLoading = false }: Ta
               {row.activeRequest && (
                 <ActiveRequestBox
                   data={{ ...row.activeRequest, cloud: 'private-cloud', licencePlate: row.licencePlate }}
-                  showCount={true}
+                  showCount
                 />
               )}
             </div>

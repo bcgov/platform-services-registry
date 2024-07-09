@@ -13,7 +13,7 @@ import {
 import { useQuery } from '@tanstack/react-query';
 import { useRouter } from 'next/navigation';
 import { useSession } from 'next-auth/react';
-import { getCommentCount } from '@/services/backend/private-cloud/products';
+import { getPrivateCloudCommentCount } from '@/services/backend/private-cloud/products';
 
 export default function ActiveRequestBox({
   data,
@@ -36,11 +36,12 @@ export default function ActiveRequestBox({
   const { data: session } = useSession();
 
   const canViewComments = session?.permissions?.viewAllPrivateProductComments;
+  const shouldFetchCommentCount = showCount && canViewComments && !!data?.id && !!data?.licencePlate;
 
   const { data: commentData, isLoading } = useQuery({
     queryKey: ['commentCount', data?.id],
-    queryFn: () => getCommentCount(data?.licencePlate as string, data?.id as string),
-    enabled: showCount && canViewComments && !!data?.id && !!data?.licencePlate,
+    queryFn: () => getPrivateCloudCommentCount(data?.licencePlate as string, data?.id as string),
+    enabled: shouldFetchCommentCount,
   });
 
   const commentCount = commentData?.count;
@@ -139,7 +140,7 @@ export default function ActiveRequestBox({
         }}
       >
         <div className="relative">
-          {showCount && canViewComments && !isLoading && typeof commentCount === 'number' && commentCount > 0 ? (
+          {shouldFetchCommentCount && !isLoading && typeof commentCount === 'number' && commentCount > 0 ? (
             <Badge
               color="blue"
               size="md"
