@@ -5,14 +5,13 @@ import { $Enums } from '@prisma/client';
 import _truncate from 'lodash-es/truncate';
 import { usePathname, useRouter } from 'next/navigation';
 import { useSession } from 'next-auth/react';
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import ActiveRequestBox from '@/components/form/ActiveRequestBox';
 import TestProductBox from '@/components/form/TestProductBox';
 import CopyableButton from '@/components/generic/button/CopyableButton';
 import UserCard from '@/components/UserCard';
 import { ministryKeyToName } from '@/helpers/product';
 import { PrivateCloudRequestSearchedItemPayload } from '@/queries/private-cloud-requests';
-import { getCommentCountsByRequest } from '@/services/backend/private-cloud/products';
 import { formatDate } from '@/utils/date';
 import EmptySearch from './EmptySearch';
 import TruncatedTooltip from './TruncatedTooltip';
@@ -27,35 +26,6 @@ export default function TableBodyPrivateRequests({ rows, isLoading = false }: Ta
   const pathname = usePathname();
   const cloud = pathname.split('/')[1];
   const { data: session } = useSession();
-  const [commentCounts, setCommentCounts] = useState<{ [key: string]: number }>({});
-
-  useEffect(() => {
-    const fetchCommentCounts = async () => {
-      try {
-        if (session?.permissions.viewAllPrivateProductComments && rows.length > 0) {
-          console.log('Rows data:', rows);
-          const licencePlates = rows.map((row) => row.licencePlate);
-          console.log('Fetching comment counts for licencePlates:', licencePlates);
-
-          const countsArray = await Promise.all(
-            licencePlates.map(async (licencePlate) => {
-              const singleCounts = await getCommentCountsByRequest(licencePlate);
-              console.log(`Fetched comment counts for licencePlate ${licencePlate}:`, singleCounts);
-              return singleCounts;
-            }),
-          );
-
-          const mergedCounts = countsArray.reduce((acc, count) => ({ ...acc, ...count }), {});
-          console.log('Merged comment counts:', mergedCounts);
-          setCommentCounts(mergedCounts);
-        }
-      } catch (error) {
-        console.error('Error fetching comment counts:', error);
-      }
-    };
-
-    fetchCommentCounts();
-  }, [rows, session]);
 
   if (isLoading) {
     return null;
@@ -121,7 +91,7 @@ export default function TableBodyPrivateRequests({ rows, isLoading = false }: Ta
             </div>
 
             <div className="md:col-span-2 lg:col-span-3">
-              <ActiveRequestBox data={{ ...row, cloud: 'private-cloud' }} commentCount={commentCounts[row.id]} />
+              <ActiveRequestBox data={{ ...row, cloud: 'private-cloud' }} showCount />
             </div>
 
             <div className="lg:col-span-1 hidden lg:block"></div>

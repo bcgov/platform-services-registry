@@ -127,13 +127,8 @@ export async function deletePrivateCloudComment(licencePlate: string, commentId:
   return response.data as { success: boolean };
 }
 
-export async function getCommentCountsByRequest(licencePlate: string) {
-  const url = `/${licencePlate}/comments?countOnly=true`;
-  try {
-    const response = await instance.get(url);
-    return response.data;
-  } catch (error) {
-    console.error(`Error fetching comment counts for licencePlate ${licencePlate}:`, error);
-    throw error;
-  }
+export async function getCommentCount(licencePlate: string, requestId?: string) {
+  const url = `/${licencePlate}/count${requestId ? `?requestId=${requestId}` : ''}`;
+  const response = await instance.get(url);
+  return response.data;
 }

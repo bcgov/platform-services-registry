@@ -10,27 +10,40 @@ import {
   IconPoint,
   IconBan,
 } from '@tabler/icons-react';
+import { useQuery } from '@tanstack/react-query';
 import { useRouter } from 'next/navigation';
+import { useSession } from 'next-auth/react';
+import { getCommentCount } from '@/services/backend/private-cloud/products';
 
 export default function ActiveRequestBox({
   data,
   className,
-  commentCount,
-  showCommentCount = true,
+  showCount = false,
 }: {
   data?: {
     cloud: 'private-cloud' | 'public-cloud';
     id: string;
+    licencePlate: string;
     type: $Enums.RequestType;
     active: boolean;
     decisionStatus: $Enums.DecisionStatus;
     createdByEmail: string;
   };
   className?: string;
-  commentCount?: number;
-  showCommentCount?: boolean;
+  showCount?: boolean;
 }) {
   const router = useRouter();
+  const { data: session } = useSession();
+
+  const canViewComments = session?.permissions?.viewAllPrivateProductComments;
+
+  const { data: commentData, isLoading } = useQuery({
+    queryKey: ['commentCount', data?.id],
+    queryFn: () => getCommentCount(data?.licencePlate as string, data?.id as string),
+    enabled: showCount && canViewComments && !!data?.id && !!data?.licencePlate,
+  });
+
+  const commentCount = commentData?.count;
 
   if (!data) return null;
 
@@ -39,11 +52,7 @@ export default function ActiveRequestBox({
   if (data.cloud === 'private-cloud') {
     switch (data.type) {
       case $Enums.RequestType.CREATE:
-        path = 'decision';
-        break;
       case $Enums.RequestType.EDIT:
-        path = 'decision';
-        break;
       case $Enums.RequestType.DELETE:
         path = 'decision';
         break;
@@ -51,11 +60,7 @@ export default function ActiveRequestBox({
   } else {
     switch (data.type) {
       case $Enums.RequestType.CREATE:
-        path = 'request';
-        break;
       case $Enums.RequestType.EDIT:
-        path = 'request';
-        break;
       case $Enums.RequestType.DELETE:
         path = 'request';
         break;
@@ -109,16 +114,6 @@ export default function ActiveRequestBox({
 
   const badges = (
     <>
-      {/* <Badge
-        leftSection={<TypeIcon className="h-6 w-6" />}
-        color={typeColor}
-        size="lg"
-        radius="sm"
-        autoContrast
-        className=""
-      >
-        {data.type}
-      </Badge> */}
       <Badge
         leftSection={<DecisionIcon className="h-6 w-6" />}
         color={decisionColor}
@@ -144,7 +139,7 @@ export default function ActiveRequestBox({
         }}
       >
         <div className="relative">
-          {showCommentCount && commentCount ? (
+          {showCount && canViewComments && !isLoading && typeof commentCount === 'number' && commentCount > 0 ? (
             <Badge
               color="blue"
               size="md"

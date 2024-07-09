@@ -5,18 +5,17 @@ import { Tooltip, Badge } from '@mantine/core';
 import { $Enums } from '@prisma/client';
 import _truncate from 'lodash-es/truncate';
 import { usePathname, useRouter } from 'next/navigation';
-import { useSession } from 'next-auth/react';
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import ActiveRequestBox from '@/components/form/ActiveRequestBox';
 import TestProductBox from '@/components/form/TestProductBox';
 import CopyableButton from '@/components/generic/button/CopyableButton';
 import UserCard from '@/components/UserCard';
 import { ministryKeyToName } from '@/helpers/product';
 import { PrivateCloudProjectGetPayloadWithActiveRequest } from '@/queries/private-cloud-products';
-import { getCommentCountsByRequest } from '@/services/backend/private-cloud/products';
 import { formatDate } from '@/utils/date';
 import EmptySearch from './EmptySearch';
 import TruncatedTooltip from './TruncatedTooltip';
+
 interface TableProps {
   rows: PrivateCloudProjectGetPayloadWithActiveRequest[];
   isLoading: boolean;
@@ -26,36 +25,6 @@ export default function TableBodyPrivateProducts({ rows, isLoading = false }: Ta
   const router = useRouter();
   const pathname = usePathname();
   const cloud = pathname.split('/')[1];
-  const { data: session } = useSession();
-  const [commentCounts, setCommentCounts] = useState<{ [key: string]: number }>({});
-
-  useEffect(() => {
-    const fetchCommentCounts = async () => {
-      try {
-        if (session?.permissions.viewAllPrivateProductComments && rows.length > 0) {
-          console.log('Rows data:', rows);
-          const licencePlates = rows.map((row) => row.licencePlate);
-          console.log('Fetching comment counts for licencePlates:', licencePlates);
-
-          const countsArray = await Promise.all(
-            licencePlates.map(async (licencePlate) => {
-              const singleCounts = await getCommentCountsByRequest(licencePlate);
-              console.log(`Fetched comment counts for licencePlate ${licencePlate}:`, singleCounts);
-              return singleCounts;
-            }),
-          );
-
-          const mergedCounts = countsArray.reduce((acc, count) => ({ ...acc, ...count }), {});
-          console.log('Merged comment counts:', mergedCounts);
-          setCommentCounts(mergedCounts);
-        }
-      } catch (error) {
-        console.error('Error fetching comment counts:', error);
-      }
-    };
-
-    fetchCommentCounts();
-  }, [rows, session]);
 
   if (isLoading) {
     return null;
@@ -122,8 +91,8 @@ export default function TableBodyPrivateProducts({ rows, isLoading = false }: Ta
             <div className="md:col-span-2 lg:col-span-3">
               {row.activeRequest && (
                 <ActiveRequestBox
-                  data={{ ...row.activeRequest, cloud: 'private-cloud' }}
-                  commentCount={commentCounts[row.activeRequest.id]}
+                  data={{ ...row.activeRequest, cloud: 'private-cloud', licencePlate: row.licencePlate }}
+                  showCount={true}
                 />
               )}
             </div>

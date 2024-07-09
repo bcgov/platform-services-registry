@@ -4,7 +4,6 @@ import { CreatedResponse, OkResponse, BadRequestResponse } from '@/core/response
 import { PermissionsEnum } from '@/types/permissions';
 import { createOp } from './_operations/create';
 import { listOp } from './_operations/list';
-import { getCommentCountsByRequestOp } from './_operations/listCount';
 
 const createCommentBodySchema = z
   .object({
@@ -35,7 +34,6 @@ const pathParamsSchema = z.object({
 
 const queryParamsSchema = z.object({
   requestId: z.string().optional(),
-  countOnly: z.string().optional(),
 });
 
 export const GET = createApiHandler({
@@ -47,15 +45,7 @@ export const GET = createApiHandler({
   },
 })(async ({ pathParams, queryParams }) => {
   const { licencePlate } = pathParams;
-  const { requestId, countOnly } = queryParams;
-
-  const countOnlyBool = countOnly === 'true';
-
-  if (countOnlyBool) {
-    // Return the count of comments grouped by requestId
-    const commentCounts = await getCommentCountsByRequestOp(licencePlate);
-    return OkResponse(commentCounts);
-  }
+  const { requestId } = queryParams;
 
   const comments = await listOp(licencePlate, requestId);
   return OkResponse(comments);
