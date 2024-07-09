@@ -1,3 +1,18 @@
+## [0.32.0](https://github.com/bcgov/platform-services-registry/compare/v0.31.2...v0.32.0) (2024-07-09)
+
+### Features
+
+* **2847:** check for license plate duplication in DB when creating ([fdc6e84](https://github.com/bcgov/platform-services-registry/commit/fdc6e84687cfdccd68113b62c23cb180f02c6257))
+* **2959:** minimal e2e private cloud happy path test set ([ef9432d](https://github.com/bcgov/platform-services-registry/commit/ef9432dcd64f9dbcc48a75dd9444d3d275bca0dd))
+* **2961:** add contact changes historical chart ([7869e76](https://github.com/bcgov/platform-services-registry/commit/7869e767f0943b1629bba981bed56314d43e6c70))
+* **2961:** enable export options for contact changes chart data ([3e2baa9](https://github.com/bcgov/platform-services-registry/commit/3e2baa930b454c396f2baafd486e8bf8faa7cbfc))
+* **2962:** add login event chart in analytics page ([039c9e6](https://github.com/bcgov/platform-services-registry/commit/039c9e6c8bfc57d5b180c264a138ae0412a79514))
+* **3220:** update v1 API endpoints data & parameters ([0444e66](https://github.com/bcgov/platform-services-registry/commit/0444e66afc664e995990c1fbb43ff6a1725c182b))
+* **3244:** add minimal happy path gherkin scenarios for public cloud request flow ([de5b5af](https://github.com/bcgov/platform-services-registry/commit/de5b5afaecae97c46b75da45726e3b1e15f99df4))
+* **3296:** enhance search input clear button behaviour ([c597284](https://github.com/bcgov/platform-services-registry/commit/c597284a8ecf0e4b57a0e171b3328a7495c66eb5))
+* add subscription to mlalchimp ([7072ad6](https://github.com/bcgov/platform-services-registry/commit/7072ad65af21ba34819fecedcb04415cf7a07538))
+* add support phone number for private products ([c1dfa88](https://github.com/bcgov/platform-services-registry/commit/c1dfa88a968e46123fb564d4dc6b5fb8732789fb))
+* add X button to clear search text field ([ffbf59a](https://github.com/bcgov/platform-services-registry/commit/ffbf59a56fefe96052c6c0e3ba8723ef1b641fc7))
 ## [0.31.2](https://github.com/bcgov/platform-services-registry/compare/v0.31.1...v0.31.2) (2024-06-25)
 
 ### Features
