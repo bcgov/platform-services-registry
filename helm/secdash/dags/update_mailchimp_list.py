@@ -6,161 +6,180 @@ import hashlib
 from projects import get_mongo_db
 
 
-def fetch_unique_emails(mongo_conn_id):
-    try:
-        db = get_mongo_db(mongo_conn_id)
-        projects_collection = db["PrivateCloudProject"]
-        users_collection = db["User"]
+class MailchimpManager:
+    def __init__(self, api_key, server_prefix, list_id, tag_id, mongo_conn_id):
+        self.client = MailchimpMarketing.Client()
+        self.client.set_config({
+            "api_key": api_key,
+            "server": server_prefix
+        })
+        self.list_id = list_id
+        self.db = get_mongo_db(mongo_conn_id)
+        self.tag_id = tag_id
 
-        projects = projects_collection.find({"status": "ACTIVE"})
+    def get_email_hash(self, email):
+        return hashlib.md5(email.lower().encode('utf-8')).hexdigest()
 
-        unique_emails = set()
+    def fetch_unique_emails(self):
+        try:
+            projects_collection = self.db["PrivateCloudProject"]
+            users_collection = self.db["User"]
+            query = {"status": "ACTIVE"}
+            projection = {"_id": 0, "projectOwnerId": 1, "primaryTechnicalLeadId": 1, "secondaryTechnicalLeadId": 1}
+            projects = list(projects_collection.find(query, projection))
 
-        for project in projects:
-            project_owner_id = project.get("projectOwnerId")
-            if project_owner_id:
-                project_owner = users_collection.find_one({"_id": ObjectId(project_owner_id)})
-                if project_owner:
-                    email = project_owner.get('email')
-                    if email:
-                        unique_emails.add(email)
+            unique_ids = set()
+            for project in projects:
+                if project.get('projectOwnerId'):
+                    unique_ids.add(str(project['projectOwnerId']))
+                if project.get('primaryTechnicalLeadId'):
+                    unique_ids.add(str(project['primaryTechnicalLeadId']))
+                if project.get('secondaryTechnicalLeadId'):
+                    unique_ids.add(str(project['secondaryTechnicalLeadId']))
 
-            primary_technical_lead_id = project.get("primaryTechnicalLeadId")
-            if primary_technical_lead_id:
-                primary_technical_lead = users_collection.find_one({"_id": ObjectId(primary_technical_lead_id)})
-                if primary_technical_lead:
-                    email = primary_technical_lead.get("email")
-                    if email:
-                        unique_emails.add(email)
+            unique_emails = []
+            for unique_id in unique_ids:
+                user = users_collection.find_one({"_id": ObjectId(unique_id)})
+                if user and user.get('email'):
+                    unique_emails.append(user['email'])
+            return unique_emails
+        except Exception as e:
+            print(f"[fetch_unique_emails] Error: {e}")
+            return []
 
-            secondary_technical_lead_id = project.get("secondaryTechnicalLeadId")
-            if secondary_technical_lead_id:
-                secondary_technical_lead = users_collection.find_one({"_id": ObjectId(secondary_technical_lead_id)})
-                if secondary_technical_lead:
-                    email = secondary_technical_lead.get("email")
-                    if email:
-                        unique_emails.add(email)
-
-        return list(unique_emails)
-
-    except Exception as e:
-        print(f"[fetch_unique_emails] Error: {e}")
-        return []
-
-
-def add_emails_to_list(client, list_id, emails):
-    try:
+    def add_emails_to_list(self, emails):
         operations = []
         for email in emails:
             operations.append({
                 "method": "POST",
-                "path": f"/lists/{list_id}/members",
+                "path": f"/lists/{self.list_id}/members",
                 "body": json.dumps({
                     "email_address": email,
                     "status": "subscribed"
                 })
             })
 
-        response = client.batches.start({"operations": operations})
-        print(f"Emails added to list: {response}")
-    except ApiClientError as error:
-        print(f"[add_emails_to_list] Error: {error}")
+        try:
+            response = self.client.batches.start({"operations": operations})
+            print(f"Emails added to list: {response}")
+        except ApiClientError as error:
+            print(f"[add_emails_to_list] API Client Error: {error.text}")
+        except Exception as e:
+            print(f"[add_emails_to_list] General Error: {e}")
 
-
-def add_tag_to_emails(client, list_id, tag_name, emails):
-    try:
-        member_hashes = [hashlib.md5(email.lower().encode('utf-8')).hexdigest() for email in emails]
-        print(f"Generated member hashes: {member_hashes}")
-
-        members_to_tag = [{"email_address": email, "email_hash": member_hash}
-                          for email, member_hash in zip(emails, member_hashes)]
-        print(f"Members to tag: {members_to_tag}")
-
-        batch_data = {
-            "operations": []
-        }
-
-        for member in members_to_tag:
-            operation = {
+    def add_tag_to_emails(self, emails, tag_name):
+        operations = []
+        for email in emails:
+            email_hash = self.get_email_hash(email)
+            operations.append({
                 "method": "POST",
-                "path": f"/lists/{list_id}/members/{member['email_hash']}/tags",
+                "path": f"/lists/{self.list_id}/members/{email_hash}/tags",
                 "body": json.dumps({
                     "tags": [{"name": tag_name, "status": "active"}]
                 })
-            }
-            batch_data["operations"].append(operation)
+            })
 
-        response = client.batches.start(batch_data)
-        print(f"Batch tag operation response: {response}")
-    except ApiClientError as error:
-        print(f"[add_tag_to_emails] Error: {error.text}")
+        try:
+            response = self.client.batches.start({"operations": operations})
+            print(f"Batch tag operation response: {response}")
+        except ApiClientError as error:
+            print(f"[add_tag_to_emails] API Client Error: {error.text}")
+        except Exception as e:
+            print(f"[add_tag_to_emails] General Error: {e}")
 
-
-def get_all_members(client, list_id):
-    members = []
-    offset = 0
-    count = 2000
-
-    while True:
-        response = client.lists.get_list_members_info(list_id, count=count, offset=offset)
-        fetched_members = response.get('members', [])
-        members.extend(fetched_members)
-
-        if len(fetched_members) < count:
-            break
-
-        offset += count
-
-    return members
-
-
-def filter_members_by_tag(client, list_id, tag_name):
-    members = get_all_members(client, list_id)
-    members_with_tag = [member for member in members if any(tag['name'] == tag_name for tag in member.get('tags', []))]
-    return members_with_tag
-
-
-def remove_tag_from_emails(client, list_id, tag_name, emails):
-    try:
-        member_hashes = [hashlib.md5(email.lower().encode('utf-8')).hexdigest() for email in emails]
-        print(f"Generated member hashes: {member_hashes}")
-
-        members_to_remove_tag = [{"email_address": email, "email_hash": member_hash}
-                                 for email, member_hash in zip(emails, member_hashes)]
-        print(f"Members to remove tag from: {members_to_remove_tag}")
-
-        batch_data = {
-            "operations": []
-        }
-
-        for member in members_to_remove_tag:
-            operation = {
+    def remove_tag_from_emails(self, emails, tag_name):
+        operations = []
+        for email in emails:
+            email_hash = self.get_email_hash(email)
+            operations.append({
                 "method": "POST",
-                "path": f"/lists/{list_id}/members/{member['email_hash']}/tags",
+                "path": f"/lists/{self.list_id}/members/{email_hash}/tags",
                 "body": json.dumps({
                     "tags": [{"name": tag_name, "status": "inactive"}]
                 })
-            }
-            batch_data["operations"].append(operation)
+            })
+        try:
+            response = self.client.batches.start({"operations": operations})
+            print(f"Batch remove tag operation response: {response}")
+        except ApiClientError as error:
+            print(f"[remove_tag_from_emails] API Client Error: {error.text}")
+        except Exception as e:
+            print(f"[remove_tag_from_emails] General Error: {e}")
 
-        response = client.batches.start(batch_data)
-        print(f"Batch remove tag operation response: {response}")
-    except ApiClientError as error:
-        print(f"[remove_tag_from_emails] Error: {error.text}")
+    def get_all_members(self):
+        members = []
+        offset = 0
+        count = 1000
+        try:
+            while True:
+                response = self.client.lists.get_list_members_info(self.list_id, count=count, offset=offset)
+                fetched_members = response.get('members', [])
+                members.extend(fetched_members)
+                if len(fetched_members) < count:
+                    break
+                offset += count
+            return members
+        except ApiClientError as error:
+            print(f"[get_all_members] API Client Error: {error.text}")
+            return []
+        except Exception as e:
+            print(f"[get_all_members] General Error: {e}")
+            return []
+
+    def filter_members_by_tag(self, tag_name):
+        try:
+            all_members = self.get_all_members()
+            members_with_tag = [
+                member for member in all_members
+                if any(tag['name'].strip().lower() == tag_name.lower() for tag in member.get('tags', []))
+            ]
+            return members_with_tag
+        except Exception as e:
+            print(f"[filter_members_by_tag] Error: {e}")
+            return []
+
+    def get_tag_name_by_id(self):
+        try:
+            tags_data = self.client.lists.tag_search(self.list_id)
+            for tag in tags_data['tags']:
+                if tag['id'] == self.tag_id:
+                    return tag
+
+        except ApiClientError as error:
+            print("Error: {}".format(error.text))
+            return None
+
+    def update_mailchimp_tag(self):
+        try:
+            # Fetch unique emails from MongoDB
+            unique_emails = set(self.fetch_unique_emails())
+            if not unique_emails:
+                print("No emails to update.")
+                return
+
+            # get tag name by tag ID
+            tag_name = self.get_tag_name_by_id()
+
+            # Fetch all members and filter those who already have the tag
+            current_tagged_members = self.filter_members_by_tag(tag_name)
+            current_tagged_emails = {member['email_address'] for member in current_tagged_members}
+
+            # Remove tags from all currently tagged members
+            if current_tagged_emails:
+                self.remove_tag_from_emails(current_tagged_emails, tag_name)
+
+            # Add emails to the list if they are not already added
+            self.add_emails_to_list(unique_emails)
+
+            # Tag the necessary emails based on the database
+            if unique_emails:
+                self.add_tag_to_emails(unique_emails, tag_name)
+
+            print("Mailchimp tag update process completed successfully.")
+        except Exception as e:
+            print(f"[update_mailchimp_tag] Error: {e}")
 
 
-def update_mailchimp_tag(api_key, server_prefix, list_id, tag_name, mongo_conn_id):
-    client = MailchimpMarketing.Client()
-    client.set_config({
-        "api_key": api_key,
-        "server": server_prefix
-    })
-
-    emails_db = fetch_unique_emails(mongo_conn_id)
-    add_emails_to_list(client, list_id, emails_db)
-
-    members = filter_members_by_tag(client, list_id, tag_name)
-    emails_mailchimp = [member['email_address'] for member in members]
-
-    remove_tag_from_emails(client, list_id, tag_name, emails_mailchimp)
-    add_tag_to_emails(client, list_id, tag_name, emails_db)
+def update_mailchimp_segment(api_key, server_prefix, list_id, tag_id, mongo_conn_id):
+    manager = MailchimpManager(api_key, server_prefix, list_id, tag_id, mongo_conn_id)
+    manager.update_mailchimp_tag()
