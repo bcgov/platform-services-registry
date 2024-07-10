@@ -56,4 +56,4 @@ export const OIDC_AUTHORITY = process.env.OIDC_AUTHORITY || 'https://localhost:8
 export const MAILCHIMP_LIST_ID = process.env.MAILCHIMP_LIST_ID || '';
 export const MAILCHIMP_API_KEY = process.env.MAILCHIMP_API_KEY || '';
 export const MAILCHIMP_SERVER_PREFIX = process.env.MAILCHIMP_SERVER_PREFIX || '';
-export const MAILCHIMP_REGISTRY_PRIVATE_TAG_NAME = process.env.MAILCHIMP_REGISTRY_PRIVATE_TAG_NAME || '';
+export const MAILCHIMP_REGISTRY_PRIVATE_TAG_ID = process.env.MAILCHIMP_REGISTRY_PRIVATE_TAG_ID || '';
