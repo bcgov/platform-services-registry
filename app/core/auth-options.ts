@@ -1,10 +1,13 @@
 import { $Enums } from '@prisma/client';
 import jwt from 'jsonwebtoken';
+import _forEach from 'lodash-es/forEach';
+import _get from 'lodash-es/get';
 import _uniq from 'lodash-es/uniq';
 import { Account, AuthOptions, Session, User } from 'next-auth';
 import { JWT } from 'next-auth/jwt';
 import KeycloakProvider, { KeycloakProfile } from 'next-auth/providers/keycloak';
 import { IS_PROD, AUTH_SERVER_URL, AUTH_RELM, AUTH_RESOURCE, AUTH_SECRET } from '@/config';
+import { TEAM_SA_PREFIX } from '@/constants';
 import prisma from '@/core/prisma';
 import { createEvent } from '@/mutations/events';
 import { upsertUser } from '@/services/db/user';
@@ -42,6 +45,7 @@ export async function generateSession({ session, token }: { session: Session; to
     session.kcUserId = token.sub ?? '';
     session.user.name = token.name ?? '';
     session.roles = token.roles || [];
+    session.teams = (token.teams as any) || [];
 
     if (token.email) {
       const user = await prisma.user.findFirst({
@@ -267,14 +271,21 @@ export const authOptions: AuthOptions = {
 
       return true;
     },
-    async jwt({ token, account }: { token: JWT; account: Account | null }) {
+    async jwt({ token, account }: { token: any; account: Account | null }) {
       if (account?.access_token) {
         const decodedToken: any = jwt.decode(account.access_token);
 
         token.accessToken = account.access_token;
         token.idToken = account.id_token;
-        token.roles = decodedToken?.resource_access?.pltsvc?.roles ?? [];
+        token.roles = _get(decodedToken, `resource_access.${AUTH_RELM}.roles`, []);
         token.sub = decodedToken?.sub ?? '';
+        token.teams = [];
+
+        _forEach(decodedToken.resource_access ?? {}, (val, key) => {
+          if (key.startsWith(TEAM_SA_PREFIX)) {
+            token.teams.push({ clientId: key, roles: val.roles });
+          }
+        });
       }
 
       if (!token.roles) token.roles = [];
