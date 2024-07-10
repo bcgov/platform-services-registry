@@ -13,7 +13,7 @@ export default async function getOp({ id, session }: { id: string; session: Sess
 
   if (!session.isAdmin) {
     const teamClientIds = session.teams.map((team) => team.clientId);
-    if (!teamClientIds.includes(client?.clientId ?? '')) return null;
+    if (!teamClientIds.includes(client?.clientId ?? '')) return OkResponse(null);
   }
 
   return OkResponse(client);
