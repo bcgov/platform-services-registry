@@ -277,7 +277,7 @@ export const authOptions: AuthOptions = {
 
         token.accessToken = account.access_token;
         token.idToken = account.id_token;
-        token.roles = _get(decodedToken, `resource_access.${AUTH_RELM}.roles`, []);
+        token.roles = _get(decodedToken, `resource_access.${AUTH_RESOURCE}.roles`, []);
         token.sub = decodedToken?.sub ?? '';
         token.teams = [];
 
