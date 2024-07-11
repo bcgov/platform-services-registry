@@ -1,7 +1,7 @@
 import { expect } from '@jest/globals';
 import { $Enums } from '@prisma/client';
 import { createSamplePrivateCloudProductData } from '@/helpers/mock-resources';
-import { mockNoRoleUsers, findMockUserByIdr, findOhterMockUsers } from '@/helpers/mock-users';
+import { mockNoRoleUsers, findMockUserByIdr, findOtherMockUsers } from '@/helpers/mock-users';
 import { mockSessionByEmail, mockSessionByRole } from '@/services/api-test/core';
 import { provisionPrivateCloudProject } from '@/services/api-test/private-cloud';
 import { createPrivateCloudProject, listPrivateCloudProductRequests } from '@/services/api-test/private-cloud/products';

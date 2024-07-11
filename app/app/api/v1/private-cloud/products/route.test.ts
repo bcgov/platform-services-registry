@@ -2,7 +2,7 @@ import { expect } from '@jest/globals';
 import { DecisionStatus, ProjectStatus, Ministry, Cluster } from '@prisma/client';
 import prisma from '@/core/prisma';
 import { createSamplePrivateCloudProductData } from '@/helpers/mock-resources';
-import { mockNoRoleUsers, findMockUserByIdr, findOhterMockUsers } from '@/helpers/mock-users';
+import { mockNoRoleUsers, findMockUserByIdr, findOtherMockUsers } from '@/helpers/mock-users';
 import {
   mockSessionByEmail,
   mockSessionByRole,
