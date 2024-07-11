@@ -1,5 +1,6 @@
 import { faker } from '@faker-js/faker';
 import { Prisma, Cluster, Provider } from '@prisma/client';
+import { ObjectId } from 'bson';
 import { clusters, ministries, providers } from '@/constants';
 import { findMockUserByIdr, mockNoRoleIdirs } from '@/helpers/mock-users';
 import { cpuOptions, memoryOptions, storageOptions } from '@/schema';
@@ -127,6 +128,20 @@ export function createSamplePublicCloudProductData(args?: {
       development: true,
       tools: true,
     },
+    ...data,
+  };
+
+  return _data;
+}
+
+export function createSamplePrivateCloudCommentData(args?: { data?: Partial<Prisma.PrivateCloudCommentCreateInput> }) {
+  const { data } = args ?? {};
+
+  const _data = {
+    text: faker.lorem.sentence(),
+    userId: new ObjectId().toHexString(),
+    projectId: new ObjectId().toHexString() as string | undefined,
+    requestId: new ObjectId().toHexString() as string | undefined,
     ...data,
   };
 

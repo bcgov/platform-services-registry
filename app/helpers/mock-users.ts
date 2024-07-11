@@ -35,7 +35,7 @@ export function findMockUserbyRole(role: string) {
   return mockUsers.find(({ roles }) => roles.includes(role));
 }
 
-export function findOhterMockUsers(emails: string[]) {
+export function findOtherMockUsers(emails: string[]) {
   return mockNoRoleUsers.filter((usr) => !emails.includes(usr.email));
 }
 
