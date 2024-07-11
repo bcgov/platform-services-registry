@@ -1,9 +1,7 @@
-from bson.objectid import ObjectId
 import mailchimp_marketing as MailchimpMarketing
 from mailchimp_marketing.api_client import ApiClientError
+from _utils import get_email_hash, fetch_unique_emails
 import json
-import hashlib
-from projects import get_mongo_db
 
 
 class MailchimpManager:
@@ -14,38 +12,8 @@ class MailchimpManager:
             "server": server_prefix
         })
         self.list_id = list_id
-        self.db = get_mongo_db(mongo_conn_id)
+        self.mongo_conn_id = mongo_conn_id
         self.tag_id = tag_id
-
-    def get_email_hash(self, email):
-        return hashlib.md5(email.lower().encode('utf-8')).hexdigest()
-
-    def fetch_unique_emails(self):
-        try:
-            projects_collection = self.db["PrivateCloudProject"]
-            users_collection = self.db["User"]
-            query = {"status": "ACTIVE"}
-            projection = {"_id": 0, "projectOwnerId": 1, "primaryTechnicalLeadId": 1, "secondaryTechnicalLeadId": 1}
-            projects = list(projects_collection.find(query, projection))
-
-            unique_ids = set()
-            for project in projects:
-                if project.get('projectOwnerId'):
-                    unique_ids.add(str(project['projectOwnerId']))
-                if project.get('primaryTechnicalLeadId'):
-                    unique_ids.add(str(project['primaryTechnicalLeadId']))
-                if project.get('secondaryTechnicalLeadId'):
-                    unique_ids.add(str(project['secondaryTechnicalLeadId']))
-
-            unique_emails = []
-            for unique_id in unique_ids:
-                user = users_collection.find_one({"_id": ObjectId(unique_id)})
-                if user and user.get('email'):
-                    unique_emails.append(user['email'])
-            return unique_emails
-        except Exception as e:
-            print(f"[fetch_unique_emails] Error: {e}")
-            return []
 
     def add_emails_to_list(self, emails):
         operations = []
@@ -70,7 +38,7 @@ class MailchimpManager:
     def add_tag_to_emails(self, emails, tag_name):
         operations = []
         for email in emails:
-            email_hash = self.get_email_hash(email)
+            email_hash = get_email_hash(email)
             operations.append({
                 "method": "POST",
                 "path": f"/lists/{self.list_id}/members/{email_hash}/tags",
@@ -90,7 +58,7 @@ class MailchimpManager:
     def remove_tag_from_emails(self, emails, tag_name):
         operations = []
         for email in emails:
-            email_hash = self.get_email_hash(email)
+            email_hash = get_email_hash(email)
             operations.append({
                 "method": "POST",
                 "path": f"/lists/{self.list_id}/members/{email_hash}/tags",
@@ -152,26 +120,26 @@ class MailchimpManager:
     def update_mailchimp_tag(self):
         try:
             # Fetch unique emails from MongoDB
-            unique_emails = set(self.fetch_unique_emails())
+            unique_emails = set(fetch_unique_emails(self.mongo_conn_id))
             if not unique_emails:
                 print("No emails to update.")
                 return
 
             # get tag name by tag ID
-            tag_name = self.get_tag_name_by_id()
+            tag_name = self.get_tag_name_by_id()['name']
 
             # Fetch all members and filter those who already have the tag
             current_tagged_members = self.filter_members_by_tag(tag_name)
             current_tagged_emails = {member['email_address'] for member in current_tagged_members}
 
-            # Remove tags from all currently tagged members
+            # # Remove tags from all currently tagged members
             if current_tagged_emails:
                 self.remove_tag_from_emails(current_tagged_emails, tag_name)
 
-            # Add emails to the list if they are not already added
+            # # Add emails to the list if they are not already added
             self.add_emails_to_list(unique_emails)
 
-            # Tag the necessary emails based on the database
+            # # Tag the necessary emails based on the database
             if unique_emails:
                 self.add_tag_to_emails(unique_emails, tag_name)
 
