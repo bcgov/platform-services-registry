@@ -5,7 +5,7 @@ from datetime import datetime, timedelta
 from update_mailchimp_list import update_mailchimp_segment
 
 
-MONGO_CONN_ID = 'pltsvc-prod'
+MONGO_CONN_ID = 'pltsvc-dev'
 MAILCHIMP_LIST_ID = os.getenv('MAILCHIMP_LIST_ID')
 MAILCHIMP_API_KEY = os.getenv('MAILCHIMP_API_KEY')
 MAILCHIMP_SERVER_PREFIX = os.getenv('MAILCHIMP_SERVER_PREFIX')
