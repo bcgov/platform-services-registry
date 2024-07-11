@@ -5,7 +5,7 @@ import { Tooltip, Badge } from '@mantine/core';
 import { $Enums } from '@prisma/client';
 import _truncate from 'lodash-es/truncate';
 import { usePathname, useRouter } from 'next/navigation';
-import React, { useState } from 'react';
+import React from 'react';
 import ActiveRequestBox from '@/components/form/ActiveRequestBox';
 import TestProductBox from '@/components/form/TestProductBox';
 import CopyableButton from '@/components/generic/button/CopyableButton';
@@ -15,6 +15,7 @@ import { PrivateCloudProjectGetPayloadWithActiveRequest } from '@/queries/privat
 import { formatDate } from '@/utils/date';
 import EmptySearch from './EmptySearch';
 import TruncatedTooltip from './TruncatedTooltip';
+
 interface TableProps {
   rows: PrivateCloudProjectGetPayloadWithActiveRequest[];
   isLoading: boolean;
@@ -39,7 +40,7 @@ export default function TableBodyPrivateProducts({ rows, isLoading = false }: Ta
 
   return (
     <div className="divide-y divide-grey-200/5">
-      {rows.map((row, index) => (
+      {rows.map((row) => (
         <div key={row.id}>
           <div
             tabIndex={0} // Make it focusable
@@ -88,7 +89,12 @@ export default function TableBodyPrivateProducts({ rows, isLoading = false }: Ta
               </div>
             </div>
             <div className="md:col-span-2 lg:col-span-3">
-              {row.activeRequest && <ActiveRequestBox data={{ ...row.activeRequest, cloud: 'private-cloud' }} />}
+              {row.activeRequest && (
+                <ActiveRequestBox
+                  data={{ ...row.activeRequest, cloud: 'private-cloud', licencePlate: row.licencePlate }}
+                  showCount
+                />
+              )}
             </div>
 
             <div className="lg:col-span-1 hidden lg:block"></div>

@@ -10,23 +10,41 @@ import {
   IconPoint,
   IconBan,
 } from '@tabler/icons-react';
+import { useQuery } from '@tanstack/react-query';
 import { useRouter } from 'next/navigation';
+import { useSession } from 'next-auth/react';
+import { getPrivateCloudCommentCount } from '@/services/backend/private-cloud/products';
 
 export default function ActiveRequestBox({
   data,
   className,
+  showCount = false,
 }: {
   data?: {
     cloud: 'private-cloud' | 'public-cloud';
     id: string;
+    licencePlate: string;
     type: $Enums.RequestType;
     active: boolean;
     decisionStatus: $Enums.DecisionStatus;
     createdByEmail: string;
   };
   className?: string;
+  showCount?: boolean;
 }) {
   const router = useRouter();
+  const { data: session } = useSession();
+
+  const canViewComments = session?.permissions?.viewAllPrivateProductComments;
+  const shouldFetchCommentCount = showCount && canViewComments && !!data?.id && !!data?.licencePlate;
+
+  const { data: commentData, isLoading } = useQuery({
+    queryKey: ['commentCount', data?.id],
+    queryFn: () => getPrivateCloudCommentCount(data?.licencePlate as string, data?.id as string),
+    enabled: shouldFetchCommentCount,
+  });
+
+  const commentCount = commentData?.count;
 
   if (!data) return null;
 
@@ -35,11 +53,7 @@ export default function ActiveRequestBox({
   if (data.cloud === 'private-cloud') {
     switch (data.type) {
       case $Enums.RequestType.CREATE:
-        path = 'decision';
-        break;
       case $Enums.RequestType.EDIT:
-        path = 'decision';
-        break;
       case $Enums.RequestType.DELETE:
         path = 'decision';
         break;
@@ -47,11 +61,7 @@ export default function ActiveRequestBox({
   } else {
     switch (data.type) {
       case $Enums.RequestType.CREATE:
-        path = 'request';
-        break;
       case $Enums.RequestType.EDIT:
-        path = 'request';
-        break;
       case $Enums.RequestType.DELETE:
         path = 'request';
         break;
@@ -105,16 +115,6 @@ export default function ActiveRequestBox({
 
   const badges = (
     <>
-      {/* <Badge
-        leftSection={<TypeIcon className="h-6 w-6" />}
-        color={typeColor}
-        size="lg"
-        radius="sm"
-        autoContrast
-        className=""
-      >
-        {data.type}
-      </Badge> */}
       <Badge
         leftSection={<DecisionIcon className="h-6 w-6" />}
         color={decisionColor}
@@ -132,26 +132,37 @@ export default function ActiveRequestBox({
     <Tooltip label="View Request" position="top" offset={10} className={className}>
       <button
         type="button"
-        className="text-gray-900 bg-white border-solid border-2 border-gray-300 focus:outline-none hover:bg-gray-100 focus:ring-4 focus:ring-gray-100 font-medium rounded-lg text-sm px-5 py-2.5"
+        className="relative text-gray-900 bg-white border-solid border-2 border-gray-300 focus:outline-none hover:bg-gray-100 focus:ring-4 focus:ring-gray-100 font-medium rounded-lg text-sm px-5 py-2.5"
         onClick={(e) => {
           e.preventDefault();
           e.stopPropagation();
-
           router.push(`/${data.cloud}/requests/${data.id}/${path}`);
         }}
       >
-        <Indicator color={data.active ? 'lime' : 'red'} zIndex={10}>
-          <Badge autoContrast size="xl" color="rgba(200, 200, 200, 1)" radius="md" className="mb-1">
-            <TypeIcon className="inline-block" />
-            {data.type} Request
-          </Badge>
-          <div>{badges}</div>
-          {data.createdByEmail && (
-            <div className="text-center text-sm text-gray-400">
-              Submitted by <span>{data.createdByEmail}</span>
-            </div>
-          )}
-        </Indicator>
+        <div className="relative">
+          {shouldFetchCommentCount && !isLoading && typeof commentCount === 'number' && commentCount > 0 ? (
+            <Badge
+              color="blue"
+              size="md"
+              circle
+              className="absolute top-1 left-0 transform -translate-x-1/2 -translate-y-1/2"
+            >
+              {commentCount}
+            </Badge>
+          ) : null}
+          <Indicator color={data.active ? 'lime' : 'red'} zIndex={10}>
+            <Badge autoContrast size="xl" color="rgba(200, 200, 200, 1)" radius="md" className="mb-1">
+              <TypeIcon className="inline-block" />
+              {data.type} Request
+            </Badge>
+          </Indicator>
+        </div>
+        <div>{badges}</div>
+        {data.createdByEmail && (
+          <div className="text-center text-sm text-gray-400">
+            Submitted by <span>{data.createdByEmail}</span>
+          </div>
+        )}
       </button>
     </Tooltip>
   );
