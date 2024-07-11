@@ -1,5 +1,3 @@
-from projects import get_mongo_db
-from bson.objectid import ObjectId
 import hashlib
 
 
@@ -63,35 +61,5 @@ def split_array(original_array, num_subarrays):
     return subarrays
 
 
-def get_email_hash(email):
-    return hashlib.md5(email.lower().encode('utf-8')).hexdigest()
-
-
-def fetch_unique_emails(mongo_conn_id):
-    try:
-        db = get_mongo_db(mongo_conn_id)
-        projects_collection = db["PrivateCloudProject"]
-        users_collection = db["User"]
-        query = {"status": "ACTIVE"}
-        projection = {"_id": 0, "projectOwnerId": 1, "primaryTechnicalLeadId": 1, "secondaryTechnicalLeadId": 1}
-        projects = list(projects_collection.find(query, projection))
-
-        unique_ids = set()
-        for project in projects:
-            if project.get('projectOwnerId'):
-                unique_ids.add(str(project['projectOwnerId']))
-            if project.get('primaryTechnicalLeadId'):
-                unique_ids.add(str(project['primaryTechnicalLeadId']))
-            if project.get('secondaryTechnicalLeadId'):
-                unique_ids.add(str(project['secondaryTechnicalLeadId']))
-
-            unique_emails = []
-            if unique_ids:
-                user_criteria = {'_id': {'$in': [ObjectId(id) for id in unique_ids]}}
-                users = users_collection.find(user_criteria)
-                unique_emails = [user['email'] for user in users if 'email' in user]
-
-        return unique_emails
-    except Exception as e:
-        print(f"[fetch_unique_emails] Error: {e}")
-        return []
+def generate_md5_hash(data):
+    return hashlib.md5(data.lower().encode('utf-8')).hexdigest()

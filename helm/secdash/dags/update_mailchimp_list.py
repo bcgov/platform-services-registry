@@ -1,7 +1,40 @@
 import mailchimp_marketing as MailchimpMarketing
 from mailchimp_marketing.api_client import ApiClientError
-from _utils import get_email_hash, fetch_unique_emails
+from _utils import generate_md5_hash
+from projects import get_mongo_db
+from bson.objectid import ObjectId
 import json
+
+
+def fetch_unique_emails(mongo_conn_id):
+    try:
+        db = get_mongo_db(mongo_conn_id)
+        projects_collection = db["PrivateCloudProject"]
+        users_collection = db["User"]
+        query = {"status": "ACTIVE"}
+        projection = {"_id": 0, "projectOwnerId": 1, "primaryTechnicalLeadId": 1, "secondaryTechnicalLeadId": 1}
+        projects = list(projects_collection.find(query, projection))
+
+        unique_ids = set()
+        for project in projects:
+            if project.get('projectOwnerId'):
+                unique_ids.add(str(project['projectOwnerId']))
+            if project.get('primaryTechnicalLeadId'):
+                unique_ids.add(str(project['primaryTechnicalLeadId']))
+            if project.get('secondaryTechnicalLeadId'):
+                unique_ids.add(str(project['secondaryTechnicalLeadId']))
+
+            unique_emails = []
+            if unique_ids:
+                user_criteria = {'_id': {'$in': [ObjectId(id) for id in unique_ids]}}
+                user_projection = {'email': 1, '_id': 0}
+                users = users_collection.find(user_criteria, user_projection)
+                unique_emails = [user['email'] for user in users if 'email' in user]
+
+        return unique_emails
+    except Exception as e:
+        print(f"[fetch_unique_emails] Error: {e}")
+        return []
 
 
 class MailchimpManager:
@@ -38,7 +71,7 @@ class MailchimpManager:
     def add_tag_to_emails(self, emails, tag_name):
         operations = []
         for email in emails:
-            email_hash = get_email_hash(email)
+            email_hash = generate_md5_hash(email)
             operations.append({
                 "method": "POST",
                 "path": f"/lists/{self.list_id}/members/{email_hash}/tags",
@@ -58,7 +91,7 @@ class MailchimpManager:
     def remove_tag_from_emails(self, emails, tag_name):
         operations = []
         for email in emails:
-            email_hash = get_email_hash(email)
+            email_hash = generate_md5_hash(email)
             operations.append({
                 "method": "POST",
                 "path": f"/lists/{self.list_id}/members/{email_hash}/tags",
@@ -132,14 +165,14 @@ class MailchimpManager:
             current_tagged_members = self.filter_members_by_tag(tag_name)
             current_tagged_emails = {member['email_address'] for member in current_tagged_members}
 
-            # # Remove tags from all currently tagged members
+            # Remove tags from all currently tagged members
             if current_tagged_emails:
                 self.remove_tag_from_emails(current_tagged_emails, tag_name)
 
-            # # Add emails to the list if they are not already added
+            # Add emails to the list if they are not already added
             self.add_emails_to_list(unique_emails)
 
-            # # Tag the necessary emails based on the database
+            # Tag the necessary emails based on the database
             if unique_emails:
                 self.add_tag_to_emails(unique_emails, tag_name)
 
