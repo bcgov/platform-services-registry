@@ -46,6 +46,10 @@ spec:
             export EMERALD_SERVICE_ACCOUNT_TOKEN="{{.Data.data.EMERALD_SERVICE_ACCOUNT_TOKEN}}"
             export PUBLIC_ADMIN_EMAILS="{{.Data.data.PUBLIC_ADMIN_EMAILS}}"
             export PRIVATE_ADMIN_EMAILS="{{.Data.data.PRIVATE_ADMIN_EMAILS}}"
+            export MAILCHIMP_LIST_ID = "{{.Data.data.MAILCHIMP_LIST_ID}}"
+            export MAILCHIMP_API_KEY = "{{.Data.data.MAILCHIMP_API_KEY}}"
+            export MAILCHIMP_SERVER_PREFIX = "{{.Data.data.MAILCHIMP_SERVER_PREFIX}}"
+            export MAILCHIMP_REGISTRY_PRIVATE_TAG_ID = "{{.Data.data.MAILCHIMP_REGISTRY_PRIVATE_TAG_ID}}"
           {{- end }}`}}
       labels:
         {{- include "app.labels" . | nindent 8 }}
