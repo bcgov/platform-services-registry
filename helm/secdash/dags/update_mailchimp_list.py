@@ -143,7 +143,7 @@ class MailchimpManager:
         try:
             tags_data = self.client.lists.tag_search(self.list_id)
             for tag in tags_data['tags']:
-                if tag['id'] == self.tag_id:
+                if str(tag['id']) == self.tag_id:
                     return tag
 
         except ApiClientError as error:
