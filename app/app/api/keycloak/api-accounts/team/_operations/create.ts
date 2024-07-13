@@ -6,8 +6,17 @@ import { OkResponse, BadRequestResponse } from '@/core/responses';
 import { createEvent } from '@/mutations/events';
 import { getKcAdminClient, findClient } from '@/services/keycloak/app-realm';
 import { generateShortId } from '@/utils/uuid';
+import { getRolesMapperPayload, syncClientUserRoles } from '../_helpers';
 
-export default async function getOp({ roles, session }: { roles: string[]; session: Session }) {
+export default async function getOp({
+  roles,
+  users,
+  session,
+}: {
+  roles: string[];
+  users: { email: string }[];
+  session: Session;
+}) {
   if (!session.user.id) {
     return BadRequestResponse('invalid session user');
   }
@@ -20,9 +29,11 @@ export default async function getOp({ roles, session }: { roles: string[]; sessi
 
   let client = await findClient(clientId, kcAdminClient);
   if (client?.id) {
+    const clientUid = client.id;
+
     await Promise.all([
       kcAdminClient.clients.update(
-        { realm: AUTH_RELM, id: client.id },
+        { realm: AUTH_RELM, id: clientUid },
         {
           description: `Created by the Registry app as a team service account.`,
           enabled: true,
@@ -33,29 +44,15 @@ export default async function getOp({ roles, session }: { roles: string[]; sessi
           directAccessGrantsEnabled: false,
         },
       ),
-      kcAdminClient.clients.addProtocolMapper(
-        { realm: AUTH_RELM, id: client.id },
-        {
-          name: 'roles',
-          protocol: 'openid-connect',
-          protocolMapper: 'oidc-hardcoded-claim-mapper',
-          config: {
-            'claim.name': 'roles',
-            'claim.value': roles.join(','),
-            'jsonType.label': 'String',
-            'id.token.claim': 'true',
-            'access.token.claim': 'true',
-            'userinfo.token.claim': 'true',
-            'access.tokenResponse.claim': 'false',
-          },
-        },
-      ),
+      kcAdminClient.clients.addProtocolMapper({ realm: AUTH_RELM, id: clientUid }, getRolesMapperPayload(roles)),
       kcAdminClient.clients.createRole({
         realm: AUTH_RELM,
-        id: client.id,
+        id: clientUid,
         name: 'member',
       }),
     ]);
+
+    await syncClientUserRoles(kcAdminClient, clientUid, users);
   }
 
   client = await findClient(clientId, kcAdminClient);

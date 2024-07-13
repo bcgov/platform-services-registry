@@ -67,9 +67,14 @@ export default function UserMenu() {
       onClick: () => setProfileOpen(true),
     },
     {
-      text: 'API Account',
+      text: 'My API Account',
       Icon: IconApi,
       href: '/api-account',
+    },
+    {
+      text: 'Team API Accounts',
+      Icon: IconApi,
+      href: '/team-api-accounts',
     },
     {
       text: 'General Analytics',

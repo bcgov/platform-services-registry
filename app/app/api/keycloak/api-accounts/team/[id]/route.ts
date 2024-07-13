@@ -1,5 +1,6 @@
 import { z } from 'zod';
 import createApiHandler from '@/core/api-handler';
+import { teamApiAccountSchema, TeamApiAccountSchemaData } from '@/schema';
 import deleteOp from '../_operations/delete';
 import getOp from '../_operations/read';
 import updateOp from '../_operations/update';
@@ -20,12 +21,10 @@ export const PUT = createApiHandler({
   roles: ['admin'],
   validations: {
     pathParams: pathParamSchema,
-    body: z.object({
-      roles: z.string().array(),
-    }),
+    body: teamApiAccountSchema,
   },
 })(async ({ session, pathParams, body }) => {
-  const res = await updateOp({ session, id: pathParams.id, roles: body.roles });
+  const res = await updateOp({ session, id: pathParams.id, roles: body.roles, users: body.users });
   return res;
 });
 
