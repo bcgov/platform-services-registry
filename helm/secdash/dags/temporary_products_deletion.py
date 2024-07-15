@@ -32,8 +32,8 @@ def create_private_cloud_requested_project(db, project_details):
     return document_id
 
 
-def send_deletion_request():
-    db = get_mongo_db()
+def send_deletion_request(mongo_conn_id):
+    db = get_mongo_db(mongo_conn_id)
     projects_collection = db["PrivateCloudProject"]
     requests_collection = db["PrivateCloudRequest"]
 
