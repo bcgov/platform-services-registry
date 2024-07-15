@@ -7,7 +7,7 @@ import { PublicCloudCreateRequestBody } from '@/schema';
 import { upsertUsers } from '@/services/db/user';
 
 export default async function createRequest(formData: PublicCloudCreateRequestBody, session: Session) {
-  const licencePlate = generateLicencePlate();
+  const licencePlate = await generateLicencePlate();
 
   await upsertUsers([
     formData.projectOwner.email,

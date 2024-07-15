@@ -1,3 +1,6 @@
+import hashlib
+
+
 def keys_exist(element, *keys):
     '''
     Check if nested keys exist in a dictionary.
@@ -56,3 +59,7 @@ def split_array(original_array, num_subarrays):
         subarrays[i].append(original_array[num_subarrays * subarray_size + i])
 
     return subarrays
+
+
+def generate_md5_hash(data):
+    return hashlib.md5(data.lower().encode('utf-8')).hexdigest()

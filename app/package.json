@@ -1,7 +1,7 @@
 {
   "name": "pltsvc-app",
   "description": "B.C. Government's Platform Product Registry - App",
-  "version": "0.31.2",
+  "version": "0.32.0",
   "private": true,
   "scripts": {
     "dev": "next dev",
@@ -28,7 +28,7 @@
   "dependencies": {
     "@azure/msal-node": "^2.3.0",
     "@faker-js/faker": "^8.0.2",
-    "@headlessui/react": "2.1.1",
+    "@headlessui/react": "2.1.2",
     "@hookform/resolvers": "^3.1.1",
     "@keycloak/keycloak-admin-client": "^25.0.0",
     "@mantine/core": "^7.10.2",

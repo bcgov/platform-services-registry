@@ -297,3 +297,14 @@ export const publicCloudRequestSearchBodySchema = z.object({
 });
 
 export type PublicCloudRequestSearchBody = z.infer<typeof publicCloudRequestSearchBodySchema>;
+
+export const teamApiAccountSchema = z.object({
+  roles: z.array(z.string()),
+  users: z.array(
+    z.object({
+      email: z.string().email().min(5),
+    }),
+  ),
+});
+
+export type TeamApiAccountSchemaData = z.infer<typeof teamApiAccountSchema>;

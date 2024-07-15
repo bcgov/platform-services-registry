@@ -69,6 +69,7 @@ declare module 'next-auth' {
     isPublicReader: boolean;
     isApprover: boolean;
     roles: string[];
+    teams: { clientId: string; roles: string[] }[];
     ministries: {
       editor: string[];
       reader: string[];
