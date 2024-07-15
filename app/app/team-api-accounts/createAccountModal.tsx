@@ -15,7 +15,7 @@ import AccountRoles from './AccountRoles';
 interface ModalProps {}
 interface ModalState {}
 
-function CreateUsersModal({ closeModal }: ModalProps & ExtraModalProps) {
+function CreateUsersModal({ closeModal }: ExtraModalProps) {
   const { data: authRoles, isFetching: isAuthRolesFetching } = useQuery({
     queryKey: ['roles'],
     queryFn: () => listKeycloakAuthRoles(),
