@@ -29,57 +29,66 @@ export default TeamApiAccountsPage(({ session }) => {
     return null;
   }
 
-  const rows = (apiAccounts || []).map((account) => {
-    const rolesMapper = account.protocolMappers?.find((mapper) => mapper.name === 'roles');
-    const rolesStr = _get(rolesMapper, ['config', 'claim.value'], '');
-    const roles: string[] = _compact(rolesStr.split(','));
-
-    return (
-      <Table.Tr key={account.id}>
-        <Table.Td>
-          <span className="whitespace-nowrap">{account.clientId}</span>
-          <Badge color="green" radius="sm" className="ml-1">
-            Active
-          </Badge>
-        </Table.Td>
-
-        <Table.Td>
-          {roles.map((role) => (
-            <Badge key={role} color="gray" radius="sm" className="mr-1">
-              {role}
-            </Badge>
-          ))}
-        </Table.Td>
-        <Table.Td>
-          <Button
-            className="mr-1"
-            variant="outline"
-            onClick={async () => {
-              await openViewAccountModal({
-                clientUid: account.id!,
-                clientId: account.clientId!,
-                clientSecret: account.secret!,
-                roles,
-              });
-            }}
-          >
-            View
-          </Button>
-          {session?.isAdmin && (
-            <Button
-              variant="outline"
-              onClick={async () => {
-                await openManageAccountModal({ clientUid: account.id!, roles });
-                await refetchApiAccounts();
-              }}
-            >
-              Manage
-            </Button>
-          )}
-        </Table.Td>
+  let rows = null;
+  if (!apiAccounts || apiAccounts.length === 0) {
+    rows = (
+      <Table.Tr>
+        <Table.Td colSpan={3}>No teams accounts found.</Table.Td>
       </Table.Tr>
     );
-  });
+  } else {
+    rows = (apiAccounts || []).map((account) => {
+      const rolesMapper = account.protocolMappers?.find((mapper) => mapper.name === 'roles');
+      const rolesStr = _get(rolesMapper, ['config', 'claim.value'], '');
+      const roles: string[] = _compact(rolesStr.split(','));
+
+      return (
+        <Table.Tr key={account.id}>
+          <Table.Td>
+            <span className="whitespace-nowrap">{account.clientId}</span>
+            <Badge color="green" radius="sm" className="ml-1">
+              Active
+            </Badge>
+          </Table.Td>
+
+          <Table.Td>
+            {roles.map((role) => (
+              <Badge key={role} color="gray" radius="sm" className="mr-1">
+                {role}
+              </Badge>
+            ))}
+          </Table.Td>
+          <Table.Td>
+            <Button
+              className="mr-1"
+              variant="outline"
+              onClick={async () => {
+                await openViewAccountModal({
+                  clientUid: account.id!,
+                  clientId: account.clientId!,
+                  clientSecret: account.secret!,
+                  roles,
+                });
+              }}
+            >
+              View
+            </Button>
+            {session?.isAdmin && (
+              <Button
+                variant="outline"
+                onClick={async () => {
+                  await openManageAccountModal({ clientUid: account.id!, roles });
+                  await refetchApiAccounts();
+                }}
+              >
+                Manage
+              </Button>
+            )}
+          </Table.Td>
+        </Table.Tr>
+      );
+    });
+  }
 
   return (
     <div className="pt-5">

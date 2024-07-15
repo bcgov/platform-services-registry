@@ -109,6 +109,7 @@ function ManageAccountModal({ clientUid, roles, closeModal }: ModalProps & Extra
                   const response = await openConfirmModal({});
                   if (response.confirmed) {
                     await deleteAccount();
+                    closeModal();
                   }
                 }}
                 className="mr-1"
