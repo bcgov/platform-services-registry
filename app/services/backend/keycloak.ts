@@ -1,3 +1,6 @@
+import ClientRepresentation from '@keycloak/keycloak-admin-client/lib/defs/clientRepresentation';
+import RoleRepresentation from '@keycloak/keycloak-admin-client/lib/defs/roleRepresentation';
+import UserRepresentation from '@keycloak/keycloak-admin-client/lib/defs/userRepresentation';
 import axios from 'axios';
 import { instance as baseInstance } from './axios';
 
@@ -21,14 +24,14 @@ export async function deleteKeycloakApiAccount() {
   return result;
 }
 
-export async function createKeycloakTeamApiAccount(roles: string[]) {
-  const result = await instance.post('/api-accounts/team', { roles }).then((res) => res.data);
+export async function createKeycloakTeamApiAccount(roles: string[], users: { email: string }[]) {
+  const result = await instance.post('/api-accounts/team', { roles, users }).then((res) => res.data);
   return result;
 }
 
 export async function listKeycloakTeamApiAccounts() {
   const result = await instance.get('/api-accounts/team').then((res) => res.data);
-  return result;
+  return result as ClientRepresentation[];
 }
 
 export async function getKeycloakApiTeamAccount(clientId: string) {
@@ -36,8 +39,8 @@ export async function getKeycloakApiTeamAccount(clientId: string) {
   return result;
 }
 
-export async function updateKeycloakApiTeamAccount(clientId: string, roles: string[]) {
-  const result = await instance.put(`/api-accounts/team/${clientId}`, { roles }).then((res) => res.data);
+export async function updateKeycloakApiTeamAccount(clientId: string, roles: string[], users: { email: string }[]) {
+  const result = await instance.put(`/api-accounts/team/${clientId}`, { roles, users }).then((res) => res.data);
   return result;
 }
 
@@ -46,10 +49,20 @@ export async function deleteKeycloakTeamApiAccount(clientId: string) {
   return result;
 }
 
+export async function listKeycloakTeamApiAccountUsers(clientId: string) {
+  const result = await instance.get(`/api-accounts/team/${clientId}/users`).then((res) => res.data);
+  return result as UserRepresentation[];
+}
+
 export async function manageUsersOfKeycloakTeamApiAccount(
   clientId: string,
   users: { email: string; type: 'add' | 'remove' }[],
 ) {
   const result = await instance.post(`/api-accounts/team/${clientId}/users`, { users }).then((res) => res.data);
   return result;
+}
+
+export async function listKeycloakAuthRoles() {
+  const result = await instance.get(`/roles`).then((res) => res.data);
+  return result as RoleRepresentation[];
 }

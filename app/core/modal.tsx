@@ -55,7 +55,6 @@ export function createModal<P, S = any>({ settings, Component, condition, onClos
         ...extraSettings,
         modalId: id,
         onClose: () => {
-          console.log('onClose11');
           const output = { state: { ...state }, snapshot };
           if (onPreClose) onPreClose(output);
           if (onClose) onClose();

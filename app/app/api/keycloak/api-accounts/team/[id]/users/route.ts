@@ -20,6 +20,22 @@ const bodySchema = z.object({
     .array(),
 });
 
+export const GET = createApiHandler({
+  roles: ['user'],
+  validations: { pathParams: pathParamSchema },
+})(async ({ session, pathParams }) => {
+  const { id: clientUid } = pathParams;
+
+  const kcAdminClient = await getKcAdminClient();
+  const exisitingUsers = await kcAdminClient.clients.findUsersWithRole({
+    realm: AUTH_RELM,
+    id: clientUid,
+    roleName: 'member',
+  });
+
+  return OkResponse(exisitingUsers);
+});
+
 export const POST = createApiHandler({
   roles: ['admin'],
   validations: { pathParams: pathParamSchema, body: bodySchema },

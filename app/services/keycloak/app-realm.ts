@@ -65,3 +65,17 @@ export async function findUser(userId: string, kcAdminClient?: KcAdminClient) {
 
   return { ...user, authRoleNames: authRoles.map((role) => role.name ?? '') };
 }
+
+export async function listClientRoles(clientId: string, kcAdminClient?: KcAdminClient) {
+  if (!kcAdminClient) kcAdminClient = await getKcAdminClient();
+
+  const client = await findClient(clientId, kcAdminClient);
+  if (!client?.id) return [];
+
+  const roles = await kcAdminClient.clients.listRoles({
+    realm: AUTH_RELM,
+    id: client.id,
+  });
+
+  return roles;
+}
