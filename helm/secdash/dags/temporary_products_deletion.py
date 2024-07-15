@@ -1,67 +1,11 @@
-import os
-import subprocess
-import json
 from datetime import datetime, timedelta, timezone
-from pymongo import MongoClient, DESCENDING
+from pymongo import DESCENDING
 from bson import ObjectId
-
-
-def get_mongo_db():
-    connection_url = os.getenv('DATABASE_URL')
-    print(f"Connecting to MongoDB with URL: {connection_url}")
-    client = MongoClient(connection_url)
-    db_name = connection_url.split('/')[-1].split('?')[0]
-    return client[db_name]
-
-
-def call_node_function(function_name, request, user_name):
-    try:
-        result = subprocess.run(
-            ['ts-node', 'app/services/ches/private-cloud/send-emails.ts',
-                function_name, json.dumps(request), user_name],
-            check=True, capture_output=True, text=True
-        )
-        print(f"[call_node_function]: {result.stdout}")
-    except subprocess.CalledProcessError as e:
-        print(f"[call_node_function] error occurred: {e.stderr}")
-
-
-def create_request_data(db, project_details):
-    now = datetime.now()
-
-    # Assuming project_details contains all necessary info, or set defaults
-    request_data = {
-        "name": project_details.get("name", "Default Name"),
-        "description": project_details.get("description", "Default Description"),
-        "status": project_details.get("status", "INACTIVE"),  # Assuming 'status' is provided, or set a default
-        "licencePlate": project_details.get("licencePlate", "Default Licence"),
-        "isTest": project_details.get("isTest", False),
-        "createdAt": now,
-        "projectOwnerId": project_details.get("projectOwnerId"),
-        "primaryTechnicalLeadId": project_details.get("primaryTechnicalLeadId"),
-        "secondaryTechnicalLeadId": project_details.get("secondaryTechnicalLeadId", None),
-        "ministry": project_details.get("ministry", "Default Ministry"),
-        "cluster": project_details.get("cluster", "Default Cluster"),
-        "golddrEnabled": project_details.get("golddrEnabled", False),
-        "productionQuota": project_details.get("productionQuota", {}),
-        "testQuota": project_details.get("testQuota", {}),
-        "developmentQuota": project_details.get("developmentQuota", {}),
-        "toolsQuota": project_details.get("toolsQuota", {}),
-        "commonComponents": project_details.get("commonComponents", {}),
-        "supportPhoneNumber": project_details.get("supportPhoneNumber", "N/A")
-    }
-
-    # Insert the data into the collection and obtain the new ObjectId
-    request_data_id = db["PrivateCloudRequestedProject"].insert_one(request_data).inserted_id
-
-    # Return the entire document just created, for further processing or verification
-    return db["PrivateCloudRequestedProject"].find_one({"_id": request_data_id})
+from projects import get_mongo_db
 
 
 def create_private_cloud_requested_project(db, project_details):
     now = datetime.now()
-
-    # Prepare the data document based on the model structure
     private_cloud_project_data = {
         "name": project_details.get("name", "Default Name"),
         "description": project_details.get("description", "Default Description"),
@@ -83,11 +27,8 @@ def create_private_cloud_requested_project(db, project_details):
         "supportPhoneNumber": project_details.get("supportPhoneNumber", "N/A")
     }
 
-    # Insert the document into the MongoDB collection
     document_id = db["PrivateCloudRequestedProject"].insert_one(private_cloud_project_data).inserted_id
-    print("data : ", db["PrivateCloudRequestedProject"].find_one({"_id": document_id})
-          )
-    # Optionally, return the created document
+
     return document_id
 
 
@@ -110,7 +51,8 @@ def send_deletion_request():
                     project_create_at = project_create_at.replace(tzinfo=timezone.utc)
 
             now = datetime.now(timezone.utc)
-            if project_create_at <= (now - timedelta(days=0)):
+            if project_create_at <= (now - timedelta(days=30)):
+
                 request_data = {
                     "type": "DELETE",
                     "decisionStatus": "PENDING",
@@ -118,18 +60,18 @@ def send_deletion_request():
                     "createdByEmail": "PlatformServicesTeam@gov.bc.ca",
                     "licencePlate": project.get("licencePlate"),
                     "originalDataId": previous_request["_id"] if previous_request else None,
-                    "decisionDataId": ObjectId(create_private_cloud_requested_project(db, project)),
+                    "decisionDataId": create_private_cloud_requested_project(db, project),
                     "requestDataId": ObjectId(),
-                    "projectId": ObjectId(project["_id"]),
+                    "projectId": project["_id"],
                     "createdAt": now,
                     "updatedAt": now,
                     "isQuotaChanged": False
                 }
 
                 new_request = requests_collection.insert_one(request_data)
-                # print("new_request", new_request)
+                request_data['_id'] = str(new_request.inserted_id)
+
                 if new_request:
-                    # call_node_function("sendDeleteRequestEmails", request_data, "PlatformServicesTeam")
                     print(f"Project {project['licencePlate']} is 30 days old or older and deletion request is created.")
 
                 # if project_create_at == (now - timedelta(days=20)):
@@ -147,13 +89,9 @@ def get_last_closed_private_cloud_request(licence_plate, requests_collection):
                 "active": False,
             },
             sort=[("updatedAt", DESCENDING)],
-
         )
         return previous_request
 
     except Exception as e:
         print(f"[get_last_closed_private_cloud_request] Error: {e}")
         return None
-
-
-send_deletion_request()
