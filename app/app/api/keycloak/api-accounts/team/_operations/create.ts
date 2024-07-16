@@ -6,7 +6,8 @@ import { OkResponse, BadRequestResponse } from '@/core/responses';
 import { createEvent } from '@/mutations/events';
 import { getKcAdminClient, findClient } from '@/services/keycloak/app-realm';
 import { generateShortId } from '@/utils/uuid';
-import { getRolesMapperPayload, syncClientUserRoles } from '../_helpers';
+import { getRolesMapperPayload, getServiceAccountTypeMapperPayload } from '../../mappers';
+import { syncClientUserRoles } from '../_helpers';
 
 export default async function getOp({
   roles,
@@ -45,6 +46,10 @@ export default async function getOp({
         },
       ),
       kcAdminClient.clients.addProtocolMapper({ realm: AUTH_RELM, id: clientUid }, getRolesMapperPayload(roles)),
+      kcAdminClient.clients.addProtocolMapper(
+        { realm: AUTH_RELM, id: clientUid },
+        getServiceAccountTypeMapperPayload('team'),
+      ),
       kcAdminClient.clients.createRole({
         realm: AUTH_RELM,
         id: clientUid,

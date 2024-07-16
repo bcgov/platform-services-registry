@@ -13,6 +13,7 @@ import { createEvent } from '@/mutations/events';
 import { upsertUser } from '@/services/db/user';
 
 export async function generateSession({ session, token }: { session: Session; token?: JWT }) {
+  session.isServiceAccount = false;
   session.isUser = false;
   session.isAdmin = false;
   session.isEditor = false;
@@ -66,6 +67,11 @@ export async function generateSession({ session, token }: { session: Session; to
 
     session.roles = [..._uniq(session.roles)];
     session.roles.forEach((role) => {
+      if (role === 'service-account') {
+        session.isServiceAccount = true;
+        return;
+      }
+
       if (role === 'user') {
         session.isUser = true;
         return;

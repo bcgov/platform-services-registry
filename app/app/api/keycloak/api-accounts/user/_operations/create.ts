@@ -4,6 +4,7 @@ import { AUTH_RELM } from '@/config';
 import { OkResponse, BadRequestResponse } from '@/core/responses';
 import { createEvent } from '@/mutations/events';
 import { getKcAdminClient, findClient } from '@/services/keycloak/app-realm';
+import { getServiceAccountTypeMapperPayload } from '../../mappers';
 
 export default async function getOp({ session }: { session: Session }) {
   if (!session.user.id) {
@@ -68,6 +69,10 @@ export default async function getOp({ session }: { session: Session }) {
             'access.tokenResponse.claim': 'false',
           },
         },
+      ),
+      kcAdminClient.clients.addProtocolMapper(
+        { realm: AUTH_RELM, id: client.id },
+        getServiceAccountTypeMapperPayload('user'),
       ),
     ]);
   }

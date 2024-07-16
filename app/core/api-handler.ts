@@ -1,3 +1,6 @@
+import _compact from 'lodash-es/compact';
+import _trim from 'lodash-es/trim';
+import _uniq from 'lodash-es/uniq';
 import { NextRequest, NextResponse } from 'next/server';
 import { Session, PermissionsKey } from 'next-auth';
 import { getServerSession } from 'next-auth/next';
@@ -107,21 +110,36 @@ function createApiHandler<
               jwtToken: bearerToken,
               authUrl: AUTH_SERVER_URL,
               realm: AUTH_RELM,
-              requiredClaims: ['kc-userid'],
+              requiredClaims: ['service_account_type'],
             });
 
             if (!jwtData) {
               return UnauthorizedResponse('invalid token');
             }
 
-            const kcUserId = jwtData['kc-userid'];
-            const kcUser = await findUser(kcUserId);
-            if (!kcUser) return BadRequestResponse('keycloak user not found');
+            const saType = jwtData.service_account_type;
+            if (saType === 'user') {
+              const kcUserId = jwtData['kc-userid'];
+              if (!kcUserId) return UnauthorizedResponse('invalid token');
 
-            session = await generateSession({
-              session: {} as Session,
-              token: { email: kcUser.email, roles: kcUser.authRoleNames },
-            });
+              const kcUser = await findUser(kcUserId);
+              if (!kcUser) return BadRequestResponse('keycloak user not found');
+
+              session = await generateSession({
+                session: {} as Session,
+                token: { email: kcUser.email, roles: kcUser.authRoleNames.concat('service-account') },
+              });
+            } else if (saType === 'team') {
+              const rolesStr = jwtData.roles;
+              const rolesArr: string[] = _uniq(_compact(rolesStr.split(',').map(_trim)));
+
+              session = await generateSession({
+                session: {} as Session,
+                token: { email: '', roles: rolesArr.concat('service-account') },
+              });
+            } else {
+              return UnauthorizedResponse('invalid token');
+            }
           } else {
             session = (await getServerSession(authOptions)) || (await generateSession({ session: {} as Session }));
           }

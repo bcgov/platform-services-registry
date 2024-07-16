@@ -2,25 +2,6 @@ import KcAdminClient from '@keycloak/keycloak-admin-client';
 import { RoleMappingPayload } from '@keycloak/keycloak-admin-client/lib/defs/roleRepresentation';
 import { AUTH_RELM } from '@/config';
 
-export function getRolesMapperPayload(roles: string[]) {
-  const rolesMapperData = {
-    name: 'roles',
-    protocol: 'openid-connect',
-    protocolMapper: 'oidc-hardcoded-claim-mapper',
-    config: {
-      'claim.name': 'roles',
-      'claim.value': roles.join(','),
-      'jsonType.label': 'String',
-      'id.token.claim': 'true',
-      'access.token.claim': 'true',
-      'userinfo.token.claim': 'true',
-      'access.tokenResponse.claim': 'false',
-    },
-  };
-
-  return rolesMapperData;
-}
-
 export async function syncClientUserRoles(kcAdminClient: KcAdminClient, clientUid: string, users: { email: string }[]) {
   const memberRole = await kcAdminClient.clients.findRole({
     realm: AUTH_RELM,
