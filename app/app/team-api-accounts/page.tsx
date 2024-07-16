@@ -31,9 +31,11 @@ export default TeamApiAccountsPage(({ session }) => {
 
   let rows = null;
   if (!apiAccounts || apiAccounts.length === 0) {
+    const message = session?.isAdmin ? 'No team API accounts found.' : 'You are not assigned to any team API accounts.';
+
     rows = (
       <Table.Tr>
-        <Table.Td colSpan={3}>No teams accounts found.</Table.Td>
+        <Table.Td colSpan={3}>{message}</Table.Td>
       </Table.Tr>
     );
   } else {

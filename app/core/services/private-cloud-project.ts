@@ -17,14 +17,14 @@ type PrivateCloudProject = Prisma.PrivateCloudProjectGetPayload<{
 
 export class PrivateCloudProjectService extends ModelService<Prisma.PrivateCloudProjectWhereInput> {
   async readFilter() {
-    if (!this.session?.userId) return false;
+    if (!this.session.isUser && !this.session.isServiceAccount) return false;
     if (this.session.permissions.viewAllPrivateCloudProducts) return true;
 
     const baseFilter: Prisma.PrivateCloudProjectWhereInput = {
       OR: [
-        { projectOwnerId: this.session.userId as string },
-        { primaryTechnicalLeadId: this.session.userId as string },
-        { secondaryTechnicalLeadId: this.session.userId },
+        { projectOwnerId: this.session.user.id as string },
+        { primaryTechnicalLeadId: this.session.user.id as string },
+        { secondaryTechnicalLeadId: this.session.user.id },
         { ministry: { in: this.session.ministries.editor as $Enums.Ministry[] } },
         { ministry: { in: this.session.ministries.reader as $Enums.Ministry[] } },
       ],
@@ -34,14 +34,14 @@ export class PrivateCloudProjectService extends ModelService<Prisma.PrivateCloud
   }
 
   async writeFilter() {
-    if (!this.session) return false;
+    if (!this.session.isUser && !this.session.isServiceAccount) return false;
     if (this.session.permissions.editAllPrivateCloudProducts) return true;
 
     const baseFilter: Prisma.PrivateCloudProjectWhereInput = {
       OR: [
-        { projectOwnerId: this.session.userId as string },
-        { primaryTechnicalLeadId: this.session.userId as string },
-        { secondaryTechnicalLeadId: this.session.userId },
+        { projectOwnerId: this.session.user.id as string },
+        { primaryTechnicalLeadId: this.session.user.id as string },
+        { secondaryTechnicalLeadId: this.session.user.id },
         { ministry: { in: this.session.ministries.editor as $Enums.Ministry[] } },
       ],
     };
@@ -60,7 +60,7 @@ export class PrivateCloudProjectService extends ModelService<Prisma.PrivateCloud
 
     const isActive = doc.status === $Enums.ProjectStatus.ACTIVE;
     const isMyProduct = [doc.projectOwnerId, doc.primaryTechnicalLeadId, doc.secondaryTechnicalLeadId].includes(
-      this.session.userId,
+      this.session.user.id,
     );
 
     const canView =

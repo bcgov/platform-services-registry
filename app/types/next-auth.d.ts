@@ -54,6 +54,7 @@ declare module 'next-auth' {
     };
     userId: string | null;
     userEmail: string | null;
+    isServiceAccount: boolean;
     isUser: boolean;
     isAdmin: boolean;
     isEditor: boolean;

@@ -4,7 +4,8 @@ import { AUTH_RELM } from '@/config';
 import { OkResponse, BadRequestResponse } from '@/core/responses';
 import { createEvent } from '@/mutations/events';
 import { getKcAdminClient, findClient } from '@/services/keycloak/app-realm';
-import { getRolesMapperPayload, syncClientUserRoles } from '../_helpers';
+import { getRolesMapperPayload } from '../../mappers';
+import { syncClientUserRoles } from '../_helpers';
 
 export default async function getOp({
   id,
