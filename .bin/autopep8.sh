@@ -1,3 +1,3 @@
 #!/bin/bash
 
-autopep8 "$@" --in-place
+autopep8 "$@" --in-place --recursive
