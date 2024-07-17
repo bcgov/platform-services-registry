@@ -20,8 +20,6 @@ class PrivateCloudTempProductsDeletionRequestManager:
             "client_id": self.client_id,
             "client_secret": self.client_secret
         }
-        print("token_url", token_url)
-        print("payload", data)
 
         response = requests.post(token_url, data=data)
         try:
@@ -75,4 +73,5 @@ class PrivateCloudTempProductsDeletionRequestManager:
 def send_temp_products_deletion_request(base_url, client_id, client_secret, mongo_conn_id, auth_server_url, realm):
     manager = PrivateCloudTempProductsDeletionRequestManager(
         base_url, client_id, client_secret, mongo_conn_id, auth_server_url, realm)
+    manager.get_token()
     manager.send_deletion_requests()
