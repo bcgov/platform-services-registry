@@ -13,8 +13,11 @@ MAILCHIMP_REGISTRY_PRIVATE_TAG_ID = os.getenv('MAILCHIMP_REGISTRY_PRIVATE_TAG_ID
 
 with DAG(
     dag_id="mailchimp_prod",
-    schedule_interval='@weekly',
-    start_date=datetime.now() - timedelta(weeks=1)
+    description='A DAG to update Mailchimp segment',
+    schedule_interval="0 3 * * *",
+    start_date=datetime.now() - timedelta(weeks=1),
+    is_paused_upon_creation=False,
+    catchup=False,
 ) as dag:
     t1 = PythonOperator(
         task_id='fetch-and-update-mailchimp-segment-prod',

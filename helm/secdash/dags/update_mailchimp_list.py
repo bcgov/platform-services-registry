@@ -150,37 +150,32 @@ class MailchimpManager:
             print("Error: {}".format(error.text))
             return None
 
-    def update_mailchimp_tag(self):
-        try:
-            # Fetch unique emails from MongoDB
-            unique_emails = set(fetch_unique_emails(self.mongo_conn_id))
-            if not unique_emails:
-                print("No emails to update.")
-                return
-
-            # get tag name by tag ID
-            tag_name = self.get_tag_name_by_id()['name']
-
-            # Fetch all members and filter those who already have the tag
-            current_tagged_members = self.filter_members_by_tag(tag_name)
-            current_tagged_emails = {member['email_address'] for member in current_tagged_members}
-
-            # Remove tags from all currently tagged members
-            if current_tagged_emails:
-                self.remove_tag_from_emails(current_tagged_emails, tag_name)
-
-            # Add emails to the list if they are not already added
-            self.add_emails_to_list(unique_emails)
-
-            # Tag the necessary emails based on the database
-            if unique_emails:
-                self.add_tag_to_emails(unique_emails, tag_name)
-
-            print("Mailchimp tag update process completed successfully.")
-        except Exception as e:
-            print(f"[update_mailchimp_tag] Error: {e}")
-
 
 def update_mailchimp_segment(api_key, server_prefix, list_id, tag_id, mongo_conn_id):
-    manager = MailchimpManager(api_key, server_prefix, list_id, tag_id, mongo_conn_id)
-    manager.update_mailchimp_tag()
+    mc = MailchimpManager(api_key, server_prefix, list_id, tag_id, mongo_conn_id)
+
+    # Fetch unique emails from MongoDB
+    unique_emails = set(fetch_unique_emails(mc.mongo_conn_id))
+    if not unique_emails:
+        print("No emails to update.")
+        return
+
+    # get tag name by tag ID
+    tag_name = mc.get_tag_name_by_id()['name']
+
+    # Fetch all members and filter those who already have the tag
+    current_tagged_members = mc.filter_members_by_tag(tag_name)
+    current_tagged_emails = {member['email_address'] for member in current_tagged_members}
+
+    # Remove tags from all currently tagged members
+    if current_tagged_emails:
+        mc.remove_tag_from_emails(current_tagged_emails, tag_name)
+
+    # Add emails to the list if they are not already added
+    mc.add_emails_to_list(unique_emails)
+
+    # Tag the necessary emails based on the database
+    if unique_emails:
+        mc.add_tag_to_emails(unique_emails, tag_name)
+
+    print("Mailchimp tag update process completed successfully.")
