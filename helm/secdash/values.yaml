@@ -47,10 +47,11 @@ airflow:
   gid:
 
   defaultAirflowRepository: ghcr.io/bcgov/pltsvc-secdashboard-airflow
-  defaultAirflowTag: "4692f1e60d8f00f302d476059284449ea722ac1e" # pragma: allowlist secret
+  # See https://github.com/bcgov/platform-services-registry/pkgs/container/pltsvc-secdashboard-airflow
+  defaultAirflowTag: "9b398a5d050f1b9d11e7f856e9c45b7ff7883fe3" # pragma: allowlist secret
 
   # See https://github.com/apache/airflow/blob/4a4913c6f729756b528a0f0095c0273e853bc197/chart/values.yaml#L77
-  airflowVersion: "2.7.3"
+  airflowVersion: "2.9.3"
 
   # See https://github.com/apache/airflow/blob/4a4913c6f729756b528a0f0095c0273e853bc197/chart/values.yaml#L80
   images:
@@ -128,11 +129,11 @@ airflow:
     replicas: 1
     resources:
       limits:
+        cpu: 1000m
+        memory: 2Gi
+      requests:
         cpu: 500m
         memory: 1Gi
-      requests:
-        cpu: 50m
-        memory: 500Mi
 
   # See https://github.com/apache/airflow/blob/4a4913c6f729756b528a0f0095c0273e853bc197/chart/values.yaml#L1342
   triggerer:

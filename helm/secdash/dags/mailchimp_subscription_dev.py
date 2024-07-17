@@ -12,7 +12,7 @@ MAILCHIMP_SERVER_PREFIX = os.getenv('MAILCHIMP_SERVER_PREFIX')
 MAILCHIMP_REGISTRY_PRIVATE_TAG_ID = os.getenv('MAILCHIMP_TEST_TAG_ID')
 
 with DAG(
-    dag_id="mailchimp-dev",
+    dag_id="mailchimp_dev",
     schedule_interval='@weekly',
     start_date=datetime.now() - timedelta(weeks=1)
 ) as dag:
