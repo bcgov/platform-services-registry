@@ -1,97 +1,78 @@
+import requests
 from datetime import datetime, timedelta, timezone
-from pymongo import DESCENDING
-from bson import ObjectId
 from projects import get_mongo_db
 
 
-def create_private_cloud_requested_project(db, project_details):
-    now = datetime.now()
-    private_cloud_project_data = {
-        "name": project_details.get("name", "Default Name"),
-        "description": project_details.get("description", "Default Description"),
-        "status": project_details.get("status", "INACTIVE"),
-        "licencePlate": project_details.get("licencePlate", "Default Licence Plate"),
-        "isTest": project_details.get("isTest", False),
-        "createdAt": now,
-        "projectOwnerId": ObjectId(project_details.get("projectOwnerId")),
-        "primaryTechnicalLeadId": ObjectId(project_details.get("primaryTechnicalLeadId")),
-        "secondaryTechnicalLeadId": ObjectId(project_details.get("secondaryTechnicalLeadId")) if project_details.get("secondaryTechnicalLeadId") else None,
-        "ministry": project_details.get("ministry", "Default Ministry"),
-        "cluster": project_details.get("cluster", "Default Cluster"),
-        "golddrEnabled": project_details.get("golddrEnabled", False),
-        "productionQuota": project_details.get("productionQuota", {"cpu": 0, "memory": 0}),
-        "testQuota": project_details.get("testQuota", {"cpu": 0, "memory": 0}),
-        "developmentQuota": project_details.get("developmentQuota", {"cpu": 0, "memory": 0}),
-        "toolsQuota": project_details.get("toolsQuota", {"cpu": 0, "memory": 0}),
-        "commonComponents": project_details.get("commonComponents", {}),
-        "supportPhoneNumber": project_details.get("supportPhoneNumber", "N/A")
-    }
+class PrivateCloudTempProductsDeletionRequestManager:
+    def __init__(self, base_url, client_id, client_secret, mongo_conn_id, auth_server_url, realm):
+        self.base_url = base_url
+        self.client_id = client_id
+        self.client_secret = client_secret
+        self.mongo_conn_id = mongo_conn_id
+        self.auth_server_url = auth_server_url
+        self.realm = realm
+        self.token = None
 
-    document_id = db["PrivateCloudRequestedProject"].insert_one(private_cloud_project_data).inserted_id
+    def get_token(self):
+        token_url = f"{self.auth_server_url}/realms/{self.realm}/protocol/openid-connect/token"
+        data = {
+            "grant_type": "client_credentials",
+            "client_id": self.client_id,
+            "client_secret": self.client_secret
+        }
+        print("token_url", token_url)
+        print("payload", data)
 
-    return document_id
+        response = requests.post(token_url, data=data)
+        try:
+            response.raise_for_status()
+            self.token = response.json().get("access_token")
+            print("Access token retrieved successfully:", self.token)
+        except requests.exceptions.HTTPError as e:
+            print("Failed to retrieve token:", e)
+            print("Response:", response.text)
+            return None
 
+    def delete_private_cloud_project(self, licence_plate):
+        url = f"{self.base_url}/{licence_plate}"
+        headers = {
+            "Authorization": f"Bearer {self.token}",
+            "Content-Type": "application/json"
+        }
+        try:
+            response = requests.delete(url, headers=headers)
+            response.raise_for_status()
+            return response.json()
+        except requests.RequestException as e:
+            print(f"An error occurred: {e}")
+            return None
 
-def send_deletion_request(mongo_conn_id):
-    db = get_mongo_db(mongo_conn_id)
-    projects_collection = db["PrivateCloudProject"]
-    requests_collection = db["PrivateCloudRequest"]
-
-    try:
-        projects = list(projects_collection.find({"isTest": True}))
-
-        for project in projects:
-            previous_request = get_last_closed_private_cloud_request(project["licencePlate"], requests_collection)
-            project_create_at = project.get("createdAt")
-            if project_create_at:
-                if isinstance(project_create_at, str):
-                    project_create_at = datetime.fromisoformat(
-                        project_create_at.rstrip("Z")).replace(tzinfo=timezone.utc)
-                elif isinstance(project_create_at, datetime) and project_create_at.tzinfo is None:
-                    project_create_at = project_create_at.replace(tzinfo=timezone.utc)
-
+    def send_deletion_requests(self):
+        db = get_mongo_db(self.mongo_conn_id)
+        projects_collection = db["PrivateCloudProject"]
+        try:
+            projects = list(projects_collection.find({"isTest": True}))
             now = datetime.now(timezone.utc)
-            if project_create_at <= (now - timedelta(days=30)):
 
-                request_data = {
-                    "type": "DELETE",
-                    "decisionStatus": "PENDING",
-                    "active": True,
-                    "createdByEmail": "PlatformServicesTeam@gov.bc.ca",
-                    "licencePlate": project.get("licencePlate"),
-                    "originalDataId": previous_request["_id"] if previous_request else None,
-                    "decisionDataId": create_private_cloud_requested_project(db, project),
-                    "requestDataId": ObjectId(),
-                    "projectId": project["_id"],
-                    "createdAt": now,
-                    "updatedAt": now,
-                    "isQuotaChanged": False
-                }
+            for project in projects:
+                project_create_at = project.get("createdAt")
+                if project_create_at:
+                    if isinstance(project_create_at, str):
+                        project_create_at = datetime.fromisoformat(
+                            project_create_at.rstrip("Z")).replace(tzinfo=timezone.utc)
+                    elif isinstance(project_create_at, datetime) and project_create_at.tzinfo is None:
+                        project_create_at = project_create_at.replace(tzinfo=timezone.utc)
 
-                new_request = requests_collection.insert_one(request_data)
-                request_data['_id'] = str(new_request.inserted_id)
+                if project_create_at <= (now - timedelta(days=0)):
+                    licence_plate = project.get("licencePlate")
+                    result = self.delete_private_cloud_project(licence_plate)
+                    print("API Response:", result)
 
-                if new_request:
-                    print(f"Project {project['licencePlate']} is 30 days old or older and deletion request is created.")
-
-                # if project_create_at == (now - timedelta(days=20)):
-                #     print(f"Project {project['licencePlate']} is 20 days old and notification should be sent.")
-
-    except Exception as e:
-        print(f"[send_deletion_request] Error: {e}")
+        except Exception as e:
+            print(f"[send_deletion_requests] Error: {e}")
 
 
-def get_last_closed_private_cloud_request(licence_plate, requests_collection):
-    try:
-        previous_request = requests_collection.find_one(
-            {
-                "licencePlate": licence_plate,
-                "active": False,
-            },
-            sort=[("updatedAt", DESCENDING)],
-        )
-        return previous_request
-
-    except Exception as e:
-        print(f"[get_last_closed_private_cloud_request] Error: {e}")
-        return None
+def send_temp_products_deletion_request(base_url, client_id, client_secret, mongo_conn_id, auth_server_url, realm):
+    manager = PrivateCloudTempProductsDeletionRequestManager(
+        base_url, client_id, client_secret, mongo_conn_id, auth_server_url, realm)
+    manager.send_deletion_requests()

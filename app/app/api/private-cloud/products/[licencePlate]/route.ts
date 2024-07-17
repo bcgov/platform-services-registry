@@ -22,7 +22,8 @@ export const PUT = createApiHandler({
 });
 
 export const DELETE = createApiHandler({
-  roles: ['user'],
+  roles: ['user', 'service-account'],
+  useServiceAccount: true,
   validations: { pathParams: deletePathParamSchema },
 })(async ({ pathParams, session }) => {
   const response = await deleteOp({ session, pathParams });
