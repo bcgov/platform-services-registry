@@ -5,19 +5,22 @@ from datetime import datetime, timedelta
 from update_mailchimp_list import update_mailchimp_segment
 
 
-MONGO_CONN_ID = 'pltsvc-prod'
+MONGO_CONN_ID = 'pltsvc-dev'
 MAILCHIMP_LIST_ID = os.getenv('MAILCHIMP_LIST_ID')
 MAILCHIMP_API_KEY = os.getenv('MAILCHIMP_API_KEY')
 MAILCHIMP_SERVER_PREFIX = os.getenv('MAILCHIMP_SERVER_PREFIX')
-MAILCHIMP_REGISTRY_PRIVATE_TAG_ID = os.getenv('MAILCHIMP_REGISTRY_PRIVATE_TAG_ID')
+MAILCHIMP_REGISTRY_PRIVATE_TAG_ID = os.getenv('MAILCHIMP_TEST_TAG_ID')
 
 with DAG(
-    dag_id="mailchimp-prod",
-    schedule_interval='@weekly',
-    start_date=datetime.now() - timedelta(weeks=1)
+    dag_id="mailchimp_dev",
+    description='A DAG to update Mailchimp segment',
+    schedule_interval="0 5 * * *",
+    start_date=datetime.now() - timedelta(weeks=1),
+    is_paused_upon_creation=True,
+    catchup=False,
 ) as dag:
     t1 = PythonOperator(
-        task_id='fetch-and-update-mailchimp-segment-prod',
+        task_id='fetch-and-update-mailchimp-segment-dev',
         python_callable=update_mailchimp_segment,
         op_kwargs={
             'api_key': MAILCHIMP_API_KEY,

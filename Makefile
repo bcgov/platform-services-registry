@@ -27,3 +27,7 @@ install:
 .PHONY: copy-db
 copy-db:
 	./.bin/copy-db.sh
+
+.PHONY: format-python
+format-python:
+	autopep8 --in-place --recursive .
