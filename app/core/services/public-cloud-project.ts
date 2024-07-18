@@ -20,15 +20,20 @@ export class PublicCloudProjectService extends ModelService<Prisma.PublicCloudPr
     if (!this.session.isUser && !this.session.isServiceAccount) return false;
     if (this.session.permissions.viewAllPublicCloudProducts) return true;
 
-    const baseFilter: Prisma.PublicCloudProjectWhereInput = {
-      OR: [
+    const OR: Prisma.PublicCloudProjectWhereInput[] = [
+      { ministry: { in: this.session.ministries.editor as $Enums.Ministry[] } },
+      { ministry: { in: this.session.ministries.reader as $Enums.Ministry[] } },
+    ];
+
+    if (this.session.user.id) {
+      OR.push(
         { projectOwnerId: this.session.user.id as string },
         { primaryTechnicalLeadId: this.session.user.id as string },
         { secondaryTechnicalLeadId: this.session.user.id },
-        { ministry: { in: this.session.ministries.editor as $Enums.Ministry[] } },
-        { ministry: { in: this.session.ministries.reader as $Enums.Ministry[] } },
-      ],
-    };
+      );
+    }
+
+    const baseFilter: Prisma.PublicCloudProjectWhereInput = { OR };
 
     return baseFilter;
   }
@@ -37,14 +42,19 @@ export class PublicCloudProjectService extends ModelService<Prisma.PublicCloudPr
     if (!this.session.isUser && !this.session.isServiceAccount) return false;
     if (this.session.permissions.editAllPublicCloudProducts) return true;
 
-    const baseFilter: Prisma.PublicCloudProjectWhereInput = {
-      OR: [
+    const OR: Prisma.PublicCloudProjectWhereInput[] = [
+      { ministry: { in: this.session.ministries.editor as $Enums.Ministry[] } },
+    ];
+
+    if (this.session.user.id) {
+      OR.push(
         { projectOwnerId: this.session.user.id as string },
         { primaryTechnicalLeadId: this.session.user.id as string },
         { secondaryTechnicalLeadId: this.session.user.id },
-        { ministry: { in: this.session.ministries.editor as $Enums.Ministry[] } },
-      ],
-    };
+      );
+    }
+
+    const baseFilter: Prisma.PublicCloudProjectWhereInput = { OR };
 
     return baseFilter;
   }

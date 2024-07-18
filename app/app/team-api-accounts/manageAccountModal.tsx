@@ -4,6 +4,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { Button, Divider, Grid, LoadingOverlay, Box } from '@mantine/core';
 import { notifications } from '@mantine/notifications';
 import { useQuery, useMutation } from '@tanstack/react-query';
+import _forEach from 'lodash-es/forEach';
 import _get from 'lodash-es/get';
 import { useEffect } from 'react';
 import { FormProvider, useForm } from 'react-hook-form';
@@ -70,7 +71,7 @@ function ManageAccountModal({ clientUid, roles, closeModal }: ModalProps & Extra
     },
   });
 
-  const { handleSubmit, setValue } = methods;
+  const { handleSubmit, setValue, setError } = methods;
 
   useEffect(() => {
     if (users) {
@@ -92,8 +93,21 @@ function ManageAccountModal({ clientUid, roles, closeModal }: ModalProps & Extra
         <form
           autoComplete="off"
           onSubmit={handleSubmit(async (formData) => {
-            await updateAccount(formData);
-            closeModal();
+            const result = await updateAccount(formData);
+            if (result.user.notfound.length === 0) {
+              closeModal();
+              return;
+            }
+
+            _forEach(result.user.notfound, (email) => {
+              const ind = formData.users.findIndex((usr) => usr.email === email);
+              if (ind > -1) {
+                setError(`users.${ind}.email`, {
+                  type: 'manual',
+                  message: 'The user does not exist in Keycloak.',
+                });
+              }
+            });
           })}
         >
           <AccountRoles allRoles={(authRoles ?? []).map((v) => v.name ?? '')} />

@@ -28,6 +28,8 @@ export default async function getOp({
 
   await kcAdminClient.clients.create({ realm: AUTH_RELM, clientId });
 
+  let user = {};
+
   let client = await findClient(clientId, kcAdminClient);
   if (client?.id) {
     const clientUid = client.id;
@@ -57,7 +59,7 @@ export default async function getOp({
       }),
     ]);
 
-    await syncClientUserRoles(kcAdminClient, clientUid, users);
+    user = await syncClientUserRoles(kcAdminClient, clientUid, users);
   }
 
   client = await findClient(clientId, kcAdminClient);
@@ -68,5 +70,5 @@ export default async function getOp({
     });
   }
 
-  return OkResponse(client);
+  return OkResponse({ client, user });
 }

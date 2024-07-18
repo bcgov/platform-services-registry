@@ -88,3 +88,7 @@ dags:
 .PHONY: force-install
 force-install: uninstall
 force-install: install
+
+.PHONY: arguments
+arguments:
+	@echo "$(call arguments)"
