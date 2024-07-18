@@ -4,7 +4,7 @@ import { MultiSelect } from '@mantine/core';
 import _get from 'lodash-es/get';
 import { Controller, useFormContext } from 'react-hook-form';
 
-export default function AccountRoles({ allRoles }: { allRoles: string[] }) {
+export default function AccountRoles({ allRoles, disabled = false }: { allRoles: string[]; disabled?: boolean }) {
   const { control } = useFormContext();
 
   return (
@@ -22,6 +22,7 @@ export default function AccountRoles({ allRoles }: { allRoles: string[] }) {
               onBlur={onBlur}
               value={value}
               searchable
+              disabled={disabled}
               classNames={{ label: 'block text-sm font-bold leading-6 text-gray-900 mb-1' }}
             />
           );
