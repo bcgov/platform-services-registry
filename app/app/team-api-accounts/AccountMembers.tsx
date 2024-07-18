@@ -6,7 +6,7 @@ import classNames from 'classnames';
 import _get from 'lodash-es/get';
 import { useFieldArray, useFormContext } from 'react-hook-form';
 
-export default function AccountMembers() {
+export default function AccountMembers({ disabled = false }: { disabled?: boolean }) {
   const {
     register,
     control,
@@ -29,8 +29,6 @@ export default function AccountMembers() {
           const itemKey = `users.${index}.email`;
           const itemError = _get(errors, itemKey);
 
-          console.log('itemError', itemError);
-
           return (
             <li key={item.id}>
               <div className="flex mb-1">
@@ -43,10 +41,13 @@ export default function AccountMembers() {
                     },
                   )}
                   {...register(itemKey)}
+                  disabled={disabled}
                 />
-                <Button color="red" onClick={() => remove(index)}>
-                  Delete
-                </Button>
+                {!disabled && (
+                  <Button color="red" onClick={() => remove(index)}>
+                    Delete
+                  </Button>
+                )}
               </div>
               {itemError && <div className="text-sm text-red-600 mb-2">{String(itemError.message)}</div>}
             </li>
@@ -54,7 +55,7 @@ export default function AccountMembers() {
         })}
       </ul>
 
-      {values.users.length < 20 && (
+      {!disabled && values.users.length < 20 && (
         <Button color="green" size="xs" leftSection={<IconPlus />} onClick={() => append({ email: '' })}>
           Add New
         </Button>

@@ -6,6 +6,7 @@ import { notifications } from '@mantine/notifications';
 import { useQuery, useMutation } from '@tanstack/react-query';
 import _forEach from 'lodash-es/forEach';
 import _get from 'lodash-es/get';
+import { useState } from 'react';
 import { FormProvider, useForm } from 'react-hook-form';
 import { createModal, ExtraModalProps } from '@/core/modal';
 import { teamApiAccountSchema, TeamApiAccountSchemaData } from '@/schema';
@@ -17,6 +18,7 @@ interface ModalProps {}
 interface ModalState {}
 
 function CreateUsersModal({ closeModal }: ExtraModalProps) {
+  const [isServerError, setIsServerError] = useState(false);
   const { data: authRoles, isFetching: isAuthRolesFetching } = useQuery({
     queryKey: ['roles'],
     queryFn: () => listKeycloakAuthRoles(),
@@ -56,6 +58,23 @@ function CreateUsersModal({ closeModal }: ExtraModalProps) {
           autoComplete="off"
           onSubmit={handleSubmit(async (formData) => {
             const result = await createAccount(formData);
+            if (!result.client) {
+              notifications.show({
+                title: 'Error',
+                message: `Failed to create API account`,
+                color: 'red',
+                autoClose: 5000,
+              });
+
+              return;
+            }
+
+            notifications.show({
+              color: 'green',
+              title: 'Success',
+              message: 'Account created successfully',
+              autoClose: 5000,
+            });
 
             if (result.user.notfound.length === 0) {
               closeModal();
@@ -71,10 +90,12 @@ function CreateUsersModal({ closeModal }: ExtraModalProps) {
                 });
               }
             });
+
+            setIsServerError(true);
           })}
         >
-          <AccountRoles allRoles={(authRoles ?? []).map((v) => v.name ?? '')} />
-          <AccountMembers />
+          <AccountRoles allRoles={(authRoles ?? []).map((v) => v.name ?? '')} disabled={isServerError} />
+          <AccountMembers disabled={isServerError} />
 
           <Divider my="md" />
 
@@ -82,9 +103,9 @@ function CreateUsersModal({ closeModal }: ExtraModalProps) {
             <Grid.Col span={4}></Grid.Col>
             <Grid.Col span={8} className="text-right">
               <Button color="gray" onClick={() => closeModal()} className="mr-1">
-                Cancel
+                {isServerError ? 'Close' : 'Cancel'}
               </Button>
-              <Button type="submit">Save</Button>
+              {!isServerError && <Button type="submit">Save</Button>}
             </Grid.Col>
           </Grid>
         </form>
