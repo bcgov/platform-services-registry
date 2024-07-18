@@ -41,6 +41,7 @@ export default function AccountMembers({ disabled = false }: { disabled?: boolea
                     },
                   )}
                   {...register(itemKey)}
+                  disabled={disabled}
                 />
                 {!disabled && (
                   <Button color="red" onClick={() => remove(index)}>
