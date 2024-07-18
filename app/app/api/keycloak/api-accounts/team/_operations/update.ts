@@ -28,6 +28,8 @@ export default async function getOp({
     id,
   });
 
+  let user = {};
+
   if (client?.id) {
     const clientUid = client.id;
     const mappers = await kcAdminClient.clients.listProtocolMappers({ realm: AUTH_RELM, id: client.id });
@@ -56,7 +58,7 @@ export default async function getOp({
       });
     } catch {}
 
-    await syncClientUserRoles(kcAdminClient, clientUid, users);
+    user = await syncClientUserRoles(kcAdminClient, clientUid, users);
   }
 
   client = await kcAdminClient.clients.findOne({
@@ -68,5 +70,5 @@ export default async function getOp({
     await createEvent($Enums.EventType.UPDATE_TEAM_API_TOKEN, session.user.id, { clientUid: client.id, roles });
   }
 
-  return OkResponse(client);
+  return OkResponse({ client, user });
 }

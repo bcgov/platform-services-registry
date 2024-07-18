@@ -4,6 +4,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { Button, Divider, Grid, LoadingOverlay, Box } from '@mantine/core';
 import { notifications } from '@mantine/notifications';
 import { useQuery, useMutation } from '@tanstack/react-query';
+import _forEach from 'lodash-es/forEach';
 import _get from 'lodash-es/get';
 import { FormProvider, useForm } from 'react-hook-form';
 import { createModal, ExtraModalProps } from '@/core/modal';
@@ -41,7 +42,7 @@ function CreateUsersModal({ closeModal }: ExtraModalProps) {
     },
   });
 
-  const { handleSubmit } = methods;
+  const { handleSubmit, setError } = methods;
 
   return (
     <Box pos="relative">
@@ -54,8 +55,22 @@ function CreateUsersModal({ closeModal }: ExtraModalProps) {
         <form
           autoComplete="off"
           onSubmit={handleSubmit(async (formData) => {
-            await createAccount(formData);
-            closeModal();
+            const result = await createAccount(formData);
+
+            if (result.user.notfound.length === 0) {
+              closeModal();
+              return;
+            }
+
+            _forEach(result.user.notfound, (email) => {
+              const ind = formData.users.findIndex((usr) => usr.email === email);
+              if (ind > -1) {
+                setError(`users.${ind}.email`, {
+                  type: 'manual',
+                  message: 'The user does not exist in Keycloak.',
+                });
+              }
+            });
           })}
         >
           <AccountRoles allRoles={(authRoles ?? []).map((v) => v.name ?? '')} />

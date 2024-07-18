@@ -20,15 +20,20 @@ export class PrivateCloudProjectService extends ModelService<Prisma.PrivateCloud
     if (!this.session.isUser && !this.session.isServiceAccount) return false;
     if (this.session.permissions.viewAllPrivateCloudProducts) return true;
 
-    const baseFilter: Prisma.PrivateCloudProjectWhereInput = {
-      OR: [
+    const OR: Prisma.PrivateCloudProjectWhereInput[] = [
+      { ministry: { in: this.session.ministries.editor as $Enums.Ministry[] } },
+      { ministry: { in: this.session.ministries.reader as $Enums.Ministry[] } },
+    ];
+
+    if (this.session.user.id) {
+      OR.push(
         { projectOwnerId: this.session.user.id as string },
         { primaryTechnicalLeadId: this.session.user.id as string },
         { secondaryTechnicalLeadId: this.session.user.id },
-        { ministry: { in: this.session.ministries.editor as $Enums.Ministry[] } },
-        { ministry: { in: this.session.ministries.reader as $Enums.Ministry[] } },
-      ],
-    };
+      );
+    }
+
+    const baseFilter: Prisma.PrivateCloudProjectWhereInput = { OR };
 
     return baseFilter;
   }
@@ -37,14 +42,19 @@ export class PrivateCloudProjectService extends ModelService<Prisma.PrivateCloud
     if (!this.session.isUser && !this.session.isServiceAccount) return false;
     if (this.session.permissions.editAllPrivateCloudProducts) return true;
 
-    const baseFilter: Prisma.PrivateCloudProjectWhereInput = {
-      OR: [
+    const OR: Prisma.PrivateCloudProjectWhereInput[] = [
+      { ministry: { in: this.session.ministries.editor as $Enums.Ministry[] } },
+    ];
+
+    if (this.session.user.id) {
+      OR.push(
         { projectOwnerId: this.session.user.id as string },
         { primaryTechnicalLeadId: this.session.user.id as string },
         { secondaryTechnicalLeadId: this.session.user.id },
-        { ministry: { in: this.session.ministries.editor as $Enums.Ministry[] } },
-      ],
-    };
+      );
+    }
+
+    const baseFilter: Prisma.PrivateCloudProjectWhereInput = { OR };
 
     return baseFilter;
   }

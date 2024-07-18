@@ -9,7 +9,7 @@ export async function syncClientUserRoles(kcAdminClient: KcAdminClient, clientUi
     roleName: 'member',
   });
 
-  const exisitingUsers = await kcAdminClient.clients.findUsersWithRole({
+  const existingUsers = await kcAdminClient.clients.findUsersWithRole({
     realm: AUTH_RELM,
     id: clientUid,
     roleName: 'member',
@@ -17,7 +17,7 @@ export async function syncClientUserRoles(kcAdminClient: KcAdminClient, clientUi
 
   // Remove all existing users
   await Promise.all(
-    exisitingUsers.map(async (user) => {
+    existingUsers.map(async (user) => {
       if (!user.id) return;
 
       const roleMapping = {
@@ -30,6 +30,10 @@ export async function syncClientUserRoles(kcAdminClient: KcAdminClient, clientUi
       await kcAdminClient.users.delClientRoleMappings(roleMapping);
     }),
   );
+
+  const result = {
+    notfound: [] as string[],
+  };
 
   // Add new users
   await Promise.all(
@@ -44,7 +48,11 @@ export async function syncClientUserRoles(kcAdminClient: KcAdminClient, clientUi
         };
 
         await kcAdminClient.users.addClientRoleMappings(roleMapping);
+      } else {
+        result.notfound.push(user.email);
       }
     }),
   );
+
+  return result;
 }
