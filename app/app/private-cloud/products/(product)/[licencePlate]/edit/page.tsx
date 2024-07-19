@@ -122,7 +122,12 @@ export default privateCloudProductEdit(({ pathParams, queryParams, session }) =>
         <FormErrorNotification />
         <form autoComplete="off" onSubmit={methods.handleSubmit(() => setOpenComment(true))}>
           <div className="mb-12 mt-8">
-            <ProjectDescription disabled={isDisabled} clusterDisabled={true} mode="edit" />
+            <ProjectDescription
+              disabled={isDisabled}
+              clusterDisabled={true}
+              mode="edit"
+              canToggleTemporary={snap.currentProduct._permissions.toggleTemporary}
+            />
             <hr className="my-7" />
             <TeamContacts
               disabled={isDisabled}

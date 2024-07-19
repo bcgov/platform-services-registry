@@ -7,7 +7,7 @@ import _truncate from 'lodash-es/truncate';
 import { usePathname, useRouter } from 'next/navigation';
 import React from 'react';
 import ActiveRequestBox from '@/components/form/ActiveRequestBox';
-import TestProductBox from '@/components/form/TestProductBox';
+import TestProductBadge from '@/components/form/TestProductBadge';
 import CopyableButton from '@/components/generic/button/CopyableButton';
 import UserCard from '@/components/UserCard';
 import { ministryKeyToName } from '@/helpers/product';
@@ -65,7 +65,7 @@ export default function TableBodyPrivateProducts({ rows, isLoading = false }: Ta
                     </span>
                   </div>
                 </h2>
-                {row.isTest && <TestProductBox data={{ createdAt: row.createdAt }} />}
+                {row.isTest && <TestProductBadge data={{ createdAt: row.createdAt }} />}
               </div>
 
               <div className="mt-1 flex items-center gap-x-2.5 text-sm leading-5 text-gray-700">

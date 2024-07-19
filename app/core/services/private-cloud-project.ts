@@ -91,6 +91,7 @@ export class PrivateCloudProjectService extends ModelService<Prisma.PrivateCloud
       this.session.ministries.editor.includes(doc.ministry);
 
     const canReprovision = isActive && (this.session.isAdmin || this.session.isPrivateAdmin);
+    const canToggleTemporary = isActive && (this.session.isAdmin || this.session.isPrivateAdmin);
 
     doc._permissions = {
       view: canView,
@@ -98,6 +99,7 @@ export class PrivateCloudProjectService extends ModelService<Prisma.PrivateCloud
       edit: canEdit,
       delete: canEdit,
       reprovision: canReprovision,
+      toggleTemporary: canToggleTemporary,
     };
 
     return doc;
