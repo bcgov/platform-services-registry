@@ -5,7 +5,7 @@ on:
     branches:
     - main
     paths:
-    - .github/workflows/deploy-secdashboard.yml
+    - .github/workflows/deploy-tools.yml
     - helm/secdash/**
 
 concurrency:
