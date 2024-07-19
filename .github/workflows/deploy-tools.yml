@@ -1,4 +1,4 @@
-name: 05.Deploy Security Dashboard
+name: 05.Deploy Tools
 
 on:
   push:
@@ -6,7 +6,7 @@ on:
     - main
     paths:
     - .github/workflows/deploy-tools.yml
-    - helm/secdash/**
+    - helm/tools/**
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
@@ -38,4 +38,4 @@ jobs:
       run: |
         make upgrade \
         NAMESPACE=${{ vars.OPENSHIFT_NAMESPACE }}
-      working-directory: ./helm/secdash
+      working-directory: ./helm/tools
