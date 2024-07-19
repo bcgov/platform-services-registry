@@ -2,7 +2,7 @@ import os
 from airflow import DAG
 from airflow.operators.python_operator import PythonOperator
 from datetime import datetime, timedelta
-from mark_provisioned import fetch_products_mark_completed
+from _mark_provisioned import fetch_products_mark_completed
 
 MONGO_CONN_ID = 'pltsvc-test'
 PROV_API_URL = os.getenv('PROD_PROVISIONER_URL')

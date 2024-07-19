@@ -8,7 +8,7 @@ from airflow.providers.cncf.kubernetes.operators.kubernetes_pod import (
 )
 from airflow.utils.trigger_rule import TriggerRule
 from kubernetes.client import V1VolumeMount, V1Volume, V1ResourceRequirements, V1PersistentVolumeClaimVolumeSource
-from projects import fetch_sonarscan_projects, load_sonarscan_results
+from _projects import fetch_sonarscan_projects, load_sonarscan_results
 
 YESTERDAY = datetime.now() - timedelta(days=1)
 CONCURRENCY = 5

@@ -2,7 +2,7 @@ import os
 from airflow import DAG
 from airflow.operators.python_operator import PythonOperator
 from datetime import datetime, timedelta
-from update_mailchimp_list import update_mailchimp_segment
+from _update_mailchimp_list import update_mailchimp_segment
 
 
 MONGO_CONN_ID = 'pltsvc-test'

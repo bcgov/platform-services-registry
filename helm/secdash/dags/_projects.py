@@ -4,7 +4,7 @@ import shutil
 from datetime import timedelta, datetime
 import requests
 from airflow.providers.mongo.hooks.mongo import MongoHook
-from github import GitHubAPI, extract_owner_repo
+from _github import GitHubAPI, extract_owner_repo
 from _utils import split_array
 from _acs_api import get_acs_context, get_search_params, extract_github_bcgov_urls
 

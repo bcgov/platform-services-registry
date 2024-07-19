@@ -1,7 +1,7 @@
 import mailchimp_marketing as MailchimpMarketing
 from mailchimp_marketing.api_client import ApiClientError
 from _utils import generate_md5_hash
-from projects import get_mongo_db
+from _projects import get_mongo_db
 from bson.objectid import ObjectId
 import json
 

@@ -2,7 +2,7 @@ from datetime import timedelta, datetime
 
 from airflow import DAG
 from airflow.operators.python import PythonOperator
-from projects import fetch_load_acs_projects
+from _projects import fetch_load_acs_projects
 
 YESTERDAY = datetime.now() - timedelta(days=1)
 CONCURRENCY = 5
