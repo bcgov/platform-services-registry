@@ -9,6 +9,7 @@ import { useEffect } from 'react';
 import { z } from 'zod';
 import PrivateCloudProductOptions from '@/components/dropdowns/PrivateCloudProductOptions';
 import ProductBadge from '@/components/form/ProductBadge';
+import TestProductAlert from '@/components/form/TestProductAlert';
 import Tabs, { ITab } from '@/components/generic/tabs/BasicTabs';
 import createClientPage from '@/core/client-page';
 import { getPrivateCloudProject } from '@/services/backend/private-cloud/products';
@@ -81,7 +82,6 @@ export default privateCloudProductSecurityACS(({ pathParams, queryParams, sessio
   if (!currentProduct) {
     return null;
   }
-  const diffInDays = 30 - differenceInDays(new Date(), new Date(currentProduct.createdAt));
 
   return (
     <div>
@@ -102,12 +102,7 @@ export default privateCloudProductSecurityACS(({ pathParams, queryParams, sessio
           for this product. You can not edit this product at this time.
         </Alert>
       )}
-      {currentProduct.isTest && (
-        <Alert variant="light" color="blue" title="" icon={<IconInfoCircle />}>
-          <span className="text-red-600/100 font-black text-lg">{Math.abs(diffInDays)}</span>
-          {diffInDays > 0 ? ' days until product deletion' : ' days overdue for automatic deletion'}
-        </Alert>
-      )}
+      {currentProduct.isTest && <TestProductAlert data={currentProduct} />}
       <Tabs tabs={tabs}>
         <PrivateCloudProductOptions
           licencePlate={currentProduct?.licencePlate}

@@ -14,10 +14,12 @@ export default function ProjectDescriptionPrivate({
   mode,
   disabled,
   clusterDisabled,
+  canToggleTemporary = false,
 }: {
   mode: string;
   disabled?: boolean;
   clusterDisabled?: boolean;
+  canToggleTemporary?: boolean;
 }) {
   const {
     register,
@@ -42,7 +44,7 @@ export default function ProjectDescriptionPrivate({
       <h2 className="text-base lg:text-lg 2xl:text-2xl font-semibold leading-6 text-gray-900">
         1. Product Description
       </h2>
-      {mode === 'create' && (
+      {(mode === 'create' || canToggleTemporary) && (
         <>
           <p className="text-base leading-6 mt-5">
             If this is your first time on the <b>OpenShift platform</b> you need to book an alignment meeting with the

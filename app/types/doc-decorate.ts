@@ -5,6 +5,7 @@ export interface PrivateCloudProjectDecorate {
     edit: boolean;
     delete: boolean;
     reprovision: boolean;
+    toggleTemporary: boolean;
   };
 }
 
