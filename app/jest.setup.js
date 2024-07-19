@@ -8,7 +8,7 @@ import { SERVICES_KEYCLOAK_APP_REALM } from './jest.mock';
 jest.setTimeout(75000);
 
 jest.mock('next-auth/next', () => ({
-  getServerSession: jest.fn(),
+  getServerSession: jest.fn(async () => null),
 }));
 
 jest.mock('next-auth', () => ({

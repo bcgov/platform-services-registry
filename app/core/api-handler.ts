@@ -77,30 +77,30 @@ function createApiHandler<
       { params }: { params: TypeOf<TPathParams> } = { params: {} as TypeOf<TPathParams> },
     ) {
       try {
-        let session!: Session;
+        let session = await getServerSession(authOptions);
         let jwtData!: any;
 
-        if (keycloakOauth2) {
-          const bearerToken = req.headers.get('authorization');
-          if (!bearerToken) {
-            return UnauthorizedResponse('not allowed to perform the task');
-          }
+        if (!session) {
+          if (keycloakOauth2) {
+            const bearerToken = req.headers.get('authorization');
+            if (!bearerToken) {
+              return UnauthorizedResponse('not allowed to perform the task');
+            }
 
-          const { authUrl = AUTH_SERVER_URL, realm = AUTH_RELM, clientId, requiredClaims } = keycloakOauth2;
+            const { authUrl = AUTH_SERVER_URL, realm = AUTH_RELM, clientId, requiredClaims } = keycloakOauth2;
 
-          jwtData = await verifyKeycloakJwtTokenSafe({
-            jwtToken: bearerToken,
-            authUrl,
-            realm,
-            authorizedPresenter: clientId,
-            requiredClaims,
-          });
+            jwtData = await verifyKeycloakJwtTokenSafe({
+              jwtToken: bearerToken,
+              authUrl,
+              realm,
+              authorizedPresenter: clientId,
+              requiredClaims,
+            });
 
-          if (!jwtData) {
-            return UnauthorizedResponse('invalid token');
-          }
-        } else {
-          if (useServiceAccount) {
+            if (!jwtData) {
+              return UnauthorizedResponse('invalid token');
+            }
+          } else if (useServiceAccount) {
             const bearerToken = req.headers.get('authorization');
             if (!bearerToken) {
               return UnauthorizedResponse('not allowed to perform the task');
@@ -118,6 +118,7 @@ function createApiHandler<
             }
 
             const saType = jwtData.service_account_type;
+
             if (saType === 'user') {
               const kcUserId = jwtData['kc-userid'];
               if (!kcUserId) return UnauthorizedResponse('invalid token');
@@ -140,26 +141,26 @@ function createApiHandler<
             } else {
               return UnauthorizedResponse('invalid token');
             }
-          } else {
-            session = (await getServerSession(authOptions)) || (await generateSession({ session: {} as Session }));
           }
+        }
 
-          // Validate user roles
-          if (roles && roles.length > 0) {
-            const allowed = checkArrayStringCondition(roles, session.roles);
-            if (!allowed) {
-              return UnauthorizedResponse('not allowed to perform the task');
-            }
+        if (!session) session = await generateSession({ session: {} as Session });
+
+        // Validate user roles
+        if (roles && roles.length > 0) {
+          const allowed = checkArrayStringCondition(roles, session.roles);
+          if (!allowed) {
+            return UnauthorizedResponse('not allowed to perform the task');
           }
+        }
 
-          // Validate user permissions
-          if (permissions && permissions.length > 0) {
-            const allowed = permissions.some(
-              (permKey) => session.permissions[permKey as keyof typeof session.permissions],
-            );
-            if (!allowed) {
-              return UnauthorizedResponse('not allowed to perform the task');
-            }
+        // Validate user permissions
+        if (permissions && permissions.length > 0) {
+          const allowed = permissions.some(
+            (permKey) => session.permissions[permKey as keyof typeof session.permissions],
+          );
+          if (!allowed) {
+            return UnauthorizedResponse('not allowed to perform the task');
           }
         }
 
