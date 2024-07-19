@@ -5,19 +5,19 @@ from datetime import datetime, timedelta
 from _temporary_products_deletion import send_temp_products_deletion_request
 
 
-MONGO_CONN_ID = "pltsvc-dev"
-KEYCLOAK_AUTH_URL = "https://dev.loginproxy.gov.bc.ca/auth"
+MONGO_CONN_ID = "pltsvc-prod"
+KEYCLOAK_AUTH_URL = "https://loginproxy.gov.bc.ca/auth"
 KEYCLOAK_REALM = "platform-services"
-REGISTRY_SA_ID = os.getenv("DEV_REGISTRY_SA_ID")
-REGISTRY_SA_SECRET = os.getenv("DEV_REGISTRY_SA_SECRET")
-REGISTRY_DELETE_URL_TEMPLATE = "https://dev-pltsvc.apps.silver.devops.gov.bc.ca/api/private-cloud/products/{}"
+REGISTRY_SA_ID = os.getenv("PROD_REGISTRY_SA_ID")
+REGISTRY_SA_SECRET = os.getenv("PROD_REGISTRY_SA_SECRET")
+REGISTRY_DELETE_URL_TEMPLATE = "https://pltsvc.apps.silver.devops.gov.bc.ca/api/private-cloud/products/{}"
 
 with DAG(
-    dag_id="temporary_products_deletion_dev",
+    dag_id="temporary_products_deletion_prod",
     description="A DAG to create delete request for old temporary products",
-    schedule_interval="0 0 * * *",
+    schedule_interval="0 2 * * *",
     start_date=datetime.now() - timedelta(weeks=1),
-    is_paused_upon_creation=False,
+    is_paused_upon_creation=True,
     catchup=False,
 ) as dag:
     t1 = PythonOperator(

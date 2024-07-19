@@ -26,4 +26,4 @@ def send_temp_products_deletion_request(
         response = requests.delete(url, headers=headers)
         response.raise_for_status()
 
-    return {"status": "success", "deleted_count": projects.count()}
+    return {"status": "success", "deleted_count": len(projects)}
