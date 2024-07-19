@@ -5,8 +5,8 @@ on:
     branches:
     - main
     paths:
-    - .github/workflows/build-push-secdashboard.yml
-    - security-dashboard/**
+    - .github/workflows/build-push-tools.yml
+    - tools/**
   workflow_dispatch:
 
 env:
@@ -34,9 +34,9 @@ jobs:
         registry-url: ${{ env.GITHUB_REGISTRY }}
         registry-username: ${{ github.actor }}
         registry-password: ${{ secrets.GITHUB_TOKEN }}
-        image-name: bcgov/pltsvc-secdashboard-airflow
-        docker-context: security-dashboard/airflow
-        docker-file: security-dashboard/airflow/Dockerfile
+        image-name: bcgov/pltsvc-tools-airflow
+        docker-context: tools/airflow
+        docker-file: tools/airflow/Dockerfile
         metadata-tags: |
           type=sha,format=long,prefix=,suffix=
 
@@ -57,9 +57,9 @@ jobs:
         registry-url: ${{ env.GITHUB_REGISTRY }}
         registry-username: ${{ github.actor }}
         registry-password: ${{ secrets.GITHUB_TOKEN }}
-        image-name: bcgov/pltsvc-secdashboard-zap
-        docker-context: security-dashboard/zap
-        docker-file: security-dashboard/zap/Dockerfile
+        image-name: bcgov/pltsvc-tools-zap
+        docker-context: tools/zap
+        docker-file: tools/zap/Dockerfile
         metadata-tags: |
           type=sha,format=long,prefix=,suffix=
 
@@ -80,8 +80,8 @@ jobs:
         registry-url: ${{ env.GITHUB_REGISTRY }}
         registry-username: ${{ github.actor }}
         registry-password: ${{ secrets.GITHUB_TOKEN }}
-        image-name: bcgov/pltsvc-secdashboard-sonarscan
-        docker-context: security-dashboard/sonarscan
-        docker-file: security-dashboard/sonarscan/Dockerfile
+        image-name: bcgov/pltsvc-tools-sonarscan
+        docker-context: tools/sonarscan
+        docker-file: tools/sonarscan/Dockerfile
         metadata-tags: |
           type=sha,format=long,prefix=,suffix=
