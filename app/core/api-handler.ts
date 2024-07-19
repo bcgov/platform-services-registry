@@ -8,7 +8,7 @@ import { z, TypeOf, ZodType } from 'zod';
 import { AUTH_SERVER_URL, AUTH_RELM } from '@/config';
 import { authOptions, generateSession } from '@/core/auth-options';
 import { findUser } from '@/services/keycloak/app-realm';
-import { arrayIntersection } from '@/utils/collection';
+import { checkArrayStringCondition } from '@/utils/collection';
 import { verifyKeycloakJwtTokenSafe } from '@/utils/jwt';
 import { parseQueryString } from '@/utils/query-string';
 import { logger } from './logging';
@@ -146,7 +146,7 @@ function createApiHandler<
 
           // Validate user roles
           if (roles && roles.length > 0) {
-            const allowed = arrayIntersection(roles, session.roles).length > 0;
+            const allowed = checkArrayStringCondition(roles, session.roles);
             if (!allowed) {
               return UnauthorizedResponse('not allowed to perform the task');
             }
