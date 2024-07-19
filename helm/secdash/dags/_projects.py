@@ -4,11 +4,11 @@ import shutil
 from datetime import timedelta, datetime
 import requests
 from airflow.providers.mongo.hooks.mongo import MongoHook
-from github import GitHubAPI, extract_owner_repo
+from _github import GitHubAPI, extract_owner_repo
 from _utils import split_array
 from _acs_api import get_acs_context, get_search_params, extract_github_bcgov_urls
 
-shared_directory = '/opt/airflow/shared'
+shared_directory = "/opt/airflow/shared"
 
 
 def get_mongo_db(mongo_conn_id):
@@ -50,26 +50,27 @@ def fetch_zap_projects(mongo_conn_id, concurrency, **context):
 
         # Delete documents older than two_days_ago
         two_days_ago = datetime.now() - timedelta(days=2)
-        db.PrivateCloudProjectZapResult.delete_many({'scannedAt': {'$lt': two_days_ago}})
+        db.PrivateCloudProjectZapResult.delete_many({"scannedAt": {"$lt": two_days_ago}})
         shutil.rmtree(f"{shared_directory}/zapscan/{mongo_conn_id}")
 
-        projects = db.PrivateCloudProject.find({"status": "ACTIVE"}, projection={
-                                               "_id": False, "licencePlate": True, "cluster": True})
+        projects = db.PrivateCloudProject.find(
+            {"status": "ACTIVE"}, projection={"_id": False, "licencePlate": True, "cluster": True}
+        )
         result = []
 
         for project in projects:
-            cluster = ''
-            token = ''
+            cluster = ""
+            token = ""
 
-            if project['cluster'] == 'SILVER':
-                cluster = 'silver'
-                token = os.environ['OC_TOKEN_SILVER']
-            elif project['cluster'] == 'GOLD':
-                cluster = 'gold'
-                token = os.environ['OC_TOKEN_GOLD']
-            elif project['cluster'] == 'KLAB':
-                cluster = 'klab'
-                token = os.environ['OC_TOKEN_KLAB']
+            if project["cluster"] == "SILVER":
+                cluster = "silver"
+                token = os.environ["OC_TOKEN_SILVER"]
+            elif project["cluster"] == "GOLD":
+                cluster = "gold"
+                token = os.environ["OC_TOKEN_GOLD"]
+            elif project["cluster"] == "KLAB":
+                cluster = "klab"
+                token = os.environ["OC_TOKEN_KLAB"]
             else:
                 continue
 
@@ -84,8 +85,8 @@ def fetch_zap_projects(mongo_conn_id, concurrency, **context):
 
             if response.status_code == 200:
                 data = response.json()
-                for item in data['items']:
-                    host = item['spec']['host']
+                for item in data["items"]:
+                    host = item["spec"]["host"]
                     available = True
                     status_code = 500
 
@@ -101,33 +102,25 @@ def fetch_zap_projects(mongo_conn_id, concurrency, **context):
 
                     if available == False:
                         db.PrivateCloudProjectZapResult.replace_one(
+                            {"licencePlate": project["licencePlate"], "cluster": cluster, "host": host},
                             {
-                                'licencePlate': project['licencePlate'],
-                                'cluster': cluster,
-                                'host': host
+                                "licencePlate": project["licencePlate"],
+                                "cluster": cluster,
+                                "host": host,
+                                "scannedAt": datetime.now(),
+                                "available": False,
                             },
-                            {
-                                'licencePlate': project['licencePlate'],
-                                'cluster': cluster,
-                                'host': host,
-                                'scannedAt': datetime.now(),
-                                'available': False
-                            },
-                            True  # Create one if it does not exist
+                            True,  # Create one if it does not exist
                         )
                         continue
 
                     # Distribute workload evenly by assigning a host per project
                     result.append(
-                        {
-                            'licencePlate': project['licencePlate'],
-                            'cluster': project['cluster'],
-                            'hosts': [host]
-                        }
+                        {"licencePlate": project["licencePlate"], "cluster": project["cluster"], "hosts": [host]}
                     )
 
         result_subarrays = split_array(result, concurrency)
-        task_instance = context['task_instance']
+        task_instance = context["task_instance"]
         for i, subarray in enumerate(result_subarrays, start=1):
             task_instance.xcom_push(key=str(i), value=json.dumps(subarray))
 
@@ -153,7 +146,9 @@ def load_zap_results(mongo_conn_id):
         report_directory = f"{shared_directory}/zapscan/{mongo_conn_id}"
 
         subdirectories = [
-            os.path.join(report_directory, d) for d in os.listdir(report_directory) if os.path.isdir(os.path.join(report_directory, d))
+            os.path.join(report_directory, d)
+            for d in os.listdir(report_directory)
+            if os.path.isdir(os.path.join(report_directory, d))
         ]
 
         for subdirectory in subdirectories:
@@ -163,28 +158,26 @@ def load_zap_results(mongo_conn_id):
                 for filename in filenames:
                     file_path = os.path.join(foldername, filename)
 
-                    with open(file_path, 'r') as file:
-                        content = file.read().replace('\n', '').replace('\t', '')
-                        if filename == 'report.html':
-                            doc['html'] = content
-                        elif filename == 'report.json':
-                            doc['json'] = json.loads(content)
-                        elif filename == 'detail.json':
+                    with open(file_path, "r") as file:
+                        content = file.read().replace("\n", "").replace("\t", "")
+                        if filename == "report.html":
+                            doc["html"] = content
+                        elif filename == "report.json":
+                            doc["json"] = json.loads(content)
+                        elif filename == "detail.json":
                             details = json.loads(content)
-                            doc['licencePlate'] = details['licencePlate']
-                            doc['cluster'] = details['cluster']
-                            doc['host'] = details['host']
+                            doc["licencePlate"] = details["licencePlate"]
+                            doc["cluster"] = details["cluster"]
+                            doc["host"] = details["host"]
 
-            doc['scannedAt'] = datetime.now()
-            doc['available'] = True
+            doc["scannedAt"] = datetime.now()
+            doc["available"] = True
 
-            if doc['licencePlate'] is not None:
-                db.PrivateCloudProjectZapResult.replace_one({
-                    'licencePlate': doc['licencePlate'],
-                    'cluster': doc['cluster'],
-                    'host': doc['host']},
+            if doc["licencePlate"] is not None:
+                db.PrivateCloudProjectZapResult.replace_one(
+                    {"licencePlate": doc["licencePlate"], "cluster": doc["cluster"], "host": doc["host"]},
                     doc,
-                    True  # Create one if it does not exist
+                    True,  # Create one if it does not exist
                 )
 
     except Exception as e:
@@ -214,7 +207,7 @@ def fetch_sonarscan_projects(mongo_conn_id, concurrency, gh_token, **context):
 
         # Delete documents older than two days ago
         two_days_ago = datetime.now() - timedelta(days=2)
-        db.SonarScanResult.delete_many({'scannedAt': {'$lt': two_days_ago}})
+        db.SonarScanResult.delete_many({"scannedAt": {"$lt": two_days_ago}})
 
         # Remove directory related to SonarScan
         shutil.rmtree(f"{shared_directory}/sonarscan/{mongo_conn_id}")
@@ -224,18 +217,21 @@ def fetch_sonarscan_projects(mongo_conn_id, concurrency, gh_token, **context):
 
         # Collect URLs from ACS images
         print("Start collecting URLs from ACS images.")
-        projects = db.PrivateCloudProject.find({"status": "ACTIVE"}, projection={
-                                               "_id": False, "licencePlate": True, "cluster": True})
+        projects = db.PrivateCloudProject.find(
+            {"status": "ACTIVE"}, projection={"_id": False, "licencePlate": True, "cluster": True}
+        )
         for project in projects:
-            urls_from_acs = extract_github_bcgov_urls(project['cluster'], project['licencePlate'])
+            urls_from_acs = extract_github_bcgov_urls(project["cluster"], project["licencePlate"])
             for url in urls_from_acs:
-                candidates.append({
-                    'context': 'PRIVATE',
-                    'clusterOrProvider': project['cluster'],
-                    'licencePlate': project['licencePlate'],
-                    'url': url,
-                    'source': "ACS",
-                })
+                candidates.append(
+                    {
+                        "context": "PRIVATE",
+                        "clusterOrProvider": project["cluster"],
+                        "licencePlate": project["licencePlate"],
+                        "url": url,
+                        "source": "ACS",
+                    }
+                )
 
         # Count ACS URLs found
         acsUrlCount = len(candidates)
@@ -244,23 +240,29 @@ def fetch_sonarscan_projects(mongo_conn_id, concurrency, gh_token, **context):
         # Collect URLs from the project team
         print("Start collecting URLs from the project team")
         configs = db.SecurityConfig.find(
-            {
-                "$expr": {
-                    "$gt": [{"$size": "$repositories"}, 0]
-                }
-            }, projection={"_id": False, "licencePlate": True, "context": True, "clusterOrProvider": True, "repositories": True})
+            {"$expr": {"$gt": [{"$size": "$repositories"}, 0]}},
+            projection={
+                "_id": False,
+                "licencePlate": True,
+                "context": True,
+                "clusterOrProvider": True,
+                "repositories": True,
+            },
+        )
 
         for config in configs:
             for repository in config["repositories"]:
-                found_dict = next((can for can in candidates if can.get('url') == repository['url']), None)
+                found_dict = next((can for can in candidates if can.get("url") == repository["url"]), None)
                 if not found_dict:
-                    candidates.append({
-                        'context': config['context'],
-                        'clusterOrProvider': config.get('clusterOrProvider', ''),
-                        'licencePlate': config['licencePlate'],
-                        'url': repository['url'],
-                        'source': "USER",
-                    })
+                    candidates.append(
+                        {
+                            "context": config["context"],
+                            "clusterOrProvider": config.get("clusterOrProvider", ""),
+                            "licencePlate": config["licencePlate"],
+                            "url": repository["url"],
+                            "source": "USER",
+                        }
+                    )
 
         # Count team URLs found
         teamUrlCount = len(candidates) - acsUrlCount
@@ -276,15 +278,13 @@ def fetch_sonarscan_projects(mongo_conn_id, concurrency, gh_token, **context):
 
             try:
                 # Get the commit SHA of the default branch
-                owner, repo = extract_owner_repo(candy['url'])
+                owner, repo = extract_owner_repo(candy["url"])
                 default_branch = github_api.get_default_branch(owner, repo)
                 commit_sha = github_api.get_sha(owner, repo, default_branch)
 
                 # Find the previous scan result in the database
-                prev_result = db.SonarScanResult.find_one({
-                    'licencePlate': candy['licencePlate'],
-                    'context': candy['context'],
-                    'url': candy['url']},
+                prev_result = db.SonarScanResult.find_one(
+                    {"licencePlate": candy["licencePlate"], "context": candy["context"], "url": candy["url"]},
                     projection={"_id": False, "sha": True},
                 )
 
@@ -293,22 +293,26 @@ def fetch_sonarscan_projects(mongo_conn_id, concurrency, gh_token, **context):
                     print(f"{candy['url']}: No changes detected. Skipping the update..")
                     continue
 
-                result.append({
-                    'context': candy['context'],
-                    'clusterOrProvider': candy['clusterOrProvider'],
-                    'licencePlate': candy['licencePlate'],
-                    'repositories': [{
-                        'url': candy['url'],
-                        'sha': commit_sha,
-                        'source': candy['source'],
-                    }]
-                })
+                result.append(
+                    {
+                        "context": candy["context"],
+                        "clusterOrProvider": candy["clusterOrProvider"],
+                        "licencePlate": candy["licencePlate"],
+                        "repositories": [
+                            {
+                                "url": candy["url"],
+                                "sha": commit_sha,
+                                "source": candy["source"],
+                            }
+                        ],
+                    }
+                )
 
             except Exception as e:
                 print(f"{repository['url']}: {e}")
 
         # Push result to XCom
-        task_instance = context['task_instance']
+        task_instance = context["task_instance"]
         result_subarrays = split_array(result, concurrency)
         for i, subarray in enumerate(result_subarrays, start=1):
             task_instance.xcom_push(key=str(i), value=json.dumps(subarray))
@@ -335,38 +339,38 @@ def load_sonarscan_results(mongo_conn_id):
         report_directory = f"{shared_directory}/sonarscan/{mongo_conn_id}"
 
         subdirectories = [
-            os.path.join(report_directory, d) for d in os.listdir(report_directory) if os.path.isdir(os.path.join(report_directory, d))
+            os.path.join(report_directory, d)
+            for d in os.listdir(report_directory)
+            if os.path.isdir(os.path.join(report_directory, d))
         ]
 
         for subdirectory in subdirectories:
             print(f"Processing files in subdirectory: {subdirectory}")
 
             # Read scan result first
-            detail_file_path = os.path.join(subdirectory, 'detail.json')
-            with open(detail_file_path, 'r') as file:
-                content = file.read().replace('\n', '').replace('\t', '')
+            detail_file_path = os.path.join(subdirectory, "detail.json")
+            with open(detail_file_path, "r") as file:
+                content = file.read().replace("\n", "").replace("\t", "")
                 doc = json.loads(content)
-                doc['scannedAt'] = datetime.now()
+                doc["scannedAt"] = datetime.now()
 
             # Read targets line by line
-            targets_file_path = os.path.join(subdirectory, 'targets.json')
-            with open(targets_file_path, 'r') as file:
+            targets_file_path = os.path.join(subdirectory, "targets.json")
+            with open(targets_file_path, "r") as file:
                 for line in file:
                     context, clusterOrProvider, licencePlate, source = line.strip().split(",")
 
                 target = {
-                    'context': context,
-                    'clusterOrProvider': clusterOrProvider,
-                    'licencePlate': licencePlate,
-                    'source': source,
+                    "context": context,
+                    "clusterOrProvider": clusterOrProvider,
+                    "licencePlate": licencePlate,
+                    "source": source,
                 }
 
-                db.SonarScanResult.replace_one({
-                    'licencePlate': licencePlate,
-                    'context': context,
-                    'url': doc['url']},
+                db.SonarScanResult.replace_one(
+                    {"licencePlate": licencePlate, "context": context, "url": doc["url"]},
                     {**doc, **target},
-                    True  # Create one if it does not exist
+                    True,  # Create one if it does not exist
                 )
 
     except Exception as e:
@@ -379,10 +383,11 @@ def fetch_load_acs_projects(mongo_conn_id):
 
         # Delete documents older than two_days_ago
         two_days_ago = datetime.now() - timedelta(days=2)
-        db.AcsResult.delete_many({'scannedAt': {'$lt': two_days_ago}})
+        db.AcsResult.delete_many({"scannedAt": {"$lt": two_days_ago}})
 
-        projects = db.PrivateCloudProject.find({"status": "ACTIVE"}, projection={
-                                               "_id": False, "licencePlate": True, "cluster": True})
+        projects = db.PrivateCloudProject.find(
+            {"status": "ACTIVE"}, projection={"_id": False, "licencePlate": True, "cluster": True}
+        )
 
         for project in projects:
             cluster = project["cluster"]
@@ -394,8 +399,12 @@ def fetch_load_acs_projects(mongo_conn_id):
             violation_url = f"{base_url}/main/violations?{ui_search_param}"
             image_url = f"{base_url}/main/vulnerability-management/images?{ui_search_param}"
 
-            result = {'cluster': cluster, 'licencePlate': licencePlate,
-                      "violationUrl": violation_url, "imageUrl": image_url}
+            result = {
+                "cluster": cluster,
+                "licencePlate": licencePlate,
+                "violationUrl": violation_url,
+                "imageUrl": image_url,
+            }
 
             # Collect alerts data
             alerts_url = f"{api_url}/alerts?{api_search_param}"
@@ -427,13 +436,10 @@ def fetch_load_acs_projects(mongo_conn_id):
                 continue
 
             result["images"] = data["images"]
-            result['scannedAt'] = datetime.now()
+            result["scannedAt"] = datetime.now()
 
-            db.AcsResult.replace_one({
-                'cluster': cluster,
-                'licencePlate': licencePlate},
-                result,
-                True  # Create one if it does not exist
+            db.AcsResult.replace_one(
+                {"cluster": cluster, "licencePlate": licencePlate}, result, True  # Create one if it does not exist
             )
 
     except Exception as e:

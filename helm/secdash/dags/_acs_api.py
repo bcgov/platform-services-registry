@@ -7,11 +7,11 @@ from _utils import keys_exist
 
 def get_acs_context(cluster):
     base_url = "https://acs.developer.gov.bc.ca"
-    token = os.environ['ACS_TOKEN']
+    token = os.environ["ACS_TOKEN"]
 
     if cluster in ["CLAB", "KLAB", "KLAB2"]:
         base_url = "https://acs-lab.developer.gov.bc.ca"
-        token = os.environ['ACS_LAB_TOKEN']
+        token = os.environ["ACS_LAB_TOKEN"]
 
     api_url = f"{base_url}/v1"
     headers = {"Authorization": f"Bearer {token}"}
@@ -45,7 +45,7 @@ def extract_image_label_urls(cluster, licencePlate):
     if not keys_exist(images_data, "images"):
         return result
 
-    url_pattern = re.compile(r'(?:git|ssh|https?|git@[-\w.]+):(\/\/)?(.*?)$', re.IGNORECASE)
+    url_pattern = re.compile(r"(?:git|ssh|https?|git@[-\w.]+):(\/\/)?(.*?)$", re.IGNORECASE)
 
     for image in images_data["images"]:
         image_url = f"{api_url}/images/{image['id']}"
@@ -81,8 +81,8 @@ def extract_github_bcgov_urls(cluster, licencePlate):
 
     all_urls = extract_image_label_urls(cluster, licencePlate)
 
-    github_https_pattern = r'^https:\/\/github\.com\/bcgov\/[a-zA-Z0-9_-]+$'
-    github_ssh_pattern = r'^git@github\.com:bcgov\/([a-zA-Z0-9_-]+)\.git$'
+    github_https_pattern = r"^https:\/\/github\.com\/bcgov\/[a-zA-Z0-9_-]+$"
+    github_ssh_pattern = r"^git@github\.com:bcgov\/([a-zA-Z0-9_-]+)\.git$"
 
     result = []
     for url in all_urls:
@@ -92,7 +92,7 @@ def extract_github_bcgov_urls(cluster, licencePlate):
             match = re.match(github_ssh_pattern, url)
             if match:
                 repo_name = match.group(1)
-                https_url = f'https://github.com/bcgov/{repo_name}'
+                https_url = f"https://github.com/bcgov/{repo_name}"
                 result.append(https_url)
 
     return list(set(result))

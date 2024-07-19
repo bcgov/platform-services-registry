@@ -1,6 +1,6 @@
 import requests
 from bson.objectid import ObjectId
-from projects import get_mongo_db
+from _projects import get_mongo_db
 from _utils import keys_exist
 
 
@@ -24,8 +24,9 @@ def fetch_products_mark_completed(provisioner_api_url, mark_provisioned_url, mon
         requests_collection = db["PrivateCloudRequest"]
         requested_projects_collection = db["PrivateCloudRequestedProject"]
 
-        product_requests = requests_collection.find({"decisionStatus": "APPROVED"}, projection={
-                                                    "_id": True, "licencePlate": True, "decisionDataId": True})
+        product_requests = requests_collection.find(
+            {"decisionStatus": "APPROVED"}, projection={"_id": True, "licencePlate": True, "decisionDataId": True}
+        )
 
         for request in product_requests:
             request_id = request["_id"]
@@ -33,16 +34,17 @@ def fetch_products_mark_completed(provisioner_api_url, mark_provisioned_url, mon
             decision_data_id = ObjectId(request["decisionDataId"])
             # a call to the RequestedProject table to get cluster
             requested_project_document = requested_projects_collection.find_one(
-                {"_id": decision_data_id}, projection={"cluster": True})
+                {"_id": decision_data_id}, projection={"cluster": True}
+            )
             cluster = requested_project_document.get("cluster").lower()
             # start of provisioner logic
             workflow_name = f"{cluster}-{licence_plate}-{request_id}"
             provisioner_workflow_url = f"{provisioner_api_url}/{workflow_name}"
             request_status_in_provisioner = requests.get(provisioner_workflow_url).json()
-            if not keys_exist(request_status_in_provisioner, 'metadata', 'labels', 'workflows.argoproj.io/phase'):
+            if not keys_exist(request_status_in_provisioner, "metadata", "labels", "workflows.argoproj.io/phase"):
                 continue
 
-            request_phase = request_status_in_provisioner['metadata']['labels']['workflows.argoproj.io/phase']
+            request_phase = request_status_in_provisioner["metadata"]["labels"]["workflows.argoproj.io/phase"]
             if request_phase == "Running":
                 continue
             elif request_phase == "Error" or request_phase == "Failed":
@@ -54,7 +56,8 @@ def fetch_products_mark_completed(provisioner_api_url, mark_provisioned_url, mon
                 response = requests.put(mark_finished_url)
                 if response.status_code != 200:
                     print(
-                        f"Error while marking {licence_plate} as Provisioned: {response.status_code} - {response.reason}")
+                        f"Error while marking {licence_plate} as Provisioned: {response.status_code} - {response.reason}"
+                    )
                 else:
                     print(f"Marked {licence_plate} as Provisioned")
 

@@ -2,7 +2,7 @@ import hashlib
 
 
 def keys_exist(element, *keys):
-    '''
+    """
     Check if nested keys exist in a dictionary.
 
     Parameters:
@@ -15,7 +15,7 @@ def keys_exist(element, *keys):
     Raises:
     - TypeError: If the input element is not a dictionary.
     - ValueError: If an insufficient number of keys are provided.
-    '''
+    """
 
     if element is None:
         return False
@@ -52,7 +52,7 @@ def split_array(original_array, num_subarrays):
     subarray_size = array_length // max(num_subarrays, 1)
     remainder = array_length % max(num_subarrays, 1)
 
-    subarrays = [original_array[i * subarray_size:(i + 1) * subarray_size] for i in range(num_subarrays)]
+    subarrays = [original_array[i * subarray_size : (i + 1) * subarray_size] for i in range(num_subarrays)]
 
     # Distribute the remainder elements to the first few subarrays
     for i in range(remainder):
@@ -62,4 +62,4 @@ def split_array(original_array, num_subarrays):
 
 
 def generate_md5_hash(data):
-    return hashlib.md5(data.lower().encode('utf-8')).hexdigest()
+    return hashlib.md5(data.lower().encode("utf-8")).hexdigest()
