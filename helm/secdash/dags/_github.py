@@ -3,7 +3,7 @@ import re
 
 
 def extract_owner_repo(url):
-    pattern = r'^https://github\.com/([^/]+)/([^/]+)'
+    pattern = r"^https://github\.com/([^/]+)/([^/]+)"
     match = re.match(pattern, url)
 
     if match:
@@ -21,7 +21,7 @@ class GitHubAPI:
         self.headers = {
             "Accept": "application/vnd.github+json",
             "Authorization": f"Bearer {gh_token}",
-            "X-GitHub-Api-Version": "2022-11-28"
+            "X-GitHub-Api-Version": "2022-11-28",
         }
 
     def make_request(self, endpoint, method="GET"):
@@ -58,6 +58,7 @@ class GitHubAPI:
 
         sha = response.json().get("sha")
         return sha
+
 
 # Example usage
 # gh_token = "your_github_token"

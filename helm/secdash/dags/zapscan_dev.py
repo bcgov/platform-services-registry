@@ -11,7 +11,7 @@ from _projects import fetch_zap_projects, load_zap_results
 
 YESTERDAY = datetime.now() - timedelta(days=1)
 CONCURRENCY = 5
-MONGO_CONN_ID = 'pltsvc-dev'
+MONGO_CONN_ID = "pltsvc-dev"
 
 with DAG(
     dag_id="zapscan_dev",
@@ -22,51 +22,57 @@ with DAG(
 
     # Step 1. Identify and gather information for all currently active projects, including their host details.
     t1 = PythonOperator(
-        task_id='fetch-zapscan-projects-dev',
+        task_id="fetch-zapscan-projects-dev",
         python_callable=fetch_zap_projects,
-        op_kwargs={'mongo_conn_id': MONGO_CONN_ID, 'concurrency': CONCURRENCY},
+        op_kwargs={"mongo_conn_id": MONGO_CONN_ID, "concurrency": CONCURRENCY},
         provide_context=True,
-        dag=dag
+        dag=dag,
     )
 
     shared_volume = V1Volume(
-        name='secdash-airflow-shared',
-        persistent_volume_claim=V1PersistentVolumeClaimVolumeSource(claim_name='secdash-airflow-shared'))
+        name="secdash-airflow-shared",
+        persistent_volume_claim=V1PersistentVolumeClaimVolumeSource(claim_name="secdash-airflow-shared"),
+    )
 
-    shared_volume_mount = V1VolumeMount(
-        mount_path='/zap/wrk', name='secdash-airflow-shared')
+    shared_volume_mount = V1VolumeMount(mount_path="/zap/wrk", name="secdash-airflow-shared")
 
     # Step 2. Execute one or multiple instances of Zap scan runners to analyze the identified projects.
     processing_tasks = []
     for i in range(1, CONCURRENCY + 1):
-        processing_tasks.append(KubernetesPodOperator(
-            task_id='zap-baseline-{}'.format(i),
-            name='zap-baseline-{}'.format(i),
-            namespace='101ed4-tools',
-            image='ghcr.io/bcgov/pltsvc-secdashboard-zap:d45cd18c9c1eb5c5fcb4f0e82f47e980092c53a3',
-            env_vars={
-                "PROJECTS": "{{" + "ti.xcom_pull(task_ids='fetch-zapscan-projects-dev', key='{}')".format(i) + "}}",
-                "CONTEXT": MONGO_CONN_ID,
-            },
-            container_resources=V1ResourceRequirements(
-                limits={"memory": "1Gi", "cpu": "1000m"},
-                requests={"memory": "200Mi", "cpu": "50m"},
-            ),
-            volumes=[shared_volume, ],
-            volume_mounts=[shared_volume_mount, ],
-            on_finish_action="delete_pod",
-            in_cluster=True,
-            do_xcom_push=False,
-            get_logs=True,
-        ))
+        processing_tasks.append(
+            KubernetesPodOperator(
+                task_id="zap-baseline-{}".format(i),
+                name="zap-baseline-{}".format(i),
+                namespace="101ed4-tools",
+                image="ghcr.io/bcgov/pltsvc-secdashboard-zap:d45cd18c9c1eb5c5fcb4f0e82f47e980092c53a3",
+                env_vars={
+                    "PROJECTS": "{{" + "ti.xcom_pull(task_ids='fetch-zapscan-projects-dev', key='{}')".format(i) + "}}",
+                    "CONTEXT": MONGO_CONN_ID,
+                },
+                container_resources=V1ResourceRequirements(
+                    limits={"memory": "1Gi", "cpu": "1000m"},
+                    requests={"memory": "200Mi", "cpu": "50m"},
+                ),
+                volumes=[
+                    shared_volume,
+                ],
+                volume_mounts=[
+                    shared_volume_mount,
+                ],
+                on_finish_action="delete_pod",
+                in_cluster=True,
+                do_xcom_push=False,
+                get_logs=True,
+            )
+        )
 
     # Step 3. Update or create records in the database with the results obtained from the Zap scans.
     t3 = PythonOperator(
-        task_id='load-zap-results',
+        task_id="load-zap-results",
         python_callable=load_zap_results,
-        op_kwargs={'mongo_conn_id': MONGO_CONN_ID},
+        op_kwargs={"mongo_conn_id": MONGO_CONN_ID},
         trigger_rule=TriggerRule.ALL_DONE,
-        dag=dag
+        dag=dag,
     )
 
     t1 >> processing_tasks >> t3
