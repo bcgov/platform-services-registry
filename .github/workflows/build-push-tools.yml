@@ -1,4 +1,4 @@
-name: 22.Build and Push Security Dashboard Images
+name: 22.Build and Push Tools Images
 
 on:
   push:
