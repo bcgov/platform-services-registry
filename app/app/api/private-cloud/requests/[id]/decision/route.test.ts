@@ -200,9 +200,10 @@ describe('Review Private Cloud Delete Request - Permissions', () => {
     await mockSessionByEmail(productData.main.primaryTechnicalLead.email);
 
     const response = await deletePrivateCloudProject(requests.main.licencePlate);
+    const responseData = await response.json();
     expect(response.status).toBe(200);
 
-    requests.main = await response.json();
+    requests.main = responseData;
   });
 
   it('should fail to review the delete request for PO', async () => {

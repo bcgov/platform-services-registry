@@ -546,6 +546,7 @@ export const samplePrivateEditRequest: PrivateCloudRequestWithProjectAndRequeste
     secondaryTechnicalLead: null,
     golddrEnabled: true,
     isTest: false,
+    temporaryProductNotificationDate: null,
   },
   originalData: {
     productionQuota: {
