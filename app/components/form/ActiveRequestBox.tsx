@@ -11,6 +11,7 @@ import {
   IconBan,
 } from '@tabler/icons-react';
 import { useQuery } from '@tanstack/react-query';
+import classNames from 'classnames';
 import { useRouter } from 'next/navigation';
 import { useSession } from 'next-auth/react';
 import { getPrivateCloudCommentCount } from '@/services/backend/private-cloud/products';
@@ -129,10 +130,13 @@ export default function ActiveRequestBox({
   );
 
   return (
-    <Tooltip label="View Request" position="top" offset={10} className={className}>
+    <Tooltip label="View Request" position="top" offset={10}>
       <button
         type="button"
-        className="relative text-gray-900 bg-white border-solid border-2 border-gray-300 focus:outline-none hover:bg-gray-100 focus:ring-4 focus:ring-gray-100 font-medium rounded-lg text-sm px-5 py-2.5"
+        className={classNames(
+          className,
+          'w-full relative text-gray-900 bg-white border-solid border-2 border-gray-300 focus:outline-none hover:bg-gray-100 focus:ring-4 focus:ring-gray-100 font-medium rounded-lg text-sm px-3 py-2.5',
+        )}
         onClick={(e) => {
           e.preventDefault();
           e.stopPropagation();
@@ -151,16 +155,22 @@ export default function ActiveRequestBox({
             </Badge>
           ) : null}
           <Indicator color={data.active ? 'lime' : 'red'} zIndex={10}>
-            <Badge autoContrast size="xl" color="rgba(200, 200, 200, 1)" radius="md" className="mb-1">
-              <TypeIcon className="inline-block" />
-              {data.type} Request
+            <Badge
+              autoContrast
+              leftSection={<TypeIcon />}
+              size="xl"
+              color="rgba(200, 200, 200, 1)"
+              radius="sm"
+              className="mb-1"
+            >
+              {data.type}
             </Badge>
           </Indicator>
         </div>
         <div>{badges}</div>
         {data.createdByEmail && (
           <div className="text-center text-sm text-gray-400">
-            Submitted by <span>{data.createdByEmail}</span>
+            Submitted by <span className="font-bold">{data.createdByEmail}</span>
           </div>
         )}
       </button>

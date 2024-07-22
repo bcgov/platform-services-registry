@@ -1,5 +1,6 @@
 'use client';
 
+import { Button, Divider, Grid, LoadingOverlay, Box } from '@mantine/core';
 import { createContext, useContext, useRef, useEffect } from 'react';
 import { proxy, useSnapshot } from 'valtio';
 import Pagination from './Pagination';
@@ -67,7 +68,11 @@ export default function Table({
           )}
         </TableHeader>
 
-        <div className="h-[60vh] overflow-y-auto scroll-smooth">{children}</div>
+        <Box pos="relative" className="min-h-96">
+          <LoadingOverlay visible={isLoading} zIndex={1000} overlayProps={{ radius: 'sm', blur: 2 }} />
+          {children}
+        </Box>
+
         <TableFooter>
           <Pagination />
         </TableFooter>
