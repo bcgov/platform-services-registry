@@ -1,4 +1,5 @@
 import hashlib
+from typing import List, Union, Optional
 
 
 def keys_exist(element, *keys):
@@ -63,3 +64,23 @@ def split_array(original_array, num_subarrays):
 
 def generate_md5_hash(data):
     return hashlib.md5(data.lower().encode("utf-8")).hexdigest()
+
+
+def _uniq(lst: List[str]) -> List[str]:
+    return list(set(lst))
+
+
+def _compact(lst: List[Optional[str]]) -> List[str]:
+    return [item for item in lst if item]
+
+
+def _cast_array(item: Union[str, List[str], None]) -> List[str]:
+    if item is None:
+        return []
+    if isinstance(item, list):
+        return item
+    return [item]
+
+
+def safe_strings(strings: Optional[Union[str, List[str]]]) -> List[str]:
+    return _uniq(_compact(_cast_array(strings)))

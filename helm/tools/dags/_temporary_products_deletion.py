@@ -12,18 +12,20 @@ def send_temp_products_deletion_request(
     db = get_mongo_db(mongo_conn_id)
 
     thirty_days_ago = datetime.now(timezone.utc) - timedelta(days=30)
-    query = {"isTest": True, "createdAt": {"$lt": thirty_days_ago}}
+    query = {"isTest": True, "status": "ACTIVE", "createdAt": {"$lt": thirty_days_ago}}
     projection = {"_id": False, "licencePlate": True}
     projects = db.PrivateCloudProject.find(query, projection=projection)
 
     access_token = kc.get_access_token()
     headers = {"Authorization": f"Bearer {access_token}", "Content-Type": "application/json"}
 
+    count = 0
     for project in projects:
+        count += 1
         licence_plate = project.get("licencePlate")
         print(f"Processing {licence_plate}...")
         url = product_deletion_url_template.format(licence_plate)
         response = requests.delete(url, headers=headers)
         response.raise_for_status()
 
-    return {"status": "success", "deleted_count": len(projects)}
+    return {"status": "success", "count": count}
