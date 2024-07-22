@@ -54,19 +54,19 @@ export default function TableBodyPrivateRequests({ rows, isLoading = false }: Ta
               <div className="flex items-center gap-x-3">
                 <h2 className="min-w-0 text-base text-gray-700">
                   <div className="flex gap-x-2">
-                    <span className="">
-                      <TruncatedTooltip label={row.decisionData.description}>
-                        <span className="font-bold">{_truncate(row.decisionData.name, { length: 100 })}</span>
-                      </TruncatedTooltip>
-                      {!row.active && (
-                        <Badge color="red" radius="sm" className="ml-1">
-                          {$Enums.ProjectStatus.INACTIVE}
-                        </Badge>
-                      )}
-                    </span>
+                    <TruncatedTooltip label={row.decisionData.description}>
+                      <span className="font-bold">{_truncate(row.decisionData.name, { length: 100 })}</span>
+                    </TruncatedTooltip>
+                    {!row.active && (
+                      <Badge color="red" radius="sm" className="mt-1">
+                        {$Enums.ProjectStatus.INACTIVE}
+                      </Badge>
+                    )}
+                    {row.decisionData.isTest && (
+                      <TestProductBadge data={{ createdAt: row.createdAt }} className="mt-1" />
+                    )}
                   </div>
                 </h2>
-                {row.decisionData.isTest && <TestProductBadge data={{ createdAt: row.createdAt }} />}
               </div>
 
               <div className="mt-1 flex items-center gap-x-2.5 text-sm leading-5 text-gray-700">
