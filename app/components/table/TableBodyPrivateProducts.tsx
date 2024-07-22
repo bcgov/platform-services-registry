@@ -53,19 +53,17 @@ export default function TableBodyPrivateProducts({ rows, isLoading = false }: Ta
               <div className="flex items-center gap-x-3">
                 <h2 className="min-w-0 text-base text-gray-700">
                   <div className="flex gap-x-2">
-                    <span className="">
-                      <TruncatedTooltip label={row.description}>
-                        <span className="font-bold">{_truncate(row.name, { length: 100 })}</span>
-                      </TruncatedTooltip>
-                      {row.status === $Enums.ProjectStatus.INACTIVE && (
-                        <Badge color="red" radius="sm" className="ml-1">
-                          {$Enums.ProjectStatus.INACTIVE}
-                        </Badge>
-                      )}
-                    </span>
+                    <TruncatedTooltip label={row.description}>
+                      <span className="font-bold">{_truncate(row.name, { length: 100 })}</span>
+                    </TruncatedTooltip>
+                    {row.status === $Enums.ProjectStatus.INACTIVE && (
+                      <Badge color="red" radius="sm" className="mt-1">
+                        {$Enums.ProjectStatus.INACTIVE}
+                      </Badge>
+                    )}
+                    {row.isTest && <TestProductBadge data={{ createdAt: row.createdAt }} className="mt-1" />}
                   </div>
                 </h2>
-                {row.isTest && <TestProductBadge data={{ createdAt: row.createdAt }} />}
               </div>
 
               <div className="mt-1 flex items-center gap-x-2.5 text-sm leading-5 text-gray-700">

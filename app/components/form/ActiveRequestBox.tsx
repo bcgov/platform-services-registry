@@ -122,7 +122,7 @@ export default function ActiveRequestBox({
         size="lg"
         radius="sm"
         autoContrast
-        className="ml-1"
+        className="ml-1 w-40"
       >
         {decisionText}
       </Badge>
@@ -144,7 +144,7 @@ export default function ActiveRequestBox({
         }}
       >
         <div className="relative">
-          {shouldFetchCommentCount && !isLoading && typeof commentCount === 'number' && commentCount > 0 ? (
+          {shouldFetchCommentCount && !isLoading && typeof commentCount === 'number' && commentCount > 0 && (
             <Badge
               color="blue"
               size="md"
@@ -153,15 +153,15 @@ export default function ActiveRequestBox({
             >
               {commentCount}
             </Badge>
-          ) : null}
+          )}
           <Indicator color={data.active ? 'lime' : 'red'} zIndex={10}>
             <Badge
               autoContrast
               leftSection={<TypeIcon />}
-              size="xl"
-              color="rgba(200, 200, 200, 1)"
+              size="lg"
               radius="sm"
-              className="mb-1"
+              color="rgba(200, 200, 200, 1)"
+              className="mb-1 w-40"
             >
               {data.type}
             </Badge>
