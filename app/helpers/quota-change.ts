@@ -1,4 +1,3 @@
-import { PrivateCloudEditRequestBody } from '@/schema';
 import { extractNumbers } from '@/utils/string';
 
 export const isResourseDowngrade = (req: string, prod: string) => {
@@ -9,7 +8,7 @@ export const isResourseUpgrade = (req: string, prod: string) => {
   return extractNumbers(req)[0] > extractNumbers(prod)[0];
 };
 
-export const isQuotaUpgrade = (request: PrivateCloudEditRequestBody, product: PrivateCloudEditRequestBody) => {
+export const isQuotaUpgrade = (request: any, product: any) => {
   return (
     isResourseUpgrade(request.productionQuota.cpu, product.productionQuota.cpu) ||
     isResourseUpgrade(request.productionQuota.memory, product.productionQuota.memory) ||

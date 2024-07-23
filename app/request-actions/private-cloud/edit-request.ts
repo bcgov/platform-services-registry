@@ -64,10 +64,7 @@ export default async function editRequest(
     project.cluster === $Enums.Cluster.GOLD && project.golddrEnabled !== formData.golddrEnabled;
 
   // If there is no quota change or no quota upgrade and no golddr flag changes, the request is automatically approved
-  if (
-    (isNoQuotaChanged || !isQuotaUpgrade(formData, project as PrivateCloudEditRequestBody)) &&
-    !hasGolddrEnabledChanged
-  ) {
+  if ((isNoQuotaChanged || !isQuotaUpgrade(formData, project)) && !hasGolddrEnabledChanged) {
     decisionStatus = DecisionStatus.APPROVED;
   } else {
     decisionStatus = DecisionStatus.PENDING;
