@@ -119,7 +119,7 @@ export const PrivateCloudCreateRequestBodySchema = z.object({
   golddrEnabled: z.preprocess(processBoolean, z.boolean()),
   isTest: z.preprocess(processBoolean, z.boolean()),
   quotaContactName: z.string().max(50).optional(),
-  quotaContactEmail: z.union([z.literal(''), z.string().email()]),
+  quotaContactEmail: z.union([z.undefined(), z.literal(''), z.string().email()]),
   quotaJustification: z.string().max(1000).optional(),
   supportPhoneNumber: z
     .string()
