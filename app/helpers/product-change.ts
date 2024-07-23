@@ -6,11 +6,13 @@ import _mapValues from 'lodash-es/mapValues';
 import _pick from 'lodash-es/pick';
 import _uniq from 'lodash-es/uniq';
 import { diffExt, DiffChange } from '@/utils/diff';
+import { extractNumbers } from '@/utils/string';
 
 export interface PrivateProductChange {
   profileChanged: boolean;
   contactsChanged: boolean;
   quotasChanged: boolean;
+  quotasIncrease: boolean;
   commonComponentsChanged: boolean;
   changes: DiffChange[];
   parentPaths: string[];
@@ -40,6 +42,7 @@ export function comparePrivateProductData(data1: any, data2: any) {
   let profileChanged = false;
   let contactsChanged = false;
   let quotasChanged = false;
+  let quotasIncrease = false;
   let commonComponentsChanged = false;
 
   for (const change of changes) {
@@ -64,6 +67,15 @@ export function comparePrivateProductData(data1: any, data2: any) {
       case 'testQuota':
       case 'productionQuota':
       case 'toolsQuota':
+        if (!quotasIncrease) {
+          const oldvalNums = extractNumbers(change.oldVal);
+          const newvalNums = extractNumbers(change.newVal);
+
+          if (newvalNums.length > 0 || oldvalNums.length > 0) {
+            quotasIncrease = newvalNums[0] > oldvalNums[0];
+          }
+        }
+
         quotasChanged = true;
         change.tag = 'resource';
         break;
@@ -78,6 +90,7 @@ export function comparePrivateProductData(data1: any, data2: any) {
     profileChanged,
     contactsChanged,
     quotasChanged,
+    quotasIncrease,
     commonComponentsChanged,
     parentPaths: _uniq(parentPaths),
     changes,

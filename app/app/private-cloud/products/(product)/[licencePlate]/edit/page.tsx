@@ -87,7 +87,7 @@ export default privateCloudProductEdit(({ pathParams, queryParams, session }) =>
           )
           .refine(
             (formData) => {
-              if (!_changes?.quotasChanged) return true;
+              if (!_changes?.quotasIncrease) return true;
               return !!formData.quotaContactName;
             },
             {
@@ -97,7 +97,7 @@ export default privateCloudProductEdit(({ pathParams, queryParams, session }) =>
           )
           .refine(
             (formData) => {
-              if (!_changes?.quotasChanged) return true;
+              if (!_changes?.quotasIncrease) return true;
               return !!formData.quotaContactEmail;
             },
             {
@@ -107,7 +107,7 @@ export default privateCloudProductEdit(({ pathParams, queryParams, session }) =>
           )
           .refine(
             (formData) => {
-              if (!_changes?.quotasChanged) return true;
+              if (!_changes?.quotasIncrease) return true;
               return !!formData.quotaJustification;
             },
             {
@@ -116,7 +116,7 @@ export default privateCloudProductEdit(({ pathParams, queryParams, session }) =>
             },
           )
           .transform((formData) => {
-            if (!_changes?.quotasChanged) {
+            if (!_changes?.quotasIncrease) {
               formData.quotaContactName = '';
               formData.quotaContactEmail = '';
               formData.quotaJustification = '';

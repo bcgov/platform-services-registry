@@ -76,6 +76,7 @@ type PrivateCloudDataChanges {
   profileChanged          Boolean
   contactsChanged         Boolean
   quotasChanged           Boolean
+  quotasIncrease          Boolean
   commonComponentsChanged Boolean
   parentPaths             String[]
 }

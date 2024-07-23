@@ -14,7 +14,7 @@ function FormError({ error }: { error?: FieldError | Merge<FieldError, FieldErro
 
 export default function QuotasChangeInfo({ disabled, className }: { disabled: boolean; className?: string }) {
   const [, privateSnap] = usePrivateProductState();
-  const [hasQuotaChanges, setHasQuotaChanges] = useState(false);
+  const [hasQuotaIncrease, setHasQuotaIncrease] = useState(false);
   const {
     register,
     control,
@@ -44,16 +44,16 @@ export default function QuotasChangeInfo({ disabled, className }: { disabled: bo
     if (!privateSnap.currentProduct) return;
 
     const _changes = comparePrivateProductData(privateSnap.currentProduct, getValues());
-    if (!_changes.quotasChanged) {
+    if (!_changes.quotasIncrease) {
       setValue('quotaContactName', '');
       setValue('quotaContactEmail', '');
       setValue('quotaJustification', '');
     }
 
-    setHasQuotaChanges(_changes.quotasChanged);
+    setHasQuotaIncrease(_changes.quotasIncrease);
   }, [privateSnap.currentProduct, quotaChanges, getValues, setValue]);
 
-  if (!hasQuotaChanges) return null;
+  if (!hasQuotaIncrease) return null;
 
   return (
     <div className={classNames(className)}>

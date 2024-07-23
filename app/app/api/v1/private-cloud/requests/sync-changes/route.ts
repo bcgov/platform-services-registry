@@ -36,5 +36,10 @@ export const POST = apiHandler(async () => {
     }),
   );
 
+  await prisma.privateCloudRequest.updateMany({
+    where: { type: { not: RequestType.EDIT } },
+    data: { changes: null },
+  });
+
   return OkResponse(results.map((ret) => ret.id));
 });
