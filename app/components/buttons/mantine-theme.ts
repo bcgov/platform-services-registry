@@ -1,33 +1,7 @@
 'use client';
 
 import { generateColors } from '@mantine/colors-generator';
-import { Button, virtualColor, createTheme, rem } from '@mantine/core';
-import localFont from 'next/font/local';
-
-const bcsans = localFont({
-  src: [
-    {
-      path: '../../fonts/bcsans-regular.woff',
-      weight: '400',
-      style: 'normal',
-    },
-    {
-      path: '../../fonts/bcsans-regular.woff',
-      weight: '400',
-      style: 'italic',
-    },
-    {
-      path: '../../fonts/bcsans-bold.woff',
-      weight: '700',
-      style: 'normal',
-    },
-    {
-      path: '../../fonts/bcsans-bold.woff',
-      weight: '700',
-      style: 'italic',
-    },
-  ],
-});
+import { createTheme } from '@mantine/core';
 
 // See https://mantine.dev/styles/styles-api/#styles-api-selectors
 // See https://mantine.dev/styles/variants-sizes/#adding-custom-variants
