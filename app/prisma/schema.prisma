@@ -47,6 +47,9 @@ model PrivateCloudRequest {
   licencePlate       String
   createdByEmail     String
   decisionMakerEmail String?
+  quotaContactName   String?
+  quotaContactEmail  String?
+  quotaJustification String?
   type               RequestType
   decisionStatus     DecisionStatus
   isQuotaChanged     Boolean?                      @default(false)

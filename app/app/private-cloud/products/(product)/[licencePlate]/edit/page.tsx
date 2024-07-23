@@ -13,15 +13,17 @@ import SubmitButton from '@/components/buttons/SubmitButton';
 import CommonComponents from '@/components/form/CommonComponents';
 import ProjectDescription from '@/components/form/ProjectDescriptionPrivate';
 import Quotas from '@/components/form/Quotas';
+import QuotasChangeInfo from '@/components/form/QuotasChangeInfo';
 import TeamContacts from '@/components/form/TeamContacts';
 import FormErrorNotification from '@/components/generic/FormErrorNotification';
 import PrivateCloudEditModal from '@/components/modal/EditPrivateCloud';
 import ReturnModal from '@/components/modal/Return';
 import { AGMinistries } from '@/constants';
 import createClientPage from '@/core/client-page';
+import { comparePrivateProductData, PrivateProductChange } from '@/helpers/product-change';
 import { PrivateCloudEditRequestBodySchema } from '@/schema';
 import { getPrivateCloudProject, editPrivateCloudProject } from '@/services/backend/private-cloud/products';
-import { privateProductState } from '@/states/global';
+import { usePrivateProductState } from '@/states/global';
 
 const pathParamSchema = z.object({
   licencePlate: z.string(),
@@ -33,7 +35,7 @@ const privateCloudProductEdit = createClientPage({
 });
 export default privateCloudProductEdit(({ pathParams, queryParams, session }) => {
   const { licencePlate } = pathParams;
-  const snap = useSnapshot(privateProductState);
+  const [, privateSnap] = usePrivateProductState();
 
   const [openComment, setOpenComment] = useState(false);
   const [openReturn, setOpenReturn] = useState(false);
@@ -65,21 +67,65 @@ export default privateCloudProductEdit(({ pathParams, queryParams, session }) =>
   // The data is not available on the first render so fetching it inside the defaultValues. This is a workaround. Not doing this will result in
   // in an error.
   const methods = useForm({
-    resolver: zodResolver(
-      PrivateCloudEditRequestBodySchema.merge(
-        z.object({
-          isAgMinistryChecked: z.boolean().optional(),
-        }),
-      ).refine(
-        (formData) => {
-          return AGMinistries.includes(formData.ministry) ? formData.isAgMinistryChecked : true;
-        },
-        {
-          message: 'AG Ministry Checkbox should be checked.',
-          path: ['isAgMinistryChecked'],
-        },
-      ),
-    ),
+    resolver: (...args) => {
+      const _changes = comparePrivateProductData(privateSnap.currentProduct, args[0]);
+
+      return zodResolver(
+        PrivateCloudEditRequestBodySchema.merge(
+          z.object({
+            isAgMinistryChecked: z.boolean().optional(),
+          }),
+        )
+          .refine(
+            (formData) => {
+              return AGMinistries.includes(formData.ministry) ? formData.isAgMinistryChecked : true;
+            },
+            {
+              message: 'AG Ministry Checkbox should be checked.',
+              path: ['isAgMinistryChecked'],
+            },
+          )
+          .refine(
+            (formData) => {
+              if (!_changes?.quotasChanged) return true;
+              return !!formData.quotaContactName;
+            },
+            {
+              message: 'Contact name should be provided.',
+              path: ['quotaContactName'],
+            },
+          )
+          .refine(
+            (formData) => {
+              if (!_changes?.quotasChanged) return true;
+              return !!formData.quotaContactEmail;
+            },
+            {
+              message: 'Contact email should be provided.',
+              path: ['quotaContactEmail'],
+            },
+          )
+          .refine(
+            (formData) => {
+              if (!_changes?.quotasChanged) return true;
+              return !!formData.quotaJustification;
+            },
+            {
+              message: 'Quota justification should be provided.',
+              path: ['quotaJustification'],
+            },
+          )
+          .transform((formData) => {
+            if (!_changes?.quotasChanged) {
+              formData.quotaContactName = '';
+              formData.quotaContactEmail = '';
+              formData.quotaJustification = '';
+            }
+
+            return formData;
+          }),
+      )(...args);
+    },
     defaultValues: async () => {
       const response = await getPrivateCloudProject(licencePlate);
       return { ...response, isAgMinistryChecked: true };
@@ -89,14 +135,14 @@ export default privateCloudProductEdit(({ pathParams, queryParams, session }) =>
   const { formState } = methods;
 
   useEffect(() => {
-    if (!snap.currentProduct) return;
+    if (!privateSnap.currentProduct) return;
 
-    if (snap.currentProduct.secondaryTechnicalLead) {
+    if (privateSnap.currentProduct.secondaryTechnicalLead) {
       setSecondTechLead(true);
     }
 
-    setDisabled(!snap.currentProduct?._permissions.edit);
-  }, [snap.currentProduct]);
+    setDisabled(!privateSnap.currentProduct?._permissions.edit);
+  }, [privateSnap.currentProduct]);
 
   const secondTechLeadOnClick = () => {
     setSecondTechLead(!secondTechLead);
@@ -112,7 +158,7 @@ export default privateCloudProductEdit(({ pathParams, queryParams, session }) =>
 
   const isSubmitEnabled = formState.isDirty || isSecondaryTechLeadRemoved;
 
-  if (!snap.currentProduct) {
+  if (!privateSnap.currentProduct) {
     return null;
   }
 
@@ -126,7 +172,7 @@ export default privateCloudProductEdit(({ pathParams, queryParams, session }) =>
               disabled={isDisabled}
               clusterDisabled={true}
               mode="edit"
-              canToggleTemporary={snap.currentProduct._permissions.toggleTemporary}
+              canToggleTemporary={privateSnap.currentProduct._permissions.toggleTemporary}
             />
             <hr className="my-7" />
             <TeamContacts
@@ -136,10 +182,11 @@ export default privateCloudProductEdit(({ pathParams, queryParams, session }) =>
             />
             <hr className="my-7" />
             <Quotas
-              licencePlate={snap.currentProduct?.licencePlate as string}
+              licencePlate={privateSnap.currentProduct?.licencePlate as string}
               disabled={isDisabled}
-              currentProject={snap.currentProduct as PrivateCloudProject}
+              currentProject={privateSnap.currentProduct as PrivateCloudProject}
             />
+            <QuotasChangeInfo disabled={isDisabled} />
             <hr className="my-7" />
             <CommonComponents disabled={isDisabled} number={4} />
           </div>

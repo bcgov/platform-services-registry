@@ -135,7 +135,7 @@ export default function ActiveRequestBox({
         type="button"
         className={classNames(
           className,
-          'w-full relative text-gray-900 bg-white border-solid border-2 border-gray-300 focus:outline-none hover:bg-gray-100 focus:ring-4 focus:ring-gray-100 font-medium rounded-lg text-sm px-3 py-2.5',
+          'w-full max-w-sm relative text-gray-900 bg-white border-solid border-2 border-gray-300 focus:outline-none hover:bg-gray-100 focus:ring-4 focus:ring-gray-100 font-medium rounded-lg text-sm px-3 py-2.5',
         )}
         onClick={(e) => {
           e.preventDefault();
