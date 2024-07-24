@@ -311,3 +311,9 @@ export const teamApiAccountSchema = z.object({
 });
 
 export type TeamApiAccountSchemaData = z.infer<typeof teamApiAccountSchema>;
+
+export const privateCloudAdminUpdateBodySchema = z.object({
+  isTest: z.preprocess(processBoolean, z.boolean()),
+});
+
+export type PrivateCloudAdminUpdateBody = z.infer<typeof privateCloudAdminUpdateBodySchema>;

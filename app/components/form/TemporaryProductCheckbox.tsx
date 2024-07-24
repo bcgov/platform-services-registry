@@ -2,7 +2,7 @@ import { Alert } from '@mantine/core';
 import { useFormContext } from 'react-hook-form';
 import FormCheckbox from '@/components/generic/checkbox/FormCheckbox';
 
-export default function IsTestCheckBox({ disabled }: { disabled?: boolean }) {
+export default function TemporaryProductCheckbox({ disabled }: { disabled?: boolean }) {
   const { register } = useFormContext();
 
   return (
