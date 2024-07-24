@@ -136,6 +136,7 @@ export const PrivateCloudCreateRequestBodySchema = z.object({
         message: 'Invalid phone number format. Expected format: +1 (xxx) xxx-xxxx',
       },
     ),
+  requestComment: string().optional(),
 });
 
 export const PublicCloudCreateRequestBodySchema = z.object({

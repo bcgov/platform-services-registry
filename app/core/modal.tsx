@@ -2,6 +2,7 @@ import { ScrollArea } from '@mantine/core';
 import { randomId } from '@mantine/hooks';
 import { modals } from '@mantine/modals';
 import { ModalSettings } from '@mantine/modals/lib/context';
+import _isString from 'lodash-es/isString';
 import React, { useMemo } from 'react';
 
 // Interface for extra props to be passed to the modal component
@@ -22,7 +23,7 @@ interface Options<S, SS> {
   initialState?: S; // Initial state for the modal
   snapshot?: SS; // Optional snapshot of the state
   settings?: ModalSettings; // Additional modal settings
-  onPreClose?: (state: { state: S; snapshot?: SS }) => void; // Callback before the modal closes
+  onPreClose?: (props: { state: S; snapshot?: SS }) => void; // Callback before the modal closes
 }
 
 // Function to create a modal
@@ -45,7 +46,7 @@ export function createModal<P, S = any>({ settings, Component, condition, onClos
 
     // Return a promise that resolves when the modal closes
     return new Promise<{ state: S; snapshot?: SS }>((resolve, reject) => {
-      modals.open({
+      const modalSettings = {
         scrollAreaComponent: ScrollArea.Autosize,
         className: '',
         overlayProps: {
@@ -61,7 +62,13 @@ export function createModal<P, S = any>({ settings, Component, condition, onClos
           resolve(output);
         },
         children: <Component {...props} state={state} {...extraProps} />,
-      });
+      };
+
+      if (_isString(modalSettings.title)) {
+        modalSettings.title = <div className="font-bold text-lg">{modalSettings.title}</div>;
+      }
+
+      modals.open(modalSettings);
     });
   };
 }

@@ -3,10 +3,8 @@
 import { zodResolver } from '@hookform/resolvers/zod';
 import { notifications } from '@mantine/notifications';
 import { PrivateCloudProject } from '@prisma/client';
-import { useQuery, useMutation } from '@tanstack/react-query';
 import { useEffect, useState } from 'react';
 import { FormProvider, useForm } from 'react-hook-form';
-import { useSnapshot } from 'valtio';
 import { z } from 'zod';
 import PreviousButton from '@/components/buttons/Previous';
 import SubmitButton from '@/components/buttons/SubmitButton';
@@ -16,7 +14,7 @@ import Quotas from '@/components/form/Quotas';
 import QuotasChangeInfo from '@/components/form/QuotasChangeInfo';
 import TeamContacts from '@/components/form/TeamContacts';
 import FormErrorNotification from '@/components/generic/FormErrorNotification';
-import PrivateCloudEditModal from '@/components/modal/EditPrivateCloud';
+import { openEditPrivateCloudProductModal } from '@/components/modal/editPrivateCloudProductModal';
 import ReturnModal from '@/components/modal/Return';
 import { AGMinistries } from '@/constants';
 import createClientPage from '@/core/client-page';
@@ -37,35 +35,11 @@ export default privateCloudProductEdit(({ pathParams, queryParams, session }) =>
   const { licencePlate } = pathParams;
   const [, privateSnap] = usePrivateProductState();
 
-  const [openComment, setOpenComment] = useState(false);
   const [openReturn, setOpenReturn] = useState(false);
   const [isDisabled, setDisabled] = useState(false);
   const [secondTechLead, setSecondTechLead] = useState(false);
   const [isSecondaryTechLeadRemoved, setIsSecondaryTechLeadRemoved] = useState(false);
 
-  const {
-    mutateAsync: editProject,
-    isPending: isEditingProject,
-    isError: isEditError,
-    error: editError,
-  } = useMutation({
-    mutationFn: (data: any) => editPrivateCloudProject(licencePlate, data),
-    onSuccess: () => {
-      setOpenComment(false);
-      setOpenReturn(true);
-    },
-    onError: (error: any) => {
-      notifications.show({
-        title: 'Error',
-        message: `Failed to edit product ${error.message}`,
-        color: 'red',
-        autoClose: 5000,
-      });
-    },
-  });
-
-  // The data is not available on the first render so fetching it inside the defaultValues. This is a workaround. Not doing this will result in
-  // in an error.
   const methods = useForm({
     resolver: (...args) => {
       const _changes = comparePrivateProductData(privateSnap.currentProduct, args[0]);
@@ -152,11 +126,7 @@ export default privateCloudProductEdit(({ pathParams, queryParams, session }) =>
     }
   };
 
-  const setComment = (requestComment: string) => {
-    editProject({ ...methods.getValues(), requestComment });
-  };
-
-  const isSubmitEnabled = formState.isDirty || isSecondaryTechLeadRemoved;
+  const isSubmitEnabled = Object.keys(formState.dirtyFields).length > 0 || isSecondaryTechLeadRemoved;
 
   if (!privateSnap.currentProduct) {
     return null;
@@ -166,7 +136,15 @@ export default privateCloudProductEdit(({ pathParams, queryParams, session }) =>
     <div>
       <FormProvider {...methods}>
         <FormErrorNotification />
-        <form autoComplete="off" onSubmit={methods.handleSubmit(() => setOpenComment(true))}>
+        <form
+          onSubmit={methods.handleSubmit(async (formData) => {
+            const result = await openEditPrivateCloudProductModal({ productData: formData });
+            if (result?.state.success) {
+              setOpenReturn(true);
+            }
+          })}
+          autoComplete="off"
+        >
           <div className="mb-12 mt-8">
             <ProjectDescription
               disabled={isDisabled}
@@ -200,12 +178,6 @@ export default privateCloudProductEdit(({ pathParams, queryParams, session }) =>
           </div>
         </form>
       </FormProvider>
-      <PrivateCloudEditModal
-        open={openComment}
-        setOpen={setOpenComment}
-        handleSubmit={setComment}
-        isLoading={isEditingProject}
-      />
       <ReturnModal
         open={openReturn}
         setOpen={setOpenReturn}
