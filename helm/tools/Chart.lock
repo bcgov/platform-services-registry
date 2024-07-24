@@ -1,12 +1,12 @@
 dependencies:
 - name: airflow
   repository: https://airflow.apache.org/
-  version: 1.12.0
+  version: 1.15.0
 - name: postgresql
   repository: https://charts.bitnami.com/bitnami
   version: 13.3.0
 - name: sonarqube
   repository: https://SonarSource.github.io/helm-chart-sonarqube
   version: 10.4.0+2288
-digest: sha256:58d5a9445394e8c93ab8582aad90058fc52f0444c45e6d584e1f52c4c5a5c628
-generated: "2024-07-16T17:13:55.662765077-07:00"
+digest: sha256:dcab16ac1223ab65f35fb91fa4f7f785033d4e76ff3a0ede2878cdfa82f87065
+generated: "2024-07-24T15:27:08.916970312Z"
