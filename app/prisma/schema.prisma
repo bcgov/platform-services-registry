@@ -73,11 +73,11 @@ model PrivateCloudRequest {
 }
 
 type PrivateCloudDataChanges {
-  profileChanged          Boolean
-  contactsChanged         Boolean
-  quotasChanged           Boolean
-  quotasIncrease          Boolean
-  commonComponentsChanged Boolean
+  profileChanged          Boolean?
+  contactsChanged         Boolean?
+  quotasChanged           Boolean?
+  quotasIncrease          Boolean?
+  commonComponentsChanged Boolean?
   parentPaths             String[]
 }
 
