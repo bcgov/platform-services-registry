@@ -3,14 +3,11 @@ name: 31.Test codebase
 on:
   push:
     paths-ignore:
-    - .github/**
     - data-migrations/**
     - helm/**
     - localdev/**
     - terraform/**
     - tools/**
-    paths:
-    - .github/workflows/test.yml
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
