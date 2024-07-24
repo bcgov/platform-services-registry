@@ -61,7 +61,7 @@ export async function getPrivateCloudProject(licencePlate: string) {
 }
 
 export async function createPrivateCloudProject(data: any) {
-  const result = await instance.post('/', data).then((res) => res.data);
+  const result = await instance.post('', data).then((res) => res.data);
   return result;
 }
 

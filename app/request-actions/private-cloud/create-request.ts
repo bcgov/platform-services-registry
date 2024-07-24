@@ -70,6 +70,7 @@ export default async function createRequest(formData: PrivateCloudCreateRequestB
       decisionStatus: DecisionStatus.PENDING,
       active: true,
       createdByEmail: session.user.email,
+      requestComment: formData.requestComment,
       licencePlate,
       decisionData: {
         create: createRequestedProject,
