@@ -47,6 +47,9 @@ model PrivateCloudRequest {
   licencePlate       String
   createdByEmail     String
   decisionMakerEmail String?
+  quotaContactName   String?
+  quotaContactEmail  String?
+  quotaJustification String?
   type               RequestType
   decisionStatus     DecisionStatus
   isQuotaChanged     Boolean?                      @default(false)
@@ -73,6 +76,7 @@ type PrivateCloudDataChanges {
   profileChanged          Boolean
   contactsChanged         Boolean
   quotasChanged           Boolean
+  quotasIncrease          Boolean
   commonComponentsChanged Boolean
   parentPaths             String[]
 }
