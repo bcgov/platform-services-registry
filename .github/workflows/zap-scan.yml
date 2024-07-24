@@ -1,4 +1,4 @@
-name: 32.Run ZAP Full Scan
+name: 40.Run ZAP Full Scan
 
 on:
   workflow_dispatch:

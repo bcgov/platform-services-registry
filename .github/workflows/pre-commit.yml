@@ -1,0 +1,25 @@
+name: 32.Run pre-commit
+
+on: push
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  pre-commit:
+    runs-on: ubuntu-22.04
+    timeout-minutes: 10
+    steps:
+    - uses: hmarr/debug-action@f7318c783045ac39ed9bb497e22ce835fdafbfe6
+    - uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332
+
+    - name: Setup Tools
+      uses: ./.github/actions/setup-tools
+
+    - name: Setup NPM Packages
+      uses: ./.github/actions/setup-npm
+
+    - name: Rerun Pre-Commit Hooks on CI
+      run: |
+        pre-commit run --config=.pre-commit-config.yaml --color=always --show-diff-on-failure --all-files
