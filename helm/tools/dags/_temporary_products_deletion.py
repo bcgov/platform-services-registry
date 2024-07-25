@@ -13,6 +13,7 @@ def send_temp_products_deletion_request(
 
     thirty_days_ago = datetime.now(timezone.utc) - timedelta(days=30)
     query = {"isTest": True, "status": "ACTIVE", "createdAt": {"$lt": thirty_days_ago}}
+    print(f"Querying {query}...")
     projection = {"_id": False, "licencePlate": True}
     projects = db.PrivateCloudProject.find(query, projection=projection)
 
@@ -21,11 +22,20 @@ def send_temp_products_deletion_request(
 
     count = 0
     for project in projects:
-        count += 1
         licence_plate = project.get("licencePlate")
         print(f"Processing {licence_plate}...")
-        url = product_deletion_url_template.format(licence_plate)
-        response = requests.delete(url, headers=headers)
-        response.raise_for_status()
+
+        reqQuery = {"licencePlate": licence_plate, "active": True}
+        reqProjection = {"_id": True}
+        activeReq = db.PrivateCloudRequest.find_one(reqQuery, projection=reqProjection)
+
+        if activeReq is None:
+            count += 1
+            url = product_deletion_url_template.format(licence_plate)
+            print(f"Sending a request to {url}")
+            response = requests.delete(url, headers=headers)
+            response.raise_for_status()
+        else:
+            print(f"Has an active request; skipping...")
 
     return {"status": "success", "count": count}

@@ -52,7 +52,7 @@ export default function TemporaryProductCheckboxAdmin({
     if (formState.dirtyFields.isTest) {
       updateFlag(isTest);
     }
-  }, [formState.dirtyFields.isTest]);
+  }, [updateFlag, formState.dirtyFields.isTest, isTest]);
 
   return (
     <Alert variant="light" color="blue" title="Temporary product set" className={classNames(className)}>
