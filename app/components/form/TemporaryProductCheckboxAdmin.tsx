@@ -52,7 +52,7 @@ export default function TemporaryProductCheckboxAdmin({
     if (formState.dirtyFields.isTest) {
       updateFlag(isTest);
     }
-  }, [formState.dirtyFields.isTest]);
+  }, [updateFlag, formState.dirtyFields.isTest, isTest]);
 
   return (
     <Alert variant="light" color="blue" title="Temporary product set" className={classNames(className)}>
@@ -62,8 +62,8 @@ export default function TemporaryProductCheckboxAdmin({
         disabled={disabled}
         className={{ label: 'text-lg', input: 'ml-1' }}
         showConfirm
-        confirmCheckedTitle="Are you sure you want to set this product as a permanent product set?"
-        confirmUncheckedTitle="Are you sure you want to set this product as a temporary product set?"
+        confirmCheckedTitle="Are you sure you want to set this product as a temporary product set?"
+        confirmUncheckedTitle="Are you sure you want to set this product as a permanent product set?"
         confirmCheckedMessage="You have selected a temporary product set. Please be aware that everything in the provisioned namespaces will be deleted after 30 days, including all data and deployments."
         confirmUncheckedMessage="You have unchecked a temporary product set. Please be aware that product set will NOT be deleted after 30 days."
       >
