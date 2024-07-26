@@ -69,14 +69,15 @@ function MainBody({ children }: { children: React.ReactNode }) {
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en">
-      <head></head>
       <Provider>
-        <MantineProvider withGlobalClasses={false} withCssVariables theme={theme}>
-          <Notifications position="top-right" limit={5} autoClose={2500} />
-          <ModalsProvider>
-            <MainBody>{children}</MainBody>
-          </ModalsProvider>
-        </MantineProvider>
+        <head>
+          <MantineProvider withGlobalClasses withCssVariables theme={theme}>
+            <Notifications position="top-right" limit={5} autoClose={2500} />
+            <ModalsProvider>
+              <MainBody>{children}</MainBody>
+            </ModalsProvider>
+          </MantineProvider>
+        </head>
       </Provider>
     </html>
   );
