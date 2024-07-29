@@ -20,7 +20,7 @@ interface ModalState {
   confirmed: boolean;
 }
 
-function SignPublicCloudProductModal({ state, closeModal }: ModalProps & { state: ModalState } & ExtraModalProps) {
+function SignPublicCloudProductModal({ state, closeModal }: { state: ModalState } & ExtraModalProps) {
   const { data: session } = useSession();
 
   const methods = useForm({

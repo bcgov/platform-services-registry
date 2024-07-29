@@ -140,8 +140,6 @@ export const samplePublicEditRequest: PublicCloudRequestWithProjectAndRequestedP
     createdAt: new Date('2023-11-30T00:00:00Z'),
     updatedAt: new Date('2023-11-30T00:00:00Z'),
     accountCoding: 'AC12345',
-    signedExpenseAuthorityId: 'ea-id',
-    mouSignedDate: new Date('2023-11-30T00:00:00Z'),
     budget: {
       dev: 1500.0,
       test: 2500.0,
