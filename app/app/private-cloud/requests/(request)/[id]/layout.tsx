@@ -9,7 +9,7 @@ import { useEffect } from 'react';
 import { z } from 'zod';
 import PrivateCloudRequestOptions from '@/components/dropdowns/PrivateCloudRequestOptions';
 import RequestBadge from '@/components/form/RequestBadge';
-import TestProductAlert from '@/components/form/TestProductAlert';
+import TemporaryProductAlert from '@/components/form/TemporaryProductAlert';
 import LightButton from '@/components/generic/button/LightButton';
 import Tabs, { ITab } from '@/components/generic/tabs/BasicTabs';
 import createClientPage from '@/core/client-page';
@@ -131,7 +131,7 @@ export default privateCloudProductSecurityACS(({ pathParams, queryParams, sessio
           A decision has been made for this request.
         </Alert>
       )}
-      {request.decisionData.isTest && <TestProductAlert data={request} />}
+      {request.decisionData.isTest && <TemporaryProductAlert data={{ createdAt: request.project?.createdAt }} />}
       <Tabs tabs={tabs}>
         <PrivateCloudRequestOptions id={request.id} canResend={request._permissions.resend} />
       </Tabs>

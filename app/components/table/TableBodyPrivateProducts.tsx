@@ -7,7 +7,7 @@ import _truncate from 'lodash-es/truncate';
 import { usePathname, useRouter } from 'next/navigation';
 import React from 'react';
 import ActiveRequestBox from '@/components/form/ActiveRequestBox';
-import TestProductBadge from '@/components/form/TestProductBadge';
+import TemporaryProductBadge from '@/components/form/TemporaryProductBadge';
 import CopyableButton from '@/components/generic/button/CopyableButton';
 import UserCard from '@/components/UserCard';
 import { ministryKeyToName } from '@/helpers/product';
@@ -61,7 +61,7 @@ export default function TableBodyPrivateProducts({ rows, isLoading = false }: Ta
                         {$Enums.ProjectStatus.INACTIVE}
                       </Badge>
                     )}
-                    {row.isTest && <TestProductBadge data={{ createdAt: row.createdAt }} className="mt-1" />}
+                    {row.isTest && <TemporaryProductBadge data={{ createdAt: row.createdAt }} className="mt-1" />}
                   </div>
                 </h2>
               </div>

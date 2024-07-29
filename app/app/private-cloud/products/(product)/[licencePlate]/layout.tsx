@@ -9,7 +9,7 @@ import { useEffect } from 'react';
 import { z } from 'zod';
 import PrivateCloudProductOptions from '@/components/dropdowns/PrivateCloudProductOptions';
 import ProductBadge from '@/components/form/ProductBadge';
-import TestProductAlert from '@/components/form/TestProductAlert';
+import TemporaryProductAlert from '@/components/form/TemporaryProductAlert';
 import Tabs, { ITab } from '@/components/generic/tabs/BasicTabs';
 import createClientPage from '@/core/client-page';
 import { getPrivateCloudProject } from '@/services/backend/private-cloud/products';
@@ -103,7 +103,7 @@ export default privateCloudProductLayout(({ pathParams, queryParams, session, ch
           for this product. You can not edit this product at this time.
         </Alert>
       )}
-      {privateSnap.currentProduct.isTest && <TestProductAlert data={privateSnap.currentProduct} />}
+      {privateSnap.currentProduct.isTest && <TemporaryProductAlert data={privateSnap.currentProduct} />}
       <Tabs tabs={tabs}>
         <PrivateCloudProductOptions
           licencePlate={privateSnap.currentProduct?.licencePlate}
