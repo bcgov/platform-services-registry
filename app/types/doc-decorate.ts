@@ -26,5 +26,13 @@ export interface PublicCloudProjectDecorate {
 }
 
 export interface PublicCloudRequestDecorate {
-  _permissions: { view: boolean; edit: boolean; review: boolean; delete: boolean; viewProduct: boolean };
+  _permissions: {
+    view: boolean;
+    edit: boolean;
+    review: boolean;
+    signMou: boolean;
+    approveMou: boolean;
+    delete: boolean;
+    viewProduct: boolean;
+  };
 }

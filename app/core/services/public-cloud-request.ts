@@ -1,14 +1,18 @@
-import { Prisma, PrismaClient, $Enums } from '@prisma/client';
+import { Prisma, PrismaClient, $Enums, RequestType, DecisionStatus, TaskType } from '@prisma/client';
 import { ModelService } from '@/core/model-service';
 import prisma from '@/core/prisma';
 import { PublicCloudProjectDecorate, PublicCloudRequestDecorate } from '@/types/doc-decorate';
 
 type PublicCloudRequest = Prisma.PublicCloudRequestGetPayload<{
   select: {
+    id: true;
     type: true;
     decisionStatus: true;
     createdByEmail: true;
     licencePlate: true;
+    decisionData: true;
+    mouSigned: true;
+    mouApproved: true;
   };
 }>;
 
@@ -24,11 +28,15 @@ export class PublicCloudRequestService extends ModelService<Prisma.PublicCloudRe
     });
 
     const licencePlates = res.map(({ licencePlate }) => licencePlate);
+    const mouSigningRequestIds = this.session.tasks
+      .filter((task) => [TaskType.SIGN_MOU, TaskType.APPROVE_MOU].includes(task.type))
+      .map((task) => (task.data as { requestId: string }).requestId);
 
     const baseFilter: Prisma.PublicCloudRequestWhereInput = {
       OR: [
         { licencePlate: { in: licencePlates } },
-        { type: $Enums.RequestType.CREATE, createdByEmail: { equals: this.session.user.email, mode: 'insensitive' } },
+        { id: { in: mouSigningRequestIds } },
+        { type: RequestType.CREATE, createdByEmail: { equals: this.session.user.email, mode: 'insensitive' } },
       ],
     };
 
@@ -41,18 +49,41 @@ export class PublicCloudRequestService extends ModelService<Prisma.PublicCloudRe
   }
 
   async decorate<T>(doc: T & PublicCloudRequest & PublicCloudRequestDecorate) {
-    const canReview =
-      doc.decisionStatus === $Enums.DecisionStatus.PENDING && this.session.permissions.reviewAllPublicCloudRequests;
+    let canReview =
+      doc.decisionStatus === DecisionStatus.PENDING && this.session.permissions.reviewAllPublicCloudRequests;
 
-    const canEdit = canReview && doc.type !== $Enums.RequestType.DELETE;
-    const hasProduct =
-      doc.type !== $Enums.RequestType.CREATE || doc.decisionStatus === $Enums.DecisionStatus.PROVISIONED;
+    let canSignMou = true;
+    let canApproveMou = true;
+
+    if (doc.type === RequestType.CREATE) {
+      canSignMou =
+        !doc.mouSigned &&
+        this.session.tasks
+          .filter((task) => task.type === TaskType.SIGN_MOU)
+          .map((task) => (task.data as { requestId: string }).requestId)
+          .includes(doc.id);
+
+      canApproveMou =
+        !doc.mouSigned &&
+        !doc.mouApproved &&
+        this.session.tasks
+          .filter((task) => task.type === TaskType.APPROVE_MOU)
+          .map((task) => (task.data as { requestId: string }).requestId)
+          .includes(doc.id);
+
+      canReview = canReview && doc.mouSigned && doc.mouApproved;
+    }
+
+    const canEdit = canReview && doc.type !== RequestType.DELETE;
+    const hasProduct = doc.type !== RequestType.CREATE || doc.decisionStatus === DecisionStatus.PROVISIONED;
 
     if (!hasProduct) {
       doc._permissions = {
         view: true,
         edit: canEdit,
         review: canReview,
+        signMou: canSignMou,
+        approveMou: canApproveMou,
         delete: false,
         viewProduct: false,
       };
@@ -64,6 +95,8 @@ export class PublicCloudRequestService extends ModelService<Prisma.PublicCloudRe
       view: true,
       edit: canEdit,
       review: canReview,
+      signMou: canSignMou,
+      approveMou: canApproveMou,
       delete: false,
       viewProduct: hasProduct,
     };
