@@ -30,6 +30,11 @@ export const samplePublicRequest: PublicCloudRequestWithRequestedProject = {
   decisionDataId: 'requested-project-id',
   requestDataId: 'user-requested-project-id',
   originalDataId: 'original-product-id',
+  mouSigned: false,
+  mouSignedDate: new Date('2023-11-30T00:00:00Z'),
+  mouApproved: false,
+  mouApprovedDate: new Date('2023-11-30T00:00:00Z'),
+  signedExpenseAuthorityId: 'existing-ea-id',
   decisionData: {
     id: 'requested-project-id',
     licencePlate: 'XYZ789',
@@ -111,6 +116,11 @@ export const samplePublicEditRequest: PublicCloudRequestWithProjectAndRequestedP
   decisionStatus: 'PENDING', // or APPROVED, REJECTED, PROVISIONED
   requestComment: 'This is a sample request',
   decisionComment: 'This is a sample request',
+  mouSigned: false,
+  mouSignedDate: new Date('2023-11-30T00:00:00Z'),
+  mouApproved: false,
+  mouApprovedDate: new Date('2023-11-30T00:00:00Z'),
+  signedExpenseAuthorityId: 'existing-ea-id',
   changes: null,
   active: true,
   createdAt: new Date('2023-11-30T00:00:00Z'),

@@ -1,4 +1,4 @@
-import { $Enums } from '@prisma/client';
+import { $Enums, TaskStatus } from '@prisma/client';
 import jwt from 'jsonwebtoken';
 import _forEach from 'lodash-es/forEach';
 import _get from 'lodash-es/get';
@@ -62,6 +62,13 @@ export async function generateSession({ session, token }: { session: Session; to
         session.userId = user.id;
         session.userEmail = user.email;
         session.roles.push('user');
+
+        session.tasks = await prisma.task.findMany({
+          where: {
+            OR: [{ userIds: { has: user.id } }],
+            status: TaskStatus.ASSIGNED,
+          },
+        });
       }
     }
 

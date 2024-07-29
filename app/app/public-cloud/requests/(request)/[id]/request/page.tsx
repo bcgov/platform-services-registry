@@ -20,6 +20,7 @@ import TeamContacts from '@/components/form/TeamContacts';
 import FormErrorNotification from '@/components/generic/FormErrorNotification';
 import Comment from '@/components/modal/Comment';
 import ReturnModal from '@/components/modal/ReturnDecision';
+import { openSignPublicCloudProductModal } from '@/components/modal/signPublicCloudProductModal';
 import createClientPage from '@/core/client-page';
 import { PublicCloudRequestDecisionBodySchema } from '@/schema';
 import { makePublicCloudRequestDecision } from '@/services/backend/public-cloud/requests';
@@ -152,7 +153,7 @@ export default publicCloudProductRequest(({ pathParams, queryParams, session, ro
 
           <div className="mt-10 flex items-center justify-start gap-x-6">
             <PreviousButton />
-            {publicSnap.currentRequest._permissions.review ? (
+            {publicSnap.currentRequest._permissions.review && (
               <div className="flex items-center justify-start gap-x-6">
                 <SubmitButton
                   text="REJECT REQUEST"
@@ -169,7 +170,18 @@ export default publicCloudProductRequest(({ pathParams, queryParams, session, ro
                   }}
                 />
               </div>
-            ) : null}
+            )}
+            {/* {publicSnap.currentRequest._permissions.signMou && (
+              <button
+                onClick={async () => {
+                  await openSignPublicCloudProductModal({});
+                }}
+                type="button"
+                className="flex rounded-md bg-bcorange px-4 py-2.5 text-bcblue text-sm tracking-[.2em] shadow-sm hover:brightness-110 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+              >
+                Sign eMOU
+              </button>
+            )} */}
           </div>
         </form>
       </FormProvider>
