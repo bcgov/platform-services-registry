@@ -7,7 +7,7 @@ import { usePathname, useRouter } from 'next/navigation';
 import { useSession } from 'next-auth/react';
 import React from 'react';
 import ActiveRequestBox from '@/components/form/ActiveRequestBox';
-import TestProductBadge from '@/components/form/TestProductBadge';
+import TemporaryProductBadge from '@/components/form/TemporaryProductBadge';
 import CopyableButton from '@/components/generic/button/CopyableButton';
 import UserCard from '@/components/UserCard';
 import { ministryKeyToName } from '@/helpers/product';
@@ -62,8 +62,8 @@ export default function TableBodyPrivateRequests({ rows, isLoading = false }: Ta
                         {$Enums.ProjectStatus.INACTIVE}
                       </Badge>
                     )}
-                    {row.decisionData.isTest && (
-                      <TestProductBadge data={{ createdAt: row.createdAt }} className="mt-1" />
+                    {row.project?.isTest && (
+                      <TemporaryProductBadge data={{ createdAt: row.project.createdAt }} className="mt-1" />
                     )}
                   </div>
                 </h2>
