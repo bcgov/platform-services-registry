@@ -23,7 +23,7 @@ jobs:
       name: tf-keycloak
     steps:
     - uses: hmarr/debug-action@f7318c783045ac39ed9bb497e22ce835fdafbfe6
-    - uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332
+    - uses: actions/checkout@9a9194f87191a7e9055e3e9b95b8cfb13023bb08
 
     - name: Setup Terraform
       uses: hashicorp/setup-terraform@7f4493e15578a47490e79892b308bf23dee56c45
