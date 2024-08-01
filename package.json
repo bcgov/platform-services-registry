@@ -18,7 +18,7 @@
     "@badeball/cypress-cucumber-preprocessor": "^20.0.2",
     "@bahmutov/cypress-esbuild-preprocessor": "^2.2.0",
     "@release-it/bumper": "^6.0.1",
-    "@typescript-eslint/eslint-plugin": "^7.0.0",
+    "@typescript-eslint/eslint-plugin": "^8.0.0",
     "conventional-changelog-cli": "^5.0.0",
     "cypress": "^12.17.4",
     "cypress-keycloak": "^2.0.1",
