@@ -1,3 +1,36 @@
+## [0.33.0](https://github.com/bcgov/platform-services-registry/compare/v0.32.0...v0.33.0) (2024-08-01)
+
+### Features
+
+* **2759:** Add generic button component PoC ([1b872aa](https://github.com/bcgov/platform-services-registry/commit/1b872aafad806e85f6afb56efc28b5e863be6eb1))
+* **2759:** add mantine color theme ([c9ff432](https://github.com/bcgov/platform-services-registry/commit/c9ff432e3d1415172ebb8d09c567c6c8a2536f90))
+* **2759:** Relocate button ex., use generated colors, looping variants ([d2ae4e0](https://github.com/bcgov/platform-services-registry/commit/d2ae4e0e0eeb3a292d281fa84d85974749f6fb8b))
+* **3077:** add Airflow DAG to handle delete requests ([69ae1af](https://github.com/bcgov/platform-services-registry/commit/69ae1af6f09968aaca1cbc4480a9ce60602ed15a))
+* **3121:** add backend API endpints to support team service accounts ([c7a7857](https://github.com/bcgov/platform-services-registry/commit/c7a7857e7f48dffac33fa2406c7d96ada7b9728a))
+* **3196:** add quota contact & justification inputs ([e38687f](https://github.com/bcgov/platform-services-registry/commit/e38687fccb1df7f8fe56dd3824de05c2d37657aa))
+* **3196:** set request box to full width for size consistency ([2e00872](https://github.com/bcgov/platform-services-registry/commit/2e008720fd4db308c2c6006a7f691bbb0d09e06f))
+* **3207:** display the number of comments on a request to admins ([5540242](https://github.com/bcgov/platform-services-registry/commit/554024273fb992ed424a063b332d4c9c1c3ab34b))
+* **3242:** grant private admin to toggle temporary flags ([9e7ee5a](https://github.com/bcgov/platform-services-registry/commit/9e7ee5aac06389ed2b63f35c86da7b40f33736d7))
+* **3242:** save temporary flag instantly when admin updates flag ([84f92dc](https://github.com/bcgov/platform-services-registry/commit/84f92dc3991d5355d76f2f5d4968fe6d69f73f04))
+* **3252:** add cronjob to update Registry emails in Mailchimp ([adf68f8](https://github.com/bcgov/platform-services-registry/commit/adf68f8453ff1423bfbf558390452e83a02af98f))
+* **3305:** add team API account page and functionalities ([691d5f6](https://github.com/bcgov/platform-services-registry/commit/691d5f6b180cc3505574b5e57a7488a58c021b2c))
+* **3320:** add core helper function to create modals ([dff956e](https://github.com/bcgov/platform-services-registry/commit/dff956e6c4fff6851413f23e7ea5b04d1af84e98))
+* **3332:** display email errors on the team account form ([4e8b5b0](https://github.com/bcgov/platform-services-registry/commit/4e8b5b04bc5a3e6fa85e0a328de562bb85bedd6e))
+* **3332:** update API handler to accept team service account tokens ([8fce615](https://github.com/bcgov/platform-services-registry/commit/8fce61501866ed464eafe6737360e63638f312a1))
+* **3372:** install Jinja2 into Airflow for email templating ([392465e](https://github.com/bcgov/platform-services-registry/commit/392465e8a38c082106872fe3290f576c70cce698))
+* **3372:** send notifications to temporary products ([29de650](https://github.com/bcgov/platform-services-registry/commit/29de65098a04231b687ddfe0783aa03b3046c4f9))
+* **3414:** add task schema and logic to backend ([04e4cfb](https://github.com/bcgov/platform-services-registry/commit/04e4cfb6a839d836804cbc2f8474d55e171b0b6a))
+
+### Bug Fixes
+
+* **3121:** fix typo to retrieve correct roles ([039f0ad](https://github.com/bcgov/platform-services-registry/commit/039f0ade30fed45ee1648b9ba07830d26eda73af))
+* **3415:** sync contact dropdown when onBlur ([2515f99](https://github.com/bcgov/platform-services-registry/commit/2515f99a1b0b4396b7091d42f235c4c25a7dd48b))
+* **3420:** display temporary product deletion date based on product ([94a5f85](https://github.com/bcgov/platform-services-registry/commit/94a5f85374d9f733cb067ea16d6fb4020bacc19f))
+* main branch merge ([5482063](https://github.com/bcgov/platform-services-registry/commit/54820633d4e0d28c1682b0ae6c3679fcbdf70dcc))
+
+### Refactors
+
+* **3369:** add optional comments in request confirmation modals ([8a8961f](https://github.com/bcgov/platform-services-registry/commit/8a8961faadf4daf8191c70abe5d1c9c5bff3e4e3))
 ## [0.32.0](https://github.com/bcgov/platform-services-registry/compare/v0.31.2...v0.32.0) (2024-07-09)
 
 ### Features
