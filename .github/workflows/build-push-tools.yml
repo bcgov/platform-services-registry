@@ -1,0 +1,87 @@
+name: 22.Build and Push Tools Images
+
+on:
+  push:
+    branches:
+    - main
+    paths:
+    - .github/workflows/build-push-tools.yml
+    - tools/**
+  workflow_dispatch:
+
+env:
+  GITHUB_REGISTRY: ghcr.io
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build-push-airflow:
+    runs-on: ubuntu-22.04
+    timeout-minutes: 5
+    permissions:
+      contents: read
+      packages: write
+
+    steps:
+    - uses: hmarr/debug-action@f7318c783045ac39ed9bb497e22ce835fdafbfe6
+    - uses: actions/checkout@9a9194f87191a7e9055e3e9b95b8cfb13023bb08
+
+    - name: Build and Push
+      uses: egose/actions/docker-build-push@39eedd7f68a65004b0f9e8872feb494900257dba
+      with:
+        registry-url: ${{ env.GITHUB_REGISTRY }}
+        registry-username: ${{ github.actor }}
+        registry-password: ${{ secrets.GITHUB_TOKEN }}
+        image-name: bcgov/pltsvc-tools-airflow
+        docker-context: tools/airflow
+        docker-file: tools/airflow/Dockerfile
+        metadata-tags: |
+          type=sha,format=long,prefix=,suffix=
+
+  build-push-zap:
+    runs-on: ubuntu-22.04
+    timeout-minutes: 5
+    permissions:
+      contents: read
+      packages: write
+
+    steps:
+    - uses: hmarr/debug-action@f7318c783045ac39ed9bb497e22ce835fdafbfe6
+    - uses: actions/checkout@9a9194f87191a7e9055e3e9b95b8cfb13023bb08
+
+    - name: Build and Push
+      uses: egose/actions/docker-build-push@39eedd7f68a65004b0f9e8872feb494900257dba
+      with:
+        registry-url: ${{ env.GITHUB_REGISTRY }}
+        registry-username: ${{ github.actor }}
+        registry-password: ${{ secrets.GITHUB_TOKEN }}
+        image-name: bcgov/pltsvc-tools-zap
+        docker-context: tools/zap
+        docker-file: tools/zap/Dockerfile
+        metadata-tags: |
+          type=sha,format=long,prefix=,suffix=
+
+  build-push-sonarscan:
+    runs-on: ubuntu-22.04
+    timeout-minutes: 5
+    permissions:
+      contents: read
+      packages: write
+
+    steps:
+    - uses: hmarr/debug-action@f7318c783045ac39ed9bb497e22ce835fdafbfe6
+    - uses: actions/checkout@9a9194f87191a7e9055e3e9b95b8cfb13023bb08
+
+    - name: Build and Push
+      uses: egose/actions/docker-build-push@39eedd7f68a65004b0f9e8872feb494900257dba
+      with:
+        registry-url: ${{ env.GITHUB_REGISTRY }}
+        registry-username: ${{ github.actor }}
+        registry-password: ${{ secrets.GITHUB_TOKEN }}
+        image-name: bcgov/pltsvc-tools-sonarscan
+        docker-context: tools/sonarscan
+        docker-file: tools/sonarscan/Dockerfile
+        metadata-tags: |
+          type=sha,format=long,prefix=,suffix=

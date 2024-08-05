@@ -17,34 +17,44 @@ type PrivateCloudProject = Prisma.PrivateCloudProjectGetPayload<{
 
 export class PrivateCloudProjectService extends ModelService<Prisma.PrivateCloudProjectWhereInput> {
   async readFilter() {
-    if (!this.session?.userId) return false;
+    if (!this.session.isUser && !this.session.isServiceAccount) return false;
     if (this.session.permissions.viewAllPrivateCloudProducts) return true;
 
-    const baseFilter: Prisma.PrivateCloudProjectWhereInput = {
-      OR: [
-        { projectOwnerId: this.session.userId as string },
-        { primaryTechnicalLeadId: this.session.userId as string },
-        { secondaryTechnicalLeadId: this.session.userId },
-        { ministry: { in: this.session.ministries.editor as $Enums.Ministry[] } },
-        { ministry: { in: this.session.ministries.reader as $Enums.Ministry[] } },
-      ],
-    };
+    const OR: Prisma.PrivateCloudProjectWhereInput[] = [
+      { ministry: { in: this.session.ministries.editor as $Enums.Ministry[] } },
+      { ministry: { in: this.session.ministries.reader as $Enums.Ministry[] } },
+    ];
+
+    if (this.session.user.id) {
+      OR.push(
+        { projectOwnerId: this.session.user.id as string },
+        { primaryTechnicalLeadId: this.session.user.id as string },
+        { secondaryTechnicalLeadId: this.session.user.id },
+      );
+    }
+
+    const baseFilter: Prisma.PrivateCloudProjectWhereInput = { OR };
 
     return baseFilter;
   }
 
   async writeFilter() {
-    if (!this.session) return false;
+    if (!this.session.isUser && !this.session.isServiceAccount) return false;
     if (this.session.permissions.editAllPrivateCloudProducts) return true;
 
-    const baseFilter: Prisma.PrivateCloudProjectWhereInput = {
-      OR: [
-        { projectOwnerId: this.session.userId as string },
-        { primaryTechnicalLeadId: this.session.userId as string },
-        { secondaryTechnicalLeadId: this.session.userId },
-        { ministry: { in: this.session.ministries.editor as $Enums.Ministry[] } },
-      ],
-    };
+    const OR: Prisma.PrivateCloudProjectWhereInput[] = [
+      { ministry: { in: this.session.ministries.editor as $Enums.Ministry[] } },
+    ];
+
+    if (this.session.user.id) {
+      OR.push(
+        { projectOwnerId: this.session.user.id as string },
+        { primaryTechnicalLeadId: this.session.user.id as string },
+        { secondaryTechnicalLeadId: this.session.user.id },
+      );
+    }
+
+    const baseFilter: Prisma.PrivateCloudProjectWhereInput = { OR };
 
     return baseFilter;
   }
@@ -60,7 +70,7 @@ export class PrivateCloudProjectService extends ModelService<Prisma.PrivateCloud
 
     const isActive = doc.status === $Enums.ProjectStatus.ACTIVE;
     const isMyProduct = [doc.projectOwnerId, doc.primaryTechnicalLeadId, doc.secondaryTechnicalLeadId].includes(
-      this.session.userId,
+      this.session.user.id,
     );
 
     const canView =
@@ -81,6 +91,7 @@ export class PrivateCloudProjectService extends ModelService<Prisma.PrivateCloud
       this.session.ministries.editor.includes(doc.ministry);
 
     const canReprovision = isActive && (this.session.isAdmin || this.session.isPrivateAdmin);
+    const canToggleTemporary = isActive && (this.session.isAdmin || this.session.isPrivateAdmin);
 
     doc._permissions = {
       view: canView,
@@ -88,6 +99,7 @@ export class PrivateCloudProjectService extends ModelService<Prisma.PrivateCloud
       edit: canEdit,
       delete: canEdit,
       reprovision: canReprovision,
+      toggleTemporary: canToggleTemporary,
     };
 
     return doc;

@@ -59,7 +59,7 @@ export default function RequestBadge({
         {request.decisionStatus}
       </Badge>
       {isTest && (
-        <Badge color="blue" radius="sm" className="ml-1">
+        <Badge color="yellow" radius="sm" className="ml-1">
           Temp
         </Badge>
       )}

@@ -16,6 +16,7 @@ import Header from '@/components/layouts/Header';
 import Provider from '@/components/layouts/Provider';
 import { getInfo } from '@/services/backend';
 import { useAppState } from '@/states/global';
+import { theme } from './mantine-theme';
 
 const bcsans = localFont({
   src: [
@@ -68,15 +69,16 @@ function MainBody({ children }: { children: React.ReactNode }) {
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en">
-      <head></head>
-      <MantineProvider withGlobalClasses={false} withCssVariables theme={{}}>
-        <Notifications position="top-right" limit={5} autoClose={2500} />
-        <ModalsProvider>
-          <Provider>
-            <MainBody>{children}</MainBody>
-          </Provider>
-        </ModalsProvider>
-      </MantineProvider>
+      <Provider>
+        <head>
+          <MantineProvider withGlobalClasses withCssVariables theme={theme}>
+            <Notifications position="top-right" limit={5} autoClose={2500} />
+            <ModalsProvider>
+              <MainBody>{children}</MainBody>
+            </ModalsProvider>
+          </MantineProvider>
+        </head>
+      </Provider>
     </html>
   );
 }

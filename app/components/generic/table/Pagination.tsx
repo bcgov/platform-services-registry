@@ -17,7 +17,7 @@ export default function Pagination() {
   };
 
   return (
-    <div className="flex items-center justify-between">
+    <div className="block md:flex md:items-center md:justify-between">
       {snap.isLoading ? (
         <div></div>
       ) : (
@@ -37,8 +37,8 @@ export default function Pagination() {
           )}
         </div>
       )}
-      <div className="flex flex-1 justify-between sm:justify-end">
-        <span>Rows per page: </span>
+      <div className="flex flex-1 mt-1 md:mt-0 md:justify-end">
+        <span className="mr-1">Rows per page: </span>
         <select
           id="pageSize"
           name="pageSize"

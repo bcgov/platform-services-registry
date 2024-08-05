@@ -61,7 +61,7 @@ export async function getPrivateCloudProject(licencePlate: string) {
 }
 
 export async function createPrivateCloudProject(data: any) {
-  const result = await instance.post('/', data).then((res) => res.data);
+  const result = await instance.post('', data).then((res) => res.data);
   return result;
 }
 
@@ -125,4 +125,10 @@ export async function updatePrivateCloudComment(licencePlate: string, commentId:
 export async function deletePrivateCloudComment(licencePlate: string, commentId: string) {
   const response = await instance.delete(`/${licencePlate}/comments/${commentId}`);
   return response.data as { success: boolean };
+}
+
+export async function getPrivateCloudCommentCount(licencePlate: string, requestId?: string) {
+  const url = `/${licencePlate}/count${requestId ? `?requestId=${requestId}` : ''}`;
+  const response = await instance.get(url);
+  return response.data;
 }

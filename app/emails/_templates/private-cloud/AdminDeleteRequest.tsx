@@ -39,7 +39,7 @@ const NewRequestTemplate = ({ request, userName }: EmailProp) => {
       <div>
         <NamespaceDetails cluster={request.decisionData.cluster} showNamespaceDetailsTitle={false} />
         <br></br>
-        <Text>This delete request was actioned by {userName}.</Text>
+        <Text>This delete request was actioned by {userName ?? 'System Admin'}.</Text>
       </div>
     </Layout>
   );

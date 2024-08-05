@@ -1,4 +1,4 @@
-import { $Enums, DecisionStatus, ProjectStatus, RequestType } from '@prisma/client';
+import { $Enums, DecisionStatus, ProjectStatus, RequestType, TaskStatus, TaskType } from '@prisma/client';
 import { Session } from 'next-auth';
 import prisma from '@/core/prisma';
 import generateLicencePlate from '@/helpers/licence-plate';
@@ -7,7 +7,7 @@ import { PublicCloudCreateRequestBody } from '@/schema';
 import { upsertUsers } from '@/services/db/user';
 
 export default async function createRequest(formData: PublicCloudCreateRequestBody, session: Session) {
-  const licencePlate = generateLicencePlate();
+  const licencePlate = await generateLicencePlate();
 
   await upsertUsers([
     formData.projectOwner.email,
@@ -99,6 +99,19 @@ export default async function createRequest(formData: PublicCloudCreateRequestBo
   });
 
   if (request) {
+    // if (request.decisionData.expenseAuthorityId) {
+    //   await prisma.task.create({
+    //     data: {
+    //       type: TaskType.SIGN_MOU,
+    //       status: TaskStatus.ASSIGNED,
+    //       userIds: [request.decisionData.expenseAuthorityId],
+    //       data: {
+    //         requestId: request.id,
+    //       },
+    //     },
+    //   });
+    // }
+
     await createEvent($Enums.EventType.CREATE_PUBLIC_CLOUD_PRODUCT, session.user.id, { requestId: request.id });
   }
 

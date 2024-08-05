@@ -32,6 +32,7 @@
     "@typescript-eslint/no-var-requires": "off",
     "import/no-extraneous-dependencies": "off",
     "import/named": "off",
+    "import/default": "off",
     "import/no-named-as-default": "off",
     "import/no-unresolved": "error",
     "import/order": [

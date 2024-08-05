@@ -10,7 +10,6 @@ import { comparePrivateCloudProjects } from '@/emails/_components/Edit/utils/com
 import Layout from '@/emails/_components/layout/Layout';
 import { isQuotaUpgrade } from '@/helpers/quota-change';
 import { PrivateCloudRequestWithProjectAndRequestedProject } from '@/request-actions/private-cloud/decision-request';
-import { PrivateCloudEditRequestBody } from '@/schema';
 
 interface EmailProp {
   request: PrivateCloudRequestWithProjectAndRequestedProject;
@@ -22,10 +21,7 @@ const EditRequestTemplate = ({ request, userName }: EmailProp) => {
   const current = request.project;
   const requested = request.decisionData;
   const changed = comparePrivateCloudProjects(current, requested);
-  const isQuotaUpgraded = isQuotaUpgrade(
-    requested as PrivateCloudEditRequestBody,
-    current as PrivateCloudEditRequestBody,
-  );
+  const isQuotaUpgraded = isQuotaUpgrade(requested, current);
   const requestComment = request.requestComment ?? undefined;
 
   return (

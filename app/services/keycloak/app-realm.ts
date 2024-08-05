@@ -22,6 +22,18 @@ export async function getKcAdminClient() {
   return kcAdminClient;
 }
 
+export async function findClients(prefix: string, kcAdminClient?: KcAdminClient) {
+  if (!kcAdminClient) kcAdminClient = await getKcAdminClient();
+
+  const clients = await kcAdminClient.clients.find({
+    realm: AUTH_RELM,
+    clientId: prefix,
+    search: true,
+  });
+
+  return clients.filter((client) => client.clientId?.startsWith(prefix));
+}
+
 export async function findClient(clientId: string, kcAdminClient?: KcAdminClient) {
   if (!kcAdminClient) kcAdminClient = await getKcAdminClient();
 
@@ -52,4 +64,18 @@ export async function findUser(userId: string, kcAdminClient?: KcAdminClient) {
   });
 
   return { ...user, authRoleNames: authRoles.map((role) => role.name ?? '') };
+}
+
+export async function listClientRoles(clientId: string, kcAdminClient?: KcAdminClient) {
+  if (!kcAdminClient) kcAdminClient = await getKcAdminClient();
+
+  const client = await findClient(clientId, kcAdminClient);
+  if (!client?.id) return [];
+
+  const roles = await kcAdminClient.clients.listRoles({
+    realm: AUTH_RELM,
+    id: client.id,
+  });
+
+  return roles;
 }

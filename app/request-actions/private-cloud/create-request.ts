@@ -13,7 +13,7 @@ const defaultQuota = {
 };
 
 export default async function createRequest(formData: PrivateCloudCreateRequestBody, session: Session) {
-  const licencePlate = generateLicencePlate();
+  const licencePlate = await generateLicencePlate();
 
   await upsertUsers([
     formData.projectOwner.email,
@@ -70,6 +70,7 @@ export default async function createRequest(formData: PrivateCloudCreateRequestB
       decisionStatus: DecisionStatus.PENDING,
       active: true,
       createdByEmail: session.user.email,
+      requestComment: formData.requestComment,
       licencePlate,
       decisionData: {
         create: createRequestedProject,

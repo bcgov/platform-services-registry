@@ -1,0 +1,41 @@
+name: 05.Deploy Tools
+
+on:
+  push:
+    branches:
+    - main
+    paths:
+    - .github/workflows/deploy-tools.yml
+    - helm/tools/**
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  deploy:
+    runs-on: ubuntu-22.04
+    timeout-minutes: 5
+    permissions:
+      contents: read
+    environment:
+      name: tools
+      url: https://secdash-airflow.apps.silver.devops.gov.bc.ca
+
+    steps:
+    - uses: hmarr/debug-action@f7318c783045ac39ed9bb497e22ce835fdafbfe6
+    - uses: actions/checkout@9a9194f87191a7e9055e3e9b95b8cfb13023bb08
+
+    - name: Authenticate and set context
+      uses: redhat-actions/oc-login@dfbd9912672664f9df2023c1c16e07bcf306043c
+      with:
+        openshift_server_url: ${{ secrets.OPENSHIFT_SERVER }}
+        openshift_token: ${{ secrets.OPENSHIFT_TOKEN }}
+        namespace: ${{ vars.OPENSHIFT_NAMESPACE }}
+        insecure_skip_tls_verify: true
+
+    - name: Deploy apps with Helm chart
+      run: |
+        make upgrade \
+        NAMESPACE=${{ vars.OPENSHIFT_NAMESPACE }}
+      working-directory: ./helm/tools

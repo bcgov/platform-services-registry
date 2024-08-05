@@ -209,3 +209,5 @@ export const defaultProvisionedResourceValues = {
   memory: 'Memory: 2 GB Request, 4 GB Limit',
   storage: 'Storage: 1 GB',
 };
+
+export const TEAM_SA_PREFIX = 'z_pltsvc-tsa-';

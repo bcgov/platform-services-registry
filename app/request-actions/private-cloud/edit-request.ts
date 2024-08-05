@@ -29,7 +29,7 @@ export default async function editRequest(
     throw new Error('Project does not exist.');
   }
 
-  const { requestComment, ...rest } = formData;
+  const { requestComment, quotaContactName, quotaContactEmail, quotaJustification, ...rest } = formData;
 
   await upsertUsers([
     formData.projectOwner.email,
@@ -64,10 +64,7 @@ export default async function editRequest(
     project.cluster === $Enums.Cluster.GOLD && project.golddrEnabled !== formData.golddrEnabled;
 
   // If there is no quota change or no quota upgrade and no golddr flag changes, the request is automatically approved
-  if (
-    (isNoQuotaChanged || !isQuotaUpgrade(formData, project as PrivateCloudEditRequestBody)) &&
-    !hasGolddrEnabledChanged
-  ) {
+  if ((isNoQuotaChanged || !isQuotaUpgrade(formData, project)) && !hasGolddrEnabledChanged) {
     decisionStatus = DecisionStatus.APPROVED;
   } else {
     decisionStatus = DecisionStatus.PENDING;
@@ -78,11 +75,20 @@ export default async function editRequest(
 
   const { changes, ...otherChangeMeta } = comparePrivateProductData(rest, previousRequest?.decisionData);
 
+  const quotaChangeInfo = isNoQuotaChanged
+    ? {}
+    : {
+        quotaContactName,
+        quotaContactEmail,
+        quotaJustification,
+      };
+
   const request = await prisma.privateCloudRequest.create({
     data: {
       type: RequestType.EDIT,
       decisionStatus,
       isQuotaChanged: !isNoQuotaChanged,
+      ...quotaChangeInfo,
       active: true,
       createdByEmail: session.user.email,
       licencePlate: project.licencePlate,

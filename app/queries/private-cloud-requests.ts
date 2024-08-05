@@ -121,6 +121,7 @@ export async function searchPrivateCloudRequests({
       skip,
       take,
       include: {
+        project: true,
         decisionData: {
           include: {
             projectOwner: true,
@@ -143,6 +144,7 @@ export async function searchPrivateCloudRequests({
 
 export type PrivateCloudRequestSearchedItemPayload = Prisma.PrivateCloudRequestGetPayload<{
   include: {
+    project: true;
     decisionData: {
       include: {
         projectOwner: true;

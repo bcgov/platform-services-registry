@@ -20,7 +20,7 @@ jobs:
 
     steps:
     - uses: hmarr/debug-action@f7318c783045ac39ed9bb497e22ce835fdafbfe6
-    - uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332
+    - uses: actions/checkout@9a9194f87191a7e9055e3e9b95b8cfb13023bb08
       with:
         ref: main
 
@@ -46,5 +46,5 @@ jobs:
         ROCKETCHAT_WEBHOOK_URL: ${{ secrets.ROCKETCHAT_WEBHOOK_URL }}
       run: |
         curl -X POST -H "Content-Type: application/json" -d '{
-          "text": ":white_check_mark: Deployment to Prod was successful! Read the changes here [${{ github.event.release.tag_name }}](https://github.com/bcgov/platform-services-registry/blob/main/CHANGELOG.md#${{ github.event.release.tag_name }})"
+          "text": ":rocket: Deployment to Prod was successful! Read the changes here [${{ github.event.release.tag_name }}](https://github.com/bcgov/platform-services-registry/blob/main/CHANGELOG.md#${{ github.event.release.tag_name }})"
         }' $ROCKETCHAT_WEBHOOK_URL

@@ -29,6 +29,7 @@ export default function AsyncAutocomplete({
     formState: { errors },
     setValue,
     setError,
+    getValues,
     clearErrors,
     watch,
   } = useFormContext();
@@ -123,6 +124,9 @@ export default function AsyncAutocomplete({
               autoComplete="xyz"
               displayValue={(user: AppUser) => user?.email}
               onChange={(event) => setQuery(event.target.value)}
+              onBlur={() => {
+                setQuery(getValues(name).email || '');
+              }}
               placeholder={placeHolder}
               value={query}
               className={classNames(

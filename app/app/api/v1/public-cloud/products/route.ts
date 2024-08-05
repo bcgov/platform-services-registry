@@ -23,7 +23,7 @@ const queryParamSchema = z.object({
 });
 
 const apiHandler = createApiHandler({
-  roles: ['user'],
+  roles: ['user', 'service-account'],
   useServiceAccount: true,
   validations: { queryParams: queryParamSchema },
 });
