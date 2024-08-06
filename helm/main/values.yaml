@@ -67,6 +67,8 @@ app:
     "AWS_ROLES_REALM_NAME": ""
     "M365_URL": "https://graph.microsoft.com"
 
+  envSecretName: pltsvc # pragma: allowlist secret
+
 email:
   enabled: true
   image:

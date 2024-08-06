@@ -6,7 +6,7 @@ import _uniq from 'lodash-es/uniq';
 import { Account, AuthOptions, Session, User } from 'next-auth';
 import { JWT } from 'next-auth/jwt';
 import KeycloakProvider, { KeycloakProfile } from 'next-auth/providers/keycloak';
-import { IS_PROD, AUTH_SERVER_URL, AUTH_RELM, AUTH_RESOURCE, AUTH_SECRET } from '@/config';
+import { IS_PROD, AUTH_SERVER_URL, AUTH_RELM, AUTH_RESOURCE, AUTH_SECRET, PUBLIC_AZURE_ACCESS_EMAILS } from '@/config';
 import { TEAM_SA_PREFIX } from '@/constants';
 import prisma from '@/core/prisma';
 import { createEvent } from '@/mutations/events';
@@ -160,10 +160,12 @@ export async function generateSession({ session, token }: { session: Session; to
     });
   }
 
+  const azureEmails = PUBLIC_AZURE_ACCESS_EMAILS.split(',').map((v) => v.trim().toLowerCase());
+
   session.previews = {
     security: !IS_PROD,
     apiAccount: !IS_PROD,
-    azure: !IS_PROD,
+    azure: session.isAdmin || session.isPublicAdmin || azureEmails.includes(session.user.email.toLowerCase()),
   };
 
   session.permissions = {
