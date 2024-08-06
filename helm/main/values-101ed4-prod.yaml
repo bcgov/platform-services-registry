@@ -26,6 +26,14 @@ app:
     enabled: true
     host: pltsvc.apps.silver.devops.gov.bc.ca
 
+  resources:
+    limits:
+      cpu: 300m
+      memory: 768Mi
+    requests:
+      cpu: 30m
+      memory: 128Mi
+
 email:
   enabled: false
   route:

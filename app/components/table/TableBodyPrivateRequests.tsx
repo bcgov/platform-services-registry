@@ -62,9 +62,11 @@ export default function TableBodyPrivateRequests({ rows, isLoading = false }: Ta
                         {$Enums.ProjectStatus.INACTIVE}
                       </Badge>
                     )}
-                    {row.project?.isTest && (
-                      <TemporaryProductBadge data={{ createdAt: row.project.createdAt }} className="mt-1" />
-                    )}
+                    {row.project
+                      ? row.project.isTest && (
+                          <TemporaryProductBadge data={{ createdAt: row.project.createdAt }} className="mt-1" />
+                        )
+                      : row.decisionData.isTest && <TemporaryProductBadge className="mt-1" />}
                   </div>
                 </h2>
               </div>
