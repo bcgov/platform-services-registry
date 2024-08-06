@@ -71,7 +71,8 @@ export class PublicCloudRequestService extends ModelService<Prisma.PublicCloudRe
           .map((task) => (task.data as { requestId: string }).requestId)
           .includes(doc.id);
 
-      canReview = canReview && doc.mouSigned && doc.mouApproved;
+      // canReview = canReview && doc.mouSigned && doc.mouApproved;
+      canReview = true;
     }
 
     const canEdit = canReview && doc.type !== RequestType.DELETE;
