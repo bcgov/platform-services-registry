@@ -1,3 +1,13 @@
+## [0.33.1](https://github.com/bcgov/platform-services-registry/compare/v0.33.0...v0.33.1) (2024-08-07)
+
+### Features
+
+* **3472:** grant public cloud Azure provider access ([6593d35](https://github.com/bcgov/platform-services-registry/commit/6593d3553d333dc2f953aa02e56f9b9bdf002bab))
+
+### Bug Fixes
+
+* **3452:** grant public products review permissions properly ([8feb824](https://github.com/bcgov/platform-services-registry/commit/8feb8247c175a55a0916e9ede4717b7d3b207949))
+* **3453:** display temporary badges and alerts ([bdc029b](https://github.com/bcgov/platform-services-registry/commit/bdc029b3fe8e128b131a51a366d491de7995f493))
 ## [0.33.0](https://github.com/bcgov/platform-services-registry/compare/v0.32.0...v0.33.0) (2024-08-01)
 
 ### Features
