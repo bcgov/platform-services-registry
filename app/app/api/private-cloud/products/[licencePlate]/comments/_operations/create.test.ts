@@ -4,19 +4,14 @@ import { findOtherMockUsers, generateTestSession } from '@/helpers/mock-users';
 import { mockSessionByEmail, mockSessionByRole } from '@/services/api-test/core';
 import { createPrivateCloudComment } from '@/services/api-test/private-cloud/products';
 
-const fieldsToCompare = ['text', 'userId', 'projectId', 'requestId'];
-
 describe('Create Private Cloud Comment - Permissions', () => {
   it('should return 401 for unauthenticated user', async () => {
     await mockSessionByEmail();
 
     const licencePlate = 'test-licence-plate';
     const requestData = createSamplePrivateCloudCommentData();
-    console.log('Request Data:', requestData);
 
     const response = await createPrivateCloudComment(licencePlate, requestData);
-    console.log('Response Status:', response.status);
-    console.log('Response Body:', await response.text());
 
     expect(response.status).toBe(401);
   });
@@ -26,27 +21,19 @@ describe('Create Private Cloud Comment - Permissions', () => {
     const requestData = createSamplePrivateCloudCommentData();
     await mockSessionByRole('admin');
 
-    console.log('Request Data:', requestData);
-
     const response = await createPrivateCloudComment(licencePlate, requestData);
-    console.log('Response Status:', response.status);
 
-    const responseBody = await response.text();
-    console.log('Response Body:', responseBody);
-    if (response.headers.get('content-type')?.includes('application/json')) {
-      const resData = JSON.parse(responseBody);
-      console.log('Response Data:', resData);
+    const responseBody = await response.json();
 
-      expect(resData).toEqual(
-        expect.objectContaining({
-          text: requestData.text,
-          userId: expect.any(String),
-          projectId: requestData.projectId,
-          requestId: requestData.requestId,
-        }),
-      );
-    }
     expect(response.status).toBe(201);
+    expect(responseBody).toEqual(
+      expect.objectContaining({
+        text: requestData.text,
+        userId: expect.any(String),
+        projectId: requestData.projectId,
+        requestId: requestData.requestId,
+      }),
+    );
   });
 
   it('should successfully submit a create comment request for private-admin', async () => {
@@ -54,27 +41,19 @@ describe('Create Private Cloud Comment - Permissions', () => {
     const requestData = createSamplePrivateCloudCommentData();
     await mockSessionByRole('private-admin');
 
-    console.log('Request Data:', requestData);
-
     const response = await createPrivateCloudComment(licencePlate, requestData);
-    console.log('Response Status:', response.status);
 
-    const responseBody = await response.text();
-    console.log('Response Body:', responseBody);
-    if (response.headers.get('content-type')?.includes('application/json')) {
-      const resData = JSON.parse(responseBody);
-      console.log('Response Data:', resData);
+    const responseBody = await response.json();
 
-      expect(resData).toEqual(
-        expect.objectContaining({
-          text: requestData.text,
-          userId: expect.any(String),
-          projectId: requestData.projectId,
-          requestId: requestData.requestId,
-        }),
-      );
-    }
     expect(response.status).toBe(201);
+    expect(responseBody).toEqual(
+      expect.objectContaining({
+        text: requestData.text,
+        userId: expect.any(String),
+        projectId: requestData.projectId,
+        requestId: requestData.requestId,
+      }),
+    );
   });
 
   it('should fail to submit a create comment request for a non-assigned user', async () => {
@@ -83,11 +62,7 @@ describe('Create Private Cloud Comment - Permissions', () => {
     const otherUsers = findOtherMockUsers([requestData.userId]);
     await mockSessionByEmail(otherUsers[0].email);
 
-    console.log('Request Data:', requestData);
-
     const response = await createPrivateCloudComment(licencePlate, requestData);
-    console.log('Response Status:', response.status);
-    console.log('Response Body:', await response.text());
 
     expect(response.status).toBe(401);
   });
@@ -101,22 +76,14 @@ describe('Create Private Cloud Comment - Validations', () => {
 
     requestData.text = '';
 
-    console.log('Request Data:', requestData);
-
     const response = await createPrivateCloudComment(licencePlate, requestData);
-    console.log('Response Status:', response.status);
 
-    const responseBody = await response.text();
-    console.log('Response Body:', responseBody);
-    if (response.headers.get('content-type')?.includes('application/json')) {
-      const resData = JSON.parse(responseBody);
-      console.log('Response Data:', resData);
+    const responseBody = await response.json();
 
-      expect(resData.success).toBe(false);
-      expect(resData.message).toBe('Bad Request');
-      expect(resData.error.issues.find((iss: { path: string[] }) => iss.path[0] === 'text')).not.toBeUndefined();
-    }
     expect(response.status).toBe(400);
+    expect(responseBody.success).toBe(false);
+    expect(responseBody.message).toBe('Bad Request');
+    expect(responseBody.error.issues.find((iss: { path: string[] }) => iss.path[0] === 'text')).not.toBeUndefined();
   });
 
   it('should fail to submit a create comment request due to missing projectId and requestId', async () => {
@@ -127,24 +94,48 @@ describe('Create Private Cloud Comment - Validations', () => {
     requestData.projectId = undefined;
     requestData.requestId = undefined;
 
-    console.log('Request Data:', requestData);
+    const response = await createPrivateCloudComment(licencePlate, requestData);
+
+    const responseBody = await response.json();
+
+    expect(response.status).toBe(400);
+    expect(responseBody.success).toBe(false);
+    expect(responseBody.message).toBe('Bad Request');
+    expect(
+      responseBody.error.issues.find((iss: { path: string[] }) => ['projectId', 'requestId'].includes(iss.path[0])),
+    ).not.toBeUndefined();
+  });
+
+  it('should fail to submit a create comment request due to invalid projectId', async () => {
+    const licencePlate = 'test-licence-plate';
+    const requestData = createSamplePrivateCloudCommentData();
+    await mockSessionByRole('admin');
+
+    requestData.projectId = 'invalid-object-id';
 
     const response = await createPrivateCloudComment(licencePlate, requestData);
-    console.log('Response Status:', response.status);
 
-    const responseBody = await response.text();
-    console.log('Response Body:', responseBody);
-    if (response.headers.get('content-type')?.includes('application/json')) {
-      const resData = JSON.parse(responseBody);
-      console.log('Response Data:', resData);
+    const responseBody = await response.json();
 
-      expect(resData.success).toBe(false);
-      expect(resData.message).toBe('Bad Request');
-      expect(
-        resData.error.issues.find((iss: { path: string[] }) => ['projectId', 'requestId'].includes(iss.path[0])),
-      ).not.toBeUndefined();
-    }
     expect(response.status).toBe(400);
+    expect(responseBody.success).toBe(false);
+    expect(responseBody.message).toBe('Bad Request');
+  });
+
+  it('should fail to submit a create comment request due to invalid requestId', async () => {
+    const licencePlate = 'test-licence-plate';
+    const requestData = createSamplePrivateCloudCommentData();
+    await mockSessionByRole('admin');
+
+    requestData.requestId = 'invalid-object-id';
+
+    const response = await createPrivateCloudComment(licencePlate, requestData);
+
+    const responseBody = await response.json();
+
+    expect(response.status).toBe(400);
+    expect(responseBody.success).toBe(false);
+    expect(responseBody.message).toBe('Bad Request');
   });
 
   it('should successfully create a comment with only projectId provided', async () => {
@@ -154,17 +145,10 @@ describe('Create Private Cloud Comment - Validations', () => {
 
     requestData.requestId = undefined;
 
-    console.log('Request Data:', requestData);
-
     const response = await createPrivateCloudComment(licencePlate, requestData);
-    console.log('Response Status:', response.status);
 
-    const responseBody = await response.text();
-    console.log('Response Body:', responseBody);
-    if (response.headers.get('content-type')?.includes('application/json')) {
-      const resData = JSON.parse(responseBody);
-      console.log('Response Data:', resData);
-    }
+    const responseBody = await response.json();
+
     expect(response.status).toBe(201);
   });
 
@@ -175,17 +159,10 @@ describe('Create Private Cloud Comment - Validations', () => {
 
     requestData.projectId = undefined;
 
-    console.log('Request Data:', requestData);
-
     const response = await createPrivateCloudComment(licencePlate, requestData);
-    console.log('Response Status:', response.status);
 
-    const responseBody = await response.text();
-    console.log('Response Body:', responseBody);
-    if (response.headers.get('content-type')?.includes('application/json')) {
-      const resData = JSON.parse(responseBody);
-      console.log('Response Data:', resData);
-    }
+    const responseBody = await response.json();
+
     expect(response.status).toBe(201);
   });
 });

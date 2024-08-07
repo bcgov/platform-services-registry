@@ -1,10 +1,10 @@
 import { faker } from '@faker-js/faker';
 import { Prisma, Cluster, Provider } from '@prisma/client';
-import { ObjectId } from 'bson';
 import { clusters, ministries, providers } from '@/constants';
 import { findMockUserByIdr, mockNoRoleIdirs } from '@/helpers/mock-users';
 import { cpuOptions, memoryOptions, storageOptions } from '@/schema';
 import { getRandomItem } from '@/utils/collection';
+import { generateShortId } from '@/utils/uuid';
 
 const getRandomBool = () => faker.helpers.arrayElement([true, false]);
 const getRandomMinistry = () => faker.helpers.arrayElement(ministries);
@@ -139,9 +139,9 @@ export function createSamplePrivateCloudCommentData(args?: { data?: Partial<Pris
 
   const _data = {
     text: faker.lorem.sentence(),
-    userId: new ObjectId().toHexString(),
-    projectId: new ObjectId().toHexString() as string | undefined,
-    requestId: new ObjectId().toHexString() as string | undefined,
+    userId: generateShortId(),
+    projectId: generateShortId() as string | undefined,
+    requestId: generateShortId() as string | undefined,
     ...data,
   };
 

@@ -9,6 +9,7 @@ import { AUTH_SERVER_URL, AUTH_RELM } from '@/config';
 import { authOptions, generateSession } from '@/core/auth-options';
 import { findUser } from '@/services/keycloak/app-realm';
 import { checkArrayStringCondition } from '@/utils/collection';
+import { BadRequestError } from '@/utils/errors';
 import { verifyKeycloakJwtTokenSafe } from '@/utils/jwt';
 import { parseQueryString } from '@/utils/query-string';
 import { logger } from './logging';
@@ -209,6 +210,9 @@ function createApiHandler<
 
         return await fn({ session, pathParams, queryParams, body, headers: req.headers, jwtData });
       } catch (error) {
+        if (error instanceof BadRequestError) {
+          return BadRequestResponse(error.message);
+        }
         logger.error('apiHandler:', error);
         return InternalServerErrorResponse(String(error));
       }
