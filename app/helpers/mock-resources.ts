@@ -4,6 +4,7 @@ import { clusters, ministries, providers } from '@/constants';
 import { findMockUserByIdr, mockNoRoleIdirs } from '@/helpers/mock-users';
 import { cpuOptions, memoryOptions, storageOptions } from '@/schema';
 import { getRandomItem } from '@/utils/collection';
+import { generateShortId } from '@/utils/uuid';
 
 const getRandomBool = () => faker.helpers.arrayElement([true, false]);
 const getRandomMinistry = () => faker.helpers.arrayElement(ministries);
@@ -127,6 +128,20 @@ export function createSamplePublicCloudProductData(args?: {
       development: true,
       tools: true,
     },
+    ...data,
+  };
+
+  return _data;
+}
+
+export function createSamplePrivateCloudCommentData(args?: { data?: Partial<Prisma.PrivateCloudCommentCreateInput> }) {
+  const { data } = args ?? {};
+
+  const _data = {
+    text: faker.lorem.sentence(),
+    userId: generateShortId(),
+    projectId: generateShortId() as string | undefined,
+    requestId: generateShortId() as string | undefined,
     ...data,
   };
 

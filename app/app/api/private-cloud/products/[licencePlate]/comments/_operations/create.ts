@@ -1,4 +1,6 @@
+import { PrismaClientKnownRequestError } from '@prisma/client/runtime/library';
 import prisma from '@/core/prisma';
+import { BadRequestError } from '@/utils/errors';
 
 export async function createOp(text: string, userId: string, projectId?: string, requestId?: string) {
   if (!projectId && !requestId) {
@@ -12,9 +14,16 @@ export async function createOp(text: string, userId: string, projectId?: string,
     requestId: requestId || undefined,
   };
 
-  const comment = await prisma.privateCloudComment.create({
-    data,
-  });
+  try {
+    const comment = await prisma.privateCloudComment.create({
+      data,
+    });
 
-  return comment;
+    return comment;
+  } catch (error) {
+    if (error instanceof PrismaClientKnownRequestError && error.code === 'P2023') {
+      throw new BadRequestError('Bad Request');
+    }
+    throw error;
+  }
 }
