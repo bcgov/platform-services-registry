@@ -3,8 +3,9 @@ Feature: Edit Request
     Given User is assigned to Existing Product
 
   Scenario: Create Private Cloud Edit Request and check visibility
-    When User logs in as User
-    And User navigates to Private Cloud tab
+    Given User logs in with username james.smith@gov.bc.ca and password james.smith@gov.bc.ca
+    When User clicks link with text PRIVATE CLOUD OPENSHIFT
+    And User clicks link with text REQUEST A NEW PRODUCT
     And User navigates to Product Page
     And User changes Product Name
     And User changes Description

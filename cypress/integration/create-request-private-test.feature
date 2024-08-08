@@ -1,15 +1,15 @@
 Feature: New Request
 
   Scenario: Create Private Cloud Request and check visibility
-    When User logs in as User
-    And User navigates to Private Cloud tab
-    And User clicks Request a New Product
-    And User inputs Product Name
-    And User inputs Description
-    And User selects Ministry
-    And User selects Hosting Tier
-    And User inputs and selects PO contact
-    And User inputs and selects Primary TL contact
+    Given User logs in with username james.smith@gov.bc.ca and password james.smith@gov.bc.ca
+    When User clicks link with text PRIVATE CLOUD OPENSHIFT
+    And User clicks link with text REQUEST A NEW PRODUCT
+    And User types Automated Test Product Name in input with name = name
+    And User types Automated Test Description in textarea with id = about
+    And User selects Citizens Services in dropdown with attribute id = ministry
+    And User selects SILVER in dropdown with attribute name = cluster
+    And User inputs and selects james.smith@gov.bc.ca in Product Owner Email
+    And User inputs and selects john.doe@gov.bc.ca in Technical Lead Email
     And User checks Does not Use Common Components
     And User clicks Submit Request
     And User checks Confirm in All Set Popup
