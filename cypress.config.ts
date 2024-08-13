@@ -21,4 +21,7 @@ export default defineConfig({
       return config;
     },
   },
+  env: {
+    keycloakUrl: 'http://localhost:8080',
+  },
 });

@@ -8,28 +8,6 @@ Given(/^There is a request with names (.*) and (.*) waiting for Review$/, (POEma
   createRequest(productName, POEmail, TLEmail);
 });
 
-Given(/^User logs in with username (.*) and password (.*)$/, (username: string, password: string) => {
-  cy.loginToRegistry(username, password);
-});
-
-When(/^User clicks link with text (.*)$/, (buttonText: string) => {
-  cy.contains('a', buttonText).click();
-});
-
-When(
-  /^User types (.*) in (.*) with (.*) = (.*)$/,
-  (text: string, elementType: string, attribute: string, attributeValue: string) => {
-    cy.get(`${elementType}[${attribute}='${attributeValue}']`).type(text + getISODate());
-  },
-);
-
-When(
-  /^User selects (.*) in dropdown with attribute (.*) = (.*)$/,
-  (optionText: string, attribute: string, attributeValue: string) => {
-    cy.get(`select[${attribute}='${attributeValue}']`).select(optionText);
-  },
-);
-
 When('User navigates to Request Decision Page', () => {
   cy.contains('span', productName).click();
 });

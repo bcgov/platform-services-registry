@@ -8,12 +8,12 @@ Feature: New Request
     And User types Automated Test Description in textarea with id = about
     And User selects Citizens Services in dropdown with attribute id = ministry
     And User selects SILVER in dropdown with attribute name = cluster
-    And User inputs and selects james.smith@gov.bc.ca in Product Owner Email
-    And User inputs and selects john.doe@gov.bc.ca in Technical Lead Email
-    And User checks Does not Use Common Components
-    And User clicks Submit Request
-    And User checks Confirm in All Set Popup
-    And User clicks Submit Request in All Set Popup
-    And User clicks Return to Dashboard in Thank You Popup
+    And User types and selects james.smith@gov.bc.ca in Product Owner Email
+    And User types and selects john.doe@gov.bc.ca in Technical Lead Email
+    And User checks checkbox with attribute name = commonComponents.noServices
+    And User clicks button with text SUBMIT REQUEST
+    And User checks checkbox with attribute id = consent
+    And User clicks button with text Submit
+    And User clicks button with text Return to Dashboard
     Then User should be redirected to Requests tab
-    And User should see their Request
+    And User should see Request with name Automated Test Product Name
