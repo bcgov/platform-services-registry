@@ -127,6 +127,7 @@ export default publicCloudProductEdit(({ pathParams, queryParams, session }) => 
             <hr className="my-7" />
             <TeamContacts
               disabled={isDisabled}
+              number={3}
               secondTechLead={secondTechLead}
               secondTechLeadOnClick={secondTechLeadOnClick}
             />

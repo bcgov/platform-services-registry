@@ -114,7 +114,7 @@ export default publicCloudProductNew(({ pathParams, queryParams, session }) => {
             <hr className="my-7" />
             <AccountEnvironmentsPublic mode="create" />
             <hr className="my-7" />
-            <TeamContacts secondTechLead={secondTechLead} secondTechLeadOnClick={secondTechLeadOnClick} />
+            <TeamContacts number={3} secondTechLead={secondTechLead} secondTechLeadOnClick={secondTechLeadOnClick} />
             <hr className="my-7" />
             <ExpenseAuthority />
             <hr className="my-7" />

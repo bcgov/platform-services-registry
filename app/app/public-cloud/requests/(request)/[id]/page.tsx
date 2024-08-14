@@ -46,6 +46,7 @@ export default publicCloudRequest(({ pathParams }) => {
             <hr className="my-7" />
             <TeamContacts
               disabled={true}
+              number={3}
               secondTechLead={!!request.decisionData.secondaryTechnicalLeadId}
               secondTechLeadOnClick={() => {}}
             />

@@ -68,7 +68,7 @@ export default privateCloudProductNew(({ pathParams, queryParams, session }) => 
           <div className="space-y-12">
             <ProjectDescription mode="create" />
             <hr className="my-7" />
-            <TeamContacts secondTechLead={secondTechLead} secondTechLeadOnClick={secondTechLeadOnClick} />
+            <TeamContacts number={2} secondTechLead={secondTechLead} secondTechLeadOnClick={secondTechLeadOnClick} />
             <hr className="my-7" />
             <CommonComponents number={3} />
           </div>
