@@ -128,6 +128,7 @@ export default publicCloudProductRequest(({ pathParams, queryParams, session, ro
             <hr className="my-7" />
             <TeamContacts
               disabled={isDisabled}
+              number={3}
               secondTechLead={secondTechLead}
               secondTechLeadOnClick={secondTechLeadOnClick}
             />

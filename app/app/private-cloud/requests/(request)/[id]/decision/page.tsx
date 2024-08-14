@@ -129,6 +129,7 @@ export default privateCloudRequestDecision(({ pathParams, queryParams, session, 
             <hr className="my-7" />
             <TeamContacts
               disabled={isDisabled}
+              number={2}
               secondTechLead={secondTechLead}
               secondTechLeadOnClick={secondTechLeadOnClick}
             />
