@@ -1,3 +1,14 @@
+## [0.33.2](https://github.com/bcgov/platform-services-registry/compare/v0.33.1...v0.33.2) (2024-08-15)
+
+### Features
+
+* **2399:** implement code for BDD features, Create, Approve, Delete tests ([0b35e9a](https://github.com/bcgov/platform-services-registry/commit/0b35e9a568295c9a35b01e9dfb7c1f03e4499ac0))
+* **3373:** Add Edit Request test and partial refactoring ([b27ccb8](https://github.com/bcgov/platform-services-registry/commit/b27ccb8032ee73c5f6ccf429f877614402cd7a21))
+* **3502:** add public eMOU workflow diagram ([af36f3e](https://github.com/bcgov/platform-services-registry/commit/af36f3e51d4d4856db548dc474438f7776dc9208))
+
+### Bug Fixes
+
+* **3526:** Make Team Comments component number dynamic ([4328b76](https://github.com/bcgov/platform-services-registry/commit/4328b7608096765be068ae65feb611dd19071566))
 ## [0.33.1](https://github.com/bcgov/platform-services-registry/compare/v0.33.0...v0.33.1) (2024-08-07)
 
 ### Features
