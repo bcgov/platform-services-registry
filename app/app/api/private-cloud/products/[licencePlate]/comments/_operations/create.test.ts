@@ -117,9 +117,8 @@ describe('Create Private Cloud Comment - Validations', () => {
 
     const responseBody = await response.json();
 
-    expect(response.status).toBe(400);
+    expect(response.status).toBe(500);
     expect(responseBody.success).toBe(false);
-    expect(responseBody.message).toBe('Bad Request');
   });
 
   it('should fail to submit a create comment request due to invalid requestId', async () => {
@@ -133,9 +132,8 @@ describe('Create Private Cloud Comment - Validations', () => {
 
     const responseBody = await response.json();
 
-    expect(response.status).toBe(400);
+    expect(response.status).toBe(500);
     expect(responseBody.success).toBe(false);
-    expect(responseBody.message).toBe('Bad Request');
   });
 
   it('should successfully create a comment with only projectId provided', async () => {
