@@ -1,7 +1,7 @@
 import { expect } from '@jest/globals';
 import { $Enums } from '@prisma/client';
 import { createSamplePublicCloudProductData } from '@/helpers/mock-resources';
-import { findOhterMockUsers } from '@/helpers/mock-users';
+import { findOtherMockUsers } from '@/helpers/mock-users';
 import { pickProductData } from '@/helpers/product';
 import { mockSessionByEmail, mockSessionByRole } from '@/services/api-test/core';
 import { createPublicCloudProject } from '@/services/api-test/public-cloud/products';
@@ -72,7 +72,7 @@ describe('Create Public Cloud Product - Permissions', () => {
 
   it('should fail to submit a create request for a non-assigned user', async () => {
     const requestData = createSamplePublicCloudProductData();
-    const otherUsers = findOhterMockUsers([
+    const otherUsers = findOtherMockUsers([
       requestData.projectOwner.email,
       requestData.primaryTechnicalLead.email,
       requestData.secondaryTechnicalLead.email,
