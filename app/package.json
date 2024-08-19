@@ -61,7 +61,6 @@
     "@types/react-dom": "18.3.0",
     "autoprefixer": "10.4.20",
     "axios": "^1.5.1",
-    "bson": "^6.8.0",
     "classnames": "^2.5.1",
     "csv-parse": "^5.5.3",
     "csv-stringify": "^6.4.4",
