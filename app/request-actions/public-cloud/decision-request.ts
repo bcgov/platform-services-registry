@@ -12,6 +12,7 @@ export type PublicCloudRequestWithProjectAndRequestedProject = Prisma.PublicClou
         primaryTechnicalLead: true;
         secondaryTechnicalLead: true;
         expenseAuthority: true;
+        billing: true;
       };
     };
     decisionData: {
@@ -20,6 +21,7 @@ export type PublicCloudRequestWithProjectAndRequestedProject = Prisma.PublicClou
         primaryTechnicalLead: true;
         secondaryTechnicalLead: true;
         expenseAuthority: true;
+        billing: true;
       };
     };
   };
@@ -33,6 +35,7 @@ export type PublicCloudRequestWithRequestedProject = Prisma.PublicCloudRequestGe
         primaryTechnicalLead: true;
         secondaryTechnicalLead: true;
         expenseAuthority: true;
+        billing: true;
       };
     };
   };
@@ -61,6 +64,8 @@ export default async function makeRequestDecision(
     return null;
   }
 
+  const { accountCoding, ...validFormData } = formData;
+
   const updatedRequest = await prisma.publicCloudRequest.update({
     where: {
       id: request.id,
@@ -73,6 +78,7 @@ export default async function makeRequestDecision(
           primaryTechnicalLead: true,
           secondaryTechnicalLead: true,
           expenseAuthority: true,
+          billing: true,
         },
       },
       originalData: {
@@ -81,6 +87,7 @@ export default async function makeRequestDecision(
           primaryTechnicalLead: true,
           secondaryTechnicalLead: true,
           expenseAuthority: true,
+          billing: true,
         },
       },
       decisionData: {
@@ -89,6 +96,7 @@ export default async function makeRequestDecision(
           primaryTechnicalLead: true,
           secondaryTechnicalLead: true,
           expenseAuthority: true,
+          billing: true,
         },
       },
     },
@@ -100,7 +108,7 @@ export default async function makeRequestDecision(
       decisionMakerEmail: session.user.email,
       decisionData: {
         update: {
-          ...formData,
+          ...validFormData,
           status: ProjectStatus.ACTIVE,
           licencePlate: request.licencePlate,
           provider: request.project?.provider ?? request.decisionData.provider,

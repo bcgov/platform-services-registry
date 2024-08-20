@@ -76,8 +76,8 @@ export default publicCloudRequestOriginal(({ pathParams, queryParams, session, r
             <Budget disabled={isDisabled} />
             <hr className="my-7" />
             <AccountCoding
-              accountCodingInitial={publicSnap.currentRequest.originalData?.accountCoding}
-              disabled={isDisabled}
+              accountCodingInitial={publicSnap.currentRequest.originalData?.billing.accountCoding}
+              disabled
             />
           </div>
 

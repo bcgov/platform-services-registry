@@ -69,6 +69,7 @@ export const PUT = apiHandler(async ({ pathParams }) => {
       primaryTechnicalLead: true,
       secondaryTechnicalLead: true,
       expenseAuthority: true,
+      billing: true,
     },
   });
 

@@ -24,8 +24,10 @@ const ExpenseAuthorityMouTemplate = ({ request }: Props) => {
     secondaryTechnicalLead,
     expenseAuthority,
     licencePlate,
-    accountCoding,
+    billing,
   } = decisionData;
+
+  const { accountCoding } = billing;
 
   return (
     <Layout>

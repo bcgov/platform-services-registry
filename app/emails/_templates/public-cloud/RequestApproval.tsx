@@ -22,11 +22,13 @@ const RequestApprovalTemplate = ({ request }: EmailProp) => {
     secondaryTechnicalLead,
     expenseAuthority,
     provider,
-    accountCoding,
+    billing,
     budget,
     licencePlate,
     environmentsEnabled,
   } = request.decisionData;
+
+  const { accountCoding } = billing;
 
   return (
     <Layout>

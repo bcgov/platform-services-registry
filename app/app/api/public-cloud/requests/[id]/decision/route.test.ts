@@ -1,5 +1,6 @@
 import { expect } from '@jest/globals';
-import { $Enums } from '@prisma/client';
+import { $Enums, TaskType, TaskStatus } from '@prisma/client';
+import prisma from '@/core/prisma';
 import { createSamplePublicCloudProductData } from '@/helpers/mock-resources';
 import { pickProductData } from '@/helpers/product';
 import { mockSessionByEmail, mockSessionByRole } from '@/services/api-test/core';
@@ -9,7 +10,11 @@ import {
   editPublicCloudProject,
   deletePublicCloudProject,
 } from '@/services/api-test/public-cloud/products';
-import { makePublicCloudRequestDecision } from '@/services/api-test/public-cloud/requests';
+import {
+  makePublicCloudRequestDecision,
+  signPublicCloudMou,
+  reviewPublicCloudMou,
+} from '@/services/api-test/public-cloud/requests';
 
 const fieldsToCompare = [
   'name',
@@ -49,12 +54,56 @@ const productData = {
 
 const requests: any = { main: null };
 
+async function makeBasicProductMouReview() {
+  const requestId = requests.main.id;
+  const decisionData = requests.main.decisionData;
+
+  const task1 = await prisma.task.findFirst({
+    where: {
+      type: TaskType.SIGN_MOU,
+      status: TaskStatus.ASSIGNED,
+      data: {
+        equals: {
+          requestId,
+        },
+      },
+    },
+  });
+
+  if (task1) {
+    await mockSessionByEmail(decisionData.expenseAuthority.email);
+    await signPublicCloudMou(requestId, {
+      taskId: task1?.id ?? '',
+      confirmed: true,
+    });
+
+    await mockSessionByRole('billing-reviewer');
+    const task2 = await prisma.task.findFirst({
+      where: {
+        type: TaskType.REVIEW_MOU,
+        status: TaskStatus.ASSIGNED,
+        data: {
+          equals: {
+            requestId,
+          },
+        },
+      },
+    });
+
+    await reviewPublicCloudMou(requestId, {
+      taskId: task2?.id ?? '',
+      decision: 'APPROVE',
+    });
+  }
+}
+
 async function makeBasicProductReview(decision: $Enums.DecisionStatus, extra = {}) {
   const decisionData = requests.main.decisionData;
   const response = await makePublicCloudRequestDecision(requests.main.id, {
     ...decisionData,
     ...extra,
     decision,
+    accountCoding: decisionData.billing.accountCoding,
   });
 
   return response;
@@ -73,8 +122,9 @@ describe('Review Public Cloud Create Request - Permissions', () => {
   });
 
   it('should fail to review the create request for PO', async () => {
-    await mockSessionByEmail(productData.main.projectOwner.email);
+    await makeBasicProductMouReview();
 
+    await mockSessionByEmail(productData.main.projectOwner.email);
     const response = await makeBasicProductReview($Enums.DecisionStatus.APPROVED);
 
     expect(response.status).toBe(401);
@@ -84,8 +134,9 @@ describe('Review Public Cloud Create Request - Permissions', () => {
   });
 
   it('should fail to review the create request for TL1', async () => {
-    await mockSessionByEmail(productData.main.primaryTechnicalLead.email);
+    await makeBasicProductMouReview();
 
+    await mockSessionByEmail(productData.main.primaryTechnicalLead.email);
     const response = await makeBasicProductReview($Enums.DecisionStatus.APPROVED);
 
     expect(response.status).toBe(401);
@@ -95,8 +146,9 @@ describe('Review Public Cloud Create Request - Permissions', () => {
   });
 
   it('should successfully review the create request for global admin', async () => {
-    await mockSessionByRole('admin');
+    await makeBasicProductMouReview();
 
+    await mockSessionByRole('admin');
     const response = await makeBasicProductReview($Enums.DecisionStatus.APPROVED);
 
     expect(response.status).toBe(200);
@@ -110,8 +162,9 @@ describe('Review Public Cloud Create Request - Permissions', () => {
   });
 
   it('should fail to review the create request already reviewed', async () => {
-    await mockSessionByRole('admin');
+    await makeBasicProductMouReview();
 
+    await mockSessionByRole('admin');
     const response = await makeBasicProductReview($Enums.DecisionStatus.APPROVED);
     expect(response.status).toBe(400);
 
@@ -133,6 +186,7 @@ describe('Review Public Cloud Update Request - Permissions', () => {
 
     const response = await editPublicCloudProject(requests.main.licencePlate, {
       ...requests.main.decisionData,
+      accountCoding: requests.main.decisionData.billing.accountCoding,
       environmentsEnabled: newEnvironmentsEnabled,
     });
     expect(response.status).toBe(200);
@@ -141,8 +195,9 @@ describe('Review Public Cloud Update Request - Permissions', () => {
   });
 
   it('should fail to review the update request for PO', async () => {
-    await mockSessionByEmail(productData.main.projectOwner.email);
+    await makeBasicProductMouReview();
 
+    await mockSessionByEmail(productData.main.projectOwner.email);
     const response = await makeBasicProductReview($Enums.DecisionStatus.APPROVED);
 
     expect(response.status).toBe(401);
@@ -152,8 +207,9 @@ describe('Review Public Cloud Update Request - Permissions', () => {
   });
 
   it('should fail to review the update request for TL1', async () => {
-    await mockSessionByEmail(productData.main.primaryTechnicalLead.email);
+    await makeBasicProductMouReview();
 
+    await mockSessionByEmail(productData.main.primaryTechnicalLead.email);
     const response = await makeBasicProductReview($Enums.DecisionStatus.APPROVED);
 
     expect(response.status).toBe(401);
@@ -163,8 +219,9 @@ describe('Review Public Cloud Update Request - Permissions', () => {
   });
 
   it('should fail to review the update request for global admin', async () => {
-    await mockSessionByRole('admin');
+    await makeBasicProductMouReview();
 
+    await mockSessionByRole('admin');
     const response = await makeBasicProductReview($Enums.DecisionStatus.APPROVED);
 
     expect(response.status).toBe(400);
@@ -192,8 +249,9 @@ describe('Review Public Cloud Delete Request - Permissions', () => {
   });
 
   it('should fail to review the delete request for PO', async () => {
-    await mockSessionByEmail(productData.main.projectOwner.email);
+    await makeBasicProductMouReview();
 
+    await mockSessionByEmail(productData.main.projectOwner.email);
     const response = await makeBasicProductReview($Enums.DecisionStatus.APPROVED);
 
     expect(response.status).toBe(401);
@@ -203,8 +261,9 @@ describe('Review Public Cloud Delete Request - Permissions', () => {
   });
 
   it('should fail to review the delete request for TL1', async () => {
-    await mockSessionByEmail(productData.main.primaryTechnicalLead.email);
+    await makeBasicProductMouReview();
 
+    await mockSessionByEmail(productData.main.primaryTechnicalLead.email);
     const response = await makeBasicProductReview($Enums.DecisionStatus.APPROVED);
 
     expect(response.status).toBe(401);
@@ -214,16 +273,18 @@ describe('Review Public Cloud Delete Request - Permissions', () => {
   });
 
   it('should successfully review the delete request for global admin', async () => {
-    await mockSessionByRole('admin');
+    await makeBasicProductMouReview();
 
+    await mockSessionByRole('admin');
     const response = await makeBasicProductReview($Enums.DecisionStatus.APPROVED);
 
     expect(response.status).toBe(200);
   });
 
   it('should fail to review the delete request already reviewed', async () => {
-    await mockSessionByRole('admin');
+    await makeBasicProductMouReview();
 
+    await mockSessionByRole('admin');
     const response = await makeBasicProductReview($Enums.DecisionStatus.APPROVED);
 
     expect(response.status).toBe(400);
@@ -251,13 +312,15 @@ describe('Review Public Cloud Request - Validations', () => {
   });
 
   it('should ignore the cluster change', async () => {
-    await mockSessionByRole('admin');
     const requestData = requests.main;
 
     const newName = requestData.decisionData.name + '_suffix';
     const newCluster =
       requestData.decisionData.cluster === $Enums.Cluster.SILVER ? $Enums.Cluster.EMERALD : $Enums.Cluster.SILVER;
 
+    await makeBasicProductMouReview();
+
+    await mockSessionByRole('admin');
     const response = await makeBasicProductReview($Enums.DecisionStatus.APPROVED, {
       name: newName,
       cluster: newCluster,

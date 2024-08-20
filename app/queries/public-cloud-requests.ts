@@ -12,6 +12,7 @@ export type PublicCloudRequestGetPayload = Prisma.PublicCloudRequestGetPayload<{
         primaryTechnicalLead: true;
         secondaryTechnicalLead: true;
         expenseAuthority: true;
+        billing: true;
       };
     };
     originalData: {
@@ -20,6 +21,7 @@ export type PublicCloudRequestGetPayload = Prisma.PublicCloudRequestGetPayload<{
         primaryTechnicalLead: true;
         secondaryTechnicalLead: true;
         expenseAuthority: true;
+        billing: true;
       };
     };
     requestData: {
@@ -28,6 +30,7 @@ export type PublicCloudRequestGetPayload = Prisma.PublicCloudRequestGetPayload<{
         primaryTechnicalLead: true;
         secondaryTechnicalLead: true;
         expenseAuthority: true;
+        billing: true;
       };
     };
     decisionData: {
@@ -36,6 +39,13 @@ export type PublicCloudRequestGetPayload = Prisma.PublicCloudRequestGetPayload<{
         primaryTechnicalLead: true;
         secondaryTechnicalLead: true;
         expenseAuthority: true;
+        billing: {
+          include: {
+            expenseAuthority: true;
+            signedBy: true;
+            approvedBy: true;
+          };
+        };
       };
     };
   };
@@ -125,6 +135,7 @@ export async function searchPublicCloudRequests({
             primaryTechnicalLead: true,
             secondaryTechnicalLead: true,
             expenseAuthority: true,
+            billing: true,
           },
         },
       },
@@ -147,6 +158,7 @@ export type PublicCloudRequestSearchedItemPayload = Prisma.PublicCloudRequestGet
         primaryTechnicalLead: true;
         secondaryTechnicalLead: true;
         expenseAuthority: true;
+        billing: true;
       };
     };
   };
@@ -172,6 +184,7 @@ export async function getPublicCloudRequest(session: Session, id?: string) {
           primaryTechnicalLead: true,
           secondaryTechnicalLead: true,
           expenseAuthority: true,
+          billing: true,
         },
       },
       originalData: {
@@ -180,6 +193,7 @@ export async function getPublicCloudRequest(session: Session, id?: string) {
           primaryTechnicalLead: true,
           secondaryTechnicalLead: true,
           expenseAuthority: true,
+          billing: true,
         },
       },
       requestData: {
@@ -188,6 +202,7 @@ export async function getPublicCloudRequest(session: Session, id?: string) {
           primaryTechnicalLead: true,
           secondaryTechnicalLead: true,
           expenseAuthority: true,
+          billing: true,
         },
       },
       decisionData: {
@@ -196,6 +211,13 @@ export async function getPublicCloudRequest(session: Session, id?: string) {
           primaryTechnicalLead: true,
           secondaryTechnicalLead: true,
           expenseAuthority: true,
+          billing: {
+            include: {
+              expenseAuthority: true,
+              signedBy: true,
+              approvedBy: true,
+            },
+          },
         },
       },
     },

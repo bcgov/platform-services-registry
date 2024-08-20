@@ -19,6 +19,7 @@ import ReturnModal from '@/components/modal/Return';
 import { AGMinistries } from '@/constants';
 import createClientPage from '@/core/client-page';
 import { PublicCloudCreateRequestBodySchema } from '@/schema';
+import { existBilling } from '@/services/backend/billing';
 import { createPublicCloudProject } from '@/services/backend/public-cloud/products';
 
 const publicCloudProductNew = createClientPage({
@@ -65,16 +66,29 @@ export default publicCloudProductNew(({ pathParams, queryParams, session }) => {
       PublicCloudCreateRequestBodySchema.merge(
         z.object({
           isAgMinistryChecked: z.boolean().optional(),
+          isEaApproval: z.boolean().optional(),
         }),
-      ).refine(
-        (formData) => {
-          return AGMinistries.includes(formData.ministry) ? formData.isAgMinistryChecked : true;
-        },
-        {
-          message: 'AG Ministry Checkbox should be checked.',
-          path: ['isAgMinistryChecked'],
-        },
-      ),
+      )
+        .refine(
+          (formData) => {
+            return AGMinistries.includes(formData.ministry) ? formData.isAgMinistryChecked : true;
+          },
+          {
+            message: 'AG Ministry Checkbox should be checked.',
+            path: ['isAgMinistryChecked'],
+          },
+        )
+        .refine(
+          async (formData) => {
+            const hasBilling = await existBilling(formData.accountCoding);
+            if (!hasBilling) return true;
+            return formData.isEaApproval;
+          },
+          {
+            message: 'EA Approval Checkbox should be checked.',
+            path: ['isEaApproval'],
+          },
+        ),
     ),
     defaultValues: {
       environmentsEnabled: {

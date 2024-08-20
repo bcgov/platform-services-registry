@@ -1,4 +1,4 @@
-import { Prisma, PrismaClient, $Enums, RequestType, DecisionStatus, TaskType } from '@prisma/client';
+import { Prisma, PrismaClient, $Enums, RequestType, DecisionStatus, TaskType, TaskStatus } from '@prisma/client';
 import { ModelService } from '@/core/model-service';
 import prisma from '@/core/prisma';
 import { PublicCloudProjectDecorate, PublicCloudRequestDecorate } from '@/types/doc-decorate';
@@ -10,9 +10,11 @@ type PublicCloudRequest = Prisma.PublicCloudRequestGetPayload<{
     decisionStatus: true;
     createdByEmail: true;
     licencePlate: true;
-    decisionData: true;
-    mouSigned: true;
-    mouApproved: true;
+    decisionData: {
+      include: {
+        billing: true;
+      };
+    };
   };
 }>;
 
@@ -28,14 +30,14 @@ export class PublicCloudRequestService extends ModelService<Prisma.PublicCloudRe
     });
 
     const licencePlates = res.map(({ licencePlate }) => licencePlate);
-    const mouSigningRequestIds = this.session.tasks
-      .filter((task) => [TaskType.SIGN_MOU, TaskType.APPROVE_MOU].includes(task.type))
+    const mouRelatedRequestIds = this.session.tasks
+      .filter((task) => [TaskType.SIGN_MOU, TaskType.REVIEW_MOU].includes(task.type))
       .map((task) => (task.data as { requestId: string }).requestId);
 
     const baseFilter: Prisma.PublicCloudRequestWhereInput = {
       OR: [
         { licencePlate: { in: licencePlates } },
-        { id: { in: mouSigningRequestIds } },
+        { id: { in: mouRelatedRequestIds } },
         { type: RequestType.CREATE, createdByEmail: { equals: this.session.user.email, mode: 'insensitive' } },
       ],
     };
@@ -52,27 +54,30 @@ export class PublicCloudRequestService extends ModelService<Prisma.PublicCloudRe
     let canReview =
       doc.decisionStatus === DecisionStatus.PENDING && this.session.permissions.reviewAllPublicCloudRequests;
 
-    let canSignMou = true;
-    let canApproveMou = true;
+    let canSignMou = false;
+    let canApproveMou = false;
 
     if (doc.type === RequestType.CREATE) {
-      canSignMou =
-        !doc.mouSigned &&
-        this.session.tasks
-          .filter((task) => task.type === TaskType.SIGN_MOU)
-          .map((task) => (task.data as { requestId: string }).requestId)
-          .includes(doc.id);
+      if (doc.decisionData.billing) {
+        canSignMou =
+          !doc.decisionData.billing.signed &&
+          this.session.tasks
+            .filter((task) => task.type === TaskType.SIGN_MOU && task.status === TaskStatus.ASSIGNED)
+            .map((task) => (task.data as { requestId: string }).requestId)
+            .includes(doc.id);
 
-      canApproveMou =
-        !doc.mouSigned &&
-        !doc.mouApproved &&
-        this.session.tasks
-          .filter((task) => task.type === TaskType.APPROVE_MOU)
-          .map((task) => (task.data as { requestId: string }).requestId)
-          .includes(doc.id);
+        canApproveMou =
+          doc.decisionData.billing.signed &&
+          !doc.decisionData.billing.approved &&
+          this.session.tasks
+            .filter((task) => task.type === TaskType.REVIEW_MOU && task.status === TaskStatus.ASSIGNED)
+            .map((task) => (task.data as { requestId: string }).requestId)
+            .includes(doc.id);
 
-      // canReview = canReview && doc.mouSigned && doc.mouApproved;
-      canReview = true;
+        canReview = canReview && doc.decisionData.billing.signed && doc.decisionData.billing.approved;
+      } else {
+        canReview = false;
+      }
     }
 
     const canEdit = canReview && doc.type !== RequestType.DELETE;
@@ -84,7 +89,7 @@ export class PublicCloudRequestService extends ModelService<Prisma.PublicCloudRe
         edit: canEdit,
         review: canReview,
         signMou: canSignMou,
-        approveMou: canApproveMou,
+        reviewMou: canApproveMou,
         delete: false,
         viewProduct: false,
       };
@@ -97,7 +102,7 @@ export class PublicCloudRequestService extends ModelService<Prisma.PublicCloudRe
       edit: canEdit,
       review: canReview,
       signMou: canSignMou,
-      approveMou: canApproveMou,
+      reviewMou: canApproveMou,
       delete: false,
       viewProduct: hasProduct,
     };
