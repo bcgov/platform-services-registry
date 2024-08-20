@@ -17,5 +17,8 @@ dependencies:
 - name: m365proxy
   repository: file://../_m365proxy
   version: 0.1.0
-digest: sha256:a2b72a2a38c3102b2a1fdfda712593f09f2ff6bd6dc64d77ee41c6221f909e6f
-generated: "2024-05-08T12:53:00.589335284-07:00"
+- name: weasyprint
+  repository: https://bcgov.github.io/weasyprint
+  version: 0.1.5
+digest: sha256:5abd4b1872bf7d5dcb104522d95006210e9c311ff03f8cd6745c0fabf8e3e497
+generated: "2024-08-20T16:15:41.914902387-07:00"

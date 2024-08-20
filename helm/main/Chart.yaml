@@ -30,6 +30,6 @@ dependencies:
     repository: 'file://../_m365proxy'
     condition: m365proxy.enabled
   - name: weasyprint
-    version: '0.1.3'
+    version: '0.1.5'
     repository: https://bcgov.github.io/weasyprint
     condition: weasyprint.enabled
