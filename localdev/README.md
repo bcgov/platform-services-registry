@@ -53,6 +53,8 @@ docker-compose -f docker-compose.yml -f docker-compose-arm64.yml up --build [-d]
 
 You can add the `-d` flag to run the containers in daemon mode.
 
+Ensure that neither `MongoDB` nor `Mongosh` is installed on your local machine, as they may interfere with the database schema managed by Prisma, which connects to the `MongoDB Docker container`. If you have either installed, you can remove them by following the instruction provided in this link: [uninstall mongodb and mongosh](https://www.mongodb.com/resources/products/fundamentals/uninstall-mongodb#:~:text=How%20to%20uninstall%20MongoDB%20from%20Mac%201%20If,the%20below%20command%3A%20brew%20uninstall%20mongodb-community%20%20)
+
 ## Services
 
 Within the local Docker container context, `5 services` are established:
