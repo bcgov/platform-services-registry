@@ -104,15 +104,15 @@ services:
       source: ./mnt/mongodb
       target: /data/db
 
-  m365proxy:
-    platform: linux/amd64
-    container_name: m365proxy
-    build:
-      context: ./m365proxy
-      dockerfile: Dockerfile
-    stdin_open: true
-    ports:
-    - 8000:8000
+  # m365proxy:
+  #   platform: linux/amd64
+  #   container_name: m365proxy
+  #   build:
+  #     context: ./m365proxy
+  #     dockerfile: Dockerfile
+  #   stdin_open: true
+  #   ports:
+  #   - 8000:8000
 
   nats:
     platform: linux/amd64

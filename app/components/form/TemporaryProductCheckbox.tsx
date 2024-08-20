@@ -23,4 +23,3 @@ export default function TemporaryProductCheckbox({ disabled }: { disabled?: bool
     </Alert>
   );
 }
-//

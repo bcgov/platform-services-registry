@@ -1,5 +1,5 @@
 import { expect } from '@jest/globals';
-import { $Enums } from '@prisma/client';
+import { $Enums, TaskType, TaskStatus } from '@prisma/client';
 import { parse } from 'csv-parse/sync';
 import prisma from '@/core/prisma';
 import { createSamplePublicCloudProductData } from '@/helpers/mock-resources';
@@ -9,7 +9,11 @@ import { formatFullName } from '@/helpers/user';
 import { mockSessionByEmail, mockSessionByRole } from '@/services/api-test/core';
 import { provisionPublicCloudProject } from '@/services/api-test/public-cloud';
 import { createPublicCloudProject, downloadPublicCloudProjects } from '@/services/api-test/public-cloud/products';
-import { makePublicCloudRequestDecision } from '@/services/api-test/public-cloud/requests';
+import {
+  makePublicCloudRequestDecision,
+  signPublicCloudMou,
+  reviewPublicCloudMou,
+} from '@/services/api-test/public-cloud/requests';
 import { PublicProductCsvRecord } from '@/types/csv';
 import { formatDateSimple } from '@/utils/date';
 
@@ -54,17 +58,56 @@ describe('Download Public Cloud Products - Permissions', () => {
 
   it('should successfully create a product by PO and approved by admin', async () => {
     await mockSessionByEmail(PO.email);
-
     const res1 = await createPublicCloudProject(productData.one);
     const dat1 = await res1.json();
     expect(res1.status).toBe(200);
+
+    const task1 = await prisma.task.findFirst({
+      where: {
+        type: TaskType.SIGN_MOU,
+        status: TaskStatus.ASSIGNED,
+        data: {
+          equals: {
+            requestId: dat1.id,
+          },
+        },
+      },
+    });
+
+    if (task1) {
+      await mockSessionByEmail(dat1.decisionData.expenseAuthority.email);
+      await signPublicCloudMou(dat1.id, {
+        taskId: task1?.id ?? '',
+        confirmed: true,
+      });
+
+      await mockSessionByRole('billing-reviewer');
+      const task2 = await prisma.task.findFirst({
+        where: {
+          type: TaskType.REVIEW_MOU,
+          status: TaskStatus.ASSIGNED,
+          data: {
+            equals: {
+              requestId: dat1.id,
+            },
+          },
+        },
+      });
+
+      await reviewPublicCloudMou(dat1.id, {
+        taskId: task2?.id ?? '',
+        decision: 'APPROVE',
+      });
+    }
 
     await mockSessionByRole('admin');
 
     const res2 = await makePublicCloudRequestDecision(dat1.id, {
       ...dat1.decisionData,
+      accountCoding: dat1.decisionData.billing.accountCoding,
       decision: $Enums.DecisionStatus.APPROVED,
     });
+
     expect(res2.status).toBe(200);
     requests.one = await res2.json();
 
@@ -140,6 +183,7 @@ describe('Download Public Cloud Products - Permissions', () => {
 
     const res2 = await makePublicCloudRequestDecision(dat1.id, {
       ...dat1.decisionData,
+      accountCoding: dat1.decisionData.billing.accountCoding,
       decision: $Enums.DecisionStatus.APPROVED,
     });
     expect(res2.status).toBe(200);
@@ -241,6 +285,7 @@ describe('Download Public Cloud Products - Validations', () => {
 
         await makePublicCloudRequestDecision(dat1.id, {
           ...dat1.decisionData,
+          accountCoding: dat1.decisionData.billing.accountCoding,
           decision: $Enums.DecisionStatus.APPROVED,
         });
 

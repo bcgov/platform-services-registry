@@ -92,6 +92,8 @@ export async function cleanUp() {
   // Now it should be safe to delete User documents
   // await prisma.user.deleteMany();
   await prisma.event.deleteMany();
+  await prisma.task.deleteMany();
+  await prisma.billing.deleteMany();
 }
 
 beforeAll(async () => {

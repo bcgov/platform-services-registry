@@ -3,6 +3,7 @@
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Button, Divider, Grid, LoadingOverlay, Box } from '@mantine/core';
 import { notifications } from '@mantine/notifications';
+import { DecisionStatus, User, RequestType, TaskStatus, TaskType } from '@prisma/client';
 import { useQuery, useMutation } from '@tanstack/react-query';
 import classNames from 'classnames';
 import { useSession } from 'next-auth/react';
@@ -12,22 +13,27 @@ import ExternalLink from '@/components/generic/button/ExternalLink';
 import FormCheckbox from '@/components/generic/checkbox/FormCheckbox';
 import FormError from '@/components/generic/FormError';
 import { createModal, ExtraModalProps } from '@/core/modal';
-import { createPrivateCloudProject } from '@/services/backend/private-cloud/products';
+import { signPublicCloudMou } from '@/services/backend/public-cloud/requests';
 
-interface ModalProps {}
+interface ModalProps {
+  requestId: string;
+}
 
 interface ModalState {
   confirmed: boolean;
 }
 
-function SignPublicCloudProductModal({ state, closeModal }: { state: ModalState } & ExtraModalProps) {
+function SignPublicCloudProductModal({
+  requestId,
+  state,
+  closeModal,
+}: ModalProps & { state: ModalState } & ExtraModalProps) {
   const { data: session } = useSession();
 
   const methods = useForm({
     resolver: zodResolver(
       z.object({
         confirmed: z.boolean().refine((bool) => bool == true, { message: 'Please confirm the agreement.' }),
-        requestComment: z.string().max(1000).optional(),
       }),
     ),
     defaultValues: {
@@ -36,34 +42,31 @@ function SignPublicCloudProductModal({ state, closeModal }: { state: ModalState 
   });
 
   const {
-    mutateAsync: createProject,
-    isPending: isCreatingProject,
-    isError: isCreateError,
-    error: createError,
+    mutateAsync: signMou,
+    isPending: isSigning,
+    isError: isSignError,
+    error: signError,
   } = useMutation({
-    mutationFn: (data: any) => createPrivateCloudProject(data),
+    mutationFn: (data: { taskId: string; confirmed: boolean }) => signPublicCloudMou(requestId, data),
     onSuccess: () => {
       state.confirmed = true;
+
+      notifications.show({
+        color: 'green',
+        title: 'Success',
+        message: 'Successfully submitted!',
+        autoClose: 5000,
+      });
     },
     onError: (error: any) => {
       state.confirmed = false;
 
-      if (error.response?.status === 401) {
-        notifications.show({
-          title: 'Error',
-          message:
-            'You are not authorized to create this product. Please ensure you are mentioned in the product contacts to proceed.',
-          color: 'red',
-          autoClose: 5000,
-        });
-      } else {
-        notifications.show({
-          title: 'Error',
-          message: `Failed to create product: ${error.message}`,
-          color: 'red',
-          autoClose: 5000,
-        });
-      }
+      notifications.show({
+        title: 'Error',
+        message: `Failed to submit a eMOU: ${error.message}`,
+        color: 'red',
+        autoClose: 5000,
+      });
     },
   });
 
@@ -71,13 +74,29 @@ function SignPublicCloudProductModal({ state, closeModal }: { state: ModalState 
 
   return (
     <Box pos="relative">
-      <LoadingOverlay visible={isCreatingProject} zIndex={1000} overlayProps={{ radius: 'sm', blur: 2 }} />
+      <LoadingOverlay visible={isSigning} zIndex={1000} overlayProps={{ radius: 'sm', blur: 2 }} />
       <FormProvider {...methods}>
         <form
           autoComplete="off"
           onSubmit={handleSubmit(async (formData) => {
             if (formData.confirmed) {
-              // await createProject({ ...productData, requestComment: formData.requestComment });
+              const task = session?.tasks.find(
+                (tsk) =>
+                  tsk.type === TaskType.SIGN_MOU &&
+                  tsk.status === TaskStatus.ASSIGNED &&
+                  (tsk.data as { requestId: string }).requestId === requestId,
+              );
+
+              if (task) {
+                await signMou({ taskId: task?.id, confirmed: true });
+              } else {
+                notifications.show({
+                  title: 'Error',
+                  message: `You are not assigned to perform the task.`,
+                  color: 'red',
+                  autoClose: 5000,
+                });
+              }
             }
 
             closeModal();

@@ -35,6 +35,7 @@ export const GET = apiHandler(async ({ pathParams, queryParams, session }) => {
           primaryTechnicalLead: true,
           secondaryTechnicalLead: true,
           expenseAuthority: true,
+          billing: true,
         },
       },
       decisionData: {
@@ -43,6 +44,7 @@ export const GET = apiHandler(async ({ pathParams, queryParams, session }) => {
           primaryTechnicalLead: true,
           secondaryTechnicalLead: true,
           expenseAuthority: true,
+          billing: true,
         },
       },
     },
@@ -63,6 +65,7 @@ export type PublicCloudProductRequestsGetPayload = Prisma.PublicCloudRequestGetP
         primaryTechnicalLead: true;
         secondaryTechnicalLead: true;
         expenseAuthority: true;
+        billing: true;
       };
     };
     decisionData: {
@@ -71,6 +74,7 @@ export type PublicCloudProductRequestsGetPayload = Prisma.PublicCloudRequestGetP
         primaryTechnicalLead: true;
         secondaryTechnicalLead: true;
         expenseAuthority: true;
+        billing: true;
       };
     };
   };

@@ -40,3 +40,13 @@ export async function makePublicCloudRequestDecision(id: string, data: any) {
   const result = await instance.post(`/${id}/decision`, data).then((res) => res.data);
   return result;
 }
+
+export async function signPublicCloudMou(id: string, data: { taskId: string; confirmed: boolean }) {
+  const result = await instance.post(`/${id}/sign-mou`, data).then((res) => res.data);
+  return result;
+}
+
+export async function reviewPublicCloudMou(id: string, data: { taskId: string; decision: string }) {
+  const result = await instance.post(`/${id}/review-mou`, data).then((res) => res.data);
+  return result;
+}

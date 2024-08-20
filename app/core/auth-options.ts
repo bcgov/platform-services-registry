@@ -62,13 +62,6 @@ export async function generateSession({ session, token }: { session: Session; to
         session.userId = user.id;
         session.userEmail = user.email;
         session.roles.push('user');
-
-        session.tasks = await prisma.task.findMany({
-          where: {
-            OR: [{ userIds: { has: user.id } }],
-            status: TaskStatus.ASSIGNED,
-          },
-        });
       }
     }
 
@@ -157,6 +150,13 @@ export async function generateSession({ session, token }: { session: Session; to
         if (!Array.isArray(session.ministries[ministryRole])) session.ministries[ministryCode] = [];
         session.ministries[ministryRole].push(ministryCode.toUpperCase());
       }
+    });
+
+    session.tasks = await prisma.task.findMany({
+      where: {
+        OR: [{ userIds: { has: session.user.id } }, { roles: { hasSome: session.roles } }],
+        status: TaskStatus.ASSIGNED,
+      },
     });
   }
 

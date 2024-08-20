@@ -78,8 +78,8 @@ const EditSummaryTemplate = ({ request, comment, userName }: EmailProp) => {
           <BudgetChanges
             budgetCurrent={current.budget}
             budgetRequested={requested.budget}
-            accountCodingCurrent={current.accountCoding}
-            accountCodingRequested={requested.accountCoding}
+            accountCodingCurrent={current.billing.accountCoding}
+            accountCodingRequested={requested.billing.accountCoding}
           />
           <br></br>
           <Text>This edit was actioned by {userName}.</Text>

@@ -61,6 +61,7 @@ export default async function deleteOp({
           primaryTechnicalLead: true,
           secondaryTechnicalLead: true,
           expenseAuthority: true,
+          billing: true,
         },
       },
       decisionData: {
@@ -69,6 +70,7 @@ export default async function deleteOp({
           primaryTechnicalLead: true,
           secondaryTechnicalLead: true,
           expenseAuthority: true,
+          billing: true,
         },
       },
       project: {
@@ -77,6 +79,7 @@ export default async function deleteOp({
           primaryTechnicalLead: true,
           secondaryTechnicalLead: true,
           expenseAuthority: true,
+          billing: true,
         },
       },
     },

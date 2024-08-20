@@ -10,6 +10,13 @@ export type PublicCloudProjectGetPayload = Prisma.PublicCloudProjectGetPayload<{
     primaryTechnicalLead: true;
     secondaryTechnicalLead: true;
     expenseAuthority: true;
+    billing: {
+      include: {
+        expenseAuthority: true;
+        signedBy: true;
+        approvedBy: true;
+      };
+    };
     requests: {
       where: {
         active: true;
@@ -128,6 +135,13 @@ export async function getPublicCloudProduct(session: Session, licencePlate?: str
       primaryTechnicalLead: true,
       secondaryTechnicalLead: true,
       expenseAuthority: true,
+      billing: {
+        include: {
+          expenseAuthority: true,
+          signedBy: true,
+          approvedBy: true,
+        },
+      },
       requests: {
         where: {
           active: true,
@@ -147,7 +161,7 @@ export async function getPublicCloudProduct(session: Session, licencePlate?: str
 export function excludeProductUsers(product: PublicCloudProjectGetPayload | null) {
   if (!product) return null;
 
-  const { projectOwner, primaryTechnicalLead, secondaryTechnicalLead, expenseAuthority, ...rest } = product;
+  const { projectOwner, primaryTechnicalLead, secondaryTechnicalLead, expenseAuthority, billing, ...rest } = product;
 
   return rest;
 }

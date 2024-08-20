@@ -13,18 +13,37 @@ export default async function createRequest(formData: PublicCloudCreateRequestBo
     formData.projectOwner.email,
     formData.primaryTechnicalLead.email,
     formData.secondaryTechnicalLead?.email,
+    formData.expenseAuthority?.email,
   ]);
 
   const createRequestedProject = {
     name: formData.name,
-    accountCoding: formData.accountCoding,
     budget: formData.budget,
     provider: formData.provider,
     description: formData.description,
     ministry: formData.ministry,
     status: ProjectStatus.ACTIVE,
-    licencePlate: licencePlate,
+    licencePlate,
     environmentsEnabled: formData.environmentsEnabled,
+    billing: {
+      connectOrCreate: {
+        where: {
+          accountCoding: formData.accountCoding,
+        },
+        create: {
+          accountCoding: formData.accountCoding,
+          expenseAuthority: {
+            connectOrCreate: {
+              where: {
+                email: formData.expenseAuthority.email,
+              },
+              create: formData.expenseAuthority,
+            },
+          },
+          licencePlate,
+        },
+      },
+    },
     projectOwner: {
       connectOrCreate: {
         where: {
@@ -85,6 +104,7 @@ export default async function createRequest(formData: PublicCloudCreateRequestBo
           primaryTechnicalLead: true,
           secondaryTechnicalLead: true,
           expenseAuthority: true,
+          billing: true,
         },
       },
       decisionData: {
@@ -93,24 +113,26 @@ export default async function createRequest(formData: PublicCloudCreateRequestBo
           primaryTechnicalLead: true,
           secondaryTechnicalLead: true,
           expenseAuthority: true,
+          billing: true,
         },
       },
     },
   });
 
   if (request) {
-    // if (request.decisionData.expenseAuthorityId) {
-    //   await prisma.task.create({
-    //     data: {
-    //       type: TaskType.SIGN_MOU,
-    //       status: TaskStatus.ASSIGNED,
-    //       userIds: [request.decisionData.expenseAuthorityId],
-    //       data: {
-    //         requestId: request.id,
-    //       },
-    //     },
-    //   });
-    // }
+    // Assign a task to the expense authority for new billing
+    if (request.decisionData.expenseAuthorityId && !request.decisionData.billing.signed) {
+      await prisma.task.create({
+        data: {
+          type: TaskType.SIGN_MOU,
+          status: TaskStatus.ASSIGNED,
+          userIds: [request.decisionData.expenseAuthorityId],
+          data: {
+            requestId: request.id,
+          },
+        },
+      });
+    }
 
     await createEvent($Enums.EventType.CREATE_PUBLIC_CLOUD_PRODUCT, session.user.id, { requestId: request.id });
   }

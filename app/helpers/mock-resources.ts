@@ -115,7 +115,7 @@ export function createSamplePublicCloudProductData(args?: {
     primaryTechnicalLead: findMockUserByIdr(getRandomItem(mockNoRoleIdirs)),
     secondaryTechnicalLead: findMockUserByIdr(getRandomItem(mockNoRoleIdirs)),
     expenseAuthority: findMockUserByIdr(getRandomItem(mockNoRoleIdirs)),
-    accountCoding: '111222223333344445555555',
+    accountCoding: faker.string.numeric(24),
     budget: {
       dev: 50,
       test: 50,
