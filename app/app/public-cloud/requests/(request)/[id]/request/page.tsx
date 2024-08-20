@@ -3,9 +3,10 @@
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Alert } from '@mantine/core';
 import { notifications } from '@mantine/notifications';
-import { $Enums } from '@prisma/client';
-import { IconInfoCircle, IconSquareCheck, IconSquare } from '@tabler/icons-react';
+import { Prisma, $Enums } from '@prisma/client';
+import { IconInfoCircle, IconInfoSquareRounded, IconSquareCheck, IconSquare } from '@tabler/icons-react';
 import { useQuery, useMutation } from '@tanstack/react-query';
+import classNames from 'classnames';
 import { useEffect, useState } from 'react';
 import { FormProvider, useForm } from 'react-hook-form';
 import { z } from 'zod';
@@ -28,6 +29,70 @@ import { PublicCloudRequestDecisionBodySchema } from '@/schema';
 import { makePublicCloudRequestDecision } from '@/services/backend/public-cloud/requests';
 import { usePublicProductState } from '@/states/global';
 import { formatDate } from '@/utils/date';
+
+function BillingInfo({
+  billing,
+  licencePlate,
+  className,
+}: {
+  billing: Prisma.BillingGetPayload<{
+    include: {
+      signedBy: true;
+      approvedBy: true;
+      expenseAuthority: true;
+    };
+  }>;
+  licencePlate: string;
+  className?: string;
+}) {
+  return (
+    <Alert
+      variant="light"
+      color="blue"
+      title="Billing eMOU status"
+      icon={<IconInfoCircle />}
+      className={classNames(className)}
+    >
+      <ul className="list-disc text-sm">
+        <li>
+          {billing.signed ? (
+            <>
+              <IconSquareCheck className="inline-block text-sm" />
+              Signed by <span className="font-bold">{formatFullName(billing.signedBy)}</span> at{' '}
+              <span className="font-bold">{formatDate(billing.signedAt)}</span>.
+            </>
+          ) : (
+            <>
+              <IconSquare className="inline-block text-sm" />
+              Pending signature from <span className="font-bold">{formatFullName(billing.expenseAuthority)}</span>.
+            </>
+          )}
+        </li>
+        <li>
+          {billing.approved ? (
+            <>
+              <IconSquareCheck className="inline-block text-sm" />
+              Approved by <span className="font-bold">{formatFullName(billing.approvedBy)}</span> at{' '}
+              <span className="font-bold">{formatDate(billing.signedAt)}</span>.
+            </>
+          ) : (
+            <>
+              <IconSquare className="inline-block text-sm" />
+              Pending approval from admin.
+            </>
+          )}
+        </li>
+        {licencePlate !== billing.licencePlate && (
+          <li>
+            <IconInfoSquareRounded className="inline-block text-sm" />
+            Exempted from the eMOU approval process for the product with licence plate{' '}
+            <span className="font-bold">{billing.licencePlate}</span>.
+          </li>
+        )}
+      </ul>
+    </Alert>
+  );
+}
 
 const pathParamSchema = z.object({
   id: z.string(),
@@ -93,6 +158,7 @@ export default publicCloudProductRequest(({ pathParams, queryParams, session, ro
       decision: '',
       type: publicSnap.currentRequest?.type,
       ...publicSnap.currentRequest?.decisionData,
+      accountCoding: publicSnap.currentRequest?.decisionData.billing.accountCoding,
     },
   });
 
@@ -115,52 +181,11 @@ export default publicCloudProductRequest(({ pathParams, queryParams, session, ro
 
   return (
     <div>
-      <Alert variant="light" color="blue" title="Billing eMOU status" icon={<IconInfoCircle />}>
-        <ul className="list-disc text-sm">
-          <li>
-            {publicSnap.currentRequest.decisionData.billing.signed ? (
-              <>
-                <IconSquareCheck className="inline-block text-sm" />
-                Signed by{' '}
-                <span className="font-bold">
-                  {formatFullName(publicSnap.currentRequest.decisionData.billing.signedBy)}
-                </span>{' '}
-                at{' '}
-                <span className="font-bold">{formatDate(publicSnap.currentRequest.decisionData.billing.signedAt)}</span>
-                .
-              </>
-            ) : (
-              <>
-                <IconSquare className="inline-block text-sm" />
-                Pending signature from{' '}
-                <span className="font-bold">
-                  {formatFullName(publicSnap.currentRequest.decisionData.billing.expenseAuthority)}
-                </span>
-                .
-              </>
-            )}
-          </li>
-          <li>
-            {publicSnap.currentRequest.decisionData.billing.approved ? (
-              <>
-                <IconSquareCheck className="inline-block text-sm" />
-                Approved by{' '}
-                <span className="font-bold">
-                  {formatFullName(publicSnap.currentRequest.decisionData.billing.approvedBy)}
-                </span>{' '}
-                at{' '}
-                <span className="font-bold">{formatDate(publicSnap.currentRequest.decisionData.billing.signedAt)}</span>
-                .
-              </>
-            ) : (
-              <>
-                <IconSquare className="inline-block text-sm" />
-                Pending approval from admin.
-              </>
-            )}
-          </li>
-        </ul>
-      </Alert>
+      <BillingInfo
+        licencePlate={publicSnap.currentRequest.licencePlate}
+        billing={publicSnap.currentRequest.decisionData.billing}
+        className="mb-2"
+      />
       <FormProvider {...methods}>
         <FormErrorNotification />
         <form

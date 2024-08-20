@@ -38,3 +38,10 @@ backup:
   cronExpression: 0 1 * * *
   storageSize: 10Gi
   rocketchatPrefix: "[Registry TEST]"
+
+weasyprint:
+  enabled: true
+
+  image:
+    # See https://github.com/bcgov/weasyprint/pkgs/container/weasyprint
+    tag: 2234822dc65bebc25a73b44fdb20bd874abcf140 # pragma: allowlist secret
