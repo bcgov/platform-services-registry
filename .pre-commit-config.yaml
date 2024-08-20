@@ -45,8 +45,8 @@ repos:
     verbose: true
     pass_filenames: true
   - id: python-format
-    name: autopep8
-    entry: .bin/autopep8.sh
+    name: black
+    entry: .bin/black.sh
     language: script
     files: \.py$
     verbose: true

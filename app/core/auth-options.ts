@@ -1,15 +1,19 @@
-import { $Enums } from '@prisma/client';
+import { $Enums, TaskStatus } from '@prisma/client';
 import jwt from 'jsonwebtoken';
+import _forEach from 'lodash-es/forEach';
+import _get from 'lodash-es/get';
 import _uniq from 'lodash-es/uniq';
 import { Account, AuthOptions, Session, User } from 'next-auth';
 import { JWT } from 'next-auth/jwt';
 import KeycloakProvider, { KeycloakProfile } from 'next-auth/providers/keycloak';
-import { IS_PROD, AUTH_SERVER_URL, AUTH_RELM, AUTH_RESOURCE, AUTH_SECRET } from '@/config';
+import { IS_PROD, AUTH_SERVER_URL, AUTH_RELM, AUTH_RESOURCE, AUTH_SECRET, PUBLIC_AZURE_ACCESS_EMAILS } from '@/config';
+import { TEAM_SA_PREFIX } from '@/constants';
 import prisma from '@/core/prisma';
 import { createEvent } from '@/mutations/events';
 import { upsertUser } from '@/services/db/user';
 
 export async function generateSession({ session, token }: { session: Session; token?: JWT }) {
+  session.isServiceAccount = false;
   session.isUser = false;
   session.isAdmin = false;
   session.isEditor = false;
@@ -42,6 +46,7 @@ export async function generateSession({ session, token }: { session: Session; to
     session.kcUserId = token.sub ?? '';
     session.user.name = token.name ?? '';
     session.roles = token.roles || [];
+    session.teams = (token.teams as any) || [];
 
     if (token.email) {
       const user = await prisma.user.findFirst({
@@ -62,6 +67,11 @@ export async function generateSession({ session, token }: { session: Session; to
 
     session.roles = [..._uniq(session.roles)];
     session.roles.forEach((role) => {
+      if (role === 'service-account') {
+        session.isServiceAccount = true;
+        return;
+      }
+
       if (role === 'user') {
         session.isUser = true;
         return;
@@ -141,12 +151,21 @@ export async function generateSession({ session, token }: { session: Session; to
         session.ministries[ministryRole].push(ministryCode.toUpperCase());
       }
     });
+
+    session.tasks = await prisma.task.findMany({
+      where: {
+        OR: [{ userIds: { has: session.user.id } }, { roles: { hasSome: session.roles } }],
+        status: TaskStatus.ASSIGNED,
+      },
+    });
   }
+
+  const azureEmails = PUBLIC_AZURE_ACCESS_EMAILS.split(',').map((v) => v.trim().toLowerCase());
 
   session.previews = {
     security: !IS_PROD,
     apiAccount: !IS_PROD,
-    azure: !IS_PROD,
+    azure: session.isAdmin || session.isPublicAdmin || azureEmails.includes(session.user.email.toLowerCase()),
   };
 
   session.permissions = {
@@ -207,6 +226,7 @@ export async function generateSession({ session, token }: { session: Session; to
 
     viewZapscanResults: session.isAdmin || session.isAnalyzer,
     viewSonarscanResults: session.isAdmin || session.isAnalyzer,
+    viewGeneralAnalytics: session.isAdmin || session.isAnalyzer,
     viewPublicAnalytics: session.isAdmin || session.isAnalyzer || session.isPublicAnalyzer,
     viewPrivateAnalytics: session.isAdmin || session.isAnalyzer || session.isPrivateAnalyzer,
   };
@@ -266,14 +286,21 @@ export const authOptions: AuthOptions = {
 
       return true;
     },
-    async jwt({ token, account }: { token: JWT; account: Account | null }) {
+    async jwt({ token, account }: { token: any; account: Account | null }) {
       if (account?.access_token) {
         const decodedToken: any = jwt.decode(account.access_token);
 
         token.accessToken = account.access_token;
         token.idToken = account.id_token;
-        token.roles = decodedToken?.resource_access?.pltsvc?.roles ?? [];
+        token.roles = _get(decodedToken, `resource_access.${AUTH_RESOURCE}.roles`, []);
         token.sub = decodedToken?.sub ?? '';
+        token.teams = [];
+
+        _forEach(decodedToken.resource_access ?? {}, (val, key) => {
+          if (key.startsWith(TEAM_SA_PREFIX)) {
+            token.teams.push({ clientId: key, roles: val.roles });
+          }
+        });
       }
 
       if (!token.roles) token.roles = [];

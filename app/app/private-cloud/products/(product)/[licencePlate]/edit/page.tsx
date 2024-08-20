@@ -3,25 +3,25 @@
 import { zodResolver } from '@hookform/resolvers/zod';
 import { notifications } from '@mantine/notifications';
 import { PrivateCloudProject } from '@prisma/client';
-import { useQuery, useMutation } from '@tanstack/react-query';
 import { useEffect, useState } from 'react';
 import { FormProvider, useForm } from 'react-hook-form';
-import { useSnapshot } from 'valtio';
 import { z } from 'zod';
 import PreviousButton from '@/components/buttons/Previous';
 import SubmitButton from '@/components/buttons/SubmitButton';
 import CommonComponents from '@/components/form/CommonComponents';
 import ProjectDescription from '@/components/form/ProjectDescriptionPrivate';
 import Quotas from '@/components/form/Quotas';
+import QuotasChangeInfo from '@/components/form/QuotasChangeInfo';
 import TeamContacts from '@/components/form/TeamContacts';
 import FormErrorNotification from '@/components/generic/FormErrorNotification';
-import PrivateCloudEditModal from '@/components/modal/EditPrivateCloud';
+import { openEditPrivateCloudProductModal } from '@/components/modal/editPrivateCloudProductModal';
 import ReturnModal from '@/components/modal/Return';
 import { AGMinistries } from '@/constants';
 import createClientPage from '@/core/client-page';
+import { comparePrivateProductData, PrivateProductChange } from '@/helpers/product-change';
 import { PrivateCloudEditRequestBodySchema } from '@/schema';
 import { getPrivateCloudProject, editPrivateCloudProject } from '@/services/backend/private-cloud/products';
-import { privateProductState } from '@/states/global';
+import { usePrivateProductState } from '@/states/global';
 
 const pathParamSchema = z.object({
   licencePlate: z.string(),
@@ -33,53 +33,73 @@ const privateCloudProductEdit = createClientPage({
 });
 export default privateCloudProductEdit(({ pathParams, queryParams, session }) => {
   const { licencePlate } = pathParams;
-  const snap = useSnapshot(privateProductState);
+  const [, privateSnap] = usePrivateProductState();
 
-  const [openComment, setOpenComment] = useState(false);
   const [openReturn, setOpenReturn] = useState(false);
   const [isDisabled, setDisabled] = useState(false);
   const [secondTechLead, setSecondTechLead] = useState(false);
   const [isSecondaryTechLeadRemoved, setIsSecondaryTechLeadRemoved] = useState(false);
 
-  const {
-    mutateAsync: editProject,
-    isPending: isEditingProject,
-    isError: isEditError,
-    error: editError,
-  } = useMutation({
-    mutationFn: (data: any) => editPrivateCloudProject(licencePlate, data),
-    onSuccess: () => {
-      setOpenComment(false);
-      setOpenReturn(true);
-    },
-    onError: (error: any) => {
-      notifications.show({
-        title: 'Error',
-        message: `Failed to edit product ${error.message}`,
-        color: 'red',
-        autoClose: 5000,
-      });
-    },
-  });
-
-  // The data is not available on the first render so fetching it inside the defaultValues. This is a workaround. Not doing this will result in
-  // in an error.
   const methods = useForm({
-    resolver: zodResolver(
-      PrivateCloudEditRequestBodySchema.merge(
-        z.object({
-          isAgMinistryChecked: z.boolean().optional(),
-        }),
-      ).refine(
-        (formData) => {
-          return AGMinistries.includes(formData.ministry) ? formData.isAgMinistryChecked : true;
-        },
-        {
-          message: 'AG Ministry Checkbox should be checked.',
-          path: ['isAgMinistryChecked'],
-        },
-      ),
-    ),
+    resolver: (...args) => {
+      const _changes = comparePrivateProductData(privateSnap.currentProduct, args[0]);
+
+      return zodResolver(
+        PrivateCloudEditRequestBodySchema.merge(
+          z.object({
+            isAgMinistryChecked: z.boolean().optional(),
+          }),
+        )
+          .refine(
+            (formData) => {
+              return AGMinistries.includes(formData.ministry) ? formData.isAgMinistryChecked : true;
+            },
+            {
+              message: 'AG Ministry Checkbox should be checked.',
+              path: ['isAgMinistryChecked'],
+            },
+          )
+          .refine(
+            (formData) => {
+              if (!_changes?.quotasIncrease) return true;
+              return !!formData.quotaContactName;
+            },
+            {
+              message: 'Contact name should be provided.',
+              path: ['quotaContactName'],
+            },
+          )
+          .refine(
+            (formData) => {
+              if (!_changes?.quotasIncrease) return true;
+              return !!formData.quotaContactEmail;
+            },
+            {
+              message: 'Contact email should be provided.',
+              path: ['quotaContactEmail'],
+            },
+          )
+          .refine(
+            (formData) => {
+              if (!_changes?.quotasIncrease) return true;
+              return !!formData.quotaJustification;
+            },
+            {
+              message: 'Quota justification should be provided.',
+              path: ['quotaJustification'],
+            },
+          )
+          .transform((formData) => {
+            if (!_changes?.quotasIncrease) {
+              formData.quotaContactName = '';
+              formData.quotaContactEmail = '';
+              formData.quotaJustification = '';
+            }
+
+            return formData;
+          }),
+      )(...args);
+    },
     defaultValues: async () => {
       const response = await getPrivateCloudProject(licencePlate);
       return { ...response, isAgMinistryChecked: true };
@@ -89,14 +109,14 @@ export default privateCloudProductEdit(({ pathParams, queryParams, session }) =>
   const { formState } = methods;
 
   useEffect(() => {
-    if (!snap.currentProduct) return;
+    if (!privateSnap.currentProduct) return;
 
-    if (snap.currentProduct.secondaryTechnicalLead) {
+    if (privateSnap.currentProduct.secondaryTechnicalLead) {
       setSecondTechLead(true);
     }
 
-    setDisabled(!snap.currentProduct?._permissions.edit);
-  }, [snap.currentProduct]);
+    setDisabled(!privateSnap.currentProduct?._permissions.edit);
+  }, [privateSnap.currentProduct]);
 
   const secondTechLeadOnClick = () => {
     setSecondTechLead(!secondTechLead);
@@ -106,13 +126,9 @@ export default privateCloudProductEdit(({ pathParams, queryParams, session }) =>
     }
   };
 
-  const setComment = (requestComment: string) => {
-    editProject({ ...methods.getValues(), requestComment });
-  };
+  const isSubmitEnabled = Object.keys(formState.dirtyFields).length > 0 || isSecondaryTechLeadRemoved;
 
-  const isSubmitEnabled = formState.isDirty || isSecondaryTechLeadRemoved;
-
-  if (!snap.currentProduct) {
+  if (!privateSnap.currentProduct) {
     return null;
   }
 
@@ -120,21 +136,36 @@ export default privateCloudProductEdit(({ pathParams, queryParams, session }) =>
     <div>
       <FormProvider {...methods}>
         <FormErrorNotification />
-        <form autoComplete="off" onSubmit={methods.handleSubmit(() => setOpenComment(true))}>
+        <form
+          onSubmit={methods.handleSubmit(async (formData) => {
+            const result = await openEditPrivateCloudProductModal({ productData: formData });
+            if (result?.state.success) {
+              setOpenReturn(true);
+            }
+          })}
+          autoComplete="off"
+        >
           <div className="mb-12 mt-8">
-            <ProjectDescription disabled={isDisabled} clusterDisabled={true} mode="edit" />
+            <ProjectDescription
+              disabled={isDisabled}
+              clusterDisabled={true}
+              mode="edit"
+              canToggleTemporary={privateSnap.currentProduct._permissions.toggleTemporary}
+            />
             <hr className="my-7" />
             <TeamContacts
               disabled={isDisabled}
+              number={2}
               secondTechLead={secondTechLead}
               secondTechLeadOnClick={secondTechLeadOnClick}
             />
             <hr className="my-7" />
             <Quotas
-              licencePlate={snap.currentProduct?.licencePlate as string}
+              licencePlate={privateSnap.currentProduct?.licencePlate as string}
               disabled={isDisabled}
-              currentProject={snap.currentProduct as PrivateCloudProject}
+              currentProject={privateSnap.currentProduct as PrivateCloudProject}
             />
+            <QuotasChangeInfo disabled={isDisabled} />
             <hr className="my-7" />
             <CommonComponents disabled={isDisabled} number={4} />
           </div>
@@ -148,12 +179,6 @@ export default privateCloudProductEdit(({ pathParams, queryParams, session }) =>
           </div>
         </form>
       </FormProvider>
-      <PrivateCloudEditModal
-        open={openComment}
-        setOpen={setOpenComment}
-        handleSubmit={setComment}
-        isLoading={isEditingProject}
-      />
       <ReturnModal
         open={openReturn}
         setOpen={setOpenReturn}

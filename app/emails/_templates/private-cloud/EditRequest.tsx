@@ -10,7 +10,6 @@ import { comparePrivateCloudProjects } from '@/emails/_components/Edit/utils/com
 import Layout from '@/emails/_components/layout/Layout';
 import { isQuotaUpgrade } from '@/helpers/quota-change';
 import { PrivateCloudRequestWithProjectAndRequestedProject } from '@/request-actions/private-cloud/decision-request';
-import { PrivateCloudEditRequestBody } from '@/schema';
 
 interface EmailProp {
   request: PrivateCloudRequestWithProjectAndRequestedProject;
@@ -22,10 +21,7 @@ const EditRequestTemplate = ({ request, userName }: EmailProp) => {
   const current = request.project;
   const requested = request.decisionData;
   const changed = comparePrivateCloudProjects(current, requested);
-  const isQuotaUpgraded = isQuotaUpgrade(
-    requested as PrivateCloudEditRequestBody,
-    current as PrivateCloudEditRequestBody,
-  );
+  const isQuotaUpgraded = isQuotaUpgrade(requested, current);
   const requestComment = request.requestComment ?? undefined;
 
   return (
@@ -40,7 +36,10 @@ const EditRequestTemplate = ({ request, userName }: EmailProp) => {
             ? ' Our administrators have been notified and will review your request.'
             : ' Your request will be reviewed automatically. Once the provisioning is complete, you will receive a notification email with all the relevant details and updates regarding your request.'}
         </Text>
-        <Button href={BASE_URL} className="bg-bcorange rounded-md px-4 py-2 text-white">
+        <Button
+          href={`${BASE_URL}/private-cloud/requests/${request.id}/summary`}
+          className="bg-bcorange rounded-md px-4 py-2 text-white"
+        >
           View request
         </Button>
       </div>

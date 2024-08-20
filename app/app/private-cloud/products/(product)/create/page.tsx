@@ -1,8 +1,6 @@
 'use client';
 
 import { zodResolver } from '@hookform/resolvers/zod';
-import { notifications } from '@mantine/notifications';
-import { useMutation } from '@tanstack/react-query';
 import { useState } from 'react';
 import { FormProvider, useForm } from 'react-hook-form';
 import { z } from 'zod';
@@ -11,52 +9,19 @@ import CommonComponents from '@/components/form/CommonComponents';
 import ProjectDescription from '@/components/form/ProjectDescriptionPrivate';
 import TeamContacts from '@/components/form/TeamContacts';
 import FormErrorNotification from '@/components/generic/FormErrorNotification';
-import CreateModal from '@/components/modal/CreatePrivateCloud';
+import { openCreatePrivateCloudProductModal } from '@/components/modal/createPrivateCloudProductModal';
 import ReturnModal from '@/components/modal/Return';
 import { AGMinistries } from '@/constants';
 import createClientPage from '@/core/client-page';
 import { PrivateCloudCreateRequestBodySchema } from '@/schema';
-import { createPrivateCloudProject } from '@/services/backend/private-cloud/products';
 
 const privateCloudProductNew = createClientPage({
   roles: ['user'],
 });
 
 export default privateCloudProductNew(({ pathParams, queryParams, session }) => {
-  const [openCreate, setOpenCreate] = useState(false);
   const [openReturn, setOpenReturn] = useState(false);
   const [secondTechLead, setSecondTechLead] = useState(false);
-
-  const {
-    mutateAsync: createProject,
-    isPending: isCreatingProject,
-    isError: isCreateError,
-    error: createError,
-  } = useMutation({
-    mutationFn: (data: any) => createPrivateCloudProject(data),
-    onSuccess: () => {
-      setOpenCreate(false);
-      setOpenReturn(true);
-    },
-    onError: (error: any) => {
-      if (error.response?.status === 401) {
-        notifications.show({
-          title: 'Error',
-          message:
-            'You are not authorized to create this product. Please ensure you are mentioned in the product contacts to proceed.',
-          color: 'red',
-          autoClose: 5000,
-        });
-      } else {
-        notifications.show({
-          title: 'Error',
-          message: `Failed to create product: ${error.message}`,
-          color: 'red',
-          autoClose: 5000,
-        });
-      }
-    },
-  });
 
   const methods = useForm({
     resolver: zodResolver(
@@ -76,10 +41,6 @@ export default privateCloudProductNew(({ pathParams, queryParams, session }) => 
     ),
   });
 
-  const handleSubmit = async (data: any) => {
-    await createProject(data);
-  };
-
   const secondTechLeadOnClick = () => {
     setSecondTechLead(!secondTechLead);
     if (secondTechLead) {
@@ -95,11 +56,19 @@ export default privateCloudProductNew(({ pathParams, queryParams, session }) => 
 
       <FormProvider {...methods}>
         <FormErrorNotification />
-        <form onSubmit={methods.handleSubmit(() => setOpenCreate(true))} autoComplete="off">
+        <form
+          onSubmit={methods.handleSubmit(async (formData) => {
+            const result = await openCreatePrivateCloudProductModal({ productData: formData });
+            if (result?.state.success) {
+              setOpenReturn(true);
+            }
+          })}
+          autoComplete="off"
+        >
           <div className="space-y-12">
             <ProjectDescription mode="create" />
             <hr className="my-7" />
-            <TeamContacts secondTechLead={secondTechLead} secondTechLeadOnClick={secondTechLeadOnClick} />
+            <TeamContacts number={2} secondTechLead={secondTechLead} secondTechLeadOnClick={secondTechLeadOnClick} />
             <hr className="my-7" />
             <CommonComponents number={3} />
           </div>
@@ -114,12 +83,6 @@ export default privateCloudProductNew(({ pathParams, queryParams, session }) => 
           </div>
         </form>
       </FormProvider>
-      <CreateModal
-        open={openCreate}
-        setOpen={setOpenCreate}
-        handleSubmit={methods.handleSubmit(handleSubmit)}
-        isLoading={isCreatingProject}
-      />
       <ReturnModal
         open={openReturn}
         setOpen={setOpenReturn}

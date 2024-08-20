@@ -5,6 +5,8 @@ import { Tabs, Code, Mark } from '@mantine/core';
 import { useAppState } from '@/states/global';
 import { ApiAccount } from './types';
 
+const randomObjectId = () => faker.string.uuid().replace(/-/g, '').substring(0, 24);
+
 function PrivateCloudEndpoint() {
   return (
     <div className="">
@@ -46,6 +48,8 @@ function PrivateCloudEndpoint() {
   "success": true,
   "data": [
     {
+      "id": "${randomObjectId()}",
+      "active": ${faker.helpers.arrayElement([true, false])},
       "licencePlate": "${faker.string.uuid().substring(0, 6)}",
       "name": "${faker.company.name()}",
       "description": "${faker.company.buzzPhrase()}",
@@ -53,12 +57,14 @@ function PrivateCloudEndpoint() {
       "ministryName": "Citizens Services",
       "cluster": "SILVER",
       "projectOwner": {
-          "firstName": "${faker.person.firstName()}",
-          "lastName": "${faker.person.lastName()}"
+        "id": "${randomObjectId()}",
+        "firstName": "${faker.person.firstName()}",
+        "lastName": "${faker.person.lastName()}"
       },
       "primaryTechnicalLead": {
-          "firstName": "${faker.person.firstName()}",
-          "lastName": "${faker.person.lastName()}"
+        "id": "${randomObjectId()}",
+        "firstName": "${faker.person.firstName()}",
+        "lastName": "${faker.person.lastName()}"
       },
       "secondaryTechnicalLead": null
     }
@@ -116,6 +122,8 @@ function PublicCloudEndpoint() {
   "success": true,
   "data": [
     {
+      "id": "${randomObjectId()}",
+      "active": ${faker.helpers.arrayElement([true, false])},
       "licencePlate": "${faker.string.uuid().substring(0, 6)}",
       "name": "${faker.company.name()}",
       "description": "${faker.company.buzzPhrase()}",
@@ -123,12 +131,14 @@ function PublicCloudEndpoint() {
       "ministryName": "Citizens Services",
       "provider": "AWS",
       "projectOwner": {
-          "firstName": "${faker.person.firstName()}",
-          "lastName": "${faker.person.lastName()}"
+        "id": "${randomObjectId()}",
+        "firstName": "${faker.person.firstName()}",
+        "lastName": "${faker.person.lastName()}"
       },
       "primaryTechnicalLead": {
-          "firstName": "${faker.person.firstName()}",
-          "lastName": "${faker.person.lastName()}"
+        "id": "${randomObjectId()}",
+        "firstName": "${faker.person.firstName()}",
+        "lastName": "${faker.person.lastName()}"
       },
       "secondaryTechnicalLead": null
     }

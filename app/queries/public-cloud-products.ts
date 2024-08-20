@@ -1,4 +1,4 @@
-import { $Enums, Prisma } from '@prisma/client';
+import { Ministry, Provider, ProjectStatus, Prisma } from '@prisma/client';
 import { Session } from 'next-auth';
 import prisma from '@/core/prisma';
 import { PublicCloudProjectDecorate } from '@/types/doc-decorate';
@@ -10,6 +10,13 @@ export type PublicCloudProjectGetPayload = Prisma.PublicCloudProjectGetPayload<{
     primaryTechnicalLead: true;
     secondaryTechnicalLead: true;
     expenseAuthority: true;
+    billing: {
+      include: {
+        expenseAuthority: true;
+        signedBy: true;
+        approvedBy: true;
+      };
+    };
     requests: {
       where: {
         active: true;
@@ -36,7 +43,7 @@ export async function searchPublicCloudProducts({
   take,
   ministry,
   provider,
-  active,
+  status,
   search,
   sortKey = defaultSortKey,
   sortOrder = Prisma.SortOrder.desc,
@@ -45,9 +52,9 @@ export async function searchPublicCloudProducts({
   session: Session;
   skip: number;
   take: number;
-  active: boolean;
-  ministry?: string;
-  provider?: string;
+  status?: ProjectStatus;
+  ministry?: Ministry;
+  provider?: Provider;
   search?: string;
   sortKey?: string;
   sortOrder?: Prisma.SortOrder;
@@ -78,15 +85,15 @@ export async function searchPublicCloudProducts({
   }
 
   if (ministry) {
-    where.ministry = ministry as $Enums.Ministry;
+    where.ministry = ministry as Ministry;
   }
 
   if (provider) {
-    where.provider = provider as $Enums.Provider;
+    where.provider = provider as Provider;
   }
 
-  if (active) {
-    where.status = $Enums.ProjectStatus.ACTIVE;
+  if (status) {
+    where.status = status;
   }
 
   const [docs, totalCount] = await Promise.all([
@@ -128,6 +135,13 @@ export async function getPublicCloudProduct(session: Session, licencePlate?: str
       primaryTechnicalLead: true,
       secondaryTechnicalLead: true,
       expenseAuthority: true,
+      billing: {
+        include: {
+          expenseAuthority: true,
+          signedBy: true,
+          approvedBy: true,
+        },
+      },
       requests: {
         where: {
           active: true,
@@ -147,7 +161,7 @@ export async function getPublicCloudProduct(session: Session, licencePlate?: str
 export function excludeProductUsers(product: PublicCloudProjectGetPayload | null) {
   if (!product) return null;
 
-  const { projectOwner, primaryTechnicalLead, secondaryTechnicalLead, expenseAuthority, ...rest } = product;
+  const { projectOwner, primaryTechnicalLead, secondaryTechnicalLead, expenseAuthority, billing, ...rest } = product;
 
   return rest;
 }

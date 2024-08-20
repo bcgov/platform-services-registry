@@ -21,11 +21,13 @@ const NewRequestTemplate = ({ request, userName }: EmailProp) => {
     primaryTechnicalLead,
     secondaryTechnicalLead,
     provider,
-    accountCoding,
+    billing,
     budget,
     licencePlate,
     environmentsEnabled,
   } = request.decisionData;
+
+  const { accountCoding } = billing;
 
   return (
     <Layout>

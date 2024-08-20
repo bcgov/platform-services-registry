@@ -8,7 +8,7 @@ import { SERVICES_KEYCLOAK_APP_REALM } from './jest.mock';
 jest.setTimeout(75000);
 
 jest.mock('next-auth/next', () => ({
-  getServerSession: jest.fn(),
+  getServerSession: jest.fn(async () => null),
 }));
 
 jest.mock('next-auth', () => ({
@@ -51,7 +51,7 @@ jest.mock('@/services/keycloak/app-realm', () => ({
 }));
 
 jest.mock('@/utils/jwt', () => ({
-  verifyKeycloakJwtTokenSafe: jest.fn(async () => ({})),
+  verifyKeycloakJwtTokenSafe: jest.fn(async () => ({ service_account_type: 'user', 'kc-userid': 'xxxxxxxxxxxx' })),
 }));
 
 [
@@ -72,6 +72,7 @@ jest.mock('@/utils/jwt', () => ({
   'reduce',
   'set',
   'uniq',
+  'trim',
 ].forEach((fnName) => jest.mock(`lodash-es/${fnName}`, () => jest.fn(_[fnName])));
 
 export async function cleanUp() {
@@ -91,6 +92,8 @@ export async function cleanUp() {
   // Now it should be safe to delete User documents
   // await prisma.user.deleteMany();
   await prisma.event.deleteMany();
+  await prisma.task.deleteMany();
+  await prisma.billing.deleteMany();
 }
 
 beforeAll(async () => {

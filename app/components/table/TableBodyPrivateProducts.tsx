@@ -5,9 +5,9 @@ import { Tooltip, Badge } from '@mantine/core';
 import { $Enums } from '@prisma/client';
 import _truncate from 'lodash-es/truncate';
 import { usePathname, useRouter } from 'next/navigation';
-import React, { useState } from 'react';
+import React from 'react';
 import ActiveRequestBox from '@/components/form/ActiveRequestBox';
-import TestProductBox from '@/components/form/TestProductBox';
+import TemporaryProductBadge from '@/components/form/TemporaryProductBadge';
 import CopyableButton from '@/components/generic/button/CopyableButton';
 import UserCard from '@/components/UserCard';
 import { ministryKeyToName } from '@/helpers/product';
@@ -15,6 +15,7 @@ import { PrivateCloudProjectGetPayloadWithActiveRequest } from '@/queries/privat
 import { formatDate } from '@/utils/date';
 import EmptySearch from './EmptySearch';
 import TruncatedTooltip from './TruncatedTooltip';
+
 interface TableProps {
   rows: PrivateCloudProjectGetPayloadWithActiveRequest[];
   isLoading: boolean;
@@ -39,7 +40,7 @@ export default function TableBodyPrivateProducts({ rows, isLoading = false }: Ta
 
   return (
     <div className="divide-y divide-grey-200/5">
-      {rows.map((row, index) => (
+      {rows.map((row) => (
         <div key={row.id}>
           <div
             tabIndex={0} // Make it focusable
@@ -52,19 +53,17 @@ export default function TableBodyPrivateProducts({ rows, isLoading = false }: Ta
               <div className="flex items-center gap-x-3">
                 <h2 className="min-w-0 text-base text-gray-700">
                   <div className="flex gap-x-2">
-                    <span className="">
-                      <TruncatedTooltip label={row.description}>
-                        <span className="font-bold">{_truncate(row.name, { length: 100 })}</span>
-                      </TruncatedTooltip>
-                      {row.status === $Enums.ProjectStatus.INACTIVE && (
-                        <Badge color="red" radius="sm" className="ml-1">
-                          {$Enums.ProjectStatus.INACTIVE}
-                        </Badge>
-                      )}
-                    </span>
+                    <TruncatedTooltip label={row.description}>
+                      <span className="font-bold">{_truncate(row.name, { length: 100 })}</span>
+                    </TruncatedTooltip>
+                    {row.status === $Enums.ProjectStatus.INACTIVE && (
+                      <Badge color="red" radius="sm" className="mt-1">
+                        {$Enums.ProjectStatus.INACTIVE}
+                      </Badge>
+                    )}
+                    {row.isTest && <TemporaryProductBadge data={{ createdAt: row.createdAt }} className="mt-1" />}
                   </div>
                 </h2>
-                {row.isTest && <TestProductBox data={{ createdAt: row.createdAt }} />}
               </div>
 
               <div className="mt-1 flex items-center gap-x-2.5 text-sm leading-5 text-gray-700">
@@ -88,7 +87,12 @@ export default function TableBodyPrivateProducts({ rows, isLoading = false }: Ta
               </div>
             </div>
             <div className="md:col-span-2 lg:col-span-3">
-              {row.activeRequest && <ActiveRequestBox data={{ ...row.activeRequest, cloud: 'private-cloud' }} />}
+              {row.activeRequest && (
+                <ActiveRequestBox
+                  data={{ ...row.activeRequest, cloud: 'private-cloud', licencePlate: row.licencePlate }}
+                  showCount
+                />
+              )}
             </div>
 
             <div className="lg:col-span-1 hidden lg:block"></div>

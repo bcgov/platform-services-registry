@@ -39,7 +39,7 @@ const publicCloudFieldsToCompare: Array<keyof PublicCloudProject> = [
   'primaryTechnicalLeadId',
   'secondaryTechnicalLeadId',
   'expenseAuthorityId',
-  'accountCoding',
+  'billingId',
   'budget',
 ];
 

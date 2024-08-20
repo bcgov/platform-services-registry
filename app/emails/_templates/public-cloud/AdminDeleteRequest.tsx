@@ -22,11 +22,13 @@ const AdminDeleteRequestTemplate = ({ product, userName }: EmailProp) => {
     secondaryTechnicalLead,
     expenseAuthority,
     provider,
-    accountCoding,
+    billing,
     budget,
     licencePlate,
     environmentsEnabled,
   } = product;
+
+  const { accountCoding } = billing;
 
   return (
     <Layout>

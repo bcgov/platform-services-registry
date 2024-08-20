@@ -1,4 +1,4 @@
-import { $Enums, DecisionStatus, ProjectStatus, RequestType } from '@prisma/client';
+import { $Enums, DecisionStatus, ProjectStatus, RequestType, TaskStatus, TaskType } from '@prisma/client';
 import { Session } from 'next-auth';
 import prisma from '@/core/prisma';
 import generateLicencePlate from '@/helpers/licence-plate';
@@ -7,24 +7,43 @@ import { PublicCloudCreateRequestBody } from '@/schema';
 import { upsertUsers } from '@/services/db/user';
 
 export default async function createRequest(formData: PublicCloudCreateRequestBody, session: Session) {
-  const licencePlate = generateLicencePlate();
+  const licencePlate = await generateLicencePlate();
 
   await upsertUsers([
     formData.projectOwner.email,
     formData.primaryTechnicalLead.email,
     formData.secondaryTechnicalLead?.email,
+    formData.expenseAuthority?.email,
   ]);
 
   const createRequestedProject = {
     name: formData.name,
-    accountCoding: formData.accountCoding,
     budget: formData.budget,
     provider: formData.provider,
     description: formData.description,
     ministry: formData.ministry,
     status: ProjectStatus.ACTIVE,
-    licencePlate: licencePlate,
+    licencePlate,
     environmentsEnabled: formData.environmentsEnabled,
+    billing: {
+      connectOrCreate: {
+        where: {
+          accountCoding: formData.accountCoding,
+        },
+        create: {
+          accountCoding: formData.accountCoding,
+          expenseAuthority: {
+            connectOrCreate: {
+              where: {
+                email: formData.expenseAuthority.email,
+              },
+              create: formData.expenseAuthority,
+            },
+          },
+          licencePlate,
+        },
+      },
+    },
     projectOwner: {
       connectOrCreate: {
         where: {
@@ -85,6 +104,7 @@ export default async function createRequest(formData: PublicCloudCreateRequestBo
           primaryTechnicalLead: true,
           secondaryTechnicalLead: true,
           expenseAuthority: true,
+          billing: true,
         },
       },
       decisionData: {
@@ -93,12 +113,27 @@ export default async function createRequest(formData: PublicCloudCreateRequestBo
           primaryTechnicalLead: true,
           secondaryTechnicalLead: true,
           expenseAuthority: true,
+          billing: true,
         },
       },
     },
   });
 
   if (request) {
+    // Assign a task to the expense authority for new billing
+    if (request.decisionData.expenseAuthorityId && !request.decisionData.billing.signed) {
+      await prisma.task.create({
+        data: {
+          type: TaskType.SIGN_MOU,
+          status: TaskStatus.ASSIGNED,
+          userIds: [request.decisionData.expenseAuthorityId],
+          data: {
+            requestId: request.id,
+          },
+        },
+      });
+    }
+
     await createEvent($Enums.EventType.CREATE_PUBLIC_CLOUD_PRODUCT, session.user.id, { requestId: request.id });
   }
 

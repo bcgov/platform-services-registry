@@ -9,21 +9,23 @@ import { useEffect } from 'react';
 import { z } from 'zod';
 import PrivateCloudProductOptions from '@/components/dropdowns/PrivateCloudProductOptions';
 import ProductBadge from '@/components/form/ProductBadge';
+import TemporaryProductAlert from '@/components/form/TemporaryProductAlert';
 import Tabs, { ITab } from '@/components/generic/tabs/BasicTabs';
 import createClientPage from '@/core/client-page';
 import { getPrivateCloudProject } from '@/services/backend/private-cloud/products';
-import { privateProductState } from '@/states/global';
+import { usePrivateProductState } from '@/states/global';
 
 const pathParamSchema = z.object({
   licencePlate: z.string(),
 });
 
-const privateCloudProductSecurityACS = createClientPage({
+const privateCloudProductLayout = createClientPage({
   roles: ['user'],
   validations: { pathParams: pathParamSchema },
 });
 
-export default privateCloudProductSecurityACS(({ pathParams, queryParams, session, children }) => {
+export default privateCloudProductLayout(({ pathParams, queryParams, session, children }) => {
+  const [privateState, privateSnap] = usePrivateProductState();
   const { licencePlate } = pathParams;
 
   const { data: currentProduct } = useQuery({
@@ -33,11 +35,11 @@ export default privateCloudProductSecurityACS(({ pathParams, queryParams, sessio
   });
 
   useEffect(() => {
-    privateProductState.currentProduct = currentProduct;
+    privateState.currentProduct = currentProduct;
   }, [currentProduct]);
 
   useEffect(() => {
-    privateProductState.licencePlate = licencePlate;
+    privateState.licencePlate = licencePlate;
   }, [licencePlate]);
 
   const tabs: ITab[] = [
@@ -70,7 +72,7 @@ export default privateCloudProductSecurityACS(({ pathParams, queryParams, sessio
     });
   }
 
-  if (currentProduct?._permissions.viewHistory) {
+  if (privateSnap.currentProduct?._permissions.viewHistory) {
     tabs.push({
       label: 'HISTORY',
       name: 'history',
@@ -78,41 +80,35 @@ export default privateCloudProductSecurityACS(({ pathParams, queryParams, sessio
     });
   }
 
-  if (!currentProduct) {
+  if (!privateSnap.currentProduct) {
     return null;
   }
-  const diffInDays = 30 - differenceInDays(new Date(), new Date(currentProduct.createdAt));
 
   return (
     <div>
       <h1 className="flex justify-between text-xl lg:text-2xl xl:text-4xl font-semibold leading-7 text-gray-900 my-2 lg:my-4">
         Private Cloud OpenShift Platform
-        <ProductBadge data={currentProduct} />
+        <ProductBadge data={privateSnap.currentProduct} />
       </h1>
 
-      {currentProduct.requests.length > 0 && (
+      {privateSnap.currentProduct.requests.length > 0 && (
         <Alert variant="light" color="blue" title="" icon={<IconInfoCircle />}>
           There is already an{' '}
           <Link
             className="underline text-blue-500 font-bold text-lg"
-            href={`/private-cloud/requests/${currentProduct.requests[0].id}/decision`}
+            href={`/private-cloud/requests/${privateSnap.currentProduct.requests[0].id}/decision`}
           >
             active request
           </Link>{' '}
           for this product. You can not edit this product at this time.
         </Alert>
       )}
-      {currentProduct.isTest && (
-        <Alert variant="light" color="blue" title="" icon={<IconInfoCircle />}>
-          <span className="text-red-600/100 font-black text-lg">{Math.abs(diffInDays)}</span>
-          {diffInDays > 0 ? ' days until product deletion' : ' days overdue for automatic deletion'}
-        </Alert>
-      )}
+      {privateSnap.currentProduct.isTest && <TemporaryProductAlert data={privateSnap.currentProduct} />}
       <Tabs tabs={tabs}>
         <PrivateCloudProductOptions
-          licencePlate={currentProduct?.licencePlate}
-          canReprovision={currentProduct?._permissions?.reprovision}
-          canDelete={currentProduct?._permissions?.delete}
+          licencePlate={privateSnap.currentProduct?.licencePlate}
+          canReprovision={privateSnap.currentProduct?._permissions?.reprovision}
+          canDelete={privateSnap.currentProduct?._permissions?.delete}
         />
       </Tabs>
       <div className="mt-6">{children}</div>

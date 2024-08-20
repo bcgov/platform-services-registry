@@ -22,6 +22,7 @@ export default async function editRequest(
       primaryTechnicalLead: true,
       secondaryTechnicalLead: true,
       expenseAuthority: true,
+      billing: true,
     },
   });
 
@@ -29,7 +30,7 @@ export default async function editRequest(
     throw new Error('Project does not exist.');
   }
 
-  const { requestComment, ...rest } = formData;
+  const { requestComment, accountCoding, ...rest } = formData;
 
   await upsertUsers([
     formData.projectOwner.email,
@@ -45,6 +46,7 @@ export default async function editRequest(
     status: project.status,
     provider: project.provider,
     createdAt: project.createdAt,
+    billing: { connect: { id: project.billingId } },
     projectOwner: { connect: { email: formData.projectOwner.email } },
     primaryTechnicalLead: { connect: { email: formData.primaryTechnicalLead.email } },
     secondaryTechnicalLead: formData.secondaryTechnicalLead
@@ -79,6 +81,7 @@ export default async function editRequest(
           primaryTechnicalLead: true,
           secondaryTechnicalLead: true,
           expenseAuthority: true,
+          billing: true,
         },
       },
       originalData: {
@@ -87,6 +90,7 @@ export default async function editRequest(
           primaryTechnicalLead: true,
           secondaryTechnicalLead: true,
           expenseAuthority: true,
+          billing: true,
         },
       },
       decisionData: {
@@ -95,6 +99,7 @@ export default async function editRequest(
           primaryTechnicalLead: true,
           secondaryTechnicalLead: true,
           expenseAuthority: true,
+          billing: true,
         },
       },
     },

@@ -1,3 +1,4 @@
+import { ProjectStatus } from '@prisma/client';
 import _isString from 'lodash-es/isString';
 import createApiHandler from '@/core/api-handler';
 import { OkResponse } from '@/core/responses';
@@ -8,16 +9,7 @@ export const POST = createApiHandler({
   roles: ['user'],
   validations: { body: publicCloudProductSearchBodySchema },
 })(async ({ session, body }) => {
-  const {
-    search = '',
-    page = 1,
-    pageSize = 5,
-    ministry = '',
-    provider = '',
-    includeInactive = false,
-    sortKey,
-    sortOrder,
-  } = body;
+  const { search = '', page = 1, pageSize = 5, ministry, provider, includeInactive = false, sortKey, sortOrder } = body;
 
   const data = await searchOp({
     session,
@@ -26,7 +18,7 @@ export const POST = createApiHandler({
     pageSize,
     ministry,
     provider,
-    active: !includeInactive,
+    status: includeInactive ? undefined : ProjectStatus.ACTIVE,
     sortKey: sortKey || undefined,
     sortOrder,
   });

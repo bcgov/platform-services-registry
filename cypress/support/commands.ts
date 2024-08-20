@@ -49,15 +49,17 @@ declare global {
 
 export function loginToRegistry(username: string, password: string): void {
   cy.visit('/login', { failOnStatusCode: false });
-  cy.contains('button', 'LOGIN').click();
+  cy.wait(2000);
+  cy.contains('button', 'Login').click();
   cy.wait(2000); // wait until the page loads, otherwise no chances to find clause below
   cy.url().then((val) => {
+    console.log(val);
     if (val.includes('/api/auth/signin?csrf=true')) {
       cy.contains('span', 'Sign in with Keycloak').click();
     }
   });
   cy.origin(
-    Cypress.env('keycloak_url'),
+    Cypress.env('keycloakUrl'),
     { args: { usernameOrig: username, passwordOrig: password } },
     ({ usernameOrig, passwordOrig }) => {
       cy.get('input[id="username"]').type(usernameOrig);
@@ -66,25 +68,14 @@ export function loginToRegistry(username: string, password: string): void {
     },
   );
 
-  cy.contains('a', 'REQUEST A NEW PRODUCT');
-}
-
-export function loginToRegistryThroughApi(username: string, password: string): void {
-  cy.login({
-    root: Cypress.env('keycloak_url'),
-    realm: 'platform-services',
-    username: username,
-    password: password,
-    client_id: 'dummy',
-    redirect_uri: '/',
-  });
-  cy.contains('a', 'REQUEST A NEW PRODUCT');
+  cy.contains('a', 'PRIVATE CLOUD OPENSHIFT');
+  cy.contains('a', 'PUBLIC CLOUD LANDING ZONES');
 }
 
 export function logoutFromRegistry(): void {
   cy.get('button[aria-haspopup="menu"]').click();
   cy.contains('a', 'Sign out');
-  cy.contains('button', 'LOGIN');
+  cy.contains('button', 'Login');
 }
 
 Cypress.Commands.add('loginToRegistry', (username: string, password: string) => {
@@ -96,20 +87,6 @@ Cypress.Commands.add('loginToRegistry', (username: string, password: string) => 
   log.snapshot('before');
 
   loginToRegistry(username, password);
-
-  log.snapshot('after');
-  log.end();
-});
-
-Cypress.Commands.add('loginToRegistryThroughApi', (username: string, password: string) => {
-  const log = Cypress.log({
-    displayName: 'Login to Registry through API',
-    message: [`🔐 Authenticating | ${username}`],
-    autoEnd: false,
-  });
-  log.snapshot('before');
-
-  loginToRegistryThroughApi(username, password);
 
   log.snapshot('after');
   log.end();

@@ -4,7 +4,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { Alert } from '@mantine/core';
 import { notifications } from '@mantine/notifications';
 import { $Enums } from '@prisma/client';
-import { IconInfoCircle } from '@tabler/icons-react';
+import { IconInfoCircle, IconSquareCheck, IconSquare } from '@tabler/icons-react';
 import { useQuery, useMutation } from '@tanstack/react-query';
 import { useEffect, useState } from 'react';
 import { FormProvider, useForm } from 'react-hook-form';
@@ -20,10 +20,14 @@ import TeamContacts from '@/components/form/TeamContacts';
 import FormErrorNotification from '@/components/generic/FormErrorNotification';
 import Comment from '@/components/modal/Comment';
 import ReturnModal from '@/components/modal/ReturnDecision';
+import { openReviewPublicCloudProductModal } from '@/components/modal/reviewPublicCloudProductModal';
+import { openSignPublicCloudProductModal } from '@/components/modal/signPublicCloudProductModal';
 import createClientPage from '@/core/client-page';
+import { formatFullName } from '@/helpers/user';
 import { PublicCloudRequestDecisionBodySchema } from '@/schema';
 import { makePublicCloudRequestDecision } from '@/services/backend/public-cloud/requests';
 import { usePublicProductState } from '@/states/global';
+import { formatDate } from '@/utils/date';
 
 const pathParamSchema = z.object({
   id: z.string(),
@@ -111,6 +115,52 @@ export default publicCloudProductRequest(({ pathParams, queryParams, session, ro
 
   return (
     <div>
+      <Alert variant="light" color="blue" title="Billing eMOU status" icon={<IconInfoCircle />}>
+        <ul className="list-disc text-sm">
+          <li>
+            {publicSnap.currentRequest.decisionData.billing.signed ? (
+              <>
+                <IconSquareCheck className="inline-block text-sm" />
+                Signed by{' '}
+                <span className="font-bold">
+                  {formatFullName(publicSnap.currentRequest.decisionData.billing.signedBy)}
+                </span>{' '}
+                at{' '}
+                <span className="font-bold">{formatDate(publicSnap.currentRequest.decisionData.billing.signedAt)}</span>
+                .
+              </>
+            ) : (
+              <>
+                <IconSquare className="inline-block text-sm" />
+                Pending signature from{' '}
+                <span className="font-bold">
+                  {formatFullName(publicSnap.currentRequest.decisionData.billing.expenseAuthority)}
+                </span>
+                .
+              </>
+            )}
+          </li>
+          <li>
+            {publicSnap.currentRequest.decisionData.billing.approved ? (
+              <>
+                <IconSquareCheck className="inline-block text-sm" />
+                Approved by{' '}
+                <span className="font-bold">
+                  {formatFullName(publicSnap.currentRequest.decisionData.billing.approvedBy)}
+                </span>{' '}
+                at{' '}
+                <span className="font-bold">{formatDate(publicSnap.currentRequest.decisionData.billing.signedAt)}</span>
+                .
+              </>
+            ) : (
+              <>
+                <IconSquare className="inline-block text-sm" />
+                Pending approval from admin.
+              </>
+            )}
+          </li>
+        </ul>
+      </Alert>
       <FormProvider {...methods}>
         <FormErrorNotification />
         <form
@@ -127,6 +177,7 @@ export default publicCloudProductRequest(({ pathParams, queryParams, session, ro
             <hr className="my-7" />
             <TeamContacts
               disabled={isDisabled}
+              number={3}
               secondTechLead={secondTechLead}
               secondTechLeadOnClick={secondTechLeadOnClick}
             />
@@ -136,8 +187,8 @@ export default publicCloudProductRequest(({ pathParams, queryParams, session, ro
             <Budget disabled={isDisabled} />
             <hr className="my-7" />
             <AccountCoding
-              accountCodingInitial={publicSnap.currentRequest.decisionData?.accountCoding}
-              disabled={isDisabled}
+              accountCodingInitial={publicSnap.currentRequest.decisionData?.billing.accountCoding}
+              disabled
             />
           </div>
 
@@ -152,7 +203,7 @@ export default publicCloudProductRequest(({ pathParams, queryParams, session, ro
 
           <div className="mt-10 flex items-center justify-start gap-x-6">
             <PreviousButton />
-            {publicSnap.currentRequest._permissions.review ? (
+            {publicSnap.currentRequest._permissions.review && (
               <div className="flex items-center justify-start gap-x-6">
                 <SubmitButton
                   text="REJECT REQUEST"
@@ -169,7 +220,44 @@ export default publicCloudProductRequest(({ pathParams, queryParams, session, ro
                   }}
                 />
               </div>
-            ) : null}
+            )}
+            {publicSnap.currentRequest._permissions.signMou && (
+              <button
+                onClick={async () => {
+                  if (!publicSnap.currentRequest) return;
+                  const res = await openSignPublicCloudProductModal<{ confirmed: boolean }>({
+                    requestId: publicSnap.currentRequest.id,
+                  });
+
+                  if (res?.state.confirmed) {
+                    router.push('/public-cloud/requests/all');
+                  }
+                }}
+                type="button"
+                className="flex rounded-md bg-bcorange px-4 py-2.5 text-bcblue text-sm tracking-[.2em] shadow-sm hover:brightness-110 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+              >
+                Sign eMOU
+              </button>
+            )}
+            {publicSnap.currentRequest._permissions.reviewMou && (
+              <button
+                onClick={async () => {
+                  if (!publicSnap.currentRequest) return;
+                  const res = await openReviewPublicCloudProductModal<{ confirmed: boolean }>({
+                    requestId: publicSnap.currentRequest.id,
+                    billingId: publicSnap.currentRequest.decisionData.billingId,
+                  });
+
+                  if (res?.state.confirmed) {
+                    router.push('/public-cloud/requests/all');
+                  }
+                }}
+                type="button"
+                className="flex rounded-md bg-bcorange px-4 py-2.5 text-bcblue text-sm tracking-[.2em] shadow-sm hover:brightness-110 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+              >
+                Review eMOU
+              </button>
+            )}
           </div>
         </form>
       </FormProvider>

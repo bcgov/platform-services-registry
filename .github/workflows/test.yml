@@ -1,6 +1,13 @@
 name: 31.Test codebase
 
-on: push
+on:
+  push:
+    paths-ignore:
+    - data-migrations/**
+    - helm/**
+    - localdev/**
+    - terraform/**
+    - tools/**
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
@@ -12,7 +19,7 @@ jobs:
     timeout-minutes: 20
     steps:
     - uses: hmarr/debug-action@f7318c783045ac39ed9bb497e22ce835fdafbfe6
-    - uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332
+    - uses: actions/checkout@9a9194f87191a7e9055e3e9b95b8cfb13023bb08
 
     - name: Setup Tools
       uses: ./.github/actions/setup-tools
@@ -29,7 +36,7 @@ jobs:
     timeout-minutes: 20
     steps:
     - uses: hmarr/debug-action@f7318c783045ac39ed9bb497e22ce835fdafbfe6
-    - uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332
+    - uses: actions/checkout@9a9194f87191a7e9055e3e9b95b8cfb13023bb08
 
     - name: Setup Tools
       uses: ./.github/actions/setup-tools
@@ -46,7 +53,7 @@ jobs:
     timeout-minutes: 20
     steps:
     - uses: hmarr/debug-action@f7318c783045ac39ed9bb497e22ce835fdafbfe6
-    - uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332
+    - uses: actions/checkout@9a9194f87191a7e9055e3e9b95b8cfb13023bb08
 
     - name: Setup Tools
       uses: ./.github/actions/setup-tools
@@ -76,20 +83,3 @@ jobs:
 
         ~/.docker/cli-plugins/docker-compose -f localdev/docker-compose.yml -f localdev/docker-compose-ci.yml down
         sudo rm -rf ./localdev/mnt
-
-  pre-commit:
-    runs-on: ubuntu-22.04
-    timeout-minutes: 10
-    steps:
-    - uses: hmarr/debug-action@f7318c783045ac39ed9bb497e22ce835fdafbfe6
-    - uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332
-
-    - name: Setup Tools
-      uses: ./.github/actions/setup-tools
-
-    - name: Setup NPM Packages
-      uses: ./.github/actions/setup-npm
-
-    - name: Rerun Pre-Commit Hooks on CI
-      run: |
-        pre-commit run --config=.pre-commit-config.yaml --color=always --show-diff-on-failure --all-files

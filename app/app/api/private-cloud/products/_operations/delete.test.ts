@@ -1,7 +1,7 @@
 import { expect } from '@jest/globals';
 import { $Enums } from '@prisma/client';
 import { createSamplePrivateCloudProductData } from '@/helpers/mock-resources';
-import { findOhterMockUsers } from '@/helpers/mock-users';
+import { findOtherMockUsers } from '@/helpers/mock-users';
 import { mockSessionByEmail, mockSessionByRole } from '@/services/api-test/core';
 import { provisionPrivateCloudProject } from '@/services/api-test/private-cloud';
 import {
@@ -106,7 +106,7 @@ describe('Delete Private Cloud Product - Permissions', () => {
   });
 
   it('should fail to submit a delete request for a non-assigned user', async () => {
-    const otherUsers = findOhterMockUsers([
+    const otherUsers = findOtherMockUsers([
       productData.main.projectOwner.email,
       productData.main.primaryTechnicalLead.email,
       productData.main.secondaryTechnicalLead.email,

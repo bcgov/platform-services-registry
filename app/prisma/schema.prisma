@@ -40,6 +40,9 @@ model User {
   publicCloudRequestedProjectsAsExpenseAuthority        PublicCloudRequestedProject[]  @relation("expenseAuthority")
   privateCloudComments                                  PrivateCloudComment[]          @relation("user")
   reactions                                             Reaction[]                     @relation("user")
+  mousSigned                                            Billing[]                      @relation("signedBy")
+  mousApproved                                          Billing[]                      @relation("approvedBy")
+  mousAsExpenseAuthority                                Billing[]                      @relation("expenseAuthority")
 }
 
 model PrivateCloudRequest {
@@ -47,6 +50,9 @@ model PrivateCloudRequest {
   licencePlate       String
   createdByEmail     String
   decisionMakerEmail String?
+  quotaContactName   String?
+  quotaContactEmail  String?
+  quotaJustification String?
   type               RequestType
   decisionStatus     DecisionStatus
   isQuotaChanged     Boolean?                      @default(false)
@@ -70,39 +76,41 @@ model PrivateCloudRequest {
 }
 
 type PrivateCloudDataChanges {
-  profileChanged          Boolean
-  contactsChanged         Boolean
-  quotasChanged           Boolean
-  commonComponentsChanged Boolean
+  profileChanged          Boolean?
+  contactsChanged         Boolean?
+  quotasChanged           Boolean?
+  quotasIncrease          Boolean?
+  commonComponentsChanged Boolean?
   parentPaths             String[]
 }
 
 model PrivateCloudProject {
-  id                       String                @id @default(auto()) @map("_id") @db.ObjectId
-  licencePlate             String                @unique
-  name                     String
-  description              String
-  status                   ProjectStatus
-  isTest                   Boolean               @default(false)
-  createdAt                DateTime              @default(now())
-  updatedAt                DateTime              @updatedAt
-  projectOwnerId           String                @db.ObjectId
-  projectOwner             User                  @relation("projectOwner", fields: [projectOwnerId], references: [id])
-  primaryTechnicalLeadId   String                @db.ObjectId
-  primaryTechnicalLead     User                  @relation("primaryTechnicalLead", fields: [primaryTechnicalLeadId], references: [id])
-  secondaryTechnicalLeadId String?               @db.ObjectId
-  secondaryTechnicalLead   User?                 @relation("secondaryTechnicalLead", fields: [secondaryTechnicalLeadId], references: [id])
-  ministry                 Ministry
-  cluster                  Cluster
-  golddrEnabled            Boolean               @default(false)
-  productionQuota          Quota
-  testQuota                Quota
-  developmentQuota         Quota
-  toolsQuota               Quota
-  commonComponents         CommonComponents
-  supportPhoneNumber       String?
-  requests                 PrivateCloudRequest[] @relation("project")
-  comments                 PrivateCloudComment[] @relation("project")
+  id                               String                @id @default(auto()) @map("_id") @db.ObjectId
+  licencePlate                     String                @unique
+  name                             String
+  description                      String
+  status                           ProjectStatus
+  isTest                           Boolean               @default(false)
+  temporaryProductNotificationDate DateTime?
+  createdAt                        DateTime              @default(now())
+  updatedAt                        DateTime              @updatedAt
+  projectOwnerId                   String                @db.ObjectId
+  projectOwner                     User                  @relation("projectOwner", fields: [projectOwnerId], references: [id])
+  primaryTechnicalLeadId           String                @db.ObjectId
+  primaryTechnicalLead             User                  @relation("primaryTechnicalLead", fields: [primaryTechnicalLeadId], references: [id])
+  secondaryTechnicalLeadId         String?               @db.ObjectId
+  secondaryTechnicalLead           User?                 @relation("secondaryTechnicalLead", fields: [secondaryTechnicalLeadId], references: [id])
+  ministry                         Ministry
+  cluster                          Cluster
+  golddrEnabled                    Boolean               @default(false)
+  productionQuota                  Quota
+  testQuota                        Quota
+  developmentQuota                 Quota
+  toolsQuota                       Quota
+  commonComponents                 CommonComponents
+  supportPhoneNumber               String?
+  requests                         PrivateCloudRequest[] @relation("project")
+  comments                         PrivateCloudComment[] @relation("project")
 }
 
 model PrivateCloudRequestedProject {
@@ -186,6 +194,26 @@ model PublicCloudRequest {
   changes            PublicCloudDataChanges?
 }
 
+model Billing {
+  id                           String                        @id @default(auto()) @map("_id") @db.ObjectId
+  accountCoding                String                        @unique
+  licencePlate                 String
+  signed                       Boolean                       @default(false)
+  signedAt                     DateTime?
+  signedById                   String?                       @db.ObjectId
+  signedBy                     User?                         @relation("signedBy", fields: [signedById], references: [id])
+  approved                     Boolean                       @default(false)
+  approvedAt                   DateTime?
+  approvedById                 String?                       @db.ObjectId
+  approvedBy                   User?                         @relation("approvedBy", fields: [approvedById], references: [id])
+  expenseAuthorityId           String?                       @db.ObjectId
+  expenseAuthority             User?                         @relation("expenseAuthority", fields: [expenseAuthorityId], references: [id])
+  createdAt                    DateTime                      @default(now())
+  updatedAt                    DateTime                      @updatedAt
+  publicCloudProjects          PublicCloudProject[]          @relation("billing")
+  publicCloudRequestedProjects PublicCloudRequestedProject[] @relation("billing")
+}
+
 type PublicCloudDataChanges {
   profileChanged  Boolean
   contactsChanged Boolean
@@ -202,7 +230,8 @@ model PublicCloudProject {
   status                   ProjectStatus
   createdAt                DateTime             @default(now())
   updatedAt                DateTime             @updatedAt
-  accountCoding            String
+  billingId                String               @db.ObjectId
+  billing                  Billing              @relation("billing", fields: [billingId], references: [id])
   budget                   Budget
   projectOwnerId           String               @db.ObjectId
   projectOwner             User                 @relation("projectOwner", fields: [projectOwnerId], references: [id])
@@ -225,7 +254,8 @@ model PublicCloudRequestedProject {
   description              String
   status                   ProjectStatus
   createdAt                DateTime             @default(now())
-  accountCoding            String
+  billingId                String               @db.ObjectId
+  billing                  Billing              @relation("billing", fields: [billingId], references: [id])
   budget                   Budget
   projectOwnerId           String               @db.ObjectId
   projectOwner             User                 @relation("projectOwner", fields: [projectOwnerId], references: [id])
@@ -256,6 +286,20 @@ model Event {
   userId    String?
   createdAt DateTime  @default(now())
   data      Json
+}
+
+model Task {
+  id             String     @id @default(auto()) @map("_id") @db.ObjectId
+  type           TaskType
+  status         TaskStatus
+  userIds        String[]
+  roles          String[]
+  permissions    String[]
+  createdAt      DateTime   @default(now())
+  completedAt    DateTime?
+  completedBy    String?    @db.ObjectId
+  data           Json
+  closedMetadata Json?
 }
 
 model PrivateCloudProjectZapResult {
@@ -505,6 +549,9 @@ enum Provider {
 enum EventType {
   LOGIN
   LOGOUT
+  CREATE_TEAM_API_TOKEN
+  UPDATE_TEAM_API_TOKEN
+  DELETE_TEAM_API_TOKEN
   CREATE_API_TOKEN
   DELETE_API_TOKEN
   CREATE_PRIVATE_CLOUD_PRODUCT
@@ -519,4 +566,14 @@ enum EventType {
   DELETE_PUBLIC_CLOUD_PRODUCT
   EXPORT_PUBLIC_CLOUD_PRODUCT
   REVIEW_PUBLIC_CLOUD_REQUEST
+}
+
+enum TaskType {
+  SIGN_MOU
+  REVIEW_MOU
+}
+
+enum TaskStatus {
+  ASSIGNED
+  COMPLETED
 }

@@ -81,7 +81,7 @@ export default function FormCheckbox({
           {...inputProps}
           onChange={handleChange}
           className={classnames(
-            'h-4 w-4 mt-1 border-black-400',
+            'h-4 w-4 mt-[0.25rem] border-black-400',
             disabled ? 'text-gray-600 focus:ring-gray-600 cursor-not-allowed' : 'text-indigo-600 focus:ring-indigo-600',
             className?.input ?? '',
           )}

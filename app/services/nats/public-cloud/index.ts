@@ -6,6 +6,7 @@ export type PublicCloudRequestedProjectWithContacts = Prisma.PublicCloudRequeste
     primaryTechnicalLead: true;
     secondaryTechnicalLead: true;
     expenseAuthority: true;
+    billing: true;
   };
 }>;
 
@@ -15,6 +16,7 @@ export type PublicCloudProjectWithContacts = Prisma.PublicCloudRequestedProjectG
     primaryTechnicalLead: true;
     secondaryTechnicalLead: true;
     expenseAuthority: true;
+    billing: true;
   };
 }>;
 
@@ -30,7 +32,7 @@ export default function createPublicCloudNatsMessage(
       ministry_name: decisionData.ministry,
       request_type: requestType,
       project_name: decisionData.name,
-      account_coding: decisionData.accountCoding,
+      account_coding: decisionData.billing.accountCoding,
       budgets: decisionData.budget,
       enterprise_support: {
         prod: true,

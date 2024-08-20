@@ -2,13 +2,14 @@
 
 import { Alert } from '@mantine/core';
 import { $Enums } from '@prisma/client';
-import { IconArrowBack, IconInfoCircle, IconFile } from '@tabler/icons-react';
+import { IconArrowBack, IconInfoCircle, IconFile, IconExclamationCircle } from '@tabler/icons-react';
 import { useQuery } from '@tanstack/react-query';
 import { differenceInDays } from 'date-fns/differenceInDays';
 import { useEffect } from 'react';
 import { z } from 'zod';
 import PrivateCloudRequestOptions from '@/components/dropdowns/PrivateCloudRequestOptions';
 import RequestBadge from '@/components/form/RequestBadge';
+import TemporaryProductAlert from '@/components/form/TemporaryProductAlert';
 import LightButton from '@/components/generic/button/LightButton';
 import Tabs, { ITab } from '@/components/generic/tabs/BasicTabs';
 import createClientPage from '@/core/client-page';
@@ -101,7 +102,7 @@ export default privateCloudProductSecurityACS(({ pathParams, queryParams, sessio
   });
 
   if (isRequestLoading || !request) return null;
-  const diffInDays = 30 - differenceInDays(new Date(), new Date(request.createdAt));
+
   return (
     <div>
       <div>
@@ -130,12 +131,7 @@ export default privateCloudProductSecurityACS(({ pathParams, queryParams, sessio
           A decision has been made for this request.
         </Alert>
       )}
-      {request.decisionData.isTest && (
-        <Alert variant="light" color="blue" title="" icon={<IconInfoCircle />}>
-          <span className="text-red-600/100 font-black text-lg">{Math.abs(diffInDays)}</span>
-          {diffInDays > 0 ? ' days until product deletion' : ' days overdue for automatic deletion'}
-        </Alert>
-      )}
+      {request.decisionData.isTest && <TemporaryProductAlert data={{ createdAt: request.project?.createdAt }} />}
       <Tabs tabs={tabs}>
         <PrivateCloudRequestOptions id={request.id} canResend={request._permissions.resend} />
       </Tabs>

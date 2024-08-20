@@ -127,6 +127,7 @@ export default publicCloudProductEdit(({ pathParams, queryParams, session }) => 
             <hr className="my-7" />
             <TeamContacts
               disabled={isDisabled}
+              number={3}
               secondTechLead={secondTechLead}
               secondTechLeadOnClick={secondTechLeadOnClick}
             />
@@ -135,7 +136,7 @@ export default publicCloudProductEdit(({ pathParams, queryParams, session }) => 
             <hr className="my-7" />
             <Budget disabled={false} />
             <hr className="my-7" />
-            <AccountCoding accountCodingInitial={snap.currentProduct?.accountCoding} disabled={isDisabled} />
+            <AccountCoding accountCodingInitial={snap.currentProduct?.billing.accountCoding} disabled />
           </div>
           <div className="mt-10 flex items-center justify-start gap-x-6">
             <PreviousButton />

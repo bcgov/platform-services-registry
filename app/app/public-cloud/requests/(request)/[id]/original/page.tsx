@@ -67,6 +67,7 @@ export default publicCloudRequestOriginal(({ pathParams, queryParams, session, r
             <hr className="my-7" />
             <TeamContacts
               disabled={isDisabled}
+              number={3}
               secondTechLead={secondTechLead}
               secondTechLeadOnClick={secondTechLeadOnClick}
             />
@@ -76,8 +77,8 @@ export default publicCloudRequestOriginal(({ pathParams, queryParams, session, r
             <Budget disabled={isDisabled} />
             <hr className="my-7" />
             <AccountCoding
-              accountCodingInitial={publicSnap.currentRequest.originalData?.accountCoding}
-              disabled={isDisabled}
+              accountCodingInitial={publicSnap.currentRequest.originalData?.billing.accountCoding}
+              disabled
             />
           </div>
 

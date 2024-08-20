@@ -1,3 +1,4 @@
+import { Prisma } from '@prisma/client';
 import { User } from 'next-auth';
 import NextAuth, { DefaultSession, JWT } from 'next-auth/jwt';
 import { Permissions, PermissionKey } from './permissions';
@@ -38,6 +39,7 @@ declare module 'next-auth' {
 
     viewZapscanResults: boolean;
     viewSonarscanResults: boolean;
+    viewGeneralAnalytics: boolean;
     viewPrivateAnalytics: boolean;
     viewPublicAnalytics: boolean;
   }
@@ -53,6 +55,7 @@ declare module 'next-auth' {
     };
     userId: string | null;
     userEmail: string | null;
+    isServiceAccount: boolean;
     isUser: boolean;
     isAdmin: boolean;
     isEditor: boolean;
@@ -68,12 +71,14 @@ declare module 'next-auth' {
     isPublicReader: boolean;
     isApprover: boolean;
     roles: string[];
+    teams: { clientId: string; roles: string[] }[];
     ministries: {
       editor: string[];
       reader: string[];
       [key: string]: string[];
     };
     permissions: Permissions;
+    tasks: Prisma.TaskGetPayload<null>[];
     previews: {
       security: boolean;
       apiAccount: boolean;

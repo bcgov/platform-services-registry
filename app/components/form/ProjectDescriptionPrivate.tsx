@@ -4,7 +4,8 @@ import { useState, useEffect } from 'react';
 import { useFormContext } from 'react-hook-form';
 import AGMinistryCheckBox from '@/components/form/AGMinistryCheckBox';
 import GolddrCheckbox from '@/components/form/GolddrCheckbox';
-import IsTestCheckBox from '@/components/form/IsTestCheckBox';
+import TemporaryProductCheckbox from '@/components/form/TemporaryProductCheckbox';
+import TemporaryProductCheckboxAdmin from '@/components/form/TemporaryProductCheckboxAdmin';
 import ExternalLink from '@/components/generic/button/ExternalLink';
 import MailLink from '@/components/generic/button/MailLink';
 import FormSelect from '@/components/generic/select/FormSelect';
@@ -14,10 +15,12 @@ export default function ProjectDescriptionPrivate({
   mode,
   disabled,
   clusterDisabled,
+  canToggleTemporary = false,
 }: {
   mode: string;
   disabled?: boolean;
   clusterDisabled?: boolean;
+  canToggleTemporary?: boolean;
 }) {
   const {
     register,
@@ -37,25 +40,31 @@ export default function ProjectDescriptionPrivate({
     }
   }, [session]);
 
+  let temporaryProduct = null;
+  if (mode === 'create') {
+    temporaryProduct = (
+      <>
+        <p className="text-base leading-6 mt-5">
+          If this is your first time on the <b>OpenShift platform</b> you need to book an alignment meeting with the
+          Platform Services team. Reach out to{' '}
+          <MailLink to="platformservicesteam@gov.bc.ca">PlatformServicesTeam@gov.bc.ca</MailLink> to get started.
+          Provisioning requests from new teams that have <b>not</b> had an onboarding meeting will not be approved.
+        </p>
+        <div className="pt-5">
+          <TemporaryProductCheckbox disabled={disabled} />
+        </div>
+      </>
+    );
+  } else if (mode === 'edit' && canToggleTemporary) {
+    temporaryProduct = <TemporaryProductCheckboxAdmin disabled={disabled} className="mt-2" />;
+  }
+
   return (
     <div className="">
       <h2 className="text-base lg:text-lg 2xl:text-2xl font-semibold leading-6 text-gray-900">
         1. Product Description
       </h2>
-      {mode === 'create' && (
-        <>
-          <p className="text-base leading-6 mt-5">
-            If this is your first time on the <b>OpenShift platform</b> you need to book an alignment meeting with the
-            Platform Services team. Reach out to{' '}
-            <MailLink to="platformservicesteam@gov.bc.ca">PlatformServicesTeam@gov.bc.ca</MailLink> to get started.
-            Provisioning requests from new teams that have <b>not</b> had an onboarding meeting will not be approved.
-          </p>
-          <div className="pt-5">
-            <IsTestCheckBox disabled={disabled} />
-          </div>
-        </>
-      )}
-
+      {temporaryProduct}
       <div className="mt-10 grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6">
         <div className="col-span-full">
           <label htmlFor="street-address" className="block text-sm font-medium leading-6 text-gray-900">

@@ -46,6 +46,7 @@ export default publicCloudRequest(({ pathParams }) => {
             <hr className="my-7" />
             <TeamContacts
               disabled={true}
+              number={3}
               secondTechLead={!!request.decisionData.secondaryTechnicalLeadId}
               secondTechLeadOnClick={() => {}}
             />
@@ -54,7 +55,7 @@ export default publicCloudRequest(({ pathParams }) => {
             <hr className="my-7" />
             <Budget disabled={true} />
             <hr className="my-7" />
-            <AccountCoding accountCodingInitial={request.decisionData.accountCoding} disabled={true} />
+            <AccountCoding accountCodingInitial={request.decisionData.billing.accountCoding} disabled />
           </div>
         </form>
       </FormProvider>

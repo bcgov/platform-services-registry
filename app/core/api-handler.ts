@@ -1,3 +1,6 @@
+import _compact from 'lodash-es/compact';
+import _trim from 'lodash-es/trim';
+import _uniq from 'lodash-es/uniq';
 import { NextRequest, NextResponse } from 'next/server';
 import { Session, PermissionsKey } from 'next-auth';
 import { getServerSession } from 'next-auth/next';
@@ -5,7 +8,7 @@ import { z, TypeOf, ZodType } from 'zod';
 import { AUTH_SERVER_URL, AUTH_RELM } from '@/config';
 import { authOptions, generateSession } from '@/core/auth-options';
 import { findUser } from '@/services/keycloak/app-realm';
-import { arrayIntersection } from '@/utils/collection';
+import { checkArrayStringCondition } from '@/utils/collection';
 import { verifyKeycloakJwtTokenSafe } from '@/utils/jwt';
 import { parseQueryString } from '@/utils/query-string';
 import { logger } from './logging';
@@ -74,30 +77,30 @@ function createApiHandler<
       { params }: { params: TypeOf<TPathParams> } = { params: {} as TypeOf<TPathParams> },
     ) {
       try {
-        let session!: Session;
+        let session = await getServerSession(authOptions);
         let jwtData!: any;
 
-        if (keycloakOauth2) {
-          const bearerToken = req.headers.get('authorization');
-          if (!bearerToken) {
-            return UnauthorizedResponse('not allowed to perform the task');
-          }
+        if (!session) {
+          if (keycloakOauth2) {
+            const bearerToken = req.headers.get('authorization');
+            if (!bearerToken) {
+              return UnauthorizedResponse('not allowed to perform the task');
+            }
 
-          const { authUrl = AUTH_SERVER_URL, realm = AUTH_RELM, clientId, requiredClaims } = keycloakOauth2;
+            const { authUrl = AUTH_SERVER_URL, realm = AUTH_RELM, clientId, requiredClaims } = keycloakOauth2;
 
-          jwtData = await verifyKeycloakJwtTokenSafe({
-            jwtToken: bearerToken,
-            authUrl,
-            realm,
-            authorizedPresenter: clientId,
-            requiredClaims,
-          });
+            jwtData = await verifyKeycloakJwtTokenSafe({
+              jwtToken: bearerToken,
+              authUrl,
+              realm,
+              authorizedPresenter: clientId,
+              requiredClaims,
+            });
 
-          if (!jwtData) {
-            return UnauthorizedResponse('invalid token');
-          }
-        } else {
-          if (useServiceAccount) {
+            if (!jwtData) {
+              return UnauthorizedResponse('invalid token');
+            }
+          } else if (useServiceAccount) {
             const bearerToken = req.headers.get('authorization');
             if (!bearerToken) {
               return UnauthorizedResponse('not allowed to perform the task');
@@ -107,41 +110,57 @@ function createApiHandler<
               jwtToken: bearerToken,
               authUrl: AUTH_SERVER_URL,
               realm: AUTH_RELM,
-              requiredClaims: ['kc-userid'],
+              requiredClaims: ['service_account_type'],
             });
 
             if (!jwtData) {
               return UnauthorizedResponse('invalid token');
             }
 
-            const kcUserId = jwtData['kc-userid'];
-            const kcUser = await findUser(kcUserId);
-            if (!kcUser) return BadRequestResponse('keycloak user not found');
+            const saType = jwtData.service_account_type;
 
-            session = await generateSession({
-              session: {} as Session,
-              token: { email: kcUser.email, roles: kcUser.authRoleNames },
-            });
-          } else {
-            session = (await getServerSession(authOptions)) || (await generateSession({ session: {} as Session }));
-          }
+            if (saType === 'user') {
+              const kcUserId = jwtData['kc-userid'];
+              if (!kcUserId) return UnauthorizedResponse('invalid token');
 
-          // Validate user roles
-          if (roles && roles.length > 0) {
-            const allowed = arrayIntersection(roles, session.roles).length > 0;
-            if (!allowed) {
-              return UnauthorizedResponse('not allowed to perform the task');
+              const kcUser = await findUser(kcUserId);
+              if (!kcUser) return BadRequestResponse('keycloak user not found');
+
+              session = await generateSession({
+                session: {} as Session,
+                token: { email: kcUser.email, roles: kcUser.authRoleNames.concat('service-account') },
+              });
+            } else if (saType === 'team') {
+              const rolesStr = jwtData.roles;
+              const rolesArr: string[] = _uniq(_compact(rolesStr.split(',').map(_trim)));
+
+              session = await generateSession({
+                session: {} as Session,
+                token: { email: '', roles: rolesArr.concat('service-account') },
+              });
+            } else {
+              return UnauthorizedResponse('invalid token');
             }
           }
+        }
 
-          // Validate user permissions
-          if (permissions && permissions.length > 0) {
-            const allowed = permissions.some(
-              (permKey) => session.permissions[permKey as keyof typeof session.permissions],
-            );
-            if (!allowed) {
-              return UnauthorizedResponse('not allowed to perform the task');
-            }
+        if (!session) session = await generateSession({ session: {} as Session });
+
+        // Validate user roles
+        if (roles && roles.length > 0) {
+          const allowed = checkArrayStringCondition(roles, session.roles);
+          if (!allowed) {
+            return UnauthorizedResponse('not allowed to perform the task');
+          }
+        }
+
+        // Validate user permissions
+        if (permissions && permissions.length > 0) {
+          const allowed = permissions.some(
+            (permKey) => session.permissions[permKey as keyof typeof session.permissions],
+          );
+          if (!allowed) {
+            return UnauthorizedResponse('not allowed to perform the task');
           }
         }
 

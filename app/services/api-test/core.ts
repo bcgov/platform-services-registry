@@ -4,7 +4,6 @@ import { getServerSession } from 'next-auth/next';
 import { BASE_URL } from '@/config';
 import { generateTestSession, findMockUserbyRole, findMockUserByEmail, upsertMockUser } from '@/helpers/mock-users';
 import { SERVICES_KEYCLOAK_APP_REALM } from '@/jest.mock';
-import { AppUser } from '@/types/user';
 import { stringifyQuery } from '@/utils/query-string';
 
 type Handler = (req: NextRequest, Options?: { params: any }) => Promise<Response>;
@@ -105,6 +104,8 @@ export async function mockSessionByRole(role?: string) {
 }
 
 export async function mockUserServiceAccountByEmail(email?: string) {
+  mockedGetServerSession.mockResolvedValue(null);
+
   let mockedValue = null;
   if (email) {
     const mockUser = await findMockUserByEmail(email);
@@ -118,8 +119,9 @@ export async function mockUserServiceAccountByEmail(email?: string) {
 }
 
 export async function mockUserServiceAccountByRole(role?: string) {
-  let mockedValue = null;
+  mockedGetServerSession.mockResolvedValue(null);
 
+  let mockedValue = null;
   if (role) {
     const mockUser = findMockUserbyRole(role);
     if (mockUser) {

@@ -8,6 +8,8 @@ const createJestConfig = nextJest({
 // Add any custom config to be passed to Jest
 /** @type {import('jest').Config} */
 const config = {
+  // Stop after first failing test
+  bail: true,
   // Add more setup options before each test is run
   setupFilesAfterEnv: ['./jest.setup.js'],
   modulePathIgnorePatterns: ['<rootDir>/.react-email'],

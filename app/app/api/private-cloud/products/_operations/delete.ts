@@ -33,7 +33,7 @@ export default async function deleteOp({
     );
   }
 
-  const { id, requests, updatedAt, _permissions, ...rest } = product;
+  const { id, requests, updatedAt, _permissions, temporaryProductNotificationDate, ...rest } = product;
 
   // Retrieve the latest request data to acquire the decision data ID that can be assigned to the incoming request's original data.
   const previousRequest = await getLastClosedPrivateCloudRequest(rest.licencePlate);

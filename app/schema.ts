@@ -118,6 +118,9 @@ export const PrivateCloudCreateRequestBodySchema = z.object({
   commonComponents: CommonComponentsInputSchema,
   golddrEnabled: z.preprocess(processBoolean, z.boolean()),
   isTest: z.preprocess(processBoolean, z.boolean()),
+  quotaContactName: z.string().max(50).optional(),
+  quotaContactEmail: z.union([z.undefined(), z.literal(''), z.string().email()]),
+  quotaJustification: z.string().max(1000).optional(),
   supportPhoneNumber: z
     .string()
     .nullable()
@@ -133,6 +136,7 @@ export const PrivateCloudCreateRequestBodySchema = z.object({
         message: 'Invalid phone number format. Expected format: +1 (xxx) xxx-xxxx',
       },
     ),
+  requestComment: string().optional(),
 });
 
 export const PublicCloudCreateRequestBodySchema = z.object({
@@ -297,3 +301,20 @@ export const publicCloudRequestSearchBodySchema = z.object({
 });
 
 export type PublicCloudRequestSearchBody = z.infer<typeof publicCloudRequestSearchBodySchema>;
+
+export const teamApiAccountSchema = z.object({
+  roles: z.array(z.string()),
+  users: z.array(
+    z.object({
+      email: z.string().email().min(5),
+    }),
+  ),
+});
+
+export type TeamApiAccountSchemaData = z.infer<typeof teamApiAccountSchema>;
+
+export const privateCloudAdminUpdateBodySchema = z.object({
+  isTest: z.preprocess(processBoolean, z.boolean()),
+});
+
+export type PrivateCloudAdminUpdateBody = z.infer<typeof privateCloudAdminUpdateBodySchema>;

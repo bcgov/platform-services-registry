@@ -1,18 +1,15 @@
-Feature: Registry App Delete Request
- As a user
-  I want to delete a Request in the Registry App and check its visibility on In Progress tab
+Feature: Delete Request
+  Background:
+    Given There is a product with names james.smith@gov.bc.ca and john.doe@gov.bc.ca waiting for Review
+    And User logs in with username james.smith@gov.bc.ca and password james.smith@gov.bc.ca
 
-  Scenario: Creating a Request and check visibility
-    Given I am logged in to the Registry as a User
-    When I Create a request with random values
-    And I see the Request
-    And I log out
-    And I log in as an Approval Admin
-    And I approve the Create Request
-    And I log out
-    And I log in as a User
-    And I create a Delete Request
-    And I log out
-    And I log in as an Approval Admin
-    And I approve the Delete Request
-    Then I cannot see the Product on the Products tab
+  Scenario: Delete Request and check visibility
+    When User navigates to Product Page
+    And User clicks button with text Options
+    And User clicks button with text Delete
+    And User inputs Licence Plate
+    And User types james.smith@gov.bc.ca in input with id = owner-email
+    And User clicks button with text Delete
+    And User clicks button with text Return to Dashboard
+    And User clicks link with text Requests
+    And User should see their Request

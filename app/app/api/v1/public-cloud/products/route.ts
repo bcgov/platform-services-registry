@@ -1,14 +1,12 @@
-import { $Enums } from '@prisma/client';
+import { ProjectStatus, Ministry, Provider } from '@prisma/client';
 import { Session } from 'next-auth';
 import { z } from 'zod';
 import createApiHandler from '@/core/api-handler';
-import { generateSession } from '@/core/auth-options';
 import { OkResponse, BadRequestResponse } from '@/core/responses';
 import { parsePaginationParams } from '@/helpers/pagination';
 import { ministryKeyToName } from '@/helpers/product';
 import { searchPublicCloudProducts } from '@/queries/public-cloud-products';
-import { findUser } from '@/services/keycloak/app-realm';
-import { processNumber } from '@/utils/zod';
+import { processNumber, processUpperEnumString, processBoolean } from '@/utils/zod';
 
 const defaultPage = 1;
 const defaultPageSize = 100;
@@ -19,15 +17,18 @@ const queryParamSchema = z.object({
     (v) => processNumber(v, { defaultValue: defaultPageSize }),
     z.number().min(1).max(1000).optional(),
   ),
+  ministry: z.preprocess(processUpperEnumString, z.nativeEnum(Ministry).optional()),
+  provider: z.preprocess(processUpperEnumString, z.nativeEnum(Provider).optional()),
+  status: z.preprocess(processUpperEnumString, z.nativeEnum(ProjectStatus).optional()),
 });
 
 const apiHandler = createApiHandler({
-  roles: ['user'],
+  roles: ['user', 'service-account'],
   useServiceAccount: true,
   validations: { queryParams: queryParamSchema },
 });
 export const GET = apiHandler(async ({ queryParams, session }) => {
-  const { page: _page, pageSize: _pageSize } = queryParams;
+  const { page: _page, pageSize: _pageSize, ministry, provider, status } = queryParams;
 
   const { skip, take, page } = parsePaginationParams(_page ?? defaultPage, _pageSize ?? defaultPageSize, 10);
 
@@ -35,12 +36,15 @@ export const GET = apiHandler(async ({ queryParams, session }) => {
     session: session as Session,
     skip,
     take,
-    active: false,
+    ministry,
+    provider,
+    status,
   });
 
   const data = docs.map((doc) => {
     return {
-      active: doc.status === $Enums.ProjectStatus.ACTIVE,
+      id: doc.id,
+      active: doc.status === ProjectStatus.ACTIVE,
       licencePlate: doc.licencePlate,
       name: doc.name,
       description: doc.description,
@@ -48,15 +52,18 @@ export const GET = apiHandler(async ({ queryParams, session }) => {
       ministryName: ministryKeyToName(doc.ministry),
       provider: doc.provider,
       projectOwner: {
+        id: doc.projectOwner.id,
         firstName: doc.projectOwner.firstName,
         lastName: doc.projectOwner.lastName,
       },
       primaryTechnicalLead: {
+        id: doc.primaryTechnicalLead.id,
         firstName: doc.primaryTechnicalLead.firstName,
         lastName: doc.primaryTechnicalLead.lastName,
       },
       secondaryTechnicalLead: doc.secondaryTechnicalLead
         ? {
+            id: doc.secondaryTechnicalLead.id,
             firstName: doc.secondaryTechnicalLead.firstName,
             lastName: doc.secondaryTechnicalLead.lastName,
           }
