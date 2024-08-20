@@ -121,7 +121,7 @@ export default function ActiveRequestBox({
         size="lg"
         radius="sm"
         autoContrast
-        className="ml-1"
+        className="min-w-40 m-auto"
       >
         {decisionText}
       </Badge>
@@ -141,7 +141,7 @@ export default function ActiveRequestBox({
         }}
       >
         <Indicator color={data.active ? 'lime' : 'red'} zIndex={10}>
-          <Badge autoContrast size="xl" color="rgba(200, 200, 200, 1)" radius="md" className="mb-1">
+          <Badge autoContrast size="xl" color="rgba(200, 200, 200, 1)" radius="md" className="mb-1 min-w-40 m-auto">
             <TypeIcon className="inline-block" />
             {data.type} Request
           </Badge>
