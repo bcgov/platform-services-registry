@@ -12,6 +12,7 @@ localmac:
 
 .PHONY: dev
 dev:
+	npm run prisma-push --prefix app
 	npm run dev --prefix app
 
 .PHONY: install
