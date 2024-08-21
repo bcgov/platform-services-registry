@@ -11,7 +11,7 @@
   "license": "ISC",
   "dependencies": {
     "@keycloak/keycloak-admin-client": "^25.0.0",
-    "wait-on": "^7.0.1"
+    "wait-on": "^8.0.0"
   },
   "devDependencies": {
     "@types/node": "^20.14.1",
