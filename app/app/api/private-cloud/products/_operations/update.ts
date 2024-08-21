@@ -6,7 +6,7 @@ import { sendRequestNatsMessage } from '@/helpers/nats-message';
 import { getPrivateCloudProduct } from '@/queries/private-cloud-products';
 import editRequest from '@/request-actions/private-cloud/edit-request';
 import { PrivateCloudEditRequestBody } from '@/schema';
-import { sendEditRequestEmails } from '@/services/ches/private-cloud/email-handler';
+import { sendEditRequestEmails, sendRequestApprovalEmails } from '@/services/ches/private-cloud/email-handler';
 import { subscribeUsersToMautic } from '@/services/mautic';
 import { putPathParamSchema } from '../[licencePlate]/schema';
 
@@ -52,7 +52,14 @@ export default async function updateOp({
   ].filter((usr): usr is User => Boolean(usr));
 
   proms.push(subscribeUsersToMautic(users, request.decisionData.cluster, 'Private'));
+
   proms.push(sendEditRequestEmails(request, false, session.user.name));
+
+  if (request.decisionStatus === DecisionStatus.APPROVED) {
+    setTimeout(() => {
+      proms.push(sendRequestApprovalEmails(request));
+    }, 10000);
+  }
 
   await Promise.all(proms);
 
