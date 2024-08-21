@@ -1,7 +1,6 @@
 'use client';
 
 import { Alert, Button } from '@mantine/core';
-import { Prisma, $Enums } from '@prisma/client';
 import { IconInfoCircle, IconInfoSquareRounded, IconSquareCheck, IconSquare } from '@tabler/icons-react';
 import classNames from 'classnames';
 import { useSession } from 'next-auth/react';

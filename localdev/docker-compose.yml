@@ -137,3 +137,10 @@ services:
       PUBLIC_CLOUD_CLIENT_SECRET: testsecret # pragma: allowlist secret
     depends_on:
     - nats
+
+  weasyprint:
+    platform: linux/amd64
+    container_name: weasyprint
+    image: ghcr.io/bcgov/weasyprint:2234822dc65bebc25a73b44fdb20bd874abcf140
+    ports:
+    - 8090:8080
