@@ -7,6 +7,7 @@ import { useEffect, useState } from 'react';
 import { FormProvider, useForm } from 'react-hook-form';
 import { useSnapshot } from 'valtio';
 import { z } from 'zod';
+import PublicCloudBillingInfo from '@/components/billing/PublicCloudBillingInfo';
 import PreviousButton from '@/components/buttons/Previous';
 import SubmitButton from '@/components/buttons/SubmitButton';
 import AccountCoding from '@/components/form/AccountCoding';
@@ -117,13 +118,18 @@ export default publicCloudProductEdit(({ pathParams, queryParams, session }) => 
 
   return (
     <div>
+      <PublicCloudBillingInfo product={snap.currentProduct} className="mb-2" />
       <FormProvider {...methods}>
         <FormErrorNotification />
         <form autoComplete="off" onSubmit={methods.handleSubmit(() => setOpenComment(true))}>
           <div className="space-y-12">
-            <ProjectDescriptionPublic mode="edit" />
+            <ProjectDescriptionPublic mode="edit" disabled={isDisabled} />
             <hr className="my-7" />
-            <AccountEnvironmentsPublic selected={snap.currentProduct.environmentsEnabled} mode="edit" />
+            <AccountEnvironmentsPublic
+              selected={snap.currentProduct.environmentsEnabled}
+              mode="edit"
+              disabled={isDisabled}
+            />
             <hr className="my-7" />
             <TeamContacts
               disabled={isDisabled}
@@ -134,7 +140,7 @@ export default publicCloudProductEdit(({ pathParams, queryParams, session }) => 
             <hr className="my-7" />
             <ExpenseAuthority disabled={isDisabled} />
             <hr className="my-7" />
-            <Budget disabled={false} />
+            <Budget disabled={isDisabled} />
             <hr className="my-7" />
             <AccountCoding accountCodingInitial={snap.currentProduct?.billing.accountCoding} disabled />
           </div>

@@ -42,6 +42,8 @@ declare module 'next-auth' {
     viewGeneralAnalytics: boolean;
     viewPrivateAnalytics: boolean;
     viewPublicAnalytics: boolean;
+
+    downloadBillingMou: boolean;
   }
 
   interface Session extends DefaultSession {
@@ -70,6 +72,7 @@ declare module 'next-auth' {
     isPublicEditor: boolean;
     isPublicReader: boolean;
     isApprover: boolean;
+    isBillingReviewer: boolean;
     roles: string[];
     teams: { clientId: string; roles: string[] }[];
     ministries: {

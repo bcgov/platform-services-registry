@@ -28,4 +28,6 @@ export enum PermissionsEnum {
   ViewGeneralAnalytics = 'viewGeneralAnalytics',
   ViewPrivateAnalytics = 'viewPrivateAnalytics',
   ViewPublicAnalytics = 'viewPublicAnalytics',
+
+  DownloadBillingMou = 'downloadBillingMou',
 }
