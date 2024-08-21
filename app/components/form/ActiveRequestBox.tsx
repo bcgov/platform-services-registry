@@ -161,7 +161,7 @@ export default function ActiveRequestBox({
               size="lg"
               radius="sm"
               color="rgba(200, 200, 200, 1)"
-              className="mb-1 min-w-40 m-auto flex flex"
+              className="mb-1 min-w-40 m-auto flex"
             >
               {data.type}
             </Badge>
