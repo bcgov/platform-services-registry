@@ -11,7 +11,15 @@ function stripSpecialCharacters(text: string) {
   return text.replace(pattern, '');
 }
 
-export default function ProjectDescriptionPublic({ mode, disabled }: { mode: string; disabled?: boolean }) {
+export default function ProjectDescriptionPublic({
+  mode,
+  disabled,
+  providerDisabled,
+}: {
+  mode: string;
+  disabled?: boolean;
+  providerDisabled?: boolean;
+}) {
   const { data: session } = useSession();
 
   const {
@@ -107,7 +115,7 @@ export default function ProjectDescriptionPublic({ mode, disabled }: { mode: str
           <FormSelect
             id="provider"
             label="Cloud Service Provider"
-            disabled={disabled}
+            disabled={disabled || providerDisabled}
             options={[
               { label: 'Select Provider', value: '' },
               ...providerOptions.filter((opt) => {
