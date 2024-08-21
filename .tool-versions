@@ -4,6 +4,6 @@ oc 4.13.3
 kubectl 1.30.3
 terraform 1.5.7
 helm 3.15.4
-shfmt 3.8.0
+shfmt 3.9.0
 act 0.2.65
 jq 1.7.1
