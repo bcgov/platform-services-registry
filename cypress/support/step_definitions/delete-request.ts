@@ -1,7 +1,7 @@
 import { Given, Then, When } from '@badeball/cypress-cucumber-preprocessor';
 import 'cypress-keycloak';
 import { createRequest } from '../../e2e/create-test.cy';
-import { getISODate } from '../../support/utils/getISODate';
+import { getISODate } from '../utils/get-iso-date';
 
 const productName: string = 'Test Product Cypress ' + getISODate();
 
