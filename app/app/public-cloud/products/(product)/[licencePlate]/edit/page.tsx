@@ -123,7 +123,7 @@ export default publicCloudProductEdit(({ pathParams, queryParams, session }) => 
         <FormErrorNotification />
         <form autoComplete="off" onSubmit={methods.handleSubmit(() => setOpenComment(true))}>
           <div className="space-y-12">
-            <ProjectDescriptionPublic mode="edit" disabled={isDisabled} providerDisabled={true} />
+            <ProjectDescriptionPublic mode="edit" disabled={isDisabled} providerDisabled />
             <hr className="my-7" />
             <AccountEnvironmentsPublic
               selected={snap.currentProduct.environmentsEnabled}
