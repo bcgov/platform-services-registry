@@ -78,7 +78,13 @@ export default function PublicCloudDeleteModal({
               <span className="flex items-center text-sm text-yellow-600">
                 <div className="flex">
                   <IconExclamationCircle className="h-5 w-5 mr-2 flex-shrink-0" aria-hidden="true" />
-                  This will permanently delete your product.
+                  <a
+                    href="https://digital.gov.bc.ca/cloud/services/public/intro/#closure"
+                    target="_blank"
+                    rel="noreferrer"
+                  >
+                    https://digital.gov.bc.ca/cloud/services/public/intro/#closure
+                  </a>
                 </div>
               </span>
             </div>
@@ -139,7 +145,7 @@ export default function PublicCloudDeleteModal({
             </div>
           </div>
           <div className="mt-8 flex items-center justify-between">
-            <p className="text-sm text-gray-500">This operation cannot be undone.</p>
+            <p className="text-sm text-red-500 font-bold">This operation cannot be undone!</p>
 
             {isSubmitLoading ? (
               <button
