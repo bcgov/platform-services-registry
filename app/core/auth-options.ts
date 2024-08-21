@@ -28,6 +28,7 @@ export async function generateSession({ session, token }: { session: Session; to
   session.isPublicEditor = false;
   session.isPublicReader = false;
   session.isApprover = false;
+  session.isBillingReviewer = false;
   session.roles = [];
   session.ministries = {
     editor: [],
@@ -142,6 +143,11 @@ export async function generateSession({ session, token }: { session: Session; to
         return;
       }
 
+      if (role === 'billing-reviewer') {
+        session.isBillingReviewer = true;
+        return;
+      }
+
       const regexPattern = /^ministry-(\w+)-(.+)$/;
       const match = regexPattern.exec(role);
       if (match) {
@@ -200,7 +206,8 @@ export async function generateSession({ session, token }: { session: Session; to
       session.isReader ||
       session.isPublicAdmin ||
       session.isPublicEditor ||
-      session.isPublicReader,
+      session.isPublicReader ||
+      session.isBillingReviewer,
 
     viewAllPublicCloudProductsHistory: session.isAdmin || session.isPublicAdmin,
 
@@ -229,6 +236,8 @@ export async function generateSession({ session, token }: { session: Session; to
     viewGeneralAnalytics: session.isAdmin || session.isAnalyzer,
     viewPublicAnalytics: session.isAdmin || session.isAnalyzer || session.isPublicAnalyzer,
     viewPrivateAnalytics: session.isAdmin || session.isAnalyzer || session.isPrivateAnalyzer,
+
+    downloadBillingMou: session.isBillingReviewer,
   };
 
   return session;

@@ -21,22 +21,22 @@ import { theme } from './mantine-theme';
 const bcsans = localFont({
   src: [
     {
-      path: '../fonts/bcsans-regular.woff',
+      path: '../public/fonts/bcsans-regular.woff',
       weight: '400',
       style: 'normal',
     },
     {
-      path: '../fonts/bcsans-regular.woff',
+      path: '../public/fonts/bcsans-italic.woff',
       weight: '400',
       style: 'italic',
     },
     {
-      path: '../fonts/bcsans-bold.woff',
+      path: '../public/fonts/bcsans-bold.woff',
       weight: '700',
       style: 'normal',
     },
     {
-      path: '../fonts/bcsans-bold.woff',
+      path: '../public/fonts/bcsans-bold-italic.woff',
       weight: '700',
       style: 'italic',
     },
