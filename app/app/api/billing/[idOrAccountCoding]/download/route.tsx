@@ -7,12 +7,8 @@ import { PdfResponse, BadRequestResponse } from '@/core/responses';
 import { WeasyPrint } from '@/services/weasyprint/client';
 import { PermissionsEnum } from '@/types/permissions';
 import { getBillingIdWhere } from '../helpers';
-
-const Test = () => {
-  return <div>test html</div>;
-};
-
-export type Product = Omit<Prisma.PublicCloudProjectGetPayload<null>, 'updatedAt'> | null;
+import BillingMou, { css } from './BillingMou';
+import { Product } from './types';
 
 const pathParamSchema = z.object({
   idOrAccountCoding: z.string(),
@@ -42,7 +38,9 @@ export const GET = apiHandler(async ({ pathParams, session }) => {
     return BadRequestResponse('invalid account coding');
   }
 
-  let product: Product = await prisma.publicCloudProject.findFirst({ where: { licencePlate: billing.licencePlate } });
+  let product: Product | null = await prisma.publicCloudProject.findFirst({
+    where: { licencePlate: billing.licencePlate },
+  });
 
   // Retrieve the product data from the original create request, if the product has not yet been created.
   if (!product) {
@@ -64,8 +62,8 @@ export const GET = apiHandler(async ({ pathParams, session }) => {
   }
 
   const ReactDOMServer = (await import('react-dom/server')).default;
-  const html = ReactDOMServer.renderToStaticMarkup(<Test />);
-  const buff = await weasyClient.generatePdf({ html });
+  const html = ReactDOMServer.renderToStaticMarkup(<BillingMou product={product} billing={billing} />);
+  const buff = await weasyClient.generatePdf({ html, css });
 
   return PdfResponse(buff);
 });

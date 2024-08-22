@@ -53,4 +53,4 @@ weasyprint:
 
   image:
     # See https://github.com/bcgov/weasyprint/pkgs/container/weasyprint
-    tag: 2234822dc65bebc25a73b44fdb20bd874abcf140 # pragma: allowlist secret
+    tag: 2b3185f05c76d16a7efc32be6124c744be5ee33f # pragma: allowlist secret
