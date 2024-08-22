@@ -51,7 +51,7 @@ flowchart LR
    <ol type="a">
      <li>Description Changes (Product Name, Description, Ministry)</li>
      <li>Contact Changes (Product Owner, Primary Technical Lead, Secondary Technical Lead)</li>
-     <li>Comments by user</li>
+     <li>Comments by user if provided</li>
      <li>Resource Quotas with Current and Requested</li>
      <li>Actioned by text (who submitted the request)</li>
    </ol>
@@ -59,7 +59,7 @@ flowchart LR
    <ol type="a">
      <li>Description Changes (Product Name, Description, Ministry)</li>
      <li>Contact Changes (Product Owner, Primary Technical Lead, Secondary Technical Lead)</li>
-     <li>Comments by user</li>
+     <li>Comments by user if provided</li>
      <li>Resource Quotas with Current and Requested</li>
    </ol>
 3. **Decision: Resource Quota Edit Request Approval/Rejection by admins**
@@ -89,23 +89,20 @@ flowchart LR
 
 **Description**: When a PO/TLs of a product edit their product where there is no increase in resources requested, the following emails will trigger.
 
-1. **Summary of changes submitted sent to PO/TLs** mentionioning that a follow up email will be sent once the provisioning is complete automatically and containing:
-   <ol type="a">
-     <li>Comments by user</li>
-     <li>Description Changes (Product Name, Description, Ministry)</li>
-     <li>Contact Changes</li>
-     <li>Resource Quota Downgrades with Before and Submitted</li>
-   </ol>
-2. **Summary of the changes provisioned sent to PO/TLs** containing:
+1. **Summary of the changes provisioned sent to PO/TLs** containing:
    <ol type="a">
      <li>Updated Description Changes (Product Name, Description, Ministry)</li>
      <li>Updated Contact Changes</li>
      <li>Updated Resource Quota Downgrades</li>
+      <li>Description Changes (Product Name, Description, Ministry)</li>
+     <li>Contact Changes (Product Owner, Primary Technical Lead, Secondary Technical Lead)</li>
+     <li>Comments by user if provided if provided</li>
+     <li>Resource Quotas with Current and Requested</li>
    </ol>
 
 ```mermaid
 flowchart LR
-    A((User Submits Edit w/ <br> No Resource Increase)) --> B(PrivateCloudEditSummary)
+    A((User Submits Edit w/ <br> No Resource Increase))
     B -->|Request Provisioned| C(PrivateCloudEditProvisioned)
 ```
 
@@ -115,7 +112,7 @@ flowchart LR
 
 1. **A notification sent to admins** containing:
     <ol type="a">
-     <li>Comments by user</li>
+     <li>Comments by user if provided if provided</li>
      <li>Name, Description, Ministry, Cluster, Contacts (all can be with Current and Requested sections if they are changed)</li>
      <li>Quota Changes with Current and Requested sections</li>
    </ol>
