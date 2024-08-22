@@ -96,13 +96,13 @@ flowchart LR
      <li>Updated Resource Quota Downgrades</li>
       <li>Description Changes (Product Name, Description, Ministry)</li>
      <li>Contact Changes (Product Owner, Primary Technical Lead, Secondary Technical Lead)</li>
-     <li>Comments by user if provided if provided</li>
+     <li>Comments by user if provided</li>
      <li>Resource Quotas with Current and Requested</li>
    </ol>
 
 ```mermaid
 flowchart LR
-    A((User Submits Edit w/ <br> No Resource Increase))
+    A((User Submits Edit w/ <br> No Resource Increase)) --> B
     B -->|Request Provisioned| C(PrivateCloudEditProvisioned)
 ```
 
@@ -112,7 +112,7 @@ flowchart LR
 
 1. **A notification sent to admins** containing:
     <ol type="a">
-     <li>Comments by user if provided if provided</li>
+     <li>Comments by user if provided</li>
      <li>Name, Description, Ministry, Cluster, Contacts (all can be with Current and Requested sections if they are changed)</li>
      <li>Quota Changes with Current and Requested sections</li>
    </ol>
