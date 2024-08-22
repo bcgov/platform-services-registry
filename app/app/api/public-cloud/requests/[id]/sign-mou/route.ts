@@ -1,8 +1,11 @@
 import { DecisionStatus, User, RequestType, TaskStatus, TaskType } from '@prisma/client';
 import { z } from 'zod';
+import { AUTH_RESOURCE } from '@/config';
 import createApiHandler from '@/core/api-handler';
 import prisma from '@/core/prisma';
 import { BadRequestResponse, OkResponse, UnauthorizedResponse } from '@/core/responses';
+import { sendPublicCloudBillingReviewEmails } from '@/services/ches/public-cloud/email-handler';
+import { findUsersByClientRole } from '@/services/keycloak/app-realm';
 
 const pathParamSchema = z.object({
   id: z.string(),
@@ -40,19 +43,35 @@ export const POST = apiHandler(async ({ pathParams, body, session }) => {
     },
   });
 
-  const request = await prisma.publicCloudRequest.findUnique({ where: { id }, include: { decisionData: true } });
-  if (request) {
-    await prisma.billing.update({
-      where: {
-        id: request?.decisionData.billingId,
+  const request = await prisma.publicCloudRequest.findUnique({
+    where: { id },
+    include: {
+      decisionData: {
+        include: {
+          projectOwner: true,
+          primaryTechnicalLead: true,
+          secondaryTechnicalLead: true,
+          expenseAuthority: true,
+          billing: true,
+        },
       },
-      data: {
-        signed: true,
-        signedAt: new Date(),
-        signedById: session.user.id,
-      },
-    });
+    },
+  });
+
+  if (!request) {
+    return BadRequestResponse('invalid request');
   }
+
+  await prisma.billing.update({
+    where: {
+      id: request?.decisionData.billingId,
+    },
+    data: {
+      signed: true,
+      signedAt: new Date(),
+      signedById: session.user.id,
+    },
+  });
 
   await prisma.task.create({
     data: {
@@ -64,6 +83,13 @@ export const POST = apiHandler(async ({ pathParams, body, session }) => {
       },
     },
   });
+
+  // Retrieve billing reviewers from the Keycloak realm
+  const billingReviewers = await findUsersByClientRole(AUTH_RESOURCE, 'billing-reviewer');
+  await sendPublicCloudBillingReviewEmails(
+    request,
+    billingReviewers.map((v) => v.email ?? ''),
+  );
 
   return OkResponse(true);
 });

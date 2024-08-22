@@ -2,6 +2,7 @@ import { render } from '@react-email/render';
 import { logger } from '@/core/logging';
 import AdminCreateTemplate from '@/emails/_templates/public-cloud/AdminCreateRequest';
 import AdminDeleteRequestTemplate from '@/emails/_templates/public-cloud/AdminDeleteRequest';
+import BillingReviewerMou from '@/emails/_templates/public-cloud/BillingReviewerMou';
 import CreateRequestTemplate from '@/emails/_templates/public-cloud/CreateRequest';
 import DeleteApprovalTemplate from '@/emails/_templates/public-cloud/DeleteApproval';
 import DeleteRequestTemplate from '@/emails/_templates/public-cloud/DeleteRequest';
@@ -44,6 +45,26 @@ export const sendCreateRequestEmails = async (request: PublicCloudRequestWithReq
     await Promise.all([contacts, ea]);
   } catch (error) {
     logger.log('sendCreateRequestEmails:', error);
+  }
+};
+
+export const sendPublicCloudBillingReviewEmails = async (
+  request: PublicCloudRequestWithRequestedProject,
+  emails: string[],
+) => {
+  try {
+    const body = render(BillingReviewerMou({ request }), { pretty: false });
+
+    const emailProm = sendEmail({
+      bodyType: 'html',
+      body,
+      to: emails,
+      subject: `eMOU review request`,
+    });
+
+    await Promise.all([emailProm]);
+  } catch (error) {
+    logger.log('sendPublicCloudBillingReviewEmails:', error);
   }
 };
 
