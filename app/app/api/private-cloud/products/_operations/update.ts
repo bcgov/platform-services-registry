@@ -53,12 +53,8 @@ export default async function updateOp({
 
   proms.push(subscribeUsersToMautic(users, request.decisionData.cluster, 'Private'));
 
-  proms.push(sendEditRequestEmails(request, false, session.user.name));
-
   if (request.decisionStatus === DecisionStatus.APPROVED) {
-    setTimeout(() => {
-      proms.push(sendRequestApprovalEmails(request));
-    }, 10000);
+    proms.push(sendRequestApprovalEmails(request));
   }
 
   await Promise.all(proms);
