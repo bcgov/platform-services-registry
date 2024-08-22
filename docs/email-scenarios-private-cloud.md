@@ -102,8 +102,8 @@ flowchart LR
 
 ```mermaid
 flowchart LR
-    A((User Submits Edit w/ <br> No Resource Increase)) --> B
-    B -->|Request Provisioned| C(PrivateCloudEditProvisioned)
+    A((User Submits Edit w/ <br> No Resource Increase)) -->|Request Automatically Approved and Provisioned| C(PrivateCloudEditApprovedAndProvisioned)
+
 ```
 
 #### Scenario 4. Mixed Edit Request: Quota Increase and Contact Change
