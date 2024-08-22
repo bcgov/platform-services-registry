@@ -1,8 +1,10 @@
+import { Button } from '@mantine/core';
 import { IconExclamationCircle } from '@tabler/icons-react';
 import classNames from 'classnames';
 import { Fragment, useEffect, useRef, useState } from 'react';
 import Modal from '@/components/generic/modal/Modal';
 import { usePublicProductState } from '@/states/global';
+import ExternalLink from '../generic/button/ExternalLink';
 
 export default function PublicCloudDeleteModal({
   open,
@@ -78,7 +80,9 @@ export default function PublicCloudDeleteModal({
               <span className="flex items-center text-sm text-yellow-600">
                 <div className="flex">
                   <IconExclamationCircle className="h-5 w-5 mr-2 flex-shrink-0" aria-hidden="true" />
-                  This will permanently delete your product.
+                  <ExternalLink href="https://digital.gov.bc.ca/cloud/services/public/intro/#closure">
+                    Account closure and project set deletion
+                  </ExternalLink>
                 </div>
               </span>
             </div>
@@ -139,7 +143,7 @@ export default function PublicCloudDeleteModal({
             </div>
           </div>
           <div className="mt-8 flex items-center justify-between">
-            <p className="text-sm text-gray-500">This operation cannot be undone.</p>
+            <p className="text-sm text-red-500 font-bold">This operation cannot be undone.</p>
 
             {isSubmitLoading ? (
               <button
@@ -149,17 +153,9 @@ export default function PublicCloudDeleteModal({
                 Deleting...
               </button>
             ) : (
-              <button
-                disabled={isDisabled}
-                type="button"
-                onClick={onSubmit}
-                className={classNames(
-                  'inline-flex justify-center rounded-md border border-transparent py-2 px-4 text-sm font-medium shadow-sm',
-                  isDisabled ? 'bg-gray-400 text-white cursor-not-allowed' : 'bg-red-600 text-white hover:bg-red-700',
-                )}
-              >
+              <Button color="danger" disabled={isDisabled} onClick={onSubmit}>
                 Delete
-              </button>
+              </Button>
             )}
           </div>
         </>

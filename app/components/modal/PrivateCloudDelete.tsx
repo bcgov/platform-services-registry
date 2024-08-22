@@ -1,3 +1,4 @@
+import { Button } from '@mantine/core';
 import { IconExclamationCircle, IconCircleCheck } from '@tabler/icons-react';
 import classNames from 'classnames';
 import { useEffect, useRef, useState } from 'react';
@@ -172,7 +173,7 @@ export default function PrivateCloudDeleteModal({
         {deletionCheckData !== 'OK_TO_DELETE' ? (
           <p className="text-sm text-gray-500">You are unable to delete this product.</p>
         ) : (
-          <p className="text-sm text-gray-500">This operation cannot be undone.</p>
+          <p className="text-sm text-red-500 font-bold">This operation cannot be undone.</p>
         )}
         {isSubmitLoading ? (
           <button
@@ -182,19 +183,9 @@ export default function PrivateCloudDeleteModal({
             Deleting...
           </button>
         ) : (
-          <button
-            disabled={isDisabled || deletionCheckData !== 'OK_TO_DELETE'}
-            type="button"
-            onClick={onSubmit}
-            className={classNames(
-              'inline-flex justify-center rounded-md border border-transparent py-2 px-4 text-sm font-medium shadow-sm',
-              isDisabled || deletionCheckData !== 'OK_TO_DELETE'
-                ? 'bg-gray-400 text-white cursor-not-allowed'
-                : 'bg-red-600 text-white hover:bg-red-700',
-            )}
-          >
+          <Button color="danger" disabled={isDisabled || deletionCheckData !== 'OK_TO_DELETE'} onClick={onSubmit}>
             Delete
-          </button>
+          </Button>
         )}
       </div>
     </Modal>
