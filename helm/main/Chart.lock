@@ -19,6 +19,6 @@ dependencies:
   version: 0.1.0
 - name: weasyprint
   repository: https://bcgov.github.io/weasyprint
-  version: 0.1.5
-digest: sha256:5abd4b1872bf7d5dcb104522d95006210e9c311ff03f8cd6745c0fabf8e3e497
-generated: "2024-08-20T16:15:41.914902387-07:00"
+  version: 0.1.6
+digest: sha256:31254c6644f3da4cb09f5e73d018eef053bdf408584abccf136375e15c408ba8
+generated: "2024-08-22T20:33:07.679846501Z"
