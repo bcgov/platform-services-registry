@@ -103,7 +103,7 @@ export const UserInputSchema = z.object({
   email: z.string().email().toLowerCase(),
   ministry: z.string(),
   idir: z.string().optional().nullable(),
-  upn: z.string(),
+  upn: z.string().optional().nullable(),
   // ministry: z.nativeEnum(Ministry), // Not using ministry enum as a new ministry may not be in our system yet
 });
 

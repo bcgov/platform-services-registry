@@ -34,6 +34,7 @@ import ReturnModal from '@/components/modal/ReturnDecision';
 import { openReviewPublicCloudProductModal } from '@/components/modal/reviewPublicCloudProductModal';
 import { openSignPublicCloudProductModal } from '@/components/modal/signPublicCloudProductModal';
 import createClientPage from '@/core/client-page';
+import { showErrorNotification } from '@/helpers/notifications';
 import { PublicCloudRequestDecisionBodySchema } from '@/schema';
 import { makePublicCloudRequestDecision } from '@/services/backend/public-cloud/requests';
 import { usePublicProductState } from '@/states/global';
@@ -66,12 +67,7 @@ export default publicCloudProductRequest(({ pathParams, queryParams, session, ro
       setOpenComment(false);
     },
     onError: (error: any) => {
-      notifications.show({
-        title: 'Error',
-        message: `Failed to make decision: ${error.message}`,
-        color: 'red',
-        autoClose: 5000,
-      });
+      showErrorNotification(error);
     },
   });
 
@@ -114,7 +110,8 @@ export default publicCloudProductRequest(({ pathParams, queryParams, session, ro
   };
 
   const setComment = (decisionComment: string) => {
-    makeDecision({ ...methods.getValues(), decisionComment });
+    const data = { ...methods.getValues(), decisionComment };
+    makeDecision(data);
   };
 
   if (!publicSnap.currentRequest) {

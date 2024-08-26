@@ -18,6 +18,7 @@ import FormErrorNotification from '@/components/generic/FormErrorNotification';
 import Comment from '@/components/modal/Comment';
 import ReturnModal from '@/components/modal/ReturnDecision';
 import createClientPage from '@/core/client-page';
+import { showErrorNotification } from '@/helpers/notifications';
 import { PrivateCloudDecisionRequestBodySchema } from '@/schema';
 import { makePrivateCloudRequestDecision } from '@/services/backend/private-cloud/requests';
 import { usePrivateProductState } from '@/states/global';
@@ -50,12 +51,7 @@ export default privateCloudRequestDecision(({ pathParams, queryParams, session, 
       setOpenReturn(true);
     },
     onError: (error: any) => {
-      notifications.show({
-        title: 'Error',
-        message: `Failed to make a decision: ${error.message}`,
-        color: 'red',
-        autoClose: 5000,
-      });
+      showErrorNotification(error);
     },
   });
 
@@ -102,7 +98,8 @@ export default privateCloudRequestDecision(({ pathParams, queryParams, session, 
   };
 
   const setComment = (decisionComment: string) => {
-    makeDecision({ ...methods.getValues(), decisionComment });
+    const data = { ...methods.getValues(), decisionComment };
+    makeDecision(data);
   };
 
   if (!privateSnap.currentRequest) {
