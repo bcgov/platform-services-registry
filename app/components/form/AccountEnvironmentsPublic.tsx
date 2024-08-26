@@ -29,7 +29,6 @@ export default function AccountEnvironmentsPublic({
 
   return (
     <div className="">
-      <h2 className="text-base lg:text-lg 2xl:text-2xl font-semibold leading-4">2. Accounts to create</h2>
       <div className="flex flex-col mt-2">
         {!disabled && (
           <div>

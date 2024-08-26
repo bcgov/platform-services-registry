@@ -63,9 +63,6 @@ export default function AccountCoding({
 
   return (
     <div className="">
-      <h2 className="text-base lg:text-lg 2xl:text-2xl font-semibold leading-6 text-gray-900">
-        6. Billing (Account Coding)
-      </h2>
       <p className="text-base leading-6 mt-5">
         Please refer to the Memorandum of Understanding (MoU) signed for this project to enter the information required
         below. Please make sure that the information entered below matches the account coding on the MoU for this

@@ -67,9 +67,9 @@ export default function BillingMou({ product, billing }: { product: Product; bil
         <div className="right">Printed on {formatDate(new Date())}</div>
       </div>
       <h1>Electronic Memorandum of Understanding (eMOU)</h1>
-      <h3>Product Description</h3>
+      <h3>Product description</h3>
       <div>
-        <div className="label">Product Name</div>
+        <div className="label">Product name</div>
         <div>{product.name}</div>
         <br />
         <div className="label">Description</div>
@@ -78,36 +78,36 @@ export default function BillingMou({ product, billing }: { product: Product; bil
         <div className="label">Ministry</div>
         <div>{ministryKeyToName(product.ministry)}</div>
         <br />
-        <div className="label">Cloud Service Provider</div>
+        <div className="label">Cloud service provider</div>
         <div>{product.provider}</div>
       </div>
 
       <br />
 
-      <h3>Product Budget (Estimated average monthly spend)</h3>
+      <h3>Product budget (estimated average monthly spend)</h3>
       <table>
         {product.environmentsEnabled.development && (
           <tr>
-            <td>Development Account</td>
+            <td>Development account</td>
             <td>{product.budget.dev.toFixed(2)}</td>
           </tr>
         )}
 
         {product.environmentsEnabled.test && (
           <tr>
-            <td>Development Account</td>
+            <td>Development account</td>
             <td>{product.budget.test.toFixed(2)}</td>
           </tr>
         )}
         {product.environmentsEnabled.production && (
           <tr>
-            <td>Development Account</td>
+            <td>Development account</td>
             <td>{product.budget.prod.toFixed(2)}</td>
           </tr>
         )}
         {product.environmentsEnabled.tools && (
           <tr>
-            <td>Development Account</td>
+            <td>Development account</td>
             <td>{product.budget.tools.toFixed(2)}</td>
           </tr>
         )}
@@ -120,23 +120,23 @@ export default function BillingMou({ product, billing }: { product: Product; bil
       <h3>Agreement</h3>
       <table>
         <tr>
-          <td>Account Coding</td>
+          <td>Account coding</td>
           <td>{billing.accountCoding}</td>
         </tr>
         <tr>
-          <td>Signed By</td>
+          <td>Signed by</td>
           <td>{formatFullName(billing.signedBy)}</td>
         </tr>
         <tr>
-          <td>Signed At</td>
+          <td>Signed at</td>
           <td>{formatDate(billing.signedAt)}</td>
         </tr>
         <tr>
-          <td>Approved By</td>
+          <td>Approved by</td>
           <td>{formatFullName(billing.approvedBy)}</td>
         </tr>
         <tr>
-          <td>Approved At</td>
+          <td>Approved at</td>
           <td>{formatDate(billing.approvedAt)}</td>
         </tr>
       </table>

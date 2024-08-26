@@ -1,11 +1,13 @@
 'use client';
 
 import { zodResolver } from '@hookform/resolvers/zod';
+import { IconInfoCircle, IconUsersGroup, IconSettings, IconComponents } from '@tabler/icons-react';
 import { useState } from 'react';
 import { FormProvider, useForm } from 'react-hook-form';
 import { z } from 'zod';
 import PreviousButton from '@/components/buttons/Previous';
 import CommonComponents from '@/components/form/CommonComponents';
+import PageAccordion from '@/components/form/PageAccordion';
 import ProjectDescription from '@/components/form/ProjectDescriptionPrivate';
 import TeamContacts from '@/components/form/TeamContacts';
 import FormErrorNotification from '@/components/generic/FormErrorNotification';
@@ -48,6 +50,30 @@ export default privateCloudProductNew(({ pathParams, queryParams, session }) => 
     }
   };
 
+  const accordionItems = [
+    {
+      LeftIcon: IconInfoCircle,
+      label: 'Product description',
+      description: '',
+      Component: ProjectDescription,
+      componentArgs: { mode: 'create' },
+    },
+    {
+      LeftIcon: IconUsersGroup,
+      label: 'Team contacts',
+      description: '',
+      Component: TeamContacts,
+      componentArgs: { secondTechLead, secondTechLeadOnClick },
+    },
+    {
+      LeftIcon: IconComponents,
+      label: 'Common components',
+      description: '',
+      Component: CommonComponents,
+      componentArgs: {},
+    },
+  ];
+
   return (
     <div>
       <h1 className="flex justify-between text-xl lg:text-2xl xl:text-4xl font-semibold leading-7 text-gray-900 mt-2 mb-4 lg:mt-4 lg:mb-8">
@@ -65,14 +91,9 @@ export default privateCloudProductNew(({ pathParams, queryParams, session }) => 
           })}
           autoComplete="off"
         >
-          <div className="space-y-12">
-            <ProjectDescription mode="create" />
-            <hr className="my-7" />
-            <TeamContacts number={2} secondTechLead={secondTechLead} secondTechLeadOnClick={secondTechLeadOnClick} />
-            <hr className="my-7" />
-            <CommonComponents number={3} />
-          </div>
-          <div className="mt-10 flex items-center justify-start gap-x-6">
+          <PageAccordion items={accordionItems} />
+
+          <div className="mt-5 flex items-center justify-start gap-x-6">
             <PreviousButton />
             <button
               type="submit"

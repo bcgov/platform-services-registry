@@ -3,15 +3,16 @@
 import { zodResolver } from '@hookform/resolvers/zod';
 import { notifications } from '@mantine/notifications';
 import { PrivateCloudProject } from '@prisma/client';
+import { IconInfoCircle, IconUsersGroup, IconSettings, IconComponents } from '@tabler/icons-react';
 import { useEffect, useState } from 'react';
 import { FormProvider, useForm } from 'react-hook-form';
 import { z } from 'zod';
 import PreviousButton from '@/components/buttons/Previous';
 import SubmitButton from '@/components/buttons/SubmitButton';
 import CommonComponents from '@/components/form/CommonComponents';
+import PageAccordion from '@/components/form/PageAccordion';
 import ProjectDescription from '@/components/form/ProjectDescriptionPrivate';
 import Quotas from '@/components/form/Quotas';
-import QuotasChangeInfo from '@/components/form/QuotasChangeInfo';
 import TeamContacts from '@/components/form/TeamContacts';
 import FormErrorNotification from '@/components/generic/FormErrorNotification';
 import { openEditPrivateCloudProductModal } from '@/components/modal/editPrivateCloudProductModal';
@@ -132,6 +133,46 @@ export default privateCloudProductEdit(({ pathParams, queryParams, session }) =>
     return null;
   }
 
+  const accordionItems = [
+    {
+      LeftIcon: IconInfoCircle,
+      label: 'Product description',
+      description: '',
+      Component: ProjectDescription,
+      componentArgs: {
+        disabled: isDisabled,
+        clusterDisabled: true,
+        mode: 'edit',
+        canToggleTemporary: privateSnap.currentProduct._permissions.toggleTemporary,
+      },
+    },
+    {
+      LeftIcon: IconUsersGroup,
+      label: 'Team contacts',
+      description: '',
+      Component: TeamContacts,
+      componentArgs: { disabled: isDisabled, secondTechLead, secondTechLeadOnClick },
+    },
+    {
+      LeftIcon: IconSettings,
+      label: 'Quotas',
+      description: '',
+      Component: Quotas,
+      componentArgs: {
+        disabled: isDisabled,
+        licencePlate: privateSnap.currentProduct?.licencePlate as string,
+        currentProject: privateSnap.currentProduct as PrivateCloudProject,
+      },
+    },
+    {
+      LeftIcon: IconComponents,
+      label: 'Common components',
+      description: '',
+      Component: CommonComponents,
+      componentArgs: { disabled: isDisabled },
+    },
+  ];
+
   return (
     <div>
       <FormProvider {...methods}>
@@ -145,30 +186,8 @@ export default privateCloudProductEdit(({ pathParams, queryParams, session }) =>
           })}
           autoComplete="off"
         >
-          <div className="mb-12 mt-8">
-            <ProjectDescription
-              disabled={isDisabled}
-              clusterDisabled={true}
-              mode="edit"
-              canToggleTemporary={privateSnap.currentProduct._permissions.toggleTemporary}
-            />
-            <hr className="my-7" />
-            <TeamContacts
-              disabled={isDisabled}
-              number={2}
-              secondTechLead={secondTechLead}
-              secondTechLeadOnClick={secondTechLeadOnClick}
-            />
-            <hr className="my-7" />
-            <Quotas
-              licencePlate={privateSnap.currentProduct?.licencePlate as string}
-              disabled={isDisabled}
-              currentProject={privateSnap.currentProduct as PrivateCloudProject}
-            />
-            <QuotasChangeInfo disabled={isDisabled} />
-            <hr className="my-7" />
-            <CommonComponents disabled={isDisabled} number={4} />
-          </div>
+          <PageAccordion items={accordionItems} />
+
           <div className="mt-10 flex items-center justify-start gap-x-6">
             <PreviousButton />
             {!isDisabled ? (
