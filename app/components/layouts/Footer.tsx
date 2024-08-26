@@ -20,7 +20,7 @@ export default function Footer() {
       ? `v${appSnapshot.info.DEPLOYMENT_TAG}`
       : appSnapshot.info.DEPLOYMENT_TAG;
     navigation.main.push({
-      name: appSnapshot.info.DEPLOYMENT_TAG,
+      name: `App Version: ${appSnapshot.info.DEPLOYMENT_TAG}`,
       href: `https://github.com/bcgov/platform-services-registry/tree/${ref}`,
     });
   }

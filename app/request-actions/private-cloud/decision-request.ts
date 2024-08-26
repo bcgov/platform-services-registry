@@ -1,4 +1,4 @@
-import { $Enums, Cluster, DecisionStatus, Prisma, ProjectStatus } from '@prisma/client';
+import { $Enums, Cluster, DecisionStatus, Prisma, ProjectStatus, RequestType } from '@prisma/client';
 import { Session } from 'next-auth';
 import prisma from '@/core/prisma';
 import { createEvent } from '@/mutations/events';
@@ -65,6 +65,52 @@ export default async function makeRequestDecision(
     return null;
   }
 
+  const dataToUpdate: Prisma.PrivateCloudRequestUpdateInput = {
+    active: decision === DecisionStatus.APPROVED,
+    decisionStatus: decision,
+    decisionComment,
+    decisionDate: new Date(),
+    decisionMakerEmail: session.user.email,
+  };
+
+  // No need to modify decision data when reviewing deletion requests.
+  if (request.type !== RequestType.DELETE) {
+    dataToUpdate.decisionData = {
+      update: {
+        ...formData,
+        status: ProjectStatus.ACTIVE,
+        licencePlate: request.licencePlate,
+        cluster: request.project?.cluster ?? request.decisionData.cluster,
+        projectOwner: {
+          connectOrCreate: {
+            where: {
+              email: formData.projectOwner.email,
+            },
+            create: formData.projectOwner,
+          },
+        },
+        primaryTechnicalLead: {
+          connectOrCreate: {
+            where: {
+              email: formData.primaryTechnicalLead.email,
+            },
+            create: formData.primaryTechnicalLead,
+          },
+        },
+        secondaryTechnicalLead: formData.secondaryTechnicalLead
+          ? {
+              connectOrCreate: {
+                where: {
+                  email: formData.secondaryTechnicalLead.email,
+                },
+                create: formData.secondaryTechnicalLead,
+              },
+            }
+          : undefined,
+      },
+    };
+  }
+
   const updatedRequest = await prisma.privateCloudRequest.update({
     where: {
       id: request.id,
@@ -93,47 +139,7 @@ export default async function makeRequestDecision(
         },
       },
     },
-    data: {
-      active: decision === DecisionStatus.APPROVED,
-      decisionStatus: decision,
-      decisionComment,
-      decisionDate: new Date(),
-      decisionMakerEmail: session.user.email,
-      decisionData: {
-        update: {
-          ...formData,
-          status: ProjectStatus.ACTIVE,
-          licencePlate: request.licencePlate,
-          cluster: request.project?.cluster ?? request.decisionData.cluster,
-          projectOwner: {
-            connectOrCreate: {
-              where: {
-                email: formData.projectOwner.email,
-              },
-              create: formData.projectOwner,
-            },
-          },
-          primaryTechnicalLead: {
-            connectOrCreate: {
-              where: {
-                email: formData.primaryTechnicalLead.email,
-              },
-              create: formData.primaryTechnicalLead,
-            },
-          },
-          secondaryTechnicalLead: formData.secondaryTechnicalLead
-            ? {
-                connectOrCreate: {
-                  where: {
-                    email: formData.secondaryTechnicalLead.email,
-                  },
-                  create: formData.secondaryTechnicalLead,
-                },
-              }
-            : undefined,
-        },
-      },
-    },
+    data: dataToUpdate,
   });
 
   if (updatedRequest) {

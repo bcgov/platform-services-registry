@@ -70,7 +70,7 @@ export async function listUsersByEmail(email: string) {
   }
 
   const data = await res.json();
-  return (data as { value: MsUser[] }).value.map(processMsUser);
+  return (data as { value: MsUser[] }).value.map(processMsUser).filter((user) => !!user.upn);
 }
 
 export async function getUserByEmail(email: string) {
