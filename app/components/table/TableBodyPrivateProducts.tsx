@@ -52,16 +52,16 @@ export default function TableBodyPrivateProducts({ rows, isLoading = false }: Ta
             <div className="md:col-span-2 lg:col-span-3">
               <div className="flex items-center gap-x-3">
                 <h2 className="min-w-0 text-base text-gray-700">
-                  <div className="flex gap-x-2">
+                  <div className="">
                     <TruncatedTooltip label={row.description}>
                       <span className="font-bold">{_truncate(row.name, { length: 100 })}</span>
                     </TruncatedTooltip>
                     {row.status === $Enums.ProjectStatus.INACTIVE && (
-                      <Badge color="red" radius="sm" className="mt-1">
+                      <Badge color="red" radius="sm" className="ml-1 mt-1">
                         {$Enums.ProjectStatus.INACTIVE}
                       </Badge>
                     )}
-                    {row.isTest && <TemporaryProductBadge data={{ createdAt: row.createdAt }} className="mt-1" />}
+                    {row.isTest && <TemporaryProductBadge data={{ createdAt: row.createdAt }} className="ml-1 mt-1" />}
                   </div>
                 </h2>
               </div>

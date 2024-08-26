@@ -2,10 +2,12 @@
 
 import { zodResolver } from '@hookform/resolvers/zod';
 import { $Enums, PrivateCloudProject } from '@prisma/client';
+import { IconInfoCircle, IconUsersGroup, IconSettings, IconComponents, IconMessage } from '@tabler/icons-react';
 import { useEffect, useState } from 'react';
 import { FormProvider, useForm } from 'react-hook-form';
 import { z } from 'zod';
 import PreviousButton from '@/components/buttons/Previous';
+import PageAccordion from '@/components/form/PageAccordion';
 import ProjectDescription from '@/components/form/ProjectDescriptionPrivate';
 import Quotas from '@/components/form/Quotas';
 import TeamContacts from '@/components/form/TeamContacts';
@@ -56,30 +58,43 @@ export default privateCloudRequestOriginal(({ pathParams, queryParams, session, 
 
   const isDisabled = true;
 
+  const accordionItems = [
+    {
+      LeftIcon: IconInfoCircle,
+      label: 'Product description',
+      description: '',
+      Component: ProjectDescription,
+      componentArgs: {
+        disabled: isDisabled,
+        clusterDisabled: privateSnap.currentRequest.type !== 'CREATE',
+        mode: 'original',
+      },
+    },
+    {
+      LeftIcon: IconUsersGroup,
+      label: 'Team contacts',
+      description: '',
+      Component: TeamContacts,
+      componentArgs: { disabled: isDisabled, secondTechLead, secondTechLeadOnClick },
+    },
+    {
+      LeftIcon: IconSettings,
+      label: 'Quotas',
+      description: '',
+      Component: Quotas,
+      componentArgs: {
+        disabled: isDisabled,
+        licencePlate: privateSnap.currentRequest.licencePlate as string,
+        currentProject: privateSnap.currentRequest.project as PrivateCloudProject,
+      },
+    },
+  ];
+
   return (
     <div>
       <FormProvider {...methods}>
         <form autoComplete="off">
-          <div className="mb-12 mt-8">
-            <ProjectDescription
-              disabled={isDisabled}
-              clusterDisabled={privateSnap.currentRequest.type !== 'CREATE'}
-              mode="decision"
-            />
-            <hr className="my-7" />
-            <TeamContacts
-              disabled={isDisabled}
-              number={2}
-              secondTechLead={secondTechLead}
-              secondTechLeadOnClick={secondTechLeadOnClick}
-            />
-            <hr className="my-7" />
-            <Quotas
-              licencePlate={privateSnap.currentRequest.licencePlate as string}
-              disabled={isDisabled}
-              currentProject={privateSnap.currentRequest.project as PrivateCloudProject}
-            />
-          </div>
+          <PageAccordion items={accordionItems} />
 
           <div className="mt-10 flex items-center justify-start gap-x-6">
             <PreviousButton />

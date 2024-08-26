@@ -50,7 +50,6 @@ export default function Budget({ disabled }: { disabled?: boolean }) {
 
   return (
     <div className="">
-      <h2 className="text-base lg:text-lg 2xl:text-2xl font-semibold leading-6 text-gray-900">5. Project Budget</h2>
       <p className="text-base leading-6 mt-5">
         Please indicate your estimated monthly budget{calculatorNote}. Provide an estimated average monthly spend
         allocated to your cloud service usage for this project. As a part of this request, you will be provisioned with

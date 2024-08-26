@@ -13,6 +13,7 @@ import {
 } from '@tabler/icons-react';
 import { ForwardRefExoticComponent, RefAttributes } from 'react';
 import { z } from 'zod';
+import { AccordionLabel } from '@/components/generic/AccordionLabel';
 import ProductComparison from '@/components/ProductComparison';
 import createClientPage from '@/core/client-page';
 import { usePrivateProductState } from '@/states/global';
@@ -21,26 +22,6 @@ import { DiffChange } from '@/utils/diff';
 const pathParamSchema = z.object({
   id: z.string(),
 });
-
-interface AccordionLabelProps {
-  label: string;
-  LeftIcon: ForwardRefExoticComponent<Omit<IconProps, 'ref'> & RefAttributes<Icon>>;
-  description: string;
-}
-
-function AccordionLabel({ label, LeftIcon, description }: AccordionLabelProps) {
-  return (
-    <Group wrap="nowrap">
-      <LeftIcon className="inline-block" />
-      <div>
-        <Text>{label}</Text>
-        <Text size="sm" c="dimmed" fw={400}>
-          {description}
-        </Text>
-      </div>
-    </Group>
-  );
-}
 
 const Layout = createClientPage({
   roles: ['user'],

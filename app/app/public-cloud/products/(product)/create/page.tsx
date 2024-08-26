@@ -2,6 +2,17 @@
 
 import { zodResolver } from '@hookform/resolvers/zod';
 import { notifications } from '@mantine/notifications';
+import {
+  IconInfoCircle,
+  IconUsersGroup,
+  IconUserDollar,
+  IconSettings,
+  IconComponents,
+  IconMessage,
+  IconLayoutGridAdd,
+  IconMoneybag,
+  IconReceipt2,
+} from '@tabler/icons-react';
 import { useMutation } from '@tanstack/react-query';
 import { useState } from 'react';
 import { FormProvider, useForm } from 'react-hook-form';
@@ -11,6 +22,7 @@ import AccountCoding from '@/components/form/AccountCoding';
 import AccountEnvironmentsPublic from '@/components/form/AccountEnvironmentsPublic';
 import Budget from '@/components/form/Budget';
 import ExpenseAuthority from '@/components/form/ExpenseAuthority';
+import PageAccordion from '@/components/form/PageAccordion';
 import ProjectDescriptionPublic from '@/components/form/ProjectDescriptionPublic';
 import TeamContacts from '@/components/form/TeamContacts';
 import FormErrorNotification from '@/components/generic/FormErrorNotification';
@@ -114,6 +126,53 @@ export default publicCloudProductNew(({ pathParams, queryParams, session }) => {
     }
   };
 
+  const accordionItems = [
+    {
+      LeftIcon: IconInfoCircle,
+      label: 'Product description',
+      description: '',
+      Component: ProjectDescriptionPublic,
+      componentArgs: {
+        mode: 'create',
+      },
+    },
+    {
+      LeftIcon: IconLayoutGridAdd,
+      label: 'Accounts to create',
+      description: '',
+      Component: AccountEnvironmentsPublic,
+      componentArgs: { mode: 'create' },
+    },
+    {
+      LeftIcon: IconUsersGroup,
+      label: 'Team contacts',
+      description: '',
+      Component: TeamContacts,
+      componentArgs: { secondTechLead, secondTechLeadOnClick },
+    },
+    {
+      LeftIcon: IconUserDollar,
+      label: 'Expense authority',
+      description: '',
+      Component: ExpenseAuthority,
+      componentArgs: {},
+    },
+    {
+      LeftIcon: IconMoneybag,
+      label: 'Project budget',
+      description: '',
+      Component: Budget,
+      componentArgs: {},
+    },
+    {
+      LeftIcon: IconReceipt2,
+      label: 'Billing (account Coding)',
+      description: '',
+      Component: AccountCoding,
+      componentArgs: {},
+    },
+  ];
+
   return (
     <div>
       <h1 className="flex justify-between text-xl lg:text-2xl xl:text-4xl font-semibold leading-7 text-gray-900 mt-2 mb-4 lg:mt-4 lg:mb-8">
@@ -123,19 +182,8 @@ export default publicCloudProductNew(({ pathParams, queryParams, session }) => {
       <FormProvider {...methods}>
         <FormErrorNotification />
         <form autoComplete="off" onSubmit={methods.handleSubmit(() => setOpenCreate(true))}>
-          <div className="space-y-12">
-            <ProjectDescriptionPublic mode="create" />
-            <hr className="my-7" />
-            <AccountEnvironmentsPublic mode="create" />
-            <hr className="my-7" />
-            <TeamContacts number={3} secondTechLead={secondTechLead} secondTechLeadOnClick={secondTechLeadOnClick} />
-            <hr className="my-7" />
-            <ExpenseAuthority />
-            <hr className="my-7" />
-            <Budget />
-            <hr className="my-7" />
-            <AccountCoding />
-          </div>
+          <PageAccordion items={accordionItems} />
+
           <div className="mt-10 flex items-center justify-start gap-x-6">
             <PreviousButton />
             <button
@@ -147,6 +195,7 @@ export default publicCloudProductNew(({ pathParams, queryParams, session }) => {
           </div>
         </form>
       </FormProvider>
+
       <CreatePublicCloud
         open={openCreate}
         setOpen={setOpenCreate}
