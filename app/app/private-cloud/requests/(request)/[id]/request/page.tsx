@@ -66,7 +66,7 @@ export default privateCloudRequestRequest(({ pathParams, queryParams, session, r
       componentArgs: {
         disabled: isDisabled,
         clusterDisabled: privateSnap.currentRequest.type !== 'CREATE',
-        mode: 'decision',
+        mode: 'request',
       },
     },
     {
