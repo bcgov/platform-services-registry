@@ -3,13 +3,13 @@ import { Session } from 'next-auth';
 import prisma from '@/core/prisma';
 import generateLicencePlate from '@/helpers/licence-plate';
 import { createEvent } from '@/mutations/events';
-import { QuotaCpuEnum, QuotaMemoryEnum, QuotaStorageEnum, PrivateCloudCreateRequestBody } from '@/schema';
 import { upsertUsers } from '@/services/db/user';
+import { CpuQuota, MemoryQuota, StorageQuota, PrivateCloudCreateRequestBody } from '@/validation-schemas/private-cloud';
 
 const defaultQuota = {
-  cpu: QuotaCpuEnum.enum.CPU_REQUEST_0_5_LIMIT_1_5,
-  memory: QuotaMemoryEnum.enum.MEMORY_REQUEST_2_LIMIT_4,
-  storage: QuotaStorageEnum.enum.STORAGE_1,
+  cpu: CpuQuota.enum.CPU_REQUEST_0_5_LIMIT_1_5,
+  memory: MemoryQuota.enum.MEMORY_REQUEST_2_LIMIT_4,
+  storage: StorageQuota.enum.STORAGE_1,
 };
 
 export default async function createRequest(formData: PrivateCloudCreateRequestBody, session: Session) {

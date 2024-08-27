@@ -1,8 +1,7 @@
 import { faker } from '@faker-js/faker';
 import { Prisma, Cluster, Provider } from '@prisma/client';
-import { clusters, ministries, providers } from '@/constants';
+import { clusters, ministries, providers, cpuOptions, memoryOptions, storageOptions } from '@/constants';
 import { findMockUserByIdr, mockNoRoleIdirs } from '@/helpers/mock-users';
-import { cpuOptions, memoryOptions, storageOptions } from '@/schema';
 import { getRandomItem } from '@/utils/collection';
 import { generateShortId } from '@/utils/uuid';
 

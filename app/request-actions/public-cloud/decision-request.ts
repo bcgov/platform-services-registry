@@ -2,7 +2,7 @@ import { $Enums, DecisionStatus, Prisma, ProjectStatus, RequestType } from '@pri
 import { Session } from 'next-auth';
 import prisma from '@/core/prisma';
 import { createEvent } from '@/mutations/events';
-import { PublicCloudEditRequestBody } from '@/schema';
+import { PublicCloudEditRequestBody } from '@/validation-schemas/public-cloud';
 
 export type PublicCloudRequestWithProjectAndRequestedProject = Prisma.PublicCloudRequestGetPayload<{
   include: {

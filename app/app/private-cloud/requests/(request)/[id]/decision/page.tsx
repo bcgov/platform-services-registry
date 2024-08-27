@@ -19,9 +19,9 @@ import Comment from '@/components/modal/Comment';
 import ReturnModal from '@/components/modal/ReturnDecision';
 import createClientPage from '@/core/client-page';
 import { showErrorNotification } from '@/helpers/notifications';
-import { PrivateCloudDecisionRequestBodySchema } from '@/schema';
 import { makePrivateCloudRequestDecision } from '@/services/backend/private-cloud/requests';
 import { usePrivateProductState } from '@/states/global';
+import { privateCloudRequestDecisionBodySchema } from '@/validation-schemas/private-cloud';
 
 const pathParamSchema = z.object({
   id: z.string(),
@@ -80,7 +80,7 @@ export default privateCloudRequestDecision(({ pathParams, queryParams, session, 
         };
       }
 
-      return zodResolver(PrivateCloudDecisionRequestBodySchema)(...args);
+      return zodResolver(privateCloudRequestDecisionBodySchema)(...args);
     },
     values: {
       decisionComment: '',

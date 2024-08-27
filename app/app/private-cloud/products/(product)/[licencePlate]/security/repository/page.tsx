@@ -8,8 +8,8 @@ import classNames from 'classnames';
 import _get from 'lodash-es/get';
 import { useEffect } from 'react';
 import { useForm, useFieldArray } from 'react-hook-form';
-import { SecurityConfigRequestBodySchema } from '@/schema';
 import { getSecurityConfig, upsertSecurityConfig } from '@/services/backend/security-config';
+import { securityConfigSchema } from '@/validation-schemas/security-config';
 
 export default function Repository({ params }: { params: { licencePlate: string } }) {
   const {
@@ -20,7 +20,7 @@ export default function Repository({ params }: { params: { licencePlate: string 
     setValue,
     formState: { errors },
   } = useForm<SecurityConfig>({
-    resolver: zodResolver(SecurityConfigRequestBodySchema),
+    resolver: zodResolver(securityConfigSchema),
     defaultValues: {
       context: $Enums.ProjectContext.PRIVATE,
       clusterOrProvider: '',

@@ -1,11 +1,11 @@
 import { Heading, Link, Text } from '@react-email/components';
-import { QuotaInput } from '@/schema';
+import { Quota } from '@/validation-schemas/private-cloud';
 import { defaultCpuOptionsLookup, defaultMemoryOptionsLookup, defaultStorageOptionsLookup } from './quotaLookup';
 
 interface QuotaChangesProps {
   licencePlate: string;
-  quotaCurrent: QuotaInput;
-  quotaRequested: QuotaInput;
+  quotaCurrent: Quota;
+  quotaRequested: Quota;
   type: string;
   cluster: string;
   currentLabel?: string;

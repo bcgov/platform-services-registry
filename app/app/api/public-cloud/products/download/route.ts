@@ -4,8 +4,8 @@ import { NoContent, CsvResponse } from '@/core/responses';
 import { ministryKeyToName } from '@/helpers/product';
 import { formatFullName } from '@/helpers/user';
 import { createEvent } from '@/mutations/events';
-import { publicCloudProductSearchNoPaginationBodySchema } from '@/schema';
 import { formatDateSimple } from '@/utils/date';
+import { publicCloudProductSearchNoPaginationBodySchema } from '@/validation-schemas/public-cloud';
 import searchOp from '../_operations/search';
 
 export const POST = createApiHandler({

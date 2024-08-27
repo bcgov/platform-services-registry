@@ -15,7 +15,7 @@ import { openCreatePrivateCloudProductModal } from '@/components/modal/createPri
 import ReturnModal from '@/components/modal/Return';
 import { AGMinistries } from '@/constants';
 import createClientPage from '@/core/client-page';
-import { PrivateCloudCreateRequestBodySchema } from '@/schema';
+import { privateCloudCreateRequestBodySchema } from '@/validation-schemas/private-cloud';
 
 const privateCloudProductNew = createClientPage({
   roles: ['user'],
@@ -27,19 +27,21 @@ export default privateCloudProductNew(({ pathParams, queryParams, session }) => 
 
   const methods = useForm({
     resolver: zodResolver(
-      PrivateCloudCreateRequestBodySchema.merge(
-        z.object({
-          isAgMinistryChecked: z.boolean().optional(),
-        }),
-      ).refine(
-        (formData) => {
-          return AGMinistries.includes(formData.ministry) ? formData.isAgMinistryChecked : true;
-        },
-        {
-          message: 'AG Ministry Checkbox should be checked.',
-          path: ['isAgMinistryChecked'],
-        },
-      ),
+      privateCloudCreateRequestBodySchema
+        .merge(
+          z.object({
+            isAgMinistryChecked: z.boolean().optional(),
+          }),
+        )
+        .refine(
+          (formData) => {
+            return AGMinistries.includes(formData.ministry) ? formData.isAgMinistryChecked : true;
+          },
+          {
+            message: 'AG Ministry Checkbox should be checked.',
+            path: ['isAgMinistryChecked'],
+          },
+        ),
     ),
   });
 

@@ -2,7 +2,7 @@ import { $Enums, Cluster, DecisionStatus, Prisma, ProjectStatus, RequestType } f
 import { Session } from 'next-auth';
 import prisma from '@/core/prisma';
 import { createEvent } from '@/mutations/events';
-import { PrivateCloudEditRequestBody } from '@/schema';
+import { PrivateCloudEditRequestBody } from '@/validation-schemas/private-cloud';
 
 export type PrivateCloudRequestWithRequestedProject = Prisma.PrivateCloudRequestGetPayload<{
   include: {

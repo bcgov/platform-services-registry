@@ -33,9 +33,9 @@ import PrivateCloudEditModal from '@/components/modal/EditPrivateCloud';
 import ReturnModal from '@/components/modal/Return';
 import { AGMinistries } from '@/constants';
 import createClientPage from '@/core/client-page';
-import { PublicCloudEditRequestBodySchema } from '@/schema';
 import { getPublicCloudProject, editPublicCloudProject } from '@/services/backend/public-cloud/products';
 import { publicProductState } from '@/states/global';
+import { publicCloudEditRequestBodySchema } from '@/validation-schemas/public-cloud';
 
 const pathParamSchema = z.object({
   licencePlate: z.string(),
@@ -78,19 +78,21 @@ export default publicCloudProductEdit(({ pathParams, queryParams, session }) => 
 
   const methods = useForm({
     resolver: zodResolver(
-      PublicCloudEditRequestBodySchema.merge(
-        z.object({
-          isAgMinistryChecked: z.boolean().optional(),
-        }),
-      ).refine(
-        (formData) => {
-          return AGMinistries.includes(formData.ministry) ? formData.isAgMinistryChecked : true;
-        },
-        {
-          message: 'AG Ministry Checkbox should be checked.',
-          path: ['isAgMinistryChecked'],
-        },
-      ),
+      publicCloudEditRequestBodySchema
+        .merge(
+          z.object({
+            isAgMinistryChecked: z.boolean().optional(),
+          }),
+        )
+        .refine(
+          (formData) => {
+            return AGMinistries.includes(formData.ministry) ? formData.isAgMinistryChecked : true;
+          },
+          {
+            message: 'AG Ministry Checkbox should be checked.',
+            path: ['isAgMinistryChecked'],
+          },
+        ),
     ),
     defaultValues: async () => {
       const response = await getPublicCloudProject(licencePlate);

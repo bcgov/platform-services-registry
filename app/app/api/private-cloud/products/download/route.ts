@@ -4,9 +4,9 @@ import { NoContent, CsvResponse } from '@/core/responses';
 import { ministryKeyToName, getTotalQuotaStr } from '@/helpers/product';
 import { formatFullName } from '@/helpers/user';
 import { createEvent } from '@/mutations/events';
-import { privateCloudProductSearchNoPaginationBodySchema } from '@/schema';
 import { PrivateProductCsvRecord } from '@/types/csv';
 import { formatDateSimple } from '@/utils/date';
+import { privateCloudProductSearchNoPaginationBodySchema } from '@/validation-schemas/private-cloud';
 import searchOp from '../_operations/search';
 
 export const POST = createApiHandler({

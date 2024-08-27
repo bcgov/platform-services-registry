@@ -30,9 +30,9 @@ import CreatePublicCloud from '@/components/modal/CreatePublicCloud';
 import ReturnModal from '@/components/modal/Return';
 import { AGMinistries } from '@/constants';
 import createClientPage from '@/core/client-page';
-import { PublicCloudCreateRequestBodySchema } from '@/schema';
 import { existBilling } from '@/services/backend/billing';
 import { createPublicCloudProject } from '@/services/backend/public-cloud/products';
+import { publicCloudCreateRequestBodySchema } from '@/validation-schemas/public-cloud';
 
 const publicCloudProductNew = createClientPage({
   roles: ['user'],
@@ -75,12 +75,13 @@ export default publicCloudProductNew(({ pathParams, queryParams, session }) => {
 
   const methods = useForm({
     resolver: zodResolver(
-      PublicCloudCreateRequestBodySchema.merge(
-        z.object({
-          isAgMinistryChecked: z.boolean().optional(),
-          isEaApproval: z.boolean().optional(),
-        }),
-      )
+      publicCloudCreateRequestBodySchema
+        .merge(
+          z.object({
+            isAgMinistryChecked: z.boolean().optional(),
+            isEaApproval: z.boolean().optional(),
+          }),
+        )
         .refine(
           (formData) => {
             return AGMinistries.includes(formData.ministry) ? formData.isAgMinistryChecked : true;

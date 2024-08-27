@@ -3,7 +3,7 @@ import { z, TypeOf, ZodType } from 'zod';
 import prisma from '@/core/prisma';
 import { BadRequestResponse, OkResponse, UnauthorizedResponse } from '@/core/responses';
 import { getPrivateCloudProduct } from '@/queries/private-cloud-products';
-import { PrivateCloudAdminUpdateBody } from '@/schema';
+import { PrivateCloudAdminUpdateBody } from '@/validation-schemas/private-cloud';
 import { putPathParamSchema } from '../[licencePlate]/schema';
 
 export default async function updateOp({

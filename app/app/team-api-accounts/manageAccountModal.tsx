@@ -10,13 +10,13 @@ import { useEffect } from 'react';
 import { FormProvider, useForm } from 'react-hook-form';
 import { openConfirmModal } from '@/components/generic/modal/ConfirmModal';
 import { createModal, ExtraModalProps } from '@/core/modal';
-import { teamApiAccountSchema, TeamApiAccountSchemaData } from '@/schema';
 import {
   listKeycloakAuthRoles,
   updateKeycloakApiTeamAccount,
   deleteKeycloakTeamApiAccount,
   listKeycloakTeamApiAccountUsers,
 } from '@/services/backend/keycloak';
+import { teamApiAccountSchema, TeamApiAccount } from '@/validation-schemas/api-accounts';
 import AccountMembers from './AccountMembers';
 import AccountRoles from './AccountRoles';
 
@@ -47,7 +47,7 @@ function ManageAccountModal({ clientUid, roles, closeModal }: ModalProps & Extra
   });
 
   const { mutateAsync: updateAccount, isPending: isUpdatingAccount } = useMutation({
-    mutationFn: ({ roles: _roles, users: _users }: TeamApiAccountSchemaData) =>
+    mutationFn: ({ roles: _roles, users: _users }: TeamApiAccount) =>
       updateKeycloakApiTeamAccount(clientUid, _roles, _users),
     onError: (error: any) => {
       notifications.show({

@@ -5,8 +5,8 @@ import { comparePrivateProductData } from '@/helpers/product-change';
 import { isQuotaUpgrade } from '@/helpers/quota-change';
 import { createEvent } from '@/mutations/events';
 import { getLastClosedPrivateCloudRequest } from '@/queries/private-cloud-requests';
-import { PrivateCloudEditRequestBody } from '@/schema';
 import { upsertUsers } from '@/services/db/user';
+import { PrivateCloudEditRequestBody } from '@/validation-schemas/private-cloud';
 
 export default async function editRequest(
   licencePlate: string,
