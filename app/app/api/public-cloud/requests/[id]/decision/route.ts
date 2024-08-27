@@ -3,11 +3,11 @@ import { z } from 'zod';
 import createApiHandler from '@/core/api-handler';
 import { BadRequestResponse, OkResponse, UnauthorizedResponse } from '@/core/responses';
 import makeRequestDecision from '@/request-actions/public-cloud/decision-request';
-import { PublicCloudRequestDecisionBodySchema } from '@/schema';
 import { sendExpenseAuthorityEmail, sendRequestRejectionEmails } from '@/services/ches/public-cloud/email-handler';
 import { subscribeUsersToMautic } from '@/services/mautic';
 import { sendPublicCloudNatsMessage } from '@/services/nats';
 import { PermissionsEnum } from '@/types/permissions';
+import { publicCloudRequestDecisionBodySchema } from '@/validation-schemas/public-cloud';
 
 const pathParamSchema = z.object({
   id: z.string(),
@@ -16,7 +16,7 @@ const pathParamSchema = z.object({
 const apiHandler = createApiHandler({
   roles: ['user'],
   permissions: [PermissionsEnum.ReviewAllPublicCloudRequests],
-  validations: { pathParams: pathParamSchema, body: PublicCloudRequestDecisionBodySchema },
+  validations: { pathParams: pathParamSchema, body: publicCloudRequestDecisionBodySchema },
 });
 export const POST = apiHandler(async ({ pathParams, body, session }) => {
   const { id } = pathParams;

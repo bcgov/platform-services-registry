@@ -1,5 +1,5 @@
 import createApiHandler from '@/core/api-handler';
-import { PublicCloudEditRequestBodySchema } from '@/schema';
+import { publicCloudEditRequestBodySchema } from '@/validation-schemas/public-cloud';
 import deleteOp from '../_operations/delete';
 import readOp from '../_operations/read';
 import updateOp from '../_operations/update';
@@ -15,7 +15,7 @@ export const GET = createApiHandler({
 
 export const PUT = createApiHandler({
   roles: ['user'],
-  validations: { pathParams: putPathParamSchema, body: PublicCloudEditRequestBodySchema },
+  validations: { pathParams: putPathParamSchema, body: publicCloudEditRequestBodySchema },
 })(async ({ pathParams, body, session }) => {
   const response = await updateOp({ session, body, pathParams });
   return response;

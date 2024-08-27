@@ -22,8 +22,8 @@ import PageAccordion from '@/components/form/PageAccordion';
 import ProjectDescriptionPublic from '@/components/form/ProjectDescriptionPublic';
 import TeamContacts from '@/components/form/TeamContacts';
 import createClientPage from '@/core/client-page';
-import { PublicCloudRequestDecisionBodySchema } from '@/schema';
 import { getPublicCloudRequest } from '@/services/backend/public-cloud/requests';
+import { publicCloudRequestDecisionBodySchema } from '@/validation-schemas/public-cloud';
 
 const pathParamSchema = z.object({
   id: z.string(),
@@ -43,7 +43,7 @@ export default publicCloudRequest(({ pathParams }) => {
   });
 
   const methods = useForm({
-    resolver: zodResolver(PublicCloudRequestDecisionBodySchema),
+    resolver: zodResolver(publicCloudRequestDecisionBodySchema),
     values: { comment: '', decision: '', ...request },
   });
 

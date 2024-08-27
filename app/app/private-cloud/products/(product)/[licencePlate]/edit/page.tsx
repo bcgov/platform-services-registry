@@ -20,9 +20,9 @@ import ReturnModal from '@/components/modal/Return';
 import { AGMinistries } from '@/constants';
 import createClientPage from '@/core/client-page';
 import { comparePrivateProductData, PrivateProductChange } from '@/helpers/product-change';
-import { PrivateCloudEditRequestBodySchema } from '@/schema';
 import { getPrivateCloudProject, editPrivateCloudProject } from '@/services/backend/private-cloud/products';
 import { usePrivateProductState } from '@/states/global';
+import { privateCloudEditRequestBodySchema } from '@/validation-schemas/private-cloud';
 
 const pathParamSchema = z.object({
   licencePlate: z.string(),
@@ -46,11 +46,12 @@ export default privateCloudProductEdit(({ pathParams, queryParams, session }) =>
       const _changes = comparePrivateProductData(privateSnap.currentProduct, args[0]);
 
       return zodResolver(
-        PrivateCloudEditRequestBodySchema.merge(
-          z.object({
-            isAgMinistryChecked: z.boolean().optional(),
-          }),
-        )
+        privateCloudEditRequestBodySchema
+          .merge(
+            z.object({
+              isAgMinistryChecked: z.boolean().optional(),
+            }),
+          )
           .refine(
             (formData) => {
               return AGMinistries.includes(formData.ministry) ? formData.isAgMinistryChecked : true;

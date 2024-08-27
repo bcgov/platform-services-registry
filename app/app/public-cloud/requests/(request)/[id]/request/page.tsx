@@ -35,9 +35,9 @@ import { openReviewPublicCloudProductModal } from '@/components/modal/reviewPubl
 import { openSignPublicCloudProductModal } from '@/components/modal/signPublicCloudProductModal';
 import createClientPage from '@/core/client-page';
 import { showErrorNotification } from '@/helpers/notifications';
-import { PublicCloudRequestDecisionBodySchema } from '@/schema';
 import { makePublicCloudRequestDecision } from '@/services/backend/public-cloud/requests';
 import { usePublicProductState } from '@/states/global';
+import { publicCloudRequestDecisionBodySchema } from '@/validation-schemas/public-cloud';
 
 const pathParamSchema = z.object({
   id: z.string(),
@@ -91,7 +91,7 @@ export default publicCloudProductRequest(({ pathParams, queryParams, session, ro
         };
       }
 
-      return zodResolver(PublicCloudRequestDecisionBodySchema)(...args);
+      return zodResolver(publicCloudRequestDecisionBodySchema)(...args);
     },
     values: {
       decisionComment: '',

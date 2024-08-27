@@ -3,8 +3,8 @@ import { Session } from 'next-auth';
 import prisma from '@/core/prisma';
 import generateLicencePlate from '@/helpers/licence-plate';
 import { createEvent } from '@/mutations/events';
-import { PublicCloudCreateRequestBody } from '@/schema';
 import { upsertUsers } from '@/services/db/user';
+import { PublicCloudCreateRequestBody } from '@/validation-schemas/public-cloud';
 
 export default async function createRequest(formData: PublicCloudCreateRequestBody, session: Session) {
   const licencePlate = await generateLicencePlate();

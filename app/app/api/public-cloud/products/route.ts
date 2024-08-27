@@ -1,12 +1,12 @@
 import createApiHandler from '@/core/api-handler';
 import { OkResponse } from '@/core/responses';
-import { PublicCloudCreateRequestBodySchema } from '@/schema';
+import { publicCloudCreateRequestBodySchema } from '@/validation-schemas/public-cloud';
 import createOp from './_operations/create';
 import listOp from './_operations/list';
 
 export const POST = createApiHandler({
   roles: ['user'],
-  validations: { body: PublicCloudCreateRequestBodySchema },
+  validations: { body: publicCloudCreateRequestBodySchema },
 })(async ({ session, body }) => {
   const res = await createOp({ session, body });
   return res;

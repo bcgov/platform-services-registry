@@ -4,8 +4,8 @@ import prisma from '@/core/prisma';
 import { comparePublicProductData } from '@/helpers/product-change';
 import { createEvent } from '@/mutations/events';
 import { getLastClosedPublicCloudRequest } from '@/queries/public-cloud-requests';
-import { PublicCloudEditRequestBody, UserInput } from '@/schema';
 import { upsertUsers } from '@/services/db/user';
+import { PublicCloudEditRequestBody } from '@/validation-schemas/public-cloud';
 
 export default async function editRequest(
   licencePlate: string,

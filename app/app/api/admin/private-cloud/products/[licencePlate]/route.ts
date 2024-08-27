@@ -1,5 +1,5 @@
 import createApiHandler from '@/core/api-handler';
-import { privateCloudAdminUpdateBodySchema } from '@/schema';
+import { privateCloudAdminUpdateBodySchema } from '@/validation-schemas/private-cloud';
 import updateOp from '../_operations/update';
 import { getPathParamSchema, putPathParamSchema, deletePathParamSchema } from './schema';
 

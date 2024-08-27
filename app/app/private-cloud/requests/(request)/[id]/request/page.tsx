@@ -11,7 +11,6 @@ import ProjectDescription from '@/components/form/ProjectDescriptionPrivate';
 import Quotas from '@/components/form/Quotas';
 import TeamContacts from '@/components/form/TeamContacts';
 import createClientPage from '@/core/client-page';
-import { PrivateCloudDecisionRequestBodySchema } from '@/schema';
 import { usePrivateProductState } from '@/states/global';
 
 const pathParamSchema = z.object({

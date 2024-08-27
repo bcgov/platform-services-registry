@@ -4,9 +4,9 @@ import { useQuery } from '@tanstack/react-query';
 import classNames from 'classnames';
 import { Fragment, useEffect, useState } from 'react';
 import { useFormContext } from 'react-hook-form';
-import { UserInputSchema } from '@/schema';
 import { listUsersByEmail } from '@/services/backend/msal';
 import { AppUser } from '@/types/user';
+import { userSchema } from '@/validation-schemas/shared';
 
 export default function AsyncAutocomplete({
   name,
@@ -52,7 +52,7 @@ export default function AsyncAutocomplete({
 
     const { firstName, lastName, email, ministry, idir, upn } = user;
 
-    const parsedParams = UserInputSchema.safeParse({
+    const parsedParams = userSchema.safeParse({
       firstName,
       lastName,
       email,

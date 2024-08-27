@@ -2,11 +2,11 @@ import { $Enums } from '@prisma/client';
 import createApiHandler from '@/core/api-handler';
 import prisma from '@/core/prisma';
 import { OkResponse } from '@/core/responses';
-import { SecurityConfigRequestBodySchema } from '@/schema';
+import { securityConfigSchema } from '@/validation-schemas/security-config';
 
 const apiHandler = createApiHandler({
   roles: ['user'],
-  validations: { body: SecurityConfigRequestBodySchema },
+  validations: { body: securityConfigSchema },
 });
 export const PUT = apiHandler(async ({ body, session }) => {
   const existQuery = { where: { licencePlate: body.licencePlate }, session: session as never };

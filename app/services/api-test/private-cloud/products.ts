@@ -23,7 +23,7 @@ import {
   PrivateCloudEditRequestBody,
   PrivateCloudProductSearchBody,
   PrivateCloudProductSearchNoPaginationBody,
-} from '@/schema';
+} from '@/validation-schemas/private-cloud';
 import { createRoute, ParamData } from '../core';
 
 const productCollectionRoute = createRoute('/private-cloud/products');

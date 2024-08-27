@@ -2,7 +2,7 @@ import { POST as _makePublicCloudRequestDecision } from '@/app/api/public-cloud/
 import { POST as _reviewPublicCloudMou } from '@/app/api/public-cloud/requests/[id]/review-mou/route';
 import { POST as _signPublicCloudMou } from '@/app/api/public-cloud/requests/[id]/sign-mou/route';
 import { POST as _searchPublicCloudRequests } from '@/app/api/public-cloud/requests/search/route';
-import { PublicCloudRequestSearchBody } from '@/schema';
+import { PublicCloudRequestSearchBody } from '@/validation-schemas/public-cloud';
 import { createRoute } from '../core';
 
 const requestCollectionRoute = createRoute('/public-cloud/requests');
