@@ -6,18 +6,18 @@ import { mockSessionByEmail, mockSessionByRole } from '@/services/api-test/core'
 import { provisionPrivateCloudProject } from '@/services/api-test/private-cloud';
 import { createPrivateCloudProject, editPrivateCloudProject } from '@/services/api-test/private-cloud/products';
 import { makePrivateCloudRequestDecision } from '@/services/api-test/private-cloud/requests';
-import { CpuQuota, MemoryQuota, StorageQuota } from '@/validation-schemas/private-cloud';
+import { CpuQuotaEnum, MemoryQuotaEnum, StorageQuotaEnum } from '@/validation-schemas/private-cloud';
 
 const oldDevelopmentQuota = {
-  cpu: CpuQuota.enum.CPU_REQUEST_1_LIMIT_2,
-  memory: MemoryQuota.enum.MEMORY_REQUEST_4_LIMIT_8,
-  storage: StorageQuota.enum.STORAGE_2,
+  cpu: CpuQuotaEnum.enum.CPU_REQUEST_1_LIMIT_2,
+  memory: MemoryQuotaEnum.enum.MEMORY_REQUEST_4_LIMIT_8,
+  storage: StorageQuotaEnum.enum.STORAGE_2,
 };
 
 const newDevelopmentQuota = {
-  cpu: CpuQuota.enum.CPU_REQUEST_1_LIMIT_2,
-  memory: MemoryQuota.enum.MEMORY_REQUEST_4_LIMIT_8,
-  storage: StorageQuota.enum.STORAGE_2,
+  cpu: CpuQuotaEnum.enum.CPU_REQUEST_1_LIMIT_2,
+  memory: MemoryQuotaEnum.enum.MEMORY_REQUEST_4_LIMIT_8,
+  storage: StorageQuotaEnum.enum.STORAGE_2,
 };
 
 const productData = {

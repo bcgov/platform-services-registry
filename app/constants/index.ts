@@ -1,5 +1,5 @@
 import { $Enums, Cluster, Ministry, Provider } from '@prisma/client';
-import { CpuQuota, MemoryQuota, StorageQuota } from '@/validation-schemas/private-cloud';
+import { CpuQuotaEnum, MemoryQuotaEnum, StorageQuotaEnum } from '@/validation-schemas/private-cloud';
 
 export const clusters = Object.values(Cluster).filter((cluster) => cluster !== 'GOLDDR');
 
@@ -213,6 +213,6 @@ export const defaultProvisionedResourceValues = {
 
 export const TEAM_SA_PREFIX = 'z_pltsvc-tsa-';
 
-export const cpuOptions = Object.values(CpuQuota.enum);
-export const memoryOptions = Object.values(MemoryQuota.enum);
-export const storageOptions = Object.values(StorageQuota.enum);
+export const cpuOptions = Object.values(CpuQuotaEnum.enum);
+export const memoryOptions = Object.values(MemoryQuotaEnum.enum);
+export const storageOptions = Object.values(StorageQuotaEnum.enum);
