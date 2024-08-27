@@ -1,4 +1,4 @@
-import { CpuQuota, MemoryQuota, StorageQuota } from '@/validation-schemas/private-cloud';
+import { CpuQuotaEnum, MemoryQuotaEnum, StorageQuotaEnum } from '@/validation-schemas/private-cloud';
 
 export const Cluster = {
   CLAB: 'clab',
@@ -22,9 +22,9 @@ export interface CpuOption {
   cpuLimits: number;
 }
 
-export type DefaultCpuOptionsKey = (typeof CpuQuota)['_type'];
-export type DefaultMemoryOptionsKey = (typeof MemoryQuota)['_type'];
-export type DefaultStorageOptionsKey = (typeof StorageQuota)['_type'];
+export type DefaultCpuOptionsKey = (typeof CpuQuotaEnum)['_type'];
+export type DefaultMemoryOptionsKey = (typeof MemoryQuotaEnum)['_type'];
+export type DefaultStorageOptionsKey = (typeof StorageQuotaEnum)['_type'];
 
 export const DefaultCpuOptions: Record<DefaultCpuOptionsKey, CpuOption> = {
   CPU_REQUEST_0_5_LIMIT_1_5: {
