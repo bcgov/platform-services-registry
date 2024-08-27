@@ -3,9 +3,9 @@ import _isString from 'lodash-es/isString';
 import { string, z } from 'zod';
 import { phoneNumberRegex } from '@/constants/regex';
 import { processEnumString, processUpperEnumString, processBoolean } from '@/utils/zod';
-import { userSchema, requestDecisionSchema } from './shared';
+import { userSchema, requestDecisionEnum } from './shared';
 
-export const CpuQuota = z.enum([
+export const CpuQuotaEnum = z.enum([
   'CPU_REQUEST_0_5_LIMIT_1_5',
   'CPU_REQUEST_1_LIMIT_2',
   'CPU_REQUEST_2_LIMIT_4',
@@ -16,7 +16,7 @@ export const CpuQuota = z.enum([
   'CPU_REQUEST_64_LIMIT_128',
 ]);
 
-export const MemoryQuota = z.enum([
+export const MemoryQuotaEnum = z.enum([
   'MEMORY_REQUEST_2_LIMIT_4',
   'MEMORY_REQUEST_4_LIMIT_8',
   'MEMORY_REQUEST_8_LIMIT_16',
@@ -26,7 +26,7 @@ export const MemoryQuota = z.enum([
   'MEMORY_REQUEST_128_LIMIT_256',
 ]);
 
-export const StorageQuota = z.enum([
+export const StorageQuotaEnum = z.enum([
   'STORAGE_1',
   'STORAGE_2',
   'STORAGE_4',
@@ -39,9 +39,9 @@ export const StorageQuota = z.enum([
 ]);
 
 export const quotaSchema = z.object({
-  cpu: z.union([CpuQuota, z.string().regex(/CPU_REQUEST_\d+(\.\d+)?_LIMIT_\d+(\.\d+)?/)]),
-  memory: z.union([MemoryQuota, z.string().regex(/MEMORY_REQUEST_\d+_LIMIT_\d+/)]),
-  storage: z.union([StorageQuota, z.string().regex(/STORAGE_\d+/)]),
+  cpu: z.union([CpuQuotaEnum, z.string().regex(/CPU_REQUEST_\d+(\.\d+)?_LIMIT_\d+(\.\d+)?/)]),
+  memory: z.union([MemoryQuotaEnum, z.string().regex(/MEMORY_REQUEST_\d+_LIMIT_\d+/)]),
+  storage: z.union([StorageQuotaEnum, z.string().regex(/STORAGE_\d+/)]),
 });
 
 const commonComponentItemSchema = z.object({
@@ -128,7 +128,7 @@ export const privateCloudEditRequestBodySchema = privateCloudCreateRequestBodySc
 
 export const privateCloudRequestDecisionBodySchema = privateCloudEditRequestBodySchema.merge(
   z.object({
-    decision: requestDecisionSchema,
+    decision: requestDecisionEnum,
     decisionComment: string().optional(),
   }),
 );
@@ -167,9 +167,9 @@ export const privateCloudAdminUpdateBodySchema = z.object({
   isTest: z.preprocess(processBoolean, z.boolean()),
 });
 
-export type CpuQuotaType = z.infer<typeof CpuQuota>;
-export type MemoryQuotaType = z.infer<typeof MemoryQuota>;
-export type StorageQuotaType = z.infer<typeof StorageQuota>;
+export type CpuQuota = z.infer<typeof CpuQuotaEnum>;
+export type MemoryQuota = z.infer<typeof MemoryQuotaEnum>;
+export type StorageQuota = z.infer<typeof StorageQuotaEnum>;
 export type Quota = z.infer<typeof quotaSchema>;
 export type CommonComponents = z.infer<typeof commonComponentsSchema>;
 export type PrivateCloudCreateRequestBody = z.infer<typeof privateCloudCreateRequestBodySchema>;
