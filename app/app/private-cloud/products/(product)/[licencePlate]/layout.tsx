@@ -60,6 +60,7 @@ export default privateCloudProductLayout(({ pathParams, queryParams, session, ch
       label: 'ADMIN NOTES',
       name: 'comments',
       href: `/private-cloud/products/${licencePlate}/comments`,
+      tooltip: 'Admin only',
     });
   }
 

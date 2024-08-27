@@ -92,6 +92,7 @@ export default privateCloudProductSecurityACS(({ pathParams, queryParams, sessio
       label: 'ADMIN COMMENTS',
       name: 'comments',
       href: `/private-cloud/requests/${id}/comments`,
+      tooltip: 'Admin Only',
     });
   }
 

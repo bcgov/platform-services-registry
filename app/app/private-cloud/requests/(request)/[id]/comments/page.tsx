@@ -1,5 +1,7 @@
 'use client';
 
+import { Alert } from '@mantine/core';
+import { IconInfoCircle } from '@tabler/icons-react';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import React, { useEffect } from 'react';
 import { z } from 'zod';
@@ -58,6 +60,9 @@ export default privateCloudRequestComments(({ pathParams, session }) => {
 
   return (
     <div>
+      <Alert variant="light" color="blue" title="" icon={<IconInfoCircle />} mb={20}>
+        This page is for admin only; users do not have access.
+      </Alert>
       <CommentForm
         licencePlate={privateSnap.licencePlate}
         requestId={requestId}
