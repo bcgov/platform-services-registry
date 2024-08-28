@@ -1,5 +1,7 @@
 'use client';
 
+import { Alert } from '@mantine/core';
+import { IconInfoCircle } from '@tabler/icons-react';
 import { useQuery } from '@tanstack/react-query';
 import React from 'react';
 import { useSnapshot } from 'valtio';
@@ -59,6 +61,9 @@ export default privateCloudProductComments(({ pathParams, queryParams, session }
 
   return (
     <div>
+      <Alert variant="light" color="blue" title="" icon={<IconInfoCircle />} mb={20}>
+        This page is for admin only; users do not have access.
+      </Alert>
       <CommentForm
         licencePlate={licencePlate}
         projectId={snap.currentProduct?.id ?? ''}
