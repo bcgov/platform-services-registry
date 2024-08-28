@@ -1,7 +1,11 @@
 import { PrivateCloudComment } from '@prisma/client';
 import axios from 'axios';
-import { PrivateCloudProductRequestsGetPayload } from '@/app/api/private-cloud/products/[licencePlate]/requests/route';
-import { PrivateCloudProjectGetPayload, PrivateCloudProductSearchPayload } from '@/queries/private-cloud-products';
+import {
+  PrivateCloudRequestSimpleDecorated,
+  PrivateCloudProductDetailDecorated,
+  PrivateCloudProductSearch,
+  PrivateCloudRequestDetail,
+} from '@/types/private-cloud';
 import { downloadFile } from '@/utils/file-download';
 import { instance as parentInstance } from './instance';
 
@@ -33,7 +37,7 @@ export async function searchPrivateCloudProducts(data: PrivateCloudProductSearch
     return res.data;
   });
 
-  return result as PrivateCloudProductSearchPayload;
+  return result as PrivateCloudProductSearch;
 }
 
 export async function downloadPrivateCloudProducts(data: PrivateCloudProductAllCriteria) {
@@ -57,37 +61,37 @@ export async function getPrivateCloudProject(licencePlate: string) {
     return res.data;
   });
 
-  return result as PrivateCloudProjectGetPayload;
+  return result as PrivateCloudProductDetailDecorated;
 }
 
 export async function createPrivateCloudProject(data: any) {
   const result = await instance.post('', data).then((res) => res.data);
-  return result;
+  return result as PrivateCloudRequestDetail;
 }
 
 export async function editPrivateCloudProject(licencePlate: string, data: any) {
   const result = await instance.put(`/${licencePlate}`, data).then((res) => res.data);
-  return result;
+  return result as PrivateCloudRequestDetail;
 }
 
 export async function deletePrivateCloudProject(licencePlate: string) {
   const result = await instance.delete(`/${licencePlate}`).then((res) => res.data);
-  return result;
+  return result as PrivateCloudRequestDetail;
 }
 
 export async function checkPrivateCloudProductDeletionAvailability(licencePlate: string) {
   const result = await instance.get(`/${licencePlate}/deletion-check`).then((res) => res.data);
-  return result;
+  return result as string;
 }
 
 export async function reprovisionPrivateCloudProduct(licencePlate: string) {
   const result = await instance.get(`/${licencePlate}/reprovision`).then((res) => res.data);
-  return result;
+  return result as true;
 }
 
 export async function getPrivateCloudProductRequests(licencePlate: string, active = false) {
   const result = await instance.get(`/${licencePlate}/requests?active=${active}`).then((res) => res.data);
-  return result as PrivateCloudProductRequestsGetPayload[];
+  return result as PrivateCloudRequestSimpleDecorated[];
 }
 
 export async function getPrivateCloudComment(licencePlate: string, commentId: string) {

@@ -1,46 +1,10 @@
-import { $Enums, Cluster, DecisionStatus, Prisma, ProjectStatus, RequestType } from '@prisma/client';
+import { DecisionStatus, Prisma, ProjectStatus, RequestType, EventType } from '@prisma/client';
 import { Session } from 'next-auth';
 import prisma from '@/core/prisma';
 import { createEvent } from '@/mutations/events';
+import { privateCloudRequestDetailInclude } from '@/queries/private-cloud-requests';
+import { PrivateCloudRequestDetail } from '@/types/private-cloud';
 import { PrivateCloudEditRequestBody } from '@/validation-schemas/private-cloud';
-
-export type PrivateCloudRequestWithRequestedProject = Prisma.PrivateCloudRequestGetPayload<{
-  include: {
-    decisionData: {
-      include: {
-        projectOwner: true;
-        primaryTechnicalLead: true;
-        secondaryTechnicalLead: true;
-      };
-    };
-  };
-}>;
-
-export type PrivateCloudRequestWithProjectAndRequestedProject = Prisma.PrivateCloudRequestGetPayload<{
-  include: {
-    project: {
-      include: {
-        projectOwner: true;
-        primaryTechnicalLead: true;
-        secondaryTechnicalLead: true;
-      };
-    };
-    originalData: {
-      include: {
-        projectOwner: true;
-        primaryTechnicalLead: true;
-        secondaryTechnicalLead: true;
-      };
-    };
-    decisionData: {
-      include: {
-        projectOwner: true;
-        primaryTechnicalLead: true;
-        secondaryTechnicalLead: true;
-      };
-    };
-  };
-}>;
 
 export default async function makeRequestDecision(
   id: string,
@@ -53,7 +17,7 @@ export default async function makeRequestDecision(
     where: {
       id,
       active: true,
-      decisionStatus: $Enums.DecisionStatus.PENDING,
+      decisionStatus: DecisionStatus.PENDING,
     },
     include: {
       project: { select: { cluster: true } },
@@ -111,39 +75,17 @@ export default async function makeRequestDecision(
     };
   }
 
-  const updatedRequest = await prisma.privateCloudRequest.update({
+  const updatedRequest: PrivateCloudRequestDetail | null = await prisma.privateCloudRequest.update({
     where: {
       id: request.id,
       active: true,
     },
-    include: {
-      project: {
-        include: {
-          projectOwner: true,
-          primaryTechnicalLead: true,
-          secondaryTechnicalLead: true,
-        },
-      },
-      originalData: {
-        include: {
-          projectOwner: true,
-          primaryTechnicalLead: true,
-          secondaryTechnicalLead: true,
-        },
-      },
-      decisionData: {
-        include: {
-          projectOwner: true,
-          primaryTechnicalLead: true,
-          secondaryTechnicalLead: true,
-        },
-      },
-    },
+    include: privateCloudRequestDetailInclude,
     data: dataToUpdate,
   });
 
   if (updatedRequest) {
-    await createEvent($Enums.EventType.REVIEW_PRIVATE_CLOUD_REQUEST, session.user.id, { requestId: updatedRequest.id });
+    await createEvent(EventType.REVIEW_PRIVATE_CLOUD_REQUEST, session.user.id, { requestId: updatedRequest.id });
   }
 
   return updatedRequest;

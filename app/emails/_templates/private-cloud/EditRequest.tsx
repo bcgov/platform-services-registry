@@ -9,10 +9,10 @@ import QuotaChanges from '@/emails/_components/Edit/QuotaChanges';
 import { comparePrivateCloudProjects } from '@/emails/_components/Edit/utils/compare-projects';
 import Layout from '@/emails/_components/layout/Layout';
 import { isQuotaUpgrade } from '@/helpers/quota-change';
-import { PrivateCloudRequestWithProjectAndRequestedProject } from '@/request-actions/private-cloud/decision-request';
+import { PrivateCloudRequestDetail } from '@/types/private-cloud';
 
 interface EmailProp {
-  request: PrivateCloudRequestWithProjectAndRequestedProject;
+  request: PrivateCloudRequestDetail;
   userName: string;
 }
 

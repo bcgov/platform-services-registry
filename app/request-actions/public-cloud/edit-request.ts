@@ -3,8 +3,9 @@ import { Session } from 'next-auth';
 import prisma from '@/core/prisma';
 import { comparePublicProductData } from '@/helpers/product-change';
 import { createEvent } from '@/mutations/events';
-import { getLastClosedPublicCloudRequest } from '@/queries/public-cloud-requests';
+import { getLastClosedPublicCloudRequest, publicCloudRequestDetailInclude } from '@/queries/public-cloud-requests';
 import { upsertUsers } from '@/services/db/user';
+import { PublicCloudRequestDetail } from '@/types/public-cloud';
 import { PublicCloudEditRequestBody } from '@/validation-schemas/public-cloud';
 
 export default async function editRequest(
@@ -60,7 +61,7 @@ export default async function editRequest(
 
   const { changes, ...otherChangeMeta } = comparePublicProductData(rest, previousRequest?.decisionData);
 
-  const request = await prisma.publicCloudRequest.create({
+  const request: PublicCloudRequestDetail | null = await prisma.publicCloudRequest.create({
     data: {
       type: RequestType.EDIT,
       decisionStatus: DecisionStatus.APPROVED, // automatically approve edit requests for public cloud
@@ -74,35 +75,7 @@ export default async function editRequest(
       requestData: { create: decisionData },
       project: { connect: { licencePlate: project.licencePlate } },
     },
-    include: {
-      project: {
-        include: {
-          projectOwner: true,
-          primaryTechnicalLead: true,
-          secondaryTechnicalLead: true,
-          expenseAuthority: true,
-          billing: true,
-        },
-      },
-      originalData: {
-        include: {
-          projectOwner: true,
-          primaryTechnicalLead: true,
-          secondaryTechnicalLead: true,
-          expenseAuthority: true,
-          billing: true,
-        },
-      },
-      decisionData: {
-        include: {
-          projectOwner: true,
-          primaryTechnicalLead: true,
-          secondaryTechnicalLead: true,
-          expenseAuthority: true,
-          billing: true,
-        },
-      },
-    },
+    include: publicCloudRequestDetailInclude,
   });
 
   if (request) {

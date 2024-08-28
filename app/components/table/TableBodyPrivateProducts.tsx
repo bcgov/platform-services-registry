@@ -11,13 +11,13 @@ import TemporaryProductBadge from '@/components/form/TemporaryProductBadge';
 import CopyableButton from '@/components/generic/button/CopyableButton';
 import UserCard from '@/components/UserCard';
 import { ministryKeyToName } from '@/helpers/product';
-import { PrivateCloudProjectGetPayloadWithActiveRequest } from '@/queries/private-cloud-products';
+import { PrivateCloudProductSimpleDecorated } from '@/types/private-cloud';
 import { formatDate } from '@/utils/date';
 import EmptySearch from './EmptySearch';
 import TruncatedTooltip from './TruncatedTooltip';
 
 interface TableProps {
-  rows: PrivateCloudProjectGetPayloadWithActiveRequest[];
+  rows: PrivateCloudProductSimpleDecorated[];
   isLoading: boolean;
 }
 

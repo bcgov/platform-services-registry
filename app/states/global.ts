@@ -1,9 +1,17 @@
 import { PrivateProductChange, PublicProductChange } from '@/helpers/product-change';
 import { createGlobalValtio } from '@/helpers/valtio';
-import { PrivateCloudProjectGetPayload } from '@/queries/private-cloud-products';
-import { PrivateCloudRequestGetPayload } from '@/queries/private-cloud-requests';
-import { PublicCloudProjectGetPayload } from '@/queries/public-cloud-products';
-import { PublicCloudRequestGetPayload } from '@/queries/public-cloud-requests';
+import {
+  PrivateCloudProductSimpleDecorated,
+  PrivateCloudRequestSimpleDecorated,
+  PrivateCloudProductDetailDecorated,
+  PrivateCloudRequestDetailDecorated,
+} from '@/types/private-cloud';
+import {
+  PublicCloudProductSimpleDecorated,
+  PublicCloudRequestSimpleDecorated,
+  PublicCloudProductDetailDecorated,
+  PublicCloudRequestDetailDecorated,
+} from '@/types/public-cloud';
 
 export type Cloud = 'private-cloud' | 'public-cloud' | null;
 
@@ -37,8 +45,8 @@ export const { state: appState, useValtioState: useAppState } = createGlobalValt
 
 export const { state: privateProductState, useValtioState: usePrivateProductState } = createGlobalValtio<{
   licencePlate: string;
-  currentProduct: PrivateCloudProjectGetPayload | undefined;
-  currentRequest: PrivateCloudRequestGetPayload | undefined;
+  currentProduct: PrivateCloudProductDetailDecorated | undefined;
+  currentRequest: PrivateCloudRequestDetailDecorated | undefined;
   dataChangeOriginalRequest: PrivateProductChange | undefined;
   dataChangeRequestDecision: PrivateProductChange | undefined;
   dataChangeOriginalDecision: PrivateProductChange | undefined;
@@ -53,8 +61,8 @@ export const { state: privateProductState, useValtioState: usePrivateProductStat
 
 export const { state: publicProductState, useValtioState: usePublicProductState } = createGlobalValtio<{
   licencePlate: string;
-  currentProduct: PublicCloudProjectGetPayload | undefined;
-  currentRequest: PublicCloudRequestGetPayload | undefined;
+  currentProduct: PublicCloudProductDetailDecorated | undefined;
+  currentRequest: PublicCloudRequestDetailDecorated | undefined;
   dataChangeOriginalRequest: PublicProductChange | undefined;
 }>({
   licencePlate: '',

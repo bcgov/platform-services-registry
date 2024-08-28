@@ -6,8 +6,8 @@ import Table from '@/components/generic/table/Table';
 import TableBodyPrivateRequests from '@/components/table/TableBodyPrivateRequests';
 import createClientPage from '@/core/client-page';
 import { processPrivateCloudRequestData } from '@/helpers/row-mapper';
-import { PrivateCloudRequestSearchedItemPayload } from '@/queries/private-cloud-requests';
 import { searchPrivateCloudRequests } from '@/services/backend/private-cloud/requests';
+import { PrivateCloudRequestSimpleDecorated } from '@/types/private-cloud';
 import FilterPanel from './FilterPanel';
 import { pageState } from './state';
 
@@ -23,7 +23,7 @@ export default privateCloudRequests(({ pathParams, queryParams, session }) => {
     queryFn: () => searchPrivateCloudRequests(snap),
   });
 
-  let requests: PrivateCloudRequestSearchedItemPayload[] = [];
+  let requests: PrivateCloudRequestSimpleDecorated[] = [];
   let totalCount = 0;
 
   if (!isLoading && data) {

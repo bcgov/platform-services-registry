@@ -9,14 +9,14 @@ import React from 'react';
 import CopyableButton from '@/components/generic/button/CopyableButton';
 import UserCard from '@/components/UserCard';
 import { ministryKeyToName } from '@/helpers/product';
-import { PublicCloudRequestSearchedItemPayload } from '@/queries/public-cloud-requests';
+import { PublicCloudRequestSimpleDecorated } from '@/types/public-cloud';
 import { formatDate } from '@/utils/date';
 import ActiveRequestBox from '../form/ActiveRequestBox';
 import EmptySearch from './EmptySearch';
 import TruncatedTooltip from './TruncatedTooltip';
 
 interface TableProps {
-  rows: PublicCloudRequestSearchedItemPayload[];
+  rows: PublicCloudRequestSimpleDecorated[];
   isLoading: boolean;
 }
 
@@ -33,7 +33,7 @@ export default function TableBodyPublicProducts({ rows, isLoading = false }: Tab
     return <EmptySearch cloud="public-cloud" type="request" />;
   }
 
-  const onRowClickHandler = (row: PublicCloudRequestSearchedItemPayload) => {
+  const onRowClickHandler = (row: PublicCloudRequestSimpleDecorated) => {
     router.push(`/${cloud}/requests/${row.id}/request`);
   };
 

@@ -1,9 +1,11 @@
-import { $Enums, DecisionStatus, ProjectStatus, RequestType } from '@prisma/client';
+import { DecisionStatus, ProjectStatus, RequestType, EventType } from '@prisma/client';
 import { Session } from 'next-auth';
 import prisma from '@/core/prisma';
 import generateLicencePlate from '@/helpers/licence-plate';
 import { createEvent } from '@/mutations/events';
+import { privateCloudRequestDetailInclude } from '@/queries/private-cloud-requests';
 import { upsertUsers } from '@/services/db/user';
+import { PrivateCloudRequestDetail } from '@/types/private-cloud';
 import {
   CpuQuotaEnum,
   MemoryQuotaEnum,
@@ -69,7 +71,7 @@ export default async function createRequest(formData: PrivateCloudCreateRequestB
       : undefined,
   };
 
-  const request = await prisma.privateCloudRequest.create({
+  const request: PrivateCloudRequestDetail = await prisma.privateCloudRequest.create({
     data: {
       type: RequestType.CREATE,
       decisionStatus: DecisionStatus.PENDING,
@@ -84,26 +86,11 @@ export default async function createRequest(formData: PrivateCloudCreateRequestB
         create: createRequestedProject,
       },
     },
-    include: {
-      project: {
-        include: {
-          projectOwner: true,
-          primaryTechnicalLead: true,
-          secondaryTechnicalLead: true,
-        },
-      },
-      decisionData: {
-        include: {
-          projectOwner: true,
-          primaryTechnicalLead: true,
-          secondaryTechnicalLead: true,
-        },
-      },
-    },
+    include: privateCloudRequestDetailInclude,
   });
 
   if (request) {
-    await createEvent($Enums.EventType.CREATE_PRIVATE_CLOUD_PRODUCT, session.user.id, { requestId: request.id });
+    await createEvent(EventType.CREATE_PRIVATE_CLOUD_PRODUCT, session.user.id, { requestId: request.id });
   }
 
   return request;

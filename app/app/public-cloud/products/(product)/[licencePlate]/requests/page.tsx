@@ -7,8 +7,8 @@ import Table from '@/components/generic/table/Table';
 import TableBodyPublicRequests from '@/components/table/TableBodyPublicRequests';
 import createClientPage from '@/core/client-page';
 import { processPublicCloudRequestData } from '@/helpers/row-mapper';
-import { PublicCloudRequestSearchedItemPayload } from '@/queries/public-cloud-requests';
 import { searchPublicCloudRequests } from '@/services/backend/public-cloud/requests';
+import { PublicCloudRequestSimpleDecorated } from '@/types/public-cloud';
 import FilterPanel from './FilterPanel';
 import { pageState } from './state';
 
@@ -31,7 +31,7 @@ export default publicCloudRequests(({ pathParams, queryParams, session }) => {
     enabled: !!licencePlate,
   });
 
-  let requests: PublicCloudRequestSearchedItemPayload[] = [];
+  let requests: PublicCloudRequestSimpleDecorated[] = [];
   let totalCount = 0;
 
   if (!isLoading && data) {

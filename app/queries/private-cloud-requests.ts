@@ -1,42 +1,60 @@
 import { $Enums, Prisma } from '@prisma/client';
 import { Session } from 'next-auth';
 import prisma from '@/core/prisma';
-import { PrivateCloudRequestDecorate } from '@/types/doc-decorate';
+import {
+  PrivateCloudRequestDetail,
+  PrivateCloudRequestDetailDecorated,
+  PrivateCloudRequestSearch,
+} from '@/types/private-cloud';
 import { getMatchingUserIds } from './users';
 
-export type PrivateCloudRequestGetPayload = Prisma.PrivateCloudRequestGetPayload<{
-  include: {
-    project: {
-      include: {
-        projectOwner: true;
-        primaryTechnicalLead: true;
-        secondaryTechnicalLead: true;
-      };
-    };
-    originalData: {
-      include: {
-        projectOwner: true;
-        primaryTechnicalLead: true;
-        secondaryTechnicalLead: true;
-      };
-    };
-    requestData: {
-      include: {
-        projectOwner: true;
-        primaryTechnicalLead: true;
-        secondaryTechnicalLead: true;
-      };
-    };
-    decisionData: {
-      include: {
-        projectOwner: true;
-        primaryTechnicalLead: true;
-        secondaryTechnicalLead: true;
-      };
-    };
-  };
-}> &
-  PrivateCloudRequestDecorate;
+export const privateCloudRequestSimpleInclude = {
+  project: {
+    include: {
+      projectOwner: true,
+      primaryTechnicalLead: true,
+      secondaryTechnicalLead: true,
+    },
+  },
+  decisionData: {
+    include: {
+      projectOwner: true,
+      primaryTechnicalLead: true,
+      secondaryTechnicalLead: true,
+    },
+  },
+};
+
+export const privateCloudRequestDetailInclude = {
+  project: {
+    include: {
+      projectOwner: true,
+      primaryTechnicalLead: true,
+      secondaryTechnicalLead: true,
+    },
+  },
+  originalData: {
+    include: {
+      projectOwner: true,
+      primaryTechnicalLead: true,
+      secondaryTechnicalLead: true,
+    },
+  },
+  requestData: {
+    include: {
+      projectOwner: true,
+      primaryTechnicalLead: true,
+      secondaryTechnicalLead: true,
+    },
+  },
+  decisionData: {
+    include: {
+      projectOwner: true,
+      primaryTechnicalLead: true,
+      secondaryTechnicalLead: true,
+    },
+  },
+};
 
 const defaultSortKey = 'updatedAt';
 
@@ -120,16 +138,7 @@ export async function searchPrivateCloudRequests({
       where,
       skip,
       take,
-      include: {
-        project: true,
-        decisionData: {
-          include: {
-            projectOwner: true,
-            primaryTechnicalLead: true,
-            secondaryTechnicalLead: true,
-          },
-        },
-      },
+      include: privateCloudRequestSimpleInclude,
       orderBy,
       session: session as never,
     }),
@@ -139,27 +148,8 @@ export async function searchPrivateCloudRequests({
     }),
   ]);
 
-  return { docs, totalCount };
+  return { docs, totalCount } as PrivateCloudRequestSearch;
 }
-
-export type PrivateCloudRequestSearchedItemPayload = Prisma.PrivateCloudRequestGetPayload<{
-  include: {
-    project: true;
-    decisionData: {
-      include: {
-        projectOwner: true;
-        primaryTechnicalLead: true;
-        secondaryTechnicalLead: true;
-      };
-    };
-  };
-}> &
-  PrivateCloudRequestDecorate;
-
-export type PrivateCloudRequestSearchPayload = {
-  docs: PrivateCloudRequestSearchedItemPayload[];
-  totalCount: number;
-};
 
 export async function getPrivateCloudRequest(session: Session, id?: string) {
   if (!id) return null;
@@ -168,36 +158,7 @@ export async function getPrivateCloudRequest(session: Session, id?: string) {
     where: {
       id,
     },
-    include: {
-      project: {
-        include: {
-          projectOwner: true,
-          primaryTechnicalLead: true,
-          secondaryTechnicalLead: true,
-        },
-      },
-      originalData: {
-        include: {
-          projectOwner: true,
-          primaryTechnicalLead: true,
-          secondaryTechnicalLead: true,
-        },
-      },
-      requestData: {
-        include: {
-          projectOwner: true,
-          primaryTechnicalLead: true,
-          secondaryTechnicalLead: true,
-        },
-      },
-      decisionData: {
-        include: {
-          projectOwner: true,
-          primaryTechnicalLead: true,
-          secondaryTechnicalLead: true,
-        },
-      },
-    },
+    include: privateCloudRequestDetailInclude,
     session: session as never,
   });
 
@@ -205,7 +166,7 @@ export async function getPrivateCloudRequest(session: Session, id?: string) {
     return null;
   }
 
-  return request as PrivateCloudRequestGetPayload;
+  return request as PrivateCloudRequestDetailDecorated;
 }
 
 export async function getLastClosedPrivateCloudRequest(licencePlate: string) {
