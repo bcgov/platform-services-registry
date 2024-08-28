@@ -105,7 +105,7 @@ function CommentForm({
   };
 
   return (
-    <div className="flex flex-col items-start w-full">
+    <div className="flex flex-col items-center w-full">
       <div className="w-full max-w-xl px-4">
         {!showCommentBox && (
           <div className="flex justify-end mb-2 transition-opacity duration-500 ease-in-out">
