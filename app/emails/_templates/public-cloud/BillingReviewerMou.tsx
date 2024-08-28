@@ -4,10 +4,10 @@ import { BASE_URL } from '@/config';
 import Closing from '@/emails/_components/Closing';
 import Layout from '@/emails/_components/layout/Layout';
 import ProductDetails from '@/emails/_components/ProductDetails';
-import { PublicCloudRequestWithRequestedProject } from '@/request-actions/public-cloud/decision-request';
+import { PublicCloudRequestDetail } from '@/types/public-cloud';
 
 interface Props {
-  request: PublicCloudRequestWithRequestedProject;
+  request: PublicCloudRequestDetail;
 }
 
 const BillingReviewerMouTemplate = ({ request }: Props) => {

@@ -4,6 +4,7 @@ import createApiHandler from '@/core/api-handler';
 import prisma from '@/core/prisma';
 import { BadRequestResponse, OkResponse, UnauthorizedResponse } from '@/core/responses';
 import { formatFullName } from '@/helpers/user';
+import { publicCloudRequestDetailInclude } from '@/queries/public-cloud-requests';
 import { sendRequestReviewEmails } from '@/services/ches/public-cloud/email-handler';
 
 const pathParamSchema = z.object({
@@ -46,17 +47,7 @@ export const POST = apiHandler(async ({ pathParams, body, session }) => {
   if (decision === 'APPROVE') {
     const request = await prisma.publicCloudRequest.findUnique({
       where: { id },
-      include: {
-        decisionData: {
-          include: {
-            projectOwner: true,
-            primaryTechnicalLead: true,
-            secondaryTechnicalLead: true,
-            expenseAuthority: true,
-            billing: true,
-          },
-        },
-      },
+      include: publicCloudRequestDetailInclude,
     });
 
     if (request) {

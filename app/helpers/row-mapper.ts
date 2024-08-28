@@ -1,9 +1,7 @@
-import { PrivateCloudProjectGetPayload } from '@/queries/private-cloud-products';
-import { PrivateCloudRequestSearchedItemPayload } from '@/queries/private-cloud-requests';
-import { PublicCloudProjectGetPayload } from '@/queries/public-cloud-products';
-import { PublicCloudRequestSearchedItemPayload } from '@/queries/public-cloud-requests';
+import { PrivateCloudProductSimpleDecorated, PrivateCloudRequestSimpleDecorated } from '@/types/private-cloud';
+import { PublicCloudProductSimpleDecorated, PublicCloudRequestSimpleDecorated } from '@/types/public-cloud';
 
-export const processPrivateCloudProductData = (product: PrivateCloudProjectGetPayload) => {
+export const processPrivateCloudProductData = (product: PrivateCloudProductSimpleDecorated) => {
   return {
     ...product,
     activeRequest: product.requests.length
@@ -14,13 +12,13 @@ export const processPrivateCloudProductData = (product: PrivateCloudProjectGetPa
   };
 };
 
-export const processPrivateCloudRequestData = (request: PrivateCloudRequestSearchedItemPayload) => {
+export const processPrivateCloudRequestData = (request: PrivateCloudRequestSimpleDecorated) => {
   return {
     ...request,
   };
 };
 
-export const processPublicCloudProductData = (product: PublicCloudProjectGetPayload) => {
+export const processPublicCloudProductData = (product: PublicCloudProductSimpleDecorated) => {
   return {
     ...product,
     activeRequest: product.requests.length
@@ -31,7 +29,7 @@ export const processPublicCloudProductData = (product: PublicCloudProjectGetPayl
   };
 };
 
-export const processPublicCloudRequestData = (request: PublicCloudRequestSearchedItemPayload) => {
+export const processPublicCloudRequestData = (request: PublicCloudRequestSimpleDecorated) => {
   return {
     ...request,
   };

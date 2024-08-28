@@ -11,13 +11,13 @@ import TemporaryProductBadge from '@/components/form/TemporaryProductBadge';
 import CopyableButton from '@/components/generic/button/CopyableButton';
 import UserCard from '@/components/UserCard';
 import { ministryKeyToName } from '@/helpers/product';
-import { PrivateCloudRequestSearchedItemPayload } from '@/queries/private-cloud-requests';
+import { PrivateCloudRequestSimpleDecorated } from '@/types/private-cloud';
 import { formatDate } from '@/utils/date';
 import EmptySearch from './EmptySearch';
 import TruncatedTooltip from './TruncatedTooltip';
 
 interface TableProps {
-  rows: PrivateCloudRequestSearchedItemPayload[];
+  rows: PrivateCloudRequestSimpleDecorated[];
   isLoading: boolean;
 }
 
@@ -35,7 +35,7 @@ export default function TableBodyPrivateRequests({ rows, isLoading = false }: Ta
     return <EmptySearch cloud="private-cloud" type="request" />;
   }
 
-  const onRowClickHandler = (row: PrivateCloudRequestSearchedItemPayload) => {
+  const onRowClickHandler = (row: PrivateCloudRequestSimpleDecorated) => {
     router.push(`/${cloud}/requests/${row.id}/decision`);
   };
 

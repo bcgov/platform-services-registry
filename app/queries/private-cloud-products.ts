@@ -1,30 +1,29 @@
 import { Ministry, Cluster, ProjectStatus, Prisma } from '@prisma/client';
 import { Session } from 'next-auth';
 import prisma from '@/core/prisma';
-import { PrivateCloudProjectDecorate, PrivateCloudRequestDecorate } from '@/types/doc-decorate';
+import { PrivateCloudProductDetail, PrivateCloudProductDetailDecorated } from '@/types/private-cloud';
 import { getMatchingUserIds } from './users';
 
-export type PrivateCloudProjectGetPayload = Prisma.PrivateCloudProjectGetPayload<{
-  include: {
-    projectOwner: true;
-    primaryTechnicalLead: true;
-    secondaryTechnicalLead: true;
-    requests: {
-      where: {
-        active: true;
-      };
-    };
-  };
-}> &
-  PrivateCloudProjectDecorate;
-
-export type PrivateCloudProjectGetPayloadWithActiveRequest = PrivateCloudProjectGetPayload & {
-  activeRequest: Prisma.PrivateCloudRequestGetPayload<null> | null;
+export const privateCloudProductSimpleInclude = {
+  projectOwner: true,
+  primaryTechnicalLead: true,
+  secondaryTechnicalLead: true,
+  requests: {
+    where: {
+      active: true,
+    },
+  },
 };
 
-export type PrivateCloudProductSearchPayload = {
-  docs: PrivateCloudProjectGetPayload[];
-  totalCount: number;
+export const privateCloudProductDetailInclude = {
+  projectOwner: true,
+  primaryTechnicalLead: true,
+  secondaryTechnicalLead: true,
+  requests: {
+    where: {
+      active: true,
+    },
+  },
 };
 
 const defaultSortKey = 'updatedAt';
@@ -99,16 +98,7 @@ export async function searchPrivateCloudProducts({
       where,
       skip,
       take,
-      include: {
-        projectOwner: true,
-        primaryTechnicalLead: true,
-        secondaryTechnicalLead: true,
-        requests: {
-          where: {
-            active: true,
-          },
-        },
-      },
+      include: privateCloudProductSimpleInclude,
       orderBy,
       session: session as never,
     }),
@@ -124,20 +114,11 @@ export async function searchPrivateCloudProducts({
 export async function getPrivateCloudProduct(session: Session, licencePlate?: string) {
   if (!licencePlate) return null;
 
-  const product = await prisma.privateCloudProject.findUnique({
+  const product: PrivateCloudProductDetail | null = await prisma.privateCloudProject.findUnique({
     where: {
       licencePlate,
     },
-    include: {
-      projectOwner: true,
-      primaryTechnicalLead: true,
-      secondaryTechnicalLead: true,
-      requests: {
-        where: {
-          active: true,
-        },
-      },
-    },
+    include: privateCloudProductDetailInclude,
     session: session as never,
   });
 
@@ -145,10 +126,10 @@ export async function getPrivateCloudProduct(session: Session, licencePlate?: st
     return null;
   }
 
-  return product as PrivateCloudProjectGetPayload;
+  return product as PrivateCloudProductDetailDecorated;
 }
 
-export function excludeProductUsers(product: PrivateCloudProjectGetPayload | null) {
+export function excludeProductUsers(product: PrivateCloudProductDetailDecorated | null) {
   if (!product) return null;
 
   const { projectOwner, primaryTechnicalLead, secondaryTechnicalLead, ...rest } = product;

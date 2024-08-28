@@ -10,13 +10,13 @@ import ActiveRequestBox from '@/components/form/ActiveRequestBox';
 import CopyableButton from '@/components/generic/button/CopyableButton';
 import UserCard from '@/components/UserCard';
 import { ministryKeyToName } from '@/helpers/product';
-import { PublicCloudProjectGetPayloadWithActiveRequest } from '@/queries/public-cloud-products';
+import { PublicCloudProductSimpleDecorated } from '@/types/public-cloud';
 import { formatDate } from '@/utils/date';
 import EmptySearch from './EmptySearch';
 import TruncatedTooltip from './TruncatedTooltip';
 
 interface TableProps {
-  rows: PublicCloudProjectGetPayloadWithActiveRequest[];
+  rows: PublicCloudProductSimpleDecorated[];
   isLoading: boolean;
 }
 

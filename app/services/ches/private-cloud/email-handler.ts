@@ -11,15 +11,12 @@ import EditRequestTemplate from '@/emails/_templates/private-cloud/EditRequest';
 import ProvisionedTemplate from '@/emails/_templates/private-cloud/Provisioned';
 import RequestApprovalTemplate from '@/emails/_templates/private-cloud/RequestApproval';
 import RequestRejectionTemplate from '@/emails/_templates/private-cloud/RequestRejection';
-import {
-  PrivateCloudRequestWithProjectAndRequestedProject,
-  PrivateCloudRequestWithRequestedProject,
-} from '@/request-actions/private-cloud/decision-request';
 import { adminPrivateEmails } from '@/services/ches/email-constant';
 import { sendEmail } from '@/services/ches/helpers';
 import { PrivateCloudRequestedProjectWithContacts } from '@/services/nats/private-cloud';
+import { PrivateCloudRequestDetail } from '@/types/private-cloud';
 
-export const sendCreateRequestEmails = async (request: PrivateCloudRequestWithRequestedProject, userName: string) => {
+export const sendCreateRequestEmails = async (request: PrivateCloudRequestDetail, userName: string) => {
   try {
     const adminEmail = render(AdminCreateTemplate({ request, userName }), { pretty: true });
     const userEmail = render(CreateRequestTemplate({ request, userName }), { pretty: true });
@@ -49,7 +46,7 @@ export const sendCreateRequestEmails = async (request: PrivateCloudRequestWithRe
 };
 
 export const sendEditRequestEmails = async (
-  request: PrivateCloudRequestWithProjectAndRequestedProject,
+  request: PrivateCloudRequestDetail,
   isAdminEmailSent: boolean,
   userName: string,
 ) => {
@@ -85,7 +82,7 @@ export const sendEditRequestEmails = async (
   }
 };
 
-export const sendRequestApprovalEmails = async (request: PrivateCloudRequestWithProjectAndRequestedProject) => {
+export const sendRequestApprovalEmails = async (request: PrivateCloudRequestDetail) => {
   try {
     const email = render(RequestApprovalTemplate({ request }), { pretty: true });
 
@@ -103,7 +100,7 @@ export const sendRequestApprovalEmails = async (request: PrivateCloudRequestWith
   }
 };
 
-export const sendRequestRejectionEmails = async (request: PrivateCloudRequestWithProjectAndRequestedProject) => {
+export const sendRequestRejectionEmails = async (request: PrivateCloudRequestDetail) => {
   try {
     const currentData = request.type === $Enums.RequestType.CREATE ? request.decisionData : request.originalData;
     if (!currentData) throw Error('invalid request');
@@ -126,7 +123,7 @@ export const sendRequestRejectionEmails = async (request: PrivateCloudRequestWit
   }
 };
 
-export const sendDeleteRequestEmails = async (request: PrivateCloudRequestWithRequestedProject, userName: string) => {
+export const sendDeleteRequestEmails = async (request: PrivateCloudRequestDetail, userName: string) => {
   try {
     const adminEmail = render(AdminDeleteRequestTemplate({ request, userName }), { pretty: true });
     const userEmail = render(DeleteRequestTemplate({ request, userName }), { pretty: true });
