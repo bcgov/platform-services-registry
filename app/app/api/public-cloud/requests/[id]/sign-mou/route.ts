@@ -4,6 +4,7 @@ import { AUTH_RESOURCE } from '@/config';
 import createApiHandler from '@/core/api-handler';
 import prisma from '@/core/prisma';
 import { BadRequestResponse, OkResponse, UnauthorizedResponse } from '@/core/responses';
+import { publicCloudRequestDetailInclude } from '@/queries/public-cloud-requests';
 import { sendPublicCloudBillingReviewEmails } from '@/services/ches/public-cloud/email-handler';
 import { findUsersByClientRole } from '@/services/keycloak/app-realm';
 
@@ -45,17 +46,7 @@ export const POST = apiHandler(async ({ pathParams, body, session }) => {
 
   const request = await prisma.publicCloudRequest.findUnique({
     where: { id },
-    include: {
-      decisionData: {
-        include: {
-          projectOwner: true,
-          primaryTechnicalLead: true,
-          secondaryTechnicalLead: true,
-          expenseAuthority: true,
-          billing: true,
-        },
-      },
-    },
+    include: publicCloudRequestDetailInclude,
   });
 
   if (!request) {

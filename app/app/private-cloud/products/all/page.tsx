@@ -6,8 +6,8 @@ import Table from '@/components/generic/table/Table';
 import TableBodyPrivateProducts from '@/components/table/TableBodyPrivateProducts';
 import createClientPage from '@/core/client-page';
 import { processPrivateCloudProductData } from '@/helpers/row-mapper';
-import { PrivateCloudProjectGetPayloadWithActiveRequest } from '@/queries/private-cloud-products';
 import { searchPrivateCloudProducts, downloadPrivateCloudProducts } from '@/services/backend/private-cloud/products';
+import { PrivateCloudProductSimpleDecorated } from '@/types/private-cloud';
 import FilterPanel from './FilterPanel';
 import { pageState } from './state';
 
@@ -23,7 +23,7 @@ export default privateCloudProducts(({ pathParams, queryParams, session }) => {
     queryFn: () => searchPrivateCloudProducts(snap),
   });
 
-  let products: PrivateCloudProjectGetPayloadWithActiveRequest[] = [];
+  let products: PrivateCloudProductSimpleDecorated[] = [];
   let totalCount = 0;
 
   if (!isLoading && data) {

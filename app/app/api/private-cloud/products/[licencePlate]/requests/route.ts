@@ -3,7 +3,8 @@ import { z } from 'zod';
 import createApiHandler from '@/core/api-handler';
 import prisma from '@/core/prisma';
 import { NoContent, OkResponse } from '@/core/responses';
-import { PrivateCloudRequestDecorate } from '@/types/doc-decorate';
+import { privateCloudRequestSimpleInclude } from '@/queries/private-cloud-requests';
+import { PrivateCloudRequestSimpleDecorated } from '@/types/private-cloud';
 import { processBoolean } from '@/utils/zod';
 
 const pathParamSchema = z.object({
@@ -28,47 +29,12 @@ export const GET = apiHandler(async ({ pathParams, queryParams, session }) => {
 
   const requests = await prisma.privateCloudRequest.findMany({
     where,
-    include: {
-      project: {
-        include: {
-          projectOwner: true,
-          primaryTechnicalLead: true,
-          secondaryTechnicalLead: true,
-        },
-      },
-      decisionData: {
-        include: {
-          projectOwner: true,
-          primaryTechnicalLead: true,
-          secondaryTechnicalLead: true,
-        },
-      },
-    },
+    include: privateCloudRequestSimpleInclude,
     orderBy: {
       createdAt: 'desc',
     },
     session: session as never,
   });
 
-  return OkResponse(requests);
+  return OkResponse(requests as PrivateCloudRequestSimpleDecorated[]);
 });
-
-export type PrivateCloudProductRequestsGetPayload = Prisma.PrivateCloudRequestGetPayload<{
-  include: {
-    project: {
-      include: {
-        projectOwner: true;
-        primaryTechnicalLead: true;
-        secondaryTechnicalLead: true;
-      };
-    };
-    decisionData: {
-      include: {
-        projectOwner: true;
-        primaryTechnicalLead: true;
-        secondaryTechnicalLead: true;
-      };
-    };
-  };
-}> &
-  PrivateCloudRequestDecorate;

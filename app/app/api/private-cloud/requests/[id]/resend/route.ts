@@ -1,4 +1,4 @@
-import { $Enums, Cluster } from '@prisma/client';
+import { Cluster, EventType } from '@prisma/client';
 import { z } from 'zod';
 import createApiHandler from '@/core/api-handler';
 import { BadRequestResponse, OkResponse, UnauthorizedResponse } from '@/core/responses';
@@ -39,7 +39,7 @@ export const GET = apiHandler(async ({ pathParams, session }) => {
     );
   }
 
-  await createEvent($Enums.EventType.RESEND_PRIVATE_CLOUD_REQUEST, session.user.id, { requestId: request.id });
+  await createEvent(EventType.RESEND_PRIVATE_CLOUD_REQUEST, session.user.id, { requestId: request.id });
 
   return OkResponse(true);
 });

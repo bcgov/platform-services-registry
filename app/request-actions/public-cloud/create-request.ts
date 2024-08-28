@@ -1,9 +1,11 @@
-import { $Enums, DecisionStatus, ProjectStatus, RequestType, TaskStatus, TaskType } from '@prisma/client';
+import { DecisionStatus, ProjectStatus, RequestType, TaskStatus, TaskType, EventType } from '@prisma/client';
 import { Session } from 'next-auth';
 import prisma from '@/core/prisma';
 import generateLicencePlate from '@/helpers/licence-plate';
 import { createEvent } from '@/mutations/events';
+import { publicCloudRequestDetailInclude } from '@/queries/public-cloud-requests';
 import { upsertUsers } from '@/services/db/user';
+import { PublicCloudRequestDetail } from '@/types/public-cloud';
 import { PublicCloudCreateRequestBody } from '@/validation-schemas/public-cloud';
 
 export default async function createRequest(formData: PublicCloudCreateRequestBody, session: Session) {
@@ -83,7 +85,7 @@ export default async function createRequest(formData: PublicCloudCreateRequestBo
       : undefined,
   };
 
-  const request = await prisma.publicCloudRequest.create({
+  const request: PublicCloudRequestDetail | null = await prisma.publicCloudRequest.create({
     data: {
       type: RequestType.CREATE,
       decisionStatus: DecisionStatus.PENDING,
@@ -97,26 +99,7 @@ export default async function createRequest(formData: PublicCloudCreateRequestBo
         create: createRequestedProject,
       },
     },
-    include: {
-      project: {
-        include: {
-          projectOwner: true,
-          primaryTechnicalLead: true,
-          secondaryTechnicalLead: true,
-          expenseAuthority: true,
-          billing: true,
-        },
-      },
-      decisionData: {
-        include: {
-          projectOwner: true,
-          primaryTechnicalLead: true,
-          secondaryTechnicalLead: true,
-          expenseAuthority: true,
-          billing: true,
-        },
-      },
-    },
+    include: publicCloudRequestDetailInclude,
   });
 
   if (request) {
@@ -134,7 +117,7 @@ export default async function createRequest(formData: PublicCloudCreateRequestBo
       });
     }
 
-    await createEvent($Enums.EventType.CREATE_PUBLIC_CLOUD_PRODUCT, session.user.id, { requestId: request.id });
+    await createEvent(EventType.CREATE_PUBLIC_CLOUD_PRODUCT, session.user.id, { requestId: request.id });
   }
 
   return request;

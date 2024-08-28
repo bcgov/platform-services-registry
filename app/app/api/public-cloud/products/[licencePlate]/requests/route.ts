@@ -3,7 +3,8 @@ import { z } from 'zod';
 import createApiHandler from '@/core/api-handler';
 import prisma from '@/core/prisma';
 import { NoContent, OkResponse } from '@/core/responses';
-import { PublicCloudRequestDecorate } from '@/types/doc-decorate';
+import { publicCloudRequestSimpleInclude } from '@/queries/public-cloud-requests';
+import { PublicCloudRequestSimple, PublicCloudRequestSimpleDecorated } from '@/types/public-cloud';
 import { processBoolean } from '@/utils/zod';
 
 const pathParamSchema = z.object({
@@ -26,57 +27,14 @@ export const GET = apiHandler(async ({ pathParams, queryParams, session }) => {
   const where: Prisma.PublicCloudRequestWhereInput = active ? { active: true } : {};
   where.licencePlate = licencePlate;
 
-  const requests = await prisma.publicCloudRequest.findMany({
+  const requests: PublicCloudRequestSimple[] = await prisma.publicCloudRequest.findMany({
     where,
-    include: {
-      project: {
-        include: {
-          projectOwner: true,
-          primaryTechnicalLead: true,
-          secondaryTechnicalLead: true,
-          expenseAuthority: true,
-          billing: true,
-        },
-      },
-      decisionData: {
-        include: {
-          projectOwner: true,
-          primaryTechnicalLead: true,
-          secondaryTechnicalLead: true,
-          expenseAuthority: true,
-          billing: true,
-        },
-      },
-    },
+    include: publicCloudRequestSimpleInclude,
     orderBy: {
       createdAt: 'desc',
     },
     session: session as never,
   });
 
-  return OkResponse(requests);
+  return OkResponse(requests as PublicCloudRequestSimpleDecorated[]);
 });
-
-export type PublicCloudProductRequestsGetPayload = Prisma.PublicCloudRequestGetPayload<{
-  include: {
-    project: {
-      include: {
-        projectOwner: true;
-        primaryTechnicalLead: true;
-        secondaryTechnicalLead: true;
-        expenseAuthority: true;
-        billing: true;
-      };
-    };
-    decisionData: {
-      include: {
-        projectOwner: true;
-        primaryTechnicalLead: true;
-        secondaryTechnicalLead: true;
-        expenseAuthority: true;
-        billing: true;
-      };
-    };
-  };
-}> &
-  PublicCloudRequestDecorate;

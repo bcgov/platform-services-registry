@@ -12,15 +12,12 @@ import ExpenseAuthorityMou from '@/emails/_templates/public-cloud/ExpenseAuthori
 import ProvisionedTemplate from '@/emails/_templates/public-cloud/Provisioned';
 import RequestApprovalTemplate from '@/emails/_templates/public-cloud/RequestApproval';
 import RequestRejectionTemplate from '@/emails/_templates/public-cloud/RequestRejection';
-import {
-  PublicCloudRequestWithProjectAndRequestedProject,
-  PublicCloudRequestWithRequestedProject,
-} from '@/request-actions/public-cloud/decision-request';
 import { adminPublicEmails } from '@/services/ches/email-constant';
 import { sendEmail } from '@/services/ches/helpers';
 import { PublicCloudRequestedProjectWithContacts } from '@/services/nats/public-cloud';
+import { PublicCloudRequestDetail } from '@/types/public-cloud';
 
-export const sendCreateRequestEmails = async (request: PublicCloudRequestWithRequestedProject, userName: string) => {
+export const sendCreateRequestEmails = async (request: PublicCloudRequestDetail, userName: string) => {
   try {
     const userEmail = render(CreateRequestTemplate({ request, userName }), { pretty: false });
     const eaEmail = render(ExpenseAuthorityMou({ request }), { pretty: false });
@@ -48,10 +45,7 @@ export const sendCreateRequestEmails = async (request: PublicCloudRequestWithReq
   }
 };
 
-export const sendPublicCloudBillingReviewEmails = async (
-  request: PublicCloudRequestWithRequestedProject,
-  emails: string[],
-) => {
+export const sendPublicCloudBillingReviewEmails = async (request: PublicCloudRequestDetail, emails: string[]) => {
   try {
     const body = render(BillingReviewerMou({ request }), { pretty: false });
 
@@ -68,7 +62,7 @@ export const sendPublicCloudBillingReviewEmails = async (
   }
 };
 
-export const sendRequestReviewEmails = async (request: PublicCloudRequestWithRequestedProject, userName: string) => {
+export const sendRequestReviewEmails = async (request: PublicCloudRequestDetail, userName: string) => {
   try {
     const adminEmail = render(AdminCreateTemplate({ request, userName }), { pretty: false });
 
@@ -102,10 +96,7 @@ export const sendAdminDeleteRequestEmails = async (
   }
 };
 
-export const sendEditRequestEmails = async (
-  request: PublicCloudRequestWithProjectAndRequestedProject,
-  userName: string,
-) => {
+export const sendEditRequestEmails = async (request: PublicCloudRequestDetail, userName: string) => {
   try {
     const userEmail = render(EditSummaryTemplate({ request, userName }), { pretty: false });
 
@@ -126,7 +117,7 @@ export const sendEditRequestEmails = async (
   }
 };
 
-export const sendRequestApprovalEmails = async (request: PublicCloudRequestWithRequestedProject) => {
+export const sendRequestApprovalEmails = async (request: PublicCloudRequestDetail) => {
   try {
     const email = render(RequestApprovalTemplate({ request }), { pretty: false });
 

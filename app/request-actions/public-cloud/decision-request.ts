@@ -2,44 +2,13 @@ import { $Enums, DecisionStatus, Prisma, ProjectStatus, RequestType } from '@pri
 import { Session } from 'next-auth';
 import prisma from '@/core/prisma';
 import { createEvent } from '@/mutations/events';
+import { publicCloudRequestDetailInclude } from '@/queries/public-cloud-requests';
+import {
+  PublicCloudRequestDetail,
+  PublicCloudRequestDetailDecorated,
+  PublicCloudRequestSearch,
+} from '@/types/public-cloud';
 import { PublicCloudEditRequestBody } from '@/validation-schemas/public-cloud';
-
-export type PublicCloudRequestWithProjectAndRequestedProject = Prisma.PublicCloudRequestGetPayload<{
-  include: {
-    project: {
-      include: {
-        projectOwner: true;
-        primaryTechnicalLead: true;
-        secondaryTechnicalLead: true;
-        expenseAuthority: true;
-        billing: true;
-      };
-    };
-    decisionData: {
-      include: {
-        projectOwner: true;
-        primaryTechnicalLead: true;
-        secondaryTechnicalLead: true;
-        expenseAuthority: true;
-        billing: true;
-      };
-    };
-  };
-}>;
-
-export type PublicCloudRequestWithRequestedProject = Prisma.PublicCloudRequestGetPayload<{
-  include: {
-    decisionData: {
-      include: {
-        projectOwner: true;
-        primaryTechnicalLead: true;
-        secondaryTechnicalLead: true;
-        expenseAuthority: true;
-        billing: true;
-      };
-    };
-  };
-}>;
 
 export default async function makeRequestDecision(
   id: string,
@@ -123,40 +92,12 @@ export default async function makeRequestDecision(
     };
   }
 
-  const updatedRequest = await prisma.publicCloudRequest.update({
+  const updatedRequest: PublicCloudRequestDetail = await prisma.publicCloudRequest.update({
     where: {
       id: request.id,
       active: true,
     },
-    include: {
-      project: {
-        include: {
-          projectOwner: true,
-          primaryTechnicalLead: true,
-          secondaryTechnicalLead: true,
-          expenseAuthority: true,
-          billing: true,
-        },
-      },
-      originalData: {
-        include: {
-          projectOwner: true,
-          primaryTechnicalLead: true,
-          secondaryTechnicalLead: true,
-          expenseAuthority: true,
-          billing: true,
-        },
-      },
-      decisionData: {
-        include: {
-          projectOwner: true,
-          primaryTechnicalLead: true,
-          secondaryTechnicalLead: true,
-          expenseAuthority: true,
-          billing: true,
-        },
-      },
-    },
+    include: publicCloudRequestDetailInclude,
     data: dataToUpdate,
   });
 

@@ -8,10 +8,10 @@ import QuotaChanges from '@/emails/_components/Edit/QuotaChanges';
 import Layout from '@/emails/_components/layout/Layout';
 import ProductDetails from '@/emails/_components/ProductDetails';
 import { comparePrivateProductData } from '@/helpers/product-change';
-import { PrivateCloudRequestWithProjectAndRequestedProject } from '@/request-actions/private-cloud/decision-request';
+import { PrivateCloudRequestDetail } from '@/types/private-cloud';
 
 interface EmailProp {
-  request: PrivateCloudRequestWithProjectAndRequestedProject;
+  request: PrivateCloudRequestDetail;
   currentData: Prisma.PrivateCloudRequestedProjectGetPayload<{
     include: {
       projectOwner: true;
