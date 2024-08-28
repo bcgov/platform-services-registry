@@ -51,11 +51,12 @@ export function loginToRegistry(username: string, password: string): void {
   cy.visit('/login', { failOnStatusCode: false });
   cy.wait(2000);
   cy.contains('button', 'Login').click();
-  cy.wait(2000); // wait until the page loads, otherwise no chances to find clause below
+  cy.wait(5000); // wait until the page loads, otherwise no chances to find clause below
   cy.url().then((val) => {
     console.log(val);
     if (val.includes('/api/auth/signin?csrf=true')) {
       cy.contains('span', 'Sign in with Keycloak').click();
+      cy.wait(2000);
     }
   });
   cy.origin(
@@ -74,8 +75,8 @@ export function loginToRegistry(username: string, password: string): void {
 
 export function logoutFromRegistry(): void {
   cy.get('button[aria-haspopup="menu"]').click();
-  cy.contains('a', 'Sign out');
-  cy.contains('button', 'Login');
+  cy.contains('div', 'Sign Out').click();
+  cy.contains('button', 'Login').should('be.visible');
 }
 
 Cypress.Commands.add('loginToRegistry', (username: string, password: string) => {
@@ -92,4 +93,6 @@ Cypress.Commands.add('loginToRegistry', (username: string, password: string) => 
   log.end();
 });
 
-Cypress.Commands.add('logoutFromRegistry', () => {});
+Cypress.Commands.add('logoutFromRegistry', () => {
+  logoutFromRegistry();
+});
