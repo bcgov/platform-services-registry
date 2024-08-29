@@ -11,7 +11,7 @@ export interface MsUser {
 }
 
 export interface AppUser {
-  id: string;
+  providerUserId: string;
   upn: string;
   email: string;
   idir: string;

@@ -22,7 +22,7 @@ export async function getMatchingUserIds(search: string) {
 export async function createProxyUsers() {
   const dbUsers = await Promise.all(
     proxyUsers.map((puser: MsUser) => {
-      const { id, displayName, idirGuid, ...clearnUserData } = processMsUser(puser);
+      const { displayName, idirGuid, ...clearnUserData } = processMsUser(puser);
 
       clearnUserData.email = clearnUserData.email.toLowerCase();
       return prisma.user.upsert({
