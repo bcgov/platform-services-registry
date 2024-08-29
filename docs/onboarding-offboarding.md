@@ -6,6 +6,8 @@ This document outlines the necessary steps for onboarding and offboarding develo
 
 ## 1. Role Assignments
 
+-**Live OCP consoles**
+
 -**Dev, Test, Prod Live Environments**
 
 -**Dev, Test, Prod Live Keycloak realms**
@@ -61,11 +63,13 @@ This document outlines the necessary steps for onboarding and offboarding develo
 
 ### Revoking Access
 
-1. **GitHub Repository**:
+1. **Live OCP consoles**:
+   - Remove the developer's access to the openshift console namespaces.
+2. **GitHub Repository**:
    - Remove the developer’s GitHub username from the repo admin list.
-2. **Uptime Monitoring**:
+3. **Uptime Monitoring**:
    - Revoke login credentials.
-3. **Google Drive**:
+4. **Google Drive**:
    - Remove access to shared folders.
 
 ### Updating Roles
