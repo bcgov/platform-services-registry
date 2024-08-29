@@ -72,9 +72,6 @@ export default function CommonComponents({ disabled, number }: { disabled?: bool
 
   return (
     <div className="">
-      <h2 className="text-base lg:text-lg 2xl:text-2xl font-semibold leading-6 text-gray-900">
-        {number}. Common Components
-      </h2>
       <p className="mt-4 text-base leading-6 text-gray-600">
         Please indicate what services you expect to utilize as part of your product.
       </p>

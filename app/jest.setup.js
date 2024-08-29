@@ -48,6 +48,7 @@ jest.mock('@/services/keycloak/app-realm', () => ({
   getKcAdminClient: jest.fn(async () => null),
   findClient: jest.fn(async () => null),
   findUser: jest.fn(async () => SERVICES_KEYCLOAK_APP_REALM.findUser),
+  findUsersByClientRole: jest.fn(async () => []),
 }));
 
 jest.mock('@/utils/jwt', () => ({
@@ -90,8 +91,10 @@ export async function cleanUp() {
   await prisma.publicCloudRequestedProject.deleteMany();
 
   // Now it should be safe to delete User documents
-  // await prisma.user.deleteMany();
+  await prisma.user.deleteMany();
   await prisma.event.deleteMany();
+  await prisma.task.deleteMany();
+  await prisma.billing.deleteMany();
 }
 
 beforeAll(async () => {

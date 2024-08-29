@@ -55,3 +55,4 @@ export const USE_M365_PROXY = process.env.USE_M365_PROXY === 'true';
 export const OIDC_AUTHORITY = process.env.OIDC_AUTHORITY || 'https://localhost:8443/realms/platform-services';
 
 export const PUBLIC_AZURE_ACCESS_EMAILS = process.env.PUBLIC_AZURE_ACCESS_EMAILS || '';
+export const WEASYPRINT_URL = process.env.WEASYPRINT_URL || 'http://localhost:8090';

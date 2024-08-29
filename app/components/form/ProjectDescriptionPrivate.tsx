@@ -61,9 +61,6 @@ export default function ProjectDescriptionPrivate({
 
   return (
     <div className="">
-      <h2 className="text-base lg:text-lg 2xl:text-2xl font-semibold leading-6 text-gray-900">
-        1. Product Description
-      </h2>
       {temporaryProduct}
       <div className="mt-10 grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6">
         <div className="col-span-full">

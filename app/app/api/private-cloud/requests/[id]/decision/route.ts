@@ -4,10 +4,10 @@ import createApiHandler from '@/core/api-handler';
 import { BadRequestResponse, OkResponse, UnauthorizedResponse } from '@/core/responses';
 import { sendRequestNatsMessage } from '@/helpers/nats-message';
 import makeRequestDecision from '@/request-actions/private-cloud/decision-request';
-import { PrivateCloudDecisionRequestBodySchema } from '@/schema';
 import { sendRequestRejectionEmails, sendRequestApprovalEmails } from '@/services/ches/private-cloud/email-handler';
 import { subscribeUsersToMautic } from '@/services/mautic';
 import { PermissionsEnum } from '@/types/permissions';
+import { privateCloudRequestDecisionBodySchema } from '@/validation-schemas/private-cloud';
 
 const pathParamSchema = z.object({
   id: z.string(),
@@ -16,7 +16,7 @@ const pathParamSchema = z.object({
 const apiHandler = createApiHandler({
   roles: ['user'],
   permissions: [PermissionsEnum.ReviewAllPrivateCloudRequests],
-  validations: { pathParams: pathParamSchema, body: PrivateCloudDecisionRequestBodySchema },
+  validations: { pathParams: pathParamSchema, body: privateCloudRequestDecisionBodySchema },
 });
 export const POST = apiHandler(async ({ pathParams, body, session }) => {
   const { id } = pathParams;

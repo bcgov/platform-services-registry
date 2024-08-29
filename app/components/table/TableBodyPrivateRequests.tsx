@@ -11,13 +11,13 @@ import TemporaryProductBadge from '@/components/form/TemporaryProductBadge';
 import CopyableButton from '@/components/generic/button/CopyableButton';
 import UserCard from '@/components/UserCard';
 import { ministryKeyToName } from '@/helpers/product';
-import { PrivateCloudRequestSearchedItemPayload } from '@/queries/private-cloud-requests';
+import { PrivateCloudRequestSimpleDecorated } from '@/types/private-cloud';
 import { formatDate } from '@/utils/date';
 import EmptySearch from './EmptySearch';
 import TruncatedTooltip from './TruncatedTooltip';
 
 interface TableProps {
-  rows: PrivateCloudRequestSearchedItemPayload[];
+  rows: PrivateCloudRequestSimpleDecorated[];
   isLoading: boolean;
 }
 
@@ -35,7 +35,7 @@ export default function TableBodyPrivateRequests({ rows, isLoading = false }: Ta
     return <EmptySearch cloud="private-cloud" type="request" />;
   }
 
-  const onRowClickHandler = (row: PrivateCloudRequestSearchedItemPayload) => {
+  const onRowClickHandler = (row: PrivateCloudRequestSimpleDecorated) => {
     router.push(`/${cloud}/requests/${row.id}/decision`);
   };
 
@@ -53,20 +53,20 @@ export default function TableBodyPrivateRequests({ rows, isLoading = false }: Ta
             <div className="md:col-span-2 lg:col-span-3">
               <div className="flex items-center gap-x-3">
                 <h2 className="min-w-0 text-base text-gray-700">
-                  <div className="flex gap-x-2">
+                  <div className="">
                     <TruncatedTooltip label={row.decisionData.description}>
                       <span className="font-bold">{_truncate(row.decisionData.name, { length: 100 })}</span>
                     </TruncatedTooltip>
                     {!row.active && (
-                      <Badge color="red" radius="sm" className="mt-1">
+                      <Badge color="red" radius="sm" className="ml-1 mt-1">
                         {$Enums.ProjectStatus.INACTIVE}
                       </Badge>
                     )}
                     {row.project
                       ? row.project.isTest && (
-                          <TemporaryProductBadge data={{ createdAt: row.project.createdAt }} className="mt-1" />
+                          <TemporaryProductBadge data={{ createdAt: row.project.createdAt }} className="ml-1 mt-1" />
                         )
-                      : row.decisionData.isTest && <TemporaryProductBadge className="mt-1" />}
+                      : row.decisionData.isTest && <TemporaryProductBadge className="ml-1 mt-1" />}
                   </div>
                 </h2>
               </div>

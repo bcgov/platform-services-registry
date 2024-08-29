@@ -3,10 +3,10 @@ import * as React from 'react';
 import Layout from '@/emails/_components/layout/Layout';
 import ProductDetails from '@/emails/_components/ProductDetails';
 import ProviderDetails from '@/emails/_components/ProviderDetails';
-import { PublicCloudRequestWithRequestedProject } from '@/request-actions/public-cloud/decision-request';
+import { PublicCloudRequestDetail } from '@/types/public-cloud';
 
 interface EmailProp {
-  request: PublicCloudRequestWithRequestedProject;
+  request: PublicCloudRequestDetail;
   userName: string;
 }
 
@@ -21,11 +21,13 @@ const NewRequestTemplate = ({ request, userName }: EmailProp) => {
     primaryTechnicalLead,
     secondaryTechnicalLead,
     provider,
-    accountCoding,
+    billing,
     budget,
     licencePlate,
     environmentsEnabled,
   } = request.decisionData;
+
+  const { accountCoding } = billing;
 
   return (
     <Layout>

@@ -28,6 +28,7 @@ export async function generateSession({ session, token }: { session: Session; to
   session.isPublicEditor = false;
   session.isPublicReader = false;
   session.isApprover = false;
+  session.isBillingReviewer = false;
   session.roles = [];
   session.ministries = {
     editor: [],
@@ -62,13 +63,6 @@ export async function generateSession({ session, token }: { session: Session; to
         session.userId = user.id;
         session.userEmail = user.email;
         session.roles.push('user');
-
-        session.tasks = await prisma.task.findMany({
-          where: {
-            OR: [{ userIds: { has: user.id } }],
-            status: TaskStatus.ASSIGNED,
-          },
-        });
       }
     }
 
@@ -149,6 +143,11 @@ export async function generateSession({ session, token }: { session: Session; to
         return;
       }
 
+      if (role === 'billing-reviewer') {
+        session.isBillingReviewer = true;
+        return;
+      }
+
       const regexPattern = /^ministry-(\w+)-(.+)$/;
       const match = regexPattern.exec(role);
       if (match) {
@@ -157,6 +156,13 @@ export async function generateSession({ session, token }: { session: Session; to
         if (!Array.isArray(session.ministries[ministryRole])) session.ministries[ministryCode] = [];
         session.ministries[ministryRole].push(ministryCode.toUpperCase());
       }
+    });
+
+    session.tasks = await prisma.task.findMany({
+      where: {
+        OR: [{ userIds: { has: session.user.id } }, { roles: { hasSome: session.roles } }],
+        status: TaskStatus.ASSIGNED,
+      },
     });
   }
 
@@ -200,7 +206,8 @@ export async function generateSession({ session, token }: { session: Session; to
       session.isReader ||
       session.isPublicAdmin ||
       session.isPublicEditor ||
-      session.isPublicReader,
+      session.isPublicReader ||
+      session.isBillingReviewer,
 
     viewAllPublicCloudProductsHistory: session.isAdmin || session.isPublicAdmin,
 
@@ -229,6 +236,8 @@ export async function generateSession({ session, token }: { session: Session; to
     viewGeneralAnalytics: session.isAdmin || session.isAnalyzer,
     viewPublicAnalytics: session.isAdmin || session.isAnalyzer || session.isPublicAnalyzer,
     viewPrivateAnalytics: session.isAdmin || session.isAnalyzer || session.isPrivateAnalyzer,
+
+    downloadBillingMou: session.isBillingReviewer,
   };
 
   return session;

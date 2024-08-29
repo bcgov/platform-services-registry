@@ -1,8 +1,7 @@
 import { faker } from '@faker-js/faker';
 import { Prisma, Cluster, Provider } from '@prisma/client';
-import { clusters, ministries, providers } from '@/constants';
+import { clusters, ministries, providers, cpuOptions, memoryOptions, storageOptions } from '@/constants';
 import { findMockUserByIdr, mockNoRoleIdirs } from '@/helpers/mock-users';
-import { cpuOptions, memoryOptions, storageOptions } from '@/schema';
 import { getRandomItem } from '@/utils/collection';
 import { generateShortId } from '@/utils/uuid';
 
@@ -115,7 +114,7 @@ export function createSamplePublicCloudProductData(args?: {
     primaryTechnicalLead: findMockUserByIdr(getRandomItem(mockNoRoleIdirs)),
     secondaryTechnicalLead: findMockUserByIdr(getRandomItem(mockNoRoleIdirs)),
     expenseAuthority: findMockUserByIdr(getRandomItem(mockNoRoleIdirs)),
-    accountCoding: '111222223333344445555555',
+    accountCoding: faker.string.numeric(24),
     budget: {
       dev: 50,
       test: 50,

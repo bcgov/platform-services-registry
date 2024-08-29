@@ -9,14 +9,14 @@ import React from 'react';
 import CopyableButton from '@/components/generic/button/CopyableButton';
 import UserCard from '@/components/UserCard';
 import { ministryKeyToName } from '@/helpers/product';
-import { PublicCloudRequestSearchedItemPayload } from '@/queries/public-cloud-requests';
+import { PublicCloudRequestSimpleDecorated } from '@/types/public-cloud';
 import { formatDate } from '@/utils/date';
 import ActiveRequestBox from '../form/ActiveRequestBox';
 import EmptySearch from './EmptySearch';
 import TruncatedTooltip from './TruncatedTooltip';
 
 interface TableProps {
-  rows: PublicCloudRequestSearchedItemPayload[];
+  rows: PublicCloudRequestSimpleDecorated[];
   isLoading: boolean;
 }
 
@@ -33,7 +33,7 @@ export default function TableBodyPublicProducts({ rows, isLoading = false }: Tab
     return <EmptySearch cloud="public-cloud" type="request" />;
   }
 
-  const onRowClickHandler = (row: PublicCloudRequestSearchedItemPayload) => {
+  const onRowClickHandler = (row: PublicCloudRequestSimpleDecorated) => {
     router.push(`/${cloud}/requests/${row.id}/request`);
   };
 
@@ -52,17 +52,15 @@ export default function TableBodyPublicProducts({ rows, isLoading = false }: Tab
               <div className="md:col-span-2 lg:col-span-3">
                 <div className="flex items-center gap-x-3">
                   <h2 className="min-w-0 text-base text-gray-700">
-                    <div className="flex gap-x-2">
-                      <span className="">
-                        <TruncatedTooltip label={row.decisionData.description}>
-                          <span className="font-bold">{_truncate(row.decisionData.name, { length: 100 })}</span>
-                        </TruncatedTooltip>
-                        {!row.active && (
-                          <Badge color="red" radius="sm" className="ml-1">
-                            {$Enums.ProjectStatus.INACTIVE}
-                          </Badge>
-                        )}
-                      </span>
+                    <div className="">
+                      <TruncatedTooltip label={row.decisionData.description}>
+                        <span className="font-bold">{_truncate(row.decisionData.name, { length: 100 })}</span>
+                      </TruncatedTooltip>
+                      {!row.active && (
+                        <Badge color="red" radius="sm" className="ml-1 mt-1">
+                          {$Enums.ProjectStatus.INACTIVE}
+                        </Badge>
+                      )}
                     </div>
                   </h2>
                 </div>

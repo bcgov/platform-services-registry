@@ -1,10 +1,12 @@
-import { $Enums, DecisionStatus, ProjectStatus, RequestType, TaskStatus, TaskType } from '@prisma/client';
+import { DecisionStatus, ProjectStatus, RequestType, TaskStatus, TaskType, EventType } from '@prisma/client';
 import { Session } from 'next-auth';
 import prisma from '@/core/prisma';
 import generateLicencePlate from '@/helpers/licence-plate';
 import { createEvent } from '@/mutations/events';
-import { PublicCloudCreateRequestBody } from '@/schema';
+import { publicCloudRequestDetailInclude } from '@/queries/public-cloud-requests';
 import { upsertUsers } from '@/services/db/user';
+import { PublicCloudRequestDetail } from '@/types/public-cloud';
+import { PublicCloudCreateRequestBody } from '@/validation-schemas/public-cloud';
 
 export default async function createRequest(formData: PublicCloudCreateRequestBody, session: Session) {
   const licencePlate = await generateLicencePlate();
@@ -13,18 +15,37 @@ export default async function createRequest(formData: PublicCloudCreateRequestBo
     formData.projectOwner.email,
     formData.primaryTechnicalLead.email,
     formData.secondaryTechnicalLead?.email,
+    formData.expenseAuthority?.email,
   ]);
 
   const createRequestedProject = {
     name: formData.name,
-    accountCoding: formData.accountCoding,
     budget: formData.budget,
     provider: formData.provider,
     description: formData.description,
     ministry: formData.ministry,
     status: ProjectStatus.ACTIVE,
-    licencePlate: licencePlate,
+    licencePlate,
     environmentsEnabled: formData.environmentsEnabled,
+    billing: {
+      connectOrCreate: {
+        where: {
+          accountCoding: formData.accountCoding,
+        },
+        create: {
+          accountCoding: formData.accountCoding,
+          expenseAuthority: {
+            connectOrCreate: {
+              where: {
+                email: formData.expenseAuthority.email,
+              },
+              create: formData.expenseAuthority,
+            },
+          },
+          licencePlate,
+        },
+      },
+    },
     projectOwner: {
       connectOrCreate: {
         where: {
@@ -64,7 +85,7 @@ export default async function createRequest(formData: PublicCloudCreateRequestBo
       : undefined,
   };
 
-  const request = await prisma.publicCloudRequest.create({
+  const request: PublicCloudRequestDetail | null = await prisma.publicCloudRequest.create({
     data: {
       type: RequestType.CREATE,
       decisionStatus: DecisionStatus.PENDING,
@@ -78,41 +99,25 @@ export default async function createRequest(formData: PublicCloudCreateRequestBo
         create: createRequestedProject,
       },
     },
-    include: {
-      project: {
-        include: {
-          projectOwner: true,
-          primaryTechnicalLead: true,
-          secondaryTechnicalLead: true,
-          expenseAuthority: true,
-        },
-      },
-      decisionData: {
-        include: {
-          projectOwner: true,
-          primaryTechnicalLead: true,
-          secondaryTechnicalLead: true,
-          expenseAuthority: true,
-        },
-      },
-    },
+    include: publicCloudRequestDetailInclude,
   });
 
   if (request) {
-    // if (request.decisionData.expenseAuthorityId) {
-    //   await prisma.task.create({
-    //     data: {
-    //       type: TaskType.SIGN_MOU,
-    //       status: TaskStatus.ASSIGNED,
-    //       userIds: [request.decisionData.expenseAuthorityId],
-    //       data: {
-    //         requestId: request.id,
-    //       },
-    //     },
-    //   });
-    // }
+    // Assign a task to the expense authority for new billing
+    if (request.decisionData.expenseAuthorityId && !request.decisionData.billing.signed) {
+      await prisma.task.create({
+        data: {
+          type: TaskType.SIGN_MOU,
+          status: TaskStatus.ASSIGNED,
+          userIds: [request.decisionData.expenseAuthorityId],
+          data: {
+            requestId: request.id,
+          },
+        },
+      });
+    }
 
-    await createEvent($Enums.EventType.CREATE_PUBLIC_CLOUD_PRODUCT, session.user.id, { requestId: request.id });
+    await createEvent(EventType.CREATE_PUBLIC_CLOUD_PRODUCT, session.user.id, { requestId: request.id });
   }
 
   return request;

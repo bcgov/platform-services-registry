@@ -1,30 +1,39 @@
 import { expect } from '@jest/globals';
-import { $Enums } from '@prisma/client';
+import { $Enums, TaskType, TaskStatus } from '@prisma/client';
 import prisma from '@/core/prisma';
 import { createSamplePublicCloudProductData } from '@/helpers/mock-resources';
 import { mockNoRoleUsers, findMockUserByIdr, findOtherMockUsers } from '@/helpers/mock-users';
 import { mockSessionByEmail, mockSessionByRole } from '@/services/api-test/core';
 import { provisionPublicCloudProject } from '@/services/api-test/public-cloud';
 import { createPublicCloudProject, editPublicCloudProject } from '@/services/api-test/public-cloud/products';
-import { searchPublicCloudRequests, makePublicCloudRequestDecision } from '@/services/api-test/public-cloud/requests';
+import {
+  searchPublicCloudRequests,
+  makePublicCloudRequestDecision,
+  signPublicCloudMou,
+  reviewPublicCloudMou,
+} from '@/services/api-test/public-cloud/requests';
 
 const PO = mockNoRoleUsers[0];
 const TL1 = mockNoRoleUsers[1];
 const TL2 = mockNoRoleUsers[2];
-const RANDOM1 = mockNoRoleUsers[3];
-const RANDOM2 = mockNoRoleUsers[4];
-const RANDOM3 = mockNoRoleUsers[5];
+const EA = mockNoRoleUsers[3];
+const RANDOM1 = mockNoRoleUsers[4];
+const RANDOM2 = mockNoRoleUsers[5];
+const RANDOM3 = mockNoRoleUsers[6];
+const RANDOM4 = mockNoRoleUsers[7];
 
 const memberData = {
   projectOwner: PO,
   primaryTechnicalLead: TL1,
   secondaryTechnicalLead: TL2,
+  expenseAuthority: EA,
 };
 
 const randomMemberData = {
   projectOwner: RANDOM1,
   primaryTechnicalLead: RANDOM2,
   secondaryTechnicalLead: RANDOM3,
+  expenseAuthority: RANDOM4,
 };
 
 // TODO: add tests for ministry roles
@@ -43,10 +52,49 @@ describe('Search Public Cloud Requests - Permissions', () => {
     const dat1 = await res1.json();
     expect(res1.status).toBe(200);
 
+    const task1 = await prisma.task.findFirst({
+      where: {
+        type: TaskType.SIGN_MOU,
+        status: TaskStatus.ASSIGNED,
+        data: {
+          equals: {
+            requestId: dat1.id,
+          },
+        },
+      },
+    });
+
+    if (task1) {
+      await mockSessionByEmail(dat1.decisionData.expenseAuthority.email);
+      await signPublicCloudMou(dat1.id, {
+        taskId: task1?.id ?? '',
+        confirmed: true,
+      });
+
+      await mockSessionByRole('billing-reviewer');
+      const task2 = await prisma.task.findFirst({
+        where: {
+          type: TaskType.REVIEW_MOU,
+          status: TaskStatus.ASSIGNED,
+          data: {
+            equals: {
+              requestId: dat1.id,
+            },
+          },
+        },
+      });
+
+      await reviewPublicCloudMou(dat1.id, {
+        taskId: task2?.id ?? '',
+        decision: 'APPROVE',
+      });
+    }
+
     await mockSessionByRole('admin');
 
     const res2 = await makePublicCloudRequestDecision(dat1.id, {
       ...dat1.decisionData,
+      accountCoding: dat1.decisionData.billing.accountCoding,
       decision: $Enums.DecisionStatus.APPROVED,
     });
     expect(res2.status).toBe(200);
@@ -99,6 +147,7 @@ describe('Search Public Cloud Requests - Permissions', () => {
 
     const res2 = await makePublicCloudRequestDecision(dat1.id, {
       ...dat1.decisionData,
+      accountCoding: dat1.decisionData.billing.accountCoding,
       decision: $Enums.DecisionStatus.APPROVED,
     });
     expect(res2.status).toBe(200);
@@ -187,8 +236,49 @@ describe('Search Public Cloud Requests - Validations', () => {
         const res1 = await createPublicCloudProject(data);
         const dat1 = await res1.json();
 
+        const task1 = await prisma.task.findFirst({
+          where: {
+            type: TaskType.SIGN_MOU,
+            status: TaskStatus.ASSIGNED,
+            data: {
+              equals: {
+                requestId: dat1.id,
+              },
+            },
+          },
+        });
+
+        if (task1) {
+          await mockSessionByEmail(dat1.decisionData.expenseAuthority.email);
+          await signPublicCloudMou(dat1.id, {
+            taskId: task1?.id ?? '',
+            confirmed: true,
+          });
+
+          await mockSessionByRole('billing-reviewer');
+          const task2 = await prisma.task.findFirst({
+            where: {
+              type: TaskType.REVIEW_MOU,
+              status: TaskStatus.ASSIGNED,
+              data: {
+                equals: {
+                  requestId: dat1.id,
+                },
+              },
+            },
+          });
+
+          await reviewPublicCloudMou(dat1.id, {
+            taskId: task2?.id ?? '',
+            decision: 'APPROVE',
+          });
+        }
+
+        await mockSessionByRole('admin');
+
         const req = await makePublicCloudRequestDecision(dat1.id, {
           ...dat1.decisionData,
+          accountCoding: dat1.decisionData.billing.accountCoding,
           decision: $Enums.DecisionStatus.APPROVED,
         });
 
@@ -200,6 +290,7 @@ describe('Search Public Cloud Requests - Validations', () => {
     const firstReq = await results[0].json();
     const res = await editPublicCloudProject(firstReq.licencePlate, {
       ...firstReq.decisionData,
+      accountCoding: firstReq.decisionData.billing.accountCoding,
       name: `${firstReq.decisionData.name}updated`,
     });
 

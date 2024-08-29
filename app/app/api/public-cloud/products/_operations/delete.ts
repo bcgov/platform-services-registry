@@ -1,12 +1,13 @@
-import { $Enums } from '@prisma/client';
+import { PublicCloudRequestType, DecisionStatus, ProjectStatus, EventType } from '@prisma/client';
 import { Session } from 'next-auth';
 import { z, TypeOf, ZodType } from 'zod';
 import prisma from '@/core/prisma';
 import { BadRequestResponse, OkResponse, UnauthorizedResponse } from '@/core/responses';
 import { createEvent } from '@/mutations/events';
 import { getPublicCloudProduct, excludeProductUsers } from '@/queries/public-cloud-products';
-import { getLastClosedPublicCloudRequest } from '@/queries/public-cloud-requests';
+import { getLastClosedPublicCloudRequest, publicCloudRequestDetailInclude } from '@/queries/public-cloud-requests';
 import { sendDeleteRequestEmails, sendAdminDeleteRequestEmails } from '@/services/ches/public-cloud/email-handler';
+import { PublicCloudRequestDetail } from '@/types/public-cloud';
 import { deletePathParamSchema } from '../[licencePlate]/schema';
 
 export default async function deleteOp({
@@ -30,10 +31,10 @@ export default async function deleteOp({
   // Retrieve the latest request data to acquire the decision data ID that can be assigned to the incoming request's original data.
   const previousRequest = await getLastClosedPublicCloudRequest(rest.licencePlate);
 
-  const request = await prisma.publicCloudRequest.create({
+  const request: PublicCloudRequestDetail | null = await prisma.publicCloudRequest.create({
     data: {
-      type: $Enums.PublicCloudRequestType.DELETE,
-      decisionStatus: $Enums.DecisionStatus.PENDING,
+      type: PublicCloudRequestType.DELETE,
+      decisionStatus: DecisionStatus.PENDING,
       active: true,
       createdByEmail: user.email,
       licencePlate: product.licencePlate,
@@ -43,10 +44,10 @@ export default async function deleteOp({
         },
       },
       decisionData: {
-        create: { ...rest, status: $Enums.ProjectStatus.INACTIVE },
+        create: { ...rest, status: ProjectStatus.INACTIVE },
       },
       requestData: {
-        create: { ...rest, status: $Enums.ProjectStatus.INACTIVE },
+        create: { ...rest, status: ProjectStatus.INACTIVE },
       },
       project: {
         connect: {
@@ -54,39 +55,14 @@ export default async function deleteOp({
         },
       },
     },
-    include: {
-      originalData: {
-        include: {
-          projectOwner: true,
-          primaryTechnicalLead: true,
-          secondaryTechnicalLead: true,
-          expenseAuthority: true,
-        },
-      },
-      decisionData: {
-        include: {
-          projectOwner: true,
-          primaryTechnicalLead: true,
-          secondaryTechnicalLead: true,
-          expenseAuthority: true,
-        },
-      },
-      project: {
-        include: {
-          projectOwner: true,
-          primaryTechnicalLead: true,
-          secondaryTechnicalLead: true,
-          expenseAuthority: true,
-        },
-      },
-    },
+    include: publicCloudRequestDetailInclude,
   });
 
   if (request) {
     await Promise.all([
       sendDeleteRequestEmails(request.decisionData, session.user.name),
       sendAdminDeleteRequestEmails(request.decisionData, session.user.name),
-      createEvent($Enums.EventType.DELETE_PUBLIC_CLOUD_PRODUCT, session.user.id, { requestId: request.id }),
+      createEvent(EventType.DELETE_PUBLIC_CLOUD_PRODUCT, session.user.id, { requestId: request.id }),
     ]);
   }
 

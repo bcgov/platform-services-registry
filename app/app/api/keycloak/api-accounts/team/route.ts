@@ -1,5 +1,5 @@
 import createApiHandler from '@/core/api-handler';
-import { teamApiAccountSchema, TeamApiAccountSchemaData } from '@/schema';
+import { teamApiAccountSchema } from '@/validation-schemas/api-accounts';
 import createOp from './_operations/create';
 import listOp from './_operations/list';
 

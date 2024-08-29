@@ -4,10 +4,10 @@ import Closing from '@/emails/_components/Closing';
 import Layout from '@/emails/_components/layout/Layout';
 import ProductDetails from '@/emails/_components/ProductDetails';
 import ProviderDetails from '@/emails/_components/ProviderDetails';
-import { PublicCloudRequestWithRequestedProject } from '@/request-actions/public-cloud/decision-request';
+import { PublicCloudRequestDetail } from '@/types/public-cloud';
 
 interface EmailProp {
-  request: PublicCloudRequestWithRequestedProject;
+  request: PublicCloudRequestDetail;
   userName: string;
 }
 
@@ -43,7 +43,7 @@ export default function AdminCreateRequest({ request, userName }: EmailProp) {
       <div className="pb-6 mt-4 mb-4 border-solid border-0 border-b-1 border-slate-300">
         <ProviderDetails
           provider={request.decisionData.provider}
-          accountCoding={request.decisionData.accountCoding}
+          accountCoding={request.decisionData.billing.accountCoding}
           budget={request.decisionData.budget}
           environmentsEnabled={request.decisionData.environmentsEnabled}
         />

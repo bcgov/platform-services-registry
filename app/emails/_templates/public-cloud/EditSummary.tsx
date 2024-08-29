@@ -6,10 +6,10 @@ import ContactChanges from '@/emails/_components/Edit/ContactChanges';
 import DescriptionChanges from '@/emails/_components/Edit/DescriptionChanges';
 import { comparePublicCloudProjects } from '@/emails/_components/Edit/utils/compare-projects';
 import Layout from '@/emails/_components/layout/Layout';
-import { PublicCloudRequestWithProjectAndRequestedProject } from '@/request-actions/public-cloud/decision-request';
+import { PublicCloudRequestDetail } from '@/types/public-cloud';
 
 interface EmailProp {
-  request: PublicCloudRequestWithProjectAndRequestedProject;
+  request: PublicCloudRequestDetail;
   comment?: string;
   userName: string;
 }
@@ -78,8 +78,8 @@ const EditSummaryTemplate = ({ request, comment, userName }: EmailProp) => {
           <BudgetChanges
             budgetCurrent={current.budget}
             budgetRequested={requested.budget}
-            accountCodingCurrent={current.accountCoding}
-            accountCodingRequested={requested.accountCoding}
+            accountCodingCurrent={current.billing.accountCoding}
+            accountCodingRequested={requested.billing.accountCoding}
           />
           <br></br>
           <Text>This edit was actioned by {userName}.</Text>

@@ -1,11 +1,16 @@
 import { expect } from '@jest/globals';
-import { $Enums } from '@prisma/client';
+import { $Enums, TaskType, TaskStatus } from '@prisma/client';
+import prisma from '@/core/prisma';
 import { createSamplePublicCloudProductData } from '@/helpers/mock-resources';
 import { findOtherMockUsers } from '@/helpers/mock-users';
 import { mockSessionByEmail, mockSessionByRole } from '@/services/api-test/core';
 import { provisionPublicCloudProject } from '@/services/api-test/public-cloud';
 import { createPublicCloudProject, deletePublicCloudProject } from '@/services/api-test/public-cloud/products';
-import { makePublicCloudRequestDecision } from '@/services/api-test/public-cloud/requests';
+import {
+  makePublicCloudRequestDecision,
+  signPublicCloudMou,
+  reviewPublicCloudMou,
+} from '@/services/api-test/public-cloud/requests';
 
 const productData = {
   main: createSamplePublicCloudProductData(),
@@ -27,11 +32,62 @@ describe('Delete Public Cloud Product - Permissions', () => {
     requests.create = await response.json();
   });
 
+  it('should successfully sign the billing by EA', async () => {
+    await mockSessionByEmail(requests.create.decisionData.expenseAuthority.email);
+
+    const task = await prisma.task.findFirst({
+      where: {
+        type: TaskType.SIGN_MOU,
+        status: TaskStatus.ASSIGNED,
+        data: {
+          equals: {
+            requestId: requests.create.id,
+          },
+        },
+      },
+    });
+
+    expect(task).toBeTruthy();
+
+    const response = await signPublicCloudMou(requests.create.id, {
+      taskId: task?.id ?? '',
+      confirmed: true,
+    });
+
+    expect(response.status).toBe(200);
+  });
+
+  it('should successfully review the billing by billing reviewer', async () => {
+    await mockSessionByRole('billing-reviewer');
+
+    const task = await prisma.task.findFirst({
+      where: {
+        type: TaskType.REVIEW_MOU,
+        status: TaskStatus.ASSIGNED,
+        data: {
+          equals: {
+            requestId: requests.create.id,
+          },
+        },
+      },
+    });
+
+    expect(task).toBeTruthy();
+
+    const response = await reviewPublicCloudMou(requests.create.id, {
+      taskId: task?.id ?? '',
+      decision: 'APPROVE',
+    });
+
+    expect(response.status).toBe(200);
+  });
+
   it('should successfully approve the request by admin', async () => {
     await mockSessionByRole('admin');
 
     const response = await makePublicCloudRequestDecision(requests.create.id, {
       ...requests.create.decisionData,
+      accountCoding: requests.create.decisionData.billing.accountCoding,
       decision: $Enums.DecisionStatus.APPROVED,
     });
 
@@ -67,6 +123,7 @@ describe('Delete Public Cloud Product - Permissions', () => {
 
     const response = await makePublicCloudRequestDecision(requests.delete.id, {
       ...requests.delete.decisionData,
+      accountCoding: requests.delete.decisionData.billing.accountCoding,
       decision: $Enums.DecisionStatus.REJECTED,
     });
 
@@ -95,6 +152,7 @@ describe('Delete Public Cloud Product - Permissions', () => {
 
     const response = await makePublicCloudRequestDecision(requests.delete.id, {
       ...requests.delete.decisionData,
+      accountCoding: requests.delete.decisionData.billing.accountCoding,
       decision: $Enums.DecisionStatus.REJECTED,
     });
 

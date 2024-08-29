@@ -1,4 +1,5 @@
 import { PrivateCloudProject } from '@prisma/client';
+import QuotasChangeInfo from '@/components/form/QuotasChangeInfo';
 import ExternalLink from '@/components/generic/button/ExternalLink';
 import { defaultCpuOptionsLookup, defaultMemoryOptionsLookup, defaultStorageOptionsLookup } from '../../constants';
 import QuotaInput from './QuotaInput';
@@ -26,7 +27,6 @@ export default function Quotas({
   };
   return (
     <>
-      <h2 className="text-base lg:text-lg 2xl:text-2xl font-semibold leading-6 text-gray-900">3. Quotas</h2>
       <p className="text-base leading-6 mt-5">
         All quota increase requests require <b> Platform Services Team’s </b>
         approval, and must have supporting information as per the{' '}
@@ -62,6 +62,8 @@ export default function Quotas({
           </div>
         ))}
       </div>
+
+      <QuotasChangeInfo disabled={disabled} />
     </>
   );
 }

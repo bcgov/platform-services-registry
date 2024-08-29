@@ -10,13 +10,13 @@ import ActiveRequestBox from '@/components/form/ActiveRequestBox';
 import CopyableButton from '@/components/generic/button/CopyableButton';
 import UserCard from '@/components/UserCard';
 import { ministryKeyToName } from '@/helpers/product';
-import { PublicCloudProjectGetPayloadWithActiveRequest } from '@/queries/public-cloud-products';
+import { PublicCloudProductSimpleDecorated } from '@/types/public-cloud';
 import { formatDate } from '@/utils/date';
 import EmptySearch from './EmptySearch';
 import TruncatedTooltip from './TruncatedTooltip';
 
 interface TableProps {
-  rows: PublicCloudProjectGetPayloadWithActiveRequest[];
+  rows: PublicCloudProductSimpleDecorated[];
   isLoading: boolean;
 }
 
@@ -51,17 +51,15 @@ export default function TableBodyPublicProducts({ rows, isLoading = false }: Tab
             <div className="md:col-span-2 lg:col-span-3">
               <div className="flex items-center gap-x-3">
                 <h2 className="min-w-0 text-base text-gray-700">
-                  <div className="flex gap-x-2">
-                    <span className="">
-                      <TruncatedTooltip label={row.description}>
-                        <span className="font-bold">{_truncate(row.name, { length: 100 })}</span>
-                      </TruncatedTooltip>
-                      {row.status === $Enums.ProjectStatus.INACTIVE && (
-                        <Badge color="red" radius="sm" className="ml-1">
-                          {$Enums.ProjectStatus.INACTIVE}
-                        </Badge>
-                      )}
-                    </span>
+                  <div className="">
+                    <TruncatedTooltip label={row.description}>
+                      <span className="font-bold">{_truncate(row.name, { length: 100 })}</span>
+                    </TruncatedTooltip>
+                    {row.status === $Enums.ProjectStatus.INACTIVE && (
+                      <Badge color="red" radius="sm" className="ml-1 mt-1">
+                        {$Enums.ProjectStatus.INACTIVE}
+                      </Badge>
+                    )}
                   </div>
                 </h2>
               </div>

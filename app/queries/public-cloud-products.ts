@@ -1,31 +1,43 @@
 import { Ministry, Provider, ProjectStatus, Prisma } from '@prisma/client';
 import { Session } from 'next-auth';
 import prisma from '@/core/prisma';
-import { PublicCloudProjectDecorate } from '@/types/doc-decorate';
+import {
+  PublicCloudProductSimple,
+  PublicCloudProductSearch,
+  PublicCloudProductDetail,
+  PublicCloudProductDetailDecorated,
+} from '@/types/public-cloud';
 import { getMatchingUserIds } from './users';
 
-export type PublicCloudProjectGetPayload = Prisma.PublicCloudProjectGetPayload<{
-  include: {
-    projectOwner: true;
-    primaryTechnicalLead: true;
-    secondaryTechnicalLead: true;
-    expenseAuthority: true;
-    requests: {
-      where: {
-        active: true;
-      };
-    };
-  };
-}> &
-  PublicCloudProjectDecorate;
-
-export type PublicCloudProjectGetPayloadWithActiveRequest = PublicCloudProjectGetPayload & {
-  activeRequest: Prisma.PublicCloudRequestGetPayload<null> | null;
+export const publicCloudProductSimpleInclude = {
+  projectOwner: true,
+  primaryTechnicalLead: true,
+  secondaryTechnicalLead: true,
+  expenseAuthority: true,
+  requests: {
+    where: {
+      active: true,
+    },
+  },
 };
 
-export type PublicCloudProductSearchPayload = {
-  docs: PublicCloudProjectGetPayload[];
-  totalCount: number;
+export const publicCloudProductDetailInclude = {
+  projectOwner: true,
+  primaryTechnicalLead: true,
+  secondaryTechnicalLead: true,
+  expenseAuthority: true,
+  billing: {
+    include: {
+      expenseAuthority: true,
+      signedBy: true,
+      approvedBy: true,
+    },
+  },
+  requests: {
+    where: {
+      active: true,
+    },
+  },
 };
 
 const defaultSortKey = 'updatedAt';
@@ -94,16 +106,7 @@ export async function searchPublicCloudProducts({
       where,
       skip,
       take,
-      include: {
-        projectOwner: true,
-        primaryTechnicalLead: true,
-        secondaryTechnicalLead: true,
-        requests: {
-          where: {
-            active: true,
-          },
-        },
-      },
+      include: publicCloudProductSimpleInclude,
       orderBy,
       session: session as never,
     }),
@@ -113,27 +116,17 @@ export async function searchPublicCloudProducts({
     }),
   ]);
 
-  return { docs, totalCount };
+  return { docs, totalCount } as PublicCloudProductSearch;
 }
 
 export async function getPublicCloudProduct(session: Session, licencePlate?: string) {
   if (!licencePlate) return null;
 
-  const product = await prisma.publicCloudProject.findUnique({
+  const product: PublicCloudProductDetail | null = await prisma.publicCloudProject.findUnique({
     where: {
       licencePlate,
     },
-    include: {
-      projectOwner: true,
-      primaryTechnicalLead: true,
-      secondaryTechnicalLead: true,
-      expenseAuthority: true,
-      requests: {
-        where: {
-          active: true,
-        },
-      },
-    },
+    include: publicCloudProductDetailInclude,
     session: session as never,
   });
 
@@ -141,13 +134,13 @@ export async function getPublicCloudProduct(session: Session, licencePlate?: str
     return null;
   }
 
-  return product as PublicCloudProjectGetPayload;
+  return product as PublicCloudProductDetailDecorated;
 }
 
-export function excludeProductUsers(product: PublicCloudProjectGetPayload | null) {
+export function excludeProductUsers(product: PublicCloudProductDetailDecorated | null) {
   if (!product) return null;
 
-  const { projectOwner, primaryTechnicalLead, secondaryTechnicalLead, expenseAuthority, ...rest } = product;
+  const { projectOwner, primaryTechnicalLead, secondaryTechnicalLead, expenseAuthority, billing, ...rest } = product;
 
   return rest;
 }

@@ -1,17 +1,29 @@
 'use client';
 
 import { zodResolver } from '@hookform/resolvers/zod';
+import {
+  IconInfoCircle,
+  IconUsersGroup,
+  IconUserDollar,
+  IconSettings,
+  IconComponents,
+  IconMessage,
+  IconLayoutGridAdd,
+  IconMoneybag,
+  IconReceipt2,
+} from '@tabler/icons-react';
 import { useQuery } from '@tanstack/react-query';
 import { FormProvider, useForm } from 'react-hook-form';
 import { z } from 'zod';
 import AccountCoding from '@/components/form/AccountCoding';
 import Budget from '@/components/form/Budget';
 import ExpenseAuthority from '@/components/form/ExpenseAuthority';
-import ProjectDescription from '@/components/form/ProjectDescriptionPublic';
+import PageAccordion from '@/components/form/PageAccordion';
+import ProjectDescriptionPublic from '@/components/form/ProjectDescriptionPublic';
 import TeamContacts from '@/components/form/TeamContacts';
 import createClientPage from '@/core/client-page';
-import { PublicCloudRequestDecisionBodySchema } from '@/schema';
 import { getPublicCloudRequest } from '@/services/backend/public-cloud/requests';
+import { publicCloudRequestDecisionBodySchema } from '@/validation-schemas/public-cloud';
 
 const pathParamSchema = z.object({
   id: z.string(),
@@ -31,32 +43,62 @@ export default publicCloudRequest(({ pathParams }) => {
   });
 
   const methods = useForm({
-    resolver: zodResolver(PublicCloudRequestDecisionBodySchema),
+    resolver: zodResolver(publicCloudRequestDecisionBodySchema),
     values: { comment: '', decision: '', ...request },
   });
 
   if (!request) return null;
 
+  const accordionItems = [
+    {
+      LeftIcon: IconInfoCircle,
+      label: 'Product description',
+      description: '',
+      Component: ProjectDescriptionPublic,
+      componentArgs: {
+        disabled: true,
+        mode: 'decision',
+      },
+    },
+    {
+      LeftIcon: IconUsersGroup,
+      label: 'Team contacts',
+      description: '',
+      Component: TeamContacts,
+      componentArgs: {
+        disabled: true,
+        secondTechLead: !!request.decisionData.secondaryTechnicalLeadId,
+        secondTechLeadOnClick: () => {},
+      },
+    },
+    {
+      LeftIcon: IconUserDollar,
+      label: 'Expense authority',
+      description: '',
+      Component: ExpenseAuthority,
+      componentArgs: { disabled: true },
+    },
+    {
+      LeftIcon: IconMoneybag,
+      label: 'Project budget',
+      description: '',
+      Component: Budget,
+      componentArgs: { disabled: true },
+    },
+    {
+      LeftIcon: IconReceipt2,
+      label: 'Billing (account Coding)',
+      description: '',
+      Component: AccountCoding,
+      componentArgs: { accountCodingInitial: request.decisionData.billing.accountCoding, disabled: true },
+    },
+  ];
+
   return (
     <div>
       <FormProvider {...methods}>
         <form autoComplete="off">
-          <div className="mb-12">
-            <ProjectDescription disabled={true} mode="decision" />
-            <hr className="my-7" />
-            <TeamContacts
-              disabled={true}
-              number={3}
-              secondTechLead={!!request.decisionData.secondaryTechnicalLeadId}
-              secondTechLeadOnClick={() => {}}
-            />
-            <hr className="my-7" />
-            <ExpenseAuthority disabled={true} />
-            <hr className="my-7" />
-            <Budget disabled={true} />
-            <hr className="my-7" />
-            <AccountCoding accountCodingInitial={request.decisionData.accountCoding} disabled={true} />
-          </div>
+          <PageAccordion items={accordionItems} />
         </form>
       </FormProvider>
     </div>

@@ -6,10 +6,10 @@ import { comparePrivateCloudProjects } from '@/emails/_components/Edit/utils/com
 import Layout from '@/emails/_components/layout/Layout';
 import NamespaceDetails from '@/emails/_components/NamespaceDetails';
 import ProductDetails from '@/emails/_components/ProductDetails';
-import { PrivateCloudRequestWithProjectAndRequestedProject } from '@/request-actions/private-cloud/decision-request';
+import { PrivateCloudRequestDetail } from '@/types/private-cloud';
 
 interface EmailProp {
-  request: PrivateCloudRequestWithProjectAndRequestedProject;
+  request: PrivateCloudRequestDetail;
   userName: string;
 }
 

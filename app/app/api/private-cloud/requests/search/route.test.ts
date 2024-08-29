@@ -195,7 +195,7 @@ describe('Search Private Cloud Requests - Validations', () => {
           decision: $Enums.DecisionStatus.APPROVED,
         });
 
-        provisionPrivateCloudProject(dat1.licencePlate);
+        await provisionPrivateCloudProject(dat1.licencePlate);
         return req;
       }),
     );

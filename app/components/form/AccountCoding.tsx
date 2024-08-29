@@ -1,7 +1,13 @@
+import { Alert } from '@mantine/core';
+import { IconInfoCircle } from '@tabler/icons-react';
+import { useQuery, useMutation } from '@tanstack/react-query';
 import classNames from 'classnames';
 import { useCallback, useEffect, useState } from 'react';
 import { useFormContext } from 'react-hook-form';
 import AccountCodingInput from '@/components/form/AccountCodingInput';
+import FormCheckbox from '@/components/generic/checkbox/FormCheckbox';
+import FormError from '@/components/generic/FormError';
+import { existBilling } from '@/services/backend/billing';
 
 export default function AccountCoding({
   disabled,
@@ -10,11 +16,6 @@ export default function AccountCoding({
   accountCodingInitial?: string;
   disabled?: boolean;
 }) {
-  const {
-    formState: { errors },
-    setValue,
-  } = useFormContext();
-
   const accountCodingSeparation = useCallback(
     () => ({
       clientCode: accountCodingInitial?.slice(0, 3).toLocaleUpperCase(),
@@ -27,6 +28,30 @@ export default function AccountCoding({
   );
 
   const [accountCoding, setAccountCoding] = useState(accountCodingSeparation());
+  const {
+    formState: { errors },
+    setValue,
+    register,
+    watch,
+  } = useFormContext();
+
+  const values = watch();
+
+  const {
+    data: hasBilling,
+    isLoading: isBillingLoading,
+    isError: isBillingError,
+    error: billingError,
+    refetch: refetchBillingExistence,
+  } = useQuery<boolean | null, Error>({
+    queryKey: ['billingExistence', values.accountCoding],
+    queryFn: () => {
+      const code = values.accountCoding;
+      if (code.length < 24) return null;
+      return existBilling(code);
+    },
+    enabled: !disabled,
+  });
 
   useEffect(() => {
     setAccountCoding(accountCodingSeparation());
@@ -38,9 +63,6 @@ export default function AccountCoding({
 
   return (
     <div className="">
-      <h2 className="text-base lg:text-lg 2xl:text-2xl font-semibold leading-6 text-gray-900">
-        6. Billing (Account Coding)
-      </h2>
       <p className="text-base leading-6 mt-5">
         Please refer to the Memorandum of Understanding (MoU) signed for this project to enter the information required
         below. Please make sure that the information entered below matches the account coding on the MoU for this
@@ -128,6 +150,19 @@ export default function AccountCoding({
           {errors.accountCoding?.message?.toString()}
         </p>
       </div>
+      {!disabled && hasBilling === true && (
+        <Alert variant="light" color="blue" title="Billing Exists" icon={<IconInfoCircle />}>
+          <FormCheckbox
+            id="isEaApproval"
+            inputProps={register('isEaApproval')}
+            disabled={disabled}
+            className={{ label: 'text-sm ' }}
+          >
+            I have received approval from my Expense Authority for the expenses associated with this project.
+          </FormCheckbox>
+          <FormError field="isEaApproval" className="mt-1" />
+        </Alert>
+      )}
     </div>
   );
 }

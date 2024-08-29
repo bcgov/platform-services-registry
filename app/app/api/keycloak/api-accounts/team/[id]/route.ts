@@ -1,6 +1,6 @@
 import { z } from 'zod';
 import createApiHandler from '@/core/api-handler';
-import { teamApiAccountSchema, TeamApiAccountSchemaData } from '@/schema';
+import { teamApiAccountSchema } from '@/validation-schemas/api-accounts';
 import deleteOp from '../_operations/delete';
 import getOp from '../_operations/read';
 import updateOp from '../_operations/update';

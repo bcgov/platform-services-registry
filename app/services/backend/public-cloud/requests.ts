@@ -1,5 +1,10 @@
 import axios from 'axios';
-import { PublicCloudRequestGetPayload, PublicCloudRequestSearchPayload } from '@/queries/public-cloud-requests';
+import {
+  PublicCloudRequestSimpleDecorated,
+  PublicCloudRequestDetail,
+  PublicCloudRequestDetailDecorated,
+  PublicCloudRequestSearch,
+} from '@/types/public-cloud';
 import { instance as parentInstance } from './instance';
 import { PublicCloudProductSearchCriteria } from './products';
 
@@ -25,7 +30,7 @@ export async function getPublicCloudRequest(id: string) {
     return res.data;
   });
 
-  return result as PublicCloudRequestGetPayload;
+  return result as PublicCloudRequestDetailDecorated;
 }
 
 export async function searchPublicCloudRequests(data: PublicCloudProductSearchCriteria) {
@@ -33,10 +38,20 @@ export async function searchPublicCloudRequests(data: PublicCloudProductSearchCr
     return res.data;
   });
 
-  return result as PublicCloudRequestSearchPayload;
+  return result as PublicCloudRequestSearch;
 }
 
 export async function makePublicCloudRequestDecision(id: string, data: any) {
   const result = await instance.post(`/${id}/decision`, data).then((res) => res.data);
-  return result;
+  return result as PublicCloudRequestDetail;
+}
+
+export async function signPublicCloudMou(id: string, data: { taskId: string; confirmed: boolean }) {
+  const result = await instance.post(`/${id}/sign-mou`, data).then((res) => res.data);
+  return result as true;
+}
+
+export async function reviewPublicCloudMou(id: string, data: { taskId: string; decision: string }) {
+  const result = await instance.post(`/${id}/review-mou`, data).then((res) => res.data);
+  return result as true;
 }

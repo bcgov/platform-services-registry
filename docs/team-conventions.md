@@ -179,3 +179,43 @@ We've identified three distinct use cases for these common functions, each follo
   - These functions are housed in the `/helpers` directory.
 
 As a team consensus, we aim to include `one or multiple common functions per file` and refrain from using `export default`.
+
+## Validation Schema & Enum Naming Conventions
+
+The following naming conventions are used for validation schemas and enums with the validation tool Zod:
+
+1. **Validation Schema:**
+
+   - **Naming:** Schema objects are named in camelCase and end with `Schema`.
+   - **Type:** The TypeScript type derived from the schema object is in PascalCase.
+
+   ```typescript
+   const userSchema = z.object({
+     name: z.string().min(1, 'Name is required'),
+     age: z.number().min(0, 'Age must be a non-negative number'),
+   });
+
+   type User = z.infer<typeof userSchema>;
+   ```
+
+2. **Enum:**
+
+   - **Naming:** Enum objects are named in PascalCase and end with `Enum`.
+   - **Type:** The TypeScript type derived from the enum object is in PascalCase.
+
+   ```typescript
+   const ColorEnum = z.enum(['Red', 'Green', 'Blue']);
+
+   type Color = z.infer<typeof ColorEnum>;
+   ```
+
+### Explanation:
+
+- **Validation Schema Naming:**
+
+  - `userSchema`: The schema object for user data, named in camelCase and ending with `Schema`.
+  - `User`: The TypeScript type inferred from `userSchema`, named in PascalCase.
+
+- **Enum Naming:**
+  - `ColorEnum`: The enum object for color options, named in PascalCase and ending with `Enum`.
+  - `Color`: The TypeScript type inferred from `ColorEnum`, named in PascalCase.

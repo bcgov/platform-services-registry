@@ -14,7 +14,7 @@ import {
   PublicCloudEditRequestBody,
   PublicCloudProductSearchBody,
   PublicCloudProductSearchNoPaginationBody,
-} from '@/schema';
+} from '@/validation-schemas/public-cloud';
 import { createRoute, ParamData } from '../core';
 
 const productCollectionRoute = createRoute('/public-cloud/products');

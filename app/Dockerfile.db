@@ -4,8 +4,9 @@ WORKDIR /app
 
 RUN apk add --no-cache jq
 
-COPY ["package.json", "prisma/schema.prisma", "./"]
+COPY package.json ./package.json.tmp
+COPY prisma/schema.prisma .
 
-RUN npm install prisma@$(jq -r '.devDependencies.prisma' package.json)
+RUN npm install prisma@$(jq -r '.devDependencies.prisma' package.json.tmp)
 
 CMD ["node_modules/.bin/prisma", "db", "push", "--schema", "schema.prisma", "--skip-generate"]
