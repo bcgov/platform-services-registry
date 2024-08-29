@@ -1,3 +1,4 @@
+import { Provider } from '@prisma/client';
 import _sumBy from 'lodash-es/sumBy';
 import { ministryKeyToName } from '@/helpers/product';
 import { formatFullName } from '@/helpers/user';
@@ -47,7 +48,19 @@ tr:nth-child(even) {
 .label {
   color: #6b6b6b;
 }
+
+.strong {
+  font-weight: bold;
+}
+
+.mt-0 {
+  margin-top: 0;
+}
 `;
+
+function formatCurrency(value: number, { suffix = 'CAD' }: { suffix: 'CAD' | 'USD' }) {
+  return `$${value.toFixed(2)} ${suffix}`;
+}
 
 export default function BillingMou({ product, billing }: { product: Product; billing: Billing }) {
   const values = [];
@@ -60,6 +73,8 @@ export default function BillingMou({ product, billing }: { product: Product; bil
     const num = Number(val);
     return isNaN(num) ? 0 : num;
   });
+
+  const currency = product.provider === Provider.AWS ? 'USD' : 'CAD';
 
   return (
     <div>
@@ -89,33 +104,45 @@ export default function BillingMou({ product, billing }: { product: Product; bil
         {product.environmentsEnabled.development && (
           <tr>
             <td>Development account</td>
-            <td>{product.budget.dev.toFixed(2)}</td>
+            <td>{formatCurrency(product.budget.dev, { suffix: currency })}</td>
           </tr>
         )}
 
         {product.environmentsEnabled.test && (
           <tr>
             <td>Development account</td>
-            <td>{product.budget.test.toFixed(2)}</td>
+            <td>{formatCurrency(product.budget.test, { suffix: currency })}</td>
           </tr>
         )}
         {product.environmentsEnabled.production && (
           <tr>
             <td>Development account</td>
-            <td>{product.budget.prod.toFixed(2)}</td>
+            <td>{formatCurrency(product.budget.prod, { suffix: currency })}</td>
           </tr>
         )}
         {product.environmentsEnabled.tools && (
           <tr>
             <td>Development account</td>
-            <td>{product.budget.tools.toFixed(2)}</td>
+            <td>{formatCurrency(product.budget.tools, { suffix: currency })}</td>
           </tr>
         )}
         <tr>
           <td>Total</td>
-          <td>{totalBudget.toFixed(2)}</td>
+          <td>{formatCurrency(totalBudget, { suffix: currency })}</td>
         </tr>
       </table>
+
+      {currency === 'CAD' ? (
+        <p className="mt-0">
+          <span className="strong">Note: </span>
+          Additional taxes and fees may apply.
+        </p>
+      ) : (
+        <p className="mt-0">
+          <span className="strong">Note: </span>
+          Additional taxes, fees, and USD currency conversion may apply.
+        </p>
+      )}
 
       <h3>Agreement</h3>
       <table>
@@ -124,7 +151,7 @@ export default function BillingMou({ product, billing }: { product: Product; bil
           <td>{billing.accountCoding}</td>
         </tr>
         <tr>
-          <td>Signed by</td>
+          <td>Signed by (Team&apos;s Expense authority)</td>
           <td>{formatFullName(billing.signedBy)}</td>
         </tr>
         <tr>
@@ -132,7 +159,7 @@ export default function BillingMou({ product, billing }: { product: Product; bil
           <td>{formatDate(billing.signedAt)}</td>
         </tr>
         <tr>
-          <td>Approved by</td>
+          <td>Approved by (OCIO Expense authority)</td>
           <td>{formatFullName(billing.approvedBy)}</td>
         </tr>
         <tr>
