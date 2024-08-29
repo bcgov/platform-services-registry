@@ -3,7 +3,7 @@
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Button, Divider, Grid, LoadingOverlay, Box } from '@mantine/core';
 import { notifications } from '@mantine/notifications';
-import { DecisionStatus, User, RequestType, TaskStatus, TaskType } from '@prisma/client';
+import { DecisionStatus, User, Provider, TaskStatus, TaskType } from '@prisma/client';
 import { useQuery, useMutation } from '@tanstack/react-query';
 import classNames from 'classnames';
 import { useSession } from 'next-auth/react';
@@ -17,6 +17,8 @@ import { signPublicCloudMou } from '@/services/backend/public-cloud/requests';
 
 interface ModalProps {
   requestId: string;
+  name: string;
+  provider: Provider;
 }
 
 interface ModalState {
@@ -25,6 +27,8 @@ interface ModalState {
 
 function SignPublicCloudProductModal({
   requestId,
+  name,
+  provider,
   state,
   closeModal,
 }: ModalProps & { state: ModalState } & ExtraModalProps) {
@@ -111,7 +115,7 @@ function SignPublicCloudProductModal({
             </p>
             <p>And</p>
             <p className="text-center font-semibold">
-              The (Team Name)
+              The {name}
               <br />
               Hereby referred to as “the Ministry”
             </p>
@@ -122,11 +126,20 @@ function SignPublicCloudProductModal({
               Ministry’s teams, on the Amazon Web Services platform, through the Government of Canada Cloud Brokering
               Service.
             </p>
-            <p className="mb-2">
-              &emsp;&emsp;AWS and the Government of Canada will invoice the OCIO, monthly, for the services consumed
-              including the Provincial Sales Tax (PST). Additional charges include the 6% brokerage fee that covers the
-              Government of Canada’s commission.
-            </p>
+
+            {provider === Provider.AWS ? (
+              <p className="mb-2">
+                &emsp;&emsp;AWS and the Government of Canada will invoice the OCIO, monthly, for the services consumed
+                including the Provincial Sales Tax (PST). Additional charges include the 6% brokerage fee that covers
+                the Government of Canada’s commission.
+              </p>
+            ) : (
+              <p className="mb-2">
+                &emsp;&emsp;Microsoft will invoice the OCIO, monthly, for the services consumed including the Provincial
+                Sales Tax (PST). Additional charges include the 6% OCIO administrative fee.
+              </p>
+            )}
+
             <p className="mb-2">
               &emsp;&emsp;The OCIO will pass these costs through to the Ministry by Journal Voucher on a quarterly
               basis.
