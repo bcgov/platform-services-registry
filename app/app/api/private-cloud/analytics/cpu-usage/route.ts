@@ -15,7 +15,7 @@ async function getPodMetrics() {
     users: [
       {
         name: 'my-user',
-        token: 'sha256~4n92GRkziI5wpqjTPPD_CFRngs9qNbsSgL01wsfUzRM', // oc whoami -t  -- personal temporary token
+        token: 'sha256~xxxxxx', // oc whoami -t  -- personal temporary token
       },
     ],
     contexts: [
