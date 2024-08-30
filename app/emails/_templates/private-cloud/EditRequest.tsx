@@ -36,6 +36,10 @@ const EditRequestTemplate = ({ request, userName }: EmailProp) => {
             ? ' Our administrators have been notified and will review your request.'
             : ' Your request will be reviewed automatically. Once the provisioning is complete, you will receive a notification email with all the relevant details and updates regarding your request.'}
         </Text>
+        <Text className="">
+          Please allow 3-5 minutes for the request to be processed by the backend. If it takes longer, don&apos;t
+          hesitate to reach out to us.
+        </Text>
         <Button
           href={`${BASE_URL}/private-cloud/requests/${request.id}/summary`}
           className="bg-bcorange rounded-md px-4 py-2 text-white"
