@@ -7,7 +7,7 @@ async function getPodMetrics() {
   kc.loadFromOptions({
     clusters: [
       {
-        name: 'silver',
+        name: clusterName,
         server: `https://api.${clusterName}.devops.gov.bc.ca:6443`,
         skipTLSVerify: false,
       },
@@ -15,7 +15,7 @@ async function getPodMetrics() {
     users: [
       {
         name: 'my-user',
-        token: 'xxxxx', // oc whoami -t  -- personal temporary token
+        token: 'sha256~4n92GRkziI5wpqjTPPD_CFRngs9qNbsSgL01wsfUzRM', // oc whoami -t  -- personal temporary token
       },
     ],
     contexts: [
@@ -28,12 +28,12 @@ async function getPodMetrics() {
     currentContext: `${clusterName}-context`,
   });
 
-  // const k8sApi = kc.makeApiClient(CoreV1Api);
+  const k8sApi = kc.makeApiClient(CoreV1Api);
   const metricsClient = new Metrics(kc);
 
   try {
-    // const pods = await k8sApi.listNamespacedPod(systemNamespace);
-    // console.log('pods body', pods.body);
+    const pods = await k8sApi.listNamespacedPod(systemNamespace);
+    console.log('pods body', JSON.stringify(pods.body, null, 2));
 
     const metrics = await metricsClient.getPodMetrics(systemNamespace);
     metrics.items.forEach((item) => {
