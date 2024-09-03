@@ -27,7 +27,7 @@ jobs:
 
     steps:
     - uses: hmarr/debug-action@f7318c783045ac39ed9bb497e22ce835fdafbfe6
-    - uses: actions/checkout@9a9194f87191a7e9055e3e9b95b8cfb13023bb08
+    - uses: actions/checkout@2d7d9f7ff5b310f983d059b68785b3c74d8b8edd
 
     - name: Setup Tools
       uses: ./.github/actions/setup-tools
@@ -56,7 +56,7 @@ jobs:
 
     steps:
     - uses: hmarr/debug-action@f7318c783045ac39ed9bb497e22ce835fdafbfe6
-    - uses: actions/checkout@9a9194f87191a7e9055e3e9b95b8cfb13023bb08
+    - uses: actions/checkout@2d7d9f7ff5b310f983d059b68785b3c74d8b8edd
 
     - name: Setup Tools
       uses: ./.github/actions/setup-tools
@@ -83,7 +83,7 @@ jobs:
 
     steps:
     - uses: hmarr/debug-action@f7318c783045ac39ed9bb497e22ce835fdafbfe6
-    - uses: actions/checkout@9a9194f87191a7e9055e3e9b95b8cfb13023bb08
+    - uses: actions/checkout@2d7d9f7ff5b310f983d059b68785b3c74d8b8edd
 
     - name: Setup Tools
       uses: ./.github/actions/setup-tools
@@ -110,7 +110,7 @@ jobs:
 
     steps:
     - uses: hmarr/debug-action@f7318c783045ac39ed9bb497e22ce835fdafbfe6
-    - uses: actions/checkout@9a9194f87191a7e9055e3e9b95b8cfb13023bb08
+    - uses: actions/checkout@2d7d9f7ff5b310f983d059b68785b3c74d8b8edd
 
     - name: Setup Tools
       uses: ./.github/actions/setup-tools
@@ -137,7 +137,7 @@ jobs:
 
     steps:
     - uses: hmarr/debug-action@f7318c783045ac39ed9bb497e22ce835fdafbfe6
-    - uses: actions/checkout@9a9194f87191a7e9055e3e9b95b8cfb13023bb08
+    - uses: actions/checkout@2d7d9f7ff5b310f983d059b68785b3c74d8b8edd
 
     - name: Build and Push
       uses: egose/actions/docker-build-push@a18ce5484959fe604bf4c29726334e54933d1ba9
@@ -161,7 +161,7 @@ jobs:
 
     steps:
     - uses: hmarr/debug-action@f7318c783045ac39ed9bb497e22ce835fdafbfe6
-    - uses: actions/checkout@9a9194f87191a7e9055e3e9b95b8cfb13023bb08
+    - uses: actions/checkout@2d7d9f7ff5b310f983d059b68785b3c74d8b8edd
 
     - name: Setup Tools
       uses: ./.github/actions/setup-tools
@@ -191,7 +191,7 @@ jobs:
 
     steps:
     - uses: hmarr/debug-action@f7318c783045ac39ed9bb497e22ce835fdafbfe6
-    - uses: actions/checkout@9a9194f87191a7e9055e3e9b95b8cfb13023bb08
+    - uses: actions/checkout@2d7d9f7ff5b310f983d059b68785b3c74d8b8edd
 
     - name: Authenticate and set context
       uses: redhat-actions/oc-login@dfbd9912672664f9df2023c1c16e07bcf306043c
