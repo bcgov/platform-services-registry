@@ -8,6 +8,7 @@ export default defineConfig({
     baseUrl: 'http://localhost:3000/',
     specPattern: 'cypress/**/*.feature',
     defaultCommandTimeout: 10000,
+    excludeSpecPattern: '**/_tmp/**',
     async setupNodeEvents(
       on: Cypress.PluginEvents,
       config: Cypress.PluginConfigOptions,
