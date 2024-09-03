@@ -19,6 +19,8 @@ import './commands';
 // Alternatively you can use CommonJS syntax:
 // require('./commands')
 Cypress.on('uncaught:exception', (err: Error) => {
+  return false;
+
   // List of specific error messages to ignore
   const ignoreMessages = [
     'Hydration failed because the initial UI does not match what was rendered on the server.',

@@ -2,11 +2,11 @@ name: 32.Run E2E Tests
 
 on:
   push:
-    branches:
-    - cypress
-    paths:
-    - .github/workflows/cypress-e2e-test.yaml
-    - cypress/**
+    paths-ignore:
+    - data-migrations/**
+    - helm/**
+    - terraform/**
+    - tools/**
 
   workflow_dispatch:
 
