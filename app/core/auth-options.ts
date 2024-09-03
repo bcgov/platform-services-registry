@@ -276,6 +276,7 @@ export const authOptions: AuthOptions = {
       const upsertedUser = await upsertUser(loweremail, { lastSeen });
       if (!upsertedUser) {
         const data = {
+          providerUserId: '',
           firstName: given_name,
           lastName: family_name,
           email: loweremail,

@@ -1,4 +1,5 @@
 import { Prisma, PublicCloudRequest, PublicCloudRequestedProject, RequestType } from '@prisma/client';
+import { formatFullName } from '@/helpers/user';
 
 export type PublicCloudRequestedProjectWithContacts = Prisma.PublicCloudRequestedProjectGetPayload<{
   include: {
@@ -19,6 +20,21 @@ export type PublicCloudProjectWithContacts = Prisma.PublicCloudRequestedProjectG
     billing: true;
   };
 }>;
+
+function prepareUser(user?: Prisma.UserGetPayload<null> | null) {
+  if (!user)
+    return {
+      name: '',
+      email: '',
+      providerUserId: '',
+    };
+
+  return {
+    name: formatFullName(user),
+    email: user.email,
+    providerUserId: user.providerUserId,
+  };
+}
 
 // Create a test env variable that prefix the namespace name with "t"
 export default function createPublicCloudNatsMessage(
@@ -54,47 +70,19 @@ export default function createPublicCloudNatsMessage(
         prod: decisionData.environmentsEnabled.production,
         tools: decisionData.environmentsEnabled.tools,
       },
-      requested_product_owner: {
-        name: `${decisionData.projectOwner.firstName} ${decisionData.projectOwner.lastName}`,
-        email: decisionData.projectOwner.email,
-      },
-      current_product_owner: !currentProject
-        ? null
-        : {
-            name: `${currentProject.projectOwner.firstName} ${currentProject.projectOwner.lastName}`,
-            email: currentProject.projectOwner.email,
-          },
-      requested_expense_authority: {
-        name: `${decisionData.expenseAuthority?.firstName} ${decisionData.expenseAuthority?.lastName}`,
-        email: decisionData.expenseAuthority?.email,
-      },
-      current_expense_authority: !currentProject
-        ? null
-        : {
-            name: `${currentProject.expenseAuthority?.firstName} ${currentProject.expenseAuthority?.lastName}`,
-            email: currentProject.expenseAuthority?.email,
-          },
+      requested_product_owner: prepareUser(decisionData.projectOwner),
+      current_product_owner: !currentProject ? null : prepareUser(currentProject.projectOwner),
+      requested_expense_authority: prepareUser(decisionData.expenseAuthority),
+      current_expense_authority: !currentProject ? null : prepareUser(currentProject.expenseAuthority),
       requested_tech_leads: [
-        {
-          name: `${decisionData.primaryTechnicalLead.firstName} ${decisionData.primaryTechnicalLead.lastName}`,
-          email: decisionData.primaryTechnicalLead.email,
-        },
-        {
-          name: `${decisionData?.secondaryTechnicalLead?.firstName} ${decisionData?.secondaryTechnicalLead?.lastName}`,
-          email: decisionData?.secondaryTechnicalLead?.email,
-        },
+        prepareUser(decisionData.primaryTechnicalLead),
+        prepareUser(decisionData.secondaryTechnicalLead),
       ].filter((techLead) => Boolean(techLead.email)),
       current_tech_leads: !currentProject
         ? null
         : [
-            {
-              name: `${currentProject.primaryTechnicalLead.firstName} ${currentProject.primaryTechnicalLead.lastName}`,
-              email: currentProject.primaryTechnicalLead.email,
-            },
-            {
-              name: `${currentProject?.secondaryTechnicalLead?.firstName} ${currentProject?.secondaryTechnicalLead?.lastName}`,
-              email: currentProject?.secondaryTechnicalLead?.email,
-            },
+            prepareUser(currentProject.primaryTechnicalLead),
+            prepareUser(currentProject?.secondaryTechnicalLead),
           ].filter((techLead) => Boolean(techLead.email)),
     },
   };
