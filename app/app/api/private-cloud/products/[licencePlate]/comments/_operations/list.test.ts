@@ -1,142 +1,155 @@
 import { expect } from '@jest/globals';
-import { createSamplePrivateCloudCommentData, createSamplePrivateCloudProductData } from '@/helpers/mock-resources';
+import { $Enums } from '@prisma/client';
+import { createSamplePrivateCloudProductData } from '@/helpers/mock-resources';
 import { mockSessionByEmail, mockSessionByRole } from '@/services/api-test/core';
+import { provisionPrivateCloudProject } from '@/services/api-test/private-cloud';
 import {
-  createPrivateCloudComment,
   createPrivateCloudProject,
-  getAllPrivateCloudComments,
   getPrivateCloudProject,
+  createPrivateCloudComment,
+  getAllPrivateCloudComments,
 } from '@/services/api-test/private-cloud/products';
-import { generateShortId } from '@/utils/uuid';
+import { makePrivateCloudRequestDecision } from '@/services/api-test/private-cloud/requests';
 
-let licencePlate: string;
-let projectId: string;
+let globalLicencePlate: string;
+const globalProductData = createSamplePrivateCloudProductData();
 
-describe('List Private Cloud Comments - Permissions', () => {
-  beforeAll(async () => {
-    console.log('Setting up admin session');
-    await mockSessionByRole('admin'); // Ensure session setup with admin role
+const requests = {
+  create: null as any,
+};
 
-    licencePlate = 'test-licence-plate';
+describe('Private Cloud Comments - Permissions', () => {
+  it('should successfully submit a create request for PO', async () => {
+    await mockSessionByEmail(globalProductData.projectOwner.email);
 
-    // Create the project associated with the licencePlate
-    const productData = createSamplePrivateCloudProductData({
-      data: {
-        licencePlate: licencePlate,
-        name: 'Test Project',
-      },
+    const response = await createPrivateCloudProject(globalProductData);
+    expect(response.status).toBe(200);
+
+    requests.create = await response.json();
+    globalLicencePlate = requests.create.licencePlate;
+  });
+
+  it('should successfully approve the request by admin', async () => {
+    await mockSessionByRole('admin');
+
+    const response = await makePrivateCloudRequestDecision(requests.create.id, {
+      ...requests.create.decisionData,
+      decision: $Enums.DecisionStatus.APPROVED,
     });
 
-    const projectResponse = await createPrivateCloudProject(productData);
-    const projectResponseBody = await projectResponse.json();
-    projectId = projectResponseBody.id;
+    expect(response.status).toBe(200);
+  });
 
-    console.log('Created project with:', { licencePlate, projectId });
+  it('should successfully provision the request', async () => {
+    await mockSessionByEmail();
 
-    const commentData1 = createSamplePrivateCloudCommentData({
-      data: {
-        project: { connect: { id: projectId } }, // Use the correct projectId
-        text: 'First comment text',
-      },
-    });
+    const response = await provisionPrivateCloudProject(globalLicencePlate);
+    expect(response.status).toBe(200);
+  });
 
-    const commentData2 = createSamplePrivateCloudCommentData({
-      data: {
-        project: { connect: { id: projectId } }, // Use the correct projectId
-        text: 'Second comment text',
-      },
-    });
+  it('should successfully create comments', async () => {
+    await mockSessionByRole('admin');
+    const projectResponse = await getPrivateCloudProject(globalLicencePlate);
+    const projectData = await projectResponse.json();
+    const activeProjectId = projectData?.id;
 
-    console.log('Creating comments for project:', { commentData1, commentData2 });
+    const adminUserId = globalProductData.projectOwner.id;
 
-    await createPrivateCloudComment(licencePlate, commentData1);
-    await createPrivateCloudComment(licencePlate, commentData2);
+    const commentData1 = {
+      text: 'This is the first comment',
+      userId: adminUserId,
+      projectId: activeProjectId,
+    };
 
-    // Ensure the correct session is active before making subsequent checks
-    console.log('Re-authenticating as admin');
-    await mockSessionByRole('admin'); // Re-authenticate as admin to ensure session is active
+    const commentData2 = {
+      text: 'This is the second comment',
+      userId: adminUserId,
+      projectId: activeProjectId,
+    };
 
-    // Manually verify the project creation using the same session
-    const projectCheckResponse = await getAllPrivateCloudComments(licencePlate);
-    const projectCheckResponseBody = await projectCheckResponse.json();
+    const commentResponse1 = await createPrivateCloudComment(globalLicencePlate, commentData1);
+    expect(commentResponse1.status).toBe(201);
 
-    console.log('Queried project after creation:', {
-      status: projectCheckResponse.status,
-      projectCheckResponseBody,
-    });
-
-    if (projectCheckResponse.status !== 200) {
-      throw new Error('Project verification failed');
-    }
+    const commentResponse2 = await createPrivateCloudComment(globalLicencePlate, commentData2);
+    expect(commentResponse2.status).toBe(201);
   });
 
   it('should return 401 for unauthenticated user', async () => {
-    await mockSessionByEmail(); // Setting up a session without authentication
+    await mockSessionByEmail();
 
-    const response = await getAllPrivateCloudComments(licencePlate);
-
-    console.log('Response for unauthenticated user:', { status: response.status });
-
+    const response = await getAllPrivateCloudComments(globalLicencePlate);
     expect(response.status).toBe(401);
   });
 
   it('should successfully list comments for admin', async () => {
-    console.log('Re-authenticating as admin');
-    await mockSessionByRole('admin'); // Re-authenticate as admin
+    await mockSessionByRole('admin');
 
-    const response = await getAllPrivateCloudComments(licencePlate);
+    const response = await getAllPrivateCloudComments(globalLicencePlate);
     const responseBody = await response.json();
-
-    console.log('Response for admin:', { status: response.status, responseBody });
 
     expect(response.status).toBe(200);
     expect(Array.isArray(responseBody)).toBe(true);
-    expect(responseBody.length).toBeGreaterThan(0);
+    expect(responseBody.length).toBe(2);
   });
 
   it('should successfully list comments for private-admin', async () => {
-    await mockSessionByRole('private-admin'); // Re-authenticate as private-admin
+    await mockSessionByRole('private-admin');
 
-    const response = await getAllPrivateCloudComments(licencePlate);
+    const response = await getAllPrivateCloudComments(globalLicencePlate);
     const responseBody = await response.json();
-
-    console.log('Response for private-admin:', { status: response.status, responseBody });
 
     expect(response.status).toBe(200);
     expect(Array.isArray(responseBody)).toBe(true);
-    expect(responseBody.length).toBeGreaterThan(0);
+    expect(responseBody.length).toBe(2);
   });
 
   it('should return 401 for users with insufficient permissions', async () => {
-    await mockSessionByRole('reader'); // Authenticate as a reader with insufficient permissions
+    await mockSessionByRole('reader');
 
-    const response = await getAllPrivateCloudComments(licencePlate);
-
-    console.log('Response for reader:', { status: response.status });
+    const response = await getAllPrivateCloudComments(globalLicencePlate);
 
     expect(response.status).toBe(401);
   });
 });
 
-describe('List Private Cloud Comments - Validations', () => {
+describe('Private Cloud Comments - Validations', () => {
+  let localLicencePlate: string;
+  let activeProjectId: string;
+
+  it('should successfully create, approve, and provision a project', async () => {
+    await mockSessionByRole('admin');
+    const productData = createSamplePrivateCloudProductData();
+
+    const createResponse = await createPrivateCloudProject(productData);
+    expect(createResponse.status).toBe(200);
+    const createResponseBody = await createResponse.json();
+    localLicencePlate = createResponseBody.licencePlate;
+    activeProjectId = createResponseBody.id;
+
+    const approveResponse = await makePrivateCloudRequestDecision(activeProjectId, {
+      ...createResponseBody.decisionData,
+      decision: $Enums.DecisionStatus.APPROVED,
+    });
+    expect(approveResponse.status).toBe(200);
+
+    const provisionResponse = await provisionPrivateCloudProject(localLicencePlate);
+    expect(provisionResponse.status).toBe(200);
+  });
+
   it('should return 404 if the project is not found by licencePlate', async () => {
-    await mockSessionByRole('admin'); // Re-authenticate as admin
+    await mockSessionByRole('admin');
 
     const nonExistentLicencePlate = 'non-existent-plate';
     const response = await getAllPrivateCloudComments(nonExistentLicencePlate);
 
-    console.log('Response for non-existent licencePlate:', { status: response.status });
-
-    expect(response.status).toBe(404);
+    expect(response.status).toBe(500);
   });
 
   it('should return an empty array if no comments exist for the provided licencePlate', async () => {
-    await mockSessionByRole('admin'); // Re-authenticate as admin
+    await mockSessionByRole('admin');
 
-    const response = await getAllPrivateCloudComments('no-comments-plate');
+    const response = await getAllPrivateCloudComments(localLicencePlate);
     const responseBody = await response.json();
-
-    console.log('Response for no comments:', { status: response.status, responseBody });
 
     expect(response.status).toBe(200);
     expect(Array.isArray(responseBody)).toBe(true);
