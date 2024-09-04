@@ -12,6 +12,10 @@ Given(
   },
 );
 
+Given('User visits main page', () => {
+  cy.visit('/login', { failOnStatusCode: false });
+});
+
 When(/^User clicks link "(.*)"$/, (buttonText: string) => {
   cy.contains('a, span', buttonText).first().scrollIntoView().click();
 });
