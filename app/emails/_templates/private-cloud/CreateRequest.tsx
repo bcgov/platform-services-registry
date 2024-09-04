@@ -25,10 +25,6 @@ const NewRequestTemplate = ({ request, userName }: EmailProp) => {
           You have requested a new project set for {request.decisionData.name} on the Private Cloud OpenShift platform.
           Our administrators have been notified and will review your request.
         </Text>
-        <Text>
-          Please allow 3-5 minutes for the request to be processed by the backend. If it takes longer, don&apos;t
-          hesitate to reach out to us.
-        </Text>
         <Button href="https://registry.developer.gov.bc.ca/" className="bg-bcorange rounded-md px-4 py-2 text-white">
           View request
         </Button>

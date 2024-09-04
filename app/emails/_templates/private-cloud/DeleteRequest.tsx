@@ -22,10 +22,6 @@ const DeleteRequestTemplate = ({ request, userName }: EmailProp) => {
         <Text className="">
           {`We have received your deletion request for ${request.decisionData.name}. You will receive an email once your request has been processed and completed.`}
         </Text>
-        <Text className="">
-          Please allow 3-5 minutes for the request to be processed by the backend. If it takes longer, don&apos;t
-          hesitate to reach out to us.
-        </Text>
       </div>
       <div className="pb-6 mt-4 mb-4 border-solid border-0 border-b-1 border-slate-300">
         <ProductDetails

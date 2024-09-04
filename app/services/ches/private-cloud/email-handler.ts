@@ -8,6 +8,7 @@ import CreateRequestTemplate from '@/emails/_templates/private-cloud/CreateReque
 import DeleteApprovalTemplate from '@/emails/_templates/private-cloud/DeleteApproval';
 import DeleteRequestTemplate from '@/emails/_templates/private-cloud/DeleteRequest';
 import EditRequestTemplate from '@/emails/_templates/private-cloud/EditRequest';
+import EditRequestCompleteTemplate from '@/emails/_templates/private-cloud/EditRequestComplete';
 import ProvisionedTemplate from '@/emails/_templates/private-cloud/Provisioned';
 import RequestApprovalTemplate from '@/emails/_templates/private-cloud/RequestApproval';
 import RequestRejectionTemplate from '@/emails/_templates/private-cloud/RequestRejection';
@@ -175,5 +176,19 @@ export const sendProvisionedEmails = async (product: PrivateCloudRequestedProjec
     });
   } catch (error) {
     logger.error('sendProvisionedEmails:', error);
+  }
+};
+
+export const sendEditRequestCompletedEmails = async (product: PrivateCloudRequestedProjectWithContacts) => {
+  try {
+    const email = render(EditRequestCompleteTemplate({ product }), { pretty: true });
+
+    await sendEmail({
+      body: email,
+      to: [product.projectOwner.email, product.primaryTechnicalLead.email, product.secondaryTechnicalLead?.email],
+      subject: 'Product edit request has been completed',
+    });
+  } catch (error) {
+    logger.error('sendEditRequestCompletedEmails:', error);
   }
 };

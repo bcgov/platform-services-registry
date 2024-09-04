@@ -1,10 +1,14 @@
-import { $Enums, DecisionStatus } from '@prisma/client';
+import { $Enums, DecisionStatus, RequestType } from '@prisma/client';
 import { z } from 'zod';
 import createApiHandler from '@/core/api-handler';
 import { logger } from '@/core/logging';
 import prisma from '@/core/prisma';
 import { NotFoundResponse, OkResponse } from '@/core/responses';
-import { sendProvisionedEmails, sendDeleteRequestApprovalEmails } from '@/services/ches/private-cloud/email-handler';
+import {
+  sendProvisionedEmails,
+  sendDeleteRequestApprovalEmails,
+  sendEditRequestCompletedEmails,
+} from '@/services/ches/private-cloud/email-handler';
 import { PrivateCloudRequestedProjectWithContacts } from '@/services/nats/private-cloud';
 
 const pathParamSchema = z.object({
@@ -72,10 +76,12 @@ export const PUT = apiHandler(async ({ pathParams }) => {
     },
   });
 
-  if (request.type == 'CREATE') {
+  if (request.type == RequestType.CREATE) {
     await sendProvisionedEmails(project as PrivateCloudRequestedProjectWithContacts);
-  } else if (request.type == 'DELETE') {
+  } else if (request.type == RequestType.DELETE) {
     await sendDeleteRequestApprovalEmails(project as PrivateCloudRequestedProjectWithContacts);
+  } else if (request.type == RequestType.EDIT) {
+    await sendEditRequestCompletedEmails(project as PrivateCloudRequestedProjectWithContacts);
   }
 
   logger.info(`Successfully marked ${licencePlate} as provisioned.`);
