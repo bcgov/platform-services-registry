@@ -12,7 +12,17 @@ const apiHandler = createApiHandler({
 });
 
 export const GET = apiHandler(async () => {
-  const products = await prisma.privateCloudProject.findMany({ where: { status: ProjectStatus.ACTIVE } });
+  const products = await prisma.privateCloudProject.findMany({
+    where: { status: ProjectStatus.ACTIVE },
+    select: {
+      name: true,
+      ministry: true,
+      developmentQuota: true,
+      testQuota: true,
+      productionQuota: true,
+      toolsQuota: true,
+    },
+  });
 
   return CsvResponse(
     products.map((row) => {
