@@ -6,6 +6,13 @@ import Link from 'next/link';
 import React from 'react';
 import Empty from '@/components/assets/empty.svg';
 
+const displayTextMap: Record<'product' | 'request' | 'comments' | 'notes', string> = {
+  comments: 'There are no comments to be displayed',
+  notes: 'There are no notes to be displayed',
+  product: 'There are no products to be displayed',
+  request: 'There are no requests to be displayed',
+};
+
 export default function EmptySearch({
   cloud,
   type,
@@ -13,22 +20,7 @@ export default function EmptySearch({
   cloud: 'private-cloud' | 'public-cloud';
   type: 'product' | 'request' | 'comments' | 'notes';
 }) {
-  let displayText = '';
-
-  switch (type) {
-    case 'comments':
-      displayText = 'There are no comments to be displayed';
-      break;
-    case 'notes':
-      displayText = 'There are no notes to be displayed';
-      break;
-    case 'product':
-      displayText = 'There are no products to be displayed';
-      break;
-    case 'request':
-      displayText = 'There are no requests to be displayed';
-      break;
-  }
+  const displayText = displayTextMap[type];
 
   return (
     <div className="flex flex-col items-center justify-center py-12 mt-12">
