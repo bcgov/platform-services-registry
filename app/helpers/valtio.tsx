@@ -1,6 +1,6 @@
 import { createContext, useContext, useRef } from 'react';
 import { proxy, useSnapshot } from 'valtio';
-import type { INTERNAL_Snapshot as Snapshot } from 'valtio/vanilla';
+import type { Snapshot } from 'valtio/vanilla';
 
 export function createValtioContext<T extends object>(initialState: T) {
   const StateContext = createContext<T>(initialState);

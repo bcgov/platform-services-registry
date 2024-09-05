@@ -4,7 +4,7 @@ import { MsUser, AppUser } from '@/types/user';
 import { callMsGraph, getAccessToken } from './core';
 export function processMsUser(user: MsUser): AppUser {
   return {
-    id: user.id,
+    providerUserId: user.id,
     upn: user.userPrincipalName,
     email: user.mail.toLowerCase(),
     idir: user.onPremisesSamAccountName,

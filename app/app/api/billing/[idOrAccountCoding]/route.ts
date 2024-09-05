@@ -10,7 +10,7 @@ const pathParamSchema = z.object({
 });
 
 export const GET = createApiHandler({
-  roles: ['billing-reviewer'],
+  roles: ['user'],
   validations: { pathParams: pathParamSchema },
 })(async ({ pathParams, session }) => {
   const { idOrAccountCoding } = pathParams;

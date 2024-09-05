@@ -13,6 +13,7 @@ datasource db {
 
 model User {
   id                                                    String                         @id @default(auto()) @map("_id") @db.ObjectId
+  providerUserId                                        String?
   firstName                                             String?
   lastName                                              String?
   email                                                 String                         @unique

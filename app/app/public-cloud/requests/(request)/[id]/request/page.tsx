@@ -2,7 +2,7 @@
 
 import { zodResolver } from '@hookform/resolvers/zod';
 import { notifications } from '@mantine/notifications';
-import { Prisma, $Enums } from '@prisma/client';
+import { Prisma, $Enums, Provider } from '@prisma/client';
 import {
   IconInfoCircle,
   IconUsersGroup,
@@ -229,6 +229,8 @@ export default publicCloudProductRequest(({ pathParams, queryParams, session, ro
                   if (!publicSnap.currentRequest) return;
                   const res = await openSignPublicCloudProductModal<{ confirmed: boolean }>({
                     requestId: publicSnap.currentRequest.id,
+                    name: publicSnap.currentRequest.decisionData.name,
+                    provider: publicSnap.currentRequest.decisionData.provider,
                   });
 
                   if (res?.state.confirmed) {

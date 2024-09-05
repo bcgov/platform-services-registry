@@ -22,6 +22,7 @@ const publicRequestData = {
     signedById: 'signed-by-id',
     signedBy: {
       id: 'd',
+      providerUserId: '',
       firstName: 'John',
       lastName: 'Doe',
       email: 'john.doe@gov.bc.ca',
@@ -39,6 +40,7 @@ const publicRequestData = {
     approvedById: 'approved-by-id',
     approvedBy: {
       id: 'd',
+      providerUserId: '',
       firstName: 'John',
       lastName: 'Doe',
       email: 'john.doe@gov.bc.ca',
@@ -54,6 +56,7 @@ const publicRequestData = {
     expenseAuthorityId: 'expense-authority-id',
     expenseAuthority: {
       id: 'd',
+      providerUserId: '',
       firstName: 'John',
       lastName: 'Doe',
       email: 'john.doe@gov.bc.ca',
@@ -89,6 +92,7 @@ const publicRequestData = {
   provider: 'AWS',
   projectOwner: {
     id: 'd',
+    providerUserId: '',
     firstName: 'John',
     lastName: 'Doe',
     email: 'john.doe@gov.bc.ca',
@@ -103,6 +107,7 @@ const publicRequestData = {
   },
   primaryTechnicalLead: {
     id: 'c',
+    providerUserId: '',
     firstName: 'Sarah',
     lastName: 'Williams',
     email: 'sarah.williams@gov.bc.ca',
@@ -117,6 +122,7 @@ const publicRequestData = {
   },
   expenseAuthority: {
     id: 'c',
+    providerUserId: '',
     firstName: 'Sarah',
     lastName: 'Williams',
     email: 'sarah.williams@gov.bc.ca',
@@ -194,6 +200,7 @@ export const samplePublicRequest = {
     provider: 'AWS', // or GOOGLE
     projectOwner: {
       id: 'd',
+      providerUserId: '',
       firstName: 'John',
       lastName: 'Doe',
       email: 'john.doe@gov.bc.ca',
@@ -208,6 +215,7 @@ export const samplePublicRequest = {
     },
     primaryTechnicalLead: {
       id: 'c',
+      providerUserId: '',
       firstName: 'Sarah',
       lastName: 'Williams',
       email: 'sarah.williams@gov.bc.ca',
@@ -222,6 +230,7 @@ export const samplePublicRequest = {
     },
     expenseAuthority: {
       id: 'c',
+      providerUserId: '',
       firstName: 'Sarah',
       lastName: 'Williams',
       email: 'sarah.williams@gov.bc.ca',
@@ -283,6 +292,7 @@ export const samplePublicProduct: PublicCloudRequestedProjectWithContacts = {
   provider: 'AWS',
   projectOwner: {
     id: 'd',
+    providerUserId: '',
     firstName: 'John',
     lastName: 'Doe',
     email: 'john.doe@gov.bc.ca',
@@ -297,6 +307,7 @@ export const samplePublicProduct: PublicCloudRequestedProjectWithContacts = {
   },
   primaryTechnicalLead: {
     id: 'c',
+    providerUserId: '',
     firstName: 'Sarah',
     lastName: 'Williams',
     email: 'sarah.williams@gov.bc.ca',
@@ -311,6 +322,7 @@ export const samplePublicProduct: PublicCloudRequestedProjectWithContacts = {
   },
   expenseAuthority: {
     id: 'c',
+    providerUserId: '',
     firstName: 'Sarah',
     lastName: 'Williams',
     email: 'sarah.williams@gov.bc.ca',
@@ -648,6 +660,7 @@ export const samplePrivateProduct: PrivateCloudRequestedProjectWithContacts = {
   cluster: 'SILVER',
   projectOwner: {
     id: 'd',
+    providerUserId: '',
     firstName: 'John',
     lastName: 'Doe',
     email: 'john.doe@gov.bc.ca',
@@ -662,6 +675,7 @@ export const samplePrivateProduct: PrivateCloudRequestedProjectWithContacts = {
   },
   primaryTechnicalLead: {
     id: 'c',
+    providerUserId: '',
     firstName: 'Sarah',
     lastName: 'Williams',
     email: 'sarah.williams@gov.bc.ca',
@@ -676,6 +690,7 @@ export const samplePrivateProduct: PrivateCloudRequestedProjectWithContacts = {
   },
   secondaryTechnicalLead: {
     id: 'c',
+    providerUserId: '',
     firstName: 'Sarah',
     lastName: 'Williams',
     email: 'sarah.williams@gov.bc.ca',
