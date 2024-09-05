@@ -7,6 +7,7 @@ import React, { useEffect } from 'react';
 import { z } from 'zod';
 import CommentBubble from '@/components/comments/CommentBubble';
 import CommentForm from '@/components/comments/CommentForm';
+import EmptySearch from '@/components/table/EmptySearch';
 import createClientPage from '@/core/client-page';
 import { getAllPrivateCloudComments } from '@/services/backend/private-cloud/products';
 import { usePrivateProductState } from '@/states/global';
@@ -94,7 +95,7 @@ export default privateCloudRequestComments(({ pathParams, session }) => {
           ))}
         </ul>
       ) : (
-        !commentsLoading && <p>No comments found.</p>
+        !commentsLoading && <EmptySearch cloud="private-cloud" type="comments" />
       )}
     </div>
   );
