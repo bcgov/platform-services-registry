@@ -27,7 +27,7 @@
   },
   "dependencies": {
     "@azure/msal-node": "^2.3.0",
-    "@faker-js/faker": "^8.0.2",
+    "@faker-js/faker": "^9.0.0",
     "@headlessui/react": "2.1.5",
     "@hookform/resolvers": "^3.1.1",
     "@keycloak/keycloak-admin-client": "^25.0.0",
@@ -91,7 +91,7 @@
     "zod": "^3.21.4"
   },
   "devDependencies": {
-    "@faker-js/faker": "^8.0.2",
+    "@faker-js/faker": "^9.0.0",
     "@testing-library/jest-dom": "^6.1.4",
     "@testing-library/react": "^16.0.0",
     "@testing-library/user-event": "^14.5.1",
