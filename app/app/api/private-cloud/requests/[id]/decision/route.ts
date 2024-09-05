@@ -52,9 +52,7 @@ export const POST = apiHandler(async ({ pathParams, body, session }) => {
   // Subscribe users to Mautic
   proms.push(subscribeUsersToMautic(users, request.decisionData.cluster, 'Private'));
 
-  if (request.type == $Enums.RequestType.EDIT) {
-    proms.push(sendRequestApprovalEmails(request));
-  }
+  proms.push(sendRequestApprovalEmails(request));
 
   await Promise.all(proms);
 
