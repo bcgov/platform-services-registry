@@ -282,8 +282,11 @@ export const authOptions: AuthOptions = {
           email: loweremail,
           ministry: '',
           idir: '',
+          idirGuid: '',
           upn: '',
           image: '',
+          officeLocation: '',
+          jobTitle: '',
           lastSeen,
         };
 

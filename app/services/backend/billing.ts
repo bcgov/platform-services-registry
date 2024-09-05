@@ -18,8 +18,11 @@ export async function existBilling(accountCoding: string) {
   return result as boolean;
 }
 
-export async function downloadBilling(accountCoding: string, filename = 'download.pdf') {
-  const result = await instance.get(`/${accountCoding}/download`, { responseType: 'blob' }).then((res) => {
+export async function downloadBilling(accountCoding: string, licencePlate = '', filename = 'download.pdf') {
+  let url = `/${accountCoding}/download`;
+  if (licencePlate) url += `?licencePlate=${licencePlate}`;
+
+  const result = await instance.get(url, { responseType: 'blob' }).then((res) => {
     if (res.status === 200) {
       downloadFile(res.data, filename, res.headers);
       return true;

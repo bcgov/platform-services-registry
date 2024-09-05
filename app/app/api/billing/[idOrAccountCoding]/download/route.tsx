@@ -1,28 +1,28 @@
 import { Prisma, RequestType } from '@prisma/client';
-import ObjectID from 'bson-objectid';
 import { z } from 'zod';
 import createApiHandler from '@/core/api-handler';
 import prisma from '@/core/prisma';
 import { PdfResponse, BadRequestResponse } from '@/core/responses';
-import { WeasyPrint } from '@/services/weasyprint/client';
+import { generateEmouPdf, Product } from '@/helpers/pdfs/emou';
 import { PermissionsEnum } from '@/types/permissions';
 import { getBillingIdWhere } from '../helpers';
-import BillingMou, { css } from './BillingMou';
-import { Product } from './types';
 
 const pathParamSchema = z.object({
   idOrAccountCoding: z.string(),
 });
 
-const apiHandler = createApiHandler({
-  permissions: [PermissionsEnum.DownloadBillingMou],
-  validations: { pathParams: pathParamSchema },
+const queryParamSchema = z.object({
+  licencePlate: z.string().optional(),
 });
 
-const weasyClient = new WeasyPrint();
+const apiHandler = createApiHandler({
+  permissions: [PermissionsEnum.DownloadBillingMou],
+  validations: { pathParams: pathParamSchema, queryParams: queryParamSchema },
+});
 
-export const GET = apiHandler(async ({ pathParams, session }) => {
+export const GET = apiHandler(async ({ pathParams, queryParams, session }) => {
   const { idOrAccountCoding } = pathParams;
+  const { licencePlate } = queryParams;
 
   const billingWhereId = getBillingIdWhere(idOrAccountCoding);
   const billing = await prisma.billing.findFirst({
@@ -38,14 +38,16 @@ export const GET = apiHandler(async ({ pathParams, session }) => {
     return BadRequestResponse('invalid account coding');
   }
 
+  const targetLicencePlate = licencePlate || billing.licencePlate;
+
   let product: Product | null = await prisma.publicCloudProject.findFirst({
-    where: { licencePlate: billing.licencePlate },
+    where: { licencePlate: targetLicencePlate },
   });
 
   // Retrieve the product data from the original create request, if the product has not yet been created.
   if (!product) {
     const req = await prisma.publicCloudRequest.findFirst({
-      where: { licencePlate: billing.licencePlate, type: RequestType.CREATE },
+      where: { licencePlate: targetLicencePlate, type: RequestType.CREATE },
       include: {
         decisionData: true,
       },
@@ -61,9 +63,6 @@ export const GET = apiHandler(async ({ pathParams, session }) => {
     product = req.decisionData;
   }
 
-  const ReactDOMServer = (await import('react-dom/server')).default;
-  const html = ReactDOMServer.renderToStaticMarkup(<BillingMou product={product} billing={billing} />);
-  const buff = await weasyClient.generatePdf({ html, css });
-
+  const buff = await generateEmouPdf(product, billing);
   return PdfResponse(buff);
 });

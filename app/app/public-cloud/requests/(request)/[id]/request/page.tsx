@@ -119,6 +119,7 @@ export default publicCloudProductRequest(({ pathParams, queryParams, session, ro
   }
 
   const isDisabled = true;
+  const canSignEmou = publicSnap.currentRequest._permissions.signMou;
 
   const accordionItems = [
     {
@@ -130,6 +131,7 @@ export default publicCloudProductRequest(({ pathParams, queryParams, session, ro
         disabled: isDisabled,
         mode: 'decision',
       },
+      initialOpen: true,
     },
     {
       LeftIcon: IconLayoutGridAdd,
@@ -158,6 +160,7 @@ export default publicCloudProductRequest(({ pathParams, queryParams, session, ro
       description: '',
       Component: Budget,
       componentArgs: { disabled: isDisabled },
+      initialOpen: true,
     },
     {
       LeftIcon: IconReceipt2,
@@ -223,7 +226,7 @@ export default publicCloudProductRequest(({ pathParams, queryParams, session, ro
                 />
               </div>
             )}
-            {publicSnap.currentRequest._permissions.signMou && (
+            {canSignEmou && (
               <button
                 onClick={async () => {
                   if (!publicSnap.currentRequest) return;

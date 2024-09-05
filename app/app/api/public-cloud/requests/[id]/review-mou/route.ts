@@ -5,7 +5,7 @@ import prisma from '@/core/prisma';
 import { BadRequestResponse, OkResponse, UnauthorizedResponse } from '@/core/responses';
 import { formatFullName } from '@/helpers/user';
 import { publicCloudRequestDetailInclude } from '@/queries/public-cloud-requests';
-import { sendRequestReviewEmails } from '@/services/ches/public-cloud/email-handler';
+import { sendRequestReviewEmails, sendEmouServiceAgreementEmail } from '@/services/ches/public-cloud/email-handler';
 
 const pathParamSchema = z.object({
   id: z.string(),
@@ -51,7 +51,7 @@ export const POST = apiHandler(async ({ pathParams, body, session }) => {
     });
 
     if (request) {
-      await prisma.billing.update({
+      const billing = await prisma.billing.update({
         where: {
           id: request?.decisionData.billingId,
         },
@@ -59,6 +59,11 @@ export const POST = apiHandler(async ({ pathParams, body, session }) => {
           approved: true,
           approvedAt: new Date(),
           approvedById: session.user.id,
+        },
+        include: {
+          expenseAuthority: true,
+          signedBy: true,
+          approvedBy: true,
         },
       });
 
@@ -70,7 +75,13 @@ export const POST = apiHandler(async ({ pathParams, body, session }) => {
         },
       });
 
-      await sendRequestReviewEmails(request, formatFullName(requester));
+      // Keep the billing information up to date.
+      request.decisionData.billing = billing;
+
+      await Promise.all([
+        sendRequestReviewEmails(request, formatFullName(requester)),
+        sendEmouServiceAgreementEmail(request),
+      ]);
     }
   }
 

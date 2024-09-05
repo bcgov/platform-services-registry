@@ -42,6 +42,8 @@ jest.mock('@/services/ches/private-cloud/email-handler', () => ({
   sendDeleteRequestEmails: jest.fn(async () => [200]),
   sendDeleteRequestApprovalEmails: jest.fn(async () => [200]),
   sendProvisionedEmails: jest.fn(async () => [200]),
+  sendRequestReviewEmails: jest.fn(async () => [200]),
+  sendEmouServiceAgreementEmail: jest.fn(async () => [200]),
 }));
 
 jest.mock('@/services/keycloak/app-realm', () => ({
@@ -53,6 +55,10 @@ jest.mock('@/services/keycloak/app-realm', () => ({
 
 jest.mock('@/utils/jwt', () => ({
   verifyKeycloakJwtTokenSafe: jest.fn(async () => ({ service_account_type: 'user', 'kc-userid': 'xxxxxxxxxxxx' })),
+}));
+
+jest.mock('@/helpers/pdfs/emou/index', () => ({
+  generateEmouPdf: jest.fn(async () => Buffer.alloc(0)),
 }));
 
 [

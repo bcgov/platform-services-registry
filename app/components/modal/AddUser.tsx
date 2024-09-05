@@ -26,6 +26,8 @@ export default function AddUserModal({ open, setOpen, setUserPrincipalName, setU
     firstName: '',
     lastName: '',
     ministry: '',
+    officeLocation: '',
+    jobTitle: '',
   });
 
   const [confirm, setConfirm] = useState(false);
