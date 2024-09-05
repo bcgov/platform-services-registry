@@ -65,7 +65,7 @@ export async function listUsersByEmail(email: string) {
   const orderby = '$orderby=userPrincipalName';
   const count = '$count=true';
   const top = '$top=25';
-  const query = [filter, orderby, count, top].join('&');
+  const query = [filter, userSelect, orderby, count, top].join('&');
 
   const url = `${M365_URL}/v1.0/users?${query}`;
   const res = await sendRequest(url);
