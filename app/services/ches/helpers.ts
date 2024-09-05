@@ -19,6 +19,12 @@ interface Email {
   encoding?: 'base64' | 'binary' | 'hex' | 'utf-8';
   priority?: 'normal' | 'low' | 'high';
   tag?: string;
+  attachments?: {
+    content: string | Buffer;
+    filename: string;
+    contentType?: string;
+    encoding?: 'base64' | 'binary' | 'hex';
+  }[];
 }
 
 interface TokenData {
@@ -118,11 +124,12 @@ const sendEmail = async (email: Email): Promise<void> => {
         encoding: email.encoding || 'utf-8',
         priority: email.priority || 'normal',
         tag: email.tag,
+        attachments: email.attachments,
       }),
     });
 
     if (!response.ok) {
-      logger.error('Error sending email:', response.statusText);
+      logger.error('Error sending email:', await response.json());
       return;
     }
 

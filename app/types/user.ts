@@ -8,6 +8,7 @@ export interface MsUser {
   givenName: string;
   surname: string;
   jobTitle: string;
+  officeLocation: string;
 }
 
 export interface AppUser {
@@ -20,6 +21,8 @@ export interface AppUser {
   firstName: string;
   lastName: string;
   ministry: string;
+  jobTitle: string;
+  officeLocation: string;
 }
 
 export interface AppUserWithRoles extends AppUser {

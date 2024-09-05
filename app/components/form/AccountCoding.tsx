@@ -84,7 +84,9 @@ export default function AccountCoding({
               disabled={disabled}
               className={{ label: 'text-sm ' }}
             >
-              I have received approval from my Expense Authority for the expenses associated with this project.
+              Our records show that your team already has a signed MoU with OCIO for {values.provider} use. This new
+              product will be added to the existing MoU. A copy of the signed MoU for this product will be emailed to
+              the Ministry Expense Authority.
             </FormCheckbox>
             <FormError field="isEaApproval" className="mt-1" />
           </Alert>
@@ -96,6 +98,14 @@ export default function AccountCoding({
           </Alert>
         );
       }
+    } else if (values.accountCoding?.length === 24) {
+      billingAlert = (
+        <Alert variant="light" color="blue" title="New Billing" icon={<IconInfoCircle />}>
+          No eMOU exists for this account coding. We will initiate the process by sending an email to the EA for their
+          signature. After the eMOU is signed, it will be reviewed and approved, which typically takes up to 2 business
+          days.
+        </Alert>
+      );
     }
   }
 

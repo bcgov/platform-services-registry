@@ -1,6 +1,5 @@
 import { Heading, Text, Link } from '@react-email/components';
 import * as React from 'react';
-import { BASE_URL } from '@/config';
 import Closing from '@/emails/_components/Closing';
 import Layout from '@/emails/_components/layout/Layout';
 import ProductDetails from '@/emails/_components/ProductDetails';
@@ -10,7 +9,7 @@ interface Props {
   request: PublicCloudRequestDetail;
 }
 
-const ExpenseAuthorityMouTemplate = ({ request }: Props) => {
+export default function EmouServiceAgreement({ request }: Props) {
   if (!request) return <></>;
 
   const { id, decisionData } = request;
@@ -32,15 +31,12 @@ const ExpenseAuthorityMouTemplate = ({ request }: Props) => {
   return (
     <Layout>
       <div className="pb-6 mt-4 mb-4 border-solid border-0 border-b-1 border-slate-300">
-        <Heading className="text-lg">Expense Authority eMOU request</Heading>
-        <Text>Hi {expenseAuthority?.firstName},</Text>
+        <Heading className="text-lg">eMOU Service Agreement</Heading>
+        <Text>Hi,</Text>
         <Text className="">
-          You have an <span className="font-bold">Electronic Memorandum of Understanding (eMOU)</span> signing request
+          An <span className="font-bold">Electronic Memorandum of Understanding (eMOU)</span> is available for download
           for the product <span className="font-bold">{name}</span> on the Public Cloud.
         </Text>
-        <Link href={`${BASE_URL}/public-cloud/requests/${id}/request`}>
-          Please click this link to access the request page.
-        </Link>
       </div>
       <div className="pb-6 mt-4 mb-4 border-solid border-0 border-b-1 border-slate-300">
         <ProductDetails
@@ -63,6 +59,4 @@ const ExpenseAuthorityMouTemplate = ({ request }: Props) => {
       </div>
     </Layout>
   );
-};
-
-export default ExpenseAuthorityMouTemplate;
+}
