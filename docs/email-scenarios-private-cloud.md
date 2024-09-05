@@ -83,6 +83,7 @@ flowchart LR
     B --> C{Admin decision on Edit Resource Quota request}
     C -->|Request approved| D(PrivateCloudResourceRequestApproval)
     C -->|Request rejected| E(PrivateCloudResourceRequestRejection)
+    D -->|Changes provisioned| F(PrivateCloudResourceRequestCompleted)
 ```
 
 #### Scenario 3. Edit Request: No Resource Quota Increase
@@ -142,6 +143,7 @@ flowchart LR
     B --> C{Admin decision on Mixed Edit Request}
     C -->|Request approved| D(PrivateCloudResourceRequestApproval)
     C -->|Request rejected| E(PrivateCloudResourceRequestRejection)
+    D -->|Changes provisioned| F(PrivateCloudResourceRequestCompleted)
 ```
 
 #### Scenario 5. Delete request is submitted
