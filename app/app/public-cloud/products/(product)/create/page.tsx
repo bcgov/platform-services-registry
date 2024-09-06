@@ -93,7 +93,7 @@ export default publicCloudProductNew(({ pathParams, queryParams, session }) => {
         )
         .refine(
           async (formData) => {
-            const hasBilling = await existBilling(formData.accountCoding);
+            const hasBilling = await existBilling(formData.accountCoding, formData.provider);
             if (!hasBilling) return true;
             return formData.isEaApproval;
           },

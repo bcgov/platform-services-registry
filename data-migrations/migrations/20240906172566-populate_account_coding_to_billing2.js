@@ -1,10 +1,19 @@
 export const up = async (db, client) => {
+  await db.collection('Billing').deleteMany({});
+
   const products = await db
     .collection('PublicCloudProject')
     .find(
-      { billingId: { $exists: false } },
+      {},
       {
-        projection: { accountCoding: 1, expenseAuthorityId: 1, licencePlate: 1, createdAt: 1, updatedAt: 1 },
+        projection: {
+          provider: 1,
+          accountCoding: 1,
+          expenseAuthorityId: 1,
+          licencePlate: 1,
+          createdAt: 1,
+          updatedAt: 1,
+        },
         sort: { createdAt: 1 },
       },
     )
@@ -14,11 +23,14 @@ export const up = async (db, client) => {
     const product = products[x];
     let billingId = null;
 
-    const billingDoc = await db.collection('Billing').findOne({ accountCoding: { $eq: product.accountCoding } });
+    const code = `${product.accountCoding}_${product.provider}`;
+
+    const billingDoc = await db.collection('Billing').findOne({ code: { $eq: code } });
     if (billingDoc) {
       billingId = billingDoc._id;
     } else {
       const billingData = {
+        code,
         accountCoding: product.accountCoding,
         expenseAuthorityId: product.expenseAuthorityId,
         licencePlate: product.licencePlate,

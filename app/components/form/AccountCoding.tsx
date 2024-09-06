@@ -49,7 +49,7 @@ export default function AccountCoding({
     queryFn: () => {
       const code = values.accountCoding;
       if (code.length < 24) return null;
-      return getBilling(code);
+      return getBilling(code, values.provider);
     },
     enabled: !disabled,
   });

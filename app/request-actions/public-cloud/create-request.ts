@@ -18,6 +18,8 @@ export default async function createRequest(formData: PublicCloudCreateRequestBo
     formData.expenseAuthority?.email,
   ]);
 
+  const billingCode = `${formData.accountCoding}_${formData.provider}`;
+
   const createRequestedProject = {
     name: formData.name,
     budget: formData.budget,
@@ -30,9 +32,10 @@ export default async function createRequest(formData: PublicCloudCreateRequestBo
     billing: {
       connectOrCreate: {
         where: {
-          accountCoding: formData.accountCoding,
+          code: billingCode,
         },
         create: {
+          code: billingCode,
           accountCoding: formData.accountCoding,
           expenseAuthority: {
             connectOrCreate: {

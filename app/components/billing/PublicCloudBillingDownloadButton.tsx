@@ -16,7 +16,7 @@ export default function BillingDownloadButton({ product }: { product: Product })
       className="mt-2"
       onClick={async () => {
         setLoading(true);
-        await downloadBilling(product.billing.accountCoding, product.licencePlate);
+        await downloadBilling(product.billing.accountCoding, product.provider, product.licencePlate);
         setLoading(false);
       }}
     >
