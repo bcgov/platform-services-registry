@@ -7,6 +7,7 @@ on:
     paths:
     - app/**
     - helm/**
+    - localdev/nats-provision/**
     - data-migrations/**
     - .github/workflows/deploy-dev.yml
 
