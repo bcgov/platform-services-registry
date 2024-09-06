@@ -65,7 +65,7 @@ export default function Landing() {
           </li>
           <li className="mb-2 text-gray-700">
             Public Cloud Platform Administrators <MailLink to="Cloud.Pathfinder@gov.bc.ca" /> to book an{' '}
-            <ExternalLink href="https://digital.gov.bc.ca/cloud/servic12es/public/onboard/">
+            <ExternalLink href="https://digital.gov.bc.ca/cloud/services/public/onboard/">
               onboarding session for the (B.C. Government Public Cloud Landing Zone)
             </ExternalLink>
           </li>
