@@ -53,7 +53,7 @@ function ReviewPublicCloudProductModal({
     error: billingError,
   } = useQuery({
     queryKey: ['billing', billingId],
-    queryFn: () => getBilling(billingId),
+    queryFn: () => getBilling(billingId, ''),
     enabled: !!billingId,
   });
 

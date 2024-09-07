@@ -15,6 +15,7 @@ const publicRequestData = {
   billingId: 'billing-id',
   billing: {
     id: 'mou-id',
+    code: '',
     accountCoding: '12345',
     licencePlate: 'XYZ789',
     signed: true,
@@ -186,6 +187,7 @@ export const samplePublicRequest = {
     billingId: 'billing-id',
     billing: {
       id: 'mou-id',
+      code: '',
       accountCoding: '12345',
       licencePlate: 'XYZ789',
       signed: true,
@@ -287,6 +289,7 @@ export const samplePublicProduct: PublicCloudRequestedProjectWithContacts = {
   billingId: 'billing-id',
   billing: {
     id: 'mou-id',
+    code: '',
     accountCoding: '12345',
     licencePlate: 'XYZ789',
     signed: true,

@@ -200,7 +200,8 @@ model PublicCloudRequest {
 
 model Billing {
   id                           String                        @id @default(auto()) @map("_id") @db.ObjectId
-  accountCoding                String                        @unique
+  code                         String                        @unique
+  accountCoding                String
   licencePlate                 String
   signed                       Boolean                       @default(false)
   signedAt                     DateTime?
