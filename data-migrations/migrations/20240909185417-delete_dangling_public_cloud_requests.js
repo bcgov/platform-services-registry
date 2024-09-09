@@ -2,7 +2,7 @@ export const up = async (db, client) => {
   const publicRequests = await db
     .collection('PublicCloudRequest')
     .find(
-      {},
+      { type: { $ne: 'CREATE' } },
       {
         projection: { licencePlate: 1 },
         sort: { createdAt: 1 },
