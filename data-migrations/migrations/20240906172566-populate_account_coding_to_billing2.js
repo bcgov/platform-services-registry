@@ -21,8 +21,9 @@ export const up = async (db, client) => {
 
   for (let x = 0; x < products.length; x++) {
     const product = products[x];
-    let billingId = null;
+    if (!product.accountCoding) continue;
 
+    let billingId = null;
     const code = `${product.accountCoding}_${product.provider}`;
 
     const billingDoc = await db.collection('Billing').findOne({ code: { $eq: code } });
