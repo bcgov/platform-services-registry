@@ -1,4 +1,5 @@
 import { $Enums, DecisionStatus, Prisma, RequestType, EventType } from '@prisma/client';
+import _toNumber from 'lodash-es/toNumber';
 import { Session } from 'next-auth';
 import prisma from '@/core/prisma';
 import { comparePrivateProductData } from '@/helpers/product-change';
@@ -8,7 +9,67 @@ import { getLastClosedPrivateCloudRequest, privateCloudRequestDetailInclude } fr
 import { upsertUsers } from '@/services/db/user';
 import { PrivateCloudRequestDetail } from '@/types/private-cloud';
 import { PrivateCloudEditRequestBody } from '@/validation-schemas/private-cloud';
+const tempPodMetric = [
+  {
+    name: 'mautic-40-j496b',
+    usage: { cpu: '0m', memory: '261612Ki' },
+    limits: { cpu: '1000m', memory: '2097152Ki' },
+    requests: { cpu: '50m', memory: '1048576Ki' },
+  },
+  {
+    name: 'mautic-db-25-w5wpd',
+    usage: { cpu: '3m', memory: '1642488Ki' },
+    limits: { cpu: '1000m', memory: '2097152Ki' },
+    requests: { cpu: '1000m', memory: '2097152Ki' },
+  },
+  {
+    name: 'mautic-db-backup-3-ntbf6',
+    usage: { cpu: '0m', memory: '0' },
+    limits: { cpu: '0m', memory: '0' },
+    requests: { cpu: '0m', memory: '0' },
+  },
+  {
+    name: 'mautic-subscription-api-prod-9-65w4g',
+    usage: { cpu: '0m', memory: '23504Ki' },
+    limits: { cpu: '1000m', memory: '81920Ki' },
+    requests: { cpu: '10m', memory: '40960Ki' },
+  },
+  {
+    name: 'mautic-subscription-api-prod-9-fp2nx',
+    usage: { cpu: '0m', memory: '11624Ki' },
+    limits: { cpu: '1000m', memory: '81920Ki' },
+    requests: { cpu: '10m', memory: '40960Ki' },
+  },
+  {
+    name: 'mautic-subscription-api-prod-9-q7rcl',
+    usage: { cpu: '0m', memory: '15160Ki' },
+    limits: { cpu: '1000m', memory: '81920Ki' },
+    requests: { cpu: '10m', memory: '40960Ki' },
+  },
+  {
+    name: 'mautic-subscription-prod-39-d9hx5',
+    usage: { cpu: '0m', memory: '19256Ki' },
+    limits: { cpu: '50m', memory: '61440Ki' },
+    requests: { cpu: '10m', memory: '30720Ki' },
+  },
+];
 
+const getNum = (str: string) => _toNumber(str.match(/\d+/));
+
+const totalUsageMemory = tempPodMetric.reduce((sum: number, pod) => sum + getNum(pod.usage.memory), 0);
+const totalLimitMemory = tempPodMetric.reduce((sum: number, pod) => sum + getNum(pod.limits.memory), 0);
+const totalUsageCPU = tempPodMetric.reduce((sum: number, pod) => sum + getNum(pod.usage.cpu), 0);
+const totalLimitCPU = tempPodMetric.reduce((sum: number, pod) => sum + getNum(pod.limits.cpu), 0);
+
+const usageInPercentage = () => {
+  // Current Usage in Percentage=( Total Quota Limit/Current Usage)×100
+  const currentUsage = (totalLimitMemory / totalUsageMemory) * 100;
+  // if Current usage exceeds 85% of the total limit - approve automatically
+
+  // Utilization Rate=( Requested Resources Actual Usage )×100
+  const utilizationRate = totalUsageMemory * 100;
+  // Utilization rate is at least 35% - approve automatically
+};
 export default async function editRequest(
   licencePlate: string,
   formData: PrivateCloudEditRequestBody,
