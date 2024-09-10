@@ -26,12 +26,6 @@ jest.mock('@/services/mautic', () => ({
   subscribeUsersToMautic: jest.fn(async () => [200, 200, 200]),
 }));
 
-jest.mock('@/services/nats', () => ({
-  ...jest.requireActual('@/services/nats'),
-  // sendPrivateCloudNatsMessage: jest.fn(async () => [200, 200, 200]),
-  sendPublicCloudNatsMessage: jest.fn(async () => [200, 200, 200]),
-}));
-
 jest.mock('@/services/nats/core', () => ({
   sendNatsMessage: jest.fn(),
 }));
