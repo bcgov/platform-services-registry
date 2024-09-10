@@ -1,17 +1,11 @@
 import { expect } from '@jest/globals';
-import { DecisionStatus } from '@prisma/client';
 import _kebabCase from 'lodash-es/kebabCase';
 import { PRIVATE_NATS_URL, PUBLIC_NATS_URL } from '@/config';
-import { createSamplePrivateCloudProductData } from '@/helpers/mock-resources';
-import { mockSessionByEmail, mockSessionByRole } from '@/services/api-test/core';
-import { provisionPrivateCloudProject } from '@/services/api-test/private-cloud';
 import {
   createPrivateCloudProduct,
   updatePrivateCloudProduct,
   deletePrivateCloudProduct,
 } from '@/services/api-test/private-cloud/helpers';
-import { createPrivateCloudProject } from '@/services/api-test/private-cloud/products';
-import { makePrivateCloudRequestDecision } from '@/services/api-test/private-cloud/requests';
 import { sendNatsMessage } from '@/services/nats/core';
 import {
   DefaultCpuOptions,
