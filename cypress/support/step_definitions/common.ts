@@ -16,8 +16,19 @@ Given('User visits main page', () => {
   cy.visit('/login', { failOnStatusCode: false });
 });
 
-Given('User visits local keycloak', () => {
+Given('User visits local keycloak and finds james.smith', () => {
   cy.visit('http://localhost:8080');
+  cy.contains('a', 'Administration Console').click();
+  cy.get('input[id="username"]').type('admin');
+  cy.get('input[id="password"]').type('password');
+  cy.get('input[type="submit"]').click();
+  cy.get('button[id="nav-toggle"]').click();
+  cy.get('button[data-testid="realmSelectorToggle"]').click();
+  cy.wait(3);
+  cy.contains('div', 'platform-services').click();
+  cy.get('a[id="nav-item-users"]').click();
+  cy.wait(3);
+  cy.contains('td', 'james.smith@gov.bc.ca').should('be.visible');
 });
 
 When(/^User clicks link "(.*)"$/, (buttonText: string) => {
