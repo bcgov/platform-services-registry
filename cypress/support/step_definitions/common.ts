@@ -24,11 +24,11 @@ Given('User visits local keycloak and finds james.smith', () => {
   cy.get('input[type="submit"]').click();
   cy.get('button[id="nav-toggle"]').click();
   cy.get('button[data-testid="realmSelectorToggle"]').click();
-  cy.wait(10);
-  cy.contains('div', 'platform-services').should('be.visible');
-  // cy.get('a[id="nav-item-users"]').click();
-  // cy.wait(3);
-  // cy.contains('td', 'james.smith@gov.bc.ca').should('be.visible');
+  cy.wait(15);
+  cy.contains('div', 'platform-services').should('be.visible').click();
+  cy.get('a[id="nav-item-users"]').click();
+  cy.wait(3);
+  cy.contains('td', 'james.smith@gov.bc.ca').should('be.visible');
 });
 
 When(/^User clicks link "(.*)"$/, (buttonText: string) => {
