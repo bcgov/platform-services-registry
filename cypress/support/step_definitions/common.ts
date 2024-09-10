@@ -16,6 +16,10 @@ Given('User visits main page', () => {
   cy.visit('/login', { failOnStatusCode: false });
 });
 
+Given('User visits local keycloak', () => {
+  cy.visit('http://localhost:8080');
+});
+
 When(/^User clicks link "(.*)"$/, (buttonText: string) => {
   cy.contains('a, span', buttonText).first().scrollIntoView().click();
 });
