@@ -1,4 +1,4 @@
-import { $Enums } from '@prisma/client';
+import { $Enums, DecisionStatus } from '@prisma/client';
 import { Button, Heading, Text, Link } from '@react-email/components';
 import * as React from 'react';
 import Closing from '@/emails/_components/Closing';
@@ -16,36 +16,39 @@ interface EmailProp {
   request: PrivateCloudRequestDetail;
 }
 
-const RequestApprovalTemplate = ({ request }: EmailProp) => {
-  if (!request || !request.project || !request.decisionData) return <></>;
-  const current = request.project;
-  const requested = request.decisionData;
-  const changed = comparePrivateCloudProjects(current, requested);
-  const isQuotaUpgraded = isQuotaUpgrade(requested, current);
-  const requestComment = request.requestComment ?? undefined;
+const CreateRequestApprovalTemplate = ({ request }: EmailProp) => {
+  let current: any;
+  let changed: any;
+  let hasQuotaChanged = false;
+  let requested: any;
+  let isQuotaUpgraded = false;
+  let requestComment: any;
 
-  const hasQuotaChanged =
-    changed.productionQuota || changed.testQuota || changed.developmentQuota || changed.toolsQuota;
+  if (request.type == $Enums.RequestType.EDIT || request.type == $Enums.RequestType.DELETE) {
+    if (!request || !request.project || !request.decisionData) return <></>;
+    current = request.project;
+    requested = request.decisionData;
+    isQuotaUpgraded = isQuotaUpgrade(requested, current);
+    requestComment = request.requestComment ?? undefined;
+    changed = comparePrivateCloudProjects(current, requested);
+    hasQuotaChanged = changed.productionQuota || changed.testQuota || changed.developmentQuota || changed.toolsQuota;
+  }
 
   return (
     <Layout>
       <div className="pb-6 mt-4 mb-4 border-solid border-0 border-b-1 border-slate-300">
-        <Heading className="text-lg text-black">Success! Your request was approved!</Heading>
+        <Heading className="text-lg text-black">
+          Success! Your {request.type.toLowerCase()} request was approved!
+        </Heading>
         <Text>Hi Product Team, </Text>
         <Text className="">
-          We are pleased to inform you that your
-          {(request.type === $Enums.RequestType.CREATE || request.type === $Enums.RequestType.DELETE) &&
-            `request for your product ${!hasQuotaChanged ? request.decisionData.name : ' '}`}
-          {hasQuotaChanged && 'request for a resource quota'} has been approved on the Private Cloud OpenShift platform.
-          You can now log in to{' '}
+          We are pleased to inform you that your request for the product {request.decisionData.name} has been approved
+          on the Private Cloud OpenShift platform. Please allow 3-5 minutes for the request to be processed. If it takes
+          longer, don&apos;t hesitate to reach out to us. You can now log in to{' '}
           <Link className="mt-0 h-4" href={`https://console.apps.${request.decisionData.cluster}.devops.gov.bc.ca/`}>
             OpenShift cluster console{' '}
           </Link>{' '}
-          {hasQuotaChanged ? 'and you will see your new resource quota values.' : 'to manage your product.'}
-        </Text>
-        <Text>
-          Please allow 3-5 minutes for the request to be processed. If it takes longer, don&apos;t hesitate to reach out
-          to us.
+          to manage your product.
         </Text>
         <Text className="">
           If you have any more questions or need assistance, please reach out to the Platform Services team in the
@@ -158,4 +161,4 @@ const RequestApprovalTemplate = ({ request }: EmailProp) => {
   );
 };
 
-export default RequestApprovalTemplate;
+export default CreateRequestApprovalTemplate;
