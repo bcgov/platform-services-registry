@@ -18,6 +18,9 @@ import {
 
 describe('Private Cloud NATs', () => {
   it('should send NATs message when creating a new product', async () => {
+    // @ts-ignore
+    sendNatsMessage.mockClear();
+
     const decisionData = await createPrivateCloudProduct();
 
     expect(sendNatsMessage).toHaveBeenCalled();

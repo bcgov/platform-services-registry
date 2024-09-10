@@ -75,16 +75,16 @@ export async function listPublicCloudProductRequests(licencePlate: string, activ
   return result;
 }
 
-export async function signPublicCloudMou(id: string, data: { taskId: string; confirmed: boolean }) {
+export async function signPublicCloudMou(licencePlate: string, data: { taskId: string; confirmed: boolean }) {
   const result = await productCollectionRoute.post(_signPublicCloudMou, '/{{licencePlate}}/sign-mou', data, {
-    pathParams: { id },
+    pathParams: { licencePlate },
   });
   return result;
 }
 
-export async function reviewPublicCloudMou(id: string, data: { taskId: string; decision: string }) {
+export async function reviewPublicCloudMou(licencePlate: string, data: { taskId: string; decision: string }) {
   const result = await productCollectionRoute.post(_reviewPublicCloudMou, '/{{licencePlate}}/review-mou', data, {
-    pathParams: { id },
+    pathParams: { licencePlate },
   });
   return result;
 }

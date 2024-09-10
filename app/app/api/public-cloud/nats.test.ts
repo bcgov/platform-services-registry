@@ -10,6 +10,8 @@ import { sendNatsMessage } from '@/services/nats/core';
 
 describe('Public Cloud NATs', () => {
   it('should send NATs message when creating a new product', async () => {
+    // @ts-ignore
+    sendNatsMessage.mockClear();
     const decisionData = await createPublicCloudProduct();
 
     expect(sendNatsMessage).toHaveBeenCalled();
