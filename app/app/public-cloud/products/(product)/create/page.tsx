@@ -195,14 +195,14 @@ export default publicCloudProductNew(({ pathParams, queryParams, session }) => {
             </button>
           </div>
         </form>
+        <CreatePublicCloud
+          open={openCreate}
+          setOpen={setOpenCreate}
+          handleSubmit={methods.handleSubmit(handleSubmit)}
+          isLoading={isCreatingProject}
+        />
       </FormProvider>
 
-      <CreatePublicCloud
-        open={openCreate}
-        setOpen={setOpenCreate}
-        handleSubmit={methods.handleSubmit(handleSubmit)}
-        isLoading={isCreatingProject}
-      />
       <ReturnModal
         isPublicCreate
         open={openReturn}

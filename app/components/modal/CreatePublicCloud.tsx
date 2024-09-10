@@ -1,7 +1,10 @@
 import { Dialog, Transition } from '@headlessui/react';
+import { useQuery, useMutation } from '@tanstack/react-query';
 import { Fragment, useRef, useState } from 'react';
+import { useFormContext } from 'react-hook-form';
 import ExternalLink from '@/components/generic/button/ExternalLink';
 import FormCheckbox from '@/components/generic/checkbox/FormCheckbox';
+import { getBilling } from '@/services/backend/billing';
 
 export default function CreatePublicCloud({
   open,
@@ -14,8 +17,49 @@ export default function CreatePublicCloud({
   handleSubmit: any;
   isLoading: boolean;
 }) {
+  const [confirmSigned, setConfirmSigned] = useState(false);
   const [confirmLiable, setConfirmLiable] = useState(false);
   const cancelButtonRef = useRef(null);
+  const { getValues } = useFormContext();
+
+  const values = getValues();
+
+  const {
+    data: billing,
+    isLoading: isBillingLoading,
+    isError: isBillingError,
+    error: billingError,
+  } = useQuery({
+    queryKey: ['billing', values.accountCoding],
+    queryFn: () => {
+      const code = values.accountCoding;
+      if (code.length < 24) return null;
+      return getBilling(values.accountCoding, values.provider);
+    },
+  });
+
+  if (isBillingLoading) return null;
+
+  let eMouCheckboxContent = null;
+  if (billing) {
+    if (billing.approved) {
+      eMouCheckboxContent = (
+        <p className="text-sm text-gray-900">
+          Our records show that your team already has a signed MoU with OCIO for {values.provider} use. This new product
+          will be added to the existing MoU. A copy of the signed MoU for this product will be emailed to the Ministry
+          Expense Authority.
+        </p>
+      );
+    }
+  } else {
+    eMouCheckboxContent = (
+      <p className="text-sm text-gray-900">
+        No eMOU exists for this account coding. We will initiate the process by sending an email to the EA for their
+        signature. After the eMOU is signed, it will be reviewed and approved, which typically takes up to 2 business
+        days.
+      </p>
+    );
+  }
 
   return (
     <Transition.Root show={open} as={Fragment}>
@@ -89,6 +133,15 @@ export default function CreatePublicCloud({
                       </ol>
                     </div>
                   </div>
+                  <div className="flex mt-8 pt-4">
+                    <FormCheckbox
+                      id="consent1"
+                      checked={confirmSigned}
+                      onChange={() => setConfirmSigned(!confirmSigned)}
+                    >
+                      {eMouCheckboxContent}
+                    </FormCheckbox>
+                  </div>
                   <div className="flex pt-2 pb-5">
                     <FormCheckbox
                       id="consent2"
@@ -130,9 +183,9 @@ export default function CreatePublicCloud({
                     <button
                       type="button"
                       onClick={handleSubmit}
-                      disabled={!confirmLiable}
+                      disabled={!(confirmLiable && confirmSigned)}
                       className={`inline-flex justify-center ${
-                        confirmLiable ? 'bg-bcorange' : 'bg-bcorange/50'
+                        confirmLiable && confirmSigned ? 'bg-bcorange' : 'bg-bcorange/50'
                       } rounded-md  px-4 py-2.5 text-bcblue text-sm tracking-[.2em] shadow-sm brightness-110 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 col-start-2`}
                     >
                       SUBMIT REQUEST
