@@ -1,4 +1,3 @@
-import { $Enums, DecisionStatus } from '@prisma/client';
 import { Button, Heading, Text, Link } from '@react-email/components';
 import * as React from 'react';
 import Closing from '@/emails/_components/Closing';
@@ -9,7 +8,6 @@ import QuotaChanges from '@/emails/_components/Edit/QuotaChanges';
 import { comparePrivateCloudProjects } from '@/emails/_components/Edit/utils/compare-projects';
 import Layout from '@/emails/_components/layout/Layout';
 import ProductDetails from '@/emails/_components/ProductDetails';
-import { isQuotaUpgrade } from '@/helpers/quota-change';
 import { PrivateCloudRequestDetail } from '@/types/private-cloud';
 
 interface EmailProp {
@@ -21,7 +19,6 @@ const EditRequestApprovalTemplate = ({ request }: EmailProp) => {
   const current = request.project;
   const requested = request.decisionData;
   const changed = comparePrivateCloudProjects(current, requested);
-  const isQuotaUpgraded = isQuotaUpgrade(requested, current);
   const requestComment = request.requestComment ?? undefined;
   const hasQuotaChanged =
     changed.productionQuota || changed.testQuota || changed.developmentQuota || changed.toolsQuota;
@@ -29,9 +26,7 @@ const EditRequestApprovalTemplate = ({ request }: EmailProp) => {
   return (
     <Layout>
       <div className="pb-6 mt-4 mb-4 border-solid border-0 border-b-1 border-slate-300">
-        <Heading className="text-lg text-black">
-          Success! Your {request.type.toLowerCase()} request was approved!
-        </Heading>
+        <Heading className="text-lg text-black">Success! Your edit request was approved!</Heading>
         <Text>Hi Product Team, </Text>
         <Text className="">
           We are pleased to inform you that your request for a resource quota has been approved on the Private Cloud
@@ -64,13 +59,13 @@ const EditRequestApprovalTemplate = ({ request }: EmailProp) => {
           tl2={request.decisionData.secondaryTechnicalLead}
         />
       </div>
-      {!isQuotaUpgraded && requestComment && (
+      {requestComment && (
         <div className="pb-6 mt-4 mb-4 border-solid border-0 border-b-1 border-slate-300">
           <Heading className="text-lg text-black">Comments</Heading>
           <Comment requestComment={requestComment} />
         </div>
       )}
-      {!isQuotaUpgraded && (changed.name || changed.description || changed.ministry || changed.cluster) && (
+      {(changed.name || changed.description || changed.ministry || changed.cluster) && (
         <div className="pb-6 mt-4 mb-4 border-solid border-0 border-b-1 border-slate-300">
           <DescriptionChanges
             nameCurrent={current.name}
@@ -82,19 +77,18 @@ const EditRequestApprovalTemplate = ({ request }: EmailProp) => {
           />
         </div>
       )}
-      {!isQuotaUpgraded &&
-        (changed.projectOwnerId || changed.primaryTechnicalLeadId || changed.secondaryTechnicalLeadId) && (
-          <div className="pb-6 mt-4 mb-4 border-solid border-0 border-b-1 border-slate-300">
-            <ContactChanges
-              poCurrent={current.projectOwner}
-              tl1Current={current.primaryTechnicalLead}
-              tl2Current={current?.secondaryTechnicalLead}
-              poRequested={requested.projectOwner}
-              tl1Requested={requested.primaryTechnicalLead}
-              tl2Requested={requested?.secondaryTechnicalLead}
-            />
-          </div>
-        )}
+      {(changed.projectOwnerId || changed.primaryTechnicalLeadId || changed.secondaryTechnicalLeadId) && (
+        <div className="pb-6 mt-4 mb-4 border-solid border-0 border-b-1 border-slate-300">
+          <ContactChanges
+            poCurrent={current.projectOwner}
+            tl1Current={current.primaryTechnicalLead}
+            tl2Current={current?.secondaryTechnicalLead}
+            poRequested={requested.projectOwner}
+            tl1Requested={requested.primaryTechnicalLead}
+            tl2Requested={requested?.secondaryTechnicalLead}
+          />
+        </div>
+      )}
       {hasQuotaChanged && (
         <div className="pb-6 mt-4 mb-4 border-solid border-0 border-b-1 border-slate-300">
           <h3 className="mb-0 text-black">Resource quota changes</h3>
