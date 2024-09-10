@@ -1,9 +1,11 @@
 import { GET as _listPublicCloudProductRequests } from '@/app/api/public-cloud/products/[licencePlate]/requests/route';
+import { POST as _reviewPublicCloudMou } from '@/app/api/public-cloud/products/[licencePlate]/review-mou/route';
 import {
   GET as _getPublicCloudProject,
   PUT as _editPublicCloudProject,
   DELETE as _deletePublicCloudProject,
 } from '@/app/api/public-cloud/products/[licencePlate]/route';
+import { POST as _signPublicCloudMou } from '@/app/api/public-cloud/products/[licencePlate]/sign-mou/route';
 import { POST as _downloadPublicCloudProjects } from '@/app/api/public-cloud/products/download/route';
 import {
   GET as _listPublicCloudProject,
@@ -70,5 +72,19 @@ export async function listPublicCloudProductRequests(licencePlate: string, activ
     },
   );
 
+  return result;
+}
+
+export async function signPublicCloudMou(id: string, data: { taskId: string; confirmed: boolean }) {
+  const result = await productCollectionRoute.post(_signPublicCloudMou, '/{{licencePlate}}/sign-mou', data, {
+    pathParams: { id },
+  });
+  return result;
+}
+
+export async function reviewPublicCloudMou(id: string, data: { taskId: string; decision: string }) {
+  const result = await productCollectionRoute.post(_reviewPublicCloudMou, '/{{licencePlate}}/review-mou', data, {
+    pathParams: { id },
+  });
   return result;
 }

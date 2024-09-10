@@ -8,7 +8,7 @@ import { publicCloudRequestDetailInclude } from '@/queries/public-cloud-requests
 import { sendRequestReviewEmails, sendEmouServiceAgreementEmail } from '@/services/ches/public-cloud/email-handler';
 
 const pathParamSchema = z.object({
-  id: z.string(),
+  licencePlate: z.string(),
 });
 
 const bodySchema = z.object({
@@ -21,7 +21,7 @@ const apiHandler = createApiHandler({
   validations: { pathParams: pathParamSchema, body: bodySchema },
 });
 export const POST = apiHandler(async ({ pathParams, body, session }) => {
-  const { id } = pathParams;
+  const { licencePlate } = pathParams;
   const { taskId, decision } = body;
 
   await prisma.task.update({
@@ -32,7 +32,7 @@ export const POST = apiHandler(async ({ pathParams, body, session }) => {
       OR: [{ userIds: { has: session.user.id } }, { roles: { hasSome: session.roles } }],
       data: {
         equals: {
-          requestId: id,
+          licencePlate,
         },
       },
     },
@@ -45,8 +45,8 @@ export const POST = apiHandler(async ({ pathParams, body, session }) => {
   });
 
   if (decision === 'APPROVE') {
-    const request = await prisma.publicCloudRequest.findUnique({
-      where: { id },
+    const request = await prisma.publicCloudRequest.findFirst({
+      where: { licencePlate },
       include: publicCloudRequestDetailInclude,
     });
 
