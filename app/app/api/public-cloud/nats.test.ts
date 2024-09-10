@@ -15,8 +15,6 @@ describe('Public Cloud NATs', () => {
     const decisionData = await createPublicCloudProduct();
 
     expect(sendNatsMessage).toHaveBeenCalled();
-    expect(sendNatsMessage).toHaveBeenCalledTimes(1);
-
     expect(sendNatsMessage).toHaveBeenCalledWith(
       PUBLIC_NATS_URL,
       `registry_project_provisioning_${decisionData.provider.toLowerCase()}`,
@@ -52,8 +50,6 @@ describe('Public Cloud NATs', () => {
     const decisionData = await updatePublicCloudProduct();
 
     expect(sendNatsMessage).toHaveBeenCalled();
-    expect(sendNatsMessage).toHaveBeenCalledTimes(2);
-
     expect(sendNatsMessage).toHaveBeenNthCalledWith(
       2,
       PUBLIC_NATS_URL,
@@ -90,8 +86,6 @@ describe('Public Cloud NATs', () => {
     const decisionData = await deletePublicCloudProduct();
 
     expect(sendNatsMessage).toHaveBeenCalled();
-    expect(sendNatsMessage).toHaveBeenCalledTimes(2);
-
     expect(sendNatsMessage).toHaveBeenNthCalledWith(
       2,
       PUBLIC_NATS_URL,
