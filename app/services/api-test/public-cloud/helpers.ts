@@ -7,12 +7,10 @@ import {
   createPublicCloudProject,
   editPublicCloudProject,
   deletePublicCloudProject,
-} from '@/services/api-test/public-cloud/products';
-import {
-  makePublicCloudRequestDecision,
   signPublicCloudMou,
   reviewPublicCloudMou,
-} from '@/services/api-test/public-cloud/requests';
+} from '@/services/api-test/public-cloud/products';
+import { makePublicCloudRequestDecision } from '@/services/api-test/public-cloud/requests';
 
 async function runEmouWorkflows(reqData: any) {
   const decisionData = reqData.decisionData;
