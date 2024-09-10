@@ -14,7 +14,6 @@ export default function CreatePublicCloud({
   handleSubmit: any;
   isLoading: boolean;
 }) {
-  const [confirmSigned, setConfirmSigned] = useState(false);
   const [confirmLiable, setConfirmLiable] = useState(false);
   const cancelButtonRef = useRef(null);
 
@@ -90,27 +89,6 @@ export default function CreatePublicCloud({
                       </ol>
                     </div>
                   </div>
-                  <div className="flex mt-8 pt-4">
-                    <FormCheckbox
-                      id="consent1"
-                      checked={confirmSigned}
-                      onChange={() => setConfirmSigned(!confirmSigned)}
-                    >
-                      <p className="text-sm text-gray-900">
-                        By checking this box, I confirm that the ministry product team has signed a Memorandum of
-                        Understanding (MoU) and have attended an onboarding session with the Public Cloud Accelerator
-                        Service Team. I also confirm that I have read and understood the roles and responsibilities as
-                        described in the
-                        <ExternalLink
-                          href="https://digital.gov.bc.ca/cloud/services/public/onboard/#understand"
-                          className="ml-1"
-                        >
-                          Public Cloud Services Shared Responsibility Model
-                        </ExternalLink>
-                        .
-                      </p>
-                    </FormCheckbox>
-                  </div>
                   <div className="flex pt-2 pb-5">
                     <FormCheckbox
                       id="consent2"
@@ -152,9 +130,9 @@ export default function CreatePublicCloud({
                     <button
                       type="button"
                       onClick={handleSubmit}
-                      disabled={!(confirmLiable && confirmSigned)}
+                      disabled={!confirmLiable}
                       className={`inline-flex justify-center ${
-                        confirmLiable && confirmSigned ? 'bg-bcorange' : 'bg-bcorange/50'
+                        confirmLiable ? 'bg-bcorange' : 'bg-bcorange/50'
                       } rounded-md  px-4 py-2.5 text-bcblue text-sm tracking-[.2em] shadow-sm brightness-110 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 col-start-2`}
                     >
                       SUBMIT REQUEST

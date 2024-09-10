@@ -91,6 +91,7 @@ export default function BillingMou({ product, billing }: { product: Product; bil
   });
 
   const currency = product.provider === Provider.AWS ? 'USD' : 'CAD';
+  const service = product.provider === Provider.AWS ? 'AWS' : 'Microsoft Azure';
 
   return (
     <div>
@@ -137,12 +138,12 @@ export default function BillingMou({ product, billing }: { product: Product; bil
         </p>
         <p className="mb-2">
           &emsp;&emsp;This agreement also enables the Ministry’s Expense Authority approval for all actual consumed
-          usage & any prepayment of reserved AWS services by the Ministry.
+          usage & any prepayment of reserved {service} services by the Ministry.
         </p>
         <p className="mb-2">
           The Ministry is responsible for understanding the cost structure associated with their current and future
-          services consumption in AWS and monitoring their actual consumption to ensure it stays within the planned
-          budget.
+          services consumption in {service} and monitoring their actual consumption to ensure it stays within the
+          planned budget.
         </p>
         <p>
           This agreement will be in effect from the date of signing, until a written notification is provided to the
