@@ -1,3 +1,4 @@
 Feature: Dummy Feature
   Scenario: Let pipeline run without reds while adjusting the tests to GHA environment
     Given User visits local keycloak and finds james.smith
+    And User logs in with username "james.smith@gov.bc.ca" and password "james.smith@gov.bc.ca"
