@@ -46,6 +46,10 @@ export const PRIVATE_NATS_HOST = process.env.PRIVATE_NATS_HOST || 'localhost';
 export const PRIVATE_NATS_PORT = process.env.PRIVATE_NATS_PORT || '4222';
 export const PUBLIC_NATS_HOST = process.env.PUBLIC_NATS_HOST || 'localhost';
 export const PUBLIC_NATS_PORT = process.env.PUBLIC_NATS_PORT || '4222';
+
+export const PRIVATE_NATS_URL = `${PRIVATE_NATS_HOST}:${PRIVATE_NATS_PORT}`;
+export const PUBLIC_NATS_URL = `${PUBLIC_NATS_HOST}:${PUBLIC_NATS_PORT}`;
+
 export const MS_GRAPH_API_AUTHORITY = process.env.MS_GRAPH_API_AUTHORITY || '';
 export const MS_GRAPH_API_CLIENT_ID = process.env.MS_GRAPH_API_CLIENT_ID || '';
 export const MS_GRAPH_API_CLIENT_SECRET = process.env.MS_GRAPH_API_CLIENT_SECRET || '';

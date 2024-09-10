@@ -28,9 +28,12 @@ jest.mock('@/services/mautic', () => ({
 
 jest.mock('@/services/nats', () => ({
   ...jest.requireActual('@/services/nats'),
-  sendPrivateCloudNatsMessage: jest.fn(async () => [200, 200, 200]),
+  // sendPrivateCloudNatsMessage: jest.fn(async () => [200, 200, 200]),
   sendPublicCloudNatsMessage: jest.fn(async () => [200, 200, 200]),
-  sendNatsMessage: jest.fn(async () => [200, 200, 200]),
+}));
+
+jest.mock('@/services/nats/core', () => ({
+  sendNatsMessage: jest.fn(),
 }));
 
 jest.mock('@/services/ches/private-cloud/email-handler', () => ({
@@ -79,6 +82,7 @@ jest.mock('@/helpers/pdfs/emou/index', () => ({
   'reduce',
   'set',
   'uniq',
+  'kebabCase',
   'trim',
 ].forEach((fnName) => jest.mock(`lodash-es/${fnName}`, () => jest.fn(_[fnName])));
 
