@@ -1,3 +1,4 @@
+import { Provider } from '@prisma/client';
 import { render } from '@react-email/render';
 import { AUTH_RESOURCE } from '@/config';
 import { logger } from '@/core/logging';
@@ -34,7 +35,7 @@ export async function sendEmouServiceAgreementEmail(request: PublicCloudRequestD
       {
         content: emouPdfBuff.toString('base64'),
         encoding: 'base64',
-        filename: `eMOU_service_agreement_${request.decisionData.licencePlate}.pdf`,
+        filename: `OCIO and ${request.decisionData.provider === Provider.AWS ? 'AWS' : 'Microsoft Azure'} MOU.pdf`,
         contentType: 'application/pdf',
       },
     ],
