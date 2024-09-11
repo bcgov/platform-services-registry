@@ -16,10 +16,10 @@ const ProvisionedTemplate = ({ product }: EmailProp) => {
   return (
     <Layout>
       <div className="pb-6 mt-4 mb-4 border-solid border-0 border-b-1 border-slate-300">
-        <Heading className="text-lg text-black">Success! Your provisioning request was approved and completed!</Heading>
+        <Heading className="text-lg text-black">Success! Your provisioning request is complete!</Heading>
         <Text>Hi Product Team, </Text>
         <Text className="">
-          Your request for your product on the Private Cloud Openshift platform is complete.{' '}
+          The request for your product on the Private Cloud Openshift platform is complete.{' '}
           <Link className="mt-0 h-4" href={`https://console.apps.${product.cluster}.devops.gov.bc.ca/`}>
             Log in to the cluster console
           </Link>{' '}
