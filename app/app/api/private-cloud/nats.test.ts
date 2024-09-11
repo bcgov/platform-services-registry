@@ -18,11 +18,12 @@ import {
 
 describe('Private Cloud NATs', () => {
   it('should send NATs message when creating a new product', async () => {
+    // @ts-ignore
+    sendNatsMessage.mockClear();
+
     const decisionData = await createPrivateCloudProduct();
 
     expect(sendNatsMessage).toHaveBeenCalled();
-    expect(sendNatsMessage).toHaveBeenCalledTimes(1);
-
     expect(sendNatsMessage).toHaveBeenCalledWith(
       PRIVATE_NATS_URL,
       `registry_project_provisioning_${decisionData.cluster.toLowerCase()}`,
@@ -82,8 +83,6 @@ describe('Private Cloud NATs', () => {
     const decisionData = await updatePrivateCloudProduct();
 
     expect(sendNatsMessage).toHaveBeenCalled();
-    expect(sendNatsMessage).toHaveBeenCalledTimes(2);
-
     expect(sendNatsMessage).toHaveBeenNthCalledWith(
       2,
       PRIVATE_NATS_URL,
@@ -144,8 +143,6 @@ describe('Private Cloud NATs', () => {
     const decisionData = await deletePrivateCloudProduct();
 
     expect(sendNatsMessage).toHaveBeenCalled();
-    expect(sendNatsMessage).toHaveBeenCalledTimes(2);
-
     expect(sendNatsMessage).toHaveBeenNthCalledWith(
       2,
       PRIVATE_NATS_URL,

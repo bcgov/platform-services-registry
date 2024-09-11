@@ -114,7 +114,7 @@ export default async function createRequest(formData: PublicCloudCreateRequestBo
           status: TaskStatus.ASSIGNED,
           userIds: [request.decisionData.expenseAuthorityId],
           data: {
-            requestId: request.id,
+            licencePlate: request.licencePlate,
           },
         },
       });

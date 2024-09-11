@@ -5,12 +5,13 @@ import { createSamplePublicCloudProductData } from '@/helpers/mock-resources';
 import { findOtherMockUsers } from '@/helpers/mock-users';
 import { mockSessionByEmail, mockSessionByRole } from '@/services/api-test/core';
 import { provisionPublicCloudProject } from '@/services/api-test/public-cloud';
-import { createPublicCloudProject, editPublicCloudProject } from '@/services/api-test/public-cloud/products';
 import {
-  makePublicCloudRequestDecision,
+  createPublicCloudProject,
+  editPublicCloudProject,
   signPublicCloudMou,
   reviewPublicCloudMou,
-} from '@/services/api-test/public-cloud/requests';
+} from '@/services/api-test/public-cloud/products';
+import { makePublicCloudRequestDecision } from '@/services/api-test/public-cloud/requests';
 
 const oldEnvironmentsEnabled = {
   production: true,
@@ -71,7 +72,7 @@ describe('Update Public Cloud Product - Permissions', () => {
         status: TaskStatus.ASSIGNED,
         data: {
           equals: {
-            requestId: requests.create.id,
+            licencePlate: requests.create.licencePlate,
           },
         },
       },
@@ -79,7 +80,7 @@ describe('Update Public Cloud Product - Permissions', () => {
 
     expect(task).toBeTruthy();
 
-    const response = await signPublicCloudMou(requests.create.id, {
+    const response = await signPublicCloudMou(requests.create.licencePlate, {
       taskId: task?.id ?? '',
       confirmed: true,
     });
@@ -96,7 +97,7 @@ describe('Update Public Cloud Product - Permissions', () => {
         status: TaskStatus.ASSIGNED,
         data: {
           equals: {
-            requestId: requests.create.id,
+            licencePlate: requests.create.licencePlate,
           },
         },
       },
@@ -104,7 +105,7 @@ describe('Update Public Cloud Product - Permissions', () => {
 
     expect(task).toBeTruthy();
 
-    const response = await reviewPublicCloudMou(requests.create.id, {
+    const response = await reviewPublicCloudMou(requests.create.licencePlate, {
       taskId: task?.id ?? '',
       decision: 'APPROVE',
     });

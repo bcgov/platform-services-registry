@@ -9,7 +9,7 @@ import { sendPublicCloudBillingReviewEmails } from '@/services/ches/public-cloud
 import { findUsersByClientRole } from '@/services/keycloak/app-realm';
 
 const pathParamSchema = z.object({
-  id: z.string(),
+  licencePlate: z.string(),
 });
 
 const bodySchema = z.object({
@@ -22,7 +22,7 @@ const apiHandler = createApiHandler({
   validations: { pathParams: pathParamSchema, body: bodySchema },
 });
 export const POST = apiHandler(async ({ pathParams, body, session }) => {
-  const { id } = pathParams;
+  const { licencePlate } = pathParams;
   const { taskId, confirmed } = body;
 
   if (!confirmed) return BadRequestResponse('not confirmed');
@@ -35,7 +35,7 @@ export const POST = apiHandler(async ({ pathParams, body, session }) => {
       OR: [{ userIds: { has: session.user.id } }, { roles: { hasSome: session.roles } }],
       data: {
         equals: {
-          requestId: id,
+          licencePlate,
         },
       },
     },
@@ -44,8 +44,8 @@ export const POST = apiHandler(async ({ pathParams, body, session }) => {
     },
   });
 
-  const request = await prisma.publicCloudRequest.findUnique({
-    where: { id },
+  const request = await prisma.publicCloudRequest.findFirst({
+    where: { licencePlate },
     include: publicCloudRequestDetailInclude,
   });
 
@@ -70,7 +70,7 @@ export const POST = apiHandler(async ({ pathParams, body, session }) => {
       status: TaskStatus.ASSIGNED,
       roles: ['billing-reviewer'],
       data: {
-        requestId: id,
+        licencePlate: request.licencePlate,
       },
     },
   });

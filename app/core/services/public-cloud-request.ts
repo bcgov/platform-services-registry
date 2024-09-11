@@ -63,16 +63,16 @@ export class PublicCloudRequestService extends ModelService<Prisma.PublicCloudRe
           !doc.decisionData.billing.signed &&
           this.session.tasks
             .filter((task) => task.type === TaskType.SIGN_MOU && task.status === TaskStatus.ASSIGNED)
-            .map((task) => (task.data as { requestId: string }).requestId)
-            .includes(doc.id);
+            .map((task) => (task.data as { licencePlate: string }).licencePlate)
+            .includes(doc.licencePlate);
 
         canApproveMou =
           doc.decisionData.billing.signed &&
           !doc.decisionData.billing.approved &&
           this.session.tasks
             .filter((task) => task.type === TaskType.REVIEW_MOU && task.status === TaskStatus.ASSIGNED)
-            .map((task) => (task.data as { requestId: string }).requestId)
-            .includes(doc.id);
+            .map((task) => (task.data as { licencePlate: string }).licencePlate)
+            .includes(doc.licencePlate);
 
         canReview = canReview && doc.decisionData.billing.signed && doc.decisionData.billing.approved;
       } else {

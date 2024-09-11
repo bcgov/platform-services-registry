@@ -13,10 +13,10 @@ import ExternalLink from '@/components/generic/button/ExternalLink';
 import FormCheckbox from '@/components/generic/checkbox/FormCheckbox';
 import FormError from '@/components/generic/FormError';
 import { createModal, ExtraModalProps } from '@/core/modal';
-import { signPublicCloudMou } from '@/services/backend/public-cloud/requests';
+import { signPublicCloudMou } from '@/services/backend/public-cloud/products';
 
 interface ModalProps {
-  requestId: string;
+  licencePlate: string;
   name: string;
   provider: Provider;
 }
@@ -26,7 +26,7 @@ interface ModalState {
 }
 
 function SignPublicCloudProductModal({
-  requestId,
+  licencePlate,
   name,
   provider,
   state,
@@ -51,7 +51,7 @@ function SignPublicCloudProductModal({
     isError: isSignError,
     error: signError,
   } = useMutation({
-    mutationFn: (data: { taskId: string; confirmed: boolean }) => signPublicCloudMou(requestId, data),
+    mutationFn: (data: { taskId: string; confirmed: boolean }) => signPublicCloudMou(licencePlate, data),
     onSuccess: () => {
       state.confirmed = true;
 
@@ -90,7 +90,7 @@ function SignPublicCloudProductModal({
                 (tsk) =>
                   tsk.type === TaskType.SIGN_MOU &&
                   tsk.status === TaskStatus.ASSIGNED &&
-                  (tsk.data as { requestId: string }).requestId === requestId,
+                  (tsk.data as { licencePlate: string }).licencePlate === licencePlate,
               );
 
               if (task) {
