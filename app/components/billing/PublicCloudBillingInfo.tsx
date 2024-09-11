@@ -87,7 +87,7 @@ export default function PublicCloudBillingInfo({
             });
 
             if (res?.state.confirmed) {
-              router.push('/public-cloud/requests/all');
+              location.reload();
             }
           }}
         >
@@ -95,7 +95,10 @@ export default function PublicCloudBillingInfo({
         </Button>
       )}
       {product._permissions?.reviewMou && (
-        <button
+        <Button
+          color="primary"
+          size="xs"
+          className="mt-2"
           onClick={async () => {
             const res = await openReviewPublicCloudProductModal<{ confirmed: boolean }>({
               licencePlate: product.licencePlate,
@@ -103,14 +106,12 @@ export default function PublicCloudBillingInfo({
             });
 
             if (res?.state.confirmed) {
-              router.push('/public-cloud/requests/all');
+              location.reload();
             }
           }}
-          type="button"
-          className="flex rounded-md bg-bcorange px-4 py-2.5 text-bcblue text-sm tracking-[.2em] shadow-sm hover:brightness-110 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
         >
           Review eMOU
-        </button>
+        </Button>
       )}
     </Alert>
   );
