@@ -5,12 +5,14 @@ import AdminCreateTemplate from '@/emails/_templates/private-cloud/AdminCreateRe
 import AdminDeleteRequestTemplate from '@/emails/_templates/private-cloud/AdminDeleteRequest';
 import AdminEditRequestTemplate from '@/emails/_templates/private-cloud/AdminEditRequest';
 import CreateRequestTemplate from '@/emails/_templates/private-cloud/CreateRequest';
+import CreateRequestApprovalTemplate from '@/emails/_templates/private-cloud/CreateRequestApproval';
 import DeleteApprovalTemplate from '@/emails/_templates/private-cloud/DeleteApproval';
 import DeleteRequestTemplate from '@/emails/_templates/private-cloud/DeleteRequest';
+import DeleteRequestApprovalTemplate from '@/emails/_templates/private-cloud/DeleteRequestApproval';
 import EditRequestTemplate from '@/emails/_templates/private-cloud/EditRequest';
+import EditRequestApprovalTemplate from '@/emails/_templates/private-cloud/EditRequestApproval';
 import EditRequestCompleteTemplate from '@/emails/_templates/private-cloud/EditRequestComplete';
 import ProvisionedTemplate from '@/emails/_templates/private-cloud/Provisioned';
-import RequestApprovalTemplate from '@/emails/_templates/private-cloud/RequestApproval';
 import RequestRejectionTemplate from '@/emails/_templates/private-cloud/RequestRejection';
 import { adminPrivateEmails } from '@/services/ches/email-constant';
 import { sendEmail } from '@/services/ches/helpers';
@@ -85,7 +87,14 @@ export const sendEditRequestEmails = async (
 
 export const sendRequestApprovalEmails = async (request: PrivateCloudRequestDetail) => {
   try {
-    const email = render(RequestApprovalTemplate({ request }), { pretty: true });
+    let email: any;
+    if (request.type == $Enums.RequestType.EDIT) {
+      email = render(EditRequestApprovalTemplate({ request }), { pretty: true });
+    } else if (request.type == $Enums.RequestType.CREATE) {
+      email = render(CreateRequestApprovalTemplate({ request }), { pretty: true });
+    } else if (request.type == $Enums.RequestType.DELETE) {
+      email = render(DeleteRequestApprovalTemplate({ request }), { pretty: true });
+    }
 
     await sendEmail({
       body: email,
