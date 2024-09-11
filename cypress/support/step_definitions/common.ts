@@ -24,7 +24,7 @@ Given('User visits local keycloak and finds james.smith', () => {
   cy.get('input[type="submit"]').click();
   cy.get('button[id="nav-toggle"]').click();
   cy.get('button[data-testid="realmSelectorToggle"]').click();
-  cy.wait(30);
+  cy.wait(50);
   cy.screenshot();
   cy.contains('div', 'platform-services').should('be.visible').click();
   cy.get('a[id="nav-item-users"]').click();
