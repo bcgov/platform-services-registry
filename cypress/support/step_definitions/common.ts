@@ -30,6 +30,7 @@ Given('User visits local keycloak and finds james.smith', () => {
   cy.get('a[id="nav-item-users"]').click();
   cy.wait(3);
   cy.contains('td', 'james.smith@gov.bc.ca').should('be.visible');
+  cy.visit('http://localhost:3000');
 });
 
 When(/^User clicks link "(.*)"$/, (buttonText: string) => {
