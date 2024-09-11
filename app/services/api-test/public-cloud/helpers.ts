@@ -22,7 +22,7 @@ async function runEmouWorkflows(reqData: any) {
       status: TaskStatus.ASSIGNED,
       data: {
         equals: {
-          requestId: reqData.id,
+          licencePlate: reqData.licencePlate,
         },
       },
     },
@@ -45,7 +45,7 @@ async function runEmouWorkflows(reqData: any) {
       status: TaskStatus.ASSIGNED,
       data: {
         equals: {
-          requestId: reqData.id,
+          licencePlate: reqData.licencePlate,
         },
       },
     },

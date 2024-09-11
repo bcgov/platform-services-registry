@@ -32,7 +32,7 @@ export class PublicCloudRequestService extends ModelService<Prisma.PublicCloudRe
     const licencePlates = res.map(({ licencePlate }) => licencePlate);
     const mouRelatedRequestIds = this.session.tasks
       .filter((task) => [TaskType.SIGN_MOU, TaskType.REVIEW_MOU].includes(task.type))
-      .map((task) => (task.data as { requestId: string }).requestId);
+      .map((task) => (task.data as { licencePlate: string }).licencePlate);
 
     const baseFilter: Prisma.PublicCloudRequestWhereInput = {
       OR: [

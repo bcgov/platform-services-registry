@@ -1,4 +1,3 @@
-import { Provider } from '@prisma/client';
 import { render } from '@react-email/render';
 import { AUTH_RESOURCE } from '@/config';
 import { logger } from '@/core/logging';
