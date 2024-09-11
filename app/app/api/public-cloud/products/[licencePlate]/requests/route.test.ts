@@ -46,7 +46,7 @@ describe('List Public Cloud Product Requests - Permissions', () => {
         status: TaskStatus.ASSIGNED,
         data: {
           equals: {
-            requestId: dat1.id,
+            licencePlate: dat1.licencePlate,
           },
         },
       },
