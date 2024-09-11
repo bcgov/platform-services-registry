@@ -48,7 +48,7 @@ declare global {
 }
 
 export function loginToRegistry(username: string, password: string): void {
-  cy.visit('/login', { failOnStatusCode: false });
+  cy.visit('localhost:3000/login', { failOnStatusCode: false });
   cy.wait(2000);
   cy.contains('button', 'Login').click();
   cy.wait(5000); // wait until the page loads, otherwise no chances to find clause below
