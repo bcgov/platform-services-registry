@@ -1,8 +1,11 @@
 import { Dialog, Transition } from '@headlessui/react';
+import { Alert } from '@mantine/core';
+import { IconInfoCircle } from '@tabler/icons-react';
 import { useQuery, useMutation } from '@tanstack/react-query';
 import { Fragment, useRef, useState } from 'react';
 import { useFormContext } from 'react-hook-form';
 import ExternalLink from '@/components/generic/button/ExternalLink';
+import MailLink from '@/components/generic/button/MailLink';
 import FormCheckbox from '@/components/generic/checkbox/FormCheckbox';
 import { getBilling } from '@/services/backend/billing';
 
@@ -103,37 +106,14 @@ export default function CreatePublicCloud({
                       regarding your product status and details.
                     </p>
                   </div>
-                  <div className="bg-blue-50 mt-4 p-4 rounded-md flex">
-                    <div className="border-2 border-blue-700 relative w-1 h-1 bg-inherit rounded-full flex justify-center items-center text-center p-2 m-2 mr-4">
-                      <span className="font-bold text-blue-700 font-sans text-xs">i</span>
+                  <Alert variant="" color="primary" title="Note:" className="mt-2" icon={<IconInfoCircle size={80} />}>
+                    <div className="text-sm text-blue-700">
+                      Ministry Teams provisioning access to BC Gov&apos;s Landing Zones in AWS and Azure are required to
+                      attend an onboarding session with the Public Cloud Team. To book an onboarding session, please
+                      email us at <MailLink to="Cloud.Pathfinder@gov.bc.ca" />.
                     </div>
-                    <div>
-                      <p className="text-sm text-blue-700 font-semibold mt-2">Note:</p>
-                      <p className="text-sm text-blue-700 mt-1">
-                        Provisioning Requests for BC Gov&apos;s Landing Zone in AWS - Ministry Product Teams are
-                        required to complete two prior steps:
-                      </p>
-                      <ol className="text-sm text-blue-700 mt-1 pl-5 list-decimal" type="I">
-                        <li className="py-2">
-                          Sign a Memorandum of Understanding (MoU) with the Public Cloud Accelerator Service Team. If
-                          you do not have a MoU in place, please email us at{' '}
-                          <a href="mailto:cloud.pathfinder@gov.bc.ca" className="underline">
-                            Cloud.Pathfinder@gov.bc.ca
-                          </a>
-                          .
-                        </li>
-                        <li className="py-2">
-                          Attend an onboarding session with the Public Cloud Accelerator Service Team. To book an
-                          onboarding session, please email us at{' '}
-                          <a href="mailto:cloud.pathfinder@gov.bc.ca" className="underline">
-                            Cloud.Pathfinder@gov.bc.ca
-                          </a>
-                          .
-                        </li>
-                      </ol>
-                    </div>
-                  </div>
-                  <div className="flex mt-8 pt-4">
+                  </Alert>
+                  <div className="pt-4">
                     <FormCheckbox
                       id="consent1"
                       checked={confirmSigned}
@@ -142,7 +122,7 @@ export default function CreatePublicCloud({
                       {eMouCheckboxContent}
                     </FormCheckbox>
                   </div>
-                  <div className="flex pt-2 pb-5">
+                  <div className="pt-2 pb-5">
                     <FormCheckbox
                       id="consent2"
                       checked={confirmLiable}
