@@ -28,7 +28,7 @@
   "dependencies": {
     "@azure/msal-node": "^2.3.0",
     "@faker-js/faker": "^9.0.0",
-    "@headlessui/react": "2.1.7",
+    "@headlessui/react": "2.1.8",
     "@hookform/resolvers": "^3.1.1",
     "@keycloak/keycloak-admin-client": "^25.0.0",
     "@mantine/colors-generator": "^7.11.2",
