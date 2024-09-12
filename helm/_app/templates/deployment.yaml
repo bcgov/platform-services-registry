@@ -46,6 +46,7 @@ spec:
             export EMERALD_SERVICE_ACCOUNT_TOKEN="{{.Data.data.EMERALD_SERVICE_ACCOUNT_TOKEN}}"
             export PUBLIC_ADMIN_EMAILS="{{.Data.data.PUBLIC_ADMIN_EMAILS}}"
             export PRIVATE_ADMIN_EMAILS="{{.Data.data.PRIVATE_ADMIN_EMAILS}}"
+            export KLAB_METRICS_READER_TOKEN="{{.Data.data.KLAB_METRICS_READER_TOKEN}}"
           {{- end }}`}}
       labels:
         {{- include "app.labels" . | nindent 8 }}
