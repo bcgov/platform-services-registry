@@ -1,60 +1,6 @@
 import { KubeConfig, CoreV1Api, Metrics } from '@kubernetes/client-node';
-import { KLAB_METRICS_READER_TOKEN } from '@/config';
-
-type UsageObj = {
-  name: string;
-  usage: {
-    cpu: string;
-    memory: string;
-  };
-  limits: {
-    cpu: string;
-    memory: string;
-  };
-  requests: {
-    cpu: string;
-    memory: string;
-  };
-};
-
-// Conversion factors
-const GiToKi = 1024 * 1024;
-const MiToKi = 1024;
-const cpuToM = 1000;
-
-const convertCpu = (cpu: string): string => {
-  if (cpu.includes('m')) {
-    return cpu;
-  }
-  return `${parseFloat(cpu) * cpuToM}m`;
-};
-
-const convertMemory = (memory: string): string => {
-  if (memory.includes('Gi')) {
-    return `${parseFloat(memory.replace('Gi', '')) * GiToKi}Ki`;
-  } else if (memory.includes('Mi')) {
-    return `${parseFloat(memory.replace('Mi', '')) * MiToKi}Ki`;
-  }
-  return memory;
-};
-
-// Convert CPU and memory values to millicores and Ki units
-const convertValues = (data: UsageObj[]): UsageObj[] =>
-  data.map((entry) => ({
-    ...entry,
-    usage: {
-      cpu: convertCpu(entry.usage.cpu),
-      memory: convertMemory(entry.usage.memory),
-    },
-    limits: {
-      cpu: convertCpu(entry.limits.cpu),
-      memory: convertMemory(entry.limits.memory),
-    },
-    requests: {
-      cpu: convertCpu(entry.requests.cpu),
-      memory: convertMemory(entry.requests.memory),
-    },
-  }));
+import { KLAB_METRICS_READER_TOKEN, IS_PROD } from '@/config';
+import { UsageObj, convertValues } from './helpers';
 
 function configureKubeConfig(cluster: string, token: string) {
   const kc = new KubeConfig();
@@ -84,8 +30,13 @@ function configureKubeConfig(cluster: string, token: string) {
   return kc;
 }
 
-export default async function getPodMetrics(licencePlate: string, namespacePostfix: string, cluster: string) {
-  const systemNamespace = licencePlate + '-' + namespacePostfix;
+export default async function getPodMetrics(licencePlate: string, environment: string, cluster: string) {
+  if (!IS_PROD) {
+    licencePlate = 'f6ee34';
+    cluster = 'klab';
+  }
+
+  const systemNamespace = licencePlate + '-' + environment;
   const CLUSTER_METRICS_READER_TOKEN = {
     // clab: CLAB_METRICS_READER_TOKEN || '',
     klab: KLAB_METRICS_READER_TOKEN || '',

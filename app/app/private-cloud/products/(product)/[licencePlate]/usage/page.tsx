@@ -6,7 +6,6 @@ import { useState } from 'react';
 import { z } from 'zod';
 import FormSelect from '@/components/generic/select/FormSelect';
 import TableBodyMetrics from '@/components/table/TableBodyMetrics';
-import { IS_PROD } from '@/config';
 import createClientPage from '@/core/client-page';
 import { getPodUsageMetrics } from '@/services/backend/private-cloud/pod-usage-metrics';
 import { usePrivateProductState } from '@/states/global';
@@ -41,18 +40,16 @@ const privateCloudProductUsageMetrics = createClientPage({
 
 export default privateCloudProductUsageMetrics(({ pathParams, queryParams, session }) => {
   const { licencePlate } = pathParams;
-  const [namespacePostfix, setNamespacePostfix] = useState('prod');
+  const [environment, setenvironment] = useState('prod');
   const [, privateSnap] = usePrivateProductState();
 
   const { data = [], isLoading } = useQuery({
-    queryKey: [namespacePostfix, licencePlate],
-    queryFn: IS_PROD
-      ? () => getPodUsageMetrics(licencePlate, namespacePostfix, privateSnap.currentProduct?.cluster || 'silver')
-      : () => getPodUsageMetrics('f6ee34', namespacePostfix, 'klab'),
+    queryKey: [environment, licencePlate],
+    queryFn: () => getPodUsageMetrics(licencePlate, environment, privateSnap.currentProduct?.cluster || ''),
   });
 
   const handleNamespaceChange = (namespace: string) => {
-    setNamespacePostfix(namespace);
+    setenvironment(namespace);
   };
 
   const titledData = [
