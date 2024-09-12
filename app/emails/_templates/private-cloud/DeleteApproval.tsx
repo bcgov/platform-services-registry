@@ -9,7 +9,7 @@ interface EmailProp {
   product: PrivateCloudRequestedProjectWithContacts;
 }
 
-const DeleteApprovalTemplate = ({ product }: EmailProp) => {
+export default function DeleteApproval({ product }: EmailProp) {
   if (!product) return <></>;
 
   return (
@@ -32,6 +32,4 @@ const DeleteApprovalTemplate = ({ product }: EmailProp) => {
       <NamespaceDetails cluster={product.cluster} licencePlate={product.licencePlate} />
     </PrivateCloudLayout>
   );
-};
-
-export default DeleteApprovalTemplate;
+}

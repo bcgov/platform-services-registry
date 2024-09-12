@@ -9,7 +9,7 @@ interface Props {
   product: PublicCloudProductDetail;
 }
 
-export default function ExpenseAuthorityMouProductTemplate({ product }: Props) {
+export default function ExpenseAuthorityMouProduct({ product }: Props) {
   if (!product) return <></>;
 
   const {

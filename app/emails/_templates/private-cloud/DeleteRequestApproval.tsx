@@ -8,7 +8,7 @@ interface EmailProp {
   request: PrivateCloudRequestDetail;
 }
 
-const DeleteRequestApprovalTemplate = ({ request }: EmailProp) => {
+export default function DeleteRequestApproval({ request }: EmailProp) {
   if (!request || !request.project || !request.decisionData) return <></>;
 
   return (
@@ -48,6 +48,4 @@ const DeleteRequestApprovalTemplate = ({ request }: EmailProp) => {
       />
     </PrivateCloudLayout>
   );
-};
-
-export default DeleteRequestApprovalTemplate;
+}

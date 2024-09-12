@@ -6,7 +6,6 @@ import { comparePrivateCloudProjects } from '@/emails/_components/Edit/utils/com
 import PrivateCloudLayout from '@/emails/_components/layout/PrivateCloudLayout';
 import NamespaceDetails from '@/emails/_components/NamespaceDetails';
 import ProductDetails from '@/emails/_components/ProductDetails';
-import Requester from '@/emails/_components/Requester';
 import { PrivateCloudRequestDetail } from '@/types/private-cloud';
 
 interface EmailProp {
@@ -14,7 +13,7 @@ interface EmailProp {
   userName: string;
 }
 
-const NewRequestTemplate = ({ request, userName }: EmailProp) => {
+export default function AdminEditRequest({ request, userName }: EmailProp) {
   if (!request || !request.project || !request.decisionData) return <></>;
   const current = request.project;
   const requested = request.decisionData;
@@ -90,6 +89,4 @@ const NewRequestTemplate = ({ request, userName }: EmailProp) => {
       </div>
     </PrivateCloudLayout>
   );
-};
-
-export default NewRequestTemplate;
+}

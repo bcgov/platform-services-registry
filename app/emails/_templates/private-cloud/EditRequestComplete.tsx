@@ -9,7 +9,7 @@ interface EmailProp {
   product: PrivateCloudRequestedProjectWithContacts;
 }
 
-const EditRequestCompleteTemplate = ({ product }: EmailProp) => {
+export default function EditRequestComplete({ product }: EmailProp) {
   if (!product) return <></>;
 
   return (
@@ -40,6 +40,4 @@ const EditRequestCompleteTemplate = ({ product }: EmailProp) => {
       <NamespaceDetails cluster={product.cluster} licencePlate={product.licencePlate} />
     </PrivateCloudLayout>
   );
-};
-
-export default EditRequestCompleteTemplate;
+}

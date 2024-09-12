@@ -9,7 +9,7 @@ interface Props {
   request: PublicCloudRequestDetail;
 }
 
-const BillingReviewerMouTemplate = ({ request }: Props) => {
+export default function BillingReviewerMou({ request }: Props) {
   if (!request) return <></>;
 
   const { id, decisionData } = request;
@@ -58,6 +58,4 @@ const BillingReviewerMouTemplate = ({ request }: Props) => {
       </div>
     </PublicCloudLayout>
   );
-};
-
-export default BillingReviewerMouTemplate;
+}

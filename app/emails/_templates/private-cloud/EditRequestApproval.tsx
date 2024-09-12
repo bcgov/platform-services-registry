@@ -13,7 +13,7 @@ interface EmailProp {
   request: PrivateCloudRequestDetail;
 }
 
-const EditRequestApprovalTemplate = ({ request }: EmailProp) => {
+export default function EditRequestApproval({ request }: EmailProp) {
   if (!request || !request.project || !request.decisionData) return <></>;
   const current = request.project;
   const requested = request.decisionData;
@@ -137,6 +137,4 @@ const EditRequestApprovalTemplate = ({ request }: EmailProp) => {
       )}
     </PrivateCloudLayout>
   );
-};
-
-export default EditRequestApprovalTemplate;
+}

@@ -10,7 +10,7 @@ interface EmailProp {
   request: PublicCloudRequestDetail;
 }
 
-const RequestApprovalTemplate = ({ request }: EmailProp) => {
+export default function RequestApproval({ request }: EmailProp) {
   if (!request) return <></>;
 
   const {
@@ -77,6 +77,4 @@ const RequestApprovalTemplate = ({ request }: EmailProp) => {
       <Comment decisionComment={request.decisionComment} />
     </PublicCloudLayout>
   );
-};
-
-export default RequestApprovalTemplate;
+}

@@ -10,7 +10,7 @@ interface EmailProp {
   userName: string;
 }
 
-const AdminDeleteRequestTemplate = ({ product, userName }: EmailProp) => {
+export default function AdminDeleteRequest({ product, userName }: EmailProp) {
   if (!product) return <></>;
 
   const {
@@ -69,6 +69,4 @@ const AdminDeleteRequestTemplate = ({ product, userName }: EmailProp) => {
       />
     </PublicCloudLayout>
   );
-};
-
-export default AdminDeleteRequestTemplate;
+}
