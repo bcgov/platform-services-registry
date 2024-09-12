@@ -231,7 +231,7 @@ export default publicCloudProductRequest(({ pathParams, queryParams, session, ro
                 onClick={async () => {
                   if (!publicSnap.currentRequest) return;
                   const res = await openSignPublicCloudProductModal<{ confirmed: boolean }>({
-                    requestId: publicSnap.currentRequest.id,
+                    licencePlate: publicSnap.currentRequest.licencePlate,
                     name: publicSnap.currentRequest.decisionData.name,
                     provider: publicSnap.currentRequest.decisionData.provider,
                   });
@@ -251,7 +251,7 @@ export default publicCloudProductRequest(({ pathParams, queryParams, session, ro
                 onClick={async () => {
                   if (!publicSnap.currentRequest) return;
                   const res = await openReviewPublicCloudProductModal<{ confirmed: boolean }>({
-                    requestId: publicSnap.currentRequest.id,
+                    licencePlate: publicSnap.currentRequest.licencePlate,
                     billingId: publicSnap.currentRequest.decisionData.billingId,
                   });
 

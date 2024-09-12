@@ -5,12 +5,13 @@ import { createSamplePublicCloudProductData } from '@/helpers/mock-resources';
 import { mockNoRoleUsers, findMockUserByIdr, findOtherMockUsers } from '@/helpers/mock-users';
 import { mockSessionByEmail, mockSessionByRole } from '@/services/api-test/core';
 import { provisionPublicCloudProject } from '@/services/api-test/public-cloud';
-import { createPublicCloudProject, listPublicCloudProductRequests } from '@/services/api-test/public-cloud/products';
 import {
-  makePublicCloudRequestDecision,
+  createPublicCloudProject,
+  listPublicCloudProductRequests,
   signPublicCloudMou,
   reviewPublicCloudMou,
-} from '@/services/api-test/public-cloud/requests';
+} from '@/services/api-test/public-cloud/products';
+import { makePublicCloudRequestDecision } from '@/services/api-test/public-cloud/requests';
 
 const PO = mockNoRoleUsers[0];
 const TL1 = mockNoRoleUsers[1];
@@ -45,7 +46,7 @@ describe('List Public Cloud Product Requests - Permissions', () => {
         status: TaskStatus.ASSIGNED,
         data: {
           equals: {
-            requestId: dat1.id,
+            licencePlate: dat1.licencePlate,
           },
         },
       },
@@ -53,7 +54,7 @@ describe('List Public Cloud Product Requests - Permissions', () => {
 
     if (task1) {
       await mockSessionByEmail(dat1.decisionData.expenseAuthority.email);
-      await signPublicCloudMou(dat1.id, {
+      await signPublicCloudMou(dat1.licencePlate, {
         taskId: task1?.id ?? '',
         confirmed: true,
       });
@@ -65,13 +66,13 @@ describe('List Public Cloud Product Requests - Permissions', () => {
           status: TaskStatus.ASSIGNED,
           data: {
             equals: {
-              requestId: dat1.id,
+              licencePlate: dat1.licencePlate,
             },
           },
         },
       });
 
-      await reviewPublicCloudMou(dat1.id, {
+      await reviewPublicCloudMou(dat1.licencePlate, {
         taskId: task2?.id ?? '',
         decision: 'APPROVE',
       });

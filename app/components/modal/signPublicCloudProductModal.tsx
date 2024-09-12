@@ -13,10 +13,10 @@ import ExternalLink from '@/components/generic/button/ExternalLink';
 import FormCheckbox from '@/components/generic/checkbox/FormCheckbox';
 import FormError from '@/components/generic/FormError';
 import { createModal, ExtraModalProps } from '@/core/modal';
-import { signPublicCloudMou } from '@/services/backend/public-cloud/requests';
+import { signPublicCloudMou } from '@/services/backend/public-cloud/products';
 
 interface ModalProps {
-  requestId: string;
+  licencePlate: string;
   name: string;
   provider: Provider;
 }
@@ -26,7 +26,7 @@ interface ModalState {
 }
 
 function SignPublicCloudProductModal({
-  requestId,
+  licencePlate,
   name,
   provider,
   state,
@@ -51,7 +51,7 @@ function SignPublicCloudProductModal({
     isError: isSignError,
     error: signError,
   } = useMutation({
-    mutationFn: (data: { taskId: string; confirmed: boolean }) => signPublicCloudMou(requestId, data),
+    mutationFn: (data: { taskId: string; confirmed: boolean }) => signPublicCloudMou(licencePlate, data),
     onSuccess: () => {
       state.confirmed = true;
 
@@ -76,6 +76,8 @@ function SignPublicCloudProductModal({
 
   const { handleSubmit, register } = methods;
 
+  const service = provider === Provider.AWS ? 'AWS' : 'Microsoft Azure';
+
   return (
     <Box pos="relative">
       <LoadingOverlay visible={isSigning} zIndex={1000} overlayProps={{ radius: 'sm', blur: 2 }} />
@@ -88,7 +90,7 @@ function SignPublicCloudProductModal({
                 (tsk) =>
                   tsk.type === TaskType.SIGN_MOU &&
                   tsk.status === TaskStatus.ASSIGNED &&
-                  (tsk.data as { requestId: string }).requestId === requestId,
+                  (tsk.data as { licencePlate: string }).licencePlate === licencePlate,
               );
 
               if (task) {
@@ -146,12 +148,12 @@ function SignPublicCloudProductModal({
             </p>
             <p className="mb-2">
               &emsp;&emsp;This agreement also enables the Ministry’s Expense Authority approval for all actual consumed
-              usage & any prepayment of reserved AWS services by the Ministry.
+              usage & any prepayment of reserved {service} services by the Ministry.
             </p>
             <p className="mb-2">
               The Ministry is responsible for understanding the cost structure associated with their current and future
-              services consumption in AWS and monitoring their actual consumption to ensure it stays within the planned
-              budget.
+              services consumption in {service} and monitoring their actual consumption to ensure it stays within the
+              planned budget.
             </p>
             <p>
               This agreement will be in effect from the date of signing, until a written notification is provided to the

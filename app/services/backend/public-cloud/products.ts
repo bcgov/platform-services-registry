@@ -82,3 +82,13 @@ export async function getPublicCloudProductRequests(licencePlate: string, active
 
   return result as PublicCloudRequestSimpleDecorated[];
 }
+
+export async function signPublicCloudMou(licencePlate: string, data: { taskId: string; confirmed: boolean }) {
+  const result = await instance.post(`/${licencePlate}/sign-mou`, data).then((res) => res.data);
+  return result as true;
+}
+
+export async function reviewPublicCloudMou(licencePlate: string, data: { taskId: string; decision: string }) {
+  const result = await instance.post(`/${licencePlate}/review-mou`, data).then((res) => res.data);
+  return result as true;
+}

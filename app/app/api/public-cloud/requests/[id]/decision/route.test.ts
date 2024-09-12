@@ -9,12 +9,10 @@ import {
   createPublicCloudProject,
   editPublicCloudProject,
   deletePublicCloudProject,
-} from '@/services/api-test/public-cloud/products';
-import {
-  makePublicCloudRequestDecision,
   signPublicCloudMou,
   reviewPublicCloudMou,
-} from '@/services/api-test/public-cloud/requests';
+} from '@/services/api-test/public-cloud/products';
+import { makePublicCloudRequestDecision } from '@/services/api-test/public-cloud/requests';
 
 const fieldsToCompare = [
   'name',
@@ -64,7 +62,7 @@ async function makeBasicProductMouReview() {
       status: TaskStatus.ASSIGNED,
       data: {
         equals: {
-          requestId,
+          licencePlate: requests.main.licencePlate,
         },
       },
     },
@@ -72,7 +70,7 @@ async function makeBasicProductMouReview() {
 
   if (task1) {
     await mockSessionByEmail(decisionData.expenseAuthority.email);
-    await signPublicCloudMou(requestId, {
+    await signPublicCloudMou(requests.main.licencePlate, {
       taskId: task1?.id ?? '',
       confirmed: true,
     });
@@ -84,13 +82,13 @@ async function makeBasicProductMouReview() {
         status: TaskStatus.ASSIGNED,
         data: {
           equals: {
-            requestId,
+            licencePlate: requests.main.licencePlate,
           },
         },
       },
     });
 
-    await reviewPublicCloudMou(requestId, {
+    await reviewPublicCloudMou(requests.main.licencePlate, {
       taskId: task2?.id ?? '',
       decision: 'APPROVE',
     });

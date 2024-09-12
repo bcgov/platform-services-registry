@@ -14,6 +14,7 @@ import ExpenseAuthorityMou from '@/emails/_templates/public-cloud/ExpenseAuthori
 import ProvisionedTemplate from '@/emails/_templates/public-cloud/Provisioned';
 import RequestApprovalTemplate from '@/emails/_templates/public-cloud/RequestApproval';
 import RequestRejectionTemplate from '@/emails/_templates/public-cloud/RequestRejection';
+import { getEmouFileName } from '@/helpers/emou';
 import { generateEmouPdf, Billing } from '@/helpers/pdfs/emou';
 import { adminPublicEmails } from '@/services/ches/email-constant';
 import { sendEmail } from '@/services/ches/helpers';
@@ -34,7 +35,7 @@ export async function sendEmouServiceAgreementEmail(request: PublicCloudRequestD
       {
         content: emouPdfBuff.toString('base64'),
         encoding: 'base64',
-        filename: `eMOU_service_agreement_${request.decisionData.licencePlate}.pdf`,
+        filename: getEmouFileName(request.decisionData.name, request.decisionData.provider),
         contentType: 'application/pdf',
       },
     ],

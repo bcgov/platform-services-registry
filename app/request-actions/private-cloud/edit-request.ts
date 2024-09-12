@@ -40,7 +40,7 @@ export default async function editRequest(
   ]);
 
   // merge the form data with the existing project data
-  const decisionData = {
+  const productData = {
     ...rest,
     licencePlate: project.licencePlate,
     status: project.status,
@@ -97,13 +97,13 @@ export default async function editRequest(
       isQuotaChanged: !isNoQuotaChanged,
       ...quotaChangeInfo,
       active: true,
-      createdByEmail: session.user.email,
+      createdBy: { connect: { email: session.user.email } },
       licencePlate: project.licencePlate,
       requestComment,
       changes: otherChangeMeta,
       originalData: { connect: { id: previousRequest?.decisionDataId } },
-      decisionData: { create: decisionData },
-      requestData: { create: decisionData },
+      decisionData: { create: productData },
+      requestData: { create: productData },
       project: { connect: { licencePlate: project.licencePlate } },
     },
     include: privateCloudRequestDetailInclude,

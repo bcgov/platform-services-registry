@@ -1,4 +1,4 @@
-import { Text } from '@react-email/components';
+import { Text, Heading, Hr } from '@react-email/components';
 
 interface CommentProps {
   requestComment?: string | null;
@@ -6,8 +6,13 @@ interface CommentProps {
 }
 
 export default function Comment({ requestComment, decisionComment }: CommentProps) {
+  if (!requestComment && !decisionComment) return null;
+
   return (
     <div>
+      <Hr className="my-4" />
+
+      <Heading className="text-lg text-black">Comments</Heading>
       {requestComment && (
         <div>
           <Text className="font-semibold">User Comment:</Text>
