@@ -1,22 +1,19 @@
 'use client';
 
-import _toNumber from 'lodash-es/toNumber';
 import _truncate from 'lodash-es/truncate';
 import React from 'react';
+import { totalMetrics, ResourceType } from '@/services/openshift-kubernetis-metrics/helpers';
 import TableHeader from '../generic/table/TableHeader';
 import TruncatedTooltip from './TruncatedTooltip';
 
 interface TableProps {
   rows: any[];
-  resource: string;
+  resource: ResourceType;
   title: string;
 }
 
 export default function TableBodyPrivateRequests({ rows, resource, title }: TableProps) {
-  const getNum = (str: string) => _toNumber(str.match(/\d+/));
-
-  const totalUsage = rows.reduce((sum: number, pod) => sum + getNum(pod.usage[resource]), 0);
-  const totalLimit = rows.reduce((sum: number, pod) => sum + getNum(pod.limits[resource]), 0);
+  const { totalUsage, totalLimit } = totalMetrics(rows, resource);
 
   const summaryNums = [
     {

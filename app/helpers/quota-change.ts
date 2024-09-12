@@ -1,57 +1,10 @@
 import _toNumber from 'lodash-es/toNumber';
 import { defaultCpuOptionsLookup, defaultMemoryOptionsLookup, defaultStorageOptionsLookup } from '@/../app/constants';
+import { totalMetrics } from '@/services/openshift-kubernetis-metrics/helpers';
+import getPodMetrics from '@/services/openshift-kubernetis-metrics/pod-usage-metrics';
 import { PrivateCloudProductSimple } from '@/types/private-cloud';
 import { extractNumbers } from '@/utils/string';
 import { PrivateCloudEditRequestBody } from '@/validation-schemas/private-cloud';
-
-const getPodMetricsTmp = (licencePlate: string, namespacePostfix: string, cluster: string) => {
-  return [
-    {
-      name: 'mautic-40-j496b',
-      usage: { cpu: '0m', memory: '261612Ki' },
-      limits: { cpu: '1000m', memory: '2097152Ki' },
-      requests: { cpu: '50m', memory: '1048576Ki' },
-    },
-    {
-      name: 'mautic-db-25-w5wpd',
-      usage: { cpu: '3m', memory: '1642488Ki' },
-      limits: { cpu: '1000m', memory: '2097152Ki' },
-      requests: { cpu: '1000m', memory: '2097152Ki' },
-    },
-    {
-      name: 'mautic-db-backup-3-ntbf6',
-      usage: { cpu: '0m', memory: '0' },
-      limits: { cpu: '0m', memory: '0' },
-      requests: { cpu: '0m', memory: '0' },
-    },
-    {
-      name: 'mautic-subscription-api-prod-9-65w4g',
-      usage: { cpu: '0m', memory: '23504Ki' },
-      limits: { cpu: '1000m', memory: '81920Ki' },
-      requests: { cpu: '10m', memory: '40960Ki' },
-    },
-    {
-      name: 'mautic-subscription-api-prod-9-fp2nx',
-      usage: { cpu: '0m', memory: '11624Ki' },
-      limits: { cpu: '1000m', memory: '81920Ki' },
-      requests: { cpu: '10m', memory: '40960Ki' },
-    },
-    {
-      name: 'mautic-subscription-api-prod-9-q7rcl',
-      usage: { cpu: '0m', memory: '15160Ki' },
-      limits: { cpu: '1000m', memory: '81920Ki' },
-      requests: { cpu: '10m', memory: '40960Ki' },
-    },
-    {
-      name: 'mautic-subscription-prod-39-d9hx5',
-      usage: { cpu: '0m', memory: '19256Ki' },
-      limits: { cpu: '50m', memory: '61440Ki' },
-      requests: { cpu: '10m', memory: '30720Ki' },
-    },
-  ];
-};
-
-const getNum = (str: string) => _toNumber(str.match(/\d+/));
 
 const areQuotasNextToEachOther = (
   projectQuota: string,
@@ -66,6 +19,8 @@ const areQuotasNextToEachOther = (
 };
 
 export const isResourceUtilized = (project: PrivateCloudProductSimple, request: PrivateCloudEditRequestBody) => {
+  console.log('project', project);
+  console.log('request', request);
   const checkQuotasNextToEachOther = () => {
     const quotaTypes = ['cpu', 'memory', 'storage'] as const;
     const namespaces = ['testQuota', 'toolsQuota', 'developmentQuota', 'productionQuota'] as const;
@@ -87,20 +42,21 @@ export const isResourceUtilized = (project: PrivateCloudProductSimple, request: 
   if (!ifAutoApproval) return ifAutoApproval;
 
   (['cpu', 'memory'] as const).forEach((resource) => {
-    ['dev', 'test', 'prod', 'tools'].forEach((namespace) => {
-      const podMetricsData = getPodMetricsTmp(project.licencePlate, namespace, request.cluster);
-      const totalUsage = podMetricsData.reduce((sum, pod) => sum + getNum(pod.usage[resource]), 0);
-      const totalLimit = podMetricsData.reduce((sum, pod) => sum + getNum(pod.limits[resource]), 0);
+    ['dev', 'test', 'prod', 'tools'].forEach(async (namespace) => {
+      const podMetricsData = await getPodMetrics(project.licencePlate, namespace, request.cluster);
+      if (!podMetricsData) return;
+      const { totalUsage, totalLimit } = totalMetrics(podMetricsData, resource);
 
-      if ((totalLimit / totalUsage) * 100 < 86) {
-        ifAutoApproval = true;
-      }
+      if (totalLimit && totalUsage) {
+        if ((totalLimit / totalUsage) * 100 < 86) {
+          ifAutoApproval = true;
+        }
 
-      if (!ifAutoApproval) return ifAutoApproval;
-
-      const utilizationRate = (getNum(request.developmentQuota.cpu) / totalUsage) * 100;
-      if (utilizationRate > 34) {
-        ifAutoApproval = true;
+        if (!ifAutoApproval) return ifAutoApproval;
+        const utilizationRate = (_toNumber(request.developmentQuota.cpu.match(/\d+/)) / totalUsage) * 100;
+        if (utilizationRate > 34) {
+          ifAutoApproval = true;
+        }
       }
       if (!ifAutoApproval) return ifAutoApproval;
     });

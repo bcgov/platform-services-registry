@@ -1,3 +1,7 @@
+import _toNumber from 'lodash-es/toNumber';
+
+export type ResourceType = 'cpu' | 'memory';
+
 export type UsageObj = {
   name: string;
   usage: {
@@ -52,3 +56,12 @@ export const convertValues = (data: UsageObj[]): UsageObj[] =>
       memory: convertMemory(entry.requests.memory),
     },
   }));
+
+export const totalMetrics = (data: UsageObj[], resource: ResourceType) => {
+  const getNum = (str: string) => _toNumber(str.match(/\d+/));
+
+  const totalUsage = data.reduce((sum: number, pod) => sum + getNum(pod.usage[resource]), 0);
+  const totalLimit = data.reduce((sum: number, pod) => sum + getNum(pod.limits[resource]), 0);
+
+  return { totalUsage, totalLimit };
+};
