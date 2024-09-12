@@ -9,7 +9,7 @@ interface EmailProp {
   product: PublicCloudRequestedProjectWithContacts;
 }
 
-const DeleteApprovalTemplate = ({ product }: EmailProp) => {
+export default function DeleteApproval({ product }: EmailProp) {
   if (!product) return <></>;
 
   const {
@@ -68,6 +68,4 @@ const DeleteApprovalTemplate = ({ product }: EmailProp) => {
       />
     </PublicCloudLayout>
   );
-};
-
-export default DeleteApprovalTemplate;
+}

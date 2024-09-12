@@ -10,7 +10,7 @@ interface EmailProp {
   userName: string;
 }
 
-const NewRequestTemplate = ({ request, userName }: EmailProp) => {
+export default function AdminDeleteRequest({ request, userName }: EmailProp) {
   if (!request) return <></>;
 
   return (
@@ -38,6 +38,4 @@ const NewRequestTemplate = ({ request, userName }: EmailProp) => {
       <NamespaceDetails cluster={request.decisionData.cluster} showNamespaceDetailsTitle={false} />
     </PrivateCloudLayout>
   );
-};
-
-export default NewRequestTemplate;
+}

@@ -10,13 +10,13 @@ interface EmailProp {
   userName: string;
 }
 
-const NewRequestTemplate = ({ request, userName }: EmailProp) => {
+export default function AdminCreateRequest({ request, userName }: EmailProp) {
   if (!request) return <></>;
 
   return (
     <PrivateCloudLayout requester={userName}>
       <Heading className="text-lg">New Request!</Heading>
-      <Text>Hi Registry Team, </Text>
+      <Text>Hi Registry Team,</Text>
       <Text>
         There is a new request that requires your review. Log in to the Registry to review the details. If you have any
         questions about the request, the PO and TL contact details are included below and in the Registry.
@@ -39,6 +39,4 @@ const NewRequestTemplate = ({ request, userName }: EmailProp) => {
       <NamespaceDetails cluster={request.decisionData.cluster} showNamespaceDetailsTitle={false} />
     </PrivateCloudLayout>
   );
-};
-
-export default NewRequestTemplate;
+}

@@ -10,7 +10,7 @@ interface EmailProp {
   userName: string;
 }
 
-const CreateRequestTemplate = ({ request, userName }: EmailProp) => {
+export default function CreateRequest({ request, userName }: EmailProp) {
   if (!request) return <></>;
 
   const {
@@ -70,6 +70,4 @@ const CreateRequestTemplate = ({ request, userName }: EmailProp) => {
       />
     </PublicCloudLayout>
   );
-};
-
-export default CreateRequestTemplate;
+}

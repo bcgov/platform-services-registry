@@ -8,7 +8,7 @@ interface EmailProp {
   product: PublicCloudRequestedProjectWithContacts;
 }
 
-const ExpenseAuthorityTemplate = ({ product }: EmailProp) => {
+export default function ExpenseAuthority({ product }: EmailProp) {
   if (!product) return <></>;
 
   const {
@@ -42,6 +42,4 @@ const ExpenseAuthorityTemplate = ({ product }: EmailProp) => {
       />
     </PublicCloudLayout>
   );
-};
-
-export default ExpenseAuthorityTemplate;
+}

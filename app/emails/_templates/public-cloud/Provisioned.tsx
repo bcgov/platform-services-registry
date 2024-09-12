@@ -8,7 +8,7 @@ interface EmailProp {
   product: PublicCloudRequestedProjectWithContacts;
 }
 
-const ProvisionedTemplate = ({ product }: EmailProp) => {
+export default function Provisioned({ product }: EmailProp) {
   const {
     name,
     description,
@@ -87,6 +87,4 @@ const ProvisionedTemplate = ({ product }: EmailProp) => {
       />
     </PublicCloudLayout>
   );
-};
-
-export default ProvisionedTemplate;
+}

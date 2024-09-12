@@ -9,7 +9,7 @@ interface Props {
   request: PublicCloudRequestDetail;
 }
 
-const ExpenseAuthorityMouTemplate = ({ request }: Props) => {
+export default function ExpenseAuthorityMou({ request }: Props) {
   if (!request) return <></>;
 
   const { id, decisionData } = request;
@@ -58,6 +58,4 @@ const ExpenseAuthorityMouTemplate = ({ request }: Props) => {
       </div>
     </PublicCloudLayout>
   );
-};
-
-export default ExpenseAuthorityMouTemplate;
+}

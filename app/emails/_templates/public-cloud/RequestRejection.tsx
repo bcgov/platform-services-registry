@@ -11,7 +11,7 @@ interface EmailProp {
   decisionComment?: string;
 }
 
-const RequestRejectionTemplate = ({ productName, decisionComment, product }: EmailProp) => {
+export default function RequestRejection({ productName, decisionComment, product }: EmailProp) {
   const {
     name,
     description,
@@ -56,6 +56,4 @@ const RequestRejectionTemplate = ({ productName, decisionComment, product }: Ema
       />
     </PublicCloudLayout>
   );
-};
-
-export default RequestRejectionTemplate;
+}

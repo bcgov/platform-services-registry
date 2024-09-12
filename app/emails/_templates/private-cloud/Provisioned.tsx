@@ -9,7 +9,7 @@ interface EmailProp {
   product: PrivateCloudRequestedProjectWithContacts;
 }
 
-const ProvisionedTemplate = ({ product }: EmailProp) => {
+export default function Provisioned({ product }: EmailProp) {
   if (!product) return <></>;
 
   return (
@@ -226,6 +226,4 @@ const ProvisionedTemplate = ({ product }: EmailProp) => {
       </ul>
     </PrivateCloudLayout>
   );
-};
-
-export default ProvisionedTemplate;
+}

@@ -8,7 +8,7 @@ interface EmailProp {
   request: PrivateCloudRequestDetail;
 }
 
-const CreateRequestApprovalTemplate = ({ request }: EmailProp) => {
+export default function CreateRequestApproval({ request }: EmailProp) {
   return (
     <PrivateCloudLayout>
       <Heading className="text-lg text-black">Success! Your create request was approved!</Heading>
@@ -42,6 +42,4 @@ const CreateRequestApprovalTemplate = ({ request }: EmailProp) => {
       />
     </PrivateCloudLayout>
   );
-};
-
-export default CreateRequestApprovalTemplate;
+}

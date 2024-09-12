@@ -14,7 +14,7 @@ interface EmailProp {
   userName: string;
 }
 
-const EditSummaryTemplate = ({ request, comment, userName }: EmailProp) => {
+export default function EditSummary({ request, comment, userName }: EmailProp) {
   if (!request || !request.project || !request.decisionData) return <></>;
   const current = request.project;
   const requested = request.decisionData;
@@ -87,6 +87,4 @@ const EditSummaryTemplate = ({ request, comment, userName }: EmailProp) => {
       )}
     </PublicCloudLayout>
   );
-};
-
-export default EditSummaryTemplate;
+}

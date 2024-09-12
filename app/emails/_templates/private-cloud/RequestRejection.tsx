@@ -20,7 +20,7 @@ interface EmailProp {
   }>;
 }
 
-const RequestRejectionTemplate = ({ request, currentData }: EmailProp) => {
+export default function RequestRejection({ request, currentData }: EmailProp) {
   if (!request) return <></>;
 
   let changes = null;
@@ -111,6 +111,4 @@ const RequestRejectionTemplate = ({ request, currentData }: EmailProp) => {
       {changes}
     </PrivateCloudLayout>
   );
-};
-
-export default RequestRejectionTemplate;
+}

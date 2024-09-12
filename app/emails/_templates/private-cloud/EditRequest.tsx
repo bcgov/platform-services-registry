@@ -15,7 +15,7 @@ interface EmailProp {
   userName: string;
 }
 
-const EditRequestTemplate = ({ request, userName }: EmailProp) => {
+export default function EditRequest({ request, userName }: EmailProp) {
   if (!request || !request.project || !request.decisionData) return <></>;
   const current = request.project;
   const requested = request.decisionData;
@@ -116,6 +116,4 @@ const EditRequestTemplate = ({ request, userName }: EmailProp) => {
       )}
     </PrivateCloudLayout>
   );
-};
-
-export default EditRequestTemplate;
+}
