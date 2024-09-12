@@ -31,29 +31,18 @@ export default async function deleteOp({
   // Retrieve the latest request data to acquire the decision data ID that can be assigned to the incoming request's original data.
   const previousRequest = await getLastClosedPublicCloudRequest(rest.licencePlate);
 
+  const productData = { ...rest, status: ProjectStatus.INACTIVE };
   const request: PublicCloudRequestDetail | null = await prisma.publicCloudRequest.create({
     data: {
       type: PublicCloudRequestType.DELETE,
       decisionStatus: DecisionStatus.PENDING,
       active: true,
-      createdByEmail: user.email,
+      createdBy: { connect: { email: user.email } },
       licencePlate: product.licencePlate,
-      originalData: {
-        connect: {
-          id: previousRequest?.decisionDataId,
-        },
-      },
-      decisionData: {
-        create: { ...rest, status: ProjectStatus.INACTIVE },
-      },
-      requestData: {
-        create: { ...rest, status: ProjectStatus.INACTIVE },
-      },
-      project: {
-        connect: {
-          licencePlate,
-        },
-      },
+      originalData: { connect: { id: previousRequest?.decisionDataId } },
+      decisionData: { create: productData },
+      requestData: { create: productData },
+      project: { connect: { licencePlate } },
     },
     include: publicCloudRequestDetailInclude,
   });

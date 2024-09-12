@@ -20,7 +20,7 @@ export default async function createRequest(formData: PublicCloudCreateRequestBo
 
   const billingCode = `${formData.accountCoding}_${formData.provider}`;
 
-  const createRequestedProject = {
+  const productData = {
     name: formData.name,
     budget: formData.budget,
     provider: formData.provider,
@@ -88,19 +88,15 @@ export default async function createRequest(formData: PublicCloudCreateRequestBo
       : undefined,
   };
 
-  const request: PublicCloudRequestDetail | null = await prisma.publicCloudRequest.create({
+  const request: PublicCloudRequestDetail = await prisma.publicCloudRequest.create({
     data: {
       type: RequestType.CREATE,
       decisionStatus: DecisionStatus.PENDING,
       active: true,
-      createdByEmail: session.user.email,
+      createdBy: { connect: { email: session.user.email } },
       licencePlate,
-      decisionData: {
-        create: createRequestedProject,
-      },
-      requestData: {
-        create: createRequestedProject,
-      },
+      decisionData: { create: productData },
+      requestData: { create: productData },
     },
     include: publicCloudRequestDetailInclude,
   });
