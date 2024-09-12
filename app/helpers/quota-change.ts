@@ -19,8 +19,6 @@ const areQuotasNextToEachOther = (
 };
 
 export const isResourceUtilized = (project: PrivateCloudProductSimple, request: PrivateCloudEditRequestBody) => {
-  console.log('project', project);
-  console.log('request', request);
   const checkQuotasNextToEachOther = () => {
     const quotaTypes = ['cpu', 'memory', 'storage'] as const;
     const namespaces = ['testQuota', 'toolsQuota', 'developmentQuota', 'productionQuota'] as const;
