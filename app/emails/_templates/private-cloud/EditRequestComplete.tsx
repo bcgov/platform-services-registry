@@ -1,4 +1,4 @@
-import { Heading, Text, Hr } from '@react-email/components';
+import { Heading, Text, Hr, Link } from '@react-email/components';
 import * as React from 'react';
 import PrivateCloudLayout from '@/emails/_components/layout/PrivateCloudLayout';
 import NamespaceDetails from '@/emails/_components/NamespaceDetails';
@@ -16,7 +16,13 @@ const EditRequestCompleteTemplate = ({ product }: EmailProp) => {
     <PrivateCloudLayout>
       <Heading className="text-lg text-black">Your edit request has been completed!</Heading>
       <Text>Hi Product Team,</Text>
-      <Text>The project set edit request for {product.name} has been successfully completed.</Text>
+      <Text>
+        The project set edit request for {product.name} has been successfully completed. You can now log in to{' '}
+        <Link className="mt-0 h-4" href={`https://console.apps.${product.cluster}.devops.gov.bc.ca/`}>
+          OpenShift cluster console{' '}
+        </Link>{' '}
+        and you will see your new resource quota values.
+      </Text>
 
       <Hr className="my-4" />
 

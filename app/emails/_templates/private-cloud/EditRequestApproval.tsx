@@ -29,11 +29,7 @@ const EditRequestApprovalTemplate = ({ request }: EmailProp) => {
       <Text>
         We are pleased to inform you that your request for a resource quota has been approved on the Private Cloud
         OpenShift platform. Please allow 3-5 minutes for the request to be processed. If it takes longer, don&apos;t
-        hesitate to reach out to us. You can now log in to{' '}
-        <Link className="mt-0 h-4" href={`https://console.apps.${request.decisionData.cluster}.devops.gov.bc.ca/`}>
-          OpenShift cluster console{' '}
-        </Link>{' '}
-        and you will see your new resource quota values.
+        hesitate to reach out to us.
       </Text>
       <Text>
         If you have any more questions or need assistance, please reach out to the Platform Services team in the
