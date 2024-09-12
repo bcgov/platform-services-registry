@@ -1,5 +1,5 @@
 import { KubeConfig, CoreV1Api, Metrics } from '@kubernetes/client-node';
-import { KLAB_METRICS_READER_TOKEN, IS_PROD } from '@/config';
+import { KLAB_METRICS_READER_TOKEN, IS_PROD, IS_TEST } from '@/config';
 import { UsageObj, convertValues } from './helpers';
 
 function configureKubeConfig(cluster: string, token: string) {
@@ -31,7 +31,7 @@ function configureKubeConfig(cluster: string, token: string) {
 }
 
 export default async function getPodMetrics(licencePlate: string, environment: string, cluster: string) {
-  if (!IS_PROD) {
+  if (!(IS_PROD || IS_TEST)) {
     licencePlate = 'f6ee34';
     cluster = 'klab';
   }
