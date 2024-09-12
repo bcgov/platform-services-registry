@@ -47,14 +47,15 @@ model User {
   mousSigned                                            Billing[]                      @relation("signedBy")
   mousApproved                                          Billing[]                      @relation("approvedBy")
   mousAsExpenseAuthority                                Billing[]                      @relation("expenseAuthority")
-  // privateCloudRequestsAsRequester                       PrivateCloudRequest[]          @relation("createdBy")
+  privateCloudRequestsAsRequester                       PrivateCloudRequest[]          @relation("createdBy")
+  publicCloudRequestsAsRequester                        PublicCloudRequest[]           @relation("createdBy")
 }
 
 model PrivateCloudRequest {
   id                 String                        @id @default(auto()) @map("_id") @db.ObjectId
   licencePlate       String
   createdByEmail     String
-  // createdBy          User                          @relation("createdBy", fields: [createdByEmail], references: [email])
+  createdBy          User                          @relation("createdBy", fields: [createdByEmail], references: [email])
   decisionMakerEmail String?
   quotaContactName   String?
   quotaContactEmail  String?
@@ -179,6 +180,7 @@ model PublicCloudRequest {
   id                 String                       @id @default(auto()) @map("_id") @db.ObjectId
   licencePlate       String
   createdByEmail     String
+  createdBy          User                         @relation("createdBy", fields: [createdByEmail], references: [email])
   decisionMakerEmail String?
   type               PublicCloudRequestType
   decisionStatus     DecisionStatus

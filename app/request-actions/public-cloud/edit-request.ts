@@ -66,7 +66,7 @@ export default async function editRequest(
       type: RequestType.EDIT,
       decisionStatus: DecisionStatus.APPROVED, // automatically approve edit requests for public cloud
       active: true,
-      createdByEmail: session.user.email,
+      createdBy: { connect: { email: session.user.email } },
       licencePlate: project.licencePlate,
       requestComment,
       changes: otherChangeMeta,
