@@ -3,9 +3,10 @@ import * as React from 'react';
 import PublicCloudLayout from '@/emails/_components/layout/PublicCloudLayout';
 import ProductDetails from '@/emails/_components/ProductDetails';
 import ProviderDetails from '@/emails/_components/ProviderDetails';
-import { PublicCloudRequestedProjectWithContacts } from '@/services/nats/public-cloud';
+import { PublicCloudProductDetail } from '@/types/public-cloud';
+
 interface EmailProp {
-  product: PublicCloudRequestedProjectWithContacts;
+  product: PublicCloudProductDetail;
 }
 
 export default function Provisioned({ product }: EmailProp) {

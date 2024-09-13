@@ -2,16 +2,18 @@ import { Button, Heading, Text, Hr } from '@react-email/components';
 import * as React from 'react';
 import Comment from '@/emails/_components/Comment';
 import PublicCloudLayout from '@/emails/_components/layout/PublicCloudLayout';
-import { PublicCloudRequestedProjectWithContacts } from '@/services/nats/public-cloud';
+import { PublicCloudRequestDetail } from '@/types/public-cloud';
 import ProductDetails from '../../_components/ProductDetails';
 
 interface EmailProp {
-  product: PublicCloudRequestedProjectWithContacts;
-  productName: string;
-  decisionComment?: string;
+  request: PublicCloudRequestDetail;
 }
 
-export default function RequestRejection({ productName, decisionComment, product }: EmailProp) {
+export default function RequestRejection({ request }: EmailProp) {
+  if (!request) return <></>;
+
+  const decisionData = request.decisionData;
+
   const {
     name,
     description,
@@ -21,9 +23,7 @@ export default function RequestRejection({ productName, decisionComment, product
     secondaryTechnicalLead,
     expenseAuthority,
     licencePlate,
-  } = product;
-
-  if (!productName) return <></>;
+  } = decisionData;
 
   return (
     <PublicCloudLayout>
@@ -33,7 +33,7 @@ export default function RequestRejection({ productName, decisionComment, product
         Your request for the product {name} on the Public Cloud Landing Zone has been rejected due to the following
         reason(s):
       </Text>
-      <Comment decisionComment={decisionComment} />
+      <Comment decisionComment={request.decisionComment} />
       <Text>Log in to the registry and create a new request if the reason(s) above no longer apply.</Text>
       <Button
         href="https://registry.developer.gov.bc.ca/public-cloud/requests/all"

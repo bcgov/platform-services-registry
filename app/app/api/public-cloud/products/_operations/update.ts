@@ -31,7 +31,7 @@ export default async function updateOp({
 
   const proms = [];
 
-  proms.push(sendPublicCloudNatsMessage(request.type, request.decisionData, request.project));
+  proms.push(sendPublicCloudNatsMessage(request));
 
   const users: User[] = [
     request.decisionData.projectOwner,
@@ -43,7 +43,7 @@ export default async function updateOp({
   proms.push(sendEditRequestEmails(request, session.user.name));
 
   if (request.decisionData.expenseAuthorityId !== request.project?.expenseAuthorityId) {
-    proms.push(sendExpenseAuthorityEmail(request.decisionData));
+    proms.push(sendExpenseAuthorityEmail(request));
   }
 
   await Promise.all(proms);

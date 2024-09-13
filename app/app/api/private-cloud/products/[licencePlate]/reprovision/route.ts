@@ -1,4 +1,4 @@
-import { $Enums } from '@prisma/client';
+import { $Enums, RequestType } from '@prisma/client';
 import { z } from 'zod';
 import createApiHandler from '@/core/api-handler';
 import { BadRequestResponse, OkResponse, UnauthorizedResponse } from '@/core/responses';
@@ -25,14 +25,23 @@ export const GET = apiHandler(async ({ pathParams, session }) => {
 
   const msgId = `reprovision-${new Date().getTime()}`;
 
-  await sendPrivateCloudNatsMessage(msgId, $Enums.RequestType.EDIT, product, false);
+  await sendPrivateCloudNatsMessage(
+    {
+      id: msgId,
+      type: RequestType.EDIT,
+      decisionData: product,
+    },
+    false,
+  );
 
   // For GOLD requests, we create an identical request for GOLDDR
   if (product.cluster === $Enums.Cluster.GOLD && product.golddrEnabled) {
     await sendPrivateCloudNatsMessage(
-      msgId,
-      $Enums.RequestType.EDIT,
-      { ...product, cluster: $Enums.Cluster.GOLDDR },
+      {
+        id: msgId,
+        type: RequestType.EDIT,
+        decisionData: { ...product, cluster: $Enums.Cluster.GOLDDR },
+      },
       false,
     );
   }

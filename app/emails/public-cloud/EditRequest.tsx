@@ -1,7 +1,10 @@
 import * as React from 'react';
-import { samplePublicRequest } from '../_components/Params';
-import EditSummaryTemplate from '../_templates/public-cloud/EditSummary';
+import { getRandomUser } from '@/helpers/mock-resources/core';
+import { createSamplePublicCloudRequest } from '@/helpers/mock-resources/public-cloud-request';
+import Template from '../_templates/public-cloud/EditSummary';
 
 export default function EditRequest() {
-  return <EditSummaryTemplate request={samplePublicRequest} userName={'User Session'} />;
+  const sampleRequest = createSamplePublicCloudRequest();
+  const sampleUser = getRandomUser();
+  return <Template request={sampleRequest} userName={sampleUser.displayName} />;
 }

@@ -3,10 +3,10 @@ import * as React from 'react';
 import PrivateCloudLayout from '@/emails/_components/layout/PrivateCloudLayout';
 import NamespaceDetails from '@/emails/_components/NamespaceDetails';
 import ProductDetails from '@/emails/_components/ProductDetails';
-import { PrivateCloudRequestedProjectWithContacts } from '@/services/nats/private-cloud';
+import { PrivateCloudProductDetail } from '@/types/private-cloud';
 
 interface EmailProp {
-  product: PrivateCloudRequestedProjectWithContacts;
+  product: PrivateCloudProductDetail;
 }
 
 export default function DeleteApproval({ product }: EmailProp) {

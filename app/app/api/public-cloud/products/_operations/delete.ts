@@ -49,8 +49,8 @@ export default async function deleteOp({
 
   if (request) {
     await Promise.all([
-      sendDeleteRequestEmails(request.decisionData, session.user.name),
-      sendAdminDeleteRequestEmails(request.decisionData, session.user.name),
+      sendDeleteRequestEmails(request, session.user.name),
+      sendAdminDeleteRequestEmails(request, session.user.name),
       createEvent(EventType.DELETE_PUBLIC_CLOUD_PRODUCT, session.user.id, { requestId: request.id }),
     ]);
   }

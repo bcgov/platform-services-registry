@@ -1,7 +1,8 @@
 import * as React from 'react';
-import { samplePrivateProduct } from '../_components/Params';
-import DeleteApprovalTemplate from '../_templates/private-cloud/DeleteApproval';
+import { createSamplePrivateCloudProduct } from '@/helpers/mock-resources/private-cloud-product';
+import Template from '../_templates/private-cloud/DeleteApproval';
 
-export default function DeleteApproval() {
-  return <DeleteApprovalTemplate product={samplePrivateProduct} />;
+export default function DeleteCompletion() {
+  const sampleProduct = createSamplePrivateCloudProduct();
+  return <Template product={sampleProduct} />;
 }

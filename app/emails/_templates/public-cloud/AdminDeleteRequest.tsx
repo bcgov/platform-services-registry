@@ -3,15 +3,17 @@ import * as React from 'react';
 import PublicCloudLayout from '@/emails/_components/layout/PublicCloudLayout';
 import ProductDetails from '@/emails/_components/ProductDetails';
 import ProviderDetails from '@/emails/_components/ProviderDetails';
-import { PublicCloudRequestedProjectWithContacts } from '@/services/nats/public-cloud';
+import { PublicCloudRequestDetail } from '@/types/public-cloud';
 
 interface EmailProp {
-  product: PublicCloudRequestedProjectWithContacts;
+  request: PublicCloudRequestDetail;
   userName: string;
 }
 
-export default function AdminDeleteRequest({ product, userName }: EmailProp) {
-  if (!product) return <></>;
+export default function AdminDeleteRequest({ request, userName }: EmailProp) {
+  if (!request) return <></>;
+
+  const decisionData = request.decisionData;
 
   const {
     name,
@@ -26,7 +28,7 @@ export default function AdminDeleteRequest({ product, userName }: EmailProp) {
     budget,
     licencePlate,
     environmentsEnabled,
-  } = product;
+  } = decisionData;
 
   const { accountCoding } = billing;
 

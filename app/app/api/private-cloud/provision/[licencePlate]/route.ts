@@ -1,15 +1,15 @@
-import { $Enums, DecisionStatus, RequestType } from '@prisma/client';
+import { $Enums, DecisionStatus, RequestType, ProjectStatus } from '@prisma/client';
 import { z } from 'zod';
 import createApiHandler from '@/core/api-handler';
 import { logger } from '@/core/logging';
 import prisma from '@/core/prisma';
-import { NotFoundResponse, OkResponse } from '@/core/responses';
+import { NotFoundResponse, OkResponse, UnprocessableEntityResponse } from '@/core/responses';
+import { privateCloudProductDetailInclude } from '@/queries/private-cloud-products';
 import {
   sendProvisionedEmails,
   sendDeleteRequestApprovalEmails,
   sendEditRequestCompletedEmails,
 } from '@/services/ches/private-cloud/email-handler';
-import { PrivateCloudRequestedProjectWithContacts } from '@/services/nats/private-cloud';
 
 const pathParamSchema = z.object({
   licencePlate: z.string(),
@@ -53,10 +53,10 @@ export const PUT = apiHandler(async ({ pathParams }) => {
   // Upsert the project with the requested project data. If admin requested project data exists, use that instead.
   const filter = { licencePlate };
   const upsertProject =
-    request.type === $Enums.RequestType.DELETE
+    request.type === RequestType.DELETE
       ? prisma.privateCloudProject.update({
           where: filter,
-          data: { status: $Enums.ProjectStatus.INACTIVE },
+          data: { status: ProjectStatus.INACTIVE },
         })
       : prisma.privateCloudProject.upsert({
           where: filter,
@@ -66,22 +66,19 @@ export const PUT = apiHandler(async ({ pathParams }) => {
 
   await Promise.all([updateRequest, upsertProject]);
 
-  // Note: For some reason this information cannot be retrieved from the transaction above without failing the test
-  const project = await prisma.privateCloudProject.findUnique({
+  const product = await prisma.privateCloudProject.findUnique({
     where: filter,
-    include: {
-      projectOwner: true,
-      primaryTechnicalLead: true,
-      secondaryTechnicalLead: true,
-    },
+    include: privateCloudProductDetailInclude,
   });
 
+  if (!product) return UnprocessableEntityResponse('product not found');
+
   if (request.type == RequestType.CREATE) {
-    await sendProvisionedEmails(project as PrivateCloudRequestedProjectWithContacts);
+    await sendProvisionedEmails(product);
   } else if (request.type == RequestType.DELETE) {
-    await sendDeleteRequestApprovalEmails(project as PrivateCloudRequestedProjectWithContacts);
+    await sendDeleteRequestApprovalEmails(product);
   } else if (request.type == RequestType.EDIT) {
-    await sendEditRequestCompletedEmails(project as PrivateCloudRequestedProjectWithContacts);
+    await sendEditRequestCompletedEmails(product);
   }
 
   logger.info(`Successfully marked ${licencePlate} as provisioned.`);

@@ -1,7 +1,10 @@
 import * as React from 'react';
-import { samplePublicProduct } from '../_components/Params';
-import DeleteTemplate from '../_templates/public-cloud/DeleteRequest';
+import { getRandomUser } from '@/helpers/mock-resources/core';
+import { createSamplePublicCloudRequest } from '@/helpers/mock-resources/public-cloud-request';
+import Template from '../_templates/public-cloud/DeleteRequest';
 
 export default function DeleteRequest() {
-  return <DeleteTemplate product={samplePublicProduct} userName={'User Session'} />;
+  const sampleRequest = createSamplePublicCloudRequest();
+  const sampleUser = getRandomUser();
+  return <Template request={sampleRequest} userName={sampleUser.displayName} />;
 }
