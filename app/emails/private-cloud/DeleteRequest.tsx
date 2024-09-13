@@ -1,7 +1,10 @@
 import * as React from 'react';
-import { samplePrivateRequest } from '../_components/Params';
-import DeleteTemplate from '../_templates/private-cloud/DeleteRequest';
+import { getRandomUser } from '@/helpers/mock-resources/core';
+import { createSamplePrivateCloudRequest } from '@/helpers/mock-resources/private-cloud-request';
+import Template from '../_templates/private-cloud/DeleteRequest';
 
 export default function DeleteRequest() {
-  return <DeleteTemplate request={samplePrivateRequest} userName={'User Session'} />;
+  const sampleRequest = createSamplePrivateCloudRequest();
+  const sampleUser = getRandomUser();
+  return <Template request={sampleRequest} userName={sampleUser.displayName} />;
 }

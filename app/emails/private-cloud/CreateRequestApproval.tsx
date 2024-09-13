@@ -1,7 +1,8 @@
 import * as React from 'react';
-import { samplePrivateRequest } from '../_components/Params';
-import CreateRequestApprovalTemplate from '../_templates/private-cloud/CreateRequestApproval';
+import { createSamplePrivateCloudRequest } from '@/helpers/mock-resources/private-cloud-request';
+import Template from '../_templates/private-cloud/CreateRequestApproval';
 
 export default function CreateRequestApproval() {
-  return <CreateRequestApprovalTemplate request={samplePrivateRequest} />;
+  const sampleRequest = createSamplePrivateCloudRequest();
+  return <Template request={sampleRequest} />;
 }

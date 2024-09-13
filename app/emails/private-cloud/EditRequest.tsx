@@ -1,7 +1,10 @@
 import * as React from 'react';
-import { samplePrivateRequest } from '../_components/Params';
-import EditRequestTemplate from '../_templates/private-cloud/EditRequest';
+import { getRandomUser } from '@/helpers/mock-resources/core';
+import { createSamplePrivateCloudRequest } from '@/helpers/mock-resources/private-cloud-request';
+import Template from '../_templates/private-cloud/EditRequest';
 
 export default function EditRequest() {
-  return <EditRequestTemplate request={samplePrivateRequest} userName={'Session User'} />;
+  const sampleRequest = createSamplePrivateCloudRequest();
+  const sampleUser = getRandomUser();
+  return <Template request={sampleRequest} userName={sampleUser.displayName} />;
 }

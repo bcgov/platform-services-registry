@@ -47,6 +47,10 @@ export function NotFoundResponse(error: any) {
   return NextResponse.json({ success: false, message: 'Not Found', error }, { status: 404 });
 }
 
+export function UnprocessableEntityResponse(error: any) {
+  return NextResponse.json({ success: false, message: 'Unprocessable Entity', error }, { status: 422 });
+}
+
 export function InternalServerErrorResponse(error: any) {
   return NextResponse.json({ success: false, message: 'Internal Server Error', error }, { status: 500 });
 }

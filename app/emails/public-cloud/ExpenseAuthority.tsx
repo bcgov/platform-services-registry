@@ -1,7 +1,8 @@
 import * as React from 'react';
-import { samplePublicProduct } from '../_components/Params';
-import ExpenseAuthority from '../_templates/public-cloud/ExpenseAuthority';
+import { createSamplePublicCloudProduct } from '@/helpers/mock-resources/public-cloud-product';
+import Template from '../_templates/public-cloud/ExpenseAuthority';
 
-export default function PublicCloudExpenseAuthority() {
-  return <ExpenseAuthority product={samplePublicProduct} />;
+export default function ExpenseAuthority() {
+  const sampleProduct = createSamplePublicCloudProduct();
+  return <Template product={sampleProduct} />;
 }

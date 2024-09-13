@@ -1,4 +1,4 @@
-import { $Enums } from '@prisma/client';
+import { $Enums, RequestType } from '@prisma/client';
 import { render } from '@react-email/render';
 import { logger } from '@/core/logging';
 import AdminCreateTemplate from '@/emails/_templates/private-cloud/AdminCreateRequest';
@@ -16,8 +16,7 @@ import ProvisionedTemplate from '@/emails/_templates/private-cloud/Provisioned';
 import RequestRejectionTemplate from '@/emails/_templates/private-cloud/RequestRejection';
 import { adminPrivateEmails } from '@/services/ches/email-constant';
 import { sendEmail } from '@/services/ches/helpers';
-import { PrivateCloudRequestedProjectWithContacts } from '@/services/nats/private-cloud';
-import { PrivateCloudRequestDetail } from '@/types/private-cloud';
+import { PrivateCloudProductDetail, PrivateCloudRequestDetail } from '@/types/private-cloud';
 
 export const sendCreateRequestEmails = async (request: PrivateCloudRequestDetail, userName: string) => {
   try {
@@ -88,11 +87,11 @@ export const sendEditRequestEmails = async (
 export const sendRequestApprovalEmails = async (request: PrivateCloudRequestDetail) => {
   try {
     let email: any;
-    if (request.type == $Enums.RequestType.EDIT) {
+    if (request.type == RequestType.EDIT) {
       email = render(EditRequestApprovalTemplate({ request }), { pretty: true });
-    } else if (request.type == $Enums.RequestType.CREATE) {
+    } else if (request.type == RequestType.CREATE) {
       email = render(CreateRequestApprovalTemplate({ request }), { pretty: true });
-    } else if (request.type == $Enums.RequestType.DELETE) {
+    } else if (request.type == RequestType.DELETE) {
       email = render(DeleteRequestApprovalTemplate({ request }), { pretty: true });
     }
 
@@ -112,7 +111,7 @@ export const sendRequestApprovalEmails = async (request: PrivateCloudRequestDeta
 
 export const sendRequestRejectionEmails = async (request: PrivateCloudRequestDetail) => {
   try {
-    const currentData = request.type === $Enums.RequestType.CREATE ? request.decisionData : request.originalData;
+    const currentData = request.type === RequestType.CREATE ? request.decisionData : request.originalData;
     if (!currentData) throw Error('invalid request');
 
     const email = render(RequestRejectionTemplate({ request, currentData }), {
@@ -160,7 +159,7 @@ export const sendDeleteRequestEmails = async (request: PrivateCloudRequestDetail
   }
 };
 
-export const sendDeleteRequestApprovalEmails = async (product: PrivateCloudRequestedProjectWithContacts) => {
+export const sendDeleteRequestApprovalEmails = async (product: PrivateCloudProductDetail) => {
   try {
     const email = render(DeleteApprovalTemplate({ product }), { pretty: true });
 
@@ -174,7 +173,7 @@ export const sendDeleteRequestApprovalEmails = async (product: PrivateCloudReque
   }
 };
 
-export const sendProvisionedEmails = async (product: PrivateCloudRequestedProjectWithContacts) => {
+export const sendProvisionedEmails = async (product: PrivateCloudProductDetail) => {
   try {
     const email = render(ProvisionedTemplate({ product }), { pretty: true });
 
@@ -188,7 +187,7 @@ export const sendProvisionedEmails = async (product: PrivateCloudRequestedProjec
   }
 };
 
-export const sendEditRequestCompletedEmails = async (product: PrivateCloudRequestedProjectWithContacts) => {
+export const sendEditRequestCompletedEmails = async (product: PrivateCloudProductDetail) => {
   try {
     const email = render(EditRequestCompleteTemplate({ product }), { pretty: true });
 

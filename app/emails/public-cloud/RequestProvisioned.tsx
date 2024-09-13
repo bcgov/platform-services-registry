@@ -1,7 +1,8 @@
 import * as React from 'react';
-import { samplePublicProduct } from '../_components/Params';
-import ProvisionedTemplate from '../_templates/public-cloud/Provisioned';
+import { createSamplePublicCloudProduct } from '@/helpers/mock-resources/public-cloud-product';
+import Template from '../_templates/public-cloud/Provisioned';
 
-export default function EditRequest() {
-  return <ProvisionedTemplate product={samplePublicProduct} />;
+export default function RequestProvisioned() {
+  const sampleProduct = createSamplePublicCloudProduct();
+  return <Template product={sampleProduct} />;
 }

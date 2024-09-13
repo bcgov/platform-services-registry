@@ -1,7 +1,8 @@
 import * as React from 'react';
-import { samplePrivateRequest } from '../_components/Params';
-import EditRequestApprovalTemplate from '../_templates/private-cloud/EditRequestApproval';
+import { createSamplePrivateCloudRequest } from '@/helpers/mock-resources/private-cloud-request';
+import Template from '../_templates/private-cloud/EditRequestApproval';
 
 export default function EditRequestApproval() {
-  return <EditRequestApprovalTemplate request={samplePrivateRequest} />;
+  const sampleRequest = createSamplePrivateCloudRequest();
+  return <Template request={sampleRequest} />;
 }

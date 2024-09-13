@@ -2,14 +2,16 @@ import { Heading, Text, Hr } from '@react-email/components';
 import * as React from 'react';
 import PublicCloudLayout from '@/emails/_components/layout/PublicCloudLayout';
 import ProductDetails from '@/emails/_components/ProductDetails';
-import { PublicCloudRequestedProjectWithContacts } from '@/services/nats/public-cloud';
+import { PublicCloudRequestDetail } from '@/types/public-cloud';
 
 interface EmailProp {
-  product: PublicCloudRequestedProjectWithContacts;
+  request: PublicCloudRequestDetail;
 }
 
-export default function ExpenseAuthority({ product }: EmailProp) {
-  if (!product) return <></>;
+export default function ExpenseAuthority({ request }: EmailProp) {
+  if (!request) return <></>;
+
+  const decisionData = request.decisionData;
 
   const {
     name,
@@ -20,7 +22,7 @@ export default function ExpenseAuthority({ product }: EmailProp) {
     secondaryTechnicalLead,
     expenseAuthority,
     licencePlate,
-  } = product;
+  } = decisionData;
 
   return (
     <PublicCloudLayout>

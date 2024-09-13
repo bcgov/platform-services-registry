@@ -29,7 +29,7 @@ export const POST = apiHandler(async ({ pathParams, body, session }) => {
   }
 
   if (request.decisionStatus === DecisionStatus.REJECTED) {
-    await sendRequestRejectionEmails(request.decisionData, decisionComment);
+    await sendRequestRejectionEmails(request);
     return OkResponse(request);
   }
 
@@ -42,7 +42,7 @@ export const POST = apiHandler(async ({ pathParams, body, session }) => {
     proms.push(sendExpenseAuthorityEmail(request.decisionData));
   }
 
-  proms.push(sendPublicCloudNatsMessage(request.type, request.decisionData, request.project));
+  proms.push(sendPublicCloudNatsMessage(request));
 
   // Subscribe users to Mautic
   const users: User[] = [

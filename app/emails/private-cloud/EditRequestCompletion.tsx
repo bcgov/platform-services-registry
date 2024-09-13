@@ -1,7 +1,8 @@
 import * as React from 'react';
-import { samplePrivateProduct } from '../_components/Params';
-import EditRequestCompleteTemplate from '../_templates/private-cloud/EditRequestComplete';
+import { createSamplePrivateCloudProduct } from '@/helpers/mock-resources/private-cloud-product';
+import Template from '../_templates/private-cloud/EditRequestComplete';
 
-export default function EditRequestComplete() {
-  return <EditRequestCompleteTemplate product={samplePrivateProduct} />;
+export default function EditRequestCompletion() {
+  const sampleProduct = createSamplePrivateCloudProduct();
+  return <Template product={sampleProduct} />;
 }

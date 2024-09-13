@@ -1,7 +1,8 @@
 import * as React from 'react';
-import { samplePublicRequest } from '../_components/Params';
-import RequestApprovalTemplate from '../_templates/public-cloud/RequestApproval';
+import { createSamplePublicCloudRequest } from '@/helpers/mock-resources/public-cloud-request';
+import Template from '../_templates/public-cloud/RequestApproval';
 
 export default function RequestApproval() {
-  return <RequestApprovalTemplate request={samplePublicRequest} />;
+  const sampleRequest = createSamplePublicCloudRequest();
+  return <Template request={sampleRequest} />;
 }
