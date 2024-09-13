@@ -39,7 +39,7 @@ export const POST = apiHandler(async ({ pathParams, body, session }) => {
     request.decisionStatus === DecisionStatus.APPROVED &&
     request.project?.expenseAuthorityId !== request.decisionData.expenseAuthorityId
   ) {
-    proms.push(sendExpenseAuthorityEmail(request.decisionData));
+    proms.push(sendExpenseAuthorityEmail(request));
   }
 
   proms.push(sendPublicCloudNatsMessage(request));
