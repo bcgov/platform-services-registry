@@ -1,6 +1,7 @@
 import { Heading, Text, Hr } from '@react-email/components';
 import * as React from 'react';
 import PublicCloudLayout from '@/emails/_components/layout/PublicCloudLayout';
+import LinkButton from '@/emails/_components/LinkButton';
 import ProductDetails from '@/emails/_components/ProductDetails';
 import { PublicCloudRequestDetail } from '@/types/public-cloud';
 
@@ -11,8 +12,6 @@ interface EmailProp {
 export default function ExpenseAuthority({ request }: EmailProp) {
   if (!request) return <></>;
 
-  const decisionData = request.decisionData;
-
   const {
     name,
     description,
@@ -22,7 +21,7 @@ export default function ExpenseAuthority({ request }: EmailProp) {
     secondaryTechnicalLead,
     expenseAuthority,
     licencePlate,
-  } = decisionData;
+  } = request.decisionData;
 
   return (
     <PublicCloudLayout>
@@ -30,7 +29,7 @@ export default function ExpenseAuthority({ request }: EmailProp) {
       <Text>Hi, {expenseAuthority?.firstName},</Text>
       <Text>You are now the Expense Authority for the the product {name} on the Public Cloud.</Text>
 
-      <Hr className="my-4" />
+      <LinkButton href={`/public-cloud/products/${request.decisionData.licencePlate}/edit`}>Review Product</LinkButton>
 
       <ProductDetails
         name={name}

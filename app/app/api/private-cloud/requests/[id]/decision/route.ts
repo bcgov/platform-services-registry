@@ -1,4 +1,4 @@
-import { $Enums, DecisionStatus, User } from '@prisma/client';
+import { DecisionStatus, User } from '@prisma/client';
 import { z } from 'zod';
 import createApiHandler from '@/core/api-handler';
 import { BadRequestResponse, OkResponse, UnauthorizedResponse } from '@/core/responses';

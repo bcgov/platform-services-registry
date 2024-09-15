@@ -1,7 +1,7 @@
 import { Heading, Text, Link, Hr } from '@react-email/components';
 import * as React from 'react';
-import { BASE_URL } from '@/config';
 import PublicCloudLayout from '@/emails/_components/layout/PublicCloudLayout';
+import LinkButton from '@/emails/_components/LinkButton';
 import ProductDetails from '@/emails/_components/ProductDetails';
 import { PublicCloudProductDetail } from '@/types/public-cloud';
 
@@ -34,11 +34,8 @@ export default function ExpenseAuthorityMouProduct({ product }: Props) {
         You have an <span className="font-bold">Electronic Memorandum of Understanding (eMOU)</span> signing request for
         the product <span className="font-bold">{name}</span> on the Public Cloud.
       </Text>
-      <Link href={`${BASE_URL}/public-cloud/products/${licencePlate}/edit`}>
-        Please click this link to access the request page.
-      </Link>
 
-      <Hr className="my-4" />
+      <LinkButton href={`/public-cloud/products/${product.licencePlate}/edit`}>Review Product</LinkButton>
 
       <ProductDetails
         name={name}

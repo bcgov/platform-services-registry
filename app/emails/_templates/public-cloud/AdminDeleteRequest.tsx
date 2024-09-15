@@ -1,19 +1,18 @@
 import { Button, Heading, Text, Hr } from '@react-email/components';
 import * as React from 'react';
 import PublicCloudLayout from '@/emails/_components/layout/PublicCloudLayout';
+import LinkButton from '@/emails/_components/LinkButton';
 import ProductDetails from '@/emails/_components/ProductDetails';
 import ProviderDetails from '@/emails/_components/ProviderDetails';
 import { PublicCloudRequestDetail } from '@/types/public-cloud';
 
 interface EmailProp {
   request: PublicCloudRequestDetail;
-  userName: string;
+  requester: string;
 }
 
-export default function AdminDeleteRequest({ request, userName }: EmailProp) {
+export default function AdminDeleteRequest({ request, requester }: EmailProp) {
   if (!request) return <></>;
-
-  const decisionData = request.decisionData;
 
   const {
     name,
@@ -28,27 +27,21 @@ export default function AdminDeleteRequest({ request, userName }: EmailProp) {
     budget,
     licencePlate,
     environmentsEnabled,
-  } = decisionData;
+  } = request.decisionData;
 
   const { accountCoding } = billing;
 
   return (
-    <PublicCloudLayout requester={userName}>
+    <PublicCloudLayout requester={requester}>
       <Heading className="text-lg">New Delete Request!</Heading>
-      <Text>Hi Public Cloud Team, </Text>
+      <Text>Hi Public Cloud Team,</Text>
       <Text>
         There is a new delete request for {name} that requires your attention. Log in to the Registry to review the
         details. If you have any questions about the request, the PO and TL contact details are included below and in
         the Registry.
       </Text>
-      <Button
-        href="https://registry.developer.gov.bc.ca/public-cloud/requests/all"
-        className="bg-bcorange rounded-md px-4 py-2 text-white"
-      >
-        Review Request
-      </Button>
 
-      <Hr className="my-4" />
+      <LinkButton href={`/public-cloud/requests/${request.id}/request`}>Review Request</LinkButton>
 
       <ProductDetails
         name={name}
@@ -60,8 +53,6 @@ export default function AdminDeleteRequest({ request, userName }: EmailProp) {
         expenseAuthority={expenseAuthority}
         licencePlate={licencePlate}
       />
-
-      <Hr className="my-4" />
 
       <ProviderDetails
         provider={provider}

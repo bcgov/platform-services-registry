@@ -8,7 +8,7 @@ import ExpenseAuthorityMou from '@/emails/_templates/public-cloud/ExpenseAuthori
 import ExpenseAuthorityMouProduct from '@/emails/_templates/public-cloud/ExpenseAuthorityMouProduct';
 import { publicCloudProductDetailInclude } from '@/queries/public-cloud-products';
 import { publicCloudRequestDetailInclude } from '@/queries/public-cloud-requests';
-import { sendEmail } from '@/services/ches/helpers';
+import { sendEmail } from '@/services/ches/core';
 
 const apiHandler = createApiHandler({
   roles: ['admin'],

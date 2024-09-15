@@ -1,20 +1,19 @@
-import { Heading, Text, Link } from '@react-email/components';
-import { defaultProvisionedResourceValues } from '../_components/Edit/quotaLookup';
+import { Heading, Text, Link, Hr } from '@react-email/components';
+import { defaultProvisionedResourceValues } from './quotaLookup';
 
 export default function NamespaceDetails({
   cluster,
   licencePlate,
-  showNamespaceDetailsTitle = true,
   showDefaultResource = false,
 }: {
   cluster: string;
   licencePlate?: string;
-  showNamespaceDetailsTitle?: boolean;
   showDefaultResource?: boolean;
 }) {
   return (
-    <div>
-      {showNamespaceDetailsTitle && <Heading className="text-lg">Namespace Details</Heading>}
+    <>
+      <Hr className="my-4" />
+      <Heading className="text-lg">Namespace Details</Heading>
       <div>
         <Text className="mb-1 font-semibold h-4">OpenShift Cluster: </Text>
         <Text className="mt-1 h-4">{cluster}</Text>
@@ -79,6 +78,6 @@ export default function NamespaceDetails({
           )}
         </>
       )}
-    </div>
+    </>
   );
 }

@@ -1,4 +1,4 @@
-import { Heading, Link, Text } from '@react-email/components';
+import { Heading, Link, Text, Hr } from '@react-email/components';
 
 interface User {
   firstName: string | null;
@@ -27,7 +27,8 @@ export default function ProductDetails({
   licencePlate?: string;
 }) {
   return (
-    <div>
+    <>
+      <Hr className="my-4" />
       <Heading className="text-lg">Product Details</Heading>
       <div>
         <Text className="mb-2 font-semibold h-4">Product Name: </Text>
@@ -79,6 +80,6 @@ export default function ProductDetails({
           </div>
         )}
       </div>
-    </div>
+    </>
   );
 }

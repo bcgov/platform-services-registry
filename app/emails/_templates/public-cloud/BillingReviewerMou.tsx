@@ -2,6 +2,7 @@ import { Heading, Text, Link, Hr } from '@react-email/components';
 import * as React from 'react';
 import { BASE_URL } from '@/config';
 import PublicCloudLayout from '@/emails/_components/layout/PublicCloudLayout';
+import LinkButton from '@/emails/_components/LinkButton';
 import ProductDetails from '@/emails/_components/ProductDetails';
 import { PublicCloudRequestDetail } from '@/types/public-cloud';
 
@@ -11,8 +12,6 @@ interface Props {
 
 export default function BillingReviewerMou({ request }: Props) {
   if (!request) return <></>;
-
-  const { id, decisionData } = request;
 
   const {
     name,
@@ -24,7 +23,7 @@ export default function BillingReviewerMou({ request }: Props) {
     expenseAuthority,
     licencePlate,
     billing,
-  } = decisionData;
+  } = request.decisionData;
 
   const { accountCoding } = billing;
 
@@ -36,11 +35,8 @@ export default function BillingReviewerMou({ request }: Props) {
         You have an <span className="font-bold">Electronic Memorandum of Understanding (eMOU)</span> review request for
         the product <span className="font-bold">{name}</span> on the Public Cloud.
       </Text>
-      <Link href={`${BASE_URL}/public-cloud/requests/${id}/request`}>
-        Please click this link to access the request page.
-      </Link>
 
-      <Hr className="my-4" />
+      <LinkButton href={`/public-cloud/requests/${request.id}/request`}>Review Request</LinkButton>
 
       <ProductDetails
         name={name}

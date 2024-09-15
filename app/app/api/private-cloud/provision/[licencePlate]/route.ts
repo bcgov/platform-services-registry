@@ -3,13 +3,9 @@ import { z } from 'zod';
 import createApiHandler from '@/core/api-handler';
 import { logger } from '@/core/logging';
 import prisma from '@/core/prisma';
-import { NotFoundResponse, OkResponse, UnprocessableEntityResponse } from '@/core/responses';
-import { privateCloudProductDetailInclude } from '@/queries/private-cloud-products';
-import {
-  sendProvisionedEmails,
-  sendDeleteRequestApprovalEmails,
-  sendEditRequestCompletedEmails,
-} from '@/services/ches/private-cloud/email-handler';
+import { NotFoundResponse, OkResponse } from '@/core/responses';
+import { privateCloudRequestDetailInclude } from '@/queries/private-cloud-requests';
+import { sendRequestCompletionEmails } from '@/services/ches/private-cloud/email-handler';
 
 const pathParamSchema = z.object({
   licencePlate: z.string(),
@@ -46,6 +42,7 @@ export const PUT = apiHandler(async ({ pathParams }) => {
       provisionedDate: new Date(),
       active: false,
     },
+    include: privateCloudRequestDetailInclude,
   });
 
   const { id, ...decisionData } = request.decisionData;
@@ -64,22 +61,9 @@ export const PUT = apiHandler(async ({ pathParams }) => {
           create: decisionData,
         });
 
-  await Promise.all([updateRequest, upsertProject]);
+  const [updatedRequest] = await Promise.all([updateRequest, upsertProject]);
 
-  const product = await prisma.privateCloudProject.findUnique({
-    where: filter,
-    include: privateCloudProductDetailInclude,
-  });
-
-  if (!product) return UnprocessableEntityResponse('product not found');
-
-  if (request.type == RequestType.CREATE) {
-    await sendProvisionedEmails(product);
-  } else if (request.type == RequestType.DELETE) {
-    await sendDeleteRequestApprovalEmails(product);
-  } else if (request.type == RequestType.EDIT) {
-    await sendEditRequestCompletedEmails(product);
-  }
+  await sendRequestCompletionEmails(updatedRequest);
 
   logger.info(`Successfully marked ${licencePlate} as provisioned.`);
   return OkResponse(`Successfully marked ${licencePlate} as provisioned.`);

@@ -1,10 +1,10 @@
-import { $Enums, DecisionStatus, ProjectStatus, RequestType } from '@prisma/client';
+import { DecisionStatus, ProjectStatus, RequestType } from '@prisma/client';
 import { z } from 'zod';
 import createApiHandler from '@/core/api-handler';
 import prisma from '@/core/prisma';
 import { NotFoundResponse, OkResponse, UnprocessableEntityResponse } from '@/core/responses';
-import { publicCloudProductDetailInclude } from '@/queries/public-cloud-products';
-import { sendProvisionedEmails, sendDeleteRequestApprovalEmails } from '@/services/ches/public-cloud/email-handler';
+import { publicCloudRequestDetailInclude } from '@/queries/public-cloud-requests';
+import { sendRequestCompletionEmails } from '@/services/ches/public-cloud/email-handler';
 
 const pathParamSchema = z.object({
   licencePlate: z.string(),
@@ -41,6 +41,7 @@ export const PUT = apiHandler(async ({ pathParams }) => {
       provisionedDate: new Date(),
       active: false,
     },
+    include: publicCloudRequestDetailInclude,
   });
 
   const { id, ...decisionData } = request.decisionData;
@@ -59,20 +60,9 @@ export const PUT = apiHandler(async ({ pathParams }) => {
           create: decisionData,
         });
 
-  await Promise.all([updateRequest, upsertProject]);
+  const [updatedRequest] = await Promise.all([updateRequest, upsertProject]);
 
-  const product = await prisma.publicCloudProject.findUnique({
-    where: filter,
-    include: publicCloudProductDetailInclude,
-  });
-
-  if (!product) return UnprocessableEntityResponse('product not found');
-
-  if (request.type == 'CREATE') {
-    await sendProvisionedEmails(product);
-  } else if (request.type == 'DELETE') {
-    await sendDeleteRequestApprovalEmails(product);
-  }
+  await sendRequestCompletionEmails(updatedRequest);
 
   return OkResponse(`Successfully marked ${licencePlate} as provisioned.`);
 });

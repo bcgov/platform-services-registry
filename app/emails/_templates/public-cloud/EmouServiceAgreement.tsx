@@ -1,6 +1,7 @@
 import { Heading, Text, Hr } from '@react-email/components';
 import * as React from 'react';
 import PublicCloudLayout from '@/emails/_components/layout/PublicCloudLayout';
+import LinkButton from '@/emails/_components/LinkButton';
 import ProductDetails from '@/emails/_components/ProductDetails';
 import { PublicCloudRequestDetail } from '@/types/public-cloud';
 
@@ -10,8 +11,6 @@ interface Props {
 
 export default function EmouServiceAgreement({ request }: Props) {
   if (!request) return <></>;
-
-  const { id, decisionData } = request;
 
   const {
     name,
@@ -23,7 +22,7 @@ export default function EmouServiceAgreement({ request }: Props) {
     expenseAuthority,
     licencePlate,
     billing,
-  } = decisionData;
+  } = request.decisionData;
 
   const { accountCoding } = billing;
 
@@ -35,8 +34,6 @@ export default function EmouServiceAgreement({ request }: Props) {
         An <span className="font-bold">Electronic Memorandum of Understanding (eMOU)</span> is available for download
         for the product <span className="font-bold">{name}</span> on the Public Cloud.
       </Text>
-
-      <Hr className="my-4" />
 
       <ProductDetails
         name={name}
