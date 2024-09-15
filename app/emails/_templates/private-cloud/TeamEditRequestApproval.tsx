@@ -1,9 +1,9 @@
 import { Button, Heading, Text, Link, Hr } from '@react-email/components';
 import * as React from 'react';
+import ClusterDetails from '@/emails/_components/ClusterDetails';
 import Comment from '@/emails/_components/Comment';
 import PrivateCloudLayout from '@/emails/_components/layout/PrivateCloudLayout';
 import LinkButton from '@/emails/_components/LinkButton';
-import NamespaceDetails from '@/emails/_components/NamespaceDetails';
 import Changes from '@/emails/_components/private-cloud/Changes';
 import ProductDetails from '@/emails/_components/ProductDetails';
 import { PrivateCloudRequestDetail } from '@/types/private-cloud';
@@ -37,16 +37,9 @@ export default function TeamEditRequestApproval({ request }: EmailProp) {
 
       <Comment decisionComment={request.decisionComment} />
 
-      <ProductDetails
-        name={request.decisionData.name}
-        description={request.decisionData.description}
-        ministry={request.decisionData.ministry}
-        po={request.decisionData.projectOwner}
-        tl1={request.decisionData.primaryTechnicalLead}
-        tl2={request.decisionData.secondaryTechnicalLead}
-      />
+      <ProductDetails product={request.decisionData} />
 
-      <NamespaceDetails cluster={request.decisionData.cluster} licencePlate={request.decisionData.licencePlate} />
+      <ClusterDetails product={request.decisionData} showNamespaceInfo />
 
       <Changes request={request} />
     </PrivateCloudLayout>

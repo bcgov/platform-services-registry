@@ -1,8 +1,8 @@
 import { Link, Button, Heading, Text, Hr } from '@react-email/components';
 import * as React from 'react';
+import ClusterDetails from '@/emails/_components/ClusterDetails';
 import PrivateCloudLayout from '@/emails/_components/layout/PrivateCloudLayout';
 import LinkButton from '@/emails/_components/LinkButton';
-import NamespaceDetails from '@/emails/_components/NamespaceDetails';
 import ProductDetails from '@/emails/_components/ProductDetails';
 import { PrivateCloudRequestDetail } from '@/types/private-cloud';
 
@@ -43,20 +43,9 @@ export default function TeamCreateRequestCompletion({ request }: EmailProp) {
 
       <LinkButton href={`/private-cloud/requests/${request.id}/decision`}>View Request</LinkButton>
 
-      <ProductDetails
-        name={decisionData.name}
-        description={decisionData.description}
-        ministry={decisionData.ministry}
-        po={decisionData.projectOwner}
-        tl1={decisionData.primaryTechnicalLead}
-        tl2={decisionData.secondaryTechnicalLead}
-      />
+      <ProductDetails product={request.decisionData} />
 
-      <NamespaceDetails
-        cluster={decisionData.cluster}
-        licencePlate={decisionData.licencePlate}
-        showDefaultResource={true}
-      />
+      <ClusterDetails product={request.decisionData} showNamespaceInfo showDefaultResource />
 
       <Hr className="my-4" />
 

@@ -1,15 +1,16 @@
 import { Heading, Text, Link, Hr } from '@react-email/components';
+import { PrivateCloudProductDetail } from '@/types/private-cloud';
 import { defaultProvisionedResourceValues } from './quotaLookup';
 
-export default function NamespaceDetails({
-  cluster,
-  licencePlate,
-  showDefaultResource = false,
-}: {
-  cluster: string;
-  licencePlate?: string;
+interface Props {
+  product: Pick<PrivateCloudProductDetail, 'cluster' | 'licencePlate'>;
+  showNamespaceInfo?: boolean;
   showDefaultResource?: boolean;
-}) {
+}
+
+export default function ClusterDetails({ product, showNamespaceInfo = false, showDefaultResource = false }: Props) {
+  const { cluster, licencePlate } = product;
+
   return (
     <>
       <Hr className="my-4" />
@@ -18,7 +19,7 @@ export default function NamespaceDetails({
         <Text className="mb-1 font-semibold h-4">OpenShift Cluster: </Text>
         <Text className="mt-1 h-4">{cluster}</Text>
       </div>
-      {licencePlate && (
+      {showNamespaceInfo && (
         <>
           <Text className="mb-0 font-semibold h-4">Development Namespace: </Text>
           <Link

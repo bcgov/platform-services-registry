@@ -7,7 +7,7 @@ import { isEligibleForDeletion } from '@/helpers/openshift';
 import { createEvent } from '@/mutations/events';
 import { getPrivateCloudProduct, excludeProductUsers } from '@/queries/private-cloud-products';
 import { getLastClosedPrivateCloudRequest, privateCloudRequestDetailInclude } from '@/queries/private-cloud-requests';
-import { sendDeleteRequestEmails } from '@/services/ches/private-cloud/email-handler';
+import { sendDeleteRequestEmails } from '@/services/ches/private-cloud';
 import { PrivateCloudRequestDetail } from '@/types/private-cloud';
 import { deletePathParamSchema } from '../[licencePlate]/schema';
 

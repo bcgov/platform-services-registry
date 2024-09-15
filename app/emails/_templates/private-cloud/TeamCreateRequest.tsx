@@ -1,9 +1,9 @@
 import { Button, Heading, Text, Hr } from '@react-email/components';
 import * as React from 'react';
+import ClusterDetails from '@/emails/_components/ClusterDetails';
 import Comment from '@/emails/_components/Comment';
 import PrivateCloudLayout from '@/emails/_components/layout/PrivateCloudLayout';
 import LinkButton from '@/emails/_components/LinkButton';
-import NamespaceDetails from '@/emails/_components/NamespaceDetails';
 import ProductDetails from '@/emails/_components/ProductDetails';
 import { PrivateCloudRequestDetail } from '@/types/private-cloud';
 
@@ -28,16 +28,9 @@ export default function TeamCreateRequest({ request, requester }: EmailProp) {
 
       <Comment requestComment={request.requestComment} />
 
-      <ProductDetails
-        name={request.decisionData.name}
-        description={request.decisionData.description}
-        ministry={request.decisionData.ministry}
-        po={request.decisionData.projectOwner}
-        tl1={request.decisionData.primaryTechnicalLead}
-        tl2={request.decisionData.secondaryTechnicalLead}
-      />
+      <ProductDetails product={request.decisionData} />
 
-      <NamespaceDetails cluster={request.decisionData.cluster} />
+      <ClusterDetails product={request.decisionData} showNamespaceInfo />
     </PrivateCloudLayout>
   );
 }

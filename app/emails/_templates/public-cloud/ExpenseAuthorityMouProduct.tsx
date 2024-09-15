@@ -12,17 +12,7 @@ interface Props {
 export default function ExpenseAuthorityMouProduct({ product }: Props) {
   if (!product) return <></>;
 
-  const {
-    name,
-    description,
-    ministry,
-    projectOwner,
-    primaryTechnicalLead,
-    secondaryTechnicalLead,
-    expenseAuthority,
-    licencePlate,
-    billing,
-  } = product;
+  const { name, expenseAuthority, billing } = product;
 
   const { accountCoding } = billing;
 
@@ -37,16 +27,8 @@ export default function ExpenseAuthorityMouProduct({ product }: Props) {
 
       <LinkButton href={`/public-cloud/products/${product.licencePlate}/edit`}>Review Product</LinkButton>
 
-      <ProductDetails
-        name={name}
-        description={description}
-        ministry={ministry}
-        po={projectOwner}
-        tl1={primaryTechnicalLead}
-        tl2={secondaryTechnicalLead}
-        expenseAuthority={expenseAuthority}
-        licencePlate={licencePlate}
-      />
+      <ProductDetails product={product} />
+
       <div>
         <Text className="mb-2 font-semibold h-4">Account Coding:</Text>
         <Text className="mt-0 mb-2 h-4">{accountCoding}</Text>

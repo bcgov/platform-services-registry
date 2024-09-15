@@ -11,22 +11,7 @@ interface EmailProp {
 }
 
 export default function TeamDeleteRequestCompletion({ request }: EmailProp) {
-  const {
-    name,
-    description,
-    ministry,
-    projectOwner,
-    primaryTechnicalLead,
-    secondaryTechnicalLead,
-    expenseAuthority,
-    provider,
-    billing,
-    budget,
-    licencePlate,
-    environmentsEnabled,
-  } = request.decisionData;
-
-  const { accountCoding } = billing;
+  const { name, provider } = request.decisionData;
 
   return (
     <PublicCloudLayout>
@@ -68,23 +53,9 @@ export default function TeamDeleteRequestCompletion({ request }: EmailProp) {
 
       <LinkButton href={`/public-cloud/requests/${request.id}/request`}>View Request</LinkButton>
 
-      <ProductDetails
-        name={name}
-        description={description}
-        ministry={ministry}
-        po={projectOwner}
-        tl1={primaryTechnicalLead}
-        tl2={secondaryTechnicalLead}
-        expenseAuthority={expenseAuthority}
-        licencePlate={licencePlate}
-      />
+      <ProductDetails product={request.decisionData} />
 
-      <ProviderDetails
-        provider={provider}
-        accountCoding={accountCoding}
-        budget={budget}
-        environmentsEnabled={environmentsEnabled}
-      />
+      <ProviderDetails product={request.decisionData} />
     </PublicCloudLayout>
   );
 }

@@ -4,7 +4,7 @@ import { z, TypeOf, ZodType } from 'zod';
 import { OkResponse, UnauthorizedResponse } from '@/core/responses';
 import { getPublicCloudProduct } from '@/queries/public-cloud-products';
 import editRequest from '@/request-actions/public-cloud/edit-request';
-import { sendEditRequestEmails } from '@/services/ches/public-cloud/email-handler';
+import { sendEditRequestEmails } from '@/services/ches/public-cloud';
 import { subscribeUsersToMautic } from '@/services/mautic';
 import { sendPublicCloudNatsMessage } from '@/services/nats';
 import { PublicCloudEditRequestBody } from '@/validation-schemas/public-cloud';

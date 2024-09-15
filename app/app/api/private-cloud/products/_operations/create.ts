@@ -1,7 +1,7 @@
 import { Session } from 'next-auth';
 import { OkResponse, UnauthorizedResponse } from '@/core/responses';
 import createRequest from '@/request-actions/private-cloud/create-request';
-import { sendCreateRequestEmails } from '@/services/ches/private-cloud/email-handler';
+import { sendCreateRequestEmails } from '@/services/ches/private-cloud';
 import { PrivateCloudCreateRequestBody } from '@/validation-schemas/private-cloud';
 
 export default async function createOp({ session, body }: { session: Session; body: PrivateCloudCreateRequestBody }) {

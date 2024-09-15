@@ -1,5 +1,7 @@
+import { render } from '@react-email/render';
 import _castArray from 'lodash-es/castArray';
 import _compact from 'lodash-es/compact';
+import _toLower from 'lodash-es/toLower';
 import _uniq from 'lodash-es/uniq';
 import { EMAIL_PREFIX, CHES_TOKEN_URL, CHES_API_URL, CHES_CLIENT_ID, CHES_CLIENT_SECRET } from '@/config';
 import { logger } from '@/core/logging';
@@ -33,7 +35,7 @@ interface TokenData {
   clientSecret: string;
 }
 
-const safeEmails = (emails: Array<NullOrString>): string[] => _uniq(_compact(_castArray(emails)));
+const safeEmails = (emails: Array<NullOrString>): string[] => _uniq(_compact(_castArray(emails)).map(_toLower));
 
 const fetchWithTimeout = async (
   resource: RequestInfo,
@@ -77,7 +79,7 @@ const getToken = async ({ tokenUrl, clientId, clientSecret }: TokenData): Promis
   return data.access_token;
 };
 
-const sendEmail = async (email: Email): Promise<void> => {
+export const sendEmail = async (email: Email): Promise<void> => {
   if (!CHES_TOKEN_URL || !CHES_CLIENT_ID || !CHES_CLIENT_SECRET) {
     logger.error('Missing environment variables for email service');
     return;
@@ -96,42 +98,39 @@ const sendEmail = async (email: Email): Promise<void> => {
     return;
   }
 
-  try {
-    const apiUrl = CHES_API_URL || '';
-    const subject = `${EMAIL_PREFIX}${email.subject}`;
+  const apiUrl = CHES_API_URL || '';
+  const subject = `${EMAIL_PREFIX}${email.subject}`;
 
-    const response = await fetchWithTimeout(`${apiUrl}/email`, {
-      method: 'POST',
-      headers: {
-        Authorization: `Bearer ${token}`,
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        bodyType: email.bodyType || 'html',
-        from: email.from || 'Registry <PlatformServicesTeam@gov.bc.ca>',
-        subject: subject,
-        body: email.body,
-        to: safeEmails(email.to),
-        // Provide an empty array as a fallback if bcc or cc is undefined
-        bcc: safeEmails(email.bcc || []),
-        cc: safeEmails(email.cc || []),
-        delayTS: email.delayTS,
-        encoding: email.encoding || 'utf-8',
-        priority: email.priority || 'normal',
-        tag: email.tag,
-        attachments: email.attachments,
-      }),
-    });
+  const response = await fetchWithTimeout(`${apiUrl}/email`, {
+    method: 'POST',
+    headers: {
+      Authorization: `Bearer ${token}`,
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({
+      bodyType: email.bodyType || 'html',
+      from: email.from || 'Registry <PlatformServicesTeam@gov.bc.ca>',
+      subject: subject,
+      body: email.body,
+      to: safeEmails(email.to),
+      // Provide an empty array as a fallback if bcc or cc is undefined
+      bcc: safeEmails(email.bcc || []),
+      cc: safeEmails(email.cc || []),
+      delayTS: email.delayTS,
+      encoding: email.encoding || 'utf-8',
+      priority: email.priority || 'normal',
+      tag: email.tag,
+      attachments: email.attachments,
+    }),
+  });
 
-    if (!response.ok) {
-      logger.error('Error sending email:', await response.json());
-      return;
-    }
-
-    const data = await response.json();
-  } catch (error) {
-    logger.error('sendEmail:', error);
+  if (!response.ok) {
+    logger.error('Error sending email:', await response.json());
+    return;
   }
+
+  const data = await response.json();
+  return data;
 };
 
-export { sendEmail };
+export const getContent = (jsx: JSX.Element) => render(jsx, { pretty: false });

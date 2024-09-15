@@ -3,11 +3,7 @@ import { z } from 'zod';
 import createApiHandler from '@/core/api-handler';
 import { BadRequestResponse, OkResponse, UnauthorizedResponse } from '@/core/responses';
 import makeRequestDecision from '@/request-actions/public-cloud/decision-request';
-import {
-  sendExpenseAuthorityEmail,
-  sendRequestRejectionEmails,
-  sendRequestApprovalEmails,
-} from '@/services/ches/public-cloud/email-handler';
+import { sendRequestRejectionEmails, sendRequestApprovalEmails } from '@/services/ches/public-cloud';
 import { subscribeUsersToMautic } from '@/services/mautic';
 import { sendPublicCloudNatsMessage } from '@/services/nats';
 import { PermissionsEnum } from '@/types/permissions';

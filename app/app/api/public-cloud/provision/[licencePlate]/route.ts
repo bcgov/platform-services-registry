@@ -4,7 +4,7 @@ import createApiHandler from '@/core/api-handler';
 import prisma from '@/core/prisma';
 import { NotFoundResponse, OkResponse, UnprocessableEntityResponse } from '@/core/responses';
 import { publicCloudRequestDetailInclude } from '@/queries/public-cloud-requests';
-import { sendRequestCompletionEmails } from '@/services/ches/public-cloud/email-handler';
+import { sendRequestCompletionEmails } from '@/services/ches/public-cloud';
 
 const pathParamSchema = z.object({
   licencePlate: z.string(),

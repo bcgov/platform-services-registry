@@ -13,22 +13,7 @@ interface EmailProp {
 export default function TeamCreateRequestRejection({ request }: EmailProp) {
   if (!request) return <></>;
 
-  const {
-    name,
-    description,
-    ministry,
-    provider,
-    projectOwner,
-    primaryTechnicalLead,
-    secondaryTechnicalLead,
-    expenseAuthority,
-    licencePlate,
-    budget,
-    billing,
-    environmentsEnabled,
-  } = request.decisionData;
-
-  const { accountCoding } = billing;
+  const { name } = request.decisionData;
 
   return (
     <PublicCloudLayout>
@@ -45,23 +30,9 @@ export default function TeamCreateRequestRejection({ request }: EmailProp) {
 
       <LinkButton href={`/public-cloud/requests/${request.id}/request`}>View Request</LinkButton>
 
-      <ProductDetails
-        name={name}
-        description={description}
-        ministry={ministry}
-        po={projectOwner}
-        tl1={primaryTechnicalLead}
-        tl2={secondaryTechnicalLead}
-        expenseAuthority={expenseAuthority}
-        licencePlate={licencePlate}
-      />
+      <ProductDetails product={request.decisionData} />
 
-      <ProviderDetails
-        provider={provider}
-        accountCoding={accountCoding}
-        budget={budget}
-        environmentsEnabled={environmentsEnabled}
-      />
+      <ProviderDetails product={request.decisionData} />
     </PublicCloudLayout>
   );
 }
