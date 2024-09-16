@@ -5,10 +5,7 @@ import prisma from '@/core/prisma';
 import { BadRequestResponse, OkResponse, UnauthorizedResponse } from '@/core/responses';
 import { formatFullName } from '@/helpers/user';
 import { publicCloudRequestDetailInclude } from '@/queries/public-cloud-requests';
-import {
-  sendAdminCreateRequestEmails,
-  sendEmouServiceAgreementEmail,
-} from '@/services/ches/public-cloud/email-handler';
+import { sendAdminCreateRequestEmails } from '@/services/ches/public-cloud';
 
 const pathParamSchema = z.object({
   licencePlate: z.string(),

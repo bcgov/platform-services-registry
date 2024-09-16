@@ -5,7 +5,7 @@ import { logger } from '@/core/logging';
 import prisma from '@/core/prisma';
 import { NotFoundResponse, OkResponse } from '@/core/responses';
 import { privateCloudRequestDetailInclude } from '@/queries/private-cloud-requests';
-import { sendRequestCompletionEmails } from '@/services/ches/private-cloud/email-handler';
+import { sendRequestCompletionEmails } from '@/services/ches/private-cloud';
 
 const pathParamSchema = z.object({
   licencePlate: z.string(),

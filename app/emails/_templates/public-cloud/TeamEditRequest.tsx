@@ -3,6 +3,8 @@ import * as React from 'react';
 import Comment from '@/emails/_components/Comment';
 import PublicCloudLayout from '@/emails/_components/layout/PublicCloudLayout';
 import LinkButton from '@/emails/_components/LinkButton';
+import ProductDetails from '@/emails/_components/ProductDetails';
+import ProviderDetails from '@/emails/_components/ProviderDetails';
 import Changes from '@/emails/_components/public-cloud/Changes';
 import { PublicCloudRequestDetail } from '@/types/public-cloud';
 
@@ -28,6 +30,10 @@ export default function TeamEditRequest({ request, requester }: EmailProp) {
       <LinkButton href={`/public-cloud/requests/${request.id}/request`}>View Request</LinkButton>
 
       <Comment requestComment={request.requestComment} />
+
+      <ProductDetails product={request.decisionData} />
+
+      <ProviderDetails product={request.decisionData} />
 
       <Changes request={request} />
     </PublicCloudLayout>

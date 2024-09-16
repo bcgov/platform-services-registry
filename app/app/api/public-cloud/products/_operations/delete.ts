@@ -6,7 +6,7 @@ import { BadRequestResponse, OkResponse, UnauthorizedResponse } from '@/core/res
 import { createEvent } from '@/mutations/events';
 import { getPublicCloudProduct, excludeProductUsers } from '@/queries/public-cloud-products';
 import { getLastClosedPublicCloudRequest, publicCloudRequestDetailInclude } from '@/queries/public-cloud-requests';
-import { sendDeleteRequestEmails } from '@/services/ches/public-cloud/email-handler';
+import { sendDeleteRequestEmails } from '@/services/ches/public-cloud';
 import { PublicCloudRequestDetail } from '@/types/public-cloud';
 import { deletePathParamSchema } from '../[licencePlate]/schema';
 

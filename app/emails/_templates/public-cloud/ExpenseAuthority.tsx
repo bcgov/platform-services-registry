@@ -12,16 +12,7 @@ interface EmailProp {
 export default function ExpenseAuthority({ request }: EmailProp) {
   if (!request) return <></>;
 
-  const {
-    name,
-    description,
-    ministry,
-    projectOwner,
-    primaryTechnicalLead,
-    secondaryTechnicalLead,
-    expenseAuthority,
-    licencePlate,
-  } = request.decisionData;
+  const { name, expenseAuthority } = request.decisionData;
 
   return (
     <PublicCloudLayout>
@@ -31,16 +22,7 @@ export default function ExpenseAuthority({ request }: EmailProp) {
 
       <LinkButton href={`/public-cloud/products/${request.decisionData.licencePlate}/edit`}>Review Product</LinkButton>
 
-      <ProductDetails
-        name={name}
-        description={description}
-        ministry={ministry}
-        po={projectOwner}
-        tl1={primaryTechnicalLead}
-        tl2={secondaryTechnicalLead}
-        expenseAuthority={expenseAuthority}
-        licencePlate={licencePlate}
-      />
+      <ProductDetails product={request.decisionData} />
     </PublicCloudLayout>
   );
 }

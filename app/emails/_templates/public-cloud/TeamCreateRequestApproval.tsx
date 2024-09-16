@@ -14,22 +14,7 @@ interface EmailProp {
 export default function TeamCreateRequestApproval({ request }: EmailProp) {
   if (!request) return <></>;
 
-  const {
-    name,
-    description,
-    ministry,
-    projectOwner,
-    primaryTechnicalLead,
-    secondaryTechnicalLead,
-    expenseAuthority,
-    provider,
-    billing,
-    budget,
-    licencePlate,
-    environmentsEnabled,
-  } = request.decisionData;
-
-  const { accountCoding } = billing;
+  const { provider } = request.decisionData;
 
   return (
     <PublicCloudLayout>
@@ -56,23 +41,9 @@ export default function TeamCreateRequestApproval({ request }: EmailProp) {
 
       <Comment decisionComment={request.decisionComment} />
 
-      <ProductDetails
-        name={name}
-        description={description}
-        ministry={ministry}
-        po={projectOwner}
-        tl1={primaryTechnicalLead}
-        tl2={secondaryTechnicalLead}
-        expenseAuthority={expenseAuthority}
-        licencePlate={licencePlate}
-      />
+      <ProductDetails product={request.decisionData} />
 
-      <ProviderDetails
-        provider={provider}
-        accountCoding={accountCoding}
-        budget={budget}
-        environmentsEnabled={environmentsEnabled}
-      />
+      <ProviderDetails product={request.decisionData} />
     </PublicCloudLayout>
   );
 }

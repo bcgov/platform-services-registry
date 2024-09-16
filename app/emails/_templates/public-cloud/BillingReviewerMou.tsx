@@ -13,17 +13,7 @@ interface Props {
 export default function BillingReviewerMou({ request }: Props) {
   if (!request) return <></>;
 
-  const {
-    name,
-    description,
-    ministry,
-    projectOwner,
-    primaryTechnicalLead,
-    secondaryTechnicalLead,
-    expenseAuthority,
-    licencePlate,
-    billing,
-  } = request.decisionData;
+  const { name, expenseAuthority, billing } = request.decisionData;
 
   const { accountCoding } = billing;
 
@@ -38,16 +28,8 @@ export default function BillingReviewerMou({ request }: Props) {
 
       <LinkButton href={`/public-cloud/requests/${request.id}/request`}>Review Request</LinkButton>
 
-      <ProductDetails
-        name={name}
-        description={description}
-        ministry={ministry}
-        po={projectOwner}
-        tl1={primaryTechnicalLead}
-        tl2={secondaryTechnicalLead}
-        expenseAuthority={expenseAuthority}
-        licencePlate={licencePlate}
-      />
+      <ProductDetails product={request.decisionData} />
+
       <div>
         <Text className="mb-2 font-semibold h-4">Account Coding:</Text>
         <Text className="mt-0 mb-2 h-4">{accountCoding}</Text>

@@ -1,10 +1,10 @@
 import { Button, Heading, Text, Link, Hr } from '@react-email/components';
 import * as React from 'react';
 import { BASE_URL } from '@/config';
+import ClusterDetails from '@/emails/_components/ClusterDetails';
 import Comment from '@/emails/_components/Comment';
 import PrivateCloudLayout from '@/emails/_components/layout/PrivateCloudLayout';
 import LinkButton from '@/emails/_components/LinkButton';
-import NamespaceDetails from '@/emails/_components/NamespaceDetails';
 import ProductDetails from '@/emails/_components/ProductDetails';
 import { PrivateCloudRequestDetail } from '@/types/private-cloud';
 
@@ -36,16 +36,9 @@ export default function TeamCreateRequestRejection({ request }: EmailProp) {
 
       <LinkButton href={`/private-cloud/requests/${request.id}/decision`}>View Request</LinkButton>
 
-      <ProductDetails
-        name={decisionData.name}
-        description={decisionData.description}
-        ministry={decisionData.ministry}
-        po={decisionData.projectOwner}
-        tl1={decisionData.primaryTechnicalLead}
-        tl2={decisionData.secondaryTechnicalLead}
-      />
+      <ProductDetails product={request.decisionData} />
 
-      <NamespaceDetails cluster={request.decisionData.cluster} />
+      <ClusterDetails product={request.decisionData} />
     </PrivateCloudLayout>
   );
 }

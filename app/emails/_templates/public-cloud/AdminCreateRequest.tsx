@@ -26,23 +26,9 @@ export default function AdminCreateRequest({ request, requester }: EmailProp) {
 
       <LinkButton href={`/public-cloud/requests/${request.id}/request`}>Review Request</LinkButton>
 
-      <ProductDetails
-        name={request.decisionData.name}
-        description={request.decisionData.description}
-        ministry={request.decisionData.ministry}
-        po={request.decisionData.projectOwner}
-        tl1={request.decisionData.primaryTechnicalLead}
-        tl2={request.decisionData.secondaryTechnicalLead}
-        expenseAuthority={request.decisionData.expenseAuthority}
-        licencePlate={request.decisionData.licencePlate}
-      />
+      <ProductDetails product={request.decisionData} />
 
-      <ProviderDetails
-        provider={request.decisionData.provider}
-        accountCoding={request.decisionData.billing.accountCoding}
-        budget={request.decisionData.budget}
-        environmentsEnabled={request.decisionData.environmentsEnabled}
-      />
+      <ProviderDetails product={request.decisionData} />
     </PublicCloudLayout>
   );
 }

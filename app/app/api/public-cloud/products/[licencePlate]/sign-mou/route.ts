@@ -1,12 +1,10 @@
-import { DecisionStatus, User, RequestType, TaskStatus, TaskType } from '@prisma/client';
+import { TaskStatus, TaskType } from '@prisma/client';
 import { z } from 'zod';
-import { AUTH_RESOURCE } from '@/config';
 import createApiHandler from '@/core/api-handler';
 import prisma from '@/core/prisma';
 import { BadRequestResponse, OkResponse, UnauthorizedResponse } from '@/core/responses';
 import { publicCloudRequestDetailInclude } from '@/queries/public-cloud-requests';
-import { sendPublicCloudBillingReviewEmails } from '@/services/ches/public-cloud/email-handler';
-import { findUsersByClientRole } from '@/services/keycloak/app-realm';
+import { sendPublicCloudBillingReviewEmails } from '@/services/ches/public-cloud';
 
 const pathParamSchema = z.object({
   licencePlate: z.string(),
@@ -75,12 +73,7 @@ export const POST = apiHandler(async ({ pathParams, body, session }) => {
     },
   });
 
-  // Retrieve billing reviewers from the Keycloak realm
-  const billingReviewers = await findUsersByClientRole(AUTH_RESOURCE, 'billing-reviewer');
-  await sendPublicCloudBillingReviewEmails(
-    request,
-    billingReviewers.map((v) => v.email ?? ''),
-  );
+  await sendPublicCloudBillingReviewEmails(request);
 
   return OkResponse(true);
 });
