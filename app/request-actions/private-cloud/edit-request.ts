@@ -2,12 +2,12 @@ import { $Enums, DecisionStatus, Prisma, RequestType, EventType } from '@prisma/
 import _toNumber from 'lodash-es/toNumber';
 import { Session } from 'next-auth';
 import prisma from '@/core/prisma';
+import { checkIfAutoApprovalBasicsAndUsage, isNoQuotaChanged } from '@/helpers/auto-approval-check';
 import { comparePrivateProductData } from '@/helpers/product-change';
-import { isQuotaUpgrade, isResourceUtilized } from '@/helpers/quota-change';
 import { createEvent } from '@/mutations/events';
 import { getLastClosedPrivateCloudRequest, privateCloudRequestDetailInclude } from '@/queries/private-cloud-requests';
 import { upsertUsers } from '@/services/db/user';
-import { PrivateCloudProductSimple, PrivateCloudRequestDetail } from '@/types/private-cloud';
+import { PrivateCloudRequestDetail } from '@/types/private-cloud';
 import { PrivateCloudEditRequestBody } from '@/validation-schemas/private-cloud';
 
 export default async function editRequest(
@@ -53,23 +53,28 @@ export default async function editRequest(
       : undefined,
   };
 
-  // The edit request will require manual admin approval if any of the quotas are being changed.
-  const isNoQuotaChanged =
-    JSON.stringify(formData.productionQuota) === JSON.stringify(project.productionQuota) &&
-    JSON.stringify(formData.testQuota) === JSON.stringify(project.testQuota) &&
-    JSON.stringify(formData.developmentQuota) === JSON.stringify(project.developmentQuota) &&
-    JSON.stringify(formData.toolsQuota) === JSON.stringify(project.toolsQuota);
-
   let decisionStatus: DecisionStatus;
 
   const hasGolddrEnabledChanged =
     project.cluster === $Enums.Cluster.GOLD && project.golddrEnabled !== formData.golddrEnabled;
 
+  const requestedQuota = {
+    testQuota: formData.testQuota,
+    toolsQuota: formData.toolsQuota,
+    developmentQuota: formData.developmentQuota,
+    productionQuota: formData.productionQuota,
+  };
+
+  const currentQuota = {
+    testQuota: project.testQuota,
+    toolsQuota: project.toolsQuota,
+    developmentQuota: project.developmentQuota,
+    productionQuota: project.productionQuota,
+  };
+
   // If there is no quota change or no quota upgrade and no golddr flag changes, the request is automatically approved
   if (
-    (isNoQuotaChanged ||
-      !isQuotaUpgrade(formData, project) ||
-      isResourceUtilized(project as PrivateCloudProductSimple, formData)) &&
+    checkIfAutoApprovalBasicsAndUsage(currentQuota, requestedQuota, project.licencePlate, project.cluster) &&
     !hasGolddrEnabledChanged
   ) {
     decisionStatus = DecisionStatus.APPROVED;
@@ -82,7 +87,7 @@ export default async function editRequest(
 
   const { changes, ...otherChangeMeta } = comparePrivateProductData(rest, previousRequest?.decisionData);
 
-  const quotaChangeInfo = isNoQuotaChanged
+  const quotaChangeInfo = isNoQuotaChanged(currentQuota, requestedQuota)
     ? {}
     : {
         quotaContactName,
