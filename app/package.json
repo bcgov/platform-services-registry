@@ -66,7 +66,7 @@
     "csv-parse": "^5.5.3",
     "csv-stringify": "^6.4.4",
     "d3-array": "^3.2.4",
-    "date-fns": "^3.6.0",
+    "date-fns": "^4.0.0",
     "https-proxy-agent": "^7.0.2",
     "jsonwebtoken": "^9.0.2",
     "just-diff": "^6.0.2",
