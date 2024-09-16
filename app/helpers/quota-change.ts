@@ -1,6 +1,10 @@
-import { isResourseUpgrade } from '@/../../app/helpers/auto-approval-check';
+import { extractNumbers } from '@/utils/string';
 
-// revisit after merge - is used in emails templates, there are changes
+export const isResourseUpgrade = (req: string, prod: string) => {
+  return extractNumbers(req)[0] > extractNumbers(prod)[0];
+};
+
+// revisit after merge - is used in emails templates, there
 export const isQuotaUpgrade = (request: any, product: any) => {
   return (
     isResourseUpgrade(request.productionQuota.cpu, product.productionQuota.cpu) ||
