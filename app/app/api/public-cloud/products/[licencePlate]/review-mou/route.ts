@@ -5,7 +5,7 @@ import prisma from '@/core/prisma';
 import { BadRequestResponse, OkResponse, UnauthorizedResponse } from '@/core/responses';
 import { formatFullName } from '@/helpers/user';
 import { publicCloudRequestDetailInclude } from '@/queries/public-cloud-requests';
-import { sendRequestReviewEmails, sendEmouServiceAgreementEmail } from '@/services/ches/public-cloud/email-handler';
+import { sendAdminCreateRequestEmails } from '@/services/ches/public-cloud';
 
 const pathParamSchema = z.object({
   licencePlate: z.string(),
@@ -78,10 +78,7 @@ export const POST = apiHandler(async ({ pathParams, body, session }) => {
       // Keep the billing information up to date.
       request.decisionData.billing = billing;
 
-      await Promise.all([
-        sendRequestReviewEmails(request, formatFullName(requester)),
-        sendEmouServiceAgreementEmail(request),
-      ]);
+      await sendAdminCreateRequestEmails(request, formatFullName(requester));
     }
   }
 

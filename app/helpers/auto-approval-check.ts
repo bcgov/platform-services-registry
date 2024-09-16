@@ -38,7 +38,7 @@ const isAnyResouseUpgrade = (requestedQuota: Quota, currentQuota: Quota): boolea
 };
 
 // if quota was changed check if it was undngrade quota request
-const isQuotaUpgrade = (currentQuota: Quotas, requestedQuota: Quotas): boolean => {
+export const isQuotaUpgrade = (currentQuota: Quotas, requestedQuota: Quotas): boolean => {
   const quotaKeys: (keyof Quotas)[] = ['productionQuota', 'developmentQuota', 'testQuota', 'toolsQuota'];
   return quotaKeys.some((key) => isAnyResouseUpgrade(currentQuota[key], requestedQuota[key]));
 };

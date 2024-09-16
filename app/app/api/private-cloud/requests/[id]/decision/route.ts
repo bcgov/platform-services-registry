@@ -1,10 +1,10 @@
-import { $Enums, DecisionStatus, User } from '@prisma/client';
+import { DecisionStatus, User } from '@prisma/client';
 import { z } from 'zod';
 import createApiHandler from '@/core/api-handler';
 import { BadRequestResponse, OkResponse, UnauthorizedResponse } from '@/core/responses';
 import { sendRequestNatsMessage } from '@/helpers/nats-message';
 import makeRequestDecision from '@/request-actions/private-cloud/decision-request';
-import { sendRequestRejectionEmails, sendRequestApprovalEmails } from '@/services/ches/private-cloud/email-handler';
+import { sendRequestRejectionEmails, sendRequestApprovalEmails } from '@/services/ches/private-cloud';
 import { subscribeUsersToMautic } from '@/services/mautic';
 import { PermissionsEnum } from '@/types/permissions';
 import { privateCloudRequestDecisionBodySchema } from '@/validation-schemas/private-cloud';

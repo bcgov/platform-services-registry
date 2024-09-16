@@ -1,17 +1,13 @@
-import { EnvironmentsEnabled, Budget } from '@prisma/client';
-import { Text } from '@react-email/components';
+import { Text, Hr } from '@react-email/components';
+import { PublicCloudProductDetail } from '@/types/public-cloud';
 
-export default function ProviderDetails({
-  provider,
-  accountCoding,
-  budget = { dev: 0, test: 0, prod: 0, tools: 0 },
-  environmentsEnabled,
-}: {
-  provider: string;
-  accountCoding: string;
-  budget: Budget;
-  environmentsEnabled: EnvironmentsEnabled;
-}) {
+interface Props {
+  product: Pick<PublicCloudProductDetail, 'provider' | 'billing' | 'budget' | 'environmentsEnabled'>;
+}
+
+export default function ProviderDetails({ product }: Props) {
+  const { provider, billing, budget, environmentsEnabled } = product;
+
   const totalBudget =
     (environmentsEnabled.development ? budget.dev : 0) +
     (environmentsEnabled.test ? budget.test : 0) +
@@ -19,7 +15,8 @@ export default function ProviderDetails({
     (environmentsEnabled.tools ? budget.tools : 0);
 
   return (
-    <div>
+    <>
+      <Hr className="my-4" />
       <Text className="text-lg font-bold">Landing Zone Details</Text>
       <div>
         <div>
@@ -54,8 +51,8 @@ export default function ProviderDetails({
           </Text>
         </div>
         <Text className="font-semibold mt-2 mb-0">Account Coding</Text>
-        <Text className="mt-0">{accountCoding}</Text>
+        <Text className="mt-0">{billing.accountCoding}</Text>
       </div>
-    </div>
+    </>
   );
 }

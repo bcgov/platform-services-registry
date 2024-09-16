@@ -1,44 +1,36 @@
 import { Button, Heading, Text, Hr } from '@react-email/components';
 import * as React from 'react';
+import ClusterDetails from '@/emails/_components/ClusterDetails';
+import Comment from '@/emails/_components/Comment';
 import PrivateCloudLayout from '@/emails/_components/layout/PrivateCloudLayout';
-import NamespaceDetails from '@/emails/_components/NamespaceDetails';
+import LinkButton from '@/emails/_components/LinkButton';
 import ProductDetails from '@/emails/_components/ProductDetails';
 import { PrivateCloudRequestDetail } from '@/types/private-cloud';
 
 interface EmailProp {
   request: PrivateCloudRequestDetail;
-  userName: string;
+  requester: string;
 }
 
-const NewRequestTemplate = ({ request, userName }: EmailProp) => {
+export default function AdminCreateRequest({ request, requester }: EmailProp) {
   if (!request) return <></>;
 
   return (
-    <PrivateCloudLayout requester={userName}>
+    <PrivateCloudLayout requester={requester}>
       <Heading className="text-lg">New Request!</Heading>
-      <Text>Hi Registry Team, </Text>
+      <Text>Hi Registry Team,</Text>
       <Text>
         There is a new request that requires your review. Log in to the Registry to review the details. If you have any
         questions about the request, the PO and TL contact details are included below and in the Registry.
       </Text>
-      <Button href="https://registry.developer.gov.bc.ca/" className="bg-bcorange rounded-md px-4 py-2 text-white">
-        Review Request
-      </Button>
 
-      <Hr className="my-4" />
+      <LinkButton href={`/private-cloud/requests/${request.id}/decision`}>Review Request</LinkButton>
 
-      <ProductDetails
-        name={request.decisionData.name}
-        description={request.decisionData.description}
-        ministry={request.decisionData.ministry}
-        po={request.decisionData.projectOwner}
-        tl1={request.decisionData.primaryTechnicalLead}
-        tl2={request.decisionData.secondaryTechnicalLead}
-      />
+      <Comment requestComment={request.requestComment} />
 
-      <NamespaceDetails cluster={request.decisionData.cluster} showNamespaceDetailsTitle={false} />
+      <ProductDetails product={request.decisionData} />
+
+      <ClusterDetails product={request.decisionData} />
     </PrivateCloudLayout>
   );
-};
-
-export default NewRequestTemplate;
+}

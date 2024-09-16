@@ -1,15 +1,11 @@
-import { $Enums, DecisionStatus, RequestType } from '@prisma/client';
+import { $Enums, DecisionStatus, RequestType, ProjectStatus } from '@prisma/client';
 import { z } from 'zod';
 import createApiHandler from '@/core/api-handler';
 import { logger } from '@/core/logging';
 import prisma from '@/core/prisma';
 import { NotFoundResponse, OkResponse } from '@/core/responses';
-import {
-  sendProvisionedEmails,
-  sendDeleteRequestApprovalEmails,
-  sendEditRequestCompletedEmails,
-} from '@/services/ches/private-cloud/email-handler';
-import { PrivateCloudRequestedProjectWithContacts } from '@/services/nats/private-cloud';
+import { privateCloudRequestDetailInclude } from '@/queries/private-cloud-requests';
+import { sendRequestCompletionEmails } from '@/services/ches/private-cloud';
 
 const pathParamSchema = z.object({
   licencePlate: z.string(),
@@ -46,6 +42,7 @@ export const PUT = apiHandler(async ({ pathParams }) => {
       provisionedDate: new Date(),
       active: false,
     },
+    include: privateCloudRequestDetailInclude,
   });
 
   const { id, ...decisionData } = request.decisionData;
@@ -53,10 +50,10 @@ export const PUT = apiHandler(async ({ pathParams }) => {
   // Upsert the project with the requested project data. If admin requested project data exists, use that instead.
   const filter = { licencePlate };
   const upsertProject =
-    request.type === $Enums.RequestType.DELETE
+    request.type === RequestType.DELETE
       ? prisma.privateCloudProject.update({
           where: filter,
-          data: { status: $Enums.ProjectStatus.INACTIVE },
+          data: { status: ProjectStatus.INACTIVE },
         })
       : prisma.privateCloudProject.upsert({
           where: filter,
@@ -64,25 +61,9 @@ export const PUT = apiHandler(async ({ pathParams }) => {
           create: decisionData,
         });
 
-  await Promise.all([updateRequest, upsertProject]);
+  const [updatedRequest] = await Promise.all([updateRequest, upsertProject]);
 
-  // Note: For some reason this information cannot be retrieved from the transaction above without failing the test
-  const project = await prisma.privateCloudProject.findUnique({
-    where: filter,
-    include: {
-      projectOwner: true,
-      primaryTechnicalLead: true,
-      secondaryTechnicalLead: true,
-    },
-  });
-
-  if (request.type == RequestType.CREATE) {
-    await sendProvisionedEmails(project as PrivateCloudRequestedProjectWithContacts);
-  } else if (request.type == RequestType.DELETE) {
-    await sendDeleteRequestApprovalEmails(project as PrivateCloudRequestedProjectWithContacts);
-  } else if (request.type == RequestType.EDIT) {
-    await sendEditRequestCompletedEmails(project as PrivateCloudRequestedProjectWithContacts);
-  }
+  await sendRequestCompletionEmails(updatedRequest);
 
   logger.info(`Successfully marked ${licencePlate} as provisioned.`);
   return OkResponse(`Successfully marked ${licencePlate} as provisioned.`);

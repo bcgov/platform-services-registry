@@ -30,8 +30,8 @@ jest.mock('@/services/nats/core', () => ({
   sendNatsMessage: jest.fn(),
 }));
 
-jest.mock('@/services/ches/private-cloud/email-handler', () => ({
-  ...jest.requireActual('@/services/ches/private-cloud/email-handler'),
+jest.mock('@/services/ches/private-cloud', () => ({
+  ...jest.requireActual('@/services/ches/private-cloud'),
   sendCreateRequestEmails: jest.fn(async () => [200]),
   sendEditRequestEmails: jest.fn(async () => [200]),
   sendRequestApprovalEmails: jest.fn(async () => [200]),
@@ -74,6 +74,8 @@ jest.mock('@/helpers/pdfs/emou/index', () => ({
   'mapValues',
   'pick',
   'reduce',
+  'toLower',
+  'toString',
   'set',
   'uniq',
   'kebabCase',

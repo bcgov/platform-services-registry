@@ -1,7 +1,10 @@
 import * as React from 'react';
-import { samplePublicRequest } from '../_components/Params';
-import AdminCreateRequest from '../_templates/public-cloud/AdminCreateRequest';
+import { getRandomUser } from '@/helpers/mock-resources/core';
+import { createSamplePublicCloudRequest } from '@/helpers/mock-resources/public-cloud-request';
+import Template from '../_templates/public-cloud/AdminCreateRequest';
 
-export default function PublicAdminCreateRequest() {
-  return <AdminCreateRequest request={samplePublicRequest} userName={'User Session'} />;
+export default function AdminCreateRequest() {
+  const sampleRequest = createSamplePublicCloudRequest();
+  const sampleUser = getRandomUser();
+  return <Template request={sampleRequest} requester={sampleUser.displayName} />;
 }

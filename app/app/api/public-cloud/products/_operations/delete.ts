@@ -6,7 +6,7 @@ import { BadRequestResponse, OkResponse, UnauthorizedResponse } from '@/core/res
 import { createEvent } from '@/mutations/events';
 import { getPublicCloudProduct, excludeProductUsers } from '@/queries/public-cloud-products';
 import { getLastClosedPublicCloudRequest, publicCloudRequestDetailInclude } from '@/queries/public-cloud-requests';
-import { sendDeleteRequestEmails, sendAdminDeleteRequestEmails } from '@/services/ches/public-cloud/email-handler';
+import { sendDeleteRequestEmails } from '@/services/ches/public-cloud';
 import { PublicCloudRequestDetail } from '@/types/public-cloud';
 import { deletePathParamSchema } from '../[licencePlate]/schema';
 
@@ -49,8 +49,7 @@ export default async function deleteOp({
 
   if (request) {
     await Promise.all([
-      sendDeleteRequestEmails(request.decisionData, session.user.name),
-      sendAdminDeleteRequestEmails(request.decisionData, session.user.name),
+      sendDeleteRequestEmails(request, session.user.name),
       createEvent(EventType.DELETE_PUBLIC_CLOUD_PRODUCT, session.user.id, { requestId: request.id }),
     ]);
   }

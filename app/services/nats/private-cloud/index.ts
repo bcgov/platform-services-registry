@@ -1,4 +1,4 @@
-import { $Enums, Prisma, PrivateCloudRequest, RequestType } from '@prisma/client';
+import { Ministry } from '@prisma/client';
 import {
   DefaultCpuOptions,
   DefaultMemoryOptions,
@@ -8,19 +8,10 @@ import {
   DefaultMemoryOptionsKey,
   DefaultStorageOptionsKey,
 } from '@/services/nats/private-cloud/constants';
-
-export type PrivateCloudRequestedProjectWithContacts = Prisma.PrivateCloudRequestedProjectGetPayload<{
-  include: {
-    projectOwner: true;
-    primaryTechnicalLead: true;
-    secondaryTechnicalLead: true;
-  };
-}>;
+import { PrivateCloudProductDetail, PrivateCloudRequestDetail } from '@/types/private-cloud';
 
 export default function createPrivateCloudNatsMessage(
-  requestId: string,
-  requestType: RequestType,
-  decisionData: PrivateCloudRequestedProjectWithContacts,
+  request: Pick<PrivateCloudRequestDetail, 'id' | 'type' | 'decisionData'>,
   contactChanged: boolean,
 ) {
   const {
@@ -37,15 +28,15 @@ export default function createPrivateCloudNatsMessage(
     projectOwner,
     primaryTechnicalLead,
     secondaryTechnicalLead,
-  } = decisionData;
+  } = request.decisionData;
 
   let allianceLabel = '';
   switch (ministry) {
-    case $Enums.Ministry.AG:
-    case $Enums.Ministry.EMBC:
-    case $Enums.Ministry.HOUS:
-    case $Enums.Ministry.MAH:
-    case $Enums.Ministry.PSSG:
+    case Ministry.AG:
+    case Ministry.EMBC:
+    case Ministry.HOUS:
+    case Ministry.MAH:
+    case Ministry.PSSG:
       allianceLabel = 'JAG';
       break;
     default:
@@ -54,11 +45,11 @@ export default function createPrivateCloudNatsMessage(
   }
 
   const messageBody = {
-    action: requestType.toLocaleLowerCase(),
+    action: request.type.toLocaleLowerCase(),
     profile_id: id,
     licencePlate: licencePlate,
     isContactChanged: contactChanged,
-    workflow: `${cluster.toLocaleLowerCase()}-${licencePlate}-${requestId}`,
+    workflow: `${cluster.toLocaleLowerCase()}-${licencePlate}-${request.id}`,
     cluster_name: cluster.toLocaleLowerCase(),
     display_name: name,
     description: description,

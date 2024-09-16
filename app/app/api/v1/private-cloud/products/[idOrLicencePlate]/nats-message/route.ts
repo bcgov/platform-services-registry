@@ -1,4 +1,4 @@
-import { $Enums } from '@prisma/client';
+import { RequestType } from '@prisma/client';
 import { z } from 'zod';
 import createApiHandler from '@/core/api-handler';
 import prisma from '@/core/prisma';
@@ -33,7 +33,10 @@ export const GET = apiHandler(async ({ pathParams, session }) => {
     return BadRequestResponse(`there is no products associated with key '${idOrLicencePlate}'`);
   }
 
-  const result = await createPrivateCloudNatsMessage(product.id, $Enums.RequestType.EDIT, product, false);
+  const result = await createPrivateCloudNatsMessage(
+    { id: product.id, type: RequestType.EDIT, decisionData: product },
+    false,
+  );
 
   return OkResponse(result);
 });

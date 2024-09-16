@@ -5,7 +5,7 @@ import { BadRequestResponse, OkResponse, UnauthorizedResponse } from '@/core/res
 import { sendRequestNatsMessage } from '@/helpers/nats-message';
 import { getPrivateCloudProduct } from '@/queries/private-cloud-products';
 import editRequest from '@/request-actions/private-cloud/edit-request';
-import { sendEditRequestEmails, sendRequestApprovalEmails } from '@/services/ches/private-cloud/email-handler';
+import { sendEditRequestEmails, sendRequestApprovalEmails } from '@/services/ches/private-cloud';
 import { subscribeUsersToMautic } from '@/services/mautic';
 import { PrivateCloudEditRequestBody } from '@/validation-schemas/private-cloud';
 import { putPathParamSchema } from '../[licencePlate]/schema';
@@ -30,7 +30,7 @@ export default async function updateOp({
   const request = await editRequest(licencePlate, body, session);
 
   if (request.decisionStatus === DecisionStatus.PENDING) {
-    await sendEditRequestEmails(request, true, session.user.name);
+    await sendEditRequestEmails(request, session.user.name);
     return OkResponse(request);
   }
 

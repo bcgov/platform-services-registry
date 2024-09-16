@@ -1,25 +1,6 @@
 import { Prisma, PublicCloudRequest, PublicCloudRequestedProject, RequestType } from '@prisma/client';
 import { formatFullName } from '@/helpers/user';
-
-export type PublicCloudRequestedProjectWithContacts = Prisma.PublicCloudRequestedProjectGetPayload<{
-  include: {
-    projectOwner: true;
-    primaryTechnicalLead: true;
-    secondaryTechnicalLead: true;
-    expenseAuthority: true;
-    billing: true;
-  };
-}>;
-
-export type PublicCloudProjectWithContacts = Prisma.PublicCloudRequestedProjectGetPayload<{
-  include: {
-    projectOwner: true;
-    primaryTechnicalLead: true;
-    secondaryTechnicalLead: true;
-    expenseAuthority: true;
-    billing: true;
-  };
-}>;
+import { PublicCloudProductDetail, PublicCloudRequestDetail } from '@/types/public-cloud';
 
 function prepareUser(user?: Prisma.UserGetPayload<null> | null) {
   if (!user)
@@ -38,15 +19,16 @@ function prepareUser(user?: Prisma.UserGetPayload<null> | null) {
 
 // Create a test env variable that prefix the namespace name with "t"
 export default function createPublicCloudNatsMessage(
-  requestType: RequestType,
-  decisionData: PublicCloudRequestedProjectWithContacts,
-  currentProject?: PublicCloudProjectWithContacts | null,
+  request: Pick<PublicCloudRequestDetail, 'id' | 'type' | 'project' | 'decisionData'>,
 ) {
+  const decisionData = request.decisionData;
+  const currentProject = request.project;
+
   return {
     project_set_info: {
       licence_plate: decisionData.licencePlate,
       ministry_name: decisionData.ministry,
-      request_type: requestType,
+      request_type: request.type,
       project_name: decisionData.name,
       account_coding: decisionData.billing.accountCoding,
       budgets: decisionData.budget,
