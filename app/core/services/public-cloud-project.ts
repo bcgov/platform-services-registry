@@ -1,19 +1,7 @@
-import { Prisma, $Enums } from '@prisma/client';
+import { Prisma, TaskType, Ministry, ProjectStatus, TaskStatus } from '@prisma/client';
 import { ModelService } from '@/core/model-service';
 import prisma from '@/core/prisma';
-import { PublicCloudProjectDecorate } from '@/types/doc-decorate';
-
-type PublicCloudProject = Prisma.PublicCloudProjectGetPayload<{
-  select: {
-    id: true;
-    status: true;
-    projectOwnerId: true;
-    primaryTechnicalLeadId: true;
-    secondaryTechnicalLeadId: true;
-    ministry: true;
-    requests: true;
-  };
-}>;
+import { PublicCloudProductDetailDecorated } from '@/types/public-cloud';
 
 export class PublicCloudProjectService extends ModelService<Prisma.PublicCloudProjectWhereInput> {
   async readFilter() {
@@ -21,8 +9,8 @@ export class PublicCloudProjectService extends ModelService<Prisma.PublicCloudPr
     if (this.session.permissions.viewAllPublicCloudProducts) return true;
 
     const OR: Prisma.PublicCloudProjectWhereInput[] = [
-      { ministry: { in: this.session.ministries.editor as $Enums.Ministry[] } },
-      { ministry: { in: this.session.ministries.reader as $Enums.Ministry[] } },
+      { ministry: { in: this.session.ministries.editor as Ministry[] } },
+      { ministry: { in: this.session.ministries.reader as Ministry[] } },
     ];
 
     if (this.session.user.id) {
@@ -43,7 +31,7 @@ export class PublicCloudProjectService extends ModelService<Prisma.PublicCloudPr
     if (this.session.permissions.editAllPublicCloudProducts) return true;
 
     const OR: Prisma.PublicCloudProjectWhereInput[] = [
-      { ministry: { in: this.session.ministries.editor as $Enums.Ministry[] } },
+      { ministry: { in: this.session.ministries.editor as Ministry[] } },
     ];
 
     if (this.session.user.id) {
@@ -59,7 +47,7 @@ export class PublicCloudProjectService extends ModelService<Prisma.PublicCloudPr
     return baseFilter;
   }
 
-  async decorate<T>(doc: T & PublicCloudProject & PublicCloudProjectDecorate) {
+  async decorate<T>(doc: T & PublicCloudProductDetailDecorated) {
     let hasActiveRequest = false;
 
     if (doc.requests) {
@@ -68,7 +56,7 @@ export class PublicCloudProjectService extends ModelService<Prisma.PublicCloudPr
       hasActiveRequest = (await prisma.publicCloudRequest.count({ where: { projectId: doc.id, active: true } })) > 0;
     }
 
-    const isActive = doc.status === $Enums.ProjectStatus.ACTIVE;
+    const isActive = doc.status === ProjectStatus.ACTIVE;
     const isMyProduct = [doc.projectOwnerId, doc.primaryTechnicalLeadId, doc.secondaryTechnicalLeadId].includes(
       this.session.user.id,
     );
@@ -92,12 +80,34 @@ export class PublicCloudProjectService extends ModelService<Prisma.PublicCloudPr
 
     const canReprovision = isActive && (this.session.isAdmin || this.session.isPublicAdmin);
 
+    let canSignMou = false;
+    let canApproveMou = false;
+
+    if (doc.billing) {
+      canSignMou =
+        !doc.billing.signed &&
+        this.session.tasks
+          .filter((task) => task.type === TaskType.SIGN_MOU && task.status === TaskStatus.ASSIGNED)
+          .map((task) => (task.data as { licencePlate: string }).licencePlate)
+          .includes(doc.licencePlate);
+
+      canApproveMou =
+        doc.billing.signed &&
+        !doc.billing.approved &&
+        this.session.tasks
+          .filter((task) => task.type === TaskType.REVIEW_MOU && task.status === TaskStatus.ASSIGNED)
+          .map((task) => (task.data as { licencePlate: string }).licencePlate)
+          .includes(doc.licencePlate);
+    }
+
     doc._permissions = {
       view: canView,
       viewHistory: canViewHistroy,
       edit: canEdit,
       delete: canEdit,
       reprovision: canReprovision,
+      signMou: canSignMou,
+      reviewMou: canApproveMou,
     };
 
     return doc;

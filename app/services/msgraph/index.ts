@@ -13,6 +13,8 @@ export function processMsUser(user: MsUser): AppUser {
     firstName: user.givenName,
     lastName: user.surname,
     ministry: parseMinistryFromDisplayName(user.displayName),
+    jobTitle: user.jobTitle || '',
+    officeLocation: user.officeLocation || '',
   };
 }
 
@@ -36,7 +38,10 @@ const userAttributes = [
   'displayName',
   'givenName',
   'surname',
+  'officeLocation',
   'jobTitle',
+  // 'mobilePhone',
+  // 'businessPhones',
 ];
 
 const userSelect = `$select=${userAttributes.join(',')}`;

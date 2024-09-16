@@ -76,15 +76,11 @@ export default async function createRequest(formData: PrivateCloudCreateRequestB
       type: RequestType.CREATE,
       decisionStatus: DecisionStatus.PENDING,
       active: true,
-      createdByEmail: session.user.email,
+      createdBy: { connect: { email: session.user.email } },
       requestComment: formData.requestComment,
       licencePlate,
-      decisionData: {
-        create: createRequestedProject,
-      },
-      requestData: {
-        create: createRequestedProject,
-      },
+      decisionData: { create: createRequestedProject },
+      requestData: { create: createRequestedProject },
     },
     include: privateCloudRequestDetailInclude,
   });

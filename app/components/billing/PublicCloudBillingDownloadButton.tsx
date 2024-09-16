@@ -2,6 +2,7 @@
 
 import { Alert, Button } from '@mantine/core';
 import { useState } from 'react';
+import { getEmouFileName } from '@/helpers/emou';
 import { downloadBilling } from '@/services/backend/billing';
 import { Product } from './types';
 
@@ -16,7 +17,12 @@ export default function BillingDownloadButton({ product }: { product: Product })
       className="mt-2"
       onClick={async () => {
         setLoading(true);
-        await downloadBilling(product.billing.accountCoding);
+        await downloadBilling(
+          product.billing.accountCoding,
+          product.provider,
+          product.licencePlate,
+          getEmouFileName(product.name, product.provider),
+        );
         setLoading(false);
       }}
     >

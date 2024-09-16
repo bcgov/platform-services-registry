@@ -3,16 +3,10 @@ interface NavigatorExtra {
 }
 
 // Copied from https://github.com/kennethjiang/js-file-download/blob/master/file-download.js
-export function downloadFile(
-  data: Blob,
-  filename = 'download.csv',
-  headers?: { [key: string]: any },
-  mime?: string,
-  bom?: string,
-) {
+export function downloadFile(data: Blob, filename = '', headers?: { [key: string]: any }, mime?: string, bom?: string) {
   if (!window) return;
 
-  if (headers) {
+  if (!filename && headers) {
     const contentDisposition = headers['content-disposition'];
     if (contentDisposition) {
       const fnameCandidate = contentDisposition.split('filename=')[1].replace(/['"]/g, '');

@@ -38,6 +38,7 @@ export const GOLDDR_SERVICE_ACCOUNT_TOKEN = process.env.GOLDDR_SERVICE_ACCOUNT_T
 export const GOLD_SERVICE_ACCOUNT_TOKEN = process.env.GOLD_SERVICE_ACCOUNT_TOKEN || '';
 export const SILVER_SERVICE_ACCOUNT_TOKEN = process.env.SILVER_SERVICE_ACCOUNT_TOKEN || '';
 export const EMERALD_SERVICE_ACCOUNT_TOKEN = process.env.EMERALD_SERVICE_ACCOUNT_TOKEN || '';
+export const KLAB_METRICS_READER_TOKEN = process.env.KLAB_METRICS_READER_TOKEN || '';
 export const MAUTIC_TOKEN_URL = process.env.MAUTIC_TOKEN_URL || '';
 export const MAUTIC_CLIENT_ID = process.env.MAUTIC_CLIENT_ID || '';
 export const MAUTIC_SUBSSCRIPTION_API_CLIENT_SECRET = process.env.MAUTIC_SUBSSCRIPTION_API_CLIENT_SECRET || '';
@@ -46,11 +47,15 @@ export const PRIVATE_NATS_HOST = process.env.PRIVATE_NATS_HOST || 'localhost';
 export const PRIVATE_NATS_PORT = process.env.PRIVATE_NATS_PORT || '4222';
 export const PUBLIC_NATS_HOST = process.env.PUBLIC_NATS_HOST || 'localhost';
 export const PUBLIC_NATS_PORT = process.env.PUBLIC_NATS_PORT || '4222';
+
+export const PRIVATE_NATS_URL = `${PRIVATE_NATS_HOST}:${PRIVATE_NATS_PORT}`;
+export const PUBLIC_NATS_URL = `${PUBLIC_NATS_HOST}:${PUBLIC_NATS_PORT}`;
+
 export const MS_GRAPH_API_AUTHORITY = process.env.MS_GRAPH_API_AUTHORITY || '';
 export const MS_GRAPH_API_CLIENT_ID = process.env.MS_GRAPH_API_CLIENT_ID || '';
 export const MS_GRAPH_API_CLIENT_SECRET = process.env.MS_GRAPH_API_CLIENT_SECRET || '';
 export const M365_PROXY_URL = process.env.M365_PROXY_URL || 'http://localhost:8000';
-export const M365_URL = process.env.M365_URL || 'http://localhost:4040';
+export const M365_URL = process.env.M365_URL || 'https://graph.microsoft.com';
 export const USE_M365_PROXY = process.env.USE_M365_PROXY === 'true';
 export const OIDC_AUTHORITY = process.env.OIDC_AUTHORITY || 'https://localhost:8443/realms/platform-services';
 

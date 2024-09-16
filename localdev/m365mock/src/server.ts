@@ -46,7 +46,11 @@ mocks.forEach((mock) => {
   mockMap.set(route, mock);
 });
 
-app.all('*', (req: Request, res: Response) => {
+app.get('/', (req: Request, res: Response) => {
+  res.send('Hello, M365 Mock Server!');
+});
+
+app.all(/(.*)/, (req: Request, res: Response) => {
   const requestedPath = req.path;
   const requestedMethod = req.method.toLowerCase() as HttpMethod;
   const routeKey = `${requestedMethod}${requestedPath}`;
@@ -57,10 +61,6 @@ app.all('*', (req: Request, res: Response) => {
   } else {
     res.status(404).send('Mock data not found');
   }
-});
-
-app.get('/', (req: Request, res: Response) => {
-  res.send('Hello, M365 Mock Server!');
 });
 
 app.listen(port, () => {

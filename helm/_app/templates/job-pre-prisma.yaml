@@ -8,7 +8,7 @@ metadata:
   annotations:
     "helm.sh/hook": "pre-install,pre-upgrade,pre-rollback"
     "helm.sh/hook-delete-policy": "before-hook-creation"
-    "helm.sh/hook-weight": "-5"
+    "helm.sh/hook-weight": "-4"
 spec:
   backoffLimit: 0
   activeDeadlineSeconds: 1800

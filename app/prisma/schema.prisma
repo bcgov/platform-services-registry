@@ -19,6 +19,9 @@ model User {
   email                                                 String                         @unique
   upn                                                   String?
   idir                                                  String?
+  idirGuid                                              String?
+  officeLocation                                        String?
+  jobTitle                                              String?
   image                                                 String?
   ministry                                              String?
   archived                                              Boolean                        @default(false)
@@ -44,12 +47,15 @@ model User {
   mousSigned                                            Billing[]                      @relation("signedBy")
   mousApproved                                          Billing[]                      @relation("approvedBy")
   mousAsExpenseAuthority                                Billing[]                      @relation("expenseAuthority")
+  privateCloudRequestsAsRequester                       PrivateCloudRequest[]          @relation("createdBy")
+  publicCloudRequestsAsRequester                        PublicCloudRequest[]           @relation("createdBy")
 }
 
 model PrivateCloudRequest {
   id                 String                        @id @default(auto()) @map("_id") @db.ObjectId
   licencePlate       String
   createdByEmail     String
+  createdBy          User                          @relation("createdBy", fields: [createdByEmail], references: [email])
   decisionMakerEmail String?
   quotaContactName   String?
   quotaContactEmail  String?
@@ -174,6 +180,7 @@ model PublicCloudRequest {
   id                 String                       @id @default(auto()) @map("_id") @db.ObjectId
   licencePlate       String
   createdByEmail     String
+  createdBy          User                         @relation("createdBy", fields: [createdByEmail], references: [email])
   decisionMakerEmail String?
   type               PublicCloudRequestType
   decisionStatus     DecisionStatus
@@ -197,7 +204,8 @@ model PublicCloudRequest {
 
 model Billing {
   id                           String                        @id @default(auto()) @map("_id") @db.ObjectId
-  accountCoding                String                        @unique
+  code                         String                        @unique
+  accountCoding                String
   licencePlate                 String
   signed                       Boolean                       @default(false)
   signedAt                     DateTime?

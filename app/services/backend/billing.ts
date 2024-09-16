@@ -8,18 +8,26 @@ export const instance = axios.create({
   baseURL: `${baseInstance.defaults.baseURL}/billing`,
 });
 
-export async function getBilling(accountCoding: string) {
-  const result = await instance.get(`/${accountCoding}`).then((res) => res.data);
+export async function getBilling(accountCoding: string, context: string) {
+  const result = await instance.get(`/${accountCoding}?context=${context}`).then((res) => res.data);
   return result as BillingGetPayload;
 }
 
-export async function existBilling(accountCoding: string) {
-  const result = await instance.get(`/${accountCoding}/exist`).then((res) => res.data);
+export async function existBilling(accountCoding: string, context: string) {
+  const result = await instance.get(`/${accountCoding}/exist?context=${context}`).then((res) => res.data);
   return result as boolean;
 }
 
-export async function downloadBilling(accountCoding: string, filename = 'download.pdf') {
-  const result = await instance.get(`/${accountCoding}/download`, { responseType: 'blob' }).then((res) => {
+export async function downloadBilling(
+  accountCoding: string,
+  context: string,
+  licencePlate = '',
+  filename = 'download.pdf',
+) {
+  let url = `/${accountCoding}/download?context=${context}`;
+  if (licencePlate) url += `&licencePlate=${licencePlate}`;
+
+  const result = await instance.get(url, { responseType: 'blob' }).then((res) => {
     if (res.status === 200) {
       downloadFile(res.data, filename, res.headers);
       return true;

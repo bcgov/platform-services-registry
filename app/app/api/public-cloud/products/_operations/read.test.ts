@@ -6,12 +6,13 @@ import { findOtherMockUsers } from '@/helpers/mock-users';
 import { pickProductData } from '@/helpers/product';
 import { mockSessionByEmail, mockSessionByRole } from '@/services/api-test/core';
 import { provisionPublicCloudProject } from '@/services/api-test/public-cloud';
-import { createPublicCloudProject, getPublicCloudProject } from '@/services/api-test/public-cloud/products';
 import {
-  makePublicCloudRequestDecision,
+  createPublicCloudProject,
+  getPublicCloudProject,
   signPublicCloudMou,
   reviewPublicCloudMou,
-} from '@/services/api-test/public-cloud/requests';
+} from '@/services/api-test/public-cloud/products';
+import { makePublicCloudRequestDecision } from '@/services/api-test/public-cloud/requests';
 
 const fieldsToCompare = [
   'name',
@@ -55,7 +56,7 @@ describe('Read Public Cloud Product - Permissions', () => {
         status: TaskStatus.ASSIGNED,
         data: {
           equals: {
-            requestId: requests.create.id,
+            licencePlate: requests.create.licencePlate,
           },
         },
       },
@@ -63,7 +64,7 @@ describe('Read Public Cloud Product - Permissions', () => {
 
     expect(task).toBeTruthy();
 
-    const response = await signPublicCloudMou(requests.create.id, {
+    const response = await signPublicCloudMou(requests.create.licencePlate, {
       taskId: task?.id ?? '',
       confirmed: true,
     });
@@ -80,7 +81,7 @@ describe('Read Public Cloud Product - Permissions', () => {
         status: TaskStatus.ASSIGNED,
         data: {
           equals: {
-            requestId: requests.create.id,
+            licencePlate: requests.create.licencePlate,
           },
         },
       },
@@ -88,7 +89,7 @@ describe('Read Public Cloud Product - Permissions', () => {
 
     expect(task).toBeTruthy();
 
-    const response = await reviewPublicCloudMou(requests.create.id, {
+    const response = await reviewPublicCloudMou(requests.create.licencePlate, {
       taskId: task?.id ?? '',
       decision: 'APPROVE',
     });

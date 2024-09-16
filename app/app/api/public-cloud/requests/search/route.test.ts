@@ -5,13 +5,13 @@ import { createSamplePublicCloudProductData } from '@/helpers/mock-resources';
 import { mockNoRoleUsers, findMockUserByIdr, findOtherMockUsers } from '@/helpers/mock-users';
 import { mockSessionByEmail, mockSessionByRole } from '@/services/api-test/core';
 import { provisionPublicCloudProject } from '@/services/api-test/public-cloud';
-import { createPublicCloudProject, editPublicCloudProject } from '@/services/api-test/public-cloud/products';
 import {
-  searchPublicCloudRequests,
-  makePublicCloudRequestDecision,
+  createPublicCloudProject,
+  editPublicCloudProject,
   signPublicCloudMou,
   reviewPublicCloudMou,
-} from '@/services/api-test/public-cloud/requests';
+} from '@/services/api-test/public-cloud/products';
+import { searchPublicCloudRequests, makePublicCloudRequestDecision } from '@/services/api-test/public-cloud/requests';
 
 const PO = mockNoRoleUsers[0];
 const TL1 = mockNoRoleUsers[1];
@@ -78,13 +78,13 @@ describe('Search Public Cloud Requests - Permissions', () => {
           status: TaskStatus.ASSIGNED,
           data: {
             equals: {
-              requestId: dat1.id,
+              licencePlate: dat1.licencePlate,
             },
           },
         },
       });
 
-      await reviewPublicCloudMou(dat1.id, {
+      await reviewPublicCloudMou(dat1.licencePlate, {
         taskId: task2?.id ?? '',
         decision: 'APPROVE',
       });
@@ -250,7 +250,7 @@ describe('Search Public Cloud Requests - Validations', () => {
 
         if (task1) {
           await mockSessionByEmail(dat1.decisionData.expenseAuthority.email);
-          await signPublicCloudMou(dat1.id, {
+          await signPublicCloudMou(dat1.licencePlate, {
             taskId: task1?.id ?? '',
             confirmed: true,
           });
@@ -262,13 +262,13 @@ describe('Search Public Cloud Requests - Validations', () => {
               status: TaskStatus.ASSIGNED,
               data: {
                 equals: {
-                  requestId: dat1.id,
+                  licencePlate: dat1.licencePlate,
                 },
               },
             },
           });
 
-          await reviewPublicCloudMou(dat1.id, {
+          await reviewPublicCloudMou(dat1.licencePlate, {
             taskId: task2?.id ?? '',
             decision: 'APPROVE',
           });

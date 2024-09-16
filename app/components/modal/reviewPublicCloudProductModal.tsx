@@ -15,11 +15,11 @@ import FormError from '@/components/generic/FormError';
 import { createModal, ExtraModalProps } from '@/core/modal';
 import { formatFullName } from '@/helpers/user';
 import { getBilling } from '@/services/backend/billing';
-import { reviewPublicCloudMou } from '@/services/backend/public-cloud/requests';
+import { reviewPublicCloudMou } from '@/services/backend/public-cloud/products';
 import { formatDate } from '@/utils/date';
 
 interface ModalProps {
-  requestId: string;
+  licencePlate: string;
   billingId: string;
 }
 
@@ -28,7 +28,7 @@ interface ModalState {
 }
 
 function ReviewPublicCloudProductModal({
-  requestId,
+  licencePlate,
   billingId,
   state,
   closeModal,
@@ -53,7 +53,7 @@ function ReviewPublicCloudProductModal({
     error: billingError,
   } = useQuery({
     queryKey: ['billing', billingId],
-    queryFn: () => getBilling(billingId),
+    queryFn: () => getBilling(billingId, ''),
     enabled: !!billingId,
   });
 
@@ -63,7 +63,7 @@ function ReviewPublicCloudProductModal({
     isError: isReviewError,
     error: reviewError,
   } = useMutation({
-    mutationFn: (data: { taskId: string; decision: string }) => reviewPublicCloudMou(requestId, data),
+    mutationFn: (data: { taskId: string; decision: string }) => reviewPublicCloudMou(licencePlate, data),
     onSuccess: () => {
       state.confirmed = true;
 
@@ -89,8 +89,6 @@ function ReviewPublicCloudProductModal({
 
   const { handleSubmit, register } = methods;
 
-  console.log('billing', billing);
-
   return (
     <Box pos="relative">
       <LoadingOverlay visible={billingLoading || isReviewing} zIndex={1000} overlayProps={{ radius: 'sm', blur: 2 }} />
@@ -103,7 +101,7 @@ function ReviewPublicCloudProductModal({
                 (tsk) =>
                   tsk.type === TaskType.REVIEW_MOU &&
                   tsk.status === TaskStatus.ASSIGNED &&
-                  (tsk.data as { requestId: string }).requestId === requestId,
+                  (tsk.data as { licencePlate: string }).licencePlate === licencePlate,
               );
 
               if (task) {
