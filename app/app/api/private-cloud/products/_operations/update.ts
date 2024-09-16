@@ -30,7 +30,7 @@ export default async function updateOp({
   const request = await editRequest(licencePlate, body, session);
 
   if (request.decisionStatus === DecisionStatus.PENDING) {
-    await sendEditRequestEmails(request, true, session.user.name);
+    await sendEditRequestEmails(request, session.user.name);
     return OkResponse(request);
   }
 

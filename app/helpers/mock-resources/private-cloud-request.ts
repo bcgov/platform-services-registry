@@ -16,6 +16,12 @@ export function createSamplePrivateCloudRequest(args?: {
     storage: storageOptions[0],
   };
 
+  const quota1 = {
+    cpu: cpuOptions[1],
+    memory: memoryOptions[1],
+    storage: storageOptions[1],
+  };
+
   const commonComponents = {
     addressAndGeolocation: {
       planningToUse: true,
@@ -97,6 +103,31 @@ export function createSamplePrivateCloudRequest(args?: {
     id: generateShortId(),
   };
 
+  const getDecisionData = () => {
+    const po = getRandomUser();
+    const tl1 = getRandomUser();
+    const tl2 = getRandomUser();
+
+    return {
+      ...productData,
+      id: generateShortId(),
+      name: faker.company.name(),
+      description: faker.lorem.sentence(),
+      projectOwnerId: po.id,
+      projectOwner: po,
+      primaryTechnicalLeadId: tl1.id,
+      primaryTechnicalLead: tl1,
+      secondaryTechnicalLeadId: tl2.id,
+      secondaryTechnicalLead: tl2,
+      developmentQuota: quota1,
+      testQuota: quota1,
+      productionQuota: quota1,
+      toolsQuota: quota1,
+    };
+  };
+
+  const decisionData = getDecisionData();
+
   const createdBy = getRandomUser();
   const decisionMaker = getRandomUser();
   const quotaContact = getRandomUser();
@@ -121,8 +152,8 @@ export function createSamplePrivateCloudRequest(args?: {
     provisionedDate: new Date(),
     projectId: product.id,
     project: product,
-    decisionDataId: productData.id,
-    decisionData: productData,
+    decisionDataId: decisionData.id,
+    decisionData,
     requestDataId: productData.id,
     requestData: productData,
     originalDataId: productData.id,

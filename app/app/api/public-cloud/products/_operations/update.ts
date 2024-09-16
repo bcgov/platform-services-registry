@@ -1,10 +1,10 @@
 import { User } from '@prisma/client';
 import { Session } from 'next-auth';
 import { z, TypeOf, ZodType } from 'zod';
-import { BadRequestResponse, OkResponse, UnauthorizedResponse } from '@/core/responses';
+import { OkResponse, UnauthorizedResponse } from '@/core/responses';
 import { getPublicCloudProduct } from '@/queries/public-cloud-products';
 import editRequest from '@/request-actions/public-cloud/edit-request';
-import { sendEditRequestEmails, sendExpenseAuthorityEmail } from '@/services/ches/public-cloud/email-handler';
+import { sendEditRequestEmails } from '@/services/ches/public-cloud/email-handler';
 import { subscribeUsersToMautic } from '@/services/mautic';
 import { sendPublicCloudNatsMessage } from '@/services/nats';
 import { PublicCloudEditRequestBody } from '@/validation-schemas/public-cloud';
@@ -41,10 +41,6 @@ export default async function updateOp({
 
   proms.push(subscribeUsersToMautic(users, request.decisionData.provider, 'Public'));
   proms.push(sendEditRequestEmails(request, session.user.name));
-
-  if (request.decisionData.expenseAuthorityId !== request.project?.expenseAuthorityId) {
-    proms.push(sendExpenseAuthorityEmail(request));
-  }
 
   await Promise.all(proms);
 

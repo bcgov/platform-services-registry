@@ -3,7 +3,11 @@ import { z } from 'zod';
 import createApiHandler from '@/core/api-handler';
 import { BadRequestResponse, OkResponse, UnauthorizedResponse } from '@/core/responses';
 import makeRequestDecision from '@/request-actions/public-cloud/decision-request';
-import { sendExpenseAuthorityEmail, sendRequestRejectionEmails } from '@/services/ches/public-cloud/email-handler';
+import {
+  sendExpenseAuthorityEmail,
+  sendRequestRejectionEmails,
+  sendRequestApprovalEmails,
+} from '@/services/ches/public-cloud/email-handler';
 import { subscribeUsersToMautic } from '@/services/mautic';
 import { sendPublicCloudNatsMessage } from '@/services/nats';
 import { PermissionsEnum } from '@/types/permissions';
@@ -35,13 +39,6 @@ export const POST = apiHandler(async ({ pathParams, body, session }) => {
 
   const proms = [];
 
-  if (
-    request.decisionStatus === DecisionStatus.APPROVED &&
-    request.project?.expenseAuthorityId !== request.decisionData.expenseAuthorityId
-  ) {
-    proms.push(sendExpenseAuthorityEmail(request));
-  }
-
   proms.push(sendPublicCloudNatsMessage(request));
 
   // Subscribe users to Mautic
@@ -53,10 +50,9 @@ export const POST = apiHandler(async ({ pathParams, body, session }) => {
 
   proms.push(subscribeUsersToMautic(users, request.decisionData.provider, 'Public'));
 
-  await Promise.all(proms);
+  proms.push(sendRequestApprovalEmails(request));
 
-  // TODO: revisit to delete for good
-  // sendRequestApprovalEmails(request);
+  await Promise.all(proms);
 
   return OkResponse(request);
 });

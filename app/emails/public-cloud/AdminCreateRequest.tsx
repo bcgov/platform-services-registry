@@ -6,5 +6,5 @@ import Template from '../_templates/public-cloud/AdminCreateRequest';
 export default function AdminCreateRequest() {
   const sampleRequest = createSamplePublicCloudRequest();
   const sampleUser = getRandomUser();
-  return <Template request={sampleRequest} userName={sampleUser.displayName} />;
+  return <Template request={sampleRequest} requester={sampleUser.displayName} />;
 }

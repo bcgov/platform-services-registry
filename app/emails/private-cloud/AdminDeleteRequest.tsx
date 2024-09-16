@@ -6,5 +6,5 @@ import Template from '../_templates/private-cloud/AdminDeleteRequest';
 export default function AdminDeleteRequest() {
   const sampleRequest = createSamplePrivateCloudRequest();
   const sampleUser = getRandomUser();
-  return <Template request={sampleRequest} userName={sampleUser.displayName} />;
+  return <Template request={sampleRequest} requester={sampleUser.displayName} />;
 }

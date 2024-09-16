@@ -1,31 +1,32 @@
 import { Button, Heading, Text, Hr } from '@react-email/components';
 import * as React from 'react';
+import Comment from '@/emails/_components/Comment';
 import PrivateCloudLayout from '@/emails/_components/layout/PrivateCloudLayout';
+import LinkButton from '@/emails/_components/LinkButton';
 import NamespaceDetails from '@/emails/_components/NamespaceDetails';
 import ProductDetails from '@/emails/_components/ProductDetails';
 import { PrivateCloudRequestDetail } from '@/types/private-cloud';
 
 interface EmailProp {
   request: PrivateCloudRequestDetail;
-  userName: string;
+  requester: string;
 }
 
-export default function AdminDeleteRequest({ request, userName }: EmailProp) {
+export default function AdminDeleteRequest({ request, requester }: EmailProp) {
   if (!request) return <></>;
 
   return (
-    <PrivateCloudLayout requester={userName ?? 'System Admin'}>
+    <PrivateCloudLayout requester={requester ?? 'System Admin'}>
       <Heading className="text-lg">New Delete Request!</Heading>
       <Text>Hi Registry Team, </Text>
       <Text>
         There is a new delete request that requires your review. Log in to the Registry to review the details. If you
         have any questions about the request, the PO and TL(s) contact details are included below and in the Registry.
       </Text>
-      <Button href="https://registry.developer.gov.bc.ca/" className="bg-bcorange rounded-md px-4 py-2 text-white">
-        Review Request
-      </Button>
 
-      <Hr className="my-4" />
+      <LinkButton href={`/private-cloud/requests/${request.id}/decision`}>Review Request</LinkButton>
+
+      <Comment requestComment={request.requestComment} />
 
       <ProductDetails
         name={request.decisionData.name}
@@ -35,7 +36,8 @@ export default function AdminDeleteRequest({ request, userName }: EmailProp) {
         tl1={request.decisionData.primaryTechnicalLead}
         tl2={request.decisionData.secondaryTechnicalLead}
       />
-      <NamespaceDetails cluster={request.decisionData.cluster} showNamespaceDetailsTitle={false} />
+
+      <NamespaceDetails cluster={request.decisionData.cluster} licencePlate={request.decisionData.licencePlate} />
     </PrivateCloudLayout>
   );
 }

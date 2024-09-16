@@ -1,35 +1,39 @@
+import { RequestType } from '@prisma/client';
 import { render } from '@react-email/render';
 import { AUTH_RESOURCE } from '@/config';
 import { logger } from '@/core/logging';
-import AdminCreateTemplate from '@/emails/_templates/public-cloud/AdminCreateRequest';
+import AdminCreateRequestTemplate from '@/emails/_templates/public-cloud/AdminCreateRequest';
 import AdminDeleteRequestTemplate from '@/emails/_templates/public-cloud/AdminDeleteRequest';
 import BillingReviewerMou from '@/emails/_templates/public-cloud/BillingReviewerMou';
-import CreateRequestTemplate from '@/emails/_templates/public-cloud/CreateRequest';
-import DeleteApprovalTemplate from '@/emails/_templates/public-cloud/DeleteApproval';
-import DeleteRequestTemplate from '@/emails/_templates/public-cloud/DeleteRequest';
-import EditSummaryTemplate from '@/emails/_templates/public-cloud/EditSummary';
 import EmouServiceAgreementTemplate from '@/emails/_templates/public-cloud/EmouServiceAgreement';
 import ExpenseAuthorityTemplate from '@/emails/_templates/public-cloud/ExpenseAuthority';
 import ExpenseAuthorityMou from '@/emails/_templates/public-cloud/ExpenseAuthorityMou';
-import ProvisionedTemplate from '@/emails/_templates/public-cloud/Provisioned';
-import RequestApprovalTemplate from '@/emails/_templates/public-cloud/RequestApproval';
-import RequestRejectionTemplate from '@/emails/_templates/public-cloud/RequestRejection';
+import TeamCreateRequestTemplate from '@/emails/_templates/public-cloud/TeamCreateRequest';
+import TeamCreateRequestApprovalTemplate from '@/emails/_templates/public-cloud/TeamCreateRequestApproval';
+import TeamCreateRequestCompletionTemplate from '@/emails/_templates/public-cloud/TeamCreateRequestCompletion';
+import TeamCreateRequestRejectionTemplate from '@/emails/_templates/public-cloud/TeamCreateRequestRejection';
+import TeamDeleteRequestTemplate from '@/emails/_templates/public-cloud/TeamDeleteRequest';
+import TeamDeleteRequestApprovalTemplate from '@/emails/_templates/public-cloud/TeamDeleteRequestApproval';
+import TeamDeleteRequestCompletionTemplate from '@/emails/_templates/public-cloud/TeamDeleteRequestCompletion';
+import TeamDeleteRequestRejectionTemplate from '@/emails/_templates/public-cloud/TeamDeleteRequestRejection';
+import TeamEditRequestTemplate from '@/emails/_templates/public-cloud/TeamEditRequest';
+import TeamEditRequestCompletionTemplate from '@/emails/_templates/public-cloud/TeamEditRequestCompletion';
 import { getEmouFileName } from '@/helpers/emou';
 import { generateEmouPdf, Billing } from '@/helpers/pdfs/emou';
-import { adminPublicEmails } from '@/services/ches/email-constant';
-import { sendEmail } from '@/services/ches/helpers';
+import { adminPublicEmails } from '@/services/ches/constant';
+import { sendEmail } from '@/services/ches/core';
 import { findUsersByClientRole } from '@/services/keycloak/app-realm';
 import { PublicCloudProductDetail, PublicCloudRequestDetail } from '@/types/public-cloud';
 
 export async function sendEmouServiceAgreementEmail(request: PublicCloudRequestDetail) {
-  const eaEmail = render(EmouServiceAgreementTemplate({ request }), { pretty: false });
+  const eaContent = render(EmouServiceAgreementTemplate({ request }), { pretty: false });
   const emouPdfBuff = await generateEmouPdf(request.decisionData, request.decisionData.billing);
   const billingReviewers = await findUsersByClientRole(AUTH_RESOURCE, 'billing-reviewer');
 
   return sendEmail({
-    body: eaEmail,
-    to: [...billingReviewers.map((v) => v.email ?? ''), request.decisionData.expenseAuthority?.email],
     subject: 'eMOU Service Agreement',
+    to: [...billingReviewers.map((v) => v.email ?? ''), request.decisionData.expenseAuthority?.email],
+    body: eaContent,
     attachments: [
       {
         content: emouPdfBuff.toString('base64'),
@@ -41,19 +45,18 @@ export async function sendEmouServiceAgreementEmail(request: PublicCloudRequestD
   });
 }
 
-export const sendCreateRequestEmails = async (request: PublicCloudRequestDetail, userName: string) => {
+export const sendCreateRequestEmails = async (request: PublicCloudRequestDetail, requester: string) => {
   try {
-    const userEmail = render(CreateRequestTemplate({ request, userName }), { pretty: false });
+    const teamEmail = render(TeamCreateRequestTemplate({ request, requester }), { pretty: false });
 
-    const contacts = sendEmail({
-      body: userEmail,
-      // For all project contacts. Sent when the project set deletion request is successfully submitted
+    const team = sendEmail({
+      subject: `Provisioning request for ${request.decisionData.name} received`,
       to: [
         request.decisionData.projectOwner.email,
         request.decisionData.primaryTechnicalLead.email,
         request.decisionData.secondaryTechnicalLead?.email,
       ],
-      subject: `Provisioning request for ${request.decisionData.name} received`,
+      body: teamEmail,
     });
 
     let ea = null;
@@ -61,172 +64,83 @@ export const sendCreateRequestEmails = async (request: PublicCloudRequestDetail,
     if (request.decisionData?.billing && request.decisionData.billing.approved) {
       ea = sendEmouServiceAgreementEmail(request);
     } else {
-      const eaEmail = render(ExpenseAuthorityMou({ request }), { pretty: false });
+      const eaContent = render(ExpenseAuthorityMou({ request }), { pretty: false });
       ea = sendEmail({
-        body: eaEmail,
+        body: eaContent,
         to: [request.decisionData.expenseAuthority?.email],
         subject: 'Expense Authority eMOU request',
       });
     }
 
-    await Promise.all([contacts, ea]);
+    await Promise.all([team, ea]);
   } catch (error) {
     logger.error('sendCreateRequestEmails:', error);
   }
 };
 
-export const sendPublicCloudBillingReviewEmails = async (request: PublicCloudRequestDetail, emails: string[]) => {
+export const sendAdminCreateRequestEmails = async (request: PublicCloudRequestDetail, requester: string) => {
   try {
-    const body = render(BillingReviewerMou({ request }), { pretty: false });
-
-    const emailProm = sendEmail({
-      bodyType: 'html',
-      body,
-      to: emails,
-      subject: `eMOU review request`,
-    });
-
-    await Promise.all([emailProm]);
-  } catch (error) {
-    logger.error('sendPublicCloudBillingReviewEmails:', error);
-  }
-};
-
-export const sendRequestReviewEmails = async (request: PublicCloudRequestDetail, userName: string) => {
-  try {
-    const adminEmail = render(AdminCreateTemplate({ request, userName }), { pretty: false });
+    const adminEmail = render(AdminCreateRequestTemplate({ request, requester }), { pretty: false });
 
     const admins = sendEmail({
-      bodyType: 'html',
       body: adminEmail,
       to: adminPublicEmails,
       subject: `New Provisioning request for ${request.decisionData.name} in Registry waiting for your approval`,
     });
 
-    await Promise.all([admins]);
+    await Promise.all([admins, sendEmouServiceAgreementEmail(request)]);
   } catch (error) {
     logger.error('sendRequestReviewEmails:', error);
   }
 };
 
-export const sendAdminDeleteRequestEmails = async (request: PublicCloudRequestDetail, userName: string) => {
+export const sendEditRequestEmails = async (request: PublicCloudRequestDetail, requester: string) => {
   try {
-    const adminEmail = render(AdminDeleteRequestTemplate({ request, userName }), { pretty: false });
+    const teamContent = render(TeamEditRequestTemplate({ request, requester }), { pretty: false });
 
     await sendEmail({
-      body: adminEmail,
-      to: adminPublicEmails,
-      subject: `${request.decisionData.name} is marked for deletion`,
-    });
-  } catch (error) {
-    logger.error('sendAdminDeleteRequestEmails:', error);
-  }
-};
-
-export const sendEditRequestEmails = async (request: PublicCloudRequestDetail, userName: string) => {
-  try {
-    const userEmail = render(EditSummaryTemplate({ request, userName }), { pretty: false });
-
-    await sendEmail({
-      body: userEmail,
+      subject: `Edit summary for ${request.decisionData.name}`,
+      body: teamContent,
       to: [
         request.decisionData.projectOwner.email,
         request.decisionData.primaryTechnicalLead.email,
         request.decisionData.secondaryTechnicalLead?.email,
-        request.project?.projectOwner.email,
-        request.project?.primaryTechnicalLead.email,
-        request.project?.secondaryTechnicalLead?.email,
-      ].filter(Boolean),
-      subject: `Edit summary for ${request.decisionData.name}`,
+        request.originalData?.projectOwner.email,
+        request.originalData?.primaryTechnicalLead.email,
+        request.originalData?.secondaryTechnicalLead?.email,
+      ],
     });
   } catch (error) {
     logger.error('sendEditRequestEmails:', error);
   }
 };
 
-export const sendRequestApprovalEmails = async (request: PublicCloudRequestDetail) => {
-  try {
-    const email = render(RequestApprovalTemplate({ request }), { pretty: false });
-
-    await sendEmail({
-      body: email,
-      to: [
-        request.decisionData.projectOwner.email,
-        request.decisionData.primaryTechnicalLead.email,
-        request.decisionData.secondaryTechnicalLead?.email,
-      ],
-      subject: `Request for ${request.decisionData.name} has been approved`,
-    });
-  } catch (error) {
-    logger.error('sendRequestApprovalEmails:', error);
-  }
-};
-
-export const sendRequestRejectionEmails = async (request: PublicCloudRequestDetail) => {
+export const sendDeleteRequestEmails = async (request: PublicCloudRequestDetail, requester: string) => {
   const decisionData = request.decisionData;
 
   try {
-    const email = render(RequestRejectionTemplate({ request }), {
-      pretty: false,
-    });
-    await sendEmail({
-      body: email,
-      to: [
-        decisionData.projectOwner.email,
-        decisionData.primaryTechnicalLead.email,
-        decisionData.secondaryTechnicalLead?.email,
-      ],
-      subject: `Request has been rejected for ${decisionData.name}`,
-    });
-  } catch (error) {
-    logger.error('sendRequestRejectionEmails:', error);
-  }
-};
+    const teamContent = render(TeamDeleteRequestTemplate({ request, requester }), { pretty: false });
+    const adminContent = render(AdminDeleteRequestTemplate({ request, requester }), { pretty: false });
 
-export const sendDeleteRequestEmails = async (request: PublicCloudRequestDetail, userName: string) => {
-  const decisionData = request.decisionData;
-
-  try {
-    const email = render(DeleteRequestTemplate({ request, userName }), { pretty: false });
-
-    await sendEmail({
-      body: email,
-      to: [
-        decisionData.projectOwner.email,
-        decisionData.primaryTechnicalLead.email,
-        decisionData.secondaryTechnicalLead?.email,
-      ],
+    const team = sendEmail({
       subject: `Request to delete ${decisionData.name} product received`,
+      to: [
+        decisionData.projectOwner.email,
+        decisionData.primaryTechnicalLead.email,
+        decisionData.secondaryTechnicalLead?.email,
+      ],
+      body: teamContent,
     });
+
+    const admin = sendEmail({
+      subject: `${request.decisionData.name} is marked for deletion`,
+      to: adminPublicEmails,
+      body: adminContent,
+    });
+
+    await Promise.all([team, admin]);
   } catch (error) {
     logger.error('sendDeleteRequestEmails:', error);
-  }
-};
-
-export const sendDeleteRequestApprovalEmails = async (product: PublicCloudProductDetail) => {
-  try {
-    const email = render(DeleteApprovalTemplate({ product }), { pretty: false });
-
-    await sendEmail({
-      body: email,
-      to: [product.projectOwner.email, product.primaryTechnicalLead.email, product.secondaryTechnicalLead?.email],
-      subject: `Delete request for ${product.name} has been acknowledged`,
-    });
-  } catch (error) {
-    logger.error('sendDeleteRequestApprovalEmails:', error);
-  }
-};
-
-export const sendProvisionedEmails = async (product: PublicCloudProductDetail) => {
-  try {
-    const email = render(ProvisionedTemplate({ product }), { pretty: false });
-    await sendEmail({
-      body: email,
-      to: [product.projectOwner.email, product.primaryTechnicalLead.email, product.secondaryTechnicalLead?.email],
-      subject: `Product ${product.name} has been provisioned`,
-    });
-  } catch (error) {
-    logger.error('sendProvisionedEmails:', error);
   }
 };
 
@@ -240,5 +154,119 @@ export const sendExpenseAuthorityEmail = async (request: PublicCloudRequestDetai
     });
   } catch (error) {
     logger.error('sendExpenseAuthorityEmail:', error);
+  }
+};
+
+export const sendPublicCloudBillingReviewEmails = async (request: PublicCloudRequestDetail, emails: string[]) => {
+  try {
+    const body = render(BillingReviewerMou({ request }), { pretty: false });
+
+    const emailProm = sendEmail({
+      body,
+      to: emails,
+      subject: `eMOU review request`,
+    });
+
+    await Promise.all([emailProm]);
+  } catch (error) {
+    logger.error('sendPublicCloudBillingReviewEmails:', error);
+  }
+};
+
+export const sendRequestApprovalEmails = async (request: PublicCloudRequestDetail) => {
+  try {
+    let subject = '';
+    let content = '';
+    if (request.type == RequestType.CREATE) {
+      content = render(TeamCreateRequestApprovalTemplate({ request }), { pretty: false });
+      subject = 'Product has been provisioned';
+    } else if (request.type == RequestType.DELETE) {
+      content = render(TeamDeleteRequestApprovalTemplate({ request }), { pretty: false });
+      subject = 'Product delete request has been completed';
+    }
+
+    if (!content) return;
+
+    const team = sendEmail({
+      subject,
+      to: [
+        request.decisionData.projectOwner.email,
+        request.decisionData.primaryTechnicalLead.email,
+        request.decisionData.secondaryTechnicalLead?.email,
+      ],
+      body: content,
+    });
+
+    const proms = [team];
+
+    if (request.originalData?.expenseAuthorityId !== request.decisionData.expenseAuthorityId) {
+      proms.push(sendExpenseAuthorityEmail(request));
+    }
+
+    await Promise.all(proms);
+  } catch (error) {
+    logger.error('sendRequestApprovalEmails:', error);
+  }
+};
+
+export const sendRequestRejectionEmails = async (request: PublicCloudRequestDetail) => {
+  try {
+    let subject = '';
+    let content = '';
+    if (request.type == RequestType.CREATE) {
+      content = render(TeamCreateRequestRejectionTemplate({ request }), { pretty: false });
+      subject = 'New product request has been rejected';
+    } else if (request.type == RequestType.DELETE) {
+      content = render(TeamDeleteRequestRejectionTemplate({ request }), { pretty: false });
+      subject = 'Product delete request has been rejected';
+    }
+
+    if (!content) return;
+
+    await sendEmail({
+      subject,
+      to: [
+        request.decisionData.projectOwner.email,
+        request.decisionData.primaryTechnicalLead.email,
+        request.decisionData.secondaryTechnicalLead?.email,
+      ],
+      body: content,
+    });
+  } catch (error) {
+    logger.error('sendRequestRejectionEmails:', error);
+  }
+};
+
+export const sendRequestCompletionEmails = async (request: PublicCloudRequestDetail) => {
+  try {
+    let subject = '';
+    let content = '';
+
+    if (request.type == RequestType.CREATE) {
+      subject = 'Product has been provisioned';
+      content = render(TeamCreateRequestCompletionTemplate({ request }), { pretty: false });
+    } else if (request.type == RequestType.EDIT) {
+      subject = 'Product edit request has been completed';
+      content = render(TeamEditRequestCompletionTemplate({ request }), { pretty: false });
+    } else if (request.type == RequestType.DELETE) {
+      subject = 'Product delete request has been completed';
+      content = render(TeamDeleteRequestCompletionTemplate({ request }), { pretty: false });
+    }
+
+    if (!content) return;
+
+    const { decisionData } = request;
+
+    await sendEmail({
+      subject,
+      to: [
+        decisionData.projectOwner.email,
+        decisionData.primaryTechnicalLead.email,
+        decisionData.secondaryTechnicalLead?.email,
+      ],
+      body: content,
+    });
+  } catch (error) {
+    logger.error('sendRequestCompletionEmails:', error);
   }
 };

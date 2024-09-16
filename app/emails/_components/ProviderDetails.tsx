@@ -1,5 +1,5 @@
 import { EnvironmentsEnabled, Budget } from '@prisma/client';
-import { Text } from '@react-email/components';
+import { Text, Hr } from '@react-email/components';
 
 export default function ProviderDetails({
   provider,
@@ -19,7 +19,8 @@ export default function ProviderDetails({
     (environmentsEnabled.tools ? budget.tools : 0);
 
   return (
-    <div>
+    <>
+      <Hr className="my-4" />
       <Text className="text-lg font-bold">Landing Zone Details</Text>
       <div>
         <div>
@@ -56,6 +57,6 @@ export default function ProviderDetails({
         <Text className="font-semibold mt-2 mb-0">Account Coding</Text>
         <Text className="mt-0">{accountCoding}</Text>
       </div>
-    </div>
+    </>
   );
 }
