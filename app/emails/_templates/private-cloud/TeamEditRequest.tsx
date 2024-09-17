@@ -21,7 +21,7 @@ export default function TeamEditRequest({ request, requester }: EmailProp) {
   const isQuotaUpgraded = isQuotaUpgrade(request.decisionData, request.originalData);
 
   return (
-    <PrivateCloudLayout requester={requester}>
+    <PrivateCloudLayout requester={requester} showFooter>
       <Heading className="text-lg text-black">New edit product request!</Heading>
       <Text>Hi Product Team, </Text>
       <Text>

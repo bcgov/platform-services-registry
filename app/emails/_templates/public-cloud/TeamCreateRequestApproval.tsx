@@ -17,13 +17,12 @@ export default function TeamCreateRequestApproval({ request }: EmailProp) {
   const { provider } = request.decisionData;
 
   return (
-    <PublicCloudLayout>
+    <PublicCloudLayout showFooter>
       <Heading className="text-lg text-black">Success! Your create request was approved!</Heading>
       <Text>Hi Product Team,</Text>
       <Text>
         We are pleased to inform you that your request to create the product {request.decisionData.name} has been
-        approved on the Public Cloud Landing Zone {provider}. Please allow 3-5 minutes for the request to be processed.
-        If it takes longer, don&apos;t hesitate to reach out to us.
+        approved on the Public Cloud Landing Zone {provider}.
       </Text>
       <Text>
         If you have any more questions or need assistance, please reach out to the Public cloud team in the Rocket.Chat

@@ -16,7 +16,7 @@ export default function TeamDeleteRequestCompletion({ request }: EmailProp) {
   const { decisionData } = request;
 
   return (
-    <PrivateCloudLayout>
+    <PrivateCloudLayout showFooter>
       <Heading className="text-lg text-black">Your deletion request has been completed!</Heading>
       <Text>Hi Product Team,</Text>
       <Text>{`The project set deletion for ${decisionData.name} has been successfully completed.`}</Text>

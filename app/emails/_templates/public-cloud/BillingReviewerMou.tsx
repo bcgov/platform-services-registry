@@ -18,7 +18,7 @@ export default function BillingReviewerMou({ request }: Props) {
   const { accountCoding } = billing;
 
   return (
-    <PublicCloudLayout>
+    <PublicCloudLayout showFooter>
       <Heading className="text-lg">eMOU review request</Heading>
       <Text>Hi, {expenseAuthority?.firstName},</Text>
       <Text>
