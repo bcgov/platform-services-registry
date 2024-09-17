@@ -14,10 +14,10 @@ const quotaOptionsLookup = {
 };
 
 const namespaceSuffixes = {
+  development: '-dev',
+  test: '-test',
   production: '-prod',
   tools: '-tools',
-  test: '-test',
-  development: '-dev',
 };
 
 type namespaceKeyType = keyof typeof namespaceSuffixes;
