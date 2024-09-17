@@ -4,13 +4,11 @@ import prisma from '@/core/prisma';
 import { createEvent } from '@/mutations/events';
 import { privateCloudRequestDetailInclude } from '@/queries/private-cloud-requests';
 import { PrivateCloudRequestDetail } from '@/types/private-cloud';
-import { PrivateCloudEditRequestBody } from '@/validation-schemas/private-cloud';
+import { PrivateCloudRequestDecisionBody } from '@/validation-schemas/private-cloud';
 
 export default async function makeRequestDecision(
   id: string,
-  decision: DecisionStatus,
-  decisionComment: string | undefined,
-  formData: PrivateCloudEditRequestBody,
+  formData: PrivateCloudRequestDecisionBody,
   session: Session,
 ) {
   const request = await prisma.privateCloudRequest.findUnique({
@@ -29,6 +27,9 @@ export default async function makeRequestDecision(
     return null;
   }
 
+  const { decision, decisionComment, quotaContactName, quotaContactEmail, quotaJustification, ...validFormData } =
+    formData;
+
   const dataToUpdate: Prisma.PrivateCloudRequestUpdateInput = {
     active: decision === DecisionStatus.APPROVED,
     decisionStatus: decision,
@@ -41,33 +42,33 @@ export default async function makeRequestDecision(
   if (request.type !== RequestType.DELETE) {
     dataToUpdate.decisionData = {
       update: {
-        ...formData,
+        ...validFormData,
         status: ProjectStatus.ACTIVE,
         licencePlate: request.licencePlate,
         cluster: request.project?.cluster ?? request.decisionData.cluster,
         projectOwner: {
           connectOrCreate: {
             where: {
-              email: formData.projectOwner.email,
+              email: validFormData.projectOwner.email,
             },
-            create: formData.projectOwner,
+            create: validFormData.projectOwner,
           },
         },
         primaryTechnicalLead: {
           connectOrCreate: {
             where: {
-              email: formData.primaryTechnicalLead.email,
+              email: validFormData.primaryTechnicalLead.email,
             },
-            create: formData.primaryTechnicalLead,
+            create: validFormData.primaryTechnicalLead,
           },
         },
-        secondaryTechnicalLead: formData.secondaryTechnicalLead
+        secondaryTechnicalLead: validFormData.secondaryTechnicalLead
           ? {
               connectOrCreate: {
                 where: {
-                  email: formData.secondaryTechnicalLead.email,
+                  email: validFormData.secondaryTechnicalLead.email,
                 },
-                create: formData.secondaryTechnicalLead,
+                create: validFormData.secondaryTechnicalLead,
               },
             }
           : undefined,
