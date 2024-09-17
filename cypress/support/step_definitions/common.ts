@@ -95,7 +95,7 @@ When(
 );
 
 When(/^User checks checkbox "(?:\.\.\.)?(.*?)(?:\.\.\.)?"$/, (checkboxLabel: string) => {
-  cy.contains('label', checkboxLabel).scrollIntoView().parent().parent().find('input').first().click();
+  cy.contains('label', checkboxLabel).scrollIntoView().parent().parent().screenshot().find('input').first().click();
 });
 
 When(/^User waits for "(.*)" seconds$/, (seconds: number) => {
