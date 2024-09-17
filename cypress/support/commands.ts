@@ -60,19 +60,15 @@ export function loginToRegistry(username: string, password: string): void {
     }
   });
 
-  cy.get('input[id="username"]').type(username);
-  cy.get('input[id="password"]').type(password);
-  cy.get('input[type="submit"]').click();
-
-  // cy.origin(
-  //   Cypress.env('keycloakUrl'),
-  //   { args: { usernameOrig: username, passwordOrig: password } },
-  //   ({ usernameOrig, passwordOrig }) => {
-  //     cy.get('input[id="username"]').type(usernameOrig);
-  //     cy.get('input[id="password"]').type(passwordOrig);
-  //     cy.get('input[type="submit"]').click();
-  //   },
-  // );
+  cy.origin(
+    Cypress.env('keycloakUrl'),
+    { args: { usernameOrig: username, passwordOrig: password } },
+    ({ usernameOrig, passwordOrig }) => {
+      cy.get('input[id="username"]').type(usernameOrig);
+      cy.get('input[id="password"]').type(passwordOrig);
+      cy.get('input[type="submit"]').click();
+    },
+  );
 
   cy.contains('a', 'PRIVATE CLOUD OPENSHIFT');
   cy.contains('a', 'PUBLIC CLOUD LANDING ZONES');
