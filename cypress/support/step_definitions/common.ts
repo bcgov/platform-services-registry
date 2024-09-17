@@ -108,13 +108,6 @@ When(/^User clicks span with text (.*)$/, (buttonText: string) => {
 
 When(/^User clicks button with text (.*)$/, (buttonText: string) => {
   cy.contains('button', buttonText).scrollIntoView().click();
-  if (buttonText === 'SUBMIT REQUEST') {
-    cy.get('body').then(($body) => {
-      if ($body.find('section[data-modal-content="true"]').length === 0) {
-        cy.contains('button', buttonText).scrollIntoView().click();
-      }
-    });
-  }
 });
 
 When('User logs out', () => {
