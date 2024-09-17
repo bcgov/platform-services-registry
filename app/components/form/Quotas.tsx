@@ -1,4 +1,5 @@
 import { PrivateCloudProject } from '@prisma/client';
+import { useFormContext } from 'react-hook-form';
 import QuotasChangeInfo from '@/components/form/QuotasChangeInfo';
 import ExternalLink from '@/components/generic/button/ExternalLink';
 import { defaultCpuOptionsLookup, defaultMemoryOptionsLookup, defaultStorageOptionsLookup } from '../../constants';
@@ -25,8 +26,12 @@ export default function Quotas({
     test: '-test',
     development: '-dev',
   };
+
+  const formData = useFormContext();
+  const initialValues = formData.getValues();
+
   return (
-    <>
+    <div>
       <p className="text-base leading-6 mt-5">
         All quota increase requests require <b> Platform Services Team’s </b>
         approval, and must have supporting information as per the{' '}
@@ -36,9 +41,22 @@ export default function Quotas({
         . Any Quota Requests without supporting information
         <b> will not </b> be processed.
       </p>
-      <div className="mt-10 grid grid-cols-1 gap-x-8 xl:gap-x-16 gap-y-8 sm:grid-cols-8 ">
-        {(['production', 'test', 'tools', 'development'] as const).map((nameSpace) => (
-          <div className="sm:col-span-2" key={nameSpace}>
+      <div className="mt-10 mb-5 grid grid-cols-1 gap-x-8 xl:gap-x-8 gap-y-8 sm:grid-cols-8 ">
+        {(['development', 'test', 'production', 'tools'] as const).map((nameSpace) => (
+          <div
+            // quota !== currentQuota
+            className={`sm:col-span-2 ${
+              initialValues[nameSpace + 'Quota']?.cpu !==
+                (currentProject as { [key: string]: any })?.[nameSpace + 'Quota']?.cpu ||
+              initialValues[nameSpace + 'Quota']?.memory !==
+                (currentProject as { [key: string]: any })?.[nameSpace + 'Quota']?.memory ||
+              initialValues[nameSpace + 'Quota']?.storage !==
+                (currentProject as { [key: string]: any })?.[nameSpace + 'Quota']?.storage
+                ? 'border-2 border-purple-800 p-4 rounded-lg shadow-[0_0_15px_2px_rgba(59,130,246,0.2)]'
+                : ''
+            }`}
+            key={nameSpace}
+          >
             <h3 className="text-base 2xl:text-lg font-semibold leading-7 text-gray-900">
               {nameSpace.charAt(0).toUpperCase() + nameSpace.slice(1)} Namespace
             </h3>
@@ -62,8 +80,7 @@ export default function Quotas({
           </div>
         ))}
       </div>
-
       <QuotasChangeInfo disabled={disabled} />
-    </>
+    </div>
   );
 }
