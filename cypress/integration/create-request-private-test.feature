@@ -1,6 +1,7 @@
-Feature: Dummy Feature
-  Scenario: Let pipeline run without reds while adjusting the tests to GHA environment
-    Given User visits local keycloak and finds james.smith
+Feature: New Request
+
+  Scenario: Create Private Cloud Request and check visibility
+    Given User waits for "1" seconds
     And User logs in with username "james.smith@gov.bc.ca" and password "james.smith@gov.bc.ca"
     When User clicks tab "PRIVATE CLOUD OPENSHIFT"
     And User clicks button "REQUEST A NEW PRODUCT"
