@@ -20,9 +20,7 @@ const apiHandler = createApiHandler({
 });
 export const POST = apiHandler(async ({ pathParams, body, session }) => {
   const { id } = pathParams;
-  const { decision, decisionComment, ...formData } = body;
-
-  const request = await makeRequestDecision(id, decision, decisionComment, formData, session);
+  const request = await makeRequestDecision(id, body, session);
 
   if (!request || !request.decisionData) {
     return BadRequestResponse(`Error creating decision request for ${id}`);
