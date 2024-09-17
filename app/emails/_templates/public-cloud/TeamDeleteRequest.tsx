@@ -17,7 +17,7 @@ export default function TeamDeleteRequest({ request, requester }: EmailProp) {
   const { name } = request.decisionData;
 
   return (
-    <PublicCloudLayout requester={requester}>
+    <PublicCloudLayout requester={requester} showFooter>
       <Heading className="text-lg text-black">Your deletion request has been received!</Heading>
       <Text>Hi Product Team,</Text>
       <Text>

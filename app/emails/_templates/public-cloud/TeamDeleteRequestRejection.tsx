@@ -17,7 +17,7 @@ export default function TeamDeleteRequestRejection({ request }: EmailProp) {
   const { name } = request.decisionData;
 
   return (
-    <PublicCloudLayout>
+    <PublicCloudLayout showFooter>
       <Heading className="text-lg text-black">Sorry, your request was rejected</Heading>
       <Text>Hi Product Team, </Text>
       <Text>

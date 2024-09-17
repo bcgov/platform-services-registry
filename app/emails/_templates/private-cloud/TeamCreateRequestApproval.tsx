@@ -13,7 +13,7 @@ interface EmailProp {
 
 export default function TeamCreateRequestApproval({ request }: EmailProp) {
   return (
-    <PrivateCloudLayout>
+    <PrivateCloudLayout showFooter>
       <Heading className="text-lg text-black">Success! Your create request was approved!</Heading>
       <Text>Hi Product Team,</Text>
       <Text>

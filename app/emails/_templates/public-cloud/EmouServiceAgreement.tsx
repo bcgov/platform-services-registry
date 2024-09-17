@@ -17,7 +17,7 @@ export default function EmouServiceAgreement({ request }: Props) {
   const { accountCoding } = billing;
 
   return (
-    <PublicCloudLayout>
+    <PublicCloudLayout showFooter>
       <Heading className="text-lg">eMOU Service Agreement</Heading>
       <Text>Hi,</Text>
       <Text>

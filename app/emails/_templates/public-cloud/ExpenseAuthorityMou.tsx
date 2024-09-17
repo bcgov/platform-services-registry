@@ -17,7 +17,7 @@ export default function ExpenseAuthorityMou({ request }: Props) {
   const { accountCoding } = billing;
 
   return (
-    <PublicCloudLayout>
+    <PublicCloudLayout showFooter>
       <Heading className="text-lg">Expense Authority eMOU request</Heading>
       <Text>Hi {expenseAuthority?.firstName},</Text>
       <Text>

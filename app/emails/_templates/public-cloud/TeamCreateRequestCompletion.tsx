@@ -16,7 +16,7 @@ export default function TeamCreateRequestCompletion({ request }: EmailProp) {
   const { name, provider } = request.decisionData;
 
   return (
-    <PublicCloudLayout>
+    <PublicCloudLayout showFooter>
       <Heading className="text-lg text-black">Success! Your provisioning request is complete!</Heading>
       <Text>Hi Product Team,</Text>
       <Text>

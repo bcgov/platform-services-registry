@@ -16,7 +16,7 @@ export default function TeamEditRequestApproval({ request }: EmailProp) {
   if (!request.originalData) return <></>;
 
   return (
-    <PrivateCloudLayout>
+    <PrivateCloudLayout showFooter>
       <Heading className="text-lg text-black">Success! Your edit request was approved!</Heading>
       <Text>Hi Product Team, </Text>
       <Text>

@@ -16,7 +16,7 @@ export default function TeamDeleteRequestApproval({ request }: EmailProp) {
   const { name } = request.decisionData;
 
   return (
-    <PublicCloudLayout>
+    <PublicCloudLayout showFooter>
       <Heading className="text-lg text-black">
         Your deletion request has been sent to our platform administrators!
       </Heading>
