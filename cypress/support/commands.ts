@@ -53,7 +53,6 @@ export function loginToRegistry(username: string, password: string): void {
   cy.contains('button', 'Login').click();
   cy.wait(5000); // wait until the page loads, otherwise no chances to find clause below
   cy.url().then((val) => {
-    console.log(val);
     if (val.includes('/api/auth/signin?csrf=true')) {
       cy.contains('span', 'Sign in with Keycloak').click();
       cy.wait(2000);
