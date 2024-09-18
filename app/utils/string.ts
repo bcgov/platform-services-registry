@@ -12,6 +12,8 @@ export function capitalizeFirstLetter(name: string) {
 }
 
 export function extractNumbers(inputString: string) {
+  if (!inputString) return [];
+
   const pattern = /\d+(?:_\d+)?/g;
   const matches = inputString.match(pattern);
 
@@ -19,6 +21,7 @@ export function extractNumbers(inputString: string) {
     const numbers = matches.map((match) => parseFloat(match.replace(/_/g, '.')));
     return numbers;
   }
+
   return [];
 }
 

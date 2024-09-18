@@ -26,15 +26,12 @@ jest.mock('@/services/mautic', () => ({
   subscribeUsersToMautic: jest.fn(async () => [200, 200, 200]),
 }));
 
-jest.mock('@/services/nats', () => ({
-  ...jest.requireActual('@/services/nats'),
-  sendPrivateCloudNatsMessage: jest.fn(async () => [200, 200, 200]),
-  sendPublicCloudNatsMessage: jest.fn(async () => [200, 200, 200]),
-  sendNatsMessage: jest.fn(async () => [200, 200, 200]),
+jest.mock('@/services/nats/core', () => ({
+  sendNatsMessage: jest.fn(),
 }));
 
-jest.mock('@/services/ches/private-cloud/email-handler', () => ({
-  ...jest.requireActual('@/services/ches/private-cloud/email-handler'),
+jest.mock('@/services/ches/private-cloud', () => ({
+  ...jest.requireActual('@/services/ches/private-cloud'),
   sendCreateRequestEmails: jest.fn(async () => [200]),
   sendEditRequestEmails: jest.fn(async () => [200]),
   sendRequestApprovalEmails: jest.fn(async () => [200]),
@@ -42,16 +39,23 @@ jest.mock('@/services/ches/private-cloud/email-handler', () => ({
   sendDeleteRequestEmails: jest.fn(async () => [200]),
   sendDeleteRequestApprovalEmails: jest.fn(async () => [200]),
   sendProvisionedEmails: jest.fn(async () => [200]),
+  sendRequestReviewEmails: jest.fn(async () => [200]),
+  sendEmouServiceAgreementEmail: jest.fn(async () => [200]),
 }));
 
 jest.mock('@/services/keycloak/app-realm', () => ({
   getKcAdminClient: jest.fn(async () => null),
   findClient: jest.fn(async () => null),
   findUser: jest.fn(async () => SERVICES_KEYCLOAK_APP_REALM.findUser),
+  findUsersByClientRole: jest.fn(async () => []),
 }));
 
 jest.mock('@/utils/jwt', () => ({
   verifyKeycloakJwtTokenSafe: jest.fn(async () => ({ service_account_type: 'user', 'kc-userid': 'xxxxxxxxxxxx' })),
+}));
+
+jest.mock('@/helpers/pdfs/emou/index', () => ({
+  generateEmouPdf: jest.fn(async () => Buffer.alloc(0)),
 }));
 
 [
@@ -70,8 +74,11 @@ jest.mock('@/utils/jwt', () => ({
   'mapValues',
   'pick',
   'reduce',
+  'toLower',
+  'toString',
   'set',
   'uniq',
+  'kebabCase',
   'trim',
 ].forEach((fnName) => jest.mock(`lodash-es/${fnName}`, () => jest.fn(_[fnName])));
 
@@ -90,8 +97,10 @@ export async function cleanUp() {
   await prisma.publicCloudRequestedProject.deleteMany();
 
   // Now it should be safe to delete User documents
-  // await prisma.user.deleteMany();
+  await prisma.user.deleteMany();
   await prisma.event.deleteMany();
+  await prisma.task.deleteMany();
+  await prisma.billing.deleteMany();
 }
 
 beforeAll(async () => {

@@ -2,7 +2,7 @@ import { ProjectStatus } from '@prisma/client';
 import _isString from 'lodash-es/isString';
 import createApiHandler from '@/core/api-handler';
 import { OkResponse } from '@/core/responses';
-import { privateCloudProductSearchBodySchema } from '@/schema';
+import { privateCloudProductSearchBodySchema } from '@/validation-schemas/private-cloud';
 import searchOp from '../_operations/search';
 
 export const POST = createApiHandler({

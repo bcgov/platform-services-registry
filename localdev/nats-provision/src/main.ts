@@ -19,10 +19,12 @@ async function main() {
   // Wait for external services to be available
   console.log('waiting for NATS server...', `tcp:${natsServer}`);
   await waitOn({
-    resources: [`tcp:${natsServer}`, KEYCLOAK_URL, APP_URL],
+    resources: [`tcp:${natsServer}`, `${KEYCLOAK_URL}/health/ready`, APP_URL],
     delay: 1000,
     window: 5000,
   });
+
+  console.log('All services are ready.')
 
   const nc = await connect({ servers: natsServer });
   const jc = JSONCodec();

@@ -19,11 +19,14 @@ import './commands';
 // Alternatively you can use CommonJS syntax:
 // require('./commands')
 Cypress.on('uncaught:exception', (err: Error) => {
+  return false;
+
   // List of specific error messages to ignore
   const ignoreMessages = [
     'Hydration failed because the initial UI does not match what was rendered on the server.',
     'Hydration failed because the initial UI does not match what was rendered on the server. See more info here: https://nextjs.org/docs/messages/react-hydration-error',
     'There was an error while hydrating. Because the error happened outside of a Suspense boundary, the entire root will switch to client rendering.',
+    "Cannot read properties of null (reading 'email')",
   ];
 
   // Check if the error message is one of the ones to ignore

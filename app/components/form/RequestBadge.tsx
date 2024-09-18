@@ -2,15 +2,14 @@ import { Badge } from '@mantine/core';
 import { $Enums } from '@prisma/client';
 import classNames from 'classnames';
 import CopyableButton from '@/components/generic/button/CopyableButton';
-import { PrivateCloudRequestGetPayload } from '@/queries/private-cloud-requests';
-import { PublicCloudRequestGetPayload } from '@/queries/public-cloud-requests';
+import { PrivateCloudRequestDetail } from '@/types/private-cloud';
 
 export default function RequestBadge({
   request,
   isTest,
   className,
 }: {
-  request: PrivateCloudRequestGetPayload | PublicCloudRequestGetPayload;
+  request: Pick<PrivateCloudRequestDetail, 'licencePlate' | 'type' | 'decisionStatus' | 'active'>;
   isTest?: boolean;
   className?: string;
 }) {

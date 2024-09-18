@@ -4,7 +4,7 @@
 flowchart TB
     A((#quot;Product Team#quot; creates<br>a new product<br>with billing details))
     A --> B{System checks<br>if the account coding<br>already exists}
-    B -->|If exists| B1A(Checkbox displayed:<br>'I have received approval from<br>my Expense Authority for the expenses<br>associated with this project.')
+    B -->|If exists| B1A(Checkbox displayed:<br>'Our records show that your team already has a signed MoU with OCIO for AWS/Azure use.<br>This new product will be added to the existing MoU.<br>A copy of the signed MoU for this product will be emailed to the Ministry Expense Authority.')
     B1A --> B1B(Submit form)
     B1B --> C
     B -->|If not exists| B2A(Submit form)

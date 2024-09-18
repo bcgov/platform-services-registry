@@ -31,7 +31,6 @@ export default function ProjectDescriptionPublic({
 
   return (
     <div className="">
-      <h2 className="text-base lg:text-lg 2xl:text-2xl font-semibold leading-4">1. Product Description</h2>
       {mode === 'create' && (
         <p className="text-base leading-6 mt-5">
           If this is your first time on the Public Cloud Platform you need to book an alignment meeting with the Public

@@ -1,10 +1,16 @@
 import { expect } from '@jest/globals';
-import { $Enums } from '@prisma/client';
+import { $Enums, TaskType, TaskStatus } from '@prisma/client';
+import prisma from '@/core/prisma';
 import { createSamplePublicCloudProductData } from '@/helpers/mock-resources';
-import { findOhterMockUsers } from '@/helpers/mock-users';
+import { findOtherMockUsers } from '@/helpers/mock-users';
 import { mockSessionByEmail, mockSessionByRole } from '@/services/api-test/core';
 import { provisionPublicCloudProject } from '@/services/api-test/public-cloud';
-import { createPublicCloudProject, editPublicCloudProject } from '@/services/api-test/public-cloud/products';
+import {
+  createPublicCloudProject,
+  editPublicCloudProject,
+  signPublicCloudMou,
+  reviewPublicCloudMou,
+} from '@/services/api-test/public-cloud/products';
 import { makePublicCloudRequestDecision } from '@/services/api-test/public-cloud/requests';
 
 const oldEnvironmentsEnabled = {
@@ -37,6 +43,7 @@ const requests = {
 async function makeBasicProductChange(extra = {}) {
   const response = await editPublicCloudProject(requests.create.licencePlate, {
     ...requests.create.decisionData,
+    accountCoding: requests.create.decisionData.billing.accountCoding,
     environmentsEnabled: newEnvironmentsEnabled,
     ...extra,
   });
@@ -56,11 +63,62 @@ describe('Update Public Cloud Product - Permissions', () => {
     requests.create = await response.json();
   });
 
+  it('should successfully sign the billing by EA', async () => {
+    await mockSessionByEmail(requests.create.decisionData.expenseAuthority.email);
+
+    const task = await prisma.task.findFirst({
+      where: {
+        type: TaskType.SIGN_MOU,
+        status: TaskStatus.ASSIGNED,
+        data: {
+          equals: {
+            licencePlate: requests.create.licencePlate,
+          },
+        },
+      },
+    });
+
+    expect(task).toBeTruthy();
+
+    const response = await signPublicCloudMou(requests.create.licencePlate, {
+      taskId: task?.id ?? '',
+      confirmed: true,
+    });
+
+    expect(response.status).toBe(200);
+  });
+
+  it('should successfully review the billing by billing reviewer', async () => {
+    await mockSessionByRole('billing-reviewer');
+
+    const task = await prisma.task.findFirst({
+      where: {
+        type: TaskType.REVIEW_MOU,
+        status: TaskStatus.ASSIGNED,
+        data: {
+          equals: {
+            licencePlate: requests.create.licencePlate,
+          },
+        },
+      },
+    });
+
+    expect(task).toBeTruthy();
+
+    const response = await reviewPublicCloudMou(requests.create.licencePlate, {
+      taskId: task?.id ?? '',
+      decision: 'APPROVE',
+    });
+
+    expect(response.status).toBe(200);
+  });
+
   it('should successfully approve the request by admin', async () => {
     await mockSessionByRole('admin');
 
     const response = await makePublicCloudRequestDecision(requests.create.id, {
       ...requests.create.decisionData,
+      accountCoding: requests.create.decisionData.billing.accountCoding,
       decision: $Enums.DecisionStatus.APPROVED,
     });
 
@@ -103,7 +161,7 @@ describe('Update Public Cloud Product - Permissions', () => {
   });
 
   it('should fail to submit a update request for a non-assigned user', async () => {
-    const otherUsers = findOhterMockUsers([
+    const otherUsers = findOtherMockUsers([
       productData.main.projectOwner.email,
       productData.main.primaryTechnicalLead.email,
       productData.main.secondaryTechnicalLead.email,

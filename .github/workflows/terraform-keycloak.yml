@@ -23,10 +23,10 @@ jobs:
       name: tf-keycloak
     steps:
     - uses: hmarr/debug-action@f7318c783045ac39ed9bb497e22ce835fdafbfe6
-    - uses: actions/checkout@9a9194f87191a7e9055e3e9b95b8cfb13023bb08
+    - uses: actions/checkout@6d193bf28034eafb982f37bd894289fe649468fc
 
     - name: Setup Terraform
-      uses: hashicorp/setup-terraform@7f4493e15578a47490e79892b308bf23dee56c45
+      uses: hashicorp/setup-terraform@c23d9fb1b7ead2e283cd20aab7c4974b032f61f6
       with:
         terraform_version: ${{ env.TF_VERSION }}
 
@@ -66,7 +66,7 @@ jobs:
       continue-on-error: true
 
     - name: Create Comment
-      uses: actions/github-script@35b1cdd1b2c1fc704b1cd9758d10f67e833fcb02
+      uses: actions/github-script@660ec11d825b714d112a6bb9727086bc2cc500b2
       if: github.event_name == 'pull_request'
       env:
         PLAN: "terraform\n${{ steps.plan.outputs.stdout }}"

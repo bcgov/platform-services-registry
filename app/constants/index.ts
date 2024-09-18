@@ -1,4 +1,5 @@
 import { $Enums, Cluster, Ministry, Provider } from '@prisma/client';
+import { CpuQuotaEnum, MemoryQuotaEnum, StorageQuotaEnum } from '@/validation-schemas/private-cloud';
 
 export const clusters = Object.values(Cluster).filter((cluster) => cluster !== 'GOLDDR');
 
@@ -126,6 +127,44 @@ export const ministryOptions = [
   },
 ];
 
+export const clusterNames = [
+  {
+    id: 1,
+    name: 'clab',
+    humanFriendlyName: 'CLAB Calgary',
+  },
+  {
+    id: 2,
+    name: 'klab',
+    humanFriendlyName: 'KLAB Kamloops',
+  },
+  {
+    id: 3,
+    name: 'silver',
+    humanFriendlyName: 'Silver Kamloops',
+  },
+  {
+    id: 4,
+    name: 'gold',
+    humanFriendlyName: 'Gold Kamloops',
+  },
+  {
+    id: 5,
+    name: 'golddr',
+    humanFriendlyName: 'Gold (DR) Calgary',
+  },
+  {
+    id: 6,
+    name: 'klab2',
+    humanFriendlyName: 'KLAB2 Kamloops',
+  },
+  {
+    id: 7,
+    name: 'emerald',
+    humanFriendlyName: 'Emerald Hosting Tier',
+  },
+];
+
 export const AGMinistries = ['AG', 'PSSG', 'EMBC', 'HOUS'];
 
 export const productSorts = [
@@ -211,3 +250,7 @@ export const defaultProvisionedResourceValues = {
 };
 
 export const TEAM_SA_PREFIX = 'z_pltsvc-tsa-';
+
+export const cpuOptions = Object.values(CpuQuotaEnum.enum);
+export const memoryOptions = Object.values(MemoryQuotaEnum.enum);
+export const storageOptions = Object.values(StorageQuotaEnum.enum);

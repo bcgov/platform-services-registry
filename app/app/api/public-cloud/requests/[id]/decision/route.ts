@@ -3,11 +3,11 @@ import { z } from 'zod';
 import createApiHandler from '@/core/api-handler';
 import { BadRequestResponse, OkResponse, UnauthorizedResponse } from '@/core/responses';
 import makeRequestDecision from '@/request-actions/public-cloud/decision-request';
-import { PublicCloudRequestDecisionBodySchema } from '@/schema';
-import { sendExpenseAuthorityEmail, sendRequestRejectionEmails } from '@/services/ches/public-cloud/email-handler';
+import { sendRequestRejectionEmails, sendRequestApprovalEmails } from '@/services/ches/public-cloud';
 import { subscribeUsersToMautic } from '@/services/mautic';
 import { sendPublicCloudNatsMessage } from '@/services/nats';
 import { PermissionsEnum } from '@/types/permissions';
+import { publicCloudRequestDecisionBodySchema } from '@/validation-schemas/public-cloud';
 
 const pathParamSchema = z.object({
   id: z.string(),
@@ -16,7 +16,7 @@ const pathParamSchema = z.object({
 const apiHandler = createApiHandler({
   roles: ['user'],
   permissions: [PermissionsEnum.ReviewAllPublicCloudRequests],
-  validations: { pathParams: pathParamSchema, body: PublicCloudRequestDecisionBodySchema },
+  validations: { pathParams: pathParamSchema, body: publicCloudRequestDecisionBodySchema },
 });
 export const POST = apiHandler(async ({ pathParams, body, session }) => {
   const { id } = pathParams;
@@ -29,20 +29,13 @@ export const POST = apiHandler(async ({ pathParams, body, session }) => {
   }
 
   if (request.decisionStatus === DecisionStatus.REJECTED) {
-    await sendRequestRejectionEmails(request.decisionData, decisionComment);
+    await sendRequestRejectionEmails(request);
     return OkResponse(request);
   }
 
   const proms = [];
 
-  if (
-    request.decisionStatus === DecisionStatus.APPROVED &&
-    request.project?.expenseAuthorityId !== request.decisionData.expenseAuthorityId
-  ) {
-    proms.push(sendExpenseAuthorityEmail(request.decisionData));
-  }
-
-  proms.push(sendPublicCloudNatsMessage(request.type, request.decisionData, request.project));
+  proms.push(sendPublicCloudNatsMessage(request));
 
   // Subscribe users to Mautic
   const users: User[] = [
@@ -53,10 +46,9 @@ export const POST = apiHandler(async ({ pathParams, body, session }) => {
 
   proms.push(subscribeUsersToMautic(users, request.decisionData.provider, 'Public'));
 
-  await Promise.all(proms);
+  proms.push(sendRequestApprovalEmails(request));
 
-  // TODO: revisit to delete for good
-  // sendRequestApprovalEmails(request);
+  await Promise.all(proms);
 
   return OkResponse(request);
 });

@@ -1,10 +1,13 @@
 'use client';
 
+import { Alert } from '@mantine/core';
+import { IconInfoCircle } from '@tabler/icons-react';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import React, { useEffect } from 'react';
 import { z } from 'zod';
 import CommentBubble from '@/components/comments/CommentBubble';
 import CommentForm from '@/components/comments/CommentForm';
+import EmptySearch from '@/components/table/EmptySearch';
 import createClientPage from '@/core/client-page';
 import { getAllPrivateCloudComments } from '@/services/backend/private-cloud/products';
 import { usePrivateProductState } from '@/states/global';
@@ -58,6 +61,9 @@ export default privateCloudRequestComments(({ pathParams, session }) => {
 
   return (
     <div>
+      <Alert variant="light" color="blue" title="" icon={<IconInfoCircle />} mb={20}>
+        This page is for admin only; users do not have access.
+      </Alert>
       <CommentForm
         licencePlate={privateSnap.licencePlate}
         requestId={requestId}
@@ -89,7 +95,7 @@ export default privateCloudRequestComments(({ pathParams, session }) => {
           ))}
         </ul>
       ) : (
-        !commentsLoading && <p>No comments found.</p>
+        !commentsLoading && <EmptySearch cloud="private-cloud" type="comments" />
       )}
     </div>
   );

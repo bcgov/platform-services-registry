@@ -66,6 +66,7 @@ app:
     "AWS_ROLES_IDENTITY_PROVIDER": ""
     "AWS_ROLES_REALM_NAME": ""
     "M365_URL": "https://graph.microsoft.com"
+    "WEASYPRINT_URL": "http://weasyprint:8080"
 
   envSecretName: pltsvc # pragma: allowlist secret
 
@@ -135,7 +136,7 @@ nats:
   enabled: false
   image:
     repository: nats
-    tag: 2.10.18
+    tag: 2.10.20
     pullPolicy: IfNotPresent
 
   nameOverride: pltsvc-mock-nats
@@ -189,3 +190,12 @@ m365proxy:
   #   requests:
   #     cpu: 10m
   #     memory: 128Mi
+
+weasyprint:
+  enabled: false
+
+  image:
+    pullPolicy: IfNotPresent
+
+  nameOverride: weasyprint
+  fullnameOverride: weasyprint

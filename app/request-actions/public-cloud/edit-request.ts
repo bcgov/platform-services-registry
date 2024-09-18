@@ -3,9 +3,10 @@ import { Session } from 'next-auth';
 import prisma from '@/core/prisma';
 import { comparePublicProductData } from '@/helpers/product-change';
 import { createEvent } from '@/mutations/events';
-import { getLastClosedPublicCloudRequest } from '@/queries/public-cloud-requests';
-import { PublicCloudEditRequestBody, UserInput } from '@/schema';
+import { getLastClosedPublicCloudRequest, publicCloudRequestDetailInclude } from '@/queries/public-cloud-requests';
 import { upsertUsers } from '@/services/db/user';
+import { PublicCloudRequestDetail } from '@/types/public-cloud';
+import { PublicCloudEditRequestBody } from '@/validation-schemas/public-cloud';
 
 export default async function editRequest(
   licencePlate: string,
@@ -22,6 +23,7 @@ export default async function editRequest(
       primaryTechnicalLead: true,
       secondaryTechnicalLead: true,
       expenseAuthority: true,
+      billing: true,
     },
   });
 
@@ -29,7 +31,7 @@ export default async function editRequest(
     throw new Error('Project does not exist.');
   }
 
-  const { requestComment, ...rest } = formData;
+  const { requestComment, accountCoding, ...rest } = formData;
 
   await upsertUsers([
     formData.projectOwner.email,
@@ -45,6 +47,7 @@ export default async function editRequest(
     status: project.status,
     provider: project.provider,
     createdAt: project.createdAt,
+    billing: { connect: { id: project.billingId } },
     projectOwner: { connect: { email: formData.projectOwner.email } },
     primaryTechnicalLead: { connect: { email: formData.primaryTechnicalLead.email } },
     secondaryTechnicalLead: formData.secondaryTechnicalLead
@@ -58,12 +61,12 @@ export default async function editRequest(
 
   const { changes, ...otherChangeMeta } = comparePublicProductData(rest, previousRequest?.decisionData);
 
-  const request = await prisma.publicCloudRequest.create({
+  const request: PublicCloudRequestDetail | null = await prisma.publicCloudRequest.create({
     data: {
       type: RequestType.EDIT,
       decisionStatus: DecisionStatus.APPROVED, // automatically approve edit requests for public cloud
       active: true,
-      createdByEmail: session.user.email,
+      createdBy: { connect: { email: session.user.email } },
       licencePlate: project.licencePlate,
       requestComment,
       changes: otherChangeMeta,
@@ -72,32 +75,7 @@ export default async function editRequest(
       requestData: { create: decisionData },
       project: { connect: { licencePlate: project.licencePlate } },
     },
-    include: {
-      project: {
-        include: {
-          projectOwner: true,
-          primaryTechnicalLead: true,
-          secondaryTechnicalLead: true,
-          expenseAuthority: true,
-        },
-      },
-      originalData: {
-        include: {
-          projectOwner: true,
-          primaryTechnicalLead: true,
-          secondaryTechnicalLead: true,
-          expenseAuthority: true,
-        },
-      },
-      decisionData: {
-        include: {
-          projectOwner: true,
-          primaryTechnicalLead: true,
-          secondaryTechnicalLead: true,
-          expenseAuthority: true,
-        },
-      },
-    },
+    include: publicCloudRequestDetailInclude,
   });
 
   if (request) {

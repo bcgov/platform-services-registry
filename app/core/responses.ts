@@ -2,7 +2,7 @@ import { stringify } from 'csv-stringify/sync';
 import _isString from 'lodash-es/isString';
 import { NextResponse } from 'next/server';
 
-export function CsvResponse<T extends Record<string, any>>(data: T[], filename: string) {
+export function CsvResponse<T extends Record<string, any>>(data: T[], filename = 'download.csv') {
   const csv = stringify(data, {
     header: true,
     columns: data.length > 0 ? Object.keys(data[0]) : [],
@@ -12,6 +12,18 @@ export function CsvResponse<T extends Record<string, any>>(data: T[], filename: 
     status: 200,
     headers: {
       'Content-Type': 'text/csv',
+      'Content-Disposition': `'attachment; filename=${filename}'`,
+    },
+  });
+
+  return response;
+}
+
+export function PdfResponse(buffer: Buffer | string, filename = 'download.pdf') {
+  const response = new NextResponse(buffer, {
+    status: 200,
+    headers: {
+      'Content-Type': 'application/pdf',
       'Content-Disposition': `'attachment; filename=${filename}'`,
     },
   });
@@ -33,6 +45,10 @@ export function ForbiddenResponse(error: any) {
 
 export function NotFoundResponse(error: any) {
   return NextResponse.json({ success: false, message: 'Not Found', error }, { status: 404 });
+}
+
+export function UnprocessableEntityResponse(error: any) {
+  return NextResponse.json({ success: false, message: 'Unprocessable Entity', error }, { status: 422 });
 }
 
 export function InternalServerErrorResponse(error: any) {

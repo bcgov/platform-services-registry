@@ -1,7 +1,10 @@
 import axios from 'axios';
-import { PublicCloudProductRequestsGetPayload } from '@/app/api/public-cloud/products/[licencePlate]/requests/route';
-import { PublicCloudProjectGetPayload, PublicCloudProductSearchPayload } from '@/queries/public-cloud-products';
-import { PublicCloudProjectDecorate } from '@/types/doc-decorate';
+import {
+  PublicCloudRequestSimpleDecorated,
+  PublicCloudProductDetailDecorated,
+  PublicCloudProductSearch,
+  PublicCloudRequestDetail,
+} from '@/types/public-cloud';
 import { downloadFile } from '@/utils/file-download';
 import { instance as parentInstance } from './instance';
 
@@ -32,7 +35,7 @@ export async function searchPublicCloudProducts(data: PublicCloudProductSearchCr
     return res.data;
   });
 
-  return result as PublicCloudProductSearchPayload;
+  return result as PublicCloudProductSearch;
 }
 
 export async function downloadPublicCloudProducts(data: PublicCloudProductSearchCriteria) {
@@ -56,26 +59,36 @@ export async function getPublicCloudProject(licencePlate: string) {
     return res.data;
   });
 
-  return result as PublicCloudProjectGetPayload & PublicCloudProjectDecorate;
+  return result as PublicCloudProductDetailDecorated;
 }
 
 export async function createPublicCloudProject(data: any) {
   const result = await instance.post('/', data).then((res) => res.data);
-  return result;
+  return result as PublicCloudRequestDetail;
 }
 
 export async function editPublicCloudProject(licencePlate: string, data: any) {
   const result = await instance.put(`/${licencePlate}`, data).then((res) => res.data);
-  return result;
+  return result as PublicCloudRequestDetail;
 }
 
 export async function deletePublicCloudProject(licencePlate: string) {
   const result = await instance.delete(`/${licencePlate}`).then((res) => res.data);
-  return result;
+  return result as PublicCloudRequestDetail;
 }
 
 export async function getPublicCloudProductRequests(licencePlate: string, active = false) {
   const result = await instance.get(`/${licencePlate}/requests?active=${active}`).then((res) => res.data);
 
-  return result as PublicCloudProductRequestsGetPayload[];
+  return result as PublicCloudRequestSimpleDecorated[];
+}
+
+export async function signPublicCloudMou(licencePlate: string, data: { taskId: string; confirmed: boolean }) {
+  const result = await instance.post(`/${licencePlate}/sign-mou`, data).then((res) => res.data);
+  return result as true;
+}
+
+export async function reviewPublicCloudMou(licencePlate: string, data: { taskId: string; decision: string }) {
+  const result = await instance.post(`/${licencePlate}/review-mou`, data).then((res) => res.data);
+  return result as true;
 }

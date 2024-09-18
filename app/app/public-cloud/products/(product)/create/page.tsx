@@ -2,6 +2,17 @@
 
 import { zodResolver } from '@hookform/resolvers/zod';
 import { notifications } from '@mantine/notifications';
+import {
+  IconInfoCircle,
+  IconUsersGroup,
+  IconUserDollar,
+  IconSettings,
+  IconComponents,
+  IconMessage,
+  IconLayoutGridAdd,
+  IconMoneybag,
+  IconReceipt2,
+} from '@tabler/icons-react';
 import { useMutation } from '@tanstack/react-query';
 import { useState } from 'react';
 import { FormProvider, useForm } from 'react-hook-form';
@@ -13,13 +24,15 @@ import Budget from '@/components/form/Budget';
 import ExpenseAuthority from '@/components/form/ExpenseAuthority';
 import ProjectDescriptionPublic from '@/components/form/ProjectDescriptionPublic';
 import TeamContacts from '@/components/form/TeamContacts';
+import PageAccordion from '@/components/generic/accordion/PageAccordion';
 import FormErrorNotification from '@/components/generic/FormErrorNotification';
 import CreatePublicCloud from '@/components/modal/CreatePublicCloud';
 import ReturnModal from '@/components/modal/Return';
 import { AGMinistries } from '@/constants';
 import createClientPage from '@/core/client-page';
-import { PublicCloudCreateRequestBodySchema } from '@/schema';
+import { existBilling } from '@/services/backend/billing';
 import { createPublicCloudProject } from '@/services/backend/public-cloud/products';
+import { publicCloudCreateRequestBodySchema } from '@/validation-schemas/public-cloud';
 
 const publicCloudProductNew = createClientPage({
   roles: ['user'],
@@ -62,19 +75,33 @@ export default publicCloudProductNew(({ pathParams, queryParams, session }) => {
 
   const methods = useForm({
     resolver: zodResolver(
-      PublicCloudCreateRequestBodySchema.merge(
-        z.object({
-          isAgMinistryChecked: z.boolean().optional(),
-        }),
-      ).refine(
-        (formData) => {
-          return AGMinistries.includes(formData.ministry) ? formData.isAgMinistryChecked : true;
-        },
-        {
-          message: 'AG Ministry Checkbox should be checked.',
-          path: ['isAgMinistryChecked'],
-        },
-      ),
+      publicCloudCreateRequestBodySchema
+        .merge(
+          z.object({
+            isAgMinistryChecked: z.boolean().optional(),
+            isEaApproval: z.boolean().optional(),
+          }),
+        )
+        .refine(
+          (formData) => {
+            return AGMinistries.includes(formData.ministry) ? formData.isAgMinistryChecked : true;
+          },
+          {
+            message: 'AG Ministry Checkbox should be checked.',
+            path: ['isAgMinistryChecked'],
+          },
+        )
+        .refine(
+          async (formData) => {
+            const hasBilling = await existBilling(formData.accountCoding, formData.provider);
+            if (!hasBilling) return true;
+            return formData.isEaApproval;
+          },
+          {
+            message: 'EA Approval Checkbox should be checked.',
+            path: ['isEaApproval'],
+          },
+        ),
     ),
     defaultValues: {
       environmentsEnabled: {
@@ -100,6 +127,53 @@ export default publicCloudProductNew(({ pathParams, queryParams, session }) => {
     }
   };
 
+  const accordionItems = [
+    {
+      LeftIcon: IconInfoCircle,
+      label: 'Product description',
+      description: '',
+      Component: ProjectDescriptionPublic,
+      componentArgs: {
+        mode: 'create',
+      },
+    },
+    {
+      LeftIcon: IconLayoutGridAdd,
+      label: 'Accounts to create',
+      description: '',
+      Component: AccountEnvironmentsPublic,
+      componentArgs: { mode: 'create' },
+    },
+    {
+      LeftIcon: IconUsersGroup,
+      label: 'Team contacts',
+      description: '',
+      Component: TeamContacts,
+      componentArgs: { secondTechLead, secondTechLeadOnClick },
+    },
+    {
+      LeftIcon: IconUserDollar,
+      label: 'Expense authority',
+      description: '',
+      Component: ExpenseAuthority,
+      componentArgs: {},
+    },
+    {
+      LeftIcon: IconMoneybag,
+      label: 'Project budget',
+      description: '',
+      Component: Budget,
+      componentArgs: {},
+    },
+    {
+      LeftIcon: IconReceipt2,
+      label: 'Billing (account Coding)',
+      description: '',
+      Component: AccountCoding,
+      componentArgs: {},
+    },
+  ];
+
   return (
     <div>
       <h1 className="flex justify-between text-xl lg:text-2xl xl:text-4xl font-semibold leading-7 text-gray-900 mt-2 mb-4 lg:mt-4 lg:mb-8">
@@ -109,19 +183,8 @@ export default publicCloudProductNew(({ pathParams, queryParams, session }) => {
       <FormProvider {...methods}>
         <FormErrorNotification />
         <form autoComplete="off" onSubmit={methods.handleSubmit(() => setOpenCreate(true))}>
-          <div className="space-y-12">
-            <ProjectDescriptionPublic mode="create" />
-            <hr className="my-7" />
-            <AccountEnvironmentsPublic mode="create" />
-            <hr className="my-7" />
-            <TeamContacts number={3} secondTechLead={secondTechLead} secondTechLeadOnClick={secondTechLeadOnClick} />
-            <hr className="my-7" />
-            <ExpenseAuthority />
-            <hr className="my-7" />
-            <Budget />
-            <hr className="my-7" />
-            <AccountCoding />
-          </div>
+          <PageAccordion items={accordionItems} />
+
           <div className="mt-10 flex items-center justify-start gap-x-6">
             <PreviousButton />
             <button
@@ -132,13 +195,14 @@ export default publicCloudProductNew(({ pathParams, queryParams, session }) => {
             </button>
           </div>
         </form>
+        <CreatePublicCloud
+          open={openCreate}
+          setOpen={setOpenCreate}
+          handleSubmit={methods.handleSubmit(handleSubmit)}
+          isLoading={isCreatingProject}
+        />
       </FormProvider>
-      <CreatePublicCloud
-        open={openCreate}
-        setOpen={setOpenCreate}
-        handleSubmit={methods.handleSubmit(handleSubmit)}
-        isLoading={isCreatingProject}
-      />
+
       <ReturnModal
         isPublicCreate
         open={openReturn}

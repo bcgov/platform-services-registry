@@ -1,3 +1,12 @@
+import {
+  GET as _getPrivateCloudComment,
+  PUT as _updatePrivateCloudComment,
+  DELETE as _deletePrivateCloudComment,
+} from '@/app/api/private-cloud/products/[licencePlate]/comments/[commentId]/route';
+import {
+  POST as _createPrivateCloudComment,
+  GET as _listPrivateCloudComments,
+} from '@/app/api/private-cloud/products/[licencePlate]/comments/route';
 import { GET as _listPrivateCloudProductRequests } from '@/app/api/private-cloud/products/[licencePlate]/requests/route';
 import {
   GET as _getPrivateCloudProject,
@@ -14,11 +23,12 @@ import {
   PrivateCloudEditRequestBody,
   PrivateCloudProductSearchBody,
   PrivateCloudProductSearchNoPaginationBody,
-} from '@/schema';
+} from '@/validation-schemas/private-cloud';
 import { createRoute, ParamData } from '../core';
 
 const productCollectionRoute = createRoute('/private-cloud/products');
 
+// Private Cloud Projects
 export async function createPrivateCloudProject(data: any, paramData?: ParamData) {
   const result = await productCollectionRoute.post(_createPrivateCloudProject, '', data);
   return result;
@@ -57,7 +67,6 @@ export async function deletePrivateCloudProject(licencePlate: string) {
   const result = await productCollectionRoute.delete(_deletePrivateCloudProject, '/{{licencePlate}}', {
     pathParams: { licencePlate },
   });
-
   return result;
 }
 
@@ -69,6 +78,52 @@ export async function listPrivateCloudProductRequests(licencePlate: string, acti
       pathParams: { licencePlate },
     },
   );
+  return result;
+}
 
+// Private Cloud Comments
+export async function createPrivateCloudComment(licencePlate: string, data: any) {
+  const result = await productCollectionRoute.post(_createPrivateCloudComment, '/{{licencePlate}}/comments', data, {
+    pathParams: { licencePlate },
+  });
+  return result;
+}
+
+export async function getAllPrivateCloudComments(licencePlate: string, requestId?: string) {
+  const queryParams = requestId ? { requestId } : {};
+  const result = await productCollectionRoute.get(_listPrivateCloudComments, '/{{licencePlate}}/comments', {
+    pathParams: { licencePlate },
+    queryParams,
+  });
+  return result;
+}
+
+export async function getPrivateCloudComment(licencePlate: string, commentId: string) {
+  const result = await productCollectionRoute.get(_getPrivateCloudComment, '/{{licencePlate}}/comments/{{commentId}}', {
+    pathParams: { licencePlate, commentId },
+  });
+  return result;
+}
+
+export async function updatePrivateCloudComment(licencePlate: string, commentId: string, data: any) {
+  const result = await productCollectionRoute.put(
+    _updatePrivateCloudComment,
+    '/{{licencePlate}}/comments/{{commentId}}',
+    data,
+    {
+      pathParams: { licencePlate, commentId },
+    },
+  );
+  return result;
+}
+
+export async function deletePrivateCloudComment(licencePlate: string, commentId: string) {
+  const result = await productCollectionRoute.delete(
+    _deletePrivateCloudComment,
+    '/{{licencePlate}}/comments/{{commentId}}',
+    {
+      pathParams: { licencePlate, commentId },
+    },
+  );
   return result;
 }

@@ -1,5 +1,9 @@
 import axios from 'axios';
-import { PrivateCloudRequestGetPayload, PrivateCloudRequestSearchPayload } from '@/queries/private-cloud-requests';
+import {
+  PrivateCloudRequestDetail,
+  PrivateCloudRequestDetailDecorated,
+  PrivateCloudRequestSearch,
+} from '@/types/private-cloud';
 import { instance as parentInstance } from './instance';
 import { PrivateCloudProductSearchCriteria } from './products';
 
@@ -25,7 +29,7 @@ export async function getPrivateCloudRequest(id: string) {
     return res.data;
   });
 
-  return result as PrivateCloudRequestGetPayload;
+  return result as PrivateCloudRequestDetailDecorated;
 }
 
 export async function searchPrivateCloudRequests(data: PrivateCloudProductSearchCriteria) {
@@ -33,15 +37,15 @@ export async function searchPrivateCloudRequests(data: PrivateCloudProductSearch
     return res.data;
   });
 
-  return result as PrivateCloudRequestSearchPayload;
+  return result as PrivateCloudRequestSearch;
 }
 
 export async function makePrivateCloudRequestDecision(id: string, data: any) {
   const result = await instance.post(`/${id}/decision`, data).then((res) => res.data);
-  return result;
+  return result as PrivateCloudRequestDetail;
 }
 
 export async function resendPrivateCloudRequest(id: string) {
   const result = await instance.get(`/${id}/resend`).then((res) => res.data);
-  return result;
+  return result as true;
 }

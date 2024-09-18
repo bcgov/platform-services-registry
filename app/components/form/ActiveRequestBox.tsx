@@ -122,7 +122,7 @@ export default function ActiveRequestBox({
         size="lg"
         radius="sm"
         autoContrast
-        className="ml-1 w-40"
+        className="min-w-40 m-auto flex"
       >
         {decisionText}
       </Badge>
@@ -161,7 +161,7 @@ export default function ActiveRequestBox({
               size="lg"
               radius="sm"
               color="rgba(200, 200, 200, 1)"
-              className="mb-1 w-40"
+              className="mb-1 min-w-40 m-auto flex"
             >
               {data.type}
             </Badge>
@@ -170,7 +170,7 @@ export default function ActiveRequestBox({
         <div>{badges}</div>
         {data.createdByEmail && (
           <div className="text-center text-sm text-gray-400">
-            Submitted by <span className="font-bold">{data.createdByEmail}</span>
+            Submitted by <span className="font-bold block">{data.createdByEmail}</span>
           </div>
         )}
       </button>

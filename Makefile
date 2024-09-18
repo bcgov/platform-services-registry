@@ -3,15 +3,16 @@ SHELL := /usr/bin/env bash
 .PHONY: localdev
 localdev:
 	export MACHINE_HOST_IP=$$(hostname -I | awk '{print $$1}'); \
-	docker-compose -f ./localdev/docker-compose.yml up --build
+	docker-compose -f ./localdev/docker-compose.yml up --build --remove-orphans
 
 .PHONY: localmac
 localmac:
 	export MACHINE_HOST_IP=$$(ipconfig getifaddr en0); \
-	docker-compose -f ./localdev/docker-compose.yml -f ./localdev/docker-compose-arm64.yml up --build
+	docker-compose -f ./localdev/docker-compose.yml -f ./localdev/docker-compose-arm64.yml up --build --remove-orphans
 
 .PHONY: dev
 dev:
+	npm run prisma-push --prefix app
 	npm run dev --prefix app
 
 .PHONY: install

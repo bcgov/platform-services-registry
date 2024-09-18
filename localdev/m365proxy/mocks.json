@@ -29,7 +29,8 @@
               "displayName": "System, Admin CITZ:EX",
               "givenName": "Admin",
               "surname": "System",
-              "jobTitle": "admin"
+              "jobTitle": "admin",
+              "officeLocation": ""
             },
             {
               "id": "a008b857-36c8-4a17-a79a-518e33effec1",
@@ -40,7 +41,8 @@
               "displayName": "System, Reader CITZ:EX",
               "givenName": "Reader",
               "surname": "System",
-              "jobTitle": "reader"
+              "jobTitle": "reader",
+              "officeLocation": ""
             },
             {
               "id": "a008b857-36c8-4a17-a79a-518e33effec2",
@@ -51,7 +53,8 @@
               "displayName": "System, Private Admin CITZ:EX",
               "givenName": "Private Admin",
               "surname": "System",
-              "jobTitle": "private-admin"
+              "jobTitle": "private-admin",
+              "officeLocation": ""
             },
             {
               "id": "a008b857-36c8-4a17-a79a-518e33effec3",
@@ -62,7 +65,8 @@
               "displayName": "System, Private Reader CITZ:EX",
               "givenName": "Private Reader",
               "surname": "System",
-              "jobTitle": "private-reader"
+              "jobTitle": "private-reader",
+              "officeLocation": ""
             },
             {
               "id": "a008b857-36c8-4a17-a79a-518e33effec4",
@@ -73,7 +77,8 @@
               "displayName": "System, Public Admin CITZ:EX",
               "givenName": "Public Admin",
               "surname": "System",
-              "jobTitle": "public-admin"
+              "jobTitle": "public-admin",
+              "officeLocation": ""
             },
             {
               "id": "a008b857-36c8-4a17-a79a-518e33effec5",
@@ -84,7 +89,20 @@
               "displayName": "System, Public Reader CITZ:EX",
               "givenName": "Public Reader",
               "surname": "System",
-              "jobTitle": "public-reader"
+              "jobTitle": "public-reader",
+              "officeLocation": ""
+            },
+            {
+              "id": "a008b857-36c8-4a17-a79a-518e33effec6",
+              "extension_85cc52e9286540fcb1f97ed86114a0e5_bcgovGUID": "a008b85736c84a17a79a518e33effec6",
+              "onPremisesSamAccountName": "BILLING_REVIEWER_SYSTEM",
+              "userPrincipalName": "billing.reviewer.system@gov.bc.ca",
+              "mail": "billing.reviewer.system@gov.bc.ca",
+              "displayName": "System, Billing Reviewer CITZ:EX",
+              "givenName": "Billing Reviewer",
+              "surname": "System",
+              "jobTitle": "billing-reviewer",
+              "officeLocation": ""
             },
             {
               "id": "a008b857-36c8-4a17-a79a-518e33effeb1",
@@ -95,7 +113,8 @@
               "displayName": "Doe, John CITZ:EX",
               "givenName": "John",
               "surname": "Doe",
-              "jobTitle": ""
+              "jobTitle": "",
+              "officeLocation": ""
             },
             {
               "id": "a008b857-36c8-4a17-a79a-518e33effeb2",
@@ -106,7 +125,8 @@
               "displayName": "Smith, James CITZ:EX",
               "givenName": "James",
               "surname": "Smith",
-              "jobTitle": ""
+              "jobTitle": "",
+              "officeLocation": ""
             },
             {
               "id": "a008b857-36c8-4a17-a79a-518e33effeb3",
@@ -117,7 +137,8 @@
               "displayName": "Johnson, David CITZ:EX",
               "givenName": "David",
               "surname": "Johnson",
-              "jobTitle": ""
+              "jobTitle": "",
+              "officeLocation": ""
             },
             {
               "id": "a008b857-36c8-4a17-a79a-518e33effeb4",
@@ -128,7 +149,8 @@
               "displayName": "Williams, Sarah CITZ:EX",
               "givenName": "Sarah",
               "surname": "Williams",
-              "jobTitle": ""
+              "jobTitle": "",
+              "officeLocation": ""
             },
             {
               "id": "a008b857-36c8-4a17-a79a-518e33effeb5",
@@ -139,7 +161,8 @@
               "displayName": "Brown, Michael CITZ:EX",
               "givenName": "Michael",
               "surname": "Brown",
-              "jobTitle": ""
+              "jobTitle": "",
+              "officeLocation": ""
             },
             {
               "id": "a008b857-36c8-4a17-a79a-518e33effeb6",
@@ -150,7 +173,8 @@
               "displayName": "Davis, Jessica CITZ:EX",
               "givenName": "Jessica",
               "surname": "Davis",
-              "jobTitle": ""
+              "jobTitle": "",
+              "officeLocation": ""
             },
             {
               "id": "a008b857-36c8-4a17-a79a-518e33effeb7",
@@ -161,7 +185,8 @@
               "displayName": "Taylor, Kevin CITZ:EX",
               "givenName": "Kevin",
               "surname": "Taylor",
-              "jobTitle": ""
+              "jobTitle": "",
+              "officeLocation": ""
             },
             {
               "id": "a008b857-36c8-4a17-a79a-518e33effeb8",
@@ -172,7 +197,8 @@
               "displayName": "Wilson, Amanda CITZ:EX",
               "givenName": "Amanda",
               "surname": "Wilson",
-              "jobTitle": ""
+              "jobTitle": "",
+              "officeLocation": ""
             },
             {
               "id": "a008b857-36c8-4a17-a79a-518e33effeb9",
@@ -183,7 +209,8 @@
               "displayName": "Anderson, Jenna CITZ:EX",
               "givenName": "Jenna",
               "surname": "Anderson",
-              "jobTitle": ""
+              "jobTitle": "",
+              "officeLocation": ""
             },
             {
               "id": "a008b857-36c8-4a17-a79a-518e33effec0",
@@ -194,7 +221,8 @@
               "displayName": "Martinez, Laura CITZ:EX",
               "givenName": "Laura",
               "surname": "Martinez",
-              "jobTitle": ""
+              "jobTitle": "",
+              "officeLocation": ""
             },
             {
               "id": "bbb8b857-aaaa-4a17-a79a-518e33effccc",
@@ -205,7 +233,8 @@
               "displayName": "Platform Services, Test Account CITZ:EX",
               "givenName": "Platform Services",
               "surname": "Test Account",
-              "jobTitle": "admin"
+              "jobTitle": "admin",
+              "officeLocation": ""
             }
           ]
         }
@@ -227,7 +256,8 @@
           "displayName": "System, Admin CITZ:EX",
           "givenName": "Admin",
           "surname": "System",
-          "jobTitle": "admin"
+          "jobTitle": "admin",
+          "officeLocation": ""
         }
       }
     },
@@ -247,7 +277,8 @@
           "displayName": "System, Reader CITZ:EX",
           "givenName": "Reader",
           "surname": "System",
-          "jobTitle": "reader"
+          "jobTitle": "reader",
+          "officeLocation": ""
         }
       }
     },
@@ -267,7 +298,8 @@
           "displayName": "System, Private Admin CITZ:EX",
           "givenName": "Private Admin",
           "surname": "System",
-          "jobTitle": "private-admin"
+          "jobTitle": "private-admin",
+          "officeLocation": ""
         }
       }
     },
@@ -287,7 +319,8 @@
           "displayName": "System, Private Reader CITZ:EX",
           "givenName": "Private Reader",
           "surname": "System",
-          "jobTitle": "private-reader"
+          "jobTitle": "private-reader",
+          "officeLocation": ""
         }
       }
     },
@@ -307,7 +340,8 @@
           "displayName": "System, Public Admin CITZ:EX",
           "givenName": "Public Admin",
           "surname": "System",
-          "jobTitle": "public-admin"
+          "jobTitle": "public-admin",
+          "officeLocation": ""
         }
       }
     },
@@ -327,7 +361,29 @@
           "displayName": "System, Public Reader CITZ:EX",
           "givenName": "Public Reader",
           "surname": "System",
-          "jobTitle": "public-reader"
+          "jobTitle": "public-reader",
+          "officeLocation": ""
+        }
+      }
+    },
+    {
+      "request": {
+        "url": "https://graph.microsoft.com/v1.0/users/billing.reviewer.system@gov.bc.ca?*",
+        "method": "GET"
+      },
+      "response": {
+        "body": {
+          "@odata.context": "https://graph.microsoft.com/v1.0/$metadata#users/$entity",
+          "id": "a008b857-36c8-4a17-a79a-518e33effec6",
+          "extension_85cc52e9286540fcb1f97ed86114a0e5_bcgovGUID": "a008b85736c84a17a79a518e33effec6",
+          "onPremisesSamAccountName": "BILLING_REVIEWER_SYSTEM",
+          "userPrincipalName": "billing.reviewer.system@gov.bc.ca",
+          "mail": "billing.reviewer.system@gov.bc.ca",
+          "displayName": "System, Billing Reviewer CITZ:EX",
+          "givenName": "Billing Reviewer",
+          "surname": "System",
+          "jobTitle": "billing-reviewer",
+          "officeLocation": ""
         }
       }
     },
@@ -346,7 +402,8 @@
         "displayName": "Doe, John CITZ:EX",
         "givenName": "John",
         "surname": "Doe",
-        "jobTitle": ""
+        "jobTitle": "",
+        "officeLocation": ""
       }
     },
     {
@@ -365,7 +422,8 @@
           "displayName": "Smith, James CITZ:EX",
           "givenName": "James",
           "surname": "Smith",
-          "jobTitle": ""
+          "jobTitle": "",
+          "officeLocation": ""
         }
       }
     },
@@ -385,7 +443,8 @@
           "displayName": "Johnson, David CITZ:EX",
           "givenName": "David",
           "surname": "Johnson",
-          "jobTitle": ""
+          "jobTitle": "",
+          "officeLocation": ""
         }
       }
     },
@@ -405,7 +464,8 @@
           "displayName": "Williams, Sarah CITZ:EX",
           "givenName": "Sarah",
           "surname": "Williams",
-          "jobTitle": ""
+          "jobTitle": "",
+          "officeLocation": ""
         }
       }
     },
@@ -425,7 +485,8 @@
           "displayName": "Brown, Michael CITZ:EX",
           "givenName": "Michael",
           "surname": "Brown",
-          "jobTitle": ""
+          "jobTitle": "",
+          "officeLocation": ""
         }
       }
     },
@@ -445,7 +506,8 @@
           "displayName": "Davis, Jessica CITZ:EX",
           "givenName": "Jessica",
           "surname": "Davis",
-          "jobTitle": ""
+          "jobTitle": "",
+          "officeLocation": ""
         }
       }
     },
@@ -465,7 +527,8 @@
           "displayName": "Taylor, Kevin CITZ:EX",
           "givenName": "Kevin",
           "surname": "Taylor",
-          "jobTitle": ""
+          "jobTitle": "",
+          "officeLocation": ""
         }
       }
     },
@@ -485,7 +548,8 @@
           "displayName": "Wilson, Amanda CITZ:EX",
           "givenName": "Amanda",
           "surname": "Wilson",
-          "jobTitle": ""
+          "jobTitle": "",
+          "officeLocation": ""
         }
       }
     },
@@ -505,7 +569,8 @@
           "displayName": "Anderson, Jenna CITZ:EX",
           "givenName": "Jenna",
           "surname": "Anderson",
-          "jobTitle": ""
+          "jobTitle": "",
+          "officeLocation": ""
         }
       }
     },
@@ -525,7 +590,8 @@
           "displayName": "Martinez, Laura CITZ:EX",
           "givenName": "Laura",
           "surname": "Martinez",
-          "jobTitle": ""
+          "jobTitle": "",
+          "officeLocation": ""
         }
       }
     },
@@ -545,7 +611,8 @@
           "displayName": "Platform Services, Test Account CITZ:EX",
           "givenName": "Platform Services",
           "surname": "Test Account",
-          "jobTitle": "admin"
+          "jobTitle": "admin",
+          "officeLocation": ""
         }
       }
     }

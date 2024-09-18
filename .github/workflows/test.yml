@@ -5,13 +5,12 @@ on:
     paths-ignore:
     - data-migrations/**
     - helm/**
-    - localdev/**
     - terraform/**
     - tools/**
 
 concurrency:
-  group: ${{ github.workflow }}
-  cancel-in-progress: false
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
 
 jobs:
   build-app:
@@ -19,7 +18,7 @@ jobs:
     timeout-minutes: 20
     steps:
     - uses: hmarr/debug-action@f7318c783045ac39ed9bb497e22ce835fdafbfe6
-    - uses: actions/checkout@9a9194f87191a7e9055e3e9b95b8cfb13023bb08
+    - uses: actions/checkout@6d193bf28034eafb982f37bd894289fe649468fc
 
     - name: Setup Tools
       uses: ./.github/actions/setup-tools
@@ -36,7 +35,7 @@ jobs:
     timeout-minutes: 20
     steps:
     - uses: hmarr/debug-action@f7318c783045ac39ed9bb497e22ce835fdafbfe6
-    - uses: actions/checkout@9a9194f87191a7e9055e3e9b95b8cfb13023bb08
+    - uses: actions/checkout@6d193bf28034eafb982f37bd894289fe649468fc
 
     - name: Setup Tools
       uses: ./.github/actions/setup-tools
@@ -53,7 +52,7 @@ jobs:
     timeout-minutes: 20
     steps:
     - uses: hmarr/debug-action@f7318c783045ac39ed9bb497e22ce835fdafbfe6
-    - uses: actions/checkout@9a9194f87191a7e9055e3e9b95b8cfb13023bb08
+    - uses: actions/checkout@6d193bf28034eafb982f37bd894289fe649468fc
 
     - name: Setup Tools
       uses: ./.github/actions/setup-tools

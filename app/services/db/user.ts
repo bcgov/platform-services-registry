@@ -19,10 +19,14 @@ export async function upsertUser(email: string, extra = {}) {
     const adUserPhoto = await getUserPhoto(email);
     const data = {
       email,
+      providerUserId: adUser.providerUserId,
       firstName: adUser.firstName,
       lastName: adUser.lastName,
       ministry: adUser.ministry,
       idir: adUser.idir,
+      idirGuid: adUser.idirGuid,
+      officeLocation: adUser.officeLocation,
+      jobTitle: adUser.jobTitle,
       upn: adUser.upn,
       image: adUserPhoto ? arrayBufferToBase64(adUserPhoto) : '',
       ...extra,

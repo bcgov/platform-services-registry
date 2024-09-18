@@ -2,11 +2,11 @@ name: 32.Run E2E Tests
 
 on:
   push:
-    branches:
-    - cypress
-    paths:
-    - .github/workflows/cypress-e2e-test.yaml
-    - cypress/**
+    paths-ignore:
+    - data-migrations/**
+    - helm/**
+    - terraform/**
+    - tools/**
 
   workflow_dispatch:
 
@@ -16,7 +16,7 @@ jobs:
     timeout-minutes: 20
     steps:
     - uses: hmarr/debug-action@f7318c783045ac39ed9bb497e22ce835fdafbfe6
-    - uses: actions/checkout@9a9194f87191a7e9055e3e9b95b8cfb13023bb08
+    - uses: actions/checkout@6d193bf28034eafb982f37bd894289fe649468fc
 
     - name: Setup Tools
       uses: ./.github/actions/setup-tools

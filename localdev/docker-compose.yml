@@ -90,7 +90,7 @@ services:
     platform: linux/amd64
     container_name: mongodb
     # See https://hub.docker.com/r/bitnami/mongodb/tags
-    image: bitnami/mongodb:7.0.12-debian-12-r6
+    image: bitnami/mongodb:7.0.14-debian-12-r3
     environment:
     - MONGODB_ADVERTISED_HOSTNAME=127.0.0.1
     - MONGODB_REPLICA_SET_MODE=primary
@@ -104,20 +104,20 @@ services:
       source: ./mnt/mongodb
       target: /data/db
 
-  m365proxy:
-    platform: linux/amd64
-    container_name: m365proxy
-    build:
-      context: ./m365proxy
-      dockerfile: Dockerfile
-    stdin_open: true
-    ports:
-    - 8000:8000
+  # m365proxy:
+  #   platform: linux/amd64
+  #   container_name: m365proxy
+  #   build:
+  #     context: ./m365proxy
+  #     dockerfile: Dockerfile
+  #   stdin_open: true
+  #   ports:
+  #   - 8000:8000
 
   nats:
     platform: linux/amd64
     container_name: nats
-    image: nats:2.10.18
+    image: nats:2.10.20
     ports:
     - 4222:4222
 
@@ -137,3 +137,11 @@ services:
       PUBLIC_CLOUD_CLIENT_SECRET: testsecret # pragma: allowlist secret
     depends_on:
     - nats
+
+  weasyprint:
+    platform: linux/amd64
+    container_name: weasyprint
+    # See https://github.com/bcgov/weasyprint/pkgs/container/weasyprint
+    image: ghcr.io/bcgov/weasyprint:2b3185f05c76d16a7efc32be6124c744be5ee33f
+    ports:
+    - 8090:8080

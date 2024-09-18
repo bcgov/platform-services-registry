@@ -3,6 +3,7 @@
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Button, Divider, Grid, LoadingOverlay, Box } from '@mantine/core';
 import { notifications } from '@mantine/notifications';
+import { DecisionStatus, User, Provider, TaskStatus, TaskType } from '@prisma/client';
 import { useQuery, useMutation } from '@tanstack/react-query';
 import classNames from 'classnames';
 import { useSession } from 'next-auth/react';
@@ -12,22 +13,31 @@ import ExternalLink from '@/components/generic/button/ExternalLink';
 import FormCheckbox from '@/components/generic/checkbox/FormCheckbox';
 import FormError from '@/components/generic/FormError';
 import { createModal, ExtraModalProps } from '@/core/modal';
-import { createPrivateCloudProject } from '@/services/backend/private-cloud/products';
+import { signPublicCloudMou } from '@/services/backend/public-cloud/products';
 
-interface ModalProps {}
+interface ModalProps {
+  licencePlate: string;
+  name: string;
+  provider: Provider;
+}
 
 interface ModalState {
   confirmed: boolean;
 }
 
-function SignPublicCloudProductModal({ state, closeModal }: { state: ModalState } & ExtraModalProps) {
+function SignPublicCloudProductModal({
+  licencePlate,
+  name,
+  provider,
+  state,
+  closeModal,
+}: ModalProps & { state: ModalState } & ExtraModalProps) {
   const { data: session } = useSession();
 
   const methods = useForm({
     resolver: zodResolver(
       z.object({
         confirmed: z.boolean().refine((bool) => bool == true, { message: 'Please confirm the agreement.' }),
-        requestComment: z.string().max(1000).optional(),
       }),
     ),
     defaultValues: {
@@ -36,48 +46,63 @@ function SignPublicCloudProductModal({ state, closeModal }: { state: ModalState 
   });
 
   const {
-    mutateAsync: createProject,
-    isPending: isCreatingProject,
-    isError: isCreateError,
-    error: createError,
+    mutateAsync: signMou,
+    isPending: isSigning,
+    isError: isSignError,
+    error: signError,
   } = useMutation({
-    mutationFn: (data: any) => createPrivateCloudProject(data),
+    mutationFn: (data: { taskId: string; confirmed: boolean }) => signPublicCloudMou(licencePlate, data),
     onSuccess: () => {
       state.confirmed = true;
+
+      notifications.show({
+        color: 'green',
+        title: 'Success',
+        message: 'Successfully submitted!',
+        autoClose: 5000,
+      });
     },
     onError: (error: any) => {
       state.confirmed = false;
 
-      if (error.response?.status === 401) {
-        notifications.show({
-          title: 'Error',
-          message:
-            'You are not authorized to create this product. Please ensure you are mentioned in the product contacts to proceed.',
-          color: 'red',
-          autoClose: 5000,
-        });
-      } else {
-        notifications.show({
-          title: 'Error',
-          message: `Failed to create product: ${error.message}`,
-          color: 'red',
-          autoClose: 5000,
-        });
-      }
+      notifications.show({
+        title: 'Error',
+        message: `Failed to submit a eMOU: ${error.message}`,
+        color: 'red',
+        autoClose: 5000,
+      });
     },
   });
 
   const { handleSubmit, register } = methods;
 
+  const service = provider === Provider.AWS ? 'AWS' : 'Microsoft Azure';
+
   return (
     <Box pos="relative">
-      <LoadingOverlay visible={isCreatingProject} zIndex={1000} overlayProps={{ radius: 'sm', blur: 2 }} />
+      <LoadingOverlay visible={isSigning} zIndex={1000} overlayProps={{ radius: 'sm', blur: 2 }} />
       <FormProvider {...methods}>
         <form
           autoComplete="off"
           onSubmit={handleSubmit(async (formData) => {
             if (formData.confirmed) {
-              // await createProject({ ...productData, requestComment: formData.requestComment });
+              const task = session?.tasks.find(
+                (tsk) =>
+                  tsk.type === TaskType.SIGN_MOU &&
+                  tsk.status === TaskStatus.ASSIGNED &&
+                  (tsk.data as { licencePlate: string }).licencePlate === licencePlate,
+              );
+
+              if (task) {
+                await signMou({ taskId: task?.id, confirmed: true });
+              } else {
+                notifications.show({
+                  title: 'Error',
+                  message: `You are not assigned to perform the task.`,
+                  color: 'red',
+                  autoClose: 5000,
+                });
+              }
             }
 
             closeModal();
@@ -92,7 +117,7 @@ function SignPublicCloudProductModal({ state, closeModal }: { state: ModalState 
             </p>
             <p>And</p>
             <p className="text-center font-semibold">
-              The (Team Name)
+              The {name}
               <br />
               Hereby referred to as “the Ministry”
             </p>
@@ -103,23 +128,32 @@ function SignPublicCloudProductModal({ state, closeModal }: { state: ModalState 
               Ministry’s teams, on the Amazon Web Services platform, through the Government of Canada Cloud Brokering
               Service.
             </p>
-            <p className="mb-2">
-              &emsp;&emsp;AWS and the Government of Canada will invoice the OCIO, monthly, for the services consumed
-              including the Provincial Sales Tax (PST). Additional charges include the 6% brokerage fee that covers the
-              Government of Canada’s commission.
-            </p>
+
+            {provider === Provider.AWS ? (
+              <p className="mb-2">
+                &emsp;&emsp;AWS and the Government of Canada will invoice the OCIO, monthly, for the services consumed
+                including the Provincial Sales Tax (PST). Additional charges include the 6% brokerage fee that covers
+                the Government of Canada’s commission.
+              </p>
+            ) : (
+              <p className="mb-2">
+                &emsp;&emsp;Microsoft will invoice the OCIO, monthly, for the services consumed including the Provincial
+                Sales Tax (PST). Additional charges include the 6% OCIO administrative fee.
+              </p>
+            )}
+
             <p className="mb-2">
               &emsp;&emsp;The OCIO will pass these costs through to the Ministry by Journal Voucher on a quarterly
               basis.
             </p>
             <p className="mb-2">
               &emsp;&emsp;This agreement also enables the Ministry’s Expense Authority approval for all actual consumed
-              usage & any prepayment of reserved AWS services by the Ministry.
+              usage & any prepayment of reserved {service} services by the Ministry.
             </p>
             <p className="mb-2">
               The Ministry is responsible for understanding the cost structure associated with their current and future
-              services consumption in AWS and monitoring their actual consumption to ensure it stays within the planned
-              budget.
+              services consumption in {service} and monitoring their actual consumption to ensure it stays within the
+              planned budget.
             </p>
             <p>
               This agreement will be in effect from the date of signing, until a written notification is provided to the

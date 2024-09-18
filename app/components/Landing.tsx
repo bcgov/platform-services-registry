@@ -59,19 +59,13 @@ export default function Landing() {
         <ul className="list-disc pl-8">
           <li className="mb-2 text-gray-700">
             Private Cloud Platform Administrators <MailLink to="PlatformServicesTeam@gov.bc.ca" /> to book an{' '}
-            <ExternalLink
-              href="https://digital.gov.bc.ca/cloud/services/private/onboard/"
-              className="text-blue-600 hover:underline"
-            >
+            <ExternalLink href="https://digital.gov.bc.ca/cloud/services/private/onboard/">
               onboarding session for the (Openshift Platform)
             </ExternalLink>
           </li>
           <li className="mb-2 text-gray-700">
             Public Cloud Platform Administrators <MailLink to="Cloud.Pathfinder@gov.bc.ca" /> to book an{' '}
-            <ExternalLink
-              href="https://digital.gov.bc.ca/cloud/servic12es/public/onboard/"
-              className="text-blue-600 hover:underline"
-            >
+            <ExternalLink href="https://digital.gov.bc.ca/cloud/services/public/onboard/">
               onboarding session for the (B.C. Government Public Cloud Landing Zone)
             </ExternalLink>
           </li>
@@ -94,10 +88,7 @@ export default function Landing() {
           <List.Item>Fulfill the onboarding prerequisites</List.Item>
           <List.Item>
             Have a valid{' '}
-            <ExternalLink
-              href="https://www2.gov.bc.ca/gov/content/governments/services-for-government/information-management-technology/id-services/idir"
-              className="text-blue-600 hover:underline"
-            >
+            <ExternalLink href="https://www2.gov.bc.ca/gov/content/governments/services-for-government/information-management-technology/id-services/idir">
               IDIR
             </ExternalLink>{' '}
             account, which you will use to access the registry
@@ -105,10 +96,7 @@ export default function Landing() {
           <List.Item>Provide an application name and description without using acronyms</List.Item>
           <List.Item>
             Contact emails tied to an{' '}
-            <ExternalLink
-              href="https://www2.gov.bc.ca/gov/content/governments/services-for-government/information-management-technology/id-services/idir"
-              className="text-blue-600 hover:underline"
-            >
+            <ExternalLink href="https://www2.gov.bc.ca/gov/content/governments/services-for-government/information-management-technology/id-services/idir">
               IDIR
             </ExternalLink>{' '}
             for the product owner and up to two (2) technical leads
@@ -126,18 +114,12 @@ export default function Landing() {
         </h2>
         <ul className="list-disc pl-8 mb-4">
           <li className="mb-2">
-            <ExternalLink
-              href="https://digital.gov.bc.ca/cloud/services/private/intro/"
-              className="text-blue-600 hover:underline"
-            >
+            <ExternalLink href="https://digital.gov.bc.ca/cloud/services/private/intro/">
               Private cloud hosting
             </ExternalLink>
           </li>
           <li className="mb-2">
-            <ExternalLink
-              href="https://digital.gov.bc.ca/cloud/services/public/intro/"
-              className="text-blue-600 hover:underline"
-            >
+            <ExternalLink href="https://digital.gov.bc.ca/cloud/services/public/intro/">
               Public cloud hosting
             </ExternalLink>
           </li>

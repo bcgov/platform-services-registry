@@ -9,8 +9,8 @@ import _get from 'lodash-es/get';
 import { useState } from 'react';
 import { FormProvider, useForm } from 'react-hook-form';
 import { createModal, ExtraModalProps } from '@/core/modal';
-import { teamApiAccountSchema, TeamApiAccountSchemaData } from '@/schema';
 import { listKeycloakAuthRoles, createKeycloakTeamApiAccount } from '@/services/backend/keycloak';
+import { teamApiAccountSchema, TeamApiAccount } from '@/validation-schemas/api-accounts';
 import AccountMembers from './AccountMembers';
 import AccountRoles from './AccountRoles';
 
@@ -33,7 +33,7 @@ function CreateUsersModal({ closeModal }: ExtraModalProps) {
   });
 
   const { mutateAsync: createAccount, isPending: isCreatinAccount } = useMutation({
-    mutationFn: ({ roles, users }: TeamApiAccountSchemaData) => createKeycloakTeamApiAccount(roles, users),
+    mutationFn: ({ roles, users }: TeamApiAccount) => createKeycloakTeamApiAccount(roles, users),
     onError: (error: any) => {
       notifications.show({
         title: 'Error',

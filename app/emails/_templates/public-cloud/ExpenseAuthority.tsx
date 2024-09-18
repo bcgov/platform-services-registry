@@ -1,52 +1,28 @@
-import { Heading, Text } from '@react-email/components';
+import { Heading, Text, Hr } from '@react-email/components';
 import * as React from 'react';
-import Closing from '@/emails/_components/Closing';
-import Layout from '@/emails/_components/layout/Layout';
+import PublicCloudLayout from '@/emails/_components/layout/PublicCloudLayout';
+import LinkButton from '@/emails/_components/LinkButton';
 import ProductDetails from '@/emails/_components/ProductDetails';
-import { PublicCloudRequestedProjectWithContacts } from '@/services/nats/public-cloud';
+import { PublicCloudRequestDetail } from '@/types/public-cloud';
 
 interface EmailProp {
-  product: PublicCloudRequestedProjectWithContacts;
+  request: PublicCloudRequestDetail;
 }
 
-const ExpenseAuthorityTemplate = ({ product }: EmailProp) => {
-  if (!product) return <></>;
+export default function ExpenseAuthority({ request }: EmailProp) {
+  if (!request) return <></>;
 
-  const {
-    name,
-    description,
-    ministry,
-    projectOwner,
-    primaryTechnicalLead,
-    secondaryTechnicalLead,
-    expenseAuthority,
-    licencePlate,
-  } = product;
+  const { name, expenseAuthority } = request.decisionData;
 
   return (
-    <Layout>
-      <div className="pb-6 mt-4 mb-4 border-solid border-0 border-b-1 border-slate-300">
-        <Heading className="text-lg">New Expense Authority</Heading>
-        <Text>Hi, {expenseAuthority?.firstName},</Text>
-        <Text className="">You are now the Expense Authority for the the product {name} on the Public Cloud.</Text>
-      </div>
-      <div className="pb-6 mt-4 mb-4 border-solid border-0 border-b-1 border-slate-300">
-        <ProductDetails
-          name={name}
-          description={description}
-          ministry={ministry}
-          po={projectOwner}
-          tl1={primaryTechnicalLead}
-          tl2={secondaryTechnicalLead}
-          expenseAuthority={expenseAuthority}
-          licencePlate={licencePlate}
-        />
-      </div>
-      <div>
-        <Closing email="Cloud.Pathfinder@gov.bc.ca" team={'Cloud Pathfinder Team'} />
-      </div>
-    </Layout>
-  );
-};
+    <PublicCloudLayout showFooter>
+      <Heading className="text-lg">New Expense Authority</Heading>
+      <Text>Hi, {expenseAuthority?.firstName},</Text>
+      <Text>You are now the Expense Authority for the the product {name} on the Public Cloud.</Text>
 
-export default ExpenseAuthorityTemplate;
+      <LinkButton href={`/public-cloud/products/${request.decisionData.licencePlate}/edit`}>Review Product</LinkButton>
+
+      <ProductDetails product={request.decisionData} />
+    </PublicCloudLayout>
+  );
+}

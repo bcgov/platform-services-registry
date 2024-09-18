@@ -26,10 +26,10 @@ jobs:
 
     steps:
     - uses: hmarr/debug-action@f7318c783045ac39ed9bb497e22ce835fdafbfe6
-    - uses: actions/checkout@9a9194f87191a7e9055e3e9b95b8cfb13023bb08
+    - uses: actions/checkout@6d193bf28034eafb982f37bd894289fe649468fc
 
     - name: Build and Push
-      uses: egose/actions/docker-build-push@39eedd7f68a65004b0f9e8872feb494900257dba
+      uses: egose/actions/docker-build-push@a18ce5484959fe604bf4c29726334e54933d1ba9
       with:
         registry-url: ${{ env.GITHUB_REGISTRY }}
         registry-username: ${{ github.actor }}
@@ -49,10 +49,10 @@ jobs:
 
     steps:
     - uses: hmarr/debug-action@f7318c783045ac39ed9bb497e22ce835fdafbfe6
-    - uses: actions/checkout@9a9194f87191a7e9055e3e9b95b8cfb13023bb08
+    - uses: actions/checkout@6d193bf28034eafb982f37bd894289fe649468fc
 
     - name: Build and Push
-      uses: egose/actions/docker-build-push@39eedd7f68a65004b0f9e8872feb494900257dba
+      uses: egose/actions/docker-build-push@a18ce5484959fe604bf4c29726334e54933d1ba9
       with:
         registry-url: ${{ env.GITHUB_REGISTRY }}
         registry-username: ${{ github.actor }}
@@ -72,10 +72,10 @@ jobs:
 
     steps:
     - uses: hmarr/debug-action@f7318c783045ac39ed9bb497e22ce835fdafbfe6
-    - uses: actions/checkout@9a9194f87191a7e9055e3e9b95b8cfb13023bb08
+    - uses: actions/checkout@6d193bf28034eafb982f37bd894289fe649468fc
 
     - name: Build and Push
-      uses: egose/actions/docker-build-push@39eedd7f68a65004b0f9e8872feb494900257dba
+      uses: egose/actions/docker-build-push@a18ce5484959fe604bf4c29726334e54933d1ba9
       with:
         registry-url: ${{ env.GITHUB_REGISTRY }}
         registry-username: ${{ github.actor }}

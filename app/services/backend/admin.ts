@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { PrivateCloudAdminUpdateBody } from '@/schema';
+import { PrivateCloudAdminUpdateBody } from '@/validation-schemas/private-cloud';
 import { instance as baseInstance } from './axios';
 
 export const instance = axios.create({

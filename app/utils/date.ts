@@ -1,7 +1,7 @@
 import { format } from 'date-fns/format';
 import _isDate from 'lodash-es/isDate';
 
-export function formatDate(date: string | number | Date, formatStr = 'yyyy-MM-dd hh:mm:ss aa') {
+export function formatDate(date: string | number | Date | null | undefined, formatStr = 'yyyy-MM-dd hh:mm:ss aa') {
   if (!date) return '';
 
   const d = new Date(date);

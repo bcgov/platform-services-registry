@@ -2,7 +2,7 @@ import { expect } from '@jest/globals';
 import { $Enums } from '@prisma/client';
 import prisma from '@/core/prisma';
 import { createSamplePrivateCloudProductData } from '@/helpers/mock-resources';
-import { mockNoRoleUsers, findMockUserByIdr, findOhterMockUsers } from '@/helpers/mock-users';
+import { mockNoRoleUsers, findMockUserByIdr, findOtherMockUsers } from '@/helpers/mock-users';
 import { mockSessionByEmail, mockSessionByRole } from '@/services/api-test/core';
 import { provisionPrivateCloudProject } from '@/services/api-test/private-cloud';
 import { createPrivateCloudProject, editPrivateCloudProject } from '@/services/api-test/private-cloud/products';
@@ -195,7 +195,7 @@ describe('Search Private Cloud Requests - Validations', () => {
           decision: $Enums.DecisionStatus.APPROVED,
         });
 
-        provisionPrivateCloudProject(dat1.licencePlate);
+        await provisionPrivateCloudProject(dat1.licencePlate);
         return req;
       }),
     );

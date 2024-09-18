@@ -6,8 +6,8 @@ import Table from '@/components/generic/table/Table';
 import TableBodyPublicProducts from '@/components/table/TableBodyPublicProducts';
 import createClientPage from '@/core/client-page';
 import { processPublicCloudProductData } from '@/helpers/row-mapper';
-import { PublicCloudProjectGetPayloadWithActiveRequest } from '@/queries/public-cloud-products';
 import { searchPublicCloudProducts, downloadPublicCloudProducts } from '@/services/backend/public-cloud/products';
+import { PublicCloudProductSimpleDecorated } from '@/types/public-cloud';
 import FilterPanel from './FilterPanel';
 import { pageState } from './state';
 
@@ -23,7 +23,7 @@ export default publicCloudProducts(({ pathParams, queryParams, session }) => {
     queryFn: () => searchPublicCloudProducts(snap),
   });
 
-  let products: PublicCloudProjectGetPayloadWithActiveRequest[] = [];
+  let products: PublicCloudProductSimpleDecorated[] = [];
   let totalCount = 0;
 
   if (!isLoading && data) {

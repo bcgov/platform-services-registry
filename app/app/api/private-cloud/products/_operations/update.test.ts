@@ -1,23 +1,23 @@
 import { expect } from '@jest/globals';
 import { $Enums } from '@prisma/client';
 import { createSamplePrivateCloudProductData } from '@/helpers/mock-resources';
-import { findOhterMockUsers } from '@/helpers/mock-users';
-import { QuotaCpuEnum, QuotaMemoryEnum, QuotaStorageEnum } from '@/schema';
+import { findOtherMockUsers } from '@/helpers/mock-users';
 import { mockSessionByEmail, mockSessionByRole } from '@/services/api-test/core';
 import { provisionPrivateCloudProject } from '@/services/api-test/private-cloud';
 import { createPrivateCloudProject, editPrivateCloudProject } from '@/services/api-test/private-cloud/products';
 import { makePrivateCloudRequestDecision } from '@/services/api-test/private-cloud/requests';
+import { CpuQuotaEnum, MemoryQuotaEnum, StorageQuotaEnum } from '@/validation-schemas/private-cloud';
 
 const oldDevelopmentQuota = {
-  cpu: QuotaCpuEnum.enum.CPU_REQUEST_1_LIMIT_2,
-  memory: QuotaMemoryEnum.enum.MEMORY_REQUEST_4_LIMIT_8,
-  storage: QuotaStorageEnum.enum.STORAGE_2,
+  cpu: CpuQuotaEnum.enum.CPU_REQUEST_1_LIMIT_2,
+  memory: MemoryQuotaEnum.enum.MEMORY_REQUEST_4_LIMIT_8,
+  storage: StorageQuotaEnum.enum.STORAGE_2,
 };
 
 const newDevelopmentQuota = {
-  cpu: QuotaCpuEnum.enum.CPU_REQUEST_1_LIMIT_2,
-  memory: QuotaMemoryEnum.enum.MEMORY_REQUEST_4_LIMIT_8,
-  storage: QuotaStorageEnum.enum.STORAGE_2,
+  cpu: CpuQuotaEnum.enum.CPU_REQUEST_1_LIMIT_2,
+  memory: MemoryQuotaEnum.enum.MEMORY_REQUEST_4_LIMIT_8,
+  storage: StorageQuotaEnum.enum.STORAGE_2,
 };
 
 const productData = {
@@ -136,7 +136,7 @@ describe('Update Private Cloud Product - Permissions', () => {
   });
 
   it('should fail to submit a update request for a non-assigned user', async () => {
-    const otherUsers = findOhterMockUsers([
+    const otherUsers = findOtherMockUsers([
       productData.main.projectOwner.email,
       productData.main.primaryTechnicalLead.email,
       productData.main.secondaryTechnicalLead.email,

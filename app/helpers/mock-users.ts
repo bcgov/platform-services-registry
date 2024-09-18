@@ -5,6 +5,7 @@ import prisma from '@/core/prisma';
 import { processMsUser } from '@/services/msgraph';
 import type { MsUser, AppUserWithRoles } from '@/types/user';
 import type { MockResponse, MockFile } from '../../localdev/m365proxy/types';
+import { formatFullName } from './user';
 const mockFile: MockFile = require('../../localdev/m365proxy/mocks.json');
 
 export const proxyUsers: MsUser[] = mockFile.mocks.find(
@@ -13,7 +14,16 @@ export const proxyUsers: MsUser[] = mockFile.mocks.find(
 
 export const mockUsers = proxyUsers.map((usr) => {
   const { firstName, lastName, email, ministry, idir, upn } = processMsUser(usr);
-  return { firstName, lastName, email, ministry, idir, upn, roles: _compact([usr.jobTitle]) } as AppUserWithRoles;
+  return {
+    firstName,
+    lastName,
+    displayName: formatFullName({ firstName, lastName }),
+    email,
+    ministry,
+    idir,
+    upn,
+    roles: _compact([usr.jobTitle]),
+  } as AppUserWithRoles;
 });
 
 export const mockRoleUsers = mockUsers.filter((usr) => usr.roles.length > 0);
@@ -35,7 +45,7 @@ export function findMockUserbyRole(role: string) {
   return mockUsers.find(({ roles }) => roles.includes(role));
 }
 
-export function findOhterMockUsers(emails: string[]) {
+export function findOtherMockUsers(emails: string[]) {
   return mockNoRoleUsers.filter((usr) => !emails.includes(usr.email));
 }
 

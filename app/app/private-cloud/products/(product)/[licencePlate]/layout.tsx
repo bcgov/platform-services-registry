@@ -3,7 +3,6 @@
 import { Alert } from '@mantine/core';
 import { IconInfoCircle } from '@tabler/icons-react';
 import { useQuery } from '@tanstack/react-query';
-import { differenceInDays } from 'date-fns/differenceInDays';
 import Link from 'next/link';
 import { useEffect } from 'react';
 import { z } from 'zod';
@@ -11,6 +10,7 @@ import PrivateCloudProductOptions from '@/components/dropdowns/PrivateCloudProdu
 import ProductBadge from '@/components/form/ProductBadge';
 import TemporaryProductAlert from '@/components/form/TemporaryProductAlert';
 import Tabs, { ITab } from '@/components/generic/tabs/BasicTabs';
+import { IS_PROD } from '@/config';
 import createClientPage from '@/core/client-page';
 import { getPrivateCloudProject } from '@/services/backend/private-cloud/products';
 import { usePrivateProductState } from '@/states/global';
@@ -60,6 +60,7 @@ export default privateCloudProductLayout(({ pathParams, queryParams, session, ch
       label: 'ADMIN NOTES',
       name: 'comments',
       href: `/private-cloud/products/${licencePlate}/comments`,
+      tooltip: 'Admin only',
     });
   }
 
@@ -77,6 +78,14 @@ export default privateCloudProductLayout(({ pathParams, queryParams, session, ch
       label: 'HISTORY',
       name: 'history',
       href: `/private-cloud/products/${licencePlate}/history`,
+    });
+  }
+
+  if (!IS_PROD) {
+    tabs.push({
+      label: 'RESOURCE USAGE',
+      name: 'usage',
+      href: `/private-cloud/products/${licencePlate}/usage`,
     });
   }
 

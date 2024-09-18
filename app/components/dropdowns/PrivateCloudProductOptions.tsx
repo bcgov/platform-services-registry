@@ -1,6 +1,7 @@
 import { Menu, MenuItems, MenuItem, MenuButton, Transition } from '@headlessui/react';
+import { Button } from '@mantine/core';
 import { notifications } from '@mantine/notifications';
-import { IconRepeat, IconChevronDown } from '@tabler/icons-react';
+import { IconRepeat, IconChevronDown, IconTrash } from '@tabler/icons-react';
 import { useMutation } from '@tanstack/react-query';
 import classNames from 'classnames';
 import { useParams } from 'next/navigation';
@@ -150,7 +151,20 @@ export default function PrivateCloudProductOptions({
                 )}
                 {canDelete && (
                   <MenuItem>
-                    {({ active }) => <DeleteButton canDelete={canDelete} setShowModal={setShowModal} active={active} />}
+                    {({ active }) => (
+                      <button
+                        disabled={!canDelete}
+                        type="button"
+                        onClick={() => setShowModal(true)}
+                        className={classNames(
+                          'group flex items-center px-4 py-2 text-sm w-full',
+                          active && canDelete ? 'bg-gray-100 text-gray-900' : 'text-gray-700',
+                        )}
+                      >
+                        <IconTrash className="inlick-block mr-2" />
+                        Delete
+                      </button>
+                    )}
                   </MenuItem>
                 )}
               </div>

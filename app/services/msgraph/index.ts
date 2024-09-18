@@ -4,7 +4,7 @@ import { MsUser, AppUser } from '@/types/user';
 import { callMsGraph, getAccessToken } from './core';
 export function processMsUser(user: MsUser): AppUser {
   return {
-    id: user.id,
+    providerUserId: user.id,
     upn: user.userPrincipalName,
     email: user.mail.toLowerCase(),
     idir: user.onPremisesSamAccountName,
@@ -13,6 +13,8 @@ export function processMsUser(user: MsUser): AppUser {
     firstName: user.givenName,
     lastName: user.surname,
     ministry: parseMinistryFromDisplayName(user.displayName),
+    jobTitle: user.jobTitle || '',
+    officeLocation: user.officeLocation || '',
   };
 }
 
@@ -36,7 +38,10 @@ const userAttributes = [
   'displayName',
   'givenName',
   'surname',
+  'officeLocation',
   'jobTitle',
+  // 'mobilePhone',
+  // 'businessPhones',
 ];
 
 const userSelect = `$select=${userAttributes.join(',')}`;
@@ -70,7 +75,7 @@ export async function listUsersByEmail(email: string) {
   }
 
   const data = await res.json();
-  return (data as { value: MsUser[] }).value.map(processMsUser);
+  return (data as { value: MsUser[] }).value.map(processMsUser).filter((user) => !!user.upn);
 }
 
 export async function getUserByEmail(email: string) {

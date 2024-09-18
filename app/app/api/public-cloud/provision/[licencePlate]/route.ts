@@ -1,10 +1,10 @@
-import { $Enums, DecisionStatus } from '@prisma/client';
+import { DecisionStatus, ProjectStatus, RequestType } from '@prisma/client';
 import { z } from 'zod';
 import createApiHandler from '@/core/api-handler';
 import prisma from '@/core/prisma';
-import { NotFoundResponse, OkResponse } from '@/core/responses';
-import { sendProvisionedEmails, sendDeleteRequestApprovalEmails } from '@/services/ches/public-cloud/email-handler';
-import { PublicCloudRequestedProjectWithContacts } from '@/services/nats/public-cloud';
+import { NotFoundResponse, OkResponse, UnprocessableEntityResponse } from '@/core/responses';
+import { publicCloudRequestDetailInclude } from '@/queries/public-cloud-requests';
+import { sendRequestCompletionEmails } from '@/services/ches/public-cloud';
 
 const pathParamSchema = z.object({
   licencePlate: z.string(),
@@ -41,6 +41,7 @@ export const PUT = apiHandler(async ({ pathParams }) => {
       provisionedDate: new Date(),
       active: false,
     },
+    include: publicCloudRequestDetailInclude,
   });
 
   const { id, ...decisionData } = request.decisionData;
@@ -48,10 +49,10 @@ export const PUT = apiHandler(async ({ pathParams }) => {
   // Upsert the project with the requested project data. If admin requested project data exists, use that instead.
   const filter = { licencePlate };
   const upsertProject =
-    request.type === $Enums.RequestType.DELETE
+    request.type === RequestType.DELETE
       ? prisma.publicCloudProject.update({
           where: filter,
-          data: { status: $Enums.ProjectStatus.INACTIVE },
+          data: { status: ProjectStatus.INACTIVE },
         })
       : prisma.publicCloudProject.upsert({
           where: filter,
@@ -59,24 +60,9 @@ export const PUT = apiHandler(async ({ pathParams }) => {
           create: decisionData,
         });
 
-  await Promise.all([updateRequest, upsertProject]);
+  const [updatedRequest] = await Promise.all([updateRequest, upsertProject]);
 
-  // Note: For some reason this information cannot be retrieved from the transaction above without failing the test
-  const project = await prisma.publicCloudProject.findUnique({
-    where: filter,
-    include: {
-      projectOwner: true,
-      primaryTechnicalLead: true,
-      secondaryTechnicalLead: true,
-      expenseAuthority: true,
-    },
-  });
-
-  if (request.type == 'CREATE') {
-    await sendProvisionedEmails(project as PublicCloudRequestedProjectWithContacts);
-  } else if (request.type == 'DELETE') {
-    await sendDeleteRequestApprovalEmails(project as PublicCloudRequestedProjectWithContacts);
-  }
+  await sendRequestCompletionEmails(updatedRequest);
 
   return OkResponse(`Successfully marked ${licencePlate} as provisioned.`);
 });

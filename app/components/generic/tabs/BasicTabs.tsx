@@ -1,3 +1,4 @@
+import { Tooltip } from '@mantine/core';
 import classNames from 'classnames';
 import _lowerCase from 'lodash-es/lowerCase';
 import _startCase from 'lodash-es/startCase';
@@ -11,6 +12,7 @@ export interface ITab {
   label: string;
   href: string;
   ignoreSegments?: number;
+  tooltip?: string;
 }
 
 export default function BasicTabs({ tabs, children }: { tabs: ITab[]; children?: React.ReactNode }) {
@@ -38,20 +40,26 @@ export default function BasicTabs({ tabs, children }: { tabs: ITab[]; children?:
         <div className="border-b border-gray-200">
           <div className="w-full -mb-px flex justify-between items-center" aria-label="Tabs">
             <div className=" -mb-px flex justify-start">
-              {tabs.map((tab) => (
-                <Link
-                  href={tab.href}
-                  key={tab.name}
-                  className={classNames(
-                    'first:ml-0 lg:ml-20 w-50 py-5 text-center text-lg font-bold',
-                    compareUrlsIgnoreLastSegments(tab.href, pathname, tab.ignoreSegments ?? 0)
-                      ? "relative border-bcorange text-bcblue before:content-[''] before:absolute before:w-full before:border-b-3 before:border-bcorange before:bottom-0 before:left-1/2 before:-translate-x-1/2"
-                      : "relative border-transparent text-gray-300 hover:before:content-[''] hover:before:absolute hover:before:w-full hover:before:border-b-3 hover:before:border-gray-300 hover:before:bottom-0 hover:before:left-1/2 hover:before:-translate-x-1/2",
-                  )}
-                >
-                  {tab.label}
-                </Link>
-              ))}
+              {tabs.map((tab) => {
+                const linkingClassNames = classNames(
+                  'first:ml-0 lg:ml-20 w-50 py-5 text-center text-lg font-bold',
+                  compareUrlsIgnoreLastSegments(tab.href, pathname, tab.ignoreSegments ?? 0)
+                    ? "relative border-bcorange text-bcblue before:content-[''] before:absolute before:w-full before:border-b-3 before:border-bcorange before:bottom-0 before:left-1/2 before:-translate-x-1/2"
+                    : "relative border-transparent text-gray-300 hover:before:content-[''] hover:before:absolute hover:before:w-full hover:before:border-b-3 hover:before:border-gray-300 hover:before:bottom-0 hover:before:left-1/2 hover:before:-translate-x-1/2",
+                );
+                const linkingComponent = (
+                  <Link href={tab.href} key={tab.name} className={linkingClassNames}>
+                    {tab.label}
+                  </Link>
+                );
+                return tab.tooltip ? (
+                  <Tooltip label={tab.tooltip} key={tab.name}>
+                    {linkingComponent}
+                  </Tooltip>
+                ) : (
+                  linkingComponent
+                );
+              })}
             </div>
             <div>{children}</div>
           </div>

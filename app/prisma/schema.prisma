@@ -13,11 +13,15 @@ datasource db {
 
 model User {
   id                                                    String                         @id @default(auto()) @map("_id") @db.ObjectId
+  providerUserId                                        String?
   firstName                                             String?
   lastName                                              String?
   email                                                 String                         @unique
   upn                                                   String?
   idir                                                  String?
+  idirGuid                                              String?
+  officeLocation                                        String?
+  jobTitle                                              String?
   image                                                 String?
   ministry                                              String?
   archived                                              Boolean                        @default(false)
@@ -34,19 +38,24 @@ model User {
   publicCloudProjectsAsPrimaryTechnicalLead             PublicCloudProject[]           @relation("primaryTechnicalLead")
   publicCloudProjectsAsSecondaryTechnicalLead           PublicCloudProject[]           @relation("secondaryTechnicalLead")
   publicCloudProjectsAsExpenseAuthority                 PublicCloudProject[]           @relation("expenseAuthority")
-  publicCloudRequestsAsSignedExpenseAuthority           PublicCloudRequest[]           @relation("signedExpenseAuthority")
   publicCloudRequestedProjectsAsProjectOwner            PublicCloudRequestedProject[]  @relation("projectOwner")
   publicCloudRequestedProjectsAsPrimaryTechnicalLead    PublicCloudRequestedProject[]  @relation("primaryTechnicalLead")
   publicCloudRequestedProjectsAsSecondaryTechnicalLead  PublicCloudRequestedProject[]  @relation("secondaryTechnicalLead")
   publicCloudRequestedProjectsAsExpenseAuthority        PublicCloudRequestedProject[]  @relation("expenseAuthority")
   privateCloudComments                                  PrivateCloudComment[]          @relation("user")
   reactions                                             Reaction[]                     @relation("user")
+  mousSigned                                            Billing[]                      @relation("signedBy")
+  mousApproved                                          Billing[]                      @relation("approvedBy")
+  mousAsExpenseAuthority                                Billing[]                      @relation("expenseAuthority")
+  privateCloudRequestsAsRequester                       PrivateCloudRequest[]          @relation("createdBy")
+  publicCloudRequestsAsRequester                        PublicCloudRequest[]           @relation("createdBy")
 }
 
 model PrivateCloudRequest {
   id                 String                        @id @default(auto()) @map("_id") @db.ObjectId
   licencePlate       String
   createdByEmail     String
+  createdBy          User                          @relation("createdBy", fields: [createdByEmail], references: [email])
   decisionMakerEmail String?
   quotaContactName   String?
   quotaContactEmail  String?
@@ -168,34 +177,50 @@ model Reaction {
 }
 
 model PublicCloudRequest {
-  id                       String                       @id @default(auto()) @map("_id") @db.ObjectId
-  licencePlate             String
-  createdByEmail           String
-  decisionMakerEmail       String?
-  mouSigned                Boolean                      @default(false)
-  mouSignedDate            DateTime?
-  mouApproved              Boolean                      @default(false)
-  mouApprovedDate          DateTime?
-  signedExpenseAuthorityId String?                      @db.ObjectId
-  signedExpenseAuthority   User?                        @relation("signedExpenseAuthority", fields: [signedExpenseAuthorityId], references: [id])
-  type                     PublicCloudRequestType
-  decisionStatus           DecisionStatus
-  requestComment           String?
-  decisionComment          String?
-  active                   Boolean                      @default(true)
-  createdAt                DateTime                     @default(now())
-  updatedAt                DateTime                     @updatedAt
-  decisionDate             DateTime?
-  provisionedDate          DateTime?
-  projectId                String?                      @db.ObjectId
-  project                  PublicCloudProject?          @relation("project", fields: [projectId], references: [id], onDelete: Cascade)
-  decisionDataId           String                       @db.ObjectId
-  decisionData             PublicCloudRequestedProject  @relation("decisionData", fields: [decisionDataId], references: [id])
-  requestDataId            String                       @db.ObjectId
-  requestData              PublicCloudRequestedProject? @relation("requestData", fields: [requestDataId], references: [id])
-  originalDataId           String?                      @db.ObjectId
-  originalData             PublicCloudRequestedProject? @relation("originalData", fields: [originalDataId], references: [id])
-  changes                  PublicCloudDataChanges?
+  id                 String                       @id @default(auto()) @map("_id") @db.ObjectId
+  licencePlate       String
+  createdByEmail     String
+  createdBy          User                         @relation("createdBy", fields: [createdByEmail], references: [email])
+  decisionMakerEmail String?
+  type               PublicCloudRequestType
+  decisionStatus     DecisionStatus
+  requestComment     String?
+  decisionComment    String?
+  active             Boolean                      @default(true)
+  createdAt          DateTime                     @default(now())
+  updatedAt          DateTime                     @updatedAt
+  decisionDate       DateTime?
+  provisionedDate    DateTime?
+  projectId          String?                      @db.ObjectId
+  project            PublicCloudProject?          @relation("project", fields: [projectId], references: [id], onDelete: Cascade)
+  decisionDataId     String                       @db.ObjectId
+  decisionData       PublicCloudRequestedProject  @relation("decisionData", fields: [decisionDataId], references: [id])
+  requestDataId      String                       @db.ObjectId
+  requestData        PublicCloudRequestedProject? @relation("requestData", fields: [requestDataId], references: [id])
+  originalDataId     String?                      @db.ObjectId
+  originalData       PublicCloudRequestedProject? @relation("originalData", fields: [originalDataId], references: [id])
+  changes            PublicCloudDataChanges?
+}
+
+model Billing {
+  id                           String                        @id @default(auto()) @map("_id") @db.ObjectId
+  code                         String                        @unique
+  accountCoding                String
+  licencePlate                 String
+  signed                       Boolean                       @default(false)
+  signedAt                     DateTime?
+  signedById                   String?                       @db.ObjectId
+  signedBy                     User?                         @relation("signedBy", fields: [signedById], references: [id])
+  approved                     Boolean                       @default(false)
+  approvedAt                   DateTime?
+  approvedById                 String?                       @db.ObjectId
+  approvedBy                   User?                         @relation("approvedBy", fields: [approvedById], references: [id])
+  expenseAuthorityId           String?                       @db.ObjectId
+  expenseAuthority             User?                         @relation("expenseAuthority", fields: [expenseAuthorityId], references: [id])
+  createdAt                    DateTime                      @default(now())
+  updatedAt                    DateTime                      @updatedAt
+  publicCloudProjects          PublicCloudProject[]          @relation("billing")
+  publicCloudRequestedProjects PublicCloudRequestedProject[] @relation("billing")
 }
 
 type PublicCloudDataChanges {
@@ -214,7 +239,8 @@ model PublicCloudProject {
   status                   ProjectStatus
   createdAt                DateTime             @default(now())
   updatedAt                DateTime             @updatedAt
-  accountCoding            String
+  billingId                String               @db.ObjectId
+  billing                  Billing              @relation("billing", fields: [billingId], references: [id])
   budget                   Budget
   projectOwnerId           String               @db.ObjectId
   projectOwner             User                 @relation("projectOwner", fields: [projectOwnerId], references: [id])
@@ -237,7 +263,8 @@ model PublicCloudRequestedProject {
   description              String
   status                   ProjectStatus
   createdAt                DateTime             @default(now())
-  accountCoding            String
+  billingId                String               @db.ObjectId
+  billing                  Billing              @relation("billing", fields: [billingId], references: [id])
   budget                   Budget
   projectOwnerId           String               @db.ObjectId
   projectOwner             User                 @relation("projectOwner", fields: [projectOwnerId], references: [id])
@@ -271,16 +298,17 @@ model Event {
 }
 
 model Task {
-  id          String     @id @default(auto()) @map("_id") @db.ObjectId
-  type        TaskType
-  status      TaskStatus
-  userIds     String[]
-  roles       String[]
-  permissions String[]
-  createdAt   DateTime   @default(now())
-  completedAt DateTime?
-  completedBy String?    @db.ObjectId
-  data        Json
+  id             String     @id @default(auto()) @map("_id") @db.ObjectId
+  type           TaskType
+  status         TaskStatus
+  userIds        String[]
+  roles          String[]
+  permissions    String[]
+  createdAt      DateTime   @default(now())
+  completedAt    DateTime?
+  completedBy    String?    @db.ObjectId
+  data           Json
+  closedMetadata Json?
 }
 
 model PrivateCloudProjectZapResult {
@@ -551,7 +579,7 @@ enum EventType {
 
 enum TaskType {
   SIGN_MOU
-  APPROVE_MOU
+  REVIEW_MOU
 }
 
 enum TaskStatus {

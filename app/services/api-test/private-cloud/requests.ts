@@ -1,6 +1,6 @@
 import { POST as _makePrivateCloudRequestDecision } from '@/app/api/private-cloud/requests/[id]/decision/route';
 import { POST as _searchPrivateCloudRequests } from '@/app/api/private-cloud/requests/search/route';
-import { PrivateCloudRequestSearchBody } from '@/schema';
+import { PrivateCloudRequestSearchBody } from '@/validation-schemas/private-cloud';
 import { createRoute } from '../core';
 
 const requestCollectionRoute = createRoute('/private-cloud/requests');

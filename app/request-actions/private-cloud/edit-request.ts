@@ -4,9 +4,10 @@ import prisma from '@/core/prisma';
 import { comparePrivateProductData } from '@/helpers/product-change';
 import { isQuotaUpgrade } from '@/helpers/quota-change';
 import { createEvent } from '@/mutations/events';
-import { getLastClosedPrivateCloudRequest } from '@/queries/private-cloud-requests';
-import { PrivateCloudEditRequestBody } from '@/schema';
+import { getLastClosedPrivateCloudRequest, privateCloudRequestDetailInclude } from '@/queries/private-cloud-requests';
 import { upsertUsers } from '@/services/db/user';
+import { PrivateCloudRequestDetail } from '@/types/private-cloud';
+import { PrivateCloudEditRequestBody } from '@/validation-schemas/private-cloud';
 
 export default async function editRequest(
   licencePlate: string,
@@ -38,7 +39,7 @@ export default async function editRequest(
   ]);
 
   // merge the form data with the existing project data
-  const decisionData = {
+  const productData = {
     ...rest,
     licencePlate: project.licencePlate,
     status: project.status,
@@ -83,45 +84,23 @@ export default async function editRequest(
         quotaJustification,
       };
 
-  const request = await prisma.privateCloudRequest.create({
+  const request: PrivateCloudRequestDetail = await prisma.privateCloudRequest.create({
     data: {
       type: RequestType.EDIT,
       decisionStatus,
       isQuotaChanged: !isNoQuotaChanged,
       ...quotaChangeInfo,
       active: true,
-      createdByEmail: session.user.email,
+      createdBy: { connect: { email: session.user.email } },
       licencePlate: project.licencePlate,
       requestComment,
       changes: otherChangeMeta,
       originalData: { connect: { id: previousRequest?.decisionDataId } },
-      decisionData: { create: decisionData },
-      requestData: { create: decisionData },
+      decisionData: { create: productData },
+      requestData: { create: productData },
       project: { connect: { licencePlate: project.licencePlate } },
     },
-    include: {
-      project: {
-        include: {
-          projectOwner: true,
-          primaryTechnicalLead: true,
-          secondaryTechnicalLead: true,
-        },
-      },
-      originalData: {
-        include: {
-          projectOwner: true,
-          primaryTechnicalLead: true,
-          secondaryTechnicalLead: true,
-        },
-      },
-      decisionData: {
-        include: {
-          projectOwner: true,
-          primaryTechnicalLead: true,
-          secondaryTechnicalLead: true,
-        },
-      },
-    },
+    include: privateCloudRequestDetailInclude,
   });
 
   if (request) {
