@@ -1,3 +1,4 @@
+import { RequestType } from '@prisma/client';
 import _isString from 'lodash-es/isString';
 import { z } from 'zod';
 
@@ -12,9 +13,15 @@ export const userSchema = z.object({
     .transform((email) => email.toLowerCase()),
 
   ministry: z.string().min(1, 'Ministry is required').max(50, 'Ministry must be 50 characters or less'),
-  idir: z.string().optional().nullable(),
-  upn: z.string().optional().nullable(),
+  idir: z.string(),
+  upn: z.string(),
   // ministry: z.nativeEnum(Ministry), // Not using ministry enum as a new ministry may not be in our system yet
+});
+
+export const deleteRequestDecisionBodySchema = z.object({
+  type: z.literal(RequestType.DELETE),
+  decision: requestDecisionEnum,
+  decisionComment: z.string().optional(),
 });
 
 export type User = z.infer<typeof userSchema>;

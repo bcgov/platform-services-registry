@@ -1,27 +1,21 @@
-import { $Enums, DecisionStatus, Prisma, ProjectStatus, RequestType } from '@prisma/client';
+import { EventType, DecisionStatus, Prisma, ProjectStatus, RequestType } from '@prisma/client';
 import { Session } from 'next-auth';
 import prisma from '@/core/prisma';
 import { createEvent } from '@/mutations/events';
 import { publicCloudRequestDetailInclude } from '@/queries/public-cloud-requests';
-import {
-  PublicCloudRequestDetail,
-  PublicCloudRequestDetailDecorated,
-  PublicCloudRequestSearch,
-} from '@/types/public-cloud';
-import { PublicCloudEditRequestBody } from '@/validation-schemas/public-cloud';
+import { PublicCloudRequestDetail } from '@/types/public-cloud';
+import { PublicCloudRequestDecisionBody } from '@/validation-schemas/public-cloud';
 
 export default async function makeRequestDecision(
   id: string,
-  decision: DecisionStatus,
-  decisionComment: string | undefined,
-  formData: PublicCloudEditRequestBody,
+  formData: PublicCloudRequestDecisionBody,
   session: Session,
 ) {
   const request = await prisma.publicCloudRequest.findUnique({
     where: {
       id,
       active: true,
-      decisionStatus: $Enums.DecisionStatus.PENDING,
+      decisionStatus: DecisionStatus.PENDING,
     },
     include: {
       project: { select: { provider: true } },
@@ -33,7 +27,7 @@ export default async function makeRequestDecision(
     return null;
   }
 
-  const { accountCoding, ...validFormData } = formData;
+  const { decision, decisionComment, accountCoding, ...validFormData } = formData;
 
   const dataToUpdate: Prisma.PublicCloudRequestUpdateInput = {
     active: decision === DecisionStatus.APPROVED,
@@ -54,37 +48,37 @@ export default async function makeRequestDecision(
         projectOwner: {
           connectOrCreate: {
             where: {
-              email: formData.projectOwner.email,
+              email: validFormData.projectOwner.email,
             },
-            create: formData.projectOwner,
+            create: validFormData.projectOwner,
           },
         },
         primaryTechnicalLead: {
           connectOrCreate: {
             where: {
-              email: formData.primaryTechnicalLead.email,
+              email: validFormData.primaryTechnicalLead.email,
             },
-            create: formData.primaryTechnicalLead,
+            create: validFormData.primaryTechnicalLead,
           },
         },
-        secondaryTechnicalLead: formData.secondaryTechnicalLead
+        secondaryTechnicalLead: validFormData.secondaryTechnicalLead
           ? {
               connectOrCreate: {
                 where: {
-                  email: formData.secondaryTechnicalLead.email,
+                  email: validFormData.secondaryTechnicalLead.email,
                 },
-                create: formData.secondaryTechnicalLead,
+                create: validFormData.secondaryTechnicalLead,
               },
             }
           : undefined,
-        expenseAuthority: formData.expenseAuthority
+        expenseAuthority: validFormData.expenseAuthority
           ? // this check until expenseAuthority field will be populated for every public cloud product
             {
               connectOrCreate: {
                 where: {
-                  email: formData.expenseAuthority.email,
+                  email: validFormData.expenseAuthority.email,
                 },
-                create: formData.expenseAuthority,
+                create: validFormData.expenseAuthority,
               },
             }
           : undefined,
@@ -102,7 +96,7 @@ export default async function makeRequestDecision(
   });
 
   if (updatedRequest) {
-    await createEvent($Enums.EventType.REVIEW_PUBLIC_CLOUD_REQUEST, session.user.id, { requestId: updatedRequest.id });
+    await createEvent(EventType.REVIEW_PUBLIC_CLOUD_REQUEST, session.user.id, { requestId: updatedRequest.id });
   }
 
   return updatedRequest;
