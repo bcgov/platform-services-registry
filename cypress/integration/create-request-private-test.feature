@@ -1,8 +1,7 @@
 Feature: New Request
 
   Scenario: Create Private Cloud Request and check visibility
-    Given User waits for "180" seconds
-    And User logs in with username "james.smith@gov.bc.ca" and password "james.smith@gov.bc.ca"
+    Given User logs in with username "james.smith@gov.bc.ca" and password "james.smith@gov.bc.ca"
     When User clicks tab "PRIVATE CLOUD OPENSHIFT"
     And User clicks button "REQUEST A NEW PRODUCT"
     And User types "Automated Test Product Name" in "Product Name"

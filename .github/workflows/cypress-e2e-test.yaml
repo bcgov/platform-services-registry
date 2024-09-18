@@ -51,6 +51,7 @@ jobs:
       run: |
         npm start --prefix app &
         node_modules/.bin/wait-on http://localhost:3000 --timeout 120000
+        node_modules/.bin/wait-on http://localhost:8080/realms/platform-services/.well-known/openid-configuration -- timeout 300000
 
     - name: Cypress run
       run: npm run cypress-headless
