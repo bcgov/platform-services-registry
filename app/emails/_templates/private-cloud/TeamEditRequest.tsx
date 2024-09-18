@@ -1,11 +1,13 @@
 import { Button, Heading, Text, Hr } from '@react-email/components';
 import * as React from 'react';
+import { BASE_URL } from '@/config';
 import ClusterDetails from '@/emails/_components/ClusterDetails';
 import Comment from '@/emails/_components/Comment';
 import PrivateCloudLayout from '@/emails/_components/layout/PrivateCloudLayout';
 import LinkButton from '@/emails/_components/LinkButton';
 import Changes from '@/emails/_components/private-cloud/Changes';
 import ProductDetails from '@/emails/_components/ProductDetails';
+import { isQuotaUpgrade } from '@/helpers/quota-change';
 import { PrivateCloudRequestDetail } from '@/types/private-cloud';
 
 interface EmailProp {
@@ -13,19 +15,23 @@ interface EmailProp {
   requester: string;
 }
 
-export default function AdminEditRequest({ request, requester }: EmailProp) {
+export default function TeamEditRequest({ request, requester }: EmailProp) {
   if (!request.originalData) return <></>;
 
+  const isQuotaUpgraded = isQuotaUpgrade(request.decisionData, request.originalData);
+
   return (
-    <PrivateCloudLayout requester={requester}>
-      <Heading className="text-lg">New Request!</Heading>
-      <Text>Hi Registry Team, </Text>
+    <PrivateCloudLayout requester={requester} showFooter>
+      <Heading className="text-lg text-black">New edit product request!</Heading>
+      <Text>Hi Product Team, </Text>
       <Text>
-        There is a new request that requires your review. Log in to the Registry to review the details. If you have any
-        questions about the request, the PO and TL contact details are included below and in the Registry.
+        You have submitted an edit request for your product with the licence plate {request.licencePlate}.
+        {isQuotaUpgraded
+          ? ' Our administrators have been notified and will review your request.'
+          : ' Your request will be reviewed automatically. Once the provisioning is complete, you will receive a notification email with all the relevant details and updates regarding your request.'}
       </Text>
 
-      <LinkButton href={`/private-cloud/requests/${request.id}/decision`}>Review Request</LinkButton>
+      <LinkButton href={`/private-cloud/requests/${request.id}/decision`}>View Request</LinkButton>
 
       <Comment requestComment={request.requestComment} />
 

@@ -4,13 +4,21 @@ import Footer from '@/emails/_components/layout/Footer';
 import Layout from '@/emails/_components/layout/Layout';
 import Requester from '@/emails/_components/Requester';
 
-export default function PrivateCloudLayout({ children, requester }: { children: React.ReactNode; requester?: string }) {
+export default function PrivateCloudLayout({
+  children,
+  requester,
+  showFooter = false,
+}: {
+  children: React.ReactNode;
+  requester?: string;
+  showFooter?: boolean;
+}) {
   return (
     <Layout>
       {children}
       {requester && <Requester name={requester} />}
       <Hr className="my-4" />
-      <Footer />
+      {showFooter && <Footer />}
     </Layout>
   );
 }
