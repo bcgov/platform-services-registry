@@ -1,3 +1,8 @@
+## [0.33.3](https://github.com/bcgov/platform-services-registry/compare/v0.33.2...v0.33.3) (2024-09-18)
+
+### Bug Fixes
+
+* **3795:** update Keycloak role fetching logic ([fb0ce85](https://github.com/bcgov/platform-services-registry/commit/fb0ce85a66de447398b0d2e4fa1da978d3a48e51))
 ## [0.33.2](https://github.com/bcgov/platform-services-registry/compare/v0.33.1...v0.33.2) (2024-08-15)
 
 ### Features
