@@ -1,23 +1,26 @@
 'use client';
 
 import { Alert, Group, Avatar, Text, Accordion, Table, Badge, Button } from '@mantine/core';
-import { $Enums } from '@prisma/client';
+import { DecisionStatus, RequestType } from '@prisma/client';
 import {
   IconInfoCircle,
   IconCircleLetterO,
   IconCircleLetterR,
   IconCircleLetterD,
   IconAddressBook,
-  IconProps,
-  Icon,
 } from '@tabler/icons-react';
-import { ForwardRefExoticComponent, RefAttributes } from 'react';
 import { z } from 'zod';
-import { AccordionLabel } from '@/components/generic/AccordionLabel';
+import PageAccordion, { PageAccordionItem } from '@/components/generic/accordion/PageAccordion';
 import ProductComparison from '@/components/ProductComparison';
 import createClientPage from '@/core/client-page';
 import { usePrivateProductState } from '@/states/global';
 import { DiffChange } from '@/utils/diff';
+
+const tabsByType = {
+  [RequestType.CREATE]: ['request'],
+  [RequestType.EDIT]: ['original', 'request', 'decision'],
+  [RequestType.DELETE]: [],
+};
 
 const pathParamSchema = z.object({
   id: z.string(),
@@ -31,12 +34,6 @@ export default Layout(({ pathParams, queryParams, session, router, children }) =
   const [, privateCloudSnap] = usePrivateProductState();
   const { id } = pathParams;
 
-  const tabsByType = {
-    [$Enums.RequestType.CREATE]: ['request'],
-    [$Enums.RequestType.EDIT]: ['original', 'request', 'decision'],
-    [$Enums.RequestType.DELETE]: [],
-  };
-
   let dataSet = [
     {
       id: 'original',
@@ -48,8 +45,8 @@ export default Layout(({ pathParams, queryParams, session, router, children }) =
   ];
 
   if (
-    privateCloudSnap.currentRequest?.decisionStatus === $Enums.DecisionStatus.APPROVED ||
-    privateCloudSnap.currentRequest?.decisionStatus === $Enums.DecisionStatus.PROVISIONED
+    privateCloudSnap.currentRequest?.decisionStatus === DecisionStatus.APPROVED ||
+    privateCloudSnap.currentRequest?.decisionStatus === DecisionStatus.PROVISIONED
   ) {
     dataSet.push(
       {
@@ -74,52 +71,46 @@ export default Layout(({ pathParams, queryParams, session, router, children }) =
     return (tabsByType[privateCloudSnap.currentRequest.type] as string[]).includes(tab.id);
   });
 
-  const items = dataSet.map((item) => (
-    <Accordion.Item value={item.id} key={item.label}>
-      <Accordion.Control>
-        <AccordionLabel {...item} />
-      </Accordion.Control>
-      <Accordion.Panel>
-        <ProductComparison data={item.data as DiffChange[]} />
-      </Accordion.Panel>
-    </Accordion.Item>
-  ));
+  const accordionItems: PageAccordionItem[] = dataSet.map((item) => ({
+    LeftIcon: item.LeftIcon,
+    label: item.label,
+    description: item.description,
+    Component: ProductComparison,
+    componentArgs: {
+      data: item.data as DiffChange[],
+    },
+  }));
 
   if (privateCloudSnap.currentRequest?.quotaContactName) {
-    items.push(
-      <Accordion.Item value="quota-contact-justification" key="quota-contact-justification">
-        <Accordion.Control>
-          <AccordionLabel
-            LeftIcon={IconAddressBook}
-            label="Quota Contact & Justification"
-            description="The contact information responsible for the justification with their detailed comments"
-          />
-        </Accordion.Control>
-        <Accordion.Panel>
-          <Table highlightOnHover verticalSpacing="sm" className="bg-white">
-            <Table.Tbody>
-              <Table.Tr>
-                <Table.Td>Contact Name</Table.Td>
-                <Table.Td>{privateCloudSnap.currentRequest?.quotaContactName}</Table.Td>
-              </Table.Tr>
-              <Table.Tr>
-                <Table.Td>Contact Email</Table.Td>
-                <Table.Td>{privateCloudSnap.currentRequest?.quotaContactEmail}</Table.Td>
-              </Table.Tr>
-              <Table.Tr>
-                <Table.Td>Justification</Table.Td>
-                <Table.Td>{privateCloudSnap.currentRequest?.quotaJustification}</Table.Td>
-              </Table.Tr>
-            </Table.Tbody>
-          </Table>
-        </Accordion.Panel>
-      </Accordion.Item>,
-    );
+    accordionItems.push({
+      LeftIcon: IconAddressBook,
+      label: 'Quota Contact & Justification',
+      description: 'The contact information responsible for the justification with their detailed comments',
+      Component: () => (
+        <Table highlightOnHover verticalSpacing="sm" className="bg-white">
+          <Table.Tbody>
+            <Table.Tr>
+              <Table.Td>Contact Name</Table.Td>
+              <Table.Td>{privateCloudSnap.currentRequest?.quotaContactName}</Table.Td>
+            </Table.Tr>
+            <Table.Tr>
+              <Table.Td>Contact Email</Table.Td>
+              <Table.Td>{privateCloudSnap.currentRequest?.quotaContactEmail}</Table.Td>
+            </Table.Tr>
+            <Table.Tr>
+              <Table.Td>Justification</Table.Td>
+              <Table.Td>{privateCloudSnap.currentRequest?.quotaJustification}</Table.Td>
+            </Table.Tr>
+          </Table.Tbody>
+        </Table>
+      ),
+      componentArgs: {},
+    });
   }
 
   return (
     <div>
-      {privateCloudSnap.currentRequest?.decisionStatus === $Enums.DecisionStatus.PENDING && (
+      {privateCloudSnap.currentRequest?.decisionStatus === DecisionStatus.PENDING && (
         <Alert variant="light" color="blue" title="" icon={<IconInfoCircle />}>
           This request is currently under admin review.
         </Alert>
@@ -127,11 +118,7 @@ export default Layout(({ pathParams, queryParams, session, router, children }) =
 
       <div className="mb-2"></div>
 
-      {dataSet.length > 0 && (
-        <Accordion chevronPosition="right" variant="contained">
-          {items}
-        </Accordion>
-      )}
+      <PageAccordion items={accordionItems} />
     </div>
   );
 });

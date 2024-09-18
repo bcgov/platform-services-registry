@@ -7,12 +7,17 @@ import _startCase from 'lodash-es/startCase';
 import { parseResourceString } from '@/helpers/product';
 import { DiffChange } from '@/utils/diff';
 
+const abbreviations = ['cpu'];
+
 function ProductField({ path }: { path: (string | number)[] }) {
-  return path.map((v, index) => {
+  return path.map((val, index) => {
+    const str = val.toString();
+    const formatted = abbreviations.includes(str.toLowerCase()) ? str.toUpperCase() : _startCase(str);
+
     return (
       <>
         {index > 0 && <IconChevronRight size={18} className="inline-block mx-1" />}
-        <span>{_startCase(v.toString())}</span>
+        <span>{formatted}</span>
       </>
     );
   });
