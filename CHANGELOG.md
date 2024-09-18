@@ -1,48 +1,8 @@
-<<<<<<< HEAD
 ## [0.33.3](https://github.com/bcgov/platform-services-registry/compare/v0.33.2...v0.33.3) (2024-09-18)
 
 ### Bug Fixes
 
 * **3795:** update Keycloak role fetching logic ([fb0ce85](https://github.com/bcgov/platform-services-registry/commit/fb0ce85a66de447398b0d2e4fa1da978d3a48e51))
-=======
-## [0.34.0](https://github.com/bcgov/platform-services-registry/compare/v0.33.2...v0.34.0) (2024-09-04)
-
-### Features
-
-* **227:** add accordion components ([67bfc0b](https://github.com/bcgov/platform-services-registry/commit/67bfc0b17698f23e86a1d9f5a048ee7143e10fef))
-* **3191:** add admin tooltip and notification ([5dd8d65](https://github.com/bcgov/platform-services-registry/commit/5dd8d65f9b0e5f0f6570bcc472a7d7a3c67b7157))
-* **3191:** add admin tooltip and notification ([db54d5a](https://github.com/bcgov/platform-services-registry/commit/db54d5a178d16538ecffe9b0081ad5a1285aa78a))
-* **3414:** add eMOU sign & review workflows ([3b1c1dc](https://github.com/bcgov/platform-services-registry/commit/3b1c1dc232d78462946438d1dd2784063e3657e0))
-* **3414:** update eMOU PDF content ([5ad8dce](https://github.com/bcgov/platform-services-registry/commit/5ad8dce8e63c04c17fe0a53a1d20a63c13d4e445))
-* **3467:** refactor create test for private and public cloud ([ace5c15](https://github.com/bcgov/platform-services-registry/commit/ace5c154d1d063e751edd980cd9f9d7cb8e331d5))
-* **3500:** send billing EMOU review request emails ([f853351](https://github.com/bcgov/platform-services-registry/commit/f85335119a29c5b8f5c461aeea6b174fccf3c312))
-* **3501:** add eMOU PDF download link ([a1996a9](https://github.com/bcgov/platform-services-registry/commit/a1996a90cd90d3d6e0d0b9f6be744db588eace71))
-* **3501:** use WeasyPrint to download PDF ([6610bfe](https://github.com/bcgov/platform-services-registry/commit/6610bfe2f397675b48209edfddbb5f5b8731863b))
-* **3576:** include MS AD user object ID into public cloud NATS ([b18cbe7](https://github.com/bcgov/platform-services-registry/commit/b18cbe71ece923167d0c15cc160a56156df0c9e3))
-* **3587:** merge steps definition to common file, refactor edit request ([9da9596](https://github.com/bcgov/platform-services-registry/commit/9da9596bc2fdd3cd20170e16cd09834c39ccdf6a))
-* **3593-1:** modify create, delete, edit and approve request templates ([6e021a8](https://github.com/bcgov/platform-services-registry/commit/6e021a81482d87c3e3bf17c8cdf9ed96b3501c32))
-
-### Bug Fixes
-
-* **2543:** send approve email for not quota increase edit ([d3ed2d7](https://github.com/bcgov/platform-services-registry/commit/d3ed2d7aa94f7ad963b17e9053aac33d0b6979de))
-* **3157:** udpate delete modal UI ([556841d](https://github.com/bcgov/platform-services-registry/commit/556841d381034d3b18b9545bb47a79747cf7e59c))
-* **3157:** update delete confirmation modal ([b6994da](https://github.com/bcgov/platform-services-registry/commit/b6994da906ffa9b3db29af1df6a3314274b2bd42))
-* **3259:** disable provider dropdown for public cloud product edit page ([0b9704e](https://github.com/bcgov/platform-services-registry/commit/0b9704e5ef573e34e36bb2e55f6318441c1166c2))
-* **3511:** fix visual bug mantinie upgrage Budge component styles ([3245017](https://github.com/bcgov/platform-services-registry/commit/324501777c0c693ef693396f5c2029864019f8a3))
-* **3641:** resolve a bug displaying multiple app versions in footer ([6c4380c](https://github.com/bcgov/platform-services-registry/commit/6c4380c6411a68d8c47c06e44b81b2a41716ce61))
-
-### Docs
-
-* **3621:** add documentation for onboarding and offboarding ([f841873](https://github.com/bcgov/platform-services-registry/commit/f84187397fd983d2d805d65facaa80f66083c081))
-* **3639:** add documentation for rocketchat notifications ([f616cd5](https://github.com/bcgov/platform-services-registry/commit/f616cd5aca8a8b53254dcc47fd46bb291f298277))
-* add guidelines for reviewing bot PRs ([9b1832f](https://github.com/bcgov/platform-services-registry/commit/9b1832fc3d596ec42e199e9f14a97f63d54f6983))
-* **readme-modified:** update installation instructions ([67b1bad](https://github.com/bcgov/platform-services-registry/commit/67b1badb3f6c474b2e0e03f1bd707356b8a97a84))
-
-### Refactors
-
-* **3610:** organize type definitions ([d569886](https://github.com/bcgov/platform-services-registry/commit/d56988672a90a7af82c087e5463a11329350206b))
-* **validation-schema:** organize schema definitions ([b7f7a82](https://github.com/bcgov/platform-services-registry/commit/b7f7a8256c98a96db2ef4da50176d9f320ef5985))
->>>>>>> 56e87b561a78ff96ec25739d05d8076b352b72ce
 ## [0.33.2](https://github.com/bcgov/platform-services-registry/compare/v0.33.1...v0.33.2) (2024-08-15)
 
 ### Features
