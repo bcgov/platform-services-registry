@@ -14,15 +14,14 @@ interface Quotas {
 // check if request contains quota change
 export const isNoQuotaChanged = (currentQuota: Quotas, requestedQuota: Quotas): boolean => {
   // @ts-ignore
-  const isSame = _some(currentQuota, (quota: Quota, envQuota: keyof Quotas) => {
+  return _some(currentQuota, (quota: Quota, envQuota: keyof Quotas) => {
     // @ts-ignore
     return _some(quota, (resource: string, resourceName: keyof Quota) => {
       const currentVal = resource;
       const requestedVal = requestedQuota[envQuota][resourceName];
-      return extractNumbers(requestedVal)[0] > extractNumbers(currentVal)[0];
+      return extractNumbers(requestedVal)[0] === extractNumbers(currentVal)[0];
     });
   });
-  return isSame;
 };
 
 // if quota was changed check if it was undngrade quota request
