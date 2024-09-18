@@ -53,10 +53,6 @@ jobs:
         npm start --prefix app &
         node_modules/.bin/wait-on http://localhost:3000 --timeout 120000
 
-    - name: Wait for platform-services realm to be provisioned in KeyCloak
-      run: |
-
-
     - name: Cypress run
       run: npm run cypress-headless
 
