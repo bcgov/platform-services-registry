@@ -1,7 +1,7 @@
 import { z } from 'zod';
 import createApiHandler from '@/core/api-handler';
 import { OkResponse } from '@/core/responses';
-import { checkIfAutoApprovalBasicsAndUsage } from '@/helpers/auto-approval-check';
+import { checkIfAutoApproval } from '@/helpers/auto-approval-check';
 
 const quotaSchema = z.object({
   cpu: z.string(),
@@ -30,6 +30,6 @@ const apiHandler = createApiHandler({
 
 export const POST = apiHandler(async ({ queryParams }) => {
   const { currentQuota, requestedQuota, licencePlate, cluster } = queryParams;
-  const users = await checkIfAutoApprovalBasicsAndUsage(currentQuota, requestedQuota, licencePlate, cluster);
+  const users = await checkIfAutoApproval(currentQuota, requestedQuota, licencePlate, cluster);
   return OkResponse(users);
 });

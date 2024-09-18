@@ -7,7 +7,7 @@ import PrivateCloudLayout from '@/emails/_components/layout/PrivateCloudLayout';
 import LinkButton from '@/emails/_components/LinkButton';
 import Changes from '@/emails/_components/private-cloud/Changes';
 import ProductDetails from '@/emails/_components/ProductDetails';
-import { isQuotaUpgrade } from '@/helpers/auto-approval-check';
+import { isQuotaUpgrade } from '@/helpers/quota-change';
 import { PrivateCloudRequestDetail } from '@/types/private-cloud';
 
 interface EmailProp {
@@ -18,24 +18,10 @@ interface EmailProp {
 export default function TeamEditRequest({ request, requester }: EmailProp) {
   if (!request.originalData) return <></>;
 
-  const requestedQuota = {
-    testQuota: request.originalData.testQuota,
-    toolsQuota: request.originalData.toolsQuota,
-    developmentQuota: request.originalData.developmentQuota,
-    productionQuota: request.originalData.productionQuota,
-  };
-
-  const currentQuota = {
-    testQuota: request.decisionData.testQuota,
-    toolsQuota: request.decisionData.toolsQuota,
-    developmentQuota: request.decisionData.developmentQuota,
-    productionQuota: request.decisionData.productionQuota,
-  };
-
-  const isQuotaUpgraded = isQuotaUpgrade(currentQuota, requestedQuota);
+  const isQuotaUpgraded = isQuotaUpgrade(request.decisionData, request.originalData);
 
   return (
-    <PrivateCloudLayout requester={requester}>
+    <PrivateCloudLayout requester={requester} showFooter>
       <Heading className="text-lg text-black">New edit product request!</Heading>
       <Text>Hi Product Team, </Text>
       <Text>

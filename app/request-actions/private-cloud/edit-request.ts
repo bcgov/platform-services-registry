@@ -2,7 +2,7 @@ import { $Enums, DecisionStatus, Prisma, RequestType, EventType } from '@prisma/
 import _toNumber from 'lodash-es/toNumber';
 import { Session } from 'next-auth';
 import prisma from '@/core/prisma';
-import { checkIfAutoApprovalBasicsAndUsage, isNoQuotaChanged } from '@/helpers/auto-approval-check';
+import { checkIfAutoApproval, isNoQuotaChanged } from '@/helpers/auto-approval-check';
 import { comparePrivateProductData } from '@/helpers/product-change';
 import { createEvent } from '@/mutations/events';
 import { getLastClosedPrivateCloudRequest, privateCloudRequestDetailInclude } from '@/queries/private-cloud-requests';
@@ -74,7 +74,7 @@ export default async function editRequest(
 
   // If there is no quota change or no quota upgrade and no golddr flag changes, the request is automatically approved
   if (
-    checkIfAutoApprovalBasicsAndUsage(currentQuota, requestedQuota, project.licencePlate, project.cluster) &&
+    checkIfAutoApproval(currentQuota, requestedQuota, project.licencePlate, project.cluster) &&
     !hasGolddrEnabledChanged
   ) {
     decisionStatus = DecisionStatus.APPROVED;
