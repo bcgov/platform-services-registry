@@ -2,19 +2,34 @@ services:
   keycloak:
     image: ghcr.io/bcgov/pltsvc-localdev-keycloak:latest
     build: {}
+    deploy:
+      update_config:
+        pull_policy: always
 
   keycloak-provision:
     image: ghcr.io/bcgov/pltsvc-localdev-keycloak-provision:latest
     build: {}
+    deploy:
+      update_config:
+        pull_policy: always
 
   m365proxy:
     image: ghcr.io/bcgov/pltsvc-localdev-m365proxy:latest
     build: {}
+    deploy:
+      update_config:
+        pull_policy: always
 
   nats-provision:
     image: ghcr.io/bcgov/pltsvc-localdev-nats-provision:latest
     build: {}
+    deploy:
+      update_config:
+        pull_policy: always
 
   m365mock:
     image: ghcr.io/bcgov/pltsvc-localdev-m365mock:latest
     build: {}
+    deploy:
+      update_config:
+        pull_policy: always
