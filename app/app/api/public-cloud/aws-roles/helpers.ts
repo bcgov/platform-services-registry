@@ -172,14 +172,17 @@ async function findParentGroup(groupName = PROJECT_GROUP) {
 
 async function getProductRoleGroups(licencePlate: string) {
   const projectTeamGroup = await findParentGroup();
-  if (!projectTeamGroup) return [];
-  if (projectTeamGroup.subGroups?.length === 0) return [];
+  if (!projectTeamGroup || !projectTeamGroup.id) return [];
+  if (projectTeamGroup.subGroupCount === 0) return [];
 
-  const productGroup = projectTeamGroup.subGroups?.find((group) => group.name?.startsWith(licencePlate));
-  const productGroupWithChildren = await kcAdminClient.groups.findOne({ id: productGroup?.id as string });
-  if (!productGroupWithChildren) return [];
+  const projectTeamSubGroups = await kcAdminClient.groups.listSubGroups({ parentId: projectTeamGroup.id });
 
-  return productGroupWithChildren.subGroups ?? [];
+  const productGroup = projectTeamSubGroups.find((group) => group.name?.startsWith(licencePlate));
+  if (!productGroup || !productGroup.id) return [];
+  if (productGroup.subGroupCount === 0) return [];
+
+  const productSubGroups = await kcAdminClient.groups.listSubGroups({ parentId: productGroup.id });
+  return productSubGroups ?? [];
 }
 
 export async function getSubGroupMembersByLicencePlateAndName(
