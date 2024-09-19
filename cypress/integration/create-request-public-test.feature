@@ -29,8 +29,8 @@ Feature: New Request
     And User types "2345" in "Standard Object of Expense (STOB)"
     And User types "6789012" in "Project Code"
     And User clicks button "SUBMIT REQUEST"
-    And User checks checkbox "...has signed a Memorandum of Understanding..."
-    And User checks checkbox "...is liable to pay the base charge..."
+    And User checks checkbox "No eMOU exists for this account coding."
+    And User checks checkbox "...team is liable to pay the base charge..."
     And User clicks modal window button "SUBMIT REQUEST"
     And User waits for "4" seconds
     And User clicks button "Return to Dashboard"
