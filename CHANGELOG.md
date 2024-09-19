@@ -1,3 +1,8 @@
+## [0.33.4](https://github.com/bcgov/platform-services-registry/compare/v0.33.3...v0.33.4) (2024-09-19)
+
+### Bug Fixes
+
+* **3795:** pull all groups using Keycloak pagination ([81088bb](https://github.com/bcgov/platform-services-registry/commit/81088bb11eadd80510b463c9b50acd5e09d8aeee))
 ## [0.33.3](https://github.com/bcgov/platform-services-registry/compare/v0.33.2...v0.33.3) (2024-09-18)
 
 ### Bug Fixes
