@@ -52,16 +52,6 @@ export default privateCloudProductUsageMetrics(({ pathParams, queryParams, sessi
     setenvironment(namespace);
   };
 
-  const titledData = [
-    {
-      name: 'Pod name',
-      usage: { cpu: 'CPU Usage', memory: 'Memory Usage' },
-      limits: { cpu: 'CPU Limits', memory: 'Memory Limits' },
-      requests: { cpu: 'CPU Requests', memory: 'Memory Requests' },
-    },
-    ...data,
-  ];
-
   return (
     <div>
       <fieldset className="w-full md:w-48 2xl:w-64 pb-6">
@@ -81,8 +71,8 @@ export default privateCloudProductUsageMetrics(({ pathParams, queryParams, sessi
         ) : (
           <>
             <LoadingOverlay visible={isLoading} zIndex={1000} overlayProps={{ radius: 'sm', blur: 2 }} />
-            <TableBodyMetrics rows={titledData} resource={'cpu'} title={'CPU Usage'} />
-            <TableBodyMetrics rows={titledData} resource={'memory'} title={'Memory Usage'} />
+            <TableBodyMetrics pods={data} resource={'cpu'} title={'CPU Usage'} />
+            <TableBodyMetrics pods={data} resource={'memory'} title={'Memory Usage'} />
           </>
         )}
       </Box>

@@ -2,18 +2,71 @@
 
 import _truncate from 'lodash-es/truncate';
 import React from 'react';
-import { totalMetrics, ResourceType } from '@/services/openshift-kubernetis-metrics/helpers';
+import { totalMetrics, ResourceType, Pod } from '@/services/openshift-kubernetis-metrics/helpers';
 import TableHeader from '../generic/table/TableHeader';
 import TruncatedTooltip from './TruncatedTooltip';
 
 interface TableProps {
-  rows: any[];
+  pods: Pod[];
   resource: ResourceType;
   title: string;
 }
 
-export default function TableBodyPrivateRequests({ rows, resource, title }: TableProps) {
-  const { totalUsage, totalLimit } = totalMetrics(rows, resource);
+type TransformedData = {
+  podName: string;
+  containerName: string;
+  usage: {
+    cpu: string;
+    memory: string;
+  };
+  limits: {
+    cpu: string;
+    memory: string;
+  };
+  requests: {
+    cpu: string;
+    memory: string;
+  };
+};
+
+const transformPodData = (data: Pod[]): TransformedData[] => {
+  const transformedData: TransformedData[] = [];
+  data.forEach((pod) => {
+    pod.containers.forEach((container) => {
+      transformedData.push({
+        podName: pod.podName,
+        containerName: container.name,
+        usage: {
+          cpu: container.usage.cpu,
+          memory: container.usage.memory,
+        },
+        limits: {
+          cpu: container.limits.cpu,
+          memory: container.limits.memory,
+        },
+        requests: {
+          cpu: container.requests.cpu,
+          memory: container.requests.memory,
+        },
+      });
+    });
+  });
+
+  return transformedData;
+};
+
+export default function TableBodyMetrics({ pods, resource, title }: TableProps) {
+  const rows = [
+    {
+      podName: 'Pod Name',
+      containerName: 'Container Name',
+      usage: { cpu: 'CPU Usage', memory: 'Memory Usage' },
+      limits: { cpu: 'CPU Limits', memory: 'Memory Limits' },
+      requests: { cpu: 'CPU Requests', memory: 'Memory Requests' },
+    },
+    ...transformPodData(pods),
+  ];
+  const { totalUsage, totalLimit } = totalMetrics(pods, resource);
 
   const summaryNums = [
     {
@@ -32,15 +85,22 @@ export default function TableBodyPrivateRequests({ rows, resource, title }: Tabl
         <TableHeader title={title} />
         <div className="divide-y divide-grey-200/5">
           {rows.map((row, index) => (
-            <div key={row.name}>
+            <div key={row.podName}>
               <div
                 className={`hover:bg-gray-100 transition-colors duration-200 grid grid-cols-1 md:grid-cols-6 lg:grid-cols-12 gap-4 px-4 py-3 sm:px-6 lg:px-8 ${
                   index === 0 && 'bg-gray-100'
                 }`}
               >
-                <div className="md:col-span-2 lg:col-span-6">
-                  <TruncatedTooltip label={row.name}>
-                    <span className={`${index === 0 && 'font-bold'}`}>{_truncate(row.name, { length: 100 })}</span>
+                <div className="md:col-span-1 lg:col-span-3">
+                  <TruncatedTooltip label={row.podName}>
+                    <span className={`${index === 0 && 'font-bold'}`}>{_truncate(row.podName, { length: 100 })}</span>
+                  </TruncatedTooltip>
+                </div>
+                <div className="md:col-span-1 lg:col-span-3">
+                  <TruncatedTooltip label={row.containerName}>
+                    <span className={`${index === 0 && 'font-bold'}`}>
+                      {_truncate(row.containerName, { length: 100 })}
+                    </span>
                   </TruncatedTooltip>
                 </div>
                 <div className={`md:col-span-1 lg:col-span-2 ${index === 0 && 'font-bold'}`}>{row.usage[resource]}</div>

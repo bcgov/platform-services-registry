@@ -2,12 +2,13 @@ import _toNumber from 'lodash-es/toNumber';
 import { extractNumbers } from '@/utils/string';
 
 export type ResourceType = 'cpu' | 'memory';
-export type podObj = {
+
+export type Pod = {
   podName: string;
-  containers: UsageObj[];
+  containers: Container[];
 };
 
-export type UsageObj = {
+export type Container = {
   name: string;
   usage: {
     cpu: string;
@@ -47,7 +48,7 @@ export const convertMemory = (memory: string): string => {
 };
 
 // Convert CPU and memory values for all containers in the pod
-export const convertValues = (data: podObj[]): podObj[] =>
+export const convertValues = (data: Pod[]): Pod[] =>
   data.map((pod) => ({
     ...pod,
     containers: pod.containers.map((container) => ({
@@ -68,7 +69,7 @@ export const convertValues = (data: podObj[]): podObj[] =>
   }));
 
 // Function to aggregate total usage and limits across all containers in a single pod
-export const totalMetrics = (pods: podObj[], resource: ResourceType) => {
+export const totalMetrics = (pods: Pod[], resource: ResourceType) => {
   if (!Array.isArray(pods) || pods.length === 0) {
     return { totalUsage: 0, totalLimit: 0 };
   }

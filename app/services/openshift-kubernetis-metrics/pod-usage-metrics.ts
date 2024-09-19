@@ -1,6 +1,6 @@
 import { KubeConfig, CoreV1Api, Metrics } from '@kubernetes/client-node';
 import { KLAB_METRICS_READER_TOKEN, IS_PROD, IS_TEST } from '@/config';
-import { UsageObj, convertValues, podObj } from './helpers';
+import { Container, convertValues, Pod } from './helpers';
 
 function configureKubeConfig(cluster: string, token: string) {
   const kc = new KubeConfig();
@@ -57,11 +57,10 @@ export default async function getPodMetrics(licencePlate: string, environment: s
   const kc = configureKubeConfig(cluster, token);
   const k8sApi = kc.makeApiClient(CoreV1Api);
   const metricsClient = new Metrics(kc);
-  const usageData: podObj[] = [];
+  const usageData: Pod[] = [];
 
   try {
     const metrics = await metricsClient.getPodMetrics(systemNamespace);
-
     if (!metrics.items || metrics.items.length === 0) {
       console.warn(`No metrics found for namespace: ${systemNamespace}`);
       return [];
@@ -73,31 +72,31 @@ export default async function getPodMetrics(licencePlate: string, environment: s
       const podStatus = await k8sApi.readNamespacedPodStatus(podName, systemNamespace);
 
       // Map over containers to collect their usage, limits, and requests
-      const containers: UsageObj[] = item.containers.map(
+      const containers: Container[] = item.containers.map(
         (container: { name: string; usage: { cpu: string; memory: string } }, index: number) => {
           return {
             name: container.name,
             usage: {
-              cpu: container.usage.cpu || '',
-              memory: container.usage.memory || '',
+              cpu: container.usage.cpu || '0',
+              memory: container.usage.memory || '0',
             },
             limits: {
-              cpu: podStatus.body.spec?.containers[index]?.resources?.limits?.cpu || '',
-              memory: podStatus.body.spec?.containers[index]?.resources?.limits?.memory || '',
+              cpu: podStatus.body.spec?.containers[index]?.resources?.limits?.cpu || '0',
+              memory: podStatus.body.spec?.containers[index]?.resources?.limits?.memory || '0',
             },
             requests: {
-              cpu: podStatus.body.spec?.containers[index]?.resources?.requests?.cpu || '',
-              memory: podStatus.body.spec?.containers[index]?.resources?.requests?.memory || '',
+              cpu: podStatus.body.spec?.containers[index]?.resources?.requests?.cpu || '0',
+              memory: podStatus.body.spec?.containers[index]?.resources?.requests?.memory || '0',
             },
           };
         },
       );
 
-      const podResources: podObj = {
+      const podResources: Pod = {
         podName: podName,
         containers: containers,
       };
-
+      // console.log('podResources', JSON.stringify(podResources, null, 2))
       usageData.push(podResources);
     }
     return convertValues(usageData);
