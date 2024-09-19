@@ -1,4 +1,4 @@
-import { Prisma, $Enums } from '@prisma/client';
+import { Prisma, ProjectContext } from '@prisma/client';
 import { redirect } from 'next/navigation';
 import { getServerSession } from 'next-auth/next';
 import SonarScanResults from '@/components/sonarscan/SonarScanResults';
@@ -13,7 +13,7 @@ export default async function Page({
     page: string;
     pageSize: string;
     search: string;
-    context: $Enums.ProjectContext | $Enums.ProjectContext[];
+    context: ProjectContext | ProjectContext[];
   };
 }) {
   const session = await getServerSession(authOptions);

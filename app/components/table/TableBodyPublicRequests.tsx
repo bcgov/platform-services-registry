@@ -1,8 +1,7 @@
 'use client';
 
-import path from 'path';
 import { Tooltip, Badge } from '@mantine/core';
-import { $Enums } from '@prisma/client';
+import { ProjectStatus } from '@prisma/client';
 import _truncate from 'lodash-es/truncate';
 import { usePathname, useRouter } from 'next/navigation';
 import React from 'react';
@@ -58,7 +57,7 @@ export default function TableBodyPublicProducts({ rows, isLoading = false }: Tab
                       </TruncatedTooltip>
                       {!row.active && (
                         <Badge color="red" radius="sm" className="ml-1 mt-1">
-                          {$Enums.ProjectStatus.INACTIVE}
+                          {ProjectStatus.INACTIVE}
                         </Badge>
                       )}
                     </div>

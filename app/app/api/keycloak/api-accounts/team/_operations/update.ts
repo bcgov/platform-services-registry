@@ -1,4 +1,4 @@
-import { $Enums } from '@prisma/client';
+import { EventType } from '@prisma/client';
 import { Session } from 'next-auth';
 import { AUTH_RELM } from '@/config';
 import { OkResponse, BadRequestResponse } from '@/core/responses';
@@ -67,7 +67,7 @@ export default async function getOp({
   });
 
   if (client) {
-    await createEvent($Enums.EventType.UPDATE_TEAM_API_TOKEN, session.user.id, { clientUid: client.id, roles });
+    await createEvent(EventType.UPDATE_TEAM_API_TOKEN, session.user.id, { clientUid: client.id, roles });
   }
 
   return OkResponse({ client, user });

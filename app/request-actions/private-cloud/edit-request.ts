@@ -1,4 +1,4 @@
-import { $Enums, DecisionStatus, Prisma, RequestType, EventType } from '@prisma/client';
+import { DecisionStatus, Cluster, RequestType, EventType } from '@prisma/client';
 import { Session } from 'next-auth';
 import prisma from '@/core/prisma';
 import { comparePrivateProductData } from '@/helpers/product-change';
@@ -61,8 +61,7 @@ export default async function editRequest(
 
   let decisionStatus: DecisionStatus;
 
-  const hasGolddrEnabledChanged =
-    project.cluster === $Enums.Cluster.GOLD && project.golddrEnabled !== formData.golddrEnabled;
+  const hasGolddrEnabledChanged = project.cluster === Cluster.GOLD && project.golddrEnabled !== formData.golddrEnabled;
 
   // If there is no quota change or no quota upgrade and no golddr flag changes, the request is automatically approved
   if ((isNoQuotaChanged || !isQuotaUpgrade(formData, project)) && !hasGolddrEnabledChanged) {

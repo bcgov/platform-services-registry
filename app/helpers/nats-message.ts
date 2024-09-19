@@ -1,4 +1,4 @@
-import { $Enums, Cluster, RequestType } from '@prisma/client';
+import { Cluster, RequestType } from '@prisma/client';
 import { sendPrivateCloudNatsMessage } from '@/services/nats';
 import { PrivateCloudRequestDetail } from '@/types/private-cloud';
 

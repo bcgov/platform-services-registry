@@ -1,5 +1,5 @@
 import { expect } from '@jest/globals';
-import { $Enums } from '@prisma/client';
+import { Ministry, Cluster, DecisionStatus } from '@prisma/client';
 import { createSamplePrivateCloudProductData } from '@/helpers/mock-resources';
 import { mockNoRoleUsers, findMockUserByIdr, findOtherMockUsers } from '@/helpers/mock-users';
 import { mockSessionByEmail, mockSessionByRole } from '@/services/api-test/core';
@@ -26,7 +26,7 @@ describe('List Private Cloud Product Requests - Permissions', () => {
     await mockSessionByEmail(PO.email);
 
     const requestData = createSamplePrivateCloudProductData({
-      data: { ...memberData, ministry: $Enums.Ministry.PSA, cluster: $Enums.Cluster.SILVER },
+      data: { ...memberData, ministry: Ministry.PSA, cluster: Cluster.SILVER },
     });
     const res1 = await createPrivateCloudProject(requestData);
     const dat1 = await res1.json();
@@ -38,7 +38,7 @@ describe('List Private Cloud Product Requests - Permissions', () => {
 
     const res2 = await makePrivateCloudRequestDecision(dat1.id, {
       ...dat1.decisionData,
-      decision: $Enums.DecisionStatus.APPROVED,
+      decision: DecisionStatus.APPROVED,
     });
     expect(res2.status).toBe(200);
 

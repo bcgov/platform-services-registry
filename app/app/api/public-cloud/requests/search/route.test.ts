@@ -1,5 +1,5 @@
 import { expect } from '@jest/globals';
-import { $Enums, TaskType, TaskStatus } from '@prisma/client';
+import { Ministry, Provider, DecisionStatus, TaskType, TaskStatus } from '@prisma/client';
 import prisma from '@/core/prisma';
 import { createSamplePublicCloudProductData } from '@/helpers/mock-resources';
 import { mockNoRoleUsers, findMockUserByIdr, findOtherMockUsers } from '@/helpers/mock-users';
@@ -46,7 +46,7 @@ describe('Search Public Cloud Requests - Permissions', () => {
     await mockSessionByEmail(PO.email);
 
     const requestData = createSamplePublicCloudProductData({
-      data: { ...memberData, ministry: $Enums.Ministry.PSA, provider: $Enums.Provider.AWS },
+      data: { ...memberData, ministry: Ministry.PSA, provider: Provider.AWS },
     });
     const res1 = await createPublicCloudProject(requestData);
     const dat1 = await res1.json();
@@ -95,8 +95,9 @@ describe('Search Public Cloud Requests - Permissions', () => {
     const res2 = await makePublicCloudRequestDecision(dat1.id, {
       ...dat1.decisionData,
       accountCoding: dat1.decisionData.billing.accountCoding,
-      decision: $Enums.DecisionStatus.APPROVED,
+      decision: DecisionStatus.APPROVED,
     });
+
     expect(res2.status).toBe(200);
 
     const res3 = await provisionPublicCloudProject(dat1.licencePlate);
@@ -137,7 +138,7 @@ describe('Search Public Cloud Requests - Permissions', () => {
     await mockSessionByEmail(RANDOM1.email);
 
     const requestData = createSamplePublicCloudProductData({
-      data: { ...randomMemberData, ministry: $Enums.Ministry.PSA, provider: $Enums.Provider.AWS },
+      data: { ...randomMemberData, ministry: Ministry.PSA, provider: Provider.AWS },
     });
     const res1 = await createPublicCloudProject(requestData);
     const dat1 = await res1.json();
@@ -148,7 +149,7 @@ describe('Search Public Cloud Requests - Permissions', () => {
     const res2 = await makePublicCloudRequestDecision(dat1.id, {
       ...dat1.decisionData,
       accountCoding: dat1.decisionData.billing.accountCoding,
-      decision: $Enums.DecisionStatus.APPROVED,
+      decision: DecisionStatus.APPROVED,
     });
     expect(res2.status).toBe(200);
 
@@ -217,17 +218,17 @@ describe('Search Public Cloud Requests - Validations', () => {
 
     const datasets = [];
     datasets.push(
-      createSamplePublicCloudProductData({ data: { ministry: $Enums.Ministry.AEST, provider: $Enums.Provider.AWS } }),
-      createSamplePublicCloudProductData({ data: { ministry: $Enums.Ministry.AEST, provider: $Enums.Provider.AZURE } }),
-      createSamplePublicCloudProductData({ data: { ministry: $Enums.Ministry.AEST, provider: $Enums.Provider.AWS } }),
-      createSamplePublicCloudProductData({ data: { ministry: $Enums.Ministry.AEST, provider: $Enums.Provider.AZURE } }),
-      createSamplePublicCloudProductData({ data: { ministry: $Enums.Ministry.AEST, provider: $Enums.Provider.AWS } }),
-      createSamplePublicCloudProductData({ data: { ministry: $Enums.Ministry.CITZ, provider: $Enums.Provider.AZURE } }),
-      createSamplePublicCloudProductData({ data: { ministry: $Enums.Ministry.CITZ, provider: $Enums.Provider.AWS } }),
-      createSamplePublicCloudProductData({ data: { ministry: $Enums.Ministry.CITZ, provider: $Enums.Provider.AZURE } }),
-      createSamplePublicCloudProductData({ data: { ministry: $Enums.Ministry.CITZ, provider: $Enums.Provider.AWS } }),
+      createSamplePublicCloudProductData({ data: { ministry: Ministry.AEST, provider: Provider.AWS } }),
+      createSamplePublicCloudProductData({ data: { ministry: Ministry.AEST, provider: Provider.AZURE } }),
+      createSamplePublicCloudProductData({ data: { ministry: Ministry.AEST, provider: Provider.AWS } }),
+      createSamplePublicCloudProductData({ data: { ministry: Ministry.AEST, provider: Provider.AZURE } }),
+      createSamplePublicCloudProductData({ data: { ministry: Ministry.AEST, provider: Provider.AWS } }),
+      createSamplePublicCloudProductData({ data: { ministry: Ministry.CITZ, provider: Provider.AZURE } }),
+      createSamplePublicCloudProductData({ data: { ministry: Ministry.CITZ, provider: Provider.AWS } }),
+      createSamplePublicCloudProductData({ data: { ministry: Ministry.CITZ, provider: Provider.AZURE } }),
+      createSamplePublicCloudProductData({ data: { ministry: Ministry.CITZ, provider: Provider.AWS } }),
       createSamplePublicCloudProductData({
-        data: { ministry: $Enums.Ministry.CITZ, provider: $Enums.Provider.AZURE, name: '______name______' },
+        data: { ministry: Ministry.CITZ, provider: Provider.AZURE, name: '______name______' },
       }),
     );
 
@@ -279,7 +280,7 @@ describe('Search Public Cloud Requests - Validations', () => {
         const req = await makePublicCloudRequestDecision(dat1.id, {
           ...dat1.decisionData,
           accountCoding: dat1.decisionData.billing.accountCoding,
-          decision: $Enums.DecisionStatus.APPROVED,
+          decision: DecisionStatus.APPROVED,
         });
 
         await provisionPublicCloudProject(dat1.licencePlate);
@@ -321,8 +322,8 @@ describe('Search Public Cloud Requests - Validations', () => {
     await mockSessionByRole('admin');
 
     const res1 = await searchPublicCloudRequests({
-      ministry: $Enums.Ministry.AEST,
-      provider: $Enums.Provider.AWS,
+      ministry: Ministry.AEST,
+      provider: Provider.AWS,
       includeInactive: true,
     });
 

@@ -1,4 +1,4 @@
-import { Cluster, Ministry, Provider, $Enums, Prisma } from '@prisma/client';
+import { Cluster, Ministry, Prisma } from '@prisma/client';
 import _isString from 'lodash-es/isString';
 import { string, z } from 'zod';
 import { phoneNumberRegex } from '@/constants/regex';
@@ -135,8 +135,8 @@ export const privateCloudRequestDecisionBodySchema = privateCloudEditRequestBody
 
 export const privateCloudProductSearchNoPaginationBodySchema = z.object({
   search: z.string().optional(),
-  ministry: z.preprocess(processUpperEnumString, z.nativeEnum($Enums.Ministry).optional()),
-  cluster: z.preprocess(processUpperEnumString, z.nativeEnum($Enums.Cluster).optional()),
+  ministry: z.preprocess(processUpperEnumString, z.nativeEnum(Ministry).optional()),
+  cluster: z.preprocess(processUpperEnumString, z.nativeEnum(Cluster).optional()),
   includeInactive: z.boolean().optional(),
   sortKey: z.string().optional(),
   sortOrder: z.preprocess(processEnumString, z.nativeEnum(Prisma.SortOrder).optional()),
@@ -155,8 +155,8 @@ export const privateCloudRequestSearchBodySchema = z.object({
   search: z.string().optional(),
   page: z.number().optional(),
   pageSize: z.number().optional(),
-  ministry: z.preprocess(processUpperEnumString, z.nativeEnum($Enums.Ministry).optional()),
-  cluster: z.preprocess(processUpperEnumString, z.nativeEnum($Enums.Cluster).optional()),
+  ministry: z.preprocess(processUpperEnumString, z.nativeEnum(Ministry).optional()),
+  cluster: z.preprocess(processUpperEnumString, z.nativeEnum(Cluster).optional()),
   includeInactive: z.boolean().optional(),
   sortKey: z.string().optional(),
   sortOrder: z.preprocess(processEnumString, z.nativeEnum(Prisma.SortOrder).optional()),

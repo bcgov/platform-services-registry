@@ -1,5 +1,5 @@
 import { expect } from '@jest/globals';
-import { $Enums } from '@prisma/client';
+import { Cluster, Ministry } from '@prisma/client';
 import { createSamplePrivateCloudProductData } from '@/helpers/mock-resources';
 import { findOtherMockUsers } from '@/helpers/mock-users';
 import { pickProductData } from '@/helpers/product';
@@ -151,7 +151,7 @@ describe('Create Private Cloud Request - Validations', () => {
     const requestData = createSamplePrivateCloudProductData();
     await mockSessionByRole('admin');
 
-    requestData.cluster = 'INVALID' as $Enums.Cluster;
+    requestData.cluster = 'INVALID' as Cluster;
 
     const response = await createPrivateCloudProject(requestData);
     expect(response.status).toBe(400);
@@ -166,7 +166,7 @@ describe('Create Private Cloud Request - Validations', () => {
     const requestData = createSamplePrivateCloudProductData();
     await mockSessionByRole('admin');
 
-    requestData.ministry = 'INVALID' as $Enums.Ministry;
+    requestData.ministry = 'INVALID' as Ministry;
 
     const response = await createPrivateCloudProject(requestData);
     expect(response.status).toBe(400);

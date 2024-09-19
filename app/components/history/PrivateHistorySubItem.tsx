@@ -1,4 +1,4 @@
-import { $Enums } from '@prisma/client';
+import { RequestType, DecisionStatus } from '@prisma/client';
 import Link from 'next/link';
 import { formatDateSimple } from '@/utils/date';
 
@@ -15,8 +15,8 @@ export default function PrivateHistorySubItem({
   id: string;
   comment: string;
   data: Date;
-  type: $Enums.RequestType;
-  status: $Enums.DecisionStatus;
+  type: RequestType;
+  status: DecisionStatus;
   isDecision: boolean;
   isQuotaChanged: boolean | null;
   email: string | null;
@@ -24,7 +24,7 @@ export default function PrivateHistorySubItem({
   let message = '';
 
   if (isDecision) {
-    if (type === $Enums.RequestType.EDIT) {
+    if (type === RequestType.EDIT) {
       message += `Edit request ${
         isQuotaChanged ? 'with upgrade' : 'without'
       } quota change was ${status.toLocaleLowerCase()}`;
@@ -32,7 +32,7 @@ export default function PrivateHistorySubItem({
       message += `${type.toLocaleLowerCase()} request was ${status.toLocaleLowerCase()}`;
     }
   } else {
-    if (type === $Enums.RequestType.EDIT) {
+    if (type === RequestType.EDIT) {
       message += `Edit request ${isQuotaChanged ? 'with' : 'without'} quota change was submitted`;
     } else {
       message += `${type.toLocaleLowerCase()} request was submitted`;

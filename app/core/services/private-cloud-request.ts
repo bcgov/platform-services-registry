@@ -1,7 +1,7 @@
-import { Prisma, PrismaClient, $Enums } from '@prisma/client';
+import { Prisma, RequestType, DecisionStatus } from '@prisma/client';
 import { ModelService } from '@/core/model-service';
 import prisma from '@/core/prisma';
-import { PrivateCloudProjectDecorate, PrivateCloudRequestDecorate } from '@/types/doc-decorate';
+import { PrivateCloudRequestDecorate } from '@/types/doc-decorate';
 
 type PrivateCloudRequest = Prisma.PrivateCloudRequestGetPayload<{
   select: {
@@ -28,7 +28,7 @@ export class PrivateCloudRequestService extends ModelService<Prisma.PrivateCloud
     const baseFilter: Prisma.PrivateCloudRequestWhereInput = {
       OR: [
         { licencePlate: { in: licencePlates } },
-        { type: $Enums.RequestType.CREATE, createdByEmail: { equals: this.session.user.email, mode: 'insensitive' } },
+        { type: RequestType.CREATE, createdByEmail: { equals: this.session.user.email, mode: 'insensitive' } },
       ],
     };
 
@@ -42,16 +42,15 @@ export class PrivateCloudRequestService extends ModelService<Prisma.PrivateCloud
 
   async decorate<T>(doc: T & PrivateCloudRequest & PrivateCloudRequestDecorate) {
     const canReview =
-      doc.decisionStatus === $Enums.DecisionStatus.PENDING && this.session.permissions.reviewAllPrivateCloudRequests;
+      doc.decisionStatus === DecisionStatus.PENDING && this.session.permissions.reviewAllPrivateCloudRequests;
 
-    const canEdit = canReview && doc.type !== $Enums.RequestType.DELETE;
+    const canEdit = canReview && doc.type !== RequestType.DELETE;
     const canResend =
-      doc.decisionStatus === $Enums.DecisionStatus.APPROVED && this.session.permissions.reviewAllPrivateCloudRequests;
+      doc.decisionStatus === DecisionStatus.APPROVED && this.session.permissions.reviewAllPrivateCloudRequests;
 
-    const hasProduct =
-      doc.type !== $Enums.RequestType.CREATE || doc.decisionStatus === $Enums.DecisionStatus.PROVISIONED;
+    const hasProduct = doc.type !== RequestType.CREATE || doc.decisionStatus === DecisionStatus.PROVISIONED;
 
-    const canViewDecision = doc.decisionStatus !== $Enums.DecisionStatus.PENDING || canReview;
+    const canViewDecision = doc.decisionStatus !== DecisionStatus.PENDING || canReview;
 
     if (!hasProduct) {
       doc._permissions = {

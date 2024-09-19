@@ -1,4 +1,4 @@
-import { $Enums, Prisma } from '@prisma/client';
+import { Provider, Prisma } from '@prisma/client';
 import { useSession } from 'next-auth/react';
 import { useEffect, useRef, useState } from 'react';
 import { useSnapshot, subscribe } from 'valtio';
@@ -82,7 +82,7 @@ export default function FilterPanel() {
               options={[
                 { label: 'All Providers', value: '' },
                 ...providerOptions.filter((opt) => {
-                  if (session?.previews.azure !== true) return opt.value === $Enums.Provider.AWS;
+                  if (session?.previews.azure !== true) return opt.value === Provider.AWS;
                   return true;
                 }),
               ]}

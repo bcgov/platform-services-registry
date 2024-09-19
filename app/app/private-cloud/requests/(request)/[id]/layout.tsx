@@ -1,10 +1,9 @@
 'use client';
 
 import { Alert } from '@mantine/core';
-import { $Enums } from '@prisma/client';
+import { RequestType } from '@prisma/client';
 import { IconArrowBack, IconInfoCircle, IconFile, IconExclamationCircle } from '@tabler/icons-react';
 import { useQuery } from '@tanstack/react-query';
-import { differenceInDays } from 'date-fns/differenceInDays';
 import { useEffect } from 'react';
 import { z } from 'zod';
 import PrivateCloudRequestOptions from '@/components/dropdowns/PrivateCloudRequestOptions';
@@ -56,9 +55,9 @@ export default privateCloudProductSecurityACS(({ pathParams, queryParams, sessio
   }, [request]);
 
   const tabsByType = {
-    [$Enums.RequestType.CREATE]: ['summary', 'request', 'decision', 'comments'],
-    [$Enums.RequestType.EDIT]: ['summary', 'original', 'request', 'decision', 'comments'],
-    [$Enums.RequestType.DELETE]: ['decision', 'comments'],
+    [RequestType.CREATE]: ['summary', 'request', 'decision', 'comments'],
+    [RequestType.EDIT]: ['summary', 'original', 'request', 'decision', 'comments'],
+    [RequestType.DELETE]: ['decision', 'comments'],
   };
 
   let tabs: ITab[] = [

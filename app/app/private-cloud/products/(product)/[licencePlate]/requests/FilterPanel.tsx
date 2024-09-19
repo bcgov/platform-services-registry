@@ -1,4 +1,4 @@
-import { $Enums, Prisma } from '@prisma/client';
+import { Prisma } from '@prisma/client';
 import { useEffect, useRef, useState } from 'react';
 import { useSnapshot, subscribe } from 'valtio';
 import FormToggle from '@/components/generic/checkbox/FormToggle';

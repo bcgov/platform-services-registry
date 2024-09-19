@@ -1,5 +1,5 @@
 import { expect } from '@jest/globals';
-import { $Enums, TaskType, TaskStatus } from '@prisma/client';
+import { DecisionStatus, Ministry, Provider, TaskType, TaskStatus } from '@prisma/client';
 import prisma from '@/core/prisma';
 import { createSamplePublicCloudProductData } from '@/helpers/mock-resources';
 import { mockNoRoleUsers, findMockUserByIdr, findOtherMockUsers } from '@/helpers/mock-users';
@@ -91,7 +91,7 @@ describe('Search Public Cloud Products - Permissions', () => {
     const res2 = await makePublicCloudRequestDecision(dat1.id, {
       ...dat1.decisionData,
       accountCoding: dat1.decisionData.billing.accountCoding,
-      decision: $Enums.DecisionStatus.APPROVED,
+      decision: DecisionStatus.APPROVED,
     });
     expect(res2.status).toBe(200);
 
@@ -144,7 +144,7 @@ describe('Search Public Cloud Products - Permissions', () => {
     const res2 = await makePublicCloudRequestDecision(dat1.id, {
       ...dat1.decisionData,
       accountCoding: dat1.decisionData.billing.accountCoding,
-      decision: $Enums.DecisionStatus.APPROVED,
+      decision: DecisionStatus.APPROVED,
     });
     expect(res2.status).toBe(200);
 
@@ -213,17 +213,17 @@ describe('Search Public Cloud Products - Validations', () => {
 
     const datasets = [];
     datasets.push(
-      createSamplePublicCloudProductData({ data: { ministry: $Enums.Ministry.AEST, provider: $Enums.Provider.AWS } }),
-      createSamplePublicCloudProductData({ data: { ministry: $Enums.Ministry.AEST, provider: $Enums.Provider.AZURE } }),
-      createSamplePublicCloudProductData({ data: { ministry: $Enums.Ministry.AEST, provider: $Enums.Provider.AWS } }),
-      createSamplePublicCloudProductData({ data: { ministry: $Enums.Ministry.AEST, provider: $Enums.Provider.AZURE } }),
-      createSamplePublicCloudProductData({ data: { ministry: $Enums.Ministry.AEST, provider: $Enums.Provider.AWS } }),
-      createSamplePublicCloudProductData({ data: { ministry: $Enums.Ministry.CITZ, provider: $Enums.Provider.AZURE } }),
-      createSamplePublicCloudProductData({ data: { ministry: $Enums.Ministry.CITZ, provider: $Enums.Provider.AWS } }),
-      createSamplePublicCloudProductData({ data: { ministry: $Enums.Ministry.CITZ, provider: $Enums.Provider.AZURE } }),
-      createSamplePublicCloudProductData({ data: { ministry: $Enums.Ministry.CITZ, provider: $Enums.Provider.AWS } }),
+      createSamplePublicCloudProductData({ data: { ministry: Ministry.AEST, provider: Provider.AWS } }),
+      createSamplePublicCloudProductData({ data: { ministry: Ministry.AEST, provider: Provider.AZURE } }),
+      createSamplePublicCloudProductData({ data: { ministry: Ministry.AEST, provider: Provider.AWS } }),
+      createSamplePublicCloudProductData({ data: { ministry: Ministry.AEST, provider: Provider.AZURE } }),
+      createSamplePublicCloudProductData({ data: { ministry: Ministry.AEST, provider: Provider.AWS } }),
+      createSamplePublicCloudProductData({ data: { ministry: Ministry.CITZ, provider: Provider.AZURE } }),
+      createSamplePublicCloudProductData({ data: { ministry: Ministry.CITZ, provider: Provider.AWS } }),
+      createSamplePublicCloudProductData({ data: { ministry: Ministry.CITZ, provider: Provider.AZURE } }),
+      createSamplePublicCloudProductData({ data: { ministry: Ministry.CITZ, provider: Provider.AWS } }),
       createSamplePublicCloudProductData({
-        data: { ministry: $Enums.Ministry.CITZ, provider: $Enums.Provider.AZURE, name: '______name______' },
+        data: { ministry: Ministry.CITZ, provider: Provider.AZURE, name: '______name______' },
       }),
     );
 
@@ -235,7 +235,7 @@ describe('Search Public Cloud Products - Validations', () => {
         await makePublicCloudRequestDecision(dat1.id, {
           ...dat1.decisionData,
           accountCoding: dat1.decisionData.billing.accountCoding,
-          decision: $Enums.DecisionStatus.APPROVED,
+          decision: DecisionStatus.APPROVED,
         });
 
         await provisionPublicCloudProject(dat1.licencePlate);
@@ -257,8 +257,8 @@ describe('Search Public Cloud Products - Validations', () => {
     await mockSessionByRole('admin');
 
     const res1 = await searchPublicCloudProjects({
-      ministry: $Enums.Ministry.AEST,
-      provider: $Enums.Provider.AWS,
+      ministry: Ministry.AEST,
+      provider: Provider.AWS,
       includeInactive: false,
     });
 

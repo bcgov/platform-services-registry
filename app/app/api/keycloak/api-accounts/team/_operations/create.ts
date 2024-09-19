@@ -1,4 +1,4 @@
-import { $Enums } from '@prisma/client';
+import { EventType } from '@prisma/client';
 import { Session } from 'next-auth';
 import { AUTH_RELM } from '@/config';
 import { TEAM_SA_PREFIX } from '@/constants';
@@ -65,7 +65,7 @@ export default async function getOp({
   client = await findClient(clientId, kcAdminClient);
 
   if (client) {
-    await createEvent($Enums.EventType.CREATE_TEAM_API_TOKEN, session.user.id, {
+    await createEvent(EventType.CREATE_TEAM_API_TOKEN, session.user.id, {
       clientUid: client.id,
     });
   }

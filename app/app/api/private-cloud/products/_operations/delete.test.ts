@@ -1,14 +1,10 @@
 import { expect } from '@jest/globals';
-import { $Enums } from '@prisma/client';
+import { DecisionStatus } from '@prisma/client';
 import { createSamplePrivateCloudProductData } from '@/helpers/mock-resources';
 import { findOtherMockUsers } from '@/helpers/mock-users';
 import { mockSessionByEmail, mockSessionByRole } from '@/services/api-test/core';
 import { provisionPrivateCloudProject } from '@/services/api-test/private-cloud';
-import {
-  createPrivateCloudProject,
-  getPrivateCloudProject,
-  deletePrivateCloudProject,
-} from '@/services/api-test/private-cloud/products';
+import { createPrivateCloudProject, deletePrivateCloudProject } from '@/services/api-test/private-cloud/products';
 import { makePrivateCloudRequestDecision } from '@/services/api-test/private-cloud/requests';
 
 const productData = {
@@ -36,7 +32,7 @@ describe('Delete Private Cloud Product - Permissions', () => {
 
     const response = await makePrivateCloudRequestDecision(requests.create.id, {
       ...requests.create.decisionData,
-      decision: $Enums.DecisionStatus.APPROVED,
+      decision: DecisionStatus.APPROVED,
     });
 
     expect(response.status).toBe(200);
@@ -71,7 +67,7 @@ describe('Delete Private Cloud Product - Permissions', () => {
 
     const response = await makePrivateCloudRequestDecision(requests.delete.id, {
       ...requests.delete.decisionData,
-      decision: $Enums.DecisionStatus.REJECTED,
+      decision: DecisionStatus.REJECTED,
     });
 
     expect(response.status).toBe(200);
@@ -99,7 +95,7 @@ describe('Delete Private Cloud Product - Permissions', () => {
 
     const response = await makePrivateCloudRequestDecision(requests.delete.id, {
       ...requests.delete.decisionData,
-      decision: $Enums.DecisionStatus.REJECTED,
+      decision: DecisionStatus.REJECTED,
     });
 
     expect(response.status).toBe(200);

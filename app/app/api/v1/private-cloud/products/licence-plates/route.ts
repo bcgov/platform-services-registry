@@ -1,4 +1,4 @@
-import { Prisma, $Enums } from '@prisma/client';
+import { Prisma, Cluster } from '@prisma/client';
 import _isString from 'lodash-es/isString';
 import { z } from 'zod';
 import createApiHandler from '@/core/api-handler';
@@ -7,7 +7,7 @@ import { OkResponse } from '@/core/responses';
 import { processBooleanPositive } from '@/utils/zod';
 
 const queryParamSchema = z.object({
-  cluster: z.preprocess((v) => (_isString(v) ? v.toUpperCase() : ''), z.nativeEnum($Enums.Cluster)),
+  cluster: z.preprocess((v) => (_isString(v) ? v.toUpperCase() : ''), z.nativeEnum(Cluster)),
   active: z.preprocess(processBooleanPositive, z.boolean()),
 });
 

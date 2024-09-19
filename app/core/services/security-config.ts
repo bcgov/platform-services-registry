@@ -1,4 +1,4 @@
-import { Prisma, PrismaClient, $Enums } from '@prisma/client';
+import { Prisma, ProjectContext } from '@prisma/client';
 import { ModelService } from '@/core/model-service';
 import prisma from '@/core/prisma';
 
@@ -17,9 +17,9 @@ export class SecurityConfigService extends ModelService<Prisma.SecurityConfigWhe
 
     const privateOR = privateRes.map(({ licencePlate }) => ({
       licencePlate,
-      context: $Enums.ProjectContext.PRIVATE,
+      context: ProjectContext.PRIVATE,
     }));
-    const publicOR = publicRes.map(({ licencePlate }) => ({ licencePlate, context: $Enums.ProjectContext.PUBLIC }));
+    const publicOR = publicRes.map(({ licencePlate }) => ({ licencePlate, context: ProjectContext.PUBLIC }));
 
     const OR = [...privateOR, ...publicOR];
 
@@ -51,7 +51,7 @@ export class SecurityConfigService extends ModelService<Prisma.SecurityConfigWhe
       select: { projectOwnerId: true, primaryTechnicalLeadId: true, secondaryTechnicalLeadId: true, provider: true },
     };
 
-    const project = await (doc.context === $Enums.ProjectContext.PRIVATE
+    const project = await (doc.context === ProjectContext.PRIVATE
       ? prisma.privateCloudProject.findFirst(privateQuery)
       : prisma.publicCloudProject.findFirst(publicQuery));
 

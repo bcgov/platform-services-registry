@@ -1,4 +1,4 @@
-import { $Enums } from '@prisma/client';
+import { RequestType, DecisionStatus } from '@prisma/client';
 import Link from 'next/link';
 import { formatDateSimple } from '@/utils/date';
 
@@ -14,21 +14,21 @@ export default function PublicHistorySubItem({
   id: string;
   comment: string | null;
   data: Date;
-  type: $Enums.RequestType;
-  status: $Enums.DecisionStatus;
+  type: RequestType;
+  status: DecisionStatus;
   isDecision: boolean;
   email: string | null;
 }) {
   let message = '';
 
   if (isDecision) {
-    if (type === $Enums.RequestType.EDIT) {
+    if (type === RequestType.EDIT) {
       message += `Edit request was ${status.toLocaleLowerCase()}`;
     } else {
       message += `${type.toLocaleLowerCase()} request was ${status.toLocaleLowerCase()}`;
     }
   } else {
-    if (type === $Enums.RequestType.EDIT) {
+    if (type === RequestType.EDIT) {
       message += `Edit request was submitted`;
     } else {
       message += `${type.toLocaleLowerCase()} request was submitted`;

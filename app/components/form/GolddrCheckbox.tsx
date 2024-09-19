@@ -1,4 +1,4 @@
-import { $Enums } from '@prisma/client';
+import { Cluster } from '@prisma/client';
 import { useFormContext } from 'react-hook-form';
 import FormCheckbox from '@/components/generic/checkbox/FormCheckbox';
 
@@ -6,7 +6,7 @@ export default function GolddrCheckbox({ disabled }: { disabled?: boolean }) {
   const { watch, register, formState } = useFormContext();
   const watchCluster = watch('cluster');
 
-  if (watchCluster !== $Enums.Cluster.GOLD) {
+  if (watchCluster !== Cluster.GOLD) {
     return null;
   }
 

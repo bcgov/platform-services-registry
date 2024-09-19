@@ -1,7 +1,9 @@
 import KcAdminClient from '@keycloak/keycloak-admin-client';
 import { Credentials } from '@keycloak/keycloak-admin-client/lib/utils/auth';
+import _compact from 'lodash-es/compact';
 import _kebabCase from 'lodash-es/kebabCase';
 import _startCase from 'lodash-es/startCase';
+import _uniq from 'lodash-es/uniq';
 import {
   AWS_ROLES_BASE_URL,
   AWS_ROLES_REALM_NAME,
@@ -170,18 +172,37 @@ async function findParentGroup(groupName = PROJECT_GROUP) {
   return groups.find((group) => group.name === groupName);
 }
 
+async function listSubGroups({ parentId, search }: { parentId: string; search?: string }) {
+  const subGroups = [];
+
+  const max = 100;
+  let first = 0;
+
+  while (true) {
+    const groups = await kcAdminClient.groups.listSubGroups({ parentId, search, first, max });
+    subGroups.push(...groups);
+    if (groups.length < max) break;
+    first += 1;
+  }
+
+  return subGroups;
+}
+
 async function getProductRoleGroups(licencePlate: string) {
   const projectTeamGroup = await findParentGroup();
   if (!projectTeamGroup || !projectTeamGroup.id) return [];
   if (projectTeamGroup.subGroupCount === 0) return [];
 
-  const projectTeamSubGroups = await kcAdminClient.groups.listSubGroups({ parentId: projectTeamGroup.id });
+  const projectTeamSubGroups = await listSubGroups({
+    parentId: projectTeamGroup.id,
+    search: licencePlate,
+  });
 
   const productGroup = projectTeamSubGroups.find((group) => group.name?.startsWith(licencePlate));
   if (!productGroup || !productGroup.id) return [];
   if (productGroup.subGroupCount === 0) return [];
 
-  const productSubGroups = await kcAdminClient.groups.listSubGroups({ parentId: productGroup.id });
+  const productSubGroups = await listSubGroups({ parentId: productGroup.id });
   return productSubGroups ?? [];
 }
 
@@ -231,5 +252,6 @@ export async function addUserToGroupByEmail(userPrincipalName: string, userEmail
 
 export async function getGroupsNamesByLicencePlate(licencePlate: string) {
   const productRoleGroups = await getProductRoleGroups(licencePlate);
-  return productRoleGroups.map((group) => parseGroupNameToTab(group.name as string));
+  const groupNames = _compact(_uniq(productRoleGroups.map((group) => group.name)));
+  return groupNames.map(parseGroupNameToTab);
 }

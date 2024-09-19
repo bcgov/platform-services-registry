@@ -1,5 +1,5 @@
 import { Alert } from '@mantine/core';
-import { $Enums } from '@prisma/client';
+import { Provider } from '@prisma/client';
 import { IconInfoCircle } from '@tabler/icons-react';
 import classNames from 'classnames';
 import _sumBy from 'lodash-es/sumBy';
@@ -34,10 +34,10 @@ export default function Budget({ disabled }: { disabled?: boolean }) {
   let calculatorNote = null;
 
   switch (provider) {
-    case $Enums.Provider.AWS:
+    case Provider.AWS:
       calculatorLink = <ExternalLink href="https://calculator.aws/#/">AWS Cost Calculator</ExternalLink>;
       break;
-    case $Enums.Provider.AZURE:
+    case Provider.AZURE:
       calculatorLink = (
         <ExternalLink href="https://azure.microsoft.com/en-ca/pricing/calculator">
           Azure Pricing Calculator
