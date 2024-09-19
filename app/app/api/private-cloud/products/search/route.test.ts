@@ -1,5 +1,5 @@
 import { expect } from '@jest/globals';
-import { $Enums } from '@prisma/client';
+import { DecisionStatus, Ministry, Cluster } from '@prisma/client';
 import prisma from '@/core/prisma';
 import { createSamplePrivateCloudProductData } from '@/helpers/mock-resources';
 import { mockNoRoleUsers, findMockUserByIdr, findOtherMockUsers } from '@/helpers/mock-users';
@@ -47,7 +47,7 @@ describe('Search Private Cloud Products - Permissions', () => {
 
     const res2 = await makePrivateCloudRequestDecision(dat1.id, {
       ...dat1.decisionData,
-      decision: $Enums.DecisionStatus.APPROVED,
+      decision: DecisionStatus.APPROVED,
     });
     expect(res2.status).toBe(200);
 
@@ -99,7 +99,7 @@ describe('Search Private Cloud Products - Permissions', () => {
 
     const res2 = await makePrivateCloudRequestDecision(dat1.id, {
       ...dat1.decisionData,
-      decision: $Enums.DecisionStatus.APPROVED,
+      decision: DecisionStatus.APPROVED,
     });
     expect(res2.status).toBe(200);
 
@@ -168,17 +168,17 @@ describe('Search Private Cloud Products - Validations', () => {
 
     const datasets = [];
     datasets.push(
-      createSamplePrivateCloudProductData({ data: { ministry: $Enums.Ministry.AEST, cluster: $Enums.Cluster.CLAB } }),
-      createSamplePrivateCloudProductData({ data: { ministry: $Enums.Ministry.AEST, cluster: $Enums.Cluster.KLAB } }),
-      createSamplePrivateCloudProductData({ data: { ministry: $Enums.Ministry.AEST, cluster: $Enums.Cluster.CLAB } }),
-      createSamplePrivateCloudProductData({ data: { ministry: $Enums.Ministry.AEST, cluster: $Enums.Cluster.KLAB } }),
-      createSamplePrivateCloudProductData({ data: { ministry: $Enums.Ministry.AEST, cluster: $Enums.Cluster.CLAB } }),
-      createSamplePrivateCloudProductData({ data: { ministry: $Enums.Ministry.CITZ, cluster: $Enums.Cluster.KLAB } }),
-      createSamplePrivateCloudProductData({ data: { ministry: $Enums.Ministry.CITZ, cluster: $Enums.Cluster.CLAB } }),
-      createSamplePrivateCloudProductData({ data: { ministry: $Enums.Ministry.CITZ, cluster: $Enums.Cluster.KLAB } }),
-      createSamplePrivateCloudProductData({ data: { ministry: $Enums.Ministry.CITZ, cluster: $Enums.Cluster.CLAB } }),
+      createSamplePrivateCloudProductData({ data: { ministry: Ministry.AEST, cluster: Cluster.CLAB } }),
+      createSamplePrivateCloudProductData({ data: { ministry: Ministry.AEST, cluster: Cluster.KLAB } }),
+      createSamplePrivateCloudProductData({ data: { ministry: Ministry.AEST, cluster: Cluster.CLAB } }),
+      createSamplePrivateCloudProductData({ data: { ministry: Ministry.AEST, cluster: Cluster.KLAB } }),
+      createSamplePrivateCloudProductData({ data: { ministry: Ministry.AEST, cluster: Cluster.CLAB } }),
+      createSamplePrivateCloudProductData({ data: { ministry: Ministry.CITZ, cluster: Cluster.KLAB } }),
+      createSamplePrivateCloudProductData({ data: { ministry: Ministry.CITZ, cluster: Cluster.CLAB } }),
+      createSamplePrivateCloudProductData({ data: { ministry: Ministry.CITZ, cluster: Cluster.KLAB } }),
+      createSamplePrivateCloudProductData({ data: { ministry: Ministry.CITZ, cluster: Cluster.CLAB } }),
       createSamplePrivateCloudProductData({
-        data: { ministry: $Enums.Ministry.CITZ, cluster: $Enums.Cluster.KLAB, name: '______name______' },
+        data: { ministry: Ministry.CITZ, cluster: Cluster.KLAB, name: '______name______' },
       }),
     );
 
@@ -189,7 +189,7 @@ describe('Search Private Cloud Products - Validations', () => {
 
         await makePrivateCloudRequestDecision(dat1.id, {
           ...dat1.decisionData,
-          decision: $Enums.DecisionStatus.APPROVED,
+          decision: DecisionStatus.APPROVED,
         });
 
         await provisionPrivateCloudProject(dat1.licencePlate);
@@ -211,8 +211,8 @@ describe('Search Private Cloud Products - Validations', () => {
     await mockSessionByRole('admin');
 
     const res1 = await searchPrivateCloudProjects({
-      ministry: $Enums.Ministry.AEST,
-      cluster: $Enums.Cluster.CLAB,
+      ministry: Ministry.AEST,
+      cluster: Cluster.CLAB,
       includeInactive: false,
     });
 

@@ -1,5 +1,5 @@
 import { Badge } from '@mantine/core';
-import { $Enums } from '@prisma/client';
+import { ProjectStatus } from '@prisma/client';
 import classNames from 'classnames';
 import CopyableButton from '@/components/generic/button/CopyableButton';
 
@@ -7,7 +7,7 @@ export default function ProductBadge({
   data,
   className,
 }: {
-  data?: { licencePlate: string; status: $Enums.ProjectStatus; isTest?: boolean };
+  data?: { licencePlate: string; status: ProjectStatus; isTest?: boolean };
   className?: string;
 }) {
   if (!data || !data.licencePlate) return null;
@@ -15,10 +15,10 @@ export default function ProductBadge({
   let color = 'gray';
 
   switch (data.status) {
-    case $Enums.ProjectStatus.ACTIVE:
+    case ProjectStatus.ACTIVE:
       color = 'green';
       break;
-    case $Enums.ProjectStatus.INACTIVE:
+    case ProjectStatus.INACTIVE:
       color = 'red';
       break;
   }

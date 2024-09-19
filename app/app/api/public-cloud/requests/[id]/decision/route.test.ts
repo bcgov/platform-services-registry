@@ -1,5 +1,5 @@
 import { expect } from '@jest/globals';
-import { $Enums, TaskType, TaskStatus } from '@prisma/client';
+import { DecisionStatus, Cluster, TaskType, TaskStatus } from '@prisma/client';
 import prisma from '@/core/prisma';
 import { createSamplePublicCloudProductData } from '@/helpers/mock-resources';
 import { pickProductData } from '@/helpers/product';
@@ -95,7 +95,7 @@ async function makeBasicProductMouReview() {
   }
 }
 
-async function makeBasicProductReview(decision: $Enums.DecisionStatus, extra = {}) {
+async function makeBasicProductReview(decision: DecisionStatus, extra = {}) {
   const decisionData = requests.main.decisionData;
   const response = await makePublicCloudRequestDecision(requests.main.id, {
     ...decisionData,
@@ -123,7 +123,7 @@ describe('Review Public Cloud Create Request - Permissions', () => {
     await makeBasicProductMouReview();
 
     await mockSessionByEmail(productData.main.projectOwner.email);
-    const response = await makeBasicProductReview($Enums.DecisionStatus.APPROVED);
+    const response = await makeBasicProductReview(DecisionStatus.APPROVED);
 
     expect(response.status).toBe(401);
 
@@ -135,7 +135,7 @@ describe('Review Public Cloud Create Request - Permissions', () => {
     await makeBasicProductMouReview();
 
     await mockSessionByEmail(productData.main.primaryTechnicalLead.email);
-    const response = await makeBasicProductReview($Enums.DecisionStatus.APPROVED);
+    const response = await makeBasicProductReview(DecisionStatus.APPROVED);
 
     expect(response.status).toBe(401);
 
@@ -147,7 +147,7 @@ describe('Review Public Cloud Create Request - Permissions', () => {
     await makeBasicProductMouReview();
 
     await mockSessionByRole('admin');
-    const response = await makeBasicProductReview($Enums.DecisionStatus.APPROVED);
+    const response = await makeBasicProductReview(DecisionStatus.APPROVED);
 
     expect(response.status).toBe(200);
 
@@ -163,7 +163,7 @@ describe('Review Public Cloud Create Request - Permissions', () => {
     await makeBasicProductMouReview();
 
     await mockSessionByRole('admin');
-    const response = await makeBasicProductReview($Enums.DecisionStatus.APPROVED);
+    const response = await makeBasicProductReview(DecisionStatus.APPROVED);
     expect(response.status).toBe(400);
 
     const resData = await response.json();
@@ -196,7 +196,7 @@ describe('Review Public Cloud Update Request - Permissions', () => {
     await makeBasicProductMouReview();
 
     await mockSessionByEmail(productData.main.projectOwner.email);
-    const response = await makeBasicProductReview($Enums.DecisionStatus.APPROVED);
+    const response = await makeBasicProductReview(DecisionStatus.APPROVED);
 
     expect(response.status).toBe(401);
 
@@ -208,7 +208,7 @@ describe('Review Public Cloud Update Request - Permissions', () => {
     await makeBasicProductMouReview();
 
     await mockSessionByEmail(productData.main.primaryTechnicalLead.email);
-    const response = await makeBasicProductReview($Enums.DecisionStatus.APPROVED);
+    const response = await makeBasicProductReview(DecisionStatus.APPROVED);
 
     expect(response.status).toBe(401);
 
@@ -220,7 +220,7 @@ describe('Review Public Cloud Update Request - Permissions', () => {
     await makeBasicProductMouReview();
 
     await mockSessionByRole('admin');
-    const response = await makeBasicProductReview($Enums.DecisionStatus.APPROVED);
+    const response = await makeBasicProductReview(DecisionStatus.APPROVED);
 
     expect(response.status).toBe(400);
 
@@ -250,7 +250,7 @@ describe('Review Public Cloud Delete Request - Permissions', () => {
     await makeBasicProductMouReview();
 
     await mockSessionByEmail(productData.main.projectOwner.email);
-    const response = await makeBasicProductReview($Enums.DecisionStatus.APPROVED);
+    const response = await makeBasicProductReview(DecisionStatus.APPROVED);
 
     expect(response.status).toBe(401);
 
@@ -262,7 +262,7 @@ describe('Review Public Cloud Delete Request - Permissions', () => {
     await makeBasicProductMouReview();
 
     await mockSessionByEmail(productData.main.primaryTechnicalLead.email);
-    const response = await makeBasicProductReview($Enums.DecisionStatus.APPROVED);
+    const response = await makeBasicProductReview(DecisionStatus.APPROVED);
 
     expect(response.status).toBe(401);
 
@@ -274,7 +274,7 @@ describe('Review Public Cloud Delete Request - Permissions', () => {
     await makeBasicProductMouReview();
 
     await mockSessionByRole('admin');
-    const response = await makeBasicProductReview($Enums.DecisionStatus.APPROVED);
+    const response = await makeBasicProductReview(DecisionStatus.APPROVED);
 
     expect(response.status).toBe(200);
   });
@@ -283,7 +283,7 @@ describe('Review Public Cloud Delete Request - Permissions', () => {
     await makeBasicProductMouReview();
 
     await mockSessionByRole('admin');
-    const response = await makeBasicProductReview($Enums.DecisionStatus.APPROVED);
+    const response = await makeBasicProductReview(DecisionStatus.APPROVED);
 
     expect(response.status).toBe(400);
 
@@ -313,13 +313,12 @@ describe('Review Public Cloud Request - Validations', () => {
     const requestData = requests.main;
 
     const newName = requestData.decisionData.name + '_suffix';
-    const newCluster =
-      requestData.decisionData.cluster === $Enums.Cluster.SILVER ? $Enums.Cluster.EMERALD : $Enums.Cluster.SILVER;
+    const newCluster = requestData.decisionData.cluster === Cluster.SILVER ? Cluster.EMERALD : Cluster.SILVER;
 
     await makeBasicProductMouReview();
 
     await mockSessionByRole('admin');
-    const response = await makeBasicProductReview($Enums.DecisionStatus.APPROVED, {
+    const response = await makeBasicProductReview(DecisionStatus.APPROVED, {
       name: newName,
       cluster: newCluster,
     });

@@ -1,5 +1,5 @@
 import { expect } from '@jest/globals';
-import { $Enums } from '@prisma/client';
+import { DecisionStatus, Cluster } from '@prisma/client';
 import { createSamplePrivateCloudProductData } from '@/helpers/mock-resources';
 import { findOtherMockUsers } from '@/helpers/mock-users';
 import { mockSessionByEmail, mockSessionByRole } from '@/services/api-test/core';
@@ -60,7 +60,7 @@ describe('Update Private Cloud Product - Permissions', () => {
 
     const response = await makePrivateCloudRequestDecision(requests.create.id, {
       ...requests.create.decisionData,
-      decision: $Enums.DecisionStatus.APPROVED,
+      decision: DecisionStatus.APPROVED,
     });
 
     expect(response.status).toBe(200);
@@ -98,7 +98,7 @@ describe('Update Private Cloud Product - Permissions', () => {
 
     const response = await makePrivateCloudRequestDecision(requests.update.id, {
       ...requests.update.decisionData,
-      decision: $Enums.DecisionStatus.REJECTED,
+      decision: DecisionStatus.REJECTED,
     });
 
     expect(response.status).toBe(200);
@@ -129,7 +129,7 @@ describe('Update Private Cloud Product - Permissions', () => {
 
     const response = await makePrivateCloudRequestDecision(requests.update.id, {
       ...requests.update.decisionData,
-      decision: $Enums.DecisionStatus.REJECTED,
+      decision: DecisionStatus.REJECTED,
     });
 
     expect(response.status).toBe(200);
@@ -201,8 +201,7 @@ describe('Update Private Cloud Product - Validations', () => {
   it('should ignore the cluster change on a new update request', async () => {
     await mockSessionByRole('admin');
 
-    const newCluster =
-      requests.create.decisionData.cluster === $Enums.Cluster.SILVER ? $Enums.Cluster.EMERALD : $Enums.Cluster.SILVER;
+    const newCluster = requests.create.decisionData.cluster === Cluster.SILVER ? Cluster.EMERALD : Cluster.SILVER;
 
     const response = await makeBasicProductChange({ cluster: newCluster });
 
@@ -218,7 +217,7 @@ describe('Update Private Cloud Product - Validations', () => {
 
     const response = await makePrivateCloudRequestDecision(requests.update.id, {
       ...requests.update.decisionData,
-      decision: $Enums.DecisionStatus.REJECTED,
+      decision: DecisionStatus.REJECTED,
     });
 
     expect(response.status).toBe(200);

@@ -1,5 +1,5 @@
 import { Badge } from '@mantine/core';
-import { $Enums } from '@prisma/client';
+import { RequestType, DecisionStatus } from '@prisma/client';
 import classNames from 'classnames';
 import CopyableButton from '@/components/generic/button/CopyableButton';
 import { PrivateCloudRequestDetail } from '@/types/private-cloud';
@@ -18,13 +18,13 @@ export default function RequestBadge({
   let typeColor = 'gray';
 
   switch (request.type) {
-    case $Enums.RequestType.CREATE:
+    case RequestType.CREATE:
       typeColor = 'green';
       break;
-    case $Enums.RequestType.EDIT:
+    case RequestType.EDIT:
       typeColor = 'blue';
       break;
-    case $Enums.RequestType.DELETE:
+    case RequestType.DELETE:
       typeColor = 'red';
       break;
   }
@@ -32,16 +32,16 @@ export default function RequestBadge({
   let decisionColor = 'gray';
 
   switch (request.decisionStatus) {
-    case $Enums.DecisionStatus.PENDING:
+    case DecisionStatus.PENDING:
       decisionColor = 'gray';
       break;
-    case $Enums.DecisionStatus.APPROVED:
+    case DecisionStatus.APPROVED:
       decisionColor = 'green';
       break;
-    case $Enums.DecisionStatus.REJECTED:
+    case DecisionStatus.REJECTED:
       decisionColor = 'red';
       break;
-    case $Enums.DecisionStatus.PROVISIONED:
+    case DecisionStatus.PROVISIONED:
       decisionColor = 'blue';
       break;
   }

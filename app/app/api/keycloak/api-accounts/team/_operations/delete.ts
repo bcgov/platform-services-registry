@@ -1,4 +1,4 @@
-import { $Enums } from '@prisma/client';
+import { EventType } from '@prisma/client';
 import { Session } from 'next-auth';
 import { AUTH_RELM } from '@/config';
 import { OkResponse, BadRequestResponse } from '@/core/responses';
@@ -16,7 +16,7 @@ export default async function getOp({ id, session }: { id: string; session: Sess
     id,
   });
 
-  await createEvent($Enums.EventType.DELETE_TEAM_API_TOKEN, session.user.id, { clientUid: id });
+  await createEvent(EventType.DELETE_TEAM_API_TOKEN, session.user.id, { clientUid: id });
 
   return OkResponse(true);
 }

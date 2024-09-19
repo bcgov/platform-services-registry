@@ -170,18 +170,35 @@ async function findParentGroup(groupName = PROJECT_GROUP) {
   return groups.find((group) => group.name === groupName);
 }
 
+async function listSubGroups({ parentId, search }: { parentId: string; search?: string }) {
+  const subGroups = [];
+  let first = 0;
+
+  while (true) {
+    const groups = await kcAdminClient.groups.listSubGroups({ parentId, search, first, max: 100 });
+    if (groups.length === 0) break;
+    subGroups.push(...groups);
+    first += 1;
+  }
+
+  return subGroups;
+}
+
 async function getProductRoleGroups(licencePlate: string) {
   const projectTeamGroup = await findParentGroup();
   if (!projectTeamGroup || !projectTeamGroup.id) return [];
   if (projectTeamGroup.subGroupCount === 0) return [];
 
-  const projectTeamSubGroups = await kcAdminClient.groups.listSubGroups({ parentId: projectTeamGroup.id });
+  const projectTeamSubGroups = await listSubGroups({
+    parentId: projectTeamGroup.id,
+    search: licencePlate,
+  });
 
   const productGroup = projectTeamSubGroups.find((group) => group.name?.startsWith(licencePlate));
   if (!productGroup || !productGroup.id) return [];
   if (productGroup.subGroupCount === 0) return [];
 
-  const productSubGroups = await kcAdminClient.groups.listSubGroups({ parentId: productGroup.id });
+  const productSubGroups = await listSubGroups({ parentId: productGroup.id });
   return productSubGroups ?? [];
 }
 

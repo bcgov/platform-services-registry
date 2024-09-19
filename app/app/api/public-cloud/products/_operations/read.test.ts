@@ -1,5 +1,5 @@
 import { expect } from '@jest/globals';
-import { $Enums, TaskType, TaskStatus } from '@prisma/client';
+import { DecisionStatus, TaskType, TaskStatus } from '@prisma/client';
 import prisma from '@/core/prisma';
 import { createSamplePublicCloudProductData } from '@/helpers/mock-resources';
 import { findOtherMockUsers } from '@/helpers/mock-users';
@@ -103,7 +103,7 @@ describe('Read Public Cloud Product - Permissions', () => {
     const response = await makePublicCloudRequestDecision(requests.create.id, {
       ...requests.create.decisionData,
       accountCoding: requests.create.decisionData.billing.accountCoding,
-      decision: $Enums.DecisionStatus.APPROVED,
+      decision: DecisionStatus.APPROVED,
     });
 
     expect(response.status).toBe(200);

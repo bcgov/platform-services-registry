@@ -1,4 +1,4 @@
-import { $Enums } from '@prisma/client';
+import { Provider, RequestType, DecisionStatus } from '@prisma/client';
 import _forEach from 'lodash-es/forEach';
 import _uniq from 'lodash-es/uniq';
 import prisma from '@/core/prisma';
@@ -8,7 +8,7 @@ export async function productsCreatedPerMonth() {
   const [projects, deleteRequests] = await Promise.all([
     prisma.publicCloudProject.findMany({
       where: {
-        provider: { in: [$Enums.Provider.AWS, $Enums.Provider.AZURE] },
+        provider: { in: [Provider.AWS, Provider.AZURE] },
       },
       select: {
         licencePlate: true,
@@ -22,8 +22,8 @@ export async function productsCreatedPerMonth() {
     }),
     prisma.publicCloudRequest.findMany({
       where: {
-        type: $Enums.RequestType.DELETE,
-        decisionStatus: $Enums.DecisionStatus.PROVISIONED,
+        type: RequestType.DELETE,
+        decisionStatus: DecisionStatus.PROVISIONED,
       },
       select: {
         licencePlate: true,
@@ -35,8 +35,8 @@ export async function productsCreatedPerMonth() {
   const result: {
     [key: string]: {
       all: number;
-      [$Enums.Provider.AWS]: number;
-      [$Enums.Provider.AZURE]: number;
+      [Provider.AWS]: number;
+      [Provider.AZURE]: number;
     };
   } = {};
 
@@ -56,7 +56,7 @@ export async function productsCreatedPerMonth() {
 
       const key = allShortDateStrs[i];
       if (!result[key]) {
-        result[key] = { all: 0, [$Enums.Provider.AWS]: 0, [$Enums.Provider.AZURE]: 0 };
+        result[key] = { all: 0, [Provider.AWS]: 0, [Provider.AZURE]: 0 };
       }
 
       result[key].all++;
@@ -72,8 +72,8 @@ export async function numberOfProductsOverTime() {
 
   const data = Object.entries(result).map(([date, counts]) => ({
     date,
-    AWS: counts[$Enums.Provider.AWS],
-    AZURE: counts[$Enums.Provider.AZURE],
+    AWS: counts[Provider.AWS],
+    AZURE: counts[Provider.AZURE],
   }));
 
   return data;

@@ -1,6 +1,6 @@
 'use client';
 
-import { $Enums } from '@prisma/client';
+import { Provider } from '@prisma/client';
 import { useQuery } from '@tanstack/react-query';
 import { useEffect } from 'react';
 import { z } from 'zod';
@@ -50,7 +50,7 @@ export default publicCloudProductSecurityACS(({ pathParams, queryParams, session
     },
   ];
 
-  if (currentProduct?.provider === $Enums.Provider.AWS) {
+  if (currentProduct?.provider === Provider.AWS) {
     tabs.push({
       label: 'ROLES',
       name: 'aws-roles',

@@ -1,10 +1,10 @@
-import { $Enums } from '@prisma/client';
+import { Provider } from '@prisma/client';
 import classNames from 'classnames';
 import { useSession } from 'next-auth/react';
 import { useFormContext } from 'react-hook-form';
 import AGMinistryCheckBox from '@/components/form/AGMinistryCheckBox';
 import FormSelect from '@/components/generic/select/FormSelect';
-import { providers, ministryOptions, providerOptions } from '@/constants';
+import { ministryOptions, providerOptions } from '@/constants';
 
 function stripSpecialCharacters(text: string) {
   const pattern = /[^A-Za-z0-9///.:+=@_ ]/g;
@@ -118,7 +118,7 @@ export default function ProjectDescriptionPublic({
             options={[
               { label: 'Select Provider', value: '' },
               ...providerOptions.filter((opt) => {
-                if (session?.previews.azure !== true) return opt.value === $Enums.Provider.AWS;
+                if (session?.previews.azure !== true) return opt.value === Provider.AWS;
                 return true;
               }),
             ]}

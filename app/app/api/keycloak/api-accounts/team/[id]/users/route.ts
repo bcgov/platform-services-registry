@@ -1,5 +1,5 @@
 import { RoleMappingPayload } from '@keycloak/keycloak-admin-client/lib/defs/roleRepresentation';
-import { $Enums } from '@prisma/client';
+import { EventType } from '@prisma/client';
 import { z } from 'zod';
 import { AUTH_RELM } from '@/config';
 import createApiHandler from '@/core/api-handler';
@@ -85,7 +85,7 @@ export const POST = createApiHandler({
     }),
   );
 
-  await createEvent($Enums.EventType.UPDATE_TEAM_API_TOKEN, session.user.id, { clientUid, users, result });
+  await createEvent(EventType.UPDATE_TEAM_API_TOKEN, session.user.id, { clientUid, users, result });
 
   return OkResponse(result);
 });

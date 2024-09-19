@@ -1,5 +1,5 @@
 import { expect } from '@jest/globals';
-import { $Enums } from '@prisma/client';
+import { DecisionStatus } from '@prisma/client';
 import { createSamplePrivateCloudProductData } from '@/helpers/mock-resources';
 import { findOtherMockUsers } from '@/helpers/mock-users';
 import { pickProductData } from '@/helpers/product';
@@ -43,7 +43,7 @@ describe('Read Private Cloud Product - Permissions', () => {
 
     const response = await makePrivateCloudRequestDecision(requests.create.id, {
       ...requests.create.decisionData,
-      decision: $Enums.DecisionStatus.APPROVED,
+      decision: DecisionStatus.APPROVED,
     });
 
     expect(response.status).toBe(200);

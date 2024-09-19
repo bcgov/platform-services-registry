@@ -1,16 +1,16 @@
-import { $Enums } from '@prisma/client';
+import { Cluster, RequestType, DecisionStatus } from '@prisma/client';
 import _forEach from 'lodash-es/forEach';
 import _uniq from 'lodash-es/uniq';
 import prisma from '@/core/prisma';
 import { dateToShortDateString, shortDateStringToDate, compareYearMonth } from '@/utils/date';
 
-type ValidCluster = typeof $Enums.Cluster.SILVER | typeof $Enums.Cluster.GOLD | typeof $Enums.Cluster.EMERALD;
+type ValidCluster = typeof Cluster.SILVER | typeof Cluster.GOLD | typeof Cluster.EMERALD;
 
 export async function productsCreatedPerMonth() {
   const [projects, deleteRequests] = await Promise.all([
     prisma.privateCloudProject.findMany({
       where: {
-        cluster: { in: [$Enums.Cluster.SILVER, $Enums.Cluster.GOLD, $Enums.Cluster.EMERALD] },
+        cluster: { in: [Cluster.SILVER, Cluster.GOLD, Cluster.EMERALD] },
         isTest: false,
       },
       select: {
@@ -25,8 +25,8 @@ export async function productsCreatedPerMonth() {
     }),
     prisma.privateCloudRequest.findMany({
       where: {
-        type: $Enums.RequestType.DELETE,
-        decisionStatus: $Enums.DecisionStatus.PROVISIONED,
+        type: RequestType.DELETE,
+        decisionStatus: DecisionStatus.PROVISIONED,
       },
       select: {
         licencePlate: true,
@@ -38,9 +38,9 @@ export async function productsCreatedPerMonth() {
   const result: {
     [key: string]: {
       all: number;
-      [$Enums.Cluster.SILVER]: number;
-      [$Enums.Cluster.GOLD]: number;
-      [$Enums.Cluster.EMERALD]: number;
+      [Cluster.SILVER]: number;
+      [Cluster.GOLD]: number;
+      [Cluster.EMERALD]: number;
     };
   } = {};
 
@@ -60,7 +60,7 @@ export async function productsCreatedPerMonth() {
 
       const key = allShortDateStrs[i];
       if (!result[key]) {
-        result[key] = { all: 0, [$Enums.Cluster.SILVER]: 0, [$Enums.Cluster.GOLD]: 0, [$Enums.Cluster.EMERALD]: 0 };
+        result[key] = { all: 0, [Cluster.SILVER]: 0, [Cluster.GOLD]: 0, [Cluster.EMERALD]: 0 };
       }
 
       result[key].all++;
@@ -77,9 +77,9 @@ export async function numberOfProductsOverTime() {
   const data = Object.entries(result).map(([date, counts]) => ({
     date,
     'All Clusters': counts.all,
-    Silver: counts[$Enums.Cluster.SILVER],
-    Gold: counts[$Enums.Cluster.GOLD],
-    Emerald: counts[$Enums.Cluster.EMERALD],
+    Silver: counts[Cluster.SILVER],
+    Gold: counts[Cluster.GOLD],
+    Emerald: counts[Cluster.EMERALD],
   }));
 
   return data;

@@ -1,4 +1,4 @@
-import { $Enums, Prisma } from '@prisma/client';
+import { Ministry, Provider, Prisma } from '@prisma/client';
 import { Session } from 'next-auth';
 import prisma from '@/core/prisma';
 import { PublicCloudRequestDetail, PublicCloudRequestDetailDecorated } from '@/types/public-cloud';
@@ -126,11 +126,11 @@ export async function searchPublicCloudRequests({
   }
 
   if (ministry) {
-    decisionDatawhere.ministry = ministry as $Enums.Ministry;
+    decisionDatawhere.ministry = ministry as Ministry;
   }
 
   if (provider) {
-    decisionDatawhere.provider = provider as $Enums.Provider;
+    decisionDatawhere.provider = provider as Provider;
   }
 
   const matchingRequestedPublicProjects = await prisma.publicCloudRequestedProject.findMany({

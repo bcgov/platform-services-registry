@@ -1,4 +1,4 @@
-import { $Enums } from '@prisma/client';
+import { ProjectContext } from '@prisma/client';
 import { z } from 'zod';
 import createApiHandler from '@/core/api-handler';
 import prisma from '@/core/prisma';
@@ -9,7 +9,7 @@ const pathParamSchema = z.object({
 });
 
 const queryParamSchema = z.object({
-  context: z.union([z.literal($Enums.ProjectContext.PRIVATE), z.literal($Enums.ProjectContext.PUBLIC)]),
+  context: z.union([z.literal(ProjectContext.PRIVATE), z.literal(ProjectContext.PUBLIC)]),
 });
 
 const apiHandler = createApiHandler({
@@ -30,12 +30,12 @@ export const GET = apiHandler(async ({ pathParams, queryParams, session }) => {
   const publicQuery = { ...query, select: { provider: true } };
 
   const projectProm =
-    queryParams.context === $Enums.ProjectContext.PRIVATE
+    queryParams.context === ProjectContext.PRIVATE
       ? prisma.privateCloudProject.findFirst(privateQuery)
       : prisma.publicCloudProject.findFirst(publicQuery);
 
   const decisionDataProm =
-    queryParams.context === $Enums.ProjectContext.PRIVATE
+    queryParams.context === ProjectContext.PRIVATE
       ? prisma.privateCloudProject.findFirst(privateQuery)
       : prisma.publicCloudProject.findFirst(publicQuery);
 

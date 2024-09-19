@@ -1,11 +1,7 @@
-import { $Enums, Prisma } from '@prisma/client';
+import { Ministry, Cluster, Prisma } from '@prisma/client';
 import { Session } from 'next-auth';
 import prisma from '@/core/prisma';
-import {
-  PrivateCloudRequestDetail,
-  PrivateCloudRequestDetailDecorated,
-  PrivateCloudRequestSearch,
-} from '@/types/private-cloud';
+import { PrivateCloudRequestDetailDecorated, PrivateCloudRequestSearch } from '@/types/private-cloud';
 import { getMatchingUserIds } from './users';
 
 export const privateCloudRequestSimpleInclude = {
@@ -118,11 +114,11 @@ export async function searchPrivateCloudRequests({
   }
 
   if (ministry) {
-    decisionDatawhere.ministry = ministry as $Enums.Ministry;
+    decisionDatawhere.ministry = ministry as Ministry;
   }
 
   if (cluster) {
-    decisionDatawhere.cluster = cluster as $Enums.Cluster;
+    decisionDatawhere.cluster = cluster as Cluster;
   }
 
   const matchingRequestedPrivateProjects = await prisma.privateCloudRequestedProject.findMany({

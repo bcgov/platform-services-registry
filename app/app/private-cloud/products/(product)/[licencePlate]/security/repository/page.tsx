@@ -2,7 +2,7 @@
 
 import { zodResolver } from '@hookform/resolvers/zod';
 import { notifications } from '@mantine/notifications';
-import { SecurityConfig, $Enums } from '@prisma/client';
+import { SecurityConfig, ProjectContext } from '@prisma/client';
 import { useQuery, useMutation } from '@tanstack/react-query';
 import classNames from 'classnames';
 import _get from 'lodash-es/get';
@@ -22,7 +22,7 @@ export default function Repository({ params }: { params: { licencePlate: string 
   } = useForm<SecurityConfig>({
     resolver: zodResolver(securityConfigSchema),
     defaultValues: {
-      context: $Enums.ProjectContext.PRIVATE,
+      context: ProjectContext.PRIVATE,
       clusterOrProvider: '',
       licencePlate: params.licencePlate,
       repositories: [{ url: 'https://' }],
@@ -36,7 +36,7 @@ export default function Repository({ params }: { params: { licencePlate: string 
     error: fetchingError,
   } = useQuery<{ config: SecurityConfig; project: { cluster: string; provider: string } }, Error>({
     queryKey: ['securityConfig', params.licencePlate],
-    queryFn: () => getSecurityConfig(params.licencePlate, $Enums.ProjectContext.PRIVATE),
+    queryFn: () => getSecurityConfig(params.licencePlate, ProjectContext.PRIVATE),
     enabled: !!params.licencePlate,
   });
 

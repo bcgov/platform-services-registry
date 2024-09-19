@@ -1,4 +1,4 @@
-import { $Enums, TaskStatus } from '@prisma/client';
+import { EventType, TaskStatus } from '@prisma/client';
 import jwt from 'jsonwebtoken';
 import _forEach from 'lodash-es/forEach';
 import _get from 'lodash-es/get';
@@ -333,7 +333,7 @@ export const authOptions: AuthOptions = {
 
       if (!loggedInUser) return;
 
-      await createEvent($Enums.EventType.LOGIN, loggedInUser.id);
+      await createEvent(EventType.LOGIN, loggedInUser.id);
     },
     async signOut({ session, token }: { session: Session; token: JWT }) {
       if (!token?.email) return;
@@ -346,7 +346,7 @@ export const authOptions: AuthOptions = {
 
       if (!loggedInUser) return;
 
-      await createEvent($Enums.EventType.LOGOUT, loggedInUser.id);
+      await createEvent(EventType.LOGOUT, loggedInUser.id);
     },
     async session({ session, token }: { session: Session; token: JWT }) {
       if (!session.user.id) return;

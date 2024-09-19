@@ -1,4 +1,4 @@
-import { Prisma, $Enums } from '@prisma/client';
+import { Prisma, Ministry } from '@prisma/client';
 import { ModelService } from '@/core/model-service';
 
 export class UserService extends ModelService<Prisma.UserWhereInput> {
@@ -8,8 +8,8 @@ export class UserService extends ModelService<Prisma.UserWhereInput> {
       baseFilter = {
         OR: [
           { email: this.session.user.email as string },
-          { ministry: { in: this.session.ministries.editor as $Enums.Ministry[] } },
-          { ministry: { in: this.session.ministries.reader as $Enums.Ministry[] } },
+          { ministry: { in: this.session.ministries.editor as Ministry[] } },
+          { ministry: { in: this.session.ministries.reader as Ministry[] } },
         ],
       };
     }

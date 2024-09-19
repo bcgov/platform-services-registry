@@ -1,5 +1,5 @@
 import { expect } from '@jest/globals';
-import { $Enums } from '@prisma/client';
+import { DecisionStatus } from '@prisma/client';
 import prisma from '@/core/prisma';
 import { createSamplePrivateCloudProductData } from '@/helpers/mock-resources';
 import { mockSessionByEmail, mockSessionByRole } from '@/services/api-test/core';
@@ -30,7 +30,7 @@ describe('Provision Private Cloud Request', () => {
 
     const response = await makePrivateCloudRequestDecision(requests.create.id, {
       ...requests.create.decisionData,
-      decision: $Enums.DecisionStatus.APPROVED,
+      decision: DecisionStatus.APPROVED,
     });
 
     expect(response.status).toBe(200);
@@ -44,7 +44,7 @@ describe('Provision Private Cloud Request', () => {
       select: { decisionStatus: true },
     });
     expect(request).toBeTruthy();
-    expect(request?.decisionStatus).toBe($Enums.DecisionStatus.APPROVED);
+    expect(request?.decisionStatus).toBe(DecisionStatus.APPROVED);
   });
 
   it('should successfully provision the request', async () => {
@@ -63,6 +63,6 @@ describe('Provision Private Cloud Request', () => {
     });
 
     expect(request).toBeTruthy();
-    expect(request?.decisionStatus).toBe($Enums.DecisionStatus.PROVISIONED);
+    expect(request?.decisionStatus).toBe(DecisionStatus.PROVISIONED);
   });
 });

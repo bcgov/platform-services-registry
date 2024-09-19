@@ -1,4 +1,4 @@
-import { Prisma, PrismaClient, $Enums } from '@prisma/client';
+import { Prisma } from '@prisma/client';
 import { ModelService } from '@/core/model-service';
 import prisma from '@/core/prisma';
 

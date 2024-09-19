@@ -1,4 +1,4 @@
-import { $Enums } from '@prisma/client';
+import { EventType } from '@prisma/client';
 import { Session } from 'next-auth';
 import { AUTH_RELM } from '@/config';
 import { OkResponse, BadRequestResponse } from '@/core/responses';
@@ -78,7 +78,7 @@ export default async function getOp({ session }: { session: Session }) {
   }
 
   client = await findClient(clientId, kcAdminClient);
-  await createEvent($Enums.EventType.CREATE_API_TOKEN, session.user.id);
+  await createEvent(EventType.CREATE_API_TOKEN, session.user.id);
 
   return OkResponse(client);
 }

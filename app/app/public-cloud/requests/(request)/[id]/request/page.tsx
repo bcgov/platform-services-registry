@@ -1,8 +1,7 @@
 'use client';
 
 import { zodResolver } from '@hookform/resolvers/zod';
-import { notifications } from '@mantine/notifications';
-import { Prisma, $Enums, Provider } from '@prisma/client';
+import { RequestType } from '@prisma/client';
 import {
   IconInfoCircle,
   IconUsersGroup,
@@ -81,7 +80,7 @@ export default publicCloudProductRequest(({ pathParams, queryParams, session, ro
 
   const methods = useForm({
     resolver: (...args) => {
-      const isDeleteRequest = publicSnap.currentRequest?.type === $Enums.RequestType.DELETE;
+      const isDeleteRequest = publicSnap.currentRequest?.type === RequestType.DELETE;
 
       // Ignore form validation if a DELETE request
       if (isDeleteRequest) {

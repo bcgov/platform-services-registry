@@ -1,6 +1,6 @@
 'use client';
 
-import { $Enums, PrivateCloudProject } from '@prisma/client';
+import { PrivateCloudProject } from '@prisma/client';
 import { IconInfoCircle, IconUsersGroup, IconSettings, IconComponents, IconMessage } from '@tabler/icons-react';
 import { useEffect, useState } from 'react';
 import { FormProvider, useForm } from 'react-hook-form';
