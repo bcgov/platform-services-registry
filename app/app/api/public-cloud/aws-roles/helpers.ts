@@ -180,8 +180,8 @@ async function listSubGroups({ parentId, search }: { parentId: string; search?: 
 
   while (true) {
     const groups = await kcAdminClient.groups.listSubGroups({ parentId, search, first, max });
-    if (groups.length < max) break;
     subGroups.push(...groups);
+    if (groups.length < max) break;
     first += 1;
   }
 
