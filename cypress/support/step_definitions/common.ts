@@ -95,7 +95,7 @@ When(
 );
 
 When(/^User checks checkbox "(?:\.\.\.)?(.*?)(?:\.\.\.)?"$/, (checkboxLabel: string) => {
-  cy.contains('label', checkboxLabel).scrollIntoView().parent().parent().screenshot().find('input').first().click();
+  cy.contains('label', checkboxLabel).scrollIntoView().parent().parent().find('input').first().click();
 });
 
 When(/^User waits for "(.*)" seconds$/, (seconds: number) => {
@@ -112,6 +112,10 @@ When(/^User clicks button with text (.*)$/, (buttonText: string) => {
 
 When('User logs out', () => {
   cy.logoutFromRegistry();
+});
+
+When('User makes a screenshot', () => {
+  cy.screenshot();
 });
 
 Then('User should be redirected to Requests tab', () => {

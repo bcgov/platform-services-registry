@@ -13,6 +13,7 @@ Feature: New Request
     And User types and selects "john.doe@gov.bc.ca" in "Technical Lead Email"
     And User clicks tab "Common components"
     And User checks checkbox "The app does not use..."
+    And User makes a screenshot
     And User clicks button "SUBMIT REQUEST"
     And User waits for "2" seconds
     And User checks checkbox "By checking this box..."
