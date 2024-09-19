@@ -45,6 +45,7 @@ jobs:
         export MACHINE_HOST_IP=$(hostname -I | awk '{print $1}')
         ~/.docker/cli-plugins/docker-compose -f localdev/docker-compose.yml -f localdev/docker-compose-ci.yml up -d
         node_modules/.bin/wait-on http://localhost:8080/health/ready --timeout 120000
+        node_modules/.bin/wait-on http://localhost:8080/realms/platform-services/.well-known/openid-configuration --timeout 120000
         cp app/.env.example app/.env.test
 
     - name: Run App
@@ -54,6 +55,15 @@ jobs:
 
     - name: Cypress run
       run: npm run cypress-headless
+
+    - name: Upload Cypress Screenshots and Videos
+      uses: actions/upload-artifact@v3
+      with:
+        name: cypress-artifacts
+        path: |-
+          /home/runner/work/platform-services-registry/platform-services-registry/cypress/screenshots
+          /home/runner/work/platform-services-registry/platform-services-registry/cypress/videos
+      if: ${{ failure() }}
 
     - name: Clean Up Localdev Environment
       run: |
