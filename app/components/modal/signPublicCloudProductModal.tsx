@@ -125,8 +125,9 @@ function SignPublicCloudProductModal({
             <p>For the following services;</p>
             <p className="mb-2">
               &emsp;&emsp;Cloud compute, storage, and container management services, which will be accessible to the
-              Ministry’s teams, on the Amazon Web Services platform, through the Government of Canada Cloud Brokering
-              Service.
+              Ministry’s teams, on&nbsp;
+              {provider === Provider.AWS ? 'the Amazon Web Services platform' : 'the Microsoft Azure platform'}, through
+              the Government of Canada Cloud Brokering Service.
             </p>
 
             {provider === Provider.AWS ? (
