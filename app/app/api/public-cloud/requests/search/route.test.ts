@@ -97,6 +97,7 @@ describe('Search Public Cloud Requests - Permissions', () => {
       accountCoding: dat1.decisionData.billing.accountCoding,
       decision: DecisionStatus.APPROVED,
     });
+
     expect(res2.status).toBe(200);
 
     const res3 = await provisionPublicCloudProject(dat1.licencePlate);
