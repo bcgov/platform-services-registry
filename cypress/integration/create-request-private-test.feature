@@ -10,7 +10,7 @@ Feature: New Request
     And User selects "SILVER" in "Hosting Tier"
     And User clicks tab "Team contacts"
     And User types and selects "james.smith@gov.bc.ca" in "Product Owner Email"
-    And user waits for "2"seconds
+    And User waits for "2" seconds
     And User types and selects "john.doe@gov.bc.ca" in "Technical Lead Email"
     And User clicks tab "Common components"
     And User checks checkbox "The app does not use..."
