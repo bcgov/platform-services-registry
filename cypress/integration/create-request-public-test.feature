@@ -15,6 +15,7 @@ Feature: New Request
     And User checks checkbox "Tools Account"
     And User clicks tab "Team contacts"
     And User types and selects "james.smith@gov.bc.ca" in "Product Owner Email"
+    And User waits for "2" seconds
     And User types and selects "john.doe@gov.bc.ca" in "Technical Lead Email"
     And User clicks tab "Expense authority"
     And User types and selects "public.admin.system@gov.bc.ca" in "Expense Authority Email"
