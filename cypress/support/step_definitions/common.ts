@@ -56,8 +56,9 @@ When(/^User types and selects Secondary Tech Lead "(.*)"$/, (contactEmail: strin
     .find('input')
     .first()
     .clear()
-    .type(contactEmail);
-  cy.contains('span', contactEmail).click();
+    .type(contactEmail)
+    .screenshot();
+  cy.contains('span', contactEmail).screenshot().click();
 });
 
 When(/^User types justification "(.*)" in "(.*)"$/, (fieldText: string, fieldHeader) => {
