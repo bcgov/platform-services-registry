@@ -15,6 +15,7 @@ Feature: New Request
     And User checks checkbox "Tools Account"
     And User clicks tab "Team contacts"
     And User types and selects "james.smith@gov.bc.ca" in "Product Owner Email"
+    And User waits for "2" seconds
     And User types and selects "john.doe@gov.bc.ca" in "Technical Lead Email"
     And User clicks tab "Expense authority"
     And User types and selects "public.admin.system@gov.bc.ca" in "Expense Authority Email"
@@ -28,8 +29,8 @@ Feature: New Request
     And User types "2345" in "Standard Object of Expense (STOB)"
     And User types "6789012" in "Project Code"
     And User clicks button "SUBMIT REQUEST"
-    And User checks checkbox "...has signed a Memorandum of Understanding..."
-    And User checks checkbox "...is liable to pay the base charge..."
+    And User checks checkbox "No eMOU exists for this account coding."
+    And User checks checkbox "...team is liable to pay the base charge..."
     And User clicks modal window button "SUBMIT REQUEST"
     And User waits for "4" seconds
     And User clicks button "Return to Dashboard"
