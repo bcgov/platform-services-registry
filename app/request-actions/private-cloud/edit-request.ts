@@ -2,7 +2,7 @@ import { $Enums, DecisionStatus, Prisma, RequestType, EventType } from '@prisma/
 import _toNumber from 'lodash-es/toNumber';
 import { Session } from 'next-auth';
 import prisma from '@/core/prisma';
-import { checkIfAutoApproval, isNoQuotaChanged } from '@/helpers/auto-approval-check';
+import { checkIfQuotaAutoApproval, checkIfNoQuotaChange } from '@/helpers/auto-approval-check';
 import { comparePrivateProductData } from '@/helpers/product-change';
 import { createEvent } from '@/mutations/events';
 import { getLastClosedPrivateCloudRequest, privateCloudRequestDetailInclude } from '@/queries/private-cloud-requests';
@@ -72,9 +72,12 @@ export default async function editRequest(
     productionQuota: project.productionQuota,
   };
 
+  const noQuotaChange = checkIfNoQuotaChange(currentQuota, requestedQuota);
   // If there is no quota change or no quota upgrade and no golddr flag changes, the request is automatically approved
-  if (
-    checkIfAutoApproval(currentQuota, requestedQuota, project.licencePlate, project.cluster) &&
+  if (noQuotaChange) {
+    decisionStatus = DecisionStatus.APPROVED;
+  } else if (
+    checkIfQuotaAutoApproval(currentQuota, requestedQuota, project.licencePlate, project.cluster) &&
     !hasGolddrEnabledChanged
   ) {
     decisionStatus = DecisionStatus.APPROVED;
@@ -87,7 +90,7 @@ export default async function editRequest(
 
   const { changes, ...otherChangeMeta } = comparePrivateProductData(rest, previousRequest?.decisionData);
 
-  const quotaChangeInfo = isNoQuotaChanged(currentQuota, requestedQuota)
+  const quotaChangeInfo = noQuotaChange
     ? {}
     : {
         quotaContactName,
@@ -99,7 +102,7 @@ export default async function editRequest(
     data: {
       type: RequestType.EDIT,
       decisionStatus,
-      isQuotaChanged: !isNoQuotaChanged,
+      isQuotaChanged: !noQuotaChange,
       ...quotaChangeInfo,
       active: true,
       createdBy: { connect: { email: session.user.email } },

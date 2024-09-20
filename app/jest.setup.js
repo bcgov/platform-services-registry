@@ -58,11 +58,6 @@ jest.mock('@/helpers/pdfs/emou/index', () => ({
   generateEmouPdf: jest.fn(async () => Buffer.alloc(0)),
 }));
 
-jest.mock('@/helpers/auto-approval-check', () => ({
-  ...jest.requireActual('@/helpers/auto-approval-check'),
-  checkIfResourceUtilized: jest.fn(async () => true),
-}));
-
 [
   'castArray',
   'compact',
@@ -85,7 +80,8 @@ jest.mock('@/helpers/auto-approval-check', () => ({
   'uniq',
   'kebabCase',
   'trim',
-  'some',
+  'flatMap',
+  'each',
 ].forEach((fnName) => jest.mock(`lodash-es/${fnName}`, () => jest.fn(_[fnName])));
 
 export async function cleanUp() {
