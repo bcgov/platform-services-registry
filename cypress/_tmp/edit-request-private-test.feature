@@ -25,6 +25,7 @@ Feature: Edit Request
     And User selects "Finance" in "Ministry"
     And User clicks tab "Team contacts"
     And User types and selects "david.johnson@gov.bc.ca" in "Product Owner Email"
+    And User waits for "2" seconds
     And User types and selects "sarah.williams@gov.bc.ca" in "Technical Lead Email"
     And User clicks button "ADD SECONDARY TECHNICAL LEAD"
     And User types and selects Secondary Tech Lead "michael.brown@gov.bc.ca"
