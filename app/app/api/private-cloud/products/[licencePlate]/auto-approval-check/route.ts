@@ -2,7 +2,7 @@ import { z } from 'zod';
 import createApiHandler from '@/core/api-handler';
 import prisma from '@/core/prisma';
 import { OkResponse } from '@/core/responses';
-import { checkIfAutoApproval } from '@/helpers/auto-approval-check';
+import { checkIfQuotaAutoApproval } from '@/helpers/auto-approval-check';
 
 const quotaSchema = z.object({
   cpu: z.string(),
@@ -40,6 +40,6 @@ export const POST = apiHandler(async ({ queryParams }) => {
     developmentQuota: currentProduct?.developmentQuota || { cpu: '0', memory: '0', storage: '0' },
     productionQuota: currentProduct?.productionQuota || { cpu: '0', memory: '0', storage: '0' },
   };
-  const users = await checkIfAutoApproval(currentQuota, requestedQuota, licencePlate, cluster);
+  const users = await checkIfQuotaAutoApproval(currentQuota, requestedQuota, licencePlate, cluster);
   return OkResponse(users);
 });
