@@ -1,5 +1,4 @@
-import { $Enums, DecisionStatus, Prisma, RequestType, EventType } from '@prisma/client';
-import _toNumber from 'lodash-es/toNumber';
+import { DecisionStatus, Cluster, RequestType, EventType } from '@prisma/client';
 import { Session } from 'next-auth';
 import prisma from '@/core/prisma';
 import { checkIfQuotaAutoApproval, checkIfNoQuotaChange } from '@/helpers/auto-approval-check';
@@ -55,8 +54,7 @@ export default async function editRequest(
 
   let decisionStatus: DecisionStatus;
 
-  const hasGolddrEnabledChanged =
-    project.cluster === $Enums.Cluster.GOLD && project.golddrEnabled !== formData.golddrEnabled;
+  const hasGolddrEnabledChanged = project.cluster === Cluster.GOLD && project.golddrEnabled !== formData.golddrEnabled;
 
   const requestedQuota = {
     testQuota: formData.testQuota,

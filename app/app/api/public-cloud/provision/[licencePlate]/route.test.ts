@@ -1,5 +1,5 @@
 import { expect } from '@jest/globals';
-import { $Enums, TaskType, TaskStatus } from '@prisma/client';
+import { DecisionStatus, TaskType, TaskStatus } from '@prisma/client';
 import prisma from '@/core/prisma';
 import { createSamplePublicCloudProductData } from '@/helpers/mock-resources';
 import { mockSessionByEmail, mockSessionByRole } from '@/services/api-test/core';
@@ -85,7 +85,7 @@ describe('Provision Public Cloud Request', () => {
     const response = await makePublicCloudRequestDecision(requests.create.id, {
       ...requests.create.decisionData,
       accountCoding: requests.create.decisionData.billing.accountCoding,
-      decision: $Enums.DecisionStatus.APPROVED,
+      decision: DecisionStatus.APPROVED,
     });
 
     expect(response.status).toBe(200);
@@ -99,7 +99,7 @@ describe('Provision Public Cloud Request', () => {
       select: { decisionStatus: true },
     });
     expect(request).toBeTruthy();
-    expect(request?.decisionStatus).toBe($Enums.DecisionStatus.APPROVED);
+    expect(request?.decisionStatus).toBe(DecisionStatus.APPROVED);
   });
 
   it('should successfully provision the request', async () => {
@@ -118,6 +118,6 @@ describe('Provision Public Cloud Request', () => {
     });
 
     expect(request).toBeTruthy();
-    expect(request?.decisionStatus).toBe($Enums.DecisionStatus.PROVISIONED);
+    expect(request?.decisionStatus).toBe(DecisionStatus.PROVISIONED);
   });
 });

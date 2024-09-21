@@ -3,7 +3,7 @@
 import { Accordion, Button } from '@mantine/core';
 import _kebabCase from 'lodash-es/kebabCase';
 import { useEffect, useState } from 'react';
-import { AccordionLabel, AccordionLabelProps } from '@/components/generic/AccordionLabel';
+import { AccordionLabel, AccordionLabelProps } from '@/components/generic/accordion/AccordionLabel';
 
 export type PageAccordionItem = AccordionLabelProps & {
   id?: string;
@@ -51,6 +51,8 @@ function InnerPageAccordion({
 }
 
 export default function PageAccordion({ items }: { items: PageAccordionItem[] }) {
+  if (items.length === 0) return null;
+
   const _items = items.map((item) => ({ ...item, id: item.id ?? _kebabCase(item.label) }));
   const initialSelected = _items.filter((item) => item.initialOpen);
   const selected = initialSelected.length > 0 ? initialSelected.map((item) => item.id) : [_items[0].id];

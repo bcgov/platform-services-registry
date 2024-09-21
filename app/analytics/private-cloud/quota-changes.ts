@@ -1,4 +1,4 @@
-import { PrivateCloudRequest, Prisma, User, $Enums } from '@prisma/client';
+import { DecisionStatus, Prisma, User } from '@prisma/client';
 import _isEqual from 'lodash-es/isEqual';
 import _uniqWith from 'lodash-es/uniqWith';
 import prisma from '@/core/prisma';
@@ -7,8 +7,8 @@ import { getProdClusterLicencePlates } from './common';
 interface QuotaChanges {
   [key: string]: {
     all: number;
-    [$Enums.DecisionStatus.APPROVED]: number;
-    [$Enums.DecisionStatus.REJECTED]: number;
+    [DecisionStatus.APPROVED]: number;
+    [DecisionStatus.REJECTED]: number;
   };
 }
 
@@ -53,7 +53,7 @@ export async function quotaEditRequests() {
   const quotaChangedRequests = await prisma.privateCloudRequest.findMany({
     where: {
       isQuotaChanged: true,
-      decisionStatus: { notIn: [$Enums.DecisionStatus.PENDING] },
+      decisionStatus: { notIn: [DecisionStatus.PENDING] },
     },
     select: {
       createdAt: true,
@@ -66,18 +66,18 @@ export async function quotaEditRequests() {
   for (const request of quotaChangedRequests) {
     const date = parseDate(request.createdAt);
     if (!result[date]) {
-      result[date] = { all: 0, [$Enums.DecisionStatus.APPROVED]: 0, [$Enums.DecisionStatus.REJECTED]: 0 };
+      result[date] = { all: 0, [DecisionStatus.APPROVED]: 0, [DecisionStatus.REJECTED]: 0 };
     }
 
     result[date].all++;
 
     switch (request.decisionStatus) {
-      case $Enums.DecisionStatus.APPROVED:
-      case $Enums.DecisionStatus.PROVISIONED:
-        result[date][$Enums.DecisionStatus.APPROVED]++;
+      case DecisionStatus.APPROVED:
+      case DecisionStatus.PROVISIONED:
+        result[date][DecisionStatus.APPROVED]++;
         break;
-      case $Enums.DecisionStatus.REJECTED:
-        result[date][$Enums.DecisionStatus.REJECTED]++;
+      case DecisionStatus.REJECTED:
+        result[date][DecisionStatus.REJECTED]++;
         break;
     }
   }
@@ -85,8 +85,8 @@ export async function quotaEditRequests() {
   const data = Object.entries(result).map(([date, counts]) => ({
     date,
     'All quota requests': counts.all,
-    'Approved quota requests': counts[$Enums.DecisionStatus.APPROVED],
-    'Rejected quota requests': counts[$Enums.DecisionStatus.REJECTED],
+    'Approved quota requests': counts[DecisionStatus.APPROVED],
+    'Rejected quota requests': counts[DecisionStatus.REJECTED],
   }));
 
   return data;

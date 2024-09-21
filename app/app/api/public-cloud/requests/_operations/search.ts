@@ -1,4 +1,4 @@
-import { $Enums, Prisma } from '@prisma/client';
+import { Prisma } from '@prisma/client';
 import { Session } from 'next-auth';
 import { parsePaginationParams } from '@/helpers/pagination';
 import { searchPublicCloudRequests } from '@/queries/public-cloud-requests';

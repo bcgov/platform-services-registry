@@ -16,7 +16,7 @@ export default function TeamDeleteRequest({ request, requester }: EmailProp) {
   if (!request) return <></>;
 
   return (
-    <PrivateCloudLayout requester={requester ?? 'System Admin'}>
+    <PrivateCloudLayout requester={requester} showFooter>
       <Heading className="text-lg text-black">Your deletion request has been received!</Heading>
       <Text>Hi Product Team,</Text>
       <Text>

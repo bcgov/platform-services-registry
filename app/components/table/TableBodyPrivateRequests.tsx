@@ -1,7 +1,7 @@
 'use client';
 
 import { Tooltip, Badge } from '@mantine/core';
-import { $Enums } from '@prisma/client';
+import { ProjectStatus } from '@prisma/client';
 import _truncate from 'lodash-es/truncate';
 import { usePathname, useRouter } from 'next/navigation';
 import { useSession } from 'next-auth/react';
@@ -59,7 +59,7 @@ export default function TableBodyPrivateRequests({ rows, isLoading = false }: Ta
                     </TruncatedTooltip>
                     {!row.active && (
                       <Badge color="red" radius="sm" className="ml-1 mt-1">
-                        {$Enums.ProjectStatus.INACTIVE}
+                        {ProjectStatus.INACTIVE}
                       </Badge>
                     )}
                     {row.project

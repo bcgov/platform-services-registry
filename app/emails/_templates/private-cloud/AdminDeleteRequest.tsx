@@ -16,7 +16,7 @@ export default function AdminDeleteRequest({ request, requester }: EmailProp) {
   if (!request) return <></>;
 
   return (
-    <PrivateCloudLayout requester={requester ?? 'System Admin'}>
+    <PrivateCloudLayout requester={requester}>
       <Heading className="text-lg">New Delete Request!</Heading>
       <Text>Hi Registry Team, </Text>
       <Text>

@@ -17,7 +17,7 @@ export default function TeamEditRequest({ request, requester }: EmailProp) {
   if (!request.originalData) return <></>;
 
   return (
-    <PublicCloudLayout requester={requester}>
+    <PublicCloudLayout requester={requester} showFooter>
       <Heading className="text-lg text-black">Your Edit Summary!</Heading>
       <Text>Hi Product Team, </Text>
       <Text>

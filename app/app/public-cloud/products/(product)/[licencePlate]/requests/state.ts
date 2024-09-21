@@ -1,4 +1,4 @@
-import { $Enums, Prisma } from '@prisma/client';
+import { Prisma } from '@prisma/client';
 import { proxy, useSnapshot } from 'valtio';
 import { PublicCloudProductSearchCriteria } from '@/services/backend/public-cloud/products';
 

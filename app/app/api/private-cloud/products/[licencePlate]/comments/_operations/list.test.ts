@@ -1,5 +1,5 @@
 import { expect } from '@jest/globals';
-import { $Enums } from '@prisma/client';
+import { DecisionStatus } from '@prisma/client';
 import { createSamplePrivateCloudProductData } from '@/helpers/mock-resources';
 import { mockSessionByEmail, mockSessionByRole } from '@/services/api-test/core';
 import { provisionPrivateCloudProject } from '@/services/api-test/private-cloud';
@@ -34,7 +34,7 @@ describe('Private Cloud Comments - Permissions', () => {
 
     const response = await makePrivateCloudRequestDecision(requests.create.id, {
       ...requests.create.decisionData,
-      decision: $Enums.DecisionStatus.APPROVED,
+      decision: DecisionStatus.APPROVED,
     });
 
     expect(response.status).toBe(200);
@@ -128,7 +128,7 @@ describe('Private Cloud Comments - Validations', () => {
 
     const approveResponse = await makePrivateCloudRequestDecision(activeProjectId, {
       ...createResponseBody.decisionData,
-      decision: $Enums.DecisionStatus.APPROVED,
+      decision: DecisionStatus.APPROVED,
     });
     expect(approveResponse.status).toBe(200);
 

@@ -1,5 +1,5 @@
 import { expect } from '@jest/globals';
-import { $Enums } from '@prisma/client';
+import { DecisionStatus, Ministry, Cluster } from '@prisma/client';
 import { parse } from 'csv-parse/sync';
 import prisma from '@/core/prisma';
 import { createSamplePrivateCloudProductData } from '@/helpers/mock-resources';
@@ -63,7 +63,7 @@ describe('Download Private Cloud Products - Permissions', () => {
 
     const res2 = await makePrivateCloudRequestDecision(dat1.id, {
       ...dat1.decisionData,
-      decision: $Enums.DecisionStatus.APPROVED,
+      decision: DecisionStatus.APPROVED,
     });
     expect(res2.status).toBe(200);
     requests.one = await res2.json();
@@ -164,7 +164,7 @@ describe('Download Private Cloud Products - Permissions', () => {
 
     const res2 = await makePrivateCloudRequestDecision(dat1.id, {
       ...dat1.decisionData,
-      decision: $Enums.DecisionStatus.APPROVED,
+      decision: DecisionStatus.APPROVED,
     });
     expect(res2.status).toBe(200);
     requests.two = await res2.json();
@@ -244,17 +244,17 @@ describe('Download Private Cloud Products - Validations', () => {
 
     const datasets = [];
     datasets.push(
-      createSamplePrivateCloudProductData({ data: { ministry: $Enums.Ministry.AEST, cluster: $Enums.Cluster.CLAB } }),
-      createSamplePrivateCloudProductData({ data: { ministry: $Enums.Ministry.AEST, cluster: $Enums.Cluster.KLAB } }),
-      createSamplePrivateCloudProductData({ data: { ministry: $Enums.Ministry.AEST, cluster: $Enums.Cluster.CLAB } }),
-      createSamplePrivateCloudProductData({ data: { ministry: $Enums.Ministry.AEST, cluster: $Enums.Cluster.KLAB } }),
-      createSamplePrivateCloudProductData({ data: { ministry: $Enums.Ministry.AEST, cluster: $Enums.Cluster.CLAB } }),
-      createSamplePrivateCloudProductData({ data: { ministry: $Enums.Ministry.CITZ, cluster: $Enums.Cluster.KLAB } }),
-      createSamplePrivateCloudProductData({ data: { ministry: $Enums.Ministry.CITZ, cluster: $Enums.Cluster.CLAB } }),
-      createSamplePrivateCloudProductData({ data: { ministry: $Enums.Ministry.CITZ, cluster: $Enums.Cluster.KLAB } }),
-      createSamplePrivateCloudProductData({ data: { ministry: $Enums.Ministry.CITZ, cluster: $Enums.Cluster.CLAB } }),
+      createSamplePrivateCloudProductData({ data: { ministry: Ministry.AEST, cluster: Cluster.CLAB } }),
+      createSamplePrivateCloudProductData({ data: { ministry: Ministry.AEST, cluster: Cluster.KLAB } }),
+      createSamplePrivateCloudProductData({ data: { ministry: Ministry.AEST, cluster: Cluster.CLAB } }),
+      createSamplePrivateCloudProductData({ data: { ministry: Ministry.AEST, cluster: Cluster.KLAB } }),
+      createSamplePrivateCloudProductData({ data: { ministry: Ministry.AEST, cluster: Cluster.CLAB } }),
+      createSamplePrivateCloudProductData({ data: { ministry: Ministry.CITZ, cluster: Cluster.KLAB } }),
+      createSamplePrivateCloudProductData({ data: { ministry: Ministry.CITZ, cluster: Cluster.CLAB } }),
+      createSamplePrivateCloudProductData({ data: { ministry: Ministry.CITZ, cluster: Cluster.KLAB } }),
+      createSamplePrivateCloudProductData({ data: { ministry: Ministry.CITZ, cluster: Cluster.CLAB } }),
       createSamplePrivateCloudProductData({
-        data: { ministry: $Enums.Ministry.CITZ, cluster: $Enums.Cluster.KLAB, name: '______name______' },
+        data: { ministry: Ministry.CITZ, cluster: Cluster.KLAB, name: '______name______' },
       }),
     );
 
@@ -265,7 +265,7 @@ describe('Download Private Cloud Products - Validations', () => {
 
         await makePrivateCloudRequestDecision(dat1.id, {
           ...dat1.decisionData,
-          decision: $Enums.DecisionStatus.APPROVED,
+          decision: DecisionStatus.APPROVED,
         });
 
         await provisionPrivateCloudProject(dat1.licencePlate);
@@ -289,8 +289,8 @@ describe('Download Private Cloud Products - Validations', () => {
     await mockSessionByRole('admin');
 
     const res1 = await downloadPrivateCloudProjects({
-      ministry: $Enums.Ministry.AEST,
-      cluster: $Enums.Cluster.CLAB,
+      ministry: Ministry.AEST,
+      cluster: Cluster.CLAB,
       includeInactive: false,
     });
 
@@ -331,7 +331,7 @@ describe('Download Private Cloud Products - Validations', () => {
     await mockSessionByRole('admin');
 
     const res1 = await downloadPrivateCloudProjects({
-      cluster: 'INVALID' as $Enums.Cluster,
+      cluster: 'INVALID' as Cluster,
     });
 
     expect(res1.status).toBe(400);
@@ -341,7 +341,7 @@ describe('Download Private Cloud Products - Validations', () => {
     await mockSessionByRole('admin');
 
     const res1 = await downloadPrivateCloudProjects({
-      ministry: 'INVALID' as $Enums.Ministry,
+      ministry: 'INVALID' as Ministry,
     });
 
     expect(res1.status).toBe(400);

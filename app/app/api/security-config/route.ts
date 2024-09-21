@@ -1,4 +1,4 @@
-import { $Enums } from '@prisma/client';
+import { ProjectContext } from '@prisma/client';
 import createApiHandler from '@/core/api-handler';
 import prisma from '@/core/prisma';
 import { OkResponse } from '@/core/responses';
@@ -11,14 +11,14 @@ const apiHandler = createApiHandler({
 export const PUT = apiHandler(async ({ body, session }) => {
   const existQuery = { where: { licencePlate: body.licencePlate }, session: session as never };
   let exists =
-    body.context === $Enums.ProjectContext.PRIVATE
+    body.context === ProjectContext.PRIVATE
       ? await prisma.privateCloudProject.count(existQuery)
       : await prisma.publicCloudProject.count(existQuery);
 
   // Find the authority in the requested projects if not found in the existing projects.
   if (exists === 0) {
     exists =
-      body.context === $Enums.ProjectContext.PRIVATE
+      body.context === ProjectContext.PRIVATE
         ? await prisma.privateCloudRequestedProject.count(existQuery)
         : await prisma.publicCloudRequestedProject.count(existQuery);
   }

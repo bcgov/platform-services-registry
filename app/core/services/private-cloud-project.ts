@@ -1,4 +1,4 @@
-import { Prisma, $Enums } from '@prisma/client';
+import { Prisma, Ministry, ProjectStatus } from '@prisma/client';
 import { ModelService } from '@/core/model-service';
 import prisma from '@/core/prisma';
 import { PrivateCloudProjectDecorate } from '@/types/doc-decorate';
@@ -21,8 +21,8 @@ export class PrivateCloudProjectService extends ModelService<Prisma.PrivateCloud
     if (this.session.permissions.viewAllPrivateCloudProducts) return true;
 
     const OR: Prisma.PrivateCloudProjectWhereInput[] = [
-      { ministry: { in: this.session.ministries.editor as $Enums.Ministry[] } },
-      { ministry: { in: this.session.ministries.reader as $Enums.Ministry[] } },
+      { ministry: { in: this.session.ministries.editor as Ministry[] } },
+      { ministry: { in: this.session.ministries.reader as Ministry[] } },
     ];
 
     if (this.session.user.id) {
@@ -43,7 +43,7 @@ export class PrivateCloudProjectService extends ModelService<Prisma.PrivateCloud
     if (this.session.permissions.editAllPrivateCloudProducts) return true;
 
     const OR: Prisma.PrivateCloudProjectWhereInput[] = [
-      { ministry: { in: this.session.ministries.editor as $Enums.Ministry[] } },
+      { ministry: { in: this.session.ministries.editor as Ministry[] } },
     ];
 
     if (this.session.user.id) {
@@ -68,7 +68,7 @@ export class PrivateCloudProjectService extends ModelService<Prisma.PrivateCloud
       hasActiveRequest = (await prisma.privateCloudRequest.count({ where: { projectId: doc.id, active: true } })) > 0;
     }
 
-    const isActive = doc.status === $Enums.ProjectStatus.ACTIVE;
+    const isActive = doc.status === ProjectStatus.ACTIVE;
     const isMyProduct = [doc.projectOwnerId, doc.primaryTechnicalLeadId, doc.secondaryTechnicalLeadId].includes(
       this.session.user.id,
     );

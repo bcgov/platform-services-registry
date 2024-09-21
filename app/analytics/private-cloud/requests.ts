@@ -1,4 +1,4 @@
-import { $Enums } from '@prisma/client';
+import { RequestType } from '@prisma/client';
 import _forEach from 'lodash-es/forEach';
 import _groupBy from 'lodash-es/groupBy';
 import _map from 'lodash-es/map';
@@ -38,13 +38,13 @@ export async function combinedRequests() {
 
     _forEach(dateRequests, (req) => {
       switch (req.type) {
-        case $Enums.RequestType.CREATE:
+        case RequestType.CREATE:
           result['Create requests']++;
           break;
-        case $Enums.RequestType.EDIT:
+        case RequestType.EDIT:
           result['Edit requests']++;
           break;
-        case $Enums.RequestType.DELETE:
+        case RequestType.DELETE:
           result['Delete requests']++;
           break;
       }

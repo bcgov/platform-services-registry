@@ -1,8 +1,7 @@
 'use client';
 
-import path from 'path';
 import { Tooltip, Badge } from '@mantine/core';
-import { $Enums } from '@prisma/client';
+import { ProjectStatus } from '@prisma/client';
 import _truncate from 'lodash-es/truncate';
 import { usePathname, useRouter } from 'next/navigation';
 import React from 'react';
@@ -35,7 +34,7 @@ export default function TableBodyPrivateProducts({ rows, isLoading = false }: Ta
   }
 
   const onRowClickHandler = (row: any) => {
-    router.push(path.join(`/${cloud}/products/${row.licencePlate}/edit`));
+    router.push(`/${cloud}/products/${row.licencePlate}/edit`);
   };
 
   return (
@@ -56,9 +55,9 @@ export default function TableBodyPrivateProducts({ rows, isLoading = false }: Ta
                     <TruncatedTooltip label={row.description}>
                       <span className="font-bold">{_truncate(row.name, { length: 100 })}</span>
                     </TruncatedTooltip>
-                    {row.status === $Enums.ProjectStatus.INACTIVE && (
+                    {row.status === ProjectStatus.INACTIVE && (
                       <Badge color="red" radius="sm" className="ml-1 mt-1">
-                        {$Enums.ProjectStatus.INACTIVE}
+                        {ProjectStatus.INACTIVE}
                       </Badge>
                     )}
                     {row.isTest && <TemporaryProductBadge data={{ createdAt: row.createdAt }} className="ml-1 mt-1" />}

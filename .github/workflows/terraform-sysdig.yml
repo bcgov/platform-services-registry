@@ -26,7 +26,7 @@ jobs:
     - uses: actions/checkout@6d193bf28034eafb982f37bd894289fe649468fc
 
     - name: Setup Terraform
-      uses: hashicorp/setup-terraform@a0b6ede12c06dbc21b9ea1f225a4121a2f203c69
+      uses: hashicorp/setup-terraform@c23d9fb1b7ead2e283cd20aab7c4974b032f61f6
       with:
         terraform_version: ${{ env.TF_VERSION }}
 
@@ -64,7 +64,7 @@ jobs:
       continue-on-error: true
 
     - name: Create Comment
-      uses: actions/github-script@58d7008c60bc638cd07845c89db844ed32ee7014
+      uses: actions/github-script@660ec11d825b714d112a6bb9727086bc2cc500b2
       if: github.event_name == 'pull_request'
       env:
         PLAN: "terraform\n${{ steps.plan.outputs.stdout }}"

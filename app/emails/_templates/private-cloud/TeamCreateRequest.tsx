@@ -16,7 +16,7 @@ export default function TeamCreateRequest({ request, requester }: EmailProp) {
   if (!request) return <></>;
 
   return (
-    <PrivateCloudLayout requester={requester}>
+    <PrivateCloudLayout requester={requester} showFooter>
       <Heading className="text-lg">Provisioning request received for {request.decisionData.name} on OpenShift</Heading>
       <Text>Hi Product Team,</Text>
       <Text>

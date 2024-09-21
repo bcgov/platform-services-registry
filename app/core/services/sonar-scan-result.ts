@@ -1,4 +1,4 @@
-import { Prisma, PrismaClient, $Enums } from '@prisma/client';
+import { Prisma, PrismaClient, ProjectContext } from '@prisma/client';
 import { ModelService } from '@/core/model-service';
 import prisma from '@/core/prisma';
 
@@ -17,9 +17,9 @@ export class SonarScanResultService extends ModelService<Prisma.SonarScanResultW
 
     const privateOR = privateRes.map(({ licencePlate }) => ({
       licencePlate,
-      context: $Enums.ProjectContext.PRIVATE,
+      context: ProjectContext.PRIVATE,
     }));
-    const publicOR = publicRes.map(({ licencePlate }) => ({ licencePlate, context: $Enums.ProjectContext.PUBLIC }));
+    const publicOR = publicRes.map(({ licencePlate }) => ({ licencePlate, context: ProjectContext.PUBLIC }));
 
     const OR = [...privateOR, ...publicOR];
 

@@ -1,5 +1,5 @@
 import { Tooltip, Badge, Indicator } from '@mantine/core';
-import { $Enums } from '@prisma/client';
+import { RequestType, DecisionStatus } from '@prisma/client';
 import {
   IconHourglass,
   IconPencil,
@@ -25,9 +25,9 @@ export default function ActiveRequestBox({
     cloud: 'private-cloud' | 'public-cloud';
     id: string;
     licencePlate: string;
-    type: $Enums.RequestType;
+    type: RequestType;
     active: boolean;
-    decisionStatus: $Enums.DecisionStatus;
+    decisionStatus: DecisionStatus;
     createdByEmail: string;
   };
   className?: string;
@@ -53,17 +53,17 @@ export default function ActiveRequestBox({
 
   if (data.cloud === 'private-cloud') {
     switch (data.type) {
-      case $Enums.RequestType.CREATE:
-      case $Enums.RequestType.EDIT:
-      case $Enums.RequestType.DELETE:
+      case RequestType.CREATE:
+      case RequestType.EDIT:
+      case RequestType.DELETE:
         path = 'decision';
         break;
     }
   } else {
     switch (data.type) {
-      case $Enums.RequestType.CREATE:
-      case $Enums.RequestType.EDIT:
-      case $Enums.RequestType.DELETE:
+      case RequestType.CREATE:
+      case RequestType.EDIT:
+      case RequestType.DELETE:
         path = 'request';
         break;
     }
@@ -73,15 +73,15 @@ export default function ActiveRequestBox({
   let TypeIcon = IconPoint;
 
   switch (data.type) {
-    case $Enums.RequestType.CREATE:
+    case RequestType.CREATE:
       typeColor = 'green';
       TypeIcon = IconFilePlus;
       break;
-    case $Enums.RequestType.EDIT:
+    case RequestType.EDIT:
       typeColor = 'blue';
       TypeIcon = IconPencil;
       break;
-    case $Enums.RequestType.DELETE:
+    case RequestType.DELETE:
       typeColor = 'red';
       TypeIcon = IconTrash;
       break;
@@ -92,22 +92,22 @@ export default function ActiveRequestBox({
   let DecisionIcon = IconPoint;
 
   switch (data.decisionStatus) {
-    case $Enums.DecisionStatus.PENDING:
+    case DecisionStatus.PENDING:
       decisionColor = 'blue';
       decisionText = 'Reviewing';
       DecisionIcon = IconHourglass;
       break;
-    case $Enums.DecisionStatus.APPROVED:
+    case DecisionStatus.APPROVED:
       decisionColor = 'lime';
       decisionText = 'Approved';
       DecisionIcon = IconConfetti;
       break;
-    case $Enums.DecisionStatus.REJECTED:
+    case DecisionStatus.REJECTED:
       decisionColor = 'red';
       decisionText = 'Rejected';
       DecisionIcon = IconBan;
       break;
-    case $Enums.DecisionStatus.PROVISIONED:
+    case DecisionStatus.PROVISIONED:
       decisionColor = 'green';
       decisionText = 'Provisioned';
       DecisionIcon = IconCircleCheck;

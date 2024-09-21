@@ -1,5 +1,5 @@
 import { expect } from '@jest/globals';
-import { $Enums, TaskType, TaskStatus } from '@prisma/client';
+import { DecisionStatus, Provider, TaskType, TaskStatus } from '@prisma/client';
 import prisma from '@/core/prisma';
 import { createSamplePublicCloudProductData } from '@/helpers/mock-resources';
 import { findOtherMockUsers } from '@/helpers/mock-users';
@@ -119,7 +119,7 @@ describe('Update Public Cloud Product - Permissions', () => {
     const response = await makePublicCloudRequestDecision(requests.create.id, {
       ...requests.create.decisionData,
       accountCoding: requests.create.decisionData.billing.accountCoding,
-      decision: $Enums.DecisionStatus.APPROVED,
+      decision: DecisionStatus.APPROVED,
     });
 
     expect(response.status).toBe(200);
@@ -233,8 +233,7 @@ describe('Update Public Cloud Product - Validations', () => {
   it('should ignore the provider change on a new update request', async () => {
     await mockSessionByRole('admin');
 
-    const newProvider =
-      requests.create.decisionData.provider === $Enums.Provider.AWS ? $Enums.Provider.AZURE : $Enums.Provider.AWS;
+    const newProvider = requests.create.decisionData.provider === Provider.AWS ? Provider.AZURE : Provider.AWS;
 
     const response = await makeBasicProductChange({ provider: newProvider });
 

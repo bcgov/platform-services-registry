@@ -1,7 +1,7 @@
 'use client';
 
 import { Alert } from '@mantine/core';
-import { $Enums } from '@prisma/client';
+import { RequestType } from '@prisma/client';
 import { IconArrowBack, IconInfoCircle, IconFile } from '@tabler/icons-react';
 import { useQuery } from '@tanstack/react-query';
 import { useEffect } from 'react';
@@ -45,9 +45,9 @@ export default publicCloudProductSecurityACS(({ pathParams, queryParams, session
   }, [request]);
 
   const tabsByType = {
-    [$Enums.RequestType.CREATE]: ['request'],
-    [$Enums.RequestType.EDIT]: ['summary', 'original', 'request'],
-    [$Enums.RequestType.DELETE]: ['request'],
+    [RequestType.CREATE]: ['request'],
+    [RequestType.EDIT]: ['summary', 'original', 'request'],
+    [RequestType.DELETE]: ['request'],
   };
 
   let tabs: ITab[] = [
@@ -83,7 +83,7 @@ export default publicCloudProductSecurityACS(({ pathParams, queryParams, session
           <IconArrowBack className="inline-block" />
           Back to Requests
         </LightButton>
-        {request.type !== $Enums.RequestType.CREATE && (
+        {request.type !== RequestType.CREATE && (
           <LightButton
             onClick={() => router.push(`/public-cloud/products/${request.licencePlate}/edit`)}
             className="my-2 ml-1"

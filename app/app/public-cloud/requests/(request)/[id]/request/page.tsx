@@ -1,8 +1,7 @@
 'use client';
 
 import { zodResolver } from '@hookform/resolvers/zod';
-import { notifications } from '@mantine/notifications';
-import { Prisma, $Enums, Provider } from '@prisma/client';
+import { RequestType } from '@prisma/client';
 import {
   IconInfoCircle,
   IconUsersGroup,
@@ -25,9 +24,9 @@ import AccountCoding from '@/components/form/AccountCoding';
 import AccountEnvironmentsPublic from '@/components/form/AccountEnvironmentsPublic';
 import Budget from '@/components/form/Budget';
 import ExpenseAuthority from '@/components/form/ExpenseAuthority';
-import PageAccordion from '@/components/form/PageAccordion';
 import ProjectDescriptionPublic from '@/components/form/ProjectDescriptionPublic';
 import TeamContacts from '@/components/form/TeamContacts';
+import PageAccordion from '@/components/generic/accordion/PageAccordion';
 import FormErrorNotification from '@/components/generic/FormErrorNotification';
 import Comment from '@/components/modal/Comment';
 import ReturnModal from '@/components/modal/ReturnDecision';
@@ -81,7 +80,7 @@ export default publicCloudProductRequest(({ pathParams, queryParams, session, ro
 
   const methods = useForm({
     resolver: (...args) => {
-      const isDeleteRequest = publicSnap.currentRequest?.type === $Enums.RequestType.DELETE;
+      const isDeleteRequest = publicSnap.currentRequest?.type === RequestType.DELETE;
 
       // Ignore form validation if a DELETE request
       if (isDeleteRequest) {

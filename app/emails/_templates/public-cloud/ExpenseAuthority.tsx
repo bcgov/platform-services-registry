@@ -15,7 +15,7 @@ export default function ExpenseAuthority({ request }: EmailProp) {
   const { name, expenseAuthority } = request.decisionData;
 
   return (
-    <PublicCloudLayout>
+    <PublicCloudLayout showFooter>
       <Heading className="text-lg">New Expense Authority</Heading>
       <Text>Hi, {expenseAuthority?.firstName},</Text>
       <Text>You are now the Expense Authority for the the product {name} on the Public Cloud.</Text>

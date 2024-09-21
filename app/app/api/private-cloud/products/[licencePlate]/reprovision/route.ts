@@ -1,4 +1,4 @@
-import { $Enums, RequestType } from '@prisma/client';
+import { RequestType, Cluster, EventType } from '@prisma/client';
 import { z } from 'zod';
 import createApiHandler from '@/core/api-handler';
 import { BadRequestResponse, OkResponse, UnauthorizedResponse } from '@/core/responses';
@@ -35,18 +35,18 @@ export const GET = apiHandler(async ({ pathParams, session }) => {
   );
 
   // For GOLD requests, we create an identical request for GOLDDR
-  if (product.cluster === $Enums.Cluster.GOLD && product.golddrEnabled) {
+  if (product.cluster === Cluster.GOLD && product.golddrEnabled) {
     await sendPrivateCloudNatsMessage(
       {
         id: msgId,
         type: RequestType.EDIT,
-        decisionData: { ...product, cluster: $Enums.Cluster.GOLDDR },
+        decisionData: { ...product, cluster: Cluster.GOLDDR },
       },
       false,
     );
   }
 
-  await createEvent($Enums.EventType.REPROVISION_PRIVATE_CLOUD_PRODUCT, session.user.id, {
+  await createEvent(EventType.REPROVISION_PRIVATE_CLOUD_PRODUCT, session.user.id, {
     licencePlate: product.licencePlate,
   });
 

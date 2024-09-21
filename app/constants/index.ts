@@ -1,4 +1,4 @@
-import { $Enums, Cluster, Ministry, Provider } from '@prisma/client';
+import { Cluster, Ministry, Provider } from '@prisma/client';
 import { CpuQuotaEnum, MemoryQuotaEnum, StorageQuotaEnum } from '@/validation-schemas/private-cloud';
 
 export const clusters = Object.values(Cluster).filter((cluster) => cluster !== 'GOLDDR');
@@ -8,7 +8,7 @@ export const ministries = Object.values(Ministry);
 export const providers = Object.values(Provider);
 
 export const providerOptions = providers.map((v) => ({
-  label: v === $Enums.Provider.AZURE ? 'MS Azure' : v,
+  label: v === Provider.AZURE ? 'MS Azure' : v,
   value: v,
 }));
 

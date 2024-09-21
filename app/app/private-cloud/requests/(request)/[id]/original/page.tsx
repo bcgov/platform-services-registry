@@ -1,16 +1,15 @@
 'use client';
 
-import { zodResolver } from '@hookform/resolvers/zod';
-import { $Enums, PrivateCloudProject } from '@prisma/client';
+import { PrivateCloudProject } from '@prisma/client';
 import { IconInfoCircle, IconUsersGroup, IconSettings, IconComponents, IconMessage } from '@tabler/icons-react';
 import { useEffect, useState } from 'react';
 import { FormProvider, useForm } from 'react-hook-form';
 import { z } from 'zod';
 import PreviousButton from '@/components/buttons/Previous';
-import PageAccordion from '@/components/form/PageAccordion';
 import ProjectDescription from '@/components/form/ProjectDescriptionPrivate';
 import Quotas from '@/components/form/Quotas';
 import TeamContacts from '@/components/form/TeamContacts';
+import PageAccordion from '@/components/generic/accordion/PageAccordion';
 import createClientPage from '@/core/client-page';
 import { usePrivateProductState } from '@/states/global';
 
@@ -23,7 +22,7 @@ const privateCloudRequestOriginal = createClientPage({
   validations: { pathParams: pathParamSchema },
 });
 export default privateCloudRequestOriginal(({ pathParams, queryParams, session, router }) => {
-  const [privateState, privateSnap] = usePrivateProductState();
+  const [, privateSnap] = usePrivateProductState();
   const { id } = pathParams;
   const [secondTechLead, setSecondTechLead] = useState(false);
 

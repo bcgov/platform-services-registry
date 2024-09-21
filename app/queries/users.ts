@@ -1,4 +1,4 @@
-import { $Enums, Prisma } from '@prisma/client';
+import { Prisma } from '@prisma/client';
 import prisma from '@/core/prisma';
 import { proxyUsers } from '@/helpers/mock-users';
 import { processMsUser } from '@/services/msgraph';

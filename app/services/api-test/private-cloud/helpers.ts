@@ -1,4 +1,4 @@
-import { DecisionStatus } from '@prisma/client';
+import { Cluster, DecisionStatus } from '@prisma/client';
 import { createSamplePrivateCloudProductData } from '@/helpers/mock-resources';
 import { mockSessionByEmail, mockSessionByRole } from '@/services/api-test/core';
 import { provisionPrivateCloudProject } from '@/services/api-test/private-cloud';
@@ -11,7 +11,7 @@ import { makePrivateCloudRequestDecision } from '@/services/api-test/private-clo
 import { CpuQuotaEnum, MemoryQuotaEnum, StorageQuotaEnum } from '@/validation-schemas/private-cloud';
 
 export async function createPrivateCloudProduct() {
-  const requestData = createSamplePrivateCloudProductData();
+  const requestData = createSamplePrivateCloudProductData({ data: { cluster: Cluster.SILVER } });
   await mockSessionByEmail(requestData.projectOwner.email);
 
   let response = await createPrivateCloudProject(requestData);
@@ -53,6 +53,7 @@ export async function updatePrivateCloudProduct() {
 
   const productData = createSamplePrivateCloudProductData({
     data: {
+      cluster: Cluster.SILVER,
       developmentQuota: oldDevelopmentQuota,
     },
   });
@@ -108,7 +109,7 @@ export async function updatePrivateCloudProduct() {
 }
 
 export async function deletePrivateCloudProduct() {
-  const productData = createSamplePrivateCloudProductData({});
+  const productData = createSamplePrivateCloudProductData({ data: { cluster: Cluster.SILVER } });
 
   await mockSessionByEmail(productData.projectOwner.email);
 

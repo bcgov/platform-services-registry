@@ -17,7 +17,7 @@ export default function TeamEditRequestCompletion({ request }: EmailProp) {
   const { name, provider } = request.decisionData;
 
   return (
-    <PublicCloudLayout>
+    <PublicCloudLayout showFooter>
       <Heading className="text-lg text-black">Success! Your request was approved and completed!</Heading>
       <Text>Hi Product Team, </Text>
       <Text>

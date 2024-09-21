@@ -1,15 +1,15 @@
 'use client';
 
-import { $Enums, PrivateCloudProject } from '@prisma/client';
+import { PrivateCloudProject } from '@prisma/client';
 import { IconInfoCircle, IconUsersGroup, IconSettings, IconComponents, IconMessage } from '@tabler/icons-react';
 import { useEffect, useState } from 'react';
 import { FormProvider, useForm } from 'react-hook-form';
 import { z } from 'zod';
 import PreviousButton from '@/components/buttons/Previous';
-import PageAccordion from '@/components/form/PageAccordion';
 import ProjectDescription from '@/components/form/ProjectDescriptionPrivate';
 import Quotas from '@/components/form/Quotas';
 import TeamContacts from '@/components/form/TeamContacts';
+import PageAccordion from '@/components/generic/accordion/PageAccordion';
 import createClientPage from '@/core/client-page';
 import { usePrivateProductState } from '@/states/global';
 

@@ -1,8 +1,7 @@
 'use client';
 
 import { zodResolver } from '@hookform/resolvers/zod';
-import { notifications } from '@mantine/notifications';
-import { $Enums, PrivateCloudProject } from '@prisma/client';
+import { PrivateCloudProject, RequestType } from '@prisma/client';
 import { IconInfoCircle, IconUsersGroup, IconSettings, IconComponents, IconMessage } from '@tabler/icons-react';
 import { useQuery, useMutation } from '@tanstack/react-query';
 import { useEffect, useState } from 'react';
@@ -10,10 +9,10 @@ import { FormProvider, useForm } from 'react-hook-form';
 import { z } from 'zod';
 import PreviousButton from '@/components/buttons/Previous';
 import SubmitButton from '@/components/buttons/SubmitButton';
-import PageAccordion from '@/components/form/PageAccordion';
 import ProjectDescription from '@/components/form/ProjectDescriptionPrivate';
 import Quotas from '@/components/form/Quotas';
 import TeamContacts from '@/components/form/TeamContacts';
+import PageAccordion from '@/components/generic/accordion/PageAccordion';
 import FormErrorNotification from '@/components/generic/FormErrorNotification';
 import Comment from '@/components/modal/Comment';
 import ReturnModal from '@/components/modal/ReturnDecision';
@@ -70,7 +69,7 @@ export default privateCloudRequestDecision(({ pathParams, queryParams, session, 
 
   const methods = useForm({
     resolver: (...args) => {
-      const isDeleteRequest = privateSnap.currentRequest?.type === $Enums.RequestType.DELETE;
+      const isDeleteRequest = privateSnap.currentRequest?.type === RequestType.DELETE;
 
       // Ignore form validation if a DELETE request
       if (isDeleteRequest) {

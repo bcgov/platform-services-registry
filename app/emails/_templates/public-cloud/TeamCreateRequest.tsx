@@ -17,7 +17,7 @@ export default function TeamCreateRequest({ request, requester }: EmailProp) {
   const { name, provider } = request.decisionData;
 
   return (
-    <PublicCloudLayout requester={requester}>
+    <PublicCloudLayout requester={requester} showFooter>
       <Heading className="text-lg">
         Provisioning request received for {name} on {provider}
       </Heading>

@@ -1,4 +1,4 @@
-import { Prisma, PrismaClient, $Enums, RequestType, DecisionStatus, TaskType, TaskStatus } from '@prisma/client';
+import { Prisma, RequestType, DecisionStatus, TaskType, TaskStatus } from '@prisma/client';
 import { ModelService } from '@/core/model-service';
 import prisma from '@/core/prisma';
 import { PublicCloudProjectDecorate, PublicCloudRequestDecorate } from '@/types/doc-decorate';
