@@ -120,7 +120,7 @@ jobs:
         registry-username: ${{ github.actor }}
         registry-password: ${{ secrets.GITHUB_TOKEN }}
         image-name: bcgov/pltsvc-email
-        docker-context: app
+        docker-context: .
         docker-file: app/Dockerfile.email
         metadata-tags: |
           type=semver,pattern={{version}}
