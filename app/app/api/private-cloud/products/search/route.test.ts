@@ -1,5 +1,5 @@
 import { expect } from '@jest/globals';
-import { DecisionStatus, Ministry, Cluster } from '@prisma/client';
+import { DecisionStatus, Ministry, Cluster, ProjectStatus } from '@prisma/client';
 import prisma from '@/core/prisma';
 import { createSamplePrivateCloudProductData } from '@/helpers/mock-resources';
 import { mockNoRoleUsers, findMockUserByIdr, findOtherMockUsers } from '@/helpers/mock-users';
@@ -211,9 +211,9 @@ describe('Search Private Cloud Products - Validations', () => {
     await mockSessionByRole('admin');
 
     const res1 = await searchPrivateCloudProjects({
-      ministry: Ministry.AEST,
-      cluster: Cluster.CLAB,
-      includeInactive: false,
+      ministries: [Ministry.AEST],
+      clusters: [Cluster.CLAB],
+      status: [ProjectStatus.ACTIVE],
     });
 
     expect(res1.status).toBe(200);

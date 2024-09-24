@@ -1,7 +1,10 @@
 import { Ministry, Cluster, ProjectStatus, Prisma } from '@prisma/client';
+import _isNumber from 'lodash-es/isNumber';
 import { Session } from 'next-auth';
 import prisma from '@/core/prisma';
+import { parsePaginationParams } from '@/helpers/pagination';
 import { PrivateCloudProductDetail, PrivateCloudProductDetailDecorated } from '@/types/private-cloud';
+import { PrivateCloudProductSearchBody } from '@/validation-schemas/private-cloud';
 import { getMatchingUserIds } from './users';
 
 export const privateCloudProductSimpleInclude = {
@@ -32,27 +35,26 @@ export async function searchPrivateCloudProducts({
   session,
   skip,
   take,
-  ministry,
-  cluster,
+  page,
+  pageSize,
+  ministries,
+  clusters,
   status,
-  search,
+  temporary,
+  search = '',
   sortKey = defaultSortKey,
   sortOrder = Prisma.SortOrder.desc,
   extraFilter,
-  isTest,
-}: {
+}: PrivateCloudProductSearchBody & {
   session: Session;
-  skip: number;
-  take: number;
-  status?: ProjectStatus;
-  ministry?: Ministry;
-  cluster?: Cluster;
-  search?: string;
-  sortKey?: string;
-  sortOrder?: Prisma.SortOrder;
+  skip?: number;
+  take?: number;
   extraFilter?: Prisma.PrivateCloudProjectWhereInput;
-  isTest: boolean;
 }) {
+  if (!_isNumber(skip) && !_isNumber(take) && page && pageSize) {
+    ({ skip, take } = parsePaginationParams(page, pageSize, 10));
+  }
+
   const where: Prisma.PrivateCloudProjectWhereInput = extraFilter ?? {};
   const orderBy = { [sortKey || defaultSortKey]: Prisma.SortOrder[sortOrder] };
 
@@ -77,20 +79,20 @@ export async function searchPrivateCloudProducts({
     }
   }
 
-  if (ministry) {
-    where.ministry = ministry as Ministry;
+  if (ministries && ministries.length > 0) {
+    where.ministry = { in: ministries };
   }
 
-  if (cluster) {
-    where.cluster = cluster as Cluster;
+  if (clusters && clusters.length > 0) {
+    where.cluster = { in: clusters };
   }
 
-  if (status) {
-    where.status = status;
+  if (status && status.length > 0) {
+    where.status = { in: status };
   }
 
-  if (isTest) {
-    where.isTest = isTest;
+  if (temporary && temporary.length === 1) {
+    where.isTest = temporary[0] === 'YES';
   }
 
   const [docs, totalCount] = await Promise.all([

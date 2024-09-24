@@ -36,8 +36,8 @@ export default privateCloudRequests(({ pathParams, queryParams, session }) => {
       title="Products in Private Cloud OpenShift Platform"
       description="Products with pending requests currently under admin review."
       totalCount={totalCount}
-      page={snap.page}
-      pageSize={snap.pageSize}
+      page={snap.page ?? 1}
+      pageSize={snap.pageSize ?? 10}
       search={snap.search}
       onPagination={(page: number, pageSize: number) => {
         pageState.page = page;

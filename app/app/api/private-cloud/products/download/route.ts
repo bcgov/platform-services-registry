@@ -4,30 +4,25 @@ import { NoContent, CsvResponse } from '@/core/responses';
 import { ministryKeyToName, getTotalQuotaStr } from '@/helpers/product';
 import { formatFullName } from '@/helpers/user';
 import { createEvent } from '@/mutations/events';
+import { searchPrivateCloudProducts } from '@/queries/private-cloud-products';
 import { PrivateProductCsvRecord } from '@/types/csv';
 import { formatDateSimple } from '@/utils/date';
 import { privateCloudProductSearchNoPaginationBodySchema } from '@/validation-schemas/private-cloud';
-import searchOp from '../_operations/search';
 
 export const POST = createApiHandler({
   roles: ['user'],
   validations: { body: privateCloudProductSearchNoPaginationBodySchema },
 })(async ({ session, body }) => {
-  const { search = '', ministry, cluster, includeInactive = false, showTest = false, sortKey, sortOrder } = body;
-
   const searchProps = {
-    search,
     page: 1,
     pageSize: 10000,
-    ministry,
-    cluster,
-    status: includeInactive ? undefined : ProjectStatus.ACTIVE,
-    sortKey: sortKey || undefined,
-    sortOrder,
-    isTest: showTest,
+    ...body,
   };
 
-  const { docs, totalCount } = await searchOp({ ...searchProps, session });
+  const { docs, totalCount } = await searchPrivateCloudProducts({
+    session,
+    ...searchProps,
+  });
 
   if (docs.length === 0) {
     return NoContent();

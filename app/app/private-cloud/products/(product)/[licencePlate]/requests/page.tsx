@@ -42,8 +42,8 @@ export default privateCloudProductRequests(({ pathParams, queryParams, session }
   return (
     <Table
       totalCount={totalCount}
-      page={snap.page}
-      pageSize={snap.pageSize}
+      page={snap.page ?? 1}
+      pageSize={snap.pageSize ?? 10}
       search={snap.search}
       onPagination={(page: number, pageSize: number) => {
         pageState.page = page;

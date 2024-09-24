@@ -1,132 +1,58 @@
-import { Prisma } from '@prisma/client';
-import { useRef } from 'react';
+import { Ministry, Cluster, Prisma, ProjectStatus } from '@prisma/client';
 import { useSnapshot } from 'valtio';
-import FormToggle from '@/components/generic/checkbox/FormToggle';
-import FormSelect from '@/components/generic/select/FormSelect';
-import { clusters, productSorts, ministryOptions } from '@/constants';
+import FormMultiSelect from '@/components/generic/select/FormMultiSelect';
+import { clusters, ministryOptions } from '@/constants';
 import { pageState } from './state';
 
 export default function FilterPanel() {
   const pageSnapshot = useSnapshot(pageState);
-  const clusterProviderRef = useRef<HTMLSelectElement>(null);
-  const ministryRef = useRef<HTMLSelectElement>(null);
-  const sortRef = useRef<HTMLSelectElement>(null);
-  const toggleDeletedProductsText = 'Show Deleted Products';
-  const toggleTestProductsText = 'Filter Temp Products';
-
-  const handleSortChange = (value: string) => {
-    const selectedOption = productSorts.find((privateSortName) => privateSortName.humanFriendlyName === value);
-    if (selectedOption) {
-      pageState.sortKey = selectedOption.sortKey;
-      pageState.sortOrder = selectedOption.sortOrder;
-    } else {
-      pageState.sortKey = '';
-      pageState.sortOrder = Prisma.SortOrder.desc;
-    }
-
-    pageState.page = 1;
-  };
-
-  const handleDeletedProductsToggleChange = () => {
-    pageState.includeInactive = !pageSnapshot.includeInactive;
-    pageState.page = 1;
-  };
-
-  const handleTestProductsToggleChange = () => {
-    pageState.showTest = !pageSnapshot.showTest;
-    pageState.page = 1;
-  };
-
-  const handleClusterChange = (value: string) => {
-    pageState.cluster = value;
-    pageState.page = 1;
-  };
-
-  const handleMinistryChange = (value: string) => {
-    pageState.ministry = value;
-    pageState.page = 1;
-  };
-
-  const clearFilters = () => {
-    if (clusterProviderRef.current) {
-      clusterProviderRef.current.value = '';
-    }
-    if (ministryRef.current) {
-      ministryRef.current.value = '';
-    }
-    if (sortRef.current) {
-      sortRef.current.value = '';
-    }
-
-    pageState.cluster = '';
-    pageState.ministry = '';
-    pageState.sortKey = '';
-    pageState.sortOrder = '';
-    pageState.includeInactive = false;
-    pageState.showTest = false;
-  };
 
   return (
-    <div className="flex gap-8 mr-10">
-      <div className="grid auto-rows-min grid-cols-1 gap-y-8 md:grid-cols-3 md:gap-x-6">
-        <fieldset className="w-full md:w-48 2xl:w-96">
-          <FormSelect
-            ref={sortRef}
-            id="id"
-            label="Sort By"
-            options={productSorts.map((v) => ({ label: v.humanFriendlyName, value: v.humanFriendlyName }))}
-            defaultValue={
-              productSorts.find((v) => v.sortKey === pageSnapshot.sortKey && v.sortOrder === pageSnapshot.sortOrder)
-                ?.humanFriendlyName
-            }
-            onChange={handleSortChange}
-          />
-        </fieldset>
-        <fieldset className="w-full md:w-48 2xl:w-96">
-          <div className="mt-2 md:mt-0 md:ml-4">
-            <FormSelect
-              ref={clusterProviderRef}
-              id="cluster"
-              label="Cluster"
-              options={[{ label: 'All Clusters', value: '' }, ...clusters.map((v) => ({ label: v, value: v }))]}
-              defaultValue={pageSnapshot.cluster}
-              onChange={handleClusterChange}
-            />
-          </div>
-        </fieldset>
-        <fieldset className="w-full md:w-48 2xl:w-96">
-          <div className="mt-2 md:mt-0 md:ml-4">
-            <FormSelect
-              ref={ministryRef}
-              id="ministry"
-              label="Ministry"
-              options={[{ label: `All Ministries`, value: '' }, ...ministryOptions]}
-              defaultValue={pageSnapshot.ministry}
-              onChange={handleMinistryChange}
-            />
-          </div>
-        </fieldset>
-        <FormToggle
-          id="includeInactive"
-          label={toggleDeletedProductsText}
-          checked={pageSnapshot.includeInactive}
-          onChange={handleDeletedProductsToggleChange}
-        />
-        <FormToggle
-          id="showTest"
-          label={toggleTestProductsText}
-          checked={pageSnapshot.showTest}
-          onChange={handleTestProductsToggleChange}
-        />
-        <div className="mt-8 md:mt-7 md:ml-4">
-          <button
-            className="min-w-max w-1/2 h-9 inline-flex items-center justify-center gap-x-2 rounded-md bg-bcblue text-white px-3 text-sm font-semibold shadow-sm ring-1 ring-inset transition-all duration-500 ring-gray-300 hover:bg-[#CCCCCE]"
-            onClick={clearFilters}
-          >
-            Clear Filters
-          </button>
-        </div>
-      </div>
+    <div className="grid grid-cols-1 gap-y-8 md:grid-cols-12 md:gap-x-6">
+      <FormMultiSelect
+        name="ministry"
+        label="Ministry"
+        value={[...(pageSnapshot.ministries ?? [])]}
+        data={ministryOptions}
+        onChange={(value) => {
+          pageState.ministries = value as Ministry[];
+          pageState.page = 1;
+        }}
+        classNames={{ wrapper: 'col-span-5' }}
+      />
+      <FormMultiSelect
+        name="cluster"
+        label="Cluster"
+        value={[...(pageSnapshot.clusters ?? [])]}
+        data={[...clusters.map((v) => ({ label: v, value: v }))]}
+        onChange={(value) => {
+          pageState.clusters = value as Cluster[];
+          pageState.page = 1;
+        }}
+        classNames={{ wrapper: 'col-span-3' }}
+      />
+      <FormMultiSelect
+        name="status"
+        label="Status"
+        value={[...(pageSnapshot.status ?? [])]}
+        data={Object.values(ProjectStatus)}
+        onChange={(value) => {
+          pageState.status = value as ProjectStatus[];
+          pageState.page = 1;
+        }}
+        classNames={{ wrapper: 'col-span-2' }}
+      />
+      <FormMultiSelect
+        name="temporary"
+        label="Temporary"
+        value={[...(pageSnapshot.temporary ?? [])]}
+        data={['YES', 'NO']}
+        onChange={(value) => {
+          pageState.temporary = value as ('YES' | 'NO')[];
+          pageState.page = 1;
+        }}
+        classNames={{ wrapper: 'col-span-2' }}
+      />
     </div>
   );
 }
