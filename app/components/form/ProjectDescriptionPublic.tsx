@@ -1,10 +1,11 @@
 import { Provider } from '@prisma/client';
 import classNames from 'classnames';
 import { useSession } from 'next-auth/react';
-import { useFormContext } from 'react-hook-form';
+import { Controller, useFormContext } from 'react-hook-form';
 import AGMinistryCheckBox from '@/components/form/AGMinistryCheckBox';
 import FormSelect from '@/components/generic/select/FormSelect';
-import { ministryOptions, providerOptions } from '@/constants';
+import { ministryOptions, providerOptions, reasonForSelectingCloudProviderOptions } from '@/constants';
+import FormMultiSelect from '../generic/select/FormMultiSelect';
 
 function stripSpecialCharacters(text: string) {
   const pattern = /[^A-Za-z0-9///.:+=@_ ]/g;
@@ -27,6 +28,7 @@ export default function ProjectDescriptionPublic({
     formState: { errors },
     getValues,
     setValue,
+    control,
   } = useFormContext();
 
   return (
@@ -109,7 +111,6 @@ export default function ProjectDescriptionPublic({
           </p>
           {['create', 'edit'].includes(mode) && <AGMinistryCheckBox disabled={disabled} />}
         </div>
-
         <div className="sm:col-span-3 sm:ml-10">
           <FormSelect
             id="provider"
@@ -133,6 +134,62 @@ export default function ProjectDescriptionPublic({
               here
             </a>
             .
+          </p>
+        </div>
+        <div className="sm:col-span-3 sm:mr-10">
+          <Controller
+            name="providerSelectionReasons"
+            control={control}
+            defaultValue={[]}
+            render={({ field: { onChange, value, onBlur } }) => (
+              <FormMultiSelect
+                name="providerSelectionReasons"
+                label="Select Reason for Choosing Cloud Provider"
+                data={reasonForSelectingCloudProviderOptions}
+                value={value}
+                onChange={onChange}
+                onBlur={onBlur}
+                disabled={disabled}
+                classNames={{ wrapper: 'mb-4', label: 'text-lg font-bold', input: 'focus:border-blue-500 border-1.5' }}
+              />
+            )}
+          />
+
+          <p
+            className={classNames(
+              errors.providerSelectionReasons ? 'text-red-400' : '',
+              'mt-3 text-sm leading-6 text-gray-600',
+            )}
+          >
+            Please select the main reason that led to your choice of the cloud provider.
+          </p>
+        </div>
+        <div className="sm:col-span-3 sm:ml-10">
+          <label htmlFor="providerSelectionReasonsNote" className="block text-sm font-medium leading-6 text-gray-900">
+            Description of Reason&#40;s&#41; for Selecting Cloud Provider
+          </label>
+          <div className="mt-2">
+            <textarea
+              disabled={disabled}
+              id="providerSelectionReasonsNote"
+              placeholder="Enter a description of the reason for choosing cloud proider..."
+              {...register('providerSelectionReasonsNote')}
+              rows={3}
+              className={classNames(
+                'block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6',
+                disabled
+                  ? 'disabled:bg-slate-50 disabled:text-slate-500 disabled:border-slate-200 disabled:shadow-noneinvalid:border-pink-500 invalid:text-pink-600 focus:invalid:border-pink-500 focus:invalid:ring-pink-500'
+                  : '',
+              )}
+            />
+          </div>
+          <p
+            className={classNames(
+              errors.providerSelectionReasonsNote ? 'text-red-400' : '',
+              'mt-3 text-sm leading-6 text-gray-600',
+            )}
+          >
+            Please provide a short description of the selected reason &#40;maximum of 1000 characters&#41;
           </p>
         </div>
       </div>

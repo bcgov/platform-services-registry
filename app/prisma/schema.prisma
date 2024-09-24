@@ -232,54 +232,58 @@ type PublicCloudDataChanges {
 }
 
 model PublicCloudProject {
-  id                       String               @id @default(auto()) @map("_id") @db.ObjectId
-  licencePlate             String               @unique
-  name                     String
-  description              String
-  status                   ProjectStatus
-  createdAt                DateTime             @default(now())
-  updatedAt                DateTime             @updatedAt
-  billingId                String               @db.ObjectId
-  billing                  Billing              @relation("billing", fields: [billingId], references: [id])
-  budget                   Budget
-  projectOwnerId           String               @db.ObjectId
-  projectOwner             User                 @relation("projectOwner", fields: [projectOwnerId], references: [id])
-  primaryTechnicalLeadId   String               @db.ObjectId
-  primaryTechnicalLead     User                 @relation("primaryTechnicalLead", fields: [primaryTechnicalLeadId], references: [id])
-  secondaryTechnicalLeadId String?              @db.ObjectId
-  secondaryTechnicalLead   User?                @relation("secondaryTechnicalLead", fields: [secondaryTechnicalLeadId], references: [id])
-  expenseAuthorityId       String?              @db.ObjectId
-  expenseAuthority         User?                @relation("expenseAuthority", fields: [expenseAuthorityId], references: [id])
-  ministry                 Ministry
-  provider                 Provider
-  environmentsEnabled      EnvironmentsEnabled
-  requests                 PublicCloudRequest[] @relation("project")
+  id                           String               @id @default(auto()) @map("_id") @db.ObjectId
+  licencePlate                 String               @unique
+  name                         String
+  description                  String
+  status                       ProjectStatus
+  createdAt                    DateTime             @default(now())
+  updatedAt                    DateTime             @updatedAt
+  billingId                    String               @db.ObjectId
+  billing                      Billing              @relation("billing", fields: [billingId], references: [id])
+  budget                       Budget
+  projectOwnerId               String               @db.ObjectId
+  projectOwner                 User                 @relation("projectOwner", fields: [projectOwnerId], references: [id])
+  primaryTechnicalLeadId       String               @db.ObjectId
+  primaryTechnicalLead         User                 @relation("primaryTechnicalLead", fields: [primaryTechnicalLeadId], references: [id])
+  secondaryTechnicalLeadId     String?              @db.ObjectId
+  secondaryTechnicalLead       User?                @relation("secondaryTechnicalLead", fields: [secondaryTechnicalLeadId], references: [id])
+  expenseAuthorityId           String?              @db.ObjectId
+  expenseAuthority             User?                @relation("expenseAuthority", fields: [expenseAuthorityId], references: [id])
+  ministry                     Ministry
+  provider                     Provider
+  providerSelectionReasons     String[]
+  providerSelectionReasonsNote String?
+  environmentsEnabled          EnvironmentsEnabled
+  requests                     PublicCloudRequest[] @relation("project")
 }
 
 model PublicCloudRequestedProject {
-  id                       String               @id @default(auto()) @map("_id") @db.ObjectId
-  licencePlate             String
-  name                     String
-  description              String
-  status                   ProjectStatus
-  createdAt                DateTime             @default(now())
-  billingId                String               @db.ObjectId
-  billing                  Billing              @relation("billing", fields: [billingId], references: [id])
-  budget                   Budget
-  projectOwnerId           String               @db.ObjectId
-  projectOwner             User                 @relation("projectOwner", fields: [projectOwnerId], references: [id])
-  primaryTechnicalLeadId   String               @db.ObjectId
-  primaryTechnicalLead     User                 @relation("primaryTechnicalLead", fields: [primaryTechnicalLeadId], references: [id])
-  secondaryTechnicalLeadId String?              @db.ObjectId
-  secondaryTechnicalLead   User?                @relation("secondaryTechnicalLead", fields: [secondaryTechnicalLeadId], references: [id])
-  expenseAuthorityId       String?              @db.ObjectId
-  expenseAuthority         User?                @relation("expenseAuthority", fields: [expenseAuthorityId], references: [id])
-  ministry                 Ministry
-  provider                 Provider
-  environmentsEnabled      EnvironmentsEnabled
-  decisionRequests         PublicCloudRequest[] @relation("decisionData")
-  requestRequests          PublicCloudRequest[] @relation("requestData")
-  originalRequests         PublicCloudRequest[] @relation("originalData")
+  id                           String               @id @default(auto()) @map("_id") @db.ObjectId
+  licencePlate                 String
+  name                         String
+  description                  String
+  status                       ProjectStatus
+  createdAt                    DateTime             @default(now())
+  billingId                    String               @db.ObjectId
+  billing                      Billing              @relation("billing", fields: [billingId], references: [id])
+  budget                       Budget
+  projectOwnerId               String               @db.ObjectId
+  projectOwner                 User                 @relation("projectOwner", fields: [projectOwnerId], references: [id])
+  primaryTechnicalLeadId       String               @db.ObjectId
+  primaryTechnicalLead         User                 @relation("primaryTechnicalLead", fields: [primaryTechnicalLeadId], references: [id])
+  secondaryTechnicalLeadId     String?              @db.ObjectId
+  secondaryTechnicalLead       User?                @relation("secondaryTechnicalLead", fields: [secondaryTechnicalLeadId], references: [id])
+  expenseAuthorityId           String?              @db.ObjectId
+  expenseAuthority             User?                @relation("expenseAuthority", fields: [expenseAuthorityId], references: [id])
+  ministry                     Ministry
+  provider                     Provider
+  providerSelectionReasons     String[]
+  providerSelectionReasonsNote String?
+  environmentsEnabled          EnvironmentsEnabled
+  decisionRequests             PublicCloudRequest[] @relation("decisionData")
+  requestRequests              PublicCloudRequest[] @relation("requestData")
+  originalRequests             PublicCloudRequest[] @relation("originalData")
 }
 
 type EnvironmentsEnabled {

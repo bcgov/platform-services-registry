@@ -24,6 +24,8 @@ export default async function createRequest(formData: PublicCloudCreateRequestBo
     name: formData.name,
     budget: formData.budget,
     provider: formData.provider,
+    providerSelectionReasons: formData.providerSelectionReasons,
+    providerSelectionReasonsNote: formData.providerSelectionReasonsNote,
     description: formData.description,
     ministry: formData.ministry,
     status: ProjectStatus.ACTIVE,

@@ -1,4 +1,5 @@
 import { EventType, ProjectStatus } from '@prisma/client';
+import _ from 'lodash';
 import createApiHandler from '@/core/api-handler';
 import { NoContent, CsvResponse } from '@/core/responses';
 import { ministryKeyToName } from '@/helpers/product';
@@ -36,6 +37,8 @@ export const POST = createApiHandler({
     Description: project.description,
     Ministry: ministryKeyToName(project.ministry),
     Provider: project.provider,
+    'Reasons for Selecting Cloud Provider': _.join(project.providerSelectionReasons, ', '),
+    'Description of Selected Reasons': project.providerSelectionReasonsNote,
     'Project Owner Email': project.projectOwner.email,
     'Project Owner Name': formatFullName(project.projectOwner),
     'Primary Technical Lead Email': project.primaryTechnicalLead.email,

@@ -38,7 +38,7 @@ export default function FormMultiSelect({
   return (
     <div className={classNames?.wrapper}>
       {label && (
-        <Label htmlFor={id} className={classNames?.label}>
+        <Label htmlFor={id} className={classnames(classNames?.label, 'mb-2')}>
           {label}
         </Label>
       )}
@@ -51,6 +51,7 @@ export default function FormMultiSelect({
         value={value}
         searchable
         disabled={disabled}
+        clearable
         classNames={{ input: classnames('text-md', classNames?.input) }}
       />
     </div>

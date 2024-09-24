@@ -15,6 +15,8 @@ export const POST = createApiHandler({
     pageSize = 5,
     ministry = '',
     provider = '',
+    providerSelectionReasonsNote = '',
+    providerSelectionReasons = [],
     includeInactive = false,
     sortKey,
     sortOrder,
