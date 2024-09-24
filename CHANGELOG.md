@@ -1,3 +1,40 @@
+## [0.34.2](https://github.com/bcgov/platform-services-registry/compare/v0.34.0...v0.34.2) (2024-09-24)
+
+### Features
+
+* **3165:** add label and select generic components ([27e2187](https://github.com/bcgov/platform-services-registry/commit/27e218782427c8f1527d229a652adb55bc1b1d3c))
+* **3364-3361:** hightlight changes to quota and reorder namespaces ([b6d447d](https://github.com/bcgov/platform-services-registry/commit/b6d447deb45cfac90dabfdb820e6656f3fa05973))
+* **3471:** add usage metrics for namespaces pods ([ebed667](https://github.com/bcgov/platform-services-registry/commit/ebed6673955e6efb9154457ae3d856a661da8954))
+* **3593-2:** add 'Completed' email template and trigger on edit request completed; update Approved email template ([830bc12](https://github.com/bcgov/platform-services-registry/commit/830bc12fa6ae20f341c12c511712335b2f159a80))
+* **3593-2:** adjust email templates for provisioning and editing products ([c28d189](https://github.com/bcgov/platform-services-registry/commit/c28d18973c86bc1f868a1721e454320a13608869))
+* **3593-3:** update mermaid diagram ([4cfdbdc](https://github.com/bcgov/platform-services-registry/commit/4cfdbdc3a6c85e49fb471927f6addeaa78f1b3ab))
+* **3593:** modify approval email templates and triggers. ([4a65e3f](https://github.com/bcgov/platform-services-registry/commit/4a65e3f9d6ee86f0de15e2efaec5e11e2ba7eb68))
+* **3593:** modify request approval email templates and triggers ([e59b808](https://github.com/bcgov/platform-services-registry/commit/e59b80831254c0309cfe517b0482274ae115c0bc))
+* **3647:** add saving screenshots, tweak e2e tests and sandbox image pulls ([bb9faa1](https://github.com/bcgov/platform-services-registry/commit/bb9faa14ce87f14ba20b195765edcb04693682c6))
+* **3663:** add graphic for when there are no comments to display ([296c19e](https://github.com/bcgov/platform-services-registry/commit/296c19e2ec24747c03eb203435fde07c8adf77a7))
+* **3669:** enhance eMOU workflow ([286f486](https://github.com/bcgov/platform-services-registry/commit/286f486c8cecbabcecd37cf7725d9afc81bde673))
+* **3697:** add separate billing code by providers ([9e117aa](https://github.com/bcgov/platform-services-registry/commit/9e117aaa2181ca48e17a40a03f86f8af76310ae9))
+* **3717:** add an admin script to resend eMOU signing emails ([1b7f909](https://github.com/bcgov/platform-services-registry/commit/1b7f909cde83ac07e55ba69c5297609bca4a495f))
+* **3814:** tweak public cloud create test to run in github actions ([093dc74](https://github.com/bcgov/platform-services-registry/commit/093dc7490dfcf0dfeda0bd48c41e9b10b16d7530))
+* **analytics:** add quota summary CSV endpoint ([71ffed4](https://github.com/bcgov/platform-services-registry/commit/71ffed46210a78dfa1471c7354fc0e3ef5f950b4))
+
+### Bug Fixes
+
+* **3364:** reorder quota namespaces in private cloud ([ef7335c](https://github.com/bcgov/platform-services-registry/commit/ef7335c88c32e5b168e219c086b855953ec85d42))
+* **3573:** capitalize CPU in the request summary page ([cf770a7](https://github.com/bcgov/platform-services-registry/commit/cf770a7489eb695562d7c12fd57e41b0be0163a8))
+* **3642:** update eMOU document for platform name ([83b1a1f](https://github.com/bcgov/platform-services-registry/commit/83b1a1fcadf27a71cd1f920dc6ba4b045c86dd3e))
+* **3773:** apply minimum validation for delete request decision ([18248a4](https://github.com/bcgov/platform-services-registry/commit/18248a4a2dcd26a3905636b555f846022860ca3f))
+* **3782:** resolve the issue approving edit requests ([9e1da00](https://github.com/bcgov/platform-services-registry/commit/9e1da00bcbac02efb53e5980d6ebc6ea78388ee2))
+* **3795:** remove duplicate group names ([1004aaf](https://github.com/bcgov/platform-services-registry/commit/1004aaf12c791c3f9763c3faa1ba14a1416989d2))
+* **3795:** update Keycloak role fetching logic ([ddd262e](https://github.com/bcgov/platform-services-registry/commit/ddd262ea168b916b922fab3cfb4da4360e4a4271))
+
+### Refactors
+
+* **3731:** revisit comment sections on email templates ([ceb9cd7](https://github.com/bcgov/platform-services-registry/commit/ceb9cd70ee8f79b30fdaeb375fad2d3d11adb700))
+* **3747:** optimize email templates ([c189f41](https://github.com/bcgov/platform-services-registry/commit/c189f41022bbb618bda02ee38f69a3cf84c91389))
+* **3747:** organize email templates ([d1ee4ef](https://github.com/bcgov/platform-services-registry/commit/d1ee4efeed94e33b0f04aceca995257b5c2332ac))
+* **3747:** organize email templates' types ([a822488](https://github.com/bcgov/platform-services-registry/commit/a8224885a74107dc647854cf20516154b5831682))
+* **3747:** update the email template function definitions ([352e8d1](https://github.com/bcgov/platform-services-registry/commit/352e8d1c676a15a222578c92cbaae11554fcfb1c))
 ## [0.34.0](https://github.com/bcgov/platform-services-registry/compare/v0.33.2...v0.34.0) (2024-09-04)
 
 ### Features
