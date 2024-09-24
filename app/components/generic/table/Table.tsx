@@ -1,6 +1,6 @@
 'use client';
 
-import { Button, Divider, Grid, LoadingOverlay, Box } from '@mantine/core';
+import { Button, Divider, Grid, LoadingOverlay, Box, ComboboxData } from '@mantine/core';
 import { createContext, useContext, useRef, useEffect } from 'react';
 import { proxy, useSnapshot } from 'valtio';
 import Pagination from './Pagination';
@@ -13,6 +13,7 @@ const defaultValue = {
   pageSize: 0,
   totalCount: 0,
   search: '',
+  sortKey: '',
   onPagination: (page: number, pageSize: number) => {},
   isLoading: false,
 };
@@ -29,6 +30,9 @@ export default function Table({
   onPagination = () => {},
   onSearch,
   onExport,
+  onSort,
+  sortOptions = [],
+  sortKey = '',
   filters,
   isLoading = false,
   children,
@@ -42,6 +46,9 @@ export default function Table({
   onPagination?: (page: number, pageSize: number) => void;
   onSearch?: (search: string) => void;
   onExport?: () => Promise<boolean>;
+  onSort?: (sortKey: string) => void;
+  sortOptions?: ComboboxData;
+  sortKey?: string;
   filters?: React.ReactNode;
   isLoading?: boolean;
   children: React.ReactNode;
@@ -53,6 +60,7 @@ export default function Table({
     state.pageSize = pageSize;
     state.totalCount = totalCount;
     state.search = search;
+    state.sortKey = sortKey;
     state.onPagination = onPagination;
     state.isLoading = isLoading;
   }, [state, page, pageSize, totalCount, search, onPagination, isLoading]);
@@ -62,7 +70,14 @@ export default function Table({
       <div className="border-2 rounded-xl overflow-hidden">
         <TableHeader title={title} description={description}>
           {(onSearch || onExport || filters) && (
-            <SearchFilterExport initialSearch={search} onSearch={onSearch} onExport={onExport}>
+            <SearchFilterExport
+              initialSearch={search}
+              onSearch={onSearch}
+              onExport={onExport}
+              onSort={onSort}
+              sortOptions={sortOptions}
+              sortKey={sortKey}
+            >
               {filters}
             </SearchFilterExport>
           )}

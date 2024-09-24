@@ -1,4 +1,4 @@
-import { Prisma } from '@prisma/client';
+import { Cluster, Ministry, Prisma } from '@prisma/client';
 import { useRef } from 'react';
 import { useSnapshot } from 'valtio';
 import FormToggle from '@/components/generic/checkbox/FormToggle';
@@ -34,11 +34,11 @@ export default function FilterPanel() {
   };
 
   const handleClusterChange = (value: string) => {
-    pageState.cluster = value;
+    pageState.cluster = value as Cluster;
   };
 
   const handleMinistryChange = (value: string) => {
-    pageState.ministry = value;
+    pageState.ministry = value as Ministry;
   };
 
   const clearFilters = () => {
@@ -52,10 +52,10 @@ export default function FilterPanel() {
       sortRef.current.value = '';
     }
 
-    pageState.cluster = '';
-    pageState.ministry = '';
+    pageState.cluster = undefined;
+    pageState.ministry = undefined;
     pageState.sortKey = '';
-    pageState.sortOrder = '';
+    pageState.sortOrder = Prisma.SortOrder.asc;
     pageState.includeInactive = false;
   };
 

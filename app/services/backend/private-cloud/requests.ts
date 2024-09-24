@@ -4,8 +4,8 @@ import {
   PrivateCloudRequestDetailDecorated,
   PrivateCloudRequestSearch,
 } from '@/types/private-cloud';
+import { PrivateCloudRequestSearchBody } from '@/validation-schemas/private-cloud';
 import { instance as parentInstance } from './instance';
-import { PrivateCloudProductSearchCriteria } from './products';
 
 export const instance = axios.create({
   ...parentInstance.defaults,
@@ -32,7 +32,7 @@ export async function getPrivateCloudRequest(id: string) {
   return result as PrivateCloudRequestDetailDecorated;
 }
 
-export async function searchPrivateCloudRequests(data: PrivateCloudProductSearchCriteria) {
+export async function searchPrivateCloudRequests(data: PrivateCloudRequestSearchBody) {
   const result = await instance.post('/search', data).then((res) => {
     return res.data;
   });

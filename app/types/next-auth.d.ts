@@ -101,3 +101,9 @@ declare module 'next-auth/jwt' {
     roles?: string[];
   }
 }
+
+// This issue requires further investigation.
+// See https://github.com/pmndrs/valtio/issues/327#issuecomment-1035937848
+declare module 'valtio' {
+  function useSnapshot<T extends object>(p: T): T;
+}

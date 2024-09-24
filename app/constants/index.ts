@@ -1,4 +1,4 @@
-import { Cluster, Ministry, Provider } from '@prisma/client';
+import { Cluster, Ministry, Prisma, Provider } from '@prisma/client';
 import { CpuQuotaEnum, MemoryQuotaEnum, StorageQuotaEnum } from '@/validation-schemas/private-cloud';
 
 export const clusters = Object.values(Cluster).filter((cluster) => cluster !== 'GOLDDR');
@@ -171,42 +171,42 @@ export const productSorts = [
   {
     sortKey: 'updatedAt',
     humanFriendlyName: 'Product last update (new to old)',
-    sortOrder: 'desc',
+    sortOrder: Prisma.SortOrder.desc,
   },
   {
     sortKey: 'updatedAt',
     humanFriendlyName: 'Product last update (old to new)',
-    sortOrder: 'asc',
+    sortOrder: Prisma.SortOrder.asc,
   },
   {
     sortKey: 'name',
     humanFriendlyName: 'Product name (A-Z)',
-    sortOrder: 'asc',
+    sortOrder: Prisma.SortOrder.asc,
   },
   {
     sortKey: 'name',
     humanFriendlyName: 'Product name (Z-A)',
-    sortOrder: 'desc',
+    sortOrder: Prisma.SortOrder.desc,
   },
   {
     sortKey: 'description',
     humanFriendlyName: 'Product description (A-Z)',
-    sortOrder: 'asc',
+    sortOrder: Prisma.SortOrder.asc,
   },
   {
     sortKey: 'description',
     humanFriendlyName: 'Product description (Z-A)',
-    sortOrder: 'desc',
+    sortOrder: Prisma.SortOrder.desc,
   },
   {
     sortKey: 'licencePlate',
     humanFriendlyName: 'Product Licence Plate (A-Z)',
-    sortOrder: 'asc',
+    sortOrder: Prisma.SortOrder.asc,
   },
   {
     sortKey: 'licencePlate',
     humanFriendlyName: 'Product Licence Plate (Z-A)',
-    sortOrder: 'desc',
+    sortOrder: Prisma.SortOrder.desc,
   },
 ];
 
