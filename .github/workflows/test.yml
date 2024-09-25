@@ -18,7 +18,7 @@ jobs:
     timeout-minutes: 20
     steps:
     - uses: hmarr/debug-action@f7318c783045ac39ed9bb497e22ce835fdafbfe6
-    - uses: actions/checkout@6d193bf28034eafb982f37bd894289fe649468fc
+    - uses: actions/checkout@d632683dd7b4114ad314bca15554477dd762a938
 
     - name: Setup Tools
       uses: ./.github/actions/setup-tools
@@ -35,7 +35,7 @@ jobs:
     timeout-minutes: 20
     steps:
     - uses: hmarr/debug-action@f7318c783045ac39ed9bb497e22ce835fdafbfe6
-    - uses: actions/checkout@6d193bf28034eafb982f37bd894289fe649468fc
+    - uses: actions/checkout@d632683dd7b4114ad314bca15554477dd762a938
 
     - name: Setup Tools
       uses: ./.github/actions/setup-tools
@@ -52,7 +52,7 @@ jobs:
     timeout-minutes: 20
     steps:
     - uses: hmarr/debug-action@f7318c783045ac39ed9bb497e22ce835fdafbfe6
-    - uses: actions/checkout@6d193bf28034eafb982f37bd894289fe649468fc
+    - uses: actions/checkout@d632683dd7b4114ad314bca15554477dd762a938
 
     - name: Setup Tools
       uses: ./.github/actions/setup-tools
