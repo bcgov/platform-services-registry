@@ -5,6 +5,7 @@ import { proxy, useSnapshot } from 'valtio';
 import { z } from 'zod';
 import Table from '@/components/generic/table/Table';
 import TableBodyPublicRequests from '@/components/table/TableBodyPublicRequests';
+import { requestSortsInProduct } from '@/constants';
 import createClientPage from '@/core/client-page';
 import { processPublicCloudRequestData } from '@/helpers/row-mapper';
 import { searchPublicCloudRequests } from '@/services/backend/public-cloud/requests';
@@ -42,9 +43,10 @@ export default publicCloudRequests(({ pathParams, queryParams, session }) => {
   return (
     <Table
       totalCount={totalCount}
-      page={snap.page}
-      pageSize={snap.pageSize}
+      page={snap.page ?? 1}
+      pageSize={snap.pageSize ?? 10}
       search={snap.search}
+      sortKey={snap.sortValue}
       onPagination={(page: number, pageSize: number) => {
         pageState.page = page;
         pageState.pageSize = pageSize;
@@ -53,6 +55,11 @@ export default publicCloudRequests(({ pathParams, queryParams, session }) => {
         pageState.page = 1;
         pageState.search = searchTerm;
       }}
+      onSort={(sortValue) => {
+        pageState.page = 1;
+        pageState.sortValue = sortValue;
+      }}
+      sortOptions={requestSortsInProduct.map((v) => v.label)}
       filters={<FilterPanel />}
       isLoading={isLoading}
     >

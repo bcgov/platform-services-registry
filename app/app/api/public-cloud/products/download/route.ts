@@ -4,28 +4,24 @@ import { NoContent, CsvResponse } from '@/core/responses';
 import { ministryKeyToName } from '@/helpers/product';
 import { formatFullName } from '@/helpers/user';
 import { createEvent } from '@/mutations/events';
+import { searchPublicCloudProducts } from '@/queries/public-cloud-products';
 import { formatDateSimple } from '@/utils/date';
 import { publicCloudProductSearchNoPaginationBodySchema } from '@/validation-schemas/public-cloud';
-import searchOp from '../_operations/search';
 
 export const POST = createApiHandler({
   roles: ['user'],
   validations: { body: publicCloudProductSearchNoPaginationBodySchema },
 })(async ({ session, body }) => {
-  const { search = '', ministry, provider, includeInactive = false, sortKey, sortOrder } = body;
-
   const searchProps = {
-    search,
     page: 1,
     pageSize: 10000,
-    ministry,
-    provider,
-    status: includeInactive ? undefined : ProjectStatus.ACTIVE,
-    sortKey: sortKey || undefined,
-    sortOrder,
+    ...body,
   };
 
-  const { docs, totalCount } = await searchOp({ ...searchProps, session });
+  const { docs, totalCount } = await searchPublicCloudProducts({
+    session,
+    ...searchProps,
+  });
 
   if (docs.length === 0) {
     return NoContent();

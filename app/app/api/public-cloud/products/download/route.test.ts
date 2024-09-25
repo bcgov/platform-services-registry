@@ -1,5 +1,5 @@
 import { expect } from '@jest/globals';
-import { DecisionStatus, Ministry, Provider, TaskType, TaskStatus } from '@prisma/client';
+import { DecisionStatus, Ministry, Provider, TaskType, TaskStatus, ProjectStatus } from '@prisma/client';
 import { parse } from 'csv-parse/sync';
 import prisma from '@/core/prisma';
 import { createSamplePublicCloudProductData } from '@/helpers/mock-resources';
@@ -311,9 +311,9 @@ describe('Download Public Cloud Products - Validations', () => {
     await mockSessionByRole('admin');
 
     const res1 = await downloadPublicCloudProjects({
-      ministry: Ministry.AEST,
-      provider: Provider.AWS,
-      includeInactive: false,
+      ministries: [Ministry.AEST],
+      providers: [Provider.AWS],
+      status: [ProjectStatus.ACTIVE],
     });
 
     expect(res1.status).toBe(200);
@@ -353,7 +353,7 @@ describe('Download Public Cloud Products - Validations', () => {
     await mockSessionByRole('admin');
 
     const res1 = await downloadPublicCloudProjects({
-      provider: 'INVALID' as Provider,
+      providers: ['INVALID' as Provider],
     });
 
     expect(res1.status).toBe(400);
@@ -363,7 +363,7 @@ describe('Download Public Cloud Products - Validations', () => {
     await mockSessionByRole('admin');
 
     const res1 = await downloadPublicCloudProjects({
-      ministry: 'INVALID' as Ministry,
+      ministries: ['INVALID' as Ministry],
     });
 
     expect(res1.status).toBe(400);

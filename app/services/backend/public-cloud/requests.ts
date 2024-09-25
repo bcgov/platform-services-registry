@@ -1,12 +1,28 @@
+import { Prisma } from '@prisma/client';
 import axios from 'axios';
+import { requestSorts } from '@/constants';
 import {
-  PublicCloudRequestSimpleDecorated,
   PublicCloudRequestDetail,
   PublicCloudRequestDetailDecorated,
   PublicCloudRequestSearch,
 } from '@/types/public-cloud';
+import { PublicCloudRequestSearchBody } from '@/validation-schemas/public-cloud';
 import { instance as parentInstance } from './instance';
-import { PublicCloudProductSearchCriteria } from './products';
+
+function prepareSearchPayload(data: PublicCloudRequestSearchBody) {
+  const reqData = { ...data };
+  const selectedOption = requestSorts.find((sort) => sort.label === reqData.sortValue);
+
+  if (selectedOption) {
+    reqData.sortKey = selectedOption.sortKey;
+    reqData.sortOrder = selectedOption.sortOrder;
+  } else {
+    reqData.sortKey = '';
+    reqData.sortOrder = Prisma.SortOrder.desc;
+  }
+
+  return reqData;
+}
 
 export const instance = axios.create({
   ...parentInstance.defaults,
@@ -33,8 +49,9 @@ export async function getPublicCloudRequest(id: string) {
   return result as PublicCloudRequestDetailDecorated;
 }
 
-export async function searchPublicCloudRequests(data: PublicCloudProductSearchCriteria) {
-  const result = await instance.post('/search', data).then((res) => {
+export async function searchPublicCloudRequests(data: PublicCloudRequestSearchBody) {
+  const reqData = prepareSearchPayload(data);
+  const result = await instance.post('/search', reqData).then((res) => {
     return res.data;
   });
 

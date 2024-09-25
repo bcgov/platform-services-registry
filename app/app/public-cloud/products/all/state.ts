@@ -1,15 +1,16 @@
-import { Prisma } from '@prisma/client';
+import { Prisma, ProjectStatus } from '@prisma/client';
 import { proxy, useSnapshot } from 'valtio';
-import { PublicCloudProductSearchCriteria } from '@/services/backend/public-cloud/products';
+import { productSorts } from '@/constants';
+import { PublicCloudProductSearchBody } from '@/validation-schemas/public-cloud';
 
-export const pageState = proxy<PublicCloudProductSearchCriteria>({
+export const pageState = proxy<PublicCloudProductSearchBody>({
   search: '',
   page: 1,
   pageSize: 10,
-  licencePlate: '',
-  ministry: '',
-  provider: '',
-  includeInactive: false,
-  sortKey: '',
-  sortOrder: Prisma.SortOrder.desc,
+  ministries: [],
+  providers: [],
+  status: [ProjectStatus.ACTIVE],
+  sortValue: productSorts[0].label,
+  sortKey: productSorts[0].sortKey,
+  sortOrder: productSorts[0].sortOrder,
 });
