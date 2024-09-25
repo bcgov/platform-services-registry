@@ -1,5 +1,5 @@
 import { faker } from '@faker-js/faker';
-import { clusters, ministries, providers } from '@/constants';
+import { ministries, clusters, providers } from '@/constants';
 import { mockNoRoleUsers } from '@/helpers/mock-users';
 import { getRandomItem } from '@/utils/collection';
 import { generateShortId } from '@/utils/uuid';

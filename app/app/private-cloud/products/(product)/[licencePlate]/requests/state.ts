@@ -1,5 +1,5 @@
 import { proxy, useSnapshot } from 'valtio';
-import { requestSortsInProduct } from '@/constants/private-cloud';
+import { requestSortsInProduct } from '@/constants';
 import { PrivateCloudRequestSearchBody } from '@/validation-schemas/private-cloud';
 
 export const pageState = proxy<PrivateCloudRequestSearchBody>({

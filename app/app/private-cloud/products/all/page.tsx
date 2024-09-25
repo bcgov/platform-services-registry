@@ -4,7 +4,7 @@ import { useQuery } from '@tanstack/react-query';
 import { proxy, useSnapshot } from 'valtio';
 import Table from '@/components/generic/table/Table';
 import TableBodyPrivateProducts from '@/components/table/TableBodyPrivateProducts';
-import { productSorts } from '@/constants/private-cloud';
+import { productSorts } from '@/constants';
 import createClientPage from '@/core/client-page';
 import { processPrivateCloudProductData } from '@/helpers/row-mapper';
 import { searchPrivateCloudProducts, downloadPrivateCloudProducts } from '@/services/backend/private-cloud/products';

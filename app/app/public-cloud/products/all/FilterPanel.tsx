@@ -4,8 +4,7 @@ import { useEffect, useRef, useState } from 'react';
 import { useSnapshot, subscribe } from 'valtio';
 import FormToggle from '@/components/generic/checkbox/FormToggle';
 import FormSelect from '@/components/generic/select/FormSelect';
-import { ministryOptions, providerOptions } from '@/constants';
-import { productSorts } from '@/constants/private-cloud';
+import { ministryOptions, productSorts, providerOptions } from '@/constants';
 import { pageState } from './state';
 
 export default function FilterPanel() {
