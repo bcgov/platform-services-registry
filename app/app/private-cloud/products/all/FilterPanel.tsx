@@ -8,11 +8,11 @@ export default function FilterPanel() {
   const pageSnapshot = useSnapshot(pageState);
 
   return (
-    <div className="grid grid-cols-1 gap-y-8 md:grid-cols-12 md:gap-x-6">
+    <div className="grid grid-cols-1 gap-y-2 md:grid-cols-12 md:gap-x-3">
       <FormMultiSelect
         name="ministry"
         label="Ministry"
-        value={[...(pageSnapshot.ministries ?? [])]}
+        value={pageSnapshot.ministries ?? []}
         data={ministryOptions}
         onChange={(value) => {
           pageState.ministries = value as Ministry[];
@@ -23,7 +23,7 @@ export default function FilterPanel() {
       <FormMultiSelect
         name="cluster"
         label="Cluster"
-        value={[...(pageSnapshot.clusters ?? [])]}
+        value={pageSnapshot.clusters ?? []}
         data={[...clusters.map((v) => ({ label: v, value: v }))]}
         onChange={(value) => {
           pageState.clusters = value as Cluster[];
@@ -34,7 +34,7 @@ export default function FilterPanel() {
       <FormMultiSelect
         name="status"
         label="Status"
-        value={[...(pageSnapshot.status ?? [])]}
+        value={pageSnapshot.status ?? []}
         data={Object.values(ProjectStatus)}
         onChange={(value) => {
           pageState.status = value as ProjectStatus[];
@@ -45,7 +45,7 @@ export default function FilterPanel() {
       <FormMultiSelect
         name="temporary"
         label="Temporary"
-        value={[...(pageSnapshot.temporary ?? [])]}
+        value={pageSnapshot.temporary ?? []}
         data={['YES', 'NO']}
         onChange={(value) => {
           pageState.temporary = value as ('YES' | 'NO')[];

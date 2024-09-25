@@ -1,11 +1,10 @@
 'use client';
 
-import { Prisma } from '@prisma/client';
 import { useQuery } from '@tanstack/react-query';
 import { proxy, useSnapshot } from 'valtio';
 import Table from '@/components/generic/table/Table';
 import TableBodyPrivateProducts from '@/components/table/TableBodyPrivateProducts';
-import { productSorts } from '@/constants';
+import { productSorts } from '@/constants/private-cloud';
 import createClientPage from '@/core/client-page';
 import { processPrivateCloudProductData } from '@/helpers/row-mapper';
 import { searchPrivateCloudProducts, downloadPrivateCloudProducts } from '@/services/backend/private-cloud/products';
@@ -42,10 +41,7 @@ export default privateCloudProducts(({ pathParams, queryParams, session }) => {
         page={snap.page ?? 1}
         pageSize={snap.pageSize ?? 10}
         search={snap.search}
-        sortKey={
-          (productSorts.find((v) => v.sortKey === snap.sortKey && v.sortOrder === snap.sortOrder) ?? productSorts[0])
-            ?.humanFriendlyName
-        }
+        sortKey={snap.sortValue}
         onPagination={(page: number, pageSize: number) => {
           pageState.page = page;
           pageState.pageSize = pageSize;
@@ -58,20 +54,11 @@ export default privateCloudProducts(({ pathParams, queryParams, session }) => {
           const result = await downloadPrivateCloudProducts(snap);
           return result;
         }}
-        onSort={(sortKey) => {
+        onSort={(sortValue) => {
           pageState.page = 1;
-
-          const selectedOption = productSorts.find((privateSortName) => privateSortName.humanFriendlyName === sortKey);
-
-          if (selectedOption) {
-            pageState.sortKey = selectedOption.sortKey;
-            pageState.sortOrder = selectedOption.sortOrder;
-          } else {
-            pageState.sortKey = '';
-            pageState.sortOrder = Prisma.SortOrder.desc;
-          }
+          pageState.sortValue = sortValue;
         }}
-        sortOptions={productSorts.map((v) => ({ label: v.humanFriendlyName, value: v.humanFriendlyName }))}
+        sortOptions={productSorts.map((v) => v.label)}
         filters={<FilterPanel />}
         isLoading={isLoading}
       >
