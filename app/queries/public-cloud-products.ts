@@ -1,12 +1,14 @@
-import { Ministry, Provider, ProjectStatus, Prisma } from '@prisma/client';
+import { Prisma } from '@prisma/client';
+import _isNumber from 'lodash-es/isNumber';
 import { Session } from 'next-auth';
 import prisma from '@/core/prisma';
+import { parsePaginationParams } from '@/helpers/pagination';
 import {
-  PublicCloudProductSimple,
   PublicCloudProductSearch,
   PublicCloudProductDetail,
   PublicCloudProductDetailDecorated,
 } from '@/types/public-cloud';
+import { PublicCloudProductSearchBody } from '@/validation-schemas/public-cloud';
 import { getMatchingUserIds } from './users';
 
 export const publicCloudProductSimpleInclude = {
@@ -46,25 +48,25 @@ export async function searchPublicCloudProducts({
   session,
   skip,
   take,
-  ministry,
-  provider,
+  page,
+  pageSize,
+  ministries,
+  providers,
   status,
   search,
   sortKey = defaultSortKey,
   sortOrder = Prisma.SortOrder.desc,
   extraFilter,
-}: {
+}: PublicCloudProductSearchBody & {
   session: Session;
-  skip: number;
-  take: number;
-  status?: ProjectStatus;
-  ministry?: Ministry;
-  provider?: Provider;
-  search?: string;
-  sortKey?: string;
-  sortOrder?: Prisma.SortOrder;
+  skip?: number;
+  take?: number;
   extraFilter?: Prisma.PublicCloudProjectWhereInput;
 }) {
+  if (!_isNumber(skip) && !_isNumber(take) && page && pageSize) {
+    ({ skip, take } = parsePaginationParams(page, pageSize, 10));
+  }
+
   const where: Prisma.PublicCloudProjectWhereInput = extraFilter ?? {};
   const orderBy = { [sortKey || defaultSortKey]: Prisma.SortOrder[sortOrder] };
 
@@ -89,16 +91,16 @@ export async function searchPublicCloudProducts({
     }
   }
 
-  if (ministry) {
-    where.ministry = ministry as Ministry;
+  if (ministries && ministries.length > 0) {
+    where.ministry = { in: ministries };
   }
 
-  if (provider) {
-    where.provider = provider as Provider;
+  if (providers && providers.length > 0) {
+    where.provider = { in: providers };
   }
 
-  if (status) {
-    where.status = status;
+  if (status && status.length > 0) {
+    where.status = { in: status };
   }
 
   const [docs, totalCount] = await Promise.all([

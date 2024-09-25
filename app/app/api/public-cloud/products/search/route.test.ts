@@ -1,5 +1,5 @@
 import { expect } from '@jest/globals';
-import { DecisionStatus, Ministry, Provider, TaskType, TaskStatus } from '@prisma/client';
+import { DecisionStatus, Ministry, Provider, TaskType, TaskStatus, ProjectStatus } from '@prisma/client';
 import prisma from '@/core/prisma';
 import { createSamplePublicCloudProductData } from '@/helpers/mock-resources';
 import { mockNoRoleUsers, findMockUserByIdr, findOtherMockUsers } from '@/helpers/mock-users';
@@ -257,9 +257,9 @@ describe('Search Public Cloud Products - Validations', () => {
     await mockSessionByRole('admin');
 
     const res1 = await searchPublicCloudProjects({
-      ministry: Ministry.AEST,
-      provider: Provider.AWS,
-      includeInactive: false,
+      ministries: [Ministry.AEST],
+      providers: [Provider.AWS],
+      status: [ProjectStatus.ACTIVE],
     });
 
     expect(res1.status).toBe(200);
