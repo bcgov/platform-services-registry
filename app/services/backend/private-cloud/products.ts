@@ -1,6 +1,6 @@
 import { Prisma, PrivateCloudComment } from '@prisma/client';
 import axios from 'axios';
-import { productSorts } from '@/constants/private-cloud';
+import { productSorts } from '@/constants';
 import {
   PrivateCloudRequestSimpleDecorated,
   PrivateCloudProductDetailDecorated,

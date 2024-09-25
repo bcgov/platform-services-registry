@@ -1,7 +1,7 @@
 import { Cluster, DecisionStatus, Ministry, Prisma, ProjectStatus, RequestType } from '@prisma/client';
 import _isString from 'lodash-es/isString';
 import { string, z } from 'zod';
-import { phoneNumberRegex } from '@/constants/regex';
+import { phoneNumberRegex } from '@/constants';
 import { processEnumString, processUpperEnumString, processBoolean } from '@/utils/zod';
 import { userSchema, requestDecisionEnum } from './shared';
 

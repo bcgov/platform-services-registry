@@ -1,6 +1,6 @@
 import { Prisma, ProjectStatus } from '@prisma/client';
 import { proxy, useSnapshot } from 'valtio';
-import { productSorts } from '@/constants/private-cloud';
+import { productSorts } from '@/constants';
 import { PrivateCloudProductSearchBody } from '@/validation-schemas/private-cloud';
 
 export const pageState = proxy<PrivateCloudProductSearchBody>({

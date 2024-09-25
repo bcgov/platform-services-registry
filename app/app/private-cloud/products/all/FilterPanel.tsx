@@ -1,7 +1,7 @@
 import { Ministry, Cluster, Prisma, ProjectStatus } from '@prisma/client';
 import { useSnapshot } from 'valtio';
 import FormMultiSelect from '@/components/generic/select/FormMultiSelect';
-import { clusters, ministryOptions } from '@/constants';
+import { ministryOptions, clusters } from '@/constants';
 import { pageState } from './state';
 
 export default function FilterPanel() {

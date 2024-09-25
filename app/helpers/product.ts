@@ -5,7 +5,6 @@ import _isString from 'lodash-es/isString';
 import _mapValues from 'lodash-es/mapValues';
 import _pick from 'lodash-es/pick';
 import { ministryOptions } from '@/constants';
-import { diffExt, DiffChange } from '@/utils/diff';
 import { extractNumbers } from '@/utils/string';
 
 export function ministryKeyToName(key: string) {

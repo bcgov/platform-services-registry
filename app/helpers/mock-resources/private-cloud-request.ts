@@ -1,6 +1,6 @@
 import { faker } from '@faker-js/faker';
-import { Prisma, Cluster, Provider, ProjectStatus, RequestType, DecisionStatus } from '@prisma/client';
-import { clusters, ministries, providers, cpuOptions, memoryOptions, storageOptions } from '@/constants';
+import { ProjectStatus, RequestType, DecisionStatus } from '@prisma/client';
+import { cpuOptions, memoryOptions, storageOptions } from '@/constants';
 import { PrivateCloudRequestDetail } from '@/types/private-cloud';
 import { generateShortId } from '@/utils/uuid';
 import { getRandomMinistry, getRandomCluster, getRandomUser } from './core';
