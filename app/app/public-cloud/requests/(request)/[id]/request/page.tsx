@@ -193,7 +193,13 @@ export default publicCloudProductRequest(({ pathParams, queryParams, session, ro
 
   return (
     <div>
-      <PublicCloudBillingInfo product={publicSnap.currentRequest.decisionData} className="mb-2" />
+      <PublicCloudBillingInfo
+        product={{
+          ...publicSnap.currentRequest.decisionData,
+          providerSelectionReasons: [...publicSnap.currentRequest.decisionData.providerSelectionReasons], // Convert to mutable array
+        }}
+      />
+
       <FormProvider {...methods}>
         <FormErrorNotification />
         <form
