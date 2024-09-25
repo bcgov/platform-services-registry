@@ -180,10 +180,15 @@ export default publicCloudProductEdit(({ pathParams, queryParams, session }) => 
   ];
 
   const isSubmitEnabled = formState.isDirty || isSecondaryTechLeadRemoved;
-
   return (
     <div>
-      <PublicCloudBillingInfo product={snap.currentProduct} className="mb-2" />
+      <PublicCloudBillingInfo
+        product={{
+          ...snap.currentProduct,
+          providerSelectionReasons: [...snap.currentProduct.providerSelectionReasons],
+        }}
+        className="mb-2"
+      />
       <FormProvider {...methods}>
         <FormErrorNotification />
         <form autoComplete="off" onSubmit={methods.handleSubmit(() => setOpenComment(true))}>
