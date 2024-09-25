@@ -1,7 +1,11 @@
 import { Ministry, Cluster, Prisma } from '@prisma/client';
+import _isNumber from 'lodash-es/isNumber';
 import { Session } from 'next-auth';
+import { requestSorts } from '@/constants/private-cloud';
 import prisma from '@/core/prisma';
+import { parsePaginationParams } from '@/helpers/pagination';
 import { PrivateCloudRequestDetailDecorated, PrivateCloudRequestSearch } from '@/types/private-cloud';
+import { PrivateCloudRequestSearchBody } from '@/validation-schemas/private-cloud';
 import { getMatchingUserIds } from './users';
 
 export const privateCloudRequestSimpleInclude = {
@@ -53,42 +57,42 @@ export const privateCloudRequestDetailInclude = {
 };
 
 const defaultSortKey = 'updatedAt';
+const defaultOrderBy = { [defaultSortKey]: Prisma.SortOrder.desc };
 
 export async function searchPrivateCloudRequests({
   session,
   skip,
   take,
+  page,
+  pageSize,
   licencePlate,
-  ministry,
-  cluster,
+  ministries,
+  clusters,
+  types,
+  status,
+  temporary,
   search,
   sortKey = defaultSortKey,
   sortOrder = Prisma.SortOrder.desc,
   extraFilter,
-  isTest,
-}: {
+}: PrivateCloudRequestSearchBody & {
   session: Session;
-  skip: number;
-  take: number;
-  licencePlate?: string;
-  ministry?: string;
-  cluster?: string;
-  search?: string;
-  sortKey?: string;
-  sortOrder?: Prisma.SortOrder;
+  skip?: number;
+  take?: number;
   extraFilter?: Prisma.PrivateCloudRequestWhereInput;
-  isTest: boolean;
 }) {
-  const decisionDatawhere: Prisma.PrivateCloudRequestedProjectWhereInput = isTest
-    ? {
-        isTest: isTest,
-      }
-    : {};
+  if (!_isNumber(skip) && !_isNumber(take) && page && pageSize) {
+    ({ skip, take } = parsePaginationParams(page, pageSize, 10));
+  }
 
-  const orderBy =
-    sortKey === 'updatedAt'
-      ? { updatedAt: Prisma.SortOrder[sortOrder] }
-      : { requestData: { [sortKey]: Prisma.SortOrder[sortOrder] } };
+  const decisionDatawhere: Prisma.PrivateCloudRequestedProjectWhereInput = {};
+
+  const sortOption = requestSorts.find((sort) => sort.sortKey === sortKey);
+  let orderBy!: Prisma.PrivateCloudRequestOrderByWithRelationInput;
+  if (sortOption) {
+    const order = { [sortKey]: Prisma.SortOrder[sortOrder] };
+    orderBy = sortOption.inData ? { decisionData: order } : order;
+  }
 
   if (search === '*') search = '';
 
@@ -113,12 +117,16 @@ export async function searchPrivateCloudRequests({
     decisionDatawhere.licencePlate = licencePlate;
   }
 
-  if (ministry) {
-    decisionDatawhere.ministry = ministry as Ministry;
+  if (ministries && ministries.length > 0) {
+    decisionDatawhere.ministry = { in: ministries };
   }
 
-  if (cluster) {
-    decisionDatawhere.cluster = cluster as Cluster;
+  if (clusters && clusters.length > 0) {
+    decisionDatawhere.cluster = { in: clusters };
+  }
+
+  if (temporary && temporary.length === 1) {
+    decisionDatawhere.isTest = temporary[0] === 'YES';
   }
 
   const matchingRequestedPrivateProjects = await prisma.privateCloudRequestedProject.findMany({
@@ -129,13 +137,21 @@ export async function searchPrivateCloudRequests({
   const where: Prisma.PrivateCloudRequestWhereInput = extraFilter ?? {};
   where.decisionDataId = { in: matchingRequestedPrivateProjects.map((proj) => proj.id) };
 
+  if (types && types.length > 0) {
+    where.type = { in: types };
+  }
+
+  if (status && status.length > 0) {
+    where.decisionStatus = { in: status };
+  }
+
   const [docs, totalCount] = await Promise.all([
     prisma.privateCloudRequest.findMany({
       where,
       skip,
       take,
       include: privateCloudRequestSimpleInclude,
-      orderBy,
+      orderBy: orderBy ?? defaultOrderBy,
       session: session as never,
     }),
     prisma.privateCloudRequest.count({

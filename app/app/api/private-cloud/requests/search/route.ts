@@ -1,39 +1,17 @@
 import _isString from 'lodash-es/isString';
 import createApiHandler from '@/core/api-handler';
 import { OkResponse } from '@/core/responses';
+import { searchPrivateCloudRequests } from '@/queries/private-cloud-requests';
 import { privateCloudRequestSearchBodySchema } from '@/validation-schemas/private-cloud';
-import searchOp from '../_operations/search';
 
 export const POST = createApiHandler({
   roles: ['user'],
   validations: { body: privateCloudRequestSearchBodySchema },
 })(async ({ session, body }) => {
-  const {
-    licencePlate = '',
-    search = '',
-    page = 1,
-    pageSize = 5,
-    ministry = '',
-    cluster = '',
-    includeInactive = false,
-    sortKey,
-    sortOrder,
-    showTest,
-  } = body;
-
-  const data = await searchOp({
-    licencePlate,
+  const { docs, totalCount } = await searchPrivateCloudRequests({
     session,
-    search,
-    page,
-    pageSize,
-    ministry,
-    cluster,
-    includeInactive,
-    sortKey: sortKey || undefined,
-    sortOrder,
-    isTest: showTest,
+    ...body,
   });
 
-  return OkResponse(data);
+  return OkResponse({ docs, totalCount });
 });

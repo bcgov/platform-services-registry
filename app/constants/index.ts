@@ -131,84 +131,41 @@ export const clusterNames = [
   {
     id: 1,
     name: 'clab',
-    humanFriendlyName: 'CLAB Calgary',
+    label: 'CLAB Calgary',
   },
   {
     id: 2,
     name: 'klab',
-    humanFriendlyName: 'KLAB Kamloops',
+    label: 'KLAB Kamloops',
   },
   {
     id: 3,
     name: 'silver',
-    humanFriendlyName: 'Silver Kamloops',
+    label: 'Silver Kamloops',
   },
   {
     id: 4,
     name: 'gold',
-    humanFriendlyName: 'Gold Kamloops',
+    label: 'Gold Kamloops',
   },
   {
     id: 5,
     name: 'golddr',
-    humanFriendlyName: 'Gold (DR) Calgary',
+    label: 'Gold (DR) Calgary',
   },
   {
     id: 6,
     name: 'klab2',
-    humanFriendlyName: 'KLAB2 Kamloops',
+    label: 'KLAB2 Kamloops',
   },
   {
     id: 7,
     name: 'emerald',
-    humanFriendlyName: 'Emerald Hosting Tier',
+    label: 'Emerald Hosting Tier',
   },
 ];
 
 export const AGMinistries = ['AG', 'PSSG', 'EMBC', 'HOUS'];
-
-export const productSorts = [
-  {
-    sortKey: 'updatedAt',
-    humanFriendlyName: 'Product last update (new to old)',
-    sortOrder: Prisma.SortOrder.desc,
-  },
-  {
-    sortKey: 'updatedAt',
-    humanFriendlyName: 'Product last update (old to new)',
-    sortOrder: Prisma.SortOrder.asc,
-  },
-  {
-    sortKey: 'name',
-    humanFriendlyName: 'Product name (A-Z)',
-    sortOrder: Prisma.SortOrder.asc,
-  },
-  {
-    sortKey: 'name',
-    humanFriendlyName: 'Product name (Z-A)',
-    sortOrder: Prisma.SortOrder.desc,
-  },
-  {
-    sortKey: 'description',
-    humanFriendlyName: 'Product description (A-Z)',
-    sortOrder: Prisma.SortOrder.asc,
-  },
-  {
-    sortKey: 'description',
-    humanFriendlyName: 'Product description (Z-A)',
-    sortOrder: Prisma.SortOrder.desc,
-  },
-  {
-    sortKey: 'licencePlate',
-    humanFriendlyName: 'Product Licence Plate (A-Z)',
-    sortOrder: Prisma.SortOrder.asc,
-  },
-  {
-    sortKey: 'licencePlate',
-    humanFriendlyName: 'Product Licence Plate (Z-A)',
-    sortOrder: Prisma.SortOrder.desc,
-  },
-];
 
 export const defaultCpuOptionsLookup: { [key: string]: string } = {
   CPU_REQUEST_0_5_LIMIT_1_5: '0.5 CPU Request, 1.5 CPU Limit',

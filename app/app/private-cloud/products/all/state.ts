@@ -1,6 +1,6 @@
 import { Prisma, ProjectStatus } from '@prisma/client';
 import { proxy, useSnapshot } from 'valtio';
-import { productSorts } from '@/constants';
+import { productSorts } from '@/constants/private-cloud';
 import { PrivateCloudProductSearchBody } from '@/validation-schemas/private-cloud';
 
 export const pageState = proxy<PrivateCloudProductSearchBody>({
@@ -11,6 +11,7 @@ export const pageState = proxy<PrivateCloudProductSearchBody>({
   clusters: [],
   status: [ProjectStatus.ACTIVE],
   temporary: [],
+  sortValue: productSorts[0].label,
   sortKey: productSorts[0].sortKey,
   sortOrder: productSorts[0].sortOrder,
 });

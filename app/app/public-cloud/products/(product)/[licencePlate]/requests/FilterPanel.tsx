@@ -4,7 +4,8 @@ import { useEffect, useRef, useState } from 'react';
 import { useSnapshot, subscribe } from 'valtio';
 import FormToggle from '@/components/generic/checkbox/FormToggle';
 import FormSelect from '@/components/generic/select/FormSelect';
-import { productSorts, ministryOptions, providerOptions } from '@/constants';
+import { ministryOptions, providerOptions } from '@/constants';
+import { productSorts } from '@/constants/private-cloud';
 import { pageState } from './state';
 
 export default function FilterPanel() {
@@ -17,7 +18,7 @@ export default function FilterPanel() {
   const toggleText = 'Show Resolved Requests';
 
   const handleSortChange = (value: string) => {
-    const selectedOption = productSorts.find((privateSortName) => privateSortName.humanFriendlyName === value);
+    const selectedOption = productSorts.find((privateSortName) => privateSortName.label === value);
     if (selectedOption) {
       pageState.sortKey = selectedOption.sortKey;
       pageState.sortOrder = selectedOption.sortOrder;
@@ -65,10 +66,10 @@ export default function FilterPanel() {
             ref={sortRef}
             id="id"
             label="Sort By"
-            options={productSorts.map((v) => ({ label: v.humanFriendlyName, value: v.humanFriendlyName }))}
+            options={productSorts.map((v) => ({ label: v.label, value: v.label }))}
             defaultValue={
               productSorts.find((v) => v.sortKey === pageSnapshot.sortKey && v.sortOrder === pageSnapshot.sortOrder)
-                ?.humanFriendlyName
+                ?.label
             }
             onChange={handleSortChange}
           />

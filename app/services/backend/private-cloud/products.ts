@@ -1,5 +1,6 @@
-import { PrivateCloudComment } from '@prisma/client';
+import { Prisma, PrivateCloudComment } from '@prisma/client';
 import axios from 'axios';
+import { productSorts } from '@/constants/private-cloud';
 import {
   PrivateCloudRequestSimpleDecorated,
   PrivateCloudProductDetailDecorated,
@@ -19,7 +20,18 @@ export const instance = axios.create({
 });
 
 export async function searchPrivateCloudProducts(data: PrivateCloudProductSearchBody) {
-  const result = await instance.post('/search', data).then((res) => {
+  const reqData = { ...data };
+  const selectedOption = productSorts.find((sort) => sort.label === reqData.sortValue);
+
+  if (selectedOption) {
+    reqData.sortKey = selectedOption.sortKey;
+    reqData.sortOrder = selectedOption.sortOrder;
+  } else {
+    reqData.sortKey = '';
+    reqData.sortOrder = Prisma.SortOrder.desc;
+  }
+
+  const result = await instance.post('/search', reqData).then((res) => {
     return res.data;
   });
 
