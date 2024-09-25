@@ -14,6 +14,21 @@ export const instance = axios.create({
   baseURL: `${parentInstance.defaults.baseURL}/requests`,
 });
 
+function prepareSearchPayload(data: PrivateCloudRequestSearchBody) {
+  const reqData = { ...data };
+  const selectedOption = requestSorts.find((sort) => sort.label === reqData.sortValue);
+
+  if (selectedOption) {
+    reqData.sortKey = selectedOption.sortKey;
+    reqData.sortOrder = selectedOption.sortOrder;
+  } else {
+    reqData.sortKey = '';
+    reqData.sortOrder = Prisma.SortOrder.desc;
+  }
+
+  return reqData;
+}
+
 export async function getPrivateCloudRequest(id: string) {
   const result = await instance.get(`/${id}`).then((res) => {
     if (res.data.originalData?.secondaryTechnicalLead === null) {
@@ -35,17 +50,7 @@ export async function getPrivateCloudRequest(id: string) {
 }
 
 export async function searchPrivateCloudRequests(data: PrivateCloudRequestSearchBody) {
-  const reqData = { ...data };
-  const selectedOption = requestSorts.find((sort) => sort.label === reqData.sortValue);
-
-  if (selectedOption) {
-    reqData.sortKey = selectedOption.sortKey;
-    reqData.sortOrder = selectedOption.sortOrder;
-  } else {
-    reqData.sortKey = '';
-    reqData.sortOrder = Prisma.SortOrder.desc;
-  }
-
+  const reqData = prepareSearchPayload(data);
   const result = await instance.post('/search', reqData).then((res) => {
     return res.data;
   });

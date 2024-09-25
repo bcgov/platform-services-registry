@@ -19,7 +19,7 @@ export const instance = axios.create({
   baseURL: `${parentInstance.defaults.baseURL}/products`,
 });
 
-export async function searchPrivateCloudProducts(data: PrivateCloudProductSearchBody) {
+function prepareSearchPayload(data: PrivateCloudProductSearchBody) {
   const reqData = { ...data };
   const selectedOption = productSorts.find((sort) => sort.label === reqData.sortValue);
 
@@ -31,6 +31,11 @@ export async function searchPrivateCloudProducts(data: PrivateCloudProductSearch
     reqData.sortOrder = Prisma.SortOrder.desc;
   }
 
+  return reqData;
+}
+
+export async function searchPrivateCloudProducts(data: PrivateCloudProductSearchBody) {
+  const reqData = prepareSearchPayload(data);
   const result = await instance.post('/search', reqData).then((res) => {
     return res.data;
   });
@@ -39,7 +44,8 @@ export async function searchPrivateCloudProducts(data: PrivateCloudProductSearch
 }
 
 export async function downloadPrivateCloudProducts(data: PrivateCloudProductSearchNoPaginationBody) {
-  const result = await instance.post('/download', data, { responseType: 'blob' }).then((res) => {
+  const reqData = prepareSearchPayload(data);
+  const result = await instance.post('/download', reqData, { responseType: 'blob' }).then((res) => {
     if (res.status === 204) return false;
 
     downloadFile(res.data, 'private-cloud-products.csv');
