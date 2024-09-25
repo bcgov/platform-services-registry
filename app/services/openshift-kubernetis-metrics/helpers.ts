@@ -1,6 +1,3 @@
-import _toNumber from 'lodash-es/toNumber';
-import { extractNumbers } from '@/utils/string';
-
 export type ResourceType = 'cpu' | 'memory';
 
 export type Pod = {
@@ -11,16 +8,16 @@ export type Pod = {
 export type Container = {
   name: string;
   usage: {
-    cpu: string;
-    memory: string;
+    cpu: number;
+    memory: number;
   };
   limits: {
-    cpu: string;
-    memory: string;
+    cpu: number;
+    memory: number;
   };
   requests: {
-    cpu: string;
-    memory: string;
+    cpu: number;
+    memory: number;
   };
 };
 
@@ -30,46 +27,25 @@ export const MiToKi = 1024;
 export const cpuToM = 1000;
 
 // Converts CPU values to millicores
-export const convertCpu = (cpu: string): string => {
+export const normalizeCpu = (cpu: string): number => {
   if (cpu.includes('m')) {
-    return cpu;
+    return parseFloat(cpu.replace('m', ''));
   }
-  return `${parseFloat(cpu) * cpuToM}m`;
+  return parseFloat(cpu) * cpuToM; // Convert cores to millicores
 };
 
 // Converts memory values to Ki units
-export const convertMemory = (memory: string): string => {
+export const normalizeMemory = (memory: string): number => {
   if (memory.includes('Gi')) {
-    return `${parseFloat(memory.replace('Gi', '')) * GiToKi}Ki`;
+    return parseFloat(memory.replace('Gi', '')) * GiToKi; // Convert Gi to KiB
   } else if (memory.includes('Mi')) {
-    return `${parseFloat(memory.replace('Mi', '')) * MiToKi}Ki`;
+    return parseFloat(memory.replace('Mi', '')) * MiToKi; // Convert Mi to KiB
   }
-  return memory;
+  return parseFloat(memory);
 };
 
-// Convert CPU and memory values for all containers in the pod
-export const convertValues = (data: Pod[]): Pod[] =>
-  data.map((pod) => ({
-    ...pod,
-    containers: pod.containers.map((container) => ({
-      ...container,
-      usage: {
-        cpu: convertCpu(container.usage.cpu),
-        memory: convertMemory(container.usage.memory),
-      },
-      limits: {
-        cpu: convertCpu(container.limits.cpu),
-        memory: convertMemory(container.limits.memory),
-      },
-      requests: {
-        cpu: convertCpu(container.requests.cpu),
-        memory: convertMemory(container.requests.memory),
-      },
-    })),
-  }));
-
 // Function to aggregate total usage and limits across all containers in a single pod
-export const totalMetrics = (pods: Pod[], resource: ResourceType) => {
+export const getTotalMetrics = (pods: Pod[], resource: ResourceType) => {
   if (!Array.isArray(pods) || pods.length === 0) {
     return { totalUsage: 0, totalLimit: 0 };
   }
@@ -80,14 +56,8 @@ export const totalMetrics = (pods: Pod[], resource: ResourceType) => {
   // Iterate through each pod and each container
   pods.forEach((pod) => {
     pod.containers.forEach((container) => {
-      const usageNumbers = extractNumbers(container.usage[resource]);
-      const limitNumbers = extractNumbers(container.limits[resource]);
-
-      const usageValue = usageNumbers.length > 0 ? usageNumbers[0] : 0;
-      const limitValue = limitNumbers.length > 0 ? limitNumbers[0] : 0;
-
-      totalUsage += usageValue;
-      totalLimit += limitValue;
+      totalUsage += container.usage[resource];
+      totalLimit += container.limits[resource];
     });
   });
 

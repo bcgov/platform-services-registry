@@ -2,7 +2,7 @@
 
 import _truncate from 'lodash-es/truncate';
 import React from 'react';
-import { totalMetrics, ResourceType, Pod } from '@/services/openshift-kubernetis-metrics/helpers';
+import { getTotalMetrics, ResourceType, Pod } from '@/services/openshift-kubernetis-metrics/helpers';
 import TableHeader from '../generic/table/TableHeader';
 import TruncatedTooltip from './TruncatedTooltip';
 
@@ -10,26 +10,27 @@ interface TableProps {
   pods: Pod[];
   resource: ResourceType;
   title: string;
+  measurementUnit: string;
 }
 
 type TransformedData = {
   podName: string;
   containerName: string;
   usage: {
-    cpu: string;
-    memory: string;
+    cpu: number;
+    memory: number;
   };
   limits: {
-    cpu: string;
-    memory: string;
+    cpu: number;
+    memory: number;
   };
   requests: {
-    cpu: string;
-    memory: string;
+    cpu: number;
+    memory: number;
   };
 };
 
-const transformPodData = (data: Pod[]): TransformedData[] => {
+const transformPodData = (data: Pod[]) => {
   const transformedData: TransformedData[] = [];
   data.forEach((pod) => {
     pod.containers.forEach((container) => {
@@ -55,7 +56,7 @@ const transformPodData = (data: Pod[]): TransformedData[] => {
   return transformedData;
 };
 
-export default function TableBodyMetrics({ pods, resource, title }: TableProps) {
+export default function TableBodyMetrics({ pods, resource, title, measurementUnit }: TableProps) {
   const rows = [
     {
       podName: 'Pod Name',
@@ -66,7 +67,7 @@ export default function TableBodyMetrics({ pods, resource, title }: TableProps) 
     },
     ...transformPodData(pods),
   ];
-  const { totalUsage, totalLimit } = totalMetrics(pods, resource);
+  const { totalUsage, totalLimit } = getTotalMetrics(pods, resource);
 
   const summaryNums = [
     {
@@ -103,12 +104,17 @@ export default function TableBodyMetrics({ pods, resource, title }: TableProps) 
                     </span>
                   </TruncatedTooltip>
                 </div>
-                <div className={`md:col-span-1 lg:col-span-2 ${index === 0 && 'font-bold'}`}>{row.usage[resource]}</div>
+                <div className={`md:col-span-1 lg:col-span-2 ${index === 0 && 'font-bold'}`}>
+                  {row.usage[resource]}
+                  {index !== 0 && measurementUnit}
+                </div>
                 <div className={`md:col-span-1 lg:col-span-2 ${index === 0 && 'font-bold'}`}>
                   {row.limits[resource]}
+                  {index !== 0 && measurementUnit}
                 </div>
                 <div className={`md:col-span-1 lg:col-span-2 ${index === 0 && 'font-bold'}`}>
                   {row.requests[resource]}
+                  {index !== 0 && measurementUnit}
                 </div>
               </div>
             </div>
@@ -126,9 +132,11 @@ export default function TableBodyMetrics({ pods, resource, title }: TableProps) 
               >
                 <div className={`md:col-span-3 lg:col-span-3 text-center ${index === 0 && 'font-bold'}`}>
                   {row.totalLimit}
+                  {index !== 0 && measurementUnit}
                 </div>
                 <div className={`md:col-span-3 lg:col-span-3 text-center ${index === 0 && 'font-bold'}`}>
                   {row.totalUsage}
+                  {index !== 0 && measurementUnit}
                 </div>
               </div>
             </div>

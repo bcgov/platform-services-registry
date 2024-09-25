@@ -1,7 +1,7 @@
 import { DecisionStatus, Cluster, RequestType, EventType } from '@prisma/client';
 import { Session } from 'next-auth';
 import prisma from '@/core/prisma';
-import { checkIfQuotaAutoApproval, checkIfNoQuotaChange } from '@/helpers/auto-approval-check';
+import { checkIfQuotaAutoApproval } from '@/helpers/auto-approval-check';
 import { comparePrivateProductData } from '@/helpers/product-change';
 import { createEvent } from '@/mutations/events';
 import { getLastClosedPrivateCloudRequest, privateCloudRequestDetailInclude } from '@/queries/private-cloud-requests';
@@ -70,14 +70,15 @@ export default async function editRequest(
     productionQuota: project.productionQuota,
   };
 
-  const noQuotaChange = checkIfNoQuotaChange(currentQuota, requestedQuota);
+  const quotaReviewResult = await checkIfQuotaAutoApproval(
+    currentQuota,
+    requestedQuota,
+    project.licencePlate,
+    project.cluster,
+  );
+
   // If there is no quota change or no quota upgrade and no golddr flag changes, the request is automatically approved
-  if (noQuotaChange) {
-    decisionStatus = DecisionStatus.APPROVED;
-  } else if (
-    checkIfQuotaAutoApproval(currentQuota, requestedQuota, project.licencePlate, project.cluster) &&
-    !hasGolddrEnabledChanged
-  ) {
+  if (quotaReviewResult && !hasGolddrEnabledChanged) {
     decisionStatus = DecisionStatus.APPROVED;
   } else {
     decisionStatus = DecisionStatus.PENDING;
@@ -88,7 +89,7 @@ export default async function editRequest(
 
   const { changes, ...otherChangeMeta } = comparePrivateProductData(rest, previousRequest?.decisionData);
 
-  const quotaChangeInfo = noQuotaChange
+  const quotaChangeInfo = quotaReviewResult.noQuotaChange
     ? {}
     : {
         quotaContactName,
@@ -100,7 +101,7 @@ export default async function editRequest(
     data: {
       type: RequestType.EDIT,
       decisionStatus,
-      isQuotaChanged: !noQuotaChange,
+      isQuotaChanged: !quotaReviewResult.noQuotaChange,
       ...quotaChangeInfo,
       active: true,
       createdBy: { connect: { email: session.user.email } },

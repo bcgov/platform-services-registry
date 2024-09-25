@@ -1,14 +1,9 @@
 import { z } from 'zod';
 import createApiHandler from '@/core/api-handler';
 import prisma from '@/core/prisma';
-import { OkResponse } from '@/core/responses';
+import { OkResponse, BadRequestResponse } from '@/core/responses';
 import { checkIfQuotaAutoApproval } from '@/helpers/auto-approval-check';
-
-const quotaSchema = z.object({
-  cpu: z.string(),
-  memory: z.string(),
-  storage: z.string(),
-});
+import { quotaSchema } from '@/validation-schemas/private-cloud';
 
 const quotasSchema = z.object({
   testQuota: quotaSchema,
@@ -17,29 +12,46 @@ const quotasSchema = z.object({
   productionQuota: quotaSchema,
 });
 
-const queryParamSchema = z.object({
-  licencePlate: z.string(),
-  cluster: z.string(),
-  currentQuota: quotasSchema,
+const bodySchema = z.object({
+  licencePlate: z.string().length(6),
   requestedQuota: quotasSchema,
 });
 
 const apiHandler = createApiHandler({
   roles: ['user'],
-  validations: { queryParams: queryParamSchema },
+  validations: { body: bodySchema },
 });
 
-export const POST = apiHandler(async ({ queryParams }) => {
-  const { requestedQuota, licencePlate, cluster } = queryParams;
+export const POST = apiHandler(async ({ body }) => {
+  const { licencePlate, requestedQuota } = body;
+
   const currentProduct = await prisma.privateCloudProject.findFirst({
     where: { licencePlate },
+    select: {
+      cluster: true,
+      productionQuota: true,
+      testQuota: true,
+      developmentQuota: true,
+      toolsQuota: true,
+    },
   });
+
+  if (!currentProduct) {
+    return BadRequestResponse(`failed to get product data for ${licencePlate} licencePlate`);
+  }
+
   const currentQuota = {
-    testQuota: currentProduct?.testQuota || { cpu: '0', memory: '0', storage: '0' },
-    toolsQuota: currentProduct?.toolsQuota || { cpu: '0', memory: '0', storage: '0' },
-    developmentQuota: currentProduct?.developmentQuota || { cpu: '0', memory: '0', storage: '0' },
-    productionQuota: currentProduct?.productionQuota || { cpu: '0', memory: '0', storage: '0' },
+    testQuota: currentProduct.testQuota,
+    toolsQuota: currentProduct.toolsQuota,
+    developmentQuota: currentProduct.developmentQuota,
+    productionQuota: currentProduct.productionQuota,
   };
-  const users = await checkIfQuotaAutoApproval(currentQuota, requestedQuota, licencePlate, cluster);
-  return OkResponse(users);
+
+  const quotaChangesReview = await checkIfQuotaAutoApproval(
+    currentQuota,
+    requestedQuota,
+    licencePlate,
+    currentProduct.cluster,
+  );
+  return OkResponse(quotaChangesReview);
 });

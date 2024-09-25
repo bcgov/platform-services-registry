@@ -7,7 +7,7 @@ import { z } from 'zod';
 import FormSelect from '@/components/generic/select/FormSelect';
 import TableBodyMetrics from '@/components/table/TableBodyMetrics';
 import createClientPage from '@/core/client-page';
-import { getPodUsageMetrics } from '@/services/backend/private-cloud/pod-usage-metrics';
+import { getPodUsageMetrics } from '@/services/backend/private-cloud/usage-metrics';
 import { usePrivateProductState } from '@/states/global';
 
 const selectOptions = [
@@ -51,7 +51,7 @@ export default privateCloudProductUsageMetrics(({ pathParams, queryParams, sessi
   const handleNamespaceChange = (namespace: string) => {
     setenvironment(namespace);
   };
-
+  console.log('data', data);
   return (
     <div>
       <fieldset className="w-full md:w-48 2xl:w-64 pb-6">
@@ -71,8 +71,8 @@ export default privateCloudProductUsageMetrics(({ pathParams, queryParams, sessi
         ) : (
           <>
             <LoadingOverlay visible={isLoading} zIndex={1000} overlayProps={{ radius: 'sm', blur: 2 }} />
-            <TableBodyMetrics pods={data} resource={'cpu'} title={'CPU Usage'} />
-            <TableBodyMetrics pods={data} resource={'memory'} title={'Memory Usage'} />
+            <TableBodyMetrics pods={data} resource={'cpu'} title={'CPU Usage'} measurementUnit={'m'} />
+            <TableBodyMetrics pods={data} resource={'memory'} title={'Memory Usage'} measurementUnit={'Ki'} />
           </>
         )}
       </Box>

@@ -1,10 +1,16 @@
-import { Quota } from '@prisma/client';
+import { Quota, Cluster } from '@prisma/client';
 import _each from 'lodash-es/each';
-import _flatMap from 'lodash-es/flatMap';
 import { defaultCpuOptionsLookup, defaultMemoryOptionsLookup, defaultStorageOptionsLookup } from '@/../app/constants';
-import { ResourceType, totalMetrics } from '@/services/openshift-kubernetis-metrics/helpers';
-import getPodMetrics from '@/services/openshift-kubernetis-metrics/pod-usage-metrics';
+import { ResourceType, getTotalMetrics } from '@/services/openshift-kubernetis-metrics/helpers';
+import getPodMetrics from '@/services/openshift-kubernetis-metrics/usage-metrics';
 import { extractNumbers } from '@/utils/string';
+
+enum NamespaceNames {
+  dev = 'developmentQuota',
+  test = 'testQuota',
+  prod = 'productionQuota',
+  tools = 'toolsQuota',
+}
 
 interface Quotas {
   testQuota: Quota;
@@ -14,31 +20,38 @@ interface Quotas {
 }
 
 // check if request contains quota change
-export const checkIfNoQuotaChange = (currentQuota: Quotas, requestedQuota: Quotas) => {
+export const checknoQuotaChange = (currentQuota: Quotas, requestedQuota: Quotas): boolean => {
+  let noQuotaChange = true;
   // @ts-ignore
-  return _each(currentQuota, (quota: Quota, envQuota: keyof Quotas) => {
+  _each(currentQuota, (quota: Quota, envQuota: keyof Quotas) => {
+    if (!noQuotaChange) return false; // Stop looping if a mismatch has already been found
     // @ts-ignore
-    return _each(quota, (resource: string, resourceName: keyof Quota) => {
+    _each(quota, (resource: string, resourceName: keyof Quota) => {
       const currentVal = resource;
       const requestedVal = requestedQuota[envQuota][resourceName];
-      return extractNumbers(requestedVal)[0] === extractNumbers(currentVal)[0];
+      if (extractNumbers(requestedVal)[0] !== extractNumbers(currentVal)[0]) {
+        noQuotaChange = false;
+        return;
+      }
     });
   });
+  return noQuotaChange;
 };
 
 // if quota was changed check if it was undngrade quota request
 // TODO replace isQuotaUpgrade at app/emails/_templates/private-cloud/TeamEditRequest.tsx
 export const checkIfQuotaUpgrade = (currentQuota: Quotas, requestedQuota: Quotas) => {
+  let ifQuotaUpgrade = true;
   // @ts-ignore
-  const isIncreased = _each(currentQuota, (quota: Quota, envQuota: keyof Quotas) => {
+  _each(currentQuota, (quota: Quota, envQuota: keyof Quotas) => {
     // @ts-ignore
-    return _each(quota, (resource: string, resourceName: keyof Quota) => {
+    _each(quota, (resource: string, resourceName: keyof Quota) => {
       const currentVal = resource;
       const requestedVal = requestedQuota[envQuota][resourceName];
-      return extractNumbers(requestedVal)[0] > extractNumbers(currentVal)[0];
+      ifQuotaUpgrade = extractNumbers(requestedVal)[0] > extractNumbers(currentVal)[0];
     });
   });
-  return isIncreased;
+  return ifQuotaUpgrade;
 };
 
 const resourceOrders = {
@@ -50,15 +63,18 @@ const resourceOrders = {
 // Helper function to check resource utilization
 const checkUtilization = async (
   requestedQuota: Quotas,
+  currentQuota: Quotas,
   licencePlate: string,
-  cluster: string,
-  namespace: string,
+  cluster: Cluster,
+  namespace: keyof typeof NamespaceNames,
   resource: ResourceType,
 ) => {
   const podMetricsData = await getPodMetrics(licencePlate, namespace, cluster);
-  if (!podMetricsData) return false;
+  if (podMetricsData.length === 0) return false;
 
-  const { totalUsage, totalLimit } = totalMetrics(podMetricsData, resource);
+  const { totalUsage } = getTotalMetrics(podMetricsData, resource);
+  const mesUnitsCoeff = resource === 'cpu' ? 1000 : 1024 * 1024;
+  const totalLimit = extractNumbers(currentQuota[NamespaceNames[namespace]][resource])[1] * mesUnitsCoeff;
 
   // Check quota utilization
   // namespace already use 85% of total limit(i.e: kube_pod_container_resource_limits/namespace-total-limit)(CPU or memory, or storage)
@@ -70,7 +86,7 @@ const checkUtilization = async (
 
     // Check quota usage
     // namespace has at least 35% of CPU utilization rate(namespace:container_cpu_usage/namespace_cpu:kube_pod_container_resource_requests:sum > 35%, same idea for memory)
-    const requestedUsage = extractNumbers(requestedQuota.developmentQuota.cpu)[0];
+    const requestedUsage = extractNumbers(requestedQuota[NamespaceNames[namespace]][resource])[0] * mesUnitsCoeff;
     const requestedUtilizationRate = (requestedUsage / totalUsage) * 100;
     if (requestedUtilizationRate > 34) {
       return true; // Auto-approval due to utilization percentage
@@ -80,54 +96,92 @@ const checkUtilization = async (
   return false;
 };
 
-const checkIfResourceUtilized = async (requestedQuota: Quotas, licencePlate: string, cluster: string) => {
-  const quotaTypes = ['cpu', 'memory'] as const;
-  const namespaces = ['dev', 'test', 'prod', 'tools'] as const;
-
-  // Create an array of promises for every combination of namespace and resource
-  const utilizationChecks = _flatMap(namespaces, (namespace) =>
-    // @ts-ignore
-    _each(quotaTypes, (resource) => checkUtilization(requestedQuota, licencePlate, cluster, namespace, resource)),
+const checkIfResourceUtilized = async (
+  requestedQuota: Quotas,
+  currentQuota: Quotas,
+  licencePlate: string,
+  cluster: Cluster,
+  namespaceNames: string[],
+  resourceNames: string[],
+) => {
+  const filteredNamespaces = Object.keys(NamespaceNames).filter((key) =>
+    namespaceNames.includes(NamespaceNames[key as keyof typeof NamespaceNames]),
   );
 
-  // Resolve all promises and return true if any result is true
+  // Create an array of promises for every combination of namespace and resource
+  const utilizationChecks = filteredNamespaces.flatMap((namespace) =>
+    resourceNames.map((resource) =>
+      checkUtilization(
+        requestedQuota,
+        currentQuota,
+        licencePlate,
+        cluster,
+        namespace as keyof typeof NamespaceNames,
+        resource as ResourceType,
+      ),
+    ),
+  );
+
+  // Resolve all promises and return true if all results are true
   const results = await Promise.all(utilizationChecks);
 
   return results.every((result) => result);
 };
 
-export const checkIfQuotaAutoApproval = (
+export const checkIfQuotaAutoApproval = async (
   currentQuota: Quotas,
   requestedQuota: Quotas,
   licencePlate: string,
-  cluster: string,
+  cluster: Cluster,
 ) => {
-  let hasIncreased = false;
-  let hasIncreasedAlot = false;
-  // @ts-ignore
-  _each(currentQuota, (quota: Quota, envQuota: keyof Quotas) => {
+  const noQuotaChange = checknoQuotaChange(currentQuota, requestedQuota);
+  let isAutoApprovalAvailable = true;
+  const namespaceNames: string[] = [];
+  const resourceNames: string[] = [];
+  if (!noQuotaChange) {
+    let hasIncreasedSignificantly = false;
+
+    // Iterate over each environment's quota
     // @ts-ignore
-    _each(quota, (resource: string, resourceName: keyof Quota) => {
-      const currentVal = resource;
-      const requestedVal = requestedQuota[envQuota][resourceName];
-      const resourceOrder = resourceOrders[resourceName as keyof Quota];
+    _each(currentQuota, (quota: Quota, envQuota: keyof Quotas) => {
+      // Iterate over each resource in the quota
+      // @ts-ignore
+      _each(quota, async (currentResource: string, resourceName: keyof Quota) => {
+        const requestedResource = requestedQuota[envQuota][resourceName];
+        const resourceOrder = resourceOrders[resourceName];
 
-      const currentIndex = Object.values(resourceOrder).indexOf(currentVal);
-      const requestedIndex = Object.values(resourceOrder).indexOf(requestedVal);
+        const currentIndex = Object.keys(resourceOrder).indexOf(currentResource);
+        const requestedIndex = Object.keys(resourceOrder).indexOf(requestedResource);
 
-      const increased = requestedIndex > currentIndex;
-      if (increased) {
-        hasIncreased = true;
-        if (!hasIncreasedAlot) {
-          hasIncreasedAlot = requestedIndex - currentIndex > 1;
+        const isIncreased = requestedIndex > currentIndex;
+        if (isIncreased) {
+          isAutoApprovalAvailable = false;
+          // Check if the increase is significant(more than next tier)
+          hasIncreasedSignificantly = requestedIndex - currentIndex > 1;
+          if (hasIncreasedSignificantly) {
+            isAutoApprovalAvailable = false;
+            return;
+          }
+          // If not a significant increase, check resource utilization
+          else if (!hasIncreasedSignificantly) {
+            namespaceNames.push(envQuota);
+            resourceNames.push(resourceName);
+          }
         }
-        if (hasIncreasedAlot) return false;
-      }
+      });
     });
-  });
+  }
+  // TODO remove condition if storage metrics are availiabe
+  if (resourceNames.indexOf('storage') === -1) {
+    isAutoApprovalAvailable = await checkIfResourceUtilized(
+      requestedQuota,
+      currentQuota,
+      licencePlate,
+      cluster,
+      namespaceNames,
+      resourceNames,
+    );
+  }
 
-  if (hasIncreasedAlot) return false;
-  if (!hasIncreased) return true;
-
-  return checkIfResourceUtilized(requestedQuota, licencePlate, cluster);
+  return { isAutoApprovalAvailable, noQuotaChange };
 };
