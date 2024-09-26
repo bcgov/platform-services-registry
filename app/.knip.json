@@ -1,7 +1,7 @@
 {
   "$schema": "https://unpkg.com/knip@5/schema.json",
   "entry": ["**/*.js", "**/*.ts", "**/*.tsx"],
-  "ignore": ["**/types/**/*.d.ts"],
+  "ignore": ["**/types/**/*.d.ts", ".next/**/*"],
   "ignoreDependencies": [
     "sharp",
     "@testing-library/react",
