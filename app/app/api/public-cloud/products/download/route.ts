@@ -1,5 +1,5 @@
 import { EventType, ProjectStatus } from '@prisma/client';
-import _join from 'lodash/join';
+import _join from 'lodash-es/join';
 import createApiHandler from '@/core/api-handler';
 import { NoContent, CsvResponse } from '@/core/responses';
 import { ministryKeyToName } from '@/helpers/product';
