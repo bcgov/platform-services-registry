@@ -46,10 +46,6 @@ export const normalizeMemory = (memory: string): number => {
 
 // Function to aggregate total usage and limits across all containers in a single pod
 export const getTotalMetrics = (pods: Pod[], resource: ResourceType) => {
-  if (!Array.isArray(pods) || pods.length === 0) {
-    return { totalUsage: 0, totalLimit: 0 };
-  }
-
   let totalUsage = 0;
   let totalLimit = 0;
 

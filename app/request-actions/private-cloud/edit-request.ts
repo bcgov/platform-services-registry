@@ -56,26 +56,7 @@ export default async function editRequest(
 
   const hasGolddrEnabledChanged = project.cluster === Cluster.GOLD && project.golddrEnabled !== formData.golddrEnabled;
 
-  const requestedQuota = {
-    testQuota: formData.testQuota,
-    toolsQuota: formData.toolsQuota,
-    developmentQuota: formData.developmentQuota,
-    productionQuota: formData.productionQuota,
-  };
-
-  const currentQuota = {
-    testQuota: project.testQuota,
-    toolsQuota: project.toolsQuota,
-    developmentQuota: project.developmentQuota,
-    productionQuota: project.productionQuota,
-  };
-
-  const quotaReviewResult = await checkIfQuotaAutoApproval(
-    currentQuota,
-    requestedQuota,
-    project.licencePlate,
-    project.cluster,
-  );
+  const quotaReviewResult = await checkIfQuotaAutoApproval(project, formData, project.licencePlate, project.cluster);
 
   // If there is no quota change or no quota upgrade and no golddr flag changes, the request is automatically approved
   if (quotaReviewResult && !hasGolddrEnabledChanged) {
