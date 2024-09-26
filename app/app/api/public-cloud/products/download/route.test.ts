@@ -128,7 +128,6 @@ describe('Download Public Cloud Products - Permissions', () => {
     expect(records.length).toBe(1);
 
     const record1 = records[0];
-
     const project = await prisma.publicCloudProject.findUnique({
       where: { licencePlate: requests.one.licencePlate },
       include: { projectOwner: true, primaryTechnicalLead: true, secondaryTechnicalLead: true },
