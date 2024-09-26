@@ -138,7 +138,7 @@ export const checkIfQuotaAutoApproval = async (
   if (!noQuotaChange) {
     let hasIncreasedSignificantly = false;
 
-    const currentQuotaCasted = {
+    const castCurrentQuota = {
       testQuota: currentQuota.testQuota,
       toolsQuota: currentQuota.toolsQuota,
       developmentQuota: currentQuota.developmentQuota,
@@ -147,7 +147,7 @@ export const checkIfQuotaAutoApproval = async (
 
     // Iterate over each environment's quota
     // @ts-ignore
-    _each(currentQuotaCasted, (quota: Quota, envQuota: keyof Quotas) => {
+    _each(castCurrentQuota, (quota: Quota, envQuota: keyof Quotas) => {
       // Iterate over each resource in the quota
       // @ts-ignore
       // _each(quota, async (currentResource: string, resourceName: keyof Quota) => {

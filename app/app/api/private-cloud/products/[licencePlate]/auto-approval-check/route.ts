@@ -2,7 +2,7 @@ import { z } from 'zod';
 import createApiHandler from '@/core/api-handler';
 import prisma from '@/core/prisma';
 import { OkResponse, BadRequestResponse } from '@/core/responses';
-import { checkIfQuotaAutoApproval } from '@/helpers/auto-approval-check';
+import { checkIfQuotaAutoApproval, Quotas } from '@/helpers/auto-approval-check';
 import { quotaSchema } from '@/validation-schemas/private-cloud';
 
 const quotasSchema = z.object({
@@ -40,15 +40,8 @@ export const POST = apiHandler(async ({ body }) => {
     return BadRequestResponse(`failed to get product data for ${licencePlate} licencePlate`);
   }
 
-  const currentQuota = {
-    testQuota: currentProduct.testQuota,
-    toolsQuota: currentProduct.toolsQuota,
-    developmentQuota: currentProduct.developmentQuota,
-    productionQuota: currentProduct.productionQuota,
-  };
-
   const quotaChangesReview = await checkIfQuotaAutoApproval(
-    currentQuota,
+    currentProduct as Quotas,
     requestedQuota,
     licencePlate,
     currentProduct.cluster,
