@@ -5,13 +5,13 @@ import { logger } from '@/core/logging';
 import { normalizeMemory, normalizeCpu, Pod } from './helpers';
 
 const clusterMetricsReaderToken = {
-  KLAB: KLAB_METRICS_READER_TOKEN,
-  CLAB: ' ',
-  KLAB2: ' ',
-  GOLDDR: ' ',
-  GOLD: ' ',
-  SILVER: ' ',
-  EMERALD: ' ',
+  [Cluster.KLAB]: KLAB_METRICS_READER_TOKEN,
+  [Cluster.CLAB]: 'CLAB_METRICS_READER_TOKEN',
+  [Cluster.KLAB2]: 'KLAB2_METRICS_READER_TOKEN',
+  [Cluster.GOLDDR]: 'GOLDDR_METRICS_READER_TOKEN',
+  [Cluster.GOLD]: 'GOLD_METRICS_READER_TOKEN',
+  [Cluster.SILVER]: 'SILVER_METRICS_READER_TOKEN',
+  [Cluster.EMERALD]: 'EMERALD_METRICS_READER_TOKEN',
 };
 
 function configureKubeConfig(cluster: string, token: string) {
