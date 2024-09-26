@@ -2,7 +2,13 @@ import { faker } from '@faker-js/faker';
 import { Prisma, Cluster, Provider, ProjectStatus, RequestType, DecisionStatus } from '@prisma/client';
 import { PublicCloudRequestDetail } from '@/types/public-cloud';
 import { generateShortId } from '@/utils/uuid';
-import { getRandomMinistry, getRandomProvider, getRandomUser } from './core';
+import {
+  getRandomMinistry,
+  getRandomProvider,
+  getRandomUser,
+  getRandomProviderReasonsNote,
+  getRandomCloudProviderSelectionReasons,
+} from './core';
 
 export function createSamplePublicCloudRequest(args?: {
   data?: Partial<PublicCloudRequestDetail>;
@@ -16,6 +22,8 @@ export function createSamplePublicCloudRequest(args?: {
 
   const licencePlate = faker.string.uuid().substring(0, 6);
   const provider = getRandomProvider();
+  const providerSelectionReasonsNote = getRandomProviderReasonsNote();
+  const providerSelectionReasons = getRandomCloudProviderSelectionReasons();
   const ministry = getRandomMinistry();
 
   const accountCoding = '123456789876543212345678';
@@ -44,6 +52,8 @@ export function createSamplePublicCloudRequest(args?: {
     description: faker.lorem.sentence(),
     status: ProjectStatus.ACTIVE,
     provider,
+    providerSelectionReasons,
+    providerSelectionReasonsNote,
     ministry,
     projectOwnerId: projectOwner.id,
     projectOwner,
