@@ -1,6 +1,5 @@
 'use client';
 
-import _kebabCase from 'lodash-es/kebabCase';
 import { Controller, FieldValues, Path, useFormContext } from 'react-hook-form';
 import FormError from '../FormError';
 import { HookFormRules } from '../types';
