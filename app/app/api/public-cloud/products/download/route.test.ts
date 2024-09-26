@@ -128,6 +128,7 @@ describe('Download Public Cloud Products - Permissions', () => {
     expect(records.length).toBe(1);
 
     const record1 = records[0];
+
     const project = await prisma.publicCloudProject.findUnique({
       where: { licencePlate: requests.one.licencePlate },
       include: { projectOwner: true, primaryTechnicalLead: true, secondaryTechnicalLead: true },
@@ -137,6 +138,8 @@ describe('Download Public Cloud Products - Permissions', () => {
     expect(record1.Description).toBe(project?.description);
     expect(record1.Ministry).toBe(ministryKeyToName(project?.ministry ?? ''));
     expect(record1.Provider).toBe(project?.provider);
+    expect(record1['Reasons for Selecting Cloud Provider']).toBe(project?.providerSelectionReasons?.join(', '));
+    expect(record1['Description of Selected Reasons']).toBe(project?.providerSelectionReasonsNote);
     expect(record1['Project Owner Email']).toBe(project?.projectOwner.email);
     expect(record1['Project Owner Name']).toBe(formatFullName(project?.projectOwner));
     expect(record1['Primary Technical Lead Email']).toBe(project?.primaryTechnicalLead.email);

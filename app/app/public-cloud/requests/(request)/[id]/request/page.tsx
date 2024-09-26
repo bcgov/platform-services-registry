@@ -193,7 +193,14 @@ export default publicCloudProductRequest(({ pathParams, queryParams, session, ro
 
   return (
     <div>
-      <PublicCloudBillingInfo product={publicSnap.currentRequest.decisionData} className="mb-2" />
+      <PublicCloudBillingInfo
+        // removing the readonly constraint.
+        product={{
+          ...publicSnap.currentRequest.decisionData,
+          providerSelectionReasons: [...publicSnap.currentRequest.decisionData.providerSelectionReasons],
+        }}
+        className="mb-2"
+      />
       <FormProvider {...methods}>
         <FormErrorNotification />
         <form
