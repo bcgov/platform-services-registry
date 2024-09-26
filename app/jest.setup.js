@@ -58,6 +58,10 @@ jest.mock('@/helpers/pdfs/emou/index', () => ({
   generateEmouPdf: jest.fn(async () => Buffer.alloc(0)),
 }));
 
+jest.mock('@/helpers/auto-approval-check', () => ({
+  checkIfResourceUtilized: jest.fn(async () => false),
+}));
+
 [
   'castArray',
   'compact',

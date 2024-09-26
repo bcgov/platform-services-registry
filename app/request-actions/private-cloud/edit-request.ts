@@ -1,7 +1,7 @@
 import { DecisionStatus, Cluster, RequestType, EventType } from '@prisma/client';
 import { Session } from 'next-auth';
 import prisma from '@/core/prisma';
-import { checkIfQuotaAutoApproval } from '@/helpers/auto-approval-check';
+import { checkIfQuotaAutoApproval, Quotas } from '@/helpers/auto-approval-check';
 import { comparePrivateProductData } from '@/helpers/product-change';
 import { createEvent } from '@/mutations/events';
 import { getLastClosedPrivateCloudRequest, privateCloudRequestDetailInclude } from '@/queries/private-cloud-requests';
@@ -56,10 +56,15 @@ export default async function editRequest(
 
   const hasGolddrEnabledChanged = project.cluster === Cluster.GOLD && project.golddrEnabled !== formData.golddrEnabled;
 
-  const quotaReviewResult = await checkIfQuotaAutoApproval(project, formData, project.licencePlate, project.cluster);
+  const quotaReviewResult = await checkIfQuotaAutoApproval(
+    project as Quotas,
+    formData as Quotas,
+    project.licencePlate,
+    project.cluster,
+  );
 
   // If there is no quota change or no quota upgrade and no golddr flag changes, the request is automatically approved
-  if (quotaReviewResult && !hasGolddrEnabledChanged) {
+  if (quotaReviewResult.isAutoApprovalAvailable && !hasGolddrEnabledChanged) {
     decisionStatus = DecisionStatus.APPROVED;
   } else {
     decisionStatus = DecisionStatus.PENDING;

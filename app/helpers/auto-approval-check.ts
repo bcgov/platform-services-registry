@@ -11,8 +11,7 @@ enum NamespaceNames {
   prod = 'productionQuota',
   tools = 'toolsQuota',
 }
-
-interface Quotas {
+export interface Quotas {
   testQuota: Quota;
   toolsQuota: Quota;
   developmentQuota: Quota;
@@ -83,7 +82,6 @@ const checkUtilization = async (
     if (utilizationPercentage < 86) {
       return true; // Auto-approval due to utilization percentage
     }
-
     // Check quota usage
     // namespace has at least 35% of CPU utilization rate(namespace:container_cpu_usage/namespace_cpu:kube_pod_container_resource_requests:sum > 35%, same idea for memory)
     const requestedUsage = extractNumbers(requestedQuota[NamespaceNames[namespace]][resource])[0] * mesUnitsCoeff;
@@ -92,7 +90,6 @@ const checkUtilization = async (
       return true; // Auto-approval due to utilization percentage
     }
   }
-
   return false;
 };
 
@@ -135,18 +132,26 @@ export const checkIfQuotaAutoApproval = async (
   cluster: Cluster,
 ) => {
   const noQuotaChange = checknoQuotaChange(currentQuota, requestedQuota);
-  let isAutoApprovalAvailable = true;
+  let isAutoApprovalAvailable = noQuotaChange;
   const namespaceNames: string[] = [];
   const resourceNames: string[] = [];
   if (!noQuotaChange) {
     let hasIncreasedSignificantly = false;
 
+    const currentQuotaCasted = {
+      testQuota: currentQuota.testQuota,
+      toolsQuota: currentQuota.toolsQuota,
+      developmentQuota: currentQuota.developmentQuota,
+      productionQuota: currentQuota.productionQuota,
+    };
+
     // Iterate over each environment's quota
     // @ts-ignore
-    _each(currentQuota, (quota: Quota, envQuota: keyof Quotas) => {
+    _each(currentQuotaCasted, (quota: Quota, envQuota: keyof Quotas) => {
       // Iterate over each resource in the quota
       // @ts-ignore
-      _each(quota, async (currentResource: string, resourceName: keyof Quota) => {
+      // _each(quota, async (currentResource: string, resourceName: keyof Quota) => {
+      _each(quota, (currentResource: string, resourceName: keyof Quota) => {
         const requestedResource = requestedQuota[envQuota][resourceName];
         const resourceOrder = resourceOrders[resourceName];
 
