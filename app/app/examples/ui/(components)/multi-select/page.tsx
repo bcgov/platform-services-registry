@@ -23,13 +23,16 @@ export default Page(() => {
   });
 
   return (
-    <FormProvider {...methods}>
-      <form onSubmit={methods.handleSubmit(console.log)} autoComplete="off">
-        <HookFormMultiSelect name="fruits" data={['apple', 'banana', 'avocado', 'grape', 'orange', 'raspberry']} />
-        <Button variant="success" type="submit" className="mt-1">
-          Submit
-        </Button>
-      </form>
-    </FormProvider>
+    <>
+      <h1 className="font-bold text-2xl mt-4 mb-5">Textarea</h1>
+      <FormProvider {...methods}>
+        <form onSubmit={methods.handleSubmit(console.log)} autoComplete="off">
+          <HookFormMultiSelect name="fruits" data={['apple', 'banana', 'avocado', 'grape', 'orange', 'raspberry']} />
+          <Button variant="success" type="submit" className="mt-1">
+            Submit
+          </Button>
+        </form>
+      </FormProvider>
+    </>
   );
 });
