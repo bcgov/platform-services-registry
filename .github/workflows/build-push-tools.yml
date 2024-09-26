@@ -18,7 +18,7 @@ concurrency:
 
 jobs:
   build-push-airflow:
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-24.04
     timeout-minutes: 5
     permissions:
       contents: read
@@ -41,7 +41,7 @@ jobs:
           type=sha,format=long,prefix=,suffix=
 
   build-push-zap:
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-24.04
     timeout-minutes: 5
     permissions:
       contents: read
@@ -64,7 +64,7 @@ jobs:
           type=sha,format=long,prefix=,suffix=
 
   build-push-sonarscan:
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-24.04
     timeout-minutes: 5
     permissions:
       contents: read
