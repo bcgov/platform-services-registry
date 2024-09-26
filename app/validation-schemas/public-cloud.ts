@@ -23,6 +23,11 @@ export const publicCloudCreateRequestBodySchema = z.object({
     .refine((value) => value.length === 24, 'Account Coding should contain 24 characters'),
   description: z.string().min(1, { message: 'Description is required.' }),
   provider: z.nativeEnum(Provider),
+  providerSelectionReasons: z.array(z.string()).min(1, { message: 'Reason for choosing provider is required' }),
+  providerSelectionReasonsNote: z
+    .string()
+    .min(1, { message: 'An explanation of the reasons for choosing provider is required' })
+    .max(1000, { message: 'Provider Selection not should contain a maximum of 1000 characters.' }),
   budget: budgetSchema,
   ministry: z.nativeEnum(Ministry),
   projectOwner: userSchema,
