@@ -11,7 +11,7 @@ import {
 } from '@/constants';
 import { findMockUserByIdr, mockNoRoleIdirs } from '@/helpers/mock-users';
 import { getRandomItem } from '@/utils/collection';
-import { getRandomNumber } from '@/utils/number';
+import { getRandomNumberOptimally } from '@/utils/number';
 import { generateShortId } from '@/utils/uuid';
 
 const getRandomBool = () => faker.helpers.arrayElement([true, false]);
@@ -20,12 +20,12 @@ const getRandomCluster = () => faker.helpers.arrayElement(clusters);
 const getRandomProvider = () => faker.helpers.arrayElement(providers);
 const getRandomCloudProviderSelectionReasons = () => {
   const reasonForSelectingCloudProviderArray = reasonForSelectingCloudProviderOptions.map((option) => option.value);
-  const randomNumberOfReasons = getRandomNumber(1, reasonForSelectingCloudProviderArray.length);
+  const randomNumberOfReasons = getRandomNumberOptimally(1, reasonForSelectingCloudProviderArray.length);
   return faker.helpers.arrayElements(reasonForSelectingCloudProviderArray, randomNumberOfReasons);
 };
 const getRandomProviderReasonsNote = () => {
   const maxCharactersForField = 1000;
-  return faker.lorem.text().slice(0, getRandomNumber(1, maxCharactersForField));
+  return faker.lorem.text().slice(0, getRandomNumberOptimally(1, maxCharactersForField));
 };
 
 export function createSamplePrivateCloudProductData(args?: {

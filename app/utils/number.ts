@@ -28,9 +28,12 @@ export function numberToWords(number: number) {
   return 'Number out of range';
 }
 
-export function getRandomNumber(min: number, max: number) {
+export function getRandomNumberOptimally(min: number, max: number) {
   const range = max - min + 1;
-  const randomBuffer = crypto.randomBytes(4);
-  const randomNumber = randomBuffer.readUInt32LE(0) % range;
-  return min + randomNumber;
+  let randomNumber;
+  do {
+    const randomBuffer = crypto.randomBytes(4);
+    randomNumber = randomBuffer.readUInt32LE(0);
+  } while (randomNumber >= Math.floor(0xffffffff / range) * range);
+  return min + (randomNumber % range);
 }
