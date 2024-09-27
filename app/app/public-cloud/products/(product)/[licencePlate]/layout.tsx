@@ -10,6 +10,7 @@ import Tabs, { ITab } from '@/components/generic/tabs/BasicTabs';
 import createClientPage from '@/core/client-page';
 import { getPublicCloudProject } from '@/services/backend/public-cloud/products';
 import { publicProductState } from '@/states/global';
+import { resetState as resetRequestsState } from './requests/state';
 
 const pathParamSchema = z.object({
   licencePlate: z.string(),
@@ -31,6 +32,7 @@ export default publicCloudProductSecurityACS(({ pathParams, queryParams, session
 
   useEffect(() => {
     publicProductState.currentProduct = currentProduct;
+    resetRequestsState();
   }, [currentProduct]);
 
   useEffect(() => {

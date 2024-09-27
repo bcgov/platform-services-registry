@@ -1,9 +1,10 @@
-import { Prisma, ProjectStatus } from '@prisma/client';
-import { proxy, useSnapshot } from 'valtio';
+import { ProjectStatus } from '@prisma/client';
+import { proxy } from 'valtio';
+import { deepClone } from 'valtio/utils';
 import { productSorts } from '@/constants';
 import { PrivateCloudProductSearchBody } from '@/validation-schemas/private-cloud';
 
-export const pageState = proxy<PrivateCloudProductSearchBody>({
+const initialValue = {
   search: '',
   page: 1,
   pageSize: 10,
@@ -14,4 +15,6 @@ export const pageState = proxy<PrivateCloudProductSearchBody>({
   sortValue: productSorts[0].label,
   sortKey: productSorts[0].sortKey,
   sortOrder: productSorts[0].sortOrder,
-});
+};
+
+export const pageState = proxy<PrivateCloudProductSearchBody>(deepClone(initialValue));
