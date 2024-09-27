@@ -36,7 +36,7 @@ export default privateCloudProducts(({ pathParams, queryParams, session }) => {
     <>
       <Table
         title="Products in Private Cloud OpenShift Platform"
-        description="These are your products hosted on Private Cloud OpenShift platform"
+        description="These products are hosted on the Private Cloud OpenShift platform."
         totalCount={totalCount}
         page={snap.page ?? 1}
         pageSize={snap.pageSize ?? 10}
