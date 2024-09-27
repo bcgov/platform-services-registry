@@ -34,8 +34,8 @@ export default publicCloudRequests(({ pathParams, queryParams, session }) => {
 
   return (
     <Table
-      title="Products in Public Cloud OpenShift Platform"
-      description="Products with pending requests currently under admin review."
+      title="Requests in Public Cloud Landing Zones"
+      description="These requests are currently under admin review."
       totalCount={totalCount}
       page={snap.page ?? 1}
       pageSize={snap.pageSize ?? 10}
