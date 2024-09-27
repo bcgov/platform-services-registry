@@ -1,3 +1,5 @@
+import * as crypto from 'crypto';
+
 export const roundNumber = (number: number, options?: { decimals?: number }) => {
   const { decimals = 2 } = options ?? {};
   return Number((Math.round(number * 100) / 100).toFixed(decimals));
@@ -24,4 +26,14 @@ export function numberToWords(number: number) {
     return tens[Math.floor(number / 10) - 1] + '-' + ones[number % 10];
   }
   return 'Number out of range';
+}
+
+export function getRandomNumberOptimally(min: number, max: number) {
+  const range = max - min + 1;
+  let randomNumber;
+  do {
+    const randomBuffer = crypto.randomBytes(4);
+    randomNumber = randomBuffer.readUInt32LE(0);
+  } while (randomNumber >= Math.floor(0xffffffff / range) * range);
+  return min + (randomNumber % range);
 }

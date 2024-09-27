@@ -15,12 +15,15 @@ export default function PublicCloudBillingInfo({
   product,
   className,
 }: {
-  product: Product & {
-    _permissions?: {
-      signMou: boolean;
-      reviewMou: boolean;
-    };
-  };
+  product: Omit<
+    Product & {
+      _permissions?: {
+        signMou: boolean;
+        reviewMou: boolean;
+      };
+    },
+    'providerSelectionReasons' | 'providerSelectionReasonsNote'
+  >;
   className?: string;
 }) {
   const { data: session } = useSession();

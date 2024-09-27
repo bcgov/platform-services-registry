@@ -32,6 +32,8 @@ export const POST = createApiHandler({
     Description: project.description,
     Ministry: ministryKeyToName(project.ministry),
     Provider: project.provider,
+    'Reasons for Selecting Cloud Provider': project.providerSelectionReasons.join(', '),
+    'Description of Selected Reasons': project.providerSelectionReasonsNote,
     'Project Owner Email': project.projectOwner.email,
     'Project Owner Name': formatFullName(project.projectOwner),
     'Primary Technical Lead Email': project.primaryTechnicalLead.email,

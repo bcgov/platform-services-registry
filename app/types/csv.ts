@@ -23,6 +23,8 @@ export interface PublicProductCsvRecord {
   Description: string;
   Ministry: string;
   Provider: string;
+  'Description of Selected Reasons': string[];
+  'Reasons for Selecting Cloud Provider': string;
   'Project Owner Email': string;
   'Project Owner Name': string;
   'Primary Technical Lead Email': string;
