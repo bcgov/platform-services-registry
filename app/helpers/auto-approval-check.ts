@@ -139,13 +139,11 @@ export const checkIfQuotaAutoApproval = async (
     productionQuota: currentQuota.productionQuota,
   };
 
-  let isAutoApprovalAvailable = checkNoQuotaChange(castCurrentQuota, requestedQuota);
+  let isAutoApprovalAvailable = !checkIfQuotaUpgrade(castCurrentQuota, requestedQuota);
+
   if (!isAutoApprovalAvailable) {
-    isAutoApprovalAvailable = !checkIfQuotaUpgrade(castCurrentQuota, requestedQuota);
-  }
-  const namespaceNames: string[] = [];
-  const resourceNames: string[] = [];
-  if (!isAutoApprovalAvailable) {
+    const namespaceNames: string[] = [];
+    const resourceNames: string[] = [];
     let hasIncreasedSignificantly = false;
     // Iterate over each environment's quota
     // @ts-ignore
