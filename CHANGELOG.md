@@ -1,3 +1,8 @@
+## [0.34.3](https://github.com/bcgov/platform-services-registry/compare/v0.34.2...v0.34.3) (2024-09-27)
+
+### Bug Fixes
+
+* pass licence plates into proper field ([48eea32](https://github.com/bcgov/platform-services-registry/commit/48eea32a8edf2d7002463156917486704b00c8e6))
 ## [0.34.2](https://github.com/bcgov/platform-services-registry/compare/v0.34.0...v0.34.2) (2024-09-24)
 
 ### Features
