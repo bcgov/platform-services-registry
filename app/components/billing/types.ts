@@ -12,5 +12,5 @@ export type Product = Omit<
       };
     };
   }>,
-  'updatedAt' | 'providerSelectionReasons' | 'providerSelectionReasonsNote'
+  'updatedAt'
 >;
