@@ -51,7 +51,7 @@ export default privateCloudProductUsageMetrics(({ pathParams, queryParams, sessi
   const handleNamespaceChange = (namespace: string) => {
     setenvironment(namespace);
   };
-  console.log('data', data);
+
   return (
     <div>
       <fieldset className="w-full md:w-48 2xl:w-64 pb-6">

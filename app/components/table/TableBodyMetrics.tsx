@@ -1,5 +1,6 @@
 'use client';
 
+import classNames from 'classnames';
 import _truncate from 'lodash-es/truncate';
 import React from 'react';
 import { getTotalMetrics, ResourceType, Pod } from '@/services/openshift-kubernetis-metrics/helpers';
@@ -88,9 +89,12 @@ export default function TableBodyMetrics({ pods, resource, title, measurementUni
           {rows.map((row, index) => (
             <div key={row.podName}>
               <div
-                className={`hover:bg-gray-100 transition-colors duration-200 grid grid-cols-1 md:grid-cols-6 lg:grid-cols-12 gap-4 px-4 py-3 sm:px-6 lg:px-8 ${
-                  index === 0 && 'bg-gray-100'
-                }`}
+                className={classNames(
+                  'hover:bg-gray-100 transition-colors duration-200 grid grid-cols-1 md:grid-cols-6 lg:grid-cols-12 gap-4 px-4 py-3 sm:px-6 lg:px-8',
+                  {
+                    'bg-gray-100': index === 0,
+                  },
+                )}
               >
                 <div className="md:col-span-1 lg:col-span-3">
                   <TruncatedTooltip label={row.podName}>
@@ -99,20 +103,20 @@ export default function TableBodyMetrics({ pods, resource, title, measurementUni
                 </div>
                 <div className="md:col-span-1 lg:col-span-3">
                   <TruncatedTooltip label={row.containerName}>
-                    <span className={`${index === 0 && 'font-bold'}`}>
+                    <span className={classNames({ 'font-bold': index === 0 })}>
                       {_truncate(row.containerName, { length: 100 })}
                     </span>
                   </TruncatedTooltip>
                 </div>
-                <div className={`md:col-span-1 lg:col-span-2 ${index === 0 && 'font-bold'}`}>
+                <div className={classNames('md:col-span-1 lg:col-span-2', { 'font-bold': index === 0 })}>
                   {row.usage[resource]}
                   {index !== 0 && measurementUnit}
                 </div>
-                <div className={`md:col-span-1 lg:col-span-2 ${index === 0 && 'font-bold'}`}>
+                <div className={classNames('md:col-span-1 lg:col-span-2', { 'font-bold': index === 0 })}>
                   {row.limits[resource]}
                   {index !== 0 && measurementUnit}
                 </div>
-                <div className={`md:col-span-1 lg:col-span-2 ${index === 0 && 'font-bold'}`}>
+                <div className={classNames('md:col-span-1 lg:col-span-2', { 'font-bold': index === 0 })}>
                   {row.requests[resource]}
                   {index !== 0 && measurementUnit}
                 </div>
@@ -130,11 +134,11 @@ export default function TableBodyMetrics({ pods, resource, title, measurementUni
                   index === 0 && 'bg-gray-100'
                 }`}
               >
-                <div className={`md:col-span-3 lg:col-span-3 text-center ${index === 0 && 'font-bold'}`}>
+                <div className={classNames('md:col-span-3 lg:col-span-3 text-center', { 'font-bold': index === 0 })}>
                   {row.totalLimit}
                   {index !== 0 && measurementUnit}
                 </div>
-                <div className={`md:col-span-3 lg:col-span-3 text-center ${index === 0 && 'font-bold'}`}>
+                <div className={classNames('md:col-span-3 lg:col-span-3 text-center', { 'font-bold': index === 0 })}>
                   {row.totalUsage}
                   {index !== 0 && measurementUnit}
                 </div>
