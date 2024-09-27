@@ -1,3 +1,4 @@
+import { DecisionStatus } from '@prisma/client';
 import { proxy, useSnapshot } from 'valtio';
 import { requestSorts } from '@/constants';
 import { PrivateCloudRequestSearchBody } from '@/validation-schemas/private-cloud';
@@ -9,7 +10,7 @@ export const pageState = proxy<PrivateCloudRequestSearchBody>({
   ministries: [],
   clusters: [],
   temporary: [],
-  status: [],
+  status: [DecisionStatus.PENDING],
   types: [],
   sortValue: requestSorts[0].label,
   sortKey: requestSorts[0].sortKey,
