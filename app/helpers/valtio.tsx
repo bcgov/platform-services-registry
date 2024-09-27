@@ -1,6 +1,5 @@
 import { createContext, useContext, useRef } from 'react';
 import { proxy, useSnapshot } from 'valtio';
-import type { Snapshot } from 'valtio/vanilla';
 
 export function createValtioContext<T extends object>(initialState: T) {
   const StateContext = createContext<T>(initialState);
@@ -24,7 +23,7 @@ export function createGlobalValtio<T extends object>(initialState: T) {
 
   const useValtioState = function useValtioState() {
     const snapshot = useSnapshot(state);
-    return [state, snapshot] as [T, Snapshot<T>];
+    return [state, snapshot];
   };
 
   return { state, useValtioState };
@@ -33,5 +32,5 @@ export function createGlobalValtio<T extends object>(initialState: T) {
 export function useValtio<T extends object>(data: T) {
   const state = useRef(proxy<T>(data)).current;
   const snapshot = useSnapshot(state);
-  return [state, snapshot] as [T, Snapshot<T>];
+  return [state, snapshot];
 }
