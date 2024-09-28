@@ -56,7 +56,7 @@ services:
   postgres:
     platform: linux/amd64
     container_name: postgres
-    image: postgres:17.0
+    image: postgres:16.4
     healthcheck:
       test: [CMD, pg_isready, -q, -d, keycloak, -U, postgres]
       timeout: 45s
