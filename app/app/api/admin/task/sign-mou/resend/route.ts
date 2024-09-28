@@ -16,6 +16,8 @@ const apiHandler = createApiHandler({
 export const GET = apiHandler(async () => {
   const unsignedBillings = await prisma.billing.findMany({ where: { signed: false } });
 
+  console.log('Thanks');
+
   const result = {
     unsignedBillings: 0,
     tasks: 0,
