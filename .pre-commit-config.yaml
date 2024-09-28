@@ -85,4 +85,4 @@ repos:
   hooks:
   - id: commitlint
     stages: [commit-msg]
-exclude: ^(app/.react-email|CHANGELOG\.md|\.git/COMMIT_EDITMSG)$
+exclude: ^(app/.react-email|CHANGELOG\.md|.git/COMMIT_EDITMSG)$
