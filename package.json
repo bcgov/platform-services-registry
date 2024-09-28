@@ -17,6 +17,8 @@
   "devDependencies": {
     "@badeball/cypress-cucumber-preprocessor": "^20.0.2",
     "@bahmutov/cypress-esbuild-preprocessor": "^2.2.0",
+    "@commitlint/cli": "^19.5.0",
+    "@commitlint/config-conventional": "^19.5.0",
     "@release-it/bumper": "^6.0.1",
     "@typescript-eslint/eslint-plugin": "^7.0.0",
     "conventional-changelog-cli": "^5.0.0",
@@ -27,6 +29,7 @@
     "eslint-config-prettier": "^9.0.0",
     "eslint-plugin-n": "^17.0.0",
     "eslint-plugin-prettier": "^5.0.1",
+    "husky": "^9.1.6",
     "release-it": "^17.0.0",
     "typescript": "^5.3.3",
     "wait-on": "^8.0.0"
