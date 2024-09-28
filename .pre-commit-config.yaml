@@ -80,5 +80,12 @@ repos:
   rev: v2.3.0
   hooks:
   - id: codespell
+- repo: local
+  hooks:
+  - id: commitlint
+    name: commitlint
+    entry: bash -c "exec < /dev/tty && npx --no-install commitlint --edit $1"
+    language: system
+    stages: [commit-msg]
 
 exclude: ^(app/.react-email|CHANGELOG\.md)$
