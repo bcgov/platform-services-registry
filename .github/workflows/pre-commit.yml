@@ -13,22 +13,22 @@ jobs:
     steps:
     - uses: actions/checkout@v3
 
-      # Install Node.js (necessary to install commitlint)
-    - name: Setup Node.js
-      uses: actions/setup-node@v3
+      # Install Python 3 (required for pre-commit)
+    - name: Setup Python
+      uses: actions/setup-python@v4
       with:
-        node-version: '16'
+        python-version: 3.x
 
-      # Install commitlint and other required npm packages
-    - name: Install Commitlint and Dependencies
+      # Install pre-commit via pip
+    - name: Install Pre-commit
       run: |
-        npm install --global @commitlint/config-conventional @commitlint/cli
+        pip install pre-commit
 
+      # Install NPM packages if needed for other tasks
+    - name: Setup NPM Packages
+      uses: ./.github/actions/setup-npm
+
+      # Run pre-commit hooks
     - name: Rerun Pre-Commit Hooks on CI
       run: |
         pre-commit run --config=.pre-commit-config.yaml --color=always --show-diff-on-failure --all-files
-
-      # Run commitlint for the latest commit
-    - name: Lint Commit Messages
-      run: |
-        commitlint --from HEAD~1 --to HEAD
