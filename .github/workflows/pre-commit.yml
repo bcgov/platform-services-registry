@@ -11,22 +11,24 @@ jobs:
     runs-on: ubuntu-22.04
     timeout-minutes: 10
     steps:
-    - uses: hmarr/debug-action@f7318c783045ac39ed9bb497e22ce835fdafbfe6
-    - uses: actions/checkout@d632683dd7b4114ad314bca15554477dd762a938
+    - uses: actions/checkout@v3
 
-    - name: Setup Tools
-      uses: ./.github/actions/setup-tools
+      # Install Node.js (necessary to install commitlint)
+    - name: Setup Node.js
+      uses: actions/setup-node@v3
+      with:
+        node-version: '16'
 
-    - name: Setup NPM Packages
-      uses: ./.github/actions/setup-npm
-
-    - name: Install Commitlint
+      # Install commitlint and other required npm packages
+    - name: Install Commitlint and Dependencies
       run: |
-        npm install --save-dev @commitlint/config-conventional @commitlint/cli husky
+        npm install --global @commitlint/config-conventional @commitlint/cli
 
     - name: Rerun Pre-Commit Hooks on CI
       run: |
         pre-commit run --config=.pre-commit-config.yaml --color=always --show-diff-on-failure --all-files
+
+      # Run commitlint for the latest commit
     - name: Lint Commit Messages
       run: |
         commitlint --from HEAD~1 --to HEAD
