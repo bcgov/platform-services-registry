@@ -20,6 +20,13 @@ jobs:
     - name: Setup NPM Packages
       uses: ./.github/actions/setup-npm
 
+    - name: Install Commitlint
+      run: |
+        npm install --save-dev @commitlint/config-conventional @commitlint/cli husky
+
     - name: Rerun Pre-Commit Hooks on CI
       run: |
         pre-commit run --config=.pre-commit-config.yaml --color=always --show-diff-on-failure --all-files
+    - name: Lint Commit Messages
+      run: |
+        commitlint --from HEAD~1 --to HEAD
