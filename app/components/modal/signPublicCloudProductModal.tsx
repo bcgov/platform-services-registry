@@ -76,7 +76,8 @@ function SignPublicCloudProductModal({
 
   const { handleSubmit, register } = methods;
 
-  const service = provider === Provider.AWS ? 'AWS' : 'Microsoft Azure';
+  const isAWS = provider === Provider.AWS || provider === Provider.AWS_LZA;
+  const service = isAWS ? 'AWS' : 'Microsoft Azure';
 
   return (
     <Box pos="relative">
@@ -126,11 +127,11 @@ function SignPublicCloudProductModal({
             <p className="mb-2">
               &emsp;&emsp;Cloud compute, storage, and container management services, which will be accessible to the
               Ministry’s teams, on&nbsp;
-              {provider === Provider.AWS ? 'the Amazon Web Services platform' : 'the Microsoft Azure platform'}, through
-              the Government of Canada Cloud Brokering Service.
+              {isAWS ? 'the Amazon Web Services platform' : 'the Microsoft Azure platform'}, through the Government of
+              Canada Cloud Brokering Service.
             </p>
 
-            {provider === Provider.AWS ? (
+            {isAWS ? (
               <p className="mb-2">
                 &emsp;&emsp;AWS and the Government of Canada will invoice the OCIO, monthly, for the services consumed
                 including the Provincial Sales Tax (PST). Additional charges include the 6% brokerage fee that covers

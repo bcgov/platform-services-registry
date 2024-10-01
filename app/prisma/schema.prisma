@@ -556,6 +556,7 @@ enum Cluster {
 enum Provider {
   // GOOGLE
   AWS
+  AWS_LZA
   AZURE
 }
 

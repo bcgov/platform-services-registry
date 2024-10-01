@@ -86,6 +86,7 @@ declare module 'next-auth' {
       security: boolean;
       apiAccount: boolean;
       azure: boolean;
+      awsLza: boolean;
     };
   }
 

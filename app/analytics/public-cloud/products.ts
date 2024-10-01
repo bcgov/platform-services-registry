@@ -8,7 +8,7 @@ export async function productsCreatedPerMonth() {
   const [projects, deleteRequests] = await Promise.all([
     prisma.publicCloudProject.findMany({
       where: {
-        provider: { in: [Provider.AWS, Provider.AZURE] },
+        provider: { in: [Provider.AWS, Provider.AWS_LZA, Provider.AZURE] },
       },
       select: {
         licencePlate: true,
@@ -36,6 +36,7 @@ export async function productsCreatedPerMonth() {
     [key: string]: {
       all: number;
       [Provider.AWS]: number;
+      [Provider.AWS_LZA]: number;
       [Provider.AZURE]: number;
     };
   } = {};
@@ -56,7 +57,7 @@ export async function productsCreatedPerMonth() {
 
       const key = allShortDateStrs[i];
       if (!result[key]) {
-        result[key] = { all: 0, [Provider.AWS]: 0, [Provider.AZURE]: 0 };
+        result[key] = { all: 0, [Provider.AWS]: 0, [Provider.AWS_LZA]: 0, [Provider.AZURE]: 0 };
       }
 
       result[key].all++;
@@ -73,6 +74,7 @@ export async function numberOfProductsOverTime() {
   const data = Object.entries(result).map(([date, counts]) => ({
     date,
     AWS: counts[Provider.AWS],
+    AWS_LZA: counts[Provider.AWS_LZA],
     AZURE: counts[Provider.AZURE],
   }));
 
