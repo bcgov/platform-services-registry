@@ -1,11 +1,15 @@
-import { Provider } from '@prisma/client';
 import classNames from 'classnames';
 import { useSession } from 'next-auth/react';
 import { Controller, useFormContext } from 'react-hook-form';
 import AGMinistryCheckBox from '@/components/form/AGMinistryCheckBox';
+import FormMultiSelect from '@/components/generic/select/FormMultiSelect';
 import FormSelect from '@/components/generic/select/FormSelect';
-import { ministryOptions, providerOptions, reasonForSelectingCloudProviderOptions } from '@/constants';
-import FormMultiSelect from '../generic/select/FormMultiSelect';
+import {
+  ministryOptions,
+  providerOptions,
+  getAllowedOptions,
+  reasonForSelectingCloudProviderOptions,
+} from '@/constants';
 
 function stripSpecialCharacters(text: string) {
   const pattern = /[^A-Za-z0-9///.:+=@_ ]/g;
@@ -30,6 +34,8 @@ export default function ProjectDescriptionPublic({
     setValue,
     control,
   } = useFormContext();
+
+  if (!session) return null;
 
   return (
     <div className="">
@@ -119,10 +125,7 @@ export default function ProjectDescriptionPublic({
             disabled={disabled || providerDisabled}
             options={[
               { label: 'Select Provider', value: '' },
-              ...providerOptions.filter((opt) => {
-                if (session?.previews.azure !== true) return opt.value === Provider.AWS;
-                return true;
-              }),
+              ...(disabled ? providerOptions : getAllowedOptions(session)),
             ]}
             selectProps={register('provider')}
           />

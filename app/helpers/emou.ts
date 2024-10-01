@@ -1,5 +1,6 @@
 import { Provider } from '@prisma/client';
 
 export function getEmouFileName(productName: string, provider: Provider) {
-  return `OCIO and ${productName} - ${provider === Provider.AWS ? 'AWS' : 'Microsoft Azure'} MOU.pdf`;
+  const isAWS = provider === Provider.AWS || provider === Provider.AWS_LZA;
+  return `OCIO and ${productName} - ${isAWS ? 'AWS' : 'Microsoft Azure'} MOU.pdf`;
 }

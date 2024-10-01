@@ -1,11 +1,14 @@
 import { Provider, Prisma, Ministry, ProjectStatus } from '@prisma/client';
+import { useSession } from 'next-auth/react';
 import { useSnapshot, subscribe } from 'valtio';
 import FormMultiSelect from '@/components/generic/select/FormMultiSelect';
-import { ministryOptions, providerOptions } from '@/constants';
+import { ministryOptions, getAllowedOptions } from '@/constants';
 import { pageState } from './state';
 
 export default function FilterPanel() {
   const pageSnapshot = useSnapshot(pageState);
+  const { data: session } = useSession();
+  if (!session) return null;
 
   return (
     <div className="grid grid-cols-1 gap-y-2 md:grid-cols-12 md:gap-x-3">
@@ -24,7 +27,7 @@ export default function FilterPanel() {
         name="provider"
         label="Provider"
         value={pageSnapshot.providers ?? []}
-        data={providerOptions}
+        data={getAllowedOptions(session)}
         onChange={(value) => {
           pageState.providers = value as Provider[];
           pageState.page = 1;

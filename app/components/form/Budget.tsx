@@ -35,6 +35,7 @@ export default function Budget({ disabled }: { disabled?: boolean }) {
 
   switch (provider) {
     case Provider.AWS:
+    case Provider.AWS_LZA:
       calculatorLink = <ExternalLink href="https://calculator.aws/#/">AWS Cost Calculator</ExternalLink>;
       break;
     case Provider.AZURE:

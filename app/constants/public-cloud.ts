@@ -1,11 +1,26 @@
 import { Provider } from '@prisma/client';
+import { Session } from 'next-auth';
 
 export const providers = Object.values(Provider);
 
-export const providerOptions = providers.map((v) => ({
-  label: v === Provider.AZURE ? 'MS Azure' : v,
-  value: v,
+const providerLabels = {
+  [Provider.AWS]: 'AWS',
+  [Provider.AWS_LZA]: 'AWS LZA',
+  [Provider.AZURE]: 'MS Azure',
+};
+
+export const providerOptions = providers.map((value) => ({
+  label: providerLabels[value] ?? value,
+  value,
 }));
+
+export function getAllowedOptions(session: Session) {
+  return providerOptions.filter((opt) => {
+    if (opt.value === Provider.AWS_LZA) return session?.previews.awsLza;
+    if (opt.value === Provider.AZURE) return session?.previews.azure;
+    return true;
+  });
+}
 
 export const reasonForSelectingCloudProviderOptions = [
   { value: 'Cost Efficiency', label: 'Cost Efficiency' },
