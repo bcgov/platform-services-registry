@@ -9,7 +9,7 @@ COPY localdev/m365proxy/mocks.json /localdev/m365proxy/mocks.json
 COPY .prettierignore .
 COPY .prettierrc .
 
-ENV BASE_URL https://dev-pltsvc.apps.silver.devops.gov.bc.ca
+ENV BASE_URL=https://dev-pltsvc.apps.silver.devops.gov.bc.ca
 
 RUN npm install
 RUN npm run email-build
@@ -29,7 +29,7 @@ COPY --from=build /app/.react-email/node_modules ./node_modules
 RUN mkdir -p .next/cache/images &&\
     chmod -R 777 .next/cache/images
 
-ENV NEXTAUTH_SECRET change_me
+ENV NEXTAUTH_SECRET=change_me
 
 EXPOSE 3000
 CMD ["node_modules/.bin/next", "start"]

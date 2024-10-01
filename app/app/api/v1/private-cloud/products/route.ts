@@ -1,5 +1,4 @@
 import { ProjectStatus, Ministry, Cluster } from '@prisma/client';
-import { Session } from 'next-auth';
 import { z } from 'zod';
 import createApiHandler from '@/core/api-handler';
 import { OkResponse, BadRequestResponse } from '@/core/responses';
@@ -33,13 +32,13 @@ export const GET = apiHandler(async ({ queryParams, session }) => {
   const { skip, take, page } = parsePaginationParams(_page ?? defaultPage, _pageSize ?? defaultPageSize, 10);
 
   const { docs, totalCount } = await searchPrivateCloudProducts({
-    session: session as Session,
+    session,
     skip,
     take,
-    ministry,
-    cluster,
-    status,
-    isTest: false,
+    ministries: ministry ? [ministry] : [],
+    clusters: cluster ? [cluster] : [],
+    status: status ? [status] : [],
+    temporary: [],
   });
 
   const data = docs.map((doc) => {

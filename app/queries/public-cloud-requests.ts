@@ -1,7 +1,11 @@
 import { Ministry, Provider, Prisma } from '@prisma/client';
+import _isNumber from 'lodash-es/isNumber';
 import { Session } from 'next-auth';
+import { requestSorts } from '@/constants';
 import prisma from '@/core/prisma';
+import { parsePaginationParams } from '@/helpers/pagination';
 import { PublicCloudRequestDetail, PublicCloudRequestDetailDecorated } from '@/types/public-cloud';
+import { PublicCloudRequestSearchBody } from '@/validation-schemas/public-cloud';
 import { getMatchingUserIds } from './users';
 
 export const publicCloudRequestSimpleInclude = {
@@ -71,37 +75,41 @@ export const publicCloudRequestDetailInclude = {
 };
 
 const defaultSortKey = 'updatedAt';
+const defaultOrderBy = { [defaultSortKey]: Prisma.SortOrder.desc };
 
 export async function searchPublicCloudRequests({
   session,
   skip,
   take,
+  page,
+  pageSize,
   licencePlate,
-  ministry,
-  provider,
+  ministries,
+  providers,
+  types,
+  status,
   search,
   sortKey = defaultSortKey,
   sortOrder = Prisma.SortOrder.desc,
   extraFilter,
-}: {
+}: PublicCloudRequestSearchBody & {
   session: Session;
-  skip: number;
-  take: number;
-  licencePlate?: string;
-  ministry?: string;
-  provider?: string;
-  search?: string;
-  sortKey?: string;
-  sortOrder?: Prisma.SortOrder;
+  skip?: number;
+  take?: number;
   extraFilter?: Prisma.PublicCloudRequestWhereInput;
 }) {
+  if (!_isNumber(skip) && !_isNumber(take) && page && pageSize) {
+    ({ skip, take } = parsePaginationParams(page, pageSize, 10));
+  }
+
   const decisionDatawhere: Prisma.PublicCloudRequestedProjectWhereInput = {};
 
-  const orderBy =
-    sortKey === 'updatedAt'
-      ? { updatedAt: Prisma.SortOrder[sortOrder] }
-      : { requestData: { [sortKey]: Prisma.SortOrder[sortOrder] } };
-
+  const sortOption = requestSorts.find((sort) => sort.sortKey === sortKey);
+  let orderBy!: Prisma.PublicCloudRequestOrderByWithRelationInput;
+  if (sortOption) {
+    const order = { [sortKey]: Prisma.SortOrder[sortOrder] };
+    orderBy = sortOption.inData ? { decisionData: order } : order;
+  }
   if (search === '*') search = '';
 
   if (search) {
@@ -125,12 +133,12 @@ export async function searchPublicCloudRequests({
     decisionDatawhere.licencePlate = licencePlate;
   }
 
-  if (ministry) {
-    decisionDatawhere.ministry = ministry as Ministry;
+  if (ministries && ministries.length > 0) {
+    decisionDatawhere.ministry = { in: ministries };
   }
 
-  if (provider) {
-    decisionDatawhere.provider = provider as Provider;
+  if (providers && providers.length > 0) {
+    decisionDatawhere.provider = { in: providers };
   }
 
   const matchingRequestedPublicProjects = await prisma.publicCloudRequestedProject.findMany({
@@ -139,7 +147,15 @@ export async function searchPublicCloudRequests({
   });
 
   const where: Prisma.PublicCloudRequestWhereInput = extraFilter ?? {};
-  where.requestDataId = { in: matchingRequestedPublicProjects.map((proj) => proj.id) };
+  where.decisionDataId = { in: matchingRequestedPublicProjects.map((proj) => proj.id) };
+
+  if (types && types.length > 0) {
+    where.type = { in: types };
+  }
+
+  if (status && status.length > 0) {
+    where.decisionStatus = { in: status };
+  }
 
   const [docs, totalCount] = await Promise.all([
     prisma.publicCloudRequest.findMany({
@@ -155,6 +171,7 @@ export async function searchPublicCloudRequests({
       session: session as never,
     }),
   ]);
+
   return { docs, totalCount };
 }
 

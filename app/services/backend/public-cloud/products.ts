@@ -1,4 +1,6 @@
+import { Prisma } from '@prisma/client';
 import axios from 'axios';
+import { productSorts } from '@/constants';
 import {
   PublicCloudRequestSimpleDecorated,
   PublicCloudProductDetailDecorated,
@@ -6,6 +8,10 @@ import {
   PublicCloudRequestDetail,
 } from '@/types/public-cloud';
 import { downloadFile } from '@/utils/file-download';
+import {
+  PublicCloudProductSearchBody,
+  PublicCloudProductSearchNoPaginationBody,
+} from '@/validation-schemas/public-cloud';
 import { instance as parentInstance } from './instance';
 
 export const instance = axios.create({
@@ -13,33 +19,33 @@ export const instance = axios.create({
   baseURL: `${parentInstance.defaults.baseURL}/products`,
 });
 
-export interface PublicCloudProductAllCriteria {
-  search: string;
-  page: number;
-  pageSize: number;
-  licencePlate: string;
-  ministry: string;
-  provider: string;
-  includeInactive: boolean;
-  sortKey: string;
-  sortOrder: string;
+function prepareSearchPayload(data: PublicCloudProductSearchBody) {
+  const reqData = { ...data };
+  const selectedOption = productSorts.find((sort) => sort.label === reqData.sortValue);
+
+  if (selectedOption) {
+    reqData.sortKey = selectedOption.sortKey;
+    reqData.sortOrder = selectedOption.sortOrder;
+  } else {
+    reqData.sortKey = '';
+    reqData.sortOrder = Prisma.SortOrder.desc;
+  }
+
+  return reqData;
 }
 
-export interface PublicCloudProductSearchCriteria extends PublicCloudProductAllCriteria {
-  page: number;
-  pageSize: number;
-}
-
-export async function searchPublicCloudProducts(data: PublicCloudProductSearchCriteria) {
-  const result = await instance.post(`/search`, data).then((res) => {
+export async function searchPublicCloudProducts(data: PublicCloudProductSearchBody) {
+  const reqData = prepareSearchPayload(data);
+  const result = await instance.post(`/search`, reqData).then((res) => {
     return res.data;
   });
 
   return result as PublicCloudProductSearch;
 }
 
-export async function downloadPublicCloudProducts(data: PublicCloudProductSearchCriteria) {
-  const result = await instance.post(`/download`, data, { responseType: 'blob' }).then((res) => {
+export async function downloadPublicCloudProducts(data: PublicCloudProductSearchNoPaginationBody) {
+  const reqData = prepareSearchPayload(data);
+  const result = await instance.post(`/download`, reqData, { responseType: 'blob' }).then((res) => {
     if (res.status === 204) return false;
 
     downloadFile(res.data, 'public-cloud-products.csv');

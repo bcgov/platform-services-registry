@@ -1,5 +1,6 @@
-import { PrivateCloudComment } from '@prisma/client';
+import { Prisma, PrivateCloudComment } from '@prisma/client';
 import axios from 'axios';
+import { productSorts } from '@/constants';
 import {
   PrivateCloudRequestSimpleDecorated,
   PrivateCloudProductDetailDecorated,
@@ -7,6 +8,10 @@ import {
   PrivateCloudRequestDetail,
 } from '@/types/private-cloud';
 import { downloadFile } from '@/utils/file-download';
+import {
+  PrivateCloudProductSearchBody,
+  PrivateCloudProductSearchNoPaginationBody,
+} from '@/validation-schemas/private-cloud';
 import { instance as parentInstance } from './instance';
 
 export const instance = axios.create({
@@ -14,34 +19,33 @@ export const instance = axios.create({
   baseURL: `${parentInstance.defaults.baseURL}/products`,
 });
 
-export interface PrivateCloudProductAllCriteria {
-  search: string;
-  page: number;
-  pageSize: number;
-  licencePlate: string;
-  ministry: string;
-  cluster: string;
-  includeInactive: boolean;
-  sortKey: string;
-  sortOrder: string;
-  showTest: boolean;
+function prepareSearchPayload(data: PrivateCloudProductSearchBody) {
+  const reqData = { ...data };
+  const selectedOption = productSorts.find((sort) => sort.label === reqData.sortValue);
+
+  if (selectedOption) {
+    reqData.sortKey = selectedOption.sortKey;
+    reqData.sortOrder = selectedOption.sortOrder;
+  } else {
+    reqData.sortKey = '';
+    reqData.sortOrder = Prisma.SortOrder.desc;
+  }
+
+  return reqData;
 }
 
-export interface PrivateCloudProductSearchCriteria extends PrivateCloudProductAllCriteria {
-  page: number;
-  pageSize: number;
-}
-
-export async function searchPrivateCloudProducts(data: PrivateCloudProductSearchCriteria) {
-  const result = await instance.post('/search', data).then((res) => {
+export async function searchPrivateCloudProducts(data: PrivateCloudProductSearchBody) {
+  const reqData = prepareSearchPayload(data);
+  const result = await instance.post('/search', reqData).then((res) => {
     return res.data;
   });
 
   return result as PrivateCloudProductSearch;
 }
 
-export async function downloadPrivateCloudProducts(data: PrivateCloudProductAllCriteria) {
-  const result = await instance.post('/download', data, { responseType: 'blob' }).then((res) => {
+export async function downloadPrivateCloudProducts(data: PrivateCloudProductSearchNoPaginationBody) {
+  const reqData = prepareSearchPayload(data);
+  const result = await instance.post('/download', reqData, { responseType: 'blob' }).then((res) => {
     if (res.status === 204) return false;
 
     downloadFile(res.data, 'private-cloud-products.csv');

@@ -50,6 +50,7 @@ export default function FormMultiSelect({
         onBlur={onBlur}
         value={value}
         searchable
+        clearable
         disabled={disabled}
         classNames={{ input: classnames('text-md', classNames?.input) }}
       />

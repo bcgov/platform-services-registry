@@ -4,6 +4,7 @@ import { useQuery } from '@tanstack/react-query';
 import { proxy, useSnapshot } from 'valtio';
 import Table from '@/components/generic/table/Table';
 import TableBodyPrivateProducts from '@/components/table/TableBodyPrivateProducts';
+import { productSorts } from '@/constants';
 import createClientPage from '@/core/client-page';
 import { processPrivateCloudProductData } from '@/helpers/row-mapper';
 import { searchPrivateCloudProducts, downloadPrivateCloudProducts } from '@/services/backend/private-cloud/products';
@@ -35,11 +36,12 @@ export default privateCloudProducts(({ pathParams, queryParams, session }) => {
     <>
       <Table
         title="Products in Private Cloud OpenShift Platform"
-        description="These are your products hosted on Private Cloud OpenShift platform"
+        description="These products are hosted on the Private Cloud OpenShift platform."
         totalCount={totalCount}
-        page={snap.page}
-        pageSize={snap.pageSize}
+        page={snap.page ?? 1}
+        pageSize={snap.pageSize ?? 10}
         search={snap.search}
+        sortKey={snap.sortValue}
         onPagination={(page: number, pageSize: number) => {
           pageState.page = page;
           pageState.pageSize = pageSize;
@@ -52,6 +54,11 @@ export default privateCloudProducts(({ pathParams, queryParams, session }) => {
           const result = await downloadPrivateCloudProducts(snap);
           return result;
         }}
+        onSort={(sortValue) => {
+          pageState.page = 1;
+          pageState.sortValue = sortValue;
+        }}
+        sortOptions={productSorts.map((v) => v.label)}
         filters={<FilterPanel />}
         isLoading={isLoading}
       >

@@ -90,8 +90,10 @@ export default function BillingMou({ product, billing }: { product: Product; bil
     return isNaN(num) ? 0 : num;
   });
 
-  const currency = product.provider === Provider.AWS ? 'USD' : 'CAD';
-  const service = product.provider === Provider.AWS ? 'AWS' : 'Microsoft Azure';
+  const isAWS = product.provider === Provider.AWS || product.provider === Provider.AWS_LZA;
+
+  const currency = isAWS ? 'USD' : 'CAD';
+  const service = isAWS ? 'AWS' : 'Microsoft Azure';
 
   return (
     <div>
@@ -117,11 +119,11 @@ export default function BillingMou({ product, billing }: { product: Product; bil
         <p className="mb-2">
           &emsp;&emsp;Cloud compute, storage, and container management services, which will be accessible to the
           Ministry’s teams, on&nbsp;
-          {product.provider === Provider.AWS ? 'the Amazon Web Services platform' : 'the Microsoft Azure platform'},
-          through the Government of Canada Cloud Brokering Service.
+          {isAWS ? 'the Amazon Web Services platform' : 'the Microsoft Azure platform'}, through the Government of
+          Canada Cloud Brokering Service.
         </p>
 
-        {product.provider === Provider.AWS ? (
+        {isAWS ? (
           <p className="mb-2">
             &emsp;&emsp;AWS and the Government of Canada will invoice the OCIO, monthly, for the services consumed
             including the Provincial Sales Tax (PST). Additional charges include the 6% brokerage fee that covers the

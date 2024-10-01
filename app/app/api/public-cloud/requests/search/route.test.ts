@@ -107,7 +107,7 @@ describe('Search Public Cloud Requests - Permissions', () => {
   it('should successfully search 1 request by PO', async () => {
     await mockSessionByEmail(PO.email);
 
-    const res1 = await searchPublicCloudRequests({ includeInactive: true });
+    const res1 = await searchPublicCloudRequests({});
     expect(res1.status).toBe(200);
     const dat1 = await res1.json();
 
@@ -117,7 +117,7 @@ describe('Search Public Cloud Requests - Permissions', () => {
   it('should successfully search 1 request by TL1', async () => {
     await mockSessionByEmail(TL1.email);
 
-    const res1 = await searchPublicCloudRequests({ includeInactive: true });
+    const res1 = await searchPublicCloudRequests({});
     expect(res1.status).toBe(200);
     const dat1 = await res1.json();
 
@@ -127,7 +127,7 @@ describe('Search Public Cloud Requests - Permissions', () => {
   it('should successfully search 1 request by TL2', async () => {
     await mockSessionByEmail(TL2.email);
 
-    const res1 = await searchPublicCloudRequests({ includeInactive: true });
+    const res1 = await searchPublicCloudRequests({});
     expect(res1.status).toBe(200);
     const dat1 = await res1.json();
 
@@ -160,7 +160,7 @@ describe('Search Public Cloud Requests - Permissions', () => {
   it('should successfully search 1 request by the random user', async () => {
     await mockSessionByEmail(RANDOM1.email);
 
-    const res1 = await searchPublicCloudRequests({ includeInactive: true });
+    const res1 = await searchPublicCloudRequests({});
     expect(res1.status).toBe(200);
     const dat1 = await res1.json();
 
@@ -170,7 +170,7 @@ describe('Search Public Cloud Requests - Permissions', () => {
   it('should successfully search 1 request by PO', async () => {
     await mockSessionByEmail(PO.email);
 
-    const res1 = await searchPublicCloudRequests({ includeInactive: true });
+    const res1 = await searchPublicCloudRequests({});
     expect(res1.status).toBe(200);
     const dat1 = await res1.json();
 
@@ -180,7 +180,7 @@ describe('Search Public Cloud Requests - Permissions', () => {
   it('should successfully search 1 request by TL1', async () => {
     await mockSessionByEmail(TL1.email);
 
-    const res1 = await searchPublicCloudRequests({ includeInactive: true });
+    const res1 = await searchPublicCloudRequests({});
     expect(res1.status).toBe(200);
     const dat1 = await res1.json();
 
@@ -190,7 +190,7 @@ describe('Search Public Cloud Requests - Permissions', () => {
   it('should successfully search 1 request by TL2', async () => {
     await mockSessionByEmail(TL2.email);
 
-    const res1 = await searchPublicCloudRequests({ includeInactive: true });
+    const res1 = await searchPublicCloudRequests({});
     expect(res1.status).toBe(200);
     const dat1 = await res1.json();
 
@@ -200,7 +200,7 @@ describe('Search Public Cloud Requests - Permissions', () => {
   it('should successfully search 2 requests by admin', async () => {
     await mockSessionByRole('admin');
 
-    const res1 = await searchPublicCloudRequests({ includeInactive: true });
+    const res1 = await searchPublicCloudRequests({});
     expect(res1.status).toBe(200);
     const dat1 = await res1.json();
 
@@ -298,20 +298,21 @@ describe('Search Public Cloud Requests - Validations', () => {
     expect(res.status).toBe(200);
   });
 
-  it('should successfully search 10 requests by admin', async () => {
+  it('should successfully search 11 requests by admin', async () => {
     await mockSessionByRole('admin');
 
-    const res1 = await searchPublicCloudRequests({ includeInactive: true });
+    const res1 = await searchPublicCloudRequests({});
     expect(res1.status).toBe(200);
     const dat1 = await res1.json();
 
+    // 10 Create requests, 1 Edit request
     expect(dat1.totalCount).toBe(11);
   });
 
   it('should successfully search 1 requests by admin', async () => {
     await mockSessionByRole('admin');
 
-    const res1 = await searchPublicCloudRequests({});
+    const res1 = await searchPublicCloudRequests({ status: [DecisionStatus.APPROVED] });
     expect(res1.status).toBe(200);
     const dat1 = await res1.json();
 
@@ -322,9 +323,8 @@ describe('Search Public Cloud Requests - Validations', () => {
     await mockSessionByRole('admin');
 
     const res1 = await searchPublicCloudRequests({
-      ministry: Ministry.AEST,
-      provider: Provider.AWS,
-      includeInactive: true,
+      ministries: [Ministry.AEST],
+      providers: [Provider.AWS],
     });
 
     expect(res1.status).toBe(200);
@@ -338,7 +338,6 @@ describe('Search Public Cloud Requests - Validations', () => {
 
     const res1 = await searchPublicCloudRequests({
       search: '______name______',
-      includeInactive: true,
     });
 
     expect(res1.status).toBe(200);

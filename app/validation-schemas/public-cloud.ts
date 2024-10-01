@@ -1,4 +1,4 @@
-import { Cluster, Ministry, Provider, Prisma, RequestType } from '@prisma/client';
+import { Cluster, Ministry, Provider, Prisma, RequestType, ProjectStatus, DecisionStatus } from '@prisma/client';
 import _isString from 'lodash-es/isString';
 import { string, z } from 'zod';
 import { processEnumString, processUpperEnumString, processBoolean } from '@/utils/zod';
@@ -23,6 +23,11 @@ export const publicCloudCreateRequestBodySchema = z.object({
     .refine((value) => value.length === 24, 'Account Coding should contain 24 characters'),
   description: z.string().min(1, { message: 'Description is required.' }),
   provider: z.nativeEnum(Provider),
+  providerSelectionReasons: z.array(z.string()).min(1, { message: 'Reason for choosing provider is required' }),
+  providerSelectionReasonsNote: z
+    .string()
+    .min(1, { message: 'An explanation of the reasons for choosing provider is required' })
+    .max(1000, { message: 'Provider Selection not should contain a maximum of 1000 characters.' }),
   budget: budgetSchema,
   ministry: z.nativeEnum(Ministry),
   projectOwner: userSchema,
@@ -58,9 +63,10 @@ export const publicCloudRequestDecisionBodySchema = publicCloudEditRequestBodySc
 
 export const publicCloudProductSearchNoPaginationBodySchema = z.object({
   search: z.string().optional(),
-  ministry: z.preprocess(processUpperEnumString, z.nativeEnum(Ministry).optional()),
-  provider: z.preprocess(processUpperEnumString, z.nativeEnum(Provider).optional()),
-  includeInactive: z.boolean().optional(),
+  ministries: z.array(z.nativeEnum(Ministry)).optional(),
+  providers: z.array(z.nativeEnum(Provider)).optional(),
+  status: z.array(z.nativeEnum(ProjectStatus)).optional(),
+  sortValue: z.string().optional(),
   sortKey: z.string().optional(),
   sortOrder: z.preprocess(processEnumString, z.nativeEnum(Prisma.SortOrder).optional()),
 });
@@ -77,9 +83,11 @@ export const publicCloudRequestSearchBodySchema = z.object({
   search: z.string().optional(),
   page: z.number().optional(),
   pageSize: z.number().optional(),
-  ministry: z.preprocess(processUpperEnumString, z.nativeEnum(Ministry).optional()),
-  provider: z.preprocess(processUpperEnumString, z.nativeEnum(Provider).optional()),
-  includeInactive: z.boolean().optional(),
+  ministries: z.array(z.nativeEnum(Ministry)).optional(),
+  providers: z.array(z.nativeEnum(Provider)).optional(),
+  types: z.array(z.nativeEnum(RequestType)).optional(),
+  status: z.array(z.nativeEnum(DecisionStatus)).optional(),
+  sortValue: z.string().optional(),
   sortKey: z.string().optional(),
   sortOrder: z.preprocess(processEnumString, z.nativeEnum(Prisma.SortOrder).optional()),
 });

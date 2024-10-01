@@ -1,21 +1,33 @@
 import { Disclosure, DisclosureButton, DisclosurePanel } from '@headlessui/react';
-import { UnstyledButton, Tooltip } from '@mantine/core';
+import { UnstyledButton, Tooltip, ComboboxData } from '@mantine/core';
 import { IconFilter, IconSearch, IconCircleX } from '@tabler/icons-react';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import { useCallback, useEffect, useState, useRef } from 'react';
 import ExportButton from '@/components/buttons/ExportButton';
+import LightButton from '@/components/generic/button/LightButton';
+import FormSingleSelect, { FormSingleSelectProps } from '@/components/generic/select/FormSingleSelect';
 import { useDebounce } from '@/utils/hooks';
-import LightButton from '../button/LightButton';
 import { useTableState } from './Table';
 
 type Props = {
   initialSearch?: string;
-  onSearch?: (search: string) => void;
+  onSort?: (sortKey: string) => void;
+  sortOptions?: ComboboxData;
+  sortKey?: string;
+  onSearch?: (searchKey: string) => void;
   onExport?: () => Promise<boolean>;
   children?: React.ReactNode;
 };
 
-export default function SearchFilterExport({ initialSearch = '', onSearch, onExport, children }: Props) {
+export default function SearchFilterExport({
+  initialSearch = '',
+  onSort,
+  sortOptions = [],
+  sortKey = '',
+  onSearch,
+  onExport,
+  children,
+}: Props) {
   const pathname = usePathname();
   const { replace } = useRouter();
   const searchParams = useSearchParams()!;
@@ -44,11 +56,24 @@ export default function SearchFilterExport({ initialSearch = '', onSearch, onExp
   return (
     <div className="w-full">
       <Disclosure defaultOpen={searchParams.get('openFilter') === 'true'}>
-        <div className="flex flex-grow-0 justify-end space-x-2.5 w-full items-center">
-          <div className="flex w-full justify-between items-center">
-            <div className="flex-grow h-12"></div>
+        <div className="grid grid-cols-1 gap-y-2 md:grid-cols-12 md:gap-x-6">
+          <div className="col-span-6">
+            {onSort && (
+              <FormSingleSelect
+                name="sortby"
+                value={sortKey}
+                data={sortOptions}
+                onChange={(value) => {
+                  if (!value) return;
+                  onSort(value);
+                }}
+              />
+            )}
+          </div>
+          <div className="col-span-6 flex">
+            <div className="ml-auto" />
             {onSearch && (
-              <form className="flex-grow flex-shrink max-w-sm">
+              <div className="flex-grow flex-shrink max-w-sm">
                 <label htmlFor="simple-search" className="sr-only">
                   Search
                 </label>
@@ -87,18 +112,18 @@ export default function SearchFilterExport({ initialSearch = '', onSearch, onExp
                     </Tooltip>
                   )}
                 </div>
-              </form>
+              </div>
             )}
+            {children && (
+              <DisclosureButton as={LightButton} type="button" onClick={handleDiscloserToggle} className="ml-2 pr-6">
+                <IconFilter size={20} />
+                Filter
+              </DisclosureButton>
+            )}
+            {onExport && <ExportButton onExport={onExport} className="ml-2" />}
           </div>
-          {children && (
-            <DisclosureButton as={LightButton} type="button" onClick={handleDiscloserToggle} className="pr-6">
-              <IconFilter size={20} />
-              Filter
-            </DisclosureButton>
-          )}
-          {onExport && <ExportButton onExport={onExport} />}
         </div>
-        <DisclosurePanel className="py-10 w-full flex justify-end ">{children}</DisclosurePanel>
+        <DisclosurePanel className="mt-2">{children}</DisclosurePanel>
       </Disclosure>
     </div>
   );

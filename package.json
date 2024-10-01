@@ -1,7 +1,7 @@
 {
   "name": "pltsvc",
   "description": "B.C. Government's Platform Product Registry",
-  "version": "0.34.0",
+  "version": "0.34.3",
   "private": true,
   "scripts": {
     "lint": "eslint --no-eslintrc --config .eslintrc.root.json .",
@@ -15,7 +15,7 @@
     "node": ">=22.1.0"
   },
   "devDependencies": {
-    "@badeball/cypress-cucumber-preprocessor": "^20.0.2",
+    "@badeball/cypress-cucumber-preprocessor": "^21.0.0",
     "@bahmutov/cypress-esbuild-preprocessor": "^2.2.0",
     "@release-it/bumper": "^6.0.1",
     "@typescript-eslint/eslint-plugin": "^7.0.0",

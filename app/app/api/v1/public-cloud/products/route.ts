@@ -36,9 +36,9 @@ export const GET = apiHandler(async ({ queryParams, session }) => {
     session: session as Session,
     skip,
     take,
-    ministry,
-    provider,
-    status,
+    ministries: ministry ? [ministry] : [],
+    providers: provider ? [provider] : [],
+    status: status ? [status] : [],
   });
 
   const data = docs.map((doc) => {

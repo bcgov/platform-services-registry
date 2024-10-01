@@ -1,4 +1,4 @@
-import { DecisionStatus, ProjectStatus, RequestType, TaskStatus, TaskType, EventType } from '@prisma/client';
+import { DecisionStatus, ProjectStatus, RequestType, TaskStatus, TaskType, EventType, Provider } from '@prisma/client';
 import { Session } from 'next-auth';
 import prisma from '@/core/prisma';
 import generateLicencePlate from '@/helpers/licence-plate';
@@ -18,13 +18,16 @@ export default async function createRequest(formData: PublicCloudCreateRequestBo
     formData.expenseAuthority?.email,
   ]);
 
-  const billingCode = `${formData.accountCoding}_${formData.provider}`;
+  const billingProvider = formData.provider === Provider.AZURE ? Provider.AZURE : Provider.AWS;
+  const billingCode = `${formData.accountCoding}_${billingProvider}`;
 
   const productData = {
     name: formData.name,
     budget: formData.budget,
     provider: formData.provider,
     description: formData.description,
+    providerSelectionReasons: formData.providerSelectionReasons,
+    providerSelectionReasonsNote: formData.providerSelectionReasonsNote,
     ministry: formData.ministry,
     status: ProjectStatus.ACTIVE,
     licencePlate,

@@ -4,6 +4,7 @@ import { useQuery } from '@tanstack/react-query';
 import { proxy, useSnapshot } from 'valtio';
 import Table from '@/components/generic/table/Table';
 import TableBodyPublicProducts from '@/components/table/TableBodyPublicProducts';
+import { productSorts } from '@/constants';
 import createClientPage from '@/core/client-page';
 import { processPublicCloudProductData } from '@/helpers/row-mapper';
 import { searchPublicCloudProducts, downloadPublicCloudProducts } from '@/services/backend/public-cloud/products';
@@ -35,11 +36,12 @@ export default publicCloudProducts(({ pathParams, queryParams, session }) => {
     <>
       <Table
         title="Products in Public Cloud Landing Zones"
-        description="These are your products using the Public Cloud Landing Zones"
+        description="These products are hosted on the Public Cloud Landing Zones."
         totalCount={totalCount}
-        page={snap.page}
-        pageSize={snap.pageSize}
+        page={snap.page ?? 1}
+        pageSize={snap.pageSize ?? 10}
         search={snap.search}
+        sortKey={snap.sortValue}
         onPagination={(page: number, pageSize: number) => {
           pageState.page = page;
           pageState.pageSize = pageSize;
@@ -52,6 +54,11 @@ export default publicCloudProducts(({ pathParams, queryParams, session }) => {
           const result = await downloadPublicCloudProducts(snap);
           return result;
         }}
+        onSort={(sortValue) => {
+          pageState.page = 1;
+          pageState.sortValue = sortValue;
+        }}
+        sortOptions={productSorts.map((v) => v.label)}
         filters={<FilterPanel />}
         isLoading={isLoading}
       >

@@ -1,5 +1,5 @@
 import { expect } from '@jest/globals';
-import { DecisionStatus, Ministry, Cluster } from '@prisma/client';
+import { DecisionStatus, Ministry, Cluster, ProjectStatus } from '@prisma/client';
 import { parse } from 'csv-parse/sync';
 import prisma from '@/core/prisma';
 import { createSamplePrivateCloudProductData } from '@/helpers/mock-resources';
@@ -289,9 +289,9 @@ describe('Download Private Cloud Products - Validations', () => {
     await mockSessionByRole('admin');
 
     const res1 = await downloadPrivateCloudProjects({
-      ministry: Ministry.AEST,
-      cluster: Cluster.CLAB,
-      includeInactive: false,
+      ministries: [Ministry.AEST],
+      clusters: [Cluster.CLAB],
+      status: [ProjectStatus.ACTIVE],
     });
 
     expect(res1.status).toBe(200);
@@ -331,7 +331,7 @@ describe('Download Private Cloud Products - Validations', () => {
     await mockSessionByRole('admin');
 
     const res1 = await downloadPrivateCloudProjects({
-      cluster: 'INVALID' as Cluster,
+      clusters: ['INVALID' as Cluster],
     });
 
     expect(res1.status).toBe(400);
@@ -341,7 +341,7 @@ describe('Download Private Cloud Products - Validations', () => {
     await mockSessionByRole('admin');
 
     const res1 = await downloadPrivateCloudProjects({
-      ministry: 'INVALID' as Ministry,
+      ministries: ['INVALID' as Ministry],
     });
 
     expect(res1.status).toBe(400);

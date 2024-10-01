@@ -1,16 +1,33 @@
+import { Prisma } from '@prisma/client';
 import axios from 'axios';
+import { requestSorts } from '@/constants';
 import {
   PrivateCloudRequestDetail,
   PrivateCloudRequestDetailDecorated,
   PrivateCloudRequestSearch,
 } from '@/types/private-cloud';
+import { PrivateCloudRequestSearchBody } from '@/validation-schemas/private-cloud';
 import { instance as parentInstance } from './instance';
-import { PrivateCloudProductSearchCriteria } from './products';
 
 export const instance = axios.create({
   ...parentInstance.defaults,
   baseURL: `${parentInstance.defaults.baseURL}/requests`,
 });
+
+function prepareSearchPayload(data: PrivateCloudRequestSearchBody) {
+  const reqData = { ...data };
+  const selectedOption = requestSorts.find((sort) => sort.label === reqData.sortValue);
+
+  if (selectedOption) {
+    reqData.sortKey = selectedOption.sortKey;
+    reqData.sortOrder = selectedOption.sortOrder;
+  } else {
+    reqData.sortKey = '';
+    reqData.sortOrder = Prisma.SortOrder.desc;
+  }
+
+  return reqData;
+}
 
 export async function getPrivateCloudRequest(id: string) {
   const result = await instance.get(`/${id}`).then((res) => {
@@ -32,8 +49,9 @@ export async function getPrivateCloudRequest(id: string) {
   return result as PrivateCloudRequestDetailDecorated;
 }
 
-export async function searchPrivateCloudRequests(data: PrivateCloudProductSearchCriteria) {
-  const result = await instance.post('/search', data).then((res) => {
+export async function searchPrivateCloudRequests(data: PrivateCloudRequestSearchBody) {
+  const reqData = prepareSearchPayload(data);
+  const result = await instance.post('/search', reqData).then((res) => {
     return res.data;
   });
 

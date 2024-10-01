@@ -14,6 +14,7 @@ import { IS_PROD } from '@/config';
 import createClientPage from '@/core/client-page';
 import { getPrivateCloudProject } from '@/services/backend/private-cloud/products';
 import { usePrivateProductState } from '@/states/global';
+import { resetState as resetRequestsState } from './requests/state';
 
 const pathParamSchema = z.object({
   licencePlate: z.string(),
@@ -36,6 +37,7 @@ export default privateCloudProductLayout(({ pathParams, queryParams, session, ch
 
   useEffect(() => {
     privateState.currentProduct = currentProduct;
+    resetRequestsState();
   }, [currentProduct]);
 
   useEffect(() => {

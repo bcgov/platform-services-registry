@@ -1,14 +1,33 @@
-import { Prisma } from '@prisma/client';
-import { proxy, useSnapshot } from 'valtio';
-import { PublicCloudProductSearchCriteria } from '@/services/backend/public-cloud/products';
+import { proxy } from 'valtio';
+import { deepClone } from 'valtio/utils';
+import { requestSorts } from '@/constants';
+import { PublicCloudRequestSearchBody } from '@/validation-schemas/public-cloud';
 
-export const pageState = proxy<Omit<PublicCloudProductSearchCriteria, 'licencePlate'>>({
+const initialValue = {
   search: '',
   page: 1,
   pageSize: 10,
-  ministry: '',
-  provider: '',
-  includeInactive: true,
-  sortKey: '',
-  sortOrder: Prisma.SortOrder.desc,
-});
+  ministries: [],
+  providers: [],
+  status: [],
+  types: [],
+  sortValue: requestSorts[0].label,
+  sortKey: requestSorts[0].sortKey,
+  sortOrder: requestSorts[0].sortOrder,
+};
+
+export const pageState = proxy<PublicCloudRequestSearchBody>(deepClone(initialValue));
+
+export function resetState() {
+  const resetObj = deepClone(initialValue);
+  pageState.search = resetObj.search;
+  pageState.page = resetObj.page;
+  pageState.pageSize = resetObj.pageSize;
+  pageState.ministries = resetObj.ministries;
+  pageState.providers = resetObj.providers;
+  pageState.status = resetObj.status;
+  pageState.types = resetObj.types;
+  pageState.sortValue = resetObj.sortValue;
+  pageState.sortKey = resetObj.sortKey;
+  pageState.sortOrder = resetObj.sortOrder;
+}

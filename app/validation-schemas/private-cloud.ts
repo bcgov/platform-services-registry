@@ -1,7 +1,7 @@
-import { Cluster, Ministry, Prisma } from '@prisma/client';
+import { Cluster, DecisionStatus, Ministry, Prisma, ProjectStatus, RequestType } from '@prisma/client';
 import _isString from 'lodash-es/isString';
 import { string, z } from 'zod';
-import { phoneNumberRegex } from '@/constants/regex';
+import { phoneNumberRegex } from '@/constants';
 import { processEnumString, processUpperEnumString, processBoolean } from '@/utils/zod';
 import { userSchema, requestDecisionEnum } from './shared';
 
@@ -135,12 +135,13 @@ export const privateCloudRequestDecisionBodySchema = privateCloudEditRequestBody
 
 export const privateCloudProductSearchNoPaginationBodySchema = z.object({
   search: z.string().optional(),
-  ministry: z.preprocess(processUpperEnumString, z.nativeEnum(Ministry).optional()),
-  cluster: z.preprocess(processUpperEnumString, z.nativeEnum(Cluster).optional()),
-  includeInactive: z.boolean().optional(),
+  ministries: z.array(z.nativeEnum(Ministry)).optional(),
+  clusters: z.array(z.nativeEnum(Cluster)).optional(),
+  status: z.array(z.nativeEnum(ProjectStatus)).optional(),
+  temporary: z.array(z.enum(['YES', 'NO'])).optional(),
+  sortValue: z.string().optional(),
   sortKey: z.string().optional(),
   sortOrder: z.preprocess(processEnumString, z.nativeEnum(Prisma.SortOrder).optional()),
-  showTest: z.boolean().default(false),
 });
 
 export const privateCloudProductSearchBodySchema = privateCloudProductSearchNoPaginationBodySchema.merge(
@@ -155,12 +156,14 @@ export const privateCloudRequestSearchBodySchema = z.object({
   search: z.string().optional(),
   page: z.number().optional(),
   pageSize: z.number().optional(),
-  ministry: z.preprocess(processUpperEnumString, z.nativeEnum(Ministry).optional()),
-  cluster: z.preprocess(processUpperEnumString, z.nativeEnum(Cluster).optional()),
-  includeInactive: z.boolean().optional(),
+  ministries: z.array(z.nativeEnum(Ministry)).optional(),
+  clusters: z.array(z.nativeEnum(Cluster)).optional(),
+  types: z.array(z.nativeEnum(RequestType)).optional(),
+  status: z.array(z.nativeEnum(DecisionStatus)).optional(),
+  temporary: z.array(z.enum(['YES', 'NO'])).optional(),
+  sortValue: z.string().optional(),
   sortKey: z.string().optional(),
   sortOrder: z.preprocess(processEnumString, z.nativeEnum(Prisma.SortOrder).optional()),
-  showTest: z.boolean().default(false),
 });
 
 export const privateCloudAdminUpdateBodySchema = z.object({

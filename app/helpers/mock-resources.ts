@@ -1,9 +1,19 @@
 import { faker } from '@faker-js/faker';
 import { Prisma, Cluster, Provider } from '@prisma/client';
-import { clusters, ministries, providers, cpuOptions, memoryOptions, storageOptions } from '@/constants';
+import {
+  ministries,
+  clusters,
+  providers,
+  cpuOptions,
+  memoryOptions,
+  storageOptions,
+  reasonForSelectingCloudProviderOptions,
+} from '@/constants';
 import { findMockUserByIdr, mockNoRoleIdirs } from '@/helpers/mock-users';
 import { getRandomItem } from '@/utils/collection';
+import { getRandomNumberOptimally } from '@/utils/number';
 import { generateShortId } from '@/utils/uuid';
+import { getRandomCloudProviderSelectionReasons, getRandomProviderReasonsNote } from './mock-resources/core';
 
 const getRandomBool = () => faker.helpers.arrayElement([true, false]);
 const getRandomMinistry = () => faker.helpers.arrayElement(ministries);
@@ -103,12 +113,16 @@ export function createSamplePublicCloudProductData(args?: {
   const { data } = args ?? {};
 
   const provider = getRandomProvider();
+  const providerSelectionReasonsNote = getRandomProviderReasonsNote();
+  const providerSelectionReasons = getRandomCloudProviderSelectionReasons();
 
   const _data = {
     licencePlate: faker.string.uuid().substring(0, 6),
     name: faker.string.alpha(10),
     description: faker.lorem.sentence(),
     provider,
+    providerSelectionReasons,
+    providerSelectionReasonsNote,
     ministry: getRandomMinistry(),
     projectOwner: findMockUserByIdr(getRandomItem(mockNoRoleIdirs)),
     primaryTechnicalLead: findMockUserByIdr(getRandomItem(mockNoRoleIdirs)),

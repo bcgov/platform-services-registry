@@ -172,6 +172,7 @@ export async function generateSession({ session, token }: { session: Session; to
     security: !IS_PROD,
     apiAccount: !IS_PROD,
     azure: session.isAdmin || session.isPublicAdmin || azureEmails.includes(session.user.email.toLowerCase()),
+    awsLza: !IS_PROD,
   };
 
   session.permissions = {

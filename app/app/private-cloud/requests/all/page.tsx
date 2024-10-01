@@ -4,6 +4,7 @@ import { useQuery } from '@tanstack/react-query';
 import { proxy, useSnapshot } from 'valtio';
 import Table from '@/components/generic/table/Table';
 import TableBodyPrivateRequests from '@/components/table/TableBodyPrivateRequests';
+import { requestSorts } from '@/constants';
 import createClientPage from '@/core/client-page';
 import { processPrivateCloudRequestData } from '@/helpers/row-mapper';
 import { searchPrivateCloudRequests } from '@/services/backend/private-cloud/requests';
@@ -33,12 +34,13 @@ export default privateCloudRequests(({ pathParams, queryParams, session }) => {
 
   return (
     <Table
-      title="Products in Private Cloud OpenShift Platform"
-      description="Products with pending requests currently under admin review."
+      title="Requests in Private Cloud OpenShift Platform"
+      description="These requests are currently under admin review."
       totalCount={totalCount}
-      page={snap.page}
-      pageSize={snap.pageSize}
+      page={snap.page ?? 1}
+      pageSize={snap.pageSize ?? 10}
       search={snap.search}
+      sortKey={snap.sortValue}
       onPagination={(page: number, pageSize: number) => {
         pageState.page = page;
         pageState.pageSize = pageSize;
@@ -47,6 +49,11 @@ export default privateCloudRequests(({ pathParams, queryParams, session }) => {
         pageState.page = 1;
         pageState.search = searchTerm;
       }}
+      onSort={(sortValue) => {
+        pageState.page = 1;
+        pageState.sortValue = sortValue;
+      }}
+      sortOptions={requestSorts.map((v) => v.label)}
       filters={<FilterPanel />}
       isLoading={isLoading}
     >

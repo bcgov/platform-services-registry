@@ -1,16 +1,18 @@
-import { Prisma } from '@prisma/client';
+import { DecisionStatus } from '@prisma/client';
 import { proxy, useSnapshot } from 'valtio';
-import { PrivateCloudProductSearchCriteria } from '@/services/backend/private-cloud/products';
+import { requestSorts } from '@/constants';
+import { PrivateCloudRequestSearchBody } from '@/validation-schemas/private-cloud';
 
-export const pageState = proxy<PrivateCloudProductSearchCriteria>({
+export const pageState = proxy<PrivateCloudRequestSearchBody>({
   search: '',
   page: 1,
   pageSize: 10,
-  licencePlate: '',
-  ministry: '',
-  cluster: '',
-  includeInactive: false,
-  sortKey: '',
-  sortOrder: Prisma.SortOrder.desc,
-  showTest: false,
+  ministries: [],
+  clusters: [],
+  temporary: [],
+  status: [DecisionStatus.PENDING],
+  types: [],
+  sortValue: requestSorts[0].label,
+  sortKey: requestSorts[0].sortKey,
+  sortOrder: requestSorts[0].sortOrder,
 });
