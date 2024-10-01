@@ -56,13 +56,10 @@ class MailchimpManager:
                 }
             )
 
-        try:
-            response = self.client.batches.start({"operations": operations})
-            print(f"Emails added to list: {response}")
-        except ApiClientError as error:
-            print(f"[add_emails_to_list] API Client Error: {error.text}")
-        except Exception as e:
-            print(f"[add_emails_to_list] General Error: {e}")
+        if len(operations) == 0:
+            return None
+        response = self.client.batches.start({"operations": operations})
+        return response.get("id")
 
     def add_tag_to_emails(self, emails, tag_name):
         operations = []
@@ -76,13 +73,10 @@ class MailchimpManager:
                 }
             )
 
-        try:
-            response = self.client.batches.start({"operations": operations})
-            print(f"Batch tag operation response: {response}")
-        except ApiClientError as error:
-            print(f"[add_tag_to_emails] API Client Error: {error.text}")
-        except Exception as e:
-            print(f"[add_tag_to_emails] General Error: {e}")
+        if len(operations) == 0:
+            return None
+        response = self.client.batches.start({"operations": operations})
+        return response.get("id")
 
     def remove_tag_from_emails(self, emails, tag_name):
         operations = []
@@ -95,84 +89,91 @@ class MailchimpManager:
                     "body": json.dumps({"tags": [{"name": tag_name, "status": "inactive"}]}),
                 }
             )
-        try:
-            response = self.client.batches.start({"operations": operations})
-            print(f"Batch remove tag operation response: {response}")
-        except ApiClientError as error:
-            print(f"[remove_tag_from_emails] API Client Error: {error.text}")
-        except Exception as e:
-            print(f"[remove_tag_from_emails] General Error: {e}")
+
+        if len(operations) == 0:
+            return None
+        response = self.client.batches.start({"operations": operations})
+        return response.get("id")
+
+    def wait_for_batch_complete(self, batch_id):
+        if batch_id is None:
+            return
+        while True:
+            response = self.client.batches.status(batch_id)
+            status = response.get("status")
+            print(f"batch status check: '{batch_id}' - '{status}'")
+            if status == "finished":
+                break
 
     def get_all_members(self):
         members = []
         offset = 0
         count = 1000
-        try:
-            while True:
-                response = self.client.lists.get_list_members_info(self.list_id, count=count, offset=offset)
-                fetched_members = response.get("members", [])
-                members.extend(fetched_members)
-                if len(fetched_members) < count:
-                    break
-                offset += count
-            return members
-        except ApiClientError as error:
-            print(f"[get_all_members] API Client Error: {error.text}")
-            return []
-        except Exception as e:
-            print(f"[get_all_members] General Error: {e}")
-            return []
+
+        while True:
+            response = self.client.lists.get_list_members_info(
+                self.list_id, count=count, offset=offset, fields=["members"]
+            )
+            fetched_members = response.get("members", [])
+            members.extend(fetched_members)
+            if len(fetched_members) < count:
+                break
+            offset += count
+
+        return members
 
     def filter_members_by_tag(self, tag_name):
-        try:
-            all_members = self.get_all_members()
-            members_with_tag = [
-                member
-                for member in all_members
-                if any(tag["name"].strip().lower() == tag_name.lower() for tag in member.get("tags", []))
-            ]
-            return members_with_tag
-        except Exception as e:
-            print(f"[filter_members_by_tag] Error: {e}")
-            return []
+        all_members = self.get_all_members()
+        members_with_tag = [
+            member
+            for member in all_members
+            if any(tag["name"].strip().lower() == tag_name.lower() for tag in member.get("tags", []))
+        ]
+
+        return members_with_tag
 
     def get_tag_name_by_id(self):
-        try:
-            tags_data = self.client.lists.tag_search(self.list_id)
-            for tag in tags_data["tags"]:
-                if str(tag["id"]) == self.tag_id:
-                    return tag
+        tags_data = self.client.lists.tag_search(self.list_id)
+        for tag in tags_data["tags"]:
+            if str(tag["id"]) == self.tag_id:
+                return tag
 
-        except ApiClientError as error:
-            print("Error: {}".format(error.text))
-            return None
+        return None
 
 
 def update_mailchimp_segment(api_key, server_prefix, list_id, tag_id, mongo_conn_id):
     mc = MailchimpManager(api_key, server_prefix, list_id, tag_id, mongo_conn_id)
 
     # Fetch unique emails from MongoDB
-    unique_emails = set(fetch_unique_emails(mc.mongo_conn_id))
+    unique_emails = list(set(fetch_unique_emails(mc.mongo_conn_id)))
+    print(f"found {len(unique_emails)} emails.")
     if not unique_emails:
         print("No emails to update.")
         return
 
     # get tag name by tag ID
     tag_name = mc.get_tag_name_by_id()["name"]
+    print(f"Tag name: {tag_name}")
 
     # Fetch all members and filter those who already have the tag
     current_tagged_members = mc.filter_members_by_tag(tag_name)
+    print(f"The current tagged members: {len(current_tagged_members)}")
+
     current_tagged_emails = {member["email_address"] for member in current_tagged_members}
 
     # Remove tags from all currently tagged members
-    if current_tagged_emails:
-        mc.remove_tag_from_emails(current_tagged_emails, tag_name)
+    batch_id = mc.remove_tag_from_emails(current_tagged_emails, tag_name)
+    mc.wait_for_batch_complete(batch_id)
+    print("'remove_tag_from_emails' completed")
 
     # Add emails to the list if they are not already added
-    mc.add_emails_to_list(unique_emails)
+    batch_id = mc.add_emails_to_list(unique_emails)
+    mc.wait_for_batch_complete(batch_id)
+    print("'add_emails_to_list' completed")
 
     # Tag the necessary emails based on the database
-    if unique_emails:
-        mc.add_tag_to_emails(unique_emails, tag_name)
+    batch_id = mc.add_tag_to_emails(unique_emails, tag_name)
+    mc.wait_for_batch_complete(batch_id)
+    print("'add_tag_to_emails' completed")
 
     print("Mailchimp tag update process completed successfully.")
