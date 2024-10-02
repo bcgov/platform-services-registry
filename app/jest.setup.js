@@ -58,9 +58,10 @@ jest.mock('@/helpers/pdfs/emou/index', () => ({
   generateEmouPdf: jest.fn(async () => Buffer.alloc(0)),
 }));
 
-jest.mock('@/helpers/auto-approval-check', () => ({
-  ...jest.requireActual('@/helpers/auto-approval-check'),
+jest.mock('@/services/k8s', () => ({
+  ...jest.requireActual('@/services/k8s'),
   getResourceDetails: jest.fn(async () => ({
+    env: 'dev',
     allocation: {
       request: -1,
       limit: -1,
@@ -71,7 +72,6 @@ jest.mock('@/helpers/auto-approval-check', () => ({
       usage: -1,
     },
   })),
-  checkAutoApprovalEligibility: jest.fn(async () => false),
 }));
 
 [

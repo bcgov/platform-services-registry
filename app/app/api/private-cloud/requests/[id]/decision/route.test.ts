@@ -35,7 +35,7 @@ const oldDevelopmentQuota = {
 
 const newDevelopmentQuota = {
   cpu: CpuQuotaEnum.enum.CPU_REQUEST_1_LIMIT_2,
-  memory: MemoryQuotaEnum.enum.MEMORY_REQUEST_4_LIMIT_8,
+  memory: MemoryQuotaEnum.enum.MEMORY_REQUEST_8_LIMIT_16,
   storage: StorageQuotaEnum.enum.STORAGE_2,
 };
 
@@ -136,6 +136,7 @@ describe('Review Private Cloud Update Request - Permissions', () => {
       ...requests.main.decisionData,
       developmentQuota: newDevelopmentQuota,
     });
+
     expect(response.status).toBe(200);
 
     requests.main = await response.json();

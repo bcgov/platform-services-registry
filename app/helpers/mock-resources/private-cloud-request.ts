@@ -145,6 +145,7 @@ export function createSamplePrivateCloudRequest(args?: {
     isQuotaChanged: false,
     requestComment: faker.lorem.sentence(),
     decisionComment: faker.lorem.sentence(),
+    quotaUpgradeResourceDetailList: [],
     active: true,
     createdAt: new Date(),
     updatedAt: new Date(),

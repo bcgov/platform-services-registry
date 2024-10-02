@@ -4,7 +4,7 @@ import { IS_PROD, IS_TEST } from '@/config';
 import createApiHandler from '@/core/api-handler';
 import { OkResponse, UnauthorizedResponse } from '@/core/responses';
 import { getPrivateCloudProduct } from '@/queries/private-cloud-products';
-import { getPodMetrics } from '@/services/k8s/usage-metrics';
+import { getPodMetrics } from '@/services/k8s';
 import { getPathParamSchema } from '../schema';
 
 const queryParamSchema = z.object({

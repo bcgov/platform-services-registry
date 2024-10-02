@@ -47,7 +47,7 @@ export async function updatePrivateCloudProduct() {
 
   const newDevelopmentQuota = {
     cpu: CpuQuotaEnum.enum.CPU_REQUEST_1_LIMIT_2,
-    memory: MemoryQuotaEnum.enum.MEMORY_REQUEST_4_LIMIT_8,
+    memory: MemoryQuotaEnum.enum.MEMORY_REQUEST_8_LIMIT_16,
     storage: StorageQuotaEnum.enum.STORAGE_2,
   };
 
