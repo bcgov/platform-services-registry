@@ -24,7 +24,7 @@ async function main() {
     window: 5000,
   });
 
-  console.log('All services are ready.')
+  console.log('All services are ready.');
 
   const nc = await connect({ servers: natsServer });
   const jc = JSONCodec();
@@ -61,7 +61,7 @@ async function main() {
   });
 
   // Subscribe to NATS topics for public cloud provisioning
-  const publicProms = ['aws', 'azure'].map((provider) => {
+  const publicProms = ['aws', 'aws_lza', 'azure'].map((provider) => {
     const publicCloudSub = nc.subscribe(`registry_project_provisioning_${provider}`);
     return (async () => {
       for await (const m of publicCloudSub) {
