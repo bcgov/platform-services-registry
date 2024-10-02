@@ -1,16 +1,16 @@
-import { Quota, Cluster } from '@prisma/client';
+import { Quota, Cluster, Env, QuotaUpgradeResourceDetail } from '@prisma/client';
 import _each from 'lodash-es/each';
 import { defaultCpuOptionsLookup, defaultMemoryOptionsLookup, defaultStorageOptionsLookup } from '@/../app/constants';
-import { getTotalMetrics } from '@/helpers/resource-metrics';
+import { getTotalMetrics, memoryUnitMultipliers, cpuCoreToMillicoreMultiplier } from '@/helpers/resource-metrics';
 import { getPodMetrics } from '@/services/k8s/usage-metrics';
 import { iterateObject, asyncEvery } from '@/utils/collection';
 import { extractNumbers } from '@/utils/string';
 
 const envQuotaToEnv = {
-  developmentQuota: 'dev',
-  testQuota: 'test',
-  productionQuota: 'prod',
-  toolsQuota: 'tools',
+  developmentQuota: Env.dev,
+  testQuota: Env.test,
+  productionQuota: Env.prod,
+  toolsQuota: Env.tools,
 };
 
 export interface Quotas {
@@ -26,7 +26,21 @@ const resourceOrders = {
   storage: defaultStorageOptionsLookup,
 };
 
-export async function checkAutoApprovalEligibility({
+export async function checkAutoApprovalEligibility({ allocation, deployment }: QuotaUpgradeResourceDetail) {
+  // Check the current usage
+  if (deployment.usage / allocation.limit <= 0.85) {
+    return false;
+  }
+
+  // Check the utilization rate
+  if (deployment.usage / deployment.request < 0.35) {
+    return false;
+  }
+
+  return true;
+}
+
+export async function getResourceDetails({
   licencePlate,
   cluster,
   envQuota,
@@ -39,28 +53,40 @@ export async function checkAutoApprovalEligibility({
   resourceName: keyof Quota;
   currentQuota: Quotas;
 }) {
+  const env = envQuotaToEnv[envQuota];
+  const result: QuotaUpgradeResourceDetail = {
+    env,
+    allocation: {
+      request: -1,
+      limit: -1,
+    },
+    deployment: {
+      request: -1,
+      limit: -1,
+      usage: -1,
+    },
+  };
+
   // Since storage usage data is unavailable, an admin review is always necessary.
-  if (resourceName === 'storage') return false;
+  if (resourceName === 'storage') return result;
 
-  const podMetricsData = await getPodMetrics(licencePlate, envQuotaToEnv[envQuota], cluster);
-  if (podMetricsData.length === 0) return false;
+  const podMetricsData = await getPodMetrics(licencePlate, env, cluster);
+  if (podMetricsData.length === 0) return result;
 
-  const { totalRequest, totalUsage } = getTotalMetrics(podMetricsData, resourceName);
-  const mesUnitsCoeff = resourceName === 'cpu' ? 1000 : 1024 * 1024;
+  const { totalRequest, totalLimit, totalUsage } = getTotalMetrics(podMetricsData, resourceName);
+  result.deployment.request = totalRequest;
+  result.deployment.limit = totalLimit;
+  result.deployment.usage = totalUsage;
+
+  const unitMultiplier = resourceName === 'cpu' ? cpuCoreToMillicoreMultiplier : memoryUnitMultipliers.Gi;
   const resourceValues = extractNumbers(currentQuota[envQuota][resourceName]);
-  const limitValue = resourceValues[1] * mesUnitsCoeff;
+  const deploymentRequest = resourceValues[0] * unitMultiplier;
+  const deploymentLimit = resourceValues[1] * unitMultiplier;
 
-  // Check the current usage
-  if (totalUsage / limitValue <= 0.85) {
-    return false;
-  }
+  result.allocation.request = deploymentRequest;
+  result.allocation.limit = deploymentLimit;
 
-  // Check the utilization rate
-  if (totalUsage / totalRequest < 0.35) {
-    return false;
-  }
-
-  return true;
+  return result;
 }
 
 function extractQuotas(quotas: Quotas) {
@@ -127,18 +153,24 @@ export async function getQuotaChangeStatus({
       hasSignificantIncrease: true,
       isEligibleForAutoApproval: false,
       resourceCheckRequired: false,
+      resourceDetailList: [],
     };
   }
 
   if (hasIncrease) {
+    const resourceDetailList = await Promise.all(
+      resourcesToCheck.map(async ({ envQuota, resourceName }) =>
+        getResourceDetails({ licencePlate, cluster, envQuota, resourceName, currentQuota }),
+      ),
+    );
+
     return {
       hasChange: true,
       hasIncrease: true,
       hasSignificantIncrease: false,
       resourceCheckRequired: true,
-      isEligibleForAutoApproval: await asyncEvery(resourcesToCheck, async ({ envQuota, resourceName }) => {
-        return checkAutoApprovalEligibility({ licencePlate, cluster, envQuota, resourceName, currentQuota });
-      }),
+      isEligibleForAutoApproval: resourceDetailList.every(checkAutoApprovalEligibility),
+      resourceDetailList,
     };
   }
 
@@ -148,5 +180,6 @@ export async function getQuotaChangeStatus({
     hasSignificantIncrease: false,
     isEligibleForAutoApproval: true,
     resourceCheckRequired: false,
+    resourceDetailList: [],
   };
 }

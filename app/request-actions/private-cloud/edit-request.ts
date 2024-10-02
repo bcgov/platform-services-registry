@@ -85,11 +85,12 @@ export default async function editRequest(
 
   const request: PrivateCloudRequestDetail = await prisma.privateCloudRequest.create({
     data: {
+      active: true,
       type: RequestType.EDIT,
       decisionStatus,
       isQuotaChanged: quotaChangeStatus.hasChange,
+      quotaUpgradeResourceDetailList: quotaChangeStatus.resourceDetailList,
       ...quotaChangeInfo,
-      active: true,
       createdBy: { connect: { email: session.user.email } },
       licencePlate: project.licencePlate,
       requestComment,

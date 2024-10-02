@@ -60,6 +60,17 @@ jest.mock('@/helpers/pdfs/emou/index', () => ({
 
 jest.mock('@/helpers/auto-approval-check', () => ({
   ...jest.requireActual('@/helpers/auto-approval-check'),
+  getResourceDetails: jest.fn(async () => ({
+    allocation: {
+      request: -1,
+      limit: -1,
+    },
+    deployment: {
+      request: -1,
+      limit: -1,
+      usage: -1,
+    },
+  })),
   checkAutoApprovalEligibility: jest.fn(async () => false),
 }));
 

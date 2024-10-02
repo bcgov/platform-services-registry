@@ -22,7 +22,7 @@ export type Container = {
 };
 
 // Conversion factors for resource units
-const cpuToM = 1000;
+export const cpuCoreToMillicoreMultiplier = 1000;
 
 // In Kubernetes, CPU resources can be specified in several units. The available units for CPU include:
 //
@@ -39,20 +39,34 @@ export function normalizeCpu(cpuValue: string | number) {
   if (typeof cpuValue === 'string') {
     if (cpuValue.endsWith('m')) {
       // Remove the 'm' suffix and parse as an integer
-      return parseInt(cpuValue.slice(0, -1), 10);
+      const millicores = parseInt(cpuValue.slice(0, -1), 10);
+      if (isNaN(millicores)) {
+        return -1;
+      }
+      return millicores;
     }
+
     // Convert from cores or decimal to millicores
-    return Math.round(parseFloat(cpuValue) * cpuToM);
+    const cores = parseFloat(cpuValue);
+    if (isNaN(cores)) {
+      return -1;
+    }
+    return Math.round(cores * cpuCoreToMillicoreMultiplier);
   }
-  // Assuming input is already in millicores (as a number)
-  return cpuValue;
+
+  // Ensure the input number is valid
+  if (typeof cpuValue === 'number') {
+    return cpuValue;
+  }
+
+  return -1;
 }
 
-const memoryUnitMultipliers: { [key: string]: number } = {
-  Ti: 1024 * 1024 * 1024, // 1 TiB = 1024 GiB
-  Gi: 1024 * 1024, // 1 GiB = 1024 MiB
-  Mi: 1024, // 1 MiB = 1024 KiB
-  Ki: 1, // 1 KiB = 1 byte
+export const memoryUnitMultipliers = {
+  Ti: 1024 * 1024 * 1024 * 1024, // 1 TiB = 1024 GiB = 1024^4 bytes
+  Gi: 1024 * 1024 * 1024, // 1 GiB = 1024 MiB = 1024^3 bytes
+  Mi: 1024 * 1024, // 1 MiB = 1024 KiB = 1024^2 bytes
+  Ki: 1024, // 1 KiB = 1024 bytes
   '': 1, // bytes to bytes
 };
 
@@ -69,45 +83,52 @@ const memoryUnitMultipliers: { [key: string]: number } = {
 // Kibibyte (KiB): 1 KiB = 1024 bytes
 //
 // Converts memory values to Ki units
-export function normalizeMemory(memoryValue: string | number) {
+export function normalizeMemory(memoryValue: string | number): number {
   if (typeof memoryValue === 'string') {
-    const match = memoryValue.match(/^(\d+(?:\.\d+)?)([KMGTE]?i?)$/);
+    const match = memoryValue.match(/^(\d+(?:\.\d+)?)([KMGTE]?i?)$/i); // Case-insensitive matching
     if (match) {
       const value = parseFloat(match[1]);
-      const unit = match[2];
+      const unit = match[2] || ''; // Default to empty string if no unit is provided
 
-      return Math.round(value * memoryUnitMultipliers[unit]); // Return the value in bytes
+      // Normalize memory to bytes
+      const multiplier = memoryUnitMultipliers[unit as keyof typeof memoryUnitMultipliers];
+      if (multiplier !== undefined) {
+        return Math.round(value * multiplier);
+      }
     }
 
     // If the input string doesn't match, consider invalid
-    return 0;
+    return -1;
   }
 
-  // Assuming input is already in bytes
+  // Assuming input is already in bytes (number)
   return memoryValue;
 }
 
-export function formatMemory(bytes: number): string {
+export function formatMemory(bytes: number) {
   const units = ['B', 'KiB', 'MiB', 'GiB', 'TiB'];
   let index = 0;
 
   // Handle zero case
   if (bytes === 0) return '0 B';
 
+  // Convert to the most appropriate unit
   while (bytes >= 1024 && index < units.length - 1) {
     bytes /= 1024;
     index++;
   }
 
-  return `${bytes.toFixed(2)} ${units[index]}`;
+  // Return with 2 decimal precision except for 'B' where no decimal precision is needed
+  const formattedValue = index === 0 ? Math.round(bytes) : bytes.toFixed(2);
+  return `${formattedValue} ${units[index]}`;
 }
 
-export function formatCpu(millicores: number): string {
+export function formatCpu(millicores: number) {
   if (millicores >= 1000) {
     return `${(millicores / 1000).toFixed(2)} cores`;
   }
 
-  return `${millicores} m`;
+  return `${Math.round(millicores)} m`;
 }
 
 // Function to aggregate total usage and limits across all containers in a single pod
