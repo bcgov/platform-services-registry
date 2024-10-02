@@ -27,7 +27,7 @@ export default async function makeRequestDecision(
     return null;
   }
 
-  const { decision, decisionComment, accountCoding, ...validFormData } = formData;
+  const { type, decision, decisionComment, accountCoding, ...validFormData } = formData;
 
   const dataToUpdate: Prisma.PublicCloudRequestUpdateInput = {
     active: decision === DecisionStatus.APPROVED,

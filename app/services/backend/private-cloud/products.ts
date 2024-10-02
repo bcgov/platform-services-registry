@@ -1,4 +1,4 @@
-import { Prisma, PrivateCloudComment } from '@prisma/client';
+import { Prisma, PrivateCloudComment, QuotaUpgradeResourceDetail } from '@prisma/client';
 import axios from 'axios';
 import { productSorts } from '@/constants';
 import {
@@ -11,6 +11,7 @@ import { downloadFile } from '@/utils/file-download';
 import {
   PrivateCloudProductSearchBody,
   PrivateCloudProductSearchNoPaginationBody,
+  Quotas,
 } from '@/validation-schemas/private-cloud';
 import { instance as parentInstance } from './instance';
 
@@ -138,5 +139,23 @@ export async function deletePrivateCloudComment(licencePlate: string, commentId:
 export async function getPrivateCloudCommentCount(licencePlate: string, requestId?: string) {
   const url = `/${licencePlate}/count${requestId ? `?requestId=${requestId}` : ''}`;
   const response = await instance.get(url);
+  return response.data;
+}
+
+export async function getPodUsageMetrics(licencePlate: string, environment: string, cluster: string) {
+  const response = await instance.get(`/${licencePlate}/usage-metrics?environment=${environment}&cluster=${cluster}`);
+  return response.data;
+}
+
+export async function getQuotaChangeStatus(licencePlate: string, requestedQuota: Quotas) {
+  const response = await instance.post<{
+    hasChange: boolean;
+    hasIncrease: boolean;
+    hasSignificantIncrease: boolean;
+    isEligibleForAutoApproval: boolean;
+    resourceCheckRequired: boolean;
+    resourceDetailList: QuotaUpgradeResourceDetail;
+  }>(`/${licencePlate}/quota-change-status`, { requestedQuota });
+
   return response.data;
 }

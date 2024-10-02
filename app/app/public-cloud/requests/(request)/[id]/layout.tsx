@@ -13,7 +13,7 @@ import Tabs, { ITab } from '@/components/generic/tabs/BasicTabs';
 import createClientPage from '@/core/client-page';
 import { comparePublicProductData } from '@/helpers/product-change';
 import { getPublicCloudRequest } from '@/services/backend/public-cloud/requests';
-import { publicProductState } from '@/states/global';
+import { usePublicProductState } from '@/states/global';
 
 const pathParamSchema = z.object({
   id: z.string(),
@@ -25,6 +25,7 @@ const publicCloudProductSecurityACS = createClientPage({
 });
 
 export default publicCloudProductSecurityACS(({ pathParams, queryParams, session, children, router }) => {
+  const [publicProductState, publicSnap] = usePublicProductState();
   const { id } = pathParams;
 
   const { data: request, isLoading: isRequestLoading } = useQuery({
@@ -74,7 +75,9 @@ export default publicCloudProductSecurityACS(({ pathParams, queryParams, session
     return tabsByType[request.type].includes(tab.name);
   });
 
-  if (isRequestLoading || !request) return null;
+  if (isRequestLoading || !request || !publicSnap.currentRequest || request.id !== publicSnap.currentRequest.id) {
+    return null;
+  }
 
   return (
     <div>

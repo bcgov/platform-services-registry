@@ -56,6 +56,7 @@ export const publicCloudEditRequestBodySchema = publicCloudCreateRequestBodySche
 
 export const publicCloudRequestDecisionBodySchema = publicCloudEditRequestBodySchema.merge(
   z.object({
+    type: z.nativeEnum(RequestType),
     decision: requestDecisionEnum,
     decisionComment: string().optional(),
   }),

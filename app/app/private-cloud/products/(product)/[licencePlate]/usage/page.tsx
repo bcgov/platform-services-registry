@@ -6,7 +6,7 @@ import { useState } from 'react';
 import { z } from 'zod';
 import FormSelect from '@/components/generic/select/FormSelect';
 import createClientPage from '@/core/client-page';
-import { getPodUsageMetrics } from '@/services/backend/private-cloud/usage-metrics';
+import { getPodUsageMetrics } from '@/services/backend/private-cloud/products';
 import { usePrivateProductState } from '@/states/global';
 import MetricsTable from './MetricsTable';
 

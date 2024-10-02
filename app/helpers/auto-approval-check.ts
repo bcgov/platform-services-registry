@@ -17,7 +17,7 @@ const resourceOrders = {
   storage: defaultStorageOptionsLookup,
 };
 
-async function checkAutoApprovalEligibility({ allocation, deployment }: QuotaUpgradeResourceDetail) {
+function checkAutoApprovalEligibility({ allocation, deployment }: QuotaUpgradeResourceDetail) {
   if (deployment.usage === -1) return false;
 
   // Check the current usage

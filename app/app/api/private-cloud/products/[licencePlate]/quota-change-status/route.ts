@@ -3,14 +3,7 @@ import createApiHandler from '@/core/api-handler';
 import prisma from '@/core/prisma';
 import { OkResponse, BadRequestResponse } from '@/core/responses';
 import { getQuotaChangeStatus } from '@/helpers/auto-approval-check';
-import { quotaSchema } from '@/validation-schemas/private-cloud';
-
-const quotasSchema = z.object({
-  testQuota: quotaSchema,
-  toolsQuota: quotaSchema,
-  developmentQuota: quotaSchema,
-  productionQuota: quotaSchema,
-});
+import { quotasSchema } from '@/validation-schemas/private-cloud';
 
 const pathParamSchema = z.object({
   licencePlate: z.string().length(6),
