@@ -1,8 +1,8 @@
 import { DecisionStatus, Cluster, RequestType, EventType } from '@prisma/client';
 import { Session } from 'next-auth';
 import prisma from '@/core/prisma';
+import { getQuotaChangeStatus } from '@/helpers/auto-approval-check';
 import { comparePrivateProductData } from '@/helpers/product-change';
-import { isQuotaUpgrade } from '@/helpers/quota-change';
 import { createEvent } from '@/mutations/events';
 import { getLastClosedPrivateCloudRequest, privateCloudRequestDetailInclude } from '@/queries/private-cloud-requests';
 import { upsertUsers } from '@/services/db/user';
@@ -52,20 +52,20 @@ export default async function editRequest(
       : undefined,
   };
 
-  // The edit request will require manual admin approval if any of the quotas are being changed.
-  const isNoQuotaChanged =
-    JSON.stringify(formData.productionQuota) === JSON.stringify(project.productionQuota) &&
-    JSON.stringify(formData.testQuota) === JSON.stringify(project.testQuota) &&
-    JSON.stringify(formData.developmentQuota) === JSON.stringify(project.developmentQuota) &&
-    JSON.stringify(formData.toolsQuota) === JSON.stringify(project.toolsQuota);
-
   let decisionStatus: DecisionStatus;
 
   const hasGolddrEnabledChanged = project.cluster === Cluster.GOLD && project.golddrEnabled !== formData.golddrEnabled;
 
+  const quotaChangeStatus = await getQuotaChangeStatus({
+    licencePlate: project.licencePlate,
+    cluster: project.cluster,
+    currentQuota: project,
+    requestedQuota: formData,
+  });
+
   // If there is no quota change or no quota upgrade and no golddr flag changes, the request is automatically approved
-  if ((isNoQuotaChanged || !isQuotaUpgrade(formData, project)) && !hasGolddrEnabledChanged) {
-    decisionStatus = DecisionStatus.APPROVED;
+  if (quotaChangeStatus.isEligibleForAutoApproval && !hasGolddrEnabledChanged) {
+    decisionStatus = DecisionStatus.AUTO_APPROVED;
   } else {
     decisionStatus = DecisionStatus.PENDING;
   }
@@ -75,7 +75,7 @@ export default async function editRequest(
 
   const { changes, ...otherChangeMeta } = comparePrivateProductData(rest, previousRequest?.decisionData);
 
-  const quotaChangeInfo = isNoQuotaChanged
+  const quotaChangeInfo = quotaChangeStatus.isEligibleForAutoApproval
     ? {}
     : {
         quotaContactName,
@@ -87,7 +87,7 @@ export default async function editRequest(
     data: {
       type: RequestType.EDIT,
       decisionStatus,
-      isQuotaChanged: !isNoQuotaChanged,
+      isQuotaChanged: quotaChangeStatus.hasChange,
       ...quotaChangeInfo,
       active: true,
       createdBy: { connect: { email: session.user.email } },

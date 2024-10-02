@@ -53,7 +53,7 @@ export default async function updateOp({
 
   proms.push(subscribeUsersToMautic(users, request.decisionData.cluster, 'Private'));
 
-  if (request.decisionStatus === DecisionStatus.APPROVED) {
+  if (request.decisionStatus === DecisionStatus.AUTO_APPROVED) {
     proms.push(sendRequestApprovalEmails(request));
   }
 

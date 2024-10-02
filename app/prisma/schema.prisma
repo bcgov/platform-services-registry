@@ -496,6 +496,7 @@ enum ProjectStatus {
 enum DecisionStatus {
   PENDING
   APPROVED
+  AUTO_APPROVED
   REJECTED
   PROVISIONED
 }

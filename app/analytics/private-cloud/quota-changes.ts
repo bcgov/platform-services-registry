@@ -73,6 +73,7 @@ export async function quotaEditRequests() {
 
     switch (request.decisionStatus) {
       case DecisionStatus.APPROVED:
+      case DecisionStatus.AUTO_APPROVED:
       case DecisionStatus.PROVISIONED:
         result[date][DecisionStatus.APPROVED]++;
         break;

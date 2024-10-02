@@ -223,7 +223,7 @@ describe('Search Private Cloud Requests - Validations', () => {
   it('should successfully search 1 requests by admin', async () => {
     await mockSessionByRole('admin');
 
-    const res1 = await searchPrivateCloudRequests({ status: [DecisionStatus.APPROVED] });
+    const res1 = await searchPrivateCloudRequests({ status: [DecisionStatus.APPROVED, DecisionStatus.AUTO_APPROVED] });
     expect(res1.status).toBe(200);
     const dat1 = await res1.json();
 

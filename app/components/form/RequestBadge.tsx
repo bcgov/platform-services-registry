@@ -36,6 +36,7 @@ export default function RequestBadge({
       decisionColor = 'gray';
       break;
     case DecisionStatus.APPROVED:
+    case DecisionStatus.AUTO_APPROVED:
       decisionColor = 'green';
       break;
     case DecisionStatus.REJECTED:

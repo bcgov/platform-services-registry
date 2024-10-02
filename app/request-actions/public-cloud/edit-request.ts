@@ -64,7 +64,7 @@ export default async function editRequest(
   const request: PublicCloudRequestDetail | null = await prisma.publicCloudRequest.create({
     data: {
       type: RequestType.EDIT,
-      decisionStatus: DecisionStatus.APPROVED, // automatically approve edit requests for public cloud
+      decisionStatus: DecisionStatus.AUTO_APPROVED, // automatically approve edit requests for public cloud
       active: true,
       createdBy: { connect: { email: session.user.email } },
       licencePlate: project.licencePlate,

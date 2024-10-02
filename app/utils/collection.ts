@@ -18,6 +18,25 @@ export function arrayIntersection(arr1: string[], arr2: string[]) {
   return [];
 }
 
+export function iterateObject<T extends object>(
+  obj: T,
+  callback: (value: T[keyof T], key: keyof T) => boolean | void,
+): void {
+  for (const key in obj) {
+    if (obj.hasOwnProperty(key)) {
+      const shouldContinue = callback(obj[key], key);
+      if (shouldContinue === false) {
+        break;
+      }
+    }
+  }
+}
+
+export async function asyncEvery<T>(arr: T[], callback: (value: T) => Promise<boolean>): Promise<boolean> {
+  const results = await Promise.all(arr.map(callback));
+  return results.every((result) => result);
+}
+
 export function checkArrayStringCondition(condition: string[] = [], target: string[] = []) {
   if (condition.length === 0) return true;
 

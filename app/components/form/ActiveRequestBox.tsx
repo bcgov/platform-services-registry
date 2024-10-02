@@ -102,6 +102,11 @@ export default function ActiveRequestBox({
       decisionText = 'Approved';
       DecisionIcon = IconConfetti;
       break;
+    case DecisionStatus.AUTO_APPROVED:
+      decisionColor = 'lime';
+      decisionText = 'Auto-Approved';
+      DecisionIcon = IconConfetti;
+      break;
     case DecisionStatus.REJECTED:
       decisionColor = 'red';
       decisionText = 'Rejected';
