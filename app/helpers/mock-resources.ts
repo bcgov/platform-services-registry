@@ -31,7 +31,7 @@ export function createSamplePrivateCloudProductData(args?: {
 }) {
   const { data } = args ?? {};
 
-  const cluster = getRandomCluster();
+  const cluster = Cluster.SILVER;
 
   const quota = {
     cpu: cpuOptions[0],
@@ -95,7 +95,7 @@ export function createSamplePrivateCloudProductData(args?: {
     ...data,
   };
 
-  _data.golddrEnabled = cluster === Cluster.GOLD ? getRandomBool() : false;
+  _data.golddrEnabled = _data.cluster === Cluster.GOLD ? getRandomBool() : false;
 
   return _data;
 }
