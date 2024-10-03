@@ -1,4 +1,4 @@
-import { Cluster, DecisionStatus } from '@prisma/client';
+import { Cluster, DecisionStatus, RequestType } from '@prisma/client';
 import { createSamplePrivateCloudProductData } from '@/helpers/mock-resources';
 import { mockSessionByEmail, mockSessionByRole } from '@/services/api-test/core';
 import { provisionPrivateCloudProject } from '@/services/api-test/private-cloud';
@@ -24,6 +24,7 @@ export async function createPrivateCloudProduct() {
 
   response = await makePrivateCloudRequestDecision(resData.id, {
     ...decisionData,
+    type: RequestType.CREATE,
     decision: DecisionStatus.APPROVED,
   });
 
@@ -47,7 +48,7 @@ export async function updatePrivateCloudProduct() {
 
   const newDevelopmentQuota = {
     cpu: CpuQuotaEnum.enum.CPU_REQUEST_1_LIMIT_2,
-    memory: MemoryQuotaEnum.enum.MEMORY_REQUEST_4_LIMIT_8,
+    memory: MemoryQuotaEnum.enum.MEMORY_REQUEST_8_LIMIT_16,
     storage: StorageQuotaEnum.enum.STORAGE_2,
   };
 
@@ -70,6 +71,7 @@ export async function updatePrivateCloudProduct() {
 
   response = await makePrivateCloudRequestDecision(resData.id, {
     ...decisionData,
+    type: RequestType.CREATE,
     decision: DecisionStatus.APPROVED,
   });
 
@@ -94,6 +96,7 @@ export async function updatePrivateCloudProduct() {
 
   response = await makePrivateCloudRequestDecision(resData.id, {
     ...decisionData,
+    type: RequestType.EDIT,
     decision: DecisionStatus.APPROVED,
   });
 
@@ -123,6 +126,7 @@ export async function deletePrivateCloudProduct() {
 
   response = await makePrivateCloudRequestDecision(resData.id, {
     ...decisionData,
+    type: RequestType.CREATE,
     decision: DecisionStatus.APPROVED,
   });
 
@@ -144,6 +148,7 @@ export async function deletePrivateCloudProduct() {
 
   response = await makePrivateCloudRequestDecision(resData.id, {
     ...decisionData,
+    type: RequestType.DELETE,
     decision: DecisionStatus.APPROVED,
   });
 

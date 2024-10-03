@@ -58,6 +58,22 @@ jest.mock('@/helpers/pdfs/emou/index', () => ({
   generateEmouPdf: jest.fn(async () => Buffer.alloc(0)),
 }));
 
+jest.mock('@/services/k8s', () => ({
+  ...jest.requireActual('@/services/k8s'),
+  getResourceDetails: jest.fn(async () => ({
+    env: 'dev',
+    allocation: {
+      request: -1,
+      limit: -1,
+    },
+    deployment: {
+      request: -1,
+      limit: -1,
+      usage: -1,
+    },
+  })),
+}));
+
 [
   'castArray',
   'compact',
@@ -80,6 +96,10 @@ jest.mock('@/helpers/pdfs/emou/index', () => ({
   'uniq',
   'kebabCase',
   'trim',
+  'flatMap',
+  'orderBy',
+  'groupBy',
+  'each',
 ].forEach((fnName) => jest.mock(`lodash-es/${fnName}`, () => jest.fn(_[fnName])));
 
 export async function cleanUp() {

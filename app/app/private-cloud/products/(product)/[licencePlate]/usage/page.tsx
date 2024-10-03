@@ -5,27 +5,27 @@ import { useQuery } from '@tanstack/react-query';
 import { useState } from 'react';
 import { z } from 'zod';
 import FormSelect from '@/components/generic/select/FormSelect';
-import TableBodyMetrics from '@/components/table/TableBodyMetrics';
 import createClientPage from '@/core/client-page';
-import { getPodUsageMetrics } from '@/services/backend/private-cloud/pod-usage-metrics';
+import { getPodUsageMetrics } from '@/services/backend/private-cloud/products';
 import { usePrivateProductState } from '@/states/global';
+import MetricsTable from './MetricsTable';
 
 const selectOptions = [
-  {
-    name: 'Production namespace',
-    value: 'prod',
-  },
   {
     name: 'Development namespace',
     value: 'dev',
   },
   {
-    name: 'Tools namespace',
-    value: 'tools',
-  },
-  {
     name: 'Test namespace',
     value: 'test',
+  },
+  {
+    name: 'Production namespace',
+    value: 'prod',
+  },
+  {
+    name: 'Tools namespace',
+    value: 'tools',
   },
 ];
 
@@ -40,7 +40,7 @@ const privateCloudProductUsageMetrics = createClientPage({
 
 export default privateCloudProductUsageMetrics(({ pathParams, queryParams, session }) => {
   const { licencePlate } = pathParams;
-  const [environment, setenvironment] = useState('prod');
+  const [environment, setenvironment] = useState('dev');
   const [, privateSnap] = usePrivateProductState();
 
   const { data = [], isLoading } = useQuery({
@@ -52,16 +52,6 @@ export default privateCloudProductUsageMetrics(({ pathParams, queryParams, sessi
     setenvironment(namespace);
   };
 
-  const titledData = [
-    {
-      name: 'Pod name',
-      usage: { cpu: 'CPU Usage', memory: 'Memory Usage' },
-      limits: { cpu: 'CPU Limits', memory: 'Memory Limits' },
-      requests: { cpu: 'CPU Requests', memory: 'Memory Requests' },
-    },
-    ...data,
-  ];
-
   return (
     <div>
       <fieldset className="w-full md:w-48 2xl:w-64 pb-6">
@@ -69,7 +59,7 @@ export default privateCloudProductUsageMetrics(({ pathParams, queryParams, sessi
           id="id"
           label="Filter by Namespace"
           options={selectOptions.map((v) => ({ label: v.name, value: v.value }))}
-          defaultValue={'prod'}
+          defaultValue={'dev'}
           onChange={handleNamespaceChange}
         />
       </fieldset>
@@ -81,8 +71,8 @@ export default privateCloudProductUsageMetrics(({ pathParams, queryParams, sessi
         ) : (
           <>
             <LoadingOverlay visible={isLoading} zIndex={1000} overlayProps={{ radius: 'sm', blur: 2 }} />
-            <TableBodyMetrics rows={titledData} resource={'cpu'} title={'CPU Usage'} />
-            <TableBodyMetrics rows={titledData} resource={'memory'} title={'Memory Usage'} />
+            <MetricsTable pods={data} resource="cpu" title="CPU Usage" />
+            <MetricsTable pods={data} resource="memory" title="Memory Usage" />
           </>
         )}
       </Box>

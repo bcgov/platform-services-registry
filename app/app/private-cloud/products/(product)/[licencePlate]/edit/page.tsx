@@ -18,10 +18,15 @@ import { openEditPrivateCloudProductModal } from '@/components/modal/editPrivate
 import ReturnModal from '@/components/modal/Return';
 import { AGMinistries } from '@/constants';
 import createClientPage from '@/core/client-page';
-import { comparePrivateProductData, PrivateProductChange } from '@/helpers/product-change';
-import { getPrivateCloudProject, editPrivateCloudProject } from '@/services/backend/private-cloud/products';
+import { getPrivateCloudProject, getQuotaChangeStatus } from '@/services/backend/private-cloud/products';
 import { usePrivateProductState } from '@/states/global';
 import { privateCloudEditRequestBodySchema } from '@/validation-schemas/private-cloud';
+
+const emptyQuota = {
+  cpu: '',
+  memory: '',
+  storage: '',
+};
 
 const pathParamSchema = z.object({
   licencePlate: z.string(),
@@ -32,17 +37,21 @@ const privateCloudProductEdit = createClientPage({
   validations: { pathParams: pathParamSchema },
 });
 export default privateCloudProductEdit(({ pathParams, queryParams, session }) => {
-  const { licencePlate } = pathParams;
   const [, privateSnap] = usePrivateProductState();
-
   const [openReturn, setOpenReturn] = useState(false);
   const [isDisabled, setDisabled] = useState(false);
   const [secondTechLead, setSecondTechLead] = useState(false);
   const [isSecondaryTechLeadRemoved, setIsSecondaryTechLeadRemoved] = useState(false);
 
   const methods = useForm({
-    resolver: (...args) => {
-      const _changes = comparePrivateProductData(privateSnap.currentProduct, args[0]);
+    resolver: async (...args) => {
+      const { developmentQuota, testQuota, productionQuota, toolsQuota } = args[0];
+      const quotaChangeStatus = await getQuotaChangeStatus(privateSnap.licencePlate, {
+        developmentQuota,
+        testQuota,
+        productionQuota,
+        toolsQuota,
+      });
 
       return zodResolver(
         privateCloudEditRequestBodySchema
@@ -62,7 +71,7 @@ export default privateCloudProductEdit(({ pathParams, queryParams, session }) =>
           )
           .refine(
             (formData) => {
-              if (!_changes?.quotasIncrease) return true;
+              if (quotaChangeStatus.isEligibleForAutoApproval) return true;
               return !!formData.quotaContactName;
             },
             {
@@ -72,7 +81,7 @@ export default privateCloudProductEdit(({ pathParams, queryParams, session }) =>
           )
           .refine(
             (formData) => {
-              if (!_changes?.quotasIncrease) return true;
+              if (quotaChangeStatus.isEligibleForAutoApproval) return true;
               return !!formData.quotaContactEmail;
             },
             {
@@ -82,7 +91,7 @@ export default privateCloudProductEdit(({ pathParams, queryParams, session }) =>
           )
           .refine(
             (formData) => {
-              if (!_changes?.quotasIncrease) return true;
+              if (quotaChangeStatus.isEligibleForAutoApproval) return true;
               return !!formData.quotaJustification;
             },
             {
@@ -91,7 +100,7 @@ export default privateCloudProductEdit(({ pathParams, queryParams, session }) =>
             },
           )
           .transform((formData) => {
-            if (!_changes?.quotasIncrease) {
+            if (quotaChangeStatus.isEligibleForAutoApproval) {
               formData.quotaContactName = '';
               formData.quotaContactEmail = '';
               formData.quotaJustification = '';
@@ -101,9 +110,13 @@ export default privateCloudProductEdit(({ pathParams, queryParams, session }) =>
           }),
       )(...args);
     },
-    defaultValues: async () => {
-      const response = await getPrivateCloudProject(licencePlate);
-      return { ...response, isAgMinistryChecked: true };
+    values: {
+      developmentQuota: emptyQuota,
+      testQuota: emptyQuota,
+      productionQuota: emptyQuota,
+      toolsQuota: emptyQuota,
+      ...privateSnap.currentProduct,
+      isAgMinistryChecked: true,
     },
   });
 

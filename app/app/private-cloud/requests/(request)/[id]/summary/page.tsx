@@ -46,6 +46,7 @@ export default Layout(({ pathParams, queryParams, session, router, children }) =
 
   if (
     privateCloudSnap.currentRequest?.decisionStatus === DecisionStatus.APPROVED ||
+    privateCloudSnap.currentRequest?.decisionStatus === DecisionStatus.AUTO_APPROVED ||
     privateCloudSnap.currentRequest?.decisionStatus === DecisionStatus.PROVISIONED
   ) {
     dataSet.push(

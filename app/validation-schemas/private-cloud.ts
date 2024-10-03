@@ -44,6 +44,13 @@ export const quotaSchema = z.object({
   storage: z.union([StorageQuotaEnum, z.string().regex(/STORAGE_\d+/)]),
 });
 
+export const quotasSchema = z.object({
+  testQuota: quotaSchema,
+  toolsQuota: quotaSchema,
+  developmentQuota: quotaSchema,
+  productionQuota: quotaSchema,
+});
+
 const commonComponentItemSchema = z.object({
   planningToUse: z.boolean(),
   implemented: z.boolean(),
@@ -128,6 +135,7 @@ export const privateCloudEditRequestBodySchema = privateCloudCreateRequestBodySc
 
 export const privateCloudRequestDecisionBodySchema = privateCloudEditRequestBodySchema.merge(
   z.object({
+    type: z.nativeEnum(RequestType),
     decision: requestDecisionEnum,
     decisionComment: string().optional(),
   }),
@@ -174,6 +182,7 @@ export type CpuQuota = z.infer<typeof CpuQuotaEnum>;
 export type MemoryQuota = z.infer<typeof MemoryQuotaEnum>;
 export type StorageQuota = z.infer<typeof StorageQuotaEnum>;
 export type Quota = z.infer<typeof quotaSchema>;
+export type Quotas = z.infer<typeof quotasSchema>;
 export type CommonComponents = z.infer<typeof commonComponentsSchema>;
 export type PrivateCloudCreateRequestBody = z.infer<typeof privateCloudCreateRequestBodySchema>;
 export type PrivateCloudEditRequestBody = z.infer<typeof privateCloudEditRequestBodySchema>;

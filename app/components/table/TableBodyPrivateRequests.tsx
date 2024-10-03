@@ -59,7 +59,7 @@ export default function TableBodyPrivateRequests({ rows, isLoading = false }: Ta
                     </TruncatedTooltip>
                     {!row.active && (
                       <Badge color="red" radius="sm" className="ml-1 mt-1">
-                        {ProjectStatus.INACTIVE}
+                        COMPLETE
                       </Badge>
                     )}
                     {row.project

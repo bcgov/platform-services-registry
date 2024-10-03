@@ -1,5 +1,5 @@
 import { expect } from '@jest/globals';
-import { Ministry, Provider, DecisionStatus, TaskType, TaskStatus } from '@prisma/client';
+import { Ministry, Provider, DecisionStatus, TaskType, TaskStatus, RequestType } from '@prisma/client';
 import prisma from '@/core/prisma';
 import { createSamplePublicCloudProductData } from '@/helpers/mock-resources';
 import { mockNoRoleUsers, findMockUserByIdr, findOtherMockUsers } from '@/helpers/mock-users';
@@ -94,6 +94,7 @@ describe('Search Public Cloud Requests - Permissions', () => {
 
     const res2 = await makePublicCloudRequestDecision(dat1.id, {
       ...dat1.decisionData,
+      type: RequestType.CREATE,
       accountCoding: dat1.decisionData.billing.accountCoding,
       decision: DecisionStatus.APPROVED,
     });
@@ -148,6 +149,7 @@ describe('Search Public Cloud Requests - Permissions', () => {
 
     const res2 = await makePublicCloudRequestDecision(dat1.id, {
       ...dat1.decisionData,
+      type: RequestType.CREATE,
       accountCoding: dat1.decisionData.billing.accountCoding,
       decision: DecisionStatus.APPROVED,
     });
@@ -279,6 +281,7 @@ describe('Search Public Cloud Requests - Validations', () => {
 
         const req = await makePublicCloudRequestDecision(dat1.id, {
           ...dat1.decisionData,
+          type: RequestType.CREATE,
           accountCoding: dat1.decisionData.billing.accountCoding,
           decision: DecisionStatus.APPROVED,
         });
@@ -312,7 +315,7 @@ describe('Search Public Cloud Requests - Validations', () => {
   it('should successfully search 1 requests by admin', async () => {
     await mockSessionByRole('admin');
 
-    const res1 = await searchPublicCloudRequests({ status: [DecisionStatus.APPROVED] });
+    const res1 = await searchPublicCloudRequests({ status: [DecisionStatus.APPROVED, DecisionStatus.AUTO_APPROVED] });
     expect(res1.status).toBe(200);
     const dat1 = await res1.json();
 

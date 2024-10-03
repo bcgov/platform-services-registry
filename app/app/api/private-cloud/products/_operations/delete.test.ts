@@ -1,5 +1,5 @@
 import { expect } from '@jest/globals';
-import { DecisionStatus } from '@prisma/client';
+import { DecisionStatus, RequestType } from '@prisma/client';
 import { createSamplePrivateCloudProductData } from '@/helpers/mock-resources';
 import { findOtherMockUsers } from '@/helpers/mock-users';
 import { mockSessionByEmail, mockSessionByRole } from '@/services/api-test/core';
@@ -32,6 +32,7 @@ describe('Delete Private Cloud Product - Permissions', () => {
 
     const response = await makePrivateCloudRequestDecision(requests.create.id, {
       ...requests.create.decisionData,
+      type: RequestType.CREATE,
       decision: DecisionStatus.APPROVED,
     });
 
@@ -67,6 +68,7 @@ describe('Delete Private Cloud Product - Permissions', () => {
 
     const response = await makePrivateCloudRequestDecision(requests.delete.id, {
       ...requests.delete.decisionData,
+      type: RequestType.DELETE,
       decision: DecisionStatus.REJECTED,
     });
 
@@ -95,6 +97,7 @@ describe('Delete Private Cloud Product - Permissions', () => {
 
     const response = await makePrivateCloudRequestDecision(requests.delete.id, {
       ...requests.delete.decisionData,
+      type: RequestType.DELETE,
       decision: DecisionStatus.REJECTED,
     });
 

@@ -46,7 +46,8 @@ export class PrivateCloudRequestService extends ModelService<Prisma.PrivateCloud
 
     const canEdit = canReview && doc.type !== RequestType.DELETE;
     const canResend =
-      doc.decisionStatus === DecisionStatus.APPROVED && this.session.permissions.reviewAllPrivateCloudRequests;
+      (doc.decisionStatus === DecisionStatus.APPROVED || doc.decisionStatus === DecisionStatus.AUTO_APPROVED) &&
+      this.session.permissions.reviewAllPrivateCloudRequests;
 
     const hasProduct = doc.type !== RequestType.CREATE || doc.decisionStatus === DecisionStatus.PROVISIONED;
 

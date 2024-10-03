@@ -1,5 +1,5 @@
 import { expect } from '@jest/globals';
-import { DecisionStatus, Cluster, TaskType, TaskStatus } from '@prisma/client';
+import { DecisionStatus, Cluster, TaskType, TaskStatus, RequestType } from '@prisma/client';
 import prisma from '@/core/prisma';
 import { createSamplePublicCloudProductData } from '@/helpers/mock-resources';
 import { pickProductData } from '@/helpers/product';
@@ -98,6 +98,7 @@ async function makeBasicProductMouReview() {
 async function makeBasicProductReview(decision: DecisionStatus, extra = {}) {
   const decisionData = requests.main.decisionData;
   const response = await makePublicCloudRequestDecision(requests.main.id, {
+    type: RequestType.CREATE,
     ...decisionData,
     ...extra,
     decision,

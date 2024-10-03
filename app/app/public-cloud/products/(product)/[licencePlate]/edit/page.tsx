@@ -94,9 +94,10 @@ export default publicCloudProductEdit(({ pathParams, queryParams, session }) => 
           },
         ),
     ),
-    defaultValues: async () => {
-      const response = await getPublicCloudProject(licencePlate);
-      return { ...response, isAgMinistryChecked: true, accountCoding: response.billing.accountCoding };
+    values: {
+      ...snap.currentProduct,
+      isAgMinistryChecked: true,
+      accountCoding: snap.currentProduct?.billing.accountCoding,
     },
   });
 

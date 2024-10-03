@@ -14,7 +14,7 @@ import Tabs, { ITab } from '@/components/generic/tabs/BasicTabs';
 import createClientPage from '@/core/client-page';
 import { comparePrivateProductData } from '@/helpers/product-change';
 import { getPrivateCloudRequest } from '@/services/backend/private-cloud/requests';
-import { privateProductState } from '@/states/global';
+import { usePrivateProductState } from '@/states/global';
 
 const pathParamSchema = z.object({
   id: z.string(),
@@ -26,6 +26,7 @@ const privateCloudProductSecurityACS = createClientPage({
 });
 
 export default privateCloudProductSecurityACS(({ pathParams, queryParams, session, children, router }) => {
+  const [privateProductState, privateSnap] = usePrivateProductState();
   const { id } = pathParams;
 
   const { data: request, isLoading: isRequestLoading } = useQuery({
@@ -101,7 +102,9 @@ export default privateCloudProductSecurityACS(({ pathParams, queryParams, sessio
     return tabsByType[request.type].includes(tab.name);
   });
 
-  if (isRequestLoading || !request) return null;
+  if (isRequestLoading || !request || !privateSnap.currentRequest || request.id !== privateSnap.currentRequest.id) {
+    return null;
+  }
 
   return (
     <div>

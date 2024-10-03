@@ -1,5 +1,5 @@
 import { expect } from '@jest/globals';
-import { DecisionStatus, Cluster } from '@prisma/client';
+import { DecisionStatus, Cluster, RequestType } from '@prisma/client';
 import { createSamplePrivateCloudProductData } from '@/helpers/mock-resources';
 import { pickProductData } from '@/helpers/product';
 import { mockSessionByEmail, mockSessionByRole } from '@/services/api-test/core';
@@ -35,7 +35,7 @@ const oldDevelopmentQuota = {
 
 const newDevelopmentQuota = {
   cpu: CpuQuotaEnum.enum.CPU_REQUEST_1_LIMIT_2,
-  memory: MemoryQuotaEnum.enum.MEMORY_REQUEST_4_LIMIT_8,
+  memory: MemoryQuotaEnum.enum.MEMORY_REQUEST_8_LIMIT_16,
   storage: StorageQuotaEnum.enum.STORAGE_2,
 };
 
@@ -52,6 +52,7 @@ const requests: any = { main: null };
 async function makeBasicProductReview(decision: DecisionStatus, extra = {}) {
   const decisionData = requests.main.decisionData;
   const response = await makePrivateCloudRequestDecision(requests.main.id, {
+    type: RequestType.CREATE,
     ...decisionData,
     ...extra,
     decision,
@@ -136,6 +137,7 @@ describe('Review Private Cloud Update Request - Permissions', () => {
       ...requests.main.decisionData,
       developmentQuota: newDevelopmentQuota,
     });
+
     expect(response.status).toBe(200);
 
     requests.main = await response.json();

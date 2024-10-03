@@ -1,5 +1,5 @@
 import { expect } from '@jest/globals';
-import { Ministry, Provider, DecisionStatus, TaskType, TaskStatus } from '@prisma/client';
+import { Ministry, Provider, DecisionStatus, TaskType, TaskStatus, RequestType } from '@prisma/client';
 import prisma from '@/core/prisma';
 import { createSamplePublicCloudProductData } from '@/helpers/mock-resources';
 import { mockNoRoleUsers, findMockUserByIdr, findOtherMockUsers } from '@/helpers/mock-users';
@@ -82,6 +82,7 @@ describe('List Public Cloud Product Requests - Permissions', () => {
 
     const res2 = await makePublicCloudRequestDecision(dat1.id, {
       ...dat1.decisionData,
+      type: RequestType.CREATE,
       accountCoding: dat1.decisionData.billing.accountCoding,
       decision: DecisionStatus.APPROVED,
     });

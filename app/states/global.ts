@@ -1,5 +1,6 @@
 import { PrivateProductChange, PublicProductChange } from '@/helpers/product-change';
 import { createGlobalValtio } from '@/helpers/valtio';
+import { QuotaChangeStatus } from '@/services/backend/private-cloud/products';
 import {
   PrivateCloudProductSimpleDecorated,
   PrivateCloudRequestSimpleDecorated,
@@ -50,6 +51,7 @@ export const { state: privateProductState, useValtioState: usePrivateProductStat
   dataChangeOriginalRequest: PrivateProductChange | undefined;
   dataChangeRequestDecision: PrivateProductChange | undefined;
   dataChangeOriginalDecision: PrivateProductChange | undefined;
+  editQuotaChangeStatus: QuotaChangeStatus | undefined;
 }>({
   licencePlate: '',
   currentProduct: undefined,
@@ -57,6 +59,7 @@ export const { state: privateProductState, useValtioState: usePrivateProductStat
   dataChangeOriginalRequest: undefined,
   dataChangeRequestDecision: undefined,
   dataChangeOriginalDecision: undefined,
+  editQuotaChangeStatus: undefined,
 });
 
 export const { state: publicProductState, useValtioState: usePublicProductState } = createGlobalValtio<{

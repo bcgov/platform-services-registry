@@ -19,7 +19,7 @@ export const PUT = apiHandler(async ({ pathParams }) => {
 
   const request = await prisma.publicCloudRequest.findFirst({
     where: {
-      decisionStatus: DecisionStatus.APPROVED,
+      decisionStatus: { in: [DecisionStatus.APPROVED, DecisionStatus.AUTO_APPROVED] },
       licencePlate,
       active: true,
     },

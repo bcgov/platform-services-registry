@@ -3,11 +3,14 @@
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Button, Divider, Grid, LoadingOverlay, Box } from '@mantine/core';
 import { notifications } from '@mantine/notifications';
+import { IconStatusChange } from '@tabler/icons-react';
 import { useQuery, useMutation } from '@tanstack/react-query';
-import classNames from 'classnames';
 import { useEffect, useState } from 'react';
 import { FormProvider, useForm, FieldValues } from 'react-hook-form';
 import { string, z } from 'zod';
+import PageAccordion, { PageAccordionItem } from '@/components/generic/accordion/PageAccordion';
+import HookFormTextarea from '@/components/generic/input/HookFormTextarea';
+import ProductComparison from '@/components/ProductComparison';
 import { createModal, ExtraModalProps } from '@/core/modal';
 import { comparePrivateProductData, PrivateProductChange } from '@/helpers/product-change';
 import { editPrivateCloudProject } from '@/services/backend/private-cloud/products';
@@ -27,7 +30,7 @@ function EditPrivateCloudProductModal({
   closeModal,
 }: ModalProps & { state: ModalState } & ExtraModalProps) {
   const [, privateSnap] = usePrivateProductState();
-  const [hasQuotaIncrease, setHasQuotaIncrease] = useState(false);
+  const [change, setChange] = useState<PrivateProductChange>();
 
   const methods = useForm({
     resolver: zodResolver(
@@ -66,8 +69,10 @@ function EditPrivateCloudProductModal({
 
   useEffect(() => {
     const _changes = comparePrivateProductData(privateSnap.currentProduct, productData);
-    setHasQuotaIncrease(_changes.quotasIncrease);
+    setChange(_changes);
   }, [productData]);
+
+  if (!change || !privateSnap.editQuotaChangeStatus) return null;
 
   return (
     <Box pos="relative">
@@ -80,9 +85,26 @@ function EditPrivateCloudProductModal({
             closeModal();
           })}
         >
-          <p className="text-sm text-gray-900">
+          <PageAccordion
+            items={[
+              {
+                LeftIcon: IconStatusChange,
+                label: 'Changes',
+                description: 'Expand to view detailed product changes.',
+                Component: ProductComparison,
+                componentArgs: {
+                  data: change.changes,
+                },
+              },
+            ]}
+            initialSelected={[]}
+            showToggles={false}
+          />
+
+          <p className="text-sm text-gray-900 mt-2">
             After hitting request, our smart robots will start working hard behind the scenes.
-            {hasQuotaIncrease && (
+            {(!privateSnap.editQuotaChangeStatus.isEligibleForAutoApproval ||
+              change.parentPaths.includes('golddrEnabled')) && (
               <span>
                 &nbsp;There is one step, the approval process, where a human is involved. They will take the
                 opportunity, if needed, to reach out and have an on-boarding conversation with you.
@@ -94,17 +116,11 @@ function EditPrivateCloudProductModal({
             product status and details.
           </p>
 
-          <p className="text-sm text-gray-900 mt-4 mb-1">
-            If you have any additional comments about the request, add them here.
-          </p>
-          <textarea
-            id="requestComment"
+          <HookFormTextarea
+            label="If you have any additional comments about the request, add them here."
+            name="requestComment"
             placeholder="Enter an optional comment..."
-            {...register('requestComment')}
-            rows={3}
-            className={classNames(
-              'block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6',
-            )}
+            classNames={{ wrapper: 'mt-2' }}
           />
 
           <Divider my="md" />

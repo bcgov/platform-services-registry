@@ -36,6 +36,7 @@ export default function RequestBadge({
       decisionColor = 'gray';
       break;
     case DecisionStatus.APPROVED:
+    case DecisionStatus.AUTO_APPROVED:
       decisionColor = 'green';
       break;
     case DecisionStatus.REJECTED:
@@ -52,7 +53,7 @@ export default function RequestBadge({
         {request.type}
       </Badge>
       <Badge color={request.active ? 'lime' : 'pink'} radius="sm" className="ml-1">
-        {request.active ? 'ACTIVE' : 'INACTIVE'}
+        {request.active ? 'ACTIVE' : 'COMPLETE'}
       </Badge>
       <Badge color={decisionColor} radius="sm" className="ml-1">
         {request.decisionStatus}

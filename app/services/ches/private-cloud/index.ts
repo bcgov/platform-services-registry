@@ -5,6 +5,7 @@ import {
   sendAdminCreateRequest,
   sendAdminDeleteRequest,
   sendAdminEditRequest,
+  sendAdminEditRequestQuotaAutoApproval,
   sendTeamCreateRequest,
   sendTeamCreateRequestApproval,
   sendTeamCreateRequestCompletion,
@@ -61,7 +62,7 @@ export function sendDeleteRequestEmails(request: PrivateCloudRequestDetail, requ
   }
 }
 
-export function sendRequestApprovalEmails(request: PrivateCloudRequestDetail) {
+export function sendRequestApprovalEmails(request: PrivateCloudRequestDetail, requester: string) {
   try {
     const proms = [];
 
@@ -69,6 +70,10 @@ export function sendRequestApprovalEmails(request: PrivateCloudRequestDetail) {
       proms.push(sendTeamCreateRequestApproval(request));
     } else if (request.type == RequestType.EDIT) {
       proms.push(sendTeamEditRequestApproval(request));
+
+      if (request.decisionStatus === DecisionStatus.AUTO_APPROVED) {
+        proms.push(sendAdminEditRequestQuotaAutoApproval(request, requester));
+      }
     } else if (request.type == RequestType.DELETE) {
       proms.push(sendTeamDeleteRequestApproval(request));
     }

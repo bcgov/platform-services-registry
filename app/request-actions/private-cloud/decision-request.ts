@@ -27,7 +27,7 @@ export default async function makeRequestDecision(
     return null;
   }
 
-  const { decision, decisionComment, quotaContactName, quotaContactEmail, quotaJustification, ...validFormData } =
+  const { type, decision, decisionComment, quotaContactName, quotaContactEmail, quotaJustification, ...validFormData } =
     formData;
 
   const dataToUpdate: Prisma.PrivateCloudRequestUpdateInput = {

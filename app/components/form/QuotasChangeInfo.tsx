@@ -1,9 +1,13 @@
+import { Alert } from '@mantine/core';
+import { IconInfoCircle, IconExclamationCircle } from '@tabler/icons-react';
+import { useQuery } from '@tanstack/react-query';
 import classNames from 'classnames';
 import _get from 'lodash-es/get';
 import { useEffect, useState } from 'react';
 import { FieldError, FieldErrorsImpl, Merge, useFieldArray, useFormContext } from 'react-hook-form';
-import { comparePrivateProductData, PrivateProductChange } from '@/helpers/product-change';
+import { getQuotaChangeStatus } from '@/services/backend/private-cloud/products';
 import { usePrivateProductState } from '@/states/global';
+import { Quotas } from '@/validation-schemas/private-cloud';
 import ExternalLink from '../generic/button/ExternalLink';
 
 function FormError({ error }: { error?: FieldError | Merge<FieldError, FieldErrorsImpl<any>> }) {
@@ -13,8 +17,7 @@ function FormError({ error }: { error?: FieldError | Merge<FieldError, FieldErro
 }
 
 export default function QuotasChangeInfo({ disabled, className }: { disabled: boolean; className?: string }) {
-  const [, privateSnap] = usePrivateProductState();
-  const [hasQuotaIncrease, setHasQuotaIncrease] = useState(false);
+  const [privateProductState, privateSnap] = usePrivateProductState();
   const {
     register,
     control,
@@ -40,23 +43,47 @@ export default function QuotasChangeInfo({ disabled, className }: { disabled: bo
     'toolsQuota.storage',
   ]);
 
-  useEffect(() => {
-    if (!privateSnap.currentProduct) return;
+  const { data: quotaChangeStatus, isLoading } = useQuery({
+    queryKey: [privateSnap.licencePlate, privateSnap.currentProduct, quotaChanges],
+    queryFn: () => {
+      const { developmentQuota, testQuota, productionQuota, toolsQuota } = getValues();
+      return getQuotaChangeStatus(privateSnap.licencePlate, {
+        developmentQuota,
+        testQuota,
+        productionQuota,
+        toolsQuota,
+      } as Quotas);
+    },
+  });
 
-    const _changes = comparePrivateProductData(privateSnap.currentProduct, getValues());
-    if (!_changes.quotasIncrease) {
+  useEffect(() => {
+    if (!quotaChangeStatus) return;
+
+    if (quotaChangeStatus.isEligibleForAutoApproval) {
       setValue('quotaContactName', '');
       setValue('quotaContactEmail', '');
       setValue('quotaJustification', '');
     }
 
-    setHasQuotaIncrease(_changes.quotasIncrease);
-  }, [privateSnap.currentProduct, quotaChanges, getValues, setValue]);
+    privateProductState.editQuotaChangeStatus = quotaChangeStatus;
+  }, [quotaChangeStatus]);
 
-  if (!hasQuotaIncrease) return null;
+  if (isLoading || !quotaChangeStatus) return null;
+  if (!quotaChangeStatus.hasChange) return null;
+
+  if (quotaChangeStatus.isEligibleForAutoApproval) {
+    return (
+      <Alert variant="light" color="blue" title="" icon={<IconInfoCircle />}>
+        The quota changes you made are eligible for auto-approval.
+      </Alert>
+    );
+  }
 
   return (
     <div className={classNames(className)}>
+      <Alert className="mb-2" color="warning" title="" icon={<IconExclamationCircle />}>
+        The quota changes you made require admin review. Please provide the following information:
+      </Alert>
       <h3 className="text-base 2xl:text-lg font-semibold leading-7 text-gray-900">Contact name</h3>
       <p className="text-sm leading-6 text-gray-600">
         Provide the first and last name of the product contact handling this request. This person will be contacted by

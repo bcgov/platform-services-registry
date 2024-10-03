@@ -52,34 +52,53 @@ model User {
 }
 
 model PrivateCloudRequest {
-  id                 String                        @id @default(auto()) @map("_id") @db.ObjectId
-  licencePlate       String
-  createdByEmail     String
-  createdBy          User                          @relation("createdBy", fields: [createdByEmail], references: [email])
-  decisionMakerEmail String?
-  quotaContactName   String?
-  quotaContactEmail  String?
-  quotaJustification String?
-  type               RequestType
-  decisionStatus     DecisionStatus
-  isQuotaChanged     Boolean?                      @default(false)
-  requestComment     String?
-  decisionComment    String?
-  active             Boolean                       @default(true)
-  createdAt          DateTime                      @default(now())
-  updatedAt          DateTime                      @updatedAt
-  decisionDate       DateTime?
-  provisionedDate    DateTime?
-  projectId          String?                       @db.ObjectId
-  project            PrivateCloudProject?          @relation("project", fields: [projectId], references: [id], onDelete: Cascade)
-  decisionDataId     String                        @db.ObjectId
-  decisionData       PrivateCloudRequestedProject  @relation("decisionData", fields: [decisionDataId], references: [id])
-  requestDataId      String                        @db.ObjectId
-  requestData        PrivateCloudRequestedProject? @relation("requestData", fields: [requestDataId], references: [id])
-  originalDataId     String?                       @db.ObjectId
-  originalData       PrivateCloudRequestedProject? @relation("originalData", fields: [originalDataId], references: [id])
-  changes            PrivateCloudDataChanges?
-  comments           PrivateCloudComment[]         @relation("request")
+  id                             String                        @id @default(auto()) @map("_id") @db.ObjectId
+  licencePlate                   String
+  createdByEmail                 String
+  createdBy                      User                          @relation("createdBy", fields: [createdByEmail], references: [email])
+  decisionMakerEmail             String?
+  quotaContactName               String?
+  quotaContactEmail              String?
+  quotaJustification             String?
+  type                           RequestType
+  decisionStatus                 DecisionStatus
+  isQuotaChanged                 Boolean?                      @default(false)
+  requestComment                 String?
+  decisionComment                String?
+  active                         Boolean                       @default(true)
+  createdAt                      DateTime                      @default(now())
+  updatedAt                      DateTime                      @updatedAt
+  decisionDate                   DateTime?
+  provisionedDate                DateTime?
+  projectId                      String?                       @db.ObjectId
+  project                        PrivateCloudProject?          @relation("project", fields: [projectId], references: [id], onDelete: Cascade)
+  decisionDataId                 String                        @db.ObjectId
+  decisionData                   PrivateCloudRequestedProject  @relation("decisionData", fields: [decisionDataId], references: [id])
+  requestDataId                  String                        @db.ObjectId
+  requestData                    PrivateCloudRequestedProject? @relation("requestData", fields: [requestDataId], references: [id])
+  originalDataId                 String?                       @db.ObjectId
+  originalData                   PrivateCloudRequestedProject? @relation("originalData", fields: [originalDataId], references: [id])
+  quotaUpgradeResourceDetailList QuotaUpgradeResourceDetail[]
+  changes                        PrivateCloudDataChanges?
+  comments                       PrivateCloudComment[]         @relation("request")
+}
+
+type QuotaUpgradeResourceDetail {
+  env          Env
+  resourceType ResourceType
+  allocation   QuotaUpgradeResourceAllocation
+  deployment   QuotaUpgradeResourceDeployment
+}
+
+type QuotaUpgradeResourceAllocation {
+  request Int
+  limit   Int
+}
+
+type QuotaUpgradeResourceDeployment {
+  request Int
+  limit   Int
+  usage   Int
 }
 
 type PrivateCloudDataChanges {
@@ -496,6 +515,7 @@ enum ProjectStatus {
 enum DecisionStatus {
   PENDING
   APPROVED
+  AUTO_APPROVED
   REJECTED
   PROVISIONED
 }
@@ -590,4 +610,17 @@ enum TaskType {
 enum TaskStatus {
   ASSIGNED
   COMPLETED
+}
+
+enum Env {
+  dev
+  test
+  prod
+  tools
+}
+
+enum ResourceType {
+  cpu
+  memory
+  storage
 }
