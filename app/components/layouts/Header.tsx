@@ -2,6 +2,7 @@
 
 import Image from 'next/image';
 import Link from 'next/link';
+import { usePathname } from 'next/navigation';
 import { useSession, signIn } from 'next-auth/react';
 import Logo from '@/components/assets/logo.svg';
 import LightButton from '@/components/generic/button/LightButton';
@@ -9,6 +10,14 @@ import UserMenu from '@/components/layouts/UserMenu';
 
 export default function Header() {
   const { data: session } = useSession();
+  const pathname = usePathname();
+
+  let context = '';
+  if (pathname.startsWith('/private-cloud')) {
+    context = 'Private Cloud OpenShift Platform';
+  } else if (pathname.startsWith('/public-cloud')) {
+    context = 'Public Cloud Landing Zone';
+  }
 
   return (
     <nav className="border-b-3 border-bcorange bg-bcblue shadow">
@@ -32,6 +41,7 @@ export default function Header() {
               <span className="ml-5 hidden items-center text-2xl leading-none text-white md:inline">
                 <span className="mr-2 font-roboto font-thin">BC Platform Services</span>
                 <span className="font-roboto font-normal">Product Registry</span>
+                {context !== '' && <span className="ml-2 font-normal">- {context}</span>}
               </span>
             </div>
           </div>

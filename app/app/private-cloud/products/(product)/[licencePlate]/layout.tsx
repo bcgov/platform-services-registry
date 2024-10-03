@@ -98,7 +98,7 @@ export default privateCloudProductLayout(({ pathParams, queryParams, session, ch
   return (
     <div>
       <h1 className="flex justify-between text-xl lg:text-2xl xl:text-4xl font-semibold leading-7 text-gray-900 my-2 lg:my-4">
-        Private Cloud OpenShift Platform
+        {privateSnap.currentProduct.name}
         <ProductBadge data={privateSnap.currentProduct} />
       </h1>
 

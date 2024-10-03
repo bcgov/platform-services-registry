@@ -1,8 +1,7 @@
-import { Button, Heading, Text, Link, Hr } from '@react-email/components';
+import { Heading, Text, Link } from '@react-email/components';
 import * as React from 'react';
 import { BASE_URL } from '@/config';
 import ClusterDetails from '@/emails/_components/ClusterDetails';
-import Comment from '@/emails/_components/Comment';
 import PrivateCloudLayout from '@/emails/_components/layout/PrivateCloudLayout';
 import LinkButton from '@/emails/_components/LinkButton';
 import Changes from '@/emails/_components/private-cloud/Changes';
