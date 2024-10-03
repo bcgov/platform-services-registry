@@ -34,6 +34,7 @@ export default async function updateOp({
     return OkResponse(request);
   }
 
+  // The EDIT request is Auto-Approved
   const proms = [];
 
   proms.push(
@@ -52,10 +53,7 @@ export default async function updateOp({
   ].filter((usr): usr is User => Boolean(usr));
 
   proms.push(subscribeUsersToMautic(users, request.decisionData.cluster, 'Private'));
-
-  if (request.decisionStatus === DecisionStatus.AUTO_APPROVED) {
-    proms.push(sendRequestApprovalEmails(request));
-  }
+  proms.push(sendRequestApprovalEmails(request, session.user.name));
 
   await Promise.all(proms);
 

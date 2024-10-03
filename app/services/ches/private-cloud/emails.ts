@@ -1,6 +1,7 @@
 import AdminCreateRequestTemplate from '@/emails/_templates/private-cloud/AdminCreateRequest';
 import AdminDeleteRequestTemplate from '@/emails/_templates/private-cloud/AdminDeleteRequest';
 import AdminEditRequestTemplate from '@/emails/_templates/private-cloud/AdminEditRequest';
+import AdminEditRequestQuotaAutoApprovalTemplate from '@/emails/_templates/private-cloud/AdminEditRequestQuotaAutoApproval';
 import TeamCreateRequestTemplate from '@/emails/_templates/private-cloud/TeamCreateRequest';
 import TeamCreateRequestApprovalTemplate from '@/emails/_templates/private-cloud/TeamCreateRequestApproval';
 import TeamCreateRequestCompletionTemplate from '@/emails/_templates/private-cloud/TeamCreateRequestCompletion';
@@ -53,6 +54,16 @@ export function sendAdminEditRequest(request: PrivateCloudRequestDetail, request
 
   return sendEmail({
     subject: 'New edit request awaiting review',
+    to: adminPrivateEmails,
+    body: content,
+  });
+}
+
+export function sendAdminEditRequestQuotaAutoApproval(request: PrivateCloudRequestDetail, requester: string) {
+  const content = getContent(AdminEditRequestQuotaAutoApprovalTemplate({ request, requester }));
+
+  return sendEmail({
+    subject: 'Quota upgrade auto-approval',
     to: adminPrivateEmails,
     body: content,
   });

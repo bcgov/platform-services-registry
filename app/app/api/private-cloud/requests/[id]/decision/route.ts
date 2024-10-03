@@ -57,7 +57,7 @@ export const POST = apiHandler(async ({ pathParams, body, session }) => {
   // Subscribe users to Mautic
   proms.push(subscribeUsersToMautic(users, request.decisionData.cluster, 'Private'));
 
-  proms.push(sendRequestApprovalEmails(request));
+  proms.push(sendRequestApprovalEmails(request, session.user.name));
 
   await Promise.all(proms);
 

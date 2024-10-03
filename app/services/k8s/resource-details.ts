@@ -1,4 +1,4 @@
-import { Quota, Cluster, Env, QuotaUpgradeResourceDetail } from '@prisma/client';
+import { Quota, Cluster, Env, ResourceType, QuotaUpgradeResourceDetail } from '@prisma/client';
 import _each from 'lodash-es/each';
 import { getTotalMetrics, memoryUnitMultipliers, cpuCoreToMillicoreMultiplier } from '@/helpers/resource-metrics';
 import { getPodMetrics } from '@/services/k8s';
@@ -28,12 +28,13 @@ export async function getResourceDetails({
   licencePlate: string;
   cluster: Cluster;
   envQuota: keyof Quotas;
-  resourceName: keyof Quota;
+  resourceName: ResourceType;
   currentQuota: Quotas;
 }) {
   const env = envQuotaToEnv[envQuota];
   const result: QuotaUpgradeResourceDetail = {
     env,
+    resourceType: resourceName,
     allocation: {
       request: -1,
       limit: -1,

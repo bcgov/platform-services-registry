@@ -42,14 +42,17 @@ export async function getPodMetrics(licencePlate: string, environment: string, c
           usage: {
             cpu: normalizeCpu(container.usage.cpu) || 0,
             memory: normalizeMemory(container.usage.memory) || 0,
+            storage: -1,
           },
           limits: {
             cpu: normalizeCpu(resourceDef.limits?.cpu || '0'),
             memory: normalizeMemory(resourceDef.limits?.memory || '0'),
+            storage: -1,
           },
           requests: {
             cpu: normalizeCpu(resourceDef.requests?.cpu || '0'),
             memory: normalizeMemory(resourceDef.requests?.memory || '0'),
+            storage: -1,
           },
         };
       });

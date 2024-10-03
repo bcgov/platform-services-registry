@@ -1,11 +1,12 @@
 'use client';
 
+import { ResourceType } from '@prisma/client';
 import classNames from 'classnames';
 import _truncate from 'lodash-es/truncate';
 import React from 'react';
 import TableHeader from '@/components/generic/table/TableHeader';
 import TruncatedTooltip from '@/components/table/TruncatedTooltip';
-import { getTotalMetrics, ResourceType, Pod, formatMemory, formatCpu } from '@/helpers/resource-metrics';
+import { getTotalMetrics, Pod, formatMemory, formatCpu } from '@/helpers/resource-metrics';
 
 interface TableProps {
   pods: Pod[];
@@ -19,14 +20,17 @@ type TransformedData = {
   usage: {
     cpu: number;
     memory: number;
+    storage: number;
   };
   limits: {
     cpu: number;
     memory: number;
+    storage: number;
   };
   requests: {
     cpu: number;
     memory: number;
+    storage: number;
   };
 };
 
@@ -40,14 +44,17 @@ function transformPodData(data: Pod[]) {
         usage: {
           cpu: container.usage.cpu,
           memory: container.usage.memory,
+          storage: -1,
         },
         limits: {
           cpu: container.limits.cpu,
           memory: container.limits.memory,
+          storage: -1,
         },
         requests: {
           cpu: container.requests.cpu,
           memory: container.requests.memory,
+          storage: -1,
         },
       });
     });
@@ -61,9 +68,9 @@ export default function MetricsTable({ pods, resource, title }: TableProps) {
     {
       podName: 'Pod Name',
       containerName: 'Container Name',
-      usage: { cpu: 'CPU Usage', memory: 'Memory Usage' },
-      limits: { cpu: 'CPU Limits', memory: 'Memory Limits' },
-      requests: { cpu: 'CPU Requests', memory: 'Memory Requests' },
+      usage: { cpu: 'CPU Usage', memory: 'Memory Usage', storage: '' },
+      limits: { cpu: 'CPU Limits', memory: 'Memory Limits', storage: '' },
+      requests: { cpu: 'CPU Requests', memory: 'Memory Requests', storage: '' },
     },
     ...transformPodData(pods),
   ];
@@ -80,7 +87,7 @@ export default function MetricsTable({ pods, resource, title }: TableProps) {
     },
   ];
 
-  const formatter = resource === 'cpu' ? formatCpu : formatMemory;
+  const formatter = resource === ResourceType.cpu ? formatCpu : formatMemory;
 
   return (
     <>

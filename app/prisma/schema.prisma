@@ -84,9 +84,10 @@ model PrivateCloudRequest {
 }
 
 type QuotaUpgradeResourceDetail {
-  env        Env
-  allocation QuotaUpgradeResourceAllocation
-  deployment QuotaUpgradeResourceDeployment
+  env          Env
+  resourceType ResourceType
+  allocation   QuotaUpgradeResourceAllocation
+  deployment   QuotaUpgradeResourceDeployment
 }
 
 type QuotaUpgradeResourceAllocation {
@@ -616,4 +617,10 @@ enum Env {
   test
   prod
   tools
+}
+
+enum ResourceType {
+  cpu
+  memory
+  storage
 }

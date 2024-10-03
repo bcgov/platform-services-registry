@@ -97,6 +97,8 @@ jest.mock('@/services/k8s', () => ({
   'kebabCase',
   'trim',
   'flatMap',
+  'orderBy',
+  'groupBy',
   'each',
 ].forEach((fnName) => jest.mock(`lodash-es/${fnName}`, () => jest.fn(_[fnName])));
 

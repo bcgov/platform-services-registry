@@ -1,4 +1,4 @@
-export type ResourceType = 'cpu' | 'memory';
+import { ResourceType } from '@prisma/client';
 
 export type Pod = {
   podName: string;
@@ -10,14 +10,17 @@ export type Container = {
   usage: {
     cpu: number;
     memory: number;
+    storage: number;
   };
   limits: {
     cpu: number;
     memory: number;
+    storage: number;
   };
   requests: {
     cpu: number;
     memory: number;
+    storage: number;
   };
 };
 
