@@ -13,19 +13,22 @@ export default function ProductBadge({
   if (!data || !data.licencePlate) return null;
 
   let color = 'gray';
+  let status = '';
 
   switch (data.status) {
     case ProjectStatus.ACTIVE:
       color = 'green';
+      status = 'active';
       break;
     case ProjectStatus.INACTIVE:
       color = 'red';
+      status = 'complete';
       break;
   }
 
   const badge = (
     <Badge color={color} radius="sm" className="ml-1">
-      {data.status}
+      {status}
     </Badge>
   );
 

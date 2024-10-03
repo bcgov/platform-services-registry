@@ -17,7 +17,7 @@ function FormError({ error }: { error?: FieldError | Merge<FieldError, FieldErro
 }
 
 export default function QuotasChangeInfo({ disabled, className }: { disabled: boolean; className?: string }) {
-  const [, privateSnap] = usePrivateProductState();
+  const [privateProductState, privateSnap] = usePrivateProductState();
   const {
     register,
     control,
@@ -64,6 +64,8 @@ export default function QuotasChangeInfo({ disabled, className }: { disabled: bo
       setValue('quotaContactEmail', '');
       setValue('quotaJustification', '');
     }
+
+    privateProductState.editQuotaChangeStatus = quotaChangeStatus;
   }, [quotaChangeStatus]);
 
   if (isLoading || !quotaChangeStatus) return null;

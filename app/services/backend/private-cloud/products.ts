@@ -147,15 +147,16 @@ export async function getPodUsageMetrics(licencePlate: string, environment: stri
   return response.data;
 }
 
-export async function getQuotaChangeStatus(licencePlate: string, requestedQuota: Quotas) {
-  const response = await instance.post<{
-    hasChange: boolean;
-    hasIncrease: boolean;
-    hasSignificantIncrease: boolean;
-    isEligibleForAutoApproval: boolean;
-    resourceCheckRequired: boolean;
-    resourceDetailList: QuotaUpgradeResourceDetail;
-  }>(`/${licencePlate}/quota-change-status`, { requestedQuota });
+export interface QuotaChangeStatus {
+  hasChange: boolean;
+  hasIncrease: boolean;
+  hasSignificantIncrease: boolean;
+  isEligibleForAutoApproval: boolean;
+  resourceCheckRequired: boolean;
+  resourceDetailList: QuotaUpgradeResourceDetail;
+}
 
+export async function getQuotaChangeStatus(licencePlate: string, requestedQuota: Quotas) {
+  const response = await instance.post<QuotaChangeStatus>(`/${licencePlate}/quota-change-status`, { requestedQuota });
   return response.data;
 }

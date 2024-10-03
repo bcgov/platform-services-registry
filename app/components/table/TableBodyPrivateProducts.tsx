@@ -57,7 +57,7 @@ export default function TableBodyPrivateProducts({ rows, isLoading = false }: Ta
                     </TruncatedTooltip>
                     {row.status === ProjectStatus.INACTIVE && (
                       <Badge color="red" radius="sm" className="ml-1 mt-1">
-                        {ProjectStatus.INACTIVE}
+                        COMPLETE
                       </Badge>
                     )}
                     {row.isTest && <TemporaryProductBadge data={{ createdAt: row.createdAt }} className="ml-1 mt-1" />}

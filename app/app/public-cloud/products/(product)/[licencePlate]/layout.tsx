@@ -9,7 +9,7 @@ import ProductBadge from '@/components/form/ProductBadge';
 import Tabs, { ITab } from '@/components/generic/tabs/BasicTabs';
 import createClientPage from '@/core/client-page';
 import { getPublicCloudProject } from '@/services/backend/public-cloud/products';
-import { publicProductState } from '@/states/global';
+import { usePublicProductState } from '@/states/global';
 import { resetState as resetRequestsState } from './requests/state';
 
 const pathParamSchema = z.object({
@@ -22,6 +22,7 @@ const publicCloudProductSecurityACS = createClientPage({
 });
 
 export default publicCloudProductSecurityACS(({ pathParams, queryParams, session, children }) => {
+  const [publicProductState, publicProductSnap] = usePublicProductState();
   const { licencePlate } = pathParams;
 
   const { data: currentProduct } = useQuery({
@@ -67,6 +68,10 @@ export default publicCloudProductSecurityACS(({ pathParams, queryParams, session
       name: 'history',
       href: `/public-cloud/products/${licencePlate}/history`,
     });
+  }
+
+  if (!publicProductSnap.currentProduct || publicProductSnap.currentProduct.licencePlate !== licencePlate) {
+    return null;
   }
 
   return (

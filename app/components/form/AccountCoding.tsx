@@ -45,7 +45,7 @@ export default function AccountCoding({
     error: billingError,
     refetch: refetchBillingExistence,
   } = useQuery({
-    queryKey: ['billingExistence', values.accountCoding],
+    queryKey: ['billingExistence', values.accountCoding, values.provider],
     queryFn: () => {
       const code = values.accountCoding;
       if (code.length < 24) return null;

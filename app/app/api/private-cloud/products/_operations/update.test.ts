@@ -1,5 +1,5 @@
 import { expect } from '@jest/globals';
-import { DecisionStatus, Cluster } from '@prisma/client';
+import { DecisionStatus, Cluster, RequestType } from '@prisma/client';
 import { createSamplePrivateCloudProductData } from '@/helpers/mock-resources';
 import { findOtherMockUsers } from '@/helpers/mock-users';
 import { mockSessionByEmail, mockSessionByRole } from '@/services/api-test/core';
@@ -60,6 +60,7 @@ describe('Update Private Cloud Product - Permissions', () => {
 
     const response = await makePrivateCloudRequestDecision(requests.create.id, {
       ...requests.create.decisionData,
+      type: RequestType.CREATE,
       decision: DecisionStatus.APPROVED,
     });
 
@@ -98,6 +99,7 @@ describe('Update Private Cloud Product - Permissions', () => {
 
     const response = await makePrivateCloudRequestDecision(requests.update.id, {
       ...requests.update.decisionData,
+      type: RequestType.EDIT,
       decision: DecisionStatus.REJECTED,
     });
 
@@ -129,6 +131,7 @@ describe('Update Private Cloud Product - Permissions', () => {
 
     const response = await makePrivateCloudRequestDecision(requests.update.id, {
       ...requests.update.decisionData,
+      type: RequestType.EDIT,
       decision: DecisionStatus.REJECTED,
     });
 
@@ -217,6 +220,7 @@ describe('Update Private Cloud Product - Validations', () => {
 
     const response = await makePrivateCloudRequestDecision(requests.update.id, {
       ...requests.update.decisionData,
+      type: RequestType.EDIT,
       decision: DecisionStatus.REJECTED,
     });
 

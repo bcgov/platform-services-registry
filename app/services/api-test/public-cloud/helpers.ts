@@ -1,4 +1,4 @@
-import { DecisionStatus, TaskType, TaskStatus } from '@prisma/client';
+import { DecisionStatus, TaskType, TaskStatus, RequestType } from '@prisma/client';
 import prisma from '@/core/prisma';
 import { createSamplePublicCloudProductData } from '@/helpers/mock-resources';
 import { mockSessionByEmail, mockSessionByRole } from '@/services/api-test/core';
@@ -65,6 +65,7 @@ async function approveAndProvisionRequest(reqData: any) {
   await mockSessionByRole('admin');
   let response = await makePublicCloudRequestDecision(reqData.id, {
     ...decisionData,
+    type: RequestType.CREATE,
     accountCoding: decisionData.billing.accountCoding,
     decision: DecisionStatus.APPROVED,
   });

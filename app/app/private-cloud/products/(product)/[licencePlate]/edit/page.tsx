@@ -18,10 +18,15 @@ import { openEditPrivateCloudProductModal } from '@/components/modal/editPrivate
 import ReturnModal from '@/components/modal/Return';
 import { AGMinistries } from '@/constants';
 import createClientPage from '@/core/client-page';
-import { comparePrivateProductData, PrivateProductChange } from '@/helpers/product-change';
 import { getPrivateCloudProject, getQuotaChangeStatus } from '@/services/backend/private-cloud/products';
 import { usePrivateProductState } from '@/states/global';
 import { privateCloudEditRequestBodySchema } from '@/validation-schemas/private-cloud';
+
+const emptyQuota = {
+  cpu: '',
+  memory: '',
+  storage: '',
+};
 
 const pathParamSchema = z.object({
   licencePlate: z.string(),
@@ -32,9 +37,7 @@ const privateCloudProductEdit = createClientPage({
   validations: { pathParams: pathParamSchema },
 });
 export default privateCloudProductEdit(({ pathParams, queryParams, session }) => {
-  const { licencePlate } = pathParams;
   const [, privateSnap] = usePrivateProductState();
-
   const [openReturn, setOpenReturn] = useState(false);
   const [isDisabled, setDisabled] = useState(false);
   const [secondTechLead, setSecondTechLead] = useState(false);
@@ -107,9 +110,13 @@ export default privateCloudProductEdit(({ pathParams, queryParams, session }) =>
           }),
       )(...args);
     },
-    defaultValues: async () => {
-      const response = await getPrivateCloudProject(licencePlate);
-      return { ...response, isAgMinistryChecked: true };
+    values: {
+      developmentQuota: emptyQuota,
+      testQuota: emptyQuota,
+      productionQuota: emptyQuota,
+      toolsQuota: emptyQuota,
+      ...privateSnap.currentProduct,
+      isAgMinistryChecked: true,
     },
   });
 

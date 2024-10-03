@@ -1,5 +1,5 @@
 import { expect } from '@jest/globals';
-import { DecisionStatus } from '@prisma/client';
+import { DecisionStatus, RequestType } from '@prisma/client';
 import prisma from '@/core/prisma';
 import { createSamplePrivateCloudProductData } from '@/helpers/mock-resources';
 import { mockSessionByEmail, mockSessionByRole } from '@/services/api-test/core';
@@ -30,6 +30,7 @@ describe('Provision Private Cloud Request', () => {
 
     const response = await makePrivateCloudRequestDecision(requests.create.id, {
       ...requests.create.decisionData,
+      type: RequestType.CREATE,
       decision: DecisionStatus.APPROVED,
     });
 

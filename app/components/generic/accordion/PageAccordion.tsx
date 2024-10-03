@@ -15,9 +15,11 @@ export type PageAccordionItem = AccordionLabelProps & {
 function InnerPageAccordion({
   items,
   initialSelected,
+  showToggles = true,
 }: {
   items: (PageAccordionItem & { id: string })[];
   initialSelected: string[];
+  showToggles?: boolean;
 }) {
   const [selected, setSelected] = useState(initialSelected);
 
@@ -35,14 +37,17 @@ function InnerPageAccordion({
   const allKeys = items.map((v) => v.id);
   return (
     <>
-      <div className="mb-2">
-        <Button color="secondary" className="mr-2" onClick={() => setSelected(allKeys)}>
-          Expand all
-        </Button>
-        <Button color="secondary" onClick={() => setSelected([])}>
-          Collapse all
-        </Button>
-      </div>
+      {showToggles && (
+        <div className="mb-2">
+          <Button color="secondary" className="mr-2" onClick={() => setSelected(allKeys)}>
+            Expand all
+          </Button>
+          <Button color="secondary" onClick={() => setSelected([])}>
+            Collapse all
+          </Button>
+        </div>
+      )}
+
       <Accordion chevronPosition="right" variant="contained" multiple value={selected} onChange={setSelected}>
         {accordionItems}
       </Accordion>
@@ -50,11 +55,19 @@ function InnerPageAccordion({
   );
 }
 
-export default function PageAccordion({ items }: { items: PageAccordionItem[] }) {
+export default function PageAccordion({
+  items,
+  showToggles = true,
+  initialSelected,
+}: {
+  items: PageAccordionItem[];
+  initialSelected?: string[];
+  showToggles?: boolean;
+}) {
   if (items.length === 0) return null;
 
   const _items = items.map((item) => ({ ...item, id: item.id ?? _kebabCase(item.label) }));
-  const initialSelected = _items.filter((item) => item.initialOpen);
-  const selected = initialSelected.length > 0 ? initialSelected.map((item) => item.id) : [_items[0].id];
-  return <InnerPageAccordion items={_items} initialSelected={selected} />;
+  const _initialSelected = _items.filter((item) => item.initialOpen);
+  const selected = _initialSelected.length > 0 ? _initialSelected.map((item) => item.id) : [_items[0].id];
+  return <InnerPageAccordion items={_items} initialSelected={initialSelected ?? selected} showToggles={showToggles} />;
 }

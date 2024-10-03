@@ -1,5 +1,5 @@
 import { expect } from '@jest/globals';
-import { DecisionStatus } from '@prisma/client';
+import { DecisionStatus, RequestType } from '@prisma/client';
 import { createSamplePrivateCloudProductData } from '@/helpers/mock-resources';
 import { mockSessionByEmail, mockSessionByRole } from '@/services/api-test/core';
 import { provisionPrivateCloudProject } from '@/services/api-test/private-cloud';
@@ -34,6 +34,7 @@ describe('Private Cloud Comments - Permissions', () => {
 
     const response = await makePrivateCloudRequestDecision(requests.create.id, {
       ...requests.create.decisionData,
+      type: RequestType.CREATE,
       decision: DecisionStatus.APPROVED,
     });
 
@@ -128,6 +129,7 @@ describe('Private Cloud Comments - Validations', () => {
 
     const approveResponse = await makePrivateCloudRequestDecision(activeProjectId, {
       ...createResponseBody.decisionData,
+      type: RequestType.CREATE,
       decision: DecisionStatus.APPROVED,
     });
     expect(approveResponse.status).toBe(200);

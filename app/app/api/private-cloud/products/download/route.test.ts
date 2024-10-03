@@ -1,5 +1,5 @@
 import { expect } from '@jest/globals';
-import { DecisionStatus, Ministry, Cluster, ProjectStatus } from '@prisma/client';
+import { DecisionStatus, Ministry, Cluster, ProjectStatus, RequestType } from '@prisma/client';
 import { parse } from 'csv-parse/sync';
 import prisma from '@/core/prisma';
 import { createSamplePrivateCloudProductData } from '@/helpers/mock-resources';
@@ -63,6 +63,7 @@ describe('Download Private Cloud Products - Permissions', () => {
 
     const res2 = await makePrivateCloudRequestDecision(dat1.id, {
       ...dat1.decisionData,
+      type: RequestType.CREATE,
       decision: DecisionStatus.APPROVED,
     });
     expect(res2.status).toBe(200);
@@ -164,6 +165,7 @@ describe('Download Private Cloud Products - Permissions', () => {
 
     const res2 = await makePrivateCloudRequestDecision(dat1.id, {
       ...dat1.decisionData,
+      type: RequestType.CREATE,
       decision: DecisionStatus.APPROVED,
     });
     expect(res2.status).toBe(200);
@@ -265,6 +267,7 @@ describe('Download Private Cloud Products - Validations', () => {
 
         await makePrivateCloudRequestDecision(dat1.id, {
           ...dat1.decisionData,
+          type: RequestType.CREATE,
           decision: DecisionStatus.APPROVED,
         });
 

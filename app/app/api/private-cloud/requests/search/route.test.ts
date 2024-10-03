@@ -1,5 +1,5 @@
 import { expect } from '@jest/globals';
-import { Ministry, Cluster, DecisionStatus } from '@prisma/client';
+import { Ministry, Cluster, DecisionStatus, RequestType } from '@prisma/client';
 import prisma from '@/core/prisma';
 import { createSamplePrivateCloudProductData } from '@/helpers/mock-resources';
 import { mockNoRoleUsers, findMockUserByIdr, findOtherMockUsers } from '@/helpers/mock-users';
@@ -50,6 +50,7 @@ describe('Search Private Cloud Requests - Permissions', () => {
 
     const res2 = await makePrivateCloudRequestDecision(dat1.id, {
       ...dat1.decisionData,
+      type: RequestType.CREATE,
       decision: DecisionStatus.APPROVED,
     });
     expect(res2.status).toBe(200);
@@ -102,6 +103,7 @@ describe('Search Private Cloud Requests - Permissions', () => {
 
     const res2 = await makePrivateCloudRequestDecision(dat1.id, {
       ...dat1.decisionData,
+      type: RequestType.CREATE,
       decision: DecisionStatus.APPROVED,
     });
     expect(res2.status).toBe(200);
@@ -192,6 +194,7 @@ describe('Search Private Cloud Requests - Validations', () => {
 
         const req = await makePrivateCloudRequestDecision(dat1.id, {
           ...dat1.decisionData,
+          type: RequestType.CREATE,
           decision: DecisionStatus.APPROVED,
         });
 

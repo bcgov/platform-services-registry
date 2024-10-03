@@ -91,7 +91,7 @@ export default privateCloudProductLayout(({ pathParams, queryParams, session, ch
     });
   }
 
-  if (!privateSnap.currentProduct) {
+  if (!privateSnap.currentProduct || privateSnap.currentProduct.licencePlate !== licencePlate) {
     return null;
   }
 

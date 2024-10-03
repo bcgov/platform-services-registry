@@ -1,5 +1,5 @@
 import { expect } from '@jest/globals';
-import { DecisionStatus } from '@prisma/client';
+import { DecisionStatus, RequestType } from '@prisma/client';
 import { createSamplePrivateCloudProductData } from '@/helpers/mock-resources';
 import { findOtherMockUsers } from '@/helpers/mock-users';
 import { pickProductData } from '@/helpers/product';
@@ -43,6 +43,7 @@ describe('Read Private Cloud Product - Permissions', () => {
 
     const response = await makePrivateCloudRequestDecision(requests.create.id, {
       ...requests.create.decisionData,
+      type: RequestType.CREATE,
       decision: DecisionStatus.APPROVED,
     });
 

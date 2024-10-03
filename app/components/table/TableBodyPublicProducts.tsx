@@ -56,7 +56,7 @@ export default function TableBodyPublicProducts({ rows, isLoading = false }: Tab
                     </TruncatedTooltip>
                     {row.status === ProjectStatus.INACTIVE && (
                       <Badge color="red" radius="sm" className="ml-1 mt-1">
-                        {ProjectStatus.INACTIVE}
+                        COMPLETE
                       </Badge>
                     )}
                   </div>
