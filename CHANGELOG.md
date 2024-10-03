@@ -1,3 +1,24 @@
+## [0.35.0](https://github.com/bcgov/platform-services-registry/compare/v0.34.3...v0.35.0) (2024-10-03)
+
+### Features
+
+* **2827:** add generic text input components ([14bcbb7](https://github.com/bcgov/platform-services-registry/commit/14bcbb7a48cb16987a44b8889ea377fba8f01bda))
+* **2827:** add HookFormMultiSelect ([499d55d](https://github.com/bcgov/platform-services-registry/commit/499d55d20894c34dad9ed8f78e3a3f3d30cfc5aa))
+* **2828:** add generic textarea components ([08e9d02](https://github.com/bcgov/platform-services-registry/commit/08e9d02d6e94a2105b3f67da3fbb17b379ee1de6))
+* **3165:** enhance search, filter, and sort on private products ([a94f71f](https://github.com/bcgov/platform-services-registry/commit/a94f71f218b910472a0ee695daccdb091fb8e458))
+* **3166:** enhance search, filter, and sort on private requests ([dc40523](https://github.com/bcgov/platform-services-registry/commit/dc40523437ecb123f52b59015123ab85533da8d6))
+* **3167:** enhance search, filter, and sort on private cloud pages ([f03a703](https://github.com/bcgov/platform-services-registry/commit/f03a7034e75de5cc5514206d000dd896d5d72140))
+* **3635:** add backend logic for quota auto-approval ([62e3448](https://github.com/bcgov/platform-services-registry/commit/62e3448e951565600d354bde3a799f15a5cdb084))
+* **3635:** store quota resource detail in request doc ([7199058](https://github.com/bcgov/platform-services-registry/commit/7199058432ef21d6ece3aa561ab14eea5e076a27))
+* **3636:** track reasons for selecting cloud provider ([fbedcc1](https://github.com/bcgov/platform-services-registry/commit/fbedcc16de0680252b30f9025197b5d26b24456c))
+* **3637:** display quota change status in UI ([8710f1b](https://github.com/bcgov/platform-services-registry/commit/8710f1bad0763deac71b670f139efd82a03076b4))
+* **3637:** send admin email for quota auto-approval ([2621f07](https://github.com/bcgov/platform-services-registry/commit/2621f07d994dcda86fc4838c48192b318564dbd0))
+* **3849:** add a new public cloud provider AWS-LZA ([7750548](https://github.com/bcgov/platform-services-registry/commit/775054824a6c6b471f31a296ec1a6331b0ca9536))
+
+### Bug Fixes
+
+* **3872:** update headers on products/requests pages ([4e405cc](https://github.com/bcgov/platform-services-registry/commit/4e405cc77c64bb134183e6af1aec6f6d6dc8dfa3))
+* **mailchimp:** wait for batch operation to complete before starting next ([691ebe2](https://github.com/bcgov/platform-services-registry/commit/691ebe21d3c06e0fdbc15472fcc14f0089da334c))
 ## [0.34.3](https://github.com/bcgov/platform-services-registry/compare/v0.34.2...v0.34.3) (2024-09-27)
 
 ### Bug Fixes
