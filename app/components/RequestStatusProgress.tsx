@@ -61,7 +61,7 @@ export default function RequestStatusProgress({
               </div>
             }
           />
-          <Stepper.Step label="Complete" description="Request provisioned" loading />
+          <Stepper.Step label="Complete" description="Provisioning request" loading />
         </Stepper>
       );
 
@@ -86,7 +86,7 @@ export default function RequestStatusProgress({
               </div>
             }
           />
-          <Stepper.Step label="Complete" description="Request provisioned" loading />
+          <Stepper.Step label="Complete" description="Provisioning request" loading />
         </Stepper>
       );
 
