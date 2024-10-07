@@ -1,6 +1,4 @@
 import { Prisma, RequestType, DecisionStatus, TaskType, TaskStatus } from '@prisma/client';
-import _compact from 'lodash-es/compact';
-import _uniq from 'lodash-es/uniq';
 import { ModelService } from '@/core/model-service';
 import prisma from '@/core/prisma';
 import { PublicCloudProjectDecorate, PublicCloudRequestDecorate } from '@/types/doc-decorate';
@@ -20,6 +18,20 @@ type PublicCloudRequest = Prisma.PublicCloudRequestGetPayload<{
   };
 }>;
 
+function getUniqueNonFalsyItems(arr: (string | null | undefined | boolean | number)[]): string[] {
+  const uniqueItems: string[] = [];
+
+  for (const item of arr) {
+    if (item && typeof item === 'string') {
+      if (!uniqueItems.includes(item)) {
+        uniqueItems.push(item);
+      }
+    }
+  }
+
+  return uniqueItems;
+}
+
 export class PublicCloudRequestService extends ModelService<Prisma.PublicCloudRequestWhereInput> {
   async readFilter() {
     if (!this.session?.userId) return false;
@@ -38,7 +50,7 @@ export class PublicCloudRequestService extends ModelService<Prisma.PublicCloudRe
 
     const baseFilter: Prisma.PublicCloudRequestWhereInput = {
       OR: [
-        { licencePlate: { in: _compact(_uniq([...licencePlates, ...licencePlatesFromTasks])) } },
+        { licencePlate: { in: getUniqueNonFalsyItems([...licencePlates, ...licencePlatesFromTasks]) } },
         { type: RequestType.CREATE, createdByEmail: { equals: this.session.user.email, mode: 'insensitive' } },
       ],
     };
