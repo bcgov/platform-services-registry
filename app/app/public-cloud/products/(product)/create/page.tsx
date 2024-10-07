@@ -176,9 +176,10 @@ export default publicCloudProductNew(({ pathParams, queryParams, session }) => {
 
   return (
     <div>
-      <h1 className="flex justify-between text-xl lg:text-2xl xl:text-4xl font-semibold leading-7 text-gray-900 mt-2 mb-4 lg:mt-4 lg:mb-8">
+      <h1 className="flex justify-between text-xl lg:text-2xl xl:text-4xl font-semibold leading-7 text-gray-900 mt-2 mb-0 lg:mt-4">
         New Public Cloud Product
       </h1>
+      <h3 className="mt-0 mb-3 italic">Public Cloud Landing Zone</h3>
 
       <FormProvider {...methods}>
         <FormErrorNotification />

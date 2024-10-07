@@ -76,10 +76,11 @@ export default publicCloudProductSecurityACS(({ pathParams, queryParams, session
 
   return (
     <div>
-      <h1 className="flex justify-between text-xl lg:text-2xl xl:text-4xl font-semibold leading-7 text-gray-900 my-2 lg:my-4">
+      <h1 className="flex justify-between text-xl lg:text-2xl xl:text-4xl font-semibold leading-7 text-gray-900 mt-2 mb-0 lg:mt-4">
         {publicProductSnap.currentProduct.name}
         <ProductBadge data={currentProduct} />
       </h1>
+      <h3 className="mt-0 italic"> Public Cloud Landing Zone</h3>
 
       <Tabs tabs={tabs}>
         <PublicCloudProductOptions disabled={!currentProduct?._permissions?.delete} />

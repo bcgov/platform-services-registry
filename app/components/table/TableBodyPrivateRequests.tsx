@@ -1,7 +1,6 @@
 'use client';
 
 import { Tooltip, Badge } from '@mantine/core';
-import { ProjectStatus } from '@prisma/client';
 import _truncate from 'lodash-es/truncate';
 import { usePathname, useRouter } from 'next/navigation';
 import { useSession } from 'next-auth/react';
@@ -9,10 +8,10 @@ import React from 'react';
 import ActiveRequestBox from '@/components/form/ActiveRequestBox';
 import TemporaryProductBadge from '@/components/form/TemporaryProductBadge';
 import CopyableButton from '@/components/generic/button/CopyableButton';
-import UserCard from '@/components/UserCard';
 import { ministryKeyToName } from '@/helpers/product';
 import { PrivateCloudRequestSimpleDecorated } from '@/types/private-cloud';
 import { formatDate } from '@/utils/date';
+import RequestStatusProgress from '../RequestStatusProgress';
 import EmptySearch from './EmptySearch';
 import TruncatedTooltip from './TruncatedTooltip';
 
@@ -59,7 +58,7 @@ export default function TableBodyPrivateRequests({ rows, isLoading = false }: Ta
                     </TruncatedTooltip>
                     {!row.active && (
                       <Badge color="red" radius="sm" className="ml-1 mt-1">
-                        COMPLETE
+                        CLOSED
                       </Badge>
                     )}
                     {row.project
@@ -82,10 +81,23 @@ export default function TableBodyPrivateRequests({ rows, isLoading = false }: Ta
                 </svg>
                 <div className="whitespace-nowrap">{row.decisionData.cluster}</div>
               </div>
+              <div className="mt-1">
+                <CopyableButton className="mr-2">{row.licencePlate}</CopyableButton>
+                {row._permissions.viewProduct && (
+                  <button
+                    className="mt-1 text-sm italic text-blue-500 hover:underline"
+                    onClick={(event) => {
+                      event.preventDefault();
+                      event.stopPropagation();
+
+                      router.push(`/private-cloud/products/${row.licencePlate}/edit`);
+                    }}
+                  >
+                    Go to product
+                  </button>
+                )}
+              </div>
               <div className="mt-1 text-sm text-gray-400">
-                <div>
-                  Created on <span>{formatDate(row.createdAt)}</span>
-                </div>
                 <div>
                   Updated on <span>{formatDate(row.updatedAt)}</span>
                 </div>
@@ -96,32 +108,8 @@ export default function TableBodyPrivateRequests({ rows, isLoading = false }: Ta
               <ActiveRequestBox data={{ ...row, cloud: 'private-cloud' }} showCount />
             </div>
 
-            <div className="lg:col-span-1 hidden lg:block"></div>
-
-            <div className="md:col-span-1 lg:col-span-2">
-              <UserCard user={row.decisionData.projectOwner} title="Product Owner" />
-            </div>
-            <div className="md:col-span-1 lg:col-span-2">
-              <div className="flex flex-col space-y-4">
-                <UserCard user={row.decisionData.primaryTechnicalLead} title="Technical Lead" />
-                <UserCard user={row.decisionData.secondaryTechnicalLead} title="Technical Lead" />
-              </div>
-            </div>
-            <div className="md:col-span-1">
-              <CopyableButton>{row.licencePlate}</CopyableButton>
-              {row._permissions.viewProduct && (
-                <button
-                  className="mt-1 text-sm italic text-blue-500 hover:underline"
-                  onClick={(event) => {
-                    event.preventDefault();
-                    event.stopPropagation();
-
-                    router.push(`/private-cloud/products/${row.licencePlate}/edit`);
-                  }}
-                >
-                  Go to product
-                </button>
-              )}
+            <div className="md:col-span-1 lg:col-span-6">
+              <RequestStatusProgress request={row} />
             </div>
           </div>
         </div>

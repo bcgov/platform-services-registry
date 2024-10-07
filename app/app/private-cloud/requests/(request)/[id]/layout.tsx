@@ -124,10 +124,11 @@ export default privateCloudProductSecurityACS(({ pathParams, queryParams, sessio
         )}
       </div>
 
-      <h1 className="flex justify-between text-xl lg:text-2xl xl:text-4xl font-semibold leading-7 text-gray-900 my-2 lg:my-4">
+      <h1 className="flex justify-between text-xl lg:text-2xl xl:text-4xl font-semibold leading-7 text-gray-900 mt-2 mb-0 lg:mt-4">
         {(request.decisionData || request.originalData).name}
         <RequestBadge request={request} />
       </h1>
+      <h3 className="mt-0 italic">Private Cloud OpenShift Platform</h3>
 
       {request.decisionStatus !== 'PENDING' && (
         <Alert variant="light" color="blue" title="" icon={<IconInfoCircle />}>
