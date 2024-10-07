@@ -4,7 +4,7 @@ import { useQuery } from '@tanstack/react-query';
 import { proxy, useSnapshot } from 'valtio';
 import Table from '@/components/generic/table/Table';
 import TableBodyPrivateProducts from '@/components/table/TableBodyPrivateProducts';
-import { productSorts } from '@/constants';
+import { privateCloudProductSorts } from '@/constants';
 import createClientPage from '@/core/client-page';
 import { processPrivateCloudProductData } from '@/helpers/row-mapper';
 import { searchPrivateCloudProducts, downloadPrivateCloudProducts } from '@/services/backend/private-cloud/products';
@@ -58,7 +58,7 @@ export default privateCloudProducts(({ pathParams, queryParams, session }) => {
           pageState.page = 1;
           pageState.sortValue = sortValue;
         }}
-        sortOptions={productSorts.map((v) => v.label)}
+        sortOptions={privateCloudProductSorts.map((v) => v.label)}
         filters={<FilterPanel />}
         isLoading={isLoading}
       >

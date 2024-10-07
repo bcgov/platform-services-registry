@@ -1,4 +1,6 @@
 import { Prisma, RequestType, DecisionStatus, TaskType, TaskStatus } from '@prisma/client';
+import _compact from 'lodash-es/compact';
+import _uniq from 'lodash-es/uniq';
 import { ModelService } from '@/core/model-service';
 import prisma from '@/core/prisma';
 import { PublicCloudProjectDecorate, PublicCloudRequestDecorate } from '@/types/doc-decorate';
@@ -36,7 +38,7 @@ export class PublicCloudRequestService extends ModelService<Prisma.PublicCloudRe
 
     const baseFilter: Prisma.PublicCloudRequestWhereInput = {
       OR: [
-        { licencePlate: { in: [...licencePlates, ...licencePlatesFromTasks] } },
+        { licencePlate: { in: _compact(_uniq([...licencePlates, ...licencePlatesFromTasks])) } },
         { type: RequestType.CREATE, createdByEmail: { equals: this.session.user.email, mode: 'insensitive' } },
       ],
     };

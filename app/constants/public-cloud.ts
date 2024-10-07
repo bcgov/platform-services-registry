@@ -1,5 +1,6 @@
-import { Provider } from '@prisma/client';
+import { Provider, Prisma } from '@prisma/client';
 import { Session } from 'next-auth';
+import { productSorts } from './common';
 
 export const providers = Object.values(Provider);
 
@@ -37,3 +38,16 @@ export const reasonForSelectingCloudProviderOptions = [
   { value: 'Project-Specific Requirements', label: 'Project-Specific Requirements' },
   { value: 'Other', label: 'Other' },
 ];
+
+export const publicCloudProductSorts = productSorts.concat([
+  {
+    label: 'Provider (A-Z)',
+    sortKey: 'provider',
+    sortOrder: Prisma.SortOrder.asc,
+  },
+  {
+    label: 'Provider (Z-A)',
+    sortKey: 'provider',
+    sortOrder: Prisma.SortOrder.desc,
+  },
+]);
