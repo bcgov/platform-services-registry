@@ -88,6 +88,7 @@ export default async function editRequest(
       active: true,
       type: RequestType.EDIT,
       decisionStatus,
+      decisionDate: decisionStatus === DecisionStatus.AUTO_APPROVED ? new Date() : null,
       isQuotaChanged: quotaChangeStatus.hasChange,
       quotaUpgradeResourceDetailList: quotaChangeStatus.resourceDetailList,
       ...quotaChangeInfo,

@@ -8,10 +8,12 @@ import React from 'react';
 export default function CopyableButton({
   children,
   value,
+  className = '',
   onClick,
 }: {
   children?: React.ReactNode;
   value?: string;
+  className?: string;
   onClick?: () => string;
 }) {
   const clipboard = useClipboard({ timeout: 500 });
@@ -35,7 +37,7 @@ export default function CopyableButton({
   return (
     <Tooltip label={clipboard.copied ? 'Copied' : 'Copy'} position="top" offset={10}>
       <UnstyledButton
-        className="inline-block"
+        className={classNames('inline-block', className)}
         onClick={(e) => {
           e.stopPropagation();
           e.preventDefault();

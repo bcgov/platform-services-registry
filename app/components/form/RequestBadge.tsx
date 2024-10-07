@@ -53,7 +53,7 @@ export default function RequestBadge({
         {request.type}
       </Badge>
       <Badge color={request.active ? 'lime' : 'pink'} radius="sm" className="ml-1">
-        {request.active ? 'ACTIVE' : 'COMPLETE'}
+        {request.active ? 'ACTIVE' : 'CLOSED'}
       </Badge>
       <Badge color={decisionColor} radius="sm" className="ml-1">
         {request.decisionStatus}

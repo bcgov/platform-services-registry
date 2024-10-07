@@ -1,4 +1,5 @@
 import { AUTH_RESOURCE } from '@/config';
+import { publicCloudPlatformAdminEmail } from '@/constants';
 import AdminCreateRequestTemplate from '@/emails/_templates/public-cloud/AdminCreateRequest';
 import AdminDeleteRequestTemplate from '@/emails/_templates/public-cloud/AdminDeleteRequest';
 import BillingReviewerMouTemplate from '@/emails/_templates/public-cloud/BillingReviewerMou';
@@ -172,6 +173,7 @@ export async function sendEmouServiceAgreement(request: PublicCloudRequestDetail
   return sendEmail({
     subject: 'eMOU Service Agreement',
     to: [...billingReviewers.map((v) => v.email ?? ''), request.decisionData.expenseAuthority?.email],
+    cc: [publicCloudPlatformAdminEmail],
     body: content,
     attachments: [
       {

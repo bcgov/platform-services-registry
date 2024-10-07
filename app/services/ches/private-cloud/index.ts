@@ -71,7 +71,7 @@ export function sendRequestApprovalEmails(request: PrivateCloudRequestDetail, re
     } else if (request.type == RequestType.EDIT) {
       proms.push(sendTeamEditRequestApproval(request));
 
-      if (request.decisionStatus === DecisionStatus.AUTO_APPROVED) {
+      if (request.decisionStatus === DecisionStatus.AUTO_APPROVED && request.changes?.quotasIncrease) {
         proms.push(sendAdminEditRequestQuotaAutoApproval(request, requester));
       }
     } else if (request.type == RequestType.DELETE) {
