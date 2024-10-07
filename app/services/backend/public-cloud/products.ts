@@ -1,6 +1,6 @@
 import { Prisma } from '@prisma/client';
 import axios from 'axios';
-import { productSorts } from '@/constants';
+import { publicCloudProductSorts } from '@/constants';
 import {
   PublicCloudRequestSimpleDecorated,
   PublicCloudProductDetailDecorated,
@@ -21,7 +21,7 @@ export const instance = axios.create({
 
 function prepareSearchPayload(data: PublicCloudProductSearchBody) {
   const reqData = { ...data };
-  const selectedOption = productSorts.find((sort) => sort.label === reqData.sortValue);
+  const selectedOption = publicCloudProductSorts.find((sort) => sort.label === reqData.sortValue);
 
   if (selectedOption) {
     reqData.sortKey = selectedOption.sortKey;

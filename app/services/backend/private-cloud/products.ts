@@ -1,6 +1,6 @@
 import { Prisma, PrivateCloudComment, QuotaUpgradeResourceDetail } from '@prisma/client';
 import axios from 'axios';
-import { productSorts } from '@/constants';
+import { privateCloudProductSorts } from '@/constants';
 import {
   PrivateCloudRequestSimpleDecorated,
   PrivateCloudProductDetailDecorated,
@@ -22,7 +22,7 @@ export const instance = axios.create({
 
 function prepareSearchPayload(data: PrivateCloudProductSearchBody) {
   const reqData = { ...data };
-  const selectedOption = productSorts.find((sort) => sort.label === reqData.sortValue);
+  const selectedOption = privateCloudProductSorts.find((sort) => sort.label === reqData.sortValue);
 
   if (selectedOption) {
     reqData.sortKey = selectedOption.sortKey;

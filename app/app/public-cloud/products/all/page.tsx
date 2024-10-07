@@ -4,7 +4,7 @@ import { useQuery } from '@tanstack/react-query';
 import { proxy, useSnapshot } from 'valtio';
 import Table from '@/components/generic/table/Table';
 import TableBodyPublicProducts from '@/components/table/TableBodyPublicProducts';
-import { productSorts } from '@/constants';
+import { publicCloudProductSorts } from '@/constants';
 import createClientPage from '@/core/client-page';
 import { processPublicCloudProductData } from '@/helpers/row-mapper';
 import { searchPublicCloudProducts, downloadPublicCloudProducts } from '@/services/backend/public-cloud/products';
@@ -58,7 +58,7 @@ export default publicCloudProducts(({ pathParams, queryParams, session }) => {
           pageState.page = 1;
           pageState.sortValue = sortValue;
         }}
-        sortOptions={productSorts.map((v) => v.label)}
+        sortOptions={publicCloudProductSorts.map((v) => v.label)}
         filters={<FilterPanel />}
         isLoading={isLoading}
       >

@@ -162,6 +162,16 @@ export const productSorts = [
     sortKey: 'licencePlate',
     sortOrder: Prisma.SortOrder.desc,
   },
+  {
+    label: 'Ministry (A-Z)',
+    sortKey: 'ministry',
+    sortOrder: Prisma.SortOrder.asc,
+  },
+  {
+    label: 'Ministry (Z-A)',
+    sortKey: 'ministry',
+    sortOrder: Prisma.SortOrder.desc,
+  },
 ];
 
 export const requestSorts = [

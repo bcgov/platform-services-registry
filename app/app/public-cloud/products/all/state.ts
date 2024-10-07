@@ -1,7 +1,7 @@
 import { ProjectStatus } from '@prisma/client';
 import { proxy } from 'valtio';
 import { deepClone } from 'valtio/utils';
-import { productSorts } from '@/constants';
+import { publicCloudProductSorts } from '@/constants';
 import { PublicCloudProductSearchBody } from '@/validation-schemas/public-cloud';
 
 const initialValue = {
@@ -11,9 +11,9 @@ const initialValue = {
   ministries: [],
   providers: [],
   status: [ProjectStatus.ACTIVE],
-  sortValue: productSorts[0].label,
-  sortKey: productSorts[0].sortKey,
-  sortOrder: productSorts[0].sortOrder,
+  sortValue: publicCloudProductSorts[0].label,
+  sortKey: publicCloudProductSorts[0].sortKey,
+  sortOrder: publicCloudProductSorts[0].sortOrder,
 };
 
 export const pageState = proxy<PublicCloudProductSearchBody>(deepClone(initialValue));
