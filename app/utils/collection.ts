@@ -62,3 +62,17 @@ export function getRandomItem<T>(arr: T[]): T {
   const randomIndex = randomValue % arr.length;
   return arr[randomIndex];
 }
+
+export function getUniqueNonFalsyItems(arr: (string | null | undefined | boolean | number)[]): string[] {
+  const uniqueItems: string[] = [];
+
+  for (const item of arr) {
+    if (item && typeof item === 'string') {
+      if (!uniqueItems.includes(item)) {
+        uniqueItems.push(item);
+      }
+    }
+  }
+
+  return uniqueItems;
+}
