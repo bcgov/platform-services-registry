@@ -3,6 +3,20 @@ import { ModelService } from '@/core/model-service';
 import prisma from '@/core/prisma';
 import { PublicCloudProductDetailDecorated } from '@/types/public-cloud';
 
+function getUniqueNonFalsyItems(arr: (string | null | undefined | boolean | number)[]): string[] {
+  const uniqueItems: string[] = [];
+
+  for (const item of arr) {
+    if (item && typeof item === 'string') {
+      if (!uniqueItems.includes(item)) {
+        uniqueItems.push(item);
+      }
+    }
+  }
+
+  return uniqueItems;
+}
+
 export class PublicCloudProjectService extends ModelService<Prisma.PublicCloudProjectWhereInput> {
   async readFilter() {
     if (!this.session.isUser && !this.session.isServiceAccount) return false;
@@ -13,11 +27,16 @@ export class PublicCloudProjectService extends ModelService<Prisma.PublicCloudPr
       { ministry: { in: this.session.ministries.reader as Ministry[] } },
     ];
 
+    const licencePlatesFromTasks = this.session.tasks
+      .filter((task) => [TaskType.SIGN_MOU, TaskType.REVIEW_MOU].includes(task.type))
+      .map((task) => (task.data as { licencePlate: string }).licencePlate);
+
     if (this.session.user.id) {
       OR.push(
         { projectOwnerId: this.session.user.id as string },
         { primaryTechnicalLeadId: this.session.user.id as string },
         { secondaryTechnicalLeadId: this.session.user.id },
+        { licencePlate: { in: getUniqueNonFalsyItems(licencePlatesFromTasks) } },
       );
     }
 
@@ -101,7 +120,7 @@ export class PublicCloudProjectService extends ModelService<Prisma.PublicCloudPr
     }
 
     doc._permissions = {
-      view: canView,
+      view: canView || canSignMou || canApproveMou,
       viewHistory: canViewHistroy,
       edit: canEdit,
       delete: canEdit,
