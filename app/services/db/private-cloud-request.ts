@@ -87,7 +87,7 @@ export async function getPrivateCloudRequest(
   session?: Session,
 ) {
   if (session) {
-    const filter = await genReadFilter<Prisma.PrivateCloudRequestWhereInput>(where, readFilter);
+    const filter = await genReadFilter<Prisma.PrivateCloudRequestWhereInput>(where, readFilter, session);
     if (filter === false) return null;
 
     where = filter;
@@ -119,7 +119,7 @@ export async function listPrivateCloudRequests(
   session?: Session,
 ) {
   if (session) {
-    const filter = await genReadFilter<Prisma.PrivateCloudRequestWhereInput>(where, readFilter);
+    const filter = await genReadFilter<Prisma.PrivateCloudRequestWhereInput>(where, readFilter, session);
     if (filter === false) return null;
 
     where = filter;

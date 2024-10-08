@@ -1,11 +1,13 @@
+import { Session } from 'next-auth';
+
 export async function genReadFilter<
   T extends {
     AND?: T | T[];
     OR?: T[];
     NOT?: T | T[];
   },
->(where: T, baseFilterFn: () => Promise<T | boolean>) {
-  const baseFilter: T | boolean = await baseFilterFn();
+>(where: T, baseFilterFn: (sessoin: Session) => Promise<T | boolean>, sessoin: Session) {
+  const baseFilter: T | boolean = await baseFilterFn(sessoin);
 
   if (baseFilter === true) {
     return where;

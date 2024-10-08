@@ -136,7 +136,7 @@ export async function getPublicCloudProduct(
   session?: Session,
 ) {
   if (session) {
-    const filter = await genReadFilter<Prisma.PublicCloudProjectWhereInput>(where, readFilter);
+    const filter = await genReadFilter<Prisma.PublicCloudProjectWhereInput>(where, readFilter, session);
     if (filter === false) return null;
 
     where = filter;
@@ -168,7 +168,7 @@ export async function listPublicCloudProducts(
   session?: Session,
 ) {
   if (session) {
-    const filter = await genReadFilter<Prisma.PublicCloudProjectWhereInput>(where, readFilter);
+    const filter = await genReadFilter<Prisma.PublicCloudProjectWhereInput>(where, readFilter, session);
     if (filter === false) return null;
 
     where = filter;

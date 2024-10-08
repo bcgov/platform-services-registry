@@ -110,7 +110,7 @@ export async function getPublicCloudRequest(
   session?: Session,
 ) {
   if (session) {
-    const filter = await genReadFilter<Prisma.PublicCloudRequestWhereInput>(where, readFilter);
+    const filter = await genReadFilter<Prisma.PublicCloudRequestWhereInput>(where, readFilter, session);
     if (filter === false) return null;
 
     where = filter;
@@ -142,7 +142,7 @@ export async function listPublicCloudRequests(
   session?: Session,
 ) {
   if (session) {
-    const filter = await genReadFilter<Prisma.PublicCloudRequestWhereInput>(where, readFilter);
+    const filter = await genReadFilter<Prisma.PublicCloudRequestWhereInput>(where, readFilter, session);
     if (filter === false) return null;
 
     where = filter;
