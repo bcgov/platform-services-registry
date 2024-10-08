@@ -1,10 +1,9 @@
-import { DecisionStatus, RequestType, User } from '@prisma/client';
+import { DecisionStatus } from '@prisma/client';
 import { z } from 'zod';
 import createApiHandler from '@/core/api-handler';
-import { BadRequestResponse, OkResponse, UnauthorizedResponse } from '@/core/responses';
+import { BadRequestResponse, OkResponse } from '@/core/responses';
 import makeRequestDecision from '@/request-actions/public-cloud/decision-request';
 import { sendRequestRejectionEmails, sendRequestApprovalEmails } from '@/services/ches/public-cloud';
-import { subscribeUsersToMautic } from '@/services/mautic';
 import { sendPublicCloudNatsMessage } from '@/services/nats';
 import { PermissionsEnum } from '@/types/permissions';
 import {
@@ -41,15 +40,6 @@ export const POST = apiHandler(async ({ pathParams, body, session }) => {
   const proms = [];
 
   proms.push(sendPublicCloudNatsMessage(request));
-
-  // Subscribe users to Mautic
-  const users: User[] = [
-    request.decisionData.projectOwner,
-    request.decisionData.primaryTechnicalLead,
-    request.decisionData?.secondaryTechnicalLead,
-  ].filter((usr): usr is User => Boolean(usr));
-
-  proms.push(subscribeUsersToMautic(users, request.decisionData.provider, 'Public'));
 
   proms.push(sendRequestApprovalEmails(request));
 

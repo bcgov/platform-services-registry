@@ -21,11 +21,6 @@ jest.mock('@/app/api/auth/[...nextauth]/route', () => ({
   POST: jest.fn(),
 }));
 
-jest.mock('@/services/mautic', () => ({
-  ...jest.requireActual('@/services/mautic'),
-  subscribeUsersToMautic: jest.fn(async () => [200, 200, 200]),
-}));
-
 jest.mock('@/services/nats/core', () => ({
   sendNatsMessage: jest.fn(),
 }));
