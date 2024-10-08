@@ -21,20 +21,24 @@ import { listPublicCloudProjectApi } from '@/services/api-test/v1/public-cloud/p
 const PO = mockNoRoleUsers[0];
 const TL1 = mockNoRoleUsers[1];
 const TL2 = mockNoRoleUsers[2];
-const RANDOM1 = mockNoRoleUsers[3];
-const RANDOM2 = mockNoRoleUsers[4];
-const RANDOM3 = mockNoRoleUsers[5];
+const EA = mockNoRoleUsers[3];
+const RANDOM1 = mockNoRoleUsers[4];
+const RANDOM2 = mockNoRoleUsers[5];
+const RANDOM3 = mockNoRoleUsers[6];
+const RANDOM4 = mockNoRoleUsers[7];
 
 const memberData = {
   projectOwner: PO,
   primaryTechnicalLead: TL1,
   secondaryTechnicalLead: TL2,
+  expenseAuthority: EA,
 };
 
 const randomMemberData = {
   projectOwner: RANDOM1,
   primaryTechnicalLead: RANDOM2,
   secondaryTechnicalLead: RANDOM3,
+  expenseAuthority: RANDOM4,
 };
 
 describe('API: List Public Cloud Products - Permissions', () => {
