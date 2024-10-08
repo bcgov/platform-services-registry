@@ -99,7 +99,6 @@ graph TD;
     frontendApp-->|HTTP requests| backendAPI;
     backendAPI-->|Queries| database;
     backendAPI-->|Sends emails| emailService(CHES);
-    backendAPI-->|Sends marketing data| marketingService(MailChimp);
     backendAPI-->|Provisions namespaces| namespaceProvisioner(NATS);
     backendAPI-->|Queries| MSGraphAPI(MS graph API);
     backendAPI-->|Handles authentication & authorization| authAuthorization(Keycloak);
