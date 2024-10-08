@@ -1,3 +1,12 @@
+## [0.36.0](https://github.com/bcgov/platform-services-registry/compare/v0.35.0...v0.36.0) (2024-10-08)
+
+### Features
+
+* **1008:** update Golddr provisioning workflow to receive two callbacks ([e69669e](https://github.com/bcgov/platform-services-registry/commit/e69669edc7c4727a82564debe323071cc5644fa2))
+* **3361:** display context in the application header ([16c3ba7](https://github.com/bcgov/platform-services-registry/commit/16c3ba7f1f2b84d4e2b5805d59e9d96fd7900737))
+* **3730:** add ministry, cluster and provider for sorting capas ([dd7cd42](https://github.com/bcgov/platform-services-registry/commit/dd7cd42d278833f0f8d08a47f594ed485839b370))
+* **3925:** use progress design in request list pages ([25aa1a4](https://github.com/bcgov/platform-services-registry/commit/25aa1a43f7c67b9d4f39bc443245e8ab3d6dfa79))
+* **eMOU:** give temporary permission to public document as EA ([2c091c7](https://github.com/bcgov/platform-services-registry/commit/2c091c788ad34e4c4bc835b81d1dea2f27c61916))
 ## [0.35.0](https://github.com/bcgov/platform-services-registry/compare/v0.34.3...v0.35.0) (2024-10-03)
 
 ### Features
