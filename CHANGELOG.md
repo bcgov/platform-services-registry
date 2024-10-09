@@ -1,3 +1,12 @@
+## [0.36.1](https://github.com/bcgov/platform-services-registry/compare/v0.36.0...v0.36.1) (2024-10-09)
+
+### Bug Fixes
+
+* **replace-broken-link:** correct link for quota increase request process ([d8ca544](https://github.com/bcgov/platform-services-registry/commit/d8ca544ba9c2dc7f5ce701d47e6cafbf9589ad31))
+
+### Refactors
+
+* **3936:** add DB services for products and requests ([6a7ec96](https://github.com/bcgov/platform-services-registry/commit/6a7ec96fcd47974393aacc399c24c2990b56c9b1))
 ## [0.36.0](https://github.com/bcgov/platform-services-registry/compare/v0.35.0...v0.36.0) (2024-10-08)
 
 ### Features
