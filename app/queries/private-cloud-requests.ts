@@ -4,57 +4,10 @@ import { Session } from 'next-auth';
 import { requestSorts } from '@/constants';
 import prisma from '@/core/prisma';
 import { parsePaginationParams } from '@/helpers/pagination';
+import { privateCloudRequestModel } from '@/services/db';
 import { PrivateCloudRequestDetailDecorated, PrivateCloudRequestSearch } from '@/types/private-cloud';
 import { PrivateCloudRequestSearchBody } from '@/validation-schemas/private-cloud';
 import { getMatchingUserIds } from './users';
-
-export const privateCloudRequestSimpleInclude = {
-  project: {
-    include: {
-      projectOwner: true,
-      primaryTechnicalLead: true,
-      secondaryTechnicalLead: true,
-    },
-  },
-  decisionData: {
-    include: {
-      projectOwner: true,
-      primaryTechnicalLead: true,
-      secondaryTechnicalLead: true,
-    },
-  },
-};
-
-export const privateCloudRequestDetailInclude = {
-  project: {
-    include: {
-      projectOwner: true,
-      primaryTechnicalLead: true,
-      secondaryTechnicalLead: true,
-    },
-  },
-  originalData: {
-    include: {
-      projectOwner: true,
-      primaryTechnicalLead: true,
-      secondaryTechnicalLead: true,
-    },
-  },
-  requestData: {
-    include: {
-      projectOwner: true,
-      primaryTechnicalLead: true,
-      secondaryTechnicalLead: true,
-    },
-  },
-  decisionData: {
-    include: {
-      projectOwner: true,
-      primaryTechnicalLead: true,
-      secondaryTechnicalLead: true,
-    },
-  },
-};
 
 const defaultSortKey = 'updatedAt';
 const defaultOrderBy = { [defaultSortKey]: Prisma.SortOrder.desc };
@@ -145,40 +98,18 @@ export async function searchPrivateCloudRequests({
     where.decisionStatus = { in: status };
   }
 
-  const [docs, totalCount] = await Promise.all([
-    prisma.privateCloudRequest.findMany({
+  const { data: docs, totalCount } = await privateCloudRequestModel.list(
+    {
       where,
       skip,
       take,
-      include: privateCloudRequestSimpleInclude,
       orderBy: orderBy ?? defaultOrderBy,
-      session: session as never,
-    }),
-    prisma.privateCloudRequest.count({
-      where,
-      session: session as never,
-    }),
-  ]);
+      includeCount: true,
+    },
+    session,
+  );
 
   return { docs, totalCount } as PrivateCloudRequestSearch;
-}
-
-export async function getPrivateCloudRequest(session: Session, id?: string) {
-  if (!id) return null;
-
-  const request = await prisma.privateCloudRequest.findUnique({
-    where: {
-      id,
-    },
-    include: privateCloudRequestDetailInclude,
-    session: session as never,
-  });
-
-  if (!request) {
-    return null;
-  }
-
-  return request as PrivateCloudRequestDetailDecorated;
 }
 
 export async function getLastClosedPrivateCloudRequest(licencePlate: string) {

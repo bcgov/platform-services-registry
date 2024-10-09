@@ -2,7 +2,7 @@ import { string, z } from 'zod';
 import createApiHandler from '@/core/api-handler';
 import { BadRequestResponse, OkResponse, UnauthorizedResponse } from '@/core/responses';
 import openshiftDeletionCheck from '@/helpers/openshift';
-import { getPrivateCloudProduct } from '@/queries/private-cloud-products';
+import { privateCloudProductModel } from '@/services/db';
 
 const pathParamSchema = z.object({
   licencePlate: string(),
@@ -15,7 +15,7 @@ const apiHandler = createApiHandler({
 
 export const GET = apiHandler(async ({ pathParams, session }) => {
   const { licencePlate } = pathParams;
-  const product = await getPrivateCloudProduct(session, licencePlate);
+  const { data: product } = await privateCloudProductModel.get({ where: { licencePlate } }, session);
 
   if (!product?._permissions.view) {
     return UnauthorizedResponse();

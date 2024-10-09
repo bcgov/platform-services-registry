@@ -1,7 +1,7 @@
 import { Prisma, Ministry, RequestType, DecisionStatus } from '@prisma/client';
 import { Session } from 'next-auth';
 import prisma from '@/core/prisma';
-import { privateCloudRequestDetailInclude, privateCloudRequestSimpleInclude } from '@/queries/private-cloud-requests';
+import { privateCloudProductModel } from '@/services/db';
 import { PrivateCloudProjectDecorate, PrivateCloudRequestDecorate } from '@/types/doc-decorate';
 import {
   PrivateCloudRequestDetail,
@@ -9,15 +9,62 @@ import {
   PrivateCloudRequestSimple,
   PrivateCloudRequestSimpleDecorated,
 } from '@/types/private-cloud';
-import { genReadFilter } from './core';
-import { listPrivateCloudProducts } from './private-cloud-product';
+import { createSessionModel } from './core';
+
+export const privateCloudRequestSimpleInclude = {
+  project: {
+    include: {
+      projectOwner: true,
+      primaryTechnicalLead: true,
+      secondaryTechnicalLead: true,
+    },
+  },
+  decisionData: {
+    include: {
+      projectOwner: true,
+      primaryTechnicalLead: true,
+      secondaryTechnicalLead: true,
+    },
+  },
+};
+
+export const privateCloudRequestDetailInclude = {
+  project: {
+    include: {
+      projectOwner: true,
+      primaryTechnicalLead: true,
+      secondaryTechnicalLead: true,
+    },
+  },
+  originalData: {
+    include: {
+      projectOwner: true,
+      primaryTechnicalLead: true,
+      secondaryTechnicalLead: true,
+    },
+  },
+  requestData: {
+    include: {
+      projectOwner: true,
+      primaryTechnicalLead: true,
+      secondaryTechnicalLead: true,
+    },
+  },
+  decisionData: {
+    include: {
+      projectOwner: true,
+      primaryTechnicalLead: true,
+      secondaryTechnicalLead: true,
+    },
+  },
+};
 
 async function readFilter(session: Session) {
   if (!session?.userId) return false;
   if (session.permissions.reviewAllPrivateCloudRequests) return true;
 
-  const res = await listPrivateCloudProducts({ select: { licencePlate: true } }, session);
-  const licencePlates = res.map(({ licencePlate }) => licencePlate);
+  const { data: products } = await privateCloudProductModel.list({ select: { licencePlate: true } }, session);
+  const licencePlates = products.map(({ licencePlate }) => licencePlate);
 
   const baseFilter: Prisma.PrivateCloudRequestWhereInput = {
     OR: [
@@ -75,66 +122,17 @@ async function decorate<T extends PrivateCloudRequestSimple>(doc: T, session: Se
   return decoratedDoc;
 }
 
-export function getPrivateCloudRequest(
-  args: Prisma.PrivateCloudRequestFindFirstArgs,
-): Promise<PrivateCloudRequestDetail>;
-export function getPrivateCloudRequest(
-  args: Prisma.PrivateCloudRequestFindFirstArgs,
-  session: Session,
-): Promise<PrivateCloudRequestDetailDecorated>;
-export async function getPrivateCloudRequest(
-  { where = {}, select, include, ...otherArgs }: Prisma.PrivateCloudRequestFindFirstArgs,
-  session?: Session,
-) {
-  if (session) {
-    const filter = await genReadFilter<Prisma.PrivateCloudRequestWhereInput>(where, readFilter, session);
-    if (filter === false) return null;
-
-    where = filter;
-  }
-
-  const args: Prisma.PrivateCloudRequestFindFirstArgs = { where, ...otherArgs };
-  if (select) args.select = select;
-  else args.include = privateCloudRequestDetailInclude;
-
-  const request = await prisma.privateCloudRequest.findFirst(args);
-  if (select) return request;
-
-  if (session) {
-    return decorate(request as PrivateCloudRequestDetail, session);
-  }
-
-  return request;
-}
-
-export function listPrivateCloudRequests(
-  args: Prisma.PrivateCloudRequestFindManyArgs,
-): Promise<PrivateCloudRequestSimple[]>;
-export function listPrivateCloudRequests(
-  args: Prisma.PrivateCloudRequestFindManyArgs,
-  session: Session,
-): Promise<PrivateCloudRequestSimpleDecorated[]>;
-export async function listPrivateCloudRequests(
-  { where = {}, select, include, ...otherArgs }: Prisma.PrivateCloudRequestFindManyArgs,
-  session?: Session,
-) {
-  if (session) {
-    const filter = await genReadFilter<Prisma.PrivateCloudRequestWhereInput>(where, readFilter, session);
-    if (filter === false) return null;
-
-    where = filter;
-  }
-
-  const args: Prisma.PrivateCloudRequestFindManyArgs = { where, ...otherArgs };
-  if (select) args.select = select;
-  else args.include = privateCloudRequestSimpleInclude;
-
-  const requests = await prisma.privateCloudRequest.findMany(args);
-  if (select) return requests;
-
-  if (session) {
-    return requests.map((product) => decorate(product as PrivateCloudRequestSimple, session));
-  }
-
-  return requests;
-}
+export const privateCloudRequestModel = createSessionModel<
+  PrivateCloudRequestDetail,
+  PrivateCloudRequestDetailDecorated,
+  PrivateCloudRequestSimple,
+  PrivateCloudRequestSimpleDecorated,
+  NonNullable<Parameters<typeof prisma.privateCloudRequest.findFirst>[0]>,
+  NonNullable<Parameters<typeof prisma.privateCloudRequest.upsert>[0]>
+>({
+  model: prisma.privateCloudRequest,
+  includeDetail: privateCloudRequestDetailInclude,
+  includeSimple: privateCloudRequestSimpleInclude,
+  readFilter,
+  decorate,
+});

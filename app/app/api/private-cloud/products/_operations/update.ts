@@ -3,9 +3,9 @@ import { Session } from 'next-auth';
 import { TypeOf } from 'zod';
 import { OkResponse, UnauthorizedResponse } from '@/core/responses';
 import { sendRequestNatsMessage } from '@/helpers/nats-message';
-import { getPrivateCloudProduct } from '@/queries/private-cloud-products';
 import editRequest from '@/request-actions/private-cloud/edit-request';
 import { sendEditRequestEmails, sendRequestApprovalEmails } from '@/services/ches/private-cloud';
+import { privateCloudProductModel } from '@/services/db';
 import { PrivateCloudEditRequestBody } from '@/validation-schemas/private-cloud';
 import { putPathParamSchema } from '../[licencePlate]/schema';
 
@@ -20,7 +20,7 @@ export default async function updateOp({
 }) {
   const { licencePlate } = pathParams;
 
-  const product = await getPrivateCloudProduct(session, licencePlate);
+  const { data: product } = await privateCloudProductModel.get({ where: { licencePlate } }, session);
 
   if (!product?._permissions.edit) {
     return UnauthorizedResponse();

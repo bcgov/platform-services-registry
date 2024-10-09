@@ -3,8 +3,8 @@ import { redirect } from 'next/navigation';
 import { getServerSession } from 'next-auth/next';
 import ZapScanResults from '@/components/zapscan/ZapScanResults';
 import { authOptions } from '@/core/auth-options';
-import prisma from '@/core/prisma';
 import { parsePaginationParams } from '@/helpers/pagination';
+import { privateCloudProductZapResultModel } from '@/services/db';
 
 export default async function Page({
   searchParams,
@@ -53,34 +53,45 @@ export default async function Page({
     ];
   }
 
-  const [rows, distinct, total] = await Promise.all([
-    prisma.privateCloudProjectZapResult.findMany({
-      where,
-      select: { id: true, licencePlate: true, cluster: true, host: true, json: true, scannedAt: true, available: true },
-      skip,
-      take,
-      orderBy: [
-        {
-          scannedAt: Prisma.SortOrder.desc,
+  const [{ data: rows, totalCount }, { data: distinct }] = await Promise.all([
+    privateCloudProductZapResultModel.list(
+      {
+        where,
+        select: {
+          id: true,
+          licencePlate: true,
+          cluster: true,
+          host: true,
+          json: true,
+          scannedAt: true,
+          available: true,
         },
-        {
-          available: Prisma.SortOrder.desc,
-        },
-      ],
-      session: session as never,
-    }),
-    prisma.privateCloudProjectZapResult.findMany({
-      where: { html: { not: null } },
-      select: { cluster: true },
-      distinct: ['cluster'],
-      session: session as never,
-    }),
-    prisma.privateCloudProjectZapResult.count({
-      where,
-      session: session as never,
-    }),
+        skip,
+        take,
+        orderBy: [
+          {
+            scannedAt: Prisma.SortOrder.desc,
+          },
+          {
+            available: Prisma.SortOrder.desc,
+          },
+        ],
+        includeCount: true,
+      },
+      session,
+    ),
+    privateCloudProductZapResultModel.list(
+      {
+        where: { html: { not: null } },
+        select: { cluster: true },
+        distinct: ['cluster'],
+      },
+      session,
+    ),
   ]);
 
   const clusters = distinct.map((row) => row.cluster);
-  return <ZapScanResults rows={rows} clusters={clusters} page={page} skip={skip} take={take} total={total} listAll />;
+  return (
+    <ZapScanResults rows={rows} clusters={clusters} page={page} skip={skip} take={take} total={totalCount} listAll />
+  );
 }

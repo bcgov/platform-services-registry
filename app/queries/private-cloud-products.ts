@@ -1,33 +1,11 @@
-import { Ministry, Cluster, ProjectStatus, Prisma } from '@prisma/client';
+import { Prisma } from '@prisma/client';
 import _isNumber from 'lodash-es/isNumber';
 import { Session } from 'next-auth';
-import prisma from '@/core/prisma';
 import { parsePaginationParams } from '@/helpers/pagination';
+import { privateCloudProductModel } from '@/services/db';
 import { PrivateCloudProductDetail, PrivateCloudProductDetailDecorated } from '@/types/private-cloud';
 import { PrivateCloudProductSearchBody } from '@/validation-schemas/private-cloud';
 import { getMatchingUserIds } from './users';
-
-export const privateCloudProductSimpleInclude = {
-  projectOwner: true,
-  primaryTechnicalLead: true,
-  secondaryTechnicalLead: true,
-  requests: {
-    where: {
-      active: true,
-    },
-  },
-};
-
-export const privateCloudProductDetailInclude = {
-  projectOwner: true,
-  primaryTechnicalLead: true,
-  secondaryTechnicalLead: true,
-  requests: {
-    where: {
-      active: true,
-    },
-  },
-};
 
 const defaultSortKey = 'updatedAt';
 
@@ -95,40 +73,18 @@ export async function searchPrivateCloudProducts({
     where.isTest = temporary[0] === 'YES';
   }
 
-  const [docs, totalCount] = await Promise.all([
-    prisma.privateCloudProject.findMany({
+  const { data: docs, totalCount } = await privateCloudProductModel.list(
+    {
       where,
       skip,
       take,
-      include: privateCloudProductSimpleInclude,
       orderBy,
-      session: session as never,
-    }),
-    prisma.privateCloudProject.count({
-      where,
-      session: session as never,
-    }),
-  ]);
+      includeCount: true,
+    },
+    session,
+  );
 
   return { docs, totalCount };
-}
-
-export async function getPrivateCloudProduct(session: Session, licencePlate?: string) {
-  if (!licencePlate) return null;
-
-  const product: PrivateCloudProductDetail | null = await prisma.privateCloudProject.findUnique({
-    where: {
-      licencePlate,
-    },
-    include: privateCloudProductDetailInclude,
-    session: session as never,
-  });
-
-  if (!product) {
-    return null;
-  }
-
-  return product as PrivateCloudProductDetailDecorated;
 }
 
 export function excludeProductUsers(product: PrivateCloudProductDetailDecorated | null) {

@@ -1,12 +1,15 @@
 import { Session } from 'next-auth';
-import prisma from '@/core/prisma';
+import { publicCloudProductModel } from '@/services/db';
 
-export default async function listOp({ session }: { session: Session | null }) {
-  const products = await prisma.publicCloudProject.findMany({
-    where: {},
-    skip: 0,
-    take: 2,
-    session: session as never,
-  });
+export default async function listOp({ session }: { session: Session }) {
+  const { data: products } = await publicCloudProductModel.list(
+    {
+      where: {},
+      skip: 0,
+      take: 2,
+    },
+    session,
+  );
+
   return products;
 }

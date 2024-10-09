@@ -4,9 +4,10 @@ import { z, TypeOf, ZodType } from 'zod';
 import prisma from '@/core/prisma';
 import { BadRequestResponse, OkResponse, UnauthorizedResponse } from '@/core/responses';
 import { createEvent } from '@/mutations/events';
-import { getPublicCloudProduct, excludeProductUsers } from '@/queries/public-cloud-products';
-import { getLastClosedPublicCloudRequest, publicCloudRequestDetailInclude } from '@/queries/public-cloud-requests';
+import { excludeProductUsers } from '@/queries/public-cloud-products';
+import { getLastClosedPublicCloudRequest } from '@/queries/public-cloud-requests';
 import { sendDeleteRequestEmails } from '@/services/ches/public-cloud';
+import { publicCloudProductModel, publicCloudRequestDetailInclude } from '@/services/db';
 import { PublicCloudRequestDetail } from '@/types/public-cloud';
 import { deletePathParamSchema } from '../[licencePlate]/schema';
 
@@ -20,7 +21,7 @@ export default async function deleteOp({
   const { user } = session;
   const { licencePlate } = pathParams;
 
-  const product = excludeProductUsers(await getPublicCloudProduct(session, licencePlate));
+  const product = excludeProductUsers((await publicCloudProductModel.get({ where: { licencePlate } }, session)).data);
 
   if (!product?._permissions.delete) {
     return UnauthorizedResponse();

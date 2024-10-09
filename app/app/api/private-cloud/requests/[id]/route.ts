@@ -1,7 +1,7 @@
 import { z } from 'zod';
 import createApiHandler from '@/core/api-handler';
 import { OkResponse, UnauthorizedResponse } from '@/core/responses';
-import { getPrivateCloudRequest } from '@/queries/private-cloud-requests';
+import { privateCloudRequestModel } from '@/services/db';
 
 const pathParamSchema = z.object({
   id: z.string(),
@@ -14,7 +14,7 @@ const apiHandler = createApiHandler({
 export const GET = apiHandler(async ({ pathParams, queryParams, session }) => {
   const { id } = pathParams;
 
-  const request = await getPrivateCloudRequest(session, id);
+  const { data: request } = await privateCloudRequestModel.get({ where: { id } }, session);
 
   if (!request?._permissions.view) {
     return UnauthorizedResponse();

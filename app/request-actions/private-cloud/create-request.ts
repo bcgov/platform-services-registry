@@ -3,7 +3,7 @@ import { Session } from 'next-auth';
 import prisma from '@/core/prisma';
 import generateLicencePlate from '@/helpers/licence-plate';
 import { createEvent } from '@/mutations/events';
-import { privateCloudRequestDetailInclude } from '@/queries/private-cloud-requests';
+import { privateCloudRequestDetailInclude } from '@/services/db';
 import { upsertUsers } from '@/services/db/user';
 import { PrivateCloudRequestDetail } from '@/types/private-cloud';
 import {

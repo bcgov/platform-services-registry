@@ -3,8 +3,8 @@ import { z } from 'zod';
 import createApiHandler from '@/core/api-handler';
 import prisma from '@/core/prisma';
 import { NotFoundResponse, OkResponse, UnprocessableEntityResponse } from '@/core/responses';
-import { publicCloudRequestDetailInclude } from '@/queries/public-cloud-requests';
 import { sendRequestCompletionEmails } from '@/services/ches/public-cloud';
+import { publicCloudRequestDetailInclude } from '@/services/db';
 
 const pathParamSchema = z.object({
   licencePlate: z.string(),
