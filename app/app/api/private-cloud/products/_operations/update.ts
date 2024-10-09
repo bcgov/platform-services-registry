@@ -1,12 +1,11 @@
-import { DecisionStatus, User } from '@prisma/client';
+import { DecisionStatus } from '@prisma/client';
 import { Session } from 'next-auth';
-import { z, TypeOf, ZodType } from 'zod';
-import { BadRequestResponse, OkResponse, UnauthorizedResponse } from '@/core/responses';
+import { TypeOf } from 'zod';
+import { OkResponse, UnauthorizedResponse } from '@/core/responses';
 import { sendRequestNatsMessage } from '@/helpers/nats-message';
 import editRequest from '@/request-actions/private-cloud/edit-request';
 import { sendEditRequestEmails, sendRequestApprovalEmails } from '@/services/ches/private-cloud';
 import { privateCloudProductModel } from '@/services/db';
-import { subscribeUsersToMautic } from '@/services/mautic';
 import { PrivateCloudEditRequestBody } from '@/validation-schemas/private-cloud';
 import { putPathParamSchema } from '../[licencePlate]/schema';
 
@@ -45,14 +44,6 @@ export default async function updateOp({
     }),
   );
 
-  // Subscribe users to Mautic
-  const users: User[] = [
-    request.decisionData.projectOwner,
-    request.decisionData.primaryTechnicalLead,
-    request.decisionData?.secondaryTechnicalLead,
-  ].filter((usr): usr is User => Boolean(usr));
-
-  proms.push(subscribeUsersToMautic(users, request.decisionData.cluster, 'Private'));
   proms.push(sendRequestApprovalEmails(request, session.user.name));
 
   await Promise.all(proms);

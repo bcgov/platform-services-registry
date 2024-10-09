@@ -42,7 +42,6 @@
     "services/ches/index.js",
     "services/ches/chesService.ts",
     "services/ches/clientConnection.ts",
-    "services/mautic/index.ts",
     "cypress/tsconfig.json"
   ],
   "exclude": ["node_modules"]

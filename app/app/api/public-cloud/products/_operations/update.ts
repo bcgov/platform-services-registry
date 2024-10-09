@@ -1,11 +1,9 @@
-import { User } from '@prisma/client';
 import { Session } from 'next-auth';
-import { z, TypeOf, ZodType } from 'zod';
+import { TypeOf } from 'zod';
 import { OkResponse, UnauthorizedResponse } from '@/core/responses';
 import editRequest from '@/request-actions/public-cloud/edit-request';
 import { sendEditRequestEmails } from '@/services/ches/public-cloud';
 import { publicCloudProductModel } from '@/services/db';
-import { subscribeUsersToMautic } from '@/services/mautic';
 import { sendPublicCloudNatsMessage } from '@/services/nats';
 import { PublicCloudEditRequestBody } from '@/validation-schemas/public-cloud';
 import { putPathParamSchema } from '../[licencePlate]/schema';
@@ -33,13 +31,6 @@ export default async function updateOp({
 
   proms.push(sendPublicCloudNatsMessage(request));
 
-  const users: User[] = [
-    request.decisionData.projectOwner,
-    request.decisionData.primaryTechnicalLead,
-    request.decisionData?.secondaryTechnicalLead,
-  ].filter((usr): usr is User => Boolean(usr));
-
-  proms.push(subscribeUsersToMautic(users, request.decisionData.provider, 'Public'));
   proms.push(sendEditRequestEmails(request, session.user.name));
 
   await Promise.all(proms);

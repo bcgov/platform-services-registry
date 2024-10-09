@@ -43,7 +43,7 @@ export default function Quotas({
       <p className="text-base leading-6 mt-5">
         All quota increase requests require <span className="font-bold">Platform Services Team&rsquo;s</span>
         &nbsp;approval, and must have supporting information as per the&nbsp;
-        <ExternalLink href="https://docs.developer.gov.bc.ca/request-quota-increase-for-openshift-project-set/">
+        <ExternalLink href="https://developer.gov.bc.ca/docs/default/component/platform-developer-docs/docs/automation-and-resiliency/request-quota-adjustment-for-openshift-project-set/">
           Quota Increase Request Process
         </ExternalLink>
         . Any Quota Requests without supporting information&nbsp;
