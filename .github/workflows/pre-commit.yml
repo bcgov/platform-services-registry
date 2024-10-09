@@ -21,5 +21,26 @@ jobs:
       uses: ./.github/actions/setup-npm
 
     - name: Rerun Pre-Commit Hooks on CI
+      run: pre-commit run --config=.pre-commit-config.yaml --color=always --show-diff-on-failure --all-files
+    - name: Install Commitlint
       run: |
-        pre-commit run --config=.pre-commit-config.yaml --color=always --show-diff-on-failure --all-files
+        npm install conventional-changelog-conventionalcommits
+        npm install commitlint@latest
+    - name: Lint Current Commits
+      if: github.event_name == 'push'
+      run: |
+        if npx commitlint --last --verbose; then
+          echo -e "push commitlint...............................................................\033[42mPassed\033[0m"
+        else
+          echo -e "push commitlint...............................................................\033[41mFailed\033[0m"
+          exit 1
+        fi
+    - name: Lint PR Commits
+      if: github.event_name == 'pull_request'
+      run: |
+        if npx commitlint --from ${{ github.event.pull_request.head.sha}}~${{ github.event.pull_request.commits }} --to ${{ github.event.pull_request.head.sha }} --verbose; then
+          echo -e "PR commitlint...............................................................\033[42mPassed\033[0m"
+        else
+          echo -e "PR commitlint...............................................................\033[41mFailed\033[0m"
+          exit 1
+        fi

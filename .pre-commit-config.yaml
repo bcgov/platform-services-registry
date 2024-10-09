@@ -80,5 +80,11 @@ repos:
   rev: v2.3.0
   hooks:
   - id: codespell
+- repo: https://github.com/alessandrojcm/commitlint-pre-commit-hook
+  rev: v9.18.0
+  hooks:
+  - id: commitlint
+    stages: [commit-msg]
+    additional_dependencies: ['@commitlint/config-conventional']
 
-exclude: ^(app/.react-email|CHANGELOG\.md)$
+exclude: ^(app/.react-email|CHANGELOG\.md|.git/COMMIT_EDITMSG)$
