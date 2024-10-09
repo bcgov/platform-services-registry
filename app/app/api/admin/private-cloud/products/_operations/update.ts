@@ -23,6 +23,6 @@ export default async function updateOp({
     data: { isTest },
   });
 
-  const { data: product } = await privateCloudProductModel.get({ where: { licencePlate } });
+  const { data: product } = await privateCloudProductModel.get({ where: { licencePlate } }, session);
   return OkResponse(product);
 }
