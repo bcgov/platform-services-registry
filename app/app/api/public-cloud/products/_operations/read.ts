@@ -1,7 +1,7 @@
 import { Session } from 'next-auth';
 import { z, TypeOf, ZodType } from 'zod';
 import { BadRequestResponse, OkResponse, UnauthorizedResponse } from '@/core/responses';
-import { getPublicCloudProduct } from '@/queries/public-cloud-products';
+import { publicCloudProductModel } from '@/services/db';
 import { getPathParamSchema } from '../[licencePlate]/schema';
 
 export default async function readOp({
@@ -13,7 +13,7 @@ export default async function readOp({
 }) {
   const { licencePlate } = pathParams;
 
-  const product = await getPublicCloudProduct(session, licencePlate);
+  const { data: product } = await publicCloudProductModel.get({ where: { licencePlate } }, session);
 
   if (!product?._permissions.view) {
     return UnauthorizedResponse();

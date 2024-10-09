@@ -5,9 +5,10 @@ import prisma from '@/core/prisma';
 import { BadRequestResponse, OkResponse, UnauthorizedResponse } from '@/core/responses';
 import { isEligibleForDeletion } from '@/helpers/openshift';
 import { createEvent } from '@/mutations/events';
-import { getPrivateCloudProduct, excludeProductUsers } from '@/queries/private-cloud-products';
-import { getLastClosedPrivateCloudRequest, privateCloudRequestDetailInclude } from '@/queries/private-cloud-requests';
+import { excludeProductUsers } from '@/queries/private-cloud-products';
+import { getLastClosedPrivateCloudRequest } from '@/queries/private-cloud-requests';
 import { sendDeleteRequestEmails } from '@/services/ches/private-cloud';
+import { privateCloudProductModel, privateCloudRequestDetailInclude } from '@/services/db';
 import { PrivateCloudRequestDetail } from '@/types/private-cloud';
 import { deletePathParamSchema } from '../[licencePlate]/schema';
 
@@ -21,7 +22,7 @@ export default async function deleteOp({
   const { user } = session;
   const { licencePlate } = pathParams;
 
-  const product = excludeProductUsers(await getPrivateCloudProduct(session, licencePlate));
+  const product = excludeProductUsers((await privateCloudProductModel.get({ where: { licencePlate } }, session)).data);
 
   if (!product?._permissions.delete) {
     return UnauthorizedResponse();

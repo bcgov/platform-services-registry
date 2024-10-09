@@ -4,8 +4,8 @@ import createApiHandler from '@/core/api-handler';
 import prisma from '@/core/prisma';
 import { BadRequestResponse, OkResponse, UnauthorizedResponse } from '@/core/responses';
 import { formatFullName } from '@/helpers/user';
-import { publicCloudRequestDetailInclude } from '@/queries/public-cloud-requests';
 import { sendAdminCreateRequestEmails } from '@/services/ches/public-cloud';
+import { publicCloudRequestDetailInclude } from '@/services/db';
 
 const pathParamSchema = z.object({
   licencePlate: z.string(),

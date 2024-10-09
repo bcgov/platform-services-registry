@@ -1,78 +1,12 @@
-import { Ministry, Provider, Prisma } from '@prisma/client';
+import { Prisma } from '@prisma/client';
 import _isNumber from 'lodash-es/isNumber';
 import { Session } from 'next-auth';
 import { requestSorts } from '@/constants';
 import prisma from '@/core/prisma';
 import { parsePaginationParams } from '@/helpers/pagination';
-import { PublicCloudRequestDetail, PublicCloudRequestDetailDecorated } from '@/types/public-cloud';
+import { publicCloudRequestModel } from '@/services/db';
 import { PublicCloudRequestSearchBody } from '@/validation-schemas/public-cloud';
 import { getMatchingUserIds } from './users';
-
-export const publicCloudRequestSimpleInclude = {
-  project: {
-    include: {
-      projectOwner: true,
-      primaryTechnicalLead: true,
-      secondaryTechnicalLead: true,
-      expenseAuthority: true,
-      billing: true,
-    },
-  },
-  decisionData: {
-    include: {
-      projectOwner: true,
-      primaryTechnicalLead: true,
-      secondaryTechnicalLead: true,
-      expenseAuthority: true,
-      billing: true,
-    },
-  },
-};
-
-export const publicCloudRequestDetailInclude = {
-  project: {
-    include: {
-      projectOwner: true,
-      primaryTechnicalLead: true,
-      secondaryTechnicalLead: true,
-      expenseAuthority: true,
-      billing: true,
-    },
-  },
-  originalData: {
-    include: {
-      projectOwner: true,
-      primaryTechnicalLead: true,
-      secondaryTechnicalLead: true,
-      expenseAuthority: true,
-      billing: true,
-    },
-  },
-  requestData: {
-    include: {
-      projectOwner: true,
-      primaryTechnicalLead: true,
-      secondaryTechnicalLead: true,
-      expenseAuthority: true,
-      billing: true,
-    },
-  },
-  decisionData: {
-    include: {
-      projectOwner: true,
-      primaryTechnicalLead: true,
-      secondaryTechnicalLead: true,
-      expenseAuthority: true,
-      billing: {
-        include: {
-          expenseAuthority: true,
-          signedBy: true,
-          approvedBy: true,
-        },
-      },
-    },
-  },
-};
 
 const defaultSortKey = 'updatedAt';
 const defaultOrderBy = { [defaultSortKey]: Prisma.SortOrder.desc };
@@ -157,40 +91,18 @@ export async function searchPublicCloudRequests({
     where.decisionStatus = { in: status };
   }
 
-  const [docs, totalCount] = await Promise.all([
-    prisma.publicCloudRequest.findMany({
+  const { data: docs, totalCount } = await publicCloudRequestModel.list(
+    {
       where,
       skip,
       take,
-      include: publicCloudRequestSimpleInclude,
       orderBy,
-      session: session as never,
-    }),
-    prisma.publicCloudRequest.count({
-      where,
-      session: session as never,
-    }),
-  ]);
+      includeCount: true,
+    },
+    session,
+  );
 
   return { docs, totalCount };
-}
-
-export async function getPublicCloudRequest(session: Session, id?: string) {
-  if (!id) return null;
-
-  const request: PublicCloudRequestDetail | null = await prisma.publicCloudRequest.findUnique({
-    where: {
-      id,
-    },
-    include: publicCloudRequestDetailInclude,
-    session: session as never,
-  });
-
-  if (!request) {
-    return null;
-  }
-
-  return request as PublicCloudRequestDetailDecorated;
 }
 
 export async function getLastClosedPublicCloudRequest(licencePlate: string) {

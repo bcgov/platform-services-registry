@@ -1,8 +1,8 @@
 import { z } from 'zod';
 import createApiHandler from '@/core/api-handler';
-import prisma from '@/core/prisma';
-import { OkResponse, BadRequestResponse } from '@/core/responses';
+import { OkResponse, UnauthorizedResponse } from '@/core/responses';
 import { getQuotaChangeStatus } from '@/helpers/auto-approval-check';
+import { privateCloudProductModel } from '@/services/db';
 import { quotasSchema } from '@/validation-schemas/private-cloud';
 
 const pathParamSchema = z.object({
@@ -22,20 +22,22 @@ export const POST = apiHandler(async ({ session, pathParams, body }) => {
   const { licencePlate } = pathParams;
   const { requestedQuota } = body;
 
-  const currentProduct = await prisma.privateCloudProject.findFirst({
-    where: { licencePlate },
-    select: {
-      cluster: true,
-      productionQuota: true,
-      testQuota: true,
-      developmentQuota: true,
-      toolsQuota: true,
+  const { data: currentProduct } = await privateCloudProductModel.get(
+    {
+      where: { licencePlate },
+      select: {
+        cluster: true,
+        productionQuota: true,
+        testQuota: true,
+        developmentQuota: true,
+        toolsQuota: true,
+      },
     },
-    session: session as never,
-  });
+    session,
+  );
 
   if (!currentProduct) {
-    return BadRequestResponse(`not allowed for the product (${licencePlate})`);
+    return UnauthorizedResponse();
   }
 
   const quotaChangeStatus = await getQuotaChangeStatus({

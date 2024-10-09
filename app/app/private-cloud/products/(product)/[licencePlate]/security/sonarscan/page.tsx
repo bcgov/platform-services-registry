@@ -3,8 +3,8 @@ import { redirect } from 'next/navigation';
 import { getServerSession } from 'next-auth/next';
 import SonarScanResults from '@/components/sonarscan/SonarScanResults';
 import { authOptions } from '@/core/auth-options';
-import prisma from '@/core/prisma';
 import { parsePaginationParams } from '@/helpers/pagination';
+import { sonarScanResultModel } from '@/services/db';
 
 export default async function Page({
   params,
@@ -49,41 +49,42 @@ export default async function Page({
     ];
   }
 
-  const [rows, distinct, total] = await Promise.all([
-    prisma.sonarScanResult.findMany({
-      where,
-      select: {
-        id: true,
-        licencePlate: true,
-        context: true,
-        clusterOrProvider: true,
-        url: true,
-        sha: true,
-        source: true,
-        result: true,
-        scannedAt: true,
-      },
-      skip,
-      take,
-      orderBy: [
-        {
-          scannedAt: Prisma.SortOrder.desc,
+  const [{ data: rows, totalCount }, { data: distinct }] = await Promise.all([
+    sonarScanResultModel.list(
+      {
+        where,
+        select: {
+          id: true,
+          licencePlate: true,
+          context: true,
+          clusterOrProvider: true,
+          url: true,
+          sha: true,
+          source: true,
+          result: true,
+          scannedAt: true,
         },
-      ],
-      session: session as never,
-    }),
-    prisma.sonarScanResult.findMany({
-      where: { licencePlate: params.licencePlate },
-      select: { context: true },
-      distinct: ['context'],
-      session: session as never,
-    }),
-    prisma.sonarScanResult.count({
-      where,
-      session: session as never,
-    }),
+        skip,
+        take,
+        orderBy: [
+          {
+            scannedAt: Prisma.SortOrder.desc,
+          },
+        ],
+        includeCount: true,
+      },
+      session,
+    ),
+    sonarScanResultModel.list(
+      {
+        where: { licencePlate: params.licencePlate },
+        select: { context: true },
+        distinct: ['context'],
+      },
+      session,
+    ),
   ]);
 
   const contexts = distinct.map((row) => row.context);
-  return <SonarScanResults rows={rows} contexts={contexts} total={total} page={page} skip={skip} take={take} />;
+  return <SonarScanResults rows={rows} contexts={contexts} total={totalCount} page={page} skip={skip} take={take} />;
 }

@@ -1,7 +1,6 @@
 import { Prisma, TaskType, TaskStatus, RequestType, DecisionStatus } from '@prisma/client';
 import { Session } from 'next-auth';
 import prisma from '@/core/prisma';
-import { publicCloudRequestDetailInclude, publicCloudRequestSimpleInclude } from '@/queries/public-cloud-requests';
 import { PublicCloudProjectDecorate, PublicCloudRequestDecorate } from '@/types/doc-decorate';
 import {
   PublicCloudRequestDetail,
@@ -10,15 +9,81 @@ import {
   PublicCloudRequestSimpleDecorated,
 } from '@/types/public-cloud';
 import { getUniqueNonFalsyItems } from '@/utils/collection';
-import { genReadFilter } from './core';
-import { listPublicCloudProducts } from './public-cloud-product';
+import { createSessionModel } from './core';
+import { publicCloudProductModel } from './public-cloud-product';
+
+export const publicCloudRequestSimpleInclude = {
+  project: {
+    include: {
+      projectOwner: true,
+      primaryTechnicalLead: true,
+      secondaryTechnicalLead: true,
+      expenseAuthority: true,
+      billing: true,
+    },
+  },
+  decisionData: {
+    include: {
+      projectOwner: true,
+      primaryTechnicalLead: true,
+      secondaryTechnicalLead: true,
+      expenseAuthority: true,
+      billing: true,
+    },
+  },
+};
+
+export const publicCloudRequestDetailInclude = {
+  project: {
+    include: {
+      projectOwner: true,
+      primaryTechnicalLead: true,
+      secondaryTechnicalLead: true,
+      expenseAuthority: true,
+      billing: true,
+    },
+  },
+  originalData: {
+    include: {
+      projectOwner: true,
+      primaryTechnicalLead: true,
+      secondaryTechnicalLead: true,
+      expenseAuthority: true,
+      billing: true,
+    },
+  },
+  requestData: {
+    include: {
+      projectOwner: true,
+      primaryTechnicalLead: true,
+      secondaryTechnicalLead: true,
+      expenseAuthority: true,
+      billing: true,
+    },
+  },
+  decisionData: {
+    include: {
+      projectOwner: true,
+      primaryTechnicalLead: true,
+      secondaryTechnicalLead: true,
+      expenseAuthority: true,
+      billing: {
+        include: {
+          expenseAuthority: true,
+          signedBy: true,
+          approvedBy: true,
+        },
+      },
+    },
+  },
+};
 
 async function readFilter(session: Session) {
   if (!session?.userId) return false;
   if (session.permissions.viewAllPublicCloudProducts) return true;
 
-  const res = await listPublicCloudProducts({ select: { licencePlate: true } }, session);
-  const licencePlates = res.map(({ licencePlate }) => licencePlate);
+  const { data: products } = await publicCloudProductModel.list({ select: { licencePlate: true } }, session);
+  const licencePlates = products.map(({ licencePlate }) => licencePlate);
 
   const licencePlatesFromTasks = session.tasks
     .filter((task) => [TaskType.SIGN_MOU, TaskType.REVIEW_MOU].includes(task.type))
@@ -100,64 +165,17 @@ async function decorate<T extends PublicCloudRequestSimple>(doc: T, session: Ses
   return decoratedDoc;
 }
 
-export function getPublicCloudRequest(args: Prisma.PublicCloudRequestFindFirstArgs): Promise<PublicCloudRequestDetail>;
-export function getPublicCloudRequest(
-  args: Prisma.PublicCloudRequestFindFirstArgs,
-  session: Session,
-): Promise<PublicCloudRequestDetailDecorated>;
-export async function getPublicCloudRequest(
-  { where = {}, select, include, ...otherArgs }: Prisma.PublicCloudRequestFindFirstArgs,
-  session?: Session,
-) {
-  if (session) {
-    const filter = await genReadFilter<Prisma.PublicCloudRequestWhereInput>(where, readFilter, session);
-    if (filter === false) return null;
-
-    where = filter;
-  }
-
-  const args: Prisma.PublicCloudRequestFindFirstArgs = { where, ...otherArgs };
-  if (select) args.select = select;
-  else args.include = publicCloudRequestDetailInclude;
-
-  const request = await prisma.publicCloudRequest.findFirst(args);
-  if (select) return request;
-
-  if (session) {
-    return decorate(request as PublicCloudRequestDetail, session);
-  }
-
-  return request;
-}
-
-export function listPublicCloudRequests(
-  args: Prisma.PublicCloudRequestFindManyArgs,
-): Promise<PublicCloudRequestSimple[]>;
-export function listPublicCloudRequests(
-  args: Prisma.PublicCloudRequestFindManyArgs,
-  session: Session,
-): Promise<PublicCloudRequestSimpleDecorated[]>;
-export async function listPublicCloudRequests(
-  { where = {}, select, include, ...otherArgs }: Prisma.PublicCloudRequestFindManyArgs,
-  session?: Session,
-) {
-  if (session) {
-    const filter = await genReadFilter<Prisma.PublicCloudRequestWhereInput>(where, readFilter, session);
-    if (filter === false) return null;
-
-    where = filter;
-  }
-
-  const args: Prisma.PublicCloudRequestFindManyArgs = { where, ...otherArgs };
-  if (select) args.select = select;
-  else args.include = publicCloudRequestSimpleInclude;
-
-  const requests = await prisma.publicCloudRequest.findMany(args);
-  if (select) return requests;
-
-  if (session) {
-    return requests.map((product) => decorate(product as PublicCloudRequestSimple, session));
-  }
-
-  return requests;
-}
+export const publicCloudRequestModel = createSessionModel<
+  PublicCloudRequestDetail,
+  PublicCloudRequestDetailDecorated,
+  PublicCloudRequestSimple,
+  PublicCloudRequestSimpleDecorated,
+  NonNullable<Parameters<typeof prisma.publicCloudRequest.findFirst>[0]>,
+  NonNullable<Parameters<typeof prisma.publicCloudRequest.upsert>[0]>
+>({
+  model: prisma.publicCloudRequest,
+  includeDetail: publicCloudRequestDetailInclude,
+  includeSimple: publicCloudRequestSimpleInclude,
+  readFilter,
+  decorate,
+});

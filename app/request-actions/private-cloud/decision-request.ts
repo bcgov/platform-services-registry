@@ -2,7 +2,7 @@ import { DecisionStatus, Prisma, ProjectStatus, RequestType, EventType } from '@
 import { Session } from 'next-auth';
 import prisma from '@/core/prisma';
 import { createEvent } from '@/mutations/events';
-import { privateCloudRequestDetailInclude } from '@/queries/private-cloud-requests';
+import { privateCloudRequestDetailInclude } from '@/services/db';
 import { PrivateCloudRequestDetail } from '@/types/private-cloud';
 import { PrivateCloudRequestDecisionBody } from '@/validation-schemas/private-cloud';
 

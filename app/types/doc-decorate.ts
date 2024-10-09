@@ -44,3 +44,33 @@ export interface PublicCloudRequestDecorate {
     viewProduct: boolean;
   };
 }
+
+export interface PrivateCloudProductZapResultDecorate {
+  _permissions: {
+    view: boolean;
+    edit: boolean;
+    delete: boolean;
+  };
+}
+
+export interface SecurityConfigDecorate {
+  _permissions: {
+    view: boolean;
+    edit: boolean;
+    delete: boolean;
+  };
+}
+
+export interface SonarScanResultDecorate {
+  _permissions: {
+    view: boolean;
+    edit: boolean;
+    delete: boolean;
+  };
+}
+
+export interface UserDecorate {
+  _permissions: {
+    view: boolean;
+  };
+}

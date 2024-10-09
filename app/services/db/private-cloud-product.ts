@@ -1,7 +1,6 @@
 import { Prisma, Ministry, ProjectStatus } from '@prisma/client';
 import { Session } from 'next-auth';
 import prisma from '@/core/prisma';
-import { privateCloudProductDetailInclude, privateCloudProductSimpleInclude } from '@/queries/private-cloud-products';
 import { PrivateCloudProjectDecorate } from '@/types/doc-decorate';
 import {
   PrivateCloudProductDetail,
@@ -9,7 +8,29 @@ import {
   PrivateCloudProductSimple,
   PrivateCloudProductSimpleDecorated,
 } from '@/types/private-cloud';
-import { genReadFilter } from './core';
+import { createSessionModel } from './core';
+
+export const privateCloudProductSimpleInclude = {
+  projectOwner: true,
+  primaryTechnicalLead: true,
+  secondaryTechnicalLead: true,
+  requests: {
+    where: {
+      active: true,
+    },
+  },
+};
+
+export const privateCloudProductDetailInclude = {
+  projectOwner: true,
+  primaryTechnicalLead: true,
+  secondaryTechnicalLead: true,
+  requests: {
+    where: {
+      active: true,
+    },
+  },
+};
 
 async function readFilter(session: Session) {
   if (!session.isUser && !session.isServiceAccount) return false;
@@ -97,66 +118,17 @@ async function decorate<T extends PrivateCloudProductSimple>(doc: T, session: Se
   return decoratedDoc;
 }
 
-export function getPrivateCloudProduct(
-  args: Prisma.PrivateCloudProjectFindFirstArgs,
-): Promise<PrivateCloudProductDetail>;
-export function getPrivateCloudProduct(
-  args: Prisma.PrivateCloudProjectFindFirstArgs,
-  session: Session,
-): Promise<PrivateCloudProductDetailDecorated>;
-export async function getPrivateCloudProduct(
-  { where = {}, select, include, ...otherArgs }: Prisma.PrivateCloudProjectFindFirstArgs,
-  session?: Session,
-) {
-  if (session) {
-    const filter = await genReadFilter<Prisma.PrivateCloudProjectWhereInput>(where, readFilter, session);
-    if (filter === false) return null;
-
-    where = filter;
-  }
-
-  const args: Prisma.PrivateCloudProjectFindFirstArgs = { where, ...otherArgs };
-  if (select) args.select = select;
-  else args.include = privateCloudProductDetailInclude;
-
-  const product = await prisma.privateCloudProject.findFirst(args);
-  if (select) return product;
-
-  if (session) {
-    return decorate(product as PrivateCloudProductDetail, session);
-  }
-
-  return product;
-}
-
-export function listPrivateCloudProducts(
-  args: Prisma.PrivateCloudProjectFindManyArgs,
-): Promise<PrivateCloudProductSimple[]>;
-export function listPrivateCloudProducts(
-  args: Prisma.PrivateCloudProjectFindManyArgs,
-  session: Session,
-): Promise<PrivateCloudProductSimpleDecorated[]>;
-export async function listPrivateCloudProducts(
-  { where = {}, select, include, ...otherArgs }: Prisma.PrivateCloudProjectFindManyArgs,
-  session?: Session,
-) {
-  if (session) {
-    const filter = await genReadFilter<Prisma.PrivateCloudProjectWhereInput>(where, readFilter, session);
-    if (filter === false) return null;
-
-    where = filter;
-  }
-
-  const args: Prisma.PrivateCloudProjectFindManyArgs = { where, ...otherArgs };
-  if (select) args.select = select;
-  else args.include = privateCloudProductSimpleInclude;
-
-  const products = await prisma.privateCloudProject.findMany(args);
-  if (select) return products;
-
-  if (session) {
-    return products.map((product) => decorate(product as PrivateCloudProductSimple, session));
-  }
-
-  return products;
-}
+export const privateCloudProductModel = createSessionModel<
+  PrivateCloudProductDetail,
+  PrivateCloudProductDetailDecorated,
+  PrivateCloudProductSimple,
+  PrivateCloudProductSimpleDecorated,
+  NonNullable<Parameters<typeof prisma.privateCloudProject.findFirst>[0]>,
+  NonNullable<Parameters<typeof prisma.privateCloudProject.upsert>[0]>
+>({
+  model: prisma.privateCloudProject,
+  includeDetail: privateCloudProductDetailInclude,
+  includeSimple: privateCloudProductSimpleInclude,
+  readFilter,
+  decorate,
+});

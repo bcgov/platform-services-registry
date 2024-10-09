@@ -6,9 +6,8 @@ import prisma from '@/core/prisma';
 import { OkResponse } from '@/core/responses';
 import ExpenseAuthorityMou from '@/emails/_templates/public-cloud/ExpenseAuthorityMou';
 import ExpenseAuthorityMouProduct from '@/emails/_templates/public-cloud/ExpenseAuthorityMouProduct';
-import { publicCloudProductDetailInclude } from '@/queries/public-cloud-products';
-import { publicCloudRequestDetailInclude } from '@/queries/public-cloud-requests';
 import { sendEmail } from '@/services/ches/core';
+import { publicCloudProductDetailInclude, publicCloudRequestDetailInclude } from '@/services/db';
 
 const apiHandler = createApiHandler({
   roles: ['admin'],

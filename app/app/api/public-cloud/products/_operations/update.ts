@@ -2,9 +2,9 @@ import { User } from '@prisma/client';
 import { Session } from 'next-auth';
 import { z, TypeOf, ZodType } from 'zod';
 import { OkResponse, UnauthorizedResponse } from '@/core/responses';
-import { getPublicCloudProduct } from '@/queries/public-cloud-products';
 import editRequest from '@/request-actions/public-cloud/edit-request';
 import { sendEditRequestEmails } from '@/services/ches/public-cloud';
+import { publicCloudProductModel } from '@/services/db';
 import { subscribeUsersToMautic } from '@/services/mautic';
 import { sendPublicCloudNatsMessage } from '@/services/nats';
 import { PublicCloudEditRequestBody } from '@/validation-schemas/public-cloud';
@@ -21,7 +21,7 @@ export default async function updateOp({
 }) {
   const { licencePlate } = pathParams;
 
-  const product = await getPublicCloudProduct(session, licencePlate);
+  const { data: product } = await publicCloudProductModel.get({ where: { licencePlate } }, session);
 
   if (!product?._permissions.edit) {
     return UnauthorizedResponse();

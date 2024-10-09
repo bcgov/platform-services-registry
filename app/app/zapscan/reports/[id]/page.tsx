@@ -1,6 +1,6 @@
 import { getServerSession } from 'next-auth/next';
 import { authOptions } from '@/core/auth-options';
-import prisma from '@/core/prisma';
+import { privateCloudProductZapResultModel } from '@/services/db';
 import './styles.css';
 
 export default async function Page({ params }: { params: { id: string } }) {
@@ -10,11 +10,13 @@ export default async function Page({ params }: { params: { id: string } }) {
     return null;
   }
 
-  const result = await prisma.privateCloudProjectZapResult.findUnique({
-    where: { id: params.id },
-    select: { id: true, html: true },
-    session: session as never,
-  });
+  const { data: result } = await privateCloudProductZapResultModel.get(
+    {
+      where: { id: params.id },
+      select: { id: true, html: true },
+    },
+    session,
+  );
 
   return <div className="zap-report" dangerouslySetInnerHTML={{ __html: result?.html || '' }}></div>;
 }

@@ -1,7 +1,6 @@
 import { Prisma, Ministry, ProjectStatus, TaskType, TaskStatus } from '@prisma/client';
 import { Session } from 'next-auth';
 import prisma from '@/core/prisma';
-import { publicCloudProductDetailInclude, publicCloudProductSimpleInclude } from '@/queries/public-cloud-products';
 import { PublicCloudProjectDecorate } from '@/types/doc-decorate';
 import {
   PublicCloudProductDetail,
@@ -10,7 +9,38 @@ import {
   PublicCloudProductSimpleDecorated,
 } from '@/types/public-cloud';
 import { getUniqueNonFalsyItems } from '@/utils/collection';
-import { genReadFilter } from './core';
+import { createSessionModel } from './core';
+
+export const publicCloudProductSimpleInclude = {
+  projectOwner: true,
+  primaryTechnicalLead: true,
+  secondaryTechnicalLead: true,
+  expenseAuthority: true,
+  requests: {
+    where: {
+      active: true,
+    },
+  },
+};
+
+export const publicCloudProductDetailInclude = {
+  projectOwner: true,
+  primaryTechnicalLead: true,
+  secondaryTechnicalLead: true,
+  expenseAuthority: true,
+  billing: {
+    include: {
+      expenseAuthority: true,
+      signedBy: true,
+      approvedBy: true,
+    },
+  },
+  requests: {
+    where: {
+      active: true,
+    },
+  },
+};
 
 async function readFilter(session: Session) {
   if (!session.isUser && !session.isServiceAccount) return false;
@@ -126,64 +156,17 @@ async function decorate<T extends PublicCloudProductSimple & Partial<Pick<Public
   return decoratedDoc;
 }
 
-export function getPublicCloudProduct(args: Prisma.PublicCloudProjectFindFirstArgs): Promise<PublicCloudProductDetail>;
-export function getPublicCloudProduct(
-  args: Prisma.PublicCloudProjectFindFirstArgs,
-  session: Session,
-): Promise<PublicCloudProductDetailDecorated>;
-export async function getPublicCloudProduct(
-  { where = {}, select, include, ...otherArgs }: Prisma.PublicCloudProjectFindFirstArgs,
-  session?: Session,
-) {
-  if (session) {
-    const filter = await genReadFilter<Prisma.PublicCloudProjectWhereInput>(where, readFilter, session);
-    if (filter === false) return null;
-
-    where = filter;
-  }
-
-  const args: Prisma.PublicCloudProjectFindFirstArgs = { where, ...otherArgs };
-  if (select) args.select = select;
-  else args.include = publicCloudProductDetailInclude;
-
-  const product = await prisma.publicCloudProject.findFirst(args);
-  if (select) return product;
-
-  if (session) {
-    return decorate(product as PublicCloudProductDetail, session);
-  }
-
-  return product;
-}
-
-export function listPublicCloudProducts(
-  args: Prisma.PublicCloudProjectFindManyArgs,
-): Promise<PublicCloudProductSimple[]>;
-export function listPublicCloudProducts(
-  args: Prisma.PublicCloudProjectFindManyArgs,
-  session: Session,
-): Promise<PublicCloudProductSimpleDecorated[]>;
-export async function listPublicCloudProducts(
-  { where = {}, select, include, ...otherArgs }: Prisma.PublicCloudProjectFindManyArgs,
-  session?: Session,
-) {
-  if (session) {
-    const filter = await genReadFilter<Prisma.PublicCloudProjectWhereInput>(where, readFilter, session);
-    if (filter === false) return null;
-
-    where = filter;
-  }
-
-  const args: Prisma.PublicCloudProjectFindManyArgs = { where, ...otherArgs };
-  if (select) args.select = select;
-  else args.include = publicCloudProductSimpleInclude;
-
-  const products = await prisma.publicCloudProject.findMany(args);
-  if (select) return products;
-
-  if (session) {
-    return products.map((product) => decorate(product as PublicCloudProductSimple, session));
-  }
-
-  return products;
-}
+export const publicCloudProductModel = createSessionModel<
+  PublicCloudProductDetail,
+  PublicCloudProductDetailDecorated,
+  PublicCloudProductSimple,
+  PublicCloudProductSimpleDecorated,
+  NonNullable<Parameters<typeof prisma.publicCloudProject.findFirst>[0]>,
+  NonNullable<Parameters<typeof prisma.publicCloudProject.upsert>[0]>
+>({
+  model: prisma.publicCloudProject,
+  includeDetail: publicCloudProductDetailInclude,
+  includeSimple: publicCloudProductSimpleInclude,
+  readFilter,
+  decorate,
+});

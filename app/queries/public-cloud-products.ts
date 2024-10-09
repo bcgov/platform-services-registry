@@ -3,6 +3,7 @@ import _isNumber from 'lodash-es/isNumber';
 import { Session } from 'next-auth';
 import prisma from '@/core/prisma';
 import { parsePaginationParams } from '@/helpers/pagination';
+import { publicCloudProductModel } from '@/services/db';
 import {
   PublicCloudProductSearch,
   PublicCloudProductDetail,
@@ -10,37 +11,6 @@ import {
 } from '@/types/public-cloud';
 import { PublicCloudProductSearchBody } from '@/validation-schemas/public-cloud';
 import { getMatchingUserIds } from './users';
-
-export const publicCloudProductSimpleInclude = {
-  projectOwner: true,
-  primaryTechnicalLead: true,
-  secondaryTechnicalLead: true,
-  expenseAuthority: true,
-  requests: {
-    where: {
-      active: true,
-    },
-  },
-};
-
-export const publicCloudProductDetailInclude = {
-  projectOwner: true,
-  primaryTechnicalLead: true,
-  secondaryTechnicalLead: true,
-  expenseAuthority: true,
-  billing: {
-    include: {
-      expenseAuthority: true,
-      signedBy: true,
-      approvedBy: true,
-    },
-  },
-  requests: {
-    where: {
-      active: true,
-    },
-  },
-};
 
 const defaultSortKey = 'updatedAt';
 
@@ -103,40 +73,18 @@ export async function searchPublicCloudProducts({
     where.status = { in: status };
   }
 
-  const [docs, totalCount] = await Promise.all([
-    prisma.publicCloudProject.findMany({
+  const { data: docs, totalCount } = await publicCloudProductModel.list(
+    {
       where,
       skip,
       take,
-      include: publicCloudProductSimpleInclude,
       orderBy,
-      session: session as never,
-    }),
-    prisma.publicCloudProject.count({
-      where,
-      session: session as never,
-    }),
-  ]);
+      includeCount: true,
+    },
+    session,
+  );
 
   return { docs, totalCount } as PublicCloudProductSearch;
-}
-
-export async function getPublicCloudProduct(session: Session, licencePlate?: string) {
-  if (!licencePlate) return null;
-
-  const product: PublicCloudProductDetail | null = await prisma.publicCloudProject.findUnique({
-    where: {
-      licencePlate,
-    },
-    include: publicCloudProductDetailInclude,
-    session: session as never,
-  });
-
-  if (!product) {
-    return null;
-  }
-
-  return product as PublicCloudProductDetailDecorated;
 }
 
 export function excludeProductUsers(product: PublicCloudProductDetailDecorated | null) {
