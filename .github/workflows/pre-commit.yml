@@ -21,5 +21,12 @@ jobs:
       uses: ./.github/actions/setup-npm
 
     - name: Rerun Pre-Commit Hooks on CI
-      run: |
-        pre-commit run --config=.pre-commit-config.yaml --color=always --show-diff-on-failure --all-files
+      run: pre-commit run --config=.pre-commit-config.yaml --color=always --show-diff-on-failure --all-files
+
+    - name: Lint Current Commits
+      if: github.event_name == 'push'
+      run: npx commitlint --last --verbose
+
+    - name: Lint PR Commits
+      if: github.event_name == 'pull_request'
+      run: npx commitlint --from ${{ github.event.pull_request.head.sha}}~${{ github.event.pull_request.commits }} --to ${{ github.event.pull_request.head.sha }} --verbose
