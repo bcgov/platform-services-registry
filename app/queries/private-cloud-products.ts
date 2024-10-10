@@ -2,7 +2,7 @@ import { Prisma } from '@prisma/client';
 import _isNumber from 'lodash-es/isNumber';
 import { Session } from 'next-auth';
 import { parsePaginationParams } from '@/helpers/pagination';
-import { privateCloudProductModel } from '@/services/db';
+import { models } from '@/services/db';
 import { PrivateCloudProductDetail, PrivateCloudProductDetailDecorated } from '@/types/private-cloud';
 import { PrivateCloudProductSearchBody } from '@/validation-schemas/private-cloud';
 import { getMatchingUserIds } from './users';
@@ -73,7 +73,7 @@ export async function searchPrivateCloudProducts({
     where.isTest = temporary[0] === 'YES';
   }
 
-  const { data: docs, totalCount } = await privateCloudProductModel.list(
+  const { data: docs, totalCount } = await models.privateCloudProduct.list(
     {
       where,
       skip,

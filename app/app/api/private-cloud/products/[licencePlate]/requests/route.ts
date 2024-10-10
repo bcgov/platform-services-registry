@@ -2,7 +2,7 @@ import { Prisma } from '@prisma/client';
 import { z } from 'zod';
 import createApiHandler from '@/core/api-handler';
 import { NoContent, OkResponse } from '@/core/responses';
-import { privateCloudRequestModel } from '@/services/db';
+import { models } from '@/services/db';
 import { processBoolean } from '@/utils/zod';
 
 const pathParamSchema = z.object({
@@ -25,7 +25,7 @@ export const GET = apiHandler(async ({ pathParams, queryParams, session }) => {
   const where: Prisma.PrivateCloudRequestWhereInput = active ? { active: true } : {};
   where.licencePlate = licencePlate;
 
-  const { data: requests } = await privateCloudRequestModel.list(
+  const { data: requests } = await models.privateCloudRequest.list(
     {
       where,
       orderBy: {

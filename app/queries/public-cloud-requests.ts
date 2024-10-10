@@ -4,7 +4,7 @@ import { Session } from 'next-auth';
 import { requestSorts } from '@/constants';
 import prisma from '@/core/prisma';
 import { parsePaginationParams } from '@/helpers/pagination';
-import { publicCloudRequestModel } from '@/services/db';
+import { models } from '@/services/db';
 import { PublicCloudRequestSearchBody } from '@/validation-schemas/public-cloud';
 import { getMatchingUserIds } from './users';
 
@@ -91,7 +91,7 @@ export async function searchPublicCloudRequests({
     where.decisionStatus = { in: status };
   }
 
-  const { data: docs, totalCount } = await publicCloudRequestModel.list(
+  const { data: docs, totalCount } = await models.publicCloudRequest.list(
     {
       where,
       skip,

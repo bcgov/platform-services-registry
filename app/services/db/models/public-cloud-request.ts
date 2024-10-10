@@ -1,84 +1,14 @@
 import { Prisma, TaskType, TaskStatus, RequestType, DecisionStatus } from '@prisma/client';
 import { Session } from 'next-auth';
 import prisma from '@/core/prisma';
-import { PublicCloudProjectDecorate, PublicCloudRequestDecorate } from '@/types/doc-decorate';
-import {
-  PublicCloudRequestDetail,
-  PublicCloudRequestDetailDecorated,
-  PublicCloudRequestSimple,
-  PublicCloudRequestSimpleDecorated,
-} from '@/types/public-cloud';
+import { PublicCloudRequestDecorate } from '@/types/doc-decorate';
+import { PublicCloudRequestDetail, PublicCloudRequestSimple } from '@/types/public-cloud';
 import { getUniqueNonFalsyItems } from '@/utils/collection';
+import { publicCloudRequestDetailInclude, publicCloudRequestSimpleInclude } from '../includes';
 import { createSessionModel } from './core';
 import { publicCloudProductModel } from './public-cloud-product';
 
-export const publicCloudRequestSimpleInclude = {
-  project: {
-    include: {
-      projectOwner: true,
-      primaryTechnicalLead: true,
-      secondaryTechnicalLead: true,
-      expenseAuthority: true,
-      billing: true,
-    },
-  },
-  decisionData: {
-    include: {
-      projectOwner: true,
-      primaryTechnicalLead: true,
-      secondaryTechnicalLead: true,
-      expenseAuthority: true,
-      billing: true,
-    },
-  },
-};
-
-export const publicCloudRequestDetailInclude = {
-  project: {
-    include: {
-      projectOwner: true,
-      primaryTechnicalLead: true,
-      secondaryTechnicalLead: true,
-      expenseAuthority: true,
-      billing: true,
-    },
-  },
-  originalData: {
-    include: {
-      projectOwner: true,
-      primaryTechnicalLead: true,
-      secondaryTechnicalLead: true,
-      expenseAuthority: true,
-      billing: true,
-    },
-  },
-  requestData: {
-    include: {
-      projectOwner: true,
-      primaryTechnicalLead: true,
-      secondaryTechnicalLead: true,
-      expenseAuthority: true,
-      billing: true,
-    },
-  },
-  decisionData: {
-    include: {
-      projectOwner: true,
-      primaryTechnicalLead: true,
-      secondaryTechnicalLead: true,
-      expenseAuthority: true,
-      billing: {
-        include: {
-          expenseAuthority: true,
-          signedBy: true,
-          approvedBy: true,
-        },
-      },
-    },
-  },
-};
-
-async function readFilter(session: Session) {
+async function baseFilter(session: Session) {
   if (!session?.userId) return false;
   if (session.permissions.viewAllPublicCloudProducts) return true;
 
@@ -89,19 +19,14 @@ async function readFilter(session: Session) {
     .filter((task) => [TaskType.SIGN_MOU, TaskType.REVIEW_MOU].includes(task.type))
     .map((task) => (task.data as { licencePlate: string }).licencePlate);
 
-  const baseFilter: Prisma.PublicCloudRequestWhereInput = {
+  const filter: Prisma.PublicCloudRequestWhereInput = {
     OR: [
       { licencePlate: { in: getUniqueNonFalsyItems([...licencePlates, ...licencePlatesFromTasks]) } },
       { type: RequestType.CREATE, createdByEmail: { equals: session.user.email, mode: 'insensitive' } },
     ],
   };
 
-  return baseFilter;
-}
-
-async function writeFilter(session: Session) {
-  if (session.permissions.reviewAllPublicCloudRequests) return true;
-  return false;
+  return filter;
 }
 
 async function decorate<T extends PublicCloudRequestSimple>(doc: T, session: Session) {
@@ -166,16 +91,17 @@ async function decorate<T extends PublicCloudRequestSimple>(doc: T, session: Ses
 }
 
 export const publicCloudRequestModel = createSessionModel<
-  PublicCloudRequestDetail,
-  PublicCloudRequestDetailDecorated,
   PublicCloudRequestSimple,
-  PublicCloudRequestSimpleDecorated,
+  PublicCloudRequestDetail,
+  PublicCloudRequestDecorate,
+  NonNullable<Parameters<typeof prisma.publicCloudRequest.create>[0]>,
   NonNullable<Parameters<typeof prisma.publicCloudRequest.findFirst>[0]>,
+  NonNullable<Parameters<typeof prisma.publicCloudRequest.update>[0]>,
   NonNullable<Parameters<typeof prisma.publicCloudRequest.upsert>[0]>
 >({
   model: prisma.publicCloudRequest,
   includeDetail: publicCloudRequestDetailInclude,
   includeSimple: publicCloudRequestSimpleInclude,
-  readFilter,
+  baseFilter,
   decorate,
 });

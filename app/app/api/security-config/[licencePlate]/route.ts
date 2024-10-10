@@ -2,7 +2,7 @@ import { ProjectContext } from '@prisma/client';
 import { z } from 'zod';
 import createApiHandler from '@/core/api-handler';
 import { OkResponse } from '@/core/responses';
-import { privateCloudProductModel, publicCloudProductModel, securityConfigModel } from '@/services/db';
+import { models } from '@/services/db';
 
 const pathParamSchema = z.object({
   licencePlate: z.string(),
@@ -17,7 +17,7 @@ const apiHandler = createApiHandler({
   validations: { pathParams: pathParamSchema, queryParams: queryParamSchema },
 });
 export const GET = apiHandler(async ({ pathParams, queryParams, session }) => {
-  const configProm = securityConfigModel.get(
+  const configProm = models.securityConfig.get(
     {
       where: {
         licencePlate: pathParams.licencePlate,
@@ -33,13 +33,13 @@ export const GET = apiHandler(async ({ pathParams, queryParams, session }) => {
 
   const projectProm =
     queryParams.context === ProjectContext.PRIVATE
-      ? privateCloudProductModel.get(privateQuery, session)
-      : publicCloudProductModel.get(publicQuery, session);
+      ? models.privateCloudProduct.get(privateQuery, session)
+      : models.publicCloudProduct.get(publicQuery, session);
 
   const decisionDataProm =
     queryParams.context === ProjectContext.PRIVATE
-      ? privateCloudProductModel.get(privateQuery, session)
-      : publicCloudProductModel.get(publicQuery, session);
+      ? models.privateCloudProduct.get(privateQuery, session)
+      : models.publicCloudProduct.get(publicQuery, session);
 
   const [config, project, decisionData] = await Promise.all([configProm, projectProm, decisionDataProm]);
 

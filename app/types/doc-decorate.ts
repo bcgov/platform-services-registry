@@ -72,5 +72,7 @@ export interface SonarScanResultDecorate {
 export interface UserDecorate {
   _permissions: {
     view: boolean;
+    edit: boolean;
+    delete: boolean;
   };
 }

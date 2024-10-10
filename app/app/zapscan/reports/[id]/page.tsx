@@ -1,6 +1,6 @@
 import { getServerSession } from 'next-auth/next';
 import { authOptions } from '@/core/auth-options';
-import { privateCloudProductZapResultModel } from '@/services/db';
+import { models } from '@/services/db';
 import './styles.css';
 
 export default async function Page({ params }: { params: { id: string } }) {
@@ -10,7 +10,7 @@ export default async function Page({ params }: { params: { id: string } }) {
     return null;
   }
 
-  const { data: result } = await privateCloudProductZapResultModel.get(
+  const { data: result } = await models.privateCloudProductZapResult.get(
     {
       where: { id: params.id },
       select: { id: true, html: true },

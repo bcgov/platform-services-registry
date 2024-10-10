@@ -4,7 +4,7 @@ import { Session } from 'next-auth';
 import { requestSorts } from '@/constants';
 import prisma from '@/core/prisma';
 import { parsePaginationParams } from '@/helpers/pagination';
-import { privateCloudRequestModel } from '@/services/db';
+import { models } from '@/services/db';
 import { PrivateCloudRequestDetailDecorated, PrivateCloudRequestSearch } from '@/types/private-cloud';
 import { PrivateCloudRequestSearchBody } from '@/validation-schemas/private-cloud';
 import { getMatchingUserIds } from './users';
@@ -98,7 +98,7 @@ export async function searchPrivateCloudRequests({
     where.decisionStatus = { in: status };
   }
 
-  const { data: docs, totalCount } = await privateCloudRequestModel.list(
+  const { data: docs, totalCount } = await models.privateCloudRequest.list(
     {
       where,
       skip,

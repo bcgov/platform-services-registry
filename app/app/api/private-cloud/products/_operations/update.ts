@@ -5,7 +5,7 @@ import { OkResponse, UnauthorizedResponse } from '@/core/responses';
 import { sendRequestNatsMessage } from '@/helpers/nats-message';
 import editRequest from '@/request-actions/private-cloud/edit-request';
 import { sendEditRequestEmails, sendRequestApprovalEmails } from '@/services/ches/private-cloud';
-import { privateCloudProductModel } from '@/services/db';
+import { models } from '@/services/db';
 import { PrivateCloudEditRequestBody } from '@/validation-schemas/private-cloud';
 import { putPathParamSchema } from '../[licencePlate]/schema';
 
@@ -20,7 +20,7 @@ export default async function updateOp({
 }) {
   const { licencePlate } = pathParams;
 
-  const { data: product } = await privateCloudProductModel.get({ where: { licencePlate } }, session);
+  const { data: product } = await models.privateCloudProduct.get({ where: { licencePlate } }, session);
 
   if (!product?._permissions.edit) {
     return UnauthorizedResponse();

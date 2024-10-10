@@ -2,7 +2,7 @@ import { z } from 'zod';
 import createApiHandler from '@/core/api-handler';
 import { OkResponse, UnauthorizedResponse } from '@/core/responses';
 import { getQuotaChangeStatus } from '@/helpers/auto-approval-check';
-import { privateCloudProductModel } from '@/services/db';
+import { models } from '@/services/db';
 import { quotasSchema } from '@/validation-schemas/private-cloud';
 
 const pathParamSchema = z.object({
@@ -22,7 +22,7 @@ export const POST = apiHandler(async ({ session, pathParams, body }) => {
   const { licencePlate } = pathParams;
   const { requestedQuota } = body;
 
-  const { data: currentProduct } = await privateCloudProductModel.get(
+  const { data: currentProduct } = await models.privateCloudProduct.get(
     {
       where: { licencePlate },
       select: {

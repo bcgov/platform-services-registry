@@ -1,8 +1,8 @@
 import { Session } from 'next-auth';
-import { publicCloudProductModel } from '@/services/db';
+import { models } from '@/services/db';
 
 export default async function listOp({ session }: { session: Session }) {
-  const { data: products } = await publicCloudProductModel.list(
+  const { data: products } = await models.publicCloudProduct.list(
     {
       where: {},
       skip: 0,
