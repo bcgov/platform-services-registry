@@ -3,7 +3,7 @@ import { z, string } from 'zod';
 import { IS_PROD, IS_TEST } from '@/config';
 import createApiHandler from '@/core/api-handler';
 import { OkResponse, UnauthorizedResponse } from '@/core/responses';
-import { privateCloudProductModel } from '@/services/db';
+import { models } from '@/services/db';
 import { getPodMetrics } from '@/services/k8s';
 import { getPathParamSchema } from '../schema';
 
@@ -21,7 +21,7 @@ export const GET = apiHandler(async ({ queryParams, pathParams, session }) => {
   const { environment } = queryParams;
   let { cluster } = queryParams;
   let { licencePlate } = pathParams;
-  const { data: product } = await privateCloudProductModel.get({ where: { licencePlate } }, session);
+  const { data: product } = await models.privateCloudProduct.get({ where: { licencePlate } }, session);
 
   if (!product?._permissions.view) {
     return UnauthorizedResponse();

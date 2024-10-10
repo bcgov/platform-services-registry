@@ -6,7 +6,7 @@ import { createSessionModel } from './core';
 import { privateCloudProductModel } from './private-cloud-product';
 import { publicCloudProductModel } from './public-cloud-product';
 
-async function readFilter(session: Session) {
+async function baseFilter(session: Session) {
   if (!session) return false;
   if (session.permissions.viewSonarscanResults) return true;
 
@@ -25,15 +25,11 @@ async function readFilter(session: Session) {
 
   if (OR.length === 0) return false;
 
-  const baseFilter: Prisma.SonarScanResultWhereInput = {
+  const filter: Prisma.SonarScanResultWhereInput = {
     OR,
   };
 
-  return baseFilter;
-}
-
-async function writeFilter(session: Session) {
-  return false;
+  return filter;
 }
 
 type SonarScanResultDecorated = SonarScanResult & SonarScanResultDecorate;
@@ -51,13 +47,14 @@ async function decorate(doc: SonarScanResult, session: Session) {
 
 export const sonarScanResultModel = createSessionModel<
   SonarScanResult,
-  SonarScanResultDecorated,
   SonarScanResult,
-  SonarScanResultDecorated,
+  SonarScanResultDecorate,
+  NonNullable<Parameters<typeof prisma.sonarScanResult.create>[0]>,
   NonNullable<Parameters<typeof prisma.sonarScanResult.findFirst>[0]>,
+  NonNullable<Parameters<typeof prisma.sonarScanResult.update>[0]>,
   NonNullable<Parameters<typeof prisma.sonarScanResult.upsert>[0]>
 >({
   model: prisma.sonarScanResult,
-  readFilter,
+  baseFilter,
   decorate,
 });

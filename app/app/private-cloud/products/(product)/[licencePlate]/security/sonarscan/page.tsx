@@ -4,7 +4,7 @@ import { getServerSession } from 'next-auth/next';
 import SonarScanResults from '@/components/sonarscan/SonarScanResults';
 import { authOptions } from '@/core/auth-options';
 import { parsePaginationParams } from '@/helpers/pagination';
-import { sonarScanResultModel } from '@/services/db';
+import { models } from '@/services/db';
 
 export default async function Page({
   params,
@@ -50,7 +50,7 @@ export default async function Page({
   }
 
   const [{ data: rows, totalCount }, { data: distinct }] = await Promise.all([
-    sonarScanResultModel.list(
+    models.sonarScanResult.list(
       {
         where,
         select: {
@@ -75,7 +75,7 @@ export default async function Page({
       },
       session,
     ),
-    sonarScanResultModel.list(
+    models.sonarScanResult.list(
       {
         where: { licencePlate: params.licencePlate },
         select: { context: true },

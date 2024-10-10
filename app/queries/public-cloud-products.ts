@@ -1,14 +1,9 @@
 import { Prisma } from '@prisma/client';
 import _isNumber from 'lodash-es/isNumber';
 import { Session } from 'next-auth';
-import prisma from '@/core/prisma';
 import { parsePaginationParams } from '@/helpers/pagination';
-import { publicCloudProductModel } from '@/services/db';
-import {
-  PublicCloudProductSearch,
-  PublicCloudProductDetail,
-  PublicCloudProductDetailDecorated,
-} from '@/types/public-cloud';
+import { models } from '@/services/db';
+import { PublicCloudProductSearch, PublicCloudProductDetailDecorated } from '@/types/public-cloud';
 import { PublicCloudProductSearchBody } from '@/validation-schemas/public-cloud';
 import { getMatchingUserIds } from './users';
 
@@ -73,7 +68,7 @@ export async function searchPublicCloudProducts({
     where.status = { in: status };
   }
 
-  const { data: docs, totalCount } = await publicCloudProductModel.list(
+  const { data: docs, totalCount } = await models.publicCloudProduct.list(
     {
       where,
       skip,

@@ -6,7 +6,7 @@ import { createSessionModel } from './core';
 import { privateCloudProductModel } from './private-cloud-product';
 import { publicCloudProductModel } from './public-cloud-product';
 
-async function readFilter(session: Session) {
+async function baseFilter(session: Session) {
   if (!session) return false;
   if (session.isAdmin) return true;
 
@@ -25,15 +25,11 @@ async function readFilter(session: Session) {
 
   if (OR.length === 0) return false;
 
-  const baseFilter: Prisma.SecurityConfigWhereInput = {
+  const filter: Prisma.SecurityConfigWhereInput = {
     OR,
   };
 
-  return baseFilter;
-}
-
-async function writeFilter(session: Session) {
-  return readFilter(session);
+  return filter;
 }
 
 type SecurityConfigDecorated = SecurityConfig & SecurityConfigDecorate;
@@ -72,13 +68,14 @@ async function decorate(doc: SecurityConfig, session: Session) {
 
 export const securityConfigModel = createSessionModel<
   SecurityConfig,
-  SecurityConfigDecorated,
   SecurityConfig,
-  SecurityConfigDecorated,
+  SecurityConfigDecorate,
+  NonNullable<Parameters<typeof prisma.securityConfig.create>[0]>,
   NonNullable<Parameters<typeof prisma.securityConfig.findFirst>[0]>,
+  NonNullable<Parameters<typeof prisma.securityConfig.update>[0]>,
   NonNullable<Parameters<typeof prisma.securityConfig.upsert>[0]>
 >({
   model: prisma.securityConfig,
-  readFilter,
+  baseFilter,
   decorate,
 });

@@ -2,37 +2,11 @@ import { Prisma, Ministry, ProjectStatus } from '@prisma/client';
 import { Session } from 'next-auth';
 import prisma from '@/core/prisma';
 import { PrivateCloudProjectDecorate } from '@/types/doc-decorate';
-import {
-  PrivateCloudProductDetail,
-  PrivateCloudProductDetailDecorated,
-  PrivateCloudProductSimple,
-  PrivateCloudProductSimpleDecorated,
-} from '@/types/private-cloud';
+import { PrivateCloudProductDetail, PrivateCloudProductSimple } from '@/types/private-cloud';
+import { privateCloudProductDetailInclude, privateCloudProductSimpleInclude } from '../includes';
 import { createSessionModel } from './core';
 
-export const privateCloudProductSimpleInclude = {
-  projectOwner: true,
-  primaryTechnicalLead: true,
-  secondaryTechnicalLead: true,
-  requests: {
-    where: {
-      active: true,
-    },
-  },
-};
-
-export const privateCloudProductDetailInclude = {
-  projectOwner: true,
-  primaryTechnicalLead: true,
-  secondaryTechnicalLead: true,
-  requests: {
-    where: {
-      active: true,
-    },
-  },
-};
-
-async function readFilter(session: Session) {
+async function baseFilter(session: Session) {
   if (!session.isUser && !session.isServiceAccount) return false;
   if (session.permissions.viewAllPrivateCloudProducts) return true;
 
@@ -49,27 +23,8 @@ async function readFilter(session: Session) {
     );
   }
 
-  const baseFilter: Prisma.PrivateCloudProjectWhereInput = { OR };
-  return baseFilter;
-}
-
-async function writeFilter(session: Session) {
-  if (!session.isUser && !session.isServiceAccount) return false;
-  if (session.permissions.editAllPrivateCloudProducts) return true;
-
-  const OR: Prisma.PrivateCloudProjectWhereInput[] = [{ ministry: { in: session.ministries.editor as Ministry[] } }];
-
-  if (session.user.id) {
-    OR.push(
-      { projectOwnerId: session.user.id as string },
-      { primaryTechnicalLeadId: session.user.id as string },
-      { secondaryTechnicalLeadId: session.user.id },
-    );
-  }
-
-  const baseFilter: Prisma.PrivateCloudProjectWhereInput = { OR };
-
-  return baseFilter;
+  const filter: Prisma.PrivateCloudProjectWhereInput = { OR };
+  return filter;
 }
 
 async function decorate<T extends PrivateCloudProductSimple>(doc: T, session: Session) {
@@ -119,16 +74,17 @@ async function decorate<T extends PrivateCloudProductSimple>(doc: T, session: Se
 }
 
 export const privateCloudProductModel = createSessionModel<
-  PrivateCloudProductDetail,
-  PrivateCloudProductDetailDecorated,
   PrivateCloudProductSimple,
-  PrivateCloudProductSimpleDecorated,
+  PrivateCloudProductDetail,
+  PrivateCloudProjectDecorate,
+  NonNullable<Parameters<typeof prisma.privateCloudProject.create>[0]>,
   NonNullable<Parameters<typeof prisma.privateCloudProject.findFirst>[0]>,
+  NonNullable<Parameters<typeof prisma.privateCloudProject.update>[0]>,
   NonNullable<Parameters<typeof prisma.privateCloudProject.upsert>[0]>
 >({
   model: prisma.privateCloudProject,
   includeDetail: privateCloudProductDetailInclude,
   includeSimple: privateCloudProductSimpleInclude,
-  readFilter,
+  baseFilter,
   decorate,
 });

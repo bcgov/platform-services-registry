@@ -4,7 +4,7 @@ import createApiHandler from '@/core/api-handler';
 import { BadRequestResponse, OkResponse, UnauthorizedResponse } from '@/core/responses';
 import { hasContactsChanged } from '@/helpers/product';
 import { createEvent } from '@/mutations/events';
-import { privateCloudRequestModel } from '@/services/db';
+import { models } from '@/services/db';
 import { sendPrivateCloudNatsMessage } from '@/services/nats';
 
 const pathParamSchema = z.object({
@@ -18,7 +18,7 @@ const apiHandler = createApiHandler({
 export const GET = apiHandler(async ({ pathParams, session }) => {
   const { id } = pathParams;
 
-  const { data: request } = await privateCloudRequestModel.get({ where: { id } }, session);
+  const { data: request } = await models.privateCloudRequest.get({ where: { id } }, session);
 
   if (!request?._permissions.resend) {
     return UnauthorizedResponse();

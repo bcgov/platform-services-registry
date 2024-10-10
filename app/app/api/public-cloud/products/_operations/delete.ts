@@ -7,7 +7,7 @@ import { createEvent } from '@/mutations/events';
 import { excludeProductUsers } from '@/queries/public-cloud-products';
 import { getLastClosedPublicCloudRequest } from '@/queries/public-cloud-requests';
 import { sendDeleteRequestEmails } from '@/services/ches/public-cloud';
-import { publicCloudProductModel, publicCloudRequestDetailInclude } from '@/services/db';
+import { models, publicCloudRequestDetailInclude } from '@/services/db';
 import { PublicCloudRequestDetail } from '@/types/public-cloud';
 import { deletePathParamSchema } from '../[licencePlate]/schema';
 
@@ -21,7 +21,7 @@ export default async function deleteOp({
   const { user } = session;
   const { licencePlate } = pathParams;
 
-  const product = excludeProductUsers((await publicCloudProductModel.get({ where: { licencePlate } }, session)).data);
+  const product = excludeProductUsers((await models.publicCloudProduct.get({ where: { licencePlate } }, session)).data);
 
   if (!product?._permissions.delete) {
     return UnauthorizedResponse();
