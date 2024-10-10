@@ -80,6 +80,7 @@ git config gpg.program gpg
 1. Install the pre-commit script.
    ```sh
    pre-commit install
+   pre-commit install --hook-type commit-msg
    ```
 
 ## Setting Up GitHub Workspace
