@@ -105,6 +105,18 @@
               "officeLocation": ""
             },
             {
+              "id": "a008b857-36c8-4a17-a79a-518e33effec7",
+              "extension_85cc52e9286540fcb1f97ed86114a0e5_bcgovGUID": "a008b85736c84a17a79a518e33effec7",
+              "onPremisesSamAccountName": "BILLING_READER_SYSTEM",
+              "userPrincipalName": "billing.reader.system@gov.bc.ca",
+              "mail": "billing.reader.system@gov.bc.ca",
+              "displayName": "System, Billing Reader CITZ:EX",
+              "givenName": "Billing Reader",
+              "surname": "System",
+              "jobTitle": "billing-reader",
+              "officeLocation": ""
+            },
+            {
               "id": "a008b857-36c8-4a17-a79a-518e33effeb1",
               "extension_85cc52e9286540fcb1f97ed86114a0e5_bcgovGUID": "a008b85736c84a17a79a518e33effeb1",
               "onPremisesSamAccountName": "JOHNDOE",
@@ -383,6 +395,27 @@
           "givenName": "Billing Reviewer",
           "surname": "System",
           "jobTitle": "billing-reviewer",
+          "officeLocation": ""
+        }
+      }
+    },
+    {
+      "request": {
+        "url": "https://graph.microsoft.com/v1.0/users/billing.reader.system@gov.bc.ca?*",
+        "method": "GET"
+      },
+      "response": {
+        "body": {
+          "@odata.context": "https://graph.microsoft.com/v1.0/$metadata#users/$entity",
+          "id": "a008b857-36c8-4a17-a79a-518e33effec7",
+          "extension_85cc52e9286540fcb1f97ed86114a0e5_bcgovGUID": "a008b85736c84a17a79a518e33effec7",
+          "onPremisesSamAccountName": "BILLING_READER_SYSTEM",
+          "userPrincipalName": "billing.reader.system@gov.bc.ca",
+          "mail": "billing.reader.system@gov.bc.ca",
+          "displayName": "System, Billing Reader CITZ:EX",
+          "givenName": "Billing Reader",
+          "surname": "System",
+          "jobTitle": "billing-reader",
           "officeLocation": ""
         }
       }
