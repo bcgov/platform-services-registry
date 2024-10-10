@@ -4,11 +4,14 @@ import { z, TypeOf, ZodType } from 'zod';
 import prisma from '@/core/prisma';
 import { BadRequestResponse, OkResponse, UnauthorizedResponse } from '@/core/responses';
 import { isEligibleForDeletion } from '@/helpers/openshift';
-import { createEvent } from '@/mutations/events';
-import { excludeProductUsers } from '@/queries/private-cloud-products';
-import { getLastClosedPrivateCloudRequest } from '@/queries/private-cloud-requests';
 import { sendDeleteRequestEmails } from '@/services/ches/private-cloud';
-import { privateCloudRequestDetailInclude, models } from '@/services/db';
+import {
+  createEvent,
+  privateCloudRequestDetailInclude,
+  models,
+  excludePrivateProductUsers,
+  getLastClosedPrivateCloudRequest,
+} from '@/services/db';
 import { PrivateCloudRequestDetail } from '@/types/private-cloud';
 import { deletePathParamSchema } from '../[licencePlate]/schema';
 
@@ -22,7 +25,7 @@ export default async function deleteOp({
   const { user } = session;
   const { licencePlate } = pathParams;
 
-  const product = excludeProductUsers(
+  const product = excludePrivateProductUsers(
     (await models.privateCloudProduct.get({ where: { licencePlate } }, session)).data,
   );
 

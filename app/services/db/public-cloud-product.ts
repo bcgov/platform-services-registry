@@ -3,44 +3,43 @@ import _isNumber from 'lodash-es/isNumber';
 import { Session } from 'next-auth';
 import { parsePaginationParams } from '@/helpers/pagination';
 import { models } from '@/services/db';
-import { PrivateCloudProductDetail, PrivateCloudProductDetailDecorated } from '@/types/private-cloud';
-import { PrivateCloudProductSearchBody } from '@/validation-schemas/private-cloud';
-import { getMatchingUserIds } from './users';
+import { PublicCloudProductSearch, PublicCloudProductDetailDecorated } from '@/types/public-cloud';
+import { PublicCloudProductSearchBody } from '@/validation-schemas/public-cloud';
+import { getMatchingUserIds } from './user';
 
 const defaultSortKey = 'updatedAt';
 
-export async function searchPrivateCloudProducts({
+export async function searchPublicCloudProducts({
   session,
   skip,
   take,
   page,
   pageSize,
   ministries,
-  clusters,
+  providers,
   status,
-  temporary,
-  search = '',
+  search,
   sortKey = defaultSortKey,
   sortOrder = Prisma.SortOrder.desc,
   extraFilter,
-}: PrivateCloudProductSearchBody & {
+}: PublicCloudProductSearchBody & {
   session: Session;
   skip?: number;
   take?: number;
-  extraFilter?: Prisma.PrivateCloudProjectWhereInput;
+  extraFilter?: Prisma.PublicCloudProjectWhereInput;
 }) {
   if (!_isNumber(skip) && !_isNumber(take) && page && pageSize) {
     ({ skip, take } = parsePaginationParams(page, pageSize, 10));
   }
 
-  const where: Prisma.PrivateCloudProjectWhereInput = extraFilter ?? {};
+  const where: Prisma.PublicCloudProjectWhereInput = extraFilter ?? {};
   const orderBy = { [sortKey || defaultSortKey]: Prisma.SortOrder[sortOrder] };
 
   if (search === '*') search = '';
 
   if (search) {
     const matchingUserIds = await getMatchingUserIds(search);
-    const productSearchcreteria: Prisma.StringFilter<'PrivateCloudProject'> = { contains: search, mode: 'insensitive' };
+    const productSearchcreteria: Prisma.StringFilter<'PublicCloudProject'> = { contains: search, mode: 'insensitive' };
 
     where.OR = [
       { name: productSearchcreteria },
@@ -61,19 +60,15 @@ export async function searchPrivateCloudProducts({
     where.ministry = { in: ministries };
   }
 
-  if (clusters && clusters.length > 0) {
-    where.cluster = { in: clusters };
+  if (providers && providers.length > 0) {
+    where.provider = { in: providers };
   }
 
   if (status && status.length > 0) {
     where.status = { in: status };
   }
 
-  if (temporary && temporary.length === 1) {
-    where.isTest = temporary[0] === 'YES';
-  }
-
-  const { data: docs, totalCount } = await models.privateCloudProduct.list(
+  const { data: docs, totalCount } = await models.publicCloudProduct.list(
     {
       where,
       skip,
@@ -84,13 +79,13 @@ export async function searchPrivateCloudProducts({
     session,
   );
 
-  return { docs, totalCount };
+  return { docs, totalCount } as PublicCloudProductSearch;
 }
 
-export function excludeProductUsers(product: PrivateCloudProductDetailDecorated | null) {
+export function excludePublicProductUsers(product: PublicCloudProductDetailDecorated | null) {
   if (!product) return null;
 
-  const { projectOwner, primaryTechnicalLead, secondaryTechnicalLead, ...rest } = product;
+  const { projectOwner, primaryTechnicalLead, secondaryTechnicalLead, expenseAuthority, billing, ...rest } = product;
 
   return rest;
 }

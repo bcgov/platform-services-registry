@@ -4,8 +4,8 @@ import createApiHandler from '@/core/api-handler';
 import { OkResponse, BadRequestResponse } from '@/core/responses';
 import { parsePaginationParams } from '@/helpers/pagination';
 import { ministryKeyToName } from '@/helpers/product';
-import { searchPrivateCloudProducts } from '@/queries/private-cloud-products';
-import { processNumber, processUpperEnumString, processBoolean } from '@/utils/zod';
+import { searchPrivateCloudProducts } from '@/services/db';
+import { processNumber, processUpperEnumString } from '@/utils/zod';
 
 const defaultPage = 1;
 const defaultPageSize = 100;

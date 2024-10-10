@@ -3,43 +3,44 @@ import _isNumber from 'lodash-es/isNumber';
 import { Session } from 'next-auth';
 import { parsePaginationParams } from '@/helpers/pagination';
 import { models } from '@/services/db';
-import { PublicCloudProductSearch, PublicCloudProductDetailDecorated } from '@/types/public-cloud';
-import { PublicCloudProductSearchBody } from '@/validation-schemas/public-cloud';
-import { getMatchingUserIds } from './users';
+import { PrivateCloudProductDetailDecorated } from '@/types/private-cloud';
+import { PrivateCloudProductSearchBody } from '@/validation-schemas/private-cloud';
+import { getMatchingUserIds } from './user';
 
 const defaultSortKey = 'updatedAt';
 
-export async function searchPublicCloudProducts({
+export async function searchPrivateCloudProducts({
   session,
   skip,
   take,
   page,
   pageSize,
   ministries,
-  providers,
+  clusters,
   status,
-  search,
+  temporary,
+  search = '',
   sortKey = defaultSortKey,
   sortOrder = Prisma.SortOrder.desc,
   extraFilter,
-}: PublicCloudProductSearchBody & {
+}: PrivateCloudProductSearchBody & {
   session: Session;
   skip?: number;
   take?: number;
-  extraFilter?: Prisma.PublicCloudProjectWhereInput;
+  extraFilter?: Prisma.PrivateCloudProjectWhereInput;
 }) {
   if (!_isNumber(skip) && !_isNumber(take) && page && pageSize) {
     ({ skip, take } = parsePaginationParams(page, pageSize, 10));
   }
 
-  const where: Prisma.PublicCloudProjectWhereInput = extraFilter ?? {};
+  const where: Prisma.PrivateCloudProjectWhereInput = extraFilter ?? {};
   const orderBy = { [sortKey || defaultSortKey]: Prisma.SortOrder[sortOrder] };
 
   if (search === '*') search = '';
 
   if (search) {
     const matchingUserIds = await getMatchingUserIds(search);
-    const productSearchcreteria: Prisma.StringFilter<'PublicCloudProject'> = { contains: search, mode: 'insensitive' };
+    const productSearchcreteria: Prisma.StringFilter<'PrivateCloudProject'> = { contains: search, mode: 'insensitive' };
 
     where.OR = [
       { name: productSearchcreteria },
@@ -60,15 +61,19 @@ export async function searchPublicCloudProducts({
     where.ministry = { in: ministries };
   }
 
-  if (providers && providers.length > 0) {
-    where.provider = { in: providers };
+  if (clusters && clusters.length > 0) {
+    where.cluster = { in: clusters };
   }
 
   if (status && status.length > 0) {
     where.status = { in: status };
   }
 
-  const { data: docs, totalCount } = await models.publicCloudProduct.list(
+  if (temporary && temporary.length === 1) {
+    where.isTest = temporary[0] === 'YES';
+  }
+
+  const { data: docs, totalCount } = await models.privateCloudProduct.list(
     {
       where,
       skip,
@@ -79,13 +84,13 @@ export async function searchPublicCloudProducts({
     session,
   );
 
-  return { docs, totalCount } as PublicCloudProductSearch;
+  return { docs, totalCount };
 }
 
-export function excludeProductUsers(product: PublicCloudProductDetailDecorated | null) {
+export function excludePrivateProductUsers(product: PrivateCloudProductDetailDecorated | null) {
   if (!product) return null;
 
-  const { projectOwner, primaryTechnicalLead, secondaryTechnicalLead, expenseAuthority, billing, ...rest } = product;
+  const { projectOwner, primaryTechnicalLead, secondaryTechnicalLead, ...rest } = product;
 
   return rest;
 }
