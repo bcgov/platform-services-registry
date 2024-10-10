@@ -1,6 +1,7 @@
 'use client';
 
 import { Alert, Button } from '@mantine/core';
+import { Provider } from '@prisma/client';
 import { useState } from 'react';
 import { getEmouFileName } from '@/helpers/emou';
 import { downloadBilling } from '@/services/backend/billing';
@@ -19,7 +20,7 @@ export default function BillingDownloadButton({ product }: { product: Product })
         setLoading(true);
         await downloadBilling(
           product.billing.accountCoding,
-          product.provider,
+          product.provider === Provider.AZURE ? Provider.AZURE : Provider.AWS,
           product.licencePlate,
           getEmouFileName(product.name, product.provider),
         );

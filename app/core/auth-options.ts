@@ -148,6 +148,11 @@ export async function generateSession({ session, token }: { session: Session; to
         return;
       }
 
+      if (role === 'billing-reader') {
+        session.isBillingReader = true;
+        return;
+      }
+
       const regexPattern = /^ministry-(\w+)-(.+)$/;
       const match = regexPattern.exec(role);
       if (match) {
@@ -208,7 +213,8 @@ export async function generateSession({ session, token }: { session: Session; to
       session.isPublicAdmin ||
       session.isPublicEditor ||
       session.isPublicReader ||
-      session.isBillingReviewer,
+      session.isBillingReviewer ||
+      session.isBillingReader,
 
     viewAllPublicCloudProductsHistory: session.isAdmin || session.isPublicAdmin,
 
@@ -238,7 +244,7 @@ export async function generateSession({ session, token }: { session: Session; to
     viewPublicAnalytics: session.isAdmin || session.isAnalyzer || session.isPublicAnalyzer,
     viewPrivateAnalytics: session.isAdmin || session.isAnalyzer || session.isPrivateAnalyzer,
 
-    downloadBillingMou: session.isBillingReviewer,
+    downloadBillingMou: session.isBillingReviewer || session.isBillingReader,
   };
 
   return session;
