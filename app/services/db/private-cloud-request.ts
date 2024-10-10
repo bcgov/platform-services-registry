@@ -5,13 +5,14 @@ import { requestSorts } from '@/constants';
 import prisma from '@/core/prisma';
 import { parsePaginationParams } from '@/helpers/pagination';
 import { models } from '@/services/db';
-import { PublicCloudRequestSearchBody } from '@/validation-schemas/public-cloud';
-import { getMatchingUserIds } from './users';
+import { PrivateCloudRequestSearch } from '@/types/private-cloud';
+import { PrivateCloudRequestSearchBody } from '@/validation-schemas/private-cloud';
+import { getMatchingUserIds } from './user';
 
 const defaultSortKey = 'updatedAt';
 const defaultOrderBy = { [defaultSortKey]: Prisma.SortOrder.desc };
 
-export async function searchPublicCloudRequests({
+export async function searchPrivateCloudRequests({
   session,
   skip,
   take,
@@ -19,36 +20,38 @@ export async function searchPublicCloudRequests({
   pageSize,
   licencePlate,
   ministries,
-  providers,
+  clusters,
   types,
   status,
+  temporary,
   search,
   sortKey = defaultSortKey,
   sortOrder = Prisma.SortOrder.desc,
   extraFilter,
-}: PublicCloudRequestSearchBody & {
+}: PrivateCloudRequestSearchBody & {
   session: Session;
   skip?: number;
   take?: number;
-  extraFilter?: Prisma.PublicCloudRequestWhereInput;
+  extraFilter?: Prisma.PrivateCloudRequestWhereInput;
 }) {
   if (!_isNumber(skip) && !_isNumber(take) && page && pageSize) {
     ({ skip, take } = parsePaginationParams(page, pageSize, 10));
   }
 
-  const decisionDatawhere: Prisma.PublicCloudRequestedProjectWhereInput = {};
+  const decisionDatawhere: Prisma.PrivateCloudRequestedProjectWhereInput = {};
 
   const sortOption = requestSorts.find((sort) => sort.sortKey === sortKey);
-  let orderBy!: Prisma.PublicCloudRequestOrderByWithRelationInput;
+  let orderBy!: Prisma.PrivateCloudRequestOrderByWithRelationInput;
   if (sortOption) {
     const order = { [sortKey]: Prisma.SortOrder[sortOrder] };
     orderBy = sortOption.inData ? { decisionData: order } : order;
   }
+
   if (search === '*') search = '';
 
   if (search) {
     const matchingUserIds = await getMatchingUserIds(search);
-    const productSearchcreteria: Prisma.StringFilter<'PublicCloudRequestedProject'> = {
+    const productSearchcreteria: Prisma.StringFilter<'PrivateCloudRequestedProject'> = {
       contains: search,
       mode: 'insensitive',
     };
@@ -71,17 +74,21 @@ export async function searchPublicCloudRequests({
     decisionDatawhere.ministry = { in: ministries };
   }
 
-  if (providers && providers.length > 0) {
-    decisionDatawhere.provider = { in: providers };
+  if (clusters && clusters.length > 0) {
+    decisionDatawhere.cluster = { in: clusters };
   }
 
-  const matchingRequestedPublicProjects = await prisma.publicCloudRequestedProject.findMany({
+  if (temporary && temporary.length === 1) {
+    decisionDatawhere.isTest = temporary[0] === 'YES';
+  }
+
+  const matchingRequestedPrivateProjects = await prisma.privateCloudRequestedProject.findMany({
     where: decisionDatawhere,
     select: { id: true },
   });
 
-  const where: Prisma.PublicCloudRequestWhereInput = extraFilter ?? {};
-  where.decisionDataId = { in: matchingRequestedPublicProjects.map((proj) => proj.id) };
+  const where: Prisma.PrivateCloudRequestWhereInput = extraFilter ?? {};
+  where.decisionDataId = { in: matchingRequestedPrivateProjects.map((proj) => proj.id) };
 
   if (types && types.length > 0) {
     where.type = { in: types };
@@ -91,22 +98,22 @@ export async function searchPublicCloudRequests({
     where.decisionStatus = { in: status };
   }
 
-  const { data: docs, totalCount } = await models.publicCloudRequest.list(
+  const { data: docs, totalCount } = await models.privateCloudRequest.list(
     {
       where,
       skip,
       take,
-      orderBy,
+      orderBy: orderBy ?? defaultOrderBy,
       includeCount: true,
     },
     session,
   );
 
-  return { docs, totalCount };
+  return { docs, totalCount } as PrivateCloudRequestSearch;
 }
 
-export async function getLastClosedPublicCloudRequest(licencePlate: string) {
-  const previousRequest = await prisma.publicCloudRequest.findFirst({
+export async function getLastClosedPrivateCloudRequest(licencePlate: string) {
+  const previousRequest = await prisma.privateCloudRequest.findFirst({
     where: {
       licencePlate,
       active: false,

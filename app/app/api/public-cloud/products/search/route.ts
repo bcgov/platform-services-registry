@@ -1,7 +1,7 @@
 import _isString from 'lodash-es/isString';
 import createApiHandler from '@/core/api-handler';
 import { OkResponse } from '@/core/responses';
-import { searchPublicCloudProducts } from '@/queries/public-cloud-products';
+import { searchPublicCloudProducts } from '@/services/db';
 import { publicCloudProductSearchBodySchema } from '@/validation-schemas/public-cloud';
 
 export const POST = createApiHandler({

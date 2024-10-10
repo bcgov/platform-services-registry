@@ -4,7 +4,7 @@ import { z } from 'zod';
 import { AUTH_RELM } from '@/config';
 import createApiHandler from '@/core/api-handler';
 import { OkResponse, BadRequestResponse } from '@/core/responses';
-import { createEvent } from '@/mutations/events';
+import { createEvent } from '@/services/db';
 import { getKcAdminClient, findClient } from '@/services/keycloak/app-realm';
 
 const pathParamSchema = z.object({

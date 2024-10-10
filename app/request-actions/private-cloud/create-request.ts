@@ -2,8 +2,7 @@ import { DecisionStatus, ProjectStatus, RequestType, EventType } from '@prisma/c
 import { Session } from 'next-auth';
 import prisma from '@/core/prisma';
 import generateLicencePlate from '@/helpers/licence-plate';
-import { createEvent } from '@/mutations/events';
-import { privateCloudRequestDetailInclude } from '@/services/db';
+import { createEvent, privateCloudRequestDetailInclude } from '@/services/db';
 import { upsertUsers } from '@/services/db/user';
 import { PrivateCloudRequestDetail } from '@/types/private-cloud';
 import {

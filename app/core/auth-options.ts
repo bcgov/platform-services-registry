@@ -9,7 +9,7 @@ import KeycloakProvider, { KeycloakProfile } from 'next-auth/providers/keycloak'
 import { IS_PROD, AUTH_SERVER_URL, AUTH_RELM, AUTH_RESOURCE, AUTH_SECRET, PUBLIC_AZURE_ACCESS_EMAILS } from '@/config';
 import { TEAM_SA_PREFIX } from '@/constants';
 import prisma from '@/core/prisma';
-import { createEvent } from '@/mutations/events';
+import { createEvent } from '@/services/db';
 import { upsertUser } from '@/services/db/user';
 
 export async function generateSession({ session, token }: { session: Session; token?: JWT }) {

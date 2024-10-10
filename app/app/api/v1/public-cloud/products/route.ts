@@ -5,7 +5,7 @@ import createApiHandler from '@/core/api-handler';
 import { OkResponse, BadRequestResponse } from '@/core/responses';
 import { parsePaginationParams } from '@/helpers/pagination';
 import { ministryKeyToName } from '@/helpers/product';
-import { searchPublicCloudProducts } from '@/queries/public-cloud-products';
+import { searchPublicCloudProducts } from '@/services/db';
 import { processNumber, processUpperEnumString, processBoolean } from '@/utils/zod';
 
 const defaultPage = 1;

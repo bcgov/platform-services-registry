@@ -2,8 +2,7 @@ import { RequestType, Cluster, EventType } from '@prisma/client';
 import { z } from 'zod';
 import createApiHandler from '@/core/api-handler';
 import { BadRequestResponse, OkResponse, UnauthorizedResponse } from '@/core/responses';
-import { createEvent } from '@/mutations/events';
-import { models } from '@/services/db';
+import { createEvent, models } from '@/services/db';
 import { sendPrivateCloudNatsMessage } from '@/services/nats';
 
 const pathParamSchema = z.object({
