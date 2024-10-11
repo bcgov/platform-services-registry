@@ -1,5 +1,6 @@
 import { expect } from '@jest/globals';
 import { DecisionStatus, Cluster, RequestType } from '@prisma/client';
+import { GlobalRole } from '@/constants';
 import { createSamplePrivateCloudProductData } from '@/helpers/mock-resources';
 import { findOtherMockUsers } from '@/helpers/mock-users';
 import { mockSessionByEmail, mockSessionByRole } from '@/services/api-test/core';
@@ -56,7 +57,7 @@ describe('Update Private Cloud Product - Permissions', () => {
   });
 
   it('should successfully approve the request by admin', async () => {
-    await mockSessionByRole('admin');
+    await mockSessionByRole(GlobalRole.Admin);
 
     const response = await makePrivateCloudRequestDecision(requests.create.id, {
       ...requests.create.decisionData,
@@ -95,7 +96,7 @@ describe('Update Private Cloud Product - Permissions', () => {
   });
 
   it('should successfully reject the request by admin', async () => {
-    await mockSessionByRole('admin');
+    await mockSessionByRole(GlobalRole.Admin);
 
     const response = await makePrivateCloudRequestDecision(requests.update.id, {
       ...requests.update.decisionData,
@@ -107,7 +108,7 @@ describe('Update Private Cloud Product - Permissions', () => {
   });
 
   it('should successfully submit a update request for admin', async () => {
-    await mockSessionByRole('admin');
+    await mockSessionByRole(GlobalRole.Admin);
 
     const response = await makeBasicProductChange();
 
@@ -119,7 +120,7 @@ describe('Update Private Cloud Product - Permissions', () => {
   });
 
   it('should fail to submit the same request for admin', async () => {
-    await mockSessionByRole('admin');
+    await mockSessionByRole(GlobalRole.Admin);
 
     const response = await makeBasicProductChange();
 
@@ -127,7 +128,7 @@ describe('Update Private Cloud Product - Permissions', () => {
   });
 
   it('should successfully reject the request by admin', async () => {
-    await mockSessionByRole('admin');
+    await mockSessionByRole(GlobalRole.Admin);
 
     const response = await makePrivateCloudRequestDecision(requests.update.id, {
       ...requests.update.decisionData,
@@ -163,7 +164,7 @@ describe('Update Private Cloud Product - Permissions', () => {
 
 describe('Update Private Cloud Product - Validations', () => {
   it('should fail to submit a update request due to an invalid name property', async () => {
-    await mockSessionByRole('admin');
+    await mockSessionByRole(GlobalRole.Admin);
 
     const response = await makeBasicProductChange({ name: '' });
 
@@ -176,7 +177,7 @@ describe('Update Private Cloud Product - Validations', () => {
   });
 
   it('should fail to submit a update request due to an invalid description property', async () => {
-    await mockSessionByRole('admin');
+    await mockSessionByRole(GlobalRole.Admin);
 
     const response = await makeBasicProductChange({ description: '' });
 
@@ -189,7 +190,7 @@ describe('Update Private Cloud Product - Validations', () => {
   });
 
   it('should fail to submit a update request due to an invalid cluster property', async () => {
-    await mockSessionByRole('admin');
+    await mockSessionByRole(GlobalRole.Admin);
 
     const response = await makeBasicProductChange({ cluster: 'INVALID' });
 
@@ -202,7 +203,7 @@ describe('Update Private Cloud Product - Validations', () => {
   });
 
   it('should ignore the cluster change on a new update request', async () => {
-    await mockSessionByRole('admin');
+    await mockSessionByRole(GlobalRole.Admin);
 
     const newCluster = requests.create.decisionData.cluster === Cluster.SILVER ? Cluster.EMERALD : Cluster.SILVER;
 
@@ -216,7 +217,7 @@ describe('Update Private Cloud Product - Validations', () => {
   });
 
   it('should successfully reject the request by admin', async () => {
-    await mockSessionByRole('admin');
+    await mockSessionByRole(GlobalRole.Admin);
 
     const response = await makePrivateCloudRequestDecision(requests.update.id, {
       ...requests.update.decisionData,
@@ -228,7 +229,7 @@ describe('Update Private Cloud Product - Validations', () => {
   });
 
   it('should fail to submit a update request due to an invalid ministry property', async () => {
-    await mockSessionByRole('admin');
+    await mockSessionByRole(GlobalRole.Admin);
 
     const response = await makeBasicProductChange({ ministry: 'INVALID' });
 
@@ -241,7 +242,7 @@ describe('Update Private Cloud Product - Validations', () => {
   });
 
   it('should fail to submit a update request due to an invalid projectOwner property', async () => {
-    await mockSessionByRole('admin');
+    await mockSessionByRole(GlobalRole.Admin);
 
     const response = await makeBasicProductChange({ projectOwner: null });
 
@@ -254,7 +255,7 @@ describe('Update Private Cloud Product - Validations', () => {
   });
 
   it('should fail to submit a update request due to an invalid primaryTechnicalLead property', async () => {
-    await mockSessionByRole('admin');
+    await mockSessionByRole(GlobalRole.Admin);
 
     const response = await makeBasicProductChange({ primaryTechnicalLead: null });
 
@@ -269,7 +270,7 @@ describe('Update Private Cloud Product - Validations', () => {
   });
 
   it('should successfully create a request without an secondaryTechnicalLead property', async () => {
-    await mockSessionByRole('admin');
+    await mockSessionByRole(GlobalRole.Admin);
 
     const response = await makeBasicProductChange({ secondaryTechnicalLead: null });
     expect(response.status).toBe(200);

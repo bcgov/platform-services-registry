@@ -1,5 +1,6 @@
 import { expect } from '@jest/globals';
 import { DecisionStatus, Ministry, Provider, TaskType, TaskStatus, ProjectStatus, RequestType } from '@prisma/client';
+import { GlobalRole } from '@/constants';
 import prisma from '@/core/prisma';
 import { createSamplePublicCloudProductData } from '@/helpers/mock-resources';
 import { mockNoRoleUsers, findMockUserByIdr, findOtherMockUsers } from '@/helpers/mock-users';
@@ -71,7 +72,7 @@ describe('Search Public Cloud Products - Permissions', () => {
         confirmed: true,
       });
 
-      await mockSessionByRole('billing-reviewer');
+      await mockSessionByRole(GlobalRole.BillingReviewer);
       const task2 = await prisma.task.findFirst({
         where: {
           type: TaskType.REVIEW_MOU,
@@ -90,7 +91,7 @@ describe('Search Public Cloud Products - Permissions', () => {
       });
     }
 
-    await mockSessionByRole('admin');
+    await mockSessionByRole(GlobalRole.Admin);
 
     const res2 = await makePublicCloudRequestDecision(dat1.id, {
       ...dat1.decisionData,
@@ -144,7 +145,7 @@ describe('Search Public Cloud Products - Permissions', () => {
     const dat1 = await res1.json();
     expect(res1.status).toBe(200);
 
-    await mockSessionByRole('admin');
+    await mockSessionByRole(GlobalRole.Admin);
 
     const res2 = await makePublicCloudRequestDecision(dat1.id, {
       ...dat1.decisionData,
@@ -199,7 +200,7 @@ describe('Search Public Cloud Products - Permissions', () => {
   });
 
   it('should successfully search 2 projects by admin', async () => {
-    await mockSessionByRole('admin');
+    await mockSessionByRole(GlobalRole.Admin);
 
     const res1 = await searchPublicCloudProjects({});
     expect(res1.status).toBe(200);
@@ -215,7 +216,7 @@ describe('Search Public Cloud Products - Validations', () => {
   });
 
   it('should successfully create products by admin', async () => {
-    await mockSessionByRole('admin');
+    await mockSessionByRole(GlobalRole.Admin);
 
     const datasets = [];
     datasets.push(
@@ -251,7 +252,7 @@ describe('Search Public Cloud Products - Validations', () => {
   });
 
   it('should successfully search 10 projects by admin', async () => {
-    await mockSessionByRole('admin');
+    await mockSessionByRole(GlobalRole.Admin);
 
     const res1 = await searchPublicCloudProjects({});
     expect(res1.status).toBe(200);
@@ -261,7 +262,7 @@ describe('Search Public Cloud Products - Validations', () => {
   });
 
   it('should successfully search 5 projects by admin with search criteria', async () => {
-    await mockSessionByRole('admin');
+    await mockSessionByRole(GlobalRole.Admin);
 
     const res1 = await searchPublicCloudProjects({
       ministries: [Ministry.AEST],
@@ -276,7 +277,7 @@ describe('Search Public Cloud Products - Validations', () => {
   });
 
   it('should successfully search 1 project by admin with search criteria', async () => {
-    await mockSessionByRole('admin');
+    await mockSessionByRole(GlobalRole.Admin);
 
     const res1 = await searchPublicCloudProjects({
       search: '______name______',

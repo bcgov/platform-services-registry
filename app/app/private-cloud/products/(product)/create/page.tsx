@@ -13,12 +13,12 @@ import PageAccordion from '@/components/generic/accordion/PageAccordion';
 import FormErrorNotification from '@/components/generic/FormErrorNotification';
 import { openCreatePrivateCloudProductModal } from '@/components/modal/createPrivateCloudProductModal';
 import ReturnModal from '@/components/modal/Return';
-import { AGMinistries } from '@/constants';
+import { AGMinistries, GlobalRole } from '@/constants';
 import createClientPage from '@/core/client-page';
 import { privateCloudCreateRequestBodySchema } from '@/validation-schemas/private-cloud';
 
 const privateCloudProductNew = createClientPage({
-  roles: ['user'],
+  roles: [GlobalRole.User],
 });
 
 export default privateCloudProductNew(({ pathParams, queryParams, session }) => {

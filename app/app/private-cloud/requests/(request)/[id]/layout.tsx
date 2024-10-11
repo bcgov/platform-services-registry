@@ -11,6 +11,7 @@ import RequestBadge from '@/components/form/RequestBadge';
 import TemporaryProductAlert from '@/components/form/TemporaryProductAlert';
 import LightButton from '@/components/generic/button/LightButton';
 import Tabs, { ITab } from '@/components/generic/tabs/BasicTabs';
+import { GlobalRole } from '@/constants';
 import createClientPage from '@/core/client-page';
 import { comparePrivateProductData } from '@/helpers/product-change';
 import { getPrivateCloudRequest } from '@/services/backend/private-cloud/requests';
@@ -21,7 +22,7 @@ const pathParamSchema = z.object({
 });
 
 const privateCloudProductSecurityACS = createClientPage({
-  roles: ['user'],
+  roles: [GlobalRole.User],
   validations: { pathParams: pathParamSchema },
 });
 

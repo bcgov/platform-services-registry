@@ -5,6 +5,7 @@ import { Button } from '@mantine/core';
 import { FormProvider, useForm } from 'react-hook-form';
 import { z } from 'zod';
 import HookFormTextarea from '@/components/generic/input/HookFormTextarea';
+import { GlobalRole } from '@/constants';
 import createClientPage from '@/core/client-page';
 
 const validationSchema = z.object({
@@ -14,7 +15,7 @@ const validationSchema = z.object({
 });
 
 const Page = createClientPage({
-  roles: ['user'],
+  roles: [GlobalRole.User],
 });
 export default Page(() => {
   const methods = useForm({

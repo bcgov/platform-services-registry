@@ -3,32 +3,20 @@ import jwt from 'jsonwebtoken';
 import _forEach from 'lodash-es/forEach';
 import _get from 'lodash-es/get';
 import _uniq from 'lodash-es/uniq';
-import { Account, AuthOptions, Session, User } from 'next-auth';
+import { Account, AuthOptions, Session, User, SessionKeys } from 'next-auth';
 import { JWT } from 'next-auth/jwt';
 import KeycloakProvider, { KeycloakProfile } from 'next-auth/providers/keycloak';
 import { IS_PROD, AUTH_SERVER_URL, AUTH_RELM, AUTH_RESOURCE, AUTH_SECRET, PUBLIC_AZURE_ACCESS_EMAILS } from '@/config';
-import { TEAM_SA_PREFIX } from '@/constants';
+import { TEAM_SA_PREFIX, GlobalRole, RoleToSessionProp, sessionRolePropKeys } from '@/constants';
 import prisma from '@/core/prisma';
 import { createEvent } from '@/services/db';
 import { upsertUser } from '@/services/db/user';
 
 export async function generateSession({ session, token }: { session: Session; token?: JWT }) {
-  session.isServiceAccount = false;
-  session.isUser = false;
-  session.isAdmin = false;
-  session.isEditor = false;
-  session.isReader = false;
-  session.isAnalyzer = false;
-  session.isPrivateAdmin = false;
-  session.isPrivateAnalyzer = false;
-  session.isPrivateEditor = false;
-  session.isPrivateReader = false;
-  session.isPublicAdmin = false;
-  session.isPublicAnalyzer = false;
-  session.isPublicEditor = false;
-  session.isPublicReader = false;
-  session.isApprover = false;
-  session.isBillingReviewer = false;
+  sessionRolePropKeys.forEach((key: SessionKeys) => {
+    // @ts-ignore: Ignore TypeScript error for dynamic property assignment
+    session[key] = false;
+  });
   session.roles = [];
   session.ministries = {
     editor: [],
@@ -62,94 +50,16 @@ export async function generateSession({ session, token }: { session: Session; to
 
         session.userId = user.id;
         session.userEmail = user.email;
-        session.roles.push('user');
+        session.roles.push(GlobalRole.User);
       }
     }
 
     session.roles = [..._uniq(session.roles)];
     session.roles.forEach((role) => {
-      if (role === 'service-account') {
-        session.isServiceAccount = true;
-        return;
-      }
-
-      if (role === 'user') {
-        session.isUser = true;
-        return;
-      }
-
-      if (role === 'admin') {
-        session.isAdmin = true;
-        return;
-      }
-
-      if (role === 'editor') {
-        session.isEditor = true;
-        return;
-      }
-
-      if (role === 'reader') {
-        session.isReader = true;
-        return;
-      }
-
-      if (role === 'analyzer') {
-        session.isAnalyzer = true;
-        return;
-      }
-
-      if (role === 'private-admin') {
-        session.isPrivateAdmin = true;
-        return;
-      }
-
-      if (role === 'private-analyzer') {
-        session.isPrivateAnalyzer = true;
-        return;
-      }
-
-      if (role === 'private-editor') {
-        session.isPrivateEditor = true;
-        return;
-      }
-
-      if (role === 'private-reader') {
-        session.isPrivateReader = true;
-        return;
-      }
-
-      if (role === 'public-admin') {
-        session.isPublicAdmin = true;
-        return;
-      }
-
-      if (role === 'public-analyzer') {
-        session.isPublicAnalyzer = true;
-        return;
-      }
-
-      if (role === 'public-editor') {
-        session.isPublicEditor = true;
-        return;
-      }
-
-      if (role === 'public-reader') {
-        session.isPublicReader = true;
-        return;
-      }
-
-      if (role === 'approver') {
-        session.isApprover = true;
-        return;
-      }
-
-      if (role === 'billing-reviewer') {
-        session.isBillingReviewer = true;
-        return;
-      }
-
-      if (role === 'billing-reader') {
-        session.isBillingReader = true;
+      const roleKey = RoleToSessionProp[role as GlobalRole];
+      if (roleKey && roleKey in session) {
+        // @ts-ignore: Ignore TypeScript error for dynamic property assignment
+        session[roleKey] = true;
         return;
       }
 

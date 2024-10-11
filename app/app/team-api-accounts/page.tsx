@@ -4,6 +4,7 @@ import { Table, Badge, Button } from '@mantine/core';
 import { useQuery } from '@tanstack/react-query';
 import _compact from 'lodash-es/compact';
 import _get from 'lodash-es/get';
+import { GlobalRole } from '@/constants';
 import createClientPage from '@/core/client-page';
 import { listKeycloakTeamApiAccounts } from '@/services/backend/keycloak';
 import { openCreateAccountModal } from './createAccountModal';
@@ -11,7 +12,7 @@ import { openManageAccountModal } from './manageAccountModal';
 import { openViewAccountModal } from './viewAccountModal';
 
 const TeamApiAccountsPage = createClientPage({
-  roles: ['user'],
+  roles: [GlobalRole.User],
 });
 export default TeamApiAccountsPage(({ session }) => {
   const {

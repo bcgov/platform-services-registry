@@ -21,6 +21,7 @@ import ExpenseAuthority from '@/components/form/ExpenseAuthority';
 import ProjectDescriptionPublic from '@/components/form/ProjectDescriptionPublic';
 import TeamContacts from '@/components/form/TeamContacts';
 import PageAccordion from '@/components/generic/accordion/PageAccordion';
+import { GlobalRole } from '@/constants';
 import createClientPage from '@/core/client-page';
 import { getPublicCloudRequest } from '@/services/backend/public-cloud/requests';
 import { publicCloudRequestDecisionBodySchema } from '@/validation-schemas/public-cloud';
@@ -30,7 +31,7 @@ const pathParamSchema = z.object({
 });
 
 const publicCloudRequest = createClientPage({
-  roles: ['user'],
+  roles: [GlobalRole.User],
   validations: { pathParams: pathParamSchema },
 });
 export default publicCloudRequest(({ pathParams }) => {

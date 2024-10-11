@@ -4,13 +4,14 @@ import { Alert } from '@mantine/core';
 import { IconInfoCircle } from '@tabler/icons-react';
 import { useQuery, useMutation } from '@tanstack/react-query';
 import { openConfirmModal } from '@/components/generic/modal/ConfirmModal';
+import { GlobalRole } from '@/constants';
 import createClientPage from '@/core/client-page';
 import { getKeycloakApiAccount, createKeycloakApiAccount, deleteKeycloakApiAccount } from '@/services/backend/keycloak';
 import ApiAccountInfo from './ApiAccountInfo';
 import ApiTabs from './ApiTabs';
 
 const ApiAccountPage = createClientPage({
-  roles: ['user'],
+  roles: [GlobalRole.User],
 });
 export default ApiAccountPage(({ session }) => {
   const {

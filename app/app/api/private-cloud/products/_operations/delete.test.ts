@@ -1,5 +1,6 @@
 import { expect } from '@jest/globals';
 import { DecisionStatus, RequestType } from '@prisma/client';
+import { GlobalRole } from '@/constants';
 import { createSamplePrivateCloudProductData } from '@/helpers/mock-resources';
 import { findOtherMockUsers } from '@/helpers/mock-users';
 import { mockSessionByEmail, mockSessionByRole } from '@/services/api-test/core';
@@ -28,7 +29,7 @@ describe('Delete Private Cloud Product - Permissions', () => {
   });
 
   it('should successfully approve the request by admin', async () => {
-    await mockSessionByRole('admin');
+    await mockSessionByRole(GlobalRole.Admin);
 
     const response = await makePrivateCloudRequestDecision(requests.create.id, {
       ...requests.create.decisionData,
@@ -64,7 +65,7 @@ describe('Delete Private Cloud Product - Permissions', () => {
   });
 
   it('should successfully reject the request by admin', async () => {
-    await mockSessionByRole('admin');
+    await mockSessionByRole(GlobalRole.Admin);
 
     const response = await makePrivateCloudRequestDecision(requests.delete.id, {
       ...requests.delete.decisionData,
@@ -76,7 +77,7 @@ describe('Delete Private Cloud Product - Permissions', () => {
   });
 
   it('should successfully submit a delete request for admin', async () => {
-    await mockSessionByRole('admin');
+    await mockSessionByRole(GlobalRole.Admin);
 
     const response = await deletePrivateCloudProject(requests.delete.licencePlate);
     expect(response.status).toBe(200);
@@ -86,14 +87,14 @@ describe('Delete Private Cloud Product - Permissions', () => {
   });
 
   it('should fail to submit the same request for admin', async () => {
-    await mockSessionByRole('admin');
+    await mockSessionByRole(GlobalRole.Admin);
 
     const response = await deletePrivateCloudProject(requests.delete.licencePlate);
     expect(response.status).toBe(401);
   });
 
   it('should successfully reject the request by admin', async () => {
-    await mockSessionByRole('admin');
+    await mockSessionByRole(GlobalRole.Admin);
 
     const response = await makePrivateCloudRequestDecision(requests.delete.id, {
       ...requests.delete.decisionData,

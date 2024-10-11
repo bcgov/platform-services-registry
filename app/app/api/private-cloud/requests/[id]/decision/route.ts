@@ -1,5 +1,6 @@
 import { DecisionStatus } from '@prisma/client';
 import { z } from 'zod';
+import { GlobalRole } from '@/constants';
 import createApiHandler from '@/core/api-handler';
 import { BadRequestResponse, OkResponse } from '@/core/responses';
 import { sendRequestNatsMessage } from '@/helpers/nats-message';
@@ -17,7 +18,7 @@ const pathParamSchema = z.object({
 });
 
 const apiHandler = createApiHandler({
-  roles: ['user'],
+  roles: [GlobalRole.User],
   permissions: [PermissionsEnum.ReviewAllPrivateCloudRequests],
   validations: {
     pathParams: pathParamSchema,

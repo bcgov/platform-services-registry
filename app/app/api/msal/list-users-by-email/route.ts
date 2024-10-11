@@ -1,4 +1,5 @@
 import { z } from 'zod';
+import { GlobalRole } from '@/constants';
 import createApiHandler from '@/core/api-handler';
 import { OkResponse } from '@/core/responses';
 import { listUsersByEmail } from '@/services/msgraph';
@@ -8,7 +9,7 @@ const queryParamSchema = z.object({
 });
 
 const apiHandler = createApiHandler({
-  roles: ['user'],
+  roles: [GlobalRole.User],
   validations: { queryParams: queryParamSchema },
 });
 export const GET = apiHandler(async ({ queryParams }) => {

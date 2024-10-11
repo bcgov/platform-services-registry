@@ -32,6 +32,7 @@ import Comment from '@/components/modal/Comment';
 import ReturnModal from '@/components/modal/ReturnDecision';
 import { openReviewPublicCloudProductModal } from '@/components/modal/reviewPublicCloudProductModal';
 import { openSignPublicCloudProductModal } from '@/components/modal/signPublicCloudProductModal';
+import { GlobalRole } from '@/constants';
 import createClientPage from '@/core/client-page';
 import { showErrorNotification } from '@/helpers/notifications';
 import { makePublicCloudRequestDecision } from '@/services/backend/public-cloud/requests';
@@ -43,7 +44,7 @@ const pathParamSchema = z.object({
 });
 
 const publicCloudProductRequest = createClientPage({
-  roles: ['user'],
+  roles: [GlobalRole.User],
   validations: { pathParams: pathParamSchema },
 });
 export default publicCloudProductRequest(({ pathParams, queryParams, session, router }) => {

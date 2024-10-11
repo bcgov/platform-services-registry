@@ -7,6 +7,7 @@ import { z } from 'zod';
 import PublicCloudProductOptions from '@/components/dropdowns/PublicCloudProductOptions';
 import ProductBadge from '@/components/form/ProductBadge';
 import Tabs, { ITab } from '@/components/generic/tabs/BasicTabs';
+import { GlobalRole } from '@/constants';
 import createClientPage from '@/core/client-page';
 import { getPublicCloudProject } from '@/services/backend/public-cloud/products';
 import { usePublicProductState } from '@/states/global';
@@ -17,7 +18,7 @@ const pathParamSchema = z.object({
 });
 
 const publicCloudProductSecurityACS = createClientPage({
-  roles: ['user'],
+  roles: [GlobalRole.User],
   validations: { pathParams: pathParamSchema },
 });
 

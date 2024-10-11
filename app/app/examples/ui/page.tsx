@@ -1,6 +1,7 @@
 'use client';
 
 import Link from 'next/link';
+import { GlobalRole } from '@/constants';
 import createClientPage from '@/core/client-page';
 
 interface PageProp {
@@ -45,7 +46,7 @@ function PageItem({ href, label }: PageProp) {
 }
 
 const Page = createClientPage({
-  roles: ['user'],
+  roles: [GlobalRole.User],
 });
 export default Page(() => {
   return (

@@ -1,6 +1,7 @@
 import { Cluster } from '@prisma/client';
 import { z, string } from 'zod';
 import { IS_PROD, IS_TEST } from '@/config';
+import { GlobalRole } from '@/constants';
 import createApiHandler from '@/core/api-handler';
 import { OkResponse, UnauthorizedResponse } from '@/core/responses';
 import { models } from '@/services/db';
@@ -13,7 +14,7 @@ const queryParamSchema = z.object({
 });
 
 const apiHandler = createApiHandler({
-  roles: ['user'],
+  roles: [GlobalRole.User],
   validations: { queryParams: queryParamSchema, pathParams: getPathParamSchema },
 });
 

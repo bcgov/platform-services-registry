@@ -1,6 +1,7 @@
 'use client';
 
 import { z } from 'zod';
+import { GlobalRole } from '@/constants';
 import createClientPage from '@/core/client-page';
 
 const pathParamSchema = z.object({
@@ -13,7 +14,7 @@ const queryParamSchema = z.object({
 });
 
 const examplePage = createClientPage({
-  roles: ['user'],
+  roles: [GlobalRole.User],
   validations: { pathParams: pathParamSchema, queryParams: queryParamSchema },
 });
 export default examplePage(({ pathParams, queryParams, session }) => {

@@ -1,4 +1,5 @@
 import { Cluster, DecisionStatus, RequestType } from '@prisma/client';
+import { GlobalRole } from '@/constants';
 import { createSamplePrivateCloudProductData } from '@/helpers/mock-resources';
 import { mockSessionByEmail, mockSessionByRole } from '@/services/api-test/core';
 import { provisionPrivateCloudProject } from '@/services/api-test/private-cloud';
@@ -20,7 +21,7 @@ export async function createPrivateCloudProduct() {
   let resData = await response.json();
   let decisionData = resData.decisionData;
 
-  await mockSessionByRole('admin');
+  await mockSessionByRole(GlobalRole.Admin);
 
   response = await makePrivateCloudRequestDecision(resData.id, {
     ...decisionData,
@@ -67,7 +68,7 @@ export async function updatePrivateCloudProduct() {
   let resData = await response.json();
   let decisionData = resData.decisionData;
 
-  await mockSessionByRole('admin');
+  await mockSessionByRole(GlobalRole.Admin);
 
   response = await makePrivateCloudRequestDecision(resData.id, {
     ...decisionData,
@@ -92,7 +93,7 @@ export async function updatePrivateCloudProduct() {
   resData = await response.json();
   decisionData = resData.decisionData;
 
-  await mockSessionByRole('admin');
+  await mockSessionByRole(GlobalRole.Admin);
 
   response = await makePrivateCloudRequestDecision(resData.id, {
     ...decisionData,
@@ -122,7 +123,7 @@ export async function deletePrivateCloudProduct() {
   let resData = await response.json();
   let decisionData = resData.decisionData;
 
-  await mockSessionByRole('admin');
+  await mockSessionByRole(GlobalRole.Admin);
 
   response = await makePrivateCloudRequestDecision(resData.id, {
     ...decisionData,
@@ -144,7 +145,7 @@ export async function deletePrivateCloudProduct() {
   resData = await response.json();
   decisionData = resData.decisionData;
 
-  await mockSessionByRole('admin');
+  await mockSessionByRole(GlobalRole.Admin);
 
   response = await makePrivateCloudRequestDecision(resData.id, {
     ...decisionData,

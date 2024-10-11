@@ -1,5 +1,6 @@
 import { expect } from '@jest/globals';
 import { DecisionStatus, RequestType } from '@prisma/client';
+import { GlobalRole } from '@/constants';
 import { createSamplePrivateCloudProductData } from '@/helpers/mock-resources';
 import { mockSessionByEmail, mockSessionByRole } from '@/services/api-test/core';
 import { provisionPrivateCloudProject } from '@/services/api-test/private-cloud';
@@ -30,7 +31,7 @@ describe('Private Cloud Comments - Permissions', () => {
   });
 
   it('should successfully approve the request by admin', async () => {
-    await mockSessionByRole('admin');
+    await mockSessionByRole(GlobalRole.Admin);
 
     const response = await makePrivateCloudRequestDecision(requests.create.id, {
       ...requests.create.decisionData,
@@ -49,7 +50,7 @@ describe('Private Cloud Comments - Permissions', () => {
   });
 
   it('should successfully create comments', async () => {
-    await mockSessionByRole('admin');
+    await mockSessionByRole(GlobalRole.Admin);
     const projectResponse = await getPrivateCloudProject(globalLicencePlate);
     const projectData = await projectResponse.json();
     const activeProjectId = projectData?.id;
@@ -83,7 +84,7 @@ describe('Private Cloud Comments - Permissions', () => {
   });
 
   it('should successfully list comments for admin', async () => {
-    await mockSessionByRole('admin');
+    await mockSessionByRole(GlobalRole.Admin);
 
     const response = await getAllPrivateCloudComments(globalLicencePlate);
     const responseBody = await response.json();
@@ -94,7 +95,7 @@ describe('Private Cloud Comments - Permissions', () => {
   });
 
   it('should successfully list comments for private-admin', async () => {
-    await mockSessionByRole('private-admin');
+    await mockSessionByRole(GlobalRole.PrivateAdmin);
 
     const response = await getAllPrivateCloudComments(globalLicencePlate);
     const responseBody = await response.json();
@@ -105,7 +106,7 @@ describe('Private Cloud Comments - Permissions', () => {
   });
 
   it('should return 401 for users with insufficient permissions', async () => {
-    await mockSessionByRole('reader');
+    await mockSessionByRole(GlobalRole.Reader);
 
     const response = await getAllPrivateCloudComments(globalLicencePlate);
 
@@ -118,7 +119,7 @@ describe('Private Cloud Comments - Validations', () => {
   let activeProjectId: string;
 
   it('should successfully create, approve, and provision a project', async () => {
-    await mockSessionByRole('admin');
+    await mockSessionByRole(GlobalRole.Admin);
     const productData = createSamplePrivateCloudProductData();
 
     const createResponse = await createPrivateCloudProject(productData);
@@ -139,7 +140,7 @@ describe('Private Cloud Comments - Validations', () => {
   });
 
   it('should return 404 if the project is not found by licencePlate', async () => {
-    await mockSessionByRole('admin');
+    await mockSessionByRole(GlobalRole.Admin);
 
     const nonExistentLicencePlate = 'non-existent-plate';
     const response = await getAllPrivateCloudComments(nonExistentLicencePlate);
@@ -148,7 +149,7 @@ describe('Private Cloud Comments - Validations', () => {
   });
 
   it('should return an empty array if no comments exist for the provided licencePlate', async () => {
-    await mockSessionByRole('admin');
+    await mockSessionByRole(GlobalRole.Admin);
 
     const response = await getAllPrivateCloudComments(localLicencePlate);
     const responseBody = await response.json();

@@ -1,4 +1,5 @@
 import { z } from 'zod';
+import { GlobalRole } from '@/constants';
 import createApiHandler from '@/core/api-handler';
 import { CreatedResponse, OkResponse, BadRequestResponse } from '@/core/responses';
 import { PermissionsEnum } from '@/types/permissions';
@@ -17,7 +18,7 @@ const createCommentBodySchema = z
   });
 
 export const POST = createApiHandler({
-  roles: ['admin', 'private-admin'],
+  roles: [GlobalRole.Admin, GlobalRole.PrivateAdmin],
   permissions: [PermissionsEnum.CreatePrivateProductComments],
   validations: {
     body: createCommentBodySchema,
@@ -37,7 +38,7 @@ const queryParamsSchema = z.object({
 });
 
 export const GET = createApiHandler({
-  roles: ['admin', 'private-admin'],
+  roles: [GlobalRole.Admin, GlobalRole.PrivateAdmin],
   permissions: [PermissionsEnum.ViewAllPrivateProductComments],
   validations: {
     pathParams: pathParamsSchema,

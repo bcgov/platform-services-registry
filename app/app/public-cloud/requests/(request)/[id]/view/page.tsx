@@ -1,6 +1,7 @@
 'use client';
 
 import { z } from 'zod';
+import { GlobalRole } from '@/constants';
 import createClientPage from '@/core/client-page';
 import { usePublicProductState } from '@/states/global';
 
@@ -9,7 +10,7 @@ const pathParamSchema = z.object({
 });
 
 const publicCloudRequestView = createClientPage({
-  roles: ['user'],
+  roles: [GlobalRole.User],
   validations: { pathParams: pathParamSchema },
 });
 export default publicCloudRequestView(({ pathParams, queryParams, session, router }) => {

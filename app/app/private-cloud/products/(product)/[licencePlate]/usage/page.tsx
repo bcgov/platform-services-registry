@@ -5,6 +5,7 @@ import { useQuery } from '@tanstack/react-query';
 import { useState } from 'react';
 import { z } from 'zod';
 import FormSelect from '@/components/generic/select/FormSelect';
+import { GlobalRole } from '@/constants';
 import createClientPage from '@/core/client-page';
 import { getPodUsageMetrics } from '@/services/backend/private-cloud/products';
 import { usePrivateProductState } from '@/states/global';
@@ -34,7 +35,7 @@ const pathParamSchema = z.object({
 });
 
 const privateCloudProductUsageMetrics = createClientPage({
-  roles: ['user'],
+  roles: [GlobalRole.User],
   validations: { pathParams: pathParamSchema },
 });
 

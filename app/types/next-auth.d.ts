@@ -92,6 +92,7 @@ declare module 'next-auth' {
   }
 
   type PermissionsKey = keyof Session['permissions'];
+  type SessionKeys = keyof typeof Session;
 }
 
 declare module 'next-auth/jwt' {

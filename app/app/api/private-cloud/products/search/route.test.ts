@@ -1,5 +1,6 @@
 import { expect } from '@jest/globals';
 import { DecisionStatus, Ministry, Cluster, ProjectStatus, RequestType } from '@prisma/client';
+import { GlobalRole } from '@/constants';
 import prisma from '@/core/prisma';
 import { createSamplePrivateCloudProductData } from '@/helpers/mock-resources';
 import { mockNoRoleUsers, findMockUserByIdr, findOtherMockUsers } from '@/helpers/mock-users';
@@ -43,7 +44,7 @@ describe('Search Private Cloud Products - Permissions', () => {
     const dat1 = await res1.json();
     expect(res1.status).toBe(200);
 
-    await mockSessionByRole('admin');
+    await mockSessionByRole(GlobalRole.Admin);
 
     const res2 = await makePrivateCloudRequestDecision(dat1.id, {
       ...dat1.decisionData,
@@ -96,7 +97,7 @@ describe('Search Private Cloud Products - Permissions', () => {
     const dat1 = await res1.json();
     expect(res1.status).toBe(200);
 
-    await mockSessionByRole('admin');
+    await mockSessionByRole(GlobalRole.Admin);
 
     const res2 = await makePrivateCloudRequestDecision(dat1.id, {
       ...dat1.decisionData,
@@ -150,7 +151,7 @@ describe('Search Private Cloud Products - Permissions', () => {
   });
 
   it('should successfully search 2 projects by admin', async () => {
-    await mockSessionByRole('admin');
+    await mockSessionByRole(GlobalRole.Admin);
 
     const res1 = await searchPrivateCloudProjects({});
     expect(res1.status).toBe(200);
@@ -166,7 +167,7 @@ describe('Search Private Cloud Products - Validations', () => {
   });
 
   it('should successfully create products by admin', async () => {
-    await mockSessionByRole('admin');
+    await mockSessionByRole(GlobalRole.Admin);
 
     const datasets = [];
     datasets.push(
@@ -201,7 +202,7 @@ describe('Search Private Cloud Products - Validations', () => {
   });
 
   it('should successfully search 10 projects by admin', async () => {
-    await mockSessionByRole('admin');
+    await mockSessionByRole(GlobalRole.Admin);
 
     const res1 = await searchPrivateCloudProjects({});
     expect(res1.status).toBe(200);
@@ -211,7 +212,7 @@ describe('Search Private Cloud Products - Validations', () => {
   });
 
   it('should successfully search 5 projects by admin with search criteria', async () => {
-    await mockSessionByRole('admin');
+    await mockSessionByRole(GlobalRole.Admin);
 
     const res1 = await searchPrivateCloudProjects({
       ministries: [Ministry.AEST],
@@ -226,7 +227,7 @@ describe('Search Private Cloud Products - Validations', () => {
   });
 
   it('should successfully search 1 project by admin with search criteria', async () => {
-    await mockSessionByRole('admin');
+    await mockSessionByRole(GlobalRole.Admin);
 
     const res1 = await searchPrivateCloudProjects({
       search: '______name______',

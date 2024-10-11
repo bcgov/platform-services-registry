@@ -10,6 +10,7 @@ import PublicCloudRequestOptions from '@/components/dropdowns/PublicCloudRequest
 import RequestBadge from '@/components/form/RequestBadge';
 import LightButton from '@/components/generic/button/LightButton';
 import Tabs, { ITab } from '@/components/generic/tabs/BasicTabs';
+import { GlobalRole } from '@/constants';
 import createClientPage from '@/core/client-page';
 import { comparePublicProductData } from '@/helpers/product-change';
 import { getPublicCloudRequest } from '@/services/backend/public-cloud/requests';
@@ -20,7 +21,7 @@ const pathParamSchema = z.object({
 });
 
 const publicCloudProductSecurityACS = createClientPage({
-  roles: ['user'],
+  roles: [GlobalRole.User],
   validations: { pathParams: pathParamSchema },
 });
 

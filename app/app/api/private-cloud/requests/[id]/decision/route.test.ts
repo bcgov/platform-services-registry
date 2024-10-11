@@ -1,5 +1,6 @@
 import { expect } from '@jest/globals';
 import { DecisionStatus, Cluster, RequestType } from '@prisma/client';
+import { GlobalRole } from '@/constants';
 import { createSamplePrivateCloudProductData } from '@/helpers/mock-resources';
 import { pickProductData } from '@/helpers/product';
 import { mockSessionByEmail, mockSessionByRole } from '@/services/api-test/core';
@@ -96,7 +97,7 @@ describe('Review Private Cloud Create Request - Permissions', () => {
   });
 
   it('should successfully review the create request for global admin', async () => {
-    await mockSessionByRole('admin');
+    await mockSessionByRole(GlobalRole.Admin);
 
     const response = await makeBasicProductReview(DecisionStatus.APPROVED);
 
@@ -111,7 +112,7 @@ describe('Review Private Cloud Create Request - Permissions', () => {
   });
 
   it('should fail to review the create request already reviewed', async () => {
-    await mockSessionByRole('admin');
+    await mockSessionByRole(GlobalRole.Admin);
 
     const response = await makeBasicProductReview(DecisionStatus.APPROVED);
 
@@ -166,7 +167,7 @@ describe('Review Private Cloud Update Request - Permissions', () => {
   });
 
   it('should successfully review the update request for global admin', async () => {
-    await mockSessionByRole('admin');
+    await mockSessionByRole(GlobalRole.Admin);
 
     const response = await makeBasicProductReview(DecisionStatus.APPROVED);
 
@@ -179,7 +180,7 @@ describe('Review Private Cloud Update Request - Permissions', () => {
   });
 
   it('should fail to review the update request already reviewed', async () => {
-    await mockSessionByRole('admin');
+    await mockSessionByRole(GlobalRole.Admin);
 
     const response = await makeBasicProductReview(DecisionStatus.APPROVED);
 
@@ -231,7 +232,7 @@ describe('Review Private Cloud Delete Request - Permissions', () => {
   });
 
   it('should successfully review the delete request for global admin', async () => {
-    await mockSessionByRole('admin');
+    await mockSessionByRole(GlobalRole.Admin);
 
     const response = await makeBasicProductReview(DecisionStatus.APPROVED);
 
@@ -239,7 +240,7 @@ describe('Review Private Cloud Delete Request - Permissions', () => {
   });
 
   it('should fail to review the delete request already reviewed', async () => {
-    await mockSessionByRole('admin');
+    await mockSessionByRole(GlobalRole.Admin);
 
     const response = await makeBasicProductReview(DecisionStatus.APPROVED);
 
@@ -268,7 +269,7 @@ describe('Review Private Cloud Request - Validations', () => {
   });
 
   it('should ignore the cluster change', async () => {
-    await mockSessionByRole('admin');
+    await mockSessionByRole(GlobalRole.Admin);
     const requestData = requests.main;
 
     const newName = requestData.decisionData.name + '_suffix';

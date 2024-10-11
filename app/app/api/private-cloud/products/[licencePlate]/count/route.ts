@@ -1,4 +1,5 @@
 import { z } from 'zod';
+import { GlobalRole } from '@/constants';
 import createApiHandler from '@/core/api-handler';
 import { OkResponse, BadRequestResponse } from '@/core/responses';
 import { PermissionsEnum } from '@/types/permissions';
@@ -13,7 +14,7 @@ const queryParamsSchema = z.object({
 });
 
 export const GET = createApiHandler({
-  roles: ['admin', 'private-admin'],
+  roles: [GlobalRole.Admin, GlobalRole.PrivateAdmin],
   permissions: [PermissionsEnum.ViewAllPrivateProductComments],
   validations: {
     pathParams: pathParamsSchema,

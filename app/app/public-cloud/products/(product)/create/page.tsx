@@ -28,14 +28,14 @@ import PageAccordion from '@/components/generic/accordion/PageAccordion';
 import FormErrorNotification from '@/components/generic/FormErrorNotification';
 import CreatePublicCloud from '@/components/modal/CreatePublicCloud';
 import ReturnModal from '@/components/modal/Return';
-import { AGMinistries } from '@/constants';
+import { AGMinistries, GlobalRole } from '@/constants';
 import createClientPage from '@/core/client-page';
 import { existBilling } from '@/services/backend/billing';
 import { createPublicCloudProject } from '@/services/backend/public-cloud/products';
 import { publicCloudCreateRequestBodySchema } from '@/validation-schemas/public-cloud';
 
 const publicCloudProductNew = createClientPage({
-  roles: ['user'],
+  roles: [GlobalRole.User],
 });
 export default publicCloudProductNew(({ pathParams, queryParams, session }) => {
   const [openCreate, setOpenCreate] = useState(false);

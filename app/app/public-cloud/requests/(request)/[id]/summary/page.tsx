@@ -5,6 +5,7 @@ import { DecisionStatus, RequestType } from '@prisma/client';
 import { IconInfoCircle } from '@tabler/icons-react';
 import { z } from 'zod';
 import ProductComparison from '@/components/ProductComparison';
+import { GlobalRole } from '@/constants';
 import createClientPage from '@/core/client-page';
 import { usePublicProductState } from '@/states/global';
 import { DiffChange } from '@/utils/diff';
@@ -14,7 +15,7 @@ const pathParamSchema = z.object({
 });
 
 const Layout = createClientPage({
-  roles: ['user'],
+  roles: [GlobalRole.User],
   validations: { pathParams: pathParamSchema },
 });
 export default Layout(({ pathParams, queryParams, session, router, children }) => {

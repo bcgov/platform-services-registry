@@ -1,5 +1,5 @@
 import { AUTH_RESOURCE } from '@/config';
-import { publicCloudPlatformAdminEmail } from '@/constants';
+import { publicCloudPlatformAdminEmail, GlobalRole } from '@/constants';
 import AdminCreateRequestTemplate from '@/emails/_templates/public-cloud/AdminCreateRequest';
 import AdminDeleteRequestTemplate from '@/emails/_templates/public-cloud/AdminDeleteRequest';
 import BillingReviewerMouTemplate from '@/emails/_templates/public-cloud/BillingReviewerMou';
@@ -156,7 +156,7 @@ export function sendTeamEditRequestCompletion(request: PublicCloudRequestDetail)
 
 export async function sendBillingReviewerMou(request: PublicCloudRequestDetail) {
   const content = getContent(BillingReviewerMouTemplate({ request }));
-  const billingReviewers = await findUsersByClientRole(AUTH_RESOURCE, 'billing-reviewer');
+  const billingReviewers = await findUsersByClientRole(AUTH_RESOURCE, GlobalRole.BillingReviewer);
 
   return sendEmail({
     subject: 'eMOU review request',
@@ -168,7 +168,7 @@ export async function sendBillingReviewerMou(request: PublicCloudRequestDetail) 
 export async function sendEmouServiceAgreement(request: PublicCloudRequestDetail) {
   const content = getContent(EmouServiceAgreementTemplate({ request }));
   const emouPdfBuff = await generateEmouPdf(request.decisionData, request.decisionData.billing);
-  const billingReviewers = await findUsersByClientRole(AUTH_RESOURCE, 'billing-reviewer');
+  const billingReviewers = await findUsersByClientRole(AUTH_RESOURCE, GlobalRole.BillingReviewer);
 
   return sendEmail({
     subject: 'eMOU Service Agreement',

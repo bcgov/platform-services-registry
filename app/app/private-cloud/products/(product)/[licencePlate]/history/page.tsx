@@ -3,6 +3,7 @@
 import { useQuery } from '@tanstack/react-query';
 import { z } from 'zod';
 import PrivateHistoryItem from '@/components/history/PrivateHistoryItem';
+import { GlobalRole } from '@/constants';
 import createClientPage from '@/core/client-page';
 import { getPrivateCloudProductRequests } from '@/services/backend/private-cloud/products';
 
@@ -11,7 +12,7 @@ const pathParamSchema = z.object({
 });
 
 const privateCloudProductHistory = createClientPage({
-  roles: ['user'],
+  roles: [GlobalRole.User],
   validations: { pathParams: pathParamSchema },
 });
 export default privateCloudProductHistory(({ pathParams, queryParams, session }) => {

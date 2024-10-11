@@ -31,7 +31,7 @@ import PageAccordion from '@/components/generic/accordion/PageAccordion';
 import FormErrorNotification from '@/components/generic/FormErrorNotification';
 import PrivateCloudEditModal from '@/components/modal/EditPrivateCloud';
 import ReturnModal from '@/components/modal/Return';
-import { AGMinistries } from '@/constants';
+import { AGMinistries, GlobalRole } from '@/constants';
 import createClientPage from '@/core/client-page';
 import { getPublicCloudProject, editPublicCloudProject } from '@/services/backend/public-cloud/products';
 import { publicProductState } from '@/states/global';
@@ -42,7 +42,7 @@ const pathParamSchema = z.object({
 });
 
 const publicCloudProductEdit = createClientPage({
-  roles: ['user'],
+  roles: [GlobalRole.User],
   validations: { pathParams: pathParamSchema },
 });
 export default publicCloudProductEdit(({ pathParams, queryParams, session }) => {

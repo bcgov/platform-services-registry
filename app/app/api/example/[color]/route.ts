@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server';
 import { z } from 'zod';
+import { GlobalRole } from '@/constants';
 import createApiHandler from '@/core/api-handler';
 
 const pathParamSchema = z.object({
@@ -17,7 +18,7 @@ const bodySchema = z.object({
 });
 
 const apiHandler = createApiHandler({
-  roles: ['admin'],
+  roles: [GlobalRole.Admin],
   validations: { pathParams: pathParamSchema, queryParams: queryParamSchema, body: bodySchema },
 });
 export const POST = apiHandler(async ({ pathParams, queryParams, body, session }) => {

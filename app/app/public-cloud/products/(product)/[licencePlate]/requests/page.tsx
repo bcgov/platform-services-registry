@@ -5,7 +5,7 @@ import { proxy, useSnapshot } from 'valtio';
 import { z } from 'zod';
 import Table from '@/components/generic/table/Table';
 import TableBodyPublicRequests from '@/components/table/TableBodyPublicRequests';
-import { requestSortsInProduct } from '@/constants';
+import { requestSortsInProduct, GlobalRole } from '@/constants';
 import createClientPage from '@/core/client-page';
 import { processPublicCloudRequestData } from '@/helpers/row-mapper';
 import { searchPublicCloudRequests } from '@/services/backend/public-cloud/requests';
@@ -18,7 +18,7 @@ const pathParamSchema = z.object({
 });
 
 const publicCloudRequests = createClientPage({
-  roles: ['user'],
+  roles: [GlobalRole.User],
   validations: { pathParams: pathParamSchema },
   fallbackUrl: '/login?callbackUrl=/home',
 });

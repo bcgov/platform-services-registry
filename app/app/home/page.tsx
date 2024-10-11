@@ -3,10 +3,11 @@
 import Tabs from '@/components/generic/tabs/BasicTabs';
 import Landing from '@/components/Landing';
 import { tabs } from '@/components/layouts/DashboardLayout';
+import { GlobalRole } from '@/constants';
 import createClientPage from '@/core/client-page';
 
 const home = createClientPage({
-  roles: ['user'],
+  roles: [GlobalRole.User],
   fallbackUrl: '/login',
 });
 export default home(({ session }) => {

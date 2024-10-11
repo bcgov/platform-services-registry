@@ -3,6 +3,7 @@
 import { Button } from '@mantine/core';
 import { IconPhoto, IconDownload } from '@tabler/icons-react';
 import classNames from 'classnames';
+import { GlobalRole } from '@/constants';
 import createClientPage from '@/core/client-page';
 
 const colors = ['primary', 'secondary', 'success', 'danger', 'warning', 'info', 'dark'];
@@ -10,7 +11,7 @@ const variants = ['filled', 'light', 'outline'];
 const sizes = ['xl', 'compact-xl', 'lg', 'compact-lg', 'md', 'compact-md', 'sm', 'compact-sm', 'xs', 'compact-xs'];
 
 const buttonPage = createClientPage({
-  roles: ['user'],
+  roles: [GlobalRole.User],
 });
 export default buttonPage(() => {
   return (

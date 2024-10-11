@@ -1,4 +1,5 @@
 import { expect } from '@jest/globals';
+import { GlobalRole } from '@/constants';
 import { createSamplePrivateCloudCommentData } from '@/helpers/mock-resources';
 import { mockSessionByEmail, mockSessionByRole } from '@/services/api-test/core';
 import {
@@ -13,7 +14,7 @@ let commentId: string;
 
 describe('Delete Private Cloud Comment - Permissions', () => {
   beforeAll(async () => {
-    await mockSessionByRole('admin');
+    await mockSessionByRole(GlobalRole.Admin);
 
     licencePlate = 'test-licence-plate';
     const commentData = createSamplePrivateCloudCommentData({
@@ -41,7 +42,7 @@ describe('Delete Private Cloud Comment - Permissions', () => {
   });
 
   it('should successfully delete a comment for admin', async () => {
-    await mockSessionByRole('admin');
+    await mockSessionByRole(GlobalRole.Admin);
 
     const deleteResponse = await deletePrivateCloudComment(licencePlate, commentId);
 
@@ -63,7 +64,7 @@ describe('Delete Private Cloud Comment - Permissions', () => {
     const createResponseBody = await createResponse.json();
     const newCommentId = createResponseBody.id;
 
-    await mockSessionByRole('private-admin');
+    await mockSessionByRole(GlobalRole.PrivateAdmin);
 
     const deleteResponse = await deletePrivateCloudComment(licencePlate, newCommentId);
 
@@ -85,7 +86,7 @@ describe('Delete Private Cloud Comment - Permissions', () => {
     const createResponseBody = await createResponse.json();
     const anotherCommentId = createResponseBody.id;
 
-    await mockSessionByRole('reader');
+    await mockSessionByRole(GlobalRole.Reader);
 
     const deleteResponse = await deletePrivateCloudComment(licencePlate, anotherCommentId);
 
@@ -95,7 +96,7 @@ describe('Delete Private Cloud Comment - Permissions', () => {
 
 describe('Delete Private Cloud Comment - Validations', () => {
   it('should return 500 Bad Request if no comment ID is provided', async () => {
-    await mockSessionByRole('admin');
+    await mockSessionByRole(GlobalRole.Admin);
 
     const deleteResponse = await deletePrivateCloudComment(licencePlate, '');
 
@@ -103,7 +104,7 @@ describe('Delete Private Cloud Comment - Validations', () => {
   });
 
   it('should return 500 when attempting to delete a comment that has already been deleted', async () => {
-    await mockSessionByRole('admin');
+    await mockSessionByRole(GlobalRole.Admin);
 
     const commentData = createSamplePrivateCloudCommentData({
       data: {

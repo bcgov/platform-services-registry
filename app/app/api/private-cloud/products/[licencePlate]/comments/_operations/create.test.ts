@@ -1,4 +1,5 @@
 import { expect } from '@jest/globals';
+import { GlobalRole } from '@/constants';
 import { createSamplePrivateCloudCommentData } from '@/helpers/mock-resources';
 import { findOtherMockUsers, generateTestSession } from '@/helpers/mock-users';
 import { mockSessionByEmail, mockSessionByRole } from '@/services/api-test/core';
@@ -19,7 +20,7 @@ describe('Create Private Cloud Comment - Permissions', () => {
   it('should successfully submit a create comment request for admin', async () => {
     const licencePlate = 'test-licence-plate';
     const requestData = createSamplePrivateCloudCommentData();
-    await mockSessionByRole('admin');
+    await mockSessionByRole(GlobalRole.Admin);
 
     const response = await createPrivateCloudComment(licencePlate, requestData);
 
@@ -39,7 +40,7 @@ describe('Create Private Cloud Comment - Permissions', () => {
   it('should successfully submit a create comment request for private-admin', async () => {
     const licencePlate = 'test-licence-plate';
     const requestData = createSamplePrivateCloudCommentData();
-    await mockSessionByRole('private-admin');
+    await mockSessionByRole(GlobalRole.PrivateAdmin);
 
     const response = await createPrivateCloudComment(licencePlate, requestData);
 
@@ -72,7 +73,7 @@ describe('Create Private Cloud Comment - Validations', () => {
   it('should fail to submit a create comment request due to missing text property', async () => {
     const licencePlate = 'test-licence-plate';
     const requestData = createSamplePrivateCloudCommentData();
-    await mockSessionByRole('admin');
+    await mockSessionByRole(GlobalRole.Admin);
 
     requestData.text = '';
 
@@ -89,7 +90,7 @@ describe('Create Private Cloud Comment - Validations', () => {
   it('should fail to submit a create comment request due to missing projectId and requestId', async () => {
     const licencePlate = 'test-licence-plate';
     const requestData = createSamplePrivateCloudCommentData();
-    await mockSessionByRole('admin');
+    await mockSessionByRole(GlobalRole.Admin);
 
     requestData.projectId = undefined;
     requestData.requestId = undefined;
@@ -109,7 +110,7 @@ describe('Create Private Cloud Comment - Validations', () => {
   it('should fail to submit a create comment request due to invalid projectId', async () => {
     const licencePlate = 'test-licence-plate';
     const requestData = createSamplePrivateCloudCommentData();
-    await mockSessionByRole('admin');
+    await mockSessionByRole(GlobalRole.Admin);
 
     requestData.projectId = 'invalid-object-id';
 
@@ -124,7 +125,7 @@ describe('Create Private Cloud Comment - Validations', () => {
   it('should fail to submit a create comment request due to invalid requestId', async () => {
     const licencePlate = 'test-licence-plate';
     const requestData = createSamplePrivateCloudCommentData();
-    await mockSessionByRole('admin');
+    await mockSessionByRole(GlobalRole.Admin);
 
     requestData.requestId = 'invalid-object-id';
 
@@ -139,7 +140,7 @@ describe('Create Private Cloud Comment - Validations', () => {
   it('should successfully create a comment with only projectId provided', async () => {
     const licencePlate = 'test-licence-plate';
     const requestData = createSamplePrivateCloudCommentData();
-    await mockSessionByRole('admin');
+    await mockSessionByRole(GlobalRole.Admin);
 
     requestData.requestId = undefined;
 
@@ -153,7 +154,7 @@ describe('Create Private Cloud Comment - Validations', () => {
   it('should successfully create a comment with only requestId provided', async () => {
     const licencePlate = 'test-licence-plate';
     const requestData = createSamplePrivateCloudCommentData();
-    await mockSessionByRole('admin');
+    await mockSessionByRole(GlobalRole.Admin);
 
     requestData.projectId = undefined;
 

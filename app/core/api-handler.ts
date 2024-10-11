@@ -6,6 +6,7 @@ import { Session, PermissionsKey } from 'next-auth';
 import { getServerSession } from 'next-auth/next';
 import { z, TypeOf, ZodType } from 'zod';
 import { AUTH_SERVER_URL, AUTH_RELM } from '@/config';
+import { GlobalRole } from '@/constants';
 import { authOptions, generateSession } from '@/core/auth-options';
 import { findUser } from '@/services/keycloak/app-realm';
 import { checkArrayStringCondition } from '@/utils/collection';
@@ -128,7 +129,7 @@ function createApiHandler<
 
               session = await generateSession({
                 session: {} as Session,
-                token: { email: kcUser.email, roles: kcUser.authRoleNames.concat('service-account') },
+                token: { email: kcUser.email, roles: kcUser.authRoleNames.concat(GlobalRole.ServiceAccount) },
               });
             } else if (saType === 'team') {
               const rolesStr = jwtData.roles;
@@ -136,7 +137,7 @@ function createApiHandler<
 
               session = await generateSession({
                 session: {} as Session,
-                token: { email: '', roles: rolesArr.concat('service-account') },
+                token: { email: '', roles: rolesArr.concat(GlobalRole.ServiceAccount) },
               });
             } else {
               return UnauthorizedResponse('invalid token');

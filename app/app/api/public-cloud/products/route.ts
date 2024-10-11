@@ -1,3 +1,4 @@
+import { GlobalRole } from '@/constants';
 import createApiHandler from '@/core/api-handler';
 import { OkResponse } from '@/core/responses';
 import { publicCloudCreateRequestBodySchema } from '@/validation-schemas/public-cloud';
@@ -5,7 +6,7 @@ import createOp from './_operations/create';
 import listOp from './_operations/list';
 
 export const POST = createApiHandler({
-  roles: ['user'],
+  roles: [GlobalRole.User],
   validations: { body: publicCloudCreateRequestBodySchema },
 })(async ({ session, body }) => {
   const res = await createOp({ session, body });
@@ -13,7 +14,7 @@ export const POST = createApiHandler({
 });
 
 export const GET = createApiHandler({
-  roles: ['user'],
+  roles: [GlobalRole.User],
   validations: {},
 })(async ({ session }) => {
   const data = await listOp({ session });

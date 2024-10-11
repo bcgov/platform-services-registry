@@ -1,9 +1,10 @@
+import { GlobalRole } from '@/constants';
 import createApiHandler from '@/core/api-handler';
 import { OkResponse } from '@/core/responses';
 import { models } from '@/services/db';
 
 const apiHandler = createApiHandler({
-  roles: ['admin'],
+  roles: [GlobalRole.Admin],
 });
 export const POST = apiHandler(async ({ pathParams, queryParams, body, session }) => {
   const { data: results } = await models.privateCloudProductZapResult.list(

@@ -1,4 +1,5 @@
 import { z } from 'zod';
+import { GlobalRole } from '@/constants';
 import createApiHandler from '@/core/api-handler';
 import { OkResponse, NotFoundResponse } from '@/core/responses';
 import { PermissionsEnum } from '@/types/permissions';
@@ -12,7 +13,7 @@ const licencePlateSchema = z.object({
 });
 
 export const GET = createApiHandler({
-  roles: ['admin', 'private-admin'],
+  roles: [GlobalRole.Admin, GlobalRole.PrivateAdmin],
   permissions: [PermissionsEnum.ViewAllPrivateProductComments],
   validations: {
     pathParams: licencePlateSchema,
@@ -31,7 +32,7 @@ const updateCommentBodySchema = z.object({
 });
 
 export const PUT = createApiHandler({
-  roles: ['admin', 'private-admin'],
+  roles: [GlobalRole.Admin, GlobalRole.PrivateAdmin],
   permissions: [PermissionsEnum.EditAllPrivateProductComments],
   validations: {
     pathParams: licencePlateSchema,
@@ -48,7 +49,7 @@ export const PUT = createApiHandler({
 });
 
 export const DELETE = createApiHandler({
-  roles: ['admin', 'private-admin'],
+  roles: [GlobalRole.Admin, GlobalRole.PrivateAdmin],
   permissions: [PermissionsEnum.DeleteAllPrivateProductComments],
   validations: {
     pathParams: licencePlateSchema,

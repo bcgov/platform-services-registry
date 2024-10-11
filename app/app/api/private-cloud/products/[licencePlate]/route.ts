@@ -1,3 +1,4 @@
+import { GlobalRole } from '@/constants';
 import createApiHandler from '@/core/api-handler';
 import { privateCloudEditRequestBodySchema } from '@/validation-schemas/private-cloud';
 import deleteOp from '../_operations/delete';
@@ -6,7 +7,7 @@ import updateOp from '../_operations/update';
 import { getPathParamSchema, putPathParamSchema, deletePathParamSchema } from './schema';
 
 export const GET = createApiHandler({
-  roles: ['user'],
+  roles: [GlobalRole.User],
   validations: { pathParams: getPathParamSchema },
 })(async ({ pathParams, session }) => {
   const response = await readOp({ session, pathParams });
@@ -14,7 +15,7 @@ export const GET = createApiHandler({
 });
 
 export const PUT = createApiHandler({
-  roles: ['user'],
+  roles: [GlobalRole.User],
   validations: { pathParams: putPathParamSchema, body: privateCloudEditRequestBodySchema },
 })(async ({ pathParams, body, session }) => {
   const response = await updateOp({ session, body, pathParams });

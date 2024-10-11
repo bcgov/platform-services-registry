@@ -1,5 +1,6 @@
 import { expect } from '@jest/globals';
 import { DecisionStatus, Cluster, TaskType, TaskStatus, RequestType } from '@prisma/client';
+import { GlobalRole } from '@/constants';
 import prisma from '@/core/prisma';
 import { createSamplePublicCloudProductData } from '@/helpers/mock-resources';
 import { pickProductData } from '@/helpers/product';
@@ -75,7 +76,7 @@ async function makeBasicProductMouReview() {
       confirmed: true,
     });
 
-    await mockSessionByRole('billing-reviewer');
+    await mockSessionByRole(GlobalRole.BillingReviewer);
     const task2 = await prisma.task.findFirst({
       where: {
         type: TaskType.REVIEW_MOU,
@@ -147,7 +148,7 @@ describe('Review Public Cloud Create Request - Permissions', () => {
   it('should successfully review the create request for global admin', async () => {
     await makeBasicProductMouReview();
 
-    await mockSessionByRole('admin');
+    await mockSessionByRole(GlobalRole.Admin);
     const response = await makeBasicProductReview(DecisionStatus.APPROVED);
 
     expect(response.status).toBe(200);
@@ -163,7 +164,7 @@ describe('Review Public Cloud Create Request - Permissions', () => {
   it('should fail to review the create request already reviewed', async () => {
     await makeBasicProductMouReview();
 
-    await mockSessionByRole('admin');
+    await mockSessionByRole(GlobalRole.Admin);
     const response = await makeBasicProductReview(DecisionStatus.APPROVED);
     expect(response.status).toBe(400);
 
@@ -220,7 +221,7 @@ describe('Review Public Cloud Update Request - Permissions', () => {
   it('should fail to review the update request for global admin', async () => {
     await makeBasicProductMouReview();
 
-    await mockSessionByRole('admin');
+    await mockSessionByRole(GlobalRole.Admin);
     const response = await makeBasicProductReview(DecisionStatus.APPROVED);
 
     expect(response.status).toBe(400);
@@ -274,7 +275,7 @@ describe('Review Public Cloud Delete Request - Permissions', () => {
   it('should successfully review the delete request for global admin', async () => {
     await makeBasicProductMouReview();
 
-    await mockSessionByRole('admin');
+    await mockSessionByRole(GlobalRole.Admin);
     const response = await makeBasicProductReview(DecisionStatus.APPROVED);
 
     expect(response.status).toBe(200);
@@ -283,7 +284,7 @@ describe('Review Public Cloud Delete Request - Permissions', () => {
   it('should fail to review the delete request already reviewed', async () => {
     await makeBasicProductMouReview();
 
-    await mockSessionByRole('admin');
+    await mockSessionByRole(GlobalRole.Admin);
     const response = await makeBasicProductReview(DecisionStatus.APPROVED);
 
     expect(response.status).toBe(400);
@@ -318,7 +319,7 @@ describe('Review Public Cloud Request - Validations', () => {
 
     await makeBasicProductMouReview();
 
-    await mockSessionByRole('admin');
+    await mockSessionByRole(GlobalRole.Admin);
     const response = await makeBasicProductReview(DecisionStatus.APPROVED, {
       name: newName,
       cluster: newCluster,

@@ -1,5 +1,6 @@
 import { expect } from '@jest/globals';
 import { DecisionStatus, ProjectStatus, Ministry, Provider, TaskType, TaskStatus, RequestType } from '@prisma/client';
+import { GlobalRole } from '@/constants';
 import prisma from '@/core/prisma';
 import { createSamplePublicCloudProductData } from '@/helpers/mock-resources';
 import { mockNoRoleUsers, findMockUserByIdr, findOtherMockUsers } from '@/helpers/mock-users';
@@ -71,7 +72,7 @@ describe('API: List Public Cloud Products - Permissions', () => {
         confirmed: true,
       });
 
-      await mockSessionByRole('billing-reviewer');
+      await mockSessionByRole(GlobalRole.BillingReviewer);
       const task2 = await prisma.task.findFirst({
         where: {
           type: TaskType.REVIEW_MOU,
@@ -90,7 +91,7 @@ describe('API: List Public Cloud Products - Permissions', () => {
       });
     }
 
-    await mockSessionByRole('admin');
+    await mockSessionByRole(GlobalRole.Admin);
 
     const res2 = await makePublicCloudRequestDecision(dat1.id, {
       ...dat1.decisionData,
@@ -144,7 +145,7 @@ describe('API: List Public Cloud Products - Permissions', () => {
     const dat1 = await res1.json();
     expect(res1.status).toBe(200);
 
-    await mockSessionByRole('admin');
+    await mockSessionByRole(GlobalRole.Admin);
 
     const res2 = await makePublicCloudRequestDecision(dat1.id, {
       ...dat1.decisionData,
@@ -199,7 +200,7 @@ describe('API: List Public Cloud Products - Permissions', () => {
   });
 
   it('should successfully list 2 projects by admin', async () => {
-    await mockUserServiceAccountByRole('admin');
+    await mockUserServiceAccountByRole(GlobalRole.Admin);
 
     const res1 = await listPublicCloudProjectApi({});
     expect(res1.status).toBe(200);
@@ -215,7 +216,7 @@ describe('API: List Public Cloud Products - Validations', () => {
   });
 
   it('should successfully create products by admin', async () => {
-    await mockSessionByRole('admin');
+    await mockSessionByRole(GlobalRole.Admin);
 
     const datasets = [];
     datasets.push(
@@ -249,7 +250,7 @@ describe('API: List Public Cloud Products - Validations', () => {
   });
 
   it('should successfully list 10 projects by admin', async () => {
-    await mockUserServiceAccountByRole('admin');
+    await mockUserServiceAccountByRole(GlobalRole.Admin);
 
     const res1 = await listPublicCloudProjectApi({});
     expect(res1.status).toBe(200);
@@ -259,7 +260,7 @@ describe('API: List Public Cloud Products - Validations', () => {
   });
 
   it('should successfully list 5 projects by admin with search criteria', async () => {
-    await mockUserServiceAccountByRole('admin');
+    await mockUserServiceAccountByRole(GlobalRole.Admin);
 
     const res1 = await listPublicCloudProjectApi({
       ministry: Ministry.AEST,
@@ -273,7 +274,7 @@ describe('API: List Public Cloud Products - Validations', () => {
   });
 
   it('should successfully list 0 projects by admin with search criteria', async () => {
-    await mockUserServiceAccountByRole('admin');
+    await mockUserServiceAccountByRole(GlobalRole.Admin);
 
     const res1 = await listPublicCloudProjectApi({
       status: ProjectStatus.INACTIVE,
@@ -286,7 +287,7 @@ describe('API: List Public Cloud Products - Validations', () => {
   });
 
   it('should fail to list products due to an invalid ministry property', async () => {
-    await mockUserServiceAccountByRole('admin');
+    await mockUserServiceAccountByRole(GlobalRole.Admin);
 
     const response = await listPublicCloudProjectApi({ ministry: 'INVALID' as Ministry });
 
