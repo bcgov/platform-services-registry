@@ -12,6 +12,7 @@ import {
 import { z } from 'zod';
 import PageAccordion, { PageAccordionItem } from '@/components/generic/accordion/PageAccordion';
 import ProductComparison from '@/components/ProductComparison';
+import { GlobalRole } from '@/constants';
 import createClientPage from '@/core/client-page';
 import { usePrivateProductState } from '@/states/global';
 import { DiffChange } from '@/utils/diff';
@@ -27,7 +28,7 @@ const pathParamSchema = z.object({
 });
 
 const Layout = createClientPage({
-  roles: ['user'],
+  roles: [GlobalRole.User],
   validations: { pathParams: pathParamSchema },
 });
 export default Layout(({ pathParams, queryParams, session, router, children }) => {

@@ -1,4 +1,5 @@
 import { ProjectContext } from '@prisma/client';
+import { GlobalRole } from '@/constants';
 import createApiHandler from '@/core/api-handler';
 import prisma from '@/core/prisma';
 import { OkResponse } from '@/core/responses';
@@ -6,7 +7,7 @@ import { models } from '@/services/db';
 import { securityConfigSchema } from '@/validation-schemas/security-config';
 
 const apiHandler = createApiHandler({
-  roles: ['user'],
+  roles: [GlobalRole.User],
   validations: { body: securityConfigSchema },
 });
 export const PUT = apiHandler(async ({ body, session }) => {

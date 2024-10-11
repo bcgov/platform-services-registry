@@ -2,6 +2,7 @@ import { RoleMappingPayload } from '@keycloak/keycloak-admin-client/lib/defs/rol
 import { EventType } from '@prisma/client';
 import { z } from 'zod';
 import { AUTH_RELM } from '@/config';
+import { GlobalRole } from '@/constants';
 import createApiHandler from '@/core/api-handler';
 import { OkResponse, BadRequestResponse } from '@/core/responses';
 import { createEvent } from '@/services/db';
@@ -21,7 +22,7 @@ const bodySchema = z.object({
 });
 
 export const GET = createApiHandler({
-  roles: ['user'],
+  roles: [GlobalRole.User],
   validations: { pathParams: pathParamSchema },
 })(async ({ session, pathParams }) => {
   const { id: clientUid } = pathParams;
@@ -37,7 +38,7 @@ export const GET = createApiHandler({
 });
 
 export const POST = createApiHandler({
-  roles: ['admin'],
+  roles: [GlobalRole.Admin],
   validations: { pathParams: pathParamSchema, body: bodySchema },
 })(async ({ session, pathParams, body }) => {
   const { id: clientUid } = pathParams;

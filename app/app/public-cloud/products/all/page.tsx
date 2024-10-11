@@ -4,7 +4,7 @@ import { useQuery } from '@tanstack/react-query';
 import { proxy, useSnapshot } from 'valtio';
 import Table from '@/components/generic/table/Table';
 import TableBodyPublicProducts from '@/components/table/TableBodyPublicProducts';
-import { publicCloudProductSorts } from '@/constants';
+import { publicCloudProductSorts, GlobalRole } from '@/constants';
 import createClientPage from '@/core/client-page';
 import { processPublicCloudProductData } from '@/helpers/row-mapper';
 import { searchPublicCloudProducts, downloadPublicCloudProducts } from '@/services/backend/public-cloud/products';
@@ -13,7 +13,7 @@ import FilterPanel from './FilterPanel';
 import { pageState } from './state';
 
 const publicCloudProducts = createClientPage({
-  roles: ['user'],
+  roles: [GlobalRole.User],
   fallbackUrl: '/login?callbackUrl=/home',
 });
 export default publicCloudProducts(({ pathParams, queryParams, session }) => {

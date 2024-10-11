@@ -1,5 +1,6 @@
 import { expect } from '@jest/globals';
 import { DecisionStatus, TaskType, TaskStatus, RequestType } from '@prisma/client';
+import { GlobalRole } from '@/constants';
 import prisma from '@/core/prisma';
 import { createSamplePublicCloudProductData } from '@/helpers/mock-resources';
 import { findOtherMockUsers } from '@/helpers/mock-users';
@@ -73,7 +74,7 @@ describe('Read Public Cloud Product - Permissions', () => {
   });
 
   it('should successfully review the billing by billing reviewer', async () => {
-    await mockSessionByRole('billing-reviewer');
+    await mockSessionByRole(GlobalRole.BillingReviewer);
 
     const task = await prisma.task.findFirst({
       where: {
@@ -98,7 +99,7 @@ describe('Read Public Cloud Product - Permissions', () => {
   });
 
   it('should successfully approve the request by admin', async () => {
-    await mockSessionByRole('admin');
+    await mockSessionByRole(GlobalRole.Admin);
 
     const response = await makePublicCloudRequestDecision(requests.create.id, {
       ...requests.create.decisionData,
@@ -126,7 +127,7 @@ describe('Read Public Cloud Product - Permissions', () => {
   });
 
   it('should successfully read the product for admin', async () => {
-    await mockSessionByRole('admin');
+    await mockSessionByRole(GlobalRole.Admin);
 
     const response = await getPublicCloudProject(requests.create.decisionData.licencePlate);
 

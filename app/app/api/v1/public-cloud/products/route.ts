@@ -1,6 +1,7 @@
 import { ProjectStatus, Ministry, Provider } from '@prisma/client';
 import { Session } from 'next-auth';
 import { z } from 'zod';
+import { GlobalRole } from '@/constants';
 import createApiHandler from '@/core/api-handler';
 import { OkResponse, BadRequestResponse } from '@/core/responses';
 import { parsePaginationParams } from '@/helpers/pagination';
@@ -23,7 +24,7 @@ const queryParamSchema = z.object({
 });
 
 const apiHandler = createApiHandler({
-  roles: ['user', 'service-account'],
+  roles: [GlobalRole.User, GlobalRole.ServiceAccount],
   useServiceAccount: true,
   validations: { queryParams: queryParamSchema },
 });

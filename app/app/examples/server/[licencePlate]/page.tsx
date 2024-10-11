@@ -1,4 +1,5 @@
 import { z } from 'zod';
+import { GlobalRole } from '@/constants';
 import prisma from '@/core/prisma';
 import createServerPage from '@/core/server-page';
 
@@ -12,7 +13,7 @@ const queryParamSchema = z.object({
 });
 
 const examplePage = createServerPage({
-  roles: ['user'],
+  roles: [GlobalRole.User],
   validations: { pathParams: pathParamSchema, queryParams: queryParamSchema },
 });
 export default examplePage(async ({ pathParams, queryParams, session }) => {

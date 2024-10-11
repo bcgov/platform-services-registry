@@ -1,4 +1,5 @@
 import { z } from 'zod';
+import { GlobalRole } from '@/constants';
 import createApiHandler from '@/core/api-handler';
 import { teamApiAccountSchema } from '@/validation-schemas/api-accounts';
 import deleteOp from '../_operations/delete';
@@ -10,7 +11,7 @@ const pathParamSchema = z.object({
 });
 
 export const GET = createApiHandler({
-  roles: ['user'],
+  roles: [GlobalRole.User],
   validations: { pathParams: pathParamSchema },
 })(async ({ session, pathParams }) => {
   const res = await getOp({ session, id: pathParams.id });
@@ -18,7 +19,7 @@ export const GET = createApiHandler({
 });
 
 export const PUT = createApiHandler({
-  roles: ['admin'],
+  roles: [GlobalRole.Admin],
   validations: {
     pathParams: pathParamSchema,
     body: teamApiAccountSchema,
@@ -29,7 +30,7 @@ export const PUT = createApiHandler({
 });
 
 export const DELETE = createApiHandler({
-  roles: ['admin'],
+  roles: [GlobalRole.Admin],
   validations: { pathParams: pathParamSchema },
 })(async ({ session, pathParams }) => {
   const res = await deleteOp({ session, id: pathParams.id });

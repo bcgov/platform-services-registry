@@ -1,5 +1,6 @@
 import { Provider, Cluster } from '@prisma/client';
 import { z } from 'zod';
+import { GlobalRole } from '@/constants';
 import createApiHandler from '@/core/api-handler';
 import prisma from '@/core/prisma';
 import { OkResponse } from '@/core/responses';
@@ -16,7 +17,7 @@ const queryParamSchema = z.object({
 });
 
 export const GET = createApiHandler({
-  roles: ['user'],
+  roles: [GlobalRole.User],
   validations: { pathParams: pathParamSchema, queryParams: queryParamSchema },
 })(async ({ pathParams, queryParams, session }) => {
   const { idOrAccountCoding } = pathParams;

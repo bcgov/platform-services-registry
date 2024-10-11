@@ -1,11 +1,12 @@
 import { RequestType } from '@prisma/client';
+import { GlobalRole } from '@/constants';
 import createApiHandler from '@/core/api-handler';
 import prisma from '@/core/prisma';
 import { OkResponse } from '@/core/responses';
 import { comparePublicProductData } from '@/helpers/product-change';
 
 const apiHandler = createApiHandler({
-  roles: ['admin'],
+  roles: [GlobalRole.Admin],
   useServiceAccount: true,
 });
 export const POST = apiHandler(async () => {

@@ -1,6 +1,7 @@
 import { expect } from '@jest/globals';
 import { DecisionStatus, Ministry, Provider, TaskType, TaskStatus, ProjectStatus, RequestType } from '@prisma/client';
 import { parse } from 'csv-parse/sync';
+import { GlobalRole } from '@/constants';
 import prisma from '@/core/prisma';
 import { createSamplePublicCloudProductData } from '@/helpers/mock-resources';
 import { mockNoRoleUsers, findMockUserByIdr, findOtherMockUsers } from '@/helpers/mock-users';
@@ -86,7 +87,7 @@ describe('Download Public Cloud Products - Permissions', () => {
         confirmed: true,
       });
 
-      await mockSessionByRole('billing-reviewer');
+      await mockSessionByRole(GlobalRole.BillingReviewer);
       const task2 = await prisma.task.findFirst({
         where: {
           type: TaskType.REVIEW_MOU,
@@ -105,7 +106,7 @@ describe('Download Public Cloud Products - Permissions', () => {
       });
     }
 
-    await mockSessionByRole('admin');
+    await mockSessionByRole(GlobalRole.Admin);
 
     const res2 = await makePublicCloudRequestDecision(dat1.id, {
       ...dat1.decisionData,
@@ -187,7 +188,7 @@ describe('Download Public Cloud Products - Permissions', () => {
     const dat1 = await res1.json();
     expect(res1.status).toBe(200);
 
-    await mockSessionByRole('admin');
+    await mockSessionByRole(GlobalRole.Admin);
 
     const res2 = await makePublicCloudRequestDecision(dat1.id, {
       ...dat1.decisionData,
@@ -251,7 +252,7 @@ describe('Download Public Cloud Products - Permissions', () => {
   });
 
   it('should successfully download 2 projects by admin', async () => {
-    await mockSessionByRole('admin');
+    await mockSessionByRole(GlobalRole.Admin);
 
     const res1 = await downloadPublicCloudProjects({});
     expect(res1.status).toBe(200);
@@ -269,7 +270,7 @@ describe('Download Public Cloud Products - Validations', () => {
   });
 
   it('should successfully create products by admin', async () => {
-    await mockSessionByRole('admin');
+    await mockSessionByRole(GlobalRole.Admin);
 
     const datasets = [];
     datasets.push(
@@ -305,7 +306,7 @@ describe('Download Public Cloud Products - Validations', () => {
   });
 
   it('should successfully download 10 projects by admin', async () => {
-    await mockSessionByRole('admin');
+    await mockSessionByRole(GlobalRole.Admin);
 
     const res1 = await downloadPublicCloudProjects({});
     expect(res1.status).toBe(200);
@@ -317,7 +318,7 @@ describe('Download Public Cloud Products - Validations', () => {
   });
 
   it('should successfully download 5 projects by admin with search criteria', async () => {
-    await mockSessionByRole('admin');
+    await mockSessionByRole(GlobalRole.Admin);
 
     const res1 = await downloadPublicCloudProjects({
       ministries: [Ministry.AEST],
@@ -334,7 +335,7 @@ describe('Download Public Cloud Products - Validations', () => {
   });
 
   it('should successfully download 1 project by admin with search criteria', async () => {
-    await mockSessionByRole('admin');
+    await mockSessionByRole(GlobalRole.Admin);
 
     const res1 = await downloadPublicCloudProjects({
       search: '______name______',
@@ -349,7 +350,7 @@ describe('Download Public Cloud Products - Validations', () => {
   });
 
   it('should successfully download 0 project by admin with search criteria', async () => {
-    await mockSessionByRole('admin');
+    await mockSessionByRole(GlobalRole.Admin);
 
     const res1 = await downloadPublicCloudProjects({
       search: '______nonexistent______',
@@ -359,7 +360,7 @@ describe('Download Public Cloud Products - Validations', () => {
   });
 
   it('should fail to download projects by admin due to an invalid provider', async () => {
-    await mockSessionByRole('admin');
+    await mockSessionByRole(GlobalRole.Admin);
 
     const res1 = await downloadPublicCloudProjects({
       providers: ['INVALID' as Provider],
@@ -369,7 +370,7 @@ describe('Download Public Cloud Products - Validations', () => {
   });
 
   it('should fail to download projects by admin due to an invalid ministry', async () => {
-    await mockSessionByRole('admin');
+    await mockSessionByRole(GlobalRole.Admin);
 
     const res1 = await downloadPublicCloudProjects({
       ministries: ['INVALID' as Ministry],

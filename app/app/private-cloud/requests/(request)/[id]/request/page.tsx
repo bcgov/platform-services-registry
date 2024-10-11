@@ -10,6 +10,7 @@ import ProjectDescription from '@/components/form/ProjectDescriptionPrivate';
 import Quotas from '@/components/form/Quotas';
 import TeamContacts from '@/components/form/TeamContacts';
 import PageAccordion from '@/components/generic/accordion/PageAccordion';
+import { GlobalRole } from '@/constants';
 import createClientPage from '@/core/client-page';
 import { usePrivateProductState } from '@/states/global';
 
@@ -18,7 +19,7 @@ const pathParamSchema = z.object({
 });
 
 const privateCloudRequestRequest = createClientPage({
-  roles: ['user'],
+  roles: [GlobalRole.User],
   validations: { pathParams: pathParamSchema },
 });
 export default privateCloudRequestRequest(({ pathParams, queryParams, session, router }) => {

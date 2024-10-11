@@ -1,6 +1,7 @@
 'use client';
 
 import { Table } from '@mantine/core';
+import { GlobalRole } from '@/constants';
 import createClientPage from '@/core/client-page';
 
 const elements = [
@@ -12,7 +13,7 @@ const elements = [
 ];
 
 const tablePage = createClientPage({
-  roles: ['user'],
+  roles: [GlobalRole.User],
 });
 export default tablePage(() => {
   const rows = elements.map((element) => (

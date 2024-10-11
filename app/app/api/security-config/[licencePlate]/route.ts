@@ -1,5 +1,6 @@
 import { ProjectContext } from '@prisma/client';
 import { z } from 'zod';
+import { GlobalRole } from '@/constants';
 import createApiHandler from '@/core/api-handler';
 import { OkResponse } from '@/core/responses';
 import { models } from '@/services/db';
@@ -13,7 +14,7 @@ const queryParamSchema = z.object({
 });
 
 const apiHandler = createApiHandler({
-  roles: ['user'],
+  roles: [GlobalRole.User],
   validations: { pathParams: pathParamSchema, queryParams: queryParamSchema },
 });
 export const GET = apiHandler(async ({ pathParams, queryParams, session }) => {

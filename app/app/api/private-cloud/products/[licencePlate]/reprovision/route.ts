@@ -1,5 +1,6 @@
 import { RequestType, Cluster, EventType } from '@prisma/client';
 import { z } from 'zod';
+import { GlobalRole } from '@/constants';
 import createApiHandler from '@/core/api-handler';
 import { BadRequestResponse, OkResponse, UnauthorizedResponse } from '@/core/responses';
 import { createEvent, models } from '@/services/db';
@@ -10,7 +11,7 @@ const pathParamSchema = z.object({
 });
 
 const apiHandler = createApiHandler({
-  roles: ['admin', 'private-admin'],
+  roles: [GlobalRole.Admin, GlobalRole.PrivateAdmin],
   validations: { pathParams: pathParamSchema },
 });
 export const GET = apiHandler(async ({ pathParams, session }) => {

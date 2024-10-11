@@ -1,5 +1,6 @@
 import { expect } from '@jest/globals';
 import { Ministry, Provider, DecisionStatus, TaskType, TaskStatus, RequestType } from '@prisma/client';
+import { GlobalRole } from '@/constants';
 import prisma from '@/core/prisma';
 import { createSamplePublicCloudProductData } from '@/helpers/mock-resources';
 import { mockNoRoleUsers, findMockUserByIdr, findOtherMockUsers } from '@/helpers/mock-users';
@@ -71,7 +72,7 @@ describe('Search Public Cloud Requests - Permissions', () => {
         confirmed: true,
       });
 
-      await mockSessionByRole('billing-reviewer');
+      await mockSessionByRole(GlobalRole.BillingReviewer);
       const task2 = await prisma.task.findFirst({
         where: {
           type: TaskType.REVIEW_MOU,
@@ -90,7 +91,7 @@ describe('Search Public Cloud Requests - Permissions', () => {
       });
     }
 
-    await mockSessionByRole('admin');
+    await mockSessionByRole(GlobalRole.Admin);
 
     const res2 = await makePublicCloudRequestDecision(dat1.id, {
       ...dat1.decisionData,
@@ -145,7 +146,7 @@ describe('Search Public Cloud Requests - Permissions', () => {
     const dat1 = await res1.json();
     expect(res1.status).toBe(200);
 
-    await mockSessionByRole('admin');
+    await mockSessionByRole(GlobalRole.Admin);
 
     const res2 = await makePublicCloudRequestDecision(dat1.id, {
       ...dat1.decisionData,
@@ -200,7 +201,7 @@ describe('Search Public Cloud Requests - Permissions', () => {
   });
 
   it('should successfully search 2 requests by admin', async () => {
-    await mockSessionByRole('admin');
+    await mockSessionByRole(GlobalRole.Admin);
 
     const res1 = await searchPublicCloudRequests({});
     expect(res1.status).toBe(200);
@@ -216,7 +217,7 @@ describe('Search Public Cloud Requests - Validations', () => {
   });
 
   it('should successfully create products by admin', async () => {
-    await mockSessionByRole('admin');
+    await mockSessionByRole(GlobalRole.Admin);
 
     const datasets = [];
     datasets.push(
@@ -258,7 +259,7 @@ describe('Search Public Cloud Requests - Validations', () => {
             confirmed: true,
           });
 
-          await mockSessionByRole('billing-reviewer');
+          await mockSessionByRole(GlobalRole.BillingReviewer);
           const task2 = await prisma.task.findFirst({
             where: {
               type: TaskType.REVIEW_MOU,
@@ -277,7 +278,7 @@ describe('Search Public Cloud Requests - Validations', () => {
           });
         }
 
-        await mockSessionByRole('admin');
+        await mockSessionByRole(GlobalRole.Admin);
 
         const req = await makePublicCloudRequestDecision(dat1.id, {
           ...dat1.decisionData,
@@ -302,7 +303,7 @@ describe('Search Public Cloud Requests - Validations', () => {
   });
 
   it('should successfully search 11 requests by admin', async () => {
-    await mockSessionByRole('admin');
+    await mockSessionByRole(GlobalRole.Admin);
 
     const res1 = await searchPublicCloudRequests({});
     expect(res1.status).toBe(200);
@@ -313,7 +314,7 @@ describe('Search Public Cloud Requests - Validations', () => {
   });
 
   it('should successfully search 1 requests by admin', async () => {
-    await mockSessionByRole('admin');
+    await mockSessionByRole(GlobalRole.Admin);
 
     const res1 = await searchPublicCloudRequests({ status: [DecisionStatus.APPROVED, DecisionStatus.AUTO_APPROVED] });
     expect(res1.status).toBe(200);
@@ -323,7 +324,7 @@ describe('Search Public Cloud Requests - Validations', () => {
   });
 
   it('should successfully search 5 requests by admin with search criteria', async () => {
-    await mockSessionByRole('admin');
+    await mockSessionByRole(GlobalRole.Admin);
 
     const res1 = await searchPublicCloudRequests({
       ministries: [Ministry.AEST],
@@ -337,7 +338,7 @@ describe('Search Public Cloud Requests - Validations', () => {
   });
 
   it('should successfully search 1 request by admin with search criteria', async () => {
-    await mockSessionByRole('admin');
+    await mockSessionByRole(GlobalRole.Admin);
 
     const res1 = await searchPublicCloudRequests({
       search: '______name______',

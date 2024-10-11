@@ -1,5 +1,6 @@
 import { z } from 'zod';
 import { addUserToGroupByEmail } from '@/app/api/public-cloud/aws-roles/helpers';
+import { GlobalRole } from '@/constants';
 import createApiHandler from '@/core/api-handler';
 import { OkResponse } from '@/core/responses';
 
@@ -10,7 +11,7 @@ const queryParamSchema = z.object({
 });
 
 const apiHandler = createApiHandler({
-  roles: ['user'],
+  roles: [GlobalRole.User],
   validations: { queryParams: queryParamSchema },
 });
 

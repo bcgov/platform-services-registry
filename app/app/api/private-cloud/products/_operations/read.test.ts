@@ -1,5 +1,6 @@
 import { expect } from '@jest/globals';
 import { DecisionStatus, RequestType } from '@prisma/client';
+import { GlobalRole } from '@/constants';
 import { createSamplePrivateCloudProductData } from '@/helpers/mock-resources';
 import { findOtherMockUsers } from '@/helpers/mock-users';
 import { pickProductData } from '@/helpers/product';
@@ -39,7 +40,7 @@ describe('Read Private Cloud Product - Permissions', () => {
   });
 
   it('should successfully approve the request by admin', async () => {
-    await mockSessionByRole('admin');
+    await mockSessionByRole(GlobalRole.Admin);
 
     const response = await makePrivateCloudRequestDecision(requests.create.id, {
       ...requests.create.decisionData,
@@ -66,7 +67,7 @@ describe('Read Private Cloud Product - Permissions', () => {
   });
 
   it('should successfully read the product for admin', async () => {
-    await mockSessionByRole('admin');
+    await mockSessionByRole(GlobalRole.Admin);
 
     const response = await getPrivateCloudProject(requests.create.decisionData.licencePlate);
 

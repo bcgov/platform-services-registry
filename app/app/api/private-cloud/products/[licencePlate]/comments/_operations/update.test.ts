@@ -1,4 +1,5 @@
 import { expect } from '@jest/globals';
+import { GlobalRole } from '@/constants';
 import { createSamplePrivateCloudCommentData } from '@/helpers/mock-resources';
 import { mockSessionByEmail, mockSessionByRole } from '@/services/api-test/core';
 import {
@@ -13,7 +14,7 @@ let commentId: string;
 
 describe('Update Private Cloud Comment - Permissions', () => {
   beforeAll(async () => {
-    await mockSessionByRole('admin');
+    await mockSessionByRole(GlobalRole.Admin);
 
     licencePlate = 'test-licence-plate';
     const commentData = createSamplePrivateCloudCommentData({
@@ -41,7 +42,7 @@ describe('Update Private Cloud Comment - Permissions', () => {
   });
 
   it('should successfully update a comment for admin', async () => {
-    await mockSessionByRole('admin');
+    await mockSessionByRole(GlobalRole.Admin);
 
     const updateResponse = await updatePrivateCloudComment(licencePlate, commentId, { text: 'Updated text' });
 
@@ -64,7 +65,7 @@ describe('Update Private Cloud Comment - Permissions', () => {
     const createResponseBody = await createResponse.json();
     const newCommentId = createResponseBody.id;
 
-    await mockSessionByRole('private-admin');
+    await mockSessionByRole(GlobalRole.PrivateAdmin);
 
     const updateResponse = await updatePrivateCloudComment(licencePlate, newCommentId, {
       text: 'Private Admin Update',
@@ -89,7 +90,7 @@ describe('Update Private Cloud Comment - Permissions', () => {
     const createResponseBody = await createResponse.json();
     const anotherCommentId = createResponseBody.id;
 
-    await mockSessionByRole('reader');
+    await mockSessionByRole(GlobalRole.Reader);
 
     const updateResponse = await updatePrivateCloudComment(licencePlate, anotherCommentId, {
       text: 'Reader Update Attempt',
@@ -101,7 +102,7 @@ describe('Update Private Cloud Comment - Permissions', () => {
 
 describe('Update Private Cloud Comment - Validations', () => {
   it('should return 400 Bad Request if no text is provided', async () => {
-    await mockSessionByRole('admin');
+    await mockSessionByRole(GlobalRole.Admin);
 
     const updateResponse = await updatePrivateCloudComment(licencePlate, commentId, { text: '' });
 
@@ -109,7 +110,7 @@ describe('Update Private Cloud Comment - Validations', () => {
   });
 
   it('should return 404 or 500 when attempting to update a comment that does not exist', async () => {
-    await mockSessionByRole('admin');
+    await mockSessionByRole(GlobalRole.Admin);
 
     const nonExistentCommentId = generateShortId();
 

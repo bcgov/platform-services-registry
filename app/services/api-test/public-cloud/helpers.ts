@@ -1,4 +1,5 @@
 import { DecisionStatus, TaskType, TaskStatus, RequestType } from '@prisma/client';
+import { GlobalRole } from '@/constants';
 import prisma from '@/core/prisma';
 import { createSamplePublicCloudProductData } from '@/helpers/mock-resources';
 import { mockSessionByEmail, mockSessionByRole } from '@/services/api-test/core';
@@ -37,7 +38,7 @@ async function runEmouWorkflows(reqData: any) {
 
   if (response.status !== 200) return;
 
-  await mockSessionByRole('billing-reviewer');
+  await mockSessionByRole(GlobalRole.BillingReviewer);
 
   task = await prisma.task.findFirst({
     where: {
@@ -62,7 +63,7 @@ async function runEmouWorkflows(reqData: any) {
 async function approveAndProvisionRequest(reqData: any) {
   let decisionData = reqData.decisionData;
 
-  await mockSessionByRole('admin');
+  await mockSessionByRole(GlobalRole.Admin);
   let response = await makePublicCloudRequestDecision(reqData.id, {
     ...decisionData,
     type: RequestType.CREATE,

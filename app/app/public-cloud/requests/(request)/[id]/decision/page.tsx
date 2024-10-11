@@ -2,6 +2,7 @@
 
 import { useEffect } from 'react';
 import { z } from 'zod';
+import { GlobalRole } from '@/constants';
 import createClientPage from '@/core/client-page';
 
 const pathParamSchema = z.object({
@@ -9,7 +10,7 @@ const pathParamSchema = z.object({
 });
 
 const publicCloudProductDecision = createClientPage({
-  roles: ['user'],
+  roles: [GlobalRole.User],
   validations: { pathParams: pathParamSchema },
 });
 export default publicCloudProductDecision(({ pathParams, queryParams, session, router }) => {

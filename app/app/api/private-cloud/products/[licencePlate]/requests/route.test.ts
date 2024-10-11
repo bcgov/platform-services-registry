@@ -1,5 +1,6 @@
 import { expect } from '@jest/globals';
 import { Ministry, Cluster, DecisionStatus, RequestType } from '@prisma/client';
+import { GlobalRole } from '@/constants';
 import { createSamplePrivateCloudProductData } from '@/helpers/mock-resources';
 import { mockNoRoleUsers, findMockUserByIdr, findOtherMockUsers } from '@/helpers/mock-users';
 import { mockSessionByEmail, mockSessionByRole } from '@/services/api-test/core';
@@ -36,7 +37,7 @@ describe('List Private Cloud Product Requests - Permissions', () => {
 
     expect(res1.status).toBe(200);
 
-    await mockSessionByRole('admin');
+    await mockSessionByRole(GlobalRole.Admin);
 
     const res2 = await makePrivateCloudRequestDecision(dat1.id, {
       ...dat1.decisionData,

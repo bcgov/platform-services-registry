@@ -1,5 +1,6 @@
 import { TaskStatus, TaskType } from '@prisma/client';
 import { z } from 'zod';
+import { GlobalRole } from '@/constants';
 import createApiHandler from '@/core/api-handler';
 import prisma from '@/core/prisma';
 import { BadRequestResponse, OkResponse, UnauthorizedResponse } from '@/core/responses';
@@ -16,7 +17,7 @@ const bodySchema = z.object({
 });
 
 const apiHandler = createApiHandler({
-  roles: ['user'],
+  roles: [GlobalRole.User],
   validations: { pathParams: pathParamSchema, body: bodySchema },
 });
 export const POST = apiHandler(async ({ pathParams, body, session }) => {
@@ -66,7 +67,7 @@ export const POST = apiHandler(async ({ pathParams, body, session }) => {
     data: {
       type: TaskType.REVIEW_MOU,
       status: TaskStatus.ASSIGNED,
-      roles: ['billing-reviewer'],
+      roles: [GlobalRole.BillingReviewer],
       data: {
         licencePlate: request.licencePlate,
       },

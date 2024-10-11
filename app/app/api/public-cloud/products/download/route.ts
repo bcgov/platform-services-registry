@@ -1,4 +1,5 @@
 import { EventType, ProjectStatus } from '@prisma/client';
+import { GlobalRole } from '@/constants';
 import createApiHandler from '@/core/api-handler';
 import { NoContent, CsvResponse } from '@/core/responses';
 import { ministryKeyToName } from '@/helpers/product';
@@ -8,7 +9,7 @@ import { formatDateSimple } from '@/utils/date';
 import { publicCloudProductSearchNoPaginationBodySchema } from '@/validation-schemas/public-cloud';
 
 export const POST = createApiHandler({
-  roles: ['user'],
+  roles: [GlobalRole.User],
   validations: { body: publicCloudProductSearchNoPaginationBodySchema },
 })(async ({ session, body }) => {
   const searchProps = {

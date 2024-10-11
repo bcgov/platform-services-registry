@@ -16,6 +16,7 @@ import PageAccordion from '@/components/generic/accordion/PageAccordion';
 import FormErrorNotification from '@/components/generic/FormErrorNotification';
 import Comment from '@/components/modal/Comment';
 import ReturnModal from '@/components/modal/ReturnDecision';
+import { GlobalRole } from '@/constants';
 import createClientPage from '@/core/client-page';
 import { showErrorNotification } from '@/helpers/notifications';
 import { makePrivateCloudRequestDecision } from '@/services/backend/private-cloud/requests';
@@ -27,7 +28,7 @@ const pathParamSchema = z.object({
 });
 
 const privateCloudRequestDecision = createClientPage({
-  roles: ['user'],
+  roles: [GlobalRole.User],
   validations: { pathParams: pathParamSchema },
 });
 export default privateCloudRequestDecision(({ pathParams, queryParams, session, router }) => {

@@ -4,7 +4,7 @@ import { useQuery } from '@tanstack/react-query';
 import { proxy, useSnapshot } from 'valtio';
 import Table from '@/components/generic/table/Table';
 import TableBodyPrivateProducts from '@/components/table/TableBodyPrivateProducts';
-import { privateCloudProductSorts } from '@/constants';
+import { privateCloudProductSorts, GlobalRole } from '@/constants';
 import createClientPage from '@/core/client-page';
 import { processPrivateCloudProductData } from '@/helpers/row-mapper';
 import { searchPrivateCloudProducts, downloadPrivateCloudProducts } from '@/services/backend/private-cloud/products';
@@ -13,7 +13,7 @@ import FilterPanel from './FilterPanel';
 import { pageState } from './state';
 
 const privateCloudProducts = createClientPage({
-  roles: ['user'],
+  roles: [GlobalRole.User],
   fallbackUrl: '/login?callbackUrl=/home',
 });
 export default privateCloudProducts(({ pathParams, queryParams, session }) => {

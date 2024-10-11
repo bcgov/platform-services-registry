@@ -9,6 +9,7 @@ import { z } from 'zod';
 import CommentBubble from '@/components/comments/CommentBubble';
 import CommentForm from '@/components/comments/CommentForm';
 import EmptySearch from '@/components/table/EmptySearch';
+import { GlobalRole } from '@/constants';
 import createClientPage from '@/core/client-page';
 import { getAllPrivateCloudComments } from '@/services/backend/private-cloud/products';
 import { privateProductState } from '@/states/global';
@@ -34,7 +35,7 @@ const pathParamSchema = z.object({
 });
 
 const privateCloudProductComments = createClientPage({
-  roles: ['user'],
+  roles: [GlobalRole.User],
   validations: { pathParams: pathParamSchema },
 });
 export default privateCloudProductComments(({ pathParams, queryParams, session }) => {

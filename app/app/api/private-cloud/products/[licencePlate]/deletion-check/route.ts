@@ -1,4 +1,5 @@
 import { string, z } from 'zod';
+import { GlobalRole } from '@/constants';
 import createApiHandler from '@/core/api-handler';
 import { BadRequestResponse, OkResponse, UnauthorizedResponse } from '@/core/responses';
 import openshiftDeletionCheck from '@/helpers/openshift';
@@ -9,7 +10,7 @@ const pathParamSchema = z.object({
 });
 
 const apiHandler = createApiHandler({
-  roles: ['user'],
+  roles: [GlobalRole.User],
   validations: { pathParams: pathParamSchema },
 });
 

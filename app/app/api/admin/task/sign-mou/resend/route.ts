@@ -1,6 +1,7 @@
 import { RequestType, TaskStatus, TaskType } from '@prisma/client';
 import { render } from '@react-email/render';
 import _sum from 'lodash-es/sum';
+import { GlobalRole } from '@/constants';
 import createApiHandler from '@/core/api-handler';
 import prisma from '@/core/prisma';
 import { OkResponse } from '@/core/responses';
@@ -10,7 +11,7 @@ import { sendEmail } from '@/services/ches/core';
 import { publicCloudProductDetailInclude, publicCloudRequestDetailInclude } from '@/services/db';
 
 const apiHandler = createApiHandler({
-  roles: ['admin'],
+  roles: [GlobalRole.Admin],
 });
 export const GET = apiHandler(async () => {
   const unsignedBillings = await prisma.billing.findMany({ where: { signed: false } });
