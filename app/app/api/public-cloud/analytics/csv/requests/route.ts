@@ -1,10 +1,10 @@
 import { combinedRequests } from '@/analytics/public-cloud/requests';
+import { GlobalPermissions } from '@/constants';
 import createApiHandler from '@/core/api-handler';
 import { CsvResponse } from '@/core/responses';
-import { PermissionsEnum } from '@/types/permissions';
 
 const apiHandler = createApiHandler({
-  permissions: [PermissionsEnum.ViewPublicAnalytics],
+  permissions: [GlobalPermissions.ViewPublicAnalytics],
 });
 
 export const GET = apiHandler(async () => {

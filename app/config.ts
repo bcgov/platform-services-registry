@@ -25,8 +25,6 @@ export const AWS_ROLES_CLIENT_ID = process.env.AWS_ROLES_CLIENT_ID || 'roles';
 export const AWS_ROLES_CLIENT_SECRET = process.env.AWS_ROLES_CLIENT_SECRET || 'testsecret';
 export const AWS_ROLES_IDENTITY_PROVIDER = process.env.AWS_ROLES_IDENTITY_PROVIDER || 'azureidir';
 
-export const PRIVATE_ADMIN_EMAILS = process.env.PRIVATE_ADMIN_EMAILS || '';
-export const PUBLIC_ADMIN_EMAILS = process.env.PUBLIC_ADMIN_EMAILS || '';
 export const CHES_TOKEN_URL = process.env.CHES_TOKEN_URL || '';
 export const CHES_API_URL = process.env.CHES_API_URL || '';
 export const CHES_CLIENT_ID = process.env.CHES_CLIENT_ID || '';

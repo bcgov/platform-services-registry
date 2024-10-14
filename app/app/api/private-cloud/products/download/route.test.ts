@@ -60,7 +60,7 @@ describe('Download Private Cloud Products - Permissions', () => {
     const dat1 = await res1.json();
     expect(res1.status).toBe(200);
 
-    await mockSessionByRole(GlobalRole.Admin);
+    await mockSessionByRole(GlobalRole.PrivateReviewer);
 
     const res2 = await makePrivateCloudRequestDecision(dat1.id, {
       ...dat1.decisionData,
@@ -162,7 +162,7 @@ describe('Download Private Cloud Products - Permissions', () => {
     const dat1 = await res1.json();
     expect(res1.status).toBe(200);
 
-    await mockSessionByRole(GlobalRole.Admin);
+    await mockSessionByRole(GlobalRole.PrivateReviewer);
 
     const res2 = await makePrivateCloudRequestDecision(dat1.id, {
       ...dat1.decisionData,
@@ -266,6 +266,7 @@ describe('Download Private Cloud Products - Validations', () => {
         const res1 = await createPrivateCloudProject(data);
         const dat1 = await res1.json();
 
+        await mockSessionByRole(GlobalRole.PrivateReviewer);
         await makePrivateCloudRequestDecision(dat1.id, {
           ...dat1.decisionData,
           type: RequestType.CREATE,

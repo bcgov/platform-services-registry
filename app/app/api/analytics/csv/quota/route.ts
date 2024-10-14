@@ -1,14 +1,14 @@
 import { ProjectStatus } from '@prisma/client';
 import _sum from 'lodash-es/sum';
+import { GlobalPermissions } from '@/constants';
 import createApiHandler from '@/core/api-handler';
 import prisma from '@/core/prisma';
 import { CsvResponse, NoContent } from '@/core/responses';
 import { ministryKeyToName } from '@/helpers/product';
-import { PermissionsEnum } from '@/types/permissions';
 import { extractNumbers } from '@/utils/string';
 
 const apiHandler = createApiHandler({
-  permissions: [PermissionsEnum.ViewGeneralAnalytics],
+  permissions: [GlobalPermissions.ViewGeneralAnalytics],
 });
 
 export const GET = apiHandler(async () => {

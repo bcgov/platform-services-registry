@@ -1,8 +1,7 @@
 import { z } from 'zod';
-import { GlobalRole } from '@/constants';
+import { GlobalRole, GlobalPermissions } from '@/constants';
 import createApiHandler from '@/core/api-handler';
 import { OkResponse, BadRequestResponse } from '@/core/responses';
-import { PermissionsEnum } from '@/types/permissions';
 import { getCommentCountOp } from './_operations/count';
 
 const pathParamsSchema = z.object({
@@ -15,7 +14,7 @@ const queryParamsSchema = z.object({
 
 export const GET = createApiHandler({
   roles: [GlobalRole.Admin, GlobalRole.PrivateAdmin],
-  permissions: [PermissionsEnum.ViewAllPrivateProductComments],
+  permissions: [GlobalPermissions.ViewAllPrivateProductComments],
   validations: {
     pathParams: pathParamsSchema,
     queryParams: queryParamsSchema,

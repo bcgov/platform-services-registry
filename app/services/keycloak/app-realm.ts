@@ -6,6 +6,7 @@ import {
   KEYCLOAK_ADMIN_CLIENT_ID,
   KEYCLOAK_ADMIN_CLIENT_SECRET,
 } from '@/config';
+import { GlobalRole } from '@/constants';
 
 export async function getKcAdminClient() {
   const kcAdminClient = new KcAdminClient({
@@ -93,4 +94,11 @@ export async function findUsersByClientRole(clientId: string, roleName: string, 
   });
 
   return users;
+}
+
+export async function findUserEmailsByAuthRole(roleName: GlobalRole, kcAdminClient?: KcAdminClient) {
+  if (!kcAdminClient) kcAdminClient = await getKcAdminClient();
+
+  const users = await findUsersByClientRole(AUTH_RESOURCE, roleName, kcAdminClient);
+  return users.map((v) => v.email ?? '').filter(Boolean);
 }

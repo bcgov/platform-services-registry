@@ -103,6 +103,8 @@ async function main() {
 
   await kc.createClientRole(AUTH_REALM_NAME, authClient?.id as string, `billing-reviewer`);
   await kc.createClientRole(AUTH_REALM_NAME, authClient?.id as string, `billing-reader`);
+  await kc.createClientRole(AUTH_REALM_NAME, authClient?.id as string, `private-reviewer`);
+  await kc.createClientRole(AUTH_REALM_NAME, authClient?.id as string, `public-reviewer`);
 
   // Upsert GitOps client
   await kc.createServiceAccount(AUTH_REALM_NAME, GITOPS_CLIENT_ID, GITOPS_CLIENT_SECRET);

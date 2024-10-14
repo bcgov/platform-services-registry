@@ -106,7 +106,7 @@ describe('Download Public Cloud Products - Permissions', () => {
       });
     }
 
-    await mockSessionByRole(GlobalRole.Admin);
+    await mockSessionByRole(GlobalRole.PublicReviewer);
 
     const res2 = await makePublicCloudRequestDecision(dat1.id, {
       ...dat1.decisionData,
@@ -188,7 +188,7 @@ describe('Download Public Cloud Products - Permissions', () => {
     const dat1 = await res1.json();
     expect(res1.status).toBe(200);
 
-    await mockSessionByRole(GlobalRole.Admin);
+    await mockSessionByRole(GlobalRole.PublicReviewer);
 
     const res2 = await makePublicCloudRequestDecision(dat1.id, {
       ...dat1.decisionData,
@@ -293,6 +293,7 @@ describe('Download Public Cloud Products - Validations', () => {
         const res1 = await createPublicCloudProject(data);
         const dat1 = await res1.json();
 
+        await mockSessionByRole(GlobalRole.PublicReviewer);
         await makePublicCloudRequestDecision(dat1.id, {
           ...dat1.decisionData,
           type: RequestType.CREATE,

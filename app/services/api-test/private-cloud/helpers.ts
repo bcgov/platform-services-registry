@@ -21,7 +21,7 @@ export async function createPrivateCloudProduct() {
   let resData = await response.json();
   let decisionData = resData.decisionData;
 
-  await mockSessionByRole(GlobalRole.Admin);
+  await mockSessionByRole(GlobalRole.PrivateReviewer);
 
   response = await makePrivateCloudRequestDecision(resData.id, {
     ...decisionData,
@@ -68,7 +68,7 @@ export async function updatePrivateCloudProduct() {
   let resData = await response.json();
   let decisionData = resData.decisionData;
 
-  await mockSessionByRole(GlobalRole.Admin);
+  await mockSessionByRole(GlobalRole.PrivateReviewer);
 
   response = await makePrivateCloudRequestDecision(resData.id, {
     ...decisionData,
@@ -84,6 +84,8 @@ export async function updatePrivateCloudProduct() {
   response = await provisionPrivateCloudProject(decisionData.licencePlate);
   if (response.status !== 200) return null;
 
+  await mockSessionByRole(GlobalRole.PrivateAdmin);
+
   response = await editPrivateCloudProject(decisionData.licencePlate, {
     ...decisionData,
     developmentQuota: newDevelopmentQuota,
@@ -93,7 +95,7 @@ export async function updatePrivateCloudProduct() {
   resData = await response.json();
   decisionData = resData.decisionData;
 
-  await mockSessionByRole(GlobalRole.Admin);
+  await mockSessionByRole(GlobalRole.PrivateReviewer);
 
   response = await makePrivateCloudRequestDecision(resData.id, {
     ...decisionData,
@@ -123,7 +125,7 @@ export async function deletePrivateCloudProduct() {
   let resData = await response.json();
   let decisionData = resData.decisionData;
 
-  await mockSessionByRole(GlobalRole.Admin);
+  await mockSessionByRole(GlobalRole.PrivateReviewer);
 
   response = await makePrivateCloudRequestDecision(resData.id, {
     ...decisionData,
@@ -139,13 +141,14 @@ export async function deletePrivateCloudProduct() {
   response = await provisionPrivateCloudProject(decisionData.licencePlate);
   if (response.status !== 200) return null;
 
+  await mockSessionByRole(GlobalRole.PrivateAdmin);
   response = await deletePrivateCloudProject(decisionData.licencePlate);
 
   if (response.status !== 200) return null;
   resData = await response.json();
   decisionData = resData.decisionData;
 
-  await mockSessionByRole(GlobalRole.Admin);
+  await mockSessionByRole(GlobalRole.PrivateReviewer);
 
   response = await makePrivateCloudRequestDecision(resData.id, {
     ...decisionData,

@@ -27,7 +27,7 @@ describe('Provision Private Cloud Request', () => {
   });
 
   it('should successfully approve the request by admin', async () => {
-    await mockSessionByRole(GlobalRole.Admin);
+    await mockSessionByRole(GlobalRole.PrivateReviewer);
 
     const response = await makePrivateCloudRequestDecision(requests.create.id, {
       ...requests.create.decisionData,

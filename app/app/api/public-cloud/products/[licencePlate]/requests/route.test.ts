@@ -79,7 +79,7 @@ describe('List Public Cloud Product Requests - Permissions', () => {
       });
     }
 
-    await mockSessionByRole(GlobalRole.Admin);
+    await mockSessionByRole(GlobalRole.PublicReviewer);
 
     const res2 = await makePublicCloudRequestDecision(dat1.id, {
       ...dat1.decisionData,

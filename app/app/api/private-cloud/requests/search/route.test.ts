@@ -47,7 +47,7 @@ describe('Search Private Cloud Requests - Permissions', () => {
     const dat1 = await res1.json();
     expect(res1.status).toBe(200);
 
-    await mockSessionByRole(GlobalRole.Admin);
+    await mockSessionByRole(GlobalRole.PrivateReviewer);
 
     const res2 = await makePrivateCloudRequestDecision(dat1.id, {
       ...dat1.decisionData,
@@ -100,7 +100,7 @@ describe('Search Private Cloud Requests - Permissions', () => {
     const dat1 = await res1.json();
     expect(res1.status).toBe(200);
 
-    await mockSessionByRole(GlobalRole.Admin);
+    await mockSessionByRole(GlobalRole.PrivateReviewer);
 
     const res2 = await makePrivateCloudRequestDecision(dat1.id, {
       ...dat1.decisionData,
@@ -170,7 +170,7 @@ describe('Search Private Cloud Requests - Validations', () => {
   });
 
   it('should successfully create products by admin', async () => {
-    await mockSessionByRole(GlobalRole.Admin);
+    await mockSessionByRole(GlobalRole.PrivateAdmin);
 
     const datasets = [];
     datasets.push(
@@ -193,6 +193,7 @@ describe('Search Private Cloud Requests - Validations', () => {
         const res1 = await createPrivateCloudProject(data);
         const dat1 = await res1.json();
 
+        await mockSessionByRole(GlobalRole.PrivateReviewer);
         const req = await makePrivateCloudRequestDecision(dat1.id, {
           ...dat1.decisionData,
           type: RequestType.CREATE,
@@ -204,6 +205,7 @@ describe('Search Private Cloud Requests - Validations', () => {
       }),
     );
 
+    await mockSessionByRole(GlobalRole.PrivateAdmin);
     const firstReq = await results[0].json();
     const res = await editPrivateCloudProject(firstReq.licencePlate, {
       ...firstReq.decisionData,

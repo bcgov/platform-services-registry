@@ -43,6 +43,7 @@ jest.mock('@/services/keycloak/app-realm', () => ({
   findClient: jest.fn(async () => null),
   findUser: jest.fn(async () => SERVICES_KEYCLOAK_APP_REALM.findUser),
   findUsersByClientRole: jest.fn(async () => []),
+  findUserEmailsByAuthRole: jest.fn(async () => []),
 }));
 
 jest.mock('@/utils/jwt', () => ({
