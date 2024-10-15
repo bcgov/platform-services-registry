@@ -1,3 +1,18 @@
+## [0.36.2](https://github.com/bcgov/platform-services-registry/compare/v0.36.1...v0.36.2) (2024-10-15)
+
+### Features
+
+* **3118:** lint commit messages locally and in CI ([ccf0962](https://github.com/bcgov/platform-services-registry/commit/ccf09621465776713d4c9bc3c9d682ab59f0b5f1))
+* **3792:** add reviewer roles and deprecate admin emails ([09ce342](https://github.com/bcgov/platform-services-registry/commit/09ce342992c193a4cb9e44c0c6541ad5d697d41f))
+* **3794:** enhance rocket.chat notifications for deployment statuses ([e54f1d5](https://github.com/bcgov/platform-services-registry/commit/e54f1d5d73fb5f6ef1b0be5a429be9c3627c0754))
+* **3936:** add create, update methods into session models ([bbf3ad4](https://github.com/bcgov/platform-services-registry/commit/bbf3ad4023dfbb3a756ea2d4a34ca0734acbbb71))
+* **3937:** add a billing reader role ([4378684](https://github.com/bcgov/platform-services-registry/commit/43786845a913876ef4d8bb999991da17c94c7a31))
+
+### Refactors
+
+* **3792:** replace string roles to GlobalRole enum object values ([ced9b80](https://github.com/bcgov/platform-services-registry/commit/ced9b80e380e833dab093059f77929247bf68ee7))
+* **3936:** add DB services for available entities ([1b8b787](https://github.com/bcgov/platform-services-registry/commit/1b8b787ee4620a1ea7af18d72537ba526cfce32c))
+* **3936:** move database helper functions into DB service ([34db605](https://github.com/bcgov/platform-services-registry/commit/34db60557563f2f105810ac51ae418e63848319f))
 ## [0.36.1](https://github.com/bcgov/platform-services-registry/compare/v0.36.0...v0.36.1) (2024-10-09)
 
 ### Bug Fixes
