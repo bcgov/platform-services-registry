@@ -1,4 +1,3 @@
-import { AUTH_RESOURCE } from '@/config';
 import { publicCloudPlatformAdminEmail, GlobalRole } from '@/constants';
 import AdminCreateRequestTemplate from '@/emails/_templates/public-cloud/AdminCreateRequest';
 import AdminDeleteRequestTemplate from '@/emails/_templates/public-cloud/AdminDeleteRequest';
@@ -18,9 +17,8 @@ import TeamEditRequestTemplate from '@/emails/_templates/public-cloud/TeamEditRe
 import TeamEditRequestCompletionTemplate from '@/emails/_templates/public-cloud/TeamEditRequestCompletion';
 import { getEmouFileName } from '@/helpers/emou';
 import { generateEmouPdf } from '@/helpers/pdfs/emou';
-import { adminPublicEmails } from '@/services/ches/constant';
 import { sendEmail, getContent } from '@/services/ches/core';
-import { findUsersByClientRole } from '@/services/keycloak/app-realm';
+import { findUserEmailsByAuthRole } from '@/services/keycloak/app-realm';
 import { PublicCloudRequestDetail } from '@/types/public-cloud';
 
 function getTeamEmails(request: PublicCloudRequestDetail) {
@@ -34,22 +32,24 @@ function getTeamEmails(request: PublicCloudRequestDetail) {
   ];
 }
 
-export function sendAdminCreateRequest(request: PublicCloudRequestDetail, requester: string) {
+export async function sendAdminCreateRequest(request: PublicCloudRequestDetail, requester: string) {
   const content = getContent(AdminCreateRequestTemplate({ request, requester }));
+  const reviewerEmails = await findUserEmailsByAuthRole(GlobalRole.PublicReviewer);
 
   return sendEmail({
     subject: 'New provisioning request awaiting review',
-    to: adminPublicEmails,
+    to: reviewerEmails,
     body: content,
   });
 }
 
-export function sendAdminDeleteRequest(request: PublicCloudRequestDetail, requester: string) {
+export async function sendAdminDeleteRequest(request: PublicCloudRequestDetail, requester: string) {
   const content = getContent(AdminDeleteRequestTemplate({ request, requester }));
+  const reviewerEmails = await findUserEmailsByAuthRole(GlobalRole.PublicReviewer);
 
   return sendEmail({
     subject: 'New delete request awaiting review',
-    to: adminPublicEmails,
+    to: reviewerEmails,
     body: content,
   });
 }
@@ -156,11 +156,11 @@ export function sendTeamEditRequestCompletion(request: PublicCloudRequestDetail)
 
 export async function sendBillingReviewerMou(request: PublicCloudRequestDetail) {
   const content = getContent(BillingReviewerMouTemplate({ request }));
-  const billingReviewers = await findUsersByClientRole(AUTH_RESOURCE, GlobalRole.BillingReviewer);
+  const billingReviewerEmails = await findUserEmailsByAuthRole(GlobalRole.BillingReviewer);
 
   return sendEmail({
     subject: 'eMOU review request',
-    to: [...billingReviewers.map((v) => v.email ?? '')],
+    to: billingReviewerEmails,
     body: content,
   });
 }
@@ -168,11 +168,11 @@ export async function sendBillingReviewerMou(request: PublicCloudRequestDetail) 
 export async function sendEmouServiceAgreement(request: PublicCloudRequestDetail) {
   const content = getContent(EmouServiceAgreementTemplate({ request }));
   const emouPdfBuff = await generateEmouPdf(request.decisionData, request.decisionData.billing);
-  const billingReviewers = await findUsersByClientRole(AUTH_RESOURCE, GlobalRole.BillingReviewer);
+  const billingReviewerEmails = await findUserEmailsByAuthRole(GlobalRole.BillingReviewer);
 
   return sendEmail({
     subject: 'eMOU Service Agreement',
-    to: [...billingReviewers.map((v) => v.email ?? ''), request.decisionData.expenseAuthority?.email],
+    to: [...billingReviewerEmails, request.decisionData.expenseAuthority?.email],
     cc: [publicCloudPlatformAdminEmail],
     body: content,
     attachments: [

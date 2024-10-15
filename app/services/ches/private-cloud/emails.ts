@@ -1,3 +1,4 @@
+import { GlobalRole } from '@/constants';
 import AdminCreateRequestTemplate from '@/emails/_templates/private-cloud/AdminCreateRequest';
 import AdminDeleteRequestTemplate from '@/emails/_templates/private-cloud/AdminDeleteRequest';
 import AdminEditRequestTemplate from '@/emails/_templates/private-cloud/AdminEditRequest';
@@ -14,8 +15,8 @@ import TeamEditRequestTemplate from '@/emails/_templates/private-cloud/TeamEditR
 import TeamEditRequestApprovalTemplate from '@/emails/_templates/private-cloud/TeamEditRequestApproval';
 import TeamEditRequestCompletionTemplate from '@/emails/_templates/private-cloud/TeamEditRequestCompletion';
 import TeamEditRequestRejectionTemplate from '@/emails/_templates/private-cloud/TeamEditRequestRejection';
-import { adminPrivateEmails } from '@/services/ches/constant';
 import { sendEmail, getContent } from '@/services/ches/core';
+import { findUserEmailsByAuthRole } from '@/services/keycloak/app-realm';
 import { PrivateCloudRequestDetail } from '@/types/private-cloud';
 
 function getTeamEmails(request: PrivateCloudRequestDetail) {
@@ -29,42 +30,46 @@ function getTeamEmails(request: PrivateCloudRequestDetail) {
   ];
 }
 
-export function sendAdminCreateRequest(request: PrivateCloudRequestDetail, requester: string) {
+export async function sendAdminCreateRequest(request: PrivateCloudRequestDetail, requester: string) {
   const content = getContent(AdminCreateRequestTemplate({ request, requester }));
+  const reviewerEmails = await findUserEmailsByAuthRole(GlobalRole.PrivateReviewer);
 
   return sendEmail({
     subject: 'New provisioning request awaiting review',
-    to: adminPrivateEmails,
+    to: reviewerEmails,
     body: content,
   });
 }
 
-export function sendAdminDeleteRequest(request: PrivateCloudRequestDetail, requester: string) {
+export async function sendAdminDeleteRequest(request: PrivateCloudRequestDetail, requester: string) {
   const content = getContent(AdminDeleteRequestTemplate({ request, requester }));
+  const reviewerEmails = await findUserEmailsByAuthRole(GlobalRole.PrivateReviewer);
 
   return sendEmail({
     subject: 'New delete request awaiting review',
-    to: adminPrivateEmails,
+    to: reviewerEmails,
     body: content,
   });
 }
 
-export function sendAdminEditRequest(request: PrivateCloudRequestDetail, requester: string) {
+export async function sendAdminEditRequest(request: PrivateCloudRequestDetail, requester: string) {
   const content = getContent(AdminEditRequestTemplate({ request, requester }));
+  const reviewerEmails = await findUserEmailsByAuthRole(GlobalRole.PrivateReviewer);
 
   return sendEmail({
     subject: 'New edit request awaiting review',
-    to: adminPrivateEmails,
+    to: reviewerEmails,
     body: content,
   });
 }
 
-export function sendAdminEditRequestQuotaAutoApproval(request: PrivateCloudRequestDetail, requester: string) {
+export async function sendAdminEditRequestQuotaAutoApproval(request: PrivateCloudRequestDetail, requester: string) {
   const content = getContent(AdminEditRequestQuotaAutoApprovalTemplate({ request, requester }));
+  const reviewerEmails = await findUserEmailsByAuthRole(GlobalRole.PrivateReviewer);
 
   return sendEmail({
     subject: 'Quota upgrade auto-approval',
-    to: adminPrivateEmails,
+    to: reviewerEmails,
     body: content,
   });
 }

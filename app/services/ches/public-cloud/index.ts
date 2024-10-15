@@ -1,12 +1,6 @@
 import { RequestType } from '@prisma/client';
-import { render } from '@react-email/render';
-import { AUTH_RESOURCE } from '@/config';
 import { logger } from '@/core/logging';
-import { generateEmouPdf, Billing } from '@/helpers/pdfs/emou';
-import { adminPublicEmails } from '@/services/ches/constant';
-import { sendEmail } from '@/services/ches/core';
-import { findUsersByClientRole } from '@/services/keycloak/app-realm';
-import { PublicCloudProductDetail, PublicCloudRequestDetail } from '@/types/public-cloud';
+import { PublicCloudRequestDetail } from '@/types/public-cloud';
 import {
   sendAdminCreateRequest,
   sendAdminDeleteRequest,

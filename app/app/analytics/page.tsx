@@ -1,10 +1,10 @@
 import { loginEvents } from '@/analytics/general/login';
 import CombinedAreaGraph from '@/components/analytics/CombinedAreaGraph';
+import { GlobalPermissions } from '@/constants';
 import createServerPage from '@/core/server-page';
-import { PermissionsEnum } from '@/types/permissions';
 
 const analyticsDashboard = createServerPage({
-  permissions: [PermissionsEnum.ViewGeneralAnalytics],
+  permissions: [GlobalPermissions.ViewGeneralAnalytics],
 });
 export default analyticsDashboard(async () => {
   const loginEventData = await loginEvents();

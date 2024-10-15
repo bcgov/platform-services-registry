@@ -29,7 +29,7 @@ describe('Delete Private Cloud Product - Permissions', () => {
   });
 
   it('should successfully approve the request by admin', async () => {
-    await mockSessionByRole(GlobalRole.Admin);
+    await mockSessionByRole(GlobalRole.PrivateReviewer);
 
     const response = await makePrivateCloudRequestDecision(requests.create.id, {
       ...requests.create.decisionData,
@@ -65,7 +65,7 @@ describe('Delete Private Cloud Product - Permissions', () => {
   });
 
   it('should successfully reject the request by admin', async () => {
-    await mockSessionByRole(GlobalRole.Admin);
+    await mockSessionByRole(GlobalRole.PrivateReviewer);
 
     const response = await makePrivateCloudRequestDecision(requests.delete.id, {
       ...requests.delete.decisionData,
@@ -94,7 +94,7 @@ describe('Delete Private Cloud Product - Permissions', () => {
   });
 
   it('should successfully reject the request by admin', async () => {
-    await mockSessionByRole(GlobalRole.Admin);
+    await mockSessionByRole(GlobalRole.PrivateReviewer);
 
     const response = await makePrivateCloudRequestDecision(requests.delete.id, {
       ...requests.delete.decisionData,

@@ -1,10 +1,10 @@
 import { Provider, Cluster, RequestType } from '@prisma/client';
 import { z } from 'zod';
+import { GlobalPermissions } from '@/constants';
 import createApiHandler from '@/core/api-handler';
 import prisma from '@/core/prisma';
 import { PdfResponse, BadRequestResponse } from '@/core/responses';
 import { generateEmouPdf, Product } from '@/helpers/pdfs/emou';
-import { PermissionsEnum } from '@/types/permissions';
 import { processNumber, processUpperEnumString, processBoolean } from '@/utils/zod';
 import { getBillingIdWhere } from '../helpers';
 
@@ -18,7 +18,7 @@ const queryParamSchema = z.object({
 });
 
 const apiHandler = createApiHandler({
-  permissions: [PermissionsEnum.DownloadBillingMou],
+  permissions: [GlobalPermissions.DownloadBillingMou],
   validations: { pathParams: pathParamSchema, queryParams: queryParamSchema },
 });
 

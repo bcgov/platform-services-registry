@@ -117,6 +117,30 @@
               "officeLocation": ""
             },
             {
+              "id": "a008b857-36c8-4a17-a79a-518e33effec8",
+              "extension_85cc52e9286540fcb1f97ed86114a0e5_bcgovGUID": "a008b85736c84a17a79a518e33effec8",
+              "onPremisesSamAccountName": "PRIVATE_REVIEWER_SYSTEM",
+              "userPrincipalName": "private.reviewer.system@gov.bc.ca",
+              "mail": "private.reviewer.system@gov.bc.ca",
+              "displayName": "System, Private Reviewer CITZ:EX",
+              "givenName": "Private Reviewer",
+              "surname": "System",
+              "jobTitle": "private-reviewer",
+              "officeLocation": ""
+            },
+            {
+              "id": "a008b857-36c8-4a17-a79a-518e33effec9",
+              "extension_85cc52e9286540fcb1f97ed86114a0e5_bcgovGUID": "a008b85736c84a17a79a518e33effec9",
+              "onPremisesSamAccountName": "PUBLIC_REVIEWER_SYSTEM",
+              "userPrincipalName": "public.reviewer.system@gov.bc.ca",
+              "mail": "public.reviewer.system@gov.bc.ca",
+              "displayName": "System, Public Reviewer CITZ:EX",
+              "givenName": "Public Reviewer",
+              "surname": "System",
+              "jobTitle": "public-reviewer",
+              "officeLocation": ""
+            },
+            {
               "id": "a008b857-36c8-4a17-a79a-518e33effeb1",
               "extension_85cc52e9286540fcb1f97ed86114a0e5_bcgovGUID": "a008b85736c84a17a79a518e33effeb1",
               "onPremisesSamAccountName": "JOHNDOE",
@@ -416,6 +440,48 @@
           "givenName": "Billing Reader",
           "surname": "System",
           "jobTitle": "billing-reader",
+          "officeLocation": ""
+        }
+      }
+    },
+    {
+      "request": {
+        "url": "https://graph.microsoft.com/v1.0/users/private.reviewer.system@gov.bc.ca?*",
+        "method": "GET"
+      },
+      "response": {
+        "body": {
+          "@odata.context": "https://graph.microsoft.com/v1.0/$metadata#users/$entity",
+          "id": "a008b857-36c8-4a17-a79a-518e33effec8",
+          "extension_85cc52e9286540fcb1f97ed86114a0e5_bcgovGUID": "a008b85736c84a17a79a518e33effec8",
+          "onPremisesSamAccountName": "PRIVATE_REVIEWER_SYSTEM",
+          "userPrincipalName": "private.reviewer.system@gov.bc.ca",
+          "mail": "private.reviewer.system@gov.bc.ca",
+          "displayName": "System, Private Reviewer CITZ:EX",
+          "givenName": "Private Reviewer",
+          "surname": "System",
+          "jobTitle": "private-reviewer",
+          "officeLocation": ""
+        }
+      }
+    },
+    {
+      "request": {
+        "url": "https://graph.microsoft.com/v1.0/users/public.reviewer.system@gov.bc.ca?*",
+        "method": "GET"
+      },
+      "response": {
+        "body": {
+          "@odata.context": "https://graph.microsoft.com/v1.0/$metadata#users/$entity",
+          "id": "a008b857-36c8-4a17-a79a-518e33effec9",
+          "extension_85cc52e9286540fcb1f97ed86114a0e5_bcgovGUID": "a008b85736c84a17a79a518e33effec9",
+          "onPremisesSamAccountName": "PUBLIC_REVIEWER_SYSTEM",
+          "userPrincipalName": "public.reviewer.system@gov.bc.ca",
+          "mail": "public.reviewer.system@gov.bc.ca",
+          "displayName": "System, Public Reviewer CITZ:EX",
+          "givenName": "Public Reviewer",
+          "surname": "System",
+          "jobTitle": "public-reviewer",
           "officeLocation": ""
         }
       }

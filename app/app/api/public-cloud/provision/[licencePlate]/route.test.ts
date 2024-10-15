@@ -81,7 +81,7 @@ describe('Provision Public Cloud Request', () => {
   });
 
   it('should successfully approve the request by admin', async () => {
-    await mockSessionByRole(GlobalRole.Admin);
+    await mockSessionByRole(GlobalRole.PublicReviewer);
 
     const response = await makePublicCloudRequestDecision(requests.create.id, {
       ...requests.create.decisionData,

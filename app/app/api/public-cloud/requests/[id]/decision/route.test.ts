@@ -148,7 +148,7 @@ describe('Review Public Cloud Create Request - Permissions', () => {
   it('should successfully review the create request for global admin', async () => {
     await makeBasicProductMouReview();
 
-    await mockSessionByRole(GlobalRole.Admin);
+    await mockSessionByRole(GlobalRole.PublicReviewer);
     const response = await makeBasicProductReview(DecisionStatus.APPROVED);
 
     expect(response.status).toBe(200);
@@ -164,7 +164,7 @@ describe('Review Public Cloud Create Request - Permissions', () => {
   it('should fail to review the create request already reviewed', async () => {
     await makeBasicProductMouReview();
 
-    await mockSessionByRole(GlobalRole.Admin);
+    await mockSessionByRole(GlobalRole.PublicReviewer);
     const response = await makeBasicProductReview(DecisionStatus.APPROVED);
     expect(response.status).toBe(400);
 
@@ -221,7 +221,7 @@ describe('Review Public Cloud Update Request - Permissions', () => {
   it('should fail to review the update request for global admin', async () => {
     await makeBasicProductMouReview();
 
-    await mockSessionByRole(GlobalRole.Admin);
+    await mockSessionByRole(GlobalRole.PublicReviewer);
     const response = await makeBasicProductReview(DecisionStatus.APPROVED);
 
     expect(response.status).toBe(400);
@@ -275,7 +275,7 @@ describe('Review Public Cloud Delete Request - Permissions', () => {
   it('should successfully review the delete request for global admin', async () => {
     await makeBasicProductMouReview();
 
-    await mockSessionByRole(GlobalRole.Admin);
+    await mockSessionByRole(GlobalRole.PublicReviewer);
     const response = await makeBasicProductReview(DecisionStatus.APPROVED);
 
     expect(response.status).toBe(200);
@@ -284,7 +284,7 @@ describe('Review Public Cloud Delete Request - Permissions', () => {
   it('should fail to review the delete request already reviewed', async () => {
     await makeBasicProductMouReview();
 
-    await mockSessionByRole(GlobalRole.Admin);
+    await mockSessionByRole(GlobalRole.PublicReviewer);
     const response = await makeBasicProductReview(DecisionStatus.APPROVED);
 
     expect(response.status).toBe(400);
@@ -319,7 +319,7 @@ describe('Review Public Cloud Request - Validations', () => {
 
     await makeBasicProductMouReview();
 
-    await mockSessionByRole(GlobalRole.Admin);
+    await mockSessionByRole(GlobalRole.PublicReviewer);
     const response = await makeBasicProductReview(DecisionStatus.APPROVED, {
       name: newName,
       cluster: newCluster,

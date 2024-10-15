@@ -1,7 +1,6 @@
 import { Prisma } from '@prisma/client';
 import { User } from 'next-auth';
 import NextAuth, { DefaultSession, JWT } from 'next-auth/jwt';
-import { Permissions, PermissionKey } from './permissions';
 
 declare module 'next-auth' {
   interface Permissions {
@@ -67,10 +66,12 @@ declare module 'next-auth' {
     isPrivateAnalyzer: boolean;
     isPrivateEditor: boolean;
     isPrivateReader: boolean;
+    isPrivateReviewer: boolean;
     isPublicAdmin: boolean;
     isPublicAnalyzer: boolean;
     isPublicEditor: boolean;
     isPublicReader: boolean;
+    isPublicReviewer: boolean;
     isApprover: boolean;
     isBillingReviewer: boolean;
     isBillingReader: boolean;
@@ -91,7 +92,7 @@ declare module 'next-auth' {
     };
   }
 
-  type PermissionsKey = keyof Session['permissions'];
+  type PermissionsKey = keyof Permissions;
   type SessionKeys = keyof typeof Session;
 }
 

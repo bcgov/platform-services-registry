@@ -63,7 +63,7 @@ async function runEmouWorkflows(reqData: any) {
 async function approveAndProvisionRequest(reqData: any) {
   let decisionData = reqData.decisionData;
 
-  await mockSessionByRole(GlobalRole.Admin);
+  await mockSessionByRole(GlobalRole.PublicReviewer);
   let response = await makePublicCloudRequestDecision(reqData.id, {
     ...decisionData,
     type: RequestType.CREATE,
@@ -76,6 +76,7 @@ async function approveAndProvisionRequest(reqData: any) {
   const resData = await response.json();
   decisionData = resData.decisionData;
 
+  await mockSessionByRole(GlobalRole.Admin);
   response = await provisionPublicCloudProject(decisionData.licencePlate);
   if (response.status !== 200) return null;
 
@@ -150,10 +151,9 @@ export async function deletePublicCloudProduct() {
   let decisionData = await approveAndProvisionRequest(resData);
 
   response = await deletePublicCloudProject(decisionData.licencePlate);
-
   if (response.status !== 200) return null;
-  resData = await response.json();
 
+  resData = await response.json();
   decisionData = await approveAndProvisionRequest(resData);
   return decisionData;
 }

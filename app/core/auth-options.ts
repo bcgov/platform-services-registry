@@ -99,7 +99,8 @@ export async function generateSession({ session, token }: { session: Session; to
       session.isReader ||
       session.isPrivateAdmin ||
       session.isPrivateEditor ||
-      session.isPrivateReader,
+      session.isPrivateReader ||
+      session.isPrivateReviewer,
 
     viewAllPrivateCloudProductsHistory: session.isAdmin || session.isPrivateAdmin,
 
@@ -107,7 +108,7 @@ export async function generateSession({ session, token }: { session: Session; to
       session.isAdmin || session.isEditor || session.isPrivateAdmin || session.isPrivateEditor,
     deleteAllPrivateCloudProducts:
       session.isAdmin || session.isEditor || session.isPrivateAdmin || session.isPrivateEditor,
-    reviewAllPrivateCloudRequests: session.isAdmin || session.isPrivateAdmin,
+    reviewAllPrivateCloudRequests: session.isPrivateReviewer,
 
     createPrivateCloudProductsAsAssignee: session.isUser,
     viewAssignedPrivateCloudProducts: session.isUser,
@@ -124,14 +125,15 @@ export async function generateSession({ session, token }: { session: Session; to
       session.isPublicEditor ||
       session.isPublicReader ||
       session.isBillingReviewer ||
-      session.isBillingReader,
+      session.isBillingReader ||
+      session.isPublicReviewer,
 
     viewAllPublicCloudProductsHistory: session.isAdmin || session.isPublicAdmin,
 
     editAllPublicCloudProducts: session.isAdmin || session.isEditor || session.isPublicAdmin || session.isPublicEditor,
     deleteAllPublicCloudProducts:
       session.isAdmin || session.isEditor || session.isPublicAdmin || session.isPublicEditor,
-    reviewAllPublicCloudRequests: session.isAdmin || session.isPublicAdmin,
+    reviewAllPublicCloudRequests: session.isPublicReviewer,
 
     createPrivateProductComments: session.isAdmin || session.isPrivateAdmin,
     viewAllPrivateProductComments: session.isAdmin || session.isPrivateAdmin,

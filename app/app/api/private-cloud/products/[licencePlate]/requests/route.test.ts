@@ -37,7 +37,7 @@ describe('List Private Cloud Product Requests - Permissions', () => {
 
     expect(res1.status).toBe(200);
 
-    await mockSessionByRole(GlobalRole.Admin);
+    await mockSessionByRole(GlobalRole.PrivateReviewer);
 
     const res2 = await makePrivateCloudRequestDecision(dat1.id, {
       ...dat1.decisionData,

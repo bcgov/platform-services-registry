@@ -1,12 +1,11 @@
 import { DecisionStatus } from '@prisma/client';
 import { z } from 'zod';
-import { GlobalRole } from '@/constants';
+import { GlobalRole, GlobalPermissions } from '@/constants';
 import createApiHandler from '@/core/api-handler';
 import { BadRequestResponse, OkResponse } from '@/core/responses';
 import makeRequestDecision from '@/request-actions/public-cloud/decision-request';
 import { sendRequestRejectionEmails, sendRequestApprovalEmails } from '@/services/ches/public-cloud';
 import { sendPublicCloudNatsMessage } from '@/services/nats';
-import { PermissionsEnum } from '@/types/permissions';
 import {
   publicCloudRequestDecisionBodySchema,
   PublicCloudRequestDecisionBody,
@@ -19,7 +18,7 @@ const pathParamSchema = z.object({
 
 const apiHandler = createApiHandler({
   roles: [GlobalRole.User],
-  permissions: [PermissionsEnum.ReviewAllPublicCloudRequests],
+  permissions: [GlobalPermissions.ReviewAllPublicCloudRequests],
   validations: {
     pathParams: pathParamSchema,
     body: z.union([deleteRequestDecisionBodySchema, publicCloudRequestDecisionBodySchema]),

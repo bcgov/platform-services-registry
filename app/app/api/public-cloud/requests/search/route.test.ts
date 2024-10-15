@@ -91,7 +91,7 @@ describe('Search Public Cloud Requests - Permissions', () => {
       });
     }
 
-    await mockSessionByRole(GlobalRole.Admin);
+    await mockSessionByRole(GlobalRole.PublicReviewer);
 
     const res2 = await makePublicCloudRequestDecision(dat1.id, {
       ...dat1.decisionData,
@@ -146,7 +146,7 @@ describe('Search Public Cloud Requests - Permissions', () => {
     const dat1 = await res1.json();
     expect(res1.status).toBe(200);
 
-    await mockSessionByRole(GlobalRole.Admin);
+    await mockSessionByRole(GlobalRole.PublicReviewer);
 
     const res2 = await makePublicCloudRequestDecision(dat1.id, {
       ...dat1.decisionData,
@@ -278,7 +278,7 @@ describe('Search Public Cloud Requests - Validations', () => {
           });
         }
 
-        await mockSessionByRole(GlobalRole.Admin);
+        await mockSessionByRole(GlobalRole.PublicReviewer);
 
         const req = await makePublicCloudRequestDecision(dat1.id, {
           ...dat1.decisionData,
@@ -292,6 +292,7 @@ describe('Search Public Cloud Requests - Validations', () => {
       }),
     );
 
+    await mockSessionByRole(GlobalRole.Admin);
     const firstReq = await results[0].json();
     const res = await editPublicCloudProject(firstReq.licencePlate, {
       ...firstReq.decisionData,
