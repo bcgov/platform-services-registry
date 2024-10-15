@@ -60,7 +60,7 @@ export default function Changes({ request }: { request: PrivateCloudRequestDetai
               type="Production"
               cluster={request.originalData.cluster}
               currentLabel="Current"
-              requestedLabel="Rejected"
+              requestedLabel="Requested"
             />
           )}
           {diffData.parentPaths.includes('testQuota') && (
@@ -71,7 +71,7 @@ export default function Changes({ request }: { request: PrivateCloudRequestDetai
               type="Test"
               cluster={request.originalData.cluster}
               currentLabel="Current"
-              requestedLabel="Rejected"
+              requestedLabel="Requested"
             />
           )}
           {diffData.parentPaths.includes('developmentQuota') && (
@@ -82,7 +82,7 @@ export default function Changes({ request }: { request: PrivateCloudRequestDetai
               type="Development"
               cluster={request.originalData.cluster}
               currentLabel="Current"
-              requestedLabel="Rejected"
+              requestedLabel="Requested"
             />
           )}
           {diffData.parentPaths.includes('toolsQuota') && (
@@ -93,7 +93,7 @@ export default function Changes({ request }: { request: PrivateCloudRequestDetai
               type="Tools"
               cluster={request.originalData.cluster}
               currentLabel="Current"
-              requestedLabel="Rejected"
+              requestedLabel="Requested"
             />
           )}
         </div>
