@@ -6,6 +6,7 @@ import { useRouter } from 'next/navigation';
 import { useSession } from 'next-auth/react';
 import ExternalLink from '@/components/generic/button/ExternalLink';
 import MailLink from '@/components/generic/button/MailLink';
+import { privateCloudTeamEmail, publicCloudTeamEmail } from '@/constants';
 
 export default function Landing() {
   const router = useRouter();
@@ -44,7 +45,7 @@ export default function Landing() {
           <p className="text-blue-700">
             The approval of a new project set creation request is subject to having a signed Memorandum of Understanding
             (MoU) with the Public Cloud Team. If you do not have a MoU in place, please email us at{' '}
-            <MailLink to="Cloud.Pathfinder@gov.bc.ca" />.
+            <MailLink to={publicCloudTeamEmail} />.
           </p>
         </div>
       </div>
@@ -58,13 +59,13 @@ export default function Landing() {
         <p className="text-gray-700 mb-4">If you have not attended an onboarding session, please contact:</p>
         <ul className="list-disc pl-8">
           <li className="mb-2 text-gray-700">
-            Private Cloud Platform Administrators <MailLink to="PlatformServicesTeam@gov.bc.ca" /> to book an{' '}
+            Private Cloud Platform Administrators <MailLink to={privateCloudTeamEmail} /> to book an{' '}
             <ExternalLink href="https://digital.gov.bc.ca/cloud/services/private/onboard/">
               onboarding session for the (Openshift Platform)
             </ExternalLink>
           </li>
           <li className="mb-2 text-gray-700">
-            Public Cloud Platform Administrators <MailLink to="Cloud.Pathfinder@gov.bc.ca" /> to book an{' '}
+            Public Cloud Platform Administrators <MailLink to={publicCloudTeamEmail} /> to book an{' '}
             <ExternalLink href="https://digital.gov.bc.ca/cloud/services/public/onboard/">
               onboarding session for the (B.C. Government Public Cloud Landing Zone)
             </ExternalLink>

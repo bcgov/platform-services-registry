@@ -1,4 +1,5 @@
-import { publicCloudPlatformAdminEmail, GlobalRole } from '@/constants';
+import { IS_PROD } from '@/config';
+import { publicCloudTeamEmail, GlobalRole } from '@/constants';
 import AdminCreateRequestTemplate from '@/emails/_templates/public-cloud/AdminCreateRequest';
 import AdminDeleteRequestTemplate from '@/emails/_templates/public-cloud/AdminDeleteRequest';
 import BillingReviewerMouTemplate from '@/emails/_templates/public-cloud/BillingReviewerMou';
@@ -39,6 +40,7 @@ export async function sendAdminCreateRequest(request: PublicCloudRequestDetail, 
   return sendEmail({
     subject: 'New provisioning request awaiting review',
     to: reviewerEmails,
+    cc: [IS_PROD ? publicCloudTeamEmail : ''],
     body: content,
   });
 }
@@ -50,6 +52,7 @@ export async function sendAdminDeleteRequest(request: PublicCloudRequestDetail, 
   return sendEmail({
     subject: 'New delete request awaiting review',
     to: reviewerEmails,
+    cc: [IS_PROD ? publicCloudTeamEmail : ''],
     body: content,
   });
 }
@@ -173,7 +176,7 @@ export async function sendEmouServiceAgreement(request: PublicCloudRequestDetail
   return sendEmail({
     subject: 'eMOU Service Agreement',
     to: [...billingReviewerEmails, request.decisionData.expenseAuthority?.email],
-    cc: [publicCloudPlatformAdminEmail],
+    cc: [IS_PROD ? publicCloudTeamEmail : ''],
     body: content,
     attachments: [
       {

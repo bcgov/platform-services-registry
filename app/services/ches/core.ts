@@ -4,6 +4,7 @@ import _compact from 'lodash-es/compact';
 import _toLower from 'lodash-es/toLower';
 import _uniq from 'lodash-es/uniq';
 import { EMAIL_PREFIX, CHES_TOKEN_URL, CHES_API_URL, CHES_CLIENT_ID, CHES_CLIENT_SECRET } from '@/config';
+import { privateCloudTeamEmail } from '@/constants';
 import { logger } from '@/core/logging';
 
 type NullOrString = string | null | undefined;
@@ -109,7 +110,7 @@ export const sendEmail = async (email: Email): Promise<void> => {
     },
     body: JSON.stringify({
       bodyType: email.bodyType || 'html',
-      from: email.from || 'Registry <PlatformServicesTeam@gov.bc.ca>',
+      from: email.from || `Registry <${privateCloudTeamEmail}>`,
       subject: subject,
       body: email.body,
       to: safeEmails(email.to),

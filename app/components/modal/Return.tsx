@@ -1,6 +1,8 @@
 import { Dialog, Transition } from '@headlessui/react';
 import { usePathname, useRouter } from 'next/navigation';
 import { Fragment, useRef, useState } from 'react';
+import MailLink from '@/components/generic/button/MailLink';
+import { publicCloudTeamEmail } from '@/constants';
 
 interface ModalProps {
   open: boolean;
@@ -73,12 +75,7 @@ export default function Modal({ open, setOpen, redirectUrl, modalTitle, modalMes
                           <p className="text-sm text-blue-700 mt-1">
                             The approval of a new product creation request is subject to having a signed Memorandum of
                             Understanding (MoU) with the Public Cloud Team. If you do not have a MoU in place, please
-                            email us at
-                            <span> </span>
-                            <a href="mailto:cloud.pathfinder@gov.bc.ca" className="underline">
-                              Cloud.Pathfinder@gov.bc.ca
-                            </a>
-                            .
+                            email us at <MailLink to={publicCloudTeamEmail} />.
                           </p>
                         </div>
                       </div>

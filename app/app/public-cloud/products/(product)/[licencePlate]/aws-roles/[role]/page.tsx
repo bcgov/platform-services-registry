@@ -5,12 +5,14 @@ import { useSearchParams, useParams, usePathname } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import { User } from '@/app/api/public-cloud/aws-roles/helpers';
 import EmptyBody from '@/components/EmptyUsersList';
+import MailLink from '@/components/generic/button/MailLink';
 import AddUserModal from '@/components/modal/AddUser';
 import DeleteUserModal from '@/components/modal/DeleteUser';
 import ErrorModal from '@/components/modal/Error';
 import TableAWSRoles from '@/components/table/TableAWSRoles';
 import TableBodyAWSRoles from '@/components/table/TableBodyAWSRoles';
 import UserAWSRolesTableTop from '@/components/table/TableTopUserAWSRoles';
+import { publicCloudTeamEmail } from '@/constants';
 import { getUsersPaginatedList, addUser, deleteUser, getRolesNames } from '@/services/backend/aws-roles';
 import { capitalizeFirstLetter } from '@/utils/string';
 
@@ -109,10 +111,7 @@ export default function ProductAWSRoles() {
     return (
       <div className="w-full">
         Looks like role groups haven&apos;t been created for this product, please, reach out Public Cloud Platform
-        Administrators{' '}
-        <a href="mailto:Cloud.Pathfinder@gov.bc.ca" className="text-blue-500 hover:text-blue-700">
-          Cloud.Pathfinder@gov.bc.ca
-        </a>
+        Administrators <MailLink to={publicCloudTeamEmail} />
       </div>
     );
   }

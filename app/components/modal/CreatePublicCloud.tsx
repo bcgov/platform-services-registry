@@ -4,9 +4,9 @@ import { IconInfoCircle } from '@tabler/icons-react';
 import { useQuery, useMutation } from '@tanstack/react-query';
 import { Fragment, useRef, useState } from 'react';
 import { useFormContext } from 'react-hook-form';
-import ExternalLink from '@/components/generic/button/ExternalLink';
 import MailLink from '@/components/generic/button/MailLink';
 import FormCheckbox from '@/components/generic/checkbox/FormCheckbox';
+import { publicCloudTeamEmail } from '@/constants';
 import { getBilling } from '@/services/backend/billing';
 
 export default function CreatePublicCloud({
@@ -110,7 +110,7 @@ export default function CreatePublicCloud({
                     <div className="text-sm text-blue-700">
                       Ministry Teams provisioning access to BC Gov&apos;s Landing Zones in AWS and Azure are required to
                       attend an onboarding session with the Public Cloud Team. To book an onboarding session, please
-                      email us at <MailLink to="Cloud.Pathfinder@gov.bc.ca" />.
+                      email us at <MailLink to={publicCloudTeamEmail} />.
                     </div>
                   </Alert>
                   <div className="pt-4">
