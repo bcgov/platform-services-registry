@@ -1,4 +1,5 @@
-import { GlobalRole } from '@/constants';
+import { IS_PROD } from '@/config';
+import { GlobalRole, privateCloudTeamEmail } from '@/constants';
 import AdminCreateRequestTemplate from '@/emails/_templates/private-cloud/AdminCreateRequest';
 import AdminDeleteRequestTemplate from '@/emails/_templates/private-cloud/AdminDeleteRequest';
 import AdminEditRequestTemplate from '@/emails/_templates/private-cloud/AdminEditRequest';
@@ -37,6 +38,7 @@ export async function sendAdminCreateRequest(request: PrivateCloudRequestDetail,
   return sendEmail({
     subject: 'New provisioning request awaiting review',
     to: reviewerEmails,
+    cc: [IS_PROD ? privateCloudTeamEmail : ''],
     body: content,
   });
 }
@@ -48,6 +50,7 @@ export async function sendAdminDeleteRequest(request: PrivateCloudRequestDetail,
   return sendEmail({
     subject: 'New delete request awaiting review',
     to: reviewerEmails,
+    cc: [IS_PROD ? privateCloudTeamEmail : ''],
     body: content,
   });
 }
@@ -59,6 +62,7 @@ export async function sendAdminEditRequest(request: PrivateCloudRequestDetail, r
   return sendEmail({
     subject: 'New edit request awaiting review',
     to: reviewerEmails,
+    cc: [IS_PROD ? privateCloudTeamEmail : ''],
     body: content,
   });
 }
@@ -70,6 +74,7 @@ export async function sendAdminEditRequestQuotaAutoApproval(request: PrivateClou
   return sendEmail({
     subject: 'Quota upgrade auto-approval',
     to: reviewerEmails,
+    cc: [IS_PROD ? privateCloudTeamEmail : ''],
     body: content,
   });
 }

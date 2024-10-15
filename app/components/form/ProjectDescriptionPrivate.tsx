@@ -9,7 +9,7 @@ import TemporaryProductCheckboxAdmin from '@/components/form/TemporaryProductChe
 import ExternalLink from '@/components/generic/button/ExternalLink';
 import MailLink from '@/components/generic/button/MailLink';
 import FormSelect from '@/components/generic/select/FormSelect';
-import { clusters, ministryOptions } from '@/constants';
+import { clusters, ministryOptions, privateCloudTeamEmail } from '@/constants';
 
 export default function ProjectDescriptionPrivate({
   mode,
@@ -46,9 +46,8 @@ export default function ProjectDescriptionPrivate({
       <>
         <p className="text-base leading-6 mt-5">
           If this is your first time on the <b>OpenShift platform</b> you need to book an alignment meeting with the
-          Platform Services team. Reach out to{' '}
-          <MailLink to="platformservicesteam@gov.bc.ca">PlatformServicesTeam@gov.bc.ca</MailLink> to get started.
-          Provisioning requests from new teams that have <b>not</b> had an onboarding meeting will not be approved.
+          Platform Services team. Reach out to <MailLink to={privateCloudTeamEmail} /> to get started. Provisioning
+          requests from new teams that have <b>not</b> had an onboarding meeting will not be approved.
         </p>
         <div className="pt-5">
           <TemporaryProductCheckbox disabled={disabled} />

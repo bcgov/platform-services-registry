@@ -2,6 +2,7 @@ import classNames from 'classnames';
 import { useSession } from 'next-auth/react';
 import { Controller, useFormContext } from 'react-hook-form';
 import AGMinistryCheckBox from '@/components/form/AGMinistryCheckBox';
+import MailLink from '@/components/generic/button/MailLink';
 import FormMultiSelect from '@/components/generic/select/FormMultiSelect';
 import FormSelect from '@/components/generic/select/FormSelect';
 import {
@@ -9,6 +10,7 @@ import {
   providerOptions,
   getAllowedOptions,
   reasonForSelectingCloudProviderOptions,
+  publicCloudTeamEmail,
 } from '@/constants';
 
 function stripSpecialCharacters(text: string) {
@@ -42,13 +44,7 @@ export default function ProjectDescriptionPublic({
       {mode === 'create' && (
         <p className="text-base leading-6 mt-5">
           If this is your first time on the Public Cloud Platform you need to book an alignment meeting with the Public
-          Cloud Accelerator Service team. Reach out to{' '}
-          {
-            <a className="text-blue-600 dark:text-blue-500 hover:underline" href="mailto:cloud.pathfinder@gov.bc.ca">
-              Cloud.Pathfinder@gov.bc.ca{' '}
-            </a>
-          }
-          to get started.
+          Cloud Accelerator Service team. Reach out to <MailLink to={publicCloudTeamEmail} /> to get started.
         </p>
       )}
       <div className="mt-10 grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6">

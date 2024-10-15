@@ -1,10 +1,11 @@
 import { Button } from '@mantine/core';
 import { IconExclamationCircle } from '@tabler/icons-react';
-import classNames from 'classnames';
 import { Fragment, useEffect, useRef, useState } from 'react';
+import ExternalLink from '@/components/generic/button/ExternalLink';
+import MailLink from '@/components/generic/button/MailLink';
 import Modal from '@/components/generic/modal/Modal';
+import { publicCloudTeamEmail } from '@/constants';
 import { usePublicProductState } from '@/states/global';
-import ExternalLink from '../generic/button/ExternalLink';
 
 export default function PublicCloudDeleteModal({
   open,
@@ -65,10 +66,7 @@ export default function PublicCloudDeleteModal({
           </p>
           <p className="text-sm font-medium text-gray-900">
             Thank you for your cooperation and understanding. If you have any questions or need further assistance,
-            please don&apos;t hesitate to contact our support team{' '}
-            <a href="mailto:Cloud.Pathfinder@gov.bc.ca" className="text-blue-500 hover:text-blue-700">
-              Cloud.Pathfinder@gov.bc.ca
-            </a>
+            please don&apos;t hesitate to contact our support team <MailLink to={publicCloudTeamEmail} />
           </p>
         </div>
       ) : (

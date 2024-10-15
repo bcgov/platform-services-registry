@@ -1,14 +1,12 @@
 import { Link, Text } from '@react-email/components';
+import { privateCloudTeamEmail } from '@/constants';
 
 interface HeaderProps {
   email?: string;
   team?: string;
 }
 
-export default function Footer({
-  email = 'PlatformServicesTeam@gov.bc.ca',
-  team = 'Platform Services Team',
-}: HeaderProps) {
+export default function Footer({ email = privateCloudTeamEmail, team = 'Platform Services Team' }: HeaderProps) {
   return (
     <div>
       <Text>
