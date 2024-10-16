@@ -6,6 +6,7 @@ from airflow.providers.cncf.kubernetes.operators.kubernetes_pod import (
     KubernetesPodOperator,
 )
 from airflow.utils.trigger_rule import TriggerRule
+from _task_failure_callback import send_alert
 from kubernetes.client import V1VolumeMount, V1Volume, V1ResourceRequirements, V1PersistentVolumeClaimVolumeSource
 from _projects import fetch_zap_projects, load_zap_results
 
@@ -26,6 +27,7 @@ with DAG(
         python_callable=fetch_zap_projects,
         op_kwargs={"mongo_conn_id": MONGO_CONN_ID, "concurrency": CONCURRENCY},
         provide_context=True,
+        on_failure_callback=lambda context: send_alert(context, "zapscan_test"),
         dag=dag,
     )
 
@@ -74,6 +76,7 @@ with DAG(
         python_callable=load_zap_results,
         op_kwargs={"mongo_conn_id": MONGO_CONN_ID},
         trigger_rule=TriggerRule.ALL_DONE,
+        on_failure_callback=lambda context: send_alert(context, "zapscan_test"),
         dag=dag,
     )
 

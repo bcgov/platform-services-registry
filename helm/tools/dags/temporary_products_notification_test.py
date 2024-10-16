@@ -3,6 +3,7 @@ from airflow import DAG
 from airflow.operators.python_operator import PythonOperator
 from datetime import datetime, timedelta
 from _temporary_products_notification import send_temporary_products_notification
+from _task_failure_callback import send_alert
 
 
 MONGO_CONN_ID = "pltsvc-test"
@@ -34,5 +35,6 @@ with DAG(
             "app_url": APP_URL,
         },
         provide_context=True,
+        on_failure_callback=lambda context: send_alert(context, "temporary_products_notification_test"),
         dag=dag,
     )
