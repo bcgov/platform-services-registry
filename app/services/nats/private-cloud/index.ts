@@ -1,6 +1,5 @@
 import { Ministry } from '@prisma/client';
 import { cpuMetadata, memoryMetadata, storageMetadata } from '@/constants';
-import { snapshot } from '@/services/nats/private-cloud/constants';
 import { PrivateCloudRequestDetail } from '@/types/private-cloud';
 
 export default function createPrivateCloudNatsMessage(
@@ -59,7 +58,9 @@ export default function createPrivateCloudNatsMessage(
       const memoryMeta = memoryMetadata[quota.memory];
       const storageMeta = storageMetadata[quota.storage];
       let backupSize = storageMeta.size / 2;
-      if (backupSize < 1) backupSize = 1;
+      const isEmptyStorage = storageMeta.size === 0;
+
+      if (!isEmptyStorage && backupSize < 1) backupSize = 1;
 
       return {
         name: `${licencePlate}-${quotaName}`,
@@ -67,7 +68,7 @@ export default function createPrivateCloudNatsMessage(
           cpu: cpuMeta.labelNats,
           memory: memoryMeta.labelNats,
           storage: storageMeta.labelNats,
-          snapshot: snapshot.name,
+          snapshot: isEmptyStorage ? 'snapshot-0' : 'snapshot-5',
         },
         quotas: {
           cpu: {
@@ -81,11 +82,11 @@ export default function createPrivateCloudNatsMessage(
           storage: {
             block: `${storageMeta.size}Gi`,
             file: `${storageMeta.size}Gi`,
-            backup: `${backupSize}Gi`,
             capacity: `${storageMeta.size}Gi`,
-            pvc_count: 60,
+            backup: `${backupSize}Gi`,
+            pvc_count: isEmptyStorage ? 0 : 60,
           },
-          snapshot: { count: snapshot.snapshotCount },
+          snapshot: { count: isEmptyStorage ? 0 : 5 },
         },
       };
     }),
