@@ -1,17 +1,8 @@
 import { faker } from '@faker-js/faker';
-import { Prisma, Cluster, Provider } from '@prisma/client';
-import {
-  ministries,
-  clusters,
-  providers,
-  cpuOptions,
-  memoryOptions,
-  storageOptions,
-  reasonForSelectingCloudProviderOptions,
-} from '@/constants';
+import { Prisma, Cluster, CPU, Memory, Storage } from '@prisma/client';
+import { ministries, clusters, providers, cpus, memories, storages } from '@/constants';
 import { findMockUserByIdr, mockNoRoleIdirs } from '@/helpers/mock-users';
 import { getRandomItem } from '@/utils/collection';
-import { getRandomNumberOptimally } from '@/utils/number';
 import { generateShortId } from '@/utils/uuid';
 import { getRandomCloudProviderSelectionReasons, getRandomProviderReasonsNote } from './mock-resources/core';
 
@@ -34,9 +25,9 @@ export function createSamplePrivateCloudProductData(args?: {
   const cluster = Cluster.SILVER;
 
   const quota = {
-    cpu: cpuOptions[0],
-    memory: memoryOptions[0],
-    storage: storageOptions[0],
+    cpu: CPU.CPU_REQUEST_0_5_LIMIT_1_5,
+    memory: Memory.MEMORY_REQUEST_2_LIMIT_4,
+    storage: Storage.STORAGE_1,
   };
 
   const _data = {

@@ -1,10 +1,8 @@
 import { usePathname } from 'next/navigation';
 import { useFormContext } from 'react-hook-form';
 import FormSelect from '@/components/generic/select/FormSelect';
+import { DropdownOption } from '@/constants';
 
-interface SelectOptions {
-  [key: string]: string;
-}
 export default function QuotaInput({
   quotaName,
   nameSpace,
@@ -15,7 +13,7 @@ export default function QuotaInput({
   quotaName: 'cpu' | 'memory' | 'storage';
   nameSpace: 'production' | 'test' | 'development' | 'tools';
   licencePlate: string;
-  selectOptions: SelectOptions;
+  selectOptions: DropdownOption[];
   disabled: boolean;
   quota: string | null;
 }) {
@@ -39,11 +37,7 @@ export default function QuotaInput({
         id={quotaName + nameSpace}
         label={quotaName.toUpperCase()}
         disabled={disabled}
-        options={[
-          { label: `Select ${quotaNameStartUpperCase}`, value: '', disabled: true },
-          ...Object.entries(selectOptions).map(([value, label]) => ({ label, value })),
-          ...(Object.keys(selectOptions).includes(currentQuota) ? [] : [{ label: currentQuota, value: currentQuota }]),
-        ]}
+        options={[{ label: `Select ${quotaNameStartUpperCase}`, value: '', disabled: true }, ...selectOptions]}
         defaultValue=""
         selectProps={register(nameSpace + 'Quota.' + quotaName)}
       />
@@ -56,12 +50,12 @@ export default function QuotaInput({
         <div>
           <p className="pt-3 text-sm leading-6 text-gray-700">
             <b>Current {quotaName}: </b>
-            {selectOptions[quota || currentQuota]}
+            {selectOptions.find((opt) => opt.value === quota || opt.value === currentQuota)?.label}
           </p>
           {quota !== currentQuota && pathname.includes('decision') && (
             <p className="pt-2 text-sm leading-6 text-gray-700">
               <b>Requested {quotaName}: </b>
-              {selectOptions[currentQuota]}
+              {selectOptions.find((opt) => opt.value === currentQuota)?.label}
             </p>
           )}
         </div>

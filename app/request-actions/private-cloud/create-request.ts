@@ -1,22 +1,12 @@
-import { DecisionStatus, ProjectStatus, RequestType, EventType } from '@prisma/client';
+import { DecisionStatus, ProjectStatus, RequestType, EventType, CPU, Memory, Storage } from '@prisma/client';
 import { Session } from 'next-auth';
+import { defaultQuota } from '@/constants';
 import prisma from '@/core/prisma';
 import generateLicencePlate from '@/helpers/licence-plate';
 import { createEvent, privateCloudRequestDetailInclude } from '@/services/db';
 import { upsertUsers } from '@/services/db/user';
 import { PrivateCloudRequestDetail } from '@/types/private-cloud';
-import {
-  CpuQuotaEnum,
-  MemoryQuotaEnum,
-  StorageQuotaEnum,
-  PrivateCloudCreateRequestBody,
-} from '@/validation-schemas/private-cloud';
-
-const defaultQuota = {
-  cpu: CpuQuotaEnum.enum.CPU_REQUEST_0_5_LIMIT_1_5,
-  memory: MemoryQuotaEnum.enum.MEMORY_REQUEST_2_LIMIT_4,
-  storage: StorageQuotaEnum.enum.STORAGE_1,
-};
+import { PrivateCloudCreateRequestBody } from '@/validation-schemas/private-cloud';
 
 export default async function createRequest(formData: PrivateCloudCreateRequestBody, session: Session) {
   const licencePlate = await generateLicencePlate();

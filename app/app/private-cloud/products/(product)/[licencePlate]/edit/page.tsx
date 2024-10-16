@@ -1,7 +1,7 @@
 'use client';
 
 import { zodResolver } from '@hookform/resolvers/zod';
-import { PrivateCloudProject } from '@prisma/client';
+import { CPU, Memory, Storage, PrivateCloudProject } from '@prisma/client';
 import { IconInfoCircle, IconUsersGroup, IconSettings, IconComponents } from '@tabler/icons-react';
 import { useEffect, useState } from 'react';
 import { FormProvider, useForm } from 'react-hook-form';
@@ -16,17 +16,11 @@ import PageAccordion from '@/components/generic/accordion/PageAccordion';
 import FormErrorNotification from '@/components/generic/FormErrorNotification';
 import { openEditPrivateCloudProductModal } from '@/components/modal/editPrivateCloudProductModal';
 import ReturnModal from '@/components/modal/Return';
-import { AGMinistries, GlobalRole } from '@/constants';
+import { AGMinistries, GlobalRole, defaultQuota } from '@/constants';
 import createClientPage from '@/core/client-page';
 import { getPrivateCloudProject, getQuotaChangeStatus } from '@/services/backend/private-cloud/products';
 import { usePrivateProductState } from '@/states/global';
 import { privateCloudEditRequestBodySchema } from '@/validation-schemas/private-cloud';
-
-const emptyQuota = {
-  cpu: '',
-  memory: '',
-  storage: '',
-};
 
 const pathParamSchema = z.object({
   licencePlate: z.string(),
@@ -46,6 +40,7 @@ export default privateCloudProductEdit(({ pathParams, queryParams, session }) =>
   const methods = useForm({
     resolver: async (...args) => {
       const { developmentQuota, testQuota, productionQuota, toolsQuota } = args[0];
+
       const quotaChangeStatus = await getQuotaChangeStatus(privateSnap.licencePlate, {
         developmentQuota,
         testQuota,
@@ -111,10 +106,10 @@ export default privateCloudProductEdit(({ pathParams, queryParams, session }) =>
       )(...args);
     },
     values: {
-      developmentQuota: emptyQuota,
-      testQuota: emptyQuota,
-      productionQuota: emptyQuota,
-      toolsQuota: emptyQuota,
+      developmentQuota: defaultQuota,
+      testQuota: defaultQuota,
+      productionQuota: defaultQuota,
+      toolsQuota: defaultQuota,
       ...privateSnap.currentProduct,
       isAgMinistryChecked: true,
     },

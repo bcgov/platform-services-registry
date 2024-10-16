@@ -1,4 +1,12 @@
-import { Cluster, DecisionStatus, RequestType } from '@prisma/client';
+import {
+  Cluster,
+  CPU,
+  DecisionStatus,
+  Memory,
+  PrivateCloudRequestedProject,
+  RequestType,
+  Storage,
+} from '@prisma/client';
 import { GlobalRole } from '@/constants';
 import { createSamplePrivateCloudProductData } from '@/helpers/mock-resources';
 import { mockSessionByEmail, mockSessionByRole } from '@/services/api-test/core';
@@ -9,7 +17,7 @@ import {
   deletePrivateCloudProject,
 } from '@/services/api-test/private-cloud/products';
 import { makePrivateCloudRequestDecision } from '@/services/api-test/private-cloud/requests';
-import { CpuQuotaEnum, MemoryQuotaEnum, StorageQuotaEnum } from '@/validation-schemas/private-cloud';
+import { PrivateCloudRequestDetail } from '@/types/private-cloud';
 
 export async function createPrivateCloudProduct() {
   const requestData = createSamplePrivateCloudProductData({ data: { cluster: Cluster.SILVER } });
@@ -18,7 +26,7 @@ export async function createPrivateCloudProduct() {
   let response = await createPrivateCloudProject(requestData);
   if (response.status !== 200) return null;
 
-  let resData = await response.json();
+  let resData: PrivateCloudRequestDetail = await response.json();
   let decisionData = resData.decisionData;
 
   await mockSessionByRole(GlobalRole.PrivateReviewer);
@@ -42,15 +50,15 @@ export async function createPrivateCloudProduct() {
 
 export async function updatePrivateCloudProduct() {
   const oldDevelopmentQuota = {
-    cpu: CpuQuotaEnum.enum.CPU_REQUEST_1_LIMIT_2,
-    memory: MemoryQuotaEnum.enum.MEMORY_REQUEST_4_LIMIT_8,
-    storage: StorageQuotaEnum.enum.STORAGE_2,
+    cpu: CPU.CPU_REQUEST_1_LIMIT_2,
+    memory: Memory.MEMORY_REQUEST_4_LIMIT_8,
+    storage: Storage.STORAGE_2,
   };
 
   const newDevelopmentQuota = {
-    cpu: CpuQuotaEnum.enum.CPU_REQUEST_1_LIMIT_2,
-    memory: MemoryQuotaEnum.enum.MEMORY_REQUEST_8_LIMIT_16,
-    storage: StorageQuotaEnum.enum.STORAGE_2,
+    cpu: CPU.CPU_REQUEST_1_LIMIT_2,
+    memory: Memory.MEMORY_REQUEST_8_LIMIT_16,
+    storage: Storage.STORAGE_2,
   };
 
   const productData = createSamplePrivateCloudProductData({
@@ -105,13 +113,13 @@ export async function updatePrivateCloudProduct() {
 
   if (response.status !== 200) return null;
 
-  resData = await response.json();
-  decisionData = resData.decisionData;
+  const decisionResData: PrivateCloudRequestDetail = await response.json();
+  const decisionResdecisionData = decisionResData.decisionData;
 
-  response = await provisionPrivateCloudProject(decisionData.licencePlate);
+  response = await provisionPrivateCloudProject(decisionResdecisionData.licencePlate);
   if (response.status !== 200) return null;
 
-  return decisionData;
+  return decisionResdecisionData;
 }
 
 export async function deletePrivateCloudProduct() {
@@ -158,11 +166,11 @@ export async function deletePrivateCloudProduct() {
 
   if (response.status !== 200) return null;
 
-  resData = await response.json();
-  decisionData = resData.decisionData;
+  const decisionResData: PrivateCloudRequestDetail = await response.json();
+  const decisionResdecisionData = decisionResData.decisionData;
 
-  response = await provisionPrivateCloudProject(decisionData.licencePlate);
+  response = await provisionPrivateCloudProject(decisionResdecisionData.licencePlate);
   if (response.status !== 200) return null;
 
-  return decisionData;
+  return decisionResdecisionData;
 }

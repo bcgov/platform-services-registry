@@ -18,29 +18,6 @@ export interface DeletableField {
   provisionerDeletionChecked: boolean;
 }
 
-export interface CommonFields {
-  id?: number;
-  archived?: boolean;
-  createdAt?: object;
-  updatedAt?: object;
-}
-
-export interface ClusterNamespace extends CommonFields {
-  namespaceId: number;
-  clusterId: number;
-  provisioned: boolean;
-  quotaCpuSize: string;
-  quotaMemorySize: string;
-  quotaStorageSize: string;
-  quotaSnapshotSize: string;
-}
-
-export interface ProjectNamespace extends CommonFields {
-  name: string;
-  profileId: number;
-  clusters?: any;
-}
-
 export enum ProjectSetNamespace {
   Prod = 'prod',
   Test = 'test',

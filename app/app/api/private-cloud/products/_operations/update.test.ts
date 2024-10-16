@@ -1,5 +1,5 @@
 import { expect } from '@jest/globals';
-import { DecisionStatus, Cluster, RequestType } from '@prisma/client';
+import { DecisionStatus, Cluster, RequestType, CPU, Memory, Storage } from '@prisma/client';
 import { GlobalRole } from '@/constants';
 import { createSamplePrivateCloudProductData } from '@/helpers/mock-resources';
 import { findOtherMockUsers } from '@/helpers/mock-users';
@@ -7,18 +7,17 @@ import { mockSessionByEmail, mockSessionByRole } from '@/services/api-test/core'
 import { provisionPrivateCloudProject } from '@/services/api-test/private-cloud';
 import { createPrivateCloudProject, editPrivateCloudProject } from '@/services/api-test/private-cloud/products';
 import { makePrivateCloudRequestDecision } from '@/services/api-test/private-cloud/requests';
-import { CpuQuotaEnum, MemoryQuotaEnum, StorageQuotaEnum } from '@/validation-schemas/private-cloud';
 
 const oldDevelopmentQuota = {
-  cpu: CpuQuotaEnum.enum.CPU_REQUEST_1_LIMIT_2,
-  memory: MemoryQuotaEnum.enum.MEMORY_REQUEST_4_LIMIT_8,
-  storage: StorageQuotaEnum.enum.STORAGE_2,
+  cpu: CPU.CPU_REQUEST_1_LIMIT_2,
+  memory: Memory.MEMORY_REQUEST_4_LIMIT_8,
+  storage: Storage.STORAGE_2,
 };
 
 const newDevelopmentQuota = {
-  cpu: CpuQuotaEnum.enum.CPU_REQUEST_1_LIMIT_2,
-  memory: MemoryQuotaEnum.enum.MEMORY_REQUEST_8_LIMIT_16,
-  storage: StorageQuotaEnum.enum.STORAGE_2,
+  cpu: CPU.CPU_REQUEST_1_LIMIT_2,
+  memory: Memory.MEMORY_REQUEST_8_LIMIT_16,
+  storage: Storage.STORAGE_2,
 };
 
 const productData = {

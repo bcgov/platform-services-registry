@@ -1,7 +1,11 @@
-import { Cluster, Prisma } from '@prisma/client';
-import { CpuQuotaEnum, MemoryQuotaEnum, StorageQuotaEnum } from '@/validation-schemas/private-cloud';
+import { Cluster, Prisma, CPU, Memory, Storage } from '@prisma/client';
+import _orderBy from 'lodash-es/orderBy';
+import { extractNumbers } from '@/utils/string';
 import { productSorts } from './common';
 
+export const cpus = Object.values(CPU);
+export const memories = Object.values(Memory);
+export const storages = Object.values(Storage);
 export const clusters = Object.values(Cluster).filter((cluster) => cluster !== 'GOLDDR');
 
 export const clusterNames = [
@@ -42,48 +46,92 @@ export const clusterNames = [
   },
 ];
 
-export const defaultCpuOptionsLookup: { [key: string]: string } = {
-  CPU_REQUEST_0_5_LIMIT_1_5: '0.5 CPU Request, 1.5 CPU Limit',
-  CPU_REQUEST_1_LIMIT_2: '1 CPU Request, 2 CPU Limit',
-  CPU_REQUEST_2_LIMIT_4: '2 CPU Request, 4 CPU Limit',
-  CPU_REQUEST_4_LIMIT_8: '4 CPU Request, 8 CPU Limit',
-  CPU_REQUEST_8_LIMIT_16: '8 CPU Request, 16 CPU Limit',
-  CPU_REQUEST_16_LIMIT_32: '16 CPU Request, 32 CPU Limit',
-  CPU_REQUEST_32_LIMIT_64: '32 CPU Request, 64 CPU Limit',
-  CPU_REQUEST_64_LIMIT_128: '64 CPU Request, 128 CPU Limit',
+export type ResourceMeta<T extends string> = Record<
+  T,
+  { value: T; label: string; labelNats: string; request: number; limit: number }
+>;
+export type StorageMeta = Record<Storage, { value: Storage; label: string; labelNats: string; size: number }>;
+
+export type DropdownOption = { label: string; value: string; key: number };
+
+const _cpuOptions: DropdownOption[] = [];
+const _memoryOptions: DropdownOption[] = [];
+const _stoageOptions: DropdownOption[] = [];
+
+export const cpuMetadata = cpus.reduce<ResourceMeta<CPU>>((ret, value) => {
+  const [request, limit] = extractNumbers(value);
+
+  const label = `${request} CPU Request, ${limit} CPU Limit`;
+  const labelNats = `cpu-request-${request}-limit-${limit}`;
+
+  ret[value] = {
+    value,
+    label,
+    labelNats,
+    request,
+    limit,
+  };
+
+  _cpuOptions.push({ value, label, key: request });
+  return ret;
+}, {} as ResourceMeta<CPU>);
+
+export const memoryMetadata = memories.reduce<ResourceMeta<Memory>>((ret, value) => {
+  const [request, limit] = extractNumbers(value);
+
+  const label = `${request} GB Request, ${limit} GB Limit`;
+  const labelNats = `memory-request-${request}-limit-${limit}`;
+
+  ret[value] = {
+    value,
+    label,
+    labelNats,
+    request,
+    limit,
+  };
+
+  _memoryOptions.push({ value, label, key: request });
+  return ret;
+}, {} as ResourceMeta<Memory>);
+
+export const storageMetadata = storages.reduce<StorageMeta>((ret, value) => {
+  const [size] = extractNumbers(value);
+
+  const label = `${size} GB`;
+  const labelNats = `storage-${size}`;
+
+  ret[value] = {
+    value,
+    label,
+    labelNats,
+    size,
+  };
+
+  _stoageOptions.push({ value, label, key: size });
+  return ret;
+}, {} as StorageMeta);
+
+export const cpuOptions = _orderBy(_cpuOptions, ['key'], ['asc']);
+export const memoryOptions = _orderBy(_memoryOptions, ['key'], ['asc']);
+export const stoageOptions = _orderBy(_stoageOptions, ['key'], ['asc']);
+
+export const resourceMetadata = {
+  cpu: cpuMetadata,
+  memory: memoryMetadata,
+  storage: storageMetadata,
 };
 
-export const defaultMemoryOptionsLookup: { [key: string]: string } = {
-  MEMORY_REQUEST_2_LIMIT_4: '2 GB Request, 4 GB Limit',
-  MEMORY_REQUEST_4_LIMIT_8: '4 GB Request, 8 GB Limit',
-  MEMORY_REQUEST_8_LIMIT_16: '8 GB Request, 16 GB Limit',
-  MEMORY_REQUEST_16_LIMIT_32: '16 GB Request, 32 GB Limit',
-  MEMORY_REQUEST_32_LIMIT_64: '32 GB Request, 64 GB Limit',
-  MEMORY_REQUEST_64_LIMIT_128: '64 GB Request, 128 GB Limit',
-  MEMORY_REQUEST_128_LIMIT_256: '128 Request, 256 GB Limit',
+export const resourceOptions = {
+  cpu: cpuOptions,
+  memory: memoryOptions,
+  storage: stoageOptions,
 };
 
-export const defaultStorageOptionsLookup: { [key: string]: string } = {
-  STORAGE_1: '1 GB',
-  STORAGE_2: '2 GB',
-  STORAGE_4: '4 GB',
-  STORAGE_16: '16 GB',
-  STORAGE_32: '32 GB',
-  STORAGE_64: '64 GB',
-  STORAGE_128: '128 GB',
-  STORAGE_256: '256 GB',
-  STORAGE_512: '512 GB',
+export const defaultQuota = {
+  cpu: CPU.CPU_REQUEST_0_5_LIMIT_1_5,
+  memory: Memory.MEMORY_REQUEST_2_LIMIT_4,
+  storage: Storage.STORAGE_1,
 };
-
-export const defaultProvisionedResourceValues = {
-  cpu: 'CPU: 0.5 CPU Request, 1.5 CPU Limit',
-  memory: 'Memory: 2 GB Request, 4 GB Limit',
-  storage: 'Storage: 1 GB',
-};
-
-export const cpuOptions = Object.values(CpuQuotaEnum.enum);
-export const memoryOptions = Object.values(MemoryQuotaEnum.enum);
-export const storageOptions = Object.values(StorageQuotaEnum.enum);
 
 export const privateCloudProductSorts = productSorts.concat([
   {

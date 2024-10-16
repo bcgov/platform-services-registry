@@ -1,6 +1,6 @@
 import { Heading, Text, Link, Hr } from '@react-email/components';
+import { defaultQuota } from '@/constants';
 import { PrivateCloudProductDetail } from '@/types/private-cloud';
-import { defaultProvisionedResourceValues } from './quotaLookup';
 
 interface Props {
   product: Pick<PrivateCloudProductDetail, 'cluster' | 'licencePlate'>;
@@ -10,6 +10,17 @@ interface Props {
 
 export default function ClusterDetails({ product, showNamespaceInfo = false, showDefaultResource = false }: Props) {
   const { cluster, licencePlate } = product;
+
+  let defaultProvisionedResource = null;
+  if (showDefaultResource) {
+    defaultProvisionedResource = (
+      <>
+        <Text className="mb-1 mt-1 h-4">CPU: {defaultQuota.cpu}</Text>
+        <Text className="mb-1 mt-1 h-4">Memory: {defaultQuota.memory}</Text>
+        <Text className="mb-1 mt-1 h-4">Storage: {defaultQuota.storage}</Text>
+      </>
+    );
+  }
 
   return (
     <>
@@ -28,13 +39,7 @@ export default function ClusterDetails({ product, showNamespaceInfo = false, sho
           >
             <Text className="mt-1 mb-1 h-4">{licencePlate}-dev</Text>
           </Link>
-          {showDefaultResource && (
-            <>
-              <Text className="mb-1 mt-1 h-4">{defaultProvisionedResourceValues.cpu}</Text>
-              <Text className="mb-1 mt-1 h-4">{defaultProvisionedResourceValues.memory}</Text>
-              <Text className="mb-1 mt-1 h-4">{defaultProvisionedResourceValues.storage}</Text>
-            </>
-          )}
+          {defaultProvisionedResource}
           <Text className="mb-0 font-semibold h-4">Test Namespace: </Text>
           <Link
             className="mt-1 h-4"
@@ -42,13 +47,7 @@ export default function ClusterDetails({ product, showNamespaceInfo = false, sho
           >
             <Text className="mt-1 mb-1 h-4">{licencePlate}-test</Text>
           </Link>
-          {showDefaultResource && (
-            <>
-              <Text className="mb-1 mt-1 h-4">{defaultProvisionedResourceValues.cpu}</Text>
-              <Text className="mb-1 mt-1 h-4">{defaultProvisionedResourceValues.memory}</Text>
-              <Text className="mb-1 mt-1 h-4">{defaultProvisionedResourceValues.storage}</Text>
-            </>
-          )}
+          {defaultProvisionedResource}
           <Text className="mb-1 font-semibold h-4">Production Namespace: </Text>
           <Link
             className="mt-1 h-4"
@@ -56,13 +55,7 @@ export default function ClusterDetails({ product, showNamespaceInfo = false, sho
           >
             <Text className="mt-1 mb-1 h-4">{licencePlate}-prod</Text>
           </Link>
-          {showDefaultResource && (
-            <>
-              <Text className="mb-1 mt-1 h-4">{defaultProvisionedResourceValues.cpu}</Text>
-              <Text className="mb-1 mt-1 h-4">{defaultProvisionedResourceValues.memory}</Text>
-              <Text className="mb-1 mt-1 h-4">{defaultProvisionedResourceValues.storage}</Text>
-            </>
-          )}
+          {defaultProvisionedResource}
           <Text className="mb-1 font-semibold h-4">Tools Namespace: </Text>
           <Link
             className="mt-1 h-4"
@@ -70,13 +63,7 @@ export default function ClusterDetails({ product, showNamespaceInfo = false, sho
           >
             <Text className="mt-1 mb-1 h-4">{licencePlate}-tools</Text>
           </Link>
-          {showDefaultResource && (
-            <>
-              <Text className="mb-1 mt-1 h-4">{defaultProvisionedResourceValues.cpu}</Text>
-              <Text className="mb-1 mt-1 h-4">{defaultProvisionedResourceValues.memory}</Text>
-              <Text className="mb-1 mt-1 h-4">{defaultProvisionedResourceValues.storage}</Text>
-            </>
-          )}
+          {defaultProvisionedResource}
         </>
       )}
     </>
