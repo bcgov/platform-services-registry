@@ -1,4 +1,4 @@
-FROM node:22.2.0-alpine3.19 AS builder
+FROM node:22.9.0-alpine3.19 AS builder
 WORKDIR /context
 
 COPY m365mock/package.json m365mock/package-lock.json m365mock/tsconfig.json ./
@@ -7,7 +7,7 @@ COPY m365proxy/mocks.json ./m365proxy/mocks.json
 
 RUN npm install && npm run build
 
-FROM node:22.2.0-alpine3.19
+FROM node:22.9.0-alpine3.19
 WORKDIR /context
 
 COPY --from=builder /context/build ./build

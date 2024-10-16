@@ -1,7 +1,7 @@
 ARG deployment_tag
 
 # 1st stage to build the image
-FROM node:22.2.0-alpine3.19 as build
+FROM node:22.9.0-alpine3.19 as build
 
 WORKDIR /app
 
@@ -20,7 +20,7 @@ RUN npm run build
 
 # 2nd stage to copy image and create a smaller final image
 # FROM gcr.io/distroless/nodejs18-debian12
-FROM node:22.2.0-alpine3.19
+FROM node:22.9.0-alpine3.19
 
 WORKDIR /app
 
