@@ -1,14 +1,7 @@
 import { Ministry } from '@prisma/client';
-import {
-  DefaultCpuOptions,
-  DefaultMemoryOptions,
-  DefaultStorageOptions,
-  snapshot,
-  DefaultCpuOptionsKey,
-  DefaultMemoryOptionsKey,
-  DefaultStorageOptionsKey,
-} from '@/services/nats/private-cloud/constants';
-import { PrivateCloudProductDetail, PrivateCloudRequestDetail } from '@/types/private-cloud';
+import { cpuMetadata, memoryMetadata, storageMetadata } from '@/constants';
+import { snapshot } from '@/services/nats/private-cloud/constants';
+import { PrivateCloudRequestDetail } from '@/types/private-cloud';
 
 export default function createPrivateCloudNatsMessage(
   request: Pick<PrivateCloudRequestDetail, 'id' | 'type' | 'decisionData'>,
@@ -61,33 +54,41 @@ export default function createPrivateCloudNatsMessage(
       { quotaName: 'prod', quota: productionQuota },
       { quotaName: 'dev', quota: developmentQuota },
       { quotaName: 'test', quota: testQuota },
-    ].map(({ quotaName, quota }) => ({
-      name: `${licencePlate}-${quotaName}`,
-      quota: {
-        cpu: DefaultCpuOptions[quota.cpu as DefaultCpuOptionsKey].name,
-        memory: DefaultMemoryOptions[quota.memory as DefaultMemoryOptionsKey].name,
-        storage: DefaultStorageOptions[quota.storage as DefaultStorageOptionsKey].name,
-        snapshot: snapshot.name,
-      },
-      quotas: {
-        cpu: {
-          requests: DefaultCpuOptions[quota.cpu as DefaultCpuOptionsKey].cpuRequests,
-          limits: DefaultCpuOptions[quota.cpu as DefaultCpuOptionsKey].cpuLimits,
+    ].map(({ quotaName, quota }) => {
+      const cpuMeta = cpuMetadata[quota.cpu];
+      const memoryMeta = memoryMetadata[quota.memory];
+      const storageMeta = storageMetadata[quota.storage];
+      let backupSize = storageMeta.size / 2;
+      if (backupSize < 1) backupSize = 1;
+
+      return {
+        name: `${licencePlate}-${quotaName}`,
+        quota: {
+          cpu: cpuMeta.labelNats,
+          memory: memoryMeta.labelNats,
+          storage: storageMeta.labelNats,
+          snapshot: snapshot.name,
         },
-        memory: {
-          requests: DefaultMemoryOptions[quota.memory as DefaultMemoryOptionsKey].memoryRequests,
-          limits: DefaultMemoryOptions[quota.memory as DefaultMemoryOptionsKey].memoryLimits,
+        quotas: {
+          cpu: {
+            requests: cpuMeta.request,
+            limits: cpuMeta.limit,
+          },
+          memory: {
+            requests: `${cpuMeta.request}Gi`,
+            limits: `${cpuMeta.limit}Gi`,
+          },
+          storage: {
+            block: `${storageMeta.size}Gi`,
+            file: `${storageMeta.size}Gi`,
+            backup: `${backupSize}Gi`,
+            capacity: `${storageMeta.size}Gi`,
+            pvc_count: 60,
+          },
+          snapshot: { count: snapshot.snapshotCount },
         },
-        storage: {
-          block: DefaultStorageOptions[quota.storage as DefaultStorageOptionsKey].storageBlock,
-          file: DefaultStorageOptions[quota.storage as DefaultStorageOptionsKey].storageFile,
-          backup: DefaultStorageOptions[quota.storage as DefaultStorageOptionsKey].storageBackup,
-          capacity: DefaultStorageOptions[quota.storage as DefaultStorageOptionsKey].storageCapacity,
-          pvc_count: DefaultStorageOptions[quota.storage as DefaultStorageOptionsKey].storagePvcCount,
-        },
-        snapshot: { count: snapshot.snapshotCount },
-      },
-    })),
+      };
+    }),
     contacts: [
       {
         email: projectOwner.email,

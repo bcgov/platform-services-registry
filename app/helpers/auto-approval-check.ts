@@ -1,6 +1,6 @@
 import { Quota, Cluster, QuotaUpgradeResourceDetail } from '@prisma/client';
 import _each from 'lodash-es/each';
-import { defaultCpuOptionsLookup, defaultMemoryOptionsLookup, defaultStorageOptionsLookup } from '@/../app/constants';
+import { resourceOptions } from '@/../app/constants';
 import { getResourceDetails } from '@/services/k8s';
 import { iterateObject } from '@/utils/collection';
 
@@ -10,12 +10,6 @@ export interface Quotas {
   developmentQuota: Quota;
   productionQuota: Quota;
 }
-
-const resourceOrders = {
-  cpu: defaultCpuOptionsLookup,
-  memory: defaultMemoryOptionsLookup,
-  storage: defaultStorageOptionsLookup,
-};
 
 function checkAutoApprovalEligibility({ allocation, deployment }: QuotaUpgradeResourceDetail) {
   if (deployment.usage === -1) return false;
@@ -64,10 +58,10 @@ export async function getQuotaChangeStatus({
   iterateObject(_currentQuota, (quota: Quota, envQuota: keyof Quotas) => {
     iterateObject(quota, (currentResource: string, resourceName: keyof Quota) => {
       const requestedResource = _requestedQuota[envQuota][resourceName];
-      const resourceOrder = resourceOrders[resourceName];
+      const resourceOrder = resourceOptions[resourceName];
 
-      const currentIndex = Object.keys(resourceOrder).indexOf(currentResource);
-      const requestedIndex = Object.keys(resourceOrder).indexOf(requestedResource);
+      const currentIndex = resourceOrder.findIndex((res) => res.value === currentResource);
+      const requestedIndex = resourceOrder.findIndex((res) => res.value === requestedResource);
       const diff = requestedIndex - currentIndex;
 
       if (!hasChange) hasChange = diff !== 0;

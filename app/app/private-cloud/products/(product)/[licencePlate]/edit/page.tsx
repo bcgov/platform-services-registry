@@ -1,7 +1,7 @@
 'use client';
 
 import { zodResolver } from '@hookform/resolvers/zod';
-import { PrivateCloudProject } from '@prisma/client';
+import { CPU, Memory, Storage, PrivateCloudProject } from '@prisma/client';
 import { IconInfoCircle, IconUsersGroup, IconSettings, IconComponents } from '@tabler/icons-react';
 import { useEffect, useState } from 'react';
 import { FormProvider, useForm } from 'react-hook-form';
@@ -22,12 +22,6 @@ import { getPrivateCloudProject, getQuotaChangeStatus } from '@/services/backend
 import { usePrivateProductState } from '@/states/global';
 import { privateCloudEditRequestBodySchema } from '@/validation-schemas/private-cloud';
 
-const emptyQuota = {
-  cpu: '',
-  memory: '',
-  storage: '',
-};
-
 const pathParamSchema = z.object({
   licencePlate: z.string(),
 });
@@ -46,12 +40,19 @@ export default privateCloudProductEdit(({ pathParams, queryParams, session }) =>
   const methods = useForm({
     resolver: async (...args) => {
       const { developmentQuota, testQuota, productionQuota, toolsQuota } = args[0];
-      const quotaChangeStatus = await getQuotaChangeStatus(privateSnap.licencePlate, {
-        developmentQuota,
-        testQuota,
-        productionQuota,
-        toolsQuota,
-      });
+
+      let quotaChangeStatus = {
+        isEligibleForAutoApproval: false,
+      };
+
+      if (developmentQuota && testQuota && productionQuota && toolsQuota) {
+        quotaChangeStatus = await getQuotaChangeStatus(privateSnap.licencePlate, {
+          developmentQuota,
+          testQuota,
+          productionQuota,
+          toolsQuota,
+        });
+      }
 
       return zodResolver(
         privateCloudEditRequestBodySchema
@@ -111,10 +112,6 @@ export default privateCloudProductEdit(({ pathParams, queryParams, session }) =>
       )(...args);
     },
     values: {
-      developmentQuota: emptyQuota,
-      testQuota: emptyQuota,
-      productionQuota: emptyQuota,
-      toolsQuota: emptyQuota,
       ...privateSnap.currentProduct,
       isAgMinistryChecked: true,
     },

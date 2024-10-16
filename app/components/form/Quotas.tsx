@@ -4,14 +4,8 @@ import _startCase from 'lodash-es/startCase';
 import { useFormContext } from 'react-hook-form';
 import QuotasChangeInfo from '@/components/form/QuotasChangeInfo';
 import ExternalLink from '@/components/generic/button/ExternalLink';
-import { defaultCpuOptionsLookup, defaultMemoryOptionsLookup, defaultStorageOptionsLookup } from '@/constants';
+import { resourceOptions } from '@/constants';
 import QuotaInput from './QuotaInput';
-
-const quotaOptionsLookup = {
-  cpu: defaultCpuOptionsLookup,
-  memory: defaultMemoryOptionsLookup,
-  storage: defaultStorageOptionsLookup,
-};
 
 const namespaceSuffixes = {
   development: '-dev',
@@ -80,7 +74,7 @@ export default function Quotas({
                 <QuotaInput
                   key={quotaName}
                   quotaName={quotaName}
-                  selectOptions={quotaOptionsLookup[quotaName]}
+                  selectOptions={resourceOptions[quotaName]}
                   licencePlate={licencePlate}
                   nameSpace={namespace}
                   disabled={disabled}

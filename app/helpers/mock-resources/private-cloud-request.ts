@@ -1,6 +1,5 @@
 import { faker } from '@faker-js/faker';
-import { ProjectStatus, RequestType, DecisionStatus } from '@prisma/client';
-import { cpuOptions, memoryOptions, storageOptions } from '@/constants';
+import { ProjectStatus, RequestType, DecisionStatus, CPU, Memory, Storage } from '@prisma/client';
 import { PrivateCloudRequestDetail } from '@/types/private-cloud';
 import { generateShortId } from '@/utils/uuid';
 import { getRandomMinistry, getRandomCluster, getRandomUser } from './core';
@@ -11,15 +10,15 @@ export function createSamplePrivateCloudRequest(args?: {
   const { data } = args ?? {};
 
   const quota = {
-    cpu: cpuOptions[0],
-    memory: memoryOptions[0],
-    storage: storageOptions[0],
+    cpu: CPU.CPU_REQUEST_0_5_LIMIT_1_5,
+    memory: Memory.MEMORY_REQUEST_2_LIMIT_4,
+    storage: Storage.STORAGE_1,
   };
 
   const quota1 = {
-    cpu: cpuOptions[1],
-    memory: memoryOptions[1],
-    storage: storageOptions[1],
+    cpu: CPU.CPU_REQUEST_1_LIMIT_2,
+    memory: Memory.MEMORY_REQUEST_4_LIMIT_8,
+    storage: Storage.STORAGE_2,
   };
 
   const commonComponents = {

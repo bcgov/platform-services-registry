@@ -1,6 +1,6 @@
 import { Heading, Link, Text } from '@react-email/components';
+import { cpuMetadata, memoryMetadata, storageMetadata } from '@/constants';
 import { Quota } from '@/validation-schemas/private-cloud';
-import { defaultCpuOptionsLookup, defaultMemoryOptionsLookup, defaultStorageOptionsLookup } from './quotaLookup';
 
 interface QuotaChangesProps {
   licencePlate: string;
@@ -35,27 +35,27 @@ export default function QuotaChanges({
         <div>
           <Text className="mt-4 mb-0 font-semibold h-4">CPU</Text>
           <Text className="mt-2 mb-0 font-medium h-3">{currentLabel} Quota</Text>
-          <Text className="mt-1 mb-0 h-4">{defaultCpuOptionsLookup[quotaCurrent.cpu]}</Text>
+          <Text className="mt-1 mb-0 h-4">{cpuMetadata[quotaCurrent.cpu].label}</Text>
           <Text className="mt-2 mb-0 font-medium h-3">{requestedLabel} Quota</Text>
-          <Text className="mt-1 mb-0 h-4">{defaultCpuOptionsLookup[quotaRequested.cpu]}</Text>
+          <Text className="mt-1 mb-0 h-4">{cpuMetadata[quotaRequested.cpu].label}</Text>
         </div>
       )}
       {quotaCurrent.memory !== quotaRequested.memory && (
         <div>
           <Text className="mt-6 mb-0 font-semibold h-4">Memory</Text>
           <Text className="mt-2 mb-0 font-medium h-3">{currentLabel} Memory</Text>
-          <Text className="mt-1 mb-0 h-4">{defaultMemoryOptionsLookup[quotaCurrent.memory]}</Text>
+          <Text className="mt-1 mb-0 h-4">{memoryMetadata[quotaCurrent.memory].label}</Text>
           <Text className="mt-2 mb-0 font-medium h-3">{requestedLabel} Memory</Text>
-          <Text className="mt-1 mb-0 h-4">{defaultMemoryOptionsLookup[quotaRequested.memory]}</Text>
+          <Text className="mt-1 mb-0 h-4">{memoryMetadata[quotaRequested.memory].label}</Text>
         </div>
       )}
       {quotaCurrent.storage !== quotaRequested.storage && (
         <div>
           <Text className="mt-6 mb-0 font-semibold h-4">Storage</Text>
           <Text className="mt-2 mb-0 font-medium h-3">{currentLabel} Storage</Text>
-          <Text className="mt-1 mb-0 h-4">{defaultStorageOptionsLookup[quotaCurrent.storage]}</Text>
+          <Text className="mt-1 mb-0 h-4">{storageMetadata[quotaCurrent.storage].label}</Text>
           <Text className="mt-2 mb-0 font-medium h-3">{requestedLabel} Storage</Text>
-          <Text className="mt-1 mb-0 h-4">{defaultStorageOptionsLookup[quotaRequested.storage]}</Text>
+          <Text className="mt-1 mb-0 h-4">{storageMetadata[quotaRequested.storage].label}</Text>
         </div>
       )}
     </div>

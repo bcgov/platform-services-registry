@@ -1,47 +1,24 @@
-import { Cluster, DecisionStatus, Ministry, Prisma, ProjectStatus, RequestType } from '@prisma/client';
+import {
+  Cluster,
+  DecisionStatus,
+  Ministry,
+  Prisma,
+  ProjectStatus,
+  RequestType,
+  CPU,
+  Memory,
+  Storage,
+} from '@prisma/client';
 import _isString from 'lodash-es/isString';
 import { string, z } from 'zod';
 import { phoneNumberRegex } from '@/constants';
 import { processEnumString, processUpperEnumString, processBoolean } from '@/utils/zod';
 import { userSchema, requestDecisionEnum } from './shared';
 
-export const CpuQuotaEnum = z.enum([
-  'CPU_REQUEST_0_5_LIMIT_1_5',
-  'CPU_REQUEST_1_LIMIT_2',
-  'CPU_REQUEST_2_LIMIT_4',
-  'CPU_REQUEST_4_LIMIT_8',
-  'CPU_REQUEST_8_LIMIT_16',
-  'CPU_REQUEST_16_LIMIT_32',
-  'CPU_REQUEST_32_LIMIT_64',
-  'CPU_REQUEST_64_LIMIT_128',
-]);
-
-export const MemoryQuotaEnum = z.enum([
-  'MEMORY_REQUEST_2_LIMIT_4',
-  'MEMORY_REQUEST_4_LIMIT_8',
-  'MEMORY_REQUEST_8_LIMIT_16',
-  'MEMORY_REQUEST_16_LIMIT_32',
-  'MEMORY_REQUEST_32_LIMIT_64',
-  'MEMORY_REQUEST_64_LIMIT_128',
-  'MEMORY_REQUEST_128_LIMIT_256',
-]);
-
-export const StorageQuotaEnum = z.enum([
-  'STORAGE_1',
-  'STORAGE_2',
-  'STORAGE_4',
-  'STORAGE_16',
-  'STORAGE_32',
-  'STORAGE_64',
-  'STORAGE_128',
-  'STORAGE_256',
-  'STORAGE_512',
-]);
-
 export const quotaSchema = z.object({
-  cpu: z.union([CpuQuotaEnum, z.string().regex(/CPU_REQUEST_\d+(\.\d+)?_LIMIT_\d+(\.\d+)?/)]),
-  memory: z.union([MemoryQuotaEnum, z.string().regex(/MEMORY_REQUEST_\d+_LIMIT_\d+/)]),
-  storage: z.union([StorageQuotaEnum, z.string().regex(/STORAGE_\d+/)]),
+  cpu: z.nativeEnum(CPU),
+  memory: z.nativeEnum(Memory),
+  storage: z.nativeEnum(Storage),
 });
 
 export const quotasSchema = z.object({
@@ -178,9 +155,6 @@ export const privateCloudAdminUpdateBodySchema = z.object({
   isTest: z.preprocess(processBoolean, z.boolean()),
 });
 
-export type CpuQuota = z.infer<typeof CpuQuotaEnum>;
-export type MemoryQuota = z.infer<typeof MemoryQuotaEnum>;
-export type StorageQuota = z.infer<typeof StorageQuotaEnum>;
 export type Quota = z.infer<typeof quotaSchema>;
 export type Quotas = z.infer<typeof quotasSchema>;
 export type CommonComponents = z.infer<typeof commonComponentsSchema>;
