@@ -1,5 +1,5 @@
-import { CPU, Memory, Storage } from '@prisma/client';
 import { Heading, Text, Link, Hr } from '@react-email/components';
+import { defaultQuota } from '@/constants';
 import { PrivateCloudProductDetail } from '@/types/private-cloud';
 
 interface Props {
@@ -15,9 +15,9 @@ export default function ClusterDetails({ product, showNamespaceInfo = false, sho
   if (showDefaultResource) {
     defaultProvisionedResource = (
       <>
-        <Text className="mb-1 mt-1 h-4">CPU: {CPU.CPU_REQUEST_0_5_LIMIT_1_5}</Text>
-        <Text className="mb-1 mt-1 h-4">Memory: {Memory.MEMORY_REQUEST_2_LIMIT_4}</Text>
-        <Text className="mb-1 mt-1 h-4">Storage: {Storage.STORAGE_1}</Text>
+        <Text className="mb-1 mt-1 h-4">CPU: {defaultQuota.cpu}</Text>
+        <Text className="mb-1 mt-1 h-4">Memory: {defaultQuota.memory}</Text>
+        <Text className="mb-1 mt-1 h-4">Storage: {defaultQuota.storage}</Text>
       </>
     );
   }

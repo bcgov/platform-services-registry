@@ -127,6 +127,12 @@ export const resourceOptions = {
   storage: stoageOptions,
 };
 
+export const defaultQuota = {
+  cpu: CPU.CPU_REQUEST_0_5_LIMIT_1_5,
+  memory: Memory.MEMORY_REQUEST_2_LIMIT_4,
+  storage: Storage.STORAGE_1,
+};
+
 export const privateCloudProductSorts = productSorts.concat([
   {
     label: 'Cluster (A-Z)',

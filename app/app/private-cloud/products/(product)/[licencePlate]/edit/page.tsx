@@ -16,7 +16,7 @@ import PageAccordion from '@/components/generic/accordion/PageAccordion';
 import FormErrorNotification from '@/components/generic/FormErrorNotification';
 import { openEditPrivateCloudProductModal } from '@/components/modal/editPrivateCloudProductModal';
 import ReturnModal from '@/components/modal/Return';
-import { AGMinistries, GlobalRole } from '@/constants';
+import { AGMinistries, GlobalRole, defaultQuota } from '@/constants';
 import createClientPage from '@/core/client-page';
 import { getPrivateCloudProject, getQuotaChangeStatus } from '@/services/backend/private-cloud/products';
 import { usePrivateProductState } from '@/states/global';
@@ -41,18 +41,12 @@ export default privateCloudProductEdit(({ pathParams, queryParams, session }) =>
     resolver: async (...args) => {
       const { developmentQuota, testQuota, productionQuota, toolsQuota } = args[0];
 
-      let quotaChangeStatus = {
-        isEligibleForAutoApproval: false,
-      };
-
-      if (developmentQuota && testQuota && productionQuota && toolsQuota) {
-        quotaChangeStatus = await getQuotaChangeStatus(privateSnap.licencePlate, {
-          developmentQuota,
-          testQuota,
-          productionQuota,
-          toolsQuota,
-        });
-      }
+      const quotaChangeStatus = await getQuotaChangeStatus(privateSnap.licencePlate, {
+        developmentQuota,
+        testQuota,
+        productionQuota,
+        toolsQuota,
+      });
 
       return zodResolver(
         privateCloudEditRequestBodySchema
@@ -112,6 +106,10 @@ export default privateCloudProductEdit(({ pathParams, queryParams, session }) =>
       )(...args);
     },
     values: {
+      developmentQuota: defaultQuota,
+      testQuota: defaultQuota,
+      productionQuota: defaultQuota,
+      toolsQuota: defaultQuota,
       ...privateSnap.currentProduct,
       isAgMinistryChecked: true,
     },
