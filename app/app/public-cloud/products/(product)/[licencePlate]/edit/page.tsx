@@ -173,7 +173,7 @@ export default publicCloudProductEdit(({ pathParams, queryParams, session }) => 
     },
     {
       LeftIcon: IconReceipt2,
-      label: 'Billing (account coding)',
+      label: 'Billing (Account coding)',
       description: '',
       Component: AccountCoding,
       componentArgs: { accountCodingInitial: snap.currentProduct?.billing.accountCoding, disabled: true },

@@ -171,11 +171,11 @@ export default function AddUserModal({ open, setOpen, setUserPrincipalName, setU
                   </div>
                 </Combobox>
                 <UserInfoField
-                  name={'First Name'}
+                  name={'First name'}
                   value={selected?.firstName ? selected.firstName : confirm ? 'Not Found' : ''}
                 />
                 <UserInfoField
-                  name={'Last Name'}
+                  name={'Last name'}
                   value={selected?.lastName ? selected.lastName : confirm ? 'Not Found' : ''}
                 />
                 <UserInfoField name={'Ministry'} value={selected ? parseMinistry(selected.displayName) : 'Not Found'} />

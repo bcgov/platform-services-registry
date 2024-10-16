@@ -10,8 +10,8 @@ const apiHandler = createApiHandler({
 export const GET = apiHandler(async () => {
   const data = await usersWithQuotaEditRequests();
   const formatted = data.map((user) => ({
-    'First Name': user?.firstName,
-    'Last Name': user?.lastName,
+    'First name': user?.firstName,
+    'Last name': user?.lastName,
     Email: user?.email,
     Ministry: user?.ministry,
   }));

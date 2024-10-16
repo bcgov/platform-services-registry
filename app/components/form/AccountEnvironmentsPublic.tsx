@@ -70,7 +70,7 @@ export default function AccountEnvironmentsPublic({
             inputProps={register('environmentsEnabled.production')}
             disabled={disabled || selected?.production}
           >
-            Production Account
+            Production account
           </FormCheckbox>
         </div>
         <div className="mt-1">
@@ -79,7 +79,7 @@ export default function AccountEnvironmentsPublic({
             inputProps={register('environmentsEnabled.development')}
             disabled={disabled || selected?.development}
           >
-            Development Account
+            Development account
           </FormCheckbox>
         </div>
         <div className="mt-1">
@@ -88,7 +88,7 @@ export default function AccountEnvironmentsPublic({
             inputProps={register('environmentsEnabled.test')}
             disabled={disabled || selected?.test}
           >
-            Test Account
+            Test account
           </FormCheckbox>
         </div>
         <div className="mt-1">
@@ -97,7 +97,7 @@ export default function AccountEnvironmentsPublic({
             inputProps={register('environmentsEnabled.tools')}
             disabled={disabled || selected?.tools}
           >
-            Tools Account
+            Tools account
           </FormCheckbox>
         </div>
 

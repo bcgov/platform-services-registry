@@ -97,9 +97,9 @@ describe('Download Private Cloud Products - Permissions', () => {
     expect(record1.Cluster).toBe(project?.cluster);
     expect(record1['Project Owner Email']).toBe(project?.projectOwner.email);
     expect(record1['Project Owner Name']).toBe(formatFullName(project?.projectOwner));
-    expect(record1['Primary Technical Lead Email']).toBe(project?.primaryTechnicalLead.email);
+    expect(record1['Primary Technical Lead email']).toBe(project?.primaryTechnicalLead.email);
     expect(record1['Primary Technical Lead Name']).toBe(formatFullName(project?.primaryTechnicalLead));
-    expect(record1['Secondary Technical Lead Email']).toBe(project?.secondaryTechnicalLead?.email);
+    expect(record1['Secondary Technical Lead email']).toBe(project?.secondaryTechnicalLead?.email);
     expect(record1['Secondary Technical Lead Name']).toBe(formatFullName(project?.secondaryTechnicalLead));
     expect(record1['Create Date']).toBe(formatDateSimple(project?.createdAt ?? ''));
     expect(record1['Update Date']).toBe(formatDateSimple(project?.updatedAt ?? ''));

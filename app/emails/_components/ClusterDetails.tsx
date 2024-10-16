@@ -32,7 +32,7 @@ export default function ClusterDetails({ product, showNamespaceInfo = false, sho
       </div>
       {showNamespaceInfo && (
         <>
-          <Text className="mb-0 font-semibold h-4">Development Namespace: </Text>
+          <Text className="mb-0 font-semibold h-4">Development namespace: </Text>
           <Link
             className="mt-1 h-4"
             href={`https://console.apps.${cluster}.devops.gov.bc.ca/k8s/cluster/projects/${licencePlate}-dev`}
@@ -40,7 +40,7 @@ export default function ClusterDetails({ product, showNamespaceInfo = false, sho
             <Text className="mt-1 mb-1 h-4">{licencePlate}-dev</Text>
           </Link>
           {defaultProvisionedResource}
-          <Text className="mb-0 font-semibold h-4">Test Namespace: </Text>
+          <Text className="mb-0 font-semibold h-4">Test namespace: </Text>
           <Link
             className="mt-1 h-4"
             href={`https://console.apps.${cluster}.devops.gov.bc.ca/k8s/cluster/projects/${licencePlate}-test`}
@@ -48,7 +48,7 @@ export default function ClusterDetails({ product, showNamespaceInfo = false, sho
             <Text className="mt-1 mb-1 h-4">{licencePlate}-test</Text>
           </Link>
           {defaultProvisionedResource}
-          <Text className="mb-1 font-semibold h-4">Production Namespace: </Text>
+          <Text className="mb-1 font-semibold h-4">Production namespace: </Text>
           <Link
             className="mt-1 h-4"
             href={`https://console.apps.${cluster}.devops.gov.bc.ca/k8s/cluster/projects/${licencePlate}-prod`}
@@ -56,7 +56,7 @@ export default function ClusterDetails({ product, showNamespaceInfo = false, sho
             <Text className="mt-1 mb-1 h-4">{licencePlate}-prod</Text>
           </Link>
           {defaultProvisionedResource}
-          <Text className="mb-1 font-semibold h-4">Tools Namespace: </Text>
+          <Text className="mb-1 font-semibold h-4">Tools namespace: </Text>
           <Link
             className="mt-1 h-4"
             href={`https://console.apps.${cluster}.devops.gov.bc.ca/k8s/cluster/projects/${licencePlate}-tools`}

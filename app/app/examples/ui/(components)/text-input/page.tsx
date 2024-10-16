@@ -33,14 +33,14 @@ export default Page(() => {
         <form onSubmit={methods.handleSubmit(console.log)} autoComplete="off">
           <div className="grid grid-cols-1 md:grid-cols-3 md:gap-4 md:py-2">
             <HookFormTextInput
-              label="First Name"
+              label="First name"
               name="firstName"
               placeholder="Enter first name..."
               required
               classNames={{ wrapper: 'col-span-1' }}
             />
             <HookFormTextInput
-              label="Last Name"
+              label="Last name"
               name="lastName"
               placeholder="Enter last name..."
               required

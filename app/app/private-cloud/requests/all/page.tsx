@@ -34,7 +34,7 @@ export default privateCloudRequests(({ pathParams, queryParams, session }) => {
 
   return (
     <Table
-      title="Requests in Private Cloud OpenShift Platform"
+      title="Requests in Private Cloud OpenShift platform"
       description="These requests are currently under admin review."
       totalCount={totalCount}
       page={snap.page ?? 1}

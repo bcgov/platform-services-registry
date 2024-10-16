@@ -87,7 +87,7 @@ export default function PublicCloudDeleteModal({
             <div className="border-t border-gray-300 pt-4">
               <div className="space-y-1">
                 <span className="flex">
-                  <p className="text-sm font-medium text-gray-900">Product Name: </p>
+                  <p className="text-sm font-medium text-gray-900">Product name: </p>
                   <p className="text-sm text-gray-900 ml-2">{publicProductSnapshot.currentProduct?.name}</p>
                 </span>
                 <span className="flex">
@@ -124,7 +124,7 @@ export default function PublicCloudDeleteModal({
 
                 <div className="mt-4">
                   <label htmlFor="owner-email" className="sr-only">
-                    Product Owner Email
+                    Product Owner email
                   </label>
                   <input
                     onChange={(e) => setEmail(e.target.value)}
@@ -133,7 +133,7 @@ export default function PublicCloudDeleteModal({
                     name="owner-email"
                     id="owner-email"
                     className="block w-1/2 rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
-                    placeholder="Product Owner Email"
+                    placeholder="Product Owner email"
                   />
                 </div>
               </div>

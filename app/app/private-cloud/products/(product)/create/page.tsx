@@ -81,7 +81,7 @@ export default privateCloudProductNew(({ pathParams, queryParams, session }) => 
       <h1 className="flex justify-between text-xl lg:text-2xl xl:text-4xl font-semibold leading-7 text-gray-900 mt-2 mb-0 lg:mt-4">
         New Private Cloud Product
       </h1>
-      <h3 className="mt-0 mb-3 italic">Private Cloud OpenShift Platform</h3>
+      <h3 className="mt-0 mb-3 italic">Private Cloud OpenShift platform</h3>
 
       <FormProvider {...methods}>
         <FormErrorNotification />

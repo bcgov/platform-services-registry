@@ -32,22 +32,22 @@ export default function ProductDetails({ product }: Props) {
   return (
     <>
       <Hr className="my-4" />
-      <Heading className="text-lg">Product Details</Heading>
+      <Heading className="text-lg">Product details</Heading>
       <div>
-        <Text className="mb-2 font-semibold h-4">Product Name: </Text>
+        <Text className="mb-2 font-semibold h-4">Product name: </Text>
         <Text className="mt-1 h-fit">{name}</Text>
-        <Text className="mb-2 font-semibold h-4">Product Description: </Text>
+        <Text className="mb-2 font-semibold h-4">Product description: </Text>
         <Text className="mt-1 h-fit">{description}</Text>
-        <Text className="mb-2 font-semibold h-4">Licence Plate: </Text>
+        <Text className="mb-2 font-semibold h-4">Licence plate: </Text>
         <Text className="mt-0 mb-2 h-4">{licencePlate}</Text>
         <Text className="mb-2 font-semibold h-4">Ministry: </Text>
         <Text className="mt-1 h-4">{ministry}</Text>
-        <Text className="mb-2 font-semibold h-4">Product Owner: </Text>
+        <Text className="mb-2 font-semibold h-4">Product owner: </Text>
         <Text className="mt-1 mb-2 h-4">{formatFullName(projectOwner)}</Text>
         <Link className="mt-0 h-4" href={`mailto:${projectOwner.email}`}>
           {projectOwner.email}
         </Link>
-        <Text className="mb-2 font-semibold h-4">Technical Lead: </Text>
+        <Text className="mb-2 font-semibold h-4">Technical lead: </Text>
         <Text className="mt-0 mb-2 h-4">{formatFullName(primaryTechnicalLead)}</Text>
         <Link className="mt-0 h-4" href={`mailto:${primaryTechnicalLead.email}`}>
           {primaryTechnicalLead.email}

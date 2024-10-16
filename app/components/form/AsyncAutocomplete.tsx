@@ -190,7 +190,7 @@ export default function AsyncAutocomplete({
 
       <div className="mt-8 col-span-full">
         <label htmlFor="first-name" className="block text-sm font-medium leading-6 text-gray-900">
-          First Name
+          First name
         </label>
         <div className="mt-2">
           <input
@@ -207,7 +207,7 @@ export default function AsyncAutocomplete({
       </div>
       <div className="mt-8 col-span-full">
         <label htmlFor="last-name" className="block text-sm font-medium leading-6 text-gray-900">
-          Last Name
+          Last name
         </label>
         <div className="mt-2">
           <input

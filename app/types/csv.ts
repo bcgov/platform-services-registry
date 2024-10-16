@@ -5,9 +5,9 @@ export interface PrivateProductCsvRecord {
   Cluster: string;
   'Project Owner Email': string;
   'Project Owner Name': string;
-  'Primary Technical Lead Email': string;
+  'Primary Technical Lead email': string;
   'Primary Technical Lead Name': string;
-  'Secondary Technical Lead Email': string;
+  'Secondary Technical Lead email': string;
   'Secondary Technical Lead Name': string;
   'Create Date': string;
   'Update Date': string;
@@ -27,9 +27,9 @@ export interface PublicProductCsvRecord {
   'Reasons for Selecting Cloud Provider': string;
   'Project Owner Email': string;
   'Project Owner Name': string;
-  'Primary Technical Lead Email': string;
+  'Primary Technical Lead email': string;
   'Primary Technical Lead Name': string;
-  'Secondary Technical Lead Email': string;
+  'Secondary Technical Lead email': string;
   'Secondary Technical Lead Name': string;
   'Create Date': string;
   'Update Date': string;
