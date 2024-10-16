@@ -1,0 +1,17 @@
+name: RocketChat Notification
+description: Send a notification to RocketChat using a webhook URL and a custom message.
+
+inputs:
+  webhook-url:
+    description: The RocketChat webhook URL
+    required: true
+  data:
+    description: The JSON payload to send to RocketChat
+    required: true
+
+runs:
+  using: composite
+  steps:
+  - run: |
+      curl -X POST -H "Content-Type: application/json" -d "${{ inputs.data }}" "${{ inputs.webhook-url }}"
+    shell: bash

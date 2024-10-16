@@ -159,18 +159,20 @@ jobs:
 
     - name: Notify RocketChat on Success
       if: success()
-      env:
-        ROCKETCHAT_WEBHOOK_URL: ${{ secrets.ROCKETCHAT_WEBHOOK_URL }}
-      run: |
-        curl -X POST -H "Content-Type: application/json" -d '{
-          "text": ":rocket: Deployment to Test was successful! Read the changes here [${{ github.ref_name }}](https://github.com/bcgov/platform-services-registry/blob/main/CHANGELOG.md#${{ github.ref_name}})"
-        }' $ROCKETCHAT_WEBHOOK_URL
+      uses: ./.github/actions/rocketchat-notification
+      with:
+        webhook-url: ${{ secrets.ROCKETCHAT_WEBHOOK_URL }}
+        data: |
+          {
+            "text": ":rocket: Deployment to Test was successful! Read the changes here [${{ github.ref_name }}](https://github.com/bcgov/platform-services-registry/blob/main/CHANGELOG.md#${{ github.ref_name}})"
+          }
 
     - name: Notify RocketChat on Failure
       if: failure()
-      env:
-        ROCKETCHAT_WEBHOOK_URL: ${{ secrets.ROCKETCHAT_WEBHOOK_URL }}
-      run: |
-        curl -X POST -H "Content-Type: application/json" -d '{
-          "text": ":warning: Deployment to Test failed! [Investigate here](https://github.com/bcgov/platform-services-registry/)"
-        }' $ROCKETCHAT_WEBHOOK_URL
+      uses: ./.github/actions/rocketchat-notification
+      with:
+        webhook-url: ${{ secrets.ROCKETCHAT_WEBHOOK_URL }}
+        data: |
+          {
+            "text": ":warning: Deployment to Test failed! [Investigate here](https://github.com/bcgov/platform-services-registry/)"
+          }
