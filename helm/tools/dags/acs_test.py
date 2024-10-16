@@ -3,6 +3,7 @@ from datetime import timedelta, datetime
 from airflow import DAG
 from airflow.operators.python import PythonOperator
 from _projects import fetch_load_acs_projects
+from _task_failure_callback import send_alert
 
 YESTERDAY = datetime.now() - timedelta(days=1)
 CONCURRENCY = 5
@@ -19,5 +20,6 @@ with DAG(
         python_callable=fetch_load_acs_projects,
         op_kwargs={"mongo_conn_id": MONGO_CONN_ID},
         provide_context=True,
+        on_failure_callback=lambda context: send_alert(context, "acs_test"),
         dag=dag,
     )

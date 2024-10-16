@@ -3,6 +3,7 @@ from airflow import DAG
 from airflow.operators.python_operator import PythonOperator
 from datetime import datetime, timedelta
 from _update_mailchimp_list import update_mailchimp_segment
+from _task_failure_callback import send_alert
 
 
 MONGO_CONN_ID = "pltsvc-test"
@@ -30,5 +31,6 @@ with DAG(
             "mongo_conn_id": MONGO_CONN_ID,
         },
         provide_context=True,
+        on_failure_callback=lambda context: send_alert(context, "mailchimp_test"),
         dag=dag,
     )
