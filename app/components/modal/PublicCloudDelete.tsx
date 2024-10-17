@@ -91,7 +91,7 @@ export default function PublicCloudDeleteModal({
                   <p className="text-sm text-gray-900 ml-2">{publicProductSnapshot.currentProduct?.name}</p>
                 </span>
                 <span className="flex">
-                  <p className="text-sm font-medium text-gray-900">Licence Plate: </p>
+                  <p className="text-sm font-medium text-gray-900">Licence plate: </p>
                   <p className="text-sm text-gray-900 ml-2">{publicProductSnapshot.currentProduct?.licencePlate}</p>
                 </span>
                 <span className="flex">
@@ -109,7 +109,7 @@ export default function PublicCloudDeleteModal({
 
                 <div className="mt-4">
                   <label htmlFor="licence-plate" className="sr-only">
-                    Licence Plate Number
+                    Licence plate Number
                   </label>
                   <input
                     value={licencePlate}
@@ -118,7 +118,7 @@ export default function PublicCloudDeleteModal({
                     name="licence-plate"
                     id="licence-plate"
                     className="block w-1/2 rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
-                    placeholder="Licence Plate Number"
+                    placeholder="Licence plate Number"
                   />
                 </div>
 

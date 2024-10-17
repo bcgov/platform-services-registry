@@ -130,7 +130,7 @@ export default async function ZapScanResults({
   if (listAll) {
     headers.unshift(
       { field: 'cluster', headerName: 'Cluster' },
-      { field: 'licencePlate', headerName: 'Licence Plate' },
+      { field: 'licencePlate', headerName: 'Licence plate' },
     );
   }
 
