@@ -21,7 +21,6 @@ export default async function deleteOp({
   session: Session;
   pathParams: TypeOf<typeof deletePathParamSchema>;
 }) {
-  const { user } = session;
   const { licencePlate } = pathParams;
 
   const product = excludePublicProductUsers(
@@ -43,7 +42,7 @@ export default async function deleteOp({
       type: PublicCloudRequestType.DELETE,
       decisionStatus: DecisionStatus.PENDING,
       active: true,
-      createdBy: { connect: { email: user.email } },
+      createdBy: { connect: { email: session.user.email } },
       licencePlate: product.licencePlate,
       originalData: { connect: { id: previousRequest?.decisionDataId } },
       decisionData: { create: productData },

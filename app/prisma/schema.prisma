@@ -54,8 +54,8 @@ model User {
 model PrivateCloudRequest {
   id                             String                        @id @default(auto()) @map("_id") @db.ObjectId
   licencePlate                   String
-  createdByEmail                 String
-  createdBy                      User                          @relation("createdBy", fields: [createdByEmail], references: [email])
+  createdByEmail                 String?
+  createdBy                      User?                         @relation("createdBy", fields: [createdByEmail], references: [email])
   decisionMakerEmail             String?
   quotaContactName               String?
   quotaContactEmail              String?

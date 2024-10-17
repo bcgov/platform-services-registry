@@ -28,7 +28,7 @@ export default function ActiveRequestBox({
     type: RequestType;
     active: boolean;
     decisionStatus: DecisionStatus;
-    createdByEmail: string;
+    createdByEmail?: string | null;
   };
   className?: string;
   showCount?: boolean;
