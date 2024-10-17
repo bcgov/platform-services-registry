@@ -1,3 +1,26 @@
+## [0.37.0](https://github.com/bcgov/platform-services-registry/compare/v0.36.1...v0.37.0) (2024-10-17)
+
+### Features
+
+* **3118:** lint commit messages locally and in CI ([ccf0962](https://github.com/bcgov/platform-services-registry/commit/ccf09621465776713d4c9bc3c9d682ab59f0b5f1))
+* **3365:** update common language to sentence case ([e9d9bcf](https://github.com/bcgov/platform-services-registry/commit/e9d9bcf416e9e510d57458aa0dcc0c3dc3ca0cae))
+* **3792:** add reviewer roles and deprecate admin emails ([09ce342](https://github.com/bcgov/platform-services-registry/commit/09ce342992c193a4cb9e44c0c6541ad5d697d41f))
+* **3794:** enhance rocket.chat notifications for deployment statuses ([e54f1d5](https://github.com/bcgov/platform-services-registry/commit/e54f1d5d73fb5f6ef1b0be5a429be9c3627c0754))
+* **3936:** add create, update methods into session models ([bbf3ad4](https://github.com/bcgov/platform-services-registry/commit/bbf3ad4023dfbb3a756ea2d4a34ca0734acbbb71))
+* **3937:** add a billing reader role ([4378684](https://github.com/bcgov/platform-services-registry/commit/43786845a913876ef4d8bb999991da17c94c7a31))
+* **3954:** send rocketchat alerts when airflow tasks fail ([334e0de](https://github.com/bcgov/platform-services-registry/commit/334e0de12644ef8640bb244c11bfcbb83cc75748))
+* **3966:** add empty quota option and update backend logic ([5c1d4b5](https://github.com/bcgov/platform-services-registry/commit/5c1d4b519f482eab29701924d5388858c67d7bca))
+
+### Bug Fixes
+
+* **4005:** set createdByEmail field optional ([8dbe5df](https://github.com/bcgov/platform-services-registry/commit/8dbe5dfbe43f26f172b4a9f30384559e144537be))
+
+### Refactors
+
+* **3792:** replace string roles to GlobalRole enum object values ([ced9b80](https://github.com/bcgov/platform-services-registry/commit/ced9b80e380e833dab093059f77929247bf68ee7))
+* **3936:** add DB services for available entities ([1b8b787](https://github.com/bcgov/platform-services-registry/commit/1b8b787ee4620a1ea7af18d72537ba526cfce32c))
+* **3936:** move database helper functions into DB service ([34db605](https://github.com/bcgov/platform-services-registry/commit/34db60557563f2f105810ac51ae418e63848319f))
+* **3966:** cleanup resource types ([78104f1](https://github.com/bcgov/platform-services-registry/commit/78104f17ec204f3e3bf19dceeb6b3ee42c61be7c))
 ## [0.36.1](https://github.com/bcgov/platform-services-registry/compare/v0.36.0...v0.36.1) (2024-10-09)
 
 ### Bug Fixes
