@@ -13,5 +13,5 @@ runs:
   using: composite
   steps:
   - run: |
-      curl -X POST -H "Content-Type: application/json" -d '${{ inputs.data }}'' '${{ inputs.webhook-url }}'
+      curl -X POST -H "Content-Type: application/json" -d '${{ inputs.data }}' '${{ inputs.webhook-url }}'
     shell: bash
