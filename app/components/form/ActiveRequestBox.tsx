@@ -112,6 +112,11 @@ export default function ActiveRequestBox({
       decisionText = 'Rejected';
       DecisionIcon = IconBan;
       break;
+    case DecisionStatus.PARTIALLY_PROVISIONED:
+      decisionColor = 'lime';
+      decisionText = 'Partially Provisioned';
+      DecisionIcon = IconConfetti;
+      break;
     case DecisionStatus.PROVISIONED:
       decisionColor = 'green';
       decisionText = 'Provisioned';
