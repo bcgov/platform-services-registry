@@ -1,4 +1,4 @@
-import { RequestType, DecisionStatus, ProjectStatus, EventType } from '@prisma/client';
+import { RequestType, DecisionStatus, ProjectStatus, EventType, Prisma } from '@prisma/client';
 import { Session } from 'next-auth';
 import { z, TypeOf, ZodType } from 'zod';
 import prisma from '@/core/prisma';
@@ -22,7 +22,6 @@ export default async function deleteOp({
   session: Session;
   pathParams: TypeOf<typeof deletePathParamSchema>;
 }) {
-  const { user } = session;
   const { licencePlate } = pathParams;
 
   const product = excludePrivateProductUsers(
@@ -46,22 +45,27 @@ export default async function deleteOp({
   const previousRequest = await getLastClosedPrivateCloudRequest(rest.licencePlate);
 
   const productData = { ...rest, status: ProjectStatus.INACTIVE };
-  const request: PrivateCloudRequestDetail = await prisma.privateCloudRequest.create({
-    data: {
-      type: RequestType.DELETE,
-      decisionStatus: DecisionStatus.PENDING,
-      active: true,
-      createdBy: { connect: { email: user.email } },
-      licencePlate: product.licencePlate,
-      originalData: { connect: { id: previousRequest?.decisionDataId } },
-      decisionData: { create: productData },
-      requestData: { create: productData },
-      project: {
-        connect: {
-          licencePlate,
-        },
+  const requestCreateData: Prisma.PrivateCloudRequestCreateInput = {
+    type: RequestType.DELETE,
+    decisionStatus: DecisionStatus.PENDING,
+    active: true,
+    licencePlate: product.licencePlate,
+    originalData: { connect: { id: previousRequest?.decisionDataId } },
+    decisionData: { create: productData },
+    requestData: { create: productData },
+    project: {
+      connect: {
+        licencePlate,
       },
     },
+  };
+
+  if (!session.isServiceAccount) {
+    requestCreateData.createdBy = { connect: { email: session.user.email } };
+  }
+
+  const request: PrivateCloudRequestDetail = await prisma.privateCloudRequest.create({
+    data: requestCreateData,
     include: privateCloudRequestDetailInclude,
   });
 
