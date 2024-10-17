@@ -64,7 +64,7 @@ export default function ProjectDescriptionPrivate({
       <div className="mt-10 grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6">
         <div className="col-span-full">
           <label htmlFor="street-address" className="block text-sm font-medium leading-6 text-gray-900">
-            Product Name
+            Product name
           </label>
           <div className="mt-2">
             <input
@@ -125,10 +125,10 @@ export default function ProjectDescriptionPrivate({
         <div className="sm:col-span-3 sm:ml-10">
           <FormSelect
             id="cluster"
-            label="Hosting Tier"
+            label="Hosting tier"
             disabled={disabled || clusterDisabled}
             options={[
-              { label: 'Select Hosting Tier', value: '' },
+              { label: 'Select Hosting tier', value: '' },
               ...clustersList.map((v) => ({ label: v, value: v })),
             ]}
             selectProps={register('cluster')}

@@ -102,7 +102,7 @@ export default privateCloudProductLayout(({ pathParams, queryParams, session, ch
         {privateSnap.currentProduct.name}
         <ProductBadge data={privateSnap.currentProduct} />
       </h1>
-      <h3 className="mt-0 italic">Private Cloud OpenShift Platform</h3>
+      <h3 className="mt-0 italic">Private Cloud OpenShift platform</h3>
 
       {privateSnap.currentProduct.requests.length > 0 && (
         <Alert variant="light" color="blue" title="" icon={<IconInfoCircle />}>

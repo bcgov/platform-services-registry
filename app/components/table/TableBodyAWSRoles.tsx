@@ -23,8 +23,8 @@ const rowValue = (value: string, header: string, index: number): React.ReactNode
 
 const headers = [
   { field: 'role', headerName: 'Role' },
-  { field: 'firstName', headerName: 'First Name' },
-  { field: 'lastName', headerName: 'Last Name' },
+  { field: 'firstName', headerName: 'First name' },
+  { field: 'lastName', headerName: 'Last name' },
   { field: 'email', headerName: 'Email' },
   { field: 'delete', headerName: '' },
 ];
@@ -43,8 +43,8 @@ export default function TableBodyAWSRoles({ rows, userRole, setOpenDeleteUser, s
   };
 
   const subHeader = [
-    { field: 'firstName', headerName: 'First Name' },
-    { field: 'lastName', headerName: 'Last Name' },
+    { field: 'firstName', headerName: 'First name' },
+    { field: 'lastName', headerName: 'Last name' },
     { field: 'email', headerName: 'Email' },
   ];
 

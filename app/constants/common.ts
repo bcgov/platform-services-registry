@@ -153,12 +153,12 @@ export const productSorts = [
     sortOrder: Prisma.SortOrder.desc,
   },
   {
-    label: 'Product Licence Plate (A-Z)',
+    label: 'Product Licence plate (A-Z)',
     sortKey: 'licencePlate',
     sortOrder: Prisma.SortOrder.asc,
   },
   {
-    label: 'Product Licence Plate (Z-A)',
+    label: 'Product Licence plate (Z-A)',
     sortKey: 'licencePlate',
     sortOrder: Prisma.SortOrder.desc,
   },
@@ -248,13 +248,13 @@ export const requestSorts = [
     inData: true,
   },
   {
-    label: 'Product Licence Plate (A-Z)',
+    label: 'Product Licence plate (A-Z)',
     sortKey: 'licencePlate',
     sortOrder: Prisma.SortOrder.asc,
     inData: true,
   },
   {
-    label: 'Product Licence Plate (Z-A)',
+    label: 'Product Licence plate (Z-A)',
     sortKey: 'licencePlate',
     sortOrder: Prisma.SortOrder.desc,
     inData: true,

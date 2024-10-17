@@ -49,7 +49,7 @@ export const GET = apiHandler(async () => {
       const storageTotal = _sum([devStorage[0], testStorage[0], prodStorage[0], toolsStorage[0]]);
 
       return {
-        'Product Name': row.name,
+        'Product name': row.name,
         'Ministry Short': row.ministry,
         'Ministry Name': ministryKeyToName(row.ministry),
         'CPU Request Total': cpuRequestTotal,

@@ -50,7 +50,7 @@ export default function ProjectDescriptionPublic({
       <div className="mt-10 grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6">
         <div className="col-span-full">
           <label htmlFor="street-address" className="block text-sm font-medium leading-6 text-gray-900">
-            Product Name
+            Product name
           </label>
           <div className="mt-2">
             <input

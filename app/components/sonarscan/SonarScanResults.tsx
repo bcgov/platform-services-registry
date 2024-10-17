@@ -95,7 +95,7 @@ export default function SonarScanResults({
   if (listAll) {
     headers.unshift(
       { field: 'context', headerName: 'Context' },
-      { field: 'licencePlate', headerName: 'Licence Plate' },
+      { field: 'licencePlate', headerName: 'Licence plate' },
     );
   }
 

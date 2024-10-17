@@ -68,27 +68,27 @@ export default function Budget({ disabled }: { disabled?: boolean }) {
       <div className="mt-5 grid grid-cols-1 gap-x-24 gap-y-6 sm:grid-cols-2">
         <BudgetInput
           disabled={disabled || !environmentsEnabled.development}
-          title={'Estimated average monthly spend - Development Account'}
+          title={'Estimated average monthly spend - Development account'}
           name={'budget.dev'}
         />
         <BudgetInput
           disabled={disabled || !environmentsEnabled.test}
-          title={'Estimated average monthly spend - Test Account'}
+          title={'Estimated average monthly spend - Test account'}
           name={'budget.test'}
         />
         <BudgetInput
           disabled={disabled || !environmentsEnabled.production}
-          title={'Estimated average monthly spend - Production Account'}
+          title={'Estimated average monthly spend - Production account'}
           name={'budget.prod'}
         />
         <BudgetInput
           disabled={disabled || !environmentsEnabled.tools}
-          title={'Estimated average monthly spend - Tool Account '}
+          title={'Estimated average monthly spend - Tool account '}
           name={'budget.tools'}
         />
         <div className="relative mb-3" data-te-input-wrapper-init>
           <label htmlFor="street-address" className="block text-sm font-medium leading-6 text-gray-900 mb-1">
-            Total Estimated average monthly spend
+            Total estimated average monthly spend
           </label>
           <input
             type="number"

@@ -18,7 +18,7 @@ export default function ExpenseAuthority({ disabled }: { disabled?: boolean }) {
             disabled={disabled}
             name="expenseAuthority"
             className="mt-8"
-            label="Expense Authority Email"
+            label="Expense Authority email"
             placeHolder="Search expense authority's IDIR email address"
           />
         </div>

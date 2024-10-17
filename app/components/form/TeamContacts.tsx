@@ -71,7 +71,7 @@ export default function TeamContacts({
             disabled={disabled}
             name="projectOwner"
             className="mt-8"
-            label="Product Owner Email"
+            label="Product Owner email"
             placeHolder="Search product owner's IDIR email address"
           />
         </div>
@@ -89,7 +89,7 @@ export default function TeamContacts({
             disabled={disabled}
             name="primaryTechnicalLead"
             className="mt-8"
-            label="Technical Lead Email"
+            label="Technical Lead email"
             placeHolder="Search technical lead's IDIR email address"
           />
         </div>
@@ -120,7 +120,7 @@ export default function TeamContacts({
                 disabled={disabled}
                 name="secondaryTechnicalLead"
                 className="mt-8"
-                label="Technical Lead Email"
+                label="Technical Lead email"
                 placeHolder="Search secondary technical lead's IDIR email address"
               />
             </div>
@@ -128,7 +128,7 @@ export default function TeamContacts({
         </div>
         <div className="mt-6 flex flex-col flex-start">
           <h3 className="text-base 2xl:text-xl font-semibold leading-7 text-gray-900">
-            After-Hours Support Contact (optional)
+            After-Hours support contact (optional)
           </h3>
           <p className="my-4 text-base leading-6 text-gray-600">
             For Business Mission Critical Applications Only. You can specify a phone number of your team member who

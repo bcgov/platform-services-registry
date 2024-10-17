@@ -95,16 +95,16 @@ describe('Download Private Cloud Products - Permissions', () => {
     expect(record1.Description).toBe(project?.description);
     expect(record1.Ministry).toBe(ministryKeyToName(project?.ministry ?? ''));
     expect(record1.Cluster).toBe(project?.cluster);
-    expect(record1['Project Owner Email']).toBe(project?.projectOwner.email);
-    expect(record1['Project Owner Name']).toBe(formatFullName(project?.projectOwner));
-    expect(record1['Primary Technical Lead Email']).toBe(project?.primaryTechnicalLead.email);
-    expect(record1['Primary Technical Lead Name']).toBe(formatFullName(project?.primaryTechnicalLead));
-    expect(record1['Secondary Technical Lead Email']).toBe(project?.secondaryTechnicalLead?.email);
-    expect(record1['Secondary Technical Lead Name']).toBe(formatFullName(project?.secondaryTechnicalLead));
-    expect(record1['Create Date']).toBe(formatDateSimple(project?.createdAt ?? ''));
-    expect(record1['Update Date']).toBe(formatDateSimple(project?.updatedAt ?? ''));
-    expect(record1['Licence Plate']).toBe(project?.licencePlate);
-    expect(record1['Total Compute Quota (Cores)']).toBe(
+    expect(record1['Project Owner email']).toBe(project?.projectOwner.email);
+    expect(record1['Project Owner name']).toBe(formatFullName(project?.projectOwner));
+    expect(record1['Primary Technical Lead email']).toBe(project?.primaryTechnicalLead.email);
+    expect(record1['Primary Technical Lead name']).toBe(formatFullName(project?.primaryTechnicalLead));
+    expect(record1['Secondary Technical Lead email']).toBe(project?.secondaryTechnicalLead?.email);
+    expect(record1['Secondary Technical Lead name']).toBe(formatFullName(project?.secondaryTechnicalLead));
+    expect(record1['Create date']).toBe(formatDateSimple(project?.createdAt ?? ''));
+    expect(record1['Update date']).toBe(formatDateSimple(project?.updatedAt ?? ''));
+    expect(record1['Licence plate']).toBe(project?.licencePlate);
+    expect(record1['Total compute quota (cores)']).toBe(
       getTotalQuotaStr(
         project?.developmentQuota.cpu ?? '',
         project?.testQuota.cpu ?? '',
@@ -112,7 +112,7 @@ describe('Download Private Cloud Products - Permissions', () => {
         project?.toolsQuota.cpu ?? '',
       ),
     );
-    expect(record1['Total Memory Quota (Gb)']).toBe(
+    expect(record1['Total memory quota (GB)']).toBe(
       getTotalQuotaStr(
         project?.developmentQuota.memory ?? '',
         project?.testQuota.memory ?? '',
@@ -120,7 +120,7 @@ describe('Download Private Cloud Products - Permissions', () => {
         project?.toolsQuota.memory ?? '',
       ),
     );
-    expect(record1['Total Storage Quota (Gb)']).toBe(
+    expect(record1['Total storage quota (GB)']).toBe(
       getTotalQuotaStr(
         project?.developmentQuota.storage ?? '',
         project?.testQuota.storage ?? '',

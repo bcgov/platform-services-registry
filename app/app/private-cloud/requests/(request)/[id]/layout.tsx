@@ -129,7 +129,7 @@ export default privateCloudProductSecurityACS(({ pathParams, queryParams, sessio
         {(request.decisionData || request.originalData).name}
         <RequestBadge request={request} />
       </h1>
-      <h3 className="mt-0 italic">Private Cloud OpenShift Platform</h3>
+      <h3 className="mt-0 italic">Private Cloud OpenShift platform</h3>
 
       {request.decisionStatus !== 'PENDING' && (
         <Alert variant="light" color="blue" title="" icon={<IconInfoCircle />}>

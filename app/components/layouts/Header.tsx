@@ -14,7 +14,7 @@ export default function Header() {
 
   let context = '';
   if (pathname.startsWith('/private-cloud')) {
-    context = 'Private Cloud OpenShift Platform';
+    context = 'Private Cloud OpenShift platform';
   } else if (pathname.startsWith('/public-cloud')) {
     context = 'Public Cloud Landing Zone';
   }

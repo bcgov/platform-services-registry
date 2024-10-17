@@ -42,7 +42,7 @@ export const clusterNames = [
   {
     id: 7,
     name: 'emerald',
-    label: 'Emerald Hosting Tier',
+    label: 'Emerald Hosting tier',
   },
 ];
 
