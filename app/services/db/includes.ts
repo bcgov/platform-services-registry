@@ -21,6 +21,8 @@ export const privateCloudProductDetailInclude = {
 };
 
 export const privateCloudRequestSimpleInclude = {
+  decisionMaker: true,
+  createdBy: true,
   project: {
     include: {
       projectOwner: true,
@@ -38,6 +40,8 @@ export const privateCloudRequestSimpleInclude = {
 };
 
 export const privateCloudRequestDetailInclude = {
+  decisionMaker: true,
+  createdBy: true,
   project: {
     include: {
       projectOwner: true,
@@ -100,6 +104,8 @@ export const publicCloudProductDetailInclude = {
 };
 
 export const publicCloudRequestSimpleInclude = {
+  decisionMaker: true,
+  createdBy: true,
   project: {
     include: {
       projectOwner: true,
@@ -121,6 +127,8 @@ export const publicCloudRequestSimpleInclude = {
 };
 
 export const publicCloudRequestDetailInclude = {
+  decisionMaker: true,
+  createdBy: true,
   project: {
     include: {
       projectOwner: true,

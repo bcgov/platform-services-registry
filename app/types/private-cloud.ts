@@ -42,6 +42,8 @@ export type PrivateCloudProductSearch = {
 
 export type PrivateCloudRequestDetail = Prisma.PrivateCloudRequestGetPayload<{
   include: {
+    decisionMaker: true;
+    createdBy: true;
     project: {
       include: {
         projectOwner: true;
@@ -77,6 +79,8 @@ export type PrivateCloudRequestDetailDecorated = PrivateCloudRequestDetail & Pri
 
 export type PrivateCloudRequestSimple = Prisma.PrivateCloudRequestGetPayload<{
   include: {
+    decisionMaker: true;
+    createdBy: true;
     project: {
       include: {
         projectOwner: true;

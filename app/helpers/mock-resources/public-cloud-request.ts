@@ -100,6 +100,7 @@ export function createSamplePublicCloudRequest(args?: {
     createdByEmail: createdBy?.email,
     createdBy,
     decisionMakerEmail: decisionMaker?.email,
+    decisionMaker,
     quotaContactName: quotaContact?.displayName,
     quotaContactEmail: quotaContact?.email,
     quotaJustification: faker.lorem.sentence(),

@@ -49,6 +49,8 @@ model User {
   mousAsExpenseAuthority                                Billing[]                      @relation("expenseAuthority")
   privateCloudRequestsAsRequester                       PrivateCloudRequest[]          @relation("createdBy")
   publicCloudRequestsAsRequester                        PublicCloudRequest[]           @relation("createdBy")
+  privateCloudRequestsAsDecisionMaker                   PrivateCloudRequest[]          @relation("decisionMaker")
+  publicCloudRequestsAsDecisionMaker                    PublicCloudRequest[]           @relation("decisionMaker")
 }
 
 model PrivateCloudRequest {
@@ -57,6 +59,7 @@ model PrivateCloudRequest {
   createdByEmail                 String?
   createdBy                      User?                         @relation("createdBy", fields: [createdByEmail], references: [email])
   decisionMakerEmail             String?
+  decisionMaker                  User?                         @relation("decisionMaker", fields: [decisionMakerEmail], references: [email])
   quotaContactName               String?
   quotaContactEmail              String?
   quotaJustification             String?
@@ -201,6 +204,7 @@ model PublicCloudRequest {
   createdByEmail     String
   createdBy          User                         @relation("createdBy", fields: [createdByEmail], references: [email])
   decisionMakerEmail String?
+  decisionMaker      User?                        @relation("decisionMaker", fields: [decisionMakerEmail], references: [email])
   type               PublicCloudRequestType
   decisionStatus     DecisionStatus
   requestComment     String?

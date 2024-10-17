@@ -136,6 +136,7 @@ export function createSamplePrivateCloudRequest(args?: {
     createdByEmail: createdBy?.email,
     createdBy,
     decisionMakerEmail: decisionMaker?.email,
+    decisionMaker: decisionMaker,
     quotaContactName: quotaContact?.displayName,
     quotaContactEmail: quotaContact?.email,
     quotaJustification: faker.lorem.sentence(),

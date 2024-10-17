@@ -22,7 +22,7 @@ export default function ProductBadge({
       break;
     case ProjectStatus.INACTIVE:
       color = 'red';
-      status = 'complete';
+      status = 'deleted';
       break;
   }
 
