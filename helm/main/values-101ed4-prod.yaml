@@ -9,7 +9,7 @@ app:
   replicaCount: 2
   env:
     "APP_ENV": "prod"
-    "BASE_URL": "https://pltsvc.apps.silver.devops.gov.bc.ca"
+    "BASE_URL": "https://registry.developer.gov.bc.ca"
     "AUTH_BASE_URL": "https://loginproxy.gov.bc.ca"
     "AUTH_SERVER_URL": "https://loginproxy.gov.bc.ca/auth"
     "AUTH_RELM": "platform-services"

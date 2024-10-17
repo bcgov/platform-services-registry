@@ -33,7 +33,7 @@ export default async function makeRequestDecision(
     decisionStatus: decision,
     decisionComment,
     decisionDate: new Date(),
-    decisionMakerEmail: session.user.email,
+    decisionMaker: { connect: { email: session.user.email } },
   };
 
   // No need to modify decision data when reviewing deletion requests.

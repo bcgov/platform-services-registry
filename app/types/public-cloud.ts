@@ -51,6 +51,8 @@ export type PublicCloudProductSearch = {
 
 export type PublicCloudRequestDetail = Prisma.PublicCloudRequestGetPayload<{
   include: {
+    decisionMaker: true;
+    createdBy: true;
     project: {
       include: {
         projectOwner: true;
@@ -100,6 +102,8 @@ export type PublicCloudRequestDetailDecorated = PublicCloudRequestDetail & Publi
 
 export type PublicCloudRequestSimple = Prisma.PublicCloudRequestGetPayload<{
   include: {
+    decisionMaker: true;
+    createdBy: true;
     project: {
       include: {
         projectOwner: true;

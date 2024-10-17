@@ -24,7 +24,6 @@ export default function PublicCloudBillingInfo({
   className?: string;
 }) {
   const { data: session } = useSession();
-  const router = useRouter();
   const { licencePlate, billing } = product;
 
   let content = null;

@@ -1,6 +1,6 @@
 import { HoverCard, Group } from '@mantine/core';
 import { useDisclosure } from '@mantine/hooks';
-import { Prisma } from '@prisma/client';
+import { User } from '@prisma/client';
 import MailLink from '@/components/generic/button/MailLink';
 import { formatFullName } from '@/helpers/user';
 import ProfileImage from './ProfileImage';
@@ -10,7 +10,7 @@ export default function UserCard({
   title,
   className = '',
 }: {
-  user?: Prisma.UserGetPayload<null> | null;
+  user?: User | null;
   title?: string;
   className?: string;
 }) {
