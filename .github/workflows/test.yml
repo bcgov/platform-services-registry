@@ -50,6 +50,11 @@ jobs:
   test-app:
     runs-on: ubuntu-22.04
     timeout-minutes: 20
+    permissions:
+      security-events: write
+      contents: read
+      packages: write
+
     steps:
     - uses: hmarr/debug-action@f7318c783045ac39ed9bb497e22ce835fdafbfe6
     - uses: actions/checkout@eef61447b9ff4aafe5dcd4e0bbf5d482be7e7871
@@ -83,4 +88,11 @@ jobs:
         ~/.docker/cli-plugins/docker-compose -f localdev/docker-compose.yml -f localdev/docker-compose-ci.yml down
         sudo rm -rf ./localdev/mnt
 
-        docker images
+    - name: Scan Image with Trivy
+      uses: aquasecurity/trivy-action@0.20.0
+      with:
+        image-ref: ghcr.io/bcgov/pltsvc-localdev-m365mock:latest
+        format: table
+        ignore-unfixed: true
+        vuln-type: os,library
+        severity: LOW,MEDIUM,CRITICAL,HIGH
