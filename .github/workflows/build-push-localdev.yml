@@ -40,7 +40,7 @@ jobs:
         metadata-tags: |
           type=raw,value=latest
 
-    - name: Install and Run Trivy
+    - name: Scan with Trivy
       uses: aquasecurity/trivy-action@0.20.0
       with:
         image-ref: bcgov/pltsvc-localdev-keycloak
