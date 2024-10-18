@@ -63,6 +63,7 @@ jobs:
         metadata-tags: |
           type=sha,format=long,prefix=,suffix=
 
+
   build-push-sonarscan:
     runs-on: ubuntu-22.04
     timeout-minutes: 5

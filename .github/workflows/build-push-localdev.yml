@@ -20,7 +20,6 @@ jobs:
     runs-on: ubuntu-22.04
     timeout-minutes: 5
     permissions:
-      security-events: write
       contents: read
       packages: write
 
@@ -39,16 +38,6 @@ jobs:
         docker-file: localdev/keycloak/Dockerfile
         metadata-tags: |
           type=raw,value=latest
-
-    - name: Scan with Trivy
-      uses: aquasecurity/trivy-action@0.20.0
-      with:
-        image-ref: bcgov/pltsvc-localdev-keycloak
-        format: table
-        ignore-unfixed: true
-        vuln-type: os,library
-        severity: LOW,MEDIUM,CRITICAL,HIGH
-
 
   build-push-keycloak-provision:
     runs-on: ubuntu-22.04

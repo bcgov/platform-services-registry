@@ -176,3 +176,47 @@ jobs:
           {
             "text": ":warning: Deployment to Test failed! [Investigate here](https://github.com/bcgov/platform-services-registry/)"
           }
+
+  scan-images-for-vulnerabilities:
+    needs: [deploy]
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      packages: write
+      actions: read
+      security-events: write
+
+    steps:
+    - uses: actions/checkout@v3
+
+    - name: App
+      uses: ./.github/actions/scan-docker-image
+      with:
+        image: bcgov/pltsvc:latest
+        category: bcgov/pltsvc-scan
+        docker-file: app/Dockerfile
+        context: .
+
+    - name: Pre-prisma
+      uses: ./.github/actions/scan-docker-image
+      with:
+        image: bcgov/pltsvc-pre-prisma:latest
+        category: bcgov/pltsvc-pre-prisma-scan
+        docker-file: app/Dockerfile.db
+        context: app
+
+    - name: Pre-data-migrations
+      uses: ./.github/actions/scan-docker-image
+      with:
+        image: bcgov/pltsvc-pre-data-migrations:latest
+        category: bcgov/pltsvc-pre-data-migrations-scan
+        docker-file: data-migrations/Dockerfile
+        context: data-migrations
+
+    - name: Email
+      uses: ./.github/actions/scan-docker-image
+      with:
+        image: bcgov/pltsvc-email:latest
+        category: bcgov/pltsvc-email-scan
+        docker-file: app/Dockerfile.email
+        context: .

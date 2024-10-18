@@ -1,0 +1,42 @@
+name: Trivy Scan Action
+description: Scan Docker images using Trivy and upload results.
+inputs:
+  image:
+    description: A docker image
+    required: true
+  category:
+    description: Unique category for the SARIF upload
+    required: true
+  docker-file:
+    description: Path to Dockerfile
+    required: true
+  context:
+    description: Dockerfile context
+    required: true
+
+runs:
+  using: composite
+  steps:
+  - name: Build Docker Second Image
+    uses: docker/build-push-action@v4
+    with:
+      context: context
+      file: ${{ inputs.docker-file }}
+      platforms: linux/amd64
+      push: false
+      tags: ${{ inputs.image }}
+
+  - name: Run Trivy vulnerability scanner
+    uses: aquasecurity/trivy-action@0.28.0
+    with:
+      image-ref: ${{ inputs.image }}
+      format: sarif
+      output: trivy-results-${{ inputs.images }}.sarif
+      vuln-type: os,library
+      severity: CRITICAL,HIGH
+
+  - name: Upload Trivy scan results to GitHub Security tab
+    uses: github/codeql-action/upload-sarif@v3
+    with:
+      sarif_file: trivy-results-${{ inputs.images }}.sarif
+      category: ${{ inputs.category }}

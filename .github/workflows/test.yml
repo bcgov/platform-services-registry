@@ -8,9 +8,6 @@ on:
     - terraform/**
     - tools/**
 
-env:
-  GITHUB_REGISTRY: ghcr.io
-
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
@@ -21,7 +18,7 @@ jobs:
     timeout-minutes: 20
     steps:
     - uses: hmarr/debug-action@f7318c783045ac39ed9bb497e22ce835fdafbfe6
-    - uses: actions/checkout@eef61447b9ff4aafe5dcd4e0bbf5d482be7e7871
+    - uses: actions/checkout@163217dfcd28294438ea1c1c149cfaf66eec283e
 
     - name: Setup Tools
       uses: ./.github/actions/setup-tools
@@ -38,7 +35,7 @@ jobs:
     timeout-minutes: 20
     steps:
     - uses: hmarr/debug-action@f7318c783045ac39ed9bb497e22ce835fdafbfe6
-    - uses: actions/checkout@eef61447b9ff4aafe5dcd4e0bbf5d482be7e7871
+    - uses: actions/checkout@163217dfcd28294438ea1c1c149cfaf66eec283e
 
     - name: Setup Tools
       uses: ./.github/actions/setup-tools
@@ -53,14 +50,9 @@ jobs:
   test-app:
     runs-on: ubuntu-22.04
     timeout-minutes: 20
-    permissions:
-      security-events: write
-      contents: read
-      packages: write
-
     steps:
     - uses: hmarr/debug-action@f7318c783045ac39ed9bb497e22ce835fdafbfe6
-    - uses: actions/checkout@eef61447b9ff4aafe5dcd4e0bbf5d482be7e7871
+    - uses: actions/checkout@163217dfcd28294438ea1c1c149cfaf66eec283e
 
     - name: Setup Tools
       uses: ./.github/actions/setup-tools
@@ -90,16 +82,3 @@ jobs:
 
         ~/.docker/cli-plugins/docker-compose -f localdev/docker-compose.yml -f localdev/docker-compose-ci.yml down
         sudo rm -rf ./localdev/mnt
-
-    - name: Retrieve Docker Images
-      id: get_images
-      run: |
-        docker images --format '{{.Repository}}:{{.Tag}}' | tr '\n' ' ' > images.txt
-        echo "images=$(cat images.txt)" >> $GITHUB_ENV
-
-    - name: Display each Image
-      run: |
-        for image in ${{ env.images }};do
-          echo "Running Trivy scan on image: $image"
-          gh workflow run trivy-scan.yaml -f image-ref=$image
-        done
