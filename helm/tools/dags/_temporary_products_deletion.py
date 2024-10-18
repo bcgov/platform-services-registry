@@ -1,4 +1,5 @@
 import requests
+from requests.exceptions import RequestException
 from datetime import datetime, timedelta, timezone
 from _projects import get_mongo_db
 from _keycloak import Keycloak
@@ -20,7 +21,8 @@ def send_temp_products_deletion_request(
     access_token = kc.get_access_token()
     headers = {"Authorization": f"Bearer {access_token}", "Content-Type": "application/json"}
 
-    count = 0
+    success = 0
+    failure = 0
     for project in projects:
         licence_plate = project.get("licencePlate")
         print(f"Processing {licence_plate}...")
@@ -30,12 +32,18 @@ def send_temp_products_deletion_request(
         activeReq = db.PrivateCloudRequest.find_one(reqQuery, projection=reqProjection)
 
         if activeReq is None:
-            count += 1
+            success += 1
             url = product_deletion_url_template.format(licence_plate)
             print(f"Sending a request to {url}")
-            response = requests.delete(url, headers=headers)
-            response.raise_for_status()
+
+            try:
+                response = requests.delete(url, headers=headers)
+                response.raise_for_status()
+                print("Request successful.")
+            except RequestException as err:
+                print(f"An error occurred: {err}")
+                failure += 1
         else:
             print(f"Has an active request; skipping...")
 
-    return {"status": "success", "count": count}
+    return {"success": success, "failure": failure}
