@@ -82,3 +82,5 @@ jobs:
 
         ~/.docker/cli-plugins/docker-compose -f localdev/docker-compose.yml -f localdev/docker-compose-ci.yml down
         sudo rm -rf ./localdev/mnt
+
+        docker images
