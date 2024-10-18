@@ -43,7 +43,7 @@ export default function SideTasks({ className }: { className?: string }) {
   return (
     <>
       <Drawer opened={opened} onClose={close} title="Tasks">
-        <Box pos="relative">
+        <Box pos="relative" className="min-h-96">
           <LoadingOverlay visible={isLoading} zIndex={1000} overlayProps={{ radius: 'sm', blur: 2 }} />
 
           {_tasks.length === 0 ? (
