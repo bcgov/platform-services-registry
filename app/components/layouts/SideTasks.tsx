@@ -86,10 +86,13 @@ export default function SideTasks({ className }: { className?: string }) {
         <Tooltip label="Tasks">
           <ActionIcon
             size={40}
-            variant="default"
+            variant="light"
             aria-label="Tasks"
             onClick={open}
-            className={classnames('', className)}
+            className={classnames(
+              'bg-bcblue border-1 rounded-lg hover:rounded-full text-white border-white hover:text-white',
+              className,
+            )}
           >
             <IconChecklist size={30} stroke={1.5} />
           </ActionIcon>
