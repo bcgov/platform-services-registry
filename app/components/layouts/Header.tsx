@@ -7,6 +7,7 @@ import { useSession, signIn } from 'next-auth/react';
 import Logo from '@/components/assets/logo.svg';
 import LightButton from '@/components/generic/button/LightButton';
 import UserMenu from '@/components/layouts/UserMenu';
+import SideTasks from './SideTasks';
 
 export default function Header() {
   const { data: session } = useSession();
@@ -47,7 +48,10 @@ export default function Header() {
           </div>
           <div className="absolute inset-y-0 right-0 flex items-center pr-2 sm:static sm:inset-auto sm:ml-6 sm:pr-0">
             {session ? (
-              <UserMenu />
+              <>
+                <SideTasks className="mr-3" />
+                <UserMenu />
+              </>
             ) : (
               <LightButton onClick={() => signIn('keycloak', { callbackUrl: '/home' })}>Login</LightButton>
             )}

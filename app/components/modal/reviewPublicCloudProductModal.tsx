@@ -1,15 +1,14 @@
 'use client';
 
 import { zodResolver } from '@hookform/resolvers/zod';
-import { Button, Divider, Grid, LoadingOverlay, Table, Box } from '@mantine/core';
+import { Button, Grid, LoadingOverlay, Table, Box } from '@mantine/core';
 import { notifications } from '@mantine/notifications';
-import { DecisionStatus, User, RequestType, TaskStatus, TaskType } from '@prisma/client';
+import { TaskStatus, TaskType } from '@prisma/client';
 import { useQuery, useMutation } from '@tanstack/react-query';
-import classNames from 'classnames';
 import { useSession } from 'next-auth/react';
+import { useEffect } from 'react';
 import { FormProvider, useForm, FieldValues } from 'react-hook-form';
-import { string, z } from 'zod';
-import ExternalLink from '@/components/generic/button/ExternalLink';
+import { z } from 'zod';
 import FormCheckbox from '@/components/generic/checkbox/FormCheckbox';
 import FormError from '@/components/generic/FormError';
 import { createModal, ExtraModalProps } from '@/core/modal';
@@ -33,7 +32,11 @@ function ReviewPublicCloudProductModal({
   state,
   closeModal,
 }: ModalProps & { state: ModalState } & ExtraModalProps) {
-  const { data: session } = useSession();
+  const { data: session, update: updateSession } = useSession();
+
+  useEffect(() => {
+    updateSession();
+  }, []);
 
   const methods = useForm({
     resolver: zodResolver(
