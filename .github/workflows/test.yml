@@ -94,9 +94,10 @@ jobs:
         docker images --format '{{.Repository}}:{{.Tag}}' | tr '\n' ' ' > images.txt
         echo "images=$(cat images.txt)" >> $GITHUB_ENV
 
-    - name: Display each Image
+    - name: Scan each Docker image with Trivy
       run: |
-        for image in ${{ env.images }};do
-          echo "Running Trivy scan on image: $image"
-          gh workflow run trivy-scan.yaml -f image-ref=$image
+        for image in ${{ env.images }}; do
+          echo "Running Trivy scan for image: $image"
+          docker pull $image # Ensure the image is available locally
+          docker run --rm aquasec/trivy:0.20.0 image $image --severity LOW,MEDIUM,HIGH,CRITICAL
         done
