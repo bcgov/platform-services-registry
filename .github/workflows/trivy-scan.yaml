@@ -1,0 +1,21 @@
+name: Scan with Trivy
+
+on:
+  workflow_dispatch:  # Allows manual triggering via GitHub CLI or UI
+
+jobs:
+  trivy_scan:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
+
+    - name: Scan Image with Trivy
+      uses: aquasecurity/trivy-action@0.20.0
+      with:
+        image-ref: ${{ inputs.image-ref }}    # Uses the image-ref input passed from the CLI
+        format: table
+        ignore-unfixed: true
+        vuln-type: os,library
+        severity: LOW,MEDIUM,CRITICAL,HIGH

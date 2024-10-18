@@ -97,14 +97,6 @@ jobs:
     - name: Display each Image
       run: |
         for image in ${{ env.images }};do
-          echo "$image"
+          echo "Running Trivy scan on image: $image"
+          gh workflow run trivy-scan.yaml -f image-ref=$image
         done
-
-    # - name: Scan Image with Trivy
-    #   uses: aquasecurity/trivy-action@0.20.0
-    #   with:
-    #     image-ref: ghcr.io/bcgov/pltsvc-localdev-m365mock:latest
-    #     format: table
-    #     ignore-unfixed: true
-    #     vuln-type: os,library
-    #     severity: LOW,MEDIUM,CRITICAL,HIGH
