@@ -88,11 +88,23 @@ jobs:
         ~/.docker/cli-plugins/docker-compose -f localdev/docker-compose.yml -f localdev/docker-compose-ci.yml down
         sudo rm -rf ./localdev/mnt
 
-    - name: Scan Image with Trivy
-      uses: aquasecurity/trivy-action@0.20.0
-      with:
-        image-ref: ghcr.io/bcgov/pltsvc-localdev-m365mock:latest
-        format: table
-        ignore-unfixed: true
-        vuln-type: os,library
-        severity: LOW,MEDIUM,CRITICAL,HIGH
+    - name: Retrieve Docker Images
+      id: get_images
+      run: |
+        docker images --format '{{.Repository}}:{{.Tag}}' | tr '\n' ' ' > images.txt
+        echo "images=${cat images.txt}" >> $GITHUB_ENV
+
+    - name: Display each Image
+      run: |
+        for image in ${{ env.images }};do
+          echo "$image"
+        done
+
+    # - name: Scan Image with Trivy
+    #   uses: aquasecurity/trivy-action@0.20.0
+    #   with:
+    #     image-ref: ghcr.io/bcgov/pltsvc-localdev-m365mock:latest
+    #     format: table
+    #     ignore-unfixed: true
+    #     vuln-type: os,library
+    #     severity: LOW,MEDIUM,CRITICAL,HIGH
