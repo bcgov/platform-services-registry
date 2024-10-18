@@ -20,6 +20,7 @@ jobs:
     runs-on: ubuntu-22.04
     timeout-minutes: 5
     permissions:
+      security-events: write
       contents: read
       packages: write
 
