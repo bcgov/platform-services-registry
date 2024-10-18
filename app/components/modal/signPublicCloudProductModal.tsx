@@ -7,6 +7,7 @@ import { DecisionStatus, User, Provider, TaskStatus, TaskType } from '@prisma/cl
 import { useQuery, useMutation } from '@tanstack/react-query';
 import classNames from 'classnames';
 import { useSession } from 'next-auth/react';
+import { useEffect } from 'react';
 import { FormProvider, useForm, FieldValues } from 'react-hook-form';
 import { string, z } from 'zod';
 import ExternalLink from '@/components/generic/button/ExternalLink';
@@ -32,7 +33,11 @@ function SignPublicCloudProductModal({
   state,
   closeModal,
 }: ModalProps & { state: ModalState } & ExtraModalProps) {
-  const { data: session } = useSession();
+  const { data: session, update: updateSession } = useSession();
+
+  useEffect(() => {
+    updateSession();
+  }, []);
 
   const methods = useForm({
     resolver: zodResolver(
