@@ -1,3 +1,12 @@
+## [0.37.1](https://github.com/bcgov/platform-services-registry/compare/v0.37.0...v0.37.1) (2024-10-21)
+
+### Features
+
+* **4018:** add side panel for assigned tasks ([63568c4](https://github.com/bcgov/platform-services-registry/commit/63568c4c6482134836ec60656fd77fdd6695c5a1))
+
+### Docs
+
+* **2692:** compare docker image scanning tools ([e03d3f8](https://github.com/bcgov/platform-services-registry/commit/e03d3f87fc793459d95b36fa0acea62cff554bc8))
 ## [0.37.0](https://github.com/bcgov/platform-services-registry/compare/v0.36.1...v0.37.0) (2024-10-17)
 
 ### Features
