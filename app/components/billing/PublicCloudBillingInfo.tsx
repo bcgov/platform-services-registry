@@ -30,7 +30,7 @@ export default function PublicCloudBillingInfo({
   if (billing.approved) {
     content = (
       <>
-        <li className="font-bold">Sign-Off Complete</li>
+        <li className="font-bold">Sign-Off complete</li>
         {licencePlate !== billing.licencePlate && (
           <li>
             - Exempted from the eMOU approval process for the product with licence plate{' '}

@@ -58,7 +58,7 @@ export default privateCloudProductUsageMetrics(({ pathParams, queryParams, sessi
       <fieldset className="w-full md:w-48 2xl:w-64 pb-6">
         <FormSelect
           id="id"
-          label="Filter by Namespace"
+          label="Filter by namespace"
           options={selectOptions.map((v) => ({ label: v.name, value: v.value }))}
           defaultValue={'dev'}
           onChange={handleNamespaceChange}

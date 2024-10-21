@@ -145,7 +145,7 @@ export default function ProjectDescriptionPublic({
             render={({ field: { onChange, value, onBlur } }) => (
               <FormMultiSelect
                 name="providerSelectionReasons"
-                label="Select Reason for Choosing Cloud Provider"
+                label="Select reason for choosing cloud provider"
                 data={reasonForSelectingCloudProviderOptions}
                 value={value}
                 onChange={onChange}
@@ -172,7 +172,7 @@ export default function ProjectDescriptionPublic({
 
         <div className="sm:col-span-3 sm:ml-10">
           <label htmlFor="providerSelectionReasonsNote" className="block text-sm font-medium leading-6 text-gray-900">
-            Description of Reason&#40;s&#41; for Selecting Cloud Provider
+            Description of reason&#40;s&#41; for selecting cloud provider
           </label>
           <div className="mt-2">
             <textarea
