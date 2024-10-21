@@ -94,7 +94,7 @@ export default publicCloudProductEdit(({ pathParams, queryParams, session }) => 
           },
         ),
     ),
-    values: {
+    defaultValues: {
       ...snap.currentProduct,
       isAgMinistryChecked: true,
       accountCoding: snap.currentProduct?.billing.accountCoding,

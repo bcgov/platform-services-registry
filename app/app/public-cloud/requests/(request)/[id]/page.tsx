@@ -45,7 +45,7 @@ export default publicCloudRequest(({ pathParams }) => {
 
   const methods = useForm({
     resolver: zodResolver(publicCloudRequestDecisionBodySchema),
-    values: { comment: '', decision: '', ...request },
+    defaultValues: { comment: '', decision: '', ...request },
   });
 
   if (!request) return null;
