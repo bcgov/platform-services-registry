@@ -10,10 +10,12 @@ import { getRolesMapperPayload, getServiceAccountTypeMapperPayload } from '../..
 import { syncClientUserRoles } from '../_helpers';
 
 export default async function getOp({
+  name,
   roles,
   users,
   session,
 }: {
+  name: string;
   roles: string[];
   users: { email: string }[];
   session: Session;
@@ -26,7 +28,7 @@ export default async function getOp({
   const tsaId = generateShortId();
   const clientId = `${TEAM_SA_PREFIX}${tsaId}`;
 
-  await kcAdminClient.clients.create({ realm: AUTH_RELM, clientId });
+  await kcAdminClient.clients.create({ realm: AUTH_RELM, name, clientId });
 
   let user = {};
 
