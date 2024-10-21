@@ -23,7 +23,7 @@ export const GET = apiHandler(async ({ session }) => {
   });
 
   let processedTasks = tasks.map(({ id, type, status, createdAt, completedAt, completedBy, data, closedMetadata }) => {
-    return { id, type, status, createdAt, completedAt, completedBy, data, closedMetadata, link: '' };
+    return { id, type, status, createdAt, completedAt, completedBy, data, closedMetadata, link: '', description: '' };
   });
 
   for (const task of tasks) {
@@ -40,11 +40,17 @@ export const GET = apiHandler(async ({ session }) => {
   const [products, requests] = await Promise.all([
     prisma.publicCloudProject.findMany({
       where: { licencePlate: { in: cleanLicencePlates } },
-      select: { id: true, licencePlate: true },
+      select: { id: true, licencePlate: true, name: true },
     }),
     prisma.publicCloudRequest.findMany({
       where: { licencePlate: { in: cleanLicencePlates } },
-      select: { id: true, licencePlate: true },
+      include: {
+        decisionData: {
+          select: {
+            name: true,
+          },
+        },
+      },
     }),
   ]);
 
@@ -54,10 +60,15 @@ export const GET = apiHandler(async ({ session }) => {
       case TaskType.REVIEW_MOU:
         const data = task.data as { licencePlate: string };
         const request = requests.find((req) => req.licencePlate === data.licencePlate);
-        if (request) task.link = `/public-cloud/requests/${request.id}/request`;
-        else {
+        if (request) {
+          task.link = `/public-cloud/requests/${request.id}/request`;
+          task.description = request.decisionData.name;
+        } else {
           const product = products.find((req) => req.licencePlate === data.licencePlate);
-          if (product) task.link = `/public-cloud/products/${product.licencePlate}/edit`;
+          if (product) {
+            task.link = `/public-cloud/products/${product.licencePlate}/edit`;
+            task.description = product.name;
+          }
         }
     }
 

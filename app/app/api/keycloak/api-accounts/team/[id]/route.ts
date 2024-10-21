@@ -25,7 +25,7 @@ export const PUT = createApiHandler({
     body: teamApiAccountSchema,
   },
 })(async ({ session, pathParams, body }) => {
-  const res = await updateOp({ session, id: pathParams.id, roles: body.roles, users: body.users });
+  const res = await updateOp({ session, id: pathParams.id, name: body.name, roles: body.roles, users: body.users });
   return res;
 });
 
