@@ -43,6 +43,7 @@ export default privateCloudProductNew(({ pathParams, queryParams, session }) => 
           },
         ),
     ),
+    defaultValues: { secondaryTechnicalLead: null },
   });
 
   const secondTechLeadOnClick = () => {

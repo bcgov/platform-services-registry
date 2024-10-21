@@ -31,6 +31,7 @@ export function hasContactsChanged(product1?: ProductWithMembers | null, product
 }
 
 type ResourceObject = {
+  type?: 'cpu' | 'memory' | 'storage';
   storage?: number;
   memoryRequest?: number;
   memoryLimit?: number;
@@ -44,16 +45,18 @@ export function parseResourceString(resource: string): ResourceObject {
   const storagePattern = /^STORAGE_(\d+)$/;
   const memoryPattern = /^MEMORY_REQUEST_(\d+)_LIMIT_(\d+)$/;
   const cpuPattern = /^CPU_REQUEST_(\d+_?\d*)_LIMIT_(\d+_?\d*)$/;
-
   let match: RegExpMatchArray | null;
   if ((match = resource.match(storagePattern))) {
     resourceObject.storage = parseInt(match[1], 10);
+    resourceObject.type = 'storage';
   } else if ((match = resource.match(memoryPattern))) {
     resourceObject.memoryRequest = parseInt(match[1], 10);
     resourceObject.memoryLimit = parseInt(match[2], 10);
+    resourceObject.type = 'memory';
   } else if ((match = resource.match(cpuPattern))) {
     resourceObject.cpuRequest = parseFloat(match[1].replace('_', '.'));
     resourceObject.cpuLimit = parseFloat(match[2].replace('_', '.'));
+    resourceObject.type = 'cpu';
   }
 
   return resourceObject;

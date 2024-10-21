@@ -27,7 +27,7 @@ function ProductValue({ value, formatterKey }: { value: any; formatterKey?: stri
   if (formatterKey) {
     if (formatterKey === 'resource') {
       const ret = parseResourceString(value);
-      if (ret.storage) {
+      if (ret.type === 'storage') {
         return (
           <span>
             Storage: <span>{ret.storage}</span>
@@ -35,7 +35,7 @@ function ProductValue({ value, formatterKey }: { value: any; formatterKey?: stri
         );
       }
 
-      if (ret.cpuRequest) {
+      if (ret.type === 'cpu') {
         return (
           <>
             <span>
@@ -49,7 +49,7 @@ function ProductValue({ value, formatterKey }: { value: any; formatterKey?: stri
         );
       }
 
-      if (ret.memoryRequest) {
+      if (ret.type === 'memory') {
         return (
           <>
             <span>

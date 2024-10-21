@@ -105,7 +105,7 @@ export default privateCloudProductEdit(({ pathParams, queryParams, session }) =>
           }),
       )(...args);
     },
-    values: {
+    defaultValues: {
       developmentQuota: defaultQuota,
       testQuota: defaultQuota,
       productionQuota: defaultQuota,
