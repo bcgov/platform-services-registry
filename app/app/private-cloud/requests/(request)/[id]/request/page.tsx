@@ -36,7 +36,7 @@ export default privateCloudRequestRequest(({ pathParams, queryParams, session, r
   }, [privateSnap.currentRequest]);
 
   const methods = useForm({
-    values: {
+    defaultValues: {
       decisionComment: '',
       decision: '',
       type: privateSnap.currentRequest?.type,

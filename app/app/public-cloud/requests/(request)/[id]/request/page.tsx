@@ -93,7 +93,7 @@ export default publicCloudProductRequest(({ pathParams, queryParams, session, ro
 
       return zodResolver(publicCloudRequestDecisionBodySchema)(...args);
     },
-    values: {
+    defaultValues: {
       decisionComment: '',
       decision: '',
       type: publicSnap.currentRequest?.type,
