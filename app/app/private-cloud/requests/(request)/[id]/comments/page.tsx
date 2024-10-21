@@ -70,8 +70,8 @@ export default privateCloudRequestComments(({ pathParams, session }) => {
         requestId={requestId}
         userId={userId ?? ''}
         onCommentAdded={handleCommentAdded}
-        addButtonText="Add Comment"
-        postButtonText="Post Comment"
+        addButtonText="Add comment"
+        postButtonText="Post comment"
         placeholderText="Leave a comment..."
       />
       {commentsLoading && <p>Loading comments...</p>}
