@@ -76,8 +76,8 @@ export default function createPrivateCloudNatsMessage(
             limits: cpuMeta.limit,
           },
           memory: {
-            requests: `${cpuMeta.request}Gi`,
-            limits: `${cpuMeta.limit}Gi`,
+            requests: `${memoryMeta.request}Gi`,
+            limits: `${memoryMeta.limit}Gi`,
           },
           storage: {
             block: `${storageMeta.size}Gi`,
