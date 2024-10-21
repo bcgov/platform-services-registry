@@ -66,11 +66,11 @@ function transformPodData(data: Pod[]) {
 export default function MetricsTable({ pods, resource, title }: TableProps) {
   const rows = [
     {
-      podName: 'Pod Name',
-      containerName: 'Container Name',
-      usage: { cpu: 'CPU Usage', memory: 'Memory Usage', storage: '' },
-      limits: { cpu: 'CPU Limits', memory: 'Memory Limits', storage: '' },
-      requests: { cpu: 'CPU Requests', memory: 'Memory Requests', storage: '' },
+      podName: 'Pod name',
+      containerName: 'Container name',
+      usage: { cpu: 'CPU usage', memory: 'Memory usage', storage: '' },
+      limits: { cpu: 'CPU limits', memory: 'Memory limits', storage: '' },
+      requests: { cpu: 'CPU requests', memory: 'Memory requests', storage: '' },
     },
     ...transformPodData(pods),
   ];
