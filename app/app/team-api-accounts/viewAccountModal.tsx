@@ -12,12 +12,13 @@ interface ModalProps {
   clientUid: string;
   clientId: string;
   clientSecret: string;
+  name: string;
   roles: string[];
 }
 
 interface ModalState {}
 
-function ViewUsersModal({ clientUid, clientId, clientSecret, roles, closeModal }: ModalProps & ExtraModalProps) {
+function ViewUsersModal({ clientUid, clientId, clientSecret, name, roles, closeModal }: ModalProps & ExtraModalProps) {
   const { data: users, isFetching: isUsersFetching } = useQuery({
     queryKey: ['users', clientUid],
     queryFn: () => listKeycloakTeamApiAccountUsers(clientUid),
@@ -26,8 +27,10 @@ function ViewUsersModal({ clientUid, clientId, clientSecret, roles, closeModal }
   return (
     <Box pos="relative">
       <LoadingOverlay visible={isUsersFetching} zIndex={1000} overlayProps={{ radius: 'sm', blur: 2 }} />
-      <div className="block text-sm font-bold leading-6 text-gray-900 mt-2 mb-1">API Account Roles</div>
+      <div className="block text-sm font-bold leading-6 text-gray-900 mt-2 mb-1">Name</div>
+      <CopyableButton value={name}>{name}</CopyableButton>
 
+      <div className="block text-sm font-bold leading-6 text-gray-900 mt-2 mb-1">API Account Roles</div>
       <InputBase component="div" multiline>
         <Pill.Group>
           {roles.map((role) => (

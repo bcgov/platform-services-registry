@@ -3,17 +3,19 @@ import { Session } from 'next-auth';
 import { AUTH_RELM } from '@/config';
 import { OkResponse, BadRequestResponse } from '@/core/responses';
 import { createEvent } from '@/services/db';
-import { getKcAdminClient, findClient } from '@/services/keycloak/app-realm';
+import { getKcAdminClient } from '@/services/keycloak/app-realm';
 import { getRolesMapperPayload } from '../../mappers';
 import { syncClientUserRoles } from '../_helpers';
 
 export default async function getOp({
   id,
+  name,
   roles,
   users,
   session,
 }: {
   id: string;
+  name: string;
   roles: string[];
   users: { email: string }[];
   session: Session;
@@ -38,14 +40,23 @@ export default async function getOp({
     const rolesMapperData = getRolesMapperPayload(roles);
 
     if (rolesMapper?.id) {
-      await kcAdminClient.clients.updateProtocolMapper(
-        {
-          realm: AUTH_RELM,
-          id: clientUid,
-          mapperId: rolesMapper?.id,
-        },
-        { id: rolesMapper?.id, ...rolesMapperData },
-      );
+      await Promise.all([
+        kcAdminClient.clients.update(
+          {
+            realm: AUTH_RELM,
+            id: clientUid,
+          },
+          { name },
+        ),
+        kcAdminClient.clients.updateProtocolMapper(
+          {
+            realm: AUTH_RELM,
+            id: clientUid,
+            mapperId: rolesMapper?.id,
+          },
+          { id: rolesMapper?.id, ...rolesMapperData },
+        ),
+      ]);
     } else {
       await kcAdminClient.clients.addProtocolMapper({ realm: AUTH_RELM, id: clientUid }, rolesMapperData);
     }

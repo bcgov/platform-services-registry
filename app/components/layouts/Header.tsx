@@ -1,5 +1,6 @@
 'use client';
 
+import { Loader } from '@mantine/core';
 import Image from 'next/image';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
@@ -10,7 +11,7 @@ import UserMenu from '@/components/layouts/UserMenu';
 import SideTasks from './SideTasks';
 
 export default function Header() {
-  const { data: session } = useSession();
+  const { data: session, status: sessionStatus } = useSession();
   const pathname = usePathname();
 
   let context = '';
@@ -18,6 +19,18 @@ export default function Header() {
     context = 'Private Cloud OpenShift platform';
   } else if (pathname.startsWith('/public-cloud')) {
     context = 'Public Cloud Landing Zone';
+  }
+
+  let rightSection = <Loader color="blue" type="dots" />;
+  if (sessionStatus !== 'loading') {
+    rightSection = session ? (
+      <>
+        <SideTasks className="mr-3" />
+        <UserMenu />
+      </>
+    ) : (
+      <LightButton onClick={() => signIn('keycloak', { callbackUrl: '/home' })}>Login</LightButton>
+    );
   }
 
   return (
@@ -47,14 +60,7 @@ export default function Header() {
             </div>
           </div>
           <div className="absolute inset-y-0 right-0 flex items-center pr-2 sm:static sm:inset-auto sm:ml-6 sm:pr-0">
-            {session ? (
-              <>
-                <SideTasks className="mr-3" />
-                <UserMenu />
-              </>
-            ) : (
-              <LightButton onClick={() => signIn('keycloak', { callbackUrl: '/home' })}>Login</LightButton>
-            )}
+            {rightSection}
           </div>
         </div>
       </div>

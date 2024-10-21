@@ -8,6 +8,7 @@ import _forEach from 'lodash-es/forEach';
 import _get from 'lodash-es/get';
 import { useState } from 'react';
 import { FormProvider, useForm } from 'react-hook-form';
+import HookFormTextInput from '@/components/generic/input/HookFormTextInput';
 import { createModal, ExtraModalProps } from '@/core/modal';
 import { listKeycloakAuthRoles, createKeycloakTeamApiAccount } from '@/services/backend/keycloak';
 import { teamApiAccountSchema, TeamApiAccount } from '@/validation-schemas/api-accounts';
@@ -27,13 +28,14 @@ function CreateUsersModal({ closeModal }: ExtraModalProps) {
   const methods = useForm({
     resolver: zodResolver(teamApiAccountSchema),
     defaultValues: {
+      name: '',
       roles: [],
       users: [] as { email: string }[],
     },
   });
 
   const { mutateAsync: createAccount, isPending: isCreatinAccount } = useMutation({
-    mutationFn: ({ roles, users }: TeamApiAccount) => createKeycloakTeamApiAccount(roles, users),
+    mutationFn: ({ name, roles, users }: TeamApiAccount) => createKeycloakTeamApiAccount(name, roles, users),
     onError: (error: any) => {
       notifications.show({
         title: 'Error',
@@ -94,6 +96,7 @@ function CreateUsersModal({ closeModal }: ExtraModalProps) {
             setIsServerError(true);
           })}
         >
+          <HookFormTextInput label="Name" name="name" placeholder="Enter name..." required />
           <AccountRoles allRoles={(authRoles ?? []).map((v) => v.name ?? '')} disabled={isServerError} />
           <AccountMembers disabled={isServerError} />
 

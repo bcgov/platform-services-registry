@@ -8,6 +8,7 @@ import _forEach from 'lodash-es/forEach';
 import _get from 'lodash-es/get';
 import { useEffect } from 'react';
 import { FormProvider, useForm } from 'react-hook-form';
+import HookFormTextInput from '@/components/generic/input/HookFormTextInput';
 import { openConfirmModal } from '@/components/generic/modal/ConfirmModal';
 import { createModal, ExtraModalProps } from '@/core/modal';
 import {
@@ -21,13 +22,14 @@ import AccountMembers from './AccountMembers';
 import AccountRoles from './AccountRoles';
 
 interface ModalProps {
+  name: string;
   clientUid: string;
   roles: string[];
 }
 
 interface ModalState {}
 
-function ManageAccountModal({ clientUid, roles, closeModal }: ModalProps & ExtraModalProps) {
+function ManageAccountModal({ name, clientUid, roles, closeModal }: ModalProps & ExtraModalProps) {
   const { data: authRoles, isFetching: isAuthRolesFetching } = useQuery({
     queryKey: ['roles'],
     queryFn: () => listKeycloakAuthRoles(),
@@ -41,14 +43,15 @@ function ManageAccountModal({ clientUid, roles, closeModal }: ModalProps & Extra
   const methods = useForm({
     resolver: zodResolver(teamApiAccountSchema),
     defaultValues: {
+      name,
       roles,
       users: [] as { email: string }[],
     },
   });
 
   const { mutateAsync: updateAccount, isPending: isUpdatingAccount } = useMutation({
-    mutationFn: ({ roles: _roles, users: _users }: TeamApiAccount) =>
-      updateKeycloakApiTeamAccount(clientUid, _roles, _users),
+    mutationFn: ({ name: _name, roles: _roles, users: _users }: TeamApiAccount) =>
+      updateKeycloakApiTeamAccount(clientUid, _name, _roles, _users),
     onError: (error: any) => {
       notifications.show({
         title: 'Error',
@@ -110,6 +113,7 @@ function ManageAccountModal({ clientUid, roles, closeModal }: ModalProps & Extra
             });
           })}
         >
+          <HookFormTextInput label="Name" name="name" placeholder="Enter name..." required />
           <AccountRoles allRoles={(authRoles ?? []).map((v) => v.name ?? '')} />
           <AccountMembers />
 

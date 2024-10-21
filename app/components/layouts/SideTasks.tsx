@@ -8,7 +8,7 @@ import { useQuery } from '@tanstack/react-query';
 import classnames from 'classnames';
 import Link from 'next/link';
 import { useEffect } from 'react';
-import { getMyTasks } from '@/services/backend/tasks';
+import { getAssignedTasks } from '@/services/backend/tasks';
 import { formatDate } from '@/utils/date';
 
 const taskTypeLabels = {
@@ -30,7 +30,7 @@ export default function SideTasks({ className }: { className?: string }) {
     refetch: refetchTasks,
   } = useQuery({
     queryKey: ['tasks'],
-    queryFn: () => getMyTasks(),
+    queryFn: () => getAssignedTasks(),
     refetchInterval: 5000,
   });
 
@@ -56,25 +56,28 @@ export default function SideTasks({ className }: { className?: string }) {
               return (
                 <div
                   key={task.id}
-                  className="hover:bg-gray-100 transition-colors duration-200 grid grid-cols-1 md:grid-cols-3 gap-4 px-4 py-3"
+                  className="hover:bg-gray-100 transition-colors duration-200 grid grid-cols-5 gap-4 px-4 py-3"
                 >
-                  <div className="col-span-2">
+                  <div className="col-span-4">
                     <div>
                       <span className="font-semibold">{type}</span>
                       <Badge color={color} size="sm" radius="sm" className="ml-1">
                         {task.status}
                       </Badge>
                     </div>
+                    <div className="text-sm italic text-gray-700">{task.description}</div>
                     <div className="text-sm text-gray-400">{formatDate(task.createdAt)}</div>
                   </div>
                   <div className="col-span-1 text-right">
-                    <Link
-                      href={task.link}
-                      onClick={close}
-                      className="text-blue-600 hover:underline font-bold text-base"
-                    >
-                      link
-                    </Link>
+                    {task.link && (
+                      <Link
+                        href={task.link}
+                        onClick={close}
+                        className="text-blue-600 hover:underline font-bold text-base"
+                      >
+                        link
+                      </Link>
+                    )}
                   </div>
                 </div>
               );
