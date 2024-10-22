@@ -59,7 +59,7 @@ describe('Search Public Cloud Requests - Permissions', () => {
         status: TaskStatus.ASSIGNED,
         data: {
           equals: {
-            requestId: dat1.id,
+            licencePlate: dat1.licencePlate,
           },
         },
       },
@@ -246,7 +246,7 @@ describe('Search Public Cloud Requests - Validations', () => {
             status: TaskStatus.ASSIGNED,
             data: {
               equals: {
-                requestId: dat1.id,
+                licencePlate: dat1.licencePlate,
               },
             },
           },
