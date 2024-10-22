@@ -32,7 +32,7 @@ export const POST = apiHandler(async ({ pathParams, body, session }) => {
   }
 
   await Promise.all([
-    prisma.task.updateMany({
+    prisma.task.update({
       where: {
         id: taskId,
         type: TaskType.SIGN_MOU,

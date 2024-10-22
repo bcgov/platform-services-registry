@@ -59,7 +59,7 @@ describe('API: List Public Cloud Products - Permissions', () => {
         status: TaskStatus.ASSIGNED,
         data: {
           equals: {
-            requestId: dat1.id,
+            licencePlate: dat1.licencePlate,
           },
         },
       },
