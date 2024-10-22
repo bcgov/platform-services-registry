@@ -167,7 +167,7 @@ export default publicCloudProductNew(({ pathParams, queryParams, session }) => {
     },
     {
       LeftIcon: IconReceipt2,
-      label: 'Billing (account Coding)',
+      label: 'Billing (account coding)',
       description: '',
       Component: AccountCoding,
       componentArgs: {},

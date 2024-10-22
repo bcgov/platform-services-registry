@@ -88,7 +88,7 @@ export default publicCloudRequest(({ pathParams }) => {
     },
     {
       LeftIcon: IconReceipt2,
-      label: 'Billing (account Coding)',
+      label: 'Billing (account coding)',
       description: '',
       Component: AccountCoding,
       componentArgs: { accountCodingInitial: request.decisionData.billing.accountCoding, disabled: true },
