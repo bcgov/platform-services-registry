@@ -77,6 +77,11 @@ When(/^User clicks tab "(.*)"$/, (tabText: string) => {
   cy.contains('a, p', tabText).should('be.visible').scrollIntoView().click();
 });
 
+When(/^User clicks and selects "(.*)" in "(.*)"$/, (menuOption: string, menuName: string) => {
+  cy.contains('label', menuName).parents().eq(2).find('input[type="text"]').click();
+  cy.contains('span', menuOption).click();
+});
+
 When(/^User selects "(.*)" in "(.*)"$/, (entryText: string, dropdownLabel: string) => {
   cy.contains('label', dropdownLabel).scrollIntoView().parent().find('select').select(entryText);
 });
@@ -120,7 +125,7 @@ When('User makes a screenshot', () => {
 });
 
 Then('User should be redirected to Requests tab', () => {
-  cy.contains('p', 'Products with pending requests').should('be.visible');
+  cy.contains('p', 'These requests are currently under admin review.').should('be.visible');
 });
 
 Then(/^User should see "(.*)"$/, (requestName: string) => {
