@@ -87,7 +87,7 @@ export default function QuotasChangeInfo({ disabled, className }: { disabled: bo
       <h3 className="text-base 2xl:text-lg font-semibold leading-7 text-gray-900">Contact name</h3>
       <p className="text-sm leading-6 text-gray-600">
         Provide the first and last name of the product contact handling this request. This person will be contacted by
-        the Platform Services team with any questions we may have about the request.{' '}
+        the Platform Services team with any questions we may have about the request.&nbsp;
         <span className="font-bold">This person does not need to be a Product Contact.</span>
       </p>
       <div className="mt-2">
@@ -109,8 +109,8 @@ export default function QuotasChangeInfo({ disabled, className }: { disabled: bo
       </div>
       <h3 className="text-base 2xl:text-lg font-semibold leading-7 text-gray-900 mt-4">Contact email</h3>
       <p className="text-sm leading-6 text-gray-600">
-        Provide the email of the product contact handling this request. This should be a professional email, but it{' '}
-        <span className="font-bold">does not need to be an IDIR email address.</span>
+        Provide the email of the product contact handling this request. This should be a professional email, but
+        it&nbsp;<span className="font-bold">does not need to be an IDIR email address.</span>
       </p>
       <div className="mt-2">
         <input
@@ -129,27 +129,25 @@ export default function QuotasChangeInfo({ disabled, className }: { disabled: bo
         />
         <FormError error={_get(errors, 'quotaContactEmail')} />
       </div>
-      <h3 className="text-base 2xl:text-lg font-semibold leading-7 text-gray-900 mt-4">
-        Justification of quota request
-      </h3>
-      <p className="text-sm leading-6 text-gray-600">Please clearly state the following:</p>
+      <h3 className="text-lg font-semibold leading-7 text-gray-900 mt-4">Justification of quota increase</h3>
+      <p className="leading-6 text-gray-600">Please clearly state the following:</p>
       <ol className="list-decimal pl-5 font-bold">
         <li>
-          Reason for quota increase resources:{' '}
+          Reason for quota increase:&nbsp;
           <span className="font-normal">
             Explain why you need more resources, such as expected growth, bursty workload patterns, or specific project
             requirements.
           </span>
         </li>
         <li>
-          Current resource usage:{' '}
+          Current resource usage:&nbsp;
           <span className="font-normal">
             Provide details on how many resources the important parts of your product currently consume. Additionally,
             if possible, inform us how your project&apos;s resource usage will change if we increase your quota.
           </span>
         </li>
         <li>
-          Steps taken to manage current workload:{' '}
+          Steps taken to manage current workload:&nbsp;
           <span className="font-normal">
             Describe the actions you&apos;ve taken to accommodate your product&apos;s workload within your current
             quota.
@@ -158,12 +156,12 @@ export default function QuotasChangeInfo({ disabled, className }: { disabled: bo
       </ol>
       <p className="mt-2">
         For a more detailed description of what the Platform Services team needs to approve your quota changes, please
-        review the documentation{' '}
-        <ExternalLink href="https://developer.gov.bc.ca/docs/default/component/platform-developer-docs/docs/automation-and-resiliency/request-quota-increase-for-openshift-project-set">
+        review the documentation&nbsp;
+        <ExternalLink href="https://developer.gov.bc.ca/docs/default/component/platform-developer-docs/docs/automation-and-resiliency/request-quota-adjustment-for-openshift-project-set/">
           on the quota increase process.
-        </ExternalLink>{' '}
-        Having difficulty answering the questions?{' '}
-        <ExternalLink href="https://developer.gov.bc.ca/docs/default/component/platform-developer-docs/docs/automation-and-resiliency/request-quota-increase-for-openshift-project-set/#examples-of-requests">
+        </ExternalLink>
+        &nbsp; Having difficulty answering the questions?&nbsp;
+        <ExternalLink href="https://developer.gov.bc.ca/docs/default/component/platform-developer-docs/docs/automation-and-resiliency/request-quota-adjustment-for-openshift-project-set/#examples-of-requests">
           Read through some of the example answers to get a better idea of what information to include.
         </ExternalLink>
       </p>

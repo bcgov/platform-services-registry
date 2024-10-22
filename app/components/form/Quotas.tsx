@@ -35,12 +35,12 @@ export default function Quotas({
   return (
     <>
       <p className="text-base leading-6 mt-5">
-        All quota increase requests require <span className="font-bold">Platform Services Team&rsquo;s</span>
-        &nbsp;approval, and must have supporting information as per the&nbsp;
+        Increasing your quota requires the Platform Services Team&rsquo;s approval, and must have supporting information
+        as per our&nbsp;
         <ExternalLink href="https://developer.gov.bc.ca/docs/default/component/platform-developer-docs/docs/automation-and-resiliency/request-quota-adjustment-for-openshift-project-set/">
-          Quota Increase Request Process
+          quota adjustment documentation
         </ExternalLink>
-        . Any Quota Requests without supporting information&nbsp;
+        . Any quota increases without supporting information&nbsp;
         <span className="font-bold text-red-600 uppercase">will not</span> be processed.
       </p>
       <div className="mt-10 mb-5 grid grid-cols-1 gap-x-4 xl:gap-x-4 gap-y-8 sm:grid-cols-8 ">

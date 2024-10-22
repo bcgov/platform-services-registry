@@ -103,12 +103,12 @@ export const openEditPrivateCloudProductModal = createModal<ModalProps, ModalSta
             />
 
             <p className="text-sm text-gray-900 mt-2">
-              After hitting request, our smart robots will start working hard behind the scenes.
+              After hitting submit, our smart robots will start working hard behind the scenes.
               {(!privateSnap.editQuotaChangeStatus.isEligibleForAutoApproval ||
                 change.parentPaths.includes('golddrEnabled')) && (
                 <span>
                   &nbsp;There is one step, the approval process, where a human is involved. They will take the
-                  opportunity, if needed, to reach out and have an on-boarding conversation with you.
+                  opportunity, if needed, to reach out to you if they have any questions.
                 </span>
               )}
             </p>
