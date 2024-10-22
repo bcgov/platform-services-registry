@@ -1,6 +1,6 @@
 'use client';
 
-import { createModal, ExtraModalProps } from '@/core/modal';
+import { createModal } from '@/core/modal';
 
 interface ModalProps {
   name: string;
@@ -8,16 +8,14 @@ interface ModalProps {
 
 interface ModalState {}
 
-function TestModal({ name }: ModalProps & ExtraModalProps) {
-  return <div>Hi {name}!</div>;
-}
-
 export const openTestModal = createModal<ModalProps, ModalState>({
   settings: {
     size: 'md',
     title: 'Test Modal',
   },
-  Component: TestModal,
+  Component: function TestModal({ name, closeModal }) {
+    return <div>Hi {name}!</div>;
+  },
   condition: (props: ModalProps) => !!props.name,
   onClose: () => {},
 });
