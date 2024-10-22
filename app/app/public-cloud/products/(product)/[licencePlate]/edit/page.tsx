@@ -194,7 +194,7 @@ export default publicCloudProductEdit(({ pathParams, queryParams, session }) => 
             <PreviousButton />
             {!isDisabled ? (
               <div className="flex items-center justify-start gap-x-6">
-                <SubmitButton text="SUBMIT EDIT REQUEST" disabled={!isSubmitEnabled} />
+                <SubmitButton text="Submit" disabled={!isSubmitEnabled} />
               </div>
             ) : null}
           </div>

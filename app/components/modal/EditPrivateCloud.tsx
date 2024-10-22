@@ -99,7 +99,7 @@ export default function Modal({
                         Loading...
                       </>
                     ) : (
-                      'SUBMIT EDIT REQUEST'
+                      'Submit'
                     )}
                   </button>
                 </div>
