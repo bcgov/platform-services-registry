@@ -1,4 +1,4 @@
-import { TaskType, TaskStatus, Prisma } from '@prisma/client';
+import { TaskType, TaskStatus, Prisma, RequestType } from '@prisma/client';
 import { GlobalPermissions, GlobalRole } from '@/constants';
 import createApiHandler from '@/core/api-handler';
 import prisma from '@/core/prisma';
@@ -6,7 +6,7 @@ import { OkResponse } from '@/core/responses';
 import { getUniqueNonFalsyItems } from '@/utils/collection';
 
 const apiHandler = createApiHandler({
-  roles: [GlobalRole.Admin],
+  roles: [GlobalRole.User],
 });
 
 export const GET = apiHandler(async ({ session }) => {
@@ -43,7 +43,7 @@ export const GET = apiHandler(async ({ session }) => {
       select: { id: true, licencePlate: true, name: true },
     }),
     prisma.publicCloudRequest.findMany({
-      where: { licencePlate: { in: cleanLicencePlates } },
+      where: { type: RequestType.CREATE, active: true, licencePlate: { in: cleanLicencePlates } },
       include: {
         decisionData: {
           select: {

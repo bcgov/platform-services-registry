@@ -110,7 +110,7 @@ export default publicCloudRequestOriginal(({ pathParams, queryParams, session, r
     },
     {
       LeftIcon: IconReceipt2,
-      label: 'Billing (account Coding)',
+      label: 'Billing (account coding)',
       description: '',
       Component: AccountCoding,
       componentArgs: {

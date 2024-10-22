@@ -1,4 +1,4 @@
-import { TaskStatus, TaskType } from '@prisma/client';
+import { RequestType, TaskStatus, TaskType } from '@prisma/client';
 import { z } from 'zod';
 import { GlobalRole } from '@/constants';
 import createApiHandler from '@/core/api-handler';
@@ -26,55 +26,57 @@ export const POST = apiHandler(async ({ pathParams, body, session }) => {
 
   if (!confirmed) return BadRequestResponse('not confirmed');
 
-  await prisma.task.update({
-    where: {
-      id: taskId,
-      type: TaskType.SIGN_MOU,
-      status: TaskStatus.ASSIGNED,
-      OR: [{ userIds: { has: session.user.id } }, { roles: { hasSome: session.roles } }],
-      data: {
-        equals: {
-          licencePlate,
-        },
-      },
-    },
-    data: {
-      status: TaskStatus.COMPLETED,
-    },
-  });
-
-  const request = await prisma.publicCloudRequest.findFirst({
-    where: { licencePlate },
-    include: publicCloudRequestDetailInclude,
-  });
-
-  if (!request) {
+  const billing = await prisma.billing.findFirst({ where: { licencePlate, signed: false }, select: { id: true } });
+  if (!billing) {
     return BadRequestResponse('invalid request');
   }
 
-  await prisma.billing.update({
-    where: {
-      id: request?.decisionData.billingId,
-    },
-    data: {
-      signed: true,
-      signedAt: new Date(),
-      signedById: session.user.id,
-    },
-  });
-
-  await prisma.task.create({
-    data: {
-      type: TaskType.REVIEW_MOU,
-      status: TaskStatus.ASSIGNED,
-      roles: [GlobalRole.BillingReviewer],
-      data: {
-        licencePlate: request.licencePlate,
+  await Promise.all([
+    prisma.task.updateMany({
+      where: {
+        id: taskId,
+        type: TaskType.SIGN_MOU,
+        status: TaskStatus.ASSIGNED,
+        OR: [{ userIds: { has: session.user.id } }, { roles: { hasSome: session.roles } }],
+        data: {
+          equals: {
+            licencePlate,
+          },
+        },
       },
-    },
+      data: {
+        status: TaskStatus.COMPLETED,
+      },
+    }),
+    prisma.task.create({
+      data: {
+        type: TaskType.REVIEW_MOU,
+        status: TaskStatus.ASSIGNED,
+        roles: [GlobalRole.BillingReviewer],
+        data: {
+          licencePlate,
+        },
+      },
+    }),
+    prisma.billing.update({
+      where: {
+        id: billing.id,
+      },
+      data: {
+        signed: true,
+        signedAt: new Date(),
+        signedById: session.user.id,
+      },
+    }),
+  ]);
+
+  const request = await prisma.publicCloudRequest.findFirst({
+    where: { type: RequestType.CREATE, licencePlate, active: true },
+    include: publicCloudRequestDetailInclude,
   });
 
-  await sendPublicCloudBillingReviewEmails(request);
-
+  if (request) {
+    await sendPublicCloudBillingReviewEmails(request);
+  }
   return OkResponse(true);
 });

@@ -25,7 +25,7 @@ export const POST = apiHandler(async ({ pathParams, body, session }) => {
   const { licencePlate } = pathParams;
   const { taskId, decision } = body;
 
-  await prisma.task.update({
+  await prisma.task.updateMany({
     where: {
       id: taskId,
       type: TaskType.REVIEW_MOU,
