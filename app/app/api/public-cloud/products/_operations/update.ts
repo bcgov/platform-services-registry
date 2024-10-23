@@ -1,10 +1,14 @@
+import { DecisionStatus, Prisma, RequestType, EventType } from '@prisma/client';
 import { Session } from 'next-auth';
 import { TypeOf } from 'zod';
+import prisma from '@/core/prisma';
 import { OkResponse, UnauthorizedResponse } from '@/core/responses';
-import editRequest from '@/request-actions/public-cloud/edit-request';
+import { comparePublicProductData } from '@/helpers/product-change';
 import { sendEditRequestEmails } from '@/services/ches/public-cloud';
-import { models } from '@/services/db';
+import { createEvent, publicCloudRequestDetailInclude, getLastClosedPublicCloudRequest, models } from '@/services/db';
+import { upsertUsers } from '@/services/db/user';
 import { sendPublicCloudNatsMessage } from '@/services/nats';
+import { PublicCloudRequestDetail } from '@/types/public-cloud';
 import { PublicCloudEditRequestBody } from '@/validation-schemas/public-cloud';
 import { putPathParamSchema } from '../[licencePlate]/schema';
 
@@ -25,15 +29,61 @@ export default async function updateOp({
     return UnauthorizedResponse();
   }
 
-  const request = await editRequest(licencePlate, body, session);
+  const { requestComment, accountCoding, ...rest } = body;
+
+  await upsertUsers([
+    body.projectOwner.email,
+    body.primaryTechnicalLead.email,
+    body.secondaryTechnicalLead?.email,
+    body.expenseAuthority?.email,
+  ]);
+
+  const decisionData = {
+    ...rest,
+    licencePlate: product.licencePlate,
+    status: product.status,
+    provider: product.provider,
+    createdAt: product.createdAt,
+    billing: { connect: { id: product.billingId } },
+    projectOwner: { connect: { email: body.projectOwner.email } },
+    primaryTechnicalLead: { connect: { email: body.primaryTechnicalLead.email } },
+    secondaryTechnicalLead: body.secondaryTechnicalLead
+      ? { connect: { email: body.secondaryTechnicalLead.email } }
+      : undefined,
+    expenseAuthority: body.expenseAuthority ? { connect: { email: body.expenseAuthority.email } } : undefined,
+  };
+
+  // Retrieve the latest request data to acquire the decision data ID that can be assigned to the incoming request's original data.
+  const previousRequest = await getLastClosedPublicCloudRequest(product.licencePlate);
+
+  const { changes, ...otherChangeMeta } = comparePublicProductData(rest, previousRequest?.decisionData);
+
+  const newRequest = await prisma.publicCloudRequest.create({
+    data: {
+      type: RequestType.EDIT,
+      decisionStatus: DecisionStatus.AUTO_APPROVED, // automatically approve edit requests for public cloud
+      active: true,
+      createdBy: { connect: { email: session.user.email } },
+      licencePlate: product.licencePlate,
+      requestComment,
+      changes: otherChangeMeta,
+      originalData: { connect: { id: previousRequest?.decisionDataId } },
+      decisionData: { create: decisionData },
+      requestData: { create: decisionData },
+      project: { connect: { licencePlate: product.licencePlate } },
+    },
+    include: publicCloudRequestDetailInclude,
+  });
 
   const proms = [];
 
-  proms.push(sendPublicCloudNatsMessage(request));
+  proms.push(createEvent(EventType.UPDATE_PUBLIC_CLOUD_PRODUCT, session.user.id, { requestId: newRequest.id }));
 
-  proms.push(sendEditRequestEmails(request, session.user.name));
+  proms.push(sendPublicCloudNatsMessage(newRequest));
+
+  proms.push(sendEditRequestEmails(newRequest, session.user.name));
 
   await Promise.all(proms);
 
-  return OkResponse(request);
+  return OkResponse(newRequest);
 }

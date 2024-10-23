@@ -11,7 +11,6 @@ import {
   excludePublicProductUsers,
   getLastClosedPublicCloudRequest,
 } from '@/services/db';
-import { PublicCloudRequestDetail } from '@/types/public-cloud';
 import { deletePathParamSchema } from '../[licencePlate]/schema';
 
 export default async function deleteOp({
@@ -37,7 +36,7 @@ export default async function deleteOp({
   const previousRequest = await getLastClosedPublicCloudRequest(rest.licencePlate);
 
   const productData = { ...rest, status: ProjectStatus.INACTIVE };
-  const request: PublicCloudRequestDetail | null = await prisma.publicCloudRequest.create({
+  const newRequest = await prisma.publicCloudRequest.create({
     data: {
       type: PublicCloudRequestType.DELETE,
       decisionStatus: DecisionStatus.PENDING,
@@ -52,12 +51,10 @@ export default async function deleteOp({
     include: publicCloudRequestDetailInclude,
   });
 
-  if (request) {
-    await Promise.all([
-      sendDeleteRequestEmails(request, session.user.name),
-      createEvent(EventType.DELETE_PUBLIC_CLOUD_PRODUCT, session.user.id, { requestId: request.id }),
-    ]);
-  }
+  await Promise.all([
+    createEvent(EventType.DELETE_PUBLIC_CLOUD_PRODUCT, session.user.id, { requestId: newRequest.id }),
+    sendDeleteRequestEmails(newRequest, session.user.name),
+  ]);
 
-  return OkResponse(request);
+  return OkResponse(newRequest);
 }

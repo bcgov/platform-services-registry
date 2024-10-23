@@ -12,7 +12,6 @@ import {
   excludePrivateProductUsers,
   getLastClosedPrivateCloudRequest,
 } from '@/services/db';
-import { PrivateCloudRequestDetail } from '@/types/private-cloud';
 import { deletePathParamSchema } from '../[licencePlate]/schema';
 
 export default async function deleteOp({
@@ -64,17 +63,15 @@ export default async function deleteOp({
     requestCreateData.createdBy = { connect: { email: session.user.email } };
   }
 
-  const request: PrivateCloudRequestDetail = await prisma.privateCloudRequest.create({
+  const newRequest = await prisma.privateCloudRequest.create({
     data: requestCreateData,
     include: privateCloudRequestDetailInclude,
   });
 
-  if (request) {
-    await Promise.all([
-      createEvent(EventType.DELETE_PRIVATE_CLOUD_PRODUCT, session.user.id, { requestId: request.id }),
-      sendDeleteRequestEmails(request, session.user.name),
-    ]);
-  }
+  await Promise.all([
+    createEvent(EventType.DELETE_PRIVATE_CLOUD_PRODUCT, session.user.id, { requestId: newRequest.id }),
+    sendDeleteRequestEmails(newRequest, session.user.name),
+  ]);
 
-  return OkResponse(request);
+  return OkResponse(newRequest);
 }
