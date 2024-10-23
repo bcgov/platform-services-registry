@@ -6,148 +6,104 @@ import _truncate from 'lodash-es/truncate';
 import React from 'react';
 import TableHeader from '@/components/generic/table/TableHeader';
 import TruncatedTooltip from '@/components/table/TruncatedTooltip';
-import { getTotalMetrics, Pod, formatMemory, formatCpu } from '@/helpers/resource-metrics';
+import { formatBinaryMetric, formatCpu, TransformedPodData, TransformedPVCData } from '@/helpers/resource-metrics';
+
+interface MetricsSummary {
+  totalUsage: number;
+  totalRequest: number;
+  totalLimit: number;
+}
 
 interface TableProps {
-  pods: Pod[];
+  rows: (TransformedPodData | TransformedPVCData)[];
   resource: ResourceType;
   title: string;
+  totalMetrics: MetricsSummary;
 }
 
-type TransformedData = {
-  podName: string;
-  containerName: string;
-  usage: {
-    cpu: number;
-    memory: number;
-    storage: number;
-  };
-  limits: {
-    cpu: number;
-    memory: number;
-    storage: number;
-  };
-  requests: {
-    cpu: number;
-    memory: number;
-    storage: number;
-  };
+const isPVC = (row: TransformedPodData | TransformedPVCData): row is TransformedPVCData => 'pvName' in row;
+
+const formatMetric = (resource: ResourceType, value: number | string) => {
+  switch (resource) {
+    case ResourceType.cpu:
+      return formatCpu(value as number);
+    case ResourceType.memory:
+    case ResourceType.storage:
+      return formatBinaryMetric(value as number);
+    default:
+      return value.toString();
+  }
 };
 
-function transformPodData(data: Pod[]) {
-  const transformedData: TransformedData[] = [];
-  data.forEach((pod) => {
-    pod.containers.forEach((container) => {
-      transformedData.push({
-        podName: pod.podName,
-        containerName: container.name,
-        usage: {
-          cpu: container.usage.cpu,
-          memory: container.usage.memory,
-          storage: -1,
-        },
-        limits: {
-          cpu: container.limits.cpu,
-          memory: container.limits.memory,
-          storage: -1,
-        },
-        requests: {
-          cpu: container.requests.cpu,
-          memory: container.requests.memory,
-          storage: -1,
-        },
-      });
-    });
-  });
-
-  return transformedData;
-}
-
-export default function MetricsTable({ pods, resource, title }: TableProps) {
-  const rows = [
-    {
-      podName: 'Pod Name',
-      containerName: 'Container Name',
-      usage: { cpu: 'CPU Usage', memory: 'Memory Usage', storage: '' },
-      limits: { cpu: 'CPU Limits', memory: 'Memory Limits', storage: '' },
-      requests: { cpu: 'CPU Requests', memory: 'Memory Requests', storage: '' },
-    },
-    ...transformPodData(pods),
-  ];
-  const { totalUsage, totalLimit } = getTotalMetrics(pods, resource);
-
-  const summaryNums = [
-    {
-      totalLimit: `Total ${resource} limit for all pods`,
-      totalUsage: `Total ${resource} usage for all pods`,
-    },
-    {
-      totalLimit,
-      totalUsage,
-    },
-  ];
-
-  const formatter = resource === ResourceType.cpu ? formatCpu : formatMemory;
-
+export default function MetricsTable({ rows, resource, title, totalMetrics }: TableProps) {
   return (
     <>
       <div className="border-2 rounded-xl overflow-hidden">
         <TableHeader title={title} />
         <div className="divide-y divide-grey-200/5">
           {rows.map((row, index) => (
-            <div key={row.podName}>
+            <div key={row.name}>
               <div
                 className={classNames(
                   'hover:bg-gray-100 transition-colors duration-200 grid grid-cols-1 md:grid-cols-6 lg:grid-cols-12 gap-4 px-4 py-3 sm:px-6 lg:px-8',
-                  {
-                    'bg-gray-100': index === 0,
-                  },
+                  { 'bg-gray-100': index === 0 },
                 )}
               >
                 <div className="md:col-span-1 lg:col-span-3">
-                  <TruncatedTooltip label={row.podName}>
-                    <span className={`${index === 0 && 'font-bold'}`}>{_truncate(row.podName, { length: 100 })}</span>
+                  <TruncatedTooltip label={row.name}>
+                    <span className={classNames({ 'font-bold': index === 0 })}>
+                      {_truncate(row.name, { length: 100 })}
+                    </span>
                   </TruncatedTooltip>
                 </div>
                 <div className="md:col-span-1 lg:col-span-3">
-                  <TruncatedTooltip label={row.containerName}>
+                  <TruncatedTooltip label={isPVC(row) ? row.pvName : row.containerName}>
                     <span className={classNames({ 'font-bold': index === 0 })}>
-                      {_truncate(row.containerName, { length: 100 })}
+                      {_truncate(isPVC(row) ? row.pvName : row.containerName, { length: 100 })}
                     </span>
                   </TruncatedTooltip>
                 </div>
                 <div className={classNames('md:col-span-1 lg:col-span-2', { 'font-bold': index === 0 })}>
-                  {index === 0 ? row.usage[resource] : formatter(row.usage[resource] as any)}
+                  {isPVC(row)
+                    ? row.storageClassName
+                    : index === 0
+                      ? (row.usage as any)?.[resource]
+                      : formatMetric(resource, (row.usage as any)?.[resource])}
                 </div>
                 <div className={classNames('md:col-span-1 lg:col-span-2', { 'font-bold': index === 0 })}>
-                  {index === 0 ? row.limits[resource] : formatter(row.limits[resource] as any)}
+                  {isPVC(row)
+                    ? index === 0
+                      ? row.usage
+                      : formatMetric(resource, row.usage)
+                    : index === 0
+                      ? (row.requests as any)?.[resource]
+                      : formatMetric(resource, (row.requests as any)?.[resource])}
                 </div>
                 <div className={classNames('md:col-span-1 lg:col-span-2', { 'font-bold': index === 0 })}>
-                  {index === 0 ? row.requests[resource] : formatter(row.requests[resource] as any)}
+                  {isPVC(row)
+                    ? index === 0
+                      ? row.limits
+                      : formatMetric(resource, row.limits)
+                    : index === 0
+                      ? (row.limits as any)?.[resource]
+                      : formatMetric(resource, (row.limits as any)?.[resource])}
                 </div>
               </div>
             </div>
           ))}
         </div>
       </div>
+
       <div className="border-2 rounded-xl max-w-2xl my-6">
-        <div className="divide-y divide-grey-200/5 ">
-          {summaryNums.map((row, index) => (
-            <div key={row.totalLimit}>
-              <div
-                className={`grid grid-cols-1 md:grid-cols-6  lg:grid-cols-6 gap-4 px-4 py-3 sm:px-6 lg:px-8 ${
-                  index === 0 && 'bg-gray-100'
-                }`}
-              >
-                <div className={classNames('md:col-span-3 lg:col-span-3 text-center', { 'font-bold': index === 0 })}>
-                  {index === 0 ? row.totalLimit : formatter(row.totalLimit as any)}
-                </div>
-                <div className={classNames('md:col-span-3 lg:col-span-3 text-center', { 'font-bold': index === 0 })}>
-                  {index === 0 ? row.totalUsage : formatter(row.totalUsage as any)}
-                </div>
-              </div>
+        <div className="divide-y divide-grey-200/5">
+          <div className="grid grid-cols-1 md:grid-cols-6 lg:grid-cols-6 gap-4 px-4 py-3 sm:px-6 lg:px-8 bg-gray-100">
+            <div className="md:col-span-3 lg:col-span-3 text-center font-bold">
+              Total {resource} limit: {formatMetric(resource, totalMetrics.totalLimit)}
             </div>
-          ))}
+            <div className="md:col-span-3 lg:col-span-3 text-center font-bold">
+              Total {resource} usage: {formatMetric(resource, totalMetrics.totalUsage)}
+            </div>
+          </div>
         </div>
       </div>
     </>
