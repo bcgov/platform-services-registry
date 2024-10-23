@@ -1,11 +1,14 @@
-import { DecisionStatus } from '@prisma/client';
+import { DecisionStatus, Cluster, RequestType, EventType } from '@prisma/client';
 import { Session } from 'next-auth';
 import { TypeOf } from 'zod';
+import prisma from '@/core/prisma';
 import { OkResponse, UnauthorizedResponse } from '@/core/responses';
+import { getQuotaChangeStatus } from '@/helpers/auto-approval-check';
 import { sendRequestNatsMessage } from '@/helpers/nats-message';
-import editRequest from '@/request-actions/private-cloud/edit-request';
+import { comparePrivateProductData } from '@/helpers/product-change';
 import { sendEditRequestEmails, sendRequestApprovalEmails } from '@/services/ches/private-cloud';
-import { models } from '@/services/db';
+import { createEvent, privateCloudRequestDetailInclude, getLastClosedPrivateCloudRequest, models } from '@/services/db';
+import { upsertUsers } from '@/services/db/user';
 import { PrivateCloudEditRequestBody } from '@/validation-schemas/private-cloud';
 import { putPathParamSchema } from '../[licencePlate]/schema';
 
@@ -26,27 +29,95 @@ export default async function updateOp({
     return UnauthorizedResponse();
   }
 
-  const request = await editRequest(licencePlate, body, session);
+  const { requestComment, quotaContactName, quotaContactEmail, quotaJustification, ...rest } = body;
 
-  if (request.decisionStatus === DecisionStatus.PENDING) {
-    await sendEditRequestEmails(request, session.user.name);
-    return OkResponse(request);
+  await upsertUsers([body.projectOwner.email, body.primaryTechnicalLead.email, body.secondaryTechnicalLead?.email]);
+
+  const productData = {
+    ...rest,
+    licencePlate: product.licencePlate,
+    status: product.status,
+    cluster: product.cluster,
+    createdAt: product.createdAt,
+    projectOwner: { connect: { email: body.projectOwner.email } },
+    primaryTechnicalLead: { connect: { email: body.primaryTechnicalLead.email } },
+    secondaryTechnicalLead: body.secondaryTechnicalLead
+      ? { connect: { email: body.secondaryTechnicalLead.email } }
+      : undefined,
+  };
+
+  let decisionStatus: DecisionStatus;
+
+  const hasGolddrEnabledChanged = product.cluster === Cluster.GOLD && product.golddrEnabled !== body.golddrEnabled;
+
+  const quotaChangeStatus = await getQuotaChangeStatus({
+    licencePlate: product.licencePlate,
+    cluster: product.cluster,
+    currentQuota: product,
+    requestedQuota: body,
+  });
+
+  // If there is no quota change or no quota upgrade and no golddr flag changes, the request is automatically approved
+  if (quotaChangeStatus.isEligibleForAutoApproval && !hasGolddrEnabledChanged) {
+    decisionStatus = DecisionStatus.AUTO_APPROVED;
+  } else {
+    decisionStatus = DecisionStatus.PENDING;
   }
 
-  // The EDIT request is Auto-Approved
+  // Retrieve the latest request data to acquire the decision data ID that can be assigned to the incoming request's original data.
+  const previousRequest = await getLastClosedPrivateCloudRequest(product.licencePlate);
+
+  const { changes, ...otherChangeMeta } = comparePrivateProductData(rest, previousRequest?.decisionData);
+
+  const quotaChangeInfo = quotaChangeStatus.isEligibleForAutoApproval
+    ? {}
+    : {
+        quotaContactName,
+        quotaContactEmail,
+        quotaJustification,
+      };
+
+  const newRequest = await prisma.privateCloudRequest.create({
+    data: {
+      active: true,
+      type: RequestType.EDIT,
+      decisionStatus,
+      decisionDate: decisionStatus === DecisionStatus.AUTO_APPROVED ? new Date() : null,
+      isQuotaChanged: quotaChangeStatus.hasChange,
+      quotaUpgradeResourceDetailList: quotaChangeStatus.resourceDetailList,
+      ...quotaChangeInfo,
+      createdBy: { connect: { email: session.user.email } },
+      licencePlate: product.licencePlate,
+      requestComment,
+      changes: otherChangeMeta,
+      originalData: { connect: { id: previousRequest?.decisionDataId } },
+      decisionData: { create: productData },
+      requestData: { create: productData },
+      project: { connect: { licencePlate: product.licencePlate } },
+    },
+    include: privateCloudRequestDetailInclude,
+  });
+
+  await createEvent(EventType.UPDATE_PRIVATE_CLOUD_PRODUCT, session.user.id, { requestId: newRequest.id });
+
+  if (newRequest.decisionStatus === DecisionStatus.PENDING) {
+    await sendEditRequestEmails(newRequest, session.user.name);
+    return OkResponse(newRequest);
+  }
+
   const proms = [];
 
   proms.push(
-    sendRequestNatsMessage(request, {
-      projectOwner: { email: request.originalData?.projectOwner.email },
-      primaryTechnicalLead: { email: request.originalData?.primaryTechnicalLead.email },
-      secondaryTechnicalLead: { email: request.originalData?.secondaryTechnicalLead?.email },
+    sendRequestNatsMessage(newRequest, {
+      projectOwner: { email: newRequest.originalData?.projectOwner.email },
+      primaryTechnicalLead: { email: newRequest.originalData?.primaryTechnicalLead.email },
+      secondaryTechnicalLead: { email: newRequest.originalData?.secondaryTechnicalLead?.email },
     }),
   );
 
-  proms.push(sendRequestApprovalEmails(request, session.user.name));
+  proms.push(sendRequestApprovalEmails(newRequest, session.user.name));
 
   await Promise.all(proms);
 
-  return OkResponse(request);
+  return OkResponse(newRequest);
 }
