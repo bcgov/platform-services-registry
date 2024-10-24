@@ -17,17 +17,17 @@ export default function Layout({ params, children }: { params: { licencePlate: s
             },
             {
               value: 'zapscan',
-              label: 'Zap Scan Results',
+              label: 'Zap scan results',
               href: `/private-cloud/products/${licencePlate}/security/zapscan`,
             },
             {
               value: 'sonarscan',
-              label: 'Sonar Scan Results',
+              label: 'Sonar scan results',
               href: `/private-cloud/products/${licencePlate}/security/sonarscan`,
             },
             {
               value: 'acs',
-              label: 'ACS Results',
+              label: 'ACS results',
               href: `/private-cloud/products/${licencePlate}/security/acs`,
             },
           ]}

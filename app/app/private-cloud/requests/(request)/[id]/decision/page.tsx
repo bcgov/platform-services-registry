@@ -82,7 +82,7 @@ export default privateCloudRequestDecision(({ pathParams, queryParams, session, 
 
       return zodResolver(privateCloudRequestDecisionBodySchema)(...args);
     },
-    values: {
+    defaultValues: {
       decisionComment: '',
       decision: '',
       type: privateSnap.currentRequest?.type,

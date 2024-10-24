@@ -24,8 +24,8 @@ export async function deleteKeycloakApiAccount() {
   return result;
 }
 
-export async function createKeycloakTeamApiAccount(roles: string[], users: { email: string }[]) {
-  const result = await instance.post('/api-accounts/team', { roles, users }).then((res) => res.data);
+export async function createKeycloakTeamApiAccount(name: string, roles: string[], users: { email: string }[]) {
+  const result = await instance.post('/api-accounts/team', { name, roles, users }).then((res) => res.data);
   return result as { client: ClientRepresentation; user: { notfound: string[] } };
 }
 
@@ -39,8 +39,13 @@ export async function getKeycloakApiTeamAccount(clientId: string) {
   return result;
 }
 
-export async function updateKeycloakApiTeamAccount(clientId: string, roles: string[], users: { email: string }[]) {
-  const result = await instance.put(`/api-accounts/team/${clientId}`, { roles, users }).then((res) => res.data);
+export async function updateKeycloakApiTeamAccount(
+  clientId: string,
+  name: string,
+  roles: string[],
+  users: { email: string }[],
+) {
+  const result = await instance.put(`/api-accounts/team/${clientId}`, { name, roles, users }).then((res) => res.data);
   return result as { client: ClientRepresentation; user: { notfound: string[] } };
 }
 

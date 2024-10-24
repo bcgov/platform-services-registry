@@ -28,7 +28,7 @@ export default function TemporaryProductAlert({
     <Alert
       variant="outline"
       color="red"
-      title="Temporary Product"
+      title="Temporary product"
       icon={<IconExclamationCircle className="" />}
       className="mt-1"
     >

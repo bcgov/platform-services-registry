@@ -17,6 +17,6 @@ export const POST = createApiHandler({
     body: teamApiAccountSchema,
   },
 })(async ({ session, body }) => {
-  const res = await createOp({ session, roles: body.roles, users: body.users });
+  const res = await createOp({ session, name: body.name, roles: body.roles, users: body.users });
   return res;
 });

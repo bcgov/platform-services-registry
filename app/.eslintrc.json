@@ -56,6 +56,7 @@
     "n/no-process-exit": "off",
     "n/no-unsupported-features/node-builtins": "off",
     "react/react-in-jsx-scope": "off",
+    "react/prop-types": "off",
     "prefer-destructuring": "off",
     "sort-imports": "off",
     "spaced-comment": ["error", "always", { "markers": ["/"] }]

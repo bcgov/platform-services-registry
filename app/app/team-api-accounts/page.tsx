@@ -48,10 +48,12 @@ export default TeamApiAccountsPage(({ session }) => {
       return (
         <Table.Tr key={account.id}>
           <Table.Td>
-            <span className="whitespace-nowrap">{account.clientId}</span>
-            <Badge color="green" radius="sm" className="ml-1">
-              Active
-            </Badge>
+            <span className="whitespace-nowrap">
+              {account.name}{' '}
+              <Badge color="green" radius="sm" className="ml-1">
+                Active
+              </Badge>
+            </span>
           </Table.Td>
 
           <Table.Td>
@@ -70,6 +72,7 @@ export default TeamApiAccountsPage(({ session }) => {
                   clientUid: account.id!,
                   clientId: account.clientId!,
                   clientSecret: account.secret!,
+                  name: account.name!,
                   roles,
                 });
               }}
@@ -80,7 +83,7 @@ export default TeamApiAccountsPage(({ session }) => {
               <Button
                 variant="outline"
                 onClick={async () => {
-                  await openManageAccountModal({ clientUid: account.id!, roles });
+                  await openManageAccountModal({ clientUid: account.id!, roles, name: account.name ?? '' });
                   await refetchApiAccounts();
                 }}
               >
@@ -114,7 +117,7 @@ export default TeamApiAccountsPage(({ session }) => {
       <Table striped verticalSpacing="sm">
         <Table.Thead>
           <Table.Tr>
-            <Table.Th>Client ID</Table.Th>
+            <Table.Th>Name</Table.Th>
             <Table.Th>Roles</Table.Th>
             <Table.Th></Table.Th>
           </Table.Tr>

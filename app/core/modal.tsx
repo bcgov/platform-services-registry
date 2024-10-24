@@ -6,7 +6,7 @@ import _isString from 'lodash-es/isString';
 import React, { useMemo } from 'react';
 
 // Interface for extra props to be passed to the modal component
-export interface ExtraModalProps {
+interface ExtraModalProps {
   closeModal: () => void; // Function to close the modal
 }
 

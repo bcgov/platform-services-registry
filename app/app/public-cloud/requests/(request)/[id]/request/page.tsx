@@ -93,7 +93,7 @@ export default publicCloudProductRequest(({ pathParams, queryParams, session, ro
 
       return zodResolver(publicCloudRequestDecisionBodySchema)(...args);
     },
-    values: {
+    defaultValues: {
       decisionComment: '',
       decision: '',
       type: publicSnap.currentRequest?.type,
@@ -164,7 +164,7 @@ export default publicCloudProductRequest(({ pathParams, queryParams, session, ro
     },
     {
       LeftIcon: IconReceipt2,
-      label: 'Billing (account Coding)',
+      label: 'Billing (account coding)',
       description: '',
       Component: AccountCoding,
       componentArgs: {

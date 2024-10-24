@@ -45,7 +45,7 @@ export default publicCloudRequest(({ pathParams }) => {
 
   const methods = useForm({
     resolver: zodResolver(publicCloudRequestDecisionBodySchema),
-    values: { comment: '', decision: '', ...request },
+    defaultValues: { comment: '', decision: '', ...request },
   });
 
   if (!request) return null;
@@ -88,7 +88,7 @@ export default publicCloudRequest(({ pathParams }) => {
     },
     {
       LeftIcon: IconReceipt2,
-      label: 'Billing (account Coding)',
+      label: 'Billing (account coding)',
       description: '',
       Component: AccountCoding,
       componentArgs: { accountCodingInitial: request.decisionData.billing.accountCoding, disabled: true },
