@@ -7,19 +7,21 @@ on:
 
 env:
   GITHUB_REGISTRY: ghcr.io
+  IMAGE_TAG: ${{ github.ref_name}}
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
 
+permissions:
+  packages: write
+  contents: write
+  security-events: write
+
 jobs:
   build-push-app:
     runs-on: ubuntu-22.04
     timeout-minutes: 10
-    permissions:
-      contents: read
-      packages: write
-
     steps:
     - uses: hmarr/debug-action@f7318c783045ac39ed9bb497e22ce835fdafbfe6
     - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
@@ -43,12 +45,27 @@ jobs:
           type=semver,pattern={{major}}.{{minor}}
           type=semver,pattern={{major}}
 
+  scan-app:
+    needs: [build-push-app]
+    runs-on: ubuntu-22.04
+    timeout-minutes: 10
+
+    steps:
+    - uses: hmarr/debug-action@f7318c783045ac39ed9bb497e22ce835fdafbfe6
+    - uses: actions/checkout@163217dfcd28294438ea1c1c149cfaf66eec283e
+    - name: Raw version
+      run: |
+        vtag=${{ env.IMAGE_TAG }}
+        IMAGE_TAG=${vtag//v}
+        echo "IMAGE_TAG=$IMAGE_TAG" >> $GITHUB_ENV
+    - name: Scan image
+      uses: ./.github/actions/scan-docker-image
+      with:
+        image: ${{ env.GITHUB_REGISTRY }}/bcgov/pltsvc:${{env.IMAGE_TAG}}
+
   build-push-pre-prisma:
     runs-on: ubuntu-22.04
     timeout-minutes: 10
-    permissions:
-      contents: read
-      packages: write
 
     steps:
     - uses: hmarr/debug-action@f7318c783045ac39ed9bb497e22ce835fdafbfe6
@@ -71,13 +88,26 @@ jobs:
           type=semver,pattern={{major}}.{{minor}}
           type=semver,pattern={{major}}
 
+  scan-pre-prisma:
+    needs: [build-push-pre-prisma]
+    runs-on: ubuntu-22.04
+    timeout-minutes: 10
+    steps:
+    - uses: hmarr/debug-action@f7318c783045ac39ed9bb497e22ce835fdafbfe6
+    - uses: actions/checkout@163217dfcd28294438ea1c1c149cfaf66eec283e
+    - name: Raw version
+      run: |
+        vtag=${{ env.IMAGE_TAG }}
+        IMAGE_TAG=${vtag//v}
+        echo "IMAGE_TAG=$IMAGE_TAG" >> $GITHUB_ENV
+    - name: Scan image
+      uses: ./.github/actions/scan-docker-image
+      with:
+        image: ${{ env.GITHUB_REGISTRY }}/bcgov/pltsvc-pre-prisma:${{ env.IMAGE_TAG }}
+
   build-push-pre-data-migrations:
     runs-on: ubuntu-22.04
     timeout-minutes: 10
-    permissions:
-      contents: read
-      packages: write
-
     steps:
     - uses: hmarr/debug-action@f7318c783045ac39ed9bb497e22ce835fdafbfe6
     - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
@@ -99,12 +129,26 @@ jobs:
           type=semver,pattern={{major}}.{{minor}}
           type=semver,pattern={{major}}
 
+  scan-pre-data-migrations:
+    needs: [build-push-pre-data-migrations]
+    runs-on: ubuntu-22.04
+    timeout-minutes: 10
+    steps:
+    - uses: hmarr/debug-action@f7318c783045ac39ed9bb497e22ce835fdafbfe6
+    - uses: actions/checkout@163217dfcd28294438ea1c1c149cfaf66eec283e
+    - name: Raw version
+      run: |
+        vtag=${{ env.IMAGE_TAG }}
+        IMAGE_TAG=${vtag//v}
+        echo "IMAGE_TAG=$IMAGE_TAG" >> $GITHUB_ENV
+    - name: Scan image
+      uses: ./.github/actions/scan-docker-image
+      with:
+        image: ${{ env.GITHUB_REGISTRY }}/bcgov/pltsvc-pre-data-migrations:${{ env.IMAGE_TAG }}
+
   build-push-email:
     runs-on: ubuntu-22.04
     timeout-minutes: 10
-    permissions:
-      contents: read
-      packages: write
 
     steps:
     - uses: hmarr/debug-action@f7318c783045ac39ed9bb497e22ce835fdafbfe6
@@ -126,6 +170,23 @@ jobs:
           type=semver,pattern={{version}}
           type=semver,pattern={{major}}.{{minor}}
           type=semver,pattern={{major}}
+
+  scan-email:
+    needs: [build-push-email]
+    runs-on: ubuntu-22.04
+    timeout-minutes: 10
+    steps:
+    - uses: hmarr/debug-action@f7318c783045ac39ed9bb497e22ce835fdafbfe6
+    - uses: actions/checkout@163217dfcd28294438ea1c1c149cfaf66eec283e
+    - name: Raw version
+      run: |
+        vtag=${{ env.IMAGE_TAG }}
+        IMAGE_TAG=${vtag//v}
+        echo "IMAGE_TAG=$IMAGE_TAG" >> $GITHUB_ENV
+    - name: Scan image
+      uses: ./.github/actions/scan-docker-image
+      with:
+        image: ${{ env.GITHUB_REGISTRY }}/bcgov/pltsvc-email:${{ env.IMAGE_TAG }}
 
   deploy:
     needs: [build-push-app, build-push-pre-prisma, build-push-pre-data-migrations, build-push-email]
@@ -151,7 +212,7 @@ jobs:
 
     - name: Deploy apps with Helm chart
       run: |
-        vtag=${{ github.ref_name }}
+        vtag=${{ env.IMAGE_TAG }}
         make upgrade \
         NAMESPACE=${{ vars.OPENSHIFT_NAMESPACE }} \
         IMAGE_TAG=${vtag//v}
