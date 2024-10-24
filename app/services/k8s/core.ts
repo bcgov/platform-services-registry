@@ -1,7 +1,15 @@
 import { KubeConfig, CoreV1Api, Metrics } from '@kubernetes/client-node';
 import { Cluster } from '@prisma/client';
-import axios from 'axios';
-import { KLAB_METRICS_READER_TOKEN, SILVER_METRICS_READER_TOKEN } from '@/config';
+import {
+  CLAB_METRICS_READER_TOKEN,
+  KLAB_METRICS_READER_TOKEN,
+  KLAB2_METRICS_READER_TOKEN,
+  GOLDDR_METRICS_READER_TOKEN,
+  GOLD_METRICS_READER_TOKEN,
+  SILVER_METRICS_READER_TOKEN,
+  EMERALD_METRICS_READER_TOKEN,
+  GOLDDR_SERVICE_ACCOUNT_TOKEN,
+} from '@/config';
 
 function configureKubeConfig(cluster: string, token: string) {
   const kc = new KubeConfig();
@@ -34,12 +42,12 @@ function configureKubeConfig(cluster: string, token: string) {
 
 const k8sConfigs = {
   [Cluster.KLAB]: configureKubeConfig(Cluster.KLAB, KLAB_METRICS_READER_TOKEN),
-  [Cluster.CLAB]: configureKubeConfig(Cluster.CLAB, KLAB_METRICS_READER_TOKEN),
-  [Cluster.KLAB2]: configureKubeConfig(Cluster.KLAB2, KLAB_METRICS_READER_TOKEN),
-  [Cluster.GOLDDR]: configureKubeConfig(Cluster.GOLDDR, KLAB_METRICS_READER_TOKEN),
-  [Cluster.GOLD]: configureKubeConfig(Cluster.GOLD, KLAB_METRICS_READER_TOKEN),
+  [Cluster.CLAB]: configureKubeConfig(Cluster.CLAB, CLAB_METRICS_READER_TOKEN),
+  [Cluster.KLAB2]: configureKubeConfig(Cluster.KLAB2, KLAB2_METRICS_READER_TOKEN),
+  [Cluster.GOLDDR]: configureKubeConfig(Cluster.GOLDDR, GOLDDR_METRICS_READER_TOKEN),
+  [Cluster.GOLD]: configureKubeConfig(Cluster.GOLD, SILVER_METRICS_READER_TOKEN),
   [Cluster.SILVER]: configureKubeConfig(Cluster.SILVER, SILVER_METRICS_READER_TOKEN),
-  [Cluster.EMERALD]: configureKubeConfig(Cluster.EMERALD, KLAB_METRICS_READER_TOKEN),
+  [Cluster.EMERALD]: configureKubeConfig(Cluster.EMERALD, EMERALD_METRICS_READER_TOKEN),
 };
 
 export function getK8sClients(cluster: Cluster) {
