@@ -8,7 +8,6 @@ import {
   GOLD_METRICS_READER_TOKEN,
   SILVER_METRICS_READER_TOKEN,
   EMERALD_METRICS_READER_TOKEN,
-  GOLDDR_SERVICE_ACCOUNT_TOKEN,
 } from '@/config';
 
 function configureKubeConfig(cluster: string, token: string) {
@@ -45,7 +44,7 @@ const k8sConfigs = {
   [Cluster.CLAB]: configureKubeConfig(Cluster.CLAB, CLAB_METRICS_READER_TOKEN),
   [Cluster.KLAB2]: configureKubeConfig(Cluster.KLAB2, KLAB2_METRICS_READER_TOKEN),
   [Cluster.GOLDDR]: configureKubeConfig(Cluster.GOLDDR, GOLDDR_METRICS_READER_TOKEN),
-  [Cluster.GOLD]: configureKubeConfig(Cluster.GOLD, SILVER_METRICS_READER_TOKEN),
+  [Cluster.GOLD]: configureKubeConfig(Cluster.GOLD, GOLD_METRICS_READER_TOKEN),
   [Cluster.SILVER]: configureKubeConfig(Cluster.SILVER, SILVER_METRICS_READER_TOKEN),
   [Cluster.EMERALD]: configureKubeConfig(Cluster.EMERALD, EMERALD_METRICS_READER_TOKEN),
 };
