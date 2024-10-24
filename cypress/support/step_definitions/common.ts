@@ -70,7 +70,7 @@ When(/^User clicks button "(.*)"$/, (buttonText: string) => {
 });
 
 When(/^User clicks modal window button "(.*)"$/, (buttonText: string) => {
-  cy.get('div[aria-modal="true"]').contains('button', buttonText).scrollIntoView().click();
+  cy.get('div[aria-modal="true"], section[role="dialog"]').contains('button', buttonText).scrollIntoView().click();
 });
 
 When(/^User clicks tab "(.*)"$/, (tabText: string) => {
