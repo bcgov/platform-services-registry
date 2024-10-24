@@ -18,14 +18,15 @@ concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
 
+permissions:
+  packages: write
+  contents: write
+  security-events: write
+
 jobs:
   build-push-app:
     runs-on: ubuntu-22.04
     timeout-minutes: 10
-    permissions:
-      contents: read
-      packages: write
-
     steps:
     - uses: hmarr/debug-action@f7318c783045ac39ed9bb497e22ce835fdafbfe6
     - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
@@ -48,13 +49,22 @@ jobs:
           type=ref,event=branch
           type=sha,format=long,prefix=,suffix=
 
+  scan-app:
+    needs: [build-push-app]
+    runs-on: ubuntu-22.04
+    continue-on-error: true
+    timeout-minutes: 10
+    steps:
+    - uses: hmarr/debug-action@f7318c783045ac39ed9bb497e22ce835fdafbfe6
+    - uses: actions/checkout@163217dfcd28294438ea1c1c149cfaf66eec283e
+    - name: Scan image
+      uses: ./.github/actions/scan-docker-image
+      with:
+        image: ${{ env.GITHUB_REGISTRY }}/bcgov/pltsvc:${{ github.sha }}
+
   build-push-pre-prisma:
     runs-on: ubuntu-22.04
     timeout-minutes: 10
-    permissions:
-      contents: read
-      packages: write
-
     steps:
     - uses: hmarr/debug-action@f7318c783045ac39ed9bb497e22ce835fdafbfe6
     - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
@@ -75,13 +85,22 @@ jobs:
           type=ref,event=branch
           type=sha,format=long,prefix=,suffix=
 
+  scan-pre-prisma:
+    needs: [build-push-pre-prisma]
+    runs-on: ubuntu-22.04
+    continue-on-error: true
+    timeout-minutes: 10
+    steps:
+    - uses: hmarr/debug-action@f7318c783045ac39ed9bb497e22ce835fdafbfe6
+    - uses: actions/checkout@163217dfcd28294438ea1c1c149cfaf66eec283e
+    - name: Scan image
+      uses: ./.github/actions/scan-docker-image
+      with:
+        image: ${{ env.GITHUB_REGISTRY }}/bcgov/pltsvc-pre-prisma:${{ github.sha }}
+
   build-push-pre-data-migrations:
     runs-on: ubuntu-22.04
     timeout-minutes: 10
-    permissions:
-      contents: read
-      packages: write
-
     steps:
     - uses: hmarr/debug-action@f7318c783045ac39ed9bb497e22ce835fdafbfe6
     - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
@@ -102,13 +121,23 @@ jobs:
           type=ref,event=branch
           type=sha,format=long,prefix=,suffix=
 
+  scan-pre-data-migrations:
+    needs: [build-push-pre-data-migrations]
+    runs-on: ubuntu-22.04
+    continue-on-error: true
+    timeout-minutes: 10
+    steps:
+    - uses: hmarr/debug-action@f7318c783045ac39ed9bb497e22ce835fdafbfe6
+    - uses: actions/checkout@163217dfcd28294438ea1c1c149cfaf66eec283e
+    - name: Scan image
+      uses: ./.github/actions/scan-docker-image
+      with:
+        image: ${{ env.GITHUB_REGISTRY }}/bcgov/pltsvc-pre-data-migrations:${{ github.sha }}
+
+
   build-push-email:
     runs-on: ubuntu-22.04
     timeout-minutes: 10
-    permissions:
-      contents: read
-      packages: write
-
     steps:
     - uses: hmarr/debug-action@f7318c783045ac39ed9bb497e22ce835fdafbfe6
     - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
@@ -129,13 +158,22 @@ jobs:
           type=ref,event=branch
           type=sha,format=long,prefix=,suffix=
 
+  scan-email:
+    needs: [build-push-email]
+    runs-on: ubuntu-22.04
+    continue-on-error: true
+    timeout-minutes: 10
+    steps:
+    - uses: hmarr/debug-action@f7318c783045ac39ed9bb497e22ce835fdafbfe6
+    - uses: actions/checkout@163217dfcd28294438ea1c1c149cfaf66eec283e
+    - name: Scan image
+      uses: ./.github/actions/scan-docker-image
+      with:
+        image: ${{ env.GITHUB_REGISTRY }}/bcgov/pltsvc-email:${{ github.sha }}
+
   build-push-m365proxy:
     runs-on: ubuntu-22.04
     timeout-minutes: 5
-    permissions:
-      contents: read
-      packages: write
-
     steps:
     - uses: hmarr/debug-action@f7318c783045ac39ed9bb497e22ce835fdafbfe6
     - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
@@ -153,13 +191,22 @@ jobs:
           type=ref,event=branch
           type=sha,format=long,prefix=,suffix=
 
+  scan-m365proxy:
+    needs: [build-push-m365proxy]
+    runs-on: ubuntu-22.04
+    continue-on-error: true
+    timeout-minutes: 10
+    steps:
+    - uses: hmarr/debug-action@f7318c783045ac39ed9bb497e22ce835fdafbfe6
+    - uses: actions/checkout@163217dfcd28294438ea1c1c149cfaf66eec283e
+    - name: Scan image
+      uses: ./.github/actions/scan-docker-image
+      with:
+        image: ${{ env.GITHUB_REGISTRY }}/bcgov/pltsvc-m365proxy:${{ github.sha }}
+
   build-push-nats-provision:
     runs-on: ubuntu-22.04
     timeout-minutes: 10
-    permissions:
-      contents: read
-      packages: write
-
     steps:
     - uses: hmarr/debug-action@f7318c783045ac39ed9bb497e22ce835fdafbfe6
     - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
@@ -179,6 +226,19 @@ jobs:
         metadata-tags: |
           type=ref,event=branch
           type=sha,format=long,prefix=,suffix=
+
+  scan-nats-provision:
+    needs: [build-push-nats-provision]
+    runs-on: ubuntu-22.04
+    continue-on-error: true
+    timeout-minutes: 10
+    steps:
+    - uses: hmarr/debug-action@f7318c783045ac39ed9bb497e22ce835fdafbfe6
+    - uses: actions/checkout@163217dfcd28294438ea1c1c149cfaf66eec283e
+    - name: Scan image
+      uses: ./.github/actions/scan-docker-image
+      with:
+        image: ${{ env.GITHUB_REGISTRY }}/bcgov/pltsvc-nats-provision:${{ github.sha }}
 
   deploy:
     needs: [build-push-app, build-push-pre-prisma, build-push-pre-data-migrations, build-push-email, build-push-m365proxy, build-push-nats-provision]
