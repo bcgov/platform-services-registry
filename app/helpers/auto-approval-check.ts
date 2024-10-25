@@ -11,18 +11,14 @@ export interface Quotas {
   productionQuota: Quota;
 }
 
-function checkAutoApprovalEligibility({ allocation, deployment }: QuotaUpgradeResourceDetail) {
+function checkAutoApprovalEligibility({ allocation, deployment, resourceType }: QuotaUpgradeResourceDetail): boolean {
   if (deployment.usage === -1) return false;
 
-  // Check the current usage
-  if (deployment.usage / allocation.limit <= 0.85) {
-    return false;
-  }
+  const usageRatio = deployment.usage / allocation.limit;
+  const utilizationRate = deployment.usage / deployment.request;
 
-  // Check the utilization rate
-  if (deployment.usage / deployment.request < 0.35) {
-    return false;
-  }
+  if (resourceType === 'storage' && usageRatio <= 0.8) return false;
+  if (usageRatio <= 0.85 || utilizationRate < 0.35) return false;
 
   return true;
 }

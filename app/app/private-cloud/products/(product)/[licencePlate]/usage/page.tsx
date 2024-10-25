@@ -7,6 +7,13 @@ import { z } from 'zod';
 import FormSelect from '@/components/generic/select/FormSelect';
 import { GlobalRole } from '@/constants';
 import createClientPage from '@/core/client-page';
+import {
+  getTotalMetrics,
+  transformPVCData,
+  TransformedPVCData,
+  transformPodData,
+  TransformedPodData,
+} from '@/helpers/resource-metrics';
 import { getPodUsageMetrics } from '@/services/backend/private-cloud/products';
 import { usePrivateProductState } from '@/states/global';
 import MetricsTable from './MetricsTable';
@@ -44,7 +51,7 @@ export default privateCloudProductUsageMetrics(({ pathParams, queryParams, sessi
   const [environment, setenvironment] = useState('dev');
   const [, privateSnap] = usePrivateProductState();
 
-  const { data = [], isLoading } = useQuery({
+  const { data = { podMetrics: [], pvcMetrics: [] }, isLoading } = useQuery({
     queryKey: [environment, licencePlate],
     queryFn: () => getPodUsageMetrics(licencePlate, environment, privateSnap.currentProduct?.cluster || ''),
   });
@@ -52,6 +59,28 @@ export default privateCloudProductUsageMetrics(({ pathParams, queryParams, sessi
   const handleNamespaceChange = (namespace: string) => {
     setenvironment(namespace);
   };
+
+  const rowsPod: TransformedPodData[] = [
+    {
+      name: 'Pod name',
+      containerName: 'Container name',
+      usage: { cpu: 'CPU usage', memory: 'Memory usage' },
+      requests: { cpu: 'CPU requests', memory: 'Memory requests' },
+      limits: { cpu: 'CPU limits', memory: 'Memory limits' },
+    },
+    ...transformPodData(data.podMetrics),
+  ];
+  const rowsPVC: TransformedPVCData[] = [
+    {
+      name: 'PVC name',
+      storageClassName: 'Storage class name',
+      pvName: 'PV name',
+      usage: 'PVC usage',
+      limits: 'PVC limits',
+      freeInodes: 'Free inodes',
+    },
+    ...transformPVCData(data.pvcMetrics),
+  ];
 
   return (
     <div>
@@ -72,8 +101,24 @@ export default privateCloudProductUsageMetrics(({ pathParams, queryParams, sessi
         ) : (
           <>
             <LoadingOverlay visible={isLoading} zIndex={1000} overlayProps={{ radius: 'sm', blur: 2 }} />
-            <MetricsTable pods={data} resource="cpu" title="CPU Usage" />
-            <MetricsTable pods={data} resource="memory" title="Memory Usage" />
+            <MetricsTable
+              rows={rowsPod}
+              resource="cpu"
+              title="CPU Usage"
+              totalMetrics={getTotalMetrics(data.podMetrics, 'cpu')}
+            />
+            <MetricsTable
+              rows={rowsPod}
+              resource="memory"
+              title="Memory Usage"
+              totalMetrics={getTotalMetrics(data.podMetrics, 'memory')}
+            />
+            <MetricsTable
+              rows={rowsPVC}
+              resource="storage"
+              title="Storage Usage"
+              totalMetrics={getTotalMetrics(data.pvcMetrics, 'storage')}
+            />
           </>
         )}
       </Box>

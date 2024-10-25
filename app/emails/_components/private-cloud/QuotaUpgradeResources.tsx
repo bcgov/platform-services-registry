@@ -2,7 +2,7 @@ import { QuotaUpgradeResourceDetail, ResourceType, Env } from '@prisma/client';
 import { Heading, Link, Text, Hr } from '@react-email/components';
 import _groupBy from 'lodash-es/groupBy';
 import _orderBy from 'lodash-es/orderBy';
-import { formatCpu, formatMemory } from '@/helpers/resource-metrics';
+import { formatCpu, formatBinaryMetric } from '@/helpers/resource-metrics';
 
 export default function QuotaUpgradeResources({
   resourceDetailList,
@@ -26,7 +26,7 @@ export default function QuotaUpgradeResources({
           <div key={index}>
             <Heading className="text-base mb-0 text-black">Environment: {env}</Heading>
             {items.map((item, index2) => {
-              const formatter = item.resourceType === ResourceType.cpu ? formatCpu : formatMemory;
+              const formatter = item.resourceType === ResourceType.cpu ? formatCpu : formatBinaryMetric;
 
               return (
                 <div key={index2}>
