@@ -202,7 +202,7 @@ jobs:
     - name: Scan image
       uses: ./.github/actions/scan-docker-image
       with:
-        image: ${{ env.GITHUB_REGISTRY }}/bcgov/pltsvc-m365proxy:${{ github.sha }}
+        image: ${{ env.GITHUB_REGISTRY }}/bcgov/pltsvc-localdev-m365proxy:${{ github.sha }}
 
   build-push-nats-provision:
     runs-on: ubuntu-22.04
@@ -238,7 +238,7 @@ jobs:
     - name: Scan image
       uses: ./.github/actions/scan-docker-image
       with:
-        image: ${{ env.GITHUB_REGISTRY }}/bcgov/pltsvc-nats-provision:${{ github.sha }}
+        image: ${{ env.GITHUB_REGISTRY }}/bcgov/pltsvc-localdev-nats-provision:${{ github.sha }}
 
   deploy:
     needs: [build-push-app, build-push-pre-prisma, build-push-pre-data-migrations, build-push-email, build-push-m365proxy, build-push-nats-provision]
