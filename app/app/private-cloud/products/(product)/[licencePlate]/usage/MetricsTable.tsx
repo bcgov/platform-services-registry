@@ -1,3 +1,5 @@
+'use client';
+
 import { ResourceType } from '@prisma/client';
 import classNames from 'classnames';
 import _truncate from 'lodash-es/truncate';
