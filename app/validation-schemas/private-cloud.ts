@@ -13,7 +13,7 @@ import _isString from 'lodash-es/isString';
 import { string, z } from 'zod';
 import { phoneNumberRegex } from '@/constants';
 import { processEnumString, processUpperEnumString, processBoolean } from '@/utils/zod';
-import { userSchema, requestDecisionEnum } from './shared';
+import { userSchema, RequestDecision } from './shared';
 
 export const quotaSchema = z.object({
   cpu: z.nativeEnum(CPU),
@@ -113,7 +113,7 @@ export const privateCloudEditRequestBodySchema = privateCloudCreateRequestBodySc
 export const privateCloudRequestDecisionBodySchema = privateCloudEditRequestBodySchema.merge(
   z.object({
     type: z.nativeEnum(RequestType),
-    decision: requestDecisionEnum,
+    decision: z.nativeEnum(RequestDecision),
     decisionComment: string().optional(),
   }),
 );

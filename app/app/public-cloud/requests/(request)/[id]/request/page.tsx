@@ -6,14 +6,11 @@ import {
   IconInfoCircle,
   IconUsersGroup,
   IconUserDollar,
-  IconSettings,
-  IconComponents,
   IconMessage,
   IconLayoutGridAdd,
   IconMoneybag,
   IconReceipt2,
 } from '@tabler/icons-react';
-import { useQuery, useMutation } from '@tanstack/react-query';
 import { useEffect, useState } from 'react';
 import { FormProvider, useForm } from 'react-hook-form';
 import { z } from 'zod';
@@ -28,16 +25,17 @@ import ProjectDescriptionPublic from '@/components/form/ProjectDescriptionPublic
 import TeamContacts from '@/components/form/TeamContacts';
 import PageAccordion from '@/components/generic/accordion/PageAccordion';
 import FormErrorNotification from '@/components/generic/FormErrorNotification';
-import Comment from '@/components/modal/Comment';
-import ReturnModal from '@/components/modal/ReturnDecision';
 import { openReviewPublicCloudProductModal } from '@/components/modal/reviewPublicCloudProductModal';
 import { openSignPublicCloudProductModal } from '@/components/modal/signPublicCloudProductModal';
+import { openPublicCloudRequestReviewModal } from '@/components/modals/publicCloudRequestReviewModal';
 import { GlobalRole } from '@/constants';
 import createClientPage from '@/core/client-page';
-import { showErrorNotification } from '@/helpers/notifications';
-import { makePublicCloudRequestDecision } from '@/services/backend/public-cloud/requests';
 import { usePublicProductState } from '@/states/global';
-import { publicCloudRequestDecisionBodySchema } from '@/validation-schemas/public-cloud';
+import {
+  publicCloudRequestDecisionBodySchema,
+  PublicCloudRequestDecisionBody,
+} from '@/validation-schemas/public-cloud';
+import { RequestDecision } from '@/validation-schemas/shared';
 
 const pathParamSchema = z.object({
   id: z.string(),
@@ -47,35 +45,9 @@ const publicCloudProductRequest = createClientPage({
   roles: [GlobalRole.User],
   validations: { pathParams: pathParamSchema },
 });
-export default publicCloudProductRequest(({ getPathParams, router }) => {
-  const [pathParams, setPathParams] = useState<z.infer<typeof pathParamSchema>>();
-
-  useEffect(() => {
-    getPathParams().then((v) => setPathParams(v));
-  }, []);
-
+export default publicCloudProductRequest(({ router }) => {
   const [publicState, publicSnap] = usePublicProductState();
-  const { id = '' } = pathParams ?? {};
-  const [openReturn, setOpenReturn] = useState(false);
-  const [openComment, setOpenComment] = useState(false);
   const [secondTechLead, setSecondTechLead] = useState(false);
-  const [currentAction, setCurrentAction] = useState<'APPROVE' | 'REJECT' | null>(null);
-
-  const {
-    mutateAsync: makeDecision,
-    isPending: isMakingDecision,
-    isError: isDecisionError,
-    error: decisionError,
-  } = useMutation({
-    mutationFn: (data: any) => makePublicCloudRequestDecision(id, data),
-    onSuccess: () => {
-      setOpenReturn(true);
-      setOpenComment(false);
-    },
-    onError: (error: any) => {
-      showErrorNotification(error);
-    },
-  });
 
   useEffect(() => {
     if (!publicSnap.currentRequest) return;
@@ -101,7 +73,7 @@ export default publicCloudProductRequest(({ getPathParams, router }) => {
     },
     defaultValues: {
       decisionComment: '',
-      decision: '',
+      decision: RequestDecision.APPROVED as RequestDecision,
       type: publicSnap.currentRequest?.type,
       ...publicSnap.currentRequest?.decisionData,
       accountCoding: publicSnap.currentRequest?.decisionData.billing.accountCoding,
@@ -113,11 +85,6 @@ export default publicCloudProductRequest(({ getPathParams, router }) => {
     if (secondTechLead) {
       methods.unregister('secondaryTechnicalLead');
     }
-  };
-
-  const setComment = (decisionComment: string) => {
-    const data = { ...methods.getValues(), decisionComment };
-    makeDecision(data);
   };
 
   if (!publicSnap.currentRequest) {
@@ -205,9 +172,17 @@ export default publicCloudProductRequest(({ getPathParams, router }) => {
         <FormErrorNotification />
         <form
           autoComplete="off"
-          onSubmit={methods.handleSubmit(() => {
-            if (methods.getValues('decision') === 'APPROVED') setOpenComment(true);
-            if (methods.getValues('decision') === 'REJECTED') setOpenComment(true);
+          onSubmit={methods.handleSubmit(async (formData) => {
+            if (!formData || !publicSnap.currentRequest) return;
+
+            const decision = formData.decision as RequestDecision;
+            await openPublicCloudRequestReviewModal(
+              {
+                request: publicSnap.currentRequest,
+                finalData: formData as PublicCloudRequestDecisionBody,
+              },
+              { settings: { title: `${decision === RequestDecision.APPROVED ? 'Approve' : 'Reject'} Request` } },
+            );
           })}
         >
           <PageAccordion items={accordionItems} />
@@ -219,15 +194,13 @@ export default publicCloudProductRequest(({ getPathParams, router }) => {
                 <SubmitButton
                   text="REJECT REQUEST"
                   onClick={() => {
-                    methods.setValue('decision', 'REJECTED');
-                    setCurrentAction('REJECT');
+                    methods.setValue('decision', RequestDecision.REJECTED);
                   }}
                 />
                 <SubmitButton
                   text="APPROVE REQUEST"
                   onClick={() => {
-                    methods.setValue('decision', 'APPROVED');
-                    setCurrentAction('APPROVE');
+                    methods.setValue('decision', RequestDecision.APPROVED);
                   }}
                 />
               </div>
@@ -274,15 +247,6 @@ export default publicCloudProductRequest(({ getPathParams, router }) => {
           </div>
         </form>
       </FormProvider>
-      <Comment
-        open={openComment}
-        setOpen={setOpenComment}
-        onSubmit={setComment}
-        isLoading={isMakingDecision}
-        type={publicSnap.currentRequest.type}
-        action={currentAction}
-      />
-      <ReturnModal open={openReturn} setOpen={setOpenReturn} redirectUrl="/public-cloud/requests/all" />
     </div>
   );
 });
