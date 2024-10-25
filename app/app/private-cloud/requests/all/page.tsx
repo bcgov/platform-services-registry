@@ -16,7 +16,7 @@ const privateCloudRequests = createClientPage({
   roles: [GlobalRole.User],
   fallbackUrl: '/login?callbackUrl=/home',
 });
-export default privateCloudRequests(({ pathParams, queryParams, session }) => {
+export default privateCloudRequests(({}) => {
   const snap = useSnapshot(pageState);
 
   const { data, isLoading } = useQuery({

@@ -7,17 +7,19 @@ import { parsePaginationParams } from '@/helpers/pagination';
 import { models } from '@/services/db';
 
 export default async function Page({
-  params,
-  searchParams,
+  params: paramsProm,
+  searchParams: searchParamsProm,
 }: {
-  params: { licencePlate: string };
-  searchParams: {
+  params: Promise<{ licencePlate: string }>;
+  searchParams: Promise<{
     page: string;
     pageSize: string;
     search: string;
     context: ProjectContext | ProjectContext[];
-  };
+  }>;
 }) {
+  const params = await paramsProm;
+  const searchParams = await searchParamsProm;
   const session = await getServerSession(authOptions);
 
   if (!session) {

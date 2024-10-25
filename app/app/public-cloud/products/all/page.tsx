@@ -16,7 +16,7 @@ const publicCloudProducts = createClientPage({
   roles: [GlobalRole.User],
   fallbackUrl: '/login?callbackUrl=/home',
 });
-export default publicCloudProducts(({ pathParams, queryParams, session }) => {
+export default publicCloudProducts(({}) => {
   const snap = useSnapshot(pageState);
 
   const { data, isLoading } = useQuery({

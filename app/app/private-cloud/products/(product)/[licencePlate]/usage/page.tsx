@@ -2,7 +2,7 @@
 
 import { LoadingOverlay, Box } from '@mantine/core';
 import { useQuery } from '@tanstack/react-query';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { z } from 'zod';
 import FormSelect from '@/components/generic/select/FormSelect';
 import { GlobalRole } from '@/constants';
@@ -39,10 +39,17 @@ const privateCloudProductUsageMetrics = createClientPage({
   validations: { pathParams: pathParamSchema },
 });
 
-export default privateCloudProductUsageMetrics(({ pathParams, queryParams, session }) => {
-  const { licencePlate } = pathParams;
+export default privateCloudProductUsageMetrics(({ getPathParams, session }) => {
+  const [pathParams, setPathParams] = useState<z.infer<typeof pathParamSchema>>();
+
+  useEffect(() => {
+    getPathParams().then((v) => setPathParams(v));
+  }, []);
+
   const [environment, setenvironment] = useState('dev');
   const [, privateSnap] = usePrivateProductState();
+
+  const { licencePlate = '' } = pathParams ?? {};
 
   const { data = [], isLoading } = useQuery({
     queryKey: [environment, licencePlate],

@@ -1,6 +1,7 @@
 'use client';
 
 import { useQuery } from '@tanstack/react-query';
+import { useEffect, useState } from 'react';
 import { z } from 'zod';
 import PublicHistoryItem from '@/components/history/PublicHistoryItem';
 import { GlobalRole } from '@/constants';
@@ -15,8 +16,14 @@ const publicCloudProductHistory = createClientPage({
   roles: [GlobalRole.User],
   validations: { pathParams: pathParamSchema },
 });
-export default publicCloudProductHistory(({ pathParams }) => {
-  const { licencePlate } = pathParams;
+export default publicCloudProductHistory(({ getPathParams }) => {
+  const [pathParams, setPathParams] = useState<z.infer<typeof pathParamSchema>>();
+
+  useEffect(() => {
+    getPathParams().then((v) => setPathParams(v));
+  }, []);
+
+  const { licencePlate = '' } = pathParams ?? {};
 
   const {
     data: requests,

@@ -18,9 +18,8 @@ const Layout = createClientPage({
   roles: [GlobalRole.User],
   validations: { pathParams: pathParamSchema },
 });
-export default Layout(({ pathParams, queryParams, session, router, children }) => {
+export default Layout(({}) => {
   const [publicCloudState, publicCloudStateSnap] = usePublicProductState();
-  const { id } = pathParams;
 
   return (
     <div>

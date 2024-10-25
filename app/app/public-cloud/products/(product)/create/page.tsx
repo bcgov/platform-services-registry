@@ -37,7 +37,7 @@ import { publicCloudCreateRequestBodySchema } from '@/validation-schemas/public-
 const publicCloudProductNew = createClientPage({
   roles: [GlobalRole.User],
 });
-export default publicCloudProductNew(({ pathParams, queryParams, session }) => {
+export default publicCloudProductNew(({}) => {
   const [openCreate, setOpenCreate] = useState(false);
   const [openReturn, setOpenReturn] = useState(false);
   const [secondTechLead, setSecondTechLead] = useState(false);

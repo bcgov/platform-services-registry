@@ -6,12 +6,18 @@ import { SecurityConfig, ProjectContext } from '@prisma/client';
 import { useQuery, useMutation } from '@tanstack/react-query';
 import classNames from 'classnames';
 import _get from 'lodash-es/get';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useForm, useFieldArray } from 'react-hook-form';
 import { getSecurityConfig, upsertSecurityConfig } from '@/services/backend/security-config';
 import { securityConfigSchema } from '@/validation-schemas/security-config';
 
-export default function Repository({ params }: { params: { licencePlate: string } }) {
+export default function Repository({ params: getParams }: { params: Promise<{ licencePlate: string }> }) {
+  const [params, setParams] = useState<{ licencePlate: string }>({ licencePlate: '' });
+
+  useEffect(() => {
+    getParams.then((v) => setParams(v));
+  }, [getParams]);
+
   const {
     register,
     control,

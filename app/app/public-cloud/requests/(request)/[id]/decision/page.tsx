@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { z } from 'zod';
 import { GlobalRole } from '@/constants';
 import createClientPage from '@/core/client-page';
@@ -13,11 +13,17 @@ const publicCloudProductDecision = createClientPage({
   roles: [GlobalRole.User],
   validations: { pathParams: pathParamSchema },
 });
-export default publicCloudProductDecision(({ pathParams, queryParams, session, router }) => {
-  const { id: requestId } = pathParams;
+export default publicCloudProductDecision(({ getPathParams, router }) => {
+  const [pathParams, setPathParams] = useState<z.infer<typeof pathParamSchema>>();
 
   useEffect(() => {
-    router.push(`/public-cloud/requests/${requestId}/request`);
+    getPathParams().then((v) => setPathParams(v));
+  }, []);
+
+  const { id: requestId } = pathParams ?? {};
+
+  useEffect(() => {
+    if (requestId) router.push(`/public-cloud/requests/${requestId}/request`);
   }, [router, requestId]);
 
   return null;
