@@ -10,46 +10,37 @@ async function getPvcUsage(name: string, namespace: string, cluster: Cluster) {
     capacity: `kubelet_volume_stats_capacity_bytes{persistentvolumeclaim="${name}", namespace="${namespace}"}`,
     freeInodes: `kubelet_volume_stats_inodes_free{persistentvolumeclaim="${name}", namespace="${namespace}"}`,
   };
-  try {
-    const [usageResult, capacityResult, freeInodesResult] = await Promise.all(
-      Object.values(queries).map((query) => queryPrometheus(query, cluster)),
-    );
+  const [usageResult, capacityResult, freeInodesResult] = await Promise.all(
+    Object.values(queries).map((query) => queryPrometheus(query, cluster)),
+  );
 
-    if (usageResult.length && capacityResult.length && freeInodesResult.length) {
-      const usage = parseFloat(usageResult[0].value[1]);
-      const limits = parseFloat(capacityResult[0].value[1]);
-      const freeInodes = parseInt(freeInodesResult[0].value[1], 10);
+  if (usageResult.length && capacityResult.length && freeInodesResult.length) {
+    const usage = parseFloat(usageResult[0].value[1]);
+    const limits = parseFloat(capacityResult[0].value[1]);
+    const freeInodes = parseInt(freeInodesResult[0].value[1], 10);
 
-      return { usage, limits, freeInodes };
-    }
-  } catch (error) {
-    console.error(`Error fetching metrics for PVC: ${name}`, error);
+    return { usage, limits, freeInodes };
   }
 }
 
 async function collectPVCMetrics(namespace: string, cluster: Cluster) {
   const { apiClient } = getK8sClients(cluster);
-  try {
-    const res = await apiClient.listNamespacedPersistentVolumeClaim(namespace);
-    const pvcs = res.body.items;
-    const pvcPromises = pvcs.map(async (pvc) => {
-      const pvcName = pvc.metadata?.name;
-      if (!pvcName) return null;
-      const pvcMetricsNums = await getPvcUsage(pvcName, namespace, cluster);
-      if (!pvcMetricsNums) return null;
-      return {
-        ...pvcMetricsNums,
-        name: pvcName,
-        pvName: pvc.spec?.volumeName || '',
-        storageClassName: pvc.spec?.storageClassName || '',
-      };
-    });
-    const usagePVCData = (await Promise.all(pvcPromises)).filter((pvc) => pvc !== null) as PVC[];
-
-    return usagePVCData;
-  } catch (error) {
-    console.error(`Error fetching PVCs from namespace ${namespace}:`, error);
-  }
+  const res = await apiClient.listNamespacedPersistentVolumeClaim(namespace);
+  const pvcs = res.body.items;
+  const pvcPromises = pvcs.map(async (pvc) => {
+    const pvcName = pvc.metadata?.name;
+    if (!pvcName) return null;
+    const pvcMetricsNums = await getPvcUsage(pvcName, namespace, cluster);
+    if (!pvcMetricsNums) return null;
+    return {
+      ...pvcMetricsNums,
+      name: pvcName,
+      pvName: pvc.spec?.volumeName || '',
+      storageClassName: pvc.spec?.storageClassName || '',
+    };
+  });
+  const usagePVCData = (await Promise.all(pvcPromises)).filter((pvc) => pvc !== null) as PVC[];
+  return usagePVCData;
 }
 
 export async function getPodMetrics(

@@ -1,13 +1,13 @@
 import axios from 'axios';
 import {
   ENABLE_DELETION_CHECK,
-  CLAB_SERVICE_ACCOUNT_TOKEN,
-  KLAB_SERVICE_ACCOUNT_TOKEN,
-  KLAB2_SERVICE_ACCOUNT_TOKEN,
-  GOLDDR_SERVICE_ACCOUNT_TOKEN,
-  GOLD_SERVICE_ACCOUNT_TOKEN,
-  SILVER_SERVICE_ACCOUNT_TOKEN,
-  EMERALD_SERVICE_ACCOUNT_TOKEN,
+  CLAB_METRICS_READER_TOKEN,
+  KLAB_METRICS_READER_TOKEN,
+  KLAB2_METRICS_READER_TOKEN,
+  GOLDDR_METRICS_READER_TOKEN,
+  GOLD_METRICS_READER_TOKEN,
+  SILVER_METRICS_READER_TOKEN,
+  EMERALD_METRICS_READER_TOKEN,
 } from '@/config';
 import { logger } from '@/core/logging';
 
@@ -38,20 +38,20 @@ export default async function openshiftDeletionCheck(
     };
   }
 
-  const CLUSTER_SERVICE_ACCOUNT_TOKEN = {
-    clab: CLAB_SERVICE_ACCOUNT_TOKEN || '',
-    klab: KLAB_SERVICE_ACCOUNT_TOKEN || '',
-    klab2: KLAB2_SERVICE_ACCOUNT_TOKEN || '',
-    golddr: GOLDDR_SERVICE_ACCOUNT_TOKEN || '',
-    gold: GOLD_SERVICE_ACCOUNT_TOKEN || '',
-    silver: SILVER_SERVICE_ACCOUNT_TOKEN || '',
-    emerald: EMERALD_SERVICE_ACCOUNT_TOKEN || '',
+  const CLUSTER_METRICS_READER_TOKEN = {
+    clab: CLAB_METRICS_READER_TOKEN || '',
+    klab: KLAB_METRICS_READER_TOKEN || '',
+    klab2: KLAB2_METRICS_READER_TOKEN || '',
+    golddr: GOLDDR_METRICS_READER_TOKEN || '',
+    gold: GOLD_METRICS_READER_TOKEN || '',
+    silver: SILVER_METRICS_READER_TOKEN || '',
+    emerald: EMERALD_METRICS_READER_TOKEN || '',
   };
 
-  const clusterName = clusterNameParam.toLowerCase() as keyof typeof CLUSTER_SERVICE_ACCOUNT_TOKEN;
+  const clusterName = clusterNameParam.toLowerCase() as keyof typeof CLUSTER_METRICS_READER_TOKEN;
 
   const url = `https://api.${clusterName}.devops.gov.bc.ca:6443`;
-  const BEARER_TOKEN = `Bearer ${CLUSTER_SERVICE_ACCOUNT_TOKEN[clusterName]}`;
+  const BEARER_TOKEN = `Bearer ${CLUSTER_METRICS_READER_TOKEN[clusterName]}`;
 
   const OC_HEADER = {
     Authorization: BEARER_TOKEN,
@@ -142,5 +142,6 @@ export default async function openshiftDeletionCheck(
 
 export async function isEligibleForDeletion(licencePlate: string, cluster: string) {
   const deleteCheckList = await openshiftDeletionCheck(licencePlate, cluster);
+  console.log('deleteCheckList', deleteCheckList);
   return Object.values(deleteCheckList).every((field) => field);
 }
