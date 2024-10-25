@@ -13,9 +13,8 @@ const privateCloudRequestView = createClientPage({
   roles: [GlobalRole.User],
   validations: { pathParams: pathParamSchema },
 });
-export default privateCloudRequestView(({ pathParams, queryParams, session, router }) => {
+export default privateCloudRequestView(({}) => {
   const [privateCloudState, privateCloudStateSnap] = usePrivateProductState();
-  const { id } = pathParams;
 
   if (!privateCloudStateSnap.currentRequest) {
     return null;

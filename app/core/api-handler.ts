@@ -73,10 +73,10 @@ function createApiHandler<
       props: RouteProps<TypeOf<TPathParams>, TypeOf<TQueryParams>, TypeOf<TBody>>,
     ) => Promise<NextResponse<unknown> | Response>,
   ) {
-    return async function (
-      req: NextRequest,
-      { params }: { params: TypeOf<TPathParams> } = { params: {} as TypeOf<TPathParams> },
-    ) {
+    return async function (req: NextRequest, context: any) {
+      const { params: paramsProm } = context ?? {};
+      const params = paramsProm && (await paramsProm);
+
       try {
         let session = await getServerSession(authOptions);
         let jwtData!: any;

@@ -3,10 +3,11 @@ import { authOptions } from '@/core/auth-options';
 import { models } from '@/services/db';
 import './styles.css';
 
-export default async function Page({ params }: { params: { id: string } }) {
+export default async function Page({ params: paramsProm }: { params: Promise<{ id: string }> }) {
+  const params = await paramsProm;
   const session = await getServerSession(authOptions);
 
-  if (!session) {
+  if (!session || !params.id) {
     return null;
   }
 

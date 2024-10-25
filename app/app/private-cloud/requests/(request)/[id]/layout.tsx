@@ -4,7 +4,7 @@ import { Alert } from '@mantine/core';
 import { RequestType } from '@prisma/client';
 import { IconArrowBack, IconInfoCircle, IconFile, IconExclamationCircle } from '@tabler/icons-react';
 import { useQuery } from '@tanstack/react-query';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { z } from 'zod';
 import PrivateCloudRequestOptions from '@/components/dropdowns/PrivateCloudRequestOptions';
 import RequestBadge from '@/components/form/RequestBadge';
@@ -26,9 +26,15 @@ const privateCloudProductSecurityACS = createClientPage({
   validations: { pathParams: pathParamSchema },
 });
 
-export default privateCloudProductSecurityACS(({ pathParams, queryParams, session, children, router }) => {
+export default privateCloudProductSecurityACS(({ getPathParams, session, children, router }) => {
+  const [pathParams, setPathParams] = useState<z.infer<typeof pathParamSchema>>();
+
+  useEffect(() => {
+    getPathParams().then((v) => setPathParams(v));
+  }, []);
+
   const [privateProductState, privateSnap] = usePrivateProductState();
-  const { id } = pathParams;
+  const { id = '' } = pathParams ?? {};
 
   const { data: request, isLoading: isRequestLoading } = useQuery({
     queryKey: ['request', id],

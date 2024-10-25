@@ -9,6 +9,7 @@ import {
   IconCircleLetterD,
   IconAddressBook,
 } from '@tabler/icons-react';
+import { useEffect, useState } from 'react';
 import { z } from 'zod';
 import PageAccordion, { PageAccordionItem } from '@/components/generic/accordion/PageAccordion';
 import ProductComparison from '@/components/ProductComparison';
@@ -31,9 +32,8 @@ const Layout = createClientPage({
   roles: [GlobalRole.User],
   validations: { pathParams: pathParamSchema },
 });
-export default Layout(({ pathParams, queryParams, session, router, children }) => {
+export default Layout(({}) => {
   const [, privateCloudSnap] = usePrivateProductState();
-  const { id } = pathParams;
 
   let dataSet = [
     {

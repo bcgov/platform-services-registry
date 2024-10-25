@@ -2,7 +2,7 @@
 
 import { Provider } from '@prisma/client';
 import { useQuery } from '@tanstack/react-query';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { z } from 'zod';
 import PublicCloudProductOptions from '@/components/dropdowns/PublicCloudProductOptions';
 import ProductBadge from '@/components/form/ProductBadge';
@@ -22,9 +22,15 @@ const publicCloudProductSecurityACS = createClientPage({
   validations: { pathParams: pathParamSchema },
 });
 
-export default publicCloudProductSecurityACS(({ pathParams, queryParams, session, children }) => {
+export default publicCloudProductSecurityACS(({ getPathParams, children }) => {
+  const [pathParams, setPathParams] = useState<z.infer<typeof pathParamSchema>>();
+
+  useEffect(() => {
+    getPathParams().then((v) => setPathParams(v));
+  }, []);
+
   const [publicProductState, publicProductSnap] = usePublicProductState();
-  const { licencePlate } = pathParams;
+  const { licencePlate = '' } = pathParams ?? {};
 
   const { data: currentProduct } = useQuery({
     queryKey: ['currentProduct', licencePlate],
