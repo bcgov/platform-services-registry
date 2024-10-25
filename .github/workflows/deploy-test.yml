@@ -49,7 +49,7 @@ jobs:
     needs: [build-push-app]
     runs-on: ubuntu-22.04
     timeout-minutes: 10
-
+    continue-on-error: true
     steps:
     - uses: hmarr/debug-action@f7318c783045ac39ed9bb497e22ce835fdafbfe6
     - uses: actions/checkout@163217dfcd28294438ea1c1c149cfaf66eec283e
@@ -92,6 +92,7 @@ jobs:
     needs: [build-push-pre-prisma]
     runs-on: ubuntu-22.04
     timeout-minutes: 10
+    continue-on-error: true
     steps:
     - uses: hmarr/debug-action@f7318c783045ac39ed9bb497e22ce835fdafbfe6
     - uses: actions/checkout@163217dfcd28294438ea1c1c149cfaf66eec283e
@@ -133,6 +134,7 @@ jobs:
     needs: [build-push-pre-data-migrations]
     runs-on: ubuntu-22.04
     timeout-minutes: 10
+    continue-on-error: true
     steps:
     - uses: hmarr/debug-action@f7318c783045ac39ed9bb497e22ce835fdafbfe6
     - uses: actions/checkout@163217dfcd28294438ea1c1c149cfaf66eec283e
@@ -175,6 +177,7 @@ jobs:
     needs: [build-push-email]
     runs-on: ubuntu-22.04
     timeout-minutes: 10
+    continue-on-error: true
     steps:
     - uses: hmarr/debug-action@f7318c783045ac39ed9bb497e22ce835fdafbfe6
     - uses: actions/checkout@163217dfcd28294438ea1c1c149cfaf66eec283e
