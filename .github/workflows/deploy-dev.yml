@@ -3,7 +3,7 @@ name: 01.Deploy Dev Environment
 on:
   push:
     branches:
-    - chore/2692-1
+    - main
     paths:
     - app/**
     - helm/**
