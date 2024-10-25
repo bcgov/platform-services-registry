@@ -1,6 +1,7 @@
 'use client';
 
 import { useQuery } from '@tanstack/react-query';
+import { useEffect, useState } from 'react';
 import { proxy, useSnapshot } from 'valtio';
 import { z } from 'zod';
 import Table from '@/components/generic/table/Table';
@@ -22,9 +23,15 @@ const privateCloudProductRequests = createClientPage({
   validations: { pathParams: pathParamSchema },
   fallbackUrl: '/login?callbackUrl=/home',
 });
-export default privateCloudProductRequests(({ pathParams, queryParams, session }) => {
+export default privateCloudProductRequests(({ getPathParams, session }) => {
+  const [pathParams, setPathParams] = useState<z.infer<typeof pathParamSchema>>();
+
+  useEffect(() => {
+    getPathParams().then((v) => setPathParams(v));
+  }, []);
+
   const snap = useSnapshot(pageState);
-  const { licencePlate } = pathParams;
+  const { licencePlate = '' } = pathParams ?? {};
 
   const { data, isLoading } = useQuery({
     queryKey: ['requests', snap],

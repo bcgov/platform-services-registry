@@ -21,7 +21,7 @@ const privateCloudProductNew = createClientPage({
   roles: [GlobalRole.User],
 });
 
-export default privateCloudProductNew(({ pathParams, queryParams, session }) => {
+export default privateCloudProductNew(({ session }) => {
   const [openReturn, setOpenReturn] = useState(false);
   const [secondTechLead, setSecondTechLead] = useState(false);
 

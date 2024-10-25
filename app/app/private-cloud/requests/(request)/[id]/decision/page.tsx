@@ -31,9 +31,15 @@ const privateCloudRequestDecision = createClientPage({
   roles: [GlobalRole.User],
   validations: { pathParams: pathParamSchema },
 });
-export default privateCloudRequestDecision(({ pathParams, queryParams, session, router }) => {
+export default privateCloudRequestDecision(({ getPathParams, session, router }) => {
+  const [pathParams, setPathParams] = useState<z.infer<typeof pathParamSchema>>();
+
+  useEffect(() => {
+    getPathParams().then((v) => setPathParams(v));
+  }, []);
+
   const [privateState, privateSnap] = usePrivateProductState();
-  const { id } = pathParams;
+  const { id = '' } = pathParams ?? {};
   const [openReturn, setOpenReturn] = useState(false);
   const [openComment, setOpenComment] = useState(false);
   const [secondTechLead, setSecondTechLead] = useState(false);
@@ -58,7 +64,7 @@ export default privateCloudRequestDecision(({ pathParams, queryParams, session, 
   useEffect(() => {
     if (!privateSnap.currentRequest) return;
 
-    if (!privateSnap.currentRequest._permissions.viewDecision) {
+    if (id && !privateSnap.currentRequest._permissions.viewDecision) {
       router.push(`/private-cloud/requests/${id}/summary`);
       return;
     }
