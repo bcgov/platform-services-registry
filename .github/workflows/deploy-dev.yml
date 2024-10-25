@@ -55,7 +55,7 @@ jobs:
     timeout-minutes: 10
     steps:
     - uses: hmarr/debug-action@f7318c783045ac39ed9bb497e22ce835fdafbfe6
-    - uses: actions/checkout@163217dfcd28294438ea1c1c149cfaf66eec283e
+    - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
     - name: Scan image
       uses: ./.github/actions/scan-docker-image
       with:
@@ -90,7 +90,7 @@ jobs:
     timeout-minutes: 10
     steps:
     - uses: hmarr/debug-action@f7318c783045ac39ed9bb497e22ce835fdafbfe6
-    - uses: actions/checkout@163217dfcd28294438ea1c1c149cfaf66eec283e
+    - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
     - name: Scan image
       uses: ./.github/actions/scan-docker-image
       with:
@@ -125,7 +125,7 @@ jobs:
     timeout-minutes: 10
     steps:
     - uses: hmarr/debug-action@f7318c783045ac39ed9bb497e22ce835fdafbfe6
-    - uses: actions/checkout@163217dfcd28294438ea1c1c149cfaf66eec283e
+    - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
     - name: Scan image
       uses: ./.github/actions/scan-docker-image
       with:
@@ -161,7 +161,7 @@ jobs:
     timeout-minutes: 10
     steps:
     - uses: hmarr/debug-action@f7318c783045ac39ed9bb497e22ce835fdafbfe6
-    - uses: actions/checkout@163217dfcd28294438ea1c1c149cfaf66eec283e
+    - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
     - name: Scan image
       uses: ./.github/actions/scan-docker-image
       with:
@@ -193,7 +193,7 @@ jobs:
     timeout-minutes: 10
     steps:
     - uses: hmarr/debug-action@f7318c783045ac39ed9bb497e22ce835fdafbfe6
-    - uses: actions/checkout@163217dfcd28294438ea1c1c149cfaf66eec283e
+    - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
     - name: Scan image
       uses: ./.github/actions/scan-docker-image
       with:
@@ -228,7 +228,7 @@ jobs:
     timeout-minutes: 10
     steps:
     - uses: hmarr/debug-action@f7318c783045ac39ed9bb497e22ce835fdafbfe6
-    - uses: actions/checkout@163217dfcd28294438ea1c1c149cfaf66eec283e
+    - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
     - name: Scan image
       uses: ./.github/actions/scan-docker-image
       with:
