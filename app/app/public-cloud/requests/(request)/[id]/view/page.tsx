@@ -13,9 +13,8 @@ const publicCloudRequestView = createClientPage({
   roles: [GlobalRole.User],
   validations: { pathParams: pathParamSchema },
 });
-export default publicCloudRequestView(({ pathParams, queryParams, session, router }) => {
+export default publicCloudRequestView(({}) => {
   const [publicCloudState, publicCloudStateSnap] = usePublicProductState();
-  const { id } = pathParams;
 
   if (!publicCloudStateSnap.currentRequest) {
     return null;

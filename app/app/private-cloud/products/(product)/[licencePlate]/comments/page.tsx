@@ -3,7 +3,7 @@
 import { Alert } from '@mantine/core';
 import { IconInfoCircle } from '@tabler/icons-react';
 import { useQuery } from '@tanstack/react-query';
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { useSnapshot } from 'valtio';
 import { z } from 'zod';
 import CommentBubble from '@/components/comments/CommentBubble';
@@ -38,9 +38,15 @@ const privateCloudProductComments = createClientPage({
   roles: [GlobalRole.User],
   validations: { pathParams: pathParamSchema },
 });
-export default privateCloudProductComments(({ pathParams, queryParams, session }) => {
+export default privateCloudProductComments(({ getPathParams, session }) => {
+  const [pathParams, setPathParams] = useState<z.infer<typeof pathParamSchema>>();
+
+  useEffect(() => {
+    getPathParams().then((v) => setPathParams(v));
+  }, []);
+
   const snap = useSnapshot(privateProductState);
-  const { licencePlate } = pathParams;
+  const { licencePlate = '' } = pathParams ?? {};
 
   const userId = session?.userId;
 

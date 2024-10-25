@@ -1,6 +1,7 @@
 'use client';
 
-import { z } from 'zod';
+import { useEffect, useState } from 'react';
+import { z, TypeOf, ZodType } from 'zod';
 import { GlobalRole } from '@/constants';
 import createClientPage from '@/core/client-page';
 
@@ -17,7 +18,15 @@ const examplePage = createClientPage({
   roles: [GlobalRole.User],
   validations: { pathParams: pathParamSchema, queryParams: queryParamSchema },
 });
-export default examplePage(({ pathParams, queryParams, session }) => {
+export default examplePage(({ getPathParams, getQueryParams, session }) => {
+  const [pathParams, setPathParams] = useState<z.infer<typeof pathParamSchema>>();
+  const [queryParams, setQueryParams] = useState<z.infer<typeof queryParamSchema>>();
+
+  useEffect(() => {
+    getPathParams().then((v) => setPathParams(v));
+    getQueryParams().then((v) => setQueryParams(v));
+  }, []);
+
   return (
     <ul>
       <li>

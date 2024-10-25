@@ -10,8 +10,13 @@ import prisma from '@/core/prisma';
 import Alerts from './Alerts';
 import Images from './Images';
 
-export default async function Page({ params }: { params: { licencePlate: string } }) {
+export default async function Page({ params: paramsProm }: { params: Promise<{ licencePlate: string }> }) {
+  const params = await paramsProm;
   const session = await getServerSession(authOptions);
+
+  if (!params.licencePlate) {
+    return null;
+  }
 
   if (!session) {
     redirect('/login?callbackUrl=/home');

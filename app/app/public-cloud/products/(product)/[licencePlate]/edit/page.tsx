@@ -6,9 +6,6 @@ import {
   IconInfoCircle,
   IconUsersGroup,
   IconUserDollar,
-  IconSettings,
-  IconComponents,
-  IconMessage,
   IconLayoutGridAdd,
   IconMoneybag,
   IconReceipt2,
@@ -45,8 +42,14 @@ const publicCloudProductEdit = createClientPage({
   roles: [GlobalRole.User],
   validations: { pathParams: pathParamSchema },
 });
-export default publicCloudProductEdit(({ pathParams, queryParams, session }) => {
-  const { licencePlate } = pathParams;
+export default publicCloudProductEdit(({ getPathParams }) => {
+  const [pathParams, setPathParams] = useState<z.infer<typeof pathParamSchema>>();
+
+  useEffect(() => {
+    getPathParams().then((v) => setPathParams(v));
+  }, []);
+
+  const { licencePlate = '' } = pathParams ?? {};
   const snap = useSnapshot(publicProductState);
 
   const [openReturn, setOpenReturn] = useState(false);
