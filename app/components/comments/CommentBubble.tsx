@@ -6,8 +6,8 @@ import { useMutation } from '@tanstack/react-query';
 import { useEditor } from '@tiptap/react';
 import { formatDistanceToNow, format } from 'date-fns';
 import React, { useState } from 'react';
+import { openConfirmModal } from '@/components/modal/confirm';
 import { deletePrivateCloudComment, updatePrivateCloudComment } from '@/services/backend/private-cloud/products';
-import AlertBox from '../modal/AlertBox';
 import ProfileImage from '../ProfileImage';
 import { commonExtensions } from './TiptapConfig';
 import TiptapReadOnly from './TiptapReadOnly';
@@ -40,7 +40,6 @@ const CommentBubble = ({
   image,
 }: CommentBubbleProps) => {
   const [menuOpen, setMenuOpen] = useState(false);
-  const [showConfirm, setShowConfirm] = useState(false);
   const [editMode, setEditMode] = useState(false);
   const [editedText, setEditedText] = useState(text);
 
@@ -100,7 +99,6 @@ const CommentBubble = ({
         message: 'Comment deleted successfully',
         autoClose: 5000,
       });
-      setShowConfirm(false); // Close the confirmation modal
     },
     onError: (error: Error) => {
       notifications.show({
@@ -112,13 +110,12 @@ const CommentBubble = ({
     },
   });
 
-  const handleDelete = () => {
+  const handleDelete = async () => {
     setMenuOpen(false);
-    setShowConfirm(true);
-  };
-
-  const confirmDelete = () => {
-    deleteMutation.mutate();
+    const res = await openConfirmModal({ content: 'Are you sure you want to delete this comment?' });
+    if (res?.state.confirmed) {
+      deleteMutation.mutate();
+    }
   };
 
   const bubbleStyles =
@@ -253,15 +250,6 @@ const CommentBubble = ({
         <div className={profileImageWrapperStyles}>
           <ProfileImage email={email} image={image} className="rounded-full" size={40} />
         </div>
-        <AlertBox
-          isOpen={showConfirm}
-          title="Confirm Deletion"
-          message="Are you sure you want to delete this comment?"
-          onCancel={() => setShowConfirm(false)}
-          onConfirm={confirmDelete}
-          cancelButtonText="Cancel"
-          confirmButtonText="Delete"
-        />
       </div>
     </div>
   );

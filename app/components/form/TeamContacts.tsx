@@ -1,10 +1,9 @@
-import classNames from 'classnames';
-import React, { useState } from 'react';
+import React from 'react';
 import { useFormContext } from 'react-hook-form';
 import { IMaskInput } from 'react-imask';
 import SecondTechLeadButton from '@/components/buttons/SecondTechLeadButton';
 import AsyncAutocomplete from '@/components/form/AsyncAutocomplete';
-import AlertBox from '@/components/modal/AlertBox';
+import { openConfirmModal } from '@/components/modal/confirm';
 
 const getErrorMessage = (error: any): string | undefined => {
   if (error?.message) {
@@ -15,12 +14,10 @@ const getErrorMessage = (error: any): string | undefined => {
 
 export default function TeamContacts({
   disabled,
-  number,
   secondTechLead,
   secondTechLeadOnClick,
 }: {
   disabled?: boolean;
-  number: number;
   secondTechLead: boolean;
   secondTechLeadOnClick: () => void;
 }) {
@@ -29,23 +26,17 @@ export default function TeamContacts({
     watch,
     formState: { errors },
   } = useFormContext();
-  const [isAlertBoxOpen, setIsAlertBoxOpen] = useState(false);
-
-  const handleSecondTechLeadClick = () => {
+  const handleSecondTechLeadClick = async () => {
     if (secondTechLead) {
-      setIsAlertBoxOpen(true);
+      const res = await openConfirmModal({
+        content: 'Are you sure you want to remove the secondary technical lead from this product?',
+      });
+      if (res?.state.confirmed) {
+        secondTechLeadOnClick();
+      }
     } else {
       secondTechLeadOnClick();
     }
-  };
-
-  const handleConfirmModal = () => {
-    secondTechLeadOnClick();
-    setIsAlertBoxOpen(false);
-  };
-
-  const handleCancelModal = () => {
-    setIsAlertBoxOpen(false);
   };
 
   const phoneNumber = watch('supportPhoneNumber') || '';
@@ -94,16 +85,6 @@ export default function TeamContacts({
           />
         </div>
 
-        <AlertBox
-          isOpen={isAlertBoxOpen}
-          title="Confirm Removal of Secondary Technical Lead"
-          message="Are you sure you want to remove the secondary technical lead from this product?"
-          onConfirm={handleConfirmModal}
-          onCancel={handleCancelModal}
-          confirmButtonText="CONFIRM REMOVAL"
-          cancelButtonText="CANCEL"
-        />
-
         <div className="mt-6 flex flex-col justify-between">
           {!disabled && <SecondTechLeadButton clicked={secondTechLead} onClick={handleSecondTechLeadClick} />}
           {secondTechLead ? (
@@ -143,9 +124,7 @@ export default function TeamContacts({
             onAccept={handlePhoneNumberChange}
             placeholder="+1 (999) 999-9999"
           />
-          <p className="text-red-400 mt-3 text-sm leading-6 text-gray-600">
-            {getErrorMessage(errors.supportPhoneNumber)}
-          </p>
+          <p className="mt-3 text-sm leading-6 text-gray-600">{getErrorMessage(errors.supportPhoneNumber)}</p>
         </div>
       </div>
     </div>

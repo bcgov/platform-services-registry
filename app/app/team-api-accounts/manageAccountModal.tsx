@@ -9,7 +9,7 @@ import _get from 'lodash-es/get';
 import { useEffect } from 'react';
 import { FormProvider, useForm } from 'react-hook-form';
 import HookFormTextInput from '@/components/generic/input/HookFormTextInput';
-import { openConfirmModal } from '@/components/generic/modal/ConfirmModal';
+import { openConfirmModal } from '@/components/modal/confirm';
 import { createModal } from '@/core/modal';
 import {
   listKeycloakAuthRoles,
@@ -131,8 +131,8 @@ export const openManageAccountModal = createModal<ModalProps, ModalState>({
                 <Button
                   color="red"
                   onClick={async () => {
-                    const response = await openConfirmModal({});
-                    if (response.confirmed) {
+                    const res = await openConfirmModal({});
+                    if (res?.state.confirmed) {
                       await deleteAccount();
                       closeModal();
                     }

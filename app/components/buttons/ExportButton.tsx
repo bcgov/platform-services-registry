@@ -1,10 +1,10 @@
 import { IconCloudDownload } from '@tabler/icons-react';
 import classNames from 'classnames';
 import { useState } from 'react';
-import AlertBox from '@/components/modal/AlertBox';
+import LightButton from '@/components/generic/button/LightButton';
+import { openNotificationModal } from '@/components/modal/notification';
 import { instance } from '@/services/backend/axios';
 import { downloadFile } from '@/utils/file-download';
-import LightButton from '../generic/button/LightButton';
 
 export default function ExportButton({
   onExport,
@@ -15,11 +15,20 @@ export default function ExportButton({
   className?: string;
   downloadUrl?: string;
 }) {
-  const [isAlertBoxOpen, setIsAlertBoxOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
 
-  const handleCancelBox = () => {
-    setIsAlertBoxOpen(false);
+  const openNoContentModal = async () => {
+    await openNotificationModal(
+      { content: 'There is no data available for download.' },
+      {
+        settings: {
+          title: 'Nothing to export',
+          withCloseButton: true,
+          closeOnClickOutside: true,
+          closeOnEscape: true,
+        },
+      },
+    );
   };
 
   return (
@@ -30,7 +39,9 @@ export default function ExportButton({
           if (onExport) {
             setIsLoading(true);
             const success = await onExport();
-            setIsAlertBoxOpen(!success);
+            if (!success) {
+              await openNoContentModal();
+            }
             setIsLoading(false);
           } else if (downloadUrl) {
             setIsLoading(true);
@@ -40,7 +51,9 @@ export default function ExportButton({
               return true;
             });
 
-            setIsAlertBoxOpen(!success);
+            if (!success) {
+              await openNoContentModal();
+            }
             setIsLoading(false);
           }
         }}
@@ -67,14 +80,6 @@ export default function ExportButton({
         )}
         <span className="md:inline hidden">Export</span>
       </LightButton>
-      <AlertBox
-        isOpen={isAlertBoxOpen}
-        title="Nothing to export"
-        message="There is no data available for download."
-        onCancel={handleCancelBox}
-        cancelButtonText="DISMISS"
-        singleButton={true}
-      />
     </>
   );
 }

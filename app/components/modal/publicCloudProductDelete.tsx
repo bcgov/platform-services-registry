@@ -14,7 +14,7 @@ import { createModal } from '@/core/modal';
 import { showErrorNotification } from '@/helpers/notifications';
 import { deletePublicCloudProject } from '@/services/backend/public-cloud/products';
 import { PublicCloudProductDetailDecorated } from '@/types/public-cloud';
-import { openCompleteModal } from './complete';
+import { openNotificationModal } from './notification';
 
 interface ModalProps {
   product: PublicCloudProductDetailDecorated;
@@ -96,7 +96,7 @@ export const openPublicCloudProductDeleteModal = createModal<ModalProps, ModalSt
                   const res = await deleteProduct();
                   if (res) {
                     closeModal();
-                    await openCompleteModal(
+                    await openNotificationModal(
                       {
                         callbackUrl: '/public-cloud/products/all',
                         content: (
