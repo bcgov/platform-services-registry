@@ -108,22 +108,11 @@ export default privateCloudProductUsageMetrics(({ getPathParams, session }) => {
         ) : (
           <>
             <LoadingOverlay visible={isLoading} zIndex={1000} overlayProps={{ radius: 'sm', blur: 2 }} />
-            <MetricsTable
-              rows={rowsPod}
-              resource="cpu"
-              title="CPU Usage"
-              totalMetrics={getTotalMetrics(data.podMetrics, 'cpu')}
-            />
-            <MetricsTable
-              rows={rowsPod}
-              resource="memory"
-              title="Memory Usage"
-              totalMetrics={getTotalMetrics(data.podMetrics, 'memory')}
-            />
+            <MetricsTable rows={rowsPod} resource="cpu" totalMetrics={getTotalMetrics(data.podMetrics, 'cpu')} />
+            <MetricsTable rows={rowsPod} resource="memory" totalMetrics={getTotalMetrics(data.podMetrics, 'memory')} />
             <MetricsTable
               rows={rowsPVC}
               resource="storage"
-              title="Storage Usage"
               totalMetrics={getTotalMetrics(data.pvcMetrics, 'storage')}
             />
           </>
