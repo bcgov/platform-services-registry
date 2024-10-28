@@ -7,6 +7,7 @@ import React from 'react';
 import TableHeader from '@/components/generic/table/TableHeader';
 import TruncatedTooltip from '@/components/table/TruncatedTooltip';
 import { formatBinaryMetric, formatCpu, TransformedPodData, TransformedPVCData } from '@/helpers/resource-metrics';
+import { capitalizeFirstLetter } from '@/utils/string';
 
 interface MetricsSummary {
   totalUsage: number;
@@ -17,7 +18,6 @@ interface MetricsSummary {
 interface TableProps {
   rows: (TransformedPodData | TransformedPVCData)[];
   resource: ResourceType;
-  title: string;
   totalMetrics: MetricsSummary;
 }
 
@@ -42,11 +42,13 @@ const getPodMetricValue = (
 
 const getPVCMetricValue = (row: TransformedPVCData, key: 'usage' | 'limits'): string | number => row[key] ?? '-';
 
-export default function MetricsTable({ rows, resource, title, totalMetrics }: TableProps) {
+export default function MetricsTable({ rows, resource, totalMetrics }: TableProps) {
   return (
     <>
       <div className="border-2 rounded-xl overflow-hidden">
-        <TableHeader title={title} />
+        <TableHeader
+          title={`${resource === ResourceType.cpu ? resource.toUpperCase() : capitalizeFirstLetter(resource)} metrics`}
+        />
         <div className="divide-y divide-grey-200/5">
           {rows.map((row, index) => {
             const isPvcRow = isPVC(row);
