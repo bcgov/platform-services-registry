@@ -1,0 +1,26 @@
+name: Trivy Scan Action
+description: Scan Docker images using Trivy and upload results.
+inputs:
+  image:
+    description: A docker image
+    required: true
+
+runs:
+  using: composite
+  steps:
+  - name: Run Trivy vulnerability scanner
+    uses: aquasecurity/trivy-action@d2a392a13760cb64cb6bbd31d4bed2a7d9a5298d
+    continue-on-error: true
+    with:
+      image-ref: ${{ inputs.image }}
+      format: sarif
+      output: trivy-results.sarif
+      vuln-type: os,library
+      severity: LOW,MEDIUM,HIGH,CRITICAL
+
+  - name: Upload Trivy scan results to GitHub Security tab
+    uses: github/codeql-action/upload-sarif@3aa71356c75a8edd8430d54dff2982203a28be45
+    continue-on-error: true
+    with:
+      sarif_file: trivy-results.sarif
+      category: ${{ inputs.image }}

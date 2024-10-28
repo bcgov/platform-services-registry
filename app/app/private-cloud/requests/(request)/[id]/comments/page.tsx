@@ -3,7 +3,7 @@
 import { Alert } from '@mantine/core';
 import { IconInfoCircle } from '@tabler/icons-react';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { z } from 'zod';
 import CommentBubble from '@/components/comments/CommentBubble';
 import CommentForm from '@/components/comments/CommentForm';
@@ -38,9 +38,15 @@ const privateCloudRequestComments = createClientPage({
   validations: { pathParams: pathParamSchema },
 });
 
-export default privateCloudRequestComments(({ pathParams, session }) => {
+export default privateCloudRequestComments(({ getPathParams, session }) => {
+  const [pathParams, setPathParams] = useState<z.infer<typeof pathParamSchema>>();
+
+  useEffect(() => {
+    getPathParams().then((v) => setPathParams(v));
+  }, []);
+
   const [, privateSnap] = usePrivateProductState();
-  const { id: requestId } = pathParams;
+  const { id: requestId = '' } = pathParams ?? {};
   const userId = session?.userId;
 
   // Query for comments

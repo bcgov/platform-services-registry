@@ -13,6 +13,7 @@ import {
   IconReceipt2,
 } from '@tabler/icons-react';
 import { useQuery } from '@tanstack/react-query';
+import { useEffect, useState } from 'react';
 import { FormProvider, useForm } from 'react-hook-form';
 import { z } from 'zod';
 import AccountCoding from '@/components/form/AccountCoding';
@@ -34,8 +35,14 @@ const publicCloudRequest = createClientPage({
   roles: [GlobalRole.User],
   validations: { pathParams: pathParamSchema },
 });
-export default publicCloudRequest(({ pathParams }) => {
-  const { id } = pathParams;
+export default publicCloudRequest(({ getPathParams }) => {
+  const [pathParams, setPathParams] = useState<z.infer<typeof pathParamSchema>>();
+
+  useEffect(() => {
+    getPathParams().then((v) => setPathParams(v));
+  }, []);
+
+  const { id = '' } = pathParams ?? {};
 
   const { data: request, isLoading: isRequestLoading } = useQuery({
     queryKey: ['request', id],

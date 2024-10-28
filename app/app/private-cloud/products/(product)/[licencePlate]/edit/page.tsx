@@ -30,7 +30,7 @@ const privateCloudProductEdit = createClientPage({
   roles: [GlobalRole.User],
   validations: { pathParams: pathParamSchema },
 });
-export default privateCloudProductEdit(({ pathParams, queryParams, session }) => {
+export default privateCloudProductEdit(({ session }) => {
   const [, privateSnap] = usePrivateProductState();
   const [openReturn, setOpenReturn] = useState(false);
   const [isDisabled, setDisabled] = useState(false);

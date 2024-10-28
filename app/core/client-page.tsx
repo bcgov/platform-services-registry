@@ -22,8 +22,8 @@ interface HandlerProps<TPathParams, TQueryParams> {
 
 interface ComponentProps<TPathParams, TQueryParams> {
   session: Session | null;
-  pathParams: TPathParams;
-  queryParams: TQueryParams;
+  getPathParams: () => Promise<TPathParams>;
+  getQueryParams: () => Promise<TQueryParams>;
   router: AppRouterInstance;
   children: React.ReactNode;
 }
@@ -41,11 +41,11 @@ function createClientPage<TPathParams extends ZodType<any, any>, TQueryParams ex
   validations,
 }: HandlerProps<TPathParams, TQueryParams>) {
   const { pathParams: pathParamVal = z.object({}), queryParams: queryParamVal = z.object({}) } = validations ?? {};
-  let pathParams: TypeOf<typeof pathParamVal> | null = null;
-  let queryParams: TypeOf<typeof queryParamVal> | null = null;
+  const pathParams: TypeOf<typeof pathParamVal> | null = null;
+  const queryParams: TypeOf<typeof queryParamVal> | null = null;
 
   return function clientPage(Component: React.FC<ComponentProps<TypeOf<TPathParams>, TypeOf<TQueryParams>>>) {
-    return function wrapper({ params, searchParams, children }: any) {
+    return function wrapper({ params: paramsProm, searchParams: searchParamsProm, children }: any) {
       // eslint-disable-next-line react-hooks/rules-of-hooks
       const router = useRouter();
       // eslint-disable-next-line react-hooks/rules-of-hooks
@@ -73,29 +73,39 @@ function createClientPage<TPathParams extends ZodType<any, any>, TQueryParams ex
         }
       }
 
-      // Parse & validate path params
-      if (validations?.pathParams) {
-        const parsed = validations?.pathParams.safeParse(params);
-        if (!parsed.success) {
-          return router.push(fallbackUrl);
+      const getPathParams = async () => {
+        // Parse & validate path params
+        if (validations?.pathParams) {
+          const params = await paramsProm;
+          const parsed = validations?.pathParams.safeParse(params);
+          if (!parsed.success) {
+            return router.push(fallbackUrl);
+          }
+
+          return parsed.data;
         }
 
-        pathParams = parsed.data;
-      }
+        return null;
+      };
 
-      // Parse & validate query params
-      if (validations?.queryParams) {
-        const query = parseQueryString(searchParams);
-        const parsed = validations?.queryParams.safeParse(query);
-        if (!parsed.success) {
-          return router.push(fallbackUrl);
+      const getQueryParams = async () => {
+        // Parse & validate query params
+        if (validations?.queryParams) {
+          const searchParams = await searchParamsProm;
+          const query = parseQueryString(searchParams);
+          const parsed = validations?.queryParams.safeParse(query);
+          if (!parsed.success) {
+            return router.push(fallbackUrl);
+          }
+
+          return parsed.data;
         }
 
-        queryParams = parsed.data;
-      }
+        return null;
+      };
 
       return (
-        <Component session={session} pathParams={pathParams} queryParams={queryParams} router={router}>
+        <Component session={session} getPathParams={getPathParams} getQueryParams={getQueryParams} router={router}>
           {children}
         </Component>
       );

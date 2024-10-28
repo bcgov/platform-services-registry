@@ -2,7 +2,7 @@ import { Cluster, Ministry, Provider, Prisma, RequestType, ProjectStatus, Decisi
 import _isString from 'lodash-es/isString';
 import { string, z } from 'zod';
 import { processEnumString, processUpperEnumString, processBoolean } from '@/utils/zod';
-import { userSchema, requestDecisionEnum } from './shared';
+import { userSchema, RequestDecision } from './shared';
 
 export const budgetSchema = z.object({
   dev: z.number().min(50.0, 'Value should be no less than USD 50').default(50.0),
@@ -57,7 +57,7 @@ export const publicCloudEditRequestBodySchema = publicCloudCreateRequestBodySche
 export const publicCloudRequestDecisionBodySchema = publicCloudEditRequestBodySchema.merge(
   z.object({
     type: z.nativeEnum(RequestType),
-    decision: requestDecisionEnum,
+    decision: z.nativeEnum(RequestDecision),
     decisionComment: string().optional(),
   }),
 );

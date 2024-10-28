@@ -1,4 +1,4 @@
-import { Quota, Cluster, QuotaUpgradeResourceDetail } from '@prisma/client';
+import { Quota, Cluster, QuotaUpgradeResourceDetail, ResourceType } from '@prisma/client';
 import _each from 'lodash-es/each';
 import { resourceOptions } from '@/../app/constants';
 import { getResourceDetails } from '@/services/k8s';
@@ -14,13 +14,15 @@ export interface Quotas {
 function checkAutoApprovalEligibility({ allocation, deployment, resourceType }: QuotaUpgradeResourceDetail): boolean {
   if (deployment.usage === -1) return false;
 
+  // Calculate usage-to-limit and utilization ratios
   const usageRatio = deployment.usage / allocation.limit;
+  if (resourceType === ResourceType.storage) {
+    // Approve if storage usage exceeds 80% of limit
+    return usageRatio > 0.8;
+  }
   const utilizationRate = deployment.usage / deployment.request;
-
-  if (resourceType === 'storage' && usageRatio <= 0.8) return false;
-  if (usageRatio <= 0.85 || utilizationRate < 0.35) return false;
-
-  return true;
+  // Approve CPU/Memory if usage exceeds 85% of limit and utilization is at least 35%
+  return usageRatio > 0.85 && utilizationRate >= 0.35;
 }
 
 function extractQuotas(quotas: Quotas) {

@@ -2,22 +2,13 @@
 
 import { List, ThemeIcon } from '@mantine/core';
 import { IconCheck } from '@tabler/icons-react';
-import { useRouter } from 'next/navigation';
-import { useSession } from 'next-auth/react';
 import ExternalLink from '@/components/generic/button/ExternalLink';
 import MailLink from '@/components/generic/button/MailLink';
 import { privateCloudTeamEmail, publicCloudTeamEmail } from '@/constants';
 
 export default function Landing() {
-  const router = useRouter();
-  const { data: session } = useSession();
-
-  if (session) {
-    router.push('/home');
-  }
-
   return (
-    <div className="flex flex-col p-4">
+    <div className="flex flex-col py-4">
       <h1 className="text-3xl font-semibold text-gray-900 mb-6 tracking-wider">
         Welcome to B.C. Gov&apos;s Platform Product Registry
       </h1>

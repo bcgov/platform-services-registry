@@ -4,9 +4,6 @@ import {
   IconInfoCircle,
   IconUsersGroup,
   IconUserDollar,
-  IconSettings,
-  IconComponents,
-  IconMessage,
   IconLayoutGridAdd,
   IconMoneybag,
   IconReceipt2,
@@ -34,9 +31,8 @@ const publicCloudRequestOriginal = createClientPage({
   roles: [GlobalRole.User],
   validations: { pathParams: pathParamSchema },
 });
-export default publicCloudRequestOriginal(({ pathParams, queryParams, session, router }) => {
+export default publicCloudRequestOriginal(({ router }) => {
   const [publicState, publicSnap] = usePublicProductState();
-  const { id } = pathParams;
   const [secondTechLead, setSecondTechLead] = useState(false);
 
   useEffect(() => {
