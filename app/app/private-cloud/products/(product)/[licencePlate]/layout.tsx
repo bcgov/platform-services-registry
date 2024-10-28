@@ -4,7 +4,7 @@ import { Alert } from '@mantine/core';
 import { IconInfoCircle } from '@tabler/icons-react';
 import { useQuery } from '@tanstack/react-query';
 import Link from 'next/link';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { z } from 'zod';
 import PrivateCloudProductOptions from '@/components/dropdowns/PrivateCloudProductOptions';
 import ProductBadge from '@/components/form/ProductBadge';
@@ -26,9 +26,15 @@ const privateCloudProductLayout = createClientPage({
   validations: { pathParams: pathParamSchema },
 });
 
-export default privateCloudProductLayout(({ pathParams, queryParams, session, children }) => {
+export default privateCloudProductLayout(({ getPathParams, session, children }) => {
+  const [pathParams, setPathParams] = useState<z.infer<typeof pathParamSchema>>();
+
+  useEffect(() => {
+    getPathParams().then((v) => setPathParams(v));
+  }, []);
+
   const [privateState, privateSnap] = usePrivateProductState();
-  const { licencePlate } = pathParams;
+  const { licencePlate = '' } = pathParams ?? {};
 
   const { data: currentProduct } = useQuery({
     queryKey: ['currentProduct', licencePlate],

@@ -6,9 +6,9 @@ export function createRequest(productName: string, POEmail: string, TLEmail: str
   cy.get('select[id="ministry"]').select('Citizens Services');
   cy.get('select[name="cluster"]').select('SILVER');
   cy.contains('p', 'Team contacts').click();
-  cy.contains('label', 'Product Owner Email').parent().find('input').first().type(POEmail.slice(0, 8));
+  cy.contains('label', 'Product Owner email').parent().find('input').first().type(POEmail.slice(0, 8));
   cy.contains('span', POEmail).click();
-  cy.contains('label', 'Technical Lead Email').parent().find('input').first().type(TLEmail.slice(0, 11));
+  cy.contains('label', 'Technical Lead email').parent().find('input').first().type(TLEmail.slice(0, 11));
   cy.contains('span', TLEmail).click();
   cy.contains('p', 'Common components').click();
   cy.get('input[name="commonComponents.other"]').type('Other common component field');

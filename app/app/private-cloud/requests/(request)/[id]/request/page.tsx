@@ -22,9 +22,8 @@ const privateCloudRequestRequest = createClientPage({
   roles: [GlobalRole.User],
   validations: { pathParams: pathParamSchema },
 });
-export default privateCloudRequestRequest(({ pathParams, queryParams, session, router }) => {
+export default privateCloudRequestRequest(({}) => {
   const [privateState, privateSnap] = usePrivateProductState();
-  const { id } = pathParams;
   const [secondTechLead, setSecondTechLead] = useState(false);
 
   useEffect(() => {

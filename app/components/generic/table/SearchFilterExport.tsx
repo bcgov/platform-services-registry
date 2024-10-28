@@ -2,12 +2,11 @@ import { Disclosure, DisclosureButton, DisclosurePanel } from '@headlessui/react
 import { UnstyledButton, Tooltip, ComboboxData } from '@mantine/core';
 import { IconFilter, IconSearch, IconCircleX } from '@tabler/icons-react';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
-import { useCallback, useEffect, useState, useRef } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import ExportButton from '@/components/buttons/ExportButton';
 import LightButton from '@/components/generic/button/LightButton';
-import FormSingleSelect, { FormSingleSelectProps } from '@/components/generic/select/FormSingleSelect';
+import FormSingleSelect from '@/components/generic/select/FormSingleSelect';
 import { useDebounce } from '@/utils/hooks';
-import { useTableState } from './Table';
 
 type Props = {
   initialSearch?: string;
@@ -28,21 +27,21 @@ export default function SearchFilterExport({
   onExport,
   children,
 }: Props) {
+  const [searchKey, setSearchKey] = useState(initialSearch);
   const pathname = usePathname();
   const { replace } = useRouter();
   const searchParams = useSearchParams()!;
   const searchRef = useRef<HTMLInputElement>(null);
 
-  const { state, snapshot: snap } = useTableState();
   const [searchTerm, setSearchTerm] = useState<string>(initialSearch);
   const debouncedValue = useDebounce<string>(searchTerm, 450);
 
   useEffect(() => {
-    if (onSearch && snap.search !== debouncedValue) {
-      state.search = debouncedValue;
-      onSearch(debouncedValue);
+    if (searchKey !== debouncedValue) {
+      setSearchKey(debouncedValue);
+      if (onSearch) onSearch(debouncedValue);
     }
-  }, [onSearch, snap.search, state, debouncedValue]);
+  }, [onSearch, searchKey, setSearchKey, debouncedValue]);
 
   const handleDiscloserToggle = () => {
     let opened = false;

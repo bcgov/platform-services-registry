@@ -15,7 +15,7 @@ interface Props<P, S> {
   settings: ModalSettings; // Modal settings
   Component: (props: P & { state: S } & ExtraModalProps) => JSX.Element | null; // Modal component
   condition?: (props: P) => boolean; // Optional condition to render the modal
-  onClose?: (() => void) | undefined; // Optional onClose callback
+  onClose?: ((props: P & { state: S }) => void) | undefined; // Optional onClose callback
 }
 
 // Generic interface for modal options
@@ -44,6 +44,8 @@ export function createModal<P, S = any>({ settings, Component, condition, onClos
       closeModal: () => modals.close(id),
     };
 
+    const _props = { ...props, state };
+
     // Return a promise that resolves when the modal closes
     return new Promise<{ state: S; snapshot?: SS }>((resolve, reject) => {
       const modalSettings = {
@@ -58,10 +60,10 @@ export function createModal<P, S = any>({ settings, Component, condition, onClos
         onClose: () => {
           const output = { state: { ...state }, snapshot };
           if (onPreClose) onPreClose(output);
-          if (onClose) onClose();
+          if (onClose) onClose({ ..._props });
           resolve(output);
         },
-        children: <Component {...props} state={state} {...extraProps} />,
+        children: <Component {..._props} {...extraProps} />,
       };
 
       if (_isString(modalSettings.title)) {
