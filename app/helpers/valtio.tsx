@@ -9,7 +9,7 @@ export function createValtioContext<T extends object>(initialState: T) {
     return <StateContext.Provider value={state}>{children}</StateContext.Provider>;
   };
 
-  const useProviderState = function useTableState() {
+  const useProviderState = function useProviderState() {
     const state = useContext(StateContext);
     const snapshot = useSnapshot(state);
     return { state, snapshot };
