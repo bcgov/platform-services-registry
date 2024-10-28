@@ -47,7 +47,12 @@ spec:
             export PUBLIC_ADMIN_EMAILS='{{.Data.data.PUBLIC_ADMIN_EMAILS}}'
             export PRIVATE_ADMIN_EMAILS='{{.Data.data.PRIVATE_ADMIN_EMAILS}}'
             export KLAB_METRICS_READER_TOKEN='{{.Data.data.KLAB_METRICS_READER_TOKEN}}'
+            export KLAB2_METRICS_READER_TOKEN='{{.Data.data.KLAB2_METRICS_READER_TOKEN}}'
+            export CLAB_METRICS_READER_TOKEN='{{.Data.data.CLAB_METRICS_READER_TOKEN}}'
             export SILVER_METRICS_READER_TOKEN='{{.Data.data.SILVER_METRICS_READER_TOKEN}}'
+            export GOLDDR_METRICS_READER_TOKEN='{{.Data.data.GOLDDR_METRICS_READER_TOKEN}}'
+            export GOLD_METRICS_READER_TOKEN='{{.Data.data.GOLD_METRICS_READER_TOKEN}}'
+            export EMERALD_METRICS_READER_TOKEN='{{.Data.data.EMERALD_METRICS_READER_TOKEN}}'
           {{- end }}`}}
       labels:
         {{- include "app.labels" . | nindent 8 }}
