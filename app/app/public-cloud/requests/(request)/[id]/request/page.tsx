@@ -25,9 +25,9 @@ import ProjectDescriptionPublic from '@/components/form/ProjectDescriptionPublic
 import TeamContacts from '@/components/form/TeamContacts';
 import PageAccordion from '@/components/generic/accordion/PageAccordion';
 import FormErrorNotification from '@/components/generic/FormErrorNotification';
+import { openPublicCloudRequestReviewModal } from '@/components/modal/publicCloudRequestReviewModal';
 import { openReviewPublicCloudProductModal } from '@/components/modal/reviewPublicCloudProductModal';
 import { openSignPublicCloudProductModal } from '@/components/modal/signPublicCloudProductModal';
-import { openPublicCloudRequestReviewModal } from '@/components/modals/publicCloudRequestReviewModal';
 import { GlobalRole } from '@/constants';
 import createClientPage from '@/core/client-page';
 import { usePublicProductState } from '@/states/global';

@@ -8,7 +8,7 @@ import { privateCloudTeamEmail, publicCloudTeamEmail } from '@/constants';
 
 export default function Landing() {
   return (
-    <div className="flex flex-col p-4">
+    <div className="flex flex-col py-4">
       <h1 className="text-3xl font-semibold text-gray-900 mb-6 tracking-wider">
         Welcome to B.C. Gov&apos;s Platform Product Registry
       </h1>

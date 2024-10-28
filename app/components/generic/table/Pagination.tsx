@@ -1,38 +1,41 @@
 'use client';
 
 import LightButton from '../button/LightButton';
-import { useTableState } from './Table';
 
-export default function Pagination() {
-  const { state, snapshot: snap } = useTableState();
+interface Props {
+  page: number;
+  pageSize: number;
+  totalCount: number;
+  onPagination: (page: number, pageSize: number) => void;
+  isLoading?: boolean;
+}
 
-  const pageCount = snap.totalCount / snap.pageSize;
-  const isPrevDisabled = snap.page === 1;
-  const isNextDisabled = snap.page >= pageCount;
+export default function Pagination({ page, pageSize, totalCount, onPagination, isLoading = false }: Props) {
+  const pageCount = totalCount / pageSize;
+  const isPrevDisabled = page === 1;
+  const isNextDisabled = page >= pageCount;
 
   const handlePaginationUpdate = (newPage: number, newPageSize?: number) => {
-    state.page = newPage;
-    state.pageSize = newPageSize ?? snap.pageSize;
-    snap.onPagination(state.page, state.pageSize);
+    onPagination(newPage, newPageSize ?? pageSize);
   };
 
   return (
     <div className="block md:flex md:items-center md:justify-between">
-      {snap.isLoading ? (
+      {isLoading ? (
         <div></div>
       ) : (
         <div className="">
-          {snap.totalCount == 0 ? (
+          {totalCount == 0 ? (
             <p className="text-sm text-gray-700">Showing 0 to 0 of 0 results</p>
-          ) : snap.totalCount < snap.pageSize * snap.page ? (
+          ) : totalCount < pageSize * page ? (
             <p className="text-sm text-gray-700">
-              Showing <span>{snap.pageSize * (snap.page - 1) + 1}</span> to <span>{snap.totalCount}</span> of{' '}
-              <span>{snap.totalCount}</span> results
+              Showing <span>{pageSize * (page - 1) + 1}</span> to <span>{totalCount}</span> of <span>{totalCount}</span>{' '}
+              results
             </p>
           ) : (
             <p className="text-sm text-gray-700">
-              Showing <span>{snap.pageSize * (snap.page - 1) + 1}</span> to <span>{snap.pageSize * snap.page}</span> of{' '}
-              <span>{snap.totalCount}</span> results
+              Showing <span>{pageSize * (page - 1) + 1}</span> to <span>{pageSize * page}</span> of{' '}
+              <span>{totalCount}</span> results
             </p>
           )}
         </div>
@@ -42,7 +45,7 @@ export default function Pagination() {
         <select
           id="pageSize"
           name="pageSize"
-          value={snap.pageSize}
+          value={pageSize}
           className="rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
           onChange={(e) => handlePaginationUpdate(1, Number(e.target.value))}
         >
@@ -54,10 +57,10 @@ export default function Pagination() {
           <option value="100">100</option>
           <option value="200">200</option>
         </select>
-        <LightButton disabled={isPrevDisabled} onClick={() => handlePaginationUpdate(snap.page - 1)} className="mx-2">
+        <LightButton disabled={isPrevDisabled} onClick={() => handlePaginationUpdate(page - 1)} className="mx-2">
           Previous
         </LightButton>
-        <LightButton disabled={isNextDisabled} onClick={() => handlePaginationUpdate(snap.page + 1)}>
+        <LightButton disabled={isNextDisabled} onClick={() => handlePaginationUpdate(page + 1)}>
           Next
         </LightButton>
       </div>
