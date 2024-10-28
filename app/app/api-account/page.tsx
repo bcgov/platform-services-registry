@@ -3,7 +3,7 @@
 import { Alert } from '@mantine/core';
 import { IconInfoCircle } from '@tabler/icons-react';
 import { useQuery, useMutation } from '@tanstack/react-query';
-import { openConfirmModal } from '@/components/generic/modal/ConfirmModal';
+import { openConfirmModal } from '@/components/modal/confirm';
 import { GlobalRole } from '@/constants';
 import createClientPage from '@/core/client-page';
 import { getKeycloakApiAccount, createKeycloakApiAccount, deleteKeycloakApiAccount } from '@/services/backend/keycloak';
@@ -62,8 +62,8 @@ export default ApiAccountPage(({ session }) => {
               type="button"
               className="h-9 inline-flex items-center rounded-md bg-red-700 gap-x-2 px-4 py-1.5 text-sm font-semibold text-white shadow-sm ring-1 ring-inset ring-red-300"
               onClick={async () => {
-                const response = await openConfirmModal({});
-                if (response.confirmed) {
+                const res = await openConfirmModal({});
+                if (res?.state.confirmed) {
                   await deleteApiAccount();
                   await refetchApiAccount();
                 }

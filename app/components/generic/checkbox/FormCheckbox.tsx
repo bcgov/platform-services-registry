@@ -2,8 +2,8 @@
 
 import classnames from 'classnames';
 import _isFunction from 'lodash-es/isFunction';
-import { InputHTMLAttributes, ChangeEvent, RefObject, ReactNode, useState, useRef } from 'react';
-import AlertBox from '@/components/modal/AlertBox';
+import { InputHTMLAttributes, ChangeEvent, RefObject, ReactNode, useRef } from 'react';
+import { openConfirmModal } from '@/components/modal/confirm';
 
 interface InputProps extends InputHTMLAttributes<HTMLInputElement> {}
 
@@ -46,29 +46,40 @@ export default function FormCheckbox({
   confirmUncheckedMessage?: string;
 }) {
   const _ref = useRef<HTMLInputElement>(null);
-
-  const [value, setValue] = useState(false);
-  const [alertOpened, setAlertOpened] = useState(false);
-  const [event, setEvent] = useState<ChangeEvent<HTMLInputElement> | null>(null);
-
   const handleChecked = (e: ChangeEvent<HTMLInputElement>) => {
     if (inputProps.onChange) inputProps.onChange(e);
     else onChange(e.target.checked);
   };
 
-  const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
-    // Keep track of the status by the user
-    setValue(e.target.checked);
-
+  const handleChange = async (e: ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.checked;
     if (showConfirm) {
-      setAlertOpened(true);
-      setEvent(e);
+      const confirmTitle = value ? confirmCheckedTitle : confirmUncheckedTitle;
+      const confirmMessage = value ? confirmCheckedMessage : confirmUncheckedMessage;
+
+      const res = await openConfirmModal(
+        {
+          content: confirmMessage,
+        },
+        {
+          settings: {
+            title: confirmTitle,
+          },
+        },
+      );
+
+      if (res?.state.confirmed) {
+        // Ensure the value
+        if (_ref.current) _ref.current.checked = value;
+        handleChecked(e);
+      } else {
+        // Undo the value
+        if (_ref.current) _ref.current.checked = !value;
+      }
     } else {
       handleChecked(e);
     }
   };
-  const confirmTitle = value ? confirmCheckedTitle : confirmUncheckedTitle;
-  const confirmMessage = value ? confirmCheckedMessage : confirmUncheckedMessage;
 
   return (
     <>
@@ -117,27 +128,6 @@ export default function FormCheckbox({
           {hasError && <div>{error}</div>}
         </div>
       </div>
-      <AlertBox
-        isOpen={alertOpened}
-        title={confirmTitle}
-        message={confirmMessage}
-        onCancel={() => {
-          // Undo the value
-          if (_ref.current) _ref.current.checked = !value;
-
-          setAlertOpened(false);
-        }}
-        onConfirm={() => {
-          // Ensure the value
-          if (_ref.current) _ref.current.checked = value;
-
-          // Trigger the change event
-          if (event) handleChecked(event);
-          setAlertOpened(false);
-        }}
-        confirmButtonText="Yes"
-        cancelButtonText="No"
-      />
     </>
   );
 }

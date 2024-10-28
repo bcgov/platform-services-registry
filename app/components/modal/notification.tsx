@@ -12,9 +12,9 @@ interface ModalProps {
 
 interface ModalState {}
 
-export const openCompleteModal = createModal<ModalProps, ModalState>({
+export const openNotificationModal = createModal<ModalProps, ModalState>({
   settings: {
-    size: 'xl',
+    size: 'lg',
     title: 'Complete!',
     withCloseButton: false,
     closeOnClickOutside: false,
@@ -38,7 +38,6 @@ export const openCompleteModal = createModal<ModalProps, ModalState>({
                 if (callbackUrl) router.push(callbackUrl);
                 closeModal();
               }}
-              className="mr-1"
             >
               Close
             </Button>

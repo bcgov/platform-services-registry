@@ -14,7 +14,7 @@ import {
   checkPrivateCloudProductDeletionAvailability,
 } from '@/services/backend/private-cloud/products';
 import { PrivateCloudProductDetailDecorated } from '@/types/private-cloud';
-import { openCompleteModal } from './complete';
+import { openNotificationModal } from './notification';
 
 const OK_TO_DELETE = 'OK_TO_DELETE';
 
@@ -131,7 +131,7 @@ export const openPrivateCloudProductDeleteModal = createModal<ModalProps, ModalS
                   const res = await deleteProduct();
                   if (res) {
                     closeModal();
-                    await openCompleteModal(
+                    await openNotificationModal(
                       {
                         callbackUrl: '/private-cloud/products/all',
                         content: (
