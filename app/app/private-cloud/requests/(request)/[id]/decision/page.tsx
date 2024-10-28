@@ -13,7 +13,7 @@ import Quotas from '@/components/form/Quotas';
 import TeamContacts from '@/components/form/TeamContacts';
 import PageAccordion from '@/components/generic/accordion/PageAccordion';
 import FormErrorNotification from '@/components/generic/FormErrorNotification';
-import { openPrivateCloudRequestReviewModal } from '@/components/modals/privateCloudRequestReviewModal';
+import { openPrivateCloudRequestReviewModal } from '@/components/modal/privateCloudRequestReviewModal';
 import { GlobalRole } from '@/constants';
 import createClientPage from '@/core/client-page';
 import { usePrivateProductState } from '@/states/global';
