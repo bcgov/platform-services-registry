@@ -56,6 +56,8 @@ export default privateCloudProductUsageMetrics(({ getPathParams, session }) => {
   const [environment, setenvironment] = useState('dev');
   const [, privateSnap] = usePrivateProductState();
 
+  const { licencePlate = '' } = pathParams ?? {};
+
   const { data = { podMetrics: [], pvcMetrics: [] }, isLoading } = useQuery({
     queryKey: [environment, licencePlate],
     queryFn: () => getPodUsageMetrics(licencePlate, environment, privateSnap.currentProduct?.cluster || ''),

@@ -46,9 +46,7 @@ export async function getResourceDetails({
     },
   };
 
-  // Since storage usage data is unavailable, an admin review is always necessary.
-  // if (resourceName === 'storage') return result;
-  const isStorage = resourceName === 'storage';
+  const isStorage = resourceName === ResourceType.storage;
   const namespaceData = await getPodMetrics(licencePlate, env, cluster);
   const metricsData = isStorage ? namespaceData.pvcMetrics : namespaceData.podMetrics;
 

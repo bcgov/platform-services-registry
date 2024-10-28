@@ -5,22 +5,31 @@ import { normalizeMemory, normalizeCpu, PVC, resourceMetrics } from '@/helpers/r
 import { getK8sClients, queryPrometheus } from './core';
 
 async function getPvcUsage(name: string, namespace: string, cluster: Cluster) {
-  const queries = {
-    usage: `kubelet_volume_stats_used_bytes{persistentvolumeclaim="${name}", namespace="${namespace}"}`,
-    capacity: `kubelet_volume_stats_capacity_bytes{persistentvolumeclaim="${name}", namespace="${namespace}"}`,
-    freeInodes: `kubelet_volume_stats_inodes_free{persistentvolumeclaim="${name}", namespace="${namespace}"}`,
-  };
+  const queryFilter = `persistentvolumeclaim="${name}", namespace="${namespace}"`;
+  const [usageQuery, capacityQuery, freeInodesQuery] = [
+    `kubelet_volume_stats_used_bytes{${queryFilter}}`,
+    `kubelet_volume_stats_capacity_bytes{${queryFilter}}`,
+    `kubelet_volume_stats_inodes_free{${queryFilter}}`,
+  ];
+
   const [usageResult, capacityResult, freeInodesResult] = await Promise.all(
-    Object.values(queries).map((query) => queryPrometheus(query, cluster)),
+    [usageQuery, capacityQuery, freeInodesQuery].map((query) => queryPrometheus(query, cluster)),
   );
 
-  if (usageResult.length && capacityResult.length && freeInodesResult.length) {
-    const usage = parseFloat(usageResult[0].value[1]);
-    const limits = parseFloat(capacityResult[0].value[1]);
-    const freeInodes = parseInt(freeInodesResult[0].value[1], 10);
-
-    return { usage, limits, freeInodes };
+  if (usageResult.length === 0 || capacityResult.length === 0 || freeInodesResult.length === 0) {
+    return null;
   }
+  // each result array contains a single item with a timestamp and value:
+  // Example: { value: [timestamp, value] }
+  const [, usageStr] = usageResult[0].value;
+  const [, limitsStr] = capacityResult[0].value;
+  const [, freeInodesStr] = freeInodesResult[0].value;
+
+  const usage = parseFloat(usageStr);
+  const limits = parseFloat(limitsStr);
+  const freeInodes = parseInt(freeInodesStr, 10);
+
+  return { usage, limits, freeInodes };
 }
 
 async function collectPVCMetrics(namespace: string, cluster: Cluster) {

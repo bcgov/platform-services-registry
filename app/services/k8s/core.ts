@@ -1,5 +1,6 @@
 import { KubeConfig, CoreV1Api, Metrics } from '@kubernetes/client-node';
 import { Cluster } from '@prisma/client';
+import axios from 'axios';
 import {
   CLAB_METRICS_READER_TOKEN,
   KLAB_METRICS_READER_TOKEN,
@@ -9,6 +10,21 @@ import {
   SILVER_METRICS_READER_TOKEN,
   EMERALD_METRICS_READER_TOKEN,
 } from '@/config';
+
+type PrometheusMetricResult = {
+  metric: Record<string, string>;
+  value: [number, string];
+};
+
+type PrometheusQueryData = {
+  resultType: string;
+  result: PrometheusMetricResult[];
+};
+
+type PrometheusQueryResponse = {
+  status: string;
+  data: PrometheusQueryData;
+};
 
 function configureKubeConfig(cluster: string, token: string) {
   const kc = new KubeConfig();
@@ -60,17 +76,12 @@ export function getK8sClients(cluster: Cluster) {
   };
 }
 
-export async function queryPrometheus(query: string, cluster: Cluster): Promise<any> {
+export async function queryPrometheus(query: string, cluster: Cluster): Promise<PrometheusMetricResult[]> {
   const METRICS_URL = `https://prometheus-k8s-openshift-monitoring.apps.${cluster}.devops.gov.bc.ca`;
   const METRICS_TOKEN = k8sConfigs[cluster].users[0].token;
-  try {
-    const response = await axios.get(`${METRICS_URL}/api/v1/query`, {
-      headers: { Authorization: `Bearer ${METRICS_TOKEN}` },
-      params: { query },
-    });
-    return response.data.data.result;
-  } catch (error) {
-    console.error('Error querying Prometheus:', error);
-    return [];
-  }
+  const response = await axios.get<PrometheusQueryResponse>(`${METRICS_URL}/api/v1/query`, {
+    headers: { Authorization: `Bearer ${METRICS_TOKEN}` },
+    params: { query },
+  });
+  return response.data.data.result;
 }
