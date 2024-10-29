@@ -65,11 +65,10 @@ describe('Download Public Cloud Products - Permissions', () => {
   it('should successfully create a product by PO and approved by admin', async () => {
     await mockSessionByEmail(PO.email);
     const res1 = await createPublicCloudProject(productData.one);
-    const dat1 = await res1.json();
-
     if (res1.status !== 200) {
       console.log(await res1.json());
     }
+    const dat1 = await res1.json();
     expect(res1.status).toBe(200);
 
     const task1 = await prisma.task.findFirst({
@@ -78,7 +77,7 @@ describe('Download Public Cloud Products - Permissions', () => {
         status: TaskStatus.ASSIGNED,
         data: {
           equals: {
-            requestId: dat1.id,
+            licencePlate: dat1.licencePlate,
           },
         },
       },
