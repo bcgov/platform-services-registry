@@ -8,13 +8,14 @@ import { useQuery, useMutation } from '@tanstack/react-query';
 import { useEffect, useState } from 'react';
 import { FormProvider, useForm, FieldValues } from 'react-hook-form';
 import { string, z } from 'zod';
-import PageAccordion, { PageAccordionItem } from '@/components/generic/accordion/PageAccordion';
+import PageAccordion from '@/components/generic/accordion/PageAccordion';
 import HookFormTextarea from '@/components/generic/input/HookFormTextarea';
+import { openNotificationModal } from '@/components/modal/notification';
 import ProductComparison from '@/components/ProductComparison';
 import { createModal } from '@/core/modal';
-import { comparePrivateProductData, PrivateProductChange } from '@/helpers/product-change';
-import { editPrivateCloudProject } from '@/services/backend/private-cloud/products';
-import { usePrivateProductState } from '@/states/global';
+import { comparePublicProductData, PublicProductChange } from '@/helpers/product-change';
+import { editPublicCloudProject } from '@/services/backend/public-cloud/products';
+import { usePublicProductState } from '@/states/global';
 
 interface ModalProps {
   productData: FieldValues;
@@ -24,14 +25,14 @@ interface ModalState {
   success: boolean;
 }
 
-export const openEditPrivateCloudProductModal = createModal<ModalProps, ModalState>({
+export const openPublicCloudProductEditSubmitModal = createModal<ModalProps, ModalState>({
   settings: {
     size: 'xl',
     title: 'All Set?',
   },
   Component: function ({ productData, state, closeModal }) {
-    const [, privateSnap] = usePrivateProductState();
-    const [change, setChange] = useState<PrivateProductChange>();
+    const [, snap] = usePublicProductState();
+    const [change, setChange] = useState<PublicProductChange>();
 
     const methods = useForm({
       resolver: zodResolver(
@@ -50,7 +51,7 @@ export const openEditPrivateCloudProductModal = createModal<ModalProps, ModalSta
       isError: isEditError,
       error: editError,
     } = useMutation({
-      mutationFn: (data: any) => editPrivateCloudProject(privateSnap.licencePlate, data),
+      mutationFn: (data: any) => editPublicCloudProject(snap.licencePlate, data),
       onSuccess: () => {
         state.success = true;
       },
@@ -69,11 +70,38 @@ export const openEditPrivateCloudProductModal = createModal<ModalProps, ModalSta
     const { handleSubmit, register } = methods;
 
     useEffect(() => {
-      const _changes = comparePrivateProductData(privateSnap.currentProduct, productData);
+      const _changes = comparePublicProductData(
+        { ...snap.currentProduct, accountCoding: snap.currentProduct?.billing.accountCoding },
+        productData,
+      );
       setChange(_changes);
     }, [productData]);
 
-    if (!change || !privateSnap.editQuotaChangeStatus) return <></>;
+    if (!change) return <></>;
+
+    const openConfirmation = async () => {
+      await openNotificationModal(
+        {
+          callbackUrl: '/public-cloud/requests/all',
+          content: (
+            <>
+              <p>
+                We have received your edit for this product. The Product Owner and Technical Lead(s) will receive a
+                summary via email.
+              </p>
+              <p className="mt-2">
+                Alternatively, you can also track the status of your requests from the Registry App Dashboard
+              </p>
+            </>
+          ),
+        },
+        {
+          settings: {
+            title: 'Thank you! We have received your edit request',
+          },
+        },
+      );
+    };
 
     return (
       <Box pos="relative">
@@ -84,6 +112,7 @@ export const openEditPrivateCloudProductModal = createModal<ModalProps, ModalSta
             onSubmit={handleSubmit(async (formData) => {
               await editProject({ ...productData, requestComment: formData.requestComment });
               closeModal();
+              await openConfirmation();
             })}
           >
             <PageAccordion
@@ -102,27 +131,17 @@ export const openEditPrivateCloudProductModal = createModal<ModalProps, ModalSta
               showToggles={false}
             />
 
-            <p className="text-sm text-gray-900 mt-2">
-              After hitting submit, our smart robots will start working hard behind the scenes.
-              {(!privateSnap.editQuotaChangeStatus.isEligibleForAutoApproval ||
-                change.parentPaths.includes('golddrEnabled')) && (
-                <span>
-                  &nbsp;There is one step, the approval process, where a human is involved. They will take the
-                  opportunity, if needed, to reach out to you if they have any questions.
-                </span>
-              )}
-            </p>
-            <p className="text-sm text-gray-900 mt-4">
-              Also, look out for our notification emails that will provide you with valuable information regarding your
-              product status and details.
-            </p>
-
             <HookFormTextarea
-              label="If you have any additional comments about the request, add them here."
+              label="Tell us a little bit about why you are requesting a change. Your comment will be saved as part of the request history for future reference.."
               name="requestComment"
               placeholder="Enter an optional comment..."
               classNames={{ wrapper: 'mt-2' }}
             />
+
+            <p className="text-sm text-gray-900 mt-4">
+              Also, look out for our notification emails that will provide you with valuable information regarding your
+              product status and details.
+            </p>
 
             <Divider my="md" />
 

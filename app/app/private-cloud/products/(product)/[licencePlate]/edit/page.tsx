@@ -14,11 +14,10 @@ import Quotas from '@/components/form/Quotas';
 import TeamContacts from '@/components/form/TeamContacts';
 import PageAccordion from '@/components/generic/accordion/PageAccordion';
 import FormErrorNotification from '@/components/generic/FormErrorNotification';
-import { openEditPrivateCloudProductModal } from '@/components/modal/editPrivateCloudProductModal';
-import ReturnModal from '@/components/modal/Return';
+import { openPrivateCloudProductEditSubmitModal } from '@/components/modal/privateCloudProductEditSubmit';
 import { AGMinistries, GlobalRole, defaultQuota } from '@/constants';
 import createClientPage from '@/core/client-page';
-import { getPrivateCloudProject, getQuotaChangeStatus } from '@/services/backend/private-cloud/products';
+import { getQuotaChangeStatus } from '@/services/backend/private-cloud/products';
 import { usePrivateProductState } from '@/states/global';
 import { privateCloudEditRequestBodySchema } from '@/validation-schemas/private-cloud';
 
@@ -31,8 +30,7 @@ const privateCloudProductEdit = createClientPage({
   validations: { pathParams: pathParamSchema },
 });
 export default privateCloudProductEdit(({ session }) => {
-  const [, privateSnap] = usePrivateProductState();
-  const [openReturn, setOpenReturn] = useState(false);
+  const [, snap] = usePrivateProductState();
   const [isDisabled, setDisabled] = useState(false);
   const [secondTechLead, setSecondTechLead] = useState(false);
   const [isSecondaryTechLeadRemoved, setIsSecondaryTechLeadRemoved] = useState(false);
@@ -41,7 +39,7 @@ export default privateCloudProductEdit(({ session }) => {
     resolver: async (...args) => {
       const { developmentQuota, testQuota, productionQuota, toolsQuota } = args[0];
 
-      const quotaChangeStatus = await getQuotaChangeStatus(privateSnap.licencePlate, {
+      const quotaChangeStatus = await getQuotaChangeStatus(snap.licencePlate, {
         developmentQuota,
         testQuota,
         productionQuota,
@@ -110,7 +108,7 @@ export default privateCloudProductEdit(({ session }) => {
       testQuota: defaultQuota,
       productionQuota: defaultQuota,
       toolsQuota: defaultQuota,
-      ...privateSnap.currentProduct,
+      ...snap.currentProduct,
       isAgMinistryChecked: true,
     },
   });
@@ -118,14 +116,14 @@ export default privateCloudProductEdit(({ session }) => {
   const { formState } = methods;
 
   useEffect(() => {
-    if (!privateSnap.currentProduct) return;
+    if (!snap.currentProduct) return;
 
-    if (privateSnap.currentProduct.secondaryTechnicalLead) {
+    if (snap.currentProduct.secondaryTechnicalLead) {
       setSecondTechLead(true);
     }
 
-    setDisabled(!privateSnap.currentProduct?._permissions.edit);
-  }, [privateSnap.currentProduct]);
+    setDisabled(!snap.currentProduct?._permissions.edit);
+  }, [snap.currentProduct]);
 
   const secondTechLeadOnClick = () => {
     setSecondTechLead(!secondTechLead);
@@ -137,7 +135,7 @@ export default privateCloudProductEdit(({ session }) => {
 
   const isSubmitEnabled = Object.keys(formState.dirtyFields).length > 0 || isSecondaryTechLeadRemoved;
 
-  if (!privateSnap.currentProduct) {
+  if (!snap.currentProduct) {
     return null;
   }
 
@@ -151,7 +149,7 @@ export default privateCloudProductEdit(({ session }) => {
         disabled: isDisabled,
         clusterDisabled: true,
         mode: 'edit',
-        canToggleTemporary: privateSnap.currentProduct._permissions.toggleTemporary,
+        canToggleTemporary: snap.currentProduct._permissions.toggleTemporary,
       },
     },
     {
@@ -168,8 +166,8 @@ export default privateCloudProductEdit(({ session }) => {
       Component: Quotas,
       componentArgs: {
         disabled: isDisabled,
-        licencePlate: privateSnap.currentProduct?.licencePlate as string,
-        currentProject: privateSnap.currentProduct as PrivateCloudProject,
+        licencePlate: snap.currentProduct?.licencePlate as string,
+        currentProject: snap.currentProduct as PrivateCloudProject,
       },
     },
     {
@@ -187,10 +185,7 @@ export default privateCloudProductEdit(({ session }) => {
         <FormErrorNotification />
         <form
           onSubmit={methods.handleSubmit(async (formData) => {
-            const result = await openEditPrivateCloudProductModal({ productData: formData });
-            if (result?.state.success) {
-              setOpenReturn(true);
-            }
+            await openPrivateCloudProductEditSubmitModal({ productData: formData });
           })}
           autoComplete="off"
         >
@@ -206,13 +201,6 @@ export default privateCloudProductEdit(({ session }) => {
           </div>
         </form>
       </FormProvider>
-      <ReturnModal
-        open={openReturn}
-        setOpen={setOpenReturn}
-        redirectUrl="/private-cloud/requests/all"
-        modalTitle="Thank you! We have received your edit request."
-        modalMessage="We have received your edit request for your product. The Product Owner and Technical Lead(s) will receive the approval/rejection decision via email."
-      />
     </div>
   );
 });

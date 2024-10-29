@@ -25,9 +25,9 @@ import ProjectDescriptionPublic from '@/components/form/ProjectDescriptionPublic
 import TeamContacts from '@/components/form/TeamContacts';
 import PageAccordion from '@/components/generic/accordion/PageAccordion';
 import FormErrorNotification from '@/components/generic/FormErrorNotification';
-import { openPublicCloudRequestReviewModal } from '@/components/modal/publicCloudRequestReviewModal';
-import { openReviewPublicCloudProductModal } from '@/components/modal/reviewPublicCloudProductModal';
-import { openSignPublicCloudProductModal } from '@/components/modal/signPublicCloudProductModal';
+import { openPublicCloudMouReviewModal } from '@/components/modal/publicCloudMouReview';
+import { openPublicCloudMouSignModal } from '@/components/modal/publicCloudMouSign';
+import { openPublicCloudRequestReviewModal } from '@/components/modal/publicCloudRequestReview';
 import { GlobalRole } from '@/constants';
 import createClientPage from '@/core/client-page';
 import { usePublicProductState } from '@/states/global';
@@ -46,25 +46,26 @@ const publicCloudProductRequest = createClientPage({
   validations: { pathParams: pathParamSchema },
 });
 export default publicCloudProductRequest(({ router }) => {
-  const [publicState, publicSnap] = usePublicProductState();
+  const [, snap] = usePublicProductState();
   const [secondTechLead, setSecondTechLead] = useState(false);
 
   useEffect(() => {
-    if (!publicSnap.currentRequest) return;
+    if (!snap.currentRequest) return;
 
-    if (publicSnap.currentRequest.decisionData.secondaryTechnicalLead) {
+    if (snap.currentRequest.decisionData.secondaryTechnicalLead) {
       setSecondTechLead(true);
     }
-  }, [publicSnap.currentRequest]);
+  }, [snap.currentRequest]);
 
   const methods = useForm({
     resolver: (...args) => {
-      const isDeleteRequest = publicSnap.currentRequest?.type === RequestType.DELETE;
+      const [values] = args;
+      const isDeleteRequest = values.type === RequestType.DELETE;
 
       // Ignore form validation if a DELETE request
       if (isDeleteRequest) {
         return {
-          values: {},
+          values,
           errors: {},
         };
       }
@@ -74,9 +75,9 @@ export default publicCloudProductRequest(({ router }) => {
     defaultValues: {
       decisionComment: '',
       decision: RequestDecision.APPROVED as RequestDecision,
-      type: publicSnap.currentRequest?.type,
-      ...publicSnap.currentRequest?.decisionData,
-      accountCoding: publicSnap.currentRequest?.decisionData.billing.accountCoding,
+      type: snap.currentRequest?.type,
+      ...snap.currentRequest?.decisionData,
+      accountCoding: snap.currentRequest?.decisionData.billing.accountCoding,
     },
   });
 
@@ -87,12 +88,12 @@ export default publicCloudProductRequest(({ router }) => {
     }
   };
 
-  if (!publicSnap.currentRequest) {
+  if (!snap.currentRequest) {
     return null;
   }
 
   const isDisabled = true;
-  const canSignEmou = publicSnap.currentRequest._permissions.signMou;
+  const canSignEmou = snap.currentRequest._permissions.signMou;
 
   const accordionItems = [
     {
@@ -141,14 +142,14 @@ export default publicCloudProductRequest(({ router }) => {
       description: '',
       Component: AccountCoding,
       componentArgs: {
-        accountCodingInitial: publicSnap.currentRequest.decisionData?.billing.accountCoding,
+        accountCodingInitial: snap.currentRequest.decisionData?.billing.accountCoding,
         disabled: true,
       },
     },
   ];
 
-  if (publicSnap.currentRequest.requestComment) {
-    const comment = publicSnap.currentRequest.requestComment;
+  if (snap.currentRequest.requestComment) {
+    const comment = snap.currentRequest.requestComment;
 
     accordionItems.push({
       LeftIcon: IconMessage,
@@ -167,18 +168,18 @@ export default publicCloudProductRequest(({ router }) => {
 
   return (
     <div>
-      <PublicCloudBillingInfo product={publicSnap.currentRequest.decisionData} className="mb-2" />
+      <PublicCloudBillingInfo product={snap.currentRequest.decisionData} className="mb-2" />
       <FormProvider {...methods}>
         <FormErrorNotification />
         <form
           autoComplete="off"
           onSubmit={methods.handleSubmit(async (formData) => {
-            if (!formData || !publicSnap.currentRequest) return;
+            if (!formData || !snap.currentRequest) return;
 
             const decision = formData.decision as RequestDecision;
             await openPublicCloudRequestReviewModal(
               {
-                request: publicSnap.currentRequest,
+                request: snap.currentRequest,
                 finalData: formData as PublicCloudRequestDecisionBody,
               },
               { settings: { title: `${decision === RequestDecision.APPROVED ? 'Approve' : 'Reject'} Request` } },
@@ -189,7 +190,7 @@ export default publicCloudProductRequest(({ router }) => {
 
           <div className="mt-10 flex items-center justify-start gap-x-6">
             <PreviousButton />
-            {publicSnap.currentRequest._permissions.review && (
+            {snap.currentRequest._permissions.review && (
               <div className="flex items-center justify-start gap-x-6">
                 <SubmitButton
                   text="REJECT REQUEST"
@@ -208,11 +209,11 @@ export default publicCloudProductRequest(({ router }) => {
             {canSignEmou && (
               <button
                 onClick={async () => {
-                  if (!publicSnap.currentRequest) return;
-                  const res = await openSignPublicCloudProductModal<{ confirmed: boolean }>({
-                    licencePlate: publicSnap.currentRequest.licencePlate,
-                    name: publicSnap.currentRequest.decisionData.name,
-                    provider: publicSnap.currentRequest.decisionData.provider,
+                  if (!snap.currentRequest) return;
+                  const res = await openPublicCloudMouSignModal<{ confirmed: boolean }>({
+                    licencePlate: snap.currentRequest.licencePlate,
+                    name: snap.currentRequest.decisionData.name,
+                    provider: snap.currentRequest.decisionData.provider,
                   });
 
                   if (res?.state.confirmed) {
@@ -225,13 +226,13 @@ export default publicCloudProductRequest(({ router }) => {
                 Sign eMOU
               </button>
             )}
-            {publicSnap.currentRequest._permissions.reviewMou && (
+            {snap.currentRequest._permissions.reviewMou && (
               <button
                 onClick={async () => {
-                  if (!publicSnap.currentRequest) return;
-                  const res = await openReviewPublicCloudProductModal<{ confirmed: boolean }>({
-                    licencePlate: publicSnap.currentRequest.licencePlate,
-                    billingId: publicSnap.currentRequest.decisionData.billingId,
+                  if (!snap.currentRequest) return;
+                  const res = await openPublicCloudMouReviewModal<{ confirmed: boolean }>({
+                    licencePlate: snap.currentRequest.licencePlate,
+                    billingId: snap.currentRequest.decisionData.billingId,
                   });
 
                   if (res?.state.confirmed) {

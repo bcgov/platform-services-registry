@@ -1,7 +1,7 @@
 'use client';
 
 import { zodResolver } from '@hookform/resolvers/zod';
-import { IconInfoCircle, IconUsersGroup, IconSettings, IconComponents } from '@tabler/icons-react';
+import { IconInfoCircle, IconUsersGroup, IconComponents } from '@tabler/icons-react';
 import { useState } from 'react';
 import { FormProvider, useForm } from 'react-hook-form';
 import { z } from 'zod';
@@ -11,8 +11,7 @@ import ProjectDescription from '@/components/form/ProjectDescriptionPrivate';
 import TeamContacts from '@/components/form/TeamContacts';
 import PageAccordion from '@/components/generic/accordion/PageAccordion';
 import FormErrorNotification from '@/components/generic/FormErrorNotification';
-import { openCreatePrivateCloudProductModal } from '@/components/modal/createPrivateCloudProductModal';
-import ReturnModal from '@/components/modal/Return';
+import { openPrivateCloudProductCreateSubmitModal } from '@/components/modal/privateCloudProductCreateSubmit';
 import { AGMinistries, GlobalRole } from '@/constants';
 import createClientPage from '@/core/client-page';
 import { privateCloudCreateRequestBodySchema } from '@/validation-schemas/private-cloud';
@@ -22,7 +21,6 @@ const privateCloudProductNew = createClientPage({
 });
 
 export default privateCloudProductNew(({ session }) => {
-  const [openReturn, setOpenReturn] = useState(false);
   const [secondTechLead, setSecondTechLead] = useState(false);
 
   const methods = useForm({
@@ -88,10 +86,7 @@ export default privateCloudProductNew(({ session }) => {
         <FormErrorNotification />
         <form
           onSubmit={methods.handleSubmit(async (formData) => {
-            const result = await openCreatePrivateCloudProductModal({ productData: formData });
-            if (result?.state.success) {
-              setOpenReturn(true);
-            }
+            await openPrivateCloudProductCreateSubmitModal({ productData: formData });
           })}
           autoComplete="off"
         >
@@ -108,13 +103,6 @@ export default privateCloudProductNew(({ session }) => {
           </div>
         </form>
       </FormProvider>
-      <ReturnModal
-        open={openReturn}
-        setOpen={setOpenReturn}
-        redirectUrl="/private-cloud/requests/all"
-        modalTitle="Thank you! We have received your create request."
-        modalMessage="We have received your create request for a new product. The Product Owner and Technical Lead(s) will receive the approval/rejection decision via email."
-      />
     </div>
   );
 });

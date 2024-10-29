@@ -26,12 +26,10 @@ import ProjectDescriptionPublic from '@/components/form/ProjectDescriptionPublic
 import TeamContacts from '@/components/form/TeamContacts';
 import PageAccordion from '@/components/generic/accordion/PageAccordion';
 import FormErrorNotification from '@/components/generic/FormErrorNotification';
-import PrivateCloudEditModal from '@/components/modal/EditPrivateCloud';
-import ReturnModal from '@/components/modal/Return';
+import { openPublicCloudProductEditSubmitModal } from '@/components/modal/publicCloudProductEditSubmit';
 import { AGMinistries, GlobalRole } from '@/constants';
 import createClientPage from '@/core/client-page';
-import { getPublicCloudProject, editPublicCloudProject } from '@/services/backend/public-cloud/products';
-import { publicProductState } from '@/states/global';
+import { usePublicProductState } from '@/states/global';
 import { publicCloudEditRequestBodySchema } from '@/validation-schemas/public-cloud';
 
 const pathParamSchema = z.object({
@@ -42,42 +40,11 @@ const publicCloudProductEdit = createClientPage({
   roles: [GlobalRole.User],
   validations: { pathParams: pathParamSchema },
 });
-export default publicCloudProductEdit(({ getPathParams }) => {
-  const [pathParams, setPathParams] = useState<z.infer<typeof pathParamSchema>>();
-
-  useEffect(() => {
-    getPathParams().then((v) => setPathParams(v));
-  }, []);
-
-  const { licencePlate = '' } = pathParams ?? {};
-  const snap = useSnapshot(publicProductState);
-
-  const [openReturn, setOpenReturn] = useState(false);
+export default publicCloudProductEdit(({}) => {
+  const [, snap] = usePublicProductState();
   const [isDisabled, setDisabled] = useState(false);
   const [secondTechLead, setSecondTechLead] = useState(false);
   const [isSecondaryTechLeadRemoved, setIsSecondaryTechLeadRemoved] = useState(false);
-  const [openComment, setOpenComment] = useState(false);
-
-  const {
-    mutateAsync: editProject,
-    isPending: isEditingProject,
-    isError: isEditError,
-    error: editError,
-  } = useMutation({
-    mutationFn: (data: any) => editPublicCloudProject(licencePlate, data),
-    onSuccess: () => {
-      setOpenComment(false);
-      setOpenReturn(true);
-    },
-    onError: (error: any) => {
-      notifications.show({
-        title: 'Error',
-        message: `Failed to edit product: ${error.message}`,
-        color: 'red',
-        autoClose: 5000,
-      });
-    },
-  });
 
   const methods = useForm({
     resolver: zodResolver(
@@ -122,10 +89,6 @@ export default publicCloudProductEdit(({ getPathParams }) => {
       methods.unregister('secondaryTechnicalLead');
       setIsSecondaryTechLeadRemoved(true);
     }
-  };
-
-  const setComment = (requestComment: string) => {
-    editProject({ ...methods.getValues(), requestComment });
   };
 
   if (!snap.currentProduct) {
@@ -190,7 +153,12 @@ export default publicCloudProductEdit(({ getPathParams }) => {
       <PublicCloudBillingInfo product={snap.currentProduct} className="mb-2" />
       <FormProvider {...methods}>
         <FormErrorNotification />
-        <form autoComplete="off" onSubmit={methods.handleSubmit(() => setOpenComment(true))}>
+        <form
+          autoComplete="off"
+          onSubmit={methods.handleSubmit(async (formData) => {
+            await openPublicCloudProductEditSubmitModal({ productData: formData });
+          })}
+        >
           <PageAccordion items={accordionItems} />
 
           <div className="mt-10 flex items-center justify-start gap-x-6">
@@ -203,19 +171,6 @@ export default publicCloudProductEdit(({ getPathParams }) => {
           </div>
         </form>
       </FormProvider>
-      <PrivateCloudEditModal
-        open={openComment}
-        setOpen={setOpenComment}
-        handleSubmit={setComment}
-        isLoading={isEditingProject}
-      />
-      <ReturnModal
-        open={openReturn}
-        setOpen={setOpenReturn}
-        redirectUrl="/public-cloud/requests/all"
-        modalTitle="Thank you! We have received your edit."
-        modalMessage="We have received your edit for this product. The Product Owner and Technical Lead(s) will receive a summary via email."
-      />
     </div>
   );
 });

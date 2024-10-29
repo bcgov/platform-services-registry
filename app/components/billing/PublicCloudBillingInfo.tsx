@@ -1,12 +1,11 @@
 'use client';
 
 import { Alert, Button } from '@mantine/core';
-import { IconInfoCircle, IconInfoSquareRounded, IconSquareCheck, IconSquare } from '@tabler/icons-react';
+import { IconInfoCircle } from '@tabler/icons-react';
 import classNames from 'classnames';
-import { useRouter } from 'next/navigation';
 import { useSession } from 'next-auth/react';
-import { openReviewPublicCloudProductModal } from '@/components/modal/reviewPublicCloudProductModal';
-import { openSignPublicCloudProductModal } from '@/components/modal/signPublicCloudProductModal';
+import { openPublicCloudMouReviewModal } from '@/components/modal/publicCloudMouReview';
+import { openPublicCloudMouSignModal } from '@/components/modal/publicCloudMouSign';
 import { formatFullName } from '@/helpers/user';
 import PublicCloudBillingDownloadButton from './PublicCloudBillingDownloadButton';
 import { Product } from './types';
@@ -79,7 +78,7 @@ export default function PublicCloudBillingInfo({
           size="xs"
           className="mt-2"
           onClick={async () => {
-            const res = await openSignPublicCloudProductModal<{ confirmed: boolean }>({
+            const res = await openPublicCloudMouSignModal<{ confirmed: boolean }>({
               licencePlate: product.licencePlate,
               name: product.name,
               provider: product.provider,
@@ -99,7 +98,7 @@ export default function PublicCloudBillingInfo({
           size="xs"
           className="mt-2"
           onClick={async () => {
-            const res = await openReviewPublicCloudProductModal<{ confirmed: boolean }>({
+            const res = await openPublicCloudMouReviewModal<{ confirmed: boolean }>({
               licencePlate: product.licencePlate,
               billingId: product.billingId,
             });

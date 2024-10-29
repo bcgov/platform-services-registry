@@ -25,7 +25,7 @@ interface ModalState {
   confirmed: boolean;
 }
 
-export const openSignPublicCloudProductModal = createModal<ModalProps, ModalState>({
+export const openPublicCloudMouSignModal = createModal<ModalProps, ModalState>({
   settings: {
     size: 'xl',
     title: 'Service Agreement',
