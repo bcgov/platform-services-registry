@@ -26,7 +26,7 @@ interface ModalState {
   confirmed: boolean;
 }
 
-export const openReviewPublicCloudProductModal = createModal<ModalProps, ModalState>({
+export const openPublicCloudMouReviewModal = createModal<ModalProps, ModalState>({
   settings: {
     size: 'xl',
     title: 'Review Electronic Memorandum of Understanding (eMOU)',

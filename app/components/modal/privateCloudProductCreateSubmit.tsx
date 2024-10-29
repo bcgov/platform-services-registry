@@ -12,6 +12,7 @@ import FormCheckbox from '@/components/generic/checkbox/FormCheckbox';
 import FormError from '@/components/generic/FormError';
 import { createModal } from '@/core/modal';
 import { createPrivateCloudProject } from '@/services/backend/private-cloud/products';
+import { openNotificationModal } from './notification';
 
 interface ModalProps {
   productData: FieldValues;
@@ -21,7 +22,7 @@ interface ModalState {
   success: boolean;
 }
 
-export const openCreatePrivateCloudProductModal = createModal<ModalProps, ModalState>({
+export const openPrivateCloudProductCreateSubmitModal = createModal<ModalProps, ModalState>({
   settings: {
     size: 'xl',
     title: 'All Set?',
@@ -74,6 +75,30 @@ export const openCreatePrivateCloudProductModal = createModal<ModalProps, ModalS
 
     const { handleSubmit, register } = methods;
 
+    const openConfirmation = async () => {
+      await openNotificationModal(
+        {
+          callbackUrl: '/private-cloud/requests/all',
+          content: (
+            <>
+              <p>
+                We have received your create request for a new product. The Product Owner and Technical Lead(s) will
+                receive the approval/rejection decision via email.
+              </p>
+              <p className="mt-2">
+                Alternatively, you can also track the status of your requests from the Registry App Dashboard
+              </p>
+            </>
+          ),
+        },
+        {
+          settings: {
+            title: 'Thank you! We have received your create request',
+          },
+        },
+      );
+    };
+
     return (
       <Box pos="relative">
         <LoadingOverlay visible={isCreatingProject} zIndex={1000} overlayProps={{ radius: 'sm', blur: 2 }} />
@@ -83,6 +108,8 @@ export const openCreatePrivateCloudProductModal = createModal<ModalProps, ModalS
             onSubmit={handleSubmit(async (formData) => {
               if (formData.confirmed) {
                 await createProject({ ...productData, requestComment: formData.requestComment });
+                closeModal();
+                await openConfirmation();
               }
 
               closeModal();

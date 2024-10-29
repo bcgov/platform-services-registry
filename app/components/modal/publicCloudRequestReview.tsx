@@ -8,22 +8,22 @@ import { FormProvider, useForm } from 'react-hook-form';
 import { z } from 'zod';
 import { createModal } from '@/core/modal';
 import { showErrorNotification } from '@/helpers/notifications';
-import { makePrivateCloudRequestDecision } from '@/services/backend/private-cloud/requests';
-import { PrivateCloudRequestDetailDecorated } from '@/types/private-cloud';
-import { PrivateCloudRequestDecisionBody } from '@/validation-schemas/private-cloud';
+import { makePublicCloudRequestDecision } from '@/services/backend/public-cloud/requests';
+import { PublicCloudRequestDetailDecorated } from '@/types/public-cloud';
+import { PublicCloudRequestDecisionBody } from '@/validation-schemas/public-cloud';
 import { RequestDecision } from '@/validation-schemas/shared';
-import { openRequestDecisionCompleteModal } from './requestDecisionCompleteModal';
+import { openRequestDecisionCompleteModal } from './requestDecisionComplete';
 
 interface ModalProps {
-  request: PrivateCloudRequestDetailDecorated;
-  finalData: Omit<PrivateCloudRequestDecisionBody, 'decisionComment'>;
+  request: PublicCloudRequestDetailDecorated;
+  finalData: Omit<PublicCloudRequestDecisionBody, 'decisionComment'>;
 }
 
 interface ModalState {
   success: boolean;
 }
 
-export const openPrivateCloudRequestReviewModal = createModal<ModalProps, ModalState>({
+export const openPublicCloudRequestReviewModal = createModal<ModalProps, ModalState>({
   settings: {
     size: 'xl',
   },
@@ -48,7 +48,7 @@ export const openPrivateCloudRequestReviewModal = createModal<ModalProps, ModalS
       isError: isDecisionError,
       error: decisionError,
     } = useMutation({
-      mutationFn: (data: any) => makePrivateCloudRequestDecision(request.id, data),
+      mutationFn: (data: any) => makePublicCloudRequestDecision(request.id, data),
       onSuccess: () => {
         state.success = true;
       },
@@ -69,7 +69,7 @@ export const openPrivateCloudRequestReviewModal = createModal<ModalProps, ModalS
               await makeDecision({ ...finalData, ...formData });
               closeModal();
 
-              await openRequestDecisionCompleteModal({ callbackUrl: '/private-cloud/requests/all' });
+              await openRequestDecisionCompleteModal({ callbackUrl: '/public-cloud/requests/all' });
             })}
           >
             {finalData.decision === RequestDecision.APPROVED ? (

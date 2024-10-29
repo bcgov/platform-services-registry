@@ -13,7 +13,7 @@ import Quotas from '@/components/form/Quotas';
 import TeamContacts from '@/components/form/TeamContacts';
 import PageAccordion from '@/components/generic/accordion/PageAccordion';
 import FormErrorNotification from '@/components/generic/FormErrorNotification';
-import { openPrivateCloudRequestReviewModal } from '@/components/modal/privateCloudRequestReviewModal';
+import { openPrivateCloudRequestReviewModal } from '@/components/modal/privateCloudRequestReview';
 import { GlobalRole } from '@/constants';
 import createClientPage from '@/core/client-page';
 import { usePrivateProductState } from '@/states/global';
@@ -38,31 +38,31 @@ export default privateCloudRequestDecision(({ getPathParams, session, router }) 
     getPathParams().then((v) => setPathParams(v));
   }, []);
 
-  const [privateState, privateSnap] = usePrivateProductState();
+  const [, snap] = usePrivateProductState();
   const { id = '' } = pathParams ?? {};
   const [secondTechLead, setSecondTechLead] = useState(false);
 
   useEffect(() => {
-    if (!privateSnap.currentRequest) return;
+    if (!snap.currentRequest) return;
 
-    if (id && !privateSnap.currentRequest._permissions.viewDecision) {
+    if (id && !snap.currentRequest._permissions.viewDecision) {
       router.push(`/private-cloud/requests/${id}/summary`);
       return;
     }
 
-    if (privateSnap.currentRequest.decisionData.secondaryTechnicalLead) {
+    if (snap.currentRequest.decisionData.secondaryTechnicalLead) {
       setSecondTechLead(true);
     }
-  }, [privateSnap.currentRequest, router]);
-
+  }, [snap.currentRequest, router]);
   const methods = useForm({
     resolver: (...args) => {
-      const isDeleteRequest = privateSnap.currentRequest?.type === RequestType.DELETE;
+      const [values] = args;
+      const isDeleteRequest = values.type === RequestType.DELETE;
 
       // Ignore form validation if a DELETE request
       if (isDeleteRequest) {
         return {
-          values: {},
+          values,
           errors: {},
         };
       }
@@ -72,8 +72,8 @@ export default privateCloudRequestDecision(({ getPathParams, session, router }) 
     defaultValues: {
       decisionComment: '',
       decision: RequestDecision.APPROVED as RequestDecision,
-      type: privateSnap.currentRequest?.type,
-      ...privateSnap.currentRequest?.decisionData,
+      type: snap.currentRequest?.type,
+      ...snap.currentRequest?.decisionData,
     },
   });
 
@@ -84,11 +84,11 @@ export default privateCloudRequestDecision(({ getPathParams, session, router }) 
     }
   };
 
-  if (!privateSnap.currentRequest) {
+  if (!snap.currentRequest) {
     return null;
   }
 
-  const isDisabled = !privateSnap.currentRequest._permissions.edit;
+  const isDisabled = !snap.currentRequest._permissions.edit;
 
   const accordionItems = [
     {
@@ -98,7 +98,7 @@ export default privateCloudRequestDecision(({ getPathParams, session, router }) 
       Component: ProjectDescription,
       componentArgs: {
         disabled: isDisabled,
-        clusterDisabled: privateSnap.currentRequest.type !== 'CREATE',
+        clusterDisabled: snap.currentRequest.type !== 'CREATE',
         mode: 'decision',
       },
     },
@@ -116,14 +116,14 @@ export default privateCloudRequestDecision(({ getPathParams, session, router }) 
       Component: Quotas,
       componentArgs: {
         disabled: isDisabled,
-        licencePlate: privateSnap.currentRequest.licencePlate as string,
-        currentProject: privateSnap.currentRequest.project as PrivateCloudProject,
+        licencePlate: snap.currentRequest.licencePlate as string,
+        currentProject: snap.currentRequest.project as PrivateCloudProject,
       },
     },
   ];
 
-  if (privateSnap.currentRequest.requestComment) {
-    const comment = privateSnap.currentRequest.requestComment;
+  if (snap.currentRequest.requestComment) {
+    const comment = snap.currentRequest.requestComment;
 
     accordionItems.push({
       LeftIcon: IconMessage,
@@ -147,12 +147,12 @@ export default privateCloudRequestDecision(({ getPathParams, session, router }) 
         <form
           autoComplete="off"
           onSubmit={methods.handleSubmit(async (formData) => {
-            if (!privateSnap.currentRequest) return;
+            if (!snap.currentRequest) return;
 
             const decision = formData.decision as RequestDecision;
             await openPrivateCloudRequestReviewModal(
               {
-                request: privateSnap.currentRequest,
+                request: snap.currentRequest,
                 finalData: formData as PrivateCloudRequestDecisionBody,
               },
               { settings: { title: `${decision === RequestDecision.APPROVED ? 'Approve' : 'Reject'} Request` } },
@@ -163,7 +163,7 @@ export default privateCloudRequestDecision(({ getPathParams, session, router }) 
 
           <div className="mt-10 flex items-center justify-start gap-x-6">
             <PreviousButton />
-            {privateSnap.currentRequest._permissions.review && (
+            {snap.currentRequest._permissions.review && (
               <div className="flex items-center justify-start gap-x-6">
                 <SubmitButton
                   text="REJECT REQUEST"

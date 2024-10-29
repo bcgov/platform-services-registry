@@ -1,19 +1,14 @@
 'use client';
 
 import { zodResolver } from '@hookform/resolvers/zod';
-import { notifications } from '@mantine/notifications';
 import {
   IconInfoCircle,
   IconUsersGroup,
   IconUserDollar,
-  IconSettings,
-  IconComponents,
-  IconMessage,
   IconLayoutGridAdd,
   IconMoneybag,
   IconReceipt2,
 } from '@tabler/icons-react';
-import { useMutation } from '@tanstack/react-query';
 import { useState } from 'react';
 import { FormProvider, useForm } from 'react-hook-form';
 import { z } from 'zod';
@@ -26,52 +21,17 @@ import ProjectDescriptionPublic from '@/components/form/ProjectDescriptionPublic
 import TeamContacts from '@/components/form/TeamContacts';
 import PageAccordion from '@/components/generic/accordion/PageAccordion';
 import FormErrorNotification from '@/components/generic/FormErrorNotification';
-import CreatePublicCloud from '@/components/modal/CreatePublicCloud';
-import ReturnModal from '@/components/modal/Return';
+import { openPublicCloudProductCreateSubmitModal } from '@/components/modal/publicCloudProductCreateSubmit';
 import { AGMinistries, GlobalRole } from '@/constants';
 import createClientPage from '@/core/client-page';
 import { existBilling } from '@/services/backend/billing';
-import { createPublicCloudProject } from '@/services/backend/public-cloud/products';
 import { publicCloudCreateRequestBodySchema } from '@/validation-schemas/public-cloud';
 
 const publicCloudProductNew = createClientPage({
   roles: [GlobalRole.User],
 });
 export default publicCloudProductNew(({}) => {
-  const [openCreate, setOpenCreate] = useState(false);
-  const [openReturn, setOpenReturn] = useState(false);
   const [secondTechLead, setSecondTechLead] = useState(false);
-
-  const {
-    mutateAsync: createProject,
-    isPending: isCreatingProject,
-    isError: isCreateError,
-    error: createError,
-  } = useMutation({
-    mutationFn: (data: any) => createPublicCloudProject(data),
-    onSuccess: () => {
-      setOpenCreate(false);
-      setOpenReturn(true);
-    },
-    onError: (error: any) => {
-      if (error.response?.status === 401) {
-        notifications.show({
-          title: 'Unauthorized',
-          message:
-            'You are not authorized to create this product. Please ensure you are mentioned in the product contacts to proceed.',
-          color: 'red',
-          autoClose: 5000,
-        });
-      } else {
-        notifications.show({
-          title: 'Error',
-          message: `Failed to create product: ${error.message}`,
-          color: 'red',
-          autoClose: 5000,
-        });
-      }
-    },
-  });
 
   const methods = useForm({
     resolver: zodResolver(
@@ -115,10 +75,6 @@ export default publicCloudProductNew(({}) => {
       },
     } as any,
   });
-
-  const handleSubmit = async (data: any) => {
-    createProject(data);
-  };
 
   const secondTechLeadOnClick = () => {
     setSecondTechLead(!secondTechLead);
@@ -183,7 +139,12 @@ export default publicCloudProductNew(({}) => {
 
       <FormProvider {...methods}>
         <FormErrorNotification />
-        <form autoComplete="off" onSubmit={methods.handleSubmit(() => setOpenCreate(true))}>
+        <form
+          autoComplete="off"
+          onSubmit={methods.handleSubmit(async (formData) => {
+            await openPublicCloudProductCreateSubmitModal({ productData: formData });
+          })}
+        >
           <PageAccordion items={accordionItems} />
 
           <div className="mt-10 flex items-center justify-start gap-x-6">
@@ -196,22 +157,7 @@ export default publicCloudProductNew(({}) => {
             </button>
           </div>
         </form>
-        <CreatePublicCloud
-          open={openCreate}
-          setOpen={setOpenCreate}
-          handleSubmit={methods.handleSubmit(handleSubmit)}
-          isLoading={isCreatingProject}
-        />
       </FormProvider>
-
-      <ReturnModal
-        isPublicCreate
-        open={openReturn}
-        setOpen={setOpenReturn}
-        redirectUrl="/public-cloud/requests/all"
-        modalTitle="Thank you! We have received your create request."
-        modalMessage="We have received your create request for a new product. The Product Owner and Technical Lead(s) will receive the approval/rejection decision via email."
-      />
     </div>
   );
 });
