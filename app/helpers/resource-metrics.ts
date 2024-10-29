@@ -1,8 +1,21 @@
 import { ResourceType } from '@prisma/client';
 
+export type resourceMetrics = {
+  podMetrics: Pod[];
+  pvcMetrics: PVC[];
+};
 export type Pod = {
-  podName: string;
+  name: string;
   containers: Container[];
+};
+
+export type PVC = {
+  name: string;
+  pvName: string;
+  storageClassName: string;
+  usage: number;
+  limits: number;
+  freeInodes: number;
 };
 
 export type Container = {
@@ -10,17 +23,14 @@ export type Container = {
   usage: {
     cpu: number;
     memory: number;
-    storage: number;
-  };
-  limits: {
-    cpu: number;
-    memory: number;
-    storage: number;
   };
   requests: {
     cpu: number;
     memory: number;
-    storage: number;
+  };
+  limits: {
+    cpu: number;
+    memory: number;
   };
 };
 
@@ -108,13 +118,13 @@ export function normalizeMemory(memoryValue: string | number): number {
   return memoryValue;
 }
 
-export function formatMemory(bytes: number) {
+export function formatBinaryMetric(bytes: number) {
   const units = ['B', 'KiB', 'MiB', 'GiB', 'TiB'];
   let index = 0;
 
   // Handle zero case
   if (bytes === 0) return '0 B';
-
+  if (bytes < 0) return '';
   // Convert to the most appropriate unit
   while (bytes >= 1024 && index < units.length - 1) {
     bytes /= 1024;
@@ -135,19 +145,92 @@ export function formatCpu(millicores: number) {
 }
 
 // Function to aggregate total usage and limits across all containers in a single pod
-export const getTotalMetrics = (pods: Pod[], resource: ResourceType) => {
+export const getTotalMetrics = (data: Pod[] | PVC[], resource: ResourceType) => {
   let totalUsage = 0;
   let totalRequest = 0;
   let totalLimit = 0;
-
   // Iterate through each pod and each container
-  pods.forEach((pod) => {
+  if (data.every((item) => 'containers' in item) && (resource === 'cpu' || resource === 'memory')) {
+    (data as Pod[]).forEach((pod) => {
+      pod.containers.forEach((container) => {
+        totalUsage += container.usage[resource] || 0;
+        totalRequest += container.requests[resource] || 0;
+        totalLimit += container.limits[resource] || 0;
+      });
+    });
+  } else {
+    (data as PVC[]).forEach((pvc) => {
+      if (pvc.usage) totalUsage += pvc.usage;
+      totalRequest += 0;
+      if (pvc.limits) totalLimit += pvc.limits;
+    });
+  }
+  return { totalUsage, totalRequest, totalLimit };
+};
+
+export type TransformedPodData = {
+  name: string;
+  containerName: string;
+  usage: {
+    cpu: number | string;
+    memory: number | string;
+  };
+  requests: {
+    cpu: number | string;
+    memory: number | string;
+  };
+  limits: {
+    cpu: number | string;
+    memory: number | string;
+  };
+};
+
+export type TransformedPVCData = {
+  name: string;
+  pvName: string;
+  storageClassName: string;
+  usage: number | string;
+  limits: number | string;
+  freeInodes: number | string;
+};
+
+export function transformPVCData(data: PVC[]) {
+  const transformedData: TransformedPVCData[] = [];
+  data.forEach((pvc) => {
+    transformedData.push({
+      name: pvc.name,
+      pvName: pvc.pvName,
+      storageClassName: pvc.storageClassName,
+      usage: pvc.usage,
+      limits: pvc.limits,
+      freeInodes: pvc.freeInodes,
+    });
+  });
+  return transformedData;
+}
+
+export function transformPodData(data: Pod[]) {
+  const transformedData: TransformedPodData[] = [];
+  data.forEach((pod) => {
     pod.containers.forEach((container) => {
-      totalUsage += container.usage[resource];
-      totalRequest += container.requests[resource];
-      totalLimit += container.limits[resource];
+      transformedData.push({
+        name: pod.name,
+        containerName: container.name,
+        usage: {
+          cpu: container.usage.cpu,
+          memory: container.usage.memory,
+        },
+        requests: {
+          cpu: container.requests.cpu,
+          memory: container.requests.memory,
+        },
+        limits: {
+          cpu: container.limits.cpu,
+          memory: container.limits.memory,
+        },
+      });
     });
   });
 
-  return { totalUsage, totalRequest, totalLimit };
-};
+  return transformedData;
+}

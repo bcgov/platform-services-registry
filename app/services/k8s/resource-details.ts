@@ -46,21 +46,21 @@ export async function getResourceDetails({
     },
   };
 
-  // Since storage usage data is unavailable, an admin review is always necessary.
-  if (resourceName === 'storage') return result;
+  const isStorage = resourceName === ResourceType.storage;
+  const namespaceData = await getPodMetrics(licencePlate, env, cluster);
+  const metricsData = isStorage ? namespaceData.pvcMetrics : namespaceData.podMetrics;
 
-  const podMetricsData = await getPodMetrics(licencePlate, env, cluster);
-  if (podMetricsData.length === 0) return result;
+  if (metricsData.length === 0) return result;
 
-  const { totalRequest, totalLimit, totalUsage } = getTotalMetrics(podMetricsData, resourceName);
+  const { totalRequest, totalLimit, totalUsage } = getTotalMetrics(metricsData, resourceName);
   result.deployment.request = totalRequest;
   result.deployment.limit = totalLimit;
   result.deployment.usage = totalUsage;
 
   const unitMultiplier = resourceName === 'cpu' ? cpuCoreToMillicoreMultiplier : memoryUnitMultipliers.Gi;
   const resourceValues = extractNumbers(currentQuota[envQuota][resourceName]);
-  const deploymentRequest = resourceValues[0] * unitMultiplier;
-  const deploymentLimit = resourceValues[1] * unitMultiplier;
+  const deploymentRequest = isStorage ? 0 : resourceValues[0] * unitMultiplier;
+  const deploymentLimit = isStorage ? resourceValues[0] : resourceValues[1] * unitMultiplier;
 
   result.allocation.request = deploymentRequest;
   result.allocation.limit = deploymentLimit;
