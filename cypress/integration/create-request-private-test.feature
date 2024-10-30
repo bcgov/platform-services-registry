@@ -18,6 +18,6 @@ Feature: New Request
     And User clicks button "SUBMIT REQUEST"
     And User checks checkbox "By checking this box..."
     And User clicks button "Submit"
-    And User clicks button "Return to Dashboard"
+    And User clicks modal window button "Close"
     Then User should be redirected to Requests tab
     And User should see "Automated Test Product Name"
