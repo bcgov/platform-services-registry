@@ -54,7 +54,7 @@ async function main() {
           });
           console.log('Response sent:', res.status);
         } catch (error) {
-          console.error('Error:', error);
+          console.error('private cloud provision:', error);
         }
       }
     })();
@@ -82,7 +82,9 @@ async function main() {
               }),
             );
           }
-        } catch {}
+        } catch (error) {
+          console.error('public cloud groups:', error);
+        }
 
         try {
           const res = await fetch(`${APP_URL}/api/public-cloud/provision/${licencePlate}`, {
@@ -94,7 +96,7 @@ async function main() {
           });
           console.log(res);
         } catch (error) {
-          console.error(error);
+          console.error('public cloud provision:', error);
         }
       }
     })();

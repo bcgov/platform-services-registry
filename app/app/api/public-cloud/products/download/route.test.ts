@@ -66,7 +66,7 @@ describe('Download Public Cloud Products - Permissions', () => {
     await mockSessionByEmail(PO.email);
     const res1 = await createPublicCloudProject(productData.one);
     if (res1.status !== 200) {
-      console.log(await res1.json());
+      console.log(JSON.stringify(await res1.json()), JSON.stringify(productData.one));
     }
     const dat1 = await res1.json();
     expect(res1.status).toBe(200);
