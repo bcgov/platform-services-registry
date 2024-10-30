@@ -12,8 +12,8 @@ Feature: Edit Request
     And User waits for "3" seconds
     And User clicks link "Automated Test Product Name"
     And User clicks button "APPROVE REQUEST"
-    And User clicks button "CONFIRM APPROVAL"
-    And User clicks button "Return to Dashboard"
+    And User clicks modal window button "Submit"
+    And User clicks modal window button "Return to Dashboard"
     And User logs out
     And User logs in with username "james.smith@gov.bc.ca" and password "james.smith@gov.bc.ca"
     And User clicks tab "PRIVATE CLOUD OPENSHIFT"
@@ -51,7 +51,7 @@ Feature: Edit Request
     And User checks checkbox "Publishing..."
     And User clicks button "Submit"
     And User clicks modal window button "Submit"
-    And User clicks button "Return to Dashboard"
+    And User clicks modal window button "Close"
     And User waits for "5" seconds
     Then User should be redirected to Requests tab
     And User should see "Automated Test Edit Request"

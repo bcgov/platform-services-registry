@@ -33,8 +33,8 @@ Feature: New Request
     And User clicks button "SUBMIT REQUEST"
     And User checks checkbox "No eMOU exists for this account coding."
     And User checks checkbox "...team is liable to pay the base charge..."
-    And User clicks modal window button "SUBMIT REQUEST"
+    And User clicks modal window button "Submit"
     And User waits for "4" seconds
-    And User clicks button "Return to Dashboard"
+    And User clicks modal window button "Close"
     Then User should be redirected to Requests tab
     And User should see "Automated Test Product Name"

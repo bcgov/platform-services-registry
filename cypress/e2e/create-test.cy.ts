@@ -15,7 +15,7 @@ export function createRequest(productName: string, POEmail: string, TLEmail: str
   cy.get('button[type="submit"]').click();
   cy.get('input[id="consent"]').click();
   cy.contains('span', 'Submit').click();
-  cy.contains('button', 'Return to Dashboard').click();
+  cy.contains('button', 'Close').click();
   cy.wait(5000);
   cy.contains('span', productName).should('be.visible');
 }
