@@ -168,6 +168,7 @@ export default privateCloudProductEdit(({ session }) => {
         disabled: isDisabled,
         licencePlate: snap.currentProduct?.licencePlate as string,
         currentProject: snap.currentProduct as PrivateCloudProject,
+        quotaContactRequired: true,
       },
     },
     {

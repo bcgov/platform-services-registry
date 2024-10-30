@@ -22,13 +22,16 @@ export default function Quotas({
   licencePlate,
   disabled,
   currentProject,
+  quotaContactRequired = false,
 }: {
   licencePlate: string;
   disabled: boolean;
   currentProject?: PrivateCloudProject | null | undefined;
+  quotaContactRequired?: boolean;
 }) {
-  const formData = useFormContext();
-  const newValues = formData.getValues();
+  const { watch } = useFormContext();
+
+  const newValues = watch();
 
   if (!currentProject) return null;
 
@@ -85,7 +88,7 @@ export default function Quotas({
           );
         })}
       </div>
-      <QuotasChangeInfo disabled={disabled} />
+      {quotaContactRequired && <QuotasChangeInfo disabled={disabled} />}
     </>
   );
 }

@@ -1,4 +1,4 @@
-import { Alert } from '@mantine/core';
+import { Button, Divider, Grid, LoadingOverlay, Box, Alert } from '@mantine/core';
 import { IconInfoCircle, IconExclamationCircle } from '@tabler/icons-react';
 import { useQuery } from '@tanstack/react-query';
 import classNames from 'classnames';
@@ -68,7 +68,7 @@ export default function QuotasChangeInfo({ disabled, className }: { disabled: bo
     privateProductState.editQuotaChangeStatus = quotaChangeStatus;
   }, [quotaChangeStatus]);
 
-  if (isLoading || !quotaChangeStatus) return null;
+  if (!quotaChangeStatus) return null;
   if (!quotaChangeStatus.hasChange) return null;
 
   if (quotaChangeStatus.isEligibleForAutoApproval) {
@@ -80,107 +80,110 @@ export default function QuotasChangeInfo({ disabled, className }: { disabled: bo
   }
 
   return (
-    <div className={classNames(className)}>
-      <Alert className="mb-2" color="warning" title="" icon={<IconExclamationCircle />}>
-        The quota changes you made require admin review. Please provide the following information:
-      </Alert>
-      <h3 className="text-base 2xl:text-lg font-semibold leading-7 text-gray-900">Contact name</h3>
-      <p className="text-sm leading-6 text-gray-600">
-        Provide the first and last name of the product contact handling this request. This person will be contacted by
-        the Platform Services team with any questions we may have about the request.&nbsp;
-        <span className="font-bold">This person does not need to be a Product Contact.</span>
-      </p>
-      <div className="mt-2">
-        <input
-          id="quotaContactName"
-          autoComplete="off"
-          disabled={disabled}
-          type="text"
-          placeholder=""
-          className={classNames(
-            'block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6',
-            disabled
-              ? 'disabled:bg-slate-50 disabled:text-slate-500 disabled:border-slate-200 disabled:shadow-noneinvalid:border-pink-500 invalid:text-pink-600 focus:invalid:border-pink-500 focus:invalid:ring-pink-500'
-              : '',
-          )}
-          {...register('quotaContactName')}
-        />
-        <FormError error={_get(errors, 'quotaContactName')} />
+    <Box pos="relative">
+      <LoadingOverlay visible={isLoading} zIndex={1000} overlayProps={{ radius: 'sm', blur: 2 }} />
+      <div className={classNames(className)}>
+        <Alert className="mb-2" color="warning" title="" icon={<IconExclamationCircle />}>
+          The quota changes you made require admin review. Please provide the following information:
+        </Alert>
+        <h3 className="text-base 2xl:text-lg font-semibold leading-7 text-gray-900">Contact name</h3>
+        <p className="text-sm leading-6 text-gray-600">
+          Provide the first and last name of the product contact handling this request. This person will be contacted by
+          the Platform Services team with any questions we may have about the request.&nbsp;
+          <span className="font-bold">This person does not need to be a Product Contact.</span>
+        </p>
+        <div className="mt-2">
+          <input
+            id="quotaContactName"
+            autoComplete="off"
+            disabled={disabled}
+            type="text"
+            placeholder=""
+            className={classNames(
+              'block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6',
+              disabled
+                ? 'disabled:bg-slate-50 disabled:text-slate-500 disabled:border-slate-200 disabled:shadow-noneinvalid:border-pink-500 invalid:text-pink-600 focus:invalid:border-pink-500 focus:invalid:ring-pink-500'
+                : '',
+            )}
+            {...register('quotaContactName')}
+          />
+          <FormError error={_get(errors, 'quotaContactName')} />
+        </div>
+        <h3 className="text-base 2xl:text-lg font-semibold leading-7 text-gray-900 mt-4">Contact email</h3>
+        <p className="text-sm leading-6 text-gray-600">
+          Provide the email of the product contact handling this request. This should be a professional email, but
+          it&nbsp;<span className="font-bold">does not need to be an IDIR email address.</span>
+        </p>
+        <div className="mt-2">
+          <input
+            id="quotaContactEmail"
+            autoComplete="off"
+            disabled={disabled}
+            type="text"
+            placeholder=""
+            className={classNames(
+              'block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6',
+              disabled
+                ? 'disabled:bg-slate-50 disabled:text-slate-500 disabled:border-slate-200 disabled:shadow-noneinvalid:border-pink-500 invalid:text-pink-600 focus:invalid:border-pink-500 focus:invalid:ring-pink-500'
+                : '',
+            )}
+            {...register('quotaContactEmail')}
+          />
+          <FormError error={_get(errors, 'quotaContactEmail')} />
+        </div>
+        <h3 className="text-lg font-semibold leading-7 text-gray-900 mt-4">Justification of quota increase</h3>
+        <p className="leading-6 text-gray-600">Please clearly state the following:</p>
+        <ol className="list-decimal pl-5 font-bold">
+          <li>
+            Reason for quota increase:&nbsp;
+            <span className="font-normal">
+              Explain why you need more resources, such as expected growth, bursty workload patterns, or specific
+              project requirements.
+            </span>
+          </li>
+          <li>
+            Current resource usage:&nbsp;
+            <span className="font-normal">
+              Provide details on how many resources the important parts of your product currently consume. Additionally,
+              if possible, inform us how your project&apos;s resource usage will change if we increase your quota.
+            </span>
+          </li>
+          <li>
+            Steps taken to manage current workload:&nbsp;
+            <span className="font-normal">
+              Describe the actions you&apos;ve taken to accommodate your product&apos;s workload within your current
+              quota.
+            </span>
+          </li>
+        </ol>
+        <p className="mt-2">
+          For a more detailed description of what the Platform Services team needs to approve your quota changes, please
+          review the documentation&nbsp;
+          <ExternalLink href="https://developer.gov.bc.ca/docs/default/component/platform-developer-docs/docs/automation-and-resiliency/request-quota-adjustment-for-openshift-project-set/">
+            on the quota increase process.
+          </ExternalLink>
+          &nbsp; Having difficulty answering the questions?&nbsp;
+          <ExternalLink href="https://developer.gov.bc.ca/docs/default/component/platform-developer-docs/docs/automation-and-resiliency/request-quota-adjustment-for-openshift-project-set/#examples-of-requests">
+            Read through some of the example answers to get a better idea of what information to include.
+          </ExternalLink>
+        </p>
+        <div className="mt-2">
+          <textarea
+            disabled={disabled}
+            id="quotaJustification"
+            placeholder="Enter a justification..."
+            {...register('quotaJustification')}
+            rows={3}
+            className={classNames(
+              'block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6',
+              disabled
+                ? 'disabled:bg-slate-50 disabled:text-slate-500 disabled:border-slate-200 disabled:shadow-noneinvalid:border-pink-500 invalid:text-pink-600 focus:invalid:border-pink-500 focus:invalid:ring-pink-500'
+                : '',
+            )}
+          />
+          <FormError error={_get(errors, 'quotaJustification')} />
+        </div>
       </div>
-      <h3 className="text-base 2xl:text-lg font-semibold leading-7 text-gray-900 mt-4">Contact email</h3>
-      <p className="text-sm leading-6 text-gray-600">
-        Provide the email of the product contact handling this request. This should be a professional email, but
-        it&nbsp;<span className="font-bold">does not need to be an IDIR email address.</span>
-      </p>
-      <div className="mt-2">
-        <input
-          id="quotaContactEmail"
-          autoComplete="off"
-          disabled={disabled}
-          type="text"
-          placeholder=""
-          className={classNames(
-            'block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6',
-            disabled
-              ? 'disabled:bg-slate-50 disabled:text-slate-500 disabled:border-slate-200 disabled:shadow-noneinvalid:border-pink-500 invalid:text-pink-600 focus:invalid:border-pink-500 focus:invalid:ring-pink-500'
-              : '',
-          )}
-          {...register('quotaContactEmail')}
-        />
-        <FormError error={_get(errors, 'quotaContactEmail')} />
-      </div>
-      <h3 className="text-lg font-semibold leading-7 text-gray-900 mt-4">Justification of quota increase</h3>
-      <p className="leading-6 text-gray-600">Please clearly state the following:</p>
-      <ol className="list-decimal pl-5 font-bold">
-        <li>
-          Reason for quota increase:&nbsp;
-          <span className="font-normal">
-            Explain why you need more resources, such as expected growth, bursty workload patterns, or specific project
-            requirements.
-          </span>
-        </li>
-        <li>
-          Current resource usage:&nbsp;
-          <span className="font-normal">
-            Provide details on how many resources the important parts of your product currently consume. Additionally,
-            if possible, inform us how your project&apos;s resource usage will change if we increase your quota.
-          </span>
-        </li>
-        <li>
-          Steps taken to manage current workload:&nbsp;
-          <span className="font-normal">
-            Describe the actions you&apos;ve taken to accommodate your product&apos;s workload within your current
-            quota.
-          </span>
-        </li>
-      </ol>
-      <p className="mt-2">
-        For a more detailed description of what the Platform Services team needs to approve your quota changes, please
-        review the documentation&nbsp;
-        <ExternalLink href="https://developer.gov.bc.ca/docs/default/component/platform-developer-docs/docs/automation-and-resiliency/request-quota-adjustment-for-openshift-project-set/">
-          on the quota increase process.
-        </ExternalLink>
-        &nbsp; Having difficulty answering the questions?&nbsp;
-        <ExternalLink href="https://developer.gov.bc.ca/docs/default/component/platform-developer-docs/docs/automation-and-resiliency/request-quota-adjustment-for-openshift-project-set/#examples-of-requests">
-          Read through some of the example answers to get a better idea of what information to include.
-        </ExternalLink>
-      </p>
-      <div className="mt-2">
-        <textarea
-          disabled={disabled}
-          id="quotaJustification"
-          placeholder="Enter a justification..."
-          {...register('quotaJustification')}
-          rows={3}
-          className={classNames(
-            'block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6',
-            disabled
-              ? 'disabled:bg-slate-50 disabled:text-slate-500 disabled:border-slate-200 disabled:shadow-noneinvalid:border-pink-500 invalid:text-pink-600 focus:invalid:border-pink-500 focus:invalid:ring-pink-500'
-              : '',
-          )}
-        />
-        <FormError error={_get(errors, 'quotaJustification')} />
-      </div>
-    </div>
+    </Box>
   );
 }

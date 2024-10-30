@@ -91,6 +91,7 @@ export default privateCloudRequestOriginal(({ getPathParams, session, router }) 
         disabled: isDisabled,
         licencePlate: privateSnap.currentRequest.licencePlate as string,
         currentProject: privateSnap.currentRequest.project as PrivateCloudProject,
+        quotaContactRequired: false,
       },
     },
   ];

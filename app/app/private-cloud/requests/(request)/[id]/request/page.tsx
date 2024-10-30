@@ -84,6 +84,7 @@ export default privateCloudRequestRequest(({}) => {
         disabled: isDisabled,
         licencePlate: privateSnap.currentRequest.licencePlate as string,
         currentProject: privateSnap.currentRequest.project as PrivateCloudProject,
+        quotaContactRequired: false,
       },
     },
   ];
