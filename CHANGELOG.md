@@ -1,3 +1,30 @@
+## [0.38.0](https://github.com/bcgov/platform-services-registry/compare/v0.37.2...v0.38.0) (2024-10-30)
+
+### Features
+
+* **2692:** scan image builds for vulnerabilities ([507e753](https://github.com/bcgov/platform-services-registry/commit/507e753af62f960459e111c2e62230e5ae0012b3))
+* **3812:** tweak edit private cloud test to run in github actions and new UI ([4a6d3b4](https://github.com/bcgov/platform-services-registry/commit/4a6d3b47701bfce5e6dd38a2bb4185c23db29268))
+* **3813:** add storage data to UI and auto approval check ([083a7e4](https://github.com/bcgov/platform-services-registry/commit/083a7e401a14077eba2c7ce99eafd9f61eef994a))
+* **3989:** tweak e2e create private and public cloud tests for new UI ([e5f4379](https://github.com/bcgov/platform-services-registry/commit/e5f4379f57561746c4c992b146e09e9a1a546162))
+* **4121:** change tests to correspond to new modal component ([419db65](https://github.com/bcgov/platform-services-registry/commit/419db65d3f3c1d0aa8ec1c741cb606ae6a031db9))
+
+### Bug Fixes
+
+* **2692:** edit image url ([6388060](https://github.com/bcgov/platform-services-registry/commit/6388060c116d9420be022a46c2f2da04cf18d225))
+
+### Docs
+
+* add resource metrics setup ([2d85fc4](https://github.com/bcgov/platform-services-registry/commit/2d85fc44de00c52ccfb82cd667cf3a629ced2ca5))
+
+### Refactors
+
+* **3791:** simply the usage of common modal components ([57c17c2](https://github.com/bcgov/platform-services-registry/commit/57c17c299350dc750aa772ca5586e05ce729e6b7))
+* **4055:** replace create request submit modals ([7ca93c4](https://github.com/bcgov/platform-services-registry/commit/7ca93c4437aa31be14480ff9e4ced9a106c5c173))
+* **4055:** replace notification & confirmation modals ([68b82f4](https://github.com/bcgov/platform-services-registry/commit/68b82f4e8e6840abe59b0ab2402e4465c4a60251))
+* **4055:** replace product delete modals ([6c7c439](https://github.com/bcgov/platform-services-registry/commit/6c7c439ce720dd7398569df099dac33fe14e5ab7))
+* **4055:** replace request edit submit modals ([1ab556b](https://github.com/bcgov/platform-services-registry/commit/1ab556b28263183ab2acc93e31ee895ab4cf26de))
+* **4055:** replace review modals ([0447eee](https://github.com/bcgov/platform-services-registry/commit/0447eee856e6d759f8bd3e8733cac731327090d6))
+* **4076:** upgrade Next.js to version 15 ([2f3d7a1](https://github.com/bcgov/platform-services-registry/commit/2f3d7a169af9337c99e3a812cb3b7b871c5fd18a))
 ## [0.37.2](https://github.com/bcgov/platform-services-registry/compare/v0.37.1...v0.37.2) (2024-10-22)
 ## [0.37.1](https://github.com/bcgov/platform-services-registry/compare/v0.37.0...v0.37.1) (2024-10-21)
 
