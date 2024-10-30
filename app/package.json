@@ -100,7 +100,7 @@
     "@types/jwk-to-pem": "^2.0.3",
     "@types/jws": "^3.2.9",
     "@types/lodash-es": "^4.17.12",
-    "@types/node": "^20.11.24",
+    "@types/node": "^22.0.0",
     "@types/node-fetch": "^2.6.11",
     "@typescript-eslint/eslint-plugin": "^7.11.0",
     "dotenv-cli": "^7.3.0",

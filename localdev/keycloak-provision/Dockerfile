@@ -1,5 +1,5 @@
 
-FROM node:22.10.0-alpine3.19 as build
+FROM node:22.11.0-alpine3.19 as build
 
 WORKDIR /sandbox
 

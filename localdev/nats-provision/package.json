@@ -15,7 +15,7 @@
     "wait-on": "^8.0.0"
   },
   "devDependencies": {
-    "@types/node": "^20.14.1",
+    "@types/node": "^22.0.0",
     "@types/wait-on": "^5.3.4",
     "rimraf": "^6.0.0",
     "tsx": "^4.11.2",
