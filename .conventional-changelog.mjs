@@ -25,6 +25,10 @@ export default {
           section: 'Refactors',
         },
         {
+          type: 'e2e',
+          section: 'End-to-end Testing',
+        },
+        {
           type: 'chore',
           hidden: true,
         },
