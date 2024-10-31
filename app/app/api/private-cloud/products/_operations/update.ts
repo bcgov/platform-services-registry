@@ -28,7 +28,8 @@ export default async function updateOp({
     return UnauthorizedResponse();
   }
 
-  const { requestComment, quotaContactName, quotaContactEmail, quotaJustification, ...rest } = body;
+  const { requestComment, quotaContactName, quotaContactEmail, quotaJustification, isAgMinistryChecked, ...rest } =
+    body;
 
   if (!product._permissions.manageMembers) {
     rest.members = product.members;

@@ -188,6 +188,7 @@ describe('Review Public Cloud Update Request - Permissions', () => {
       ...requests.main.decisionData,
       accountCoding: requests.main.decisionData.billing.accountCoding,
       environmentsEnabled: newEnvironmentsEnabled,
+      isAgMinistryChecked: true,
     });
     expect(response.status).toBe(200);
 
