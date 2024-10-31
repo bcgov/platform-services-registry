@@ -31,9 +31,23 @@ export default function Quotas({
 }) {
   const { watch } = useFormContext();
 
-  const newValues = watch();
+  const [developmentQuota, testQuota, toolsQuota, productionQuota] = watch([
+    'developmentQuota',
+    'testQuota',
+    'toolsQuota',
+    'productionQuota',
+  ]);
 
   if (!currentProject) return null;
+
+  const newValues = {
+    developmentQuota,
+    testQuota,
+    toolsQuota,
+    productionQuota,
+  };
+
+  console.log('newValues', newValues);
 
   return (
     <>
@@ -48,7 +62,7 @@ export default function Quotas({
       </p>
       <div className="mt-10 mb-5 grid grid-cols-1 gap-x-4 xl:gap-x-4 gap-y-8 sm:grid-cols-8 ">
         {namespaceKeys.map((namespace) => {
-          const quotaField = (namespace + 'Quota') as keyof PrivateCloudProject;
+          const quotaField = (namespace + 'Quota') as keyof typeof newValues;
           const originalEnvQuota = currentProject[quotaField] as Quota;
           const newEnvQuota = newValues[quotaField];
           const hasResourceChange =
