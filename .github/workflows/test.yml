@@ -79,10 +79,10 @@ jobs:
 
         endpoints=(
           "http://localhost:8080/health/ready"
-          "http://localhost:4040"
         )
 
         endpoint_string=$(printf "%s " "${endpoints[@]}")
+        echo $endpoint_string
         node_modules/.bin/wait-on $endpoint_string --timeout 120000
         until $DOCKER_COMPOSE logs --tail=1 keycloak-provision | grep -q "complete!"; do sleep 2; done && echo "complete!"
 
