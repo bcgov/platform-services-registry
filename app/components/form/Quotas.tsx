@@ -22,15 +22,32 @@ export default function Quotas({
   licencePlate,
   disabled,
   currentProject,
+  quotaContactRequired = false,
 }: {
   licencePlate: string;
   disabled: boolean;
   currentProject?: PrivateCloudProject | null | undefined;
+  quotaContactRequired?: boolean;
 }) {
-  const formData = useFormContext();
-  const newValues = formData.getValues();
+  const { watch } = useFormContext();
+
+  const [developmentQuota, testQuota, toolsQuota, productionQuota] = watch([
+    'developmentQuota',
+    'testQuota',
+    'toolsQuota',
+    'productionQuota',
+  ]);
 
   if (!currentProject) return null;
+
+  const newValues = {
+    developmentQuota,
+    testQuota,
+    toolsQuota,
+    productionQuota,
+  };
+
+  console.log('newValues', newValues);
 
   return (
     <>
@@ -45,7 +62,7 @@ export default function Quotas({
       </p>
       <div className="mt-10 mb-5 grid grid-cols-1 gap-x-4 xl:gap-x-4 gap-y-8 sm:grid-cols-8 ">
         {namespaceKeys.map((namespace) => {
-          const quotaField = (namespace + 'Quota') as keyof PrivateCloudProject;
+          const quotaField = (namespace + 'Quota') as keyof typeof newValues;
           const originalEnvQuota = currentProject[quotaField] as Quota;
           const newEnvQuota = newValues[quotaField];
           const hasResourceChange =
@@ -85,7 +102,7 @@ export default function Quotas({
           );
         })}
       </div>
-      <QuotasChangeInfo disabled={disabled} />
+      {quotaContactRequired && <QuotasChangeInfo disabled={disabled} />}
     </>
   );
 }

@@ -118,6 +118,7 @@ export default privateCloudRequestDecision(({ getPathParams, session, router }) 
         disabled: isDisabled,
         licencePlate: snap.currentRequest.licencePlate as string,
         currentProject: snap.currentRequest.project as PrivateCloudProject,
+        quotaContactRequired: false,
       },
     },
   ];
