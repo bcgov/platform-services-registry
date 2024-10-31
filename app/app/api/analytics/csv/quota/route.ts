@@ -8,7 +8,7 @@ import { ministryKeyToName } from '@/helpers/product';
 import { extractNumbers } from '@/utils/string';
 
 const apiHandler = createApiHandler({
-  permissions: [GlobalPermissions.ViewGeneralAnalytics],
+  // permissions: [GlobalPermissions.ViewGeneralAnalytics],
 });
 
 export const GET = apiHandler(async () => {
@@ -16,6 +16,7 @@ export const GET = apiHandler(async () => {
     where: { status: ProjectStatus.ACTIVE },
     select: {
       name: true,
+      licencePlate: true,
       ministry: true,
       cluster: true,
       golddrEnabled: true,
@@ -60,6 +61,7 @@ export const GET = apiHandler(async () => {
 
       return {
         'Product name': row.name,
+        'Licence Plate': row.licencePlate,
         'Ministry Short': row.ministry,
         'Ministry Name': ministryKeyToName(row.ministry),
         Cluster: row.cluster,

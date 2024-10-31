@@ -74,9 +74,7 @@ jobs:
         mkdir -p ./localdev/mnt/{mongodb,postgres}
 
         export MACHINE_HOST_IP=$(hostname -I | awk '{print $1}')
-        ls ~/.docker/cli-plugins/docker-compose
-        DOCKER_COMPOSE="~/.docker/cli-plugins/docker-compose -f localdev/docker-compose.yml"
-
+        DOCKER_COMPOSE="$HOME/.docker/cli-plugins/docker-compose -f localdev/docker-compose.yml"
         $DOCKER_COMPOSE up -d
 
         endpoints=(
