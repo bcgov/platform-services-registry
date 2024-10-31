@@ -77,13 +77,7 @@ jobs:
         DOCKER_COMPOSE="$HOME/.docker/cli-plugins/docker-compose -f localdev/docker-compose.yml"
         $DOCKER_COMPOSE up -d
 
-        endpoints=(
-          "http://localhost:8080/health/ready"
-        )
-
-        endpoint_string=$(printf "%s " "${endpoints[@]}")
-        echo $endpoint_string
-        node_modules/.bin/wait-on $endpoint_string --timeout 120000
+        node_modules/.bin/wait-on http://localhost:8080/health/ready http://localhost:4040 --timeout 120000
         until $DOCKER_COMPOSE logs --tail=1 keycloak-provision | grep -q "complete!"; do sleep 2; done && echo "complete!"
 
         cp app/.env.example app/.env.test
