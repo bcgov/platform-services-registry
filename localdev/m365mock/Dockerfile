@@ -17,6 +17,7 @@ COPY --from=builder /context/m365proxy/mocks.json ./m365proxy/mocks.json
 RUN npm install --only=production
 
 USER node
+
 EXPOSE 4040
 
 CMD ["node", "build/server.js"]

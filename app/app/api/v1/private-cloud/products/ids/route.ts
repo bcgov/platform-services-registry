@@ -1,4 +1,4 @@
-import { Cluster } from '@prisma/client';
+import { Cluster, Prisma } from '@prisma/client';
 import _isString from 'lodash-es/isString';
 import { z } from 'zod';
 import createApiHandler from '@/core/api-handler';
@@ -18,14 +18,20 @@ const apiHandler = createApiHandler({
 export const GET = apiHandler(async ({ queryParams, session }) => {
   const { cluster } = queryParams;
 
+  const where: Prisma.PrivateCloudProjectWhereInput = {
+    status: 'ACTIVE',
+    cluster,
+  };
+
+  if (cluster === Cluster.GOLDDR) {
+    where.cluster = Cluster.GOLD;
+    where.golddrEnabled = true;
+  }
+
   const products = await prisma.privateCloudProject.findMany({
-    where: {
-      status: 'ACTIVE',
-      cluster,
-    },
+    where,
     select: {
       id: true,
-      cluster: true,
     },
   });
 
