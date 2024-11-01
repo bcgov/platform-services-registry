@@ -85,6 +85,29 @@ jobs:
         metadata-tags: |
           type=raw,value=latest
 
+  build-push-m365mock:
+    runs-on: ubuntu-22.04
+    timeout-minutes: 5
+    permissions:
+      contents: read
+      packages: write
+
+    steps:
+    - uses: hmarr/debug-action@f7318c783045ac39ed9bb497e22ce835fdafbfe6
+    - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+
+    - name: Build and Push
+      uses: egose/actions/docker-build-push@97fff4a960b7f2db201eed7012958e4e2f9439f3
+      with:
+        registry-url: ${{ env.GITHUB_REGISTRY }}
+        registry-username: ${{ github.actor }}
+        registry-password: ${{ secrets.GITHUB_TOKEN }}
+        image-name: bcgov/pltsvc-localdev-m365mock
+        docker-context: localdev/m365mock
+        docker-file: localdev/m365mock/Dockerfile
+        metadata-tags: |
+          type=raw,value=latest
+
   build-push-nats-provision:
     runs-on: ubuntu-22.04
     timeout-minutes: 5

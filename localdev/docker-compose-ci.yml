@@ -19,7 +19,7 @@ services:
     pull_policy: always
     build: {}
 
-  m365mock:
-    image: ghcr.io/bcgov/pltsvc-localdev-m365mock:latest
-    pull_policy: always
-    build: {}
+  # m365mock:
+  #   image: ghcr.io/bcgov/pltsvc-localdev-m365mock:latest
+  #   pull_policy: always
+  #   build: {}

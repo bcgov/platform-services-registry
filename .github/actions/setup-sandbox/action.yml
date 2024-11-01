@@ -27,7 +27,6 @@ runs:
           "ghcr.io/bcgov/pltsvc-localdev-keycloak:latest"
           "ghcr.io/bcgov/pltsvc-localdev-keycloak-provision:latest"
           "ghcr.io/bcgov/pltsvc-localdev-nats-provision:latest"
-          "ghcr.io/bcgov/pltsvc-localdev-m365mock:latest"
       )
 
       for image in "${images[@]}"; do
