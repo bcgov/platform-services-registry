@@ -9,11 +9,6 @@ services:
     pull_policy: always
     build: {}
 
-  m365proxy:
-    image: ghcr.io/bcgov/pltsvc-localdev-m365proxy:latest
-    pull_policy: always
-    build: {}
-
   nats-provision:
     image: ghcr.io/bcgov/pltsvc-localdev-nats-provision:latest
     pull_policy: always
