@@ -8,7 +8,7 @@ import { ministryKeyToName } from '@/helpers/product';
 import { extractNumbers } from '@/utils/string';
 
 const apiHandler = createApiHandler({
-  // permissions: [GlobalPermissions.ViewGeneralAnalytics],
+  permissions: [GlobalPermissions.ViewGeneralAnalytics],
 });
 
 export const GET = apiHandler(async () => {
