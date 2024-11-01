@@ -38,7 +38,8 @@ runs:
       $DOCKER_COMPOSE up -d
 
       node_modules/.bin/wait-on http://localhost:8080/health/ready http://localhost:4040 --timeout 120000
-      until $DOCKER_COMPOSE logs --tail=1 keycloak-provision | grep -q "complete!"; do sleep 2; done && echo "complete!"
+      print("wait-on complete!")
+      until $DOCKER_COMPOSE logs --tail=1 -f keycloak-provision | tee >(grep -q "complete!") ; do sleep 2; done && echo "keycloak-provision complete!"
 
       echo "Running script..."
       ${{ inputs.script }}
