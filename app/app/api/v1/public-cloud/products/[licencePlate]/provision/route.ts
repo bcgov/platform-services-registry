@@ -13,7 +13,7 @@ const pathParamSchema = z.object({
 });
 
 const apiHandler = createApiHandler({
-  roles: ['service-account private-admin'],
+  roles: ['service-account public-admin'],
   useServiceAccount: true,
   validations: { pathParams: pathParamSchema },
 });
