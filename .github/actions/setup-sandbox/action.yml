@@ -23,12 +23,23 @@ runs:
     run: |
       mkdir -p ./localdev/mnt/{mongodb,postgres}
 
+      images=(
+          "ghcr.io/bcgov/pltsvc-localdev-keycloak:latest"
+          "ghcr.io/bcgov/pltsvc-localdev-keycloak-provision:latest"
+          "ghcr.io/bcgov/pltsvc-localdev-nats-provision:latest"
+      )
+
+      for image in "${images[@]}"; do
+          docker pull "$image"
+      done
+
       export MACHINE_HOST_IP=$(hostname -I | awk '{print $1}')
       DOCKER_COMPOSE="$HOME/.docker/cli-plugins/docker-compose -f localdev/docker-compose.yml -f localdev/docker-compose-ci.yml"
       $DOCKER_COMPOSE up -d
 
       node_modules/.bin/wait-on http://localhost:8080/health/ready http://localhost:4040 --timeout 120000
-      until $DOCKER_COMPOSE logs --tail=1 keycloak-provision | grep -q "complete!"; do sleep 2; done && echo "complete!"
+      echo "wait-on complete!"
+      until $DOCKER_COMPOSE logs --tail=1 -f keycloak-provision | tee >(grep -q "complete!") ; do sleep 2; done && echo "keycloak-provision complete!"
 
       echo "Running script..."
       ${{ inputs.script }}
