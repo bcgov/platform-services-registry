@@ -103,7 +103,7 @@ jobs:
         registry-username: ${{ github.actor }}
         registry-password: ${{ secrets.GITHUB_TOKEN }}
         image-name: bcgov/pltsvc-localdev-m365mock
-        docker-context: localdev/m365mock
+        docker-context: localdev
         docker-file: localdev/m365mock/Dockerfile
         metadata-tags: |
           type=raw,value=latest
