@@ -77,10 +77,9 @@ jobs:
         DOCKER_COMPOSE="$HOME/.docker/cli-plugins/docker-compose -f localdev/docker-compose.yml"
         $DOCKER_COMPOSE up -d
 
-        node_modules/.bin/wait-on http://localhost:8080/health/ready --timeout 120000
+        node_modules/.bin/wait-on http://localhost:8080/health/ready http://localhost:4040 --timeout 120000
         echo "test1"
-        node_modules/.bin/wait-on http://localhost:4040 --timeout 120000
-        echo "test2"
+        $DOCKER_COMPOSE logs --tail=1 keycloak-provision
         until $DOCKER_COMPOSE logs --tail=1 keycloak-provision | grep -q "complete!"; do sleep 2; done && echo "complete!"
 
         cp app/.env.example app/.env.test
