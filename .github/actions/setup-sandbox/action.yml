@@ -23,6 +23,17 @@ runs:
     run: |
       mkdir -p ./localdev/mnt/{mongodb,postgres}
 
+      images=(
+          "ghcr.io/bcgov/pltsvc-localdev-keycloak:latest"
+          "ghcr.io/bcgov/pltsvc-localdev-keycloak-provision:latest"
+          "ghcr.io/bcgov/pltsvc-localdev-nats-provision:latest"
+          "ghcr.io/bcgov/pltsvc-localdev-m365mock:latest"
+      )
+
+      for image in "${images[@]}"; do
+          docker pull "$image"
+      done
+
       export MACHINE_HOST_IP=$(hostname -I | awk '{print $1}')
       DOCKER_COMPOSE="$HOME/.docker/cli-plugins/docker-compose -f localdev/docker-compose.yml -f localdev/docker-compose-ci.yml"
       $DOCKER_COMPOSE up -d
