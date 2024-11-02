@@ -20,7 +20,7 @@
     "@commitlint/cli": "^19.5.0",
     "@commitlint/config-conventional": "^19.5.0",
     "@release-it/bumper": "^6.0.1",
-    "@typescript-eslint/eslint-plugin": "^7.0.0",
+    "@typescript-eslint/eslint-plugin": "^8.0.0",
     "conventional-changelog-cli": "^5.0.0",
     "cypress": "^13.13.2",
     "cypress-keycloak": "^2.0.1",
