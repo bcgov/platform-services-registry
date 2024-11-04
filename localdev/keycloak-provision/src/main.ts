@@ -37,12 +37,7 @@ if (usersMock?.response.body?.value) {
 }
 
 async function main() {
-  console.log('Starting Keycloak Provision...', {
-    baseUrl: KEYCLOAK_URL,
-    realmName: 'master',
-    username: MASTER_ADMIN,
-    password: MASTER_ADMIN_PASSWORD,
-  });
+  console.log('Starting Keycloak Provision...');
 
   await waitOn({
     resources: [`${KEYCLOAK_URL}/health/ready`],
