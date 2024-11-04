@@ -41,7 +41,7 @@ async function main() {
 
   await waitOn({
     resources: [`${KEYCLOAK_URL}/health/ready`],
-    delay: 1000,
+    delay: 5000,
     window: 5000,
   });
 
