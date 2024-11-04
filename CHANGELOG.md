@@ -1,3 +1,13 @@
+## [0.39.0](https://github.com/bcgov/platform-services-registry/compare/v0.38.0...v0.39.0) (2024-11-04)
+
+### Features
+
+* **1920:** secure provisioner callback URLs ([b119b7a](https://github.com/bcgov/platform-services-registry/commit/b119b7a44ce88719646b85e58172f6b848f5d91a))
+
+### Bug Fixes
+
+* **4110:** hide quota change information section when reviewing ([30640ff](https://github.com/bcgov/platform-services-registry/commit/30640ff06336540cd8886cbd1aeaf9495c819d08))
+* **4110:** remove quota change information section from decision page ([5876879](https://github.com/bcgov/platform-services-registry/commit/5876879a1d17055dca9982f28facf30a0b8fcec3))
 ## [0.38.0](https://github.com/bcgov/platform-services-registry/compare/v0.37.2...v0.38.0) (2024-10-30)
 
 ### Features
