@@ -8,12 +8,12 @@ import { OkResponse } from '@/core/responses';
 import ExpenseAuthorityMou from '@/emails/_templates/public-cloud/ExpenseAuthorityMou';
 import ExpenseAuthorityMouProduct from '@/emails/_templates/public-cloud/ExpenseAuthorityMouProduct';
 import { sendEmail } from '@/services/ches/core';
-import { publicCloudProductDetailInclude, publicCloudRequestDetailInclude } from '@/services/db';
+import { models, publicCloudProductDetailInclude, publicCloudRequestDetailInclude } from '@/services/db';
 
 const apiHandler = createApiHandler({
   roles: [GlobalRole.Admin],
 });
-export const GET = apiHandler(async () => {
+export const GET = apiHandler(async ({ session }) => {
   const unsignedBillings = await prisma.billing.findMany({ where: { signed: false } });
 
   const result = {
@@ -54,7 +54,7 @@ export const GET = apiHandler(async () => {
       if (product) {
         result.products += 1;
 
-        const eaEmail = render(ExpenseAuthorityMouProduct({ product }), { pretty: false });
+        const eaEmail = await render(ExpenseAuthorityMouProduct({ product }), { pretty: false });
         await sendEmail({
           body: eaEmail,
           to: users.map((user) => user.email),
@@ -70,7 +70,8 @@ export const GET = apiHandler(async () => {
         if (request) {
           result.requests += 1;
 
-          const eaEmail = render(ExpenseAuthorityMou({ request }), { pretty: false });
+          const requestDecorated = await (models.publicCloudRequest as any).decorate(request, session, true);
+          const eaEmail = await render(ExpenseAuthorityMou({ request: requestDecorated }), { pretty: false });
           await sendEmail({
             body: eaEmail,
             to: users.map((user) => user.email),
