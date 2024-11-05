@@ -9,8 +9,8 @@ import TemporaryProductCheckboxAdmin from '@/components/form/TemporaryProductChe
 import ExternalLink from '@/components/generic/button/ExternalLink';
 import MailLink from '@/components/generic/button/MailLink';
 import FormSelect from '@/components/generic/select/FormSelect';
-import { clusters, ministryOptions, privateCloudTeamEmail } from '@/constants';
 import HookFormSingleSelect from '@/components/generic/select/HookFormSingleSelect';
+import { clusters, ministryOptions, privateCloudTeamEmail } from '@/constants';
 
 export default function ProjectDescriptionPrivate({
   mode,
