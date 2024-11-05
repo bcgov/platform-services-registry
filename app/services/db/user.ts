@@ -10,6 +10,28 @@ import { getUserByEmail, getUserPhoto, processMsUser } from '@/services/msgraph'
 import { MsUser, AppUser } from '@/types/user';
 import { arrayBufferToBase64 } from '@/utils/base64-arraybuffer';
 
+export async function prepareUserData(user: AppUser, extra = {}) {
+  const email = user.email.toLowerCase();
+
+  const image = await getUserPhoto(email);
+  const data = {
+    email,
+    providerUserId: user.providerUserId,
+    firstName: user.firstName,
+    lastName: user.lastName,
+    ministry: user.ministry,
+    idir: user.idir,
+    idirGuid: user.idirGuid,
+    officeLocation: user.officeLocation,
+    jobTitle: user.jobTitle,
+    upn: user.upn,
+    image: image ? arrayBufferToBase64(image) : '',
+    ...extra,
+  };
+
+  return data;
+}
+
 export async function upsertUser(email: string, extra = {}) {
   if (!email) return null;
 
@@ -19,21 +41,7 @@ export async function upsertUser(email: string, extra = {}) {
     const adUser = await getUserByEmail(email);
     if (!adUser) return null;
 
-    const adUserPhoto = await getUserPhoto(email);
-    const data = {
-      email,
-      providerUserId: adUser.providerUserId,
-      firstName: adUser.firstName,
-      lastName: adUser.lastName,
-      ministry: adUser.ministry,
-      idir: adUser.idir,
-      idirGuid: adUser.idirGuid,
-      officeLocation: adUser.officeLocation,
-      jobTitle: adUser.jobTitle,
-      upn: adUser.upn,
-      image: adUserPhoto ? arrayBufferToBase64(adUserPhoto) : '',
-      ...extra,
-    };
+    const data = await prepareUserData(adUser, extra);
 
     return await prisma.user.upsert({
       where: { email },
