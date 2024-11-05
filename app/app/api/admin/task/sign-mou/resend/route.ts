@@ -54,7 +54,7 @@ export const GET = apiHandler(async () => {
       if (product) {
         result.products += 1;
 
-        const eaEmail = render(ExpenseAuthorityMouProduct({ product }), { pretty: false });
+        const eaEmail = await render(ExpenseAuthorityMouProduct({ product }), { pretty: false });
         await sendEmail({
           body: eaEmail,
           to: users.map((user) => user.email),
@@ -70,7 +70,7 @@ export const GET = apiHandler(async () => {
         if (request) {
           result.requests += 1;
 
-          const eaEmail = render(ExpenseAuthorityMou({ request }), { pretty: false });
+          const eaEmail = await render(ExpenseAuthorityMou({ request }), { pretty: false });
           await sendEmail({
             body: eaEmail,
             to: users.map((user) => user.email),
