@@ -18,6 +18,10 @@ export function arrayIntersection(arr1: string[], arr2: string[]) {
   return [];
 }
 
+export function arraysIntersect<T>(array1: T[], array2: T[]) {
+  return array1.filter((item) => array2.includes(item)).length > 0;
+}
+
 export function iterateObject<T extends object>(
   obj: T,
   callback: (value: T[keyof T], key: keyof T) => boolean | void,

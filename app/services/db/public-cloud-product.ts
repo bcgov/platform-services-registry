@@ -82,10 +82,17 @@ export async function searchPublicCloudProducts({
   return { docs, totalCount } as PublicCloudProductSearch;
 }
 
-export function excludePublicProductUsers(product: PublicCloudProductDetailDecorated | null) {
+export function excludePublicProductPopulatedFields(product: PublicCloudProductDetailDecorated | null) {
   if (!product) return null;
 
-  const { projectOwner, primaryTechnicalLead, secondaryTechnicalLead, expenseAuthority, billing, ...rest } = product;
+  const { projectOwner, primaryTechnicalLead, secondaryTechnicalLead, expenseAuthority, members, billing, ...rest } =
+    product;
 
-  return rest;
+  return {
+    ...rest,
+    members: members.map((member) => ({
+      userId: member.userId,
+      roles: member.roles,
+    })),
+  };
 }

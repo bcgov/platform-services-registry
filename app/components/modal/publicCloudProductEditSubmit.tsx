@@ -19,6 +19,7 @@ import { usePublicProductState } from '@/states/global';
 
 interface ModalProps {
   productData: FieldValues;
+  originalProductData: FieldValues;
 }
 
 interface ModalState {
@@ -30,7 +31,7 @@ export const openPublicCloudProductEditSubmitModal = createModal<ModalProps, Mod
     size: 'xl',
     title: 'All Set?',
   },
-  Component: function ({ productData, state, closeModal }) {
+  Component: function ({ productData, originalProductData, state, closeModal }) {
     const [, snap] = usePublicProductState();
     const [change, setChange] = useState<PublicProductChange>();
 
@@ -72,10 +73,10 @@ export const openPublicCloudProductEditSubmitModal = createModal<ModalProps, Mod
     useEffect(() => {
       const _changes = comparePublicProductData(
         { ...snap.currentProduct, accountCoding: snap.currentProduct?.billing.accountCoding },
-        productData,
+        originalProductData,
       );
       setChange(_changes);
-    }, [productData]);
+    }, [originalProductData]);
 
     if (!change) return <></>;
 

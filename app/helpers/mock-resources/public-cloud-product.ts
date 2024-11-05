@@ -64,6 +64,7 @@ export function createSamplePublicCloudProduct(args?: {
     secondaryTechnicalLead,
     expenseAuthorityId: expenseAuthority.id,
     expenseAuthority,
+    members: [],
     billingId: billing.id,
     billing,
     budget: {

@@ -1,5 +1,6 @@
 import { IS_PROD } from '@/config';
 import { GlobalRole, privateCloudTeamEmail } from '@/constants';
+import prisma from '@/core/prisma';
 import AdminCreateRequestTemplate from '@/emails/_templates/private-cloud/AdminCreateRequest';
 import AdminDeleteRequestTemplate from '@/emails/_templates/private-cloud/AdminDeleteRequest';
 import AdminEditRequestTemplate from '@/emails/_templates/private-cloud/AdminEditRequest';
@@ -20,7 +21,7 @@ import { sendEmail, getContent } from '@/services/ches/core';
 import { findUserEmailsByAuthRole } from '@/services/keycloak/app-realm';
 import { PrivateCloudRequestDetail } from '@/types/private-cloud';
 
-function getTeamEmails(request: PrivateCloudRequestDetail) {
+async function getTeamEmails(request: PrivateCloudRequestDetail) {
   return [
     request.decisionData.projectOwner.email,
     request.decisionData.primaryTechnicalLead.email,
@@ -79,122 +80,122 @@ export async function sendAdminEditRequestQuotaAutoApproval(request: PrivateClou
   });
 }
 
-export function sendTeamCreateRequest(request: PrivateCloudRequestDetail, requester: string) {
+export async function sendTeamCreateRequest(request: PrivateCloudRequestDetail, requester: string) {
   const content = getContent(TeamCreateRequestTemplate({ request, requester }));
 
   return sendEmail({
     subject: 'New provisioning request received',
-    to: getTeamEmails(request),
+    to: await getTeamEmails(request),
     body: content,
   });
 }
 
-export function sendTeamCreateRequestApproval(request: PrivateCloudRequestDetail) {
+export async function sendTeamCreateRequestApproval(request: PrivateCloudRequestDetail) {
   const content = getContent(TeamCreateRequestApprovalTemplate({ request }));
 
   return sendEmail({
     subject: 'Your provisioning request has been approved',
-    to: getTeamEmails(request),
+    to: await getTeamEmails(request),
     body: content,
   });
 }
 
-export function sendTeamCreateRequestCompletion(request: PrivateCloudRequestDetail) {
+export async function sendTeamCreateRequestCompletion(request: PrivateCloudRequestDetail) {
   const content = getContent(TeamCreateRequestCompletionTemplate({ request }));
 
   return sendEmail({
     subject: 'Your provisioning request has been completed',
-    to: getTeamEmails(request),
+    to: await getTeamEmails(request),
     body: content,
   });
 }
 
-export function sendTeamCreateRequestRejection(request: PrivateCloudRequestDetail) {
+export async function sendTeamCreateRequestRejection(request: PrivateCloudRequestDetail) {
   const content = getContent(TeamCreateRequestRejectionTemplate({ request }));
 
   return sendEmail({
     subject: 'Your provisioning request has been rejected',
-    to: getTeamEmails(request),
+    to: await getTeamEmails(request),
     body: content,
   });
 }
 
-export function sendTeamDeleteRequest(request: PrivateCloudRequestDetail, requester: string) {
+export async function sendTeamDeleteRequest(request: PrivateCloudRequestDetail, requester: string) {
   const content = getContent(TeamDeleteRequestTemplate({ request, requester }));
 
   return sendEmail({
     subject: 'New delete request received',
-    to: getTeamEmails(request),
+    to: await getTeamEmails(request),
     body: content,
   });
 }
 
-export function sendTeamDeleteRequestApproval(request: PrivateCloudRequestDetail) {
+export async function sendTeamDeleteRequestApproval(request: PrivateCloudRequestDetail) {
   const content = getContent(TeamDeleteRequestApprovalTemplate({ request }));
 
   return sendEmail({
     subject: 'Your delete request has been approved',
-    to: getTeamEmails(request),
+    to: await getTeamEmails(request),
     body: content,
   });
 }
 
-export function sendTeamDeleteRequestCompletion(request: PrivateCloudRequestDetail) {
+export async function sendTeamDeleteRequestCompletion(request: PrivateCloudRequestDetail) {
   const content = getContent(TeamDeleteRequestCompletionTemplate({ request }));
 
   return sendEmail({
     subject: 'Your delete request has been completed',
-    to: getTeamEmails(request),
+    to: await getTeamEmails(request),
     body: content,
   });
 }
 
-export function sendTeamDeleteRequestRejection(request: PrivateCloudRequestDetail) {
+export async function sendTeamDeleteRequestRejection(request: PrivateCloudRequestDetail) {
   const content = getContent(TeamDeleteRequestRejectionTemplate({ request }));
 
   return sendEmail({
     subject: 'Your delete request has been rejected',
-    to: getTeamEmails(request),
+    to: await getTeamEmails(request),
     body: content,
   });
 }
 
-export function sendTeamEditRequest(request: PrivateCloudRequestDetail, requester: string) {
+export async function sendTeamEditRequest(request: PrivateCloudRequestDetail, requester: string) {
   const content = getContent(TeamEditRequestTemplate({ request, requester }));
 
   return sendEmail({
     subject: 'New edit request received',
-    to: getTeamEmails(request),
+    to: await getTeamEmails(request),
     body: content,
   });
 }
 
-export function sendTeamEditRequestApproval(request: PrivateCloudRequestDetail) {
+export async function sendTeamEditRequestApproval(request: PrivateCloudRequestDetail) {
   const content = getContent(TeamEditRequestApprovalTemplate({ request }));
 
   return sendEmail({
     subject: 'Your edit request has been approved',
-    to: getTeamEmails(request),
+    to: await getTeamEmails(request),
     body: content,
   });
 }
 
-export function sendTeamEditRequestCompletion(request: PrivateCloudRequestDetail) {
+export async function sendTeamEditRequestCompletion(request: PrivateCloudRequestDetail) {
   const content = getContent(TeamEditRequestCompletionTemplate({ request }));
 
   return sendEmail({
     subject: 'Your edit request has been completed',
-    to: getTeamEmails(request),
+    to: await getTeamEmails(request),
     body: content,
   });
 }
 
-export function sendTeamEditRequestRejection(request: PrivateCloudRequestDetail) {
+export async function sendTeamEditRequestRejection(request: PrivateCloudRequestDetail) {
   const content = getContent(TeamEditRequestRejectionTemplate({ request }));
 
   return sendEmail({
     subject: 'Your edit request has been rejected',
-    to: getTeamEmails(request),
+    to: await getTeamEmails(request),
     body: content,
   });
 }

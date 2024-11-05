@@ -1,5 +1,11 @@
-import { Prisma } from '@prisma/client';
+import { Prisma, User, PublicCloudProductMember } from '@prisma/client';
 import { PublicCloudProjectDecorate, PublicCloudRequestDecorate } from './doc-decorate';
+
+export type ExtendedPublicCloudProductMember = PublicCloudProductMember & User;
+
+interface ExtendedPublicCloudProductMembersData {
+  members: ExtendedPublicCloudProductMember[];
+}
 
 export type PublicCloudProductSimple = Prisma.PublicCloudProjectGetPayload<{
   include: {
@@ -42,7 +48,9 @@ export type PublicCloudProductDetail = Prisma.PublicCloudProjectGetPayload<{
   activeRequest?: Prisma.PublicCloudRequestGetPayload<null> | null;
 };
 
-export type PublicCloudProductDetailDecorated = PublicCloudProductDetail & PublicCloudProjectDecorate;
+type _PublicCloudProductDetail = Omit<PublicCloudProductDetail, 'members'> & ExtendedPublicCloudProductMembersData;
+
+export type PublicCloudProductDetailDecorated = _PublicCloudProductDetail & PublicCloudProjectDecorate;
 
 export type PublicCloudProductSearch = {
   docs: PublicCloudProductSimpleDecorated[];
@@ -98,7 +106,24 @@ export type PublicCloudRequestDetail = Prisma.PublicCloudRequestGetPayload<{
   };
 }>;
 
-export type PublicCloudRequestDetailDecorated = PublicCloudRequestDetail & PublicCloudRequestDecorate;
+type ExtendedOriginalData =
+  | (Omit<NonNullable<PublicCloudRequestDetail['originalData']>, 'members'> & ExtendedPublicCloudProductMembersData)
+  | null;
+
+type ExtendedRequestData =
+  | (Omit<PublicCloudRequestDetail['requestData'], 'members'> & ExtendedPublicCloudProductMembersData)
+  | null;
+
+type ExtendedDecisionData = Omit<PublicCloudRequestDetail['decisionData'], 'members'> &
+  ExtendedPublicCloudProductMembersData;
+
+type _PublicCloudRequestDetail = Omit<PublicCloudRequestDetail, 'originalData' | 'requestData' | 'decisionData'> & {
+  originalData: ExtendedOriginalData;
+  requestData: ExtendedRequestData;
+  decisionData: ExtendedDecisionData;
+};
+
+export type PublicCloudRequestDetailDecorated = _PublicCloudRequestDetail & PublicCloudRequestDecorate;
 
 export type PublicCloudRequestSimple = Prisma.PublicCloudRequestGetPayload<{
   include: {

@@ -18,6 +18,7 @@ export default function PublicCloudBillingInfo({
     _permissions?: {
       signMou: boolean;
       reviewMou: boolean;
+      downloadMou: boolean;
     };
   };
   className?: string;
@@ -69,7 +70,7 @@ export default function PublicCloudBillingInfo({
       className={classNames(className)}
     >
       <ul className="list-disc text-sm">{content}</ul>
-      {session?.permissions.downloadBillingMou && billing.approved && (
+      {(session?.permissions.downloadBillingMou || product._permissions?.downloadMou) && billing.approved && (
         <PublicCloudBillingDownloadButton product={product} />
       )}
       {product._permissions?.signMou && (

@@ -8,7 +8,7 @@ import {
   createEvent,
   models,
   publicCloudRequestDetailInclude,
-  excludePublicProductUsers,
+  excludePublicProductPopulatedFields,
   getLastClosedPublicCloudRequest,
 } from '@/services/db';
 import { deletePathParamSchema } from '../[licencePlate]/schema';
@@ -22,7 +22,7 @@ export default async function deleteOp({
 }) {
   const { licencePlate } = pathParams;
 
-  const product = excludePublicProductUsers(
+  const product = excludePublicProductPopulatedFields(
     (await models.publicCloudProduct.get({ where: { licencePlate } }, session)).data,
   );
 
@@ -44,8 +44,8 @@ export default async function deleteOp({
       createdBy: { connect: { email: session.user.email } },
       licencePlate: product.licencePlate,
       originalData: { connect: { id: previousRequest?.decisionDataId } },
-      decisionData: { create: productData },
       requestData: { create: productData },
+      decisionData: { create: productData },
       project: { connect: { licencePlate } },
     },
     include: publicCloudRequestDetailInclude,

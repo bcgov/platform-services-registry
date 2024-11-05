@@ -67,6 +67,7 @@ function ProductValue({ value, formatterKey }: { value: any; formatterKey?: stri
 
   if (_isString(value)) return <span>{value}</span>;
   if (_isBoolean(value)) return <span>{value ? 'Yes' : 'No'}</span>;
+  if (Array.isArray(value)) return value.join(', ');
   return <span>{String(value)}</span>;
 }
 

@@ -1,5 +1,6 @@
 import { IS_PROD } from '@/config';
 import { publicCloudTeamEmail, GlobalRole } from '@/constants';
+import prisma from '@/core/prisma';
 import AdminCreateRequestTemplate from '@/emails/_templates/public-cloud/AdminCreateRequest';
 import AdminDeleteRequestTemplate from '@/emails/_templates/public-cloud/AdminDeleteRequest';
 import BillingReviewerMouTemplate from '@/emails/_templates/public-cloud/BillingReviewerMou';
@@ -22,7 +23,16 @@ import { sendEmail, getContent } from '@/services/ches/core';
 import { findUserEmailsByAuthRole } from '@/services/keycloak/app-realm';
 import { PublicCloudRequestDetail } from '@/types/public-cloud';
 
-function getTeamEmails(request: PublicCloudRequestDetail) {
+async function getTeamEmails(request: PublicCloudRequestDetail) {
+  let members: { email: string }[] = [];
+  if (request.decisionData.members?.length) {
+    members = await prisma.user.findMany({
+      where: { email: { in: request.decisionData.members.map((member) => member.userId) } },
+      select: { email: true },
+      distinct: ['email'],
+    });
+  }
+
   return [
     request.decisionData.projectOwner.email,
     request.decisionData.primaryTechnicalLead.email,
@@ -30,6 +40,7 @@ function getTeamEmails(request: PublicCloudRequestDetail) {
     request.originalData?.projectOwner.email,
     request.originalData?.primaryTechnicalLead.email,
     request.originalData?.secondaryTechnicalLead?.email,
+    ...members.map((member) => member.email),
   ];
 }
 
@@ -57,102 +68,102 @@ export async function sendAdminDeleteRequest(request: PublicCloudRequestDetail, 
   });
 }
 
-export function sendTeamCreateRequest(request: PublicCloudRequestDetail, requester: string) {
+export async function sendTeamCreateRequest(request: PublicCloudRequestDetail, requester: string) {
   const content = getContent(TeamCreateRequestTemplate({ request, requester }));
 
   return sendEmail({
     subject: 'New provisioning request received',
-    to: getTeamEmails(request),
+    to: await getTeamEmails(request),
     body: content,
   });
 }
 
-export function sendTeamCreateRequestApproval(request: PublicCloudRequestDetail) {
+export async function sendTeamCreateRequestApproval(request: PublicCloudRequestDetail) {
   const content = getContent(TeamCreateRequestApprovalTemplate({ request }));
 
   return sendEmail({
     subject: 'Your provisioning request has been approved',
-    to: getTeamEmails(request),
+    to: await getTeamEmails(request),
     body: content,
   });
 }
 
-export function sendTeamCreateRequestCompletion(request: PublicCloudRequestDetail) {
+export async function sendTeamCreateRequestCompletion(request: PublicCloudRequestDetail) {
   const content = getContent(TeamCreateRequestCompletionTemplate({ request }));
 
   return sendEmail({
     subject: 'Your provisioning request has been completed',
-    to: getTeamEmails(request),
+    to: await getTeamEmails(request),
     body: content,
   });
 }
 
-export function sendTeamCreateRequestRejection(request: PublicCloudRequestDetail) {
+export async function sendTeamCreateRequestRejection(request: PublicCloudRequestDetail) {
   const content = getContent(TeamCreateRequestRejectionTemplate({ request }));
 
   return sendEmail({
     subject: 'Your provisioning request has been rejected',
-    to: getTeamEmails(request),
+    to: await getTeamEmails(request),
     body: content,
   });
 }
 
-export function sendTeamDeleteRequest(request: PublicCloudRequestDetail, requester: string) {
+export async function sendTeamDeleteRequest(request: PublicCloudRequestDetail, requester: string) {
   const content = getContent(TeamDeleteRequestTemplate({ request, requester }));
 
   return sendEmail({
     subject: 'New delete request received',
-    to: getTeamEmails(request),
+    to: await getTeamEmails(request),
     body: content,
   });
 }
 
-export function sendTeamDeleteRequestApproval(request: PublicCloudRequestDetail) {
+export async function sendTeamDeleteRequestApproval(request: PublicCloudRequestDetail) {
   const content = getContent(TeamDeleteRequestApprovalTemplate({ request }));
 
   return sendEmail({
     subject: 'Your delete request has been approved',
-    to: getTeamEmails(request),
+    to: await getTeamEmails(request),
     body: content,
   });
 }
 
-export function sendTeamDeleteRequestCompletion(request: PublicCloudRequestDetail) {
+export async function sendTeamDeleteRequestCompletion(request: PublicCloudRequestDetail) {
   const content = getContent(TeamDeleteRequestCompletionTemplate({ request }));
 
   return sendEmail({
     subject: 'Your delete request has been completed',
-    to: getTeamEmails(request),
+    to: await getTeamEmails(request),
     body: content,
   });
 }
 
-export function sendTeamDeleteRequestRejection(request: PublicCloudRequestDetail) {
+export async function sendTeamDeleteRequestRejection(request: PublicCloudRequestDetail) {
   const content = getContent(TeamDeleteRequestRejectionTemplate({ request }));
 
   return sendEmail({
     subject: 'Your delete request has been rejected',
-    to: getTeamEmails(request),
+    to: await getTeamEmails(request),
     body: content,
   });
 }
 
-export function sendTeamEditRequest(request: PublicCloudRequestDetail, requester: string) {
+export async function sendTeamEditRequest(request: PublicCloudRequestDetail, requester: string) {
   const content = getContent(TeamEditRequestTemplate({ request, requester }));
 
   return sendEmail({
     subject: 'New edit request received',
-    to: getTeamEmails(request),
+    to: await getTeamEmails(request),
     body: content,
   });
 }
 
-export function sendTeamEditRequestCompletion(request: PublicCloudRequestDetail) {
+export async function sendTeamEditRequestCompletion(request: PublicCloudRequestDetail) {
   const content = getContent(TeamEditRequestCompletionTemplate({ request }));
 
   return sendEmail({
     subject: 'Your edit request has been completed',
-    to: getTeamEmails(request),
+    to: await getTeamEmails(request),
     body: content,
   });
 }
