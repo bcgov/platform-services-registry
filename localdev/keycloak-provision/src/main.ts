@@ -41,7 +41,7 @@ async function main() {
 
   await waitOn({
     resources: [`${KEYCLOAK_URL}/health/ready`],
-    delay: 5000,
+    delay: 500,
     window: 5000,
   });
 
@@ -52,7 +52,17 @@ async function main() {
     password: MASTER_ADMIN_PASSWORD,
   });
 
-  await kc.auth();
+  let success = false;
+  while (!success) {
+    try {
+      await kc.auth();
+      success = true;
+      console.log('Authentication successful!');
+    } catch (error) {
+      console.error('Authentication failed, retrying...', error);
+      await new Promise(resolve => setTimeout(resolve, 1000)); // Delay for 1 second
+    }
+  }
 
   // Create auth realm & client
   const authRealm = await kc.upsertRealm(AUTH_REALM_NAME, { enabled: true });
