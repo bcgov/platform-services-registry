@@ -1,3 +1,12 @@
+## [0.39.1](https://github.com/bcgov/platform-services-registry/compare/v0.39.0...v0.39.1) (2024-11-06)
+
+### Features
+
+* **4156:** add user search reusable picker modal ([e3e49b0](https://github.com/bcgov/platform-services-registry/commit/e3e49b06fac4ca9cabe5e74b429cc72bc6df73eb))
+
+### Bug Fixes
+
+* **4165:** replace generic select with dropdown for cluster ([5e7650b](https://github.com/bcgov/platform-services-registry/commit/5e7650b746170d9ce5d1969e054f49ec07d2c94b))
 ## [0.39.0](https://github.com/bcgov/platform-services-registry/compare/v0.38.0...v0.39.0) (2024-11-04)
 
 ### Features
