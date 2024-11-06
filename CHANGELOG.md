@@ -1,3 +1,8 @@
+## [0.39.2](https://github.com/bcgov/platform-services-registry/compare/v0.39.1...v0.39.2) (2024-11-06)
+
+### Bug Fixes
+
+* **4123:** grant view permission of create requests to admins ([72540b3](https://github.com/bcgov/platform-services-registry/commit/72540b34a452edb84ec5d42e4ec1a313b2fa253c))
 ## [0.39.1](https://github.com/bcgov/platform-services-registry/compare/v0.39.0...v0.39.1) (2024-11-06)
 
 ### Features
