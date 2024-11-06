@@ -78,12 +78,16 @@ When(/^User clicks tab "(.*)"$/, (tabText: string) => {
 });
 
 When(/^User clicks and selects "(.*)" in "(.*)"$/, (menuOption: string, menuName: string) => {
-  cy.contains('label', menuName).parents().eq(2).find('input[type="text"]').click();
+  cy.contains('label', menuName).parent().parent().parent().find('input').first().click();
   cy.contains('span', menuOption).click();
 });
 
+// When(/^User selects "(.*)" in "(.*)"$/, (entryText: string, dropdownLabel: string) => {
+//   cy.contains('label', dropdownLabel).scrollIntoView().parent().find('select').select(entryText);
+// });
+
 When(/^User selects "(.*)" in "(.*)"$/, (entryText: string, dropdownLabel: string) => {
-  cy.contains('label', dropdownLabel).scrollIntoView().parent().find('select').select(entryText);
+  cy.contains('label', dropdownLabel).scrollIntoView().parent().find('input, select').select(entryText);
 });
 
 When(
@@ -122,6 +126,15 @@ When('User logs out', () => {
 
 When('User makes a screenshot', () => {
   cy.screenshot();
+});
+
+When(/^User sees "(.*)" in "?(.*?)(?:\.\.\.)?"$/, (text: string, textFieldLabel: string) => {
+  cy.contains('label', textFieldLabel)
+    .parent()
+    .find('input, textarea, select')
+    .first()
+    .scrollIntoView()
+    .should('have.value', text);
 });
 
 Then('User should be redirected to Requests tab', () => {
