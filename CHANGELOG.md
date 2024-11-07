@@ -1,3 +1,27 @@
+## [0.39.2](https://github.com/bcgov/platform-services-registry/compare/v0.39.1...v0.39.2) (2024-11-06)
+
+### Bug Fixes
+
+* **4123:** grant view permission of create requests to admins ([72540b3](https://github.com/bcgov/platform-services-registry/commit/72540b34a452edb84ec5d42e4ec1a313b2fa253c))
+## [0.39.1](https://github.com/bcgov/platform-services-registry/compare/v0.39.0...v0.39.1) (2024-11-06)
+
+### Features
+
+* **4156:** add user search reusable picker modal ([e3e49b0](https://github.com/bcgov/platform-services-registry/commit/e3e49b06fac4ca9cabe5e74b429cc72bc6df73eb))
+
+### Bug Fixes
+
+* **4165:** replace generic select with dropdown for cluster ([5e7650b](https://github.com/bcgov/platform-services-registry/commit/5e7650b746170d9ce5d1969e054f49ec07d2c94b))
+## [0.39.0](https://github.com/bcgov/platform-services-registry/compare/v0.38.0...v0.39.0) (2024-11-04)
+
+### Features
+
+* **1920:** secure provisioner callback URLs ([b119b7a](https://github.com/bcgov/platform-services-registry/commit/b119b7a44ce88719646b85e58172f6b848f5d91a))
+
+### Bug Fixes
+
+* **4110:** hide quota change information section when reviewing ([30640ff](https://github.com/bcgov/platform-services-registry/commit/30640ff06336540cd8886cbd1aeaf9495c819d08))
+* **4110:** remove quota change information section from decision page ([5876879](https://github.com/bcgov/platform-services-registry/commit/5876879a1d17055dca9982f28facf30a0b8fcec3))
 ## [0.38.0](https://github.com/bcgov/platform-services-registry/compare/v0.37.2...v0.38.0) (2024-10-30)
 
 ### Features

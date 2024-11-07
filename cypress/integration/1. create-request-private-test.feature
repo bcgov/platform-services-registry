@@ -7,7 +7,7 @@ Feature: New Request
     And User types "Automated Test Product Name" in "Product name"
     And User types "Automated Test Description" in "Description"
     And User selects "Citizens Services" in "Ministry"
-    And User selects "SILVER" in "Hosting tier"
+    And User clicks and selects "SILVER" in "Hosting tier"
     And User clicks tab "Team contacts"
     And User types and selects "james.smith@gov.bc.ca" in "Product Owner email"
     And User waits for "2" seconds

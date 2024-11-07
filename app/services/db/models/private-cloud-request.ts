@@ -14,7 +14,7 @@ import { privateCloudProductModel } from './private-cloud-product';
 
 async function baseFilter(session: Session) {
   if (!session?.userId) return false;
-  if (session.permissions.reviewAllPrivateCloudRequests) return true;
+  if (session.permissions.viewAllPrivateCloudProducts) return true;
 
   const { data: products } = await privateCloudProductModel.list({ select: { licencePlate: true } }, session);
   const licencePlates = products.map(({ licencePlate }) => licencePlate);

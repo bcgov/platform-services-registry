@@ -2,8 +2,25 @@ Feature: Edit Request
 
   Scenario: Create Private Cloud Edit Request and check visibility
     Given User logs in with username "james.smith@gov.bc.ca" and password "james.smith@gov.bc.ca"
-    And User clicks tab "PRIVATE CLOUD OPENSHIFT"
-    And Request exists with name "Automated Test Product Name" and contacts "james.smith@gov.bc.ca" and "john.doe@gov.bc.ca"
+    When User clicks tab "PRIVATE CLOUD OPENSHIFT"
+    And User clicks button "REQUEST A NEW PRODUCT"
+    And User types "Automated Test Product Name" in "Product name"
+    And User types "Automated Test Description" in "Description"
+    And User selects "Citizens Services" in "Ministry"
+    And User clicks and selects "SILVER" in "Hosting tier"
+    And User clicks tab "Team contacts"
+    And User types and selects "james.smith@gov.bc.ca" in "Product Owner email"
+    And User waits for "2" seconds
+    And User types and selects "john.doe@gov.bc.ca" in "Technical Lead email"
+    And User clicks tab "Common components"
+    And User checks checkbox "The app does not use..."
+    And User makes a screenshot
+    And User clicks button "SUBMIT REQUEST"
+    And User checks checkbox "By checking this box..."
+    And User clicks button "Submit"
+    And User clicks modal window button "Close"
+    Then User should be redirected to Requests tab
+    And User should see "Automated Test Product Name"
     And User logs out
     And User logs in with username "private.reviewer.system@gov.bc.ca" and password "private.reviewer.system@gov.bc.ca"
     And User clicks tab "PRIVATE CLOUD OPENSHIFT"

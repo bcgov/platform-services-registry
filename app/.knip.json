@@ -8,7 +8,8 @@
     "@testing-library/user-event",
     "eslint-config-airbnb",
     "ts-jest",
-    "ts-node"
+    "ts-node",
+    "@next/swc-*"
   ],
   "rules": {
     "binaries": "off",

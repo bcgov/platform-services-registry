@@ -9,6 +9,7 @@ import TemporaryProductCheckboxAdmin from '@/components/form/TemporaryProductChe
 import ExternalLink from '@/components/generic/button/ExternalLink';
 import MailLink from '@/components/generic/button/MailLink';
 import FormSelect from '@/components/generic/select/FormSelect';
+import HookFormSingleSelect from '@/components/generic/select/HookFormSingleSelect';
 import { clusters, ministryOptions, privateCloudTeamEmail } from '@/constants';
 
 export default function ProjectDescriptionPrivate({
@@ -38,7 +39,7 @@ export default function ProjectDescriptionPrivate({
     if (session && !session?.permissions.viewAllPrivateCloudProducts) {
       setClustersList(clusters.filter((cluster) => cluster.indexOf('LAB') === -1));
     }
-  }, [session]);
+  }, [session, setClustersList]);
 
   let temporaryProduct = null;
   if (mode === 'create') {
@@ -123,15 +124,11 @@ export default function ProjectDescriptionPrivate({
           {['create', 'edit'].includes(mode) && <AGMinistryCheckBox disabled={disabled} />}
         </div>
         <div className="sm:col-span-3 sm:ml-10">
-          <FormSelect
-            id="cluster"
+          <HookFormSingleSelect
+            name="cluster"
             label="Hosting tier"
             disabled={disabled || clusterDisabled}
-            options={[
-              { label: 'Select Hosting tier', value: '' },
-              ...clustersList.map((v) => ({ label: v, value: v })),
-            ]}
-            selectProps={register('cluster')}
+            data={[{ label: 'Select Hosting tier', value: '' }, ...clustersList.map((v) => ({ label: v, value: v }))]}
           />
           <p className={classNames(errors.cluster ? 'text-red-400' : '', 'mt-3 text-sm leading-6 text-gray-600')}>
             {session?.isAdmin

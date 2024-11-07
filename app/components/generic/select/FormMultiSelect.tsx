@@ -36,7 +36,7 @@ export default function FormMultiSelect({
   if (!id) id = _kebabCase(name);
 
   return (
-    <div className={classNames?.wrapper}>
+    <div className={classnames('multi-select', classNames?.wrapper)}>
       {label && (
         <Label htmlFor={id} className={classNames?.label}>
           {label}
