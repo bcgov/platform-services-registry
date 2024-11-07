@@ -5,10 +5,10 @@ import PublicCloudLayout from '@/emails/_components/layout/PublicCloudLayout';
 import LinkButton from '@/emails/_components/LinkButton';
 import ProductDetails from '@/emails/_components/ProductDetails';
 import ProviderDetails from '@/emails/_components/ProviderDetails';
-import { PublicCloudRequestDetail } from '@/types/public-cloud';
+import { PublicCloudRequestDetailDecorated } from '@/types/public-cloud';
 
 interface EmailProp {
-  request: PublicCloudRequestDetail;
+  request: PublicCloudRequestDetailDecorated;
 }
 
 export default function TeamDeleteRequestRejection({ request }: EmailProp) {

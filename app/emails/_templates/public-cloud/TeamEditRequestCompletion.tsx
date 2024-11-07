@@ -5,10 +5,10 @@ import LinkButton from '@/emails/_components/LinkButton';
 import ProductDetails from '@/emails/_components/ProductDetails';
 import ProviderDetails from '@/emails/_components/ProviderDetails';
 import Changes from '@/emails/_components/public-cloud/Changes';
-import { PublicCloudRequestDetail } from '@/types/public-cloud';
+import { PublicCloudRequestDetailDecorated } from '@/types/public-cloud';
 
 interface EmailProp {
-  request: PublicCloudRequestDetail;
+  request: PublicCloudRequestDetailDecorated;
 }
 
 export default function TeamEditRequestCompletion({ request }: EmailProp) {

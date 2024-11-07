@@ -51,9 +51,11 @@ export default async function deleteOp({
     include: publicCloudRequestDetailInclude,
   });
 
+  const newRequestDecorated = await models.publicCloudRequest.decorate(newRequest, session, true);
+
   await Promise.all([
     createEvent(EventType.DELETE_PUBLIC_CLOUD_PRODUCT, session.user.id, { requestId: newRequest.id }),
-    sendDeleteRequestEmails(newRequest, session.user.name),
+    sendDeleteRequestEmails(newRequestDecorated, session.user.name),
   ]);
 
   return OkResponse(newRequest);

@@ -1,12 +1,11 @@
 import { Heading, Text, Hr } from '@react-email/components';
 import * as React from 'react';
 import PublicCloudLayout from '@/emails/_components/layout/PublicCloudLayout';
-import LinkButton from '@/emails/_components/LinkButton';
 import ProductDetails from '@/emails/_components/ProductDetails';
-import { PublicCloudRequestDetail } from '@/types/public-cloud';
+import { PublicCloudRequestDetailDecorated } from '@/types/public-cloud';
 
 interface Props {
-  request: PublicCloudRequestDetail;
+  request: PublicCloudRequestDetailDecorated;
 }
 
 export default function EmouServiceAgreement({ request }: Props) {

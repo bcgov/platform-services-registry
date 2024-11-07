@@ -4,7 +4,7 @@ import createApiHandler from '@/core/api-handler';
 import prisma from '@/core/prisma';
 import { NotFoundResponse, OkResponse, UnprocessableEntityResponse } from '@/core/responses';
 import { sendRequestCompletionEmails } from '@/services/ches/public-cloud';
-import { publicCloudRequestDetailInclude } from '@/services/db';
+import { models, publicCloudRequestDetailInclude } from '@/services/db';
 
 const pathParamSchema = z.object({
   licencePlate: z.string(),
@@ -14,7 +14,7 @@ const apiHandler = createApiHandler({
   roles: [],
   validations: { pathParams: pathParamSchema },
 });
-export const PUT = apiHandler(async ({ pathParams }) => {
+export const PUT = apiHandler(async ({ pathParams, session }) => {
   const { licencePlate } = pathParams;
 
   const request = await prisma.publicCloudRequest.findFirst({
@@ -32,7 +32,7 @@ export const PUT = apiHandler(async ({ pathParams }) => {
     return NotFoundResponse('No request found for this licece plate.');
   }
 
-  const updateRequest = prisma.publicCloudRequest.update({
+  const updateRequest = models.publicCloudRequest.update({
     where: {
       id: request.id,
     },
@@ -61,8 +61,8 @@ export const PUT = apiHandler(async ({ pathParams }) => {
         });
 
   const [updatedRequest] = await Promise.all([updateRequest, upsertProject]);
-
-  await sendRequestCompletionEmails(updatedRequest);
+  const updatedRequestDecorated = await models.publicCloudRequest.decorate(updatedRequest, session, true);
+  await sendRequestCompletionEmails(updatedRequestDecorated);
 
   return OkResponse(`Successfully marked ${licencePlate} as provisioned.`);
 });

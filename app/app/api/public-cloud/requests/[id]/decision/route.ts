@@ -5,7 +5,7 @@ import createApiHandler from '@/core/api-handler';
 import prisma from '@/core/prisma';
 import { BadRequestResponse, OkResponse, UnprocessableEntityResponse } from '@/core/responses';
 import { sendRequestRejectionEmails, sendRequestApprovalEmails } from '@/services/ches/public-cloud';
-import { createEvent, publicCloudRequestDetailInclude } from '@/services/db';
+import { createEvent, models, publicCloudRequestDetailInclude } from '@/services/db';
 import { upsertUsers } from '@/services/db/user';
 import { sendPublicCloudNatsMessage } from '@/services/nats';
 import {
@@ -93,17 +93,19 @@ export const POST = apiHandler(async ({ pathParams, body, session }) => {
     return UnprocessableEntityResponse('failed to update the request');
   }
 
+  const updatedRequestDecorated = await models.publicCloudRequest.decorate(updatedRequest, session, true);
+
   await createEvent(EventType.REVIEW_PUBLIC_CLOUD_REQUEST, session.user.id, { requestId: updatedRequest.id });
 
   if (updatedRequest.decisionStatus === DecisionStatus.REJECTED) {
-    await sendRequestRejectionEmails(updatedRequest);
+    await sendRequestRejectionEmails(updatedRequestDecorated);
     return OkResponse(updatedRequest);
   }
 
   const proms = [];
 
-  proms.push(sendPublicCloudNatsMessage(updatedRequest));
-  proms.push(sendRequestApprovalEmails(updatedRequest));
+  proms.push(sendPublicCloudNatsMessage(updatedRequestDecorated));
+  proms.push(sendRequestApprovalEmails(updatedRequestDecorated));
 
   await Promise.all(proms);
 

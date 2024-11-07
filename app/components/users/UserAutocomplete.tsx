@@ -4,12 +4,13 @@ import { IconSearch } from '@tabler/icons-react';
 import _throttle from 'lodash-es/throttle';
 import { useRef, useState } from 'react';
 import { formatFullName } from '@/helpers/user';
+import { getUserImageData } from '@/helpers/user-image';
 import { searchUsers } from '@/services/backend/users';
 
 function UserOption({ data }: { data: User }) {
   return (
     <Group gap="sm">
-      <Avatar src={data.image} size={36} radius="xl" />
+      <Avatar src={getUserImageData(data.image)} size={36} radius="xl" />
       <div>
         <Text size="sm">{formatFullName(data)}</Text>
         <Text size="xs" opacity={0.5}>
@@ -23,7 +24,7 @@ function UserOption({ data }: { data: User }) {
 function UserOptionDetail({ data }: { data: User }) {
   return (
     <Group gap="sm">
-      <Avatar src={data.image} size={56} radius="xl" />
+      <Avatar src={getUserImageData(data.image)} size={56} radius="xl" />
       <div>
         {data.jobTitle && (
           <Text size="sm" tt="uppercase" c="dimmed">

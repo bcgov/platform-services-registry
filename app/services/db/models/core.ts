@@ -62,6 +62,9 @@ type UpdateArgs = {
   include?: any | null;
   data: any;
   where?: any;
+  options?: {
+    skipPermissionCheck?: boolean;
+  };
 };
 
 type UpsertArgs = {
@@ -216,12 +219,13 @@ export function createSessionModel<
   async function updateItem(args: TUpdateArgs, session: Session): Promise<ReadResult<TDetailDecorated, TUpdateArgs>>;
   async function updateItem(args: TUpdateArgs): Promise<ReadResult<TDetail, TUpdateArgs>>;
   async function updateItem(
-    { where = {}, select, ...otherArgs }: TUpdateArgs,
+    { where = {}, select, options, ...otherArgs }: TUpdateArgs,
     session?: Session,
   ): Promise<ReadResult<TDetail | TDetailDecorated, TUpdateArgs>> {
+    const { skipPermissionCheck = false } = options ?? {};
     const finalArgs = { where, ...otherArgs } as TUpdateArgs;
 
-    if (session) {
+    if (session && !skipPermissionCheck) {
       const item = await getItem({ where } as TReadArgs, session);
       if (!item.data?._permissions.edit) return { data: null, args: finalArgs };
 
@@ -284,6 +288,11 @@ export function createSessionModel<
     };
   }
 
+  async function decorateItem(data: any, session: Session, detail = true): Promise<TDetailDecorated> {
+    const decoratedData = await decorate(data, session, detail);
+    return decoratedData;
+  }
+
   return {
     get: getItem,
     list: listItems,
@@ -291,5 +300,6 @@ export function createSessionModel<
     create: createItem,
     update: updateItem,
     upsert: upsertItem,
+    decorate: decorateItem,
   };
 }
