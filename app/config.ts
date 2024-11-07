@@ -26,7 +26,7 @@ export const AWS_ROLES_CLIENT_SECRET = process.env.AWS_ROLES_CLIENT_SECRET || 't
 export const AWS_ROLES_IDENTITY_PROVIDER = process.env.AWS_ROLES_IDENTITY_PROVIDER || 'azureidir';
 
 export const CHES_TOKEN_URL = process.env.CHES_TOKEN_URL || '';
-export const CHES_API_URL = process.env.CHES_API_URL || '';
+export const CHES_API_URL = process.env.CHES_API_URL || 'http://localhost:8025/api/v1/';
 export const CHES_CLIENT_ID = process.env.CHES_CLIENT_ID || '';
 export const CHES_CLIENT_SECRET = process.env.CHES_CLIENT_SECRET || '';
 export const CLAB_SERVICE_ACCOUNT_TOKEN = process.env.CLAB_SERVICE_ACCOUNT_TOKEN || '';

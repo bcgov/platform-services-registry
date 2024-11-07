@@ -145,3 +145,19 @@ services:
     image: ghcr.io/bcgov/weasyprint:2b3185f05c76d16a7efc32be6124c744be5ee33f
     ports:
     - 8090:8080
+
+  mailpit:
+    image: axllent/mailpit:latest  # Use the latest stable version of Mailpit
+    container_name: mailpit        # Name the container for easy identification
+    restart: unless-stopped        # Restart automatically unless stopped manually
+    volumes:
+    - ./data:/data                 # Persist data in the 'data' directory
+    ports:
+    - 8025:8025                    # Web UI accessible at localhost:8025
+    - 1025:1025                    # SMTP server accessible at localhost:1025
+    environment:
+      MP_MAX_MESSAGES: 5000        # Store up to 5000 messages
+      MP_DATABASE: /data/mailpit.db # Use a persistent database file
+      MP_SMTP_AUTH_ACCEPT_ANY: 1   # Accept any SMTP authentication for testing
+      MP_SMTP_AUTH_ALLOW_INSECURE: 1 # Allow insecure SMTP auth (useful for localdev)
+      MP_SMTP_TIMEOUT: 30s
