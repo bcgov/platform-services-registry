@@ -101,6 +101,7 @@ export function comparePrivateProductData(data1: any, data2: any) {
 export interface PublicProductChange {
   profileChanged: boolean;
   contactsChanged: boolean;
+  membersChanged: boolean;
   budgetChanged: boolean;
   billingChanged: boolean;
   changes: DiffChange[];
@@ -142,6 +143,7 @@ export function comparePublicProductData(data1: any, data2: any) {
   let contactsChanged = false;
   let budgetChanged = false;
   let billingChanged = false;
+  let membersChanged = false;
 
   for (const change of changes) {
     parentPaths.push(String(change.path[0]));
@@ -157,8 +159,11 @@ export function comparePublicProductData(data1: any, data2: any) {
       case 'primaryTechnicalLead':
       case 'secondaryTechnicalLead':
       case 'expenseAuthority':
-      case 'members':
         contactsChanged = true;
+        break;
+
+      case 'members':
+        membersChanged = true;
         break;
 
       case 'budget':
@@ -174,6 +179,7 @@ export function comparePublicProductData(data1: any, data2: any) {
   return {
     profileChanged,
     contactsChanged,
+    membersChanged,
     budgetChanged,
     billingChanged,
     parentPaths: _uniq(parentPaths),

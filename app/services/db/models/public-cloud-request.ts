@@ -34,7 +34,11 @@ async function baseFilter(session: Session) {
   return filter;
 }
 
-async function decorate<T extends PublicCloudRequestSimple>(doc: T, session: Session, detail: boolean) {
+async function decorate<T extends PublicCloudRequestSimple | PublicCloudRequestDetail>(
+  doc: T,
+  session: Session,
+  detail: boolean,
+) {
   let canReview = doc.decisionStatus === DecisionStatus.PENDING && session.permissions.reviewAllPublicCloudRequests;
 
   let canSignMou = false;

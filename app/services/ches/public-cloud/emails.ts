@@ -21,9 +21,9 @@ import { getEmouFileName } from '@/helpers/emou';
 import { generateEmouPdf } from '@/helpers/pdfs/emou';
 import { sendEmail, getContent } from '@/services/ches/core';
 import { findUserEmailsByAuthRole } from '@/services/keycloak/app-realm';
-import { PublicCloudRequestDetail } from '@/types/public-cloud';
+import { PublicCloudRequestDetailDecorated } from '@/types/public-cloud';
 
-async function getTeamEmails(request: PublicCloudRequestDetail) {
+async function getTeamEmails(request: PublicCloudRequestDetailDecorated) {
   let members: { email: string }[] = [];
   if (request.decisionData.members?.length) {
     members = await prisma.user.findMany({
@@ -44,7 +44,7 @@ async function getTeamEmails(request: PublicCloudRequestDetail) {
   ];
 }
 
-export async function sendAdminCreateRequest(request: PublicCloudRequestDetail, requester: string) {
+export async function sendAdminCreateRequest(request: PublicCloudRequestDetailDecorated, requester: string) {
   const content = getContent(AdminCreateRequestTemplate({ request, requester }));
   const reviewerEmails = await findUserEmailsByAuthRole(GlobalRole.PublicReviewer);
 
@@ -56,7 +56,7 @@ export async function sendAdminCreateRequest(request: PublicCloudRequestDetail, 
   });
 }
 
-export async function sendAdminDeleteRequest(request: PublicCloudRequestDetail, requester: string) {
+export async function sendAdminDeleteRequest(request: PublicCloudRequestDetailDecorated, requester: string) {
   const content = getContent(AdminDeleteRequestTemplate({ request, requester }));
   const reviewerEmails = await findUserEmailsByAuthRole(GlobalRole.PublicReviewer);
 
@@ -68,7 +68,7 @@ export async function sendAdminDeleteRequest(request: PublicCloudRequestDetail, 
   });
 }
 
-export async function sendTeamCreateRequest(request: PublicCloudRequestDetail, requester: string) {
+export async function sendTeamCreateRequest(request: PublicCloudRequestDetailDecorated, requester: string) {
   const content = getContent(TeamCreateRequestTemplate({ request, requester }));
 
   return sendEmail({
@@ -78,7 +78,7 @@ export async function sendTeamCreateRequest(request: PublicCloudRequestDetail, r
   });
 }
 
-export async function sendTeamCreateRequestApproval(request: PublicCloudRequestDetail) {
+export async function sendTeamCreateRequestApproval(request: PublicCloudRequestDetailDecorated) {
   const content = getContent(TeamCreateRequestApprovalTemplate({ request }));
 
   return sendEmail({
@@ -88,7 +88,7 @@ export async function sendTeamCreateRequestApproval(request: PublicCloudRequestD
   });
 }
 
-export async function sendTeamCreateRequestCompletion(request: PublicCloudRequestDetail) {
+export async function sendTeamCreateRequestCompletion(request: PublicCloudRequestDetailDecorated) {
   const content = getContent(TeamCreateRequestCompletionTemplate({ request }));
 
   return sendEmail({
@@ -98,7 +98,7 @@ export async function sendTeamCreateRequestCompletion(request: PublicCloudReques
   });
 }
 
-export async function sendTeamCreateRequestRejection(request: PublicCloudRequestDetail) {
+export async function sendTeamCreateRequestRejection(request: PublicCloudRequestDetailDecorated) {
   const content = getContent(TeamCreateRequestRejectionTemplate({ request }));
 
   return sendEmail({
@@ -108,7 +108,7 @@ export async function sendTeamCreateRequestRejection(request: PublicCloudRequest
   });
 }
 
-export async function sendTeamDeleteRequest(request: PublicCloudRequestDetail, requester: string) {
+export async function sendTeamDeleteRequest(request: PublicCloudRequestDetailDecorated, requester: string) {
   const content = getContent(TeamDeleteRequestTemplate({ request, requester }));
 
   return sendEmail({
@@ -118,7 +118,7 @@ export async function sendTeamDeleteRequest(request: PublicCloudRequestDetail, r
   });
 }
 
-export async function sendTeamDeleteRequestApproval(request: PublicCloudRequestDetail) {
+export async function sendTeamDeleteRequestApproval(request: PublicCloudRequestDetailDecorated) {
   const content = getContent(TeamDeleteRequestApprovalTemplate({ request }));
 
   return sendEmail({
@@ -128,7 +128,7 @@ export async function sendTeamDeleteRequestApproval(request: PublicCloudRequestD
   });
 }
 
-export async function sendTeamDeleteRequestCompletion(request: PublicCloudRequestDetail) {
+export async function sendTeamDeleteRequestCompletion(request: PublicCloudRequestDetailDecorated) {
   const content = getContent(TeamDeleteRequestCompletionTemplate({ request }));
 
   return sendEmail({
@@ -138,7 +138,7 @@ export async function sendTeamDeleteRequestCompletion(request: PublicCloudReques
   });
 }
 
-export async function sendTeamDeleteRequestRejection(request: PublicCloudRequestDetail) {
+export async function sendTeamDeleteRequestRejection(request: PublicCloudRequestDetailDecorated) {
   const content = getContent(TeamDeleteRequestRejectionTemplate({ request }));
 
   return sendEmail({
@@ -148,7 +148,7 @@ export async function sendTeamDeleteRequestRejection(request: PublicCloudRequest
   });
 }
 
-export async function sendTeamEditRequest(request: PublicCloudRequestDetail, requester: string) {
+export async function sendTeamEditRequest(request: PublicCloudRequestDetailDecorated, requester: string) {
   const content = getContent(TeamEditRequestTemplate({ request, requester }));
 
   return sendEmail({
@@ -158,7 +158,7 @@ export async function sendTeamEditRequest(request: PublicCloudRequestDetail, req
   });
 }
 
-export async function sendTeamEditRequestCompletion(request: PublicCloudRequestDetail) {
+export async function sendTeamEditRequestCompletion(request: PublicCloudRequestDetailDecorated) {
   const content = getContent(TeamEditRequestCompletionTemplate({ request }));
 
   return sendEmail({
@@ -168,7 +168,7 @@ export async function sendTeamEditRequestCompletion(request: PublicCloudRequestD
   });
 }
 
-export async function sendBillingReviewerMou(request: PublicCloudRequestDetail) {
+export async function sendBillingReviewerMou(request: PublicCloudRequestDetailDecorated) {
   const content = getContent(BillingReviewerMouTemplate({ request }));
   const billingReviewerEmails = await findUserEmailsByAuthRole(GlobalRole.BillingReviewer);
 
@@ -179,7 +179,7 @@ export async function sendBillingReviewerMou(request: PublicCloudRequestDetail) 
   });
 }
 
-export async function sendEmouServiceAgreement(request: PublicCloudRequestDetail) {
+export async function sendEmouServiceAgreement(request: PublicCloudRequestDetailDecorated) {
   const content = getContent(EmouServiceAgreementTemplate({ request }));
   const emouPdfBuff = await generateEmouPdf(request.decisionData, request.decisionData.billing);
   const billingReviewerEmails = await findUserEmailsByAuthRole(GlobalRole.BillingReviewer);
@@ -200,7 +200,7 @@ export async function sendEmouServiceAgreement(request: PublicCloudRequestDetail
   });
 }
 
-export function sendExpenseAuthority(request: PublicCloudRequestDetail) {
+export function sendExpenseAuthority(request: PublicCloudRequestDetailDecorated) {
   const content = getContent(ExpenseAuthorityTemplate({ request }));
 
   return sendEmail({
@@ -210,7 +210,7 @@ export function sendExpenseAuthority(request: PublicCloudRequestDetail) {
   });
 }
 
-export function sendExpenseAuthorityMou(request: PublicCloudRequestDetail) {
+export function sendExpenseAuthorityMou(request: PublicCloudRequestDetailDecorated) {
   const content = getContent(ExpenseAuthorityMouTemplate({ request }));
 
   return sendEmail({
