@@ -2,12 +2,18 @@ import { M365_URL } from '@/config';
 import { parseMinistryFromDisplayName } from '@/helpers/user';
 import { MsUser, AppUser } from '@/types/user';
 import { callMsGraph, getAccessToken } from './core';
-export function processMsUser(user: MsUser): AppUser {
+
+export function processMsUser(user: MsUser): AppUser | null {
+  const idir = user.onPremisesSamAccountName;
+  const upn = user.userPrincipalName;
+
+  if (!idir || !upn) return null;
+
   return {
     providerUserId: user.id,
-    upn: user.userPrincipalName,
+    upn,
     email: user.mail.toLowerCase(),
-    idir: user.onPremisesSamAccountName,
+    idir,
     idirGuid: user.extension_85cc52e9286540fcb1f97ed86114a0e5_bcgovGUID,
     displayName: user.displayName,
     firstName: user.givenName,
@@ -75,7 +81,7 @@ export async function listUsersByEmail(email: string) {
   }
 
   const data = await res.json();
-  return (data as { value: MsUser[] }).value.map(processMsUser).filter((user) => !!user.upn);
+  return (data as { value: MsUser[] }).value.map(processMsUser).filter((user) => !!user);
 }
 
 export async function getUserByEmail(email: string) {
