@@ -1,4 +1,4 @@
-import { Prisma } from '@prisma/client';
+import { Prisma, Task } from '@prisma/client';
 import { User } from 'next-auth';
 import NextAuth, { DefaultSession, JWT } from 'next-auth/jwt';
 
@@ -83,7 +83,7 @@ declare module 'next-auth' {
       [key: string]: string[];
     };
     permissions: Permissions;
-    tasks: Prisma.TaskGetPayload<null>[];
+    tasks: Task[];
     previews: {
       security: boolean;
       apiAccount: boolean;

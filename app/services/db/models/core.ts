@@ -84,7 +84,8 @@ type Decoration = {
 export function createSessionModel<
   TSimple,
   TDetail,
-  TDecoration extends Decoration,
+  TSimpleDecorated extends Decoration,
+  TDetailDecorated extends Decoration,
   TCreateArgs extends CreateArgs,
   TReadArgs extends ReadArgs,
   TUpdateArgs extends UpdateArgs,
@@ -100,7 +101,7 @@ export function createSessionModel<
   includeDetail?: object;
   includeSimple?: object;
   baseFilter: any;
-  decorate: (data: any, session: Session) => Promise<any>;
+  decorate: (data: any, session: Session, detail: boolean) => Promise<any>;
 }) {
   // Helper function to handle filtering
   async function applyFilter<T extends { where?: any }>(args: T, session?: Session): Promise<T> {
@@ -113,12 +114,12 @@ export function createSessionModel<
   }
 
   // Overloaded method signatures for getItem
-  async function getItem(args: TReadArgs, session: Session): Promise<ReadResult<TDetail & TDecoration, TReadArgs>>;
+  async function getItem(args: TReadArgs, session: Session): Promise<ReadResult<TDetailDecorated, TReadArgs>>;
   async function getItem(args: TReadArgs): Promise<ReadResult<TDetail, TReadArgs>>;
   async function getItem(
     { where = {}, select, ...otherArgs }: TReadArgs,
     session?: Session,
-  ): Promise<ReadResult<TDetail | (TDetail & TDecoration), TReadArgs>> {
+  ): Promise<ReadResult<TDetail | TDetailDecorated, TReadArgs>> {
     let finalArgs = { where, ...otherArgs } as TReadArgs;
 
     finalArgs = await applyFilter<TReadArgs>(finalArgs, session);
@@ -132,7 +133,7 @@ export function createSessionModel<
     const data = await model.findFirst(finalArgs);
 
     if (session && data && !select) {
-      const decoratedData = await decorate(data, session);
+      const decoratedData = await decorate(data, session, true);
       return { data: decoratedData, args: finalArgs };
     }
 
@@ -144,11 +145,11 @@ export function createSessionModel<
   async function listItems(
     args: TReadArgs & { includeCount?: boolean },
     session: Session,
-  ): Promise<ListResult<TSimple & TDecoration, TReadArgs>>;
+  ): Promise<ListResult<TSimpleDecorated, TReadArgs>>;
   async function listItems(
     { where = {}, select, includeCount, ...otherArgs }: TReadArgs & { includeCount?: boolean },
     session?: Session,
-  ): Promise<ListResult<TSimple | (TSimple & TDecoration), TReadArgs>> {
+  ): Promise<ListResult<TSimple | TSimpleDecorated, TReadArgs>> {
     let finalArgs = { where, ...otherArgs } as TReadArgs;
 
     finalArgs = await applyFilter<TReadArgs>(finalArgs, session);
@@ -165,7 +166,7 @@ export function createSessionModel<
     ]);
 
     if (session && !select) {
-      const decoratedData = await Promise.all(data.map((item: TSimple) => decorate(item, session)));
+      const decoratedData = await Promise.all(data.map((item: TSimple) => decorate(item, session, false)));
       return { data: decoratedData, args: finalArgs, totalCount };
     }
 
@@ -188,15 +189,12 @@ export function createSessionModel<
   }
 
   // Overloaded method signatures for createItem
-  async function createItem(
-    args: TCreateArgs,
-    session: Session,
-  ): Promise<ReadResult<TDetail & TDecoration, TCreateArgs>>;
+  async function createItem(args: TCreateArgs, session: Session): Promise<ReadResult<TDetailDecorated, TCreateArgs>>;
   async function createItem(args: TCreateArgs): Promise<ReadResult<TDetail, TCreateArgs>>;
   async function createItem(
     { select, ...otherArgs }: TCreateArgs,
     session?: Session,
-  ): Promise<ReadResult<TDetail | (TDetail & TDecoration), TCreateArgs>> {
+  ): Promise<ReadResult<TDetail | TDetailDecorated, TCreateArgs>> {
     const finalArgs = { ...otherArgs } as TCreateArgs;
     if (select) {
       finalArgs.select = select;
@@ -207,7 +205,7 @@ export function createSessionModel<
     const data = await model.create(finalArgs);
 
     if (session && data && !select) {
-      const decoratedData = await decorate(data, session);
+      const decoratedData = await decorate(data, session, true);
       return { data: decoratedData, args: finalArgs };
     }
 
@@ -215,15 +213,12 @@ export function createSessionModel<
   }
 
   // Overloaded method signatures for updateItem
-  async function updateItem(
-    args: TUpdateArgs,
-    session: Session,
-  ): Promise<ReadResult<TDetail & TDecoration, TUpdateArgs>>;
+  async function updateItem(args: TUpdateArgs, session: Session): Promise<ReadResult<TDetailDecorated, TUpdateArgs>>;
   async function updateItem(args: TUpdateArgs): Promise<ReadResult<TDetail, TUpdateArgs>>;
   async function updateItem(
     { where = {}, select, ...otherArgs }: TUpdateArgs,
     session?: Session,
-  ): Promise<ReadResult<TDetail | (TDetail & TDecoration), TUpdateArgs>> {
+  ): Promise<ReadResult<TDetail | TDetailDecorated, TUpdateArgs>> {
     const finalArgs = { where, ...otherArgs } as TUpdateArgs;
 
     if (session) {
@@ -242,7 +237,7 @@ export function createSessionModel<
     const data = await model.update(finalArgs);
 
     if (session && data && !select) {
-      const decoratedData = await decorate(data, session);
+      const decoratedData = await decorate(data, session, true);
       return { data: decoratedData, args: finalArgs };
     }
 
@@ -250,15 +245,12 @@ export function createSessionModel<
   }
 
   // Overloaded method signatures for upsertItem
-  async function upsertItem(
-    args: TUpsertArgs,
-    session: Session,
-  ): Promise<ReadResult<TDetail & TDecoration, TUpsertArgs>>;
+  async function upsertItem(args: TUpsertArgs, session: Session): Promise<ReadResult<TDetailDecorated, TUpsertArgs>>;
   async function upsertItem(args: TUpsertArgs): Promise<ReadResult<TDetail, TUpsertArgs>>;
   async function upsertItem(
     { where = {}, select, ...otherArgs }: TUpsertArgs,
     session?: Session,
-  ): Promise<ReadResult<TDetail | (TDetail & TDecoration), TUpsertArgs>> {
+  ): Promise<ReadResult<TDetail | TDetailDecorated, TUpsertArgs>> {
     const finalArgs = { where, ...otherArgs } as TUpsertArgs;
 
     const one = await model.findFirst(finalArgs);

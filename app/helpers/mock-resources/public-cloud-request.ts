@@ -63,6 +63,7 @@ export function createSamplePublicCloudRequest(args?: {
     secondaryTechnicalLead,
     expenseAuthorityId: expenseAuthority.id,
     expenseAuthority,
+    members: [],
     billingId: billing.id,
     billing,
     budget: {

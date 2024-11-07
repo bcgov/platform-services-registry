@@ -1,8 +1,9 @@
-import { Provider, Prisma } from '@prisma/client';
+import { Provider, PublicCloudProductMemberRole, Prisma } from '@prisma/client';
 import { Session } from 'next-auth';
 import { productSorts } from './common';
 
 export const providers = Object.values(Provider);
+export const publicCloudProductMemberRoles = Object.values(PublicCloudProductMemberRole);
 
 const providerLabels = {
   [Provider.AWS]: 'AWS',

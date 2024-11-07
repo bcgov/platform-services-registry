@@ -1,4 +1,13 @@
-import { Cluster, Ministry, Provider, Prisma, RequestType, ProjectStatus, DecisionStatus } from '@prisma/client';
+import {
+  Cluster,
+  Ministry,
+  Provider,
+  Prisma,
+  RequestType,
+  ProjectStatus,
+  DecisionStatus,
+  PublicCloudProductMemberRole,
+} from '@prisma/client';
 import _isString from 'lodash-es/isString';
 import { string, z } from 'zod';
 import { processEnumString, processUpperEnumString, processBoolean } from '@/utils/zod';
@@ -10,6 +19,15 @@ export const budgetSchema = z.object({
   prod: z.number().min(50.0, 'Value should be no less than USD 50').default(50.0),
   tools: z.number().min(50.0, 'Value should be no less than USD 50').default(50.0),
 });
+
+const publicCloudProductMembers = z
+  .array(
+    z.object({
+      userId: z.string().length(24, { message: 'Please select a member' }),
+      roles: z.array(z.nativeEnum(PublicCloudProductMemberRole)),
+    }),
+  )
+  .max(10);
 
 export const publicCloudCreateRequestBodySchema = z.object({
   name: z
@@ -52,7 +70,11 @@ export const publicCloudCreateRequestBodySchema = z.object({
     ),
 });
 
-export const publicCloudEditRequestBodySchema = publicCloudCreateRequestBodySchema.omit({});
+export const publicCloudEditRequestBodySchema = publicCloudCreateRequestBodySchema.merge(
+  z.object({
+    members: publicCloudProductMembers,
+  }),
+);
 
 export const publicCloudRequestDecisionBodySchema = publicCloudEditRequestBodySchema.merge(
   z.object({

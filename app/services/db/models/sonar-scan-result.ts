@@ -48,7 +48,8 @@ async function decorate(doc: SonarScanResult, session: Session) {
 export const sonarScanResultModel = createSessionModel<
   SonarScanResult,
   SonarScanResult,
-  SonarScanResultDecorate,
+  SonarScanResultDecorated,
+  SonarScanResultDecorated,
   NonNullable<Parameters<typeof prisma.sonarScanResult.create>[0]>,
   NonNullable<Parameters<typeof prisma.sonarScanResult.findFirst>[0]>,
   NonNullable<Parameters<typeof prisma.sonarScanResult.update>[0]>,

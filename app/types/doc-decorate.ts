@@ -30,6 +30,7 @@ export interface PublicCloudProjectDecorate {
     reprovision: boolean;
     signMou: boolean;
     reviewMou: boolean;
+    downloadMou: boolean;
   };
 }
 

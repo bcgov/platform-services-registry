@@ -19,6 +19,7 @@ import ExpenseAuthority from '@/components/form/ExpenseAuthority';
 import ProjectDescriptionPublic from '@/components/form/ProjectDescriptionPublic';
 import TeamContacts from '@/components/form/TeamContacts';
 import PageAccordion from '@/components/generic/accordion/PageAccordion';
+import AdditionalTeamMembers from '@/components/public-cloud/sections/AdditionalTeamMembers';
 import { GlobalRole } from '@/constants';
 import createClientPage from '@/core/client-page';
 import { usePublicProductState } from '@/states/global';
@@ -95,6 +96,13 @@ export default publicCloudRequestOriginal(({ router }) => {
       label: 'Expense authority',
       description: '',
       Component: ExpenseAuthority,
+      componentArgs: { disabled: isDisabled },
+    },
+    {
+      LeftIcon: IconUsersGroup,
+      label: 'Additional team members',
+      description: '',
+      Component: AdditionalTeamMembers,
       componentArgs: { disabled: isDisabled },
     },
     {

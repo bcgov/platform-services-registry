@@ -31,7 +31,7 @@ export default function TeamContacts({
       const res = await openConfirmModal({
         content: 'Are you sure you want to remove the secondary technical lead from this product?',
       });
-      if (res?.state.confirmed) {
+      if (res.state.confirmed) {
         secondTechLeadOnClick();
       }
     } else {
