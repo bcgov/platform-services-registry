@@ -10,6 +10,7 @@ import { openConfirmModal } from '@/components/modal/confirm';
 import { openUserPickerModal } from '@/components/modal/userPicker';
 import { publicCloudProductMemberRoles } from '@/constants';
 import { formatFullName } from '@/helpers/user';
+import { getUserImageData } from '@/helpers/user-image';
 import { formatDate } from '@/utils/date';
 
 export default function AdditionalTeamMembers({ disabled }: { disabled?: boolean }) {
@@ -50,7 +51,7 @@ export default function AdditionalTeamMembers({ disabled }: { disabled?: boolean
               }
             }}
           >
-            <Avatar src={member.image} size={36} radius="xl" />
+            <Avatar src={getUserImageData(member.image)} size={36} radius="xl" />
             <div>
               <Text size="sm" className="font-semibold">
                 {member.id ? (
