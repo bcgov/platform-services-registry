@@ -36,7 +36,7 @@ export default function FormSingleSelect({
   if (!id) id = _kebabCase(name);
 
   return (
-    <div className={classNames?.wrapper}>
+    <div className={classnames('select-single', classNames?.wrapper)}>
       {label && (
         <Label htmlFor={id} className={classNames?.label}>
           {label}
