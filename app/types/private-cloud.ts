@@ -1,5 +1,11 @@
-import { Ministry, Cluster, ProjectStatus, Prisma } from '@prisma/client';
+import { Ministry, Cluster, User, Prisma, PrivateCloudProductMember } from '@prisma/client';
 import { PrivateCloudProjectDecorate, PrivateCloudRequestDecorate } from './doc-decorate';
+
+export type ExtendedPrivateCloudProductMember = PrivateCloudProductMember & User;
+
+interface ExtendedPrivateCloudProductMembersData {
+  members: ExtendedPrivateCloudProductMember[];
+}
 
 export type PrivateCloudProductSimple = Prisma.PrivateCloudProjectGetPayload<{
   include: {
@@ -33,7 +39,9 @@ export type PrivateCloudProductDetail = Prisma.PrivateCloudProjectGetPayload<{
   activeRequest?: Prisma.PrivateCloudRequestGetPayload<null> | null;
 };
 
-export type PrivateCloudProductDetailDecorated = PrivateCloudProductDetail & PrivateCloudProjectDecorate;
+type _PrivateCloudProductDetail = Omit<PrivateCloudProductDetail, 'members'> & ExtendedPrivateCloudProductMembersData;
+
+export type PrivateCloudProductDetailDecorated = _PrivateCloudProductDetail & PrivateCloudProjectDecorate;
 
 export type PrivateCloudProductSearch = {
   docs: PrivateCloudProductSimpleDecorated[];
@@ -75,7 +83,23 @@ export type PrivateCloudRequestDetail = Prisma.PrivateCloudRequestGetPayload<{
   };
 }>;
 
-export type PrivateCloudRequestDetailDecorated = PrivateCloudRequestDetail & PrivateCloudRequestDecorate;
+type ExtendedOriginalData =
+  | (Omit<NonNullable<PrivateCloudRequestDetail['originalData']>, 'members'> & ExtendedPrivateCloudProductMembersData)
+  | null;
+
+type ExtendedRequestData = Omit<PrivateCloudRequestDetail['requestData'], 'members'> &
+  ExtendedPrivateCloudProductMembersData;
+
+type ExtendedDecisionData = Omit<PrivateCloudRequestDetail['decisionData'], 'members'> &
+  ExtendedPrivateCloudProductMembersData;
+
+type _PrivateCloudRequestDetail = Omit<PrivateCloudRequestDetail, 'originalData' | 'requestData' | 'decisionData'> & {
+  originalData: ExtendedOriginalData;
+  requestData: ExtendedRequestData;
+  decisionData: ExtendedDecisionData;
+};
+
+export type PrivateCloudRequestDetailDecorated = _PrivateCloudRequestDetail & PrivateCloudRequestDecorate;
 
 export type PrivateCloudRequestSimple = Prisma.PrivateCloudRequestGetPayload<{
   include: {

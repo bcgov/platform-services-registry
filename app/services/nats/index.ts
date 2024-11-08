@@ -3,12 +3,12 @@ import { PRIVATE_NATS_URL, PUBLIC_NATS_URL } from '@/config';
 import openshiftDeletionCheck, { DeletableField } from '@/helpers/openshift';
 import createPrivateCloudNatsMessage from '@/services/nats/private-cloud';
 import createPublicCloudNatsMessage from '@/services/nats/public-cloud';
-import { PrivateCloudRequestDetail } from '@/types/private-cloud';
+import { PrivateCloudRequestDetailDecorated } from '@/types/private-cloud';
 import { PublicCloudRequestDetailDecorated } from '@/types/public-cloud';
 import { sendNatsMessage } from './core';
 
 export async function sendPrivateCloudNatsMessage(
-  request: Pick<PrivateCloudRequestDetail, 'id' | 'type' | 'decisionData'>,
+  request: Pick<PrivateCloudRequestDetailDecorated, 'id' | 'type' | 'decisionData'>,
   contactChanged: boolean,
 ) {
   const decisionData = request.decisionData;

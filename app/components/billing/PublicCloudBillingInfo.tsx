@@ -85,7 +85,7 @@ export default function PublicCloudBillingInfo({
               provider: product.provider,
             });
 
-            if (res?.state.confirmed) {
+            if (res.state.confirmed) {
               location.reload();
             }
           }}
@@ -104,7 +104,7 @@ export default function PublicCloudBillingInfo({
               billingId: product.billingId,
             });
 
-            if (res?.state.confirmed) {
+            if (res.state.confirmed) {
               location.reload();
             }
           }}

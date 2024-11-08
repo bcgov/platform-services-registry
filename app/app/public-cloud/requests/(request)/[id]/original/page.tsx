@@ -33,23 +33,23 @@ const publicCloudRequestOriginal = createClientPage({
   validations: { pathParams: pathParamSchema },
 });
 export default publicCloudRequestOriginal(({ router }) => {
-  const [publicState, publicSnap] = usePublicProductState();
+  const [, snap] = usePublicProductState();
   const [secondTechLead, setSecondTechLead] = useState(false);
 
   useEffect(() => {
-    if (!publicSnap.currentRequest) return;
+    if (!snap.currentRequest) return;
 
-    if (publicSnap.currentRequest.originalData?.secondaryTechnicalLead) {
+    if (snap.currentRequest.originalData?.secondaryTechnicalLead) {
       setSecondTechLead(true);
     }
-  }, [publicSnap.currentRequest, router]);
+  }, [snap.currentRequest, router]);
 
   const methods = useForm({
     defaultValues: {
       decisionComment: '',
       decision: '',
-      type: publicSnap.currentRequest?.type,
-      ...publicSnap.currentRequest?.originalData,
+      type: snap.currentRequest?.type,
+      ...snap.currentRequest?.originalData,
     },
   });
 
@@ -60,7 +60,7 @@ export default publicCloudRequestOriginal(({ router }) => {
     }
   };
 
-  if (!publicSnap.currentRequest) {
+  if (!snap.currentRequest) {
     return null;
   }
 
@@ -103,7 +103,7 @@ export default publicCloudRequestOriginal(({ router }) => {
       label: 'Additional team members',
       description: '',
       Component: AdditionalTeamMembers,
-      componentArgs: { disabled: isDisabled },
+      componentArgs: { disabled: true },
     },
     {
       LeftIcon: IconMoneybag,
@@ -118,7 +118,7 @@ export default publicCloudRequestOriginal(({ router }) => {
       description: '',
       Component: AccountCoding,
       componentArgs: {
-        accountCodingInitial: publicSnap.currentRequest.originalData?.billing.accountCoding,
+        accountCodingInitial: snap.currentRequest.originalData?.billing.accountCoding,
         disabled: true,
       },
     },

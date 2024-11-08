@@ -78,7 +78,7 @@ model PrivateCloudRequest {
   decisionDataId                 String                        @db.ObjectId
   decisionData                   PrivateCloudRequestedProject  @relation("decisionData", fields: [decisionDataId], references: [id])
   requestDataId                  String                        @db.ObjectId
-  requestData                    PrivateCloudRequestedProject? @relation("requestData", fields: [requestDataId], references: [id])
+  requestData                    PrivateCloudRequestedProject  @relation("requestData", fields: [requestDataId], references: [id])
   originalDataId                 String?                       @db.ObjectId
   originalData                   PrivateCloudRequestedProject? @relation("originalData", fields: [originalDataId], references: [id])
   quotaUpgradeResourceDetailList QuotaUpgradeResourceDetail[]
@@ -107,6 +107,7 @@ type QuotaUpgradeResourceDeployment {
 type PrivateCloudDataChanges {
   profileChanged          Boolean?
   contactsChanged         Boolean?
+  membersChanged          Boolean?
   quotasChanged           Boolean?
   quotasIncrease          Boolean?
   commonComponentsChanged Boolean?
@@ -114,60 +115,67 @@ type PrivateCloudDataChanges {
 }
 
 model PrivateCloudProject {
-  id                               String                @id @default(auto()) @map("_id") @db.ObjectId
-  licencePlate                     String                @unique
+  id                               String                      @id @default(auto()) @map("_id") @db.ObjectId
+  licencePlate                     String                      @unique
   name                             String
   description                      String
   status                           ProjectStatus
-  isTest                           Boolean               @default(false)
+  isTest                           Boolean                     @default(false)
   temporaryProductNotificationDate DateTime?
-  createdAt                        DateTime              @default(now())
-  updatedAt                        DateTime              @updatedAt
-  projectOwnerId                   String                @db.ObjectId
-  projectOwner                     User                  @relation("projectOwner", fields: [projectOwnerId], references: [id])
-  primaryTechnicalLeadId           String                @db.ObjectId
-  primaryTechnicalLead             User                  @relation("primaryTechnicalLead", fields: [primaryTechnicalLeadId], references: [id])
-  secondaryTechnicalLeadId         String?               @db.ObjectId
-  secondaryTechnicalLead           User?                 @relation("secondaryTechnicalLead", fields: [secondaryTechnicalLeadId], references: [id])
+  createdAt                        DateTime                    @default(now())
+  updatedAt                        DateTime                    @updatedAt
+  projectOwnerId                   String                      @db.ObjectId
+  projectOwner                     User                        @relation("projectOwner", fields: [projectOwnerId], references: [id])
+  primaryTechnicalLeadId           String                      @db.ObjectId
+  primaryTechnicalLead             User                        @relation("primaryTechnicalLead", fields: [primaryTechnicalLeadId], references: [id])
+  secondaryTechnicalLeadId         String?                     @db.ObjectId
+  secondaryTechnicalLead           User?                       @relation("secondaryTechnicalLead", fields: [secondaryTechnicalLeadId], references: [id])
   ministry                         Ministry
   cluster                          Cluster
-  golddrEnabled                    Boolean               @default(false)
+  golddrEnabled                    Boolean                     @default(false)
   productionQuota                  Quota
   testQuota                        Quota
   developmentQuota                 Quota
   toolsQuota                       Quota
   commonComponents                 CommonComponents
   supportPhoneNumber               String?
-  requests                         PrivateCloudRequest[] @relation("project")
-  comments                         PrivateCloudComment[] @relation("project")
+  members                          PrivateCloudProductMember[]
+  requests                         PrivateCloudRequest[]       @relation("project")
+  comments                         PrivateCloudComment[]       @relation("project")
 }
 
 model PrivateCloudRequestedProject {
-  id                       String                @id @default(auto()) @map("_id") @db.ObjectId
+  id                       String                      @id @default(auto()) @map("_id") @db.ObjectId
   name                     String
   description              String
   status                   ProjectStatus
   licencePlate             String
-  isTest                   Boolean               @default(false)
-  createdAt                DateTime              @default(now())
-  projectOwnerId           String                @db.ObjectId
-  projectOwner             User                  @relation("projectOwner", fields: [projectOwnerId], references: [id])
-  primaryTechnicalLeadId   String                @db.ObjectId
-  primaryTechnicalLead     User                  @relation("primaryTechnicalLead", fields: [primaryTechnicalLeadId], references: [id])
-  secondaryTechnicalLeadId String?               @db.ObjectId
-  secondaryTechnicalLead   User?                 @relation("secondaryTechnicalLead", fields: [secondaryTechnicalLeadId], references: [id])
+  isTest                   Boolean                     @default(false)
+  createdAt                DateTime                    @default(now())
+  projectOwnerId           String                      @db.ObjectId
+  projectOwner             User                        @relation("projectOwner", fields: [projectOwnerId], references: [id])
+  primaryTechnicalLeadId   String                      @db.ObjectId
+  primaryTechnicalLead     User                        @relation("primaryTechnicalLead", fields: [primaryTechnicalLeadId], references: [id])
+  secondaryTechnicalLeadId String?                     @db.ObjectId
+  secondaryTechnicalLead   User?                       @relation("secondaryTechnicalLead", fields: [secondaryTechnicalLeadId], references: [id])
   ministry                 Ministry
   cluster                  Cluster
-  golddrEnabled            Boolean               @default(false)
+  golddrEnabled            Boolean                     @default(false)
   productionQuota          Quota
   testQuota                Quota
   developmentQuota         Quota
   toolsQuota               Quota
   commonComponents         CommonComponents
   supportPhoneNumber       String?
-  decisionRequests         PrivateCloudRequest[] @relation("decisionData")
-  requestRequests          PrivateCloudRequest[] @relation("requestData")
-  originalRequests         PrivateCloudRequest[] @relation("originalData")
+  members                  PrivateCloudProductMember[]
+  decisionRequests         PrivateCloudRequest[]       @relation("decisionData")
+  requestRequests          PrivateCloudRequest[]       @relation("requestData")
+  originalRequests         PrivateCloudRequest[]       @relation("originalData")
+}
+
+type PrivateCloudProductMember {
+  userId String
+  roles  PrivateCloudProductMemberRole[]
 }
 
 model PrivateCloudComment {
@@ -219,7 +227,7 @@ model PublicCloudRequest {
   decisionDataId     String                       @db.ObjectId
   decisionData       PublicCloudRequestedProject  @relation("decisionData", fields: [decisionDataId], references: [id])
   requestDataId      String                       @db.ObjectId
-  requestData        PublicCloudRequestedProject? @relation("requestData", fields: [requestDataId], references: [id])
+  requestData        PublicCloudRequestedProject  @relation("requestData", fields: [requestDataId], references: [id])
   originalDataId     String?                      @db.ObjectId
   originalData       PublicCloudRequestedProject? @relation("originalData", fields: [originalDataId], references: [id])
   changes            PublicCloudDataChanges?
@@ -672,6 +680,12 @@ enum ResourceType {
   cpu
   memory
   storage
+}
+
+enum PrivateCloudProductMemberRole {
+  EDITOR
+  VIEWER
+  SUBSCRIBER
 }
 
 enum PublicCloudProductMemberRole {

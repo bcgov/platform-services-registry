@@ -79,9 +79,6 @@ export default async function updateOp({
     )
   ).data;
 
-  if (!newRequest) {
-    return UnprocessableEntityResponse('failed to create a request.');
-  }
   const proms = [];
 
   proms.push(createEvent(EventType.UPDATE_PUBLIC_CLOUD_PRODUCT, session.user.id, { requestId: newRequest.id }));

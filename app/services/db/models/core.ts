@@ -33,6 +33,7 @@ export async function genBaseFilter<
 }
 
 export type ReadResult<TData, TArgs> = { data: TData | null; args: TArgs };
+export type CreateResult<TData, TArgs> = { data: TData; args: TArgs };
 export type ListResult<TData, TArgs> = {
   data: TData[];
   args: TArgs;
@@ -192,12 +193,12 @@ export function createSessionModel<
   }
 
   // Overloaded method signatures for createItem
-  async function createItem(args: TCreateArgs, session: Session): Promise<ReadResult<TDetailDecorated, TCreateArgs>>;
-  async function createItem(args: TCreateArgs): Promise<ReadResult<TDetail, TCreateArgs>>;
+  async function createItem(args: TCreateArgs, session: Session): Promise<CreateResult<TDetailDecorated, TCreateArgs>>;
+  async function createItem(args: TCreateArgs): Promise<CreateResult<TDetail, TCreateArgs>>;
   async function createItem(
     { select, ...otherArgs }: TCreateArgs,
     session?: Session,
-  ): Promise<ReadResult<TDetail | TDetailDecorated, TCreateArgs>> {
+  ): Promise<CreateResult<TDetail | TDetailDecorated, TCreateArgs>> {
     const finalArgs = { ...otherArgs } as TCreateArgs;
     if (select) {
       finalArgs.select = select;

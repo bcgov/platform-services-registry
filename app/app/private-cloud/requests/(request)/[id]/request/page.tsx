@@ -10,6 +10,7 @@ import ProjectDescription from '@/components/form/ProjectDescriptionPrivate';
 import Quotas from '@/components/form/Quotas';
 import TeamContacts from '@/components/form/TeamContacts';
 import PageAccordion from '@/components/generic/accordion/PageAccordion';
+import AdditionalTeamMembers from '@/components/private-cloud/sections/AdditionalTeamMembers';
 import { GlobalRole } from '@/constants';
 import createClientPage from '@/core/client-page';
 import { usePrivateProductState } from '@/states/global';
@@ -23,23 +24,23 @@ const privateCloudRequestRequest = createClientPage({
   validations: { pathParams: pathParamSchema },
 });
 export default privateCloudRequestRequest(({}) => {
-  const [privateState, privateSnap] = usePrivateProductState();
+  const [, snap] = usePrivateProductState();
   const [secondTechLead, setSecondTechLead] = useState(false);
 
   useEffect(() => {
-    if (!privateSnap.currentRequest) return;
+    if (!snap.currentRequest) return;
 
-    if (privateSnap.currentRequest.requestData?.secondaryTechnicalLead) {
+    if (snap.currentRequest.requestData.secondaryTechnicalLead) {
       setSecondTechLead(true);
     }
-  }, [privateSnap.currentRequest]);
+  }, [snap.currentRequest]);
 
   const methods = useForm({
     defaultValues: {
       decisionComment: '',
       decision: '',
-      type: privateSnap.currentRequest?.type,
-      ...privateSnap.currentRequest?.requestData,
+      type: snap.currentRequest?.type,
+      ...snap.currentRequest?.requestData,
     },
   });
 
@@ -50,7 +51,7 @@ export default privateCloudRequestRequest(({}) => {
     }
   };
 
-  if (!privateSnap.currentRequest) {
+  if (!snap.currentRequest) {
     return null;
   }
 
@@ -64,7 +65,7 @@ export default privateCloudRequestRequest(({}) => {
       Component: ProjectDescription,
       componentArgs: {
         disabled: isDisabled,
-        clusterDisabled: privateSnap.currentRequest.type !== 'CREATE',
+        clusterDisabled: snap.currentRequest.type !== 'CREATE',
         mode: 'request',
       },
     },
@@ -76,21 +77,28 @@ export default privateCloudRequestRequest(({}) => {
       componentArgs: { disabled: isDisabled, secondTechLead, secondTechLeadOnClick },
     },
     {
+      LeftIcon: IconUsersGroup,
+      label: 'Additional team members',
+      description: '',
+      Component: AdditionalTeamMembers,
+      componentArgs: { disabled: true },
+    },
+    {
       LeftIcon: IconSettings,
       label: 'Quotas',
       description: '',
       Component: Quotas,
       componentArgs: {
         disabled: isDisabled,
-        licencePlate: privateSnap.currentRequest.licencePlate as string,
-        currentProject: privateSnap.currentRequest.project as PrivateCloudProject,
+        licencePlate: snap.currentRequest.licencePlate as string,
+        currentProject: snap.currentRequest.project as PrivateCloudProject,
         quotaContactRequired: false,
       },
     },
   ];
 
-  if (privateSnap.currentRequest.requestComment) {
-    const comment = privateSnap.currentRequest.requestComment;
+  if (snap.currentRequest.requestComment) {
+    const comment = snap.currentRequest.requestComment;
 
     accordionItems.push({
       LeftIcon: IconMessage,

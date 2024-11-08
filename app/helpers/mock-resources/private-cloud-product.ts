@@ -75,6 +75,7 @@ export function createSamplePrivateCloudProduct(args?: {
     primaryTechnicalLead,
     secondaryTechnicalLeadId: secondaryTechnicalLead.id,
     secondaryTechnicalLead,
+    members: [],
     developmentQuota: quota,
     testQuota: quota,
     productionQuota: quota,

@@ -20,6 +20,7 @@ import { openNotificationModal } from './notification';
 
 interface ModalProps {
   productData: FieldValues;
+  originalProductData: FieldValues;
 }
 
 interface ModalState {
@@ -31,7 +32,7 @@ export const openPrivateCloudProductEditSubmitModal = createModal<ModalProps, Mo
     size: 'xl',
     title: 'All Set?',
   },
-  Component: function ({ productData, state, closeModal }) {
+  Component: function ({ productData, originalProductData, state, closeModal }) {
     const [, snap] = usePrivateProductState();
     const [change, setChange] = useState<PrivateProductChange>();
 
@@ -64,9 +65,9 @@ export const openPrivateCloudProductEditSubmitModal = createModal<ModalProps, Mo
     const { handleSubmit, register } = methods;
 
     useEffect(() => {
-      const _changes = comparePrivateProductData(snap.currentProduct, productData);
+      const _changes = comparePrivateProductData(snap.currentProduct, originalProductData);
       setChange(_changes);
-    }, [productData]);
+    }, [originalProductData]);
 
     if (!change || !snap.editQuotaChangeStatus) return <></>;
 

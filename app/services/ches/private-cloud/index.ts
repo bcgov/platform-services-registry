@@ -1,6 +1,6 @@
 import { DecisionStatus, RequestType } from '@prisma/client';
 import { logger } from '@/core/logging';
-import { PrivateCloudRequestDetail } from '@/types/private-cloud';
+import { PrivateCloudRequestDetailDecorated } from '@/types/private-cloud';
 import {
   sendAdminCreateRequest,
   sendAdminDeleteRequest,
@@ -20,7 +20,7 @@ import {
   sendTeamEditRequestRejection,
 } from './emails';
 
-export function sendCreateRequestEmails(request: PrivateCloudRequestDetail, requester: string) {
+export function sendCreateRequestEmails(request: PrivateCloudRequestDetailDecorated, requester: string) {
   try {
     const proms = [];
 
@@ -33,7 +33,7 @@ export function sendCreateRequestEmails(request: PrivateCloudRequestDetail, requ
   }
 }
 
-export function sendEditRequestEmails(request: PrivateCloudRequestDetail, requester: string) {
+export function sendEditRequestEmails(request: PrivateCloudRequestDetailDecorated, requester: string) {
   try {
     const proms = [];
 
@@ -49,7 +49,7 @@ export function sendEditRequestEmails(request: PrivateCloudRequestDetail, reques
   }
 }
 
-export function sendDeleteRequestEmails(request: PrivateCloudRequestDetail, requester: string) {
+export function sendDeleteRequestEmails(request: PrivateCloudRequestDetailDecorated, requester: string) {
   try {
     const proms = [];
 
@@ -62,7 +62,7 @@ export function sendDeleteRequestEmails(request: PrivateCloudRequestDetail, requ
   }
 }
 
-export function sendRequestApprovalEmails(request: PrivateCloudRequestDetail, requester: string) {
+export function sendRequestApprovalEmails(request: PrivateCloudRequestDetailDecorated, requester: string) {
   try {
     const proms = [];
 
@@ -84,7 +84,7 @@ export function sendRequestApprovalEmails(request: PrivateCloudRequestDetail, re
   }
 }
 
-export function sendRequestRejectionEmails(request: PrivateCloudRequestDetail) {
+export function sendRequestRejectionEmails(request: PrivateCloudRequestDetailDecorated) {
   try {
     const proms = [];
 
@@ -102,7 +102,7 @@ export function sendRequestRejectionEmails(request: PrivateCloudRequestDetail) {
   }
 }
 
-export function sendRequestCompletionEmails(request: PrivateCloudRequestDetail) {
+export function sendRequestCompletionEmails(request: PrivateCloudRequestDetailDecorated) {
   try {
     const proms = [];
 

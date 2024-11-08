@@ -156,6 +156,9 @@ async function decorate<T extends PublicCloudProductSimple & Partial<Pick<Public
     signMou: canSignMou,
     reviewMou: canApproveMou,
     downloadMou: canDownloadMou,
+    manageMembers: [doc.projectOwnerId, doc.primaryTechnicalLeadId, doc.secondaryTechnicalLeadId].includes(
+      session.user.id,
+    ),
   };
 
   return decoratedDoc;

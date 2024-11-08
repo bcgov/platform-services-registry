@@ -2,10 +2,10 @@ import { DecisionStatus, ProjectStatus, RequestType, EventType } from '@prisma/c
 import { Session } from 'next-auth';
 import { defaultQuota } from '@/constants';
 import prisma from '@/core/prisma';
-import { OkResponse, UnauthorizedResponse } from '@/core/responses';
+import { OkResponse, UnauthorizedResponse, UnprocessableEntityResponse } from '@/core/responses';
 import generateLicencePlate from '@/helpers/licence-plate';
 import { sendCreateRequestEmails } from '@/services/ches/private-cloud';
-import { createEvent, privateCloudRequestDetailInclude } from '@/services/db';
+import { createEvent, models, privateCloudRequestDetailInclude } from '@/services/db';
 import { upsertUsers } from '@/services/db/user';
 import { PrivateCloudCreateRequestBody } from '@/validation-schemas/private-cloud';
 
@@ -48,19 +48,24 @@ export default async function createOp({ session, body }: { session: Session; bo
       : undefined,
   };
 
-  const newRequest = await prisma.privateCloudRequest.create({
-    data: {
-      active: true,
-      licencePlate,
-      type: RequestType.CREATE,
-      decisionStatus: DecisionStatus.PENDING,
-      createdBy: { connect: { email: session.user.email } },
-      requestComment: body.requestComment,
-      decisionData: { create: productData },
-      requestData: { create: productData },
-    },
-    include: privateCloudRequestDetailInclude,
-  });
+  const newRequest = (
+    await models.privateCloudRequest.create(
+      {
+        data: {
+          active: true,
+          licencePlate,
+          type: RequestType.CREATE,
+          decisionStatus: DecisionStatus.PENDING,
+          createdBy: { connect: { email: session.user.email } },
+          requestComment: body.requestComment,
+          decisionData: { create: productData },
+          requestData: { create: productData },
+        },
+        include: privateCloudRequestDetailInclude,
+      },
+      session,
+    )
+  ).data;
 
   await Promise.all([
     createEvent(EventType.CREATE_PRIVATE_CLOUD_PRODUCT, session.user.id, { requestId: newRequest.id }),

@@ -64,7 +64,6 @@ export const POST = apiHandler(async ({ pathParams, session }) => {
         });
 
   const [updatedRequest] = await Promise.all([updateRequest, upsertProject]);
-
   const updatedRequestDecorated = await models.publicCloudRequest.decorate(updatedRequest, session, true);
   await sendRequestCompletionEmails(updatedRequestDecorated);
 
