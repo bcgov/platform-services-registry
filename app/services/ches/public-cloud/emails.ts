@@ -45,7 +45,7 @@ async function getTeamEmails(request: PublicCloudRequestDetailDecorated) {
 }
 
 export async function sendAdminCreateRequest(request: PublicCloudRequestDetailDecorated, requester: string) {
-  const content = getContent(AdminCreateRequestTemplate({ request, requester }));
+  const content = await getContent(AdminCreateRequestTemplate({ request, requester }));
   const reviewerEmails = await findUserEmailsByAuthRole(GlobalRole.PublicReviewer);
 
   return sendEmail({
@@ -57,7 +57,7 @@ export async function sendAdminCreateRequest(request: PublicCloudRequestDetailDe
 }
 
 export async function sendAdminDeleteRequest(request: PublicCloudRequestDetailDecorated, requester: string) {
-  const content = getContent(AdminDeleteRequestTemplate({ request, requester }));
+  const content = await getContent(AdminDeleteRequestTemplate({ request, requester }));
   const reviewerEmails = await findUserEmailsByAuthRole(GlobalRole.PublicReviewer);
 
   return sendEmail({
@@ -69,7 +69,7 @@ export async function sendAdminDeleteRequest(request: PublicCloudRequestDetailDe
 }
 
 export async function sendTeamCreateRequest(request: PublicCloudRequestDetailDecorated, requester: string) {
-  const content = getContent(TeamCreateRequestTemplate({ request, requester }));
+  const content = await getContent(TeamCreateRequestTemplate({ request, requester }));
 
   return sendEmail({
     subject: 'New provisioning request received',
@@ -79,7 +79,7 @@ export async function sendTeamCreateRequest(request: PublicCloudRequestDetailDec
 }
 
 export async function sendTeamCreateRequestApproval(request: PublicCloudRequestDetailDecorated) {
-  const content = getContent(TeamCreateRequestApprovalTemplate({ request }));
+  const content = await getContent(TeamCreateRequestApprovalTemplate({ request }));
 
   return sendEmail({
     subject: 'Your provisioning request has been approved',
@@ -89,7 +89,7 @@ export async function sendTeamCreateRequestApproval(request: PublicCloudRequestD
 }
 
 export async function sendTeamCreateRequestCompletion(request: PublicCloudRequestDetailDecorated) {
-  const content = getContent(TeamCreateRequestCompletionTemplate({ request }));
+  const content = await getContent(TeamCreateRequestCompletionTemplate({ request }));
 
   return sendEmail({
     subject: 'Your provisioning request has been completed',
@@ -99,7 +99,7 @@ export async function sendTeamCreateRequestCompletion(request: PublicCloudReques
 }
 
 export async function sendTeamCreateRequestRejection(request: PublicCloudRequestDetailDecorated) {
-  const content = getContent(TeamCreateRequestRejectionTemplate({ request }));
+  const content = await getContent(TeamCreateRequestRejectionTemplate({ request }));
 
   return sendEmail({
     subject: 'Your provisioning request has been rejected',
@@ -109,7 +109,7 @@ export async function sendTeamCreateRequestRejection(request: PublicCloudRequest
 }
 
 export async function sendTeamDeleteRequest(request: PublicCloudRequestDetailDecorated, requester: string) {
-  const content = getContent(TeamDeleteRequestTemplate({ request, requester }));
+  const content = await getContent(TeamDeleteRequestTemplate({ request, requester }));
 
   return sendEmail({
     subject: 'New delete request received',
@@ -119,7 +119,7 @@ export async function sendTeamDeleteRequest(request: PublicCloudRequestDetailDec
 }
 
 export async function sendTeamDeleteRequestApproval(request: PublicCloudRequestDetailDecorated) {
-  const content = getContent(TeamDeleteRequestApprovalTemplate({ request }));
+  const content = await getContent(TeamDeleteRequestApprovalTemplate({ request }));
 
   return sendEmail({
     subject: 'Your delete request has been approved',
@@ -129,7 +129,7 @@ export async function sendTeamDeleteRequestApproval(request: PublicCloudRequestD
 }
 
 export async function sendTeamDeleteRequestCompletion(request: PublicCloudRequestDetailDecorated) {
-  const content = getContent(TeamDeleteRequestCompletionTemplate({ request }));
+  const content = await getContent(TeamDeleteRequestCompletionTemplate({ request }));
 
   return sendEmail({
     subject: 'Your delete request has been completed',
@@ -139,7 +139,7 @@ export async function sendTeamDeleteRequestCompletion(request: PublicCloudReques
 }
 
 export async function sendTeamDeleteRequestRejection(request: PublicCloudRequestDetailDecorated) {
-  const content = getContent(TeamDeleteRequestRejectionTemplate({ request }));
+  const content = await getContent(TeamDeleteRequestRejectionTemplate({ request }));
 
   return sendEmail({
     subject: 'Your delete request has been rejected',
@@ -149,7 +149,7 @@ export async function sendTeamDeleteRequestRejection(request: PublicCloudRequest
 }
 
 export async function sendTeamEditRequest(request: PublicCloudRequestDetailDecorated, requester: string) {
-  const content = getContent(TeamEditRequestTemplate({ request, requester }));
+  const content = await getContent(TeamEditRequestTemplate({ request, requester }));
 
   return sendEmail({
     subject: 'New edit request received',
@@ -159,7 +159,7 @@ export async function sendTeamEditRequest(request: PublicCloudRequestDetailDecor
 }
 
 export async function sendTeamEditRequestCompletion(request: PublicCloudRequestDetailDecorated) {
-  const content = getContent(TeamEditRequestCompletionTemplate({ request }));
+  const content = await getContent(TeamEditRequestCompletionTemplate({ request }));
 
   return sendEmail({
     subject: 'Your edit request has been completed',
@@ -169,7 +169,7 @@ export async function sendTeamEditRequestCompletion(request: PublicCloudRequestD
 }
 
 export async function sendBillingReviewerMou(request: PublicCloudRequestDetailDecorated) {
-  const content = getContent(BillingReviewerMouTemplate({ request }));
+  const content = await getContent(BillingReviewerMouTemplate({ request }));
   const billingReviewerEmails = await findUserEmailsByAuthRole(GlobalRole.BillingReviewer);
 
   return sendEmail({
@@ -180,7 +180,7 @@ export async function sendBillingReviewerMou(request: PublicCloudRequestDetailDe
 }
 
 export async function sendEmouServiceAgreement(request: PublicCloudRequestDetailDecorated) {
-  const content = getContent(EmouServiceAgreementTemplate({ request }));
+  const content = await getContent(EmouServiceAgreementTemplate({ request }));
   const emouPdfBuff = await generateEmouPdf(request.decisionData, request.decisionData.billing);
   const billingReviewerEmails = await findUserEmailsByAuthRole(GlobalRole.BillingReviewer);
 
@@ -200,8 +200,8 @@ export async function sendEmouServiceAgreement(request: PublicCloudRequestDetail
   });
 }
 
-export function sendExpenseAuthority(request: PublicCloudRequestDetailDecorated) {
-  const content = getContent(ExpenseAuthorityTemplate({ request }));
+export async function sendExpenseAuthority(request: PublicCloudRequestDetailDecorated) {
+  const content = await getContent(ExpenseAuthorityTemplate({ request }));
 
   return sendEmail({
     subject: `You have been added as the Expense Authority for ${request.decisionData.name}`,
@@ -210,8 +210,8 @@ export function sendExpenseAuthority(request: PublicCloudRequestDetailDecorated)
   });
 }
 
-export function sendExpenseAuthorityMou(request: PublicCloudRequestDetailDecorated) {
-  const content = getContent(ExpenseAuthorityMouTemplate({ request }));
+export async function sendExpenseAuthorityMou(request: PublicCloudRequestDetailDecorated) {
+  const content = await getContent(ExpenseAuthorityMouTemplate({ request }));
 
   return sendEmail({
     subject: 'Expense Authority eMOU request',
