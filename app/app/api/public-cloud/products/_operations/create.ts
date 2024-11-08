@@ -34,7 +34,7 @@ export default async function createOp({ session, body }: { session: Session; bo
     body.expenseAuthority?.email,
   ]);
 
-  const { requestComment, accountCoding, ...rest } = body;
+  const { requestComment, accountCoding, isAgMinistryChecked, isEaApproval, ...rest } = body;
 
   const billingProvider = body.provider === Provider.AZURE ? Provider.AZURE : Provider.AWS;
   const billingCode = `${body.accountCoding}_${billingProvider}`;

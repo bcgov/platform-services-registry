@@ -57,7 +57,7 @@ jobs:
       run: npm run cypress-headless
 
     - name: Upload Cypress Screenshots and Videos
-      uses: actions/upload-artifact@v4
+      uses: actions/upload-artifact@184d73b71b93c222403b2e7f1ffebe4508014249
       with:
         name: cypress-artifacts
         path: |-

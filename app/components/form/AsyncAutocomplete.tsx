@@ -187,7 +187,11 @@ export default function AsyncAutocomplete({
         </div>
       </Combobox>
       {errors.root ? <p className={'text-red-400 mt-3 text-sm leading-6'}>{String(errors.root?.message)}</p> : null}
-
+      {errors.primaryTechnicalLead ? (
+        <p className="text-red-400 mt-3 text-sm leading-6">
+          The Product Owner &#40;PO&#41; and the Primary Technical Lead &#40;TL&#41; must not be the same.
+        </p>
+      ) : null}
       <div className="mt-8 col-span-full">
         <label htmlFor="first-name" className="block text-sm font-medium leading-6 text-gray-900">
           First name
@@ -255,7 +259,6 @@ export default function AsyncAutocomplete({
         </div>
       </div>
       {errors.idir ? <p className={'text-red-400 mt-3 text-sm leading-6'}>{String(errors.idir?.message)}</p> : null}
-
       <div className="mt-8 col-span-full">
         <label htmlFor="upn" className="block text-sm font-medium leading-6 text-gray-900">
           UPN

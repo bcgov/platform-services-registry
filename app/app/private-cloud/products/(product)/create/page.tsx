@@ -4,7 +4,6 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { IconInfoCircle, IconUsersGroup, IconComponents } from '@tabler/icons-react';
 import { useState } from 'react';
 import { FormProvider, useForm } from 'react-hook-form';
-import { z } from 'zod';
 import PreviousButton from '@/components/buttons/Previous';
 import CommonComponents from '@/components/form/CommonComponents';
 import ProjectDescription from '@/components/form/ProjectDescriptionPrivate';
@@ -12,7 +11,7 @@ import TeamContacts from '@/components/form/TeamContacts';
 import PageAccordion from '@/components/generic/accordion/PageAccordion';
 import FormErrorNotification from '@/components/generic/FormErrorNotification';
 import { openPrivateCloudProductCreateSubmitModal } from '@/components/modal/privateCloudProductCreateSubmit';
-import { AGMinistries, GlobalRole } from '@/constants';
+import { GlobalRole } from '@/constants';
 import createClientPage from '@/core/client-page';
 import { privateCloudCreateRequestBodySchema } from '@/validation-schemas/private-cloud';
 
@@ -24,23 +23,7 @@ export default privateCloudProductNew(({ session }) => {
   const [secondTechLead, setSecondTechLead] = useState(false);
 
   const methods = useForm({
-    resolver: zodResolver(
-      privateCloudCreateRequestBodySchema
-        .merge(
-          z.object({
-            isAgMinistryChecked: z.boolean().optional(),
-          }),
-        )
-        .refine(
-          (formData) => {
-            return AGMinistries.includes(formData.ministry) ? formData.isAgMinistryChecked : true;
-          },
-          {
-            message: 'AG Ministry Checkbox should be checked.',
-            path: ['isAgMinistryChecked'],
-          },
-        ),
-    ),
+    resolver: zodResolver(privateCloudCreateRequestBodySchema),
     defaultValues: { secondaryTechnicalLead: null },
   });
 

@@ -1,15 +1,7 @@
-import {
-  Cluster,
-  Ministry,
-  Provider,
-  Prisma,
-  RequestType,
-  ProjectStatus,
-  DecisionStatus,
-  PublicCloudProductMemberRole,
-} from '@prisma/client';
+import { Cluster, Ministry, Provider, Prisma, RequestType, ProjectStatus, DecisionStatus } from '@prisma/client';
 import _isString from 'lodash-es/isString';
 import { string, z } from 'zod';
+import { AGMinistries } from '@/constants';
 import { processEnumString, processUpperEnumString, processBoolean } from '@/utils/zod';
 import { userSchema, RequestDecision } from './shared';
 
@@ -20,16 +12,7 @@ export const budgetSchema = z.object({
   tools: z.number().min(50.0, 'Value should be no less than USD 50').default(50.0),
 });
 
-const publicCloudProductMembers = z
-  .array(
-    z.object({
-      userId: z.string().length(24, { message: 'Please select a member' }),
-      roles: z.array(z.nativeEnum(PublicCloudProductMemberRole)),
-    }),
-  )
-  .max(10);
-
-export const publicCloudCreateRequestBodySchema = z.object({
+const _publicCloudCreateRequestBodySchema = z.object({
   name: z
     .string()
     .min(1, { message: 'Name is required.' })
@@ -70,13 +53,39 @@ export const publicCloudCreateRequestBodySchema = z.object({
     ),
 });
 
-export const publicCloudEditRequestBodySchema = publicCloudCreateRequestBodySchema.merge(
-  z.object({
-    members: publicCloudProductMembers,
-  }),
-);
+const isEmailUnique = (data: any) => {
+  const { projectOwner, primaryTechnicalLead } = data;
+  return projectOwner.email !== primaryTechnicalLead.email;
+};
 
-export const publicCloudRequestDecisionBodySchema = publicCloudEditRequestBodySchema.merge(
+export const publicCloudCreateRequestBodySchema = _publicCloudCreateRequestBodySchema
+  .merge(
+    z.object({
+      isAgMinistryChecked: z.boolean().optional(),
+      isEaApproval: z.boolean().optional(),
+    }),
+  )
+  .refine(
+    (formData) => {
+      return AGMinistries.includes(formData.ministry) ? formData.isAgMinistryChecked : true;
+    },
+    {
+      message: 'AG Ministry Checkbox should be checked.',
+      path: ['isAgMinistryChecked'],
+    },
+  )
+  .refine(isEmailUnique, {
+    message: 'Project Owner and Primary Technical Lead must not have the same email.',
+    path: ['primaryTechnicalLead'],
+  });
+
+const _publicCloudEditRequestBodySchema = _publicCloudCreateRequestBodySchema.omit({});
+
+export const publicCloudEditRequestBodySchema = _publicCloudEditRequestBodySchema.refine(isEmailUnique, {
+  message: 'Project Owner and Primary Technical Lead must not have the same email.',
+});
+
+export const publicCloudRequestDecisionBodySchema = _publicCloudEditRequestBodySchema.merge(
   z.object({
     type: z.nativeEnum(RequestType),
     decision: z.nativeEnum(RequestDecision),
