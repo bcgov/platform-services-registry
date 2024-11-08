@@ -247,11 +247,11 @@ model Billing {
 }
 
 type PublicCloudDataChanges {
-  profileChanged  Boolean
-  contactsChanged Boolean
-  membersChanged  Boolean
-  budgetChanged   Boolean
-  billingChanged  Boolean
+  profileChanged  Boolean?
+  contactsChanged Boolean?
+  membersChanged  Boolean?
+  budgetChanged   Boolean?
+  billingChanged  Boolean?
   parentPaths     String[]
 }
 

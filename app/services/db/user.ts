@@ -1,4 +1,4 @@
-import { Prisma } from '@prisma/client';
+import { Prisma, User } from '@prisma/client';
 import _castArray from 'lodash-es/castArray';
 import _compact from 'lodash-es/compact';
 import _forEach from 'lodash-es/forEach';
@@ -77,16 +77,21 @@ export async function getMatchingUserIds(search: string) {
 
 export async function createProxyUsers() {
   const dbUsers = await Promise.all(
-    proxyUsers.map((puser: MsUser) => {
-      const { displayName, ...clearnUserData } = processMsUser(puser);
+    proxyUsers
+      .map((puser: MsUser) => {
+        const appUser = processMsUser(puser);
+        if (!appUser) return null;
 
-      clearnUserData.email = clearnUserData.email.toLowerCase();
-      return prisma.user.upsert({
-        where: { email: clearnUserData.email },
-        update: clearnUserData,
-        create: clearnUserData,
-      });
-    }),
+        const { displayName, ...clearnUserData } = appUser;
+
+        clearnUserData.email = clearnUserData.email.toLowerCase();
+        return prisma.user.upsert({
+          where: { email: clearnUserData.email },
+          update: clearnUserData,
+          create: clearnUserData,
+        });
+      })
+      .filter((v) => v!),
   );
 
   return dbUsers;
