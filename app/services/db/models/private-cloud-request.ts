@@ -2,14 +2,19 @@ import { Prisma, RequestType, DecisionStatus } from '@prisma/client';
 import { Session } from 'next-auth';
 import prisma from '@/core/prisma';
 import { PrivateCloudRequestDecorate } from '@/types/doc-decorate';
-import { PrivateCloudRequestDetail, PrivateCloudRequestSimple } from '@/types/private-cloud';
+import {
+  PrivateCloudRequestDetail,
+  PrivateCloudRequestDetailDecorated,
+  PrivateCloudRequestSimple,
+  PrivateCloudRequestSimpleDecorated,
+} from '@/types/private-cloud';
 import { privateCloudRequestDetailInclude, privateCloudRequestSimpleInclude } from '../includes';
 import { createSessionModel } from './core';
 import { privateCloudProductModel } from './private-cloud-product';
 
 async function baseFilter(session: Session) {
   if (!session?.userId) return false;
-  if (session.permissions.reviewAllPrivateCloudRequests) return true;
+  if (session.permissions.viewAllPrivateCloudProducts) return true;
 
   const { data: products } = await privateCloudProductModel.list({ select: { licencePlate: true } }, session);
   const licencePlates = products.map(({ licencePlate }) => licencePlate);
@@ -68,7 +73,8 @@ async function decorate<T extends PrivateCloudRequestSimple>(doc: T, session: Se
 export const privateCloudRequestModel = createSessionModel<
   PrivateCloudRequestSimple,
   PrivateCloudRequestDetail,
-  PrivateCloudRequestDecorate,
+  PrivateCloudRequestSimpleDecorated,
+  PrivateCloudRequestDetailDecorated,
   NonNullable<Parameters<typeof prisma.privateCloudRequest.create>[0]>,
   NonNullable<Parameters<typeof prisma.privateCloudRequest.findFirst>[0]>,
   NonNullable<Parameters<typeof prisma.privateCloudRequest.update>[0]>,

@@ -1,16 +1,8 @@
 import { When, Then, Given } from '@badeball/cypress-cucumber-preprocessor';
-import { createRequest } from 'e2e/create-test.cy';
 
 Given(/^User logs in with username "(.*)" and password "(.*)"$/, (username: string, password: string) => {
   cy.loginToRegistry(username, password);
 });
-
-Given(
-  /^Request exists with name "(.*)" and contacts "(.*)" and "(.*)"$/,
-  (productName: string, POEmail: string, TLEmail: string) => {
-    createRequest(productName, POEmail, TLEmail);
-  },
-);
 
 Given('User visits main page', () => {
   cy.visit('/login', { failOnStatusCode: false });
@@ -78,12 +70,12 @@ When(/^User clicks tab "(.*)"$/, (tabText: string) => {
 });
 
 When(/^User clicks and selects "(.*)" in "(.*)"$/, (menuOption: string, menuName: string) => {
-  cy.contains('label', menuName).parents().eq(2).find('input[type="text"]').click();
+  cy.contains('label', menuName).closest('.select-single, .multi-select').find('input').first().click();
   cy.contains('span', menuOption).click();
 });
 
 When(/^User selects "(.*)" in "(.*)"$/, (entryText: string, dropdownLabel: string) => {
-  cy.contains('label', dropdownLabel).scrollIntoView().parent().find('select').select(entryText);
+  cy.contains('label', dropdownLabel).scrollIntoView().parent().find('input, select').select(entryText);
 });
 
 When(
@@ -122,6 +114,15 @@ When('User logs out', () => {
 
 When('User makes a screenshot', () => {
   cy.screenshot();
+});
+
+When(/^User sees "(.*)" in "?(.*?)(?:\.\.\.)?"$/, (text: string, textFieldLabel: string) => {
+  cy.contains('label', textFieldLabel)
+    .parent()
+    .find('input, textarea, select')
+    .first()
+    .scrollIntoView()
+    .should('have.value', text);
 });
 
 Then('User should be redirected to Requests tab', () => {

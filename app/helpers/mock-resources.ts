@@ -1,7 +1,7 @@
 import { faker } from '@faker-js/faker';
 import { Prisma, Cluster, CPU, Memory, Storage } from '@prisma/client';
 import { ministries, clusters, providers, cpus, memories, storages } from '@/constants';
-import { findMockUserByIdr, mockNoRoleIdirs } from '@/helpers/mock-users';
+import { findMockUserByIdr, mockNoRoleIdirs, mockNoRoleUsers } from '@/helpers/mock-users';
 import { getRandomItem } from '@/utils/collection';
 import { generateShortId } from '@/utils/uuid';
 import { getRandomCloudProviderSelectionReasons, getRandomProviderReasonsNote } from './mock-resources/core';
@@ -30,15 +30,19 @@ export function createSamplePrivateCloudProductData(args?: {
     storage: Storage.STORAGE_1,
   };
 
+  const PO = mockNoRoleUsers[0];
+  const TL1 = mockNoRoleUsers[1];
+  const TL2 = mockNoRoleUsers[2];
+
   const _data = {
     licencePlate: faker.string.uuid().substring(0, 6),
     name: faker.company.name(),
     description: faker.lorem.sentence(),
     cluster,
     ministry: getRandomMinistry(),
-    projectOwner: findMockUserByIdr(getRandomItem(mockNoRoleIdirs)),
-    primaryTechnicalLead: findMockUserByIdr(getRandomItem(mockNoRoleIdirs)),
-    secondaryTechnicalLead: findMockUserByIdr(getRandomItem(mockNoRoleIdirs)),
+    projectOwner: PO,
+    primaryTechnicalLead: TL1,
+    secondaryTechnicalLead: TL2,
     productionQuota: quota,
     toolsQuota: quota,
     developmentQuota: quota,
@@ -83,6 +87,7 @@ export function createSamplePrivateCloudProductData(args?: {
       noServices: false,
     },
     isTest: getRandomBool(),
+    isAgMinistryChecked: true,
     ...data,
   };
 
@@ -107,6 +112,11 @@ export function createSamplePublicCloudProductData(args?: {
   const providerSelectionReasonsNote = getRandomProviderReasonsNote();
   const providerSelectionReasons = getRandomCloudProviderSelectionReasons();
 
+  const PO = mockNoRoleUsers[0];
+  const TL1 = mockNoRoleUsers[1];
+  const TL2 = mockNoRoleUsers[2];
+  const EA = mockNoRoleUsers[3];
+
   const _data = {
     licencePlate: faker.string.uuid().substring(0, 6),
     name: faker.string.alpha(10),
@@ -115,10 +125,10 @@ export function createSamplePublicCloudProductData(args?: {
     providerSelectionReasons,
     providerSelectionReasonsNote,
     ministry: getRandomMinistry(),
-    projectOwner: findMockUserByIdr(getRandomItem(mockNoRoleIdirs)),
-    primaryTechnicalLead: findMockUserByIdr(getRandomItem(mockNoRoleIdirs)),
-    secondaryTechnicalLead: findMockUserByIdr(getRandomItem(mockNoRoleIdirs)),
-    expenseAuthority: findMockUserByIdr(getRandomItem(mockNoRoleIdirs)),
+    projectOwner: PO,
+    primaryTechnicalLead: TL1,
+    secondaryTechnicalLead: TL2,
+    expenseAuthority: EA,
     accountCoding: faker.string.numeric(24),
     budget: {
       dev: 50,
@@ -132,6 +142,8 @@ export function createSamplePublicCloudProductData(args?: {
       development: true,
       tools: true,
     },
+    isAgMinistryChecked: true,
+    isEaApproval: true,
     ...data,
   };
 

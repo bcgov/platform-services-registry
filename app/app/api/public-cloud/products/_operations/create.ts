@@ -4,7 +4,7 @@ import prisma from '@/core/prisma';
 import { OkResponse, UnauthorizedResponse } from '@/core/responses';
 import generateLicencePlate from '@/helpers/licence-plate';
 import { sendCreateRequestEmails } from '@/services/ches/public-cloud';
-import { createEvent, publicCloudRequestDetailInclude } from '@/services/db';
+import { createEvent, models, publicCloudRequestDetailInclude } from '@/services/db';
 import { upsertUsers } from '@/services/db/user';
 import { PublicCloudCreateRequestBody } from '@/validation-schemas/public-cloud';
 
@@ -34,7 +34,7 @@ export default async function createOp({ session, body }: { session: Session; bo
     body.expenseAuthority?.email,
   ]);
 
-  const { requestComment, accountCoding, ...rest } = body;
+  const { requestComment, accountCoding, isAgMinistryChecked, isEaApproval, ...rest } = body;
 
   const billingProvider = body.provider === Provider.AZURE ? Provider.AZURE : Provider.AWS;
   const billingCode = `${body.accountCoding}_${billingProvider}`;
@@ -84,17 +84,19 @@ export default async function createOp({ session, body }: { session: Session; bo
     include: publicCloudRequestDetailInclude,
   });
 
+  const newRequestDecorated = await models.publicCloudRequest.decorate(newRequest, session, true);
+
   const proms = [];
 
   // Assign a task to the expense authority for new billing
-  if (newRequest.decisionData.expenseAuthorityId && !newRequest.decisionData.billing.signed) {
+  if (newRequestDecorated.decisionData.expenseAuthorityId && !newRequestDecorated.decisionData.billing.signed) {
     const taskProm = prisma.task.create({
       data: {
         type: TaskType.SIGN_MOU,
         status: TaskStatus.ASSIGNED,
-        userIds: [newRequest.decisionData.expenseAuthorityId],
+        userIds: [newRequestDecorated.decisionData.expenseAuthorityId],
         data: {
-          licencePlate: newRequest.licencePlate,
+          licencePlate: newRequestDecorated.licencePlate,
         },
       },
     });
@@ -103,8 +105,8 @@ export default async function createOp({ session, body }: { session: Session; bo
   }
 
   proms.push(
-    createEvent(EventType.CREATE_PUBLIC_CLOUD_PRODUCT, session.user.id, { requestId: newRequest.id }),
-    sendCreateRequestEmails(newRequest, user.name),
+    createEvent(EventType.CREATE_PUBLIC_CLOUD_PRODUCT, session.user.id, { requestId: newRequestDecorated.id }),
+    sendCreateRequestEmails(newRequestDecorated, user.name),
   );
 
   await Promise.all(proms);

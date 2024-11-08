@@ -48,7 +48,14 @@ function InnerPageAccordion({
         </div>
       )}
 
-      <Accordion chevronPosition="right" variant="contained" multiple value={selected} onChange={setSelected}>
+      <Accordion
+        chevronPosition="right"
+        variant="contained"
+        multiple
+        value={selected}
+        onChange={setSelected}
+        classNames={{ content: 'px-2' }}
+      >
         {accordionItems}
       </Accordion>
     </>

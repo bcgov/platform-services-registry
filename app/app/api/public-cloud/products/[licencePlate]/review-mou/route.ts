@@ -6,7 +6,7 @@ import prisma from '@/core/prisma';
 import { BadRequestResponse, OkResponse, UnauthorizedResponse } from '@/core/responses';
 import { formatFullName } from '@/helpers/user';
 import { sendAdminCreateRequestEmails } from '@/services/ches/public-cloud';
-import { publicCloudRequestDetailInclude } from '@/services/db';
+import { models, publicCloudRequestDetailInclude } from '@/services/db';
 
 const pathParamSchema = z.object({
   licencePlate: z.string(),
@@ -76,10 +76,12 @@ export const POST = apiHandler(async ({ pathParams, body, session }) => {
         },
       });
 
-      // Keep the billing information up to date.
-      request.decisionData.billing = billing;
+      const requestDecorated = await models.publicCloudRequest.decorate(request, session, true);
 
-      await sendAdminCreateRequestEmails(request, formatFullName(requester));
+      // Keep the billing information up to date.
+      requestDecorated.decisionData.billing = billing;
+
+      await sendAdminCreateRequestEmails(requestDecorated, formatFullName(requester));
     }
   }
 

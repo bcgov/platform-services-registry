@@ -1,10 +1,11 @@
-import { Provider, Cluster, RequestType } from '@prisma/client';
+import { Provider, Cluster, RequestType, PublicCloudProductMemberRole } from '@prisma/client';
 import { z } from 'zod';
-import { GlobalPermissions } from '@/constants';
+import { GlobalPermissions, GlobalRole } from '@/constants';
 import createApiHandler from '@/core/api-handler';
 import prisma from '@/core/prisma';
-import { PdfResponse, BadRequestResponse } from '@/core/responses';
+import { PdfResponse, BadRequestResponse, UnauthorizedResponse } from '@/core/responses';
 import { generateEmouPdf, Product } from '@/helpers/pdfs/emou';
+import { arraysIntersect } from '@/utils/collection';
 import { processNumber, processUpperEnumString, processBoolean } from '@/utils/zod';
 import { getBillingIdWhere } from '../helpers';
 
@@ -18,7 +19,7 @@ const queryParamSchema = z.object({
 });
 
 const apiHandler = createApiHandler({
-  permissions: [GlobalPermissions.DownloadBillingMou],
+  roles: [GlobalRole.User],
   validations: { pathParams: pathParamSchema, queryParams: queryParamSchema },
 });
 
@@ -63,6 +64,18 @@ export const GET = apiHandler(async ({ pathParams, queryParams, session }) => {
     }
 
     product = req.decisionData;
+  }
+
+  const canDownloadMou =
+    session.permissions.downloadBillingMou ||
+    product.members.some(
+      (member) =>
+        member.userId === session.user.id &&
+        arraysIntersect(member.roles, [PublicCloudProductMemberRole.BILLING_VIEWER]),
+    );
+
+  if (!canDownloadMou) {
+    return UnauthorizedResponse();
   }
 
   const buff = await generateEmouPdf(product, billing);

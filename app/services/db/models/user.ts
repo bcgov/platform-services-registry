@@ -39,7 +39,8 @@ async function decorate(doc: User, session: Session) {
 export const userModel = createSessionModel<
   User,
   User,
-  UserDecorate,
+  UserDecorated,
+  UserDecorated,
   NonNullable<Parameters<typeof prisma.user.create>[0]>,
   NonNullable<Parameters<typeof prisma.user.findFirst>[0]>,
   NonNullable<Parameters<typeof prisma.user.update>[0]>,

@@ -47,8 +47,6 @@ export default function Quotas({
     productionQuota,
   };
 
-  console.log('newValues', newValues);
-
   return (
     <>
       <p className="text-base leading-6 mt-5">

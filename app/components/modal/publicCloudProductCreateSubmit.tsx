@@ -13,6 +13,7 @@ import FormCheckbox from '@/components/generic/checkbox/FormCheckbox';
 import FormError from '@/components/generic/FormError';
 import { publicCloudTeamEmail } from '@/constants';
 import { createModal } from '@/core/modal';
+import { showErrorNotification } from '@/helpers/notifications';
 import { getBilling } from '@/services/backend/billing';
 import { createPublicCloudProject } from '@/services/backend/public-cloud/products';
 import { openNotificationModal } from './notification';
@@ -69,24 +70,7 @@ export const openPublicCloudProductCreateSubmitModal = createModal<ModalProps, M
         state.success = true;
       },
       onError: (error: any) => {
-        state.success = false;
-
-        if (error.response?.status === 401) {
-          notifications.show({
-            title: 'Error',
-            message:
-              'You are not authorized to create this product. Please ensure you are mentioned in the product contacts to proceed.',
-            color: 'red',
-            autoClose: 5000,
-          });
-        } else {
-          notifications.show({
-            title: 'Error',
-            message: `Failed to create product: ${error.message}`,
-            color: 'red',
-            autoClose: 5000,
-          });
-        }
+        showErrorNotification(error);
       },
     });
 

@@ -37,3 +37,19 @@ export function getRandomNumberOptimally(min: number, max: number) {
   } while (randomNumber >= Math.floor(0xffffffff / range) * range);
   return min + (randomNumber % range);
 }
+
+export function toOrdinal(n: number): string {
+  const suffixes = ['th', 'st', 'nd', 'rd'];
+  const remainder100 = n % 100;
+
+  // Special cases for 11, 12, 13
+  if (remainder100 >= 11 && remainder100 <= 13) {
+    return n + 'th';
+  }
+
+  // Determine suffix based on the last digit
+  const remainder10 = n % 10;
+  const suffix = suffixes[remainder10] || 'th';
+
+  return n + suffix;
+}

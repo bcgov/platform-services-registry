@@ -41,7 +41,8 @@ async function decorate(doc: PrivateCloudProjectZapResult, session: Session) {
 export const privateCloudProductZapResultModel = createSessionModel<
   PrivateCloudProjectZapResult,
   PrivateCloudProjectZapResult,
-  PrivateCloudProductZapResultDecorate,
+  PrivateCloudProjectZapResultDecorated,
+  PrivateCloudProjectZapResultDecorated,
   NonNullable<Parameters<typeof prisma.privateCloudProjectZapResult.create>[0]>,
   NonNullable<Parameters<typeof prisma.privateCloudProjectZapResult.findFirst>[0]>,
   NonNullable<Parameters<typeof prisma.privateCloudProjectZapResult.update>[0]>,

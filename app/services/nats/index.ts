@@ -1,10 +1,10 @@
-import { PrivateCloudRequest, RequestType } from '@prisma/client';
+import { RequestType } from '@prisma/client';
 import { PRIVATE_NATS_URL, PUBLIC_NATS_URL } from '@/config';
 import openshiftDeletionCheck, { DeletableField } from '@/helpers/openshift';
 import createPrivateCloudNatsMessage from '@/services/nats/private-cloud';
 import createPublicCloudNatsMessage from '@/services/nats/public-cloud';
-import { PrivateCloudProductDetail, PrivateCloudRequestDetail } from '@/types/private-cloud';
-import { PublicCloudProductDetail, PublicCloudRequestDetail } from '@/types/public-cloud';
+import { PrivateCloudRequestDetail } from '@/types/private-cloud';
+import { PublicCloudRequestDetailDecorated } from '@/types/public-cloud';
 import { sendNatsMessage } from './core';
 
 export async function sendPrivateCloudNatsMessage(
@@ -34,7 +34,7 @@ export async function sendPrivateCloudNatsMessage(
 }
 
 export async function sendPublicCloudNatsMessage(
-  request: Pick<PublicCloudRequestDetail, 'id' | 'type' | 'project' | 'decisionData'>,
+  request: Pick<PublicCloudRequestDetailDecorated, 'id' | 'type' | 'project' | 'decisionData'>,
 ) {
   const decisionData = request.decisionData;
   const natsSubject = `registry_project_provisioning_${decisionData.provider.toLocaleLowerCase()}`;

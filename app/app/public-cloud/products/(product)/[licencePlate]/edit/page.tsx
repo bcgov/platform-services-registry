@@ -1,7 +1,6 @@
 'use client';
 
 import { zodResolver } from '@hookform/resolvers/zod';
-import { notifications } from '@mantine/notifications';
 import {
   IconInfoCircle,
   IconUsersGroup,
@@ -10,10 +9,8 @@ import {
   IconMoneybag,
   IconReceipt2,
 } from '@tabler/icons-react';
-import { useQuery, useMutation } from '@tanstack/react-query';
 import { useEffect, useState } from 'react';
 import { FormProvider, useForm } from 'react-hook-form';
-import { useSnapshot } from 'valtio';
 import { z } from 'zod';
 import PublicCloudBillingInfo from '@/components/billing/PublicCloudBillingInfo';
 import PreviousButton from '@/components/buttons/Previous';
@@ -27,6 +24,7 @@ import TeamContacts from '@/components/form/TeamContacts';
 import PageAccordion from '@/components/generic/accordion/PageAccordion';
 import FormErrorNotification from '@/components/generic/FormErrorNotification';
 import { openPublicCloudProductEditSubmitModal } from '@/components/modal/publicCloudProductEditSubmit';
+import AdditionalTeamMembers from '@/components/public-cloud/sections/AdditionalTeamMembers';
 import { AGMinistries, GlobalRole } from '@/constants';
 import createClientPage from '@/core/client-page';
 import { usePublicProductState } from '@/states/global';
@@ -47,23 +45,7 @@ export default publicCloudProductEdit(({}) => {
   const [isSecondaryTechLeadRemoved, setIsSecondaryTechLeadRemoved] = useState(false);
 
   const methods = useForm({
-    resolver: zodResolver(
-      publicCloudEditRequestBodySchema
-        .merge(
-          z.object({
-            isAgMinistryChecked: z.boolean().optional(),
-          }),
-        )
-        .refine(
-          (formData) => {
-            return AGMinistries.includes(formData.ministry) ? formData.isAgMinistryChecked : true;
-          },
-          {
-            message: 'AG Ministry Checkbox should be checked.',
-            path: ['isAgMinistryChecked'],
-          },
-        ),
-    ),
+    resolver: zodResolver(publicCloudEditRequestBodySchema),
     defaultValues: {
       ...snap.currentProduct,
       isAgMinistryChecked: true,
@@ -131,6 +113,13 @@ export default publicCloudProductEdit(({}) => {
       },
     },
     {
+      LeftIcon: IconUsersGroup,
+      label: 'Additional team members',
+      description: '',
+      Component: AdditionalTeamMembers,
+      componentArgs: { disabled: isDisabled },
+    },
+    {
       LeftIcon: IconMoneybag,
       label: 'Project budget',
       description: '',
@@ -156,7 +145,10 @@ export default publicCloudProductEdit(({}) => {
         <form
           autoComplete="off"
           onSubmit={methods.handleSubmit(async (formData) => {
-            await openPublicCloudProductEditSubmitModal({ productData: formData });
+            await openPublicCloudProductEditSubmitModal({
+              productData: formData,
+              originalProductData: methods.getValues(),
+            });
           })}
         >
           <PageAccordion items={accordionItems} />

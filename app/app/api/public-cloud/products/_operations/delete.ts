@@ -8,7 +8,7 @@ import {
   createEvent,
   models,
   publicCloudRequestDetailInclude,
-  excludePublicProductUsers,
+  excludePublicProductPopulatedFields,
   getLastClosedPublicCloudRequest,
 } from '@/services/db';
 import { deletePathParamSchema } from '../[licencePlate]/schema';
@@ -22,7 +22,7 @@ export default async function deleteOp({
 }) {
   const { licencePlate } = pathParams;
 
-  const product = excludePublicProductUsers(
+  const product = excludePublicProductPopulatedFields(
     (await models.publicCloudProduct.get({ where: { licencePlate } }, session)).data,
   );
 
@@ -44,16 +44,18 @@ export default async function deleteOp({
       createdBy: { connect: { email: session.user.email } },
       licencePlate: product.licencePlate,
       originalData: { connect: { id: previousRequest?.decisionDataId } },
-      decisionData: { create: productData },
       requestData: { create: productData },
+      decisionData: { create: productData },
       project: { connect: { licencePlate } },
     },
     include: publicCloudRequestDetailInclude,
   });
 
+  const newRequestDecorated = await models.publicCloudRequest.decorate(newRequest, session, true);
+
   await Promise.all([
     createEvent(EventType.DELETE_PUBLIC_CLOUD_PRODUCT, session.user.id, { requestId: newRequest.id }),
-    sendDeleteRequestEmails(newRequest, session.user.name),
+    sendDeleteRequestEmails(newRequestDecorated, session.user.name),
   ]);
 
   return OkResponse(newRequest);

@@ -13,12 +13,14 @@ import HookFormTextarea from '@/components/generic/input/HookFormTextarea';
 import { openNotificationModal } from '@/components/modal/notification';
 import ProductComparison from '@/components/ProductComparison';
 import { createModal } from '@/core/modal';
+import { showErrorNotification } from '@/helpers/notifications';
 import { comparePublicProductData, PublicProductChange } from '@/helpers/product-change';
 import { editPublicCloudProject } from '@/services/backend/public-cloud/products';
 import { usePublicProductState } from '@/states/global';
 
 interface ModalProps {
   productData: FieldValues;
+  originalProductData: FieldValues;
 }
 
 interface ModalState {
@@ -30,7 +32,7 @@ export const openPublicCloudProductEditSubmitModal = createModal<ModalProps, Mod
     size: 'xl',
     title: 'All Set?',
   },
-  Component: function ({ productData, state, closeModal }) {
+  Component: function ({ productData, originalProductData, state, closeModal }) {
     const [, snap] = usePublicProductState();
     const [change, setChange] = useState<PublicProductChange>();
 
@@ -56,14 +58,7 @@ export const openPublicCloudProductEditSubmitModal = createModal<ModalProps, Mod
         state.success = true;
       },
       onError: (error: any) => {
-        state.success = false;
-
-        notifications.show({
-          title: 'Error',
-          message: `Failed to edit product ${error.message}`,
-          color: 'red',
-          autoClose: 5000,
-        });
+        showErrorNotification(error);
       },
     });
 
@@ -72,10 +67,10 @@ export const openPublicCloudProductEditSubmitModal = createModal<ModalProps, Mod
     useEffect(() => {
       const _changes = comparePublicProductData(
         { ...snap.currentProduct, accountCoding: snap.currentProduct?.billing.accountCoding },
-        productData,
+        originalProductData,
       );
       setChange(_changes);
-    }, [productData]);
+    }, [originalProductData]);
 
     if (!change) return <></>;
 

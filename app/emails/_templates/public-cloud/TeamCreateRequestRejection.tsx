@@ -3,11 +3,11 @@ import * as React from 'react';
 import PublicCloudLayout from '@/emails/_components/layout/PublicCloudLayout';
 import LinkButton from '@/emails/_components/LinkButton';
 import ProviderDetails from '@/emails/_components/ProviderDetails';
-import { PublicCloudRequestDetail } from '@/types/public-cloud';
+import { PublicCloudRequestDetailDecorated } from '@/types/public-cloud';
 import ProductDetails from '../../_components/ProductDetails';
 
 interface EmailProp {
-  request: PublicCloudRequestDetail;
+  request: PublicCloudRequestDetailDecorated;
 }
 
 export default function TeamCreateRequestRejection({ request }: EmailProp) {

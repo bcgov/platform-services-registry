@@ -2,7 +2,12 @@ import { Prisma, Ministry, ProjectStatus } from '@prisma/client';
 import { Session } from 'next-auth';
 import prisma from '@/core/prisma';
 import { PrivateCloudProjectDecorate } from '@/types/doc-decorate';
-import { PrivateCloudProductDetail, PrivateCloudProductSimple } from '@/types/private-cloud';
+import {
+  PrivateCloudProductDetail,
+  PrivateCloudProductDetailDecorated,
+  PrivateCloudProductSimple,
+  PrivateCloudProductSimpleDecorated,
+} from '@/types/private-cloud';
 import { privateCloudProductDetailInclude, privateCloudProductSimpleInclude } from '../includes';
 import { createSessionModel } from './core';
 
@@ -76,7 +81,8 @@ async function decorate<T extends PrivateCloudProductSimple>(doc: T, session: Se
 export const privateCloudProductModel = createSessionModel<
   PrivateCloudProductSimple,
   PrivateCloudProductDetail,
-  PrivateCloudProjectDecorate,
+  PrivateCloudProductSimpleDecorated,
+  PrivateCloudProductDetailDecorated,
   NonNullable<Parameters<typeof prisma.privateCloudProject.create>[0]>,
   NonNullable<Parameters<typeof prisma.privateCloudProject.findFirst>[0]>,
   NonNullable<Parameters<typeof prisma.privateCloudProject.update>[0]>,

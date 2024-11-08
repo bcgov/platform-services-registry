@@ -2,7 +2,7 @@ import { DecisionStatus, Prisma, RequestType, EventType } from '@prisma/client';
 import { Session } from 'next-auth';
 import { TypeOf } from 'zod';
 import prisma from '@/core/prisma';
-import { OkResponse, UnauthorizedResponse } from '@/core/responses';
+import { OkResponse, UnauthorizedResponse, UnprocessableEntityResponse } from '@/core/responses';
 import { comparePublicProductData } from '@/helpers/product-change';
 import { sendEditRequestEmails } from '@/services/ches/public-cloud';
 import { createEvent, publicCloudRequestDetailInclude, getLastClosedPublicCloudRequest, models } from '@/services/db';
@@ -58,27 +58,33 @@ export default async function updateOp({
 
   const { changes, ...otherChangeMeta } = comparePublicProductData(rest, previousRequest?.decisionData);
 
-  const newRequest = await prisma.publicCloudRequest.create({
-    data: {
-      type: RequestType.EDIT,
-      decisionStatus: DecisionStatus.AUTO_APPROVED, // automatically approve edit requests for public cloud
-      active: true,
-      createdBy: { connect: { email: session.user.email } },
-      licencePlate: product.licencePlate,
-      requestComment,
-      changes: otherChangeMeta,
-      originalData: { connect: { id: previousRequest?.decisionDataId } },
-      decisionData: { create: decisionData },
-      requestData: { create: decisionData },
-      project: { connect: { licencePlate: product.licencePlate } },
-    },
-    include: publicCloudRequestDetailInclude,
-  });
+  const newRequest = (
+    await models.publicCloudRequest.create(
+      {
+        data: {
+          type: RequestType.EDIT,
+          decisionStatus: DecisionStatus.AUTO_APPROVED, // automatically approve edit requests for public cloud
+          active: true,
+          createdBy: { connect: { email: session.user.email } },
+          licencePlate: product.licencePlate,
+          requestComment,
+          changes: otherChangeMeta,
+          originalData: { connect: { id: previousRequest?.decisionDataId } },
+          decisionData: { create: decisionData },
+          requestData: { create: decisionData },
+          project: { connect: { licencePlate: product.licencePlate } },
+        },
+      },
+      session,
+    )
+  ).data;
 
+  if (!newRequest) {
+    return UnprocessableEntityResponse('failed to create a request.');
+  }
   const proms = [];
 
   proms.push(createEvent(EventType.UPDATE_PUBLIC_CLOUD_PRODUCT, session.user.id, { requestId: newRequest.id }));
-
   proms.push(sendPublicCloudNatsMessage(newRequest));
 
   proms.push(sendEditRequestEmails(newRequest, session.user.name));

@@ -28,6 +28,7 @@ import FormErrorNotification from '@/components/generic/FormErrorNotification';
 import { openPublicCloudMouReviewModal } from '@/components/modal/publicCloudMouReview';
 import { openPublicCloudMouSignModal } from '@/components/modal/publicCloudMouSign';
 import { openPublicCloudRequestReviewModal } from '@/components/modal/publicCloudRequestReview';
+import AdditionalTeamMembers from '@/components/public-cloud/sections/AdditionalTeamMembers';
 import { GlobalRole } from '@/constants';
 import createClientPage from '@/core/client-page';
 import { usePublicProductState } from '@/states/global';
@@ -126,6 +127,13 @@ export default publicCloudProductRequest(({ router }) => {
       label: 'Expense authority',
       description: '',
       Component: ExpenseAuthority,
+      componentArgs: { disabled: isDisabled },
+    },
+    {
+      LeftIcon: IconUsersGroup,
+      label: 'Additional team members',
+      description: '',
+      Component: AdditionalTeamMembers,
       componentArgs: { disabled: isDisabled },
     },
     {

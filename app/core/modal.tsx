@@ -32,9 +32,11 @@ export function createModal<P, S = any>({ settings, Component, condition, onClos
     const { initialState, snapshot, settings: extraSettings, onPreClose } = options ?? {};
     const state = { ...(initialState ?? {}) } as S;
 
+    const innitProps = { ...props, state };
+
     // If condition is provided and returns false, do not open the modal
     if (condition && !condition(props)) {
-      return null;
+      return { state, snapshot };
     }
 
     const id = settings.modalId || randomId(); // Generate a modal ID if not provided
@@ -43,8 +45,6 @@ export function createModal<P, S = any>({ settings, Component, condition, onClos
     const extraProps: ExtraModalProps = {
       closeModal: () => modals.close(id),
     };
-
-    const _props = { ...props, state };
 
     // Return a promise that resolves when the modal closes
     return new Promise<{ state: S; snapshot?: SS }>((resolve, reject) => {
@@ -60,10 +60,10 @@ export function createModal<P, S = any>({ settings, Component, condition, onClos
         onClose: () => {
           const output = { state: { ...state }, snapshot };
           if (onPreClose) onPreClose(output);
-          if (onClose) onClose({ ..._props });
+          if (onClose) onClose({ ...innitProps });
           resolve(output);
         },
-        children: <Component {..._props} {...extraProps} />,
+        children: <Component {...innitProps} {...extraProps} />,
       };
 
       if (_isString(modalSettings.title)) {

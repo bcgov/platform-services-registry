@@ -12,6 +12,7 @@ import PageAccordion from '@/components/generic/accordion/PageAccordion';
 import HookFormTextarea from '@/components/generic/input/HookFormTextarea';
 import ProductComparison from '@/components/ProductComparison';
 import { createModal } from '@/core/modal';
+import { showErrorNotification } from '@/helpers/notifications';
 import { comparePrivateProductData, PrivateProductChange } from '@/helpers/product-change';
 import { editPrivateCloudProject } from '@/services/backend/private-cloud/products';
 import { usePrivateProductState } from '@/states/global';
@@ -56,14 +57,7 @@ export const openPrivateCloudProductEditSubmitModal = createModal<ModalProps, Mo
         state.success = true;
       },
       onError: (error: any) => {
-        state.success = false;
-
-        notifications.show({
-          title: 'Error',
-          message: `Failed to edit product ${error.message}`,
-          color: 'red',
-          autoClose: 5000,
-        });
+        showErrorNotification(error);
       },
     });
 

@@ -58,8 +58,13 @@ export async function generateUserImage(email: string): Promise<string> {
   });
 }
 
+export function getUserImageData(image?: string | null) {
+  if (!image) return '';
+  return `data:image/png;base64, ${image}`;
+}
+
 export async function getUserImage(email?: string, image?: string) {
-  if (image) return `data:image/png;base64, ${image}`;
+  if (image) return getUserImageData(image);
   if (!email) return '';
 
   try {

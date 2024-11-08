@@ -2,7 +2,12 @@ import { Prisma, TaskType, TaskStatus, RequestType, DecisionStatus } from '@pris
 import { Session } from 'next-auth';
 import prisma from '@/core/prisma';
 import { PublicCloudRequestDecorate } from '@/types/doc-decorate';
-import { PublicCloudRequestDetail, PublicCloudRequestSimple } from '@/types/public-cloud';
+import {
+  PublicCloudRequestDetail,
+  PublicCloudRequestDetailDecorated,
+  PublicCloudRequestSimple,
+  PublicCloudRequestSimpleDecorated,
+} from '@/types/public-cloud';
 import { getUniqueNonFalsyItems } from '@/utils/collection';
 import { publicCloudRequestDetailInclude, publicCloudRequestSimpleInclude } from '../includes';
 import { createSessionModel } from './core';
@@ -29,7 +34,11 @@ async function baseFilter(session: Session) {
   return filter;
 }
 
-async function decorate<T extends PublicCloudRequestSimple>(doc: T, session: Session) {
+async function decorate<T extends PublicCloudRequestSimple | PublicCloudRequestDetail>(
+  doc: T,
+  session: Session,
+  detail: boolean,
+) {
   let canReview = doc.decisionStatus === DecisionStatus.PENDING && session.permissions.reviewAllPublicCloudRequests;
 
   let canSignMou = false;
@@ -63,6 +72,56 @@ async function decorate<T extends PublicCloudRequestSimple>(doc: T, session: Ses
 
   const decoratedDoc = doc as T & PublicCloudRequestDecorate;
 
+  if (detail) {
+    let memberIds = [];
+
+    const detailedData = doc as never as PublicCloudRequestDetail;
+    if (detailedData.originalData) {
+      memberIds.push(...detailedData.originalData.members.map((member) => member.userId));
+    }
+
+    if (detailedData.requestData) {
+      memberIds.push(...detailedData.requestData.members.map((member) => member.userId));
+    }
+
+    if (detailedData.decisionData) {
+      memberIds.push(...detailedData.decisionData.members.map((member) => member.userId));
+    }
+
+    memberIds = getUniqueNonFalsyItems(memberIds);
+    const users = await prisma.user.findMany({ where: { id: { in: memberIds } } });
+
+    if (detailedData.originalData) {
+      detailedData.originalData.members = detailedData.originalData.members.map((member) => {
+        const user = users.find((usr) => usr.id === member.userId);
+        return {
+          ...user,
+          ...member,
+        };
+      });
+    }
+
+    if (detailedData.requestData) {
+      detailedData.requestData.members = detailedData.requestData.members.map((member) => {
+        const user = users.find((usr) => usr.id === member.userId);
+        return {
+          ...user,
+          ...member,
+        };
+      });
+    }
+
+    if (detailedData.decisionData) {
+      detailedData.decisionData.members = detailedData.decisionData.members.map((member) => {
+        const user = users.find((usr) => usr.id === member.userId);
+        return {
+          ...user,
+          ...member,
+        };
+      });
+    }
+  }
+
   if (!hasProduct) {
     decoratedDoc._permissions = {
       view: true,
@@ -93,7 +152,8 @@ async function decorate<T extends PublicCloudRequestSimple>(doc: T, session: Ses
 export const publicCloudRequestModel = createSessionModel<
   PublicCloudRequestSimple,
   PublicCloudRequestDetail,
-  PublicCloudRequestDecorate,
+  PublicCloudRequestSimpleDecorated,
+  PublicCloudRequestDetailDecorated,
   NonNullable<Parameters<typeof prisma.publicCloudRequest.create>[0]>,
   NonNullable<Parameters<typeof prisma.publicCloudRequest.findFirst>[0]>,
   NonNullable<Parameters<typeof prisma.publicCloudRequest.update>[0]>,

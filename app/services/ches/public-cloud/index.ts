@@ -1,6 +1,6 @@
 import { RequestType } from '@prisma/client';
 import { logger } from '@/core/logging';
-import { PublicCloudRequestDetail } from '@/types/public-cloud';
+import { PublicCloudRequestDetailDecorated } from '@/types/public-cloud';
 import {
   sendAdminCreateRequest,
   sendAdminDeleteRequest,
@@ -20,7 +20,7 @@ import {
   sendExpenseAuthorityMou,
 } from './emails';
 
-export function sendAdminCreateRequestEmails(request: PublicCloudRequestDetail, requester: string) {
+export function sendAdminCreateRequestEmails(request: PublicCloudRequestDetailDecorated, requester: string) {
   try {
     const proms = [];
 
@@ -33,7 +33,7 @@ export function sendAdminCreateRequestEmails(request: PublicCloudRequestDetail, 
   }
 }
 
-export function sendCreateRequestEmails(request: PublicCloudRequestDetail, requester: string) {
+export function sendCreateRequestEmails(request: PublicCloudRequestDetailDecorated, requester: string) {
   try {
     const proms = [];
 
@@ -51,7 +51,7 @@ export function sendCreateRequestEmails(request: PublicCloudRequestDetail, reque
   }
 }
 
-export function sendEditRequestEmails(request: PublicCloudRequestDetail, requester: string) {
+export function sendEditRequestEmails(request: PublicCloudRequestDetailDecorated, requester: string) {
   try {
     const proms = [];
 
@@ -63,7 +63,7 @@ export function sendEditRequestEmails(request: PublicCloudRequestDetail, request
   }
 }
 
-export function sendDeleteRequestEmails(request: PublicCloudRequestDetail, requester: string) {
+export function sendDeleteRequestEmails(request: PublicCloudRequestDetailDecorated, requester: string) {
   try {
     const proms = [];
 
@@ -76,7 +76,7 @@ export function sendDeleteRequestEmails(request: PublicCloudRequestDetail, reque
   }
 }
 
-export function sendRequestApprovalEmails(request: PublicCloudRequestDetail) {
+export function sendRequestApprovalEmails(request: PublicCloudRequestDetailDecorated) {
   try {
     const proms = [];
 
@@ -96,7 +96,7 @@ export function sendRequestApprovalEmails(request: PublicCloudRequestDetail) {
   }
 }
 
-export function sendRequestRejectionEmails(request: PublicCloudRequestDetail) {
+export function sendRequestRejectionEmails(request: PublicCloudRequestDetailDecorated) {
   try {
     const proms = [];
 
@@ -112,7 +112,7 @@ export function sendRequestRejectionEmails(request: PublicCloudRequestDetail) {
   }
 }
 
-export function sendRequestCompletionEmails(request: PublicCloudRequestDetail) {
+export function sendRequestCompletionEmails(request: PublicCloudRequestDetailDecorated) {
   try {
     const proms = [];
 
@@ -130,7 +130,7 @@ export function sendRequestCompletionEmails(request: PublicCloudRequestDetail) {
   }
 }
 
-export function sendPublicCloudBillingReviewEmails(request: PublicCloudRequestDetail) {
+export function sendPublicCloudBillingReviewEmails(request: PublicCloudRequestDetailDecorated) {
   try {
     const proms = [];
     proms.push(sendBillingReviewerMou(request));

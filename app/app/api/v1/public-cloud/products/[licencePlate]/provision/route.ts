@@ -6,7 +6,7 @@ import { logger } from '@/core/logging';
 import prisma from '@/core/prisma';
 import { NotFoundResponse, OkResponse, UnprocessableEntityResponse } from '@/core/responses';
 import { sendRequestCompletionEmails } from '@/services/ches/public-cloud';
-import { publicCloudRequestDetailInclude } from '@/services/db';
+import { models, publicCloudRequestDetailInclude } from '@/services/db';
 
 const pathParamSchema = z.object({
   licencePlate: z.string().max(7),
@@ -17,7 +17,7 @@ const apiHandler = createApiHandler({
   useServiceAccount: true,
   validations: { pathParams: pathParamSchema },
 });
-export const POST = apiHandler(async ({ pathParams }) => {
+export const POST = apiHandler(async ({ pathParams, session }) => {
   const { licencePlate } = pathParams;
 
   const request = await prisma.publicCloudRequest.findFirst({
@@ -65,7 +65,8 @@ export const POST = apiHandler(async ({ pathParams }) => {
 
   const [updatedRequest] = await Promise.all([updateRequest, upsertProject]);
 
-  await sendRequestCompletionEmails(updatedRequest);
+  const updatedRequestDecorated = await models.publicCloudRequest.decorate(updatedRequest, session, true);
+  await sendRequestCompletionEmails(updatedRequestDecorated);
 
   logger.info(`Successfully marked ${licencePlate} as provisioned.`);
   return OkResponse({ success: true });

@@ -1,3 +1,4 @@
+import classNames from 'classnames';
 import React from 'react';
 import { useFormContext } from 'react-hook-form';
 import { IMaskInput } from 'react-imask';
@@ -74,6 +75,10 @@ export default function TeamContacts({
               This is typically the DevOps specialist. We use this information to contact them with technical questions
               or notify them about platform events. You require a Primary Technical Lead, a Secondary Technical Lead is
               optional. Please use only IDIR linked email address below.
+              <p className="text-gray-600">
+                Kindly make sure the Product Owner&#40;PO&#41; and the Primary Technical Lead &#40;TL&#41; are{' '}
+                <span className="text-red-600">NOT</span> the same person.
+              </p>
             </p>
           </div>
           <AsyncAutocomplete
@@ -84,7 +89,6 @@ export default function TeamContacts({
             placeHolder="Search technical lead's IDIR email address"
           />
         </div>
-
         <div className="mt-6 flex flex-col justify-between">
           {!disabled && <SecondTechLeadButton clicked={secondTechLead} onClick={handleSecondTechLeadClick} />}
           {secondTechLead ? (

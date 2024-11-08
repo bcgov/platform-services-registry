@@ -43,22 +43,26 @@ export function diffExt<T = any>(data1: T, data2: T, fields: string[]) {
       if (_isPlainObject(dff.value)) {
         _forEach(dff.value, (val, key) => {
           const path = dff.path.concat(key);
-          changes.push({
-            op: dff.op,
-            path,
-            loc: path.join('.'),
-            oldVal: '',
-            newVal: val,
-          });
+          if (val) {
+            changes.push({
+              op: dff.op,
+              path,
+              loc: path.join('.'),
+              oldVal: '',
+              newVal: val,
+            });
+          }
         });
       } else {
-        changes.push({
-          op: dff.op,
-          path: dff.path,
-          loc: dff.path.join('.'),
-          oldVal: '',
-          newVal: dff.value,
-        });
+        if (dff.value) {
+          changes.push({
+            op: dff.op,
+            path: dff.path,
+            loc: dff.path.join('.'),
+            oldVal: '',
+            newVal: dff.value,
+          });
+        }
       }
     } else if (dff.op === 'remove') {
       const value = _get(d1, dff.path, null);

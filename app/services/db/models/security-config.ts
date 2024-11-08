@@ -69,7 +69,8 @@ async function decorate(doc: SecurityConfig, session: Session) {
 export const securityConfigModel = createSessionModel<
   SecurityConfig,
   SecurityConfig,
-  SecurityConfigDecorate,
+  SecurityConfigDecorated,
+  SecurityConfigDecorated,
   NonNullable<Parameters<typeof prisma.securityConfig.create>[0]>,
   NonNullable<Parameters<typeof prisma.securityConfig.findFirst>[0]>,
   NonNullable<Parameters<typeof prisma.securityConfig.update>[0]>,

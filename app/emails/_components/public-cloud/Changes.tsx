@@ -2,16 +2,18 @@ import { Heading, Link, Text, Hr } from '@react-email/components';
 import BudgetChanges from '@/emails/_components/BudgetChanges';
 import ContactChanges from '@/emails/_components/ContactChanges';
 import DescriptionChanges from '@/emails/_components/DescriptionChanges';
+import MemberChanges from '@/emails/_components/MemberChanges';
 import { comparePublicProductData } from '@/helpers/product-change';
-import { PublicCloudRequestDetail } from '@/types/public-cloud';
+import { PublicCloudRequestDetail, PublicCloudRequestDetailDecorated } from '@/types/public-cloud';
 
-export default function Changes({ request }: { request: PublicCloudRequestDetail }) {
+export default function Changes({ request }: { request: PublicCloudRequestDetailDecorated }) {
   if (!request.originalData) return null;
 
   const diffData = comparePublicProductData(request.originalData, request.decisionData);
 
   let profileChange = null;
   let contactChange = null;
+  let membersChange = null;
   let billingChange = null;
 
   if (diffData.profileChanged) {
@@ -26,6 +28,15 @@ export default function Changes({ request }: { request: PublicCloudRequestDetail
           descRequested={request.decisionData.description}
           ministryRequested={request.decisionData.ministry}
         />
+      </>
+    );
+  }
+
+  if (diffData.membersChanged) {
+    membersChange = (
+      <>
+        <Hr className="my-4" />
+        <MemberChanges data={diffData.changes.filter((change) => change.loc.startsWith('members.'))} />
       </>
     );
   }
@@ -67,6 +78,7 @@ export default function Changes({ request }: { request: PublicCloudRequestDetail
     <>
       {profileChange}
       {contactChange}
+      {membersChange}
       {billingChange}
     </>
   );

@@ -90,6 +90,7 @@ export async function sendTeamCreateRequest(request: PrivateCloudRequestDetail, 
 }
 
 export async function sendTeamCreateRequestApproval(request: PrivateCloudRequestDetail) {
+
   const content = await getContent(TeamCreateRequestApprovalTemplate({ request }));
 
   return sendEmail({
@@ -100,6 +101,7 @@ export async function sendTeamCreateRequestApproval(request: PrivateCloudRequest
 }
 
 export async function sendTeamCreateRequestCompletion(request: PrivateCloudRequestDetail) {
+
   const content = await getContent(TeamCreateRequestCompletionTemplate({ request }));
 
   return sendEmail({
@@ -111,7 +113,7 @@ export async function sendTeamCreateRequestCompletion(request: PrivateCloudReque
 
 export async function sendTeamCreateRequestRejection(request: PrivateCloudRequestDetail) {
   const content = await getContent(TeamCreateRequestRejectionTemplate({ request }));
-
+  
   return sendEmail({
     subject: 'Your provisioning request has been rejected',
     to: await getTeamEmails(request),
@@ -171,7 +173,7 @@ export async function sendTeamEditRequest(request: PrivateCloudRequestDetail, re
 
 export async function sendTeamEditRequestApproval(request: PrivateCloudRequestDetail) {
   const content = await getContent(TeamEditRequestApprovalTemplate({ request }));
-
+  
   return sendEmail({
     subject: 'Your edit request has been approved',
     to: await getTeamEmails(request),

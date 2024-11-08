@@ -22,7 +22,7 @@ import TeamContacts from '@/components/form/TeamContacts';
 import PageAccordion from '@/components/generic/accordion/PageAccordion';
 import FormErrorNotification from '@/components/generic/FormErrorNotification';
 import { openPublicCloudProductCreateSubmitModal } from '@/components/modal/publicCloudProductCreateSubmit';
-import { AGMinistries, GlobalRole } from '@/constants';
+import { GlobalRole } from '@/constants';
 import createClientPage from '@/core/client-page';
 import { existBilling } from '@/services/backend/billing';
 import { publicCloudCreateRequestBodySchema } from '@/validation-schemas/public-cloud';
@@ -35,33 +35,17 @@ export default publicCloudProductNew(({}) => {
 
   const methods = useForm({
     resolver: zodResolver(
-      publicCloudCreateRequestBodySchema
-        .merge(
-          z.object({
-            isAgMinistryChecked: z.boolean().optional(),
-            isEaApproval: z.boolean().optional(),
-          }),
-        )
-        .refine(
-          (formData) => {
-            return AGMinistries.includes(formData.ministry) ? formData.isAgMinistryChecked : true;
-          },
-          {
-            message: 'AG Ministry Checkbox should be checked.',
-            path: ['isAgMinistryChecked'],
-          },
-        )
-        .refine(
-          async (formData) => {
-            const hasBilling = await existBilling(formData.accountCoding, formData.provider);
-            if (!hasBilling) return true;
-            return formData.isEaApproval;
-          },
-          {
-            message: 'EA Approval Checkbox should be checked.',
-            path: ['isEaApproval'],
-          },
-        ),
+      publicCloudCreateRequestBodySchema.refine(
+        async (formData) => {
+          const hasBilling = await existBilling(formData.accountCoding, formData.provider);
+          if (!hasBilling) return true;
+          return formData.isEaApproval;
+        },
+        {
+          message: 'EA Approval Checkbox should be checked.',
+          path: ['isEaApproval'],
+        },
+      ),
     ),
     defaultValues: {
       environmentsEnabled: {

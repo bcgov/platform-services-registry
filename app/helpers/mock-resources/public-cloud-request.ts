@@ -1,5 +1,6 @@
 import { faker } from '@faker-js/faker';
 import { Prisma, Cluster, Provider, ProjectStatus, RequestType, DecisionStatus } from '@prisma/client';
+import { deepClone } from 'valtio/utils';
 import { PublicCloudRequestDetail } from '@/types/public-cloud';
 import { generateShortId } from '@/utils/uuid';
 import {
@@ -63,6 +64,7 @@ export function createSamplePublicCloudRequest(args?: {
     secondaryTechnicalLead,
     expenseAuthorityId: expenseAuthority.id,
     expenseAuthority,
+    members: [],
     billingId: billing.id,
     billing,
     budget: {
@@ -117,11 +119,11 @@ export function createSamplePublicCloudRequest(args?: {
     projectId: product.id,
     project: product,
     decisionDataId: productData.id,
-    decisionData: productData,
+    decisionData: deepClone(productData),
     requestDataId: productData.id,
-    requestData: productData,
+    requestData: deepClone(productData),
     originalDataId: productData.id,
-    originalData: productData,
+    originalData: deepClone(productData),
     changes: null,
     ...data,
   };

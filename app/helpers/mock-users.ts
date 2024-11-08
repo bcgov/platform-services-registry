@@ -12,19 +12,24 @@ export const proxyUsers: MsUser[] = mockFile.mocks.find(
   (mock: MockResponse) => mock.request.url === 'https://graph.microsoft.com/v1.0/users?$filter*',
 )?.response.body.value;
 
-export const mockUsers = proxyUsers.map((usr) => {
-  const { firstName, lastName, email, ministry, idir, upn } = processMsUser(usr);
-  return {
-    firstName,
-    lastName,
-    displayName: formatFullName({ firstName, lastName }),
-    email,
-    ministry,
-    idir,
-    upn,
-    roles: _compact([usr.jobTitle]),
-  } as AppUserWithRoles;
-});
+export const mockUsers = proxyUsers
+  .map((usr) => {
+    const appUser = processMsUser(usr);
+    if (!appUser) return null;
+
+    const { firstName, lastName, email, ministry, idir, upn } = appUser;
+    return {
+      firstName,
+      lastName,
+      displayName: formatFullName({ firstName, lastName }),
+      email,
+      ministry,
+      idir,
+      upn,
+      roles: _compact([usr.jobTitle]),
+    } as AppUserWithRoles;
+  })
+  .filter((v) => v!) as AppUserWithRoles[];
 
 export const mockRoleUsers = mockUsers.filter((usr) => usr.roles.length > 0);
 export const mockNoRoleUsers = mockUsers.filter((usr) => usr.roles.length === 0);

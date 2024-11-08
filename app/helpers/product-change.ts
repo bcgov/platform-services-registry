@@ -5,6 +5,7 @@ import _isString from 'lodash-es/isString';
 import _mapValues from 'lodash-es/mapValues';
 import _pick from 'lodash-es/pick';
 import _uniq from 'lodash-es/uniq';
+import { ExtendedPublicCloudProductMember } from '@/types/public-cloud';
 import { diffExt, DiffChange } from '@/utils/diff';
 import { extractNumbers } from '@/utils/string';
 
@@ -100,6 +101,7 @@ export function comparePrivateProductData(data1: any, data2: any) {
 export interface PublicProductChange {
   profileChanged: boolean;
   contactsChanged: boolean;
+  membersChanged: boolean;
   budgetChanged: boolean;
   billingChanged: boolean;
   changes: DiffChange[];
@@ -116,9 +118,24 @@ const publicDataFields = [
   'primaryTechnicalLead.email',
   'secondaryTechnicalLead.email',
   'expenseAuthority.email',
+  'members',
 ];
 
+function prepareProductCloudData(data: any) {
+  if (data.members) {
+    data.members = data.members.map((member: ExtendedPublicCloudProductMember) => ({
+      email: member.email,
+      roles: (member.roles || []).join(', '),
+    }));
+  }
+
+  return data;
+}
+
 export function comparePublicProductData(data1: any, data2: any) {
+  data1 = prepareProductCloudData({ ...data1 });
+  data2 = prepareProductCloudData({ ...data2 });
+
   const changes = diffExt(data1, data2, publicDataFields);
   const parentPaths = [];
 
@@ -126,6 +143,7 @@ export function comparePublicProductData(data1: any, data2: any) {
   let contactsChanged = false;
   let budgetChanged = false;
   let billingChanged = false;
+  let membersChanged = false;
 
   for (const change of changes) {
     parentPaths.push(String(change.path[0]));
@@ -140,7 +158,12 @@ export function comparePublicProductData(data1: any, data2: any) {
       case 'projectOwner':
       case 'primaryTechnicalLead':
       case 'secondaryTechnicalLead':
+      case 'expenseAuthority':
         contactsChanged = true;
+        break;
+
+      case 'members':
+        membersChanged = true;
         break;
 
       case 'budget':
@@ -156,6 +179,7 @@ export function comparePublicProductData(data1: any, data2: any) {
   return {
     profileChanged,
     contactsChanged,
+    membersChanged,
     budgetChanged,
     billingChanged,
     parentPaths: _uniq(parentPaths),

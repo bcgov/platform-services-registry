@@ -4,12 +4,13 @@ import { IconSearch } from '@tabler/icons-react';
 import _throttle from 'lodash-es/throttle';
 import { useRef, useState } from 'react';
 import { formatFullName } from '@/helpers/user';
+import { getUserImageData } from '@/helpers/user-image';
 import { searchUsers } from '@/services/backend/users';
 
 function UserOption({ data }: { data: User }) {
   return (
     <Group gap="sm">
-      <Avatar src={data.image} size={36} radius="xl" />
+      <Avatar src={getUserImageData(data.image)} size={36} radius="xl" />
       <div>
         <Text size="sm">{formatFullName(data)}</Text>
         <Text size="xs" opacity={0.5}>
@@ -23,7 +24,7 @@ function UserOption({ data }: { data: User }) {
 function UserOptionDetail({ data }: { data: User }) {
   return (
     <Group gap="sm">
-      <Avatar src={data.image} size={56} radius="xl" />
+      <Avatar src={getUserImageData(data.image)} size={56} radius="xl" />
       <div>
         {data.jobTitle && (
           <Text size="sm" tt="uppercase" c="dimmed">
@@ -55,18 +56,22 @@ export default function UserAutocomplete({ onSelect }: { onSelect: (user?: User)
   const [data, setData] = useState<User[]>([]);
   const [value, setValue] = useState<User>();
   const [searching, setSearching] = useState(false);
-  const throttled = useRef(_throttle((query: string) => searchUsers(query), 500, { trailing: true }));
-
-  const fetchOptions = (query: string) => {
-    setLoading(true);
-
-    throttled
-      .current(query)
-      ?.then((result) => {
+  const throttled = useRef(
+    _throttle(
+      async (query: string) => {
+        setLoading(true);
+        const result = await searchUsers(query);
         setData(result.data);
         setLoading(false);
-      })
-      .catch(() => {});
+        return result.data;
+      },
+      500,
+      { trailing: true },
+    ),
+  );
+
+  const fetchOptions = (query: string) => {
+    throttled.current(query);
   };
 
   const options = (data || []).map((item) => (
@@ -120,15 +125,15 @@ export default function UserAutocomplete({ onSelect }: { onSelect: (user?: User)
         </div>
       </Combobox.Target>
 
-      {data?.length ? (
-        <Combobox.Dropdown className="max-h-80 overflow-y-scroll z-50">
-          <Combobox.Options>{options}</Combobox.Options>
-        </Combobox.Dropdown>
-      ) : (
+      {loading || data?.length === 0 ? (
         <Combobox.Dropdown className="">
           <Combobox.Options>
             <Combobox.Empty>No results found</Combobox.Empty>
           </Combobox.Options>
+        </Combobox.Dropdown>
+      ) : (
+        <Combobox.Dropdown className="max-h-80 overflow-y-scroll z-50">
+          <Combobox.Options>{options}</Combobox.Options>
         </Combobox.Dropdown>
       )}
     </Combobox>

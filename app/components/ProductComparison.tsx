@@ -9,14 +9,14 @@ import { DiffChange } from '@/utils/diff';
 
 const abbreviations = ['cpu'];
 
-function ProductField({ path }: { path: (string | number)[] }) {
+function ProductField({ path, iconSize = 18 }: { path: (string | number)[]; iconSize?: number }) {
   return path.map((val, index) => {
     const str = val.toString();
     const formatted = abbreviations.includes(str.toLowerCase()) ? str.toUpperCase() : _startCase(str);
 
     return (
       <>
-        {index > 0 && <IconChevronRight size={18} className="inline-block mx-1" />}
+        {index > 0 && <IconChevronRight size={iconSize} className="inline-block mx-1" />}
         <span>{formatted}</span>
       </>
     );
@@ -67,6 +67,7 @@ function ProductValue({ value, formatterKey }: { value: any; formatterKey?: stri
 
   if (_isString(value)) return <span>{value}</span>;
   if (_isBoolean(value)) return <span>{value ? 'Yes' : 'No'}</span>;
+  if (Array.isArray(value)) return value.join(', ');
   return <span>{String(value)}</span>;
 }
 

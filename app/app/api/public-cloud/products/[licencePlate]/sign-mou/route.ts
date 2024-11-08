@@ -5,7 +5,7 @@ import createApiHandler from '@/core/api-handler';
 import prisma from '@/core/prisma';
 import { BadRequestResponse, OkResponse, UnauthorizedResponse } from '@/core/responses';
 import { sendPublicCloudBillingReviewEmails } from '@/services/ches/public-cloud';
-import { publicCloudRequestDetailInclude } from '@/services/db';
+import { models, publicCloudRequestDetailInclude } from '@/services/db';
 
 const pathParamSchema = z.object({
   licencePlate: z.string(),
@@ -76,7 +76,8 @@ export const POST = apiHandler(async ({ pathParams, body, session }) => {
   });
 
   if (request) {
-    await sendPublicCloudBillingReviewEmails(request);
+    const requestDecorated = await models.publicCloudRequest.decorate(request, session, true);
+    await sendPublicCloudBillingReviewEmails(requestDecorated);
   }
   return OkResponse(true);
 });

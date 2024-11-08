@@ -19,11 +19,11 @@ const Layout = createClientPage({
   validations: { pathParams: pathParamSchema },
 });
 export default Layout(({}) => {
-  const [publicCloudState, publicCloudStateSnap] = usePublicProductState();
+  const [, snap] = usePublicProductState();
 
   return (
     <div>
-      {publicCloudStateSnap.currentRequest?.decisionStatus === DecisionStatus.PENDING && (
+      {snap.currentRequest?.decisionStatus === DecisionStatus.PENDING && (
         <Alert variant="light" color="blue" title="" icon={<IconInfoCircle />}>
           This request is currently under admin review.
         </Alert>
@@ -31,9 +31,9 @@ export default Layout(({}) => {
 
       <div className="mb-2"></div>
 
-      {publicCloudStateSnap.currentRequest?.type !== RequestType.CREATE && (
+      {snap.currentRequest?.type !== RequestType.CREATE && (
         <div className="py-2">
-          <ProductComparison data={publicCloudStateSnap.dataChangeOriginalRequest?.changes as DiffChange[]} />
+          <ProductComparison data={snap.dataChangeOriginalRequest?.changes as DiffChange[]} />
         </div>
       )}
     </div>
