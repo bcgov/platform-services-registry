@@ -30,7 +30,8 @@ export default async function createOp({ session, body }: { session: Session; bo
 
   await upsertUsers([body.projectOwner.email, body.primaryTechnicalLead.email, body.secondaryTechnicalLead?.email]);
 
-  const { requestComment, quotaContactName, quotaContactEmail, quotaJustification, ...rest } = body;
+  const { requestComment, quotaContactName, quotaContactEmail, quotaJustification, isAgMinistryChecked, ...rest } =
+    body;
 
   const productData = {
     ...rest,

@@ -45,23 +45,7 @@ export default publicCloudProductEdit(({}) => {
   const [isSecondaryTechLeadRemoved, setIsSecondaryTechLeadRemoved] = useState(false);
 
   const methods = useForm({
-    resolver: zodResolver(
-      publicCloudEditRequestBodySchema
-        .merge(
-          z.object({
-            isAgMinistryChecked: z.boolean().optional(),
-          }),
-        )
-        .refine(
-          (formData) => {
-            return AGMinistries.includes(formData.ministry) ? formData.isAgMinistryChecked : true;
-          },
-          {
-            message: 'AG Ministry Checkbox should be checked.',
-            path: ['isAgMinistryChecked'],
-          },
-        ),
-    ),
+    resolver: zodResolver(publicCloudEditRequestBodySchema),
     defaultValues: {
       ...snap.currentProduct,
       isAgMinistryChecked: true,

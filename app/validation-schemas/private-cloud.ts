@@ -11,7 +11,7 @@ import {
 } from '@prisma/client';
 import _isString from 'lodash-es/isString';
 import { string, z } from 'zod';
-import { phoneNumberRegex } from '@/constants';
+import { AGMinistries, phoneNumberRegex } from '@/constants';
 import { processEnumString, processUpperEnumString, processBoolean } from '@/utils/zod';
 import { userSchema, RequestDecision } from './shared';
 
@@ -68,7 +68,7 @@ export const commonComponentsSchema = z
     },
   );
 
-export const privateCloudCreateRequestBodySchema = z.object({
+const _privateCloudCreateRequestBodySchema = z.object({
   name: z.string().min(1, { message: 'Name is required.' }),
   description: z.string().min(1, { message: 'Description is required.' }),
   cluster: z.nativeEnum(Cluster),
@@ -100,7 +100,32 @@ export const privateCloudCreateRequestBodySchema = z.object({
   requestComment: string().optional(),
 });
 
-export const privateCloudEditRequestBodySchema = privateCloudCreateRequestBodySchema.merge(
+const isEmailUnique = (data: any) => {
+  const { projectOwner, primaryTechnicalLead } = data;
+  return projectOwner.email !== primaryTechnicalLead.email;
+};
+
+export const privateCloudCreateRequestBodySchema = _privateCloudCreateRequestBodySchema
+  .merge(
+    z.object({
+      isAgMinistryChecked: z.boolean().optional(),
+    }),
+  )
+  .refine(
+    (formData) => {
+      return AGMinistries.includes(formData.ministry) ? formData.isAgMinistryChecked : true;
+    },
+    {
+      message: 'AG Ministry Checkbox should be checked.',
+      path: ['isAgMinistryChecked'],
+    },
+  )
+  .refine(isEmailUnique, {
+    message: 'Project Owner and Primary Technical Lead must not have the same email.',
+    path: ['primaryTechnicalLead'],
+  });
+
+const _privateCloudEditRequestBodySchema = _privateCloudCreateRequestBodySchema.merge(
   z.object({
     productionQuota: quotaSchema,
     testQuota: quotaSchema,
@@ -110,7 +135,11 @@ export const privateCloudEditRequestBodySchema = privateCloudCreateRequestBodySc
   }),
 );
 
-export const privateCloudRequestDecisionBodySchema = privateCloudEditRequestBodySchema.merge(
+export const privateCloudEditRequestBodySchema = _privateCloudEditRequestBodySchema.refine(isEmailUnique, {
+  message: 'Project Owner and Primary Technical Lead must not have the same email.',
+});
+
+export const privateCloudRequestDecisionBodySchema = _privateCloudEditRequestBodySchema.merge(
   z.object({
     type: z.nativeEnum(RequestType),
     decision: z.nativeEnum(RequestDecision),

@@ -48,20 +48,6 @@ export default privateCloudProductEdit(({ session }) => {
 
       return zodResolver(
         privateCloudEditRequestBodySchema
-          .merge(
-            z.object({
-              isAgMinistryChecked: z.boolean().optional(),
-            }),
-          )
-          .refine(
-            (formData) => {
-              return AGMinistries.includes(formData.ministry) ? formData.isAgMinistryChecked : true;
-            },
-            {
-              message: 'AG Ministry Checkbox should be checked.',
-              path: ['isAgMinistryChecked'],
-            },
-          )
           .refine(
             (formData) => {
               if (quotaChangeStatus.isEligibleForAutoApproval) return true;

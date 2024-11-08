@@ -11,6 +11,7 @@ import ExternalLink from '@/components/generic/button/ExternalLink';
 import FormCheckbox from '@/components/generic/checkbox/FormCheckbox';
 import FormError from '@/components/generic/FormError';
 import { createModal } from '@/core/modal';
+import { showErrorNotification } from '@/helpers/notifications';
 import { createPrivateCloudProject } from '@/services/backend/private-cloud/products';
 import { openNotificationModal } from './notification';
 
@@ -52,24 +53,7 @@ export const openPrivateCloudProductCreateSubmitModal = createModal<ModalProps, 
         state.success = true;
       },
       onError: (error: any) => {
-        state.success = false;
-
-        if (error.response?.status === 401) {
-          notifications.show({
-            title: 'Error',
-            message:
-              'You are not authorized to create this product. Please ensure you are mentioned in the product contacts to proceed.',
-            color: 'red',
-            autoClose: 5000,
-          });
-        } else {
-          notifications.show({
-            title: 'Error',
-            message: `Failed to create product: ${error.message}`,
-            color: 'red',
-            autoClose: 5000,
-          });
-        }
+        showErrorNotification(error);
       },
     });
 
