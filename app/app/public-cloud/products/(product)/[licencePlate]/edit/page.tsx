@@ -117,7 +117,7 @@ export default publicCloudProductEdit(({}) => {
       label: 'Additional team members',
       description: '',
       Component: AdditionalTeamMembers,
-      componentArgs: { disabled: isDisabled },
+      componentArgs: { disabled: isDisabled || !snap.currentProduct._permissions.manageMembers },
     },
     {
       LeftIcon: IconMoneybag,

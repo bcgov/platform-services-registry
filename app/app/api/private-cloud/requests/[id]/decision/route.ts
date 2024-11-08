@@ -6,7 +6,7 @@ import prisma from '@/core/prisma';
 import { BadRequestResponse, OkResponse, UnprocessableEntityResponse } from '@/core/responses';
 import { sendRequestNatsMessage } from '@/helpers/nats-message';
 import { sendRequestRejectionEmails, sendRequestApprovalEmails } from '@/services/ches/private-cloud';
-import { createEvent, privateCloudRequestDetailInclude } from '@/services/db';
+import { createEvent, models, privateCloudRequestDetailInclude } from '@/services/db';
 import { upsertUsers } from '@/services/db/user';
 import {
   privateCloudRequestDecisionBodySchema,
@@ -92,24 +92,26 @@ export const POST = apiHandler(async ({ pathParams, body, session }) => {
     return UnprocessableEntityResponse('failed to update the request');
   }
 
-  await createEvent(EventType.REVIEW_PRIVATE_CLOUD_REQUEST, session.user.id, { requestId: updatedRequest.id });
+  const updatedRequestDecorated = await models.privateCloudRequest.decorate(updatedRequest, session, true);
 
-  if (updatedRequest.decisionStatus === DecisionStatus.REJECTED) {
-    await sendRequestRejectionEmails(updatedRequest);
-    return OkResponse(updatedRequest);
+  await createEvent(EventType.REVIEW_PRIVATE_CLOUD_REQUEST, session.user.id, { requestId: updatedRequestDecorated.id });
+
+  if (updatedRequestDecorated.decisionStatus === DecisionStatus.REJECTED) {
+    await sendRequestRejectionEmails(updatedRequestDecorated);
+    return OkResponse(updatedRequestDecorated);
   }
 
   const proms = [];
 
   proms.push(
-    sendRequestNatsMessage(updatedRequest, {
-      projectOwner: { email: updatedRequest.originalData?.projectOwner.email },
-      primaryTechnicalLead: { email: updatedRequest.originalData?.primaryTechnicalLead.email },
-      secondaryTechnicalLead: { email: updatedRequest.originalData?.secondaryTechnicalLead?.email },
+    sendRequestNatsMessage(updatedRequestDecorated, {
+      projectOwner: { email: updatedRequestDecorated.originalData?.projectOwner.email },
+      primaryTechnicalLead: { email: updatedRequestDecorated.originalData?.primaryTechnicalLead.email },
+      secondaryTechnicalLead: { email: updatedRequestDecorated.originalData?.secondaryTechnicalLead?.email },
     }),
   );
 
-  proms.push(sendRequestApprovalEmails(updatedRequest, session.user.name));
+  proms.push(sendRequestApprovalEmails(updatedRequestDecorated, session.user.name));
 
   await Promise.all(proms);
 

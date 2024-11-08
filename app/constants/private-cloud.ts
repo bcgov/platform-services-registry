@@ -1,8 +1,9 @@
-import { Cluster, Prisma, CPU, Memory, Storage } from '@prisma/client';
+import { Cluster, Prisma, CPU, Memory, Storage, PrivateCloudProductMemberRole } from '@prisma/client';
 import _orderBy from 'lodash-es/orderBy';
 import { extractNumbers } from '@/utils/string';
 import { productSorts } from './common';
 
+export const privateCloudProductMemberRoles = Object.values(PrivateCloudProductMemberRole);
 export const cpus = Object.values(CPU);
 export const memories = Object.values(Memory);
 export const storages = Object.values(Storage);

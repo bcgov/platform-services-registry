@@ -33,7 +33,7 @@ const Layout = createClientPage({
   validations: { pathParams: pathParamSchema },
 });
 export default Layout(({}) => {
-  const [, privateCloudSnap] = usePrivateProductState();
+  const [, snap] = usePrivateProductState();
 
   let dataSet = [
     {
@@ -41,14 +41,14 @@ export default Layout(({}) => {
       LeftIcon: IconCircleLetterO,
       label: 'Original Data to User Request Data',
       description: 'Data changes between the original data and the user requested data',
-      data: privateCloudSnap.dataChangeOriginalRequest?.changes,
+      data: snap.dataChangeOriginalRequest?.changes,
     },
   ];
 
   if (
-    privateCloudSnap.currentRequest?.decisionStatus === DecisionStatus.APPROVED ||
-    privateCloudSnap.currentRequest?.decisionStatus === DecisionStatus.AUTO_APPROVED ||
-    privateCloudSnap.currentRequest?.decisionStatus === DecisionStatus.PROVISIONED
+    snap.currentRequest?.decisionStatus === DecisionStatus.APPROVED ||
+    snap.currentRequest?.decisionStatus === DecisionStatus.AUTO_APPROVED ||
+    snap.currentRequest?.decisionStatus === DecisionStatus.PROVISIONED
   ) {
     dataSet.push(
       {
@@ -56,21 +56,21 @@ export default Layout(({}) => {
         LeftIcon: IconCircleLetterR,
         label: 'User Request Data to Admin Decision Data',
         description: 'Data changes between the user requested data and the admin decision data',
-        data: privateCloudSnap.dataChangeRequestDecision?.changes,
+        data: snap.dataChangeRequestDecision?.changes,
       },
       {
         id: 'decision',
         LeftIcon: IconCircleLetterD,
         label: 'Original Data to Admin Decision Data',
         description: 'Data changes between the original data and the admin decision data',
-        data: privateCloudSnap.dataChangeOriginalDecision?.changes,
+        data: snap.dataChangeOriginalDecision?.changes,
       },
     );
   }
 
   dataSet = dataSet.filter((tab) => {
-    if (!privateCloudSnap.currentRequest) return false;
-    return (tabsByType[privateCloudSnap.currentRequest.type] as string[]).includes(tab.id);
+    if (!snap.currentRequest) return false;
+    return (tabsByType[snap.currentRequest.type] as string[]).includes(tab.id);
   });
 
   const accordionItems: PageAccordionItem[] = dataSet.map((item) => ({
@@ -83,7 +83,7 @@ export default Layout(({}) => {
     },
   }));
 
-  if (privateCloudSnap.currentRequest?.quotaContactName) {
+  if (snap.currentRequest?.quotaContactName) {
     accordionItems.push({
       LeftIcon: IconAddressBook,
       label: 'Quota Contact & Justification',
@@ -93,15 +93,15 @@ export default Layout(({}) => {
           <Table.Tbody>
             <Table.Tr>
               <Table.Td>Contact Name</Table.Td>
-              <Table.Td>{privateCloudSnap.currentRequest?.quotaContactName}</Table.Td>
+              <Table.Td>{snap.currentRequest?.quotaContactName}</Table.Td>
             </Table.Tr>
             <Table.Tr>
               <Table.Td>Contact Email</Table.Td>
-              <Table.Td>{privateCloudSnap.currentRequest?.quotaContactEmail}</Table.Td>
+              <Table.Td>{snap.currentRequest?.quotaContactEmail}</Table.Td>
             </Table.Tr>
             <Table.Tr>
               <Table.Td>Justification</Table.Td>
-              <Table.Td>{privateCloudSnap.currentRequest?.quotaJustification}</Table.Td>
+              <Table.Td>{snap.currentRequest?.quotaJustification}</Table.Td>
             </Table.Tr>
           </Table.Tbody>
         </Table>
@@ -112,7 +112,7 @@ export default Layout(({}) => {
 
   return (
     <div>
-      {privateCloudSnap.currentRequest?.decisionStatus === DecisionStatus.PENDING && (
+      {snap.currentRequest?.decisionStatus === DecisionStatus.PENDING && (
         <Alert variant="light" color="blue" title="" icon={<IconInfoCircle />}>
           This request is currently under admin review.
         </Alert>

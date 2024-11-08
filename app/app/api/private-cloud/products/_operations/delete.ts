@@ -2,14 +2,14 @@ import { RequestType, DecisionStatus, ProjectStatus, EventType, Prisma } from '@
 import { Session } from 'next-auth';
 import { z, TypeOf, ZodType } from 'zod';
 import prisma from '@/core/prisma';
-import { BadRequestResponse, OkResponse, UnauthorizedResponse } from '@/core/responses';
+import { BadRequestResponse, OkResponse, UnauthorizedResponse, UnprocessableEntityResponse } from '@/core/responses';
 import { isEligibleForDeletion } from '@/helpers/openshift';
 import { sendDeleteRequestEmails } from '@/services/ches/private-cloud';
 import {
   createEvent,
   privateCloudRequestDetailInclude,
   models,
-  excludePrivateProductUsers,
+  excludePrivateProductPopulatedFields,
   getLastClosedPrivateCloudRequest,
 } from '@/services/db';
 import { deletePathParamSchema } from '../[licencePlate]/schema';
@@ -23,7 +23,7 @@ export default async function deleteOp({
 }) {
   const { licencePlate } = pathParams;
 
-  const product = excludePrivateProductUsers(
+  const product = excludePrivateProductPopulatedFields(
     (await models.privateCloudProduct.get({ where: { licencePlate } }, session)).data,
   );
 
@@ -63,10 +63,15 @@ export default async function deleteOp({
     requestCreateData.createdBy = { connect: { email: session.user.email } };
   }
 
-  const newRequest = await prisma.privateCloudRequest.create({
-    data: requestCreateData,
-    include: privateCloudRequestDetailInclude,
-  });
+  const newRequest = (
+    await models.privateCloudRequest.create(
+      {
+        data: requestCreateData,
+        include: privateCloudRequestDetailInclude,
+      },
+      session,
+    )
+  ).data;
 
   await Promise.all([
     createEvent(EventType.DELETE_PRIVATE_CLOUD_PRODUCT, session.user.id, { requestId: newRequest.id }),

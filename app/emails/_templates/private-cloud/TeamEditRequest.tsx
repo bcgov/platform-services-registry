@@ -8,10 +8,10 @@ import LinkButton from '@/emails/_components/LinkButton';
 import Changes from '@/emails/_components/private-cloud/Changes';
 import ProductDetails from '@/emails/_components/ProductDetails';
 import { isQuotaUpgrade } from '@/helpers/quota-change';
-import { PrivateCloudRequestDetail } from '@/types/private-cloud';
+import { PrivateCloudRequestDetailDecorated } from '@/types/private-cloud';
 
 interface EmailProp {
-  request: PrivateCloudRequestDetail;
+  request: PrivateCloudRequestDetailDecorated;
   requester: string;
 }
 

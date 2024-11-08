@@ -8,6 +8,7 @@ import {
   CPU,
   Memory,
   Storage,
+  PrivateCloudProductMemberRole,
 } from '@prisma/client';
 import _isString from 'lodash-es/isString';
 import { string, z } from 'zod';
@@ -68,7 +69,16 @@ export const commonComponentsSchema = z
     },
   );
 
-const _privateCloudCreateRequestBodySchema = z.object({
+const privateCloudProductMembers = z
+  .array(
+    z.object({
+      userId: z.string().length(24, { message: 'Please select a member' }),
+      roles: z.array(z.nativeEnum(PrivateCloudProductMemberRole)),
+    }),
+  )
+  .max(10);
+
+export const _privateCloudCreateRequestBodySchema = z.object({
   name: z.string().min(1, { message: 'Name is required.' }),
   description: z.string().min(1, { message: 'Description is required.' }),
   cluster: z.nativeEnum(Cluster),
@@ -132,6 +142,7 @@ const _privateCloudEditRequestBodySchema = _privateCloudCreateRequestBodySchema.
     toolsQuota: quotaSchema,
     developmentQuota: quotaSchema,
     requestComment: string().optional(),
+    members: privateCloudProductMembers,
   }),
 );
 

@@ -80,6 +80,7 @@ export function createSamplePrivateCloudRequest(args?: {
     primaryTechnicalLead,
     secondaryTechnicalLeadId: secondaryTechnicalLead.id,
     secondaryTechnicalLead,
+    members: [],
     developmentQuota: quota,
     testQuota: quota,
     productionQuota: quota,

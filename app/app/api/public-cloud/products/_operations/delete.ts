@@ -2,7 +2,7 @@ import { PublicCloudRequestType, DecisionStatus, ProjectStatus, EventType } from
 import { Session } from 'next-auth';
 import { z, TypeOf, ZodType } from 'zod';
 import prisma from '@/core/prisma';
-import { BadRequestResponse, OkResponse, UnauthorizedResponse } from '@/core/responses';
+import { BadRequestResponse, OkResponse, UnauthorizedResponse, UnprocessableEntityResponse } from '@/core/responses';
 import { sendDeleteRequestEmails } from '@/services/ches/public-cloud';
 import {
   createEvent,
@@ -36,26 +36,29 @@ export default async function deleteOp({
   const previousRequest = await getLastClosedPublicCloudRequest(rest.licencePlate);
 
   const productData = { ...rest, status: ProjectStatus.INACTIVE };
-  const newRequest = await prisma.publicCloudRequest.create({
-    data: {
-      type: PublicCloudRequestType.DELETE,
-      decisionStatus: DecisionStatus.PENDING,
-      active: true,
-      createdBy: { connect: { email: session.user.email } },
-      licencePlate: product.licencePlate,
-      originalData: { connect: { id: previousRequest?.decisionDataId } },
-      requestData: { create: productData },
-      decisionData: { create: productData },
-      project: { connect: { licencePlate } },
-    },
-    include: publicCloudRequestDetailInclude,
-  });
-
-  const newRequestDecorated = await models.publicCloudRequest.decorate(newRequest, session, true);
+  const newRequest = (
+    await models.publicCloudRequest.create(
+      {
+        data: {
+          type: PublicCloudRequestType.DELETE,
+          decisionStatus: DecisionStatus.PENDING,
+          active: true,
+          createdBy: { connect: { email: session.user.email } },
+          licencePlate: product.licencePlate,
+          originalData: { connect: { id: previousRequest?.decisionDataId } },
+          requestData: { create: productData },
+          decisionData: { create: productData },
+          project: { connect: { licencePlate } },
+        },
+        include: publicCloudRequestDetailInclude,
+      },
+      session,
+    )
+  ).data;
 
   await Promise.all([
     createEvent(EventType.DELETE_PUBLIC_CLOUD_PRODUCT, session.user.id, { requestId: newRequest.id }),
-    sendDeleteRequestEmails(newRequestDecorated, session.user.name),
+    sendDeleteRequestEmails(newRequest, session.user.name),
   ]);
 
   return OkResponse(newRequest);
