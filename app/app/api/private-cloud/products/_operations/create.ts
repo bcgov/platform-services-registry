@@ -1,7 +1,6 @@
 import { DecisionStatus, ProjectStatus, RequestType, EventType } from '@prisma/client';
 import { Session } from 'next-auth';
 import { defaultQuota } from '@/constants';
-import prisma from '@/core/prisma';
 import { OkResponse, UnauthorizedResponse, UnprocessableEntityResponse } from '@/core/responses';
 import generateLicencePlate from '@/helpers/licence-plate';
 import { sendCreateRequestEmails } from '@/services/ches/private-cloud';

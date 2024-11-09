@@ -1,8 +1,16 @@
-import { Cluster, Ministry, Provider, Prisma, RequestType, ProjectStatus, DecisionStatus } from '@prisma/client';
+import {
+  Ministry,
+  Provider,
+  Prisma,
+  RequestType,
+  ProjectStatus,
+  DecisionStatus,
+  PublicCloudProductMemberRole,
+} from '@prisma/client';
 import _isString from 'lodash-es/isString';
 import { string, z } from 'zod';
 import { AGMinistries } from '@/constants';
-import { processEnumString, processUpperEnumString, processBoolean } from '@/utils/zod';
+import { processEnumString } from '@/utils/zod';
 import { userSchema, RequestDecision } from './shared';
 
 export const budgetSchema = z.object({
@@ -11,6 +19,15 @@ export const budgetSchema = z.object({
   prod: z.number().min(50.0, 'Value should be no less than USD 50').default(50.0),
   tools: z.number().min(50.0, 'Value should be no less than USD 50').default(50.0),
 });
+
+const publicCloudProductMembers = z
+  .array(
+    z.object({
+      userId: z.string().length(24, { message: 'Please select a member' }),
+      roles: z.array(z.nativeEnum(PublicCloudProductMemberRole)),
+    }),
+  )
+  .max(10);
 
 const _publicCloudCreateRequestBodySchema = z.object({
   name: z
@@ -79,7 +96,11 @@ export const publicCloudCreateRequestBodySchema = _publicCloudCreateRequestBodyS
     path: ['primaryTechnicalLead'],
   });
 
-const _publicCloudEditRequestBodySchema = _publicCloudCreateRequestBodySchema.omit({});
+const _publicCloudEditRequestBodySchema = _publicCloudCreateRequestBodySchema.merge(
+  z.object({
+    members: publicCloudProductMembers,
+  }),
+);
 
 export const publicCloudEditRequestBodySchema = _publicCloudEditRequestBodySchema.refine(isEmailUnique, {
   message: 'Project Owner and Primary Technical Lead must not have the same email.',
