@@ -1,6 +1,6 @@
 'use client';
 
-import { MultiSelect, ComboboxData } from '@mantine/core';
+import { MultiSelect, ComboboxData, InputBase, Pill } from '@mantine/core';
 import _kebabCase from 'lodash-es/kebabCase';
 import { FocusEventHandler } from 'react';
 import { cn } from '@/utils';
@@ -43,17 +43,27 @@ export default function FormMultiSelect({
         </Label>
       )}
 
-      <MultiSelect
-        placeholder="select..."
-        data={data}
-        onChange={onChange}
-        onBlur={onBlur}
-        value={value}
-        searchable
-        clearable
-        disabled={disabled}
-        classNames={{ input: cn('text-md', classNames?.input) }}
-      />
+      {disabled ? (
+        <InputBase component="div" multiline>
+          <Pill.Group>
+            {value.map((item) => (
+              <Pill key={item}>{item}</Pill>
+            ))}
+          </Pill.Group>
+        </InputBase>
+      ) : (
+        <MultiSelect
+          placeholder="select..."
+          data={data}
+          onChange={onChange}
+          onBlur={onBlur}
+          value={value}
+          searchable
+          clearable
+          disabled={disabled}
+          classNames={{ input: cn('text-md', classNames?.input) }}
+        />
+      )}
     </div>
   );
 }
