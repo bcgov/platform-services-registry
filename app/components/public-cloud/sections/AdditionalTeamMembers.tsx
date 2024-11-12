@@ -1,7 +1,6 @@
 import { Avatar, Badge, Table, Group, Text, Button, UnstyledButton } from '@mantine/core';
 import { User, PublicCloudProductMember } from '@prisma/client';
 import { IconPlus } from '@tabler/icons-react';
-import classnames from 'classnames';
 import _get from 'lodash-es/get';
 import React from 'react';
 import { useFieldArray, useFormContext } from 'react-hook-form';
@@ -11,6 +10,7 @@ import { openUserPickerModal } from '@/components/modal/userPicker';
 import { publicCloudProductMemberRoles } from '@/constants';
 import { formatFullName } from '@/helpers/user';
 import { getUserImageData } from '@/helpers/user-image';
+import { cn } from '@/utils';
 import { formatDate } from '@/utils/date';
 
 export default function AdditionalTeamMembers({ disabled }: { disabled?: boolean }) {
@@ -35,7 +35,7 @@ export default function AdditionalTeamMembers({ disabled }: { disabled?: boolean
         <Table.Td>
           <Group
             gap="sm"
-            className={classnames({
+            className={cn({
               'cursor-pointer': !disabled,
             })}
             onClick={async () => {

@@ -1,9 +1,9 @@
 'use client';
 
 import { Select, ComboboxData, ComboboxItem } from '@mantine/core';
-import classnames from 'classnames';
 import _kebabCase from 'lodash-es/kebabCase';
 import { FocusEventHandler } from 'react';
+import { cn } from '@/utils';
 import Label from '../Label';
 
 export interface FormSingleSelectProps {
@@ -36,7 +36,7 @@ export default function FormSingleSelect({
   if (!id) id = _kebabCase(name);
 
   return (
-    <div className={classnames('select-single', classNames?.wrapper)}>
+    <div className={cn('select-single', classNames?.wrapper)}>
       {label && (
         <Label htmlFor={id} className={classNames?.label}>
           {label}
@@ -53,7 +53,7 @@ export default function FormSingleSelect({
         value={value}
         searchable
         disabled={disabled}
-        classNames={{ input: classnames('text-md', classNames?.input) }}
+        classNames={{ input: cn('text-md', classNames?.input) }}
       />
     </div>
   );

@@ -1,4 +1,3 @@
-import classNames from 'classnames';
 import { useSession } from 'next-auth/react';
 import { useState, useEffect } from 'react';
 import { useFormContext } from 'react-hook-form';
@@ -11,6 +10,7 @@ import MailLink from '@/components/generic/button/MailLink';
 import FormSelect from '@/components/generic/select/FormSelect';
 import HookFormSingleSelect from '@/components/generic/select/HookFormSingleSelect';
 import { clusters, ministryOptions, privateCloudTeamEmail } from '@/constants';
+import { cn } from '@/utils';
 
 export default function ProjectDescriptionPrivate({
   mode,
@@ -73,7 +73,7 @@ export default function ProjectDescriptionPrivate({
               disabled={disabled}
               type="text"
               placeholder="Enter product name"
-              className={classNames(
+              className={cn(
                 'block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6',
                 disabled
                   ? 'disabled:bg-slate-50 disabled:text-slate-500 disabled:border-slate-200 disabled:shadow-noneinvalid:border-pink-500 invalid:text-pink-600 focus:invalid:border-pink-500 focus:invalid:ring-pink-500'
@@ -82,7 +82,7 @@ export default function ProjectDescriptionPrivate({
               {...register('name')}
             />
           </div>
-          <p className={classNames(errors.name ? 'text-red-400' : '', 'mt-3 text-sm leading-6 text-gray-600')}>
+          <p className={cn(errors.name ? 'text-red-400' : '', 'mt-3 text-sm leading-6 text-gray-600')}>
             Please provide a descriptive product name with no acronyms
           </p>
         </div>
@@ -97,7 +97,7 @@ export default function ProjectDescriptionPrivate({
               placeholder="Enter a description..."
               {...register('description')}
               rows={3}
-              className={classNames(
+              className={cn(
                 'block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6',
                 disabled
                   ? 'disabled:bg-slate-50 disabled:text-slate-500 disabled:border-slate-200 disabled:shadow-noneinvalid:border-pink-500 invalid:text-pink-600 focus:invalid:border-pink-500 focus:invalid:ring-pink-500'
@@ -105,7 +105,7 @@ export default function ProjectDescriptionPrivate({
               )}
             />
           </div>
-          <p className={classNames(errors.description ? 'text-red-400' : '', 'mt-3 text-sm leading-6 text-gray-600')}>
+          <p className={cn(errors.description ? 'text-red-400' : '', 'mt-3 text-sm leading-6 text-gray-600')}>
             Tell us more about your product
           </p>
         </div>
@@ -118,7 +118,7 @@ export default function ProjectDescriptionPrivate({
             selectProps={register('ministry')}
           />
 
-          <p className={classNames(errors.ministry ? 'text-red-400' : '', 'mt-3 text-sm leading-6 text-gray-600')}>
+          <p className={cn(errors.ministry ? 'text-red-400' : '', 'mt-3 text-sm leading-6 text-gray-600')}>
             Select the government ministry that this product belongs to
           </p>
           {['create', 'edit'].includes(mode) && <AGMinistryCheckBox disabled={disabled} />}
@@ -130,7 +130,7 @@ export default function ProjectDescriptionPrivate({
             disabled={disabled || clusterDisabled}
             data={[{ label: 'Select Hosting tier', value: '' }, ...clustersList.map((v) => ({ label: v, value: v }))]}
           />
-          <p className={classNames(errors.cluster ? 'text-red-400' : '', 'mt-3 text-sm leading-6 text-gray-600')}>
+          <p className={cn(errors.cluster ? 'text-red-400' : '', 'mt-3 text-sm leading-6 text-gray-600')}>
             {session?.isAdmin
               ? 'Select your hosting tier, select CLAB or KLAB for testing purposes. Read more about hosting tiers '
               : 'Select your hosting tier. Read more about hosting tiers '}

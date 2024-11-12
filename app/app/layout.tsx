@@ -8,7 +8,6 @@ import { MantineProvider } from '@mantine/core';
 import { ModalsProvider } from '@mantine/modals';
 import { Notifications } from '@mantine/notifications';
 import { useQuery } from '@tanstack/react-query';
-import classNames from 'classnames';
 import localFont from 'next/font/local';
 import { useEffect } from 'react';
 import Footer from '@/components/layouts/Footer';
@@ -16,6 +15,7 @@ import Header from '@/components/layouts/Header';
 import Provider from '@/components/layouts/Provider';
 import { getInfo } from '@/services/backend';
 import { useAppState } from '@/states/global';
+import { cn } from '@/utils';
 import { theme } from './mantine-theme';
 
 const bcsans = localFont({
@@ -56,7 +56,7 @@ function MainBody({ children }: { children: React.ReactNode }) {
   }, [appState, info]);
 
   return (
-    <body className={classNames('flex flex-col min-h-screen', bcsans.className)}>
+    <body className={cn('flex flex-col min-h-screen', bcsans.className)}>
       <Header />
       <main className="flex-grow h-100">
         <div className="mt-2 mb-2 h-full mx-4 lg:mx-20">{children}</div>

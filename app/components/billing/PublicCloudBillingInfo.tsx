@@ -2,11 +2,11 @@
 
 import { Alert, Button } from '@mantine/core';
 import { IconInfoCircle } from '@tabler/icons-react';
-import classNames from 'classnames';
 import { useSession } from 'next-auth/react';
 import { openPublicCloudMouReviewModal } from '@/components/modal/publicCloudMouReview';
 import { openPublicCloudMouSignModal } from '@/components/modal/publicCloudMouSign';
 import { formatFullName } from '@/helpers/user';
+import { cn } from '@/utils';
 import PublicCloudBillingDownloadButton from './PublicCloudBillingDownloadButton';
 import { Product } from './types';
 
@@ -62,13 +62,7 @@ export default function PublicCloudBillingInfo({
   }
 
   return (
-    <Alert
-      variant="light"
-      color="blue"
-      title="Billing eMOU status"
-      icon={<IconInfoCircle />}
-      className={classNames(className)}
-    >
+    <Alert variant="light" color="blue" title="Billing eMOU status" icon={<IconInfoCircle />} className={cn(className)}>
       <ul className="list-disc text-sm">{content}</ul>
       {(session?.permissions.downloadBillingMou || product._permissions?.downloadMou) && billing.approved && (
         <PublicCloudBillingDownloadButton product={product} />

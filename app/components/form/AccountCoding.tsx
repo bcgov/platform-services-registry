@@ -1,13 +1,13 @@
 import { Alert } from '@mantine/core';
 import { IconInfoCircle } from '@tabler/icons-react';
 import { useQuery, useMutation } from '@tanstack/react-query';
-import classNames from 'classnames';
 import { useCallback, useEffect, useState } from 'react';
 import { useFormContext } from 'react-hook-form';
 import AccountCodingInput from '@/components/form/AccountCodingInput';
 import FormCheckbox from '@/components/generic/checkbox/FormCheckbox';
 import FormError from '@/components/generic/FormError';
 import { getBilling } from '@/services/backend/billing';
+import { cn } from '@/utils';
 
 export default function AccountCoding({
   disabled,
@@ -189,12 +189,7 @@ export default function AccountCoding({
             ? Object.values(accountCoding).join(' ').toLocaleUpperCase()
             : 'Value populated from Client Code+Responsibility Centre (RC)+Service Line (SL)+Standard Object of Expense (STOB)+Project Code'}
         </p>
-        <p
-          className={classNames(
-            errors.accountCoding ? 'text-red-400' : '',
-            'mt-1 text-sm leading-6 text-gray-600 absolute',
-          )}
-        >
+        <p className={cn(errors.accountCoding ? 'text-red-400' : '', 'mt-1 text-sm leading-6 text-gray-600 absolute')}>
           {errors.accountCoding?.message?.toString()}
         </p>
       </div>

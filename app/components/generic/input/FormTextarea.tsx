@@ -1,9 +1,9 @@
 'use client';
 
-import classnames from 'classnames';
 import _isFunction from 'lodash-es/isFunction';
 import _kebabCase from 'lodash-es/kebabCase';
 import { TextareaHTMLAttributes, useRef } from 'react';
+import { cn } from '@/utils';
 import CopyableButton from '../button/CopyableButton';
 import Label from '../Label';
 
@@ -107,7 +107,7 @@ export default function FormTextarea({
             }
           });
         }}
-        className={classnames(inputClass, classNames?.input)}
+        className={cn(inputClass, classNames?.input)}
       />
     </div>
   );

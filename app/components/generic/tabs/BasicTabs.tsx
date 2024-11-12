@@ -1,11 +1,11 @@
 import { Tooltip } from '@mantine/core';
-import classNames from 'classnames';
 import _lowerCase from 'lodash-es/lowerCase';
 import _startCase from 'lodash-es/startCase';
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
 import FormSelect from '@/components/generic/select/FormSelect';
 import { compareUrlsIgnoreLastSegments } from '@/helpers/path-segments';
+import { cn } from '@/utils';
 
 export interface ITab {
   name: string;
@@ -41,7 +41,7 @@ export default function BasicTabs({ tabs, children }: { tabs: ITab[]; children?:
           <div className="w-full -mb-px flex justify-between items-center" aria-label="Tabs">
             <div className=" -mb-px flex justify-start">
               {tabs.map((tab) => {
-                const linkingClassNames = classNames(
+                const linkingClassNames = cn(
                   'first:ml-0 lg:ml-10 w-50 py-5 text-center text-lg font-bold',
                   compareUrlsIgnoreLastSegments(tab.href, pathname, tab.ignoreSegments ?? 0)
                     ? "relative border-bcorange text-bcblue before:content-[''] before:absolute before:w-full before:border-b-3 before:border-bcorange before:bottom-0 before:left-1/2 before:-translate-x-1/2"

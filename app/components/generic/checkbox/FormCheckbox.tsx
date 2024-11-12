@@ -1,9 +1,9 @@
 'use client';
 
-import classnames from 'classnames';
 import _isFunction from 'lodash-es/isFunction';
 import { InputHTMLAttributes, ChangeEvent, RefObject, ReactNode, useRef } from 'react';
 import { openConfirmModal } from '@/components/modal/confirm';
+import { cn } from '@/utils';
 
 interface InputProps extends InputHTMLAttributes<HTMLInputElement> {}
 
@@ -91,7 +91,7 @@ export default function FormCheckbox({
           disabled={disabled}
           {...inputProps}
           onChange={handleChange}
-          className={classnames(
+          className={cn(
             'h-4 w-4 mt-[0.25rem] border-black-400',
             disabled ? 'text-gray-600 focus:ring-gray-600 cursor-not-allowed' : 'text-indigo-600 focus:ring-indigo-600',
             className?.input ?? '',
@@ -117,7 +117,7 @@ export default function FormCheckbox({
         <div className="ml-3">
           <label
             htmlFor={id}
-            className={classnames(
+            className={cn(
               'text-gray-900 select-none',
               className?.label ?? '',
               disabled ? 'cursor-not-allowed' : 'cursor-pointer',

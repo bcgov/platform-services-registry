@@ -1,7 +1,7 @@
 'use client';
 
-import classNames from 'classnames';
 import React from 'react';
+import { cn } from '@/utils';
 
 export default function Label({
   children,
@@ -19,10 +19,7 @@ export default function Label({
   return (
     <div className="flex justify-between">
       <div>
-        <label
-          htmlFor={htmlFor}
-          className={classNames('block text-sm font-medium leading-6 text-gray-900 mb-1', className)}
-        >
+        <label htmlFor={htmlFor} className={cn('block text-sm font-medium leading-6 text-gray-900 mb-1', className)}>
           {children}
           {required && <span className="text-red-500">*</span>}
         </label>

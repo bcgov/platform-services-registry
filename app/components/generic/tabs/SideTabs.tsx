@@ -1,6 +1,6 @@
-import classNames from 'classnames';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
+import { cn } from '@/utils';
 
 export interface ITab {
   value: string;
@@ -21,7 +21,7 @@ export default function SideTabs({ tabs, children }: { tabs: ITab[]; children?: 
           <li key={tab.value}>
             <Link
               href={tab.href}
-              className={classNames('block px-4 py-2 text-sm text-gray-700 hover:bg-gray-200 hover:text-black', {
+              className={cn('block px-4 py-2 text-sm text-gray-700 hover:bg-gray-200 hover:text-black', {
                 'bg-[#003366] text-white font-semibold': tab.href === pathname,
               })}
               role="menuitem"
