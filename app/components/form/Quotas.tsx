@@ -1,10 +1,10 @@
 import { PrivateCloudProject, Quota } from '@prisma/client';
-import classNames from 'classnames';
 import _startCase from 'lodash-es/startCase';
 import { useFormContext } from 'react-hook-form';
 import QuotasChangeInfo from '@/components/form/QuotasChangeInfo';
 import ExternalLink from '@/components/generic/button/ExternalLink';
 import { resourceOptions } from '@/constants';
+import { cn } from '@/utils';
 import QuotaInput from './QuotaInput';
 
 const namespaceSuffixes = {
@@ -71,7 +71,7 @@ export default function Quotas({
           return (
             <div
               key={namespace}
-              className={classNames('sm:col-span-2 py-3 px-5 rounded-lg border-2', {
+              className={cn('sm:col-span-2 py-3 px-5 rounded-lg border-2', {
                 'border-purple-800 shadow-[0_0_15px_2px_rgba(59,130,246,0.2)]': hasResourceChange,
                 'border-transparent': !hasResourceChange,
               })}

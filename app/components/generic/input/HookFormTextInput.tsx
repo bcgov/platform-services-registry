@@ -1,8 +1,8 @@
 'use client';
 
-import classnames from 'classnames';
 import _get from 'lodash-es/get';
 import { FieldValues, RegisterOptions, Path, useFormContext } from 'react-hook-form';
+import { cn } from '@/utils';
 import FormError from '../FormError';
 import FormTextInput, { FormTextInputProps } from './FormTextInput';
 
@@ -36,10 +36,10 @@ export default function HookFormTextInput<T extends FieldValues>({
         disabled={disabled}
         {...others}
         classNames={{
-          label: classnames(classNames?.label, {
+          label: cn(classNames?.label, {
             'text-pink-600': showError,
           }),
-          input: classnames(classNames?.input, {
+          input: cn(classNames?.input, {
             'ring-pink-600 text-pink-600': showError,
           }),
         }}

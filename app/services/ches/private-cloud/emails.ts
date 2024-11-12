@@ -1,7 +1,6 @@
 import { PrivateCloudProductMemberRole } from '@prisma/client';
 import { IS_PROD } from '@/config';
 import { GlobalRole, privateCloudTeamEmail } from '@/constants';
-import prisma from '@/core/prisma';
 import AdminCreateRequestTemplate from '@/emails/_templates/private-cloud/AdminCreateRequest';
 import AdminDeleteRequestTemplate from '@/emails/_templates/private-cloud/AdminDeleteRequest';
 import AdminEditRequestTemplate from '@/emails/_templates/private-cloud/AdminEditRequest';

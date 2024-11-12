@@ -1,7 +1,7 @@
 'use client';
 
-import classnames from 'classnames';
 import React, { useEffect, useRef } from 'react';
+import { cn } from '@/utils';
 
 interface AutoResizeTextAreaProps {
   id?: string;
@@ -25,7 +25,7 @@ export default function AutoResizeTextArea({ id, value, className = '' }: AutoRe
     <textarea
       ref={textAreaRef}
       id={id}
-      className={classnames(
+      className={cn(
         'border-none bg-transparent resize-none outline-none w-full font-inherit text-inherit p-0 overflow-hidden',
         className,
       )}

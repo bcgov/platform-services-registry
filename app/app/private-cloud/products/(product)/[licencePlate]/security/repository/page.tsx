@@ -4,11 +4,11 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { notifications } from '@mantine/notifications';
 import { SecurityConfig, ProjectContext } from '@prisma/client';
 import { useQuery, useMutation } from '@tanstack/react-query';
-import classNames from 'classnames';
 import _get from 'lodash-es/get';
 import { useEffect, useState } from 'react';
 import { useForm, useFieldArray } from 'react-hook-form';
 import { getSecurityConfig, upsertSecurityConfig } from '@/services/backend/security-config';
+import { cn } from '@/utils';
 import { securityConfigSchema } from '@/validation-schemas/security-config';
 
 export default function Repository({ params: getParams }: { params: Promise<{ licencePlate: string }> }) {
@@ -113,7 +113,7 @@ export default function Repository({ params: getParams }: { params: Promise<{ li
               <div className="flex mb-1">
                 <input
                   autoComplete="off"
-                  className={classNames(
+                  className={cn(
                     'flex-auto rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6',
                   )}
                   {...register(`repositories.${index}.url`)}

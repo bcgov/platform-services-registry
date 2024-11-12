@@ -1,9 +1,9 @@
 import { IconCloudDownload } from '@tabler/icons-react';
-import classNames from 'classnames';
 import { useState } from 'react';
 import LightButton from '@/components/generic/button/LightButton';
 import { openNotificationModal } from '@/components/modal/notification';
 import { instance } from '@/services/backend/axios';
+import { cn } from '@/utils';
 import { downloadFile } from '@/utils/file-download';
 
 export default function ExportButton({
@@ -34,7 +34,7 @@ export default function ExportButton({
   return (
     <>
       <LightButton
-        className={classNames('pr-6', className)}
+        className={cn('pr-6', className)}
         onClick={async () => {
           if (onExport) {
             setIsLoading(true);

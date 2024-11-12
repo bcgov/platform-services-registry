@@ -2,10 +2,10 @@ import { Menu, MenuButton, MenuItems, MenuItem, Transition } from '@headlessui/r
 import { notifications } from '@mantine/notifications';
 import { IconChevronDown, IconRepeat } from '@tabler/icons-react';
 import { useMutation } from '@tanstack/react-query';
-import classNames from 'classnames';
 import { useParams } from 'next/navigation';
 import { useState, Fragment } from 'react';
 import { resendPrivateCloudRequest } from '@/services/backend/private-cloud/requests';
+import { cn } from '@/utils';
 
 export default function PrivateCloudRequestOptions({
   id = '',
@@ -73,7 +73,7 @@ export default function PrivateCloudRequestOptions({
                       onClick={async () => {
                         await resend();
                       }}
-                      className={classNames(
+                      className={cn(
                         'group flex items-center px-4 py-2 text-sm w-full',
                         active && canResend ? 'bg-gray-100 text-gray-900' : 'text-gray-700',
                       )}

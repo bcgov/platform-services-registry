@@ -1,6 +1,6 @@
 import { Dialog, Transition } from '@headlessui/react';
-import classnames from 'classnames';
 import { Fragment, useRef, FormEventHandler, useEffect } from 'react';
+import { cn } from '@/utils';
 
 export default function Modal({
   isOpen,
@@ -48,7 +48,7 @@ export default function Modal({
               <Dialog.Panel
                 as={onSubmit ? 'form' : 'div'}
                 {...(onSubmit ? { onSubmit } : {})}
-                className={classnames(
+                className={cn(
                   'relative transform rounded-lg bg-white text-left shadow-xl transition-all overflow-hidden px-4 pb-5 pt-5 sm:my-8 sm:w-full sm:max-w-4xl sm:p-6',
                   className,
                 )}

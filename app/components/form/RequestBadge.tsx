@@ -1,8 +1,8 @@
 import { Badge } from '@mantine/core';
 import { RequestType, DecisionStatus } from '@prisma/client';
-import classNames from 'classnames';
 import CopyableButton from '@/components/generic/button/CopyableButton';
 import { PrivateCloudRequestDetail } from '@/types/private-cloud';
+import { cn } from '@/utils';
 
 export default function RequestBadge({
   request,
@@ -67,7 +67,7 @@ export default function RequestBadge({
   );
 
   return (
-    <div className={classNames('inline-block', className)}>
+    <div className={cn('inline-block', className)}>
       <CopyableButton value={request.licencePlate}>
         <Badge color="gray" radius="sm">
           {request.licencePlate}

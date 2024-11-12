@@ -1,12 +1,12 @@
 import { Alert } from '@mantine/core';
 import { notifications } from '@mantine/notifications';
 import { useQuery, useMutation } from '@tanstack/react-query';
-import classNames from 'classnames';
 import { useEffect } from 'react';
 import { useFormContext } from 'react-hook-form';
 import FormCheckbox from '@/components/generic/checkbox/FormCheckbox';
 import { updatePrivateCloudProductAdmin } from '@/services/backend/admin';
 import { usePrivateProductState } from '@/states/global';
+import { cn } from '@/utils';
 
 export default function TemporaryProductCheckboxAdmin({
   disabled,
@@ -55,7 +55,7 @@ export default function TemporaryProductCheckboxAdmin({
   }, [updateFlag, formState.dirtyFields.isTest, isTest]);
 
   return (
-    <Alert variant="light" color="blue" title="Temporary product set" className={classNames(className)}>
+    <Alert variant="light" color="blue" title="Temporary product set" className={cn(className)}>
       <FormCheckbox
         id="isTest"
         inputProps={register('isTest')}

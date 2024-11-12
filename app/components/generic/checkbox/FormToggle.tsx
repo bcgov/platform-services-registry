@@ -1,7 +1,7 @@
 'use client';
 
-import classnames from 'classnames';
 import { RefObject } from 'react';
+import { cn } from '@/utils';
 
 export default function FormToggle({
   id,
@@ -32,16 +32,13 @@ export default function FormToggle({
         defaultValue={'true'}
       />
       <span
-        className={classnames(
+        className={cn(
           'slider mr-3 flex h-[26px] w-[50px] items-center rounded-full p-1 duration-200',
           checked ? 'bg-bcblue' : 'bg-[#CCCCCE]',
         )}
       >
         <span
-          className={classnames(
-            'dot h-[18px] w-[18px] rounded-full bg-white duration-200',
-            checked ? 'translate-x-6' : '',
-          )}
+          className={cn('dot h-[18px] w-[18px] rounded-full bg-white duration-200', checked ? 'translate-x-6' : '')}
         />
       </span>
       <span className="block text-sm font-medium leading-6 text-gray-900">{label}</span>
