@@ -1,5 +1,5 @@
-import classNames from 'classnames';
 import { useFormContext } from 'react-hook-form';
+import { cn } from '@/utils';
 
 export default function BudgetInput({ disabled, title, name }: { disabled?: boolean; title: string; name: string }) {
   const {
@@ -21,7 +21,7 @@ export default function BudgetInput({ disabled, title, name }: { disabled?: bool
           type="number"
           id={name}
           step="0.01"
-          className={classNames(
+          className={cn(
             '[appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none block w-full rounded-md border-0 py-1.5 pl-7 pr-12 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6',
             { 'bg-neutral-200': disabled },
           )}

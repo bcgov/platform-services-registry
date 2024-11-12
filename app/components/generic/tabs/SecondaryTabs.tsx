@@ -1,7 +1,7 @@
-import classNames from 'classnames';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { compareUrlsIgnoreLastSegments } from '@/helpers/path-segments';
+import { cn } from '@/utils';
 
 export interface ITab {
   name: string;
@@ -22,12 +22,12 @@ export default function SecondaryTabs({
   const pathname = usePathname();
 
   return (
-    <div className={classNames('w-full isolate inline-flex rounded-md h-10', className)}>
+    <div className={cn('w-full isolate inline-flex rounded-md h-10', className)}>
       {tabs.map((tab) => (
         <Link
           href={tab.href}
           key={tab.name}
-          className={classNames(
+          className={cn(
             'pl-4 relative inline-flex items-center first:rounded-l-lg last:rounded-r-lg px-3 py-2 text-sm font-semibold ring-1 ring-inset ring-bcblue focus:z-10',
             compareUrlsIgnoreLastSegments(tab.href, pathname, tab.ignoreSegments ?? 0)
               ? 'bg-bcblue text-white'

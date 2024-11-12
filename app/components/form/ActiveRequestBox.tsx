@@ -11,10 +11,10 @@ import {
   IconBan,
 } from '@tabler/icons-react';
 import { useQuery } from '@tanstack/react-query';
-import classNames from 'classnames';
 import { useRouter } from 'next/navigation';
 import { useSession } from 'next-auth/react';
 import { getPrivateCloudCommentCount } from '@/services/backend/private-cloud/products';
+import { cn } from '@/utils';
 
 export default function ActiveRequestBox({
   data,
@@ -143,7 +143,7 @@ export default function ActiveRequestBox({
     <Tooltip label="View Request" position="top" offset={10}>
       <button
         type="button"
-        className={classNames(
+        className={cn(
           className,
           'w-full max-w-sm relative text-gray-900 bg-white border-solid border-2 border-gray-300 focus:outline-none hover:bg-gray-100 focus:ring-4 focus:ring-gray-100 font-medium rounded-lg text-sm px-3 py-2.5',
         )}

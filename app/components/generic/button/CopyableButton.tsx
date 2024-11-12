@@ -1,9 +1,9 @@
 import { Tooltip, UnstyledButton } from '@mantine/core';
 import { useClipboard } from '@mantine/hooks';
 import { IconClipboardCopy } from '@tabler/icons-react';
-import classNames from 'classnames';
 import _isString from 'lodash-es/isString';
 import React from 'react';
+import { cn } from '@/utils';
 
 export default function CopyableButton({
   children,
@@ -22,7 +22,7 @@ export default function CopyableButton({
   if (children) {
     content = (
       <div
-        className={classNames('flex', {
+        className={cn('flex', {
           'hover:underline': _isString(children),
         })}
       >
@@ -37,7 +37,7 @@ export default function CopyableButton({
   return (
     <Tooltip label={clipboard.copied ? 'Copied' : 'Copy'} position="top" offset={10}>
       <UnstyledButton
-        className={classNames('inline-block', className)}
+        className={cn('inline-block', className)}
         onClick={(e) => {
           e.stopPropagation();
           e.preventDefault();

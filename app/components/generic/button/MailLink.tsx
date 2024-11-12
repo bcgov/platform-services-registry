@@ -1,6 +1,6 @@
 'use client';
 import { IconMail } from '@tabler/icons-react';
-import classnames from 'classnames';
+import { cn } from '@/utils';
 
 export default function MailLink({
   to,
@@ -16,7 +16,7 @@ export default function MailLink({
   return (
     <a
       href={href}
-      className={classnames('underline text-blue-500 hover:text-blue-700', className)}
+      className={cn('underline text-blue-500 hover:text-blue-700', className)}
       onClick={(event) => {
         event.stopPropagation();
       }}

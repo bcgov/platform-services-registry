@@ -1,9 +1,9 @@
-import classNames from 'classnames';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useSnapshot } from 'valtio';
 import { tabName } from '@/app/api/public-cloud/aws-roles/helpers';
 import { publicProductState } from '@/states/global';
+import { cn } from '@/utils';
 
 export default function PublicUsersTabs({ roles }: { roles: tabName[] }) {
   const snap = useSnapshot(publicProductState);
@@ -20,7 +20,7 @@ export default function PublicUsersTabs({ roles }: { roles: tabName[] }) {
             key={index}
             href={`/public-cloud/products/${snap.licencePlate}/aws-roles/${role.href}`}
             type="button"
-            className={classNames(
+            className={cn(
               (pathname.split('/').includes(role.href) ? 'bg-gray-200 hover:none' : 'bg-white hover:bg-gray-100') +
                 (index === 0 ? ' rounded-l-lg' : '') +
                 (index === roles.length - 1 ? ' rounded-r-lg' : '') +

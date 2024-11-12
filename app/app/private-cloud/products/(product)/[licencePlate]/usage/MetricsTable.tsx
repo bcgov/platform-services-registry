@@ -1,12 +1,12 @@
 'use client';
 
 import { ResourceType } from '@prisma/client';
-import classNames from 'classnames';
 import _truncate from 'lodash-es/truncate';
 import React from 'react';
 import TableHeader from '@/components/generic/table/TableHeader';
 import TruncatedTooltip from '@/components/table/TruncatedTooltip';
 import { formatBinaryMetric, formatCpu, TransformedPodData, TransformedPVCData } from '@/helpers/resource-metrics';
+import { cn } from '@/utils';
 import { capitalizeFirstLetter } from '@/utils/string';
 
 interface MetricsSummary {
@@ -55,36 +55,34 @@ export default function MetricsTable({ rows, resource, totalMetrics }: TableProp
             return (
               <div
                 key={row.name}
-                className={classNames(
+                className={cn(
                   'hover:bg-gray-100 transition-colors duration-200 grid grid-cols-1 md:grid-cols-6 lg:grid-cols-12 gap-4 px-4 py-3 sm:px-6 lg:px-8',
                   { 'bg-gray-100': index === 0 },
                 )}
               >
                 <div className="md:col-span-1 lg:col-span-3">
                   <TruncatedTooltip label={row.name}>
-                    <span className={classNames({ 'font-bold': index === 0 })}>
-                      {_truncate(row.name, { length: 100 })}
-                    </span>
+                    <span className={cn({ 'font-bold': index === 0 })}>{_truncate(row.name, { length: 100 })}</span>
                   </TruncatedTooltip>
                 </div>
                 <div className="md:col-span-1 lg:col-span-3">
                   <TruncatedTooltip label={isPvcRow ? row.pvName : row.containerName}>
-                    <span className={classNames({ 'font-bold': index === 0 })}>
+                    <span className={cn({ 'font-bold': index === 0 })}>
                       {_truncate(isPvcRow ? row.pvName : row.containerName, { length: 100 })}
                     </span>
                   </TruncatedTooltip>
                 </div>
                 {isPvcRow ? (
                   <>
-                    <div className={classNames('md:col-span-1 lg:col-span-2', { 'font-bold': index === 0 })}>
+                    <div className={cn('md:col-span-1 lg:col-span-2', { 'font-bold': index === 0 })}>
                       {index === 0 ? row.storageClassName : row.storageClassName}
                     </div>
-                    <div className={classNames('md:col-span-1 lg:col-span-2', { 'font-bold': index === 0 })}>
+                    <div className={cn('md:col-span-1 lg:col-span-2', { 'font-bold': index === 0 })}>
                       {index === 0
                         ? getPVCMetricValue(row, 'usage')
                         : formatMetric(resource, getPVCMetricValue(row, 'usage'))}
                     </div>
-                    <div className={classNames('md:col-span-1 lg:col-span-2', { 'font-bold': index === 0 })}>
+                    <div className={cn('md:col-span-1 lg:col-span-2', { 'font-bold': index === 0 })}>
                       {index === 0
                         ? getPVCMetricValue(row, 'limits')
                         : formatMetric(resource, getPVCMetricValue(row, 'limits'))}
@@ -92,17 +90,17 @@ export default function MetricsTable({ rows, resource, totalMetrics }: TableProp
                   </>
                 ) : (
                   <>
-                    <div className={classNames('md:col-span-1 lg:col-span-2', { 'font-bold': index === 0 })}>
+                    <div className={cn('md:col-span-1 lg:col-span-2', { 'font-bold': index === 0 })}>
                       {index === 0
                         ? getPodMetricValue(row, resource, 'usage')
                         : formatMetric(resource, getPodMetricValue(row, resource, 'usage'))}
                     </div>
-                    <div className={classNames('md:col-span-1 lg:col-span-2', { 'font-bold': index === 0 })}>
+                    <div className={cn('md:col-span-1 lg:col-span-2', { 'font-bold': index === 0 })}>
                       {index === 0
                         ? getPodMetricValue(row, resource, 'requests')
                         : formatMetric(resource, getPodMetricValue(row, resource, 'requests'))}
                     </div>
-                    <div className={classNames('md:col-span-1 lg:col-span-2', { 'font-bold': index === 0 })}>
+                    <div className={cn('md:col-span-1 lg:col-span-2', { 'font-bold': index === 0 })}>
                       {index === 0
                         ? getPodMetricValue(row, resource, 'limits')
                         : formatMetric(resource, getPodMetricValue(row, resource, 'limits'))}
@@ -121,10 +119,10 @@ export default function MetricsTable({ rows, resource, totalMetrics }: TableProp
             <div className="md:col-span-3 lg:col-span-3 text-center font-bold">Total {resource} usage:</div>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-6 lg:grid-cols-6 gap-4 px-4 py-3 sm:px-6 lg:px-8 ">
-            <div className={classNames('md:col-span-3 lg:col-span-3 text-center')}>
+            <div className={cn('md:col-span-3 lg:col-span-3 text-center')}>
               {formatMetric(resource, totalMetrics.totalLimit)}
             </div>
-            <div className={classNames('md:col-span-3 lg:col-span-3 text-center')}>
+            <div className={cn('md:col-span-3 lg:col-span-3 text-center')}>
               {formatMetric(resource, totalMetrics.totalUsage)}
             </div>
           </div>

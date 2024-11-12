@@ -1,7 +1,7 @@
 import { Badge } from '@mantine/core';
 import { ProjectStatus } from '@prisma/client';
-import classNames from 'classnames';
 import CopyableButton from '@/components/generic/button/CopyableButton';
+import { cn } from '@/utils';
 
 export default function ProductBadge({
   data,
@@ -39,7 +39,7 @@ export default function ProductBadge({
   ) : null;
 
   return (
-    <div className={classNames('inline-block', className)}>
+    <div className={cn('inline-block', className)}>
       <CopyableButton value={data.licencePlate}>
         <Badge color="gray" radius="sm">
           {data.licencePlate}

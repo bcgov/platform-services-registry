@@ -2,9 +2,9 @@
 
 import { Button } from '@mantine/core';
 import { IconPhoto, IconDownload } from '@tabler/icons-react';
-import classNames from 'classnames';
 import { GlobalRole } from '@/constants';
 import createClientPage from '@/core/client-page';
+import { cn } from '@/utils';
 
 const colors = ['primary', 'secondary', 'success', 'danger', 'warning', 'info', 'dark'];
 const variants = ['filled', 'light', 'outline'];
@@ -17,7 +17,7 @@ export default buttonPage(() => {
   return (
     <>
       <h1 className="font-bold text-2xl mt-4 mb-5">Text Input</h1>
-      <div className={classNames('grid grid-cols-1 md:gap-4 md:py-2', `md:grid-cols-${colors.length}`)}>
+      <div className={cn('grid grid-cols-1 md:gap-4 md:py-2', `md:grid-cols-${colors.length}`)}>
         {colors.map((color) => {
           return (
             <div className="col-span-1" key={color}>

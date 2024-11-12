@@ -2,9 +2,9 @@
 
 import { Button } from '@mantine/core';
 import { IconPlus } from '@tabler/icons-react';
-import classNames from 'classnames';
 import _get from 'lodash-es/get';
 import { useFieldArray, useFormContext } from 'react-hook-form';
+import { cn } from '@/utils';
 
 export default function AccountMembers({ disabled = false }: { disabled?: boolean }) {
   const {
@@ -34,7 +34,7 @@ export default function AccountMembers({ disabled = false }: { disabled?: boolea
               <div className="flex mb-1">
                 <input
                   autoComplete="off"
-                  className={classNames(
+                  className={cn(
                     'flex-auto rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset sm:text-sm sm:leading-6',
                     {
                       'border-solid border-1 border-red-600 focus:ring-red-600 text-red-600': itemError,

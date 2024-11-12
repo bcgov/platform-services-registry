@@ -5,10 +5,10 @@ import { useDisclosure } from '@mantine/hooks';
 import { TaskStatus, TaskType } from '@prisma/client';
 import { IconChecklist } from '@tabler/icons-react';
 import { useQuery } from '@tanstack/react-query';
-import classnames from 'classnames';
 import Link from 'next/link';
 import { useEffect } from 'react';
 import { getAssignedTasks } from '@/services/backend/tasks';
+import { cn } from '@/utils';
 import { formatDate } from '@/utils/date';
 
 const taskTypeLabels = {
@@ -92,7 +92,7 @@ export default function SideTasks({ className }: { className?: string }) {
             variant="light"
             aria-label="Tasks"
             onClick={open}
-            className={classnames(
+            className={cn(
               'bg-bcblue border-1 rounded-lg hover:rounded-full text-white border-white hover:text-white',
               className,
             )}

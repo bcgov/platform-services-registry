@@ -1,8 +1,8 @@
 'use client';
 
-import classnames from 'classnames';
 import _kebabCase from 'lodash-es/kebabCase';
 import { InputHTMLAttributes } from 'react';
+import { cn } from '@/utils';
 import Label from '../Label';
 
 interface InputProps extends InputHTMLAttributes<HTMLInputElement> {}
@@ -72,7 +72,7 @@ export default function FormTextInput({
         autoComplete="off"
         {...inputProps}
         {...others}
-        className={classnames(inputClass, classNames?.input)}
+        className={cn(inputClass, classNames?.input)}
       />
     </div>
   );

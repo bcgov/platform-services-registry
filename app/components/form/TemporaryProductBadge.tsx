@@ -1,6 +1,6 @@
 import { Tooltip, Badge } from '@mantine/core';
-import classNames from 'classnames';
 import { differenceInDays } from 'date-fns/differenceInDays';
+import { cn } from '@/utils';
 
 export default function TemporaryProductBadge({
   data,
@@ -24,7 +24,7 @@ export default function TemporaryProductBadge({
 
   return (
     <Tooltip label={label} position="top" offset={10} hidden={!label}>
-      <Badge autoContrast size="md" color={color} radius="sm" className={classNames('mt-1', className)}>
+      <Badge autoContrast size="md" color={color} radius="sm" className={cn('mt-1', className)}>
         Temp
       </Badge>
     </Tooltip>
