@@ -12,7 +12,7 @@ export const up = async (db, client) => {
 
   const taskData = billings.map((billing) => {
     return {
-      type: 'SIGN_MOU',
+      type: 'SIGN_PRIVATE_CLOUD_MOU',
       status: 'ASSIGNED',
       userIds: [String(billing.expenseAuthorityId)],
       data: {

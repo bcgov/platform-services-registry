@@ -106,7 +106,7 @@ export const openPublicCloudMouReviewModal = createModal<ModalProps, ModalState>
               if (formData.confirmed) {
                 const task = session?.tasks.find(
                   (tsk) =>
-                    tsk.type === TaskType.REVIEW_MOU &&
+                    tsk.type === TaskType.REVIEW_PRIVATE_CLOUD_MOU &&
                     tsk.status === TaskStatus.ASSIGNED &&
                     (tsk.data as { licencePlate: string }).licencePlate === licencePlate,
                 );

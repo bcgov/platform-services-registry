@@ -73,7 +73,7 @@ describe('Download Public Cloud Products - Permissions', () => {
 
     const task1 = await prisma.task.findFirst({
       where: {
-        type: TaskType.SIGN_MOU,
+        type: TaskType.SIGN_PRIVATE_CLOUD_MOU,
         status: TaskStatus.ASSIGNED,
         data: {
           equals: {
@@ -93,7 +93,7 @@ describe('Download Public Cloud Products - Permissions', () => {
       await mockSessionByRole(GlobalRole.BillingReviewer);
       const task2 = await prisma.task.findFirst({
         where: {
-          type: TaskType.REVIEW_MOU,
+          type: TaskType.REVIEW_PRIVATE_CLOUD_MOU,
           status: TaskStatus.ASSIGNED,
           data: {
             equals: {

@@ -19,7 +19,7 @@ async function runEmouWorkflows(reqData: any) {
 
   let task = await prisma.task.findFirst({
     where: {
-      type: TaskType.SIGN_MOU,
+      type: TaskType.SIGN_PRIVATE_CLOUD_MOU,
       status: TaskStatus.ASSIGNED,
       data: {
         equals: {
@@ -42,7 +42,7 @@ async function runEmouWorkflows(reqData: any) {
 
   task = await prisma.task.findFirst({
     where: {
-      type: TaskType.REVIEW_MOU,
+      type: TaskType.REVIEW_PRIVATE_CLOUD_MOU,
       status: TaskStatus.ASSIGNED,
       data: {
         equals: {

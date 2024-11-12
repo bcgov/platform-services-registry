@@ -35,7 +35,7 @@ export const POST = apiHandler(async ({ pathParams, body, session }) => {
     prisma.task.update({
       where: {
         id: taskId,
-        type: TaskType.SIGN_MOU,
+        type: TaskType.SIGN_PRIVATE_CLOUD_MOU,
         status: TaskStatus.ASSIGNED,
         OR: [{ userIds: { has: session.user.id } }, { roles: { hasSome: session.roles } }],
         data: {
@@ -50,7 +50,7 @@ export const POST = apiHandler(async ({ pathParams, body, session }) => {
     }),
     prisma.task.create({
       data: {
-        type: TaskType.REVIEW_MOU,
+        type: TaskType.REVIEW_PRIVATE_CLOUD_MOU,
         status: TaskStatus.ASSIGNED,
         roles: [GlobalRole.BillingReviewer],
         data: {

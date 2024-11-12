@@ -28,8 +28,8 @@ export const GET = apiHandler(async ({ session }) => {
 
   for (const task of tasks) {
     switch (task.type) {
-      case TaskType.SIGN_MOU:
-      case TaskType.REVIEW_MOU:
+      case TaskType.SIGN_PRIVATE_CLOUD_MOU:
+      case TaskType.REVIEW_PRIVATE_CLOUD_MOU:
         const data = task.data as { licencePlate: string };
         licencePlates.push(data.licencePlate);
     }
@@ -56,8 +56,8 @@ export const GET = apiHandler(async ({ session }) => {
 
   processedTasks = processedTasks.map((task) => {
     switch (task.type) {
-      case TaskType.SIGN_MOU:
-      case TaskType.REVIEW_MOU:
+      case TaskType.SIGN_PRIVATE_CLOUD_MOU:
+      case TaskType.REVIEW_PRIVATE_CLOUD_MOU:
         const data = task.data as { licencePlate: string };
         const request = requests.find((req) => req.licencePlate === data.licencePlate);
         if (request) {

@@ -652,8 +652,8 @@ enum EventType {
 }
 
 enum TaskType {
-  SIGN_MOU
-  REVIEW_MOU
+  SIGN_PRIVATE_CLOUD_MOU
+  REVIEW_PRIVATE_CLOUD_MOU
 }
 
 enum TaskStatus {
