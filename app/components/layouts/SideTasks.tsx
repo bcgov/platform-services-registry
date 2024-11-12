@@ -12,7 +12,7 @@ import { getAssignedTasks } from '@/services/backend/tasks';
 import { formatDate } from '@/utils/date';
 
 const taskTypeLabels = {
-  [TaskType.SIGN_PUBLIC_CLOUD_MOU]: 'Sign Private Cloud MOU',
+  [TaskType.SIGN_PUBLIC_CLOUD_MOU]: 'Sign Public Cloud MOU',
   [TaskType.REVIEW_PUBLIC_CLOUD_MOU]: 'Review Public Cloud MOU',
 };
 
