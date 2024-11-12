@@ -54,7 +54,7 @@ export const GET = apiHandler(async ({ session }) => {
       if (product) {
         result.products += 1;
 
-        const eaEmail = render(ExpenseAuthorityMouProduct({ product }), { pretty: false });
+        const eaEmail = await render(ExpenseAuthorityMouProduct({ product }), { pretty: false });
         await sendEmail({
           body: eaEmail,
           to: users.map((user) => user.email),
@@ -71,7 +71,7 @@ export const GET = apiHandler(async ({ session }) => {
           result.requests += 1;
 
           const requestDecorated = await models.publicCloudRequest.decorate(request, session, true);
-          const eaEmail = render(ExpenseAuthorityMou({ request: requestDecorated }), { pretty: false });
+          const eaEmail = await render(ExpenseAuthorityMou({ request: requestDecorated }), { pretty: false });
           await sendEmail({
             body: eaEmail,
             to: users.map((user) => user.email),
