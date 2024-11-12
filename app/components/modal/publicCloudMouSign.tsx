@@ -92,7 +92,7 @@ export const openPublicCloudMouSignModal = createModal<ModalProps, ModalState>({
               if (formData.confirmed) {
                 const task = session?.tasks.find(
                   (tsk) =>
-                    tsk.type === TaskType.SIGN_MOU &&
+                    tsk.type === TaskType.SIGN_PUBLIC_CLOUD_MOU &&
                     tsk.status === TaskStatus.ASSIGNED &&
                     (tsk.data as { licencePlate: string }).licencePlate === licencePlate,
                 );

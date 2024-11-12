@@ -39,7 +39,7 @@ describe('Delete Public Cloud Product - Permissions', () => {
 
     const task = await prisma.task.findFirst({
       where: {
-        type: TaskType.SIGN_MOU,
+        type: TaskType.SIGN_PUBLIC_CLOUD_MOU,
         status: TaskStatus.ASSIGNED,
         data: {
           equals: {
@@ -64,7 +64,7 @@ describe('Delete Public Cloud Product - Permissions', () => {
 
     const task = await prisma.task.findFirst({
       where: {
-        type: TaskType.REVIEW_MOU,
+        type: TaskType.REVIEW_PUBLIC_CLOUD_MOU,
         status: TaskStatus.ASSIGNED,
         data: {
           equals: {

@@ -21,7 +21,7 @@ async function baseFilter(session: Session) {
   const licencePlates = products.map(({ licencePlate }) => licencePlate);
 
   const licencePlatesFromTasks = session.tasks
-    .filter((task) => [TaskType.SIGN_MOU, TaskType.REVIEW_MOU].includes(task.type))
+    .filter((task) => [TaskType.SIGN_PUBLIC_CLOUD_MOU, TaskType.REVIEW_PUBLIC_CLOUD_MOU].includes(task.type))
     .map((task) => (task.data as { licencePlate: string }).licencePlate);
 
   const filter: Prisma.PublicCloudRequestWhereInput = {
@@ -40,7 +40,6 @@ async function decorate<T extends PublicCloudRequestSimple | PublicCloudRequestD
   detail: boolean,
 ) {
   let canReview = doc.decisionStatus === DecisionStatus.PENDING && session.permissions.reviewAllPublicCloudRequests;
-
   let canSignMou = false;
   let canApproveMou = false;
 
@@ -49,7 +48,7 @@ async function decorate<T extends PublicCloudRequestSimple | PublicCloudRequestD
       canSignMou =
         !doc.decisionData.billing.signed &&
         session.tasks
-          .filter((task) => task.type === TaskType.SIGN_MOU && task.status === TaskStatus.ASSIGNED)
+          .filter((task) => task.type === TaskType.SIGN_PUBLIC_CLOUD_MOU && task.status === TaskStatus.ASSIGNED)
           .map((task) => (task.data as { licencePlate: string }).licencePlate)
           .includes(doc.licencePlate);
 
@@ -57,7 +56,7 @@ async function decorate<T extends PublicCloudRequestSimple | PublicCloudRequestD
         doc.decisionData.billing.signed &&
         !doc.decisionData.billing.approved &&
         session.tasks
-          .filter((task) => task.type === TaskType.REVIEW_MOU && task.status === TaskStatus.ASSIGNED)
+          .filter((task) => task.type === TaskType.REVIEW_PUBLIC_CLOUD_MOU && task.status === TaskStatus.ASSIGNED)
           .map((task) => (task.data as { licencePlate: string }).licencePlate)
           .includes(doc.licencePlate);
 

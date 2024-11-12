@@ -28,7 +28,7 @@ export const GET = apiHandler(async ({ session }) => {
 
     const task = await prisma.task.findFirst({
       where: {
-        type: TaskType.SIGN_MOU,
+        type: TaskType.SIGN_PUBLIC_CLOUD_MOU,
         status: TaskStatus.ASSIGNED,
         data: {
           equals: {

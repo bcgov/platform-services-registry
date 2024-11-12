@@ -28,7 +28,7 @@ export const POST = apiHandler(async ({ pathParams, body, session }) => {
   await prisma.task.update({
     where: {
       id: taskId,
-      type: TaskType.REVIEW_MOU,
+      type: TaskType.REVIEW_PUBLIC_CLOUD_MOU,
       status: TaskStatus.ASSIGNED,
       OR: [{ userIds: { has: session.user.id } }, { roles: { hasSome: session.roles } }],
       data: {

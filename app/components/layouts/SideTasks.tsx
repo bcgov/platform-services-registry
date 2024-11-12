@@ -12,8 +12,8 @@ import { getAssignedTasks } from '@/services/backend/tasks';
 import { formatDate } from '@/utils/date';
 
 const taskTypeLabels = {
-  [TaskType.SIGN_MOU]: 'Sign MOU',
-  [TaskType.REVIEW_MOU]: 'Review MOU',
+  [TaskType.SIGN_PUBLIC_CLOUD_MOU]: 'Sign Public Cloud MOU',
+  [TaskType.REVIEW_PUBLIC_CLOUD_MOU]: 'Review Public Cloud MOU',
 };
 
 const taskStatusColors = {
