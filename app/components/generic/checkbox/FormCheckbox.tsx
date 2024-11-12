@@ -68,7 +68,7 @@ export default function FormCheckbox({
         },
       );
 
-      if (res?.state.confirmed) {
+      if (res.state.confirmed) {
         // Ensure the value
         if (_ref.current) _ref.current.checked = value;
         handleChecked(e);

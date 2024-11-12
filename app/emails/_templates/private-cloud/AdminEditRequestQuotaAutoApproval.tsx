@@ -4,10 +4,10 @@ import PrivateCloudLayout from '@/emails/_components/layout/PrivateCloudLayout';
 import LinkButton from '@/emails/_components/LinkButton';
 import Changes from '@/emails/_components/private-cloud/Changes';
 import QuotaUpgradeResources from '@/emails/_components/private-cloud/QuotaUpgradeResources';
-import { PrivateCloudRequestDetail } from '@/types/private-cloud';
+import { PrivateCloudRequestDetailDecorated } from '@/types/private-cloud';
 
 interface EmailProp {
-  request: PrivateCloudRequestDetail;
+  request: PrivateCloudRequestDetailDecorated;
   requester: string;
 }
 

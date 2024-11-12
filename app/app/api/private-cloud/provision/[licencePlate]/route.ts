@@ -5,7 +5,7 @@ import { logger } from '@/core/logging';
 import prisma from '@/core/prisma';
 import { NotFoundResponse, OkResponse } from '@/core/responses';
 import { sendRequestCompletionEmails } from '@/services/ches/private-cloud';
-import { privateCloudRequestDetailInclude } from '@/services/db';
+import { models, privateCloudRequestDetailInclude } from '@/services/db';
 
 const pathParamSchema = z.object({
   licencePlate: z.string(),
@@ -15,7 +15,7 @@ const apiHandler = createApiHandler({
   roles: [],
   validations: { pathParams: pathParamSchema },
 });
-export const PUT = apiHandler(async ({ pathParams }) => {
+export const PUT = apiHandler(async ({ pathParams, session }) => {
   const { licencePlate } = pathParams;
 
   const request = await prisma.privateCloudRequest.findFirst({
@@ -71,8 +71,8 @@ export const PUT = apiHandler(async ({ pathParams }) => {
           });
 
     const [updatedRequest] = await Promise.all([updateRequest, upsertProject]);
-
-    await sendRequestCompletionEmails(updatedRequest);
+    const updatedRequestDecorated = await models.privateCloudRequest.decorate(updatedRequest, session, true);
+    await sendRequestCompletionEmails(updatedRequestDecorated);
   }
 
   logger.info(`Successfully marked ${licencePlate} as provisioned.`);

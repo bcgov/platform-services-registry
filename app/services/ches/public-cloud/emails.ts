@@ -1,3 +1,4 @@
+import { PublicCloudProductMemberRole } from '@prisma/client';
 import { IS_PROD } from '@/config';
 import { publicCloudTeamEmail, GlobalRole } from '@/constants';
 import prisma from '@/core/prisma';
@@ -24,14 +25,9 @@ import { findUserEmailsByAuthRole } from '@/services/keycloak/app-realm';
 import { PublicCloudRequestDetailDecorated } from '@/types/public-cloud';
 
 async function getTeamEmails(request: PublicCloudRequestDetailDecorated) {
-  let members: { email: string }[] = [];
-  if (request.decisionData.members?.length) {
-    members = await prisma.user.findMany({
-      where: { email: { in: request.decisionData.members.map((member) => member.userId) } },
-      select: { email: true },
-      distinct: ['email'],
-    });
-  }
+  const memberEmails = request.decisionData.members
+    .filter((member) => member.roles.includes(PublicCloudProductMemberRole.SUBSCRIBER))
+    .map((member) => member.email);
 
   return [
     request.decisionData.projectOwner.email,
@@ -40,7 +36,7 @@ async function getTeamEmails(request: PublicCloudRequestDetailDecorated) {
     request.originalData?.projectOwner.email,
     request.originalData?.primaryTechnicalLead.email,
     request.originalData?.secondaryTechnicalLead?.email,
-    ...members.map((member) => member.email),
+    ...memberEmails,
   ];
 }
 

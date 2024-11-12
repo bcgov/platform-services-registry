@@ -1,14 +1,12 @@
 import { DecisionStatus, Prisma, RequestType, EventType } from '@prisma/client';
 import { Session } from 'next-auth';
 import { TypeOf } from 'zod';
-import prisma from '@/core/prisma';
-import { OkResponse, UnauthorizedResponse, UnprocessableEntityResponse } from '@/core/responses';
+import { OkResponse, UnauthorizedResponse } from '@/core/responses';
 import { comparePublicProductData } from '@/helpers/product-change';
 import { sendEditRequestEmails } from '@/services/ches/public-cloud';
-import { createEvent, publicCloudRequestDetailInclude, getLastClosedPublicCloudRequest, models } from '@/services/db';
+import { createEvent, getLastClosedPublicCloudRequest, models } from '@/services/db';
 import { upsertUsers } from '@/services/db/user';
 import { sendPublicCloudNatsMessage } from '@/services/nats';
-import { PublicCloudRequestDetail } from '@/types/public-cloud';
 import { PublicCloudEditRequestBody } from '@/validation-schemas/public-cloud';
 import { putPathParamSchema } from '../[licencePlate]/schema';
 
@@ -30,6 +28,10 @@ export default async function updateOp({
   }
 
   const { requestComment, accountCoding, ...rest } = body;
+
+  if (!product._permissions.manageMembers) {
+    rest.members = product.members;
+  }
 
   await upsertUsers([
     body.projectOwner.email,
@@ -79,9 +81,6 @@ export default async function updateOp({
     )
   ).data;
 
-  if (!newRequest) {
-    return UnprocessableEntityResponse('failed to create a request.');
-  }
   const proms = [];
 
   proms.push(createEvent(EventType.UPDATE_PUBLIC_CLOUD_PRODUCT, session.user.id, { requestId: newRequest.id }));

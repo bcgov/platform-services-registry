@@ -5,6 +5,7 @@ import _isString from 'lodash-es/isString';
 import _mapValues from 'lodash-es/mapValues';
 import _pick from 'lodash-es/pick';
 import _uniq from 'lodash-es/uniq';
+import { ExtendedPrivateCloudProductMember } from '@/types/private-cloud';
 import { ExtendedPublicCloudProductMember } from '@/types/public-cloud';
 import { diffExt, DiffChange } from '@/utils/diff';
 import { extractNumbers } from '@/utils/string';
@@ -28,6 +29,7 @@ const privateDataFields = [
   'projectOwner.email',
   'primaryTechnicalLead.email',
   'secondaryTechnicalLead.email',
+  'members',
   'developmentQuota',
   'testQuota',
   'productionQuota',
@@ -36,12 +38,27 @@ const privateDataFields = [
   'supportPhoneNumber',
 ];
 
+function preparePrivateCloudProductCloudData(data: any) {
+  if (data.members) {
+    data.members = data.members.map((member: ExtendedPrivateCloudProductMember) => ({
+      email: member.email,
+      roles: (member.roles || []).join(', '),
+    }));
+  }
+
+  return data;
+}
+
 export function comparePrivateProductData(data1: any, data2: any) {
+  data1 = preparePrivateCloudProductCloudData({ ...data1 });
+  data2 = preparePrivateCloudProductCloudData({ ...data2 });
+
   const changes = diffExt(data1, data2, privateDataFields);
   const parentPaths = [];
 
   let profileChanged = false;
   let contactsChanged = false;
+  let membersChanged = false;
   let quotasChanged = false;
   let quotasIncrease = false;
   let commonComponentsChanged = false;
@@ -62,6 +79,10 @@ export function comparePrivateProductData(data1: any, data2: any) {
       case 'primaryTechnicalLead':
       case 'secondaryTechnicalLead':
         contactsChanged = true;
+        break;
+
+      case 'members':
+        membersChanged = true;
         break;
 
       case 'developmentQuota':
@@ -90,6 +111,7 @@ export function comparePrivateProductData(data1: any, data2: any) {
   return {
     profileChanged,
     contactsChanged,
+    membersChanged,
     quotasChanged,
     quotasIncrease,
     commonComponentsChanged,
@@ -121,7 +143,7 @@ const publicDataFields = [
   'members',
 ];
 
-function prepareProductCloudData(data: any) {
+function preparePublicCloudProductCloudData(data: any) {
   if (data.members) {
     data.members = data.members.map((member: ExtendedPublicCloudProductMember) => ({
       email: member.email,
@@ -133,8 +155,8 @@ function prepareProductCloudData(data: any) {
 }
 
 export function comparePublicProductData(data1: any, data2: any) {
-  data1 = prepareProductCloudData({ ...data1 });
-  data2 = prepareProductCloudData({ ...data2 });
+  data1 = preparePublicCloudProductCloudData({ ...data1 });
+  data2 = preparePublicCloudProductCloudData({ ...data2 });
 
   const changes = diffExt(data1, data2, publicDataFields);
   const parentPaths = [];

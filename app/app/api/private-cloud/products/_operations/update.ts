@@ -1,8 +1,7 @@
 import { DecisionStatus, Cluster, RequestType, EventType } from '@prisma/client';
 import { Session } from 'next-auth';
 import { TypeOf } from 'zod';
-import prisma from '@/core/prisma';
-import { OkResponse, UnauthorizedResponse } from '@/core/responses';
+import { OkResponse, UnauthorizedResponse, UnprocessableEntityResponse } from '@/core/responses';
 import { getQuotaChangeStatus } from '@/helpers/auto-approval-check';
 import { sendRequestNatsMessage } from '@/helpers/nats-message';
 import { comparePrivateProductData } from '@/helpers/product-change';
@@ -30,6 +29,10 @@ export default async function updateOp({
   }
 
   const { requestComment, quotaContactName, quotaContactEmail, quotaJustification, ...rest } = body;
+
+  if (!product._permissions.manageMembers) {
+    rest.members = product.members;
+  }
 
   await upsertUsers([body.projectOwner.email, body.primaryTechnicalLead.email, body.secondaryTechnicalLead?.email]);
 
@@ -77,26 +80,31 @@ export default async function updateOp({
         quotaJustification,
       };
 
-  const newRequest = await prisma.privateCloudRequest.create({
-    data: {
-      active: true,
-      type: RequestType.EDIT,
-      decisionStatus,
-      decisionDate: decisionStatus === DecisionStatus.AUTO_APPROVED ? new Date() : null,
-      isQuotaChanged: quotaChangeStatus.hasChange,
-      quotaUpgradeResourceDetailList: quotaChangeStatus.resourceDetailList,
-      ...quotaChangeInfo,
-      createdBy: { connect: { email: session.user.email } },
-      licencePlate: product.licencePlate,
-      requestComment,
-      changes: otherChangeMeta,
-      originalData: { connect: { id: previousRequest?.decisionDataId } },
-      decisionData: { create: productData },
-      requestData: { create: productData },
-      project: { connect: { licencePlate: product.licencePlate } },
-    },
-    include: privateCloudRequestDetailInclude,
-  });
+  const newRequest = (
+    await models.privateCloudRequest.create(
+      {
+        data: {
+          active: true,
+          type: RequestType.EDIT,
+          decisionStatus,
+          decisionDate: decisionStatus === DecisionStatus.AUTO_APPROVED ? new Date() : null,
+          isQuotaChanged: quotaChangeStatus.hasChange,
+          quotaUpgradeResourceDetailList: quotaChangeStatus.resourceDetailList,
+          ...quotaChangeInfo,
+          createdBy: { connect: { email: session.user.email } },
+          licencePlate: product.licencePlate,
+          requestComment,
+          changes: otherChangeMeta,
+          originalData: { connect: { id: previousRequest?.decisionDataId } },
+          decisionData: { create: productData },
+          requestData: { create: productData },
+          project: { connect: { licencePlate: product.licencePlate } },
+        },
+        include: privateCloudRequestDetailInclude,
+      },
+      session,
+    )
+  ).data;
 
   await createEvent(EventType.UPDATE_PRIVATE_CLOUD_PRODUCT, session.user.id, { requestId: newRequest.id });
 

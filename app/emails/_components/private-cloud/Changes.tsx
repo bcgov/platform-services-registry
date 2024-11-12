@@ -1,6 +1,7 @@
 import { Heading, Link, Text, Hr } from '@react-email/components';
 import ContactChanges from '@/emails/_components/ContactChanges';
 import DescriptionChanges from '@/emails/_components/DescriptionChanges';
+import MemberChanges from '@/emails/_components/MemberChanges';
 import QuotaChanges from '@/emails/_components/QuotaChanges';
 import { comparePrivateProductData } from '@/helpers/product-change';
 import { PrivateCloudRequestDetail } from '@/types/private-cloud';
@@ -12,6 +13,7 @@ export default function Changes({ request }: { request: PrivateCloudRequestDetai
 
   let profileChange = null;
   let contactChange = null;
+  let membersChange = null;
   let quotaChange = null;
 
   if (diffData.profileChanged) {
@@ -26,6 +28,15 @@ export default function Changes({ request }: { request: PrivateCloudRequestDetai
           descRequested={request.decisionData.description}
           ministryRequested={request.decisionData.ministry}
         />
+      </>
+    );
+  }
+
+  if (diffData.membersChanged) {
+    membersChange = (
+      <>
+        <Hr className="my-4" />
+        <MemberChanges data={diffData.changes.filter((change) => change.loc.startsWith('members.'))} />
       </>
     );
   }

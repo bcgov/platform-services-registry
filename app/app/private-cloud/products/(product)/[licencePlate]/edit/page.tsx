@@ -1,7 +1,7 @@
 'use client';
 
 import { zodResolver } from '@hookform/resolvers/zod';
-import { CPU, Memory, Storage, PrivateCloudProject } from '@prisma/client';
+import { PrivateCloudProject } from '@prisma/client';
 import { IconInfoCircle, IconUsersGroup, IconSettings, IconComponents } from '@tabler/icons-react';
 import { useEffect, useState } from 'react';
 import { FormProvider, useForm } from 'react-hook-form';
@@ -15,6 +15,7 @@ import TeamContacts from '@/components/form/TeamContacts';
 import PageAccordion from '@/components/generic/accordion/PageAccordion';
 import FormErrorNotification from '@/components/generic/FormErrorNotification';
 import { openPrivateCloudProductEditSubmitModal } from '@/components/modal/privateCloudProductEditSubmit';
+import AdditionalTeamMembers from '@/components/private-cloud/sections/AdditionalTeamMembers';
 import { AGMinistries, GlobalRole, defaultQuota } from '@/constants';
 import createClientPage from '@/core/client-page';
 import { getQuotaChangeStatus } from '@/services/backend/private-cloud/products';
@@ -146,6 +147,13 @@ export default privateCloudProductEdit(({ session }) => {
       componentArgs: { disabled: isDisabled, secondTechLead, secondTechLeadOnClick },
     },
     {
+      LeftIcon: IconUsersGroup,
+      label: 'Additional team members',
+      description: '',
+      Component: AdditionalTeamMembers,
+      componentArgs: { disabled: isDisabled || !snap.currentProduct._permissions.manageMembers },
+    },
+    {
       LeftIcon: IconSettings,
       label: 'Quotas',
       description: '',
@@ -172,7 +180,10 @@ export default privateCloudProductEdit(({ session }) => {
         <FormErrorNotification />
         <form
           onSubmit={methods.handleSubmit(async (formData) => {
-            await openPrivateCloudProductEditSubmitModal({ productData: formData });
+            await openPrivateCloudProductEditSubmitModal({
+              productData: formData,
+              originalProductData: methods.getValues(),
+            });
           })}
           autoComplete="off"
         >

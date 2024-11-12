@@ -5,6 +5,7 @@ export interface PrivateCloudProjectDecorate {
     edit: boolean;
     delete: boolean;
     reprovision: boolean;
+    manageMembers: boolean;
     toggleTemporary: boolean;
   };
 }
@@ -31,6 +32,7 @@ export interface PublicCloudProjectDecorate {
     signMou: boolean;
     reviewMou: boolean;
     downloadMou: boolean;
+    manageMembers: boolean;
   };
 }
 

@@ -87,10 +87,10 @@ export async function searchPrivateCloudProducts({
   return { docs, totalCount };
 }
 
-export function excludePrivateProductUsers(product: PrivateCloudProductDetailDecorated | null) {
+export function excludePrivateProductPopulatedFields(product: PrivateCloudProductDetailDecorated | null) {
   if (!product) return null;
 
-  const { projectOwner, primaryTechnicalLead, secondaryTechnicalLead, ...rest } = product;
+  const { projectOwner, primaryTechnicalLead, secondaryTechnicalLead, members, ...rest } = product;
 
   return rest;
 }

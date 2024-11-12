@@ -14,6 +14,7 @@ import TeamContacts from '@/components/form/TeamContacts';
 import PageAccordion from '@/components/generic/accordion/PageAccordion';
 import FormErrorNotification from '@/components/generic/FormErrorNotification';
 import { openPrivateCloudRequestReviewModal } from '@/components/modal/privateCloudRequestReview';
+import AdditionalTeamMembers from '@/components/private-cloud/sections/AdditionalTeamMembers';
 import { GlobalRole } from '@/constants';
 import createClientPage from '@/core/client-page';
 import { usePrivateProductState } from '@/states/global';
@@ -108,6 +109,13 @@ export default privateCloudRequestDecision(({ getPathParams, session, router }) 
       description: '',
       Component: TeamContacts,
       componentArgs: { disabled: isDisabled, secondTechLead, secondTechLeadOnClick },
+    },
+    {
+      LeftIcon: IconUsersGroup,
+      label: 'Additional team members',
+      description: '',
+      Component: AdditionalTeamMembers,
+      componentArgs: { disabled: true },
     },
     {
       LeftIcon: IconSettings,

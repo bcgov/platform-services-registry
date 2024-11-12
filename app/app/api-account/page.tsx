@@ -63,7 +63,7 @@ export default ApiAccountPage(({ session }) => {
               className="h-9 inline-flex items-center rounded-md bg-red-700 gap-x-2 px-4 py-1.5 text-sm font-semibold text-white shadow-sm ring-1 ring-inset ring-red-300"
               onClick={async () => {
                 const res = await openConfirmModal({});
-                if (res?.state.confirmed) {
+                if (res.state.confirmed) {
                   await deleteApiAccount();
                   await refetchApiAccount();
                 }

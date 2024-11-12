@@ -1,7 +1,7 @@
 import { DecisionStatus, ProjectStatus, RequestType, TaskStatus, TaskType, EventType, Provider } from '@prisma/client';
 import { Session } from 'next-auth';
 import prisma from '@/core/prisma';
-import { OkResponse, UnauthorizedResponse } from '@/core/responses';
+import { OkResponse, UnauthorizedResponse, UnprocessableEntityResponse } from '@/core/responses';
 import generateLicencePlate from '@/helpers/licence-plate';
 import { sendCreateRequestEmails } from '@/services/ches/public-cloud';
 import { createEvent, models, publicCloudRequestDetailInclude } from '@/services/db';
@@ -71,32 +71,35 @@ export default async function createOp({ session, body }: { session: Session; bo
     },
   };
 
-  const newRequest = await prisma.publicCloudRequest.create({
-    data: {
-      active: true,
-      licencePlate,
-      type: RequestType.CREATE,
-      decisionStatus: DecisionStatus.PENDING,
-      createdBy: { connect: { email: session.user.email } },
-      decisionData: { create: productData },
-      requestData: { create: productData },
-    },
-    include: publicCloudRequestDetailInclude,
-  });
-
-  const newRequestDecorated = await models.publicCloudRequest.decorate(newRequest, session, true);
+  const newRequest = (
+    await models.publicCloudRequest.create(
+      {
+        data: {
+          active: true,
+          licencePlate,
+          type: RequestType.CREATE,
+          decisionStatus: DecisionStatus.PENDING,
+          createdBy: { connect: { email: session.user.email } },
+          decisionData: { create: productData },
+          requestData: { create: productData },
+        },
+        include: publicCloudRequestDetailInclude,
+      },
+      session,
+    )
+  ).data;
 
   const proms = [];
 
   // Assign a task to the expense authority for new billing
-  if (newRequestDecorated.decisionData.expenseAuthorityId && !newRequestDecorated.decisionData.billing.signed) {
+  if (newRequest.decisionData.expenseAuthorityId && !newRequest.decisionData.billing.signed) {
     const taskProm = prisma.task.create({
       data: {
         type: TaskType.SIGN_MOU,
         status: TaskStatus.ASSIGNED,
-        userIds: [newRequestDecorated.decisionData.expenseAuthorityId],
+        userIds: [newRequest.decisionData.expenseAuthorityId],
         data: {
-          licencePlate: newRequestDecorated.licencePlate,
+          licencePlate: newRequest.licencePlate,
         },
       },
     });
@@ -105,8 +108,8 @@ export default async function createOp({ session, body }: { session: Session; bo
   }
 
   proms.push(
-    createEvent(EventType.CREATE_PUBLIC_CLOUD_PRODUCT, session.user.id, { requestId: newRequestDecorated.id }),
-    sendCreateRequestEmails(newRequestDecorated, user.name),
+    createEvent(EventType.CREATE_PUBLIC_CLOUD_PRODUCT, session.user.id, { requestId: newRequest.id }),
+    sendCreateRequestEmails(newRequest, user.name),
   );
 
   await Promise.all(proms);

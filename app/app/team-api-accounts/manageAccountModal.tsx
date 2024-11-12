@@ -132,7 +132,7 @@ export const openManageAccountModal = createModal<ModalProps, ModalState>({
                   color="red"
                   onClick={async () => {
                     const res = await openConfirmModal({});
-                    if (res?.state.confirmed) {
+                    if (res.state.confirmed) {
                       await deleteAccount();
                       closeModal();
                     }

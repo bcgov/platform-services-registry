@@ -8,6 +8,7 @@ import {
   PrivateCloudRequestSimple,
   PrivateCloudRequestSimpleDecorated,
 } from '@/types/private-cloud';
+import { getUniqueNonFalsyItems } from '@/utils/collection';
 import { privateCloudRequestDetailInclude, privateCloudRequestSimpleInclude } from '../includes';
 import { createSessionModel } from './core';
 import { privateCloudProductModel } from './private-cloud-product';
@@ -29,7 +30,11 @@ async function baseFilter(session: Session) {
   return filter;
 }
 
-async function decorate<T extends PrivateCloudRequestSimple>(doc: T, session: Session) {
+async function decorate<T extends PrivateCloudRequestSimple | PrivateCloudRequestDetail>(
+  doc: T,
+  session: Session,
+  detail: boolean,
+) {
   const canReview = doc.decisionStatus === DecisionStatus.PENDING && session.permissions.reviewAllPrivateCloudRequests;
 
   const canEdit = canReview && doc.type !== RequestType.DELETE;
@@ -42,6 +47,56 @@ async function decorate<T extends PrivateCloudRequestSimple>(doc: T, session: Se
   const canViewDecision = doc.decisionStatus !== DecisionStatus.PENDING || canReview;
 
   const decoratedDoc = doc as T & PrivateCloudRequestDecorate;
+
+  if (detail) {
+    let memberIds = [];
+
+    const detailedData = doc as never as PrivateCloudRequestDetail;
+    if (detailedData.originalData) {
+      memberIds.push(...detailedData.originalData.members.map((member) => member.userId));
+    }
+
+    if (detailedData.requestData) {
+      memberIds.push(...detailedData.requestData.members.map((member) => member.userId));
+    }
+
+    if (detailedData.decisionData) {
+      memberIds.push(...detailedData.decisionData.members.map((member) => member.userId));
+    }
+
+    memberIds = getUniqueNonFalsyItems(memberIds);
+    const users = await prisma.user.findMany({ where: { id: { in: memberIds } } });
+
+    if (detailedData.originalData) {
+      detailedData.originalData.members = detailedData.originalData.members.map((member) => {
+        const user = users.find((usr) => usr.id === member.userId);
+        return {
+          ...user,
+          ...member,
+        };
+      });
+    }
+
+    if (detailedData.requestData) {
+      detailedData.requestData.members = detailedData.requestData.members.map((member) => {
+        const user = users.find((usr) => usr.id === member.userId);
+        return {
+          ...user,
+          ...member,
+        };
+      });
+    }
+
+    if (detailedData.decisionData) {
+      detailedData.decisionData.members = detailedData.decisionData.members.map((member) => {
+        const user = users.find((usr) => usr.id === member.userId);
+        return {
+          ...user,
+          ...member,
+        };
+      });
+    }
+  }
 
   if (!hasProduct) {
     decoratedDoc._permissions = {

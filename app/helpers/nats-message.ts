@@ -1,6 +1,6 @@
 import { Cluster, RequestType } from '@prisma/client';
 import { sendPrivateCloudNatsMessage } from '@/services/nats';
-import { PrivateCloudRequestDetail } from '@/types/private-cloud';
+import { PrivateCloudRequestDetail, PrivateCloudRequestDetailDecorated } from '@/types/private-cloud';
 
 interface User {
   email?: string;
@@ -8,7 +8,7 @@ interface User {
 
 // TODO: refactor here to just take request as it will have original data available.
 export async function sendRequestNatsMessage(
-  updatedRequest: PrivateCloudRequestDetail,
+  updatedRequest: PrivateCloudRequestDetailDecorated,
   updateData: {
     projectOwner: User;
     primaryTechnicalLead: User;

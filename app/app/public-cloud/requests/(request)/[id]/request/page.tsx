@@ -134,7 +134,7 @@ export default publicCloudProductRequest(({ router }) => {
       label: 'Additional team members',
       description: '',
       Component: AdditionalTeamMembers,
-      componentArgs: { disabled: isDisabled },
+      componentArgs: { disabled: true },
     },
     {
       LeftIcon: IconMoneybag,
@@ -224,7 +224,7 @@ export default publicCloudProductRequest(({ router }) => {
                     provider: snap.currentRequest.decisionData.provider,
                   });
 
-                  if (res?.state.confirmed) {
+                  if (res.state.confirmed) {
                     router.push('/public-cloud/requests/all');
                   }
                 }}
@@ -243,7 +243,7 @@ export default publicCloudProductRequest(({ router }) => {
                     billingId: snap.currentRequest.decisionData.billingId,
                   });
 
-                  if (res?.state.confirmed) {
+                  if (res.state.confirmed) {
                     router.push('/public-cloud/requests/all');
                   }
                 }}

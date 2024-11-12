@@ -113,7 +113,7 @@ const CommentBubble = ({
   const handleDelete = async () => {
     setMenuOpen(false);
     const res = await openConfirmModal({ content: 'Are you sure you want to delete this comment?' });
-    if (res?.state.confirmed) {
+    if (res.state.confirmed) {
       deleteMutation.mutate();
     }
   };

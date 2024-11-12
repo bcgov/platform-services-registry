@@ -110,9 +110,8 @@ type ExtendedOriginalData =
   | (Omit<NonNullable<PublicCloudRequestDetail['originalData']>, 'members'> & ExtendedPublicCloudProductMembersData)
   | null;
 
-type ExtendedRequestData =
-  | (Omit<PublicCloudRequestDetail['requestData'], 'members'> & ExtendedPublicCloudProductMembersData)
-  | null;
+type ExtendedRequestData = Omit<PublicCloudRequestDetail['requestData'], 'members'> &
+  ExtendedPublicCloudProductMembersData;
 
 type ExtendedDecisionData = Omit<PublicCloudRequestDetail['decisionData'], 'members'> &
   ExtendedPublicCloudProductMembersData;
