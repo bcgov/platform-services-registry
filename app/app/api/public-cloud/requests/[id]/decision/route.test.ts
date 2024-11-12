@@ -59,7 +59,7 @@ async function makeBasicProductMouReview() {
 
   const task1 = await prisma.task.findFirst({
     where: {
-      type: TaskType.SIGN_PRIVATE_CLOUD_MOU,
+      type: TaskType.SIGN_PUBLIC_CLOUD_MOU,
       status: TaskStatus.ASSIGNED,
       data: {
         equals: {
@@ -79,7 +79,7 @@ async function makeBasicProductMouReview() {
     await mockSessionByRole(GlobalRole.BillingReviewer);
     const task2 = await prisma.task.findFirst({
       where: {
-        type: TaskType.REVIEW_PRIVATE_CLOUD_MOU,
+        type: TaskType.REVIEW_PUBLIC_CLOUD_MOU,
         status: TaskStatus.ASSIGNED,
         data: {
           equals: {

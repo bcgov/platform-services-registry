@@ -92,7 +92,7 @@ export default async function createOp({ session, body }: { session: Session; bo
   if (newRequestDecorated.decisionData.expenseAuthorityId && !newRequestDecorated.decisionData.billing.signed) {
     const taskProm = prisma.task.create({
       data: {
-        type: TaskType.SIGN_PRIVATE_CLOUD_MOU,
+        type: TaskType.SIGN_PUBLIC_CLOUD_MOU,
         status: TaskStatus.ASSIGNED,
         userIds: [newRequestDecorated.decisionData.expenseAuthorityId],
         data: {

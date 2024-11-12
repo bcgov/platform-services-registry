@@ -35,7 +35,7 @@ describe('Provision Public Cloud Request', () => {
 
     const task = await prisma.task.findFirst({
       where: {
-        type: TaskType.SIGN_PRIVATE_CLOUD_MOU,
+        type: TaskType.SIGN_PUBLIC_CLOUD_MOU,
         status: TaskStatus.ASSIGNED,
         data: {
           equals: {
@@ -60,7 +60,7 @@ describe('Provision Public Cloud Request', () => {
 
     const task = await prisma.task.findFirst({
       where: {
-        type: TaskType.REVIEW_PRIVATE_CLOUD_MOU,
+        type: TaskType.REVIEW_PUBLIC_CLOUD_MOU,
         status: TaskStatus.ASSIGNED,
         data: {
           equals: {

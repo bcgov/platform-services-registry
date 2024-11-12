@@ -22,7 +22,7 @@ async function baseFilter(session: Session) {
   ];
 
   const licencePlatesFromTasks = session.tasks
-    .filter((task) => [TaskType.SIGN_PRIVATE_CLOUD_MOU, TaskType.REVIEW_PRIVATE_CLOUD_MOU].includes(task.type))
+    .filter((task) => [TaskType.SIGN_PUBLIC_CLOUD_MOU, TaskType.REVIEW_PUBLIC_CLOUD_MOU].includes(task.type))
     .map((task) => (task.data as { licencePlate: string }).licencePlate);
 
   if (session.user.id) {
@@ -117,7 +117,7 @@ async function decorate<T extends PublicCloudProductSimple & Partial<Pick<Public
     canSignMou =
       !doc.billing.signed &&
       session.tasks
-        .filter((task) => task.type === TaskType.SIGN_PRIVATE_CLOUD_MOU && task.status === TaskStatus.ASSIGNED)
+        .filter((task) => task.type === TaskType.SIGN_PUBLIC_CLOUD_MOU && task.status === TaskStatus.ASSIGNED)
         .map((task) => (task.data as { licencePlate: string }).licencePlate)
         .includes(doc.licencePlate);
 
@@ -125,7 +125,7 @@ async function decorate<T extends PublicCloudProductSimple & Partial<Pick<Public
       doc.billing.signed &&
       !doc.billing.approved &&
       session.tasks
-        .filter((task) => task.type === TaskType.REVIEW_PRIVATE_CLOUD_MOU && task.status === TaskStatus.ASSIGNED)
+        .filter((task) => task.type === TaskType.REVIEW_PUBLIC_CLOUD_MOU && task.status === TaskStatus.ASSIGNED)
         .map((task) => (task.data as { licencePlate: string }).licencePlate)
         .includes(doc.licencePlate);
   }
