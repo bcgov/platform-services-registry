@@ -18,5 +18,5 @@ export default function FormError({
 
   const error = _get(errors, field);
   if (!error) return null;
-  return <div className={cn('text-sm text-red-600 mb-2', className)}>{message ?? String(error.message)}</div>;
+  return <div className={cn('text-sm text-red-600 mb-2', className)}>{message || String(error.message)}</div>;
 }
