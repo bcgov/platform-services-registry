@@ -9,6 +9,7 @@ export default function HookFormSingleSelect<T extends FieldValues>({
   id,
   name,
   label,
+  error,
   rules,
   data,
   classNames,
@@ -18,6 +19,7 @@ export default function HookFormSingleSelect<T extends FieldValues>({
   rules?: HookFormRules<T>;
   name: Path<T>;
   showError?: boolean;
+  error?: string;
 }) {
   const { control } = useFormContext<T>();
 
@@ -43,7 +45,7 @@ export default function HookFormSingleSelect<T extends FieldValues>({
           );
         }}
       />
-      {showError && <FormError field={name} className="mt-1" />}
+      {showError && <FormError field={name} className="mt-1" message={error} />}
     </>
   );
 }

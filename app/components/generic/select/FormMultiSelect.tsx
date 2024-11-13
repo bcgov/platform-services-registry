@@ -1,12 +1,12 @@
 'use client';
 
-import { MultiSelect, ComboboxData, InputBase, Pill } from '@mantine/core';
+import { MultiSelect, ComboboxData, InputBase, Pill, MultiSelectProps } from '@mantine/core';
 import _kebabCase from 'lodash-es/kebabCase';
 import { FocusEventHandler } from 'react';
 import { cn } from '@/utils';
 import Label from '../Label';
 
-export interface FormMultiSelectProps {
+export interface FormMultiSelectProps extends MultiSelectProps {
   id?: string;
   name: string;
   label?: string;
@@ -32,6 +32,7 @@ export default function FormMultiSelect({
   onBlur,
   value,
   disabled = false,
+  ...others
 }: FormMultiSelectProps) {
   if (!id) id = _kebabCase(name);
 
@@ -61,6 +62,7 @@ export default function FormMultiSelect({
           searchable
           clearable
           disabled={disabled}
+          {...others}
           classNames={{ input: cn('text-md', classNames?.input) }}
         />
       )}
