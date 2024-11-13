@@ -11,6 +11,7 @@ export default function HookFormTextarea<T extends FieldValues>({
   name,
   options,
   label,
+  error,
   classNames,
   disabled,
   copyable,
@@ -18,15 +19,16 @@ export default function HookFormTextarea<T extends FieldValues>({
 }: Omit<FormTextareaProps, 'name' | 'inputProps'> & {
   name: Path<T>;
   options?: RegisterOptions<T, Path<T>> | undefined;
+  error?: string;
 }) {
   const {
     register,
     formState: { errors },
   } = useFormContext<T>();
+  const formError = _get(errors, name);
+  const _error = error ?? (formError && String(formError?.message));
 
-  const error = _get(errors, name);
-
-  const showError = !!error && !disabled;
+  const showError = !!formError && !disabled;
 
   return (
     <div className={classNames?.wrapper}>
@@ -42,12 +44,12 @@ export default function HookFormTextarea<T extends FieldValues>({
             'text-pink-600': showError,
           }),
           input: cn(classNames?.input, {
-            'ring-pink-600 text-pink-600': showError,
+            'ring-pink-600': showError,
           }),
         }}
         inputProps={register(name, options)}
       />
-      {showError && <FormError field={name} className="mt-1" />}
+      {showError && <FormError field={name} className="mt-1" message={_error} />}
     </div>
   );
 }

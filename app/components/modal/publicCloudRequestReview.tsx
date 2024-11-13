@@ -5,6 +5,7 @@ import { Button, Divider, Grid, LoadingOverlay, Box } from '@mantine/core';
 import { useMutation } from '@tanstack/react-query';
 import { FormProvider, useForm } from 'react-hook-form';
 import { z } from 'zod';
+import HookFormTextarea from '@/components/generic/input/HookFormTextarea';
 import { createModal } from '@/core/modal';
 import { showErrorNotification } from '@/helpers/notifications';
 import { makePublicCloudRequestDecision } from '@/services/backend/public-cloud/requests';
@@ -94,16 +95,13 @@ export const openPublicCloudRequestReviewModal = createModal<ModalProps, ModalSt
               </>
             )}
 
-            <textarea
-              id="decisionComment"
+            <HookFormTextarea
+              name="decisionComment"
               placeholder={
                 finalData.decision === RequestDecision.APPROVED ? 'Enter an optional comment...' : 'Enter a comment...'
               }
-              {...register('decisionComment')}
-              rows={3}
-              className={cn(
-                'block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6',
-              )}
+              classNames={{ wrapper: 'mt-4 mb-1' }}
+              error="Please provide a comment"
             />
 
             <Divider my="md" />

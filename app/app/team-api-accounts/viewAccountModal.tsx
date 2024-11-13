@@ -5,8 +5,10 @@ import { IconUser } from '@tabler/icons-react';
 import { useQuery } from '@tanstack/react-query';
 import _get from 'lodash-es/get';
 import CopyableButton from '@/components/generic/button/CopyableButton';
+import Label from '@/components/generic/Label';
 import { createModal } from '@/core/modal';
 import { listKeycloakTeamApiAccountUsers } from '@/services/backend/keycloak';
+import { useAppState } from '@/states/global';
 
 interface ModalProps {
   clientUid: string;
@@ -24,6 +26,8 @@ export const openViewAccountModal = createModal<ModalProps, ModalState>({
     title: 'View API Account',
   },
   Component: function ({ clientUid, clientId, clientSecret, name, roles, closeModal }) {
+    const [, appSnap] = useAppState();
+
     const { data: users, isFetching: isUsersFetching } = useQuery({
       queryKey: ['users', clientUid],
       queryFn: () => listKeycloakTeamApiAccountUsers(clientUid),
@@ -32,10 +36,12 @@ export const openViewAccountModal = createModal<ModalProps, ModalState>({
     return (
       <Box pos="relative">
         <LoadingOverlay visible={isUsersFetching} zIndex={1000} overlayProps={{ radius: 'sm', blur: 2 }} />
-        <div className="block text-sm font-bold leading-6 text-gray-900 mt-2 mb-1">Name</div>
+        <Label htmlFor="name">Name</Label>
         <CopyableButton value={name}>{name}</CopyableButton>
 
-        <div className="block text-sm font-bold leading-6 text-gray-900 mt-2 mb-1">API Account Roles</div>
+        <Label htmlFor="account-roles" className="mt-2">
+          API Account Roles
+        </Label>
         <InputBase component="div" multiline>
           <Pill.Group>
             {roles.map((role) => (
@@ -44,7 +50,9 @@ export const openViewAccountModal = createModal<ModalProps, ModalState>({
           </Pill.Group>
         </InputBase>
 
-        <div className="block text-sm font-bold leading-6 text-gray-900 mt-2 mb-1">Member Emails</div>
+        <Label htmlFor="member-email" className="mt-2">
+          Member Email
+        </Label>
         <List icon={<IconUser />}>
           {users && users.length > 0 ? (
             (users ?? []).map((user) => (
@@ -57,11 +65,20 @@ export const openViewAccountModal = createModal<ModalProps, ModalState>({
           )}
         </List>
 
-        <div className="block text-sm font-bold leading-6 text-gray-900 mt-2 mb-1">Client ID</div>
+        <Label htmlFor="client-id" className="mt-2">
+          Client ID
+        </Label>
         <CopyableButton value={clientId}>{clientId}</CopyableButton>
 
-        <div className="block text-sm font-bold leading-6 text-gray-900 mt-2 mb-1">Client Secret</div>
+        <Label htmlFor="client-secret" className="mt-2">
+          Client Secret
+        </Label>
         <CopyableButton value={clientSecret}>*************************</CopyableButton>
+
+        <Label htmlFor="client-secret" className="mt-2">
+          Token Endpoint
+        </Label>
+        <CopyableButton value={appSnap.info.TOKEN_URL}>{appSnap.info.TOKEN_URL}</CopyableButton>
 
         <Divider my="md" />
 

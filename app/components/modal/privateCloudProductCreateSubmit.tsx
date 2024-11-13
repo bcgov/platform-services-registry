@@ -2,17 +2,16 @@
 
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Button, Divider, Grid, LoadingOverlay, Box } from '@mantine/core';
-import { notifications } from '@mantine/notifications';
 import { useMutation } from '@tanstack/react-query';
 import { FormProvider, useForm, FieldValues } from 'react-hook-form';
 import { z } from 'zod';
 import ExternalLink from '@/components/generic/button/ExternalLink';
 import FormCheckbox from '@/components/generic/checkbox/FormCheckbox';
 import FormError from '@/components/generic/FormError';
+import HookFormTextarea from '@/components/generic/input/HookFormTextarea';
 import { createModal } from '@/core/modal';
 import { showErrorNotification } from '@/helpers/notifications';
 import { createPrivateCloudProject } from '@/services/backend/private-cloud/products';
-import { cn } from '@/utils';
 import { openNotificationModal } from './notification';
 
 interface ModalProps {
@@ -109,17 +108,11 @@ export const openPrivateCloudProductCreateSubmitModal = createModal<ModalProps, 
               product status and details.
             </p>
 
-            <p className="text-sm text-gray-900 mt-4 mb-1">
-              If you have any additional comments about the request, add them here.
-            </p>
-            <textarea
-              id="requestComment"
+            <HookFormTextarea
+              label=" If you have any additional comments about the request, add them here."
+              name="requestComment"
               placeholder="Enter an optional comment..."
-              {...register('requestComment')}
-              rows={3}
-              className={cn(
-                'block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6',
-              )}
+              classNames={{ wrapper: 'mt-4 mb-1' }}
             />
 
             <Divider my="md" />

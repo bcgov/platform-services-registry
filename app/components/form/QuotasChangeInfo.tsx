@@ -4,11 +4,12 @@ import { useQuery } from '@tanstack/react-query';
 import _get from 'lodash-es/get';
 import { useEffect, useState } from 'react';
 import { FieldError, FieldErrorsImpl, Merge, useFieldArray, useFormContext } from 'react-hook-form';
+import ExternalLink from '@/components/generic/button/ExternalLink';
+import HookFormTextarea from '@/components/generic/input/HookFormTextarea';
 import { getQuotaChangeStatus } from '@/services/backend/private-cloud/products';
 import { usePrivateProductState } from '@/states/global';
 import { cn } from '@/utils';
 import { Quotas } from '@/validation-schemas/private-cloud';
-import ExternalLink from '../generic/button/ExternalLink';
 
 function FormError({ error }: { error?: FieldError | Merge<FieldError, FieldErrorsImpl<any>> }) {
   if (!error) return null;
@@ -165,22 +166,15 @@ export default function QuotasChangeInfo({ disabled, className }: { disabled: bo
           Read through some of the example answers to get a better idea of what information to include.
         </ExternalLink>
       </p>
-      <div className="mt-2">
-        <textarea
-          disabled={disabled}
-          id="quotaJustification"
-          placeholder="Enter a justification..."
-          {...register('quotaJustification')}
-          rows={3}
-          className={cn(
-            'block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6',
-            disabled
-              ? 'disabled:bg-slate-50 disabled:text-slate-500 disabled:border-slate-200 disabled:shadow-noneinvalid:border-pink-500 invalid:text-pink-600 focus:invalid:border-pink-500 focus:invalid:ring-pink-500'
-              : '',
-          )}
-        />
-        <FormError error={_get(errors, 'quotaJustification')} />
-      </div>
+
+      <HookFormTextarea
+        label="Description of reason(s) for selecting cloud provider"
+        name="quotaJustification"
+        placeholder="Enter a justification..."
+        required
+        classNames={{ wrapper: 'mt-2' }}
+        disabled={disabled}
+      />
     </div>
   );
 }

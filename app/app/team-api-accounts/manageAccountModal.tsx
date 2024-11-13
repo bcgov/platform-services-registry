@@ -9,6 +9,7 @@ import _get from 'lodash-es/get';
 import { useEffect } from 'react';
 import { FormProvider, useForm } from 'react-hook-form';
 import HookFormTextInput from '@/components/generic/input/HookFormTextInput';
+import HookFormMultiSelect from '@/components/generic/select/HookFormMultiSelect';
 import { openConfirmModal } from '@/components/modal/confirm';
 import { createModal } from '@/core/modal';
 import {
@@ -19,7 +20,6 @@ import {
 } from '@/services/backend/keycloak';
 import { teamApiAccountSchema, TeamApiAccount } from '@/validation-schemas/api-accounts';
 import AccountMembers from './AccountMembers';
-import AccountRoles from './AccountRoles';
 
 interface ModalProps {
   name: string;
@@ -121,8 +121,13 @@ export const openManageAccountModal = createModal<ModalProps, ModalState>({
             })}
           >
             <HookFormTextInput label="Name" name="name" placeholder="Enter name..." required />
-            <AccountRoles allRoles={(authRoles ?? []).map((v) => v.name ?? '')} />
-            <AccountMembers />
+            <HookFormMultiSelect
+              name="roles"
+              label="API Account Roles"
+              data={(authRoles ?? []).map((v) => v.name ?? '')}
+              classNames={{ wrapper: 'mt-2' }}
+            />
+            <AccountMembers className="mt-2" />
 
             <Divider my="md" />
 

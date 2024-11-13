@@ -4,9 +4,16 @@ import { Button } from '@mantine/core';
 import { IconPlus } from '@tabler/icons-react';
 import _get from 'lodash-es/get';
 import { useFieldArray, useFormContext } from 'react-hook-form';
+import Label from '@/components/generic/Label';
 import { cn } from '@/utils';
 
-export default function AccountMembers({ disabled = false }: { disabled?: boolean }) {
+export default function AccountMembers({
+  className = '',
+  disabled = false,
+}: {
+  className?: string;
+  disabled?: boolean;
+}) {
   const {
     register,
     control,
@@ -22,8 +29,8 @@ export default function AccountMembers({ disabled = false }: { disabled?: boolea
   const values = getValues();
 
   return (
-    <>
-      <div className="block text-sm font-bold leading-6 text-gray-900 mt-2 mb-1">Member Emails</div>
+    <div className={cn(className)}>
+      <Label htmlFor="member-email">Member Email</Label>
       <ul>
         {fields.map((item, index) => {
           const itemKey = `users.${index}.email`;
@@ -60,6 +67,6 @@ export default function AccountMembers({ disabled = false }: { disabled?: boolea
           Add New
         </Button>
       )}
-    </>
+    </div>
   );
 }
