@@ -58,6 +58,23 @@ export default function Quotas({
         . Any quota increases without supporting information&nbsp;
         <span className="font-bold text-red-600 uppercase">will not</span> be processed.
       </p>
+      <p className="text-base leading-6 mt-5">
+        If your request for more CPU and Memory meets all of the following requirements, it will be automatically
+        approved:
+        <ol className="list-decimal pl-5">
+          <li>Your namespace’s current usage exceeds 85% of its total limit.</li>
+          <li>Your namespace’s resource utilization rate is at least 35%.</li>
+          <li>You are increasing your quota allotment to the next tier only.</li>
+        </ol>
+      </p>
+      <p className="text-base leading-6 mt-5">
+        If your request for more Storage meets all of the following requirements, it will be automatically approved:
+        <ol className="list-decimal pl-5">
+          <li>Your namespace’s current usage exceeds 80% of its PVC limit.</li>
+          <li>You are increasing your quota allotment to the next tier only.</li>
+        </ol>
+      </p>
+
       <div className="mt-10 mb-5 grid grid-cols-1 gap-x-4 xl:gap-x-4 gap-y-8 sm:grid-cols-8 ">
         {namespaceKeys.map((namespace) => {
           const quotaField = (namespace + 'Quota') as keyof typeof newValues;
@@ -67,7 +84,6 @@ export default function Quotas({
             newEnvQuota?.cpu !== originalEnvQuota?.cpu ||
             newEnvQuota?.memory !== originalEnvQuota?.memory ||
             newEnvQuota?.storage !== originalEnvQuota?.storage;
-
           return (
             <div
               key={namespace}

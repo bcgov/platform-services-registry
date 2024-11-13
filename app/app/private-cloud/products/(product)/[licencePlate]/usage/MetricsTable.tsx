@@ -118,7 +118,7 @@ export default function MetricsTable({ rows, resource, totalMetrics }: TableProp
         <div className="divide-y divide-grey-200/5">
           <div className="grid grid-cols-1 md:grid-cols-6 lg:grid-cols-6 gap-4 px-4 py-3 sm:px-6 lg:px-8 bg-gray-100">
             <div className="md:col-span-3 lg:col-span-3 text-center font-bold">Total {resource} limit:</div>
-            <div className="md:col-span-3 lg:col-span-3 text-center font-bold">Total {resource} usage:</div>
+            <div className="md:col-span-3 lg:col-span-3 text-center font-bold">Current {resource} usage:</div>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-6 lg:grid-cols-6 gap-4 px-4 py-3 sm:px-6 lg:px-8 ">
             <div className={classNames('md:col-span-3 lg:col-span-3 text-center')}>

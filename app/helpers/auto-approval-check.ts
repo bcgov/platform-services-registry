@@ -12,6 +12,10 @@ export interface Quotas {
 }
 
 function checkAutoApprovalEligibility({ allocation, deployment, resourceType }: QuotaUpgradeResourceDetail): boolean {
+  console.log('allocation', allocation);
+  console.log('deployment', deployment);
+  console.log('resourceType', resourceType);
+
   if (deployment.usage === -1) return false;
 
   // Calculate usage-to-limit and utilization ratios
