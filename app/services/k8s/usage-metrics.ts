@@ -4,10 +4,10 @@ import { logger } from '@/core/logging';
 import { normalizeMemory, normalizeCpu, PVC, resourceMetrics } from '@/helpers/resource-metrics';
 import { getK8sClients, queryPrometheus } from './core';
 
-async function getLastHourAvgUsage(namespace: string, cluster: Cluster) {
+async function getLastTwoWeeksAvgUsage(namespace: string, cluster: Cluster) {
   const queryFilter = `namespace="${namespace}"`;
-  const cpuUsageQuery = `sum by (pod) (irate(container_cpu_usage_seconds_total{${queryFilter}}[1m]))`;
-  const memoryUsageQuery = `sum by (pod) (avg_over_time(container_memory_usage_bytes{${queryFilter}}[1h]))`;
+  const cpuUsageQuery = `sum by (pod) (irate(container_cpu_usage_seconds_total{${queryFilter}}[2w]))`;
+  const memoryUsageQuery = `sum by (pod) (avg_over_time(container_memory_usage_bytes{${queryFilter}}[2w]))`;
 
   const [usageCPU, usageMemory] = await Promise.all(
     [cpuUsageQuery, memoryUsageQuery].map((query) => queryPrometheus(query, cluster)),
@@ -37,7 +37,7 @@ async function getLastHourAvgUsage(namespace: string, cluster: Cluster) {
 async function getPvcUsage(name: string, namespace: string, cluster: Cluster) {
   const queryFilter = `persistentvolumeclaim="${name}", namespace="${namespace}"`;
   const [usageQuery, capacityQuery, freeInodesQuery] = [
-    `avg_over_time(kubelet_volume_stats_used_bytes{${queryFilter}}[1h])`,
+    `kubelet_volume_stats_used_bytes{${queryFilter}}`,
     `kubelet_volume_stats_capacity_bytes{${queryFilter}}`,
     `kubelet_volume_stats_inodes_free{${queryFilter}}`,
   ];
@@ -98,7 +98,7 @@ export async function getPodMetrics(
 
   try {
     const pvc = await collectPVCMetrics(namespace, cluster); // PVC metrics collection
-    podUsageData = await getLastHourAvgUsage(namespace, cluster); // CPU and memory by pod usage data collection
+    podUsageData = await getLastTwoWeeksAvgUsage(namespace, cluster); // CPU and memory by pod usage data collection
     const metrics = await metricsClient.getPodMetrics(namespace);
     if ((!metrics.items || metrics.items.length === 0) && (!pvc || pvc.length === 0)) {
       return { podMetrics: [], pvcMetrics: [] };
@@ -126,29 +126,29 @@ export async function getPodMetrics(
 
     // Map over containers to collect their usage, limits, and requests
     const containers = item.containers
-      .filter((container) => {
-        if (container.name === 'POD') return false;
-        return true;
-      })
+      // When querying pod metrics, Kubernetes adds a pseudo-container named "POD" to represent
+      // the pod's management overhead, like network or logging. This is not an actual application
+      // container and usually shows zero resource usage (cpu: '0', memory: '0').
+      .filter((container) => container.name !== 'POD') // Exclude the POD overhead entry
       .map((container, index) => {
         const resourceDef = podStatus.body.spec?.containers[index]?.resources ?? {};
 
         // Retrieve last hour usage for CPU and memory from usageMap
-        const lastHourUsage = usageMap[name] || { cpu: 0, memory: 0 };
+        const lastTwoWeeksUsage = usageMap[name] || { cpu: 0, memory: 0 };
 
         return {
           name: container.name,
           usage: {
-            cpu: normalizeCpu(lastHourUsage.cpu) as number,
-            memory: normalizeMemory(lastHourUsage.memory) as number,
+            cpu: normalizeCpu(lastTwoWeeksUsage.cpu),
+            memory: normalizeMemory(lastTwoWeeksUsage.memory),
           },
           limits: {
-            cpu: normalizeCpu(resourceDef.limits?.cpu || 0) as number,
-            memory: normalizeMemory(resourceDef.limits?.memory || 0) as number,
+            cpu: normalizeCpu(resourceDef.limits?.cpu || 0),
+            memory: normalizeMemory(resourceDef.limits?.memory || 0),
           },
           requests: {
-            cpu: normalizeCpu(resourceDef.requests?.cpu || 0) as number,
-            memory: normalizeMemory(resourceDef.requests?.memory || 0) as number,
+            cpu: normalizeCpu(resourceDef.requests?.cpu || 0),
+            memory: normalizeMemory(resourceDef.requests?.memory || 0),
           },
         };
       });
