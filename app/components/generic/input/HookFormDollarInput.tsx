@@ -4,9 +4,9 @@ import _get from 'lodash-es/get';
 import { FieldValues, RegisterOptions, Path, useFormContext } from 'react-hook-form';
 import { cn } from '@/utils';
 import FormError from '../FormError';
-import FormTextInput, { FormTextInputProps } from './FormTextInput';
+import FormDollarInput, { FormDollarInputProps } from './FormDollarInput';
 
-export default function HookFormTextInput<T extends FieldValues>({
+export default function HookFormDollarInput<T extends FieldValues>({
   id,
   name,
   options,
@@ -14,7 +14,7 @@ export default function HookFormTextInput<T extends FieldValues>({
   classNames,
   disabled,
   ...others
-}: Omit<FormTextInputProps, 'name' | 'inputProps'> & {
+}: Omit<FormDollarInputProps, 'name' | 'inputProps'> & {
   name: Path<T>;
   options?: RegisterOptions<T, Path<T>> | undefined;
 }) {
@@ -28,7 +28,7 @@ export default function HookFormTextInput<T extends FieldValues>({
 
   return (
     <div className={classNames?.wrapper}>
-      <FormTextInput
+      <FormDollarInput
         id={id}
         name={name}
         label={label}

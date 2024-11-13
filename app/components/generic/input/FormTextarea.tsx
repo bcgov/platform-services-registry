@@ -69,16 +69,11 @@ export default function FormTextarea({
           htmlFor={id}
           className={classNames?.label}
           required={required}
-          leftSection={
-            copyable ? (
-              <CopyableButton
-                onClick={() => {
-                  if (!_ref.current) return '';
-                  return _ref.current.value;
-                }}
-              />
-            ) : null
-          }
+          copyable={copyable}
+          onCopy={() => {
+            if (!_ref.current) return '';
+            return _ref.current.value;
+          }}
         >
           {label}
         </Label>
