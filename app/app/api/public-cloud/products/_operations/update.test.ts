@@ -46,6 +46,7 @@ async function makeBasicProductChange(extra = {}) {
     ...requests.create.decisionData,
     accountCoding: requests.create.decisionData.billing.accountCoding,
     environmentsEnabled: newEnvironmentsEnabled,
+    isAgMinistryChecked: true,
     ...extra,
   });
 

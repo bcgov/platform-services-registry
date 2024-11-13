@@ -27,7 +27,7 @@ export default async function updateOp({
     return UnauthorizedResponse();
   }
 
-  const { requestComment, accountCoding, ...rest } = body;
+  const { requestComment, accountCoding, isAgMinistryChecked, isEaApproval, ...rest } = body;
 
   if (!product._permissions.manageMembers) {
     rest.members = product.members;
