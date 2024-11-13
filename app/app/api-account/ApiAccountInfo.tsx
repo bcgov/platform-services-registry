@@ -5,7 +5,7 @@ import { useAppState } from '@/states/global';
 import { ApiAccount } from './types';
 
 export default function ApiAccountInfo({ apiAccount }: { apiAccount: ApiAccount }) {
-  const [appState, appSnap] = useAppState();
+  const [, appSnap] = useAppState();
 
   const privateProductsEndpoint = `${appSnap.info.BASE_URL}/api/v1/private-cloud/products`;
   const publicProductsEndpoint = `${appSnap.info.BASE_URL}/api/v1/public-cloud/products`;

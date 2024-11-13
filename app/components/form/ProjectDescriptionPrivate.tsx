@@ -7,6 +7,7 @@ import TemporaryProductCheckbox from '@/components/form/TemporaryProductCheckbox
 import TemporaryProductCheckboxAdmin from '@/components/form/TemporaryProductCheckboxAdmin';
 import ExternalLink from '@/components/generic/button/ExternalLink';
 import MailLink from '@/components/generic/button/MailLink';
+import HookFormTextarea from '@/components/generic/input/HookFormTextarea';
 import FormSelect from '@/components/generic/select/FormSelect';
 import HookFormSingleSelect from '@/components/generic/select/HookFormSingleSelect';
 import { clusters, ministryOptions, privateCloudTeamEmail } from '@/constants';
@@ -82,33 +83,21 @@ export default function ProjectDescriptionPrivate({
               {...register('name')}
             />
           </div>
-          <p className={cn(errors.name ? 'text-red-400' : '', 'mt-3 text-sm leading-6 text-gray-600')}>
+          <p className={cn(errors.name ? 'text-red-400' : 'text-gray-600', 'mt-3 text-sm leading-6')}>
             Please provide a descriptive product name with no acronyms
           </p>
         </div>
-        <div className="col-span-full">
-          <label htmlFor="description" className="block text-sm font-medium leading-6 text-gray-900">
-            Description
-          </label>
-          <div className="mt-2">
-            <textarea
-              disabled={disabled}
-              id="about"
-              placeholder="Enter a description..."
-              {...register('description')}
-              rows={3}
-              className={cn(
-                'block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6',
-                disabled
-                  ? 'disabled:bg-slate-50 disabled:text-slate-500 disabled:border-slate-200 disabled:shadow-noneinvalid:border-pink-500 invalid:text-pink-600 focus:invalid:border-pink-500 focus:invalid:ring-pink-500'
-                  : '',
-              )}
-            />
-          </div>
-          <p className={cn(errors.description ? 'text-red-400' : '', 'mt-3 text-sm leading-6 text-gray-600')}>
-            Tell us more about your product
-          </p>
-        </div>
+
+        <HookFormTextarea
+          label="Description"
+          name="description"
+          placeholder="Enter description..."
+          required
+          error="Tell us more about your product"
+          classNames={{ wrapper: 'col-span-full' }}
+          disabled={disabled}
+        />
+
         <div className="sm:col-span-3 sm:mr-10">
           <FormSelect
             id="ministry"
@@ -118,7 +107,7 @@ export default function ProjectDescriptionPrivate({
             selectProps={register('ministry')}
           />
 
-          <p className={cn(errors.ministry ? 'text-red-400' : '', 'mt-3 text-sm leading-6 text-gray-600')}>
+          <p className={cn(errors.ministry ? 'text-red-400' : 'text-gray-600', 'mt-3 text-sm leading-6')}>
             Select the government ministry that this product belongs to
           </p>
           {['create', 'edit'].includes(mode) && <AGMinistryCheckBox disabled={disabled} />}
@@ -130,7 +119,7 @@ export default function ProjectDescriptionPrivate({
             disabled={disabled || clusterDisabled}
             data={[{ label: 'Select Hosting tier', value: '' }, ...clustersList.map((v) => ({ label: v, value: v }))]}
           />
-          <p className={cn(errors.cluster ? 'text-red-400' : '', 'mt-3 text-sm leading-6 text-gray-600')}>
+          <p className={cn(errors.cluster ? 'text-red-400' : 'text-gray-600', 'mt-3 text-sm leading-6')}>
             {session?.isAdmin
               ? 'Select your hosting tier, select CLAB or KLAB for testing purposes. Read more about hosting tiers '
               : 'Select your hosting tier. Read more about hosting tiers '}

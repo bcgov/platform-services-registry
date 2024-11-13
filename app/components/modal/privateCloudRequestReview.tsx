@@ -5,11 +5,11 @@ import { Button, Divider, Grid, LoadingOverlay, Box } from '@mantine/core';
 import { useMutation } from '@tanstack/react-query';
 import { FormProvider, useForm } from 'react-hook-form';
 import { z } from 'zod';
+import HookFormTextarea from '@/components/generic/input/HookFormTextarea';
 import { createModal } from '@/core/modal';
 import { showErrorNotification } from '@/helpers/notifications';
 import { makePrivateCloudRequestDecision } from '@/services/backend/private-cloud/requests';
 import { PrivateCloudRequestDetailDecorated } from '@/types/private-cloud';
-import { cn } from '@/utils';
 import { PrivateCloudRequestDecisionBody } from '@/validation-schemas/private-cloud';
 import { RequestDecision } from '@/validation-schemas/shared';
 import { openRequestDecisionCompleteModal } from './requestDecisionComplete';
@@ -94,16 +94,13 @@ export const openPrivateCloudRequestReviewModal = createModal<ModalProps, ModalS
               </>
             )}
 
-            <textarea
-              id="decisionComment"
+            <HookFormTextarea
+              name="decisionComment"
               placeholder={
                 finalData.decision === RequestDecision.APPROVED ? 'Enter an optional comment...' : 'Enter a comment...'
               }
-              {...register('decisionComment')}
-              rows={3}
-              className={cn(
-                'block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6',
-              )}
+              classNames={{ wrapper: 'mt-4 mb-1' }}
+              error="Please provide a comment"
             />
 
             <Divider my="md" />
