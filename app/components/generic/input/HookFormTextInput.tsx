@@ -11,20 +11,23 @@ export default function HookFormTextInput<T extends FieldValues>({
   name,
   options,
   label,
+  error,
   classNames,
   disabled,
   ...others
 }: Omit<FormTextInputProps, 'name' | 'inputProps'> & {
   name: Path<T>;
   options?: RegisterOptions<T, Path<T>> | undefined;
+  error?: string;
 }) {
   const {
     register,
     formState: { errors },
   } = useFormContext<T>();
 
-  const error = _get(errors, name);
-  const showError = !!error && !disabled;
+  const formError = _get(errors, name);
+  const _error = error ?? (formError && String(formError?.message));
+  const showError = !!formError && !disabled;
 
   return (
     <div className={classNames?.wrapper}>
@@ -44,7 +47,7 @@ export default function HookFormTextInput<T extends FieldValues>({
         }}
         inputProps={register(name, options)}
       />
-      {showError && <FormError field={name} className="mt-1" />}
+      {showError && <FormError field={name} className="mt-1" message={_error} />}
     </div>
   );
 }

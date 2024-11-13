@@ -10,6 +10,7 @@ import { getQuotaChangeStatus } from '@/services/backend/private-cloud/products'
 import { usePrivateProductState } from '@/states/global';
 import { cn } from '@/utils';
 import { Quotas } from '@/validation-schemas/private-cloud';
+import HookFormTextInput from '../generic/input/HookFormTextInput';
 
 function FormError({ error }: { error?: FieldError | Merge<FieldError, FieldErrorsImpl<any>> }) {
   if (!error) return null;
@@ -91,45 +92,17 @@ export default function QuotasChangeInfo({ disabled, className }: { disabled: bo
         the Platform Services team with any questions we may have about the request.&nbsp;
         <span className="font-bold">This person does not need to be a Product Contact.</span>
       </p>
-      <div className="mt-2">
-        <input
-          id="quotaContactName"
-          autoComplete="off"
-          disabled={disabled}
-          type="text"
-          placeholder=""
-          className={cn(
-            'block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6',
-            disabled
-              ? 'disabled:bg-slate-50 disabled:text-slate-500 disabled:border-slate-200 disabled:shadow-noneinvalid:border-pink-500 invalid:text-pink-600 focus:invalid:border-pink-500 focus:invalid:ring-pink-500'
-              : '',
-          )}
-          {...register('quotaContactName')}
-        />
-        <FormError error={_get(errors, 'quotaContactName')} />
-      </div>
+
+      <HookFormTextInput name="quotaContactName" disabled={disabled} required classNames={{ wrapper: 'mt-2' }} />
+
       <h3 className="text-base 2xl:text-lg font-semibold leading-7 text-gray-900 mt-4">Contact email</h3>
       <p className="text-sm leading-6 text-gray-600">
         Provide the email of the product contact handling this request. This should be a professional email, but
         it&nbsp;<span className="font-bold">does not need to be an IDIR email address.</span>
       </p>
-      <div className="mt-2">
-        <input
-          id="quotaContactEmail"
-          autoComplete="off"
-          disabled={disabled}
-          type="text"
-          placeholder=""
-          className={cn(
-            'block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6',
-            disabled
-              ? 'disabled:bg-slate-50 disabled:text-slate-500 disabled:border-slate-200 disabled:shadow-noneinvalid:border-pink-500 invalid:text-pink-600 focus:invalid:border-pink-500 focus:invalid:ring-pink-500'
-              : '',
-          )}
-          {...register('quotaContactEmail')}
-        />
-        <FormError error={_get(errors, 'quotaContactEmail')} />
-      </div>
+
+      <HookFormTextInput name="quotaContactEmail" disabled={disabled} required classNames={{ wrapper: 'mt-2' }} />
+
       <h3 className="text-lg font-semibold leading-7 text-gray-900 mt-4">Justification of quota increase</h3>
       <p className="leading-6 text-gray-600">Please clearly state the following:</p>
       <ol className="list-decimal pl-5 font-bold">
