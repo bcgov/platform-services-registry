@@ -1,14 +1,15 @@
 'use client';
 
 import { zodResolver } from '@hookform/resolvers/zod';
+import { Button } from '@mantine/core';
 import { notifications } from '@mantine/notifications';
 import { SecurityConfig, ProjectContext } from '@prisma/client';
 import { useQuery, useMutation } from '@tanstack/react-query';
 import _get from 'lodash-es/get';
 import { useEffect, useState } from 'react';
-import { useForm, useFieldArray } from 'react-hook-form';
+import { FormProvider, useForm, useFieldArray } from 'react-hook-form';
+import HookFormTextInput from '@/components/generic/input/HookFormTextInput';
 import { getSecurityConfig, upsertSecurityConfig } from '@/services/backend/security-config';
-import { cn } from '@/utils';
 import { securityConfigSchema } from '@/validation-schemas/security-config';
 
 export default function Repository({ params: getParams }: { params: Promise<{ licencePlate: string }> }) {
@@ -18,14 +19,7 @@ export default function Repository({ params: getParams }: { params: Promise<{ li
     getParams.then((v) => setParams(v));
   }, [getParams]);
 
-  const {
-    register,
-    control,
-    handleSubmit,
-    getValues,
-    setValue,
-    formState: { errors },
-  } = useForm<SecurityConfig>({
+  const methods = useForm<SecurityConfig>({
     resolver: zodResolver(securityConfigSchema),
     defaultValues: {
       context: ProjectContext.PRIVATE,
@@ -34,6 +28,14 @@ export default function Repository({ params: getParams }: { params: Promise<{ li
       repositories: [{ url: 'https://' }],
     },
   });
+
+  const {
+    control,
+    handleSubmit,
+    getValues,
+    setValue,
+    formState: { errors },
+  } = methods;
 
   const {
     data: current,
@@ -96,61 +98,54 @@ export default function Repository({ params: getParams }: { params: Promise<{ li
   return (
     <div>
       <h2 className="text-base lg:text-lg 2xl:text-2xl font-semibold leading-6 text-gray-900 mb-2">Repository URLs</h2>
-      <form
-        onSubmit={handleSubmit(async (data) => {
-          await mutateAsync(data);
-          notifications.show({
-            color: 'green',
-            title: 'Success',
-            message: 'Successfully updated!',
-            autoClose: 5000,
-          });
-        })}
-      >
-        <ul>
-          {fields.map((item, index) => (
-            <li key={item.id}>
-              <div className="flex mb-1">
-                <input
-                  autoComplete="off"
-                  className={cn(
-                    'flex-auto rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6',
-                  )}
-                  {...register(`repositories.${index}.url`)}
-                />
-
-                <button
-                  type="button"
-                  className="ml-2 rounded-md bg-red-600 text-white px-4 py-2.5 text-sm tracking-[.2em] shadow-sm hover:brightness-110 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 w-32"
-                  onClick={() => remove(index)}
-                >
-                  Remove
-                </button>
-              </div>
-              {_get(errors, `repositories.${index}.url`) && (
-                <span className="text-red-600">{_get(errors, `repositories.${index}.url.message`)}</span>
-              )}
-            </li>
-          ))}
-        </ul>
-
-        {values.repositories.length < 10 && (
-          <button
-            type="button"
-            className="rounded-md bg-blue-400 text-white px-4 py-2.5 text-sm tracking-[.2em] shadow-sm hover:brightness-110 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 w-32"
-            onClick={() => append({ url: 'https://' })}
-          >
-            Add New
-          </button>
-        )}
-
-        <button
-          type="submit"
-          className="ml-2 rounded-md bg-green-600 text-white px-4 py-2.5 text-sm tracking-[.2em] shadow-sm hover:brightness-110 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 w-32"
+      <FormProvider {...methods}>
+        <form
+          onSubmit={handleSubmit(async (data) => {
+            await mutateAsync(data);
+            notifications.show({
+              color: 'green',
+              title: 'Success',
+              message: 'Successfully updated!',
+              autoClose: 5000,
+            });
+          })}
         >
-          Submit
-        </button>
-      </form>
+          <ul>
+            {fields.map((item, index) => (
+              <li key={item.id}>
+                <div className="flex mb-1">
+                  <HookFormTextInput
+                    name={`repositories.${index}.url`}
+                    placeholder="https://"
+                    classNames={{ wrapper: 'flex-auto' }}
+                  />
+
+                  <Button color="danger" onClick={() => remove(index)} className="ml-1">
+                    Remove
+                  </Button>
+                </div>
+              </li>
+            ))}
+          </ul>
+
+          {values.repositories.length < 10 && (
+            <button
+              type="button"
+              className="rounded-md bg-blue-400 text-white px-4 py-2.5 text-sm tracking-[.2em] shadow-sm hover:brightness-110 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 w-32"
+              onClick={() => append({ url: 'https://' })}
+            >
+              Add New
+            </button>
+          )}
+
+          <button
+            type="submit"
+            className="ml-2 rounded-md bg-green-600 text-white px-4 py-2.5 text-sm tracking-[.2em] shadow-sm hover:brightness-110 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 w-32"
+          >
+            Submit
+          </button>
+        </form>
+      </FormProvider>
     </div>
   );
 }

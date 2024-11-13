@@ -1,6 +1,7 @@
 import React, { useEffect } from 'react';
 import { Controller, useFormContext } from 'react-hook-form';
 import FormCheckbox from '@/components/generic/checkbox/FormCheckbox';
+import HookFormTextInput from '../generic/input/HookFormTextInput';
 
 const commonComponents = [
   { name: 'addressAndGeolocation', label: 'Address and Geolocation' },
@@ -134,20 +135,12 @@ export default function CommonComponents({ disabled, number }: { disabled?: bool
               </div>
             ))}
           </div>
-          <div className="col-span-full mt-10">
-            <label htmlFor="street-address" className="font-semibold text-base text-gray-900">
-              Other
-            </label>
-            <div className="mt-2">
-              <input
-                disabled={disabled}
-                type="text"
-                placeholder="Please specify any other common components used"
-                className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
-                {...register('commonComponents.other')}
-              />
-            </div>
-          </div>
+          <HookFormTextInput
+            label="Other"
+            name="commonComponents.other"
+            placeholder="Please specify any other common components used"
+            classNames={{ wrapper: 'col-span-full mt-10' }}
+          />
         </fieldset>
       </div>
     </div>

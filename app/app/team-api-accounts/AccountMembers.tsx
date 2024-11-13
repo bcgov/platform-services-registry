@@ -4,6 +4,7 @@ import { Button } from '@mantine/core';
 import { IconPlus } from '@tabler/icons-react';
 import _get from 'lodash-es/get';
 import { useFieldArray, useFormContext } from 'react-hook-form';
+import HookFormTextInput from '@/components/generic/input/HookFormTextInput';
 import Label from '@/components/generic/Label';
 import { cn } from '@/utils';
 
@@ -14,12 +15,7 @@ export default function AccountMembers({
   className?: string;
   disabled?: boolean;
 }) {
-  const {
-    register,
-    control,
-    formState: { errors },
-    getValues,
-  } = useFormContext();
+  const { control, getValues } = useFormContext();
 
   const { fields, append, remove } = useFieldArray({
     control,
@@ -34,29 +30,23 @@ export default function AccountMembers({
       <ul>
         {fields.map((item, index) => {
           const itemKey = `users.${index}.email`;
-          const itemError = _get(errors, itemKey);
 
           return (
             <li key={item.id}>
               <div className="flex mb-1">
-                <input
-                  autoComplete="off"
-                  className={cn(
-                    'flex-auto rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset sm:text-sm sm:leading-6',
-                    {
-                      'border-solid border-1 border-red-600 focus:ring-red-600 text-red-600': itemError,
-                    },
-                  )}
-                  {...register(itemKey)}
+                <HookFormTextInput
+                  name={itemKey}
+                  placeholder="example@example.com"
+                  classNames={{ wrapper: 'flex-auto' }}
                   disabled={disabled}
                 />
+
                 {!disabled && (
-                  <Button color="red" onClick={() => remove(index)}>
+                  <Button color="red" size="sm" onClick={() => remove(index)} className="ml-1">
                     Delete
                   </Button>
                 )}
               </div>
-              {itemError && <div className="text-sm text-red-600 mb-2">{String(itemError.message)}</div>}
             </li>
           );
         })}

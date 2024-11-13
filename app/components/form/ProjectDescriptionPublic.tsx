@@ -13,6 +13,7 @@ import {
   publicCloudTeamEmail,
 } from '@/constants';
 import { cn } from '@/utils';
+import HookFormTextInput from '../generic/input/HookFormTextInput';
 
 function stripSpecialCharacters(text: string) {
   const pattern = /[^A-Za-z0-9///.:+=@_ ]/g;
@@ -49,33 +50,20 @@ export default function ProjectDescriptionPublic({
         </p>
       )}
       <div className="mt-10 grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6">
-        <div className="col-span-full">
-          <label htmlFor="street-address" className="block text-sm font-medium leading-6 text-gray-900">
-            Product name
-          </label>
-          <div className="mt-2">
-            <input
-              autoComplete="off"
-              disabled={disabled}
-              type="text"
-              placeholder="Enter product name"
-              className={cn(
-                'block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6',
-                disabled
-                  ? 'disabled:bg-slate-50 disabled:text-slate-500 disabled:border-slate-200 disabled:shadow-noneinvalid:border-pink-500 invalid:text-pink-600 focus:invalid:border-pink-500 focus:invalid:ring-pink-500'
-                  : '',
-              )}
-              {...register('name', {
-                onChange: (e) => {
-                  setValue('name', stripSpecialCharacters(e.target.value));
-                },
-              })}
-            />
-          </div>
-          <p className={cn(errors.name ? 'text-red-400' : 'text-gray-600', 'mt-3 text-sm leading-6')}>
-            Please provide a descriptive product name with no acronyms. (Only /. : + = @ _ special symbols are allowed)
-          </p>
-        </div>
+        <HookFormTextInput
+          label="Product name"
+          name="name"
+          placeholder="Enter product name"
+          disabled={disabled}
+          required
+          options={{
+            onChange: (e) => {
+              setValue('name', stripSpecialCharacters(e.target.value));
+            },
+          }}
+          error="Please provide a descriptive product name with no acronyms. (Only /. : + = @ _ special symbols are allowed)"
+          classNames={{ wrapper: 'col-span-full mt-2' }}
+        />
 
         <HookFormTextarea
           label="Description"

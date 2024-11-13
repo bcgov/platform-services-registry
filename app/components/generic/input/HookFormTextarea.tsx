@@ -27,7 +27,6 @@ export default function HookFormTextarea<T extends FieldValues>({
   } = useFormContext<T>();
   const formError = _get(errors, name);
   const _error = error ?? (formError && String(formError?.message));
-
   const showError = !!formError && !disabled;
 
   return (

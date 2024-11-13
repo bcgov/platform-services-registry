@@ -12,6 +12,7 @@ import FormSelect from '@/components/generic/select/FormSelect';
 import HookFormSingleSelect from '@/components/generic/select/HookFormSingleSelect';
 import { clusters, ministryOptions, privateCloudTeamEmail } from '@/constants';
 import { cn } from '@/utils';
+import HookFormTextInput from '../generic/input/HookFormTextInput';
 
 export default function ProjectDescriptionPrivate({
   mode,
@@ -27,7 +28,6 @@ export default function ProjectDescriptionPrivate({
   const {
     register,
     formState: { errors },
-    getValues,
   } = useFormContext();
 
   const [clustersList, setClustersList] = useState(clusters);
@@ -64,29 +64,15 @@ export default function ProjectDescriptionPrivate({
     <div className="">
       {temporaryProduct}
       <div className="mt-10 grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6">
-        <div className="col-span-full">
-          <label htmlFor="street-address" className="block text-sm font-medium leading-6 text-gray-900">
-            Product name
-          </label>
-          <div className="mt-2">
-            <input
-              autoComplete="off"
-              disabled={disabled}
-              type="text"
-              placeholder="Enter product name"
-              className={cn(
-                'block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6',
-                disabled
-                  ? 'disabled:bg-slate-50 disabled:text-slate-500 disabled:border-slate-200 disabled:shadow-noneinvalid:border-pink-500 invalid:text-pink-600 focus:invalid:border-pink-500 focus:invalid:ring-pink-500'
-                  : '',
-              )}
-              {...register('name')}
-            />
-          </div>
-          <p className={cn(errors.name ? 'text-red-400' : 'text-gray-600', 'mt-3 text-sm leading-6')}>
-            Please provide a descriptive product name with no acronyms
-          </p>
-        </div>
+        <HookFormTextInput
+          label="Product name"
+          name="name"
+          placeholder="Enter product name"
+          disabled={disabled}
+          required
+          error="Please provide a descriptive product name with no acronyms"
+          classNames={{ wrapper: 'col-span-full mt-2' }}
+        />
 
         <HookFormTextarea
           label="Description"
