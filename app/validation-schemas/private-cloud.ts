@@ -146,9 +146,25 @@ const _privateCloudEditRequestBodySchema = _privateCloudCreateRequestBodySchema.
   }),
 );
 
-export const privateCloudEditRequestBodySchema = _privateCloudEditRequestBodySchema.refine(isEmailUnique, {
-  message: 'Project Owner and Primary Technical Lead must not have the same email.',
-});
+export const privateCloudEditRequestBodySchema = _privateCloudEditRequestBodySchema
+  .merge(
+    z.object({
+      isAgMinistryChecked: z.boolean().optional(),
+    }),
+  )
+  .refine(
+    (formData) => {
+      return AGMinistries.includes(formData.ministry) ? formData.isAgMinistryChecked : true;
+    },
+    {
+      message: 'AG Ministry Checkbox should be checked.',
+      path: ['isAgMinistryChecked'],
+    },
+  )
+  .refine(isEmailUnique, {
+    message: 'Project Owner and Primary Technical Lead must not have the same email.',
+    path: ['primaryTechnicalLead'],
+  });
 
 export const privateCloudRequestDecisionBodySchema = _privateCloudEditRequestBodySchema.merge(
   z.object({
