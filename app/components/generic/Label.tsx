@@ -1,20 +1,26 @@
 'use client';
 
 import React from 'react';
+import CopyableButton from '@/components/generic/button/CopyableButton';
+import InfoTooltip from '@/components/generic/InfoTooltip';
 import { cn } from '@/utils';
 
 export default function Label({
   children,
-  htmlFor,
+  htmlFor = 'label',
   className = '',
   required = false,
-  leftSection,
+  copyable = false,
+  onCopy,
+  info,
 }: {
   children: React.ReactNode;
-  leftSection?: React.ReactNode;
-  htmlFor: string;
+  htmlFor?: string;
   className?: string;
   required?: boolean;
+  copyable?: boolean;
+  onCopy?: () => void;
+  info?: string;
 }) {
   return (
     <div className="flex justify-between">
@@ -22,9 +28,10 @@ export default function Label({
         <label htmlFor={htmlFor} className={cn('block text-sm font-medium leading-6 text-gray-900 mb-1', className)}>
           {children}
           {required && <span className="text-red-500">*</span>}
+          {info && <InfoTooltip label={info} />}
         </label>
       </div>
-      <div>{leftSection}</div>
+      <div>{copyable && <CopyableButton onClick={onCopy} />}</div>
     </div>
   );
 }

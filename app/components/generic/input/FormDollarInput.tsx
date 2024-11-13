@@ -28,11 +28,16 @@ const inputClasslist = [
   'sm:text-sm',
   'text-gray-900',
   'w-full',
+  '[appearance:textfield]',
+  '[&::-webkit-outer-spin-button]:appearance-none',
+  '[&::-webkit-inner-spin-button]:appearance-none',
+  'pl-7',
+  'pr-12',
 ];
 
 const inputClass = inputClasslist.join(' ');
 
-export interface FormTextInputProps extends InputProps {
+export interface FormDollarInputProps extends InputProps {
   id?: string;
   name: string;
   label?: string;
@@ -47,11 +52,10 @@ export interface FormTextInputProps extends InputProps {
   info?: string;
 }
 
-export default function FormTextInput({
+export default function FormDollarInput({
   id,
   name,
   label,
-  type = 'text',
   classNames,
   required,
   disabled,
@@ -60,7 +64,7 @@ export default function FormTextInput({
   onCopy,
   info,
   ...others
-}: FormTextInputProps) {
+}: FormDollarInputProps) {
   if (!id) id = _kebabCase(name);
 
   return (
@@ -77,16 +81,27 @@ export default function FormTextInput({
           {label}
         </Label>
       )}
-      <input
-        type={type}
-        id={id}
-        name={name}
-        disabled={disabled}
-        autoComplete="off"
-        {...inputProps}
-        {...others}
-        className={cn(inputClass, classNames?.input)}
-      />
+      <div className="relative mt-2 rounded-md shadow-sm">
+        <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
+          <span className="text-gray-500 sm:text-sm">$</span>
+        </div>
+        <input
+          id={id}
+          name={name}
+          disabled={disabled}
+          autoComplete="off"
+          step="0.01"
+          {...inputProps}
+          {...others}
+          type="number"
+          className={cn(inputClass, classNames?.input)}
+        />
+        <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-3">
+          <span className="text-gray-500 sm:text-sm" id="price-currency">
+            USD
+          </span>
+        </div>
+      </div>
     </div>
   );
 }

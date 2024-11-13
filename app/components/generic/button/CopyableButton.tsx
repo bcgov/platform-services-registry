@@ -14,7 +14,7 @@ export default function CopyableButton({
   children?: React.ReactNode;
   value?: string;
   className?: string;
-  onClick?: () => string;
+  onClick?: () => void;
 }) {
   const clipboard = useClipboard({ timeout: 500 });
 
