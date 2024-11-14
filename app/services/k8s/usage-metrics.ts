@@ -4,35 +4,6 @@ import { logger } from '@/core/logging';
 import { normalizeMemory, normalizeCpu, PVC, resourceMetrics } from '@/helpers/resource-metrics';
 import { getK8sClients, queryPrometheus } from './core';
 
-// async function getLastTwoWeeksAvgUsage(namespace: string, cluster: Cluster) {
-//   const queryFilter = `namespace="${namespace}"`;
-//   const cpuUsageQuery = `sum by (container) (irate(container_cpu_usage_seconds_total{${queryFilter}}[2w]))`;
-//   const memoryUsageQuery = `sum by (container) (avg_over_time(container_memory_usage_bytes{${queryFilter}}[2w]))`;
-
-//   const [usageCPU, usageMemory] = await Promise.all(
-//     [cpuUsageQuery, memoryUsageQuery].map((query) => queryPrometheus(query, cluster)),
-//   );
-
-//   // Handle missing data and fallback to zeros
-//   const usageData = usageCPU.map((cpuItem) => {
-//     const podName = cpuItem.metric.pod;
-//     const cpuUsage = cpuItem.value ? parseFloat(cpuItem.value[1]) : 0;
-
-//     // Match memory usage for the same pod
-//     const memoryUsageItem = usageMemory.find((memItem) => memItem.metric.pod === podName);
-//     const memoryUsage = memoryUsageItem && memoryUsageItem.value ? parseFloat(memoryUsageItem.value[1]) : 0;
-
-//     return {
-//       podName,
-//       usage: {
-//         cpu: cpuUsage,
-//         memory: memoryUsage,
-//       },
-//     };
-//   });
-
-//   return usageData;
-// }
 async function getLastTwoWeeksAvgUsage(namespace: string, podName: string, cluster: Cluster) {
   const queryFilter = `namespace="${namespace}", pod="${podName}"`;
   const cpuUsageQuery = `sum by (container) (irate(container_cpu_usage_seconds_total{${queryFilter}}[2w]))`;
