@@ -136,6 +136,8 @@ export async function getPodMetrics(
     const containers = item.containers
       .filter((container) => container.name !== 'POD') // Exclude pseudo-container
       .map((container) => {
+        // The name of each app and init container in a Pod must be unique
+        // https://kubernetes.io/docs/reference/kubernetes-api/workload-resources/pod-v1/#containers
         const resourceDef = podStatus.body.spec?.containers.find((cont) => cont.name === container.name);
 
         if (!resourceDef) {
