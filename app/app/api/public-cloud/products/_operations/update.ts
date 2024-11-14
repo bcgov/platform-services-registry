@@ -30,7 +30,7 @@ export default async function updateOp({
   const { requestComment, accountCoding, isAgMinistryChecked, isEaApproval, ...rest } = body;
 
   if (!product._permissions.manageMembers) {
-    rest.members = product.members;
+    rest.members = product.members.map(({ userId, roles }) => ({ userId, roles }));
   }
 
   await upsertUsers([
