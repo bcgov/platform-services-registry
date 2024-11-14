@@ -16,7 +16,7 @@ export default function ProductsRequestsTabs({ context }: { context: 'private' |
 
   return (
     <div>
-      <Tabs tabs={tabs} className="mb-6" />
+      <Tabs tabs={tabs} className="mb-3" />
     </div>
   );
 }
