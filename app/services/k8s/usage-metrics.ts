@@ -4,10 +4,39 @@ import { logger } from '@/core/logging';
 import { normalizeMemory, normalizeCpu, PVC, resourceMetrics } from '@/helpers/resource-metrics';
 import { getK8sClients, queryPrometheus } from './core';
 
-async function getLastTwoWeeksAvgUsage(namespace: string, cluster: Cluster) {
-  const queryFilter = `namespace="${namespace}"`;
-  const cpuUsageQuery = `sum by (pod) (irate(container_cpu_usage_seconds_total{${queryFilter}}[2w]))`;
-  const memoryUsageQuery = `sum by (pod) (avg_over_time(container_memory_usage_bytes{${queryFilter}}[2w]))`;
+// async function getLastTwoWeeksAvgUsage(namespace: string, cluster: Cluster) {
+//   const queryFilter = `namespace="${namespace}"`;
+//   const cpuUsageQuery = `sum by (container) (irate(container_cpu_usage_seconds_total{${queryFilter}}[2w]))`;
+//   const memoryUsageQuery = `sum by (container) (avg_over_time(container_memory_usage_bytes{${queryFilter}}[2w]))`;
+
+//   const [usageCPU, usageMemory] = await Promise.all(
+//     [cpuUsageQuery, memoryUsageQuery].map((query) => queryPrometheus(query, cluster)),
+//   );
+
+//   // Handle missing data and fallback to zeros
+//   const usageData = usageCPU.map((cpuItem) => {
+//     const podName = cpuItem.metric.pod;
+//     const cpuUsage = cpuItem.value ? parseFloat(cpuItem.value[1]) : 0;
+
+//     // Match memory usage for the same pod
+//     const memoryUsageItem = usageMemory.find((memItem) => memItem.metric.pod === podName);
+//     const memoryUsage = memoryUsageItem && memoryUsageItem.value ? parseFloat(memoryUsageItem.value[1]) : 0;
+
+//     return {
+//       podName,
+//       usage: {
+//         cpu: cpuUsage,
+//         memory: memoryUsage,
+//       },
+//     };
+//   });
+
+//   return usageData;
+// }
+async function getLastTwoWeeksAvgUsage(namespace: string, podName: string, cluster: Cluster) {
+  const queryFilter = `namespace="${namespace}", pod="${podName}"`;
+  const cpuUsageQuery = `sum by (container) (irate(container_cpu_usage_seconds_total{${queryFilter}}[2w]))`;
+  const memoryUsageQuery = `sum by (container) (avg_over_time(container_memory_usage_bytes{${queryFilter}}[2w]))`;
 
   const [usageCPU, usageMemory] = await Promise.all(
     [cpuUsageQuery, memoryUsageQuery].map((query) => queryPrometheus(query, cluster)),
@@ -15,15 +44,15 @@ async function getLastTwoWeeksAvgUsage(namespace: string, cluster: Cluster) {
 
   // Handle missing data and fallback to zeros
   const usageData = usageCPU.map((cpuItem) => {
-    const podName = cpuItem.metric.pod;
+    const containerName = cpuItem.metric.container;
     const cpuUsage = cpuItem.value ? parseFloat(cpuItem.value[1]) : 0;
 
-    // Match memory usage for the same pod
-    const memoryUsageItem = usageMemory.find((memItem) => memItem.metric.pod === podName);
+    // Match memory usage for the same container
+    const memoryUsageItem = usageMemory.find((memItem) => memItem.metric.container === containerName);
     const memoryUsage = memoryUsageItem && memoryUsageItem.value ? parseFloat(memoryUsageItem.value[1]) : 0;
 
     return {
-      podName,
+      containerName,
       usage: {
         cpu: cpuUsage,
         memory: memoryUsage,
@@ -94,47 +123,57 @@ export async function getPodMetrics(
 
   const namespace = `${licencePlate}-${environment}`;
   let metricItems: PodMetric[] = [];
-  let podUsageData: { podName: string; usage: { cpu: number; memory: number } }[] = [];
 
   try {
-    const pvc = await collectPVCMetrics(namespace, cluster); // PVC metrics collection
-    podUsageData = await getLastTwoWeeksAvgUsage(namespace, cluster); // CPU and memory by pod usage data collection
+    // Collect PVC metrics
+    const pvc = await collectPVCMetrics(namespace, cluster);
+
+    // Retrieve pod metrics for the namespace
     const metrics = await metricsClient.getPodMetrics(namespace);
+
+    // If no metrics or PVC data, return empty
     if ((!metrics.items || metrics.items.length === 0) && (!pvc || pvc.length === 0)) {
       return { podMetrics: [], pvcMetrics: [] };
     }
+
+    // Add PVC data to the usageData
     usageData.pvcMetrics = pvc || [];
     metricItems = metrics.items;
   } catch (error: any) {
-    logger.error(error.body);
+    logger.error(error?.body || error.message || 'Unknown error occurred while fetching pod metrics.');
     return { podMetrics: [], pvcMetrics: [] };
   }
 
-  // Organize usage data by pod name for easy lookup
-  const usageMap = podUsageData.reduce(
-    (acc, { podName, usage }) => {
-      acc[podName] = usage;
-      return acc;
-    },
-    {} as Record<string, { cpu: number; memory: number }>,
-  );
-
-  // Iterate through each pod and its containers to extract usage metrics
+  // Iterate through each pod to collect container-level metrics
   for (const item of metricItems) {
-    const name = item.metadata.name;
-    const podStatus = await apiClient.readNamespacedPodStatus(name, namespace);
+    const podName = item.metadata.name;
 
-    // Map over containers to collect their usage, limits, and requests
+    // Collect average CPU and memory usage for the specific pod
+    const containerUsageData = await getLastTwoWeeksAvgUsage(namespace, podName, cluster);
+
+    // Create a map for quick lookup of usage data by container name
+    const usageMap = containerUsageData.reduce(
+      (acc, { containerName, usage }) => {
+        acc[containerName] = usage;
+        return acc;
+      },
+      {} as Record<string, { cpu: number; memory: number }>,
+    );
+
+    const podStatus = await apiClient.readNamespacedPodStatus(podName, namespace);
+
     const containers = item.containers
-      // When querying pod metrics, Kubernetes adds a pseudo-container named "POD" to represent
-      // the pod's management overhead, like network or logging. This is not an actual application
-      // container and usually shows zero resource usage (cpu: '0', memory: '0').
-      .filter((container) => container.name !== 'POD') // Exclude the POD overhead entry
-      .map((container, index) => {
-        const resourceDef = podStatus.body.spec?.containers[index]?.resources ?? {};
+      .filter((container) => container.name !== 'POD') // Exclude pseudo-container
+      .map((container) => {
+        const resourceDef = podStatus.body.spec?.containers.find((cont) => cont.name === container.name);
 
-        // Retrieve last hour usage for CPU and memory from usageMap
-        const lastTwoWeeksUsage = usageMap[name] || { cpu: 0, memory: 0 };
+        if (!resourceDef) {
+          logger.warn(`No resource found for container: ${container.name}`);
+          return null;
+        }
+
+        // Retrieve last two weeks usage for the container
+        const lastTwoWeeksUsage = usageMap[container.name] || { cpu: 0, memory: 0 };
 
         return {
           name: container.name,
@@ -143,21 +182,22 @@ export async function getPodMetrics(
             memory: normalizeMemory(lastTwoWeeksUsage.memory),
           },
           limits: {
-            cpu: normalizeCpu(resourceDef.limits?.cpu || 0),
-            memory: normalizeMemory(resourceDef.limits?.memory || 0),
+            cpu: normalizeCpu(resourceDef.resources?.limits?.cpu || 0),
+            memory: normalizeMemory(resourceDef.resources?.limits?.memory || 0),
           },
           requests: {
-            cpu: normalizeCpu(resourceDef.requests?.cpu || 0),
-            memory: normalizeMemory(resourceDef.requests?.memory || 0),
+            cpu: normalizeCpu(resourceDef.resources?.requests?.cpu || 0),
+            memory: normalizeMemory(resourceDef.resources?.requests?.memory || 0),
           },
         };
-      });
+      })
+      .filter((container) => container !== null);
 
-    const podResources = {
-      name,
+    usageData.podMetrics.push({
+      name: podName,
       containers,
-    };
-    usageData.podMetrics.push(podResources);
+    });
   }
+
   return usageData;
 }
