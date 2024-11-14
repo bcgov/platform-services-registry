@@ -32,7 +32,7 @@ export default async function updateOp({
     body;
 
   if (!product._permissions.manageMembers) {
-    rest.members = product.members;
+    rest.members = product.members.map(({ userId, roles }) => ({ userId, roles }));
   }
 
   await upsertUsers([body.projectOwner.email, body.primaryTechnicalLead.email, body.secondaryTechnicalLead?.email]);

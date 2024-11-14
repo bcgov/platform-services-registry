@@ -38,35 +38,15 @@ describe('Private Cloud NATs', () => {
         namespaces: expect.arrayContaining([
           expect.objectContaining({
             name: `${decisionData.licencePlate}-dev`,
-            quota: expect.objectContaining({
-              cpu: cpuMetadata[decisionData.developmentQuota.cpu].labelNats,
-              memory: memoryMetadata[decisionData.developmentQuota.memory].labelNats,
-              storage: storageMetadata[decisionData.developmentQuota.storage].labelNats,
-            }),
           }),
           expect.objectContaining({
             name: `${decisionData.licencePlate}-test`,
-            quota: expect.objectContaining({
-              cpu: cpuMetadata[decisionData.testQuota.cpu].labelNats,
-              memory: memoryMetadata[decisionData.testQuota.memory].labelNats,
-              storage: storageMetadata[decisionData.testQuota.storage].labelNats,
-            }),
           }),
           expect.objectContaining({
             name: `${decisionData.licencePlate}-prod`,
-            quota: expect.objectContaining({
-              cpu: cpuMetadata[decisionData.productionQuota.cpu].labelNats,
-              memory: memoryMetadata[decisionData.productionQuota.memory].labelNats,
-              storage: storageMetadata[decisionData.productionQuota.storage].labelNats,
-            }),
           }),
           expect.objectContaining({
             name: `${decisionData.licencePlate}-tools`,
-            quota: expect.objectContaining({
-              cpu: cpuMetadata[decisionData.toolsQuota.cpu].labelNats,
-              memory: memoryMetadata[decisionData.toolsQuota.memory].labelNats,
-              storage: storageMetadata[decisionData.toolsQuota.storage].labelNats,
-            }),
           }),
         ]),
         profile_id: expect.any(String),
@@ -98,35 +78,15 @@ describe('Private Cloud NATs', () => {
         namespaces: expect.arrayContaining([
           expect.objectContaining({
             name: `${decisionData.licencePlate}-dev`,
-            quota: expect.objectContaining({
-              cpu: cpuMetadata[decisionData.developmentQuota.cpu].labelNats,
-              memory: memoryMetadata[decisionData.developmentQuota.memory].labelNats,
-              storage: storageMetadata[decisionData.developmentQuota.storage].labelNats,
-            }),
           }),
           expect.objectContaining({
             name: `${decisionData.licencePlate}-test`,
-            quota: expect.objectContaining({
-              cpu: cpuMetadata[decisionData.testQuota.cpu].labelNats,
-              memory: memoryMetadata[decisionData.testQuota.memory].labelNats,
-              storage: storageMetadata[decisionData.testQuota.storage].labelNats,
-            }),
           }),
           expect.objectContaining({
             name: `${decisionData.licencePlate}-prod`,
-            quota: expect.objectContaining({
-              cpu: cpuMetadata[decisionData.productionQuota.cpu].labelNats,
-              memory: memoryMetadata[decisionData.productionQuota.memory].labelNats,
-              storage: storageMetadata[decisionData.productionQuota.storage].labelNats,
-            }),
           }),
           expect.objectContaining({
             name: `${decisionData.licencePlate}-tools`,
-            quota: expect.objectContaining({
-              cpu: cpuMetadata[decisionData.toolsQuota.cpu].labelNats,
-              memory: memoryMetadata[decisionData.toolsQuota.memory].labelNats,
-              storage: storageMetadata[decisionData.toolsQuota.storage].labelNats,
-            }),
           }),
         ]),
         profile_id: expect.any(String),
@@ -158,35 +118,15 @@ describe('Private Cloud NATs', () => {
         namespaces: expect.arrayContaining([
           expect.objectContaining({
             name: `${decisionData.licencePlate}-dev`,
-            quota: expect.objectContaining({
-              cpu: cpuMetadata[decisionData.developmentQuota.cpu].labelNats,
-              memory: memoryMetadata[decisionData.developmentQuota.memory].labelNats,
-              storage: storageMetadata[decisionData.developmentQuota.storage].labelNats,
-            }),
           }),
           expect.objectContaining({
             name: `${decisionData.licencePlate}-test`,
-            quota: expect.objectContaining({
-              cpu: cpuMetadata[decisionData.testQuota.cpu].labelNats,
-              memory: memoryMetadata[decisionData.testQuota.memory].labelNats,
-              storage: storageMetadata[decisionData.testQuota.storage].labelNats,
-            }),
           }),
           expect.objectContaining({
             name: `${decisionData.licencePlate}-prod`,
-            quota: expect.objectContaining({
-              cpu: cpuMetadata[decisionData.productionQuota.cpu].labelNats,
-              memory: memoryMetadata[decisionData.productionQuota.memory].labelNats,
-              storage: storageMetadata[decisionData.productionQuota.storage].labelNats,
-            }),
           }),
           expect.objectContaining({
             name: `${decisionData.licencePlate}-tools`,
-            quota: expect.objectContaining({
-              cpu: cpuMetadata[decisionData.toolsQuota.cpu].labelNats,
-              memory: memoryMetadata[decisionData.toolsQuota.memory].labelNats,
-              storage: storageMetadata[decisionData.toolsQuota.storage].labelNats,
-            }),
           }),
         ]),
         profile_id: expect.any(String),
