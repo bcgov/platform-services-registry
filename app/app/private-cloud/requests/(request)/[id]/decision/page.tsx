@@ -1,13 +1,13 @@
 'use client';
 
 import { zodResolver } from '@hookform/resolvers/zod';
+import { Button } from '@mantine/core';
 import { PrivateCloudProject, RequestType } from '@prisma/client';
 import { IconInfoCircle, IconUsersGroup, IconSettings, IconComponents, IconMessage } from '@tabler/icons-react';
 import { useEffect, useState } from 'react';
 import { FormProvider, useForm } from 'react-hook-form';
 import { z } from 'zod';
 import PreviousButton from '@/components/buttons/Previous';
-import SubmitButton from '@/components/buttons/SubmitButton';
 import ProjectDescription from '@/components/form/ProjectDescriptionPrivate';
 import Quotas from '@/components/form/Quotas';
 import TeamContacts from '@/components/form/TeamContacts';
@@ -170,23 +170,30 @@ export default privateCloudRequestDecision(({ getPathParams, session, router }) 
         >
           <PageAccordion items={accordionItems} />
 
-          <div className="mt-10 flex items-center justify-start gap-x-6">
+          <div className="mt-5 flex items-center justify-start gap-x-2">
             <PreviousButton />
             {snap.currentRequest._permissions.review && (
-              <div className="flex items-center justify-start gap-x-6">
-                <SubmitButton
-                  text="REJECT REQUEST"
+              <>
+                <Button
+                  type="submit"
+                  color="danger"
                   onClick={() => {
                     methods.setValue('decision', RequestDecision.REJECTED);
                   }}
-                />
-                <SubmitButton
-                  text="APPROVE REQUEST"
+                >
+                  Reject
+                </Button>
+
+                <Button
+                  type="submit"
+                  color="primary"
                   onClick={() => {
                     methods.setValue('decision', RequestDecision.APPROVED);
                   }}
-                />
-              </div>
+                >
+                  Approve
+                </Button>
+              </>
             )}
           </div>
         </form>

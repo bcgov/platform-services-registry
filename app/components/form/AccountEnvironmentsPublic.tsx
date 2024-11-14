@@ -1,4 +1,4 @@
-import { Alert } from '@mantine/core';
+import { Alert, Button } from '@mantine/core';
 import { IconInfoCircle } from '@tabler/icons-react';
 import _get from 'lodash-es/get';
 import { useFormContext } from 'react-hook-form';
@@ -32,8 +32,9 @@ export default function AccountEnvironmentsPublic({
       <div className="flex flex-col mt-2">
         {!disabled && (
           <div>
-            <button
-              type="button"
+            <Button
+              color="primary"
+              size="compact-sm"
               onClick={() => {
                 [
                   'environmentsEnabled.production',
@@ -44,12 +45,12 @@ export default function AccountEnvironmentsPublic({
                   setValue(key, true, { shouldDirty: true });
                 });
               }}
-              className="rounded-md bg-blue-600 text-white px-3 py-1 text-sm hover:brightness-110 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
             >
               Select All
-            </button>
-            <button
-              type="button"
+            </Button>
+            <Button
+              color="primary"
+              size="compact-sm"
               onClick={() => {
                 ['production', 'development', 'test', 'tools'].forEach((key) => {
                   if (!selected || !selected[key as keyof EnvironmentsEnabled]) {
@@ -57,10 +58,10 @@ export default function AccountEnvironmentsPublic({
                   }
                 });
               }}
-              className="rounded-md bg-blue-600 text-white px-3 py-1 text-sm hover:brightness-110 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 ml-1"
+              className="ml-1"
             >
               Select None
-            </button>
+            </Button>
           </div>
         )}
 

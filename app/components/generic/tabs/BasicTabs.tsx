@@ -42,7 +42,7 @@ export default function BasicTabs({ tabs, children }: { tabs: ITab[]; children?:
             <div className=" -mb-px flex justify-start">
               {tabs.map((tab) => {
                 const linkingClassNames = cn(
-                  'first:ml-0 lg:ml-10 w-50 py-5 text-center text-lg font-bold',
+                  'first:ml-0 lg:ml-10 w-50 py-3 text-center text-lg font-bold',
                   compareUrlsIgnoreLastSegments(tab.href, pathname, tab.ignoreSegments ?? 0)
                     ? "relative border-bcorange text-bcblue before:content-[''] before:absolute before:w-full before:border-b-3 before:border-bcorange before:bottom-0 before:left-1/2 before:-translate-x-1/2"
                     : "relative border-transparent text-gray-300 hover:before:content-[''] hover:before:absolute hover:before:w-full hover:before:border-b-3 hover:before:border-gray-300 hover:before:bottom-0 hover:before:left-1/2 hover:before:-translate-x-1/2",

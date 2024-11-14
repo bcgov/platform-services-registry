@@ -130,7 +130,7 @@ export default publicCloudRequestOriginal(({ router }) => {
         <form autoComplete="off">
           <PageAccordion items={accordionItems} />
 
-          <div className="mt-10 flex items-center justify-start gap-x-6">
+          <div className="mt-5 flex items-center justify-start gap-x-2">
             <PreviousButton />
           </div>
         </form>

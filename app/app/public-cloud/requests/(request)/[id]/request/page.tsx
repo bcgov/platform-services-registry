@@ -1,6 +1,7 @@
 'use client';
 
 import { zodResolver } from '@hookform/resolvers/zod';
+import { Button } from '@mantine/core';
 import { RequestType } from '@prisma/client';
 import {
   IconInfoCircle,
@@ -16,7 +17,6 @@ import { FormProvider, useForm } from 'react-hook-form';
 import { z } from 'zod';
 import PublicCloudBillingInfo from '@/components/billing/PublicCloudBillingInfo';
 import PreviousButton from '@/components/buttons/Previous';
-import SubmitButton from '@/components/buttons/SubmitButton';
 import AccountCoding from '@/components/form/AccountCoding';
 import AccountEnvironmentsPublic from '@/components/form/AccountEnvironmentsPublic';
 import Budget from '@/components/form/Budget';
@@ -196,26 +196,34 @@ export default publicCloudProductRequest(({ router }) => {
         >
           <PageAccordion items={accordionItems} />
 
-          <div className="mt-10 flex items-center justify-start gap-x-6">
+          <div className="mt-5 flex items-center justify-start gap-x-2">
             <PreviousButton />
             {snap.currentRequest._permissions.review && (
-              <div className="flex items-center justify-start gap-x-6">
-                <SubmitButton
-                  text="REJECT REQUEST"
+              <>
+                <Button
+                  type="submit"
+                  color="danger"
                   onClick={() => {
                     methods.setValue('decision', RequestDecision.REJECTED);
                   }}
-                />
-                <SubmitButton
-                  text="APPROVE REQUEST"
+                >
+                  Reject
+                </Button>
+
+                <Button
+                  type="submit"
+                  color="primary"
                   onClick={() => {
                     methods.setValue('decision', RequestDecision.APPROVED);
                   }}
-                />
-              </div>
+                >
+                  Approve
+                </Button>
+              </>
             )}
             {canSignEmou && (
-              <button
+              <Button
+                color="info"
                 onClick={async () => {
                   if (!snap.currentRequest) return;
                   const res = await openPublicCloudMouSignModal<{ confirmed: boolean }>({
@@ -228,14 +236,13 @@ export default publicCloudProductRequest(({ router }) => {
                     router.push('/public-cloud/requests/all');
                   }
                 }}
-                type="button"
-                className="flex rounded-md bg-bcorange px-4 py-2.5 text-bcblue text-sm tracking-[.2em] shadow-sm hover:brightness-110 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
               >
                 Sign eMOU
-              </button>
+              </Button>
             )}
             {snap.currentRequest._permissions.reviewMou && (
-              <button
+              <Button
+                color="info"
                 onClick={async () => {
                   if (!snap.currentRequest) return;
                   const res = await openPublicCloudMouReviewModal<{ confirmed: boolean }>({
@@ -247,11 +254,9 @@ export default publicCloudProductRequest(({ router }) => {
                     router.push('/public-cloud/requests/all');
                   }
                 }}
-                type="button"
-                className="flex rounded-md bg-bcorange px-4 py-2.5 text-bcblue text-sm tracking-[.2em] shadow-sm hover:brightness-110 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
               >
                 Review eMOU
-              </button>
+              </Button>
             )}
           </div>
         </form>

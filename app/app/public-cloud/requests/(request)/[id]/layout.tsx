@@ -1,6 +1,6 @@
 'use client';
 
-import { Alert } from '@mantine/core';
+import { Alert, Button } from '@mantine/core';
 import { RequestType } from '@prisma/client';
 import { IconArrowBack, IconInfoCircle, IconFile } from '@tabler/icons-react';
 import { useQuery } from '@tanstack/react-query';
@@ -89,18 +89,25 @@ export default publicCloudProductSecurityACS(({ getPathParams, children, router 
   return (
     <div>
       <div>
-        <LightButton onClick={() => router.push('/public-cloud/requests/all')} className="my-2">
-          <IconArrowBack className="inline-block" />
+        <Button
+          leftSection={<IconArrowBack />}
+          color="dark"
+          variant="outline"
+          onClick={() => router.push('/public-cloud/requests/all')}
+          className="my-2"
+        >
           Back to Requests
-        </LightButton>
-        {request.type !== RequestType.CREATE && (
-          <LightButton
+        </Button>
+        {request._permissions.viewProduct && (
+          <Button
+            leftSection={<IconFile />}
+            color="dark"
+            variant="outline"
             onClick={() => router.push(`/public-cloud/products/${request.licencePlate}/edit`)}
-            className="my-2 ml-1"
+            className="my-2 ml-2"
           >
-            <IconFile className="inline-block" />
             Go to Product
-          </LightButton>
+          </Button>
         )}
       </div>
 

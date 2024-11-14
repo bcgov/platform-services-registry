@@ -1,6 +1,7 @@
 'use client';
 
 import { zodResolver } from '@hookform/resolvers/zod';
+import { Button } from '@mantine/core';
 import {
   IconInfoCircle,
   IconUsersGroup,
@@ -14,7 +15,6 @@ import { FormProvider, useForm } from 'react-hook-form';
 import { z } from 'zod';
 import PublicCloudBillingInfo from '@/components/billing/PublicCloudBillingInfo';
 import PreviousButton from '@/components/buttons/Previous';
-import SubmitButton from '@/components/buttons/SubmitButton';
 import AccountCoding from '@/components/form/AccountCoding';
 import AccountEnvironmentsPublic from '@/components/form/AccountEnvironmentsPublic';
 import Budget from '@/components/form/Budget';
@@ -153,13 +153,13 @@ export default publicCloudProductEdit(({}) => {
         >
           <PageAccordion items={accordionItems} />
 
-          <div className="mt-10 flex items-center justify-start gap-x-6">
+          <div className="mt-5 flex items-center justify-start gap-x-2">
             <PreviousButton />
-            {!isDisabled ? (
-              <div className="flex items-center justify-start gap-x-6">
-                <SubmitButton text="Submit" disabled={!isSubmitEnabled} />
-              </div>
-            ) : null}
+            {!isDisabled && (
+              <Button type="submit" color="primary" disabled={!isSubmitEnabled}>
+                Submit
+              </Button>
+            )}
           </div>
         </form>
       </FormProvider>

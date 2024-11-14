@@ -15,7 +15,7 @@ import Link from 'next/link';
 import { Permissions } from 'next-auth';
 import { useSession } from 'next-auth/react';
 import { useState, ForwardRefExoticComponent, RefAttributes } from 'react';
-import UserProfile from '@/components/dropdowns/UserProfile';
+import { openUserProfileModal } from '@/components/modal/userProfile';
 import { signOut } from '@/helpers/auth';
 import { useAppState } from '@/states/global';
 import ProfileImage from '../ProfileImage';
@@ -50,7 +50,6 @@ const isClickMenu = (menu: MenuType): menu is ClickMenu => 'onClick' in menu;
 export default function UserMenu() {
   const [, appSnapshot] = useAppState();
   const { data: session } = useSession();
-  const [profileOpen, setProfileOpen] = useState(false);
 
   if (!session) return null;
   if (!session.user.id) {
@@ -64,7 +63,9 @@ export default function UserMenu() {
     {
       text: 'Profile',
       Icon: IconUserCircle,
-      onClick: () => setProfileOpen(true),
+      onClick: () => {
+        openUserProfileModal({ session });
+      },
     },
     {
       text: 'My API Account',
@@ -148,7 +149,6 @@ export default function UserMenu() {
           })}
         </Menu.Dropdown>
       </Menu>
-      {session && profileOpen && <UserProfile isOpen={profileOpen} onClose={() => setProfileOpen(false)} />}
     </>
   );
 }
