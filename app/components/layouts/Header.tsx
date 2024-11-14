@@ -1,12 +1,12 @@
 'use client';
 
-import { Loader } from '@mantine/core';
+import { Button, Loader } from '@mantine/core';
+import { IconLogin2 } from '@tabler/icons-react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useSession, signIn } from 'next-auth/react';
 import Logo from '@/components/assets/logo.svg';
-import LightButton from '@/components/generic/button/LightButton';
 import UserMenu from '@/components/layouts/UserMenu';
 import SideTasks from './SideTasks';
 
@@ -29,7 +29,15 @@ export default function Header() {
         <UserMenu />
       </>
     ) : (
-      <LightButton onClick={() => signIn('keycloak', { callbackUrl: '/home' })}>Login</LightButton>
+      <Button
+        color="dark"
+        variant="outline"
+        leftSection={<IconLogin2 />}
+        className="bg-white hover:bg-white"
+        onClick={() => signIn('keycloak', { callbackUrl: '/home' })}
+      >
+        Login
+      </Button>
     );
   }
 

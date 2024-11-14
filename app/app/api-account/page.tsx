@@ -1,6 +1,6 @@
 'use client';
 
-import { Alert } from '@mantine/core';
+import { Alert, Button } from '@mantine/core';
 import { IconInfoCircle } from '@tabler/icons-react';
 import { useQuery, useMutation } from '@tanstack/react-query';
 import { openConfirmModal } from '@/components/modal/confirm';
@@ -58,9 +58,8 @@ export default ApiAccountPage(({ session }) => {
               A service account has been created for your use.{' '}
               <span className="font-bold">Please keep it confidential and do not share it with others.</span>
             </p>
-            <button
-              type="button"
-              className="h-9 inline-flex items-center rounded-md bg-red-700 gap-x-2 px-4 py-1.5 text-sm font-semibold text-white shadow-sm ring-1 ring-inset ring-red-300"
+            <Button
+              color="danger"
               onClick={async () => {
                 const res = await openConfirmModal({});
                 if (res.state.confirmed) {
@@ -70,7 +69,7 @@ export default ApiAccountPage(({ session }) => {
               }}
             >
               Delete the service account
-            </button>
+            </Button>
           </Alert>
 
           <div>
@@ -85,16 +84,15 @@ export default ApiAccountPage(({ session }) => {
         <div className="">
           <Alert variant="light" color="blue" title="" icon={<IconInfoCircle />}>
             <p className="mb-2">Please create a service account before accessing the API endpoints.</p>
-            <button
-              type="button"
-              className="h-9 inline-flex items-center rounded-md bg-blue-700 gap-x-2 px-4 py-1.5 text-sm font-semibold text-white shadow-sm ring-1 ring-inset ring-blue-300"
+            <Button
+              color="primary"
               onClick={async () => {
                 await createApiAccount();
                 await refetchApiAccount();
               }}
             >
               Request a service account
-            </button>
+            </Button>
           </Alert>
         </div>
       )}

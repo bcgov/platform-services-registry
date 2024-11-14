@@ -197,7 +197,7 @@ jobs:
         webhook-url: ${{ secrets.ROCKETCHAT_WEBHOOK_URL }}
         data: |
           {
-            "text": ":warning: Deployment to Prod failed! [Investigate here](https://github.com/bcgov/platform-services-registry/)"
+            "text": ":warning: Deployment to Dev failed! [Investigate here](https://github.com/bcgov/platform-services-registry/)"
           }
 
   scan-app:

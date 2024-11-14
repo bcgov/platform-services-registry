@@ -1,18 +1,23 @@
 'use client';
 
+import { Button } from '@mantine/core';
 import { IconArrowBack } from '@tabler/icons-react';
 import { useRouter } from 'next/navigation';
-import LightButton from '@/components/generic/button/LightButton';
 
 export default function Layout({ children }: { children: React.ReactNode }) {
   const router = useRouter();
 
   return (
     <div>
-      <LightButton onClick={() => router.push('/private-cloud/products/all')} className="my-2">
-        <IconArrowBack className="inline-block" />
+      <Button
+        leftSection={<IconArrowBack />}
+        color="dark"
+        variant="outline"
+        onClick={() => router.push('/private-cloud/products/all')}
+        className="my-2"
+      >
         Back to Products
-      </LightButton>
+      </Button>
       <div className="my-2">{children}</div>
     </div>
   );

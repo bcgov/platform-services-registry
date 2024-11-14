@@ -1,13 +1,13 @@
 'use client';
 
 import { zodResolver } from '@hookform/resolvers/zod';
+import { Button } from '@mantine/core';
 import { PrivateCloudProject } from '@prisma/client';
 import { IconInfoCircle, IconUsersGroup, IconSettings, IconComponents } from '@tabler/icons-react';
 import { useEffect, useState } from 'react';
 import { FormProvider, useForm } from 'react-hook-form';
 import { z } from 'zod';
 import PreviousButton from '@/components/buttons/Previous';
-import SubmitButton from '@/components/buttons/SubmitButton';
 import CommonComponents from '@/components/form/CommonComponents';
 import ProjectDescription from '@/components/form/ProjectDescriptionPrivate';
 import Quotas from '@/components/form/Quotas';
@@ -189,13 +189,13 @@ export default privateCloudProductEdit(({ session }) => {
         >
           <PageAccordion items={accordionItems} />
 
-          <div className="mt-10 flex items-center justify-start gap-x-6">
+          <div className="mt-5 flex items-center justify-start gap-x-2">
             <PreviousButton />
-            {!isDisabled ? (
-              <div className="flex items-center justify-start gap-x-6">
-                <SubmitButton text="Submit" disabled={!isSubmitEnabled} />
-              </div>
-            ) : null}
+            {!isDisabled && (
+              <Button type="submit" color="primary" disabled={!isSubmitEnabled}>
+                Submit
+              </Button>
+            )}
           </div>
         </form>
       </FormProvider>

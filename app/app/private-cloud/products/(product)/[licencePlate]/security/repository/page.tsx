@@ -129,21 +129,14 @@ export default function Repository({ params: getParams }: { params: Promise<{ li
           </ul>
 
           {values.repositories.length < 10 && (
-            <button
-              type="button"
-              className="rounded-md bg-blue-400 text-white px-4 py-2.5 text-sm tracking-[.2em] shadow-sm hover:brightness-110 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 w-32"
-              onClick={() => append({ url: 'https://' })}
-            >
+            <Button color="primary" onClick={() => append({ url: 'https://' })}>
               Add New
-            </button>
+            </Button>
           )}
 
-          <button
-            type="submit"
-            className="ml-2 rounded-md bg-green-600 text-white px-4 py-2.5 text-sm tracking-[.2em] shadow-sm hover:brightness-110 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 w-32"
-          >
+          <Button type="submit" color="success" className="ml-1">
             Submit
-          </button>
+          </Button>
         </form>
       </FormProvider>
     </div>

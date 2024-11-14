@@ -1,6 +1,7 @@
 'use client';
 
 import { zodResolver } from '@hookform/resolvers/zod';
+import { Button } from '@mantine/core';
 import {
   IconInfoCircle,
   IconUsersGroup,
@@ -131,14 +132,11 @@ export default publicCloudProductNew(({}) => {
         >
           <PageAccordion items={accordionItems} />
 
-          <div className="mt-10 flex items-center justify-start gap-x-6">
+          <div className="mt-5 flex items-center justify-start gap-x-2">
             <PreviousButton />
-            <button
-              type="submit"
-              className="flex mr-20 rounded-md bg-bcorange px-4 py-2.5 text-bcblue text-sm tracking-[.2em] shadow-sm hover:brightness-110 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
-            >
-              SUBMIT REQUEST
-            </button>
+            <Button type="submit" color="primary">
+              Submit
+            </Button>
           </div>
         </form>
       </FormProvider>

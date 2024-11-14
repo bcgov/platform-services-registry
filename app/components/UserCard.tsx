@@ -31,7 +31,12 @@ export default function UserCard({
           </div>
         </HoverCard.Target>
         <HoverCard.Dropdown>
-          <ProfileImage email={user.email ?? ''} image={user.image ?? ''} className="h-15 w-15 mx-auto mb-2" />
+          <ProfileImage
+            email={user.email ?? ''}
+            image={user.image ?? ''}
+            size={56}
+            className="h-14 w-14 mx-auto mb-2"
+          />
           <div className="text-center text-lg leading-6 font-bold text-gray-900 mb-2">{name}</div>
           <div className="text-center text-md">
             <MailLink to={user.email} />
