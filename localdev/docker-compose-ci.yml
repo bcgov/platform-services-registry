@@ -23,3 +23,20 @@ services:
     image: ghcr.io/bcgov/pltsvc-localdev-m365mock:latest
     pull_policy: always
     build: {}
+
+mailpit:
+  image: axllent/mailpit:latest
+  pull_policy: always
+  container_name: mailpit-ci
+  restart: unless-stopped
+  volumes:
+  - ./data:/data
+  ports:
+  - 8025:8025
+  - 1025:1025
+  environment:
+    MP_MAX_MESSAGES: 5000
+    MP_DATABASE: /data/mailpit.db
+    MP_SMTP_AUTH_ACCEPT_ANY: 1
+    MP_SMTP_AUTH_ALLOW_INSECURE: 1
+    MP_SMTP_TIMEOUT: 30s

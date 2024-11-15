@@ -147,17 +147,17 @@ services:
     - 8090:8080
 
   mailpit:
-    image: axllent/mailpit:latest  # Use the latest stable version of Mailpit
-    container_name: mailpit        # Name the container for easy identification
-    restart: unless-stopped        # Restart automatically unless stopped manually
+    image: axllent/mailpit:latest
+    container_name: mailpit
+    restart: unless-stopped
     volumes:
-    - ./data:/data                 # Persist data in the 'data' directory
+    - ./data:/data
     ports:
-    - 8025:8025                    # Web UI accessible at localhost:8025
-    - 1025:1025                    # SMTP server accessible at localhost:1025
+    - 8025:8025
+    - 1025:1025
     environment:
-      MP_MAX_MESSAGES: 5000        # Store up to 5000 messages
-      MP_DATABASE: /data/mailpit.db # Use a persistent database file
-      MP_SMTP_AUTH_ACCEPT_ANY: 1   # Accept any SMTP authentication for testing
-      MP_SMTP_AUTH_ALLOW_INSECURE: 1 # Allow insecure SMTP auth (useful for localdev)
+      MP_MAX_MESSAGES: 5000
+      MP_DATABASE: /data/mailpit.db
+      MP_SMTP_AUTH_ACCEPT_ANY: 1
+      MP_SMTP_AUTH_ALLOW_INSECURE: 1
       MP_SMTP_TIMEOUT: 30s

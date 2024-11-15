@@ -3,7 +3,7 @@ import _castArray from 'lodash-es/castArray';
 import _compact from 'lodash-es/compact';
 import _toLower from 'lodash-es/toLower';
 import _uniq from 'lodash-es/uniq';
-import { IS_PROD, EMAIL_PREFIX, CHES_TOKEN_URL, CHES_API_URL, CHES_CLIENT_ID, CHES_CLIENT_SECRET } from '@/config';
+import { EMAIL_PREFIX, CHES_TOKEN_URL, CHES_API_URL, CHES_CLIENT_ID, CHES_CLIENT_SECRET } from '@/config';
 import { privateCloudTeamEmail } from '@/constants';
 import { logger } from '@/core/logging';
 
@@ -81,35 +81,33 @@ const getToken = async ({ tokenUrl, clientId, clientSecret }: TokenData): Promis
 };
 
 export const sendEmail = async (email: Email): Promise<void> => {
-  // console.log('sendEmail', email)
-  const headers: HeadersInit = { 'Content-Type': 'application/json' };
-  if (IS_PROD) {
-    if (!CHES_TOKEN_URL || !CHES_CLIENT_ID || !CHES_CLIENT_SECRET) {
-      logger.error('Missing environment variables for email service');
-      return;
-    }
-
-    const tokenData: TokenData = {
-      tokenUrl: CHES_TOKEN_URL || '',
-      clientId: CHES_CLIENT_ID || '',
-      clientSecret: CHES_CLIENT_SECRET || '',
-    };
-
-    const token = await getToken(tokenData);
-
-    if (!token) {
-      logger.error('Unable to retrieve token for email service');
-      return;
-    }
-    headers.Authorization = `Bearer ${token}`;
+  if (!CHES_TOKEN_URL || !CHES_CLIENT_ID || !CHES_CLIENT_SECRET) {
+    logger.error('Missing environment variables for email service');
+    return;
   }
-  const apiUrl = IS_PROD ? `${CHES_API_URL}/email` : `${CHES_API_URL}messages`;
 
+  const tokenData: TokenData = {
+    tokenUrl: CHES_TOKEN_URL || '',
+    clientId: CHES_CLIENT_ID || '',
+    clientSecret: CHES_CLIENT_SECRET || '',
+  };
+
+  const token = await getToken(tokenData);
+
+  if (!token) {
+    logger.error('Unable to retrieve token for email service');
+    return;
+  }
+
+  const apiUrl = CHES_API_URL || '';
   const subject = `${EMAIL_PREFIX}${email.subject}`;
 
-  const response = await fetchWithTimeout(`${apiUrl}`, {
+  const response = await fetchWithTimeout(`${apiUrl}/email`, {
     method: 'POST',
-    headers,
+    headers: {
+      Authorization: `Bearer ${token}`,
+      'Content-Type': 'application/json',
+    },
     body: JSON.stringify({
       bodyType: email.bodyType || 'html',
       from: email.from || `Registry <${privateCloudTeamEmail}>`,
@@ -126,14 +124,13 @@ export const sendEmail = async (email: Email): Promise<void> => {
       attachments: email.attachments,
     }),
   });
-  console.log('Response Headers:', response.headers);
+
   if (!response.ok) {
     logger.error('Error sending email:', await response.json());
     return;
   }
-  console.log('Response Text:', response);
-  const data = await response.json();
 
+  const data = await response.json();
   return data;
 };
 

@@ -13,8 +13,15 @@ app:
     "AUTH_BASE_URL": "https://dev.loginproxy.gov.bc.ca"
     "AUTH_SERVER_URL": "https://dev.loginproxy.gov.bc.ca/auth"
     "AUTH_RELM": "platform-services"
-    "CHES_TOKEN_URL": "https://dev.loginproxy.gov.bc.ca/auth/realms/comsvcauth/protocol/openid-connect/token"
-    "CHES_API_URL": "https://ches-dev.api.gov.bc.ca/api/v1/"
+    # "CHES_TOKEN_URL": "https://dev.loginproxy.gov.bc.ca/auth/realms/comsvcauth/protocol/openid-connect/token"
+    # "CHES_API_URL": "https://ches-dev.api.gov.bc.ca/api/v1/"
+    "CHES_API_URL": "http://mailpit:8025/api/v1/"
+    "MAIL_SERVER": "mailpit"
+    "MAIL_PORT": "1025"
+    "MAIL_USERNAME": ""
+    "MAIL_PASSWORD": ""
+    "MAIL_USE_TLS": "false"
+    "MAIL_USE_SSL": "false"
     "PRIVATE_NATS_HOST": "pltsvc-mock-nats-client"
     "PRIVATE_NATS_PORT": "4222"
     "PUBLIC_NATS_HOST": "pltsvc-mock-nats-client"
@@ -64,3 +71,14 @@ weasyprint:
   image:
     # See https://github.com/bcgov/weasyprint/pkgs/container/weasyprint
     tag: 2b3185f05c76d16a7efc32be6124c744be5ee33f # pragma: allowlist secret
+
+mailpit:
+  enabled: true
+  env:
+    "MP_MAX_MESSAGES": "5000"
+    "MP_SMTP_AUTH_ACCEPT_ANY": "1"
+    "MP_SMTP_AUTH_ALLOW_INSECURE": "1"
+    "MP_SMTP_TIMEOUT": "30s"
+  route:
+    enabled: true
+    host: dev-pltsvc-mailpit.apps.silver.devops.gov.bc.ca
