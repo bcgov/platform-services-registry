@@ -1,6 +1,7 @@
 'use client';
 
 import { Select, ComboboxData, ComboboxItem } from '@mantine/core';
+import _isNil from 'lodash-es/isNil';
 import _kebabCase from 'lodash-es/kebabCase';
 import { FocusEventHandler } from 'react';
 import { cn } from '@/utils';
@@ -47,7 +48,7 @@ export default function FormSingleSelect({
         placeholder="select..."
         data={data}
         onChange={(val, option) => {
-          if (val) onChange(val, option);
+          if (!_isNil(val)) onChange(val, option);
         }}
         onBlur={onBlur}
         value={value}

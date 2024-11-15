@@ -1,3 +1,5 @@
+import { User } from '@prisma/client';
+
 export interface MsUser {
   id: string;
   userPrincipalName: string;
@@ -28,3 +30,9 @@ export interface AppUser {
 export interface AppUserWithRoles extends AppUser {
   roles: string[];
 }
+
+export type AdminViewUsers = User & {
+  roles: string[];
+  privateProducts: { name: string; licencePlate: string }[];
+  publicProducts: { name: string; licencePlate: string }[];
+};

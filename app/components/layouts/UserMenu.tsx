@@ -6,6 +6,7 @@ import {
   IconApi,
   IconVirusSearch,
   IconScan,
+  IconUsersGroup,
   IconPresentationAnalytics,
   IconLogout,
   IconProps,
@@ -76,6 +77,12 @@ export default function UserMenu() {
       text: 'Team API Accounts',
       Icon: IconApi,
       href: '/team-api-accounts',
+    },
+    {
+      text: 'Users',
+      Icon: IconUsersGroup,
+      href: '/users/all',
+      permission: 'viewUsers',
     },
     {
       text: 'General Analytics',
