@@ -1,3 +1,31 @@
+## [0.40.0](https://github.com/bcgov/platform-services-registry/compare/v0.39.2...v0.40.0) (2024-11-15)
+
+### Features
+
+* **3097:** add additional product members in private cloud ([e314d6d](https://github.com/bcgov/platform-services-registry/commit/e314d6d650f0431ddc021e966bf0bfea1afa774d))
+* **3314:** enforce distinct idir for PO and TL ([a92b0bd](https://github.com/bcgov/platform-services-registry/commit/a92b0bdb3e0a970feb881dd6c8639a4fb3f58b04))
+* **4123:** add additional product members in public cloud ([39f5865](https://github.com/bcgov/platform-services-registry/commit/39f586558d1afbc07f28489592392a78acf7815b))
+* **4123:** include member changes in public cloud emails ([fde9253](https://github.com/bcgov/platform-services-registry/commit/fde9253d76d1ad40372a146cc849320197d67bfb))
+* **4215:** update private cloud Nats message ([f41fb2f](https://github.com/bcgov/platform-services-registry/commit/f41fb2feb0e3c76c9d29065297f45bb1678e6ec7))
+* **4221:** use different view for disabled multi-select ([2a70608](https://github.com/bcgov/platform-services-registry/commit/2a70608ee83d9293f8ab64d52eb501002d92c43e))
+* **4229:** add generic dollar inputs ([611028a](https://github.com/bcgov/platform-services-registry/commit/611028a747a669ee06e42ce32963a77b366e537b))
+
+### Bug Fixes
+
+* **4196:** resolve issues with react-email/render version ugrade ([adcf70d](https://github.com/bcgov/platform-services-registry/commit/adcf70d498d6a65023519541fea03f2d15529305))
+
+### Docs
+
+* **cd:** add debug deployments guide ([b66110c](https://github.com/bcgov/platform-services-registry/commit/b66110c335e3dba8657066228fafbe2154455f69))
+* update Helm deployment failure debug doc ([8f79060](https://github.com/bcgov/platform-services-registry/commit/8f790603331310ed0188effb45b760225565ff6b))
+
+### Refactors
+
+* **4208:** replace classNames with clsx ([3bf622b](https://github.com/bcgov/platform-services-registry/commit/3bf622ba9fe6e39eedfd196573ca8fc969599e46))
+* **4212:** add private cloud prefix to MOU tasks ([85fa535](https://github.com/bcgov/platform-services-registry/commit/85fa5353f10f2e335f629d0bc583781e85860359))
+* **4227:** replace textarea and multi-select with common components ([d60eb1a](https://github.com/bcgov/platform-services-registry/commit/d60eb1ade77dff959716f8442341156a67aee376))
+* **4229:** replace input and with common components ([307da03](https://github.com/bcgov/platform-services-registry/commit/307da034b8b6be510c8580133915d9c8559e8b97))
+* **4242:** replace button and with common components ([f2517f8](https://github.com/bcgov/platform-services-registry/commit/f2517f8ce1f24577e52f84d7fe6103f862a0454f))
 ## [0.39.2](https://github.com/bcgov/platform-services-registry/compare/v0.39.1...v0.39.2) (2024-11-06)
 
 ### Bug Fixes
