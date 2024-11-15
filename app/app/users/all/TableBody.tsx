@@ -8,13 +8,14 @@ import { formatFullName } from '@/helpers/user';
 import { getUserImageData } from '@/helpers/user-image';
 import { AdminViewUsers } from '@/types/user';
 import { formatDate } from '@/utils/date';
+import PrivateCloudProductsCard from './PrivateCloudProductsCard';
 
 interface TableProps {
   data: AdminViewUsers[];
   isLoading: boolean;
 }
 
-export default function TableBodyUsers({ data, isLoading = false }: TableProps) {
+export default function TableBody({ data, isLoading = false }: TableProps) {
   if (isLoading) {
     return null;
   }
@@ -74,13 +75,19 @@ export default function TableBodyUsers({ data, isLoading = false }: TableProps) 
           )}
         </Table.Td>
         <Table.Td>
-          <Badge color="primary" variant="outline">
-            {item.privateProducts.length}
-          </Badge>
+          <PrivateCloudProductsCard products={item.privateProducts} context="private-cloud">
+            <Badge color="primary" variant="outline">
+              {item.privateProducts.length}
+            </Badge>
+          </PrivateCloudProductsCard>
+
           <span className="mx-2">/</span>
-          <Badge color="success" variant="outline">
-            {item.publicProducts.length}
-          </Badge>
+
+          <PrivateCloudProductsCard products={item.publicProducts} context="public-cloud">
+            <Badge color="success" variant="outline">
+              {item.publicProducts.length}
+            </Badge>
+          </PrivateCloudProductsCard>
         </Table.Td>
         <Table.Td className="italic">{formatDate(item.lastSeen) || <span>has not yet logged in</span>}</Table.Td>
         <Table.Td></Table.Td>

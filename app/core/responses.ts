@@ -12,7 +12,7 @@ export function CsvResponse<T extends Record<string, any>>(data: T[], filename =
     status: 200,
     headers: {
       'Content-Type': 'text/csv',
-      'Content-Disposition': `'attachment; filename=${filename}'`,
+      'Content-Disposition': `attachment; filename=${filename}`,
     },
   });
 

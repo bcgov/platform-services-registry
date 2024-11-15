@@ -57,7 +57,7 @@ jobs:
     - name: Set output variables
       id: vars
       run: |
-        pr_title="chore: release candidate v${{ steps.input.outputs.tag }}"
+        pr_title="chore(release): release candidate v${{ steps.input.outputs.tag }}"
         pr_body=$(git tag -l --format='%(contents)' v${{ steps.input.outputs.tag }})
         echo "pr_title=$pr_title" >> $GITHUB_OUTPUT
         echo "base=$GITHUB_REF_NAME" >> $GITHUB_OUTPUT

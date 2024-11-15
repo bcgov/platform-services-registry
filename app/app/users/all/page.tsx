@@ -3,13 +3,13 @@
 import { useQuery } from '@tanstack/react-query';
 import { useSnapshot } from 'valtio';
 import Table from '@/components/generic/table/Table';
-import TableBodyUsers from '@/components/table/TableBodyUsers';
 import { userSorts, GlobalPermissions } from '@/constants';
 import createClientPage from '@/core/client-page';
 import { searchUsers } from '@/services/backend/user';
 import { AdminViewUsers } from '@/types/user';
 import FilterPanel from './FilterPanel';
 import { pageState } from './state';
+import TableBody from './TableBody';
 
 const usersPage = createClientPage({
   permissions: [GlobalPermissions.ViewUsers],
@@ -56,7 +56,7 @@ export default usersPage(({ session }) => {
         filters={<FilterPanel />}
         isLoading={isLoading}
       >
-        <TableBodyUsers data={users} isLoading={isLoading} />
+        <TableBody data={users} isLoading={isLoading} />
       </Table>
     </>
   );
