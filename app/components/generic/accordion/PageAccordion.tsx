@@ -39,10 +39,10 @@ function InnerPageAccordion({
     <>
       {showToggles && (
         <div className="mb-2">
-          <Button color="secondary" className="mr-2" onClick={() => setSelected(allKeys)}>
+          <Button color="secondary" size="compact-md" className="mr-2" onClick={() => setSelected(allKeys)}>
             Expand all
           </Button>
-          <Button color="secondary" onClick={() => setSelected([])}>
+          <Button color="secondary" size="compact-md" onClick={() => setSelected([])}>
             Collapse all
           </Button>
         </div>

@@ -2,13 +2,16 @@ import { Prisma, User } from '@prisma/client';
 import _castArray from 'lodash-es/castArray';
 import _compact from 'lodash-es/compact';
 import _forEach from 'lodash-es/forEach';
+import _isNumber from 'lodash-es/isNumber';
 import _uniq from 'lodash-es/uniq';
 import { logger } from '@/core/logging';
 import prisma from '@/core/prisma';
 import { proxyUsers } from '@/helpers/mock-users';
+import { parsePaginationParams } from '@/helpers/pagination';
 import { getUserByEmail, getUserPhoto, processMsUser } from '@/services/msgraph';
 import { MsUser, AppUser } from '@/types/user';
 import { arrayBufferToBase64 } from '@/utils/base64-arraybuffer';
+import { UserSearchBody } from '@/validation-schemas';
 
 export async function prepareUserData(user: AppUser, extra = {}) {
   const email = user.email.toLowerCase();
@@ -95,4 +98,73 @@ export async function createProxyUsers() {
   );
 
   return dbUsers;
+}
+
+const defaultSortKey = 'lastSeen';
+
+export async function searchUsers({
+  skip,
+  take,
+  page,
+  pageSize,
+  search = '',
+  sortKey = defaultSortKey,
+  sortOrder = Prisma.SortOrder.desc,
+  extraFilter,
+}: UserSearchBody & {
+  skip?: number;
+  take?: number;
+  extraFilter?: Prisma.UserWhereInput;
+}) {
+  if (!_isNumber(skip) && !_isNumber(take) && page && pageSize) {
+    ({ skip, take } = parsePaginationParams(page, pageSize, 10));
+  }
+
+  const where: Prisma.UserWhereInput = extraFilter ?? {};
+  const orderBy = { [sortKey || defaultSortKey]: Prisma.SortOrder[sortOrder] };
+
+  if (search === '*') search = '';
+
+  if (search) {
+    const searchCriteria: Prisma.StringFilter<'User'> = { contains: search, mode: 'insensitive' };
+
+    where.OR = [
+      { firstName: searchCriteria },
+      { lastName: searchCriteria },
+      { email: searchCriteria },
+      { officeLocation: searchCriteria },
+      { jobTitle: searchCriteria },
+      { ministry: searchCriteria },
+    ];
+  }
+
+  const [data, totalCount] = await Promise.all([
+    prisma.user.findMany({
+      where,
+      skip,
+      take,
+      orderBy,
+      select: {
+        id: true,
+        firstName: true,
+        lastName: true,
+        email: true,
+        upn: true,
+        idir: true,
+        officeLocation: true,
+        jobTitle: true,
+        image: true,
+        ministry: true,
+        archived: true,
+        createdAt: true,
+        updatedAt: true,
+        lastSeen: true,
+      },
+    }),
+    prisma.user.count({
+      where,
+    }),
+  ]);
+
+  return { data, totalCount };
 }

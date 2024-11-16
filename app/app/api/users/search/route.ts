@@ -1,59 +1,63 @@
+import { Prisma } from '@prisma/client';
+import _compact from 'lodash-es/compact';
 import _isString from 'lodash-es/isString';
-import { string, z } from 'zod';
-import { GlobalRole } from '@/constants';
+import { GlobalPermissions, GlobalRole } from '@/constants';
 import createApiHandler from '@/core/api-handler';
 import prisma from '@/core/prisma';
 import { OkResponse } from '@/core/responses';
-import { prepareUserData } from '@/services/db';
-import { listUsersByEmail } from '@/services/msgraph';
-
-const userSearchBodySchema = z.object({
-  email: z.string().max(40),
-});
+import { searchUsers } from '@/services/db';
+import { listUsersByRoles, findUserByEmail, getKcAdminClient } from '@/services/keycloak/app-realm';
+import { userSearchBodySchema } from '@/validation-schemas';
 
 export const POST = createApiHandler({
-  roles: [GlobalRole.User],
+  permissions: [GlobalPermissions.ViewUsers],
   validations: { body: userSearchBodySchema },
-})(async ({ session, body }) => {
-  const { email } = body;
-  if (email.length < 3) {
-    return OkResponse({ data: [], totalCount: 0 });
+})(async ({ body }) => {
+  const kcAdminClient = await getKcAdminClient();
+
+  let roleEmails: string[] = [];
+
+  if (body.roles.length > 0) {
+    const roleKcUsers = await listUsersByRoles(body.roles, kcAdminClient);
+    roleEmails = _compact(roleKcUsers.map((user) => user.email?.toLocaleLowerCase()));
+    if (roleEmails.length === 0) return OkResponse({ data: [], totalCount: 0 });
   }
 
-  const users = await listUsersByEmail(email);
+  const result = await searchUsers({ ...body, extraFilter: roleEmails.length ? { email: { in: roleEmails } } : {} });
 
-  const dbUsers = await Promise.all(
-    users.map(async (user) => {
-      const data = await prepareUserData(user);
-      // The upsert method returns { count: x } when updating data instead of the document.
-      // Related issue: https://github.com/prisma/prisma/issues/10935
-      await prisma.user.upsert({
-        where: { email: data.email },
-        update: data,
-        create: data,
-      });
+  const kcProfiles = await Promise.all(result.data.map((v) => findUserByEmail(v.email, kcAdminClient)));
 
-      return prisma.user.findUnique({
-        where: { email: data.email },
-        select: {
-          id: true,
-          firstName: true,
-          lastName: true,
-          email: true,
-          upn: true,
-          idir: true,
-          officeLocation: true,
-          jobTitle: true,
-          image: true,
-          ministry: true,
-          archived: true,
-          createdAt: true,
-          updatedAt: true,
-          lastSeen: true,
-        },
-      });
+  result.data = await Promise.all(
+    result.data.map(async (user, index) => {
+      const [privateProducts, publicProducts] = await Promise.all([
+        prisma.privateCloudProject.findMany({
+          where: {
+            OR: [
+              { projectOwnerId: user.id },
+              { primaryTechnicalLeadId: user.id },
+              { secondaryTechnicalLeadId: user.id },
+              { members: { some: { userId: user.id } } },
+            ],
+          },
+          select: { licencePlate: true, name: true },
+        }),
+        prisma.publicCloudProject.findMany({
+          where: {
+            OR: [
+              { projectOwnerId: user.id },
+              { primaryTechnicalLeadId: user.id },
+              { secondaryTechnicalLeadId: user.id },
+              { expenseAuthorityId: user.id },
+              { members: { some: { userId: user.id } } },
+            ],
+          },
+          select: { licencePlate: true, name: true },
+        }),
+      ]);
+
+      return { ...user, privateProducts, publicProducts, roles: kcProfiles[index]?.authRoleNames ?? [] };
     }),
   );
 
-  return OkResponse({ data: dbUsers, totalCount: users.length });
+  return OkResponse(result);
 });

@@ -5,7 +5,7 @@ import _throttle from 'lodash-es/throttle';
 import { useRef, useState } from 'react';
 import { formatFullName } from '@/helpers/user';
 import { getUserImageData } from '@/helpers/user-image';
-import { searchUsers } from '@/services/backend/users';
+import { searchMSUsers } from '@/services/backend/msgraph';
 
 function UserOption({ data }: { data: User }) {
   return (
@@ -60,7 +60,7 @@ export default function UserAutocomplete({ onSelect }: { onSelect: (user?: User)
     _throttle(
       async (query: string) => {
         setLoading(true);
-        const result = await searchUsers(query);
+        const result = await searchMSUsers(query);
         setData(result.data);
         setLoading(false);
         return result.data;

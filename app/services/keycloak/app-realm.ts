@@ -102,3 +102,78 @@ export async function findUserEmailsByAuthRole(roleName: GlobalRole, kcAdminClie
   const users = await findUsersByClientRole(AUTH_RESOURCE, roleName, kcAdminClient);
   return users.map((v) => v.email ?? '').filter(Boolean);
 }
+
+export async function listUsers(kcAdminClient?: KcAdminClient) {
+  if (!kcAdminClient) kcAdminClient = await getKcAdminClient();
+
+  // See https://www.keycloak.org/docs-api/latest/rest-api/index.html#_get_adminrealmsrealmusers
+  const users = await kcAdminClient.users.find({
+    realm: AUTH_RELM,
+    briefRepresentation: false,
+    first: 0,
+    max: 100,
+  });
+
+  return users;
+}
+
+export async function listUsersByRole(roleName: string, kcAdminClient?: KcAdminClient) {
+  if (!kcAdminClient) kcAdminClient = await getKcAdminClient();
+
+  const client = await findClient(AUTH_RESOURCE, kcAdminClient);
+  if (!client?.id) return [];
+
+  const users = await kcAdminClient.clients.findUsersWithRole({
+    realm: AUTH_RELM,
+    id: client.id,
+    roleName,
+    briefRepresentation: false,
+  });
+
+  return users;
+}
+
+export async function listUsersByRoles(roleNames: string[], kcAdminClient?: KcAdminClient) {
+  if (!kcAdminClient) kcAdminClient = await getKcAdminClient();
+
+  const client = await findClient(AUTH_RESOURCE, kcAdminClient);
+  if (!client?.id) return [];
+
+  const userGroups = await Promise.all(
+    roleNames.map((roleName) =>
+      kcAdminClient.clients.findUsersWithRole({
+        realm: AUTH_RELM,
+        id: client.id as string,
+        roleName,
+        briefRepresentation: false,
+      }),
+    ),
+  );
+
+  const users = userGroups.flat();
+  return users;
+}
+
+export async function findUserByEmail(email: string, kcAdminClient?: KcAdminClient) {
+  if (!kcAdminClient) kcAdminClient = await getKcAdminClient();
+
+  const users = await kcAdminClient.users.find({
+    realm: AUTH_RELM,
+    email,
+    exact: true,
+    userProfileMetadata: false,
+  });
+
+  if (users.length === 0) return null;
+
+  const authClient = await findClient(AUTH_RESOURCE, kcAdminClient);
+  if (!authClient?.id) return null;
+
+  const authRoles = await kcAdminClient.users.listClientRoleMappings({
+    realm: AUTH_RELM,
+    id: users[0].id as string,
+    clientUniqueId: authClient.id,
+  });
+
+  return { ...users[0], authRoleNames: authRoles.map((role) => role.name ?? '') };
+}

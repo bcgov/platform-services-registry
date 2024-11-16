@@ -10,7 +10,7 @@ export default function ExternalLink({
 }: {
   href: string;
   className?: string;
-  children: React.ReactNode;
+  children?: React.ReactNode;
 }) {
   return (
     <a

@@ -1,3 +1,5 @@
+import { Prisma } from '@prisma/client';
+
 export enum GlobalPermissions {
   CreatePrivateCloudProducts = 'createPrivateCloudProducts',
   ViewAllPrivateCloudProducts = 'viewAllPrivateCloudProducts',
@@ -30,6 +32,8 @@ export enum GlobalPermissions {
   ViewPublicAnalytics = 'viewPublicAnalytics',
 
   DownloadBillingMou = 'downloadBillingMou',
+
+  ViewUsers = 'viewUsers',
 }
 
 export enum GlobalRole {
@@ -77,3 +81,36 @@ export const RoleToSessionProp = {
 };
 
 export const sessionRolePropKeys = Object.values(RoleToSessionProp);
+
+export const userSorts = [
+  {
+    label: 'Last active date (new to old)',
+    sortKey: 'lastSeen',
+    sortOrder: Prisma.SortOrder.desc,
+  },
+  {
+    label: 'Last active date (old to new)',
+    sortKey: 'lastSeen',
+    sortOrder: Prisma.SortOrder.asc,
+  },
+  {
+    label: 'First Name (A-Z)',
+    sortKey: 'firstName',
+    sortOrder: Prisma.SortOrder.asc,
+  },
+  {
+    label: 'First Name (Z-A)',
+    sortKey: 'firstName',
+    sortOrder: Prisma.SortOrder.desc,
+  },
+  {
+    label: 'Last Name (A-Z)',
+    sortKey: 'lastName',
+    sortOrder: Prisma.SortOrder.asc,
+  },
+  {
+    label: 'Last Name (Z-A)',
+    sortKey: 'lastName',
+    sortOrder: Prisma.SortOrder.desc,
+  },
+];
