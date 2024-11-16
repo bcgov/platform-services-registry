@@ -3,7 +3,7 @@ Feature: Edit Request
   Scenario: Create Private Cloud Edit Request and check visibility
     Given User logs in with username "james.smith@gov.bc.ca" and password "james.smith@gov.bc.ca"
     When User clicks tab "PRIVATE CLOUD OPENSHIFT"
-    And User clicks button "REQUEST A NEW PRODUCT"
+    And User clicks button "Request a new product"
     And User types "Automated Test Product Name" in "Product name"
     And User types "Automated Test Description" in "Description"
     And User selects "Citizens Services" in "Ministry"
@@ -15,9 +15,9 @@ Feature: Edit Request
     And User clicks tab "Common components"
     And User checks checkbox "The app does not use..."
     And User makes a screenshot
-    And User clicks button "SUBMIT REQUEST"
-    And User checks checkbox "By checking this box..."
     And User clicks button "Submit"
+    And User checks checkbox "By checking this box..."
+    And User clicks modal window button "Submit"
     And User clicks modal window button "Close"
     Then User should be redirected to Requests tab
     And User should see "Automated Test Product Name"
@@ -28,7 +28,7 @@ Feature: Edit Request
     And User clicks tab "Requests"
     And User waits for "3" seconds
     And User clicks link "Automated Test Product Name"
-    And User clicks button "APPROVE REQUEST"
+    And User clicks button "Approve"
     And User clicks modal window button "Submit"
     And User clicks modal window button "Return to Dashboard"
     And User logs out
@@ -36,7 +36,7 @@ Feature: Edit Request
     And User clicks tab "PRIVATE CLOUD OPENSHIFT"
     And User clicks tab "PRIVATE CLOUD OPENSHIFT"
     When User clicks link "Automated Test Product Name"
-    And User waits for "3" seconds
+    And User waits for "10" seconds
     And User types "Automated Test Edit Request" in "Product name"
     And User types "Automated Test Description Edit" in "Description"
     And User selects "Finance" in "Ministry"

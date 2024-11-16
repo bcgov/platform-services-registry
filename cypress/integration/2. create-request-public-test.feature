@@ -4,7 +4,7 @@ Feature: New Request
     Given User logs in with username "james.smith@gov.bc.ca" and password "james.smith@gov.bc.ca"
     And User waits for "3" seconds
     When User clicks tab "PUBLIC CLOUD LANDING ZONES"
-    And User clicks button "REQUEST A NEW PRODUCT"
+    And User clicks button "Request a new product"
     And User types "Automated Test Product Name" in "Product name"
     And User types "Automated Test Description" in "Description"
     And User selects "Citizens Services" in "Ministry"
@@ -30,7 +30,7 @@ Feature: New Request
     And User types "78901" in "Service Line (SL)"
     And User types "2345" in "Standard Object of Expense (STOB)"
     And User types "6789012" in "Project Code"
-    And User clicks button "SUBMIT REQUEST"
+    And User clicks button "Submit"
     And User checks checkbox "No eMOU exists for this account coding."
     And User checks checkbox "...team is liable to pay the base charge..."
     And User clicks modal window button "Submit"
