@@ -33,7 +33,12 @@ When(/^User clicks link "(.*)"$/, (buttonText: string) => {
 });
 
 When(/^User types (?!.*\band selects\b)"(.*)" in "?(.*?)(?:\.\.\.)?"$/, (text: string, textFieldLabel: string) => {
-  cy.contains('label', textFieldLabel).parent().find('input, textarea').first().scrollIntoView().clear().type(text);
+  cy.contains('label', textFieldLabel)
+    .closest('.text-input, .textarea, .dollar-input')
+    .find('input, textarea')
+    .scrollIntoView()
+    .clear()
+    .type(text);
 });
 
 When(/^User types and selects "(.*)" in "(.*)"$/, (contactEmail: string, contactLabel: string) => {
@@ -118,11 +123,43 @@ When('User makes a screenshot', () => {
 
 When(/^User sees "(.*)" in "?(.*?)(?:\.\.\.)?"$/, (text: string, textFieldLabel: string) => {
   cy.contains('label', textFieldLabel)
-    .parent()
+    .parents()
+    .eq(2)
     .find('input, textarea, select')
     .first()
     .scrollIntoView()
     .should('have.value', text);
+});
+
+When(/^User copies value of "(.*)"$/, (elementLabel: string) => {
+  cy.get('section[role="dialog"]').then(($modal) => {
+    if ($modal.length) {
+      cy.get('div[aria-modal="true"], section[role="dialog"]')
+        .contains('p', elementLabel)
+        .parent()
+        .find('p')
+        .last()
+        .then((element) => {
+          const copiedText = element.text();
+          cy.wrap(copiedText).as('copiedText');
+        });
+    } else {
+      cy.contains('p', elementLabel)
+        .parent()
+        .find('p')
+        .last()
+        .then((element) => {
+          const copiedText = element.text();
+          cy.wrap(copiedText).as('copiedText');
+        });
+    }
+  });
+});
+
+When(/^User pastes from clipboard to "?(.*?)(?:\.\.\.)?"$/, (textfieldLabel) => {
+  cy.get('@copiedText').then((copiedText) => {
+    cy.get(`input[placeholder="${textfieldLabel}"]`).click().invoke('val', copiedText);
+  });
 });
 
 Then('User should be redirected to Requests tab', () => {
@@ -131,4 +168,12 @@ Then('User should be redirected to Requests tab', () => {
 
 Then(/^User should see "(.*)"$/, (requestName: string) => {
   cy.contains('span', requestName).should('be.visible');
+});
+
+Then(/^User should not see "(.*)"$/, (productName: string) => {
+  cy.contains('span', productName).should('not.exist');
+});
+
+Then(/^User should see badge "(.*)"$/, (badgeText: string) => {
+  cy.contains('span', badgeText).should('be.visible');
 });

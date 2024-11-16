@@ -15,9 +15,9 @@ Feature: New Request
     And User clicks tab "Common components"
     And User checks checkbox "The app does not use..."
     And User makes a screenshot
-    And User clicks button "SUBMIT REQUEST"
-    And User checks checkbox "By checking this box..."
     And User clicks button "Submit"
+    And User checks checkbox "By checking this box..."
+    And User clicks modal window button "Submit"
     And User clicks modal window button "Close"
     Then User should be redirected to Requests tab
     And User should see "Automated Test Product Name"

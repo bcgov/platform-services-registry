@@ -68,7 +68,7 @@ export default function FormDollarInput({
   if (!id) id = _kebabCase(name);
 
   return (
-    <div className={classNames?.wrapper}>
+    <div className={cn('dollar-input', classNames?.wrapper)}>
       {label && (
         <Label
           htmlFor={id}

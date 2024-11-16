@@ -64,7 +64,7 @@ export default function FormTextInput({
   if (!id) id = _kebabCase(name);
 
   return (
-    <div className={classNames?.wrapper}>
+    <div className={cn('text-input', classNames?.wrapper)}>
       {label && (
         <Label
           htmlFor={id}

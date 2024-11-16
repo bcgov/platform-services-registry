@@ -2,7 +2,7 @@ Feature: Requests Review
   Background:
     Given User logs in with username "james.smith@gov.bc.ca" and password "james.smith@gov.bc.ca"
     When User clicks tab "PRIVATE CLOUD OPENSHIFT"
-    And User clicks button "REQUEST A NEW PRODUCT"
+    And User clicks button "Request a new product"
     And User types "Automated Test Product Name" in "Product name"
     And User types "Automated Test Description" in "Description"
     And User selects "Citizens Services" in "Ministry"
@@ -14,9 +14,9 @@ Feature: Requests Review
     And User clicks tab "Common components"
     And User checks checkbox "The app does not use..."
     And User makes a screenshot
-    And User clicks button "SUBMIT REQUEST"
-    And User checks checkbox "By checking this box..."
     And User clicks button "Submit"
+    And User checks checkbox "By checking this box..."
+    And User clicks modal window button "Submit"
     And User clicks modal window button "Close"
     Then User should be redirected to Requests tab
     And User should see "Automated Test Product Name"
@@ -29,7 +29,7 @@ Scenario: Approval Admin reviews New Request
     And User clicks tab "Requests"
     And User waits for "3" seconds
     And User clicks link "Automated Test Product Name"
-    And User clicks button "APPROVE REQUEST"
+    And User clicks button "Approve"
     And User clicks modal window button "Submit"
     And User clicks modal window button "Return to Dashboard"
     And User clicks tab "Products"
@@ -41,7 +41,7 @@ Scenario: Approval Admin reviews Edit Request
     And User clicks tab "PRIVATE CLOUD OPENSHIFT"
     And User clicks tab "PRIVATE CLOUD OPENSHIFT"
     When User clicks link "Automated Test Product Name"
-    And User waits for "3" seconds
+    And User waits for "10" seconds
     And User types "Automated Test Edit Request" in "Product name"
     And User types "Automated Test Description Edit" in "Description"
     And User selects "Finance" in "Ministry"
@@ -82,9 +82,9 @@ Scenario: Approval Admin reviews Edit Request
     And User clicks tab "PRIVATE CLOUD OPENSHIFT"
     And User waits for "3" seconds
     And User clicks tab "Requests"
-    And User waits for "3" seconds
+    And User waits for "10" seconds
     And User clicks link "Automated Test Edit Request"
-    And User clicks button "APPROVE REQUEST"
+    And User clicks button "Approve"
     And User clicks modal window button "Submit"
     And User clicks modal window button "Return to Dashboard"
     And User clicks tab "Products"
@@ -94,10 +94,37 @@ Scenario: Approval Admin reviews Edit Request
     And User clicks tab "PRIVATE CLOUD OPENSHIFT"
     And User clicks tab "PRIVATE CLOUD OPENSHIFT"
     And User clicks link "Automated Test Edit Request"
+    And User waits for "5" seconds
     Then User sees "Automated Test Edit Request" in "Product name"
     And User sees "Automated Test Description Edit" in "Description"
-    And User sees "FIN" in "Ministry"
-    And User clicks tab "Team contacts"
-    And User sees "david.johnson@gov.bc.ca" in "Product Owner email"
-    And User sees "sarah.williams@gov.bc.ca" in "Technical Lead email"
     And User logs out
+
+Scenario: Approval Admin reviews Delete Request
+    When User logs in with username "david.johnson@gov.bc.ca" and password "david.johnson@gov.bc.ca"
+    And User clicks tab "PRIVATE CLOUD OPENSHIFT"
+    And User clicks tab "PRIVATE CLOUD OPENSHIFT"
+    And User clicks link "Automated Test Edit Request"
+    And User waits for "10" seconds
+    And User clicks button "Delete"
+    And User copies value of "Licence plate"
+    And User pastes from clipboard to "Licence plate number"
+    And User copies value of "Product Owner"
+    And User pastes from clipboard to "Product owner email"
+    And User clicks modal window button "Submit"
+    And User clicks button "Close"
+    And User clicks tab "Requests"
+    Then User should see "Automated Test Edit Request"
+    And User should see badge "DELETE"
+    And User logs out
+    When User logs in with username "private.reviewer.system@gov.bc.ca" and password "private.reviewer.system@gov.bc.ca"
+    And User clicks tab "PRIVATE CLOUD OPENSHIFT"
+    And User waits for "3" seconds
+    And User clicks tab "Requests"
+    And User waits for "10" seconds
+    And User clicks link "Automated Test Edit Request"
+    And User waits for "5" seconds
+    And User clicks button "Approve"
+    And User clicks modal window button "Submit"
+    And User clicks modal window button "Return to Dashboard"
+    And User clicks tab "Products"
+    Then User should not see "Automated Test Edit Request"

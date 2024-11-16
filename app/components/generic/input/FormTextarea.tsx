@@ -63,7 +63,7 @@ export default function FormTextarea({
   const _ref = useRef<HTMLTextAreaElement>(null);
 
   return (
-    <div className={classNames?.wrapper}>
+    <div className={cn('textarea', classNames?.wrapper)}>
       {label && (
         <Label
           htmlFor={id}
