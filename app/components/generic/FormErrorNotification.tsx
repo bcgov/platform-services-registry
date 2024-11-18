@@ -1,9 +1,9 @@
-import { notifications } from '@mantine/notifications';
 import { IconPoint } from '@tabler/icons-react';
 import _startCase from 'lodash-es/startCase';
 import React, { useEffect } from 'react';
 import { useFormContext } from 'react-hook-form';
 import { numberToWords } from '@/utils/number';
+import { failure } from '../notification';
 
 const NUM_TO_DISPLAY = 5;
 
@@ -16,10 +16,9 @@ export default function FormErrorNotification() {
       const keysToDisplay = keys.slice(0, NUM_TO_DISPLAY);
       const remaining = keys.length - NUM_TO_DISPLAY;
 
-      notifications.show({
-        color: 'red',
+      failure({
         title: 'Please correct the following errors in the form:',
-        autoClose: 5000,
+        autoClose: true,
         message: (
           <ul className="text-red-500 list-disc">
             {keysToDisplay.map((key) => (

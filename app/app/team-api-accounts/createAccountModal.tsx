@@ -2,7 +2,6 @@
 
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Button, Divider, Grid, LoadingOverlay, Box } from '@mantine/core';
-import { notifications } from '@mantine/notifications';
 import { useQuery, useMutation } from '@tanstack/react-query';
 import _forEach from 'lodash-es/forEach';
 import _get from 'lodash-es/get';
@@ -10,6 +9,7 @@ import { useState } from 'react';
 import { FormProvider, useForm } from 'react-hook-form';
 import HookFormTextInput from '@/components/generic/input/HookFormTextInput';
 import HookFormMultiSelect from '@/components/generic/select/HookFormMultiSelect';
+import { success, failure } from '@/components/notification';
 import { createModal } from '@/core/modal';
 import { listKeycloakAuthRoles, createKeycloakTeamApiAccount } from '@/services/backend/keycloak';
 import { teamApiAccountSchema, TeamApiAccount } from '@/validation-schemas/api-accounts';
@@ -43,14 +43,6 @@ export const openCreateAccountModal = createModal<ModalProps, ModalState>({
 
     const { mutateAsync: createAccount, isPending: isCreatinAccount } = useMutation({
       mutationFn: ({ name, roles, users }: TeamApiAccount) => createKeycloakTeamApiAccount(name, roles, users),
-      onError: (error: any) => {
-        notifications.show({
-          title: 'Error',
-          message: `Failed to create API account: ${error.message}`,
-          color: 'red',
-          autoClose: 5000,
-        });
-      },
     });
 
     const { handleSubmit, setError } = methods;
@@ -68,22 +60,11 @@ export const openCreateAccountModal = createModal<ModalProps, ModalState>({
             onSubmit={handleSubmit(async (formData) => {
               const result = await createAccount(formData);
               if (!result.client) {
-                notifications.show({
-                  title: 'Error',
-                  message: `Failed to create API account`,
-                  color: 'red',
-                  autoClose: 5000,
-                });
-
+                failure({ message: 'Failed to create API account' });
                 return;
               }
 
-              notifications.show({
-                color: 'green',
-                title: 'Success',
-                message: 'Account created successfully',
-                autoClose: 5000,
-              });
+              success();
 
               if (result.user.notfound.length === 0) {
                 closeModal();

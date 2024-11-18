@@ -2,20 +2,18 @@
 
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Button, Divider, Grid, LoadingOverlay, Box, Alert } from '@mantine/core';
-import { notifications } from '@mantine/notifications';
 import { IconInfoCircle } from '@tabler/icons-react';
 import { useQuery, useMutation } from '@tanstack/react-query';
 import { FormProvider, useForm, FieldValues } from 'react-hook-form';
 import { z } from 'zod';
-import ExternalLink from '@/components/generic/button/ExternalLink';
 import MailLink from '@/components/generic/button/MailLink';
 import FormCheckbox from '@/components/generic/checkbox/FormCheckbox';
 import FormError from '@/components/generic/FormError';
 import { publicCloudTeamEmail } from '@/constants';
 import { createModal } from '@/core/modal';
-import { showErrorNotification } from '@/helpers/notifications';
 import { getBilling } from '@/services/backend/billing';
 import { createPublicCloudProject } from '@/services/backend/public-cloud/products';
+import { success } from '../notification';
 import { openNotificationModal } from './notification';
 
 interface ModalProps {
@@ -68,9 +66,7 @@ export const openPublicCloudProductCreateSubmitModal = createModal<ModalProps, M
       mutationFn: (data: any) => createPublicCloudProject(data),
       onSuccess: () => {
         state.success = true;
-      },
-      onError: (error: any) => {
-        showErrorNotification(error);
+        success();
       },
     });
 

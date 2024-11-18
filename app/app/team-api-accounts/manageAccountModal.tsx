@@ -2,7 +2,6 @@
 
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Button, Divider, Grid, LoadingOverlay, Box } from '@mantine/core';
-import { notifications } from '@mantine/notifications';
 import { useQuery, useMutation } from '@tanstack/react-query';
 import _forEach from 'lodash-es/forEach';
 import _get from 'lodash-es/get';
@@ -59,26 +58,10 @@ export const openManageAccountModal = createModal<ModalProps, ModalState>({
     const { mutateAsync: updateAccount, isPending: isUpdatingAccount } = useMutation({
       mutationFn: ({ name: _name, roles: _roles, users: _users }: TeamApiAccount) =>
         updateKeycloakApiTeamAccount(clientUid, _name, _roles, _users),
-      onError: (error: any) => {
-        notifications.show({
-          title: 'Error',
-          message: `Failed to update API account: ${error.message}`,
-          color: 'red',
-          autoClose: 5000,
-        });
-      },
     });
 
     const { mutateAsync: deleteAccount, isPending: isDeletingAccount } = useMutation({
       mutationFn: () => deleteKeycloakTeamApiAccount(clientUid),
-      onError: (error: any) => {
-        notifications.show({
-          title: 'Error',
-          message: `Failed to delete API account: ${error.message}`,
-          color: 'red',
-          autoClose: 5000,
-        });
-      },
     });
 
     const { handleSubmit, setValue, setError } = methods;

@@ -10,11 +10,13 @@ export default function CopyableButton({
   value,
   className = '',
   onClick,
+  updateContent = false,
 }: {
   children?: React.ReactNode;
   value?: string;
   className?: string;
   onClick?: () => void;
+  updateContent?: boolean;
 }) {
   const clipboard = useClipboard({ timeout: 500 });
 
@@ -51,7 +53,7 @@ export default function CopyableButton({
           }
         }}
       >
-        {content}
+        {updateContent && clipboard.copied ? 'Copied' : content}
       </UnstyledButton>
     </Tooltip>
   );

@@ -2,7 +2,6 @@
 
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Button, Divider, Grid, LoadingOverlay, Box } from '@mantine/core';
-import { notifications } from '@mantine/notifications';
 import { Provider, TaskStatus, TaskType } from '@prisma/client';
 import { useQuery, useMutation } from '@tanstack/react-query';
 import { useSession } from 'next-auth/react';
@@ -14,6 +13,7 @@ import FormCheckbox from '@/components/generic/checkbox/FormCheckbox';
 import FormError from '@/components/generic/FormError';
 import { createModal } from '@/core/modal';
 import { signPublicCloudMou } from '@/services/backend/public-cloud/products';
+import { failure, success } from '../notification';
 
 interface ModalProps {
   licencePlate: string;
@@ -57,23 +57,11 @@ export const openPublicCloudMouSignModal = createModal<ModalProps, ModalState>({
       mutationFn: (data: { taskId: string; confirmed: boolean }) => signPublicCloudMou(licencePlate, data),
       onSuccess: () => {
         state.confirmed = true;
-
-        notifications.show({
-          color: 'green',
-          title: 'Success',
-          message: 'Successfully submitted!',
-          autoClose: 5000,
-        });
+        success();
       },
-      onError: (error: any) => {
+      onError: (error: Error) => {
         state.confirmed = false;
-
-        notifications.show({
-          title: 'Error',
-          message: `Failed to submit a eMOU: ${error.message}`,
-          color: 'red',
-          autoClose: 5000,
-        });
+        failure({ error });
       },
     });
 
@@ -100,12 +88,7 @@ export const openPublicCloudMouSignModal = createModal<ModalProps, ModalState>({
                 if (task) {
                   await signMou({ taskId: task?.id, confirmed: true });
                 } else {
-                  notifications.show({
-                    title: 'Error',
-                    message: `You are not assigned to perform the task.`,
-                    color: 'red',
-                    autoClose: 5000,
-                  });
+                  failure({ message: 'You are not assigned to perform the task.', autoClose: true });
                 }
               }
 

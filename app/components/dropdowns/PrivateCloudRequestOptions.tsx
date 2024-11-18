@@ -1,5 +1,4 @@
 import { Menu, MenuButton, MenuItems, MenuItem, Transition } from '@headlessui/react';
-import { notifications } from '@mantine/notifications';
 import { IconChevronDown, IconRepeat } from '@tabler/icons-react';
 import { useMutation } from '@tanstack/react-query';
 import { useParams } from 'next/navigation';
@@ -23,22 +22,6 @@ export default function PrivateCloudRequestOptions({
     error: resendError,
   } = useMutation({
     mutationFn: () => resendPrivateCloudRequest(id),
-    onSuccess: () => {
-      notifications.show({
-        color: 'green',
-        title: 'Success',
-        message: 'Successfully resent!',
-        autoClose: 5000,
-      });
-    },
-    onError: (error: any) => {
-      notifications.show({
-        color: 'red',
-        title: 'Error',
-        message: `Failed to resend request: ${error.message}`,
-        autoClose: 5000,
-      });
-    },
   });
 
   if (!canResend) return null;

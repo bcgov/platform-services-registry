@@ -1,9 +1,7 @@
 import { Menu, Button, Text, rem } from '@mantine/core';
-import { notifications } from '@mantine/notifications';
 import { IconRepeat, IconChevronDown, IconTrash } from '@tabler/icons-react';
 import { useMutation } from '@tanstack/react-query';
 import { openPrivateCloudProductDeleteModal } from '@/components/modal/privateCloudProductDelete';
-import { showErrorNotification } from '@/helpers/notifications';
 import { reprovisionPrivateCloudProduct } from '@/services/backend/private-cloud/products';
 import { usePrivateProductState } from '@/states/global';
 
@@ -24,17 +22,6 @@ export default function PrivateCloudProductOptions({
     error: reprovisionError,
   } = useMutation({
     mutationFn: () => reprovisionPrivateCloudProduct(licencePlate),
-    onSuccess: () => {
-      notifications.show({
-        color: 'green',
-        title: 'Success',
-        message: 'Successfully reprovisioned!',
-        autoClose: 5000,
-      });
-    },
-    onError: (error: any) => {
-      showErrorNotification(error);
-    },
   });
 
   if (!canDelete && !canReprovision) return null;

@@ -1,5 +1,4 @@
 import { Button } from '@mantine/core';
-import { notifications } from '@mantine/notifications';
 import { RichTextEditor } from '@mantine/tiptap';
 import { IconMessageCirclePlus, IconX, IconSend, IconSourceCode } from '@tabler/icons-react';
 import { useMutation } from '@tanstack/react-query';
@@ -7,6 +6,7 @@ import Placeholder from '@tiptap/extension-placeholder';
 import { useEditor } from '@tiptap/react';
 import React, { useState, useEffect } from 'react';
 import { createPrivateCloudComment } from '@/services/backend/private-cloud/products';
+import { failure, success } from '../notification';
 import { commonExtensions } from './TiptapConfig';
 
 interface CommentFormProps {
@@ -66,34 +66,18 @@ function CommentForm({
       editorInstance?.commands.clearContent();
       setLoading(false);
       setShowCommentBox(false);
-      notifications.show({
-        color: 'green',
-        title: 'Success',
-        message: 'Comment added successfully',
-        autoClose: 5000,
-      });
+      success();
     },
     onError: (error: Error) => {
-      console.error('Failed to add comment:', error);
       setLoading(false);
-      notifications.show({
-        color: 'red',
-        title: 'Error',
-        message: `Failed to add comment: ${error.message}`,
-        autoClose: 5000,
-      });
+      failure({ error });
     },
   });
 
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     if (isEditorEmpty) {
-      notifications.show({
-        color: 'red',
-        title: 'Error',
-        message: 'Cannot post empty content',
-        autoClose: 5000,
-      });
+      success({ message: 'Cannot post empty content', autoClose: true });
     } else {
       mutation.mutate();
     }

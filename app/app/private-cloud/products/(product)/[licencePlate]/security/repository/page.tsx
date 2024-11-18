@@ -2,13 +2,13 @@
 
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Button } from '@mantine/core';
-import { notifications } from '@mantine/notifications';
 import { SecurityConfig, ProjectContext } from '@prisma/client';
 import { useQuery, useMutation } from '@tanstack/react-query';
 import _get from 'lodash-es/get';
 import { useEffect, useState } from 'react';
 import { FormProvider, useForm, useFieldArray } from 'react-hook-form';
 import HookFormTextInput from '@/components/generic/input/HookFormTextInput';
+import { success, failure } from '@/components/notification';
 import { getSecurityConfig, upsertSecurityConfig } from '@/services/backend/security-config';
 import { securityConfigSchema } from '@/validation-schemas/security-config';
 
@@ -55,14 +55,6 @@ export default function Repository({ params: getParams }: { params: Promise<{ li
     error: updatingError,
   } = useMutation({
     mutationFn: upsertSecurityConfig,
-    onError: (error: any) => {
-      notifications.show({
-        title: 'Error',
-        message: `Failed to update security configuration: ${error.message}`,
-        color: 'red',
-        autoClose: 5000,
-      });
-    },
   });
 
   const { fields, append, remove } = useFieldArray({
@@ -102,12 +94,7 @@ export default function Repository({ params: getParams }: { params: Promise<{ li
         <form
           onSubmit={handleSubmit(async (data) => {
             await mutateAsync(data);
-            notifications.show({
-              color: 'green',
-              title: 'Success',
-              message: 'Successfully updated!',
-              autoClose: 5000,
-            });
+            success();
           })}
         >
           <ul>

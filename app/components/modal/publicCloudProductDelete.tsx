@@ -11,7 +11,6 @@ import MailLink from '@/components/generic/button/MailLink';
 import HookFormTextInput from '@/components/generic/input/HookFormTextInput';
 import { publicCloudTeamEmail } from '@/constants';
 import { createModal } from '@/core/modal';
-import { showErrorNotification } from '@/helpers/notifications';
 import { deletePublicCloudProject } from '@/services/backend/public-cloud/products';
 import { PublicCloudProductDetailDecorated } from '@/types/public-cloud';
 import { openNotificationModal } from './notification';
@@ -50,10 +49,6 @@ export const openPublicCloudProductDeleteModal = createModal<ModalProps, ModalSt
       error: deleteProductError,
     } = useMutation({
       mutationFn: () => deletePublicCloudProject(product.licencePlate),
-      onSuccess: () => {},
-      onError: (error: any) => {
-        showErrorNotification(error);
-      },
     });
 
     const { handleSubmit, register } = methods;
