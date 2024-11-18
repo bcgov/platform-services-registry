@@ -1,5 +1,6 @@
-import { Prisma } from '@prisma/client';
+import UserRepresentation from '@keycloak/keycloak-admin-client/lib/defs/userRepresentation';
 import _compact from 'lodash-es/compact';
+import _forEach from 'lodash-es/forEach';
 import _isString from 'lodash-es/isString';
 import { GlobalPermissions, GlobalRole } from '@/constants';
 import createApiHandler from '@/core/api-handler';
@@ -13,19 +14,41 @@ export const POST = createApiHandler({
   permissions: [GlobalPermissions.ViewUsers],
   validations: { body: userSearchBodySchema },
 })(async ({ body }) => {
+  const isRoleSearch = body.roles.length > 0;
   const kcAdminClient = await getKcAdminClient();
 
+  let usersByRole: { [key: string]: UserRepresentation[] };
   let roleEmails: string[] = [];
 
-  if (body.roles.length > 0) {
-    const roleKcUsers = await listUsersByRoles(body.roles, kcAdminClient);
-    roleEmails = _compact(roleKcUsers.map((user) => user.email?.toLocaleLowerCase()));
+  if (isRoleSearch) {
+    const ret = await listUsersByRoles(body.roles, kcAdminClient);
+    usersByRole = ret.usersByRole;
+    roleEmails = _compact(ret.users.map((user) => user.email?.toLocaleLowerCase()));
     if (roleEmails.length === 0) return OkResponse({ data: [], totalCount: 0 });
   }
 
   const result = await searchUsers({ ...body, extraFilter: roleEmails.length ? { email: { in: roleEmails } } : {} });
 
-  const kcProfiles = await Promise.all(result.data.map((v) => findUserByEmail(v.email, kcAdminClient)));
+  const findUserRoles = await (async () => {
+    if (isRoleSearch) {
+      return (email: string) => {
+        email = email.toLowerCase();
+        const authRoleNames: string[] = [];
+        _forEach(usersByRole, (users, roleName) => {
+          if (users.find((usr) => usr.email && usr.email.toLowerCase() === email)) {
+            authRoleNames.push(roleName);
+          }
+        });
+
+        return authRoleNames;
+      };
+    }
+    const kcProfiles = await Promise.all(result.data.map((v) => findUserByEmail(v.email, kcAdminClient)));
+    return (email: string) => {
+      email = email.toLowerCase();
+      return kcProfiles.find((prof) => prof?.email && prof.email.toLowerCase() === email)?.authRoleNames ?? [];
+    };
+  })();
 
   result.data = await Promise.all(
     result.data.map(async (user, index) => {
@@ -55,7 +78,12 @@ export const POST = createApiHandler({
         }),
       ]);
 
-      return { ...user, privateProducts, publicProducts, roles: kcProfiles[index]?.authRoleNames ?? [] };
+      return {
+        ...user,
+        privateProducts,
+        publicProducts,
+        roles: findUserRoles(user.email),
+      };
     }),
   );
 

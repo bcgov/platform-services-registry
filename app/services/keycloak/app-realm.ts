@@ -1,4 +1,8 @@
 import KcAdminClient from '@keycloak/keycloak-admin-client';
+import UserRepresentation from '@keycloak/keycloak-admin-client/lib/defs/userRepresentation';
+import _mapKeys from 'lodash-es/mapKeys';
+import _uniq from 'lodash-es/uniq';
+import _uniqBy from 'lodash-es/uniqBy';
 import {
   AUTH_SERVER_URL,
   AUTH_RELM,
@@ -137,7 +141,9 @@ export async function listUsersByRoles(roleNames: string[], kcAdminClient?: KcAd
   if (!kcAdminClient) kcAdminClient = await getKcAdminClient();
 
   const client = await findClient(AUTH_RESOURCE, kcAdminClient);
-  if (!client?.id) return [];
+  if (!client?.id) return { usersByRole: {}, users: [] };
+
+  roleNames = _uniq(roleNames);
 
   const userGroups = await Promise.all(
     roleNames.map((roleName) =>
@@ -150,30 +156,38 @@ export async function listUsersByRoles(roleNames: string[], kcAdminClient?: KcAd
     ),
   );
 
-  const users = userGroups.flat();
-  return users;
+  const allusers: UserRepresentation[] = [];
+  const usersByRole = _mapKeys(userGroups, (users, index) => {
+    allusers.push(...users);
+    return roleNames[index];
+  });
+
+  return { usersByRole, users: _uniqBy(allusers, (usr) => usr.id) };
 }
 
 export async function findUserByEmail(email: string, kcAdminClient?: KcAdminClient) {
   if (!kcAdminClient) kcAdminClient = await getKcAdminClient();
 
+  email = email.toLowerCase();
+
   const users = await kcAdminClient.users.find({
     realm: AUTH_RELM,
-    email,
+    username: email,
     exact: true,
     userProfileMetadata: false,
   });
 
-  if (users.length === 0) return null;
+  const user = users.find((usr) => usr.username?.toLowerCase() === email);
+  if (!user) return null;
 
   const authClient = await findClient(AUTH_RESOURCE, kcAdminClient);
   if (!authClient?.id) return null;
 
   const authRoles = await kcAdminClient.users.listClientRoleMappings({
     realm: AUTH_RELM,
-    id: users[0].id as string,
+    id: user.id as string,
     clientUniqueId: authClient.id,
   });
 
-  return { ...users[0], authRoleNames: authRoles.map((role) => role.name ?? '') };
+  return { ...user, authRoleNames: authRoles.map((role) => role.name ?? '') };
 }
