@@ -144,6 +144,22 @@ export default function AdditionalTeamMembers({ disabled }: { disabled?: boolean
 
   return (
     <>
+      <p>
+        Additional members are included to facilitate efficient team management. They can be managed by the product
+        owner or technical lead(s) of the product. The following roles are available:
+      </p>
+      <ul className="list-disc pl-5">
+        <li>
+          <span className="font-semibold">Viewer</span>: Has read-only access to the product.
+        </li>
+        <li>
+          <span className="font-semibold">Editor</span>: Can edit the product and submit edit requests.
+        </li>
+        <li>
+          <span className="font-semibold">Subscriber</span>: Receives email notifications about product-related
+          activities.
+        </li>
+      </ul>
       <Table.ScrollContainer minWidth={800}>
         <Table verticalSpacing="sm">
           <Table.Thead>
