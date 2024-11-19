@@ -12,7 +12,13 @@ def fetch_unique_emails(mongo_conn_id):
         projects_collection = db["PrivateCloudProject"]
         users_collection = db["User"]
         query = {"status": "ACTIVE"}
-        projection = {"_id": 0, "projectOwnerId": 1, "primaryTechnicalLeadId": 1, "secondaryTechnicalLeadId": 1}
+        projection = {
+            "_id": 0,
+            "projectOwnerId": 1,
+            "primaryTechnicalLeadId": 1,
+            "secondaryTechnicalLeadId": 1,
+            "members": 1,
+        }
         projects = list(projects_collection.find(query, projection))
 
         unique_ids = set()
@@ -23,6 +29,10 @@ def fetch_unique_emails(mongo_conn_id):
                 unique_ids.add(str(project["primaryTechnicalLeadId"]))
             if project.get("secondaryTechnicalLeadId"):
                 unique_ids.add(str(project["secondaryTechnicalLeadId"]))
+            if project.get("members"):
+                for member in project["members"]:
+                    if "SUBSCRIBER" in member.get("roles", []):
+                        unique_ids.add(str(member["userId"]))
 
             unique_emails = []
             if unique_ids:
