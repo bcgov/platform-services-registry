@@ -4,7 +4,8 @@ The development sandbox serves as an isolated environment for local development 
 
 ## Getting Started
 
-1. To begin with, duplicate the `.env.example` file and name it either `.env` or `.env.local` to set the default local environment variable in your local environment.
+1. To begin, duplicate the `.env.example` file to create a `.env.local` file and a `.env.test` file. The `.env.local` file is used to define default environment variables for local development, while the `.env.test` file is specifically for testing purposes.
+   Ensure `.env.local` and `.env.test` are in the root directory of the project (`/app`). This ensures that they are correctly picked up by the application when required.
 
 2. Switch to localdev folder
 
