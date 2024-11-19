@@ -147,11 +147,13 @@ services:
     - 8090:8080
 
   mailpit:
-    image: axllent/mailpit:latest   # The `axllent/mailpit:latest` is pulled from Docker Hub https://hub.docker.com/r/axllent/mailpit
+    image: axllent/mailpit:v1.21   # Pulls the specified version of Mailpit (`v1.21`) from Docker Hub: https://hub.docker.com/r/axllent/mailpit
     container_name: mailpit
     restart: unless-stopped   # Ensures the container restarts automatically unless it is manually stopped.
     volumes:
-    - ./data:/data   # Maps the `./data` directory on the host to `/data` inside the container - storage for Mailpit's database.
+    - type: bind
+      source: ./mnt/mailpit  # The host directory to be mounted to the container.
+      target: /data        # The directory inside the container where Mailpit stores its data, including the database.
     ports:
     - 8025:8025   # Maps port 8025 on the host to port 8025 in the container for the Mailpit web interface.
     - 1025:1025   # Maps port 1025 on the host to port 1025 in the container for the SMTP server.

@@ -13,11 +13,12 @@ The development sandbox serves as an isolated environment for local development 
 cd localdev
 ```
 
-3. Create two directories to mount volumns for `mongodb` and `postgres`.
+3. Create three directories to mount volumns for `mongodb`,`postgres` and `mailpit`.
 
 ```bash
 mkdir -p ./mnt/mongodb
 mkdir -p ./mnt/postgres
+mkdir -p ./mnt/mailpit
 ```
 
 If you have data version conflict errors due to existing mount volumes, please delete the directories and recreate them.
