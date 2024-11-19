@@ -21,7 +21,7 @@ runs:
   - name: Run Docker Compose and Custom Script
     shell: bash
     run: |
-      mkdir -p ./localdev/mnt/{mongodb,postgres, mailpit}
+      mkdir -p ./localdev/mnt/{mongodb,postgres,mailpit}
 
       images=(
           "ghcr.io/bcgov/pltsvc-localdev-keycloak:latest"
