@@ -7,12 +7,11 @@ import { FormProvider, useForm } from 'react-hook-form';
 import { z } from 'zod';
 import HookFormTextarea from '@/components/generic/input/HookFormTextarea';
 import { createModal } from '@/core/modal';
-import { showErrorNotification } from '@/helpers/notifications';
 import { makePublicCloudRequestDecision } from '@/services/backend/public-cloud/requests';
 import { PublicCloudRequestDetailDecorated } from '@/types/public-cloud';
-import { cn } from '@/utils';
 import { PublicCloudRequestDecisionBody } from '@/validation-schemas/public-cloud';
 import { RequestDecision } from '@/validation-schemas/shared';
+import { success } from '../notification';
 import { openRequestDecisionCompleteModal } from './requestDecisionComplete';
 
 interface ModalProps {
@@ -52,9 +51,7 @@ export const openPublicCloudRequestReviewModal = createModal<ModalProps, ModalSt
       mutationFn: (data: any) => makePublicCloudRequestDecision(request.id, data),
       onSuccess: () => {
         state.success = true;
-      },
-      onError: (error: any) => {
-        showErrorNotification(error);
+        success();
       },
     });
 

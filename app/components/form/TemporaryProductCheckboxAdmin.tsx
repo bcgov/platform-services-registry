@@ -1,5 +1,4 @@
 import { Alert } from '@mantine/core';
-import { notifications } from '@mantine/notifications';
 import { useQuery, useMutation } from '@tanstack/react-query';
 import { useEffect } from 'react';
 import { useFormContext } from 'react-hook-form';
@@ -7,6 +6,7 @@ import FormCheckbox from '@/components/generic/checkbox/FormCheckbox';
 import { updatePrivateCloudProductAdmin } from '@/services/backend/admin';
 import { usePrivateProductState } from '@/states/global';
 import { cn } from '@/utils';
+import { success } from '../notification';
 
 export default function TemporaryProductCheckboxAdmin({
   disabled,
@@ -30,21 +30,7 @@ export default function TemporaryProductCheckboxAdmin({
     onSuccess: async (prod) => {
       privateState.currentProduct = prod;
       resetField('isTest', { defaultValue: prod.isTest });
-
-      notifications.show({
-        color: 'green',
-        title: 'Success',
-        message: 'Temporary flag updated!',
-        autoClose: 5000,
-      });
-    },
-    onError: (error: any) => {
-      notifications.show({
-        color: 'red',
-        title: 'Error',
-        message: `Failed to update temporary flag: ${error.message}`,
-        autoClose: 5000,
-      });
+      success();
     },
   });
 

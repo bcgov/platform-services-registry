@@ -2,7 +2,6 @@
 
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Button, Divider, Grid, LoadingOverlay, Box } from '@mantine/core';
-import { notifications } from '@mantine/notifications';
 import { IconStatusChange } from '@tabler/icons-react';
 import { useMutation } from '@tanstack/react-query';
 import { useEffect, useState } from 'react';
@@ -10,9 +9,9 @@ import { FormProvider, useForm, FieldValues } from 'react-hook-form';
 import { string, z } from 'zod';
 import PageAccordion from '@/components/generic/accordion/PageAccordion';
 import HookFormTextarea from '@/components/generic/input/HookFormTextarea';
+import { success } from '@/components/notification';
 import ProductComparison from '@/components/ProductComparison';
 import { createModal } from '@/core/modal';
-import { showErrorNotification } from '@/helpers/notifications';
 import { comparePrivateProductData, PrivateProductChange } from '@/helpers/product-change';
 import { editPrivateCloudProject } from '@/services/backend/private-cloud/products';
 import { usePrivateProductState } from '@/states/global';
@@ -56,9 +55,7 @@ export const openPrivateCloudProductEditSubmitModal = createModal<ModalProps, Mo
       mutationFn: (data: any) => editPrivateCloudProject(snap.licencePlate, data),
       onSuccess: () => {
         state.success = true;
-      },
-      onError: (error: any) => {
-        showErrorNotification(error);
+        success();
       },
     });
 

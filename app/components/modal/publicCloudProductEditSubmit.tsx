@@ -2,7 +2,6 @@
 
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Button, Divider, Grid, LoadingOverlay, Box } from '@mantine/core';
-import { notifications } from '@mantine/notifications';
 import { IconStatusChange } from '@tabler/icons-react';
 import { useQuery, useMutation } from '@tanstack/react-query';
 import { useEffect, useState } from 'react';
@@ -13,10 +12,10 @@ import HookFormTextarea from '@/components/generic/input/HookFormTextarea';
 import { openNotificationModal } from '@/components/modal/notification';
 import ProductComparison from '@/components/ProductComparison';
 import { createModal } from '@/core/modal';
-import { showErrorNotification } from '@/helpers/notifications';
 import { comparePublicProductData, PublicProductChange } from '@/helpers/product-change';
 import { editPublicCloudProject } from '@/services/backend/public-cloud/products';
 import { usePublicProductState } from '@/states/global';
+import { success } from '../notification';
 
 interface ModalProps {
   productData: FieldValues;
@@ -56,9 +55,7 @@ export const openPublicCloudProductEditSubmitModal = createModal<ModalProps, Mod
       mutationFn: (data: any) => editPublicCloudProject(snap.licencePlate, data),
       onSuccess: () => {
         state.success = true;
-      },
-      onError: (error: any) => {
-        showErrorNotification(error);
+        success();
       },
     });
 

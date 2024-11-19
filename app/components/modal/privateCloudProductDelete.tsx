@@ -8,7 +8,6 @@ import { FormProvider, useForm } from 'react-hook-form';
 import { z } from 'zod';
 import HookFormTextInput from '@/components/generic/input/HookFormTextInput';
 import { createModal } from '@/core/modal';
-import { showErrorNotification } from '@/helpers/notifications';
 import {
   deletePrivateCloudProject,
   checkPrivateCloudProductDeletionAvailability,
@@ -63,10 +62,6 @@ export const openPrivateCloudProductDeleteModal = createModal<ModalProps, ModalS
       error: deleteProductError,
     } = useMutation({
       mutationFn: () => deletePrivateCloudProject(product.licencePlate),
-      onSuccess: () => {},
-      onError: (error: any) => {
-        showErrorNotification(error);
-      },
     });
 
     const { handleSubmit, register } = methods;

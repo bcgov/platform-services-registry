@@ -1,5 +1,4 @@
 import { Tooltip, UnstyledButton, Button } from '@mantine/core';
-import { notifications } from '@mantine/notifications';
 import { RichTextEditor } from '@mantine/tiptap';
 import { IconTrash, IconPencil, IconDots, IconSourceCode } from '@tabler/icons-react';
 import { useMutation } from '@tanstack/react-query';
@@ -8,6 +7,7 @@ import { formatDistanceToNow, format } from 'date-fns';
 import React, { useState } from 'react';
 import { openConfirmModal } from '@/components/modal/confirm';
 import { deletePrivateCloudComment, updatePrivateCloudComment } from '@/services/backend/private-cloud/products';
+import { failure, success } from '../notification';
 import ProfileImage from '../ProfileImage';
 import { commonExtensions } from './TiptapConfig';
 import TiptapReadOnly from './TiptapReadOnly';
@@ -55,22 +55,12 @@ const CommentBubble = ({
   const editMutation = useMutation({
     mutationFn: () => updatePrivateCloudComment(licencePlate, commentId, editedText),
     onSuccess: () => {
-      notifications.show({
-        color: 'green',
-        title: 'Success',
-        message: 'Comment edited successfully',
-        autoClose: 5000,
-      });
+      success();
       setEditMode(false);
       refetchComments(); // Refresh the comments
     },
     onError: (error: Error) => {
-      notifications.show({
-        color: 'red',
-        title: 'Error',
-        message: `Error updating comment: ${error.message}`,
-        autoClose: 5000,
-      });
+      failure({ error });
       setEditMode(false);
     },
   });
@@ -93,20 +83,7 @@ const CommentBubble = ({
     mutationFn: () => deletePrivateCloudComment(licencePlate, commentId),
     onSuccess: () => {
       refetchComments();
-      notifications.show({
-        color: 'green',
-        title: 'Success',
-        message: 'Comment deleted successfully',
-        autoClose: 5000,
-      });
-    },
-    onError: (error: Error) => {
-      notifications.show({
-        color: 'red',
-        title: 'Error',
-        message: `Error: ${error.message}`,
-        autoClose: 5000,
-      });
+      success();
     },
   });
 

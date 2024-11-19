@@ -2,7 +2,6 @@
 
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Button, Grid, LoadingOverlay, Table, Box } from '@mantine/core';
-import { notifications } from '@mantine/notifications';
 import { TaskStatus, TaskType } from '@prisma/client';
 import { useQuery, useMutation } from '@tanstack/react-query';
 import { useSession } from 'next-auth/react';
@@ -16,6 +15,7 @@ import { formatFullName } from '@/helpers/user';
 import { getBilling } from '@/services/backend/billing';
 import { reviewPublicCloudMou } from '@/services/backend/public-cloud/products';
 import { formatDate } from '@/utils/date';
+import { failure, success } from '../notification';
 
 interface ModalProps {
   licencePlate: string;
@@ -69,24 +69,11 @@ export const openPublicCloudMouReviewModal = createModal<ModalProps, ModalState>
       mutationFn: (data: { taskId: string; decision: string }) => reviewPublicCloudMou(licencePlate, data),
       onSuccess: () => {
         state.confirmed = true;
-
-        notifications.show({
-          color: 'green',
-          title: 'Success',
-          message: 'Successfully reviewed!',
-          autoClose: 5000,
-        });
+        success();
       },
-      onError: (error: any) => {
+      onError: (error: Error) => {
         state.confirmed = false;
-        console.log('error', error);
-
-        notifications.show({
-          title: 'Error',
-          message: `Failed to review a eMOU: ${error.response.data.error}`,
-          color: 'red',
-          autoClose: 5000,
-        });
+        failure({ error });
       },
     });
 
@@ -114,12 +101,7 @@ export const openPublicCloudMouReviewModal = createModal<ModalProps, ModalState>
                 if (task) {
                   await reviewMou({ taskId: task?.id, decision: 'APPROVE' });
                 } else {
-                  notifications.show({
-                    title: 'Error',
-                    message: `You are not assigned to perform the task.`,
-                    color: 'red',
-                    autoClose: 5000,
-                  });
+                  failure({ message: 'You are not assigned to perform the task.', autoClose: true });
                 }
               }
 
