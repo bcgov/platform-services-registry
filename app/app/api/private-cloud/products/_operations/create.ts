@@ -3,7 +3,8 @@ import { Session } from 'next-auth';
 import { defaultQuota } from '@/constants';
 import { OkResponse, UnauthorizedResponse, UnprocessableEntityResponse } from '@/core/responses';
 import generateLicencePlate from '@/helpers/licence-plate';
-import { sendCreateRequestEmails } from '@/services/ches/private-cloud';
+import { sendRequestNatsMessage } from '@/helpers/nats-message';
+import { sendCreateRequestEmails, sendRequestApprovalEmails } from '@/services/ches/private-cloud';
 import { createEvent, models, privateCloudRequestDetailInclude } from '@/services/db';
 import { upsertUsers } from '@/services/db/user';
 import { PrivateCloudCreateRequestBody } from '@/validation-schemas/private-cloud';
@@ -47,6 +48,9 @@ export default async function createOp({ session, body }: { session: Session; bo
       : undefined,
   };
 
+  const decisionStatus = productData.isTest ? DecisionStatus.AUTO_APPROVED : DecisionStatus.PENDING;
+  const decisionDate = decisionStatus === DecisionStatus.AUTO_APPROVED ? new Date() : null;
+
   const newRequest = (
     await models.privateCloudRequest.create(
       {
@@ -54,7 +58,8 @@ export default async function createOp({ session, body }: { session: Session; bo
           active: true,
           licencePlate,
           type: RequestType.CREATE,
-          decisionStatus: DecisionStatus.PENDING,
+          decisionStatus,
+          decisionDate,
           createdBy: { connect: { email: session.user.email } },
           requestComment: body.requestComment,
           decisionData: { create: productData },
@@ -66,10 +71,24 @@ export default async function createOp({ session, body }: { session: Session; bo
     )
   ).data;
 
-  await Promise.all([
+  const proms: (Promise<any> | undefined)[] = [
     createEvent(EventType.CREATE_PRIVATE_CLOUD_PRODUCT, session.user.id, { requestId: newRequest.id }),
-    sendCreateRequestEmails(newRequest, user.name),
-  ]);
+  ];
+
+  if (decisionStatus === DecisionStatus.AUTO_APPROVED) {
+    proms.push(
+      sendRequestNatsMessage(newRequest, {
+        projectOwner: { email: newRequest.originalData?.projectOwner.email },
+        primaryTechnicalLead: { email: newRequest.originalData?.primaryTechnicalLead.email },
+        secondaryTechnicalLead: { email: newRequest.originalData?.secondaryTechnicalLead?.email },
+      }),
+      sendRequestApprovalEmails(newRequest, session.user.name),
+    );
+  } else {
+    proms.push(sendCreateRequestEmails(newRequest, user.name));
+  }
+
+  await Promise.all(proms);
 
   return OkResponse(newRequest);
 }

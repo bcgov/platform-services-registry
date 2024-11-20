@@ -86,7 +86,7 @@ export function createSamplePrivateCloudProductData(args?: {
       other: 'Some other services',
       noServices: false,
     },
-    isTest: getRandomBool(),
+    isTest: false,
     isAgMinistryChecked: true,
     ...data,
   };
