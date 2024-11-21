@@ -1,3 +1,15 @@
+## [0.40.1](https://github.com/bcgov/platform-services-registry/compare/v0.40.0...v0.40.1) (2024-11-20)
+
+### Features
+
+* **3197:** enhance popup notifications ([65c8886](https://github.com/bcgov/platform-services-registry/commit/65c8886dc1ac3ca0a648e9428ef3f367c0a849d1))
+* **3972:** add admin users page ([3917556](https://github.com/bcgov/platform-services-registry/commit/39175564fef9f12f4199cef6151117158298eaac))
+* **4250:** send MailChimp emails to subscriber role members ([ee94fad](https://github.com/bcgov/platform-services-registry/commit/ee94fadf9b8da8dff45d8e319b81b0253c89426d))
+* **4284:** auto-approve initial temporary product requests ([c7231b1](https://github.com/bcgov/platform-services-registry/commit/c7231b1ae74d4812e96771ff2ccadefc738b5b55))
+
+### End-to-end Testing
+
+* **4259:** adapt tests to new components and refactor delete test ([ad7daf1](https://github.com/bcgov/platform-services-registry/commit/ad7daf1e2dfc752997ab4d7da5b97c5066cb097b))
 ## [0.40.0](https://github.com/bcgov/platform-services-registry/compare/v0.39.2...v0.40.0) (2024-11-15)
 
 ### Features
