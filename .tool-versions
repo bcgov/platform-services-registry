@@ -1,7 +1,7 @@
 nodejs 22.10.0
 python 3.12.1
 oc 4.13.3
-kubectl 1.31.2
+kubectl 1.31.3
 terraform 1.5.7
 helm 3.16.3
 shfmt 3.10.0
