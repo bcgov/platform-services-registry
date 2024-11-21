@@ -3,14 +3,22 @@ import _castArray from 'lodash-es/castArray';
 import _compact from 'lodash-es/compact';
 import _toLower from 'lodash-es/toLower';
 import _uniq from 'lodash-es/uniq';
-import { EMAIL_PREFIX, CHES_TOKEN_URL, CHES_API_URL, CHES_CLIENT_ID, CHES_CLIENT_SECRET } from '@/config';
+import {
+  IS_DEV,
+  IS_LOCAL,
+  EMAIL_PREFIX,
+  CHES_TOKEN_URL,
+  CHES_API_URL,
+  CHES_CLIENT_ID,
+  CHES_CLIENT_SECRET,
+} from '@/config';
 import { privateCloudTeamEmail } from '@/constants';
 import { logger } from '@/core/logging';
-
+import { sendViaMailPit } from '../../../localdev/ches-mock/src/main';
 type NullOrString = string | null | undefined;
 type EmailAddress = string | undefined;
 
-interface Email {
+export interface Email {
   bodyType?: 'html' | 'text';
   from?: string;
   subject: string;
@@ -81,6 +89,18 @@ const getToken = async ({ tokenUrl, clientId, clientSecret }: TokenData): Promis
 };
 
 export const sendEmail = async (email: Email): Promise<void> => {
+  if (IS_DEV || IS_LOCAL) {
+    const emailBody = {
+      ...email,
+      to: safeEmails(email.to),
+      bcc: safeEmails(email.bcc || []),
+      cc: safeEmails(email.cc || []),
+    };
+    logger.info('Using MailPit for email delivery.');
+    await sendViaMailPit(emailBody);
+    return;
+  }
+
   if (!CHES_TOKEN_URL || !CHES_CLIENT_ID || !CHES_CLIENT_SECRET) {
     logger.error('Missing environment variables for email service');
     return;
