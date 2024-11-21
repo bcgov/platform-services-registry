@@ -1,7 +1,8 @@
 'use client';
 
-import { Alert } from '@mantine/core';
-import { IconInfoCircle } from '@tabler/icons-react';
+import { Alert, Loader } from '@mantine/core';
+import { Cluster } from '@prisma/client';
+import { IconInfoCircle, IconLicense } from '@tabler/icons-react';
 import { useQuery } from '@tanstack/react-query';
 import Link from 'next/link';
 import { useEffect, useState } from 'react';
@@ -13,7 +14,7 @@ import Tabs, { ITab } from '@/components/generic/tabs/BasicTabs';
 import { IS_PROD } from '@/config';
 import { GlobalRole } from '@/constants';
 import createClientPage from '@/core/client-page';
-import { getPrivateCloudProject } from '@/services/backend/private-cloud/products';
+import { getPrivateCloudProject, getSubnetForEmerald } from '@/services/backend/private-cloud/products';
 import { usePrivateProductState } from '@/states/global';
 import { resetState as resetRequestsState } from './requests/state';
 
@@ -35,7 +36,6 @@ export default privateCloudProductLayout(({ getPathParams, session, children }) 
 
   const [privateState, privateSnap] = usePrivateProductState();
   const { licencePlate = '' } = pathParams ?? {};
-
   const { data: currentProduct } = useQuery({
     queryKey: ['currentProduct', licencePlate],
     queryFn: () => getPrivateCloudProject(licencePlate),
@@ -50,6 +50,12 @@ export default privateCloudProductLayout(({ getPathParams, session, children }) 
   useEffect(() => {
     privateState.licencePlate = licencePlate;
   }, [licencePlate]);
+
+  const { data: subnetInfo, isLoading: isLoadingSubnetInfo } = useQuery({
+    queryKey: [licencePlate],
+    queryFn: () => getSubnetForEmerald(licencePlate),
+    enabled: currentProduct?.cluster === Cluster.EMERALD && !!licencePlate,
+  });
 
   const tabs: ITab[] = [
     {
@@ -108,8 +114,16 @@ export default privateCloudProductLayout(({ getPathParams, session, children }) 
         {privateSnap.currentProduct.name}
         <ProductBadge data={privateSnap.currentProduct} />
       </h1>
+      {isLoadingSubnetInfo ? (
+        <Loader color="blue" type="dots" />
+      ) : (
+        subnetInfo && (
+          <h3 className="flex justify-between text-xl lg:text-1xl xl:text-2xl font-semibold leading-7 text-gray-500 mb-0 lg:mt-2">
+            {subnetInfo}
+          </h3>
+        )
+      )}
       <h3 className="mt-0 italic">Private Cloud OpenShift platform</h3>
-
       {privateSnap.currentProduct.requests.length > 0 && (
         <Alert variant="light" color="blue" title="" icon={<IconInfoCircle />}>
           There is already an{' '}
