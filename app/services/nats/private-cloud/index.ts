@@ -66,12 +66,20 @@ export default function createPrivateCloudNatsMessage(
 
         return {
           name: `${licencePlate}-${quotaName}`,
+          quota: {
+            cpu: cpuMeta.labelNats,
+            memory: memoryMeta.labelNats,
+            storage: storageMeta.labelNats,
+            snapshot: isEmptyStorage ? 'snapshot-0' : 'snapshot-5',
+          },
           quotas: {
             cpu: {
               requests: cpuMeta.request,
+              limits: cpuMeta.limit,
             },
             memory: {
               requests: `${memoryMeta.request}Gi`,
+              limits: `${memoryMeta.limit}Gi`,
             },
             storage: {
               block: `${storageMeta.size}Gi`,
@@ -139,20 +147,12 @@ export default function createPrivateCloudNatsMessage(
 
       return {
         name: `${licencePlate}-${quotaName}`,
-        quota: {
-          cpu: cpuMeta.labelNats,
-          memory: memoryMeta.labelNats,
-          storage: storageMeta.labelNats,
-          snapshot: isEmptyStorage ? 'snapshot-0' : 'snapshot-5',
-        },
         quotas: {
           cpu: {
             requests: cpuMeta.request,
-            limits: cpuMeta.limit,
           },
           memory: {
             requests: `${memoryMeta.request}Gi`,
-            limits: `${memoryMeta.limit}Gi`,
           },
           storage: {
             block: `${storageMeta.size}Gi`,
