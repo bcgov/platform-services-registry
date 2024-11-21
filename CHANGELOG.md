@@ -1,3 +1,8 @@
+## [0.40.2](https://github.com/bcgov/platform-services-registry/compare/v0.40.1...v0.40.2) (2024-11-21)
+
+### Bug Fixes
+
+* **4294:** fix the issue setting temporary product by admin ([4a59596](https://github.com/bcgov/platform-services-registry/commit/4a59596d991eca990fb98f4b2eae2598cf829ee4))
 ## [0.40.1](https://github.com/bcgov/platform-services-registry/compare/v0.40.0...v0.40.1) (2024-11-20)
 
 ### Features
