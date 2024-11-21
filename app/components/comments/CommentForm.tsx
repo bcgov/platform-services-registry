@@ -14,10 +14,10 @@ interface CommentFormProps {
   userId: string;
   projectId?: string;
   requestId?: string;
-  onCommentAdded: () => void;
-  addButtonText: string;
-  postButtonText: string;
-  placeholderText: string;
+  onCommentAdded?: () => void;
+  addButtonText?: string;
+  postButtonText?: string;
+  placeholderText?: string;
 }
 
 function CommentForm({
@@ -25,10 +25,10 @@ function CommentForm({
   userId,
   projectId,
   requestId,
-  onCommentAdded,
-  addButtonText,
-  postButtonText,
-  placeholderText,
+  onCommentAdded = () => undefined,
+  addButtonText = 'Add Note',
+  postButtonText = 'Post Note',
+  placeholderText = 'Leave a note...',
 }: CommentFormProps) {
   const [isLoading, setLoading] = useState(false);
   const [showCommentBox, setShowCommentBox] = useState(false);

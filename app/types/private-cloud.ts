@@ -128,3 +128,9 @@ export type PrivateCloudRequestSearch = {
   docs: PrivateCloudRequestSimpleDecorated[];
   totalCount: number;
 };
+
+export type PrivateCloudComment = Prisma.PrivateCloudCommentGetPayload<{
+  include: {
+    user: true;
+  };
+}>;
