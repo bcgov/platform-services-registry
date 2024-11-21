@@ -145,8 +145,13 @@ export default function AdditionalTeamMembers({ disabled }: { disabled?: boolean
   return (
     <>
       <p>
-        Additional members can be added to grant privileges on the registry application. These members can be managed by
-        the product owner or the product&apos;s technical lead(s). The available roles include:
+        Additional members can be added to grant privileges on the registry application. These privileges are for
+        the&nbsp;<span className="font-semibold">registry only</span>, and do not control access to OpenShift
+        namespaces.
+      </p>
+      <p>
+        These members can be managed by the product owner or the product&apos;s technical lead(s). The available roles
+        include:
       </p>
       <ul className="list-disc pl-5">
         <li>

@@ -47,8 +47,11 @@ export const clusterNames = [
   },
 ];
 
-export type ResourceMeta<T extends string> = Record<T, { value: T; label: string; request: number; limit: number }>;
-export type StorageMeta = Record<Storage, { value: Storage; label: string; size: number }>;
+export type ResourceMeta<T extends string> = Record<
+  T,
+  { value: T; label: string; labelNats: string; request: number; limit: number }
+>;
+export type StorageMeta = Record<Storage, { value: Storage; label: string; labelNats: string; size: number }>;
 
 export type DropdownOption = { label: string; value: string; key: number };
 
@@ -60,10 +63,12 @@ export const cpuMetadata = cpus.reduce<ResourceMeta<CPU>>((ret, value) => {
   const [request, limit] = extractNumbers(value);
 
   const label = `${request} CPU Request, ${limit} CPU Limit`;
+  const labelNats = `cpu-request-${request}-limit-${limit}`;
 
   ret[value] = {
     value,
     label,
+    labelNats,
     request,
     limit,
   };
@@ -76,10 +81,12 @@ export const memoryMetadata = memories.reduce<ResourceMeta<Memory>>((ret, value)
   const [request, limit] = extractNumbers(value);
 
   const label = `${request} GB Request, ${limit} GB Limit`;
+  const labelNats = `memory-request-${request}-limit-${limit}`;
 
   ret[value] = {
     value,
     label,
+    labelNats,
     request,
     limit,
   };
@@ -92,10 +99,12 @@ export const storageMetadata = storages.reduce<StorageMeta>((ret, value) => {
   const [size] = extractNumbers(value);
 
   const label = `${size} GB`;
+  const labelNats = `storage-${size}`;
 
   ret[value] = {
     value,
     label,
+    labelNats,
     size,
   };
 
