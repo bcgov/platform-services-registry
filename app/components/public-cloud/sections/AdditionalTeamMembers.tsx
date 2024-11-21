@@ -145,8 +145,9 @@ export default function AdditionalTeamMembers({ disabled }: { disabled?: boolean
   return (
     <>
       <p>
-        Additional members can be added to grant privileges on the registry application. These members can be managed by
-        the product owner or the product&apos;s technical lead(s). The available roles include:
+        Additional members can be added to grant privileges&nbsp;
+        <span className="font-semibold">on the registry application</span>. These members can be managed by the product
+        owner or the product&apos;s technical lead(s). The available roles include:
       </p>
       <ul className="list-disc pl-5">
         <li>
