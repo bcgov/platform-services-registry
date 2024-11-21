@@ -18,10 +18,10 @@ interface CommentBubbleProps {
   timeStamp: Date;
   updatedAt: Date;
   text: string;
-  isAuthor: boolean;
+  isAuthor?: boolean;
   commentId: string;
   licencePlate: string;
-  refetchComments: () => void;
+  refetchComments?: () => void;
   email: string;
   image: string;
 }
@@ -32,10 +32,10 @@ const CommentBubble = ({
   timeStamp,
   updatedAt,
   text,
-  isAuthor,
+  isAuthor = false,
   commentId,
   licencePlate,
-  refetchComments,
+  refetchComments = () => undefined,
   email,
   image,
 }: CommentBubbleProps) => {

@@ -3,18 +3,22 @@ import prisma from '@/core/prisma';
 export async function listOp(licencePlate: string, requestId?: string) {
   let comments;
 
+  if (requestId === 'all') {
+    comments = await prisma.privateCloudComment.findMany({
+      where: { projectId: undefined, requestId: { not: null } },
+      include: { user: true },
+      orderBy: { createdAt: 'desc' },
+    });
+
+    return comments;
+  }
+
   // If requestId is provided, fetch comments by requestId
   if (requestId) {
     comments = await prisma.privateCloudComment.findMany({
-      where: {
-        requestId,
-      },
-      include: {
-        user: true,
-      },
-      orderBy: {
-        createdAt: 'desc',
-      },
+      where: { requestId },
+      include: { user: true },
+      orderBy: { createdAt: 'desc' },
     });
 
     return comments;
@@ -22,12 +26,8 @@ export async function listOp(licencePlate: string, requestId?: string) {
 
   // Fetch the project by licencePlate
   const project = await prisma.privateCloudProject.findUnique({
-    where: {
-      licencePlate,
-    },
-    select: {
-      id: true,
-    },
+    where: { licencePlate },
+    select: { id: true },
   });
 
   if (!project) {
@@ -35,15 +35,9 @@ export async function listOp(licencePlate: string, requestId?: string) {
   }
 
   comments = await prisma.privateCloudComment.findMany({
-    where: {
-      projectId: project.id,
-    },
-    include: {
-      user: true,
-    },
-    orderBy: {
-      createdAt: 'desc',
-    },
+    where: { projectId: project.id },
+    include: { user: true },
+    orderBy: { createdAt: 'desc' },
   });
 
   return comments;

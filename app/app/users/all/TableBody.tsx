@@ -76,7 +76,7 @@ export default function TableBody({ data, isLoading = false }: TableProps) {
         </Table.Td>
         <Table.Td>
           <PrivateCloudProductsCard products={item.privateProducts} context="private-cloud">
-            <Badge color="primary" variant="outline">
+            <Badge color="primary" variant="filled">
               {item.privateProducts.length}
             </Badge>
           </PrivateCloudProductsCard>
@@ -84,7 +84,7 @@ export default function TableBody({ data, isLoading = false }: TableProps) {
           <span className="mx-2">/</span>
 
           <PrivateCloudProductsCard products={item.publicProducts} context="public-cloud">
-            <Badge color="success" variant="outline">
+            <Badge color="success" variant="filled">
               {item.publicProducts.length}
             </Badge>
           </PrivateCloudProductsCard>

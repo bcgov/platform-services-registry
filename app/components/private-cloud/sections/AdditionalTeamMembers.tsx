@@ -77,14 +77,14 @@ export default function AdditionalTeamMembers({ disabled }: { disabled?: boolean
         <Table.Td>
           {member.jobTitle && (
             <div>
-              <Badge color="info" variant="light">
+              <Badge color="info" variant="filled">
                 {member.jobTitle}
               </Badge>
             </div>
           )}
           {member.officeLocation && (
             <div>
-              <Badge color="primary" variant="light">
+              <Badge color="primary" variant="filled">
                 {member.officeLocation}
               </Badge>
             </div>
