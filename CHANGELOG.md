@@ -1,3 +1,9 @@
+## [0.40.3](https://github.com/bcgov/platform-services-registry/compare/v0.40.2...v0.40.3) (2024-11-22)
+
+### Features
+
+* **3190:** display product requests comments ([b53a8e6](https://github.com/bcgov/platform-services-registry/commit/b53a8e6640e2194ddf042ab1ff56abfd0fb43124))
+* **3418:** display subnet info for namespace in emerald cluster ([cc1cd04](https://github.com/bcgov/platform-services-registry/commit/cc1cd049f62ecd052d577beb0d8d24097a66a9ad))
 ## [0.40.2](https://github.com/bcgov/platform-services-registry/compare/v0.40.1...v0.40.2) (2024-11-21)
 
 ### Bug Fixes
