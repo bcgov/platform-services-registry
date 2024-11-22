@@ -19,7 +19,7 @@ runs:
       severity: LOW,MEDIUM,HIGH,CRITICAL
 
   - name: Upload Trivy scan results to GitHub Security tab
-    uses: github/codeql-action/upload-sarif@f8e782af5670be7b12c0acb5b25c1c5703b931b9
+    uses: github/codeql-action/upload-sarif@3d3d628990a5f99229dd9fa1821cc5a4f31b613b
     continue-on-error: true
     with:
       sarif_file: trivy-results.sarif
