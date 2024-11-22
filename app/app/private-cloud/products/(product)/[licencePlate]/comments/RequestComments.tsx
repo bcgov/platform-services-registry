@@ -35,9 +35,7 @@ export default function RequestComments({ licencePlate }: { licencePlate: string
               <>
                 <Divider my="md" />
                 <div className="text-center">
-                  <ExternalLink href={`http://localhost:3000/private-cloud/requests/${requestId}/comments`}>
-                    {requestId}
-                  </ExternalLink>
+                  <ExternalLink href={`/private-cloud/requests/${requestId}/comments`}>{requestId}</ExternalLink>
                 </div>
 
                 {cmts.map((cmt: PrivateCloudComment) => (
