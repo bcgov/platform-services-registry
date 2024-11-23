@@ -1,5 +1,6 @@
 import nodemailer from 'nodemailer';
 import express, { Request, Response } from 'express';
+import sanitizeHtml from 'sanitize-html';
 
 const app = express();
 app.use(express.json());
@@ -64,8 +65,9 @@ app.post('/email', async (req: Request, res: Response): Promise<void> => {
       res.status(400).json({ error: 'Missing required fields' });
       return;
     }
+    const sanitizedBody = sanitizeHtml(body);
 
-    await sendViaMailPit({ to, subject, body });
+    await sendViaMailPit({ to, subject, body: sanitizedBody });
     res.status(200).json({ message: 'Email sent successfully' });
   } catch (error: any) {
     res.status(500).json({ error: 'Failed to send email', details: error.message });
