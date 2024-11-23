@@ -1,2 +1,5 @@
-node_modules
-build
+/node_modules
+/build
+# CHES_TOKEN_URL=http://localhost:8080/auth/realms/platform-services/protocol/openid-connect/token
+# CHES_CLIENT_ID=pltsvc
+# CHES_CLIENT_SECRET=testsecret
