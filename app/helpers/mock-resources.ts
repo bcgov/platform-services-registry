@@ -1,10 +1,10 @@
 import { faker } from '@faker-js/faker';
-import { Prisma, Cluster, CPU, Memory, Storage } from '@prisma/client';
-import { ministries, clusters, providers, cpus, memories, storages } from '@/constants';
-import { findMockUserByIdr, mockNoRoleIdirs, mockNoRoleUsers } from '@/helpers/mock-users';
-import { getRandomItem } from '@/utils/collection';
+import { Prisma, Cluster } from '@prisma/client';
+import { ministries, clusters, providers } from '@/constants';
+import { mockNoRoleUsers } from '@/helpers/mock-users';
 import { generateShortId } from '@/utils/uuid';
 import { getRandomCloudProviderSelectionReasons, getRandomProviderReasonsNote } from './mock-resources/core';
+import { resourceRequests1 } from './mock-resources/private-cloud-product';
 
 const getRandomBool = () => faker.helpers.arrayElement([true, false]);
 const getRandomMinistry = () => faker.helpers.arrayElement(ministries);
@@ -24,12 +24,6 @@ export function createSamplePrivateCloudProductData(args?: {
 
   const cluster = Cluster.SILVER;
 
-  const quota = {
-    cpu: CPU.CPU_REQUEST_0_5_LIMIT_1_5,
-    memory: Memory.MEMORY_REQUEST_2_LIMIT_4,
-    storage: Storage.STORAGE_1,
-  };
-
   const PO = mockNoRoleUsers[0];
   const TL1 = mockNoRoleUsers[1];
   const TL2 = mockNoRoleUsers[2];
@@ -43,9 +37,7 @@ export function createSamplePrivateCloudProductData(args?: {
     projectOwner: PO,
     primaryTechnicalLead: TL1,
     secondaryTechnicalLead: TL2,
-    productionQuota: quota,
-    toolsQuota: quota,
-    developmentQuota: quota,
+    resourceRequests: resourceRequests1,
     commonComponents: {
       addressAndGeolocation: {
         planningToUse: true,

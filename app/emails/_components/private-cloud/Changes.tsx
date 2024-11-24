@@ -63,48 +63,40 @@ export default function Changes({ request }: { request: PrivateCloudRequestDetai
         <Hr className="my-4" />
         <Heading className="text-lg mb-0 text-black">Quota Changes</Heading>
         <div className="flex flex-row flex-wrap">
-          {diffData.parentPaths.includes('productionQuota') && (
+          {diffData.changes.find((chg) => chg.loc.startsWith('resourceRequests.production.')) && (
             <QuotaChanges
               licencePlate={`${request.licencePlate}-prod`}
-              quotaCurrent={request.originalData.productionQuota}
-              quotaRequested={request.decisionData.productionQuota}
+              currentResourceRequests={request.originalData.resourceRequests.production}
+              requestedResourceRequests={request.decisionData.resourceRequests.production}
               type="Production"
               cluster={request.originalData.cluster}
-              currentLabel="Current"
-              requestedLabel="Requested"
             />
           )}
-          {diffData.parentPaths.includes('testQuota') && (
+          {diffData.changes.find((chg) => chg.loc.startsWith('resourceRequests.test.')) && (
             <QuotaChanges
               licencePlate={`${request.licencePlate}-test`}
-              quotaCurrent={request.originalData.testQuota}
-              quotaRequested={request.decisionData.testQuota}
+              currentResourceRequests={request.originalData.resourceRequests.test}
+              requestedResourceRequests={request.decisionData.resourceRequests.test}
               type="Test"
               cluster={request.originalData.cluster}
-              currentLabel="Current"
-              requestedLabel="Requested"
             />
           )}
-          {diffData.parentPaths.includes('developmentQuota') && (
+          {diffData.changes.find((chg) => chg.loc.startsWith('resourceRequests.development.')) && (
             <QuotaChanges
               licencePlate={`${request.licencePlate}-dev`}
-              quotaCurrent={request.originalData.developmentQuota}
-              quotaRequested={request.decisionData.developmentQuota}
+              currentResourceRequests={request.originalData.resourceRequests.development}
+              requestedResourceRequests={request.decisionData.resourceRequests.development}
               type="Development"
               cluster={request.originalData.cluster}
-              currentLabel="Current"
-              requestedLabel="Requested"
             />
           )}
-          {diffData.parentPaths.includes('toolsQuota') && (
+          {diffData.changes.find((chg) => chg.loc.startsWith('resourceRequests.tools.')) && (
             <QuotaChanges
               licencePlate={`${request.licencePlate}-tools`}
-              quotaCurrent={request.originalData.toolsQuota}
-              quotaRequested={request.decisionData.toolsQuota}
+              currentResourceRequests={request.originalData.resourceRequests.tools}
+              requestedResourceRequests={request.decisionData.resourceRequests.tools}
               type="Tools"
               cluster={request.originalData.cluster}
-              currentLabel="Current"
-              requestedLabel="Requested"
             />
           )}
         </div>

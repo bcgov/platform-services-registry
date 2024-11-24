@@ -1,8 +1,9 @@
-import { EventType, ProjectStatus } from '@prisma/client';
+import { Cluster, EventType } from '@prisma/client';
+import _sum from 'lodash-es/sum';
 import { GlobalRole } from '@/constants';
 import createApiHandler from '@/core/api-handler';
 import { NoContent, CsvResponse } from '@/core/responses';
-import { ministryKeyToName, getTotalQuotaStr } from '@/helpers/product';
+import { ministryKeyToName } from '@/helpers/product';
 import { formatFullName } from '@/helpers/user';
 import { createEvent, searchPrivateCloudProducts } from '@/services/db';
 import { PrivateProductCsvRecord } from '@/types/csv';
@@ -28,40 +29,54 @@ export const POST = createApiHandler({
     return NoContent();
   }
 
-  const formattedData: PrivateProductCsvRecord[] = docs.map((project) => ({
-    Name: project.name,
-    Description: project.description,
-    Ministry: ministryKeyToName(project.ministry),
-    Cluster: project.cluster,
-    'Project Owner email': project.projectOwner.email,
-    'Project Owner name': formatFullName(project.projectOwner),
-    'Primary Technical Lead email': project.primaryTechnicalLead.email,
-    'Primary Technical Lead name': formatFullName(project.primaryTechnicalLead),
-    'Secondary Technical Lead email': project.secondaryTechnicalLead ? project.secondaryTechnicalLead.email : '',
-    'Secondary Technical Lead name': formatFullName(project.secondaryTechnicalLead),
-    'Create date': formatDateSimple(project.createdAt),
-    'Update date': formatDateSimple(project.updatedAt),
-    'Licence plate': project.licencePlate,
-    'Total compute quota (cores)': getTotalQuotaStr(
-      project.developmentQuota.cpu,
-      project.testQuota.cpu,
-      project.productionQuota.cpu,
-      project.toolsQuota.cpu,
-    ),
-    'Total memory quota (GB)': getTotalQuotaStr(
-      project.developmentQuota.memory,
-      project.testQuota.memory,
-      project.productionQuota.memory,
-      project.toolsQuota.memory,
-    ),
-    'Total storage quota (GB)': getTotalQuotaStr(
-      project.developmentQuota.storage,
-      project.testQuota.storage,
-      project.productionQuota.storage,
-      project.toolsQuota.storage,
-    ),
-    Status: project.status,
-  }));
+  const formattedData: PrivateProductCsvRecord[] = docs.map((project) => {
+    let cpuRequestTotal = _sum([
+      project.resourceRequests.development.cpu,
+      project.resourceRequests.test.cpu,
+      project.resourceRequests.production.cpu,
+      project.resourceRequests.tools.cpu,
+    ]);
+
+    let memoryRequestTotal = _sum([
+      project.resourceRequests.development.memory,
+      project.resourceRequests.test.memory,
+      project.resourceRequests.production.memory,
+      project.resourceRequests.tools.memory,
+    ]);
+
+    let storageTotal = _sum([
+      project.resourceRequests.development.storage,
+      project.resourceRequests.test.storage,
+      project.resourceRequests.production.storage,
+      project.resourceRequests.tools.storage,
+    ]);
+
+    if (project.cluster === Cluster.GOLD && project.golddrEnabled) {
+      cpuRequestTotal *= 2;
+      memoryRequestTotal *= 2;
+      storageTotal *= 2;
+    }
+
+    return {
+      Name: project.name,
+      Description: project.description,
+      Ministry: ministryKeyToName(project.ministry),
+      Cluster: project.cluster,
+      'Project Owner email': project.projectOwner.email,
+      'Project Owner name': formatFullName(project.projectOwner),
+      'Primary Technical Lead email': project.primaryTechnicalLead.email,
+      'Primary Technical Lead name': formatFullName(project.primaryTechnicalLead),
+      'Secondary Technical Lead email': project.secondaryTechnicalLead ? project.secondaryTechnicalLead.email : '',
+      'Secondary Technical Lead name': formatFullName(project.secondaryTechnicalLead),
+      'Create date': formatDateSimple(project.createdAt),
+      'Update date': formatDateSimple(project.updatedAt),
+      'Licence plate': project.licencePlate,
+      'Total compute quota (cores)': String(cpuRequestTotal),
+      'Total memory quota (GB)': String(memoryRequestTotal),
+      'Total storage quota (GB)': String(storageTotal),
+      Status: project.status,
+    };
+  });
 
   await createEvent(EventType.EXPORT_PRIVATE_CLOUD_PRODUCT, session.user.id, searchProps);
 

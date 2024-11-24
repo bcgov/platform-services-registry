@@ -133,10 +133,7 @@ model PrivateCloudProject {
   ministry                         Ministry
   cluster                          Cluster
   golddrEnabled                    Boolean                     @default(false)
-  productionQuota                  Quota
-  testQuota                        Quota
-  developmentQuota                 Quota
-  toolsQuota                       Quota
+  resourceRequests                 ResourceRequestsEnv
   commonComponents                 CommonComponents
   supportPhoneNumber               String?
   members                          PrivateCloudProductMember[]
@@ -161,10 +158,7 @@ model PrivateCloudRequestedProject {
   ministry                 Ministry
   cluster                  Cluster
   golddrEnabled            Boolean                     @default(false)
-  productionQuota          Quota
-  testQuota                Quota
-  developmentQuota         Quota
-  toolsQuota               Quota
+  resourceRequests         ResourceRequestsEnv
   commonComponents         CommonComponents
   supportPhoneNumber       String?
   members                  PrivateCloudProductMember[]
@@ -495,10 +489,17 @@ type AcsResultImage {
   priority    String
 }
 
-type Quota {
-  cpu     CPU
-  memory  Memory
-  storage Storage
+type ResourceRequestsEnv {
+  development ResourceRequests
+  test        ResourceRequests
+  production  ResourceRequests
+  tools       ResourceRequests
+}
+
+type ResourceRequests {
+  cpu     Float
+  memory  Float
+  storage Float
 }
 
 type Budget {
@@ -584,41 +585,41 @@ enum Ministry {
   TRAN
 }
 
-enum CPU {
-  CPU_REQUEST_0_LIMIT_0
-  CPU_REQUEST_0_5_LIMIT_1_5
-  CPU_REQUEST_1_LIMIT_2
-  CPU_REQUEST_2_LIMIT_4
-  CPU_REQUEST_4_LIMIT_8
-  CPU_REQUEST_8_LIMIT_16
-  CPU_REQUEST_16_LIMIT_32
-  CPU_REQUEST_32_LIMIT_64
-  CPU_REQUEST_64_LIMIT_128
-}
+// enum CPU {
+//   CPU_REQUEST_0_LIMIT_0
+//   CPU_REQUEST_0_5_LIMIT_1_5
+//   CPU_REQUEST_1_LIMIT_2
+//   CPU_REQUEST_2_LIMIT_4
+//   CPU_REQUEST_4_LIMIT_8
+//   CPU_REQUEST_8_LIMIT_16
+//   CPU_REQUEST_16_LIMIT_32
+//   CPU_REQUEST_32_LIMIT_64
+//   CPU_REQUEST_64_LIMIT_128
+// }
 
-enum Memory {
-  MEMORY_REQUEST_0_LIMIT_0
-  MEMORY_REQUEST_2_LIMIT_4
-  MEMORY_REQUEST_4_LIMIT_8
-  MEMORY_REQUEST_8_LIMIT_16
-  MEMORY_REQUEST_16_LIMIT_32
-  MEMORY_REQUEST_32_LIMIT_64
-  MEMORY_REQUEST_64_LIMIT_128
-  MEMORY_REQUEST_128_LIMIT_256
-}
+// enum Memory {
+//   MEMORY_REQUEST_0_LIMIT_0
+//   MEMORY_REQUEST_2_LIMIT_4
+//   MEMORY_REQUEST_4_LIMIT_8
+//   MEMORY_REQUEST_8_LIMIT_16
+//   MEMORY_REQUEST_16_LIMIT_32
+//   MEMORY_REQUEST_32_LIMIT_64
+//   MEMORY_REQUEST_64_LIMIT_128
+//   MEMORY_REQUEST_128_LIMIT_256
+// }
 
-enum Storage {
-  STORAGE_0
-  STORAGE_1
-  STORAGE_2
-  STORAGE_4
-  STORAGE_16
-  STORAGE_32
-  STORAGE_64
-  STORAGE_128
-  STORAGE_256
-  STORAGE_512
-}
+// enum Storage {
+//   STORAGE_0
+//   STORAGE_1
+//   STORAGE_2
+//   STORAGE_4
+//   STORAGE_16
+//   STORAGE_32
+//   STORAGE_64
+//   STORAGE_128
+//   STORAGE_256
+//   STORAGE_512
+// }
 
 enum Cluster {
   CLAB
@@ -672,9 +673,9 @@ enum TaskStatus {
 }
 
 enum Env {
-  dev
+  development
   test
-  prod
+  production
   tools
 }
 

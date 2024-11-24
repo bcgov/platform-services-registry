@@ -103,7 +103,7 @@ export async function generateSession({ session, token }: { session: Session; to
       session.isAdmin || session.isEditor || session.isPrivateAdmin || session.isPrivateEditor,
     deleteAllPrivateCloudProducts:
       session.isAdmin || session.isEditor || session.isPrivateAdmin || session.isPrivateEditor,
-    reviewAllPrivateCloudRequests: session.isAdmin || session.isPrivateReviewer,
+    reviewAllPrivateCloudRequests: session.isAdmin || session.isPrivateAdmin || session.isPrivateReviewer,
 
     createPrivateCloudProductsAsAssignee: session.isUser,
     viewAssignedPrivateCloudProducts: session.isUser,
@@ -128,7 +128,11 @@ export async function generateSession({ session, token }: { session: Session; to
     editAllPublicCloudProducts: session.isAdmin || session.isEditor || session.isPublicAdmin || session.isPublicEditor,
     deleteAllPublicCloudProducts:
       session.isAdmin || session.isEditor || session.isPublicAdmin || session.isPublicEditor,
+<<<<<<< HEAD
     reviewAllPublicCloudRequests: session.isAdmin || session.isPublicReviewer,
+=======
+    reviewAllPublicCloudRequests: session.isAdmin || session.isPublicAdmin || session.isPublicReviewer,
+>>>>>>> e4d2515a (feat(4188): provide input box for resource requests)
 
     createPrivateProductComments: session.isAdmin || session.isPrivateAdmin,
     viewAllPrivateProductComments: session.isAdmin || session.isPrivateAdmin,

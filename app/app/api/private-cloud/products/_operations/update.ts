@@ -63,8 +63,8 @@ export default async function updateOp({
   const quotaChangeStatus = await getQuotaChangeStatus({
     licencePlate: product.licencePlate,
     cluster: product.cluster,
-    currentQuota: product,
-    requestedQuota: body,
+    currentResourceRequests: product.resourceRequests,
+    requestedResourceRequests: body.resourceRequests,
   });
 
   // If there is no quota change or no quota upgrade and no golddr flag changes, the request is automatically approved

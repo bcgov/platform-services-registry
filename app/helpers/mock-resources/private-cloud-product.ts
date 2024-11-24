@@ -1,19 +1,59 @@
 import { faker } from '@faker-js/faker';
-import { Prisma, ProjectStatus, CPU, Memory, Storage } from '@prisma/client';
+import { ProjectStatus } from '@prisma/client';
 import { PrivateCloudProductDetail } from '@/types/private-cloud';
 import { generateShortId } from '@/utils/uuid';
 import { getRandomMinistry, getRandomCluster, getRandomUser } from './core';
+
+export const resourceRequests1 = {
+  development: {
+    cpu: 0.5,
+    memory: 2,
+    storage: 1,
+  },
+  test: {
+    cpu: 0.5,
+    memory: 2,
+    storage: 1,
+  },
+  production: {
+    cpu: 0.5,
+    memory: 2,
+    storage: 1,
+  },
+  tools: {
+    cpu: 0.5,
+    memory: 2,
+    storage: 1,
+  },
+};
+
+export const resourceRequests2 = {
+  development: {
+    cpu: 1,
+    memory: 5,
+    storage: 3,
+  },
+  test: {
+    cpu: 0.5,
+    memory: 2,
+    storage: 2,
+  },
+  production: {
+    cpu: 0.5,
+    memory: 4,
+    storage: 1,
+  },
+  tools: {
+    cpu: 0.5,
+    memory: 2,
+    storage: 1,
+  },
+};
 
 export function createSamplePrivateCloudProduct(args?: {
   data?: Partial<PrivateCloudProductDetail>;
 }): PrivateCloudProductDetail {
   const { data } = args ?? {};
-
-  const quota = {
-    cpu: CPU.CPU_REQUEST_0_5_LIMIT_1_5,
-    memory: Memory.MEMORY_REQUEST_2_LIMIT_4,
-    storage: Storage.STORAGE_1,
-  };
 
   const commonComponents = {
     addressAndGeolocation: {
@@ -76,10 +116,7 @@ export function createSamplePrivateCloudProduct(args?: {
     secondaryTechnicalLeadId: secondaryTechnicalLead.id,
     secondaryTechnicalLead,
     members: [],
-    developmentQuota: quota,
-    testQuota: quota,
-    productionQuota: quota,
-    toolsQuota: quota,
+    resourceRequests: resourceRequests1,
     commonComponents: commonComponents,
     golddrEnabled: false,
     supportPhoneNumber: '',

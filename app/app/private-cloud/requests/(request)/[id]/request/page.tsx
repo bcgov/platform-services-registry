@@ -7,10 +7,10 @@ import { FormProvider, useForm } from 'react-hook-form';
 import { z } from 'zod';
 import PreviousButton from '@/components/buttons/Previous';
 import ProjectDescription from '@/components/form/ProjectDescriptionPrivate';
-import Quotas from '@/components/form/Quotas';
 import TeamContacts from '@/components/form/TeamContacts';
 import PageAccordion from '@/components/generic/accordion/PageAccordion';
 import AdditionalTeamMembers from '@/components/private-cloud/sections/AdditionalTeamMembers';
+import Quotas from '@/components/private-cloud/sections/Quotas';
 import { GlobalRole } from '@/constants';
 import createClientPage from '@/core/client-page';
 import { usePrivateProductState } from '@/states/global';
@@ -90,8 +90,9 @@ export default privateCloudRequestRequest(({}) => {
       Component: Quotas,
       componentArgs: {
         disabled: isDisabled,
-        licencePlate: snap.currentRequest.licencePlate as string,
-        currentProject: snap.currentRequest.project as PrivateCloudProject,
+        licencePlate: snap.currentRequest?.licencePlate,
+        cluster: snap.currentRequest?.originalData?.cluster,
+        originalResourceRequests: snap.currentRequest?.originalData?.resourceRequests,
         quotaContactRequired: false,
       },
     },

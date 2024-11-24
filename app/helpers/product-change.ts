@@ -8,7 +8,6 @@ import _uniq from 'lodash-es/uniq';
 import { ExtendedPrivateCloudProductMember } from '@/types/private-cloud';
 import { ExtendedPublicCloudProductMember } from '@/types/public-cloud';
 import { diffExt, DiffChange } from '@/utils/diff';
-import { extractNumbers } from '@/utils/string';
 
 export interface PrivateProductChange {
   profileChanged: boolean;
@@ -30,10 +29,7 @@ const privateDataFields = [
   'primaryTechnicalLead.email',
   'secondaryTechnicalLead.email',
   'members',
-  'developmentQuota',
-  'testQuota',
-  'productionQuota',
-  'toolsQuota',
+  'resourceRequests',
   'commonComponents',
   'supportPhoneNumber',
 ];
@@ -85,21 +81,12 @@ export function comparePrivateProductData(data1: any, data2: any) {
         membersChanged = true;
         break;
 
-      case 'developmentQuota':
-      case 'testQuota':
-      case 'productionQuota':
-      case 'toolsQuota':
+      case 'resourceRequests':
         if (!quotasIncrease) {
-          const oldvalNums = extractNumbers(change.oldVal);
-          const newvalNums = extractNumbers(change.newVal);
-
-          if (newvalNums.length > 0 || oldvalNums.length > 0) {
-            quotasIncrease = newvalNums[0] > oldvalNums[0];
-          }
+          quotasIncrease = change.newVal > change.oldVal;
         }
 
         quotasChanged = true;
-        change.tag = 'resource';
         break;
 
       case 'commonComponents':

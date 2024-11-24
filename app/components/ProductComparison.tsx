@@ -15,56 +15,15 @@ function ProductField({ path, iconSize = 18 }: { path: (string | number)[]; icon
     const formatted = abbreviations.includes(str.toLowerCase()) ? str.toUpperCase() : _startCase(str);
 
     return (
-      <>
+      <span key={formatted}>
         {index > 0 && <IconChevronRight size={iconSize} className="inline-block mx-1" />}
         <span>{formatted}</span>
-      </>
+      </span>
     );
   });
 }
 
 function ProductValue({ value, formatterKey }: { value: any; formatterKey?: string }) {
-  if (formatterKey) {
-    if (formatterKey === 'resource') {
-      const ret = parseResourceString(value);
-      if (ret.type === 'storage') {
-        return (
-          <span>
-            Storage: <span>{ret.storage}</span>
-          </span>
-        );
-      }
-
-      if (ret.type === 'cpu') {
-        return (
-          <>
-            <span>
-              CPU Request: <span>{ret.cpuRequest}</span>
-            </span>
-            ,&nbsp;
-            <span>
-              CPU Limit: <span>{ret.cpuLimit}</span>
-            </span>
-          </>
-        );
-      }
-
-      if (ret.type === 'memory') {
-        return (
-          <>
-            <span>
-              Memory Request: <span>{ret.memoryRequest}</span>
-            </span>
-            ,&nbsp;
-            <span>
-              Memory Limit: <span>{ret.memoryLimit}</span>
-            </span>
-          </>
-        );
-      }
-    }
-  }
-
   if (_isString(value)) return <span>{value}</span>;
   if (_isBoolean(value)) return <span>{value ? 'Yes' : 'No'}</span>;
   if (Array.isArray(value)) return value.join(', ');

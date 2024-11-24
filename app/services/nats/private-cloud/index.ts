@@ -1,6 +1,15 @@
-import { Ministry } from '@prisma/client';
-import { cpuMetadata, memoryMetadata, storageMetadata } from '@/constants';
+import { Ministry, ResourceRequestsEnv } from '@prisma/client';
 import { PrivateCloudRequestDetail } from '@/types/private-cloud';
+
+type ResourceRequestsEnvKeys = Array<keyof ResourceRequestsEnv>;
+const namespaceKeys: ResourceRequestsEnvKeys = ['development', 'test', 'production', 'tools'];
+
+const namespaceAbbr = {
+  development: 'dev',
+  test: 'test',
+  production: 'prod',
+  tools: 'tools',
+};
 
 export default function createPrivateCloudNatsMessage(
   request: Pick<PrivateCloudRequestDetail, 'id' | 'type' | 'decisionData'>,
@@ -13,10 +22,7 @@ export default function createPrivateCloudNatsMessage(
     description,
     ministry,
     cluster,
-    productionQuota,
-    developmentQuota,
-    testQuota,
-    toolsQuota,
+    resourceRequests,
     projectOwner,
     primaryTechnicalLead,
     secondaryTechnicalLead,
@@ -48,41 +54,26 @@ export default function createPrivateCloudNatsMessage(
     ministry_id: ministry,
     merge_type: 'auto',
     alliance: allianceLabel,
-    namespaces: [
-      { quotaName: 'tools', quota: toolsQuota },
-      { quotaName: 'prod', quota: productionQuota },
-      { quotaName: 'dev', quota: developmentQuota },
-      { quotaName: 'test', quota: testQuota },
-    ].map(({ quotaName, quota }) => {
-      const cpuMeta = cpuMetadata[quota.cpu];
-      const memoryMeta = memoryMetadata[quota.memory];
-      const storageMeta = storageMetadata[quota.storage];
-      let backupSize = storageMeta.size / 2;
-      const isEmptyStorage = storageMeta.size === 0;
+    namespaces: namespaceKeys.map((namespace) => {
+      const requests = resourceRequests[namespace];
+      let backupSize = requests.storage / 2;
+      const isEmptyStorage = requests.storage === 0;
 
       if (!isEmptyStorage && backupSize < 1) backupSize = 1;
 
       return {
-        name: `${licencePlate}-${quotaName}`,
-        quota: {
-          cpu: cpuMeta.labelNats,
-          memory: memoryMeta.labelNats,
-          storage: storageMeta.labelNats,
-          snapshot: isEmptyStorage ? 'snapshot-0' : 'snapshot-5',
-        },
+        name: `${licencePlate}-${namespaceAbbr[namespace]}`,
         quotas: {
           cpu: {
-            requests: cpuMeta.request,
-            limits: cpuMeta.limit,
+            requests: requests.cpu,
           },
           memory: {
-            requests: `${memoryMeta.request}Gi`,
-            limits: `${memoryMeta.limit}Gi`,
+            requests: `${requests.memory}Gi`,
           },
           storage: {
-            block: `${storageMeta.size}Gi`,
-            file: `${storageMeta.size}Gi`,
-            capacity: `${storageMeta.size}Gi`,
+            block: `${requests.storage}Gi`,
+            file: `${requests.storage}Gi`,
+            capacity: `${requests.storage}Gi`,
             backup: `${backupSize}Gi`,
             pvc_count: isEmptyStorage ? 0 : 60,
           },

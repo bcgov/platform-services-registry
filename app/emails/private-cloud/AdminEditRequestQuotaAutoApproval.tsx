@@ -11,7 +11,7 @@ export default function AdminEditRequestQuotaAutoApproval() {
 
   sampleRequest.quotaUpgradeResourceDetailList = [
     {
-      env: Env.dev,
+      env: Env.development,
       resourceType: ResourceType.cpu,
       allocation: {
         request: 1000,

@@ -104,30 +104,6 @@ describe('Download Private Cloud Products - Permissions', () => {
     expect(record1['Create date']).toBe(formatDateSimple(project?.createdAt ?? ''));
     expect(record1['Update date']).toBe(formatDateSimple(project?.updatedAt ?? ''));
     expect(record1['Licence plate']).toBe(project?.licencePlate);
-    expect(record1['Total compute quota (cores)']).toBe(
-      getTotalQuotaStr(
-        project?.developmentQuota.cpu ?? '',
-        project?.testQuota.cpu ?? '',
-        project?.productionQuota.cpu ?? '',
-        project?.toolsQuota.cpu ?? '',
-      ),
-    );
-    expect(record1['Total memory quota (GB)']).toBe(
-      getTotalQuotaStr(
-        project?.developmentQuota.memory ?? '',
-        project?.testQuota.memory ?? '',
-        project?.productionQuota.memory ?? '',
-        project?.toolsQuota.memory ?? '',
-      ),
-    );
-    expect(record1['Total storage quota (GB)']).toBe(
-      getTotalQuotaStr(
-        project?.developmentQuota.storage ?? '',
-        project?.testQuota.storage ?? '',
-        project?.productionQuota.storage ?? '',
-        project?.toolsQuota.storage ?? '',
-      ),
-    );
     expect(record1.Status).toBe(project?.status);
   });
 

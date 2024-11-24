@@ -5,9 +5,6 @@ import {
   Prisma,
   ProjectStatus,
   RequestType,
-  CPU,
-  Memory,
-  Storage,
   PrivateCloudProductMemberRole,
 } from '@prisma/client';
 import _isString from 'lodash-es/isString';
@@ -16,17 +13,35 @@ import { AGMinistries, phoneNumberRegex } from '@/constants';
 import { processEnumString, processUpperEnumString, processBoolean } from '@/utils/zod';
 import { userSchema, RequestDecision } from './shared';
 
-export const quotaSchema = z.object({
-  cpu: z.nativeEnum(CPU),
-  memory: z.nativeEnum(Memory),
-  storage: z.nativeEnum(Storage),
+export const resourceRequestsSchema = z.object({
+  cpu: z
+    .number()
+    .min(0)
+    .max(64)
+    .refine((val) => val % 0.5 === 0, {
+      message: 'CPU must be a multiple of 0.5',
+    }),
+  memory: z
+    .number()
+    .min(0)
+    .max(128)
+    .refine((val) => val % 1 === 0, {
+      message: 'Memory must be an integer',
+    }),
+  storage: z
+    .number()
+    .min(0)
+    .max(512)
+    .refine((val) => val % 1 === 0, {
+      message: 'Memory must be an integer',
+    }),
 });
 
-export const quotasSchema = z.object({
-  testQuota: quotaSchema,
-  toolsQuota: quotaSchema,
-  developmentQuota: quotaSchema,
-  productionQuota: quotaSchema,
+export const resourceRequestsEnvSchema = z.object({
+  development: resourceRequestsSchema,
+  test: resourceRequestsSchema,
+  production: resourceRequestsSchema,
+  tools: resourceRequestsSchema,
 });
 
 const commonComponentItemSchema = z.object({
@@ -137,10 +152,7 @@ export const privateCloudCreateRequestBodySchema = _privateCloudCreateRequestBod
 
 const _privateCloudEditRequestBodySchema = _privateCloudCreateRequestBodySchema.merge(
   z.object({
-    productionQuota: quotaSchema,
-    testQuota: quotaSchema,
-    toolsQuota: quotaSchema,
-    developmentQuota: quotaSchema,
+    resourceRequests: resourceRequestsEnvSchema,
     requestComment: string().optional(),
     members: privateCloudProductMembers,
   }),
@@ -211,8 +223,6 @@ export const privateCloudAdminUpdateBodySchema = z.object({
   isTest: z.preprocess(processBoolean, z.boolean()),
 });
 
-export type Quota = z.infer<typeof quotaSchema>;
-export type Quotas = z.infer<typeof quotasSchema>;
 export type CommonComponents = z.infer<typeof commonComponentsSchema>;
 export type PrivateCloudCreateRequestBody = z.infer<typeof privateCloudCreateRequestBodySchema>;
 export type PrivateCloudEditRequestBody = z.infer<typeof privateCloudEditRequestBodySchema>;

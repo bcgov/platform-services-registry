@@ -130,7 +130,7 @@ export async function updatePublicCloudProduct() {
   response = await editPublicCloudProject(decisionData.licencePlate, {
     ...decisionData,
     accountCoding: decisionData.billing.accountCoding,
-    developmentQuota: newEnvironmentsEnabled,
+    environmentsEnabled: newEnvironmentsEnabled,
   });
 
   if (response.status !== 200) return null;

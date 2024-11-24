@@ -2,59 +2,26 @@ import { Alert } from '@mantine/core';
 import { IconInfoCircle, IconExclamationCircle } from '@tabler/icons-react';
 import { useQuery } from '@tanstack/react-query';
 import _get from 'lodash-es/get';
-import { useEffect, useState } from 'react';
-import { FieldError, FieldErrorsImpl, Merge, useFieldArray, useFormContext } from 'react-hook-form';
+import { useEffect } from 'react';
+import { useFormContext } from 'react-hook-form';
 import ExternalLink from '@/components/generic/button/ExternalLink';
 import HookFormTextarea from '@/components/generic/input/HookFormTextarea';
+import HookFormTextInput from '@/components/generic/input/HookFormTextInput';
 import { getQuotaChangeStatus } from '@/services/backend/private-cloud/products';
 import { usePrivateProductState } from '@/states/global';
 import { cn } from '@/utils';
-import { Quotas } from '@/validation-schemas/private-cloud';
-import HookFormTextInput from '../generic/input/HookFormTextInput';
-
-function FormError({ error }: { error?: FieldError | Merge<FieldError, FieldErrorsImpl<any>> }) {
-  if (!error) return null;
-
-  return <div className="text-sm text-red-600 mb-2">{String(error.message)}</div>;
-}
 
 export default function QuotasChangeInfo({ disabled, className }: { disabled: boolean; className?: string }) {
   const [privateProductState, privateSnap] = usePrivateProductState();
-  const {
-    register,
-    control,
-    formState: { errors },
-    watch,
-    setValue,
-    getValues,
-  } = useFormContext();
+  const { watch, setValue, getValues } = useFormContext();
 
-  // Monitor specific values to trigger component re-rendering.
-  const quotaChanges = watch([
-    'developmentQuota.cpu',
-    'developmentQuota.memory',
-    'developmentQuota.storage',
-    'testQuota.cpu',
-    'testQuota.memory',
-    'testQuota.storage',
-    'productionQuota.cpu',
-    'productionQuota.memory',
-    'productionQuota.storage',
-    'toolsQuota.cpu',
-    'toolsQuota.memory',
-    'toolsQuota.storage',
-  ]);
+  const [resourceRequestsWatch] = watch(['resourceRequests']);
 
   const { data: quotaChangeStatus, isLoading } = useQuery({
-    queryKey: [privateSnap.licencePlate, privateSnap.currentProduct, quotaChanges],
+    queryKey: [privateSnap.licencePlate, privateSnap.currentProduct, resourceRequestsWatch],
     queryFn: () => {
-      const { developmentQuota, testQuota, productionQuota, toolsQuota } = getValues();
-      return getQuotaChangeStatus(privateSnap.licencePlate, {
-        developmentQuota,
-        testQuota,
-        productionQuota,
-        toolsQuota,
-      } as Quotas);
+      const { resourceRequests } = getValues();
+      return getQuotaChangeStatus(privateSnap.licencePlate, resourceRequests);
     },
   });
 

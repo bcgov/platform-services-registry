@@ -4,14 +4,14 @@ import createApiHandler from '@/core/api-handler';
 import { OkResponse, UnauthorizedResponse } from '@/core/responses';
 import { getQuotaChangeStatus } from '@/helpers/auto-approval-check';
 import { models } from '@/services/db';
-import { quotasSchema } from '@/validation-schemas/private-cloud';
+import { resourceRequestsEnvSchema } from '@/validation-schemas/private-cloud';
 
 const pathParamSchema = z.object({
   licencePlate: z.string().length(6),
 });
 
 const bodySchema = z.object({
-  requestedQuota: quotasSchema,
+  resourceRequests: resourceRequestsEnvSchema,
 });
 
 const apiHandler = createApiHandler({
@@ -21,17 +21,14 @@ const apiHandler = createApiHandler({
 
 export const POST = apiHandler(async ({ session, pathParams, body }) => {
   const { licencePlate } = pathParams;
-  const { requestedQuota } = body;
+  const { resourceRequests } = body;
 
   const { data: currentProduct } = await models.privateCloudProduct.get(
     {
       where: { licencePlate },
       select: {
         cluster: true,
-        productionQuota: true,
-        testQuota: true,
-        developmentQuota: true,
-        toolsQuota: true,
+        resourceRequests: true,
       },
     },
     session,
@@ -44,8 +41,8 @@ export const POST = apiHandler(async ({ session, pathParams, body }) => {
   const quotaChangeStatus = await getQuotaChangeStatus({
     licencePlate,
     cluster: currentProduct.cluster,
-    currentQuota: currentProduct,
-    requestedQuota,
+    currentResourceRequests: currentProduct.resourceRequests,
+    requestedResourceRequests: resourceRequests,
   });
 
   return OkResponse(quotaChangeStatus);

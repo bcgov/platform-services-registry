@@ -1,25 +1,14 @@
 import { faker } from '@faker-js/faker';
-import { ProjectStatus, RequestType, DecisionStatus, CPU, Memory, Storage } from '@prisma/client';
+import { ProjectStatus, RequestType, DecisionStatus } from '@prisma/client';
 import { PrivateCloudRequestDetail } from '@/types/private-cloud';
 import { generateShortId } from '@/utils/uuid';
 import { getRandomMinistry, getRandomCluster, getRandomUser } from './core';
+import { resourceRequests1, resourceRequests2 } from './private-cloud-product';
 
 export function createSamplePrivateCloudRequest(args?: {
   data?: Partial<PrivateCloudRequestDetail>;
 }): PrivateCloudRequestDetail {
   const { data } = args ?? {};
-
-  const quota = {
-    cpu: CPU.CPU_REQUEST_0_5_LIMIT_1_5,
-    memory: Memory.MEMORY_REQUEST_2_LIMIT_4,
-    storage: Storage.STORAGE_1,
-  };
-
-  const quota1 = {
-    cpu: CPU.CPU_REQUEST_1_LIMIT_2,
-    memory: Memory.MEMORY_REQUEST_4_LIMIT_8,
-    storage: Storage.STORAGE_2,
-  };
 
   const commonComponents = {
     addressAndGeolocation: {
@@ -81,10 +70,7 @@ export function createSamplePrivateCloudRequest(args?: {
     secondaryTechnicalLeadId: secondaryTechnicalLead.id,
     secondaryTechnicalLead,
     members: [],
-    developmentQuota: quota,
-    testQuota: quota,
-    productionQuota: quota,
-    toolsQuota: quota,
+    resourceRequests: resourceRequests1,
     commonComponents: commonComponents,
     golddrEnabled: false,
     supportPhoneNumber: '',
@@ -119,10 +105,7 @@ export function createSamplePrivateCloudRequest(args?: {
       primaryTechnicalLead: tl1,
       secondaryTechnicalLeadId: tl2.id,
       secondaryTechnicalLead: tl2,
-      developmentQuota: quota1,
-      testQuota: quota1,
-      productionQuota: quota1,
-      toolsQuota: quota1,
+      resourceRequests: resourceRequests2,
     };
   };
 

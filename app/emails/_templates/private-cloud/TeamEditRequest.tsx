@@ -18,7 +18,7 @@ interface EmailProp {
 export default function TeamEditRequest({ request, requester }: EmailProp) {
   if (!request.originalData) return <></>;
 
-  const isQuotaUpgraded = isQuotaUpgrade(request.decisionData, request.originalData);
+  const isQuotaUpgraded = isQuotaUpgrade(request.decisionData.resourceRequests, request.originalData.resourceRequests);
 
   return (
     <PrivateCloudLayout requester={requester} showFooter>
