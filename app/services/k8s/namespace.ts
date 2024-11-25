@@ -9,5 +9,5 @@ export async function getNamespace(namespace: string, cluster: Cluster) {
 
 export async function getSubnet(licencePlate: string, environment: string, cluster: Cluster) {
   const namespaceInfo = await getNamespace(`${licencePlate}-${environment}`, cluster);
-  return _get(namespaceInfo, 'metadata.annotations.ncp/subnet-0');
+  return _get(namespaceInfo.body, 'metadata.annotations.ncp/subnet-0');
 }
