@@ -26,7 +26,7 @@ export const AWS_ROLES_CLIENT_SECRET = process.env.AWS_ROLES_CLIENT_SECRET || 't
 export const AWS_ROLES_IDENTITY_PROVIDER = process.env.AWS_ROLES_IDENTITY_PROVIDER || 'azureidir';
 
 export const CHES_TOKEN_URL =
-  process.env.CHES_TOKEN_URL || 'http://localhost:8080/auth/realms/comsvcauth/protocol/openid-connect/token';
+  process.env.CHES_TOKEN_URL || 'http://localhost:8080/realms/platform-services/protocol/openid-connect/token';
 export const CHES_API_URL = process.env.CHES_API_URL || 'http://localhost:3025';
 export const CHES_CLIENT_ID = process.env.CHES_CLIENT_ID || 'pltsvc';
 export const CHES_CLIENT_SECRET = process.env.CHES_CLIENT_SECRET || 'testsecret';

@@ -1,6 +1,5 @@
 import nodemailer from 'nodemailer';
 import express, { Request, Response } from 'express';
-import sanitizeHtml from 'sanitize-html';
 
 const app = express();
 app.use(express.json());
@@ -59,15 +58,25 @@ export const sendViaMailPit = async (email: Email): Promise<void> => {
 // API endpoint to send emails
 app.post('/email', async (req: Request, res: Response): Promise<void> => {
   try {
-    const { to, subject, body } = req.body;
+    const { from, to, subject, body, cc, bcc, attachments } = req.body;
 
+    // Validation for required fields
     if (!to || !subject || !body) {
-      res.status(400).json({ error: 'Missing required fields' });
+      res.status(400).json({ error: 'Missing required fields: "to", "subject", or "body"' });
       return;
     }
-    const sanitizedBody = sanitizeHtml(body);
 
-    await sendViaMailPit({ to, subject, body: sanitizedBody });
+    // Pass all fields from req.body to sendViaMailPit
+    await sendViaMailPit({
+      from,
+      to,
+      subject,
+      body,
+      cc,
+      bcc,
+      attachments,
+    });
+
     res.status(200).json({ message: 'Email sent successfully' });
   } catch (error: any) {
     res.status(500).json({ error: 'Failed to send email', details: error.message });
