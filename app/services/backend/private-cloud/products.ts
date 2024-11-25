@@ -147,7 +147,7 @@ export async function getPodUsageMetrics(licencePlate: string, environment: stri
   return response.data;
 }
 
-export async function getSubnetForEmerald(licencePlate: string, environment: string = 'dev') {
+export async function getSubnetForEmerald(licencePlate: string, environment: string) {
   const response = await instance.get<string>(`/${licencePlate}/namespace-subnet?environment=${environment}`);
   return response.data;
 }

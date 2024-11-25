@@ -51,12 +51,6 @@ export default privateCloudProductLayout(({ getPathParams, session, children }) 
     privateState.licencePlate = licencePlate;
   }, [licencePlate]);
 
-  const { data: subnetInfo, isLoading: isLoadingSubnetInfo } = useQuery({
-    queryKey: [licencePlate],
-    queryFn: () => getSubnetForEmerald(licencePlate),
-    enabled: currentProduct?.cluster === Cluster.EMERALD && !!licencePlate,
-  });
-
   const tabs: ITab[] = [
     {
       label: 'PRODUCT',
@@ -114,15 +108,6 @@ export default privateCloudProductLayout(({ getPathParams, session, children }) 
         {privateSnap.currentProduct.name}
         <ProductBadge data={privateSnap.currentProduct} />
       </h1>
-      {isLoadingSubnetInfo ? (
-        <Loader color="blue" type="dots" />
-      ) : (
-        subnetInfo && (
-          <h3 className="flex justify-between text-xl lg:text-1xl xl:text-2xl font-semibold leading-7 text-gray-500 mb-0 lg:mt-2">
-            {subnetInfo}
-          </h3>
-        )
-      )}
       <h3 className="mt-0 italic">Private Cloud OpenShift platform</h3>
       {privateSnap.currentProduct.requests.length > 0 && (
         <Alert variant="light" color="blue" title="" icon={<IconInfoCircle />}>

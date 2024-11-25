@@ -1,9 +1,13 @@
-import { PrivateCloudProject, Quota } from '@prisma/client';
+import { Loader } from '@mantine/core';
+import { Cluster, PrivateCloudProject, Quota } from '@prisma/client';
+import { useQueries } from '@tanstack/react-query';
+import _replace from 'lodash-es/replace';
 import _startCase from 'lodash-es/startCase';
 import { useFormContext } from 'react-hook-form';
 import QuotasChangeInfo from '@/components/form/QuotasChangeInfo';
 import ExternalLink from '@/components/generic/button/ExternalLink';
 import { resourceOptions } from '@/constants';
+import { getSubnetForEmerald } from '@/services/backend/private-cloud/products';
 import { cn } from '@/utils';
 import QuotaInput from './QuotaInput';
 
@@ -17,6 +21,8 @@ const namespaceSuffixes = {
 type namespaceKeyType = keyof typeof namespaceSuffixes;
 
 const namespaceKeys = Object.keys(namespaceSuffixes) as namespaceKeyType[];
+
+const environments = Object.values(namespaceSuffixes).map((value) => _replace(value, '-', ''));
 
 export default function Quotas({
   licencePlate,
@@ -37,6 +43,16 @@ export default function Quotas({
     'toolsQuota',
     'productionQuota',
   ]);
+
+  const subnetInformation = useQueries({
+    queries: environments.map((environment) => {
+      return {
+        queryKey: [licencePlate, environment],
+        queryFn: () => getSubnetForEmerald(licencePlate, environment),
+        enabled: currentProject?.cluster === Cluster.EMERALD && !!licencePlate,
+      };
+    }),
+  });
 
   if (!currentProject) return null;
 
@@ -76,7 +92,7 @@ export default function Quotas({
       </p>
 
       <div className="mt-10 mb-5 grid grid-cols-1 gap-x-4 xl:gap-x-4 gap-y-8 sm:grid-cols-8 ">
-        {namespaceKeys.map((namespace) => {
+        {namespaceKeys.map((namespace, index) => {
           const quotaField = (namespace + 'Quota') as keyof typeof newValues;
           const originalEnvQuota = currentProject[quotaField] as Quota;
           const newEnvQuota = newValues[quotaField];
@@ -84,6 +100,7 @@ export default function Quotas({
             newEnvQuota?.cpu !== originalEnvQuota?.cpu ||
             newEnvQuota?.memory !== originalEnvQuota?.memory ||
             newEnvQuota?.storage !== originalEnvQuota?.storage;
+
           return (
             <div
               key={namespace}
@@ -101,6 +118,14 @@ export default function Quotas({
                 {licencePlate}
                 {namespaceSuffixes[namespace] || ''}
               </ExternalLink>
+              {subnetInformation[index].isLoading ? (
+                <Loader color="blue" type="dots" />
+              ) : subnetInformation[index].data ? (
+                <p className="text-base font-semibold mb-3">{subnetInformation[index].data}</p>
+              ) : (
+                <p className="text-base font-semibold mb-3 text-gray-500">No subnet information available</p>
+              )}
+
               {(['cpu', 'memory', 'storage'] as const).map((quotaName) => (
                 <QuotaInput
                   key={quotaName}
