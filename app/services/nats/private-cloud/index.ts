@@ -1,15 +1,9 @@
 import { Ministry, ResourceRequestsEnv } from '@prisma/client';
+import { environmentShortNames } from '@/constants';
 import { PrivateCloudRequestDetail } from '@/types/private-cloud';
 
 type ResourceRequestsEnvKeys = Array<keyof ResourceRequestsEnv>;
 const namespaceKeys: ResourceRequestsEnvKeys = ['development', 'test', 'production', 'tools'];
-
-const namespaceAbbr = {
-  development: 'dev',
-  test: 'test',
-  production: 'prod',
-  tools: 'tools',
-};
 
 export default function createPrivateCloudNatsMessage(
   request: Pick<PrivateCloudRequestDetail, 'id' | 'type' | 'decisionData'>,
@@ -62,7 +56,7 @@ export default function createPrivateCloudNatsMessage(
       if (!isEmptyStorage && backupSize < 1) backupSize = 1;
 
       return {
-        name: `${licencePlate}-${namespaceAbbr[namespace]}`,
+        name: `${licencePlate}-${environmentShortNames[namespace]}`,
         quotas: {
           cpu: {
             requests: requests.cpu,

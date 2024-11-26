@@ -63,3 +63,10 @@ export const privateCloudProductSorts = productSorts.concat([
     sortOrder: Prisma.SortOrder.desc,
   },
 ]);
+
+export const environmentShortNames = {
+  development: 'dev',
+  test: 'test',
+  production: 'prod',
+  tools: 'tools',
+};

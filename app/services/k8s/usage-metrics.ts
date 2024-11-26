@@ -1,5 +1,6 @@
 import { PodMetric } from '@kubernetes/client-node';
-import { Cluster } from '@prisma/client';
+import { Cluster, ResourceRequestsEnv } from '@prisma/client';
+import { environmentShortNames } from '@/constants';
 import { logger } from '@/core/logging';
 import { normalizeMemory, normalizeCpu, PVC, resourceMetrics } from '@/helpers/resource-metrics';
 import { getK8sClients, queryPrometheus } from './core';
@@ -86,13 +87,13 @@ async function collectPVCMetrics(namespace: string, cluster: Cluster) {
 
 export async function getPodMetrics(
   licencePlate: string,
-  environment: string,
+  environment: keyof ResourceRequestsEnv,
   cluster: Cluster,
 ): Promise<resourceMetrics> {
   const { apiClient, metricsClient } = getK8sClients(cluster);
   const usageData: resourceMetrics = { podMetrics: [], pvcMetrics: [] };
 
-  const namespace = `${licencePlate}-${environment}`;
+  const namespace = `${licencePlate}-${environmentShortNames[environment]}`;
   let metricItems: PodMetric[] = [];
 
   try {
