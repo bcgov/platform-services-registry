@@ -32,6 +32,7 @@ jobs:
       uses: ./.github/actions/setup-sandbox
       with:
         script: |
+          cp app/.env.example app/.env.test
           npm start --prefix app &
           node_modules/.bin/wait-on http://localhost:3000 --timeout 120000
           npm run cypress-headless
