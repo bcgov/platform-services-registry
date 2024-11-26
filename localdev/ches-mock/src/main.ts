@@ -1,14 +1,16 @@
+import sanitizeHtml from 'sanitize-html';
 import nodemailer from 'nodemailer';
 import express, { Request, Response } from 'express';
 
 const app = express();
 app.use(express.json());
 const port = 3025;
+
 interface Email {
   from?: string;
   subject: string;
   body: string;
-  to: string[]; // Ensure 'to' is a string array
+  to: string[];
   cc?: string[];
   bcc?: string[];
   attachments?: {
@@ -23,9 +25,9 @@ interface Email {
 export const sendViaMailPit = async (email: Email): Promise<void> => {
   try {
     const transporter = nodemailer.createTransport({
-      host: 'mailpit', // Use MailPit's service name from Docker Compose
+      host: 'mailpit',
       port: 1025,
-      secure: false, // MailPit does not require TLS/SSL
+      secure: false,
       auth:
         process.env.MAIL_USERNAME && process.env.MAIL_PASSWORD
           ? {
@@ -35,6 +37,38 @@ export const sendViaMailPit = async (email: Email): Promise<void> => {
           : undefined,
     });
 
+    // Sanitize the email body
+    const sanitizedBody = sanitizeHtml(email.body, {
+      allowedTags: [
+        'html',
+        'head',
+        'body',
+        'div',
+        'h1',
+        'h2',
+        'p',
+        'a',
+        'img',
+        'meta',
+        'link',
+        'span',
+        'hr',
+        // Add other tags as required
+      ],
+      allowedAttributes: {
+        '*': ['style', 'class', 'dir'], // Allow global attributes
+        a: ['href', 'target'], // Allow attributes for links
+        img: ['src', 'alt', 'width', 'height'], // Allow attributes for images
+        meta: ['content', 'http-equiv'],
+        link: ['rel', 'href', 'as'], // Preload links for images
+      },
+      allowedSchemes: ['http', 'https', 'mailto'], // Allow safe URL schemes
+      allowedSchemesByTag: {
+        img: ['http', 'https'],
+        a: ['http', 'https', 'mailto'],
+      },
+    });
+
     // Verify SMTP Connection
     await transporter.verify();
 
@@ -42,7 +76,7 @@ export const sendViaMailPit = async (email: Email): Promise<void> => {
       from: email.from || 'Registry <PlatformServicesTeam@gov.bc.ca>',
       to: email.to.join(', '),
       subject: email.subject,
-      html: email.body,
+      html: sanitizedBody, // Use the sanitized body
       cc: email.cc ? email.cc.join(', ') : undefined,
       bcc: email.bcc ? email.bcc.join(', ') : undefined,
       attachments: email.attachments,
@@ -55,28 +89,16 @@ export const sendViaMailPit = async (email: Email): Promise<void> => {
   }
 };
 
-// API endpoint to send emails
 app.post('/email', async (req: Request, res: Response): Promise<void> => {
   try {
     const { from, to, subject, body, cc, bcc, attachments } = req.body;
 
-    // Validation for required fields
     if (!to || !subject || !body) {
       res.status(400).json({ error: 'Missing required fields: "to", "subject", or "body"' });
       return;
     }
 
-    // Pass all fields from req.body to sendViaMailPit
-    await sendViaMailPit({
-      from,
-      to,
-      subject,
-      body,
-      cc,
-      bcc,
-      attachments,
-    });
-
+    await sendViaMailPit({ from, to, subject, body, cc, bcc, attachments });
     res.status(200).json({ message: 'Email sent successfully' });
   } catch (error: any) {
     res.status(500).json({ error: 'Failed to send email', details: error.message });
