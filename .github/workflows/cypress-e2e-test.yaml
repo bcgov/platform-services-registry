@@ -28,42 +28,23 @@ jobs:
       run: npm run build
       working-directory: app
 
-    - name: Install Docker Compose v2
-      # See https://docs.docker.com/compose/install/linux/
-      run: |
-        DOCKER_CONFIG=${DOCKER_CONFIG:-$HOME/.docker}
-        mkdir -p $DOCKER_CONFIG/cli-plugins
-        curl -SL https://github.com/docker/compose/releases/download/v2.27.0/docker-compose-linux-x86_64 -o $DOCKER_CONFIG/cli-plugins/docker-compose
-        chmod +x $DOCKER_CONFIG/cli-plugins/docker-compose
-        docker compose version
-
-    - name: Setup Localdev Environment
-      run: |
-        mkdir -p ./localdev/mnt/mongodb
-        mkdir -p ./localdev/mnt/postgres
-
-        export MACHINE_HOST_IP=$(hostname -I | awk '{print $1}')
-        ~/.docker/cli-plugins/docker-compose -f localdev/docker-compose.yml up -d
-        node_modules/.bin/wait-on http://localhost:8080/health/ready --timeout 120000
-        node_modules/.bin/wait-on http://localhost:8080/realms/platform-services/.well-known/openid-configuration --timeout 240000
-        cp app/.env.example app/.env.test
-
-    - name: Run App
-      run: |
-        npm start --prefix app &
-        node_modules/.bin/wait-on http://localhost:3000 --timeout 120000
-
-    - name: Cypress run
-      run: npm run cypress-headless
+    - name: Setup Sandbox & Cypress
+      uses: ./.github/actions/setup-sandbox
+      with:
+        script: |
+          cp app/.env.example app/.env.test
+          npm start --prefix app &
+          node_modules/.bin/wait-on http://localhost:3000 --timeout 120000
+          npm run cypress-headless
 
     - name: Upload Cypress Screenshots and Videos
+      if: ${{ failure() }}
       uses: actions/upload-artifact@184d73b71b93c222403b2e7f1ffebe4508014249
       with:
         name: cypress-artifacts
         path: |-
           /home/runner/work/platform-services-registry/platform-services-registry/cypress/screenshots
           /home/runner/work/platform-services-registry/platform-services-registry/cypress/videos
-      if: ${{ failure() }}
 
     - name: Clean Up Localdev Environment
       run: |
