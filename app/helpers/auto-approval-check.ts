@@ -9,6 +9,14 @@ import _each from 'lodash-es/each';
 import { getResourceDetails } from '@/services/k8s';
 import { iterateObject } from '@/utils/collection';
 
+const allowedAutoApprovalPercentage = 50;
+
+const allowedMinResource = {
+  cpu: 1,
+  memory: 2,
+  storage: 32,
+};
+
 function checkAutoApprovalEligibility({ allocation, deployment, resourceType }: QuotaUpgradeResourceDetail): boolean {
   if (deployment.usage === -1) return false;
 
@@ -57,11 +65,12 @@ export async function getQuotaChangeStatus({
 
       const diffValue = requestedValue - currentValue;
       const diffPerc = (diffValue / currentValue) * 100;
+      const allowedMin = allowedMinResource[resourceName];
 
       if (!hasChange) hasChange = diffValue !== 0;
       if (diffValue > 0) {
         hasIncrease = true;
-        hasSignificantIncrease = diffPerc > 100;
+        hasSignificantIncrease = requestedValue > allowedMin && diffPerc > allowedAutoApprovalPercentage;
         if (hasSignificantIncrease) {
           return false;
         }

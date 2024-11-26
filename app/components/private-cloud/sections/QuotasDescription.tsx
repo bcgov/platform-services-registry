@@ -19,14 +19,26 @@ export default function QuotasDescription() {
         <ol className="list-decimal pl-5">
           <li>Your namespace’s current usage exceeds 85% of its total limit.</li>
           <li>Your namespace’s resource utilization rate is at least 35%.</li>
-          <li>You are increasing your quota allotment to the next tier only.</li>
+          <li>
+            The requested adjustment either:
+            <ul className="list-disc pl-5">
+              <li>Meets the minimum values of 1 core for CPU and 2GB for memory, or</li>
+              <li>Increases the quota by no more than 50%.</li>
+            </ul>
+          </li>
         </ol>
       </div>
       <div className="text-base leading-6 mt-5">
         If your request for more Storage meets all of the following requirements, it will be automatically approved:
         <ol className="list-decimal pl-5">
           <li>Your namespace’s current usage exceeds 80% of its PVC limit.</li>
-          <li>You are increasing your quota allotment to the next tier only.</li>
+          <li>
+            The requested adjustment either:
+            <ul className="list-disc pl-5">
+              <li>Meets the minimum values of 32GB, or</li>
+              <li>Increases the quota by no more than 50%.</li>
+            </ul>
+          </li>
         </ol>
       </div>
     </>

@@ -18,7 +18,7 @@ const namespaceSuffixes = {
 };
 
 const resourceUnit = {
-  cpu: 'Core(s)',
+  cpu: 'Core',
   memory: 'GB',
   storage: 'GB',
 };
@@ -111,6 +111,8 @@ export default function Quotas({
                       disabled={disabled}
                       classNames={{ wrapper: 'mt-3' }}
                       options={{ valueAsNumber: true }}
+                      min={0}
+                      max={resourceKey === 'cpu' ? 64 : resourceKey === 'memory' ? 128 : 512}
                     />
                     {oldval !== newval && (
                       <div>
