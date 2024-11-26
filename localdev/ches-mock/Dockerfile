@@ -15,6 +15,6 @@ COPY --from=builder /context/package.json /context/package-lock.json ./
 RUN npm install --only=production
 
 USER node
-EXPOSE 3100
+EXPOSE 3025
 
 CMD ["node", "build/main.js"]
