@@ -13,4 +13,9 @@ export const userSearchBodySchema = z.object({
   sortOrder: z.preprocess(processEnumString, z.nativeEnum(Prisma.SortOrder).optional()),
 });
 
+export const userUpdateBodySchema = z.object({
+  roles: z.array(z.string()),
+});
+
 export type UserSearchBody = z.infer<typeof userSearchBodySchema>;
+export type UserUpdateBody = z.infer<typeof userUpdateBodySchema>;

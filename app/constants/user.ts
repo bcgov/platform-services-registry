@@ -34,6 +34,7 @@ export enum GlobalPermissions {
   DownloadBillingMou = 'downloadBillingMou',
 
   ViewUsers = 'viewUsers',
+  EditUsers = 'editUsers',
 }
 
 export enum GlobalRole {

@@ -5,8 +5,9 @@ import { useSnapshot } from 'valtio';
 import Table from '@/components/generic/table/Table';
 import { userSorts, GlobalPermissions } from '@/constants';
 import createClientPage from '@/core/client-page';
+import { listKeycloakAuthRoles } from '@/services/backend/keycloak';
 import { searchUsers } from '@/services/backend/user';
-import { AdminViewUsers } from '@/types/user';
+import { AdminViewUser } from '@/types/user';
 import FilterPanel from './FilterPanel';
 import { pageState } from './state';
 import TableBody from './TableBody';
@@ -23,7 +24,14 @@ export default usersPage(({ session }) => {
     queryFn: () => searchUsers(snap),
   });
 
-  let users: AdminViewUsers[] = [];
+  const { data: authRoles, isFetching: isAuthRolesFetching } = useQuery({
+    queryKey: ['roles'],
+    queryFn: () => listKeycloakAuthRoles(),
+  });
+
+  const availableRoles = (authRoles || []).map((role) => role.name ?? '').sort();
+
+  let users: AdminViewUser[] = [];
   let totalCount = 0;
 
   if (!isLoading && data) {
@@ -53,10 +61,15 @@ export default usersPage(({ session }) => {
           pageState.sortValue = sortValue;
         }}
         sortOptions={userSorts.map((v) => v.label)}
-        filters={<FilterPanel />}
+        filters={<FilterPanel availableRoles={availableRoles} />}
         isLoading={isLoading}
       >
-        <TableBody data={users} isLoading={isLoading} />
+        <TableBody
+          data={users}
+          isLoading={isLoading}
+          availableRoles={availableRoles}
+          disabled={!session?.permissions.editUsers}
+        />
       </Table>
     </>
   );

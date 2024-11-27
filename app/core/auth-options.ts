@@ -158,6 +158,7 @@ export async function generateSession({ session, token }: { session: Session; to
 
     downloadBillingMou: session.isBillingReviewer || session.isBillingReader,
     viewUsers: session.isAdmin,
+    editUsers: session.isAdmin,
   };
 
   return session;

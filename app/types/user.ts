@@ -31,7 +31,7 @@ export interface AppUserWithRoles extends AppUser {
   roles: string[];
 }
 
-export type AdminViewUsers = User & {
+export type AdminViewUser = User & {
   roles: string[];
   privateProducts: { name: string; licencePlate: string }[];
   publicProducts: { name: string; licencePlate: string }[];
