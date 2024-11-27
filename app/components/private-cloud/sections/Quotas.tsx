@@ -69,6 +69,21 @@ export default function Quotas({
             originalVal?.memory !== newVal?.memory ||
             originalVal?.storage !== newVal?.storage;
 
+          let subnetInfo = null;
+          if (cluster === Cluster.EMERALD) {
+            if (subnetInformation[index].isLoading) {
+              subnetInfo = <Loader color="blue" type="dots" />;
+            } else {
+              if (subnetInformation[index].data) {
+                subnetInfo = <p className="text-base font-semibold mb-3">{subnetInformation[index].data}</p>;
+              } else {
+                subnetInfo = (
+                  <p className="text-base font-semibold mb-3 text-gray-500">No subnet information available</p>
+                );
+              }
+            }
+          }
+
           return (
             <div
               key={namespace}
@@ -87,13 +102,7 @@ export default function Quotas({
                 {namespaceSuffixes[namespace] || ''}
               </ExternalLink>
 
-              {subnetInformation[index].isLoading ? (
-                <Loader color="blue" type="dots" />
-              ) : subnetInformation[index].data ? (
-                <p className="text-base font-semibold mb-3">{subnetInformation[index].data}</p>
-              ) : (
-                <p className="text-base font-semibold mb-3 text-gray-500">No subnet information available</p>
-              )}
+              {subnetInfo}
 
               {resourceKeys.map((resourceKey) => {
                 const oldval = String(originalVal[resourceKey]);
