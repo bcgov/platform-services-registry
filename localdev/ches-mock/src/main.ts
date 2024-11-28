@@ -2,7 +2,7 @@ import sanitizeHtml from 'sanitize-html';
 import nodemailer from 'nodemailer';
 import { z } from 'zod';
 import express, { Request, Response, NextFunction } from 'express';
-import { SMPT_HOST_NAME, SMPT_PORT, CHES_MOCK_PORT, SMTP_USERNAME, SMTP_PASSWORD } from './config.js';
+import { SMTP_HOST_NAME, SMTP_PORT, CHES_MOCK_PORT, SMTP_USERNAME, SMTP_PASSWORD } from './config.js';
 import SMTPTransport from 'nodemailer/lib/smtp-transport';
 
 const app = express();
@@ -28,8 +28,8 @@ const EmailSchema = z.object({
 });
 
 const transportOptions: SMTPTransport.Options = {
-  host: SMPT_HOST_NAME,
-  port: Number(SMPT_PORT),
+  host: SMTP_HOST_NAME,
+  port: Number(SMTP_PORT),
   secure: false, // Set true if TLS is required
   auth:
     SMTP_USERNAME && SMTP_PASSWORD
