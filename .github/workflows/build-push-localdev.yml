@@ -130,3 +130,26 @@ jobs:
         docker-file: localdev/nats-provision/Dockerfile
         metadata-tags: |
           type=raw,value=latest
+
+  build-push-ches-mock:
+    runs-on: ubuntu-22.04
+    timeout-minutes: 5
+    permissions:
+      contents: read
+      packages: write
+
+    steps:
+    - uses: hmarr/debug-action@f7318c783045ac39ed9bb497e22ce835fdafbfe6
+    - uses: actions/checkout@cbb722410c2e876e24abbe8de2cc27693e501dcb
+
+    - name: Build and Push
+      uses: egose/actions/docker-build-push@bbf744210b38b07e89866354914efbffc8a47e5a
+      with:
+        registry-url: ${{ env.GITHUB_REGISTRY }}
+        registry-username: ${{ github.actor }}
+        registry-password: ${{ secrets.GITHUB_TOKEN }}
+        image-name: bcgov/pltsvc-localdev-ches-mock
+        docker-context: localdev
+        docker-file: localdev/ches-mock/Dockerfile
+        metadata-tags: |
+          type=raw,value=latest

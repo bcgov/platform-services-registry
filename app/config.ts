@@ -25,10 +25,11 @@ export const AWS_ROLES_CLIENT_ID = process.env.AWS_ROLES_CLIENT_ID || 'roles';
 export const AWS_ROLES_CLIENT_SECRET = process.env.AWS_ROLES_CLIENT_SECRET || 'testsecret';
 export const AWS_ROLES_IDENTITY_PROVIDER = process.env.AWS_ROLES_IDENTITY_PROVIDER || 'azureidir';
 
-export const CHES_TOKEN_URL = process.env.CHES_TOKEN_URL || '';
-export const CHES_API_URL = process.env.CHES_API_URL || '';
-export const CHES_CLIENT_ID = process.env.CHES_CLIENT_ID || '';
-export const CHES_CLIENT_SECRET = process.env.CHES_CLIENT_SECRET || '';
+export const CHES_TOKEN_URL =
+  process.env.CHES_TOKEN_URL || 'http://localhost:8080/realms/platform-services/protocol/openid-connect/token';
+export const CHES_API_URL = process.env.CHES_API_URL || 'http://localhost:3025';
+export const CHES_CLIENT_ID = process.env.CHES_CLIENT_ID || 'pltsvc';
+export const CHES_CLIENT_SECRET = process.env.CHES_CLIENT_SECRET || 'testsecret';
 export const CLAB_SERVICE_ACCOUNT_TOKEN = process.env.CLAB_SERVICE_ACCOUNT_TOKEN || '';
 export const KLAB_SERVICE_ACCOUNT_TOKEN = process.env.KLAB_SERVICE_ACCOUNT_TOKEN || '';
 export const KLAB2_SERVICE_ACCOUNT_TOKEN = process.env.KLAB2_SERVICE_ACCOUNT_TOKEN || '';

@@ -163,3 +163,13 @@ services:
       MP_SMTP_AUTH_ACCEPT_ANY: 1   # Allows the SMTP server to accept any username and password (for testing).
       MP_SMTP_AUTH_ALLOW_INSECURE: 1   # Permits insecure authentication mechanisms for SMTP (for testing).
       MP_SMTP_TIMEOUT: 30s   # Sets the timeout for SMTP connections to 30 seconds.
+
+  ches-mock:
+    platform: linux/amd64
+    container_name: ches-mock
+    build:
+      context: .
+      dockerfile: ./ches-mock/Dockerfile
+    stdin_open: true
+    ports:
+    - 3025:3025
