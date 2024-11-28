@@ -4,8 +4,16 @@ export async function listOp(licencePlate: string, requestId?: string) {
   let comments;
 
   if (requestId === 'all') {
+    const requests = await prisma.privateCloudRequest.findMany({
+      where: { licencePlate },
+      select: { id: true },
+      distinct: ['id'],
+    });
+
+    const requestIds = requests.map((rec) => rec.id);
+
     comments = await prisma.privateCloudComment.findMany({
-      where: { projectId: undefined, requestId: { not: null } },
+      where: { projectId: undefined, requestId: { in: requestIds } },
       include: { user: true },
       orderBy: { createdAt: 'desc' },
     });
