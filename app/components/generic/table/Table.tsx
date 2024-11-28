@@ -59,7 +59,7 @@ export default function Table({
 
       <Box pos="relative" className="min-h-96">
         <LoadingOverlay visible={isLoading} zIndex={1000} overlayProps={{ radius: 'sm', blur: 2 }} />
-        {children}
+        {!isLoading && children}
       </Box>
 
       <TableFooter>
