@@ -23,7 +23,7 @@ interface TableProps {
 
 export default function TableBody({ data, disabled = false, availableRoles = [] }: TableProps) {
   const methods = useForm({
-    defaultValues: {
+    values: {
       users: data,
     },
   });
