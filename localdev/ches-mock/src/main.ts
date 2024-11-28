@@ -2,7 +2,7 @@ import sanitizeHtml from 'sanitize-html';
 import nodemailer from 'nodemailer';
 import { z } from 'zod';
 import express, { Request, Response, NextFunction } from 'express';
-import { SMTP_HOST_NAME, SMTP_PORT, CHES_MOCK_PORT, SMTP_USERNAME, SMTP_PASSWORD } from './config.js';
+import { SMTP_HOST_NAME, SMTP_PORT, PORT, SMTP_USERNAME, SMTP_PASSWORD } from './config.js';
 import SMTPTransport from 'nodemailer/lib/smtp-transport';
 
 const app = express();
@@ -98,6 +98,6 @@ app.use((err: any, req: Request, res: Response, next: NextFunction) => {
   });
 });
 
-app.listen(CHES_MOCK_PORT, () => {
-  console.log(`Server is running on http://localhost:${CHES_MOCK_PORT}`);
+app.listen(PORT, () => {
+  console.log(`Server is running on http://localhost:${PORT}`);
 });
