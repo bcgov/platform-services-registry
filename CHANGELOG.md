@@ -1,3 +1,8 @@
+## [0.40.4](https://github.com/bcgov/platform-services-registry/compare/v0.40.3...v0.40.4) (2024-11-28)
+
+### Features
+
+* **4304:** add user role update function in users page ([9cc1daa](https://github.com/bcgov/platform-services-registry/commit/9cc1daabd6f9579bad153dff739c8845b33902d9))
 ## [0.40.3](https://github.com/bcgov/platform-services-registry/compare/v0.40.2...v0.40.3) (2024-11-22)
 
 ### Features
