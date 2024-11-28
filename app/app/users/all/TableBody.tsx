@@ -17,21 +17,16 @@ import PrivateCloudProductsCard from './PrivateCloudProductsCard';
 
 interface TableProps {
   data: AdminViewUser[];
-  isLoading?: boolean;
   disabled?: boolean;
   availableRoles?: string[];
 }
 
-export default function TableBody({ data, isLoading = false, disabled = false, availableRoles = [] }: TableProps) {
+export default function TableBody({ data, disabled = false, availableRoles = [] }: TableProps) {
   const methods = useForm({
     defaultValues: {
       users: data,
     },
   });
-
-  if (isLoading) {
-    return null;
-  }
 
   const [users] = methods.watch(['users']);
 
