@@ -90,6 +90,8 @@ export default function TableBody({ data, disabled = false, availableRoles = [] 
                       onClick={async () => {
                         const result = await updateUser(item.id, { roles: users[index].roles });
                         if (result) {
+                          data[index].roles = [...result.roles];
+                          methods.setValue(`users.${index}.roles`, [...result.roles]);
                           success();
                         } else {
                           failure({ message: 'Failed to assign roles', autoClose: true });
