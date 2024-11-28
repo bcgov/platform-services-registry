@@ -1,5 +1,6 @@
 'use client';
 
+import { Button, Divider, Grid, LoadingOverlay, Box } from '@mantine/core';
 import { useQuery } from '@tanstack/react-query';
 import { useSnapshot } from 'valtio';
 import Table from '@/components/generic/table/Table';
@@ -64,12 +65,12 @@ export default usersPage(({ session }) => {
         filters={<FilterPanel availableRoles={availableRoles} />}
         isLoading={isLoading}
       >
-        <TableBody
-          data={users}
-          isLoading={isLoading}
-          availableRoles={availableRoles}
-          disabled={!session?.permissions.editUsers}
-        />
+        <Box pos="relative">
+          <LoadingOverlay visible={isLoading} zIndex={1000} overlayProps={{ radius: 'sm', blur: 2 }} />
+          {!isLoading && (
+            <TableBody data={users} availableRoles={availableRoles} disabled={!session?.permissions.editUsers} />
+          )}
+        </Box>
       </Table>
     </>
   );
