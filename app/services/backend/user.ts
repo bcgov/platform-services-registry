@@ -1,8 +1,8 @@
 import { Prisma, User } from '@prisma/client';
 import axios from 'axios';
 import { userSorts } from '@/constants';
-import { AdminViewUsers } from '@/types/user';
-import { UserSearchBody } from '@/validation-schemas';
+import { AdminViewUser } from '@/types/user';
+import { UserSearchBody, UserUpdateBody } from '@/validation-schemas';
 import { instance as baseInstance } from './axios';
 
 export const instance = axios.create({
@@ -28,7 +28,12 @@ function prepareSearchPayload(data: UserSearchBody) {
 export async function searchUsers(data: UserSearchBody) {
   const reqData = prepareSearchPayload(data);
   const result = await instance
-    .post<{ data: AdminViewUsers[]; totalCount: number }>('/search', reqData)
+    .post<{ data: AdminViewUser[]; totalCount: number }>('/search', reqData)
     .then((res) => res.data);
+  return result;
+}
+
+export async function updateUser(id: string, data: UserUpdateBody) {
+  const result = await instance.put(`/${id}`, data).then((res) => res.data);
   return result;
 }

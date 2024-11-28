@@ -45,6 +45,7 @@ declare module 'next-auth' {
     downloadBillingMou: boolean;
 
     viewUsers: boolean;
+    editUsers: boolean;
   }
 
   interface Session extends DefaultSession {

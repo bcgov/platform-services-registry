@@ -1,23 +1,21 @@
 import { Button, LoadingOverlay, Box } from '@mantine/core';
-import { useQuery } from '@tanstack/react-query';
 import { useSnapshot } from 'valtio';
 import FormMultiSelect from '@/components/generic/select/FormMultiSelect';
-import { listKeycloakAuthRoles } from '@/services/backend/keycloak';
 import { pageState } from './state';
 
-export default function FilterPanel() {
+export default function FilterPanel({
+  isLoading = false,
+  availableRoles = [],
+}: {
+  isLoading?: boolean;
+  availableRoles?: string[];
+}) {
   const pageSnapshot = useSnapshot(pageState);
-  const { data: authRoles, isFetching: isAuthRolesFetching } = useQuery({
-    queryKey: ['roles'],
-    queryFn: () => listKeycloakAuthRoles(),
-  });
-
-  const authRoleNames = (authRoles || []).map((role) => role.name ?? '').sort();
 
   return (
     <Box pos="relative">
       <LoadingOverlay
-        visible={!authRoles || isAuthRolesFetching}
+        visible={isLoading}
         zIndex={1000}
         overlayProps={{ radius: 'sm', blur: 2 }}
         loaderProps={{ color: 'pink', type: 'bars' }}
@@ -28,7 +26,7 @@ export default function FilterPanel() {
             name="roles"
             label="Global Roles"
             value={pageSnapshot.roles ?? []}
-            data={authRoleNames}
+            data={availableRoles}
             onChange={(value) => {
               pageState.roles = value;
               pageState.page = 1;
@@ -41,7 +39,7 @@ export default function FilterPanel() {
               size="compact-md"
               className="mt-1"
               onClick={() => {
-                pageState.roles = authRoleNames;
+                pageState.roles = availableRoles;
                 pageState.page = 1;
               }}
             >

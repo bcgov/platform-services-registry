@@ -64,7 +64,7 @@ export function failure({
   message?: React.ReactNode;
   error?: Error;
   autoClose?: boolean;
-}) {
+} = {}) {
   const id = randomId();
 
   if (error) {
