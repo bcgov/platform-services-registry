@@ -1,5 +1,5 @@
 {
-  "name": "ches",
+  "name": "ches-mock",
   "version": "1.0.0",
   "type": "module",
   "main": "index.js",
@@ -13,7 +13,7 @@
   "devDependencies": {
     "@types/express": "^5.0.0",
     "@types/node": "^20.14.1",
-    "@types/nodemailer": "^6.4.16",
+    "@types/nodemailer": "^6.4.17",
     "@types/sanitize-html": "^2.13.0",
     "rimraf": "^6.0.0",
     "tsx": "^4.15.4",

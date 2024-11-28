@@ -2,7 +2,8 @@ import sanitizeHtml from 'sanitize-html';
 import nodemailer from 'nodemailer';
 import { z } from 'zod';
 import express, { Request, Response, NextFunction } from 'express';
-import { CHES_MOCK_PORT, CHES_CLIENT_ID, CHES_CLIENT_SECRET } from './config.js';
+import { SMPT_HOST_NAME, SMPT_PORT, CHES_MOCK_PORT, SMTP_USERNAME, SMTP_PASSWORD } from './config.js';
+import SMTPTransport from 'nodemailer/lib/smtp-transport';
 
 const app = express();
 app.use(express.json());
@@ -26,20 +27,21 @@ const EmailSchema = z.object({
     .optional(),
 });
 
-const transporter = nodemailer.createTransport({
-  host: 'mailpit',
-  port: 1025,
-  secure: false,
+const transportOptions: SMTPTransport.Options = {
+  host: SMPT_HOST_NAME,
+  port: Number(SMPT_PORT),
+  secure: false, // Set true if TLS is required
   auth:
-    CHES_CLIENT_ID && CHES_CLIENT_SECRET
+    SMTP_USERNAME && SMTP_PASSWORD
       ? {
-          user: CHES_CLIENT_ID,
-          pass: CHES_CLIENT_SECRET,
+          user: SMTP_USERNAME,
+          pass: SMTP_PASSWORD,
         }
       : undefined,
-});
+};
 
-// Email sending function
+const transporter = nodemailer.createTransport(transportOptions);
+
 export const sendViaMailPit = async (email: z.infer<typeof EmailSchema>): Promise<nodemailer.SentMessageInfo> => {
   const sanitizedBody = sanitizeHtml(email.body, {
     allowedTags: ['html', 'head', 'body', 'div', 'h1', 'h2', 'p', 'a', 'img', 'meta', 'link', 'span', 'hr'],
@@ -73,20 +75,16 @@ export const sendViaMailPit = async (email: z.infer<typeof EmailSchema>): Promis
   return info;
 };
 
-app.post('/email', async (req: Request, res: Response, next: NextFunction): Promise<void> => {
-  try {
-    const email = EmailSchema.parse(req.body);
-    const info = await sendViaMailPit(email);
-    res.status(200).json({
-      message: 'Email sent successfully',
-      messageId: info.messageId,
-      accepted: info.accepted,
-      rejected: info.rejected,
-      response: info.response, // SMTP response
-    });
-  } catch (error: any) {
-    next(error);
-  }
+app.post('/email', async (req: Request, res: Response): Promise<void> => {
+  const email = EmailSchema.parse(req.body);
+  const info = await sendViaMailPit(email);
+  res.status(200).json({
+    message: 'Email sent successfully',
+    messageId: info.messageId,
+    accepted: info.accepted,
+    rejected: info.rejected,
+    response: info.response, // SMTP response
+  });
 });
 
 // Error-handling middleware
