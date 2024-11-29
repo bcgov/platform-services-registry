@@ -125,3 +125,11 @@ resource "keycloak_role" "pltsvc_public_reviewer" {
   name        = "public-reviewer"
   description = "Registry Public Reviewer"
 }
+
+resource "keycloak_role" "pltsvc_user_reader" {
+  realm_id  = data.keycloak_realm.pltsvc.id
+  client_id = keycloak_openid_client.pltsvc.id
+
+  name        = "user-reader"
+  description = "Registry User Reader"
+}

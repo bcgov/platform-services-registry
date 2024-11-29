@@ -157,7 +157,7 @@ export async function generateSession({ session, token }: { session: Session; to
     viewPrivateAnalytics: session.isAdmin || session.isAnalyzer || session.isPrivateAnalyzer,
 
     downloadBillingMou: session.isBillingReviewer || session.isBillingReader,
-    viewUsers: session.isAdmin,
+    viewUsers: session.isAdmin || session.isUserReader,
     editUsers: session.isAdmin,
   };
 
