@@ -20,5 +20,11 @@ dependencies:
 - name: weasyprint
   repository: https://bcgov.github.io/weasyprint
   version: 0.1.6
+- name: mailpit
+  repository: file://../_mailpit
+  version: 0.1.0
+- name: mailpit
+  repository: file://../_ches-mock
+  version: 0.1.0
 digest: sha256:31254c6644f3da4cb09f5e73d018eef053bdf408584abccf136375e15c408ba8
 generated: "2024-08-22T20:33:07.679846501Z"
