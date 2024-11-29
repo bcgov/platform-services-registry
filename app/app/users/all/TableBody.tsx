@@ -6,6 +6,7 @@ import _isEqual from 'lodash-es/isEqual';
 import _truncate from 'lodash-es/truncate';
 import React from 'react';
 import { FormProvider, useForm } from 'react-hook-form';
+import MinistryBadge from '@/components/badges/MinistryBadge';
 import HookFormMultiSelect from '@/components/generic/select/HookFormMultiSelect';
 import { failure, success } from '@/components/notification';
 import { formatFullName } from '@/helpers/user';
@@ -13,7 +14,7 @@ import { getUserImageData } from '@/helpers/user-image';
 import { updateUser } from '@/services/backend/user';
 import { AdminViewUser } from '@/types/user';
 import { formatDate } from '@/utils/date';
-import PrivateCloudProductsCard from './PrivateCloudProductsCard';
+import ProductsCard from './ProductsCard';
 
 interface TableProps {
   data: AdminViewUser[];
@@ -41,11 +42,7 @@ export default function TableBody({ data, disabled = false, availableRoles = [] 
                 {item.id ? (
                   <div>
                     {formatFullName(item)}
-                    {item.ministry && (
-                      <Badge color="dark" variant="light" className="ml-1">
-                        {item.ministry}
-                      </Badge>
-                    )}
+                    <MinistryBadge className="ml-1" ministry={item.ministry} />
                   </div>
                 ) : (
                   <UnstyledButton className="text-gray-700 hover:underline">Click to select member</UnstyledButton>
@@ -116,19 +113,19 @@ export default function TableBody({ data, disabled = false, availableRoles = [] 
           )}
         </Table.Td>
         <Table.Td>
-          <PrivateCloudProductsCard products={item.privateProducts} context="private-cloud">
+          <ProductsCard products={item.privateProducts} context="private-cloud">
             <Badge color="primary" variant="filled">
               {item.privateProducts.length}
             </Badge>
-          </PrivateCloudProductsCard>
+          </ProductsCard>
 
           <span className="mx-2">/</span>
 
-          <PrivateCloudProductsCard products={item.publicProducts} context="public-cloud">
+          <ProductsCard products={item.publicProducts} context="public-cloud">
             <Badge color="success" variant="filled">
               {item.publicProducts.length}
             </Badge>
-          </PrivateCloudProductsCard>
+          </ProductsCard>
         </Table.Td>
         <Table.Td className="italic">{formatDate(item.lastSeen) || <span>has not yet logged in</span>}</Table.Td>
         <Table.Td></Table.Td>

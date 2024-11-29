@@ -1,9 +1,10 @@
 import { HoverCard, Group } from '@mantine/core';
 import { useDisclosure } from '@mantine/hooks';
+import { useSession } from 'next-auth/react';
 import ExternalLink from '@/components/generic/button/ExternalLink';
 import { cn } from '@/utils';
 
-export default function PrivateCloudProductsCard({
+export default function ProductsCard({
   products = [],
   className = '',
   context,
@@ -15,6 +16,7 @@ export default function PrivateCloudProductsCard({
   children: React.ReactNode;
 }) {
   const [opened, { close, open }] = useDisclosure(false);
+  const { data: session } = useSession();
 
   const title = context === 'private-cloud' ? 'Private Cloud Products' : 'Public Cloud Products';
 
@@ -49,7 +51,9 @@ export default function PrivateCloudProductsCard({
                       </div>
                     </div>
                     <div className="col-span-1 text-right">
-                      <ExternalLink href={`${baseUrl}/${product.licencePlate}/edit`} />
+                      {session?.permissions.editUsers && (
+                        <ExternalLink href={`${baseUrl}/${product.licencePlate}/edit`} />
+                      )}
                     </div>
                   </div>
                 );

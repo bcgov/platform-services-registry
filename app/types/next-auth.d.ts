@@ -75,6 +75,7 @@ declare module 'next-auth' {
     isPublicEditor: boolean;
     isPublicReader: boolean;
     isPublicReviewer: boolean;
+    isUserReader: boolean;
     isApprover: boolean;
     isBillingReviewer: boolean;
     isBillingReader: boolean;
