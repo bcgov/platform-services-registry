@@ -115,28 +115,7 @@ export const ministryOptions = [
     value: 'HOUS',
     label: 'Ministry of Housing',
   },
-  {
-    value: 'PSFS',
-    label: 'Post Secondary Education and Future Skills',
-  },
-  {
-    value: 'MOTI',
-    label: 'Transportation and Infrastructure',
-  },
-  {
-    value: 'EHS',
-    label: 'Emergency Health Services',
-  },
-  {
-    value: 'ISMC',
-    label: 'International Student Ministries Canada',
-  },
 ];
-
-export const ministryMap = ministryOptions.reduce<{ [key: string]: string }>((ret, mini) => {
-  ret[mini.value] = mini.label;
-  return ret;
-}, {});
 
 export const AGMinistries = ['AG', 'PSSG', 'EMBC', 'HOUS'];
 
