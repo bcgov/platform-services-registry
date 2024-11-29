@@ -1,3 +1,8 @@
+## [0.41.0](https://github.com/bcgov/platform-services-registry/compare/v0.40.6...v0.41.0) (2024-11-29)
+
+### Features
+
+* **4363:** add export function on users page ([e4b756f](https://github.com/bcgov/platform-services-registry/commit/e4b756f143371556b4b6f15d39a129f870b50c16))
 ## [0.40.6](https://github.com/bcgov/platform-services-registry/compare/v0.40.5...v0.40.6) (2024-11-29)
 ## [0.40.5](https://github.com/bcgov/platform-services-registry/compare/v0.40.4...v0.40.5) (2024-11-29)
 ## [0.40.4](https://github.com/bcgov/platform-services-registry/compare/v0.40.3...v0.40.4) (2024-11-28)
