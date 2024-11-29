@@ -82,7 +82,7 @@ export default function TableBody({ data, disabled = false, availableRoles = [] 
                 <HookFormMultiSelect name={`users.${index}.roles`} data={availableRoles} disabled={disabled} />
               </div>
               <div className="col-span-3">
-                {!_isEqual(users[index].roles, data[index].roles) && (
+                {!_isEqual(users[index]?.roles, data[index]?.roles) && (
                   <div className="mx-1 flex gap-1">
                     <Button
                       color="primary"

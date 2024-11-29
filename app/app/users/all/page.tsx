@@ -6,7 +6,7 @@ import Table from '@/components/generic/table/Table';
 import { userSorts, GlobalPermissions } from '@/constants';
 import createClientPage from '@/core/client-page';
 import { listKeycloakAuthRoles } from '@/services/backend/keycloak';
-import { searchUsers } from '@/services/backend/user';
+import { downloadUsers, searchUsers } from '@/services/backend/user';
 import { AdminViewUser } from '@/types/user';
 import FilterPanel from './FilterPanel';
 import { pageState } from './state';
@@ -55,6 +55,10 @@ export default usersPage(({ session }) => {
         onSearch={(searchTerm: string) => {
           pageState.page = 1;
           pageState.search = searchTerm;
+        }}
+        onExport={async () => {
+          const result = await downloadUsers(snap);
+          return result;
         }}
         onSort={(sortValue) => {
           pageState.page = 1;
