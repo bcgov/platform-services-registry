@@ -118,12 +118,16 @@ export default function Quotas({
                 {licencePlate}
                 {namespaceSuffixes[namespace] || ''}
               </ExternalLink>
-              {subnetInformation[index].isLoading ? (
-                <Loader color="blue" type="dots" />
-              ) : subnetInformation[index].data ? (
-                <p className="text-base font-semibold mb-3">{subnetInformation[index].data}</p>
-              ) : (
-                <p className="text-base font-semibold mb-3 text-gray-500">No subnet information available</p>
+              {currentProject?.cluster === Cluster.EMERALD && (
+                <>
+                  {subnetInformation[index].isLoading ? (
+                    <Loader color="blue" type="dots" />
+                  ) : subnetInformation[index].data ? (
+                    <p className="text-base font-semibold mb-3">{subnetInformation[index].data}</p>
+                  ) : (
+                    <p className="text-base font-semibold mb-3 text-gray-500">No subnet information available</p>
+                  )}
+                </>
               )}
 
               {(['cpu', 'memory', 'storage'] as const).map((quotaName) => (
