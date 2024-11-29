@@ -222,19 +222,6 @@ export async function searchUsersWithRoles({
   });
 
   const findUserRoles = await (async () => {
-    if (isRoleSearch) {
-      return (email: string) => {
-        email = email.toLowerCase();
-        const authRoleNames: string[] = [];
-        _forEach(usersByRole, (users, roleName) => {
-          if (users.find((usr) => usr.email && usr.email.toLowerCase() === email)) {
-            authRoleNames.push(roleName);
-          }
-        });
-
-        return authRoleNames;
-      };
-    }
     const kcProfiles = await Promise.all(result.data.map((v) => findUserByEmail(v.email, kcAdminClient)));
     return (email: string) => {
       email = email.toLowerCase();
