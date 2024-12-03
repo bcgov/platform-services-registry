@@ -41,7 +41,7 @@ jobs:
       run: |
         mkdir -p ./localdev/mnt/mongodb
         mkdir -p ./localdev/mnt/postgres
-        mkdir -p ./localdev/mnt/mailpit
+
         export MACHINE_HOST_IP=$(hostname -I | awk '{print $1}')
         ~/.docker/cli-plugins/docker-compose -f localdev/docker-compose.yml up -d
         node_modules/.bin/wait-on http://localhost:8080/health/ready --timeout 120000
