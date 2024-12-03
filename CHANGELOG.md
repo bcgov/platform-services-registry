@@ -1,3 +1,8 @@
+## [0.41.1](https://github.com/bcgov/platform-services-registry/compare/v0.41.0...v0.41.1) (2024-12-03)
+
+### Features
+
+* **4368:** add user reader role ([549aaad](https://github.com/bcgov/platform-services-registry/commit/549aaad302799841476f4c1d2cafa429bae6a0f9))
 ## [0.41.0](https://github.com/bcgov/platform-services-registry/compare/v0.40.6...v0.41.0) (2024-11-29)
 
 ### Features
