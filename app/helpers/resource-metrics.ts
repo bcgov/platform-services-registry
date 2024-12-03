@@ -69,7 +69,7 @@ export function normalizeCpu(cpuValue: string | number) {
 
   // Ensure the input number is valid
   if (typeof cpuValue === 'number') {
-    return cpuValue;
+    return Math.round(cpuValue * cpuCoreToMillicoreMultiplier);
   }
 
   return -1;
@@ -95,7 +95,7 @@ export const memoryUnitMultipliers = {
 // Mebibyte (MiB): 1 MiB = 1024^2 bytes
 // Kibibyte (KiB): 1 KiB = 1024 bytes
 //
-// Converts memory values to Ki units
+// Converts memory values to bytes units
 export function normalizeMemory(memoryValue: string | number): number {
   if (typeof memoryValue === 'string') {
     const match = memoryValue.match(/^(\d+(?:\.\d+)?)([KMGTE]?i?)$/i); // Case-insensitive matching
@@ -136,15 +136,12 @@ export function formatBinaryMetric(bytes: number) {
   return `${formattedValue} ${units[index]}`;
 }
 
-export function formatCpu(cores: number) {
-  if (cores < 0.001) {
-    // Handle very small values
-    return `${(cores * 1000).toFixed(2)} m`;
+export function formatCpu(millicores: number) {
+  if (millicores >= 1000) {
+    return `${(millicores / 1000).toFixed(2)} cores`;
   }
-  if (cores >= 1) {
-    return `${cores.toFixed(2)} cores`;
-  }
-  return `${Math.round(cores * 1000)} m`;
+
+  return `${Math.round(millicores)} m`;
 }
 
 // Function to aggregate total usage and limits across all containers in a single pod

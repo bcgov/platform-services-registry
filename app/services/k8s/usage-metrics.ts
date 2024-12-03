@@ -121,6 +121,7 @@ export async function getPodMetrics(
 
     // Collect average CPU and memory usage for the specific pod
     const containerUsageData = await getLastTwoWeeksAvgUsage(namespace, podName, cluster);
+
     // Create a map for quick lookup of usage data by container name
     const usageMap = containerUsageData.reduce(
       (acc, { containerName, usage }) => {
