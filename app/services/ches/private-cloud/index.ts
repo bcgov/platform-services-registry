@@ -20,11 +20,42 @@ import {
   sendTeamEditRequestRejection,
 } from './emails';
 
-export function sendCreateRequestEmails(request: PrivateCloudRequestDetailDecorated, requester: string) {
+export function sendAdminCreateRequestEmail(request: PrivateCloudRequestDetailDecorated, requester: string) {
   try {
     const proms = [];
 
     proms.push(sendAdminCreateRequest(request, requester));
+    return Promise.all(proms);
+  } catch (error) {
+    logger.error('sendAdminCreateRequestEmail:', error);
+  }
+}
+
+export function sendAdminDeleteRequestEmail(request: PrivateCloudRequestDetailDecorated, requester: string) {
+  try {
+    const proms = [];
+
+    proms.push(sendAdminDeleteRequest(request, requester));
+    return Promise.all(proms);
+  } catch (error) {
+    logger.error('sendAdminDeleteRequestEmail:', error);
+  }
+}
+
+export function sendAdminEditRequestEmail(request: PrivateCloudRequestDetailDecorated, requester: string) {
+  try {
+    const proms = [];
+
+    proms.push(sendAdminEditRequest(request, requester));
+    return Promise.all(proms);
+  } catch (error) {
+    logger.error('sendAdminEditRequestEmail:', error);
+  }
+}
+
+export function sendCreateRequestEmails(request: PrivateCloudRequestDetailDecorated, requester: string) {
+  try {
+    const proms = [];
     proms.push(sendTeamCreateRequest(request, requester));
 
     return Promise.all(proms);
@@ -36,12 +67,7 @@ export function sendCreateRequestEmails(request: PrivateCloudRequestDetailDecora
 export function sendEditRequestEmails(request: PrivateCloudRequestDetailDecorated, requester: string) {
   try {
     const proms = [];
-
     proms.push(sendTeamEditRequest(request, requester));
-
-    if (request.decisionStatus === DecisionStatus.PENDING) {
-      proms.push(sendAdminEditRequest(request, requester));
-    }
 
     return Promise.all(proms);
   } catch (error) {
@@ -52,8 +78,6 @@ export function sendEditRequestEmails(request: PrivateCloudRequestDetailDecorate
 export function sendDeleteRequestEmails(request: PrivateCloudRequestDetailDecorated, requester: string) {
   try {
     const proms = [];
-
-    proms.push(sendAdminDeleteRequest(request, requester));
     proms.push(sendTeamDeleteRequest(request, requester));
 
     return Promise.all(proms);

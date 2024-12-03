@@ -36,6 +36,7 @@ export default privateCloudProductRequests(({ getPathParams, session }) => {
   const { data, isLoading } = useQuery({
     queryKey: ['requests', snap],
     queryFn: () => searchPrivateCloudRequests({ ...snap, licencePlate }),
+    refetchInterval: 5000,
     enabled: !!licencePlate,
   });
 

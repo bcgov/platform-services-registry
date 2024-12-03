@@ -22,6 +22,7 @@ export default publicCloudProducts(({}) => {
   const { data, isLoading } = useQuery({
     queryKey: ['products', snap],
     queryFn: () => searchPublicCloudProducts(snap),
+    refetchInterval: 5000,
   });
 
   let products: PublicCloudProductSimpleDecorated[] = [];

@@ -14,6 +14,8 @@ import { formatDate } from '@/utils/date';
 const taskTypeLabels = {
   [TaskType.SIGN_PUBLIC_CLOUD_MOU]: 'Sign Public Cloud MOU',
   [TaskType.REVIEW_PUBLIC_CLOUD_MOU]: 'Review Public Cloud MOU',
+  [TaskType.REVIEW_PRIVATE_CLOUD_REQUEST]: 'Review Private Cloud Request',
+  [TaskType.REVIEW_PUBLIC_CLOUD_REQUEST]: 'Review Public Cloud Request',
 };
 
 const taskStatusColors = {

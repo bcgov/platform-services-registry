@@ -1,4 +1,4 @@
-import { Prisma, RequestType, DecisionStatus } from '@prisma/client';
+import { Prisma, RequestType, DecisionStatus, TaskType, TaskStatus } from '@prisma/client';
 import { Session } from 'next-auth';
 import prisma from '@/core/prisma';
 import { PrivateCloudRequestDecorate } from '@/types/doc-decorate';
@@ -20,9 +20,18 @@ async function baseFilter(session: Session) {
   const { data: products } = await privateCloudProductModel.list({ select: { licencePlate: true } }, session);
   const licencePlates = products.map(({ licencePlate }) => licencePlate);
 
+  const requestIdsFromTasks = session.tasks
+    .filter(
+      (task) =>
+        ([TaskType.REVIEW_PRIVATE_CLOUD_REQUEST] as TaskType[]).includes(task.type) &&
+        task.status === TaskStatus.ASSIGNED,
+    )
+    .map((task) => (task.data as { requestId: string }).requestId);
+
   const filter: Prisma.PrivateCloudRequestWhereInput = {
     OR: [
       { licencePlate: { in: licencePlates } },
+      { id: { in: getUniqueNonFalsyItems([...requestIdsFromTasks]) } },
       { type: RequestType.CREATE, createdByEmail: { equals: session.user.email, mode: 'insensitive' } },
     ],
   };
@@ -35,7 +44,12 @@ async function decorate<T extends PrivateCloudRequestSimple | PrivateCloudReques
   session: Session,
   detail: boolean,
 ) {
-  const canReview = doc.decisionStatus === DecisionStatus.PENDING && session.permissions.reviewAllPrivateCloudRequests;
+  const canReview =
+    doc.decisionStatus === DecisionStatus.PENDING &&
+    session.tasks
+      .filter((task) => task.type === TaskType.REVIEW_PRIVATE_CLOUD_REQUEST && task.status === TaskStatus.ASSIGNED)
+      .map((task) => (task.data as { requestId: string }).requestId)
+      .includes(doc.id);
 
   const canEdit = canReview && doc.type !== RequestType.DELETE;
   const canResend =

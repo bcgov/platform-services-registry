@@ -20,11 +20,31 @@ import {
   sendExpenseAuthorityMou,
 } from './emails';
 
-export function sendAdminCreateRequestEmails(request: PublicCloudRequestDetailDecorated, requester: string) {
+export function sendAdminCreateRequestEmail(request: PublicCloudRequestDetailDecorated, requester: string) {
   try {
     const proms = [];
 
     proms.push(sendAdminCreateRequest(request, requester));
+    return Promise.all(proms);
+  } catch (error) {
+    logger.error('sendAdminCreateRequestEmail:', error);
+  }
+}
+
+export function sendAdminDeleteRequestEmail(request: PublicCloudRequestDetailDecorated, requester: string) {
+  try {
+    const proms = [];
+
+    proms.push(sendAdminDeleteRequest(request, requester));
+    return Promise.all(proms);
+  } catch (error) {
+    logger.error('sendAdminDeleteRequestEmail:', error);
+  }
+}
+
+export function sendAdminCreateRequestEmails(request: PublicCloudRequestDetailDecorated, requester: string) {
+  try {
+    const proms = [];
     proms.push(sendEmouServiceAgreement(request));
 
     return Promise.all(proms);
@@ -66,8 +86,6 @@ export function sendEditRequestEmails(request: PublicCloudRequestDetailDecorated
 export function sendDeleteRequestEmails(request: PublicCloudRequestDetailDecorated, requester: string) {
   try {
     const proms = [];
-
-    proms.push(sendAdminDeleteRequest(request, requester));
     proms.push(sendTeamDeleteRequest(request, requester));
 
     return Promise.all(proms);
