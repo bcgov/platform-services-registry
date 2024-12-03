@@ -69,7 +69,7 @@ export function normalizeCpu(cpuValue: string | number) {
 
   // Ensure the input number is valid
   if (typeof cpuValue === 'number') {
-    return cpuValue;
+    return Math.round(cpuValue * cpuCoreToMillicoreMultiplier);
   }
 
   return -1;
@@ -95,7 +95,7 @@ export const memoryUnitMultipliers = {
 // Mebibyte (MiB): 1 MiB = 1024^2 bytes
 // Kibibyte (KiB): 1 KiB = 1024 bytes
 //
-// Converts memory values to Ki units
+// Converts memory values to bytes units
 export function normalizeMemory(memoryValue: string | number): number {
   if (typeof memoryValue === 'string') {
     const match = memoryValue.match(/^(\d+(?:\.\d+)?)([KMGTE]?i?)$/i); // Case-insensitive matching
