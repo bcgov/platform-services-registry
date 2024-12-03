@@ -136,12 +136,15 @@ export function formatBinaryMetric(bytes: number) {
   return `${formattedValue} ${units[index]}`;
 }
 
-export function formatCpu(millicores: number) {
-  if (millicores >= 1000) {
-    return `${(millicores / 1000).toFixed(2)} cores`;
+export function formatCpu(cores: number) {
+  if (cores < 0.001) {
+    // Handle very small values
+    return `${(cores * 1000).toFixed(2)} m`;
   }
-
-  return `${Math.round(millicores)} m`;
+  if (cores >= 1) {
+    return `${cores.toFixed(2)} cores`;
+  }
+  return `${Math.round(cores * 1000)} m`;
 }
 
 // Function to aggregate total usage and limits across all containers in a single pod
