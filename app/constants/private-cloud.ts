@@ -70,3 +70,10 @@ export const environmentShortNames = {
   production: 'prod',
   tools: 'tools',
 };
+
+export const environmentLongNames = {
+  dev: 'development',
+  test: 'test',
+  prod: 'production',
+  tools: 'tools',
+};
