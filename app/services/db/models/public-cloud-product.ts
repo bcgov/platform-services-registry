@@ -22,7 +22,9 @@ async function baseFilter(session: Session) {
   ];
 
   const licencePlatesFromTasks = session.tasks
-    .filter((task) => [TaskType.SIGN_PUBLIC_CLOUD_MOU, TaskType.REVIEW_PUBLIC_CLOUD_MOU].includes(task.type))
+    .filter((task) =>
+      ([TaskType.SIGN_PUBLIC_CLOUD_MOU, TaskType.REVIEW_PUBLIC_CLOUD_MOU] as TaskType[]).includes(task.type),
+    )
     .map((task) => (task.data as { licencePlate: string }).licencePlate);
 
   if (session.user.id) {

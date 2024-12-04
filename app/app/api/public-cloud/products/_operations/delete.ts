@@ -1,4 +1,4 @@
-import { PublicCloudRequestType, DecisionStatus, ProjectStatus, EventType } from '@prisma/client';
+import { PublicCloudRequestType, DecisionStatus, ProjectStatus, EventType, TaskType } from '@prisma/client';
 import { Session } from 'next-auth';
 import { z, TypeOf, ZodType } from 'zod';
 import prisma from '@/core/prisma';

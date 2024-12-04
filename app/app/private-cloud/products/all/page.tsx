@@ -22,6 +22,7 @@ export default privateCloudProducts(({ session }) => {
   const { data, isLoading } = useQuery({
     queryKey: ['products', snap],
     queryFn: () => searchPrivateCloudProducts(snap),
+    refetchInterval: 5000,
   });
 
   let products: PrivateCloudProductSimpleDecorated[] = [];

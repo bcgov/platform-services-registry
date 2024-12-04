@@ -22,6 +22,7 @@ export default privateCloudRequests(({}) => {
   const { data, isLoading } = useQuery({
     queryKey: ['requests', snap],
     queryFn: () => searchPrivateCloudRequests(snap),
+    refetchInterval: 5000,
   });
 
   let requests: PrivateCloudRequestSimpleDecorated[] = [];

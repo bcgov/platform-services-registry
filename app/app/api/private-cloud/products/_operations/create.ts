@@ -1,11 +1,11 @@
-import { DecisionStatus, ProjectStatus, RequestType, EventType } from '@prisma/client';
+import { DecisionStatus, ProjectStatus, RequestType, EventType, TaskType } from '@prisma/client';
 import { Session } from 'next-auth';
 import { defaultQuota } from '@/constants';
 import { OkResponse, UnauthorizedResponse, UnprocessableEntityResponse } from '@/core/responses';
 import generateLicencePlate from '@/helpers/licence-plate';
 import { sendRequestNatsMessage } from '@/helpers/nats-message';
 import { sendCreateRequestEmails, sendRequestApprovalEmails } from '@/services/ches/private-cloud';
-import { createEvent, models, privateCloudRequestDetailInclude } from '@/services/db';
+import { createEvent, models, privateCloudRequestDetailInclude, tasks } from '@/services/db';
 import { upsertUsers } from '@/services/db/user';
 import { PrivateCloudCreateRequestBody } from '@/validation-schemas/private-cloud';
 
@@ -85,7 +85,10 @@ export default async function createOp({ session, body }: { session: Session; bo
       sendRequestApprovalEmails(newRequest, session.user.name),
     );
   } else {
-    proms.push(sendCreateRequestEmails(newRequest, user.name));
+    proms.push(
+      sendCreateRequestEmails(newRequest, user.name),
+      tasks.create(TaskType.REVIEW_PRIVATE_CLOUD_REQUEST, { request: newRequest, requester: user.name }),
+    );
   }
 
   await Promise.all(proms);

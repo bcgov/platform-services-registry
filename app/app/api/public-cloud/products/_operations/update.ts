@@ -1,4 +1,4 @@
-import { DecisionStatus, Prisma, RequestType, EventType } from '@prisma/client';
+import { DecisionStatus, Prisma, RequestType, EventType, TaskType } from '@prisma/client';
 import { Session } from 'next-auth';
 import { TypeOf } from 'zod';
 import { OkResponse, UnauthorizedResponse } from '@/core/responses';
@@ -81,12 +81,11 @@ export default async function updateOp({
     )
   ).data;
 
-  const proms = [];
-
-  proms.push(createEvent(EventType.UPDATE_PUBLIC_CLOUD_PRODUCT, session.user.id, { requestId: newRequest.id }));
-  proms.push(sendPublicCloudNatsMessage(newRequest));
-
-  proms.push(sendEditRequestEmails(newRequest, session.user.name));
+  const proms = [
+    createEvent(EventType.UPDATE_PUBLIC_CLOUD_PRODUCT, session.user.id, { requestId: newRequest.id }),
+    sendPublicCloudNatsMessage(newRequest),
+    sendEditRequestEmails(newRequest, session.user.name),
+  ];
 
   await Promise.all(proms);
 

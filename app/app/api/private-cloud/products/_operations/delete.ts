@@ -1,4 +1,4 @@
-import { RequestType, DecisionStatus, ProjectStatus, EventType, Prisma } from '@prisma/client';
+import { RequestType, DecisionStatus, ProjectStatus, EventType, Prisma, TaskType } from '@prisma/client';
 import { Session } from 'next-auth';
 import { z, TypeOf, ZodType } from 'zod';
 import prisma from '@/core/prisma';
@@ -11,6 +11,7 @@ import {
   models,
   excludePrivateProductPopulatedFields,
   getLastClosedPrivateCloudRequest,
+  tasks,
 } from '@/services/db';
 import { deletePathParamSchema } from '../[licencePlate]/schema';
 
@@ -75,6 +76,7 @@ export default async function deleteOp({
 
   await Promise.all([
     createEvent(EventType.DELETE_PRIVATE_CLOUD_PRODUCT, session.user.id, { requestId: newRequest.id }),
+    tasks.create(TaskType.REVIEW_PRIVATE_CLOUD_REQUEST, { request: newRequest, requester: session.user.name }),
     sendDeleteRequestEmails(newRequest, session.user.name),
   ]);
 

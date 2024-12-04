@@ -36,6 +36,7 @@ export default publicCloudRequests(({ getPathParams }) => {
   const { data, isLoading } = useQuery({
     queryKey: ['requests', snap],
     queryFn: () => searchPublicCloudRequests({ ...snap, licencePlate }),
+    refetchInterval: 5000,
     enabled: !!licencePlate,
   });
 

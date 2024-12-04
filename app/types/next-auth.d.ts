@@ -94,6 +94,7 @@ declare module 'next-auth' {
       azure: boolean;
       awsLza: boolean;
     };
+    permissionList: string[];
   }
 
   type PermissionsKey = keyof Permissions;

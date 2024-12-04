@@ -1,4 +1,4 @@
-import { DecisionStatus, Cluster, RequestType, EventType } from '@prisma/client';
+import { DecisionStatus, Cluster, RequestType, EventType, TaskType } from '@prisma/client';
 import { Session } from 'next-auth';
 import { TypeOf } from 'zod';
 import { OkResponse, UnauthorizedResponse, UnprocessableEntityResponse } from '@/core/responses';
@@ -6,7 +6,13 @@ import { getQuotaChangeStatus } from '@/helpers/auto-approval-check';
 import { sendRequestNatsMessage } from '@/helpers/nats-message';
 import { comparePrivateProductData } from '@/helpers/product-change';
 import { sendEditRequestEmails, sendRequestApprovalEmails } from '@/services/ches/private-cloud';
-import { createEvent, privateCloudRequestDetailInclude, getLastClosedPrivateCloudRequest, models } from '@/services/db';
+import {
+  createEvent,
+  privateCloudRequestDetailInclude,
+  getLastClosedPrivateCloudRequest,
+  models,
+  tasks,
+} from '@/services/db';
 import { upsertUsers } from '@/services/db/user';
 import { PrivateCloudEditRequestBody } from '@/validation-schemas/private-cloud';
 import { putPathParamSchema } from '../[licencePlate]/schema';
@@ -107,7 +113,10 @@ export default async function updateOp({
     )
   ).data;
 
-  await createEvent(EventType.UPDATE_PRIVATE_CLOUD_PRODUCT, session.user.id, { requestId: newRequest.id });
+  await Promise.all([
+    createEvent(EventType.UPDATE_PRIVATE_CLOUD_PRODUCT, session.user.id, { requestId: newRequest.id }),
+    tasks.create(TaskType.REVIEW_PRIVATE_CLOUD_REQUEST, { request: newRequest, requester: session.user.name }),
+  ]);
 
   if (newRequest.decisionStatus === DecisionStatus.PENDING) {
     await sendEditRequestEmails(newRequest, session.user.name);

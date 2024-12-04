@@ -1,4 +1,4 @@
-import { DecisionStatus, Prisma, ProjectStatus, RequestType, EventType } from '@prisma/client';
+import { DecisionStatus, Prisma, ProjectStatus, RequestType, EventType, TaskType } from '@prisma/client';
 import { z } from 'zod';
 import { GlobalRole, GlobalPermissions } from '@/constants';
 import createApiHandler from '@/core/api-handler';
@@ -6,7 +6,7 @@ import prisma from '@/core/prisma';
 import { BadRequestResponse, OkResponse, UnprocessableEntityResponse } from '@/core/responses';
 import { sendRequestNatsMessage } from '@/helpers/nats-message';
 import { sendRequestRejectionEmails, sendRequestApprovalEmails } from '@/services/ches/private-cloud';
-import { createEvent, models, privateCloudRequestDetailInclude } from '@/services/db';
+import { createEvent, models, privateCloudRequestDetailInclude, tasks } from '@/services/db';
 import { upsertUsers } from '@/services/db/user';
 import {
   privateCloudRequestDecisionBodySchema,
@@ -94,7 +94,15 @@ export const POST = apiHandler(async ({ pathParams, body, session }) => {
 
   const updatedRequestDecorated = await models.privateCloudRequest.decorate(updatedRequest, session, true);
 
-  await createEvent(EventType.REVIEW_PRIVATE_CLOUD_REQUEST, session.user.id, { requestId: updatedRequestDecorated.id });
+  await Promise.all([
+    createEvent(EventType.REVIEW_PRIVATE_CLOUD_REQUEST, session.user.id, { requestId: updatedRequestDecorated.id }),
+    tasks.close(TaskType.REVIEW_PRIVATE_CLOUD_REQUEST, {
+      requestId: request.id,
+      licencePlate: request.licencePlate,
+      session,
+      decision,
+    }),
+  ]);
 
   if (updatedRequestDecorated.decisionStatus === DecisionStatus.REJECTED) {
     await sendRequestRejectionEmails(updatedRequestDecorated);
