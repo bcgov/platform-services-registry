@@ -39,7 +39,6 @@ Scenario: Approval Admin reviews New Request
 Scenario: Approval Admin reviews Edit Request
     When User logs in with username "james.smith@gov.bc.ca" and password "james.smith@gov.bc.ca"
     And User clicks tab "PRIVATE CLOUD OPENSHIFT"
-    And User clicks tab "PRIVATE CLOUD OPENSHIFT"
     When User clicks link "Automated Test Product Name"
     And User waits for "10" seconds
     And User types "Automated Test Edit Request" in "Product name"
@@ -101,7 +100,6 @@ Scenario: Approval Admin reviews Edit Request
 
 Scenario: Approval Admin reviews Delete Request
     When User logs in with username "david.johnson@gov.bc.ca" and password "david.johnson@gov.bc.ca"
-    And User clicks tab "PRIVATE CLOUD OPENSHIFT"
     And User clicks tab "PRIVATE CLOUD OPENSHIFT"
     And User clicks link "Automated Test Edit Request"
     And User waits for "10" seconds
