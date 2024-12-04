@@ -51,6 +51,8 @@ model User {
   publicCloudRequestsAsRequester                        PublicCloudRequest[]           @relation("createdBy")
   privateCloudRequestsAsDecisionMaker                   PrivateCloudRequest[]          @relation("decisionMaker")
   publicCloudRequestsAsDecisionMaker                    PublicCloudRequest[]           @relation("decisionMaker")
+  tokenLock                                             Boolean                        @default(false)
+  timeUntilTokenExpire                                  DateTime?
 }
 
 model PrivateCloudRequest {

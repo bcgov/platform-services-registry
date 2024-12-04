@@ -1,6 +1,7 @@
 import { Prisma, User } from '@prisma/client';
 import axios from 'axios';
 import { userSorts } from '@/constants';
+import prisma from '@/core/prisma';
 import { AdminViewUser } from '@/types/user';
 import { downloadFile } from '@/utils/file-download';
 import { UserSearchBody, UserUpdateBody } from '@/validation-schemas';
@@ -49,4 +50,30 @@ export async function downloadUsers(data: UserSearchBody) {
   });
 
   return result;
+}
+
+export async function acquireUserLock(userId: string): Promise<boolean> {
+  const user = await prisma.user.findUnique({ where: { email: userId } });
+
+  if (user?.tokenLock) {
+    return false; // Lock is already held
+  }
+
+  await prisma.user.update({
+    where: { email: userId },
+    data: { tokenLock: true },
+  });
+
+  return true;
+}
+
+export async function releaseUserLock(userId: string): Promise<boolean> {
+  const result = await prisma.user
+    .update({
+      where: { email: userId },
+      data: { tokenLock: false },
+    })
+    .catch(() => false);
+
+  return !!result;
 }
