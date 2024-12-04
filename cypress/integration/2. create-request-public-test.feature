@@ -38,3 +38,4 @@ Feature: New Request
     And User clicks modal window button "Close"
     Then User should be redirected to Requests tab
     And User should see "Automated Test Product Name"
+    And User logs out

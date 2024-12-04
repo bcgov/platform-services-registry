@@ -28,8 +28,8 @@ Given('User visits main page', () => {
 //   cy.screenshot();
 // });
 
-When(/^User clicks link "(.*)"$/, (buttonText: string) => {
-  cy.contains('a, span', buttonText).first().scrollIntoView().click();
+When(/^User clicks link "(.*)"$/, (linkText: string) => {
+  cy.contains('a, span', linkText).first().scrollIntoView().click();
 });
 
 When(/^User types (?!.*\band selects\b)"(.*)" in "?(.*?)(?:\.\.\.)?"$/, (text: string, textFieldLabel: string) => {
@@ -53,8 +53,7 @@ When(/^User types and selects Secondary Tech Lead "(.*)"$/, (contactEmail: strin
     .find('input')
     .first()
     .clear()
-    .type(contactEmail)
-    .screenshot();
+    .type(contactEmail);
   cy.contains('span', contactEmail).screenshot().click();
 });
 
@@ -160,6 +159,10 @@ When(/^User pastes from clipboard to "?(.*?)(?:\.\.\.)?"$/, (textfieldLabel) => 
   cy.get('@copiedText').then((copiedText) => {
     cy.get(`input[placeholder="${textfieldLabel}"]`).click().invoke('val', copiedText);
   });
+});
+
+When('User reloads the page', () => {
+  cy.reload();
 });
 
 Then('User should be redirected to Requests tab', () => {
