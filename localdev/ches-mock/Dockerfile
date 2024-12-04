@@ -1,4 +1,4 @@
-FROM node:22.10.0-alpine3.19 AS builder
+FROM node:22.12.0-alpine3.19 AS builder
 WORKDIR /context
 
 COPY ches-mock/package.json ches-mock/package-lock.json ches-mock/tsconfig.json ./
@@ -6,7 +6,7 @@ COPY ches-mock/src ./src
 
 RUN npm install && npm run build
 
-FROM node:22.10.0-alpine3.19
+FROM node:22.12.0-alpine3.19
 WORKDIR /context
 
 COPY --from=builder /context/build ./build
