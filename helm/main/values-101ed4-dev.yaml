@@ -68,6 +68,10 @@ weasyprint:
 ches-mock:
   enabled: true
 
+  route:
+    enabled: true
+    host: dev-pltsvc-ches-mock.apps.silver.devops.gov.bc.ca
+
 mailpit:
   enabled: true
 
