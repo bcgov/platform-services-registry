@@ -39,42 +39,75 @@ function populatePathParams(url: string, paramData?: ParamData) {
   };
 }
 
+async function wrapHanlder(handler: Handler, req: NextRequest, options?: { params: any; data?: any }) {
+  const { params, data } = options ?? {};
+  const res = await handler(req, { params });
+
+  let resData: any;
+  let isJSON = false;
+
+  const contentType = res.headers.get('Content-Type') || '';
+  if (contentType.includes('application/json')) {
+    try {
+      resData = await res.json();
+      res.json = async () => resData;
+      isJSON = true;
+    } catch {}
+  } else {
+    try {
+      resData = await res.text();
+      res.text = async () => resData;
+    } catch {}
+  }
+
+  if (res.status < 200 || res.status >= 300) {
+    console.log('HTTP Error', {
+      request: {
+        method: req.method,
+        url: req.url,
+        headers: req.headers,
+        body: data,
+      },
+      response: {
+        status: res.status,
+        headers: res.headers,
+        body: isJSON ? JSON.stringify(resData) : resData,
+      },
+    });
+  }
+
+  return res;
+}
+
 export function createRoute(baseUrl: string) {
   return {
     get: async function (handler: Handler, url: string, paramData?: ParamData, headers?: any) {
       const { url: _url, pathParams } = populatePathParams(`${baseUrl}${url}`, paramData);
       const req = new NextRequest(_url, { method: 'GET', headers });
-      const res = await handler(req, { params: pathParams });
-
-      return res;
+      return wrapHanlder(handler, req, { params: pathParams });
     },
     post: async function (handler: Handler, url: string, data: any, paramData?: ParamData, headers?: any) {
       const { url: _url, pathParams } = populatePathParams(`${baseUrl}${url}`, paramData);
-      const req = new NextRequest(_url, { method: 'POST', body: JSON.stringify(data), headers });
-      const res = await handler(req, { params: pathParams });
-
-      return res;
+      const jsonData = JSON.stringify(data);
+      const req = new NextRequest(_url, { method: 'POST', body: jsonData, headers });
+      return wrapHanlder(handler, req, { params: pathParams, data: jsonData });
     },
     put: async function (handler: Handler, url: string, data: any, paramData?: ParamData, headers?: any) {
       const { url: _url, pathParams } = populatePathParams(`${baseUrl}${url}`, paramData);
-      const req = new NextRequest(_url, { method: 'PUT', body: JSON.stringify(data), headers });
-      const res = await handler(req, { params: pathParams });
-
-      return res;
+      const jsonData = JSON.stringify(data);
+      const req = new NextRequest(_url, { method: 'PUT', body: jsonData, headers });
+      return wrapHanlder(handler, req, { params: pathParams, data: jsonData });
     },
     patch: async function (handler: Handler, url: string, data: any, paramData?: ParamData, headers?: any) {
       const { url: _url, pathParams } = populatePathParams(`${baseUrl}${url}`, paramData);
-      const req = new NextRequest(_url, { method: 'PATCH', body: JSON.stringify(data), headers });
-      const res = await handler(req, { params: pathParams });
-
-      return res;
+      const jsonData = JSON.stringify(data);
+      const req = new NextRequest(_url, { method: 'PATCH', body: jsonData, headers });
+      return wrapHanlder(handler, req, { params: pathParams, data: jsonData });
     },
     delete: async function (handler: Handler, url: string, paramData?: ParamData, headers?: any) {
       const { url: _url, pathParams } = populatePathParams(`${baseUrl}${url}`, paramData);
       const req = new NextRequest(_url, { method: 'DELETE', headers });
-      const res = await handler(req, { params: pathParams });
-
-      return res;
+      return wrapHanlder(handler, req, { params: pathParams });
     },
   };
 }
