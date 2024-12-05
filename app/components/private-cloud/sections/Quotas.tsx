@@ -62,12 +62,15 @@ export default function Quotas({
 
       <div className="mt-10 mb-5 grid grid-cols-1 gap-x-4 xl:gap-x-4 gap-y-8 sm:grid-cols-8 ">
         {namespaceKeys.map((namespace, index) => {
-          const originalVal = originalResourceRequests[namespace];
+          const originalVal = originalResourceRequests?.[namespace];
+          const hasOriginalVal = !!originalVal;
+
           const newVal = (resourceRequests[namespace] || {}) as ResourceRequests;
           const changed =
-            originalVal?.cpu !== newVal?.cpu ||
-            originalVal?.memory !== newVal?.memory ||
-            originalVal?.storage !== newVal?.storage;
+            hasOriginalVal &&
+            (originalVal?.cpu !== newVal?.cpu ||
+              originalVal?.memory !== newVal?.memory ||
+              originalVal?.storage !== newVal?.storage);
 
           let subnetInfo = null;
           if (cluster === Cluster.EMERALD) {
@@ -105,7 +108,7 @@ export default function Quotas({
               {subnetInfo}
 
               {resourceKeys.map((resourceKey) => {
-                const oldval = String(originalVal[resourceKey]);
+                const oldval = String(originalVal?.[resourceKey]);
                 const newval = String(newVal[resourceKey]);
 
                 return (
@@ -123,7 +126,7 @@ export default function Quotas({
                       min={0}
                       max={resourceKey === 'cpu' ? 64 : resourceKey === 'memory' ? 128 : 512}
                     />
-                    {oldval !== newval && (
+                    {hasOriginalVal && oldval !== newval && (
                       <div>
                         Original value: <span className="font-semibold">{oldval}</span>
                       </div>
