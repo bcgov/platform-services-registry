@@ -39,10 +39,13 @@ export async function createReviewPrivateCloudRequestTask(data: CreateReviewPriv
   switch (data.request.type) {
     case RequestType.CREATE:
       emailProm = sendAdminCreateRequestEmail(data.request, data.requester);
+      break;
     case RequestType.EDIT:
       emailProm = sendAdminEditRequestEmail(data.request, data.requester);
+      break;
     case RequestType.DELETE:
       emailProm = sendAdminDeleteRequestEmail(data.request, data.requester);
+      break;
   }
 
   const [task] = await Promise.all([taskProm, emailProm]);
