@@ -61,7 +61,7 @@ async function wrapHanlder(handler: Handler, req: NextRequest, options?: { param
   }
 
   if (res.status < 200 || res.status >= 300) {
-    console.error('HTTP Error', {
+    console.log('HTTP Error', {
       request: {
         method: req.method,
         url: req.url,
