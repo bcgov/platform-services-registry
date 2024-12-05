@@ -15,8 +15,18 @@ runs:
       restore-keys: |
         ${{ runner.os }}-nextjs-${{ hashFiles('**/package-lock.json') }}-
 
+  - uses: actions/cache@1bd1e32a3bdc45362d1e726936510720a7c30a57
+    with:
+      # pnpm store path
+      path: |
+        ~/.local/share/pnpm/store/v3
+        ${{ github.workspace }}/app/.next/cache
+      key: ${{ runner.os }}-nextjs-${{ hashFiles('**/pnpm-lock.yaml') }}-${{ hashFiles('**/*.js', '**/*.jsx', '**/*.ts', '**/*.tsx') }}
+      restore-keys: |
+        ${{ runner.os }}-nextjs-${{ hashFiles('**/pnpm-lock.yaml') }}-
+
   - name: Install Root NPM packages
-    run: npm install
+    run: pnpm install
     shell: bash
 
   - name: Install App NPM packages

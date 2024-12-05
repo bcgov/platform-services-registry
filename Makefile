@@ -17,7 +17,7 @@ dev:
 
 .PHONY: install
 install:
-	npm install
+	pnpm install
 	npm install --prefix app
 	npm install --prefix data-migrations
 

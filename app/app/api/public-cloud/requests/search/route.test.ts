@@ -67,7 +67,7 @@ describe('Search Public Cloud Requests - Permissions', () => {
 
     if (task1) {
       await mockSessionByEmail(dat1.decisionData.expenseAuthority.email);
-      await signPublicCloudMou(dat1.id, {
+      await signPublicCloudMou(dat1.licencePlate, {
         taskId: task1?.id ?? '',
         confirmed: true,
       });
