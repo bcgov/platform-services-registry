@@ -89,6 +89,7 @@ jest.mock('@/services/k8s', () => ({
   'toLower',
   'toString',
   'set',
+  'sum',
   'uniq',
   'kebabCase',
   'trim',

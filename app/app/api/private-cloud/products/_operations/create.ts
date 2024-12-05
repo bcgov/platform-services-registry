@@ -1,6 +1,6 @@
 import { DecisionStatus, ProjectStatus, RequestType, EventType, TaskType } from '@prisma/client';
 import { Session } from 'next-auth';
-import { defaultQuota } from '@/constants';
+import { defaultResourceRequests } from '@/constants';
 import { OkResponse, UnauthorizedResponse, UnprocessableEntityResponse } from '@/core/responses';
 import generateLicencePlate from '@/helpers/licence-plate';
 import { sendRequestNatsMessage } from '@/helpers/nats-message';
@@ -37,10 +37,12 @@ export default async function createOp({ session, body }: { session: Session; bo
     ...rest,
     licencePlate,
     status: ProjectStatus.ACTIVE,
-    productionQuota: defaultQuota,
-    testQuota: defaultQuota,
-    toolsQuota: defaultQuota,
-    developmentQuota: defaultQuota,
+    resourceRequests: {
+      development: defaultResourceRequests,
+      test: defaultResourceRequests,
+      production: defaultResourceRequests,
+      tools: defaultResourceRequests,
+    },
     projectOwner: { connect: { email: body.projectOwner.email } },
     primaryTechnicalLead: { connect: { email: body.primaryTechnicalLead.email } },
     secondaryTechnicalLead: body.secondaryTechnicalLead

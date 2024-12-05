@@ -1,14 +1,7 @@
-import {
-  Cluster,
-  CPU,
-  DecisionStatus,
-  Memory,
-  PrivateCloudRequestedProject,
-  RequestType,
-  Storage,
-} from '@prisma/client';
+import { Cluster, DecisionStatus, RequestType } from '@prisma/client';
 import { GlobalRole } from '@/constants';
 import { createSamplePrivateCloudProductData } from '@/helpers/mock-resources';
+import { resourceRequests1, resourceRequests2 } from '@/helpers/mock-resources/private-cloud-product';
 import { mockSessionByEmail, mockSessionByRole } from '@/services/api-test/core';
 import { provisionPrivateCloudProject } from '@/services/api-test/private-cloud';
 import {
@@ -49,22 +42,10 @@ export async function createPrivateCloudProduct() {
 }
 
 export async function updatePrivateCloudProduct() {
-  const oldDevelopmentQuota = {
-    cpu: CPU.CPU_REQUEST_1_LIMIT_2,
-    memory: Memory.MEMORY_REQUEST_4_LIMIT_8,
-    storage: Storage.STORAGE_2,
-  };
-
-  const newDevelopmentQuota = {
-    cpu: CPU.CPU_REQUEST_1_LIMIT_2,
-    memory: Memory.MEMORY_REQUEST_8_LIMIT_16,
-    storage: Storage.STORAGE_2,
-  };
-
   const productData = createSamplePrivateCloudProductData({
     data: {
       cluster: Cluster.SILVER,
-      developmentQuota: oldDevelopmentQuota,
+      resourceRequests: resourceRequests1,
     },
   });
 
@@ -96,7 +77,7 @@ export async function updatePrivateCloudProduct() {
 
   response = await editPrivateCloudProject(decisionData.licencePlate, {
     ...decisionData,
-    developmentQuota: newDevelopmentQuota,
+    resourceRequests: resourceRequests2,
   });
 
   if (response.status !== 200) return null;

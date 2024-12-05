@@ -7,10 +7,10 @@ import { FormProvider, useForm } from 'react-hook-form';
 import { z } from 'zod';
 import PreviousButton from '@/components/buttons/Previous';
 import ProjectDescription from '@/components/form/ProjectDescriptionPrivate';
-import Quotas from '@/components/form/Quotas';
 import TeamContacts from '@/components/form/TeamContacts';
 import PageAccordion from '@/components/generic/accordion/PageAccordion';
 import AdditionalTeamMembers from '@/components/private-cloud/sections/AdditionalTeamMembers';
+import Quotas from '@/components/private-cloud/sections/Quotas';
 import { GlobalRole } from '@/constants';
 import createClientPage from '@/core/client-page';
 import { usePrivateProductState } from '@/states/global';
@@ -30,24 +30,24 @@ export default privateCloudRequestOriginal(({ getPathParams, session, router }) 
     getPathParams().then((v) => setPathParams(v));
   }, []);
 
-  const [, privateSnap] = usePrivateProductState();
+  const [, snap] = usePrivateProductState();
   const { id = '' } = pathParams ?? {};
   const [secondTechLead, setSecondTechLead] = useState(false);
 
   useEffect(() => {
-    if (!privateSnap.currentRequest) return;
+    if (!snap.currentRequest) return;
 
-    if (privateSnap.currentRequest.originalData?.secondaryTechnicalLead) {
+    if (snap.currentRequest.originalData?.secondaryTechnicalLead) {
       setSecondTechLead(true);
     }
-  }, [privateSnap.currentRequest, router]);
+  }, [snap.currentRequest, router]);
 
   const methods = useForm({
     defaultValues: {
       decisionComment: '',
       decision: '',
-      type: privateSnap.currentRequest?.type,
-      ...privateSnap.currentRequest?.originalData,
+      type: snap.currentRequest?.type,
+      ...snap.currentRequest?.originalData,
     },
   });
 
@@ -58,7 +58,7 @@ export default privateCloudRequestOriginal(({ getPathParams, session, router }) 
     }
   };
 
-  if (!privateSnap.currentRequest) {
+  if (!snap.currentRequest) {
     return null;
   }
 
@@ -72,7 +72,7 @@ export default privateCloudRequestOriginal(({ getPathParams, session, router }) 
       Component: ProjectDescription,
       componentArgs: {
         disabled: isDisabled,
-        clusterDisabled: privateSnap.currentRequest.type !== 'CREATE',
+        clusterDisabled: snap.currentRequest.type !== 'CREATE',
         mode: 'original',
       },
     },
@@ -97,8 +97,9 @@ export default privateCloudRequestOriginal(({ getPathParams, session, router }) 
       Component: Quotas,
       componentArgs: {
         disabled: isDisabled,
-        licencePlate: privateSnap.currentRequest.licencePlate as string,
-        currentProject: privateSnap.currentRequest.project as PrivateCloudProject,
+        licencePlate: snap.currentRequest?.licencePlate,
+        cluster: snap.currentRequest?.originalData?.cluster,
+        originalResourceRequests: snap.currentRequest?.originalData?.resourceRequests,
         quotaContactRequired: false,
       },
     },

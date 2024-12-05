@@ -1,4 +1,4 @@
-import { Prisma, PrivateCloudComment, QuotaUpgradeResourceDetail } from '@prisma/client';
+import { Prisma, PrivateCloudComment, QuotaUpgradeResourceDetail, ResourceRequestsEnv } from '@prisma/client';
 import axios from 'axios';
 import { privateCloudProductSorts } from '@/constants';
 import {
@@ -11,7 +11,6 @@ import { downloadFile } from '@/utils/file-download';
 import {
   PrivateCloudProductSearchBody,
   PrivateCloudProductSearchNoPaginationBody,
-  Quotas,
 } from '@/validation-schemas/private-cloud';
 import { instance as parentInstance } from './instance';
 
@@ -161,7 +160,7 @@ export interface QuotaChangeStatus {
   resourceDetailList: QuotaUpgradeResourceDetail;
 }
 
-export async function getQuotaChangeStatus(licencePlate: string, requestedQuota: Quotas) {
-  const response = await instance.post<QuotaChangeStatus>(`/${licencePlate}/quota-change-status`, { requestedQuota });
+export async function getQuotaChangeStatus(licencePlate: string, resourceRequests: ResourceRequestsEnv) {
+  const response = await instance.post<QuotaChangeStatus>(`/${licencePlate}/quota-change-status`, { resourceRequests });
   return response.data;
 }

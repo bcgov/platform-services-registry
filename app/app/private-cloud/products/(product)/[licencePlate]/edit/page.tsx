@@ -2,7 +2,7 @@
 
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Button } from '@mantine/core';
-import { PrivateCloudProject } from '@prisma/client';
+import { ResourceRequestsEnv } from '@prisma/client';
 import { IconInfoCircle, IconUsersGroup, IconSettings, IconComponents } from '@tabler/icons-react';
 import { useEffect, useState } from 'react';
 import { FormProvider, useForm } from 'react-hook-form';
@@ -10,13 +10,13 @@ import { z } from 'zod';
 import PreviousButton from '@/components/buttons/Previous';
 import CommonComponents from '@/components/form/CommonComponents';
 import ProjectDescription from '@/components/form/ProjectDescriptionPrivate';
-import Quotas from '@/components/form/Quotas';
 import TeamContacts from '@/components/form/TeamContacts';
 import PageAccordion from '@/components/generic/accordion/PageAccordion';
 import FormErrorNotification from '@/components/generic/FormErrorNotification';
 import { openPrivateCloudProductEditSubmitModal } from '@/components/modal/privateCloudProductEditSubmit';
 import AdditionalTeamMembers from '@/components/private-cloud/sections/AdditionalTeamMembers';
-import { AGMinistries, GlobalRole, defaultQuota } from '@/constants';
+import Quotas from '@/components/private-cloud/sections/Quotas';
+import { GlobalRole } from '@/constants';
 import createClientPage from '@/core/client-page';
 import { getQuotaChangeStatus } from '@/services/backend/private-cloud/products';
 import { usePrivateProductState } from '@/states/global';
@@ -38,14 +38,9 @@ export default privateCloudProductEdit(({ session }) => {
 
   const methods = useForm({
     resolver: async (...args) => {
-      const { developmentQuota, testQuota, productionQuota, toolsQuota } = args[0];
+      const { resourceRequests } = args[0];
 
-      const quotaChangeStatus = await getQuotaChangeStatus(snap.licencePlate, {
-        developmentQuota,
-        testQuota,
-        productionQuota,
-        toolsQuota,
-      });
+      const quotaChangeStatus = await getQuotaChangeStatus(snap.licencePlate, resourceRequests as ResourceRequestsEnv);
 
       return zodResolver(
         privateCloudEditRequestBodySchema
@@ -91,10 +86,6 @@ export default privateCloudProductEdit(({ session }) => {
       )(...args);
     },
     defaultValues: {
-      developmentQuota: defaultQuota,
-      testQuota: defaultQuota,
-      productionQuota: defaultQuota,
-      toolsQuota: defaultQuota,
       ...snap.currentProduct,
       isAgMinistryChecked: true,
     },
@@ -160,8 +151,9 @@ export default privateCloudProductEdit(({ session }) => {
       Component: Quotas,
       componentArgs: {
         disabled: isDisabled,
-        licencePlate: snap.currentProduct?.licencePlate as string,
-        currentProject: snap.currentProduct as PrivateCloudProject,
+        licencePlate: snap.currentProduct?.licencePlate,
+        cluster: snap.currentProduct?.cluster,
+        originalResourceRequests: snap.currentProduct?.resourceRequests,
         quotaContactRequired: true,
       },
     },

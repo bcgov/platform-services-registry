@@ -1,7 +1,8 @@
 import { expect } from '@jest/globals';
-import { DecisionStatus, Cluster, RequestType, CPU, Memory, Storage } from '@prisma/client';
+import { DecisionStatus, Cluster, RequestType } from '@prisma/client';
 import { GlobalRole } from '@/constants';
 import { createSamplePrivateCloudProductData } from '@/helpers/mock-resources';
+import { resourceRequests1, resourceRequests2 } from '@/helpers/mock-resources/private-cloud-product';
 import { pickProductData } from '@/helpers/product';
 import { mockSessionByEmail, mockSessionByRole } from '@/services/api-test/core';
 import { provisionPrivateCloudProject } from '@/services/api-test/private-cloud';
@@ -20,29 +21,14 @@ const fieldsToCompare = [
   'projectOwner',
   'primaryTechnicalLead',
   'secondaryTechnicalLead',
-  'developmentQuota',
-  'testQuota',
-  'productionQuota',
-  'toolsQuota',
+  'resourceRequests',
   'commonComponents',
 ];
-
-const oldDevelopmentQuota = {
-  cpu: CPU.CPU_REQUEST_1_LIMIT_2,
-  memory: Memory.MEMORY_REQUEST_4_LIMIT_8,
-  storage: Storage.STORAGE_2,
-};
-
-const newDevelopmentQuota = {
-  cpu: CPU.CPU_REQUEST_1_LIMIT_2,
-  memory: Memory.MEMORY_REQUEST_8_LIMIT_16,
-  storage: Storage.STORAGE_2,
-};
 
 const productData = {
   main: createSamplePrivateCloudProductData({
     data: {
-      developmentQuota: oldDevelopmentQuota,
+      resourceRequests: resourceRequests1,
     },
   }),
 };
@@ -135,7 +121,7 @@ describe('Review Private Cloud Update Request - Permissions', () => {
 
     const response = await editPrivateCloudProject(requests.main.licencePlate, {
       ...requests.main.decisionData,
-      developmentQuota: newDevelopmentQuota,
+      resourceRequests: resourceRequests2,
       isAgMinistryChecked: true,
     });
 
@@ -176,7 +162,7 @@ describe('Review Private Cloud Update Request - Permissions', () => {
     const resData = await response.json();
     const decisionData = resData.decisionData;
 
-    expect(decisionData.developmentQuota).toEqual(decisionData.developmentQuota);
+    expect(decisionData.resourceRequests).toEqual(decisionData.resourceRequests);
   });
 
   it('should fail to review the update request already reviewed', async () => {

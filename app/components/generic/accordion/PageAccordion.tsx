@@ -24,7 +24,7 @@ function InnerPageAccordion({
   const [selected, setSelected] = useState(initialSelected);
 
   const accordionItems = items.map((item) => (
-    <Accordion.Item value={item.id ?? ''} key={item.label}>
+    <Accordion.Item value={item.id ?? ''} key={item.id ?? item.label}>
       <Accordion.Control>
         <AccordionLabel {...item} />
       </Accordion.Control>

@@ -1,7 +1,7 @@
-import { Cluster } from '@prisma/client';
+import { Cluster, ResourceRequestsEnv } from '@prisma/client';
 import { z, string } from 'zod';
 import { IS_PROD, IS_TEST } from '@/config';
-import { GlobalRole } from '@/constants';
+import { environmentLongNames, GlobalRole } from '@/constants';
 import createApiHandler from '@/core/api-handler';
 import { OkResponse, UnauthorizedResponse } from '@/core/responses';
 import { models } from '@/services/db';
@@ -9,7 +9,7 @@ import { getPodMetrics } from '@/services/k8s';
 import { getPathParamSchema } from '../schema';
 
 const queryParamSchema = z.object({
-  environment: string(),
+  environment: z.enum(['dev', 'test', 'prod', 'tools']),
   cluster: z.nativeEnum(Cluster),
 });
 
@@ -33,6 +33,10 @@ export const GET = apiHandler(async ({ queryParams, pathParams, session }) => {
     cluster = 'KLAB';
   }
 
-  const metrics = await getPodMetrics(licencePlate, environment, cluster);
+  const metrics = await getPodMetrics(
+    licencePlate,
+    environmentLongNames[environment] as keyof ResourceRequestsEnv,
+    cluster,
+  );
   return OkResponse(metrics);
 });

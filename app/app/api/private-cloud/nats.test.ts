@@ -1,7 +1,6 @@
 import { expect } from '@jest/globals';
 import _kebabCase from 'lodash-es/kebabCase';
-import { PRIVATE_NATS_URL, PUBLIC_NATS_URL } from '@/config';
-import { cpuMetadata, memoryMetadata, storageMetadata } from '@/constants';
+import { PRIVATE_NATS_URL } from '@/config';
 import {
   createPrivateCloudProduct,
   updatePrivateCloudProduct,

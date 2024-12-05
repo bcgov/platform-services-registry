@@ -31,18 +31,6 @@
       "module": "commonjs"
     }
   },
-  "include": [
-    "next-env.d.ts",
-    "**/*.ts",
-    "**/*.tsx",
-    ".next/types/**/*.ts",
-    "types/**/*.ts",
-    "middleware/**/*.ts",
-    "components/nav/Avatar.js",
-    "services/ches/index.js",
-    "services/ches/chesService.ts",
-    "services/ches/clientConnection.ts",
-    "cypress/tsconfig.json"
-  ],
+  "include": ["**/*.ts", "**/*.tsx", ".next/types/**/*.ts"],
   "exclude": ["node_modules"]
 }

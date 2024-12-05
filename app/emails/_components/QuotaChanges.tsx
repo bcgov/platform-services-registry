@@ -1,11 +1,10 @@
+import { ResourceRequests } from '@prisma/client';
 import { Heading, Link, Text } from '@react-email/components';
-import { cpuMetadata, memoryMetadata, storageMetadata } from '@/constants';
-import { Quota } from '@/validation-schemas/private-cloud';
 
 interface QuotaChangesProps {
   licencePlate: string;
-  quotaCurrent: Quota;
-  quotaRequested: Quota;
+  currentResourceRequests: ResourceRequests;
+  requestedResourceRequests: ResourceRequests;
   type: string;
   cluster: string;
   currentLabel?: string;
@@ -14,12 +13,10 @@ interface QuotaChangesProps {
 
 export default function QuotaChanges({
   licencePlate,
-  quotaCurrent,
-  quotaRequested,
+  currentResourceRequests,
+  requestedResourceRequests,
   type,
   cluster,
-  currentLabel = 'Current',
-  requestedLabel = 'Requested',
 }: QuotaChangesProps) {
   cluster = cluster.toLowerCase();
   return (
@@ -31,31 +28,28 @@ export default function QuotaChanges({
       >
         {licencePlate}
       </Link>
-      {quotaCurrent.cpu !== quotaRequested.cpu && (
+      {currentResourceRequests.cpu !== requestedResourceRequests.cpu && (
         <div>
-          <Text className="mt-4 mb-0 font-semibold h-4">CPU</Text>
-          <Text className="mt-2 mb-0 font-medium h-3">{currentLabel} Quota</Text>
-          <Text className="mt-1 mb-0 h-4">{cpuMetadata[quotaCurrent.cpu].label}</Text>
-          <Text className="mt-2 mb-0 font-medium h-3">{requestedLabel} Quota</Text>
-          <Text className="mt-1 mb-0 h-4">{cpuMetadata[quotaRequested.cpu].label}</Text>
+          <Text className="mt-4 mb-0 font-semibold h-4">CPU requests (Core)</Text>
+          <Text className="mt-1 mb-0 h-4">
+            {currentResourceRequests.cpu} &gt; {requestedResourceRequests.cpu}
+          </Text>
         </div>
       )}
-      {quotaCurrent.memory !== quotaRequested.memory && (
+      {currentResourceRequests.memory !== requestedResourceRequests.memory && (
         <div>
-          <Text className="mt-6 mb-0 font-semibold h-4">Memory</Text>
-          <Text className="mt-2 mb-0 font-medium h-3">{currentLabel} Memory</Text>
-          <Text className="mt-1 mb-0 h-4">{memoryMetadata[quotaCurrent.memory].label}</Text>
-          <Text className="mt-2 mb-0 font-medium h-3">{requestedLabel} Memory</Text>
-          <Text className="mt-1 mb-0 h-4">{memoryMetadata[quotaRequested.memory].label}</Text>
+          <Text className="mt-6 mb-0 font-semibold h-4">Memory requests (GB)</Text>
+          <Text className="mt-1 mb-0 h-4">
+            {currentResourceRequests.memory} &gt; {requestedResourceRequests.memory}
+          </Text>
         </div>
       )}
-      {quotaCurrent.storage !== quotaRequested.storage && (
+      {currentResourceRequests.storage !== requestedResourceRequests.storage && (
         <div>
-          <Text className="mt-6 mb-0 font-semibold h-4">Storage</Text>
-          <Text className="mt-2 mb-0 font-medium h-3">{currentLabel} Storage</Text>
-          <Text className="mt-1 mb-0 h-4">{storageMetadata[quotaCurrent.storage].label}</Text>
-          <Text className="mt-2 mb-0 font-medium h-3">{requestedLabel} Storage</Text>
-          <Text className="mt-1 mb-0 h-4">{storageMetadata[quotaRequested.storage].label}</Text>
+          <Text className="mt-6 mb-0 font-semibold h-4">Storage requests (GB)</Text>
+          <Text className="mt-1 mb-0 h-4">
+            {currentResourceRequests.storage} &gt; {requestedResourceRequests.storage}
+          </Text>
         </div>
       )}
     </div>

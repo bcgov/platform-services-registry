@@ -74,11 +74,11 @@ export default function TeamContacts({
             <p className="mt-4 text-base leading-6 text-gray-600">
               This is typically the DevOps specialist. We use this information to contact them with technical questions
               or notify them about platform events. You require a Primary Technical Lead, a Secondary Technical Lead is
-              optional. Please use only IDIR linked email address below.
-              <p className="text-gray-600">
+              optional. Please use only IDIR linked email address below. <br />
+              <span className="text-gray-600">
                 Kindly make sure the Product Owner&#40;PO&#41; and the Primary Technical Lead &#40;TL&#41; are{' '}
                 <span className="text-red-600">NOT</span> the same person.
-              </p>
+              </span>
             </p>
           </div>
           <AsyncAutocomplete

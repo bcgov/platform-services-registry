@@ -9,7 +9,6 @@ import {
   IconCircleLetterD,
   IconAddressBook,
 } from '@tabler/icons-react';
-import { useEffect, useState } from 'react';
 import { z } from 'zod';
 import PageAccordion, { PageAccordionItem } from '@/components/generic/accordion/PageAccordion';
 import ProductComparison from '@/components/ProductComparison';

@@ -1,12 +1,8 @@
-import { Cluster, Prisma, CPU, Memory, Storage, PrivateCloudProductMemberRole } from '@prisma/client';
+import { Cluster, Prisma, PrivateCloudProductMemberRole } from '@prisma/client';
 import _orderBy from 'lodash-es/orderBy';
-import { extractNumbers } from '@/utils/string';
 import { productSorts } from './common';
 
 export const privateCloudProductMemberRoles = Object.values(PrivateCloudProductMemberRole);
-export const cpus = Object.values(CPU);
-export const memories = Object.values(Memory);
-export const storages = Object.values(Storage);
 export const clusters = Object.values(Cluster).filter((cluster) => cluster !== 'GOLDDR');
 
 export const clusterNames = [
@@ -47,91 +43,12 @@ export const clusterNames = [
   },
 ];
 
-export type ResourceMeta<T extends string> = Record<
-  T,
-  { value: T; label: string; labelNats: string; request: number; limit: number }
->;
-export type StorageMeta = Record<Storage, { value: Storage; label: string; labelNats: string; size: number }>;
-
 export type DropdownOption = { label: string; value: string; key: number };
 
-const _cpuOptions: DropdownOption[] = [];
-const _memoryOptions: DropdownOption[] = [];
-const _stoageOptions: DropdownOption[] = [];
-
-export const cpuMetadata = cpus.reduce<ResourceMeta<CPU>>((ret, value) => {
-  const [request, limit] = extractNumbers(value);
-
-  const label = `${request} CPU Request, ${limit} CPU Limit`;
-  const labelNats = `cpu-request-${request}-limit-${limit}`;
-
-  ret[value] = {
-    value,
-    label,
-    labelNats,
-    request,
-    limit,
-  };
-
-  _cpuOptions.push({ value, label, key: request });
-  return ret;
-}, {} as ResourceMeta<CPU>);
-
-export const memoryMetadata = memories.reduce<ResourceMeta<Memory>>((ret, value) => {
-  const [request, limit] = extractNumbers(value);
-
-  const label = `${request} GB Request, ${limit} GB Limit`;
-  const labelNats = `memory-request-${request}-limit-${limit}`;
-
-  ret[value] = {
-    value,
-    label,
-    labelNats,
-    request,
-    limit,
-  };
-
-  _memoryOptions.push({ value, label, key: request });
-  return ret;
-}, {} as ResourceMeta<Memory>);
-
-export const storageMetadata = storages.reduce<StorageMeta>((ret, value) => {
-  const [size] = extractNumbers(value);
-
-  const label = `${size} GB`;
-  const labelNats = `storage-${size}`;
-
-  ret[value] = {
-    value,
-    label,
-    labelNats,
-    size,
-  };
-
-  _stoageOptions.push({ value, label, key: size });
-  return ret;
-}, {} as StorageMeta);
-
-export const cpuOptions = _orderBy(_cpuOptions, ['key'], ['asc']);
-export const memoryOptions = _orderBy(_memoryOptions, ['key'], ['asc']);
-export const stoageOptions = _orderBy(_stoageOptions, ['key'], ['asc']);
-
-export const resourceMetadata = {
-  cpu: cpuMetadata,
-  memory: memoryMetadata,
-  storage: storageMetadata,
-};
-
-export const resourceOptions = {
-  cpu: cpuOptions,
-  memory: memoryOptions,
-  storage: stoageOptions,
-};
-
-export const defaultQuota = {
-  cpu: CPU.CPU_REQUEST_0_5_LIMIT_1_5,
-  memory: Memory.MEMORY_REQUEST_2_LIMIT_4,
-  storage: Storage.STORAGE_1,
+export const defaultResourceRequests = {
+  cpu: 0.5,
+  memory: 2,
+  storage: 1,
 };
 
 export const privateCloudProductSorts = productSorts.concat([
@@ -146,3 +63,17 @@ export const privateCloudProductSorts = productSorts.concat([
     sortOrder: Prisma.SortOrder.desc,
   },
 ]);
+
+export const environmentShortNames = {
+  development: 'dev',
+  test: 'test',
+  production: 'prod',
+  tools: 'tools',
+};
+
+export const environmentLongNames = {
+  dev: 'development',
+  test: 'test',
+  prod: 'production',
+  tools: 'tools',
+};

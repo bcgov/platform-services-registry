@@ -1,29 +1,18 @@
 import { expect } from '@jest/globals';
-import { DecisionStatus, Cluster, RequestType, CPU, Memory, Storage } from '@prisma/client';
+import { DecisionStatus, Cluster, RequestType } from '@prisma/client';
 import { GlobalRole } from '@/constants';
 import { createSamplePrivateCloudProductData } from '@/helpers/mock-resources';
+import { resourceRequests1, resourceRequests2 } from '@/helpers/mock-resources/private-cloud-product';
 import { findOtherMockUsers } from '@/helpers/mock-users';
 import { mockSessionByEmail, mockSessionByRole } from '@/services/api-test/core';
 import { provisionPrivateCloudProject } from '@/services/api-test/private-cloud';
 import { createPrivateCloudProject, editPrivateCloudProject } from '@/services/api-test/private-cloud/products';
 import { makePrivateCloudRequestDecision } from '@/services/api-test/private-cloud/requests';
 
-const oldDevelopmentQuota = {
-  cpu: CPU.CPU_REQUEST_1_LIMIT_2,
-  memory: Memory.MEMORY_REQUEST_4_LIMIT_8,
-  storage: Storage.STORAGE_2,
-};
-
-const newDevelopmentQuota = {
-  cpu: CPU.CPU_REQUEST_1_LIMIT_2,
-  memory: Memory.MEMORY_REQUEST_8_LIMIT_16,
-  storage: Storage.STORAGE_2,
-};
-
 const productData = {
   main: createSamplePrivateCloudProductData({
     data: {
-      developmentQuota: oldDevelopmentQuota,
+      resourceRequests: resourceRequests1,
     },
   }),
 };
@@ -36,7 +25,7 @@ const requests = {
 async function makeBasicProductChange(extra = {}) {
   const response = await editPrivateCloudProject(requests.create.licencePlate, {
     ...requests.create.decisionData,
-    developmentQuota: newDevelopmentQuota,
+    resourceRequests: resourceRequests2,
     isAgMinistryChecked: true,
     ...extra,
   });
@@ -84,7 +73,7 @@ describe('Update Private Cloud Product - Permissions', () => {
 
     requests.update = await response.json();
     expect(requests.update.licencePlate).toBe(requests.create.licencePlate);
-    expect(requests.update.decisionData.developmentQuota).toEqual(newDevelopmentQuota);
+    expect(requests.update.decisionData.resourceRequests).toEqual(resourceRequests2);
   });
 
   it('should fail to submit the same request for PO', async () => {
@@ -116,7 +105,7 @@ describe('Update Private Cloud Product - Permissions', () => {
 
     requests.update = await response.json();
     expect(requests.update.licencePlate).toBe(requests.create.licencePlate);
-    expect(requests.update.decisionData.developmentQuota).toEqual(newDevelopmentQuota);
+    expect(requests.update.decisionData.resourceRequests).toEqual(resourceRequests2);
   });
 
   it('should fail to submit the same request for admin', async () => {

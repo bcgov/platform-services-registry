@@ -1,15 +1,21 @@
-import { Quota, Cluster, QuotaUpgradeResourceDetail, ResourceType } from '@prisma/client';
+import {
+  Cluster,
+  QuotaUpgradeResourceDetail,
+  ResourceType,
+  ResourceRequestsEnv,
+  ResourceRequests,
+} from '@prisma/client';
 import _each from 'lodash-es/each';
-import { resourceOptions } from '@/../app/constants';
 import { getResourceDetails } from '@/services/k8s';
 import { iterateObject } from '@/utils/collection';
 
-export interface Quotas {
-  testQuota: Quota;
-  toolsQuota: Quota;
-  developmentQuota: Quota;
-  productionQuota: Quota;
-}
+const allowedAutoApprovalPercentage = 50;
+
+const allowedMinResource = {
+  cpu: 1,
+  memory: 2,
+  storage: 32,
+};
 
 function checkAutoApprovalEligibility({ allocation, deployment, resourceType }: QuotaUpgradeResourceDetail): boolean {
   if (deployment.usage === -1) return false;
@@ -25,53 +31,52 @@ function checkAutoApprovalEligibility({ allocation, deployment, resourceType }: 
   return usageRatio > 0.85 && utilizationRate >= 0.35;
 }
 
-function extractQuotas(quotas: Quotas) {
-  const { testQuota, toolsQuota, developmentQuota, productionQuota } = quotas;
-  return { testQuota, toolsQuota, developmentQuota, productionQuota };
+function extractResourceRequests(resourceRequests: ResourceRequestsEnv) {
+  const { development, test, production, tools } = resourceRequests;
+  return { development, test, production, tools };
 }
 
 export async function getQuotaChangeStatus({
   licencePlate,
   cluster,
-  currentQuota,
-  requestedQuota,
+  currentResourceRequests,
+  requestedResourceRequests,
 }: {
   licencePlate: string;
   cluster: Cluster;
-  currentQuota: Quotas;
-  requestedQuota: Quotas;
+  currentResourceRequests: ResourceRequestsEnv;
+  requestedResourceRequests: ResourceRequestsEnv;
 }) {
-  const _currentQuota = extractQuotas(currentQuota);
-  const _requestedQuota = extractQuotas(requestedQuota);
+  const _currentResourceRequests = extractResourceRequests(currentResourceRequests);
+  const _requestedResourceRequests = extractResourceRequests(requestedResourceRequests);
 
   let hasChange = false;
   let hasIncrease = false;
   let hasSignificantIncrease = false;
 
   const resourcesToCheck: {
-    envQuota: keyof Quotas;
-    resourceName: keyof Quota;
+    env: keyof ResourceRequestsEnv;
+    resourceName: keyof ResourceRequests;
   }[] = [];
 
-  iterateObject(_currentQuota, (quota: Quota, envQuota: keyof Quotas) => {
-    iterateObject(quota, (currentResource: string, resourceName: keyof Quota) => {
-      const requestedResource = _requestedQuota[envQuota][resourceName];
-      const resourceOrder = resourceOptions[resourceName];
+  iterateObject(_currentResourceRequests, (resourceRequests: ResourceRequests, env: keyof ResourceRequestsEnv) => {
+    iterateObject(resourceRequests, (currentValue: number, resourceName: keyof ResourceRequests) => {
+      const requestedValue = _requestedResourceRequests[env][resourceName];
 
-      const currentIndex = resourceOrder.findIndex((res) => res.value === currentResource);
-      const requestedIndex = resourceOrder.findIndex((res) => res.value === requestedResource);
-      const diff = requestedIndex - currentIndex;
+      const diffValue = requestedValue - currentValue;
+      const diffPerc = (diffValue / currentValue) * 100;
+      const allowedMin = allowedMinResource[resourceName];
 
-      if (!hasChange) hasChange = diff !== 0;
-      if (diff > 0) {
+      if (!hasChange) hasChange = diffValue !== 0;
+      if (diffValue > 0) {
         hasIncrease = true;
-        hasSignificantIncrease = diff > 1;
+        hasSignificantIncrease = requestedValue > allowedMin && diffPerc > allowedAutoApprovalPercentage;
         if (hasSignificantIncrease) {
           return false;
         }
 
         resourcesToCheck.push({
-          envQuota,
+          env,
           resourceName,
         });
       }
@@ -95,8 +100,8 @@ export async function getQuotaChangeStatus({
 
   if (hasIncrease) {
     const resourceDetailList = await Promise.all(
-      resourcesToCheck.map(async ({ envQuota, resourceName }) =>
-        getResourceDetails({ licencePlate, cluster, envQuota, resourceName, currentQuota }),
+      resourcesToCheck.map(async ({ env, resourceName }) =>
+        getResourceDetails({ licencePlate, cluster, env, resourceName, currentResourceRequests }),
       ),
     );
 
