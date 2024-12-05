@@ -1,3 +1,13 @@
+## [0.42.0](https://github.com/bcgov/platform-services-registry/compare/v0.41.1...v0.42.0) (2024-12-05)
+
+### Features
+
+* **4093:** add task type 'Review Requests' ([1884c0f](https://github.com/bcgov/platform-services-registry/commit/1884c0fe2a3784745ae602d0cc0382dcf140685d))
+* **4188:** provide input box for resource requests ([c672284](https://github.com/bcgov/platform-services-registry/commit/c672284cb53636ae33bfdad3967ac2e25190297a))
+
+### End-to-end Testing
+
+* **4125:** edit request for public cloud and couple of fixes ([e6adb46](https://github.com/bcgov/platform-services-registry/commit/e6adb464992232b22e83db528eaad457e9a41c2e))
 ## [0.41.1](https://github.com/bcgov/platform-services-registry/compare/v0.41.0...v0.41.1) (2024-12-03)
 
 ### Features
