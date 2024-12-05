@@ -1,4 +1,5 @@
 import { EventType, TaskStatus } from '@prisma/client';
+import axios from 'axios';
 import jwt from 'jsonwebtoken';
 import _forEach from 'lodash-es/forEach';
 import _get from 'lodash-es/get';
@@ -12,7 +13,50 @@ import prisma from '@/core/prisma';
 import { createEvent } from '@/services/db';
 import { upsertUser } from '@/services/db/user';
 
+async function getNewAccessToken(token: any) {
+  try {
+    const response = await axios.post(
+      `${AUTH_SERVER_URL}/realms/${AUTH_RELM}/protocol/openid-connect/token`,
+      new URLSearchParams({
+        client_id: AUTH_RESOURCE,
+        client_secret: AUTH_SECRET,
+        grant_type: 'refresh_token',
+        refresh_token: token.refreshToken,
+      }),
+      {
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+      },
+    );
+
+    const refreshedAccessToken = response.data;
+
+    if (!(response.status === 200)) {
+      throw refreshedAccessToken;
+    }
+
+    const decodedToken: any = jwt.decode(refreshedAccessToken.access_token);
+    const newRoles = _get(decodedToken, `resource_access.${AUTH_RESOURCE}.roles`, []);
+
+    return {
+      ...token,
+      accessToken: refreshedAccessToken.access_token,
+      accessTokenExpires: Date.now() + refreshedAccessToken.expires_at * 1000,
+      refreshToken: refreshedAccessToken.refresh_token ?? token.refreshToken,
+      isRefreshTokenExpired: false,
+      roles: newRoles,
+      sub: decodedToken?.sub ?? '',
+      teams: Object.entries(decodedToken.resource_access ?? {})
+        .filter(([key]) => key.startsWith(TEAM_SA_PREFIX))
+        .map(([key, val]: [string, any]) => ({ clientId: key, roles: val.roles })),
+    };
+  } catch (error) {
+    console.error('Failed to refresh access token:', error);
+    throw new Error('RefreshTokenError');
+  }
+}
+
 export async function generateSession({ session, token }: { session: Session; token?: JWT }) {
+  if (token?.isRefreshTokenExpired) session.isExpired = true;
   sessionRolePropKeys.forEach((key: SessionKeys) => {
     // @ts-ignore: Ignore TypeScript error for dynamic property assignment
     session[key] = false;
@@ -237,7 +281,9 @@ export const authOptions: AuthOptions = {
         const decodedToken: any = jwt.decode(account.access_token);
 
         token.accessToken = account.access_token;
+        token.refreshToken = account.refresh_token;
         token.idToken = account.id_token;
+        token.isRefreshTokenExpired = false;
         token.roles = _get(decodedToken, `resource_access.${AUTH_RESOURCE}.roles`, []);
         token.sub = decodedToken?.sub ?? '';
         token.teams = [];
@@ -250,7 +296,15 @@ export const authOptions: AuthOptions = {
       }
 
       if (!token.roles) token.roles = [];
-      return token;
+      if (Date.now() < token.accessTokenExpires) {
+        return token;
+      }
+      try {
+        const newAccessToken = await getNewAccessToken(token);
+        return newAccessToken;
+      } catch (error) {
+        token.isRefreshTokenExpired = true;
+      }
     },
     session: generateSession.bind(this),
   },
