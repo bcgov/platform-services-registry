@@ -67,6 +67,7 @@ export const POST = apiHandler(async ({ pathParams, session }) => {
   const updatedRequestDecorated = await models.publicCloudRequest.decorate(updatedRequest, session, true);
   await sendRequestCompletionEmails(updatedRequestDecorated);
 
-  logger.info(`Successfully marked ${licencePlate} as provisioned.`);
-  return OkResponse({ success: true });
+  const message = `Successfully marked ${licencePlate} as provisioned.`;
+  logger.info(message);
+  return OkResponse({ success: true, message });
 });

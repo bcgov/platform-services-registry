@@ -1,6 +1,7 @@
 import { DecisionStatus, ProjectStatus, RequestType } from '@prisma/client';
 import { z } from 'zod';
 import createApiHandler from '@/core/api-handler';
+import { logger } from '@/core/logging';
 import prisma from '@/core/prisma';
 import { NotFoundResponse, OkResponse, UnprocessableEntityResponse } from '@/core/responses';
 import { sendRequestCompletionEmails } from '@/services/ches/public-cloud';
@@ -64,5 +65,7 @@ export const PUT = apiHandler(async ({ pathParams, session }) => {
   const updatedRequestDecorated = await models.publicCloudRequest.decorate(updatedRequest, session, true);
   await sendRequestCompletionEmails(updatedRequestDecorated);
 
-  return OkResponse(`Successfully marked ${licencePlate} as provisioned.`);
+  const message = `Successfully marked ${licencePlate} as provisioned.`;
+  logger.info(message);
+  return OkResponse({ message });
 });

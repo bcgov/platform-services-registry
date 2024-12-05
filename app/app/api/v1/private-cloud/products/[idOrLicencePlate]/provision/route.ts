@@ -36,6 +36,8 @@ export const POST = apiHandler(async ({ pathParams, session }) => {
     return NotFoundResponse('No request found for this licence plate.');
   }
 
+  let isPartialProvision = false;
+
   // For products with Golddr enabled, two callbacks are required to complete the request.
   if (request.decisionData.golddrEnabled && request.decisionStatus !== DecisionStatus.PARTIALLY_PROVISIONED) {
     await prisma.privateCloudRequest.update({
@@ -44,6 +46,7 @@ export const POST = apiHandler(async ({ pathParams, session }) => {
         decisionStatus: DecisionStatus.PARTIALLY_PROVISIONED,
       },
     });
+    isPartialProvision = true;
   } else {
     const updateRequest = prisma.privateCloudRequest.update({
       where: { id: request.id },
@@ -76,6 +79,7 @@ export const POST = apiHandler(async ({ pathParams, session }) => {
     await sendRequestCompletionEmails(updatedRequestDecorated);
   }
 
-  logger.info(`Successfully marked ${licencePlate} as provisioned.`);
-  return OkResponse({ success: true });
+  const message = `Successfully marked ${licencePlate} as ${isPartialProvision ? 'partially-' : ''}provisioned.`;
+  logger.info(message);
+  return OkResponse({ success: true, message });
 });
