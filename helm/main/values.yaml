@@ -222,5 +222,5 @@ ches-mock:
   image:
     pullPolicy: IfNotPresent
 
-  nameOverride: pltsvc-ches-mock
-  fullnameOverride: pltsvc-ches-mock
+  nameOverride: pltsvc-localdev-ches-mock
+  fullnameOverride: pltsvc-localdev-ches-mock

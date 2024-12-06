@@ -1,13 +1,13 @@
 replicaCount: 1
 
 image:
-  repository: ghcr.io/bcgov/pltsvc-ches-mock
-  tag: main
+  repository: ghcr.io/bcgov/pltsvc-localdev-ches-mock
+  tag: latest
   pullPolicy: Always
 
 imagePullSecrets: []
-nameOverride: pltsvc-ches-mock
-fullnameOverride: pltsvc-ches-mock
+nameOverride: pltsvc-localdev-ches-mock
+fullnameOverride: pltsvc-localdev-ches-mock
 
 podAnnotations: {}
 podLabels: {}

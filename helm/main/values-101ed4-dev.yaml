@@ -70,7 +70,7 @@ ches-mock:
 
   route:
     enabled: true
-    host: dev-pltsvc-ches-mock.apps.silver.devops.gov.bc.ca
+    host: dev-pltsvc-localdev-ches-mock.apps.silver.devops.gov.bc.ca
 
 mailpit:
   enabled: true
