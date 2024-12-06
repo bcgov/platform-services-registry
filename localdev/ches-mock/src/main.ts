@@ -87,6 +87,12 @@ app.post('/email', async (req: Request, res: Response): Promise<void> => {
   });
 });
 
+app.get('/health', async (req: Request, res: Response): Promise<void> => {
+  res.json({
+    success: true,
+  });
+});
+
 // Error-handling middleware
 app.use((err: any, req: Request, res: Response, next: NextFunction) => {
   console.error(err.stack); // Log the error stack for debugging
