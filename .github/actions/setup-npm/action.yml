@@ -9,6 +9,7 @@ runs:
     with:
       # pnpm store path
       path: |
+        ~/.cache/Cypress
         ~/.local/share/pnpm/store/v3
         ${{ github.workspace }}/app/.next/cache
       key: ${{ runner.os }}-nextjs-${{ hashFiles('**/pnpm-lock.yaml') }}-${{ hashFiles('**/*.js', '**/*.jsx', '**/*.ts', '**/*.tsx') }}
