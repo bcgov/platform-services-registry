@@ -15,6 +15,11 @@ spec:
       {{- include "app.selectorLabels" . | nindent 6 }}
   template:
     metadata:
+      annotations:
+      {{- $podAnnotations := (.Values.podAnnotations | default dict) -}}
+      {{- with $podAnnotations }}
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
       labels:
         {{- include "app.labels" . | nindent 8 }}
         {{- with .Values.podLabels }}
@@ -36,8 +41,6 @@ spec:
           image: "{{ .Values.image.repository }}:{{ $deploymentTag }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           env:
-            - name: DEPLOYMENT_TAG
-              value: {{ $deploymentTag | quote }}
           {{- $env := merge (.Values.global.env | default dict) (.Values.env | default dict) -}}
             {{ range $k, $v := $env }}
             - name: {{ $k | quote }}
@@ -53,20 +56,23 @@ spec:
               containerPort: {{ .Values.service.port }}
               protocol: TCP
           livenessProbe:
-            tcpSocket:
-              port: {{ .Values.service.port }}
+            httpGet:
+              path: /
+              port: http
           readinessProbe:
-            tcpSocket:
-              port: {{ .Values.service.port }}
+            httpGet:
+              path: /
+              port: http
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
+          {{- with .Values.volumeMounts }}
           volumeMounts:
-          - mountPath: /opt/devserver
-            name: working-dir
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+      {{- with .Values.volumes }}
       volumes:
-      - name: working-dir
-        persistentVolumeClaim:
-          claimName: {{ include "app.fullname" . }}
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
       {{- with .Values.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}

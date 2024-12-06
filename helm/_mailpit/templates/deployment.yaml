@@ -50,14 +50,21 @@ spec:
           {{- end }}
           ports:
             - name: http
-              containerPort: {{ .Values.service.port }}
+              containerPort: {{ .Values.service.http.port | default 8025 }}
+              protocol: TCP
+            - name: smtp
+              containerPort: {{ .Values.service.smtp.port | default 1025 }}
               protocol: TCP
           livenessProbe:
             tcpSocket:
-              port: {{ .Values.service.port }}
+              port: {{ .Values.service.http.port | default 8025 }}
+            initialDelaySeconds: 5
+            periodSeconds: 10
           readinessProbe:
             tcpSocket:
-              port: {{ .Values.service.port }}
+              port: {{ .Values.service.http.port | default 8025 }}
+            initialDelaySeconds: 5
+            periodSeconds: 10
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
           volumeMounts:

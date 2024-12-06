@@ -24,7 +24,7 @@ securityContext: {}
   # runAsUser: 1000
 
 service:
-    http:
+  http:
     type: ClusterIP
     port: 8025
   smtp:
@@ -32,8 +32,8 @@ service:
     port: 1025
 
 route:
-  enabled: false
-  host:
+  enabled: true
+  targetPort: http
 
 serviceAccountName:
 envSecretName:

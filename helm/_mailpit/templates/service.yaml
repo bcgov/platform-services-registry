@@ -1,15 +1,19 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: {{ include "_mailpit.fullname" . }}
+  name: {{ include "app.fullname" . }}
   labels:
-    {{- include "_mailpit.labels" . | nindent 4 }}
+    {{- include "app.labels" . | nindent 4 }}
 spec:
-  type: {{ .Values.service.type }}
+  type: ClusterIP
   ports:
-    - port: {{ .Values.service.port }}
-      targetPort: http
+    - name: http
+      port: {{ .Values.service.http.port }}
+      targetPort: {{ .Values.service.http.port }}
       protocol: TCP
-      name: http
+    - name: smtp
+      port: {{ .Values.service.smtp.port }}
+      targetPort: {{ .Values.service.smtp.port }}
+      protocol: TCP
   selector:
-    {{- include "_mailpit.selectorLabels" . | nindent 4 }}
+    {{- include "app.selectorLabels" . | nindent 4 }}

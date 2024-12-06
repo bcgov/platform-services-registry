@@ -17,4 +17,10 @@ spec:
   to:
     kind: Service
     name: {{ include "app.fullname" . }}
+    weight: 100
+  port:
+    targetPort: http
+  tls:
+    termination: edge
+    insecureEdgeTerminationPolicy: Redirect
 {{- end }}

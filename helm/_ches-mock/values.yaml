@@ -1,13 +1,13 @@
 replicaCount: 1
 
 image:
-  repository: ghcr.io/bcgov/pltsvc-ches=mock
+  repository: ghcr.io/bcgov/pltsvc-ches-mock
   tag: main
   pullPolicy: Always
 
 imagePullSecrets: []
-nameOverride: pltsvc-ches=mock
-fullnameOverride: pltsvc-ches=mock
+nameOverride: pltsvc-ches-mock
+fullnameOverride: pltsvc-ches-mock
 
 podAnnotations: {}
 podLabels: {}
@@ -56,7 +56,7 @@ autoscaling:
 
 # Additional volumes on the output Deployment definition.
 volumes: []
-ß
+
 
 # Additional volumeMounts on the output Deployment definition.
 volumeMounts: []
