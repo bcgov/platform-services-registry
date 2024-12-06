@@ -14,9 +14,10 @@ COPY .prettierrc .
 ENV SECURE_HEADERS=true \
   DEPLOYMENT_TAG=${deployment_tag}
 
-RUN npm install
+RUN npm install -g turbo pnpm
+RUN pnpm install --frozen-lockfile
 RUN npx ts-node scripts/render-react-email-tailwind-style.ts
-RUN npm run build
+RUN pnpm build
 
 # 2nd stage to copy image and create a smaller final image
 # FROM gcr.io/distroless/nodejs18-debian12
