@@ -1,6 +1,6 @@
 nodejs 22.10.0
 python 3.13.1
-pnpm 9.13.2
+pnpm 9.14.4
 oc 4.13.3
 kubectl 1.31.3
 terraform 1.5.7
