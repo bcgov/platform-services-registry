@@ -11,7 +11,6 @@ import Strike from '@tiptap/extension-strike';
 import Underline from '@tiptap/extension-underline';
 import { useEditor, EditorContent } from '@tiptap/react';
 import StarterKit from '@tiptap/starter-kit';
-import PropTypes from 'prop-types';
 import { useEffect } from 'react';
 import './tiptap.css';
 
@@ -61,10 +60,6 @@ const TiptapReadOnly: React.FC<TiptapReadOnlyProps> = ({ content }) => {
   }, [content, editor]);
 
   return <EditorContent editor={editor} className="tiptap" />;
-};
-
-TiptapReadOnly.propTypes = {
-  content: PropTypes.string.isRequired,
 };
 
 export default TiptapReadOnly;

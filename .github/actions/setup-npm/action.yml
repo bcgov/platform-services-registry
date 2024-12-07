@@ -7,18 +7,9 @@ runs:
   # See https://nextjs.org/docs/pages/building-your-application/deploying/ci-build-caching#github-actions
   - uses: actions/cache@1bd1e32a3bdc45362d1e726936510720a7c30a57
     with:
-      path: |
-        ~/.npm
-        ~/.cache/Cypress
-        ${{ github.workspace }}/app/.next/cache
-      key: ${{ runner.os }}-nextjs-${{ hashFiles('**/package-lock.json') }}-${{ hashFiles('**/*.js', '**/*.jsx', '**/*.ts', '**/*.tsx') }}
-      restore-keys: |
-        ${{ runner.os }}-nextjs-${{ hashFiles('**/package-lock.json') }}-
-
-  - uses: actions/cache@1bd1e32a3bdc45362d1e726936510720a7c30a57
-    with:
       # pnpm store path
       path: |
+        ~/.cache/Cypress
         ~/.local/share/pnpm/store/v3
         ${{ github.workspace }}/app/.next/cache
       key: ${{ runner.os }}-nextjs-${{ hashFiles('**/pnpm-lock.yaml') }}-${{ hashFiles('**/*.js', '**/*.jsx', '**/*.ts', '**/*.tsx') }}
@@ -30,6 +21,6 @@ runs:
     shell: bash
 
   - name: Install App NPM packages
-    run: npm install
+    run: pnpm install
     shell: bash
     working-directory: app

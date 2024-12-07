@@ -33,7 +33,7 @@ function processErrorMessage(error: any) {
 
   if (_isString(error.response.data.error)) {
     title = error.response.statusText;
-    message = error.response.data.error;
+    message = 'An unexpected error has occurred.';
   } else if (_isPlainObject(error.response.data.error)) {
     if (error.response.data.error.name === 'ZodError') {
       title = 'Form Validation Error';

@@ -1,6 +1,5 @@
 import { ConfidentialClientApplication } from '@azure/msal-node';
 import { HttpsProxyAgent } from 'https-proxy-agent';
-import fetch, { Headers, RequestInit } from 'node-fetch';
 import { M365_PROXY_URL, USE_M365_PROXY } from '@/config';
 import { logger } from '@/core/logging';
 import msalConfig from './config';
@@ -35,7 +34,7 @@ export async function callMsGraph(endpoint: string, accessToken: string, options
   headers.append('Authorization', bearer);
   headers.append('ConsistencyLevel', 'eventual');
 
-  const defaultOptions: RequestInit = {
+  const defaultOptions: any = {
     method: 'GET',
     headers,
   };

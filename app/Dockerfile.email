@@ -11,8 +11,9 @@ COPY .prettierrc .
 
 ENV BASE_URL=https://dev-pltsvc.apps.silver.devops.gov.bc.ca
 
-RUN npm install
-RUN npm run email-build
+RUN npm install -g turbo pnpm
+RUN pnpm install --frozen-lockfile
+RUN pnpm email-build
 RUN mkdir -p .react-email/public
 
 # 2nd stage to copy image and create a smaller final image

@@ -7,9 +7,10 @@ COPY ./keycloak-provision ./keycloak-provision
 COPY ./_packages ./_packages
 COPY ./m365proxy/mocks.json ./m365proxy/mocks.json
 
-RUN npm install --ignore-scripts --prefix _packages/keycloak-admin
-RUN npm install --ignore-scripts --prefix keycloak-provision
-RUN npm run build --prefix keycloak-provision
+RUN npm install -g turbo pnpm
+RUN pnpm --dir _packages/keycloak-admin install --ignore-scripts
+RUN pnpm --dir keycloak-provision install --ignore-scripts
+RUN pnpm --dir keycloak-provision build
 
 USER node
 CMD ["node", "keycloak-provision/build/keycloak-provision/src/main.js"]
