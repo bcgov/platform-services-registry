@@ -8,9 +8,11 @@ WORKDIR /sandbox
 COPY ./nats-provision ./nats-provision
 COPY ./_packages ./_packages
 
-RUN npm install --ignore-scripts --prefix _packages/keycloak-admin
-RUN npm install --ignore-scripts --prefix nats-provision
-RUN npm run build --prefix nats-provision
+RUN npm install -g turbo pnpm
+
+RUN pnpm --dir _packages/keycloak-admin install --ignore-scripts
+RUN pnpm --dir nats-provision install --ignore-scripts
+RUN pnpm --dir nats-provision build
 
 USER node
 CMD ["node", "nats-provision/build/nats-provision/src/main.js"]

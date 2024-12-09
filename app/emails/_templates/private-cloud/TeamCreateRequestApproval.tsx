@@ -36,7 +36,7 @@ export default function TeamCreateRequestApproval({ request }: EmailProp) {
 
       <ProductDetails product={request.decisionData} />
 
-      <ClusterDetails product={request.decisionData} showNamespaceInfo />
+      <ClusterDetails product={request.decisionData} />
     </PrivateCloudLayout>
   );
 }

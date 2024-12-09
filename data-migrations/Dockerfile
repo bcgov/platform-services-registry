@@ -2,10 +2,11 @@ FROM node:22.10.0-alpine3.19
 
 WORKDIR /app
 
-COPY ["package.json", "package-lock.json", "migrate-mongo-config.js", "./"]
+COPY ["package.json", "pnpm-lock.yaml", "migrate-mongo-config.js", "./"]
 COPY migrations migrations
 
-RUN npm install --ignore-scripts
+RUN npm install -g turbo pnpm
+RUN pnpm install --ignore-scripts
 
 USER node
 

@@ -30,7 +30,7 @@ export default function TeamCreateRequest({ request, requester }: EmailProp) {
 
       <ProductDetails product={request.decisionData} />
 
-      <ClusterDetails product={request.decisionData} showNamespaceInfo />
+      <ClusterDetails product={request.decisionData} />
     </PrivateCloudLayout>
   );
 }
