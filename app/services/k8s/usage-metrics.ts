@@ -7,8 +7,8 @@ import { getK8sClients, queryPrometheus } from './core';
 
 async function getLastTwoWeeksAvgUsage(namespace: string, podName: string, cluster: Cluster) {
   const queryFilter = `namespace="${namespace}", pod="${podName}"`;
-  const cpuUsageQuery = `sum by (container) (irate(container_cpu_usage_seconds_total{${queryFilter}}[2w]))`;
-  const memoryUsageQuery = `sum by (container) (avg_over_time(container_memory_usage_bytes{${queryFilter}}[2w]))`;
+  const cpuUsageQuery = `avg by (container) (rate(container_cpu_usage_seconds_total{${queryFilter}}[2w]))`;
+  const memoryUsageQuery = `avg by (container) (avg_over_time(container_memory_usage_bytes{${queryFilter}}[2w]))`;
 
   const [usageCPU, usageMemory] = await Promise.all(
     [cpuUsageQuery, memoryUsageQuery].map((query) => queryPrometheus(query, cluster)),
