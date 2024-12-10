@@ -26,5 +26,5 @@ dependencies:
 - name: mailpit
   repository: file://../_mailpit
   version: 0.1.0
-digest: sha256:cb40a712d9e7c0484be7c73dbffffc974972c663ff38f9782de62f333670a330
-generated: "2024-12-05T16:19:36.688066-08:00"
+digest: sha256:31254c6644f3da4cb09f5e73d018eef053bdf408584abccf136375e15c408ba8
+generated: "2024-08-22T20:33:07.679846501Z"
