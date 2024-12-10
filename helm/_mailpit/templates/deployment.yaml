@@ -67,8 +67,6 @@ spec:
             periodSeconds: 10
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
-          # Removed the volumeMount for /opt/devserver
-      # Removed the volumes section for PVC
       {{- with .Values.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}
