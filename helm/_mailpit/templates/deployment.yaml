@@ -1,0 +1,81 @@
+{{- $deploymentTag := .Values.image.tag | default .Chart.AppVersion -}}
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "_.fullname" . }}
+  labels:
+    {{- include "_.labels" . | nindent 4 }}
+spec:
+  {{- if not .Values.autoscaling.enabled }}
+  replicas: {{ .Values.replicaCount }}
+  {{- end }}
+  selector:
+    matchLabels:
+      {{- include "_.selectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+      labels:
+        {{- include "_.labels" . | nindent 8 }}
+        {{- with .Values.podLabels }}
+        {{- toYaml . | nindent 8 }}
+        {{- end }}
+    spec:
+      {{- $imagePullSecrets := concat (.Values.imagePullSecrets | default list) (.Values.global.imagePullSecrets | default list) -}}
+      {{- with $imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      serviceAccountName: {{ default .Values.global.serviceAccountName .Values.serviceAccountName }}
+      securityContext:
+        {{- toYaml .Values.podSecurityContext | nindent 8 }}
+      containers:
+        - name: {{ .Chart.Name }}
+          securityContext:
+            {{- toYaml .Values.securityContext | nindent 12 }}
+          image: "{{ .Values.image.repository }}:{{ $deploymentTag }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          env:
+            - name: DEPLOYMENT_TAG
+              value: {{ $deploymentTag | quote }}
+          {{- $env := merge (.Values.global.env | default dict) (.Values.env | default dict) -}}
+            {{ range $k, $v := $env }}
+            - name: {{ $k | quote }}
+              value: {{ $v | quote }}
+            {{- end }}
+          {{- if .Values.envSecretName }}
+          envFrom:
+            - secretRef:
+                name: {{ .Values.envSecretName }}
+          {{- end }}
+          ports:
+            - name: http
+              containerPort: {{ .Values.service.http.port | default 8025 }}
+              protocol: TCP
+            - name: smtp
+              containerPort: {{ .Values.service.smtp.port | default 1025 }}
+              protocol: TCP
+          livenessProbe:
+            tcpSocket:
+              port: {{ .Values.service.http.port | default 8025 }}
+            initialDelaySeconds: 5
+            periodSeconds: 10
+          readinessProbe:
+            tcpSocket:
+              port: {{ .Values.service.http.port | default 8025 }}
+            initialDelaySeconds: 5
+            periodSeconds: 10
+          resources:
+            {{- toYaml .Values.resources | nindent 12 }}
+      {{- with .Values.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}

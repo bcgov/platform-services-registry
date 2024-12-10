@@ -1,13 +1,13 @@
 replicaCount: 1
 
 image:
-  repository: nats
-  tag: latest
+  repository: axllent/mailpit
+  tag: v1.21.1
   pullPolicy: Always
 
 imagePullSecrets: []
-nameOverride: nats
-fullnameOverride: nats
+nameOverride: mailpit
+fullnameOverride: mailpit
 
 podAnnotations: {}
 podLabels: {}
@@ -23,9 +23,17 @@ securityContext: {}
   # runAsNonRoot: true
   # runAsUser: 1000
 
+service:
+  http:
+    type: ClusterIP
+    port: 8025
+  smtp:
+    type: ClusterIP
+    port: 1025
+
 route:
-  enabled: false
-  host:
+  enabled: true
+  targetPort: http
 
 serviceAccountName:
 envSecretName:
@@ -52,10 +60,7 @@ autoscaling:
 
 # Additional volumes on the output Deployment definition.
 volumes: []
-# - name: foo
-#   secret:
-#     secretName: mysecret
-#     optional: false
+
 
 # Additional volumeMounts on the output Deployment definition.
 volumeMounts: []
