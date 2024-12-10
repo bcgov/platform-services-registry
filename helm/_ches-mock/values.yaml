@@ -6,8 +6,8 @@ image:
   pullPolicy: Always
 
 imagePullSecrets: []
-nameOverride: pltsvc-localdev-ches-mock
-fullnameOverride: pltsvc-localdev-ches-mock
+nameOverride: pltsvc-ches-mock
+fullnameOverride: pltsvc-ches-mock
 
 podAnnotations: {}
 podLabels: {}

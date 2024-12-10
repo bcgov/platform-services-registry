@@ -67,13 +67,8 @@ spec:
             periodSeconds: 10
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
-          volumeMounts:
-          - mountPath: /opt/devserver
-            name: working-dir
-      volumes:
-      - name: working-dir
-        persistentVolumeClaim:
-          claimName: {{ include "app.fullname" . }}
+          # Removed the volumeMount for /opt/devserver
+      # Removed the volumes section for PVC
       {{- with .Values.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}
