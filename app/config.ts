@@ -8,6 +8,7 @@ export const IS_TEST = APP_ENV === 'test';
 export const IS_PROD = APP_ENV === 'prod';
 export const EMAIL_PREFIX = IS_PROD ? '' : `[${process.env.APP_ENV}] `;
 export const DEPLOYMENT_TAG = process.env.DEPLOYMENT_TAG || '';
+export const LOG_DATABASE = process.env.LOG_DATABASE === 'true';
 export const ENABLE_DELETION_CHECK = !['localdev', 'dev'].includes(APP_ENV);
 export const BASE_URL = process.env.BASE_URL || 'http://localhost:3000';
 
