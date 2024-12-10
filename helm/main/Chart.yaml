@@ -33,3 +33,11 @@ dependencies:
     version: '0.1.6'
     repository: https://bcgov.github.io/weasyprint
     condition: weasyprint.enabled
+  - name: ches-mock
+    version: '0.1.0'
+    repository: 'file://../_ches-mock'
+    condition: ches-mock.enabled
+  - name: mailpit
+    version: '0.1.0'
+    repository: 'file://../_mailpit'
+    condition: mailpit.enabled

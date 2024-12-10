@@ -199,3 +199,28 @@ weasyprint:
 
   nameOverride: weasyprint
   fullnameOverride: weasyprint
+
+mailpit:
+  enabled: false
+
+  image:
+    pullPolicy: IfNotPresent
+
+  nameOverride: mailpit
+  fullnameOverride: mailpit
+
+  resources:
+    limits:
+      cpu: 200m
+      memory: 256Mi
+    requests:
+      cpu: 10m
+      memory: 128Mi
+
+ches-mock:
+  enabled: true
+  image:
+    pullPolicy: IfNotPresent
+
+  nameOverride: pltsvc-localdev-ches-mock
+  fullnameOverride: pltsvc-localdev-ches-mock
