@@ -57,6 +57,8 @@ export async function getPrivateCloudProject(licencePlate: string) {
 }
 
 export async function editPrivateCloudProject(licencePlate: string, data: PrivateCloudEditRequestBody) {
+  data.isAgMinistryChecked = true;
+
   const result = await productCollectionRoute.put(_editPrivateCloudProject, '/{{licencePlate}}', data, {
     pathParams: { licencePlate },
   });
