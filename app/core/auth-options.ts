@@ -21,13 +21,18 @@ interface Token {
   idToken: string;
   roles: string[];
   sub: string;
-  teams: Array<{ clientId: string; roles: string[] }>;
+  teams: TeamAccess[];
   isRefreshTokenExpired: boolean;
   timeLimit: number;
 }
 
+interface TeamAccess {
+  clientId: string;
+  roles: string[];
+}
+
 interface DecodedToken {
-  resource_access: { [key: string]: { roles: string[] } };
+  resource_access: Record<string, { roles: string[] }>;
   sub: string;
 }
 
@@ -35,11 +40,8 @@ async function processToken(token: Token) {
   const decodedToken: DecodedToken = jwt.decode(token.accessToken || '') as DecodedToken;
 
   token.isRefreshTokenExpired = false;
-  token.timeLimit = 270;
-
-  const newRole = _get(decodedToken, `resource_access.${AUTH_RESOURCE}.roles`, []);
-  console.warn(`User role: ${newRole}`);
-  token.roles = newRole;
+  token.timeLimit = 40;
+  token.roles = _get(decodedToken, `resource_access.${AUTH_RESOURCE}.roles`, []);
   token.sub = decodedToken?.sub ?? '';
   token.teams = [];
 
@@ -50,7 +52,6 @@ async function processToken(token: Token) {
   });
 
   const expirationDateTime = new Date((Math.floor(Date.now() / 1000) + 5 * 60) * 1000);
-
   await prisma.user.update({
     where: { email: token.email },
     data: {
@@ -60,20 +61,18 @@ async function processToken(token: Token) {
 }
 
 async function getNewToken(refreshToken: string) {
-  const response = await axios.post(
-    `${AUTH_SERVER_URL}/realms/${AUTH_RELM}/protocol/openid-connect/token`,
-    new URLSearchParams({
-      client_id: AUTH_RESOURCE,
-      client_secret: AUTH_SECRET,
-      grant_type: 'refresh_token',
-      refresh_token: refreshToken,
-    }),
-    {
-      headers: {
-        'Content-Type': 'application/x-www-form-urlencoded',
-      },
+  const tokenEndpoint = `${AUTH_SERVER_URL}/realms/${AUTH_RELM}/protocol/openid-connect/token`;
+  const params = new URLSearchParams({
+    client_id: AUTH_RESOURCE,
+    client_secret: AUTH_SECRET,
+    grant_type: 'refresh_token',
+    refresh_token: refreshToken,
+  });
+  const response = await axios.post(tokenEndpoint, params, {
+    headers: {
+      'Content-Type': 'application/x-www-form-urlencoded',
     },
-  );
+  });
   return response.data;
 }
 
@@ -308,8 +307,6 @@ export const authOptions: AuthOptions = {
           const timeUntilExpiry = Math.floor(user.timeUntilTokenExpire.getTime() / 1000);
           const currentTime = Math.floor(Date.now() / 1000);
           const timeUntilExpiryInSeconds = timeUntilExpiry - currentTime;
-
-          console.warn(`Token expires in ${timeUntilExpiry - currentTime} seconds.`);
 
           if (timeUntilExpiryInSeconds <= token.timeLimit) {
             const { access_token } = await getNewToken(token.refreshToken);
