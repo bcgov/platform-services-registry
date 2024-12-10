@@ -290,7 +290,7 @@ importers:
         version: 29.7.0
       knip:
         specifier: ^5.17.3
-        version: 5.39.2(@types/node@20.17.9)(typescript@5.7.2)
+        version: 5.39.3(@types/node@20.17.9)(typescript@5.7.2)
       lodash:
         specifier: ^4.17.21
         version: 4.17.21
@@ -1292,12 +1292,6 @@ packages:
 
   '@react-email/section@0.0.16':
     resolution: {integrity: sha512-FjqF9xQ8FoeUZYKSdt8sMIKvoT9XF8BrzhT3xiFKdEMwYNbsDflcjfErJe3jb7Wj/es/lKTbV5QR1dnLzGpL3w==}
-    engines: {node: '>=18.0.0'}
-    peerDependencies:
-      react: ^18.0 || ^19.0 || ^19.0.0-rc
-
-  '@react-email/tailwind@1.0.3':
-    resolution: {integrity: sha512-VwRft4u/c0KuD6YlGWr+pltfzLzHS6Qt/L0XvdJf6ij6Iz6kKtuc7ZVZp/CJVbGnkUgWl/uiDlJ4FIAF6IzWTQ==}
     engines: {node: '>=18.0.0'}
     peerDependencies:
       react: ^18.0 || ^19.0 || ^19.0.0-rc
@@ -3484,8 +3478,8 @@ packages:
     resolution: {integrity: sha512-eTIzlVOSUR+JxdDFepEYcBMtZ9Qqdef+rnzWdRZuMbOywu5tO2w2N7rqjoANZ5k9vywhL6Br1VRjUIgTQx4E8w==}
     engines: {node: '>=6'}
 
-  knip@5.39.2:
-    resolution: {integrity: sha512-BuvuWRllLWV/r2G4m9ggNH+DZ6gouP/dhtJPXVlMbWNF++w9/EfrF6k2g7YBKCwjzCC+PXmYtpH8S2t8RjnY4Q==}
+  knip@5.39.3:
+    resolution: {integrity: sha512-RNzu/7EiBwOEfPsKfpgJ/jfsAtJmLNVdseq78DAMHCzyCylbRIW0QCFD7pYE6T3JBTsV93LKfmZSVxGDbelYzw==}
     engines: {node: '>=18.6.0'}
     hasBin: true
     peerDependencies:
@@ -6185,10 +6179,6 @@ snapshots:
     dependencies:
       react: 18.3.1
 
-  '@react-email/tailwind@1.0.3(react@18.3.1)':
-    dependencies:
-      react: 18.3.1
-
   '@react-email/tailwind@1.0.4(react@18.3.1)':
     dependencies:
       react: 18.3.1
@@ -8870,7 +8860,7 @@ snapshots:
 
   kleur@3.0.3: {}
 
-  knip@5.39.2(@types/node@20.17.9)(typescript@5.7.2):
+  knip@5.39.3(@types/node@20.17.9)(typescript@5.7.2):
     dependencies:
       '@nodelib/fs.walk': 1.2.8
       '@snyk/github-codeowners': 1.1.0
