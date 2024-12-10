@@ -6,8 +6,8 @@ image:
   pullPolicy: Always
 
 imagePullSecrets: []
-nameOverride: pltsvc-m365proxy
-fullnameOverride: pltsvc-m365proxy
+nameOverride: m365proxy
+fullnameOverride: m365proxy
 
 podAnnotations: {}
 podLabels: {}
