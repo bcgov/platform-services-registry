@@ -58,7 +58,7 @@ importers:
         version: 1.0.3(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       '@react-email/tailwind':
         specifier: ^1.0.0
-        version: 1.0.3(react@18.3.1)
+        version: 1.0.4(react@18.3.1)
       '@tabler/icons-react':
         specifier: ^3.3.0
         version: 3.24.0(react@18.3.1)
