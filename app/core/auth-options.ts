@@ -14,7 +14,7 @@ import prisma from '@/core/prisma';
 import { createEvent } from '@/services/db';
 import { upsertUser } from '@/services/db/user';
 
-export const USER_TOKEN_REFRESH_MIN = 1; // 3 minutes
+export const USER_TOKEN_REFRESH_MIN = 3; // 3 minutes
 
 interface Token {
   email: string;
@@ -52,30 +52,19 @@ function processToken(accessToken: string) {
   });
 
   return {
-    roles: roles,
-    sub: sub,
-    teams: teams,
+    roles,
+    sub,
+    teams,
   };
 }
 
-function updateTokens(userAccount: Account | null, token: Token) {
-  if (userAccount?.access_token) {
-    Object.assign(token, {
-      accessToken: userAccount.access_token,
-      refreshToken: userAccount.refresh_token,
-      idToken: userAccount.id_token,
-      ...processToken(userAccount.access_token),
-    });
-  }
-}
-
-async function getNewTokens(token: Token) {
+async function getNewTokens(refreshToken: string) {
   const tokenEndpoint = `${AUTH_SERVER_URL}/realms/${AUTH_RELM}/protocol/openid-connect/token`;
   const params = new URLSearchParams({
     client_id: AUTH_RESOURCE,
     client_secret: AUTH_SECRET,
     grant_type: 'refresh_token',
-    refresh_token: token.refreshToken,
+    refresh_token: refreshToken,
   });
   try {
     const response = await axios.post(tokenEndpoint, params, {
@@ -85,7 +74,7 @@ async function getNewTokens(token: Token) {
     });
     return response.data;
   } catch (error) {
-    token.isRefreshTokenExpired = true;
+    return null;
   }
 }
 
@@ -283,8 +272,9 @@ export const authOptions: AuthOptions = {
       const { given_name, family_name, email } = profile as KeycloakProfile;
       const loweremail = email.toLowerCase();
       const lastSeen = new Date();
+      const nextTokenRefreshTime = addMinutes(new Date(), USER_TOKEN_REFRESH_MIN);
 
-      const upsertedUser = await upsertUser(loweremail, { lastSeen });
+      const upsertedUser = await upsertUser(loweremail, { lastSeen, nextTokenRefreshTime });
       if (!upsertedUser) {
         const data = {
           providerUserId: '',
@@ -299,7 +289,7 @@ export const authOptions: AuthOptions = {
           officeLocation: '',
           jobTitle: '',
           lastSeen,
-          nextTokenRefreshTime: '',
+          nextTokenRefreshTime,
         };
 
         await prisma.user.upsert({
@@ -313,7 +303,14 @@ export const authOptions: AuthOptions = {
     },
     async jwt({ token, account }: { token: any; account: Account | null }) {
       const now = new Date();
-      updateTokens(account, token);
+      if (account?.access_token) {
+        Object.assign(token, {
+          accessToken: account.access_token,
+          refreshToken: account.refresh_token,
+          idToken: account.id_token,
+          ...processToken(account.access_token),
+        });
+      }
 
       const { count } = await prisma.user.updateMany({
         where: {
@@ -326,8 +323,13 @@ export const authOptions: AuthOptions = {
       });
 
       if (count > 0) {
-        const newTokens = await getNewTokens(token);
-        updateTokens(newTokens, token);
+        const newTokens = await getNewTokens(token.refreshToken);
+        Object.assign(token, {
+          accessToken: newTokens.access_token,
+          refreshToken: newTokens.refresh_token,
+          idToken: newTokens.id_token,
+          ...processToken(newTokens.access_token),
+        });
       }
 
       if (!token.roles) token.roles = [];
