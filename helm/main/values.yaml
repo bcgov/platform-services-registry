@@ -201,14 +201,19 @@ weasyprint:
   fullnameOverride: weasyprint
 
 mailpit:
-  enabled: false
+  enabled: true
   image:
     pullPolicy: IfNotPresent
 
   nameOverride: pltsvc-mailpit
   fullnameOverride: pltsvc-mailpit
 
-  env: {}
+  dbPath: /var/lib/mailpit/mailpit.db
+  persistence:
+    enabled: true
+    size: 200Mi
+    storageClassName: netapp-file-standard
+    existingClaim: ""
 
 ches-mock:
   enabled: true

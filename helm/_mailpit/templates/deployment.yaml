@@ -22,10 +22,10 @@ spec:
         {{- end }}
     spec:
       {{- $imagePullSecrets := concat (.Values.imagePullSecrets | default list) (.Values.global.imagePullSecrets | default list) -}}
-      {{- with $imagePullSecrets }}
-      imagePullSecrets:
-        {{- toYaml . | nindent 8 }}
-      {{- end }}
+        {{- with $imagePullSecrets }}
+        imagePullSecrets:
+          {{- toYaml . | nindent 8 }}
+        {{- end }}
       serviceAccountName: {{ default .Values.global.serviceAccountName .Values.serviceAccountName }}
       securityContext:
         {{- toYaml .Values.podSecurityContext | nindent 8 }}
@@ -35,6 +35,9 @@ spec:
             {{- toYaml .Values.securityContext | nindent 12 }}
           image: "{{ .Values.image.repository }}:{{ $deploymentTag }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
+          args:
+            - --db-file
+            - {{ .Values.dbPath | default "/var/lib/mailpit/mailpit.db" }}
           env:
             - name: DEPLOYMENT_TAG
               value: {{ $deploymentTag | quote }}
@@ -68,10 +71,10 @@ spec:
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
           volumeMounts:
-            - name: working-dir
-              mountPath: /opt/devserver
+            - name: data
+              mountPath: /var/lib/mailpit
       volumes:
-        - name: working-dir
+        - name: data
           {{- if .Values.persistence.enabled }}
           persistentVolumeClaim:
             claimName: {{ default (include "_.fullname" .) .Values.persistence.existingClaim }}
