@@ -12,7 +12,8 @@ localmac:
 
 .PHONY: dev
 dev:
-	npm run prisma-push --prefix app
+	@DATABASE_URL=$$(grep -m 1 '^DATABASE_URL=' app/.env.local | cut -d '=' -f 2-) \
+	npm run prisma-push --prefix app && \
 	npm run dev --prefix app
 
 .PHONY: install
