@@ -3,20 +3,20 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ include "app.fullname" . }}
+  name: {{ include "_.fullname" . }}
   labels:
-    {{- include "app.labels" . | nindent 4 }}
+    {{- include "_.labels" . | nindent 4 }}
 spec:
   {{- if not .Values.autoscaling.enabled }}
   replicas: {{ .Values.replicaCount }}
   {{- end }}
   selector:
     matchLabels:
-      {{- include "app.selectorLabels" . | nindent 6 }}
+      {{- include "_.selectorLabels" . | nindent 6 }}
   template:
     metadata:
       labels:
-        {{- include "app.labels" . | nindent 8 }}
+        {{- include "_.labels" . | nindent 8 }}
         {{- with .Values.podLabels }}
         {{- toYaml . | nindent 8 }}
         {{- end }}
@@ -74,7 +74,7 @@ spec:
         - name: working-dir
           {{- if .Values.persistence.enabled }}
           persistentVolumeClaim:
-            claimName: {{ default (include "app.fullname" .) .Values.persistence.existingClaim }}
+            claimName: {{ default (include "_.fullname" .) .Values.persistence.existingClaim }}
           {{- else }}
           emptyDir: {}
           {{- end }}
