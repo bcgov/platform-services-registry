@@ -1,5 +1,6 @@
 replicaCount: 1
 
+# https://hub.docker.com/r/axllent/mailpit/tags
 image:
   repository: axllent/mailpit
   tag: v1.21.1
@@ -73,3 +74,9 @@ nodeSelector: {}
 tolerations: []
 
 affinity: {}
+
+persistence:
+  enabled: false
+  size: 200Mi
+  storageClassName: ""
+  existingClaim: ""

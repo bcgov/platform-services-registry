@@ -202,20 +202,13 @@ weasyprint:
 
 mailpit:
   enabled: false
-
   image:
     pullPolicy: IfNotPresent
 
   nameOverride: pltsvc-mailpit
   fullnameOverride: pltsvc-mailpit
 
-  resources:
-    limits:
-      cpu: 200m
-      memory: 256Mi
-    requests:
-      cpu: 10m
-      memory: 128Mi
+  env: {}
 
 ches-mock:
   enabled: true

@@ -72,6 +72,12 @@ ches-mock:
     enabled: true
     host: dev-pltsvc-ches-mock.apps.silver.devops.gov.bc.ca
 
+  env:
+    "SMTP_USERNAME": ""
+    "SMTP_PASSWORD": ""
+    "SMTP_HOST": "pltsvc-mailpit"
+    "SMTP_PORT": "1025"
+
 mailpit:
   enabled: true
 
