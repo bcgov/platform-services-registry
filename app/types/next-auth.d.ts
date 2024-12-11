@@ -95,6 +95,7 @@ declare module 'next-auth' {
       awsLza: boolean;
     };
     permissionList: string[];
+    isExpired: boolean;
   }
 
   type PermissionsKey = keyof Permissions;

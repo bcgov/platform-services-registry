@@ -19,6 +19,7 @@ export const getRandomUser = () => {
     updatedAt: new Date(),
     lastSeen: new Date(),
     createdAt: new Date(),
+    nextTokenRefreshTime: new Date(),
   };
 };
 export const getRandomCloudProviderSelectionReasons = () => {
