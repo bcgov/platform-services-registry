@@ -2,7 +2,7 @@ replicaCount: 1
 
 image:
   repository: axllent/mailpit
-  tag: v1.21.1
+  tag: v1.21.6
   pullPolicy: Always
 
 imagePullSecrets: []
