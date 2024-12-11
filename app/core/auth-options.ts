@@ -5,7 +5,7 @@ import jwt from 'jsonwebtoken';
 import _forEach from 'lodash-es/forEach';
 import _get from 'lodash-es/get';
 import _uniq from 'lodash-es/uniq';
-import { Account, AuthOptions, Session, User, SessionKeys, Permissions } from 'next-auth';
+import { Account, AuthOptions, Session, User, SessionKeys } from 'next-auth';
 import { JWT } from 'next-auth/jwt';
 import KeycloakProvider, { KeycloakProfile } from 'next-auth/providers/keycloak';
 import { IS_PROD, AUTH_SERVER_URL, AUTH_RELM, AUTH_RESOURCE, AUTH_SECRET, PUBLIC_AZURE_ACCESS_EMAILS } from '@/config';
@@ -172,7 +172,7 @@ export async function generateSession({ session, token }: { session: Session; to
       session.isAdmin || session.isEditor || session.isPrivateAdmin || session.isPrivateEditor,
     deleteAllPrivateCloudProducts:
       session.isAdmin || session.isEditor || session.isPrivateAdmin || session.isPrivateEditor,
-    reviewAllPrivateCloudRequests: session.isAdmin || session.isPrivateAdmin || session.isPrivateReviewer,
+    reviewAllPrivateCloudRequests: session.isPrivateReviewer,
 
     createPrivateCloudProductsAsAssignee: session.isUser,
     viewAssignedPrivateCloudProducts: session.isUser,
@@ -197,7 +197,7 @@ export async function generateSession({ session, token }: { session: Session; to
     editAllPublicCloudProducts: session.isAdmin || session.isEditor || session.isPublicAdmin || session.isPublicEditor,
     deleteAllPublicCloudProducts:
       session.isAdmin || session.isEditor || session.isPublicAdmin || session.isPublicEditor,
-    reviewAllPublicCloudRequests: session.isAdmin || session.isPublicAdmin || session.isPublicReviewer,
+    reviewAllPublicCloudRequests: session.isPublicReviewer,
 
     createPrivateProductComments: session.isAdmin || session.isPrivateAdmin,
     viewAllPrivateProductComments: session.isAdmin || session.isPrivateAdmin,
@@ -224,23 +224,6 @@ export async function generateSession({ session, token }: { session: Session; to
     viewUsers: session.isAdmin,
     editUsers: session.isAdmin,
   };
-
-  session.permissionList = Object.keys(session.permissions).filter(
-    (key) => session.permissions[key as keyof Permissions],
-  );
-
-  if (session.user.id) {
-    session.tasks = await prisma.task.findMany({
-      where: {
-        OR: [
-          { userIds: { has: session.user.id } },
-          { roles: { hasSome: session.roles } },
-          { permissions: { hasSome: session.permissionList } },
-        ],
-        status: TaskStatus.ASSIGNED,
-      },
-    });
-  }
 
   return session;
 }
