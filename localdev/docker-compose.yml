@@ -147,22 +147,23 @@ services:
     - 8090:8080
 
   mailpit:
-    image: axllent/mailpit:v1.21   # Pulls the specified version of Mailpit (`v1.21`) from Docker Hub: https://hub.docker.com/r/axllent/mailpit
+    # See https://hub.docker.com/r/axllent/mailpit/tags
+    image: axllent/mailpit:v1.21
     container_name: mailpit
-    restart: unless-stopped   # Ensures the container restarts automatically unless it is manually stopped.
+    restart: unless-stopped
     volumes:
     - type: bind
-      source: ./mnt/mailpit  # The host directory to be mounted to the container.
-      target: /data        # The directory inside the container where Mailpit stores its data, including the database.
+      source: ./mnt/mailpit
+      target: /data
     ports:
-    - 8025:8025   # Maps port 8025 on the host to port 8025 in the container for the Mailpit web interface.
-    - 1025:1025   # Maps port 1025 on the host to port 1025 in the container for the SMTP server.
+    - 8025:8025   # Mailpit web interface
+    - 1025:1025   # SMTP server
     environment:
-      MP_MAX_MESSAGES: 5000   # Limits the maximum number of messages stored in Mailpit to 5000.
+      MP_MAX_MESSAGES: 5000           # Limits the maximum number of messages stored in Mailpit to 5000.
       MP_DATABASE: /data/mailpit.db   # Specifies the path to the Mailpit database file within the container.
-      MP_SMTP_AUTH_ACCEPT_ANY: 1   # Allows the SMTP server to accept any username and password (for testing).
-      MP_SMTP_AUTH_ALLOW_INSECURE: 1   # Permits insecure authentication mechanisms for SMTP (for testing).
-      MP_SMTP_TIMEOUT: 30s   # Sets the timeout for SMTP connections to 30 seconds.
+      MP_SMTP_AUTH_ACCEPT_ANY: 1      # Allows the SMTP server to accept any username and password (for testing).
+      MP_SMTP_AUTH_ALLOW_INSECURE: 1  # Permits insecure authentication mechanisms for SMTP (for testing).
+      MP_SMTP_TIMEOUT: 30s            # Sets the timeout for SMTP connections to 30 seconds.
 
   ches-mock:
     platform: linux/amd64

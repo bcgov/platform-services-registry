@@ -1,6 +1,6 @@
 import { ReadonlyURLSearchParams } from 'next/navigation';
 
-export default function createQueryString(
+export function createQueryString(
   params: Record<string, string | number | null>,
   searchParams: ReadonlyURLSearchParams,
 ) {
