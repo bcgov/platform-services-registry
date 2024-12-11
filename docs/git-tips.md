@@ -30,5 +30,10 @@ To address this, a practical workaround involves resetting all commits on the ba
 
   ```sh
   git checkout -b feat/1234-1
+  git pull origin main --no-rebase
+  git add .
+  git commit -m "chore(0000): temporary message"
   git reset --soft origin/main
+  git add .
+  git commit -m "feat(0000): <commit-message>"
   ```
