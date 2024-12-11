@@ -6,8 +6,7 @@ import React from 'react';
 import TableHeader from '@/components/generic/table/TableHeader';
 import TruncatedTooltip from '@/components/table/TruncatedTooltip';
 import { formatBinaryMetric, formatCpu, TransformedPodData, TransformedPVCData } from '@/helpers/resource-metrics';
-import { cn } from '@/utils';
-import { capitalizeFirstLetter } from '@/utils/string';
+import { capitalizeFirstLetter, cn } from '@/utils/js';
 
 interface MetricsSummary {
   totalUsage: number;

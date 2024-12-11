@@ -9,7 +9,7 @@ import HookFormTextarea from '@/components/generic/input/HookFormTextarea';
 import HookFormTextInput from '@/components/generic/input/HookFormTextInput';
 import { getQuotaChangeStatus } from '@/services/backend/private-cloud/products';
 import { usePrivateProductState } from '@/states/global';
-import { cn } from '@/utils';
+import { cn } from '@/utils/js';
 
 export default function QuotasChangeInfo({ disabled, className }: { disabled: boolean; className?: string }) {
   const [privateProductState, privateSnap] = usePrivateProductState();

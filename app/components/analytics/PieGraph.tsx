@@ -4,7 +4,7 @@ import { Card, DonutChart, Title, Subtitle } from '@tremor/react';
 import _map from 'lodash-es/map';
 import _orderBy from 'lodash-es/orderBy';
 import _sumBy from 'lodash-es/sumBy';
-import { formatNumber } from '@/utils/number';
+import { formatNumber } from '@/utils/js';
 
 interface PieGraphItem {
   label: string;

@@ -2,7 +2,7 @@ import { Badge } from '@mantine/core';
 import { RequestType, DecisionStatus } from '@prisma/client';
 import CopyableButton from '@/components/generic/button/CopyableButton';
 import { PrivateCloudRequestDetail } from '@/types/private-cloud';
-import { cn } from '@/utils';
+import { cn } from '@/utils/js';
 
 export default function RequestBadge({
   request,

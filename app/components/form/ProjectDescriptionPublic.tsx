@@ -12,7 +12,7 @@ import {
   reasonForSelectingCloudProviderOptions,
   publicCloudTeamEmail,
 } from '@/constants';
-import { cn } from '@/utils';
+import { cn } from '@/utils/js';
 import HookFormTextInput from '../generic/input/HookFormTextInput';
 
 function stripSpecialCharacters(text: string) {

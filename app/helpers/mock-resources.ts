@@ -2,7 +2,7 @@ import { faker } from '@faker-js/faker';
 import { Prisma, Cluster } from '@prisma/client';
 import { ministries, clusters, providers } from '@/constants';
 import { mockNoRoleUsers } from '@/helpers/mock-users';
-import { generateShortId } from '@/utils/uuid';
+import { generateShortId } from '@/utils/js';
 import { getRandomCloudProviderSelectionReasons, getRandomProviderReasonsNote } from './mock-resources/core';
 import { resourceRequests1 } from './mock-resources/private-cloud-product';
 

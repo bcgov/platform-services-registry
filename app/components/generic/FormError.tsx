@@ -1,7 +1,7 @@
 import _get from 'lodash-es/get';
 import _startCase from 'lodash-es/startCase';
 import { useFormContext } from 'react-hook-form';
-import { cn } from '@/utils';
+import { cn } from '@/utils/js';
 
 export default function FormError({
   field,

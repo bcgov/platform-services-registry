@@ -3,7 +3,7 @@ import { GlobalPermissions, GlobalRole } from '@/constants';
 import createApiHandler from '@/core/api-handler';
 import prisma from '@/core/prisma';
 import { OkResponse } from '@/core/responses';
-import { getUniqueNonFalsyItems } from '@/utils/collection';
+import { getUniqueNonFalsyItems } from '@/utils/js';
 
 const apiHandler = createApiHandler({
   roles: [GlobalRole.User],

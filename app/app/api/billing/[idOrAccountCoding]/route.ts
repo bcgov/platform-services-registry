@@ -5,7 +5,7 @@ import createApiHandler from '@/core/api-handler';
 import prisma from '@/core/prisma';
 import { OkResponse } from '@/core/responses';
 import { BillingGetPayload } from '@/types/billing';
-import { processNumber, processUpperEnumString, processBoolean } from '@/utils/zod';
+import { processNumber, processUpperEnumString, processBoolean } from '@/utils/js';
 import { getBillingIdWhere } from './helpers';
 
 const pathParamSchema = z.object({

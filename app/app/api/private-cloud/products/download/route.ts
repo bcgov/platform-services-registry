@@ -7,7 +7,7 @@ import { ministryKeyToName } from '@/helpers/product';
 import { formatFullName } from '@/helpers/user';
 import { createEvent, searchPrivateCloudProducts } from '@/services/db';
 import { PrivateProductCsvRecord } from '@/types/csv';
-import { formatDateSimple } from '@/utils/date';
+import { formatDateSimple } from '@/utils/js';
 import { privateCloudProductSearchNoPaginationBodySchema } from '@/validation-schemas/private-cloud';
 
 export const POST = createApiHandler({

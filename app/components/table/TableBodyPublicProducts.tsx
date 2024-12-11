@@ -10,7 +10,7 @@ import CopyableButton from '@/components/generic/button/CopyableButton';
 import UserCard from '@/components/UserCard';
 import { ministryKeyToName } from '@/helpers/product';
 import { PublicCloudProductSimpleDecorated } from '@/types/public-cloud';
-import { formatDate } from '@/utils/date';
+import { formatDate } from '@/utils/js';
 import EmptySearch from './EmptySearch';
 import TruncatedTooltip from './TruncatedTooltip';
 

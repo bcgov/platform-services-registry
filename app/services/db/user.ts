@@ -13,7 +13,7 @@ import { parsePaginationParams } from '@/helpers/pagination';
 import { listUsersByRoles, findUserByEmail, getKcAdminClient } from '@/services/keycloak/app-realm';
 import { getUserByEmail, getUserPhoto, processMsUser } from '@/services/msgraph';
 import { MsUser, AppUser } from '@/types/user';
-import { arrayBufferToBase64 } from '@/utils/base64-arraybuffer';
+import { arrayBufferToBase64 } from '@/utils/js';
 import { UserSearchBody } from '@/validation-schemas';
 
 export async function prepareUserData(user: AppUser, extra = {}) {

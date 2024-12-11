@@ -2,7 +2,7 @@
 
 import _kebabCase from 'lodash-es/kebabCase';
 import { InputHTMLAttributes } from 'react';
-import { cn } from '@/utils';
+import { cn } from '@/utils/js';
 import Label from '../Label';
 
 interface InputProps extends InputHTMLAttributes<HTMLInputElement> {}

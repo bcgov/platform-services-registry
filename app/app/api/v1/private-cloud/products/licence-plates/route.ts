@@ -4,7 +4,7 @@ import { z } from 'zod';
 import createApiHandler from '@/core/api-handler';
 import prisma from '@/core/prisma';
 import { OkResponse } from '@/core/responses';
-import { processBooleanPositive } from '@/utils/zod';
+import { processBooleanPositive } from '@/utils/js';
 
 const queryParamSchema = z.object({
   cluster: z.preprocess((v) => (_isString(v) ? v.toUpperCase() : ''), z.nativeEnum(Cluster)),

@@ -15,7 +15,7 @@ import Header from '@/components/layouts/Header';
 import Provider from '@/components/layouts/Provider';
 import { getInfo } from '@/services/backend';
 import { useAppState } from '@/states/global';
-import { cn } from '@/utils';
+import { cn } from '@/utils/js';
 import { theme } from './mantine-theme';
 
 const bcsans = localFont({

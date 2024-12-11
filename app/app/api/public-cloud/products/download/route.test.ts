@@ -17,7 +17,7 @@ import {
 } from '@/services/api-test/public-cloud/products';
 import { makePublicCloudRequestDecision } from '@/services/api-test/public-cloud/requests';
 import { PublicProductCsvRecord } from '@/types/csv';
-import { formatDateSimple } from '@/utils/date';
+import { formatDateSimple } from '@/utils/js';
 
 const PO = mockNoRoleUsers[0];
 const TL1 = mockNoRoleUsers[1];

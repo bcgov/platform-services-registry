@@ -13,7 +13,7 @@ import { formatFullName } from '@/helpers/user';
 import { getUserImageData } from '@/helpers/user-image';
 import { updateUser } from '@/services/backend/user';
 import { AdminViewUser } from '@/types/user';
-import { formatDate } from '@/utils/date';
+import { formatDate } from '@/utils/js';
 import ProductsCard from './ProductsCard';
 
 interface TableProps {

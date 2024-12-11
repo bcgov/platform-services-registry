@@ -8,7 +8,7 @@ import {
   PublicCloudProductSimple,
   PublicCloudProductSimpleDecorated,
 } from '@/types/public-cloud';
-import { getUniqueNonFalsyItems, arraysIntersect } from '@/utils/collection';
+import { getUniqueNonFalsyItems, arraysIntersect } from '@/utils/js';
 import { publicCloudProductDetailInclude, publicCloudProductSimpleInclude } from '../includes';
 import { createSessionModel } from './core';
 

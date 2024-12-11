@@ -14,7 +14,7 @@ import TableBodyAWSRoles from '@/components/table/TableBodyAWSRoles';
 import UserAWSRolesTableTop from '@/components/table/TableTopUserAWSRoles';
 import { publicCloudTeamEmail } from '@/constants';
 import { getUsersPaginatedList, addUser, deleteUser, getRolesNames } from '@/services/backend/aws-roles';
-import { capitalizeFirstLetter } from '@/utils/string';
+import { capitalizeFirstLetter } from '@/utils/js';
 
 const pathParamRoleToRole = (pathRole: string): string => {
   const role = capitalizeFirstLetter(pathRole.replace(/-/g, ' ').slice(0, -1));

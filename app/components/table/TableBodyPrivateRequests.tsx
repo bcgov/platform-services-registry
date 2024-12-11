@@ -10,7 +10,7 @@ import TemporaryProductBadge from '@/components/form/TemporaryProductBadge';
 import CopyableButton from '@/components/generic/button/CopyableButton';
 import { ministryKeyToName } from '@/helpers/product';
 import { PrivateCloudRequestSimpleDecorated } from '@/types/private-cloud';
-import { formatDate } from '@/utils/date';
+import { formatDate } from '@/utils/js';
 import RequestStatusProgress from '../RequestStatusProgress';
 import EmptySearch from './EmptySearch';
 import TruncatedTooltip from './TruncatedTooltip';

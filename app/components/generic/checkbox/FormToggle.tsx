@@ -1,7 +1,7 @@
 'use client';
 
 import { RefObject } from 'react';
-import { cn } from '@/utils';
+import { cn } from '@/utils/js';
 
 export default function FormToggle({
   id,

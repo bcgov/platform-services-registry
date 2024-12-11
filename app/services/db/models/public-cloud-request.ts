@@ -8,7 +8,7 @@ import {
   PublicCloudRequestSimple,
   PublicCloudRequestSimpleDecorated,
 } from '@/types/public-cloud';
-import { getUniqueNonFalsyItems } from '@/utils/collection';
+import { getUniqueNonFalsyItems } from '@/utils/js';
 import { publicCloudRequestDetailInclude, publicCloudRequestSimpleInclude } from '../includes';
 import { createSessionModel } from './core';
 import { publicCloudProductModel } from './public-cloud-product';

@@ -1,6 +1,6 @@
 'use client';
 import { IconMail } from '@tabler/icons-react';
-import { cn } from '@/utils';
+import { cn } from '@/utils/js';
 
 export default function MailLink({
   to,

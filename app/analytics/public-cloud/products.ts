@@ -2,7 +2,7 @@ import { Provider, RequestType, DecisionStatus } from '@prisma/client';
 import _forEach from 'lodash-es/forEach';
 import _uniq from 'lodash-es/uniq';
 import prisma from '@/core/prisma';
-import { dateToShortDateString, shortDateStringToDate, compareYearMonth } from '@/utils/date';
+import { dateToShortDateString, shortDateStringToDate, compareYearMonth } from '@/utils/js';
 
 export async function productsCreatedPerMonth() {
   const [projects, deleteRequests] = await Promise.all([

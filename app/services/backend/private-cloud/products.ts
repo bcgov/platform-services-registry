@@ -7,7 +7,7 @@ import {
   PrivateCloudProductSearch,
   PrivateCloudRequestDetail,
 } from '@/types/private-cloud';
-import { downloadFile } from '@/utils/file-download';
+import { downloadFile } from '@/utils/browser';
 import {
   PrivateCloudProductSearchBody,
   PrivateCloudProductSearchNoPaginationBody,

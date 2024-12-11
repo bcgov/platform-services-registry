@@ -3,7 +3,7 @@ import { usePathname } from 'next/navigation';
 import { useSnapshot } from 'valtio';
 import { tabName } from '@/app/api/public-cloud/aws-roles/helpers';
 import { publicProductState } from '@/states/global';
-import { cn } from '@/utils';
+import { cn } from '@/utils/js';
 
 export default function PublicUsersTabs({ roles }: { roles: tabName[] }) {
   const snap = useSnapshot(publicProductState);

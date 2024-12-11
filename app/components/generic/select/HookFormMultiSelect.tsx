@@ -1,7 +1,7 @@
 'use client';
 
 import { Controller, FieldValues, Path, useFormContext } from 'react-hook-form';
-import { cn } from '@/utils';
+import { cn } from '@/utils/js';
 import FormError from '../FormError';
 import { HookFormRules } from '../types';
 import FormMultiSelect, { FormMultiSelectProps } from './FormMultiSelect';

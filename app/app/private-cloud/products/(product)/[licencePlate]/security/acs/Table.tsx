@@ -2,7 +2,7 @@ import _get from 'lodash-es/get';
 import _isArray from 'lodash-es/isArray';
 import _isFunction from 'lodash-es/isFunction';
 import ExternalLink from '@/components/generic/button/ExternalLink';
-import { formatDateSimple } from '@/utils/date';
+import { formatDateSimple } from '@/utils/js';
 
 type Process<T> = ({
   value,

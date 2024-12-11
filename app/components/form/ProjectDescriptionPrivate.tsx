@@ -11,7 +11,7 @@ import HookFormTextarea from '@/components/generic/input/HookFormTextarea';
 import FormSelect from '@/components/generic/select/FormSelect';
 import HookFormSingleSelect from '@/components/generic/select/HookFormSingleSelect';
 import { clusters, ministryOptions, privateCloudTeamEmail } from '@/constants';
-import { cn } from '@/utils';
+import { cn } from '@/utils/js';
 import HookFormTextInput from '../generic/input/HookFormTextInput';
 
 export default function ProjectDescriptionPrivate({

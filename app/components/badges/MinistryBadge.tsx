@@ -1,6 +1,6 @@
 import { Badge, Tooltip } from '@mantine/core';
 import { ministryOptions } from '@/constants';
-import { cn } from '@/utils';
+import { cn } from '@/utils/js';
 
 const additionalMinistryOptions = [
   {

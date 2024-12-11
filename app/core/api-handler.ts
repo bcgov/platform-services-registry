@@ -9,9 +9,8 @@ import { AUTH_SERVER_URL, AUTH_RELM } from '@/config';
 import { GlobalRole } from '@/constants';
 import { authOptions, generateSession } from '@/core/auth-options';
 import { findUser } from '@/services/keycloak/app-realm';
-import { checkArrayStringCondition } from '@/utils/collection';
-import { verifyKeycloakJwtTokenSafe } from '@/utils/jwt';
-import { parseQueryString } from '@/utils/query-string';
+import { checkArrayStringCondition, parseQueryString } from '@/utils/js';
+import { verifyKeycloakJwtTokenSafe } from '@/utils/node';
 import { logger } from './logging';
 import {
   BadRequestResponse,

@@ -7,7 +7,7 @@ import {
   PublicCloudProductSearch,
   PublicCloudRequestDetail,
 } from '@/types/public-cloud';
-import { downloadFile } from '@/utils/file-download';
+import { downloadFile } from '@/utils/browser';
 import {
   PublicCloudProductSearchBody,
   PublicCloudProductSearchNoPaginationBody,

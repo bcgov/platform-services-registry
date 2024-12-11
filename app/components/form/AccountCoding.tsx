@@ -7,7 +7,7 @@ import AccountCodingInput from '@/components/form/AccountCodingInput';
 import FormCheckbox from '@/components/generic/checkbox/FormCheckbox';
 import FormError from '@/components/generic/FormError';
 import { getBilling } from '@/services/backend/billing';
-import { cn } from '@/utils';
+import { cn } from '@/utils/js';
 
 export default function AccountCoding({
   disabled,

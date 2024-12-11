@@ -5,7 +5,7 @@ import { Fragment, useEffect, useState } from 'react';
 import { useFormContext } from 'react-hook-form';
 import { listUsersByEmail } from '@/services/backend/msal';
 import { AppUser } from '@/types/user';
-import { cn } from '@/utils';
+import { cn } from '@/utils/js';
 import { userSchema } from '@/validation-schemas/shared';
 
 export default function AsyncAutocomplete({

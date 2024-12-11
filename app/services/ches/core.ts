@@ -7,7 +7,7 @@ import sanitizeHtml from 'sanitize-html';
 import { EMAIL_PREFIX, CHES_TOKEN_URL, CHES_API_URL, CHES_CLIENT_ID, CHES_CLIENT_SECRET } from '@/config';
 import { privateCloudTeamEmail } from '@/constants';
 import { logger } from '@/core/logging';
-import { fetchWithTimeout } from '@/utils';
+import { fetchWithTimeout } from '@/utils/js';
 
 type NullOrString = string | null | undefined;
 type EmailAddress = string | undefined;

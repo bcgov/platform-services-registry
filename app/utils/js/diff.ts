@@ -5,7 +5,7 @@ import _isPlainObject from 'lodash-es/isPlainObject';
 import _isString from 'lodash-es/isString';
 import _mapValues from 'lodash-es/mapValues';
 import _pick from 'lodash-es/pick';
-import { isEmail } from '@/utils/string';
+import { isEmail } from '@/utils/js';
 
 function pickData(data: any, fields: string[]) {
   return _mapValues(_pick(data || {}, fields), (val, key) => {

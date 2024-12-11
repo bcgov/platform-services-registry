@@ -10,8 +10,7 @@ import { openUserPickerModal } from '@/components/modal/userPicker';
 import { privateCloudProductMemberRoles } from '@/constants';
 import { formatFullName } from '@/helpers/user';
 import { getUserImageData } from '@/helpers/user-image';
-import { cn } from '@/utils';
-import { formatDate } from '@/utils/date';
+import { formatDate, cn } from '@/utils/js';
 
 export default function AdditionalTeamMembers({ disabled }: { disabled?: boolean }) {
   const {

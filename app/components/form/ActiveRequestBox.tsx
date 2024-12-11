@@ -14,7 +14,7 @@ import { useQuery } from '@tanstack/react-query';
 import { useRouter } from 'next/navigation';
 import { useSession } from 'next-auth/react';
 import { getPrivateCloudCommentCount } from '@/services/backend/private-cloud/products';
-import { cn } from '@/utils';
+import { cn } from '@/utils/js';
 
 export default function ActiveRequestBox({
   data,

@@ -7,7 +7,7 @@ import _throttle from 'lodash-es/throttle';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import { useEffect, useState, useTransition, useRef } from 'react';
 import Select, { MultiValue } from 'react-select';
-import { parseQueryString, stringifyQuery, isSearchQueryEqual } from '@/utils/query-string';
+import { parseQueryString, stringifyQuery, isSearchQueryEqual } from '@/utils/js';
 
 export default function SearchPanel({ clusters, endPaths }: { clusters: string[]; endPaths: string }) {
   const { replace } = useRouter();

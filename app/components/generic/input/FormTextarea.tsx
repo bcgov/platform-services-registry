@@ -3,7 +3,7 @@
 import _isFunction from 'lodash-es/isFunction';
 import _kebabCase from 'lodash-es/kebabCase';
 import { TextareaHTMLAttributes, useRef } from 'react';
-import { cn } from '@/utils';
+import { cn } from '@/utils/js';
 import CopyableButton from '../button/CopyableButton';
 import Label from '../Label';
 
