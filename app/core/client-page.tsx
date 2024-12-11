@@ -4,7 +4,7 @@ import _isUndefined from 'lodash-es/isUndefined';
 import { AppRouterInstance } from 'next/dist/shared/lib/app-router-context.shared-runtime';
 import { useRouter } from 'next/navigation';
 import { Session, PermissionsKey } from 'next-auth';
-import { useSession } from 'next-auth/react';
+import { useSession, signOut as appSignOut } from 'next-auth/react';
 import React from 'react';
 import { z, TypeOf, ZodType } from 'zod';
 import { arrayIntersection } from '@/utils/collection';
@@ -50,6 +50,8 @@ function createClientPage<TPathParams extends ZodType<any, any>, TQueryParams ex
       const router = useRouter();
       // eslint-disable-next-line react-hooks/rules-of-hooks
       const { data: session } = useSession();
+
+      if (session?.isExpired) appSignOut();
 
       // Wait until the session is fetched by the backend
       if (_isUndefined(session)) return null;

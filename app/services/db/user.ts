@@ -1,11 +1,13 @@
 import UserRepresentation from '@keycloak/keycloak-admin-client/lib/defs/userRepresentation';
 import { Prisma, User } from '@prisma/client';
+import { addMinutes } from 'date-fns';
 import _castArray from 'lodash-es/castArray';
 import _compact from 'lodash-es/compact';
 import _forEach from 'lodash-es/forEach';
 import _isNumber from 'lodash-es/isNumber';
 import _isString from 'lodash-es/isString';
 import _uniq from 'lodash-es/uniq';
+import { USER_TOKEN_REFRESH_MIN } from '@/core/auth-options';
 import { logger } from '@/core/logging';
 import prisma from '@/core/prisma';
 import { proxyUsers } from '@/helpers/mock-users';
@@ -18,7 +20,6 @@ import { UserSearchBody } from '@/validation-schemas';
 
 export async function prepareUserData(user: AppUser, extra = {}) {
   const email = user.email.toLowerCase();
-
   const image = await getUserPhoto(email);
   const data = {
     email,
@@ -31,6 +32,7 @@ export async function prepareUserData(user: AppUser, extra = {}) {
     officeLocation: user.officeLocation,
     jobTitle: user.jobTitle,
     upn: user.upn,
+    nextTokenRefreshTime: addMinutes(new Date(), USER_TOKEN_REFRESH_MIN),
     image: image ? arrayBufferToBase64(image) : '',
     ...extra,
   };

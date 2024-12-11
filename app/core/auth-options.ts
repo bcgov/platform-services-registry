@@ -1,4 +1,6 @@
 import { EventType, TaskStatus } from '@prisma/client';
+import axios from 'axios';
+import { addMinutes } from 'date-fns';
 import jwt from 'jsonwebtoken';
 import _forEach from 'lodash-es/forEach';
 import _get from 'lodash-es/get';
@@ -12,7 +14,83 @@ import prisma from '@/core/prisma';
 import { createEvent } from '@/services/db';
 import { upsertUser } from '@/services/db/user';
 
+export const USER_TOKEN_REFRESH_MIN = 1; // 3 minutes
+
+interface Token {
+  email: string;
+  accessToken: string;
+  refreshToken: string;
+  idToken: string;
+  roles: string[];
+  sub: string;
+  teams: TeamAccess[];
+  isRefreshTokenExpired: boolean;
+}
+
+interface TeamAccess {
+  clientId: string;
+  roles: string[];
+}
+
+interface DecodedToken {
+  resource_access: Record<string, { roles: string[] }>;
+  sub: string;
+  email: string;
+}
+
+function processToken(accessToken: string) {
+  const decodedToken = jwt.decode(accessToken || '') as DecodedToken;
+
+  const roles = _get(decodedToken, `resource_access.${AUTH_RESOURCE}.roles`, []);
+  const sub = decodedToken?.sub ?? '';
+  const teams: TeamAccess[] = [];
+
+  _forEach(decodedToken.resource_access ?? {}, (val, key) => {
+    if (key.startsWith(TEAM_SA_PREFIX)) {
+      teams.push({ clientId: key, roles: val.roles });
+    }
+  });
+
+  return {
+    roles: roles,
+    sub: sub,
+    teams: teams,
+  };
+}
+
+function updateTokens(userAccount: Account | null, token: Token) {
+  if (userAccount?.access_token) {
+    Object.assign(token, {
+      accessToken: userAccount.access_token,
+      refreshToken: userAccount.refresh_token,
+      idToken: userAccount.id_token,
+      ...processToken(userAccount.access_token),
+    });
+  }
+}
+
+async function getNewTokens(token: Token) {
+  const tokenEndpoint = `${AUTH_SERVER_URL}/realms/${AUTH_RELM}/protocol/openid-connect/token`;
+  const params = new URLSearchParams({
+    client_id: AUTH_RESOURCE,
+    client_secret: AUTH_SECRET,
+    grant_type: 'refresh_token',
+    refresh_token: token.refreshToken,
+  });
+  try {
+    const response = await axios.post(tokenEndpoint, params, {
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded',
+      },
+    });
+    return response.data;
+  } catch (error) {
+    token.isRefreshTokenExpired = true;
+  }
+}
+
 export async function generateSession({ session, token }: { session: Session; token?: JWT }) {
+  if (token?.isRefreshTokenExpired) session.isExpired = true;
   sessionRolePropKeys.forEach((key: SessionKeys) => {
     // @ts-ignore: Ignore TypeScript error for dynamic property assignment
     session[key] = false;
@@ -221,6 +299,7 @@ export const authOptions: AuthOptions = {
           officeLocation: '',
           jobTitle: '',
           lastSeen,
+          nextTokenRefreshTime: '',
         };
 
         await prisma.user.upsert({
@@ -233,23 +312,26 @@ export const authOptions: AuthOptions = {
       return true;
     },
     async jwt({ token, account }: { token: any; account: Account | null }) {
-      if (account?.access_token) {
-        const decodedToken: any = jwt.decode(account.access_token);
+      const now = new Date();
+      updateTokens(account, token);
 
-        token.accessToken = account.access_token;
-        token.idToken = account.id_token;
-        token.roles = _get(decodedToken, `resource_access.${AUTH_RESOURCE}.roles`, []);
-        token.sub = decodedToken?.sub ?? '';
-        token.teams = [];
+      const { count } = await prisma.user.updateMany({
+        where: {
+          email: token.email,
+          nextTokenRefreshTime: { lt: now },
+        },
+        data: {
+          nextTokenRefreshTime: addMinutes(now, USER_TOKEN_REFRESH_MIN),
+        },
+      });
 
-        _forEach(decodedToken.resource_access ?? {}, (val, key) => {
-          if (key.startsWith(TEAM_SA_PREFIX)) {
-            token.teams.push({ clientId: key, roles: val.roles });
-          }
-        });
+      if (count > 0) {
+        const newTokens = await getNewTokens(token);
+        updateTokens(newTokens, token);
       }
 
       if (!token.roles) token.roles = [];
+
       return token;
     },
     session: generateSession.bind(this),
