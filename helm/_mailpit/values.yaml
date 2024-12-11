@@ -1,9 +1,13 @@
 replicaCount: 1
 
+# https://hub.docker.com/r/axllent/mailpit/tags
 image:
   repository: axllent/mailpit
   tag: v1.21.1
   pullPolicy: Always
+
+global:
+  imagePullSecrets: []
 
 imagePullSecrets: []
 nameOverride: mailpit
@@ -73,3 +77,13 @@ nodeSelector: {}
 tolerations: []
 
 affinity: {}
+
+mailpit:
+  dbPath: /var/lib/mailpit/mailpit.db
+
+
+persistence:
+  enabled: true
+  size: 200Mi
+  storageClassName: netapp-file-standard
+  existingClaim: mailpit
