@@ -1,9 +1,11 @@
 import { EventType, TaskStatus } from '@prisma/client';
+import axios from 'axios';
+import { addMinutes, addSeconds } from 'date-fns';
 import jwt from 'jsonwebtoken';
 import _forEach from 'lodash-es/forEach';
 import _get from 'lodash-es/get';
 import _uniq from 'lodash-es/uniq';
-import { Account, AuthOptions, Session, User, SessionKeys, Permissions } from 'next-auth';
+import { Account, AuthOptions, Session, User, SessionKeys } from 'next-auth';
 import { JWT } from 'next-auth/jwt';
 import KeycloakProvider, { KeycloakProfile } from 'next-auth/providers/keycloak';
 import { IS_PROD, AUTH_SERVER_URL, AUTH_RELM, AUTH_RESOURCE, AUTH_SECRET, PUBLIC_AZURE_ACCESS_EMAILS } from '@/config';
@@ -12,7 +14,69 @@ import prisma from '@/core/prisma';
 import { createEvent } from '@/services/db';
 import { upsertUser } from '@/services/db/user';
 
+const USER_TOKEN_REFRESH_MIN = 3; // 3 minutes
+
+interface Token {
+  email: string;
+  accessToken: string;
+  refreshToken: string;
+  idToken: string;
+  roles: string[];
+  sub: string;
+  teams: TeamAccess[];
+  isRefreshTokenExpired: boolean;
+}
+
+interface TeamAccess {
+  clientId: string;
+  roles: string[];
+}
+
+interface DecodedToken {
+  resource_access: Record<string, { roles: string[] }>;
+  sub: string;
+  email: string;
+}
+
+async function processToken(token: Token) {
+  const decodedToken: DecodedToken = jwt.decode(token.accessToken || '') as DecodedToken;
+
+  const newRoles = _get(decodedToken, `resource_access.${AUTH_RESOURCE}.roles`, []);
+  const newSub = decodedToken?.sub ?? '';
+  const newTeams: TeamAccess[] = [];
+
+  _forEach(decodedToken.resource_access ?? {}, (val, key) => {
+    if (key.startsWith(TEAM_SA_PREFIX)) {
+      token.teams.push({ clientId: key, roles: val.roles });
+    }
+  });
+
+  return {
+    isRefreshTokenExpired: false,
+    roles: newRoles,
+    sub: newSub,
+    teams: newTeams,
+  };
+}
+
+async function getNewTokens(refreshToken: string) {
+  const tokenEndpoint = `${AUTH_SERVER_URL}/realms/${AUTH_RELM}/protocol/openid-connect/token`;
+  const params = new URLSearchParams({
+    client_id: AUTH_RESOURCE,
+    client_secret: AUTH_SECRET,
+    grant_type: 'refresh_token',
+    refresh_token: refreshToken,
+  });
+  const response = await axios.post(tokenEndpoint, params, {
+    headers: {
+      'Content-Type': 'application/x-www-form-urlencoded',
+    },
+  });
+  return response.data;
+}
+
 export async function generateSession({ session, token }: { session: Session; token?: JWT }) {
+  if (token?.isRefreshTokenExpired) session.isExpired = true;
   sessionRolePropKeys.forEach((key: SessionKeys) => {
     // @ts-ignore: Ignore TypeScript error for dynamic property assignment
     session[key] = false;
@@ -29,8 +93,6 @@ export async function generateSession({ session, token }: { session: Session; to
     email: '',
     image: '',
   };
-
-  session.tasks = [];
 
   if (token) {
     session.idToken = token.idToken ?? '';
@@ -74,6 +136,13 @@ export async function generateSession({ session, token }: { session: Session; to
         session.ministries[ministryRole].push(ministryCode.toUpperCase());
       }
     });
+
+    session.tasks = await prisma.task.findMany({
+      where: {
+        OR: [{ userIds: { has: session.user.id } }, { roles: { hasSome: session.roles } }],
+        status: TaskStatus.ASSIGNED,
+      },
+    });
   }
 
   const azureEmails = PUBLIC_AZURE_ACCESS_EMAILS.split(',').map((v) => v.trim().toLowerCase());
@@ -103,7 +172,7 @@ export async function generateSession({ session, token }: { session: Session; to
       session.isAdmin || session.isEditor || session.isPrivateAdmin || session.isPrivateEditor,
     deleteAllPrivateCloudProducts:
       session.isAdmin || session.isEditor || session.isPrivateAdmin || session.isPrivateEditor,
-    reviewAllPrivateCloudRequests: session.isAdmin || session.isPrivateAdmin || session.isPrivateReviewer,
+    reviewAllPrivateCloudRequests: session.isPrivateReviewer,
 
     createPrivateCloudProductsAsAssignee: session.isUser,
     viewAssignedPrivateCloudProducts: session.isUser,
@@ -128,7 +197,7 @@ export async function generateSession({ session, token }: { session: Session; to
     editAllPublicCloudProducts: session.isAdmin || session.isEditor || session.isPublicAdmin || session.isPublicEditor,
     deleteAllPublicCloudProducts:
       session.isAdmin || session.isEditor || session.isPublicAdmin || session.isPublicEditor,
-    reviewAllPublicCloudRequests: session.isAdmin || session.isPublicAdmin || session.isPublicReviewer,
+    reviewAllPublicCloudRequests: session.isPublicReviewer,
 
     createPrivateProductComments: session.isAdmin || session.isPrivateAdmin,
     viewAllPrivateProductComments: session.isAdmin || session.isPrivateAdmin,
@@ -152,26 +221,9 @@ export async function generateSession({ session, token }: { session: Session; to
     viewPrivateAnalytics: session.isAdmin || session.isAnalyzer || session.isPrivateAnalyzer,
 
     downloadBillingMou: session.isBillingReviewer || session.isBillingReader,
-    viewUsers: session.isAdmin || session.isUserReader,
+    viewUsers: session.isAdmin,
     editUsers: session.isAdmin,
   };
-
-  session.permissionList = Object.keys(session.permissions).filter(
-    (key) => session.permissions[key as keyof Permissions],
-  );
-
-  if (session.user.id) {
-    session.tasks = await prisma.task.findMany({
-      where: {
-        OR: [
-          { userIds: { has: session.user.id } },
-          { roles: { hasSome: session.roles } },
-          { permissions: { hasSome: session.permissionList } },
-        ],
-        status: TaskStatus.ASSIGNED,
-      },
-    });
-  }
 
   return session;
 }
@@ -206,6 +258,11 @@ export const authOptions: AuthOptions = {
       const loweremail = email.toLowerCase();
       const lastSeen = new Date();
 
+      await prisma.user.update({
+        where: { email: loweremail },
+        data: { nextTokenRefreshTime: addMinutes(lastSeen, USER_TOKEN_REFRESH_MIN) },
+      });
+
       const upsertedUser = await upsertUser(loweremail, { lastSeen });
       if (!upsertedUser) {
         const data = {
@@ -233,23 +290,38 @@ export const authOptions: AuthOptions = {
       return true;
     },
     async jwt({ token, account }: { token: any; account: Account | null }) {
-      if (account?.access_token) {
-        const decodedToken: any = jwt.decode(account.access_token);
-
+      const now = new Date();
+      let user;
+      if (account) {
         token.accessToken = account.access_token;
+        token.refreshToken = account.refresh_token;
         token.idToken = account.id_token;
-        token.roles = _get(decodedToken, `resource_access.${AUTH_RESOURCE}.roles`, []);
-        token.sub = decodedToken?.sub ?? '';
-        token.teams = [];
-
-        _forEach(decodedToken.resource_access ?? {}, (val, key) => {
-          if (key.startsWith(TEAM_SA_PREFIX)) {
-            token.teams.push({ clientId: key, roles: val.roles });
-          }
+        Object.assign(token, await processToken(token));
+      }
+      try {
+        user = await prisma.user.update({
+          where: {
+            email: token.email,
+            nextTokenRefreshTime: { lt: now },
+          },
+          data: {
+            nextTokenRefreshTime: addMinutes(now, USER_TOKEN_REFRESH_MIN),
+          },
         });
+      } catch (error) {}
+
+      if (user) {
+        try {
+          const { access_token } = await getNewTokens(token.refreshToken);
+          token.accessToken = access_token;
+          Object.assign(token, await processToken(token));
+        } catch (error) {
+          token.isRefreshTokenExpired = true;
+        }
       }
 
       if (!token.roles) token.roles = [];
+
       return token;
     },
     session: generateSession.bind(this),
