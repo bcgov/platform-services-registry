@@ -14,7 +14,7 @@ import prisma from '@/core/prisma';
 import { createEvent } from '@/services/db';
 import { upsertUser } from '@/services/db/user';
 
-const USER_TOKEN_REFRESH_MIN = 3; // 3 minutes
+export const USER_TOKEN_REFRESH_MIN = 1; // 3 minutes
 
 interface Token {
   email: string;
@@ -38,41 +38,55 @@ interface DecodedToken {
   email: string;
 }
 
-async function processToken(token: Token) {
-  const decodedToken: DecodedToken = jwt.decode(token.accessToken || '') as DecodedToken;
+function processToken(accessToken: string) {
+  const decodedToken = jwt.decode(accessToken || '') as DecodedToken;
 
-  const newRoles = _get(decodedToken, `resource_access.${AUTH_RESOURCE}.roles`, []);
-  const newSub = decodedToken?.sub ?? '';
-  const newTeams: TeamAccess[] = [];
+  const roles = _get(decodedToken, `resource_access.${AUTH_RESOURCE}.roles`, []);
+  const sub = decodedToken?.sub ?? '';
+  const teams: TeamAccess[] = [];
 
   _forEach(decodedToken.resource_access ?? {}, (val, key) => {
     if (key.startsWith(TEAM_SA_PREFIX)) {
-      token.teams.push({ clientId: key, roles: val.roles });
+      teams.push({ clientId: key, roles: val.roles });
     }
   });
 
   return {
-    isRefreshTokenExpired: false,
-    roles: newRoles,
-    sub: newSub,
-    teams: newTeams,
+    roles: roles,
+    sub: sub,
+    teams: teams,
   };
 }
 
-async function getNewTokens(refreshToken: string) {
+function updateTokens(userAccount: Account | null, token: Token) {
+  if (userAccount?.access_token) {
+    Object.assign(token, {
+      accessToken: userAccount.access_token,
+      refreshToken: userAccount.refresh_token,
+      idToken: userAccount.id_token,
+      ...processToken(userAccount.access_token),
+    });
+  }
+}
+
+async function getNewTokens(token: Token) {
   const tokenEndpoint = `${AUTH_SERVER_URL}/realms/${AUTH_RELM}/protocol/openid-connect/token`;
   const params = new URLSearchParams({
     client_id: AUTH_RESOURCE,
     client_secret: AUTH_SECRET,
     grant_type: 'refresh_token',
-    refresh_token: refreshToken,
+    refresh_token: token.refreshToken,
   });
-  const response = await axios.post(tokenEndpoint, params, {
-    headers: {
-      'Content-Type': 'application/x-www-form-urlencoded',
-    },
-  });
-  return response.data;
+  try {
+    const response = await axios.post(tokenEndpoint, params, {
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded',
+      },
+    });
+    return response.data;
+  } catch (error) {
+    token.isRefreshTokenExpired = true;
+  }
 }
 
 export async function generateSession({ session, token }: { session: Session; token?: JWT }) {
@@ -270,11 +284,6 @@ export const authOptions: AuthOptions = {
       const loweremail = email.toLowerCase();
       const lastSeen = new Date();
 
-      await prisma.user.update({
-        where: { email: loweremail },
-        data: { nextTokenRefreshTime: addMinutes(lastSeen, USER_TOKEN_REFRESH_MIN) },
-      });
-
       const upsertedUser = await upsertUser(loweremail, { lastSeen });
       if (!upsertedUser) {
         const data = {
@@ -290,6 +299,7 @@ export const authOptions: AuthOptions = {
           officeLocation: '',
           jobTitle: '',
           lastSeen,
+          nextTokenRefreshTime: '',
         };
 
         await prisma.user.upsert({
@@ -303,34 +313,21 @@ export const authOptions: AuthOptions = {
     },
     async jwt({ token, account }: { token: any; account: Account | null }) {
       const now = new Date();
-      let user;
-      if (account) {
-        token.accessToken = account.access_token;
-        token.refreshToken = account.refresh_token;
-        token.idToken = account.id_token;
-        Object.assign(token, await processToken(token));
-      }
+      updateTokens(account, token);
 
-      try {
-        user = await prisma.user.update({
-          where: {
-            email: token.email,
-            nextTokenRefreshTime: { lt: now },
-          },
-          data: {
-            nextTokenRefreshTime: addMinutes(now, USER_TOKEN_REFRESH_MIN),
-          },
-        });
-      } catch (error) {}
+      const { count } = await prisma.user.updateMany({
+        where: {
+          email: token.email,
+          nextTokenRefreshTime: { lt: now },
+        },
+        data: {
+          nextTokenRefreshTime: addMinutes(now, USER_TOKEN_REFRESH_MIN),
+        },
+      });
 
-      if (user) {
-        try {
-          const { access_token } = await getNewTokens(token.refreshToken);
-          token.accessToken = access_token;
-          Object.assign(token, await processToken(token));
-        } catch (error) {
-          token.isRefreshTokenExpired = true;
-        }
+      if (count > 0) {
+        const newTokens = await getNewTokens(token);
+        updateTokens(newTokens, token);
       }
 
       if (!token.roles) token.roles = [];
