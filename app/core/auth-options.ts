@@ -14,7 +14,7 @@ import prisma from '@/core/prisma';
 import { createEvent } from '@/services/db';
 import { upsertUser } from '@/services/db/user';
 
-export const USER_TOKEN_REFRESH_MIN = 3; // 3 minutes
+export const USER_TOKEN_REFRESH_MIN = 1; // 3 minutes
 
 interface Token {
   email: string;
@@ -38,7 +38,15 @@ interface DecodedToken {
   email: string;
 }
 
-function processToken(accessToken: string) {
+function processTokens({
+  accessToken,
+  refreshToken,
+  idToken,
+}: {
+  accessToken: string;
+  refreshToken: string;
+  idToken: string;
+}) {
   const decodedToken = jwt.decode(accessToken || '') as DecodedToken;
 
   const roles = _get(decodedToken, `resource_access.${AUTH_RESOURCE}.roles`, []);
@@ -55,6 +63,9 @@ function processToken(accessToken: string) {
     roles,
     sub,
     teams,
+    accessToken,
+    refreshToken,
+    idToken,
   };
 }
 
@@ -304,12 +315,14 @@ export const authOptions: AuthOptions = {
     async jwt({ token, account }: { token: any; account: Account | null }) {
       const now = new Date();
       if (account?.access_token) {
-        Object.assign(token, {
-          accessToken: account.access_token,
-          refreshToken: account.refresh_token,
-          idToken: account.id_token,
-          ...processToken(account.access_token),
-        });
+        Object.assign(
+          token,
+          processTokens({
+            accessToken: account.access_token,
+            refreshToken: account.refresh_token || '',
+            idToken: account.id_token || '',
+          }),
+        );
       }
 
       const { count } = await prisma.user.updateMany({
@@ -324,12 +337,17 @@ export const authOptions: AuthOptions = {
 
       if (count > 0) {
         const newTokens = await getNewTokens(token.refreshToken);
-        Object.assign(token, {
-          accessToken: newTokens.access_token,
-          refreshToken: newTokens.refresh_token,
-          idToken: newTokens.id_token,
-          ...processToken(newTokens.access_token),
-        });
+        if (!newTokens) token.isRefreshTokenExpired = true;
+        else {
+          Object.assign(
+            token,
+            processTokens({
+              accessToken: newTokens.access_token,
+              refreshToken: newTokens.refresh_token,
+              idToken: newTokens.id_token,
+            }),
+          );
+        }
       }
 
       if (!token.roles) token.roles = [];
