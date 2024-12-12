@@ -5,55 +5,37 @@ import jwt from 'jsonwebtoken';
 import _forEach from 'lodash-es/forEach';
 import _get from 'lodash-es/get';
 import _uniq from 'lodash-es/uniq';
-import { Account, AuthOptions, Session, User, SessionKeys, Permissions } from 'next-auth';
+import { Account, AuthOptions, Session, User, SessionKeys, Permissions, SessionTokenTeams } from 'next-auth';
 import { JWT } from 'next-auth/jwt';
 import KeycloakProvider, { KeycloakProfile } from 'next-auth/providers/keycloak';
-import { IS_PROD, AUTH_SERVER_URL, AUTH_RELM, AUTH_RESOURCE, AUTH_SECRET, PUBLIC_AZURE_ACCESS_EMAILS } from '@/config';
+import {
+  IS_PROD,
+  AUTH_SERVER_URL,
+  AUTH_RELM,
+  AUTH_RESOURCE,
+  AUTH_SECRET,
+  PUBLIC_AZURE_ACCESS_EMAILS,
+  USER_TOKEN_REFRESH_INTERVAL,
+} from '@/config';
 import { TEAM_SA_PREFIX, GlobalRole, RoleToSessionProp, sessionRolePropKeys } from '@/constants';
 import prisma from '@/core/prisma';
 import { createEvent } from '@/services/db';
 import { upsertUser } from '@/services/db/user';
 
-const USER_TOKEN_REFRESH_MIN = 3; // 3 minutes
-
-interface Token {
-  email: string;
-  accessToken: string;
-  refreshToken: string;
-  idToken: string;
-  roles: string[];
-  sub: string;
-  teams: TeamAccess[];
-  isRefreshTokenExpired: boolean;
-}
-
-interface TeamAccess {
-  clientId: string;
-  roles: string[];
-}
-
 interface DecodedToken {
-  resource_access: Record<string, { roles: string[] }>;
+  resource_access?: Record<string, { roles: string[] }>;
   sub: string;
-  email: string;
 }
 
-function processTokens({
-  accessToken,
-  refreshToken,
-  idToken,
-}: {
-  accessToken: string;
-  refreshToken: string;
-  idToken: string;
-}) {
-  const decodedToken = jwt.decode(accessToken || '') as DecodedToken;
+function processTokens(tokens?: { access_token?: string; refresh_token?: string; id_token?: string }) {
+  const { access_token = '', refresh_token = '', id_token = '' } = tokens ?? {};
+  const decodedToken = jwt.decode(access_token) as DecodedToken;
+  const { resource_access = {}, sub = '' } = decodedToken || {};
 
-  const roles = _get(decodedToken, `resource_access.${AUTH_RESOURCE}.roles`, []);
-  const sub = decodedToken?.sub ?? '';
-  const teams: TeamAccess[] = [];
+  const roles = _get(resource_access, `${AUTH_RESOURCE}.roles`, []);
+  const teams: SessionTokenTeams[] = [];
 
-  _forEach(decodedToken.resource_access ?? {}, (val, key) => {
+  _forEach(resource_access, (val, key) => {
     if (key.startsWith(TEAM_SA_PREFIX)) {
       teams.push({ clientId: key, roles: val.roles });
     }
@@ -63,9 +45,9 @@ function processTokens({
     roles,
     sub,
     teams,
-    accessToken,
-    refreshToken,
-    idToken,
+    accessToken: access_token,
+    refreshToken: refresh_token,
+    idToken: id_token,
   };
 }
 
@@ -77,12 +59,14 @@ async function getNewTokens(refreshToken: string) {
     grant_type: 'refresh_token',
     refresh_token: refreshToken,
   });
+
   try {
     const response = await axios.post(tokenEndpoint, params, {
       headers: {
         'Content-Type': 'application/x-www-form-urlencoded',
       },
     });
+
     return response.data;
   } catch (error) {
     return null;
@@ -91,6 +75,7 @@ async function getNewTokens(refreshToken: string) {
 
 export async function generateSession({ session, token }: { session: Session; token?: JWT }) {
   if (token?.isRefreshTokenExpired) session.isExpired = true;
+
   sessionRolePropKeys.forEach((key: SessionKeys) => {
     // @ts-ignore: Ignore TypeScript error for dynamic property assignment
     session[key] = false;
@@ -283,7 +268,7 @@ export const authOptions: AuthOptions = {
       const { given_name, family_name, email } = profile as KeycloakProfile;
       const loweremail = email.toLowerCase();
       const lastSeen = new Date();
-      const nextTokenRefreshTime = addMinutes(new Date(), USER_TOKEN_REFRESH_MIN);
+      const nextTokenRefreshTime = addMinutes(new Date(), USER_TOKEN_REFRESH_INTERVAL);
 
       const upsertedUser = await upsertUser(loweremail, { lastSeen, nextTokenRefreshTime });
       if (!upsertedUser) {
@@ -312,45 +297,40 @@ export const authOptions: AuthOptions = {
 
       return true;
     },
-    async jwt({ token, account }: { token: any; account: Account | null }) {
-      const now = new Date();
-      if (account?.access_token) {
-        return Object.assign(
-          token,
-          processTokens({
-            accessToken: account.access_token,
-            refreshToken: account.refresh_token || '',
-            idToken: account.id_token || '',
-          }),
-        );
+    async jwt({ token, account }: { token: JWT; account: Account | null }) {
+      if (account) {
+        return Object.assign(token, processTokens(account));
       }
 
+      if (!token.email) {
+        return token;
+      }
+
+      const now = new Date();
+      const loweremail = token.email.toLowerCase();
+
+      // 1. nextTokenRefreshTime has value (valid datetime)
+      // 1-1. the datetime is less than now           ==> refresh the token
+      // 1-2. the datetime is not less than now       ==> do nothing
+      // 2. nextTokenRefreshTime no value (null)      ==> refresh the token
       const { count } = await prisma.user.updateMany({
         where: {
-          email: token.email,
-          nextTokenRefreshTime: { lt: now },
+          email: loweremail,
+          OR: [{ nextTokenRefreshTime: { not: null, lt: now } }, { nextTokenRefreshTime: null }],
         },
         data: {
-          nextTokenRefreshTime: addMinutes(now, USER_TOKEN_REFRESH_MIN),
+          nextTokenRefreshTime: addMinutes(now, USER_TOKEN_REFRESH_INTERVAL),
         },
       });
 
       if (count > 0) {
         const newTokens = await getNewTokens(token.refreshToken);
-        if (!newTokens) token.isRefreshTokenExpired = true;
-        else {
-          Object.assign(
-            token,
-            processTokens({
-              accessToken: newTokens.access_token,
-              refreshToken: newTokens.refresh_token,
-              idToken: newTokens.id_token,
-            }),
-          );
+        if (!newTokens) {
+          token.isRefreshTokenExpired = true;
+        } else {
+          Object.assign(token, processTokens(newTokens));
         }
       }
-
-      if (!token.roles) token.roles = [];
 
       return token;
     },
