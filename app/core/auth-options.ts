@@ -309,10 +309,14 @@ export const authOptions: AuthOptions = {
       const now = new Date();
       const loweremail = token.email.toLowerCase();
 
+      // 1. nextTokenRefreshTime has value (valid datetime)
+      // 1-1. the datetime is less than now           ==> refresh the token
+      // 1-2. the datetime is not less than now       ==> do nothing
+      // 2. nextTokenRefreshTime no value (null)      ==> refresh the token
       const { count } = await prisma.user.updateMany({
         where: {
           email: loweremail,
-          nextTokenRefreshTime: { lt: now },
+          OR: [{ nextTokenRefreshTime: { not: null, lt: now } }, { nextTokenRefreshTime: null }],
         },
         data: {
           nextTokenRefreshTime: addMinutes(now, USER_TOKEN_REFRESH_INTERVAL),
