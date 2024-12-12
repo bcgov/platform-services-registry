@@ -100,15 +100,21 @@ declare module 'next-auth' {
 
   type PermissionsKey = keyof Permissions;
   type SessionKeys = keyof typeof Session;
+
+  interface SessionTokenTeams {
+    clientId: string;
+    roles: string[];
+  }
 }
 
 declare module 'next-auth/jwt' {
   /** Returned by the `jwt` callback and `getToken`, when using JWT sessions */
   interface JWT {
-    /** OpenID ID Token */
-    idToken?: string;
-    accessToken?: string; // declare accessToken here too
-    roles?: string[];
+    accessToken: string;
+    refreshToken: string;
+    idToken: string;
+    roles: string[];
+    teams: SessionTokenTeams[];
   }
 }
 
