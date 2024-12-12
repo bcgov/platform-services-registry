@@ -14,7 +14,7 @@ import prisma from '@/core/prisma';
 import { createEvent } from '@/services/db';
 import { upsertUser } from '@/services/db/user';
 
-export const USER_TOKEN_REFRESH_MIN = 1; // 3 minutes
+export const USER_TOKEN_REFRESH_MIN = 3; // 3 minutes
 
 interface Token {
   email: string;
