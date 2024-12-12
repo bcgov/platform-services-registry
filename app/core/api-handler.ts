@@ -129,7 +129,14 @@ function createApiHandler<
 
               session = await generateSession({
                 session: {} as Session,
-                token: { email: kcUser.email, roles: kcUser.authRoleNames.concat(GlobalRole.ServiceAccount) },
+                token: {
+                  email: kcUser.email,
+                  roles: kcUser.authRoleNames.concat(GlobalRole.ServiceAccount),
+                  accessToken: '',
+                  refreshToken: '',
+                  idToken: '',
+                  teams: [],
+                },
               });
             } else if (saType === 'team') {
               const rolesStr = jwtData.roles;
@@ -137,7 +144,14 @@ function createApiHandler<
 
               session = await generateSession({
                 session: {} as Session,
-                token: { email: '', roles: rolesArr.concat(GlobalRole.ServiceAccount) },
+                token: {
+                  email: '',
+                  roles: rolesArr.concat(GlobalRole.ServiceAccount),
+                  accessToken: '',
+                  refreshToken: '',
+                  idToken: '',
+                  teams: [],
+                },
               });
             } else {
               return UnauthorizedResponse('invalid token');
