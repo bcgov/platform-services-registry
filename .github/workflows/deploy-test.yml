@@ -153,9 +153,8 @@ jobs:
     - name: Deploy apps with Helm chart
       run: |
         vtag=${{ env.IMAGE_TAG }}
-        make upgrade \
-        NAMESPACE=${{ vars.OPENSHIFT_NAMESPACE }} \
-        IMAGE_TAG=${vtag//v}
+        make upgrade NAMESPACE=${{ vars.OPENSHIFT_NAMESPACE }} IMAGE_TAG=${vtag//v}
+        kubectl rollout status deployment/pltsvc-app
       working-directory: ./helm/main
 
     - name: Notify RocketChat on Success
