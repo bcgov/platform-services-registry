@@ -28,7 +28,7 @@ export async function sendPrivateCloudNatsMessage(
     }
   }
 
-  const messageBody = createPrivateCloudNatsMessage(request, contactChanged);
+  const messageBody = await createPrivateCloudNatsMessage(request, contactChanged);
 
   await sendNatsMessage(PRIVATE_NATS_URL, natsSubject, messageBody);
 }

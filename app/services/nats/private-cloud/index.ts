@@ -1,11 +1,12 @@
-import { Ministry, ResourceRequestsEnv } from '@prisma/client';
+import { Ministry, PublicCloudProductMemberRole, ResourceRequestsEnv } from '@prisma/client';
 import { environmentShortNames } from '@/constants';
+import prisma from '@/core/prisma';
 import { PrivateCloudRequestDetail } from '@/types/private-cloud';
 
 type ResourceRequestsEnvKeys = Array<keyof ResourceRequestsEnv>;
 const namespaceKeys: ResourceRequestsEnvKeys = ['development', 'test', 'production', 'tools'];
 
-export default function createPrivateCloudNatsMessage(
+export default async function createPrivateCloudNatsMessage(
   request: Pick<PrivateCloudRequestDetail, 'id' | 'type' | 'decisionData'>,
   contactChanged: boolean,
 ) {
@@ -20,7 +21,13 @@ export default function createPrivateCloudNatsMessage(
     projectOwner,
     primaryTechnicalLead,
     secondaryTechnicalLead,
+    members,
   } = request.decisionData;
+
+  const subscribers = members.filter(
+    (member) => !!member.userId && member.roles.includes(PublicCloudProductMemberRole.SUBSCRIBER),
+  );
+  const users = await prisma.user.findMany({ where: { id: { in: subscribers.map((user) => user.userId) } } });
 
   let allianceLabel = '';
   switch (ministry) {
@@ -96,6 +103,12 @@ export default function createPrivateCloudNatsMessage(
             role: 'lead',
           }
         : null,
+      ...users.map(({ email, idir, upn }) => ({
+        email,
+        idir,
+        upn,
+        role: 'subscriber',
+      })),
     ].filter(Boolean),
   };
 
