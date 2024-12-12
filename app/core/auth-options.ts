@@ -14,7 +14,7 @@ import prisma from '@/core/prisma';
 import { createEvent } from '@/services/db';
 import { upsertUser } from '@/services/db/user';
 
-export const USER_TOKEN_REFRESH_MIN = 3; // 3 minutes
+const USER_TOKEN_REFRESH_MIN = 3; // 3 minutes
 
 interface Token {
   email: string;
@@ -315,7 +315,7 @@ export const authOptions: AuthOptions = {
     async jwt({ token, account }: { token: any; account: Account | null }) {
       const now = new Date();
       if (account?.access_token) {
-        Object.assign(
+        return Object.assign(
           token,
           processTokens({
             accessToken: account.access_token,
