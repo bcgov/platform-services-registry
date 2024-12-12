@@ -18,6 +18,7 @@ import { UserSearchBody } from '@/validation-schemas';
 
 export async function prepareUserData(user: AppUser, extra = {}) {
   const email = user.email.toLowerCase();
+
   const image = await getUserPhoto(email);
   const data = {
     email,
