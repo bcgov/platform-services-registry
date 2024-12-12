@@ -20,6 +20,7 @@ export const AUTH_RESOURCE = process.env.AUTH_RESOURCE || 'pltsvc';
 export const AUTH_SECRET = process.env.AUTH_SECRET || 'testsecret';
 export const KEYCLOAK_ADMIN_CLIENT_ID = process.env.KEYCLOAK_ADMIN_CLIENT_ID || 'pltsvc-admin-cli';
 export const KEYCLOAK_ADMIN_CLIENT_SECRET = process.env.KEYCLOAK_ADMIN_CLIENT_SECRET || 'testsecret';
+export const USER_TOKEN_REFRESH_INTERVAL = Number(process.env.USER_TOKEN_REFRESH_INTERVAL || 3);
 export const AWS_ROLES_BASE_URL = process.env.AWS_ROLES_BASE_URL || 'http://localhost:8080';
 export const AWS_ROLES_REALM_NAME = process.env.AWS_ROLES_REALM_NAME || 'public-cloud';
 export const AWS_ROLES_CLIENT_ID = process.env.AWS_ROLES_CLIENT_ID || 'roles';
