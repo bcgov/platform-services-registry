@@ -3,7 +3,7 @@
 import React from 'react';
 import CopyableButton from '@/components/generic/button/CopyableButton';
 import InfoTooltip from '@/components/generic/InfoTooltip';
-import { cn } from '@/utils';
+import { cn } from '@/utils/js';
 
 export default function Label({
   children,

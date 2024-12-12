@@ -2,7 +2,7 @@ import { Cluster, RequestType, DecisionStatus } from '@prisma/client';
 import _forEach from 'lodash-es/forEach';
 import _uniq from 'lodash-es/uniq';
 import prisma from '@/core/prisma';
-import { dateToShortDateString, shortDateStringToDate, compareYearMonth } from '@/utils/date';
+import { dateToShortDateString, shortDateStringToDate, compareYearMonth } from '@/utils/js';
 
 type ValidCluster = typeof Cluster.SILVER | typeof Cluster.GOLD | typeof Cluster.EMERALD;
 

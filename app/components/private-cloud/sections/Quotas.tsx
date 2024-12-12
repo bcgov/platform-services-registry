@@ -6,7 +6,7 @@ import { useFormContext } from 'react-hook-form';
 import ExternalLink from '@/components/generic/button/ExternalLink';
 import HookFormTextInput from '@/components/generic/input/HookFormTextInput';
 import { getSubnetForEmerald } from '@/services/backend/private-cloud/products';
-import { cn } from '@/utils';
+import { cn } from '@/utils/js';
 import QuotasChangeInfo from './QuotasChangeInfo';
 import QuotasDescription from './QuotasDescription';
 

@@ -6,7 +6,7 @@ import { useSession } from 'next-auth/react';
 import { openPublicCloudMouReviewModal } from '@/components/modal/publicCloudMouReview';
 import { openPublicCloudMouSignModal } from '@/components/modal/publicCloudMouSign';
 import { formatFullName } from '@/helpers/user';
-import { cn } from '@/utils';
+import { cn } from '@/utils/js';
 import PublicCloudBillingDownloadButton from './PublicCloudBillingDownloadButton';
 import { Product } from './types';
 

@@ -8,8 +8,7 @@ import { useQuery } from '@tanstack/react-query';
 import Link from 'next/link';
 import { useEffect } from 'react';
 import { getAssignedTasks } from '@/services/backend/tasks';
-import { cn } from '@/utils';
-import { formatDate } from '@/utils/date';
+import { formatDate, cn } from '@/utils/js';
 
 const taskTypeLabels = {
   [TaskType.SIGN_PUBLIC_CLOUD_MOU]: 'Sign Public Cloud MOU',

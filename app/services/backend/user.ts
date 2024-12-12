@@ -2,7 +2,7 @@ import { Prisma, User } from '@prisma/client';
 import axios from 'axios';
 import { userSorts } from '@/constants';
 import { AdminViewUser } from '@/types/user';
-import { downloadFile } from '@/utils/file-download';
+import { downloadFile } from '@/utils/browser';
 import { UserSearchBody, UserUpdateBody } from '@/validation-schemas';
 import { instance as baseInstance } from './axios';
 

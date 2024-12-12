@@ -4,7 +4,7 @@ import { useCallback, useEffect, useState, useTransition } from 'react';
 import { tabName } from '@/app/api/public-cloud/aws-roles/helpers';
 import AddUserButton from '@/components/buttons/AddUserButton';
 import PublicUsersTabs from '@/components/tabs/PublicUsersTabs';
-import { useDebounce } from '@/utils/hooks';
+import { useDebounce } from '@/utils/react';
 
 export default function UserAWSRolesTableTop({
   title,

@@ -1,6 +1,6 @@
 import { RequestType, DecisionStatus } from '@prisma/client';
 import Link from 'next/link';
-import { formatDateSimple } from '@/utils/date';
+import { formatDateSimple } from '@/utils/js';
 
 export default function PublicHistorySubItem({
   id,

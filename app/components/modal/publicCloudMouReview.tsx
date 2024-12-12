@@ -14,7 +14,7 @@ import { createModal } from '@/core/modal';
 import { formatFullName } from '@/helpers/user';
 import { getBilling } from '@/services/backend/billing';
 import { reviewPublicCloudMou } from '@/services/backend/public-cloud/products';
-import { formatDate } from '@/utils/date';
+import { formatDate } from '@/utils/js';
 import { failure, success } from '../notification';
 
 interface ModalProps {

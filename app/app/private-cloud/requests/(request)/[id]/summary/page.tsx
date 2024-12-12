@@ -15,7 +15,7 @@ import ProductComparison from '@/components/ProductComparison';
 import { GlobalRole } from '@/constants';
 import createClientPage from '@/core/client-page';
 import { usePrivateProductState } from '@/states/global';
-import { DiffChange } from '@/utils/diff';
+import { DiffChange } from '@/utils/js';
 
 const tabsByType = {
   [RequestType.CREATE]: ['request'],

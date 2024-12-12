@@ -7,7 +7,7 @@ import { z } from 'zod';
 import HookFormTextInput from '@/components/generic/input/HookFormTextInput';
 import { GlobalRole } from '@/constants';
 import createClientPage from '@/core/client-page';
-import { processNumber } from '@/utils/zod';
+import { processNumber } from '@/utils/js';
 
 const validationSchema = z.object({
   firstName: z.string().min(1).max(100),

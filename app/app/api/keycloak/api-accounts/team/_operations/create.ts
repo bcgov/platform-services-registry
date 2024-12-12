@@ -5,7 +5,7 @@ import { TEAM_SA_PREFIX } from '@/constants';
 import { OkResponse, BadRequestResponse } from '@/core/responses';
 import { createEvent } from '@/services/db';
 import { getKcAdminClient, findClient } from '@/services/keycloak/app-realm';
-import { generateShortId } from '@/utils/uuid';
+import { generateShortId } from '@/utils/js';
 import { getRolesMapperPayload, getServiceAccountTypeMapperPayload } from '../../mappers';
 import { syncClientUserRoles } from '../_helpers';
 

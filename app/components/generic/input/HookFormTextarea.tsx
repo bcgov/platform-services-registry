@@ -2,7 +2,7 @@
 
 import _get from 'lodash-es/get';
 import { FieldValues, RegisterOptions, Path, useFormContext } from 'react-hook-form';
-import { cn } from '@/utils';
+import { cn } from '@/utils/js';
 import FormError from '../FormError';
 import FormTextarea, { FormTextareaProps } from './FormTextarea';
 

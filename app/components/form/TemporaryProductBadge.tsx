@@ -1,6 +1,6 @@
 import { Tooltip, Badge } from '@mantine/core';
 import { differenceInDays } from 'date-fns/differenceInDays';
-import { cn } from '@/utils';
+import { cn } from '@/utils/js';
 
 export default function TemporaryProductBadge({
   data,

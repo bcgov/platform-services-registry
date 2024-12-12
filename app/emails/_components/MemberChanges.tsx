@@ -1,6 +1,5 @@
 import { Heading, Text } from '@react-email/components';
-import { DiffChange } from '@/utils/diff';
-import { toOrdinal } from '@/utils/number';
+import { DiffChange, toOrdinal } from '@/utils/js';
 
 function FieldValue({ value }: { value: string }) {
   if (value) {

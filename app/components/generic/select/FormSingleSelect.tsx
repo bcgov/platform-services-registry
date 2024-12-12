@@ -4,7 +4,7 @@ import { Select, ComboboxData, ComboboxItem } from '@mantine/core';
 import _isNil from 'lodash-es/isNil';
 import _kebabCase from 'lodash-es/kebabCase';
 import { FocusEventHandler } from 'react';
-import { cn } from '@/utils';
+import { cn } from '@/utils/js';
 import Label from '../Label';
 
 export interface FormSingleSelectProps {

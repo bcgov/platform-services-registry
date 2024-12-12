@@ -2,7 +2,7 @@ import { HoverCard, Group } from '@mantine/core';
 import { useDisclosure } from '@mantine/hooks';
 import { useSession } from 'next-auth/react';
 import ExternalLink from '@/components/generic/button/ExternalLink';
-import { cn } from '@/utils';
+import { cn } from '@/utils/js';
 
 export default function ProductsCard({
   products = [],

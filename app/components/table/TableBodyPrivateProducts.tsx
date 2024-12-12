@@ -11,7 +11,7 @@ import CopyableButton from '@/components/generic/button/CopyableButton';
 import UserCard from '@/components/UserCard';
 import { ministryKeyToName } from '@/helpers/product';
 import { PrivateCloudProductSimpleDecorated } from '@/types/private-cloud';
-import { formatDate } from '@/utils/date';
+import { formatDate } from '@/utils/js';
 import EmptySearch from './EmptySearch';
 import TruncatedTooltip from './TruncatedTooltip';
 

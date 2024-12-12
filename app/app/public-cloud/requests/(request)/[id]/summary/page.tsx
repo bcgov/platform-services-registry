@@ -8,7 +8,7 @@ import ProductComparison from '@/components/ProductComparison';
 import { GlobalRole } from '@/constants';
 import createClientPage from '@/core/client-page';
 import { usePublicProductState } from '@/states/global';
-import { DiffChange } from '@/utils/diff';
+import { DiffChange } from '@/utils/js';
 
 const pathParamSchema = z.object({
   id: z.string(),

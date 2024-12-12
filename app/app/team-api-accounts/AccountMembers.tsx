@@ -6,7 +6,7 @@ import _get from 'lodash-es/get';
 import { useFieldArray, useFormContext } from 'react-hook-form';
 import HookFormTextInput from '@/components/generic/input/HookFormTextInput';
 import Label from '@/components/generic/Label';
-import { cn } from '@/utils';
+import { cn } from '@/utils/js';
 
 export default function AccountMembers({
   className = '',

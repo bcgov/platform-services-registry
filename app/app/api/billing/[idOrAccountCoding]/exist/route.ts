@@ -4,7 +4,7 @@ import { GlobalRole } from '@/constants';
 import createApiHandler from '@/core/api-handler';
 import prisma from '@/core/prisma';
 import { NoContent, OkResponse } from '@/core/responses';
-import { processNumber, processUpperEnumString, processBoolean } from '@/utils/zod';
+import { processNumber, processUpperEnumString, processBoolean } from '@/utils/js';
 import { getBillingIdWhere } from '../helpers';
 
 const pathParamSchema = z.object({

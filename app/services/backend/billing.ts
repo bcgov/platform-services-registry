@@ -1,6 +1,6 @@
 import axios from 'axios';
 import { BillingGetPayload } from '@/types/billing';
-import { downloadFile } from '@/utils/file-download';
+import { downloadFile } from '@/utils/browser';
 import { instance as baseInstance } from './axios';
 
 export const instance = axios.create({

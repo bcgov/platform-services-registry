@@ -2,7 +2,7 @@ import { IconPoint } from '@tabler/icons-react';
 import _startCase from 'lodash-es/startCase';
 import React, { useEffect } from 'react';
 import { useFormContext } from 'react-hook-form';
-import { numberToWords } from '@/utils/number';
+import { numberToWords } from '@/utils/js';
 import { failure } from '../notification';
 
 const NUM_TO_DISPLAY = 5;

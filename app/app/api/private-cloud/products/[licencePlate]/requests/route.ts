@@ -4,7 +4,7 @@ import { GlobalRole } from '@/constants';
 import createApiHandler from '@/core/api-handler';
 import { NoContent, OkResponse } from '@/core/responses';
 import { models } from '@/services/db';
-import { processBoolean } from '@/utils/zod';
+import { processBoolean } from '@/utils/js';
 
 const pathParamSchema = z.object({
   licencePlate: z.string(),

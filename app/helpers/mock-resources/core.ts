@@ -1,9 +1,7 @@
 import { faker } from '@faker-js/faker';
 import { ministries, clusters, providers, reasonForSelectingCloudProviderOptions } from '@/constants';
 import { mockNoRoleUsers } from '@/helpers/mock-users';
-import { getRandomItem } from '@/utils/collection';
-import { getRandomNumberOptimally } from '@/utils/number';
-import { generateShortId } from '@/utils/uuid';
+import { generateShortId, getRandomItem, getRandomNumberOptimally } from '@/utils/js';
 
 export const getRandomBool = () => faker.helpers.arrayElement([true, false]);
 export const getRandomMinistry = () => faker.helpers.arrayElement(ministries);

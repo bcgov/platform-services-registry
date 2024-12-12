@@ -4,7 +4,7 @@ import { useMutation } from '@tanstack/react-query';
 import { useParams } from 'next/navigation';
 import { useState, Fragment } from 'react';
 import { resendPrivateCloudRequest } from '@/services/backend/private-cloud/requests';
-import { cn } from '@/utils';
+import { cn } from '@/utils/js';
 
 export default function PrivateCloudRequestOptions({
   id = '',

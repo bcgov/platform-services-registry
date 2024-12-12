@@ -3,8 +3,8 @@ import { IconCloudDownload } from '@tabler/icons-react';
 import { useState } from 'react';
 import { openNotificationModal } from '@/components/modal/notification';
 import { instance } from '@/services/backend/axios';
-import { cn } from '@/utils';
-import { downloadFile } from '@/utils/file-download';
+import { downloadFile } from '@/utils/browser';
+import { cn } from '@/utils/js';
 
 export default function ExportButton({
   onExport,

@@ -5,7 +5,7 @@ import _isString from 'lodash-es/isString';
 import _mapValues from 'lodash-es/mapValues';
 import _pick from 'lodash-es/pick';
 import { ministryOptions } from '@/constants';
-import { extractNumbers } from '@/utils/string';
+import { extractNumbers } from '@/utils/js';
 
 export function ministryKeyToName(key: string) {
   return ministryOptions.find((item) => item.value === key)?.label ?? '';

@@ -4,7 +4,7 @@ import { IconInfoCircle } from '@tabler/icons-react';
 import _sumBy from 'lodash-es/sumBy';
 import { useFormContext } from 'react-hook-form';
 import ExternalLink from '@/components/generic/button/ExternalLink';
-import { cn } from '@/utils';
+import { cn } from '@/utils/js';
 import FormDollarInput from '../generic/input/FormDollarInput';
 import HookFormDollarInput from '../generic/input/HookFormDollarInput';
 

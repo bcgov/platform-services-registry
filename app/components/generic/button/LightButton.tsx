@@ -1,7 +1,7 @@
 'use client';
 
 import { MouseEventHandler, MouseEvent, DetailedHTMLProps, ButtonHTMLAttributes } from 'react';
-import { cn } from '@/utils';
+import { cn } from '@/utils/js';
 
 export default function LightButton({
   disabled = false,

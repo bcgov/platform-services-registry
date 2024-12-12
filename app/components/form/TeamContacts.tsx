@@ -4,7 +4,7 @@ import { IMaskInput } from 'react-imask';
 import SecondTechLeadButton from '@/components/buttons/SecondTechLeadButton';
 import AsyncAutocomplete from '@/components/form/AsyncAutocomplete';
 import { openConfirmModal } from '@/components/modal/confirm';
-import { cn } from '@/utils';
+import { cn } from '@/utils/js';
 
 const getErrorMessage = (error: any): string | undefined => {
   if (error?.message) {

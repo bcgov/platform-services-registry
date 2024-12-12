@@ -7,8 +7,7 @@ import { Session, PermissionsKey } from 'next-auth';
 import { useSession } from 'next-auth/react';
 import React from 'react';
 import { z, TypeOf, ZodType } from 'zod';
-import { arrayIntersection } from '@/utils/collection';
-import { parseQueryString } from '@/utils/query-string';
+import { arrayIntersection, parseQueryString } from '@/utils/js';
 
 interface HandlerProps<TPathParams, TQueryParams> {
   roles?: string[];

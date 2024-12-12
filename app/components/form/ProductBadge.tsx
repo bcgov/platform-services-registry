@@ -1,7 +1,7 @@
 import { Badge } from '@mantine/core';
 import { ProjectStatus } from '@prisma/client';
 import CopyableButton from '@/components/generic/button/CopyableButton';
-import { cn } from '@/utils';
+import { cn } from '@/utils/js';
 
 export default function ProductBadge({
   data,

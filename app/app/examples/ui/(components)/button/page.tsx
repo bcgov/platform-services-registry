@@ -4,7 +4,7 @@ import { Button } from '@mantine/core';
 import { IconPhoto, IconDownload } from '@tabler/icons-react';
 import { GlobalRole } from '@/constants';
 import createClientPage from '@/core/client-page';
-import { cn } from '@/utils';
+import { cn } from '@/utils/js';
 
 const colors = ['primary', 'secondary', 'success', 'danger', 'warning', 'info', 'dark'];
 const variants = ['filled', 'light', 'outline'];

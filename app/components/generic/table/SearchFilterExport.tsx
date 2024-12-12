@@ -6,7 +6,7 @@ import { useEffect, useState, useRef } from 'react';
 import ExportButton from '@/components/buttons/ExportButton';
 import LightButton from '@/components/generic/button/LightButton';
 import FormSingleSelect from '@/components/generic/select/FormSingleSelect';
-import { useDebounce } from '@/utils/hooks';
+import { useDebounce } from '@/utils/react';
 
 type Props = {
   initialSearch?: string;

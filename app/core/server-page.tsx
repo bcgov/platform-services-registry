@@ -4,8 +4,7 @@ import { Session, PermissionsKey } from 'next-auth';
 import { getServerSession } from 'next-auth/next';
 import { z, TypeOf, ZodType } from 'zod';
 import { authOptions } from '@/core/auth-options';
-import { arrayIntersection } from '@/utils/collection';
-import { parseQueryString } from '@/utils/query-string';
+import { arrayIntersection, parseQueryString } from '@/utils/js';
 
 interface HandlerProps<TPathParams, TQueryParams> {
   roles?: string[];

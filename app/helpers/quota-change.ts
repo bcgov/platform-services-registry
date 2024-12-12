@@ -1,5 +1,5 @@
 import { ResourceRequestsEnv } from '@prisma/client';
-import { extractNumbers } from '@/utils/string';
+import { extractNumbers } from '@/utils/js';
 
 export const isResourseDowngrade = (req: string, prod: string) => {
   return extractNumbers(req)[0] < extractNumbers(prod)[0];

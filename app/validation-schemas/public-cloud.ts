@@ -10,7 +10,7 @@ import {
 import _isString from 'lodash-es/isString';
 import { string, z } from 'zod';
 import { AGMinistries } from '@/constants';
-import { processEnumString } from '@/utils/zod';
+import { processEnumString } from '@/utils/js';
 import { userSchema, RequestDecision } from './shared';
 
 export const budgetSchema = z.object({

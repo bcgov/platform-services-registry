@@ -1,7 +1,7 @@
 import Image from 'next/image';
 import { useEffect, useState } from 'react';
 import { getUserImage } from '@/helpers/user-image';
-import { cn } from '@/utils';
+import { cn } from '@/utils/js';
 
 export default function ProfileImage({
   image,

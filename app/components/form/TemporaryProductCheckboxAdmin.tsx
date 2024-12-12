@@ -5,7 +5,7 @@ import { useFormContext } from 'react-hook-form';
 import FormCheckbox from '@/components/generic/checkbox/FormCheckbox';
 import { updatePrivateCloudProductAdmin } from '@/services/backend/admin';
 import { usePrivateProductState } from '@/states/global';
-import { cn } from '@/utils';
+import { cn } from '@/utils/js';
 import { success } from '../notification';
 
 export default function TemporaryProductCheckboxAdmin({

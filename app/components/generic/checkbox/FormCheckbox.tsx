@@ -3,7 +3,7 @@
 import _isFunction from 'lodash-es/isFunction';
 import { InputHTMLAttributes, ChangeEvent, RefObject, ReactNode, useRef } from 'react';
 import { openConfirmModal } from '@/components/modal/confirm';
-import { cn } from '@/utils';
+import { cn } from '@/utils/js';
 
 interface InputProps extends InputHTMLAttributes<HTMLInputElement> {}
 

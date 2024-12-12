@@ -2,7 +2,7 @@ import { Stepper, Popover, rem, HoverCard } from '@mantine/core';
 import { DecisionStatus } from '@prisma/client';
 import { IconCircleX, IconConfetti, IconCancel } from '@tabler/icons-react';
 import { PrivateCloudRequestDetail } from '@/types/private-cloud';
-import { formatDate } from '@/utils/date';
+import { formatDate } from '@/utils/js';
 import AutoResizeTextArea from './generic/input/AutoResizeTextArea';
 import UserCard from './UserCard';
 

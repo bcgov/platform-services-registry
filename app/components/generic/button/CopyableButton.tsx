@@ -3,7 +3,7 @@ import { useClipboard } from '@mantine/hooks';
 import { IconClipboardCopy } from '@tabler/icons-react';
 import _isString from 'lodash-es/isString';
 import React from 'react';
-import { cn } from '@/utils';
+import { cn } from '@/utils/js';
 
 export default function CopyableButton({
   children,

@@ -2,7 +2,7 @@ import { faker } from '@faker-js/faker';
 import { Prisma, Cluster, Provider, ProjectStatus, RequestType, DecisionStatus } from '@prisma/client';
 import { deepClone } from 'valtio/utils';
 import { PublicCloudRequestDetail } from '@/types/public-cloud';
-import { generateShortId } from '@/utils/uuid';
+import { generateShortId } from '@/utils/js';
 import {
   getRandomMinistry,
   getRandomProvider,

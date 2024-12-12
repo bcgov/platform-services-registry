@@ -46,7 +46,7 @@ jest.mock('@/services/keycloak/app-realm', () => ({
   findUserEmailsByAuthRole: jest.fn(async () => []),
 }));
 
-jest.mock('@/utils/jwt', () => ({
+jest.mock('@/utils/node/jwt', () => ({
   verifyKeycloakJwtTokenSafe: jest.fn(async () => ({ service_account_type: 'user', 'kc-userid': 'xxxxxxxxxxxx' })),
 }));
 

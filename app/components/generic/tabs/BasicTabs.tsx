@@ -5,7 +5,7 @@ import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
 import FormSelect from '@/components/generic/select/FormSelect';
 import { compareUrlsIgnoreLastSegments } from '@/helpers/path-segments';
-import { cn } from '@/utils';
+import { cn } from '@/utils/js';
 
 export interface ITab {
   name: string;

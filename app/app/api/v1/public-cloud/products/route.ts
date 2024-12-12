@@ -7,7 +7,7 @@ import { OkResponse, BadRequestResponse } from '@/core/responses';
 import { parsePaginationParams } from '@/helpers/pagination';
 import { ministryKeyToName } from '@/helpers/product';
 import { searchPublicCloudProducts } from '@/services/db';
-import { processNumber, processUpperEnumString, processBoolean } from '@/utils/zod';
+import { processNumber, processUpperEnumString, processBoolean } from '@/utils/js';
 
 const defaultPage = 1;
 const defaultPageSize = 100;

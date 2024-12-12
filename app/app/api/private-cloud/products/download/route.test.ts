@@ -12,7 +12,7 @@ import { provisionPrivateCloudProject } from '@/services/api-test/private-cloud'
 import { createPrivateCloudProject, downloadPrivateCloudProjects } from '@/services/api-test/private-cloud/products';
 import { makePrivateCloudRequestDecision } from '@/services/api-test/private-cloud/requests';
 import { PrivateProductCsvRecord } from '@/types/csv';
-import { formatDateSimple } from '@/utils/date';
+import { formatDateSimple } from '@/utils/js';
 
 const PO = mockNoRoleUsers[0];
 const TL1 = mockNoRoleUsers[1];

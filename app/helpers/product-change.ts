@@ -7,7 +7,7 @@ import _pick from 'lodash-es/pick';
 import _uniq from 'lodash-es/uniq';
 import { ExtendedPrivateCloudProductMember } from '@/types/private-cloud';
 import { ExtendedPublicCloudProductMember } from '@/types/public-cloud';
-import { diffExt, DiffChange } from '@/utils/diff';
+import { diffExt, DiffChange } from '@/utils/js';
 
 export interface PrivateProductChange {
   profileChanged: boolean;

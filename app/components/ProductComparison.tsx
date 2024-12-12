@@ -4,8 +4,7 @@ import { IconChevronRight } from '@tabler/icons-react';
 import _isBoolean from 'lodash-es/isBoolean';
 import _isString from 'lodash-es/isString';
 import _startCase from 'lodash-es/startCase';
-import { parseResourceString } from '@/helpers/product';
-import { DiffChange } from '@/utils/diff';
+import { DiffChange } from '@/utils/js';
 
 const abbreviations = ['cpu'];
 

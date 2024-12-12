@@ -1,7 +1,7 @@
 'use client';
 
 import { SelectHTMLAttributes, ChangeEventHandler, RefObject } from 'react';
-import { cn } from '@/utils';
+import { cn } from '@/utils/js';
 
 interface SelectProps extends SelectHTMLAttributes<HTMLSelectElement> {}
 

@@ -3,7 +3,7 @@ import createApiHandler from '@/core/api-handler';
 import { NoContent, CsvResponse } from '@/core/responses';
 import { formatFullName } from '@/helpers/user';
 import { searchUsersWithRoles } from '@/services/db';
-import { formatDate } from '@/utils/date';
+import { formatDate } from '@/utils/js';
 import { userSearchBodySchema } from '@/validation-schemas';
 
 export const POST = createApiHandler({

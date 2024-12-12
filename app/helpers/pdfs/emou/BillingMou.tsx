@@ -1,8 +1,7 @@
 import { Provider } from '@prisma/client';
 import _sumBy from 'lodash-es/sumBy';
-import { ministryKeyToName } from '@/helpers/product';
 import { formatFullName } from '@/helpers/user';
-import { formatDate } from '@/utils/date';
+import { formatDate } from '@/utils/js';
 import { Product, Billing } from './types';
 
 export const css = `

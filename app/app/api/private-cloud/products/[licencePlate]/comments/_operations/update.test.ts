@@ -7,7 +7,7 @@ import {
   updatePrivateCloudComment,
   getPrivateCloudComment,
 } from '@/services/api-test/private-cloud/products';
-import { generateShortId } from '@/utils/uuid';
+import { generateShortId } from '@/utils/js';
 
 let licencePlate: string;
 let commentId: string;
