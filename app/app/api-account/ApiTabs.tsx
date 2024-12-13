@@ -9,42 +9,43 @@ const randomObjectId = () => faker.string.uuid().replace(/-/g, '').substring(0, 
 
 function PrivateCloudEndpoint() {
   return (
-    <div className="">
-      <h3 className="text-2xl font-bold my-2">1. Get Private Cloud Products</h3>
-      <p className="my-2">This endpoint returns a set of private cloud products.</p>
-      <Mark className="font-mono">GET /api/v1/private-cloud/products</Mark>
+    <>
+      <div>
+        <h3 className="text-2xl font-bold my-2">1. List Private Cloud Products</h3>
+        <p className="my-2">This endpoint returns a set of private cloud products.</p>
+        <Mark className="font-mono">GET /api/v1/private-cloud/products</Mark>
 
-      <h4 className="text-xl font-bold mt-4 mb-2">Parameters</h4>
-      <table className="w-full text-sm text-left rtl:text-right text-black">
-        <thead>
-          <tr>
-            <th className="px-6 py-1">Name</th>
-            <th className="px-6 py-1">Type</th>
-            <th className="px-6 py-1">In</th>
-            <th className="px-6 py-1">Description</th>
-            <th className="px-6 py-1">Default</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr className="bg-white border-b">
-            <td className="px-6 py-2">page</td>
-            <td className="px-6 py-2">number</td>
-            <td className="px-6 py-2">query</td>
-            <td className="px-6 py-2">The page number of records; starts from 1</td>
-            <td className="px-6 py-2">1</td>
-          </tr>
-          <tr className="bg-white border-b">
-            <td className="px-6 py-2">pageSize</td>
-            <td className="px-6 py-2">number</td>
-            <td className="px-6 py-2">query</td>
-            <td className="px-6 py-2">The number of records to fetch</td>
-            <td className="px-6 py-2">100; maximum 1000</td>
-          </tr>
-        </tbody>
-      </table>
+        <h4 className="text-xl font-bold mt-4 mb-2">Parameters</h4>
+        <table className="w-full text-sm text-left rtl:text-right text-black">
+          <thead>
+            <tr>
+              <th className="px-6 py-1">Name</th>
+              <th className="px-6 py-1">Type</th>
+              <th className="px-6 py-1">In</th>
+              <th className="px-6 py-1">Description</th>
+              <th className="px-6 py-1">Default</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr className="bg-white border-b">
+              <td className="px-6 py-2">page</td>
+              <td className="px-6 py-2">number</td>
+              <td className="px-6 py-2">query</td>
+              <td className="px-6 py-2">The page number of records; starts from 1</td>
+              <td className="px-6 py-2">1</td>
+            </tr>
+            <tr className="bg-white border-b">
+              <td className="px-6 py-2">pageSize</td>
+              <td className="px-6 py-2">number</td>
+              <td className="px-6 py-2">query</td>
+              <td className="px-6 py-2">The number of records to fetch</td>
+              <td className="px-6 py-2">100; maximum 1000</td>
+            </tr>
+          </tbody>
+        </table>
 
-      <h4 className="text-xl font-bold mt-4 mb-2">200 Response</h4>
-      <Code block>{`{
+        <h4 className="text-xl font-bold mt-4 mb-2">200 Response</h4>
+        <Code block>{`{
   "success": true,
   "data": [
     {
@@ -58,11 +59,13 @@ function PrivateCloudEndpoint() {
       "cluster": "SILVER",
       "projectOwner": {
         "id": "${randomObjectId()}",
+        "email": "${faker.internet.email()}",
         "firstName": "${faker.person.firstName()}",
         "lastName": "${faker.person.lastName()}"
       },
       "primaryTechnicalLead": {
         "id": "${randomObjectId()}",
+        "email": "${faker.internet.email()}",
         "firstName": "${faker.person.firstName()}",
         "lastName": "${faker.person.lastName()}"
       },
@@ -77,81 +80,196 @@ function PrivateCloudEndpoint() {
     "take": 100
   }
 }`}</Code>
-    </div>
+      </div>
+      <div>
+        <h3 className="text-2xl font-bold my-2">2. Get Private Cloud Product</h3>
+        <p className="my-2">This endpoint returns a single private cloud product.</p>
+        <Mark className="font-mono">{`GET /api/v1/private-cloud/products/<id-or-licencePlate>`}</Mark>
+
+        <h4 className="text-xl font-bold mt-4 mb-2">Parameters</h4>
+        <table className="w-full text-sm text-left rtl:text-right text-black">
+          <thead>
+            <tr>
+              <th className="px-6 py-1">Name</th>
+              <th className="px-6 py-1">Type</th>
+              <th className="px-6 py-1">In</th>
+              <th className="px-6 py-1">Description</th>
+              <th className="px-6 py-1">Default</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr className="bg-white border-b">
+              <td className="px-6 py-2">id or licencePlate</td>
+              <td className="px-6 py-2">string</td>
+              <td className="px-6 py-2">path</td>
+              <td className="px-6 py-2">ID or LicencePlate of the product</td>
+              <td className="px-6 py-2 italic">required</td>
+            </tr>
+          </tbody>
+        </table>
+
+        <h4 className="text-xl font-bold mt-4 mb-2">200 Response</h4>
+        <Code block>{`{
+  "success": true,
+  "data": {
+    "id": "${randomObjectId()}",
+    "active": ${faker.helpers.arrayElement([true, false])},
+    "licencePlate": "${faker.string.uuid().substring(0, 6)}",
+    "name": "${faker.company.name()}",
+    "description": "${faker.company.buzzPhrase()}",
+    "ministry": "CITZ",
+    "ministryName": "Citizens Services",
+    "cluster": "SILVER",
+    "projectOwner": {
+      "id": "${randomObjectId()}",
+      "email": "${faker.internet.email()}",
+      "firstName": "${faker.person.firstName()}",
+      "lastName": "${faker.person.lastName()}"
+    },
+    "primaryTechnicalLead": {
+      "id": "${randomObjectId()}",
+      "email": "${faker.internet.email()}",
+      "firstName": "${faker.person.firstName()}",
+      "lastName": "${faker.person.lastName()}"
+    },
+    "secondaryTechnicalLead": null
+  }
+}`}</Code>
+      </div>
+    </>
   );
 }
 
 function PublicCloudEndpoint() {
   return (
-    <div className="">
-      <h3 className="text-2xl font-bold my-2">2. Get Public Cloud Products</h3>
-      <p className="my-2">This endpoint returns a set of public cloud products.</p>
-      <Mark className="font-mono">GET /api/v1/public-cloud/products</Mark>
+    <>
+      <div>
+        <h3 className="text-2xl font-bold my-2">2. Get Public Cloud Products</h3>
+        <p className="my-2">This endpoint returns a set of public cloud products.</p>
+        <Mark className="font-mono">GET /api/v1/public-cloud/products</Mark>
 
-      <h4 className="text-xl font-bold mt-4 mb-2">Parameters</h4>
-      <table className="w-full text-sm text-left rtl:text-right text-black">
-        <thead>
-          <tr>
-            <th className="px-6 py-1">Name</th>
-            <th className="px-6 py-1">Type</th>
-            <th className="px-6 py-1">In</th>
-            <th className="px-6 py-1">Description</th>
-            <th className="px-6 py-1">Default</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr className="bg-white border-b">
-            <td className="px-6 py-2">page</td>
-            <td className="px-6 py-2">number</td>
-            <td className="px-6 py-2">query</td>
-            <td className="px-6 py-2">The page number of records; starts from 1</td>
-            <td className="px-6 py-2">1</td>
-          </tr>
-          <tr className="bg-white border-b">
-            <td className="px-6 py-2">pageSize</td>
-            <td className="px-6 py-2">number</td>
-            <td className="px-6 py-2">query</td>
-            <td className="px-6 py-2">The number of records to fetch</td>
-            <td className="px-6 py-2">100; maximum 1000</td>
-          </tr>
-        </tbody>
-      </table>
+        <h4 className="text-xl font-bold mt-4 mb-2">Parameters</h4>
+        <table className="w-full text-sm text-left rtl:text-right text-black">
+          <thead>
+            <tr>
+              <th className="px-6 py-1">Name</th>
+              <th className="px-6 py-1">Type</th>
+              <th className="px-6 py-1">In</th>
+              <th className="px-6 py-1">Description</th>
+              <th className="px-6 py-1">Default</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr className="bg-white border-b">
+              <td className="px-6 py-2">page</td>
+              <td className="px-6 py-2">number</td>
+              <td className="px-6 py-2">query</td>
+              <td className="px-6 py-2">The page number of records; starts from 1</td>
+              <td className="px-6 py-2">1</td>
+            </tr>
+            <tr className="bg-white border-b">
+              <td className="px-6 py-2">pageSize</td>
+              <td className="px-6 py-2">number</td>
+              <td className="px-6 py-2">query</td>
+              <td className="px-6 py-2">The number of records to fetch</td>
+              <td className="px-6 py-2">100; maximum 1000</td>
+            </tr>
+          </tbody>
+        </table>
 
-      <h4 className="text-xl font-bold mt-4 mb-2">200 Response</h4>
-      <Code block>{`{
-  "success": true,
-  "data": [
-    {
+        <h4 className="text-xl font-bold mt-4 mb-2">200 Response</h4>
+        <Code block>{`{
+"success": true,
+"data": [
+  {
+    "id": "${randomObjectId()}",
+    "active": ${faker.helpers.arrayElement([true, false])},
+    "licencePlate": "${faker.string.uuid().substring(0, 6)}",
+    "name": "${faker.company.name()}",
+    "description": "${faker.company.buzzPhrase()}",
+    "ministry": "CITZ",
+    "ministryName": "Citizens Services",
+    "provider": "AWS",
+    "projectOwner": {
       "id": "${randomObjectId()}",
-      "active": ${faker.helpers.arrayElement([true, false])},
-      "licencePlate": "${faker.string.uuid().substring(0, 6)}",
-      "name": "${faker.company.name()}",
-      "description": "${faker.company.buzzPhrase()}",
-      "ministry": "CITZ",
-      "ministryName": "Citizens Services",
-      "provider": "AWS",
-      "projectOwner": {
-        "id": "${randomObjectId()}",
-        "firstName": "${faker.person.firstName()}",
-        "lastName": "${faker.person.lastName()}"
-      },
-      "primaryTechnicalLead": {
-        "id": "${randomObjectId()}",
-        "firstName": "${faker.person.firstName()}",
-        "lastName": "${faker.person.lastName()}"
-      },
-      "secondaryTechnicalLead": null
-    }
-  ],
-  "totalCount": 1,
-  "pagination": {
-    "page": 1,
-    "pageSize": 100,
-    "skip": 0,
-    "take": 100
+      "email": "${faker.internet.email()}",
+      "firstName": "${faker.person.firstName()}",
+      "lastName": "${faker.person.lastName()}"
+    },
+    "primaryTechnicalLead": {
+      "id": "${randomObjectId()}",
+      "email": "${faker.internet.email()}",
+      "firstName": "${faker.person.firstName()}",
+      "lastName": "${faker.person.lastName()}"
+    },
+    "secondaryTechnicalLead": null
+  }
+],
+"totalCount": 1,
+"pagination": {
+  "page": 1,
+  "pageSize": 100,
+  "skip": 0,
+  "take": 100
+}
+}`}</Code>
+      </div>
+      <div>
+        <h3 className="text-2xl font-bold my-2">2. Get Public Cloud Product</h3>
+        <p className="my-2">This endpoint returns a single public cloud product.</p>
+        <Mark className="font-mono">{`GET /api/v1/public-cloud/products/<id-or-licencePlate>`}</Mark>
+
+        <h4 className="text-xl font-bold mt-4 mb-2">Parameters</h4>
+        <table className="w-full text-sm text-left rtl:text-right text-black">
+          <thead>
+            <tr>
+              <th className="px-6 py-1">Name</th>
+              <th className="px-6 py-1">Type</th>
+              <th className="px-6 py-1">In</th>
+              <th className="px-6 py-1">Description</th>
+              <th className="px-6 py-1">Default</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr className="bg-white border-b">
+              <td className="px-6 py-2">id or licencePlate</td>
+              <td className="px-6 py-2">string</td>
+              <td className="px-6 py-2">path</td>
+              <td className="px-6 py-2">ID or LicencePlate of the product</td>
+              <td className="px-6 py-2 italic">required</td>
+            </tr>
+          </tbody>
+        </table>
+
+        <h4 className="text-xl font-bold mt-4 mb-2">200 Response</h4>
+        <Code block>{`{
+  "success": true,
+  "data": {
+    "id": "${randomObjectId()}",
+    "active": ${faker.helpers.arrayElement([true, false])},
+    "licencePlate": "${faker.string.uuid().substring(0, 6)}",
+    "name": "${faker.company.name()}",
+    "description": "${faker.company.buzzPhrase()}",
+    "ministry": "CITZ",
+    "ministryName": "Citizens Services",
+    "provider": "AWS",
+    "projectOwner": {
+      "id": "${randomObjectId()}",
+      "email": "${faker.internet.email()}",
+      "firstName": "${faker.person.firstName()}",
+      "lastName": "${faker.person.lastName()}"
+    },
+    "primaryTechnicalLead": {
+      "id": "${randomObjectId()}",
+      "email": "${faker.internet.email()}",
+      "firstName": "${faker.person.firstName()}",
+      "lastName": "${faker.person.lastName()}"
+    },
+    "secondaryTechnicalLead": null
   }
 }`}</Code>
-    </div>
+      </div>
+    </>
   );
 }
 

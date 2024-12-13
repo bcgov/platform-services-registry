@@ -1,6 +1,5 @@
 import { DecisionStatus, ProjectStatus, RequestType } from '@prisma/client';
 import { z } from 'zod';
-import { GlobalRole } from '@/constants';
 import createApiHandler from '@/core/api-handler';
 import { logger } from '@/core/logging';
 import prisma from '@/core/prisma';
