@@ -1,13 +1,10 @@
 import { ProjectStatus, Ministry, Provider } from '@prisma/client';
-import { Session } from 'next-auth';
 import { z } from 'zod';
-import { GlobalRole } from '@/constants';
 import createApiHandler from '@/core/api-handler';
-import { OkResponse, BadRequestResponse } from '@/core/responses';
+import { BadRequestResponse } from '@/core/responses';
 import { parsePaginationParams } from '@/helpers/pagination';
-import { ministryKeyToName } from '@/helpers/product';
-import { searchPublicCloudProducts } from '@/services/db';
-import { processNumber, processUpperEnumString, processBoolean } from '@/utils/js';
+import { processNumber, processUpperEnumString } from '@/utils/js';
+import listOp from './_operations/list';
 
 const defaultPage = 1;
 const defaultPageSize = 100;
@@ -23,18 +20,17 @@ const queryParamSchema = z.object({
   status: z.preprocess(processUpperEnumString, z.nativeEnum(ProjectStatus).optional()),
 });
 
-const apiHandler = createApiHandler({
-  roles: [GlobalRole.User, GlobalRole.ServiceAccount],
+export const GET = createApiHandler({
+  roles: ['service-account user'],
   useServiceAccount: true,
   validations: { queryParams: queryParamSchema },
-});
-export const GET = apiHandler(async ({ queryParams, session }) => {
+})(async ({ session, queryParams }) => {
   const { page: _page, pageSize: _pageSize, ministry, provider, status } = queryParams;
 
   const { skip, take, page } = parsePaginationParams(_page ?? defaultPage, _pageSize ?? defaultPageSize, 10);
-
-  const { docs, totalCount } = await searchPublicCloudProducts({
-    session: session as Session,
+  const response = await listOp({
+    session,
+    page,
     skip,
     take,
     ministries: ministry ? [ministry] : [],
@@ -42,37 +38,7 @@ export const GET = apiHandler(async ({ queryParams, session }) => {
     status: status ? [status] : [],
   });
 
-  const data = docs.map((doc) => {
-    return {
-      id: doc.id,
-      active: doc.status === ProjectStatus.ACTIVE,
-      licencePlate: doc.licencePlate,
-      name: doc.name,
-      description: doc.description,
-      ministry: doc.ministry,
-      ministryName: ministryKeyToName(doc.ministry),
-      provider: doc.provider,
-      projectOwner: {
-        id: doc.projectOwner.id,
-        firstName: doc.projectOwner.firstName,
-        lastName: doc.projectOwner.lastName,
-      },
-      primaryTechnicalLead: {
-        id: doc.primaryTechnicalLead.id,
-        firstName: doc.primaryTechnicalLead.firstName,
-        lastName: doc.primaryTechnicalLead.lastName,
-      },
-      secondaryTechnicalLead: doc.secondaryTechnicalLead
-        ? {
-            id: doc.secondaryTechnicalLead.id,
-            firstName: doc.secondaryTechnicalLead.firstName,
-            lastName: doc.secondaryTechnicalLead.lastName,
-          }
-        : null,
-    };
-  });
-
-  return OkResponse({ success: true, data, totalCount, pagination: { page, pageSize: take, skip, take } });
+  return response;
 });
 
 // Important! It appears there is a bug in NextJS where it caches route information, including response data from third-party services (Keycloak)

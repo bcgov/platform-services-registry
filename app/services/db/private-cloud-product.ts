@@ -9,6 +9,13 @@ import { getMatchingUserIds } from './user';
 
 const defaultSortKey = 'updatedAt';
 
+export type SearchPrivateCloudProductsProps = PrivateCloudProductSearchBody & {
+  session: Session;
+  skip?: number;
+  take?: number;
+  extraFilter?: Prisma.PrivateCloudProjectWhereInput;
+};
+
 export async function searchPrivateCloudProducts({
   session,
   skip,
@@ -23,12 +30,7 @@ export async function searchPrivateCloudProducts({
   sortKey = defaultSortKey,
   sortOrder = Prisma.SortOrder.desc,
   extraFilter,
-}: PrivateCloudProductSearchBody & {
-  session: Session;
-  skip?: number;
-  take?: number;
-  extraFilter?: Prisma.PrivateCloudProjectWhereInput;
-}) {
+}: SearchPrivateCloudProductsProps) {
   if (!_isNumber(skip) && !_isNumber(take) && page && pageSize) {
     ({ skip, take } = parsePaginationParams(page, pageSize, 10));
   }
