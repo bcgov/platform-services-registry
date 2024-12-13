@@ -18,6 +18,8 @@
 
 - [Zod](https://zod.dev/): A TypeScript-first schema declaration and validation library leveraged for its developer-friendly features and elimination of duplicative type declarations.
 
+- [Mailpit](https://mailpit.axllent.org/): An email testing tool for developers that acts as an SMTP server, providing a web interface to capture, view, and debug emails.
+
 These technologies foster rapid iterative development, polished user interfaces, and a user-centric experience for application development.
 
 ### Database & ORM
