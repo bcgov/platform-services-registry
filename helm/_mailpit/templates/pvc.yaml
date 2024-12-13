@@ -1,4 +1,3 @@
-{{- if .Values.volumes }}
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
@@ -11,7 +10,4 @@ spec:
   resources:
     requests:
       storage: 200Mi
-  {{- with (index .Values.volumes 0).persistentVolumeClaim.storageClassName }}
-  storageClassName: {{ . }}
-  {{- end }}
-{{- end }}
+  storageClassName: netapp-file-standard

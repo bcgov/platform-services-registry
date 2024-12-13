@@ -42,10 +42,10 @@ spec:
             - name: DEPLOYMENT_TAG
               value: {{ $deploymentTag | quote }}
           {{- $env := merge (.Values.global.env | default dict) (.Values.env | default dict) -}}
-          {{- range $k, $v := $env }}
+            {{- range $k, $v := $env }}
             - name: {{ $k | quote }}
               value: {{ $v | quote }}
-          {{- end }}
+            {{- end }}
           {{- if .Values.envSecretName }}
           envFrom:
             - secretRef:
@@ -71,16 +71,12 @@ spec:
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
           volumeMounts:
-            {{- range .Values.volumeMounts }}
-            - name: {{ .name }}
-              mountPath: {{ .mountPath }}
-            {{- end }}
+            - name: mailpit-data
+              mountPath: /var/lib/mailpit
       volumes:
-        {{- range .Values.volumes }}
-        - name: {{ .name }}
+        - name: mailpit-data
           persistentVolumeClaim:
-            claimName: {{ .persistentVolumeClaim.claimName }}
-        {{- end }}
+            claimName: pltsvc-mailpit
       {{- with .Values.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}
