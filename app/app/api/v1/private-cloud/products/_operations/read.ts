@@ -54,5 +54,5 @@ export default async function readOp({ session, idOrLicencePlate }: { session: S
       : null,
   };
 
-  return OkResponse(result);
+  return OkResponse({ success: true, data: result });
 }
