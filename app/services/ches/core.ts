@@ -88,7 +88,12 @@ export const sendEmail = async (email: Email): Promise<void> => {
     email.body,
     // See https://github.com/apostrophecms/sanitize-html?tab=readme-ov-file#default-options
     {
-      allowedTags: sanitizeHtml.defaults.allowedTags.concat(['img']),
+      allowedTags: sanitizeHtml.defaults.allowedTags.concat(['html', 'head', 'body', 'img', 'meta', 'link']),
+      allowedAttributes: {
+        ...sanitizeHtml.defaults.allowedAttributes,
+        '*': ['style', 'class'],
+        link: ['rel', 'href'],
+      },
     },
   );
 
