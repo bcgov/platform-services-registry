@@ -35,11 +35,14 @@ spec:
             {{- toYaml .Values.securityContext | nindent 12 }}
           image: "{{ .Values.image.repository }}:{{ $deploymentTag }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
+          args:
+            - --db-file
+            - "/var/lib/mailpit/mailpit.db"
           env:
             - name: DEPLOYMENT_TAG
               value: {{ $deploymentTag | quote }}
           {{- $env := merge (.Values.global.env | default dict) (.Values.env | default dict) -}}
-            {{ range $k, $v := $env }}
+            {{- range $k, $v := $env }}
             - name: {{ $k | quote }}
               value: {{ $v | quote }}
             {{- end }}
@@ -67,6 +70,13 @@ spec:
             periodSeconds: 10
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
+          volumeMounts:
+            - name: data
+              mountPath: /var/lib/mailpit
+      volumes:
+        - name: data
+          persistentVolumeClaim:
+            claimName: {{ include "_.fullname" . }}
       {{- with .Values.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}
