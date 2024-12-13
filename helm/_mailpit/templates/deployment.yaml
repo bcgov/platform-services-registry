@@ -22,10 +22,10 @@ spec:
         {{- end }}
     spec:
       {{- $imagePullSecrets := concat (.Values.imagePullSecrets | default list) (.Values.global.imagePullSecrets | default list) -}}
-        {{- with $imagePullSecrets }}
-        imagePullSecrets:
-          {{- toYaml . | nindent 8 }}
-        {{- end }}
+      {{- with $imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
       serviceAccountName: {{ default .Values.global.serviceAccountName .Values.serviceAccountName }}
       securityContext:
         {{- toYaml .Values.podSecurityContext | nindent 8 }}
@@ -37,15 +37,15 @@ spec:
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           args:
             - --db-file
-            - {{ .Values.dbPath | default "/var/lib/mailpit/mailpit.db" }}
+            - "/var/lib/mailpit/mailpit.db"
           env:
             - name: DEPLOYMENT_TAG
               value: {{ $deploymentTag | quote }}
           {{- $env := merge (.Values.global.env | default dict) (.Values.env | default dict) -}}
-            {{ range $k, $v := $env }}
+          {{- range $k, $v := $env }}
             - name: {{ $k | quote }}
               value: {{ $v | quote }}
-            {{- end }}
+          {{- end }}
           {{- if .Values.envSecretName }}
           envFrom:
             - secretRef:
@@ -71,16 +71,16 @@ spec:
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
           volumeMounts:
-            - name: data
-              mountPath: /var/lib/mailpit
+            {{- range .Values.volumeMounts }}
+            - name: {{ .name }}
+              mountPath: {{ .mountPath }}
+            {{- end }}
       volumes:
-        - name: data
-          {{- if .Values.persistence.enabled }}
+        {{- range .Values.volumes }}
+        - name: {{ .name }}
           persistentVolumeClaim:
-            claimName: {{ default (include "_.fullname" .) .Values.persistence.existingClaim }}
-          {{- else }}
-          emptyDir: {}
-          {{- end }}
+            claimName: {{ .persistentVolumeClaim.claimName }}
+        {{- end }}
       {{- with .Values.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}

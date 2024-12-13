@@ -208,13 +208,6 @@ mailpit:
   nameOverride: pltsvc-mailpit
   fullnameOverride: pltsvc-mailpit
 
-  dbPath: /var/lib/mailpit/mailpit.db
-  persistence:
-    enabled: true
-    size: 200Mi
-    storageClassName: netapp-file-standard
-    existingClaim: ""
-
 ches-mock:
   enabled: true
   image:
