@@ -39,7 +39,7 @@ spec:
             - name: DEPLOYMENT_TAG
               value: {{ $deploymentTag | quote }}
           {{- $env := merge (.Values.global.env | default dict) (.Values.env | default dict) -}}
-            {{ range $k, $v := $env }}
+            {{- range $k, $v := $env }}
             - name: {{ $k | quote }}
               value: {{ $v | quote }}
             {{- end }}

@@ -71,10 +71,10 @@ spec:
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
           volumeMounts:
-            - name: mailpit-data
+            - name: data
               mountPath: /var/lib/mailpit
       volumes:
-        - name: mailpit-data
+        - name: data
           persistentVolumeClaim:
             claimName: pltsvc-mailpit
       {{- with .Values.nodeSelector }}
