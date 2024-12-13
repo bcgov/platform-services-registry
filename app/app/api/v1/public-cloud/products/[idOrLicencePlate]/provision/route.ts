@@ -9,7 +9,7 @@ import { sendRequestCompletionEmails } from '@/services/ches/public-cloud';
 import { models, publicCloudRequestDetailInclude } from '@/services/db';
 
 const pathParamSchema = z.object({
-  licencePlate: z.string().max(7),
+  idOrLicencePlate: z.string().max(7),
 });
 
 const apiHandler = createApiHandler({
@@ -18,7 +18,7 @@ const apiHandler = createApiHandler({
   validations: { pathParams: pathParamSchema },
 });
 export const POST = apiHandler(async ({ pathParams, session }) => {
-  const { licencePlate } = pathParams;
+  const { idOrLicencePlate: licencePlate } = pathParams;
 
   const request = await prisma.publicCloudRequest.findFirst({
     where: {
