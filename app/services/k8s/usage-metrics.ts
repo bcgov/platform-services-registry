@@ -53,14 +53,14 @@ async function getPvcUsage(name: string, namespace: string, cluster: Cluster) {
   // each result array contains a single item with a timestamp and value:
   // Example: { value: [timestamp, value] }
   const [, usageStr] = usageResult[0].value;
-  const [, limitsStr] = capacityResult[0].value;
+  const [, requestsStr] = capacityResult[0].value;
   const [, freeInodesStr] = freeInodesResult[0].value;
 
   const usage = parseFloat(usageStr);
-  const limits = parseFloat(limitsStr);
+  const requests = parseFloat(requestsStr);
   const freeInodes = parseInt(freeInodesStr, 10);
 
-  return { usage, limits, freeInodes };
+  return { usage, requests, freeInodes };
 }
 
 async function collectPVCMetrics(namespace: string, cluster: Cluster) {

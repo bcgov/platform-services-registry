@@ -14,29 +14,29 @@ export default function QuotasDescription() {
         <span className="font-bold text-red-600 uppercase">will not</span> be processed.
       </p>
       <div className="text-base leading-6 mt-5">
-        If your request for more CPU and Memory meets all of the following requirements, it will be automatically
-        approved:
+        Your request for additional CPU, Memory, and Storage will be automatically approved if{' '}
+        <span className="font-bold text-red-600 uppercase">all</span> of the following conditions are met:
         <ol className="list-decimal pl-5">
-          <li>Your namespace’s current usage exceeds 85% of its total limit.</li>
+          <b>For CPU and Memory:</b>
+
           <li>Your namespace’s resource utilization rate is at least 35%.</li>
           <li>
-            The requested adjustment either:
+            The adjustment satisfies one of the following:
             <ul className="list-disc pl-5">
-              <li>Meets the minimum values of 1 core for CPU and 2GB for memory, or</li>
-              <li>Increases the quota by no more than 50%.</li>
+              <li>Starts from a minimum of 1 core for CPU and 2GB for memory, or</li>
+              <li>Does not exceed a 50% increase in the quota.</li>
             </ul>
           </li>
         </ol>
-      </div>
-      <div className="text-base leading-6 mt-5">
-        If your request for more Storage meets all of the following requirements, it will be automatically approved:
         <ol className="list-decimal pl-5">
-          <li>Your namespace’s current usage exceeds 80% of its PVC limit.</li>
+          <b>For Storage:</b>
+
+          <li>Your namespace’s current usage exceeds 80% of its requested capacity.</li>
           <li>
-            The requested adjustment either:
+            The adjustment satisfies one of the following:
             <ul className="list-disc pl-5">
-              <li>Meets the minimum values of 32GB, or</li>
-              <li>Increases the quota by no more than 50%.</li>
+              <li>Is 32GB or less, or</li>
+              <li>Does not exceed a 50% increase in the current capacity.</li>
             </ul>
           </li>
         </ol>
