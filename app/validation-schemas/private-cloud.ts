@@ -128,7 +128,9 @@ export const _privateCloudCreateRequestBodySchema = z.object({
     .url()
     .refine((value) => value.startsWith('https://'), {
       message: 'The URL must start with https://',
-    }),
+    })
+    .nullable()
+    .optional(),
 });
 
 const isEmailUnique = (data: any) => {
