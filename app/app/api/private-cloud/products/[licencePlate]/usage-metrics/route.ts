@@ -29,8 +29,8 @@ export const GET = apiHandler(async ({ queryParams, pathParams, session }) => {
   }
 
   if (!(IS_PROD || IS_TEST)) {
-    licencePlate = 'de0974';
-    cluster = 'SILVER';
+    licencePlate = 'e3913e';
+    cluster = 'KLAB';
   }
 
   const metrics = await getPodMetrics(
