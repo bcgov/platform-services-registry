@@ -120,7 +120,9 @@ export default function MetricsTable({ rows, resource, totalMetrics }: TableProp
               {formatMetric(resource, totalMetrics.totalUsage)}
             </div>
             <div className={cn('md:col-span-3 lg:col-span-3 text-center')}>
-              {((totalMetrics.totalUsage / totalMetrics.totalRequest) * 100).toFixed(2)}%
+              {totalMetrics.totalRequest > 0
+                ? `${((totalMetrics.totalUsage / totalMetrics.totalRequest) * 100).toFixed(2)}%`
+                : 'N/A'}
             </div>
           </div>
         </div>
