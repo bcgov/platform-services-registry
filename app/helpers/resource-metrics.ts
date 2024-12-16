@@ -14,7 +14,7 @@ export type PVC = {
   pvName: string;
   storageClassName: string;
   usage: number;
-  limits: number;
+  requests: number;
   freeInodes: number;
 };
 
@@ -162,7 +162,7 @@ export const getTotalMetrics = (data: Pod[] | PVC[], resource: ResourceType) => 
     (data as PVC[]).forEach((pvc) => {
       if (pvc.usage) totalUsage += pvc.usage;
       totalRequest += 0;
-      if (pvc.limits) totalLimit += pvc.limits;
+      if (pvc.requests) totalRequest += pvc.requests;
     });
   }
   return { totalUsage, totalRequest, totalLimit };
@@ -190,7 +190,7 @@ export type TransformedPVCData = {
   pvName: string;
   storageClassName: string;
   usage: number | string;
-  limits: number | string;
+  requests: number | string;
   freeInodes: number | string;
 };
 
@@ -202,7 +202,7 @@ export function transformPVCData(data: PVC[]) {
       pvName: pvc.pvName,
       storageClassName: pvc.storageClassName,
       usage: pvc.usage,
-      limits: pvc.limits,
+      requests: pvc.requests,
       freeInodes: pvc.freeInodes,
     });
   });

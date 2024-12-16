@@ -83,7 +83,7 @@ export default privateCloudProductUsageMetrics(({ getPathParams, session }) => {
       storageClassName: 'Storage class name',
       pvName: 'PV name',
       usage: 'PVC usage',
-      limits: 'PVC limits',
+      requests: 'PVC request',
       freeInodes: 'Free inodes',
     },
     ...transformPVCData(data.pvcMetrics),
