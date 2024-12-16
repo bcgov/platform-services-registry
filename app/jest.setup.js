@@ -84,6 +84,7 @@ jest.mock('@/services/k8s', () => ({
   'isPlainObject',
   'isString',
   'mapValues',
+  'noop',
   'pick',
   'reduce',
   'toLower',
