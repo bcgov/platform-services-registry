@@ -123,6 +123,12 @@ export const _privateCloudCreateRequestBodySchema = z.object({
       },
     ),
   requestComment: string().optional(),
+  webhookUrl: z
+    .string()
+    .url()
+    .refine((value) => value.startsWith('https://'), {
+      message: 'The URL must start with https://',
+    }),
 });
 
 const isEmailUnique = (data: any) => {
