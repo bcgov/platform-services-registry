@@ -59,7 +59,7 @@
     "@tiptap/react": "^2.4.0",
     "@tiptap/starter-kit": "^2.4.0",
     "@tremor/react": "^3.13.1",
-    "@types/react": "18.3.16",
+    "@types/react": "18.3.17",
     "@types/react-dom": "18.3.5",
     "autoprefixer": "10.4.20",
     "axios": "^1.5.1",
