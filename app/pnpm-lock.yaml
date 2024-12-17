@@ -49,7 +49,7 @@ importers:
         version: 7.15.1(@mantine/core@7.15.1(@mantine/hooks@7.15.1(react@18.3.1))(@types/react@18.3.17)(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(@mantine/hooks@7.15.1(react@18.3.1))(@tiptap/extension-link@2.10.3(@tiptap/core@2.10.3(@tiptap/pm@2.10.3))(@tiptap/pm@2.10.3))(@tiptap/react@2.10.3(@tiptap/core@2.10.3(@tiptap/pm@2.10.3))(@tiptap/pm@2.10.3)(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       '@prisma/client':
         specifier: ^6.0.0
-        version: 6.0.1(prisma@6.0.1)
+        version: 6.1.0(prisma@6.0.1)
       '@react-email/components':
         specifier: ^0.0.31
         version: 0.0.31(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
@@ -1144,8 +1144,8 @@ packages:
   '@popperjs/core@2.11.8':
     resolution: {integrity: sha512-P1st0aksCrn9sGZhp8GMYwBnQsbvAWsZAX44oXNNvLHGqAOcoVxmjZiohstwQ7SqKnbR47akdNi+uleWD8+g6A==}
 
-  '@prisma/client@6.0.1':
-    resolution: {integrity: sha512-60w7kL6bUxz7M6Gs/V+OWMhwy94FshpngVmOY05TmGD0Lhk+Ac0ZgtjlL6Wll9TD4G03t4Sq1wZekNVy+Xdlbg==}
+  '@prisma/client@6.1.0':
+    resolution: {integrity: sha512-AbQYc5+EJKm1Ydfq3KxwcGiy7wIbm4/QbjCKWWoNROtvy7d6a3gmAGkKjK0iUCzh+rHV8xDhD5Cge8ke/kiy5Q==}
     engines: {node: '>=18.18'}
     peerDependencies:
       prisma: '*'
@@ -6033,7 +6033,7 @@ snapshots:
 
   '@popperjs/core@2.11.8': {}
 
-  '@prisma/client@6.0.1(prisma@6.0.1)':
+  '@prisma/client@6.1.0(prisma@6.0.1)':
     optionalDependencies:
       prisma: 6.0.1
 
