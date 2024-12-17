@@ -42,9 +42,8 @@ export async function getResourceDetails({
 
   if (metricsData.length === 0) return result;
 
-  const { totalRequest, totalLimit, totalUsage } = getTotalMetrics(metricsData, resourceName);
+  const { totalRequest, totalUsage } = getTotalMetrics(metricsData, resourceName);
   result.deployment.request = totalRequest;
-  result.deployment.limit = totalLimit;
   result.deployment.usage = totalUsage;
 
   const unitMultiplier = resourceName === 'cpu' ? cpuCoreToMillicoreMultiplier : memoryUnitMultipliers.Gi;

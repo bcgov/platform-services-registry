@@ -17,18 +17,18 @@ const allowedMinResource = {
   storage: 32,
 };
 
-function checkAutoApprovalEligibility({ allocation, deployment, resourceType }: QuotaUpgradeResourceDetail): boolean {
+function checkAutoApprovalEligibility({ deployment, resourceType }: QuotaUpgradeResourceDetail): boolean {
   if (deployment.usage === -1) return false;
 
   // Calculate usage-to-limit and utilization ratios
-  const usageRatio = deployment.usage / allocation.limit;
+  const usageRatio = deployment.usage / deployment.request;
   if (resourceType === ResourceType.storage) {
     // Approve if storage usage exceeds 80% of limit
     return usageRatio > 0.8;
   }
   const utilizationRate = deployment.usage / deployment.request;
   // Approve CPU/Memory if usage exceeds 85% of limit and utilization is at least 35%
-  return usageRatio > 0.85 && utilizationRate >= 0.35;
+  return utilizationRate >= 0.35;
 }
 
 function extractResourceRequests(resourceRequests: ResourceRequestsEnv) {

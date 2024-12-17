@@ -155,10 +155,6 @@ export async function getPodMetrics(
             cpu: normalizeCpu(lastTwoWeeksUsage.cpu),
             memory: normalizeMemory(lastTwoWeeksUsage.memory),
           },
-          limits: {
-            cpu: normalizeCpu(resourceDef.resources?.limits?.cpu || 0),
-            memory: normalizeMemory(resourceDef.resources?.limits?.memory || 0),
-          },
           requests: {
             cpu: normalizeCpu(resourceDef.resources?.requests?.cpu || 0),
             memory: normalizeMemory(resourceDef.resources?.requests?.memory || 0),

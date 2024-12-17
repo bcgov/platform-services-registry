@@ -18,8 +18,7 @@ export default function QuotasDescription() {
         <span className="font-bold text-red-600 uppercase">all</span> of the following conditions are met:
         <ol className="list-decimal pl-5">
           <b>For CPU and Memory:</b>
-
-          <li>Your namespace’s resource utilization rate is at least 35%.</li>
+          <li>Your namespace&apos;s resource utilization rate is at least 35%.</li>
           <li>
             The adjustment satisfies one of the following:
             <ul className="list-disc pl-5">
@@ -30,8 +29,7 @@ export default function QuotasDescription() {
         </ol>
         <ol className="list-decimal pl-5">
           <b>For Storage:</b>
-
-          <li>Your namespace’s current usage exceeds 80% of its requested capacity.</li>
+          <li>Your namespace&apos;s current usage exceeds 80% of its requested capacity.</li>
           <li>
             The adjustment satisfies one of the following:
             <ul className="list-disc pl-5">
