@@ -3,7 +3,7 @@
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Button } from '@mantine/core';
 import { ResourceRequestsEnv } from '@prisma/client';
-import { IconInfoCircle, IconUsersGroup, IconSettings, IconComponents } from '@tabler/icons-react';
+import { IconInfoCircle, IconWebhook, IconUsersGroup, IconSettings, IconComponents } from '@tabler/icons-react';
 import { useEffect, useState } from 'react';
 import { FormProvider, useForm } from 'react-hook-form';
 import { z } from 'zod';
@@ -16,6 +16,7 @@ import FormErrorNotification from '@/components/generic/FormErrorNotification';
 import { openPrivateCloudProductEditSubmitModal } from '@/components/modal/privateCloudProductEditSubmit';
 import AdditionalTeamMembers from '@/components/private-cloud/sections/AdditionalTeamMembers';
 import Quotas from '@/components/private-cloud/sections/Quotas';
+import Webhooks from '@/components/private-cloud/sections/Webhooks';
 import { GlobalRole } from '@/constants';
 import createClientPage from '@/core/client-page';
 import { getQuotaChangeStatus } from '@/services/backend/private-cloud/products';
@@ -163,6 +164,15 @@ export default privateCloudProductEdit(({ session }) => {
       description: '',
       Component: CommonComponents,
       componentArgs: { disabled: isDisabled },
+    },
+    {
+      LeftIcon: IconWebhook,
+      label: 'Webhooks',
+      description: '',
+      Component: Webhooks,
+      componentArgs: {
+        disabled: isDisabled,
+      },
     },
   ];
 

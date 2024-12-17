@@ -138,6 +138,7 @@ model PrivateCloudProject {
   commonComponents                 CommonComponents
   supportPhoneNumber               String?
   members                          PrivateCloudProductMember[]
+  webhookUrl                       String?
   requests                         PrivateCloudRequest[]       @relation("project")
   comments                         PrivateCloudComment[]       @relation("project")
 }
@@ -163,6 +164,7 @@ model PrivateCloudRequestedProject {
   commonComponents         CommonComponents
   supportPhoneNumber       String?
   members                  PrivateCloudProductMember[]
+  webhookUrl               String?
   decisionRequests         PrivateCloudRequest[]       @relation("decisionData")
   requestRequests          PrivateCloudRequest[]       @relation("requestData")
   originalRequests         PrivateCloudRequest[]       @relation("originalData")

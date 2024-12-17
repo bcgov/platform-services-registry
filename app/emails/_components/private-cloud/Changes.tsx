@@ -15,6 +15,7 @@ export default function Changes({ request }: { request: PrivateCloudRequestDetai
   let contactChange = null;
   let membersChange = null;
   let quotaChange = null;
+  let webhookUrlChange = null;
 
   if (diffData.profileChanged) {
     profileChange = (
@@ -104,11 +105,25 @@ export default function Changes({ request }: { request: PrivateCloudRequestDetai
     );
   }
 
+  if (diffData.parentPaths.includes('webhookUrl')) {
+    const noUrl = <span className="italic text-gray-400">No URL</span>;
+    webhookUrlChange = (
+      <>
+        <Hr className="my-4" />
+        <Heading className="text-lg mb-0 text-black">Webhook URL</Heading>
+        <Text className="mt-1 mb-0 h-4">
+          {request.originalData.webhookUrl || noUrl} &gt; {request.decisionData.webhookUrl || noUrl}
+        </Text>
+      </>
+    );
+  }
+
   return (
     <>
       {profileChange}
       {contactChange}
       {quotaChange}
+      {webhookUrlChange}
     </>
   );
 }

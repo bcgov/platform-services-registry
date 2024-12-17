@@ -1,4 +1,6 @@
 import { DecisionStatus, RequestType, ProjectStatus } from '@prisma/client';
+import axios from 'axios';
+import _noop from 'lodash-es/noop';
 import { z } from 'zod';
 import createApiHandler from '@/core/api-handler';
 import { logger } from '@/core/logging';
@@ -73,9 +75,28 @@ export const PUT = apiHandler(async ({ pathParams, session }) => {
             create: decisionData,
           });
 
-    const [updatedRequest] = await Promise.all([updateRequest, upsertProject]);
+    const [updatedRequest, upsertedProduct] = await Promise.all([updateRequest, upsertProject]);
     const updatedRequestDecorated = await models.privateCloudRequest.decorate(updatedRequest, session, true);
-    await sendRequestCompletionEmails(updatedRequestDecorated);
+
+    await Promise.all([
+      sendRequestCompletionEmails(updatedRequestDecorated),
+      upsertedProduct.webhookUrl &&
+        axios
+          .post(
+            upsertedProduct.webhookUrl,
+            {
+              action: request.type,
+              product: {
+                id: upsertedProduct.id,
+                licencePlate: upsertedProduct.licencePlate,
+              },
+            },
+            {
+              signal: AbortSignal.timeout(1000),
+            },
+          )
+          .catch(_noop),
+    ]);
   }
 
   const message = `Successfully marked ${licencePlate} as ${isPartialProvision ? 'partially-' : ''}provisioned.`;
