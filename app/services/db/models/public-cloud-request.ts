@@ -56,7 +56,7 @@ async function decorate<T extends PublicCloudRequestSimple | PublicCloudRequestD
   let canSignMou = false;
   let canApproveMou = false;
 
-  if (doc.type === RequestType.CREATE) {
+  if (doc.type === RequestType.CREATE || doc.type === RequestType.DELETE) {
     if (doc.decisionData.billing) {
       canSignMou =
         !doc.decisionData.billing.signed &&

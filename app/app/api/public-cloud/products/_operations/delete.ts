@@ -10,6 +10,7 @@ import {
   publicCloudRequestDetailInclude,
   excludePublicProductPopulatedFields,
   getLastClosedPublicCloudRequest,
+  tasks,
 } from '@/services/db';
 import { deletePathParamSchema } from '../[licencePlate]/schema';
 
@@ -58,6 +59,7 @@ export default async function deleteOp({
 
   await Promise.all([
     createEvent(EventType.DELETE_PUBLIC_CLOUD_PRODUCT, session.user.id, { requestId: newRequest.id }),
+    tasks.create(TaskType.REVIEW_PUBLIC_CLOUD_REQUEST, { request: newRequest, requester: session.user.name }),
     sendDeleteRequestEmails(newRequest, session.user.name),
   ]);
 
