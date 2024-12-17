@@ -30,6 +30,7 @@ Feature: Delete Request
     And User clicks button "Approve"
     And User clicks modal window button "Submit"
     And User clicks modal window button "Return to Dashboard"
+    And User waits for "7" seconds
     And User logs out
     And User logs in with username "james.smith@gov.bc.ca" and password "james.smith@gov.bc.ca"
     And User clicks tab "PRIVATE CLOUD OPENSHIFT"
