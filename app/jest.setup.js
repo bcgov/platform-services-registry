@@ -25,6 +25,11 @@ jest.mock('@/services/nats/core', () => ({
   sendNatsMessage: jest.fn(),
 }));
 
+jest.mock('@/services/ches/core', () => ({
+  sendEmail: jest.fn(),
+  safeSendEmail: jest.fn(),
+}));
+
 jest.mock('@/services/ches/private-cloud', () => ({
   ...jest.requireActual('@/services/ches/private-cloud'),
   sendCreateRequestEmails: jest.fn(async () => [200]),

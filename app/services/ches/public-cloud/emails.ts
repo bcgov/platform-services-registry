@@ -20,7 +20,8 @@ import TeamEditRequestTemplate from '@/emails/_templates/public-cloud/TeamEditRe
 import TeamEditRequestCompletionTemplate from '@/emails/_templates/public-cloud/TeamEditRequestCompletion';
 import { getEmouFileName } from '@/helpers/emou';
 import { generateEmouPdf } from '@/helpers/pdfs/emou';
-import { sendEmail, getContent } from '@/services/ches/core';
+import { sendEmail } from '@/services/ches/core';
+import { getContent } from '@/services/ches/helpers';
 import { findUserEmailsByAuthRole } from '@/services/keycloak/app-realm';
 import { PublicCloudRequestDetailDecorated } from '@/types/public-cloud';
 
