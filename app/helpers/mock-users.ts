@@ -3,16 +3,13 @@ import { Session } from 'next-auth';
 import { generateSession } from '@/core/auth-options';
 import prisma from '@/core/prisma';
 import { processMsUser } from '@/services/msgraph';
-import type { MsUser, AppUserWithRoles } from '@/types/user';
-import type { MockResponse, MockFile } from '../../localdev/m365proxy/types';
+import type { AppUserWithRoles } from '@/types/user';
+import type { MsUser } from '../../localdev/types';
 import { formatFullName } from './user';
-const mockFile: MockFile = require('../../localdev/m365proxy/mocks.json');
 
-export const proxyUsers: MsUser[] = mockFile.mocks.find(
-  (mock: MockResponse) => mock.request.url === 'https://graph.microsoft.com/v1.0/users?$filter*',
-)?.response.body.value;
+export const msUsers: MsUser[] = require('../../localdev/mock-users.json');
 
-export const mockUsers = proxyUsers
+export const mockUsers = msUsers
   .map((usr) => {
     const appUser = processMsUser(usr);
     if (!appUser) return null;

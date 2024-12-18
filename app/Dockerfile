@@ -6,8 +6,8 @@ FROM node:22.10.0-alpine3.19 as build
 WORKDIR /app
 
 COPY app .
-COPY localdev/m365proxy/types.ts /localdev/m365proxy/types.ts
-COPY localdev/m365proxy/mocks.json /localdev/m365proxy/mocks.json
+COPY localdev/types.ts /localdev/types.ts
+COPY localdev/mock-users.json /localdev/mock-users.json
 COPY .prettierignore .
 COPY .prettierrc .
 

@@ -8,7 +8,6 @@ import _isString from 'lodash-es/isString';
 import _uniq from 'lodash-es/uniq';
 import { logger } from '@/core/logging';
 import prisma from '@/core/prisma';
-import { proxyUsers } from '@/helpers/mock-users';
 import { parsePaginationParams } from '@/helpers/pagination';
 import { listUsersByRoles, findUserByEmail, getKcAdminClient } from '@/services/keycloak/app-realm';
 import { getUserByEmail, getUserPhoto, processMsUser } from '@/services/msgraph';
@@ -79,28 +78,6 @@ export async function getMatchingUserIds(search: string) {
 
   const matchingUserIds = matchingUsers.map((user) => user.id);
   return matchingUserIds;
-}
-
-export async function createProxyUsers() {
-  const dbUsers = await Promise.all(
-    proxyUsers
-      .map((puser: MsUser) => {
-        const appUser = processMsUser(puser);
-        if (!appUser) return null;
-
-        const { displayName, ...clearnUserData } = appUser;
-
-        clearnUserData.email = clearnUserData.email.toLowerCase();
-        return prisma.user.upsert({
-          where: { email: clearnUserData.email },
-          update: clearnUserData,
-          create: clearnUserData,
-        });
-      })
-      .filter((v) => v!),
-  );
-
-  return dbUsers;
 }
 
 const defaultSortKey = 'lastSeen';

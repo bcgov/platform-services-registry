@@ -28,7 +28,7 @@ repos:
   hooks:
   - id: detect-secrets
     args: [--baseline, .secrets.baseline]
-    exclude: package.lock.json|localdev/m365proxy/mocks.json
+    exclude: package.lock.json|localdev/mock-users.json
 - repo: local
   hooks:
   - id: eslint
