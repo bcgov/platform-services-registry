@@ -129,7 +129,8 @@ export const _privateCloudCreateRequestBodySchema = z.object({
     .refine((value) => value.startsWith('https://'), {
       message: 'The URL must start with https://',
     })
-    .nullable()
+    .or(z.literal(''))
+    .or(z.null())
     .optional(),
 });
 
