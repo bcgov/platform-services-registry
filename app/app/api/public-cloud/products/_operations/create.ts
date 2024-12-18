@@ -4,7 +4,7 @@ import prisma from '@/core/prisma';
 import { OkResponse, UnauthorizedResponse, UnprocessableEntityResponse } from '@/core/responses';
 import generateLicencePlate from '@/helpers/licence-plate';
 import { sendCreateRequestEmails } from '@/services/ches/public-cloud';
-import { createEvent, models, publicCloudRequestDetailInclude } from '@/services/db';
+import { createEvent, models, publicCloudRequestDetailInclude, tasks } from '@/services/db';
 import { upsertUsers } from '@/services/db/user';
 import { PublicCloudCreateRequestBody } from '@/validation-schemas/public-cloud';
 
@@ -105,6 +105,10 @@ export default async function createOp({ session, body }: { session: Session; bo
     });
 
     proms.push(taskProm);
+  } else {
+    proms.push(
+      tasks.create(TaskType.REVIEW_PUBLIC_CLOUD_REQUEST, { request: newRequest, requester: session.user.name }),
+    );
   }
 
   proms.push(

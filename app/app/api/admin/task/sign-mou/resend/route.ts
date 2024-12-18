@@ -55,11 +55,12 @@ export const GET = apiHandler(async ({ session }) => {
         result.products += 1;
 
         const eaEmail = await render(ExpenseAuthorityMouProduct({ product }), { pretty: false });
+        // TODO: move this to email service with error handler
         await sendEmail({
           body: eaEmail,
           to: users.map((user) => user.email),
           subject: 'Expense Authority eMOU request',
-        });
+        }).catch(console.error);
       } else {
         const request = await prisma.publicCloudRequest.findFirst({
           where: { type: RequestType.CREATE, licencePlate: billing.licencePlate },
@@ -72,11 +73,12 @@ export const GET = apiHandler(async ({ session }) => {
 
           const requestDecorated = await models.publicCloudRequest.decorate(request, session, true);
           const eaEmail = await render(ExpenseAuthorityMou({ request: requestDecorated }), { pretty: false });
+          // TODO: move this to email service with error handler
           await sendEmail({
             body: eaEmail,
             to: users.map((user) => user.email),
             subject: 'Expense Authority eMOU request',
-          });
+          }).catch(console.error);
         }
       }
     }
