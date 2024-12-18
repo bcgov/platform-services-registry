@@ -77,7 +77,6 @@ export function createSamplePrivateCloudRequest(args?: {
     webhookUrl: '',
     createdAt: new Date(),
     updatedAt: new Date(),
-    nextTokenRefreshTime: new Date(),
   };
 
   const product = {

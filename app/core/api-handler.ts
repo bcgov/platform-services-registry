@@ -130,11 +130,15 @@ function createApiHandler<
                 session: {} as Session,
                 token: {
                   email: kcUser.email,
+                },
+                userSession: {
+                  email: kcUser.email ?? '',
                   roles: kcUser.authRoleNames.concat(GlobalRole.ServiceAccount),
+                  teams: [],
+                  sub: '',
                   accessToken: '',
                   refreshToken: '',
                   idToken: '',
-                  teams: [],
                 },
               });
             } else if (saType === 'team') {
@@ -145,11 +149,15 @@ function createApiHandler<
                 session: {} as Session,
                 token: {
                   email: '',
+                },
+                userSession: {
+                  email: '',
                   roles: rolesArr.concat(GlobalRole.ServiceAccount),
+                  teams: [],
+                  sub: '',
                   accessToken: '',
                   refreshToken: '',
                   idToken: '',
-                  teams: [],
                 },
               });
             } else {

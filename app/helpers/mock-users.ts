@@ -83,13 +83,17 @@ export async function generateTestSession(testEmail: string) {
   const session = await generateSession({
     session: {} as Session,
     token: {
-      roles: mockUser.roles,
       name: mockUser.displayName,
       email: mockUser.email,
+    },
+    userSession: {
+      email: mockUser.email,
+      roles: mockUser.roles,
+      teams: [],
+      sub: '',
       accessToken: '',
       refreshToken: '',
       idToken: '',
-      teams: [],
     },
   });
 
