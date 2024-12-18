@@ -51,7 +51,23 @@ model User {
   publicCloudRequestsAsRequester                        PublicCloudRequest[]           @relation("createdBy")
   privateCloudRequestsAsDecisionMaker                   PrivateCloudRequest[]          @relation("decisionMaker")
   publicCloudRequestsAsDecisionMaker                    PublicCloudRequest[]           @relation("decisionMaker")
-  nextTokenRefreshTime                                  DateTime?
+}
+
+model UserSession {
+  id                   String   @id @default(auto()) @map("_id") @db.ObjectId
+  email                String   @unique
+  nextTokenRefreshTime DateTime
+  accessToken          String
+  refreshToken         String
+  idToken              String
+  sub                  String
+  roles                String[]
+  teams                Team[]
+}
+
+type Team {
+  clientId String
+  roles    String[]
 }
 
 model PrivateCloudRequest {

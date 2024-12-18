@@ -1,4 +1,4 @@
-import { EventType, TaskStatus } from '@prisma/client';
+import { EventType, TaskStatus, UserSession } from '@prisma/client';
 import axios from 'axios';
 import { addMinutes } from 'date-fns';
 import jwt from 'jsonwebtoken';
@@ -24,15 +24,16 @@ import { upsertUser } from '@/services/db/user';
 
 interface DecodedToken {
   resource_access?: Record<string, { roles: string[] }>;
+  email: string;
   sub: string;
 }
 
-function processTokens(tokens?: { access_token?: string; refresh_token?: string; id_token?: string }) {
+async function updateUserSession(tokens?: { access_token?: string; refresh_token?: string; id_token?: string }) {
   const { access_token = '', refresh_token = '', id_token = '' } = tokens ?? {};
   const decodedToken = jwt.decode(access_token) as DecodedToken;
-  const { resource_access = {}, sub = '' } = decodedToken || {};
+  const { resource_access = {}, sub = '', email = '' } = decodedToken || {};
 
-  const roles = _get(resource_access, `${AUTH_RESOURCE}.roles`, []);
+  const roles = _get(resource_access, `${AUTH_RESOURCE}.roles`, []) as string[];
   const teams: SessionTokenTeams[] = [];
 
   _forEach(resource_access, (val, key) => {
@@ -41,7 +42,12 @@ function processTokens(tokens?: { access_token?: string; refresh_token?: string;
     }
   });
 
-  return {
+  const loweremail = email.toLowerCase();
+  const nextTokenRefreshTime = addMinutes(new Date(), USER_TOKEN_REFRESH_INTERVAL);
+
+  const userSessionData = {
+    email: loweremail,
+    nextTokenRefreshTime,
     roles,
     sub,
     teams,
@@ -49,6 +55,36 @@ function processTokens(tokens?: { access_token?: string; refresh_token?: string;
     refreshToken: refresh_token,
     idToken: id_token,
   };
+
+  const userSession = await prisma.userSession.upsert({
+    where: { email: loweremail },
+    create: userSessionData,
+    update: userSessionData,
+  });
+
+  return userSession;
+}
+
+async function endUserSession(email: string) {
+  const loweremail = email.toLowerCase();
+  const nextTokenRefreshTime = new Date();
+
+  const userSessionData = {
+    email: loweremail,
+    nextTokenRefreshTime,
+    roles: [],
+    teams: [],
+    accessToken: '',
+    refreshToken: '',
+  };
+
+  const userSession = await prisma.userSession.upsert({
+    where: { email: loweremail },
+    create: { ...userSessionData, sub: '', idToken: '' },
+    update: userSessionData,
+  });
+
+  return userSession;
 }
 
 async function getNewTokens(refreshToken: string) {
@@ -73,9 +109,34 @@ async function getNewTokens(refreshToken: string) {
   }
 }
 
-export async function generateSession({ session, token }: { session: Session; token?: JWT }) {
-  if (token?.isRefreshTokenExpired) session.isExpired = true;
+async function getUserSessionToRefresh(email: string) {
+  try {
+    const now = new Date();
+    const userSession = await prisma.userSession.update({
+      where: {
+        email: email.toLowerCase(),
+        nextTokenRefreshTime: { lt: now },
+      },
+      data: {
+        nextTokenRefreshTime: addMinutes(now, USER_TOKEN_REFRESH_INTERVAL),
+      },
+    });
 
+    return userSession;
+  } catch {
+    return null;
+  }
+}
+
+export async function generateSession({
+  session,
+  token,
+  userSession: userSessionOverride,
+}: {
+  session: Session;
+  token?: JWT;
+  userSession?: Omit<UserSession, 'id' | 'nextTokenRefreshTime'>;
+}) {
   sessionRolePropKeys.forEach((key: SessionKeys) => {
     // @ts-ignore: Ignore TypeScript error for dynamic property assignment
     session[key] = false;
@@ -95,29 +156,37 @@ export async function generateSession({ session, token }: { session: Session; to
 
   session.tasks = [];
 
-  if (token) {
-    session.idToken = token.idToken ?? '';
-    session.kcUserId = token.sub ?? '';
-    session.user.name = token.name ?? '';
-    session.roles = token.roles || [];
-    session.teams = (token.teams as any) || [];
-
-    if (token.email) {
-      const user = await prisma.user.findFirst({
+  if (token?.email) {
+    const [user, userSession] = await Promise.all([
+      prisma.user.findFirst({
         where: { email: token.email },
         select: { id: true, email: true, image: true },
-      });
+      }),
+      userSessionOverride ??
+        prisma.userSession.findFirst({
+          where: { email: token.email },
+        }),
+    ]);
 
-      if (user) {
-        session.user.id = user.id;
-        session.user.email = user.email;
-        session.user.image = user.image;
-
-        session.userId = user.id;
-        session.userEmail = user.email;
-        session.roles.push(GlobalRole.User);
-      }
+    if (userSession) {
+      session.idToken = userSession.idToken;
+      session.kcUserId = userSession.sub;
+      session.roles = userSession.roles;
+      session.teams = userSession.teams;
+      session.requiresRelogin = !userSession.accessToken;
     }
+
+    if (user) {
+      session.user.id = user.id;
+      session.user.email = user.email;
+      session.user.image = user.image;
+
+      session.userId = user.id;
+      session.userEmail = user.email;
+      session.roles.push(GlobalRole.User);
+    }
+
+    session.user.name = token.name ?? '';
 
     session.roles = [..._uniq(session.roles)];
     session.roles.forEach((role) => {
@@ -268,9 +337,8 @@ export const authOptions: AuthOptions = {
       const { given_name, family_name, email } = profile as KeycloakProfile;
       const loweremail = email.toLowerCase();
       const lastSeen = new Date();
-      const nextTokenRefreshTime = addMinutes(new Date(), USER_TOKEN_REFRESH_INTERVAL);
 
-      const upsertedUser = await upsertUser(loweremail, { lastSeen, nextTokenRefreshTime });
+      const upsertedUser = await upsertUser(loweremail, { lastSeen });
       if (!upsertedUser) {
         const data = {
           providerUserId: '',
@@ -285,7 +353,6 @@ export const authOptions: AuthOptions = {
           officeLocation: '',
           jobTitle: '',
           lastSeen,
-          nextTokenRefreshTime,
         };
 
         await prisma.user.upsert({
@@ -299,36 +366,21 @@ export const authOptions: AuthOptions = {
     },
     async jwt({ token, account }: { token: JWT; account: Account | null }) {
       if (account) {
-        return Object.assign(token, processTokens(account));
+        await updateUserSession(account);
+        return token;
       }
 
       if (!token.email) {
         return token;
       }
 
-      const now = new Date();
-      const loweremail = token.email.toLowerCase();
-
-      // 1. nextTokenRefreshTime has value (valid datetime)
-      // 1-1. the datetime is less than now           ==> refresh the token
-      // 1-2. the datetime is not less than now       ==> do nothing
-      // 2. nextTokenRefreshTime no value (null)      ==> refresh the token
-      const { count } = await prisma.user.updateMany({
-        where: {
-          email: loweremail,
-          OR: [{ nextTokenRefreshTime: { not: null, lt: now } }, { nextTokenRefreshTime: null }],
-        },
-        data: {
-          nextTokenRefreshTime: addMinutes(now, USER_TOKEN_REFRESH_INTERVAL),
-        },
-      });
-
-      if (count > 0) {
-        const newTokens = await getNewTokens(token.refreshToken);
-        if (!newTokens) {
-          token.isRefreshTokenExpired = true;
+      const userSessToRefresh = await getUserSessionToRefresh(token.email);
+      if (userSessToRefresh) {
+        const newTokens = await getNewTokens(userSessToRefresh.refreshToken);
+        if (newTokens) {
+          await updateUserSession(newTokens);
         } else {
-          Object.assign(token, processTokens(newTokens));
+          await endUserSession(token.email);
         }
       }
 
