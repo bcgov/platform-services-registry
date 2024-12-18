@@ -1,5 +1,5 @@
 import waitOn from 'wait-on';
-import mockFile from '../../m365proxy/mocks.json' with { type: 'json' };
+import mockUsers from '../../mock-users.json' with { type: 'json' };
 import { KcAdmin } from '../../_packages/keycloak-admin/src/main.js';
 import {
   KEYCLOAK_URL,
@@ -30,11 +30,7 @@ interface MsUser {
 
 const clientScope = 'https://graph.microsoft.com/.default';
 
-let proxyUsers: MsUser[] = [];
-const usersMock = mockFile.mocks.find((mock) => mock.request.url === 'https://graph.microsoft.com/v1.0/users?$filter*');
-if (usersMock?.response.body?.value) {
-  proxyUsers = usersMock.response.body?.value;
-}
+let msUsers: MsUser[] = mockUsers;
 
 async function main() {
   console.log('Starting Keycloak Provision...');
@@ -60,7 +56,7 @@ async function main() {
       console.log('Authentication successful!');
     } catch (error) {
       console.error('Authentication failed, retrying...', error);
-      await new Promise(resolve => setTimeout(resolve, 1000)); // Delay for 1 second
+      await new Promise((resolve) => setTimeout(resolve, 1000)); // Delay for 1 second
     }
   }
 
@@ -123,7 +119,7 @@ async function main() {
   // Upsert Admin client
   await kc.createRealmAdminServiceAccount(AUTH_REALM_NAME, ADMIN_CLIENT_ID, ADMIN_CLIENT_SECRET);
 
-  const authUsers = proxyUsers.map(({ surname, givenName, mail, jobTitle }) => ({
+  const authUsers = msUsers.map(({ surname, givenName, mail, jobTitle }) => ({
     username: mail,
     email: mail,
     firstName: givenName,

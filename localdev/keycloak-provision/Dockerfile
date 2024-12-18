@@ -5,7 +5,7 @@ WORKDIR /sandbox
 
 COPY ./keycloak-provision ./keycloak-provision
 COPY ./_packages ./_packages
-COPY ./m365proxy/mocks.json ./m365proxy/mocks.json
+COPY ./mock-users.json ./mock-users.json
 
 RUN npm install -g turbo pnpm
 RUN pnpm --dir _packages/keycloak-admin install --ignore-scripts

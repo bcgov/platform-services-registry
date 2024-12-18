@@ -1,4 +1,4 @@
-FROM node:22.10.0-alpine3.19 AS builder
+FROM node:22.10.0-alpine3.19 AS build
 WORKDIR /context
 
 COPY ches-mock/package.json ches-mock/package-lock.json ches-mock/tsconfig.json ./
@@ -9,8 +9,8 @@ RUN npm install && npm run build
 FROM node:22.10.0-alpine3.19
 WORKDIR /context
 
-COPY --from=builder /context/build ./build
-COPY --from=builder /context/package.json /context/package-lock.json ./
+COPY --from=build /context/build ./build
+COPY --from=build /context/package.json /context/package-lock.json ./
 
 RUN npm install --only=production
 

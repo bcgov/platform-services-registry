@@ -25,10 +25,6 @@ dependencies:
     version: '0.1.0'
     repository: 'file://../_nats_provision'
     condition: nats-provision.enabled
-  - name: m365proxy
-    version: '0.1.0'
-    repository: 'file://../_m365proxy'
-    condition: m365proxy.enabled
   - name: weasyprint
     version: '0.1.6'
     repository: https://bcgov.github.io/weasyprint
