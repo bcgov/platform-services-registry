@@ -7,7 +7,7 @@ import prisma from '@/core/prisma';
 import { OkResponse } from '@/core/responses';
 import ExpenseAuthorityMou from '@/emails/_templates/public-cloud/ExpenseAuthorityMou';
 import ExpenseAuthorityMouProduct from '@/emails/_templates/public-cloud/ExpenseAuthorityMouProduct';
-import { sendEmail } from '@/services/ches/core';
+import { safeSendEmail } from '@/services/ches/core';
 import { models, publicCloudProductDetailInclude, publicCloudRequestDetailInclude } from '@/services/db';
 
 const apiHandler = createApiHandler({
@@ -55,12 +55,11 @@ export const GET = apiHandler(async ({ session }) => {
         result.products += 1;
 
         const eaEmail = await render(ExpenseAuthorityMouProduct({ product }), { pretty: false });
-        // TODO: move this to email service with error handler
-        await sendEmail({
+        await safeSendEmail({
           body: eaEmail,
           to: users.map((user) => user.email),
           subject: 'Expense Authority eMOU request',
-        }).catch(console.error);
+        });
       } else {
         const request = await prisma.publicCloudRequest.findFirst({
           where: { type: RequestType.CREATE, licencePlate: billing.licencePlate },
@@ -73,12 +72,11 @@ export const GET = apiHandler(async ({ session }) => {
 
           const requestDecorated = await models.publicCloudRequest.decorate(request, session, true);
           const eaEmail = await render(ExpenseAuthorityMou({ request: requestDecorated }), { pretty: false });
-          // TODO: move this to email service with error handler
-          await sendEmail({
+          await safeSendEmail({
             body: eaEmail,
             to: users.map((user) => user.email),
             subject: 'Expense Authority eMOU request',
-          }).catch(console.error);
+          });
         }
       }
     }
