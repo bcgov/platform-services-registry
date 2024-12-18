@@ -37,9 +37,8 @@ export async function getResourceDetails({
   };
 
   const isStorage = resourceName === ResourceType.storage;
-  const namespaceData = await getPodMetrics(licencePlate, env, cluster);
+  const namespaceData = await getPodMetrics('101ed4', env, 'SILVER');
   const metricsData = isStorage ? namespaceData.pvcMetrics : namespaceData.podMetrics;
-
   if (metricsData.length === 0) return result;
 
   const { totalRequest, totalUsage } = getTotalMetrics(metricsData, resourceName);
@@ -48,7 +47,7 @@ export async function getResourceDetails({
 
   const unitMultiplier = resourceName === 'cpu' ? cpuCoreToMillicoreMultiplier : memoryUnitMultipliers.Gi;
   const resourceValue = currentResourceRequests[env][resourceName];
-  const deploymentRequest = isStorage ? 0 : resourceValue * unitMultiplier;
+  const deploymentRequest = resourceValue * unitMultiplier;
 
   result.allocation.request = deploymentRequest;
   return result;
