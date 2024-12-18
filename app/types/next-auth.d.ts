@@ -95,7 +95,7 @@ declare module 'next-auth' {
       awsLza: boolean;
     };
     permissionList: string[];
-    isExpired: boolean;
+    requiresRelogin: boolean;
   }
 
   type PermissionsKey = keyof Permissions;
@@ -110,11 +110,7 @@ declare module 'next-auth' {
 declare module 'next-auth/jwt' {
   /** Returned by the `jwt` callback and `getToken`, when using JWT sessions */
   interface JWT {
-    accessToken: string;
-    refreshToken: string;
-    idToken: string;
-    roles: string[];
-    teams: SessionTokenTeams[];
+    email?: string;
   }
 }
 
