@@ -17,7 +17,8 @@ import TeamEditRequestTemplate from '@/emails/_templates/private-cloud/TeamEditR
 import TeamEditRequestApprovalTemplate from '@/emails/_templates/private-cloud/TeamEditRequestApproval';
 import TeamEditRequestCompletionTemplate from '@/emails/_templates/private-cloud/TeamEditRequestCompletion';
 import TeamEditRequestRejectionTemplate from '@/emails/_templates/private-cloud/TeamEditRequestRejection';
-import { sendEmail, getContent } from '@/services/ches/core';
+import { sendEmail } from '@/services/ches/core';
+import { getContent } from '@/services/ches/helpers';
 import { findUserEmailsByAuthRole } from '@/services/keycloak/app-realm';
 import { PrivateCloudRequestDetailDecorated } from '@/types/private-cloud';
 

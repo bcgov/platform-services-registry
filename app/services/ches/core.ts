@@ -62,7 +62,7 @@ const getToken = async ({ tokenUrl, clientId, clientSecret }: TokenData): Promis
   return data.access_token;
 };
 
-export const sendEmail = async (email: Email): Promise<void> => {
+export async function sendEmail(email: Email) {
   if (!CHES_TOKEN_URL || !CHES_CLIENT_ID || !CHES_CLIENT_SECRET) {
     logger.error('Missing environment variables for email service');
     return;
@@ -127,6 +127,9 @@ export const sendEmail = async (email: Email): Promise<void> => {
 
   const data = await response.json();
   return data;
-};
+}
 
-export const getContent = (jsx: JSX.Element) => render(jsx, { pretty: false });
+export async function safeSendEmail(email: Email) {
+  const result = await sendEmail(email);
+  return result;
+}
