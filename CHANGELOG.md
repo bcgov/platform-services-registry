@@ -1,5 +1,13 @@
+## <small>0.43.2 (2024-12-19)</small>
+
+* chore(4537): enforce relogin for users missing session data in DB ([e072741](https://github.com/bcgov/platform-services-registry/commit/e072741))
+* chore(deps): update github/codeql-action digest to 64cc90b ([64bd106](https://github.com/bcgov/platform-services-registry/commit/64bd106))
+
+
+
 ## <small>0.43.1 (2024-12-19)</small>
 
+* chore: release candidate v0.43.1 ([ceca6dc](https://github.com/bcgov/platform-services-registry/commit/ceca6dc))
 * chore(3225): add whitespace trimming, rename mailpit volum, remove unused entities ([343e801](https://github.com/bcgov/platform-services-registry/commit/343e801))
 * chore(3225): align PVC naming in Mailpit templates ([ae5346e](https://github.com/bcgov/platform-services-registry/commit/ae5346e))
 * chore(3225): change mailpit name, mountpath, add  pvc vars, mailpit dbpath ([7f3b950](https://github.com/bcgov/platform-services-registry/commit/7f3b950))
