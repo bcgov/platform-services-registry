@@ -19,7 +19,7 @@ export default function QuotasDescription() {
         <ol className="list-decimal pl-5">
           <b>For CPU and Memory:</b>
 
-          <li>Your namespace’s resource utilization rate is at least 35%.</li>
+          <li>Your namespace&rsquo;s resource utilization rate is at least 35%.</li>
           <li>
             The adjustment satisfies one of the following:
             <ul className="list-disc pl-5">
@@ -31,7 +31,7 @@ export default function QuotasDescription() {
         <ol className="list-decimal pl-5">
           <b>For Storage:</b>
 
-          <li>Your namespace’s current usage exceeds 80% of its requested capacity.</li>
+          <li>Your namespace&rsquo;s current usage exceeds 80% of its requested capacity.</li>
           <li>
             The adjustment satisfies one of the following:
             <ul className="list-disc pl-5">

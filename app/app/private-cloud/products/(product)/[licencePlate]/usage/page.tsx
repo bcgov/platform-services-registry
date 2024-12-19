@@ -5,7 +5,7 @@ import { useQuery } from '@tanstack/react-query';
 import { useEffect, useState } from 'react';
 import { z } from 'zod';
 import FormSelect from '@/components/generic/select/FormSelect';
-import { GlobalRole } from '@/constants';
+import { environmentLongNames, environmentShortNames, GlobalRole } from '@/constants';
 import createClientPage from '@/core/client-page';
 import {
   getTotalMetrics,
@@ -13,12 +13,14 @@ import {
   TransformedPVCData,
   transformPodData,
   TransformedPodData,
+  normalizeCpu,
+  normalizeMemory,
 } from '@/helpers/resource-metrics';
 import { getPodUsageMetrics } from '@/services/backend/private-cloud/products';
 import { usePrivateProductState } from '@/states/global';
 import MetricsTable from './MetricsTable';
 
-const selectOptions = [
+const selectOptions: { name: string; value: EnvironmentShort }[] = [
   {
     name: 'Development namespace',
     value: 'dev',
@@ -46,15 +48,21 @@ const privateCloudProductUsageMetrics = createClientPage({
   validations: { pathParams: pathParamSchema },
 });
 
-export default privateCloudProductUsageMetrics(({ getPathParams, session }) => {
+type EnvironmentShort = keyof typeof environmentLongNames;
+type EnvironmentLong = keyof typeof environmentShortNames;
+
+export default privateCloudProductUsageMetrics(({ getPathParams }) => {
   const [pathParams, setPathParams] = useState<z.infer<typeof pathParamSchema>>();
 
   useEffect(() => {
     getPathParams().then((v) => setPathParams(v));
   }, []);
 
-  const [environment, setenvironment] = useState('dev');
+  const [environment, setEnvironment] = useState<EnvironmentShort>('dev');
+
   const [, privateSnap] = usePrivateProductState();
+  const productRequest =
+    privateSnap.currentProduct?.resourceRequests[environmentLongNames[environment] as EnvironmentLong];
 
   const { licencePlate = '' } = pathParams ?? {};
 
@@ -63,8 +71,8 @@ export default privateCloudProductUsageMetrics(({ getPathParams, session }) => {
     queryFn: () => getPodUsageMetrics(licencePlate, environment, privateSnap.currentProduct?.cluster || ''),
   });
 
-  const handleNamespaceChange = (namespace: string) => {
-    setenvironment(namespace);
+  const handleNamespaceChange = (namespace: EnvironmentShort) => {
+    setEnvironment(namespace);
   };
 
   const rowsPod: TransformedPodData[] = [
@@ -72,7 +80,7 @@ export default privateCloudProductUsageMetrics(({ getPathParams, session }) => {
       name: 'Pod name',
       containerName: 'Container name',
       usage: { cpu: 'CPU usage', memory: 'Memory usage' },
-      requests: { cpu: 'CPU requests', memory: 'Memory requests' },
+      requests: { cpu: 'CPU request', memory: 'Memory request' },
       limits: { cpu: 'CPU limits', memory: 'Memory limits' },
     },
     ...transformPodData(data.podMetrics),
@@ -91,13 +99,17 @@ export default privateCloudProductUsageMetrics(({ getPathParams, session }) => {
 
   return (
     <div>
+      <p className="w-full block text-sm font-medium leading-6 text-gray-900 pb-3">
+        Average utilization rate for CPU and Memory is being counted based on the metrics of your namespace received in
+        last 2 weeks
+      </p>
       <fieldset className="w-full md:w-48 2xl:w-64 pb-6">
         <FormSelect
           id="id"
           label="Filter by namespace"
           options={selectOptions.map((v) => ({ label: v.name, value: v.value }))}
-          defaultValue={'dev'}
-          onChange={handleNamespaceChange}
+          defaultValue={environment}
+          onChange={(value) => handleNamespaceChange(value as EnvironmentShort)}
         />
       </fieldset>
       <Box pos="relative" className="min-h-96">
@@ -108,10 +120,21 @@ export default privateCloudProductUsageMetrics(({ getPathParams, session }) => {
         ) : (
           <>
             <LoadingOverlay visible={isLoading} zIndex={1000} overlayProps={{ radius: 'sm', blur: 2 }} />
-            <MetricsTable rows={rowsPod} resource="cpu" totalMetrics={getTotalMetrics(data.podMetrics, 'cpu')} />
-            <MetricsTable rows={rowsPod} resource="memory" totalMetrics={getTotalMetrics(data.podMetrics, 'memory')} />
+            <MetricsTable
+              rows={rowsPod}
+              productRequest={normalizeCpu((productRequest?.cpu ?? 0) + 'c')}
+              resource="cpu"
+              totalMetrics={getTotalMetrics(data.podMetrics, 'cpu')}
+            />
+            <MetricsTable
+              rows={rowsPod}
+              productRequest={normalizeMemory((productRequest?.memory ?? 0) + 'Gi')}
+              resource="memory"
+              totalMetrics={getTotalMetrics(data.podMetrics, 'memory')}
+            />
             <MetricsTable
               rows={rowsPVC}
+              productRequest={normalizeMemory((productRequest?.storage ?? 0) + 'Gi')}
               resource="storage"
               totalMetrics={getTotalMetrics(data.pvcMetrics, 'storage')}
             />
