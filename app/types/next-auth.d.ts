@@ -96,6 +96,7 @@ declare module 'next-auth' {
     };
     permissionList: string[];
     requiresRelogin: boolean;
+    nextTokenRefreshTime?: Date;
   }
 
   type PermissionsKey = keyof Permissions;
