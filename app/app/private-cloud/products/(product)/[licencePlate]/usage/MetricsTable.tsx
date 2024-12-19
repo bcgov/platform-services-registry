@@ -5,14 +5,7 @@ import _truncate from 'lodash-es/truncate';
 import React from 'react';
 import TableHeader from '@/components/generic/table/TableHeader';
 import TruncatedTooltip from '@/components/table/TruncatedTooltip';
-import {
-  formatBinaryMetric,
-  formatCpu,
-  TransformedPodData,
-  TransformedPVCData,
-  normalizeCpu,
-  normalizeMemory,
-} from '@/helpers/resource-metrics';
+import { formatBinaryMetric, formatCpu, TransformedPodData, TransformedPVCData } from '@/helpers/resource-metrics';
 import { capitalizeFirstLetter, cn } from '@/utils/js';
 
 interface MetricsSummary {
@@ -49,12 +42,6 @@ const getPodMetricValue = (
 const getPVCMetricValue = (row: TransformedPVCData, key: 'usage' | 'requests'): string | number => row[key] ?? '-';
 
 export default function MetricsTable({ rows, resource, totalMetrics, productRequest }: TableProps) {
-  let productRequestNormalized;
-  if (resource === ResourceType.cpu) {
-    productRequestNormalized = normalizeCpu(productRequest + 'c');
-  } else {
-    productRequestNormalized = normalizeMemory(productRequest + 'Gi');
-  }
   return (
     <>
       <div className="border-2 rounded-xl overflow-hidden">
@@ -128,7 +115,7 @@ export default function MetricsTable({ rows, resource, totalMetrics, productRequ
           </div>
           <div className="grid grid-cols-1 md:grid-cols-12 lg:grid-cols-12 gap-4 px-4 py-3 sm:px-6 lg:px-8 ">
             <div className={cn('md:col-span-3 lg:col-span-3 text-center')}>
-              {formatMetric(resource, productRequestNormalized)}
+              {formatMetric(resource, productRequest)}
             </div>
             <div className={cn('md:col-span-3 lg:col-span-3 text-center')}>
               {formatMetric(resource, totalMetrics.totalRequest)}
@@ -138,7 +125,7 @@ export default function MetricsTable({ rows, resource, totalMetrics, productRequ
             </div>
             <div className={cn('md:col-span-3 lg:col-span-3 text-center')}>
               {productRequest && productRequest > 0
-                ? `${((totalMetrics.totalUsage / productRequestNormalized) * 100).toFixed(2)}%`
+                ? `${((totalMetrics.totalUsage / productRequest) * 100).toFixed(2)}%`
                 : 'N/A'}
             </div>
           </div>

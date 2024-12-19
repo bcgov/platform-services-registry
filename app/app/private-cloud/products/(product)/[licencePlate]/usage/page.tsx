@@ -13,6 +13,8 @@ import {
   TransformedPVCData,
   transformPodData,
   TransformedPodData,
+  normalizeCpu,
+  normalizeMemory,
 } from '@/helpers/resource-metrics';
 import { getPodUsageMetrics } from '@/services/backend/private-cloud/products';
 import { usePrivateProductState } from '@/states/global';
@@ -61,6 +63,7 @@ export default privateCloudProductUsageMetrics(({ getPathParams }) => {
   const [, privateSnap] = usePrivateProductState();
   const productRequest =
     privateSnap.currentProduct?.resourceRequests[environmentLongNames[environment] as EnvironmentLong];
+
   const { licencePlate = '' } = pathParams ?? {};
 
   const { data = { podMetrics: [], pvcMetrics: [] }, isLoading } = useQuery({
@@ -119,19 +122,19 @@ export default privateCloudProductUsageMetrics(({ getPathParams }) => {
             <LoadingOverlay visible={isLoading} zIndex={1000} overlayProps={{ radius: 'sm', blur: 2 }} />
             <MetricsTable
               rows={rowsPod}
-              productRequest={productRequest?.cpu ?? 0}
+              productRequest={normalizeCpu((productRequest?.cpu ?? 0) + 'c')}
               resource="cpu"
               totalMetrics={getTotalMetrics(data.podMetrics, 'cpu')}
             />
             <MetricsTable
               rows={rowsPod}
-              productRequest={productRequest?.memory ?? 0}
+              productRequest={normalizeMemory((productRequest?.memory ?? 0) + 'Gi')}
               resource="memory"
               totalMetrics={getTotalMetrics(data.podMetrics, 'memory')}
             />
             <MetricsTable
               rows={rowsPVC}
-              productRequest={productRequest?.storage ?? 0}
+              productRequest={normalizeMemory((productRequest?.storage ?? 0) + 'Gi')}
               resource="storage"
               totalMetrics={getTotalMetrics(data.pvcMetrics, 'storage')}
             />
