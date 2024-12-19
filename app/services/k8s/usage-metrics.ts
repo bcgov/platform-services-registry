@@ -67,6 +67,7 @@ async function collectPVCMetrics(namespace: string, cluster: Cluster) {
   const { apiClient } = getK8sClients(cluster);
   const res = await apiClient.listNamespacedPersistentVolumeClaim(namespace);
   const pvcs = res.body.items;
+
   const pvcPromises = pvcs.map(async (pvc) => {
     const pvcName = pvc.metadata?.name;
     if (!pvcName) return null;
@@ -154,10 +155,6 @@ export async function getPodMetrics(
           usage: {
             cpu: normalizeCpu(lastTwoWeeksUsage.cpu),
             memory: normalizeMemory(lastTwoWeeksUsage.memory),
-          },
-          limits: {
-            cpu: normalizeCpu(resourceDef.resources?.limits?.cpu || 0),
-            memory: normalizeMemory(resourceDef.resources?.limits?.memory || 0),
           },
           requests: {
             cpu: normalizeCpu(resourceDef.resources?.requests?.cpu || 0),
