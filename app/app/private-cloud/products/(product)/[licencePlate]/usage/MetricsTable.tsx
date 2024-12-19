@@ -18,14 +18,13 @@ import { capitalizeFirstLetter, cn } from '@/utils/js';
 interface MetricsSummary {
   totalUsage: number;
   totalRequest: number;
-  totalLimit: number;
 }
 
 interface TableProps {
   rows: (TransformedPodData | TransformedPVCData)[];
   resource: ResourceType;
   totalMetrics: MetricsSummary;
-  productRequest?: number;
+  productRequest: number;
 }
 
 const isPVC = (row: TransformedPodData | TransformedPVCData): row is TransformedPVCData => 'pvName' in row;
