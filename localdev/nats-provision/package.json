@@ -1,14 +1,12 @@
 {
   "name": "nats-provision",
-  "version": "0.0.0",
-  "description": "",
+  "version": "0.1.0",
   "type": "module",
   "scripts": {
     "build": "rimraf ./build && tsc",
-    "start": "tsx src/main.ts"
+    "start": "tsx main.ts"
   },
-  "author": "",
-  "license": "ISC",
+  "license": "MIT",
   "dependencies": {
     "@keycloak/keycloak-admin-client": "^26.0.0",
     "nats": "^2.19.0",

@@ -1,13 +1,13 @@
 {
   "compilerOptions": {
-    "target": "esnext",
-    "module": "esnext",
+    "target": "ES2022",
+    "module": "ES2022",
     "moduleResolution": "node",
-    "rootDir": "./src",
-    "baseUrl": "./",
+    "rootDir": "../",
+    "baseUrl": ".",
+    "outDir": "build",
     "resolveJsonModule": true,
     "allowJs": true,
-    "outDir": "build",
     "esModuleInterop": true,
     "forceConsistentCasingInFileNames": true,
     "strict": true,

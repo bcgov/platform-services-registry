@@ -1,20 +1,18 @@
 FROM node:22.10.0-alpine3.19 AS build
-WORKDIR /context
+WORKDIR /opt
 
-COPY ches-mock/package.json ches-mock/package-lock.json ches-mock/tsconfig.json ./
-COPY ches-mock/src ./src
+COPY ches-mock ./context
 
-RUN npm install && npm run build
+RUN npm install -g turbo pnpm
+RUN cd context && pnpm install --ignore-scripts && pnpm build
 
 FROM node:22.10.0-alpine3.19
-WORKDIR /context
+WORKDIR /opt
 
-COPY --from=build /context/build ./build
-COPY --from=build /context/package.json /context/package-lock.json ./
-
-RUN npm install --only=production
+COPY --from=build /opt/context/build ./
+COPY --from=build /opt/context/node_modules ./node_modules
 
 USER node
 EXPOSE 3025
 
-CMD ["node", "build/main.js"]
+CMD ["node", "context/main.js"]

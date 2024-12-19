@@ -9,7 +9,7 @@ import {
   PUBLIC_CLOUD_CLIENT_ID,
   PUBLIC_CLOUD_CLIENT_SECRET,
 } from './config.js';
-import { KcAdmin } from '../../_packages/keycloak-admin/src/main.js';
+import { KcAdmin } from '../_packages/keycloak-admin/src/main.js';
 
 const natsServer = `${NATS_HOST}:${NATS_PORT}`;
 

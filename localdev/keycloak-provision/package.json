@@ -1,14 +1,12 @@
 {
   "name": "keycloak-provision",
-  "version": "0.0.0",
-  "description": "",
+  "version": "0.1.0",
   "type": "module",
   "scripts": {
     "build": "rimraf ./build && tsc",
-    "start": "tsx src/main.ts"
+    "start": "tsx main.ts"
   },
-  "author": "",
-  "license": "ISC",
+  "license": "MIT",
   "dependencies": {
     "@keycloak/keycloak-admin-client": "^26.0.0",
     "wait-on": "^8.0.0"
@@ -17,7 +15,6 @@
     "@types/node": "^20.14.1",
     "@types/wait-on": "^5.3.4",
     "rimraf": "^6.0.0",
-    "tsconfig-paths": "^4.2.0",
     "tsx": "^4.11.2",
     "typescript": "^5.4.5"
   }
