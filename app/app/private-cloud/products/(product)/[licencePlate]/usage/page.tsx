@@ -41,21 +41,30 @@ const pathParamSchema = z.object({
   licencePlate: z.string(),
 });
 
+enum envMapping {
+  dev = 'development',
+  tools = 'tools',
+  test = 'test',
+  prod = 'production',
+}
+
 const privateCloudProductUsageMetrics = createClientPage({
   roles: [GlobalRole.User],
   validations: { pathParams: pathParamSchema },
 });
 
-export default privateCloudProductUsageMetrics(({ getPathParams, session }) => {
+export default privateCloudProductUsageMetrics(({ getPathParams }) => {
   const [pathParams, setPathParams] = useState<z.infer<typeof pathParamSchema>>();
 
   useEffect(() => {
     getPathParams().then((v) => setPathParams(v));
   }, []);
 
-  const [environment, setenvironment] = useState('dev');
-  const [, privateSnap] = usePrivateProductState();
+  const [environment, setEnvironment] = useState('dev');
+  const [resourceKey, setResourceKey] = useState(envMapping[environment as keyof typeof envMapping] || 'development');
 
+  const [, privateSnap] = usePrivateProductState();
+  const productRequest = privateSnap.currentProduct?.resourceRequests[resourceKey];
   const { licencePlate = '' } = pathParams ?? {};
 
   const { data = { podMetrics: [], pvcMetrics: [] }, isLoading } = useQuery({
@@ -64,7 +73,8 @@ export default privateCloudProductUsageMetrics(({ getPathParams, session }) => {
   });
 
   const handleNamespaceChange = (namespace: string) => {
-    setenvironment(namespace);
+    setEnvironment(namespace);
+    setResourceKey(envMapping[environment as keyof typeof envMapping]);
   };
 
   const rowsPod: TransformedPodData[] = [
@@ -72,7 +82,7 @@ export default privateCloudProductUsageMetrics(({ getPathParams, session }) => {
       name: 'Pod name',
       containerName: 'Container name',
       usage: { cpu: 'CPU usage', memory: 'Memory usage' },
-      requests: { cpu: 'CPU requests', memory: 'Memory requests' },
+      requests: { cpu: 'CPU request', memory: 'Memory request' },
       limits: { cpu: 'CPU limits', memory: 'Memory limits' },
     },
     ...transformPodData(data.podMetrics),
@@ -91,6 +101,10 @@ export default privateCloudProductUsageMetrics(({ getPathParams, session }) => {
 
   return (
     <div>
+      <p className="w-full block text-sm font-medium leading-6 text-gray-900 pb-3">
+        Average utilization rate for CPU and Memory is being counted based on the metrics of your namespace received in
+        last 2 weeks
+      </p>
       <fieldset className="w-full md:w-48 2xl:w-64 pb-6">
         <FormSelect
           id="id"
@@ -108,10 +122,21 @@ export default privateCloudProductUsageMetrics(({ getPathParams, session }) => {
         ) : (
           <>
             <LoadingOverlay visible={isLoading} zIndex={1000} overlayProps={{ radius: 'sm', blur: 2 }} />
-            <MetricsTable rows={rowsPod} resource="cpu" totalMetrics={getTotalMetrics(data.podMetrics, 'cpu')} />
-            <MetricsTable rows={rowsPod} resource="memory" totalMetrics={getTotalMetrics(data.podMetrics, 'memory')} />
+            <MetricsTable
+              rows={rowsPod}
+              productRequest={productRequest?.cpu}
+              resource="cpu"
+              totalMetrics={getTotalMetrics(data.podMetrics, 'cpu')}
+            />
+            <MetricsTable
+              rows={rowsPod}
+              productRequest={productRequest?.memory}
+              resource="memory"
+              totalMetrics={getTotalMetrics(data.podMetrics, 'memory')}
+            />
             <MetricsTable
               rows={rowsPVC}
+              productRequest={productRequest?.storage}
               resource="storage"
               totalMetrics={getTotalMetrics(data.pvcMetrics, 'storage')}
             />
