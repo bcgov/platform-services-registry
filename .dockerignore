@@ -1,6 +1,6 @@
 **/*
 !app
-!localdev/m365proxy/types.ts
-!localdev/m365proxy/mocks.json
+!localdev/types.ts
+!localdev/mock-users.json
 !.prettierignore
 !.prettierrc

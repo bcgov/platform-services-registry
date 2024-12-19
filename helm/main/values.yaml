@@ -173,24 +173,6 @@ nats-provision:
   #     cpu: 10m
   #     memory: 128Mi
 
-m365proxy:
-  enabled: false
-  image:
-    pullPolicy: IfNotPresent
-
-  nameOverride: pltsvc-mock-m365proxy
-  fullnameOverride: pltsvc-mock-m365proxy
-
-  env: {}
-
-  # resources:
-  #   limits:
-  #     cpu: 200m
-  #     memory: 256Mi
-  #   requests:
-  #     cpu: 10m
-  #     memory: 128Mi
-
 weasyprint:
   enabled: false
 

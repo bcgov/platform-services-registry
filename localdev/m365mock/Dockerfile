@@ -1,25 +1,23 @@
-FROM node:22.10.0-alpine3.19 AS builder
-WORKDIR /context
+FROM node:22.10.0-alpine3.19 AS build
+WORKDIR /opt
 
-COPY m365mock/package.json m365mock/pnpm-lock.yaml m365mock/tsconfig.json ./
-COPY m365mock/src ./src
-COPY m365proxy/mocks.json ./m365proxy/mocks.json
+COPY ["mock-users.json", "types.ts", "./"]
+COPY m365mock ./app
 
 RUN npm install -g turbo pnpm
-RUN pnpm install --ignore-scripts
-RUN pnpm build
+RUN cd app && pnpm install --ignore-scripts
+RUN cd app && pnpm build
 
 FROM node:22.10.0-alpine3.19
-WORKDIR /context
+WORKDIR /opt
 
-COPY --from=builder /context/build ./build
-COPY --from=builder /context/package.json /context/pnpm-lock.yaml ./
-COPY --from=builder /context/m365proxy/mocks.json ./m365proxy/mocks.json
-
-RUN npm install -g turbo pnpm
-RUN pnpm install --ignore-scripts
+COPY --from=build /opt/app/package.json ./app/package.json
+COPY --from=build /opt/app/pnpm-lock.yaml ./app/pnpm-lock.yaml
+COPY --from=build /opt/app/node_modules ./app/node_modules
+COPY --from=build /opt/app/build/app ./app/build
+COPY --from=build /opt/mock-users.json ./app/mock-users.json
 
 USER node
 EXPOSE 4040
 
-CMD ["node", "build/server.js"]
+CMD ["node", "app/build/server.js"]

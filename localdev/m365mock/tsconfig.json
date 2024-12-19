@@ -3,8 +3,7 @@
     "target": "esnext",
     "module": "esnext",
     "moduleResolution": "node",
-    "rootDir": "./src",
-    "baseUrl": "./",
+    "baseUrl": ".",
     "resolveJsonModule": true,
     "allowJs": true,
     "outDir": "build",
@@ -12,6 +11,9 @@
     "forceConsistentCasingInFileNames": true,
     "strict": true,
     "noImplicitAny": true,
-    "skipLibCheck": true
+    "skipLibCheck": true,
+    "paths": {
+      "@sandbox/*": ["../*"]
+    }
   }
 }
