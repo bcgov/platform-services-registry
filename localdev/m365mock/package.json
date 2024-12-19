@@ -1,20 +1,14 @@
 {
   "name": "m365mock",
-  "version": "1.0.0",
+  "version": "0.1.0",
   "type": "module",
-  "main": "index.js",
   "scripts": {
     "build": "rimraf ./build && tsc",
-    "start": "tsx server.ts"
+    "start": "tsx main.ts"
   },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
-  "description": "",
+  "license": "MIT",
   "dependencies": {
-    "@types/node-fetch": "^2.6.11",
-    "express": "^5.0.0",
-    "node-fetch": "^3.3.2"
+    "express": "^5.0.0"
   },
   "devDependencies": {
     "@types/express": "^5.0.0",

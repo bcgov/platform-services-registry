@@ -2,15 +2,13 @@ import express, { Request, Response } from 'express';
 import { readFileSync } from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
-import { MsUser } from '@sandbox/types';
+import { MsUser } from '../types';
 
 const app = express();
 const port = 4040;
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
-
-console.log('__dirname__dirname', __dirname);
 
 const jsonData = readFileSync(path.join(__dirname, '../mock-users.json'), 'utf-8');
 const msUsers: MsUser[] = JSON.parse(jsonData);

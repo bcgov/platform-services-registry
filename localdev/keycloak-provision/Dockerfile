@@ -1,16 +1,20 @@
+FROM node:22.10.0-alpine3.19 AS build
+WORKDIR /opt
 
-FROM node:22.10.0-alpine3.19 as build
-
-WORKDIR /sandbox
-
-COPY ./keycloak-provision ./keycloak-provision
-COPY ./_packages ./_packages
-COPY ./mock-users.json ./mock-users.json
+COPY ["mock-users.json", "types.ts", "./"]
+COPY keycloak-provision ./context
+COPY _packages ./_packages
 
 RUN npm install -g turbo pnpm
-RUN pnpm --dir _packages/keycloak-admin install --ignore-scripts
-RUN pnpm --dir keycloak-provision install --ignore-scripts
-RUN pnpm --dir keycloak-provision build
+RUN cd context && pnpm install --ignore-scripts && pnpm build
+
+FROM node:22.10.0-alpine3.19
+WORKDIR /opt
+
+COPY --from=build /opt/context/build ./
+COPY --from=build /opt/mock-users.json ./mock-users.json
+COPY --from=build /opt/context/node_modules ./node_modules
 
 USER node
-CMD ["node", "keycloak-provision/build/keycloak-provision/src/main.js"]
+
+CMD ["node", "context/main.js"]

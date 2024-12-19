@@ -12,5 +12,7 @@ docs
 helm
 terraform
 localdev/mnt
-localdev/keycloak-provision
-localdev/nats-provision
+localdev/ches-mock/build
+localdev/keycloak-provision/build
+localdev/m365mock/build
+localdev/nats-provision/build
