@@ -5,7 +5,7 @@ import { useQuery } from '@tanstack/react-query';
 import { useEffect, useState } from 'react';
 import { z } from 'zod';
 import FormSelect from '@/components/generic/select/FormSelect';
-import { GlobalRole } from '@/constants';
+import { environmentLongNames, environmentShortNames, GlobalRole } from '@/constants';
 import createClientPage from '@/core/client-page';
 import {
   getTotalMetrics,
@@ -18,7 +18,7 @@ import { getPodUsageMetrics } from '@/services/backend/private-cloud/products';
 import { usePrivateProductState } from '@/states/global';
 import MetricsTable from './MetricsTable';
 
-const selectOptions = [
+const selectOptions: { name: string; value: EnvironmentShort }[] = [
   {
     name: 'Development namespace',
     value: 'dev',
@@ -41,17 +41,13 @@ const pathParamSchema = z.object({
   licencePlate: z.string(),
 });
 
-enum envMapping {
-  dev = 'development',
-  tools = 'tools',
-  test = 'test',
-  prod = 'production',
-}
-
 const privateCloudProductUsageMetrics = createClientPage({
   roles: [GlobalRole.User],
   validations: { pathParams: pathParamSchema },
 });
+
+type EnvironmentShort = keyof typeof environmentLongNames;
+type EnvironmentLong = keyof typeof environmentShortNames;
 
 export default privateCloudProductUsageMetrics(({ getPathParams }) => {
   const [pathParams, setPathParams] = useState<z.infer<typeof pathParamSchema>>();
@@ -60,11 +56,11 @@ export default privateCloudProductUsageMetrics(({ getPathParams }) => {
     getPathParams().then((v) => setPathParams(v));
   }, []);
 
-  const [environment, setEnvironment] = useState('dev');
-  const [resourceKey, setResourceKey] = useState(envMapping[environment as keyof typeof envMapping] || 'development');
+  const [environment, setEnvironment] = useState<EnvironmentShort>('dev');
 
   const [, privateSnap] = usePrivateProductState();
-  const productRequest = privateSnap.currentProduct?.resourceRequests[resourceKey];
+  const productRequest =
+    privateSnap.currentProduct?.resourceRequests[environmentLongNames[environment] as EnvironmentLong];
   const { licencePlate = '' } = pathParams ?? {};
 
   const { data = { podMetrics: [], pvcMetrics: [] }, isLoading } = useQuery({
@@ -72,9 +68,8 @@ export default privateCloudProductUsageMetrics(({ getPathParams }) => {
     queryFn: () => getPodUsageMetrics(licencePlate, environment, privateSnap.currentProduct?.cluster || ''),
   });
 
-  const handleNamespaceChange = (namespace: string) => {
+  const handleNamespaceChange = (namespace: EnvironmentShort) => {
     setEnvironment(namespace);
-    setResourceKey(envMapping[environment as keyof typeof envMapping]);
   };
 
   const rowsPod: TransformedPodData[] = [
@@ -110,8 +105,8 @@ export default privateCloudProductUsageMetrics(({ getPathParams }) => {
           id="id"
           label="Filter by namespace"
           options={selectOptions.map((v) => ({ label: v.name, value: v.value }))}
-          defaultValue={'dev'}
-          onChange={handleNamespaceChange}
+          defaultValue={environment}
+          onChange={(value) => handleNamespaceChange(value as EnvironmentShort)}
         />
       </fieldset>
       <Box pos="relative" className="min-h-96">
@@ -124,19 +119,19 @@ export default privateCloudProductUsageMetrics(({ getPathParams }) => {
             <LoadingOverlay visible={isLoading} zIndex={1000} overlayProps={{ radius: 'sm', blur: 2 }} />
             <MetricsTable
               rows={rowsPod}
-              productRequest={productRequest?.cpu}
+              productRequest={productRequest?.cpu ?? 0}
               resource="cpu"
               totalMetrics={getTotalMetrics(data.podMetrics, 'cpu')}
             />
             <MetricsTable
               rows={rowsPod}
-              productRequest={productRequest?.memory}
+              productRequest={productRequest?.memory ?? 0}
               resource="memory"
               totalMetrics={getTotalMetrics(data.podMetrics, 'memory')}
             />
             <MetricsTable
               rows={rowsPVC}
-              productRequest={productRequest?.storage}
+              productRequest={productRequest?.storage ?? 0}
               resource="storage"
               totalMetrics={getTotalMetrics(data.pvcMetrics, 'storage')}
             />
