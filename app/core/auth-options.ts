@@ -135,7 +135,7 @@ export async function generateSession({
 }: {
   session: Session;
   token?: JWT;
-  userSession?: Omit<UserSession, 'id' | 'nextTokenRefreshTime'>;
+  userSession?: Omit<UserSession, 'id' | 'nextTokenRefreshTime'> & { nextTokenRefreshTime?: Date };
 }) {
   sessionRolePropKeys.forEach((key: SessionKeys) => {
     // @ts-ignore: Ignore TypeScript error for dynamic property assignment
@@ -174,6 +174,9 @@ export async function generateSession({
       session.roles = userSession.roles;
       session.teams = userSession.teams;
       session.requiresRelogin = !userSession.accessToken;
+      session.nextTokenRefreshTime = userSession.nextTokenRefreshTime;
+    } else {
+      session.requiresRelogin = true;
     }
 
     if (user) {
