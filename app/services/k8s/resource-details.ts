@@ -37,7 +37,7 @@ export async function getResourceDetails({
   };
 
   const isStorage = resourceName === ResourceType.storage;
-  const namespaceData = await getPodMetrics('101ed4', env, 'SILVER');
+  const namespaceData = await getPodMetrics(licencePlate, env, cluster);
   const metricsData = isStorage ? namespaceData.pvcMetrics : namespaceData.podMetrics;
   if (metricsData.length === 0) return result;
 

@@ -67,7 +67,7 @@ async function collectPVCMetrics(namespace: string, cluster: Cluster) {
   const { apiClient } = getK8sClients(cluster);
   const res = await apiClient.listNamespacedPersistentVolumeClaim(namespace);
   const pvcs = res.body.items;
-  console.log('pvcs', pvcs);
+
   const pvcPromises = pvcs.map(async (pvc) => {
     const pvcName = pvc.metadata?.name;
     if (!pvcName) return null;
