@@ -1,6 +1,9 @@
 import waitOn from 'wait-on';
-import mockUsers from '../../mock-users.json' with { type: 'json' };
-import { KcAdmin } from '../../_packages/keycloak-admin/src/main.js';
+import { readFileSync } from 'fs';
+import path from 'path';
+import { fileURLToPath } from 'url';
+import { KcAdmin } from '../_packages/keycloak-admin/src/main.js';
+import { MsUser } from '../types';
 import {
   KEYCLOAK_URL,
   MASTER_ADMIN,
@@ -17,20 +20,13 @@ import {
   PUBLIC_CLOUD_CLIENT_SECRET,
 } from './config.js';
 
-interface MsUser {
-  id: string;
-  onPremisesSamAccountName: string;
-  userPrincipalName: string;
-  mail: string;
-  displayName: string;
-  givenName: string;
-  surname: string;
-  jobTitle: string;
-}
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+const jsonData = readFileSync(path.join(__dirname, '../mock-users.json'), 'utf-8');
+const msUsers: MsUser[] = JSON.parse(jsonData);
 
 const clientScope = 'https://graph.microsoft.com/.default';
-
-let msUsers: MsUser[] = mockUsers;
 
 async function main() {
   console.log('Starting Keycloak Provision...');
@@ -56,7 +52,9 @@ async function main() {
       console.log('Authentication successful!');
     } catch (error) {
       console.error('Authentication failed, retrying...', error);
-      await new Promise((resolve) => setTimeout(resolve, 1000)); // Delay for 1 second
+      await new Promise((resolve) => {
+        setTimeout(resolve, 1000);
+      }); // Delay for 1 second
     }
   }
 

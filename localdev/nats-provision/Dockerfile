@@ -1,18 +1,20 @@
-FROM node:22.10.0-alpine3.19
+FROM node:22.10.0-alpine3.19 AS build
+WORKDIR /opt
 
-RUN apk update && \
-    apk add --no-cache curl
-
-WORKDIR /sandbox
-
-COPY ./nats-provision ./nats-provision
-COPY ./_packages ./_packages
+COPY ["mock-users.json", "types.ts", "./"]
+COPY nats-provision ./context
+COPY _packages ./_packages
 
 RUN npm install -g turbo pnpm
+RUN cd context && pnpm install --ignore-scripts && pnpm build
 
-RUN pnpm --dir _packages/keycloak-admin install --ignore-scripts
-RUN pnpm --dir nats-provision install --ignore-scripts
-RUN pnpm --dir nats-provision build
+FROM node:22.10.0-alpine3.19
+WORKDIR /opt
+
+COPY --from=build /opt/context/build ./
+COPY --from=build /opt/mock-users.json ./mock-users.json
+COPY --from=build /opt/context/node_modules ./node_modules
 
 USER node
-CMD ["node", "nats-provision/build/nats-provision/src/main.js"]
+
+CMD ["node", "context/main.js"]

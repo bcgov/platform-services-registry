@@ -19,7 +19,7 @@ export const up = async (db, client) => {
       const ids = duplicates.map((v) => v._id);
       const otherIds = ids.filter((v) => String(v) !== String(user._id));
 
-      async function update(collectionName) {
+      const update = async (collectionName) => {
         await db
           .collection(collectionName)
           .updateMany({ projectOwnerId: { $in: otherIds } }, [{ $set: { projectOwnerId: user._id } }]);
@@ -35,7 +35,7 @@ export const up = async (db, client) => {
           ]);
 
         results.push(user.email);
-      }
+      };
 
       await update('PrivateCloudProject');
       await update('PrivateCloudRequestedProject');
