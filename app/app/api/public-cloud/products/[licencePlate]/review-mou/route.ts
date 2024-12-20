@@ -1,9 +1,9 @@
-import { DecisionStatus, User, RequestType, TaskStatus, TaskType } from '@prisma/client';
+import { TaskType } from '@prisma/client';
 import { z } from 'zod';
 import { GlobalRole } from '@/constants';
 import createApiHandler from '@/core/api-handler';
 import prisma from '@/core/prisma';
-import { BadRequestResponse, OkResponse, UnauthorizedResponse } from '@/core/responses';
+import { OkResponse } from '@/core/responses';
 import { formatFullName } from '@/helpers/user';
 import { sendAdminCreateRequestEmails } from '@/services/ches/public-cloud';
 import { models, publicCloudRequestDetailInclude, tasks } from '@/services/db';
@@ -23,27 +23,9 @@ const apiHandler = createApiHandler({
 });
 export const POST = apiHandler(async ({ pathParams, body, session }) => {
   const { licencePlate } = pathParams;
-  const { taskId, decision } = body;
+  const { decision } = body;
 
-  await prisma.task.update({
-    where: {
-      id: taskId,
-      type: TaskType.REVIEW_PUBLIC_CLOUD_MOU,
-      status: TaskStatus.ASSIGNED,
-      OR: [{ userIds: { has: session.user.id } }, { roles: { hasSome: session.roles } }],
-      data: {
-        equals: {
-          licencePlate,
-        },
-      },
-    },
-    data: {
-      status: TaskStatus.COMPLETED,
-      closedMetadata: {
-        decision,
-      },
-    },
-  });
+  await tasks.close(TaskType.REVIEW_PUBLIC_CLOUD_MOU, { licencePlate, session, decision });
 
   if (decision === 'APPROVE') {
     const request = await prisma.publicCloudRequest.findFirst({

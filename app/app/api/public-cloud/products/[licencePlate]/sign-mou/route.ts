@@ -3,9 +3,8 @@ import { z } from 'zod';
 import { GlobalRole } from '@/constants';
 import createApiHandler from '@/core/api-handler';
 import prisma from '@/core/prisma';
-import { BadRequestResponse, OkResponse, UnauthorizedResponse } from '@/core/responses';
-import { sendPublicCloudBillingReviewEmails } from '@/services/ches/public-cloud';
-import { models, publicCloudRequestDetailInclude } from '@/services/db';
+import { BadRequestResponse, OkResponse } from '@/core/responses';
+import { models, publicCloudRequestDetailInclude, tasks } from '@/services/db';
 
 const pathParamSchema = z.object({
   licencePlate: z.string(),
@@ -31,33 +30,7 @@ export const POST = apiHandler(async ({ pathParams, body, session }) => {
     return BadRequestResponse('invalid request');
   }
 
-  await Promise.all([
-    prisma.task.update({
-      where: {
-        id: taskId,
-        type: TaskType.SIGN_PUBLIC_CLOUD_MOU,
-        status: TaskStatus.ASSIGNED,
-        OR: [{ userIds: { has: session.user.id } }, { roles: { hasSome: session.roles } }],
-        data: {
-          equals: {
-            licencePlate,
-          },
-        },
-      },
-      data: {
-        status: TaskStatus.COMPLETED,
-      },
-    }),
-    prisma.task.create({
-      data: {
-        type: TaskType.REVIEW_PUBLIC_CLOUD_MOU,
-        status: TaskStatus.ASSIGNED,
-        roles: [GlobalRole.BillingReviewer],
-        data: {
-          licencePlate,
-        },
-      },
-    }),
+  const [billingUpdated] = await Promise.all([
     prisma.billing.update({
       where: {
         id: billing.id,
@@ -68,6 +41,7 @@ export const POST = apiHandler(async ({ pathParams, body, session }) => {
         signedById: session.user.id,
       },
     }),
+    tasks.close(TaskType.SIGN_PUBLIC_CLOUD_MOU, { licencePlate, session }),
   ]);
 
   const request = await prisma.publicCloudRequest.findFirst({
@@ -77,7 +51,8 @@ export const POST = apiHandler(async ({ pathParams, body, session }) => {
 
   if (request) {
     const requestDecorated = await models.publicCloudRequest.decorate(request, session, true);
-    await sendPublicCloudBillingReviewEmails(requestDecorated);
+    await tasks.create(TaskType.REVIEW_PUBLIC_CLOUD_MOU, { billing: billingUpdated, request: requestDecorated });
   }
+
   return OkResponse(true);
 });
