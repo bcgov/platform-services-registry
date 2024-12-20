@@ -61,8 +61,6 @@ export function sendCreateRequestEmails(request: PublicCloudRequestDetailDecorat
 
     if (request.decisionData?.billing && request.decisionData.billing.approved) {
       proms.push(sendAdminCreateRequestEmails(request, requester));
-    } else {
-      proms.push(sendExpenseAuthorityMou(request));
     }
 
     return Promise.all(proms);

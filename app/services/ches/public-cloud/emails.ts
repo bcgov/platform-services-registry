@@ -20,7 +20,7 @@ import TeamEditRequestTemplate from '@/emails/_templates/public-cloud/TeamEditRe
 import TeamEditRequestCompletionTemplate from '@/emails/_templates/public-cloud/TeamEditRequestCompletion';
 import { getEmouFileName } from '@/helpers/emou';
 import { generateEmouPdf } from '@/helpers/pdfs/emou';
-import { sendEmail } from '@/services/ches/core';
+import { safeSendEmail, sendEmail } from '@/services/ches/core';
 import { getContent } from '@/services/ches/helpers';
 import { findUserEmailsByAuthRole } from '@/services/keycloak/app-realm';
 import { PublicCloudRequestDetailDecorated } from '@/types/public-cloud';
@@ -169,7 +169,7 @@ export async function sendBillingReviewerMou(request: PublicCloudRequestDetailDe
   const content = await getContent(BillingReviewerMouTemplate({ request }));
   const billingReviewerEmails = await findUserEmailsByAuthRole(GlobalRole.BillingReviewer);
 
-  return sendEmail({
+  return safeSendEmail({
     subject: 'eMOU review request',
     to: billingReviewerEmails,
     body: content,
@@ -210,7 +210,7 @@ export async function sendExpenseAuthority(request: PublicCloudRequestDetailDeco
 export async function sendExpenseAuthorityMou(request: PublicCloudRequestDetailDecorated) {
   const content = await getContent(ExpenseAuthorityMouTemplate({ request }));
 
-  return sendEmail({
+  return safeSendEmail({
     subject: 'Expense Authority eMOU request',
     to: [request.decisionData.expenseAuthority?.email],
     body: content,
