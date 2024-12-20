@@ -22,7 +22,7 @@ importers:
         version: 2.2.0(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       '@hookform/resolvers':
         specifier: ^3.1.1
-        version: 3.9.1(react-hook-form@7.54.1(react@18.3.1))
+        version: 3.9.1(react-hook-form@7.54.2(react@18.3.1))
       '@keycloak/keycloak-admin-client':
         specifier: ^26.0.0
         version: 26.0.7
@@ -178,7 +178,7 @@ importers:
         version: 3.0.4(babel-plugin-macros@3.1.0)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       react-hook-form:
         specifier: ^7.45.1
-        version: 7.54.1(react@18.3.1)
+        version: 7.54.2(react@18.3.1)
       react-imask:
         specifier: ^7.6.1
         version: 7.6.1(react@18.3.1)
@@ -4254,8 +4254,8 @@ packages:
     engines: {node: '>=18.0.0'}
     hasBin: true
 
-  react-hook-form@7.54.1:
-    resolution: {integrity: sha512-PUNzFwQeQ5oHiiTUO7GO/EJXGEtuun2Y1A59rLnZBBj+vNEOWt/3ERTiG1/zt7dVeJEM+4vDX/7XQ/qanuvPMg==}
+  react-hook-form@7.54.2:
+    resolution: {integrity: sha512-eHpAUgUjWbZocoQYUHposymRb4ZP6d0uwUnooL2uOybA9/3tPUvoAKqEWK1WaSiTxxOfTpffNZP7QwlnM3/gEg==}
     engines: {node: '>=18.0.0'}
     peerDependencies:
       react: ^16.8.0 || ^17 || ^18 || ^19
@@ -5683,9 +5683,9 @@ snapshots:
       react: 18.3.1
       react-dom: 18.3.1(react@18.3.1)
 
-  '@hookform/resolvers@3.9.1(react-hook-form@7.54.1(react@18.3.1))':
+  '@hookform/resolvers@3.9.1(react-hook-form@7.54.2(react@18.3.1))':
     dependencies:
-      react-hook-form: 7.54.1(react@18.3.1)
+      react-hook-form: 7.54.2(react@18.3.1)
 
   '@humanwhocodes/config-array@0.13.0':
     dependencies:
@@ -9726,7 +9726,7 @@ snapshots:
       - supports-color
       - utf-8-validate
 
-  react-hook-form@7.54.1(react@18.3.1):
+  react-hook-form@7.54.2(react@18.3.1):
     dependencies:
       react: 18.3.1
 
