@@ -28,10 +28,6 @@ export type Container = {
     cpu: number;
     memory: number;
   };
-  limits: {
-    cpu: number;
-    memory: number;
-  };
 };
 
 // Conversion factors for resource units
@@ -148,14 +144,12 @@ export function formatCpu(millicores: number) {
 export const getTotalMetrics = (data: Pod[] | PVC[], resource: ResourceType) => {
   let totalUsage = 0;
   let totalRequest = 0;
-  let totalLimit = 0;
   // Iterate through each pod and each container
   if (data.every((item) => 'containers' in item) && (resource === 'cpu' || resource === 'memory')) {
     (data as Pod[]).forEach((pod) => {
       pod.containers.forEach((container) => {
         totalUsage += container.usage[resource] || 0;
         totalRequest += container.requests[resource] || 0;
-        totalLimit += container.limits[resource] || 0;
       });
     });
   } else {
@@ -165,7 +159,7 @@ export const getTotalMetrics = (data: Pod[] | PVC[], resource: ResourceType) => 
       if (pvc.requests) totalRequest += pvc.requests;
     });
   }
-  return { totalUsage, totalRequest, totalLimit };
+  return { totalUsage, totalRequest };
 };
 
 export type TransformedPodData = {
@@ -176,10 +170,6 @@ export type TransformedPodData = {
     memory: number | string;
   };
   requests: {
-    cpu: number | string;
-    memory: number | string;
-  };
-  limits: {
     cpu: number | string;
     memory: number | string;
   };
@@ -223,10 +213,6 @@ export function transformPodData(data: Pod[]) {
         requests: {
           cpu: container.requests.cpu,
           memory: container.requests.memory,
-        },
-        limits: {
-          cpu: container.limits.cpu,
-          memory: container.limits.memory,
         },
       });
     });
