@@ -141,7 +141,7 @@ export async function generateSession({
     // @ts-ignore: Ignore TypeScript error for dynamic property assignment
     session[key] = false;
   });
-  session.roles = [];
+  session.roles = userSessionOverride?.roles || [];
   session.ministries = {
     editor: [],
     reader: [],
