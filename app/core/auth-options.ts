@@ -288,6 +288,7 @@ export async function generateSession({
 
     downloadBillingMou: session.isBillingReviewer || session.isBillingReader,
     viewUsers: session.isAdmin || session.isUserReader,
+    viewEvents: session.isAdmin || session.isEventReader,
     editUsers: session.isAdmin,
   };
 

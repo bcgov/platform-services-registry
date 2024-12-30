@@ -33,6 +33,7 @@ export enum GlobalPermissions {
 
   DownloadBillingMou = 'downloadBillingMou',
 
+  ViewEvents = 'viewEvents',
   ViewUsers = 'viewUsers',
   EditUsers = 'editUsers',
 }
@@ -58,6 +59,7 @@ export enum GlobalRole {
   Approver = 'approver',
   BillingReviewer = 'billing-reviewer',
   Billingreader = 'billing-reader',
+  EventReader = 'event-reader',
 }
 
 export const RoleToSessionProp = {

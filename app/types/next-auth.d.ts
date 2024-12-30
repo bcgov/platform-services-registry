@@ -44,6 +44,7 @@ declare module 'next-auth' {
 
     downloadBillingMou: boolean;
 
+    viewEvents: boolean;
     viewUsers: boolean;
     editUsers: boolean;
   }
@@ -75,6 +76,7 @@ declare module 'next-auth' {
     isPublicEditor: boolean;
     isPublicReader: boolean;
     isPublicReviewer: boolean;
+    isEventReader: boolean;
     isUserReader: boolean;
     isApprover: boolean;
     isBillingReviewer: boolean;
