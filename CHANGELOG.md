@@ -1,5 +1,41 @@
+## <small>0.43.3 (2024-12-31)</small>
+
+* fix(deps): update dependency @tanstack/react-query to v5.62.10 ([38dd1eb](https://github.com/bcgov/platform-services-registry/commit/38dd1eb))
+* fix(deps): update dependency @tanstack/react-query to v5.62.11 ([02a25b2](https://github.com/bcgov/platform-services-registry/commit/02a25b2))
+* fix(deps): update dependency @tanstack/react-query to v5.62.9 ([5070e9d](https://github.com/bcgov/platform-services-registry/commit/5070e9d))
+* fix(deps): update dependency @types/react to v18.3.18 ([e3bba62](https://github.com/bcgov/platform-services-registry/commit/e3bba62))
+* fix(deps): update dependency react-hook-form to v7.54.2 ([76d2b7a](https://github.com/bcgov/platform-services-registry/commit/76d2b7a))
+* fix(deps): update dependency tailwind-merge to v2.6.0 ([040e1a2](https://github.com/bcgov/platform-services-registry/commit/040e1a2))
+* fix(deps): update mantine monorepo to v7.15.2 ([db17ae7](https://github.com/bcgov/platform-services-registry/commit/db17ae7))
+* fix(deps): update nextjs monorepo to v15.1.2 ([27fd1d4](https://github.com/bcgov/platform-services-registry/commit/27fd1d4))
+* fix(deps): update nextjs monorepo to v15.1.3 ([1d76518](https://github.com/bcgov/platform-services-registry/commit/1d76518))
+* fix(deps): update node.js to v22.12.0 ([71b8266](https://github.com/bcgov/platform-services-registry/commit/71b8266))
+* fix(deps): update tiptap monorepo to v2.10.4 ([7a99ff6](https://github.com/bcgov/platform-services-registry/commit/7a99ff6))
+* fix(deps): update tiptap monorepo to v2.11.0 ([6a7a353](https://github.com/bcgov/platform-services-registry/commit/6a7a353))
+* feat(4582): add user roles to session roles if exist ([1b1765a](https://github.com/bcgov/platform-services-registry/commit/1b1765a))
+* chore(4494): add hard limit to metrics table ([66de203](https://github.com/bcgov/platform-services-registry/commit/66de203))
+* chore(4494): move normilize function to page level ([2134e2c](https://github.com/bcgov/platform-services-registry/commit/2134e2c))
+* chore(4494): revise env name types ([0f36d6e](https://github.com/bcgov/platform-services-registry/commit/0f36d6e))
+* chore(deps): update axllent/mailpit docker tag to v1.21.8 ([afeb981](https://github.com/bcgov/platform-services-registry/commit/afeb981))
+* chore(deps): update dependency apache-airflow-providers-mongo to v5 ([3ef1311](https://github.com/bcgov/platform-services-registry/commit/3ef1311))
+* chore(deps): update dependency dotenv-cli to v8 ([a2275af](https://github.com/bcgov/platform-services-registry/commit/a2275af))
+* chore(deps): update dependency eslint-plugin-n to v17.15.1 ([233e968](https://github.com/bcgov/platform-services-registry/commit/233e968))
+* chore(deps): update dependency eslint-plugin-react to v7.37.3 ([9d6f6bd](https://github.com/bcgov/platform-services-registry/commit/9d6f6bd))
+* chore(deps): update dependency jinja2 to v3.1.5 ([f94c3c8](https://github.com/bcgov/platform-services-registry/commit/f94c3c8))
+* chore(deps): update dependency knip to v5.41.1 ([96bee10](https://github.com/bcgov/platform-services-registry/commit/96bee10))
+* chore(deps): update dependency pnpm to v9.15.1 ([9006dc5](https://github.com/bcgov/platform-services-registry/commit/9006dc5))
+* chore(deps): update dependency pnpm to v9.15.2 ([4b36c62](https://github.com/bcgov/platform-services-registry/commit/4b36c62))
+* chore(deps): update dependency release-it to v17.11.0 ([a7947dc](https://github.com/bcgov/platform-services-registry/commit/a7947dc))
+* chore(deps): update github/codeql-action digest to 5b6e617 ([9924db7](https://github.com/bcgov/platform-services-registry/commit/9924db7))
+* chore(deps): update github/codeql-action digest to d01b25e ([8990a13](https://github.com/bcgov/platform-services-registry/commit/8990a13))
+* refactor(4545): update sandbox Node.js apps following the convention ([ae30d7b](https://github.com/bcgov/platform-services-registry/commit/ae30d7b))
+* refactor(4560): use task module for creating and closing tasks ([7891965](https://github.com/bcgov/platform-services-registry/commit/7891965))
+
+
+
 ## <small>0.43.2 (2024-12-19)</small>
 
+* chore: release candidate v0.43.2 ([a93e0b6](https://github.com/bcgov/platform-services-registry/commit/a93e0b6))
 * chore(4537): enforce relogin for users missing session data in DB ([e072741](https://github.com/bcgov/platform-services-registry/commit/e072741))
 * chore(deps): update github/codeql-action digest to 64cc90b ([64bd106](https://github.com/bcgov/platform-services-registry/commit/64bd106))
 
