@@ -81,7 +81,6 @@ export default privateCloudProductUsageMetrics(({ getPathParams }) => {
       containerName: 'Container name',
       usage: { cpu: 'CPU usage', memory: 'Memory usage' },
       requests: { cpu: 'CPU request', memory: 'Memory request' },
-      limits: { cpu: 'CPU limits', memory: 'Memory limits' },
     },
     ...transformPodData(data.podMetrics),
   ];

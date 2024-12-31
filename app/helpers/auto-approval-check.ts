@@ -18,7 +18,6 @@ const allowedMinResource = {
 };
 
 function checkAutoApprovalEligibility({ allocation, deployment, resourceType }: QuotaUpgradeResourceDetail): boolean {
-  console.log('allocation', allocation);
   if (deployment.usage === -1) return false;
 
   // Calculate usage-to-limit and utilization ratios
