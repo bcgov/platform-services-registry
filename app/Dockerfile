@@ -15,7 +15,7 @@ ENV SECURE_HEADERS=true \
   DEPLOYMENT_TAG=${deployment_tag}
 
 RUN npm install -g turbo pnpm
-RUN pnpm install --no-frozen-lockfile --frozen-lockfile
+RUN pnpm install --no-frozen-lockfile
 RUN npx ts-node scripts/render-react-email-tailwind-style.ts
 RUN pnpm build
 
