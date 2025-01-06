@@ -44,4 +44,5 @@ spec:
             requests:
               cpu: 0.2
               memory: 200M
+          command: ["/bin/sh", "-c", "sleep 1700"]
 {{- end }}
