@@ -17,10 +17,10 @@ runs:
         ${{ runner.os }}-nextjs-${{ hashFiles('**/pnpm-lock.yaml') }}-
 
   - name: Install Root NPM packages
-    run: pnpm install
+    run: pnpm install --no-frozen-lockfile
     shell: bash
 
   - name: Install App NPM packages
-    run: pnpm install
+    run: pnpm install --no-frozen-lockfile
     shell: bash
     working-directory: app
