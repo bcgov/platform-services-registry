@@ -1,7 +1,7 @@
 ARG deployment_tag
 
 # 1st stage to build the image
-FROM node:22.12.0-alpine3.19 as build
+FROM node:22.10.0-alpine3.19 as build
 
 WORKDIR /app
 
@@ -15,13 +15,13 @@ ENV SECURE_HEADERS=true \
   DEPLOYMENT_TAG=${deployment_tag}
 
 RUN npm install -g turbo pnpm
-RUN pnpm install --frozen-lockfile
+RUN pnpm install --no-frozen-lockfile --frozen-lockfile
 RUN npx ts-node scripts/render-react-email-tailwind-style.ts
 RUN pnpm build
 
 # 2nd stage to copy image and create a smaller final image
 # FROM gcr.io/distroless/nodejs18-debian12
-FROM node:22.12.0-alpine3.19
+FROM node:22.10.0-alpine3.19
 
 WORKDIR /app
 
