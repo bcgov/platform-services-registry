@@ -1,7 +1,10 @@
-import { EventType } from '@prisma/client';
+import { EventType, Prisma } from '@prisma/client';
+import _isNumber from 'lodash-es/isNumber';
 import { z } from 'zod';
 import { logger } from '@/core/logging';
 import prisma from '@/core/prisma';
+import { parsePaginationParams } from '@/helpers/pagination';
+import { EventSearchBody } from '@/validation-schemas/event';
 
 const validationSchemas = {
   [EventType.CREATE_PRIVATE_CLOUD_PRODUCT]: z.object({
@@ -36,6 +39,26 @@ const validationSchemas = {
   }),
 };
 
+type SearchEvent = Prisma.EventGetPayload<{
+  select: {
+    id: true;
+    type: true;
+    userId: true;
+    createdAt: true;
+    user: {
+      select: {
+        firstName: true;
+        lastName: true;
+        email: true;
+        jobTitle: true;
+        image: true;
+      };
+    };
+  };
+}>;
+
+const defaultSortKey = 'createdAt';
+
 const validationKeys = Object.keys(validationSchemas);
 
 export async function createEvent(type: EventType, userId = '', data = {}) {
@@ -61,4 +84,71 @@ export async function createEvent(type: EventType, userId = '', data = {}) {
   } catch (error) {
     logger.error('createEvent:', error);
   }
+}
+
+export async function searchEvents({
+  events = [],
+  search = '',
+  skip,
+  take,
+  page,
+  pageSize,
+  sortKey = defaultSortKey,
+  sortOrder = Prisma.SortOrder.desc,
+}: EventSearchBody & {
+  skip?: number;
+  take?: number;
+}): Promise<{ data: SearchEvent[]; totalCount: number }> {
+  const isEventSearch = events.length > 0;
+
+  if (!_isNumber(skip) && !_isNumber(take) && page && pageSize) {
+    ({ skip, take } = parsePaginationParams(page, pageSize, 10));
+  }
+
+  if (!Object.values(Prisma.SortOrder).includes(sortOrder)) {
+    throw new Error(`Invalid sortOrder: ${sortOrder}`);
+  }
+
+  const filters: Prisma.EventWhereInput = {};
+
+  if (search.trim()) {
+    filters.OR = [
+      { user: { firstName: { contains: search, mode: 'insensitive' } } },
+      { user: { lastName: { contains: search, mode: 'insensitive' } } },
+      { user: { email: { contains: search, mode: 'insensitive' } } },
+    ];
+  }
+
+  if (isEventSearch) {
+    filters.type = { in: events };
+  }
+
+  const orderBy = { [sortKey]: sortOrder };
+
+  const [data, totalCount] = await Promise.all([
+    prisma.event.findMany({
+      skip,
+      take,
+      where: filters,
+      orderBy,
+      select: {
+        id: true,
+        type: true,
+        userId: true,
+        createdAt: true,
+        user: {
+          select: {
+            firstName: true,
+            lastName: true,
+            email: true,
+            jobTitle: true,
+            image: true,
+          },
+        },
+      },
+    }),
+    prisma.event.count({ where: filters }),
+  ]);
+
+  return { data, totalCount };
 }

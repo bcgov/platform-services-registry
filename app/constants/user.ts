@@ -80,6 +80,7 @@ export const RoleToSessionProp = {
   [GlobalRole.PublicReader]: 'isPublicReader',
   [GlobalRole.PublicReviewer]: 'isPublicReviewer',
   [GlobalRole.UserReader]: 'isUserReader',
+  [GlobalRole.EventReader]: 'isEventReader',
   [GlobalRole.Approver]: 'isApprover',
   [GlobalRole.BillingReviewer]: 'isBillingReviewer',
   [GlobalRole.Billingreader]: 'isBillingReader',

@@ -11,11 +11,12 @@ import {
   IconLogout,
   IconProps,
   Icon,
+  IconCalendarEvent,
 } from '@tabler/icons-react';
 import Link from 'next/link';
 import { Permissions } from 'next-auth';
 import { useSession } from 'next-auth/react';
-import { useState, ForwardRefExoticComponent, RefAttributes } from 'react';
+import { ForwardRefExoticComponent, RefAttributes } from 'react';
 import { openUserProfileModal } from '@/components/modal/userProfile';
 import { signOut } from '@/helpers/auth';
 import { useAppState } from '@/states/global';
@@ -113,6 +114,12 @@ export default function UserMenu() {
       Icon: IconScan,
       href: '/sonarscan/results',
       permission: 'viewSonarscanResults',
+    },
+    {
+      text: 'Events',
+      Icon: IconCalendarEvent,
+      href: '/events/all',
+      permission: 'viewEvents',
     },
     { divider: true, key: '1' },
     {
