@@ -23,6 +23,7 @@ interface Event {
   userId: string | null;
   createdAt: string;
   user: User | null;
+  data: object;
 }
 
 interface TableProps {
@@ -69,6 +70,26 @@ export default function TableBody({ data }: TableProps) {
         <Table.Td>
           <Text size="xs">{formatDate(event.createdAt)}</Text>
         </Table.Td>
+        <Table.Td>
+          {Object.keys(event.data).length !== 0 ? (
+            <ul>
+              {Object.entries(event.data).map(([key, value]) => (
+                <li key={key}>
+                  <Text size="xs" className="font-semibold">
+                    {key}:
+                  </Text>
+                  <Text size="xs" c="dimmed" component="span">
+                    {typeof value === 'object' ? JSON.stringify(value) : value.toString()}
+                  </Text>
+                </li>
+              ))}
+            </ul>
+          ) : (
+            <Text size="xs" c="dimmed">
+              No data
+            </Text>
+          )}
+        </Table.Td>
       </Table.Tr>
     ))
   ) : (
@@ -88,6 +109,7 @@ export default function TableBody({ data }: TableProps) {
             <Table.Th>User</Table.Th>
             <Table.Th>Position</Table.Th>
             <Table.Th>Date</Table.Th>
+            <Table.Th>Event data</Table.Th>
           </Table.Tr>
         </Table.Thead>
         <Table.Tbody>{rows}</Table.Tbody>

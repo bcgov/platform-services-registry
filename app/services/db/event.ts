@@ -136,6 +136,7 @@ export async function searchEvents({
         type: true,
         userId: true,
         createdAt: true,
+        data: true,
         user: {
           select: {
             firstName: true,
