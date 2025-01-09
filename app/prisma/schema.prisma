@@ -51,6 +51,7 @@ model User {
   publicCloudRequestsAsRequester                        PublicCloudRequest[]           @relation("createdBy")
   privateCloudRequestsAsDecisionMaker                   PrivateCloudRequest[]          @relation("decisionMaker")
   publicCloudRequestsAsDecisionMaker                    PublicCloudRequest[]           @relation("decisionMaker")
+  events                                                Event[]                        @relation("UserToEvents")
 }
 
 model UserSession {
@@ -348,9 +349,10 @@ type EnvironmentsEnabled {
 model Event {
   id        String    @id @default(auto()) @map("_id") @db.ObjectId
   type      EventType
-  userId    String?
+  userId    String?   @db.ObjectId
   createdAt DateTime  @default(now())
   data      Json
+  user      User?     @relation("UserToEvents", fields: [userId], references: [id])
 }
 
 model Task {
