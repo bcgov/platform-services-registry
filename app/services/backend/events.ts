@@ -1,3 +1,4 @@
+import { EventType } from '@prisma/client';
 import axios from 'axios';
 import { eventSorts } from '@/app/events/all/state';
 import { downloadFile } from '@/utils/browser';
@@ -35,6 +36,6 @@ export async function downloadEvents(data: EventSearchBody) {
 
 export async function searchEvents(data: EventSearchBody): Promise<any> {
   const reqData = prepareSearchPayload(data);
-  const result = await instance.post<{ data: any }>('/search', reqData);
+  const result = await instance.post<{ data: EventType; totalCount: number }>('/search', reqData);
   return result.data;
 }
