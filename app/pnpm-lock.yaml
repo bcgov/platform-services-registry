@@ -61,7 +61,7 @@ importers:
         version: 1.0.4(react@18.3.1)
       '@tabler/icons-react':
         specifier: ^3.3.0
-        version: 3.27.1(react@18.3.1)
+        version: 3.28.1(react@18.3.1)
       '@tailwindcss/forms':
         specifier: ^0.5.3
         version: 0.5.10(tailwindcss@3.4.17(ts-node@10.9.2(@types/node@20.17.12)(typescript@5.7.2)))
@@ -1434,13 +1434,13 @@ packages:
   '@swc/helpers@0.5.15':
     resolution: {integrity: sha512-JQ5TuMi45Owi4/BIMAJBoSQoOJu12oOk/gADqlcUL9JEdHB8vyjUSsxqeNXnmXHjYKMi2WcYtezGEEhqUI/E2g==}
 
-  '@tabler/icons-react@3.27.1':
-    resolution: {integrity: sha512-4C8PPvWPIQZvHgpWSGVIJUAbZz1qhKHvaSi9GWgXaDYB9CAfVz4puEcjo3nFCeg1OUPv3ZQZ0Ste0nh9/IeuWw==}
+  '@tabler/icons-react@3.28.1':
+    resolution: {integrity: sha512-KNBpA2kbxr3/2YK5swt7b/kd/xpDP1FHYZCxDFIw54tX8slELRFEf95VMxsccQHZeIcUbdoojmUUuYSbt/sM5Q==}
     peerDependencies:
       react: '>= 16'
 
-  '@tabler/icons@3.27.1':
-    resolution: {integrity: sha512-Utt80OeExBV/Pi9m9Z7ZRHOHQPapMO8t4mCSMb/n5oiLWCEU2HX+9mGzo772SVxyDZ3YQBgmzIYnGKhL3tUSSQ==}
+  '@tabler/icons@3.28.1':
+    resolution: {integrity: sha512-h7nqKEvFooLtFxhMOC1/2eiV+KRXhBUuDUUJrJlt6Ft6tuMw2eU/9GLQgrTk41DNmIEzp/LI83K9J9UUU8YBYQ==}
 
   '@tailwindcss/forms@0.5.10':
     resolution: {integrity: sha512-utI1ONF6uf/pPNO68kmN1b8rEwNXv3czukalo8VtJH8ksIkZXr3Q3VYudZLkCsDd4Wku120uF02hYK25XGPorw==}
@@ -6579,12 +6579,12 @@ snapshots:
     dependencies:
       tslib: 2.8.1
 
-  '@tabler/icons-react@3.27.1(react@18.3.1)':
+  '@tabler/icons-react@3.28.1(react@18.3.1)':
     dependencies:
-      '@tabler/icons': 3.27.1
+      '@tabler/icons': 3.28.1
       react: 18.3.1
 
-  '@tabler/icons@3.27.1': {}
+  '@tabler/icons@3.28.1': {}
 
   '@tailwindcss/forms@0.5.10(tailwindcss@3.4.17(ts-node@10.9.2(@types/node@20.17.12)(typescript@5.7.2)))':
     dependencies:
