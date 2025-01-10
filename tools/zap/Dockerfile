@@ -1,4 +1,4 @@
-FROM ghcr.io/zaproxy/zaproxy:2.15.0
+FROM ghcr.io/zaproxy/zaproxy:2.16.0
 
 WORKDIR /opt/zap
 
