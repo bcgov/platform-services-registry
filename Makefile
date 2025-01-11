@@ -12,7 +12,7 @@ localmac:
 
 .PHONY: dev
 dev:
-	@DATABASE_URL=$$(grep -m 1 '^DATABASE_URL=' app/.env.apple.local | cut -d '=' -f 2-) \
+	@DATABASE_URL=$$(grep -m 1 '^DATABASE_URL=' app/.env.local | cut -d '=' -f 2-) \
 	npm run prisma-push --prefix app && \
 	npm run dev --prefix app
 
