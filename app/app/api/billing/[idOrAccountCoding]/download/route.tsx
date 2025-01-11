@@ -67,13 +67,13 @@ export const GET = apiHandler(async ({ pathParams, queryParams, session }) => {
 
   const canDownloadMou =
     session.permissions.downloadBillingMou ||
-    product.members.some(
+    product?.members.some(
       (member) =>
         member.userId === session.user.id &&
         arraysIntersect(member.roles, [PublicCloudProductMemberRole.BILLING_VIEWER]),
     );
 
-  if (!canDownloadMou) {
+  if (!canDownloadMou || !product) {
     return UnauthorizedResponse();
   }
 

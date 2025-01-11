@@ -14,7 +14,7 @@ export default function BillingReviewerMou({ request }: Props) {
 
   const { name, expenseAuthority, billing } = request.decisionData;
 
-  const { accountCoding } = billing;
+  const accountCoding = billing?.accountCoding;
 
   return (
     <PublicCloudLayout showFooter>

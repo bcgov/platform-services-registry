@@ -27,7 +27,7 @@ export default function PublicCloudBillingInfo({
   const { licencePlate, billing } = product;
 
   let content = null;
-  if (billing.approved) {
+  if (billing?.approved) {
     content = (
       <>
         <li className="font-bold">Sign-Off complete</li>
@@ -39,7 +39,7 @@ export default function PublicCloudBillingInfo({
         )}
       </>
     );
-  } else if (billing.signed) {
+  } else if (billing?.signed) {
     content = (
       <>
         <li>
@@ -52,7 +52,7 @@ export default function PublicCloudBillingInfo({
       <>
         <li>
           <span className="font-bold mr-1">Current Step:</span>Pending sign-off from the Ministry Expense Authority (
-          {formatFullName(billing.expenseAuthority)})
+          {formatFullName(billing?.expenseAuthority)})
         </li>
         <li>
           <span className="font-bold mr-1">Next Step:</span>Sign-off by the OCIO Cloud Director
@@ -64,7 +64,7 @@ export default function PublicCloudBillingInfo({
   return (
     <Alert variant="light" color="blue" title="Billing eMOU status" icon={<IconInfoCircle />} className={cn(className)}>
       <ul className="list-disc text-sm">{content}</ul>
-      {(session?.permissions.downloadBillingMou || product._permissions?.downloadMou) && billing.approved && (
+      {(session?.permissions.downloadBillingMou || product._permissions?.downloadMou) && billing?.approved && (
         <PublicCloudBillingDownloadButton product={product} />
       )}
       {product._permissions?.signMou && (
@@ -93,6 +93,10 @@ export default function PublicCloudBillingInfo({
           size="xs"
           className="mt-2"
           onClick={async () => {
+            if (!product.billingId) {
+              return;
+            }
+
             const res = await openPublicCloudMouReviewModal<{ confirmed: boolean }>({
               licencePlate: product.licencePlate,
               billingId: product.billingId,

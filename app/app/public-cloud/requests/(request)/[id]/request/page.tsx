@@ -2,7 +2,7 @@
 
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Button } from '@mantine/core';
-import { RequestType } from '@prisma/client';
+import { DecisionStatus, RequestType } from '@prisma/client';
 import {
   IconInfoCircle,
   IconUsersGroup,
@@ -12,10 +12,12 @@ import {
   IconMoneybag,
   IconReceipt2,
 } from '@tabler/icons-react';
+import { useSession } from 'next-auth/react';
 import { useEffect, useState } from 'react';
-import { FormProvider, useForm } from 'react-hook-form';
+import { useForm, FormProvider } from 'react-hook-form';
 import { z } from 'zod';
 import PublicCloudBillingInfo from '@/components/billing/PublicCloudBillingInfo';
+import CancelRequest from '@/components/buttons/CancelButton';
 import PreviousButton from '@/components/buttons/Previous';
 import AccountCoding from '@/components/form/AccountCoding';
 import AccountEnvironmentsPublic from '@/components/form/AccountEnvironmentsPublic';
@@ -46,6 +48,7 @@ const publicCloudProductRequest = createClientPage({
   roles: [GlobalRole.User],
   validations: { pathParams: pathParamSchema },
 });
+
 export default publicCloudProductRequest(({ router }) => {
   const [, snap] = usePublicProductState();
   const [secondTechLead, setSecondTechLead] = useState(false);
@@ -78,7 +81,7 @@ export default publicCloudProductRequest(({ router }) => {
       decision: RequestDecision.APPROVED as RequestDecision,
       type: snap.currentRequest?.type,
       ...snap.currentRequest?.decisionData,
-      accountCoding: snap.currentRequest?.decisionData.billing.accountCoding,
+      accountCoding: snap.currentRequest?.decisionData.billing?.accountCoding,
     },
   });
 
@@ -150,7 +153,7 @@ export default publicCloudProductRequest(({ router }) => {
       description: '',
       Component: AccountCoding,
       componentArgs: {
-        accountCodingInitial: snap.currentRequest.decisionData?.billing.accountCoding,
+        accountCodingInitial: snap.currentRequest.decisionData?.billing?.accountCoding,
         disabled: true,
       },
     },
@@ -173,6 +176,9 @@ export default publicCloudProductRequest(({ router }) => {
       componentArgs: {} as any,
     });
   }
+
+  const { data: session } = useSession();
+  const canCancel = session?.user.email === snap.currentRequest.createdByEmail;
 
   return (
     <div>
@@ -198,6 +204,9 @@ export default publicCloudProductRequest(({ router }) => {
 
           <div className="mt-5 flex items-center justify-start gap-x-2">
             <PreviousButton />
+            {snap.currentRequest.decisionStatus === DecisionStatus.PENDING && canCancel && (
+              <CancelRequest id={snap.currentRequest.id} context={'PUBLIC'} />
+            )}
             {snap.currentRequest._permissions.review && (
               <>
                 <Button
@@ -244,7 +253,10 @@ export default publicCloudProductRequest(({ router }) => {
               <Button
                 color="info"
                 onClick={async () => {
-                  if (!snap.currentRequest) return;
+                  if (!snap.currentRequest || !snap.currentRequest.decisionData.billingId) {
+                    return;
+                  }
+
                   const res = await openPublicCloudMouReviewModal<{ confirmed: boolean }>({
                     licencePlate: snap.currentRequest.licencePlate,
                     billingId: snap.currentRequest.decisionData.billingId,
@@ -255,7 +267,7 @@ export default publicCloudProductRequest(({ router }) => {
                   }
                 }}
               >
-                Review eMOU
+                Review MOU
               </Button>
             )}
           </div>

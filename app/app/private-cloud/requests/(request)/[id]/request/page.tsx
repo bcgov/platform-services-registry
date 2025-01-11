@@ -1,6 +1,6 @@
 'use client';
 
-import { PrivateCloudProject } from '@prisma/client';
+import { DecisionStatus, PrivateCloudProject } from '@prisma/client';
 import {
   IconInfoCircle,
   IconUsersGroup,
@@ -9,9 +9,11 @@ import {
   IconMessage,
   IconWebhook,
 } from '@tabler/icons-react';
+import { useSession } from 'next-auth/react';
 import { useEffect, useState } from 'react';
 import { FormProvider, useForm } from 'react-hook-form';
 import { z } from 'zod';
+import CancelRequest from '@/components/buttons/CancelButton';
 import PreviousButton from '@/components/buttons/Previous';
 import ProjectDescription from '@/components/form/ProjectDescriptionPrivate';
 import TeamContacts from '@/components/form/TeamContacts';
@@ -133,6 +135,9 @@ export default privateCloudRequestRequest(({}) => {
     });
   }
 
+  const { data: session } = useSession();
+  const canCancel = session?.user.email === snap.currentRequest.createdByEmail;
+
   return (
     <div>
       <FormProvider {...methods}>
@@ -141,6 +146,9 @@ export default privateCloudRequestRequest(({}) => {
 
           <div className="mt-5 flex items-center justify-start gap-x-2">
             <PreviousButton />
+            {snap.currentRequest.decisionStatus === DecisionStatus.PENDING && canCancel && (
+              <CancelRequest id={snap.currentRequest.id} context={'PRIVATE'} />
+            )}
           </div>
         </form>
       </FormProvider>
