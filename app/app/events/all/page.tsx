@@ -4,10 +4,11 @@ import { useQuery } from '@tanstack/react-query';
 import { useSnapshot } from 'valtio/react';
 import Table from '@/components/generic/table/Table';
 import { GlobalPermissions } from '@/constants';
+import { eventSorts, ExtendedEvent } from '@/constants/event';
 import createClientPage from '@/core/client-page';
 import { downloadEvents, searchEvents } from '@/services/backend/events';
 import FilterPanel from './FilterPanel';
-import { eventSorts, pageState } from './state';
+import { pageState } from './state';
 import TableBody from './TableBody';
 
 const eventsPage = createClientPage({
@@ -18,7 +19,7 @@ const eventsPage = createClientPage({
 export default eventsPage(() => {
   const snap = useSnapshot(pageState);
   let totalCount = 0;
-  let events = [];
+  let events: ExtendedEvent[] = [];
 
   const { data, isLoading } = useQuery({
     queryKey: ['events', snap],
@@ -34,8 +35,8 @@ export default eventsPage(() => {
       <Table
         title="Events in Registry"
         totalCount={totalCount}
-        page={snap.page}
-        pageSize={snap.pageSize}
+        page={snap.page ?? 1}
+        pageSize={snap.pageSize ?? 10}
         sortKey={snap.sortValue}
         onPagination={(page: number, pageSize: number) => {
           pageState.page = page;

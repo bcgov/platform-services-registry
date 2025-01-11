@@ -1,6 +1,6 @@
-import { EventType } from '@prisma/client';
+import { Event } from '@prisma/client';
 import axios from 'axios';
-import { eventSorts } from '@/app/events/all/state';
+import { eventSorts, ExtendedEvent } from '@/constants/event';
 import { downloadFile } from '@/utils/browser';
 import { EventSearchBody } from '@/validation-schemas/event';
 import { instance as baseInstance } from './axios';
@@ -34,8 +34,8 @@ export async function downloadEvents(data: EventSearchBody) {
   return result;
 }
 
-export async function searchEvents(data: EventSearchBody): Promise<any> {
+export async function searchEvents(data: EventSearchBody) {
   const reqData = prepareSearchPayload(data);
-  const result = await instance.post<{ data: EventType; totalCount: number }>('/search', reqData);
+  const result = await instance.post<{ data: ExtendedEvent[]; totalCount: number }>('/search', reqData);
   return result.data;
 }

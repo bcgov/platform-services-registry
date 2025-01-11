@@ -1,4 +1,4 @@
-import { EventType } from '@prisma/client';
+import { EventType, Prisma, User, Event } from '@prisma/client';
 
 export const eventTypeNames: Record<EventType, string> = {
   [EventType.LOGIN]: 'Login',
@@ -21,3 +21,20 @@ export const eventTypeNames: Record<EventType, string> = {
   [EventType.EXPORT_PUBLIC_CLOUD_PRODUCT]: 'Export Public Cloud Product',
   [EventType.REVIEW_PUBLIC_CLOUD_REQUEST]: 'Review Public Cloud Request',
 };
+
+export const eventSorts = [
+  {
+    label: 'Event date (new to old)',
+    sortKey: 'createdAt',
+    sortOrder: Prisma.SortOrder.desc,
+  },
+  {
+    label: 'Event date (old to new)',
+    sortKey: 'createdAt',
+    sortOrder: Prisma.SortOrder.asc,
+  },
+];
+
+export interface ExtendedEvent extends Event {
+  user?: User | null;
+}

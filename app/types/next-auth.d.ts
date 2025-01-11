@@ -44,6 +44,7 @@ declare module 'next-auth' {
 
     downloadBillingMou: boolean;
 
+    viewBilling: boolean;
     viewEvents: boolean;
     viewUsers: boolean;
     editUsers: boolean;

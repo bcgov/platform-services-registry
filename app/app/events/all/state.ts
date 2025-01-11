@@ -1,30 +1,9 @@
-import { EventType, Prisma } from '@prisma/client';
 import { proxy } from 'valtio';
+import { deepClone } from 'valtio/utils';
+import { eventSorts } from '@/constants/event';
+import { EventSearchBody } from '@/validation-schemas/event';
 
-export const eventSorts = [
-  {
-    label: 'Event date (new to old)',
-    sortKey: 'createdAt',
-    sortOrder: Prisma.SortOrder.desc,
-  },
-  {
-    label: 'Event date (old to new)',
-    sortKey: 'createdAt',
-    sortOrder: Prisma.SortOrder.asc,
-  },
-];
-
-type PageState = {
-  page: number;
-  pageSize: number;
-  search: string;
-  events: EventType[];
-  sortValue: string;
-  sortKey: string;
-  sortOrder: 'asc' | 'desc';
-};
-
-export const pageState = proxy<PageState>({
+const initialValue = {
   page: 1,
   pageSize: 10,
   search: '',
@@ -32,4 +11,6 @@ export const pageState = proxy<PageState>({
   sortValue: eventSorts[0].label,
   sortKey: eventSorts[0].sortKey,
   sortOrder: eventSorts[0].sortOrder,
-});
+};
+
+export const pageState = proxy<EventSearchBody>(deepClone(initialValue));

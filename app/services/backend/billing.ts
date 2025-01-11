@@ -1,7 +1,23 @@
+import { Billing } from '@prisma/client';
 import axios from 'axios';
+import { billingSorts } from '@/constants/billing';
+import { SearchBilling } from '@/services/db/billing';
 import { BillingGetPayload } from '@/types/billing';
 import { downloadFile } from '@/utils/browser';
+import { BillingSearchBody } from '@/validation-schemas/billing';
 import { instance as baseInstance } from './axios';
+
+function prepareSearchPayload(data: BillingSearchBody) {
+  const reqData = { ...data };
+
+  const selectedOption = billingSorts.find((sort) => sort.label === reqData.sortValue);
+
+  if (selectedOption) {
+    reqData.sortKey = selectedOption.sortKey;
+    reqData.sortOrder = selectedOption.sortOrder;
+  }
+  return reqData;
+}
 
 export const instance = axios.create({
   ...baseInstance.defaults,
@@ -37,4 +53,10 @@ export async function downloadBilling(
   });
 
   return result;
+}
+
+export async function searchBilling(data: BillingSearchBody) {
+  const reqData = prepareSearchPayload(data);
+  const result = await instance.post<{ data: SearchBilling[]; totalCount: number }>('search', reqData);
+  return result.data;
 }
