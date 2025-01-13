@@ -12,7 +12,7 @@ import { openNotificationModal } from './notification';
 
 interface ModalProps {
   requestId: string;
-  context: 'PRIVATE' | 'PUBLIC';
+  context: ProjectContext;
 }
 
 interface ModalState {
@@ -34,7 +34,7 @@ export const openRequestCancelModal = createModal<ModalProps, ModalState>({
         closeModal();
         openNotificationModal({
           callbackUrl: `/${lowerCase(context)}-cloud/requests/all`,
-          content: <p>The request for the product has been successfully cancelled.</p>,
+          content: <p>This request has been successfully cancelled!</p>,
         });
       },
       onError: (error) => {
