@@ -12,7 +12,6 @@ import {
   IconMoneybag,
   IconReceipt2,
 } from '@tabler/icons-react';
-import { useSession } from 'next-auth/react';
 import { useEffect, useState } from 'react';
 import { useForm, FormProvider } from 'react-hook-form';
 import { z } from 'zod';

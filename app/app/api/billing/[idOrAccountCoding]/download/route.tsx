@@ -62,18 +62,18 @@ export const GET = apiHandler(async ({ pathParams, queryParams, session }) => {
       return BadRequestResponse('invalid account coding');
     }
 
-    product = req.decisionData as Product;
+    product = req.decisionData;
   }
 
   const canDownloadMou =
     session.permissions.downloadBillingMou ||
-    product?.members.some(
+    product.members.some(
       (member) =>
         member.userId === session.user.id &&
         arraysIntersect(member.roles, [PublicCloudProductMemberRole.BILLING_VIEWER]),
     );
 
-  if (!canDownloadMou || !product) {
+  if (!canDownloadMou) {
     return UnauthorizedResponse();
   }
 
