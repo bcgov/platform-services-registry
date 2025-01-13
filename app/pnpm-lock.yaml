@@ -157,7 +157,7 @@ importers:
         version: 4.17.21
       nats:
         specifier: ^2.17.0
-        version: 2.28.2
+        version: 2.29.0
       next:
         specifier: ^15.0.1
         version: 15.1.4(@babel/core@7.24.5)(babel-plugin-macros@3.1.0)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
@@ -3913,8 +3913,8 @@ packages:
     engines: {node: ^10 || ^12 || ^13.7 || ^14 || >=15.0.1}
     hasBin: true
 
-  nats@2.28.2:
-    resolution: {integrity: sha512-02cvR8EPach+0BfVaQjPgsbPFn6uMjEQAuvXS2ppg8jiWEm2KYdfmeFmtshiU9b2+kFh3LSEKMEaIfRgk3K8tw==}
+  nats@2.29.0:
+    resolution: {integrity: sha512-VI+LPLjJYlgk8h83KYDvG2stCs/+hO9MfGD5lRgOEtV9hwgzgEAptexifiobDWCaRD7GIEJaIq1whf+HCX2ATw==}
     engines: {node: '>= 14.0.0'}
 
   natural-compare@1.4.0:
@@ -9642,7 +9642,7 @@ snapshots:
 
   nanoid@3.3.8: {}
 
-  nats@2.28.2:
+  nats@2.29.0:
     dependencies:
       nkeys.js: 1.1.0
 

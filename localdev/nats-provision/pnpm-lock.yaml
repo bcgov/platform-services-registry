@@ -13,7 +13,7 @@ importers:
         version: 26.0.7
       nats:
         specifier: ^2.19.0
-        version: 2.28.2
+        version: 2.29.0
       wait-on:
         specifier: ^8.0.0
         version: 8.0.2
@@ -344,8 +344,8 @@ packages:
     resolution: {integrity: sha512-qOOzS1cBTWYF4BH8fVePDBOO9iptMnGUEZwNc/cMWnTV2nVLZ7VoNWEPHkYczZA0pdoA7dl6e7FL659nX9S2aw==}
     engines: {node: '>=16 || 14 >=14.17'}
 
-  nats@2.28.2:
-    resolution: {integrity: sha512-02cvR8EPach+0BfVaQjPgsbPFn6uMjEQAuvXS2ppg8jiWEm2KYdfmeFmtshiU9b2+kFh3LSEKMEaIfRgk3K8tw==}
+  nats@2.29.0:
+    resolution: {integrity: sha512-VI+LPLjJYlgk8h83KYDvG2stCs/+hO9MfGD5lRgOEtV9hwgzgEAptexifiobDWCaRD7GIEJaIq1whf+HCX2ATw==}
     engines: {node: '>= 14.0.0'}
 
   nkeys.js@1.1.0:
@@ -703,7 +703,7 @@ snapshots:
 
   minipass@7.1.2: {}
 
-  nats@2.28.2:
+  nats@2.29.0:
     dependencies:
       nkeys.js: 1.1.0
 
