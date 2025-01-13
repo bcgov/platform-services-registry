@@ -30,7 +30,7 @@ export default function createPublicCloudNatsMessage(
       ministry_name: decisionData.ministry,
       request_type: request.type,
       project_name: decisionData.name,
-      account_coding: decisionData.billing.accountCoding,
+      account_coding: decisionData.billing?.accountCoding,
       budgets: decisionData.budget,
       enterprise_support: {
         prod: true,

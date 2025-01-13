@@ -47,6 +47,9 @@ declare module 'next-auth' {
     viewEvents: boolean;
     viewUsers: boolean;
     editUsers: boolean;
+
+    cancelPrivateCloudRequest: boolean;
+    cancelPublicCloudRequest: boolean;
   }
 
   interface Session extends DefaultSession {

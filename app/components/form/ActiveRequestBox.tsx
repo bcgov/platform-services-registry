@@ -9,6 +9,7 @@ import {
   IconCircleCheck,
   IconPoint,
   IconBan,
+  IconCancel,
 } from '@tabler/icons-react';
 import { useQuery } from '@tanstack/react-query';
 import { useRouter } from 'next/navigation';
@@ -121,6 +122,11 @@ export default function ActiveRequestBox({
       decisionColor = 'green';
       decisionText = 'Provisioned';
       DecisionIcon = IconCircleCheck;
+      break;
+    case DecisionStatus.CANCELLED:
+      decisionColor = 'pink';
+      decisionText = 'Cancelled';
+      DecisionIcon = IconCancel;
       break;
   }
 

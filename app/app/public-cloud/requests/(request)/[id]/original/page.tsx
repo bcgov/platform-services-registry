@@ -118,7 +118,7 @@ export default publicCloudRequestOriginal(({ router }) => {
       description: '',
       Component: AccountCoding,
       componentArgs: {
-        accountCodingInitial: snap.currentRequest.originalData?.billing.accountCoding,
+        accountCodingInitial: snap.currentRequest.originalData?.billing?.accountCoding,
         disabled: true,
       },
     },

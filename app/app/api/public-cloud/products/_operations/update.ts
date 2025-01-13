@@ -1,6 +1,7 @@
 import { DecisionStatus, Prisma, RequestType, EventType, TaskType } from '@prisma/client';
 import { Session } from 'next-auth';
 import { TypeOf } from 'zod';
+import prisma from '@/core/prisma';
 import { OkResponse, UnauthorizedResponse } from '@/core/responses';
 import { comparePublicProductData } from '@/helpers/product-change';
 import { sendEditRequestEmails } from '@/services/ches/public-cloud';
@@ -40,13 +41,28 @@ export default async function updateOp({
     body.expenseAuthority?.email,
   ]);
 
+  const billingInfo = product.billingId
+    ? await prisma.billing.findFirst({
+        where: {
+          id: product.billingId,
+        },
+      })
+    : null;
+
   const decisionData = {
     ...rest,
     licencePlate: product.licencePlate,
     status: product.status,
     provider: product.provider,
     createdAt: product.createdAt,
-    billing: { connect: { id: product.billingId } },
+    billing: product.billingId
+      ? {
+          connect: {
+            id: product.billingId,
+            code: billingInfo?.code,
+          },
+        }
+      : undefined,
     projectOwner: { connect: { email: body.projectOwner.email } },
     primaryTechnicalLead: { connect: { email: body.primaryTechnicalLead.email } },
     secondaryTechnicalLead: body.secondaryTechnicalLead
@@ -72,7 +88,9 @@ export default async function updateOp({
           requestComment,
           changes: otherChangeMeta,
           originalData: { connect: { id: previousRequest?.decisionDataId } },
-          decisionData: { create: decisionData },
+          decisionData: {
+            create: decisionData,
+          },
           requestData: { create: decisionData },
           project: { connect: { licencePlate: product.licencePlate } },
         },

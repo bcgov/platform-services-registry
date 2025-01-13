@@ -290,6 +290,9 @@ export async function generateSession({
     viewUsers: session.isAdmin || session.isUserReader,
     viewEvents: session.isAdmin || session.isEventReader,
     editUsers: session.isAdmin,
+
+    cancelPrivateCloudRequest: session.isUser,
+    cancelPublicCloudRequest: session.isUser,
   };
 
   session.permissionList = Object.keys(session.permissions).filter(

@@ -49,7 +49,7 @@ export default publicCloudProductEdit(({}) => {
     defaultValues: {
       ...snap.currentProduct,
       isAgMinistryChecked: true,
-      accountCoding: snap.currentProduct?.billing.accountCoding,
+      accountCoding: snap.currentProduct?.billing?.accountCoding,
     },
   });
 
@@ -131,7 +131,7 @@ export default publicCloudProductEdit(({}) => {
       label: 'Billing (Account coding)',
       description: '',
       Component: AccountCoding,
-      componentArgs: { accountCodingInitial: snap.currentProduct?.billing.accountCoding, disabled: true },
+      componentArgs: { accountCodingInitial: snap.currentProduct?.billing?.accountCoding, disabled: true },
     },
   ];
 

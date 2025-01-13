@@ -2,7 +2,7 @@
 
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Button } from '@mantine/core';
-import { PrivateCloudProject, RequestType } from '@prisma/client';
+import { DecisionStatus, PrivateCloudProject, ProjectContext, RequestType } from '@prisma/client';
 import {
   IconInfoCircle,
   IconUsersGroup,
@@ -14,6 +14,7 @@ import {
 import { useEffect, useState } from 'react';
 import { FormProvider, useForm } from 'react-hook-form';
 import { z } from 'zod';
+import CancelRequest from '@/components/buttons/CancelButton';
 import PreviousButton from '@/components/buttons/Previous';
 import ProjectDescription from '@/components/form/ProjectDescriptionPrivate';
 import TeamContacts from '@/components/form/TeamContacts';
@@ -213,6 +214,10 @@ export default privateCloudRequestDecision(({ getPathParams, session, router }) 
                 </Button>
               </>
             )}
+            {snap.currentRequest.decisionStatus === DecisionStatus.PENDING &&
+              snap.currentRequest._permissions.cancel && (
+                <CancelRequest id={snap.currentRequest.id} context={ProjectContext.PRIVATE} />
+              )}
           </div>
         </form>
       </FormProvider>

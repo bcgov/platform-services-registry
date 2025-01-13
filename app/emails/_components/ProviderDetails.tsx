@@ -51,7 +51,7 @@ export default function ProviderDetails({ product }: Props) {
           </Text>
         </div>
         <Text className="font-semibold mt-2 mb-0">Account Coding</Text>
-        <Text className="mt-0">{billing.accountCoding}</Text>
+        <Text className="mt-0">{billing?.accountCoding}</Text>
       </div>
     </>
   );
