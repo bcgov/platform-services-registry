@@ -62,7 +62,7 @@ export default async function updateOp({
             code: billingInfo?.code,
           },
         }
-      : undefined, // Handle the case where `billingId` is null
+      : undefined,
     projectOwner: { connect: { email: body.projectOwner.email } },
     primaryTechnicalLead: { connect: { email: body.primaryTechnicalLead.email } },
     secondaryTechnicalLead: body.secondaryTechnicalLead

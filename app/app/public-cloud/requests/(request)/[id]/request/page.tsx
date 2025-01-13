@@ -2,7 +2,7 @@
 
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Button } from '@mantine/core';
-import { DecisionStatus, RequestType } from '@prisma/client';
+import { DecisionStatus, ProjectContext, RequestType } from '@prisma/client';
 import {
   IconInfoCircle,
   IconUsersGroup,
@@ -177,9 +177,6 @@ export default publicCloudProductRequest(({ router }) => {
     });
   }
 
-  const { data: session } = useSession();
-  const canCancel = session?.user.email === snap.currentRequest.createdByEmail;
-
   return (
     <div>
       <PublicCloudBillingInfo product={snap.currentRequest.decisionData} className="mb-2" />
@@ -204,9 +201,10 @@ export default publicCloudProductRequest(({ router }) => {
 
           <div className="mt-5 flex items-center justify-start gap-x-2">
             <PreviousButton />
-            {snap.currentRequest.decisionStatus === DecisionStatus.PENDING && canCancel && (
-              <CancelRequest id={snap.currentRequest.id} context={'PUBLIC'} />
-            )}
+            {snap.currentRequest.decisionStatus === DecisionStatus.PENDING &&
+              snap.currentRequest._permissions.cancel && (
+                <CancelRequest id={snap.currentRequest.id} context={ProjectContext.PUBLIC} />
+              )}
             {snap.currentRequest._permissions.review && (
               <>
                 <Button
@@ -267,7 +265,7 @@ export default publicCloudProductRequest(({ router }) => {
                   }
                 }}
               >
-                Review MOU
+                Review eMOU
               </Button>
             )}
           </div>

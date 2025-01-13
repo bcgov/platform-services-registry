@@ -46,17 +46,9 @@ export const PUT = apiHandler(async ({ pathParams, session }) => {
         decisionStatus: DecisionStatus.CANCELLED,
       },
       select: {
-        decisionStatus: true,
-        createdByEmail: true,
         licencePlate: true,
-        decisionData: true,
         decisionDataId: true,
         requestDataId: true,
-        createdBy: {
-          select: {
-            id: true,
-          },
-        },
       },
     },
     session,
@@ -78,7 +70,6 @@ export const PUT = apiHandler(async ({ pathParams, session }) => {
       expenseAuthorityId: billingData?.expenseAuthorityId,
     },
     data: {
-      expenseAuthorityId: null,
       billingId: null,
     },
   });

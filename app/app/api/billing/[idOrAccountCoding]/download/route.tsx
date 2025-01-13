@@ -62,7 +62,7 @@ export const GET = apiHandler(async ({ pathParams, queryParams, session }) => {
       return BadRequestResponse('invalid account coding');
     }
 
-    product = req.decisionData;
+    product = req.decisionData as Product;
   }
 
   const canDownloadMou =

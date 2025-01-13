@@ -48,7 +48,7 @@ export const openPublicCloudRequestCancelModal = createModal<ModalProps, ModalSt
             No
           </Button>
           <Button variant="outline" color="red" onClick={() => cancelRequest()}>
-            {isCancelingRequest ? 'Canceling...' : 'Yes, Cancel the Request'}
+            Yes, Cancel the Request
           </Button>
         </div>
       </Box>

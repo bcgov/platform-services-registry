@@ -1,6 +1,6 @@
 'use client';
 
-import { DecisionStatus, PrivateCloudProject } from '@prisma/client';
+import { DecisionStatus, PrivateCloudProject, ProjectContext } from '@prisma/client';
 import {
   IconInfoCircle,
   IconUsersGroup,
@@ -135,9 +135,6 @@ export default privateCloudRequestRequest(({}) => {
     });
   }
 
-  const { data: session } = useSession();
-  const canCancel = session?.user.email === snap.currentRequest.createdByEmail;
-
   return (
     <div>
       <FormProvider {...methods}>
@@ -146,9 +143,10 @@ export default privateCloudRequestRequest(({}) => {
 
           <div className="mt-5 flex items-center justify-start gap-x-2">
             <PreviousButton />
-            {snap.currentRequest.decisionStatus === DecisionStatus.PENDING && canCancel && (
-              <CancelRequest id={snap.currentRequest.id} context={'PRIVATE'} />
-            )}
+            {snap.currentRequest.decisionStatus === DecisionStatus.PENDING &&
+              snap.currentRequest._permissions.cancel && (
+                <CancelRequest id={snap.currentRequest.id} context={ProjectContext.PRIVATE} />
+              )}
           </div>
         </form>
       </FormProvider>

@@ -48,7 +48,7 @@ export const openPrivateCloudRequestCancelModal = createModal<ModalProps, ModalS
             No
           </Button>
           <Button variant="outline" color="red" onClick={() => cancelRequest()}>
-            {isCancelingRequest ? 'Canceling...' : 'Yes, Cancel the Request'}
+            Yes, Cancel the Request
           </Button>
         </div>
       </Box>

@@ -51,9 +51,11 @@ async function decorate<T extends PrivateCloudRequestSimple | PrivateCloudReques
       .map((task) => (task.data as { requestId: string }).requestId)
       .includes(doc.id);
 
-  const canEdit =
-    (canReview && doc.type !== RequestType.DELETE) ||
-    (session.user.email === doc.createdBy?.email && doc.type !== RequestType.DELETE);
+  const canCancel =
+    session.user.email === doc.createdBy?.email &&
+    (doc.type === RequestType.DELETE || doc.type === RequestType.EDIT || doc.type === RequestType.CREATE);
+
+  const canEdit = (canReview && doc.type !== RequestType.DELETE) || canCancel;
 
   const canResend =
     (doc.decisionStatus === DecisionStatus.APPROVED || doc.decisionStatus === DecisionStatus.AUTO_APPROVED) &&
@@ -62,8 +64,6 @@ async function decorate<T extends PrivateCloudRequestSimple | PrivateCloudReques
   const hasProduct = doc.type !== RequestType.CREATE || doc.decisionStatus === DecisionStatus.PROVISIONED;
 
   const canViewDecision = doc.decisionStatus !== DecisionStatus.PENDING || canReview;
-
-  const canCancel = doc.decisionStatus === DecisionStatus.PENDING && session.user.email === doc.createdBy?.email;
 
   const decoratedDoc = doc as T & PrivateCloudRequestDecorate;
 

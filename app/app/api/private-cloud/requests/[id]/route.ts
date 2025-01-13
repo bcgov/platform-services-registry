@@ -35,7 +35,7 @@ export const PUT = apiHandler(async ({ pathParams, session }) => {
     return UnauthorizedResponse();
   }
 
-  const updatedRequest = await models.privateCloudRequest.update(
+  await models.privateCloudRequest.update(
     {
       where: {
         id,
@@ -45,17 +45,11 @@ export const PUT = apiHandler(async ({ pathParams, session }) => {
       data: {
         decisionStatus: DecisionStatus.CANCELLED,
       },
-      select: {
-        decisionStatus: true,
-        createdByEmail: true,
-      },
     },
     session,
   );
 
-  if (updatedRequest) {
-    await createEvent(EventType.CANCEL_PRIVATE_CLOUD_REQUEST, session.user.id, { requestId: id });
-  }
+  await createEvent(EventType.CANCEL_PRIVATE_CLOUD_REQUEST, session.user.id, { requestId: id });
 
-  return OkResponse(updatedRequest);
+  return OkResponse(true);
 });
