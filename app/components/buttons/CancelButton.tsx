@@ -1,20 +1,14 @@
 import { Button } from '@mantine/core';
 import { ProjectContext } from '@prisma/client';
 import { IconCancel } from '@tabler/icons-react';
-import { openPrivateCloudRequestCancelModal } from '../modal/privateCloudRequestCancel';
-import { openPublicCloudRequestCancelModal } from '../modal/publicCloudRequestCancel';
+import { openRequestCancelModal } from '../modal/CancelRequest';
 
-export default function CancelRequest({ id, context }: any) {
+export default function CancelRequest({ id, context }: { id: string; context: ProjectContext }) {
   const handleCancel = async () => {
-    if (context === ProjectContext.PRIVATE) {
-      await openPrivateCloudRequestCancelModal({
-        requestId: id,
-      });
-    } else {
-      await openPublicCloudRequestCancelModal({
-        requestId: id,
-      });
-    }
+    await openRequestCancelModal({
+      requestId: id,
+      context,
+    });
   };
 
   return (

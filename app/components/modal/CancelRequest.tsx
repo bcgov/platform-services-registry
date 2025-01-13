@@ -1,34 +1,39 @@
 'use client';
 
 import { Button, LoadingOverlay, Box } from '@mantine/core';
+import { ProjectContext } from '@prisma/client';
 import { useMutation } from '@tanstack/react-query';
+import { lowerCase } from 'lodash-es';
 import { createModal } from '@/core/modal';
+import { cancelPrivateCloudRequest } from '@/services/backend/private-cloud/requests';
 import { cancelPublicCloudRequest } from '@/services/backend/public-cloud/requests';
 import { success, failure } from '../notification';
 import { openNotificationModal } from './notification';
 
 interface ModalProps {
   requestId: string;
+  context: 'PRIVATE' | 'PUBLIC';
 }
 
 interface ModalState {
   success: boolean;
 }
 
-export const openPublicCloudRequestCancelModal = createModal<ModalProps, ModalState>({
+export const openRequestCancelModal = createModal<ModalProps, ModalState>({
   settings: {
     size: 'md',
     title: 'Cancel Request?',
   },
-  Component: function ({ requestId, state, closeModal }) {
+  Component: function ({ requestId, context, state, closeModal }) {
     const { mutateAsync: cancelRequest, isPending: isCancelingRequest } = useMutation({
-      mutationFn: () => cancelPublicCloudRequest(requestId),
+      mutationFn: async () =>
+        context === ProjectContext.PRIVATE ? cancelPrivateCloudRequest(requestId) : cancelPublicCloudRequest(requestId),
       onSuccess: () => {
         state.success = true;
         success();
         closeModal();
         openNotificationModal({
-          callbackUrl: '/public-cloud/requests/all',
+          callbackUrl: `/${lowerCase(context)}-cloud/requests/all`,
           content: <p>The request for the product has been successfully cancelled.</p>,
         });
       },
