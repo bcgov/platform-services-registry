@@ -1,7 +1,7 @@
 'use client';
 
 import { Alert, Group, Avatar, Text, Accordion, Table, Badge, Button } from '@mantine/core';
-import { DecisionStatus, RequestType } from '@prisma/client';
+import { DecisionStatus, ProjectContext, RequestType } from '@prisma/client';
 import {
   IconInfoCircle,
   IconCircleLetterO,
@@ -10,6 +10,7 @@ import {
   IconAddressBook,
 } from '@tabler/icons-react';
 import { z } from 'zod';
+import CancelRequest from '@/components/buttons/CancelButton';
 import PageAccordion, { PageAccordionItem } from '@/components/generic/accordion/PageAccordion';
 import ProductComparison from '@/components/ProductComparison';
 import { GlobalRole } from '@/constants';
@@ -120,6 +121,11 @@ export default Layout(({}) => {
       <div className="mb-2"></div>
 
       <PageAccordion items={accordionItems} />
+      <div className="mt-3">
+        {snap.currentRequest?.decisionStatus === DecisionStatus.PENDING && snap.currentRequest._permissions.cancel && (
+          <CancelRequest id={snap.currentRequest.id} context={ProjectContext.PRIVATE} />
+        )}
+      </div>
     </div>
   );
 });

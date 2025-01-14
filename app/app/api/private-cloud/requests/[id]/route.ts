@@ -44,6 +44,7 @@ export const PUT = apiHandler(async ({ pathParams, session }) => {
       },
       data: {
         decisionStatus: DecisionStatus.CANCELLED,
+        active: false,
       },
     },
     session,

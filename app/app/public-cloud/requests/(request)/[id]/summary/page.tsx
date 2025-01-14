@@ -1,9 +1,10 @@
 'use client';
 
 import { Alert } from '@mantine/core';
-import { DecisionStatus, RequestType } from '@prisma/client';
+import { DecisionStatus, ProjectContext, RequestType } from '@prisma/client';
 import { IconInfoCircle } from '@tabler/icons-react';
 import { z } from 'zod';
+import CancelRequest from '@/components/buttons/CancelButton';
 import ProductComparison from '@/components/ProductComparison';
 import { GlobalRole } from '@/constants';
 import createClientPage from '@/core/client-page';
@@ -36,6 +37,12 @@ export default Layout(({}) => {
           <ProductComparison data={snap.dataChangeOriginalRequest?.changes as DiffChange[]} />
         </div>
       )}
+
+      <div className="mt-3">
+        {snap.currentRequest?.decisionStatus === DecisionStatus.PENDING && snap.currentRequest._permissions.cancel && (
+          <CancelRequest id={snap.currentRequest.id} context={ProjectContext.PUBLIC} />
+        )}
+      </div>
     </div>
   );
 });

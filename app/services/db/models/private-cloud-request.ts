@@ -52,6 +52,7 @@ async function decorate<T extends PrivateCloudRequestSimple | PrivateCloudReques
       .includes(doc.id);
 
   const canCancel =
+    doc.decisionStatus === DecisionStatus.PENDING &&
     session.user.email === doc.createdBy?.email &&
     (doc.type === RequestType.DELETE || doc.type === RequestType.EDIT || doc.type === RequestType.CREATE);
 

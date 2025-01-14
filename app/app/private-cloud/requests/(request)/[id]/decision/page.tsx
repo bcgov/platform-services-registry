@@ -2,7 +2,7 @@
 
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Button } from '@mantine/core';
-import { DecisionStatus, PrivateCloudProject, ProjectContext, RequestType } from '@prisma/client';
+import { RequestType } from '@prisma/client';
 import {
   IconInfoCircle,
   IconUsersGroup,
@@ -214,10 +214,6 @@ export default privateCloudRequestDecision(({ getPathParams, session, router }) 
                 </Button>
               </>
             )}
-            {snap.currentRequest.decisionStatus === DecisionStatus.PENDING &&
-              snap.currentRequest._permissions.cancel && (
-                <CancelRequest id={snap.currentRequest.id} context={ProjectContext.PRIVATE} />
-              )}
           </div>
         </form>
       </FormProvider>
