@@ -44,6 +44,7 @@ export type SearchBilling = Prisma.BillingGetPayload<{
 }>;
 
 export async function searchBilling({
+  billings = [],
   search = '',
   page,
   skip,
@@ -55,6 +56,7 @@ export async function searchBilling({
   skip?: number;
   take?: number;
 }): Promise<{ data: SearchBilling[]; totalCount: number }> {
+  const isBillingSearch = billings.length > 0;
   if (!_isNumber(skip) && !_isNumber(take) && page && pageSize) {
     ({ skip, take } = parsePaginationParams(page, pageSize, 10));
   }
@@ -74,6 +76,22 @@ export async function searchBilling({
       { approvedBy: { email: { contains: search, mode: 'insensitive' } } },
       { licencePlate: { contains: search, mode: 'insensitive' } },
     ];
+  }
+
+  if (isBillingSearch) {
+    const conditions = [];
+
+    if (billings.includes('approved')) {
+      conditions.push({ approved: true });
+    }
+
+    if (billings.includes('signed')) {
+      conditions.push({ signed: true });
+    }
+
+    if (conditions.length > 0) {
+      filters.OR = conditions;
+    }
   }
 
   const orderBy = { [sortKey]: sortOrder };

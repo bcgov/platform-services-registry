@@ -42,3 +42,8 @@ export const billingSorts = [
     sortOrder: Prisma.SortOrder.asc,
   },
 ];
+
+export enum BillingStatus {
+  signed = 'signed',
+  approved = 'approved',
+}

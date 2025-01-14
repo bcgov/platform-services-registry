@@ -2,11 +2,15 @@
 
 import { useQuery } from '@tanstack/react-query';
 import { useSnapshot } from 'valtio/react';
+import Table from '@/components/generic/table/Table';
 import { GlobalPermissions } from '@/constants';
+import { billingSorts } from '@/constants/billing';
 import createClientPage from '@/core/client-page';
-import { searchBilling } from '@/services/backend/billing';
+import { searchBilling, downloadBillings } from '@/services/backend/billing';
 import { SearchBilling } from '@/services/db/billing';
+import FilterPanel from './FilterPanel';
 import { pageState } from './state';
+import TableBody from './TableBody';
 
 const billingPage = createClientPage({
   permissions: [GlobalPermissions.ViewBilling],
@@ -28,5 +32,36 @@ export default billingPage(() => {
     totalCount = data.totalCount;
   }
 
-  return <>{JSON.stringify(data?.data)}</>;
+  return (
+    <>
+      <Table
+        title="Billings"
+        totalCount={totalCount}
+        page={snap.page ?? 1}
+        pageSize={snap.pageSize ?? 10}
+        sortKey={snap.sortValue}
+        onPagination={(page: number, pageSize: number) => {
+          pageState.page = page;
+          pageState.pageSize = pageSize;
+        }}
+        onSearch={(searchTearm: string) => {
+          pageState.page = 1;
+          pageState.search = searchTearm;
+        }}
+        onExport={async () => {
+          const result = await downloadBillings(snap);
+          return result;
+        }}
+        onSort={(sortValue) => {
+          pageState.page = 1;
+          pageState.sortValue = sortValue;
+        }}
+        sortOptions={billingSorts.map((val) => val.label)}
+        filters={<FilterPanel />}
+        isLoading={isLoading}
+      >
+        <TableBody data={billings} />
+      </Table>
+    </>
+  );
 });

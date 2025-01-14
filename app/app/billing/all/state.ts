@@ -7,6 +7,7 @@ const initialValue = {
   search: '',
   page: 1,
   pageSize: 10,
+  billings: [],
   sortValue: billingSorts[0].label,
   sortKey: billingSorts[0].sortKey,
   sortOrder: billingSorts[0].sortOrder,

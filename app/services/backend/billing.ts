@@ -60,3 +60,15 @@ export async function searchBilling(data: BillingSearchBody) {
   const result = await instance.post<{ data: SearchBilling[]; totalCount: number }>('search', reqData);
   return result.data;
 }
+
+export async function downloadBillings(data: BillingSearchBody) {
+  const reqData = prepareSearchPayload(data);
+  const result = await instance.post('/download', reqData, { responseType: 'blob' }).then((res) => {
+    if (res.status === 204) return false;
+
+    downloadFile(res.data, 'billings.csv');
+    return true;
+  });
+
+  return result;
+}
