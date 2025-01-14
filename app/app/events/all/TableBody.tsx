@@ -1,33 +1,15 @@
 'use client';
 
 import { Avatar, Badge, Group, Table, Text } from '@mantine/core';
-import { EventType } from '@prisma/client';
 import { useForm } from 'react-hook-form';
-import { eventTypeNames } from '@/constants/event';
+import MinistryBadge from '@/components/badges/MinistryBadge';
+import { eventTypeNames, ExtendedEvent } from '@/constants/event';
 import { formatFullName } from '@/helpers/user';
 import { getUserImageData } from '@/helpers/user-image';
 import { formatDate } from '@/utils/js';
 
-interface User {
-  id: string;
-  firstName: string;
-  lastName: string;
-  email: string;
-  jobTitle: string;
-  image: string;
-}
-
-interface Event {
-  id: string;
-  type: EventType;
-  userId: string | null;
-  createdAt: string;
-  user: User | null;
-  data: object;
-}
-
 interface TableProps {
-  data: Event[];
+  data: ExtendedEvent[];
 }
 
 export default function TableBody({ data }: TableProps) {
@@ -51,6 +33,7 @@ export default function TableBody({ data }: TableProps) {
             <div>
               <Text size="sm" className="font-semibold">
                 {formatFullName(event.user)}
+                <MinistryBadge className="ml-1" ministry={event.user?.ministry} />
               </Text>
               <Text size="xs" opacity={0.5}>
                 {event.user?.email}
@@ -71,7 +54,7 @@ export default function TableBody({ data }: TableProps) {
           <Text size="xs">{formatDate(event.createdAt)}</Text>
         </Table.Td>
         <Table.Td>
-          {Object.keys(event.data).length !== 0 ? (
+          {event.data && Object.keys(event.data).length !== 0 ? (
             <ul>
               {Object.entries(event.data).map(([key, value]) => (
                 <li key={key}>

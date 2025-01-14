@@ -12,6 +12,7 @@ import {
   IconProps,
   Icon,
   IconCalendarEvent,
+  IconSignLeft,
 } from '@tabler/icons-react';
 import Link from 'next/link';
 import { Permissions } from 'next-auth';
@@ -120,6 +121,12 @@ export default function UserMenu() {
       Icon: IconCalendarEvent,
       href: '/events/all',
       permission: 'viewEvents',
+    },
+    {
+      text: 'Billing',
+      Icon: IconSignLeft,
+      href: '/billing/all',
+      permission: 'viewBilling',
     },
     { divider: true, key: '1' },
     {

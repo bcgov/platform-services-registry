@@ -33,6 +33,7 @@ export enum GlobalPermissions {
 
   DownloadBillingMou = 'downloadBillingMou',
 
+  ViewBilling = 'viewBilling',
   ViewEvents = 'viewEvents',
   ViewUsers = 'viewUsers',
   EditUsers = 'editUsers',

@@ -287,8 +287,10 @@ export async function generateSession({
     viewPrivateAnalytics: session.isAdmin || session.isAnalyzer || session.isPrivateAnalyzer,
 
     downloadBillingMou: session.isBillingReviewer || session.isBillingReader,
+
     viewUsers: session.isAdmin || session.isUserReader,
     viewEvents: session.isAdmin || session.isEventReader,
+    viewBilling: session.isAdmin || session.isBillingReader || session.isBillingReviewer,
     editUsers: session.isAdmin,
   };
 

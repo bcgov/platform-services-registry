@@ -4,36 +4,38 @@ import { useQuery } from '@tanstack/react-query';
 import { useSnapshot } from 'valtio/react';
 import Table from '@/components/generic/table/Table';
 import { GlobalPermissions } from '@/constants';
-import { eventSorts, ExtendedEvent } from '@/constants/event';
+import { billingSorts } from '@/constants/billing';
 import createClientPage from '@/core/client-page';
-import { downloadEvents, searchEvents } from '@/services/backend/events';
+import { searchBilling, downloadBillings } from '@/services/backend/billing';
+import { SearchBilling } from '@/services/db/billing';
 import FilterPanel from './FilterPanel';
 import { pageState } from './state';
 import TableBody from './TableBody';
 
-const eventsPage = createClientPage({
-  permissions: [GlobalPermissions.ViewEvents],
-  fallbackUrl: '/login?callbackUrl=/home',
+const billingPage = createClientPage({
+  permissions: [GlobalPermissions.ViewBilling],
+  fallbackUrl: 'login?callbackUrl=/home',
 });
 
-export default eventsPage(() => {
+export default billingPage(() => {
   const snap = useSnapshot(pageState);
   let totalCount = 0;
-  let events: ExtendedEvent[] = [];
+  let billings: SearchBilling[] = [];
 
   const { data, isLoading } = useQuery({
-    queryKey: ['events', snap],
-    queryFn: () => searchEvents(snap),
+    queryKey: ['billings', snap],
+    queryFn: () => searchBilling(snap),
   });
 
   if (!isLoading && data) {
-    events = data.data;
+    billings = data.data;
     totalCount = data.totalCount;
   }
+
   return (
     <>
       <Table
-        title="Events in Registry"
+        title="Billings"
         totalCount={totalCount}
         page={snap.page ?? 1}
         pageSize={snap.pageSize ?? 10}
@@ -42,23 +44,23 @@ export default eventsPage(() => {
           pageState.page = page;
           pageState.pageSize = pageSize;
         }}
-        onSearch={(searchTerm: string) => {
+        onSearch={(searchTearm: string) => {
           pageState.page = 1;
-          pageState.search = searchTerm;
+          pageState.search = searchTearm;
         }}
         onExport={async () => {
-          const result = await downloadEvents(snap);
+          const result = await downloadBillings(snap);
           return result;
         }}
         onSort={(sortValue) => {
           pageState.page = 1;
           pageState.sortValue = sortValue;
         }}
-        sortOptions={eventSorts.map((val) => val.label)}
+        sortOptions={billingSorts.map((val) => val.label)}
         filters={<FilterPanel />}
         isLoading={isLoading}
       >
-        <TableBody data={events} />
+        <TableBody data={billings} />
       </Table>
     </>
   );

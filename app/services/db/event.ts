@@ -105,10 +105,6 @@ export async function searchEvents({
     ({ skip, take } = parsePaginationParams(page, pageSize, 10));
   }
 
-  if (!Object.values(Prisma.SortOrder).includes(sortOrder)) {
-    throw new Error(`Invalid sortOrder: ${sortOrder}`);
-  }
-
   const filters: Prisma.EventWhereInput = {};
 
   if (search.trim()) {
@@ -144,6 +140,7 @@ export async function searchEvents({
             email: true,
             jobTitle: true,
             image: true,
+            ministry: true,
           },
         },
       },
