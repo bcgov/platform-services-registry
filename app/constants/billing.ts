@@ -44,6 +44,6 @@ export const billingSorts = [
 ];
 
 export enum BillingStatus {
-  signed = 'signed',
-  approved = 'approved',
+  signed = 'not signed',
+  approved = 'not approved',
 }
