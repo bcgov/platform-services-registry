@@ -2,6 +2,7 @@
 
 import { Avatar, Badge, Group, Table, Text } from '@mantine/core';
 import { useForm } from 'react-hook-form';
+import MinistryBadge from '@/components/badges/MinistryBadge';
 import CopyableButton from '@/components/generic/button/CopyableButton';
 import { formatFullName } from '@/helpers/user';
 import { getUserImageData } from '@/helpers/user-image';
@@ -62,6 +63,7 @@ export default function TableBody({ data }: TableProps) {
                 <div>
                   <Text size="sm" className="font-semibold">
                     {formatFullName(billing.expenseAuthority)}
+                    <MinistryBadge className="ml-1" ministry={billing.expenseAuthority?.ministry} />
                   </Text>
                   <Text size="xs" opacity={0.5}>
                     {billing.expenseAuthority?.email}
@@ -89,6 +91,7 @@ export default function TableBody({ data }: TableProps) {
                 <div>
                   <Text size="sm" className="font-semibold">
                     {formatFullName(billing.approvedBy)}
+                    <MinistryBadge className="ml-1" ministry={billing.approvedBy?.ministry} />
                   </Text>
                   <Text size="xs" opacity={0.5}>
                     {billing.approvedBy?.email}
@@ -104,6 +107,7 @@ export default function TableBody({ data }: TableProps) {
                 <div>
                   <Text size="sm" className="font-semibold">
                     {formatFullName(billing.signedBy)}
+                    <MinistryBadge className="ml-1" ministry={billing.signedBy?.ministry} />
                   </Text>
                   <Text size="xs" opacity={0.5}>
                     {billing.signedBy?.email}

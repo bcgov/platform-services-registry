@@ -140,6 +140,7 @@ export async function searchEvents({
             email: true,
             jobTitle: true,
             image: true,
+            ministry: true,
           },
         },
       },

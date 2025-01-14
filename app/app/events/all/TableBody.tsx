@@ -2,6 +2,7 @@
 
 import { Avatar, Badge, Group, Table, Text } from '@mantine/core';
 import { useForm } from 'react-hook-form';
+import MinistryBadge from '@/components/badges/MinistryBadge';
 import { eventTypeNames, ExtendedEvent } from '@/constants/event';
 import { formatFullName } from '@/helpers/user';
 import { getUserImageData } from '@/helpers/user-image';
@@ -32,6 +33,7 @@ export default function TableBody({ data }: TableProps) {
             <div>
               <Text size="sm" className="font-semibold">
                 {formatFullName(event.user)}
+                <MinistryBadge className="ml-1" ministry={event.user?.ministry} />
               </Text>
               <Text size="xs" opacity={0.5}>
                 {event.user?.email}

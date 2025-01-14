@@ -1,4 +1,3 @@
-import { Billing } from '@prisma/client';
 import axios from 'axios';
 import { billingSorts } from '@/constants/billing';
 import { SearchBilling } from '@/services/db/billing';

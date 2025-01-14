@@ -20,6 +20,7 @@ export type SearchBilling = Prisma.BillingGetPayload<{
         email: true;
         jobTitle: true;
         image: true;
+        ministry: true;
       };
     };
     expenseAuthority: {
@@ -29,6 +30,7 @@ export type SearchBilling = Prisma.BillingGetPayload<{
         email: true;
         jobTitle: true;
         image: true;
+        ministry: true;
       };
     };
     signedBy: {
@@ -38,6 +40,7 @@ export type SearchBilling = Prisma.BillingGetPayload<{
         email: true;
         jobTitle: true;
         image: true;
+        ministry: true;
       };
     };
   };
@@ -116,6 +119,7 @@ export async function searchBilling({
             email: true,
             jobTitle: true,
             image: true,
+            ministry: true,
           },
         },
         expenseAuthority: {
@@ -125,6 +129,7 @@ export async function searchBilling({
             email: true,
             jobTitle: true,
             image: true,
+            ministry: true,
           },
         },
         signedBy: {
@@ -134,6 +139,7 @@ export async function searchBilling({
             email: true,
             jobTitle: true,
             image: true,
+            ministry: true,
           },
         },
       },
