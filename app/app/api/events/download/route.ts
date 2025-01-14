@@ -6,7 +6,7 @@ import { formatDate } from '@/utils/js';
 import { eventsSearchBodySchema } from '@/validation-schemas/event';
 
 export const POST = createApiHandler({
-  permissions: [GlobalPermissions.ViewUsers],
+  permissions: [GlobalPermissions.ViewEvents],
   validations: { body: eventsSearchBodySchema },
 })(async ({ session, body }) => {
   const searchProps = {

@@ -6,7 +6,7 @@ import { formatDate } from '@/utils/js';
 import { billingSearchBodySchema } from '@/validation-schemas/billing';
 
 export const POST = createApiHandler({
-  permissions: [GlobalPermissions.ViewUsers],
+  permissions: [GlobalPermissions.ViewBilling],
   validations: { body: billingSearchBodySchema },
 })(async ({ session, body }) => {
   const searchProps = {
