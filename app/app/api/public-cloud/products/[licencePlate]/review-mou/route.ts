@@ -33,7 +33,7 @@ export const POST = apiHandler(async ({ pathParams, body, session }) => {
       include: publicCloudRequestDetailInclude,
     });
 
-    if (request) {
+    if (request && request.decisionData.billingId) {
       const billing = await prisma.billing.update({
         where: {
           id: request?.decisionData.billingId,

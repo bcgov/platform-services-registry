@@ -292,6 +292,9 @@ export async function generateSession({
     viewEvents: session.isAdmin || session.isEventReader,
     viewBilling: session.isAdmin || session.isBillingReader || session.isBillingReviewer,
     editUsers: session.isAdmin,
+
+    cancelPrivateCloudRequest: session.isUser,
+    cancelPublicCloudRequest: session.isUser,
   };
 
   session.permissionList = Object.keys(session.permissions).filter(

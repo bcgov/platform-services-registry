@@ -19,6 +19,7 @@ export interface PrivateCloudRequestDecorate {
     resend: boolean;
     viewDecision: boolean;
     viewProduct: boolean;
+    cancel: boolean;
   };
 }
 
@@ -45,6 +46,7 @@ export interface PublicCloudRequestDecorate {
     reviewMou: boolean;
     delete: boolean;
     viewProduct: boolean;
+    cancel: boolean;
   };
 }
 

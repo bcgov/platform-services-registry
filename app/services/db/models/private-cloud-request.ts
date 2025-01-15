@@ -51,7 +51,13 @@ async function decorate<T extends PrivateCloudRequestSimple | PrivateCloudReques
       .map((task) => (task.data as { requestId: string }).requestId)
       .includes(doc.id);
 
-  const canEdit = canReview && doc.type !== RequestType.DELETE;
+  const canCancel =
+    doc.decisionStatus === DecisionStatus.PENDING &&
+    session.user.email === doc.createdBy?.email &&
+    (doc.type === RequestType.DELETE || doc.type === RequestType.EDIT || doc.type === RequestType.CREATE);
+
+  const canEdit = (canReview && doc.type !== RequestType.DELETE) || canCancel;
+
   const canResend =
     (doc.decisionStatus === DecisionStatus.APPROVED || doc.decisionStatus === DecisionStatus.AUTO_APPROVED) &&
     session.permissions.reviewAllPrivateCloudRequests;
@@ -121,6 +127,7 @@ async function decorate<T extends PrivateCloudRequestSimple | PrivateCloudReques
       delete: false,
       viewDecision: canViewDecision,
       viewProduct: false,
+      cancel: canCancel,
     };
 
     return doc;
@@ -134,6 +141,7 @@ async function decorate<T extends PrivateCloudRequestSimple | PrivateCloudReques
     delete: false,
     viewDecision: canViewDecision,
     viewProduct: hasProduct,
+    cancel: canCancel,
   };
 
   return decoratedDoc;

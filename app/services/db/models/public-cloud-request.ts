@@ -84,7 +84,13 @@ async function decorate<T extends PublicCloudRequestSimple | PublicCloudRequestD
     }
   }
 
-  const canEdit = canReview && doc.type !== RequestType.DELETE;
+  const canCancel =
+    doc.decisionStatus === DecisionStatus.PENDING &&
+    session.user.email === doc.createdBy?.email &&
+    (doc.type === RequestType.DELETE || doc.type === RequestType.CREATE);
+
+  const canEdit = (canReview && doc.type !== RequestType.DELETE) || canCancel;
+
   const hasProduct = doc.type !== RequestType.CREATE || doc.decisionStatus === DecisionStatus.PROVISIONED;
 
   const decoratedDoc = doc as T & PublicCloudRequestDecorate;
@@ -148,6 +154,7 @@ async function decorate<T extends PublicCloudRequestSimple | PublicCloudRequestD
       reviewMou: canApproveMou,
       delete: false,
       viewProduct: false,
+      cancel: canCancel,
     };
 
     return decoratedDoc;
@@ -161,6 +168,7 @@ async function decorate<T extends PublicCloudRequestSimple | PublicCloudRequestD
     reviewMou: canApproveMou,
     delete: false,
     viewProduct: hasProduct,
+    cancel: canCancel,
   };
 
   return decoratedDoc;
