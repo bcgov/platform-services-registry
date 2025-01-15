@@ -85,11 +85,11 @@ export async function searchBilling({
     const conditions = [];
 
     if (billings.includes('approved')) {
-      conditions.push({ approved: true });
+      conditions.push({ approved: false });
     }
 
     if (billings.includes('signed')) {
-      conditions.push({ signed: true });
+      conditions.push({ signed: false });
     }
 
     if (conditions.length > 0) {
