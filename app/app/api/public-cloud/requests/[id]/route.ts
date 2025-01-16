@@ -1,4 +1,4 @@
-import { DecisionStatus, EventType, PublicCloudRequest, RequestType, TaskType } from '@prisma/client';
+import { DecisionStatus, EventType, PublicCloudRequest, RequestType, TaskStatus, TaskType } from '@prisma/client';
 import { z } from 'zod';
 import { GlobalRole } from '@/constants';
 import createApiHandler from '@/core/api-handler';
@@ -69,6 +69,7 @@ export const PUT = apiHandler(async ({ pathParams, session }) => {
             licencePlate,
           },
         },
+        type: TaskType.SIGN_PUBLIC_CLOUD_MOU,
       },
     });
   }
