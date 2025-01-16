@@ -1,6 +1,6 @@
 'use client';
 
-import { Avatar, Badge, Box, Group, Table, Text } from '@mantine/core';
+import { Avatar, Badge, Group, Table, Text } from '@mantine/core';
 import { useForm } from 'react-hook-form';
 import MinistryBadge from '@/components/badges/MinistryBadge';
 import CopyableButton from '@/components/generic/button/CopyableButton';
@@ -28,18 +28,16 @@ export default function TableBody({ data }: TableProps) {
         <Table.Tr key={billing.id ?? index}>
           {/* Billing Info */}
           <Table.Td style={{ overflow: 'hidden' }}>
-            <Box w={100}>
-              <Text size="xs" className="font-semibold">
-                Licence plate
-              </Text>
-              <Text size="xs" c="dimmed" component="span">
-                <CopyableButton>{billing.licencePlate}</CopyableButton>
-              </Text>
-              <Text size="xs" className="font-semibold mt-2">
-                Account coding
-              </Text>
-              <CopyableButton trancatedLen={10}>{billing.accountCoding}</CopyableButton>
-            </Box>
+            <Text size="xs" className="font-semibold">
+              Licence plate
+            </Text>
+            <Text size="xs" c="dimmed" component="span">
+              <CopyableButton>{billing.licencePlate}</CopyableButton>
+            </Text>
+            <Text size="xs" className="font-semibold mt-2">
+              Account coding
+            </Text>
+            <CopyableButton trancatedLen={10}>{billing.accountCoding}</CopyableButton>
           </Table.Td>
 
           {/* Expense Authority */}
@@ -62,24 +60,14 @@ export default function TableBody({ data }: TableProps) {
 
           {/* Dates */}
           <Table.Td>
-            <Group gap="sm" align="flex-start">
-              <div>
-                <Text size="sm" className="font-semibold">
-                  Create date
-                </Text>
-                <Text size="sm" c="dimmed">
-                  {formatDate(billing.createdAt)}
-                </Text>
-              </div>
-              <div>
-                <Text size="sm" className="font-semibold mt-2">
-                  Last update date
-                </Text>
-                <Text size="sm" c="dimmed">
-                  {formatDate(billing.updatedAt)}
-                </Text>
-              </div>
-            </Group>
+            <Text size="sm" c="dimmed">
+              {formatDate(billing.createdAt)}
+            </Text>
+          </Table.Td>
+          <Table.Td>
+            <Text size="sm" c="dimmed">
+              {formatDate(billing.updatedAt)}
+            </Text>
           </Table.Td>
 
           {/* Approved By */}
@@ -106,7 +94,6 @@ export default function TableBody({ data }: TableProps) {
               </Badge>
             )}
           </Table.Td>
-
           {/* Signed By */}
           <Table.Td>
             {billing.signed ? (
@@ -148,7 +135,8 @@ export default function TableBody({ data }: TableProps) {
           <Table.Tr>
             <Table.Th>Billing info</Table.Th>
             <Table.Th>Expense authority</Table.Th>
-            <Table.Th>Dates</Table.Th>
+            <Table.Th>Create date</Table.Th>
+            <Table.Th>Last update date</Table.Th>
             <Table.Th>Approved by</Table.Th>
             <Table.Th>Signed by</Table.Th>
           </Table.Tr>
