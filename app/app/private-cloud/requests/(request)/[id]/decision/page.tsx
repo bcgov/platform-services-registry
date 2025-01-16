@@ -98,7 +98,11 @@ export default privateCloudRequestDecision(({ getPathParams, session, router }) 
     return null;
   }
 
-  const isDisabled = !snap.currentRequest._permissions.edit;
+  let isDisabled = !snap.currentRequest._permissions.edit;
+
+  if (snap.currentRequest._permissions.cancel) {
+    isDisabled = true;
+  }
 
   const accordionItems = [
     {
