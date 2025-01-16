@@ -26,39 +26,24 @@ export default function TableBody({ data }: TableProps) {
     billings.length > 0 ? (
       billings.map((billing, index) => (
         <Table.Tr key={billing.id ?? index}>
-          <Table.Td>
-            <Group gap="sm" className="cursor-pointer" onClick={async () => {}}>
-              <ul>
-                <li>
-                  <Text size="xs" className="font-semibold">
-                    Licence plate
-                  </Text>
-                  <Text size="xs" c="dimmed" component="span">
-                    <CopyableButton>{billing.licencePlate}</CopyableButton>
-                  </Text>
-                </li>
-                <li>
-                  <Text size="xs" className="font-semibold">
-                    Account coding
-                  </Text>
-                  <Text size="xs" c="dimmed" component="span">
-                    <CopyableButton>{billing.accountCoding}</CopyableButton>
-                  </Text>
-                </li>
-                <li>
-                  <Text size="xs" className="font-semibold">
-                    Create Date
-                  </Text>
-                  <Text size="xs" c="dimmed" component="span">
-                    {formatDate(billing.createdAt)}
-                  </Text>
-                </li>
-              </ul>
-            </Group>
+          {/* Billing Info */}
+          <Table.Td style={{ overflow: 'hidden' }}>
+            <Text size="xs" className="font-semibold">
+              Licence plate
+            </Text>
+            <Text size="xs" c="dimmed" component="span">
+              <CopyableButton>{billing.licencePlate}</CopyableButton>
+            </Text>
+            <Text size="xs" className="font-semibold mt-2">
+              Account coding
+            </Text>
+            <CopyableButton trancatedLen={10}>{billing.accountCoding}</CopyableButton>
           </Table.Td>
+
+          {/* Expense Authority */}
           <Table.Td>
             {billing.expenseAuthority && (
-              <Group gap="sm" className="cursor-pointer" onClick={async () => {}}>
+              <Group gap="sm">
                 <Avatar src={getUserImageData(billing.expenseAuthority?.image)} size={36} radius="xl" />
                 <div>
                   <Text size="sm" className="font-semibold">
@@ -72,21 +57,23 @@ export default function TableBody({ data }: TableProps) {
               </Group>
             )}
           </Table.Td>
+
+          {/* Dates */}
           <Table.Td>
-            <Text size="xs">
-              <div>
-                <Badge color={billing.approved ? 'green' : 'red'} variant="filled" display="block">
-                  {billing.approved ? '' : 'not '}approved
-                </Badge>
-                <Badge color={billing.signed ? 'green' : 'red'} variant="filled" mt="xs">
-                  {billing.signed ? '' : 'not '}signed
-                </Badge>
-              </div>
+            <Text size="sm" c="dimmed">
+              {formatDate(billing.createdAt)}
             </Text>
           </Table.Td>
           <Table.Td>
-            {billing.approved && (
-              <Group gap="sm" className="cursor-pointer" onClick={async () => {}}>
+            <Text size="sm" c="dimmed">
+              {formatDate(billing.updatedAt)}
+            </Text>
+          </Table.Td>
+
+          {/* Approved By */}
+          <Table.Td>
+            {billing.approved ? (
+              <Group gap="sm">
                 <Avatar src={getUserImageData(billing.approvedBy?.image)} size={36} radius="xl" />
                 <div>
                   <Text size="sm" className="font-semibold">
@@ -96,13 +83,21 @@ export default function TableBody({ data }: TableProps) {
                   <Text size="xs" opacity={0.5}>
                     {billing.approvedBy?.email}
                   </Text>
+                  <Text size="sm" className="font-light mt-1">
+                    At: {formatDate(billing.approvedAt)}
+                  </Text>
                 </div>
               </Group>
+            ) : (
+              <Badge color="red" variant="filled">
+                Not approved
+              </Badge>
             )}
           </Table.Td>
+          {/* Signed By */}
           <Table.Td>
-            {billing.signed && (
-              <Group gap="sm" className="cursor-pointer" onClick={async () => {}}>
+            {billing.signed ? (
+              <Group gap="sm">
                 <Avatar src={getUserImageData(billing.signedBy?.image)} size={36} radius="xl" />
                 <div>
                   <Text size="sm" className="font-semibold">
@@ -112,15 +107,22 @@ export default function TableBody({ data }: TableProps) {
                   <Text size="xs" opacity={0.5}>
                     {billing.signedBy?.email}
                   </Text>
+                  <Text size="sm" className="font-light mt-1">
+                    At: {formatDate(billing.signedAt)}
+                  </Text>
                 </div>
               </Group>
+            ) : (
+              <Badge color="red" variant="filled" mt="xs">
+                Not signed
+              </Badge>
             )}
           </Table.Td>
         </Table.Tr>
       ))
     ) : (
       <Table.Tr>
-        <Table.Td colSpan={5} className="italic">
+        <Table.Td colSpan={5} className="italic text-center">
           No billings found
         </Table.Td>
       </Table.Tr>
@@ -133,7 +135,8 @@ export default function TableBody({ data }: TableProps) {
           <Table.Tr>
             <Table.Th>Billing info</Table.Th>
             <Table.Th>Expense authority</Table.Th>
-            <Table.Th>Status</Table.Th>
+            <Table.Th>Create date</Table.Th>
+            <Table.Th>Last update date</Table.Th>
             <Table.Th>Approved by</Table.Th>
             <Table.Th>Signed by</Table.Th>
           </Table.Tr>
