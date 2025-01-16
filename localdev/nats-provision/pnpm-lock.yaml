@@ -20,7 +20,7 @@ importers:
     devDependencies:
       '@types/node':
         specifier: ^20.14.1
-        version: 20.17.12
+        version: 20.17.14
       '@types/wait-on':
         specifier: ^5.3.4
         version: 5.3.4
@@ -203,8 +203,8 @@ packages:
   '@sideway/pinpoint@2.0.0':
     resolution: {integrity: sha512-RNiOoTPkptFtSVzQevY/yWtZwf/RxyVnPy/OcA9HBM3MlGDnBEYL5B41H0MTn0Uec8Hi+2qUtTfG2WWZBmMejQ==}
 
-  '@types/node@20.17.12':
-    resolution: {integrity: sha512-vo/wmBgMIiEA23A/knMfn/cf37VnuF52nZh5ZoW0GWt4e4sxNquibrMRJ7UQsA06+MBx9r/H1jsI9grYjQCQlw==}
+  '@types/node@20.17.14':
+    resolution: {integrity: sha512-w6qdYetNL5KRBiSClK/KWai+2IMEJuAj+EujKCumalFOwXtvOXaEan9AuwcRID2IcOIAWSIfR495hBtgKlx2zg==}
 
   '@types/wait-on@5.3.4':
     resolution: {integrity: sha512-EBsPjFMrFlMbbUFf9D1Fp+PAB2TwmUn7a3YtHyD9RLuTIk1jDd8SxXVAoez2Ciy+8Jsceo2MYEYZzJ/DvorOKw==}
@@ -553,13 +553,13 @@ snapshots:
 
   '@sideway/pinpoint@2.0.0': {}
 
-  '@types/node@20.17.12':
+  '@types/node@20.17.14':
     dependencies:
       undici-types: 6.19.8
 
   '@types/wait-on@5.3.4':
     dependencies:
-      '@types/node': 20.17.12
+      '@types/node': 20.17.14
 
   ansi-regex@5.0.1: {}
 
