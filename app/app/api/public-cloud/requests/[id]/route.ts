@@ -69,7 +69,6 @@ export const PUT = apiHandler(async ({ pathParams, session }) => {
             licencePlate,
           },
         },
-        type: TaskType.SIGN_PUBLIC_CLOUD_MOU,
       },
     });
   }
