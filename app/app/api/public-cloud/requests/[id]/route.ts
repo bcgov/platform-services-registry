@@ -1,4 +1,4 @@
-import { DecisionStatus, EventType, PublicCloudRequest } from '@prisma/client';
+import { DecisionStatus, EventType, PublicCloudRequest, RequestType, TaskType } from '@prisma/client';
 import { z } from 'zod';
 import { GlobalRole } from '@/constants';
 import createApiHandler from '@/core/api-handler';
@@ -48,57 +48,31 @@ export const PUT = apiHandler(async ({ pathParams, session }) => {
       },
       select: {
         licencePlate: true,
-        decisionDataId: true,
-        requestDataId: true,
       },
     },
     session,
   );
 
-  const { decisionDataId, requestDataId, licencePlate } = updatedRequest as unknown as PublicCloudRequest;
+  const { licencePlate } = updatedRequest as unknown as PublicCloudRequest;
 
-  const billingData = await prisma.billing.findFirst({
-    where: {
-      licencePlate,
-    },
-    select: {
-      expenseAuthorityId: true,
-    },
-  });
-
-  await prisma.publicCloudRequestedProject.updateMany({
-    where: {
-      expenseAuthorityId: billingData?.expenseAuthorityId,
-    },
-    data: {
-      billingId: null,
-    },
-  });
-
-  await prisma.billing.deleteMany({
-    where: {
-      licencePlate,
-      signed: false,
-    },
-  });
-
-  await prisma.task.deleteMany({
-    where: {
-      data: {
-        equals: {
-          licencePlate,
-        },
+  if (request?.type === RequestType.CREATE) {
+    await prisma.billing.deleteMany({
+      where: {
+        licencePlate,
       },
-    },
-  });
+    });
 
-  await prisma.publicCloudRequest.update({
-    where: { id },
-    data: {
-      decisionDataId,
-      requestDataId,
-    },
-  });
+    await prisma.task.deleteMany({
+      where: {
+        data: {
+          equals: {
+            licencePlate,
+          },
+        },
+        type: TaskType.SIGN_PUBLIC_CLOUD_MOU,
+      },
+    });
+  }
 
   await createEvent(EventType.CANCEL_PUBLIC_CLOUD_REQUEST, session.user.id, { requestId: id });
 
