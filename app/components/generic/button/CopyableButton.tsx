@@ -2,6 +2,7 @@ import { Tooltip, UnstyledButton } from '@mantine/core';
 import { useClipboard } from '@mantine/hooks';
 import { IconClipboardCopy } from '@tabler/icons-react';
 import _isString from 'lodash-es/isString';
+import _truncate from 'lodash-es/truncate';
 import React from 'react';
 import { cn } from '@/utils/js';
 
@@ -11,12 +12,14 @@ export default function CopyableButton({
   className = '',
   onClick,
   updateContent = false,
+  trancatedLen,
 }: {
   children?: React.ReactNode;
   value?: string;
   className?: string;
   onClick?: () => void;
   updateContent?: boolean;
+  trancatedLen?: number;
 }) {
   const clipboard = useClipboard({ timeout: 500 });
 
@@ -28,7 +31,7 @@ export default function CopyableButton({
           'hover:underline': _isString(children),
         })}
       >
-        {children}
+        {_isString(children) && trancatedLen ? _truncate(children, { length: trancatedLen }) : children}
         {_isString(children) && <IconClipboardCopy className="" />}
       </div>
     );
@@ -37,7 +40,11 @@ export default function CopyableButton({
   }
 
   return (
-    <Tooltip label={clipboard.copied ? 'Copied' : 'Copy'} position="top" offset={10}>
+    <Tooltip
+      label={`${clipboard.copied ? 'Copied' : 'Copy'} ${trancatedLen ? children : ''}`}
+      position="top"
+      offset={10}
+    >
       <UnstyledButton
         className={cn('inline-block', className)}
         onClick={(e) => {

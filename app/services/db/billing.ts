@@ -13,6 +13,9 @@ export type SearchBilling = Prisma.BillingGetPayload<{
     signed: true;
     approved: true;
     createdAt: true;
+    signedAt: true;
+    approvedAt: true;
+    updatedAt: true;
     approvedBy: {
       select: {
         firstName: true;
@@ -112,6 +115,9 @@ export async function searchBilling({
         signed: true,
         approved: true,
         createdAt: true,
+        signedAt: true,
+        approvedAt: true,
+        updatedAt: true,
         approvedBy: {
           select: {
             firstName: true,
