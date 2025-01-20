@@ -7,7 +7,7 @@ COPY ["package.json", "pnpm-lock.yaml", "migrate-mongo-config.js", "./"]
 COPY migrations migrations
 
 RUN npm install -g turbo pnpm
-RUN pnpm install --no-frozen-lockfile --ignore-scripts
+RUN pnpm install --ignore-scripts
 
 USER node
 

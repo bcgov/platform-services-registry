@@ -18,7 +18,7 @@ dev:
 
 .PHONY: install
 install:
-	pnpm install --no-frozen-lockfile
+	pnpm install
 	npm install --prefix app
 	npm install --prefix data-migrations
 
