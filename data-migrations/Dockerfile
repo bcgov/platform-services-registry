@@ -1,4 +1,5 @@
-FROM node:22.12.0-alpine3.19
+# TODO: debug further why migrate-mongo package won't work with 22.12 and contribute the package if needed.
+FROM node:22.10.0-alpine3.19
 
 WORKDIR /app
 
