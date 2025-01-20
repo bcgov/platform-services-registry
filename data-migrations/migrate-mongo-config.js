@@ -1,5 +1,7 @@
 import 'dotenv/config';
 
+console.log(process.env);
+
 const config = {
   mongodb: {
     url: process.env.DATABASE_URL,
