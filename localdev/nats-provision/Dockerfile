@@ -1,4 +1,4 @@
-FROM node:22.10.0-alpine3.19 AS build
+FROM node:22.12.0-alpine3.19 AS build
 WORKDIR /opt
 
 COPY ["mock-users.json", "types.ts", "./"]
@@ -10,7 +10,7 @@ RUN cd context && pnpm install --no-frozen-lockfile --ignore-scripts
 RUN cd _packages/keycloak-admin && pnpm install --no-frozen-lockfile --ignore-scripts && pnpm build
 RUN cd context && pnpm build
 
-FROM node:22.10.0-alpine3.19
+FROM node:22.12.0-alpine3.19
 WORKDIR /opt
 
 COPY --from=build /opt/context/build ./
