@@ -1,7 +1,5 @@
 import 'dotenv/config';
 
-console.log('pre', process.env);
-
 const config = {
   mongodb: {
     url: process.env.DATABASE_URL,
@@ -30,7 +28,5 @@ const config = {
   // Don't change this, unless you know what you're doing
   moduleSystem: 'esm',
 };
-
-console.log('post', config);
 
 export default config;
