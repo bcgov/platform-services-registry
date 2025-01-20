@@ -1,5 +1,6 @@
 export * from './models';
 export * from './tasks';
+export * from './task';
 export * from './includes';
 export * from './event';
 export * from './user';

@@ -13,6 +13,7 @@ import {
   Icon,
   IconCalendarEvent,
   IconSignLeft,
+  IconCheckupList,
 } from '@tabler/icons-react';
 import Link from 'next/link';
 import { Permissions } from 'next-auth';
@@ -127,6 +128,12 @@ export default function UserMenu() {
       Icon: IconSignLeft,
       href: '/billing/all',
       permission: 'viewBilling',
+    },
+    {
+      text: 'Tasks',
+      Icon: IconCheckupList,
+      href: '/tasks/all',
+      permission: 'viewTasks',
     },
     { divider: true, key: '1' },
     {

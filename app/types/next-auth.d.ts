@@ -48,6 +48,7 @@ declare module 'next-auth' {
     viewEvents: boolean;
     viewUsers: boolean;
     editUsers: boolean;
+    viewTasks: boolean;
 
     cancelPrivateCloudRequest: boolean;
     cancelPublicCloudRequest: boolean;
@@ -85,6 +86,7 @@ declare module 'next-auth' {
     isApprover: boolean;
     isBillingReviewer: boolean;
     isBillingReader: boolean;
+    isTaskReader: boolean;
     roles: string[];
     teams: { clientId: string; roles: string[] }[];
     ministries: {

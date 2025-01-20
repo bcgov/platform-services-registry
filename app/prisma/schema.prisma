@@ -52,6 +52,7 @@ model User {
   privateCloudRequestsAsDecisionMaker                   PrivateCloudRequest[]          @relation("decisionMaker")
   publicCloudRequestsAsDecisionMaker                    PublicCloudRequest[]           @relation("decisionMaker")
   events                                                Event[]                        @relation("UserToEvents")
+  Task                                                  Task[]                         @relation("UserToTasks")
 }
 
 model UserSession {
@@ -365,6 +366,7 @@ model Task {
   createdAt      DateTime   @default(now())
   completedAt    DateTime?
   completedBy    String?    @db.ObjectId
+  user           User?      @relation("UserToTasks", fields: [completedBy], references: [id])
   data           Json
   closedMetadata Json?
 }
