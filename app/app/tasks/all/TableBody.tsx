@@ -2,6 +2,7 @@
 
 import { Avatar, Badge, Group, Table, Text } from '@mantine/core';
 import { TaskStatus } from '@prisma/client';
+import { useQueries, useQuery } from '@tanstack/react-query';
 import { startCase } from 'lodash-es';
 import { useForm } from 'react-hook-form';
 import MinistryBadge from '@/components/badges/MinistryBadge';
@@ -9,6 +10,7 @@ import CopyableButton from '@/components/generic/button/CopyableButton';
 import { ExtendedTask, statusColorMap, taskTypeNames } from '@/constants/task';
 import { formatFullName } from '@/helpers/user';
 import { getUserImageData } from '@/helpers/user-image';
+import { getUserInfo } from '@/services/backend/user';
 import { formatDate } from '@/utils/js';
 
 interface TableProps {
@@ -98,11 +100,13 @@ export default function TableBody({ data }: TableProps) {
         <Table.Td>
           {task.userIds && Object.keys(task.userIds).length !== 0 && (
             <ul>
-              {Object.entries(task.userIds).map(([key, value]) => (
-                <li key={key}>
-                  <CopyableButton trancatedLen={10}>{value}</CopyableButton>
-                </li>
-              ))}
+              {Object.entries(task.userIds).map(([key, value]) => {
+                return (
+                  <li key={key}>
+                    <CopyableButton trancatedLen={10}>{value}</CopyableButton>
+                  </li>
+                );
+              })}
             </ul>
           )}
         </Table.Td>
