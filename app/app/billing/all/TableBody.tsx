@@ -1,6 +1,7 @@
 'use client';
 
-import { Avatar, Badge, Group, Table, Text } from '@mantine/core';
+import { Avatar, Group, Table, Text } from '@mantine/core';
+import _uniq from 'lodash-es/uniq';
 import { useForm } from 'react-hook-form';
 import MinistryBadge from '@/components/badges/MinistryBadge';
 import CopyableButton from '@/components/generic/button/CopyableButton';
@@ -20,51 +21,107 @@ export default function TableBody({ data }: TableProps) {
     },
   });
 
+  const UniqueLicencePlates = ({
+    projects,
+  }: {
+    projects: {
+      licencePlate: string;
+    }[];
+  }) => {
+    const uniquePlates = _uniq(projects.map((project) => project.licencePlate));
+
+    if (uniquePlates.length === 0) {
+      return (
+        <Text size="xs" c="dimmed">
+          No data
+        </Text>
+      );
+    }
+
+    return (
+      <Text size="xs" c="dimmed" component="span">
+        {uniquePlates.map((licencePlate) => (
+          <span key={licencePlate}>
+            <CopyableButton>{licencePlate}</CopyableButton>
+          </span>
+        ))}
+      </Text>
+    );
+  };
+
   const [billings] = methods.watch(['billings']);
 
   const rows =
     billings.length > 0 ? (
       billings.map((billing, index) => (
         <Table.Tr key={billing.id ?? index}>
-          {/* Billing Info */}
+          {/* Account coding */}
           <Table.Td style={{ overflow: 'hidden' }}>
             <Text size="xs" className="font-semibold">
-              Licence plate
+              Client code
             </Text>
             <Text size="xs" c="dimmed" component="span">
-              <CopyableButton>{billing.licencePlate}</CopyableButton>
+              {billing.accountCoding.slice(0, 3)}
             </Text>
-            <Text size="xs" className="font-semibold mt-2">
-              Account coding
+            <Text size="xs" className="font-semibold">
+              Responsibility centre
             </Text>
-            <CopyableButton trancatedLen={10}>{billing.accountCoding}</CopyableButton>
+            <Text size="xs" c="dimmed" component="span">
+              {billing.accountCoding.slice(3, 8)}
+            </Text>
+            <Text size="xs" className="font-semibold">
+              Service line
+            </Text>
+            <Text size="xs" c="dimmed" component="span">
+              {billing.accountCoding.slice(8, 13)}
+            </Text>
+            <Text size="xs" className="font-semibold">
+              Standard object of expense
+            </Text>
+            <Text size="xs" c="dimmed" component="span">
+              {billing.accountCoding.slice(13, 17)}
+            </Text>
+            <Text size="xs" className="font-semibold">
+              Project code
+            </Text>
+            <Text size="xs" c="dimmed" component="span">
+              {billing.accountCoding.slice(17, 24)}
+            </Text>
+
+            <Text size="xs" c="dimmed" component="span">
+              <CopyableButton trancatedLen={1}>{billing.accountCoding}</CopyableButton>
+            </Text>
           </Table.Td>
 
-          {/* Expense Authority */}
+          {/* products and requests */}
           <Table.Td>
-            {billing.expenseAuthority && (
-              <Group gap="sm">
-                <Avatar src={getUserImageData(billing.expenseAuthority?.image)} size={36} radius="xl" />
-                <div>
-                  <Text size="sm" className="font-semibold">
-                    {formatFullName(billing.expenseAuthority)}
-                    <MinistryBadge className="ml-1" ministry={billing.expenseAuthority?.ministry} />
-                  </Text>
-                  <Text size="xs" opacity={0.5}>
-                    {billing.expenseAuthority?.email}
-                  </Text>
-                </div>
-              </Group>
-            )}
+            <Text size="xs" className="font-semibold">
+              Initial licence plate
+            </Text>
+            <Text size="xs" c="dimmed">
+              <CopyableButton>{billing.licencePlate}</CopyableButton>
+            </Text>
+            <Text size="xs" className="font-semibold">
+              Requested products
+            </Text>
+            <UniqueLicencePlates projects={billing.publicCloudRequestedProjects} />
+            <Text size="xs" className="font-semibold">
+              Products
+            </Text>
+            <UniqueLicencePlates projects={billing.publicCloudProjects} />
           </Table.Td>
 
           {/* Dates */}
           <Table.Td>
+            <Text size="xs" className="font-semibold">
+              Created at
+            </Text>
             <Text size="sm" c="dimmed">
               {formatDate(billing.createdAt)}
             </Text>
-          </Table.Td>
-          <Table.Td>
+            <Text size="xs" className="font-semibold">
+              Updated at
+            </Text>
             <Text size="sm" c="dimmed">
               {formatDate(billing.updatedAt)}
             </Text>
@@ -89,9 +146,9 @@ export default function TableBody({ data }: TableProps) {
                 </div>
               </Group>
             ) : (
-              <Badge color="red" variant="filled">
-                Not approved
-              </Badge>
+              <Text size="xs" c="dimmed">
+                No data
+              </Text>
             )}
           </Table.Td>
           {/* Signed By */}
@@ -113,9 +170,9 @@ export default function TableBody({ data }: TableProps) {
                 </div>
               </Group>
             ) : (
-              <Badge color="red" variant="filled" mt="xs">
-                Not signed
-              </Badge>
+              <Text size="xs" c="dimmed">
+                No data
+              </Text>
             )}
           </Table.Td>
         </Table.Tr>
@@ -133,10 +190,9 @@ export default function TableBody({ data }: TableProps) {
       <Table verticalSpacing="sm">
         <Table.Thead>
           <Table.Tr>
-            <Table.Th>Billing info</Table.Th>
-            <Table.Th>Expense authority</Table.Th>
-            <Table.Th>Create date</Table.Th>
-            <Table.Th>Last update date</Table.Th>
+            <Table.Th>Account coding</Table.Th>
+            <Table.Th>Products and requests</Table.Th>
+            <Table.Th>Dates</Table.Th>
             <Table.Th>Approved by</Table.Th>
             <Table.Th>Signed by</Table.Th>
           </Table.Tr>

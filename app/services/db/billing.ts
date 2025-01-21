@@ -46,6 +46,18 @@ export type SearchBilling = Prisma.BillingGetPayload<{
         ministry: true;
       };
     };
+    publicCloudProjects: {
+      select: {
+        licencePlate: true;
+        provider: true;
+      };
+    };
+    publicCloudRequestedProjects: {
+      select: {
+        licencePlate: true;
+        provider: true;
+      };
+    };
   };
 }>;
 
@@ -69,18 +81,29 @@ export async function searchBilling({
 
   const filters: Prisma.BillingWhereInput = {};
 
+  const billingSearchFilter: Prisma.StringFilter<'Billing'> = {
+    contains: search,
+    mode: Prisma.QueryMode.insensitive,
+  };
+
+  const userSearchFilter: Prisma.StringFilter<'User'> = {
+    contains: search,
+    mode: Prisma.QueryMode.insensitive,
+  };
+
   if (search.trim()) {
     filters.OR = [
-      { expenseAuthority: { firstName: { contains: search, mode: 'insensitive' } } },
-      { expenseAuthority: { firstName: { contains: search, mode: 'insensitive' } } },
-      { expenseAuthority: { lastName: { contains: search, mode: 'insensitive' } } },
-      { signedBy: { email: { contains: search, mode: 'insensitive' } } },
-      { signedBy: { lastName: { contains: search, mode: 'insensitive' } } },
-      { signedBy: { email: { contains: search, mode: 'insensitive' } } },
-      { approvedBy: { firstName: { contains: search, mode: 'insensitive' } } },
-      { approvedBy: { lastName: { contains: search, mode: 'insensitive' } } },
-      { approvedBy: { email: { contains: search, mode: 'insensitive' } } },
-      { licencePlate: { contains: search, mode: 'insensitive' } },
+      { expenseAuthority: { firstName: userSearchFilter } },
+      { expenseAuthority: { firstName: userSearchFilter } },
+      { expenseAuthority: { lastName: userSearchFilter } },
+      { signedBy: { email: userSearchFilter } },
+      { signedBy: { lastName: userSearchFilter } },
+      { signedBy: { email: userSearchFilter } },
+      { approvedBy: { firstName: userSearchFilter } },
+      { approvedBy: { lastName: userSearchFilter } },
+      { approvedBy: { email: userSearchFilter } },
+      { licencePlate: billingSearchFilter },
+      { accountCoding: billingSearchFilter },
     ];
   }
 
@@ -148,9 +171,22 @@ export async function searchBilling({
             ministry: true,
           },
         },
+        publicCloudProjects: {
+          select: {
+            licencePlate: true,
+            provider: true,
+          },
+        },
+        publicCloudRequestedProjects: {
+          select: {
+            licencePlate: true,
+            provider: true,
+          },
+        },
       },
     }),
     prisma.billing.count({ where: filters }),
   ]);
+
   return { data, totalCount };
 }
