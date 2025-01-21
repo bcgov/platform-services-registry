@@ -46,6 +46,18 @@ export type SearchBilling = Prisma.BillingGetPayload<{
         ministry: true;
       };
     };
+    publicCloudProjects: {
+      select: {
+        licencePlate: true;
+        provider: true;
+      };
+    };
+    publicCloudRequestedProjects: {
+      select: {
+        licencePlate: true;
+        provider: true;
+      };
+    };
   };
 }>;
 
@@ -81,6 +93,7 @@ export async function searchBilling({
       { approvedBy: { lastName: { contains: search, mode: 'insensitive' } } },
       { approvedBy: { email: { contains: search, mode: 'insensitive' } } },
       { licencePlate: { contains: search, mode: 'insensitive' } },
+      { accountCoding: { contains: search, mode: 'insensitive' } },
     ];
   }
 
@@ -148,9 +161,22 @@ export async function searchBilling({
             ministry: true,
           },
         },
+        publicCloudProjects: {
+          select: {
+            licencePlate: true,
+            provider: true,
+          },
+        },
+        publicCloudRequestedProjects: {
+          select: {
+            licencePlate: true,
+            provider: true,
+          },
+        },
       },
     }),
     prisma.billing.count({ where: filters }),
   ]);
+
   return { data, totalCount };
 }

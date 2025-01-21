@@ -50,7 +50,6 @@ export default function CopyableButton({
         onClick={(e) => {
           e.stopPropagation();
           e.preventDefault();
-
           if (onClick) {
             clipboard.copy(onClick());
           } else if (value) {
