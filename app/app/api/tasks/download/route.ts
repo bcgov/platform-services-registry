@@ -22,23 +22,17 @@ export const POST = createApiHandler({
     return NoContent();
   }
 
-  const formattedData = data.map((task) => {
-    const taskData = task.data as { licencePlate: string; requestId: string };
-    const taskDecision = task.closedMetadata as { decision: string };
-
-    return {
-      Type: task.type,
-      'Licence Plate': taskData.licencePlate,
-      'Request Id': taskData.requestId,
-      Status: task.status,
-      'Task Created': formatDate(task.createdAt),
-      Decision: taskDecision?.decision,
-      'Completed By Name': formatFullName(task.user),
-      'Completed By Email': task.user?.email,
-      'Completed At': formatDate(task.completedAt),
-      'Assigned Roles': task.roles?.join(', '),
-      'Assigned Permissions': task.permissions?.join(', '),
-    };
-  });
+  const formattedData = data.map((task) => ({
+    Type: task.type,
+    Data: task.data,
+    Status: task.status,
+    'Task Created': formatDate(task.createdAt),
+    ClosedMetaData: task.closedMetadata,
+    'Completed By Name': formatFullName(task.user),
+    'Completed By Email': task.user?.email,
+    'Completed At': formatDate(task.completedAt),
+    'Assigned Roles': task.roles?.join(', '),
+    'Assigned Permissions': task.permissions?.join(', '),
+  }));
   return CsvResponse(formattedData, 'tasks.csv');
 });

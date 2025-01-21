@@ -53,11 +53,13 @@ export async function searchTasks({
   const filters: Prisma.TaskWhereInput = {};
 
   if (search.trim()) {
+    const searchCriteria: Prisma.StringFilter<'User'> = { contains: search, mode: 'insensitive' };
+
     filters.OR = [
-      { user: { firstName: { contains: search, mode: 'insensitive' } } },
-      { user: { lastName: { contains: search, mode: 'insensitive' } } },
-      { user: { email: { contains: search, mode: 'insensitive' } } },
-      { user: { ministry: { contains: search, mode: 'insensitive' } } },
+      { user: { firstName: searchCriteria } },
+      { user: { lastName: searchCriteria } },
+      { user: { email: searchCriteria } },
+      { user: { ministry: searchCriteria } },
     ];
   }
 
