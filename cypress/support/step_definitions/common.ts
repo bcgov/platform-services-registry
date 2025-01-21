@@ -82,19 +82,17 @@ When(/^User selects "(.*)" in "(.*)"$/, (entryText: string, dropdownLabel: strin
   cy.contains('label', dropdownLabel).scrollIntoView().parent().find('input, select').select(entryText);
 });
 
-When(
-  /^User selects quota "(.*)" in "(.*)" for "(.*)"$/,
-  (entryText: string, dropdownLabel: string, envLabel: string) => {
-    cy.contains('h3', envLabel)
-      .parent()
-      .find('label')
-      .contains(dropdownLabel)
-      .parent()
-      .find('select')
-      .scrollIntoView()
-      .select(entryText);
-  },
-);
+When(/^User types quota "(.*)" in "(.*)" for "(.*)"$/, (value: string, resourceType: string, envLabel: string) => {
+  cy.contains('h3', envLabel)
+    .parent()
+    .find('label')
+    .contains(resourceType)
+    .closest('.text-input')
+    .find('input')
+    .scrollIntoView()
+    .clear()
+    .type(value);
+});
 
 When(/^User checks checkbox "(?:\.\.\.)?(.*?)(?:\.\.\.)?"$/, (checkboxLabel: string) => {
   cy.contains('label', checkboxLabel).scrollIntoView().parent().parent().find('input').first().click();
