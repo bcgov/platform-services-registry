@@ -100,7 +100,7 @@ export default privateCloudRequestOriginal(({ getPathParams, session, router }) 
     },
     {
       LeftIcon: IconSettings,
-      label: 'Quotas',
+      label: 'Quotas (request)',
       description: '',
       Component: Quotas,
       componentArgs: {

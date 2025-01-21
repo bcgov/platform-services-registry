@@ -16,8 +16,8 @@ export default function ClusterDetails({ product, showNamespaceInfo = false, sho
     defaultProvisionedResource = (
       <>
         <Text className="mb-1 mt-1 h-4">CPU: {defaultResourceRequests.cpu} Core(s)</Text>
-        <Text className="mb-1 mt-1 h-4">Memory: {defaultResourceRequests.memory} GB</Text>
-        <Text className="mb-1 mt-1 h-4">Storage: {defaultResourceRequests.storage} GB</Text>
+        <Text className="mb-1 mt-1 h-4">Memory: {defaultResourceRequests.memory} GiB</Text>
+        <Text className="mb-1 mt-1 h-4">Storage: {defaultResourceRequests.storage} GiB</Text>
       </>
     );
   }

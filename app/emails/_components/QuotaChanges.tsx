@@ -38,7 +38,7 @@ export default function QuotaChanges({
       )}
       {currentResourceRequests.memory !== requestedResourceRequests.memory && (
         <div>
-          <Text className="mt-6 mb-0 font-semibold h-4">Memory requests (GB)</Text>
+          <Text className="mt-6 mb-0 font-semibold h-4">Memory requests (GiB)</Text>
           <Text className="mt-1 mb-0 h-4">
             {currentResourceRequests.memory} &gt; {requestedResourceRequests.memory}
           </Text>
@@ -46,7 +46,7 @@ export default function QuotaChanges({
       )}
       {currentResourceRequests.storage !== requestedResourceRequests.storage && (
         <div>
-          <Text className="mt-6 mb-0 font-semibold h-4">Storage requests (GB)</Text>
+          <Text className="mt-6 mb-0 font-semibold h-4">Storage requests (GiB)</Text>
           <Text className="mt-1 mb-0 h-4">
             {currentResourceRequests.storage} &gt; {requestedResourceRequests.storage}
           </Text>
