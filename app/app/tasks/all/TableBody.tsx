@@ -6,7 +6,6 @@ import { useQueries } from '@tanstack/react-query';
 import { startCase } from 'lodash-es';
 import { useForm } from 'react-hook-form';
 import MinistryBadge from '@/components/badges/MinistryBadge';
-import CopyableButton from '@/components/generic/button/CopyableButton';
 import { ExtendedTask, statusColorMap, taskTypeNames } from '@/constants/task';
 import { formatFullName } from '@/helpers/user';
 import { getUserImageData } from '@/helpers/user-image';
@@ -79,16 +78,16 @@ export default function TableBody({ data }: TableProps) {
           )}
         </Table.Td>
         <Table.Td>
-          {task.roles && Object.keys(task.roles).length !== 0 && (
+          {task.roles && task.roles?.length !== 0 && (
             <>
               <Text c="dimmed" size="sm" className="font-semibold">
                 Roles:
               </Text>
               <ul className="mb-3">
-                {Object.entries(task.roles).map(([key, value]) => (
+                {task.roles.map((role, key) => (
                   <li key={key}>
                     <Badge autoContrast={true} size="sm" color="gray">
-                      {startCase(value)}
+                      {startCase(role)}
                     </Badge>
                   </li>
                 ))}
@@ -96,7 +95,7 @@ export default function TableBody({ data }: TableProps) {
             </>
           )}
 
-          {task.permissions && task.permissions.length !== 0 && (
+          {task.permissions && task.permissions?.length !== 0 && (
             <>
               <Text c="dimmed" size="sm" className="font-semibold">
                 Permissions:
