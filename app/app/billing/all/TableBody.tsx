@@ -1,6 +1,7 @@
 'use client';
 
 import { Avatar, Group, Table, Text } from '@mantine/core';
+import _uniq from 'lodash-es/uniq';
 import { useForm } from 'react-hook-form';
 import MinistryBadge from '@/components/badges/MinistryBadge';
 import CopyableButton from '@/components/generic/button/CopyableButton';
@@ -27,7 +28,7 @@ export default function TableBody({ data }: TableProps) {
       licencePlate: string;
     }[];
   }) => {
-    const uniquePlates = Array.from(new Set(projects.map((project) => project.licencePlate)));
+    const uniquePlates = _uniq(projects.map((project) => project.licencePlate));
 
     if (uniquePlates.length === 0) {
       return (
