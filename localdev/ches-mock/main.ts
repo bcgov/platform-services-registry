@@ -65,7 +65,7 @@ export const sendViaMailPit = async (email: z.infer<typeof EmailSchema>): Promis
     from: email.from || 'Registry <PlatformServicesTeam@gov.bc.ca>',
     to: email.to.join(', '),
     subject: email.subject,
-    html: sanitizedBody, // Use the sanitized body
+    html: sanitizedBody,
     cc: email.cc ? email.cc.join(', ') : undefined,
     bcc: email.bcc ? email.bcc.join(', ') : undefined,
     attachments: email.attachments,
@@ -78,29 +78,22 @@ export const sendViaMailPit = async (email: z.infer<typeof EmailSchema>): Promis
 app.post('/email', async (req: Request, res: Response): Promise<void> => {
   const email = EmailSchema.parse(req.body);
   const info = await sendViaMailPit(email);
-  res.status(200).json({
-    message: 'Email sent successfully',
-    messageId: info.messageId,
-    accepted: info.accepted,
-    rejected: info.rejected,
-    response: info.response, // SMTP response
-  });
+  console.log('Success:', info);
+  res.json({ success: true, info });
 });
 
 app.get('/health', async (req: Request, res: Response): Promise<void> => {
-  res.json({
-    success: true,
-  });
+  res.json({ success: true });
 });
 
-// Error-handling middleware
 app.use((err: any, req: Request, res: Response, next: NextFunction) => {
-  console.error(err.stack); // Log the error stack for debugging
+  console.error(err.stack);
   const statusCode = err.status || 500;
+
   res.status(statusCode).json({
     error: 'An error occurred',
     message: err.message || 'Internal Server Error',
-    details: err.errors || null, // Include validation errors, if any
+    details: err.errors || null,
   });
 });
 
