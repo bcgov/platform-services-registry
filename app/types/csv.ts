@@ -13,8 +13,8 @@ export interface PrivateProductCsvRecord {
   'Update date': string;
   'Licence plate': string;
   'Total compute quota (cores)': string;
-  'Total memory quota (GB)': string;
-  'Total storage quota (GB)': string;
+  'Total memory quota (GiB)': string;
+  'Total storage quota (GiB)': string;
   Status: string;
 }
 

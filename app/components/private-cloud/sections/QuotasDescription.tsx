@@ -23,7 +23,7 @@ export default function QuotasDescription() {
           <li>
             The adjustment satisfies one of the following:
             <ul className="list-disc pl-5">
-              <li>Starts from a minimum of 1 core for CPU and 2GB for memory, or</li>
+              <li>Starts from a minimum of 1 core for CPU and 2GiB for memory, or</li>
               <li>Does not exceed a 50% increase in the quota.</li>
             </ul>
           </li>
@@ -35,7 +35,7 @@ export default function QuotasDescription() {
           <li>
             The adjustment satisfies one of the following:
             <ul className="list-disc pl-5">
-              <li>Is 32GB or less, or</li>
+              <li>Is 32GiB or less, or</li>
               <li>Does not exceed a 50% increase in the current capacity.</li>
             </ul>
           </li>

@@ -72,8 +72,8 @@ export const POST = createApiHandler({
       'Update date': formatDateSimple(project.updatedAt),
       'Licence plate': project.licencePlate,
       'Total compute quota (cores)': String(cpuRequestTotal),
-      'Total memory quota (GB)': String(memoryRequestTotal),
-      'Total storage quota (GB)': String(storageTotal),
+      'Total memory quota (GiB)': String(memoryRequestTotal),
+      'Total storage quota (GiB)': String(storageTotal),
       Status: project.status,
     };
   });

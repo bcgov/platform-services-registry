@@ -147,7 +147,7 @@ export default privateCloudProductEdit(({ session }) => {
     },
     {
       LeftIcon: IconSettings,
-      label: 'Quotas',
+      label: 'Quotas (request)',
       description: '',
       Component: Quotas,
       componentArgs: {

@@ -19,8 +19,8 @@ const namespaceSuffixes = {
 
 const resourceUnit = {
   cpu: 'Core',
-  memory: 'GB',
-  storage: 'GB',
+  memory: 'GiB',
+  storage: 'GiB',
 };
 
 type ResourceRequestsEnvKeys = Array<keyof ResourceRequestsEnv>;
