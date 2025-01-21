@@ -172,3 +172,6 @@ services:
     stdin_open: true
     ports:
     - 3025:3025
+    environment:
+      SMTP_HOST: mailpit
+      SMTP_PORT: 1025
