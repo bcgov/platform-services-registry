@@ -4,6 +4,7 @@ import createApiHandler from '@/core/api-handler';
 import { logger } from '@/core/logging';
 import prisma from '@/core/prisma';
 import { NotFoundResponse, OkResponse } from '@/core/responses';
+import { sendWebhookMessage } from '@/helpers/webhook';
 import { sendRequestCompletionEmails } from '@/services/ches/private-cloud';
 import { models, privateCloudRequestDetailInclude } from '@/services/db';
 
@@ -74,9 +75,19 @@ export const POST = apiHandler(async ({ pathParams, session }) => {
             create: decisionData,
           });
 
-    const [updatedRequest] = await Promise.all([updateRequest, upsertProject]);
+    const [updatedRequest, upsertedProduct] = await Promise.all([updateRequest, upsertProject]);
     const updatedRequestDecorated = await models.privateCloudRequest.decorate(updatedRequest, session, true);
-    await sendRequestCompletionEmails(updatedRequestDecorated);
+
+    await Promise.all([
+      sendRequestCompletionEmails(updatedRequestDecorated),
+      sendWebhookMessage(upsertedProduct.licencePlate, {
+        action: request.type,
+        product: {
+          id: upsertedProduct.id,
+          licencePlate: upsertedProduct.licencePlate,
+        },
+      }),
+    ]);
   }
 
   const message = `Successfully marked ${licencePlate} as ${isPartialProvision ? 'partially-' : ''}provisioned.`;

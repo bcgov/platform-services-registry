@@ -74,7 +74,6 @@ export function createSamplePrivateCloudRequest(args?: {
     commonComponents: commonComponents,
     golddrEnabled: false,
     supportPhoneNumber: '',
-    webhookUrl: '',
     createdAt: new Date(),
     updatedAt: new Date(),
   };

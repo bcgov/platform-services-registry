@@ -258,7 +258,7 @@ export function createSessionModel<
   ): Promise<ReadResult<TDetail | TDetailDecorated, TUpsertArgs>> {
     const finalArgs = { where, ...otherArgs } as TUpsertArgs;
 
-    const one = await model.findFirst(finalArgs);
+    const one = await model.findFirst({ where });
     // Update document
     if (one) {
       const updateArgs = { where, select, include: otherArgs.include, data: otherArgs.update } as TUpdateArgs;

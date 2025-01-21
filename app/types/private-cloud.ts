@@ -1,5 +1,9 @@
 import { Ministry, Cluster, User, Prisma, PrivateCloudProductMember } from '@prisma/client';
-import { PrivateCloudProjectDecorate, PrivateCloudRequestDecorate } from './doc-decorate';
+import {
+  PrivateCloudProjectDecorate,
+  PrivateCloudRequestDecorate,
+  PrivateCloudProductWebhookDecorate,
+} from './doc-decorate';
 
 export type ExtendedPrivateCloudProductMember = PrivateCloudProductMember & User;
 
@@ -134,3 +138,10 @@ export type PrivateCloudComment = Prisma.PrivateCloudCommentGetPayload<{
     user: true;
   };
 }>;
+
+export type PrivateCloudProductWebhookDetail = Prisma.PrivateCloudProductWebhookGetPayload<object>;
+export type PrivateCloudProductWebhookDetailDecorated = PrivateCloudProductWebhookDetail &
+  PrivateCloudProductWebhookDecorate;
+export type PrivateCloudProductWebhookSimple = Prisma.PrivateCloudProductWebhookGetPayload<object>;
+export type PrivateCloudProductWebhookSimpleDecorated = PrivateCloudProductWebhookSimple &
+  PrivateCloudProductWebhookDecorate;

@@ -1,4 +1,5 @@
 import _isString from 'lodash-es/isString';
+import _omit from 'lodash-es/omit';
 import { GlobalRole } from '@/constants';
 import createApiHandler from '@/core/api-handler';
 import { OkResponse } from '@/core/responses';
@@ -14,5 +15,8 @@ export const POST = createApiHandler({
     ...body,
   });
 
-  return OkResponse({ docs, totalCount });
+  return OkResponse({
+    docs,
+    totalCount,
+  });
 });

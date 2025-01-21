@@ -123,7 +123,10 @@ export const _privateCloudCreateRequestBodySchema = z.object({
       },
     ),
   requestComment: string().optional(),
-  webhookUrl: z
+});
+
+export const privateCloudProductWebhookBodySchema = z.object({
+  url: z
     .string()
     .url()
     .refine((value) => value.startsWith('https://'), {
@@ -132,6 +135,9 @@ export const _privateCloudCreateRequestBodySchema = z.object({
     .or(z.literal(''))
     .or(z.null())
     .optional(),
+  secret: z.string().min(2).max(40).or(z.literal('')).or(z.null()).optional(),
+  username: z.string().min(2).max(40).or(z.literal('')).or(z.null()).optional(),
+  password: z.string().min(2).max(40).or(z.literal('')).or(z.null()).optional(),
 });
 
 const isEmailUnique = (data: any) => {
@@ -240,3 +246,4 @@ export type PrivateCloudProductSearchNoPaginationBody = z.infer<typeof privateCl
 export type PrivateCloudProductSearchBody = z.infer<typeof privateCloudProductSearchBodySchema>;
 export type PrivateCloudRequestSearchBody = z.infer<typeof privateCloudRequestSearchBodySchema>;
 export type PrivateCloudAdminUpdateBody = z.infer<typeof privateCloudAdminUpdateBodySchema>;
+export type PrivateCloudProductWebhookBody = z.infer<typeof privateCloudProductWebhookBodySchema>;
