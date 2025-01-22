@@ -111,6 +111,14 @@ export async function searchTasks({
         in: userIds,
       },
     },
+    select: {
+      id: true,
+      image: true,
+      ministry: true,
+      email: true,
+      firstName: true,
+      lastName: true,
+    },
   });
 
   return { data, totalCount, usersWithAssignedTasks };
