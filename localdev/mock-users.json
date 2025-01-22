@@ -262,5 +262,29 @@
     "surname": "Test Account",
     "jobTitle": "admin",
     "officeLocation": ""
+  },
+  {
+    "id": "a008b857-36c8-4a17-a79a-518e33effed1",
+    "extension_85cc52e9286540fcb1f97ed86114a0e5_bcgovGUID": "a008b85736c84a17a79a518e33effed1",
+    "onPremisesSamAccountName": "PRIVATE_ADMIN_AND_REVIEWER_SYSTEM",
+    "userPrincipalName": "private.admin.and.reviewer.system@gov.bc.ca",
+    "mail": "private.admin.and.reviewer.system@gov.bc.ca",
+    "displayName": "System, Private Admin And Reviewer CITZ:EX",
+    "givenName": "Private Admin And Reviewer",
+    "surname": "System",
+    "jobTitle": "private-admin, private-reviewer",
+    "officeLocation": ""
+  },
+  {
+    "id": "a008b857-36c8-4a17-a79a-518e33effed2",
+    "extension_85cc52e9286540fcb1f97ed86114a0e5_bcgovGUID": "a008b85736c84a17a79a518e33effed1",
+    "onPremisesSamAccountName": "PUBLIC_ADMIN_AND_REVIEWER_SYSTEM",
+    "userPrincipalName": "public.admin.and.reviewer.system@gov.bc.ca",
+    "mail": "public.admin.and.reviewer.system@gov.bc.ca",
+    "displayName": "System, Public Admin And Reviewer CITZ:EX",
+    "givenName": "Public Admin And Reviewer",
+    "surname": "System",
+    "jobTitle": "public-admin, public-reviewer",
+    "officeLocation": ""
   }
 ]
