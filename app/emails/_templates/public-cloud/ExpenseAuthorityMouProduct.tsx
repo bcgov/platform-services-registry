@@ -14,7 +14,7 @@ export default function ExpenseAuthorityMouProduct({ product }: Props) {
 
   const { name, expenseAuthority, billing } = product;
 
-  const accountCoding = billing?.accountCoding;
+  const { accountCoding } = billing;
 
   return (
     <PublicCloudLayout showFooter>

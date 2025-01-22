@@ -14,7 +14,7 @@ export async function createSignPublicCloudMouTask(data: CreateSignPublicCloudMo
   const { request } = data;
   const { decisionData } = request;
 
-  if (!decisionData.expenseAuthorityId || decisionData.billing?.signed || decisionData.billing?.approved) {
+  if (!decisionData.expenseAuthorityId || decisionData.billing.signed || decisionData.billing.approved) {
     return null;
   }
 

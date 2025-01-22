@@ -98,7 +98,7 @@ export default publicCloudRequest(({ getPathParams }) => {
       label: 'Billing (account coding)',
       description: '',
       Component: AccountCoding,
-      componentArgs: { accountCodingInitial: request.decisionData.billing?.accountCoding, disabled: true },
+      componentArgs: { accountCodingInitial: request.decisionData.billing.accountCoding, disabled: true },
     },
   ];
 

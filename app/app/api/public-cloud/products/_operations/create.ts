@@ -92,7 +92,7 @@ export default async function createOp({ session, body }: { session: Session; bo
   const proms = [];
 
   // Assign a task to the expense authority for new billing
-  if (newRequest.decisionData.expenseAuthorityId && !newRequest.decisionData.billing?.signed) {
+  if (newRequest.decisionData.expenseAuthorityId && !newRequest.decisionData.billing.signed) {
     const taskProm = tasks.create(TaskType.SIGN_PUBLIC_CLOUD_MOU, { request: newRequest });
     proms.push(taskProm);
   } else {

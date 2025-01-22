@@ -13,7 +13,7 @@ export default function EmouServiceAgreement({ request }: Props) {
 
   const { name, billing } = request.decisionData;
 
-  const accountCoding = billing?.accountCoding;
+  const { accountCoding } = billing;
 
   return (
     <PublicCloudLayout showFooter>

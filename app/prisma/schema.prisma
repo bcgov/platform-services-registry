@@ -285,8 +285,8 @@ model PublicCloudProject {
   status                       ProjectStatus
   createdAt                    DateTime                   @default(now())
   updatedAt                    DateTime                   @updatedAt
-  billingId                    String?                    @db.ObjectId
-  billing                      Billing?                   @relation("billing", fields: [billingId], references: [id])
+  billingId                    String                     @db.ObjectId
+  billing                      Billing                    @relation("billing", fields: [billingId], references: [id])
   budget                       Budget
   projectOwnerId               String                     @db.ObjectId
   projectOwner                 User                       @relation("projectOwner", fields: [projectOwnerId], references: [id])
