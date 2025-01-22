@@ -34,3 +34,5 @@ app.get('/v1.0/users/:upn', (req: Request, res: Response) => {
 app.listen(port, () => {
   console.log(`M365 Mock Server running at https://localhost:${port}`);
 });
+
+export default app;
