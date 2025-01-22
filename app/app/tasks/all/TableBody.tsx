@@ -9,7 +9,8 @@ import MinistryBadge from '@/components/badges/MinistryBadge';
 import { ExtendedTask, statusColorMap, taskTypeNames } from '@/constants/task';
 import { formatFullName } from '@/helpers/user';
 import { getUserImageData } from '@/helpers/user-image';
-import { getUsersWithAssignedTask } from '@/services/backend/user';
+import {} from '@/services/backend/user';
+import { getUsersWithAssignedTask } from '@/services/backend/tasks';
 import { formatDate } from '@/utils/js';
 
 interface TableProps {

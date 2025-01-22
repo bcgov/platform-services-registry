@@ -1,4 +1,4 @@
-import { Prisma, User } from '@prisma/client';
+import { Prisma } from '@prisma/client';
 import axios from 'axios';
 import { userSorts } from '@/constants';
 import { AdminViewUser } from '@/types/user';
@@ -53,10 +53,5 @@ export async function downloadUsers(data: UserSearchBody) {
 
 export async function getUserInfo(id: string) {
   const result = await instance.get(`/${id}`).then((res) => res.data);
-  return result;
-}
-
-export async function getUsersWithAssignedTask() {
-  const result = await instance.get('/').then((res) => res.data);
   return result;
 }

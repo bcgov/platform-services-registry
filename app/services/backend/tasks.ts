@@ -52,3 +52,8 @@ export async function searchTasks(data: TaskSearchBody) {
 
   return result.data;
 }
+
+export async function getUsersWithAssignedTask() {
+  const result = await instance.get('/search').then((res) => res.data);
+  return result;
+}
