@@ -81,3 +81,11 @@ export interface UserDecorate {
     delete: boolean;
   };
 }
+
+export interface PrivateCloudProductWebhookDecorate {
+  _permissions: {
+    view: boolean;
+    edit: boolean;
+    delete: boolean;
+  };
+}

@@ -32,7 +32,6 @@ const privateDataFields = [
   'resourceRequests',
   'commonComponents',
   'supportPhoneNumber',
-  'webhookUrl',
 ];
 
 function preparePrivateCloudProductCloudData(data: any) {

@@ -6,6 +6,7 @@ import createApiHandler from '@/core/api-handler';
 import { logger } from '@/core/logging';
 import prisma from '@/core/prisma';
 import { NotFoundResponse, OkResponse } from '@/core/responses';
+import { sendWebhookMessage } from '@/helpers/webhook';
 import { sendRequestCompletionEmails } from '@/services/ches/private-cloud';
 import { models, privateCloudRequestDetailInclude } from '@/services/db';
 
@@ -80,26 +81,17 @@ export const PUT = apiHandler(async ({ pathParams, session }) => {
 
     await Promise.all([
       sendRequestCompletionEmails(updatedRequestDecorated),
-      upsertedProduct.webhookUrl &&
-        axios
-          .post(
-            upsertedProduct.webhookUrl,
-            {
-              action: request.type,
-              product: {
-                id: upsertedProduct.id,
-                licencePlate: upsertedProduct.licencePlate,
-              },
-            },
-            {
-              signal: AbortSignal.timeout(1000),
-            },
-          )
-          .catch(_noop),
+      sendWebhookMessage(upsertedProduct.licencePlate, {
+        action: request.type,
+        product: {
+          id: upsertedProduct.id,
+          licencePlate: upsertedProduct.licencePlate,
+        },
+      }),
     ]);
   }
 
   const message = `Successfully marked ${licencePlate} as ${isPartialProvision ? 'partially-' : ''}provisioned.`;
   logger.info(message);
-  return OkResponse({ message });
+  return OkResponse({ success: true, message });
 });

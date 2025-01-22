@@ -23,7 +23,6 @@ import FormErrorNotification from '@/components/generic/FormErrorNotification';
 import { openPrivateCloudRequestReviewModal } from '@/components/modal/privateCloudRequestReview';
 import AdditionalTeamMembers from '@/components/private-cloud/sections/AdditionalTeamMembers';
 import Quotas from '@/components/private-cloud/sections/Quotas';
-import Webhooks from '@/components/private-cloud/sections/Webhooks';
 import { GlobalRole } from '@/constants';
 import createClientPage from '@/core/client-page';
 import { usePrivateProductState } from '@/states/global';
@@ -141,15 +140,6 @@ export default privateCloudRequestDecision(({ getPathParams, session, router }) 
         cluster: snap.currentRequest?.originalData?.cluster,
         originalResourceRequests: snap.currentRequest?.originalData?.resourceRequests,
         quotaContactRequired: true,
-      },
-    },
-    {
-      LeftIcon: IconWebhook,
-      label: 'Webhooks',
-      description: '',
-      Component: Webhooks,
-      componentArgs: {
-        disabled: isDisabled,
       },
     },
   ];

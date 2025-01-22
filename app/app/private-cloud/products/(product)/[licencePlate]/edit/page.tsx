@@ -16,7 +16,7 @@ import FormErrorNotification from '@/components/generic/FormErrorNotification';
 import { openPrivateCloudProductEditSubmitModal } from '@/components/modal/privateCloudProductEditSubmit';
 import AdditionalTeamMembers from '@/components/private-cloud/sections/AdditionalTeamMembers';
 import Quotas from '@/components/private-cloud/sections/Quotas';
-import Webhooks from '@/components/private-cloud/sections/Webhooks';
+import SiloAccordion from '@/components/private-cloud/SiloAccordion';
 import { GlobalRole } from '@/constants';
 import createClientPage from '@/core/client-page';
 import { getQuotaChangeStatus } from '@/services/backend/private-cloud/products';
@@ -165,16 +165,13 @@ export default privateCloudProductEdit(({ session }) => {
       Component: CommonComponents,
       componentArgs: { disabled: isDisabled },
     },
-    {
-      LeftIcon: IconWebhook,
-      label: 'Webhooks',
-      description: '',
-      Component: Webhooks,
-      componentArgs: {
-        disabled: isDisabled,
-      },
-    },
   ];
+
+  const isMyProduct = [
+    snap.currentProduct.projectOwnerId,
+    snap.currentProduct.primaryTechnicalLeadId,
+    snap.currentProduct.secondaryTechnicalLeadId,
+  ].includes(session?.user.id ?? '');
 
   return (
     <div>
@@ -201,6 +198,10 @@ export default privateCloudProductEdit(({ session }) => {
           </div>
         </form>
       </FormProvider>
+
+      {isMyProduct && (
+        <SiloAccordion className="my-4" disabled={isDisabled} licencePlate={snap.currentProduct?.licencePlate} />
+      )}
     </div>
   );
 });

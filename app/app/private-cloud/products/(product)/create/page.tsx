@@ -12,7 +12,6 @@ import TeamContacts from '@/components/form/TeamContacts';
 import PageAccordion from '@/components/generic/accordion/PageAccordion';
 import FormErrorNotification from '@/components/generic/FormErrorNotification';
 import { openPrivateCloudProductCreateSubmitModal } from '@/components/modal/privateCloudProductCreateSubmit';
-import Webhooks from '@/components/private-cloud/sections/Webhooks';
 import { GlobalRole } from '@/constants';
 import createClientPage from '@/core/client-page';
 import { privateCloudCreateRequestBodySchema } from '@/validation-schemas/private-cloud';
@@ -56,13 +55,6 @@ export default privateCloudProductNew(({ session }) => {
       label: 'Common components',
       description: '',
       Component: CommonComponents,
-      componentArgs: {},
-    },
-    {
-      LeftIcon: IconWebhook,
-      label: 'Webhooks',
-      description: '',
-      Component: Webhooks,
       componentArgs: {},
     },
   ];

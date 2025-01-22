@@ -18,7 +18,6 @@ import TeamContacts from '@/components/form/TeamContacts';
 import PageAccordion from '@/components/generic/accordion/PageAccordion';
 import AdditionalTeamMembers from '@/components/private-cloud/sections/AdditionalTeamMembers';
 import Quotas from '@/components/private-cloud/sections/Quotas';
-import Webhooks from '@/components/private-cloud/sections/Webhooks';
 import { GlobalRole } from '@/constants';
 import createClientPage from '@/core/client-page';
 import { usePrivateProductState } from '@/states/global';
@@ -109,15 +108,6 @@ export default privateCloudRequestOriginal(({ getPathParams, session, router }) 
         cluster: snap.currentRequest?.originalData?.cluster,
         originalResourceRequests: snap.currentRequest?.originalData?.resourceRequests,
         quotaContactRequired: false,
-      },
-    },
-    {
-      LeftIcon: IconWebhook,
-      label: 'Webhooks',
-      description: '',
-      Component: Webhooks,
-      componentArgs: {
-        disabled: isDisabled,
       },
     },
   ];

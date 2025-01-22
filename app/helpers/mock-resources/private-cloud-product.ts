@@ -125,7 +125,6 @@ export function createSamplePrivateCloudProduct(args?: {
     temporaryProductNotificationDate: new Date(),
     requests: [],
     activeRequest: null,
-    webhookUrl: '',
     ...data,
   };
 
