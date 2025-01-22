@@ -2,37 +2,32 @@
 
 import { Avatar, Badge, Code, Group, Table, Text } from '@mantine/core';
 import { TaskStatus } from '@prisma/client';
-import { useQuery } from '@tanstack/react-query';
 import { startCase } from 'lodash-es';
 import { useForm } from 'react-hook-form';
 import MinistryBadge from '@/components/badges/MinistryBadge';
-import { ExtendedTask, statusColorMap, taskTypeNames } from '@/constants/task';
+import { ExtendedTask, statusColorMap, taskTypeNames, UserInfo } from '@/constants/task';
 import { formatFullName } from '@/helpers/user';
 import { getUserImageData } from '@/helpers/user-image';
 import {} from '@/services/backend/user';
-import { getUsersWithAssignedTask } from '@/services/backend/tasks';
 import { formatDate } from '@/utils/js';
 
 interface TableProps {
   data: ExtendedTask[];
+  assignees: UserInfo[];
 }
 
-export default function TableBody({ data }: TableProps) {
+export default function TableBody({ data, assignees }: TableProps) {
   const methods = useForm({
     values: {
       tasks: data,
+      taskAssignees: assignees,
     },
   });
 
-  const [tasks] = methods.watch(['tasks']);
-
-  const { data: userInfoMap } = useQuery({
-    queryKey: ['user', ''],
-    queryFn: () => getUsersWithAssignedTask(),
-  });
+  const [tasks, taskAssignees] = methods.watch(['tasks', 'taskAssignees']);
 
   const rows =
-    tasks.length && userInfoMap ? (
+    tasks.length && taskAssignees ? (
       tasks.map((task) => (
         <Table.Tr key={task.id}>
           <Table.Td>{taskTypeNames[task.type]}</Table.Td>
@@ -96,10 +91,11 @@ export default function TableBody({ data }: TableProps) {
           <Table.Td>
             {task.userIds && Object.keys(task.userIds).length !== 0 && (
               <ul>
-                {Object.entries(task.userIds).map(([key, value]) => {
-                  const userInfo = userInfoMap[value];
+                {Object.entries(task.userIds).map(([index]) => {
+                  console.log(index);
+                  const userInfo = taskAssignees[Number(index)];
                   return (
-                    <li className="my-5" key={key}>
+                    <li className="my-5" key={index}>
                       <Avatar src={getUserImageData(userInfo?.image)} size={36} radius="xl" />
                       <div>
                         <Text size="sm" className="font-semibold">

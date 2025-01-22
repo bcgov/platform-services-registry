@@ -4,7 +4,7 @@ import { useQuery } from '@tanstack/react-query';
 import { useSnapshot } from 'valtio/react';
 import Table from '@/components/generic/table/Table';
 import { GlobalPermissions } from '@/constants';
-import { taskSorts, ExtendedTask } from '@/constants/task';
+import { taskSorts, ExtendedTask, UserInfo } from '@/constants/task';
 import createClientPage from '@/core/client-page';
 import { downloadTasks, searchTasks } from '@/services/backend/tasks';
 import FilterPanel from './FilterPanel';
@@ -20,6 +20,7 @@ export default tasksPage(() => {
   const snap = useSnapshot(pageState);
   let totalCount = 0;
   let tasks: ExtendedTask[] = [];
+  let usersWithAssignedTasks: UserInfo[] = [];
 
   const { data, isLoading } = useQuery({
     queryKey: ['tasks', snap],
@@ -29,7 +30,9 @@ export default tasksPage(() => {
   if (!isLoading && data) {
     tasks = data.data;
     totalCount = data.totalCount;
+    usersWithAssignedTasks = data.usersWithAssignedTasks;
   }
+
   return (
     <>
       <Table
@@ -58,7 +61,7 @@ export default tasksPage(() => {
         filters={<FilterPanel />}
         isLoading={isLoading}
       >
-        <TableBody data={tasks} />
+        <TableBody data={tasks} assignees={usersWithAssignedTasks} />
       </Table>
     </>
   );

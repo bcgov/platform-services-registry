@@ -50,8 +50,3 @@ export async function downloadUsers(data: UserSearchBody) {
 
   return result;
 }
-
-export async function getUserInfo(id: string) {
-  const result = await instance.get(`/${id}`).then((res) => res.data);
-  return result;
-}

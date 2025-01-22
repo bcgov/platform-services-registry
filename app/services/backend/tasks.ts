@@ -1,6 +1,6 @@
 import { Task } from '@prisma/client';
 import axios from 'axios';
-import { taskSorts, ExtendedTask } from '@/constants/task';
+import { taskSorts, ExtendedTask, UserInfo } from '@/constants/task';
 import { downloadFile } from '@/utils/browser';
 import { TaskSearchBody } from '@/validation-schemas/task';
 import { instance as baseInstance } from './axios';
@@ -48,12 +48,10 @@ export async function downloadTasks(data: TaskSearchBody) {
 
 export async function searchTasks(data: TaskSearchBody) {
   const reqData = prepareSearchPayload(data);
-  const result = await instance.post<{ data: ExtendedTask[]; totalCount: number }>('/search', reqData);
+  const result = await instance.post<{ data: ExtendedTask[]; totalCount: number; usersWithAssignedTasks: UserInfo[] }>(
+    '/search',
+    reqData,
+  );
 
   return result.data;
-}
-
-export async function getUsersWithAssignedTask() {
-  const result = await instance.get('/search').then((res) => res.data);
-  return result;
 }

@@ -43,3 +43,17 @@ export const taskSorts = [
 export interface ExtendedTask extends Task {
   user?: User | null;
 }
+
+type NullableFields<T> = {
+  [K in keyof T]: T[K] | null;
+};
+
+export interface UserInfo
+  extends NullableFields<{
+    id: string;
+    image: string;
+    ministry: string;
+    email: string;
+    firstName: string;
+    lastName: string;
+  }> {}
