@@ -55,3 +55,8 @@ export async function getUserInfo(id: string) {
   const result = await instance.get(`/${id}`).then((res) => res.data);
   return result;
 }
+
+export async function getUsersWithAssignedTask() {
+  const result = await instance.get('/').then((res) => res.data);
+  return result;
+}

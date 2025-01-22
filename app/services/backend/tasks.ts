@@ -49,5 +49,6 @@ export async function downloadTasks(data: TaskSearchBody) {
 export async function searchTasks(data: TaskSearchBody) {
   const reqData = prepareSearchPayload(data);
   const result = await instance.post<{ data: ExtendedTask[]; totalCount: number }>('/search', reqData);
+
   return result.data;
 }

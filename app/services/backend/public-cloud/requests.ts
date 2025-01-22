@@ -64,7 +64,6 @@ export async function makePublicCloudRequestDecision(id: string, data: any) {
 }
 
 export async function cancelPublicCloudRequest(id: string) {
-  console.log('This is called');
   const result = await instance.put(`/${id}`).then((res) => res.data);
   return result as PublicCloudRequestDetail;
 }
