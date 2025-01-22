@@ -1,5 +1,4 @@
 import { DecisionStatus, ProjectStatus, RequestType, EventType, TaskType } from '@prisma/client';
-import _omit from 'lodash-es/omit';
 import { Session } from 'next-auth';
 import { defaultResourceRequests } from '@/constants';
 import { OkResponse, UnauthorizedResponse, UnprocessableEntityResponse } from '@/core/responses';
