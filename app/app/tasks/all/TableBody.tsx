@@ -160,7 +160,7 @@ export default function TableBody({ data, assignees }: TableProps) {
             <Table.Th>Status</Table.Th>
             <Table.Th>Decision</Table.Th>
             <Table.Th>Assigned Roles/Permissions</Table.Th>
-            <Table.Th>Assigned User</Table.Th>
+            <Table.Th>Assigned User(s)</Table.Th>
             <Table.Th>Data</Table.Th>
             <Table.Th>Created At</Table.Th>
             <Table.Th>Completed By</Table.Th>
