@@ -41,28 +41,13 @@ export default async function updateOp({
     body.expenseAuthority?.email,
   ]);
 
-  const billingInfo = product.billingId
-    ? await prisma.billing.findFirst({
-        where: {
-          id: product.billingId,
-        },
-      })
-    : null;
-
   const decisionData = {
     ...rest,
     licencePlate: product.licencePlate,
     status: product.status,
     provider: product.provider,
     createdAt: product.createdAt,
-    billing: product.billingId
-      ? {
-          connect: {
-            id: product.billingId,
-            code: billingInfo?.code,
-          },
-        }
-      : undefined,
+    billing: { connect: { id: product.billingId } },
     projectOwner: { connect: { email: body.projectOwner.email } },
     primaryTechnicalLead: { connect: { email: body.primaryTechnicalLead.email } },
     secondaryTechnicalLead: body.secondaryTechnicalLead
@@ -88,9 +73,7 @@ export default async function updateOp({
           requestComment,
           changes: otherChangeMeta,
           originalData: { connect: { id: previousRequest?.decisionDataId } },
-          decisionData: {
-            create: decisionData,
-          },
+          decisionData: { create: decisionData },
           requestData: { create: decisionData },
           project: { connect: { licencePlate: product.licencePlate } },
         },

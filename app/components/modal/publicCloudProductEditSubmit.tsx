@@ -63,7 +63,7 @@ export const openPublicCloudProductEditSubmitModal = createModal<ModalProps, Mod
 
     useEffect(() => {
       const _changes = comparePublicProductData(
-        { ...snap.currentProduct, accountCoding: snap.currentProduct?.billing?.accountCoding },
+        { ...snap.currentProduct, accountCoding: snap.currentProduct?.billing.accountCoding },
         originalProductData,
       );
       setChange(_changes);
