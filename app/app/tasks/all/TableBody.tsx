@@ -8,7 +8,6 @@ import MinistryBadge from '@/components/badges/MinistryBadge';
 import { ExtendedTask, statusColorMap, taskTypeNames, UserInfo } from '@/constants/task';
 import { formatFullName } from '@/helpers/user';
 import { getUserImageData } from '@/helpers/user-image';
-import {} from '@/services/backend/user';
 import { formatDate } from '@/utils/js';
 
 interface TableProps {
@@ -101,7 +100,7 @@ export default function TableBody({ data, assignees }: TableProps) {
                         <Text size="sm" className="font-semibold">
                           <div>
                             {formatFullName(userInfo)}
-                            <MinistryBadge className="ml-1" ministry={userInfo?.ministry} />
+                            <MinistryBadge className="ml-1" ministry={userInfo.ministry} />
                           </div>
                         </Text>
                         <Text size="xs" opacity={0.5}>
@@ -122,16 +121,16 @@ export default function TableBody({ data, assignees }: TableProps) {
             <Group gap="sm" className="cursor-pointer" onClick={async () => {}}>
               {task.user && (
                 <>
-                  <Avatar src={getUserImageData(task.user?.image)} size={36} radius="xl" />
+                  <Avatar src={getUserImageData(task.user.image)} size={36} radius="xl" />
                   <div>
                     <Text size="sm" className="font-semibold">
                       <div>
                         {formatFullName(task.user)}
-                        <MinistryBadge className="ml-1" ministry={task.user?.ministry} />
+                        <MinistryBadge className="ml-1" ministry={task.user.ministry} />
                       </div>
                     </Text>
                     <Text size="xs" opacity={0.5}>
-                      {task.user?.email}
+                      {task.user.email}
                     </Text>
                     <Text className="mt-2 italic" size="sm">
                       At: {formatDate(task.completedAt)}

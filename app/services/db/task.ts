@@ -1,4 +1,5 @@
 import { Prisma } from '@prisma/client';
+import { uniq } from 'lodash-es';
 import _isNumber from 'lodash-es/isNumber';
 import { UserInfo } from '@/constants/task';
 import prisma from '@/core/prisma';
@@ -104,7 +105,7 @@ export async function searchTasks({
     prisma.task.count({ where: filters }),
   ]);
 
-  const userIds = Array.from(new Set(data.flatMap((task) => (task.userIds ? Object.values(task.userIds) : []))));
+  const userIds = uniq(data.flatMap((task) => task.userIds ?? []));
   const usersWithAssignedTasks = await prisma.user.findMany({
     where: {
       id: {
