@@ -123,7 +123,7 @@ async function main() {
     firstName: givenName,
     lastName: surname,
     password: mail,
-    roles: [jobTitle],
+    roles: jobTitle ? jobTitle.split(',').map((role) => role.trim()) : [],
   }));
 
   // Create Auth Users with auth roles assigned
