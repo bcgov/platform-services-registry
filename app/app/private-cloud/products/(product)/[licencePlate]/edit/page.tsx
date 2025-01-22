@@ -16,7 +16,6 @@ import FormErrorNotification from '@/components/generic/FormErrorNotification';
 import { openPrivateCloudProductEditSubmitModal } from '@/components/modal/privateCloudProductEditSubmit';
 import AdditionalTeamMembers from '@/components/private-cloud/sections/AdditionalTeamMembers';
 import Quotas from '@/components/private-cloud/sections/Quotas';
-import Webhooks from '@/components/private-cloud/sections/Webhooks';
 import SiloAccordion from '@/components/private-cloud/SiloAccordion';
 import { GlobalRole } from '@/constants';
 import createClientPage from '@/core/client-page';
@@ -168,6 +167,12 @@ export default privateCloudProductEdit(({ session }) => {
     },
   ];
 
+  const isMyProduct = [
+    snap.currentProduct.projectOwnerId,
+    snap.currentProduct.primaryTechnicalLeadId,
+    snap.currentProduct.secondaryTechnicalLeadId,
+  ].includes(session?.user.id ?? '');
+
   return (
     <div>
       <FormProvider {...methods}>
@@ -194,7 +199,9 @@ export default privateCloudProductEdit(({ session }) => {
         </form>
       </FormProvider>
 
-      <SiloAccordion className="my-4" disabled={isDisabled} licencePlate={snap.currentProduct?.licencePlate} />
+      {isMyProduct && (
+        <SiloAccordion className="my-4" disabled={isDisabled} licencePlate={snap.currentProduct?.licencePlate} />
+      )}
     </div>
   );
 });

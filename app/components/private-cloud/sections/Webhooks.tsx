@@ -5,7 +5,7 @@ import { FormProvider, useForm } from 'react-hook-form';
 import ExternalLink from '@/components/generic/button/ExternalLink';
 import FormErrorNotification from '@/components/generic/FormErrorNotification';
 import HookFormTextInput from '@/components/generic/input/HookFormTextInput';
-import { success } from '@/components/notification';
+import { success, failure } from '@/components/notification';
 import {
   getPrivateCloudProductWebhook,
   upsertPrivateCloudProductWebhook,
@@ -33,8 +33,12 @@ export default function Webhooks({
         <FormErrorNotification />
         <form
           onSubmit={methods.handleSubmit(async (formData) => {
-            await upsertPrivateCloudProductWebhook(licencePlate, formData);
-            success({ title: 'Webhook', message: 'Updated!' });
+            const result = await upsertPrivateCloudProductWebhook(licencePlate, formData);
+            if (result) {
+              success({ title: 'Webhook', message: 'Updated!' });
+            } else {
+              failure({ title: 'Webhook', message: 'Failed to update!' });
+            }
           })}
           autoComplete="off"
         >
