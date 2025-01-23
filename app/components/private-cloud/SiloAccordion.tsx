@@ -2,7 +2,7 @@
 
 import { IconWebhook } from '@tabler/icons-react';
 import PageAccordion from '@/components/generic/accordion/PageAccordion';
-import Webhooks from '@/components/private-cloud/sections/Webhooks';
+import FormWebhooks from '@/components/private-cloud/sections/FormWebhooks';
 import { cn } from '@/utils/js';
 
 export default function SiloAccordion({
@@ -19,7 +19,7 @@ export default function SiloAccordion({
       LeftIcon: IconWebhook,
       label: 'Webhooks',
       description: '',
-      Component: Webhooks,
+      Component: FormWebhooks,
       componentArgs: {
         disabled,
         licencePlate,
