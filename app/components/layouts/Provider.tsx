@@ -12,6 +12,9 @@ interface ProviderProps {
 const queryClient = new QueryClient({
   queryCache: new QueryCache({}),
   defaultOptions: {
+    queries: {
+      gcTime: 500, // remove cache data after 0.5 sec
+    },
     mutations: {
       onSuccess: () => {
         success();
