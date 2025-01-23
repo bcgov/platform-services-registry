@@ -27,10 +27,10 @@ export default function FilterPanel({ isLoading = false }: { isLoading?: boolean
           <FormMultiSelect
             name="tasks"
             label="Task Types"
-            value={pageSnapshot.tasks ?? []}
+            value={pageSnapshot.types ?? []}
             data={taskTypeOptions}
             onChange={(value) => {
-              pageState.tasks = value as TaskType[];
+              pageState.types = value as TaskType[];
               pageState.page = 1;
             }}
             classNames={{ wrapper: '' }}
@@ -41,7 +41,7 @@ export default function FilterPanel({ isLoading = false }: { isLoading?: boolean
               size="compact-md"
               className="mt-1"
               onClick={() => {
-                pageState.tasks = taskTypeOptions.map((option) => option.value as TaskType);
+                pageState.types = taskTypeOptions.map((option) => option.value as TaskType);
                 pageState.page = 1;
               }}
             >

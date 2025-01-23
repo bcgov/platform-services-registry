@@ -41,7 +41,7 @@ export const taskSorts = [
 ];
 
 export interface ExtendedTask extends Task {
-  user?: User | null;
+  completedByUser?: User | null;
 }
 
 type NullableFields<T> = {

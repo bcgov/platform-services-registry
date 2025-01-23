@@ -1,6 +1,6 @@
 import { Prisma } from '@prisma/client';
-import { uniq } from 'lodash-es';
 import _isNumber from 'lodash-es/isNumber';
+import uniq from 'lodash-es/uniq';
 import { UserInfo } from '@/constants/task';
 import prisma from '@/core/prisma';
 import { parsePaginationParams } from '@/helpers/pagination';
@@ -19,7 +19,7 @@ export type SearchTasks = Prisma.TaskGetPayload<{
     status: true;
     type: true;
     userIds: true;
-    user: {
+    completedByUser: {
       select: {
         id: true;
         firstName: true;
@@ -35,7 +35,7 @@ export type SearchTasks = Prisma.TaskGetPayload<{
 
 const defaultSortKey = 'createdAt';
 export async function searchTasks({
-  tasks = [],
+  types = [],
   search = '',
   page,
   skip,
@@ -47,26 +47,29 @@ export async function searchTasks({
   skip?: number;
   take?: number;
 }): Promise<{ data: SearchTasks[]; totalCount: number; usersWithAssignedTasks: UserInfo[] }> {
-  const isTaskSearch = tasks.length > 0;
+  const isTaskSearch = types.length > 0;
   if (!_isNumber(skip) && !_isNumber(take) && page && pageSize) {
     ({ skip, take } = parsePaginationParams(page, pageSize, 10));
   }
 
   const filters: Prisma.TaskWhereInput = {};
 
-  if (search.trim()) {
+  search = search.trim();
+  if (search) {
     const searchCriteria: Prisma.StringFilter<'User'> = { contains: search, mode: 'insensitive' };
 
-    filters.OR = [
-      { user: { firstName: searchCriteria } },
-      { user: { lastName: searchCriteria } },
-      { user: { email: searchCriteria } },
-      { user: { ministry: searchCriteria } },
-    ];
+    filters.completedByUser = {
+      OR: [
+        { firstName: searchCriteria },
+        { lastName: searchCriteria },
+        { email: searchCriteria },
+        { ministry: searchCriteria },
+      ],
+    };
   }
 
   if (isTaskSearch) {
-    filters.type = { in: tasks };
+    filters.type = { in: types };
   }
 
   const orderBy = { [sortKey]: sortOrder };
@@ -89,7 +92,7 @@ export async function searchTasks({
         status: true,
         type: true,
         userIds: true,
-        user: {
+        completedByUser: {
           select: {
             id: true,
             firstName: true,

@@ -7,7 +7,7 @@ const initialValue = {
   page: 1,
   pageSize: 10,
   search: '',
-  tasks: [],
+  types: [],
   sortValue: taskSorts[0].label,
   sortKey: taskSorts[0].sortKey,
   sortOrder: taskSorts[0].sortOrder,

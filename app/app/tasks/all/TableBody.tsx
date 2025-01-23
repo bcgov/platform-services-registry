@@ -68,7 +68,7 @@ export default function TableBody({ data, assignees }: TableProps) {
               </>
             )}
 
-            {task.permissions && task.permissions?.length !== 0 && (
+            {task.permissions?.length > 0 && (
               <>
                 <Text c="dimmed" size="sm" className="font-semibold">
                   Permissions:
@@ -88,14 +88,14 @@ export default function TableBody({ data, assignees }: TableProps) {
             )}
           </Table.Td>
           <Table.Td>
-            {task.userIds && Object.keys(task.userIds).length !== 0 && (
+            {task.userIds.length > 0 && (
               <ul>
-                {Object.entries(task.userIds).map(([index]) => {
-                  console.log(index);
-                  const userInfo = taskAssignees[Number(index)];
+                {task.userIds.map((id, index) => {
+                  const userInfo = taskAssignees[index];
+                  if (!userInfo) return null;
                   return (
                     <li className="my-5" key={index}>
-                      <Avatar src={getUserImageData(userInfo?.image)} size={36} radius="xl" />
+                      <Avatar src={getUserImageData(userInfo.image)} size={36} radius="xl" />
                       <div>
                         <Text size="sm" className="font-semibold">
                           <div>
@@ -104,7 +104,7 @@ export default function TableBody({ data, assignees }: TableProps) {
                           </div>
                         </Text>
                         <Text size="xs" opacity={0.5}>
-                          {userInfo?.email}
+                          {userInfo.email}
                         </Text>
                       </div>
                     </li>
@@ -119,18 +119,18 @@ export default function TableBody({ data, assignees }: TableProps) {
           <Table.Td className="italic">{formatDate(task.createdAt)}</Table.Td>
           <Table.Td>
             <Group gap="sm" className="cursor-pointer" onClick={async () => {}}>
-              {task.user && (
+              {task.completedByUser && (
                 <>
-                  <Avatar src={getUserImageData(task.user.image)} size={36} radius="xl" />
+                  <Avatar src={getUserImageData(task.completedByUser.image)} size={36} radius="xl" />
                   <div>
                     <Text size="sm" className="font-semibold">
                       <div>
-                        {formatFullName(task.user)}
-                        <MinistryBadge className="ml-1" ministry={task.user.ministry} />
+                        {formatFullName(task.completedByUser)}
+                        <MinistryBadge className="ml-1" ministry={task.completedByUser.ministry} />
                       </div>
                     </Text>
                     <Text size="xs" opacity={0.5}>
-                      {task.user.email}
+                      {task.completedByUser.email}
                     </Text>
                     <Text className="mt-2 italic" size="sm">
                       At: {formatDate(task.completedAt)}
