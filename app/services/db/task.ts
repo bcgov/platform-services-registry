@@ -1,6 +1,6 @@
 import { Prisma } from '@prisma/client';
 import _isNumber from 'lodash-es/isNumber';
-import uniq from 'lodash-es/uniq';
+import _uniq from 'lodash-es/uniq';
 import { UserInfo } from '@/constants/task';
 import prisma from '@/core/prisma';
 import { parsePaginationParams } from '@/helpers/pagination';
@@ -108,7 +108,7 @@ export async function searchTasks({
     prisma.task.count({ where: filters }),
   ]);
 
-  const userIds = uniq(data.flatMap((task) => task.userIds ?? []));
+  const userIds = _uniq(data.flatMap((task) => task.userIds ?? []));
   const usersWithAssignedTasks = await prisma.user.findMany({
     where: {
       id: {
