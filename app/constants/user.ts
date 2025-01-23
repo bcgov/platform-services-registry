@@ -36,6 +36,7 @@ export enum GlobalPermissions {
   ViewBilling = 'viewBilling',
   ViewEvents = 'viewEvents',
   ViewUsers = 'viewUsers',
+  ViewTasks = 'viewTasks',
   EditUsers = 'editUsers',
 }
 
@@ -61,6 +62,7 @@ export enum GlobalRole {
   BillingReviewer = 'billing-reviewer',
   Billingreader = 'billing-reader',
   EventReader = 'event-reader',
+  TaskReader = 'task-reader',
 }
 
 export const RoleToSessionProp = {
@@ -82,6 +84,7 @@ export const RoleToSessionProp = {
   [GlobalRole.PublicReviewer]: 'isPublicReviewer',
   [GlobalRole.UserReader]: 'isUserReader',
   [GlobalRole.EventReader]: 'isEventReader',
+  [GlobalRole.TaskReader]: 'isTaskReader',
   [GlobalRole.Approver]: 'isApprover',
   [GlobalRole.BillingReviewer]: 'isBillingReviewer',
   [GlobalRole.Billingreader]: 'isBillingReader',

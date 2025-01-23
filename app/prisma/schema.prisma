@@ -52,6 +52,7 @@ model User {
   privateCloudRequestsAsDecisionMaker                   PrivateCloudRequest[]          @relation("decisionMaker")
   publicCloudRequestsAsDecisionMaker                    PublicCloudRequest[]           @relation("decisionMaker")
   events                                                Event[]                        @relation("UserToEvents")
+  Task                                                  Task[]                         @relation("UserToTasks")
 }
 
 model UserSession {
@@ -363,17 +364,18 @@ model Event {
 }
 
 model Task {
-  id             String     @id @default(auto()) @map("_id") @db.ObjectId
-  type           TaskType
-  status         TaskStatus
-  userIds        String[]
-  roles          String[]
-  permissions    String[]
-  createdAt      DateTime   @default(now())
-  completedAt    DateTime?
-  completedBy    String?    @db.ObjectId
-  data           Json
-  closedMetadata Json?
+  id              String     @id @default(auto()) @map("_id") @db.ObjectId
+  type            TaskType
+  status          TaskStatus
+  userIds         String[]
+  roles           String[]
+  permissions     String[]
+  createdAt       DateTime   @default(now())
+  completedAt     DateTime?
+  completedBy     String?    @db.ObjectId
+  completedByUser User?      @relation("UserToTasks", fields: [completedBy], references: [id])
+  data            Json
+  closedMetadata  Json?
 }
 
 model PrivateCloudProjectZapResult {

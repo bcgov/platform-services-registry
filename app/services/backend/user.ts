@@ -1,4 +1,4 @@
-import { Prisma, User } from '@prisma/client';
+import { Prisma } from '@prisma/client';
 import axios from 'axios';
 import { userSorts } from '@/constants';
 import { AdminViewUser } from '@/types/user';

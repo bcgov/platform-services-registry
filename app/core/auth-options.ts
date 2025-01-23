@@ -291,6 +291,7 @@ export async function generateSession({
     viewUsers: session.isAdmin || session.isUserReader,
     viewEvents: session.isAdmin || session.isEventReader,
     viewBilling: session.isAdmin || session.isBillingReader || session.isBillingReviewer,
+    viewTasks: session.isAdmin || session.isTaskReader,
     editUsers: session.isAdmin,
 
     cancelPrivateCloudRequest: session.isUser,

@@ -133,3 +133,11 @@ resource "keycloak_role" "pltsvc_user_reader" {
   name        = "user-reader"
   description = "Registry User Reader"
 }
+
+resource "keycloak_role" "pltsvc_task_reader" {
+  realm_id  = data.keycloak_realm.pltsvc.id
+  client_id = keycloak_openid_client.pltsvc.id
+
+  name        = "task-reader"
+  description = "Registry Task Reader"
+}
