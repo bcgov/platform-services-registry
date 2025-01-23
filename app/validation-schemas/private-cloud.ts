@@ -151,6 +151,7 @@ export const privateCloudCreateRequestBodySchema = _privateCloudCreateRequestBod
       isAgMinistryChecked: z.boolean().optional(),
     }),
   )
+  .merge(privateCloudProductWebhookBodySchema)
   .refine(
     (formData) => {
       return AGMinistries.includes(formData.ministry) ? formData.isAgMinistryChecked : true;

@@ -3,7 +3,7 @@
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Button } from '@mantine/core';
 import { ResourceRequestsEnv } from '@prisma/client';
-import { IconInfoCircle, IconWebhook, IconUsersGroup, IconSettings, IconComponents } from '@tabler/icons-react';
+import { IconInfoCircle, IconUsersGroup, IconSettings, IconComponents } from '@tabler/icons-react';
 import { useEffect, useState } from 'react';
 import { FormProvider, useForm } from 'react-hook-form';
 import { z } from 'zod';

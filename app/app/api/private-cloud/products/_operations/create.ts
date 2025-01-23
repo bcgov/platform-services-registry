@@ -1,6 +1,7 @@
 import { DecisionStatus, ProjectStatus, RequestType, EventType, TaskType } from '@prisma/client';
 import { Session } from 'next-auth';
 import { defaultResourceRequests } from '@/constants';
+import prisma from '@/core/prisma';
 import { OkResponse, UnauthorizedResponse, UnprocessableEntityResponse } from '@/core/responses';
 import generateLicencePlate from '@/helpers/licence-plate';
 import { sendRequestNatsMessage } from '@/helpers/nats-message';
@@ -30,8 +31,18 @@ export default async function createOp({ session, body }: { session: Session; bo
 
   await upsertUsers([body.projectOwner.email, body.primaryTechnicalLead.email, body.secondaryTechnicalLead?.email]);
 
-  const { requestComment, quotaContactName, quotaContactEmail, quotaJustification, isAgMinistryChecked, ...rest } =
-    body;
+  const {
+    requestComment,
+    quotaContactName,
+    quotaContactEmail,
+    quotaJustification,
+    isAgMinistryChecked,
+    url,
+    secret,
+    username,
+    password,
+    ...rest
+  } = body;
 
   const productData = {
     ...rest,
@@ -75,6 +86,15 @@ export default async function createOp({ session, body }: { session: Session; bo
 
   const proms: (Promise<any> | undefined)[] = [
     createEvent(EventType.CREATE_PRIVATE_CLOUD_PRODUCT, session.user.id, { requestId: newRequest.id }),
+    prisma.privateCloudProductWebhook.create({
+      data: {
+        licencePlate,
+        url,
+        secret,
+        username,
+        password,
+      },
+    }),
   ];
 
   if (decisionStatus === DecisionStatus.AUTO_APPROVED) {
