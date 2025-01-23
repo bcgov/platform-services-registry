@@ -20,6 +20,7 @@ export const up = async (db, client) => {
       })
       .filter(({ url }) => !!url);
 
+    if (webhookDocs.length === 0) return;
     await db.collection('PrivateCloudProductWebhook').insertMany(webhookDocs, {});
   });
 
