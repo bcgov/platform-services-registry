@@ -1,3 +1,4 @@
+## [0.43.6](https://github.com/bcgov/platform-services-registry/compare/v0.43.5...v0.43.6) (2025-01-23)
 ## [0.43.5](https://github.com/bcgov/platform-services-registry/compare/v0.43.4...v0.43.5) (2025-01-23)
 
 ### Features
