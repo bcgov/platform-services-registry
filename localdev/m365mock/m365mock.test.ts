@@ -1,5 +1,5 @@
 import request from 'supertest';
-import app from '../../../../localdev/m365mock/main';
+import app from './main';
 
 describe('M365 Mock Server API Tests', () => {
   it('should return a welcome message on GET /', async () => {
