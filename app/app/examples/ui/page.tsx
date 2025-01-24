@@ -19,6 +19,10 @@ const pages = [
     label: 'Text Input',
   },
   {
+    href: 'ui/password-input',
+    label: 'Password Input',
+  },
+  {
     href: 'ui/textarea',
     label: 'Textarea',
   },
