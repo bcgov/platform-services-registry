@@ -7,8 +7,13 @@ import { MsUser } from '../types';
 const app = express();
 const port = 4040;
 
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
+if (!globalThis.__filename) {
+  globalThis.__filename = fileURLToPath(import.meta.url);
+}
+
+if (!globalThis.__dirname) {
+  globalThis.__dirname = path.dirname(globalThis.__filename);
+}
 
 const jsonData = readFileSync(path.join(__dirname, '../mock-users.json'), 'utf-8');
 const msUsers: MsUser[] = JSON.parse(jsonData);
@@ -31,6 +36,14 @@ app.get('/v1.0/users/:upn', (req: Request, res: Response) => {
   res.json(user);
 });
 
-app.listen(port, () => {
-  console.log(`M365 Mock Server running at https://localhost:${port}`);
-});
+export function startServer() {
+  return app.listen(port, () => {
+    console.log(`M365 Mock Server running at https://localhost:${port}`);
+  });
+}
+
+if (process.env.NODE_ENV !== 'test') {
+  startServer();
+}
+
+export default app;
