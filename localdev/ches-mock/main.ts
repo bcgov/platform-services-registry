@@ -1,4 +1,3 @@
-import sanitizeHtml from 'sanitize-html';
 import nodemailer from 'nodemailer';
 import { z } from 'zod';
 import express, { Request, Response, NextFunction } from 'express';
@@ -43,29 +42,13 @@ const transportOptions: SMTPTransport.Options = {
 const transporter = nodemailer.createTransport(transportOptions);
 
 export const sendViaMailPit = async (email: z.infer<typeof EmailSchema>): Promise<nodemailer.SentMessageInfo> => {
-  const sanitizedBody = sanitizeHtml(email.body, {
-    allowedTags: ['html', 'head', 'body', 'div', 'h1', 'h2', 'p', 'a', 'img', 'meta', 'link', 'span', 'hr'],
-    allowedAttributes: {
-      '*': ['style', 'class', 'dir'], // Allow global attributes
-      a: ['href', 'target'], // Allow attributes for links
-      img: ['src', 'alt', 'width', 'height'], // Allow attributes for images
-      meta: ['content', 'http-equiv'],
-      link: ['rel', 'href', 'as'], // Preload links for images
-    },
-    allowedSchemes: ['http', 'https', 'mailto'], // Allow safe URL schemes
-    allowedSchemesByTag: {
-      img: ['http', 'https'],
-      a: ['http', 'https', 'mailto'],
-    },
-  });
-
   await transporter.verify();
 
   const info = await transporter.sendMail({
     from: email.from || 'Registry <PlatformServicesTeam@gov.bc.ca>',
     to: email.to.join(', '),
     subject: email.subject,
-    html: sanitizedBody,
+    html: email.body,
     cc: email.cc ? email.cc.join(', ') : undefined,
     bcc: email.bcc ? email.bcc.join(', ') : undefined,
     attachments: email.attachments,
