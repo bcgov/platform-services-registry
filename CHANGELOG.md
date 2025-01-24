@@ -1,3 +1,9 @@
+## [0.43.7](https://github.com/bcgov/platform-services-registry/compare/v0.43.6...v0.43.7) (2025-01-24)
+
+### Features
+
+* **3974:** add task page ([2cc9f2f](https://github.com/bcgov/platform-services-registry/commit/2cc9f2ff7d1c9633a8b64fb5eb850c53a9ada413))
+* **4732:** send Webhook request on create events ([71b1dd9](https://github.com/bcgov/platform-services-registry/commit/71b1dd95300e2125d1a7a75dba5bfc28e1107b4d))
 ## [0.43.6](https://github.com/bcgov/platform-services-registry/compare/v0.43.5...v0.43.6) (2025-01-23)
 ## [0.43.5](https://github.com/bcgov/platform-services-registry/compare/v0.43.4...v0.43.5) (2025-01-23)
 
