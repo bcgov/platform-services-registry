@@ -88,7 +88,7 @@ export async function sendEmail(email: Email) {
     email.body,
     // See https://github.com/apostrophecms/sanitize-html?tab=readme-ov-file#default-options
     {
-      allowedTags: sanitizeHtml.defaults.allowedTags.concat(['html', 'head', 'body', 'img', 'meta', 'link']),
+      allowedTags: sanitizeHtml.defaults.allowedTags.concat(['html', 'head', 'body', 'img', 'meta', 'style', 'link']),
       allowedAttributes: {
         ...sanitizeHtml.defaults.allowedAttributes,
         '*': ['style', 'class'],
