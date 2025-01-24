@@ -1,11 +1,30 @@
+/** @type {import('ts-jest').JestConfigWithTsJest} */
 export default {
-  preset: 'ts-jest/presets/default-esm',
-  testEnvironment: 'node',
   extensionsToTreatAsEsm: ['.ts'],
   transform: {
-    '^.+\\.ts$': 'ts-jest',
+    '^.+\\.tsx?$': [
+      'ts-jest',
+      {
+        useESM: true,
+        diagnostics: { ignoreCodes: [1343] },
+        astTransformers: {
+          before: [
+            {
+              path: 'ts-jest-mock-import-meta',
+              options: {
+                metaObjectReplacement: {
+                  url: ({ fileName }) => `file://${fileName}`,
+                },
+              },
+            },
+          ],
+        },
+      },
+    ],
   },
+  testEnvironment: 'node',
   moduleNameMapper: {
     '^(\\.{1,2}/.*)\\.js$': '$1',
   },
+  verbose: true,
 };

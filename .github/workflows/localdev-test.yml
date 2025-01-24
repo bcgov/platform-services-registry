@@ -1,0 +1,34 @@
+name: 32.Test localdev codebase
+
+on:
+  push:
+    paths:
+    - localdev/m365mock/**
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  test-m365mock:
+    runs-on: ubuntu-22.04
+    timeout-minutes: 20
+
+    steps:
+    - name: Checkout Repository
+      uses: actions/checkout@v3
+
+    - name: Setup Node.js
+      uses: actions/setup-node@v3
+      with:
+        node-version: 18
+
+    - name: Install Dependencies
+      run: |
+        corepack enable
+        pnpm install
+      working-directory: localdev/m365mock
+
+    - name: Run Tests (Verbose)
+      run: pnpm test m365mock.test.ts -- --verbose
+      working-directory: localdev/m365mock

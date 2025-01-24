@@ -1,7 +1,18 @@
 import request from 'supertest';
-import app from './main';
+import app, { startServer } from './main.js';
 
 describe('M365 Mock Server API Tests', () => {
+  let server: ReturnType<typeof startServer>;
+
+  beforeAll(() => {
+    server = startServer(); // Start the server before running tests
+    console.log('Server started');
+  });
+
+  afterAll(() => {
+    server.close(); // Close the server after all tests
+    console.log('Server closed');
+  });
   it('should return a welcome message on GET /', async () => {
     const res = await request(app).get('/');
     expect(res.status).toBe(200);
