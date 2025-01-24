@@ -98,7 +98,7 @@ export async function sendEmail(email: Email) {
     },
   );
 
-  logger.info({ type: 'email body', body });
+  logger.info(`email body: ${JSON.stringify(body)}`);
 
   const response = await fetchWithTimeout(`${apiUrl}/email`, {
     method: 'POST',
