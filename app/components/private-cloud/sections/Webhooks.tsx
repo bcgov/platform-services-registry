@@ -2,6 +2,7 @@ import { Code } from '@mantine/core';
 import { RequestType } from '@prisma/client';
 import _get from 'lodash-es/get';
 import ExternalLink from '@/components/generic/button/ExternalLink';
+import HookFormPasswordInput from '@/components/generic/input/HookFormPasswordInput';
 import HookFormTextInput from '@/components/generic/input/HookFormTextInput';
 import { cn } from '@/utils/js';
 
@@ -49,7 +50,7 @@ export default function Webhooks({ disabled, className }: { disabled: boolean; c
         error="Please provide a valid HTTPS URL"
         classNames={{ wrapper: 'col-span-full mt-2' }}
       />
-      <HookFormTextInput
+      <HookFormPasswordInput
         label="Secret"
         name="secret"
         placeholder="Enter Webhook Secret"
@@ -57,14 +58,14 @@ export default function Webhooks({ disabled, className }: { disabled: boolean; c
         classNames={{ wrapper: 'col-span-full mt-2' }}
       />
       <div className="flex justify-between gap-2 mt-2">
-        <HookFormTextInput
+        <HookFormPasswordInput
           label="Username"
           name="username"
           placeholder="Enter Webhook Username"
           disabled={disabled}
           classNames={{ wrapper: 'w-1/2' }}
         />
-        <HookFormTextInput
+        <HookFormPasswordInput
           label="Password"
           name="password"
           placeholder="Enter Webhook Password"
