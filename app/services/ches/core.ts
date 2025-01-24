@@ -94,8 +94,11 @@ export async function sendEmail(email: Email) {
         '*': ['style', 'class'],
         link: ['rel', 'href'],
       },
+      allowVulnerableTags: true, // 'style' tag for BCSans fonts
     },
   );
+
+  logger.info({ type: 'email body', body });
 
   const response = await fetchWithTimeout(`${apiUrl}/email`, {
     method: 'POST',
