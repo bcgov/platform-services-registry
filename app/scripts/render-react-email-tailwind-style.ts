@@ -49,9 +49,7 @@ async function iterateDirectories(directoryPath: string) {
         await iterateDirectories(fullPath);
       } else {
         console.log('File:', fullPath);
-        await replaceClassMatches(fullPath, (className) => {
-          return twj(className);
-        });
+        await replaceClassMatches(fullPath, (className) => twj(className));
       }
     }
   } catch (err) {
