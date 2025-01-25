@@ -193,7 +193,8 @@ mailpit:
 ches-mock:
   enabled: true
   image:
-    pullPolicy: IfNotPresent
+    tag: latest
+    pullPolicy: Always
 
   nameOverride: pltsvc-ches-mock
   fullnameOverride: pltsvc-ches-mock
