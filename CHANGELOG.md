@@ -1,3 +1,9 @@
+## [0.43.8](https://github.com/bcgov/platform-services-registry/compare/v0.43.7...v0.43.8) (2025-01-25)
+
+### Features
+
+* **4502:** use BCSans font in emails ([6ecd1c6](https://github.com/bcgov/platform-services-registry/commit/6ecd1c67efe7f1e00e5110ca820e4d7594068988))
+* **4746:** add password input components ([c148ac6](https://github.com/bcgov/platform-services-registry/commit/c148ac60fdaf095b2c94e8108fd0b26179e0bda3))
 ## [0.43.7](https://github.com/bcgov/platform-services-registry/compare/v0.43.6...v0.43.7) (2025-01-24)
 
 ### Features
