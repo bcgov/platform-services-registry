@@ -13,6 +13,7 @@ describe('M365 Mock Server API Tests', () => {
     server.close(); // Close the server after all tests
     console.log('Server closed');
   });
+
   it('should return a welcome message on GET /', async () => {
     const res = await request(app).get('/');
     expect(res.status).toBe(200);
