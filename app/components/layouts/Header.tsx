@@ -42,7 +42,7 @@ export default function Header() {
   }
 
   return (
-    <nav className="border-b-3 border-bcorange bg-bcblue shadow">
+    <nav className="sticky top-0 z-50 border-b-3 border-bcorange bg-bcblue shadow">
       <div style={{ height: 65 }} className="test mx-auto border-y-4 border-bcblue px-2 sm:px-6 lg:px-8">
         <div className="relative flex h-14 justify-between px-12">
           <div className="absolute inset-y-0 left-0 flex items-center sm:hidden">{/* Mobile menu button */}</div>
