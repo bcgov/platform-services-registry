@@ -15,20 +15,21 @@ jobs:
     timeout-minutes: 20
 
     steps:
-    - name: Checkout Repository
-      uses: actions/checkout@v3
+    - uses: hmarr/debug-action@f7318c783045ac39ed9bb497e22ce835fdafbfe6
+    - uses: actions/checkout@85e6279cec87321a52edac9c87bce653a07cf6c2
 
-    - name: Setup Node.js
-      uses: actions/setup-node@v3
-      with:
-        node-version: 18
+
+    - name: Setup Tools
+      uses: ./.github/actions/setup-tools
 
     - name: Install Dependencies
-      run: |
-        corepack enable
-        pnpm install
+      run: pnpm install
+      working-directory: localdev/m365mock
+
+    - name: Build the Application
+      run: pnpm run build
       working-directory: localdev/m365mock
 
     - name: Run Tests (Verbose)
-      run: pnpm test m365mock.test.ts -- --verbose
+      run: pnpm test test.ts -- --verbose
       working-directory: localdev/m365mock
