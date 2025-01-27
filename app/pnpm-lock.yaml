@@ -67,7 +67,7 @@ importers:
         version: 0.5.10(tailwindcss@3.4.17(ts-node@10.9.2(@types/node@22.10.10)(typescript@5.7.3)))
       '@tanstack/react-query':
         specifier: ^5.4.3
-        version: 5.64.2(react@18.3.1)
+        version: 5.65.0(react@18.3.1)
       '@tiptap/extension-blockquote':
         specifier: ^2.4.0
         version: 2.11.3(@tiptap/core@2.11.3(@tiptap/pm@2.11.3))
@@ -1456,11 +1456,11 @@ packages:
     peerDependencies:
       tailwindcss: '>=3.0.0 || >= 3.0.0-alpha.1 || >= 4.0.0-alpha.20 || >= 4.0.0-beta.1'
 
-  '@tanstack/query-core@5.64.2':
-    resolution: {integrity: sha512-hdO8SZpWXoADNTWXV9We8CwTkXU88OVWRBcsiFrk7xJQnhm6WRlweDzMD+uH+GnuieTBVSML6xFa17C2cNV8+g==}
+  '@tanstack/query-core@5.65.0':
+    resolution: {integrity: sha512-Bnnq/1axf00r2grRT6gUyIkZRKzhHs+p4DijrCQ3wMlA3D3TTT71gtaSLtqnzGddj73/7X5JDGyjiSLdjvQN4w==}
 
-  '@tanstack/react-query@5.64.2':
-    resolution: {integrity: sha512-3pakNscZNm8KJkxmovvtZ4RaXLyiYYobwleTMvpIGUoKRa8j8VlrQKNl5W8VUEfVfZKkikvXVddLuWMbcSCA1Q==}
+  '@tanstack/react-query@5.65.0':
+    resolution: {integrity: sha512-qXdHj3SCT2xkFxgrBIe6y9Lkowlwm+tGcV++PBLFtyvEJR5Q+biTnzm5p0tdVwqA603xlju9mtV2Kd/2brobgA==}
     peerDependencies:
       react: ^18 || ^19
 
@@ -6661,11 +6661,11 @@ snapshots:
       mini-svg-data-uri: 1.4.4
       tailwindcss: 3.4.17(ts-node@10.9.2(@types/node@22.10.10)(typescript@5.7.3))
 
-  '@tanstack/query-core@5.64.2': {}
+  '@tanstack/query-core@5.65.0': {}
 
-  '@tanstack/react-query@5.64.2(react@18.3.1)':
+  '@tanstack/react-query@5.65.0(react@18.3.1)':
     dependencies:
-      '@tanstack/query-core': 5.64.2
+      '@tanstack/query-core': 5.65.0
       react: 18.3.1
 
   '@tanstack/react-virtual@3.10.9(react-dom@18.3.1(react@18.3.1))(react@18.3.1)':
