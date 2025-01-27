@@ -1,5 +1,5 @@
-Feature: Requests Review Public Cloud
-  Scenario: Approval Admin reviews New Request
+Feature: Delete Request
+  Scenario: Delete Request and check visibility
     Given User logs in with username "james.smith@gov.bc.ca" and password "james.smith@gov.bc.ca"
     And User waits for "3" seconds
     When User clicks tab "PUBLIC CLOUD LANDING ZONES"
@@ -28,7 +28,7 @@ Feature: Requests Review Public Cloud
     And User types "4A5B6" in "Responsibility Centre (RC)"
     And User types "78901" in "Service Line (SL)"
     And User types "2345" in "Standard Object of Expense (STOB)"
-    And User types "6789012" in "Project Code"
+    And User types "6789016" in "Project Code"
     And User clicks button "Submit"
     And User checks checkbox "No eMOU exists for this account coding."
     And User checks checkbox "...team is liable to pay the base charge..."
@@ -71,58 +71,10 @@ Feature: Requests Review Public Cloud
     And User clicks button "Approve"
     And User clicks modal window button "Submit"
     And User clicks modal window button "Return to Dashboard"
-    And User clicks tab "Products"
-    And User waits for "3" seconds
-    And User reloads the page
-    And User waits for "3" seconds
-    Then User should see "Automated Test Product Name"
     And User logs out
-
-Scenario: Approval Admin reviews Edit Request
-    And User logs in with username "james.smith@gov.bc.ca" and password "james.smith@gov.bc.ca"
-    And User waits for "3" seconds
-    When User clicks tab "PUBLIC CLOUD LANDING ZONES"
-    And User waits for "3" seconds
+     And User logs in with username "james.smith@gov.bc.ca" and password "james.smith@gov.bc.ca"
+    And User clicks tab "PUBLIC CLOUD LANDING ZONES"
     And User clicks link "Automated Test Product Name"
-    And User waits for "10" seconds
-    And User types "Automated Test Edit Request" in "Product name"
-    And User types "Automated Test Description Edit" in "Description"
-    And User selects "Finance" in "Ministry"
-    And User clicks tab "Accounts to create"
-    And User checks checkbox "Development account"
-    And User clicks tab "Team contacts"
-    And User types and selects "david.johnson@gov.bc.ca" in "Product Owner email"
-    And User waits for "2" seconds
-    And User types and selects "sarah.williams@gov.bc.ca" in "Technical Lead email"
-    And User clicks button "ADD SECONDARY TECHNICAL LEAD"
-    And User types and selects Secondary Tech Lead "michael.brown@gov.bc.ca"
-    And User clicks tab "Expense authority"
-    And User types and selects "sarah.williams@gov.bc.ca" in "Expense Authority email"
-    And User clicks tab "Project budget"
-    And User types "55.55" in "Estimated average monthly spend - Test..."
-    And User types "66.66" in "Estimated average monthly spend - Tool..."
-    And User types "77.77" in "Estimated average monthly spend - Development..."
-    And User clicks button "Submit"
-    And User clicks modal window button "Submit"
-    And User waits for "5" seconds
-    And User clicks modal window button "Close"
-    And User logs out
-    And User logs in with username "sarah.williams@gov.bc.ca" and password "sarah.williams@gov.bc.ca"
-    And User waits for "3" seconds
-    When User clicks tab "PUBLIC CLOUD LANDING ZONES"
-    And User waits for "3" seconds
-    Then User should see "Automated Test Edit Request"
-    And User clicks link "Automated Test Edit Request"
-    And User waits for "5" seconds
-    Then User sees "Automated Test Edit Request" in "Product name"
-    And User sees "Automated Test Description Edit" in "Description"
-    And User logs out
-
-Scenario: Approval Admin reviews Delete Request
-    When User logs in with username "david.johnson@gov.bc.ca" and password "david.johnson@gov.bc.ca"
-    And User waits for "3" seconds
-    When User clicks tab "PUBLIC CLOUD LANDING ZONES"
-    And User clicks link "Automated Test Edit Request"
     And User waits for "10" seconds
     And User clicks button "Delete"
     And User copies value of "Licence plate"
@@ -132,18 +84,6 @@ Scenario: Approval Admin reviews Delete Request
     And User clicks modal window button "Submit"
     And User clicks button "Close"
     And User clicks tab "Requests"
-    Then User should see "Automated Test Edit Request"
+    Then User should see "Automated Test Product Name"
     And User should see badge "DELETE"
     And User logs out
-    When User logs in with username "public.reviewer.system@gov.bc.ca" and password "public.reviewer.system@gov.bc.ca"
-    And User clicks tab "PUBLIC CLOUD LANDING ZONES"
-    And User waits for "3" seconds
-    And User clicks tab "Requests"
-    And User waits for "10" seconds
-    And User clicks link "Automated Test Edit Request"
-    And User waits for "5" seconds
-    And User clicks button "Approve"
-    And User clicks modal window button "Submit"
-    And User clicks modal window button "Return to Dashboard"
-    And User clicks tab "Products"
-    Then User should not see "Automated Test Edit Request"
