@@ -164,7 +164,7 @@ jobs:
   deploy:
     needs: [build-push-app, build-push-pre-prisma, build-push-pre-data-migrations, build-push-email, build-push-m365proxy, build-push-nats-provision]
     runs-on: ubuntu-22.04
-    timeout-minutes: 5
+    timeout-minutes: 10
     permissions:
       contents: read
     environment:
