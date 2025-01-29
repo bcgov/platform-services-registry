@@ -8,4 +8,4 @@ helm 3.17.0
 shfmt 3.10.0
 act 0.2.71
 jq 1.7.1
-mongodb-database-tools 0.8.2
+mongodb-database-tools 0.8.10
