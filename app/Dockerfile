@@ -1,7 +1,7 @@
 ARG deployment_tag
 
 # 1st stage to build the image
-FROM node:22.12.0-alpine3.19 as build
+FROM node:22.12.0-alpine3.19 AS build
 
 WORKDIR /app
 

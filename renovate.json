@@ -1,6 +1,6 @@
 {
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
   "extends": ["config:base", ":semanticCommitType(chore)"],
-  "ignoreDeps": ["terraform", "hashicorp/terraform"],
-  "ignorePaths": ["data-migrations/.tool-versions", "data-migrations/Dockerfile", "**/node_modules/**"]
+  "ignoreDeps": [],
+  "ignorePaths": ["**/node_modules/**"]
 }
