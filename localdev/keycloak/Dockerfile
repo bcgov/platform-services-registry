@@ -1,5 +1,5 @@
 
-FROM golang:1.23.5-bullseye as build
+FROM golang:1.23.5-bullseye AS build
 
 WORKDIR /opt
 
