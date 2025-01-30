@@ -23,5 +23,8 @@ dependencies:
 - name: mailpit
   repository: file://../_mailpit
   version: 0.1.0
-digest: sha256:a9417c21d60ed7e0b922d578e9f0917a09c77fd794cefdc2769f94239c3c659c
-generated: "2025-01-24T16:22:29.931737705-08:00"
+- name: maintenance-mode
+  repository: file://../_maintenance-mode
+  version: 0.1.0
+digest: sha256:0f20b7437c839b3c23a98826794ec542ff9ed88b9b926bf8a1466267af9dbe85
+generated: "2025-01-29T13:57:24.526089-08:00"
