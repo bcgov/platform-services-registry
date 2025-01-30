@@ -26,3 +26,4 @@ yarn-error.log*
 next-env.d.ts
 mnt
 tmp
+site

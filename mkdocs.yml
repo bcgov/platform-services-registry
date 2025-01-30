@@ -1,0 +1,120 @@
+# See https://github.com/squidfunk/mkdocs-material/blob/master/mkdocs.yml
+dev_addr: 127.0.0.1:8888
+
+# Project information
+site_name: Platform Services Registry
+site_url: https://bcgov.github.io/platform-services-registry
+site_author: Platform Services Team
+
+# Repository
+repo_name: bcgov/platform-services-registry
+repo_url: https://github.com/bcgov/platform-services-registry
+
+# Copyright
+copyright: Copyright &copy; Platform Services Team
+
+docs_dir: docs
+
+theme:
+  name: material
+  logo: _assets/logo.png
+
+  include_search_page: false
+  search_index_only: true
+
+  language: en
+  features:
+  - content.code.annotate
+  - content.code.copy
+  - content.tabs.link
+    # - header.autohide
+    # - navigation.expand
+  - navigation.indexes
+    # - navigation.instant
+  - navigation.sections
+  - navigation.tabs
+    # - navigation.tabs.sticky
+  - navigation.top
+  - navigation.tracking
+  - search.highlight
+  - search.share
+  - search.suggest
+    # - toc.integrate
+  palette:
+  - scheme: default
+    primary: indigo
+    accent: indigo
+    toggle:
+      icon: material/toggle-switch
+      name: Switch to dark mode
+  - scheme: slate
+    primary: red
+    accent: red
+    toggle:
+      icon: material/toggle-switch-off-outline
+      name: Switch to light mode
+
+  font:
+    text: Roboto
+    code: Roboto Mono
+  favicon: _assets/logo.png
+  icon:
+    logo: logo
+
+nav:
+- Home: index.md
+- Docs:
+  - Clean Code:
+    - clean-codes/return-early.md
+  - developer-guide.md
+  - api-testing.md
+  - bot-pr-review.md
+  - ci-cd.md
+  - database.md
+  - debug-deployments.md
+  - email-scenarios-private-cloud.md
+  - email-scenarios-public-cloud.md
+  - emou-workflow.md
+  - git-tips.md
+  - onboarding-offboarding.md
+  - react-email.md
+  - resource-metrics.md
+  - rocketchat-notifications.md
+  - selecting-image-scanner.md
+  - team-conventions.md
+  - terraform.md
+
+# Extensions
+markdown_extensions:
+- abbr
+- admonition
+- attr_list
+- codehilite
+- def_list
+- footnotes
+- meta
+- md_in_html
+- pymdownx.highlight:
+    anchor_linenums: true
+    line_spans: __span
+    pygments_lang_class: true
+- pymdownx.inlinehilite
+- pymdownx.arithmatex
+- pymdownx.details
+- pymdownx.superfences
+- pymdownx.tabbed:
+    alternate_style: true
+- pymdownx.tilde
+- pymdownx.snippets:
+    base_path:
+    - ./
+- toc:
+    permalink: true
+
+extra_javascript:
+- https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.11.1/highlight.min.js
+- https://polyfill.io/v3/polyfill.min.js?features=es6
+- _javascripts/highlight.js
+
+extra_css:
+- https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.11.1/styles/github.min.css

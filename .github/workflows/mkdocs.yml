@@ -1,0 +1,31 @@
+name: 50. Publish MkDocs in GitHub Pages
+
+on:
+  push:
+    branches:
+    - main
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: ubuntu-22.04
+    steps:
+    - uses: hmarr/debug-action@f7318c783045ac39ed9bb497e22ce835fdafbfe6
+    - uses: actions/checkout@85e6279cec87321a52edac9c87bce653a07cf6c2
+
+    - name: Setup Tools
+      uses: ./.github/actions/setup-tools
+
+    - name: Build 📦
+      run: make mk-build
+
+    - name: Deploy 🚀
+      uses: JamesIves/github-pages-deploy-action@ee2ef8cbeab8f3d8ba46ddcda2d022aaab998276
+      with:
+        folder: site
