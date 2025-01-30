@@ -1,3 +1,21 @@
+## [0.43.9](https://github.com/bcgov/platform-services-registry/compare/v0.43.8...v0.43.9) (2025-01-30)
+
+### Features
+
+* **3116:** add MS365 mock integration test ([22124f0](https://github.com/bcgov/platform-services-registry/commit/22124f00f6ddaa1de5a45fdf7a4762c358f25188))
+* **3162:** implement integration tests for email workflows ([5c382cb](https://github.com/bcgov/platform-services-registry/commit/5c382cb639eddd2d8a37c987125c73a984f50ed9))
+* **4216:** upgrade MongoDB & Backup container versions ([2aee00a](https://github.com/bcgov/platform-services-registry/commit/2aee00ab2570d6db0fdcadaf06b82716492d6c4e))
+* **4749:** redirect 404 page to home page ([971be62](https://github.com/bcgov/platform-services-registry/commit/971be62b0b30197b52887266f4b07ba9cefc23b8))
+* **4771:** add data migration for Webhook URL duplication ([936dd37](https://github.com/bcgov/platform-services-registry/commit/936dd37f2d9e1e6b8bcf4fa4e7c69f4c7d95fcf0))
+
+### Bug Fixes
+
+* **4802:** resolve EMou Authority information discrepancy ([2b7d7e7](https://github.com/bcgov/platform-services-registry/commit/2b7d7e720bd8f8c9e328ca0a79661efb714a5262))
+
+### End-to-end Testing
+
+* **4311:** add delete request and delete approval tests public cloud ([2cab756](https://github.com/bcgov/platform-services-registry/commit/2cab7563d9a82fed98a9cbbcc2af161c8b0abeed))
+* **4311:** exceed timeout for e2e github action ([874f937](https://github.com/bcgov/platform-services-registry/commit/874f937c887f98a63db6409befc657be7cc1d665))
 ## [0.43.8](https://github.com/bcgov/platform-services-registry/compare/v0.43.7...v0.43.8) (2025-01-25)
 
 ### Features
