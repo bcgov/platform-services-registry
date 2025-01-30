@@ -40,3 +40,11 @@ copy-db:
 .PHONY: format-python
 format-python:
 	autopep8 --in-place --recursive .
+
+.PHONY: mk-serve
+mk-serve:
+	mkdocs serve
+
+.PHONY: mk-build
+mk-build:
+	mkdocs build
