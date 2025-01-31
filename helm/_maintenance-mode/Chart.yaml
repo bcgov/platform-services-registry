@@ -1,6 +1,0 @@
-apiVersion: v2
-name: maintenance-mode
-description: A Helm chart for the Maintenance mode
-type: application
-version: 0.1.0
-appVersion: "0.1.0"

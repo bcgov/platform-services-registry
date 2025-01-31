@@ -11,6 +11,11 @@ on:
         description: Image Tag Version (ghcr.io/bcgov/pltsvc:<imageTag>)
         type: string
         required: true
+      maintenanceMode:
+        description: Toggle Maintenance Mode
+        type: boolean
+        required: false
+        default: false
 
 jobs:
   deploy:
@@ -35,7 +40,19 @@ jobs:
         namespace: ${{ vars.OPENSHIFT_NAMESPACE }}
         insecure_skip_tls_verify: true
 
+    - name: Toggle Maintenance Mode
+      if: ${{ inputs.maintenanceMode }}
+      run: |
+        helm upgrade \
+          pltsvc-maintenance-mode \
+          ./helm/main \
+          -n ${{ vars.OPENSHIFT_NAMESPACE }} \
+          --set maintenanceMode.enabled=true \
+          --set app.replicaCount=0 \
+          --set maintenanceMode.image.tag=${{ inputs.imageTag }}
+
     - name: Deploy apps with Helm chart
+      if: ${{ !inputs.maintenanceMode }}
       run: |
         make upgrade \
         NAMESPACE=${{ vars.OPENSHIFT_NAMESPACE }} \

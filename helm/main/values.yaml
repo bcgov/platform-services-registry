@@ -28,6 +28,15 @@ global:
 nameOverride: pltsvc
 fullnameOverride: pltsvc
 
+maintenanceMode:
+  enabled: false
+  image:
+    tag: latest
+    pullPolicy: Always
+
+  nameOverride: pltsvc-maintenance-mode
+  fullnameOverride: pltsvc-maintenance-mode
+
 app:
   enabled: true
   image:
@@ -198,14 +207,3 @@ ches-mock:
 
   nameOverride: pltsvc-ches-mock
   fullnameOverride: pltsvc-ches-mock
-
-maintenanceMode: false
-
-maintenance-mode:
-  enabled: true
-  image:
-    tag: latest
-    pullPolicy: Always
-
-  nameOverride: pltsvc-maintenance-mode
-  fullnameOverride: pltsvc-maintenance-mode

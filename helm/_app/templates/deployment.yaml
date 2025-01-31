@@ -3,16 +3,22 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ include "app.fullname" . }}
+  name: {{ include "app.fullname" .  }}{{- if .Values.maintenanceMode.enabled }}-maintenance-mode
+  {{- end }}
   labels:
     {{- include "app.labels" . | nindent 4 }}
 spec:
   {{- if not .Values.autoscaling.enabled }}
-  replicas: {{ .Values.replicaCount }}
+  replicas: {{ if .Values.maintenanceMode.enabled }}1
+  {{ else }}{{ .Values.replicaCount }}{{- end }}
   {{- end }}
   selector:
     matchLabels:
+      {{- if .Values.maintenanceMode.enabled }}
+      app: maintenance-mode
+      {{- else }}
       {{- include "app.selectorLabels" . | nindent 6 }}
+      {{- end }}
   template:
     metadata:
       annotations:
@@ -21,6 +27,7 @@ spec:
         {{- toYaml . | nindent 8 }}
       {{- end }}
         vault.hashicorp.com/role: {{ .Values.global.vault.role }}
+      {{- if not .Values.maintenanceMode.enabled }}
         vault.hashicorp.com/agent-inject-secret-secrets.env: {{ .Values.global.vault.role }}/{{ .Values.global.vault.subPath }}
         vault.hashicorp.com/agent-inject-template-secrets.env: |
           {{`{{ with secret "`}}{{ .Values.global.vault.role }}/{{ .Values.global.vault.subPath }}{{`" -}}
@@ -54,10 +61,14 @@ spec:
             export GOLD_METRICS_READER_TOKEN='{{.Data.data.GOLD_METRICS_READER_TOKEN}}'
             export EMERALD_METRICS_READER_TOKEN='{{.Data.data.EMERALD_METRICS_READER_TOKEN}}'
           {{- end }}`}}
+        {{- end }}
       labels:
         {{- include "app.labels" . | nindent 8 }}
         {{- with .Values.podLabels }}
         {{- toYaml . | nindent 8 }}
+        {{- end }}
+        {{- if .Values.maintenanceMode.enabled }}
+        app: maintenance-mode
         {{- end }}
     spec:
       {{- $imagePullSecrets := concat (.Values.imagePullSecrets | default list) (.Values.global.imagePullSecrets | default list) -}}
@@ -69,14 +80,18 @@ spec:
       securityContext:
         {{- toYaml .Values.podSecurityContext | nindent 8 }}
       containers:
-        - name: {{ .Chart.Name }}
+        - name: {{ if .Values.maintenanceMode.enabled }}maintenance-mode
+        {{ else }}{{ .Chart.Name }}
+        {{- end }}
           securityContext:
             {{- toYaml .Values.securityContext | nindent 12 }}
-          image: "{{ .Values.image.repository }}:{{ $deploymentTag }}"
-          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          image: "{{ if .Values.maintenanceMode.enabled }}{{ .Values.maintenanceMode.image.repository }}:{{ .Values.maintenanceMode.image.tag }}{{ else }}{{ .Values.image.repository }}:{{ $deploymentTag }}{{- end }}"
+          imagePullPolicy: {{ if .Values.maintenanceMode.enabled }}{{ .Values.maintenanceMode.image.pullPolicy }}{{ else }}{{ .Values.image.pullPolicy }}{{ end }}
+          {{- if not .Values.maintenanceMode.enabled }}
           command: ["/bin/sh", "-c"]
           args:
             ['. /vault/secrets/secrets.env && /app/node_modules/.bin/next start']
+           {{- end }}
           env:
             - name: DEPLOYMENT_TAG
               value: {{ $deploymentTag | quote }}
@@ -92,7 +107,7 @@ spec:
           {{- end }}
           ports:
             - name: http
-              containerPort: {{ .Values.service.port }}
+              containerPort: {{ if .Values.maintenanceMode.enabled }}{{ .Values.service.maintenancePort }}{{ else }}{{ .Values.service.port }}{{ end }}
               protocol: TCP
           livenessProbe:
             httpGet:
