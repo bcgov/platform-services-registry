@@ -29,6 +29,6 @@ jobs:
         touch site/.nojekyll
 
     - name: Deploy 🚀
-      uses: JamesIves/github-pages-deploy-action@15de0f09300eea763baee31dff6c6184995c5f6a
+      uses: JamesIves/github-pages-deploy-action@ee2ef8cbeab8f3d8ba46ddcda2d022aaab998276
       with:
         folder: site
