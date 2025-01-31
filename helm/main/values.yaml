@@ -28,6 +28,15 @@ global:
 nameOverride: pltsvc
 fullnameOverride: pltsvc
 
+maintenanceMode:
+  enabled: false
+  image:
+    tag: latest
+    pullPolicy: Always
+
+  nameOverride: pltsvc-maintenance-mode
+  fullnameOverride: pltsvc-maintenance-mode
+
 app:
   enabled: true
   image:

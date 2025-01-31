@@ -1,0 +1,71 @@
+/* General Reset */
+body,
+html {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  width: 100%;
+  height: 100%;
+  font-family: 'Arial', sans-serif;
+  color: #333;
+  background: #f4f4f9;
+}
+
+/* Centering Container */
+.container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+  text-align: center;
+  padding: 20px;
+}
+
+/* message Box */
+.message-box {
+  max-width: 600px;
+  padding: 30px;
+  background: #ffffff; /* White card */
+  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+  border-radius: 8px;
+}
+
+/* Heading */
+h1 {
+  font-size: 2.5rem;
+  color: #ff5733;
+  margin-bottom: 20px;
+}
+
+/* Subtext */
+p {
+  font-size: 1.1rem;
+  color: #666;
+  margin-bottom: 20px;
+  line-height: 1.6;
+}
+
+/*  Animation */
+.animated-icon {
+  font-size: 3rem;
+  color: #ff5733;
+  animation: bounce 1.5s infinite;
+}
+
+/* Bounce Animation */
+@keyframes bounce {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
+}
+
+/* Footer */
+footer {
+  font-size: 0.9rem;
+  color: #999;
+  margin-top: 20px;
+}

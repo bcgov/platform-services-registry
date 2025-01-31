@@ -16,5 +16,9 @@ spec:
     termination: edge
   to:
     kind: Service
-    name: {{ include "app.fullname" . }}
+    name: {{ if .Values.maintenanceMode.enabled }}
+      {{ include "app.fullname" . }}-maintenance-mode
+    {{ else }}
+      {{ include "app.fullname" . }}
+    {{ end }}
 {{- end }}
