@@ -13,8 +13,9 @@ permissions:
   contents: write
 
 jobs:
-  build:
+  mkdocs:
     runs-on: ubuntu-22.04
+    timeout-minutes: 5
     steps:
     - uses: hmarr/debug-action@f7318c783045ac39ed9bb497e22ce835fdafbfe6
     - uses: actions/checkout@85e6279cec87321a52edac9c87bce653a07cf6c2
@@ -23,9 +24,11 @@ jobs:
       uses: ./.github/actions/setup-tools
 
     - name: Build 📦
-      run: make mk-build
+      run: |
+        make mk-build
+        touch site/.nojekyll
 
     - name: Deploy 🚀
-      uses: JamesIves/github-pages-deploy-action@ee2ef8cbeab8f3d8ba46ddcda2d022aaab998276
+      uses: JamesIves/github-pages-deploy-action@15de0f09300eea763baee31dff6c6184995c5f6a
       with:
         folder: site

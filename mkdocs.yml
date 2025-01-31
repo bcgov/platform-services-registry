@@ -5,6 +5,7 @@ dev_addr: 127.0.0.1:8888
 site_name: Platform Services Registry
 site_url: https://bcgov.github.io/platform-services-registry
 site_author: Platform Services Team
+use_directory_urls: false
 
 # Repository
 repo_name: bcgov/platform-services-registry
@@ -113,7 +114,7 @@ markdown_extensions:
 
 extra_javascript:
 - https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.11.1/highlight.min.js
-- https://polyfill.io/v3/polyfill.min.js?features=es6
+- https://cdnjs.cloudflare.com/ajax/libs/js-polyfills/0.1.43/polyfill.min.js
 - _javascripts/highlight.js
 
 extra_css:
