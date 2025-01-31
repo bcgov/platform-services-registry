@@ -23,7 +23,9 @@ jobs:
       uses: ./.github/actions/setup-tools
 
     - name: Build 📦
-      run: make mk-build
+      run: |
+        make mk-build
+        touch site/.nojekyll
 
     - name: Deploy 🚀
       uses: JamesIves/github-pages-deploy-action@15de0f09300eea763baee31dff6c6184995c5f6a
