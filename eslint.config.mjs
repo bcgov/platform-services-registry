@@ -37,7 +37,7 @@ export default [
     ],
   },
   {
-    files: ['*.ts', '*.tsx'],
+    files: ['*.js', '*.ts'],
   },
   {
     languageOptions: {

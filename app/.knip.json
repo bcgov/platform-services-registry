@@ -6,9 +6,9 @@
     "sharp",
     "@testing-library/react",
     "@testing-library/user-event",
-    "eslint-config-airbnb",
     "ts-jest",
     "ts-node",
+    "eslint-config-next",
     "@next/swc-*"
   ],
   "rules": {
