@@ -37,7 +37,3 @@ dependencies:
     version: '0.1.0'
     repository: 'file://../_mailpit'
     condition: mailpit.enabled
-  - name: maintenance-mode
-    version: '0.1.0'
-    repository: 'file://../_maintenance-mode'
-    condition: maintenance-mode.enabled
