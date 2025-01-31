@@ -10,28 +10,28 @@
         <meta name="author" content="Platform Services Team">
       
       
-        <link rel="canonical" href="https://bcgov.github.io/platform-services-registry/selecting-image-scanner/">
+        <link rel="canonical" href="https://bcgov.github.io/platform-services-registry/api-testing.html">
       
       
-        <link rel="prev" href="../rocketchat-notifications/">
+        <link rel="prev" href="developer-guide.html">
       
       
-        <link rel="next" href="../team-conventions/">
+        <link rel="next" href="bot-pr-review.html">
       
       
-      <link rel="icon" href="../_assets/logo.png">
+      <link rel="icon" href="platform-services-registry/_assets/logo.png">
       <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.5.50">
     
     
       
-        <title>Image Scanning for Vulnerabilities - Platform Services Registry</title>
+        <title>API Testing - Platform Services Registry</title>
       
     
     
-      <link rel="stylesheet" href="../assets/stylesheets/main.a40c8224.min.css">
+      <link rel="stylesheet" href="assets/stylesheets/main.a40c8224.min.css">
       
         
-        <link rel="stylesheet" href="../assets/stylesheets/palette.06af60db.min.css">
+        <link rel="stylesheet" href="assets/stylesheets/palette.06af60db.min.css">
       
       
 
@@ -52,7 +52,7 @@
     
       <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.11.1/styles/github.min.css">
     
-    <script>__md_scope=new URL("..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    <script>__md_scope=new URL(".",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
     
       
 
@@ -78,7 +78,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#image-scanning-for-vulnerabilities" class="md-skip">
+        <a href="#api-testing" class="md-skip">
           Skip to content
         </a>
       
@@ -92,9 +92,9 @@
 
 <header class="md-header" data-md-component="header">
   <nav class="md-header__inner md-grid" aria-label="Header">
-    <a href=".." title="Platform Services Registry" class="md-header__button md-logo" aria-label="Platform Services Registry" data-md-component="logo">
+    <a href="index.html" title="Platform Services Registry" class="md-header__button md-logo" aria-label="Platform Services Registry" data-md-component="logo">
       
-  <img src="../_assets/logo.png" alt="logo">
+  <img src="platform-services-registry/_assets/logo.png" alt="logo">
 
     </a>
     <label class="md-header__button md-icon" for="__drawer">
@@ -111,7 +111,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              Image Scanning for Vulnerabilities
+              API Testing
             
           </span>
         </div>
@@ -225,7 +225,7 @@
   
   
     <li class="md-tabs__item">
-      <a href=".." class="md-tabs__link">
+      <a href="index.html" class="md-tabs__link">
         
   
     
@@ -254,7 +254,7 @@
     
     
       <li class="md-tabs__item md-tabs__item--active">
-        <a href="../clean-codes/return-early/" class="md-tabs__link">
+        <a href="clean-codes/return-early.html" class="md-tabs__link">
           
   
     
@@ -292,9 +292,9 @@
 
 <nav class="md-nav md-nav--primary md-nav--lifted" aria-label="Navigation" data-md-level="0">
   <label class="md-nav__title" for="__drawer">
-    <a href=".." title="Platform Services Registry" class="md-nav__button md-logo" aria-label="Platform Services Registry" data-md-component="logo">
+    <a href="index.html" title="Platform Services Registry" class="md-nav__button md-logo" aria-label="Platform Services Registry" data-md-component="logo">
       
-  <img src="../_assets/logo.png" alt="logo">
+  <img src="platform-services-registry/_assets/logo.png" alt="logo">
 
     </a>
     Platform Services Registry
@@ -321,7 +321,7 @@
   
   
     <li class="md-nav__item">
-      <a href=".." class="md-nav__link">
+      <a href="index.html" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -471,7 +471,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../clean-codes/return-early/" class="md-nav__link">
+      <a href="clean-codes/return-early.html" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -500,284 +500,11 @@
   
   
     <li class="md-nav__item">
-      <a href="../developer-guide/" class="md-nav__link">
+      <a href="developer-guide.html" class="md-nav__link">
         
   
   <span class="md-ellipsis">
     Developer Guidelines
-  </span>
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../api-testing/" class="md-nav__link">
-        
-  
-  <span class="md-ellipsis">
-    API Testing
-  </span>
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../bot-pr-review/" class="md-nav__link">
-        
-  
-  <span class="md-ellipsis">
-    Renovate Bot PR Review
-  </span>
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../ci-cd/" class="md-nav__link">
-        
-  
-  <span class="md-ellipsis">
-    CI/CD Pipelines
-  </span>
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../database/" class="md-nav__link">
-        
-  
-  <span class="md-ellipsis">
-    Database
-  </span>
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../debug-deployments/" class="md-nav__link">
-        
-  
-  <span class="md-ellipsis">
-    Debugging Helm Deployment Failure Issues
-  </span>
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../email-scenarios-private-cloud/" class="md-nav__link">
-        
-  
-  <span class="md-ellipsis">
-    Email scenarios private cloud
-  </span>
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../email-scenarios-public-cloud/" class="md-nav__link">
-        
-  
-  <span class="md-ellipsis">
-    Email scenarios public cloud
-  </span>
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../emou-workflow/" class="md-nav__link">
-        
-  
-  <span class="md-ellipsis">
-    Emou workflow
-  </span>
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../git-tips/" class="md-nav__link">
-        
-  
-  <span class="md-ellipsis">
-    Git Tips
-  </span>
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../onboarding-offboarding/" class="md-nav__link">
-        
-  
-  <span class="md-ellipsis">
-    Onboarding and Offboarding Documentation
-  </span>
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../react-email/" class="md-nav__link">
-        
-  
-  <span class="md-ellipsis">
-    React email
-  </span>
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../resource-metrics/" class="md-nav__link">
-        
-  
-  <span class="md-ellipsis">
-    Resource metrics
-  </span>
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../rocketchat-notifications/" class="md-nav__link">
-        
-  
-  <span class="md-ellipsis">
-    RocketChat Deployment Notifications Setup
   </span>
   
 
@@ -807,18 +534,18 @@
           
   
   <span class="md-ellipsis">
-    Image Scanning for Vulnerabilities
+    API Testing
   </span>
   
 
           <span class="md-nav__icon md-icon"></span>
         </label>
       
-      <a href="./" class="md-nav__link md-nav__link--active">
+      <a href="api-testing.html" class="md-nav__link md-nav__link--active">
         
   
   <span class="md-ellipsis">
-    Image Scanning for Vulnerabilities
+    API Testing
   </span>
   
 
@@ -840,27 +567,9 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#introduction" class="md-nav__link">
+  <a href="#steps-to-add-api-test-scripts" class="md-nav__link">
     <span class="md-ellipsis">
-      Introduction
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#selection-criteria" class="md-nav__link">
-    <span class="md-ellipsis">
-      Selection Criteria
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#comparative-analysis" class="md-nav__link">
-    <span class="md-ellipsis">
-      Comparative Analysis
+      Steps to Add API Test Scripts
     </span>
   </a>
   
@@ -882,7 +591,280 @@
   
   
     <li class="md-nav__item">
-      <a href="../team-conventions/" class="md-nav__link">
+      <a href="bot-pr-review.html" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Renovate Bot PR Review
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="ci-cd.html" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    CI/CD Pipelines
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="database.html" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Database
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="debug-deployments.html" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Debugging Helm Deployment Failure Issues
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="email-scenarios-private-cloud.html" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Email scenarios private cloud
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="email-scenarios-public-cloud.html" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Email scenarios public cloud
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="emou-workflow.html" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Emou workflow
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="git-tips.html" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Git Tips
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="onboarding-offboarding.html" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Onboarding and Offboarding Documentation
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="react-email.html" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    React email
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="resource-metrics.html" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Resource metrics
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="rocketchat-notifications.html" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    RocketChat Deployment Notifications Setup
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="selecting-image-scanner.html" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Image Scanning for Vulnerabilities
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="team-conventions.html" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -903,7 +885,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../terraform/" class="md-nav__link">
+      <a href="terraform.html" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -951,27 +933,9 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#introduction" class="md-nav__link">
+  <a href="#steps-to-add-api-test-scripts" class="md-nav__link">
     <span class="md-ellipsis">
-      Introduction
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#selection-criteria" class="md-nav__link">
-    <span class="md-ellipsis">
-      Selection Criteria
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#comparative-analysis" class="md-nav__link">
-    <span class="md-ellipsis">
-      Comparative Analysis
+      Steps to Add API Test Scripts
     </span>
   </a>
   
@@ -995,99 +959,15 @@
   
 
 
-<h1 id="image-scanning-for-vulnerabilities">Image Scanning for Vulnerabilities<a class="headerlink" href="#image-scanning-for-vulnerabilities" title="Permanent link">&para;</a></h1>
-<h2 id="introduction">Introduction<a class="headerlink" href="#introduction" title="Permanent link">&para;</a></h2>
-<p>Vulnerability scanning tools are essential for identifying security risks in software applications and their underlying infrastructure. This summary examines seven prominent tools: Trivy, Clair, Anchore, Snyk, Grype, Aqua Security, and Qualys. These tools vary in their focus, coverage, and features, catering to different needs from simple open-source solutions to comprehensive enterprise-grade offerings. We can better select the tool(s) that aligns with our security requirements and expectations, by understanding their key differences.</p>
-<h2 id="selection-criteria">Selection Criteria<a class="headerlink" href="#selection-criteria" title="Permanent link">&para;</a></h2>
-<p>To comparatively evaluate the vulnerability scanning tools, the following selection criteria were considered:</p>
+<h1 id="api-testing">API Testing<a class="headerlink" href="#api-testing" title="Permanent link">&para;</a></h1>
+<p>We use <code>Jest</code> to test our application's API endpoints, focusing on access permissions and parameter validations.</p>
+<h2 id="steps-to-add-api-test-scripts">Steps to Add API Test Scripts<a class="headerlink" href="#steps-to-add-api-test-scripts" title="Permanent link">&para;</a></h2>
 <ol>
-<li><strong>Vulnerability Coverage</strong>: The extent to which the tool identifies vulnerabilities across OS, application dependencies, and compliance requirements.</li>
-<li><strong>Features</strong>: Additional capabilities, such as real-time monitoring, customizable policies, and secrets detection.</li>
-<li><strong>Ease of Use</strong>: The user-friendliness of the tool and the complexity of its setup and configuration.</li>
-<li><strong>Integration</strong>: Compatibility with CI/CD pipelines, Kubernetes, and other development tools.</li>
-<li><strong>Cost</strong>: Pricing models, including free versions, basic features, and enterprise-grade options.</li>
+<li>Add the corresponding API service methods to encapsulate endpoint information and structure in the <code>/app/services/api-test</code> directory.</li>
+<li>The names and method arguments should ideally be similar to those in <code>/app/services/backend</code>.</li>
+<li>Add the test script, such as <code>route.test.ts</code>, in the same directory as the API route file.</li>
+<li>The test script should focus on the permission checks and parameter validations of the route itself. When using other endpoint methods from <code>/app/services/api-test</code>, only check the status codes to prevent the test script from becoming overly bloated with excessive validations; concentrate on the route tests for each test script.</li>
 </ol>
-<h2 id="comparative-analysis">Comparative Analysis<a class="headerlink" href="#comparative-analysis" title="Permanent link">&para;</a></h2>
-<p>This table below provides a clear comparison of the tools based the above selection criteria.</p>
-<table>
-<thead>
-<tr>
-<th>Tool</th>
-<th>Type</th>
-<th>Vulnerability Coverage</th>
-<th>Features</th>
-<th>Ease of Use</th>
-<th>Integration</th>
-<th>Cost</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><a href="https://trivy.dev/">Trivy</a></td>
-<td>Open-source</td>
-<td>High (OS + app dependencies)</td>
-<td>Simple, fast, secrets detection</td>
-<td>High</td>
-<td>CI/CD, Kubernetes</td>
-<td>Free</td>
-</tr>
-<tr>
-<td><a href="https://github.com/arminc/clair-scanner">Clair</a></td>
-<td>Open-source</td>
-<td>OS-level vulnerabilities</td>
-<td>Layered image scanning</td>
-<td>Moderate</td>
-<td>Quay, Kubernetes</td>
-<td>Free</td>
-</tr>
-<tr>
-<td><a href="https://anchore.com/container-vulnerability-scanning/">Anchore</a></td>
-<td>Open-source/Enterprise</td>
-<td>High (OS + app + compliance)</td>
-<td>Customizable policies, compliance</td>
-<td>Moderate</td>
-<td>Jenkins, CircleCI, K8s</td>
-<td>Free (basic), Paid</td>
-</tr>
-<tr>
-<td><a href="https://snyk.io/product/container-vulnerability-management/">Snyk</a></td>
-<td>Open-source/Commercial</td>
-<td>High (OS + app + IaC)</td>
-<td>Real-time monitoring, open-source focus</td>
-<td>High</td>
-<td>CI/CD, GitHub, Registries</td>
-<td>Free (basic), Paid</td>
-</tr>
-<tr>
-<td><a href="https://github.com/anchore/grype">Grype</a></td>
-<td>Open-source</td>
-<td>High (OS + app dependencies)</td>
-<td>Basic vulnerability scanning</td>
-<td>High</td>
-<td>CI/CD, Kubernetes</td>
-<td>Free</td>
-</tr>
-<tr>
-<td><a href="https://www.aquasec.com/products/container-vulnerability-scanning/">Aqua Security</a></td>
-<td>Enterprise</td>
-<td>Comprehensive</td>
-<td>Runtime protection, compliance</td>
-<td>Moderate</td>
-<td>CI/CD, Kubernetes, Docker</td>
-<td>Paid (enterprise-grade)</td>
-</tr>
-<tr>
-<td><a href="https://docs.qualys.com/en/cs/latest/vuln_scans/docker_images.htm">Qualys</a></td>
-<td>Enterprise</td>
-<td>Comprehensive</td>
-<td>Real-time, continuous monitoring</td>
-<td>Moderate</td>
-<td>CI/CD, Kubernetes, Docker</td>
-<td>Paid (enterprise-grade)</td>
-</tr>
-</tbody>
-</table>
-<p>Given our team's emphasis on open-source solutions, we have streamlined our selection to Trivy, Clair, Anchore, Snyk, and Grype. We also prioritize ease of use, implementation speed, and execution speed as essential features in our technical decisions. Additionally, we strive to minimize costs wherever possible. Based on the table, Trivy meets all these selection criteria and will be used to implement image scanning in our GitHub workflows.</p>
 
 
 
@@ -1146,16 +1026,16 @@
     </div>
     
     
-    <script id="__config" type="application/json">{"base": "..", "features": ["content.code.annotate", "content.code.copy", "content.tabs.link", "navigation.indexes", "navigation.sections", "navigation.tabs", "navigation.top", "navigation.tracking", "search.highlight", "search.share", "search.suggest"], "search": "../assets/javascripts/workers/search.f8cc74c7.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}}</script>
+    <script id="__config" type="application/json">{"base": ".", "features": ["content.code.annotate", "content.code.copy", "content.tabs.link", "navigation.indexes", "navigation.sections", "navigation.tabs", "navigation.top", "navigation.tracking", "search.highlight", "search.share", "search.suggest"], "search": "assets/javascripts/workers/search.f8cc74c7.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}}</script>
     
     
-      <script src="../assets/javascripts/bundle.60a45f97.min.js"></script>
+      <script src="assets/javascripts/bundle.60a45f97.min.js"></script>
       
         <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.11.1/highlight.min.js"></script>
       
-        <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/js-polyfills/0.1.43/polyfill.min.js"></script>
       
-        <script src="../_javascripts/highlight.js"></script>
+        <script src="platform-services-registry/_javascripts/highlight.js"></script>
       
     
   </body>
