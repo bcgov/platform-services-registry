@@ -12,7 +12,7 @@ permissions:
   contents: write
 
 jobs:
-  build:
+  mkdocs:
     runs-on: ubuntu-22.04
     timeout-minutes: 5
     steps:

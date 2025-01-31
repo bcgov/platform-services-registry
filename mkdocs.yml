@@ -5,6 +5,7 @@ dev_addr: 127.0.0.1:8888
 site_name: Platform Services Registry
 site_url: https://bcgov.github.io/platform-services-registry
 site_author: Platform Services Team
+use_directory_urls: false
 
 # Repository
 repo_name: bcgov/platform-services-registry
@@ -17,7 +18,7 @@ docs_dir: docs
 
 theme:
   name: material
-  logo: _assets/logo.png
+  logo: platform-services-registry/_assets/logo.png
 
   include_search_page: false
   search_index_only: true
@@ -57,7 +58,7 @@ theme:
   font:
     text: Roboto
     code: Roboto Mono
-  favicon: _assets/logo.png
+  favicon: platform-services-registry/_assets/logo.png
   icon:
     logo: logo
 
@@ -113,8 +114,8 @@ markdown_extensions:
 
 extra_javascript:
 - https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.11.1/highlight.min.js
-- https://polyfill.io/v3/polyfill.min.js?features=es6
-- _javascripts/highlight.js
+- https://cdnjs.cloudflare.com/ajax/libs/js-polyfills/0.1.43/polyfill.min.js
+- platform-services-registry/_javascripts/highlight.js
 
 extra_css:
 - https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.11.1/styles/github.min.css
