@@ -1,6 +1,0 @@
-**/*.js
-**/*.jsx
-**/*.mjs
-node_modules
-.next
-.react-email

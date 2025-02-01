@@ -87,7 +87,6 @@ export default function SearchFilterExport({
                     className="w-full h-9 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-slate-300-500 focus:border-slate-300-500 block px-9 py-1.5 dark:border-gray-300 dark:placeholder-gray-400 dark:text-darkergrey dark:focus:ring-slate-300 dark:focus:border-slate-300"
                     placeholder="Search"
                     onChange={(e) => setSearchTerm(e.target.value)}
-                    // eslint-disable-next-line jsx-a11y/no-autofocus
                     autoFocus
                     maxLength={30}
                     spellCheck={false}
