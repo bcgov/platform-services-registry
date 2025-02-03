@@ -1,0 +1,20 @@
+services:
+  keycloak:
+    image: ghcr.io/bcgov/pltsvc-sandbox-keycloak:latest
+    pull_policy: always
+    build: {}
+
+  keycloak-provision:
+    image: ghcr.io/bcgov/pltsvc-sandbox-keycloak-provision:latest
+    pull_policy: always
+    build: {}
+
+  nats-provision:
+    image: ghcr.io/bcgov/pltsvc-sandbox-nats-provision:latest
+    pull_policy: always
+    build: {}
+
+  # m365mock:
+  #   image: ghcr.io/bcgov/pltsvc-sandbox-m365mock:latest
+  #   pull_policy: always
+  #   build: {}

@@ -139,7 +139,7 @@ In order to identify and manage potential secrets within your Git repository, a 
 To create or update a baseline file that captures the potential secrets currently present in your repository, run:
 
 ```sh
-detect-secrets scan > .secrets.baseline
+detect-secrets scan --exclude-files '(sandbox/mock-users\.json|pnpm-lock\.yaml|.*/pnpm-lock\.yaml)$' > .secrets.baseline
 ```
 
 ## File Naming Conventions

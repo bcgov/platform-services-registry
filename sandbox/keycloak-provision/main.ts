@@ -3,7 +3,7 @@ import { readFileSync } from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
 import { KcAdmin } from '../_packages/keycloak-admin/src/main.js';
-import { MsUser } from '../types';
+import { MsUser } from '../types.js';
 import {
   KEYCLOAK_URL,
   MASTER_ADMIN,

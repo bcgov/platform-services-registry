@@ -28,14 +28,14 @@ repos:
   hooks:
   - id: detect-secrets
     args: [--baseline, .secrets.baseline]
-    exclude: package.lock.json|localdev/mock-users.json
+    exclude: ^(sandbox/mock-users\.json|sandbox/m365proxy/mocks\.json|pnpm-lock\.yaml|.*/pnpm-lock\.yaml)$
 - repo: local
   hooks:
   - id: eslint
     name: eslint
     entry: .bin/eslint.sh
     language: script
-    files: ^(cypress|localdev)/.*\.(js|ts)$
+    files: ^(cypress|sandbox)/.*\.(js|ts)$
     verbose: true
     pass_filenames: true
   - id: eslint-app
@@ -90,4 +90,4 @@ repos:
   - id: codespell
     exclude: .git/COMMIT_EDITMSG
 
-exclude: ^(app/.react-email|CHANGELOG\.md|.*pnpm-lock\.yaml)$
+exclude: ^(app/.react-email|CHANGELOG\.md|pnpm-lock\.yaml|.*/pnpm-lock\.yaml)$

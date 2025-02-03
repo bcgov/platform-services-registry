@@ -7,10 +7,10 @@ The development sandbox serves as an isolated environment for local development 
 1. To begin, duplicate the `.env.example` file to create a `.env.local` file and a `.env.test` file. The `.env.local` file is used to define default environment variables for local development, while the `.env.test` file is specifically for testing purposes.
    Ensure `.env.local` and `.env.test` are in the root directory of the project (`/app`). This ensures that they are correctly picked up by the application when required.
 
-2. Switch to localdev folder
+2. Switch to sandbox folder
 
 ```bash
-cd localdev
+cd sandbox
 ```
 
 3. Create three directories to mount volumns for `mongodb`,`postgres` and `mailpit`.

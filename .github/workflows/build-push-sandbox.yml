@@ -1,12 +1,12 @@
-name: 21.Build and Push Localdev Images
+name: 21.Build and Push Sandbox Images
 
 on:
   push:
     branches:
     - main
     paths:
-    - .github/workflows/build-push-localdev.yml
-    - localdev/**
+    - .github/workflows/build-push-sandbox.yml
+    - sandbox/**
 
 env:
   GITHUB_REGISTRY: ghcr.io
@@ -33,9 +33,9 @@ jobs:
         registry-url: ${{ env.GITHUB_REGISTRY }}
         registry-username: ${{ github.actor }}
         registry-password: ${{ secrets.GITHUB_TOKEN }}
-        image-name: bcgov/pltsvc-localdev-keycloak
-        docker-context: localdev/keycloak
-        docker-file: localdev/keycloak/Dockerfile
+        image-name: bcgov/pltsvc-sandbox-keycloak
+        docker-context: sandbox/keycloak
+        docker-file: sandbox/keycloak/Dockerfile
         metadata-tags: |
           type=raw,value=latest
 
@@ -56,9 +56,9 @@ jobs:
         registry-url: ${{ env.GITHUB_REGISTRY }}
         registry-username: ${{ github.actor }}
         registry-password: ${{ secrets.GITHUB_TOKEN }}
-        image-name: bcgov/pltsvc-localdev-keycloak-provision
-        docker-context: localdev
-        docker-file: localdev/keycloak-provision/Dockerfile
+        image-name: bcgov/pltsvc-sandbox-keycloak-provision
+        docker-context: sandbox
+        docker-file: sandbox/keycloak-provision/Dockerfile
         metadata-tags: |
           type=raw,value=latest
 
@@ -79,9 +79,9 @@ jobs:
         registry-url: ${{ env.GITHUB_REGISTRY }}
         registry-username: ${{ github.actor }}
         registry-password: ${{ secrets.GITHUB_TOKEN }}
-        image-name: bcgov/pltsvc-localdev-m365proxy
-        docker-context: localdev/m365proxy
-        docker-file: localdev/m365proxy/Dockerfile
+        image-name: bcgov/pltsvc-sandbox-m365proxy
+        docker-context: sandbox/m365proxy
+        docker-file: sandbox/m365proxy/Dockerfile
         metadata-tags: |
           type=raw,value=latest
 
@@ -102,9 +102,9 @@ jobs:
         registry-url: ${{ env.GITHUB_REGISTRY }}
         registry-username: ${{ github.actor }}
         registry-password: ${{ secrets.GITHUB_TOKEN }}
-        image-name: bcgov/pltsvc-localdev-m365mock
-        docker-context: localdev
-        docker-file: localdev/m365mock/Dockerfile
+        image-name: bcgov/pltsvc-sandbox-m365mock
+        docker-context: sandbox
+        docker-file: sandbox/m365mock/Dockerfile
         metadata-tags: |
           type=raw,value=latest
 
@@ -125,9 +125,9 @@ jobs:
         registry-url: ${{ env.GITHUB_REGISTRY }}
         registry-username: ${{ github.actor }}
         registry-password: ${{ secrets.GITHUB_TOKEN }}
-        image-name: bcgov/pltsvc-localdev-nats-provision
-        docker-context: localdev
-        docker-file: localdev/nats-provision/Dockerfile
+        image-name: bcgov/pltsvc-sandbox-nats-provision
+        docker-context: sandbox
+        docker-file: sandbox/nats-provision/Dockerfile
         metadata-tags: |
           type=raw,value=latest
 
@@ -148,8 +148,8 @@ jobs:
         registry-url: ${{ env.GITHUB_REGISTRY }}
         registry-username: ${{ github.actor }}
         registry-password: ${{ secrets.GITHUB_TOKEN }}
-        image-name: bcgov/pltsvc-localdev-ches-mock
-        docker-context: localdev
-        docker-file: localdev/ches-mock/Dockerfile
+        image-name: bcgov/pltsvc-sandbox-ches-mock
+        docker-context: sandbox
+        docker-file: sandbox/ches-mock/Dockerfile
         metadata-tags: |
           type=raw,value=latest

@@ -7,7 +7,7 @@ on:
     paths:
     - app/**
     - helm/**
-    - localdev/nats-provision/**
+    - sandbox/nats-provision/**
     - data-migrations/**
     - .github/workflows/deploy-dev.yml
 
@@ -131,9 +131,9 @@ jobs:
         registry-url: ${{ env.GITHUB_REGISTRY }}
         registry-username: ${{ github.actor }}
         registry-password: ${{ secrets.GITHUB_TOKEN }}
-        image-name: bcgov/pltsvc-localdev-m365proxy
-        docker-context: localdev/m365proxy
-        docker-file: localdev/m365proxy/Dockerfile
+        image-name: bcgov/pltsvc-sandbox-m365proxy
+        docker-context: sandbox/m365proxy
+        docker-file: sandbox/m365proxy/Dockerfile
         metadata-tags: |
           type=ref,event=branch
           type=sha,format=long,prefix=,suffix=
@@ -154,9 +154,9 @@ jobs:
         registry-url: ${{ env.GITHUB_REGISTRY }}
         registry-username: ${{ github.actor }}
         registry-password: ${{ secrets.GITHUB_TOKEN }}
-        image-name: bcgov/pltsvc-localdev-nats-provision
-        docker-context: localdev
-        docker-file: localdev/nats-provision/Dockerfile
+        image-name: bcgov/pltsvc-sandbox-nats-provision
+        docker-context: sandbox
+        docker-file: sandbox/nats-provision/Dockerfile
         metadata-tags: |
           type=ref,event=branch
           type=sha,format=long,prefix=,suffix=
@@ -257,7 +257,7 @@ jobs:
     - name: Scan image
       uses: ./.github/actions/scan-docker-image
       with:
-        image: ${{ env.GITHUB_REGISTRY }}/bcgov/pltsvc-localdev-m365proxy:${{ github.sha }}
+        image: ${{ env.GITHUB_REGISTRY }}/bcgov/pltsvc-sandbox-m365proxy:${{ github.sha }}
 
   scan-nats-provision:
     needs: [build-push-app, build-push-pre-prisma, build-push-pre-data-migrations, build-push-email, build-push-m365proxy, build-push-nats-provision]
@@ -269,4 +269,4 @@ jobs:
     - name: Scan image
       uses: ./.github/actions/scan-docker-image
       with:
-        image: ${{ env.GITHUB_REGISTRY }}/bcgov/pltsvc-localdev-nats-provision:${{ github.sha }}
+        image: ${{ env.GITHUB_REGISTRY }}/bcgov/pltsvc-sandbox-nats-provision:${{ github.sha }}
