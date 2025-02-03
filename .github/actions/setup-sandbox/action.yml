@@ -21,12 +21,12 @@ runs:
   - name: Run Docker Compose and Custom Script
     shell: bash
     run: |
-      mkdir -p ./localdev/mnt/{mongodb,postgres,mailpit}
+      mkdir -p ./sandbox/mnt/{mongodb,postgres,mailpit}
 
       images=(
-          "ghcr.io/bcgov/pltsvc-localdev-keycloak:latest"
-          "ghcr.io/bcgov/pltsvc-localdev-keycloak-provision:latest"
-          "ghcr.io/bcgov/pltsvc-localdev-nats-provision:latest"
+          "ghcr.io/bcgov/pltsvc-sandbox-keycloak:latest"
+          "ghcr.io/bcgov/pltsvc-sandbox-keycloak-provision:latest"
+          "ghcr.io/bcgov/pltsvc-sandbox-nats-provision:latest"
       )
 
       for image in "${images[@]}"; do
@@ -34,7 +34,7 @@ runs:
       done
 
       export MACHINE_HOST_IP=$(hostname -I | awk '{print $1}')
-      DOCKER_COMPOSE="$HOME/.docker/cli-plugins/docker-compose -f localdev/docker-compose.yml -f localdev/docker-compose-ci.yml"
+      DOCKER_COMPOSE="$HOME/.docker/cli-plugins/docker-compose -f sandbox/docker-compose.yml -f sandbox/docker-compose-ci.yml"
       $DOCKER_COMPOSE up -d
 
       node_modules/.bin/wait-on http://localhost:8080/health/ready http://localhost:4040 --timeout 120000
@@ -45,4 +45,4 @@ runs:
       ${{ inputs.script }}
 
       $DOCKER_COMPOSE down
-      sudo rm -rf ./localdev/mnt
+      sudo rm -rf ./sandbox/mnt

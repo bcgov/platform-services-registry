@@ -4,10 +4,10 @@ import { generateSession } from '@/core/auth-options';
 import prisma from '@/core/prisma';
 import { processMsUser } from '@/services/msgraph';
 import type { AppUserWithRoles } from '@/types/user';
-import type { MsUser } from '../../localdev/types';
+import type { MsUser } from '../../sandbox/types';
 import { formatFullName } from './user';
 
-export const msUsers: MsUser[] = require('../../localdev/mock-users.json');
+export const msUsers: MsUser[] = require('../../sandbox/mock-users.json');
 
 export const mockUsers = msUsers
   .map((usr) => {

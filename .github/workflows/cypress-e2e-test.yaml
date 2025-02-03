@@ -46,7 +46,7 @@ jobs:
           /home/runner/work/platform-services-registry/platform-services-registry/cypress/screenshots
           /home/runner/work/platform-services-registry/platform-services-registry/cypress/videos
 
-    - name: Clean Up Localdev Environment
+    - name: Clean Up Sandbox Environment
       run: |
-        ~/.docker/cli-plugins/docker-compose -f localdev/docker-compose.yml down
-        sudo rm -rf ./localdev/mnt
+        ~/.docker/cli-plugins/docker-compose -f sandbox/docker-compose.yml down
+        sudo rm -rf ./sandbox/mnt
