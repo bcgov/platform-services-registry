@@ -22,7 +22,7 @@ jobs:
       uses: ./.github/actions/setup-tools
 
     - name: Install Dependencies
-      run: pnpm install
+      run: pnpm install --frozen-lockfile
       working-directory: localdev/m365mock
 
     - name: Build the Application

@@ -1,9 +1,12 @@
-import { ScrollArea } from '@mantine/core';
+import { ScrollArea, ModalProps } from '@mantine/core';
 import { randomId } from '@mantine/hooks';
 import { modals } from '@mantine/modals';
-import { ModalSettings } from '@mantine/modals/lib/context';
 import _isString from 'lodash-es/isString';
-import React, { useMemo } from 'react';
+import React, { JSX } from 'react';
+
+type ModalSettings = Partial<Omit<ModalProps, 'opened'>> & {
+  modalId?: string;
+};
 
 // Interface for extra props to be passed to the modal component
 interface ExtraModalProps {

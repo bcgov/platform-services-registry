@@ -43,6 +43,16 @@ describe('Public Cloud Emails', () => {
     expect(sendEmail).toHaveBeenNthCalledWith(
       2,
       expect.objectContaining({
+        subject: `You have been added as the Expense Authority for ${decisionData.name}`,
+        to: expect.arrayContaining([decisionData.expenseAuthority.email]),
+        body: expect.compareEmailText(
+          `You are now the Expense Authority for the the product ${decisionData.name} on the Public Cloud.`,
+        ),
+      }),
+    );
+    expect(sendEmail).toHaveBeenNthCalledWith(
+      3,
+      expect.objectContaining({
         subject: 'Your provisioning request has been approved',
         to: expect.arrayContaining([
           decisionData.projectOwner.email,
@@ -51,16 +61,6 @@ describe('Public Cloud Emails', () => {
         ]),
         body: expect.compareEmailText(
           `We are pleased to inform you that your request to create the product ${decisionData.name} has been approved on the Public Cloud Landing Zone ${decisionData.provider}.`,
-        ),
-      }),
-    );
-    expect(sendEmail).toHaveBeenNthCalledWith(
-      3,
-      expect.objectContaining({
-        subject: `You have been added as the Expense Authority for ${decisionData.name}`,
-        to: expect.arrayContaining([decisionData.expenseAuthority.email]),
-        body: expect.compareEmailText(
-          `You are now the Expense Authority for the the product ${decisionData.name} on the Public Cloud.`,
         ),
       }),
     );
@@ -89,6 +89,16 @@ describe('Public Cloud Emails', () => {
     expect(sendEmail).toHaveBeenNthCalledWith(
       2,
       expect.objectContaining({
+        subject: `You have been added as the Expense Authority for ${decisionData.name}`,
+        to: expect.arrayContaining([decisionData.expenseAuthority.email]),
+        body: expect.compareEmailText(
+          `You are now the Expense Authority for the the product ${decisionData.name} on the Public Cloud.`,
+        ),
+      }),
+    );
+    expect(sendEmail).toHaveBeenNthCalledWith(
+      3,
+      expect.objectContaining({
         subject: 'Your provisioning request has been approved',
         to: expect.arrayContaining([
           decisionData.projectOwner.email,
@@ -97,16 +107,6 @@ describe('Public Cloud Emails', () => {
         ]),
         body: expect.compareEmailText(
           `We are pleased to inform you that your request to create the product ${decisionData.name} has been approved on the Public Cloud Landing Zone ${decisionData.provider}.`,
-        ),
-      }),
-    );
-    expect(sendEmail).toHaveBeenNthCalledWith(
-      3,
-      expect.objectContaining({
-        subject: `You have been added as the Expense Authority for ${decisionData.name}`,
-        to: expect.arrayContaining([decisionData.expenseAuthority.email]),
-        body: expect.compareEmailText(
-          `You are now the Expense Authority for the the product ${decisionData.name} on the Public Cloud.`,
         ),
       }),
     );
@@ -151,6 +151,16 @@ describe('Public Cloud Emails', () => {
     expect(sendEmail).toHaveBeenNthCalledWith(
       2,
       expect.objectContaining({
+        subject: `You have been added as the Expense Authority for ${decisionData.name}`,
+        to: expect.arrayContaining([decisionData.expenseAuthority.email]),
+        body: expect.compareEmailText(
+          `You are now the Expense Authority for the the product ${decisionData.name} on the Public Cloud.`,
+        ),
+      }),
+    );
+    expect(sendEmail).toHaveBeenNthCalledWith(
+      3,
+      expect.objectContaining({
         subject: 'Your provisioning request has been approved',
         to: expect.arrayContaining([
           decisionData.projectOwner.email,
@@ -159,16 +169,6 @@ describe('Public Cloud Emails', () => {
         ]),
         body: expect.compareEmailText(
           `We are pleased to inform you that your request to create the product ${decisionData.name} has been approved on the Public Cloud Landing Zone ${decisionData.provider}.`,
-        ),
-      }),
-    );
-    expect(sendEmail).toHaveBeenNthCalledWith(
-      3,
-      expect.objectContaining({
-        subject: `You have been added as the Expense Authority for ${decisionData.name}`,
-        to: expect.arrayContaining([decisionData.expenseAuthority.email]),
-        body: expect.compareEmailText(
-          `You are now the Expense Authority for the the product ${decisionData.name} on the Public Cloud.`,
         ),
       }),
     );
