@@ -1,15 +1,22 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: {{ include "app.fullname" . }}
+  name: {{ include "app.fullname" . }}{{ if .Values.maintenanceMode.enabled }}-maintenance-mode{{ end }}
   labels:
     {{- include "app.labels" . | nindent 4 }}
+    {{- if .Values.maintenanceMode.enabled }}
+    app: maintenance-mode
+    {{- end }}
 spec:
   type: {{ .Values.service.type }}
   ports:
-    - port: {{ .Values.service.port }}
+    - port: {{ if .Values.maintenanceMode.enabled }}{{ .Values.service.maintenancePort }}{{ else }}{{ .Values.service.port }}{{ end }}
       targetPort: http
       protocol: TCP
       name: http
   selector:
+    {{- if .Values.maintenanceMode.enabled }}
+    app: maintenance-mode
+    {{- else }}
     {{- include "app.selectorLabels" . | nindent 4 }}
+    {{- end }}

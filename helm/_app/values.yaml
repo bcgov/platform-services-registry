@@ -33,9 +33,17 @@ securityContext: {}
   # runAsNonRoot: true
   # runAsUser: 1000
 
+maintenanceMode:
+  enabled: false
+  image:
+    repository: ghcr.io/bcgov/pltsvc-maintenance-mode
+    tag: main
+    pullPolicy: Always
+
 service:
   type: ClusterIP
   port: 3000
+  maintenancePort: 7070
 
 route:
   enabled: false
