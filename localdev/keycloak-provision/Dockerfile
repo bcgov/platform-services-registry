@@ -6,8 +6,8 @@ COPY keycloak-provision ./context
 COPY _packages ./_packages
 
 RUN npm install -g turbo pnpm
-RUN cd context && pnpm install --ignore-scripts
-RUN cd _packages/keycloak-admin && pnpm install --ignore-scripts && pnpm build
+RUN cd context && pnpm install --frozen-lockfile --ignore-scripts
+RUN cd _packages/keycloak-admin && pnpm install --frozen-lockfile --ignore-scripts && pnpm build
 RUN cd context && pnpm build
 
 FROM node:22.12.0-alpine3.19

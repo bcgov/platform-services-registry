@@ -17,7 +17,8 @@ export function compareEmailText(html: string, targets: string | string[]) {
     target = normalizeText(target);
     if (!converted.includes(target)) {
       pass = false;
-      message = `expected ${target} in ${converted}`;
+      message = `expected <<${target}>> in <<${converted}>>`;
+      console.log(message);
       return false;
     }
   });
