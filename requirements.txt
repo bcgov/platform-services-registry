@@ -3,5 +3,5 @@ detect-secrets==1.5.0
 autopep8==2.3.2
 black==25.1.0
 mkdocs-material==9.6.1
-pymdown-extensions==10.14.2
+pymdown-extensions==10.14.3
 pygments==2.19.1
