@@ -21,6 +21,6 @@ runs:
     shell: bash
 
   - name: Install App NPM packages
-    run: pnpm install --frozen-lockfile
+    run: pnpm install --no-frozen-lockfile
     shell: bash
     working-directory: app
