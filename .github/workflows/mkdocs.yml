@@ -29,6 +29,7 @@ jobs:
         touch site/.nojekyll
 
     - name: Deploy 🚀
-      uses: JamesIves/github-pages-deploy-action@ee2ef8cbeab8f3d8ba46ddcda2d022aaab998276
+      # Due to an issue with the latest tag, we’ll hard-code the tag version for now.
+      uses: JamesIves/github-pages-deploy-action@v4.7.2
       with:
         folder: site
