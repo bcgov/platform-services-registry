@@ -1,9 +1,9 @@
-name: 32.Test localdev codebase
+name: 32.Test Sandbox codebase
 
 on:
   push:
     paths:
-    - localdev/m365mock/**
+    - sandbox/m365mock/**
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
@@ -23,12 +23,12 @@ jobs:
 
     - name: Install Dependencies
       run: pnpm install --frozen-lockfile
-      working-directory: localdev/m365mock
+      working-directory: sandbox/m365mock
 
     - name: Build the Application
       run: pnpm run build
-      working-directory: localdev/m365mock
+      working-directory: sandbox/m365mock
 
     - name: Run Tests (Verbose)
       run: pnpm test test.ts -- --verbose
-      working-directory: localdev/m365mock
+      working-directory: sandbox/m365mock
