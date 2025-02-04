@@ -1,11 +1,12 @@
 FROM nginx:1.25.3-alpine
 
-RUN chown -R 1001:0 /usr/share/nginx/html /etc/nginx /var/cache/nginx /var/run \
-    && chmod -R g+w /usr/share/nginx/html /etc/nginx /var/cache/nginx /var/run
 
-USER 1001
+
+RUN addgroup -S nonroot && adduser -S nonroot -G nonroot
 
 COPY static /usr/share/nginx/html
 COPY nginx.conf /etc/nginx/nginx.conf
 
+RUN chown -R nonroot:nonroot /usr/share/nginx/html /etc/nginx/nginx.conf
+USER nonroot
 EXPOSE 3000
