@@ -69,7 +69,7 @@ jobs:
         echo "$EOF" >> "$GITHUB_OUTPUT"
 
     - name: Create Pull Request
-      uses: actions/github-script@91a83c091797b22c5771b1d7178fd0fddacc73ea
+      uses: actions/github-script@378a50fac5798d21828ee1c3ea7444341c3f04ca
       with:
         github-token: ${{ secrets.GITHUB_TOKEN }}
         script: |
