@@ -1,4 +1,4 @@
-import { RequestType, TaskStatus, TaskType } from '@prisma/client';
+import { Prisma, RequestType, TaskStatus, TaskType } from '@prisma/client';
 import { z } from 'zod';
 import { GlobalRole } from '@/constants';
 import createApiHandler from '@/core/api-handler';
@@ -44,13 +44,14 @@ export const POST = apiHandler(async ({ pathParams, body, session }) => {
     tasks.close(TaskType.SIGN_PUBLIC_CLOUD_MOU, { licencePlate, session }),
   ]);
 
-  const request = await prisma.publicCloudRequest.findFirst({
-    where: { type: RequestType.CREATE, licencePlate, active: true },
+  const recentRequest = await prisma.publicCloudRequest.findFirst({
+    where: { licencePlate, OR: [{ type: RequestType.CREATE, active: true }, { active: false }] },
     include: publicCloudRequestDetailInclude,
+    orderBy: { createdAt: Prisma.SortOrder.desc },
   });
 
-  if (request) {
-    const requestDecorated = await models.publicCloudRequest.decorate(request, session, true);
+  if (recentRequest) {
+    const requestDecorated = await models.publicCloudRequest.decorate(recentRequest, session, true);
     await tasks.create(TaskType.REVIEW_PUBLIC_CLOUD_MOU, { billing: billingUpdated, request: requestDecorated });
   }
 

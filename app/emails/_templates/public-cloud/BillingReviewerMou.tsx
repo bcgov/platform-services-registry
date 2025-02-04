@@ -12,9 +12,14 @@ interface Props {
 export default function BillingReviewerMou({ request }: Props) {
   if (!request) return <></>;
 
-  const { name, expenseAuthority, billing } = request.decisionData;
-
+  const { licencePlate, decisionData, active } = request;
+  const { name, expenseAuthority, billing } = decisionData;
   const { accountCoding } = billing;
+
+  const productExists = !active;
+  const linkUrl = productExists
+    ? `/public-cloud/products/${licencePlate}/edit`
+    : `/public-cloud/requests/${request.id}/request`;
 
   return (
     <PublicCloudLayout showFooter>
@@ -25,9 +30,9 @@ export default function BillingReviewerMou({ request }: Props) {
         the product <span className="font-bold">{name}</span> on the Public Cloud.
       </Text>
 
-      <LinkButton href={`/public-cloud/requests/${request.id}/request`}>Review Request</LinkButton>
+      <LinkButton href={linkUrl}>Review Request</LinkButton>
 
-      <ProductDetails product={request.decisionData} />
+      <ProductDetails product={decisionData} />
 
       <div>
         <Text className="mb-2 font-semibold h-4">Account Coding:</Text>

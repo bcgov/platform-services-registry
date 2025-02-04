@@ -3,18 +3,17 @@ import { Session } from 'next-auth';
 import { GlobalPermissions, GlobalRole } from '@/constants';
 import prisma from '@/core/prisma';
 import { sendBillingReviewerMou } from '@/services/ches/public-cloud/emails';
-import { BillingGetPayload } from '@/types/billing';
 import { PublicCloudRequestDetailDecorated } from '@/types/public-cloud';
 
 const type = TaskType.REVIEW_PUBLIC_CLOUD_MOU;
 
 export interface CreateReviewPublicCloudMouTaskData {
-  billing: BillingGetPayload;
-  request?: PublicCloudRequestDetailDecorated;
+  request: PublicCloudRequestDetailDecorated;
 }
 
 export async function createReviewPublicCloudMouTask(data: CreateReviewPublicCloudMouTaskData) {
-  const { billing, request } = data;
+  const { request } = data;
+  const { billing } = request.decisionData;
 
   if (!billing.signed || billing.approved) {
     return null;
@@ -31,7 +30,7 @@ export async function createReviewPublicCloudMouTask(data: CreateReviewPublicClo
     },
   });
 
-  const emailProm = request ? sendBillingReviewerMou(request) : null;
+  const emailProm = sendBillingReviewerMou(request);
 
   const [task] = await Promise.all([taskProm, emailProm]);
   return task;
