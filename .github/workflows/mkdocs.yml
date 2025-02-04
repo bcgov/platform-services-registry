@@ -4,6 +4,10 @@ on:
   push:
     branches:
     - main
+    paths:
+    - .github/workflows/mkdocs.yml
+    - docs/**
+    - README.md
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
@@ -33,3 +37,13 @@ jobs:
       uses: JamesIves/github-pages-deploy-action@v4.7.2
       with:
         folder: site
+
+    - name: Notify RocketChat on Failure
+      if: failure()
+      uses: ./.github/actions/rocketchat-notification
+      with:
+        webhook-url: ${{ secrets.ROCKETCHAT_WEBHOOK_URL }}
+        data: |
+          {
+            "text": ":warning: Deployment to GitHub Pages failed! [Investigate here](https://github.com/bcgov/platform-services-registry/actions/workflows/mkdocs.yml)"
+          }
