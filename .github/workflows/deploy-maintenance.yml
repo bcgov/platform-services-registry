@@ -3,11 +3,13 @@ name: 06.Deploy Maintenance Mode
 on:
   push:
     branches:
-    - feat/4829
+    - main
+    paths:
+    - maintenance-mode
 
 env:
   GITHUB_REGISTRY: ghcr.io
-  IMAGE_NAME: ghcr.io/${{ github.repository }}/maintenance-mode
+  IMAGE_NAME: ghcr.io/${{ github.repository }}/maintenance
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
