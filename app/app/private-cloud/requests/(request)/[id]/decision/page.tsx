@@ -17,7 +17,6 @@ import { z } from 'zod';
 import CancelRequest from '@/components/buttons/CancelButton';
 import PreviousButton from '@/components/buttons/Previous';
 import ProjectDescription from '@/components/form/ProjectDescriptionPrivate';
-import TeamContacts from '@/components/form/TeamContacts';
 import PageAccordion from '@/components/generic/accordion/PageAccordion';
 import FormErrorNotification from '@/components/generic/FormErrorNotification';
 import { openPrivateCloudRequestReviewModal } from '@/components/modal/privateCloudRequestReview';

@@ -14,7 +14,7 @@ const [PO, TL1, TL2] = mockNoRoleUsers;
 
 const memberData = {
   projectOwner: PO,
-  primaryTechncialLead: TL1,
+  primaryTechnicalLead: TL1,
   secondaryTechnicalLead: TL2,
 };
 
@@ -29,7 +29,7 @@ beforeAll(async () => {
   ]);
 
   memberData.projectOwner.id = createdPO!.id;
-  memberData.primaryTechncialLead.id = createdTL1!.id;
+  memberData.primaryTechnicalLead.id = createdTL1!.id;
   memberData.secondaryTechnicalLead.id = createdTL2!.id;
 });
 

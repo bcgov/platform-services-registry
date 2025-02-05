@@ -45,8 +45,6 @@ describe('Public Cloud NATs', () => {
   it('should send NATs message when creating a new product', async () => {
     const decisionData = await createPublicCloudProduct();
 
-    console.log('Decision Data: ', decisionData);
-
     expect(sendNatsMessage).toHaveBeenCalled();
     expect(sendNatsMessage).toHaveBeenCalledTimes(1);
     expect(sendNatsMessage).toHaveBeenCalledWith(

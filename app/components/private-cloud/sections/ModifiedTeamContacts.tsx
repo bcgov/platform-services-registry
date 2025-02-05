@@ -1,4 +1,4 @@
-import { Avatar, Badge, Table, UnstyledButton, Tooltip, TooltipFloating, Button, Text, Group } from '@mantine/core';
+import { Avatar, Badge, Table, UnstyledButton, Button, Text, Group } from '@mantine/core';
 import { User } from '@prisma/client';
 import { IconMinus, IconPlus } from '@tabler/icons-react';
 import _forEach from 'lodash-es/forEach';
