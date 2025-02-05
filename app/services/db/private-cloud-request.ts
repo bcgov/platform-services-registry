@@ -1,10 +1,10 @@
-import { Prisma } from '@prisma/client';
+import { Prisma, RequestType } from '@prisma/client';
 import _isNumber from 'lodash-es/isNumber';
 import { Session } from 'next-auth';
 import { requestSorts } from '@/constants';
 import prisma from '@/core/prisma';
 import { parsePaginationParams } from '@/helpers/pagination';
-import { models } from '@/services/db';
+import { models, publicCloudRequestDetailInclude } from '@/services/db';
 import { PrivateCloudRequestSearch } from '@/types/private-cloud';
 import { PrivateCloudRequestSearchBody } from '@/validation-schemas/private-cloud';
 import { getMatchingUserIds } from './user';
@@ -133,4 +133,14 @@ export async function getLastClosedPrivateCloudRequest(licencePlate: string) {
   });
 
   return previousRequest;
+}
+
+export async function getMostRecentPublicCloudRequest(licencePlate: string) {
+  const request = await prisma.publicCloudRequest.findFirst({
+    where: { licencePlate, OR: [{ type: RequestType.CREATE, active: true }, { active: false }] },
+    include: publicCloudRequestDetailInclude,
+    orderBy: { createdAt: Prisma.SortOrder.desc },
+  });
+
+  return request;
 }

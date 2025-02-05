@@ -49,6 +49,7 @@ declare module 'next-auth' {
     viewUsers: boolean;
     editUsers: boolean;
     viewTasks: boolean;
+    sendTaskEmails: boolean;
 
     cancelPrivateCloudRequest: boolean;
     cancelPublicCloudRequest: boolean;

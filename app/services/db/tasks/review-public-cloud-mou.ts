@@ -11,13 +11,27 @@ export interface CreateReviewPublicCloudMouTaskData {
   request: PublicCloudRequestDetailDecorated;
 }
 
-export async function createReviewPublicCloudMouTask(data: CreateReviewPublicCloudMouTaskData) {
+function isValidData(data: CreateReviewPublicCloudMouTaskData) {
   const { request } = data;
   const { billing } = request.decisionData;
 
   if (!billing.signed || billing.approved) {
-    return null;
+    return false;
   }
+
+  return true;
+}
+
+export async function sendReviewPublicCloudMouTaskEmail(data: CreateReviewPublicCloudMouTaskData) {
+  if (!isValidData(data)) return null;
+
+  return sendBillingReviewerMou(data.request);
+}
+
+export async function createReviewPublicCloudMouTask(data: CreateReviewPublicCloudMouTaskData) {
+  if (!isValidData(data)) return null;
+
+  const { billing } = data.request.decisionData;
 
   const taskProm = prisma.task.create({
     data: {
@@ -30,7 +44,7 @@ export async function createReviewPublicCloudMouTask(data: CreateReviewPublicClo
     },
   });
 
-  const emailProm = sendBillingReviewerMou(request);
+  const emailProm = sendReviewPublicCloudMouTaskEmail(data);
 
   const [task] = await Promise.all([taskProm, emailProm]);
   return task;
