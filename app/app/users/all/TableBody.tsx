@@ -1,16 +1,14 @@
 'use client';
 
-import { Avatar, Badge, Table, Group, Text, UnstyledButton, Pill, Button } from '@mantine/core';
+import { Badge, Table, Button } from '@mantine/core';
 import _get from 'lodash-es/get';
 import _isEqual from 'lodash-es/isEqual';
 import _truncate from 'lodash-es/truncate';
 import React from 'react';
 import { FormProvider, useForm } from 'react-hook-form';
-import MinistryBadge from '@/components/badges/MinistryBadge';
 import HookFormMultiSelect from '@/components/generic/select/HookFormMultiSelect';
 import { failure, success } from '@/components/notification';
-import { formatFullName } from '@/helpers/user';
-import { getUserImageData } from '@/helpers/user-image';
+import UserProfile from '@/components/users/UserProfile';
 import { updateUser } from '@/services/backend/user';
 import { AdminViewUser } from '@/types/user';
 import { formatDate } from '@/utils/js';
@@ -35,24 +33,7 @@ export default function TableBody({ data, disabled = false, availableRoles = [] 
     users.map((item, index) => (
       <Table.Tr key={item.id ?? index}>
         <Table.Td>
-          <Group gap="sm" className="cursor-pointer" onClick={async () => {}}>
-            <Avatar src={getUserImageData(item.image)} size={36} radius="xl" />
-            <div>
-              <Text size="sm" className="font-semibold">
-                {item.id ? (
-                  <div>
-                    {formatFullName(item)}
-                    <MinistryBadge className="ml-1" ministry={item.ministry} />
-                  </div>
-                ) : (
-                  <UnstyledButton className="text-gray-700 hover:underline">Click to select member</UnstyledButton>
-                )}
-              </Text>
-              <Text size="xs" opacity={0.5}>
-                {item.email}
-              </Text>
-            </div>
-          </Group>
+          <UserProfile data={item} />
         </Table.Td>
 
         <Table.Td>

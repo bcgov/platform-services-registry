@@ -1,12 +1,11 @@
 import { Button, LoadingOverlay, Box } from '@mantine/core';
-import { TaskType } from '@prisma/client';
-import { startCase } from 'lodash-es';
+import { TaskStatus, TaskType } from '@prisma/client';
 import { useSnapshot } from 'valtio';
 import FormMultiSelect from '@/components/generic/select/FormMultiSelect';
-import { taskTypeNames } from '@/constants/task';
+import { taskTypeMap } from '@/constants';
 import { pageState } from './state';
 
-const taskTypeOptions = Object.entries(taskTypeNames).map(([key, value]) => ({
+const taskTypeOptions = Object.entries(taskTypeMap).map(([key, value]) => ({
   value: key,
   label: value,
 }));
@@ -23,10 +22,10 @@ export default function FilterPanel({ isLoading = false }: { isLoading?: boolean
         loaderProps={{ color: 'pink', type: 'bars' }}
       />
       <div className="grid grid-cols-1 gap-y-2 md:grid-cols-12 md:gap-x-3">
-        <div className="col-span-12">
+        <div className="col-span-6">
           <FormMultiSelect
-            name="tasks"
-            label="Task Types"
+            name="types"
+            label="Types"
             value={pageSnapshot.types ?? []}
             data={taskTypeOptions}
             onChange={(value) => {
@@ -35,19 +34,19 @@ export default function FilterPanel({ isLoading = false }: { isLoading?: boolean
             }}
             classNames={{ wrapper: '' }}
           />
-          <div className="text-right">
-            <Button
-              color="primary"
-              size="compact-md"
-              className="mt-1"
-              onClick={() => {
-                pageState.types = taskTypeOptions.map((option) => option.value as TaskType);
-                pageState.page = 1;
-              }}
-            >
-              Select All
-            </Button>
-          </div>
+        </div>
+        <div className="col-span-6">
+          <FormMultiSelect
+            name="statuses"
+            label="Statuses"
+            value={pageSnapshot.statuses ?? []}
+            data={Object.values(TaskStatus)}
+            onChange={(value) => {
+              pageState.statuses = value as TaskStatus[];
+              pageState.page = 1;
+            }}
+            classNames={{ wrapper: '' }}
+          />
         </div>
       </div>
     </Box>

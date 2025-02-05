@@ -33,7 +33,7 @@ export default eventsPage(() => {
   return (
     <>
       <Table
-        title="Events in Registry"
+        title="Events"
         totalCount={totalCount}
         page={snap.page ?? 1}
         pageSize={snap.pageSize ?? 10}

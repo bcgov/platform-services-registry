@@ -42,7 +42,7 @@ export default usersPage(({ session }) => {
   return (
     <>
       <Table
-        title="Users in Registry"
+        title="Users"
         totalCount={totalCount}
         page={snap.page ?? 1}
         pageSize={snap.pageSize ?? 10}

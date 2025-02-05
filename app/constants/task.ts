@@ -1,10 +1,10 @@
 import { Prisma, User, Task, DecisionStatus, TaskType } from '@prisma/client';
 
-export const taskTypeNames: Record<TaskType, string> = {
+export const taskTypeMap: Record<TaskType, string> = {
   [TaskType.REVIEW_PRIVATE_CLOUD_REQUEST]: 'Review Private Cloud Request',
+  [TaskType.REVIEW_PUBLIC_CLOUD_REQUEST]: 'Review Public Cloud Request',
   [TaskType.SIGN_PUBLIC_CLOUD_MOU]: 'Sign Public Cloud MOU',
   [TaskType.REVIEW_PUBLIC_CLOUD_MOU]: 'Review Public Cloud MOU',
-  [TaskType.REVIEW_PUBLIC_CLOUD_REQUEST]: 'Review Public Cloud Request',
 };
 
 export const statusColorMap: Record<any, string> = {
@@ -39,21 +39,3 @@ export const taskSorts = [
     sortOrder: Prisma.SortOrder.asc,
   },
 ];
-
-export interface ExtendedTask extends Task {
-  completedByUser?: User | null;
-}
-
-type NullableFields<T> = {
-  [K in keyof T]: T[K] | null;
-};
-
-export interface UserInfo
-  extends NullableFields<{
-    id: string;
-    image: string;
-    ministry: string;
-    email: string;
-    firstName: string;
-    lastName: string;
-  }> {}
