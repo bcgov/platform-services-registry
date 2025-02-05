@@ -4,6 +4,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { Button, Divider, Grid, LoadingOverlay, Box, Alert } from '@mantine/core';
 import { IconInfoCircle } from '@tabler/icons-react';
 import { useQuery, useMutation } from '@tanstack/react-query';
+import { ReactNode } from 'react';
 import { FormProvider, useForm, FieldValues } from 'react-hook-form';
 import { z } from 'zod';
 import MailLink from '@/components/generic/button/MailLink';
@@ -96,7 +97,7 @@ export const openPublicCloudProductCreateSubmitModal = createModal<ModalProps, M
       );
     };
 
-    let eMouCheckboxContent = null;
+    let eMouCheckboxContent: ReactNode = null;
     if (billing) {
       if (billing.approved) {
         eMouCheckboxContent = (

@@ -12,15 +12,18 @@ localmac:
 
 .PHONY: dev
 dev:
-	@DATABASE_URL=$$(grep -m 1 '^DATABASE_URL=' app/.env.local | cut -d '=' -f 2-) \
-	npm run prisma-push --prefix app && \
-	npm run dev --prefix app
+	pnpm --dir app run prisma-push
+	pnpm --dir app run dev
 
 .PHONY: install
 install:
 	pnpm install
-	npm install --prefix app
-	npm install --prefix data-migrations
+	pnpm --dir app install
+	pnpm --dir data-migrations install
+	pnpm --dir sandbox/_packages/keycloak-admin install
+	pnpm --dir sandbox/keycloak-provision install
+	pnpm --dir sandbox/m365mock install
+	pnpm --dir sandbox/nats-provision install
 
 .PHONY: asdf-install
 asdf-install:

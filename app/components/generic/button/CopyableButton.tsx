@@ -3,7 +3,7 @@ import { useClipboard } from '@mantine/hooks';
 import { IconClipboardCopy } from '@tabler/icons-react';
 import _isString from 'lodash-es/isString';
 import _truncate from 'lodash-es/truncate';
-import React from 'react';
+import React, { ReactNode } from 'react';
 import { cn } from '@/utils/js';
 
 export default function CopyableButton({
@@ -23,7 +23,7 @@ export default function CopyableButton({
 }) {
   const clipboard = useClipboard({ timeout: 500 });
 
-  let content = null;
+  let content: ReactNode = null;
   if (children) {
     content = (
       <div

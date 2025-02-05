@@ -1,4 +1,5 @@
 import KcAdminClient from '@keycloak/keycloak-admin-client';
+import GroupRepresentation from '@keycloak/keycloak-admin-client/lib/defs/groupRepresentation';
 import { Credentials } from '@keycloak/keycloak-admin-client/lib/utils/auth';
 import _compact from 'lodash-es/compact';
 import _kebabCase from 'lodash-es/kebabCase';
@@ -173,7 +174,7 @@ async function findParentGroup(groupName = PROJECT_GROUP) {
 }
 
 async function listSubGroups({ parentId, search }: { parentId: string; search?: string }) {
-  const subGroups = [];
+  const subGroups: GroupRepresentation[] = [];
 
   const max = 100;
   let first = 0;

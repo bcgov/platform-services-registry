@@ -1,7 +1,7 @@
 import { Alert } from '@mantine/core';
 import { IconInfoCircle } from '@tabler/icons-react';
 import { useQuery, useMutation } from '@tanstack/react-query';
-import { useCallback, useEffect, useState } from 'react';
+import { ReactNode, useCallback, useEffect, useState } from 'react';
 import { useFormContext } from 'react-hook-form';
 import AccountCodingInput from '@/components/form/AccountCodingInput';
 import FormCheckbox from '@/components/generic/checkbox/FormCheckbox';
@@ -72,7 +72,7 @@ export default function AccountCoding({
     }
   }, [disabled, billing]);
 
-  let billingAlert = null;
+  let billingAlert: ReactNode = null;
   if (!disabled) {
     if (billing) {
       if (billing.approved) {

@@ -109,7 +109,7 @@ export const POST = apiHandler(async ({ pathParams, body, session }) => {
     return OkResponse(updatedRequestDecorated);
   }
 
-  const proms = [];
+  const proms: any[] = [];
 
   proms.push(
     sendRequestNatsMessage(updatedRequestDecorated, {

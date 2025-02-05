@@ -1,4 +1,5 @@
 import { Heading, Link, Text, Hr } from '@react-email/components';
+import { ReactNode } from 'react';
 import BudgetChanges from '@/emails/_components/BudgetChanges';
 import ContactChanges from '@/emails/_components/ContactChanges';
 import DescriptionChanges from '@/emails/_components/DescriptionChanges';
@@ -11,10 +12,10 @@ export default function Changes({ request }: { request: PublicCloudRequestDetail
 
   const diffData = comparePublicProductData(request.originalData, request.decisionData);
 
-  let profileChange = null;
-  let contactChange = null;
-  let membersChange = null;
-  let billingChange = null;
+  let profileChange: ReactNode = null;
+  let contactChange: ReactNode = null;
+  let membersChange: ReactNode = null;
+  let billingChange: ReactNode = null;
 
   if (diffData.profileChanged) {
     profileChange = (

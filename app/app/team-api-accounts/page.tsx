@@ -4,6 +4,7 @@ import { Table, Badge, Button } from '@mantine/core';
 import { useQuery } from '@tanstack/react-query';
 import _compact from 'lodash-es/compact';
 import _get from 'lodash-es/get';
+import { JSX, ReactNode } from 'react';
 import { GlobalRole } from '@/constants';
 import createClientPage from '@/core/client-page';
 import { listKeycloakTeamApiAccounts } from '@/services/backend/keycloak';
@@ -30,7 +31,7 @@ export default TeamApiAccountsPage(({ session }) => {
     return null;
   }
 
-  let rows = null;
+  let rows: ReactNode = null;
   if (!apiAccounts || apiAccounts.length === 0) {
     const message = session?.isAdmin ? 'No team API accounts found.' : 'You are not assigned to any team API accounts.';
 

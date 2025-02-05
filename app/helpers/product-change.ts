@@ -50,7 +50,7 @@ export function comparePrivateProductData(data1: any, data2: any) {
   data2 = preparePrivateCloudProductCloudData({ ...data2 });
 
   const changes = diffExt(data1, data2, privateDataFields);
-  const parentPaths = [];
+  const parentPaths: string[] = [];
 
   let profileChanged = false;
   let contactsChanged = false;
@@ -146,7 +146,7 @@ export function comparePublicProductData(data1: any, data2: any) {
   data2 = preparePublicCloudProductCloudData({ ...data2 });
 
   const changes = diffExt(data1, data2, publicDataFields);
-  const parentPaths = [];
+  const parentPaths: string[] = [];
 
   let profileChanged = false;
   let contactsChanged = false;

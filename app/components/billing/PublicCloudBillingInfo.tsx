@@ -3,6 +3,7 @@
 import { Alert, Button } from '@mantine/core';
 import { IconInfoCircle } from '@tabler/icons-react';
 import { useSession } from 'next-auth/react';
+import { ReactNode } from 'react';
 import { openPublicCloudMouReviewModal } from '@/components/modal/publicCloudMouReview';
 import { openPublicCloudMouSignModal } from '@/components/modal/publicCloudMouSign';
 import { formatFullName } from '@/helpers/user';
@@ -26,7 +27,7 @@ export default function PublicCloudBillingInfo({
   const { data: session } = useSession();
   const { licencePlate, billing } = product;
 
-  let content = null;
+  let content: ReactNode = null;
   if (billing.approved) {
     content = (
       <>

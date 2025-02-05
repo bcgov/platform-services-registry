@@ -108,7 +108,7 @@ export async function searchBilling({
   }
 
   if (isBillingSearch) {
-    const conditions = [];
+    const conditions: Prisma.BillingWhereInput[] = [];
 
     if (billings.includes('approved')) {
       conditions.push({ approved: false });

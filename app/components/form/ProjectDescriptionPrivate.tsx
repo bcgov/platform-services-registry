@@ -1,5 +1,5 @@
 import { useSession } from 'next-auth/react';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, ReactNode } from 'react';
 import { useFormContext } from 'react-hook-form';
 import AGMinistryCheckBox from '@/components/form/AGMinistryCheckBox';
 import GolddrCheckbox from '@/components/form/GolddrCheckbox';
@@ -42,7 +42,7 @@ export default function ProjectDescriptionPrivate({
     }
   }, [session, setClustersList]);
 
-  let temporaryProduct = null;
+  let temporaryProduct: ReactNode = null;
   if (mode === 'create') {
     temporaryProduct = (
       <>

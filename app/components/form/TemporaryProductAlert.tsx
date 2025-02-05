@@ -1,6 +1,7 @@
 import { Alert, Badge } from '@mantine/core';
 import { IconArrowBack, IconInfoCircle, IconFile, IconExclamationCircle } from '@tabler/icons-react';
 import { differenceInDays } from 'date-fns/differenceInDays';
+import { ReactNode } from 'react';
 
 export default function TemporaryProductAlert({
   data,
@@ -11,7 +12,7 @@ export default function TemporaryProductAlert({
   };
   className?: string;
 }) {
-  let label = null;
+  let label: ReactNode = null;
   if (data?.createdAt) {
     const diffInDays = 30 - differenceInDays(new Date(), new Date(data.createdAt));
     label = (

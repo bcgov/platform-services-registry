@@ -219,7 +219,7 @@ describe('Search Public Cloud Requests - Validations', () => {
   it('should successfully create products by admin', async () => {
     await mockSessionByRole(GlobalRole.Admin);
 
-    const datasets = [];
+    const datasets: any[] = [];
     datasets.push(
       createSamplePublicCloudProductData({ data: { ministry: Ministry.AEST, provider: Provider.AWS } }),
       createSamplePublicCloudProductData({ data: { ministry: Ministry.AEST, provider: Provider.AZURE } }),

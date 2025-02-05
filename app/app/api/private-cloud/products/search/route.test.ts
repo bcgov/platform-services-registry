@@ -169,7 +169,7 @@ describe('Search Private Cloud Products - Validations', () => {
   it('should successfully create products by admin', async () => {
     await mockSessionByRole(GlobalRole.Admin);
 
-    const datasets = [];
+    const datasets: any[] = [];
     datasets.push(
       createSamplePrivateCloudProductData({ data: { ministry: Ministry.AEST, cluster: Cluster.CLAB } }),
       createSamplePrivateCloudProductData({ data: { ministry: Ministry.AEST, cluster: Cluster.KLAB } }),
