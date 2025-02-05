@@ -34,7 +34,7 @@ export async function createReviewPrivateCloudRequestTask(data: CreateReviewPriv
     },
   });
 
-  let emailProm = null;
+  let emailProm: any = null;
 
   switch (data.request.type) {
     case RequestType.CREATE:

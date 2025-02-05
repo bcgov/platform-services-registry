@@ -8,6 +8,7 @@ const initialValue = {
   pageSize: 10,
   search: '',
   types: [],
+  statuses: [],
   sortValue: taskSorts[0].label,
   sortKey: taskSorts[0].sortKey,
   sortOrder: taskSorts[0].sortOrder,

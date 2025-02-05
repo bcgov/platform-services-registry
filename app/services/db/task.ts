@@ -1,41 +1,14 @@
 import { Prisma } from '@prisma/client';
 import _isNumber from 'lodash-es/isNumber';
 import _uniq from 'lodash-es/uniq';
-import { UserInfo } from '@/constants/task';
 import prisma from '@/core/prisma';
 import { parsePaginationParams } from '@/helpers/pagination';
 import { TaskSearchBody } from '@/validation-schemas/task';
 
-export type SearchTasks = Prisma.TaskGetPayload<{
-  select: {
-    id: true;
-    closedMetadata: true;
-    completedAt: true;
-    completedBy: true;
-    createdAt: true;
-    data: true;
-    permissions: true;
-    roles: true;
-    status: true;
-    type: true;
-    userIds: true;
-    completedByUser: {
-      select: {
-        id: true;
-        firstName: true;
-        lastName: true;
-        email: true;
-        ministry: true;
-        jobTitle: true;
-        image: true;
-      };
-    };
-  };
-}>;
-
 const defaultSortKey = 'createdAt';
 export async function searchTasks({
   types = [],
+  statuses = [],
   search = '',
   page,
   skip,
@@ -46,8 +19,7 @@ export async function searchTasks({
 }: TaskSearchBody & {
   skip?: number;
   take?: number;
-}): Promise<{ data: SearchTasks[]; totalCount: number; usersWithAssignedTasks: UserInfo[] }> {
-  const isTaskSearch = types.length > 0;
+}) {
   if (!_isNumber(skip) && !_isNumber(take) && page && pageSize) {
     ({ skip, take } = parsePaginationParams(page, pageSize, 10));
   }
@@ -68,13 +40,17 @@ export async function searchTasks({
     };
   }
 
-  if (isTaskSearch) {
+  if (types.length > 0) {
     filters.type = { in: types };
+  }
+
+  if (statuses.length > 0) {
+    filters.status = { in: statuses };
   }
 
   const orderBy = { [sortKey]: sortOrder };
 
-  const [data, totalCount] = await Promise.all([
+  const [tasks, totalCount] = await Promise.all([
     prisma.task.findMany({
       skip,
       take,
@@ -108,8 +84,8 @@ export async function searchTasks({
     prisma.task.count({ where: filters }),
   ]);
 
-  const userIds = _uniq(data.flatMap((task) => task.userIds ?? []));
-  const usersWithAssignedTasks = await prisma.user.findMany({
+  const userIds = _uniq(tasks.flatMap((task) => task.userIds ?? []));
+  const users = await prisma.user.findMany({
     where: {
       id: {
         in: userIds,
@@ -125,5 +101,9 @@ export async function searchTasks({
     },
   });
 
-  return { data, totalCount, usersWithAssignedTasks };
+  const data = tasks.map((task) => {
+    return { ...task, users: task.userIds.map((id) => users.find((usr) => usr.id === id)) };
+  });
+
+  return { data, totalCount };
 }
