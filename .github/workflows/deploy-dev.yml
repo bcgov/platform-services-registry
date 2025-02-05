@@ -180,7 +180,7 @@ jobs:
           }
 
   scan-app:
-    needs: [build-push-app, build-push-pre-prisma, build-push-pre-data-migrations, build-push-email, build-push-m365proxy, build-push-nats-provision]
+    needs: [build-push-app, build-push-pre-prisma, build-push-pre-data-migrations, build-push-email, build-push-nats-provision]
     runs-on: ubuntu-22.04
     timeout-minutes: 10
     steps:
@@ -192,7 +192,7 @@ jobs:
         image: ${{ env.GITHUB_REGISTRY }}/bcgov/pltsvc:${{ github.sha }}
 
   scan-pre-prisma:
-    needs: [build-push-app, build-push-pre-prisma, build-push-pre-data-migrations, build-push-email, build-push-m365proxy, build-push-nats-provision]
+    needs: [build-push-app, build-push-pre-prisma, build-push-pre-data-migrations, build-push-email, build-push-nats-provision]
     runs-on: ubuntu-22.04
     timeout-minutes: 10
     steps:
@@ -204,7 +204,7 @@ jobs:
         image: ${{ env.GITHUB_REGISTRY }}/bcgov/pltsvc-pre-prisma:${{ github.sha }}
 
   scan-pre-data-migrations:
-    needs: [build-push-app, build-push-pre-prisma, build-push-pre-data-migrations, build-push-email, build-push-m365proxy, build-push-nats-provision]
+    needs: [build-push-app, build-push-pre-prisma, build-push-pre-data-migrations, build-push-email, build-push-nats-provision]
     runs-on: ubuntu-22.04
     timeout-minutes: 10
     steps:
@@ -216,7 +216,7 @@ jobs:
         image: ${{ env.GITHUB_REGISTRY }}/bcgov/pltsvc-pre-data-migrations:${{ github.sha }}
 
   scan-email:
-    needs: [build-push-app, build-push-pre-prisma, build-push-pre-data-migrations, build-push-email, build-push-m365proxy, build-push-nats-provision]
+    needs: [build-push-app, build-push-pre-prisma, build-push-pre-data-migrations, build-push-email, build-push-nats-provision]
     runs-on: ubuntu-22.04
     timeout-minutes: 10
     steps:
@@ -228,7 +228,7 @@ jobs:
         image: ${{ env.GITHUB_REGISTRY }}/bcgov/pltsvc-email:${{ github.sha }}
 
   scan-m365proxy:
-    needs: [build-push-app, build-push-pre-prisma, build-push-pre-data-migrations, build-push-email, build-push-m365proxy, build-push-nats-provision]
+    needs: [build-push-app, build-push-pre-prisma, build-push-pre-data-migrations, build-push-email, build-push-nats-provision]
     runs-on: ubuntu-22.04
     timeout-minutes: 10
     steps:
@@ -240,7 +240,7 @@ jobs:
         image: ${{ env.GITHUB_REGISTRY }}/bcgov/pltsvc-sandbox-m365proxy:${{ github.sha }}
 
   scan-nats-provision:
-    needs: [build-push-app, build-push-pre-prisma, build-push-pre-data-migrations, build-push-email, build-push-m365proxy, build-push-nats-provision]
+    needs: [build-push-app, build-push-pre-prisma, build-push-pre-data-migrations, build-push-email, build-push-nats-provision]
     runs-on: ubuntu-22.04
     timeout-minutes: 10
     steps:
