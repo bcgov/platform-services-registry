@@ -1,0 +1,44 @@
+name: 06.Deploy Maintenance Mode
+
+on:
+  push:
+    branches:
+    - main
+    paths:
+    - maintenance/**
+    - .github/workflows/deploy-maintenance.yml
+
+env:
+  GITHUB_REGISTRY: ghcr.io
+  IMAGE_NAME: ghcr.io/${{ github.repository }}/maintenance
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  packages: write
+  contents: read
+
+jobs:
+  deploy-maintenance:
+    runs-on: ubuntu-22.04
+    timeout-minutes: 10
+    steps:
+    - uses: hmarr/debug-action@f7318c783045ac39ed9bb497e22ce835fdafbfe6
+    - uses: actions/checkout@85e6279cec87321a52edac9c87bce653a07cf6c2
+
+    - name: Build and Push Docker Image
+      uses: egose/actions/docker-build-push@e5cca77343da50a82d2fb2f9e4740457e883eb75
+      with:
+        registry-url: ${{ env.GITHUB_REGISTRY }}
+        registry-username: ${{ github.actor }}
+        registry-password: ${{ secrets.GITHUB_TOKEN }}
+        image-name: ${{ env.IMAGE_NAME }}
+        docker-context: .
+        docker-file: app/Dockerfile
+        docker-args: |
+          deployment_tag=${{ github.sha }}
+        metadata-tags: |
+          type=ref,event=branch
+          type=sha,format=long,prefix=,suffix=
