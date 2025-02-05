@@ -73,7 +73,6 @@ describe('Download Private Cloud Products - Permissions', () => {
   it('should successfully create a product by PO and approved by admin', async () => {
     await mockSessionByEmail(PO.email);
 
-    console.log('Payload:', PO);
     const res1 = await createPrivateCloudProject(productData.one);
     const dat1 = await res1.json();
     expect(res1.status).toBe(200);
