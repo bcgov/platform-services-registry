@@ -53,3 +53,9 @@ export async function searchTasks(data: TaskSearchBody) {
 
   return result.data;
 }
+
+export async function sendTaskEmail(taskId: string) {
+  const result = await instance.get<true>(`/${taskId}/resend`);
+
+  return result.data;
+}

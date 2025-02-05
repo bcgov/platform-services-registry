@@ -10,12 +10,29 @@ export interface CreateSignPublicCloudMouTaskData {
   request: PublicCloudRequestDetailDecorated;
 }
 
-export async function createSignPublicCloudMouTask(data: CreateSignPublicCloudMouTaskData) {
+function isValidData(data: CreateSignPublicCloudMouTaskData) {
   const { request } = data;
   const { decisionData } = request;
 
-  if (!decisionData.expenseAuthorityId || decisionData.billing.signed || decisionData.billing.approved) {
-    return null;
+  if (decisionData.billing.signed || decisionData.billing.approved) {
+    return false;
+  }
+
+  return true;
+}
+
+export async function sendSignPublicCloudMouTaskEmail(data: CreateSignPublicCloudMouTaskData) {
+  if (!isValidData(data)) return null;
+
+  return sendExpenseAuthorityMou(data.request);
+}
+
+export async function createSignPublicCloudMouTask(data: CreateSignPublicCloudMouTaskData) {
+  if (!isValidData(data)) return null;
+
+  const { decisionData } = data.request;
+  if (!decisionData.expenseAuthorityId) {
+    return false;
   }
 
   const taskProm = prisma.task.create({
@@ -24,12 +41,12 @@ export async function createSignPublicCloudMouTask(data: CreateSignPublicCloudMo
       status: TaskStatus.ASSIGNED,
       userIds: [decisionData.expenseAuthorityId],
       data: {
-        licencePlate: request.licencePlate,
+        licencePlate: data.request.licencePlate,
       },
     },
   });
 
-  const emailProm = sendExpenseAuthorityMou(request);
+  const emailProm = sendSignPublicCloudMouTaskEmail(data);
 
   const [task] = await Promise.all([taskProm, emailProm]);
   return task;
