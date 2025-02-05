@@ -1,12 +1,66 @@
 import { expect } from '@jest/globals';
 import _kebabCase from 'lodash-es/kebabCase';
 import { PRIVATE_NATS_URL, PUBLIC_NATS_URL } from '@/config';
+import prisma from '@/core/prisma';
+import { mockNoRoleUsers, upsertMockUser } from '@/helpers/mock-users';
 import {
   createPublicCloudProduct,
   updatePublicCloudProduct,
   deletePublicCloudProduct,
 } from '@/services/api-test/public-cloud/helpers';
 import { sendNatsMessage } from '@/services/nats/core';
+
+// const [PO, TL1, TL2, EA] = mockNoRoleUsers;
+
+// const memberData = {
+//   projectOwner: PO,
+//   primaryTechnicalLead: TL1,
+//   secondaryTechnicalLead: TL2,
+//   expenseAuthority: EA,
+// };
+
+// // Create users in advance before running tests
+// beforeAll(async () => {
+//   await Promise.all([PO, TL1, TL2, EA].map((user) => upsertMockUser(user)));
+
+//   const [createdPO, createdTL1, createdTL2, createdEA] = await Promise.all([
+//     prisma.user.findUnique({ where: { email: PO.email } }),
+//     prisma.user.findUnique({ where: { email: TL1.email } }),
+//     prisma.user.findUnique({ where: { email: TL2.email } }),
+//     prisma.user.findUnique({ where: { email: EA.email } }),
+//   ]);
+
+//   memberData.projectOwner.id = createdPO!.id;
+//   memberData.primaryTechnicalLead.id = createdTL1!.id;
+//   memberData.secondaryTechnicalLead.id = createdTL2!.id;
+//   memberData.expenseAuthority.id = createdEA!.id;
+// });
+
+const [PO, TL1, TL2, EA] = mockNoRoleUsers;
+
+const memberData = {
+  projectOwner: PO,
+  primaryTechnicalLead: TL1,
+  secondaryTechnicalLead: TL2,
+  expenseAuthority: EA,
+};
+
+// Create users in advance before running tests
+beforeAll(async () => {
+  await Promise.all([PO, TL1, TL2, EA].map((user) => upsertMockUser(user)));
+
+  const [createdPO, createdTL1, createdTL2, createdEA] = await Promise.all([
+    prisma.user.findUnique({ where: { email: PO.email } }),
+    prisma.user.findUnique({ where: { email: TL1.email } }),
+    prisma.user.findUnique({ where: { email: TL2.email } }),
+    prisma.user.findUnique({ where: { email: EA.email } }),
+  ]);
+
+  memberData.projectOwner.id = createdPO!.id;
+  memberData.primaryTechnicalLead.id = createdTL1!.id;
+  memberData.secondaryTechnicalLead.id = createdTL2!.id;
+  memberData.expenseAuthority.id = createdEA!.id;
+});
 
 describe('Public Cloud NATs', () => {
   beforeEach(() => {
@@ -16,6 +70,8 @@ describe('Public Cloud NATs', () => {
 
   it('should send NATs message when creating a new product', async () => {
     const decisionData = await createPublicCloudProduct();
+
+    console.log('Decision Data: ', decisionData);
 
     expect(sendNatsMessage).toHaveBeenCalled();
     expect(sendNatsMessage).toHaveBeenCalledTimes(1);

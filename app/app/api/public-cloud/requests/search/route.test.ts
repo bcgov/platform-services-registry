@@ -3,7 +3,7 @@ import { Ministry, Provider, DecisionStatus, TaskType, TaskStatus, RequestType }
 import { GlobalRole } from '@/constants';
 import prisma from '@/core/prisma';
 import { createSamplePublicCloudProductData } from '@/helpers/mock-resources';
-import { mockNoRoleUsers, findMockUserByIdr, findOtherMockUsers } from '@/helpers/mock-users';
+import { mockNoRoleUsers, findMockUserByIdr, findOtherMockUsers, upsertMockUser } from '@/helpers/mock-users';
 import { mockSessionByEmail, mockSessionByRole } from '@/services/api-test/core';
 import { provisionPublicCloudProject } from '@/services/api-test/public-cloud';
 import {
@@ -36,6 +36,33 @@ const randomMemberData = {
   secondaryTechnicalLead: RANDOM3,
   expenseAuthority: RANDOM4,
 };
+
+// Create users in advance before running tests
+beforeAll(async () => {
+  await Promise.all([PO, TL1, TL2, EA, RANDOM1, RANDOM2, RANDOM3, RANDOM4].map((user) => upsertMockUser(user)));
+
+  const [createdPO, createdTL1, createdTL2, createdEA, createdRANDOM1, createdRANDOM2, createdRANDOM3, createdRANDOM4] =
+    await Promise.all([
+      prisma.user.findUnique({ where: { email: PO.email } }),
+      prisma.user.findUnique({ where: { email: TL1.email } }),
+      prisma.user.findUnique({ where: { email: TL2.email } }),
+      prisma.user.findUnique({ where: { email: EA.email } }),
+      prisma.user.findUnique({ where: { email: RANDOM1.email } }),
+      prisma.user.findUnique({ where: { email: RANDOM2.email } }),
+      prisma.user.findUnique({ where: { email: RANDOM3.email } }),
+      prisma.user.findUnique({ where: { email: RANDOM4.email } }),
+    ]);
+
+  memberData.projectOwner.id = createdPO!.id;
+  memberData.primaryTechnicalLead.id = createdTL1!.id;
+  memberData.secondaryTechnicalLead.id = createdTL2!.id;
+  memberData.expenseAuthority.id = createdEA!.id;
+
+  randomMemberData.projectOwner.id = createdRANDOM1!.id;
+  randomMemberData.primaryTechnicalLead.id = createdRANDOM2!.id;
+  randomMemberData.secondaryTechnicalLead.id = createdRANDOM3!.id;
+  randomMemberData.expenseAuthority.id = createdRANDOM4!.id;
+});
 
 // TODO: add tests for ministry roles
 describe('Search Public Cloud Requests - Permissions', () => {

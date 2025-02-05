@@ -15,6 +15,7 @@ import PageAccordion from '@/components/generic/accordion/PageAccordion';
 import FormErrorNotification from '@/components/generic/FormErrorNotification';
 import { openPrivateCloudProductEditSubmitModal } from '@/components/modal/privateCloudProductEditSubmit';
 import AdditionalTeamMembers from '@/components/private-cloud/sections/AdditionalTeamMembers';
+import ModifiedTeamContacts from '@/components/private-cloud/sections/ModifiedTeamContacts';
 import Quotas from '@/components/private-cloud/sections/Quotas';
 import SiloAccordion from '@/components/private-cloud/SiloAccordion';
 import { GlobalRole } from '@/constants';
@@ -135,7 +136,7 @@ export default privateCloudProductEdit(({ session }) => {
       LeftIcon: IconUsersGroup,
       label: 'Team contacts',
       description: '',
-      Component: TeamContacts,
+      Component: ModifiedTeamContacts,
       componentArgs: { disabled: isDisabled, secondTechLead, secondTechLeadOnClick },
     },
     {

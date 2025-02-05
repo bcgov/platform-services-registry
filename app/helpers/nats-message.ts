@@ -3,7 +3,7 @@ import { sendPrivateCloudNatsMessage } from '@/services/nats';
 import { PrivateCloudRequestDetail, PrivateCloudRequestDetailDecorated } from '@/types/private-cloud';
 
 interface User {
-  email?: string;
+  id?: string;
 }
 
 // TODO: refactor here to just take request as it will have original data available.
@@ -16,9 +16,9 @@ export async function sendRequestNatsMessage(
   },
 ) {
   const contactsChanged =
-    updateData.projectOwner.email !== updatedRequest.decisionData.projectOwner.email ||
-    updateData.primaryTechnicalLead.email !== updatedRequest.decisionData.primaryTechnicalLead.email ||
-    updateData.secondaryTechnicalLead?.email !== updatedRequest.decisionData?.secondaryTechnicalLead?.email;
+    updateData.projectOwner.id !== updatedRequest.decisionData.projectOwner.id ||
+    updateData.primaryTechnicalLead.id !== updatedRequest.decisionData.primaryTechnicalLead.id ||
+    updateData.secondaryTechnicalLead?.id !== updatedRequest.decisionData?.secondaryTechnicalLead?.id;
 
   await sendPrivateCloudNatsMessage(updatedRequest, contactsChanged);
 

@@ -1,8 +1,9 @@
 import { expect } from '@jest/globals';
 import { Ministry, Provider } from '@prisma/client';
 import { GlobalRole } from '@/constants';
+import prisma from '@/core/prisma';
 import { createSamplePublicCloudProductData } from '@/helpers/mock-resources';
-import { findOtherMockUsers } from '@/helpers/mock-users';
+import { findOtherMockUsers, mockNoRoleUsers, upsertMockUser } from '@/helpers/mock-users';
 import { pickProductData } from '@/helpers/product';
 import { mockSessionByEmail, mockSessionByRole } from '@/services/api-test/core';
 import { createPublicCloudProject } from '@/services/api-test/public-cloud/products';
@@ -20,6 +21,32 @@ const fieldsToCompare = [
   'secondaryTechnicalLead',
   'expenseAuthority',
 ];
+
+const [PO, TL1, TL2, EA] = mockNoRoleUsers;
+
+const memberData = {
+  projectOwner: PO,
+  primaryTechnicalLead: TL1,
+  secondaryTechnicalLead: TL2,
+  expenseAuthority: EA,
+};
+
+// Create users in advance before running tests
+beforeAll(async () => {
+  await Promise.all([PO, TL1, TL2, EA].map((user) => upsertMockUser(user)));
+
+  const [createdPO, createdTL1, createdTL2, createdEA] = await Promise.all([
+    prisma.user.findUnique({ where: { email: PO.email } }),
+    prisma.user.findUnique({ where: { email: TL1.email } }),
+    prisma.user.findUnique({ where: { email: TL2.email } }),
+    prisma.user.findUnique({ where: { email: EA.email } }),
+  ]);
+
+  memberData.projectOwner.id = createdPO!.id;
+  memberData.primaryTechnicalLead.id = createdTL1!.id;
+  memberData.secondaryTechnicalLead.id = createdTL2!.id;
+  memberData.expenseAuthority.id = createdEA!.id;
+});
 
 // TODO: add tests for ministry roles
 // TODO: test the emails templates if possible

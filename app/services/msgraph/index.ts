@@ -10,6 +10,7 @@ export function processMsUser(user: MsUser): AppUser | null {
   if (!idir || !upn) return null;
 
   return {
+    id: user.id,
     providerUserId: user.id,
     upn,
     email: user.mail.toLowerCase(),

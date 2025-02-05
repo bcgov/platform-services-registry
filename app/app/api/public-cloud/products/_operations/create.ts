@@ -5,7 +5,6 @@ import { OkResponse, UnauthorizedResponse, UnprocessableEntityResponse } from '@
 import generateLicencePlate from '@/helpers/licence-plate';
 import { sendCreateRequestEmails } from '@/services/ches/public-cloud';
 import { createEvent, models, publicCloudRequestDetailInclude, tasks } from '@/services/db';
-import { upsertUsers } from '@/services/db/user';
 import { PublicCloudCreateRequestBody } from '@/validation-schemas/public-cloud';
 
 export default async function createOp({ session, body }: { session: Session; body: PublicCloudCreateRequestBody }) {
@@ -15,9 +14,7 @@ export default async function createOp({ session, body }: { session: Session; bo
     // 1. can create one globally
     permissions.createPublicCloudProducts ||
     // 2. can create one as an product member
-    [body.projectOwner.email, body.primaryTechnicalLead.email, body.secondaryTechnicalLead?.email].includes(
-      user.email,
-    ) ||
+    [body.projectOwner.id, body.primaryTechnicalLead.id, body.secondaryTechnicalLead?.id].includes(user.id) ||
     // 3. can create one as a ministry editor
     ministries.editor.includes(body.ministry);
 
@@ -26,13 +23,6 @@ export default async function createOp({ session, body }: { session: Session; bo
   }
 
   const licencePlate = await generateLicencePlate();
-
-  await upsertUsers([
-    body.projectOwner.email,
-    body.primaryTechnicalLead.email,
-    body.secondaryTechnicalLead?.email,
-    body.expenseAuthority?.email,
-  ]);
 
   const { requestComment, accountCoding, isAgMinistryChecked, isEaApproval, ...rest } = body;
 
@@ -43,12 +33,12 @@ export default async function createOp({ session, body }: { session: Session; bo
     ...rest,
     licencePlate,
     status: ProjectStatus.ACTIVE,
-    projectOwner: { connect: { email: body.projectOwner.email } },
-    primaryTechnicalLead: { connect: { email: body.primaryTechnicalLead.email } },
+    projectOwner: { connect: { id: body.projectOwner.id } },
+    primaryTechnicalLead: { connect: { id: body.primaryTechnicalLead.id } },
     secondaryTechnicalLead: body.secondaryTechnicalLead
-      ? { connect: { email: body.secondaryTechnicalLead.email } }
+      ? { connect: { id: body.secondaryTechnicalLead.id } }
       : undefined,
-    expenseAuthority: body.expenseAuthority ? { connect: { email: body.expenseAuthority.email } } : undefined,
+    expenseAuthority: body.expenseAuthority ? { connect: { id: body.expenseAuthority.id } } : undefined,
     billing: {
       connectOrCreate: {
         where: {
@@ -60,7 +50,7 @@ export default async function createOp({ session, body }: { session: Session; bo
           expenseAuthority: {
             connectOrCreate: {
               where: {
-                email: body.expenseAuthority.email,
+                id: body.expenseAuthority.id,
               },
               create: body.expenseAuthority,
             },

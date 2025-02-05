@@ -13,7 +13,6 @@ import {
   models,
   tasks,
 } from '@/services/db';
-import { upsertUsers } from '@/services/db/user';
 import { PrivateCloudEditRequestBody } from '@/validation-schemas/private-cloud';
 import { putPathParamSchema } from '../[licencePlate]/schema';
 
@@ -41,18 +40,16 @@ export default async function updateOp({
     rest.members = product.members.map(({ userId, roles }) => ({ userId, roles }));
   }
 
-  await upsertUsers([body.projectOwner.email, body.primaryTechnicalLead.email, body.secondaryTechnicalLead?.email]);
-
   const productData = {
     ...rest,
     licencePlate: product.licencePlate,
     status: product.status,
     cluster: product.cluster,
     createdAt: product.createdAt,
-    projectOwner: { connect: { email: body.projectOwner.email } },
-    primaryTechnicalLead: { connect: { email: body.primaryTechnicalLead.email } },
+    projectOwner: { connect: { id: body.projectOwner.id } },
+    primaryTechnicalLead: { connect: { id: body.primaryTechnicalLead.id } },
     secondaryTechnicalLead: body.secondaryTechnicalLead
-      ? { connect: { email: body.secondaryTechnicalLead.email } }
+      ? { connect: { id: body.secondaryTechnicalLead.id } }
       : undefined,
   };
 
@@ -98,7 +95,7 @@ export default async function updateOp({
           isQuotaChanged: quotaChangeStatus.hasChange,
           quotaUpgradeResourceDetailList: quotaChangeStatus.resourceDetailList,
           ...quotaChangeInfo,
-          createdBy: { connect: { email: session.user.email } },
+          createdBy: { connect: { id: session.user.id } },
           licencePlate: product.licencePlate,
           requestComment,
           changes: otherChangeMeta,
@@ -127,9 +124,9 @@ export default async function updateOp({
 
   proms.push(
     sendRequestNatsMessage(newRequest, {
-      projectOwner: { email: newRequest.originalData?.projectOwner.email },
-      primaryTechnicalLead: { email: newRequest.originalData?.primaryTechnicalLead.email },
-      secondaryTechnicalLead: { email: newRequest.originalData?.secondaryTechnicalLead?.email },
+      projectOwner: { id: newRequest.originalData?.projectOwner.id },
+      primaryTechnicalLead: { id: newRequest.originalData?.primaryTechnicalLead.id },
+      secondaryTechnicalLead: { id: newRequest.originalData?.secondaryTechnicalLead?.id },
     }),
   );
 

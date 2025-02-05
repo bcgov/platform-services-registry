@@ -3,7 +3,7 @@ import { DecisionStatus, ProjectStatus, Ministry, Cluster, RequestType } from '@
 import { GlobalRole } from '@/constants';
 import prisma from '@/core/prisma';
 import { createSamplePrivateCloudProductData } from '@/helpers/mock-resources';
-import { mockNoRoleUsers, findMockUserByIdr, findOtherMockUsers } from '@/helpers/mock-users';
+import { mockNoRoleUsers, findMockUserByIdr, findOtherMockUsers, upsertMockUser } from '@/helpers/mock-users';
 import {
   mockSessionByEmail,
   mockSessionByRole,
@@ -15,12 +15,7 @@ import { createPrivateCloudProject } from '@/services/api-test/private-cloud/pro
 import { makePrivateCloudRequestDecision } from '@/services/api-test/private-cloud/requests';
 import { listPrivateCloudProjectApi } from '@/services/api-test/v1/private-cloud/products';
 
-const PO = mockNoRoleUsers[0];
-const TL1 = mockNoRoleUsers[1];
-const TL2 = mockNoRoleUsers[2];
-const RANDOM1 = mockNoRoleUsers[3];
-const RANDOM2 = mockNoRoleUsers[4];
-const RANDOM3 = mockNoRoleUsers[5];
+const [PO, TL1, TL2, RANDOM1, RANDOM2, RANDOM3] = mockNoRoleUsers;
 
 const memberData = {
   projectOwner: PO,
@@ -33,6 +28,28 @@ const randomMemberData = {
   primaryTechnicalLead: RANDOM2,
   secondaryTechnicalLead: RANDOM3,
 };
+
+beforeAll(async () => {
+  await Promise.all([PO, TL1, TL2, RANDOM1, RANDOM2, RANDOM3].map((user) => upsertMockUser(user)));
+
+  const [createdPO, createdTL1, createdTL2, createdRANDOM1, createdRANDOM2, createdRANDOM3] = await Promise.all([
+    prisma.user.findUnique({ where: { email: PO.email } }),
+    prisma.user.findUnique({ where: { email: TL1.email } }),
+    prisma.user.findUnique({ where: { email: TL2.email } }),
+
+    prisma.user.findUnique({ where: { email: RANDOM1.email } }),
+    prisma.user.findUnique({ where: { email: RANDOM2.email } }),
+    prisma.user.findUnique({ where: { email: RANDOM3.email } }),
+  ]);
+
+  memberData.projectOwner.id = createdPO!.id;
+  memberData.primaryTechnicalLead.id = createdTL1!.id;
+  memberData.secondaryTechnicalLead.id = createdTL2!.id;
+
+  randomMemberData.projectOwner.id = createdRANDOM1!.id;
+  randomMemberData.primaryTechnicalLead.id = createdRANDOM2!.id;
+  randomMemberData.secondaryTechnicalLead.id = createdRANDOM3!.id;
+});
 
 describe('API: List Private Cloud Products - Permissions', () => {
   it('should successfully create a product by PO and approved by admin', async () => {

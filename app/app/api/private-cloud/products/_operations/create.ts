@@ -7,7 +7,6 @@ import generateLicencePlate from '@/helpers/licence-plate';
 import { sendRequestNatsMessage } from '@/helpers/nats-message';
 import { sendCreateRequestEmails, sendRequestApprovalEmails } from '@/services/ches/private-cloud';
 import { createEvent, models, privateCloudRequestDetailInclude, tasks } from '@/services/db';
-import { upsertUsers } from '@/services/db/user';
 import { PrivateCloudCreateRequestBody } from '@/validation-schemas/private-cloud';
 
 export default async function createOp({ session, body }: { session: Session; body: PrivateCloudCreateRequestBody }) {
@@ -17,9 +16,7 @@ export default async function createOp({ session, body }: { session: Session; bo
     // 1. can create one globally
     permissions.createPrivateCloudProducts ||
     // 2. can create one as an product member
-    [body.projectOwner.email, body.primaryTechnicalLead.email, body.secondaryTechnicalLead?.email].includes(
-      user.email,
-    ) ||
+    [body.projectOwner.id, body.primaryTechnicalLead.id, body.secondaryTechnicalLead?.id].includes(user.id) ||
     // 3. can create one as a ministry editor
     ministries.editor.includes(body.ministry);
 
@@ -28,8 +25,6 @@ export default async function createOp({ session, body }: { session: Session; bo
   }
 
   const licencePlate = await generateLicencePlate();
-
-  await upsertUsers([body.projectOwner.email, body.primaryTechnicalLead.email, body.secondaryTechnicalLead?.email]);
 
   const {
     requestComment,
@@ -54,10 +49,10 @@ export default async function createOp({ session, body }: { session: Session; bo
       production: defaultResourceRequests,
       tools: defaultResourceRequests,
     },
-    projectOwner: { connect: { email: body.projectOwner.email } },
-    primaryTechnicalLead: { connect: { email: body.primaryTechnicalLead.email } },
+    projectOwner: { connect: { id: body.projectOwner.id } },
+    primaryTechnicalLead: { connect: { id: body.primaryTechnicalLead.id } },
     secondaryTechnicalLead: body.secondaryTechnicalLead
-      ? { connect: { email: body.secondaryTechnicalLead.email } }
+      ? { connect: { id: body.secondaryTechnicalLead.id } }
       : undefined,
   };
 
@@ -100,9 +95,9 @@ export default async function createOp({ session, body }: { session: Session; bo
   if (decisionStatus === DecisionStatus.AUTO_APPROVED) {
     proms.push(
       sendRequestNatsMessage(newRequest, {
-        projectOwner: { email: newRequest.originalData?.projectOwner.email },
-        primaryTechnicalLead: { email: newRequest.originalData?.primaryTechnicalLead.email },
-        secondaryTechnicalLead: { email: newRequest.originalData?.secondaryTechnicalLead?.email },
+        projectOwner: { id: newRequest.originalData?.projectOwner.id },
+        primaryTechnicalLead: { id: newRequest.originalData?.primaryTechnicalLead.id },
+        secondaryTechnicalLead: { id: newRequest.originalData?.secondaryTechnicalLead?.id },
       }),
       sendRequestApprovalEmails(newRequest, session.user.name),
     );

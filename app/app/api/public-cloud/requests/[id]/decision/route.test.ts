@@ -3,6 +3,7 @@ import { DecisionStatus, Cluster, TaskType, TaskStatus, RequestType } from '@pri
 import { GlobalRole } from '@/constants';
 import prisma from '@/core/prisma';
 import { createSamplePublicCloudProductData } from '@/helpers/mock-resources';
+import { mockNoRoleUsers, upsertMockUser } from '@/helpers/mock-users';
 import { pickProductData } from '@/helpers/product';
 import { mockSessionByEmail, mockSessionByRole } from '@/services/api-test/core';
 import { provisionPublicCloudProject } from '@/services/api-test/public-cloud';
@@ -29,6 +30,8 @@ const fieldsToCompare = [
   'expenseAuthority',
 ];
 
+const [PO, TL1, TL2, EA] = mockNoRoleUsers;
+
 const oldEnvironmentsEnabled = {
   production: true,
   test: false,
@@ -52,6 +55,23 @@ const productData = {
 };
 
 const requests: any = { main: null };
+
+// Create users in advance before running tests
+beforeAll(async () => {
+  await Promise.all([PO, TL1, TL2, EA].map((user) => upsertMockUser(user)));
+
+  const [createdPO, createdTL1, createdTL2, createdEA] = await Promise.all([
+    prisma.user.findUnique({ where: { email: PO.email } }),
+    prisma.user.findUnique({ where: { email: TL1.email } }),
+    prisma.user.findUnique({ where: { email: TL2.email } }),
+    prisma.user.findUnique({ where: { email: EA.email } }),
+  ]);
+
+  productData.main.projectOwner.id = createdPO!.id;
+  productData.main.primaryTechnicalLead.id = createdTL1!.id;
+  productData.main.secondaryTechnicalLead.id = createdTL2!.id;
+  productData.main.expenseAuthority.id = createdEA!.id;
+});
 
 async function makeBasicProductMouReview() {
   const requestId = requests.main.id;

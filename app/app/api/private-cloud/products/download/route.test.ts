@@ -4,7 +4,7 @@ import { parse } from 'csv-parse/sync';
 import { GlobalRole } from '@/constants';
 import prisma from '@/core/prisma';
 import { createSamplePrivateCloudProductData } from '@/helpers/mock-resources';
-import { mockNoRoleUsers, findMockUserByIdr, findOtherMockUsers } from '@/helpers/mock-users';
+import { mockNoRoleUsers, findMockUserByIdr, findOtherMockUsers, upsertMockUser } from '@/helpers/mock-users';
 import { ministryKeyToName, getTotalQuotaStr } from '@/helpers/product';
 import { formatFullName } from '@/helpers/user';
 import { mockSessionByEmail, mockSessionByRole } from '@/services/api-test/core';
@@ -14,12 +14,7 @@ import { makePrivateCloudRequestDecision } from '@/services/api-test/private-clo
 import { PrivateProductCsvRecord } from '@/types/csv';
 import { formatDateSimple } from '@/utils/js';
 
-const PO = mockNoRoleUsers[0];
-const TL1 = mockNoRoleUsers[1];
-const TL2 = mockNoRoleUsers[2];
-const RANDOM1 = mockNoRoleUsers[3];
-const RANDOM2 = mockNoRoleUsers[4];
-const RANDOM3 = mockNoRoleUsers[5];
+const [PO, TL1, TL2, RANDOM1, RANDOM2, RANDOM3] = mockNoRoleUsers;
 
 const memberData = {
   projectOwner: PO,
@@ -47,6 +42,28 @@ const requests = {
   two: null as any,
 };
 
+// Create users in advance before running tests
+beforeAll(async () => {
+  await Promise.all([PO, TL1, TL2, RANDOM1, RANDOM2, RANDOM3].map((user) => upsertMockUser(user)));
+
+  const [createdPO, createdTL1, createdTL2, createdRANDOM1, createdRANDOM2, createdRANDOM3] = await Promise.all([
+    prisma.user.findUnique({ where: { email: PO.email } }),
+    prisma.user.findUnique({ where: { email: TL1.email } }),
+    prisma.user.findUnique({ where: { email: TL2.email } }),
+    prisma.user.findUnique({ where: { email: RANDOM1.email } }),
+    prisma.user.findUnique({ where: { email: RANDOM2.email } }),
+    prisma.user.findUnique({ where: { email: RANDOM3.email } }),
+  ]);
+
+  productData.one.projectOwner.id = createdPO!.id;
+  productData.one.primaryTechnicalLead.id = createdTL1!.id;
+  productData.one.secondaryTechnicalLead.id = createdTL2!.id;
+
+  productData.two.projectOwner.id = createdRANDOM1!.id;
+  productData.two.primaryTechnicalLead.id = createdRANDOM2!.id;
+  productData.two.secondaryTechnicalLead.id = createdRANDOM3!.id;
+});
+
 // TODO: add tests for ministry roles
 describe('Download Private Cloud Products - Permissions', () => {
   it('should successfully delete all private cloud products', async () => {
@@ -56,6 +73,7 @@ describe('Download Private Cloud Products - Permissions', () => {
   it('should successfully create a product by PO and approved by admin', async () => {
     await mockSessionByEmail(PO.email);
 
+    console.log('Payload:', PO);
     const res1 = await createPrivateCloudProject(productData.one);
     const dat1 = await res1.json();
     expect(res1.status).toBe(200);

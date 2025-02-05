@@ -1,12 +1,37 @@
 import { expect } from '@jest/globals';
 import _kebabCase from 'lodash-es/kebabCase';
 import { PRIVATE_NATS_URL } from '@/config';
+import prisma from '@/core/prisma';
+import { mockNoRoleUsers, upsertMockUser } from '@/helpers/mock-users';
 import {
   createPrivateCloudProduct,
   updatePrivateCloudProduct,
   deletePrivateCloudProduct,
 } from '@/services/api-test/private-cloud/helpers';
 import { sendNatsMessage } from '@/services/nats/core';
+
+const [PO, TL1, TL2] = mockNoRoleUsers;
+
+const memberData = {
+  projectOwner: PO,
+  primaryTechncialLead: TL1,
+  secondaryTechnicalLead: TL2,
+};
+
+// Create users in advance before running tests
+beforeAll(async () => {
+  await Promise.all([PO, TL1, TL2].map((user) => upsertMockUser(user)));
+
+  const [createdPO, createdTL1, createdTL2] = await Promise.all([
+    prisma.user.findUnique({ where: { email: PO.email } }),
+    prisma.user.findUnique({ where: { email: TL1.email } }),
+    prisma.user.findUnique({ where: { email: TL2.email } }),
+  ]);
+
+  memberData.projectOwner.id = createdPO!.id;
+  memberData.primaryTechncialLead.id = createdTL1!.id;
+  memberData.secondaryTechnicalLead.id = createdTL2!.id;
+});
 
 describe('Private Cloud NATs', () => {
   beforeEach(() => {
