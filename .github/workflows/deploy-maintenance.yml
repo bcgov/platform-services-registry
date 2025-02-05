@@ -5,7 +5,7 @@ on:
     branches:
     - main
     paths:
-    - maintenance
+    - maintenance/**
     - .github/workflows/deploy-maintenance.yml
 
 env:
