@@ -1,3 +1,19 @@
+## [0.43.10](https://github.com/bcgov/platform-services-registry/compare/v0.43.9...v0.43.10) (2025-02-05)
+
+### Features
+
+* **4740:** deploy developer docs in GitHub Pages ([06ccac1](https://github.com/bcgov/platform-services-registry/commit/06ccac183840174c1e1b249f9d70020cab1abaf5))
+* **4829:** implement maintenance-app with its deployment pipeline ([0264c1f](https://github.com/bcgov/platform-services-registry/commit/0264c1f4e656d73ea5b3d2695fea2cb07327ce59))
+* **4853:** enhance Tasks admin page ([411aa58](https://github.com/bcgov/platform-services-registry/commit/411aa5884d2c847f22ef77741b5890e21a980656))
+
+### Bug Fixes
+
+* **4846:** send emails when signing eMOU on exisiting products ([8af780a](https://github.com/bcgov/platform-services-registry/commit/8af780a98ab2f58dd2c455974184756adabddfbb))
+
+### Refactors
+
+* **4794:** upgrade ESlint version to V9 in app directory ([799a0d0](https://github.com/bcgov/platform-services-registry/commit/799a0d06d49cd833b411bc96b4703201a8b82a3d))
+* **4794:** upgrade ESlint version to V9 in root directory ([98f2252](https://github.com/bcgov/platform-services-registry/commit/98f22528281f845c8c3482c0eeff237a986ac6c0))
 ## [0.43.9](https://github.com/bcgov/platform-services-registry/compare/v0.43.8...v0.43.9) (2025-01-30)
 
 ### Features
