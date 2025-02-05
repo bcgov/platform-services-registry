@@ -103,7 +103,7 @@ export default function ModifiedTeamContacts({
       role: 'Project Owner (PO)',
       user: projectOwner,
       content:
-        'The Product Owner (PO) is the business owner of the application, and their contact information will be used for non-technical inquiries.',
+        'This is the business owner of the application, and their contact information will be used for non-technical inquiries.',
     },
     {
       role: 'Primary Technical Lead (TL)',
