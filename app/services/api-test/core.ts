@@ -139,7 +139,7 @@ export async function mockSessionByRole(role?: string) {
 export async function mockUserServiceAccountByEmail(email?: string) {
   mockedGetServerSession.mockResolvedValue(null);
 
-  let mockedValue = null;
+  let mockedValue: { email: string; authRoleNames: string[] } | null = null;
   if (email) {
     const mockUser = await findMockUserByEmail(email);
     if (mockUser) {
@@ -154,7 +154,7 @@ export async function mockUserServiceAccountByEmail(email?: string) {
 export async function mockUserServiceAccountByRole(role?: string) {
   mockedGetServerSession.mockResolvedValue(null);
 
-  let mockedValue = null;
+  let mockedValue: { email: string; authRoleNames: string[] } | null = null;
   if (role) {
     const mockUser = findMockUserbyRole(role);
     if (mockUser) {

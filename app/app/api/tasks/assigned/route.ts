@@ -10,10 +10,10 @@ const apiHandler = createApiHandler({
 });
 
 export const GET = apiHandler(async ({ session }) => {
-  const privateCloudLicencePlates = [];
-  const publicCloudLicencePlates = [];
-  const privateCloudRequestIds = [];
-  const publicCloudRequestIds = [];
+  const privateCloudLicencePlates: string[] = [];
+  const publicCloudLicencePlates: string[] = [];
+  const privateCloudRequestIds: string[] = [];
+  const publicCloudRequestIds: string[] = [];
 
   let processedTasks = session.tasks.map(
     ({ id, type, status, createdAt, completedAt, completedBy, data, closedMetadata }) => {

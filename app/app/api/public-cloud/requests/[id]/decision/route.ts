@@ -110,7 +110,7 @@ export const POST = apiHandler(async ({ pathParams, body, session }) => {
     return OkResponse(updatedRequest);
   }
 
-  const proms = [];
+  const proms: any[] = [];
 
   proms.push(sendPublicCloudNatsMessage(updatedRequestDecorated));
   proms.push(sendRequestApprovalEmails(updatedRequestDecorated));

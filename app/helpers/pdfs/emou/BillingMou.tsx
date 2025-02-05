@@ -78,7 +78,7 @@ function formatCurrency(value: number, { suffix = 'CAD' }: { suffix: 'CAD' | 'US
 }
 
 export default function BillingMou({ product, billing }: { product: Product; billing: Billing }) {
-  const values = [];
+  const values: number[] = [];
   if (product.environmentsEnabled.development) values.push(product.budget.dev);
   if (product.environmentsEnabled.test) values.push(product.budget.test);
   if (product.environmentsEnabled.production) values.push(product.budget.prod);

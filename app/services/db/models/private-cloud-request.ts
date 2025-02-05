@@ -69,7 +69,7 @@ async function decorate<T extends PrivateCloudRequestSimple | PrivateCloudReques
   const decoratedDoc = doc as T & PrivateCloudRequestDecorate;
 
   if (detail) {
-    let memberIds = [];
+    let memberIds: string[] = [];
 
     const detailedData = doc as never as PrivateCloudRequestDetail;
     if (detailedData.originalData) {

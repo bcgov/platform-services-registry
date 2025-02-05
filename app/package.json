@@ -12,7 +12,7 @@
     "lint-fix": "eslint --fix .",
     "test": "dotenv -e .env.test -- prisma db push && NODE_OPTIONS='--experimental-vm-modules' jest --runInBand",
     "prisma-generate": "prisma generate",
-    "prisma-push": "prisma db push",
+    "prisma-push": "dotenv -e .env.local -- prisma db push",
     "migrate-data": "cat .env.local | grep DATABASE_URL > ../data-migrations/.env && cd ../data-migrations && npm install && npx migrate-mongo up",
     "email": "dotenv -e .env.local -- email dev --dir emails --port 3001",
     "email-build": "email build",
@@ -91,7 +91,7 @@
     "tw-to-css": "^0.0.12",
     "valtio": "^2.0.0",
     "winston": "^3.13.0",
-    "zod": "^3.21.4"
+    "zod": "^3.24.1"
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3.2.0",

@@ -1,5 +1,6 @@
 import { Tooltip, Badge } from '@mantine/core';
 import { differenceInDays } from 'date-fns/differenceInDays';
+import { ReactNode } from 'react';
 import { cn } from '@/utils/js';
 
 export default function TemporaryProductBadge({
@@ -11,7 +12,7 @@ export default function TemporaryProductBadge({
   };
   className?: string;
 }) {
-  let label = null;
+  let label: ReactNode = null;
   let color = 'gray';
   if (data?.createdAt) {
     const diffInDays = 30 - differenceInDays(new Date(), new Date(data.createdAt));

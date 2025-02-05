@@ -2,6 +2,7 @@ import { Loader } from '@mantine/core';
 import { Cluster, ResourceRequestsEnv, ResourceRequests } from '@prisma/client';
 import { useQueries } from '@tanstack/react-query';
 import _startCase from 'lodash-es/startCase';
+import { ReactNode } from 'react';
 import { useFormContext } from 'react-hook-form';
 import ExternalLink from '@/components/generic/button/ExternalLink';
 import HookFormTextInput from '@/components/generic/input/HookFormTextInput';
@@ -72,7 +73,7 @@ export default function Quotas({
               originalVal?.memory !== newVal?.memory ||
               originalVal?.storage !== newVal?.storage);
 
-          let subnetInfo = null;
+          let subnetInfo: ReactNode = null;
           if (cluster === Cluster.EMERALD) {
             if (subnetInformation[index].isLoading) {
               subnetInfo = <Loader color="blue" type="dots" />;

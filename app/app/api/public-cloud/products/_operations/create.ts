@@ -89,7 +89,7 @@ export default async function createOp({ session, body }: { session: Session; bo
     )
   ).data;
 
-  const proms = [];
+  const proms: any[] = [];
 
   // Assign a task to the expense authority for new billing
   if (newRequest.decisionData.expenseAuthorityId && !newRequest.decisionData.billing.signed) {

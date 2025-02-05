@@ -96,7 +96,7 @@ async function decorate<T extends PublicCloudRequestSimple | PublicCloudRequestD
   const decoratedDoc = doc as T & PublicCloudRequestDecorate;
 
   if (detail) {
-    let memberIds = [];
+    let memberIds: string[] = [];
 
     const detailedData = doc as never as PublicCloudRequestDetail;
     if (detailedData.originalData) {

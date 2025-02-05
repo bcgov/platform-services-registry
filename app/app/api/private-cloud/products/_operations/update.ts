@@ -123,7 +123,7 @@ export default async function updateOp({
     return OkResponse(newRequest);
   }
 
-  const proms = [];
+  const proms: any[] = [];
 
   proms.push(
     sendRequestNatsMessage(newRequest, {

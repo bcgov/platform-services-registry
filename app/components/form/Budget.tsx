@@ -2,6 +2,7 @@ import { Alert } from '@mantine/core';
 import { Provider } from '@prisma/client';
 import { IconInfoCircle } from '@tabler/icons-react';
 import _sumBy from 'lodash-es/sumBy';
+import { ReactNode } from 'react';
 import { useFormContext } from 'react-hook-form';
 import ExternalLink from '@/components/generic/button/ExternalLink';
 import { cn } from '@/utils/js';
@@ -18,7 +19,7 @@ export default function Budget({ disabled }: { disabled?: boolean }) {
   const budget = watch('budget', {});
   const environmentsEnabled = watch('environmentsEnabled', {});
 
-  const values = [];
+  const values: number[] = [];
   if (environmentsEnabled.development) values.push(budget.dev);
   if (environmentsEnabled.test) values.push(budget.test);
   if (environmentsEnabled.production) values.push(budget.prod);
@@ -31,8 +32,8 @@ export default function Budget({ disabled }: { disabled?: boolean }) {
 
   const formattedTotalBudget = parseFloat(totalBudget.toFixed(2));
 
-  let calculatorLink = null;
-  let calculatorNote = null;
+  let calculatorLink: ReactNode = null;
+  let calculatorNote: ReactNode = null;
 
   switch (provider) {
     case Provider.AWS:

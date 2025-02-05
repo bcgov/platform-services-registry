@@ -1,4 +1,5 @@
 import { Heading, Text, Link, Hr } from '@react-email/components';
+import { ReactNode } from 'react';
 import { defaultResourceRequests } from '@/constants';
 import { PrivateCloudProductDetail } from '@/types/private-cloud';
 
@@ -11,7 +12,7 @@ interface Props {
 export default function ClusterDetails({ product, showNamespaceInfo = false, showDefaultResource = false }: Props) {
   const { cluster, licencePlate } = product;
 
-  let defaultProvisionedResource = null;
+  let defaultProvisionedResource: ReactNode = null;
   if (showDefaultResource) {
     defaultProvisionedResource = (
       <>

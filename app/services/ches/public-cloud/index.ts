@@ -22,7 +22,7 @@ import {
 
 export function sendAdminCreateRequestEmail(request: PublicCloudRequestDetailDecorated, requester: string) {
   try {
-    const proms = [];
+    const proms: any[] = [];
 
     proms.push(sendAdminCreateRequest(request, requester));
     return Promise.all(proms);
@@ -33,7 +33,7 @@ export function sendAdminCreateRequestEmail(request: PublicCloudRequestDetailDec
 
 export function sendAdminDeleteRequestEmail(request: PublicCloudRequestDetailDecorated, requester: string) {
   try {
-    const proms = [];
+    const proms: any[] = [];
 
     proms.push(sendAdminDeleteRequest(request, requester));
     return Promise.all(proms);
@@ -44,7 +44,7 @@ export function sendAdminDeleteRequestEmail(request: PublicCloudRequestDetailDec
 
 export function sendAdminCreateRequestEmails(request: PublicCloudRequestDetailDecorated, requester: string) {
   try {
-    const proms = [];
+    const proms: any[] = [];
     proms.push(sendEmouServiceAgreement(request));
 
     return Promise.all(proms);
@@ -55,7 +55,7 @@ export function sendAdminCreateRequestEmails(request: PublicCloudRequestDetailDe
 
 export function sendCreateRequestEmails(request: PublicCloudRequestDetailDecorated, requester: string) {
   try {
-    const proms = [];
+    const proms: any[] = [];
 
     proms.push(sendTeamCreateRequest(request, requester));
 
@@ -71,7 +71,7 @@ export function sendCreateRequestEmails(request: PublicCloudRequestDetailDecorat
 
 export function sendEditRequestEmails(request: PublicCloudRequestDetailDecorated, requester: string) {
   try {
-    const proms = [];
+    const proms: any[] = [];
 
     proms.push(sendTeamEditRequest(request, requester));
 
@@ -83,7 +83,7 @@ export function sendEditRequestEmails(request: PublicCloudRequestDetailDecorated
 
 export function sendDeleteRequestEmails(request: PublicCloudRequestDetailDecorated, requester: string) {
   try {
-    const proms = [];
+    const proms: any[] = [];
     proms.push(sendTeamDeleteRequest(request, requester));
 
     return Promise.all(proms);
@@ -94,7 +94,7 @@ export function sendDeleteRequestEmails(request: PublicCloudRequestDetailDecorat
 
 export function sendRequestApprovalEmails(request: PublicCloudRequestDetailDecorated) {
   try {
-    const proms = [];
+    const proms: any[] = [];
 
     if (request.type == RequestType.CREATE) {
       proms.push(sendTeamCreateRequestApproval(request));
@@ -114,7 +114,7 @@ export function sendRequestApprovalEmails(request: PublicCloudRequestDetailDecor
 
 export function sendRequestRejectionEmails(request: PublicCloudRequestDetailDecorated) {
   try {
-    const proms = [];
+    const proms: any[] = [];
 
     if (request.type == RequestType.CREATE) {
       proms.push(sendTeamCreateRequestRejection(request));
@@ -130,7 +130,7 @@ export function sendRequestRejectionEmails(request: PublicCloudRequestDetailDeco
 
 export function sendRequestCompletionEmails(request: PublicCloudRequestDetailDecorated) {
   try {
-    const proms = [];
+    const proms: any[] = [];
 
     if (request.type == RequestType.CREATE) {
       proms.push(sendTeamCreateRequestCompletion(request));
@@ -148,7 +148,7 @@ export function sendRequestCompletionEmails(request: PublicCloudRequestDetailDec
 
 export function sendPublicCloudBillingReviewEmails(request: PublicCloudRequestDetailDecorated) {
   try {
-    const proms = [];
+    const proms: any[] = [];
     proms.push(sendBillingReviewerMou(request));
 
     return Promise.all(proms);
