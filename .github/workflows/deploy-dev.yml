@@ -118,26 +118,6 @@ jobs:
           type=ref,event=branch
           type=sha,format=long,prefix=,suffix=
 
-  build-push-m365proxy:
-    runs-on: ubuntu-22.04
-    timeout-minutes: 5
-    steps:
-    - uses: hmarr/debug-action@f7318c783045ac39ed9bb497e22ce835fdafbfe6
-    - uses: actions/checkout@85e6279cec87321a52edac9c87bce653a07cf6c2
-
-    - name: Build and Push
-      uses: egose/actions/docker-build-push@f613e050592b8baa0706bda39574ef2eeedd7a4e
-      with:
-        registry-url: ${{ env.GITHUB_REGISTRY }}
-        registry-username: ${{ github.actor }}
-        registry-password: ${{ secrets.GITHUB_TOKEN }}
-        image-name: bcgov/pltsvc-sandbox-m365proxy
-        docker-context: sandbox/m365proxy
-        docker-file: sandbox/m365proxy/Dockerfile
-        metadata-tags: |
-          type=ref,event=branch
-          type=sha,format=long,prefix=,suffix=
-
   build-push-nats-provision:
     runs-on: ubuntu-22.04
     timeout-minutes: 10
@@ -162,7 +142,7 @@ jobs:
           type=sha,format=long,prefix=,suffix=
 
   deploy:
-    needs: [build-push-app, build-push-pre-prisma, build-push-pre-data-migrations, build-push-email, build-push-m365proxy, build-push-nats-provision]
+    needs: [build-push-app, build-push-pre-prisma, build-push-pre-data-migrations, build-push-email, build-push-nats-provision]
     runs-on: ubuntu-22.04
     timeout-minutes: 10
     permissions:
