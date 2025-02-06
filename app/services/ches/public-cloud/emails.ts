@@ -177,8 +177,9 @@ export async function sendBillingReviewerMou(request: PublicCloudRequestDetailDe
 }
 
 export async function sendEmouServiceAgreement(request: PublicCloudRequestDetailDecorated) {
-  const content = await getContent(EmouServiceAgreementTemplate({ request }));
+  if (!request.decisionData.billing) return;
 
+  const content = await getContent(EmouServiceAgreementTemplate({ request }));
   const emouPdfBuff = await generateEmouPdf(request.decisionData, request.decisionData.billing);
   const billingReviewerEmails = await findUserEmailsByAuthRole(GlobalRole.BillingReviewer);
 

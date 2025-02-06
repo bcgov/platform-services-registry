@@ -1,6 +1,6 @@
 'use client';
 
-import { Alert, Button } from '@mantine/core';
+import { Button } from '@mantine/core';
 import { Provider } from '@prisma/client';
 import { useState } from 'react';
 import { getEmouFileName } from '@/helpers/emou';
@@ -10,6 +10,8 @@ import { Product } from './types';
 export default function BillingDownloadButton({ product }: { product: Product }) {
   const [loading, setLoading] = useState(false);
 
+  if (!product.billing) return null;
+
   return (
     <Button
       loading={loading}
@@ -17,6 +19,8 @@ export default function BillingDownloadButton({ product }: { product: Product })
       size="xs"
       className="mt-2"
       onClick={async () => {
+        if (!product.billing) return;
+
         setLoading(true);
         await downloadBilling(
           product.billing.accountCoding,

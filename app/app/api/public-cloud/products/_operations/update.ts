@@ -47,7 +47,7 @@ export default async function updateOp({
     status: product.status,
     provider: product.provider,
     createdAt: product.createdAt,
-    billing: { connect: { id: product.billingId } },
+    billing: product.billingId ? { connect: { id: product.billingId } } : undefined,
     projectOwner: { connect: { email: body.projectOwner.email } },
     primaryTechnicalLead: { connect: { email: body.primaryTechnicalLead.email } },
     secondaryTechnicalLead: body.secondaryTechnicalLead

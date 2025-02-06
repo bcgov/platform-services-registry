@@ -14,7 +14,7 @@ function isValidData(data: CreateSignPublicCloudMouTaskData) {
   const { request } = data;
   const { decisionData } = request;
 
-  if (decisionData.billing.signed || decisionData.billing.approved) {
+  if (decisionData.billing?.signed || decisionData.billing?.approved) {
     return false;
   }
 

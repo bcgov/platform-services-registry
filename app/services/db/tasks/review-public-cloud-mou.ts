@@ -15,7 +15,7 @@ function isValidData(data: CreateReviewPublicCloudMouTaskData) {
   const { request } = data;
   const { billing } = request.decisionData;
 
-  if (!billing.signed || billing.approved) {
+  if (!billing?.signed || billing?.approved) {
     return false;
   }
 
@@ -32,6 +32,7 @@ export async function createReviewPublicCloudMouTask(data: CreateReviewPublicClo
   if (!isValidData(data)) return null;
 
   const { billing } = data.request.decisionData;
+  if (!billing) return null;
 
   const taskProm = prisma.task.create({
     data: {
