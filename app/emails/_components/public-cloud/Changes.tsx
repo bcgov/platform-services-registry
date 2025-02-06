@@ -68,8 +68,8 @@ export default function Changes({ request }: { request: PublicCloudRequestDetail
         <BudgetChanges
           budgetCurrent={request.originalData.budget}
           budgetRequested={request.decisionData.budget}
-          accountCodingCurrent={request.originalData.billing.accountCoding}
-          accountCodingRequested={request.decisionData.billing.accountCoding}
+          accountCodingCurrent={request.originalData.billing?.accountCoding ?? ''}
+          accountCodingRequested={request.decisionData.billing?.accountCoding ?? ''}
         />
       </>
     );

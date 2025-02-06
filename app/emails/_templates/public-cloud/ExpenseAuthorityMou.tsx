@@ -13,6 +13,7 @@ export default function ExpenseAuthorityMou({ request }: Props) {
   if (!request) return <></>;
 
   const { name, expenseAuthority, billing } = request.decisionData;
+  if (!billing) return <></>;
 
   const { accountCoding } = billing;
 
