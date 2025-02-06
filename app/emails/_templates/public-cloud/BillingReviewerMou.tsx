@@ -14,6 +14,8 @@ export default function BillingReviewerMou({ request }: Props) {
 
   const { licencePlate, decisionData, active } = request;
   const { name, expenseAuthority, billing } = decisionData;
+  if (!billing) return <></>;
+
   const { accountCoding } = billing;
 
   const productExists = !active;

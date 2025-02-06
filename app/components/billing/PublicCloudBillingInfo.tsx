@@ -27,6 +27,8 @@ export default function PublicCloudBillingInfo({
   const { data: session } = useSession();
   const { licencePlate, billing } = product;
 
+  if (!billing) return null;
+
   let content: ReactNode = null;
   if (billing.approved) {
     content = (
@@ -94,6 +96,8 @@ export default function PublicCloudBillingInfo({
           size="xs"
           className="mt-2"
           onClick={async () => {
+            if (!product.billingId) return;
+
             const res = await openPublicCloudMouReviewModal<{ confirmed: boolean }>({
               licencePlate: product.licencePlate,
               billingId: product.billingId,

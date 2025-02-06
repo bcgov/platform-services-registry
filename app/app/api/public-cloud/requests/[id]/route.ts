@@ -35,8 +35,10 @@ export const PUT = apiHandler(async ({ pathParams, session }) => {
     return UnauthorizedResponse();
   }
 
-  const { data: updatedRequest } = await models.publicCloudRequest.update(
-    {
+  const { type, licencePlate, requestDataId, decisionDataId } = request;
+
+  const proms: any[] = [
+    prisma.publicCloudRequest.update({
       where: {
         id,
         decisionStatus: DecisionStatus.PENDING,
@@ -49,32 +51,39 @@ export const PUT = apiHandler(async ({ pathParams, session }) => {
       select: {
         licencePlate: true,
       },
-    },
-    session,
-  );
+    }),
+    createEvent(EventType.CANCEL_PUBLIC_CLOUD_REQUEST, session.user.id, { requestId: id }),
+  ];
 
-  const { licencePlate } = updatedRequest as unknown as PublicCloudRequest;
-
-  if (request?.type === RequestType.CREATE) {
-    await prisma.billing.deleteMany({
-      where: {
-        licencePlate,
-      },
-    });
-
-    await prisma.task.deleteMany({
-      where: {
+  if (type === RequestType.CREATE) {
+    proms.push(
+      prisma.publicCloudRequestedProject.updateMany({
+        where: {
+          id: { in: [requestDataId, decisionDataId] },
+        },
         data: {
-          equals: {
-            licencePlate,
+          billingId: null,
+        },
+      }),
+      prisma.billing.deleteMany({
+        where: {
+          licencePlate,
+        },
+      }),
+      prisma.task.deleteMany({
+        where: {
+          type: { in: [TaskType.SIGN_PUBLIC_CLOUD_MOU, TaskType.REVIEW_PUBLIC_CLOUD_MOU] },
+          data: {
+            equals: {
+              licencePlate,
+            },
           },
         },
-        type: TaskType.SIGN_PUBLIC_CLOUD_MOU,
-      },
-    });
+      }),
+    );
   }
 
-  await createEvent(EventType.CANCEL_PUBLIC_CLOUD_REQUEST, session.user.id, { requestId: id });
+  await Promise.all(proms);
 
   return OkResponse(true);
 });

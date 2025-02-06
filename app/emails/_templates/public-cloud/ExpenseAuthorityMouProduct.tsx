@@ -13,6 +13,7 @@ export default function ExpenseAuthorityMouProduct({ product }: Props) {
   if (!product) return <></>;
 
   const { name, expenseAuthority, billing } = product;
+  if (!billing) return <></>;
 
   const { accountCoding } = billing;
 

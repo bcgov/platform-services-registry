@@ -12,6 +12,7 @@ export default function EmouServiceAgreement({ request }: Props) {
   if (!request) return <></>;
 
   const { name, billing } = request.decisionData;
+  if (!billing) return <></>;
 
   const { accountCoding } = billing;
 
