@@ -18,6 +18,7 @@ export default function AddUserModal({ open, setOpen, setUserPrincipalName, setU
   const [query, setQuery] = useState<string>('');
   const [selected, setSelected] = useState<AppUser | undefined>({
     providerUserId: '0',
+    id: '',
     upn: '',
     email: '',
     idir: '',

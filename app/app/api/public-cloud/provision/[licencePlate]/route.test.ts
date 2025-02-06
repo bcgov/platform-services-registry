@@ -3,6 +3,7 @@ import { DecisionStatus, TaskType, TaskStatus, RequestType } from '@prisma/clien
 import { GlobalRole } from '@/constants';
 import prisma from '@/core/prisma';
 import { createSamplePublicCloudProductData } from '@/helpers/mock-resources';
+import { mockNoRoleUsers, upsertMockUser } from '@/helpers/mock-users';
 import { mockSessionByEmail, mockSessionByRole } from '@/services/api-test/core';
 import { provisionPublicCloudProject } from '@/services/api-test/public-cloud';
 import {
@@ -12,6 +13,8 @@ import {
 } from '@/services/api-test/public-cloud/products';
 import { makePublicCloudRequestDecision } from '@/services/api-test/public-cloud/requests';
 
+const [PO, TL1, TL2, EA] = mockNoRoleUsers;
+
 const productData = {
   main: createSamplePublicCloudProductData(),
 };
@@ -19,6 +22,22 @@ const productData = {
 const requests = {
   create: null as any,
 };
+
+beforeAll(async () => {
+  await Promise.all([PO, TL1, TL2, EA].map((user) => upsertMockUser(user)));
+
+  const [createdPO, createdTL1, createdTL2, createdEA] = await Promise.all([
+    prisma.user.findUnique({ where: { email: PO.email } }),
+    prisma.user.findUnique({ where: { email: TL1.email } }),
+    prisma.user.findUnique({ where: { email: TL2.email } }),
+    prisma.user.findUnique({ where: { email: EA.email } }),
+  ]);
+
+  productData.main.projectOwner.id = createdPO!.id;
+  productData.main.primaryTechnicalLead.id = createdTL1!.id;
+  productData.main.secondaryTechnicalLead.id = createdTL2!.id;
+  productData.main.expenseAuthority.id = createdEA!.id;
+});
 
 describe('Provision Public Cloud Request', () => {
   it('should successfully submit a create request for PO', async () => {

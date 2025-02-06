@@ -6,7 +6,6 @@ import { OkResponse, UnauthorizedResponse } from '@/core/responses';
 import { comparePublicProductData } from '@/helpers/product-change';
 import { sendEditRequestEmails } from '@/services/ches/public-cloud';
 import { createEvent, getLastClosedPublicCloudRequest, models } from '@/services/db';
-import { upsertUsers } from '@/services/db/user';
 import { sendPublicCloudNatsMessage } from '@/services/nats';
 import { PublicCloudEditRequestBody } from '@/validation-schemas/public-cloud';
 import { putPathParamSchema } from '../[licencePlate]/schema';
@@ -34,13 +33,6 @@ export default async function updateOp({
     rest.members = product.members.map(({ userId, roles }) => ({ userId, roles }));
   }
 
-  await upsertUsers([
-    body.projectOwner.email,
-    body.primaryTechnicalLead.email,
-    body.secondaryTechnicalLead?.email,
-    body.expenseAuthority?.email,
-  ]);
-
   const decisionData = {
     ...rest,
     licencePlate: product.licencePlate,
@@ -48,12 +40,12 @@ export default async function updateOp({
     provider: product.provider,
     createdAt: product.createdAt,
     billing: { connect: { id: product.billingId } },
-    projectOwner: { connect: { email: body.projectOwner.email } },
-    primaryTechnicalLead: { connect: { email: body.primaryTechnicalLead.email } },
+    projectOwner: { connect: { id: body.projectOwner.id } },
+    primaryTechnicalLead: { connect: { id: body.primaryTechnicalLead.id } },
     secondaryTechnicalLead: body.secondaryTechnicalLead
-      ? { connect: { email: body.secondaryTechnicalLead.email } }
+      ? { connect: { id: body.secondaryTechnicalLead.id } }
       : undefined,
-    expenseAuthority: body.expenseAuthority ? { connect: { email: body.expenseAuthority.email } } : undefined,
+    expenseAuthority: body.expenseAuthority ? { connect: { id: body.expenseAuthority.id } } : undefined,
   };
 
   // Retrieve the latest request data to acquire the decision data ID that can be assigned to the incoming request's original data.

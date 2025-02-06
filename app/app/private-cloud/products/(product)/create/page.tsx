@@ -8,10 +8,10 @@ import { FormProvider, useForm } from 'react-hook-form';
 import PreviousButton from '@/components/buttons/Previous';
 import CommonComponents from '@/components/form/CommonComponents';
 import ProjectDescription from '@/components/form/ProjectDescriptionPrivate';
-import TeamContacts from '@/components/form/TeamContacts';
 import PageAccordion from '@/components/generic/accordion/PageAccordion';
 import FormErrorNotification from '@/components/generic/FormErrorNotification';
 import { openPrivateCloudProductCreateSubmitModal } from '@/components/modal/privateCloudProductCreateSubmit';
+import ModifiedTeamContacts from '@/components/private-cloud/sections/ModifiedTeamContacts';
 import Webhooks from '@/components/private-cloud/sections/Webhooks';
 import { GlobalRole } from '@/constants';
 import createClientPage from '@/core/client-page';
@@ -48,7 +48,7 @@ export default privateCloudProductNew(({ session }) => {
       LeftIcon: IconUsersGroup,
       label: 'Team contacts',
       description: '',
-      Component: TeamContacts,
+      Component: ModifiedTeamContacts,
       componentArgs: { secondTechLead, secondTechLeadOnClick },
     },
     {

@@ -4,7 +4,7 @@ import { parse } from 'csv-parse/sync';
 import { GlobalRole } from '@/constants';
 import prisma from '@/core/prisma';
 import { createSamplePublicCloudProductData } from '@/helpers/mock-resources';
-import { mockNoRoleUsers, findMockUserByIdr, findOtherMockUsers } from '@/helpers/mock-users';
+import { mockNoRoleUsers, findMockUserByIdr, findOtherMockUsers, upsertMockUser } from '@/helpers/mock-users';
 import { ministryKeyToName, getTotalQuotaStr } from '@/helpers/product';
 import { formatFullName } from '@/helpers/user';
 import { mockSessionByEmail, mockSessionByRole } from '@/services/api-test/core';
@@ -19,14 +19,7 @@ import { makePublicCloudRequestDecision } from '@/services/api-test/public-cloud
 import { PublicProductCsvRecord } from '@/types/csv';
 import { formatDateSimple } from '@/utils/js';
 
-const PO = mockNoRoleUsers[0];
-const TL1 = mockNoRoleUsers[1];
-const TL2 = mockNoRoleUsers[2];
-const EA = mockNoRoleUsers[3];
-const RANDOM1 = mockNoRoleUsers[4];
-const RANDOM2 = mockNoRoleUsers[5];
-const RANDOM3 = mockNoRoleUsers[6];
-const RANDOM4 = mockNoRoleUsers[7];
+const [PO, TL1, TL2, EA, RANDOM1, RANDOM2, RANDOM3, RANDOM4] = mockNoRoleUsers;
 
 const memberData = {
   projectOwner: PO,
@@ -55,6 +48,33 @@ const requests = {
   one: null as any,
   two: null as any,
 };
+
+// Create users in advance before running tests
+beforeAll(async () => {
+  await Promise.all([PO, TL1, TL2, EA, RANDOM1, RANDOM2, RANDOM3, RANDOM4].map((user) => upsertMockUser(user)));
+
+  const [createdPO, createdTL1, createdTL2, createdEA, createdRANDOM1, createdRANDOM2, createdRANDOM3, createdRANDOM4] =
+    await Promise.all([
+      prisma.user.findUnique({ where: { email: PO.email } }),
+      prisma.user.findUnique({ where: { email: TL1.email } }),
+      prisma.user.findUnique({ where: { email: TL2.email } }),
+      prisma.user.findUnique({ where: { email: EA.email } }),
+      prisma.user.findUnique({ where: { email: RANDOM1.email } }),
+      prisma.user.findUnique({ where: { email: RANDOM2.email } }),
+      prisma.user.findUnique({ where: { email: RANDOM3.email } }),
+      prisma.user.findUnique({ where: { email: RANDOM4.email } }),
+    ]);
+
+  productData.one.projectOwner.id = createdPO!.id;
+  productData.one.primaryTechnicalLead.id = createdTL1!.id;
+  productData.one.secondaryTechnicalLead.id = createdTL2!.id;
+  productData.one.expenseAuthority.id = createdEA!.id;
+
+  productData.two.projectOwner.id = createdRANDOM1!.id;
+  productData.two.primaryTechnicalLead.id = createdRANDOM2!.id;
+  productData.two.secondaryTechnicalLead.id = createdRANDOM3!.id;
+  productData.two.expenseAuthority.id = createdRANDOM4!.id;
+});
 
 // TODO: add tests for ministry roles
 describe('Download Public Cloud Products - Permissions', () => {

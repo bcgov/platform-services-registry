@@ -18,13 +18,12 @@ import PreviousButton from '@/components/buttons/Previous';
 import AccountCoding from '@/components/form/AccountCoding';
 import AccountEnvironmentsPublic from '@/components/form/AccountEnvironmentsPublic';
 import Budget from '@/components/form/Budget';
-import ExpenseAuthority from '@/components/form/ExpenseAuthority';
 import ProjectDescriptionPublic from '@/components/form/ProjectDescriptionPublic';
-import TeamContacts from '@/components/form/TeamContacts';
 import PageAccordion from '@/components/generic/accordion/PageAccordion';
 import FormErrorNotification from '@/components/generic/FormErrorNotification';
 import { openPublicCloudProductEditSubmitModal } from '@/components/modal/publicCloudProductEditSubmit';
 import AdditionalTeamMembers from '@/components/public-cloud/sections/AdditionalTeamMembers';
+import ModifiedTeamContacts from '@/components/public-cloud/sections/ModifiedTeamContacts';
 import { AGMinistries, GlobalRole } from '@/constants';
 import createClientPage from '@/core/client-page';
 import { usePublicProductState } from '@/states/global';
@@ -100,17 +99,8 @@ export default publicCloudProductEdit(({}) => {
       LeftIcon: IconUsersGroup,
       label: 'Team contacts',
       description: '',
-      Component: TeamContacts,
+      Component: ModifiedTeamContacts,
       componentArgs: { disabled: isDisabled, secondTechLead, secondTechLeadOnClick },
-    },
-    {
-      LeftIcon: IconUserDollar,
-      label: 'Expense authority',
-      description: '',
-      Component: ExpenseAuthority,
-      componentArgs: {
-        disabled: isDisabled,
-      },
     },
     {
       LeftIcon: IconUsersGroup,

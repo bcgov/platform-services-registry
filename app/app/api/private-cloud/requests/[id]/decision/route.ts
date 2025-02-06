@@ -7,7 +7,6 @@ import { BadRequestResponse, OkResponse, UnprocessableEntityResponse } from '@/c
 import { sendRequestNatsMessage } from '@/helpers/nats-message';
 import { sendRequestRejectionEmails, sendRequestApprovalEmails } from '@/services/ches/private-cloud';
 import { createEvent, models, privateCloudRequestDetailInclude, tasks } from '@/services/db';
-import { upsertUsers } from '@/services/db/user';
 import {
   privateCloudRequestDecisionBodySchema,
   PrivateCloudRequestDecisionBody,
@@ -58,22 +57,16 @@ export const POST = apiHandler(async ({ pathParams, body, session }) => {
 
   // No need to modify decision data when reviewing deletion requests.
   if (request.type !== RequestType.DELETE) {
-    await upsertUsers([
-      validFormData.projectOwner.email,
-      validFormData.primaryTechnicalLead.email,
-      validFormData.secondaryTechnicalLead?.email,
-    ]);
-
     dataToUpdate.decisionData = {
       update: {
         ...validFormData,
         status: ProjectStatus.ACTIVE,
         licencePlate: request.licencePlate,
         cluster: request.project?.cluster ?? request.decisionData.cluster,
-        projectOwner: { connect: { email: validFormData.projectOwner.email } },
-        primaryTechnicalLead: { connect: { email: validFormData.primaryTechnicalLead.email } },
+        projectOwner: { connect: { id: validFormData.projectOwner.id } },
+        primaryTechnicalLead: { connect: { id: validFormData.primaryTechnicalLead.id } },
         secondaryTechnicalLead: validFormData.secondaryTechnicalLead
-          ? { connect: { email: validFormData.secondaryTechnicalLead.email } }
+          ? { connect: { id: validFormData.secondaryTechnicalLead.id } }
           : undefined,
       },
     };
@@ -113,9 +106,9 @@ export const POST = apiHandler(async ({ pathParams, body, session }) => {
 
   proms.push(
     sendRequestNatsMessage(updatedRequestDecorated, {
-      projectOwner: { email: updatedRequestDecorated.originalData?.projectOwner.email },
-      primaryTechnicalLead: { email: updatedRequestDecorated.originalData?.primaryTechnicalLead.email },
-      secondaryTechnicalLead: { email: updatedRequestDecorated.originalData?.secondaryTechnicalLead?.email },
+      projectOwner: { id: updatedRequestDecorated.originalData?.projectOwner.id },
+      primaryTechnicalLead: { id: updatedRequestDecorated.originalData?.primaryTechnicalLead.id },
+      secondaryTechnicalLead: { id: updatedRequestDecorated.originalData?.secondaryTechnicalLead?.id },
     }),
   );
 

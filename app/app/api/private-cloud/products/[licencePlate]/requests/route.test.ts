@@ -1,27 +1,44 @@
 import { expect } from '@jest/globals';
 import { Ministry, Cluster, DecisionStatus, RequestType } from '@prisma/client';
 import { GlobalRole } from '@/constants';
+import prisma from '@/core/prisma';
 import { createSamplePrivateCloudProductData } from '@/helpers/mock-resources';
-import { mockNoRoleUsers, findMockUserByIdr, findOtherMockUsers } from '@/helpers/mock-users';
+import { mockNoRoleUsers, findMockUserByIdr, findOtherMockUsers, upsertMockUser } from '@/helpers/mock-users';
 import { mockSessionByEmail, mockSessionByRole } from '@/services/api-test/core';
 import { provisionPrivateCloudProject } from '@/services/api-test/private-cloud';
 import { createPrivateCloudProject, listPrivateCloudProductRequests } from '@/services/api-test/private-cloud/products';
 import { makePrivateCloudRequestDecision } from '@/services/api-test/private-cloud/requests';
 
-const PO = mockNoRoleUsers[0];
-const TL1 = mockNoRoleUsers[1];
-const TL2 = mockNoRoleUsers[2];
-const EA = mockNoRoleUsers[3];
-const RANDOM1 = mockNoRoleUsers[4];
+const [PO, TL1, TL2, EA, RANDOM1] = mockNoRoleUsers;
 
 const memberData = {
   projectOwner: PO,
   primaryTechnicalLead: TL1,
   secondaryTechnicalLead: TL2,
   expenseAuthority: EA,
+  randomPerson: RANDOM1,
 };
 
 let licencePlate = '';
+
+// Create users in advance before running tests
+beforeAll(async () => {
+  await Promise.all([PO, TL1, TL2, EA, RANDOM1].map((user) => upsertMockUser(user)));
+
+  const [createdPO, createdTL1, createdTL2, createdEA, createdRANDOM1] = await Promise.all([
+    prisma.user.findUnique({ where: { email: PO.email } }),
+    prisma.user.findUnique({ where: { email: TL1.email } }),
+    prisma.user.findUnique({ where: { email: TL2.email } }),
+    prisma.user.findUnique({ where: { email: EA.email } }),
+    prisma.user.findUnique({ where: { email: RANDOM1.email } }),
+  ]);
+
+  memberData.projectOwner.id = createdPO!.id;
+  memberData.primaryTechnicalLead.id = createdTL1!.id;
+  memberData.secondaryTechnicalLead.id = createdTL2!.id;
+  memberData.expenseAuthority.id = createdEA!.id;
+  memberData.randomPerson.id = createdRANDOM1!.id;
+});
 
 // TODO: add tests for ministry roles
 describe('List Private Cloud Product Requests - Permissions', () => {

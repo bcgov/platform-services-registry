@@ -1,8 +1,9 @@
 import { expect } from '@jest/globals';
 import { Cluster, Ministry } from '@prisma/client';
 import { GlobalRole } from '@/constants';
+import prisma from '@/core/prisma';
 import { createSamplePrivateCloudProductData } from '@/helpers/mock-resources';
-import { findOtherMockUsers } from '@/helpers/mock-users';
+import { findOtherMockUsers, mockNoRoleUsers, upsertMockUser } from '@/helpers/mock-users';
 import { pickProductData } from '@/helpers/product';
 import { mockSessionByEmail, mockSessionByRole } from '@/services/api-test/core';
 import { createPrivateCloudProject } from '@/services/api-test/private-cloud/products';
@@ -17,6 +18,28 @@ const fieldsToCompare = [
   'secondaryTechnicalLead',
   'commonComponents',
 ];
+const [PO, TL1, TL2] = mockNoRoleUsers;
+
+const memberData = {
+  projectOwner: PO,
+  primaryTechnicalLead: TL1,
+  secondaryTechnicalLead: TL2,
+};
+
+// Create users in advance before running tests
+beforeAll(async () => {
+  await Promise.all([PO, TL1, TL2].map((user) => upsertMockUser(user)));
+
+  const [createdPO, createdTL1, createdTL2] = await Promise.all([
+    prisma.user.findUnique({ where: { email: PO.email } }),
+    prisma.user.findUnique({ where: { email: TL1.email } }),
+    prisma.user.findUnique({ where: { email: TL2.email } }),
+  ]);
+
+  memberData.projectOwner.id = createdPO!.id;
+  memberData.primaryTechnicalLead.id = createdTL1!.id;
+  memberData.secondaryTechnicalLead.id = createdTL2!.id;
+});
 
 // TODO: add tests for ministry roles
 // TODO: test the emails templates if possible
