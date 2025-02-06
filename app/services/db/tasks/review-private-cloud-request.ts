@@ -17,10 +17,29 @@ export interface CreateReviewPrivateCloudRequestTaskData {
   requester: string;
 }
 
-export async function createReviewPrivateCloudRequestTask(data: CreateReviewPrivateCloudRequestTaskData) {
+function isValidData(data: CreateReviewPrivateCloudRequestTaskData) {
   if (data.request.decisionStatus !== DecisionStatus.PENDING) {
-    return null;
+    return false;
   }
+
+  return true;
+}
+
+export async function sendReviewPrivateCloudRequestTaskEmail(data: CreateReviewPrivateCloudRequestTaskData) {
+  if (!isValidData(data)) return null;
+
+  switch (data.request.type) {
+    case RequestType.CREATE:
+      return sendAdminCreateRequestEmail(data.request, data.requester);
+    case RequestType.EDIT:
+      return sendAdminEditRequestEmail(data.request, data.requester);
+    case RequestType.DELETE:
+      return sendAdminDeleteRequestEmail(data.request, data.requester);
+  }
+}
+
+export async function createReviewPrivateCloudRequestTask(data: CreateReviewPrivateCloudRequestTaskData) {
+  if (!isValidData(data)) return null;
 
   const taskProm = prisma.task.create({
     data: {
@@ -34,19 +53,7 @@ export async function createReviewPrivateCloudRequestTask(data: CreateReviewPriv
     },
   });
 
-  let emailProm: any = null;
-
-  switch (data.request.type) {
-    case RequestType.CREATE:
-      emailProm = sendAdminCreateRequestEmail(data.request, data.requester);
-      break;
-    case RequestType.EDIT:
-      emailProm = sendAdminEditRequestEmail(data.request, data.requester);
-      break;
-    case RequestType.DELETE:
-      emailProm = sendAdminDeleteRequestEmail(data.request, data.requester);
-      break;
-  }
+  const emailProm = sendReviewPrivateCloudRequestTaskEmail(data);
 
   const [task] = await Promise.all([taskProm, emailProm]);
   return task;

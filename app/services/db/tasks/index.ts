@@ -1,31 +1,64 @@
 import { Task, TaskType } from '@prisma/client';
 import {
+  sendReviewPrivateCloudRequestTaskEmail,
   createReviewPrivateCloudRequestTask,
   CreateReviewPrivateCloudRequestTaskData,
   closeReviewPrivateCloudRequestTask,
   CloseReviewPrivateCloudRequestTaskData,
 } from './review-private-cloud-request';
 import {
+  sendReviewPublicCloudMouTaskEmail,
   createReviewPublicCloudMouTask,
   CreateReviewPublicCloudMouTaskData,
   closeReviewPublicCloudMouTask,
   CloseReviewPublicCloudMouTaskData,
 } from './review-public-cloud-mou';
 import {
+  sendReviewPublicCloudRequestTaskEmail,
   createReviewPublicCloudRequestTask,
   CreateReviewPublicCloudRequestTaskData,
   closeReviewPublicCloudRequestTask,
   CloseReviewPublicCloudRequestTaskData,
 } from './review-public-cloud-request';
 import {
+  sendSignPublicCloudMouTaskEmail,
   createSignPublicCloudMouTask,
   CreateSignPublicCloudMouTaskData,
   closeSignPublicCloudMouTask,
   CloseSignPublicCloudMouTaskData,
 } from './sign-public-cloud-mou';
 
-async function createTask(type: typeof TaskType.SIGN_PUBLIC_CLOUD_MOU, data: any): Promise<Task>;
-async function createTask(type: typeof TaskType.REVIEW_PUBLIC_CLOUD_MOU, data: any): Promise<Task>;
+async function sendTaskEmail(
+  type: typeof TaskType.REVIEW_PRIVATE_CLOUD_REQUEST,
+  data: CreateReviewPrivateCloudRequestTaskData,
+): Promise<any>;
+async function sendTaskEmail(
+  type: typeof TaskType.REVIEW_PUBLIC_CLOUD_REQUEST,
+  data: CreateReviewPublicCloudRequestTaskData,
+): Promise<any>;
+async function sendTaskEmail(
+  type: typeof TaskType.SIGN_PUBLIC_CLOUD_MOU,
+  data: CreateSignPublicCloudMouTaskData,
+): Promise<any>;
+async function sendTaskEmail(
+  type: typeof TaskType.REVIEW_PUBLIC_CLOUD_MOU,
+  data: CreateReviewPublicCloudMouTaskData,
+): Promise<any>;
+async function sendTaskEmail(type: TaskType, data: any) {
+  switch (type) {
+    case TaskType.REVIEW_PRIVATE_CLOUD_REQUEST:
+      return sendReviewPrivateCloudRequestTaskEmail(data);
+    case TaskType.REVIEW_PUBLIC_CLOUD_REQUEST:
+      return sendReviewPublicCloudRequestTaskEmail(data);
+    case TaskType.SIGN_PUBLIC_CLOUD_MOU:
+      return sendSignPublicCloudMouTaskEmail(data);
+    case TaskType.REVIEW_PUBLIC_CLOUD_MOU:
+      return sendReviewPublicCloudMouTaskEmail(data);
+    default:
+      throw new Error(`Unknown task type: ${type}`);
+  }
+}
+
 async function createTask(
   type: typeof TaskType.REVIEW_PRIVATE_CLOUD_REQUEST,
   data: CreateReviewPrivateCloudRequestTaskData,
@@ -57,8 +90,6 @@ async function createTask(type: TaskType, data: any) {
   }
 }
 
-async function closeTask(type: typeof TaskType.SIGN_PUBLIC_CLOUD_MOU, data: any): Promise<number>;
-async function closeTask(type: typeof TaskType.REVIEW_PUBLIC_CLOUD_MOU, data: any): Promise<number>;
 async function closeTask(
   type: typeof TaskType.REVIEW_PRIVATE_CLOUD_REQUEST,
   data: CloseReviewPrivateCloudRequestTaskData,
@@ -91,6 +122,7 @@ async function closeTask(type: TaskType, data: any) {
 }
 
 export const tasks = {
+  sendEmail: sendTaskEmail,
   create: createTask,
   close: closeTask,
 };

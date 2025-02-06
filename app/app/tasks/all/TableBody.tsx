@@ -1,12 +1,14 @@
 'use client';
 
-import { Badge, Table, Text } from '@mantine/core';
+import { Button, Badge, Table, Text } from '@mantine/core';
 import { TaskStatus } from '@prisma/client';
+import { useQuery, useMutation } from '@tanstack/react-query';
 import { startCase } from 'lodash-es';
 import { ReactNode } from 'react';
 import KeyValueTable from '@/components/generic/KeyValueTable';
 import UserProfile from '@/components/users/UserProfile';
 import { taskTypeMap } from '@/constants/task';
+import { sendTaskEmail } from '@/services/backend/tasks';
 import { SearchTask } from '@/types/task';
 import { formatDate } from '@/utils/js';
 
@@ -77,6 +79,10 @@ function Assignees({ task }: { task: SearchTask }) {
 }
 
 export default function TableBody({ data }: TableProps) {
+  const { mutateAsync: _sendTaskEmail, isPending: isSendingTaskEmail } = useMutation({
+    mutationFn: sendTaskEmail,
+  });
+
   const rows =
     data.length > 0 ? (
       data.map((task) => (
@@ -107,6 +113,20 @@ export default function TableBody({ data }: TableProps) {
           <Table.Td>
             <KeyValueTable data={task.closedMetadata || {}} />
           </Table.Td>
+          <Table.Td>
+            {task.status === TaskStatus.ASSIGNED && (
+              <Button
+                size="xs"
+                loading={isSendingTaskEmail}
+                onClick={async () => {
+                  if (isSendingTaskEmail) return;
+                  await _sendTaskEmail(task.id);
+                }}
+              >
+                Resend
+              </Button>
+            )}
+          </Table.Td>
         </Table.Tr>
       ))
     ) : (
@@ -128,6 +148,7 @@ export default function TableBody({ data }: TableProps) {
             <Table.Th>Completed</Table.Th>
             <Table.Th>Data</Table.Th>
             <Table.Th>Metadata</Table.Th>
+            <Table.Th></Table.Th>
           </Table.Tr>
         </Table.Thead>
         <Table.Tbody>{rows}</Table.Tbody>

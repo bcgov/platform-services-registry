@@ -37,6 +37,7 @@ export enum GlobalPermissions {
   ViewEvents = 'viewEvents',
   ViewUsers = 'viewUsers',
   ViewTasks = 'viewTasks',
+  SendTaskEmails = 'sendTaskEmails',
   EditUsers = 'editUsers',
 }
 

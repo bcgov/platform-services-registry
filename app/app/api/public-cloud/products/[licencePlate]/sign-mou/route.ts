@@ -4,7 +4,7 @@ import { GlobalRole } from '@/constants';
 import createApiHandler from '@/core/api-handler';
 import prisma from '@/core/prisma';
 import { BadRequestResponse, OkResponse } from '@/core/responses';
-import { models, publicCloudRequestDetailInclude, tasks } from '@/services/db';
+import { models, publicCloudRequestDetailInclude, tasks, getMostRecentPublicCloudRequest } from '@/services/db';
 
 const pathParamSchema = z.object({
   licencePlate: z.string(),
@@ -30,7 +30,7 @@ export const POST = apiHandler(async ({ pathParams, body, session }) => {
     return BadRequestResponse('invalid request');
   }
 
-  const [billingUpdated] = await Promise.all([
+  await Promise.all([
     prisma.billing.update({
       where: {
         id: billing.id,
@@ -44,15 +44,11 @@ export const POST = apiHandler(async ({ pathParams, body, session }) => {
     tasks.close(TaskType.SIGN_PUBLIC_CLOUD_MOU, { licencePlate, session }),
   ]);
 
-  const recentRequest = await prisma.publicCloudRequest.findFirst({
-    where: { licencePlate, OR: [{ type: RequestType.CREATE, active: true }, { active: false }] },
-    include: publicCloudRequestDetailInclude,
-    orderBy: { createdAt: Prisma.SortOrder.desc },
-  });
+  const recentRequest = await getMostRecentPublicCloudRequest(licencePlate);
 
   if (recentRequest) {
     const requestDecorated = await models.publicCloudRequest.decorate(recentRequest, session, true);
-    await tasks.create(TaskType.REVIEW_PUBLIC_CLOUD_MOU, { billing: billingUpdated, request: requestDecorated });
+    await tasks.create(TaskType.REVIEW_PUBLIC_CLOUD_MOU, { request: requestDecorated });
   }
 
   return OkResponse(true);
