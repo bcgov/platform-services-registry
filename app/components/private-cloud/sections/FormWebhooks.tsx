@@ -26,7 +26,12 @@ export default function FormWebhooks({
   const methods = useForm({
     resolver: zodResolver(privateCloudProductWebhookBodySchema),
     defaultValues: async () => {
-      const result = await getPrivateCloudProductWebhook(licencePlate);
+      const result = await getPrivateCloudProductWebhook(licencePlate).catch(() => ({
+        url: '',
+        secret: '',
+        username: '',
+        password: '',
+      }));
       setLoading(false);
       return result;
     },
