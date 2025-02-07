@@ -22,14 +22,14 @@ import AccountCoding from '@/components/form/AccountCoding';
 import AccountEnvironmentsPublic from '@/components/form/AccountEnvironmentsPublic';
 import Budget from '@/components/form/Budget';
 import ProjectDescriptionPublic from '@/components/form/ProjectDescriptionPublic';
+import TeamContacts from '@/components/form/TeamContacts';
 import PageAccordion from '@/components/generic/accordion/PageAccordion';
 import FormErrorNotification from '@/components/generic/FormErrorNotification';
 import { openPublicCloudMouReviewModal } from '@/components/modal/publicCloudMouReview';
 import { openPublicCloudMouSignModal } from '@/components/modal/publicCloudMouSign';
 import { openPublicCloudRequestReviewModal } from '@/components/modal/publicCloudRequestReview';
 import AdditionalTeamMembers from '@/components/public-cloud/sections/AdditionalTeamMembers';
-import ModifiedTeamContacts from '@/components/public-cloud/sections/ModifiedTeamContacts';
-import { GlobalRole } from '@/constants';
+import { GlobalRole, userAttributes } from '@/constants';
 import createClientPage from '@/core/client-page';
 import { usePublicProductState } from '@/states/global';
 import {
@@ -120,8 +120,8 @@ export default publicCloudProductRequest(({ router }) => {
       LeftIcon: IconUsersGroup,
       label: 'Team contacts',
       description: '',
-      Component: ModifiedTeamContacts,
-      componentArgs: { disabled: isDisabled, secondTechLead, secondTechLeadOnClick },
+      Component: TeamContacts,
+      componentArgs: { disabled: isDisabled, hasEA: true, userAttributes, secondTechLead, secondTechLeadOnClick },
     },
     {
       LeftIcon: IconUsersGroup,

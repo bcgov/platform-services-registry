@@ -10,14 +10,14 @@ import { z } from 'zod';
 import PreviousButton from '@/components/buttons/Previous';
 import CommonComponents from '@/components/form/CommonComponents';
 import ProjectDescription from '@/components/form/ProjectDescriptionPrivate';
+import TeamContacts from '@/components/form/TeamContacts';
 import PageAccordion from '@/components/generic/accordion/PageAccordion';
 import FormErrorNotification from '@/components/generic/FormErrorNotification';
 import { openPrivateCloudProductEditSubmitModal } from '@/components/modal/privateCloudProductEditSubmit';
 import AdditionalTeamMembers from '@/components/private-cloud/sections/AdditionalTeamMembers';
-import ModifiedTeamContacts from '@/components/private-cloud/sections/ModifiedTeamContacts';
 import Quotas from '@/components/private-cloud/sections/Quotas';
 import SiloAccordion from '@/components/private-cloud/SiloAccordion';
-import { GlobalRole } from '@/constants';
+import { GlobalRole, userAttributes } from '@/constants';
 import createClientPage from '@/core/client-page';
 import { getQuotaChangeStatus } from '@/services/backend/private-cloud/products';
 import { usePrivateProductState } from '@/states/global';
@@ -135,8 +135,8 @@ export default privateCloudProductEdit(({ session }) => {
       LeftIcon: IconUsersGroup,
       label: 'Team contacts',
       description: '',
-      Component: ModifiedTeamContacts,
-      componentArgs: { disabled: isDisabled, secondTechLead, secondTechLeadOnClick },
+      Component: TeamContacts,
+      componentArgs: { userAttributes, disabled: isDisabled, secondTechLead, secondTechLeadOnClick },
     },
     {
       LeftIcon: IconUsersGroup,

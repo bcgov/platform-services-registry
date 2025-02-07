@@ -60,7 +60,7 @@ describe('Create Private Cloud Comment - Permissions', () => {
   it('should fail to submit a create comment request for a non-assigned user', async () => {
     const licencePlate = 'test-licence-plate';
     const requestData = createSamplePrivateCloudCommentData();
-    const otherUsers = findOtherMockUsers([requestData.userId]);
+    const otherUsers = await findOtherMockUsers([requestData.userId]);
     await mockSessionByEmail(otherUsers[0].email);
 
     const response = await createPrivateCloudComment(licencePlate, requestData);

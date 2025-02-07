@@ -16,10 +16,10 @@ import AccountCoding from '@/components/form/AccountCoding';
 import AccountEnvironmentsPublic from '@/components/form/AccountEnvironmentsPublic';
 import Budget from '@/components/form/Budget';
 import ProjectDescriptionPublic from '@/components/form/ProjectDescriptionPublic';
+import TeamContacts from '@/components/form/TeamContacts';
 import PageAccordion from '@/components/generic/accordion/PageAccordion';
 import AdditionalTeamMembers from '@/components/public-cloud/sections/AdditionalTeamMembers';
-import ModifiedTeamContacts from '@/components/public-cloud/sections/ModifiedTeamContacts';
-import { GlobalRole } from '@/constants';
+import { GlobalRole, userAttributes } from '@/constants';
 import createClientPage from '@/core/client-page';
 import { usePublicProductState } from '@/states/global';
 
@@ -87,8 +87,8 @@ export default publicCloudRequestOriginal(({ router }) => {
       LeftIcon: IconUsersGroup,
       label: 'Team contacts',
       description: '',
-      Component: ModifiedTeamContacts,
-      componentArgs: { disabled: isDisabled, secondTechLead, secondTechLeadOnClick },
+      Component: TeamContacts,
+      componentArgs: { disabled: isDisabled, hasEA: true, userAttributes, secondTechLead, secondTechLeadOnClick },
     },
     {
       LeftIcon: IconUsersGroup,

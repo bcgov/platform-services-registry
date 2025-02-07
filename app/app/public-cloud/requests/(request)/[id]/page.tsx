@@ -22,7 +22,7 @@ import ExpenseAuthority from '@/components/form/ExpenseAuthority';
 import ProjectDescriptionPublic from '@/components/form/ProjectDescriptionPublic';
 import TeamContacts from '@/components/form/TeamContacts';
 import PageAccordion from '@/components/generic/accordion/PageAccordion';
-import { GlobalRole } from '@/constants';
+import { GlobalRole, userAttributes } from '@/constants';
 import createClientPage from '@/core/client-page';
 import { getPublicCloudRequest } from '@/services/backend/public-cloud/requests';
 import { publicCloudRequestDecisionBodySchema } from '@/validation-schemas/public-cloud';
@@ -75,6 +75,8 @@ export default publicCloudRequest(({ getPathParams }) => {
       Component: TeamContacts,
       componentArgs: {
         disabled: true,
+        hasEA: true,
+        userAttributes,
         secondTechLead: !!request.decisionData.secondaryTechnicalLeadId,
         secondTechLeadOnClick: () => {},
       },

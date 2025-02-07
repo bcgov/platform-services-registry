@@ -1,4 +1,4 @@
-import { Cluster, Prisma, PrivateCloudProductMemberRole } from '@prisma/client';
+import { Cluster, Prisma, PrivateCloudProductMemberRole, User } from '@prisma/client';
 import _orderBy from 'lodash-es/orderBy';
 import { productSorts } from './common';
 
