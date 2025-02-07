@@ -1,3 +1,16 @@
+## [0.43.11](https://github.com/bcgov/platform-services-registry/compare/v0.43.10...v0.43.11) (2025-02-07)
+
+### Features
+
+* **4845:** add email resend button in admin tasks page ([835404b](https://github.com/bcgov/platform-services-registry/commit/835404b5212683c295388d05365376e149503999))
+
+### Bug Fixes
+
+* **4872:** fix deleting create request with initial account coding ([326be8b](https://github.com/bcgov/platform-services-registry/commit/326be8b5075064921370ac011b85a9ece6f9ed93))
+
+### Refactors
+
+* **4869:** add sharable additional team members component ([1a84265](https://github.com/bcgov/platform-services-registry/commit/1a84265648dbad1fa848debba0739c3732efa233))
 ## [0.43.10](https://github.com/bcgov/platform-services-registry/compare/v0.43.9...v0.43.10) (2025-02-05)
 
 ### Features
