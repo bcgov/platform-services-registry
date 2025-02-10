@@ -1,3 +1,4 @@
+import { Provider } from '@prisma/client';
 import axios from 'axios';
 import { billingSorts } from '@/constants/billing';
 import { BillingGetPayload, BillingSearchResponsePayload } from '@/types/billing';
@@ -38,6 +39,8 @@ export async function downloadBilling(
   licencePlate = '',
   filename = 'download.pdf',
 ) {
+  if (context === Provider.AWS_LZA) context = Provider.AWS;
+
   let url = `/${accountCoding}/download?context=${context}`;
   if (licencePlate) url += `&licencePlate=${licencePlate}`;
 
