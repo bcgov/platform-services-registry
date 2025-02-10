@@ -7,7 +7,7 @@ import { GlobalPermissions } from '@/constants';
 import { billingSorts } from '@/constants/billing';
 import createClientPage from '@/core/client-page';
 import { searchBilling, downloadBillings } from '@/services/backend/billing';
-import { SearchBilling } from '@/services/db/billing';
+import { BillingSearchResponseDataItem, BillingSearchResponseMetadata } from '@/types/billing';
 import FilterPanel from './FilterPanel';
 import { pageState } from './state';
 import TableBody from './TableBody';
@@ -17,10 +17,11 @@ const billingPage = createClientPage({
   fallbackUrl: 'login?callbackUrl=/home',
 });
 
-export default billingPage(() => {
+export default billingPage(({ session }) => {
   const snap = useSnapshot(pageState);
   let totalCount = 0;
-  let billings: SearchBilling[] = [];
+  let billings: BillingSearchResponseDataItem[] = [];
+  let metadata!: BillingSearchResponseMetadata;
 
   const { data, isLoading } = useQuery({
     queryKey: ['billings', snap],
@@ -30,6 +31,7 @@ export default billingPage(() => {
   if (!isLoading && data) {
     billings = data.data;
     totalCount = data.totalCount;
+    metadata = data.metadata;
   }
 
   return (
@@ -60,7 +62,7 @@ export default billingPage(() => {
         filters={<FilterPanel />}
         isLoading={isLoading}
       >
-        <TableBody data={billings} />
+        <TableBody data={billings} metadata={metadata} session={session!} />
       </Table>
     </>
   );
