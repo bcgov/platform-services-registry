@@ -1,7 +1,6 @@
 import axios from 'axios';
 import { billingSorts } from '@/constants/billing';
-import { SearchBilling } from '@/services/db/billing';
-import { BillingGetPayload } from '@/types/billing';
+import { BillingGetPayload, BillingSearchResponsePayload } from '@/types/billing';
 import { downloadFile } from '@/utils/browser';
 import { BillingSearchBody } from '@/validation-schemas/billing';
 import { instance as baseInstance } from './axios';
@@ -56,7 +55,7 @@ export async function downloadBilling(
 
 export async function searchBilling(data: BillingSearchBody) {
   const reqData = prepareSearchPayload(data);
-  const result = await instance.post<{ data: SearchBilling[]; totalCount: number }>('search', reqData);
+  const result = await instance.post<BillingSearchResponsePayload>('search', reqData);
   return result.data;
 }
 

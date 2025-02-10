@@ -1,182 +1,124 @@
 'use client';
 
-import { Avatar, Group, Table, Text } from '@mantine/core';
+import { Badge, Table, Button } from '@mantine/core';
+import { Provider } from '@prisma/client';
+import { useQuery, useMutation } from '@tanstack/react-query';
+import _difference from 'lodash-es/difference';
+import _flatten from 'lodash-es/flatten';
 import _uniq from 'lodash-es/uniq';
-import { useForm } from 'react-hook-form';
-import MinistryBadge from '@/components/badges/MinistryBadge';
+import { Session } from 'next-auth';
+import { useState } from 'react';
 import CopyableButton from '@/components/generic/button/CopyableButton';
-import { formatFullName } from '@/helpers/user';
-import { getUserImageData } from '@/helpers/user-image';
-import { SearchBilling } from '@/services/db/billing';
+import ExternalLink from '@/components/generic/button/ExternalLink';
+import KeyValueTable from '@/components/generic/KeyValueTable';
+import UserProfile from '@/components/users/UserProfile';
+import { getEmouFileName } from '@/helpers/emou';
+import { downloadBilling } from '@/services/backend/billing';
+import { BillingSearchResponseDataItem, BillingSearchResponseMetadata } from '@/types/billing';
 import { formatDate } from '@/utils/js';
 
 interface TableProps {
-  data: SearchBilling[];
+  data: BillingSearchResponseDataItem[];
+  metadata: BillingSearchResponseMetadata;
+  session: Session;
 }
 
-export default function TableBody({ data }: TableProps) {
-  const methods = useForm({
-    values: {
-      billings: data,
-    },
-  });
-
-  const UniqueLicencePlates = ({
-    projects,
-  }: {
-    projects: {
-      licencePlate: string;
-    }[];
-  }) => {
-    const uniquePlates = _uniq(projects.map((project) => project.licencePlate));
-
-    if (uniquePlates.length === 0) {
-      return (
-        <Text size="xs" c="dimmed">
-          No data
-        </Text>
-      );
-    }
-
-    return (
-      <Text size="xs" c="dimmed" component="span">
-        {uniquePlates.map((licencePlate) => (
-          <span key={licencePlate}>
-            <CopyableButton>{licencePlate}</CopyableButton>
-          </span>
-        ))}
-      </Text>
-    );
-  };
-
-  const [billings] = methods.watch(['billings']);
+export default function TableBody({ data, metadata, session }: TableProps) {
+  const [downloading, setDownloading] = useState(false);
 
   const rows =
-    billings.length > 0 ? (
-      billings.map((billing, index) => (
-        <Table.Tr key={billing.id ?? index}>
-          {/* Account coding */}
-          <Table.Td style={{ overflow: 'hidden' }}>
-            <Text size="xs" className="font-semibold">
-              Client code
-            </Text>
-            <Text size="xs" c="dimmed" component="span">
-              {billing.accountCoding.slice(0, 3)}
-            </Text>
-            <Text size="xs" className="font-semibold">
-              Responsibility centre
-            </Text>
-            <Text size="xs" c="dimmed" component="span">
-              {billing.accountCoding.slice(3, 8)}
-            </Text>
-            <Text size="xs" className="font-semibold">
-              Service line
-            </Text>
-            <Text size="xs" c="dimmed" component="span">
-              {billing.accountCoding.slice(8, 13)}
-            </Text>
-            <Text size="xs" className="font-semibold">
-              Standard object of expense
-            </Text>
-            <Text size="xs" c="dimmed" component="span">
-              {billing.accountCoding.slice(13, 17)}
-            </Text>
-            <Text size="xs" className="font-semibold">
-              Project code
-            </Text>
-            <Text size="xs" c="dimmed" component="span">
-              {billing.accountCoding.slice(17, 24)}
-            </Text>
+    data.length > 0 ? (
+      data.map((billing, index) => {
+        const associations = [
+          ...metadata.publicProducts.filter(({ billingId }) => billingId === billing.id),
+          ...metadata.publicRequests.filter(({ billingId }) => billingId === billing.id),
+        ];
 
-            <Text size="xs" c="dimmed" component="span">
-              <CopyableButton trancatedLen={1}>{billing.accountCoding}</CopyableButton>
-            </Text>
-          </Table.Td>
+        return (
+          <Table.Tr key={billing.id ?? index}>
+            <Table.Td className="align-top">
+              <KeyValueTable
+                data={{
+                  'Client code': billing.accountCoding.slice(0, 3),
+                  'Responsibility centre': billing.accountCoding.slice(3, 8),
+                  'Service line': billing.accountCoding.slice(8, 13),
+                  'Standard object of expense': billing.accountCoding.slice(13, 17),
+                  'Project code': billing.accountCoding.slice(17, 24),
+                }}
+                showHeader={false}
+              />
 
-          {/* products and requests */}
-          <Table.Td>
-            <Text size="xs" className="font-semibold">
-              Initial licence plate
-            </Text>
-            <Text size="xs" c="dimmed">
-              <CopyableButton>{billing.licencePlate}</CopyableButton>
-            </Text>
-            <Text size="xs" className="font-semibold">
-              Requested products
-            </Text>
-            <UniqueLicencePlates projects={billing.publicCloudRequestedProjects} />
-            <Text size="xs" className="font-semibold">
-              Products
-            </Text>
-            <UniqueLicencePlates projects={billing.publicCloudProjects} />
-          </Table.Td>
+              <CopyableButton className="text-gray-600">{billing.accountCoding}</CopyableButton>
+            </Table.Td>
 
-          {/* Dates */}
-          <Table.Td>
-            <Text size="xs" className="font-semibold">
-              Created at
-            </Text>
-            <Text size="sm" c="dimmed">
-              {formatDate(billing.createdAt)}
-            </Text>
-            <Text size="xs" className="font-semibold">
-              Updated at
-            </Text>
-            <Text size="sm" c="dimmed">
-              {formatDate(billing.updatedAt)}
-            </Text>
-          </Table.Td>
+            <Table.Td className="align-top">
+              {associations.map(({ id, name, url, type, context, licencePlate }) => {
+                return (
+                  <div key={id} className="hover:bg-gray-100 transition-colors duration-200 px-2 py-1 text-base">
+                    <span className="font-semibold">{name}</span>
+                    <span className="italic ml-1">({licencePlate})</span>
+                    {type === 'request' && (
+                      <Badge color="primary" size="xs" className="ml-1">
+                        New
+                      </Badge>
+                    )}
+                    {session.permissions.downloadBillingMou && (
+                      <Button
+                        loading={downloading}
+                        color="primary"
+                        size="compact-xs"
+                        className="ml-2"
+                        onClick={async () => {
+                          setDownloading(true);
+                          await downloadBilling(
+                            billing.accountCoding,
+                            context,
+                            licencePlate,
+                            getEmouFileName(name, context),
+                          );
+                          setDownloading(false);
+                        }}
+                      >
+                        Download
+                      </Button>
+                    )}
 
-          {/* Approved By */}
-          <Table.Td>
-            {billing.approved ? (
-              <Group gap="sm">
-                <Avatar src={getUserImageData(billing.approvedBy?.image)} size={36} radius="xl" />
-                <div>
-                  <Text size="sm" className="font-semibold">
-                    {formatFullName(billing.approvedBy)}
-                    <MinistryBadge className="ml-1" ministry={billing.approvedBy?.ministry} />
-                  </Text>
-                  <Text size="xs" opacity={0.5}>
-                    {billing.approvedBy?.email}
-                  </Text>
-                  <Text size="sm" className="font-light mt-1">
-                    At: {formatDate(billing.approvedAt)}
-                  </Text>
-                </div>
-              </Group>
-            ) : (
-              <Text size="xs" c="dimmed">
-                No data
-              </Text>
-            )}
-          </Table.Td>
-          {/* Signed By */}
-          <Table.Td>
-            {billing.signed ? (
-              <Group gap="sm">
-                <Avatar src={getUserImageData(billing.signedBy?.image)} size={36} radius="xl" />
-                <div>
-                  <Text size="sm" className="font-semibold">
-                    {formatFullName(billing.signedBy)}
-                    <MinistryBadge className="ml-1" ministry={billing.signedBy?.ministry} />
-                  </Text>
-                  <Text size="xs" opacity={0.5}>
-                    {billing.signedBy?.email}
-                  </Text>
-                  <Text size="sm" className="font-light mt-1">
-                    At: {formatDate(billing.signedAt)}
-                  </Text>
-                </div>
-              </Group>
-            ) : (
-              <Text size="xs" c="dimmed">
-                No data
-              </Text>
-            )}
-          </Table.Td>
-        </Table.Tr>
-      ))
+                    <ExternalLink href={url} className="ml-2" />
+                  </div>
+                );
+              })}
+            </Table.Td>
+
+            <Table.Td className="align-top">
+              <ul className="list-disc">
+                <li>
+                  <div className="font-semibold">
+                    Created at <span className="italic font-normal">{formatDate(billing.createdAt)}</span>
+                  </div>
+                </li>
+
+                {billing.signed && billing.signedBy && (
+                  <li>
+                    <div className="font-semibold mt-5">
+                      Signed at <span className="italic font-normal">{formatDate(billing.signedAt)}</span>; by
+                    </div>
+                    <UserProfile data={billing.signedBy} />
+                  </li>
+                )}
+
+                {billing.approved && billing.approvedBy && (
+                  <li>
+                    <div className="font-semibold mt-5">
+                      Reviewed at <span className="italic font-normal">{formatDate(billing.approvedAt)}</span>; by
+                    </div>
+                    <UserProfile data={billing.approvedBy} />
+                  </li>
+                )}
+              </ul>
+            </Table.Td>
+          </Table.Tr>
+        );
+      })
     ) : (
       <Table.Tr>
         <Table.Td colSpan={5} className="italic text-center">
@@ -192,9 +134,7 @@ export default function TableBody({ data }: TableProps) {
           <Table.Tr>
             <Table.Th>Account coding</Table.Th>
             <Table.Th>Products and requests</Table.Th>
-            <Table.Th>Dates</Table.Th>
-            <Table.Th>Approved by</Table.Th>
-            <Table.Th>Signed by</Table.Th>
+            <Table.Th>Status</Table.Th>
           </Table.Tr>
         </Table.Thead>
         <Table.Tbody>{rows}</Table.Tbody>
