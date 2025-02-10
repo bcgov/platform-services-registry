@@ -4,6 +4,7 @@ on:
   push:
     branches:
     - main
+    - hore/4829
     paths:
     - maintenance/**
     - .github/workflows/build-push-maintenance.yml
