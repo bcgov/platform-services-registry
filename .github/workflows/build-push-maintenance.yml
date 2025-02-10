@@ -34,7 +34,7 @@ jobs:
         registry-username: ${{ github.actor }}
         registry-password: ${{ secrets.GITHUB_TOKEN }}
         image-name: bcgov/pltsvc-maintenance
-        docker-context: maintenance/
+        docker-context: maintenance
         docker-file: Dockerfile
         docker-args: |
           deployment_tag=${{ github.sha }}
