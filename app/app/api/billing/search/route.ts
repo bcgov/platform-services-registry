@@ -49,7 +49,7 @@ export const POST = createApiHandler({
       })),
       publicRequests: publicCreateRequests.map(({ id, licencePlate, decisionData }) => ({
         type: 'request',
-        url: `/public-cloud/requests/${id}/summary`,
+        url: `/public-cloud/requests/${id}/request`,
         id,
         licencePlate,
         name: decisionData.name,
