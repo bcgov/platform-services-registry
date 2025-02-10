@@ -1,4 +1,5 @@
 **/*
+!maintenance
 !app
 !sandbox/types.ts
 !sandbox/mock-users.json

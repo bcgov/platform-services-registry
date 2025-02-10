@@ -26,13 +26,7 @@ jobs:
     timeout-minutes: 10
     steps:
     - uses: hmarr/debug-action@f7318c783045ac39ed9bb497e22ce835fdafbfe6
-    - uses: actions/checkout@v3
-
-    - name: Verify Maintenance Files
-      run: |
-          if [ -f maintenance/nginx.conf ]; then echo "nginx.conf exists"; else echo "nginx.conf missing"; fi
-          if [ -d maintenance/static ]; then echo "static directory exists"; else echo "static directory missing"; fi
-      
+    - uses: actions/checkout@85e6279cec87321a52edac9c87bce653a07cf6c2
 
     - name: Build and Push Docker Image
       uses: egose/actions/docker-build-push@f613e050592b8baa0706bda39574ef2eeedd7a4e
