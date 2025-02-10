@@ -21,7 +21,7 @@ export default function FilterPanel({ isLoading = false }: { isLoading?: boolean
         loaderProps={{ color: 'pink', type: 'bars' }}
       />
       <div className="grid grid-cols-1 gap-y-2 md:grid-cols-12 md:gap-x-3">
-        <div className="col-span-12">
+        <div className="col-span-6">
           <FormMultiSelect
             name="roles"
             label="Billing status"
@@ -33,19 +33,6 @@ export default function FilterPanel({ isLoading = false }: { isLoading?: boolean
             }}
             classNames={{ wrapper: '' }}
           />
-          <div className="text-right">
-            <Button
-              color="primary"
-              size="compact-md"
-              className="mt-1"
-              onClick={() => {
-                pageState.billings = billingTypeOptions.map((option) => option.value);
-                pageState.page = 1;
-              }}
-            >
-              Select All
-            </Button>
-          </div>
         </div>
       </div>
     </Box>

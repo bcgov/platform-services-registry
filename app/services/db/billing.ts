@@ -2,64 +2,10 @@ import { Prisma } from '@prisma/client';
 import _isNumber from 'lodash-es/isNumber';
 import prisma from '@/core/prisma';
 import { parsePaginationParams } from '@/helpers/pagination';
+import { BillingSearchResponseDataItem } from '@/types/billing';
 import { BillingSearchBody } from '@/validation-schemas/billing';
-const defaultSortKey = 'createdAt';
 
-export type SearchBilling = Prisma.BillingGetPayload<{
-  select: {
-    id: true;
-    accountCoding: true;
-    licencePlate: true;
-    signed: true;
-    approved: true;
-    createdAt: true;
-    signedAt: true;
-    approvedAt: true;
-    updatedAt: true;
-    approvedBy: {
-      select: {
-        firstName: true;
-        lastName: true;
-        email: true;
-        jobTitle: true;
-        image: true;
-        ministry: true;
-      };
-    };
-    expenseAuthority: {
-      select: {
-        firstName: true;
-        lastName: true;
-        email: true;
-        jobTitle: true;
-        image: true;
-        ministry: true;
-      };
-    };
-    signedBy: {
-      select: {
-        firstName: true;
-        lastName: true;
-        email: true;
-        jobTitle: true;
-        image: true;
-        ministry: true;
-      };
-    };
-    publicCloudProjects: {
-      select: {
-        licencePlate: true;
-        provider: true;
-      };
-    };
-    publicCloudRequestedProjects: {
-      select: {
-        licencePlate: true;
-        provider: true;
-      };
-    };
-  };
-}>;
+const defaultSortKey = 'createdAt';
 
 export async function searchBilling({
   billings = [],
@@ -73,7 +19,7 @@ export async function searchBilling({
 }: BillingSearchBody & {
   skip?: number;
   take?: number;
-}): Promise<{ data: SearchBilling[]; totalCount: number }> {
+}): Promise<{ data: BillingSearchResponseDataItem[]; totalCount: number }> {
   const isBillingSearch = billings.length > 0;
   if (!_isNumber(skip) && !_isNumber(take) && page && pageSize) {
     ({ skip, take } = parsePaginationParams(page, pageSize, 10));
@@ -169,18 +115,6 @@ export async function searchBilling({
             jobTitle: true,
             image: true,
             ministry: true,
-          },
-        },
-        publicCloudProjects: {
-          select: {
-            licencePlate: true,
-            provider: true,
-          },
-        },
-        publicCloudRequestedProjects: {
-          select: {
-            licencePlate: true,
-            provider: true,
           },
         },
       },
