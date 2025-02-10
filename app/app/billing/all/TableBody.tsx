@@ -62,7 +62,7 @@ export default function TableBody({ data, metadata, session }: TableProps) {
                         New
                       </Badge>
                     )}
-                    {session.permissions.downloadBillingMou && (
+                    {session.permissions.downloadBillingMou && billing.signed && billing.approved && (
                       <Button
                         loading={downloading}
                         color="primary"
