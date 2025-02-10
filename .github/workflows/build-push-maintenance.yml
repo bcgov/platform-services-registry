@@ -4,7 +4,6 @@ on:
   push:
     branches:
     - main
-    - chore/4829
     paths:
     - maintenance/**
     - .github/workflows/build-push-maintenance.yml
