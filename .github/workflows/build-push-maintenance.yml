@@ -28,6 +28,9 @@ jobs:
     - uses: hmarr/debug-action@f7318c783045ac39ed9bb497e22ce835fdafbfe6
     - uses: actions/checkout@85e6279cec87321a52edac9c87bce653a07cf6c2
 
+    - name: Debug File Structure
+      run: ls -laR
+
     - name: Build and Push Docker Image
       uses: egose/actions/docker-build-push@b3c5900a63eb9df567173fd8e7e5deec9f81d4ae
       with:
