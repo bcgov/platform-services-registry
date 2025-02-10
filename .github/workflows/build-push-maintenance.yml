@@ -1,4 +1,4 @@
-name: 06.Deploy Maintenance Mode
+name: 23. Build and Push Maintenance Image
 
 on:
   push:
@@ -6,11 +6,10 @@ on:
     - main
     paths:
     - maintenance/**
-    - .github/workflows/deploy-maintenance.yml
+    - .github/workflows/build-push-maintenance.yml
 
 env:
   GITHUB_REGISTRY: ghcr.io
-  IMAGE_NAME: ghcr.io/${{ github.repository }}/maintenance
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
@@ -21,7 +20,7 @@ permissions:
   contents: read
 
 jobs:
-  deploy-maintenance:
+  build-push-maintenance:
     runs-on: ubuntu-22.04
     timeout-minutes: 10
     steps:
@@ -29,14 +28,14 @@ jobs:
     - uses: actions/checkout@85e6279cec87321a52edac9c87bce653a07cf6c2
 
     - name: Build and Push Docker Image
-      uses: egose/actions/docker-build-push@b3c5900a63eb9df567173fd8e7e5deec9f81d4ae
+      uses: egose/actions/docker-build-push@f613e050592b8baa0706bda39574ef2eeedd7a4e
       with:
         registry-url: ${{ env.GITHUB_REGISTRY }}
         registry-username: ${{ github.actor }}
         registry-password: ${{ secrets.GITHUB_TOKEN }}
-        image-name: ${{ env.IMAGE_NAME }}
+        image-name: bcgov/pltsvc-maintenance
         docker-context: .
-        docker-file: app/Dockerfile
+        docker-file: maintenance/Dockerfile
         docker-args: |
           deployment_tag=${{ github.sha }}
         metadata-tags: |
