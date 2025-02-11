@@ -39,6 +39,9 @@ app:
   preDataMigrationsImage:
     pullPolicy: IfNotPresent
 
+  maintenance:
+    pullPolicy: IfNotPresent
+
   nameOverride: pltsvc-app
   fullnameOverride: pltsvc-app
 

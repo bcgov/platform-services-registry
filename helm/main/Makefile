@@ -17,6 +17,7 @@ define arguments
 	--set email.image.tag="${IMAGE_TAG}" \
 	--set nats-provision.image.tag="${IMAGE_TAG}" \
 	--set m365proxy.image.tag="${IMAGE_TAG}"
+	--set maintenance.enabled=true
 endef
 
 define curr-image-tag
