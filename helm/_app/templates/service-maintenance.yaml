@@ -1,0 +1,18 @@
+{{- if .Values.maintenance.enabled }}
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "app.fullname" . }}-maintenance
+  labels:
+    {{- include "app.labels" . | nindent 4 }}
+    app.kubernetes.io/component: maintenance
+spec:
+  selector:
+    app.kubernetes.io/name: pltsvc-app-maintenance
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/component: maintenance
+  ports:
+    - protocol: TCP
+      port: 3000
+      targetPort: 3000
+{{- end }}
