@@ -10,13 +10,11 @@ spec:
   selector:
     matchLabels:
       {{- include "app.selectorLabels" . | nindent 6 }}
-      app.kubernetes.io/instance: "{{ .Release.Name }}"
       app.kubernetes.io/component: maintenance
   template:
     metadata:
       labels:
         {{- include "app.selectorLabels" . | nindent 8 }}
-        app.kubernetes.io/instance: "{{ .Release.Name }}"
         app.kubernetes.io/component: maintenance
     spec:
       containers:
