@@ -39,7 +39,7 @@ export default function FormWebhooks({
 
   return (
     <div className={cn(className)}>
-      <Box pos={'relative'}>
+      <Box pos="relative">
         <LoadingOverlay
           visible={loading}
           zIndex={1000}

@@ -13,7 +13,7 @@ export default function FilterPanel({ isLoading = false }: { isLoading?: boolean
   const pageSnapshot = useSnapshot(pageState);
 
   return (
-    <Box pos={'relative'}>
+    <Box pos="relative">
       <LoadingOverlay
         visible={isLoading}
         zIndex={1000}

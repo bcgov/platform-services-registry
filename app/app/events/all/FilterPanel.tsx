@@ -1,7 +1,9 @@
 import { Box, Button, LoadingOverlay } from '@mantine/core';
-import { EventType } from '@prisma/client';
+import { EventType, User } from '@prisma/client';
 import { useSnapshot } from 'valtio';
+import FormDateRangePicker from '@/components/generic/select/FormDateRangePicker';
 import FormMultiSelect from '@/components/generic/select/FormMultiSelect';
+import FormUserPicker from '@/components/generic/select/FormUserPicker';
 import { eventTypeNames } from '@/constants/event';
 import { pageState } from './state';
 
@@ -14,7 +16,7 @@ export default function FilterPanel({ isLoading = false }: { isLoading?: boolean
   const pageSnapshot = useSnapshot(pageState);
 
   return (
-    <Box pos={'relative'}>
+    <Box pos="relative">
       <LoadingOverlay
         visible={isLoading}
         zIndex={1000}
@@ -22,32 +24,31 @@ export default function FilterPanel({ isLoading = false }: { isLoading?: boolean
         loaderProps={{ color: 'pink', type: 'bars' }}
       />
       <div className="grid grid-cols-1 gap-y-2 md:grid-cols-12 md:gap-x-3">
-        <div className="col-span-12">
-          <FormMultiSelect
-            name="roles"
-            label="Event types"
-            value={pageSnapshot.events ?? []}
-            data={eventTypeOptions}
-            onChange={(value) => {
-              pageState.events = value as EventType[];
-              pageState.page = 1;
-            }}
-            classNames={{ wrapper: '' }}
-          />
-          <div className="text-right">
-            <Button
-              color="primary"
-              size="compact-md"
-              className="mt-1"
-              onClick={() => {
-                pageState.events = eventTypeOptions.map((option) => option.value as EventType);
-                pageState.page = 1;
-              }}
-            >
-              Select All
-            </Button>
-          </div>
-        </div>
+        <FormMultiSelect
+          name="roles"
+          label="Types"
+          value={pageSnapshot.types ?? []}
+          data={eventTypeOptions}
+          onChange={(value) => {
+            pageState.types = value as EventType[];
+            pageState.page = 1;
+          }}
+          classNames={{ wrapper: 'col-span-6' }}
+        />
+        <FormDateRangePicker
+          label="Date Range"
+          onChange={(dates) => {
+            pageState.dates = dates.filter((value) => !!value).map((v) => v.toISOString());
+          }}
+          classNames={{ wrapper: 'col-span-4' }}
+        />
+        <FormUserPicker
+          label="User"
+          onChange={(user) => {
+            pageState.userId = user?.id ?? '';
+          }}
+          classNames={{ wrapper: 'col-span-2' }}
+        />
       </div>
     </Box>
   );

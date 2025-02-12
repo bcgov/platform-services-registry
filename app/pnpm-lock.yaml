@@ -35,6 +35,9 @@ importers:
       '@mantine/core':
         specifier: ^7.10.2
         version: 7.16.3(@mantine/hooks@7.16.3(react@19.0.0))(@types/react@19.0.8)(react-dom@19.0.0(react@19.0.0))(react@19.0.0)
+      '@mantine/dates':
+        specifier: ^7.16.3
+        version: 7.16.3(@mantine/core@7.16.3(@mantine/hooks@7.16.3(react@19.0.0))(@types/react@19.0.8)(react-dom@19.0.0(react@19.0.0))(react@19.0.0))(@mantine/hooks@7.16.3(react@19.0.0))(dayjs@1.11.13)(react-dom@19.0.0(react@19.0.0))(react@19.0.0)
       '@mantine/hooks':
         specifier: ^7.10.2
         version: 7.16.3(react@19.0.0)
@@ -137,6 +140,9 @@ importers:
       date-fns:
         specifier: ^4.0.0
         version: 4.1.0
+      dayjs:
+        specifier: ^1.11.13
+        version: 1.11.13
       https-proxy-agent:
         specifier: ^7.0.2
         version: 7.0.6
@@ -1055,6 +1061,15 @@ packages:
     resolution: {integrity: sha512-cxhIpfd2i0Zmk9TKdejYAoIvWouMGhzK3OOX+VRViZ5HEjnTQCGl2h3db56ThqB6NfVPCno6BPbt5lwekTtmuQ==}
     peerDependencies:
       '@mantine/hooks': 7.16.3
+      react: ^18.x || ^19.x
+      react-dom: ^18.x || ^19.x
+
+  '@mantine/dates@7.16.3':
+    resolution: {integrity: sha512-YI8aW3GFBmLJz0eu9Q6tFFXaubZIZMccA+6Jla8K8K8KMdx5wEPBrCCOHZnL3r0RcVLhARLa0VEmEyaQB+DTjQ==}
+    peerDependencies:
+      '@mantine/core': 7.16.3
+      '@mantine/hooks': 7.16.3
+      dayjs: '>=1.0.0'
       react: ^18.x || ^19.x
       react-dom: ^18.x || ^19.x
 
@@ -2442,6 +2457,9 @@ packages:
 
   date-fns@4.1.0:
     resolution: {integrity: sha512-Ukq0owbQXxa/U3EGtsdVBkR1w7KOQ5gIBqdH2hkvknzZPYvBxb/aa6E8L7tmjFtkwZBu3UXBbjIgPo/Ez4xaNg==}
+
+  dayjs@1.11.13:
+    resolution: {integrity: sha512-oaMBel6gjolK862uaPQOVTA7q3TZhuSvuMQAAglQDOWYO9A91IrAOUJEyKVlqJlHE0vq5p5UXxzdPfMH/x6xNg==}
 
   debounce@2.0.0:
     resolution: {integrity: sha512-xRetU6gL1VJbs85Mc4FoEGSjQxzpdxRyFhe3lmWFyy2EzydIcD4xzUvRJMD+NPDfMwKNhxa3PvsIOU32luIWeA==}
@@ -6259,6 +6277,15 @@ snapshots:
     transitivePeerDependencies:
       - '@types/react'
 
+  '@mantine/dates@7.16.3(@mantine/core@7.16.3(@mantine/hooks@7.16.3(react@19.0.0))(@types/react@19.0.8)(react-dom@19.0.0(react@19.0.0))(react@19.0.0))(@mantine/hooks@7.16.3(react@19.0.0))(dayjs@1.11.13)(react-dom@19.0.0(react@19.0.0))(react@19.0.0)':
+    dependencies:
+      '@mantine/core': 7.16.3(@mantine/hooks@7.16.3(react@19.0.0))(@types/react@19.0.8)(react-dom@19.0.0(react@19.0.0))(react@19.0.0)
+      '@mantine/hooks': 7.16.3(react@19.0.0)
+      clsx: 2.1.1
+      dayjs: 1.11.13
+      react: 19.0.0
+      react-dom: 19.0.0(react@19.0.0)
+
   '@mantine/hooks@7.16.3(react@19.0.0)':
     dependencies:
       react: 19.0.0
@@ -7748,6 +7775,8 @@ snapshots:
   date-fns@3.6.0: {}
 
   date-fns@4.1.0: {}
+
+  dayjs@1.11.13: {}
 
   debounce@2.0.0: {}
 
