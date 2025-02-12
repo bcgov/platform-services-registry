@@ -1,32 +1,38 @@
 'use client';
 
-import { Avatar, Group, Text, UnstyledButton } from '@mantine/core';
+import { Avatar, Group, UnstyledButton } from '@mantine/core';
+import { User } from '@prisma/client';
 import MinistryBadge from '@/components/badges/MinistryBadge';
 import { formatFullName } from '@/helpers/user';
 import { getUserImageData } from '@/helpers/user-image';
 import { cn } from '@/utils/js';
 
+export type UserPickerData = Pick<User, 'email' | 'firstName' | 'lastName' | 'ministry' | 'image'> & { id?: string };
+
 interface Props {
-  data: {
-    id?: string;
-    email: string;
-    firstName: string | null;
-    lastName: string | null;
-    ministry: string | null;
-    image: string | null;
-  };
+  data?: UserPickerData;
   onClick?: () => void;
   children?: React.ReactNode;
 }
 
 export default function UserProfile({ data, onClick, children }: Props) {
+  if (!data) {
+    data = {
+      image: '',
+      email: '',
+      ministry: '',
+      firstName: '',
+      lastName: '',
+    };
+  }
+
   return (
     <>
       <Group gap="sm" className={cn({ 'cursor-pointer': !!onClick })} onClick={onClick}>
         <Avatar src={getUserImageData(data.image)} size={36} radius="xl" />
         <div>
           <div className="text-sm font-semibold">
-            {data.id ? (
+            {data.email ? (
               <div>
                 {formatFullName(data)}
                 <MinistryBadge className="ml-1" ministry={data.ministry} />

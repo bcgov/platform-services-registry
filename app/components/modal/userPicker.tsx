@@ -6,10 +6,12 @@ import { useState } from 'react';
 import UserAutocomplete from '@/components/users/UserAutocomplete';
 import { createModal } from '@/core/modal';
 
-interface ModalProps {}
+interface ModalProps {
+  initialValue?: User | null;
+}
 
 interface ModalState {
-  user?: User;
+  user?: User | null;
 }
 
 export const openUserPickerModal = createModal<ModalProps, ModalState>({
@@ -20,14 +22,14 @@ export const openUserPickerModal = createModal<ModalProps, ModalState>({
       content: 'overflow-y-visible',
     },
   },
-  Component: function ({ state, closeModal }) {
-    const [user, setUser] = useState<User>();
+  Component: function ({ initialValue, state, closeModal }) {
+    const [user, setUser] = useState<User | null>(initialValue ?? null);
 
     return (
       <>
         <UserAutocomplete
           onSelect={(item) => {
-            setUser(item);
+            setUser(item ?? null);
           }}
         />
 

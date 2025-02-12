@@ -1,4 +1,5 @@
 import { EventType, Prisma } from '@prisma/client';
+import { addDays } from 'date-fns';
 import _isNumber from 'lodash-es/isNumber';
 import { z } from 'zod';
 import { logger } from '@/core/logging';
@@ -87,7 +88,9 @@ export async function createEvent(type: EventType, userId = '', data = {}) {
 }
 
 export async function searchEvents({
-  events = [],
+  types = [],
+  dates = [],
+  userId = '',
   search = '',
   skip,
   take,
@@ -99,15 +102,16 @@ export async function searchEvents({
   skip?: number;
   take?: number;
 }): Promise<{ data: SearchEvent[]; totalCount: number }> {
-  const isEventSearch = events.length > 0;
-
   if (!_isNumber(skip) && !_isNumber(take) && page && pageSize) {
     ({ skip, take } = parsePaginationParams(page, pageSize, 10));
   }
 
   const filters: Prisma.EventWhereInput = {};
+  search = search.trim();
 
-  if (search.trim()) {
+  if (userId) {
+    filters.userId = userId;
+  } else if (search) {
     filters.OR = [
       { user: { firstName: { contains: search, mode: 'insensitive' } } },
       { user: { lastName: { contains: search, mode: 'insensitive' } } },
@@ -115,8 +119,16 @@ export async function searchEvents({
     ];
   }
 
-  if (isEventSearch) {
-    filters.type = { in: events };
+  if (types?.length > 0) {
+    filters.type = { in: types };
+  }
+
+  if (dates?.length > 0) {
+    if (dates.length === 2) {
+      filters.AND = [{ createdAt: { gte: dates[0] } }, { createdAt: { lt: addDays(dates[1], 1) } }];
+    } else {
+      filters.createdAt = { gte: dates[0] };
+    }
   }
 
   const orderBy = { [sortKey]: sortOrder };

@@ -45,3 +45,8 @@ export function compareYearMonth(date1: Date, date2: Date) {
 
   return 1; // date1 is after date2
 }
+
+export function isValidISODateString(value: string) {
+  const date = new Date(value);
+  return !isNaN(date.getTime()) && value === date.toISOString();
+}
