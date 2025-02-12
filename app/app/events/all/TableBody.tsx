@@ -21,9 +21,11 @@ export default function TableBody({ data }: TableProps) {
           <Table.Td>
             {event.user && (
               <UserProfile data={event.user}>
-                <Badge color="info" variant="filled">
-                  {event.user.jobTitle}
-                </Badge>
+                {event.user.jobTitle && (
+                  <Badge color="info" variant="filled">
+                    {event.user.jobTitle}
+                  </Badge>
+                )}
               </UserProfile>
             )}
           </Table.Td>
