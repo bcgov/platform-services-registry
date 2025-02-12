@@ -8,11 +8,11 @@ metadata:
     app.kubernetes.io/component: maintenance
 spec:
   selector:
-    app.kubernetes.io/name: pltsvc-app-maintenance
-    app.kubernetes.io/instance: {{ .Release.Name }}
+    {{- include "app.selectorLabels" . | nindent 4 }}
     app.kubernetes.io/component: maintenance
   ports:
-    - protocol: TCP
-      port: 3000
-      targetPort: 3000
+    - port: {{ .Values.service.port }}
+      targetPort: http
+      protocol: TCP
+      name: http
 {{- end }}

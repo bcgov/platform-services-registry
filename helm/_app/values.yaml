@@ -17,11 +17,11 @@ preDataMigrationsImage:
 
 maintenance:
   enabled: false
-  fullnameOverride: pltsvc-app-maintenance
+  fullnameOverride: pltsvc-maintenance
   replicas: 1
   repository: ghcr.io/bcgov/pltsvc-maintenance
   tag: main
-  pullPolicy: IfNotPresent
+  pullPolicy: Always
   resources:
     limits:
       cpu: 100m

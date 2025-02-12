@@ -17,9 +17,9 @@ spec:
   to:
     kind: Service
     name:
-      {{- if and (hasKey .Values "maintenance") (eq .Values.maintenance.enabled true) }}
+      {{- if .Values.maintenance.enabled }}
         {{ include "app.fullname" . }}-maintenance
       {{- else }}
         {{ include "app.fullname" . }}
-      {{- end }}
+    {{- end }}
 {{- end }}

@@ -12,7 +12,7 @@ spec:
   {{- end }}
   selector:
     matchLabels:
-      app.kubernetes.io/name: pltsvc-app
+      {{- include "app.selectorLabels" . | nindent 6 }}
       app.kubernetes.io/instance: {{ .Release.Name }}
       app.kubernetes.io/component: application
   template:
@@ -57,8 +57,7 @@ spec:
             export EMERALD_METRICS_READER_TOKEN='{{.Data.data.EMERALD_METRICS_READER_TOKEN}}'
           {{- end }}`}}
       labels:
-        app.kubernetes.io/name: pltsvc-app
-        app.kubernetes.io/instance: {{ .Release.Name }}
+        {{- include "app.labels" . | nindent 8 }}
         app.kubernetes.io/component: application
     spec:
       {{- $imagePullSecrets := concat (.Values.imagePullSecrets | default list) (.Values.global.imagePullSecrets | default list) -}}
