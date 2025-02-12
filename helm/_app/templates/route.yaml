@@ -16,5 +16,10 @@ spec:
     termination: edge
   to:
     kind: Service
-    name: {{ include "app.fullname" . }}
+    name:
+      {{- if .Values.maintenance.enabled }}
+        {{ include "app.fullname" . }}-maintenance
+      {{- else }}
+        {{ include "app.fullname" . }}
+    {{- end }}
 {{- end }}

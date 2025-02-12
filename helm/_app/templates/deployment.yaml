@@ -13,6 +13,7 @@ spec:
   selector:
     matchLabels:
       {{- include "app.selectorLabels" . | nindent 6 }}
+      app.kubernetes.io/component: application
   template:
     metadata:
       annotations:
@@ -59,6 +60,7 @@ spec:
         {{- with .Values.podLabels }}
         {{- toYaml . | nindent 8 }}
         {{- end }}
+        app.kubernetes.io/component: application
     spec:
       {{- $imagePullSecrets := concat (.Values.imagePullSecrets | default list) (.Values.global.imagePullSecrets | default list) -}}
       {{- with $imagePullSecrets }}

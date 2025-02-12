@@ -1,0 +1,32 @@
+{{- if .Values.maintenance.enabled }}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "app.fullname" . }}-maintenance
+  labels:
+    {{- include "app.labels" . | nindent 4 }}
+spec:
+  replicas: {{ .Values.maintenance.replicas }}
+  selector:
+    matchLabels:
+      {{- include "app.selectorLabels" . | nindent 6 }}
+      app.kubernetes.io/component: maintenance
+  template:
+    metadata:
+      labels:
+        {{- include "app.selectorLabels" . | nindent 8 }}
+        app.kubernetes.io/component: maintenance
+    spec:
+      containers:
+        - name: maintenance
+          image: "{{ .Values.maintenance.repository }}:{{ .Values.maintenance.tag }}"
+          imagePullPolicy: {{ .Values.maintenance.pullPolicy }}
+          ports:
+            - name: http
+              containerPort: {{ .Values.service.port }}
+              protocol: TCP
+          {{- if .Values.maintenance.resources }}
+          resources:
+            {{- toYaml .Values.maintenance.resources | nindent 12 }}
+          {{- end }}
+{{- end }}

@@ -15,6 +15,21 @@ preDataMigrationsImage:
   tag: main
   pullPolicy: Always
 
+maintenance:
+  enabled: false
+  fullnameOverride: pltsvc-maintenance
+  replicas: 1
+  repository: ghcr.io/bcgov/pltsvc-maintenance
+  tag: main
+  pullPolicy: Always
+  resources:
+    limits:
+      cpu: 100m
+      memory: 128Mi
+    requests:
+      cpu: 50m
+      memory: 64Mi
+
 imagePullSecrets: []
 nameOverride: pltsvc-app
 fullnameOverride: pltsvc-app
