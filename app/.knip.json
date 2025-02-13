@@ -9,7 +9,8 @@
     "ts-jest",
     "ts-node",
     "eslint-config-next",
-    "@next/swc-*"
+    "@next/swc-*",
+    "@types/eslint__js"
   ],
   "rules": {
     "binaries": "off",
