@@ -60,7 +60,6 @@ jest.mock('@/helpers/pdfs/emou/index', () => ({
 }));
 
 jest.mock('@/services/k8s', () => ({
-  ...jest.requireActual('@/services/k8s'),
   getResourceDetails: jest.fn(async () => ({
     env: 'dev',
     allocation: {
