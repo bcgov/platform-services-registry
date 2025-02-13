@@ -13,7 +13,6 @@ import {
   models,
   tasks,
 } from '@/services/db';
-import { upsertUsers } from '@/services/db/user';
 import { PrivateCloudEditRequestBody } from '@/validation-schemas/private-cloud';
 import { putPathParamSchema } from '../[licencePlate]/schema';
 
@@ -34,14 +33,21 @@ export default async function updateOp({
     return UnauthorizedResponse();
   }
 
-  const { requestComment, quotaContactName, quotaContactEmail, quotaJustification, isAgMinistryChecked, ...rest } =
-    body;
+  const {
+    projectOwnerId,
+    primaryTechnicalLeadId,
+    secondaryTechnicalLeadId,
+    requestComment,
+    quotaContactName,
+    quotaContactEmail,
+    quotaJustification,
+    isAgMinistryChecked,
+    ...rest
+  } = body;
 
   if (!product._permissions.manageMembers) {
     rest.members = product.members.map(({ userId, roles }) => ({ userId, roles }));
   }
-
-  await upsertUsers([body.projectOwner.email, body.primaryTechnicalLead.email, body.secondaryTechnicalLead?.email]);
 
   const productData = {
     ...rest,
@@ -49,11 +55,9 @@ export default async function updateOp({
     status: product.status,
     cluster: product.cluster,
     createdAt: product.createdAt,
-    projectOwner: { connect: { email: body.projectOwner.email } },
-    primaryTechnicalLead: { connect: { email: body.primaryTechnicalLead.email } },
-    secondaryTechnicalLead: body.secondaryTechnicalLead
-      ? { connect: { email: body.secondaryTechnicalLead.email } }
-      : undefined,
+    projectOwner: { connect: { id: projectOwnerId } },
+    primaryTechnicalLead: { connect: { id: primaryTechnicalLeadId } },
+    secondaryTechnicalLead: secondaryTechnicalLeadId ? { connect: { id: secondaryTechnicalLeadId } } : undefined,
   };
 
   let decisionStatus: DecisionStatus;
@@ -98,7 +102,7 @@ export default async function updateOp({
           isQuotaChanged: quotaChangeStatus.hasChange,
           quotaUpgradeResourceDetailList: quotaChangeStatus.resourceDetailList,
           ...quotaChangeInfo,
-          createdBy: { connect: { email: session.user.email } },
+          createdBy: { connect: { id: session.user.id } },
           licencePlate: product.licencePlate,
           requestComment,
           changes: otherChangeMeta,

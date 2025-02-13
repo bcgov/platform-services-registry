@@ -20,7 +20,7 @@ import TeamContacts from '@/components/form/TeamContacts';
 import PageAccordion from '@/components/generic/accordion/PageAccordion';
 import AdditionalTeamMembers from '@/components/private-cloud/sections/AdditionalTeamMembers';
 import Quotas from '@/components/private-cloud/sections/Quotas';
-import { GlobalRole } from '@/constants';
+import { GlobalRole, userAttributes } from '@/constants';
 import createClientPage from '@/core/client-page';
 import { usePrivateProductState } from '@/states/global';
 
@@ -83,7 +83,7 @@ export default privateCloudRequestRequest(({}) => {
       label: 'Team contacts',
       description: '',
       Component: TeamContacts,
-      componentArgs: { disabled: isDisabled, secondTechLead, secondTechLeadOnClick },
+      componentArgs: { userAttributes, disabled: isDisabled, secondTechLead, secondTechLeadOnClick },
     },
     {
       LeftIcon: IconUsersGroup,

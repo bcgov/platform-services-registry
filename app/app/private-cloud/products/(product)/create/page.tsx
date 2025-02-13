@@ -13,7 +13,7 @@ import PageAccordion from '@/components/generic/accordion/PageAccordion';
 import FormErrorNotification from '@/components/generic/FormErrorNotification';
 import { openPrivateCloudProductCreateSubmitModal } from '@/components/modal/privateCloudProductCreateSubmit';
 import Webhooks from '@/components/private-cloud/sections/Webhooks';
-import { GlobalRole } from '@/constants';
+import { GlobalRole, userAttributes } from '@/constants';
 import createClientPage from '@/core/client-page';
 import { privateCloudCreateRequestBodySchema } from '@/validation-schemas/private-cloud';
 
@@ -49,7 +49,7 @@ export default privateCloudProductNew(({ session }) => {
       label: 'Team contacts',
       description: '',
       Component: TeamContacts,
-      componentArgs: { secondTechLead, secondTechLeadOnClick },
+      componentArgs: { userAttributes, secondTechLead, secondTechLeadOnClick },
     },
     {
       LeftIcon: IconComponents,
