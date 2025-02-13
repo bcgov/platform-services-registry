@@ -21,7 +21,7 @@ runs:
     shell: bash
 
   - name: Verify Cypress Binary
-    run: ls ~/.cache/Cypress && ls /home/runner/.cache/Cypress
+    run: ls ~/.cache/Cypress
     shell: bash
 
   - name: Install App NPM packages
