@@ -6,6 +6,34 @@ services:
 
   keycloak:
     platform: linux/arm64
+    container_name: keycloak
+    build:
+      context: ./keycloak
+      dockerfile: Dockerfile
+    command:
+    - start-dev
+    environment:
+      KC_DB: postgres
+      KC_DB_URL_HOST: postgres
+      KC_DB_URL_DATABASE: keycloak
+      KC_DB_URL_PORT: 5432
+      KC_DB_PASSWORD: postgres # pragma: allowlist secret
+      KC_DB_USERNAME: postgres
+      KC_HEALTH_ENABLED: 'true'
+      KC_HTTP_ENABLED: 'true'
+      KC_HTTP_PORT: 8080
+      KC_METRICS_ENABLED: 'true'
+      KC_HOSTNAME_STRICT_HTTPS: 'false'
+      KEYCLOAK_ADMIN: admin
+      KEYCLOAK_ADMIN_PASSWORD: password # pragma: allowlist secret
+      KC_HTTPS_CERTIFICATE_FILE: /opt/keycloak/conf/server.crt.pem
+      KC_HTTPS_CERTIFICATE_KEY_FILE: /opt/keycloak/conf/server.key.pem
+      JAVA_OPTS_APPEND: -Dkeycloak.profile.feature.scripts=enabled
+    ports:
+    - 8080:8080
+    - 8443:8443
+    depends_on:
+    - postgres
 
   # m365proxy:
   #   platform: linux/arm64
