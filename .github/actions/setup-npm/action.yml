@@ -20,6 +20,10 @@ runs:
     run: pnpm install --no-frozen-lockfile && pnpm install cypress
     shell: bash
 
+  - name: Verify Cypress Binary
+    run: ls ~/.cache/Cypress && ls /home/runner/.cache/Cypress
+    shell: bash
+
   - name: Install App NPM packages
     run: pnpm install --no-frozen-lockfile
     shell: bash
