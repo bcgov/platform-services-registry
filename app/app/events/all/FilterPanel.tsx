@@ -39,6 +39,7 @@ export default function FilterPanel({ isLoading = false }: { isLoading?: boolean
           label="Date Range"
           onChange={(dates) => {
             pageState.dates = dates.filter((value) => !!value).map((v) => v.toISOString());
+            pageState.page = 1;
           }}
           classNames={{ wrapper: 'col-span-4' }}
         />
@@ -46,6 +47,7 @@ export default function FilterPanel({ isLoading = false }: { isLoading?: boolean
           label="User"
           onChange={(user) => {
             pageState.userId = user?.id ?? '';
+            pageState.page = 1;
           }}
           classNames={{ wrapper: 'col-span-2' }}
         />

@@ -88,6 +88,24 @@ export default function UserMenu() {
       permission: 'viewUsers',
     },
     {
+      text: 'Events',
+      Icon: IconCalendarEvent,
+      href: '/events/all',
+      permission: 'viewEvents',
+    },
+    {
+      text: 'Billing',
+      Icon: IconSignLeft,
+      href: '/billing/all',
+      permission: 'viewBilling',
+    },
+    {
+      text: 'Tasks',
+      Icon: IconCheckupList,
+      href: '/tasks/all',
+      permission: 'viewTasks',
+    },
+    {
       text: 'General Analytics',
       Icon: IconPresentationAnalytics,
       href: '/analytics',
@@ -116,24 +134,6 @@ export default function UserMenu() {
       Icon: IconScan,
       href: '/sonarscan/results',
       permission: 'viewSonarscanResults',
-    },
-    {
-      text: 'Events',
-      Icon: IconCalendarEvent,
-      href: '/events/all',
-      permission: 'viewEvents',
-    },
-    {
-      text: 'Billing',
-      Icon: IconSignLeft,
-      href: '/billing/all',
-      permission: 'viewBilling',
-    },
-    {
-      text: 'Tasks',
-      Icon: IconCheckupList,
-      href: '/tasks/all',
-      permission: 'viewTasks',
     },
     { divider: true, key: '1' },
     {
