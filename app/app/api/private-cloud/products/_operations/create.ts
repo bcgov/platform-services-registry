@@ -7,7 +7,6 @@ import generateLicencePlate from '@/helpers/licence-plate';
 import { sendRequestNatsMessage } from '@/helpers/nats-message';
 import { sendCreateRequestEmails, sendRequestApprovalEmails } from '@/services/ches/private-cloud';
 import { createEvent, models, privateCloudRequestDetailInclude, tasks } from '@/services/db';
-import { upsertUsers } from '@/services/db/user';
 import { PrivateCloudCreateRequestBody } from '@/validation-schemas/private-cloud';
 
 export default async function createOp({ session, body }: { session: Session; body: PrivateCloudCreateRequestBody }) {
@@ -17,9 +16,7 @@ export default async function createOp({ session, body }: { session: Session; bo
     // 1. can create one globally
     permissions.createPrivateCloudProducts ||
     // 2. can create one as an product member
-    [body.projectOwner.email, body.primaryTechnicalLead.email, body.secondaryTechnicalLead?.email].includes(
-      user.email,
-    ) ||
+    [body.projectOwnerId, body.primaryTechnicalLeadId, body.secondaryTechnicalLeadId].includes(user.id) ||
     // 3. can create one as a ministry editor
     ministries.editor.includes(body.ministry);
 
@@ -29,9 +26,10 @@ export default async function createOp({ session, body }: { session: Session; bo
 
   const licencePlate = await generateLicencePlate();
 
-  await upsertUsers([body.projectOwner.email, body.primaryTechnicalLead.email, body.secondaryTechnicalLead?.email]);
-
   const {
+    projectOwnerId,
+    primaryTechnicalLeadId,
+    secondaryTechnicalLeadId,
     requestComment,
     quotaContactName,
     quotaContactEmail,
@@ -54,11 +52,9 @@ export default async function createOp({ session, body }: { session: Session; bo
       production: defaultResourceRequests,
       tools: defaultResourceRequests,
     },
-    projectOwner: { connect: { email: body.projectOwner.email } },
-    primaryTechnicalLead: { connect: { email: body.primaryTechnicalLead.email } },
-    secondaryTechnicalLead: body.secondaryTechnicalLead
-      ? { connect: { email: body.secondaryTechnicalLead.email } }
-      : undefined,
+    projectOwner: { connect: { id: projectOwnerId } },
+    primaryTechnicalLead: { connect: { id: primaryTechnicalLeadId } },
+    secondaryTechnicalLead: secondaryTechnicalLeadId ? { connect: { id: secondaryTechnicalLeadId } } : undefined,
   };
 
   const decisionStatus = productData.isTest ? DecisionStatus.AUTO_APPROVED : DecisionStatus.PENDING;

@@ -13,7 +13,8 @@ import { makePrivateCloudRequestDecision } from '@/services/api-test/private-clo
 import { PrivateCloudRequestDetail } from '@/types/private-cloud';
 
 export async function createPrivateCloudProduct() {
-  const requestData = createSamplePrivateCloudProductData({ data: { cluster: Cluster.SILVER } });
+  const requestData = await createSamplePrivateCloudProductData({ data: { cluster: Cluster.SILVER } });
+  console.log('Request Data: ', requestData);
   await mockSessionByEmail(requestData.projectOwner.email);
 
   let response = await createPrivateCloudProject(requestData);
@@ -42,7 +43,7 @@ export async function createPrivateCloudProduct() {
 }
 
 export async function updatePrivateCloudProduct() {
-  const productData = createSamplePrivateCloudProductData({
+  const productData = await createSamplePrivateCloudProductData({
     data: {
       cluster: Cluster.SILVER,
       resourceRequests: resourceRequests1,
@@ -104,7 +105,7 @@ export async function updatePrivateCloudProduct() {
 }
 
 export async function deletePrivateCloudProduct() {
-  const productData = createSamplePrivateCloudProductData({ data: { cluster: Cluster.SILVER } });
+  const productData = await createSamplePrivateCloudProductData({ data: { cluster: Cluster.SILVER } });
 
   await mockSessionByEmail(productData.projectOwner.email);
 

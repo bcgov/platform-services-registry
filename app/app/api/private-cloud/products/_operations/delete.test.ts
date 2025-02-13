@@ -8,9 +8,12 @@ import { provisionPrivateCloudProject } from '@/services/api-test/private-cloud'
 import { createPrivateCloudProject, deletePrivateCloudProject } from '@/services/api-test/private-cloud/products';
 import { makePrivateCloudRequestDecision } from '@/services/api-test/private-cloud/requests';
 
-const productData = {
-  main: createSamplePrivateCloudProductData(),
-};
+let productData: any;
+beforeAll(async () => {
+  productData = {
+    main: await createSamplePrivateCloudProductData(),
+  };
+});
 
 const requests = {
   create: null as any,
@@ -24,7 +27,6 @@ describe('Delete Private Cloud Product - Permissions', () => {
 
     const response = await createPrivateCloudProject(productData.main);
     expect(response.status).toBe(200);
-
     requests.create = await response.json();
   });
 

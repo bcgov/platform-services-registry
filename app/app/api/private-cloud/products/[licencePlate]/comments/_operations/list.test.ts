@@ -13,7 +13,11 @@ import {
 import { makePrivateCloudRequestDecision } from '@/services/api-test/private-cloud/requests';
 
 let globalLicencePlate: string;
-const globalProductData = createSamplePrivateCloudProductData();
+let globalProductData: any;
+
+beforeAll(async () => {
+  globalProductData = await createSamplePrivateCloudProductData();
+});
 
 const requests = {
   create: null as any,
@@ -120,7 +124,7 @@ describe('Private Cloud Comments - Validations', () => {
 
   it('should successfully create, approve, and provision a project', async () => {
     await mockSessionByRole(GlobalRole.Admin);
-    const productData = createSamplePrivateCloudProductData();
+    const productData = await createSamplePrivateCloudProductData();
 
     const createResponse = await createPrivateCloudProject(productData);
     expect(createResponse.status).toBe(200);

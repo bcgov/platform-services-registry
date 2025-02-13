@@ -23,7 +23,7 @@ import FormErrorNotification from '@/components/generic/FormErrorNotification';
 import { openPrivateCloudRequestReviewModal } from '@/components/modal/privateCloudRequestReview';
 import AdditionalTeamMembers from '@/components/private-cloud/sections/AdditionalTeamMembers';
 import Quotas from '@/components/private-cloud/sections/Quotas';
-import { GlobalRole } from '@/constants';
+import { GlobalRole, userAttributes } from '@/constants';
 import createClientPage from '@/core/client-page';
 import { usePrivateProductState } from '@/states/global';
 import {
@@ -120,7 +120,7 @@ export default privateCloudRequestDecision(({ getPathParams, session, router }) 
       label: 'Team contacts',
       description: '',
       Component: TeamContacts,
-      componentArgs: { disabled: isDisabled, secondTechLead, secondTechLeadOnClick },
+      componentArgs: { userAttributes, disabled: isDisabled, secondTechLead, secondTechLeadOnClick },
     },
     {
       LeftIcon: IconUsersGroup,

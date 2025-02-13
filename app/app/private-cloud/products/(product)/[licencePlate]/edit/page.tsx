@@ -17,7 +17,7 @@ import { openPrivateCloudProductEditSubmitModal } from '@/components/modal/priva
 import AdditionalTeamMembers from '@/components/private-cloud/sections/AdditionalTeamMembers';
 import Quotas from '@/components/private-cloud/sections/Quotas';
 import SiloAccordion from '@/components/private-cloud/SiloAccordion';
-import { GlobalRole } from '@/constants';
+import { GlobalRole, userAttributes } from '@/constants';
 import createClientPage from '@/core/client-page';
 import { getQuotaChangeStatus } from '@/services/backend/private-cloud/products';
 import { usePrivateProductState } from '@/states/global';
@@ -136,7 +136,7 @@ export default privateCloudProductEdit(({ session }) => {
       label: 'Team contacts',
       description: '',
       Component: TeamContacts,
-      componentArgs: { disabled: isDisabled, secondTechLead, secondTechLeadOnClick },
+      componentArgs: { userAttributes, disabled: isDisabled, secondTechLead, secondTechLeadOnClick },
     },
     {
       LeftIcon: IconUsersGroup,
