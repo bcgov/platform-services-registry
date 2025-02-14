@@ -38,46 +38,6 @@ export function createSamplePrivateCloudProductData(args?: {
     primaryTechnicalLead: TL1,
     secondaryTechnicalLead: TL2,
     resourceRequests: resourceRequests1,
-    commonComponents: {
-      addressAndGeolocation: {
-        planningToUse: true,
-        implemented: false,
-      },
-      workflowManagement: {
-        planningToUse: false,
-        implemented: true,
-      },
-      formDesignAndSubmission: {
-        planningToUse: true,
-        implemented: false,
-      },
-      identityManagement: {
-        planningToUse: false,
-        implemented: false,
-      },
-      paymentServices: {
-        planningToUse: true,
-        implemented: false,
-      },
-      documentManagement: {
-        planningToUse: false,
-        implemented: true,
-      },
-      endUserNotificationAndSubscription: {
-        planningToUse: true,
-        implemented: false,
-      },
-      publishing: {
-        planningToUse: false,
-        implemented: true,
-      },
-      businessIntelligence: {
-        planningToUse: true,
-        implemented: false,
-      },
-      other: 'Some other services',
-      noServices: false,
-    },
     isTest: false,
     isAgMinistryChecked: true,
     ...data,

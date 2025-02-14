@@ -22,13 +22,11 @@
 11. For Public Cloud Budget numbers less than 50 in the Budget fields shows an error text on Submit and blocks the Submit action.
 12. For Public Cloud Budget fields allow adding and save decimal numbers.
 13. For Public Cloud using non-alphanumeric symbols in Account Coding fields shows an error text on Submit and blocks the Submit action.
-14. For Private Cloud If nothing is checked in the Common Components section, the Submit action is blocked.
-15. If at least one radio button in Common Components section is checked or text present in Other field, the Submit action is not blocked.
-16. Leaving Secondary TL blank after opening his section shows an error text on Submit and blocks the Submit action.
-17. Not adding Secondary TL does not block the Submit action.
-18. After clicking Submit with valid data the Modal Window shows up. It has the information corresponding to the Cloud type you are requesting (Private or Public).
-19. If any of the Modal Window checkboxes is unchecked, Submit button is non-clickable.
-20. Clicking “Return to Dashboard” returns user to the Products Tab of corresponding Cloud. The created Request is shown at the In Progress Tab.
+14. Leaving Secondary TL blank after opening his section shows an error text on Submit and blocks the Submit action.
+15. Not adding Secondary TL does not block the Submit action.
+16. After clicking Submit with valid data the Modal Window shows up. It has the information corresponding to the Cloud type you are requesting (Private or Public).
+17. If any of the Modal Window checkboxes is unchecked, Submit button is non-clickable.
+18. Clicking “Return to Dashboard” returns user to the Products Tab of corresponding Cloud. The created Request is shown at the In Progress Tab.
 
 #### Requests and Products Tabs
 
@@ -56,14 +54,13 @@
 4. If the User doesn’t touch any fields, the Submit button is inactive and grayed out.
 5. If the User changes any value in any of the fields and then changes it to the previous one, the Submit button is inactive and grayed out.
 6. The wording on the Edit page does not have phrases about onboarding and Create Request specific descriptions.
-7. Common Components section has at least one checkbox marked or text in Other field.
-8. Button Previous returns to the Products Tab.
-9. If the Product has Secondary Technical Lead his section is open by default.
-10. If the Product doesn’t have a Secondary TL, his section is closed. Clicking Add Secondary Technical Lead opens the section.
-11. In Private Cloud Quotas Section the links to namespaces lead to Openshift Console.
-12. User Comments section has a comment which the User has added on Submit.
-13. In Private Cloud the correct Current Quota is shown under the Quota dropdowns.
-14. Clicking Back (Arrow Left) button in the top of the page leads to the Products tab of corresponding Cloud.
+7. Button Previous returns to the Products Tab.
+8. If the Product has Secondary Technical Lead his section is open by default.
+9. If the Product doesn’t have a Secondary TL, his section is closed. Clicking Add Secondary Technical Lead opens the section.
+10. In Private Cloud Quotas Section the links to namespaces lead to Openshift Console.
+11. User Comments section has a comment which the User has added on Submit.
+12. In Private Cloud the correct Current Quota is shown under the Quota dropdowns.
+13. Clicking Back (Arrow Left) button in the top of the page leads to the Products tab of corresponding Cloud.
 
 #### Delete Request
 

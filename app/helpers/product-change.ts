@@ -14,7 +14,6 @@ export interface PrivateProductChange {
   contactsChanged: boolean;
   quotasChanged: boolean;
   quotasIncrease: boolean;
-  commonComponentsChanged: boolean;
   changes: DiffChange[];
   parentPaths: string[];
 }
@@ -30,7 +29,6 @@ const privateDataFields = [
   'secondaryTechnicalLead.email',
   'members',
   'resourceRequests',
-  'commonComponents',
   'supportPhoneNumber',
 ];
 
@@ -57,7 +55,6 @@ export function comparePrivateProductData(data1: any, data2: any) {
   let membersChanged = false;
   let quotasChanged = false;
   let quotasIncrease = false;
-  let commonComponentsChanged = false;
 
   for (const change of changes) {
     parentPaths.push(String(change.path[0]));
@@ -88,10 +85,6 @@ export function comparePrivateProductData(data1: any, data2: any) {
 
         quotasChanged = true;
         break;
-
-      case 'commonComponents':
-        commonComponentsChanged = true;
-        break;
     }
   }
 
@@ -101,7 +94,6 @@ export function comparePrivateProductData(data1: any, data2: any) {
     membersChanged,
     quotasChanged,
     quotasIncrease,
-    commonComponentsChanged,
     parentPaths: _uniq(parentPaths),
     changes,
   };

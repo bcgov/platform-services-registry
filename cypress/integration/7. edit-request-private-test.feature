@@ -12,9 +12,6 @@ Feature: Edit Request
     And User types and selects "james.smith@gov.bc.ca" in "Product Owner email"
     And User waits for "2" seconds
     And User types and selects "john.doe@gov.bc.ca" in "Technical Lead email"
-    And User clicks tab "Common components"
-    And User checks checkbox "The app does not use..."
-    And User makes a screenshot
     And User clicks button "Submit"
     And User checks checkbox "By checking this box..."
     And User clicks modal window button "Submit"
@@ -61,10 +58,6 @@ Feature: Edit Request
     And User types justification "John Cypress" in "Contact name"
     And User types justification "testemail@artemtest.com" in "Contact email"
     And User types justification "Test Justification text, test-test, 123" in "Justification of quota increase"
-    And User clicks tab "Common components"
-    And User checks checkbox "Address and Geolocation"
-    And User checks checkbox "Form Design and Submission..."
-    And User checks checkbox "Publishing..."
     And User clicks button "Submit"
     And User clicks modal window button "Submit"
     And User clicks modal window button "Close"
