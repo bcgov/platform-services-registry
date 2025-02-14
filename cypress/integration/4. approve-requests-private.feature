@@ -11,8 +11,6 @@ Feature: Requests Review Private Cloud
     And User types and selects "james.smith@gov.bc.ca" in "Product Owner email"
     And User waits for "2" seconds
     And User types and selects "john.doe@gov.bc.ca" in "Technical Lead email"
-    And User clicks tab "Common components"
-    And User checks checkbox "The app does not use..."
     And User makes a screenshot
     And User clicks button "Submit"
     And User checks checkbox "By checking this box..."
