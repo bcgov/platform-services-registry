@@ -21,14 +21,14 @@ runs:
         ${{ runner.os }}-nextjs-${{ hashFiles('**/pnpm-lock.yaml') }}-x
 
   - name: Install Root NPM packages
-    run: pnpm install --no-frozen-lockfile --config.strict-dep-builds=false
+    run: pnpm install --no-frozen-lockfile
     shell: bash
 
   - name: Install Cypress
-    run: pnpm install cypress --config.strict-dep-builds=false
+    run: npm install cypress
     shell: bash
 
   - name: Install App NPM packages
-    run: pnpm install --no-frozen-lockfile --config.strict-dep-builds=false
+    run: pnpm install --no-frozen-lockfile
     shell: bash
     working-directory: app
