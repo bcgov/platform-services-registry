@@ -30,6 +30,10 @@ const productCollectionRoute = createRoute('/private-cloud/products');
 
 // Private Cloud Projects
 export async function createPrivateCloudProject(data: any, paramData?: ParamData) {
+  data.projectOwnerId = data.projectOwner?.id ?? null;
+  data.primaryTechnicalLeadId = data.primaryTechnicalLead?.id ?? null;
+  data.secondaryTechnicalLeadId = data.secondaryTechnicalLead?.id ?? null;
+
   const result = await productCollectionRoute.post(_createPrivateCloudProject, '', data);
   return result;
 }

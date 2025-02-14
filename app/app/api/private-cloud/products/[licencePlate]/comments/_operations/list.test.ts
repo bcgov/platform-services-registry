@@ -13,11 +13,7 @@ import {
 import { makePrivateCloudRequestDecision } from '@/services/api-test/private-cloud/requests';
 
 let globalLicencePlate: string;
-let globalProductData: any;
-
-beforeAll(async () => {
-  globalProductData = await createSamplePrivateCloudProductData();
-});
+const globalProductData = createSamplePrivateCloudProductData();
 
 const requests = {
   create: null as any,

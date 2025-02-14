@@ -9,17 +9,13 @@ import { provisionPrivateCloudProject } from '@/services/api-test/private-cloud'
 import { createPrivateCloudProject, editPrivateCloudProject } from '@/services/api-test/private-cloud/products';
 import { makePrivateCloudRequestDecision } from '@/services/api-test/private-cloud/requests';
 
-let productData: any;
-
-beforeAll(async () => {
-  productData = {
-    main: await createSamplePrivateCloudProductData({
-      data: {
-        resourceRequests: resourceRequests1,
-      },
-    }),
-  };
-});
+const productData = {
+  main: createSamplePrivateCloudProductData({
+    data: {
+      resourceRequests: resourceRequests1,
+    },
+  }),
+};
 
 const requests = {
   create: null as any,
