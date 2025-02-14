@@ -14,11 +14,11 @@ import { FormProvider, useForm } from 'react-hook-form';
 import { z } from 'zod';
 import PreviousButton from '@/components/buttons/Previous';
 import ProjectDescription from '@/components/form/ProjectDescriptionPrivate';
-import TeamContacts from '@/components/form/TeamContacts';
 import PageAccordion from '@/components/generic/accordion/PageAccordion';
 import AdditionalTeamMembers from '@/components/private-cloud/sections/AdditionalTeamMembers';
 import Quotas from '@/components/private-cloud/sections/Quotas';
-import { GlobalRole, userAttributes } from '@/constants';
+import TeamContacts from '@/components/private-cloud/sections/TeamContacts';
+import { GlobalRole } from '@/constants';
 import createClientPage from '@/core/client-page';
 import { usePrivateProductState } from '@/states/global';
 
@@ -39,14 +39,9 @@ export default privateCloudRequestOriginal(({ getPathParams, session, router }) 
 
   const [, snap] = usePrivateProductState();
   const { id = '' } = pathParams ?? {};
-  const [secondTechLead, setSecondTechLead] = useState(false);
 
   useEffect(() => {
     if (!snap.currentRequest) return;
-
-    if (snap.currentRequest.originalData?.secondaryTechnicalLead) {
-      setSecondTechLead(true);
-    }
   }, [snap.currentRequest, router]);
 
   const methods = useForm({
@@ -57,13 +52,6 @@ export default privateCloudRequestOriginal(({ getPathParams, session, router }) 
       ...snap.currentRequest?.originalData,
     },
   });
-
-  const secondTechLeadOnClick = () => {
-    setSecondTechLead(!secondTechLead);
-    if (secondTechLead) {
-      methods.unregister('secondaryTechnicalLead');
-    }
-  };
 
   if (!snap.currentRequest) {
     return null;
@@ -88,7 +76,7 @@ export default privateCloudRequestOriginal(({ getPathParams, session, router }) 
       label: 'Team contacts',
       description: '',
       Component: TeamContacts,
-      componentArgs: { userAttributes, disabled: isDisabled, secondTechLead, secondTechLeadOnClick },
+      componentArgs: { disabled: isDisabled },
     },
     {
       LeftIcon: IconUsersGroup,

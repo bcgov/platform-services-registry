@@ -56,15 +56,7 @@ export async function downloadPrivateCloudProducts(data: PrivateCloudProductSear
 }
 
 export async function getPrivateCloudProject(licencePlate: string) {
-  const result = await instance.get(`/${licencePlate}`).then((res) => {
-    // Secondary technical lead should only be included if it exists
-    if (res.data.secondaryTechnicalLead === null) {
-      delete res.data.secondaryTechnicalLead;
-    }
-
-    return res.data;
-  });
-
+  const result = await instance.get(`/${licencePlate}`).then((res) => res.data);
   return result as PrivateCloudProductDetailDecorated;
 }
 

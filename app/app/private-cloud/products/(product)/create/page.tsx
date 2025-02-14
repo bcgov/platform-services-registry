@@ -3,17 +3,16 @@
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Button } from '@mantine/core';
 import { IconInfoCircle, IconUsersGroup, IconComponents, IconWebhook } from '@tabler/icons-react';
-import { useState } from 'react';
 import { FormProvider, useForm } from 'react-hook-form';
 import PreviousButton from '@/components/buttons/Previous';
 import CommonComponents from '@/components/form/CommonComponents';
 import ProjectDescription from '@/components/form/ProjectDescriptionPrivate';
-import TeamContacts from '@/components/form/TeamContacts';
 import PageAccordion from '@/components/generic/accordion/PageAccordion';
 import FormErrorNotification from '@/components/generic/FormErrorNotification';
 import { openPrivateCloudProductCreateSubmitModal } from '@/components/modal/privateCloudProductCreateSubmit';
+import TeamContacts from '@/components/private-cloud/sections/TeamContacts';
 import Webhooks from '@/components/private-cloud/sections/Webhooks';
-import { GlobalRole, userAttributes } from '@/constants';
+import { GlobalRole } from '@/constants';
 import createClientPage from '@/core/client-page';
 import { privateCloudCreateRequestBodySchema } from '@/validation-schemas/private-cloud';
 
@@ -22,19 +21,10 @@ const privateCloudProductNew = createClientPage({
 });
 
 export default privateCloudProductNew(({ session }) => {
-  const [secondTechLead, setSecondTechLead] = useState(false);
-
   const methods = useForm({
     resolver: zodResolver(privateCloudCreateRequestBodySchema),
-    defaultValues: { secondaryTechnicalLead: null },
+    defaultValues: {},
   });
-
-  const secondTechLeadOnClick = () => {
-    setSecondTechLead(!secondTechLead);
-    if (secondTechLead) {
-      methods.unregister('secondaryTechnicalLead');
-    }
-  };
 
   const accordionItems = [
     {
@@ -49,7 +39,7 @@ export default privateCloudProductNew(({ session }) => {
       label: 'Team contacts',
       description: '',
       Component: TeamContacts,
-      componentArgs: { userAttributes, secondTechLead, secondTechLeadOnClick },
+      componentArgs: {},
     },
     {
       LeftIcon: IconComponents,
