@@ -10,6 +10,10 @@ on:
         options:
         - 'true'
         - 'false'
+      environment:
+        description: Environment to deploy (dev, test, prod)
+        type: environment
+        required: true
       imageTag:
         description: Image Tag Version (ghcr.io/bcgov/pltsvc:<imageTag>)
         type: string
@@ -23,6 +27,9 @@ jobs:
       contents: read
       actions: write
 
+    environment:
+      name: ${{ inputs.environment }}
+
     steps:
     - name: Authenticate and set context
       uses: redhat-actions/oc-login@dfbd9912672664f9df2023c1c16e07bcf306043c
@@ -32,25 +39,48 @@ jobs:
         namespace: ${{ vars.OPENSHIFT_NAMESPACE }}
         insecure_skip_tls_verify: true
 
+    - name: Checkout Repository
+      uses: actions/checkout@v4
+
+    - name: Preserve Environment Variables (if enabling maintenance)
+      if: inputs.maintenanceMode == 'true'
+      run: |
+        echo "Preserving current environment variables..."
+        yq e '.maintenance.previous_env = .env' helm/_app/values.yaml -i
+
     - name: Toggle Maintenance Mode
       run: |
         export MAINTENANCE_MODE=${{ inputs.maintenanceMode }}
         echo "Setting maintenance mode to $MAINTENANCE_MODE"
-        yq e -i '.maintenance.enabled = strenv(MAINTENANCE_MODE)' helm/_app/values.yaml
-      env:
-        MAINTENANCE_MODE: ${{ inputs.maintenanceMode }}
+        if [ "$MAINTENANCE_MODE" == "true" ]; then
+          yq e -i '.maintenance.enabled = true' helm/_app/values.yaml
+        else
+          echo "Restoring original environment variables..."
+          yq e '.env = .maintenance.previous_env' helm/_app/values.yaml -i
+          yq e -i 'del(.maintenance.previous_env)' helm/_app/values.yaml
+          yq e -i '.maintenance.enabled = false' helm/_app/values.yaml
+        fi
 
-    - name: Deploy updated Helm chart
+    - name: Deploy Updated Helm Chart
       run: |
         make upgrade \
         NAMESPACE=${{ vars.OPENSHIFT_NAMESPACE }} \
         IMAGE_TAG=${{ inputs.imageTag }}
       working-directory: ./helm/main
 
-    - name: Trigger Maintenance Image Build
+    - name: Trigger Maintenance Image Build (if enabling maintenance)
       if: inputs.maintenanceMode == 'true'
       run: |
         curl -X POST -H "Accept: application/vnd.github.v3+json" \
         -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" \
         https://api.github.com/repos/${{ github.repository }}/actions/workflows/build-push-maintenance.yml/dispatches \
         -d '{"ref":"main"}'
+
+    - name: Deploy Application Back to Environment (if disabling maintenance)
+      if: inputs.maintenanceMode == 'false'
+      run: |
+        echo "Deploying application back to ${{ inputs.environment }}"
+        curl -X POST -H "Accept: application/vnd.github.v3+json" \
+        -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" \
+        https://api.github.com/repos/${{ github.repository }}/actions/workflows/deploy-dispatch.yml/dispatches \
+        -d '{"ref":"main", "inputs": {"environment": "'"${{ inputs.environment }}"'", "imageTag": "'"${{ inputs.imageTag }}"'"}}'
