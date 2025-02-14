@@ -120,7 +120,7 @@ describe('Private Cloud Comments - Validations', () => {
 
   it('should successfully create, approve, and provision a project', async () => {
     await mockSessionByRole(GlobalRole.Admin);
-    const productData = await createSamplePrivateCloudProductData();
+    const productData = createSamplePrivateCloudProductData();
 
     const createResponse = await createPrivateCloudProject(productData);
     expect(createResponse.status).toBe(200);
