@@ -14,7 +14,6 @@ import { PrivateCloudRequestDetail } from '@/types/private-cloud';
 
 export async function createPrivateCloudProduct() {
   const requestData = await createSamplePrivateCloudProductData({ data: { cluster: Cluster.SILVER } });
-  console.log('Request Data: ', requestData);
   await mockSessionByEmail(requestData.projectOwner.email);
 
   let response = await createPrivateCloudProject(requestData);

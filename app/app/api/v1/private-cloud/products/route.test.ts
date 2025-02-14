@@ -2,8 +2,8 @@ import { expect } from '@jest/globals';
 import { DecisionStatus, ProjectStatus, Ministry, Cluster, RequestType } from '@prisma/client';
 import { GlobalRole } from '@/constants';
 import prisma from '@/core/prisma';
-import { createSamplePrivateCloudProductData, getMembersData } from '@/helpers/mock-resources';
-import { mockNoRoleUsers, findMockUserByIdr, findOtherMockUsers, upsertMockUser } from '@/helpers/mock-users';
+import { createSamplePrivateCloudProductData } from '@/helpers/mock-resources';
+import { mockNoRoleUsers, findMockUserByIdr, findOtherMockUsers } from '@/helpers/mock-users';
 import {
   mockSessionByEmail,
   mockSessionByRole,
@@ -15,18 +15,30 @@ import { createPrivateCloudProject } from '@/services/api-test/private-cloud/pro
 import { makePrivateCloudRequestDecision } from '@/services/api-test/private-cloud/requests';
 import { listPrivateCloudProjectApi } from '@/services/api-test/v1/private-cloud/products';
 
-let PO, TL1, TL2, RANDOM1, RANDOM2, RANDOM3;
-let memberData, randomMemberData;
+const PO = mockNoRoleUsers[0];
+const TL1 = mockNoRoleUsers[1];
+const TL2 = mockNoRoleUsers[2];
+const RANDOM1 = mockNoRoleUsers[3];
+const RANDOM2 = mockNoRoleUsers[4];
+const RANDOM3 = mockNoRoleUsers[5];
 
-beforeAll(async () => {
-  [PO, TL1, TL2, RANDOM1, RANDOM2, RANDOM3, memberData, randomMemberData] = await getMembersData(true);
-});
+const memberData = {
+  projectOwner: PO,
+  primaryTechnicalLead: TL1,
+  secondaryTechnicalLead: TL2,
+};
+
+const randomMemberData = {
+  projectOwner: RANDOM1,
+  primaryTechnicalLead: RANDOM2,
+  secondaryTechnicalLead: RANDOM3,
+};
 
 describe('API: List Private Cloud Products - Permissions', () => {
   it('should successfully create a product by PO and approved by admin', async () => {
     await mockSessionByEmail(PO.email);
 
-    const requestData = await createSamplePrivateCloudProductData({
+    const requestData = createSamplePrivateCloudProductData({
       data: { ...memberData },
     });
     const res1 = await createPrivateCloudProject(requestData);
@@ -79,7 +91,7 @@ describe('API: List Private Cloud Products - Permissions', () => {
   it('should successfully create a product by a random user and approved by admin', async () => {
     await mockSessionByEmail(RANDOM1.email);
 
-    const requestData = await createSamplePrivateCloudProductData({
+    const requestData = createSamplePrivateCloudProductData({
       data: { ...randomMemberData },
     });
     const res1 = await createPrivateCloudProject(requestData);
@@ -160,16 +172,16 @@ describe('API: List Private Cloud Products - Validations', () => {
 
     const datasets: any[] = [];
     datasets.push(
-      await createSamplePrivateCloudProductData({ data: { ministry: Ministry.AEST, cluster: Cluster.CLAB } }),
-      await createSamplePrivateCloudProductData({ data: { ministry: Ministry.AEST, cluster: Cluster.KLAB } }),
-      await createSamplePrivateCloudProductData({ data: { ministry: Ministry.AEST, cluster: Cluster.CLAB } }),
-      await createSamplePrivateCloudProductData({ data: { ministry: Ministry.AEST, cluster: Cluster.KLAB } }),
-      await createSamplePrivateCloudProductData({ data: { ministry: Ministry.AEST, cluster: Cluster.CLAB } }),
-      await createSamplePrivateCloudProductData({ data: { ministry: Ministry.CITZ, cluster: Cluster.KLAB } }),
-      await createSamplePrivateCloudProductData({ data: { ministry: Ministry.CITZ, cluster: Cluster.CLAB } }),
-      await createSamplePrivateCloudProductData({ data: { ministry: Ministry.CITZ, cluster: Cluster.KLAB } }),
-      await createSamplePrivateCloudProductData({ data: { ministry: Ministry.CITZ, cluster: Cluster.CLAB } }),
-      await createSamplePrivateCloudProductData({ data: { ministry: Ministry.CITZ, cluster: Cluster.KLAB } }),
+      createSamplePrivateCloudProductData({ data: { ministry: Ministry.AEST, cluster: Cluster.CLAB } }),
+      createSamplePrivateCloudProductData({ data: { ministry: Ministry.AEST, cluster: Cluster.KLAB } }),
+      createSamplePrivateCloudProductData({ data: { ministry: Ministry.AEST, cluster: Cluster.CLAB } }),
+      createSamplePrivateCloudProductData({ data: { ministry: Ministry.AEST, cluster: Cluster.KLAB } }),
+      createSamplePrivateCloudProductData({ data: { ministry: Ministry.AEST, cluster: Cluster.CLAB } }),
+      createSamplePrivateCloudProductData({ data: { ministry: Ministry.CITZ, cluster: Cluster.KLAB } }),
+      createSamplePrivateCloudProductData({ data: { ministry: Ministry.CITZ, cluster: Cluster.CLAB } }),
+      createSamplePrivateCloudProductData({ data: { ministry: Ministry.CITZ, cluster: Cluster.KLAB } }),
+      createSamplePrivateCloudProductData({ data: { ministry: Ministry.CITZ, cluster: Cluster.CLAB } }),
+      createSamplePrivateCloudProductData({ data: { ministry: Ministry.CITZ, cluster: Cluster.KLAB } }),
     );
 
     await Promise.all(

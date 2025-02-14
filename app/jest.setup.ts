@@ -1,8 +1,8 @@
 import 'isomorphic-fetch';
 import '@testing-library/jest-dom';
-import prisma from '@/core/prisma';
-import { logger } from '@/core/logging';
 import _ from 'lodash';
+import { logger } from '@/core/logging';
+import prisma from '@/core/prisma';
 import { SERVICES_KEYCLOAK_APP_REALM } from './jest.mock';
 
 jest.setTimeout(75000);
@@ -127,7 +127,9 @@ export async function cleanUp() {
 }
 
 beforeAll(async () => {
+  const { mutateMockUsersWithDbUsers } = await import('@/helpers/mock-users');
   await cleanUp();
+  return mutateMockUsersWithDbUsers();
 });
 
 afterAll(async () => {

@@ -96,3 +96,13 @@ export async function generateTestSession(testEmail: string) {
 
   return session;
 }
+
+export async function mutateMockUsersWithDbUsers() {
+  await Promise.all(
+    mockUsers.map(async (user) => {
+      const dbuser = await upsertMockUser(user);
+      user.id = dbuser.id;
+      return user;
+    }),
+  );
+}

@@ -20,12 +20,9 @@ const fieldsToCompare = [
   'commonComponents',
 ];
 
-let productData: any;
-beforeAll(async () => {
-  productData = {
-    main: await createSamplePrivateCloudProductData(),
-  };
-});
+const productData = {
+  main: createSamplePrivateCloudProductData(),
+};
 
 const requests = {
   create: null as any,
