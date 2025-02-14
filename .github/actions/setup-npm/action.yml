@@ -4,6 +4,10 @@ description: Setup required NPM packages
 runs:
   using: composite
   steps:
+  - name: Setup Node.js
+    uses: actions/setup-node@v3
+    with:
+      node-version: 22.x
   # See https://nextjs.org/docs/pages/building-your-application/deploying/ci-build-caching#github-actions
   - uses: actions/cache@9fa7e61ec7e1f44ac75218e7aaea81da8856fd11
     with:
@@ -14,7 +18,7 @@ runs:
         ${{ github.workspace }}/app/.next/cache
       key: ${{ runner.os }}-nextjs-${{ hashFiles('**/pnpm-lock.yaml') }}-${{ hashFiles('**/*.js', '**/*.jsx', '**/*.ts', '**/*.tsx') }}
       restore-keys: |
-        ${{ runner.os }}-nextjs-${{ hashFiles('**/pnpm-lock.yaml') }}-
+        ${{ runner.os }}-nextjs-${{ hashFiles('**/pnpm-lock.yaml') }}-x
 
   - name: Install Root NPM packages
     run: pnpm approve-builds && pnpm install --no-frozen-lockfile && pnpm install cypress
