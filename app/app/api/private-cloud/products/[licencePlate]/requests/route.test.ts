@@ -1,19 +1,25 @@
 import { expect } from '@jest/globals';
 import { Ministry, Cluster, DecisionStatus, RequestType } from '@prisma/client';
 import { GlobalRole } from '@/constants';
-import { createSamplePrivateCloudProductData, getMembersData } from '@/helpers/mock-resources';
+import { createSamplePrivateCloudProductData } from '@/helpers/mock-resources';
 import { mockNoRoleUsers, findMockUserByIdr, findOtherMockUsers } from '@/helpers/mock-users';
 import { mockSessionByEmail, mockSessionByRole } from '@/services/api-test/core';
 import { provisionPrivateCloudProject } from '@/services/api-test/private-cloud';
 import { createPrivateCloudProject, listPrivateCloudProductRequests } from '@/services/api-test/private-cloud/products';
 import { makePrivateCloudRequestDecision } from '@/services/api-test/private-cloud/requests';
 
-let PO, TL1, TL2, EA, RANDOM1;
-let memberData;
+const PO = mockNoRoleUsers[0];
+const TL1 = mockNoRoleUsers[1];
+const TL2 = mockNoRoleUsers[2];
+const EA = mockNoRoleUsers[3];
+const RANDOM1 = mockNoRoleUsers[4];
 
-beforeAll(async () => {
-  [PO, TL1, TL2, EA, RANDOM1, memberData] = await getMembersData();
-});
+const memberData = {
+  projectOwner: PO,
+  primaryTechnicalLead: TL1,
+  secondaryTechnicalLead: TL2,
+  expenseAuthority: EA,
+};
 
 let licencePlate = '';
 
@@ -22,7 +28,7 @@ describe('List Private Cloud Product Requests - Permissions', () => {
   it('should successfully create a product by PO and approved by admin', async () => {
     await mockSessionByEmail(PO.email);
 
-    const requestData = await createSamplePrivateCloudProductData({
+    const requestData = createSamplePrivateCloudProductData({
       data: { ...memberData, ministry: Ministry.PSA, cluster: Cluster.SILVER },
     });
     const res1 = await createPrivateCloudProject(requestData);

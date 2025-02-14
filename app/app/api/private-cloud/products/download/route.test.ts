@@ -3,7 +3,8 @@ import { DecisionStatus, Ministry, Cluster, ProjectStatus, RequestType } from '@
 import { parse } from 'csv-parse/sync';
 import { GlobalRole } from '@/constants';
 import prisma from '@/core/prisma';
-import { createSamplePrivateCloudProductData, getMembersData } from '@/helpers/mock-resources';
+import { createSamplePrivateCloudProductData } from '@/helpers/mock-resources';
+import { mockNoRoleUsers, findMockUserByIdr, findOtherMockUsers } from '@/helpers/mock-users';
 import { ministryKeyToName, getTotalQuotaStr } from '@/helpers/product';
 import { formatFullName } from '@/helpers/user';
 import { mockSessionByEmail, mockSessionByRole } from '@/services/api-test/core';
@@ -13,21 +14,33 @@ import { makePrivateCloudRequestDecision } from '@/services/api-test/private-clo
 import { PrivateProductCsvRecord } from '@/types/csv';
 import { formatDateSimple } from '@/utils/js';
 
-let PO, TL1, TL2, RANDOM1, RANDOM2, RANDOM3;
-let productData;
+const PO = mockNoRoleUsers[0];
+const TL1 = mockNoRoleUsers[1];
+const TL2 = mockNoRoleUsers[2];
+const RANDOM1 = mockNoRoleUsers[3];
+const RANDOM2 = mockNoRoleUsers[4];
+const RANDOM3 = mockNoRoleUsers[5];
 
-beforeAll(async () => {
-  let memberData, randomMemberData;
-  [PO, TL1, TL2, RANDOM1, RANDOM2, RANDOM3, memberData, randomMemberData] = await getMembersData(true);
-  productData = {
-    one: await createSamplePrivateCloudProductData({
-      data: { ...memberData },
-    }),
-    two: await createSamplePrivateCloudProductData({
-      data: { ...randomMemberData },
-    }),
-  };
-});
+const memberData = {
+  projectOwner: PO,
+  primaryTechnicalLead: TL1,
+  secondaryTechnicalLead: TL2,
+};
+
+const randomMemberData = {
+  projectOwner: RANDOM1,
+  primaryTechnicalLead: RANDOM2,
+  secondaryTechnicalLead: RANDOM3,
+};
+
+const productData = {
+  one: createSamplePrivateCloudProductData({
+    data: { ...memberData },
+  }),
+  two: createSamplePrivateCloudProductData({
+    data: { ...randomMemberData },
+  }),
+};
 
 const requests = {
   one: null as any,
@@ -210,16 +223,16 @@ describe('Download Private Cloud Products - Validations', () => {
 
     const datasets: any[] = [];
     datasets.push(
-      await createSamplePrivateCloudProductData({ data: { ministry: Ministry.AEST, cluster: Cluster.CLAB } }),
-      await createSamplePrivateCloudProductData({ data: { ministry: Ministry.AEST, cluster: Cluster.KLAB } }),
-      await createSamplePrivateCloudProductData({ data: { ministry: Ministry.AEST, cluster: Cluster.CLAB } }),
-      await createSamplePrivateCloudProductData({ data: { ministry: Ministry.AEST, cluster: Cluster.KLAB } }),
-      await createSamplePrivateCloudProductData({ data: { ministry: Ministry.AEST, cluster: Cluster.CLAB } }),
-      await createSamplePrivateCloudProductData({ data: { ministry: Ministry.CITZ, cluster: Cluster.KLAB } }),
-      await createSamplePrivateCloudProductData({ data: { ministry: Ministry.CITZ, cluster: Cluster.CLAB } }),
-      await createSamplePrivateCloudProductData({ data: { ministry: Ministry.CITZ, cluster: Cluster.KLAB } }),
-      await createSamplePrivateCloudProductData({ data: { ministry: Ministry.CITZ, cluster: Cluster.CLAB } }),
-      await createSamplePrivateCloudProductData({
+      createSamplePrivateCloudProductData({ data: { ministry: Ministry.AEST, cluster: Cluster.CLAB } }),
+      createSamplePrivateCloudProductData({ data: { ministry: Ministry.AEST, cluster: Cluster.KLAB } }),
+      createSamplePrivateCloudProductData({ data: { ministry: Ministry.AEST, cluster: Cluster.CLAB } }),
+      createSamplePrivateCloudProductData({ data: { ministry: Ministry.AEST, cluster: Cluster.KLAB } }),
+      createSamplePrivateCloudProductData({ data: { ministry: Ministry.AEST, cluster: Cluster.CLAB } }),
+      createSamplePrivateCloudProductData({ data: { ministry: Ministry.CITZ, cluster: Cluster.KLAB } }),
+      createSamplePrivateCloudProductData({ data: { ministry: Ministry.CITZ, cluster: Cluster.CLAB } }),
+      createSamplePrivateCloudProductData({ data: { ministry: Ministry.CITZ, cluster: Cluster.KLAB } }),
+      createSamplePrivateCloudProductData({ data: { ministry: Ministry.CITZ, cluster: Cluster.CLAB } }),
+      createSamplePrivateCloudProductData({
         data: { ministry: Ministry.CITZ, cluster: Cluster.KLAB, name: '______name______' },
       }),
     );

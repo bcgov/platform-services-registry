@@ -11,7 +11,7 @@ const config = {
   // Stop after first failing test
   bail: true,
   // Add more setup options before each test is run
-  setupFilesAfterEnv: ['./jest.setup.js'],
+  setupFilesAfterEnv: ['./jest.setup.ts'],
   modulePathIgnorePatterns: ['<rootDir>/.react-email'],
   moduleNameMapper: {
     '^@/(.*)$': '<rootDir>/$1',

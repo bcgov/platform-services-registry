@@ -1,8 +1,7 @@
 import { faker } from '@faker-js/faker';
 import { Prisma, Cluster } from '@prisma/client';
 import { ministries, clusters, providers } from '@/constants';
-import prisma from '@/core/prisma';
-import { mockNoRoleUsers, upsertMockUser } from '@/helpers/mock-users';
+import { mockNoRoleUsers } from '@/helpers/mock-users';
 import { generateShortId } from '@/utils/js';
 import { getRandomCloudProviderSelectionReasons, getRandomProviderReasonsNote } from './mock-resources/core';
 import { resourceRequests1 } from './mock-resources/private-cloud-product';
@@ -12,7 +11,7 @@ const getRandomMinistry = () => faker.helpers.arrayElement(ministries);
 const getRandomCluster = () => faker.helpers.arrayElement(clusters);
 const getRandomProvider = () => faker.helpers.arrayElement(providers);
 
-export async function createSamplePrivateCloudProductData(args?: {
+export function createSamplePrivateCloudProductData(args?: {
   data?: Partial<
     Prisma.PrivateCloudProjectGetPayload<null> & {
       projectOwner: any;
@@ -25,7 +24,9 @@ export async function createSamplePrivateCloudProductData(args?: {
 
   const cluster = Cluster.SILVER;
 
-  const [PO, TL1, TL2] = await getMockUsersWithId();
+  const PO = mockNoRoleUsers[0];
+  const TL1 = mockNoRoleUsers[1];
+  const TL2 = mockNoRoleUsers[2];
 
   const _data = {
     licencePlate: faker.string.uuid().substring(0, 6),
@@ -34,11 +35,8 @@ export async function createSamplePrivateCloudProductData(args?: {
     cluster,
     ministry: getRandomMinistry(),
     projectOwner: PO,
-    projectOwnerId: PO.id,
     primaryTechnicalLead: TL1,
-    primaryTechnicalLeadId: TL1.id,
     secondaryTechnicalLead: TL2,
-    secondaryTechnicalLeadId: TL2.id,
     resourceRequests: resourceRequests1,
     commonComponents: {
       addressAndGeolocation: {
@@ -156,44 +154,4 @@ export function createSamplePrivateCloudCommentData(args?: { data?: Partial<Pris
   };
 
   return _data;
-}
-
-export async function getMockUsersWithId() {
-  const users = [...mockNoRoleUsers];
-
-  const usersWithIds = await Promise.all(
-    users.map(async (user) => {
-      await upsertMockUser(user);
-      const userWithId = await prisma.user.findUnique({ where: { email: user.email } });
-      user.id = userWithId!.id;
-      return user;
-    }),
-  );
-
-  return usersWithIds;
-}
-
-export async function getMembersData(hasRandomData: boolean = false) {
-  const [PO, TL1, TL2, EA, RANDOM1, RANDOM2, RANDOM3, RANDOM4] = await getMockUsersWithId();
-
-  const createMemberData = (
-    projectOwner: any,
-    primaryTechLead: any,
-    secondaryTechLead: any,
-    expenseAuthority: any,
-  ) => ({
-    projectOwner,
-    projectOwnerId: projectOwner.id,
-    primaryTechnicalLead: primaryTechLead,
-    primaryTechnicalLeadId: primaryTechLead.id,
-    secondaryTechnicalLead: secondaryTechLead,
-    secondaryTechnicalLeadId: secondaryTechLead.id,
-    expenseAuthority,
-    expenseAuthorityId: expenseAuthority.id,
-  });
-
-  const memberData = createMemberData(PO, TL1, TL2, EA);
-  const randomMemberData = hasRandomData ? createMemberData(RANDOM1, RANDOM2, RANDOM3, RANDOM4) : null;
-
-  return [PO, TL1, TL2, RANDOM1, RANDOM2, RANDOM3, memberData, randomMemberData];
 }
