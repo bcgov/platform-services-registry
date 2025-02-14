@@ -15,7 +15,6 @@ const fieldsToCompare = [
   'projectOwner',
   'primaryTechnicalLead',
   'secondaryTechnicalLead',
-  'commonComponents',
 ];
 
 // TODO: add tests for ministry roles

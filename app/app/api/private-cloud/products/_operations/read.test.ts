@@ -17,7 +17,6 @@ const fieldsToCompare = [
   'projectOwner',
   'primaryTechnicalLead',
   'secondaryTechnicalLead',
-  'commonComponents',
 ];
 
 const productData = {

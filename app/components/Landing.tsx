@@ -93,7 +93,6 @@ export default function Landing() {
             </ExternalLink>{' '}
             for the product owner and up to two (2) technical leads
           </List.Item>
-          <List.Item>An idea of which common components you will use</List.Item>
           <List.Item>
             Provide an estimate for your project&apos;s projected budget if using AWS <strong>(must be in USD)</strong>
           </List.Item>

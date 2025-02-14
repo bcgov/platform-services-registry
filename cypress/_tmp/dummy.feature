@@ -11,8 +11,6 @@
 #     And User clicks tab "Team contacts"
 #     And User types and selects "james.smith@gov.bc.ca" in "Product Owner Email"
 #     And User types and selects "john.doe@gov.bc.ca" in "Technical Lead Email"
-#     And User clicks tab "Common components"
-#     And User checks checkbox "The app does not use..."
 #     And User clicks button "SUBMIT REQUEST"
 #     And User checks checkbox "By checking this box..."
 #     And User clicks button "Submit"

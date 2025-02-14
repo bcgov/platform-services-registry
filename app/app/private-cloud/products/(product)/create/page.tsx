@@ -6,7 +6,6 @@ import { IconInfoCircle, IconUsersGroup, IconComponents, IconWebhook } from '@ta
 import { useState } from 'react';
 import { FormProvider, useForm } from 'react-hook-form';
 import PreviousButton from '@/components/buttons/Previous';
-import CommonComponents from '@/components/form/CommonComponents';
 import ProjectDescription from '@/components/form/ProjectDescriptionPrivate';
 import TeamContacts from '@/components/form/TeamContacts';
 import PageAccordion from '@/components/generic/accordion/PageAccordion';
@@ -50,13 +49,6 @@ export default privateCloudProductNew(({ session }) => {
       description: '',
       Component: TeamContacts,
       componentArgs: { secondTechLead, secondTechLeadOnClick },
-    },
-    {
-      LeftIcon: IconComponents,
-      label: 'Common components',
-      description: '',
-      Component: CommonComponents,
-      componentArgs: {},
     },
     {
       LeftIcon: IconWebhook,

@@ -22,7 +22,6 @@ const fieldsToCompare = [
   'primaryTechnicalLead',
   'secondaryTechnicalLead',
   'resourceRequests',
-  'commonComponents',
 ];
 
 const productData = {
