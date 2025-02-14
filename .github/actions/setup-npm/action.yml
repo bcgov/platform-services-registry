@@ -20,8 +20,16 @@ runs:
       restore-keys: |
         ${{ runner.os }}-nextjs-${{ hashFiles('**/pnpm-lock.yaml') }}-x
 
+  - name: Approve build scripts
+    run: pnpm approve-builds
+    shell: bash
+
   - name: Install Root NPM packages
-    run: pnpm approve-builds && pnpm install --no-frozen-lockfile && pnpm install cypress
+    run: pnpm install --no-frozen-lockfile
+    shell: bash
+
+  - name: Install Cypress
+    run: pnpm install cypress
     shell: bash
 
   - name: Install App NPM packages
