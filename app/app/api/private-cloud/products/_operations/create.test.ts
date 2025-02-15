@@ -181,22 +181,7 @@ describe('Create Private Cloud Request - Validations', () => {
     const requestData = createSamplePrivateCloudProductData();
     await mockSessionByRole(GlobalRole.Admin);
 
-    requestData.projectOwner = null as any;
-
-    const response = await createPrivateCloudProject(requestData);
-    expect(response.status).toBe(400);
-
-    const resData = await response.json();
-    expect(resData.success).toBe(false);
-    expect(resData.message).toBe('Bad Request');
-    expect(resData.error.issues.find((iss: { path: string[] }) => iss.path[0] === 'projectOwner')).not.toBeUndefined();
-  });
-
-  it('should fail to submit a create request due to an invalid primaryTechnicalLead property', async () => {
-    const requestData = createSamplePrivateCloudProductData();
-    await mockSessionByRole(GlobalRole.Admin);
-
-    requestData.primaryTechnicalLead = null as any;
+    requestData.projectOwner = undefined;
 
     const response = await createPrivateCloudProject(requestData);
     expect(response.status).toBe(400);
@@ -205,7 +190,24 @@ describe('Create Private Cloud Request - Validations', () => {
     expect(resData.success).toBe(false);
     expect(resData.message).toBe('Bad Request');
     expect(
-      resData.error.issues.find((iss: { path: string[] }) => iss.path[0] === 'primaryTechnicalLead'),
+      resData.error.issues.find((iss: { path: string[] }) => iss.path[0] === 'projectOwnerId'),
+    ).not.toBeUndefined();
+  });
+
+  it('should fail to submit a create request due to an invalid primaryTechnicalLead property', async () => {
+    const requestData = createSamplePrivateCloudProductData();
+    await mockSessionByRole(GlobalRole.Admin);
+
+    requestData.primaryTechnicalLead = undefined;
+
+    const response = await createPrivateCloudProject(requestData);
+    expect(response.status).toBe(400);
+
+    const resData = await response.json();
+    expect(resData.success).toBe(false);
+    expect(resData.message).toBe('Bad Request');
+    expect(
+      resData.error.issues.find((iss: { path: string[] }) => iss.path[0] === 'primaryTechnicalLeadId'),
     ).not.toBeUndefined();
   });
 

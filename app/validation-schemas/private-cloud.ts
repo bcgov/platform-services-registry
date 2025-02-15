@@ -58,9 +58,9 @@ export const _privateCloudCreateRequestBodySchema = z.object({
   description: z.string().min(1, { message: 'Description is required.' }),
   cluster: z.nativeEnum(Cluster),
   ministry: z.nativeEnum(Ministry),
-  projectOwner: userSchema,
-  primaryTechnicalLead: userSchema,
-  secondaryTechnicalLead: userSchema.optional().nullable(),
+  projectOwnerId: z.string().max(24),
+  primaryTechnicalLeadId: z.string().max(24),
+  secondaryTechnicalLeadId: z.string().max(24).optional().nullable(),
   golddrEnabled: z.preprocess(processBoolean, z.boolean()),
   isTest: z.preprocess(processBoolean, z.boolean()),
   quotaContactName: z.string().max(50).optional(),
@@ -100,8 +100,8 @@ export const privateCloudProductWebhookBodySchema = z.object({
 });
 
 const isEmailUnique = (data: any) => {
-  const { projectOwner, primaryTechnicalLead } = data;
-  return projectOwner.email !== primaryTechnicalLead.email;
+  const { projectOwnerId, primaryTechnicalLeadId } = data;
+  return projectOwnerId !== primaryTechnicalLeadId;
 };
 
 export const privateCloudCreateRequestBodySchema = _privateCloudCreateRequestBodySchema
@@ -121,7 +121,7 @@ export const privateCloudCreateRequestBodySchema = _privateCloudCreateRequestBod
     },
   )
   .refine(isEmailUnique, {
-    message: 'Project Owner and Primary Technical Lead must not have the same email.',
+    message: 'The Project Owner and Primary Technical Lead must be different.',
     path: ['primaryTechnicalLead'],
   });
 
@@ -149,7 +149,7 @@ export const privateCloudEditRequestBodySchema = _privateCloudEditRequestBodySch
     },
   )
   .refine(isEmailUnique, {
-    message: 'Project Owner and Primary Technical Lead must not have the same email.',
+    message: 'The Project Owner and Primary Technical Lead must be different.',
     path: ['primaryTechnicalLead'],
   });
 

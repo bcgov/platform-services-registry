@@ -232,20 +232,7 @@ describe('Update Private Cloud Product - Validations', () => {
   it('should fail to submit a update request due to an invalid projectOwner property', async () => {
     await mockSessionByRole(GlobalRole.Admin);
 
-    const response = await makeBasicProductChange({ projectOwner: null });
-
-    expect(response.status).toBe(400);
-
-    const resData = await response.json();
-    expect(resData.success).toBe(false);
-    expect(resData.message).toBe('Bad Request');
-    expect(resData.error.issues.find((iss: { path: string[] }) => iss.path[0] === 'projectOwner')).not.toBeUndefined();
-  });
-
-  it('should fail to submit a update request due to an invalid primaryTechnicalLead property', async () => {
-    await mockSessionByRole(GlobalRole.Admin);
-
-    const response = await makeBasicProductChange({ primaryTechnicalLead: null });
+    const response = await makeBasicProductChange({ projectOwnerId: null });
 
     expect(response.status).toBe(400);
 
@@ -253,14 +240,29 @@ describe('Update Private Cloud Product - Validations', () => {
     expect(resData.success).toBe(false);
     expect(resData.message).toBe('Bad Request');
     expect(
-      resData.error.issues.find((iss: { path: string[] }) => iss.path[0] === 'primaryTechnicalLead'),
+      resData.error.issues.find((iss: { path: string[] }) => iss.path[0] === 'projectOwnerId'),
+    ).not.toBeUndefined();
+  });
+
+  it('should fail to submit a update request due to an invalid primaryTechnicalLead property', async () => {
+    await mockSessionByRole(GlobalRole.Admin);
+
+    const response = await makeBasicProductChange({ primaryTechnicalLeadId: null });
+
+    expect(response.status).toBe(400);
+
+    const resData = await response.json();
+    expect(resData.success).toBe(false);
+    expect(resData.message).toBe('Bad Request');
+    expect(
+      resData.error.issues.find((iss: { path: string[] }) => iss.path[0] === 'primaryTechnicalLeadId'),
     ).not.toBeUndefined();
   });
 
   it('should successfully create a request without an secondaryTechnicalLead property', async () => {
     await mockSessionByRole(GlobalRole.Admin);
 
-    const response = await makeBasicProductChange({ secondaryTechnicalLead: null });
+    const response = await makeBasicProductChange({ secondaryTechnicalLeadId: null });
     expect(response.status).toBe(200);
   });
 });

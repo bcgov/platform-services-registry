@@ -17,6 +17,7 @@ interface Props {
 export default function AddUserModal({ open, setOpen, setUserPrincipalName, setUserEmail }: Props) {
   const [query, setQuery] = useState<string>('');
   const [selected, setSelected] = useState<AppUser | undefined>({
+    id: '',
     providerUserId: '0',
     upn: '',
     email: '',

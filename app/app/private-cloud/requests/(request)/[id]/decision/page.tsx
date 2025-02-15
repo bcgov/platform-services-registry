@@ -17,12 +17,12 @@ import { z } from 'zod';
 import CancelRequest from '@/components/buttons/CancelButton';
 import PreviousButton from '@/components/buttons/Previous';
 import ProjectDescription from '@/components/form/ProjectDescriptionPrivate';
-import TeamContacts from '@/components/form/TeamContacts';
 import PageAccordion from '@/components/generic/accordion/PageAccordion';
 import FormErrorNotification from '@/components/generic/FormErrorNotification';
 import { openPrivateCloudRequestReviewModal } from '@/components/modal/privateCloudRequestReview';
 import AdditionalTeamMembers from '@/components/private-cloud/sections/AdditionalTeamMembers';
 import Quotas from '@/components/private-cloud/sections/Quotas';
+import TeamContacts from '@/components/private-cloud/sections/TeamContacts';
 import { GlobalRole } from '@/constants';
 import createClientPage from '@/core/client-page';
 import { usePrivateProductState } from '@/states/global';
@@ -49,7 +49,6 @@ export default privateCloudRequestDecision(({ getPathParams, session, router }) 
 
   const [, snap] = usePrivateProductState();
   const { id = '' } = pathParams ?? {};
-  const [secondTechLead, setSecondTechLead] = useState(false);
 
   useEffect(() => {
     if (!snap.currentRequest) return;
@@ -57,10 +56,6 @@ export default privateCloudRequestDecision(({ getPathParams, session, router }) 
     if (id && !snap.currentRequest._permissions.viewDecision) {
       router.push(`/private-cloud/requests/${id}/summary`);
       return;
-    }
-
-    if (snap.currentRequest.decisionData.secondaryTechnicalLead) {
-      setSecondTechLead(true);
     }
   }, [snap.currentRequest, router]);
   const methods = useForm({
@@ -85,13 +80,6 @@ export default privateCloudRequestDecision(({ getPathParams, session, router }) 
       ...snap.currentRequest?.decisionData,
     },
   });
-
-  const secondTechLeadOnClick = () => {
-    setSecondTechLead(!secondTechLead);
-    if (secondTechLead) {
-      methods.unregister('secondaryTechnicalLead');
-    }
-  };
 
   if (!snap.currentRequest) {
     return null;
@@ -120,7 +108,7 @@ export default privateCloudRequestDecision(({ getPathParams, session, router }) 
       label: 'Team contacts',
       description: '',
       Component: TeamContacts,
-      componentArgs: { disabled: isDisabled, secondTechLead, secondTechLeadOnClick },
+      componentArgs: { disabled: isDisabled },
     },
     {
       LeftIcon: IconUsersGroup,

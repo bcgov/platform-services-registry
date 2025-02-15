@@ -9,12 +9,12 @@ import { FormProvider, useForm } from 'react-hook-form';
 import { z } from 'zod';
 import PreviousButton from '@/components/buttons/Previous';
 import ProjectDescription from '@/components/form/ProjectDescriptionPrivate';
-import TeamContacts from '@/components/form/TeamContacts';
 import PageAccordion from '@/components/generic/accordion/PageAccordion';
 import FormErrorNotification from '@/components/generic/FormErrorNotification';
 import { openPrivateCloudProductEditSubmitModal } from '@/components/modal/privateCloudProductEditSubmit';
 import AdditionalTeamMembers from '@/components/private-cloud/sections/AdditionalTeamMembers';
 import Quotas from '@/components/private-cloud/sections/Quotas';
+import TeamContacts from '@/components/private-cloud/sections/TeamContacts';
 import SiloAccordion from '@/components/private-cloud/SiloAccordion';
 import { GlobalRole } from '@/constants';
 import createClientPage from '@/core/client-page';
@@ -33,8 +33,6 @@ const privateCloudProductEdit = createClientPage({
 export default privateCloudProductEdit(({ session }) => {
   const [, snap] = usePrivateProductState();
   const [isDisabled, setDisabled] = useState(false);
-  const [secondTechLead, setSecondTechLead] = useState(false);
-  const [isSecondaryTechLeadRemoved, setIsSecondaryTechLeadRemoved] = useState(false);
 
   const methods = useForm({
     resolver: async (...args) => {
@@ -96,22 +94,10 @@ export default privateCloudProductEdit(({ session }) => {
   useEffect(() => {
     if (!snap.currentProduct) return;
 
-    if (snap.currentProduct.secondaryTechnicalLead) {
-      setSecondTechLead(true);
-    }
-
     setDisabled(!snap.currentProduct?._permissions.edit);
   }, [snap.currentProduct]);
 
-  const secondTechLeadOnClick = () => {
-    setSecondTechLead(!secondTechLead);
-    if (secondTechLead) {
-      methods.unregister('secondaryTechnicalLead');
-      setIsSecondaryTechLeadRemoved(true);
-    }
-  };
-
-  const isSubmitEnabled = Object.keys(formState.dirtyFields).length > 0 || isSecondaryTechLeadRemoved;
+  const isSubmitEnabled = Object.keys(formState.dirtyFields).length > 0;
 
   if (!snap.currentProduct) {
     return null;
@@ -135,7 +121,7 @@ export default privateCloudProductEdit(({ session }) => {
       label: 'Team contacts',
       description: '',
       Component: TeamContacts,
-      componentArgs: { disabled: isDisabled, secondTechLead, secondTechLeadOnClick },
+      componentArgs: { disabled: isDisabled },
     },
     {
       LeftIcon: IconUsersGroup,
