@@ -8,7 +8,7 @@ const getErrorMessage = (error: any): string | undefined => {
   return undefined;
 };
 
-export default function SupportContact() {
+export default function SupportContact({ disabled }: { disabled?: boolean }) {
   const {
     watch,
     setValue,
@@ -33,6 +33,7 @@ export default function SupportContact() {
         of business hours
       </p>
       <IMaskInput
+        disabled={disabled}
         className="w-fit"
         mask="+1 (000) 000-0000"
         unmask={true}
