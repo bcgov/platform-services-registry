@@ -124,13 +124,12 @@ type QuotaUpgradeResourceDeployment {
 }
 
 type PrivateCloudDataChanges {
-  profileChanged          Boolean?
-  contactsChanged         Boolean?
-  membersChanged          Boolean?
-  quotasChanged           Boolean?
-  quotasIncrease          Boolean?
-  commonComponentsChanged Boolean?
-  parentPaths             String[]
+  profileChanged  Boolean?
+  contactsChanged Boolean?
+  membersChanged  Boolean?
+  quotasChanged   Boolean?
+  quotasIncrease  Boolean?
+  parentPaths     String[]
 }
 
 model PrivateCloudProject {
@@ -153,7 +152,6 @@ model PrivateCloudProject {
   cluster                          Cluster
   golddrEnabled                    Boolean                     @default(false)
   resourceRequests                 ResourceRequestsEnv
-  commonComponents                 CommonComponents
   supportPhoneNumber               String?
   members                          PrivateCloudProductMember[]
   requests                         PrivateCloudRequest[]       @relation("project")
@@ -178,7 +176,6 @@ model PrivateCloudRequestedProject {
   cluster                  Cluster
   golddrEnabled            Boolean                     @default(false)
   resourceRequests         ResourceRequestsEnv
-  commonComponents         CommonComponents
   supportPhoneNumber       String?
   members                  PrivateCloudProductMember[]
   decisionRequests         PrivateCloudRequest[]       @relation("decisionData")
@@ -537,25 +534,6 @@ type Budget {
   test  Float
   prod  Float
   tools Float
-}
-
-type CommonComponentsOptions {
-  planningToUse Boolean
-  implemented   Boolean
-}
-
-type CommonComponents {
-  addressAndGeolocation              CommonComponentsOptions
-  workflowManagement                 CommonComponentsOptions
-  formDesignAndSubmission            CommonComponentsOptions
-  identityManagement                 CommonComponentsOptions
-  paymentServices                    CommonComponentsOptions
-  documentManagement                 CommonComponentsOptions
-  endUserNotificationAndSubscription CommonComponentsOptions
-  publishing                         CommonComponentsOptions
-  businessIntelligence               CommonComponentsOptions
-  other                              String
-  noServices                         Boolean
 }
 
 enum ProjectStatus {

@@ -5,7 +5,6 @@ import { Button } from '@mantine/core';
 import { IconInfoCircle, IconUsersGroup, IconComponents, IconWebhook } from '@tabler/icons-react';
 import { FormProvider, useForm } from 'react-hook-form';
 import PreviousButton from '@/components/buttons/Previous';
-import CommonComponents from '@/components/form/CommonComponents';
 import ProjectDescription from '@/components/form/ProjectDescriptionPrivate';
 import PageAccordion from '@/components/generic/accordion/PageAccordion';
 import FormErrorNotification from '@/components/generic/FormErrorNotification';
@@ -39,13 +38,6 @@ export default privateCloudProductNew(({ session }) => {
       label: 'Team contacts',
       description: '',
       Component: TeamContacts,
-      componentArgs: {},
-    },
-    {
-      LeftIcon: IconComponents,
-      label: 'Common components',
-      description: '',
-      Component: CommonComponents,
       componentArgs: {},
     },
     {

@@ -65,8 +65,8 @@ async function getPvcUsage(name: string, namespace: string, cluster: Cluster) {
 
 async function collectPVCMetrics(namespace: string, cluster: Cluster) {
   const { apiClient } = getK8sClients(cluster);
-  const res = await apiClient.listNamespacedPersistentVolumeClaim(namespace);
-  const pvcs = res.body.items;
+  const res = await apiClient.listNamespacedPersistentVolumeClaim({ namespace });
+  const pvcs = res.items;
 
   const pvcPromises = pvcs.map(async (pvc) => {
     const pvcName = pvc.metadata?.name;
@@ -133,14 +133,14 @@ export async function getPodMetrics(
       {} as Record<string, { cpu: number; memory: number }>,
     );
 
-    const podStatus = await apiClient.readNamespacedPodStatus(podName, namespace);
+    const podStatus = await apiClient.readNamespacedPodStatus({ name: podName, namespace });
 
     const containers = item.containers
       .filter((container) => container.name !== 'POD') // Exclude pseudo-container
       .map((container) => {
         // The name of each app and init container in a Pod must be unique
         // https://kubernetes.io/docs/reference/kubernetes-api/workload-resources/pod-v1/#containers
-        const resourceDef = podStatus.body.spec?.containers.find((cont) => cont.name === container.name);
+        const resourceDef = podStatus.spec?.containers.find((cont) => cont.name === container.name);
 
         if (!resourceDef) {
           logger.warn(`No resource found for container: ${container.name}`);

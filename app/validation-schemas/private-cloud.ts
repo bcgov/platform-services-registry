@@ -44,46 +44,6 @@ export const resourceRequestsEnvSchema = z.object({
   tools: resourceRequestsSchema,
 });
 
-const commonComponentItemSchema = z.object({
-  planningToUse: z.boolean(),
-  implemented: z.boolean(),
-});
-
-export const commonComponentsSchema = z
-  .object({
-    addressAndGeolocation: commonComponentItemSchema,
-    workflowManagement: commonComponentItemSchema,
-    formDesignAndSubmission: commonComponentItemSchema,
-    identityManagement: commonComponentItemSchema,
-    paymentServices: commonComponentItemSchema,
-    documentManagement: commonComponentItemSchema,
-    endUserNotificationAndSubscription: commonComponentItemSchema,
-    publishing: commonComponentItemSchema,
-    businessIntelligence: commonComponentItemSchema,
-    other: z.string(),
-    noServices: z.boolean(),
-  })
-  .refine(
-    (data) => {
-      const checkBoxIsChecked = Object.values(data)
-        .filter(
-          (
-            value,
-            // @ts-ignore
-          ): value is { planningToUse?: boolean; implemented?: boolean } => typeof value === 'object' && value !== null,
-        ) // @ts-ignore
-        .some((options) => options.planningToUse || options.implemented);
-
-      const otherFieldHasValue = data.other !== undefined && data.other !== '';
-      const noServicesIsChecked = data.noServices === true;
-
-      return checkBoxIsChecked || otherFieldHasValue || noServicesIsChecked;
-    },
-    {
-      message: 'At least one common component option must be selected.',
-    },
-  );
-
 const privateCloudProductMembers = z
   .array(
     z.object({
@@ -101,7 +61,6 @@ export const _privateCloudCreateRequestBodySchema = z.object({
   projectOwnerId: z.string().max(24),
   primaryTechnicalLeadId: z.string().max(24),
   secondaryTechnicalLeadId: z.string().max(24).optional().nullable(),
-  commonComponents: commonComponentsSchema,
   golddrEnabled: z.preprocess(processBoolean, z.boolean()),
   isTest: z.preprocess(processBoolean, z.boolean()),
   quotaContactName: z.string().max(50).optional(),
@@ -239,7 +198,6 @@ export const privateCloudAdminUpdateBodySchema = z.object({
   isTest: z.preprocess(processBoolean, z.boolean()),
 });
 
-export type CommonComponents = z.infer<typeof commonComponentsSchema>;
 export type PrivateCloudCreateRequestBody = z.infer<typeof privateCloudCreateRequestBodySchema>;
 export type PrivateCloudEditRequestBody = z.infer<typeof privateCloudEditRequestBodySchema>;
 export type PrivateCloudRequestDecisionBody = z.infer<typeof privateCloudRequestDecisionBodySchema>;
