@@ -14,10 +14,10 @@ on:
         description: Environment to deploy (dev, test, prod)
         type: environment
         required: true
-      imageTag:
-        description: Image Tag Version (ghcr.io/bcgov/pltsvc:<imageTag>)
-        type: string
-        required: true
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
 
 jobs:
   toggle-maintenance:
@@ -63,24 +63,25 @@ jobs:
 
     - name: Deploy Updated Helm Chart
       run: |
-        make upgrade \
-        NAMESPACE=${{ vars.OPENSHIFT_NAMESPACE }} \
-        IMAGE_TAG=${{ inputs.imageTag }}
+        make upgrade NAMESPACE=${{ vars.OPENSHIFT_NAMESPACE }}
       working-directory: ./helm/main
 
-    - name: Trigger Maintenance Image Build (if enabling maintenance)
-      if: inputs.maintenanceMode == 'true'
-      run: |
-        curl -X POST -H "Accept: application/vnd.github.v3+json" \
-        -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" \
-        https://api.github.com/repos/${{ github.repository }}/actions/workflows/build-push-maintenance.yml/dispatches \
-        -d '{"ref":"main"}'
+    - name: Notify RocketChat on Success
+      if: success()
+      uses: ./.github/actions/rocketchat-notification
+      with:
+        webhook-url: ${{ secrets.ROCKETCHAT_WEBHOOK_URL }}
+        data: |
+          {
+            "text": ":rocket: Maintenance Mode ${{ inputs.maintenanceMode }} deployed successfully in ${{ inputs.environment }}!"
+          }
 
-    - name: Deploy Application Back to Environment (if disabling maintenance)
-      if: inputs.maintenanceMode == 'false'
-      run: |
-        echo "Deploying application back to ${{ inputs.environment }}"
-        curl -X POST -H "Accept: application/vnd.github.v3+json" \
-        -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" \
-        https://api.github.com/repos/${{ github.repository }}/actions/workflows/deploy-dispatch.yml/dispatches \
-        -d '{"ref":"main", "inputs": {"environment": "'"${{ inputs.environment }}"'", "imageTag": "'"${{ inputs.imageTag }}"'"}}'
+    - name: Notify RocketChat on Failure
+      if: failure()
+      uses: ./.github/actions/rocketchat-notification
+      with:
+        webhook-url: ${{ secrets.ROCKETCHAT_WEBHOOK_URL }}
+        data: |
+          {
+            "text": ":warning: Maintenance Mode deployment failed in ${{ inputs.environment }}!"
+          }

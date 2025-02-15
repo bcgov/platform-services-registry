@@ -7,7 +7,6 @@ on:
     paths:
     - maintenance/**
     - .github/workflows/build-push-maintenance.yml
-  workflow_dispatch:
 
 env:
   GITHUB_REGISTRY: ghcr.io
