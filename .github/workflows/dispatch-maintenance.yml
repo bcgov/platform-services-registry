@@ -1,4 +1,4 @@
-name: 06.Deploy Maintenance Dispatch
+name: 06.Dispatch Maintenance
 
 on:
   workflow_dispatch:
@@ -25,12 +25,15 @@ jobs:
     timeout-minutes: 10
     permissions:
       contents: read
-      actions: write
-
     environment:
       name: ${{ inputs.environment }}
 
     steps:
+    - uses: hmarr/debug-action@f7318c783045ac39ed9bb497e22ce835fdafbfe6
+    - uses: actions/checkout@85e6279cec87321a52edac9c87bce653a07cf6c2
+      with:
+        ref: main
+
     - name: Authenticate and set context
       uses: redhat-actions/oc-login@dfbd9912672664f9df2023c1c16e07bcf306043c
       with:
@@ -39,31 +42,12 @@ jobs:
         namespace: ${{ vars.OPENSHIFT_NAMESPACE }}
         insecure_skip_tls_verify: true
 
-    - name: Checkout Repository
-      uses: actions/checkout@v4
-
-    - name: Preserve Environment Variables (if enabling maintenance)
-      if: inputs.maintenanceMode == 'true'
+    - name: Deploy apps with Helm chart
       run: |
-        echo "Preserving current environment variables..."
-        yq e '.maintenance.previous_env = .env' helm/_app/values.yaml -i
-
-    - name: Toggle Maintenance Mode
-      run: |
-        export MAINTENANCE_MODE=${{ inputs.maintenanceMode }}
-        echo "Setting maintenance mode to $MAINTENANCE_MODE"
-        if [ "$MAINTENANCE_MODE" == "true" ]; then
-          yq e -i '.maintenance.enabled = true' helm/_app/values.yaml
-        else
-          echo "Restoring original environment variables..."
-          yq e '.env = .maintenance.previous_env' helm/_app/values.yaml -i
-          yq e -i 'del(.maintenance.previous_env)' helm/_app/values.yaml
-          yq e -i '.maintenance.enabled = false' helm/_app/values.yaml
-        fi
-
-    - name: Deploy Updated Helm Chart
-      run: |
-        make upgrade NAMESPACE=${{ vars.OPENSHIFT_NAMESPACE }}
+        helm dependency update
+        helm upgrade --set app.maintenance.enabled=${{ inputs.maintenanceMode }} \
+        pltsvc . -n ${{ vars.OPENSHIFT_NAMESPACE }} \
+        -f values.yaml -f values-${{ vars.OPENSHIFT_NAMESPACE }}.yaml
       working-directory: ./helm/main
 
     - name: Notify RocketChat on Success
