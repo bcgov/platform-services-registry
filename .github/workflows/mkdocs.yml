@@ -1,4 +1,4 @@
-name: 50. Publish MkDocs in GitHub Pages
+name: 50.Publish MkDocs in GitHub Pages
 
 on:
   push:
