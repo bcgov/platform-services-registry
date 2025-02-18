@@ -1,71 +1,84 @@
-/* General Reset */
-body,
-html {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-  width: 100%;
-  height: 100%;
-  font-family: 'Arial', sans-serif;
-  color: #333;
-  background: #f4f4f9;
+article {
+  display: block;
+  text-align: left;
+  width: 650px;
+  margin: 0 auto;
+  padding-top: 150px;
 }
-
-/* Centering Container */
-.container {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  height: 100%;
+body {
   text-align: center;
-  padding: 20px;
+  font:
+    20px Helvetica,
+    sans-serif;
+  color: #333;
 }
 
-/* message Box */
-.message-box {
-  max-width: 600px;
-  padding: 30px;
-  background: #ffffff; /* White card */
-  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
-  border-radius: 8px;
+body h1 {
+  font-size: 50px;
 }
 
-/* Heading */
-h1 {
-  font-size: 2.5rem;
-  color: #ff5733;
-  margin-bottom: 20px;
+header {
+  background-color: #036;
+  border-bottom: 2px solid #fcba19;
+  padding: 0 65px 0 65px;
+  color: #fff;
+  display: flex;
+  height: 65px;
+  top: 0;
+  position: fixed;
+  width: 100%;
 }
 
-/* Subtext */
-p {
-  font-size: 1.1rem;
-  color: #666;
-  margin-bottom: 20px;
-  line-height: 1.6;
+header h1 {
+  font-family:
+    ‘Noto Sans’,
+    Verdana,
+    Arial,
+    sans-serif;
+  font-weight: normal; /* 400 */
+  margin: 5px 5px 0 18px;
+  visibility: hidden;
 }
 
-/*  Animation */
-.animated-icon {
-  font-size: 3rem;
-  color: #ff5733;
-  animation: bounce 1.5s infinite;
+header .banner {
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  margin: 0 10px 0 0;
+  /* border-style: dotted;
+    border-width: 1px;
+    border-color: lightgrey; */
 }
 
-/* Bounce Animation */
-@keyframes bounce {
-  0%,
-  100% {
-    transform: translateY(0);
+header .other {
+  display: flex;
+  flex-grow: 1;
+  /* border-style: dotted;
+    border-width: 1px;
+    border-color: lightgrey; */
+}
+
+:focus {
+  outline: 4px solid #3b99fc;
+  outline-offset: 1px;
+}
+
+/*
+  These are sample media queries only. Media queries are quite subjective
+  but, in general, should be made for the three different classes of screen
+  size: phone, tablet, full.
+*/
+
+@media screen and (min-width: 600px) and (max-width: 899px) {
+  header h1 {
+    font-size: calc(7px + 2.2vw);
+    visibility: visible;
   }
-  50% {
-    transform: translateY(-10px);
-  }
 }
 
-/* Footer */
-footer {
-  font-size: 0.9rem;
-  color: #999;
-  margin-top: 20px;
+@media screen and (min-width: 900px) {
+  header h1 {
+    font-size: 20px;
+    visibility: visible;
+  }
 }

@@ -1,0 +1,87 @@
+name: 06.Deploy Maintenance Dispatch
+
+on:
+  workflow_dispatch:
+    inputs:
+      maintenanceMode:
+        description: Enable Maintenance Mode
+        type: choice
+        required: true
+        options:
+        - 'true'
+        - 'false'
+      environment:
+        description: Environment to deploy (dev, test, prod)
+        type: environment
+        required: true
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  toggle-maintenance:
+    runs-on: ubuntu-22.04
+    timeout-minutes: 10
+    permissions:
+      contents: read
+      actions: write
+
+    environment:
+      name: ${{ inputs.environment }}
+
+    steps:
+    - name: Authenticate and set context
+      uses: redhat-actions/oc-login@dfbd9912672664f9df2023c1c16e07bcf306043c
+      with:
+        openshift_server_url: ${{ secrets.OPENSHIFT_SERVER }}
+        openshift_token: ${{ secrets.OPENSHIFT_TOKEN }}
+        namespace: ${{ vars.OPENSHIFT_NAMESPACE }}
+        insecure_skip_tls_verify: true
+
+    - name: Checkout Repository
+      uses: actions/checkout@v4
+
+    - name: Preserve Environment Variables (if enabling maintenance)
+      if: inputs.maintenanceMode == 'true'
+      run: |
+        echo "Preserving current environment variables..."
+        yq e '.maintenance.previous_env = .env' helm/_app/values.yaml -i
+
+    - name: Toggle Maintenance Mode
+      run: |
+        export MAINTENANCE_MODE=${{ inputs.maintenanceMode }}
+        echo "Setting maintenance mode to $MAINTENANCE_MODE"
+        if [ "$MAINTENANCE_MODE" == "true" ]; then
+          yq e -i '.maintenance.enabled = true' helm/_app/values.yaml
+        else
+          echo "Restoring original environment variables..."
+          yq e '.env = .maintenance.previous_env' helm/_app/values.yaml -i
+          yq e -i 'del(.maintenance.previous_env)' helm/_app/values.yaml
+          yq e -i '.maintenance.enabled = false' helm/_app/values.yaml
+        fi
+
+    - name: Deploy Updated Helm Chart
+      run: |
+        make upgrade NAMESPACE=${{ vars.OPENSHIFT_NAMESPACE }}
+      working-directory: ./helm/main
+
+    - name: Notify RocketChat on Success
+      if: success()
+      uses: ./.github/actions/rocketchat-notification
+      with:
+        webhook-url: ${{ secrets.ROCKETCHAT_WEBHOOK_URL }}
+        data: |
+          {
+            "text": ":rocket: Maintenance Mode ${{ inputs.maintenanceMode }} deployed successfully in ${{ inputs.environment }}!"
+          }
+
+    - name: Notify RocketChat on Failure
+      if: failure()
+      uses: ./.github/actions/rocketchat-notification
+      with:
+        webhook-url: ${{ secrets.ROCKETCHAT_WEBHOOK_URL }}
+        data: |
+          {
+            "text": ":warning: Maintenance Mode deployment failed in ${{ inputs.environment }}!"
+          }
