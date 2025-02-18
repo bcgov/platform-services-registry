@@ -299,7 +299,7 @@ importers:
         version: 29.7.0
       knip:
         specifier: ^5.44.1
-        version: 5.44.1(@types/node@22.13.4)(typescript@5.7.3)
+        version: 5.44.2(@types/node@22.13.4)(typescript@5.7.3)
       lodash:
         specifier: ^4.17.21
         version: 4.17.21
@@ -2890,9 +2890,6 @@ packages:
   fast-levenshtein@2.0.6:
     resolution: {integrity: sha512-DCXu6Ifhqcks7TZKY3Hxp3y6qphY5SJZmrWMDrKcERSOXWQdMhU9Ig/PYrzyw/ul9jOIyh0N4M0tbC5hodg8dw==}
 
-  fastq@1.17.1:
-    resolution: {integrity: sha512-sRVD3lWVIXWg6By68ZN7vho9a1pQcN/WBFaAAsDDFzlJjvoGx0P8z7V1t72grFJfJhu3YPZBuu25f7Kaw2jN1w==}
-
   fastq@1.19.0:
     resolution: {integrity: sha512-7SFSRCNjBQIZH/xZR3iy5iQYR8aGBE0h3VG6/cwlbrpdciNYBMotQav8c1XI3HjHH+NikUpP53nPdlZSdWmFzA==}
 
@@ -3613,8 +3610,8 @@ packages:
     resolution: {integrity: sha512-eTIzlVOSUR+JxdDFepEYcBMtZ9Qqdef+rnzWdRZuMbOywu5tO2w2N7rqjoANZ5k9vywhL6Br1VRjUIgTQx4E8w==}
     engines: {node: '>=6'}
 
-  knip@5.44.1:
-    resolution: {integrity: sha512-YJrz7K6AA3SwXJ5LL9ZlzQX9wcihMNwKoGBAaY5kUn4rLNOZ5ehsjFV+xm8gQuIJdjsFIKcFsy0K3U3yM/mabw==}
+  knip@5.44.2:
+    resolution: {integrity: sha512-FbNYckASiU73X61cKE8Uw3QuA+jJozrB8z8tDjbcCRqM9e3ji2+PT5sigSSm3IAVDpqWdhdgsIJVZ2B74Tiqrw==}
     engines: {node: '>=18.18.0'}
     hasBin: true
     peerDependencies:
@@ -6296,7 +6293,7 @@ snapshots:
   '@nodelib/fs.walk@1.2.8':
     dependencies:
       '@nodelib/fs.scandir': 2.1.5
-      fastq: 1.17.1
+      fastq: 1.19.0
 
   '@nodelib/fs.walk@3.0.1':
     dependencies:
@@ -8321,10 +8318,6 @@ snapshots:
 
   fast-levenshtein@2.0.6: {}
 
-  fastq@1.17.1:
-    dependencies:
-      reusify: 1.0.4
-
   fastq@1.19.0:
     dependencies:
       reusify: 1.0.4
@@ -9273,7 +9266,7 @@ snapshots:
 
   kleur@3.0.3: {}
 
-  knip@5.44.1(@types/node@22.13.4)(typescript@5.7.3):
+  knip@5.44.2(@types/node@22.13.4)(typescript@5.7.3):
     dependencies:
       '@nodelib/fs.walk': 3.0.1
       '@snyk/github-codeowners': 1.1.0
