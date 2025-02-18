@@ -5,8 +5,8 @@ import { useQuery } from '@tanstack/react-query';
 import { useEffect, useState } from 'react';
 import { z } from 'zod';
 import PublicCloudProductOptions from '@/components/dropdowns/PublicCloudProductOptions';
-import ProductBadge from '@/components/form/ProductBadge';
 import Tabs, { ITab } from '@/components/generic/tabs/BasicTabs';
+import ProductBadge from '@/components/public-cloud/ProductBadge';
 import { GlobalRole } from '@/constants';
 import createClientPage from '@/core/client-page';
 import { getPublicCloudProject } from '@/services/backend/public-cloud/products';
@@ -29,7 +29,7 @@ export default publicCloudProductSecurityACS(({ getPathParams, children }) => {
     getPathParams().then((v) => setPathParams(v));
   }, []);
 
-  const [publicProductState, publicProductSnap] = usePublicProductState();
+  const [state, snap] = usePublicProductState();
   const { licencePlate = '' } = pathParams ?? {};
 
   const { data: currentProduct } = useQuery({
@@ -39,12 +39,12 @@ export default publicCloudProductSecurityACS(({ getPathParams, children }) => {
   });
 
   useEffect(() => {
-    publicProductState.currentProduct = currentProduct;
+    state.currentProduct = currentProduct;
     resetRequestsState();
   }, [currentProduct]);
 
   useEffect(() => {
-    publicProductState.licencePlate = licencePlate;
+    state.licencePlate = licencePlate;
   }, [licencePlate]);
 
   const tabs: ITab[] = [
@@ -77,15 +77,15 @@ export default publicCloudProductSecurityACS(({ getPathParams, children }) => {
     });
   }
 
-  if (!publicProductSnap.currentProduct || publicProductSnap.currentProduct.licencePlate !== licencePlate) {
+  if (!snap.currentProduct || snap.currentProduct.licencePlate !== licencePlate) {
     return null;
   }
 
   return (
     <div>
       <h1 className="flex justify-between text-xl lg:text-2xl xl:text-4xl font-semibold leading-7 text-gray-900 mt-2 mb-0 lg:mt-4">
-        {publicProductSnap.currentProduct.name}
-        <ProductBadge data={currentProduct} />
+        {snap.currentProduct.name}
+        <ProductBadge data={snap.currentProduct} />
       </h1>
       <h3 className="mt-0 italic"> Public Cloud Landing Zone</h3>
 

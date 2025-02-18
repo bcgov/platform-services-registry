@@ -8,9 +8,9 @@ import Link from 'next/link';
 import { useEffect, useState } from 'react';
 import { z } from 'zod';
 import PrivateCloudProductOptions from '@/components/dropdowns/PrivateCloudProductOptions';
-import ProductBadge from '@/components/form/ProductBadge';
 import TemporaryProductAlert from '@/components/form/TemporaryProductAlert';
 import Tabs, { ITab } from '@/components/generic/tabs/BasicTabs';
+import ProductBadge from '@/components/private-cloud/ProductBadge';
 import { IS_PROD } from '@/config';
 import { GlobalRole } from '@/constants';
 import createClientPage from '@/core/client-page';
@@ -34,7 +34,7 @@ export default privateCloudProductLayout(({ getPathParams, session, children }) 
     getPathParams().then((v) => setPathParams(v));
   }, []);
 
-  const [privateState, privateSnap] = usePrivateProductState();
+  const [state, snap] = usePrivateProductState();
   const { licencePlate = '' } = pathParams ?? {};
   const { data: currentProduct } = useQuery({
     queryKey: ['currentProduct', licencePlate],
@@ -43,12 +43,12 @@ export default privateCloudProductLayout(({ getPathParams, session, children }) 
   });
 
   useEffect(() => {
-    privateState.currentProduct = currentProduct;
+    state.currentProduct = currentProduct;
     resetRequestsState();
   }, [currentProduct]);
 
   useEffect(() => {
-    privateState.licencePlate = licencePlate;
+    state.licencePlate = licencePlate;
   }, [licencePlate]);
 
   const tabs: ITab[] = [
@@ -82,7 +82,7 @@ export default privateCloudProductLayout(({ getPathParams, session, children }) 
     });
   }
 
-  if (privateSnap.currentProduct?._permissions.viewHistory) {
+  if (snap.currentProduct?._permissions.viewHistory) {
     tabs.push({
       label: 'HISTORY',
       name: 'history',
@@ -98,35 +98,35 @@ export default privateCloudProductLayout(({ getPathParams, session, children }) 
     });
   }
 
-  if (!privateSnap.currentProduct || privateSnap.currentProduct.licencePlate !== licencePlate) {
+  if (!snap.currentProduct || snap.currentProduct.licencePlate !== licencePlate) {
     return null;
   }
 
   return (
     <div>
       <h1 className="flex justify-between text-xl lg:text-2xl xl:text-4xl font-semibold leading-7 text-gray-900 mt-2 mb-0 lg:mt-4">
-        {privateSnap.currentProduct.name}
-        <ProductBadge data={privateSnap.currentProduct} />
+        {snap.currentProduct.name}
+        <ProductBadge data={snap.currentProduct} />
       </h1>
       <h3 className="mt-0 italic">Private Cloud OpenShift platform</h3>
-      {privateSnap.currentProduct.requests.length > 0 && (
+      {snap.currentProduct.requests.length > 0 && (
         <Alert variant="light" color="blue" title="" icon={<IconInfoCircle />}>
           There is already an{' '}
           <Link
             className="underline text-blue-500 font-bold text-lg"
-            href={`/private-cloud/requests/${privateSnap.currentProduct.requests[0].id}/decision`}
+            href={`/private-cloud/requests/${snap.currentProduct.requests[0].id}/decision`}
           >
             active request
           </Link>{' '}
           for this product. You can not edit this product at this time.
         </Alert>
       )}
-      {privateSnap.currentProduct.isTest && <TemporaryProductAlert data={privateSnap.currentProduct} />}
+      {snap.currentProduct.isTest && <TemporaryProductAlert data={snap.currentProduct} />}
       <Tabs tabs={tabs}>
         <PrivateCloudProductOptions
-          licencePlate={privateSnap.currentProduct?.licencePlate}
-          canReprovision={privateSnap.currentProduct?._permissions?.reprovision}
-          canDelete={privateSnap.currentProduct?._permissions?.delete}
+          licencePlate={snap.currentProduct?.licencePlate}
+          canReprovision={snap.currentProduct?._permissions?.reprovision}
+          canDelete={snap.currentProduct?._permissions?.delete}
         />
       </Tabs>
       <div className="mt-6">{children}</div>
