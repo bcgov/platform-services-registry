@@ -70,6 +70,9 @@ app:
 
   envSecretName: pltsvc # pragma: allowlist secret
 
+  maintenance:
+    enabled: false
+
 email:
   enabled: true
   image:
