@@ -1,4 +1,4 @@
-name: 23. Build and Push Maintenance Image
+name: 23.Build and Push Maintenance Image
 
 on:
   push:
