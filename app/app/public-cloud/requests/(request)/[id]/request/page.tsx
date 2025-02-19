@@ -23,13 +23,13 @@ import AccountEnvironmentsPublic from '@/components/form/AccountEnvironmentsPubl
 import Budget from '@/components/form/Budget';
 import ExpenseAuthority from '@/components/form/ExpenseAuthority';
 import ProjectDescriptionPublic from '@/components/form/ProjectDescriptionPublic';
-import TeamContacts from '@/components/form/TeamContacts';
 import PageAccordion from '@/components/generic/accordion/PageAccordion';
 import FormErrorNotification from '@/components/generic/FormErrorNotification';
 import { openPublicCloudMouReviewModal } from '@/components/modal/publicCloudMouReview';
 import { openPublicCloudMouSignModal } from '@/components/modal/publicCloudMouSign';
 import { openPublicCloudRequestReviewModal } from '@/components/modal/publicCloudRequestReview';
 import AdditionalTeamMembers from '@/components/public-cloud/sections/AdditionalTeamMembers';
+import TeamContacts from '@/components/public-cloud/sections/TeamContacts';
 import { GlobalRole } from '@/constants';
 import createClientPage from '@/core/client-page';
 import { usePublicProductState } from '@/states/global';
