@@ -16,12 +16,14 @@ export default function AdminRequest() {
       email: 'private.admin.system@gov.bc.ca',
       userId: '',
       roles: [],
+      onboardingDate: null,
     },
     {
       ...sampleUser,
       email: 'kevin.taylor@gov.bc.ca',
       userId: '',
       roles: [PrivateCloudProductMemberRole.VIEWER, PrivateCloudProductMemberRole.SUBSCRIBER],
+      onboardingDate: null,
     },
   ];
 
