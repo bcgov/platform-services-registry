@@ -14,7 +14,7 @@ export default async function createOp({ session, body }: { session: Session; bo
     // 1. can create one globally
     permissions.createPublicCloudProducts ||
     // 2. can create one as an product member
-    [body.projectOwnerId, body.primaryTechnicalLeadId, body.secondaryTechnicalLeadId].includes(user.email) ||
+    [body.projectOwnerId, body.primaryTechnicalLeadId, body.secondaryTechnicalLeadId].includes(user.id) ||
     // 3. can create one as a ministry editor
     ministries.editor.includes(body.ministry);
 

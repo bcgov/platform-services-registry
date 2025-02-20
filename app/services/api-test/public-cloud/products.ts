@@ -22,6 +22,11 @@ import { createRoute, ParamData } from '../core';
 const productCollectionRoute = createRoute('/public-cloud/products');
 
 export async function createPublicCloudProject(data: any, paramData?: ParamData) {
+  data.projectOwnerId = data.projectOwner?.id ?? null;
+  data.primaryTechnicalLeadId = data.primaryTechnicalLead?.id ?? null;
+  data.secondaryTechnicalLeadId = data.secondaryTechnicalLead?.id ?? null;
+  data.expenseAuthorityId = data.expenseAuthority?.id ?? null;
+
   const result = await productCollectionRoute.post(_createPublicCloudProject, '', data);
   return result;
 }

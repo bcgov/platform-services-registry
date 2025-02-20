@@ -10,21 +10,21 @@ const userAttributes = [
   {
     role: 'Project Owner (PO)',
     content:
-      'This is the business owner of the application, and their contact information will be used for non-technical inquiries.',
+      'This is the business owner of the application. They are the primary point of contact for non-technical inquiries, and their contact information will be used for such purposes.',
     key: 'projectOwner',
     isOptional: false,
   },
   {
     role: 'Primary Technical Lead (TL)',
     content:
-      'This is the DevOps specialist that handles technical queries and platform updates. A Primary Technical Lead is required.',
+      'This is the DevOps specialist who is responsible for handling technical queries and managing platform updates. This role is mandatory, and they serve as the main point of contact for all technical matters.',
     key: 'primaryTechnicalLead',
     isOptional: false,
   },
   {
     role: 'Secondary Technical Lead (TL)',
     content:
-      'This is typically the DevOps specialist. We use this information to contact them with technical questions or notify them about platform events. You require a Primary Technical Lead, a Secondary Technical Lead is optional.',
+      'This is an optional role, typically filled by another DevOps specialist. They may be contacted for technical questions or notified about platform events as a backup to the Primary Technical Lead.',
     key: 'secondaryTechnicalLead',
     isOptional: true,
   },
