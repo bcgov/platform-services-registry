@@ -2,7 +2,6 @@
 
 import { AreaChart, Card, Title, Subtitle } from '@tremor/react';
 import ExportButton from '@/components/buttons/ExportButton';
-import { downloadEvents } from '@/services/backend/events';
 
 const valueFormatter = function (number: number) {
   return new Intl.NumberFormat('us').format(number).toString();
