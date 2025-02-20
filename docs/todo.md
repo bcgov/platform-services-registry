@@ -1,0 +1,1 @@
+- main/additional team members roles onto the registry and Openshift

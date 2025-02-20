@@ -1,4 +1,4 @@
-{{- if and .Values.migration.enabled (gt .Release.Revision 1)}}
+{{- if and (gt .Release.Revision 1) (not .Values.maintenance.enabled) .Values.migration.enabled }}
 apiVersion: batch/v1
 kind: Job
 metadata:
