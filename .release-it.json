@@ -8,7 +8,7 @@
     "publish": false
   },
   "hooks": {
-    "after:bump": "pnpm changelog"
+    "after:bump": "npm run changelog"
   },
   "plugins": {
     "@release-it/bumper": {
