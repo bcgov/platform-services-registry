@@ -18,6 +18,7 @@ export default function CombinedAreaGraph({
   chartData,
   categories,
   colors,
+  exportApiEndpoint /* temporary */,
 }: {
   title: string;
   subtitle: string;
@@ -25,10 +26,11 @@ export default function CombinedAreaGraph({
   chartData: any;
   categories: string[];
   colors: string[];
+  exportApiEndpoint?: string /* temporary */;
 }) {
   return (
     <div className="flex flex-col items-end">
-      <ExportButton onExport={onExport} className="m-2" />
+      <ExportButton onExport={onExport} downloadUrl={exportApiEndpoint} /* temporary */ className="m-2" />
       <Card>
         <Title>{title}</Title>
         <Subtitle>{subtitle}</Subtitle>
