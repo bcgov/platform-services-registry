@@ -47,7 +47,7 @@ jobs:
         helm dependency update
         helm upgrade pltsvc . \
         --reuse-values \
-        --set app.maintenance.enabled=${{ inputs.maintenanceMode }} \
+        --set app.maintenance.enabled=${{ inputs.status }} \
         -n ${{ vars.OPENSHIFT_NAMESPACE }} \
         -f values.yaml \
         -f values-${{ vars.OPENSHIFT_NAMESPACE }}.yaml
@@ -60,7 +60,7 @@ jobs:
         webhook-url: ${{ secrets.ROCKETCHAT_WEBHOOK_URL }}
         data: |
           {
-            "text": ":rocket: Maintenance Mode ${{ inputs.maintenanceMode }} deployed successfully in ${{ inputs.environment }}!"
+            "text": ":rocket: Maintenance Mode ${{ inputs.status }} deployed successfully in ${{ inputs.environment }}!"
           }
 
     - name: Notify RocketChat on Failure
