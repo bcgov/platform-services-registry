@@ -1,12 +1,12 @@
-import { Prisma } from '@prisma/client';
+import { EventType, Prisma } from '@prisma/client';
 import prisma from '@/core/prisma';
 import { LoginSearchBody } from '@/validation-schemas/logins';
 
-export async function loginEvents({ types = [], dates = [], userId = '' }: LoginSearchBody) {
+export async function loginEvents({ dates = [], userId = '' }: LoginSearchBody) {
   const pipeline: Prisma.InputJsonValue[] = [
     {
       $match: {
-        type: types[0],
+        type: EventType.LOGIN,
         ...(userId && userId !== '' ? { userId } : {}),
         $expr: {
           $and: [{ $gte: ['$createdAt', { $toDate: dates[0] }] }, { $lte: ['$createdAt', { $toDate: dates[1] }] }],
@@ -44,5 +44,5 @@ export async function loginEvents({ types = [], dates = [], userId = '' }: Login
   ];
 
   const result = await prisma.event.aggregateRaw({ pipeline });
-  return result as never as { date: string; [key: string]: string }[];
+  return result as never as { date: string; Logins: string }[];
 }
