@@ -45,7 +45,8 @@ jobs:
     - name: Deploy apps with Helm chart
       run: |
         helm dependency update
-        helm upgrade --set app.maintenance.enabled=${{ inputs.maintenanceMode }} \
+        helm upgrade --reuse-values --set \
+        app.maintenance.enabled=${{ inputs.maintenanceMode }} \
         pltsvc . -n ${{ vars.OPENSHIFT_NAMESPACE }} \
         -f values.yaml -f values-${{ vars.OPENSHIFT_NAMESPACE }}.yaml
       working-directory: ./helm/main
