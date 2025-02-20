@@ -8,9 +8,9 @@ Feature: Requests Review Private Cloud
     And User selects "Citizens Services" in "Ministry"
     And User clicks and selects "SILVER" in "Hosting tier"
     And User clicks tab "Team contacts"
-    And User types and selects "james.smith@gov.bc.ca" in "Product Owner email"
+    And User types and selects "james.smith@gov.bc.ca" in "Project Owner"
     And User waits for "2" seconds
-    And User types and selects "john.doe@gov.bc.ca" in "Technical Lead email"
+    And User types and selects "john.doe@gov.bc.ca" in "Primary Technical Lead"
     And User makes a screenshot
     And User clicks button "Submit"
     And User checks checkbox "By checking this box..."
@@ -41,11 +41,10 @@ Scenario: Approval Admin reviews Edit Request
     And User types "Automated Test Description Edit" in "Description"
     And User selects "Finance" in "Ministry"
     And User clicks tab "Team contacts"
-    And User types and selects "david.johnson@gov.bc.ca" in "Product Owner email"
+    And User changes "Project Owner" to "david.johnson@gov.bc.ca"
     And User waits for "2" seconds
-    And User types and selects "sarah.williams@gov.bc.ca" in "Technical Lead email"
-    And User clicks button "ADD SECONDARY TECHNICAL LEAD"
-    And User types and selects Secondary Tech Lead "michael.brown@gov.bc.ca"
+    And User changes "Primary Technical Lead" to "sarah.williams@gov.bc.ca"
+    And User types and selects "michael.brown@gov.bc.ca" in "Secondary Technical Lead"
     And User clicks tab "Quotas"
     And User types quota "1" in "CPU" for "Development"
     And User types quota "3" in "MEMORY" for "Development"
