@@ -3,17 +3,17 @@ name: 06.Dispatch Maintenance
 on:
   workflow_dispatch:
     inputs:
-      maintenanceMode:
-        description: Enable Maintenance Mode
+      environment:
+        description: Environment
+        required: true
+        default: dev
+        type: choice
+        options: [dev, test, prod]
+      status:
+        description: Maintenance status to set
         type: choice
         required: true
-        options:
-        - 'true'
-        - 'false'
-      environment:
-        description: Environment to deploy (dev, test, prod)
-        type: environment
-        required: true
+        options: ['true', 'false']
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
@@ -45,10 +45,12 @@ jobs:
     - name: Deploy apps with Helm chart
       run: |
         helm dependency update
-        helm upgrade --reuse-values --set \
-        app.maintenance.enabled=${{ inputs.maintenanceMode }} \
-        pltsvc . -n ${{ vars.OPENSHIFT_NAMESPACE }} \
-        -f values.yaml -f values-${{ vars.OPENSHIFT_NAMESPACE }}.yaml
+        helm upgrade pltsvc . \
+        --reuse-values \
+        --set app.maintenance.enabled=${{ inputs.maintenanceMode }} \
+        -n ${{ vars.OPENSHIFT_NAMESPACE }} \
+        -f values.yaml \
+        -f values-${{ vars.OPENSHIFT_NAMESPACE }}.yaml
       working-directory: ./helm/main
 
     - name: Notify RocketChat on Success
