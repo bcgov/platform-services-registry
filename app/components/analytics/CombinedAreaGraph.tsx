@@ -2,6 +2,7 @@
 
 import { AreaChart, Card, Title, Subtitle } from '@tremor/react';
 import ExportButton from '@/components/buttons/ExportButton';
+import { downloadEvents } from '@/services/backend/events';
 
 const valueFormatter = function (number: number) {
   return new Intl.NumberFormat('us').format(number).toString();
@@ -14,21 +15,21 @@ export type ChartDate = {
 export default function CombinedAreaGraph({
   title,
   subtitle,
-  exportApiEndpoint,
+  onExport,
   chartData,
   categories,
   colors,
 }: {
   title: string;
   subtitle: string;
-  exportApiEndpoint: string;
+  onExport?: () => Promise<boolean>;
   chartData: any;
   categories: string[];
   colors: string[];
 }) {
   return (
     <div className="flex flex-col items-end">
-      <ExportButton className="mb-4" downloadUrl={exportApiEndpoint} />
+      <ExportButton onExport={onExport} className="ml-2" />
       <Card>
         <Title>{title}</Title>
         <Subtitle>{subtitle}</Subtitle>

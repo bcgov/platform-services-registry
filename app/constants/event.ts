@@ -40,3 +40,8 @@ export const eventSorts = [
 export interface ExtendedEvent extends Event {
   user?: User | null;
 }
+
+export const eventTypeOptions = Object.entries(eventTypeNames).map(([key, value]) => ({
+  value: key,
+  label: value,
+}));

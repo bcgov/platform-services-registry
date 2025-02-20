@@ -1,6 +1,5 @@
 'use client';
 
-import { Button } from '@mantine/core';
 import { randomId } from '@mantine/hooks';
 import { User } from '@prisma/client';
 import _kebabCase from 'lodash-es/kebabCase';
