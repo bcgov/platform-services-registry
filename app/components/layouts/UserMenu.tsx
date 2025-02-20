@@ -108,7 +108,7 @@ export default function UserMenu() {
     {
       text: 'General Analytics',
       Icon: IconPresentationAnalytics,
-      href: '/analytics-general',
+      href: '/analytics/general',
       permission: 'viewPrivateAnalytics',
     },
     {
