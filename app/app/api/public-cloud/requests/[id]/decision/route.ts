@@ -6,7 +6,6 @@ import prisma from '@/core/prisma';
 import { BadRequestResponse, OkResponse, UnprocessableEntityResponse } from '@/core/responses';
 import { sendRequestRejectionEmails, sendRequestApprovalEmails } from '@/services/ches/public-cloud';
 import { createEvent, models, publicCloudRequestDetailInclude, tasks } from '@/services/db';
-import { upsertUsers } from '@/services/db/user';
 import { sendPublicCloudNatsMessage } from '@/services/nats';
 import {
   publicCloudRequestDecisionBodySchema,
@@ -45,7 +44,17 @@ export const POST = apiHandler(async ({ pathParams, body, session }) => {
     return BadRequestResponse('request not found');
   }
 
-  const { type, decision, decisionComment, accountCoding, ...rest } = body as PublicCloudRequestDecisionBody;
+  const {
+    projectOwnerId,
+    primaryTechnicalLeadId,
+    secondaryTechnicalLeadId,
+    expenseAuthorityId,
+    type,
+    decision,
+    decisionComment,
+    accountCoding,
+    ...rest
+  } = body as PublicCloudRequestDecisionBody;
 
   const dataToUpdate: Prisma.PublicCloudRequestUpdateInput = {
     active: decision === DecisionStatus.APPROVED,
@@ -57,25 +66,16 @@ export const POST = apiHandler(async ({ pathParams, body, session }) => {
 
   // No need to modify decision data when reviewing deletion requests.
   if (request.type !== RequestType.DELETE) {
-    await upsertUsers([
-      rest.projectOwner.email,
-      rest.primaryTechnicalLead.email,
-      rest.secondaryTechnicalLead?.email,
-      rest.expenseAuthority?.email,
-    ]);
-
     dataToUpdate.decisionData = {
       update: {
         ...rest,
         status: ProjectStatus.ACTIVE,
         licencePlate: request.licencePlate,
         provider: request.project?.provider ?? request.decisionData.provider,
-        projectOwner: { connect: { email: rest.projectOwner.email } },
-        primaryTechnicalLead: { connect: { email: rest.primaryTechnicalLead.email } },
-        secondaryTechnicalLead: rest.secondaryTechnicalLead
-          ? { connect: { email: rest.secondaryTechnicalLead.email } }
-          : undefined,
-        expenseAuthority: rest.expenseAuthority ? { connect: { email: rest.expenseAuthority.email } } : undefined,
+        projectOwner: { connect: { id: projectOwnerId } },
+        primaryTechnicalLead: { connect: { id: primaryTechnicalLeadId } },
+        secondaryTechnicalLead: secondaryTechnicalLeadId ? { connect: { id: secondaryTechnicalLeadId } } : undefined,
+        expenseAuthority: expenseAuthorityId ? { connect: { id: expenseAuthorityId } } : undefined,
       },
     };
   }

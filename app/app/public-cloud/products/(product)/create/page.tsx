@@ -32,8 +32,6 @@ const publicCloudProductNew = createClientPage({
   roles: [GlobalRole.User],
 });
 export default publicCloudProductNew(({}) => {
-  const [secondTechLead, setSecondTechLead] = useState(false);
-
   const methods = useForm({
     resolver: zodResolver(
       publicCloudCreateRequestBodySchema.refine(
@@ -61,13 +59,6 @@ export default publicCloudProductNew(({}) => {
     } as any,
   });
 
-  const secondTechLeadOnClick = () => {
-    setSecondTechLead(!secondTechLead);
-    if (secondTechLead) {
-      methods.unregister('secondaryTechnicalLead');
-    }
-  };
-
   const accordionItems = [
     {
       LeftIcon: IconInfoCircle,
@@ -90,13 +81,6 @@ export default publicCloudProductNew(({}) => {
       label: 'Team contacts',
       description: '',
       Component: TeamContacts,
-      componentArgs: { secondTechLead, secondTechLeadOnClick },
-    },
-    {
-      LeftIcon: IconUserDollar,
-      label: 'Expense authority',
-      description: '',
-      Component: ExpenseAuthority,
       componentArgs: {},
     },
     {

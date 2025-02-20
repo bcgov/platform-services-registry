@@ -125,13 +125,6 @@ export default publicCloudProductRequest(({ router }) => {
       componentArgs: { disabled: isDisabled, secondTechLead, secondTechLeadOnClick },
     },
     {
-      LeftIcon: IconUserDollar,
-      label: 'Expense authority',
-      description: '',
-      Component: ExpenseAuthority,
-      componentArgs: { disabled: isDisabled },
-    },
-    {
       LeftIcon: IconUsersGroup,
       label: 'Additional team members',
       description: '',

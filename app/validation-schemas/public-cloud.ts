@@ -48,10 +48,10 @@ const _publicCloudCreateRequestBodySchema = z.object({
     .max(1000, { message: 'Provider Selection not should contain a maximum of 1000 characters.' }),
   budget: budgetSchema,
   ministry: z.nativeEnum(Ministry),
-  projectOwner: userSchema,
-  primaryTechnicalLead: userSchema,
-  secondaryTechnicalLead: userSchema.optional().nullable(),
-  expenseAuthority: userSchema,
+  projectOwnerId: z.string().max(24),
+  primaryTechnicalLeadId: z.string().max(24),
+  secondaryTechnicalLeadId: z.string().max(24).optional().nullable(),
+  expenseAuthorityId: z.string().max(24).optional(),
   requestComment: string().optional(),
   environmentsEnabled: z
     .object({
@@ -71,8 +71,8 @@ const _publicCloudCreateRequestBodySchema = z.object({
 });
 
 const isEmailUnique = (data: any) => {
-  const { projectOwner, primaryTechnicalLead } = data;
-  return projectOwner.email !== primaryTechnicalLead.email;
+  const { projectOwnerId, primaryTechnicalLeadId } = data;
+  return projectOwnerId !== primaryTechnicalLeadId;
 };
 
 export const publicCloudCreateRequestBodySchema = _publicCloudCreateRequestBodySchema
@@ -92,7 +92,7 @@ export const publicCloudCreateRequestBodySchema = _publicCloudCreateRequestBodyS
     },
   )
   .refine(isEmailUnique, {
-    message: 'Project Owner and Primary Technical Lead must not have the same email.',
+    message: 'The Project Owner and Primary Technical Lead must be different.',
     path: ['primaryTechnicalLead'],
   });
 
@@ -119,7 +119,7 @@ export const publicCloudEditRequestBodySchema = _publicCloudEditRequestBodySchem
     },
   )
   .refine(isEmailUnique, {
-    message: 'Project Owner and Primary Technical Lead must not have the same email.',
+    message: 'The Project Owner and Primary Technical Lead must be different.',
     path: ['primaryTechnicalLead'],
   });
 
