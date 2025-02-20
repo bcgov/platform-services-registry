@@ -42,19 +42,17 @@ When(/^User types (?!.*\band selects\b)"(.*)" in "?(.*?)(?:\.\.\.)?"$/, (text: s
 });
 
 When(/^User types and selects "(.*)" in "(.*)"$/, (contactEmail: string, contactLabel: string) => {
-  cy.contains('label', contactLabel).parent().find('input').first().clear().type(contactEmail);
-  cy.contains('span', contactEmail).scrollIntoView().click();
+  cy.contains('td', contactLabel).parent().find('button').first().click();
+  cy.get('input[placeholder="Enter email..."]').click().clear().type(contactEmail);
+  cy.contains('p', contactEmail).scrollIntoView().click();
+  cy.contains('button', 'Select').click();
 });
 
-When(/^User types and selects Secondary Tech Lead "(.*)"$/, (contactEmail: string) => {
-  cy.contains('span', 'REMOVE SECONDARY TECHNICAL LEAD')
-    .parent()
-    .parent()
-    .find('input')
-    .first()
-    .clear()
-    .type(contactEmail);
-  cy.contains('span', contactEmail).screenshot().click();
+When(/^User changes "(.*)" to "(.*)"$/, (contactLabel: string, contactEmail: string) => {
+  cy.contains('td', contactLabel).scrollIntoView().parent().find('td').eq(1).click();
+  cy.get('input[placeholder="Enter email..."]').click().clear().type(contactEmail);
+  cy.contains('p', contactEmail).scrollIntoView().click();
+  cy.contains('button', 'Select').click();
 });
 
 When(/^User types justification "(.*)" in "(.*)"$/, (fieldText: string, fieldHeader) => {

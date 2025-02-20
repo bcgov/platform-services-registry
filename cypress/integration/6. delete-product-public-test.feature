@@ -15,9 +15,9 @@ Feature: Delete Request
     And User checks checkbox "Test account"
     And User checks checkbox "Tools account"
     And User clicks tab "Team contacts"
-    And User types and selects "james.smith@gov.bc.ca" in "Product Owner email"
+    And User types and selects "james.smith@gov.bc.ca" in "Project Owner"
     And User waits for "2" seconds
-    And User types and selects "john.doe@gov.bc.ca" in "Technical Lead email"
+    And User types and selects "john.doe@gov.bc.ca" in "Primary Technical Lead"
     And User clicks tab "Expense authority"
     And User types and selects "public.admin.system@gov.bc.ca" in "Expense Authority email"
     And User clicks tab "Project budget"
