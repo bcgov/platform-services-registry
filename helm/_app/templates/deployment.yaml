@@ -1,5 +1,5 @@
 {{- $deploymentTag := .Values.image.tag | default .Chart.AppVersion -}}
-
+{{- if not .Values.maintenance.enabled }}
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -8,7 +8,7 @@ metadata:
     {{- include "app.labels" . | nindent 4 }}
 spec:
   {{- if not .Values.autoscaling.enabled }}
-  replicas: {{ ternary 0 .Values.replicaCount .Values.maintenance.enabled }}
+  replicas: {{ .Values.replicaCount }}
   {{- end }}
   selector:
     matchLabels:
@@ -126,3 +126,4 @@ spec:
       tolerations:
         {{- toYaml . | nindent 8 }}
       {{- end }}
+{{- end }}
