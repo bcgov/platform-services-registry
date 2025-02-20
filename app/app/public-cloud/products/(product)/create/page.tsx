@@ -17,7 +17,6 @@ import PreviousButton from '@/components/buttons/Previous';
 import AccountCoding from '@/components/form/AccountCoding';
 import AccountEnvironmentsPublic from '@/components/form/AccountEnvironmentsPublic';
 import Budget from '@/components/form/Budget';
-import ExpenseAuthority from '@/components/form/ExpenseAuthority';
 import ProjectDescriptionPublic from '@/components/form/ProjectDescriptionPublic';
 import PageAccordion from '@/components/generic/accordion/PageAccordion';
 import FormErrorNotification from '@/components/generic/FormErrorNotification';
@@ -32,8 +31,6 @@ const publicCloudProductNew = createClientPage({
   roles: [GlobalRole.User],
 });
 export default publicCloudProductNew(({}) => {
-  const [secondTechLead, setSecondTechLead] = useState(false);
-
   const methods = useForm({
     resolver: zodResolver(
       publicCloudCreateRequestBodySchema.refine(
@@ -61,13 +58,6 @@ export default publicCloudProductNew(({}) => {
     } as any,
   });
 
-  const secondTechLeadOnClick = () => {
-    setSecondTechLead(!secondTechLead);
-    if (secondTechLead) {
-      methods.unregister('secondaryTechnicalLead');
-    }
-  };
-
   const accordionItems = [
     {
       LeftIcon: IconInfoCircle,
@@ -90,13 +80,6 @@ export default publicCloudProductNew(({}) => {
       label: 'Team contacts',
       description: '',
       Component: TeamContacts,
-      componentArgs: { secondTechLead, secondTechLeadOnClick },
-    },
-    {
-      LeftIcon: IconUserDollar,
-      label: 'Expense authority',
-      description: '',
-      Component: ExpenseAuthority,
       componentArgs: {},
     },
     {

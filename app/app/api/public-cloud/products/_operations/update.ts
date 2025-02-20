@@ -6,7 +6,6 @@ import { OkResponse, UnauthorizedResponse } from '@/core/responses';
 import { comparePublicProductData } from '@/helpers/product-change';
 import { sendEditRequestEmails } from '@/services/ches/public-cloud';
 import { createEvent, getLastClosedPublicCloudRequest, models } from '@/services/db';
-import { upsertUsers } from '@/services/db/user';
 import { sendPublicCloudNatsMessage } from '@/services/nats';
 import { PublicCloudEditRequestBody } from '@/validation-schemas/public-cloud';
 import { putPathParamSchema } from '../[licencePlate]/schema';
@@ -28,18 +27,21 @@ export default async function updateOp({
     return UnauthorizedResponse();
   }
 
-  const { requestComment, accountCoding, isAgMinistryChecked, isEaApproval, ...rest } = body;
+  const {
+    projectOwnerId,
+    primaryTechnicalLeadId,
+    secondaryTechnicalLeadId,
+    expenseAuthorityId,
+    requestComment,
+    accountCoding,
+    isAgMinistryChecked,
+    isEaApproval,
+    ...rest
+  } = body;
 
   if (!product._permissions.manageMembers) {
     rest.members = product.members.map(({ userId, roles }) => ({ userId, roles }));
   }
-
-  await upsertUsers([
-    body.projectOwner.email,
-    body.primaryTechnicalLead.email,
-    body.secondaryTechnicalLead?.email,
-    body.expenseAuthority?.email,
-  ]);
 
   const decisionData = {
     ...rest,
@@ -48,12 +50,10 @@ export default async function updateOp({
     provider: product.provider,
     createdAt: product.createdAt,
     billing: product.billingId ? { connect: { id: product.billingId } } : undefined,
-    projectOwner: { connect: { email: body.projectOwner.email } },
-    primaryTechnicalLead: { connect: { email: body.primaryTechnicalLead.email } },
-    secondaryTechnicalLead: body.secondaryTechnicalLead
-      ? { connect: { email: body.secondaryTechnicalLead.email } }
-      : undefined,
-    expenseAuthority: body.expenseAuthority ? { connect: { email: body.expenseAuthority.email } } : undefined,
+    projectOwner: { connect: { id: projectOwnerId } },
+    primaryTechnicalLead: { connect: { id: primaryTechnicalLeadId } },
+    secondaryTechnicalLead: secondaryTechnicalLeadId ? { connect: { id: secondaryTechnicalLeadId } } : undefined,
+    expenseAuthority: expenseAuthorityId ? { connect: { id: expenseAuthorityId } } : undefined,
   };
 
   // Retrieve the latest request data to acquire the decision data ID that can be assigned to the incoming request's original data.

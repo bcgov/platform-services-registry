@@ -18,7 +18,6 @@ import PreviousButton from '@/components/buttons/Previous';
 import AccountCoding from '@/components/form/AccountCoding';
 import AccountEnvironmentsPublic from '@/components/form/AccountEnvironmentsPublic';
 import Budget from '@/components/form/Budget';
-import ExpenseAuthority from '@/components/form/ExpenseAuthority';
 import ProjectDescriptionPublic from '@/components/form/ProjectDescriptionPublic';
 import PageAccordion from '@/components/generic/accordion/PageAccordion';
 import FormErrorNotification from '@/components/generic/FormErrorNotification';
@@ -41,8 +40,6 @@ const publicCloudProductEdit = createClientPage({
 export default publicCloudProductEdit(({}) => {
   const [, snap] = usePublicProductState();
   const [isDisabled, setDisabled] = useState(false);
-  const [secondTechLead, setSecondTechLead] = useState(false);
-  const [isSecondaryTechLeadRemoved, setIsSecondaryTechLeadRemoved] = useState(false);
 
   const methods = useForm({
     resolver: zodResolver(publicCloudEditRequestBodySchema),
@@ -58,20 +55,10 @@ export default publicCloudProductEdit(({}) => {
   useEffect(() => {
     if (!snap.currentProduct) return;
 
-    if (snap.currentProduct.secondaryTechnicalLead) {
-      setSecondTechLead(true);
-    }
-
     setDisabled(!snap.currentProduct?._permissions.edit);
   }, [snap.currentProduct]);
 
-  const secondTechLeadOnClick = () => {
-    setSecondTechLead(!secondTechLead);
-    if (secondTechLead) {
-      methods.unregister('secondaryTechnicalLead');
-      setIsSecondaryTechLeadRemoved(true);
-    }
-  };
+  const isSubmitEnabled = Object.keys(formState.dirtyFields).length > 0;
 
   if (!snap.currentProduct) {
     return null;
@@ -101,16 +88,7 @@ export default publicCloudProductEdit(({}) => {
       label: 'Team contacts',
       description: '',
       Component: TeamContacts,
-      componentArgs: { disabled: isDisabled, secondTechLead, secondTechLeadOnClick },
-    },
-    {
-      LeftIcon: IconUserDollar,
-      label: 'Expense authority',
-      description: '',
-      Component: ExpenseAuthority,
-      componentArgs: {
-        disabled: isDisabled,
-      },
+      componentArgs: { disabled: isDisabled },
     },
     {
       LeftIcon: IconUsersGroup,
@@ -134,8 +112,6 @@ export default publicCloudProductEdit(({}) => {
       componentArgs: { accountCodingInitial: snap.currentProduct?.billing?.accountCoding, disabled: true },
     },
   ];
-
-  const isSubmitEnabled = formState.isDirty || isSecondaryTechLeadRemoved;
 
   return (
     <div>

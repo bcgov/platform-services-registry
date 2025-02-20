@@ -15,7 +15,6 @@ import PreviousButton from '@/components/buttons/Previous';
 import AccountCoding from '@/components/form/AccountCoding';
 import AccountEnvironmentsPublic from '@/components/form/AccountEnvironmentsPublic';
 import Budget from '@/components/form/Budget';
-import ExpenseAuthority from '@/components/form/ExpenseAuthority';
 import ProjectDescriptionPublic from '@/components/form/ProjectDescriptionPublic';
 import PageAccordion from '@/components/generic/accordion/PageAccordion';
 import AdditionalTeamMembers from '@/components/public-cloud/sections/AdditionalTeamMembers';
@@ -90,13 +89,6 @@ export default publicCloudRequestOriginal(({ router }) => {
       description: '',
       Component: TeamContacts,
       componentArgs: { disabled: isDisabled, secondTechLead, secondTechLeadOnClick },
-    },
-    {
-      LeftIcon: IconUserDollar,
-      label: 'Expense authority',
-      description: '',
-      Component: ExpenseAuthority,
-      componentArgs: { disabled: isDisabled },
     },
     {
       LeftIcon: IconUsersGroup,

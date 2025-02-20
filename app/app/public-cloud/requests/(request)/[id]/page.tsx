@@ -18,7 +18,6 @@ import { FormProvider, useForm } from 'react-hook-form';
 import { z } from 'zod';
 import AccountCoding from '@/components/form/AccountCoding';
 import Budget from '@/components/form/Budget';
-import ExpenseAuthority from '@/components/form/ExpenseAuthority';
 import ProjectDescriptionPublic from '@/components/form/ProjectDescriptionPublic';
 import PageAccordion from '@/components/generic/accordion/PageAccordion';
 import TeamContacts from '@/components/public-cloud/sections/TeamContacts';
@@ -75,16 +74,7 @@ export default publicCloudRequest(({ getPathParams }) => {
       Component: TeamContacts,
       componentArgs: {
         disabled: true,
-        secondTechLead: !!request.decisionData.secondaryTechnicalLeadId,
-        secondTechLeadOnClick: () => {},
       },
-    },
-    {
-      LeftIcon: IconUserDollar,
-      label: 'Expense authority',
-      description: '',
-      Component: ExpenseAuthority,
-      componentArgs: { disabled: true },
     },
     {
       LeftIcon: IconMoneybag,
