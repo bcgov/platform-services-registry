@@ -1,4 +1,3 @@
-import { Event } from '@prisma/client';
 import axios from 'axios';
 import { eventSorts, ExtendedEvent } from '@/constants/event';
 import { downloadFile } from '@/utils/browser';

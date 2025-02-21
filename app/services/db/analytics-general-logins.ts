@@ -1,13 +1,15 @@
-import { Prisma, EventType } from '@prisma/client';
+import { EventType, Prisma } from '@prisma/client';
 import prisma from '@/core/prisma';
+import { AnalyticsGeneralFilterBody } from '@/validation-schemas/analytics-general';
 
-export async function loginEvents() {
+export async function filterAnalyticsGeneral({ dates = [], userId = '' }: AnalyticsGeneralFilterBody) {
   const pipeline: Prisma.InputJsonValue[] = [
     {
       $match: {
         type: EventType.LOGIN,
+        ...(userId && userId !== '' ? { userId } : {}),
         $expr: {
-          $gte: ['$createdAt', { $dateSubtract: { startDate: '$$NOW', unit: 'month', amount: 3 } }],
+          $and: [{ $gte: ['$createdAt', { $toDate: dates[0] }] }, { $lte: ['$createdAt', { $toDate: dates[1] }] }],
         },
       },
     },

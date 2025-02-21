@@ -1,16 +1,11 @@
-import { Box, Button, LoadingOverlay } from '@mantine/core';
-import { EventType, User } from '@prisma/client';
+import { Box, LoadingOverlay } from '@mantine/core';
+import { EventType } from '@prisma/client';
 import { useSnapshot } from 'valtio';
 import FormDateRangePicker from '@/components/generic/select/FormDateRangePicker';
 import FormMultiSelect from '@/components/generic/select/FormMultiSelect';
 import FormUserPicker from '@/components/generic/select/FormUserPicker';
-import { eventTypeNames } from '@/constants/event';
+import { eventTypeOptions } from '@/constants/event';
 import { pageState } from './state';
-
-const eventTypeOptions = Object.entries(eventTypeNames).map(([key, value]) => ({
-  value: key,
-  label: value,
-}));
 
 export default function FilterPanel({ isLoading = false }: { isLoading?: boolean }) {
   const pageSnapshot = useSnapshot(pageState);
