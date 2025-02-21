@@ -35,7 +35,9 @@ export async function searchUsers(data: UserSearchBody) {
 }
 
 export async function updateUser(id: string, data: UserUpdateBody) {
-  const result = await instance.put<{ roles: string[] }>(`/${id}`, data).then((res) => res.data);
+  const result = await instance
+    .put<{ roles: string[]; onboardingDate: string | null }>(`/${id}`, data)
+    .then((res) => res.data);
   return result;
 }
 

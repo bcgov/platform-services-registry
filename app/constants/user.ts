@@ -39,6 +39,8 @@ export enum GlobalPermissions {
   ViewTasks = 'viewTasks',
   SendTaskEmails = 'sendTaskEmails',
   EditUsers = 'editUsers',
+  EditUserRoles = 'editUserRoles',
+  EditUserOnboardingDate = 'editUserOnboardingDate',
 }
 
 export enum GlobalRole {

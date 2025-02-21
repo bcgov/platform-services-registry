@@ -28,6 +28,7 @@ model User {
   createdAt                                             DateTime                       @default(now())
   updatedAt                                             DateTime                       @updatedAt
   lastSeen                                              DateTime?
+  onboardingDate                                        DateTime?
   privateCloudProjectsAsProjectOwner                    PrivateCloudProject[]          @relation("projectOwner")
   privateCloudProjectsAsPrimaryTechnicalLead            PrivateCloudProject[]          @relation("primaryTechnicalLead")
   privateCloudProjectsAsSecondaryTechnicalLead          PrivateCloudProject[]          @relation("secondaryTechnicalLead")

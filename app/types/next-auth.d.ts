@@ -48,6 +48,8 @@ declare module 'next-auth' {
     viewEvents: boolean;
     viewUsers: boolean;
     editUsers: boolean;
+    editUserRoles: boolean;
+    editUserOnboardingDate: boolean;
     viewTasks: boolean;
     sendTaskEmails: boolean;
 

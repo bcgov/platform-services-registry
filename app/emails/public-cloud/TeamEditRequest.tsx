@@ -16,12 +16,14 @@ export default function TeamEditRequest() {
       email: 'private.admin.system@gov.bc.ca',
       userId: '',
       roles: [],
+      onboardingDate: null,
     },
     {
       ...sampleUser,
       email: 'kevin.taylor@gov.bc.ca',
       userId: '',
       roles: [PublicCloudProductMemberRole.VIEWER, PublicCloudProductMemberRole.SUBSCRIBER],
+      onboardingDate: null,
     },
   ];
 

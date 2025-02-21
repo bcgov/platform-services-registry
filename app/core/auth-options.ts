@@ -294,6 +294,8 @@ export async function generateSession({
     viewTasks: session.isAdmin || session.isTaskReader,
     sendTaskEmails: session.isAdmin,
     editUsers: session.isAdmin,
+    editUserRoles: session.isAdmin,
+    editUserOnboardingDate: session.isPrivateReviewer,
 
     cancelPrivateCloudRequest: session.isUser,
     cancelPublicCloudRequest: session.isUser,

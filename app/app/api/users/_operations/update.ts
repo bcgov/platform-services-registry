@@ -1,3 +1,4 @@
+import _isUndefined from 'lodash-es/isUndefined';
 import { Session } from 'next-auth';
 import { TypeOf } from 'zod';
 import prisma from '@/core/prisma';
@@ -16,14 +17,23 @@ export default async function updateOp({
   pathParams: TypeOf<typeof putPathParamSchema>;
 }) {
   const { id } = pathParams;
-  const { roles } = body;
+  const { roles, onboardingDate } = body;
 
   const user = await prisma.user.findUnique({ where: { id }, select: { email: true } });
   if (!user) {
     return BadRequestResponse('user not found');
   }
 
-  const result = await updateUserRoles(user.email, roles);
+  let updatedRoles: (string | undefined)[] = [];
+  if (roles && session.permissions.editUserRoles) {
+    updatedRoles = (await updateUserRoles(user.email, roles))?.roles ?? [];
+  }
 
-  return OkResponse(result);
+  let updatedOnboardingDate: Date | null = null;
+  if (!_isUndefined(onboardingDate) && session.permissions.editUserOnboardingDate) {
+    const updatedUser = await prisma.user.update({ where: { id }, data: { onboardingDate } });
+    updatedOnboardingDate = updatedUser.onboardingDate;
+  }
+
+  return OkResponse({ roles: updatedRoles, onboardingDate: updatedOnboardingDate });
 }

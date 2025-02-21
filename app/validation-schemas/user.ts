@@ -14,7 +14,8 @@ export const userSearchBodySchema = z.object({
 });
 
 export const userUpdateBodySchema = z.object({
-  roles: z.array(z.string()),
+  roles: z.array(z.string()).nullable().optional(),
+  onboardingDate: z.string().nullable().optional(),
 });
 
 export type UserSearchBody = z.infer<typeof userSearchBodySchema>;

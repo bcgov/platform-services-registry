@@ -17,6 +17,7 @@ export const getRandomUser = () => {
     updatedAt: new Date(),
     lastSeen: new Date(),
     createdAt: new Date(),
+    onboardingDate: null,
   };
 };
 export const getRandomCloudProviderSelectionReasons = () => {

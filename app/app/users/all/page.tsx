@@ -39,6 +39,10 @@ export default usersPage(({ session }) => {
     totalCount = data.totalCount;
   }
 
+  if (!session) {
+    return null;
+  }
+
   return (
     <>
       <Table
@@ -68,7 +72,7 @@ export default usersPage(({ session }) => {
         filters={<FilterPanel availableRoles={availableRoles} />}
         isLoading={isLoading}
       >
-        <TableBody data={users} availableRoles={availableRoles} disabled={!session?.permissions.editUsers} />
+        <TableBody data={users} availableRoles={availableRoles} session={session} />
       </Table>
     </>
   );

@@ -4,8 +4,10 @@ import { Badge, Table, Button } from '@mantine/core';
 import _get from 'lodash-es/get';
 import _isEqual from 'lodash-es/isEqual';
 import _truncate from 'lodash-es/truncate';
-import React from 'react';
+import { Session } from 'next-auth';
+import React, { useState } from 'react';
 import { FormProvider, useForm } from 'react-hook-form';
+import FormDatePicker from '@/components/generic/select/FormDatePicker';
 import HookFormMultiSelect from '@/components/generic/select/HookFormMultiSelect';
 import { failure, success } from '@/components/notification';
 import UserProfile from '@/components/users/UserProfile';
@@ -16,11 +18,13 @@ import ProductsCard from './ProductsCard';
 
 interface TableProps {
   data: AdminViewUser[];
-  disabled?: boolean;
   availableRoles?: string[];
+  session: Session;
 }
 
-export default function TableBody({ data, disabled = false, availableRoles = [] }: TableProps) {
+export default function TableBody({ data, availableRoles = [], session }: TableProps) {
+  const [savingOnboardingDate, setSavingOnboardingDate] = useState(false);
+
   const methods = useForm({
     values: {
       users: data,
@@ -31,7 +35,7 @@ export default function TableBody({ data, disabled = false, availableRoles = [] 
 
   const rows = users.length ? (
     users.map((item, index) => (
-      <Table.Tr key={item.id ?? index}>
+      <Table.Tr key={item.id}>
         <Table.Td>
           <UserProfile data={item} />
         </Table.Td>
@@ -57,7 +61,11 @@ export default function TableBody({ data, disabled = false, availableRoles = [] 
           {item.id && (
             <div className="grid grid-cols-10">
               <div className="col-span-7 max-w-md">
-                <HookFormMultiSelect name={`users.${index}.roles`} data={availableRoles} disabled={disabled} />
+                <HookFormMultiSelect
+                  name={`users.${index}.roles`}
+                  data={availableRoles}
+                  disabled={!session.permissions.editUserRoles}
+                />
               </div>
               <div className="col-span-3">
                 {!_isEqual(users[index]?.roles, data[index]?.roles) && (
@@ -93,6 +101,37 @@ export default function TableBody({ data, disabled = false, availableRoles = [] 
             </div>
           )}
         </Table.Td>
+
+        <Table.Td className="italic">
+          {session.permissions.editUserOnboardingDate ? (
+            <FormDatePicker
+              onChange={async (date, done) => {
+                setSavingOnboardingDate(true);
+                const result = await updateUser(item.id, {
+                  onboardingDate: date ? date.toISOString() : null,
+                });
+
+                if (result.onboardingDate) {
+                  const savedDate = new Date(result.onboardingDate);
+                  methods.setValue(`users.${index}.onboardingDate`, savedDate);
+                  done();
+                  success();
+                } else {
+                  failure({ message: 'Failed to update onboarding date', autoClose: true });
+                }
+
+                setSavingOnboardingDate(false);
+              }}
+              value={item.onboardingDate}
+              loading={savingOnboardingDate}
+              classNames={{ wrapper: 'col-span-4' }}
+              placeholder="not onboarded yet"
+            />
+          ) : (
+            formatDate(item.onboardingDate) || ''
+          )}
+        </Table.Td>
+
         <Table.Td>
           <ProductsCard products={item.privateProducts} context="private-cloud">
             <Badge color="primary" variant="filled">
@@ -108,7 +147,8 @@ export default function TableBody({ data, disabled = false, availableRoles = [] 
             </Badge>
           </ProductsCard>
         </Table.Td>
-        <Table.Td className="italic">{formatDate(item.lastSeen) || <span>has not yet logged in</span>}</Table.Td>
+
+        <Table.Td className="italic">{formatDate(item.lastSeen) || ''}</Table.Td>
         <Table.Td></Table.Td>
       </Table.Tr>
     ))
@@ -130,6 +170,7 @@ export default function TableBody({ data, disabled = false, availableRoles = [] 
                 <Table.Th>User</Table.Th>
                 <Table.Th>Position</Table.Th>
                 <Table.Th>Roles</Table.Th>
+                <Table.Th>Onboarding Date</Table.Th>
                 <Table.Th># of Products</Table.Th>
                 <Table.Th>Last active</Table.Th>
               </Table.Tr>
