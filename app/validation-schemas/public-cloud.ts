@@ -13,11 +13,32 @@ import { AGMinistries } from '@/constants';
 import { processEnumString } from '@/utils/js';
 import { userSchema, RequestDecision } from './shared';
 
-export const budgetSchema = z.object({
-  dev: z.number().min(50.0, 'Value should be no less than USD 50').default(50.0),
-  test: z.number().min(50.0, 'Value should be no less than USD 50').default(50.0),
-  prod: z.number().min(50.0, 'Value should be no less than USD 50').default(50.0),
-  tools: z.number().min(50.0, 'Value should be no less than USD 50').default(50.0),
+export const getBudgetSchema = (provider: Provider) => {
+  if (provider === Provider.AZURE) {
+    return z.object({
+      dev: z.number().min(0).default(0),
+      test: z.number().min(0).default(0),
+      prod: z.number().min(0).default(0),
+      tools: z.number().min(0).default(0),
+    });
+  }
+
+  const minValue = 50;
+  const message = 'Value should be no less than USD 100';
+
+  return z.object({
+    dev: z.number().min(minValue, message).default(minValue),
+    test: z.number().min(minValue, message).default(minValue),
+    prod: z.number().min(minValue, message).default(minValue),
+    tools: z.number().min(minValue, message).default(minValue),
+  });
+};
+
+const budgetSchema = z.object({
+  dev: z.number().min(0).default(0),
+  test: z.number().min(0).default(0),
+  prod: z.number().min(0).default(0),
+  tools: z.number().min(0).default(0),
 });
 
 const publicCloudProductMembers = z
@@ -94,6 +115,17 @@ export const publicCloudCreateRequestBodySchema = _publicCloudCreateRequestBodyS
   .refine(isEmailUnique, {
     message: 'The Project Owner and Primary Technical Lead must be different.',
     path: ['primaryTechnicalLead'],
+  })
+  .superRefine((data, ctx) => {
+    console.log('data.budgetdata.budget', data.budget);
+    const budgetSchema = getBudgetSchema(data.provider);
+    const budgetParseResult = budgetSchema.safeParse(data.budget);
+
+    if (!budgetParseResult.success) {
+      budgetParseResult.error.errors.forEach((error) =>
+        ctx.addIssue({ ...error, path: ['budget', ...(error.path || [])] }),
+      );
+    }
   });
 
 const _publicCloudEditRequestBodySchema = _publicCloudCreateRequestBodySchema.merge(
@@ -162,7 +194,6 @@ export const publicCloudRequestSearchBodySchema = z.object({
   sortOrder: z.preprocess(processEnumString, z.nativeEnum(Prisma.SortOrder).optional()),
 });
 
-export type Budget = z.infer<typeof budgetSchema>;
 export type PublicCloudCreateRequestBody = z.infer<typeof publicCloudCreateRequestBodySchema>;
 export type PublicCloudEditRequestBody = z.infer<typeof publicCloudEditRequestBodySchema>;
 export type PublicCloudRequestDecisionBody = z.infer<typeof publicCloudRequestDecisionBodySchema>;

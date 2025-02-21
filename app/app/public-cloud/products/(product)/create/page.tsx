@@ -50,10 +50,10 @@ export default publicCloudProductNew(({}) => {
         production: true,
       },
       budget: {
-        dev: 50,
-        test: 50,
-        prod: 50,
-        tools: 50,
+        dev: 0,
+        test: 0,
+        prod: 0,
+        tools: 0,
       },
     } as any,
   });
