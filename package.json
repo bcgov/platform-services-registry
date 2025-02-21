@@ -22,7 +22,7 @@
     "@eslint/js": "^9.19.0",
     "@release-it/bumper": "^7.0.0",
     "@types/eslint-config-prettier": "^6.11.3",
-    "@types/eslint__js": "^8.42.3",
+    "@types/eslint__js": "^9.0.0",
     "conventional-changelog-cli": "^5.0.0",
     "cypress": "^13.13.2",
     "cypress-keycloak": "^2.0.1",
