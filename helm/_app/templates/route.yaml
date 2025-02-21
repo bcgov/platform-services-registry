@@ -17,9 +17,5 @@ spec:
   to:
     kind: Service
     name:
-    {{- if .Values.maintenance.enabled }}
-      {{ include "app.fullname" . }}-maintenance
-    {{- else }}
       {{ include "app.fullname" . }}
-    {{- end }}
 {{- end }}
