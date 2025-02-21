@@ -1,3 +1,27 @@
+## [0.43.14](https://github.com/bcgov/platform-services-registry/compare/v0.43.11...v0.43.14) (2025-02-21)
+
+### Features
+
+* **4484:** implement PO & TL picker for public cloud ([cc478be](https://github.com/bcgov/platform-services-registry/commit/cc478be596028f43f95b6ab1117e6044bcb5d286))
+* **4484:** implement team contacts user picker for private cloud ([2a92130](https://github.com/bcgov/platform-services-registry/commit/2a921303d777bc7587c6e89e2e8169f827292534))
+* **4829:** change maintenancedeployment file name and image-name ([e562104](https://github.com/bcgov/platform-services-registry/commit/e5621049b7045eb5efb6f9f5edd9d5494f623f8e))
+* **4842:** add helm files for maintenance mode ([ee8f794](https://github.com/bcgov/platform-services-registry/commit/ee8f79456f79c4799ee253a558470f27f8de220d))
+* **4843:** add GitHub dispatcher to toggle maintenance ([af0e751](https://github.com/bcgov/platform-services-registry/commit/af0e7519623c0bdcac2285ca31369dba5a462579))
+* **4843:** add toggling maintenance mode dispatcher ([1972519](https://github.com/bcgov/platform-services-registry/commit/19725197da6088a9260ebe6a37b20a64347954ad))
+* **4870:** improve admin billing page ([759b65a](https://github.com/bcgov/platform-services-registry/commit/759b65a2bd675f2a2500ee6d632e4e040f2808b8))
+* **4912:** enhance admin event page ([e56677b](https://github.com/bcgov/platform-services-registry/commit/e56677badd06be760ba0c2c57124bdd7420a7e6a))
+* **4918:** deprecate common components ([5871da0](https://github.com/bcgov/platform-services-registry/commit/5871da0f3def5152a1958b3d28cda5f74be42a82))
+* **4926:** add cluster badge in private products ([4deff80](https://github.com/bcgov/platform-services-registry/commit/4deff80eae11d61488503f39c876fb1cc702eb6e))
+
+### Bug Fixes
+
+* **4983:** use original public cloud's team section component ([fea7036](https://github.com/bcgov/platform-services-registry/commit/fea7036d5530df0c6204c6eea3851e4bc4bd03c2))
+* **4984:** resolve create page errors in public cloud ([f3959d8](https://github.com/bcgov/platform-services-registry/commit/f3959d8b60cdcdf308af6ba6192d9c2ba728bda7))
+* **4987:** install cypress in CI pipelines ([3ac7f25](https://github.com/bcgov/platform-services-registry/commit/3ac7f25ac9b5ead1fd50ed879a0c83bff3619579))
+
+### End-to-end Testing
+
+* **4992:** adapt tests to new user picker component ([931fa63](https://github.com/bcgov/platform-services-registry/commit/931fa63a9421ef410a7e2138569ea282355a3108))
 ## [0.43.11](https://github.com/bcgov/platform-services-registry/compare/v0.43.10...v0.43.11) (2025-02-07)
 
 ### Features
