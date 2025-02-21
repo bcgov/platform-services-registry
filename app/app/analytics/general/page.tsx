@@ -1,6 +1,5 @@
 'use client';
 
-import { Box, LoadingOverlay } from '@mantine/core';
 import { useQuery } from '@tanstack/react-query';
 import { useSnapshot } from 'valtio';
 import CombinedAreaGraph from '@/components/analytics/CombinedAreaGraph';
@@ -8,8 +7,8 @@ import FormDateRangePicker from '@/components/generic/select/FormDateRangePicker
 import FormUserPicker from '@/components/generic/select/FormUserPicker';
 import { GlobalPermissions } from '@/constants';
 import createClientPage from '@/core/client-page';
-import { searchLogins } from '@/services/backend/analytics/general';
-import { downloadEvents } from '@/services/backend/events';
+import { getAnalyticsGeneralData, downloadAnalyticsGeneral } from '@/services/backend/analytics/general';
+import { formatDate } from '@/utils/js/date';
 import { pageState } from './state';
 
 const analyticsDashboard = createClientPage({
@@ -17,13 +16,11 @@ const analyticsDashboard = createClientPage({
   fallbackUrl: '/login?callbackUrl=/home',
 });
 
-const formatDate = (date?: string) => (date ? new Date(date).toLocaleDateString() : 'N/A');
-
 export default analyticsDashboard(() => {
   const snap = useSnapshot(pageState);
   const { data, isLoading } = useQuery({
     queryKey: ['logins', snap.dates, snap.userId],
-    queryFn: () => searchLogins(snap),
+    queryFn: () => getAnalyticsGeneralData(snap),
   });
 
   return (
@@ -45,26 +42,20 @@ export default analyticsDashboard(() => {
         />
       </div>
       <div className="flex flex-col gap-y-12 mt-14">
-        {isLoading ? (
-          <Box pos="relative" className="min-h-96">
-            <LoadingOverlay visible={isLoading} zIndex={1000} overlayProps={{ radius: 'sm', blur: 2 }} />
-            {!isLoading}
-          </Box>
-        ) : (
-          <CombinedAreaGraph
-            title="Daily User Login Events"
-            subtitle={`This chart displays the number of login events per day from ${formatDate(
-              snap.dates?.[0],
-            )} to ${formatDate(snap.dates?.[1])}.`}
-            chartData={data}
-            categories={['Logins']}
-            colors={['indigo']}
-            onExport={async () => {
-              const result = await downloadEvents(snap);
-              return result;
-            }}
-          />
-        )}
+        <CombinedAreaGraph
+          isLoading={isLoading}
+          title="Daily User Login Events"
+          subtitle={`This chart displays the number of login events per day from ${formatDate(
+            snap.dates?.[0],
+          )} to ${formatDate(snap.dates?.[1])}.`}
+          chartData={data}
+          categories={['Logins']}
+          colors={['indigo']}
+          onExport={async () => {
+            const result = await downloadAnalyticsGeneral(snap);
+            return result;
+          }}
+        />
       </div>
     </div>
   );

@@ -1,5 +1,6 @@
 'use client';
 
+import { LoadingOverlay } from '@mantine/core';
 import { AreaChart, Card, Title, Subtitle } from '@tremor/react';
 import ExportButton from '@/components/buttons/ExportButton';
 
@@ -18,6 +19,7 @@ export default function CombinedAreaGraph({
   chartData,
   categories,
   colors,
+  isLoading = false,
   exportApiEndpoint /* temporary */,
 }: {
   title: string;
@@ -26,23 +28,32 @@ export default function CombinedAreaGraph({
   chartData: any;
   categories: string[];
   colors: string[];
+  isLoading?: boolean;
   exportApiEndpoint?: string /* temporary */;
 }) {
   return (
     <div className="flex flex-col items-end">
       <ExportButton onExport={onExport} downloadUrl={exportApiEndpoint} /* temporary */ className="m-2" />
-      <Card>
+      <Card className="relative">
         <Title>{title}</Title>
         <Subtitle>{subtitle}</Subtitle>
-        <AreaChart
-          className="h-72 mt-4"
-          data={chartData}
-          index="date"
-          yAxisWidth={65}
-          categories={categories}
-          colors={colors}
-          valueFormatter={valueFormatter}
-        />
+        <div className="relative">
+          <LoadingOverlay
+            visible={isLoading ?? false}
+            zIndex={50}
+            overlayProps={{ radius: 'sm', blur: 2 }}
+            loaderProps={{ color: 'pink', type: 'bars' }}
+          />
+          <AreaChart
+            className="h-72 mt-4"
+            data={chartData}
+            index="date"
+            yAxisWidth={65}
+            categories={categories}
+            colors={colors}
+            valueFormatter={valueFormatter}
+          />
+        </div>
       </Card>
     </div>
   );

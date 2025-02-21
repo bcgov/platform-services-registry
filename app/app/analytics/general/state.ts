@@ -1,7 +1,7 @@
 import { EventType } from '@prisma/client';
 import { proxy } from 'valtio';
 import { deepClone } from 'valtio/utils';
-import { LoginSearchBody } from '@/validation-schemas/logins';
+import { AnalyticsGeneralFilterBody } from '@/validation-schemas/analytics-general';
 
 const initialValue = {
   types: [EventType.LOGIN],
@@ -9,4 +9,4 @@ const initialValue = {
   userId: '',
 };
 
-export const pageState = proxy<LoginSearchBody>(deepClone(initialValue));
+export const pageState = proxy<AnalyticsGeneralFilterBody>(deepClone(initialValue));
