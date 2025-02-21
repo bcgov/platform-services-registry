@@ -98,6 +98,7 @@ type SearchUser = Prisma.UserGetPayload<{
     createdAt: true;
     updatedAt: true;
     lastSeen: true;
+    onboardingDate: true;
   };
 }>;
 
@@ -158,6 +159,7 @@ export async function searchUsers({
         createdAt: true,
         updatedAt: true,
         lastSeen: true,
+        onboardingDate: true,
       },
     }),
     prisma.user.count({
