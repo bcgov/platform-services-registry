@@ -50,6 +50,7 @@ export interface FormDollarInputProps extends InputProps {
   copyable?: boolean;
   onCopy?: () => void;
   info?: string;
+  currency?: string;
 }
 
 export default function FormDollarInput({
@@ -63,6 +64,7 @@ export default function FormDollarInput({
   copyable = false,
   onCopy,
   info,
+  currency = 'USD',
   ...others
 }: FormDollarInputProps) {
   if (!id) id = _kebabCase(name);
@@ -98,7 +100,7 @@ export default function FormDollarInput({
         />
         <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-3">
           <span className="text-gray-500 sm:text-sm" id="price-currency">
-            USD
+            {currency}
           </span>
         </div>
       </div>
