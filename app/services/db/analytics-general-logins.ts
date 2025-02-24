@@ -2,7 +2,7 @@ import { EventType, Prisma } from '@prisma/client';
 import prisma from '@/core/prisma';
 import { AnalyticsGeneralFilterBody } from '@/validation-schemas/analytics-general';
 
-export async function filterAnalyticsGeneral({ dates = [], userId = '' }: AnalyticsGeneralFilterBody) {
+export async function filterAnalyticsGeneral({ dates, userId = '' }: AnalyticsGeneralFilterBody) {
   const pipeline: Prisma.InputJsonValue[] = [
     {
       $match: {

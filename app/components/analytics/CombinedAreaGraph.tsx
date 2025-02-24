@@ -39,7 +39,7 @@ export default function CombinedAreaGraph({
         <Subtitle>{subtitle}</Subtitle>
         <div className="relative">
           <LoadingOverlay
-            visible={isLoading ?? false}
+            visible={isLoading}
             zIndex={50}
             overlayProps={{ radius: 'sm', blur: 2 }}
             loaderProps={{ color: 'pink', type: 'bars' }}
