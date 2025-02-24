@@ -3,7 +3,7 @@ import { deepClone } from 'valtio/utils';
 import { AnalyticsGeneralFilterBody } from '@/validation-schemas/analytics-general';
 
 const initialValue = {
-  dates: [new Date(new Date().setMonth(new Date().getMonth() - 3)).toISOString(), new Date().toISOString()],
+  dates: [],
   userId: '',
 };
 
