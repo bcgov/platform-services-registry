@@ -35,7 +35,7 @@ export default function AdditionalTeamMembers<
             onClick={async () => {
               if (disabled) return;
 
-              const { state } = await openUserPickerModal({});
+              const { state } = await openUserPickerModal({ initialValue: member }, { initialState: { user: member } });
               if (state.user) {
                 setValue(
                   `members.${index}`,

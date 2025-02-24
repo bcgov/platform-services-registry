@@ -45,7 +45,7 @@ export default function FormUserPicker({
         <UserProfile
           data={user as UserPickerData}
           onClick={async () => {
-            const { state } = await openUserPickerModal({ initialValue: value });
+            const { state } = await openUserPickerModal({ initialValue: user }, { initialState: { user } });
             setUser(state.user ?? null);
             onChange(state.user ?? null);
           }}
