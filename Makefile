@@ -29,7 +29,7 @@ install:
 asdf-install:
 	cat .tool-versions | cut -f 1 -d ' ' | xargs -n 1 asdf plugin-add || true
 	asdf plugin update --all
-	asdf install
+	asdf install || true
 	asdf reshim
 
 # To copy data from the live environment, please follow these steps:
