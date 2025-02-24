@@ -105,16 +105,17 @@ export default function TableBody({ data, availableRoles = [], session }: TableP
         <Table.Td className="italic">
           {session.permissions.editUserOnboardingDate ? (
             <FormDatePicker
-              onChange={async (date, done) => {
+              onChange={async (date) => {
                 setSavingOnboardingDate(true);
                 const result = await updateUser(item.id, {
                   onboardingDate: date ? date.toISOString() : null,
                 });
 
-                if (result.onboardingDate) {
-                  const savedDate = new Date(result.onboardingDate);
-                  methods.setValue(`users.${index}.onboardingDate`, savedDate);
-                  done();
+                if (result.onboardingDate || result.onboardingDate === date) {
+                  methods.setValue(
+                    `users.${index}.onboardingDate`,
+                    result.onboardingDate ? new Date(result.onboardingDate) : null,
+                  );
                   success();
                 } else {
                   failure({ message: 'Failed to update onboarding date', autoClose: true });

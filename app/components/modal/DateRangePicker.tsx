@@ -7,6 +7,7 @@ import { createModal } from '@/core/modal';
 import { formatDate } from '@/utils/js';
 
 interface ModalProps {
+  allowSingleDate?: boolean;
   initialValue?: [Date | null, Date | null];
 }
 
@@ -22,9 +23,10 @@ export const openDateRangePickerModal = createModal<ModalProps, ModalState>({
       content: 'overflow-y-visible',
     },
   },
-  Component: function ({ initialValue, state, closeModal }) {
+  Component: function ({ allowSingleDate, initialValue, state, closeModal }) {
     const [value, setValue] = useState<[Date | null, Date | null]>(initialValue ?? [null, null]);
 
+    const dateCount = value.filter(Boolean).length;
     return (
       <>
         <div>
@@ -35,7 +37,7 @@ export const openDateRangePickerModal = createModal<ModalProps, ModalState>({
           <div className="flex items-center space-x-2 text-gray-700">
             <span className="font-semibold">
               {value[0] ? (
-                formatDate(value[0], 'yyyy-MM-dd')
+                formatDate(value[0], 'MMMM d, yyyy')
               ) : (
                 <span className="font-medium text-gray-500 italic">unselected</span>
               )}
@@ -43,7 +45,7 @@ export const openDateRangePickerModal = createModal<ModalProps, ModalState>({
             <span>-</span>
             <span className="font-semibold">
               {value[1] ? (
-                formatDate(value[1], 'yyyy-MM-dd')
+                formatDate(value[1], 'MMMM d, yyyy')
               ) : (
                 <span className="font-medium text-gray-500 italic">unselected</span>
               )}
@@ -58,8 +60,7 @@ export const openDateRangePickerModal = createModal<ModalProps, ModalState>({
             <Button
               color="warning"
               onClick={() => {
-                state.dates = [null, null];
-                closeModal();
+                setValue([null, null]);
               }}
               className="mr-1"
             >
@@ -76,7 +77,7 @@ export const openDateRangePickerModal = createModal<ModalProps, ModalState>({
                 state.dates = value;
                 closeModal();
               }}
-              disabled={!value}
+              disabled={!allowSingleDate && dateCount === 1}
             >
               Select
             </Button>

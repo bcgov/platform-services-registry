@@ -6,14 +6,14 @@ import _kebabCase from 'lodash-es/kebabCase';
 import { useState } from 'react';
 import { openDatePickerModal } from '@/components/modal/DatePicker';
 import { cn } from '@/utils/js';
-import { formatDate } from '@/utils/js';
+import { formatDate, isEqualDate } from '@/utils/js';
 import Label from '../Label';
 
 export interface FormDatePickerProps {
   id?: string;
   label?: string;
   placeholder?: string;
-  onChange: (value: Date | null, callback: () => void) => void;
+  onChange: (value: Date | null) => void;
   loading?: boolean;
   value?: Date | null;
   disabled?: boolean;
@@ -49,14 +49,12 @@ export default function FormDatePicker({
         <Button
           disabled={disabled}
           loading={loading}
-          color={date ? 'success' : 'secondary'}
+          color={loading ? 'info' : date ? 'success' : 'secondary'}
           onClick={async () => {
-            const { state } = await openDatePickerModal({ initialValue: date });
-            const currdt = date ? new Date(date).getTime() : null;
-            const newdt = state.date ? state.date.getTime() : null;
-
-            if (newdt !== currdt) {
-              onChange(state.date, () => setDate(state.date));
+            const { state } = await openDatePickerModal({ initialValue: date }, { initialState: { date } });
+            if (!isEqualDate(date, state.date)) {
+              onChange(state.date);
+              setDate(state.date);
             }
           }}
         >

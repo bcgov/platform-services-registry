@@ -50,7 +50,6 @@ export const openDatePickerModal = createModal<ModalProps, ModalState>({
             <Button
               color="warning"
               onClick={() => {
-                state.date = null;
                 setValue(null);
               }}
               className="mr-1"
