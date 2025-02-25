@@ -36,7 +36,7 @@ export default function TeamContacts({ disabled, userAttributes }: Props) {
     const handleUserChange = async () => {
       if (disabled) return;
 
-      const { state } = await openUserPickerModal({});
+      const { state } = await openUserPickerModal({ initialValue: user }, { initialState: { user } });
       const updatedUser = state.user ? { ...state.user } : { id: null };
 
       setValue(`${key}Id`, updatedUser.id);

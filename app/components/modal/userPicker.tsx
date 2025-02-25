@@ -1,6 +1,7 @@
 'use client';
 
 import { Button, Divider, Grid } from '@mantine/core';
+import { randomId } from '@mantine/hooks';
 import { User } from '@prisma/client';
 import { useState } from 'react';
 import UserAutocomplete from '@/components/users/UserAutocomplete';
@@ -23,20 +24,34 @@ export const openUserPickerModal = createModal<ModalProps, ModalState>({
     },
   },
   Component: function ({ initialValue, state, closeModal }) {
-    const [user, setUser] = useState<User | null>(initialValue ?? null);
+    const [user, setUser] = useState<User | null>(initialValue && initialValue.id ? initialValue : null);
+    const [autocompId, setAutocompId] = useState(randomId());
 
     return (
       <>
         <UserAutocomplete
+          key={autocompId}
           onSelect={(item) => {
             setUser(item ?? null);
           }}
+          initialValue={user}
         />
 
         <Divider my="md" />
 
         <Grid>
-          <Grid.Col span={4}></Grid.Col>
+          <Grid.Col span={4}>
+            <Button
+              color="warning"
+              onClick={() => {
+                setUser(null);
+                setAutocompId(randomId());
+              }}
+              className="mr-1"
+            >
+              Reset
+            </Button>
+          </Grid.Col>
           <Grid.Col span={8} className="text-right">
             <Button color="secondary" onClick={() => closeModal()} className="mr-1">
               Close
@@ -47,7 +62,6 @@ export const openUserPickerModal = createModal<ModalProps, ModalState>({
                 state.user = user;
                 closeModal();
               }}
-              disabled={!user}
             >
               Select
             </Button>

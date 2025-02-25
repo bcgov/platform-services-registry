@@ -47,14 +47,20 @@ function UserOptionDetail({ data }: { data: User }) {
   );
 }
 
-export default function UserAutocomplete({ onSelect }: { onSelect: (user?: User) => void }) {
+export default function UserAutocomplete({
+  onSelect,
+  initialValue,
+}: {
+  onSelect: (user?: User) => void;
+  initialValue?: User | null;
+}) {
   const combobox = useCombobox({
     onDropdownClose: () => combobox.resetSelectedOption(),
   });
 
   const [loading, setLoading] = useState(false);
   const [data, setData] = useState<User[]>([]);
-  const [value, setValue] = useState<User>();
+  const [value, setValue] = useState<User | null>(initialValue ?? null);
   const [searching, setSearching] = useState(false);
   const throttled = useRef(
     _throttle(
@@ -84,8 +90,11 @@ export default function UserAutocomplete({ onSelect }: { onSelect: (user?: User)
     <Combobox
       onOptionSubmit={(optionValue) => {
         const selected = data.find((v) => v.id === optionValue);
-        setValue(selected);
-        onSelect(selected);
+        if (selected) {
+          setValue(selected);
+          onSelect(selected);
+        }
+
         setSearching(false);
         combobox.closeDropdown();
       }}
@@ -103,7 +112,10 @@ export default function UserAutocomplete({ onSelect }: { onSelect: (user?: User)
             onChange={(event) => {
               const searchKey = event.currentTarget.value;
               const selected = data.find((v) => v.id === searchKey);
-              setValue(selected);
+              if (selected) {
+                setValue(selected);
+              }
+
               fetchOptions(searchKey);
               combobox.resetSelectedOption();
               combobox.openDropdown();
