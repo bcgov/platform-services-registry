@@ -91,6 +91,10 @@ async function decorate<T extends PublicCloudRequestSimple | PublicCloudRequestD
 
   const canEdit = (canReview && doc.type !== RequestType.DELETE) || canCancel;
 
+  const canResend =
+    (doc.decisionStatus === DecisionStatus.APPROVED || doc.decisionStatus === DecisionStatus.AUTO_APPROVED) &&
+    session.permissions.reviewAllPublicCloudRequests;
+
   const hasProduct = doc.type !== RequestType.CREATE || doc.decisionStatus === DecisionStatus.PROVISIONED;
 
   const decoratedDoc = doc as T & PublicCloudRequestDecorate;
@@ -150,6 +154,7 @@ async function decorate<T extends PublicCloudRequestSimple | PublicCloudRequestD
       view: true,
       edit: canEdit,
       review: canReview,
+      resend: canResend,
       signMou: canSignMou,
       reviewMou: canApproveMou,
       delete: false,
@@ -164,6 +169,7 @@ async function decorate<T extends PublicCloudRequestSimple | PublicCloudRequestD
     view: true,
     edit: canEdit,
     review: canReview,
+    resend: canResend,
     signMou: canSignMou,
     reviewMou: canApproveMou,
     delete: false,

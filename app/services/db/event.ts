@@ -38,6 +38,9 @@ const validationSchemas = {
   [EventType.REVIEW_PUBLIC_CLOUD_REQUEST]: z.object({
     requestId: z.string().length(24),
   }),
+  [EventType.RESEND_PUBLIC_CLOUD_REQUEST]: z.object({
+    requestId: z.string().length(24),
+  }),
 };
 
 type SearchEvent = Prisma.EventGetPayload<{

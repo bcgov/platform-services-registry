@@ -42,6 +42,7 @@ export interface PublicCloudRequestDecorate {
     view: boolean;
     edit: boolean;
     review: boolean;
+    resend: boolean;
     signMou: boolean;
     reviewMou: boolean;
     delete: boolean;
