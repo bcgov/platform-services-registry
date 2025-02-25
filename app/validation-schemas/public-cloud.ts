@@ -71,7 +71,7 @@ const _publicCloudCreateRequestBodySchema = z.object({
   ministry: z.nativeEnum(Ministry),
   projectOwnerId: z.string().length(24),
   primaryTechnicalLeadId: z.string().length(24),
-  secondaryTechnicalLeadId: z.string().length(24).or(z.literal('')).optional(),
+  secondaryTechnicalLeadId: z.string().length(24).or(z.literal('')).nullable().optional(),
   expenseAuthorityId: z.string().length(24),
   requestComment: string().optional(),
   environmentsEnabled: z
