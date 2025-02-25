@@ -9,7 +9,6 @@ import { z } from 'zod';
 import PrivateCloudRequestOptions from '@/components/dropdowns/PrivateCloudRequestOptions';
 import RequestBadge from '@/components/form/RequestBadge';
 import TemporaryProductAlert from '@/components/form/TemporaryProductAlert';
-import LightButton from '@/components/generic/button/LightButton';
 import Tabs, { ITab } from '@/components/generic/tabs/BasicTabs';
 import { GlobalRole } from '@/constants';
 import createClientPage from '@/core/client-page';

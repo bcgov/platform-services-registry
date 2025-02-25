@@ -21,6 +21,7 @@ export const eventTypeNames: Record<EventType, string> = {
   [EventType.DELETE_PUBLIC_CLOUD_PRODUCT]: 'Delete Public Cloud Product',
   [EventType.EXPORT_PUBLIC_CLOUD_PRODUCT]: 'Export Public Cloud Product',
   [EventType.REVIEW_PUBLIC_CLOUD_REQUEST]: 'Review Public Cloud Request',
+  [EventType.RESEND_PUBLIC_CLOUD_REQUEST]: 'Resend Public Cloud Request',
   [EventType.CANCEL_PUBLIC_CLOUD_REQUEST]: 'Cancel Public Cloud Request',
 };
 

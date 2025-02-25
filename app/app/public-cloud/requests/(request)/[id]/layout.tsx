@@ -124,7 +124,7 @@ export default publicCloudProductSecurityACS(({ getPathParams, children, router 
       )}
 
       <Tabs tabs={tabs}>
-        <PublicCloudRequestOptions id={request.id} />
+        <PublicCloudRequestOptions id={request.id} canResend={request._permissions.resend} />
       </Tabs>
       <div className="mt-6">{children}</div>
     </div>
