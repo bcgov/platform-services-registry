@@ -2,7 +2,7 @@ import { Combobox, Loader, Avatar, Group, Text, TextInput, useCombobox, Badge } 
 import { User } from '@prisma/client';
 import { IconSearch } from '@tabler/icons-react';
 import _throttle from 'lodash-es/throttle';
-import { useRef, useState } from 'react';
+import { useRef, useState, ReactNode } from 'react';
 import { formatFullName } from '@/helpers/user';
 import { getUserImageData } from '@/helpers/user-image';
 import { searchMSUsers } from '@/services/backend/msgraph';
@@ -60,8 +60,10 @@ export default function UserAutocomplete({
 
   const [loading, setLoading] = useState(false);
   const [data, setData] = useState<User[]>([]);
-  const [value, setValue] = useState<User | null>(initialValue ?? null);
+  const [value, setValue] = useState<User>();
   const [searching, setSearching] = useState(false);
+  const [searched, setSearched] = useState(false);
+
   const throttled = useRef(
     _throttle(
       async (query: string) => {
@@ -85,6 +87,24 @@ export default function UserAutocomplete({
       <UserOption data={item} />
     </Combobox.Option>
   ));
+
+  let selectedUser: ReactNode = null;
+
+  if (searched) {
+    if (!searching && value) {
+      selectedUser = (
+        <div className="mt-2 p-3 border-1 border-slate-200 rounded-sm">
+          <UserOptionDetail data={value} />
+        </div>
+      );
+    }
+  } else if (initialValue) {
+    selectedUser = (
+      <div className="mt-2 p-3 border-1 border-slate-200 rounded-sm">
+        <UserOptionDetail data={initialValue} />
+      </div>
+    );
+  }
 
   return (
     <Combobox
@@ -117,6 +137,7 @@ export default function UserAutocomplete({
               }
 
               fetchOptions(searchKey);
+              setSearched(true);
               combobox.resetSelectedOption();
               combobox.openDropdown();
             }}
@@ -129,11 +150,7 @@ export default function UserAutocomplete({
             onBlur={() => combobox.closeDropdown()}
             rightSection={loading ? <Loader size={18} /> : <IconSearch size={18} />}
           />
-          {value && !searching && (
-            <div className="mt-2 p-3 border-1 border-slate-200 rounded-sm">
-              <UserOptionDetail data={value} />
-            </div>
-          )}
+          {selectedUser}
         </div>
       </Combobox.Target>
 

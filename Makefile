@@ -16,6 +16,7 @@ dev:
 	pnpm --dir app run dev
 
 .PHONY: install
+install: asdf-install
 install:
 	pnpm install
 	pnpm --dir app install
