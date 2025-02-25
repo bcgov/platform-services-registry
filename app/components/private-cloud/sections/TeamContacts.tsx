@@ -1,5 +1,5 @@
 import React from 'react';
-import SupportContact from '@/components/form/SupportContact';
+import SupportContact from '@/components/shared/SupportContact';
 import TeamContactsBase from '@/components/shared/TeamContacts';
 
 interface Props {
