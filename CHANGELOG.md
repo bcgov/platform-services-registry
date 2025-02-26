@@ -1,3 +1,8 @@
+## [0.44.0](https://github.com/bcgov/platform-services-registry/compare/v0.43.15...v0.44.0) (2025-02-26)
+
+### Features
+
+* **5057:** enable AWS LZA public cloud provider in prod ([0fc4459](https://github.com/bcgov/platform-services-registry/commit/0fc44599c7a2457c13b4cd49ae7a321aa4bcce08))
 ## [0.43.15](https://github.com/bcgov/platform-services-registry/compare/v0.43.14...v0.43.15) (2025-02-26)
 
 ### Features
