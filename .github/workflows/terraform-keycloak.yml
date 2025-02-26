@@ -66,7 +66,7 @@ jobs:
       continue-on-error: true
 
     - name: Create Comment
-      uses: actions/github-script@378a50fac5798d21828ee1c3ea7444341c3f04ca
+      uses: actions/github-script@d0bdabac5f007c21843a5881b248896dab6b579b
       if: github.event_name == 'pull_request'
       env:
         PLAN: "terraform\n${{ steps.plan.outputs.stdout }}"
