@@ -1,3 +1,14 @@
+## [0.43.15](https://github.com/bcgov/platform-services-registry/compare/v0.43.14...v0.43.15) (2025-02-26)
+
+### Features
+
+* **4973:** update Public Cloud product page based on provider ([5df467b](https://github.com/bcgov/platform-services-registry/commit/5df467b1fe50b684a79e83cbeea0eee9e008d446))
+* **5012:** support Vanity URL route on maintenance mode ([320b00e](https://github.com/bcgov/platform-services-registry/commit/320b00eeed6c516850264496ce891f40b2b280a3))
+* **5026:** add mask input component ([2c959d9](https://github.com/bcgov/platform-services-registry/commit/2c959d922e9db27a1141cfb76ec2eaf981b99f84))
+* **5026:** enhance date picker modals & components ([dd1ef64](https://github.com/bcgov/platform-services-registry/commit/dd1ef64f7742d3572c12d034f003b118b3401349))
+* **5026:** enhance user picker modals & components ([19497bd](https://github.com/bcgov/platform-services-registry/commit/19497bddf21e04eb4ad38ecab5d3da9fabe5e8f1))
+* **5036:** add resend function on public cloud side ([fcb1ab4](https://github.com/bcgov/platform-services-registry/commit/fcb1ab4ee8e378dad1e5b0cf99cb62904947989d))
+* **994:** add onboarding date field ([3e89485](https://github.com/bcgov/platform-services-registry/commit/3e89485e996f30e06344236dd5058cd23ca64d03))
 ## [0.43.14](https://github.com/bcgov/platform-services-registry/compare/v0.43.11...v0.43.14) (2025-02-21)
 
 ### Features
