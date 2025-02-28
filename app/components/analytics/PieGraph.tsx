@@ -31,7 +31,7 @@ export default function PieGraph({
             const orderedItems = _orderBy(items, ['value'], 'desc');
 
             return (
-              <div className="w-full max-w-lg mx-auto">
+              <div className="w-full max-w-lg mx-auto" key={key}>
                 <DonutChart
                   className="mt-8"
                   data={orderedItems}
