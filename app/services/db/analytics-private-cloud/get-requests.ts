@@ -3,19 +3,17 @@ import _forEach from 'lodash-es/forEach';
 import _groupBy from 'lodash-es/groupBy';
 import _map from 'lodash-es/map';
 import prisma from '@/core/prisma';
-import { getProdClusterLicencePlates } from './common';
+import { dateToShortDateString } from '@/utils/js/date';
 
-const formatter = new Intl.DateTimeFormat('en', { month: 'short', year: 'numeric' });
-
-function createMonthKey(date: Date) {
-  return formatter.format(date);
-}
-
-export async function combinedRequests() {
-  const prodClusterLicencePlates = await getProdClusterLicencePlates();
-
+export async function getAllRequests({
+  licencePlatesList,
+  dateFilter = {},
+}: {
+  licencePlatesList: string[];
+  dateFilter?: Record<string, any>;
+}) {
   const requests = await prisma.privateCloudRequest.findMany({
-    where: { licencePlate: { in: prodClusterLicencePlates } },
+    where: { licencePlate: { in: licencePlatesList }, ...dateFilter },
     select: {
       createdAt: true,
       type: true,
@@ -25,7 +23,7 @@ export async function combinedRequests() {
     },
   });
 
-  const groupByDateKey = _groupBy(requests, (req) => createMonthKey(req.createdAt));
+  const groupByDateKey = _groupBy(requests, (req) => dateToShortDateString(req.createdAt));
 
   return _map(groupByDateKey, (dateRequests, date) => {
     const result = {

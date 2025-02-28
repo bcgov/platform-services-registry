@@ -5,6 +5,7 @@ import _map from 'lodash-es/map';
 import _orderBy from 'lodash-es/orderBy';
 import _sumBy from 'lodash-es/sumBy';
 import { formatNumber } from '@/utils/js';
+import ExportButton from '../buttons/ExportButton';
 
 interface PieGraphItem {
   label: string;
@@ -14,24 +15,26 @@ export default function PieGraph({
   title,
   subtitle,
   data,
+  onExport,
 }: {
   title: string;
   subtitle: string;
   data: Record<string, PieGraphItem[]>;
+  onExport?: () => Promise<boolean>;
 }) {
   return (
     <div className="flex flex-col items-end">
+      <ExportButton onExport={onExport} className="m-2" />
       <Card>
         <Title>{title}</Title>
         <Subtitle>{subtitle}</Subtitle>
-
         <div className={`grid grid-cols-1 lg:grid-cols-${Object.values(data).length} lg:gap-4`}>
           {_map(data, (items: PieGraphItem[], key: string) => {
             const total = _sumBy(items, (item) => item.value);
             const orderedItems = _orderBy(items, ['value'], 'desc');
 
             return (
-              <div className="w-full max-w-lg mx-auto">
+              <div className="w-full max-w-lg mx-auto" key={key}>
                 <DonutChart
                   className="mt-8"
                   data={orderedItems}

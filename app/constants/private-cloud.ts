@@ -77,3 +77,13 @@ export const environmentLongNames = {
   prod: 'production',
   tools: 'tools',
 };
+
+export enum FetchKey {
+  CONTACTS_CHANGE = 'contactsChange',
+  ALL_REQUESTS = 'allRequests',
+  QUOTA_CHANGE = 'quotaChange',
+  ACTIVE_PRODUCTS = 'activeProducts',
+  REQUEST_DECISION_TIME = 'requestDecisionTime',
+  MINISTRY_DISTRIBUTION_DATA = 'ministryDistributionData',
+  USERS_QUOTA_EDIT_REQUEST = 'usersQuotaEditRequest',
+}
