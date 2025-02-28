@@ -35,21 +35,16 @@ const validClusters = (clusters as string[]).filter((cluster): cluster is Cluste
 );
 
 const mapClusterData = (selectedClusters: Cluster[], ministryData: any[]) => {
-  const clusterDataMapping = Object.fromEntries(
-    Object.values(Cluster).map((cluster) => [cluster, [] as { _id: string; value: number }[]]),
-  ) as Record<Cluster, { _id: string; value: number }[]>;
-
-  selectedClusters.forEach((cluster) => {
-    const clusterIndex = validClusters.indexOf(cluster);
-    if (clusterIndex !== -1 && ministryData[clusterIndex + 1]) {
-      clusterDataMapping[cluster] = ministryData[clusterIndex + 1];
-    } else {
-      clusterDataMapping[cluster] = [];
-    }
-  });
-
-  return Object.fromEntries(
-    selectedClusters.map((cluster) => [cluster, transformMinistryData(clusterDataMapping[cluster] || [])]),
+  return selectedClusters.reduce<Record<Cluster, { label: string; value: number }[]>>(
+    (acc, cluster) => {
+      const clusterIndex = validClusters.indexOf(cluster);
+      acc[cluster] =
+        clusterIndex !== -1 && ministryData[clusterIndex + 1]
+          ? transformMinistryData(ministryData[clusterIndex + 1])
+          : [];
+      return acc;
+    },
+    {} as Record<Cluster, { label: string; value: number }[]>,
   );
 };
 
@@ -95,7 +90,7 @@ export default analyticsPrivateCloudDashboard(() => {
 
   return (
     <div>
-      <h1 className="text-xl lg:text-2xl 2xl:text-4xl font-semibold leading-7 text-gray-900">
+      <h1 className="text-xl lg:text-2xl 2xl:text-4xl font-semibold leading-7 text-gray-900 py-6">
         Private Cloud Data Analytics
       </h1>
       <Filters snap={snap} />
