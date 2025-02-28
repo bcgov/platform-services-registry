@@ -1,15 +1,7 @@
 import { Cluster, Ministry } from '@prisma/client';
 import { z } from 'zod';
+import { FetchKey } from '@/constants';
 import { isValidISODateString } from '@/utils/js';
-
-export enum FetchKey {
-  CONTACTS_CHANGE = 'contactsChange',
-  ALL_REQUESTS = 'allRequests',
-  QUOTA_CHANGE = 'quotaChange',
-  ACTIVE_PRODUCTS = 'activeProducts',
-  REQUEST_DECISION_TIME = 'requestDecisionTime',
-  MINISTRY_DISTRIBUTION_DATA = 'ministryDistributionData',
-}
 
 export const analyticsPrivateCloudFilterSchema = z.object({
   ministries: z.array(z.nativeEnum(Ministry)).optional(),

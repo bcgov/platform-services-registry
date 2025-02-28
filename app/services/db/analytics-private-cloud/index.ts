@@ -1,5 +1,5 @@
 import { Cluster, Ministry } from '@prisma/client';
-import { FetchKey } from '@/validation-schemas/analytics-private-cloud';
+import { FetchKey } from '@/constants';
 import { getActiveProducts } from './get-active-products';
 import { getContactChangeRequests } from './get-contact-changes';
 import { getPrivateLicencePlates } from './get-licencePlates';
@@ -7,6 +7,7 @@ import { ministryDistributions } from './get-ministry-distributions';
 import { getQuotaChangeRequests } from './get-quota-change';
 import { getRequestDecisionTime } from './get-request-decision-time';
 import { getAllRequests } from './get-requests';
+import { usersWithQuotaEditRequests } from './get-users-quota-change';
 
 export async function privateCloudAnalytics({
   userId,
@@ -23,7 +24,6 @@ export async function privateCloudAnalytics({
   temporary?: string[];
   fetchKey?: FetchKey;
 }) {
-  console.log('fetchKey', fetchKey);
   const licencePlatesList = await getPrivateLicencePlates({ userId, ministries, clusters, temporary });
   const dateFilter = dates?.length === 2 ? { createdAt: { gte: new Date(dates[0]), lte: new Date(dates[1]) } } : {};
   const fetchFunctions = {
@@ -36,6 +36,10 @@ export async function privateCloudAnalytics({
   };
 
   if (fetchKey) {
+    if (fetchKey === FetchKey.USERS_QUOTA_EDIT_REQUEST) {
+      const result = await usersWithQuotaEditRequests({ licencePlatesList, dateFilter });
+      return { [fetchKey]: result };
+    }
     const result = await fetchFunctions[fetchKey]();
     return { [fetchKey]: result };
   }

@@ -114,7 +114,7 @@ export default function UserMenu() {
     {
       text: 'Private Cloud Analytics',
       Icon: IconPresentationAnalytics,
-      href: '/private-cloud/analytics',
+      href: '/analytics/private-cloud',
       permission: 'viewPrivateAnalytics',
     },
     {
