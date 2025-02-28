@@ -3,22 +3,23 @@
 import { LoadingOverlay } from '@mantine/core';
 import { Cluster, Ministry } from '@prisma/client';
 import { useQuery } from '@tanstack/react-query';
+import { Title } from '@tremor/react';
 import { useSnapshot } from 'valtio';
 import CombinedAreaGraph from '@/components/analytics/CombinedAreaGraph';
 import Histogram from '@/components/analytics/Histogram';
 import LineGraph from '@/components/analytics/LineGraph';
 import PieGraph from '@/components/analytics/PieGraph';
+import ExportButton from '@/components/buttons/ExportButton';
 import FormDateRangePicker from '@/components/generic/select/FormDateRangePicker';
 import FormMultiSelect from '@/components/generic/select/FormMultiSelect';
 import FormUserPicker from '@/components/generic/select/FormUserPicker';
-import { clusters, GlobalPermissions, ministryOptions } from '@/constants';
+import { clusters, FetchKey, GlobalPermissions, ministryOptions } from '@/constants';
 import createClientPage from '@/core/client-page';
 import { ministryKeyToName } from '@/helpers/product';
 import {
   downloadPrivateCloudAnalytics,
   getAnalyticsPrivateCloudData,
 } from '@/services/backend/analytics/private-cloud';
-import { FetchKey } from '@/validation-schemas/analytics-private-cloud';
 import { pageState } from './state';
 
 const analyticsPrivateCloudDashboard = createClientPage({
@@ -34,15 +35,9 @@ const validClusters = (clusters as string[]).filter((cluster): cluster is Cluste
 );
 
 const mapClusterData = (selectedClusters: Cluster[], ministryData: any[]) => {
-  const clusterDataMapping: Record<Cluster, { _id: string; value: number }[]> = {
-    CLAB: [],
-    KLAB: [],
-    SILVER: [],
-    GOLD: [],
-    GOLDDR: [],
-    KLAB2: [],
-    EMERALD: [],
-  };
+  const clusterDataMapping = Object.fromEntries(
+    Object.values(Cluster).map((cluster) => [cluster, [] as { _id: string; value: number }[]]),
+  ) as Record<Cluster, { _id: string; value: number }[]>;
 
   selectedClusters.forEach((cluster) => {
     const clusterIndex = validClusters.indexOf(cluster);
@@ -107,9 +102,27 @@ export default analyticsPrivateCloudDashboard(() => {
       <div className="grid grid-cols-1 gap-8 mt-12">
         <GraphSection data={data} isLoading={isLoading} snap={snap} />
         <PieGraph
+          onExport={async () => {
+            const exportParams = {
+              data: { ...snap, fetchKey: FetchKey.MINISTRY_DISTRIBUTION_DATA },
+            };
+            return await downloadPrivateCloudAnalytics(exportParams);
+          }}
           title="Ministry per Cluster"
           subtitle="This graph shows the cluster distributions by ministries"
           data={pieChartData}
+        />
+      </div>
+      <div className="flex flex-col items-start border rounded-lg w-fit p-4 mt-8">
+        <Title>{'Users with quota edit requests'}</Title>
+        <ExportButton
+          onExport={async () => {
+            const exportParams = {
+              data: { ...snap, fetchKey: FetchKey.USERS_QUOTA_EDIT_REQUEST },
+            };
+            return await downloadPrivateCloudAnalytics(exportParams);
+          }}
+          className="m-2"
         />
       </div>
     </div>

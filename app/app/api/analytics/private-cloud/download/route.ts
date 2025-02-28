@@ -1,8 +1,8 @@
-import { GlobalPermissions } from '@/constants';
+import { FetchKey, GlobalPermissions } from '@/constants';
 import createApiHandler from '@/core/api-handler';
 import { NoContent, CsvResponse } from '@/core/responses';
 import { privateCloudAnalytics } from '@/services/db/analytics-private-cloud';
-import { analyticsPrivateCloudFilterSchema, FetchKey } from '@/validation-schemas/analytics-private-cloud';
+import { analyticsPrivateCloudFilterSchema } from '@/validation-schemas/analytics-private-cloud';
 
 export const POST = createApiHandler({
   permissions: [GlobalPermissions.ViewPrivateAnalytics],
@@ -12,21 +12,22 @@ export const POST = createApiHandler({
 
   const data = await privateCloudAnalytics({ ...searchProps, fetchKey });
 
-  if (!data || !fetchKey) {
+  if (!data || !fetchKey || !data[fetchKey]) {
     return NoContent();
   }
 
   let formattedData;
+
   switch (fetchKey) {
-    case 'contactsChange':
-      formattedData = data.contactsChange.map((item) => ({
+    case FetchKey.CONTACTS_CHANGE:
+      formattedData = data[fetchKey].map((item) => ({
         Date: item.date,
         'Contact Changes': item['Contact changes'],
       }));
       break;
 
-    case 'allRequests':
-      formattedData = data.allRequests.map((item) => ({
+    case FetchKey.ALL_REQUESTS:
+      formattedData = data[fetchKey].map((item) => ({
         Date: item.date,
         'All Requests': item['All requests'],
         'Edit Requests': item['Edit requests'],
@@ -35,8 +36,8 @@ export const POST = createApiHandler({
       }));
       break;
 
-    case 'quotaChange':
-      formattedData = data.quotaChange.map((item) => ({
+    case FetchKey.QUOTA_CHANGE:
+      formattedData = data[fetchKey].map((item) => ({
         Date: item.date,
         'All Quota Requests': item['All quota requests'],
         'Approved Quota Requests': item['Approved quota requests'],
@@ -44,31 +45,45 @@ export const POST = createApiHandler({
       }));
       break;
 
-    case 'activeProducts':
-      formattedData = data.activeProducts.map((item) => ({
+    case FetchKey.ACTIVE_PRODUCTS:
+      formattedData = data[fetchKey].map((item) => ({
         Date: item.date,
         'All Clusters': item['All Clusters'],
         ...Object.fromEntries(Object.entries(item).filter(([key]) => key !== 'date' && key !== 'All Clusters')),
       }));
       break;
 
-    case 'requestDecisionTime':
-      formattedData = data.requestDecisionTime.map((item) => ({
+    case FetchKey.REQUEST_DECISION_TIME:
+      formattedData = data[fetchKey].map((item) => ({
         'Time Interval': item.time,
         Percentage: item.Percentage,
       }));
       break;
 
-    // case 'ministryDistributionData':
-    //   formattedData = data.ministryDistributionData.flat().map((item) => ({
-    //     Ministry: item.name,
-    //     'Value': item.value,
-    //   }));
-    //   break;
+    case FetchKey.USERS_QUOTA_EDIT_REQUEST:
+      formattedData = data[fetchKey].map((item) => ({
+        UserID: item.id,
+        CreatedAt: item.createdAt,
+        UpdatedAt: item.updatedAt,
+        Ministry: item.ministry ?? 'N/A',
+        ProviderUserID: item.providerUserId ?? 'N/A',
+        FirstName: item.firstName ?? 'N/A',
+        LastName: item.lastName ?? 'N/A',
+        Email: item.email ?? 'N/A',
+        LastSeen: item.lastSeen ?? 'N/A',
+      }));
+      break;
+
+    case FetchKey.MINISTRY_DISTRIBUTION_DATA:
+      formattedData = data[fetchKey].flat().map((item) => ({
+        Ministry: item._id,
+        Value: item.value,
+      }));
+      break;
 
     default:
-      formattedData = data; // If no specific fetchKey, return everything as-is
+      formattedData = data; // If no specific fetchKey, return entire dataset
   }
 
-  return CsvResponse(formattedData, `analytics-private-cloud-${fetchKey ?? 'all'}.csv`);
+  return CsvResponse(formattedData, `analytics-private-cloud-${fetchKey}.csv`);
 });
