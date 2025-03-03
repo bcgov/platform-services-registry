@@ -1,7 +1,6 @@
 import { DecisionStatus, Prisma, RequestType, EventType, TaskType } from '@prisma/client';
 import { Session } from 'next-auth';
 import { TypeOf } from 'zod';
-import prisma from '@/core/prisma';
 import { OkResponse, UnauthorizedResponse } from '@/core/responses';
 import { comparePublicProductData } from '@/helpers/product-change';
 import { sendEditRequestEmails } from '@/services/ches/public-cloud';
@@ -33,9 +32,7 @@ export default async function updateOp({
     secondaryTechnicalLeadId,
     expenseAuthorityId,
     requestComment,
-    accountCoding,
     isAgMinistryChecked,
-    isEaApproval,
     ...rest
   } = body;
 
@@ -49,7 +46,6 @@ export default async function updateOp({
     status: product.status,
     provider: product.provider,
     createdAt: product.createdAt,
-    billing: product.billingId ? { connect: { id: product.billingId } } : undefined,
     projectOwner: { connect: { id: projectOwnerId } },
     primaryTechnicalLead: { connect: { id: primaryTechnicalLeadId } },
     secondaryTechnicalLead: secondaryTechnicalLeadId ? { connect: { id: secondaryTechnicalLeadId } } : undefined,

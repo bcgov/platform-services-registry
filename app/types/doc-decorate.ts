@@ -30,10 +30,9 @@ export interface PublicCloudProjectDecorate {
     edit: boolean;
     delete: boolean;
     reprovision: boolean;
-    signMou: boolean;
-    reviewMou: boolean;
     downloadMou: boolean;
     manageMembers: boolean;
+    editAccountCoding: boolean;
   };
 }
 
@@ -84,6 +83,14 @@ export interface UserDecorate {
 }
 
 export interface PrivateCloudProductWebhookDecorate {
+  _permissions: {
+    view: boolean;
+    edit: boolean;
+    delete: boolean;
+  };
+}
+
+export interface PublicCloudBillingDecorate {
   _permissions: {
     view: boolean;
     edit: boolean;

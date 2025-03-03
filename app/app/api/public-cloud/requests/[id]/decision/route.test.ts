@@ -10,8 +10,8 @@ import {
   createPublicCloudProject,
   editPublicCloudProject,
   deletePublicCloudProject,
-  signPublicCloudMou,
-  reviewPublicCloudMou,
+  signPublicCloudBilling,
+  reviewPublicCloudBilling,
 } from '@/services/api-test/public-cloud/products';
 import { makePublicCloudRequestDecision } from '@/services/api-test/public-cloud/requests';
 
@@ -57,43 +57,28 @@ async function makeBasicProductMouReview() {
   const requestId = requests.main.id;
   const decisionData = requests.main.decisionData;
 
-  const task1 = await prisma.task.findFirst({
-    where: {
-      type: TaskType.SIGN_PUBLIC_CLOUD_MOU,
-      status: TaskStatus.ASSIGNED,
-      data: {
-        equals: {
-          licencePlate: requests.main.licencePlate,
-        },
-      },
-    },
+  const billing = await prisma.publicCloudBilling.findFirst({
+    where: { licencePlate: requests.main.licencePlate, signed: false, approved: false },
   });
 
-  if (task1) {
-    await mockSessionByEmail(decisionData.expenseAuthority.email);
-    await signPublicCloudMou(requests.main.licencePlate, {
-      taskId: task1?.id ?? '',
-      confirmed: true,
-    });
+  if (!billing) return;
 
-    await mockSessionByRole(GlobalRole.BillingReviewer);
-    const task2 = await prisma.task.findFirst({
-      where: {
-        type: TaskType.REVIEW_PUBLIC_CLOUD_MOU,
-        status: TaskStatus.ASSIGNED,
-        data: {
-          equals: {
-            licencePlate: requests.main.licencePlate,
-          },
-        },
-      },
-    });
+  await mockSessionByEmail(decisionData.expenseAuthority.email);
+  await signPublicCloudBilling(requests.main.licencePlate, billing.id, {
+    accountCoding: billing.accountCoding,
+    confirmed: true,
+  });
 
-    await reviewPublicCloudMou(requests.main.licencePlate, {
-      taskId: task2?.id ?? '',
-      decision: 'APPROVE',
-    });
-  }
+  await mockSessionByRole(GlobalRole.BillingReviewer);
+  const billing2 = await prisma.publicCloudBilling.findFirst({
+    where: { licencePlate: requests.main.licencePlate, signed: true, approved: false },
+  });
+
+  if (!billing2) return;
+
+  await reviewPublicCloudBilling(requests.main.licencePlate, billing2.id, {
+    decision: 'APPROVE',
+  });
 }
 
 async function makeBasicProductReview(decision: DecisionStatus, extra = {}) {
@@ -103,7 +88,6 @@ async function makeBasicProductReview(decision: DecisionStatus, extra = {}) {
     ...decisionData,
     ...extra,
     decision,
-    accountCoding: decisionData.billing.accountCoding,
   });
 
   return response;
@@ -186,7 +170,6 @@ describe('Review Public Cloud Update Request - Permissions', () => {
 
     const response = await editPublicCloudProject(requests.main.licencePlate, {
       ...requests.main.decisionData,
-      accountCoding: requests.main.decisionData.billing.accountCoding,
       environmentsEnabled: newEnvironmentsEnabled,
       isAgMinistryChecked: true,
     });

@@ -13,8 +13,8 @@ import {
 import { provisionPublicCloudProject } from '@/services/api-test/public-cloud';
 import {
   createPublicCloudProject,
-  signPublicCloudMou,
-  reviewPublicCloudMou,
+  signPublicCloudBilling,
+  reviewPublicCloudBilling,
 } from '@/services/api-test/public-cloud/products';
 import { makePublicCloudRequestDecision } from '@/services/api-test/public-cloud/requests';
 import { listPublicCloudProjectApi } from '@/services/api-test/v1/public-cloud/products';
@@ -53,50 +53,36 @@ describe('API: List Public Cloud Products - Permissions', () => {
     const dat1 = await res1.json();
     expect(res1.status).toBe(200);
 
-    const task1 = await prisma.task.findFirst({
-      where: {
-        type: TaskType.SIGN_PUBLIC_CLOUD_MOU,
-        status: TaskStatus.ASSIGNED,
-        data: {
-          equals: {
-            licencePlate: dat1.licencePlate,
-          },
-        },
-      },
+    const billing = await prisma.publicCloudBilling.findFirst({
+      where: { licencePlate: dat1.licencePlate, signed: false, approved: false },
     });
 
-    if (task1) {
-      await mockSessionByEmail(dat1.decisionData.expenseAuthority.email);
-      await signPublicCloudMou(dat1.licencePlate, {
-        taskId: task1?.id ?? '',
-        confirmed: true,
-      });
+    expect(billing).toBeTruthy();
+    if (!billing) return;
 
-      await mockSessionByRole(GlobalRole.BillingReviewer);
-      const task2 = await prisma.task.findFirst({
-        where: {
-          type: TaskType.REVIEW_PUBLIC_CLOUD_MOU,
-          status: TaskStatus.ASSIGNED,
-          data: {
-            equals: {
-              licencePlate: dat1.licencePlate,
-            },
-          },
-        },
-      });
+    await mockSessionByEmail(dat1.decisionData.expenseAuthority.email);
+    await signPublicCloudBilling(dat1.licencePlate, billing.id, {
+      accountCoding: billing.accountCoding,
+      confirmed: true,
+    });
 
-      await reviewPublicCloudMou(dat1.licencePlate, {
-        taskId: task2?.id ?? '',
-        decision: 'APPROVE',
-      });
-    }
+    const billing2 = await prisma.publicCloudBilling.findFirst({
+      where: { licencePlate: dat1.licencePlate, signed: true, approved: false },
+    });
+
+    expect(billing2).toBeTruthy();
+    if (!billing2) return;
+
+    await mockSessionByRole(GlobalRole.BillingReviewer);
+    await reviewPublicCloudBilling(dat1.licencePlate, billing2.id, {
+      decision: 'APPROVE',
+    });
 
     await mockSessionByRole(GlobalRole.PublicReviewer);
 
     const res2 = await makePublicCloudRequestDecision(dat1.id, {
       ...dat1.decisionData,
       type: RequestType.CREATE,
-      accountCoding: dat1.decisionData.billing.accountCoding,
       decision: DecisionStatus.APPROVED,
     });
     expect(res2.status).toBe(200);
@@ -150,7 +136,6 @@ describe('API: List Public Cloud Products - Permissions', () => {
     const res2 = await makePublicCloudRequestDecision(dat1.id, {
       ...dat1.decisionData,
       type: RequestType.CREATE,
-      accountCoding: dat1.decisionData.billing.accountCoding,
       decision: DecisionStatus.APPROVED,
     });
     expect(res2.status).toBe(200);
@@ -241,7 +226,6 @@ describe('API: List Public Cloud Products - Validations', () => {
         await makePublicCloudRequestDecision(dat1.id, {
           ...dat1.decisionData,
           type: RequestType.CREATE,
-          accountCoding: dat1.decisionData.billing.accountCoding,
           decision: DecisionStatus.APPROVED,
         });
 

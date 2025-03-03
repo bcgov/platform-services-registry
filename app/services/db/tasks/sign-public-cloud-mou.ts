@@ -1,47 +1,64 @@
-import { TaskStatus, TaskType } from '@prisma/client';
+import { PublicCloudBilling, TaskStatus, TaskType } from '@prisma/client';
 import { Session } from 'next-auth';
 import prisma from '@/core/prisma';
-import { sendExpenseAuthorityMou } from '@/services/ches/public-cloud/emails';
-import { PublicCloudRequestDetailDecorated } from '@/types/public-cloud';
+import { sendExpenseAuthorityMou, sendExpenseAuthorityMouProduct } from '@/services/ches/public-cloud/emails';
+import {
+  PublicCloudRequestDetailDecorated,
+  PublicCloudProductDetailDecorated,
+  PublicCloudBillingDetailDecorated,
+} from '@/types/public-cloud';
 
 const type = TaskType.SIGN_PUBLIC_CLOUD_MOU;
 
 export interface CreateSignPublicCloudMouTaskData {
-  request: PublicCloudRequestDetailDecorated;
+  request?: PublicCloudRequestDetailDecorated | null;
+  product?: PublicCloudProductDetailDecorated | null;
+  billing: PublicCloudBillingDetailDecorated;
 }
 
 function isValidData(data: CreateSignPublicCloudMouTaskData) {
-  const { request } = data;
-  const { decisionData } = request;
-
-  if (decisionData.billing?.signed || decisionData.billing?.approved) {
-    return false;
-  }
-
-  return true;
+  const { request, product } = data;
+  return product || request;
 }
 
 export async function sendSignPublicCloudMouTaskEmail(data: CreateSignPublicCloudMouTaskData) {
   if (!isValidData(data)) return null;
 
-  return sendExpenseAuthorityMou(data.request);
+  if (data.request) {
+    return sendExpenseAuthorityMou(data.request, data.billing);
+  }
+
+  if (data.product) {
+    return sendExpenseAuthorityMouProduct(data.product, data.billing);
+  }
 }
 
 export async function createSignPublicCloudMouTask(data: CreateSignPublicCloudMouTaskData) {
   if (!isValidData(data)) return null;
 
-  const { decisionData } = data.request;
-  if (!decisionData.expenseAuthorityId) {
-    return false;
+  let licencePlate = '';
+  let expenseAuthorityId = '';
+
+  if (data.request) {
+    const { decisionData } = data.request;
+    licencePlate = decisionData.licencePlate;
+    expenseAuthorityId = decisionData.expenseAuthorityId ?? '';
+  } else if (data.product) {
+    licencePlate = data.product.licencePlate;
+    expenseAuthorityId = data.product.expenseAuthorityId ?? '';
+  }
+
+  if (!licencePlate || !expenseAuthorityId) {
+    return null;
   }
 
   const taskProm = prisma.task.create({
     data: {
       type,
       status: TaskStatus.ASSIGNED,
-      userIds: [decisionData.expenseAuthorityId],
+      userIds: [expenseAuthorityId],
       data: {
-        licencePlate: data.request.licencePlate,
+        licencePlate,
       },
     },
   });
