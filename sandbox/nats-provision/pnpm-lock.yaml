@@ -10,7 +10,7 @@ importers:
     dependencies:
       '@keycloak/keycloak-admin-client':
         specifier: ^26.0.0
-        version: 26.1.2
+        version: 26.1.3
       nats:
         specifier: ^2.19.0
         version: 2.29.2
@@ -196,8 +196,8 @@ packages:
     resolution: {integrity: sha512-O8jcjabXaleOG9DQ0+ARXWZBTfnP4WNAqzuiJK7ll44AmxGKv/J2M4TPjxjY3znBCfvBXFzucm1twdyFybFqEA==}
     engines: {node: '>=12'}
 
-  '@keycloak/keycloak-admin-client@26.1.2':
-    resolution: {integrity: sha512-WiYrPQ+M4o7SF8pD0mxSfazCpUOA28rJFWwVjyijJPPSvLxAeZxHjIFNm5q/FzPxsN8+7VdjFsWg/U/UYZ5uHg==}
+  '@keycloak/keycloak-admin-client@26.1.3':
+    resolution: {integrity: sha512-VFIfCEq050hs3ufj0apkvIDTdVn0LvcLsZEZA8eOyr6QOuSkKIzYOsW6Kf4uV2g6CVERJUPLZ9OF+bhEDSaV5g==}
     engines: {node: '>=18'}
 
   '@sideway/address@4.1.5':
@@ -548,7 +548,7 @@ snapshots:
       wrap-ansi: 8.1.0
       wrap-ansi-cjs: wrap-ansi@7.0.0
 
-  '@keycloak/keycloak-admin-client@26.1.2':
+  '@keycloak/keycloak-admin-client@26.1.3':
     dependencies:
       camelize-ts: 3.0.0
       url-join: 5.0.0
