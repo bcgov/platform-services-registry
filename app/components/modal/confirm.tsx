@@ -5,6 +5,7 @@ import { createModal } from '@/core/modal';
 
 interface ModalProps {
   content?: React.ReactNode;
+  submitColor?: string;
 }
 
 interface ModalState {
@@ -19,7 +20,7 @@ export const openConfirmModal = createModal<ModalProps, ModalState>({
     closeOnClickOutside: true,
     closeOnEscape: true,
   },
-  Component: function ({ content = 'Are you sure you want to proceed?', state, closeModal }) {
+  Component: function ({ content = 'Are you sure you want to proceed?', submitColor = 'danger', state, closeModal }) {
     return (
       <Box pos="relative">
         {content}
@@ -40,7 +41,7 @@ export const openConfirmModal = createModal<ModalProps, ModalState>({
               Cancel
             </Button>
             <Button
-              color="danger"
+              color={submitColor}
               onClick={() => {
                 state.confirmed = true;
                 closeModal();

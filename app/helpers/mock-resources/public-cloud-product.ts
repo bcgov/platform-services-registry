@@ -26,26 +26,6 @@ export function createSamplePublicCloudProduct(args?: {
   const providerSelectionReasons = getRandomCloudProviderSelectionReasons();
   const ministry = getRandomMinistry();
 
-  const accountCoding = '123456789876543212345678';
-  const billing = {
-    id: generateShortId(),
-    code: `${accountCoding}_${provider}`,
-    accountCoding,
-    licencePlate,
-    signed: true,
-    signedAt: new Date(),
-    signedById: expenseAuthority.id,
-    signedBy: expenseAuthority,
-    approved: true,
-    approvedAt: new Date(),
-    approvedById: projectOwner.id,
-    approvedBy: projectOwner,
-    expenseAuthorityId: expenseAuthority.id,
-    expenseAuthority,
-    createdAt: new Date(),
-    updatedAt: new Date(),
-  };
-
   const product = {
     id: generateShortId(),
     licencePlate,
@@ -65,8 +45,6 @@ export function createSamplePublicCloudProduct(args?: {
     expenseAuthorityId: expenseAuthority.id,
     expenseAuthority,
     members: [],
-    billingId: billing.id,
-    billing,
     budget: {
       dev: 0,
       test: 0,

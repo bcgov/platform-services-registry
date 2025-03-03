@@ -4,7 +4,6 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { Button, Divider, Grid, LoadingOverlay, Box, Alert } from '@mantine/core';
 import { IconInfoCircle } from '@tabler/icons-react';
 import { useQuery, useMutation } from '@tanstack/react-query';
-import { ReactNode } from 'react';
 import { FormProvider, useForm, FieldValues } from 'react-hook-form';
 import { z } from 'zod';
 import MailLink from '@/components/generic/button/MailLink';
@@ -12,7 +11,6 @@ import FormCheckbox from '@/components/generic/checkbox/FormCheckbox';
 import FormError from '@/components/generic/FormError';
 import { publicCloudTeamEmail } from '@/constants';
 import { createModal } from '@/core/modal';
-import { getBilling } from '@/services/backend/billing';
 import { createPublicCloudProject } from '@/services/backend/public-cloud/products';
 import { success } from '../notification';
 import { openNotificationModal } from './notification';
@@ -41,20 +39,6 @@ export const openPublicCloudProductCreateSubmitModal = createModal<ModalProps, M
       defaultValues: {
         consent1: false,
         consent2: false,
-      },
-    });
-
-    const {
-      data: billing,
-      isLoading: isBillingLoading,
-      isError: isBillingError,
-      error: billingError,
-    } = useQuery({
-      queryKey: ['billing', productData.accountCoding],
-      queryFn: () => {
-        const code = productData.accountCoding;
-        if (code.length < 24) return null;
-        return getBilling(productData.accountCoding, productData.provider);
       },
     });
 
@@ -97,34 +81,9 @@ export const openPublicCloudProductCreateSubmitModal = createModal<ModalProps, M
       );
     };
 
-    let eMouCheckboxContent: ReactNode = null;
-    if (billing) {
-      if (billing.approved) {
-        eMouCheckboxContent = (
-          <p className="text-sm text-gray-900">
-            Our records show that your team already has a signed MoU with OCIO for {productData.provider} use. This new
-            product will be added to the existing MoU. A copy of the signed MoU for this product will be emailed to the
-            Ministry Expense Authority.
-          </p>
-        );
-      }
-    } else {
-      eMouCheckboxContent = (
-        <p className="text-sm text-gray-900">
-          No eMOU exists for this account coding. We will initiate the process by sending an email to the EA for their
-          signature. After the eMOU is signed, it will be reviewed and approved, which typically takes up to 2 business
-          days.
-        </p>
-      );
-    }
-
     return (
       <Box pos="relative">
-        <LoadingOverlay
-          visible={isBillingLoading || isCreatingProject}
-          zIndex={1000}
-          overlayProps={{ radius: 'sm', blur: 2 }}
-        />
+        <LoadingOverlay visible={isCreatingProject} zIndex={1000} overlayProps={{ radius: 'sm', blur: 2 }} />
         <FormProvider {...methods}>
           <form
             autoComplete="off"
@@ -157,7 +116,8 @@ export const openPublicCloudProductCreateSubmitModal = createModal<ModalProps, M
             <Divider my="md" />
 
             <FormCheckbox id="consent1" inputProps={register('consent1')}>
-              {eMouCheckboxContent}
+              We will initiate the process by sending an email to the EA for their signature. After the eMOU is signed,
+              it will be reviewed and approved, which typically takes up to 2 business days.
             </FormCheckbox>
             <FormError field="consent1" />
 

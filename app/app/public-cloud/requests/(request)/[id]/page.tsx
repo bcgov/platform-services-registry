@@ -16,7 +16,6 @@ import { useQuery } from '@tanstack/react-query';
 import { useEffect, useState } from 'react';
 import { FormProvider, useForm } from 'react-hook-form';
 import { z } from 'zod';
-import AccountCoding from '@/components/form/AccountCoding';
 import Budget from '@/components/form/Budget';
 import ProjectDescriptionPublic from '@/components/form/ProjectDescriptionPublic';
 import PageAccordion from '@/components/generic/accordion/PageAccordion';
@@ -82,13 +81,6 @@ export default publicCloudRequest(({ getPathParams }) => {
       description: '',
       Component: Budget,
       componentArgs: { disabled: true },
-    },
-    {
-      LeftIcon: IconReceipt2,
-      label: 'Billing (account coding)',
-      description: '',
-      Component: AccountCoding,
-      componentArgs: { accountCodingInitial: request.decisionData.billing?.accountCoding, disabled: true },
     },
   ];
 

@@ -54,6 +54,11 @@ export default publicCloudProductSecurityACS(({ getPathParams, children }) => {
       href: `/public-cloud/products/${licencePlate}/edit`,
     },
     {
+      label: 'BILLING',
+      name: 'billing',
+      href: `/public-cloud/products/${licencePlate}/billing`,
+    },
+    {
       label: 'REQUESTS',
       name: 'requests',
       href: `/public-cloud/products/${licencePlate}/requests`,
@@ -92,7 +97,7 @@ export default publicCloudProductSecurityACS(({ getPathParams, children }) => {
       <Tabs tabs={tabs}>
         <PublicCloudProductOptions disabled={!currentProduct?._permissions?.delete} />
       </Tabs>
-      <div className="mt-14"> {children}</div>
+      <div className="mt-10"> {children}</div>
     </div>
   );
 });

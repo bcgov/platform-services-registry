@@ -286,11 +286,11 @@ export async function generateSession({
     viewPublicAnalytics: session.isAdmin || session.isAnalyzer || session.isPublicAnalyzer,
     viewPrivateAnalytics: session.isAdmin || session.isAnalyzer || session.isPrivateAnalyzer,
 
-    downloadBillingMou: session.isBillingReviewer || session.isBillingReader,
+    downloadBillingMou: session.isAdmin || session.isBillingReviewer || session.isBillingReader,
+    viewPublicCloudBilling: session.isAdmin || session.isBillingReviewer || session.isBillingReader,
 
     viewUsers: session.isAdmin || session.isUserReader,
     viewEvents: session.isAdmin || session.isEventReader,
-    viewBilling: session.isAdmin || session.isBillingReader || session.isBillingReviewer,
     viewTasks: session.isAdmin || session.isTaskReader,
     sendTaskEmails: session.isAdmin,
     editUsers: session.isAdmin,

@@ -34,14 +34,9 @@ const privateCloudRequestRequest = createClientPage({
 });
 export default privateCloudRequestRequest(({}) => {
   const [, snap] = usePrivateProductState();
-  const [secondTechLead, setSecondTechLead] = useState(false);
 
   useEffect(() => {
     if (!snap.currentRequest) return;
-
-    if (snap.currentRequest.requestData.secondaryTechnicalLead) {
-      setSecondTechLead(true);
-    }
   }, [snap.currentRequest]);
 
   const methods = useForm({
@@ -52,13 +47,6 @@ export default privateCloudRequestRequest(({}) => {
       ...snap.currentRequest?.requestData,
     },
   });
-
-  const secondTechLeadOnClick = () => {
-    setSecondTechLead(!secondTechLead);
-    if (secondTechLead) {
-      methods.unregister('secondaryTechnicalLead');
-    }
-  };
 
   if (!snap.currentRequest) {
     return null;

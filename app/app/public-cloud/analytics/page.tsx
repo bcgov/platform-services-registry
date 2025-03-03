@@ -38,7 +38,7 @@ export default async function AnalyticsDashboard() {
       <h1 className="text-xl lg:text-2xl 2xl:text-4xl font-semibold leading-7 text-gray-900">
         Public Cloud Data Analytics
       </h1>
-      <div className="flex flex-col gap-y-12 mt-14">
+      <div className="flex flex-col gap-y-12 mt-10">
         <CombinedAreaGraph
           title={'Requests over time'}
           subtitle={'This graph shows the number of requests over time for each request type'}

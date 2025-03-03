@@ -1,8 +1,8 @@
 'use client';
 
 import { zodResolver } from '@hookform/resolvers/zod';
-import { Button } from '@mantine/core';
-import { DecisionStatus, ProjectContext, RequestType } from '@prisma/client';
+import { Alert, Button } from '@mantine/core';
+import { DecisionStatus, ProjectContext, RequestType, TaskStatus, TaskType } from '@prisma/client';
 import {
   IconInfoCircle,
   IconUsersGroup,
@@ -12,13 +12,12 @@ import {
   IconMoneybag,
   IconReceipt2,
 } from '@tabler/icons-react';
+import { useQuery } from '@tanstack/react-query';
 import { useEffect, useState } from 'react';
 import { useForm, FormProvider } from 'react-hook-form';
 import { z } from 'zod';
-import PublicCloudBillingInfo from '@/components/billing/PublicCloudBillingInfo';
 import CancelRequest from '@/components/buttons/CancelButton';
 import PreviousButton from '@/components/buttons/Previous';
-import AccountCoding from '@/components/form/AccountCoding';
 import AccountEnvironmentsPublic from '@/components/form/AccountEnvironmentsPublic';
 import Budget from '@/components/form/Budget';
 import ProjectDescriptionPublic from '@/components/form/ProjectDescriptionPublic';
@@ -27,10 +26,12 @@ import FormErrorNotification from '@/components/generic/FormErrorNotification';
 import { openPublicCloudMouReviewModal } from '@/components/modal/publicCloudMouReview';
 import { openPublicCloudMouSignModal } from '@/components/modal/publicCloudMouSign';
 import { openPublicCloudRequestReviewModal } from '@/components/modal/publicCloudRequestReview';
+import BillingStatusProgress from '@/components/public-cloud/BillingStatusProgress';
 import AdditionalTeamMembers from '@/components/public-cloud/sections/AdditionalTeamMembers';
 import TeamContacts from '@/components/public-cloud/sections/TeamContacts';
 import { GlobalRole } from '@/constants';
 import createClientPage from '@/core/client-page';
+import { searchPublicCloudBillings } from '@/services/backend/public-cloud/billings';
 import { usePublicProductState } from '@/states/global';
 import {
   publicCloudRequestDecisionBodySchema,
@@ -48,18 +49,26 @@ const publicCloudProductRequest = createClientPage({
 });
 
 export default publicCloudProductRequest(({ router }) => {
-  const [, snap] = usePublicProductState();
-  const [secondTechLead, setSecondTechLead] = useState(false);
+  const [, publicProductSnap] = usePublicProductState();
 
   useEffect(() => {
-    if (!snap.currentRequest) return;
+    if (!publicProductSnap.currentRequest) return;
+  }, [publicProductSnap.currentRequest]);
 
-    if (snap.currentRequest.decisionData.secondaryTechnicalLead) {
-      setSecondTechLead(true);
-    }
-  }, [snap.currentRequest]);
+  const { data: billingData, isLoading } = useQuery({
+    queryKey: ['billings', publicProductSnap?.currentRequest?.id],
+    queryFn: () =>
+      searchPublicCloudBillings({
+        licencePlate: publicProductSnap?.currentRequest?.licencePlate ?? '',
+        page: 1,
+        pageSize: 1,
+        includeMetadata: false,
+      }),
+    refetchInterval: 1000,
+    enabled: publicProductSnap?.currentRequest?.type === RequestType.CREATE,
+  });
 
-  const methods = useForm({
+  const form = useForm({
     resolver: (...args) => {
       const [values] = args;
       const isDeleteRequest = values.type === RequestType.DELETE;
@@ -77,26 +86,16 @@ export default publicCloudProductRequest(({ router }) => {
     defaultValues: {
       decisionComment: '',
       decision: RequestDecision.APPROVED as RequestDecision,
-      type: snap.currentRequest?.type,
-      ...snap.currentRequest?.decisionData,
-      accountCoding: snap.currentRequest?.decisionData.billing?.accountCoding,
+      type: publicProductSnap.currentRequest?.type,
+      ...publicProductSnap.currentRequest?.decisionData,
     },
   });
 
-  const secondTechLeadOnClick = () => {
-    setSecondTechLead(!secondTechLead);
-    if (secondTechLead) {
-      methods.unregister('secondaryTechnicalLead');
-    }
-  };
-
-  if (!snap.currentRequest) {
+  if (!publicProductSnap.currentRequest) {
     return null;
   }
 
   const isDisabled = true;
-  const canSignEmou = snap.currentRequest._permissions.signMou;
-
   const accordionItems = [
     {
       LeftIcon: IconInfoCircle,
@@ -121,7 +120,7 @@ export default publicCloudProductRequest(({ router }) => {
       label: 'Team contacts',
       description: '',
       Component: TeamContacts,
-      componentArgs: { disabled: isDisabled, secondTechLead, secondTechLeadOnClick },
+      componentArgs: { disabled: isDisabled },
     },
     {
       LeftIcon: IconUsersGroup,
@@ -138,20 +137,10 @@ export default publicCloudProductRequest(({ router }) => {
       componentArgs: { disabled: isDisabled },
       initialOpen: true,
     },
-    {
-      LeftIcon: IconReceipt2,
-      label: 'Billing (account coding)',
-      description: '',
-      Component: AccountCoding,
-      componentArgs: {
-        accountCodingInitial: snap.currentRequest.decisionData?.billing?.accountCoding,
-        disabled: true,
-      },
-    },
   ];
 
-  if (snap.currentRequest.requestComment) {
-    const comment = snap.currentRequest.requestComment;
+  if (publicProductSnap.currentRequest.requestComment) {
+    const comment = publicProductSnap.currentRequest.requestComment;
 
     accordionItems.push({
       LeftIcon: IconMessage,
@@ -170,18 +159,31 @@ export default publicCloudProductRequest(({ router }) => {
 
   return (
     <div>
-      <PublicCloudBillingInfo product={snap.currentRequest.decisionData} className="mb-2" />
-      <FormProvider {...methods}>
+      {billingData && billingData.data.length > 0 && (
+        <Alert variant="light" color="blue" title="Billing eMOU status" icon={<IconInfoCircle />} className="mb-2">
+          <BillingStatusProgress
+            billing={billingData.data[0]}
+            data={{
+              name: publicProductSnap.currentRequest.decisionData.name,
+              provider: publicProductSnap.currentRequest.decisionData.provider,
+            }}
+            editable
+            className="max-w-4xl"
+          />
+        </Alert>
+      )}
+
+      <FormProvider {...form}>
         <FormErrorNotification />
         <form
           autoComplete="off"
-          onSubmit={methods.handleSubmit(async (formData) => {
-            if (!formData || !snap.currentRequest) return;
+          onSubmit={form.handleSubmit(async (formData) => {
+            if (!formData || !publicProductSnap.currentRequest) return;
 
             const decision = formData.decision as RequestDecision;
             await openPublicCloudRequestReviewModal(
               {
-                request: snap.currentRequest,
+                request: publicProductSnap.currentRequest,
                 finalData: formData as PublicCloudRequestDecisionBody,
               },
               { settings: { title: `${decision === RequestDecision.APPROVED ? 'Approve' : 'Reject'} Request` } },
@@ -192,17 +194,17 @@ export default publicCloudProductRequest(({ router }) => {
 
           <div className="mt-5 flex items-center justify-start gap-x-2">
             <PreviousButton />
-            {snap.currentRequest.decisionStatus === DecisionStatus.PENDING &&
-              snap.currentRequest._permissions.cancel && (
-                <CancelRequest id={snap.currentRequest.id} context={ProjectContext.PUBLIC} />
+            {publicProductSnap.currentRequest.decisionStatus === DecisionStatus.PENDING &&
+              publicProductSnap.currentRequest._permissions.cancel && (
+                <CancelRequest id={publicProductSnap.currentRequest.id} context={ProjectContext.PUBLIC} />
               )}
-            {snap.currentRequest._permissions.review && (
+            {publicProductSnap.currentRequest._permissions.review && (
               <>
                 <Button
                   type="submit"
                   color="danger"
                   onClick={() => {
-                    methods.setValue('decision', RequestDecision.REJECTED);
+                    form.setValue('decision', RequestDecision.REJECTED);
                   }}
                 >
                   Reject
@@ -212,22 +214,27 @@ export default publicCloudProductRequest(({ router }) => {
                   type="submit"
                   color="primary"
                   onClick={() => {
-                    methods.setValue('decision', RequestDecision.APPROVED);
+                    form.setValue('decision', RequestDecision.APPROVED);
                   }}
                 >
                   Approve
                 </Button>
               </>
             )}
-            {canSignEmou && (
+            {publicProductSnap.currentRequest._permissions.signMou && (
               <Button
                 color="info"
                 onClick={async () => {
-                  if (!snap.currentRequest) return;
-                  const res = await openPublicCloudMouSignModal<{ confirmed: boolean }>({
-                    licencePlate: snap.currentRequest.licencePlate,
-                    name: snap.currentRequest.decisionData.name,
-                    provider: snap.currentRequest.decisionData.provider,
+                  if (!publicProductSnap.currentRequest || !billingData) return;
+
+                  const currentBilling = billingData.data[0];
+                  const res = await openPublicCloudMouSignModal({
+                    billingId: currentBilling.id,
+                    licencePlate: currentBilling.licencePlate,
+                    accountCoding: currentBilling.accountCoding,
+                    name: publicProductSnap.currentRequest.decisionData.name,
+                    provider: publicProductSnap.currentRequest.decisionData.provider,
+                    editable: true,
                   });
 
                   if (res.state.confirmed) {
@@ -238,17 +245,16 @@ export default publicCloudProductRequest(({ router }) => {
                 Sign eMOU
               </Button>
             )}
-            {snap.currentRequest._permissions.reviewMou && (
+            {publicProductSnap.currentRequest._permissions.reviewMou && (
               <Button
                 color="info"
                 onClick={async () => {
-                  if (!snap.currentRequest || !snap.currentRequest.decisionData.billingId) {
-                    return;
-                  }
+                  if (!publicProductSnap.currentRequest || !billingData) return;
 
-                  const res = await openPublicCloudMouReviewModal<{ confirmed: boolean }>({
-                    licencePlate: snap.currentRequest.licencePlate,
-                    billingId: snap.currentRequest.decisionData.billingId,
+                  const currentBilling = billingData.data[0];
+                  const res = await openPublicCloudMouReviewModal({
+                    billingId: currentBilling.id,
+                    licencePlate: currentBilling.licencePlate,
                   });
 
                   if (res.state.confirmed) {

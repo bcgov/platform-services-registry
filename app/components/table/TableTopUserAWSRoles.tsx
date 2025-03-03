@@ -57,7 +57,7 @@ export default function UserAWSRolesTableTop({
 
   return (
     <div className="mx-auto w-full pt-6">
-      <h1 className="px-4  text-xl lg:text-2xl 2xl:text-4xl font-semibold leading-7 text-gray-900 mb-8 lg:mt-14">
+      <h1 className="px-4  text-xl lg:text-2xl 2xl:text-4xl font-semibold leading-7 text-gray-900 mb-8 lg:mt-10">
         {title}
       </h1>
       <div className="sm:flex sm:items-center pb-5 border-b-2 pl-4 pr-24 ">
