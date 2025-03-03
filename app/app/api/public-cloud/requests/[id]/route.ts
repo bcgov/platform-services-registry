@@ -1,4 +1,4 @@
-import { DecisionStatus, EventType, PublicCloudRequest, RequestType, TaskType } from '@prisma/client';
+import { DecisionStatus, EventType, PublicCloudRequest, RequestType, TaskStatus, TaskType } from '@prisma/client';
 import { z } from 'zod';
 import { GlobalRole } from '@/constants';
 import createApiHandler from '@/core/api-handler';
@@ -57,22 +57,13 @@ export const PUT = apiHandler(async ({ pathParams, session }) => {
 
   if (type === RequestType.CREATE) {
     proms.push(
-      prisma.publicCloudRequestedProject.updateMany({
-        where: {
-          id: { in: [requestDataId, decisionDataId] },
-        },
-        data: {
-          billingId: null,
-        },
-      }),
-      prisma.billing.deleteMany({
-        where: {
-          licencePlate,
-        },
+      prisma.publicCloudBilling.deleteMany({
+        where: { licencePlate },
       }),
       prisma.task.deleteMany({
         where: {
           type: { in: [TaskType.SIGN_PUBLIC_CLOUD_MOU, TaskType.REVIEW_PUBLIC_CLOUD_MOU] },
+          status: TaskStatus.ASSIGNED,
           data: {
             equals: {
               licencePlate,

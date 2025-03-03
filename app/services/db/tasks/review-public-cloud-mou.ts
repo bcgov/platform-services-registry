@@ -2,37 +2,40 @@ import { TaskStatus, TaskType } from '@prisma/client';
 import { Session } from 'next-auth';
 import { GlobalPermissions, GlobalRole } from '@/constants';
 import prisma from '@/core/prisma';
-import { sendBillingReviewerMou } from '@/services/ches/public-cloud/emails';
-import { PublicCloudRequestDetailDecorated } from '@/types/public-cloud';
+import { sendBillingReviewerMou, sendBillingReviewerMouProduct } from '@/services/ches/public-cloud/emails';
+import {
+  PublicCloudBillingDetailDecorated,
+  PublicCloudProductDetailDecorated,
+  PublicCloudRequestDetailDecorated,
+} from '@/types/public-cloud';
 
 const type = TaskType.REVIEW_PUBLIC_CLOUD_MOU;
 
 export interface CreateReviewPublicCloudMouTaskData {
-  request: PublicCloudRequestDetailDecorated;
+  request?: PublicCloudRequestDetailDecorated | null;
+  product?: PublicCloudProductDetailDecorated | null;
+  billing: PublicCloudBillingDetailDecorated;
 }
 
 function isValidData(data: CreateReviewPublicCloudMouTaskData) {
-  const { request } = data;
-  const { billing } = request.decisionData;
-
-  if (!billing?.signed || billing?.approved) {
-    return false;
-  }
-
-  return true;
+  const { request, product } = data;
+  return product || request;
 }
 
 export async function sendReviewPublicCloudMouTaskEmail(data: CreateReviewPublicCloudMouTaskData) {
   if (!isValidData(data)) return null;
 
-  return sendBillingReviewerMou(data.request);
+  if (data.request) {
+    return sendBillingReviewerMou(data.request, data.billing);
+  }
+
+  if (data.product) {
+    return sendBillingReviewerMouProduct(data.product, data.billing);
+  }
 }
 
 export async function createReviewPublicCloudMouTask(data: CreateReviewPublicCloudMouTaskData) {
   if (!isValidData(data)) return null;
-
-  const { billing } = data.request.decisionData;
-  if (!billing) return null;
 
   const taskProm = prisma.task.create({
     data: {
@@ -40,7 +43,7 @@ export async function createReviewPublicCloudMouTask(data: CreateReviewPublicClo
       status: TaskStatus.ASSIGNED,
       roles: [GlobalRole.BillingReviewer],
       data: {
-        licencePlate: billing.licencePlate,
+        licencePlate: data.billing.licencePlate,
       },
     },
   });

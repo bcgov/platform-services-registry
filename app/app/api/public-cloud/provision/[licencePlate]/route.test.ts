@@ -7,8 +7,8 @@ import { mockSessionByEmail, mockSessionByRole } from '@/services/api-test/core'
 import { provisionPublicCloudProject } from '@/services/api-test/public-cloud';
 import {
   createPublicCloudProject,
-  signPublicCloudMou,
-  reviewPublicCloudMou,
+  signPublicCloudBilling,
+  reviewPublicCloudBilling,
 } from '@/services/api-test/public-cloud/products';
 import { makePublicCloudRequestDecision } from '@/services/api-test/public-cloud/requests';
 
@@ -31,24 +31,16 @@ describe('Provision Public Cloud Request', () => {
   });
 
   it('should successfully sign the billing by EA', async () => {
-    await mockSessionByEmail(requests.create.decisionData.expenseAuthority.email);
-
-    const task = await prisma.task.findFirst({
-      where: {
-        type: TaskType.SIGN_PUBLIC_CLOUD_MOU,
-        status: TaskStatus.ASSIGNED,
-        data: {
-          equals: {
-            licencePlate: requests.create.licencePlate,
-          },
-        },
-      },
+    const billing = await prisma.publicCloudBilling.findFirst({
+      where: { licencePlate: requests.create.licencePlat, signed: false, approved: false },
     });
 
-    expect(task).toBeTruthy();
+    expect(billing).toBeTruthy();
+    if (!billing) return;
 
-    const response = await signPublicCloudMou(requests.create.licencePlate, {
-      taskId: task?.id ?? '',
+    await mockSessionByEmail(requests.create.decisionData.expenseAuthority.email);
+    const response = await signPublicCloudBilling(requests.create.licencePlate, billing.id, {
+      accountCoding: billing.accountCoding,
       confirmed: true,
     });
 
@@ -56,24 +48,15 @@ describe('Provision Public Cloud Request', () => {
   });
 
   it('should successfully review the billing by billing reviewer', async () => {
-    await mockSessionByRole(GlobalRole.BillingReviewer);
-
-    const task = await prisma.task.findFirst({
-      where: {
-        type: TaskType.REVIEW_PUBLIC_CLOUD_MOU,
-        status: TaskStatus.ASSIGNED,
-        data: {
-          equals: {
-            licencePlate: requests.create.licencePlate,
-          },
-        },
-      },
+    const billing = await prisma.publicCloudBilling.findFirst({
+      where: { licencePlate: requests.create.licencePlate, signed: true, approved: false },
     });
 
-    expect(task).toBeTruthy();
+    expect(billing).toBeTruthy();
+    if (!billing) return;
 
-    const response = await reviewPublicCloudMou(requests.create.licencePlate, {
-      taskId: task?.id ?? '',
+    await mockSessionByRole(GlobalRole.BillingReviewer);
+    const response = await reviewPublicCloudBilling(requests.create.licencePlate, billing.id, {
       decision: 'APPROVE',
     });
 
@@ -86,7 +69,6 @@ describe('Provision Public Cloud Request', () => {
     const response = await makePublicCloudRequestDecision(requests.create.id, {
       ...requests.create.decisionData,
       type: RequestType.CREATE,
-      accountCoding: requests.create.decisionData.billing.accountCoding,
       decision: DecisionStatus.APPROVED,
     });
 

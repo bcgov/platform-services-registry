@@ -10,8 +10,8 @@ export const POST = createApiHandler({
   validations: { body: publicCloudProductSearchBodySchema },
 })(async ({ session, body }) => {
   const { docs, totalCount } = await searchPublicCloudProducts({
-    session,
     ...body,
+    session,
   });
 
   return OkResponse({ docs, totalCount });

@@ -86,7 +86,7 @@ export const GET = apiHandler(async ({ session }) => {
         } else {
           product = publicCloudProducts.find((req) => req.licencePlate === data.licencePlate);
           if (product) {
-            task.link = `/public-cloud/products/${product.licencePlate}/edit`;
+            task.link = `/public-cloud/products/${product.licencePlate}/billing`;
             task.description = product.name;
           }
         }

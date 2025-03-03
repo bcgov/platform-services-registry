@@ -4,16 +4,12 @@ import { GlobalPermissions, GlobalRole } from '@/constants';
 import createApiHandler from '@/core/api-handler';
 import prisma from '@/core/prisma';
 import { BadRequestResponse, OkResponse } from '@/core/responses';
-import {
-  models,
-  tasks,
-  getMostRecentPublicCloudRequest,
-  privateCloudRequestDetailInclude,
-  publicCloudRequestDetailInclude,
-} from '@/services/db';
+import { models, tasks, privateCloudRequestDetailInclude, publicCloudRequestDetailInclude } from '@/services/db';
+import { getPublicCloudBillingResources } from '@/services/db/public-cloud-billing';
+import { objectId } from '@/validation-schemas';
 
 const pathParamSchema = z.object({
-  id: z.string().min(1),
+  id: objectId,
 });
 
 const apiHandler = createApiHandler({
@@ -64,26 +60,40 @@ export const GET = apiHandler(async ({ pathParams, session }) => {
     return OkResponse(true);
   } else if (task.type === TaskType.SIGN_PUBLIC_CLOUD_MOU) {
     const data = task.data as { licencePlate: string };
-    const recentRequest = await getMostRecentPublicCloudRequest(data.licencePlate);
+    const { billingDecorated, productDecorated, requestDecorated } = await getPublicCloudBillingResources({
+      licencePlate: data.licencePlate,
+      complete: false,
+      session,
+    });
 
-    if (!recentRequest) {
+    if (!billingDecorated) {
       return BadRequestResponse('invalid task');
     }
 
-    const requestDecorated = await models.publicCloudRequest.decorate(recentRequest, session, true);
-    await tasks.sendEmail(task.type, { request: requestDecorated });
+    await tasks.sendEmail(task.type, {
+      product: productDecorated,
+      request: requestDecorated,
+      billing: billingDecorated,
+    });
 
     return OkResponse(true);
   } else if (task.type === TaskType.REVIEW_PUBLIC_CLOUD_MOU) {
     const data = task.data as { licencePlate: string };
-    const recentRequest = await getMostRecentPublicCloudRequest(data.licencePlate);
+    const { billingDecorated, productDecorated, requestDecorated } = await getPublicCloudBillingResources({
+      licencePlate: data.licencePlate,
+      complete: false,
+      session,
+    });
 
-    if (!recentRequest) {
+    if (!billingDecorated) {
       return BadRequestResponse('invalid task');
     }
 
-    const requestDecorated = await models.publicCloudRequest.decorate(recentRequest, session, true);
-    await tasks.sendEmail(task.type, { request: requestDecorated });
+    await tasks.sendEmail(task.type, {
+      product: productDecorated,
+      request: requestDecorated,
+      billing: billingDecorated,
+    });
 
     return OkResponse(true);
   }

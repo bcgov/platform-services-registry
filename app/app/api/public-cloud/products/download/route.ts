@@ -19,8 +19,8 @@ export const POST = createApiHandler({
   };
 
   const { docs, totalCount } = await searchPublicCloudProducts({
-    session,
     ...searchProps,
+    session,
   });
 
   if (docs.length === 0) {

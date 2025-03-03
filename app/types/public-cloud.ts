@@ -1,5 +1,5 @@
-import { Prisma, User, PublicCloudProductMember } from '@prisma/client';
-import { PublicCloudProjectDecorate, PublicCloudRequestDecorate } from './doc-decorate';
+import { Prisma, User, PublicCloudProductMember, Provider } from '@prisma/client';
+import { PublicCloudProjectDecorate, PublicCloudRequestDecorate, PublicCloudBillingDecorate } from './doc-decorate';
 
 export type ExtendedPublicCloudProductMember = PublicCloudProductMember & User;
 
@@ -31,13 +31,6 @@ export type PublicCloudProductDetail = Prisma.PublicCloudProjectGetPayload<{
     primaryTechnicalLead: true;
     secondaryTechnicalLead: true;
     expenseAuthority: true;
-    billing: {
-      include: {
-        expenseAuthority: true;
-        signedBy: true;
-        approvedBy: true;
-      };
-    };
     requests: {
       where: {
         active: true;
@@ -67,7 +60,6 @@ export type PublicCloudRequestDetail = Prisma.PublicCloudRequestGetPayload<{
         primaryTechnicalLead: true;
         secondaryTechnicalLead: true;
         expenseAuthority: true;
-        billing: true;
       };
     };
     originalData: {
@@ -76,7 +68,6 @@ export type PublicCloudRequestDetail = Prisma.PublicCloudRequestGetPayload<{
         primaryTechnicalLead: true;
         secondaryTechnicalLead: true;
         expenseAuthority: true;
-        billing: true;
       };
     };
     requestData: {
@@ -85,7 +76,6 @@ export type PublicCloudRequestDetail = Prisma.PublicCloudRequestGetPayload<{
         primaryTechnicalLead: true;
         secondaryTechnicalLead: true;
         expenseAuthority: true;
-        billing: true;
       };
     };
     decisionData: {
@@ -94,13 +84,6 @@ export type PublicCloudRequestDetail = Prisma.PublicCloudRequestGetPayload<{
         primaryTechnicalLead: true;
         secondaryTechnicalLead: true;
         expenseAuthority: true;
-        billing: {
-          include: {
-            expenseAuthority: true;
-            signedBy: true;
-            approvedBy: true;
-          };
-        };
       };
     };
   };
@@ -134,7 +117,6 @@ export type PublicCloudRequestSimple = Prisma.PublicCloudRequestGetPayload<{
         primaryTechnicalLead: true;
         secondaryTechnicalLead: true;
         expenseAuthority: true;
-        billing: true;
       };
     };
     decisionData: {
@@ -143,7 +125,6 @@ export type PublicCloudRequestSimple = Prisma.PublicCloudRequestGetPayload<{
         primaryTechnicalLead: true;
         secondaryTechnicalLead: true;
         expenseAuthority: true;
-        billing: true;
       };
     };
   };
@@ -154,4 +135,49 @@ export type PublicCloudRequestSimpleDecorated = PublicCloudRequestSimple & Publi
 export type PublicCloudRequestSearch = {
   docs: PublicCloudRequestSimpleDecorated[];
   totalCount: number;
+};
+
+export type PublicCloudBillingDetail = Prisma.PublicCloudBillingGetPayload<{
+  include: {
+    signedBy: true;
+    approvedBy: true;
+    expenseAuthority: true;
+  };
+}>;
+export type PublicCloudBillingDetailDecorated = PublicCloudBillingDetail & PublicCloudBillingDecorate;
+export type PublicCloudBillingSimple = Prisma.PublicCloudBillingGetPayload<{
+  include: {
+    signedBy: true;
+    approvedBy: true;
+    expenseAuthority: true;
+  };
+}>;
+export type PublicCloudBillingSimpleDecorated = PublicCloudBillingSimple & PublicCloudBillingDecorate;
+export interface PublicCloudBillingSearchResponseMetadataProduct {
+  id: string;
+  licencePlate: string;
+  name: string;
+  url: string;
+  type: 'product' | 'request';
+  provider: Provider;
+}
+
+export type PublicCloudBillingSearchResponseMetadataTask = Prisma.TaskGetPayload<{
+  select: {
+    id: true;
+    type: true;
+    data: true;
+  };
+}>;
+
+export type PublicCloudBillingSearchResponseMetadata = {
+  publicProducts: PublicCloudBillingSearchResponseMetadataProduct[];
+  publicRequests: PublicCloudBillingSearchResponseMetadataProduct[];
+  tasks: PublicCloudBillingSearchResponseMetadataTask[];
+} | null;
+
+export type PublicCloudBillingSearch = {
+  data: PublicCloudBillingSimpleDecorated[];
+  totalCount: number;
+  metadata: PublicCloudBillingSearchResponseMetadata;
 };

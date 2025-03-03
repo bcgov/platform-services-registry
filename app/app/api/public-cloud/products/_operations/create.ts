@@ -1,7 +1,6 @@
 import { DecisionStatus, ProjectStatus, RequestType, TaskStatus, TaskType, EventType, Provider } from '@prisma/client';
 import { Session } from 'next-auth';
-import prisma from '@/core/prisma';
-import { OkResponse, UnauthorizedResponse, UnprocessableEntityResponse } from '@/core/responses';
+import { BadRequestResponse, OkResponse, UnauthorizedResponse } from '@/core/responses';
 import generateLicencePlate from '@/helpers/licence-plate';
 import { sendCreateRequestEmails } from '@/services/ches/public-cloud';
 import { createEvent, models, publicCloudRequestDetailInclude, tasks } from '@/services/db';
@@ -30,14 +29,13 @@ export default async function createOp({ session, body }: { session: Session; bo
     secondaryTechnicalLeadId,
     expenseAuthorityId,
     requestComment,
-    accountCoding,
     isAgMinistryChecked,
-    isEaApproval,
     ...rest
   } = body;
 
-  const billingProvider = body.provider === Provider.AZURE ? Provider.AZURE : Provider.AWS;
-  const billingCode = `${body.accountCoding}_${billingProvider}`;
+  if (!expenseAuthorityId) {
+    return BadRequestResponse('invalid expensive authority');
+  }
 
   const productData = {
     ...rest,
@@ -47,19 +45,6 @@ export default async function createOp({ session, body }: { session: Session; bo
     primaryTechnicalLead: { connect: { id: primaryTechnicalLeadId } },
     secondaryTechnicalLead: secondaryTechnicalLeadId ? { connect: { id: secondaryTechnicalLeadId } } : undefined,
     expenseAuthority: expenseAuthorityId ? { connect: { id: expenseAuthorityId } } : undefined,
-    billing: {
-      connectOrCreate: {
-        where: {
-          code: billingCode,
-        },
-        create: {
-          code: billingCode,
-          accountCoding: body.accountCoding,
-          expenseAuthority: { connect: { id: expenseAuthorityId } },
-          licencePlate,
-        },
-      },
-    },
   };
 
   const newRequest = (
@@ -82,19 +67,27 @@ export default async function createOp({ session, body }: { session: Session; bo
 
   const proms: any[] = [];
 
-  // Assign a task to the expense authority for new billing
-  if (newRequest.decisionData.expenseAuthorityId && !newRequest.decisionData.billing?.signed) {
-    const taskProm = tasks.create(TaskType.SIGN_PUBLIC_CLOUD_MOU, { request: newRequest });
-    proms.push(taskProm);
-  } else {
-    proms.push(
-      tasks.create(TaskType.REVIEW_PUBLIC_CLOUD_REQUEST, { request: newRequest, requester: session.user.name }),
-    );
-  }
+  const { data: billing } = await models.publicCloudBilling.create(
+    {
+      data: {
+        licencePlate,
+        expenseAuthority: { connect: { id: expenseAuthorityId } },
+        accountCoding: {
+          cc: '000',
+          rc: '00000',
+          sl: '00000',
+          stob: '0000',
+          pc: '0000000',
+        },
+      },
+    },
+    session,
+  );
 
   proms.push(
+    tasks.create(TaskType.SIGN_PUBLIC_CLOUD_MOU, { request: newRequest, billing }),
+    sendCreateRequestEmails(newRequest, user.name, billing),
     createEvent(EventType.CREATE_PUBLIC_CLOUD_PRODUCT, session.user.id, { requestId: newRequest.id }),
-    sendCreateRequestEmails(newRequest, user.name),
   );
 
   await Promise.all(proms);

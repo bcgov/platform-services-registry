@@ -1,3 +1,4 @@
+import { Task } from '@prisma/client';
 import { Prisma } from '@prisma/client';
 
 export type SearchTask = Prisma.TaskGetPayload<{
@@ -35,3 +36,8 @@ export type SearchTask = Prisma.TaskGetPayload<{
     lastName: string;
   }[];
 };
+
+export type AssignedTask = Pick<
+  Task,
+  'id' | 'type' | 'status' | 'createdAt' | 'completedAt' | 'completedBy' | 'data' | 'closedMetadata'
+> & { link: string; description: string };
