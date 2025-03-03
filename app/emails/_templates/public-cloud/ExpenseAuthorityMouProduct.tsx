@@ -3,18 +3,18 @@ import * as React from 'react';
 import PublicCloudLayout from '@/emails/_components/layout/PublicCloudLayout';
 import LinkButton from '@/emails/_components/LinkButton';
 import ProductDetails from '@/emails/_components/ProductDetails';
-import { PublicCloudProductDetail } from '@/types/public-cloud';
+import { getAccountCodingString } from '@/helpers/billing';
+import { PublicCloudBillingDetailDecorated, PublicCloudProductDetail } from '@/types/public-cloud';
 
 interface Props {
   product: PublicCloudProductDetail;
+  billing: PublicCloudBillingDetailDecorated;
 }
 
-export default function ExpenseAuthorityMouProduct({ product }: Props) {
+export default function ExpenseAuthorityMouProduct({ product, billing }: Props) {
   if (!product) return <></>;
 
-  const { name, expenseAuthority, billing } = product;
-  if (!billing) return <></>;
-
+  const { expenseAuthority, name } = product;
   const { accountCoding } = billing;
 
   return (
@@ -26,13 +26,13 @@ export default function ExpenseAuthorityMouProduct({ product }: Props) {
         the product <span className="font-bold">{name}</span> on the Public Cloud.
       </Text>
 
-      <LinkButton href={`/public-cloud/products/${product.licencePlate}/edit`}>Review Product</LinkButton>
+      <LinkButton href={`/public-cloud/products/${product.licencePlate}/billing`}>Review Product</LinkButton>
 
       <ProductDetails product={product} />
 
       <div>
         <Text className="mb-2 font-semibold h-4">Account Coding:</Text>
-        <Text className="mt-0 mb-2 h-4">{accountCoding}</Text>
+        <Text className="mt-0 mb-2 h-4">{getAccountCodingString(accountCoding)}</Text>
       </div>
     </PublicCloudLayout>
   );
