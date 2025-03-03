@@ -15,7 +15,7 @@ export default function Changes({ request }: { request: PublicCloudRequestDetail
   let profileChange: ReactNode = null;
   let contactChange: ReactNode = null;
   let membersChange: ReactNode = null;
-  let billingChange: ReactNode = null;
+  let budgetChange: ReactNode = null;
 
   if (diffData.profileChanged) {
     profileChange = (
@@ -61,16 +61,11 @@ export default function Changes({ request }: { request: PublicCloudRequestDetail
     );
   }
 
-  if (diffData.billingChanged || diffData.budgetChanged) {
-    billingChange = (
+  if (diffData.budgetChanged) {
+    budgetChange = (
       <>
         <Hr className="my-4" />
-        <BudgetChanges
-          budgetCurrent={request.originalData.budget}
-          budgetRequested={request.decisionData.budget}
-          accountCodingCurrent={request.originalData.billing?.accountCoding ?? ''}
-          accountCodingRequested={request.decisionData.billing?.accountCoding ?? ''}
-        />
+        <BudgetChanges budgetCurrent={request.originalData.budget} budgetRequested={request.decisionData.budget} />
       </>
     );
   }
@@ -80,7 +75,7 @@ export default function Changes({ request }: { request: PublicCloudRequestDetail
       {profileChange}
       {contactChange}
       {membersChange}
-      {billingChange}
+      {budgetChange}
     </>
   );
 }

@@ -4,31 +4,32 @@ import PublicCloudLayout from '@/emails/_components/layout/PublicCloudLayout';
 import LinkButton from '@/emails/_components/LinkButton';
 import ProductDetails from '@/emails/_components/ProductDetails';
 import { getAccountCodingString } from '@/helpers/billing';
-import { PublicCloudBillingDetailDecorated, PublicCloudRequestDetailDecorated } from '@/types/public-cloud';
+import { PublicCloudBillingDetailDecorated, PublicCloudProductDetail } from '@/types/public-cloud';
 
 interface Props {
-  request: PublicCloudRequestDetailDecorated;
+  product: PublicCloudProductDetail;
   billing: PublicCloudBillingDetailDecorated;
 }
 
-export default function ExpenseAuthorityMou({ request, billing }: Props) {
-  if (!request) return <></>;
+export default function BillingReviewerMou({ product, billing }: Props) {
+  if (!product) return <></>;
 
-  const { expenseAuthority, name } = request.decisionData;
+  const { licencePlate, name } = product;
   const { accountCoding } = billing;
+  const linkUrl = `/public-cloud/products/${licencePlate}/billing`;
 
   return (
     <PublicCloudLayout showFooter>
-      <Heading className="text-lg">Expense Authority eMOU request</Heading>
-      <Text>Hi {expenseAuthority?.firstName},</Text>
+      <Heading className="text-lg">eMOU review request</Heading>
+      <Text>Hi OCIO Cloud Director,</Text>
       <Text>
-        You have an <span className="font-bold">Electronic Memorandum of Understanding (eMOU)</span> signing request for
+        You have an <span className="font-bold">Electronic Memorandum of Understanding (eMOU)</span> review request for
         the product <span className="font-bold">{name}</span> on the Public Cloud.
       </Text>
 
-      <LinkButton href={`/public-cloud/requests/${request.id}/request`}>Review Request</LinkButton>
+      <LinkButton href={linkUrl}>Review Billing</LinkButton>
 
-      <ProductDetails product={request.decisionData} />
+      <ProductDetails product={product} />
 
       <div>
         <Text className="mb-2 font-semibold h-4">Account Coding:</Text>
