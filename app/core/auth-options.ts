@@ -286,8 +286,9 @@ export async function generateSession({
     viewPublicAnalytics: session.isAdmin || session.isAnalyzer || session.isPublicAnalyzer,
     viewPrivateAnalytics: session.isAdmin || session.isAnalyzer || session.isPrivateAnalyzer,
 
-    downloadBillingMou: session.isAdmin || session.isBillingReviewer || session.isBillingReader,
+    reviewPublicCloudBilling: session.isAdmin || session.isBillingReviewer,
     viewPublicCloudBilling: session.isAdmin || session.isBillingReviewer || session.isBillingReader,
+    downloadPublicCloudBillingMou: session.isAdmin || session.isBillingReviewer || session.isBillingReader,
 
     viewUsers: session.isAdmin || session.isUserReader,
     viewEvents: session.isAdmin || session.isEventReader,

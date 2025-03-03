@@ -39,7 +39,7 @@ export const GET = apiHandler(async ({ pathParams, queryParams, session }) => {
   }
 
   // Case2: create request
-  if (!session.permissions.downloadBillingMou) {
+  if (!session.permissions.downloadPublicCloudBillingMou) {
     return UnauthorizedResponse();
   }
 

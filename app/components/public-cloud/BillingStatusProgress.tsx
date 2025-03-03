@@ -76,7 +76,7 @@ export default function BillingStatusProgress({
     <>
       {billing.approvedBy && <UserProfile data={billing.approvedBy} />}
       <BillingDate date={billing.approvedAt} />
-      {data && session?.permissions.downloadBillingMou && (
+      {data && session?.permissions.downloadPublicCloudBillingMou && (
         <Button
           color="success"
           loading={downloading}

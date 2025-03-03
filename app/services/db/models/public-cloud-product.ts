@@ -111,7 +111,7 @@ async function decorate<T extends PublicCloudProductSimple & Partial<PublicCloud
   const canSignMou = false;
   const canApproveMou = false;
   const canDownloadMou =
-    session.permissions.downloadBillingMou ||
+    session.permissions.downloadPublicCloudBillingMou ||
     members.some(
       (member) =>
         member.userId === session.user.id &&
@@ -145,7 +145,7 @@ async function decorate<T extends PublicCloudProductSimple & Partial<PublicCloud
     manageMembers: [doc.projectOwnerId, doc.primaryTechnicalLeadId, doc.secondaryTechnicalLeadId].includes(
       session.user.id,
     ),
-    editAccountCoding: session.permissions.viewPublicCloudBilling || doc.expenseAuthorityId === session.user.id,
+    editAccountCoding: session.permissions.reviewPublicCloudBilling || doc.expenseAuthorityId === session.user.id,
   };
 
   return decoratedDoc;
