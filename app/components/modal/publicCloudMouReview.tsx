@@ -2,7 +2,6 @@
 
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Button, Grid, LoadingOverlay, Table, Box } from '@mantine/core';
-import { TaskStatus, TaskType } from '@prisma/client';
 import { useQuery, useMutation } from '@tanstack/react-query';
 import { useSession } from 'next-auth/react';
 import { useEffect } from 'react';
@@ -11,9 +10,10 @@ import { z } from 'zod';
 import FormCheckbox from '@/components/generic/checkbox/FormCheckbox';
 import FormError from '@/components/generic/FormError';
 import { createModal } from '@/core/modal';
+import { getAccountCodingString } from '@/helpers/billing';
 import { formatFullName } from '@/helpers/user';
-import { getBilling } from '@/services/backend/billing';
-import { reviewPublicCloudMou } from '@/services/backend/public-cloud/products';
+import { getPublicCloudProductBilling } from '@/services/backend/public-cloud/products';
+import { reviewPublicCloudProductBilling } from '@/services/backend/public-cloud/products';
 import { formatDate } from '@/utils/js';
 import { failure, success } from '../notification';
 
@@ -56,17 +56,17 @@ export const openPublicCloudMouReviewModal = createModal<ModalProps, ModalState>
       error: billingError,
     } = useQuery({
       queryKey: ['billing', billingId],
-      queryFn: () => getBilling(billingId, ''),
+      queryFn: () => getPublicCloudProductBilling(licencePlate, billingId),
       enabled: !!billingId,
     });
 
     const {
-      mutateAsync: reviewMou,
+      mutateAsync: reviewBilling,
       isPending: isReviewing,
       isError: isReviewError,
       error: reviewError,
     } = useMutation({
-      mutationFn: (data: { taskId: string; decision: string }) => reviewPublicCloudMou(licencePlate, data),
+      mutationFn: (data: { decision: string }) => reviewPublicCloudProductBilling(licencePlate, { billingId, ...data }),
       onSuccess: () => {
         state.confirmed = true;
         success();
@@ -91,18 +91,7 @@ export const openPublicCloudMouReviewModal = createModal<ModalProps, ModalState>
             autoComplete="off"
             onSubmit={handleSubmit(async (formData) => {
               if (formData.confirmed) {
-                const task = session?.tasks.find(
-                  (tsk) =>
-                    tsk.type === TaskType.REVIEW_PUBLIC_CLOUD_MOU &&
-                    tsk.status === TaskStatus.ASSIGNED &&
-                    (tsk.data as { licencePlate: string }).licencePlate === licencePlate,
-                );
-
-                if (task) {
-                  await reviewMou({ taskId: task?.id, decision: 'APPROVE' });
-                } else {
-                  failure({ message: 'You are not assigned to perform the task.', autoClose: true });
-                }
+                await reviewBilling({ decision: 'APPROVE' });
               }
 
               closeModal();
@@ -110,20 +99,22 @@ export const openPublicCloudMouReviewModal = createModal<ModalProps, ModalState>
           >
             <div className="mb-2">
               <Table highlightOnHover verticalSpacing="sm" className="bg-white">
-                <Table.Tbody>
-                  <Table.Tr>
-                    <Table.Td>Account Coding</Table.Td>
-                    <Table.Td>{billing?.accountCoding}</Table.Td>
-                  </Table.Tr>
-                  <Table.Tr>
-                    <Table.Td>Signed By</Table.Td>
-                    <Table.Td>{formatFullName(billing?.signedBy)}</Table.Td>
-                  </Table.Tr>
-                  <Table.Tr>
-                    <Table.Td>Signed At</Table.Td>
-                    <Table.Td>{formatDate(billing?.signedAt)}</Table.Td>
-                  </Table.Tr>
-                </Table.Tbody>
+                {billing && (
+                  <Table.Tbody>
+                    <Table.Tr>
+                      <Table.Td>Account Coding</Table.Td>
+                      <Table.Td>{getAccountCodingString(billing.accountCoding)}</Table.Td>
+                    </Table.Tr>
+                    <Table.Tr>
+                      <Table.Td>Signed By</Table.Td>
+                      <Table.Td>{formatFullName(billing.signedBy)}</Table.Td>
+                    </Table.Tr>
+                    <Table.Tr>
+                      <Table.Td>Signed At</Table.Td>
+                      <Table.Td>{formatDate(billing.signedAt)}</Table.Td>
+                    </Table.Tr>
+                  </Table.Tbody>
+                )}
               </Table>
             </div>
 

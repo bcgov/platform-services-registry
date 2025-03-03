@@ -45,9 +45,9 @@ model User {
   publicCloudRequestedProjectsAsExpenseAuthority        PublicCloudRequestedProject[]  @relation("expenseAuthority")
   privateCloudComments                                  PrivateCloudComment[]          @relation("user")
   reactions                                             Reaction[]                     @relation("user")
-  mousSigned                                            Billing[]                      @relation("signedBy")
-  mousApproved                                          Billing[]                      @relation("approvedBy")
-  mousAsExpenseAuthority                                Billing[]                      @relation("expenseAuthority")
+  publicCloudBillingSigned                              PublicCloudBilling[]           @relation("signedBy")
+  publicCloudBillingApproved                            PublicCloudBilling[]           @relation("approvedBy")
+  publicCloudBillingAsExpenseAuthority                  PublicCloudBilling[]           @relation("expenseAuthority")
   privateCloudRequestsAsRequester                       PrivateCloudRequest[]          @relation("createdBy")
   publicCloudRequestsAsRequester                        PublicCloudRequest[]           @relation("createdBy")
   privateCloudRequestsAsDecisionMaker                   PrivateCloudRequest[]          @relation("decisionMaker")
@@ -253,25 +253,30 @@ model PublicCloudRequest {
   changes            PublicCloudDataChanges?
 }
 
-model Billing {
-  id                           String                        @id @default(auto()) @map("_id") @db.ObjectId
-  code                         String                        @unique
-  accountCoding                String
-  licencePlate                 String
-  signed                       Boolean                       @default(false)
-  signedAt                     DateTime?
-  signedById                   String?                       @db.ObjectId
-  signedBy                     User?                         @relation("signedBy", fields: [signedById], references: [id])
-  approved                     Boolean                       @default(false)
-  approvedAt                   DateTime?
-  approvedById                 String?                       @db.ObjectId
-  approvedBy                   User?                         @relation("approvedBy", fields: [approvedById], references: [id])
-  expenseAuthorityId           String?                       @db.ObjectId
-  expenseAuthority             User?                         @relation("expenseAuthority", fields: [expenseAuthorityId], references: [id])
-  createdAt                    DateTime                      @default(now())
-  updatedAt                    DateTime                      @updatedAt
-  publicCloudProjects          PublicCloudProject[]          @relation("billing")
-  publicCloudRequestedProjects PublicCloudRequestedProject[] @relation("billing")
+model PublicCloudBilling {
+  id                 String        @id @default(auto()) @map("_id") @db.ObjectId
+  accountCoding      AccountCoding
+  licencePlate       String
+  expenseAuthorityId String        @db.ObjectId
+  expenseAuthority   User          @relation("expenseAuthority", fields: [expenseAuthorityId], references: [id])
+  signed             Boolean       @default(false)
+  signedAt           DateTime?
+  signedById         String?       @db.ObjectId
+  signedBy           User?         @relation("signedBy", fields: [signedById], references: [id])
+  approved           Boolean       @default(false)
+  approvedAt         DateTime?
+  approvedById       String?       @db.ObjectId
+  approvedBy         User?         @relation("approvedBy", fields: [approvedById], references: [id])
+  createdAt          DateTime      @default(now())
+  updatedAt          DateTime      @updatedAt
+}
+
+type AccountCoding {
+  cc   String
+  rc   String
+  sl   String
+  stob String?
+  pc   String
 }
 
 type PublicCloudDataChanges {
@@ -291,8 +296,6 @@ model PublicCloudProject {
   status                       ProjectStatus
   createdAt                    DateTime                   @default(now())
   updatedAt                    DateTime                   @updatedAt
-  billingId                    String?                    @db.ObjectId
-  billing                      Billing?                   @relation("billing", fields: [billingId], references: [id])
   budget                       Budget
   projectOwnerId               String                     @db.ObjectId
   projectOwner                 User                       @relation("projectOwner", fields: [projectOwnerId], references: [id])
@@ -323,8 +326,6 @@ model PublicCloudRequestedProject {
   description                  String
   status                       ProjectStatus
   createdAt                    DateTime                   @default(now())
-  billingId                    String?                    @db.ObjectId
-  billing                      Billing?                   @relation("billing", fields: [billingId], references: [id])
   budget                       Budget
   projectOwnerId               String                     @db.ObjectId
   projectOwner                 User                       @relation("projectOwner", fields: [projectOwnerId], references: [id])

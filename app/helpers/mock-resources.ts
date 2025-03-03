@@ -95,7 +95,6 @@ export function createSamplePublicCloudProductData(args?: {
       tools: true,
     },
     isAgMinistryChecked: true,
-    isEaApproval: true,
     ...data,
   };
 

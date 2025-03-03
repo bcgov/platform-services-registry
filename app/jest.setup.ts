@@ -118,11 +118,12 @@ export async function cleanUp() {
   await prisma.privateCloudRequestedProject.deleteMany();
   await prisma.publicCloudRequestedProject.deleteMany();
 
+  await prisma.publicCloudBilling.deleteMany();
+
   // Now it should be safe to delete User documents
   await prisma.user.deleteMany();
   await prisma.event.deleteMany();
   await prisma.task.deleteMany();
-  await prisma.billing.deleteMany();
 }
 
 beforeAll(async () => {

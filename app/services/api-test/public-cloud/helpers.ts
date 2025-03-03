@@ -8,54 +8,35 @@ import {
   createPublicCloudProject,
   editPublicCloudProject,
   deletePublicCloudProject,
-  signPublicCloudMou,
-  reviewPublicCloudMou,
+  signPublicCloudBilling,
+  reviewPublicCloudBilling,
 } from '@/services/api-test/public-cloud/products';
 import { makePublicCloudRequestDecision } from '@/services/api-test/public-cloud/requests';
 
-async function runEmouWorkflows(reqData: any) {
+async function runPublicCloudMouWorkflows(reqData: any) {
   const decisionData = reqData.decisionData;
-  await mockSessionByEmail(decisionData.expenseAuthority.email);
-
-  let task = await prisma.task.findFirst({
-    where: {
-      type: TaskType.SIGN_PUBLIC_CLOUD_MOU,
-      status: TaskStatus.ASSIGNED,
-      data: {
-        equals: {
-          licencePlate: reqData.licencePlate,
-        },
-      },
-    },
+  const billing = await prisma.publicCloudBilling.findFirst({
+    where: { licencePlate: reqData.licencePlate, signed: false, approved: false },
   });
 
-  if (!task) return;
+  if (!billing) return;
 
-  let response = await signPublicCloudMou(reqData.licencePlate, {
-    taskId: task.id,
+  await mockSessionByEmail(decisionData.expenseAuthority.email);
+  let response = await signPublicCloudBilling(reqData.licencePlate, billing.id, {
+    accountCoding: billing.accountCoding,
     confirmed: true,
   });
 
   if (response.status !== 200) return;
 
-  await mockSessionByRole(GlobalRole.BillingReviewer);
-
-  task = await prisma.task.findFirst({
-    where: {
-      type: TaskType.REVIEW_PUBLIC_CLOUD_MOU,
-      status: TaskStatus.ASSIGNED,
-      data: {
-        equals: {
-          licencePlate: reqData.licencePlate,
-        },
-      },
-    },
+  const billing2 = await prisma.publicCloudBilling.findFirst({
+    where: { licencePlate: reqData.licencePlate, signed: false, approved: false },
   });
 
-  if (!task) return;
+  if (!billing2) return;
 
-  response = await reviewPublicCloudMou(reqData.id, {
-    taskId: task.id,
+  await mockSessionByRole(GlobalRole.BillingReviewer);
+  response = await reviewPublicCloudBilling(reqData.id, billing2.id, {
     decision: 'APPROVE',
   });
 }
@@ -67,7 +48,6 @@ async function approveAndProvisionRequest(reqData: any) {
   let response = await makePublicCloudRequestDecision(reqData.id, {
     ...decisionData,
     type: RequestType.CREATE,
-    accountCoding: decisionData.billing.accountCoding,
     decision: DecisionStatus.APPROVED,
   });
 
@@ -92,7 +72,7 @@ export async function createPublicCloudProduct() {
 
   const resData = await response.json();
 
-  await runEmouWorkflows(resData);
+  await runPublicCloudMouWorkflows(resData);
 
   const decisionData = await approveAndProvisionRequest(resData);
   return decisionData;
@@ -129,7 +109,6 @@ export async function updatePublicCloudProduct() {
 
   response = await editPublicCloudProject(decisionData.licencePlate, {
     ...decisionData,
-    accountCoding: decisionData.billing.accountCoding,
     environmentsEnabled: newEnvironmentsEnabled,
   });
 

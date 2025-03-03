@@ -10,11 +10,8 @@ import {
   IconMoneybag,
   IconReceipt2,
 } from '@tabler/icons-react';
-import { useState } from 'react';
 import { FormProvider, useForm } from 'react-hook-form';
-import { z } from 'zod';
 import PreviousButton from '@/components/buttons/Previous';
-import AccountCoding from '@/components/form/AccountCoding';
 import AccountEnvironmentsPublic from '@/components/form/AccountEnvironmentsPublic';
 import Budget from '@/components/form/Budget';
 import ProjectDescriptionPublic from '@/components/form/ProjectDescriptionPublic';
@@ -24,27 +21,14 @@ import { openPublicCloudProductCreateSubmitModal } from '@/components/modal/publ
 import TeamContacts from '@/components/public-cloud/sections/TeamContacts';
 import { GlobalRole } from '@/constants';
 import createClientPage from '@/core/client-page';
-import { existBilling } from '@/services/backend/billing';
 import { publicCloudCreateRequestBodySchema } from '@/validation-schemas/public-cloud';
 
 const publicCloudProductNew = createClientPage({
   roles: [GlobalRole.User],
 });
 export default publicCloudProductNew(({}) => {
-  const methods = useForm({
-    resolver: zodResolver(
-      publicCloudCreateRequestBodySchema.refine(
-        async (formData) => {
-          const hasBilling = await existBilling(formData.accountCoding, formData.provider);
-          if (!hasBilling) return true;
-          return formData.isEaApproval;
-        },
-        {
-          message: 'EA Approval Checkbox should be checked.',
-          path: ['isEaApproval'],
-        },
-      ),
-    ),
+  const form = useForm({
+    resolver: zodResolver(publicCloudCreateRequestBodySchema),
     defaultValues: {
       environmentsEnabled: {
         production: true,
@@ -89,13 +73,6 @@ export default publicCloudProductNew(({}) => {
       Component: Budget,
       componentArgs: {},
     },
-    {
-      LeftIcon: IconReceipt2,
-      label: 'Billing (account coding)',
-      description: '',
-      Component: AccountCoding,
-      componentArgs: {},
-    },
   ];
 
   return (
@@ -105,11 +82,11 @@ export default publicCloudProductNew(({}) => {
       </h1>
       <h3 className="mt-0 mb-3 italic">Public Cloud Landing Zone</h3>
 
-      <FormProvider {...methods}>
+      <FormProvider {...form}>
         <FormErrorNotification />
         <form
           autoComplete="off"
-          onSubmit={methods.handleSubmit(async (formData) => {
+          onSubmit={form.handleSubmit(async (formData) => {
             await openPublicCloudProductCreateSubmitModal({ productData: formData });
           })}
         >

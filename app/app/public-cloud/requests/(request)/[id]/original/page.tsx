@@ -12,7 +12,6 @@ import { useEffect, useState } from 'react';
 import { FormProvider, useForm } from 'react-hook-form';
 import { z } from 'zod';
 import PreviousButton from '@/components/buttons/Previous';
-import AccountCoding from '@/components/form/AccountCoding';
 import AccountEnvironmentsPublic from '@/components/form/AccountEnvironmentsPublic';
 import Budget from '@/components/form/Budget';
 import ProjectDescriptionPublic from '@/components/form/ProjectDescriptionPublic';
@@ -33,14 +32,9 @@ const publicCloudRequestOriginal = createClientPage({
 });
 export default publicCloudRequestOriginal(({ router }) => {
   const [, snap] = usePublicProductState();
-  const [secondTechLead, setSecondTechLead] = useState(false);
 
   useEffect(() => {
     if (!snap.currentRequest) return;
-
-    if (snap.currentRequest.originalData?.secondaryTechnicalLead) {
-      setSecondTechLead(true);
-    }
   }, [snap.currentRequest, router]);
 
   const methods = useForm({
@@ -51,13 +45,6 @@ export default publicCloudRequestOriginal(({ router }) => {
       ...snap.currentRequest?.originalData,
     },
   });
-
-  const secondTechLeadOnClick = () => {
-    setSecondTechLead(!secondTechLead);
-    if (secondTechLead) {
-      methods.unregister('secondaryTechnicalLead');
-    }
-  };
 
   if (!snap.currentRequest) {
     return null;
@@ -88,7 +75,7 @@ export default publicCloudRequestOriginal(({ router }) => {
       label: 'Team contacts',
       description: '',
       Component: TeamContacts,
-      componentArgs: { disabled: isDisabled, secondTechLead, secondTechLeadOnClick },
+      componentArgs: { disabled: isDisabled },
     },
     {
       LeftIcon: IconUsersGroup,
@@ -103,16 +90,6 @@ export default publicCloudRequestOriginal(({ router }) => {
       description: '',
       Component: Budget,
       componentArgs: { disabled: isDisabled },
-    },
-    {
-      LeftIcon: IconReceipt2,
-      label: 'Billing (account coding)',
-      description: '',
-      Component: AccountCoding,
-      componentArgs: {
-        accountCodingInitial: snap.currentRequest.originalData?.billing?.accountCoding,
-        disabled: true,
-      },
     },
   ];
 

@@ -6,26 +6,26 @@ import Table from '@/components/generic/table/Table';
 import { GlobalPermissions } from '@/constants';
 import { billingSorts } from '@/constants/billing';
 import createClientPage from '@/core/client-page';
-import { searchBilling, downloadBillings } from '@/services/backend/billing';
-import { BillingSearchResponseDataItem, BillingSearchResponseMetadata } from '@/types/billing';
+import { searchPublicCloudBillings, downloadPublicCloudBillings } from '@/services/backend/public-cloud/billings';
+import { PublicCloudBillingSearchResponseMetadata, PublicCloudBillingSimpleDecorated } from '@/types/public-cloud';
 import FilterPanel from './FilterPanel';
 import { pageState } from './state';
 import TableBody from './TableBody';
 
 const billingPage = createClientPage({
-  permissions: [GlobalPermissions.ViewBilling],
+  permissions: [GlobalPermissions.ViewPublicCloudBilling],
   fallbackUrl: 'login?callbackUrl=/home',
 });
 
 export default billingPage(({ session }) => {
   const snap = useSnapshot(pageState);
   let totalCount = 0;
-  let billings: BillingSearchResponseDataItem[] = [];
-  let metadata!: BillingSearchResponseMetadata;
+  let billings: PublicCloudBillingSimpleDecorated[] = [];
+  let metadata!: PublicCloudBillingSearchResponseMetadata;
 
   const { data, isLoading } = useQuery({
     queryKey: ['billings', snap],
-    queryFn: () => searchBilling(snap),
+    queryFn: () => searchPublicCloudBillings(snap),
   });
 
   if (!isLoading && data) {
@@ -37,7 +37,7 @@ export default billingPage(({ session }) => {
   return (
     <>
       <Table
-        title="Billings"
+        title="Public Cloud Billings"
         totalCount={totalCount}
         page={snap.page ?? 1}
         pageSize={snap.pageSize ?? 10}
@@ -51,7 +51,7 @@ export default billingPage(({ session }) => {
           pageState.search = searchTearm;
         }}
         onExport={async () => {
-          const result = await downloadBillings(snap);
+          const result = await downloadPublicCloudBillings(snap);
           return result;
         }}
         onSort={(sortValue) => {

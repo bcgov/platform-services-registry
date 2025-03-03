@@ -1,13 +1,14 @@
-import { PublicCloudProductMemberRole } from '@prisma/client';
+import { PublicCloudBilling, PublicCloudProductMemberRole } from '@prisma/client';
 import { IS_PROD } from '@/config';
 import { publicCloudTeamEmail, GlobalRole } from '@/constants';
-import prisma from '@/core/prisma';
 import AdminCreateRequestTemplate from '@/emails/_templates/public-cloud/AdminCreateRequest';
 import AdminDeleteRequestTemplate from '@/emails/_templates/public-cloud/AdminDeleteRequest';
 import BillingReviewerMouTemplate from '@/emails/_templates/public-cloud/BillingReviewerMou';
+import BillingReviewerMouProductTemplate from '@/emails/_templates/public-cloud/BillingReviewerMouProduct';
 import EmouServiceAgreementTemplate from '@/emails/_templates/public-cloud/EmouServiceAgreement';
 import ExpenseAuthorityTemplate from '@/emails/_templates/public-cloud/ExpenseAuthority';
 import ExpenseAuthorityMouTemplate from '@/emails/_templates/public-cloud/ExpenseAuthorityMou';
+import ExpenseAuthorityMouProductTemplate from '@/emails/_templates/public-cloud/ExpenseAuthorityMouProduct';
 import TeamCreateRequestTemplate from '@/emails/_templates/public-cloud/TeamCreateRequest';
 import TeamCreateRequestApprovalTemplate from '@/emails/_templates/public-cloud/TeamCreateRequestApproval';
 import TeamCreateRequestCompletionTemplate from '@/emails/_templates/public-cloud/TeamCreateRequestCompletion';
@@ -18,12 +19,16 @@ import TeamDeleteRequestCompletionTemplate from '@/emails/_templates/public-clou
 import TeamDeleteRequestRejectionTemplate from '@/emails/_templates/public-cloud/TeamDeleteRequestRejection';
 import TeamEditRequestTemplate from '@/emails/_templates/public-cloud/TeamEditRequest';
 import TeamEditRequestCompletionTemplate from '@/emails/_templates/public-cloud/TeamEditRequestCompletion';
-import { getEmouFileName } from '@/helpers/emou';
+import { getPublicCloudEmouFileName } from '@/helpers/emou';
 import { generateEmouPdf } from '@/helpers/pdfs/emou';
 import { safeSendEmail, sendEmail } from '@/services/ches/core';
 import { getContent } from '@/services/ches/helpers';
 import { findUserEmailsByAuthRole } from '@/services/keycloak/app-realm';
-import { PublicCloudRequestDetailDecorated } from '@/types/public-cloud';
+import {
+  PublicCloudBillingDetailDecorated,
+  PublicCloudProductDetailDecorated,
+  PublicCloudRequestDetailDecorated,
+} from '@/types/public-cloud';
 
 async function getTeamEmails(request: PublicCloudRequestDetailDecorated) {
   const memberEmails = request.decisionData.members
@@ -165,8 +170,11 @@ export async function sendTeamEditRequestCompletion(request: PublicCloudRequestD
   });
 }
 
-export async function sendBillingReviewerMou(request: PublicCloudRequestDetailDecorated) {
-  const content = await getContent(BillingReviewerMouTemplate({ request }));
+export async function sendBillingReviewerMou(
+  request: PublicCloudRequestDetailDecorated,
+  billing: PublicCloudBillingDetailDecorated,
+) {
+  const content = await getContent(BillingReviewerMouTemplate({ request, billing }));
   const billingReviewerEmails = await findUserEmailsByAuthRole(GlobalRole.BillingReviewer);
 
   return safeSendEmail({
@@ -176,11 +184,26 @@ export async function sendBillingReviewerMou(request: PublicCloudRequestDetailDe
   });
 }
 
-export async function sendEmouServiceAgreement(request: PublicCloudRequestDetailDecorated) {
-  if (!request.decisionData.billing) return;
+export async function sendBillingReviewerMouProduct(
+  product: PublicCloudProductDetailDecorated,
+  billing: PublicCloudBillingDetailDecorated,
+) {
+  const content = await getContent(BillingReviewerMouProductTemplate({ product, billing }));
+  const billingReviewerEmails = await findUserEmailsByAuthRole(GlobalRole.BillingReviewer);
 
-  const content = await getContent(EmouServiceAgreementTemplate({ request }));
-  const emouPdfBuff = await generateEmouPdf(request.decisionData, request.decisionData.billing);
+  return safeSendEmail({
+    subject: 'eMOU review request',
+    to: billingReviewerEmails,
+    body: content,
+  });
+}
+
+export async function sendEmouServiceAgreement(
+  request: PublicCloudRequestDetailDecorated,
+  billing: PublicCloudBillingDetailDecorated,
+) {
+  const content = await getContent(EmouServiceAgreementTemplate({ request, billing }));
+  const emouPdfBuff = await generateEmouPdf(request.decisionData, billing);
   const billingReviewerEmails = await findUserEmailsByAuthRole(GlobalRole.BillingReviewer);
 
   return sendEmail({
@@ -192,7 +215,7 @@ export async function sendEmouServiceAgreement(request: PublicCloudRequestDetail
       {
         content: emouPdfBuff.toString('base64'),
         encoding: 'base64',
-        filename: getEmouFileName(request.decisionData.name, request.decisionData.provider),
+        filename: getPublicCloudEmouFileName(request.decisionData.name, request.decisionData.provider),
         contentType: 'application/pdf',
       },
     ],
@@ -209,12 +232,28 @@ export async function sendExpenseAuthority(request: PublicCloudRequestDetailDeco
   });
 }
 
-export async function sendExpenseAuthorityMou(request: PublicCloudRequestDetailDecorated) {
-  const content = await getContent(ExpenseAuthorityMouTemplate({ request }));
+export async function sendExpenseAuthorityMou(
+  request: PublicCloudRequestDetailDecorated,
+  billing: PublicCloudBillingDetailDecorated,
+) {
+  const content = await getContent(ExpenseAuthorityMouTemplate({ request, billing }));
 
   return safeSendEmail({
     subject: 'Expense Authority eMOU request',
     to: [request.decisionData.expenseAuthority?.email],
+    body: content,
+  });
+}
+
+export async function sendExpenseAuthorityMouProduct(
+  product: PublicCloudProductDetailDecorated,
+  billing: PublicCloudBillingDetailDecorated,
+) {
+  const content = await getContent(ExpenseAuthorityMouProductTemplate({ product, billing }));
+
+  return safeSendEmail({
+    subject: 'Expense Authority eMOU request',
+    to: [product.expenseAuthority?.email],
     body: content,
   });
 }
