@@ -107,7 +107,7 @@ export const up = async (db, client) => {
 
     const result = await Promise.all([
       PublicCloudBilling.insertMany(newBillingDataSet, {}),
-      Task.insertMany(newTaskSet, {}),
+      newTaskSet.length > 0 && Task.insertMany(newTaskSet, {}),
     ]);
 
     console.log('migrate_public_cloud_billings:', result);
