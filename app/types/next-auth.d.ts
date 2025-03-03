@@ -42,9 +42,10 @@ declare module 'next-auth' {
     viewPrivateAnalytics: boolean;
     viewPublicAnalytics: boolean;
 
-    downloadBillingMou: boolean;
+    reviewPublicCloudBilling: boolean;
+    viewPublicCloudBilling: boolean;
+    downloadPublicCloudBillingMou: boolean;
 
-    viewBilling: boolean;
     viewEvents: boolean;
     viewUsers: boolean;
     editUsers: boolean;

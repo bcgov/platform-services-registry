@@ -31,9 +31,10 @@ export enum GlobalPermissions {
   ViewPrivateAnalytics = 'viewPrivateAnalytics',
   ViewPublicAnalytics = 'viewPublicAnalytics',
 
-  DownloadBillingMou = 'downloadBillingMou',
+  ReviewPublicCloudBilling = 'reviewPublicCloudBilling',
+  ViewPublicCloudBilling = 'viewPublicCloudBilling',
+  DownloadPublicCloudBillingMou = 'downloadPublicCloudBillingMou',
 
-  ViewBilling = 'viewBilling',
   ViewEvents = 'viewEvents',
   ViewUsers = 'viewUsers',
   ViewTasks = 'viewTasks',

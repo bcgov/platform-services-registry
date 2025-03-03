@@ -52,7 +52,6 @@ export const POST = apiHandler(async ({ pathParams, body, session }) => {
     type,
     decision,
     decisionComment,
-    accountCoding,
     ...rest
   } = body as PublicCloudRequestDecisionBody;
 

@@ -1,7 +1,8 @@
-import { Task } from '@prisma/client';
 import axios from 'axios';
 import { taskSorts } from '@/constants/task';
+import { userState } from '@/states/user';
 import { SearchTask } from '@/types/task';
+import { AssignedTask } from '@/types/task';
 import { downloadFile } from '@/utils/browser';
 import { TaskSearchBody } from '@/validation-schemas/task';
 import { instance as baseInstance } from './axios';
@@ -12,14 +13,9 @@ export const instance = axios.create({
 });
 
 export async function getAssignedTasks() {
-  const result = await instance
-    .get<
-      (Pick<
-        Task,
-        'id' | 'type' | 'status' | 'createdAt' | 'completedAt' | 'completedBy' | 'data' | 'closedMetadata'
-      > & { link: string; description: string })[]
-    >('/assigned')
-    .then((res) => res.data);
+  const result = await instance.get<AssignedTask[]>('/assigned').then((res) => res.data);
+  userState.assignedTasks = result;
+
   return result;
 }
 

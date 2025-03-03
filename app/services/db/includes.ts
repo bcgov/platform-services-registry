@@ -89,13 +89,6 @@ export const publicCloudProductDetailInclude = {
   primaryTechnicalLead: true,
   secondaryTechnicalLead: true,
   expenseAuthority: true,
-  billing: {
-    include: {
-      expenseAuthority: true,
-      signedBy: true,
-      approvedBy: true,
-    },
-  },
   requests: {
     where: {
       active: true,
@@ -112,7 +105,6 @@ export const publicCloudRequestSimpleInclude = {
       primaryTechnicalLead: true,
       secondaryTechnicalLead: true,
       expenseAuthority: true,
-      billing: true,
     },
   },
   decisionData: {
@@ -121,7 +113,6 @@ export const publicCloudRequestSimpleInclude = {
       primaryTechnicalLead: true,
       secondaryTechnicalLead: true,
       expenseAuthority: true,
-      billing: true,
     },
   },
 };
@@ -135,7 +126,6 @@ export const publicCloudRequestDetailInclude = {
       primaryTechnicalLead: true,
       secondaryTechnicalLead: true,
       expenseAuthority: true,
-      billing: true,
     },
   },
   originalData: {
@@ -144,7 +134,6 @@ export const publicCloudRequestDetailInclude = {
       primaryTechnicalLead: true,
       secondaryTechnicalLead: true,
       expenseAuthority: true,
-      billing: true,
     },
   },
   requestData: {
@@ -153,7 +142,6 @@ export const publicCloudRequestDetailInclude = {
       primaryTechnicalLead: true,
       secondaryTechnicalLead: true,
       expenseAuthority: true,
-      billing: true,
     },
   },
   decisionData: {
@@ -162,13 +150,18 @@ export const publicCloudRequestDetailInclude = {
       primaryTechnicalLead: true,
       secondaryTechnicalLead: true,
       expenseAuthority: true,
-      billing: {
-        include: {
-          expenseAuthority: true,
-          signedBy: true,
-          approvedBy: true,
-        },
-      },
     },
   },
+};
+
+export const publicCloudBillingSimpleInclude = {
+  signedBy: true,
+  approvedBy: true,
+  expenseAuthority: true,
+};
+
+export const publicCloudBillingDetailInclude = {
+  signedBy: true,
+  approvedBy: true,
+  expenseAuthority: true,
 };

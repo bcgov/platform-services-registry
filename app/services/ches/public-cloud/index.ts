@@ -1,6 +1,6 @@
-import { RequestType } from '@prisma/client';
+import { PublicCloudBilling, RequestType } from '@prisma/client';
 import { logger } from '@/core/logging';
-import { PublicCloudRequestDetailDecorated } from '@/types/public-cloud';
+import { PublicCloudBillingDetailDecorated, PublicCloudRequestDetailDecorated } from '@/types/public-cloud';
 import {
   sendAdminCreateRequest,
   sendAdminDeleteRequest,
@@ -42,10 +42,14 @@ export function sendAdminDeleteRequestEmail(request: PublicCloudRequestDetailDec
   }
 }
 
-export function sendAdminCreateRequestEmails(request: PublicCloudRequestDetailDecorated, requester: string) {
+export function sendAdminCreateRequestEmails(
+  request: PublicCloudRequestDetailDecorated,
+  requester: string,
+  billing: PublicCloudBillingDetailDecorated,
+) {
   try {
     const proms: any[] = [];
-    proms.push(sendEmouServiceAgreement(request));
+    proms.push(sendEmouServiceAgreement(request, billing));
 
     return Promise.all(proms);
   } catch (error) {
@@ -53,14 +57,18 @@ export function sendAdminCreateRequestEmails(request: PublicCloudRequestDetailDe
   }
 }
 
-export function sendCreateRequestEmails(request: PublicCloudRequestDetailDecorated, requester: string) {
+export function sendCreateRequestEmails(
+  request: PublicCloudRequestDetailDecorated,
+  requester: string,
+  billing: PublicCloudBillingDetailDecorated,
+) {
   try {
     const proms: any[] = [];
 
     proms.push(sendTeamCreateRequest(request, requester));
 
-    if (request.decisionData?.billing && request.decisionData.billing.approved) {
-      proms.push(sendAdminCreateRequestEmails(request, requester));
+    if (billing.approved) {
+      proms.push(sendAdminCreateRequestEmails(request, requester, billing));
     }
 
     return Promise.all(proms);
@@ -143,16 +151,5 @@ export function sendRequestCompletionEmails(request: PublicCloudRequestDetailDec
     return Promise.all(proms);
   } catch (error) {
     logger.error('sendRequestCompletionEmails:', error);
-  }
-}
-
-export function sendPublicCloudBillingReviewEmails(request: PublicCloudRequestDetailDecorated) {
-  try {
-    const proms: any[] = [];
-    proms.push(sendBillingReviewerMou(request));
-
-    return Promise.all(proms);
-  } catch (error) {
-    logger.error('sendPublicCloudBillingReviewEmails:', error);
   }
 }

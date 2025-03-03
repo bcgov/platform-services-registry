@@ -39,7 +39,7 @@ export async function sendPublicCloudNatsMessage(
   const decisionData = request.decisionData;
   const natsSubject = `registry_project_provisioning_${decisionData.provider.toLocaleLowerCase()}`;
 
-  const messageBody = createPublicCloudNatsMessage(request);
+  const messageBody = await createPublicCloudNatsMessage(request);
 
   await sendNatsMessage(PUBLIC_NATS_URL, natsSubject, messageBody);
 }

@@ -55,11 +55,6 @@ const _publicCloudCreateRequestBodySchema = z.object({
     .string()
     .min(1, { message: 'Name is required.' })
     .refine((value) => !/[^A-Za-z0-9///.:+=@_ ]/g.test(value), 'Only /. : + = @ _ special symbols are allowed'),
-  accountCoding: z
-    .string()
-    .refine((value) => /^[0-9A-Z\s]+$/.test(value), 'Account Coding should contain only uppercase characters, digits')
-    .transform((value) => value.replace(/\s+/g, '').toLocaleUpperCase())
-    .refine((value) => value.length === 24, 'Account Coding should contain 24 characters'),
   description: z.string().min(1, { message: 'Description is required.' }),
   provider: z.nativeEnum(Provider),
   providerSelectionReasons: z.array(z.string()).min(1, { message: 'Reason for choosing provider is required' }),
@@ -100,7 +95,6 @@ export const publicCloudCreateRequestBodySchema = _publicCloudCreateRequestBodyS
   .merge(
     z.object({
       isAgMinistryChecked: z.boolean().optional(),
-      isEaApproval: z.boolean().optional(),
     }),
   )
   .refine(
@@ -117,7 +111,6 @@ export const publicCloudCreateRequestBodySchema = _publicCloudCreateRequestBodyS
     path: ['primaryTechnicalLead'],
   })
   .superRefine((data, ctx) => {
-    console.log('data.budgetdata.budget', data.budget);
     const budgetSchema = getBudgetSchema(data.provider);
     const budgetParseResult = budgetSchema.safeParse(data.budget);
 
@@ -138,7 +131,6 @@ export const publicCloudEditRequestBodySchema = _publicCloudEditRequestBodySchem
   .merge(
     z.object({
       isAgMinistryChecked: z.boolean().optional(),
-      isEaApproval: z.boolean().optional(),
     }),
   )
   .refine(
@@ -200,3 +192,48 @@ export type PublicCloudRequestDecisionBody = z.infer<typeof publicCloudRequestDe
 export type PublicCloudProductSearchNoPaginationBody = z.infer<typeof publicCloudProductSearchNoPaginationBodySchema>;
 export type PublicCloudProductSearchBody = z.infer<typeof publicCloudProductSearchBodySchema>;
 export type PublicCloudRequestSearchBody = z.infer<typeof publicCloudRequestSearchBodySchema>;
+
+export const publicCloudBillingSearchBodySchema = z.object({
+  search: z.string().optional(),
+  licencePlate: z.string().min(1).nullable().optional(),
+  signed: z.boolean().optional(),
+  approved: z.boolean().optional(),
+  page: z.number().optional(),
+  pageSize: z.number().optional(),
+  sortValue: z.string().optional(),
+  sortKey: z.string().optional(),
+  sortOrder: z.preprocess(processEnumString, z.nativeEnum(Prisma.SortOrder).optional()),
+  includeMetadata: z.boolean().optional().default(false),
+});
+
+export type PublicCloudBillingSearchBody = z.infer<typeof publicCloudBillingSearchBodySchema>;
+
+export const accountCodingSchema = z.object({
+  cc: z
+    .string()
+    .length(3, 'Must be exactly 3 characters long')
+    .regex(/^[0-9]+$/, 'Must contain only numbers'),
+  rc: z
+    .string()
+    .length(5, 'Must be exactly 5 characters long')
+    .regex(/^[a-z0-9]+$/, 'Must contain only letters and numbers'),
+  sl: z
+    .string()
+    .length(5, 'Must be exactly 5 characters long')
+    .regex(/^[0-9]+$/, 'Must contain only numbers'),
+  stob: z
+    .string()
+    .length(4, 'Must be exactly 4 characters long')
+    .regex(/^[0-9]+$/, 'Must contain only numbers')
+    .nullable(),
+  pc: z
+    .string()
+    .length(7, 'Must be exactly 7 characters long')
+    .regex(/^[a-z0-9]+$/, 'Must contain only letters and numbers'),
+});
+
+export const publicCloudBillingBodySchema = z.object({
+  accountCoding: accountCodingSchema,
+});
+
+export type PublicCloudBillingBody = z.infer<typeof publicCloudBillingBodySchema>;

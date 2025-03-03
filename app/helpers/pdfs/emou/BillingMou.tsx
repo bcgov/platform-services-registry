@@ -1,8 +1,9 @@
 import { Provider } from '@prisma/client';
 import _sumBy from 'lodash-es/sumBy';
 import { formatFullName } from '@/helpers/user';
+import { PublicCloudBillingDetailDecorated } from '@/types/public-cloud';
 import { formatDate } from '@/utils/js';
-import { Product, Billing } from './types';
+import { Product } from './types';
 
 export const css = `
 @page {
@@ -77,7 +78,13 @@ function formatCurrency(value: number, { suffix = 'CAD' }: { suffix: 'CAD' | 'US
   return `$${value.toFixed(2)} ${suffix}`;
 }
 
-export default function BillingMou({ product, billing }: { product: Product; billing: Billing }) {
+export default function BillingMou({
+  product,
+  billing,
+}: {
+  product: Product;
+  billing: PublicCloudBillingDetailDecorated;
+}) {
   const values: number[] = [];
   if (product.environmentsEnabled.development) values.push(product.budget.dev);
   if (product.environmentsEnabled.test) values.push(product.budget.test);
@@ -193,11 +200,11 @@ export default function BillingMou({ product, billing }: { product: Product; bil
           <td>Project Code</td>
         </tr>
         <tr>
-          <td>{billing.accountCoding.substring(0, 3)}</td>
-          <td>{billing.accountCoding.substring(3, 8)}</td>
-          <td>{billing.accountCoding.substring(8, 13)}</td>
-          <td>{billing.accountCoding.substring(13, 17)}</td>
-          <td>{billing.accountCoding.substring(17, 24)}</td>
+          <td>{billing.accountCoding.cc}</td>
+          <td>{billing.accountCoding.rc}</td>
+          <td>{billing.accountCoding.sl}</td>
+          <td>{billing.accountCoding.stob}</td>
+          <td>{billing.accountCoding.pc}</td>
         </tr>
       </table>
 

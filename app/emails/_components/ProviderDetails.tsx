@@ -2,11 +2,11 @@ import { Text, Hr } from '@react-email/components';
 import { PublicCloudProductDetail } from '@/types/public-cloud';
 
 interface Props {
-  product: Pick<PublicCloudProductDetail, 'provider' | 'billing' | 'budget' | 'environmentsEnabled'>;
+  product: Pick<PublicCloudProductDetail, 'provider' | 'budget' | 'environmentsEnabled'>;
 }
 
 export default function ProviderDetails({ product }: Props) {
-  const { provider, billing, budget, environmentsEnabled } = product;
+  const { provider, budget, environmentsEnabled } = product;
 
   const totalBudget =
     (environmentsEnabled.development ? budget.dev : 0) +
@@ -51,7 +51,6 @@ export default function ProviderDetails({ product }: Props) {
           </Text>
         </div>
         <Text className="font-semibold mt-2 mb-0">Account Coding</Text>
-        <Text className="mt-0">{billing?.accountCoding ?? ''}</Text>
       </div>
     </>
   );

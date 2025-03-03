@@ -2,7 +2,7 @@
 
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Button, Divider, Grid, LoadingOverlay, Box } from '@mantine/core';
-import { Provider, TaskStatus, TaskType } from '@prisma/client';
+import { AccountCoding, Provider, TaskStatus, TaskType } from '@prisma/client';
 import { useQuery, useMutation } from '@tanstack/react-query';
 import { useSession } from 'next-auth/react';
 import { useEffect } from 'react';
@@ -11,14 +11,19 @@ import { string, z } from 'zod';
 import ExternalLink from '@/components/generic/button/ExternalLink';
 import FormCheckbox from '@/components/generic/checkbox/FormCheckbox';
 import FormError from '@/components/generic/FormError';
+import AccountCodingBase from '@/components/shared/AccountCoding';
 import { createModal } from '@/core/modal';
-import { signPublicCloudMou } from '@/services/backend/public-cloud/products';
+import { signPublicCloudProductBilling } from '@/services/backend/public-cloud/products';
+import { publicCloudBillingBodySchema } from '@/validation-schemas';
 import { failure, success } from '../notification';
 
 interface ModalProps {
+  billingId: string;
   licencePlate: string;
   name: string;
   provider: Provider;
+  accountCoding: AccountCoding;
+  editable?: boolean;
 }
 
 interface ModalState {
@@ -30,31 +35,44 @@ export const openPublicCloudMouSignModal = createModal<ModalProps, ModalState>({
     size: 'xl',
     title: 'Service Agreement',
   },
-  Component: function ({ licencePlate, name, provider, state, closeModal }) {
+  Component: function ({
+    billingId,
+    licencePlate,
+    name,
+    provider,
+    accountCoding,
+    editable = false,
+    state,
+    closeModal,
+  }) {
     const { data: session, update: updateSession } = useSession();
 
     useEffect(() => {
       updateSession();
     }, []);
 
-    const methods = useForm({
+    const form = useForm({
       resolver: zodResolver(
-        z.object({
-          confirmed: z.boolean().refine((bool) => bool == true, { message: 'Please confirm the agreement.' }),
-        }),
+        publicCloudBillingBodySchema.merge(
+          z.object({
+            confirmed: z.boolean().refine((bool) => bool == true, { message: 'Please confirm the agreement.' }),
+          }),
+        ),
       ),
       defaultValues: {
         confirmed: false,
+        accountCoding,
       },
     });
 
     const {
-      mutateAsync: signMou,
+      mutateAsync: signBilling,
       isPending: isSigning,
       isError: isSignError,
       error: signError,
     } = useMutation({
-      mutationFn: (data: { taskId: string; confirmed: boolean }) => signPublicCloudMou(licencePlate, data),
+      mutationFn: (data: { accountCoding: AccountCoding; confirmed: boolean }) =>
+        signPublicCloudProductBilling(licencePlate, { billingId, ...data }),
       onSuccess: () => {
         state.confirmed = true;
         success();
@@ -65,7 +83,7 @@ export const openPublicCloudMouSignModal = createModal<ModalProps, ModalState>({
       },
     });
 
-    const { handleSubmit, register } = methods;
+    const { handleSubmit, register } = form;
 
     const isAWS = provider === Provider.AWS || provider === Provider.AWS_LZA;
     const service = isAWS ? 'AWS' : 'Microsoft Azure';
@@ -73,23 +91,12 @@ export const openPublicCloudMouSignModal = createModal<ModalProps, ModalState>({
     return (
       <Box pos="relative">
         <LoadingOverlay visible={isSigning} zIndex={1000} overlayProps={{ radius: 'sm', blur: 2 }} />
-        <FormProvider {...methods}>
+        <FormProvider {...form}>
           <form
             autoComplete="off"
             onSubmit={handleSubmit(async (formData) => {
               if (formData.confirmed) {
-                const task = session?.tasks.find(
-                  (tsk) =>
-                    tsk.type === TaskType.SIGN_PUBLIC_CLOUD_MOU &&
-                    tsk.status === TaskStatus.ASSIGNED &&
-                    (tsk.data as { licencePlate: string }).licencePlate === licencePlate,
-                );
-
-                if (task) {
-                  await signMou({ taskId: task?.id, confirmed: true });
-                } else {
-                  failure({ message: 'You are not assigned to perform the task.', autoClose: true });
-                }
+                await signBilling({ accountCoding: formData.accountCoding, confirmed: true });
               }
 
               closeModal();
@@ -151,6 +158,8 @@ export const openPublicCloudMouSignModal = createModal<ModalProps, ModalState>({
                 </ExternalLink>
               </p>
             </div>
+
+            <AccountCodingBase disabled={!editable} />
 
             <Divider my="md" />
 

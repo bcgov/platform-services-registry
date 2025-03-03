@@ -56,27 +56,41 @@ async function decorate<T extends PublicCloudRequestSimple | PublicCloudRequestD
   let canSignMou = false;
   let canApproveMou = false;
 
-  if (doc.type === RequestType.CREATE || doc.type === RequestType.DELETE) {
-    if (doc.decisionData.billing) {
-      canSignMou =
-        !doc.decisionData.billing.signed &&
-        session.tasks
-          .filter((task) => task.type === TaskType.SIGN_PUBLIC_CLOUD_MOU && task.status === TaskStatus.ASSIGNED)
-          .map((task) => (task.data as { licencePlate: string }).licencePlate)
-          .includes(doc.licencePlate);
+  if (doc.decisionStatus === DecisionStatus.PENDING) {
+    if (doc.type === RequestType.CREATE) {
+      const billing = await prisma.publicCloudBilling.findFirst({
+        where: { licencePlate: doc.licencePlate },
+        orderBy: { createdAt: Prisma.SortOrder.desc },
+      });
 
-      canApproveMou =
-        doc.decisionData.billing.signed &&
-        !doc.decisionData.billing.approved &&
-        session.tasks
-          .filter((task) => task.type === TaskType.REVIEW_PUBLIC_CLOUD_MOU && task.status === TaskStatus.ASSIGNED)
-          .map((task) => (task.data as { licencePlate: string }).licencePlate)
-          .includes(doc.licencePlate);
+      if (billing) {
+        canSignMou =
+          !billing.signed &&
+          session.tasks
+            .filter((task) => task.type === TaskType.SIGN_PUBLIC_CLOUD_MOU && task.status === TaskStatus.ASSIGNED)
+            .map((task) => (task.data as { licencePlate: string }).licencePlate)
+            .includes(doc.licencePlate);
 
+        canApproveMou =
+          billing.signed &&
+          !billing.approved &&
+          session.tasks
+            .filter((task) => task.type === TaskType.REVIEW_PUBLIC_CLOUD_MOU && task.status === TaskStatus.ASSIGNED)
+            .map((task) => (task.data as { licencePlate: string }).licencePlate)
+            .includes(doc.licencePlate);
+
+        canReview =
+          doc.decisionStatus === DecisionStatus.PENDING &&
+          billing.signed &&
+          billing.approved &&
+          session.tasks
+            .filter((task) => task.type === TaskType.REVIEW_PUBLIC_CLOUD_REQUEST && task.status === TaskStatus.ASSIGNED)
+            .map((task) => (task.data as { requestId: string }).requestId)
+            .includes(doc.id);
+      }
+    } else if (doc.type === RequestType.DELETE) {
       canReview =
         doc.decisionStatus === DecisionStatus.PENDING &&
-        doc.decisionData.billing.signed &&
-        doc.decisionData.billing.approved &&
         session.tasks
           .filter((task) => task.type === TaskType.REVIEW_PUBLIC_CLOUD_REQUEST && task.status === TaskStatus.ASSIGNED)
           .map((task) => (task.data as { requestId: string }).requestId)

@@ -1,4 +1,4 @@
-import { Prisma } from '@prisma/client';
+import { AccountCoding, Prisma } from '@prisma/client';
 import axios from 'axios';
 import { publicCloudProductSorts } from '@/constants';
 import {
@@ -6,9 +6,12 @@ import {
   PublicCloudProductDetailDecorated,
   PublicCloudProductSearch,
   PublicCloudRequestDetail,
+  PublicCloudBillingSimpleDecorated,
+  PublicCloudBillingSearch,
 } from '@/types/public-cloud';
 import { downloadFile } from '@/utils/browser';
 import {
+  PublicCloudBillingBody,
   PublicCloudProductSearchBody,
   PublicCloudProductSearchNoPaginationBody,
 } from '@/validation-schemas/public-cloud';
@@ -89,12 +92,32 @@ export async function getPublicCloudProductRequests(licencePlate: string, active
   return result as PublicCloudRequestSimpleDecorated[];
 }
 
-export async function signPublicCloudMou(licencePlate: string, data: { taskId: string; confirmed: boolean }) {
-  const result = await instance.post(`/${licencePlate}/sign-mou`, data).then((res) => res.data);
+export async function getPublicCloudProductBilling(licencePlate: string, billingId: string) {
+  const result = await instance
+    .get<PublicCloudBillingSimpleDecorated>(`/${licencePlate}/billings/${billingId}`)
+    .then((res) => res.data);
+  return result;
+}
+
+export async function signPublicCloudProductBilling(
+  licencePlate: string,
+  data: { billingId: string; accountCoding: AccountCoding; confirmed: boolean },
+) {
+  const result = await instance.post(`/${licencePlate}/billings/${data.billingId}/sign`, data).then((res) => res.data);
   return result as true;
 }
 
-export async function reviewPublicCloudMou(licencePlate: string, data: { taskId: string; decision: string }) {
-  const result = await instance.post(`/${licencePlate}/review-mou`, data).then((res) => res.data);
+export async function reviewPublicCloudProductBilling(
+  licencePlate: string,
+  data: { billingId: string; decision: string },
+) {
+  const result = await instance
+    .post(`/${licencePlate}/billings/${data.billingId}/review`, data)
+    .then((res) => res.data);
   return result as true;
+}
+
+export async function updateAccountCoding(licencePlate: string, data: PublicCloudBillingBody) {
+  const result = await instance.put<true>(`/${licencePlate}/billings`, data).then((res) => res.data);
+  return result;
 }

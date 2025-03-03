@@ -2,18 +2,18 @@ import { Heading, Text, Hr } from '@react-email/components';
 import * as React from 'react';
 import PublicCloudLayout from '@/emails/_components/layout/PublicCloudLayout';
 import ProductDetails from '@/emails/_components/ProductDetails';
-import { PublicCloudRequestDetailDecorated } from '@/types/public-cloud';
+import { getAccountCodingString } from '@/helpers/billing';
+import { PublicCloudBillingDetailDecorated, PublicCloudRequestDetailDecorated } from '@/types/public-cloud';
 
 interface Props {
   request: PublicCloudRequestDetailDecorated;
+  billing: PublicCloudBillingDetailDecorated;
 }
 
-export default function EmouServiceAgreement({ request }: Props) {
+export default function EmouServiceAgreement({ request, billing }: Props) {
   if (!request) return <></>;
 
-  const { name, billing } = request.decisionData;
-  if (!billing) return <></>;
-
+  const { name } = request.decisionData;
   const { accountCoding } = billing;
 
   return (
@@ -29,7 +29,7 @@ export default function EmouServiceAgreement({ request }: Props) {
 
       <div>
         <Text className="mb-2 font-semibold h-4">Account Coding:</Text>
-        <Text className="mt-0 mb-2 h-4">{accountCoding}</Text>
+        <Text className="mt-0 mb-2 h-4">{getAccountCodingString(accountCoding)}</Text>
       </div>
     </PublicCloudLayout>
   );

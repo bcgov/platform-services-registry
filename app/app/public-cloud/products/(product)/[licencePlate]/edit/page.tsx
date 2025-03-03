@@ -13,9 +13,7 @@ import {
 import { useEffect, useState } from 'react';
 import { FormProvider, useForm } from 'react-hook-form';
 import { z } from 'zod';
-import PublicCloudBillingInfo from '@/components/billing/PublicCloudBillingInfo';
 import PreviousButton from '@/components/buttons/Previous';
-import AccountCoding from '@/components/form/AccountCoding';
 import AccountEnvironmentsPublic from '@/components/form/AccountEnvironmentsPublic';
 import Budget from '@/components/form/Budget';
 import ProjectDescriptionPublic from '@/components/form/ProjectDescriptionPublic';
@@ -46,7 +44,6 @@ export default publicCloudProductEdit(({}) => {
     defaultValues: {
       ...snap.currentProduct,
       isAgMinistryChecked: true,
-      accountCoding: snap.currentProduct?.billing?.accountCoding,
     },
   });
 
@@ -104,18 +101,10 @@ export default publicCloudProductEdit(({}) => {
       Component: Budget,
       componentArgs: { disabled: isDisabled },
     },
-    {
-      LeftIcon: IconReceipt2,
-      label: 'Billing (Account coding)',
-      description: '',
-      Component: AccountCoding,
-      componentArgs: { accountCodingInitial: snap.currentProduct?.billing?.accountCoding, disabled: true },
-    },
   ];
 
   return (
     <div>
-      <PublicCloudBillingInfo product={snap.currentProduct} className="mb-2" />
       <FormProvider {...methods}>
         <FormErrorNotification />
         <form

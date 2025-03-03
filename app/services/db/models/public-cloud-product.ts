@@ -54,7 +54,7 @@ async function baseFilter(session: Session) {
   return filter;
 }
 
-async function decorate<T extends PublicCloudProductSimple & Partial<Pick<PublicCloudProductDetail, 'billing'>>>(
+async function decorate<T extends PublicCloudProductSimple & Partial<PublicCloudProductDetail>>(
   doc: T,
   session: Session,
   detail: boolean,
@@ -68,9 +68,12 @@ async function decorate<T extends PublicCloudProductSimple & Partial<Pick<Public
   }
 
   const isActive = doc.status === ProjectStatus.ACTIVE;
-  const isMyProduct = [doc.projectOwnerId, doc.primaryTechnicalLeadId, doc.secondaryTechnicalLeadId].includes(
-    session.user.id,
-  );
+  const isMyProduct = [
+    doc.projectOwnerId,
+    doc.primaryTechnicalLeadId,
+    doc.secondaryTechnicalLeadId,
+    doc.expenseAuthorityId,
+  ].includes(session.user.id);
 
   const members = doc.members || [];
 
@@ -105,32 +108,15 @@ async function decorate<T extends PublicCloudProductSimple & Partial<Pick<Public
 
   const canReprovision = isActive && (session.isAdmin || session.isPublicAdmin);
 
-  let canSignMou = false;
-  let canApproveMou = false;
+  const canSignMou = false;
+  const canApproveMou = false;
   const canDownloadMou =
-    session.permissions.downloadBillingMou ||
+    session.permissions.downloadPublicCloudBillingMou ||
     members.some(
       (member) =>
         member.userId === session.user.id &&
         arraysIntersect(member.roles, [PublicCloudProductMemberRole.BILLING_VIEWER]),
     );
-
-  if (doc.billing) {
-    canSignMou =
-      !doc.billing.signed &&
-      session.tasks
-        .filter((task) => task.type === TaskType.SIGN_PUBLIC_CLOUD_MOU && task.status === TaskStatus.ASSIGNED)
-        .map((task) => (task.data as { licencePlate: string }).licencePlate)
-        .includes(doc.licencePlate);
-
-    canApproveMou =
-      doc.billing.signed &&
-      !doc.billing.approved &&
-      session.tasks
-        .filter((task) => task.type === TaskType.REVIEW_PUBLIC_CLOUD_MOU && task.status === TaskStatus.ASSIGNED)
-        .map((task) => (task.data as { licencePlate: string }).licencePlate)
-        .includes(doc.licencePlate);
-  }
 
   if (detail) {
     const detailedData = doc as never as PublicCloudProductDetail;
@@ -155,12 +141,11 @@ async function decorate<T extends PublicCloudProductSimple & Partial<Pick<Public
     edit: canEdit,
     delete: canEdit,
     reprovision: canReprovision,
-    signMou: canSignMou,
-    reviewMou: canApproveMou,
     downloadMou: canDownloadMou,
     manageMembers: [doc.projectOwnerId, doc.primaryTechnicalLeadId, doc.secondaryTechnicalLeadId].includes(
       session.user.id,
     ),
+    editAccountCoding: session.permissions.reviewPublicCloudBilling || doc.expenseAuthorityId === session.user.id,
   };
 
   return decoratedDoc;

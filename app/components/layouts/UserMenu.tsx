@@ -94,16 +94,16 @@ export default function UserMenu() {
       permission: 'viewEvents',
     },
     {
-      text: 'Billing',
-      Icon: IconSignLeft,
-      href: '/billing/all',
-      permission: 'viewBilling',
-    },
-    {
       text: 'Tasks',
       Icon: IconCheckupList,
       href: '/tasks/all',
       permission: 'viewTasks',
+    },
+    {
+      text: 'Public Cloud Billings',
+      Icon: IconSignLeft,
+      href: '/public-cloud/billings/all',
+      permission: 'viewPublicCloudBilling',
     },
     {
       text: 'General Analytics',

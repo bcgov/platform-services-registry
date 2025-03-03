@@ -6,13 +6,9 @@ type BudgetKey = keyof Budget;
 export default function BudgetChanges({
   budgetCurrent,
   budgetRequested,
-  accountCodingCurrent,
-  accountCodingRequested,
 }: {
   budgetCurrent: Budget;
   budgetRequested: Budget;
-  accountCodingCurrent: string;
-  accountCodingRequested: string;
 }) {
   const budgetChanged = (Object.keys(budgetCurrent) as BudgetKey[]).some(
     (key) => budgetCurrent[key] !== budgetRequested[key],
@@ -38,16 +34,6 @@ export default function BudgetChanges({
             }
             return null;
           })}
-        </>
-      )}
-
-      {accountCodingCurrent !== accountCodingRequested && (
-        <>
-          <Heading className="text-lg text-black mb-2">Account Coding Changes</Heading>
-          <div>
-            <Text className="mb-0">Current Account Coding: {accountCodingCurrent}</Text>
-            <Text className="mt-0 mb-0">Updated Account Coding: {accountCodingRequested}</Text>
-          </div>
         </>
       )}
     </div>

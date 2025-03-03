@@ -3,25 +3,21 @@ import * as React from 'react';
 import PublicCloudLayout from '@/emails/_components/layout/PublicCloudLayout';
 import LinkButton from '@/emails/_components/LinkButton';
 import ProductDetails from '@/emails/_components/ProductDetails';
-import { PublicCloudRequestDetailDecorated } from '@/types/public-cloud';
+import { getAccountCodingString } from '@/helpers/billing';
+import { PublicCloudBillingDetailDecorated, PublicCloudRequestDetailDecorated } from '@/types/public-cloud';
 
 interface Props {
   request: PublicCloudRequestDetailDecorated;
+  billing: PublicCloudBillingDetailDecorated;
 }
 
-export default function BillingReviewerMou({ request }: Props) {
+export default function BillingReviewerMou({ request, billing }: Props) {
   if (!request) return <></>;
 
-  const { licencePlate, decisionData, active } = request;
-  const { name, expenseAuthority, billing } = decisionData;
-  if (!billing) return <></>;
-
+  const { licencePlate, decisionData } = request;
+  const { name, expenseAuthority } = decisionData;
   const { accountCoding } = billing;
-
-  const productExists = !active;
-  const linkUrl = productExists
-    ? `/public-cloud/products/${licencePlate}/edit`
-    : `/public-cloud/requests/${request.id}/request`;
+  const linkUrl = `/public-cloud/requests/${request.id}/request`;
 
   return (
     <PublicCloudLayout showFooter>
@@ -32,13 +28,13 @@ export default function BillingReviewerMou({ request }: Props) {
         the product <span className="font-bold">{name}</span> on the Public Cloud.
       </Text>
 
-      <LinkButton href={linkUrl}>Review Request</LinkButton>
+      <LinkButton href={linkUrl}>Review Billing</LinkButton>
 
       <ProductDetails product={decisionData} />
 
       <div>
         <Text className="mb-2 font-semibold h-4">Account Coding:</Text>
-        <Text className="mt-0 mb-2 h-4">{accountCoding}</Text>
+        <Text className="mt-0 mb-2 h-4">{getAccountCodingString(accountCoding)}</Text>
       </div>
     </PublicCloudLayout>
   );

@@ -28,7 +28,6 @@ describe('Public Cloud NATs', () => {
           project_name: decisionData.name,
           licence_plate: decisionData.licencePlate,
           ministry_name: decisionData.ministry,
-          account_coding: decisionData.billing.accountCoding,
           budgets: decisionData.budget,
           requested_environments: {
             dev: decisionData.environmentsEnabled.development,
@@ -62,7 +61,6 @@ describe('Public Cloud NATs', () => {
           project_name: decisionData.name,
           licence_plate: decisionData.licencePlate,
           ministry_name: decisionData.ministry,
-          account_coding: decisionData.billing.accountCoding,
           budgets: decisionData.budget,
           requested_environments: {
             dev: decisionData.environmentsEnabled.development,
@@ -95,7 +93,6 @@ describe('Public Cloud NATs', () => {
           project_name: decisionData.name,
           licence_plate: decisionData.licencePlate,
           ministry_name: decisionData.ministry,
-          account_coding: decisionData.billing.accountCoding,
           budgets: decisionData.budget,
           requested_environments: {
             dev: decisionData.environmentsEnabled.development,
