@@ -1,6 +1,6 @@
 'use client';
 
-import { LoadingOverlay } from '@mantine/core';
+import { Loader } from '@mantine/core';
 import { useQuery } from '@tanstack/react-query';
 import { Title } from '@tremor/react';
 import { useSnapshot } from 'valtio';
@@ -43,12 +43,7 @@ export default analyticsPrivateCloudDashboard(() => {
     return (
       <div className="flex items-center justify-center min-h-screen relative">
         {isLoading ? (
-          <LoadingOverlay
-            visible
-            zIndex={50}
-            overlayProps={{ radius: 'sm', blur: 2 }}
-            loaderProps={{ color: 'pink', type: 'bars' }}
-          />
+          <Loader color="pink" type="bars" />
         ) : (
           <span className="text-red-500 text-lg">Failed to load analytics data. Please try again.</span>
         )}
@@ -73,12 +68,7 @@ export default analyticsPrivateCloudDashboard(() => {
       <div className="flex flex-col items-start border rounded-lg w-fit p-4 mt-8">
         <Title>{'Users with quota edit requests'}</Title>
         <ExportButton
-          onExport={async () => {
-            const exportParams = {
-              data: { ...snap },
-            };
-            return await downloadPrivateCloudUsersWithQuotaEditRequests(exportParams);
-          }}
+          onExport={async () => downloadPrivateCloudUsersWithQuotaEditRequests({ data: { ...snap } })}
           className="m-2"
         />
       </div>
