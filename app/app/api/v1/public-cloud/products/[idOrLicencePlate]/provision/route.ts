@@ -1,4 +1,4 @@
-import { DecisionStatus, ProjectStatus, RequestType } from '@prisma/client';
+import { DecisionStatus, Prisma, ProjectStatus, RequestType } from '@prisma/client';
 import { z } from 'zod';
 import createApiHandler from '@/core/api-handler';
 import { logger } from '@/core/logging';
@@ -71,9 +71,15 @@ export const POST = apiHandler(async ({ pathParams, session }) => {
       updatedRequestDecorated.originalData?.expenseAuthorityId !==
       updatedRequestDecorated.decisionData.expenseAuthorityId
     ) {
+      const lastBilling = await prisma.publicCloudBilling.findFirst({
+        select: { accountCoding: true },
+        orderBy: { createdAt: Prisma.SortOrder.desc },
+      });
+
       await upsertPublicCloudBillings({
         request: updatedRequestDecorated,
         expenseAuthorityId: updatedRequestDecorated.decisionData.expenseAuthorityId!,
+        accountCoding: lastBilling?.accountCoding,
         session,
       });
     }
