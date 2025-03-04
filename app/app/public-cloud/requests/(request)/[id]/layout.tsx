@@ -7,9 +7,8 @@ import { useQuery } from '@tanstack/react-query';
 import { useEffect, useState } from 'react';
 import { z } from 'zod';
 import PublicCloudRequestOptions from '@/components/dropdowns/PublicCloudRequestOptions';
-import RequestBadge from '@/components/form/RequestBadge';
-import LightButton from '@/components/generic/button/LightButton';
 import Tabs, { ITab } from '@/components/generic/tabs/BasicTabs';
+import RequestBadge from '@/components/public-cloud/RequestBadge';
 import { GlobalRole } from '@/constants';
 import createClientPage from '@/core/client-page';
 import { comparePublicProductData } from '@/helpers/product-change';
@@ -113,7 +112,7 @@ export default publicCloudProductSecurityACS(({ getPathParams, children, router 
 
       <h1 className="flex justify-between text-xl lg:text-2xl xl:text-4xl font-semibold leading-7 text-gray-900 mt-2 mb-0 lg:mt-4">
         {(request.decisionData || request.originalData).name}
-        <RequestBadge request={request} />
+        <RequestBadge data={request} />
       </h1>
       <h3 className="mt-0 italic">Public Cloud Landing Zone</h3>
 

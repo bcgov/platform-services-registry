@@ -7,9 +7,9 @@ import { useQuery } from '@tanstack/react-query';
 import { useEffect, useState } from 'react';
 import { z } from 'zod';
 import PrivateCloudRequestOptions from '@/components/dropdowns/PrivateCloudRequestOptions';
-import RequestBadge from '@/components/form/RequestBadge';
 import TemporaryProductAlert from '@/components/form/TemporaryProductAlert';
 import Tabs, { ITab } from '@/components/generic/tabs/BasicTabs';
+import RequestBadge from '@/components/private-cloud/RequestBadge';
 import { GlobalRole } from '@/constants';
 import createClientPage from '@/core/client-page';
 import { comparePrivateProductData } from '@/helpers/product-change';
@@ -139,7 +139,7 @@ export default privateCloudProductSecurityACS(({ getPathParams, session, childre
 
       <h1 className="flex justify-between text-xl lg:text-2xl xl:text-4xl font-semibold leading-7 text-gray-900 mt-2 mb-0 lg:mt-4">
         {(request.decisionData || request.originalData).name}
-        <RequestBadge request={request} />
+        <RequestBadge data={request} />
       </h1>
       <h3 className="mt-0 italic">Private Cloud OpenShift platform</h3>
 

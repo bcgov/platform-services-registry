@@ -1,7 +1,7 @@
 import { Badge } from '@mantine/core';
 import { ProjectStatus } from '@prisma/client';
 import { PublicCloudProject } from '@prisma/client';
-import CopyableButton from '@/components/generic/button/CopyableButton';
+import LicencePlateBadge from '@/components/shared/LicencePlateBadge';
 import { cn } from '@/utils/js';
 
 export default function ProductBadge({
@@ -25,14 +25,6 @@ export default function ProductBadge({
       break;
   }
 
-  const licenceBadge = (
-    <CopyableButton value={data.licencePlate}>
-      <Badge color="gray" radius="sm" className="cursor-pointer">
-        {data.licencePlate}
-      </Badge>
-    </CopyableButton>
-  );
-
   const statusBadge = (
     <Badge color={color} radius="sm" className="ml-1">
       {status}
@@ -41,7 +33,7 @@ export default function ProductBadge({
 
   return (
     <div className={cn('inline-block', className)}>
-      {licenceBadge}
+      <LicencePlateBadge licencePlate={data.licencePlate} />
       {statusBadge}
     </div>
   );
