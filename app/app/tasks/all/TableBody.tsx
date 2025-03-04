@@ -4,7 +4,7 @@ import { Button, Badge, Table, Text } from '@mantine/core';
 import { TaskStatus } from '@prisma/client';
 import { useQuery, useMutation } from '@tanstack/react-query';
 import { startCase } from 'lodash-es';
-import { ReactNode } from 'react';
+import { Fragment, ReactNode } from 'react';
 import KeyValueTable from '@/components/generic/KeyValueTable';
 import UserProfile from '@/components/users/UserProfile';
 import { taskTypeMap } from '@/constants/task';
@@ -20,7 +20,7 @@ function Assignees({ task }: { task: SearchTask }) {
   const result: ReactNode[] = [];
   if (task.roles?.length > 0) {
     result.push(
-      <>
+      <Fragment key="roles">
         <Text c="dimmed" size="sm" className="font-semibold">
           Roles
         </Text>
@@ -33,13 +33,13 @@ function Assignees({ task }: { task: SearchTask }) {
             </li>
           ))}
         </ul>
-      </>,
+      </Fragment>,
     );
   }
 
   if (task.permissions?.length > 0) {
     result.push(
-      <>
+      <Fragment key="permissions">
         <Text c="dimmed" size="sm" className="font-semibold">
           Permissions
         </Text>
@@ -52,25 +52,26 @@ function Assignees({ task }: { task: SearchTask }) {
             </li>
           ))}
         </ul>
-      </>,
+      </Fragment>,
     );
   }
 
   if (task.users?.length > 0) {
+    console.log('task.users', task.userIds, task.users);
     result.push(
-      <>
+      <Fragment key="users">
         <Text c="dimmed" size="sm" className="font-semibold">
           Users
         </Text>
         {task.users.map((user) => (
           <UserProfile key={user.id} data={user} />
         ))}
-      </>,
+      </Fragment>,
     );
   }
 
   result.push(
-    <Text className="mt-2 italic" size="sm">
+    <Text className="mt-2 italic" size="sm" key="at">
       At: {formatDate(task.createdAt)}
     </Text>,
   );
