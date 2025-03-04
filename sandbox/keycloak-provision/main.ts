@@ -32,7 +32,7 @@ async function main() {
   console.log('Starting Keycloak Provision...');
 
   await waitOn({
-    resources: [`${KEYCLOAK_URL}/health/ready`],
+    resources: [`${KEYCLOAK_URL}/realms/master/.well-known/openid-configuration`],
     delay: 500,
     window: 5000,
   });
