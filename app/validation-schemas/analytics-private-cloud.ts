@@ -1,6 +1,5 @@
 import { Cluster, Ministry } from '@prisma/client';
 import { z } from 'zod';
-import { FetchKey } from '@/constants';
 import { isValidISODateString } from '@/utils/js';
 
 export const analyticsPrivateCloudFilterSchema = z.object({
@@ -19,7 +18,6 @@ export const analyticsPrivateCloudFilterSchema = z.object({
       return arr;
     }),
   userId: z.string().length(24).or(z.literal('')).optional(),
-  fetchKey: z.nativeEnum(FetchKey).optional(),
 });
 
 export type AnalyticsPrivateCloudFilterBody = z.infer<typeof analyticsPrivateCloudFilterSchema>;
