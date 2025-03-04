@@ -54,8 +54,12 @@ export async function getPublicCloudProject(licencePlate: string) {
   return result;
 }
 
-export async function editPublicCloudProject(licencePlate: string, data: PublicCloudEditRequestBody) {
+export async function editPublicCloudProject(licencePlate: string, data: any) {
   data.isAgMinistryChecked = true;
+  data.projectOwnerId = data.projectOwner?.id ?? null;
+  data.primaryTechnicalLeadId = data.primaryTechnicalLead?.id ?? null;
+  data.secondaryTechnicalLeadId = data.secondaryTechnicalLead?.id ?? null;
+  data.expenseAuthorityId = data.expenseAuthority?.id ?? null;
 
   const result = await productCollectionRoute.put(_editPublicCloudProject, '/{{licencePlate}}', data, {
     pathParams: { licencePlate },
