@@ -14,7 +14,6 @@ export default function Histogram({
   title,
   categories,
   colors,
-  isLoading = false,
 }: {
   index: string;
   onExport?: () => Promise<boolean>;
@@ -23,7 +22,6 @@ export default function Histogram({
   title: string;
   categories: string[];
   colors: string[];
-  isLoading?: boolean;
 }) {
   return (
     <div className="flex flex-col items-end">
@@ -31,12 +29,6 @@ export default function Histogram({
       <Card>
         <Title>{title}</Title>
         <div className="relative">
-          <LoadingOverlay
-            visible={isLoading}
-            zIndex={50}
-            overlayProps={{ radius: 'sm', blur: 2 }}
-            loaderProps={{ color: 'pink', type: 'bars' }}
-          />
           <BarChart
             className="mt-6"
             data={chartData}
