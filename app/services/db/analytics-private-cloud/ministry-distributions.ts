@@ -29,7 +29,7 @@ function getAggByCluster(licencePlatesList: string[], cluster?: string, dateFilt
   return prisma.privateCloudProject.aggregateRaw({ pipeline });
 }
 
-export async function ministryDistributions({
+export async function getMinistryDistributions({
   licencePlatesList,
   dates = [],
 }: {
