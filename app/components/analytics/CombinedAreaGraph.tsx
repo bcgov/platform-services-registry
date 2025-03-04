@@ -19,7 +19,6 @@ export default function CombinedAreaGraph({
   chartData,
   categories,
   colors,
-  isLoading = false,
   exportApiEndpoint /* temporary */,
 }: {
   title: string;
@@ -28,7 +27,6 @@ export default function CombinedAreaGraph({
   chartData: any;
   categories: string[];
   colors: string[];
-  isLoading?: boolean;
   exportApiEndpoint?: string /* temporary */;
 }) {
   return (
@@ -38,12 +36,6 @@ export default function CombinedAreaGraph({
         <Title>{title}</Title>
         <Subtitle>{subtitle}</Subtitle>
         <div className="relative">
-          <LoadingOverlay
-            visible={isLoading}
-            zIndex={50}
-            overlayProps={{ radius: 'sm', blur: 2 }}
-            loaderProps={{ color: 'pink', type: 'bars' }}
-          />
           <AreaChart
             className="h-72 mt-4"
             data={chartData}

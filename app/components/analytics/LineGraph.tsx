@@ -14,7 +14,6 @@ export default function Chart({
   chartData,
   title,
   categories,
-  isLoading = false,
 }: {
   index: string;
   subtitle: string;
@@ -23,7 +22,6 @@ export default function Chart({
   chartData: any;
   title: string;
   categories: string[];
-  isLoading?: boolean;
 }) {
   return (
     <div className="flex flex-col items-end">
@@ -32,12 +30,6 @@ export default function Chart({
         <Title>{title}</Title>
         <Subtitle>{subtitle}</Subtitle>
         <div className="relative">
-          <LoadingOverlay
-            visible={isLoading}
-            zIndex={50}
-            overlayProps={{ radius: 'sm', blur: 2 }}
-            loaderProps={{ color: 'pink', type: 'bars' }}
-          />
           <LineChart
             className="mt-6"
             data={chartData}
