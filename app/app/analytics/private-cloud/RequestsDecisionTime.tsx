@@ -14,7 +14,7 @@ export default function RequestsDecisionTime({ data }: { data: RequestDecisionTi
       chartData={data}
       categories={['Percentage']}
       colors={['indigo']}
-      onExport={async () => downloadPrivateCloudRequestsDecisionTime({ data: { ...pageSnapshot } })}
+      onExport={() => downloadPrivateCloudRequestsDecisionTime({ data: { ...pageSnapshot } })}
     />
   );
 }

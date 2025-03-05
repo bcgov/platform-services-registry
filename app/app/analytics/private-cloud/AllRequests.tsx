@@ -13,7 +13,7 @@ export default function AllRequests({ data }: { data: AllRequests[] }) {
       chartData={data}
       categories={['All requests', 'Edit requests', 'Create requests', 'Delete requests']}
       colors={['indigo', 'yellow', 'green', 'red']}
-      onExport={async () => downloadPrivateCloudAllRequests({ data: { ...pageSnapshot } })}
+      onExport={() => downloadPrivateCloudAllRequests({ data: { ...pageSnapshot } })}
     />
   );
 }

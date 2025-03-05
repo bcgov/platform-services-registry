@@ -14,7 +14,7 @@ export default function ActiveProducts({ data }: { data: ActiveProduct[] }) {
       subtitle="This graph shows the cumulative total of products provisioned through the registry"
       chartData={data}
       categories={['All Clusters'].concat(pageSnapshot.clusters?.length ? pageSnapshot.clusters : clusters)}
-      onExport={async () => downloadPrivateCloudActiveProducts({ data: { ...pageSnapshot } })}
+      onExport={() => downloadPrivateCloudActiveProducts({ data: { ...pageSnapshot } })}
     />
   );
 }
