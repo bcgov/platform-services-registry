@@ -11,13 +11,13 @@ import {
   downloadPrivateCloudUsersWithQuotaEditRequests,
   getAnalyticsPrivateCloudData,
 } from '@/services/backend/analytics/private-cloud';
-import ActiveProducts from './activeProducts';
-import AllRequests from './allRequests';
-import ContactChangeRequests from './contactChangeRequests';
-import FilterPanel from './filterPanel';
-import MinistryDistribution from './ministryDistribution';
-import QuotaRequests from './quotaRequests';
-import RequestsDecisionTime from './requestsDecisionTime';
+import ActiveProducts from './ActiveProducts';
+import AllRequests from './AllRequests';
+import ContactChangeRequests from './ContactChangeRequests';
+import FilterPanel from './FilterPanel';
+import MinistryDistribution from './MinistryDistribution';
+import QuotaRequests from './QuotaRequests';
+import RequestsDecisionTime from './RequestsDecisionTime';
 import { pageState } from './state';
 
 const analyticsPrivateCloudDashboard = createClientPage({
@@ -56,14 +56,14 @@ export default analyticsPrivateCloudDashboard(() => {
       <h1 className="text-xl lg:text-2xl 2xl:text-4xl font-semibold leading-7 text-gray-900 py-6">
         Private Cloud Data Analytics
       </h1>
-      <FilterPanel snap={snap} />
+      <FilterPanel />
       <div className="grid grid-cols-1 gap-8 mt-12">
-        <AllRequests snap={snap} data={data} />
-        <QuotaRequests snap={snap} data={data} />
-        <ContactChangeRequests snap={snap} data={data} />
-        <ActiveProducts snap={snap} data={data} />
-        <RequestsDecisionTime snap={snap} data={data} />
-        <MinistryDistribution snap={snap} data={data} />
+        <AllRequests data={data.allRequests} />
+        <QuotaRequests data={data.quotaChange} />
+        <ContactChangeRequests data={data.contactsChange} />
+        <ActiveProducts data={data.activeProducts} />
+        <RequestsDecisionTime data={data.requestDecisionTime} />
+        <MinistryDistribution data={data.ministryDistributionData} />
       </div>
       <div className="flex flex-col items-start border rounded-lg w-fit p-4 mt-8">
         <Title>{'Users with quota edit requests'}</Title>

@@ -1,4 +1,5 @@
 import axios from 'axios';
+import { AnalyticsPrivateCloudResponse } from '@/types/analytics';
 import { downloadFile } from '@/utils/browser';
 import { AnalyticsPrivateCloudFilterBody } from '@/validation-schemas/analytics-private-cloud';
 import { instance as baseInstance } from '../axios';
@@ -7,29 +8,6 @@ const instance = axios.create({
   ...baseInstance.defaults,
   baseURL: `${baseInstance.defaults.baseURL}/analytics`,
 });
-
-export interface AnalyticsPrivateCloudResponse {
-  contactsChange: { date: string; 'Contact changes': number }[];
-  allRequests: {
-    date: string;
-    'All requests': number;
-    'Edit requests': number;
-    'Create requests': number;
-    'Delete requests': number;
-  }[];
-  quotaChange: {
-    date: string;
-    'All quota requests': number;
-    'Approved quota requests': number;
-    'Rejected quota requests': number;
-  }[];
-  activeProducts: ({
-    date: string;
-    'All Clusters': number;
-  } & Record<string, number>)[];
-  requestDecisionTime: { time: string; Percentage: number }[];
-  ministryDistributionData: { _id: string; value: number }[][];
-}
 
 export async function getAnalyticsPrivateCloudData(
   data: AnalyticsPrivateCloudFilterBody,

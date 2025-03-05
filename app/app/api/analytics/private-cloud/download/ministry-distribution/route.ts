@@ -3,8 +3,8 @@ import { GlobalPermissions } from '@/constants';
 import createApiHandler from '@/core/api-handler';
 import { NoContent, CsvResponse } from '@/core/responses';
 import { mapClusterData, validClusters } from '@/helpers/ministry-data';
-import { getPrivateLicencePlates } from '@/services/db/analytics-private-cloud/licencePlates';
-import { getMinistryDistributions } from '@/services/db/analytics-private-cloud/ministry-distributions';
+import { getPrivateLicencePlates } from '@/services/db/analytics/private-cloud/licence-plates';
+import { getMinistryDistributions } from '@/services/db/analytics/private-cloud/ministry-distributions';
 import { analyticsPrivateCloudFilterSchema } from '@/validation-schemas/analytics-private-cloud';
 
 export const POST = createApiHandler({

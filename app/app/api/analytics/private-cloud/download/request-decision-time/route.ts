@@ -1,8 +1,8 @@
 import { GlobalPermissions } from '@/constants';
 import createApiHandler from '@/core/api-handler';
 import { NoContent, CsvResponse } from '@/core/responses';
-import { getPrivateLicencePlates } from '@/services/db/analytics-private-cloud/licencePlates';
-import { getRequestDecisionTime } from '@/services/db/analytics-private-cloud/request-decision-time';
+import { getPrivateLicencePlates } from '@/services/db/analytics/private-cloud/licence-plates';
+import { getRequestDecisionTime } from '@/services/db/analytics/private-cloud/request-decision-time';
 import { analyticsPrivateCloudFilterSchema } from '@/validation-schemas/analytics-private-cloud';
 
 export const POST = createApiHandler({
