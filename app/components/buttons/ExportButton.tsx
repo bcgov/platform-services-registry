@@ -1,3 +1,5 @@
+'use client';
+
 import { Button } from '@mantine/core';
 import { IconCloudDownload } from '@tabler/icons-react';
 import { useState } from 'react';

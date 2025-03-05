@@ -2,7 +2,7 @@ import { Cluster, Ministry } from '@prisma/client';
 import { getActiveProducts } from './active-products';
 import { getAllRequests } from './all-requests';
 import { getContactChangeRequests } from './contact-changes';
-import { getPrivateLicencePlates } from './licencePlates';
+import { getPrivateLicencePlates } from './licence-plates';
 import { getMinistryDistributions } from './ministry-distributions';
 import { getQuotaChangeRequests } from './quota-change';
 import { getRequestDecisionTime } from './request-decision-time';
