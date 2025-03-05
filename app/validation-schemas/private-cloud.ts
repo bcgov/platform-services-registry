@@ -10,8 +10,8 @@ import {
 import _isString from 'lodash-es/isString';
 import { string, z } from 'zod';
 import { AGMinistries, phoneNumberRegex } from '@/constants';
-import { processEnumString, processUpperEnumString, processBoolean } from '@/utils/js';
-import { userSchema, RequestDecision } from './shared';
+import { processEnumString, processBoolean } from '@/utils/js';
+import { RequestDecision } from './shared';
 
 export const resourceRequestsSchema = z.object({
   cpu: z

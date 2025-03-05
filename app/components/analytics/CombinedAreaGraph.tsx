@@ -1,5 +1,3 @@
-'use client';
-
 import { LoadingOverlay } from '@mantine/core';
 import { AreaChart, Card, Title, Subtitle } from '@tremor/react';
 import ExportButton from '@/components/buttons/ExportButton';
