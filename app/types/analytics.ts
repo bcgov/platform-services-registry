@@ -39,5 +39,5 @@ export interface AnalyticsPrivateCloudResponse {
   quotaChange: QuotaChange[];
   activeProducts: ActiveProduct[];
   requestDecisionTime: RequestDecisionTime[];
-  ministryDistributionData: RequestDecisionTime[][];
+  ministryDistributionData: MinistryDistribution[][];
 }
