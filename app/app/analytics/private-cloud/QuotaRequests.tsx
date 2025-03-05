@@ -13,7 +13,7 @@ export default function QuotaRequests({ data }: { data: QuotaChange[] }) {
       chartData={data}
       categories={['All quota requests', 'Approved quota requests', 'Rejected quota requests']}
       colors={['indigo', 'green', 'red']}
-      onExport={async () => downloadPrivateCloudQuotaChangeRequests({ data: { ...pageSnapshot } })}
+      onExport={() => downloadPrivateCloudQuotaChangeRequests({ data: { ...pageSnapshot } })}
     />
   );
 }

@@ -20,7 +20,7 @@ export default function MinistryDistribution({ data }: { data: MinistryDistribut
 
   return (
     <PieGraph
-      onExport={async () => downloadPrivateCloudMinistryDistribution({ data: { ...pageSnapshot } })}
+      onExport={() => downloadPrivateCloudMinistryDistribution({ data: { ...pageSnapshot } })}
       title="Ministry per Cluster"
       subtitle="This graph shows the cluster distributions by ministries"
       data={pieChartData}

@@ -52,7 +52,7 @@ export default analyticsDashboard(() => {
           chartData={data}
           categories={['Logins']}
           colors={['indigo']}
-          onExport={async () => downloadAnalyticsGeneral({ dates: snap.dates, userId: snap.userId })}
+          onExport={() => downloadAnalyticsGeneral({ dates: snap.dates, userId: snap.userId })}
         />
       </div>
     </div>

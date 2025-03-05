@@ -13,7 +13,7 @@ export default function ContactChangeRequests({ data }: { data: ContactsChange[]
       chartData={data}
       categories={['Contact changes']}
       colors={['indigo']}
-      onExport={async () => downloadPrivateCloudContactChangeRequests({ data: { ...pageSnapshot } })}
+      onExport={() => downloadPrivateCloudContactChangeRequests({ data: { ...pageSnapshot } })}
     />
   );
 }
