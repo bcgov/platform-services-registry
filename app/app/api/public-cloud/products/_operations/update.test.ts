@@ -243,8 +243,7 @@ describe('Update Public Cloud Product - Validations', () => {
   it('should fail to submit a update request due to an invalid projectOwner property', async () => {
     await mockSessionByRole(GlobalRole.Admin);
 
-    const response = await makeBasicProductChange({ projectOwnerId: null });
-
+    const response = await makeBasicProductChange({ projectOwnerId: null, projectOwner: null });
     expect(response.status).toBe(400);
 
     const resData = await response.json();
@@ -258,8 +257,7 @@ describe('Update Public Cloud Product - Validations', () => {
   it('should fail to submit a update request due to an invalid primaryTechnicalLead property', async () => {
     await mockSessionByRole(GlobalRole.Admin);
 
-    const response = await makeBasicProductChange({ primaryTechnicalLeadId: null });
-
+    const response = await makeBasicProductChange({ primaryTechnicalLeadId: null, primaryTechnicalLead: null });
     expect(response.status).toBe(400);
 
     const resData = await response.json();

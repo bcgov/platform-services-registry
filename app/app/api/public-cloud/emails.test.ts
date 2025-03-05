@@ -29,7 +29,7 @@ describe('Public Cloud Emails', () => {
     const reviewerEmails = await findUserEmailsByAuthRole(GlobalRole.PublicReviewer);
 
     expect(sendEmail).toHaveBeenCalled();
-    expect(sendEmail).toHaveBeenCalledTimes(3);
+    expect(sendEmail).toHaveBeenCalledTimes(4);
     expect(sendEmail).toHaveBeenNthCalledWith(
       1,
       expect.objectContaining({
@@ -64,6 +64,20 @@ describe('Public Cloud Emails', () => {
         ),
       }),
     );
+    expect(sendEmail).toHaveBeenNthCalledWith(
+      4,
+      expect.objectContaining({
+        subject: 'Your provisioning request has been completed',
+        to: expect.arrayContaining([
+          decisionData.projectOwner.email,
+          decisionData.primaryTechnicalLead.email,
+          decisionData.secondaryTechnicalLead?.email,
+        ]),
+        body: expect.compareEmailText(
+          `Your request for your product ${decisionData.name} on the Public Cloud platform is complete.`,
+        ),
+      }),
+    );
   });
 
   it('should send Email message when updating a product', async () => {
@@ -74,7 +88,7 @@ describe('Public Cloud Emails', () => {
     const reviewerEmails = await findUserEmailsByAuthRole(GlobalRole.PublicReviewer);
 
     expect(sendEmail).toHaveBeenCalled();
-    expect(sendEmail).toHaveBeenCalledTimes(4);
+    expect(sendEmail).toHaveBeenCalledTimes(5);
     // CREATE
     expect(sendEmail).toHaveBeenNthCalledWith(
       1,
@@ -110,9 +124,23 @@ describe('Public Cloud Emails', () => {
         ),
       }),
     );
-    // EDIT
     expect(sendEmail).toHaveBeenNthCalledWith(
       4,
+      expect.objectContaining({
+        subject: 'Your provisioning request has been completed',
+        to: expect.arrayContaining([
+          decisionData.projectOwner.email,
+          decisionData.primaryTechnicalLead.email,
+          decisionData.secondaryTechnicalLead?.email,
+        ]),
+        body: expect.compareEmailText(
+          `Your request for your product ${decisionData.name} on the Public Cloud platform is complete.`,
+        ),
+      }),
+    );
+    // EDIT
+    expect(sendEmail).toHaveBeenNthCalledWith(
+      5,
       expect.objectContaining({
         subject: 'New edit request received',
         to: expect.arrayContaining([
@@ -135,7 +163,7 @@ describe('Public Cloud Emails', () => {
     const reviewerEmails = await findUserEmailsByAuthRole(GlobalRole.PublicReviewer);
 
     expect(sendEmail).toHaveBeenCalled();
-    expect(sendEmail).toHaveBeenCalledTimes(6);
+    expect(sendEmail).toHaveBeenCalledTimes(8);
 
     // CREATE
     expect(sendEmail).toHaveBeenNthCalledWith(
@@ -172,9 +200,23 @@ describe('Public Cloud Emails', () => {
         ),
       }),
     );
-    // DELETE
     expect(sendEmail).toHaveBeenNthCalledWith(
       4,
+      expect.objectContaining({
+        subject: 'Your provisioning request has been completed',
+        to: expect.arrayContaining([
+          decisionData.projectOwner.email,
+          decisionData.primaryTechnicalLead.email,
+          decisionData.secondaryTechnicalLead?.email,
+        ]),
+        body: expect.compareEmailText(
+          `Your request for your product ${decisionData.name} on the Public Cloud platform is complete.`,
+        ),
+      }),
+    );
+    // DELETE
+    expect(sendEmail).toHaveBeenNthCalledWith(
+      5,
       expect.objectContaining({
         subject: 'New delete request awaiting review',
         to: expect.arrayContaining(reviewerEmails),
@@ -184,7 +226,7 @@ describe('Public Cloud Emails', () => {
       }),
     );
     expect(sendEmail).toHaveBeenNthCalledWith(
-      5,
+      6,
       expect.objectContaining({
         subject: 'New delete request received',
         to: expect.arrayContaining([
@@ -198,7 +240,7 @@ describe('Public Cloud Emails', () => {
       }),
     );
     expect(sendEmail).toHaveBeenNthCalledWith(
-      6,
+      7,
       expect.objectContaining({
         subject: 'Your delete request has been approved',
         to: expect.arrayContaining([
