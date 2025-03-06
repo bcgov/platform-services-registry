@@ -4,6 +4,7 @@ import { clusters } from '@/constants';
 import { mapClusterData, transformMinistryData } from '@/helpers/ministry-data';
 import { downloadPrivateCloudMinistryDistribution } from '@/services/backend/analytics/private-cloud';
 import type { MinistryDistribution } from '@/types/analytics';
+import { formatDate } from '@/utils/js/date';
 import { pageState } from './state';
 
 export default function MinistryDistribution({ data }: { data: MinistryDistribution[][] }) {
@@ -22,7 +23,9 @@ export default function MinistryDistribution({ data }: { data: MinistryDistribut
     <PieGraph
       onExport={() => downloadPrivateCloudMinistryDistribution({ data: { ...pageSnapshot } })}
       title="Ministry per Cluster"
-      subtitle="This graph shows the cluster distributions by ministries"
+      subtitle={`This chart displays the cluster distributions by ministries for products created from ${formatDate(
+        pageSnapshot.dates?.[0] || new Date('2023-04-01T00:00:00.000Z'),
+      )} to ${formatDate(pageSnapshot.dates?.[1] || new Date())}.`}
       data={pieChartData}
     />
   );

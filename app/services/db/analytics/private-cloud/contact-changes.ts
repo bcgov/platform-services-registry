@@ -11,11 +11,20 @@ export async function getContactChangeRequests({
   licencePlatesList: string[];
   dateFilter?: Record<string, any>;
 }) {
+  const mongoDateFilter: Record<string, any> = {};
+
+  if (dateFilter.createdAt?.gte && dateFilter.createdAt?.lte) {
+    mongoDateFilter.createdAt = {
+      $gte: { $date: dateFilter.createdAt.gte.toISOString() },
+      $lte: { $date: dateFilter.createdAt.lte.toISOString() },
+    };
+  }
+
   const filter = {
     type: RequestType.EDIT,
-    'changes.contactsChanged': { $eq: true },
+    'changes.contactsChanged': true,
     licencePlate: { $in: licencePlatesList },
-    ...dateFilter,
+    ...mongoDateFilter,
   };
 
   const requests = await prisma.privateCloudRequest.findRaw({
@@ -24,14 +33,12 @@ export async function getContactChangeRequests({
   });
 
   const grouped = _groupBy(requests, (req: any) => {
-    const createdAtValue = req.createdAt && req.createdAt.$date ? req.createdAt.$date : req.createdAt;
+    const createdAtValue = req.createdAt?.$date ? req.createdAt.$date : req.createdAt;
     return dateToShortDateString(new Date(createdAtValue));
   });
 
-  const results = _map(grouped, (dateRequests, date) => ({
+  return _map(grouped, (dateRequests, date) => ({
     date,
     'Contact changes': dateRequests.length,
   }));
-
-  return results;
 }
