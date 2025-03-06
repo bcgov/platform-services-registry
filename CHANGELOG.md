@@ -1,3 +1,14 @@
+## [0.45.0](https://github.com/bcgov/platform-services-registry/compare/v0.44.0...v0.45.0) (2025-03-06)
+
+### Features
+
+* **4982:** add private cloud cluster badge ([eb545a7](https://github.com/bcgov/platform-services-registry/commit/eb545a79616ae58fd26a627ca9f1df7c61c001dd))
+* **5033:** add filters to private cloud analytics page ([f6582a7](https://github.com/bcgov/platform-services-registry/commit/f6582a71f2920658ccb84d423bfb2b313404b3e5))
+* **5033:** add filters to private cloud analytics page ([8480354](https://github.com/bcgov/platform-services-registry/commit/8480354de60a9537eaa16a2e581a56d51c983164))
+* **5057:** add migration script for public cloud billings ([9368886](https://github.com/bcgov/platform-services-registry/commit/93688860e2e0df16cb9ca02dbe3d5256102a1099))
+* **5057:** enhance backend billing logic ([1a3665e](https://github.com/bcgov/platform-services-registry/commit/1a3665e80816ef47d54bc1e2cfbbb00572f182b0))
+* **5057:** enhance email templates for billing workflow ([17c8715](https://github.com/bcgov/platform-services-registry/commit/17c87152a15c1890f69d3681118eb62f64aa915f))
+* **5057:** enhance frontend billing logic ([6d4cd59](https://github.com/bcgov/platform-services-registry/commit/6d4cd592a657136c84a20834a8530253836008ef))
 ## [0.44.0](https://github.com/bcgov/platform-services-registry/compare/v0.43.15...v0.44.0) (2025-02-26)
 
 ### Features
