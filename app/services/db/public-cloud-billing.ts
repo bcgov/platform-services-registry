@@ -43,8 +43,8 @@ export type SearchPublicCloudBillingSProps = PublicCloudBillingSearchBody & {
 
 export async function searchPublicCloudBillings({
   session,
-  skip = 0,
-  take = 100,
+  skip,
+  take,
   search = '',
   page,
   pageSize,
