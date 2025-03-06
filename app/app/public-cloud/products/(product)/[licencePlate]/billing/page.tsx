@@ -30,11 +30,11 @@ function AccountCodingForm({
     resolver: zodResolver(publicCloudBillingBodySchema),
     defaultValues: {
       accountCoding: accountCoding || {
-        cc: '000',
-        rc: '00000',
-        sl: '00000',
-        stob: '0000',
-        pc: '0000000',
+        cc: '',
+        rc: '',
+        sl: '',
+        stob: '',
+        pc: '',
       },
     },
   });

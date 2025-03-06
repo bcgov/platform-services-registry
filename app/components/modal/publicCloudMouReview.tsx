@@ -119,7 +119,7 @@ export const openPublicCloudMouReviewModal = createModal<ModalProps, ModalState>
             </div>
 
             <FormCheckbox id="consent" inputProps={register('confirmed')}>
-              <p className="">
+              <p className="text-sm text-gray-900">
                 By checking this box, I confirm that I have reviewed and approved the Electronic Memorandum of
                 Understanding (eMOU).
               </p>

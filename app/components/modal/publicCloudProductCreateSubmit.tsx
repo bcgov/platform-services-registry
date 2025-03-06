@@ -116,8 +116,10 @@ export const openPublicCloudProductCreateSubmitModal = createModal<ModalProps, M
             <Divider my="md" />
 
             <FormCheckbox id="consent1" inputProps={register('consent1')}>
-              We will initiate the process by sending an email to the EA for their signature. After the eMOU is signed,
-              it will be reviewed and approved, which typically takes up to 2 business days.
+              <p className="text-sm text-gray-900">
+                We will initiate the process by sending an email to the EA for their signature. After the eMOU is
+                signed, it will be reviewed and approved, which typically takes up to 2 business days.
+              </p>
             </FormCheckbox>
             <FormError field="consent1" />
 
