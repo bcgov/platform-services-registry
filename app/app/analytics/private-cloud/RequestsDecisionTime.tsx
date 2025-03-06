@@ -7,7 +7,6 @@ import { pageState } from './state';
 
 export default function RequestsDecisionTime({ data }: { data: RequestDecisionTime[] }) {
   const pageSnapshot = useSnapshot(pageState);
-  console.log('data', data);
   return (
     <Histogram
       index="time"
