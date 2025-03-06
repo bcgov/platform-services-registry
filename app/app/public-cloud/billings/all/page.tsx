@@ -26,6 +26,7 @@ export default billingPage(({ session }) => {
   const { data, isLoading } = useQuery({
     queryKey: ['billings', snap],
     queryFn: () => searchPublicCloudBillings(snap),
+    refetchInterval: 2000,
   });
 
   if (!isLoading && data) {

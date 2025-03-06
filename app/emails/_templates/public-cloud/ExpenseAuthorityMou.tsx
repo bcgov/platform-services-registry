@@ -29,11 +29,6 @@ export default function ExpenseAuthorityMou({ request, billing }: Props) {
       <LinkButton href={`/public-cloud/requests/${request.id}/request`}>Review Request</LinkButton>
 
       <ProductDetails product={request.decisionData} />
-
-      <div>
-        <Text className="mb-2 font-semibold h-4">Account Coding:</Text>
-        <Text className="mt-0 mb-2 h-4">{getAccountCodingString(accountCoding)}</Text>
-      </div>
     </PublicCloudLayout>
   );
 }

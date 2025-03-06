@@ -32,7 +32,7 @@ export default function SideTasks({ className }: { className?: string }) {
   } = useQuery({
     queryKey: ['tasks'],
     queryFn: () => getAssignedTasks(),
-    refetchInterval: 5000,
+    refetchInterval: 3000,
   });
 
   useEffect(() => {
