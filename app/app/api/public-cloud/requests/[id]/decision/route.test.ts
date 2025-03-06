@@ -1,6 +1,7 @@
 import { expect } from '@jest/globals';
 import { DecisionStatus, Cluster, TaskType, TaskStatus, RequestType } from '@prisma/client';
 import { GlobalRole } from '@/constants';
+import { defaultAccountCoding } from '@/constants';
 import prisma from '@/core/prisma';
 import { createSamplePublicCloudProductData } from '@/helpers/mock-resources';
 import { pickProductData } from '@/helpers/product';
@@ -65,7 +66,7 @@ async function makeBasicProductMouReview() {
 
   await mockSessionByEmail(decisionData.expenseAuthority.email);
   await signPublicCloudBilling(requests.main.licencePlate, billing.id, {
-    accountCoding: billing.accountCoding,
+    accountCoding: defaultAccountCoding,
     confirmed: true,
   });
 

@@ -1,6 +1,7 @@
 import { expect } from '@jest/globals';
 import { Ministry, Provider, DecisionStatus, TaskType, TaskStatus, RequestType } from '@prisma/client';
 import { GlobalRole } from '@/constants';
+import { defaultAccountCoding } from '@/constants';
 import prisma from '@/core/prisma';
 import { createSamplePublicCloudProductData } from '@/helpers/mock-resources';
 import { mockNoRoleUsers, findMockUserByIdr, findOtherMockUsers } from '@/helpers/mock-users';
@@ -62,7 +63,7 @@ describe('Search Public Cloud Requests - Permissions', () => {
 
     await mockSessionByEmail(dat1.decisionData.expenseAuthority.email);
     await signPublicCloudBilling(dat1.licencePlate, billing.id, {
-      accountCoding: billing.accountCoding,
+      accountCoding: defaultAccountCoding,
       confirmed: true,
     });
 
@@ -234,7 +235,7 @@ describe('Search Public Cloud Requests - Validations', () => {
 
         await mockSessionByEmail(dat1.decisionData.expenseAuthority.email);
         await signPublicCloudBilling(dat1.licencePlate, billing.id, {
-          accountCoding: billing.accountCoding,
+          accountCoding: defaultAccountCoding,
           confirmed: true,
         });
 

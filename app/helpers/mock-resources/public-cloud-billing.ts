@@ -1,4 +1,5 @@
 import { faker } from '@faker-js/faker';
+import { defaultAccountCoding } from '@/constants';
 import { PublicCloudBillingDetail } from '@/types/public-cloud';
 import { generateShortId } from '@/utils/js';
 import { getRandomUser } from './core';
@@ -16,13 +17,7 @@ export function createSamplePublicCloudBilling(args?: {
   const billing = {
     id: generateShortId(),
     licencePlate,
-    accountCoding: {
-      cc: '000',
-      rc: '00000',
-      sl: '00000',
-      stob: '0000',
-      pc: '0000000',
-    },
+    accountCoding: defaultAccountCoding,
     expenseAuthorityId: expenseAuthority.id,
     expenseAuthority,
     signed: true,
