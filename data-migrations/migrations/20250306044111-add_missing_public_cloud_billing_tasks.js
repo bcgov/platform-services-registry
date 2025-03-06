@@ -32,7 +32,7 @@ export const up = async (db, client) => {
     if (newTaskSet.length === 0) return;
 
     const result = await Task.insertMany(newTaskSet, {});
-    console.log('invalid_public_cloud_billings:', result);
+    console.log('add_missing_public_cloud_billing_tasks:', result);
   });
 
   session.endSession();
