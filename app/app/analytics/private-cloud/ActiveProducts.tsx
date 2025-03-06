@@ -8,13 +8,15 @@ import { pageState } from './state';
 
 export default function ActiveProducts({ data }: { data: ActiveProduct[] }) {
   const pageSnapshot = useSnapshot(pageState);
+  const startDate = pageSnapshot.dates?.[0] ?? data?.[0]?.date;
+  const endDate = pageSnapshot.dates?.[1] ?? new Date();
   return (
     <LineGraph
       index="date"
       title="Active Products"
       subtitle={`This chart displays the cumulative number of products created from ${formatDate(
-        pageSnapshot.dates?.[0] || data?.[0]?.date,
-      )} to ${formatDate(pageSnapshot.dates?.[1] || new Date())}.`}
+        startDate,
+      )} to ${formatDate(endDate)}.`}
       chartData={data}
       categories={['All Clusters'].concat(pageSnapshot.clusters?.length ? pageSnapshot.clusters : clusters)}
       onExport={() => downloadPrivateCloudActiveProducts({ data: { ...pageSnapshot } })}

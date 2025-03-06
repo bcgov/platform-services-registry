@@ -23,7 +23,8 @@ export default analyticsDashboard(() => {
     queryKey: ['logins', snap.dates, snap.userId],
     queryFn: () => getAnalyticsGeneralData({ dates: snap.dates, userId: snap.userId }),
   });
-
+  const startDate = snap.dates?.[0] ?? data?.[0]?.date;
+  const endDate = snap.dates?.[1] ?? new Date();
   return (
     <div className="">
       <h1 className="text-xl lg:text-2xl 2xl:text-4xl font-semibold leading-7 text-gray-900">General Analytics</h1>
@@ -47,8 +48,8 @@ export default analyticsDashboard(() => {
           isLoading={isLoading}
           title="Daily User Login Events"
           subtitle={`This chart displays the number of login events per day from ${formatDate(
-            snap.dates?.[0] || data?.[0]?.date,
-          )} to ${formatDate(snap.dates?.[1] || new Date())}.`}
+            startDate,
+          )} to ${formatDate(endDate)}.`}
           chartData={data}
           categories={['Logins']}
           colors={['indigo']}

@@ -11,7 +11,8 @@ export default function MinistryDistribution({ data }: { data: MinistryDistribut
   const pageSnapshot = useSnapshot(pageState);
   const selectedClusters = pageSnapshot.clusters?.length ? pageSnapshot.clusters : clusters;
   const allClusterData = transformMinistryData(data[0]);
-
+  const startDate = pageSnapshot.dates?.[0] ?? new Date('2023-04-01T00:00:00.000Z');
+  const endDate = pageSnapshot.dates?.[1] ?? new Date();
   const mappedClusterData = mapClusterData(selectedClusters, data);
 
   const pieChartData: Record<string, { label: string; value: number }[]> = {
@@ -24,8 +25,8 @@ export default function MinistryDistribution({ data }: { data: MinistryDistribut
       onExport={() => downloadPrivateCloudMinistryDistribution({ data: { ...pageSnapshot } })}
       title="Ministry per Cluster"
       subtitle={`This chart displays the cluster distributions by ministries for products created from ${formatDate(
-        pageSnapshot.dates?.[0] || new Date('2023-04-01T00:00:00.000Z'),
-      )} to ${formatDate(pageSnapshot.dates?.[1] || new Date())}.`}
+        startDate,
+      )} to ${formatDate(endDate)}.`}
       data={pieChartData}
     />
   );

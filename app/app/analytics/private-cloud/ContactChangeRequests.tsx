@@ -7,12 +7,14 @@ import { pageState } from './state';
 
 export default function ContactChangeRequests({ data }: { data: ContactsChange[] }) {
   const pageSnapshot = useSnapshot(pageState);
+  const startDate = pageSnapshot.dates?.[0] ?? data?.[0]?.date;
+  const endDate = pageSnapshot.dates?.[1] ?? new Date();
   return (
     <CombinedAreaGraph
       title="Contact change requests over time"
       subtitle={`This chart displays edit requests where contact changes were requested and the request decision from ${formatDate(
-        pageSnapshot.dates?.[0] || data?.[0]?.date,
-      )} to ${formatDate(pageSnapshot.dates?.[1] || new Date())}.`}
+        startDate,
+      )} to ${formatDate(endDate)}.`}
       chartData={data}
       categories={['Contact changes']}
       colors={['indigo']}
