@@ -1,6 +1,7 @@
 import { expect } from '@jest/globals';
 import { DecisionStatus, TaskType, TaskStatus, RequestType } from '@prisma/client';
 import { GlobalRole } from '@/constants';
+import { defaultAccountCoding } from '@/constants';
 import prisma from '@/core/prisma';
 import { createSamplePublicCloudProductData } from '@/helpers/mock-resources';
 import { findOtherMockUsers } from '@/helpers/mock-users';
@@ -43,7 +44,7 @@ describe('Delete Public Cloud Product - Permissions', () => {
 
     await mockSessionByEmail(requests.create.decisionData.expenseAuthority.email);
     const response = await signPublicCloudBilling(requests.create.licencePlate, billing.id, {
-      accountCoding: billing.accountCoding,
+      accountCoding: defaultAccountCoding,
       confirmed: true,
     });
 

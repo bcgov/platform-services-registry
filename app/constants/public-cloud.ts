@@ -52,3 +52,11 @@ export const publicCloudProductSorts = productSorts.concat([
     sortOrder: Prisma.SortOrder.desc,
   },
 ]);
+
+export const defaultAccountCoding = {
+  cc: '000',
+  rc: '00000',
+  sl: '00000',
+  stob: '0000',
+  pc: '0000000',
+};

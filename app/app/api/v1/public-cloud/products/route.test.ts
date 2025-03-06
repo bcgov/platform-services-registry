@@ -1,6 +1,7 @@
 import { expect } from '@jest/globals';
 import { DecisionStatus, ProjectStatus, Ministry, Provider, TaskType, TaskStatus, RequestType } from '@prisma/client';
 import { GlobalRole } from '@/constants';
+import { defaultAccountCoding } from '@/constants';
 import prisma from '@/core/prisma';
 import { createSamplePublicCloudProductData } from '@/helpers/mock-resources';
 import { mockNoRoleUsers, findMockUserByIdr, findOtherMockUsers } from '@/helpers/mock-users';
@@ -62,7 +63,7 @@ describe('API: List Public Cloud Products - Permissions', () => {
 
     await mockSessionByEmail(dat1.decisionData.expenseAuthority.email);
     await signPublicCloudBilling(dat1.licencePlate, billing.id, {
-      accountCoding: billing.accountCoding,
+      accountCoding: defaultAccountCoding,
       confirmed: true,
     });
 

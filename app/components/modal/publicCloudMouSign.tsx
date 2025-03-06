@@ -164,7 +164,7 @@ export const openPublicCloudMouSignModal = createModal<ModalProps, ModalState>({
             <Divider my="md" />
 
             <FormCheckbox id="consent" inputProps={register('confirmed')}>
-              <p className="">
+              <p className="text-sm text-gray-900">
                 By checking this box, I confirm that I have read and understood the roles and responsibilities for use
                 of Public Cloud&apos;s services.
               </p>

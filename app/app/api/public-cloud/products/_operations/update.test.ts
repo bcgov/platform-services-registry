@@ -1,6 +1,7 @@
 import { expect } from '@jest/globals';
 import { DecisionStatus, Provider, TaskType, TaskStatus, RequestType } from '@prisma/client';
 import { GlobalRole } from '@/constants';
+import { defaultAccountCoding } from '@/constants';
 import prisma from '@/core/prisma';
 import { createSamplePublicCloudProductData } from '@/helpers/mock-resources';
 import { findOtherMockUsers } from '@/helpers/mock-users';
@@ -74,7 +75,7 @@ describe('Update Public Cloud Product - Permissions', () => {
     if (!billing) return;
 
     const response = await signPublicCloudBilling(requests.create.licencePlate, billing.id, {
-      accountCoding: billing.accountCoding,
+      accountCoding: defaultAccountCoding,
       confirmed: true,
     });
 
