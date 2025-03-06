@@ -22,7 +22,7 @@ export default publicCloudRequests(({}) => {
   const { data, isLoading } = useQuery({
     queryKey: ['requests', snap],
     queryFn: () => searchPublicCloudRequests(snap),
-    refetchInterval: 5000,
+    refetchInterval: 2000,
   });
 
   let requests: PublicCloudRequestSimpleDecorated[] = [];

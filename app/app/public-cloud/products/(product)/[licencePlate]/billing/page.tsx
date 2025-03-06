@@ -14,6 +14,7 @@ import { requestSortsInProduct, GlobalRole } from '@/constants';
 import createClientPage from '@/core/client-page';
 import { searchPublicCloudBillings } from '@/services/backend/public-cloud/billings';
 import { updateAccountCoding as _updateAccountCoding } from '@/services/backend/public-cloud/products';
+import { usePublicProductState } from '@/states/global';
 import { PublicCloudBillingSimpleDecorated } from '@/types/public-cloud';
 import { PublicCloudBillingBody, publicCloudBillingBodySchema } from '@/validation-schemas';
 import { pageState } from './state';
@@ -26,6 +27,8 @@ function AccountCodingForm({
   accountCoding?: AccountCoding | null;
   licencePlate: string;
 }) {
+  const [, publicCloudSnap] = usePublicProductState();
+
   const form = useForm({
     resolver: zodResolver(publicCloudBillingBodySchema),
     defaultValues: {
@@ -48,6 +51,8 @@ function AccountCodingForm({
     mutationFn: (data: any) => _updateAccountCoding(licencePlate, data),
   });
 
+  const canEdit = publicCloudSnap.currentProduct?._permissions.editAccountCoding;
+
   return (
     <FormProvider {...form}>
       <form
@@ -59,7 +64,7 @@ function AccountCodingForm({
         })}
         autoComplete="off"
       >
-        <AccountCodingSection isSubmitting={isUpdatingAccountCoding} />
+        <AccountCodingSection isSubmitting={isUpdatingAccountCoding} disabled={!canEdit} />
       </form>
     </FormProvider>
   );

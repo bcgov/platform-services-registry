@@ -50,7 +50,6 @@ export default function ProviderDetails({ product }: Props) {
             <b>Total:</b> USD ${totalBudget.toFixed(2)}
           </Text>
         </div>
-        <Text className="font-semibold mt-2 mb-0">Account Coding</Text>
       </div>
     </>
   );

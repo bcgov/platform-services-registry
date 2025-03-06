@@ -293,7 +293,7 @@ export async function generateSession({
     viewUsers: session.isAdmin || session.isUserReader,
     viewEvents: session.isAdmin || session.isEventReader,
     viewTasks: session.isAdmin || session.isTaskReader,
-    sendTaskEmails: session.isAdmin,
+    sendTaskEmails: session.isAdmin || session.isBillingReviewer || session.isBillingReader,
     editUsers: session.isAdmin,
     editUserRoles: session.isAdmin,
     editUserOnboardingDate: session.isPrivateReviewer,
