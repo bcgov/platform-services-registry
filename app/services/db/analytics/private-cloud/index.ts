@@ -1,4 +1,6 @@
 import { Cluster, Ministry } from '@prisma/client';
+import { startOfDay, endOfDay } from 'date-fns';
+import { fromZonedTime } from 'date-fns-tz';
 import { getActiveProducts } from './active-products';
 import { getAllRequests } from './all-requests';
 import { getContactChangeRequests } from './contact-changes';
@@ -21,7 +23,17 @@ export async function getPrivateCloudAnalytics({
   temporary?: string[];
 }) {
   const licencePlatesList = await getPrivateLicencePlates({ userId, ministries, clusters, temporary });
-  const dateFilter = dates?.length === 2 ? { createdAt: { gte: new Date(dates[0]), lte: new Date(dates[1]) } } : {};
+
+  const dateFilter =
+    dates.length === 2
+      ? {
+          createdAt: {
+            gte: fromZonedTime(startOfDay(new Date(dates[0])), 'America/Vancouver'),
+            lte: fromZonedTime(endOfDay(new Date(dates[1])), 'America/Vancouver'),
+          },
+        }
+      : {};
+
   const [contactsChange, allRequests, quotaChange, activeProducts, requestDecisionTime, ministryDistributionData] =
     await Promise.all([
       getContactChangeRequests({ licencePlatesList, dateFilter }),
@@ -31,5 +43,6 @@ export async function getPrivateCloudAnalytics({
       getRequestDecisionTime({ licencePlatesList, dateFilter }),
       getMinistryDistributions({ licencePlatesList, dates }),
     ]);
+
   return { contactsChange, allRequests, quotaChange, activeProducts, requestDecisionTime, ministryDistributionData };
 }
