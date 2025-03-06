@@ -1,3 +1,8 @@
+## [0.46.0](https://github.com/bcgov/platform-services-registry/compare/v0.45.0...v0.46.0) (2025-03-06)
+
+### Features
+
+* **4988:** add data migration script to add missing tasks ([4388b84](https://github.com/bcgov/platform-services-registry/commit/4388b843d637ab1e922826a800b4e90965130516))
 ## [0.45.0](https://github.com/bcgov/platform-services-registry/compare/v0.44.0...v0.45.0) (2025-03-06)
 
 ### Features
