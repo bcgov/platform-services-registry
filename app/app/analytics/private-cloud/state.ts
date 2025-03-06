@@ -9,7 +9,6 @@ const initialValue = {
   ministries: undefined,
   clusters: [Cluster.SILVER, Cluster.GOLD, Cluster.EMERALD],
   temporary: [],
-  fetchKey: undefined,
 };
 
 export const pageState = proxy<AnalyticsPrivateCloudFilterBody>(deepClone(initialValue));

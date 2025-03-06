@@ -9,7 +9,7 @@ export const instance = axios.create({
 });
 
 export async function getAnalyticsGeneralData(data: AnalyticsGeneralFilterBody) {
-  const result = await instance.post<{ data: { date: string; Logins: string }[] }>('/general/chart-data', data);
+  const result = await instance.post<{ date: string; Logins: string }[]>('/general/chart-data', data);
   return result.data;
 }
 
