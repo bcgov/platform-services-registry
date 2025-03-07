@@ -1,7 +1,4 @@
-'use client';
-
-import { LoadingOverlay } from '@mantine/core';
-import { BarChart, Card, Title } from '@tremor/react';
+import { BarChart, Card, Subtitle, Title } from '@tremor/react';
 import ExportButton from '@/components/buttons/ExportButton';
 
 const valueFormatter = (number: number) => `${new Intl.NumberFormat('us').format(number).toString()}%`;
@@ -12,6 +9,7 @@ export default function Histogram({
   exportApiEndpoint,
   chartData,
   title,
+  subtitle,
   categories,
   colors,
 }: {
@@ -20,6 +18,7 @@ export default function Histogram({
   exportApiEndpoint?: string;
   chartData: any;
   title: string;
+  subtitle?: string;
   categories: string[];
   colors: string[];
 }) {
@@ -28,6 +27,7 @@ export default function Histogram({
       <ExportButton className="mb-4" onExport={onExport} downloadUrl={exportApiEndpoint} />
       <Card>
         <Title>{title}</Title>
+        <Subtitle>{subtitle}</Subtitle>
         <div className="relative">
           <BarChart
             className="mt-6"

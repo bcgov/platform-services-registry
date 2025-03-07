@@ -1,7 +1,7 @@
 import { useSnapshot } from 'valtio';
 import CombinedAreaGraph from '@/components/analytics/CombinedAreaGraph';
 import { downloadPrivateCloudAllRequests } from '@/services/backend/analytics/private-cloud';
-import type { AllRequests } from '@/types/analytics';
+import type { AllRequests } from '@/types/analytics-private';
 import { pageState } from './state';
 
 export default function AllRequests({ data }: { data: AllRequests[] }) {

@@ -120,7 +120,7 @@ export default function UserMenu() {
     {
       text: 'Public Cloud Analytics',
       Icon: IconPresentationAnalytics,
-      href: '/public-cloud/analytics',
+      href: '/analytics/public-cloud',
       permission: 'viewPublicAnalytics',
     },
     {

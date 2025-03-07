@@ -2,7 +2,7 @@ import { useSnapshot } from 'valtio';
 import LineGraph from '@/components/analytics/LineGraph';
 import { clusters } from '@/constants';
 import { downloadPrivateCloudActiveProducts } from '@/services/backend/analytics/private-cloud';
-import { ActiveProduct } from '@/types/analytics';
+import { ActiveProduct } from '@/types/analytics-private';
 import { pageState } from './state';
 
 export default function ActiveProducts({ data }: { data: ActiveProduct[] }) {

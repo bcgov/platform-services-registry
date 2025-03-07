@@ -1,7 +1,7 @@
 import { useSnapshot } from 'valtio';
 import CombinedAreaGraph from '@/components/analytics/CombinedAreaGraph';
 import { downloadPrivateCloudContactChangeRequests } from '@/services/backend/analytics/private-cloud';
-import { ContactsChange } from '@/types/analytics';
+import { ContactsChange } from '@/types/analytics-private';
 import { pageState } from './state';
 
 export default function ContactChangeRequests({ data }: { data: ContactsChange[] }) {

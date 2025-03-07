@@ -1,7 +1,7 @@
 import { useSnapshot } from 'valtio';
 import Histogram from '@/components/analytics/Histogram';
 import { downloadPrivateCloudRequestsDecisionTime } from '@/services/backend/analytics/private-cloud';
-import { RequestDecisionTime } from '@/types/analytics';
+import { RequestDecisionTime } from '@/types/analytics-private';
 import { pageState } from './state';
 
 export default function RequestsDecisionTime({ data }: { data: RequestDecisionTime[] }) {
