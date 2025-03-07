@@ -145,7 +145,10 @@ async function decorate<T extends PublicCloudProductSimple & Partial<PublicCloud
     manageMembers: [doc.projectOwnerId, doc.primaryTechnicalLeadId, doc.secondaryTechnicalLeadId].includes(
       session.user.id,
     ),
-    editAccountCoding: session.permissions.reviewPublicCloudBilling || doc.expenseAuthorityId === session.user.id,
+    editAccountCoding:
+      session.permissions.reviewPublicCloudBilling ||
+      session.isBillingManager ||
+      doc.expenseAuthorityId === session.user.id,
   };
 
   return decoratedDoc;

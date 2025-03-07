@@ -255,6 +255,7 @@ export async function generateSession({
       session.isPublicEditor ||
       session.isPublicReader ||
       session.isBillingReviewer ||
+      session.isBillingManager ||
       session.isBillingReader ||
       session.isPublicReviewer,
 
@@ -287,13 +288,15 @@ export async function generateSession({
     viewPrivateAnalytics: session.isAdmin || session.isAnalyzer || session.isPrivateAnalyzer,
 
     reviewPublicCloudBilling: session.isAdmin || session.isBillingReviewer,
-    viewPublicCloudBilling: session.isAdmin || session.isBillingReviewer || session.isBillingReader,
-    downloadPublicCloudBillingMou: session.isAdmin || session.isBillingReviewer || session.isBillingReader,
+    viewPublicCloudBilling:
+      session.isAdmin || session.isBillingReviewer || session.isBillingManager || session.isBillingReader,
+    downloadPublicCloudBillingMou:
+      session.isAdmin || session.isBillingReviewer || session.isBillingManager || session.isBillingReader,
 
     viewUsers: session.isAdmin || session.isUserReader,
     viewEvents: session.isAdmin || session.isEventReader,
     viewTasks: session.isAdmin || session.isTaskReader,
-    sendTaskEmails: session.isAdmin || session.isBillingReviewer || session.isBillingReader,
+    sendTaskEmails: session.isAdmin || session.isBillingReviewer || session.isBillingManager || session.isBillingReader,
     editUsers: session.isAdmin,
     editUserRoles: session.isAdmin,
     editUserOnboardingDate: session.isPrivateReviewer,
