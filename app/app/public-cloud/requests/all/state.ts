@@ -9,7 +9,12 @@ export const pageState = proxy<PublicCloudRequestSearchBody>({
   pageSize: 10,
   ministries: [],
   providers: [],
-  status: [DecisionStatus.PENDING],
+  status: [
+    DecisionStatus.PENDING,
+    DecisionStatus.APPROVED,
+    DecisionStatus.AUTO_APPROVED,
+    DecisionStatus.PARTIALLY_PROVISIONED,
+  ],
   types: [],
   sortValue: requestSorts[0].label,
   sortKey: requestSorts[0].sortKey,

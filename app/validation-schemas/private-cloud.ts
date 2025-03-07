@@ -63,6 +63,7 @@ export const _privateCloudCreateRequestBodySchema = z.object({
   secondaryTechnicalLeadId: z.string().length(24).or(z.literal('')).nullable().optional(),
   golddrEnabled: z.preprocess(processBoolean, z.boolean()),
   isTest: z.preprocess(processBoolean, z.boolean()),
+  resourceRequests: resourceRequestsEnvSchema,
   quotaContactName: z.string().max(50).optional(),
   quotaContactEmail: z.union([z.undefined(), z.literal(''), z.string().email()]),
   quotaJustification: z.string().max(1000).optional(),
@@ -127,7 +128,6 @@ export const privateCloudCreateRequestBodySchema = _privateCloudCreateRequestBod
 
 const _privateCloudEditRequestBodySchema = _privateCloudCreateRequestBodySchema.merge(
   z.object({
-    resourceRequests: resourceRequestsEnvSchema,
     requestComment: string().optional(),
     members: privateCloudProductMembers,
   }),

@@ -85,11 +85,7 @@ export default privateCloudRequestDecision(({ getPathParams, session, router }) 
     return null;
   }
 
-  let isDisabled = !snap.currentRequest._permissions.edit;
-
-  if (snap.currentRequest._permissions.cancel) {
-    isDisabled = true;
-  }
+  const isDisabled = !snap.currentRequest._permissions.review;
 
   const accordionItems = [
     {
@@ -105,7 +101,7 @@ export default privateCloudRequestDecision(({ getPathParams, session, router }) 
     },
     {
       LeftIcon: IconUsersGroup,
-      label: 'Team contacts',
+      label: 'Team members',
       description: '',
       Component: TeamContacts,
       componentArgs: { disabled: isDisabled },

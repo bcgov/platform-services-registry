@@ -2,16 +2,17 @@
 
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Button } from '@mantine/core';
-import { IconInfoCircle, IconUsersGroup, IconComponents, IconWebhook } from '@tabler/icons-react';
+import { IconInfoCircle, IconUsersGroup, IconSettings, IconWebhook } from '@tabler/icons-react';
 import { FormProvider, useForm } from 'react-hook-form';
 import PreviousButton from '@/components/buttons/Previous';
 import ProjectDescription from '@/components/form/ProjectDescriptionPrivate';
 import PageAccordion from '@/components/generic/accordion/PageAccordion';
 import FormErrorNotification from '@/components/generic/FormErrorNotification';
 import { openPrivateCloudProductCreateSubmitModal } from '@/components/modal/privateCloudProductCreateSubmit';
+import Quotas from '@/components/private-cloud/sections/Quotas';
 import TeamContacts from '@/components/private-cloud/sections/TeamContacts';
 import Webhooks from '@/components/private-cloud/sections/Webhooks';
-import { GlobalRole } from '@/constants';
+import { GlobalRole, defaultResourceRequests } from '@/constants';
 import createClientPage from '@/core/client-page';
 import { privateCloudCreateRequestBodySchema } from '@/validation-schemas/private-cloud';
 
@@ -22,7 +23,14 @@ const privateCloudProductNew = createClientPage({
 export default privateCloudProductNew(({ session }) => {
   const methods = useForm({
     resolver: zodResolver(privateCloudCreateRequestBodySchema),
-    defaultValues: {},
+    defaultValues: {
+      resourceRequests: {
+        development: defaultResourceRequests,
+        test: defaultResourceRequests,
+        production: defaultResourceRequests,
+        tools: defaultResourceRequests,
+      },
+    },
   });
 
   const accordionItems = [
@@ -35,10 +43,19 @@ export default privateCloudProductNew(({ session }) => {
     },
     {
       LeftIcon: IconUsersGroup,
-      label: 'Team contacts',
+      label: 'Team members',
       description: '',
       Component: TeamContacts,
       componentArgs: {},
+    },
+    {
+      LeftIcon: IconSettings,
+      label: 'Quotas (request)',
+      description: '',
+      Component: Quotas,
+      componentArgs: {
+        disabled: true,
+      },
     },
     {
       LeftIcon: IconWebhook,
