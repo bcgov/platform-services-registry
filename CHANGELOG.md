@@ -1,3 +1,10 @@
+## [0.46.2](https://github.com/bcgov/platform-services-registry/compare/v0.46.1...v0.46.2) (2025-03-07)
+
+### Features
+
+* **5033:** add filters to public cloud analytics page ([7b3060c](https://github.com/bcgov/platform-services-registry/commit/7b3060ceff17d18c2d0e2a10d7cc6d9a46139023))
+* **5078:** add disabled Quota section on new product page ([1c011d3](https://github.com/bcgov/platform-services-registry/commit/1c011d32f8e892af9e2261987431fbbe0cb57704))
+* **5134:** add billing manager role ([e5b0376](https://github.com/bcgov/platform-services-registry/commit/e5b037607bffd97f07f988f188070c61ea229134))
 ## [0.46.1](https://github.com/bcgov/platform-services-registry/compare/v0.46.0...v0.46.1) (2025-03-07)
 
 ### Bug Fixes
