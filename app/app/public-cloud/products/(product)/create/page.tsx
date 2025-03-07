@@ -61,7 +61,7 @@ export default publicCloudProductNew(({}) => {
     },
     {
       LeftIcon: IconUsersGroup,
-      label: 'Team contacts',
+      label: 'Team members',
       description: '',
       Component: TeamContacts,
       componentArgs: {},

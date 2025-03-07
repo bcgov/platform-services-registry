@@ -1,6 +1,5 @@
 import { DecisionStatus, ProjectStatus, RequestType, EventType, TaskType } from '@prisma/client';
 import { Session } from 'next-auth';
-import { defaultResourceRequests } from '@/constants';
 import prisma from '@/core/prisma';
 import { OkResponse, UnauthorizedResponse, UnprocessableEntityResponse } from '@/core/responses';
 import generateLicencePlate from '@/helpers/licence-plate';
@@ -46,12 +45,6 @@ export default async function createOp({ session, body }: { session: Session; bo
     ...rest,
     licencePlate,
     status: ProjectStatus.ACTIVE,
-    resourceRequests: {
-      development: defaultResourceRequests,
-      test: defaultResourceRequests,
-      production: defaultResourceRequests,
-      tools: defaultResourceRequests,
-    },
     projectOwner: { connect: { id: projectOwnerId } },
     primaryTechnicalLead: { connect: { id: primaryTechnicalLeadId } },
     secondaryTechnicalLead: secondaryTechnicalLeadId ? { connect: { id: secondaryTechnicalLeadId } } : undefined,

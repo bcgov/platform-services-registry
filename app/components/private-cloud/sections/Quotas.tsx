@@ -31,16 +31,16 @@ const namespaceKeys: ResourceRequestsEnvKeys = ['development', 'test', 'producti
 const resourceKeys: ResourceRequestsKeys = ['cpu', 'memory', 'storage'];
 
 export default function Quotas({
+  disabled,
   cluster,
   licencePlate,
-  disabled,
   originalResourceRequests,
   quotaContactRequired = false,
 }: {
-  cluster: Cluster;
-  licencePlate: string;
   disabled: boolean;
-  originalResourceRequests: ResourceRequestsEnv;
+  cluster?: Cluster;
+  licencePlate?: string;
+  originalResourceRequests?: ResourceRequestsEnv;
   quotaContactRequired?: boolean;
 }) {
   const { watch } = useFormContext();
@@ -51,7 +51,7 @@ export default function Quotas({
     queries: ['dev', 'test', 'prod', 'tools'].map((environment) => {
       return {
         queryKey: [licencePlate, environment],
-        queryFn: () => getSubnetForEmerald(licencePlate, environment),
+        queryFn: () => getSubnetForEmerald(licencePlate!, environment),
         enabled: cluster === Cluster.EMERALD && !!licencePlate,
       };
     }),
@@ -88,6 +88,18 @@ export default function Quotas({
             }
           }
 
+          let clusterLink: ReactNode = null;
+          if (licencePlate && cluster) {
+            clusterLink = (
+              <ExternalLink
+                href={`https://console.apps.${cluster}.devops.gov.bc.ca/k8s/cluster/projects/${licencePlate}${namespaceSuffixes[namespace]}`}
+              >
+                {licencePlate}
+                {namespaceSuffixes[namespace] || ''}
+              </ExternalLink>
+            );
+          }
+
           return (
             <div
               key={namespace}
@@ -99,13 +111,8 @@ export default function Quotas({
               <h3 className="text-base 2xl:text-lg font-semibold leading-7 text-gray-900">
                 {_startCase(namespace)} Namespace
               </h3>
-              <ExternalLink
-                href={`https://console.apps.${cluster}.devops.gov.bc.ca/k8s/cluster/projects/${licencePlate}${namespaceSuffixes[namespace]}`}
-              >
-                {licencePlate}
-                {namespaceSuffixes[namespace] || ''}
-              </ExternalLink>
 
+              {clusterLink}
               {subnetInfo}
 
               {resourceKeys.map((resourceKey) => {

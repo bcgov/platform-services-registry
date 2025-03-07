@@ -68,7 +68,7 @@ export default publicCloudRequest(({ getPathParams }) => {
     },
     {
       LeftIcon: IconUsersGroup,
-      label: 'Team contacts',
+      label: 'Team members',
       description: '',
       Component: TeamContacts,
       componentArgs: {

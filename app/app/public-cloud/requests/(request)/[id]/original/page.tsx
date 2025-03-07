@@ -72,7 +72,7 @@ export default publicCloudRequestOriginal(({ router }) => {
     },
     {
       LeftIcon: IconUsersGroup,
-      label: 'Team contacts',
+      label: 'Team members',
       description: '',
       Component: TeamContacts,
       componentArgs: { disabled: isDisabled },
