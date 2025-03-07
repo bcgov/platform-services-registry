@@ -3,7 +3,7 @@ import PieGraph from '@/components/analytics/PieGraph';
 import { clusters } from '@/constants';
 import { mapClusterData, transformMinistryData } from '@/helpers/ministry-data';
 import { downloadPrivateCloudMinistryDistribution } from '@/services/backend/analytics/private-cloud';
-import type { MinistryDistribution } from '@/types/analytics';
+import type { MinistryDistribution } from '@/types/analytics-private';
 import { formatDate } from '@/utils/js/date';
 import { pageState } from './state';
 

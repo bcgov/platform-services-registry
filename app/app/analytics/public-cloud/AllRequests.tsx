@@ -1,7 +1,7 @@
 import { useSnapshot } from 'valtio';
 import CombinedAreaGraph from '@/components/analytics/CombinedAreaGraph';
-import { downloadPrivateCloudAllRequests } from '@/services/backend/analytics/private-cloud';
-import type { AllRequests } from '@/types/analytics-private';
+import { downloadPublicCloudAllRequests } from '@/services/backend/analytics/public-cloud';
+import type { AllRequests } from '@/types/analytics-public';
 import { formatDate } from '@/utils/js/date';
 import { pageState } from './state';
 
@@ -18,7 +18,7 @@ export default function AllRequests({ data }: { data: AllRequests[] }) {
       chartData={data}
       categories={['All requests', 'Edit requests', 'Create requests', 'Delete requests']}
       colors={['indigo', 'yellow', 'green', 'red']}
-      onExport={() => downloadPrivateCloudAllRequests({ data: { ...pageSnapshot } })}
+      onExport={async () => downloadPublicCloudAllRequests({ data: { ...pageSnapshot } })}
     />
   );
 }

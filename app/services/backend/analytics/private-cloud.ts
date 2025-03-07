@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { AnalyticsPrivateCloudResponse } from '@/types/analytics';
+import { AnalyticsPrivateCloudResponse } from '@/types/analytics-private';
 import { downloadFile } from '@/utils/browser';
 import { AnalyticsPrivateCloudFilterBody } from '@/validation-schemas/analytics-private-cloud';
 import { instance as baseInstance } from '../axios';

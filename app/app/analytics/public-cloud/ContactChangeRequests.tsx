@@ -1,7 +1,7 @@
 import { useSnapshot } from 'valtio';
 import CombinedAreaGraph from '@/components/analytics/CombinedAreaGraph';
-import { downloadPrivateCloudContactChangeRequests } from '@/services/backend/analytics/private-cloud';
-import { ContactsChange } from '@/types/analytics-private';
+import { downloadPublicCloudContactChangeRequests } from '@/services/backend/analytics/public-cloud';
+import { ContactsChange } from '@/types/analytics-public';
 import { formatDate } from '@/utils/js/date';
 import { pageState } from './state';
 
@@ -18,7 +18,7 @@ export default function ContactChangeRequests({ data }: { data: ContactsChange[]
       chartData={data}
       categories={['Contact changes']}
       colors={['indigo']}
-      onExport={() => downloadPrivateCloudContactChangeRequests({ data: { ...pageSnapshot } })}
+      onExport={async () => downloadPublicCloudContactChangeRequests({ data: { ...pageSnapshot } })}
     />
   );
 }

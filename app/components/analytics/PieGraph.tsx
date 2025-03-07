@@ -1,5 +1,3 @@
-'use client';
-
 import { Card, DonutChart, Title, Subtitle } from '@tremor/react';
 import _map from 'lodash-es/map';
 import _orderBy from 'lodash-es/orderBy';
