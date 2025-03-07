@@ -89,6 +89,7 @@ declare module 'next-auth' {
     isUserReader: boolean;
     isApprover: boolean;
     isBillingReviewer: boolean;
+    isBillingManager: boolean;
     isBillingReader: boolean;
     isTaskReader: boolean;
     roles: string[];

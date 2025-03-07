@@ -64,6 +64,7 @@ export enum GlobalRole {
   UserReader = 'user-reader',
   Approver = 'approver',
   BillingReviewer = 'billing-reviewer',
+  BillingManager = 'billing-manager',
   Billingreader = 'billing-reader',
   EventReader = 'event-reader',
   TaskReader = 'task-reader',
@@ -91,6 +92,7 @@ export const RoleToSessionProp = {
   [GlobalRole.TaskReader]: 'isTaskReader',
   [GlobalRole.Approver]: 'isApprover',
   [GlobalRole.BillingReviewer]: 'isBillingReviewer',
+  [GlobalRole.BillingManager]: 'isBillingManager',
   [GlobalRole.Billingreader]: 'isBillingReader',
 };
 
