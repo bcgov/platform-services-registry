@@ -1,3 +1,10 @@
+## [0.46.1](https://github.com/bcgov/platform-services-registry/compare/v0.46.0...v0.46.1) (2025-03-07)
+
+### Bug Fixes
+
+* **5032:** ensure today's data is included in charts and update subtitles for accuracy ([0ae4e62](https://github.com/bcgov/platform-services-registry/commit/0ae4e621802cda929a50f5be3cc4b2ca3fd08402))
+* **5032:** revert Histogram to a Client Component to fix function prop issue ([ed87da2](https://github.com/bcgov/platform-services-registry/commit/ed87da2925470b6eb1d2c881709172b14f0bfaad))
+* **5121:** resolve permission issues regarding billing workflows ([cf0eac7](https://github.com/bcgov/platform-services-registry/commit/cf0eac7389da6bdd2f38f73a855c08bb4d6db136))
 ## [0.46.0](https://github.com/bcgov/platform-services-registry/compare/v0.45.0...v0.46.0) (2025-03-06)
 
 ### Features
