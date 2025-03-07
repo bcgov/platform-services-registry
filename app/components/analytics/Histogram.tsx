@@ -1,5 +1,3 @@
-'use client';
-
 import { BarChart, Card, Subtitle, Title } from '@tremor/react';
 import ExportButton from '@/components/buttons/ExportButton';
 

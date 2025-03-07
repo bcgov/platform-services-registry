@@ -1,5 +1,3 @@
-'use client';
-
 import { Title } from '@tremor/react';
 import ExportButton from '@/components/buttons/ExportButton';
 

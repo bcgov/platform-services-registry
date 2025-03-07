@@ -1,5 +1,5 @@
-import { Cluster } from '@prisma/client';
-import { clusters } from '@/constants';
+import { Cluster, Provider } from '@prisma/client';
+import { clusters, providers } from '@/constants';
 import { ministryKeyToName } from '@/helpers/product';
 
 export const transformMinistryData = (items: { _id: string; value: number }[]) =>
@@ -7,6 +7,10 @@ export const transformMinistryData = (items: { _id: string; value: number }[]) =
 
 export const validClusters = (clusters as string[]).filter((cluster): cluster is Cluster =>
   Object.values(Cluster).includes(cluster as Cluster),
+);
+
+export const validProviders = (providers as string[]).filter((provider): provider is Provider =>
+  Object.values(Provider).includes(provider as Provider),
 );
 
 export const mapClusterData = (selectedClusters: Cluster[], ministryData: any[]) => {
@@ -20,5 +24,19 @@ export const mapClusterData = (selectedClusters: Cluster[], ministryData: any[])
       return acc;
     },
     {} as Record<Cluster, { label: string; value: number }[]>,
+  );
+};
+
+export const mapProviderData = (selectedProviders: Provider[], ministryData: any[]) => {
+  return selectedProviders.reduce<Record<Provider, { label: string; value: number }[]>>(
+    (acc, provider) => {
+      const providerIndex = validProviders.indexOf(provider);
+      acc[provider] =
+        providerIndex !== -1 && ministryData[providerIndex + 1]
+          ? transformMinistryData(ministryData[providerIndex + 1])
+          : [];
+      return acc;
+    },
+    {} as Record<Provider, { label: string; value: number }[]>,
   );
 };

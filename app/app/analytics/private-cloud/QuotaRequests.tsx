@@ -1,7 +1,7 @@
 import { useSnapshot } from 'valtio';
 import CombinedAreaGraph from '@/components/analytics/CombinedAreaGraph';
 import { downloadPrivateCloudQuotaChangeRequests } from '@/services/backend/analytics/private-cloud';
-import { QuotaChange } from '@/types/analytics';
+import { QuotaChange } from '@/types/analytics-private';
 import { formatDate } from '@/utils/js/date';
 import { pageState } from './state';
 
