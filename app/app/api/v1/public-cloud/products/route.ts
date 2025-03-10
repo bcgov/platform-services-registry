@@ -21,7 +21,7 @@ const queryParamSchema = z.object({
 });
 
 export const GET = createApiHandler({
-  roles: ['service-account user'],
+  roles: ['service-account'],
   useServiceAccount: true,
   validations: { queryParams: queryParamSchema },
 })(async ({ session, queryParams }) => {
