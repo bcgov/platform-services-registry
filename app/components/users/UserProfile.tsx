@@ -16,15 +16,7 @@ interface Props {
   text?: string;
   children?: React.ReactNode;
 }
-{
-  /* <Tooltip label={canDelete ? 'Delete member' : 'Edit member'}>
-{canDelete ? (
-  <IconTrash className="ml-2 cursor-pointer" onClick={handleUserDelete} />
-) : (
-  <IconEdit className="ml-2 cursor-pointer" onClick={handleUserChange} />
-)}
-</Tooltip> */
-}
+
 export default function UserProfile({ data, onClick, text = 'Click to select member', children }: Props) {
   if (!data) {
     data = {
@@ -38,25 +30,25 @@ export default function UserProfile({ data, onClick, text = 'Click to select mem
 
   return (
     <>
-      <Group gap="sm" className={cn({ 'cursor-pointer': !!onClick })} onClick={onClick}>
-        <Avatar src={getUserImageData(data.image)} size={36} radius="xl" />
-        <div>
-          <div className="text-sm font-semibold">
-            {data.email ? (
-              <div className="flex">
-                {formatFullName(data)}
-                <MinistryBadge className="ml-1" ministry={data.ministry} />
-                <Tooltip label="Edit">
-                  <IconEdit className="ml-2 cursor-pointer" onClick={onClick} />
-                </Tooltip>
-              </div>
-            ) : (
-              onClick && <UnstyledButton className="text-gray-700 hover:underline">{text}</UnstyledButton>
-            )}
+      <Tooltip label="Edit" disabled={!(onClick && data.email)}>
+        <Group gap="sm" className={cn({ 'cursor-pointer': !!onClick })} onClick={onClick}>
+          <Avatar src={getUserImageData(data.image)} size={36} radius="xl" />
+          <div>
+            <div className="text-sm font-semibold">
+              {data.email ? (
+                <div className="flex">
+                  {formatFullName(data)}
+                  <MinistryBadge className="ml-1" ministry={data.ministry} />
+                  {onClick && <IconEdit className="ml-2 cursor-pointer" onClick={onClick} />}
+                </div>
+              ) : (
+                onClick && <UnstyledButton className="text-gray-700 hover:underline">{text}</UnstyledButton>
+              )}
+            </div>
+            <div className="text-xs font-semibold opacity-50">{data.email}</div>
           </div>
-          <div className="text-xs font-semibold opacity-50">{data.email}</div>
-        </div>
-      </Group>
+        </Group>
+      </Tooltip>
       {children}
     </>
   );
