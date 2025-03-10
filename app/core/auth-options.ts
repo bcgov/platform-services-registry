@@ -190,28 +190,26 @@ export async function generateSession({
     }
 
     session.user.name = token.name ?? '';
-
-    session.roles = [..._uniq(session.roles)];
-    session.roles.forEach((role) => {
-      const roleKey = RoleToSessionProp[role as GlobalRole];
-      if (roleKey && roleKey in session) {
-        // @ts-ignore: Ignore TypeScript error for dynamic property assignment
-        session[roleKey] = true;
-        return;
-      }
-
-      const regexPattern = /^ministry-(\w+)-(.+)$/;
-      const match = regexPattern.exec(role);
-      if (match) {
-        const ministryCode = match[1];
-        const ministryRole = match[2];
-        if (!Array.isArray(session.ministries[ministryRole])) session.ministries[ministryCode] = [];
-        session.ministries[ministryRole].push(ministryCode.toUpperCase());
-      }
-    });
   }
 
-  const azureEmails = PUBLIC_AZURE_ACCESS_EMAILS.split(',').map((v) => v.trim().toLowerCase());
+  session.roles = [..._uniq(session.roles)];
+  session.roles.forEach((role) => {
+    const roleKey = RoleToSessionProp[role as GlobalRole];
+    if (roleKey && roleKey in session) {
+      // @ts-ignore: Ignore TypeScript error for dynamic property assignment
+      session[roleKey] = true;
+      return;
+    }
+
+    const regexPattern = /^ministry-(\w+)-(.+)$/;
+    const match = regexPattern.exec(role);
+    if (match) {
+      const ministryCode = match[1];
+      const ministryRole = match[2];
+      if (!Array.isArray(session.ministries[ministryRole])) session.ministries[ministryCode] = [];
+      session.ministries[ministryRole].push(ministryCode.toUpperCase());
+    }
+  });
 
   session.previews = {
     security: !IS_PROD,
