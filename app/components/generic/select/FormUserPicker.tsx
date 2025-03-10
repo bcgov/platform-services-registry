@@ -43,6 +43,7 @@ export default function FormUserPicker({
       <div className="flex">
         <UserProfile
           data={user as UserPickerData}
+          text="Click to select user"
           onClick={async () => {
             const { state } = await openUserPickerModal({ initialValue: user }, { initialState: { user } });
             setUser(state.user ?? null);
