@@ -1,7 +1,8 @@
 'use client';
 
-import { Avatar, Group, UnstyledButton } from '@mantine/core';
+import { Avatar, Group, Tooltip, UnstyledButton } from '@mantine/core';
 import { User } from '@prisma/client';
+import { IconEdit } from '@tabler/icons-react';
 import MinistryBadge from '@/components/badges/MinistryBadge';
 import { formatFullName } from '@/helpers/user';
 import { getUserImageData } from '@/helpers/user-image';
@@ -15,7 +16,15 @@ interface Props {
   text?: string;
   children?: React.ReactNode;
 }
-
+{
+  /* <Tooltip label={canDelete ? 'Delete member' : 'Edit member'}>
+{canDelete ? (
+  <IconTrash className="ml-2 cursor-pointer" onClick={handleUserDelete} />
+) : (
+  <IconEdit className="ml-2 cursor-pointer" onClick={handleUserChange} />
+)}
+</Tooltip> */
+}
 export default function UserProfile({ data, onClick, text = 'Click to select member', children }: Props) {
   if (!data) {
     data = {
@@ -34,9 +43,12 @@ export default function UserProfile({ data, onClick, text = 'Click to select mem
         <div>
           <div className="text-sm font-semibold">
             {data.email ? (
-              <div>
+              <div className="flex">
                 {formatFullName(data)}
                 <MinistryBadge className="ml-1" ministry={data.ministry} />
+                <Tooltip label="Edit">
+                  <IconEdit className="ml-2 cursor-pointer" onClick={onClick} />
+                </Tooltip>
               </div>
             ) : (
               onClick && <UnstyledButton className="text-gray-700 hover:underline">{text}</UnstyledButton>

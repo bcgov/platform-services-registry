@@ -1,11 +1,11 @@
-import { Badge, Table, Tooltip } from '@mantine/core';
-import { IconEdit, IconTrash } from '@tabler/icons-react';
+import { Badge, Table, Button } from '@mantine/core';
+import { IconMinus } from '@tabler/icons-react';
 import React from 'react';
 import { useFormContext } from 'react-hook-form';
 import { openConfirmModal } from '@/components/modal/confirm';
 import { openUserPickerModal } from '@/components/modal/userPicker';
 import UserProfile from '@/components/users/UserProfile';
-import { formatDate } from '@/utils/js';
+import { cn, formatDate } from '@/utils/js';
 
 interface UserAttribute {
   role: string;
@@ -24,6 +24,7 @@ export default function TeamContacts({ disabled, userAttributes }: Props) {
     setValue,
     watch,
     formState: { errors },
+    register,
   } = useFormContext();
 
   const users = watch(userAttributes.map(({ key }) => key));
@@ -61,22 +62,10 @@ export default function TeamContacts({ disabled, userAttributes }: Props) {
           {role}
           {isOptional && <span className="italic font-bold"> (Optional)</span>}
         </Table.Td>
-        <Table.Td className="flex">
-          <Tooltip label="Edit member" disabled={!user.email}>
-            <span>
-              <UserProfile data={user} onClick={disabled ? undefined : handleUserChange} />
-            </span>
-          </Tooltip>
-          {user.email && (
-            <Tooltip label={canDelete ? 'Delete member' : 'Edit member'}>
-              {canDelete ? (
-                <IconTrash className="ml-2 cursor-pointer" onClick={handleUserDelete} />
-              ) : (
-                <IconEdit className="ml-2 cursor-pointer" onClick={handleUserChange} />
-              )}
-            </Tooltip>
-          )}
+        <Table.Td>
+          <UserProfile data={user} onClick={disabled ? undefined : handleUserChange} />
         </Table.Td>
+
         <Table.Td>
           {user.jobTitle && (
             <Badge color="primary" variant="filled" className="block">
@@ -89,7 +78,15 @@ export default function TeamContacts({ disabled, userAttributes }: Props) {
             </Badge>
           )}
         </Table.Td>
+
         <Table.Td className="italic">{formatDate(user.lastSeen) || <span>has not yet logged in</span>}</Table.Td>
+        <Table.Td>
+          {canDelete && (
+            <Button color="danger" size="sm" onClick={handleUserDelete} leftSection={<IconMinus />}>
+              Remove
+            </Button>
+          )}
+        </Table.Td>
       </Table.Tr>
     );
   });
