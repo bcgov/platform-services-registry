@@ -3,7 +3,7 @@ import createApiHandler from '@/core/api-handler';
 import readOp from '../_operations/read';
 
 export const GET = createApiHandler({
-  roles: ['service-account user'],
+  roles: ['service-account'],
   useServiceAccount: true,
   validations: {
     pathParams: z.object({
