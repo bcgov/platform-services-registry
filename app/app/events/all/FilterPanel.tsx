@@ -36,7 +36,7 @@ export default function FilterPanel({ isLoading = false }: { isLoading?: boolean
             pageState.dates = dates.filter((value) => !!value).map((v) => v.toISOString());
             pageState.page = 1;
           }}
-          classNames={{ wrapper: 'col-span-4' }}
+          classNames={{ wrapper: 'col-span-3' }}
         />
         <FormUserPicker
           label="User"
@@ -44,7 +44,7 @@ export default function FilterPanel({ isLoading = false }: { isLoading?: boolean
             pageState.userId = user?.id ?? '';
             pageState.page = 1;
           }}
-          classNames={{ wrapper: 'col-span-2' }}
+          classNames={{ wrapper: 'col-span-3' }}
         />
       </div>
     </Box>

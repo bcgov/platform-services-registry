@@ -12,10 +12,11 @@ export type UserPickerData = Pick<User, 'email' | 'firstName' | 'lastName' | 'mi
 interface Props {
   data?: UserPickerData;
   onClick?: () => void;
+  noUserSelectedText?: string;
   children?: React.ReactNode;
 }
 
-export default function UserProfile({ data, onClick, children }: Props) {
+export default function UserProfile({ data, onClick, noUserSelectedText = 'Click to select member', children }: Props) {
   if (!data) {
     data = {
       image: '',
@@ -38,9 +39,7 @@ export default function UserProfile({ data, onClick, children }: Props) {
                 <MinistryBadge className="ml-1" ministry={data.ministry} />
               </div>
             ) : (
-              onClick && (
-                <UnstyledButton className="text-gray-700 hover:underline">Click to select member</UnstyledButton>
-              )
+              onClick && <UnstyledButton className="text-gray-700 hover:underline">{noUserSelectedText}</UnstyledButton>
             )}
           </div>
           <div className="text-xs font-semibold opacity-50">{data.email}</div>
