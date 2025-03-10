@@ -127,6 +127,7 @@ export function createSessionModel<
     let finalArgs = { where, ...otherArgs } as TReadArgs;
 
     finalArgs = await applyFilter<TReadArgs>(finalArgs, session);
+    if (finalArgs.where === false) return { data: null, args: finalArgs };
 
     if (select) {
       finalArgs.select = select;
@@ -157,6 +158,7 @@ export function createSessionModel<
     let finalArgs = { where, ...otherArgs } as TReadArgs;
 
     finalArgs = await applyFilter<TReadArgs>(finalArgs, session);
+    if (finalArgs.where === false) return { data: [], totalCount: 0, args: finalArgs };
 
     if (select) {
       finalArgs.select = select;
@@ -188,6 +190,7 @@ export function createSessionModel<
     session?: Session,
   ): Promise<CountResult<Pick<TReadArgs, 'where'>>> {
     const finalArgs = await applyFilter<TReadArgs>({ where, ...otherArgs } as TReadArgs, session);
+    if (finalArgs.where === false) return { data: 0, args: finalArgs };
 
     return { data: await model.count(finalArgs), args: finalArgs };
   }
