@@ -1,6 +1,6 @@
 'use client';
 
-import { Badge, Table, Button, Tooltip } from '@mantine/core';
+import { Badge, Table, Button } from '@mantine/core';
 import _get from 'lodash-es/get';
 import _isEqual from 'lodash-es/isEqual';
 import _truncate from 'lodash-es/truncate';
