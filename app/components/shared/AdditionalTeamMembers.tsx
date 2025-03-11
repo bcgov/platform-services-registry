@@ -126,7 +126,7 @@ export default function AdditionalTeamMembers<
               <Table.Th>Member</Table.Th>
               <Table.Th>Position</Table.Th>
               <Table.Th>Roles</Table.Th>
-              <TooltipTableHeader label="User's last sign-in date/time.">Last active</TooltipTableHeader>
+              <TooltipTableHeader label="The last active date/time in the registry.">Last active</TooltipTableHeader>
             </Table.Tr>
           </Table.Thead>
           <Table.Tbody>{rows}</Table.Tbody>

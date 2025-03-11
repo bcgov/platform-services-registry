@@ -109,7 +109,7 @@ export default function TeamContacts({ disabled, userAttributes }: Props) {
               <Table.Th>Title</Table.Th>
               <Table.Th>User</Table.Th>
               <Table.Th>Position</Table.Th>
-              <TooltipTableHeader label="User's last sign-in date/time.">Last active</TooltipTableHeader>
+              <TooltipTableHeader label="The last active date/time in the registry.">Last active</TooltipTableHeader>
             </Table.Tr>
           </Table.Thead>
           <Table.Tbody>{tableBody}</Table.Tbody>
