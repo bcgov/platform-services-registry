@@ -6,6 +6,7 @@ import { openConfirmModal } from '@/components/modal/confirm';
 import { openUserPickerModal } from '@/components/modal/userPicker';
 import UserProfile from '@/components/users/UserProfile';
 import { cn, formatDate } from '@/utils/js';
+import TooltipTableHeader from './TooltipTableHeader';
 
 interface UserAttribute {
   role: string;
@@ -108,7 +109,7 @@ export default function TeamContacts({ disabled, userAttributes }: Props) {
               <Table.Th>Title</Table.Th>
               <Table.Th>User</Table.Th>
               <Table.Th>Position</Table.Th>
-              <Table.Th>Last active</Table.Th>
+              <TooltipTableHeader label="The last active date/time in the registry.">Last active</TooltipTableHeader>
             </Table.Tr>
           </Table.Thead>
           <Table.Tbody>{tableBody}</Table.Tbody>

@@ -10,6 +10,7 @@ import { openUserPickerModal } from '@/components/modal/userPicker';
 import UserProfile from '@/components/users/UserProfile';
 import { formatFullName } from '@/helpers/user';
 import { formatDate, cn } from '@/utils/js';
+import TooltipTableHeader from './TooltipTableHeader';
 
 export default function AdditionalTeamMembers<
   T extends {
@@ -125,7 +126,7 @@ export default function AdditionalTeamMembers<
               <Table.Th>Member</Table.Th>
               <Table.Th>Position</Table.Th>
               <Table.Th>Roles</Table.Th>
-              <Table.Th>Last active</Table.Th>
+              <TooltipTableHeader label="The last active date/time in the registry.">Last active</TooltipTableHeader>
             </Table.Tr>
           </Table.Thead>
           <Table.Tbody>{rows}</Table.Tbody>
