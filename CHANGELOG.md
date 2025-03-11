@@ -1,3 +1,8 @@
+## [0.47.0](https://github.com/bcgov/platform-services-registry/compare/v0.46.2...v0.47.0) (2025-03-11)
+
+### Bug Fixes
+
+* **5148:** resolve issue assigning service account role ([cd96025](https://github.com/bcgov/platform-services-registry/commit/cd960254129db93488da61f8248ece98e3d8efdd))
 ## [0.46.2](https://github.com/bcgov/platform-services-registry/compare/v0.46.1...v0.46.2) (2025-03-07)
 
 ### Features
