@@ -1,6 +1,6 @@
 'use client';
 
-import { Badge, Table, Button } from '@mantine/core';
+import { Badge, Table, Button, Tooltip } from '@mantine/core';
 import _get from 'lodash-es/get';
 import _isEqual from 'lodash-es/isEqual';
 import _truncate from 'lodash-es/truncate';
@@ -10,6 +10,7 @@ import { FormProvider, useForm } from 'react-hook-form';
 import FormDatePicker from '@/components/generic/select/FormDatePicker';
 import HookFormMultiSelect from '@/components/generic/select/HookFormMultiSelect';
 import { failure, success } from '@/components/notification';
+import TooltipTableHeader from '@/components/shared/TooltipTableHeader';
 import UserProfile from '@/components/users/UserProfile';
 import { updateUser } from '@/services/backend/user';
 import { AdminViewUser } from '@/types/user';
@@ -173,7 +174,7 @@ export default function TableBody({ data, availableRoles = [], session }: TableP
                 <Table.Th>Roles</Table.Th>
                 <Table.Th>Onboarding Date</Table.Th>
                 <Table.Th># of Products</Table.Th>
-                <Table.Th>Last active</Table.Th>
+                <TooltipTableHeader label="User's last sign-in date/time.">Last active</TooltipTableHeader>
               </Table.Tr>
             </Table.Thead>
             <Table.Tbody>{rows}</Table.Tbody>
