@@ -594,6 +594,7 @@ enum Ministry {
   SDPR
   TCA
   TRAN
+  WLRS
 }
 
 // enum CPU {
