@@ -27,7 +27,7 @@ spec:
         command: [/bin/sh, -c]
         args:
         - |
-          mongo-archive --db=pltsvc --read-preference=secondaryPreferred --force-table-scan
+          mongo-archive --db=pltsvc --read-preference=secondaryPreferred --expiry-days=30 --force-table-scan
         env:
         - name: MONGOARCHIVE__URI
           value: "mongodb://pltsvc-mongodb-headless/?authSource=admin"
