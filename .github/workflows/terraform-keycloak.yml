@@ -13,7 +13,7 @@ on:
     - .github/workflows/terraform-keycloak.yml
 
 env:
-  TF_VERSION: 1.10.5
+  TF_VERSION: 1.11.2
 
 jobs:
   terraform:
