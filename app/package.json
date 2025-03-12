@@ -62,7 +62,7 @@
     "@tremor/react": "^3.18.7",
     "@types/react": "19.0.10",
     "@types/react-dom": "19.0.4",
-    "autoprefixer": "10.4.20",
+    "autoprefixer": "10.4.21",
     "axios": "^1.5.1",
     "clsx": "^2.1.1",
     "csv-parse": "^5.5.3",
