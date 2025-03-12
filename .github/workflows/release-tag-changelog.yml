@@ -5,8 +5,9 @@ on:
     inputs:
       tag:
         type: string
-        description: Tag Version (excl. prefix; e.g. 1.2.3)
-        required: true
+        description: Tag Version (excl. prefix; e.g. 1.2.3). Leave empty to auto-determine.
+        required: false
+        default: ''
 
 jobs:
   tag-changelog:
@@ -22,13 +23,62 @@ jobs:
       run: exit 1
       if: ${{ !startsWith(github.ref, 'refs/heads/') }}
 
-    - name: Validate Tag Input
-      id: input
+    - name: Determine Tag Version
+      id: new-tag
       run: |
-        vtag=${{ github.event.inputs.tag }}
-        echo "tag=${vtag//v}" >> $GITHUB_OUTPUT
+        if [ -n "${{ github.event.inputs.tag }}" ]; then
+          if ! echo "${{ github.event.inputs.tag }}" | grep -qE '^[0-9]+\.[0-9]+\.[0-9]+$'; then
+            echo "Error: provided tag does not follow semantic versioning (major.minor.patch)" >&2
+            exit 1
+          fi
+          TAG="${{ github.event.inputs.tag }}"
+        else
+          LAST_TAG=$(git describe --tags --abbrev=0 2>/dev/null || echo "")
+          if [ -z "$LAST_TAG" ]; then
+            echo "Error: no previous tag found and no tag input provided" >&2
+            exit 1
+          fi
+          echo "Last tag: $LAST_TAG"
+          COMMIT_MESSAGES=$(git log ${LAST_TAG}..HEAD --pretty=format:%B)
+          echo "Commit messages since last tag:"
+          echo "$COMMIT_MESSAGES"
+          BUMP=""
+          if echo "$COMMIT_MESSAGES" | grep -q -E 'BREAKING CHANGE:' || \
+             echo "$COMMIT_MESSAGES" | grep -q -E '^(feat|fix|refactor|chore|docs|style|test)(\(.+\))?!:'; then
+            BUMP="major"
+          elif echo "$COMMIT_MESSAGES" | grep -q -E '^feat(\(.+\))?:'; then
+            BUMP="minor"
+          else
+            BUMP="patch"
+          fi
+          echo "Bump type: $BUMP"
+          VERSION_REGEX="v([0-9]+)\.([0-9]+)\.([0-9]+)"
+          if [[ $LAST_TAG =~ $VERSION_REGEX ]]; then
+            MAJOR="${BASH_REMATCH[1]}"
+            MINOR="${BASH_REMATCH[2]}"
+            PATCH="${BASH_REMATCH[3]}"
+          else
+            echo "Error: last tag '$LAST_TAG' does not follow expected format" >&2
+            exit 1
+          fi
+          if [ "$BUMP" = "major" ]; then
+            MAJOR=$((MAJOR + 1))
+            MINOR=0
+            PATCH=0
+          elif [ "$BUMP" = "minor" ]; then
+            MINOR=$((MINOR + 1))
+            PATCH=0
+          else
+            PATCH=$((PATCH + 1))
+          fi
+          NEXT_VERSION="v${MAJOR}.${MINOR}.${PATCH}"
+          echo "Determined next version: ${NEXT_VERSION}"
+          TAG=${NEXT_VERSION//v/}
+        fi
+        echo "tag=$TAG" >> $GITHUB_OUTPUT
 
     - uses: hmarr/debug-action@f7318c783045ac39ed9bb497e22ce835fdafbfe6
+
     - uses: actions/checkout@85e6279cec87321a52edac9c87bce653a07cf6c2
       with:
         ssh-key: ${{ secrets.SSH_KEY }}
@@ -46,23 +96,21 @@ jobs:
         git config user.email "$GITHUB_ACTOR@users.noreply.github.com"
         git config commit.gpgsign false
 
-        branch=changelog/${{ steps.input.outputs.tag }}
+        branch=changelog/${{ steps.new-tag.outputs.tag }}
         git checkout -b "$branch"
         git push --set-upstream origin "$branch"
 
         git status
         git reset --hard
-        ./node_modules/.bin/release-it ${{ steps.input.outputs.tag }} --ci
+        ./node_modules/.bin/release-it v${{ steps.new-tag.outputs.tag }} --ci
 
     - name: Set output variables
       id: vars
       run: |
-        pr_title="chore(release): release candidate v${{ steps.input.outputs.tag }}"
-        pr_body=$(git tag -l --format='%(contents)' v${{ steps.input.outputs.tag }})
+        pr_title="chore(release): release candidate v${{ steps.new-tag.outputs.tag }}"
+        pr_body=$(git tag -l --format='%(contents)' v${{ steps.new-tag.outputs.tag }})
         echo "pr_title=$pr_title" >> $GITHUB_OUTPUT
         echo "base=$GITHUB_REF_NAME" >> $GITHUB_OUTPUT
-
-        # See https://docs.github.com/en/actions/using-workflows/workflow-commands-for-github-actions#multiline-strings
         EOF=$(dd if=/dev/urandom bs=15 count=1 status=none | base64)
         echo "pr_body<<$EOF" >> "$GITHUB_OUTPUT"
         echo "$pr_body" >> $GITHUB_OUTPUT
@@ -77,7 +125,7 @@ jobs:
           const result = await github.rest.pulls.create({
             owner,
             repo,
-            head: 'changelog/${{ steps.input.outputs.tag }}',
+            head: 'changelog/${{ steps.new-tag.outputs.tag }}',
             base: '${{ steps.vars.outputs.base }}',
             title: '${{ steps.vars.outputs.pr_title }}',
             body: `### Commits
@@ -86,10 +134,9 @@ jobs:
           - [Build and deploy Apps in Test Environment](https://github.com/bcgov/platform-services-registry/actions/workflows/deploy-test.yml)
           `,
           });
-
           github.rest.issues.addLabels({
             owner,
             repo,
             issue_number: result.data.number,
-            labels: ['changelog', 'v${{ steps.input.outputs.tag }}']
+            labels: ['changelog', 'v${{ steps.new-tag.outputs.tag }}']
           });
