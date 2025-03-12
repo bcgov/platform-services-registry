@@ -8,9 +8,10 @@ on:
         type: environment
         required: true
       imageTag:
-        description: Image Tag Version (ghcr.io/bcgov/pltsvc:<imageTag>)
+        description: Image Tag Version (ghcr.io/bcgov/pltsvc:<imageTag>). Leave empty to auto-determine.
         type: string
-        required: true
+        required: false
+        default: ''
 
 jobs:
   deploy:
@@ -27,6 +28,51 @@ jobs:
       with:
         ref: main
 
+    - name: Determine next image tag if not provided
+      if: ${{ inputs.imageTag == '' }}
+      run: |
+        LAST_TAG=$(git describe --tags --abbrev=0 2>/dev/null || echo "v0.0.0")
+        echo "Last tag: $LAST_TAG"
+        COMMIT_MESSAGES=$(git log ${LAST_TAG}..HEAD --pretty=format:%B)
+        echo "Commit messages since last tag:"
+        echo "$COMMIT_MESSAGES"
+        BUMP="patch"
+        if echo "$COMMIT_MESSAGES" | grep -q -E 'BREAKING CHANGE:' || \
+           echo "$COMMIT_MESSAGES" | grep -q -E '^(feat|fix|refactor|chore|docs|style|test)(\(.+\))?!:'; then
+          BUMP="major"
+        fi
+        if [ "$BUMP" != "major" ] && echo "$COMMIT_MESSAGES" | grep -q -E '^feat(\(.+\))?:'; then
+          BUMP="minor"
+        fi
+        echo "Bump type: $BUMP"
+        VERSION_REGEX="v([0-9]+)\.([0-9]+)\.([0-9]+)"
+        if [[ $LAST_TAG =~ $VERSION_REGEX ]]; then
+          MAJOR="${BASH_REMATCH[1]}"
+          MINOR="${BASH_REMATCH[2]}"
+          PATCH="${BASH_REMATCH[3]}"
+        else
+          MAJOR=0
+          MINOR=0
+          PATCH=0
+        fi
+        if [ "$BUMP" = "major" ]; then
+          MAJOR=$((MAJOR + 1))
+          MINOR=0
+          PATCH=0
+        elif [ "$BUMP" = "minor" ]; then
+          MINOR=$((MINOR + 1))
+          PATCH=0
+        else
+          PATCH=$((PATCH + 1))
+        fi
+        NEXT_VERSION="v${MAJOR}.${MINOR}.${PATCH}"
+        echo "Determined next version: ${NEXT_VERSION}"
+        echo "IMAGE_TAG=${NEXT_VERSION}" >> $GITHUB_ENV
+
+    - name: Set image tag if provided
+      if: ${{ inputs.imageTag != '' }}
+      run: echo "IMAGE_TAG=${{ inputs.imageTag }}" >> $GITHUB_ENV
+
     - name: Authenticate and set context
       uses: redhat-actions/oc-login@dfbd9912672664f9df2023c1c16e07bcf306043c
       with:
@@ -39,5 +85,5 @@ jobs:
       run: |
         make upgrade \
         NAMESPACE=${{ vars.OPENSHIFT_NAMESPACE }} \
-        IMAGE_TAG=${{ inputs.imageTag }}
+        IMAGE_TAG=$IMAGE_TAG
       working-directory: ./helm/main
