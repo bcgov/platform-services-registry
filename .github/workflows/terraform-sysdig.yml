@@ -12,9 +12,6 @@ on:
     - terraform/sysdig/**
     - .github/workflows/terraform-sysdig.yml
 
-env:
-  TF_VERSION: 1.11.2
-
 jobs:
   terraform:
     runs-on: ubuntu-22.04
@@ -24,6 +21,9 @@ jobs:
     steps:
     - uses: hmarr/debug-action@f7318c783045ac39ed9bb497e22ce835fdafbfe6
     - uses: actions/checkout@85e6279cec87321a52edac9c87bce653a07cf6c2
+
+    - name: Set Terraform Version
+      run: echo "TF_VERSION=$(cat .terraform-version)" >> $GITHUB_ENV
 
     - name: Setup Terraform
       uses: hashicorp/setup-terraform@2f1b53ffa558af27b90742f3f28397d986061ece
