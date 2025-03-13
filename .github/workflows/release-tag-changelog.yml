@@ -49,6 +49,16 @@ jobs:
             echo "Error: no previous tag found and no tag input provided" >&2
             exit 1
           fi
+
+          if [[ $LAST_TAG =~ v([0-9]+)\.([0-9]+)\.([0-9]+) ]]; then
+            MAJOR="${BASH_REMATCH[1]}"
+            MINOR="${BASH_REMATCH[2]}"
+            PATCH="${BASH_REMATCH[3]}"
+          else
+            echo "Error: last tag '$LAST_TAG' does not follow expected format" >&2
+            exit 1
+          fi
+
           echo "Last tag: $LAST_TAG"
           COMMIT_MESSAGES=$(git log ${LAST_TAG}..HEAD --pretty=format:%B)
           echo "Commit messages since last tag:"
@@ -63,15 +73,6 @@ jobs:
             BUMP="patch"
           fi
           echo "Bump type: $BUMP"
-
-          if [[ $LAST_TAG =~ v([0-9]+)\.([0-9]+)\.([0-9]+) ]]; then
-            MAJOR="${BASH_REMATCH[1]}"
-            MINOR="${BASH_REMATCH[2]}"
-            PATCH="${BASH_REMATCH[3]}"
-          else
-            echo "Error: last tag '$LAST_TAG' does not follow expected format" >&2
-            exit 1
-          fi
 
           case "$BUMP" in
             major)
@@ -115,7 +116,7 @@ jobs:
 
         # Pass the computed version WITHOUT a leading 'v'.
         # Release-it will prepend 'v' itself, producing 'vX.Y.Z'.
-        ./node_modules/.bin/release-it v${{ steps.new-tag.outputs.tag }} --ci
+        ./node_modules/.bin/release-it ${{ steps.new-tag.outputs.tag }} --ci
 
     - name: Set output variables
       id: vars
