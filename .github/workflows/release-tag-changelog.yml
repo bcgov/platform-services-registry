@@ -23,6 +23,8 @@ jobs:
       run: exit 1
       if: ${{ !startsWith(github.ref, 'refs/heads/') }}
 
+    - uses: hmarr/debug-action@f7318c783045ac39ed9bb497e22ce835fdafbfe6
+
     - uses: actions/checkout@85e6279cec87321a52edac9c87bce653a07cf6c2
       with:
         ssh-key: ${{ secrets.SSH_KEY }}
@@ -80,13 +82,10 @@ jobs:
           else
             PATCH=$((PATCH + 1))
           fi
-          NEXT_VERSION="${MAJOR}.${MINOR}.${PATCH}"
+         NEXT_VERSION="${MAJOR}.${MINOR}.${PATCH}"
           echo "Determined next version: ${NEXT_VERSION}"
-          TAG=${NEXT_VERSION//v/}
         fi
-        echo "tag=$TAG" >> $GITHUB_OUTPUT
-
-    - uses: hmarr/debug-action@f7318c783045ac39ed9bb497e22ce835fdafbfe6
+        echo "tag=${NEXT_VERSION}" >> $GITHUB_OUTPUT
 
     - name: Setup Tools
       uses: ./.github/actions/setup-tools
@@ -106,7 +105,7 @@ jobs:
 
         git status
         git reset --hard
-        ./node_modules/.bin/release-it ${{ steps.new-tag.outputs.tag }} --ci
+        ./node_modules/.bin/release-it v${{ steps.new-tag.outputs.tag }} --ci
 
     - name: Set output variables
       id: vars
@@ -137,7 +136,7 @@ jobs:
           ### GitHub Action
           - [Build and deploy Apps in Test Environment](https://github.com/bcgov/platform-services-registry/actions/workflows/deploy-test.yml)
           `,
-          });
+                      });
           github.rest.issues.addLabels({
             owner,
             repo,
