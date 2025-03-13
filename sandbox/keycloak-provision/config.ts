@@ -11,3 +11,4 @@ export const ADMIN_CLIENT_SECRET = process.env.ADMIN_CLIENT_SECRET || '';
 export const PUBLIC_CLOUD_REALM_NAME = process.env.PUBLIC_CLOUD_REALM_NAME || '';
 export const PUBLIC_CLOUD_CLIENT_ID = process.env.PUBLIC_CLOUD_CLIENT_ID || '';
 export const PUBLIC_CLOUD_CLIENT_SECRET = process.env.PUBLIC_CLOUD_CLIENT_SECRET || '';
+export const AUTH_RELM = process.env.AUTH_RELM || 'platform-services';

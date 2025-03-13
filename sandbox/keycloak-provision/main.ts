@@ -11,6 +11,7 @@ import {
   AUTH_REALM_NAME,
   AUTH_CLIENT_ID,
   AUTH_CLIENT_SECRET,
+  AUTH_RELM,
   GITOPS_CLIENT_ID,
   GITOPS_CLIENT_SECRET,
   ADMIN_CLIENT_ID,
@@ -19,6 +20,7 @@ import {
   PUBLIC_CLOUD_CLIENT_ID,
   PUBLIC_CLOUD_CLIENT_SECRET,
 } from './config.js';
+import * as crypto from 'crypto';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -27,6 +29,9 @@ const jsonData = readFileSync(path.join(__dirname, '../mock-users.json'), 'utf-8
 const msUsers: MsUser[] = JSON.parse(jsonData);
 
 const clientScope = 'https://graph.microsoft.com/.default';
+
+const TEAM_SA_PREFIX = 'z_pltsvc-tsa-';
+const ROLES = ['admin', 'private-admin', 'public-admin'];
 
 async function main() {
   console.log('Starting Keycloak Provision...');
@@ -133,9 +138,81 @@ async function main() {
   await kc.upsertRealm(PUBLIC_CLOUD_REALM_NAME, { enabled: true });
   await kc.createRealmAdminServiceAccount(PUBLIC_CLOUD_REALM_NAME, PUBLIC_CLOUD_CLIENT_ID, PUBLIC_CLOUD_CLIENT_SECRET);
 
+  // // Creating service account for provision;
+
+  function generateRandomId(length: number) {
+    const buffer = crypto.randomBytes(Math.ceil(length / 2));
+    return buffer.toString('hex').slice(0, length);
+  }
+
+  function getMapperPayload(name: string, claimValue: string) {
+    const mapper = {
+      name,
+      protocol: 'openid-connect',
+      protocolMapper: 'oidc-hardcoded-claim-mapper',
+      config: {
+        'claim.name': name,
+        'claim.value': claimValue,
+        'jsonType.label': 'String',
+        'id.token.claim': 'true',
+        'access.token.claim': 'true',
+        'userinfo.token.claim': 'true',
+        'access.tokenResponse.claim': 'false',
+      },
+    };
+    return mapper;
+  }
+
+  async function createProvisionClient(kc: KcAdmin, realm: string, prefix: string, roles: any[]) {
+    const tsaId = generateRandomId(24);
+    const provisionClientId = `${prefix}${tsaId}`;
+
+    await kc.cli.clients.create({
+      realm,
+      name: 'Provision',
+      clientId: provisionClientId,
+    });
+
+    const [provisionClient] = await kc.cli.clients.find({ realm, clientId: provisionClientId });
+
+    if (provisionClient?.id) {
+      const { id: provisionClientUid } = provisionClient;
+
+      await Promise.all([
+        kc.cli.clients.update(
+          { realm, id: provisionClientUid },
+          {
+            description: 'Created by the Registry app as a team service account for the provision',
+            enabled: true,
+            publicClient: false,
+            serviceAccountsEnabled: true,
+            standardFlowEnabled: false,
+            implicitFlowEnabled: false,
+            directAccessGrantsEnabled: false,
+          },
+        ),
+        kc.cli.clients.addProtocolMapper({ realm, id: provisionClientUid }, getMapperPayload('roles', roles.join(','))),
+        kc.cli.clients.addProtocolMapper(
+          { realm, id: provisionClientUid },
+          getMapperPayload('service_account_type', 'team'),
+        ),
+        kc.cli.clients.createRole({
+          realm,
+          id: provisionClientUid,
+          name: 'member',
+        }),
+      ]);
+    }
+
+    return provisionClient;
+  }
+
+  const provisionClient = await createProvisionClient(kc, AUTH_RELM, TEAM_SA_PREFIX, ROLES);
+
   return {
     authRealm,
     authClient,
+    provisionClient,
   };
 }
 
