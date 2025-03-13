@@ -27,7 +27,6 @@ async function baseFilter(session: Session) {
     { primaryTechnicalLeadId: session.user.id },
     { secondaryTechnicalLeadId: session.user.id },
     { expenseAuthorityId: session.user.id },
-    { licencePlate: { in: getUniqueNonFalsyItems(licencePlatesFromTasks) } },
     {
       members: {
         some: {
@@ -43,7 +42,9 @@ async function baseFilter(session: Session) {
   const products = await prisma.publicCloudProject.findMany({ where: { OR }, select: { licencePlate: true } });
   const productLicencePlates = products.map(({ licencePlate }) => licencePlate);
 
-  const filter: Prisma.PublicCloudBillingWhereInput = { licencePlate: { in: productLicencePlates } };
+  const filter: Prisma.PublicCloudBillingWhereInput = {
+    licencePlate: { in: getUniqueNonFalsyItems([...productLicencePlates, ...licencePlatesFromTasks]) },
+  };
   return filter;
 }
 
