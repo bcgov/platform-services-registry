@@ -157,10 +157,14 @@ async function main() {
   }
 
   async function createProvisionClient(kc: KcAdmin, realm: string, prefix: string, roles: string[]) {
-    const provisionClient = await kc.createClient(realm, PROVISION_SERVICE_ACCOUNT_ID);
+    const provisionServiceAccount = await kc.createServiceAccount(
+      realm,
+      PROVISION_SERVICE_ACCOUNT_ID,
+      ADMIN_CLIENT_SECRET,
+    );
 
-    if (provisionClient?.id) {
-      const { id: provisionClientUid } = provisionClient;
+    if (provisionServiceAccount?.id) {
+      const { id: provisionClientUid } = provisionServiceAccount;
 
       await Promise.all([
         kc.cli.clients.update(
@@ -188,15 +192,15 @@ async function main() {
       ]);
     }
 
-    return provisionClient;
+    return provisionServiceAccount;
   }
 
-  const provisionClient = await createProvisionClient(kc, AUTH_RELM, TEAM_SA_PREFIX, ROLES);
+  const provisionServiceAccount = await createProvisionClient(kc, AUTH_RELM, TEAM_SA_PREFIX, ROLES);
 
   return {
     authRealm,
     authClient,
-    provisionClient,
+    provisionServiceAccount,
   };
 }
 
