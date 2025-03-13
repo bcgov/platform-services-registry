@@ -108,11 +108,11 @@ jobs:
         git config commit.gpgsign false
 
         branch=changelog/${{ steps.new-tag.outputs.tag }}
-        git checkout -b "$branch"
-        git push --set-upstream origin "$branch"
 
+        git checkout -b "$branch"
         git status
-        git reset --hard
+        git pull --rebase origin main
+        git push --set-upstream origin "$branch"
 
         # Pass the computed version WITHOUT a leading 'v'.
         # Release-it will prepend 'v' itself, producing 'vX.Y.Z'.
