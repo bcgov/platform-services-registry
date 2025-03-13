@@ -24,7 +24,6 @@ jobs:
       if: ${{ !startsWith(github.ref, 'refs/heads/') }}
 
     - uses: hmarr/debug-action@f7318c783045ac39ed9bb497e22ce835fdafbfe6
-
     - uses: actions/checkout@85e6279cec87321a52edac9c87bce653a07cf6c2
       with:
         ssh-key: ${{ secrets.SSH_KEY }}
@@ -42,7 +41,7 @@ jobs:
             echo "Error: provided tag does not follow semantic versioning (major.minor.patch)" >&2
             exit 1
           fi
-          TAG="${{ github.event.inputs.tag }}"
+          NEXT_VERSION="${{ github.event.inputs.tag }}"
         else
           LAST_TAG=$(git describe --tags --abbrev=0 2>/dev/null || echo "")
           if [ -z "$LAST_TAG" ]; then
@@ -53,7 +52,6 @@ jobs:
           COMMIT_MESSAGES=$(git log ${LAST_TAG}..HEAD --pretty=format:%B)
           echo "Commit messages since last tag:"
           echo "$COMMIT_MESSAGES"
-          BUMP=""
           if echo "$COMMIT_MESSAGES" | grep -q -E 'BREAKING CHANGE:' || \
              echo "$COMMIT_MESSAGES" | grep -q -E '^(feat|fix|refactor|chore|docs|style|test)(\(.+\))?!:'; then
             BUMP="major"
@@ -63,8 +61,7 @@ jobs:
             BUMP="patch"
           fi
           echo "Bump type: $BUMP"
-          VERSION_REGEX="v([0-9]+)\.([0-9]+)\.([0-9]+)"
-          if [[ $LAST_TAG =~ $VERSION_REGEX ]]; then
+          if [[ $LAST_TAG =~ v([0-9]+)\.([0-9]+)\.([0-9]+) ]]; then
             MAJOR="${BASH_REMATCH[1]}"
             MINOR="${BASH_REMATCH[2]}"
             PATCH="${BASH_REMATCH[3]}"
@@ -72,17 +69,12 @@ jobs:
             echo "Error: last tag '$LAST_TAG' does not follow expected format" >&2
             exit 1
           fi
-          if [ "$BUMP" = "major" ]; then
-            MAJOR=$((MAJOR + 1))
-            MINOR=0
-            PATCH=0
-          elif [ "$BUMP" = "minor" ]; then
-            MINOR=$((MINOR + 1))
-            PATCH=0
-          else
-            PATCH=$((PATCH + 1))
-          fi
-         NEXT_VERSION="${MAJOR}.${MINOR}.${PATCH}"
+          case "$BUMP" in
+            major) MAJOR=$((MAJOR + 1)); MINOR=0; PATCH=0 ;;
+            minor) MINOR=$((MINOR + 1)); PATCH=0 ;;
+            patch) PATCH=$((PATCH + 1)) ;;
+          esac
+          NEXT_VERSION="${MAJOR}.${MINOR}.${PATCH}"
           echo "Determined next version: ${NEXT_VERSION}"
         fi
         echo "tag=${NEXT_VERSION}" >> $GITHUB_OUTPUT
@@ -128,18 +120,18 @@ jobs:
           const result = await github.rest.pulls.create({
             owner,
             repo,
-            head: 'changelog/${{ steps.new-tag.outputs.tag }}',
-            base: '${{ steps.vars.outputs.base }}',
-            title: '${{ steps.vars.outputs.pr_title }}',
+            head: `changelog/${{ steps.new-tag.outputs.tag }}`,
+            base: `${{ steps.vars.outputs.base }}`,
+            title: `chore(release): release candidate v${{ steps.new-tag.outputs.tag }}`,
             body: `### Commits
-          ${{ steps.vars.outputs.pr_body }}
-          ### GitHub Action
-          - [Build and deploy Apps in Test Environment](https://github.com/bcgov/platform-services-registry/actions/workflows/deploy-test.yml)
-          `,
+            ${{ steps.vars.outputs.pr_body }}
+            ### GitHub Action
+            - [Build and deploy Apps in Test Environment](https://github.com/bcgov/platform-services-registry/actions/workflows/deploy-test.yml)
+            `,
           });
           github.rest.issues.addLabels({
             owner,
             repo,
             issue_number: result.data.number,
-            labels: ['changelog', 'v${{ steps.new-tag.outputs.tag }}']
+            labels: ['changelog', `v${{ steps.new-tag.outputs.tag }}`]
           });
