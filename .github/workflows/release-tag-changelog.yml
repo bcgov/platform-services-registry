@@ -80,7 +80,7 @@ jobs:
           else
             PATCH=$((PATCH + 1))
           fi
-          NEXT_VERSION="v${MAJOR}.${MINOR}.${PATCH}"
+          NEXT_VERSION="${MAJOR}.${MINOR}.${PATCH}"
           echo "Determined next version: ${NEXT_VERSION}"
           TAG=${NEXT_VERSION//v/}
         fi
