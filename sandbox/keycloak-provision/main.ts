@@ -157,13 +157,7 @@ async function main() {
   }
 
   async function createProvisionClient(kc: KcAdmin, realm: string, prefix: string, roles: string[]) {
-    await kc.cli.clients.create({
-      realm,
-      name: 'Provision',
-      clientId: PROVISION_SERVICE_ACCOUNT_ID,
-    });
-
-    const [provisionClient] = await kc.cli.clients.find({ realm, clientId: PROVISION_SERVICE_ACCOUNT_ID });
+    const provisionClient = await kc.createClient(realm, PROVISION_SERVICE_ACCOUNT_ID);
 
     if (provisionClient?.id) {
       const { id: provisionClientUid } = provisionClient;
