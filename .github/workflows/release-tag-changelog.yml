@@ -101,12 +101,12 @@ jobs:
         git config commit.gpgsign false
 
         branch=changelog/${{ steps.new-tag.outputs.tag }}
-        git checkout -b "$branch"
-        git push --set-upstream origin "$branch"
+        git checkout -B "$branch"
+        git push --set-upstream origin "$branch" --force-with-lease
 
         git status
         git reset --hard
-        ./node_modules/.bin/release-it v${{ steps.new-tag.outputs.tag }} --ci
+        ./node_modules/.bin/release-it ${{ steps.new-tag.outputs.tag }} --ci
 
     - name: Set output variables
       id: vars
@@ -133,10 +133,10 @@ jobs:
             base: '${{ steps.vars.outputs.base }}',
             title: '${{ steps.vars.outputs.pr_title }}',
             body: `### Commits
-              ${{ steps.vars.outputs.pr_body }}
-              ### GitHub Action
-              - [Build and deploy Apps in Test Environment](https://github.com/bcgov/platform-services-registry/actions/workflows/deploy-test.yml)
-              `,
+          ${{ steps.vars.outputs.pr_body }}
+          ### GitHub Action
+          - [Build and deploy Apps in Test Environment](https://github.com/bcgov/platform-services-registry/actions/workflows/deploy-test.yml)
+          `,
           });
           github.rest.issues.addLabels({
             owner,
