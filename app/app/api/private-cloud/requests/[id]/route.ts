@@ -43,8 +43,10 @@ export const PUT = apiHandler(async ({ pathParams, session }) => {
         active: true,
       },
       data: {
-        decisionStatus: DecisionStatus.CANCELLED,
         active: false,
+        decisionStatus: DecisionStatus.CANCELLED,
+        cancelledAt: new Date(),
+        cancelledById: session.user.id,
       },
     },
     session,

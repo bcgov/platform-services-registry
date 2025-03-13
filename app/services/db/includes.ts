@@ -22,6 +22,7 @@ export const privateCloudProductDetailInclude = {
 
 export const privateCloudRequestSimpleInclude = {
   decisionMaker: true,
+  cancelledBy: true,
   createdBy: true,
   project: {
     include: {
@@ -41,6 +42,7 @@ export const privateCloudRequestSimpleInclude = {
 
 export const privateCloudRequestDetailInclude = {
   decisionMaker: true,
+  cancelledBy: true,
   createdBy: true,
   project: {
     include: {
@@ -98,6 +100,7 @@ export const publicCloudProductDetailInclude = {
 
 export const publicCloudRequestSimpleInclude = {
   decisionMaker: true,
+  cancelledBy: true,
   createdBy: true,
   project: {
     include: {
@@ -119,6 +122,7 @@ export const publicCloudRequestSimpleInclude = {
 
 export const publicCloudRequestDetailInclude = {
   decisionMaker: true,
+  cancelledBy: true,
   createdBy: true,
   project: {
     include: {

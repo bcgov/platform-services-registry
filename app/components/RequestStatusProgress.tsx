@@ -37,6 +37,9 @@ export default function RequestStatusProgress({
     | 'createdByEmail'
     | 'createdBy'
     | 'createdAt'
+    | 'cancelledAt'
+    | 'cancelledById'
+    | 'cancelledBy'
     | 'provisionedDate'
     | 'requestComment'
   >;
@@ -60,7 +63,7 @@ export default function RequestStatusProgress({
     </DetailHoverCard>
   );
 
-  const getDecisionnContent = (text: string) => (
+  const getDecisionContent = (text: string) => (
     <DetailHoverCard
       content={
         (request.decisionMaker || request.decisionComment) && (
@@ -71,8 +74,23 @@ export default function RequestStatusProgress({
         )
       }
     >
-      <div>Request submitted</div>
+      <div>{text}</div>
       <RequestDate date={request.decisionDate} />
+    </DetailHoverCard>
+  );
+
+  const getCancellationContent = () => (
+    <DetailHoverCard
+      content={
+        request.cancelledBy && (
+          <div>
+            <UserCard user={request.cancelledBy} />
+          </div>
+        )
+      }
+    >
+      <div>Request cancelled</div>
+      <RequestDate date={request.cancelledAt} />
     </DetailHoverCard>
   );
 
@@ -90,7 +108,7 @@ export default function RequestStatusProgress({
       return (
         <Stepper active={3} iconSize={35}>
           <Stepper.Step label="Submission" description={getSubmissionContent()} />
-          <Stepper.Step label="Approve" description={getDecisionnContent('Request approved')} />
+          <Stepper.Step label="Approve" description={getDecisionContent('Request approved')} />
           <Stepper.Step label="Complete" description="Provisioning request" loading />
         </Stepper>
       );
@@ -99,7 +117,7 @@ export default function RequestStatusProgress({
       return (
         <Stepper active={3} iconSize={35}>
           <Stepper.Step label="Submission" description={getSubmissionContent()} />
-          <Stepper.Step label="Auto-approve" description={getDecisionnContent('Request auto-approved')} />
+          <Stepper.Step label="Auto-approve" description={getDecisionContent('Request auto-approved')} />
           <Stepper.Step label="Complete" description="Provisioning request" loading />
         </Stepper>
       );
@@ -112,7 +130,26 @@ export default function RequestStatusProgress({
             label="Reject"
             color="danger"
             completedIcon={<IconCircleX style={{ width: rem(20), height: rem(20) }} />}
-            description={getDecisionnContent('Request rejected')}
+            description={getDecisionContent('Request rejected')}
+          />
+          <Stepper.Step
+            label="Complete"
+            color="gray"
+            completedIcon={<IconCancel style={{ width: rem(20), height: rem(20) }} />}
+            description="Request provisioned"
+          />
+        </Stepper>
+      );
+
+    case DecisionStatus.CANCELLED:
+      return (
+        <Stepper active={3} iconSize={35}>
+          <Stepper.Step label="Submission" description={getSubmissionContent()} />
+          <Stepper.Step
+            label="Cancel"
+            color="pink"
+            completedIcon={<IconCircleX style={{ width: rem(20), height: rem(20) }} />}
+            description={getCancellationContent()}
           />
           <Stepper.Step
             label="Complete"
@@ -128,9 +165,9 @@ export default function RequestStatusProgress({
         <Stepper active={3} iconSize={35}>
           <Stepper.Step label="Submission" description={getSubmissionContent()} />
           {request.decisionMakerEmail ? (
-            <Stepper.Step label="Approve" description={getDecisionnContent('Request approved')} />
+            <Stepper.Step label="Approve" description={getDecisionContent('Request approved')} />
           ) : (
-            <Stepper.Step label="Auto-approve" description={getDecisionnContent('Request auto-approved')} />
+            <Stepper.Step label="Auto-approve" description={getDecisionContent('Request auto-approved')} />
           )}
           <Stepper.Step
             label="Complete"
