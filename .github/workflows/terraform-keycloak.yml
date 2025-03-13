@@ -24,7 +24,7 @@ jobs:
 
     - name: Set Terraform Version
       run: |
-        version=$(<.tool-versions)
+        version=$(grep '^terraform ' .tool-versions)
         version=${version#terraform }
         echo "TF_VERSION=${version}" >> $GITHUB_ENV
 
