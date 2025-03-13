@@ -1,3 +1,15 @@
+## [0.48.0](https://github.com/bcgov/platform-services-registry/compare/v0.47.0...v0.48.0) (2025-03-13)
+
+### Features
+
+* **4742:** highlight the users missing with mandatory attributes ([f7175eb](https://github.com/bcgov/platform-services-registry/commit/f7175ebc1a15659673bd1180e09b1d652db9f45b))
+* **4927:** add reusable TooltipTableHeader component ([0dbcf2e](https://github.com/bcgov/platform-services-registry/commit/0dbcf2e64778354ff57892055f41bf81cd3762f4))
+* **5059:** update deploy dispatch workflow for automated versioning ([5d0bce8](https://github.com/bcgov/platform-services-registry/commit/5d0bce8b35132bb1114f43424679523735c73a1a))
+* **5164:** update ministries list with Water, Land and Resource Stewardship ministry ([f7f3bbb](https://github.com/bcgov/platform-services-registry/commit/f7f3bbb53c4ca23d610b16d7984bca94a5a4a738))
+
+### Bug Fixes
+
+* **5188:** resolve EA signing eMOU ([9329daa](https://github.com/bcgov/platform-services-registry/commit/9329daab0bdd8bd119a8d250a2b463ffedf689b2))
 ## [0.47.0](https://github.com/bcgov/platform-services-registry/compare/v0.46.2...v0.47.0) (2025-03-11)
 
 ### Bug Fixes
