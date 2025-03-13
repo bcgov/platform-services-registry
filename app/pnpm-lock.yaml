@@ -52,7 +52,7 @@ importers:
         version: 7.17.1(@mantine/core@7.17.1(@mantine/hooks@7.17.1(react@19.0.0))(@types/react@19.0.10)(react-dom@19.0.0(react@19.0.0))(react@19.0.0))(@mantine/hooks@7.17.1(react@19.0.0))(@tiptap/extension-link@2.11.5(@tiptap/core@2.11.5(@tiptap/pm@2.11.5))(@tiptap/pm@2.11.5))(@tiptap/react@2.11.5(@tiptap/core@2.11.5(@tiptap/pm@2.11.5))(@tiptap/pm@2.11.5)(react-dom@19.0.0(react@19.0.0))(react@19.0.0))(react-dom@19.0.0(react@19.0.0))(react@19.0.0)
       '@prisma/client':
         specifier: ^6.0.0
-        version: 6.5.0(prisma@6.4.1(typescript@5.8.2))(typescript@5.8.2)
+        version: 6.5.0(prisma@6.5.0(typescript@5.8.2))(typescript@5.8.2)
       '@react-email/components':
         specifier: ^0.0.33
         version: 0.0.33(react-dom@19.0.0(react@19.0.0))(react@19.0.0)
@@ -304,8 +304,8 @@ importers:
         specifier: ^4.17.21
         version: 4.17.21
       prisma:
-        specifier: ~6.4.0
-        version: 6.4.1(typescript@5.8.2)
+        specifier: ~6.5.0
+        version: 6.5.0(typescript@5.8.2)
       ts-jest:
         specifier: ^29.1.1
         version: 29.2.6(@babel/core@7.24.5)(@jest/transform@29.7.0)(@jest/types@29.6.3)(babel-jest@29.7.0(@babel/core@7.24.5))(esbuild@0.25.0)(jest@29.7.0(@types/node@22.13.10)(babel-plugin-macros@3.1.0)(ts-node@10.9.2(@types/node@22.13.10)(typescript@5.8.2)))(typescript@5.8.2)
@@ -1445,20 +1445,23 @@ packages:
       typescript:
         optional: true
 
-  '@prisma/debug@6.4.1':
-    resolution: {integrity: sha512-Q9xk6yjEGIThjSD8zZegxd5tBRNHYd13GOIG0nLsanbTXATiPXCLyvlYEfvbR2ft6dlRsziQXfQGxAgv7zcMUA==}
+  '@prisma/config@6.5.0':
+    resolution: {integrity: sha512-sOH/2Go9Zer67DNFLZk6pYOHj+rumSb0VILgltkoxOjYnlLqUpHPAN826vnx8HigqnOCxj9LRhT6U7uLiIIWgw==}
 
-  '@prisma/engines-version@6.4.0-29.a9055b89e58b4b5bfb59600785423b1db3d0e75d':
-    resolution: {integrity: sha512-Xq54qw55vaCGrGgIJqyDwOq0TtjZPJEWsbQAHugk99hpDf2jcEeQhUcF+yzEsSqegBaDNLA4IC8Nn34sXmkiTQ==}
+  '@prisma/debug@6.5.0':
+    resolution: {integrity: sha512-fc/nusYBlJMzDmDepdUtH9aBsJrda2JNErP9AzuHbgUEQY0/9zQYZdNlXmKoIWENtio+qarPNe/+DQtrX5kMcQ==}
 
-  '@prisma/engines@6.4.1':
-    resolution: {integrity: sha512-KldENzMHtKYwsOSLThghOIdXOBEsfDuGSrxAZjMnimBiDKd3AE4JQ+Kv+gBD/x77WoV9xIPf25GXMWffXZ17BA==}
+  '@prisma/engines-version@6.5.0-73.173f8d54f8d52e692c7e27e72a88314ec7aeff60':
+    resolution: {integrity: sha512-iK3EmiVGFDCmXjSpdsKGNqy9hOdLnvYBrJB61far/oP03hlIxrb04OWmDjNTwtmZ3UZdA5MCvI+f+3k2jPTflQ==}
 
-  '@prisma/fetch-engine@6.4.1':
-    resolution: {integrity: sha512-uZ5hVeTmDspx7KcaRCNoXmcReOD+84nwlO2oFvQPRQh9xiFYnnUKDz7l9bLxp8t4+25CsaNlgrgilXKSQwrIGQ==}
+  '@prisma/engines@6.5.0':
+    resolution: {integrity: sha512-FVPQYHgOllJklN9DUyujXvh3hFJCY0NX86sDmBErLvoZjy2OXGiZ5FNf3J/C4/RZZmCypZBYpBKEhx7b7rEsdw==}
 
-  '@prisma/get-platform@6.4.1':
-    resolution: {integrity: sha512-gXqZaDI5scDkBF8oza7fOD3Q3QMD0e0rBynlzDDZdTWbWmzjuW58PRZtj+jkvKje2+ZigCWkH8SsWZAsH6q1Yw==}
+  '@prisma/fetch-engine@6.5.0':
+    resolution: {integrity: sha512-3LhYA+FXP6pqY8FLHCjewyE8pGXXJ7BxZw2rhPq+CZAhvflVzq4K8Qly3OrmOkn6wGlz79nyLQdknyCG2HBTuA==}
+
+  '@prisma/get-platform@6.5.0':
+    resolution: {integrity: sha512-xYcvyJwNMg2eDptBYFqFLUCfgi+wZLcj6HDMsj0Qw0irvauG4IKmkbywnqwok0B+k+W+p+jThM2DKTSmoPCkzw==}
 
   '@react-aria/focus@3.19.0':
     resolution: {integrity: sha512-hPF9EXoUQeQl1Y21/rbV2H4FdUR2v+4/I0/vB+8U3bT1CJ+1AFj1hc/rqx2DqEwDlEwOHN+E4+mRahQmlybq0A==}
@@ -4415,8 +4418,8 @@ packages:
     resolution: {integrity: sha512-4yf0QO/sllf/1zbZWYnvWw3NxCQwLXKzIj0G849LSufP15BXKM0rbD2Z3wVnkMfjdn/CB0Dpp444gYAACdsplg==}
     engines: {node: '>=18'}
 
-  prisma@6.4.1:
-    resolution: {integrity: sha512-q2uJkgXnua/jj66mk6P9bX/zgYJFI/jn4Yp0aS6SPRrjH/n6VyOV7RDe1vHD0DX8Aanx4MvgmUPPoYnR6MJnPg==}
+  prisma@6.5.0:
+    resolution: {integrity: sha512-yUGXmWqv5F4PByMSNbYFxke/WbnyTLjnJ5bKr8fLkcnY7U5rU9rUTh/+Fja+gOrRxEgtCbCtca94IeITj4j/pg==}
     engines: {node: '>=18.18'}
     hasBin: true
     peerDependencies:
@@ -6629,31 +6632,38 @@ snapshots:
 
   '@popperjs/core@2.11.8': {}
 
-  '@prisma/client@6.5.0(prisma@6.4.1(typescript@5.8.2))(typescript@5.8.2)':
+  '@prisma/client@6.5.0(prisma@6.5.0(typescript@5.8.2))(typescript@5.8.2)':
     optionalDependencies:
-      prisma: 6.4.1(typescript@5.8.2)
+      prisma: 6.5.0(typescript@5.8.2)
       typescript: 5.8.2
 
-  '@prisma/debug@6.4.1': {}
-
-  '@prisma/engines-version@6.4.0-29.a9055b89e58b4b5bfb59600785423b1db3d0e75d': {}
-
-  '@prisma/engines@6.4.1':
+  '@prisma/config@6.5.0':
     dependencies:
-      '@prisma/debug': 6.4.1
-      '@prisma/engines-version': 6.4.0-29.a9055b89e58b4b5bfb59600785423b1db3d0e75d
-      '@prisma/fetch-engine': 6.4.1
-      '@prisma/get-platform': 6.4.1
+      esbuild: 0.25.0
+      esbuild-register: 3.6.0(esbuild@0.25.0)
+    transitivePeerDependencies:
+      - supports-color
 
-  '@prisma/fetch-engine@6.4.1':
-    dependencies:
-      '@prisma/debug': 6.4.1
-      '@prisma/engines-version': 6.4.0-29.a9055b89e58b4b5bfb59600785423b1db3d0e75d
-      '@prisma/get-platform': 6.4.1
+  '@prisma/debug@6.5.0': {}
 
-  '@prisma/get-platform@6.4.1':
+  '@prisma/engines-version@6.5.0-73.173f8d54f8d52e692c7e27e72a88314ec7aeff60': {}
+
+  '@prisma/engines@6.5.0':
     dependencies:
-      '@prisma/debug': 6.4.1
+      '@prisma/debug': 6.5.0
+      '@prisma/engines-version': 6.5.0-73.173f8d54f8d52e692c7e27e72a88314ec7aeff60
+      '@prisma/fetch-engine': 6.5.0
+      '@prisma/get-platform': 6.5.0
+
+  '@prisma/fetch-engine@6.5.0':
+    dependencies:
+      '@prisma/debug': 6.5.0
+      '@prisma/engines-version': 6.5.0-73.173f8d54f8d52e692c7e27e72a88314ec7aeff60
+      '@prisma/get-platform': 6.5.0
+
+  '@prisma/get-platform@6.5.0':
+    dependencies:
+      '@prisma/debug': 6.5.0
 
   '@react-aria/focus@3.19.0(react@19.0.0)':
     dependencies:
@@ -10208,11 +10218,10 @@ snapshots:
     dependencies:
       parse-ms: 4.0.0
 
-  prisma@6.4.1(typescript@5.8.2):
+  prisma@6.5.0(typescript@5.8.2):
     dependencies:
-      '@prisma/engines': 6.4.1
-      esbuild: 0.25.0
-      esbuild-register: 3.6.0(esbuild@0.25.0)
+      '@prisma/config': 6.5.0
+      '@prisma/engines': 6.5.0
     optionalDependencies:
       fsevents: 2.3.3
       typescript: 5.8.2
