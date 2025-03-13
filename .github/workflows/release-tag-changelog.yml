@@ -77,12 +77,15 @@ jobs:
         fi
         echo "tag=$TAG" >> $GITHUB_OUTPUT
 
-    - uses: hmarr/debug-action@f7318c783045ac39ed9bb497e22ce835fdafbfe6
+    - name: List Tags
+      run: git tag
 
+    - uses: hmarr/debug-action@f7318c783045ac39ed9bb497e22ce835fdafbfe6
     - uses: actions/checkout@85e6279cec87321a52edac9c87bce653a07cf6c2
       with:
         ssh-key: ${{ secrets.SSH_KEY }}
         fetch-depth: 0
+        fetch-tags: true
 
     - name: Setup Tools
       uses: ./.github/actions/setup-tools
