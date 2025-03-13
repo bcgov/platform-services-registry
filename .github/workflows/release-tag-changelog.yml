@@ -109,10 +109,21 @@ jobs:
 
         branch=changelog/${{ steps.new-tag.outputs.tag }}
 
+        # Delete the branch locally if it exists
+        if git show-ref --verify --quiet "refs/heads/$branch"; then
+            git branch -D "$branch"
+        fi
+
+        # Delete the branch remotely if it exists
+        if git ls-remote --exit-code --heads origin "$branch"; then
+            git push origin --delete "$branch"
+        fi
+
         git checkout -b "$branch"
-        git status
-        git pull --rebase origin main
         git push --set-upstream origin "$branch"
+
+        git status
+        git reset --hard
 
         # Pass the computed version WITHOUT a leading 'v'.
         # Release-it will prepend 'v' itself, producing 'vX.Y.Z'.
