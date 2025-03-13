@@ -12,4 +12,5 @@ export const PUBLIC_CLOUD_REALM_NAME = process.env.PUBLIC_CLOUD_REALM_NAME || ''
 export const PUBLIC_CLOUD_CLIENT_ID = process.env.PUBLIC_CLOUD_CLIENT_ID || '';
 export const PUBLIC_CLOUD_CLIENT_SECRET = process.env.PUBLIC_CLOUD_CLIENT_SECRET || '';
 export const AUTH_RELM = process.env.AUTH_RELM || 'platform-services';
-export const FIXED_TSA_ID = process.env.FIXED_TSA_ID || 'dcd638006814e95f9972cd93';
+export const PROVISION_SERVICE_ACCOUNT_ID =
+  process.env.PROVISION_SERVICE_ACCOUNT_ID || 'z_pltsvc-tsa-dcd638006814e95f9972cd93';

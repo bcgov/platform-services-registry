@@ -19,9 +19,8 @@ import {
   PUBLIC_CLOUD_REALM_NAME,
   PUBLIC_CLOUD_CLIENT_ID,
   PUBLIC_CLOUD_CLIENT_SECRET,
-  FIXED_TSA_ID,
+  PROVISION_SERVICE_ACCOUNT_ID,
 } from './config.js';
-import * as crypto from 'crypto';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -158,15 +157,13 @@ async function main() {
   }
 
   async function createProvisionClient(kc: KcAdmin, realm: string, prefix: string, roles: string[]) {
-    const provisionClientId = `${prefix}${FIXED_TSA_ID}`;
-
     await kc.cli.clients.create({
       realm,
       name: 'Provision',
-      clientId: provisionClientId,
+      clientId: PROVISION_SERVICE_ACCOUNT_ID,
     });
 
-    const [provisionClient] = await kc.cli.clients.find({ realm, clientId: provisionClientId });
+    const [provisionClient] = await kc.cli.clients.find({ realm, clientId: PROVISION_SERVICE_ACCOUNT_ID });
 
     if (provisionClient?.id) {
       const { id: provisionClientUid } = provisionClient;
