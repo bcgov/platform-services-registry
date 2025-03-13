@@ -1,3 +1,9 @@
+## [0.48.0](https://github.com/bcgov/platform-services-registry/compare/v0.47.0...v0.48.0) (2025-03-13)
+
+### Features
+
+* **4927:** add reusable TooltipTableHeader component ([0dbcf2e](https://github.com/bcgov/platform-services-registry/commit/0dbcf2e64778354ff57892055f41bf81cd3762f4))
+* **5059:** update deploy dispatch workflow for automated versioning ([5d0bce8](https://github.com/bcgov/platform-services-registry/commit/5d0bce8b35132bb1114f43424679523735c73a1a))
 ## [0.47.0](https://github.com/bcgov/platform-services-registry/compare/v0.46.2...v0.47.0) (2025-03-11)
 
 ### Bug Fixes
