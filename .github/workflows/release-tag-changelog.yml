@@ -42,6 +42,7 @@ jobs:
             exit 1
           fi
           NEXT_VERSION="${{ github.event.inputs.tag }}"
+          NEXT_VERSION=${NEXT_VERSION//v}
         else
           LAST_TAG=$(git describe --tags --abbrev=0 2>/dev/null || echo "")
           if [ -z "$LAST_TAG" ]; then
