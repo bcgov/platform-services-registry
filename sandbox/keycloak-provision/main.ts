@@ -19,6 +19,7 @@ import {
   PUBLIC_CLOUD_REALM_NAME,
   PUBLIC_CLOUD_CLIENT_ID,
   PUBLIC_CLOUD_CLIENT_SECRET,
+  FIXED_TSA_ID,
 } from './config.js';
 import * as crypto from 'crypto';
 
@@ -31,7 +32,7 @@ const msUsers: MsUser[] = JSON.parse(jsonData);
 const clientScope = 'https://graph.microsoft.com/.default';
 
 const TEAM_SA_PREFIX = 'z_pltsvc-tsa-';
-const ROLES = ['admin', 'private-admin', 'public-admin'];
+const ROLES = ['private-admin', 'public-admin'];
 
 async function main() {
   console.log('Starting Keycloak Provision...');
@@ -138,13 +139,6 @@ async function main() {
   await kc.upsertRealm(PUBLIC_CLOUD_REALM_NAME, { enabled: true });
   await kc.createRealmAdminServiceAccount(PUBLIC_CLOUD_REALM_NAME, PUBLIC_CLOUD_CLIENT_ID, PUBLIC_CLOUD_CLIENT_SECRET);
 
-  // // Creating service account for provision;
-
-  function generateRandomId(length: number) {
-    const buffer = crypto.randomBytes(Math.ceil(length / 2));
-    return buffer.toString('hex').slice(0, length);
-  }
-
   function getMapperPayload(name: string, claimValue: string) {
     const mapper = {
       name,
@@ -163,9 +157,8 @@ async function main() {
     return mapper;
   }
 
-  async function createProvisionClient(kc: KcAdmin, realm: string, prefix: string, roles: any[]) {
-    const tsaId = generateRandomId(24);
-    const provisionClientId = `${prefix}${tsaId}`;
+  async function createProvisionClient(kc: KcAdmin, realm: string, prefix: string, roles: string[]) {
+    const provisionClientId = `${prefix}${FIXED_TSA_ID}`;
 
     await kc.cli.clients.create({
       realm,
