@@ -23,6 +23,15 @@ jobs:
       run: exit 1
       if: ${{ !startsWith(github.ref, 'refs/heads/') }}
 
+    - uses: actions/checkout@85e6279cec87321a52edac9c87bce653a07cf6c2
+      with:
+        ssh-key: ${{ secrets.SSH_KEY }}
+        fetch-depth: 0
+        fetch-tags: true
+
+    - name: List Tags
+      run: git tag
+
     - name: Determine Tag Version
       id: new-tag
       run: |
@@ -77,15 +86,7 @@ jobs:
         fi
         echo "tag=$TAG" >> $GITHUB_OUTPUT
 
-    - name: List Tags
-      run: git tag
-
     - uses: hmarr/debug-action@f7318c783045ac39ed9bb497e22ce835fdafbfe6
-    - uses: actions/checkout@85e6279cec87321a52edac9c87bce653a07cf6c2
-      with:
-        ssh-key: ${{ secrets.SSH_KEY }}
-        fetch-depth: 0
-        fetch-tags: true
 
     - name: Setup Tools
       uses: ./.github/actions/setup-tools
@@ -132,10 +133,10 @@ jobs:
             base: '${{ steps.vars.outputs.base }}',
             title: '${{ steps.vars.outputs.pr_title }}',
             body: `### Commits
-          ${{ steps.vars.outputs.pr_body }}
-          ### GitHub Action
-          - [Build and deploy Apps in Test Environment](https://github.com/bcgov/platform-services-registry/actions/workflows/deploy-test.yml)
-          `,
+              ${{ steps.vars.outputs.pr_body }}
+              ### GitHub Action
+              - [Build and deploy Apps in Test Environment](https://github.com/bcgov/platform-services-registry/actions/workflows/deploy-test.yml)
+              `,
           });
           github.rest.issues.addLabels({
             owner,
