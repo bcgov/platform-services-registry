@@ -54,6 +54,8 @@ model User {
   publicCloudRequestsAsDecisionMaker                    PublicCloudRequest[]           @relation("decisionMaker")
   events                                                Event[]                        @relation("UserToEvents")
   Task                                                  Task[]                         @relation("UserToTasks")
+  privateCloudRequestsAsCanceler                        PrivateCloudRequest[]          @relation("cancelledBy")
+  publicCloudRequestsAsCanceler                         PublicCloudRequest[]           @relation("cancelledBy")
 }
 
 model UserSession {
@@ -91,6 +93,9 @@ model PrivateCloudRequest {
   active                         Boolean                       @default(true)
   createdAt                      DateTime                      @default(now())
   updatedAt                      DateTime                      @updatedAt
+  cancelledAt                    DateTime?
+  cancelledById                  String?                       @db.ObjectId
+  cancelledBy                    User?                         @relation("cancelledBy", fields: [cancelledById], references: [id])
   decisionDate                   DateTime?
   provisionedDate                DateTime?
   projectId                      String?                       @db.ObjectId
@@ -240,6 +245,9 @@ model PublicCloudRequest {
   active             Boolean                      @default(true)
   createdAt          DateTime                     @default(now())
   updatedAt          DateTime                     @updatedAt
+  cancelledAt        DateTime?
+  cancelledById      String?                      @db.ObjectId
+  cancelledBy        User?                        @relation("cancelledBy", fields: [cancelledById], references: [id])
   decisionDate       DateTime?
   provisionedDate    DateTime?
   projectId          String?                      @db.ObjectId
