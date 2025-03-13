@@ -156,7 +156,7 @@ async function main() {
     return mapper;
   }
 
-  async function createProvisionClient(kc: KcAdmin, realm: string, prefix: string, roles: string[]) {
+  async function createProvisionServiceAccount(kc: KcAdmin, realm: string, prefix: string, roles: string[]) {
     const provisionServiceAccount = await kc.createServiceAccount(
       realm,
       PROVISION_SERVICE_ACCOUNT_ID,
@@ -195,7 +195,7 @@ async function main() {
     return provisionServiceAccount;
   }
 
-  const provisionServiceAccount = await createProvisionClient(kc, AUTH_RELM, TEAM_SA_PREFIX, ROLES);
+  const provisionServiceAccount = await createProvisionServiceAccount(kc, AUTH_RELM, TEAM_SA_PREFIX, ROLES);
 
   return {
     authRealm,
