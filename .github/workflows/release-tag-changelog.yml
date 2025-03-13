@@ -100,8 +100,8 @@ jobs:
         git config commit.gpgsign false
 
         branch=changelog/${{ steps.new-tag.outputs.tag }}
-        git checkout -B "$branch"
-        git push --set-upstream origin "$branch" --force-with-lease
+        git checkout -b "$branch"
+        git push --set-upstream origin "$branch"
 
         git status
         git reset --hard
@@ -136,7 +136,7 @@ jobs:
           ### GitHub Action
           - [Build and deploy Apps in Test Environment](https://github.com/bcgov/platform-services-registry/actions/workflows/deploy-test.yml)
           `,
-                      });
+          });
           github.rest.issues.addLabels({
             owner,
             repo,
