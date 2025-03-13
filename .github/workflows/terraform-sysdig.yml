@@ -23,7 +23,10 @@ jobs:
     - uses: actions/checkout@85e6279cec87321a52edac9c87bce653a07cf6c2
 
     - name: Set Terraform Version
-      run: echo "TF_VERSION=$(grep terraform .tool-versions | awk '{print $2}' | xargs)" >> $GITHUB_ENV
+      run: |
+        version=$(<.tool-versions)
+        version=${version#terraform }
+        echo "TF_VERSION=${version}" >> $GITHUB_ENV
 
     - name: Setup Terraform
       uses: hashicorp/setup-terraform@2f1b53ffa558af27b90742f3f28397d986061ece
