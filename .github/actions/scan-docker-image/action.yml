@@ -9,7 +9,7 @@ runs:
   using: composite
   steps:
   - name: Run Trivy vulnerability scanner
-    uses: aquasecurity/trivy-action@a11da62073708815958ea6d84f5650c78a3ef85b
+    uses: aquasecurity/trivy-action@53e8848d3e517db48b0e70ae4f648a12ae04fe02
     continue-on-error: true
     with:
       image-ref: ${{ inputs.image }}
@@ -19,7 +19,7 @@ runs:
       severity: LOW,MEDIUM,HIGH,CRITICAL
 
   - name: Upload Trivy scan results to GitHub Security tab
-    uses: github/codeql-action/upload-sarif@dc49dcabdb86371d19197fcae2585f548bbbc395
+    uses: github/codeql-action/upload-sarif@f338ec87a39f9c5e2ec91decb5d7718c92875790
     continue-on-error: true
     with:
       sarif_file: trivy-results.sarif

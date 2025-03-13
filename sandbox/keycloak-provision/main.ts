@@ -100,6 +100,7 @@ async function main() {
     'tca',
     'tran',
     'hous',
+    'wlrs',
   ].forEach(async (ministry) => {
     await kc.createClientRole(AUTH_REALM_NAME, authClient?.id as string, `ministry-${ministry}-reader`);
     await kc.createClientRole(AUTH_REALM_NAME, authClient?.id as string, `ministry-${ministry}-editor`);

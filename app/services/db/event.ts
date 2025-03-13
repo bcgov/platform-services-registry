@@ -156,6 +156,8 @@ export async function searchEvents({
             jobTitle: true,
             image: true,
             ministry: true,
+            upn: true,
+            idir: true,
           },
         },
       },
