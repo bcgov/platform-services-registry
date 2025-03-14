@@ -17,6 +17,7 @@ import TeamEditRequestTemplate from '@/emails/_templates/private-cloud/TeamEditR
 import TeamEditRequestApprovalTemplate from '@/emails/_templates/private-cloud/TeamEditRequestApproval';
 import TeamEditRequestCompletionTemplate from '@/emails/_templates/private-cloud/TeamEditRequestCompletion';
 import TeamEditRequestRejectionTemplate from '@/emails/_templates/private-cloud/TeamEditRequestRejection';
+import TeamRequestCancellationTemplate from '@/emails/_templates/private-cloud/TeamRequestCancellation';
 import { sendEmail } from '@/services/ches/core';
 import { getContent } from '@/services/ches/helpers';
 import { findUserEmailsByAuthRole } from '@/services/keycloak/app-realm';
@@ -164,6 +165,16 @@ export async function sendTeamDeleteRequestRejection(request: PrivateCloudReques
 
   return sendEmail({
     subject: 'Your delete request has been rejected',
+    to: await getTeamEmails(request),
+    body: content,
+  });
+}
+
+export async function sendTeamRequestCancellation(request: PrivateCloudRequestDetailDecorated, requester: string) {
+  const content = await getContent(TeamRequestCancellationTemplate({ request, requester }));
+
+  return sendEmail({
+    subject: 'Your request has been cancelled',
     to: await getTeamEmails(request),
     body: content,
   });

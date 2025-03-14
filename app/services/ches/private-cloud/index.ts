@@ -18,6 +18,7 @@ import {
   sendTeamEditRequestApproval,
   sendTeamEditRequestCompletion,
   sendTeamEditRequestRejection,
+  sendTeamRequestCancellation,
 } from './emails';
 
 export function sendAdminCreateRequestEmail(request: PrivateCloudRequestDetailDecorated, requester: string) {
@@ -141,5 +142,16 @@ export function sendRequestCompletionEmails(request: PrivateCloudRequestDetailDe
     return Promise.all(proms);
   } catch (error) {
     logger.error('sendRequestCompletionEmails:', error);
+  }
+}
+
+export function sendRequestCancellationEmails(request: PrivateCloudRequestDetailDecorated, requester: string) {
+  try {
+    const proms: any[] = [];
+    proms.push(sendTeamRequestCancellation(request, requester));
+
+    return Promise.all(proms);
+  } catch (error) {
+    logger.error('sendRequestCancellationEmails:', error);
   }
 }
