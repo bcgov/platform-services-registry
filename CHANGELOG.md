@@ -1,3 +1,9 @@
+## [0.49.0](https://github.com/bcgov/platform-services-registry/compare/v0.48.0...v0.49.0) (2025-03-14)
+
+### Features
+
+* **0000:** give public admin billing privileges ([aa2055e](https://github.com/bcgov/platform-services-registry/commit/aa2055e0ae270e8e24e98cf40410eef73c6a881d))
+* **4981:** include additional request details for cancellations ([483673f](https://github.com/bcgov/platform-services-registry/commit/483673fd03aaa9a6d545745c183b36bf68204f60))
 ## [0.48.0](https://github.com/bcgov/platform-services-registry/compare/v0.47.0...v0.48.0) (2025-03-13)
 
 ### Features
