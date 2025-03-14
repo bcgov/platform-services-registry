@@ -17,8 +17,8 @@ export default function TeamRequestCancellation({ request, requester }: EmailPro
       <Heading className="text-lg">Request Cancellation: {request.decisionData.name}</Heading>
       <Text>Hi Product Team,</Text>
       <Text>
-        The request for the project set <strong>{request.decisionData.name}</strong> on the Private Cloud OpenShift
-        platform has been cancelled.
+        The {request.type} request for the project set <strong>{request.decisionData.name}</strong> on the Private Cloud
+        OpenShift platform has been cancelled.
       </Text>
 
       <LinkButton href={`/private-cloud/requests/${request.id}/decision`}>View Request</LinkButton>
