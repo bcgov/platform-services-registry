@@ -1,3 +1,10 @@
+## [0.50.0](https://github.com/bcgov/platform-services-registry/compare/v0.49.0...v0.50.0) (2025-03-14)
+
+### Features
+
+* **4721:** generate service account for new provision endpoint ([c0fa2bc](https://github.com/bcgov/platform-services-registry/commit/c0fa2bc47446d3c84d951e867a881e49c1e2a99d))
+* **4750:** send cancellation notification emails ([16b3ffb](https://github.com/bcgov/platform-services-registry/commit/16b3ffb590bc5be6ce4e5368daa7402fa5d136e0))
+* **5196:** convert lower cases into upper in account coding ([db51da8](https://github.com/bcgov/platform-services-registry/commit/db51da8a07c52e57faf30b23faac85e67464752a))
 ## [0.49.0](https://github.com/bcgov/platform-services-registry/compare/v0.48.0...v0.49.0) (2025-03-14)
 
 ### Features
