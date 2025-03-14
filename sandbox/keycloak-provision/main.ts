@@ -32,6 +32,24 @@ const clientScope = 'https://graph.microsoft.com/.default';
 
 const ROLES = ['private-admin', 'public-admin'];
 
+function getMapperPayload(name: string, claimValue: string) {
+  const mapper = {
+    name,
+    protocol: 'openid-connect',
+    protocolMapper: 'oidc-hardcoded-claim-mapper',
+    config: {
+      'claim.name': name,
+      'claim.value': claimValue,
+      'jsonType.label': 'String',
+      'id.token.claim': 'true',
+      'access.token.claim': 'true',
+      'userinfo.token.claim': 'true',
+      'access.tokenResponse.claim': 'false',
+    },
+  };
+  return mapper;
+}
+
 async function main() {
   console.log('Starting Keycloak Provision...');
 
@@ -137,47 +155,26 @@ async function main() {
   await kc.upsertRealm(PUBLIC_CLOUD_REALM_NAME, { enabled: true });
   await kc.createRealmAdminServiceAccount(PUBLIC_CLOUD_REALM_NAME, PUBLIC_CLOUD_CLIENT_ID, PUBLIC_CLOUD_CLIENT_SECRET);
 
-  function getMapperPayload(name: string, claimValue: string) {
-    const mapper = {
-      name,
-      protocol: 'openid-connect',
-      protocolMapper: 'oidc-hardcoded-claim-mapper',
-      config: {
-        'claim.name': name,
-        'claim.value': claimValue,
-        'jsonType.label': 'String',
-        'id.token.claim': 'true',
-        'access.token.claim': 'true',
-        'userinfo.token.claim': 'true',
-        'access.tokenResponse.claim': 'false',
-      },
-    };
-    return mapper;
+  const provisionServiceAccount = await kc.createServiceAccount(
+    AUTH_REALM_NAME,
+    PROVISION_SERVICE_ACCOUNT_ID,
+    PROVISION_SERVICE_ACCOUNT_SECRET,
+  );
+
+  if (provisionServiceAccount?.id) {
+    const { id: provisionClientUid } = provisionServiceAccount;
+
+    await Promise.all([
+      kc.cli.clients.addProtocolMapper(
+        { realm: AUTH_REALM_NAME, id: provisionClientUid },
+        getMapperPayload('roles', ROLES.join(',')),
+      ),
+      kc.cli.clients.addProtocolMapper(
+        { realm: AUTH_REALM_NAME, id: provisionClientUid },
+        getMapperPayload('service_account_type', 'team'),
+      ),
+    ]);
   }
-
-  async function createProvisionServiceAccount(kc: KcAdmin, realm: string, roles: string[]) {
-    const provisionServiceAccount = await kc.createServiceAccount(
-      realm,
-      PROVISION_SERVICE_ACCOUNT_ID,
-      PROVISION_SERVICE_ACCOUNT_SECRET,
-    );
-
-    if (provisionServiceAccount?.id) {
-      const { id: provisionClientUid } = provisionServiceAccount;
-
-      await Promise.all([
-        kc.cli.clients.addProtocolMapper({ realm, id: provisionClientUid }, getMapperPayload('roles', roles.join(','))),
-        kc.cli.clients.addProtocolMapper(
-          { realm, id: provisionClientUid },
-          getMapperPayload('service_account_type', 'team'),
-        ),
-      ]);
-    }
-
-    return provisionServiceAccount;
-  }
-
-  const provisionServiceAccount = await createProvisionServiceAccount(kc, AUTH_REALM_NAME, ROLES);
 
   return {
     authRealm,
