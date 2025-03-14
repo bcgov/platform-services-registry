@@ -128,6 +128,8 @@ services:
       context: ./
       dockerfile: ./nats-provision/Dockerfile
     environment:
+      PROVISION_SERVICE_ACCOUNT_ID: z_pltsvc-tsa-dcd638006814e95f9972cd93
+      PROVISION_SERVICE_ACCOUNT_SECRET: testsecret # pragma: allowlist secret
       NATS_HOST: nats
       NATS_PORT: 4222
       APP_URL: http://${MACHINE_HOST_IP}:3000
@@ -135,6 +137,7 @@ services:
       PUBLIC_CLOUD_REALM_NAME: public-cloud
       PUBLIC_CLOUD_CLIENT_ID: roles
       PUBLIC_CLOUD_CLIENT_SECRET: testsecret # pragma: allowlist secret
+
     depends_on:
     - nats
 
