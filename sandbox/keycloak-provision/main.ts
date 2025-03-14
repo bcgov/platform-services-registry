@@ -11,7 +11,6 @@ import {
   AUTH_REALM_NAME,
   AUTH_CLIENT_ID,
   AUTH_CLIENT_SECRET,
-  AUTH_RELM,
   GITOPS_CLIENT_ID,
   GITOPS_CLIENT_SECRET,
   ADMIN_CLIENT_ID,
@@ -20,6 +19,7 @@ import {
   PUBLIC_CLOUD_CLIENT_ID,
   PUBLIC_CLOUD_CLIENT_SECRET,
   PROVISION_SERVICE_ACCOUNT_ID,
+  PROVISION_SERVICE_ACCOUNT_SECRET,
 } from './config.js';
 
 const __filename = fileURLToPath(import.meta.url);
@@ -30,7 +30,6 @@ const msUsers: MsUser[] = JSON.parse(jsonData);
 
 const clientScope = 'https://graph.microsoft.com/.default';
 
-const TEAM_SA_PREFIX = 'z_pltsvc-tsa-';
 const ROLES = ['private-admin', 'public-admin'];
 
 async function main() {
@@ -156,46 +155,29 @@ async function main() {
     return mapper;
   }
 
-  async function createProvisionServiceAccount(kc: KcAdmin, realm: string, prefix: string, roles: string[]) {
+  async function createProvisionServiceAccount(kc: KcAdmin, realm: string, roles: string[]) {
     const provisionServiceAccount = await kc.createServiceAccount(
       realm,
       PROVISION_SERVICE_ACCOUNT_ID,
-      ADMIN_CLIENT_SECRET,
+      PROVISION_SERVICE_ACCOUNT_SECRET,
     );
 
     if (provisionServiceAccount?.id) {
       const { id: provisionClientUid } = provisionServiceAccount;
 
       await Promise.all([
-        kc.cli.clients.update(
-          { realm, id: provisionClientUid },
-          {
-            description: 'Created by the Registry app as a team service account for the provision',
-            enabled: true,
-            publicClient: false,
-            serviceAccountsEnabled: true,
-            standardFlowEnabled: false,
-            implicitFlowEnabled: false,
-            directAccessGrantsEnabled: false,
-          },
-        ),
         kc.cli.clients.addProtocolMapper({ realm, id: provisionClientUid }, getMapperPayload('roles', roles.join(','))),
         kc.cli.clients.addProtocolMapper(
           { realm, id: provisionClientUid },
           getMapperPayload('service_account_type', 'team'),
         ),
-        kc.cli.clients.createRole({
-          realm,
-          id: provisionClientUid,
-          name: 'member',
-        }),
       ]);
     }
 
     return provisionServiceAccount;
   }
 
-  const provisionServiceAccount = await createProvisionServiceAccount(kc, AUTH_RELM, TEAM_SA_PREFIX, ROLES);
+  const provisionServiceAccount = await createProvisionServiceAccount(kc, AUTH_REALM_NAME, ROLES);
 
   return {
     authRealm,

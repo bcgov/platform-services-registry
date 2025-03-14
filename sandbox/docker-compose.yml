@@ -37,6 +37,8 @@ services:
       context: ./
       dockerfile: ./keycloak-provision/Dockerfile
     environment:
+      PROVISION_SERVICE_ACCOUNT_ID: z_pltsvc-tsa-dcd638006814e95f9972cd93
+      PROVISION_SERVICE_ACCOUNT_SECRET: testsecret # pragma: allowlist secret
       KEYCLOAK_URL: http://keycloak:8080
       MASTER_ADMIN: admin
       MASTER_ADMIN_PASSWORD: password # pragma: allowlist secret
