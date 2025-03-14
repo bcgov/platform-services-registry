@@ -6,6 +6,7 @@
     "sharp",
     "@testing-library/react",
     "@testing-library/user-event",
+    "@types/eslint-config-prettier",
     "ts-jest",
     "ts-node",
     "eslint-config-next",
