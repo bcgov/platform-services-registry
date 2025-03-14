@@ -17,8 +17,8 @@ export default function TeamRequestCancellation({ request, requester }: EmailPro
       <Heading className="text-lg">Request Cancellation: {request.decisionData.name}</Heading>
       <Text>Hi Product Team,</Text>
       <Text>
-        The request for the project set <strong>{request.decisionData.name}</strong> on the Public Cloud Landing Zone
-        has been cancelled.
+        The {request.type} request for the project set <strong>{request.decisionData.name}</strong> on the Public Cloud
+        Landing Zone has been cancelled.
       </Text>
 
       <LinkButton href={`/public-cloud/requests/${request.id}/request`}>View Request</LinkButton>
