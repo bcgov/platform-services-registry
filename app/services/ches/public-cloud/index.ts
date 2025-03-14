@@ -18,6 +18,7 @@ import {
   sendEmouServiceAgreement,
   sendExpenseAuthority,
   sendExpenseAuthorityMou,
+  sendTeamRequestCancellation,
 } from './emails';
 
 export function sendAdminCreateRequestEmail(request: PublicCloudRequestDetailDecorated, requester: string) {
@@ -151,5 +152,16 @@ export function sendRequestCompletionEmails(request: PublicCloudRequestDetailDec
     return Promise.all(proms);
   } catch (error) {
     logger.error('sendRequestCompletionEmails:', error);
+  }
+}
+
+export function sendRequestCancellationEmails(request: PublicCloudRequestDetailDecorated, requester: string) {
+  try {
+    const proms: any[] = [];
+    proms.push(sendTeamRequestCancellation(request, requester));
+
+    return Promise.all(proms);
+  } catch (error) {
+    logger.error('sendRequestCancellationEmails:', error);
   }
 }
