@@ -42,6 +42,9 @@ export enum GlobalPermissions {
   EditUsers = 'editUsers',
   EditUserRoles = 'editUserRoles',
   EditUserOnboardingDate = 'editUserOnboardingDate',
+
+  ViewWebhook = 'viewWebhook',
+  EditWebhook = 'editWebhook',
 }
 
 export enum GlobalRole {

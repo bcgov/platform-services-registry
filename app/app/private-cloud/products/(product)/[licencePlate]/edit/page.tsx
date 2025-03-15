@@ -145,12 +145,6 @@ export default privateCloudProductEdit(({ session }) => {
     },
   ];
 
-  const isMyProduct = [
-    snap.currentProduct.projectOwnerId,
-    snap.currentProduct.primaryTechnicalLeadId,
-    snap.currentProduct.secondaryTechnicalLeadId,
-  ].includes(session?.user.id ?? '');
-
   return (
     <div>
       <FormProvider {...methods}>
@@ -176,10 +170,7 @@ export default privateCloudProductEdit(({ session }) => {
           </div>
         </form>
       </FormProvider>
-
-      {isMyProduct && (
-        <SiloAccordion className="my-4" disabled={isDisabled} licencePlate={snap.currentProduct?.licencePlate} />
-      )}
+      <SiloAccordion className="my-4" disabled={isDisabled} licencePlate={snap.currentProduct?.licencePlate} />
     </div>
   );
 });
