@@ -56,6 +56,9 @@ declare module 'next-auth' {
 
     cancelPrivateCloudRequest: boolean;
     cancelPublicCloudRequest: boolean;
+
+    editWebhook: boolean;
+    viewWebhook: boolean;
   }
 
   interface Session extends DefaultSession {
