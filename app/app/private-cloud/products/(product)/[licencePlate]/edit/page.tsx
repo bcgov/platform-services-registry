@@ -152,6 +152,7 @@ export default privateCloudProductEdit(({ session }) => {
   ].includes(session?.user.id ?? '');
 
   const canViewWebhook = isMyProduct || session?.permissions.viewPrivateWebhook;
+  const canEditWebhook = isMyProduct || (session?.permissions.editPrivateWebhook ?? false);
 
   return (
     <div>
@@ -179,7 +180,7 @@ export default privateCloudProductEdit(({ session }) => {
         </form>
       </FormProvider>
       {canViewWebhook && (
-        <SiloAccordion className="my-4" disabled={isDisabled} licencePlate={snap.currentProduct?.licencePlate} />
+        <SiloAccordion className="my-4" disabled={!canEditWebhook} licencePlate={snap.currentProduct?.licencePlate} />
       )}
     </div>
   );
