@@ -17,13 +17,13 @@ async function baseFilter(session: Session) {
 
   const { user, ministries } = session;
 
-  const projectFilters: Prisma.PrivateCloudProjectWhereInput[] = [
+  const productFilters: Prisma.PrivateCloudProjectWhereInput[] = [
     { ministry: { in: ministries.editor as Ministry[] } },
     { ministry: { in: ministries.reader as Ministry[] } },
   ];
 
   if (user.id) {
-    projectFilters.push(
+    productFilters.push(
       { projectOwnerId: user.id },
       { primaryTechnicalLeadId: user.id },
       { secondaryTechnicalLeadId: user.id },
@@ -40,11 +40,11 @@ async function baseFilter(session: Session) {
     );
   }
 
-  const projects = await prisma.privateCloudProject.findMany({
-    where: { OR: projectFilters },
+  const products = await prisma.privateCloudProject.findMany({
+    where: { OR: productFilters },
     select: { licencePlate: true },
   });
-  const licencePlates = projects.map((project) => project.licencePlate);
+  const licencePlates = products.map((product) => product.licencePlate);
 
   const filter: Prisma.PrivateCloudProductWebhookWhereInput = {
     licencePlate: { in: licencePlates },
