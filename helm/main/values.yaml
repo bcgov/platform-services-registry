@@ -72,6 +72,9 @@ app:
 
   maintenance:
     enabled: false
+    image:
+      tag: e1a5c9ee83d8d9e02a5889faedaaf23ca420edc0 # pragma: allowlist secret
+      pullPolicy: IfNotPresent
 
 email:
   enabled: true
