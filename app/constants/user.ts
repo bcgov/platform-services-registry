@@ -25,6 +25,9 @@ export enum GlobalPermissions {
   EditAllPublicProductComments = 'editAllPublicProductComments',
   DeleteAllPublicProductComments = 'deleteAllPublicProductComments',
 
+  ViewPrivateWebhook = 'viewPrivateWebhook',
+  EditPrivateWebhook = 'editPrivateWebhook',
+
   ViewZapscanResults = 'viewZapscanResults',
   ViewSonarscanResults = 'viewSonarscanResults',
   ViewGeneralAnalytics = 'viewGeneralAnalytics',
@@ -42,9 +45,6 @@ export enum GlobalPermissions {
   EditUsers = 'editUsers',
   EditUserRoles = 'editUserRoles',
   EditUserOnboardingDate = 'editUserOnboardingDate',
-
-  ViewWebhook = 'viewWebhook',
-  EditWebhook = 'editWebhook',
 }
 
 export enum GlobalRole {

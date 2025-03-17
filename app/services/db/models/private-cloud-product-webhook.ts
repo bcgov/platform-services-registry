@@ -13,7 +13,7 @@ import { createSessionModel } from './core';
 
 async function baseFilter(session: Session) {
   if (!session.isUser && !session.isServiceAccount) return false;
-  if (session.permissions.viewWebhook) return {};
+  if (session.permissions.viewPrivateWebhook) return {};
 
   const { user, ministries } = session;
 
@@ -82,7 +82,7 @@ async function decorate<T extends PrivateCloudProductWebhookSimple | PrivateClou
     : false;
 
   const canView =
-    permissions.viewWebhook ||
+    permissions.viewPrivateWebhook ||
     isMyProduct ||
     hasMinistryAccess ||
     members.some(
@@ -92,7 +92,7 @@ async function decorate<T extends PrivateCloudProductWebhookSimple | PrivateClou
     );
 
   const canEdit =
-    permissions.editWebhook ||
+    permissions.editPrivateWebhook ||
     isMyProduct ||
     (product ? ministries.editor.includes(productMinistry) : false) ||
     members.some(

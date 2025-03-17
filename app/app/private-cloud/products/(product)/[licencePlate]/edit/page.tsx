@@ -16,7 +16,7 @@ import AdditionalTeamMembers from '@/components/private-cloud/sections/Additiona
 import Quotas from '@/components/private-cloud/sections/Quotas';
 import TeamContacts from '@/components/private-cloud/sections/TeamContacts';
 import SiloAccordion from '@/components/private-cloud/SiloAccordion';
-import { GlobalRole } from '@/constants';
+import { GlobalPermissions, GlobalRole } from '@/constants';
 import createClientPage from '@/core/client-page';
 import { getQuotaChangeStatus } from '@/services/backend/private-cloud/products';
 import { usePrivateProductState } from '@/states/global';
@@ -145,6 +145,14 @@ export default privateCloudProductEdit(({ session }) => {
     },
   ];
 
+  const isMyProduct = [
+    snap.currentProduct.projectOwnerId,
+    snap.currentProduct.primaryTechnicalLeadId,
+    snap.currentProduct.secondaryTechnicalLeadId,
+  ].includes(session?.user.id ?? '');
+
+  const canViewWebhook = isMyProduct || session?.permissions.viewPrivateWebhook;
+
   return (
     <div>
       <FormProvider {...methods}>
@@ -170,7 +178,9 @@ export default privateCloudProductEdit(({ session }) => {
           </div>
         </form>
       </FormProvider>
-      <SiloAccordion className="my-4" disabled={isDisabled} licencePlate={snap.currentProduct?.licencePlate} />
+      {canViewWebhook && (
+        <SiloAccordion className="my-4" disabled={isDisabled} licencePlate={snap.currentProduct?.licencePlate} />
+      )}
     </div>
   );
 });
