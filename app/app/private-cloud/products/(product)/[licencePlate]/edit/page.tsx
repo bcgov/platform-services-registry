@@ -145,15 +145,6 @@ export default privateCloudProductEdit(({ session }) => {
     },
   ];
 
-  const isMyProduct = [
-    snap.currentProduct.projectOwnerId,
-    snap.currentProduct.primaryTechnicalLeadId,
-    snap.currentProduct.secondaryTechnicalLeadId,
-  ].includes(session?.user.id ?? '');
-
-  const canViewWebhook = isMyProduct || session?.permissions.viewPrivateWebhook;
-  const canEditWebhook = isMyProduct || (session?.permissions.editPrivateWebhook ?? false);
-
   return (
     <div>
       <FormProvider {...methods}>
@@ -179,9 +170,13 @@ export default privateCloudProductEdit(({ session }) => {
           </div>
         </form>
       </FormProvider>
-      {canViewWebhook && (
-        <SiloAccordion className="my-4" disabled={!canEditWebhook} licencePlate={snap.currentProduct?.licencePlate} />
-      )}
+      <SiloAccordion
+        className="my-4"
+        currentProduct={{
+          ...snap.currentProduct,
+        }}
+        session={session!}
+      />
     </div>
   );
 });

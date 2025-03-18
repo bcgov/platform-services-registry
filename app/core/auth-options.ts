@@ -243,8 +243,8 @@ export async function generateSession({
     editAssignedPrivateCloudProducts: session.isUser,
     deleteAssignedPrivateCloudProducts: session.isUser,
 
-    editPrivateWebhook: session.isAdmin || session.isEditor || session.isPrivateAdmin || session.isPrivateEditor,
-    viewPrivateWebhook:
+    editPrivateProductWebhook: session.isAdmin || session.isEditor || session.isPrivateAdmin || session.isPrivateEditor,
+    viewPrivateProductWebhook:
       session.isAdmin ||
       session.isEditor ||
       session.isReader ||
