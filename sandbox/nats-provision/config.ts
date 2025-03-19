@@ -7,3 +7,4 @@ export const PUBLIC_CLOUD_CLIENT_ID = process.env.PUBLIC_CLOUD_CLIENT_ID || 'rol
 export const PUBLIC_CLOUD_CLIENT_SECRET = process.env.PUBLIC_CLOUD_CLIENT_SECRET || 'testsecret';
 export const PROVISION_SERVICE_ACCOUNT_ID = process.env.PROVISION_SERVICE_ACCOUNT_ID || '';
 export const PROVISION_SERVICE_ACCOUNT_SECRET = process.env.PROVISION_SERVICE_ACCOUNT_SECRET || '';
+export const AUTH_REALM_NAME = process.env.AUTH_REALM_NAME || '';

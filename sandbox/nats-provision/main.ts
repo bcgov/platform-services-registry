@@ -8,10 +8,33 @@ import {
   PUBLIC_CLOUD_REALM_NAME,
   PUBLIC_CLOUD_CLIENT_ID,
   PUBLIC_CLOUD_CLIENT_SECRET,
+  PROVISION_SERVICE_ACCOUNT_ID,
+  PROVISION_SERVICE_ACCOUNT_SECRET,
+  AUTH_REALM_NAME,
 } from './config.js';
 import { KcAdmin } from '../_packages/keycloak-admin/src/main.js';
 
 const natsServer = `${NATS_HOST}:${NATS_PORT}`;
+
+// http://localhost:8080/realms/platform-services
+
+async function getkeyCloakAccessToken() {
+  const tokenResponse = await fetch(`${KEYCLOAK_URL}/realms/platform-services/protocol/openid-connect/token`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/x-www-form-urlencoded',
+    },
+    body: new URLSearchParams({
+      grant_type: 'client_credentials',
+      client_id: PROVISION_SERVICE_ACCOUNT_ID,
+      client_secret: PROVISION_SERVICE_ACCOUNT_SECRET,
+    }),
+  });
+
+  const { access_token } = await tokenResponse.json();
+
+  return access_token;
+}
 
 async function main() {
   console.log('Starting NATS Provision...');
@@ -44,14 +67,18 @@ async function main() {
         const data: any = jc.decode(m.data);
         console.log(`Received: ${JSON.stringify(data)}`);
 
+        const accessToken = await getkeyCloakAccessToken();
+
         try {
-          const res = await fetch(`${APP_URL}/api/private-cloud/provision/${data.licencePlate}`, {
-            method: 'PUT',
+          const res = await fetch(`${APP_URL}/api/v1/private-cloud/products/${data.licencePlate}/provision`, {
+            method: 'POST',
             headers: {
+              Authorization: 'Bearer ' + accessToken,
               'Content-Type': 'application/json',
             },
             body: JSON.stringify({}),
           });
+          console.log('This is the response: ', res);
           console.log('Response sent:', res.status);
         } catch (error) {
           console.error('private cloud provision:', error);
@@ -86,10 +113,13 @@ async function main() {
           console.error('public cloud groups:', error);
         }
 
+        const accessToken = await getkeyCloakAccessToken();
+
         try {
-          const res = await fetch(`${APP_URL}/api/public-cloud/provision/${licencePlate}`, {
-            method: 'PUT',
+          const res = await fetch(`${APP_URL}/api/v1/public-cloud/products/${licencePlate}/provision`, {
+            method: 'POST',
             headers: {
+              Authorization: 'Bearer ' + accessToken,
               'Content-Type': 'application/json',
             },
             body: JSON.stringify({}),
