@@ -2,6 +2,7 @@ import { HoverCard, Group } from '@mantine/core';
 import { useDisclosure } from '@mantine/hooks';
 import { User } from '@prisma/client';
 import MailLink from '@/components/generic/button/MailLink';
+import { openUserDetailModal } from '@/components/modal/userDetail';
 import { formatFullName } from '@/helpers/user';
 import { cn } from '@/utils/js';
 import ProfileImage from './ProfileImage';
@@ -25,7 +26,17 @@ export default function UserCard({
     <Group justify="left">
       <HoverCard shadow="md" position="top">
         <HoverCard.Target>
-          <div className={cn('cursor-help', className)} onMouseEnter={open} onMouseLeave={close}>
+          <div
+            className={cn('cursor-help', className)}
+            onMouseEnter={open}
+            onMouseLeave={close}
+            onClick={(e) => {
+              e.preventDefault();
+              e.stopPropagation();
+
+              openUserDetailModal({ userId: user.id });
+            }}
+          >
             <div className="text-base font-bold text-gray-700 group-hover:text-gray-900">{name}</div>
             {title && <div className="text-sm text-gray-400 group-hover:text-gray-700">{title}</div>}
           </div>

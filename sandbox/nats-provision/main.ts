@@ -16,13 +16,18 @@ const natsServer = `${NATS_HOST}:${NATS_PORT}`;
 async function main() {
   console.log('Starting NATS Provision...');
 
-  // Wait for external services to be available
-  console.log('waiting for NATS server...', `tcp:${natsServer}`);
-  await waitOn({
-    resources: [`tcp:${natsServer}`, `${KEYCLOAK_URL}/realms/master/.well-known/openid-configuration`, APP_URL],
-    delay: 1000,
-    window: 5000,
-  });
+  const resources = [`tcp:${natsServer}`, `${KEYCLOAK_URL}/realms/master/.well-known/openid-configuration`, APP_URL];
+
+  await Promise.all(
+    resources.map((resource) => {
+      console.log('waiting for a service...', resource);
+      return waitOn({
+        resources: [resource],
+        delay: 1000,
+        window: 5000,
+      });
+    }),
+  );
 
   console.log('All services are ready.');
 

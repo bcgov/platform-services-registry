@@ -4,6 +4,7 @@ import { Avatar, Group, Tooltip, UnstyledButton } from '@mantine/core';
 import { User } from '@prisma/client';
 import { IconEdit } from '@tabler/icons-react';
 import MinistryBadge from '@/components/badges/MinistryBadge';
+import { openUserDetailModal } from '@/components/modal/userDetail';
 import { formatFullName } from '@/helpers/user';
 import { getUserImageData } from '@/helpers/user-image';
 import { cn } from '@/utils/js';
@@ -28,10 +29,21 @@ export default function UserProfile({ data, onClick, text = 'Click to select mem
     };
   }
 
+  const isSavedUser = !!data.id;
+
   return (
     <>
       <Tooltip label="Edit" disabled={!(onClick && data.email)}>
-        <Group gap="sm" className={cn({ 'cursor-pointer': !!onClick })} onClick={onClick}>
+        <Group
+          gap="sm"
+          className={cn({ 'cursor-pointer': !!onClick || isSavedUser })}
+          onClick={
+            onClick ||
+            function () {
+              if (data.id) openUserDetailModal({ userId: data.id });
+            }
+          }
+        >
           <Avatar src={getUserImageData(data.image)} size={36} radius="xl" />
           <div>
             <div className="text-sm font-semibold">
