@@ -31,6 +31,6 @@ export const GET = apiHandler(async ({ pathParams, session }) => {
   } else if (Object.values(deleteCheckList).every((field) => field)) {
     result = 'OK_TO_DELETE';
   }
-  result = 'ARTIFACTORY_NOT_DELETABLE';
+
   return OkResponse(result);
 });
