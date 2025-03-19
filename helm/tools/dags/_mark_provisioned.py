@@ -56,9 +56,9 @@ def fetch_products_mark_completed(
                 continue
             elif request_phase == "Succeeded":
                 # Call the callback URL to mark the product as Provisioned
+                mark_provisioned_url = f"{mark_provisioned_url}/{licence_plate}/provision"
                 kc = Keycloak(kc_auth_url, kc_realm, kc_client_id, kc_client_secret)
                 access_token = kc.get_access_token()
-                mark_provisioned_url = f"{mark_provisioned_url}/{licence_plate}/provision"
                 headers = {"Authorization": f"Bearer {access_token}", "Content-Type": "application/json"}
                 response = requests.post(mark_provisioned_url, headers=headers, data=json.dumps({}))
 
