@@ -52,7 +52,7 @@ jest.mock('@/services/keycloak/app-realm', () => ({
 }));
 
 jest.mock('@/utils/node/jwt', () => ({
-  verifyKeycloakJwtTokenSafe: jest.fn(async () => ({ service_account_type: 'user', 'kc-userid': 'xxxxxxxxxxxx' })),
+  parseKeycloakJwtTokenSafe: jest.fn(async () => ({ service_account_type: 'user', 'kc-userid': 'xxxxxxxxxxxx' })),
 }));
 
 jest.mock('@/helpers/pdfs/emou/index', () => ({

@@ -5,12 +5,12 @@ import { NextRequest, NextResponse } from 'next/server';
 import { Session, PermissionsKey } from 'next-auth';
 import { getServerSession } from 'next-auth/next';
 import { z, TypeOf, ZodType } from 'zod';
-import { AUTH_SERVER_URL, AUTH_RELM, APP_ENV } from '@/config';
+import { AUTH_SERVER_URL, AUTH_RELM, IS_LOCAL } from '@/config';
 import { GlobalRole } from '@/constants';
 import { authOptions, generateSession } from '@/core/auth-options';
 import { findUser } from '@/services/keycloak/app-realm';
 import { checkArrayStringCondition, parseQueryString } from '@/utils/js';
-import { verifyKeycloakJwtTokenSafe } from '@/utils/node';
+import { verifyKeycloakJwtTokenSafe, parseKeycloakJwtTokenSafe } from '@/utils/node';
 import { logger } from './logging';
 import {
   BadRequestResponse,
@@ -20,6 +20,8 @@ import {
   InternalServerErrorResponse,
   OkResponse,
 } from './responses';
+
+const verifyKeycloakJwtToken = IS_LOCAL ? parseKeycloakJwtTokenSafe : verifyKeycloakJwtTokenSafe;
 
 interface HandlerProps<TPathParams, TQueryParams, TBody> {
   roles?: string[];
@@ -36,26 +38,6 @@ interface HandlerProps<TPathParams, TQueryParams, TBody> {
     requiredClaims?: string[];
   };
   useServiceAccount?: boolean;
-}
-
-async function generateSessionWithRoles(roles: string[], email: string = '') {
-  return generateSession({
-    session: {} as Session,
-    token: { email },
-    userSession: {
-      email,
-      roles: roles.concat(GlobalRole.ServiceAccount),
-      teams: [],
-      sub: '',
-      accessToken: '',
-      refreshToken: '',
-      idToken: '',
-    },
-  });
-}
-
-function parseRoles(rolesStr: string): string[] {
-  return _uniq(_compact(rolesStr.split(',').map(_trim)));
 }
 
 interface RouteProps<TPathParams, TQueryParams, TBody> {
@@ -109,7 +91,7 @@ function createApiHandler<
 
             const { authUrl = AUTH_SERVER_URL, realm = AUTH_RELM, clientId, requiredClaims } = keycloakOauth2;
 
-            jwtData = await verifyKeycloakJwtTokenSafe({
+            jwtData = await verifyKeycloakJwtToken({
               jwtToken: bearerToken,
               authUrl,
               realm,
@@ -125,37 +107,63 @@ function createApiHandler<
             if (!bearerToken) {
               return UnauthorizedResponse('not allowed to perform the task');
             }
-            if (APP_ENV === 'localdev') {
-              const rolesArr = parseRoles(roles?.[0]?.split(' ')?.join(',') || '');
-              session = await generateSessionWithRoles(rolesArr);
-            } else {
-              jwtData = await verifyKeycloakJwtTokenSafe({
-                jwtToken: bearerToken,
-                authUrl: AUTH_SERVER_URL,
-                realm: AUTH_RELM,
-                requiredClaims: ['service_account_type'],
+
+            jwtData = await verifyKeycloakJwtToken({
+              jwtToken: bearerToken,
+              authUrl: AUTH_SERVER_URL,
+              realm: AUTH_RELM,
+              requiredClaims: ['service_account_type'],
+            });
+
+            if (!jwtData) {
+              return UnauthorizedResponse('invalid token');
+            }
+
+            const saType = jwtData.service_account_type;
+
+            if (saType === 'user') {
+              const kcUserId = jwtData['kc-userid'];
+              if (!kcUserId) return UnauthorizedResponse('invalid token');
+
+              const kcUser = await findUser(kcUserId);
+              if (!kcUser) return BadRequestResponse('keycloak user not found');
+
+              session = await generateSession({
+                session: {} as Session,
+                token: {
+                  email: kcUser.email,
+                },
+                userSession: {
+                  email: kcUser.email ?? '',
+                  roles: kcUser.authRoleNames.concat(GlobalRole.ServiceAccount),
+                  teams: [],
+                  sub: '',
+                  accessToken: '',
+                  refreshToken: '',
+                  idToken: '',
+                },
               });
+            } else if (saType === 'team') {
+              const rolesStr = jwtData.roles;
+              const rolesArr: string[] = _uniq(_compact(rolesStr.split(',').map(_trim)));
 
-              if (!jwtData) {
-                return UnauthorizedResponse('invalid token');
-              }
-
-              const saType = jwtData.service_account_type;
-
-              if (saType === 'user') {
-                const kcUserId = jwtData['kc-userid'];
-                if (!kcUserId) return UnauthorizedResponse('invalid token');
-
-                const kcUser = await findUser(kcUserId);
-                if (!kcUser) return BadRequestResponse('keycloak user not found');
-
-                session = await generateSessionWithRoles(kcUser.authRoleNames, kcUser.email ?? '');
-              } else if (saType === 'team') {
-                const rolesArr = parseRoles(jwtData.roles);
-                session = await generateSessionWithRoles(rolesArr);
-              } else {
-                return UnauthorizedResponse('invalid token');
-              }
+              session = await generateSession({
+                session: {} as Session,
+                token: {
+                  email: '',
+                },
+                userSession: {
+                  email: '',
+                  roles: rolesArr.concat(GlobalRole.ServiceAccount),
+                  teams: [],
+                  sub: '',
+                  accessToken: '',
+                  refreshToken: '',
+                  idToken: '',
+                },
+              });
+            } else {
+              return UnauthorizedResponse('invalid token');
             }
           }
         }
