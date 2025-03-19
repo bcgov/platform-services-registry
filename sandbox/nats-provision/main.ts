@@ -78,7 +78,6 @@ async function main() {
             },
             body: JSON.stringify({}),
           });
-          console.log('This is the response: ', res);
           console.log('Response sent:', res.status);
         } catch (error) {
           console.error('private cloud provision:', error);
@@ -124,7 +123,7 @@ async function main() {
             },
             body: JSON.stringify({}),
           });
-          console.log(res);
+          console.log('Response sent:', res.status);
         } catch (error) {
           console.error('public cloud provision:', error);
         }
