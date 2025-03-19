@@ -16,10 +16,8 @@ import { KcAdmin } from '../_packages/keycloak-admin/src/main.js';
 
 const natsServer = `${NATS_HOST}:${NATS_PORT}`;
 
-// http://localhost:8080/realms/platform-services
-
 async function getkeyCloakAccessToken() {
-  const tokenResponse = await fetch(`${KEYCLOAK_URL}/realms/platform-services/protocol/openid-connect/token`, {
+  const tokenResponse = await fetch(`${KEYCLOAK_URL}/realms/${AUTH_REALM_NAME}/protocol/openid-connect/token`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/x-www-form-urlencoded',
@@ -78,7 +76,7 @@ async function main() {
             },
             body: JSON.stringify({}),
           });
-          console.log('Response sent:', res.status);
+          console.log('Response status:', res.status);
         } catch (error) {
           console.error('private cloud provision:', error);
         }
@@ -123,7 +121,7 @@ async function main() {
             },
             body: JSON.stringify({}),
           });
-          console.log('Response sent:', res.status);
+          console.log('Response status', res.status);
         } catch (error) {
           console.error('public cloud provision:', error);
         }
