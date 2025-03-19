@@ -1,10 +1,14 @@
+import json
 import requests
 from bson.objectid import ObjectId
 from _projects import get_mongo_db
 from _utils import keys_exist
+from _keycloak import Keycloak
 
 
-def fetch_products_mark_completed(provisioner_api_url, mark_provisioned_url, mongo_conn_id):
+def fetch_products_mark_completed(
+    provisioner_api_url, mark_provisioned_url, mongo_conn_id, kc_auth_url, kc_realm, kc_client_id, kc_client_secret
+):
     """
     Fetches Approved Requests from MongoDB, makes call to the Provisioner by every of them
     and if labels completed = true and phase = Succeeded, makes a call to callback URL.
@@ -51,9 +55,13 @@ def fetch_products_mark_completed(provisioner_api_url, mark_provisioned_url, mon
                 # TODO: add resend logic here in the future
                 continue
             elif request_phase == "Succeeded":
-                # call the callback URL to mark the product Provisioned
-                mark_finished_url = f"{mark_provisioned_url}/{licence_plate}"
-                response = requests.put(mark_finished_url)
+                # Call the callback URL to mark the product as Provisioned
+                kc = Keycloak(kc_auth_url, kc_realm, kc_client_id, kc_client_secret)
+                access_token = kc.get_access_token()
+                mark_provisioned_url = f"{mark_provisioned_url}/{licence_plate}/provision"
+                headers = {"Authorization": f"Bearer {access_token}", "Content-Type": "application/json"}
+                response = requests.post(mark_provisioned_url, headers=headers, data=json.dumps({}))
+
                 if response.status_code != 200:
                     print(
                         f"Error while marking {licence_plate} as Provisioned: {response.status_code} - {response.reason}"
