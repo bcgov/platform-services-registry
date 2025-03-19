@@ -1,3 +1,8 @@
+## [0.51.0](https://github.com/bcgov/platform-services-registry/compare/v0.50.0...v0.51.0) (2025-03-19)
+
+### Features
+
+* **4966:** deprecate Bootstrap library in maintainance page ([c8da3ea](https://github.com/bcgov/platform-services-registry/commit/c8da3ea1dcad99cb7edbfe6ac7fc7d409aef1369))
 ## [0.50.0](https://github.com/bcgov/platform-services-registry/compare/v0.49.0...v0.50.0) (2025-03-14)
 
 ### Features
