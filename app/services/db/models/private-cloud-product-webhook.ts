@@ -1,6 +1,7 @@
 import { Ministry, Prisma, PrivateCloudProductMemberRole } from '@prisma/client';
 import { Session } from 'next-auth';
 import prisma from '@/core/prisma';
+import { getPrivateCloudProductContext } from '@/helpers/product';
 import { PrivateCloudProductWebhookDecorate } from '@/types/doc-decorate';
 import {
   PrivateCloudProductWebhookDetail,
@@ -8,37 +9,31 @@ import {
   PrivateCloudProductWebhookDetailDecorated,
   PrivateCloudProductWebhookSimpleDecorated,
 } from '@/types/private-cloud';
-import { arraysIntersect } from '@/utils/js';
 import { createSessionModel } from './core';
 
 async function baseFilter(session: Session) {
   if (!session.isUser && !session.isServiceAccount) return false;
-  if (session.permissions.viewPrivateProductWebhook) return {};
+  if (session.permissions.viewPrivateProductWebhook) return true;
 
   const { user, ministries } = session;
 
   const productFilters: Prisma.PrivateCloudProjectWhereInput[] = [
-    { ministry: { in: ministries.editor as Ministry[] } },
-    { ministry: { in: ministries.reader as Ministry[] } },
-  ];
-
-  if (user.id) {
-    productFilters.push(
-      { projectOwnerId: user.id },
-      { primaryTechnicalLeadId: user.id },
-      { secondaryTechnicalLeadId: user.id },
-      {
-        members: {
-          some: {
-            userId: user.id,
-            roles: {
-              hasSome: [PrivateCloudProductMemberRole.EDITOR, PrivateCloudProductMemberRole.VIEWER],
-            },
+    { projectOwnerId: user.id },
+    { primaryTechnicalLeadId: user.id },
+    { secondaryTechnicalLeadId: user.id },
+    {
+      members: {
+        some: {
+          userId: user.id,
+          roles: {
+            hasSome: [PrivateCloudProductMemberRole.EDITOR, PrivateCloudProductMemberRole.VIEWER],
           },
         },
       },
-    );
-  }
+    },
+    { ministry: { in: ministries.editor as Ministry[] } },
+    { ministry: { in: ministries.reader as Ministry[] } },
+  ];
 
   const products = await prisma.privateCloudProject.findMany({
     where: { OR: productFilters },
@@ -46,10 +41,7 @@ async function baseFilter(session: Session) {
   });
   const licencePlates = products.map((product) => product.licencePlate);
 
-  const filter: Prisma.PrivateCloudProductWebhookWhereInput = {
-    licencePlate: { in: licencePlates },
-  };
-
+  const filter: Prisma.PrivateCloudProductWebhookWhereInput = { licencePlate: { in: licencePlates } };
   return filter;
 }
 
@@ -57,7 +49,7 @@ async function decorate<T extends PrivateCloudProductWebhookSimple | PrivateClou
   doc: T,
   session: Session,
 ) {
-  const { user, permissions, ministries } = session;
+  const { permissions } = session;
   const decoratedDoc = doc as T & PrivateCloudProductWebhookDecorate;
 
   const product = await prisma.privateCloudProject.findUnique({
@@ -71,34 +63,30 @@ async function decorate<T extends PrivateCloudProductWebhookSimple | PrivateClou
     },
   });
 
-  const isMyProduct =
-    product &&
-    [product.projectOwnerId, product.primaryTechnicalLeadId, product.secondaryTechnicalLeadId].includes(user.id);
+  if (!product) {
+    decoratedDoc._permissions = {
+      view: false,
+      edit: false,
+      delete: false,
+    };
 
-  const productMinistry = product?.ministry ?? '';
-  const members = product?.members || [];
-  const hasMinistryAccess = product
-    ? ministries.reader.includes(productMinistry) || ministries.editor.includes(productMinistry)
-    : false;
+    return decoratedDoc;
+  }
+
+  const { isMaintainer, isViewer, isEditor, isMinistryReader, isMinistryEditor } = getPrivateCloudProductContext(
+    product,
+    session,
+  );
 
   const canView =
     permissions.viewPrivateProductWebhook ||
-    isMyProduct ||
-    hasMinistryAccess ||
-    members.some(
-      (member: any) =>
-        member.userId === user.id &&
-        arraysIntersect(member.roles, [PrivateCloudProductMemberRole.EDITOR, PrivateCloudProductMemberRole.VIEWER]),
-    );
+    isMaintainer ||
+    isViewer ||
+    isEditor ||
+    isMinistryReader ||
+    isMinistryEditor;
 
-  const canEdit =
-    permissions.editPrivateProductWebhook ||
-    isMyProduct ||
-    (product ? ministries.editor.includes(productMinistry) : false) ||
-    members.some(
-      (member: any) =>
-        member.userId === user.id && arraysIntersect(member.roles, [PrivateCloudProductMemberRole.EDITOR]),
-    );
+  const canEdit = permissions.editPrivateProductWebhook || isMaintainer || isEditor || isMinistryEditor;
 
   decoratedDoc._permissions = {
     view: canView,

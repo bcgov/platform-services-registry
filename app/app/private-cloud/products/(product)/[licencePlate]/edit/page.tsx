@@ -170,13 +170,8 @@ export default privateCloudProductEdit(({ session }) => {
           </div>
         </form>
       </FormProvider>
-      <SiloAccordion
-        className="my-4"
-        currentProduct={{
-          ...snap.currentProduct,
-        }}
-        session={session!}
-      />
+
+      <SiloAccordion className="my-4" product={snap.currentProduct} />
     </div>
   );
 });

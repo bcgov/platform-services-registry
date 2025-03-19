@@ -1,9 +1,11 @@
+import { PrivateCloudProductMemberRole, PrivateCloudProject } from '@prisma/client';
 import _forEach from 'lodash-es/forEach';
 import _get from 'lodash-es/get';
 import _isPlainObject from 'lodash-es/isPlainObject';
 import _isString from 'lodash-es/isString';
 import _mapValues from 'lodash-es/mapValues';
 import _pick from 'lodash-es/pick';
+import { Session } from 'next-auth';
 import { ministryOptions } from '@/constants';
 import { extractNumbers } from '@/utils/js';
 
@@ -93,3 +95,51 @@ export function getTotalQuota(...quotaValues: string[]) {
 }
 
 export const getTotalQuotaStr = (...values: string[]) => String(getTotalQuota(...values));
+
+export function getPrivateCloudProductContext(
+  product: Pick<
+    PrivateCloudProject,
+    'projectOwnerId' | 'primaryTechnicalLeadId' | 'secondaryTechnicalLeadId' | 'members' | 'ministry'
+  >,
+  session: Session,
+) {
+  const { user, ministries } = session;
+
+  const isMaintainer = [
+    product.projectOwnerId,
+    product.primaryTechnicalLeadId,
+    product.secondaryTechnicalLeadId,
+  ].includes(user.id);
+
+  let isViewer = false;
+  let isEditor = false;
+
+  product.members.forEach((member) => {
+    if (member.userId === user.id) {
+      member.roles.forEach((role) => {
+        if (role === PrivateCloudProductMemberRole.VIEWER) {
+          isViewer = true;
+          return false;
+        }
+
+        if (role === PrivateCloudProductMemberRole.EDITOR) {
+          isEditor = true;
+          return false;
+        }
+      });
+
+      return false;
+    }
+  });
+
+  const isMinistryReader = ministries.reader.includes(product.ministry);
+  const isMinistryEditor = ministries.editor.includes(product.ministry);
+
+  return {
+    isMaintainer,
+    isViewer,
+    isEditor,
+    isMinistryReader,
+    isMinistryEditor,
+  };
+}
