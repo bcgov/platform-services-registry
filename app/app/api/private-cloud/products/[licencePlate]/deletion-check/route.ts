@@ -26,9 +26,11 @@ export const GET = apiHandler(async ({ pathParams, session }) => {
 
   let result = 'NOT_DELETABLE';
 
-  if (Object.values(deleteCheckList).every((field) => field)) {
+  if (!deleteCheckList.artifactoryDeletability) {
+    result = 'ARTIFACTORY_NOT_DELETABLE';
+  } else if (Object.values(deleteCheckList).every((field) => field)) {
     result = 'OK_TO_DELETE';
   }
-
+  result = 'ARTIFACTORY_NOT_DELETABLE';
   return OkResponse(result);
 });

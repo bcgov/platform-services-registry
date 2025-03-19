@@ -16,6 +16,7 @@ import { PrivateCloudProductDetailDecorated } from '@/types/private-cloud';
 import { openNotificationModal } from './notification';
 
 const OK_TO_DELETE = 'OK_TO_DELETE';
+const ARTIFACTORY_NOT_DELETABLE = 'ARTIFACTORY_NOT_DELETABLE';
 
 interface ModalProps {
   product: PrivateCloudProductDetailDecorated;
@@ -74,27 +75,42 @@ export const openPrivateCloudProductDeleteModal = createModal<ModalProps, ModalS
           overlayProps={{ radius: 'sm', blur: 2 }}
         />
 
-        {deletionAvailability === OK_TO_DELETE ? (
-          <div className="flex items-center justify-between">
-            <span className="flex items-center text-sm text-green-600">
-              <div className="flex">
+        <div className="flex items-center justify-between">
+          <span
+            className={`flex items-center text-sm ${
+              deletionAvailability === OK_TO_DELETE ? 'text-green-600' : 'text-red-600'
+            }`}
+          >
+            {deletionAvailability === OK_TO_DELETE ? (
+              <>
                 <IconCircleCheck className="h-5 w-5 mr-2 flex-shrink-0" aria-hidden="true" />
                 Ready to Delete
-              </div>
-            </span>
-            <p className="text-sm text-gray-500">Deletion check has passed.</p>
-          </div>
-        ) : (
-          <div className="flex items-center justify-between">
-            <span className="flex items-center text-sm text-red-600">
-              <div className="flex">
+              </>
+            ) : (
+              <>
                 <IconExclamationCircle className="h-5 w-5 mr-2 flex-shrink-0" aria-hidden="true" />
-                Please remember to remove all pods and PVCs from all four namespaces before trying to delete again.
-              </div>
-            </span>
-            <p className="text-sm text-gray-500">Deletion check has failed.</p>
-          </div>
-        )}
+                {deletionAvailability === ARTIFACTORY_NOT_DELETABLE ? (
+                  <div className="text-left">
+                    Your project set cannot be deleted, because you have an Artifactory project object in your
+                    namespaces and probably artifacts in Artifactory. If you need to delete them, please contact
+                    platform admins by email{' '}
+                    <a href="mailto:PlatformServicesTeam@gov.bc.ca" className="text-red-900">
+                      PlatformServicesTeam@gov.bc.ca
+                    </a>{' '}
+                    before trying again.
+                  </div>
+                ) : (
+                  <>
+                    Please remember to remove all pods and PVCs from all four namespaces before trying to delete again.
+                  </>
+                )}
+              </>
+            )}
+          </span>
+          <p className="text-sm text-gray-500">
+            Deletion check has {deletionAvailability === OK_TO_DELETE ? 'passed.' : 'failed.'}
+          </p>
+        </div>
 
         <Divider my="md" />
 
