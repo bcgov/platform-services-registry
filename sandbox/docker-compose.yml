@@ -133,6 +133,7 @@ services:
       NATS_HOST: nats
       NATS_PORT: 4222
       APP_URL: http://${MACHINE_HOST_IP}:3000
+      AUTH_REALM_NAME: platform-services
       KEYCLOAK_URL: http://keycloak:8080
       PUBLIC_CLOUD_REALM_NAME: public-cloud
       PUBLIC_CLOUD_CLIENT_ID: roles

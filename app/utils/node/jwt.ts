@@ -139,3 +139,28 @@ export async function verifyKeycloakJwtTokenSafe({
     return null;
   }
 }
+
+export async function parseKeycloakJwtTokenSafe({
+  authUrl,
+  realm,
+  jwtToken,
+  audience,
+  authorizedPresenter,
+  requiredClaims,
+}: Omit<VerifyJwtTokenArgs, 'jwksUri' | 'issuer'> & { authUrl: string; realm: string }) {
+  if (!jwtToken) {
+    throw Error('invalid jwt token');
+  }
+  try {
+    if (jwtToken.startsWith(authHeaderPrefix)) jwtToken = jwtToken.slice(authHeaderPrefix.length).trim();
+
+    const decodedToken = jws.decode(jwtToken);
+
+    if (decodedToken === null) return null;
+
+    return decodedToken.payload;
+  } catch (error) {
+    logger.error('parseKeycloakJwtTokenSafe:', error);
+    return null;
+  }
+}

@@ -5,12 +5,12 @@ import { NextRequest, NextResponse } from 'next/server';
 import { Session, PermissionsKey } from 'next-auth';
 import { getServerSession } from 'next-auth/next';
 import { z, TypeOf, ZodType } from 'zod';
-import { AUTH_SERVER_URL, AUTH_RELM } from '@/config';
+import { AUTH_SERVER_URL, AUTH_RELM, IS_LOCAL } from '@/config';
 import { GlobalRole } from '@/constants';
 import { authOptions, generateSession } from '@/core/auth-options';
 import { findUser } from '@/services/keycloak/app-realm';
 import { checkArrayStringCondition, parseQueryString } from '@/utils/js';
-import { verifyKeycloakJwtTokenSafe } from '@/utils/node';
+import { verifyKeycloakJwtTokenSafe, parseKeycloakJwtTokenSafe } from '@/utils/node';
 import { logger } from './logging';
 import {
   BadRequestResponse,
@@ -20,6 +20,8 @@ import {
   InternalServerErrorResponse,
   OkResponse,
 } from './responses';
+
+const verifyKeycloakJwtToken = IS_LOCAL ? parseKeycloakJwtTokenSafe : verifyKeycloakJwtTokenSafe;
 
 interface HandlerProps<TPathParams, TQueryParams, TBody> {
   roles?: string[];
@@ -89,7 +91,7 @@ function createApiHandler<
 
             const { authUrl = AUTH_SERVER_URL, realm = AUTH_RELM, clientId, requiredClaims } = keycloakOauth2;
 
-            jwtData = await verifyKeycloakJwtTokenSafe({
+            jwtData = await verifyKeycloakJwtToken({
               jwtToken: bearerToken,
               authUrl,
               realm,
@@ -106,7 +108,7 @@ function createApiHandler<
               return UnauthorizedResponse('not allowed to perform the task');
             }
 
-            jwtData = await verifyKeycloakJwtTokenSafe({
+            jwtData = await verifyKeycloakJwtToken({
               jwtToken: bearerToken,
               authUrl: AUTH_SERVER_URL,
               realm: AUTH_RELM,
