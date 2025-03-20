@@ -7,15 +7,16 @@ import { useQuery, useMutation } from '@tanstack/react-query';
 import { FormProvider, useForm } from 'react-hook-form';
 import { z } from 'zod';
 import HookFormTextInput from '@/components/generic/input/HookFormTextInput';
+import { privateCloudTeamEmail } from '@/constants';
 import { createModal } from '@/core/modal';
 import {
   deletePrivateCloudProject,
   checkPrivateCloudProductDeletionAvailability,
 } from '@/services/backend/private-cloud/products';
 import { PrivateCloudProductDetailDecorated } from '@/types/private-cloud';
+import { DeletionStatus } from '@/types/private-cloud';
+import MailLink from '../generic/button/MailLink';
 import { openNotificationModal } from './notification';
-
-const OK_TO_DELETE = 'OK_TO_DELETE';
 
 interface ModalProps {
   product: PrivateCloudProductDetailDecorated;
@@ -74,27 +75,39 @@ export const openPrivateCloudProductDeleteModal = createModal<ModalProps, ModalS
           overlayProps={{ radius: 'sm', blur: 2 }}
         />
 
-        {deletionAvailability === OK_TO_DELETE ? (
-          <div className="flex items-center justify-between">
-            <span className="flex items-center text-sm text-green-600">
-              <div className="flex">
+        <div className="flex items-center justify-between">
+          <span
+            className={`flex items-center text-sm ${
+              deletionAvailability === DeletionStatus.OK_TO_DELETE ? 'text-green-600' : 'text-red-600'
+            }`}
+          >
+            {deletionAvailability === DeletionStatus.OK_TO_DELETE ? (
+              <>
                 <IconCircleCheck className="h-5 w-5 mr-2 flex-shrink-0" aria-hidden="true" />
                 Ready to Delete
-              </div>
-            </span>
-            <p className="text-sm text-gray-500">Deletion check has passed.</p>
-          </div>
-        ) : (
-          <div className="flex items-center justify-between">
-            <span className="flex items-center text-sm text-red-600">
-              <div className="flex">
+              </>
+            ) : (
+              <>
                 <IconExclamationCircle className="h-5 w-5 mr-2 flex-shrink-0" aria-hidden="true" />
-                Please remember to remove all pods and PVCs from all four namespaces before trying to delete again.
-              </div>
-            </span>
-            <p className="text-sm text-gray-500">Deletion check has failed.</p>
-          </div>
-        )}
+                {deletionAvailability === DeletionStatus.ARTIFACTORY_NOT_DELETABLE ? (
+                  <div className="text-left">
+                    Your project set cannot be deleted, because you have an Artifactory project object in your
+                    namespaces and probably artifacts in Artifactory. If you need to delete them, please contact
+                    platform admins by email <MailLink to={privateCloudTeamEmail} className="text-red-900" /> before
+                    trying again.
+                  </div>
+                ) : (
+                  <>
+                    Please remember to remove all pods and PVCs from all four namespaces before trying to delete again.
+                  </>
+                )}
+              </>
+            )}
+          </span>
+          <p className="text-sm text-gray-500">
+            Deletion check has {deletionAvailability === DeletionStatus.OK_TO_DELETE ? 'passed.' : 'failed.'}
+          </p>
+        </div>
 
         <Divider my="md" />
 
@@ -113,7 +126,7 @@ export const openPrivateCloudProductDeleteModal = createModal<ModalProps, ModalS
           </span>
         </div>
 
-        {deletionAvailability === OK_TO_DELETE ? (
+        {deletionAvailability === DeletionStatus.OK_TO_DELETE ? (
           <>
             <p className="mt-8 text-sm">
               Are you sure you want to delete this product? Enter the following data to proceed:
