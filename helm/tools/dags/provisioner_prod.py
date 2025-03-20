@@ -7,7 +7,7 @@ from _task_failure_callback import send_alert
 
 MONGO_CONN_ID = "pltsvc-prod"
 PROV_API_URL = os.getenv("PROD_PROVISIONER_URL")
-MARK_PROV_URL = os.getenv("PROD_MARK_NEW_PROVISIONED_URL")
+MARK_PROV_URL = "https://pltsvc.apps.silver.devops.gov.bc.ca/api/v1/private-cloud/products"
 KEYCLOAK_AUTH_URL = "https://loginproxy.gov.bc.ca/auth"
 KEYCLOAK_REALM = "platform-services"
 REGISTRY_PROVISION_SA_ID = os.getenv("PROD_PROVISION_SA_ID")

@@ -60,7 +60,7 @@ def fetch_products_mark_completed(
                 kc = Keycloak(kc_auth_url, kc_realm, kc_client_id, kc_client_secret)
                 access_token = kc.get_access_token()
                 headers = {"Authorization": f"Bearer {access_token}", "Content-Type": "application/json"}
-                response = requests.post(mark_provisioned_url, headers=headers, data=json.dumps({}))
+                response = requests.post(mark_provisioned_url, headers=headers, json={})
 
                 if response.status_code != 200:
                     print(
