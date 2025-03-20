@@ -52,6 +52,12 @@ export type PrivateCloudProductSearch = {
   totalCount: number;
 };
 
+export enum DeletionStatus {
+  NOT_DELETABLE = 'NOT_DELETABLE',
+  ARTIFACTORY_NOT_DELETABLE = 'ARTIFACTORY_NOT_DELETABLE',
+  OK_TO_DELETE = 'OK_TO_DELETE',
+}
+
 export type PrivateCloudRequestDetail = Prisma.PrivateCloudRequestGetPayload<{
   include: {
     decisionMaker: true;
