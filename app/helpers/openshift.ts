@@ -30,15 +30,15 @@ export default async function openshiftDeletionCheck(
   namespacePrefix: string,
   clusterNameParam: string,
 ): Promise<DeletableField> {
-  // if (!ENABLE_DELETION_CHECK) {
-  //   return {
-  //     namespaceDeletability: true,
-  //     podsDeletability: true,
-  //     pvcDeletability: true,
-  //     artifactoryDeletability: true,
-  //     provisionerDeletionChecked: true,
-  //   };
-  // }
+  if (!ENABLE_DELETION_CHECK) {
+    return {
+      namespaceDeletability: true,
+      podsDeletability: true,
+      pvcDeletability: true,
+      artifactoryDeletability: true,
+      provisionerDeletionChecked: true,
+    };
+  }
 
   const CLUSTER_SERVICE_ACCOUNT_TOKEN = {
     clab: CLAB_SERVICE_ACCOUNT_TOKEN || '',

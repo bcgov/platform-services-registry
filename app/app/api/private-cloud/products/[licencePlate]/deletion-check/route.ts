@@ -23,7 +23,7 @@ export const GET = apiHandler(async ({ pathParams, session }) => {
     return UnauthorizedResponse();
   }
 
-  const deleteCheckList = await openshiftDeletionCheck('fe6594', 'KLAB');
+  const deleteCheckList = await openshiftDeletionCheck(licencePlate, product.cluster);
 
   let result: DeletionStatus = DeletionStatus.NOT_DELETABLE;
 
