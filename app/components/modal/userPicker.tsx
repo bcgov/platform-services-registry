@@ -3,6 +3,7 @@
 import { Button, Divider, Grid } from '@mantine/core';
 import { randomId } from '@mantine/hooks';
 import { User } from '@prisma/client';
+import { IconInfoSquareFilled } from '@tabler/icons-react';
 import { useState } from 'react';
 import UserAutocomplete from '@/components/users/UserAutocomplete';
 import { createModal } from '@/core/modal';
@@ -13,6 +14,11 @@ interface ModalProps {
 
 interface ModalState {
   user?: User | null;
+}
+
+interface Warning {
+  condition: boolean;
+  message: string;
 }
 
 export const openUserPickerModal = createModal<ModalProps, ModalState>({
@@ -27,6 +33,26 @@ export const openUserPickerModal = createModal<ModalProps, ModalState>({
     const [user, setUser] = useState<User | null>(initialValue && initialValue.id ? initialValue : null);
     const [autocompId, setAutocompId] = useState(randomId());
 
+    const WarningMessage = ({ message }) => (
+      <div className="mt-3">
+        <IconInfoSquareFilled color="red" className="inline-block" />
+        <span className="ml-2 text-red-500 font-bold">{message}</span>
+      </div>
+    );
+
+    let warnings: Warning[] = [];
+
+    if (user) {
+      warnings = [
+        { condition: !user.ministry, message: 'Please populate your account with your home ministry name' },
+        {
+          condition: !user.idir,
+          message: 'Please populate your account with your Integrated Directory Identification and Resource (IDIR)',
+        },
+        { condition: !user.upn, message: 'Please populate your account with your User Principle Name (UPN)' },
+      ];
+    }
+
     return (
       <>
         <UserAutocomplete
@@ -36,6 +62,10 @@ export const openUserPickerModal = createModal<ModalProps, ModalState>({
           }}
           initialValue={user}
         />
+
+        {warnings.map(
+          (warning, index) => warning.condition && <WarningMessage key={index} message={warning.message} />,
+        )}
 
         <Divider my="md" />
 
@@ -56,8 +86,11 @@ export const openUserPickerModal = createModal<ModalProps, ModalState>({
             <Button color="secondary" onClick={() => closeModal()} className="mr-1">
               Close
             </Button>
+
             <Button
               color="primary"
+              disabled={!user?.idir || !user?.upn}
+              className={!user?.idir || !user?.upn ? 'opacity-50 cursor-not-allowed' : ''}
               onClick={() => {
                 state.user = user;
                 closeModal();

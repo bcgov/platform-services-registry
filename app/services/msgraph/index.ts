@@ -7,8 +7,6 @@ export function processMsUser(user: MsUser): AppUser | null {
   const idir = user.onPremisesSamAccountName;
   const upn = user.userPrincipalName;
 
-  if (!idir || !upn) return null;
-
   return {
     id: '',
     providerUserId: user.id,
