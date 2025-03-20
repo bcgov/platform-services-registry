@@ -63,9 +63,11 @@ export const openUserPickerModal = createModal<ModalProps, ModalState>({
           initialValue={user}
         />
 
-        {warnings.map(
-          (warning, index) => warning.condition && <WarningMessage key={index} message={warning.message} />,
-        )}
+        {warnings
+          .filter((warning) => warning.condition)
+          .map((warning, index) => (
+            <WarningMessage key={index} message={warning.message} />
+          ))}
 
         <Divider my="md" />
 
