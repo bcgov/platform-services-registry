@@ -1,6 +1,7 @@
-import { Prisma, PrivateCloudProductMemberRole } from '@prisma/client';
+import { Ministry, Prisma, PrivateCloudProductMemberRole } from '@prisma/client';
 import { Session } from 'next-auth';
 import prisma from '@/core/prisma';
+import { getPrivateCloudProductContext } from '@/helpers/product';
 import { PrivateCloudProductWebhookDecorate } from '@/types/doc-decorate';
 import {
   PrivateCloudProductWebhookDetail,
@@ -11,28 +12,36 @@ import {
 import { createSessionModel } from './core';
 
 async function baseFilter(session: Session) {
-  if (!session?.user.id) return false;
+  if (!session.isUser && !session.isServiceAccount) return false;
+  if (session.permissions.viewPrivateProductWebhook) return true;
 
-  const OR: Prisma.PrivateCloudProjectWhereInput[] = [
-    { projectOwnerId: session.user.id },
-    { primaryTechnicalLeadId: session.user.id },
-    { secondaryTechnicalLeadId: session.user.id },
+  const { user, ministries } = session;
+
+  const productFilters: Prisma.PrivateCloudProjectWhereInput[] = [
+    { projectOwnerId: user.id },
+    { primaryTechnicalLeadId: user.id },
+    { secondaryTechnicalLeadId: user.id },
     {
       members: {
         some: {
-          userId: session.user.id,
+          userId: user.id,
           roles: {
             hasSome: [PrivateCloudProductMemberRole.EDITOR, PrivateCloudProductMemberRole.VIEWER],
           },
         },
       },
     },
+    { ministry: { in: ministries.editor as Ministry[] } },
+    { ministry: { in: ministries.reader as Ministry[] } },
   ];
 
-  const products = await prisma.privateCloudProject.findMany({ where: { OR }, select: { licencePlate: true } });
-  const productLicencePlates = products.map(({ licencePlate }) => licencePlate);
+  const products = await prisma.privateCloudProject.findMany({
+    where: { OR: productFilters },
+    select: { licencePlate: true },
+  });
+  const licencePlates = products.map((product) => product.licencePlate);
 
-  const filter: Prisma.PrivateCloudProductWebhookWhereInput = { licencePlate: { in: productLicencePlates } };
+  const filter: Prisma.PrivateCloudProductWebhookWhereInput = { licencePlate: { in: licencePlates } };
   return filter;
 }
 
@@ -40,11 +49,49 @@ async function decorate<T extends PrivateCloudProductWebhookSimple | PrivateClou
   doc: T,
   session: Session,
 ) {
+  const { permissions } = session;
   const decoratedDoc = doc as T & PrivateCloudProductWebhookDecorate;
+
+  const product = await prisma.privateCloudProject.findUnique({
+    where: { licencePlate: doc.licencePlate },
+    select: {
+      projectOwnerId: true,
+      primaryTechnicalLeadId: true,
+      secondaryTechnicalLeadId: true,
+      ministry: true,
+      members: true,
+    },
+  });
+
+  if (!product) {
+    decoratedDoc._permissions = {
+      view: false,
+      edit: false,
+      delete: false,
+    };
+
+    return decoratedDoc;
+  }
+
+  const { isMaintainer, isViewer, isEditor, isMinistryReader, isMinistryEditor } = getPrivateCloudProductContext(
+    product,
+    session,
+  );
+
+  const canView =
+    permissions.viewPrivateProductWebhook ||
+    isMaintainer ||
+    isViewer ||
+    isEditor ||
+    isMinistryReader ||
+    isMinistryEditor;
+
+  const canEdit = permissions.editPrivateProductWebhook || isMaintainer || isEditor || isMinistryEditor;
+
   decoratedDoc._permissions = {
-    view: true,
-    edit: true,
-    delete: true,
+    view: canView,
+    edit: canEdit,
+    delete: canEdit,
   };
 
   return decoratedDoc;
