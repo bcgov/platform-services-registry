@@ -5,9 +5,9 @@ import { createSamplePublicCloudProductData } from '@/helpers/mock-resources';
 import { mockSessionByEmail, mockSessionByRole } from '@/services/api-test/core';
 import { provisionPublicCloudProduct } from '@/services/api-test/public-cloud';
 import {
-  createPublicCloudProduct,
+  createPublicCloudProduct as createPublicCloudProductTest,
   editPublicCloudProduct,
-  deletePublicCloudProduct,
+  deletePublicCloudProduct as deletePublicCloudProductTest,
   signPublicCloudBilling,
   reviewPublicCloudBilling,
 } from '@/services/api-test/public-cloud/products';
@@ -67,7 +67,7 @@ export async function createPublicCloudProduct() {
   const requestData = createSamplePublicCloudProductData();
   await mockSessionByEmail(requestData.projectOwner.email);
 
-  const response = await createPublicCloudProduct(requestData);
+  const response = await createPublicCloudProductTest(requestData);
   if (response.status !== 200) return null;
 
   const resData = await response.json();
@@ -101,7 +101,7 @@ export async function updatePublicCloudProduct() {
 
   await mockSessionByEmail(productData.projectOwner.email);
 
-  let response = await createPublicCloudProduct(productData);
+  let response = await createPublicCloudProductTest(productData);
   if (response.status !== 200) return null;
 
   let resData = await response.json();
@@ -123,13 +123,13 @@ export async function deletePublicCloudProduct() {
 
   await mockSessionByEmail(productData.projectOwner.email);
 
-  let response = await createPublicCloudProduct(productData);
+  let response = await createPublicCloudProductTest(productData);
   if (response.status !== 200) return null;
 
   let resData = await response.json();
   let decisionData = await approveAndProvisionRequest(resData);
 
-  response = await deletePublicCloudProduct(decisionData.licencePlate);
+  response = await deletePublicCloudProductTest(decisionData.licencePlate);
   if (response.status !== 200) return null;
 
   resData = await response.json();

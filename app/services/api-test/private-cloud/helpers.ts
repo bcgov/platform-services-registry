@@ -5,9 +5,9 @@ import { resourceRequests1, resourceRequests2 } from '@/helpers/mock-resources/p
 import { mockSessionByEmail, mockSessionByRole } from '@/services/api-test/core';
 import { provisionPrivateCloudProduct } from '@/services/api-test/private-cloud';
 import {
-  createPrivateCloudProduct,
+  createPrivateCloudProduct as createPrivateCloudProductTest,
   editPrivateCloudProduct,
-  deletePrivateCloudProduct,
+  deletePrivateCloudProduct as deletePrivateCloudProductTest,
 } from '@/services/api-test/private-cloud/products';
 import { makePrivateCloudRequestDecision } from '@/services/api-test/private-cloud/requests';
 import { PrivateCloudRequestDetail } from '@/types/private-cloud';
@@ -16,7 +16,7 @@ export async function createPrivateCloudProduct() {
   const requestData = await createSamplePrivateCloudProductData({ data: { cluster: Cluster.SILVER } });
   await mockSessionByEmail(requestData.projectOwner.email);
 
-  let response = await createPrivateCloudProduct(requestData);
+  let response = await createPrivateCloudProductTest(requestData);
   if (response.status !== 200) return null;
 
   let resData: PrivateCloudRequestDetail = await response.json();
@@ -51,7 +51,7 @@ export async function updatePrivateCloudProduct() {
 
   await mockSessionByEmail(productData.projectOwner.email);
 
-  let response = await createPrivateCloudProduct(productData);
+  let response = await createPrivateCloudProductTest(productData);
   if (response.status !== 200) return null;
 
   let resData = await response.json();
@@ -108,7 +108,7 @@ export async function deletePrivateCloudProduct() {
 
   await mockSessionByEmail(productData.projectOwner.email);
 
-  let response = await createPrivateCloudProduct(productData);
+  let response = await createPrivateCloudProductTest(productData);
   if (response.status !== 200) return null;
 
   let resData = await response.json();
@@ -131,7 +131,7 @@ export async function deletePrivateCloudProduct() {
   if (response.status !== 200) return null;
 
   await mockSessionByRole(GlobalRole.PrivateAdmin);
-  response = await deletePrivateCloudProduct(decisionData.licencePlate);
+  response = await deletePrivateCloudProductTest(decisionData.licencePlate);
 
   if (response.status !== 200) return null;
   resData = await response.json();
