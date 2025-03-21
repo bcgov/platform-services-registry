@@ -28,7 +28,7 @@ export const GET = apiHandler(async ({ queryParams, session }) => {
     where.golddrEnabled = true;
   }
 
-  const products = await prisma.privateCloudProject.findMany({
+  const products = await prisma.privateCloudProduct.findMany({
     where,
     select: {
       id: true,

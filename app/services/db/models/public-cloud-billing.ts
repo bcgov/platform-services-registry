@@ -39,7 +39,7 @@ async function baseFilter(session: Session) {
     },
   ];
 
-  const products = await prisma.publicCloudProject.findMany({ where: { OR }, select: { licencePlate: true } });
+  const products = await prisma.publicCloudProduct.findMany({ where: { OR }, select: { licencePlate: true } });
   const productLicencePlates = products.map(({ licencePlate }) => licencePlate);
 
   const filter: Prisma.PublicCloudBillingWhereInput = {

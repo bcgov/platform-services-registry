@@ -23,7 +23,7 @@ export const GET = apiHandler(async ({ queryParams }) => {
   const where: Prisma.PrivateCloudProductWhereInput = active ? { status: 'ACTIVE' } : {};
   where.cluster = cluster;
 
-  const licencePlateRecords = await prisma.privateCloudProject.findMany({
+  const licencePlateRecords = await prisma.privateCloudProduct.findMany({
     where,
     select: { licencePlate: true },
     distinct: ['licencePlate'],

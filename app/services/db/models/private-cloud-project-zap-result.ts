@@ -43,12 +43,12 @@ export const privateCloudProductZapResultModel = createSessionModel<
   PrivateCloudProductZapResult,
   PrivateCloudProductZapResultDecorated,
   PrivateCloudProductZapResultDecorated,
-  NonNullable<Parameters<typeof prisma.privateCloudProjectZapResult.create>[0]>,
-  NonNullable<Parameters<typeof prisma.privateCloudProjectZapResult.findFirst>[0]>,
-  NonNullable<Parameters<typeof prisma.privateCloudProjectZapResult.update>[0]>,
-  NonNullable<Parameters<typeof prisma.privateCloudProjectZapResult.upsert>[0]>
+  NonNullable<Parameters<typeof prisma.privateCloudProductZapResult.create>[0]>,
+  NonNullable<Parameters<typeof prisma.privateCloudProductZapResult.findFirst>[0]>,
+  NonNullable<Parameters<typeof prisma.privateCloudProductZapResult.update>[0]>,
+  NonNullable<Parameters<typeof prisma.privateCloudProductZapResult.upsert>[0]>
 >({
-  model: prisma.privateCloudProjectZapResult,
+  model: prisma.privateCloudProductZapResult,
   baseFilter,
   decorate,
 });

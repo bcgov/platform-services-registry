@@ -33,7 +33,7 @@ export async function listOp(licencePlate: string, requestId?: string) {
   }
 
   // Fetch the project by licencePlate
-  const project = await prisma.privateCloudProject.findUnique({
+  const project = await prisma.privateCloudProduct.findUnique({
     where: { licencePlate },
     select: { id: true },
   });

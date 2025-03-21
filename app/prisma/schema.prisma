@@ -29,16 +29,16 @@ model User {
   updatedAt                                            DateTime                  @updatedAt
   lastSeen                                             DateTime?
   onboardingDate                                       DateTime?
-  privateCloudProjectsAsProjectOwner                   PrivateCloudProduct[]     @relation("projectOwner")
-  privateCloudProjectsAsPrimaryTechnicalLead           PrivateCloudProduct[]     @relation("primaryTechnicalLead")
-  privateCloudProjectsAsSecondaryTechnicalLead         PrivateCloudProduct[]     @relation("secondaryTechnicalLead")
+  privateCloudProductsAsProjectOwner                   PrivateCloudProduct[]     @relation("projectOwner")
+  privateCloudProductsAsPrimaryTechnicalLead           PrivateCloudProduct[]     @relation("primaryTechnicalLead")
+  privateCloudProductsAsSecondaryTechnicalLead         PrivateCloudProduct[]     @relation("secondaryTechnicalLead")
   PrivateCloudRequestDatasAsProjectOwner               PrivateCloudRequestData[] @relation("projectOwner")
   PrivateCloudRequestDatasAsPrimaryTechnicalLead       PrivateCloudRequestData[] @relation("primaryTechnicalLead")
   PrivateCloudRequestDatasAsSecondaryTechnicalLead     PrivateCloudRequestData[] @relation("secondaryTechnicalLead")
-  publicCloudProjectsAsProjectOwner                    PublicCloudProduct[]      @relation("projectOwner")
-  publicCloudProjectsAsPrimaryTechnicalLead            PublicCloudProduct[]      @relation("primaryTechnicalLead")
-  publicCloudProjectsAsSecondaryTechnicalLead          PublicCloudProduct[]      @relation("secondaryTechnicalLead")
-  publicCloudProjectsAsExpenseAuthority                PublicCloudProduct[]      @relation("expenseAuthority")
+  publicCloudProductsAsProjectOwner                    PublicCloudProduct[]      @relation("projectOwner")
+  publicCloudProductsAsPrimaryTechnicalLead            PublicCloudProduct[]      @relation("primaryTechnicalLead")
+  publicCloudProductsAsSecondaryTechnicalLead          PublicCloudProduct[]      @relation("secondaryTechnicalLead")
+  publicCloudProductsAsExpenseAuthority                PublicCloudProduct[]      @relation("expenseAuthority")
   publicCloudRequestedProjectsAsProjectOwner           PublicCloudRequestData[]  @relation("projectOwner")
   publicCloudRequestedProjectsAsPrimaryTechnicalLead   PublicCloudRequestData[]  @relation("primaryTechnicalLead")
   publicCloudRequestedProjectsAsSecondaryTechnicalLead PublicCloudRequestData[]  @relation("secondaryTechnicalLead")

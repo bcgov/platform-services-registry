@@ -60,7 +60,7 @@ const requests = {
 // TODO: add tests for ministry roles
 describe('Download Public Cloud Products - Permissions', () => {
   it('should successfully delete all public cloud products', async () => {
-    await prisma.publicCloudProject.deleteMany();
+    await prisma.publicCloudProduct.deleteMany();
   });
 
   it('should successfully create a product by PO and approved by admin', async () => {
@@ -121,7 +121,7 @@ describe('Download Public Cloud Products - Permissions', () => {
     expect(records.length).toBe(1);
 
     const record1 = records[0];
-    const project = await prisma.publicCloudProject.findUnique({
+    const project = await prisma.publicCloudProduct.findUnique({
       where: { licencePlate: requests.one.licencePlate },
       include: { projectOwner: true, primaryTechnicalLead: true, secondaryTechnicalLead: true },
     });
@@ -252,7 +252,7 @@ describe('Download Public Cloud Products - Permissions', () => {
 
 describe('Download Public Cloud Products - Validations', () => {
   it('should successfully delete all public cloud products', async () => {
-    await prisma.publicCloudProject.deleteMany();
+    await prisma.publicCloudProduct.deleteMany();
   });
 
   it('should successfully create products by admin', async () => {

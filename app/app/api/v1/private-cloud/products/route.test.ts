@@ -164,7 +164,7 @@ describe('API: List Private Cloud Products - Permissions', () => {
 
 describe('API: List Private Cloud Products - Validations', () => {
   it('should successfully delete all private cloud products', async () => {
-    await prisma.privateCloudProject.deleteMany();
+    await prisma.privateCloudProduct.deleteMany();
   });
 
   it('should successfully create products by admin', async () => {

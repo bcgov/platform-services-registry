@@ -127,12 +127,12 @@ export const privateCloudProductModel = createSessionModel<
   PrivateCloudProductDetail,
   PrivateCloudProductSimpleDecorated,
   PrivateCloudProductDetailDecorated,
-  NonNullable<Parameters<typeof prisma.privateCloudProject.create>[0]>,
-  NonNullable<Parameters<typeof prisma.privateCloudProject.findFirst>[0]>,
-  NonNullable<Parameters<typeof prisma.privateCloudProject.update>[0]>,
-  NonNullable<Parameters<typeof prisma.privateCloudProject.upsert>[0]>
+  NonNullable<Parameters<typeof prisma.privateCloudProduct.create>[0]>,
+  NonNullable<Parameters<typeof prisma.privateCloudProduct.findFirst>[0]>,
+  NonNullable<Parameters<typeof prisma.privateCloudProduct.update>[0]>,
+  NonNullable<Parameters<typeof prisma.privateCloudProduct.upsert>[0]>
 >({
-  model: prisma.privateCloudProject,
+  model: prisma.privateCloudProduct,
   includeDetail: privateCloudProductDetailInclude,
   includeSimple: privateCloudProductSimpleInclude,
   baseFilter,

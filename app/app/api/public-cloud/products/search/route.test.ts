@@ -41,7 +41,7 @@ const randomMemberData = {
 // TODO: add tests for ministry roles
 describe('Search Public Cloud Products - Permissions', () => {
   it('should successfully delete all public cloud products', async () => {
-    await prisma.publicCloudProject.deleteMany();
+    await prisma.publicCloudProduct.deleteMany();
   });
 
   it('should successfully create a product by PO and approved by admin', async () => {
@@ -197,7 +197,7 @@ describe('Search Public Cloud Products - Permissions', () => {
 
 describe('Search Public Cloud Products - Validations', () => {
   it('should successfully delete all public cloud products', async () => {
-    await prisma.publicCloudProject.deleteMany();
+    await prisma.publicCloudProduct.deleteMany();
   });
 
   it('should successfully create products by admin', async () => {

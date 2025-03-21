@@ -1,9 +1,9 @@
 export const up = async (db, client) => {
-  // Rename collection: PrivateCloudProject → PrivateCloudProduct
-  const oldPrivateCloudProject = await db.listCollections({ name: 'PrivateCloudProject' }).toArray();
-  if (oldPrivateCloudProject.length > 0) {
-    await db.collection('PrivateCloudProject').rename('PrivateCloudProduct');
-    console.log('Renamed collection PrivateCloudProject to PrivateCloudProduct');
+  // Rename collection: privateCloudProduct → PrivateCloudProduct
+  const oldprivateCloudProduct = await db.listCollections({ name: 'privateCloudProduct' }).toArray();
+  if (oldprivateCloudProduct.length > 0) {
+    await db.collection('privateCloudProduct').rename('PrivateCloudProduct');
+    console.log('Renamed collection privateCloudProduct to PrivateCloudProduct');
   }
 
   // Rename collection: PrivateCloudRequestedProject → PrivateCloudRequestData
@@ -13,11 +13,11 @@ export const up = async (db, client) => {
     console.log('Renamed collection PrivateCloudRequestedProject to PrivateCloudRequestData');
   }
 
-  // Rename collection: PublicCloudProject → PublicCloudProduct
-  const oldPublicCloudProject = await db.listCollections({ name: 'PublicCloudProject' }).toArray();
-  if (oldPublicCloudProject.length > 0) {
-    await db.collection('PublicCloudProject').rename('PublicCloudProduct');
-    console.log('Renamed collection PublicCloudProject to PublicCloudProduct');
+  // Rename collection: publicCloudProduct → PublicCloudProduct
+  const oldpublicCloudProduct = await db.listCollections({ name: 'publicCloudProduct' }).toArray();
+  if (oldpublicCloudProduct.length > 0) {
+    await db.collection('publicCloudProduct').rename('PublicCloudProduct');
+    console.log('Renamed collection publicCloudProduct to PublicCloudProduct');
   }
 
   // Rename collection: PublicCloudRequestedProject → PublicCloudRequestData

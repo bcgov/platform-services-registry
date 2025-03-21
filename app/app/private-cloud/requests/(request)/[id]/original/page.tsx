@@ -1,6 +1,6 @@
 'use client';
 
-import { PrivateCloudProject } from '@prisma/client';
+import { privateCloudProduct } from '@prisma/client';
 import {
   IconInfoCircle,
   IconUsersGroup,

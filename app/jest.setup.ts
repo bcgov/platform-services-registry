@@ -111,8 +111,8 @@ export async function cleanUp() {
   await prisma.privateCloudComment.deleteMany();
 
   // Delete projects
-  await prisma.privateCloudProject.deleteMany();
-  await prisma.publicCloudProject.deleteMany();
+  await prisma.privateCloudProduct.deleteMany();
+  await prisma.publicCloudProduct.deleteMany();
 
   // Delete requested projects
   await prisma.PrivateCloudRequestData.deleteMany();

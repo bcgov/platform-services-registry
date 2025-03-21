@@ -35,7 +35,7 @@ async function baseFilter(session: Session) {
     { ministry: { in: ministries.reader as Ministry[] } },
   ];
 
-  const products = await prisma.privateCloudProject.findMany({
+  const products = await prisma.privateCloudProduct.findMany({
     where: { OR: productFilters },
     select: { licencePlate: true },
   });
@@ -52,7 +52,7 @@ async function decorate<T extends PrivateCloudProductWebhookSimple | PrivateClou
   const { permissions } = session;
   const decoratedDoc = doc as T & PrivateCloudProductWebhookDecorate;
 
-  const product = await prisma.privateCloudProject.findUnique({
+  const product = await prisma.privateCloudProduct.findUnique({
     where: { licencePlate: doc.licencePlate },
     select: {
       projectOwnerId: true,
