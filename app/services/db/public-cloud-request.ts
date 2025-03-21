@@ -75,7 +75,7 @@ export async function searchPublicCloudRequests({
     decisionDatawhere.provider = { in: providers };
   }
 
-  const matchingRequestedPublicProjects = await prisma.publicCloudRequestedProject.findMany({
+  const matchingRequestedPublicProjects = await prisma.publicCloudRequestData.findMany({
     where: decisionDatawhere,
     select: { id: true },
   });
