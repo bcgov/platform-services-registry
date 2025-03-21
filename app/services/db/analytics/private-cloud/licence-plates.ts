@@ -38,7 +38,7 @@ export async function getPrivateLicencePlates({
       { members: { some: { userId } } },
     ];
   }
-  const licencePlateRecords = await prisma.PrivateCloudRequestData.findMany({
+  const licencePlateRecords = await prisma.privateCloudRequestData.findMany({
     where,
     select: { licencePlate: true },
     distinct: ['licencePlate'],

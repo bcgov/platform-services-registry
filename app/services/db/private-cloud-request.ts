@@ -82,7 +82,7 @@ export async function searchPrivateCloudRequests({
     decisionDatawhere.isTest = temporary[0] === 'YES';
   }
 
-  const matchingRequestedPrivateProjects = await prisma.PrivateCloudRequestData.findMany({
+  const matchingRequestedPrivateProjects = await prisma.privateCloudRequestData.findMany({
     where: decisionDatawhere,
     select: { id: true },
   });
