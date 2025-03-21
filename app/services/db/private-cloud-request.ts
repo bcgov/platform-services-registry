@@ -38,7 +38,7 @@ export async function searchPrivateCloudRequests({
     ({ skip, take } = parsePaginationParams(page, pageSize, 10));
   }
 
-  const decisionDatawhere: Prisma.PrivateCloudRequestedProjectWhereInput = {};
+  const decisionDatawhere: Prisma.PrivateCloudRequestDataWhereInput = {};
 
   const sortOption = requestSorts.find((sort) => sort.sortKey === sortKey);
   let orderBy!: Prisma.PrivateCloudRequestOrderByWithRelationInput;
@@ -51,7 +51,7 @@ export async function searchPrivateCloudRequests({
 
   if (search) {
     const matchingUserIds = await getMatchingUserIds(search);
-    const productSearchcreteria: Prisma.StringFilter<'PrivateCloudRequestedProject'> = {
+    const productSearchcreteria: Prisma.StringFilter<'PrivateCloudRequestData'> = {
       contains: search,
       mode: 'insensitive',
     };
@@ -82,7 +82,7 @@ export async function searchPrivateCloudRequests({
     decisionDatawhere.isTest = temporary[0] === 'YES';
   }
 
-  const matchingRequestedPrivateProjects = await prisma.privateCloudRequestedProject.findMany({
+  const matchingRequestedPrivateProjects = await prisma.PrivateCloudRequestData.findMany({
     where: decisionDatawhere,
     select: { id: true },
   });

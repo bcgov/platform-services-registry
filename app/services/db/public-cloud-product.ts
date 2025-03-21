@@ -13,7 +13,7 @@ export type SearchPublicCloudProductsProps = PublicCloudProductSearchBody & {
   session: Session;
   skip?: number;
   take?: number;
-  extraFilter?: Prisma.PublicCloudProjectWhereInput;
+  extraFilter?: Prisma.PublicCloudProductWhereInput;
 };
 
 export async function searchPublicCloudProducts({
@@ -34,14 +34,14 @@ export async function searchPublicCloudProducts({
     ({ skip, take } = parsePaginationParams(page, pageSize, 10));
   }
 
-  const where: Prisma.PublicCloudProjectWhereInput = extraFilter ?? {};
+  const where: Prisma.PublicCloudProductWhereInput = extraFilter ?? {};
   const orderBy = { [sortKey || defaultSortKey]: Prisma.SortOrder[sortOrder] };
 
   if (search === '*') search = '';
 
   if (search) {
     const matchingUserIds = await getMatchingUserIds(search);
-    const productSearchcreteria: Prisma.StringFilter<'PublicCloudProject'> = { contains: search, mode: 'insensitive' };
+    const productSearchcreteria: Prisma.StringFilter<'PublicCloudProduct'> = { contains: search, mode: 'insensitive' };
 
     where.OR = [
       { name: productSearchcreteria },

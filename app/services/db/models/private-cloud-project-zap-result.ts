@@ -1,4 +1,4 @@
-import { Prisma, PrivateCloudProjectZapResult } from '@prisma/client';
+import { Prisma, PrivateCloudProductZapResult } from '@prisma/client';
 import { Session } from 'next-auth';
 import prisma from '@/core/prisma';
 import { PrivateCloudProductZapResultDecorate } from '@/types/doc-decorate';
@@ -18,17 +18,17 @@ async function baseFilter(session: Session) {
 
   if (products.length === 0) return false;
 
-  const filter: Prisma.PrivateCloudProjectZapResultWhereInput = {
+  const filter: Prisma.PrivateCloudProductZapResultWhereInput = {
     OR: products.map(({ cluster, licencePlate }) => ({ cluster, licencePlate })),
   };
 
   return filter;
 }
 
-type PrivateCloudProjectZapResultDecorated = PrivateCloudProjectZapResult & PrivateCloudProductZapResultDecorate;
+type PrivateCloudProductZapResultDecorated = PrivateCloudProductZapResult & PrivateCloudProductZapResultDecorate;
 
-async function decorate(doc: PrivateCloudProjectZapResult, session: Session) {
-  const decoratedDoc = doc as PrivateCloudProjectZapResultDecorated;
+async function decorate(doc: PrivateCloudProductZapResult, session: Session) {
+  const decoratedDoc = doc as PrivateCloudProductZapResultDecorated;
   decoratedDoc._permissions = {
     view: true,
     edit: false,
@@ -39,10 +39,10 @@ async function decorate(doc: PrivateCloudProjectZapResult, session: Session) {
 }
 
 export const privateCloudProductZapResultModel = createSessionModel<
-  PrivateCloudProjectZapResult,
-  PrivateCloudProjectZapResult,
-  PrivateCloudProjectZapResultDecorated,
-  PrivateCloudProjectZapResultDecorated,
+  PrivateCloudProductZapResult,
+  PrivateCloudProductZapResult,
+  PrivateCloudProductZapResultDecorated,
+  PrivateCloudProductZapResultDecorated,
   NonNullable<Parameters<typeof prisma.privateCloudProjectZapResult.create>[0]>,
   NonNullable<Parameters<typeof prisma.privateCloudProjectZapResult.findFirst>[0]>,
   NonNullable<Parameters<typeof prisma.privateCloudProjectZapResult.update>[0]>,

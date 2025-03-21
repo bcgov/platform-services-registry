@@ -1,6 +1,6 @@
 'use client';
 
-import { DecisionStatus, PrivateCloudProject, ProjectContext } from '@prisma/client';
+import { DecisionStatus, PrivateCloudProduct, ProjectContext } from '@prisma/client';
 import {
   IconInfoCircle,
   IconUsersGroup,

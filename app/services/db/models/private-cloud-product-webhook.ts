@@ -17,7 +17,7 @@ async function baseFilter(session: Session) {
 
   const { user, ministries } = session;
 
-  const productFilters: Prisma.PrivateCloudProjectWhereInput[] = [
+  const productFilters: Prisma.PrivateCloudProductWhereInput[] = [
     { projectOwnerId: user.id },
     { primaryTechnicalLeadId: user.id },
     { secondaryTechnicalLeadId: user.id },

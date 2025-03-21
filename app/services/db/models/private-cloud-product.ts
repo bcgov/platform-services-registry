@@ -1,7 +1,7 @@
 import { Prisma, Ministry, ProjectStatus, PrivateCloudProductMemberRole } from '@prisma/client';
 import { Session } from 'next-auth';
 import prisma from '@/core/prisma';
-import { PrivateCloudProjectDecorate } from '@/types/doc-decorate';
+import { PrivateCloudProductDecorate } from '@/types/doc-decorate';
 import {
   PrivateCloudProductDetail,
   PrivateCloudProductDetailDecorated,
@@ -16,7 +16,7 @@ async function baseFilter(session: Session) {
   if (!session.isUser && !session.isServiceAccount) return false;
   if (session.permissions.viewAllPrivateCloudProducts) return true;
 
-  const OR: Prisma.PrivateCloudProjectWhereInput[] = [
+  const OR: Prisma.PrivateCloudProductWhereInput[] = [
     { ministry: { in: session.ministries.editor as Ministry[] } },
     { ministry: { in: session.ministries.reader as Ministry[] } },
   ];
@@ -39,7 +39,7 @@ async function baseFilter(session: Session) {
     );
   }
 
-  const filter: Prisma.PrivateCloudProjectWhereInput = { OR };
+  const filter: Prisma.PrivateCloudProductWhereInput = { OR };
   return filter;
 }
 
@@ -106,7 +106,7 @@ async function decorate<T extends PrivateCloudProductSimple | PrivateCloudProduc
     });
   }
 
-  const decoratedDoc = doc as T & PrivateCloudProjectDecorate;
+  const decoratedDoc = doc as T & PrivateCloudProductDecorate;
   decoratedDoc._permissions = {
     view: canView,
     viewHistory: canViewHistroy,

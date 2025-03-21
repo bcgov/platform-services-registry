@@ -36,7 +36,7 @@ export async function searchPublicCloudRequests({
     ({ skip, take } = parsePaginationParams(page, pageSize, 10));
   }
 
-  const decisionDatawhere: Prisma.PublicCloudRequestedProjectWhereInput = {};
+  const decisionDatawhere: Prisma.PublicCloudRequestDataWhereInput = {};
 
   const sortOption = requestSorts.find((sort) => sort.sortKey === sortKey);
   let orderBy!: Prisma.PublicCloudRequestOrderByWithRelationInput;
@@ -48,7 +48,7 @@ export async function searchPublicCloudRequests({
 
   if (search) {
     const matchingUserIds = await getMatchingUserIds(search);
-    const productSearchcreteria: Prisma.StringFilter<'PublicCloudRequestedProject'> = {
+    const productSearchcreteria: Prisma.StringFilter<'PublicCloudRequestData'> = {
       contains: search,
       mode: 'insensitive',
     };

@@ -13,7 +13,7 @@ export type SearchPrivateCloudProductsProps = PrivateCloudProductSearchBody & {
   session: Session;
   skip?: number;
   take?: number;
-  extraFilter?: Prisma.PrivateCloudProjectWhereInput;
+  extraFilter?: Prisma.PrivateCloudProductWhereInput;
 };
 
 export async function searchPrivateCloudProducts({
@@ -35,14 +35,14 @@ export async function searchPrivateCloudProducts({
     ({ skip, take } = parsePaginationParams(page, pageSize, 10));
   }
 
-  const where: Prisma.PrivateCloudProjectWhereInput = extraFilter ?? {};
+  const where: Prisma.PrivateCloudProductWhereInput = extraFilter ?? {};
   const orderBy = { [sortKey || defaultSortKey]: Prisma.SortOrder[sortOrder] };
 
   if (search === '*') search = '';
 
   if (search) {
     const matchingUserIds = await getMatchingUserIds(search);
-    const productSearchcreteria: Prisma.StringFilter<'PrivateCloudProject'> = { contains: search, mode: 'insensitive' };
+    const productSearchcreteria: Prisma.StringFilter<'PrivateCloudProduct'> = { contains: search, mode: 'insensitive' };
 
     where.OR = [
       { name: productSearchcreteria },

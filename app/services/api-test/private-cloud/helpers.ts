@@ -3,11 +3,11 @@ import { GlobalRole } from '@/constants';
 import { createSamplePrivateCloudProductData } from '@/helpers/mock-resources';
 import { resourceRequests1, resourceRequests2 } from '@/helpers/mock-resources/private-cloud-product';
 import { mockSessionByEmail, mockSessionByRole } from '@/services/api-test/core';
-import { provisionPrivateCloudProject } from '@/services/api-test/private-cloud';
+import { provisionPrivateCloudProduct } from '@/services/api-test/private-cloud';
 import {
-  createPrivateCloudProject,
-  editPrivateCloudProject,
-  deletePrivateCloudProject,
+  createPrivateCloudProduct,
+  editPrivateCloudProduct,
+  deletePrivateCloudProduct,
 } from '@/services/api-test/private-cloud/products';
 import { makePrivateCloudRequestDecision } from '@/services/api-test/private-cloud/requests';
 import { PrivateCloudRequestDetail } from '@/types/private-cloud';
@@ -16,7 +16,7 @@ export async function createPrivateCloudProduct() {
   const requestData = await createSamplePrivateCloudProductData({ data: { cluster: Cluster.SILVER } });
   await mockSessionByEmail(requestData.projectOwner.email);
 
-  let response = await createPrivateCloudProject(requestData);
+  let response = await createPrivateCloudProduct(requestData);
   if (response.status !== 200) return null;
 
   let resData: PrivateCloudRequestDetail = await response.json();
@@ -35,7 +35,7 @@ export async function createPrivateCloudProduct() {
   resData = await response.json();
   decisionData = resData.decisionData;
 
-  response = await provisionPrivateCloudProject(decisionData.licencePlate);
+  response = await provisionPrivateCloudProduct(decisionData.licencePlate);
   if (response.status !== 200) return null;
 
   return decisionData;
@@ -51,7 +51,7 @@ export async function updatePrivateCloudProduct() {
 
   await mockSessionByEmail(productData.projectOwner.email);
 
-  let response = await createPrivateCloudProject(productData);
+  let response = await createPrivateCloudProduct(productData);
   if (response.status !== 200) return null;
 
   let resData = await response.json();
@@ -70,12 +70,12 @@ export async function updatePrivateCloudProduct() {
   resData = await response.json();
   decisionData = resData.decisionData;
 
-  response = await provisionPrivateCloudProject(decisionData.licencePlate);
+  response = await provisionPrivateCloudProduct(decisionData.licencePlate);
   if (response.status !== 200) return null;
 
   await mockSessionByRole(GlobalRole.PrivateAdmin);
 
-  response = await editPrivateCloudProject(decisionData.licencePlate, {
+  response = await editPrivateCloudProduct(decisionData.licencePlate, {
     ...decisionData,
     resourceRequests: resourceRequests2,
   });
@@ -97,7 +97,7 @@ export async function updatePrivateCloudProduct() {
   const decisionResData: PrivateCloudRequestDetail = await response.json();
   const decisionResdecisionData = decisionResData.decisionData;
 
-  response = await provisionPrivateCloudProject(decisionResdecisionData.licencePlate);
+  response = await provisionPrivateCloudProduct(decisionResdecisionData.licencePlate);
   if (response.status !== 200) return null;
 
   return decisionResdecisionData;
@@ -108,7 +108,7 @@ export async function deletePrivateCloudProduct() {
 
   await mockSessionByEmail(productData.projectOwner.email);
 
-  let response = await createPrivateCloudProject(productData);
+  let response = await createPrivateCloudProduct(productData);
   if (response.status !== 200) return null;
 
   let resData = await response.json();
@@ -127,11 +127,11 @@ export async function deletePrivateCloudProduct() {
   resData = await response.json();
   decisionData = resData.decisionData;
 
-  response = await provisionPrivateCloudProject(decisionData.licencePlate);
+  response = await provisionPrivateCloudProduct(decisionData.licencePlate);
   if (response.status !== 200) return null;
 
   await mockSessionByRole(GlobalRole.PrivateAdmin);
-  response = await deletePrivateCloudProject(decisionData.licencePlate);
+  response = await deletePrivateCloudProduct(decisionData.licencePlate);
 
   if (response.status !== 200) return null;
   resData = await response.json();
@@ -150,7 +150,7 @@ export async function deletePrivateCloudProduct() {
   const decisionResData: PrivateCloudRequestDetail = await response.json();
   const decisionResdecisionData = decisionResData.decisionData;
 
-  response = await provisionPrivateCloudProject(decisionResdecisionData.licencePlate);
+  response = await provisionPrivateCloudProduct(decisionResdecisionData.licencePlate);
   if (response.status !== 200) return null;
 
   return decisionResdecisionData;

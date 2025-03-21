@@ -2,7 +2,7 @@ export const up = async (db, client) => {
   await db.collection('Billing').deleteMany({});
 
   const products = await db
-    .collection('PublicCloudProject')
+    .collection('PublicCloudProduct')
     .find(
       {},
       {
@@ -44,15 +44,15 @@ export const up = async (db, client) => {
       billingId = insertMeta.insertedId;
     }
 
-    await db.collection('PublicCloudProject').updateOne({ _id: { $eq: product._id } }, { $set: { billingId } });
+    await db.collection('PublicCloudProduct').updateOne({ _id: { $eq: product._id } }, { $set: { billingId } });
 
     await db
-      .collection('PublicCloudRequestedProject')
+      .collection('PublicCloudRequestData')
       .updateMany({ licencePlate: { $eq: product.licencePlate } }, { $set: { billingId } });
   }
 
   // Remove invalid (dangling) documents
-  await db.collection('PublicCloudRequestedProject').deleteMany({ billingId: { $exists: false } });
+  await db.collection('PublicCloudRequestData').deleteMany({ billingId: { $exists: false } });
 };
 
 export const down = async (db, client) => {};

@@ -18,7 +18,7 @@ const apiHandler = createApiHandler({
 export const GET = apiHandler(async ({ queryParams, session }) => {
   const { cluster } = queryParams;
 
-  const where: Prisma.PrivateCloudProjectWhereInput = {
+  const where: Prisma.PrivateCloudProductWhereInput = {
     status: 'ACTIVE',
     cluster,
   };

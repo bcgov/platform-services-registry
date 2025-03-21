@@ -5,8 +5,8 @@ import prisma from '@/core/prisma';
 import { createSamplePrivateCloudProductData } from '@/helpers/mock-resources';
 import { mockNoRoleUsers, findMockUserByIdr, findOtherMockUsers } from '@/helpers/mock-users';
 import { mockSessionByEmail, mockSessionByRole } from '@/services/api-test/core';
-import { provisionPrivateCloudProject } from '@/services/api-test/private-cloud';
-import { createPrivateCloudProject, searchPrivateCloudProjects } from '@/services/api-test/private-cloud/products';
+import { provisionPrivateCloudProduct } from '@/services/api-test/private-cloud';
+import { createPrivateCloudProduct, searchPrivateCloudProducts } from '@/services/api-test/private-cloud/products';
 import { makePrivateCloudRequestDecision } from '@/services/api-test/private-cloud/requests';
 
 const PO = mockNoRoleUsers[0];
@@ -40,7 +40,7 @@ describe('Search Private Cloud Products - Permissions', () => {
     const requestData = createSamplePrivateCloudProductData({
       data: { ...memberData },
     });
-    const res1 = await createPrivateCloudProject(requestData);
+    const res1 = await createPrivateCloudProduct(requestData);
     const dat1 = await res1.json();
     expect(res1.status).toBe(200);
 
@@ -53,14 +53,14 @@ describe('Search Private Cloud Products - Permissions', () => {
     });
     expect(res2.status).toBe(200);
 
-    const res3 = await provisionPrivateCloudProject(dat1.licencePlate);
+    const res3 = await provisionPrivateCloudProduct(dat1.licencePlate);
     expect(res3.status).toBe(200);
   });
 
   it('should successfully search 1 project by PO', async () => {
     await mockSessionByEmail(PO.email);
 
-    const res1 = await searchPrivateCloudProjects({});
+    const res1 = await searchPrivateCloudProducts({});
     expect(res1.status).toBe(200);
     const dat1 = await res1.json();
 
@@ -70,7 +70,7 @@ describe('Search Private Cloud Products - Permissions', () => {
   it('should successfully search 1 project by TL1', async () => {
     await mockSessionByEmail(TL1.email);
 
-    const res1 = await searchPrivateCloudProjects({});
+    const res1 = await searchPrivateCloudProducts({});
     expect(res1.status).toBe(200);
     const dat1 = await res1.json();
 
@@ -80,7 +80,7 @@ describe('Search Private Cloud Products - Permissions', () => {
   it('should successfully search 1 project by TL2', async () => {
     await mockSessionByEmail(TL2.email);
 
-    const res1 = await searchPrivateCloudProjects({});
+    const res1 = await searchPrivateCloudProducts({});
     expect(res1.status).toBe(200);
     const dat1 = await res1.json();
 
@@ -93,7 +93,7 @@ describe('Search Private Cloud Products - Permissions', () => {
     const requestData = createSamplePrivateCloudProductData({
       data: { ...randomMemberData },
     });
-    const res1 = await createPrivateCloudProject(requestData);
+    const res1 = await createPrivateCloudProduct(requestData);
     const dat1 = await res1.json();
     expect(res1.status).toBe(200);
 
@@ -106,14 +106,14 @@ describe('Search Private Cloud Products - Permissions', () => {
     });
     expect(res2.status).toBe(200);
 
-    const res3 = await provisionPrivateCloudProject(dat1.licencePlate);
+    const res3 = await provisionPrivateCloudProduct(dat1.licencePlate);
     expect(res3.status).toBe(200);
   });
 
   it('should successfully search 1 project by the random user', async () => {
     await mockSessionByEmail(RANDOM1.email);
 
-    const res1 = await searchPrivateCloudProjects({});
+    const res1 = await searchPrivateCloudProducts({});
     expect(res1.status).toBe(200);
     const dat1 = await res1.json();
 
@@ -123,7 +123,7 @@ describe('Search Private Cloud Products - Permissions', () => {
   it('should successfully search 1 project by PO', async () => {
     await mockSessionByEmail(PO.email);
 
-    const res1 = await searchPrivateCloudProjects({});
+    const res1 = await searchPrivateCloudProducts({});
     expect(res1.status).toBe(200);
     const dat1 = await res1.json();
 
@@ -133,7 +133,7 @@ describe('Search Private Cloud Products - Permissions', () => {
   it('should successfully search 1 project by TL1', async () => {
     await mockSessionByEmail(TL1.email);
 
-    const res1 = await searchPrivateCloudProjects({});
+    const res1 = await searchPrivateCloudProducts({});
     expect(res1.status).toBe(200);
     const dat1 = await res1.json();
 
@@ -143,7 +143,7 @@ describe('Search Private Cloud Products - Permissions', () => {
   it('should successfully search 1 project by TL2', async () => {
     await mockSessionByEmail(TL2.email);
 
-    const res1 = await searchPrivateCloudProjects({});
+    const res1 = await searchPrivateCloudProducts({});
     expect(res1.status).toBe(200);
     const dat1 = await res1.json();
 
@@ -153,7 +153,7 @@ describe('Search Private Cloud Products - Permissions', () => {
   it('should successfully search 2 projects by admin', async () => {
     await mockSessionByRole(GlobalRole.Admin);
 
-    const res1 = await searchPrivateCloudProjects({});
+    const res1 = await searchPrivateCloudProducts({});
     expect(res1.status).toBe(200);
     const dat1 = await res1.json();
 
@@ -187,7 +187,7 @@ describe('Search Private Cloud Products - Validations', () => {
 
     await Promise.all(
       datasets.map(async (data) => {
-        const res1 = await createPrivateCloudProject(data);
+        const res1 = await createPrivateCloudProduct(data);
         const dat1 = await res1.json();
 
         await mockSessionByRole(GlobalRole.PrivateReviewer);
@@ -197,7 +197,7 @@ describe('Search Private Cloud Products - Validations', () => {
           decision: DecisionStatus.APPROVED,
         });
 
-        await provisionPrivateCloudProject(dat1.licencePlate);
+        await provisionPrivateCloudProduct(dat1.licencePlate);
       }),
     );
   });
@@ -205,7 +205,7 @@ describe('Search Private Cloud Products - Validations', () => {
   it('should successfully search 10 projects by admin', async () => {
     await mockSessionByRole(GlobalRole.Admin);
 
-    const res1 = await searchPrivateCloudProjects({});
+    const res1 = await searchPrivateCloudProducts({});
     expect(res1.status).toBe(200);
     const dat1 = await res1.json();
 
@@ -215,7 +215,7 @@ describe('Search Private Cloud Products - Validations', () => {
   it('should successfully search 5 projects by admin with search criteria', async () => {
     await mockSessionByRole(GlobalRole.Admin);
 
-    const res1 = await searchPrivateCloudProjects({
+    const res1 = await searchPrivateCloudProducts({
       ministries: [Ministry.AEST],
       clusters: [Cluster.CLAB],
       status: [ProjectStatus.ACTIVE],
@@ -230,7 +230,7 @@ describe('Search Private Cloud Products - Validations', () => {
   it('should successfully search 1 project by admin with search criteria', async () => {
     await mockSessionByRole(GlobalRole.Admin);
 
-    const res1 = await searchPrivateCloudProjects({
+    const res1 = await searchPrivateCloudProducts({
       search: '______name______',
     });
 

@@ -3,10 +3,10 @@ import { DecisionStatus, RequestType } from '@prisma/client';
 import { GlobalRole } from '@/constants';
 import { createSamplePrivateCloudProductData } from '@/helpers/mock-resources';
 import { mockSessionByEmail, mockSessionByRole } from '@/services/api-test/core';
-import { provisionPrivateCloudProject } from '@/services/api-test/private-cloud';
+import { provisionPrivateCloudProduct } from '@/services/api-test/private-cloud';
 import {
-  createPrivateCloudProject,
-  getPrivateCloudProject,
+  createPrivateCloudProduct,
+  getPrivateCloudProduct,
   createPrivateCloudComment,
   getAllPrivateCloudComments,
 } from '@/services/api-test/private-cloud/products';
@@ -23,7 +23,7 @@ describe('Private Cloud Comments - Permissions', () => {
   it('should successfully submit a create request for PO', async () => {
     await mockSessionByEmail(globalProductData.projectOwner.email);
 
-    const response = await createPrivateCloudProject(globalProductData);
+    const response = await createPrivateCloudProduct(globalProductData);
     expect(response.status).toBe(200);
 
     requests.create = await response.json();
@@ -45,13 +45,13 @@ describe('Private Cloud Comments - Permissions', () => {
   it('should successfully provision the request', async () => {
     await mockSessionByEmail();
 
-    const response = await provisionPrivateCloudProject(globalLicencePlate);
+    const response = await provisionPrivateCloudProduct(globalLicencePlate);
     expect(response.status).toBe(200);
   });
 
   it('should successfully create comments', async () => {
     await mockSessionByRole(GlobalRole.Admin);
-    const projectResponse = await getPrivateCloudProject(globalLicencePlate);
+    const projectResponse = await getPrivateCloudProduct(globalLicencePlate);
     const projectData = await projectResponse.json();
     const activeProjectId = projectData?.id;
 
@@ -122,7 +122,7 @@ describe('Private Cloud Comments - Validations', () => {
     await mockSessionByRole(GlobalRole.Admin);
     const productData = createSamplePrivateCloudProductData();
 
-    const createResponse = await createPrivateCloudProject(productData);
+    const createResponse = await createPrivateCloudProduct(productData);
     expect(createResponse.status).toBe(200);
     const createResponseBody = await createResponse.json();
     localLicencePlate = createResponseBody.licencePlate;
@@ -136,7 +136,7 @@ describe('Private Cloud Comments - Validations', () => {
     });
     expect(approveResponse.status).toBe(200);
 
-    const provisionResponse = await provisionPrivateCloudProject(localLicencePlate);
+    const provisionResponse = await provisionPrivateCloudProduct(localLicencePlate);
     expect(provisionResponse.status).toBe(200);
   });
 

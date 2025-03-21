@@ -13,7 +13,7 @@ import { success } from '@/components/notification';
 import ProductComparison from '@/components/ProductComparison';
 import { createModal } from '@/core/modal';
 import { comparePrivateProductData, PrivateProductChange } from '@/helpers/product-change';
-import { editPrivateCloudProject } from '@/services/backend/private-cloud/products';
+import { editPrivateCloudProduct } from '@/services/backend/private-cloud/products';
 import { usePrivateProductState } from '@/states/global';
 import { openNotificationModal } from './notification';
 
@@ -52,7 +52,7 @@ export const openPrivateCloudProductEditSubmitModal = createModal<ModalProps, Mo
       isError: isEditError,
       error: editError,
     } = useMutation({
-      mutationFn: (data: any) => editPrivateCloudProject(snap.licencePlate, data),
+      mutationFn: (data: any) => editPrivateCloudProduct(snap.licencePlate, data),
       onSuccess: () => {
         state.success = true;
         success();

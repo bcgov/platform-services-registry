@@ -17,7 +17,7 @@ export const up = async (db, client) => {
 
   await session.withTransaction(async () => {
     await Promise.all(
-      ['PrivateCloudProject', 'PrivateCloudRequestedProject'].map(async (collectionName) => {
+      ['PrivateCloudProduct', 'PrivateCloudRequestData'].map(async (collectionName) => {
         const coll = db.collection(collectionName);
         const privateCloudProducts = await coll
           .find({})

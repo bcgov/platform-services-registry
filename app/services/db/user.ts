@@ -247,13 +247,13 @@ export async function searchUsersWithRoles({
 
   return result as {
     data: (SearchUser & {
-      privateProducts: Prisma.PrivateCloudProjectGetPayload<{
+      privateProducts: Prisma.PrivateCloudProductGetPayload<{
         select: {
           licencePlate: true;
           name: true;
         };
       }>[];
-      publicProducts: Prisma.PublicCloudProjectGetPayload<{
+      publicProducts: Prisma.PublicCloudProductGetPayload<{
         select: {
           licencePlate: true;
           name: true;

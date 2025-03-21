@@ -22,7 +22,7 @@ async function baseFilter(session: Session) {
     )
     .map((task) => (task.data as { licencePlate: string }).licencePlate);
 
-  const OR: Prisma.PublicCloudProjectWhereInput[] = [
+  const OR: Prisma.PublicCloudProductWhereInput[] = [
     { projectOwnerId: session.user.id },
     { primaryTechnicalLeadId: session.user.id },
     { secondaryTechnicalLeadId: session.user.id },

@@ -9,10 +9,10 @@ import { mockNoRoleUsers, findMockUserByIdr, findOtherMockUsers } from '@/helper
 import { ministryKeyToName, getTotalQuotaStr } from '@/helpers/product';
 import { formatFullName } from '@/helpers/user';
 import { mockSessionByEmail, mockSessionByRole } from '@/services/api-test/core';
-import { provisionPublicCloudProject } from '@/services/api-test/public-cloud';
+import { provisionPublicCloudProduct } from '@/services/api-test/public-cloud';
 import {
-  createPublicCloudProject,
-  downloadPublicCloudProjects,
+  createPublicCloudProduct,
+  downloadPublicCloudProducts,
   signPublicCloudBilling,
   reviewPublicCloudBilling,
 } from '@/services/api-test/public-cloud/products';
@@ -65,7 +65,7 @@ describe('Download Public Cloud Products - Permissions', () => {
 
   it('should successfully create a product by PO and approved by admin', async () => {
     await mockSessionByEmail(PO.email);
-    const res1 = await createPublicCloudProject(productData.one);
+    const res1 = await createPublicCloudProduct(productData.one);
     const dat1 = await res1.json();
     expect(res1.status).toBe(200);
 
@@ -105,14 +105,14 @@ describe('Download Public Cloud Products - Permissions', () => {
     expect(res2.status).toBe(200);
     requests.one = await res2.json();
 
-    const res3 = await provisionPublicCloudProject(dat1.licencePlate);
+    const res3 = await provisionPublicCloudProduct(dat1.licencePlate);
     expect(res3.status).toBe(200);
   });
 
   it('should successfully download 1 project by PO', async () => {
     await mockSessionByEmail(PO.email);
 
-    const res1 = await downloadPublicCloudProjects({});
+    const res1 = await downloadPublicCloudProducts({});
     expect(res1.status).toBe(200);
     expect(res1.headers.get('Content-Type')).toBe('text/csv');
     const csvContent = await res1.text();
@@ -147,7 +147,7 @@ describe('Download Public Cloud Products - Permissions', () => {
   it('should successfully download 1 project by TL1', async () => {
     await mockSessionByEmail(TL1.email);
 
-    const res1 = await downloadPublicCloudProjects({});
+    const res1 = await downloadPublicCloudProducts({});
     expect(res1.status).toBe(200);
     expect(res1.headers.get('Content-Type')).toBe('text/csv');
     const csvContent = await res1.text();
@@ -159,7 +159,7 @@ describe('Download Public Cloud Products - Permissions', () => {
   it('should successfully download 1 project by TL2', async () => {
     await mockSessionByEmail(TL2.email);
 
-    const res1 = await downloadPublicCloudProjects({});
+    const res1 = await downloadPublicCloudProducts({});
     expect(res1.status).toBe(200);
     expect(res1.headers.get('Content-Type')).toBe('text/csv');
     const csvContent = await res1.text();
@@ -171,7 +171,7 @@ describe('Download Public Cloud Products - Permissions', () => {
   it('should successfully create a product by a random user and approved by admin', async () => {
     await mockSessionByEmail(RANDOM1.email);
 
-    const res1 = await createPublicCloudProject(productData.two);
+    const res1 = await createPublicCloudProduct(productData.two);
     const dat1 = await res1.json();
     expect(res1.status).toBe(200);
 
@@ -185,14 +185,14 @@ describe('Download Public Cloud Products - Permissions', () => {
     expect(res2.status).toBe(200);
     requests.two = await res2.json();
 
-    const res3 = await provisionPublicCloudProject(dat1.licencePlate);
+    const res3 = await provisionPublicCloudProduct(dat1.licencePlate);
     expect(res3.status).toBe(200);
   });
 
   it('should successfully download 1 project by the random user', async () => {
     await mockSessionByEmail(RANDOM1.email);
 
-    const res1 = await downloadPublicCloudProjects({});
+    const res1 = await downloadPublicCloudProducts({});
     expect(res1.status).toBe(200);
     expect(res1.headers.get('Content-Type')).toBe('text/csv');
     const csvContent = await res1.text();
@@ -204,7 +204,7 @@ describe('Download Public Cloud Products - Permissions', () => {
   it('should successfully download 1 project by PO', async () => {
     await mockSessionByEmail(PO.email);
 
-    const res1 = await downloadPublicCloudProjects({});
+    const res1 = await downloadPublicCloudProducts({});
     expect(res1.status).toBe(200);
     expect(res1.headers.get('Content-Type')).toBe('text/csv');
     const csvContent = await res1.text();
@@ -216,7 +216,7 @@ describe('Download Public Cloud Products - Permissions', () => {
   it('should successfully download 1 project by TL1', async () => {
     await mockSessionByEmail(TL1.email);
 
-    const res1 = await downloadPublicCloudProjects({});
+    const res1 = await downloadPublicCloudProducts({});
     expect(res1.status).toBe(200);
     expect(res1.headers.get('Content-Type')).toBe('text/csv');
     const csvContent = await res1.text();
@@ -228,7 +228,7 @@ describe('Download Public Cloud Products - Permissions', () => {
   it('should successfully download 1 project by TL2', async () => {
     await mockSessionByEmail(TL2.email);
 
-    const res1 = await downloadPublicCloudProjects({});
+    const res1 = await downloadPublicCloudProducts({});
     expect(res1.status).toBe(200);
     expect(res1.headers.get('Content-Type')).toBe('text/csv');
     const csvContent = await res1.text();
@@ -240,7 +240,7 @@ describe('Download Public Cloud Products - Permissions', () => {
   it('should successfully download 2 projects by admin', async () => {
     await mockSessionByRole(GlobalRole.Admin);
 
-    const res1 = await downloadPublicCloudProjects({});
+    const res1 = await downloadPublicCloudProducts({});
     expect(res1.status).toBe(200);
     expect(res1.headers.get('Content-Type')).toBe('text/csv');
     const csvContent = await res1.text();
@@ -276,7 +276,7 @@ describe('Download Public Cloud Products - Validations', () => {
 
     await Promise.all(
       datasets.map(async (data) => {
-        const res1 = await createPublicCloudProject(data);
+        const res1 = await createPublicCloudProduct(data);
         const dat1 = await res1.json();
 
         await mockSessionByRole(GlobalRole.PublicReviewer);
@@ -286,7 +286,7 @@ describe('Download Public Cloud Products - Validations', () => {
           decision: DecisionStatus.APPROVED,
         });
 
-        await provisionPublicCloudProject(dat1.licencePlate);
+        await provisionPublicCloudProduct(dat1.licencePlate);
       }),
     );
   });
@@ -294,7 +294,7 @@ describe('Download Public Cloud Products - Validations', () => {
   it('should successfully download 10 projects by admin', async () => {
     await mockSessionByRole(GlobalRole.Admin);
 
-    const res1 = await downloadPublicCloudProjects({});
+    const res1 = await downloadPublicCloudProducts({});
     expect(res1.status).toBe(200);
     expect(res1.headers.get('Content-Type')).toBe('text/csv');
     const csvContent = await res1.text();
@@ -306,7 +306,7 @@ describe('Download Public Cloud Products - Validations', () => {
   it('should successfully download 5 projects by admin with search criteria', async () => {
     await mockSessionByRole(GlobalRole.Admin);
 
-    const res1 = await downloadPublicCloudProjects({
+    const res1 = await downloadPublicCloudProducts({
       ministries: [Ministry.AEST],
       providers: [Provider.AWS],
       status: [ProjectStatus.ACTIVE],
@@ -323,7 +323,7 @@ describe('Download Public Cloud Products - Validations', () => {
   it('should successfully download 1 project by admin with search criteria', async () => {
     await mockSessionByRole(GlobalRole.Admin);
 
-    const res1 = await downloadPublicCloudProjects({
+    const res1 = await downloadPublicCloudProducts({
       search: '______name______',
     });
 
@@ -338,7 +338,7 @@ describe('Download Public Cloud Products - Validations', () => {
   it('should successfully download 0 project by admin with search criteria', async () => {
     await mockSessionByRole(GlobalRole.Admin);
 
-    const res1 = await downloadPublicCloudProjects({
+    const res1 = await downloadPublicCloudProducts({
       search: '______nonexistent______',
     });
 
@@ -348,7 +348,7 @@ describe('Download Public Cloud Products - Validations', () => {
   it('should fail to download projects by admin due to an invalid provider', async () => {
     await mockSessionByRole(GlobalRole.Admin);
 
-    const res1 = await downloadPublicCloudProjects({
+    const res1 = await downloadPublicCloudProducts({
       providers: ['INVALID' as Provider],
     });
 
@@ -358,7 +358,7 @@ describe('Download Public Cloud Products - Validations', () => {
   it('should fail to download projects by admin due to an invalid ministry', async () => {
     await mockSessionByRole(GlobalRole.Admin);
 
-    const res1 = await downloadPublicCloudProjects({
+    const res1 = await downloadPublicCloudProducts({
       ministries: ['INVALID' as Ministry],
     });
 

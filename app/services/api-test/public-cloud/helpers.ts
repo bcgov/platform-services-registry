@@ -3,11 +3,11 @@ import { GlobalRole } from '@/constants';
 import prisma from '@/core/prisma';
 import { createSamplePublicCloudProductData } from '@/helpers/mock-resources';
 import { mockSessionByEmail, mockSessionByRole } from '@/services/api-test/core';
-import { provisionPublicCloudProject } from '@/services/api-test/public-cloud';
+import { provisionPublicCloudProduct } from '@/services/api-test/public-cloud';
 import {
-  createPublicCloudProject,
-  editPublicCloudProject,
-  deletePublicCloudProject,
+  createPublicCloudProduct,
+  editPublicCloudProduct,
+  deletePublicCloudProduct,
   signPublicCloudBilling,
   reviewPublicCloudBilling,
 } from '@/services/api-test/public-cloud/products';
@@ -57,7 +57,7 @@ async function approveAndProvisionRequest(reqData: any) {
   decisionData = resData.decisionData;
 
   await mockSessionByRole(GlobalRole.Admin);
-  response = await provisionPublicCloudProject(decisionData.licencePlate);
+  response = await provisionPublicCloudProduct(decisionData.licencePlate);
   if (response.status !== 200) return null;
 
   return decisionData;
@@ -67,7 +67,7 @@ export async function createPublicCloudProduct() {
   const requestData = createSamplePublicCloudProductData();
   await mockSessionByEmail(requestData.projectOwner.email);
 
-  const response = await createPublicCloudProject(requestData);
+  const response = await createPublicCloudProduct(requestData);
   if (response.status !== 200) return null;
 
   const resData = await response.json();
@@ -101,13 +101,13 @@ export async function updatePublicCloudProduct() {
 
   await mockSessionByEmail(productData.projectOwner.email);
 
-  let response = await createPublicCloudProject(productData);
+  let response = await createPublicCloudProduct(productData);
   if (response.status !== 200) return null;
 
   let resData = await response.json();
   const decisionData = await approveAndProvisionRequest(resData);
 
-  response = await editPublicCloudProject(decisionData.licencePlate, {
+  response = await editPublicCloudProduct(decisionData.licencePlate, {
     ...decisionData,
     environmentsEnabled: newEnvironmentsEnabled,
   });
@@ -123,13 +123,13 @@ export async function deletePublicCloudProduct() {
 
   await mockSessionByEmail(productData.projectOwner.email);
 
-  let response = await createPublicCloudProject(productData);
+  let response = await createPublicCloudProduct(productData);
   if (response.status !== 200) return null;
 
   let resData = await response.json();
   let decisionData = await approveAndProvisionRequest(resData);
 
-  response = await deletePublicCloudProject(decisionData.licencePlate);
+  response = await deletePublicCloudProduct(decisionData.licencePlate);
   if (response.status !== 200) return null;
 
   resData = await response.json();

@@ -5,8 +5,8 @@ import prisma from '@/core/prisma';
 import { createSamplePrivateCloudProductData } from '@/helpers/mock-resources';
 import { mockNoRoleUsers, findMockUserByIdr, findOtherMockUsers } from '@/helpers/mock-users';
 import { mockSessionByEmail, mockSessionByRole } from '@/services/api-test/core';
-import { provisionPrivateCloudProject } from '@/services/api-test/private-cloud';
-import { createPrivateCloudProject, editPrivateCloudProject } from '@/services/api-test/private-cloud/products';
+import { provisionPrivateCloudProduct } from '@/services/api-test/private-cloud';
+import { createPrivateCloudProduct, editPrivateCloudProduct } from '@/services/api-test/private-cloud/products';
 import {
   searchPrivateCloudRequests,
   makePrivateCloudRequestDecision,
@@ -43,7 +43,7 @@ describe('Search Private Cloud Requests - Permissions', () => {
     const requestData = createSamplePrivateCloudProductData({
       data: { ...memberData, ministry: Ministry.PSA, cluster: Cluster.SILVER },
     });
-    const res1 = await createPrivateCloudProject(requestData);
+    const res1 = await createPrivateCloudProduct(requestData);
     const dat1 = await res1.json();
     expect(res1.status).toBe(200);
 
@@ -56,7 +56,7 @@ describe('Search Private Cloud Requests - Permissions', () => {
     });
     expect(res2.status).toBe(200);
 
-    const res3 = await provisionPrivateCloudProject(dat1.licencePlate);
+    const res3 = await provisionPrivateCloudProduct(dat1.licencePlate);
     expect(res3.status).toBe(200);
   });
 
@@ -96,7 +96,7 @@ describe('Search Private Cloud Requests - Permissions', () => {
     const requestData = createSamplePrivateCloudProductData({
       data: { ...randomMemberData, ministry: Ministry.PSA, cluster: Cluster.SILVER },
     });
-    const res1 = await createPrivateCloudProject(requestData);
+    const res1 = await createPrivateCloudProduct(requestData);
     const dat1 = await res1.json();
     expect(res1.status).toBe(200);
 
@@ -109,7 +109,7 @@ describe('Search Private Cloud Requests - Permissions', () => {
     });
     expect(res2.status).toBe(200);
 
-    const res3 = await provisionPrivateCloudProject(dat1.licencePlate);
+    const res3 = await provisionPrivateCloudProduct(dat1.licencePlate);
     expect(res3.status).toBe(200);
   });
 
@@ -190,7 +190,7 @@ describe('Search Private Cloud Requests - Validations', () => {
 
     const results = await Promise.all(
       datasets.map(async (data) => {
-        const res1 = await createPrivateCloudProject(data);
+        const res1 = await createPrivateCloudProduct(data);
         const dat1 = await res1.json();
 
         await mockSessionByRole(GlobalRole.PrivateReviewer);
@@ -200,14 +200,14 @@ describe('Search Private Cloud Requests - Validations', () => {
           decision: DecisionStatus.APPROVED,
         });
 
-        await provisionPrivateCloudProject(dat1.licencePlate);
+        await provisionPrivateCloudProduct(dat1.licencePlate);
         return req;
       }),
     );
 
     await mockSessionByRole(GlobalRole.PrivateAdmin);
     const firstReq = await results[0].json();
-    const res = await editPrivateCloudProject(firstReq.licencePlate, {
+    const res = await editPrivateCloudProduct(firstReq.licencePlate, {
       ...firstReq.decisionData,
       name: `${firstReq.decisionData.name} - updated`,
     });
