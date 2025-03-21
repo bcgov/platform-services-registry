@@ -5,8 +5,8 @@ import { createSamplePrivateCloudProductData } from '@/helpers/mock-resources';
 import { findOtherMockUsers } from '@/helpers/mock-users';
 import { pickProductData } from '@/helpers/product';
 import { mockSessionByEmail, mockSessionByRole } from '@/services/api-test/core';
-import { provisionPrivateCloudProject } from '@/services/api-test/private-cloud';
-import { createPrivateCloudProject, getPrivateCloudProject } from '@/services/api-test/private-cloud/products';
+import { provisionPrivateCloudProduct } from '@/services/api-test/private-cloud';
+import { createPrivateCloudProduct, getPrivateCloudProduct } from '@/services/api-test/private-cloud/products';
 import { makePrivateCloudRequestDecision } from '@/services/api-test/private-cloud/requests';
 
 const fieldsToCompare = [
@@ -32,7 +32,7 @@ describe('Read Private Cloud Product - Permissions', () => {
   it('should successfully submit a create request for PO', async () => {
     await mockSessionByEmail(productData.main.projectOwner.email);
 
-    const response = await createPrivateCloudProject(productData.main);
+    const response = await createPrivateCloudProduct(productData.main);
     expect(response.status).toBe(200);
 
     requests.create = await response.json();
@@ -53,14 +53,14 @@ describe('Read Private Cloud Product - Permissions', () => {
   it('should successfully provision the request', async () => {
     await mockSessionByEmail();
 
-    const response = await provisionPrivateCloudProject(requests.create.licencePlate);
+    const response = await provisionPrivateCloudProduct(requests.create.licencePlate);
     expect(response.status).toBe(200);
   });
 
   it('should return 401 for unauthenticated user', async () => {
     await mockSessionByEmail();
 
-    const response = await getPrivateCloudProject(requests.create.decisionData.licencePlate);
+    const response = await getPrivateCloudProduct(requests.create.decisionData.licencePlate);
 
     expect(response.status).toBe(401);
   });
@@ -68,7 +68,7 @@ describe('Read Private Cloud Product - Permissions', () => {
   it('should successfully read the product for admin', async () => {
     await mockSessionByRole(GlobalRole.Admin);
 
-    const response = await getPrivateCloudProject(requests.create.decisionData.licencePlate);
+    const response = await getPrivateCloudProduct(requests.create.decisionData.licencePlate);
 
     expect(response.status).toBe(200);
 
@@ -81,7 +81,7 @@ describe('Read Private Cloud Product - Permissions', () => {
   it('should successfully read the product for PO', async () => {
     await mockSessionByEmail(productData.main.projectOwner.email);
 
-    const response = await getPrivateCloudProject(requests.create.decisionData.licencePlate);
+    const response = await getPrivateCloudProduct(requests.create.decisionData.licencePlate);
 
     expect(response.status).toBe(200);
 
@@ -94,7 +94,7 @@ describe('Read Private Cloud Product - Permissions', () => {
   it('should successfully read the product for TL1', async () => {
     await mockSessionByEmail(productData.main.primaryTechnicalLead.email);
 
-    const response = await getPrivateCloudProject(requests.create.decisionData.licencePlate);
+    const response = await getPrivateCloudProduct(requests.create.decisionData.licencePlate);
 
     expect(response.status).toBe(200);
 
@@ -107,7 +107,7 @@ describe('Read Private Cloud Product - Permissions', () => {
   it('should successfully read the product for TL2', async () => {
     await mockSessionByEmail(productData.main.secondaryTechnicalLead.email);
 
-    const response = await getPrivateCloudProject(requests.create.decisionData.licencePlate);
+    const response = await getPrivateCloudProduct(requests.create.decisionData.licencePlate);
 
     expect(response.status).toBe(200);
 
@@ -126,7 +126,7 @@ describe('Read Private Cloud Product - Permissions', () => {
 
     await mockSessionByEmail(otherUsers[0].email);
 
-    const response = await getPrivateCloudProject(requests.create.decisionData.licencePlate);
+    const response = await getPrivateCloudProduct(requests.create.decisionData.licencePlate);
 
     expect(response.status).toBe(401);
   });

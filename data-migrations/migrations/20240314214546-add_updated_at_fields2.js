@@ -1,6 +1,6 @@
 export const up = async (db, client) => {
   const privateProjectProm = db
-    .collection('PrivateCloudProject')
+    .collection('PrivateCloudProduct')
     .updateMany({ updatedAt: { $exists: false } }, [{ $set: { updatedAt: '$created' } }]);
 
   const privateRequestProm = db
@@ -8,7 +8,7 @@ export const up = async (db, client) => {
     .updateMany({ updatedAt: { $exists: false } }, [{ $set: { updatedAt: '$created' } }]);
 
   const publicProjectProm = db
-    .collection('PublicCloudProject')
+    .collection('PublicCloudProduct')
     .updateMany({ updatedAt: { $exists: false } }, [{ $set: { updatedAt: '$created' } }]);
 
   const publicRequestProm = db

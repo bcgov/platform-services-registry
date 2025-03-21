@@ -1,11 +1,11 @@
 import { Ministry, Provider, ProjectStatus } from '@prisma/client';
 import _isNil from 'lodash-es/isNil';
-import { GET as _listPublicCloudProject } from '@/app/api/v1/public-cloud/products/route';
+import { GET as _listPublicCloudProduct } from '@/app/api/v1/public-cloud/products/route';
 import { createRoute, ParamData } from '../../core';
 
 const productCollectionRoute = createRoute('/api/public-cloud/products');
 
-interface ListPublicCloudProjectApiProps {
+interface ListPublicCloudProductApiProps {
   page?: number;
   pageSize?: number;
   ministry?: Ministry;
@@ -13,9 +13,9 @@ interface ListPublicCloudProjectApiProps {
   status?: ProjectStatus;
 }
 
-export async function listPublicCloudProjectApi(queryParams?: ListPublicCloudProjectApiProps) {
+export async function listPublicCloudProductApi(queryParams?: ListPublicCloudProductApiProps) {
   const result = await productCollectionRoute.get(
-    _listPublicCloudProject,
+    _listPublicCloudProduct,
     '',
     { queryParams: queryParams || {} },
     { authorization: 'dummy' },

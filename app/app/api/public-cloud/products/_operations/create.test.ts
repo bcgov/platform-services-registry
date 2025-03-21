@@ -5,7 +5,7 @@ import { createSamplePublicCloudProductData } from '@/helpers/mock-resources';
 import { findOtherMockUsers } from '@/helpers/mock-users';
 import { pickProductData } from '@/helpers/product';
 import { mockSessionByEmail, mockSessionByRole } from '@/services/api-test/core';
-import { createPublicCloudProject } from '@/services/api-test/public-cloud/products';
+import { createPublicCloudProduct } from '@/services/api-test/public-cloud/products';
 
 const fieldsToCompare = [
   'name',
@@ -28,7 +28,7 @@ describe('Create Public Cloud Product - Permissions', () => {
     await mockSessionByEmail();
 
     const requestData = createSamplePublicCloudProductData();
-    const response = await createPublicCloudProject(requestData);
+    const response = await createPublicCloudProduct(requestData);
     expect(response.status).toBe(401);
   });
 
@@ -36,7 +36,7 @@ describe('Create Public Cloud Product - Permissions', () => {
     const requestData = createSamplePublicCloudProductData();
     await mockSessionByEmail(requestData.projectOwner.email);
 
-    const response = await createPublicCloudProject(requestData);
+    const response = await createPublicCloudProduct(requestData);
     expect(response.status).toBe(200);
 
     const resData = await response.json();
@@ -49,7 +49,7 @@ describe('Create Public Cloud Product - Permissions', () => {
     const requestData = createSamplePublicCloudProductData();
     await mockSessionByEmail(requestData.primaryTechnicalLead.email);
 
-    const response = await createPublicCloudProject(requestData);
+    const response = await createPublicCloudProduct(requestData);
     expect(response.status).toBe(200);
 
     const resData = await response.json();
@@ -62,7 +62,7 @@ describe('Create Public Cloud Product - Permissions', () => {
     const requestData = createSamplePublicCloudProductData();
     await mockSessionByEmail(requestData.secondaryTechnicalLead.email);
 
-    const response = await createPublicCloudProject(requestData);
+    const response = await createPublicCloudProduct(requestData);
     expect(response.status).toBe(200);
 
     const resData = await response.json();
@@ -81,7 +81,7 @@ describe('Create Public Cloud Product - Permissions', () => {
 
     await mockSessionByEmail(otherUsers[0].email);
 
-    const response = await createPublicCloudProject(requestData);
+    const response = await createPublicCloudProduct(requestData);
     expect(response.status).toBe(401);
   });
 
@@ -89,7 +89,7 @@ describe('Create Public Cloud Product - Permissions', () => {
     const requestData = createSamplePublicCloudProductData();
     await mockSessionByRole(GlobalRole.Admin);
 
-    const response = await createPublicCloudProject(requestData);
+    const response = await createPublicCloudProduct(requestData);
     expect(response.status).toBe(200);
 
     const resData = await response.json();
@@ -102,7 +102,7 @@ describe('Create Public Cloud Product - Permissions', () => {
     const requestData = createSamplePublicCloudProductData();
     await mockSessionByRole(GlobalRole.Reader);
 
-    const response = await createPublicCloudProject(requestData);
+    const response = await createPublicCloudProduct(requestData);
     expect(response.status).toBe(401);
   });
 
@@ -110,7 +110,7 @@ describe('Create Public Cloud Product - Permissions', () => {
     const requestData = createSamplePublicCloudProductData();
     await mockSessionByRole(GlobalRole.PublicAdmin);
 
-    const response = await createPublicCloudProject(requestData);
+    const response = await createPublicCloudProduct(requestData);
     expect(response.status).toBe(200);
 
     const resData = await response.json();
@@ -127,7 +127,7 @@ describe('Create Public Cloud Request - Validations', () => {
 
     requestData.name = '';
 
-    const response = await createPublicCloudProject(requestData);
+    const response = await createPublicCloudProduct(requestData);
     expect(response.status).toBe(400);
 
     const resData = await response.json();
@@ -142,7 +142,7 @@ describe('Create Public Cloud Request - Validations', () => {
 
     requestData.description = '';
 
-    const response = await createPublicCloudProject(requestData);
+    const response = await createPublicCloudProduct(requestData);
     expect(response.status).toBe(400);
 
     const resData = await response.json();
@@ -157,7 +157,7 @@ describe('Create Public Cloud Request - Validations', () => {
 
     requestData.provider = 'INVALID' as Provider;
 
-    const response = await createPublicCloudProject(requestData);
+    const response = await createPublicCloudProduct(requestData);
     expect(response.status).toBe(400);
 
     const resData = await response.json();
@@ -172,7 +172,7 @@ describe('Create Public Cloud Request - Validations', () => {
 
     requestData.ministry = 'INVALID' as Ministry;
 
-    const response = await createPublicCloudProject(requestData);
+    const response = await createPublicCloudProduct(requestData);
     expect(response.status).toBe(400);
 
     const resData = await response.json();
@@ -187,7 +187,7 @@ describe('Create Public Cloud Request - Validations', () => {
 
     requestData.projectOwner = undefined;
 
-    const response = await createPublicCloudProject(requestData);
+    const response = await createPublicCloudProduct(requestData);
     expect(response.status).toBe(400);
 
     const resData = await response.json();
@@ -204,7 +204,7 @@ describe('Create Public Cloud Request - Validations', () => {
 
     requestData.primaryTechnicalLead = undefined;
 
-    const response = await createPublicCloudProject(requestData);
+    const response = await createPublicCloudProduct(requestData);
     expect(response.status).toBe(400);
 
     const resData = await response.json();
@@ -221,7 +221,7 @@ describe('Create Public Cloud Request - Validations', () => {
 
     requestData.secondaryTechnicalLead = null as any;
 
-    const response = await createPublicCloudProject(requestData);
+    const response = await createPublicCloudProduct(requestData);
     expect(response.status).toBe(200);
   });
 });

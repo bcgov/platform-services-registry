@@ -42,7 +42,7 @@ export const POST = apiHandler(async ({ pathParams, body, session }) => {
         data: { equals: { licencePlate } },
       },
     }),
-    prisma.publicCloudProject.findFirst({ where: { licencePlate }, include: publicCloudProductDetailInclude }),
+    prisma.publicCloudProduct.findFirst({ where: { licencePlate }, include: publicCloudProductDetailInclude }),
   ]);
 
   if (!assignedTask) {

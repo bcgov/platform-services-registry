@@ -5,9 +5,9 @@ export const up = async (db, client) => {
     const result = await Promise.all([
       db.collection('User').createIndex({ email: 1, firstName: 1, lastName: 1 }),
 
-      db.collection('PrivateCloudProject').createIndex({ status: 1 }),
-      db.collection('PrivateCloudProject').createIndex({ status: 1, licencePlate: 1, name: 1, description: 1 }),
-      db.collection('PrivateCloudProject').createIndex({
+      db.collection('PrivateCloudProduct').createIndex({ status: 1 }),
+      db.collection('PrivateCloudProduct').createIndex({ status: 1, licencePlate: 1, name: 1, description: 1 }),
+      db.collection('PrivateCloudProduct').createIndex({
         status: 1,
         licencePlate: 1,
         name: 1,
@@ -17,9 +17,9 @@ export const up = async (db, client) => {
         secondaryTechnicalLeadId: 1,
       }),
 
-      db.collection('PublicCloudProject').createIndex({ status: 1 }),
-      db.collection('PublicCloudProject').createIndex({ status: 1, licencePlate: 1, name: 1, description: 1 }),
-      db.collection('PublicCloudProject').createIndex({
+      db.collection('PublicCloudProduct').createIndex({ status: 1 }),
+      db.collection('PublicCloudProduct').createIndex({ status: 1, licencePlate: 1, name: 1, description: 1 }),
+      db.collection('PublicCloudProduct').createIndex({
         status: 1,
         licencePlate: 1,
         name: 1,
@@ -35,7 +35,7 @@ export const up = async (db, client) => {
       db.collection('PublicCloudRequest').createIndex({ licencePlate: 1, decisionDataId: 1, decisionStatus: 1 }),
       db.collection('PublicCloudRequest').createIndex({ decisionDataId: 1, decisionStatus: 1 }),
 
-      db.collection('PrivateCloudRequestedProject').createIndex({
+      db.collection('PrivateCloudRequestData').createIndex({
         licencePlate: 1,
         name: 1,
         description: 1,
@@ -43,7 +43,7 @@ export const up = async (db, client) => {
         primaryTechnicalLeadId: 1,
         secondaryTechnicalLeadId: 1,
       }),
-      db.collection('PublicCloudRequestedProject').createIndex({
+      db.collection('PublicCloudRequestData').createIndex({
         licencePlate: 1,
         name: 1,
         description: 1,

@@ -1,3 +1,3 @@
 import { Prisma } from '@prisma/client';
 
-export type Product = Omit<Prisma.PublicCloudProjectGetPayload<null>, 'updatedAt'>;
+export type Product = Omit<Prisma.PublicCloudProductGetPayload<null>, 'updatedAt'>;

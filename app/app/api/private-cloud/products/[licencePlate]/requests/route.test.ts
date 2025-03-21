@@ -4,8 +4,8 @@ import { GlobalRole } from '@/constants';
 import { createSamplePrivateCloudProductData } from '@/helpers/mock-resources';
 import { mockNoRoleUsers, findMockUserByIdr, findOtherMockUsers } from '@/helpers/mock-users';
 import { mockSessionByEmail, mockSessionByRole } from '@/services/api-test/core';
-import { provisionPrivateCloudProject } from '@/services/api-test/private-cloud';
-import { createPrivateCloudProject, listPrivateCloudProductRequests } from '@/services/api-test/private-cloud/products';
+import { provisionPrivateCloudProduct } from '@/services/api-test/private-cloud';
+import { createPrivateCloudProduct, listPrivateCloudProductRequests } from '@/services/api-test/private-cloud/products';
 import { makePrivateCloudRequestDecision } from '@/services/api-test/private-cloud/requests';
 
 const PO = mockNoRoleUsers[0];
@@ -31,7 +31,7 @@ describe('List Private Cloud Product Requests - Permissions', () => {
     const requestData = createSamplePrivateCloudProductData({
       data: { ...memberData, ministry: Ministry.PSA, cluster: Cluster.SILVER },
     });
-    const res1 = await createPrivateCloudProject(requestData);
+    const res1 = await createPrivateCloudProduct(requestData);
     const dat1 = await res1.json();
     licencePlate = dat1.licencePlate;
 
@@ -46,7 +46,7 @@ describe('List Private Cloud Product Requests - Permissions', () => {
     });
     expect(res2.status).toBe(200);
 
-    const res3 = await provisionPrivateCloudProject(dat1.licencePlate);
+    const res3 = await provisionPrivateCloudProduct(dat1.licencePlate);
     expect(res3.status).toBe(200);
   });
 

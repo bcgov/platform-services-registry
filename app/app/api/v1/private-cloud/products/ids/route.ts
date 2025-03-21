@@ -18,7 +18,7 @@ const apiHandler = createApiHandler({
 export const GET = apiHandler(async ({ queryParams, session }) => {
   const { cluster } = queryParams;
 
-  const where: Prisma.PrivateCloudProjectWhereInput = {
+  const where: Prisma.PrivateCloudProductWhereInput = {
     status: 'ACTIVE',
     cluster,
   };
@@ -28,7 +28,7 @@ export const GET = apiHandler(async ({ queryParams, session }) => {
     where.golddrEnabled = true;
   }
 
-  const products = await prisma.privateCloudProject.findMany({
+  const products = await prisma.privateCloudProduct.findMany({
     where,
     select: {
       id: true,

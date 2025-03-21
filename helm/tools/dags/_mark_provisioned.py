@@ -26,7 +26,7 @@ def fetch_products_mark_completed(
         # Establish MongoDB connection
         db = get_mongo_db(mongo_conn_id)
         requests_collection = db["PrivateCloudRequest"]
-        requested_projects_collection = db["PrivateCloudRequestedProject"]
+        requested_projects_collection = db["PrivateCloudRequestData"]
 
         product_requests = requests_collection.find(
             {"decisionStatus": "APPROVED"}, projection={"_id": True, "licencePlate": True, "decisionDataId": True}

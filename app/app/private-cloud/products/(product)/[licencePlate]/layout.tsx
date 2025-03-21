@@ -14,7 +14,7 @@ import ProductBadge from '@/components/private-cloud/ProductBadge';
 import { IS_PROD } from '@/config';
 import { GlobalRole } from '@/constants';
 import createClientPage from '@/core/client-page';
-import { getPrivateCloudProject, getSubnetForEmerald } from '@/services/backend/private-cloud/products';
+import { getPrivateCloudProduct, getSubnetForEmerald } from '@/services/backend/private-cloud/products';
 import { usePrivateProductState } from '@/states/global';
 import { resetState as resetRequestsState } from './requests/state';
 
@@ -38,7 +38,7 @@ export default privateCloudProductLayout(({ getPathParams, session, children }) 
   const { licencePlate = '' } = pathParams ?? {};
   const { data: currentProduct } = useQuery({
     queryKey: ['currentProduct', licencePlate],
-    queryFn: () => getPrivateCloudProject(licencePlate),
+    queryFn: () => getPrivateCloudProduct(licencePlate),
     enabled: !!licencePlate,
   });
 

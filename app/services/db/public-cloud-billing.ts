@@ -104,7 +104,7 @@ export async function searchPublicCloudBillings({
     }
 
     const [products, requests] = await Promise.all([
-      prisma.publicCloudProject.findMany({
+      prisma.publicCloudProduct.findMany({
         where: {
           name: {
             contains: search,
@@ -208,7 +208,7 @@ export async function getPublicCloudBillingResources({
   result.billingDecorated = await models.publicCloudBilling.decorate(billing, session, true);
 
   const [product, request] = await Promise.all([
-    prisma.publicCloudProject.findFirst({
+    prisma.publicCloudProduct.findFirst({
       where: { licencePlate: billing.licencePlate, status: ProjectStatus.ACTIVE },
       include: publicCloudProductDetailInclude,
       orderBy: { createdAt: Prisma.SortOrder.desc },

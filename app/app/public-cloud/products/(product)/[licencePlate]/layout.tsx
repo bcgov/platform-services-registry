@@ -9,7 +9,7 @@ import Tabs, { ITab } from '@/components/generic/tabs/BasicTabs';
 import ProductBadge from '@/components/public-cloud/ProductBadge';
 import { GlobalRole } from '@/constants';
 import createClientPage from '@/core/client-page';
-import { getPublicCloudProject } from '@/services/backend/public-cloud/products';
+import { getPublicCloudProduct } from '@/services/backend/public-cloud/products';
 import { usePublicProductState } from '@/states/global';
 import { resetState as resetRequestsState } from './requests/state';
 
@@ -34,7 +34,7 @@ export default publicCloudProductSecurityACS(({ getPathParams, children }) => {
 
   const { data: currentProduct } = useQuery({
     queryKey: ['currentProduct', licencePlate],
-    queryFn: () => getPublicCloudProject(licencePlate),
+    queryFn: () => getPublicCloudProduct(licencePlate),
     enabled: !!licencePlate,
   });
 

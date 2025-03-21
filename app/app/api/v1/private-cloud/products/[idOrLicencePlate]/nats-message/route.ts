@@ -20,7 +20,7 @@ export const GET = apiHandler(async ({ pathParams, session }) => {
 
   const where = idOrLicencePlate.length > 7 ? { id: idOrLicencePlate } : { licencePlate: idOrLicencePlate };
 
-  const product = await prisma.privateCloudProject.findUnique({
+  const product = await prisma.privateCloudProduct.findUnique({
     where,
     include: {
       projectOwner: true,

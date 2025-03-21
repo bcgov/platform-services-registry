@@ -1,5 +1,5 @@
 import { Prisma, User, PublicCloudProductMember, Provider } from '@prisma/client';
-import { PublicCloudProjectDecorate, PublicCloudRequestDecorate, PublicCloudBillingDecorate } from './doc-decorate';
+import { PublicCloudProductDecorate, PublicCloudRequestDecorate, PublicCloudBillingDecorate } from './doc-decorate';
 
 export type ExtendedPublicCloudProductMember = PublicCloudProductMember & User;
 
@@ -7,7 +7,7 @@ interface ExtendedPublicCloudProductMembersData {
   members: ExtendedPublicCloudProductMember[];
 }
 
-export type PublicCloudProductSimple = Prisma.PublicCloudProjectGetPayload<{
+export type PublicCloudProductSimple = Prisma.PublicCloudProductGetPayload<{
   include: {
     projectOwner: true;
     primaryTechnicalLead: true;
@@ -23,9 +23,9 @@ export type PublicCloudProductSimple = Prisma.PublicCloudProjectGetPayload<{
   activeRequest?: Prisma.PublicCloudRequestGetPayload<null> | null;
 };
 
-export type PublicCloudProductSimpleDecorated = PublicCloudProductSimple & PublicCloudProjectDecorate;
+export type PublicCloudProductSimpleDecorated = PublicCloudProductSimple & PublicCloudProductDecorate;
 
-export type PublicCloudProductDetail = Prisma.PublicCloudProjectGetPayload<{
+export type PublicCloudProductDetail = Prisma.PublicCloudProductGetPayload<{
   include: {
     projectOwner: true;
     primaryTechnicalLead: true;
@@ -43,7 +43,7 @@ export type PublicCloudProductDetail = Prisma.PublicCloudProjectGetPayload<{
 
 type _PublicCloudProductDetail = Omit<PublicCloudProductDetail, 'members'> & ExtendedPublicCloudProductMembersData;
 
-export type PublicCloudProductDetailDecorated = _PublicCloudProductDetail & PublicCloudProjectDecorate;
+export type PublicCloudProductDetailDecorated = _PublicCloudProductDetail & PublicCloudProductDecorate;
 
 export type PublicCloudProductSearch = {
   docs: PublicCloudProductSimpleDecorated[];

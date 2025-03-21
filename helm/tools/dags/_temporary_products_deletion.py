@@ -16,7 +16,7 @@ def send_temp_products_deletion_request(
     query = {"isTest": True, "status": "ACTIVE", "createdAt": {"$lt": thirty_days_ago}}
     print(f"Querying {query}...")
     projection = {"_id": False, "licencePlate": True}
-    projects = db.PrivateCloudProject.find(query, projection=projection)
+    projects = db.PrivateCloudProduct.find(query, projection=projection)
 
     access_token = kc.get_access_token()
     headers = {"Authorization": f"Bearer {access_token}", "Content-Type": "application/json"}

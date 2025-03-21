@@ -6,10 +6,10 @@ import prisma from '@/core/prisma';
 import { createSamplePublicCloudProductData } from '@/helpers/mock-resources';
 import { findOtherMockUsers } from '@/helpers/mock-users';
 import { mockSessionByEmail, mockSessionByRole } from '@/services/api-test/core';
-import { provisionPublicCloudProject } from '@/services/api-test/public-cloud';
+import { provisionPublicCloudProduct } from '@/services/api-test/public-cloud';
 import {
-  createPublicCloudProject,
-  editPublicCloudProject,
+  createPublicCloudProduct,
+  editPublicCloudProduct,
   signPublicCloudBilling,
   reviewPublicCloudBilling,
 } from '@/services/api-test/public-cloud/products';
@@ -43,7 +43,7 @@ const requests = {
 };
 
 async function makeBasicProductChange(extra = {}) {
-  const response = await editPublicCloudProject(requests.create.licencePlate, {
+  const response = await editPublicCloudProduct(requests.create.licencePlate, {
     ...requests.create.decisionData,
     environmentsEnabled: newEnvironmentsEnabled,
     isAgMinistryChecked: true,
@@ -59,7 +59,7 @@ describe('Update Public Cloud Product - Permissions', () => {
   it('should successfully submit a create request for PO', async () => {
     await mockSessionByEmail(productData.main.projectOwner.email);
 
-    const response = await createPublicCloudProject(productData.main);
+    const response = await createPublicCloudProduct(productData.main);
     expect(response.status).toBe(200);
 
     requests.create = await response.json();
@@ -112,7 +112,7 @@ describe('Update Public Cloud Product - Permissions', () => {
   it('should successfully provision the request', async () => {
     await mockSessionByEmail();
 
-    const response = await provisionPublicCloudProject(requests.create.licencePlate);
+    const response = await provisionPublicCloudProduct(requests.create.licencePlate);
     expect(response.status).toBe(200);
   });
 
@@ -169,7 +169,7 @@ describe('Update Public Cloud Product - Permissions', () => {
   it('should successfully provision the request', async () => {
     await mockSessionByEmail();
 
-    const response = await provisionPublicCloudProject(requests.update.licencePlate);
+    const response = await provisionPublicCloudProduct(requests.update.licencePlate);
     expect(response.status).toBe(200);
   });
 });
@@ -272,7 +272,7 @@ describe('Update Public Cloud Product - Validations', () => {
   it('should successfully provision the request', async () => {
     await mockSessionByEmail();
 
-    const response = await provisionPublicCloudProject(requests.create.licencePlate);
+    const response = await provisionPublicCloudProduct(requests.create.licencePlate);
     expect(response.status).toBe(200);
   });
 

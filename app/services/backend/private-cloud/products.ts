@@ -55,22 +55,22 @@ export async function downloadPrivateCloudProducts(data: PrivateCloudProductSear
   return result;
 }
 
-export async function getPrivateCloudProject(licencePlate: string) {
+export async function getPrivateCloudProduct(licencePlate: string) {
   const result = await instance.get(`/${licencePlate}`).then((res) => res.data);
   return result as PrivateCloudProductDetailDecorated;
 }
 
-export async function createPrivateCloudProject(data: any) {
+export async function createPrivateCloudProduct(data: any) {
   const result = await instance.post('', data).then((res) => res.data);
   return result as PrivateCloudRequestDetail;
 }
 
-export async function editPrivateCloudProject(licencePlate: string, data: any) {
+export async function editPrivateCloudProduct(licencePlate: string, data: any) {
   const result = await instance.put(`/${licencePlate}`, data).then((res) => res.data);
   return result as PrivateCloudRequestDetail;
 }
 
-export async function deletePrivateCloudProject(licencePlate: string) {
+export async function deletePrivateCloudProduct(licencePlate: string) {
   const result = await instance.delete(`/${licencePlate}`).then((res) => res.data);
   return result as PrivateCloudRequestDetail;
 }

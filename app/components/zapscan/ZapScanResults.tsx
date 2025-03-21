@@ -5,7 +5,7 @@ import TableTop from '@/components/table/TableTop';
 import { formatDateSimple } from '@/utils/js';
 import SearchPanel from './SearchPanel';
 
-type ZapResultRows = Prisma.PrivateCloudProjectZapResultGetPayload<{
+type ZapResultRows = Prisma.PrivateCloudProductZapResultGetPayload<{
   select: { id: true; licencePlate: true; cluster: true; host: true; json: true; scannedAt: true; available: true };
 }>;
 

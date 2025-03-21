@@ -5,11 +5,11 @@ import { createSamplePrivateCloudProductData } from '@/helpers/mock-resources';
 import { resourceRequests1, resourceRequests2 } from '@/helpers/mock-resources/private-cloud-product';
 import { pickProductData } from '@/helpers/product';
 import { mockSessionByEmail, mockSessionByRole } from '@/services/api-test/core';
-import { provisionPrivateCloudProject } from '@/services/api-test/private-cloud';
+import { provisionPrivateCloudProduct } from '@/services/api-test/private-cloud';
 import {
-  createPrivateCloudProject,
-  editPrivateCloudProject,
-  deletePrivateCloudProject,
+  createPrivateCloudProduct,
+  editPrivateCloudProduct,
+  deletePrivateCloudProduct,
 } from '@/services/api-test/private-cloud/products';
 import { makePrivateCloudRequestDecision } from '@/services/api-test/private-cloud/requests';
 
@@ -52,7 +52,7 @@ describe('Review Private Cloud Create Request - Permissions', () => {
   it('should successfully submit a create request for PO', async () => {
     await mockSessionByEmail(productData.main.projectOwner.email);
 
-    const response = await createPrivateCloudProject(productData.main);
+    const response = await createPrivateCloudProduct(productData.main);
     expect(response.status).toBe(200);
 
     requests.main = await response.json();
@@ -109,7 +109,7 @@ describe('Review Private Cloud Create Request - Permissions', () => {
   it('should successfully provision the create request', async () => {
     await mockSessionByEmail();
 
-    const response = await provisionPrivateCloudProject(requests.main.licencePlate);
+    const response = await provisionPrivateCloudProduct(requests.main.licencePlate);
     expect(response.status).toBe(200);
   });
 });
@@ -118,7 +118,7 @@ describe('Review Private Cloud Update Request - Permissions', () => {
   it('should successfully submit a update request for TL1', async () => {
     await mockSessionByEmail(productData.main.primaryTechnicalLead.email);
 
-    const response = await editPrivateCloudProject(requests.main.licencePlate, {
+    const response = await editPrivateCloudProduct(requests.main.licencePlate, {
       ...requests.main.decisionData,
       resourceRequests: resourceRequests2,
     });
@@ -177,7 +177,7 @@ describe('Review Private Cloud Update Request - Permissions', () => {
   it('should successfully provision the update request', async () => {
     await mockSessionByEmail();
 
-    const response = await provisionPrivateCloudProject(requests.main.licencePlate);
+    const response = await provisionPrivateCloudProduct(requests.main.licencePlate);
     expect(response.status).toBe(200);
   });
 });
@@ -186,7 +186,7 @@ describe('Review Private Cloud Delete Request - Permissions', () => {
   it('should successfully submit a delete request for TL1', async () => {
     await mockSessionByEmail(productData.main.primaryTechnicalLead.email);
 
-    const response = await deletePrivateCloudProject(requests.main.licencePlate);
+    const response = await deletePrivateCloudProduct(requests.main.licencePlate);
     const responseData = await response.json();
     expect(response.status).toBe(200);
 
@@ -237,7 +237,7 @@ describe('Review Private Cloud Delete Request - Permissions', () => {
   it('should successfully provision the delete request', async () => {
     await mockSessionByEmail();
 
-    const response = await provisionPrivateCloudProject(requests.main.licencePlate);
+    const response = await provisionPrivateCloudProduct(requests.main.licencePlate);
     expect(response.status).toBe(200);
   });
 });
@@ -246,7 +246,7 @@ describe('Review Private Cloud Request - Validations', () => {
   it('should successfully submit a create request for TL1', async () => {
     await mockSessionByEmail(productData.main.primaryTechnicalLead.email);
 
-    const response = await createPrivateCloudProject(productData.main);
+    const response = await createPrivateCloudProduct(productData.main);
     expect(response.status).toBe(200);
 
     requests.main = await response.json();

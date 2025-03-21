@@ -18,7 +18,7 @@ export default async function updateOp({
   const { licencePlate } = pathParams;
   const { isTest } = body;
 
-  await prisma.privateCloudProject.update({
+  await prisma.privateCloudProduct.update({
     where: { licencePlate },
     data: { isTest },
   });

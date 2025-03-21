@@ -37,7 +37,7 @@ def send_temporary_products_notification(
         "primaryTechnicalLeadId": True,
         "secondaryTechnicalLeadId": True,
     }
-    projects = db.PrivateCloudProject.find(query, projection=projection)
+    projects = db.PrivateCloudProduct.find(query, projection=projection)
     project_ids = []
 
     count = 0
@@ -75,7 +75,7 @@ def send_temporary_products_notification(
         project_ids.append(project_id)
 
     if project_ids:
-        db.PrivateCloudProject.update_many(
+        db.PrivateCloudProduct.update_many(
             {"_id": {"$in": project_ids}}, {"$set": {"temporaryProductNotificationDate": current_date}}
         )
 

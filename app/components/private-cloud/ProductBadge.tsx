@@ -1,6 +1,6 @@
 import { Badge } from '@mantine/core';
 import { ProjectStatus } from '@prisma/client';
-import { PrivateCloudProject } from '@prisma/client';
+import { PrivateCloudProduct } from '@prisma/client';
 import LicencePlateBadge from '@/components/shared/LicencePlateBadge';
 import { cn } from '@/utils/js';
 import ClusterBadge from './ClusterBadge';
@@ -9,7 +9,7 @@ export default function ProductBadge({
   data,
   className,
 }: {
-  data: Pick<PrivateCloudProject, 'licencePlate' | 'cluster' | 'status' | 'isTest'>;
+  data: Pick<PrivateCloudProduct, 'licencePlate' | 'cluster' | 'status' | 'isTest'>;
   className?: string;
 }) {
   let statusColor = 'gray';

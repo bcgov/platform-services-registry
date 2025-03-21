@@ -1,13 +1,13 @@
 export const up = async (db, client) => {
   await Promise.all([
     db
-      .collection('PublicCloudRequestedProject')
+      .collection('PublicCloudRequestData')
       .updateMany(
         { $or: [{ providerSelectionReasonsNote: null }, { providerSelectionReasonsNote: { $exists: false } }] },
         { $set: { providerSelectionReasonsNote: '' } },
       ),
     db
-      .collection('PublicCloudProject')
+      .collection('PublicCloudProduct')
       .updateMany(
         { $or: [{ providerSelectionReasonsNote: null }, { providerSelectionReasonsNote: { $exists: false } }] },
         { $set: { providerSelectionReasonsNote: '' } },

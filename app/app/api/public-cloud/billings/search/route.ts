@@ -20,7 +20,7 @@ export const POST = createApiHandler({
     const licencePlates = _uniq(data.map(({ licencePlate }) => licencePlate));
 
     const [publicProducts, publicCreateRequests, tasks] = await Promise.all([
-      prisma.publicCloudProject.findMany({
+      prisma.publicCloudProduct.findMany({
         where: { licencePlate: { in: licencePlates } },
         select: { id: true, licencePlate: true, name: true, provider: true },
       }),

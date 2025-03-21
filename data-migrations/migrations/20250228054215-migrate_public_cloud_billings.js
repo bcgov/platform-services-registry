@@ -20,9 +20,9 @@ export const up = async (db, client) => {
     const Task = db.collection('Task');
     const Billing = db.collection('Billing');
     const PublicCloudBilling = db.collection('PublicCloudBilling');
-    const PublicCloudProject = db.collection('PublicCloudProject');
+    const PublicCloudProduct = db.collection('PublicCloudProduct');
 
-    const products = await PublicCloudProject.find().toArray();
+    const products = await PublicCloudProduct.find().toArray();
     const oldBillings = await Billing.find().toArray();
 
     const accountCodingMap = {};

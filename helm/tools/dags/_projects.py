@@ -50,10 +50,10 @@ def fetch_zap_projects(mongo_conn_id, concurrency, **context):
 
         # Delete documents older than two_days_ago
         two_days_ago = datetime.now() - timedelta(days=2)
-        db.PrivateCloudProjectZapResult.delete_many({"scannedAt": {"$lt": two_days_ago}})
+        db.PrivateCloudProductZapResult.delete_many({"scannedAt": {"$lt": two_days_ago}})
         shutil.rmtree(f"{shared_directory}/zapscan/{mongo_conn_id}")
 
-        projects = db.PrivateCloudProject.find(
+        projects = db.PrivateCloudProduct.find(
             {"status": "ACTIVE"}, projection={"_id": False, "licencePlate": True, "cluster": True}
         )
         result = []
@@ -101,7 +101,7 @@ def fetch_zap_projects(mongo_conn_id, concurrency, **context):
                         available = False
 
                     if available == False:
-                        db.PrivateCloudProjectZapResult.replace_one(
+                        db.PrivateCloudProductZapResult.replace_one(
                             {"licencePlate": project["licencePlate"], "cluster": cluster, "host": host},
                             {
                                 "licencePlate": project["licencePlate"],
@@ -174,7 +174,7 @@ def load_zap_results(mongo_conn_id):
             doc["available"] = True
 
             if doc["licencePlate"] is not None:
-                db.PrivateCloudProjectZapResult.replace_one(
+                db.PrivateCloudProductZapResult.replace_one(
                     {"licencePlate": doc["licencePlate"], "cluster": doc["cluster"], "host": doc["host"]},
                     doc,
                     True,  # Create one if it does not exist
@@ -217,7 +217,7 @@ def fetch_sonarscan_projects(mongo_conn_id, concurrency, gh_token, **context):
 
         # Collect URLs from ACS images
         print("Start collecting URLs from ACS images.")
-        projects = db.PrivateCloudProject.find(
+        projects = db.PrivateCloudProduct.find(
             {"status": "ACTIVE"}, projection={"_id": False, "licencePlate": True, "cluster": True}
         )
         for project in projects:
@@ -385,7 +385,7 @@ def fetch_load_acs_projects(mongo_conn_id):
         two_days_ago = datetime.now() - timedelta(days=2)
         db.AcsResult.delete_many({"scannedAt": {"$lt": two_days_ago}})
 
-        projects = db.PrivateCloudProject.find(
+        projects = db.PrivateCloudProduct.find(
             {"status": "ACTIVE"}, projection={"_id": False, "licencePlate": True, "cluster": True}
         )
 

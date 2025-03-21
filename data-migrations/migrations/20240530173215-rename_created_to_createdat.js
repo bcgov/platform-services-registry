@@ -2,13 +2,13 @@ export const up = async (db, client) => {
   const schemas = [
     'User',
     'PrivateCloudRequest',
-    'PrivateCloudProject',
-    'PrivateCloudRequestedProject',
+    'PrivateCloudProduct',
+    'PrivateCloudRequestData',
     'PrivateCloudComment',
     'Reaction',
     'PublicCloudRequest',
-    'PublicCloudProject',
-    'PublicCloudRequestedProject',
+    'PublicCloudProduct',
+    'PublicCloudRequestData',
     'AcsResultImage',
   ];
 

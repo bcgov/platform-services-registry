@@ -15,8 +15,8 @@ export const up = async (db, client) => {
     ],
   ];
 
-  const prom1 = db.collection('PublicCloudProject').updateMany(...args);
-  const prom2 = db.collection('PublicCloudRequestedProject').updateMany(...args);
+  const prom1 = db.collection('PublicCloudProduct').updateMany(...args);
+  const prom2 = db.collection('PublicCloudRequestData').updateMany(...args);
 
   const result = await Promise.all([prom1, prom2]);
 

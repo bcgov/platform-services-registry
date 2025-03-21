@@ -58,7 +58,7 @@ export async function downloadPublicCloudProducts(data: PublicCloudProductSearch
   return result;
 }
 
-export async function getPublicCloudProject(licencePlate: string) {
+export async function getPublicCloudProduct(licencePlate: string) {
   const result = await instance.get(`/${licencePlate}`).then((res) => {
     // Secondaty technical lead should only be included if it exists
     if (res.data.secondaryTechnicalLead === null) {
@@ -71,17 +71,17 @@ export async function getPublicCloudProject(licencePlate: string) {
   return result as PublicCloudProductDetailDecorated;
 }
 
-export async function createPublicCloudProject(data: any) {
+export async function createPublicCloudProduct(data: any) {
   const result = await instance.post('/', data).then((res) => res.data);
   return result as PublicCloudRequestDetail;
 }
 
-export async function editPublicCloudProject(licencePlate: string, data: any) {
+export async function editPublicCloudProduct(licencePlate: string, data: any) {
   const result = await instance.put(`/${licencePlate}`, data).then((res) => res.data);
   return result as PublicCloudRequestDetail;
 }
 
-export async function deletePublicCloudProject(licencePlate: string) {
+export async function deletePublicCloudProduct(licencePlate: string) {
   const result = await instance.delete(`/${licencePlate}`).then((res) => res.data);
   return result as PublicCloudRequestDetail;
 }

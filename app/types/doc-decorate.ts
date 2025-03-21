@@ -1,4 +1,4 @@
-export interface PrivateCloudProjectDecorate {
+export interface PrivateCloudProductDecorate {
   _permissions: {
     view: boolean;
     viewHistory: boolean;
@@ -23,7 +23,7 @@ export interface PrivateCloudRequestDecorate {
   };
 }
 
-export interface PublicCloudProjectDecorate {
+export interface PublicCloudProductDecorate {
   _permissions: {
     view: boolean;
     viewHistory: boolean;

@@ -3,16 +3,16 @@ import { POST as _reviewPublicCloudBilling } from '@/app/api/public-cloud/produc
 import { POST as _signPublicCloudBilling } from '@/app/api/public-cloud/products/[licencePlate]/billings/[billingId]/sign/route';
 import { GET as _listPublicCloudProductRequests } from '@/app/api/public-cloud/products/[licencePlate]/requests/route';
 import {
-  GET as _getPublicCloudProject,
-  PUT as _editPublicCloudProject,
-  DELETE as _deletePublicCloudProject,
+  GET as _getPublicCloudProduct,
+  PUT as _editPublicCloudProduct,
+  DELETE as _deletePublicCloudProduct,
 } from '@/app/api/public-cloud/products/[licencePlate]/route';
-import { POST as _downloadPublicCloudProjects } from '@/app/api/public-cloud/products/download/route';
+import { POST as _downloadPublicCloudProducts } from '@/app/api/public-cloud/products/download/route';
 import {
-  GET as _listPublicCloudProject,
-  POST as _createPublicCloudProject,
+  GET as _listPublicCloudProduct,
+  POST as _createPublicCloudProduct,
 } from '@/app/api/public-cloud/products/route';
-import { POST as _searchPublicCloudProjects } from '@/app/api/public-cloud/products/search/route';
+import { POST as _searchPublicCloudProducts } from '@/app/api/public-cloud/products/search/route';
 import {
   PublicCloudEditRequestBody,
   PublicCloudProductSearchBody,
@@ -22,33 +22,33 @@ import { createRoute, ParamData } from '../core';
 
 const productCollectionRoute = createRoute('/public-cloud/products');
 
-export async function createPublicCloudProject(data: any, paramData?: ParamData) {
+export async function createPublicCloudProduct(data: any, paramData?: ParamData) {
   data.projectOwnerId = data.projectOwner?.id ?? null;
   data.primaryTechnicalLeadId = data.primaryTechnicalLead?.id ?? null;
   data.secondaryTechnicalLeadId = data.secondaryTechnicalLead?.id ?? null;
   data.expenseAuthorityId = data.expenseAuthority?.id ?? null;
 
-  const result = await productCollectionRoute.post(_createPublicCloudProject, '', data);
+  const result = await productCollectionRoute.post(_createPublicCloudProduct, '', data);
   return result;
 }
 
-export async function listPublicCloudProject(data: any) {
-  const result = await productCollectionRoute.get(_listPublicCloudProject, '', data);
+export async function listPublicCloudProduct(data: any) {
+  const result = await productCollectionRoute.get(_listPublicCloudProduct, '', data);
   return result;
 }
 
-export async function searchPublicCloudProjects(data: Partial<PublicCloudProductSearchBody>) {
-  const result = await productCollectionRoute.post(_searchPublicCloudProjects, '/search', data);
+export async function searchPublicCloudProducts(data: Partial<PublicCloudProductSearchBody>) {
+  const result = await productCollectionRoute.post(_searchPublicCloudProducts, '/search', data);
   return result;
 }
 
-export async function downloadPublicCloudProjects(data: Partial<PublicCloudProductSearchNoPaginationBody>) {
-  const result = await productCollectionRoute.post(_downloadPublicCloudProjects, '/download', data);
+export async function downloadPublicCloudProducts(data: Partial<PublicCloudProductSearchNoPaginationBody>) {
+  const result = await productCollectionRoute.post(_downloadPublicCloudProducts, '/download', data);
   return result;
 }
 
-export async function getPublicCloudProject(licencePlate: string) {
-  const result = await productCollectionRoute.get(_getPublicCloudProject, '/{{licencePlate}}', {
+export async function getPublicCloudProduct(licencePlate: string) {
+  const result = await productCollectionRoute.get(_getPublicCloudProduct, '/{{licencePlate}}', {
     pathParams: { licencePlate },
   });
   return result;
@@ -56,7 +56,7 @@ export async function getPublicCloudProject(licencePlate: string) {
 
 type EmptyDocument = { id: string };
 
-export async function editPublicCloudProject(
+export async function editPublicCloudProduct(
   licencePlate: string,
   data: PublicCloudEditRequestBody & {
     projectOwner: EmptyDocument;
@@ -71,14 +71,14 @@ export async function editPublicCloudProject(
   data.secondaryTechnicalLeadId = data.secondaryTechnicalLead?.id ?? null;
   data.expenseAuthorityId = data.expenseAuthority?.id ?? null;
 
-  const result = await productCollectionRoute.put(_editPublicCloudProject, '/{{licencePlate}}', data, {
+  const result = await productCollectionRoute.put(_editPublicCloudProduct, '/{{licencePlate}}', data, {
     pathParams: { licencePlate },
   });
   return result;
 }
 
-export async function deletePublicCloudProject(licencePlate: string) {
-  const result = await productCollectionRoute.delete(_deletePublicCloudProject, '/{{licencePlate}}', {
+export async function deletePublicCloudProduct(licencePlate: string) {
+  const result = await productCollectionRoute.delete(_deletePublicCloudProduct, '/{{licencePlate}}', {
     pathParams: { licencePlate },
   });
 
