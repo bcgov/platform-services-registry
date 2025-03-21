@@ -80,7 +80,7 @@ export default function Quotas({
             } else {
               if (subnetInformation[index].data) {
                 subnetInfo = (
-                  <Tooltip arrowSize={10} label="Ip address for this namespace" withArrow position="top-start">
+                  <Tooltip arrowSize={10} label="IP address range for this namespace" withArrow position="top-start">
                     <p className="text-base font-semibold mb-3">{subnetInformation[index].data}</p>
                   </Tooltip>
                 );
