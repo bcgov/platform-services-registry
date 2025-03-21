@@ -18,8 +18,6 @@ const userSearchBodySchema = z.object({
 function syncUsers(appUsers: AppUser[], dbUsers: any) {
   const mappedbUsers = keyBy(dbUsers, 'email');
 
-  console.log('MappedbUsers ', mappedbUsers);
-
   forEach(appUsers, (appUser, index) => {
     if (appUser && appUser.email && mappedbUsers[appUser.email]) {
       appUsers[index] = mappedbUsers[appUser.email];
