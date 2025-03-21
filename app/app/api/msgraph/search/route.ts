@@ -15,7 +15,7 @@ const userSearchBodySchema = z.object({
   email: z.string().max(40),
 });
 
-function syncUsers(appUsers: AppUser[], dbUsers: any) {
+function syncUsersByEmail(appUsers: AppUser[], dbUsers: any) {
   const mappedbUsers = keyBy(dbUsers, 'email');
 
   forEach(appUsers, (appUser, index) => {
@@ -72,7 +72,7 @@ export const POST = createApiHandler({
     }),
   );
 
-  syncUsers(users, dbUsers);
+  syncUsersByEmail(users, dbUsers);
 
   return OkResponse({ data: users, totalCount: users.length });
 });
