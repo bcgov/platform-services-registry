@@ -1,4 +1,7 @@
+import concat from 'lodash-es/concat';
+import forEach from 'lodash-es/forEach';
 import _isString from 'lodash-es/isString';
+import keyBy from 'lodash-es/keyBy';
 import { string, z } from 'zod';
 import { GlobalRole } from '@/constants';
 import createApiHandler from '@/core/api-handler';
@@ -6,10 +9,23 @@ import prisma from '@/core/prisma';
 import { OkResponse } from '@/core/responses';
 import { prepareUserData } from '@/services/db';
 import { listUsersByEmail } from '@/services/msgraph';
+import { AppUser } from '@/types/user';
 
 const userSearchBodySchema = z.object({
   email: z.string().max(40),
 });
+
+function syncUsers(appUsers: AppUser[], dbUsers: any) {
+  const mappedbUsers = keyBy(dbUsers, 'email');
+
+  console.log('MappedbUsers ', mappedbUsers);
+
+  forEach(appUsers, (appUser, index) => {
+    if (appUser && appUser.email && mappedbUsers[appUser.email]) {
+      appUsers[index] = mappedbUsers[appUser.email];
+    }
+  });
+}
 
 export const POST = createApiHandler({
   roles: [GlobalRole.User],
@@ -27,33 +43,38 @@ export const POST = createApiHandler({
       const data = await prepareUserData(user);
       // The upsert method returns { count: x } when updating data instead of the document.
       // Related issue: https://github.com/prisma/prisma/issues/10935
-      await prisma.user.upsert({
-        where: { email: data.email },
-        update: data,
-        create: data,
-      });
 
-      return prisma.user.findUnique({
-        where: { email: data.email },
-        select: {
-          id: true,
-          firstName: true,
-          lastName: true,
-          email: true,
-          upn: true,
-          idir: true,
-          officeLocation: true,
-          jobTitle: true,
-          image: true,
-          ministry: true,
-          archived: true,
-          createdAt: true,
-          updatedAt: true,
-          lastSeen: true,
-        },
-      });
+      if (data.idir && data.upn) {
+        await prisma.user.upsert({
+          where: { email: data.email },
+          update: data,
+          create: data,
+        });
+
+        return prisma.user.findUnique({
+          where: { email: data.email },
+          select: {
+            id: true,
+            firstName: true,
+            lastName: true,
+            email: true,
+            upn: true,
+            idir: true,
+            officeLocation: true,
+            jobTitle: true,
+            image: true,
+            ministry: true,
+            archived: true,
+            createdAt: true,
+            updatedAt: true,
+            lastSeen: true,
+          },
+        });
+      }
     }),
   );
 
-  return OkResponse({ data: dbUsers, totalCount: users.length });
+  syncUsers(users, dbUsers);
+
+  return OkResponse({ data: users, totalCount: users.length });
 });
