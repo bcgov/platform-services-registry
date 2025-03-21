@@ -19,7 +19,7 @@ function syncUsersByEmail(appUsers: AppUser[], dbUsers: any) {
   const mappedbUsers = keyBy(dbUsers, 'email');
 
   forEach(appUsers, (appUser, index) => {
-    if (appUser && appUser.email && mappedbUsers[appUser.email]) {
+    if (appUser.email && mappedbUsers[appUser.email]) {
       appUsers[index] = mappedbUsers[appUser.email];
     }
   });
