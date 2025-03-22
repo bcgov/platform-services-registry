@@ -1,3 +1,12 @@
+## [0.52.0](https://github.com/bcgov/platform-services-registry/compare/v0.51.0...v0.52.0) (2025-03-22)
+
+### Features
+
+* **4721:** update airflow with new provision api endpoint ([e014d0a](https://github.com/bcgov/platform-services-registry/commit/e014d0ab992dbf63ca6c6808a1766ab77a319aae))
+* **4721:** update nats-provision with new provision api ([22ce701](https://github.com/bcgov/platform-services-registry/commit/22ce701b7b8d94b88dbcda3899cbd1b8776d9481))
+* **4851:** make webhook visible and editable for global roles accordingly ([3ca9700](https://github.com/bcgov/platform-services-registry/commit/3ca9700f25ef46e3b34fd6cea56f33f473784d4b))
+* **5257:** add tooltip for emerald cluster namespace subnets ([bd94c86](https://github.com/bcgov/platform-services-registry/commit/bd94c86183716cf4e314f9b3474afcbadb9c30a6))
+* **5257:** reword tooltip message ([e697a6a](https://github.com/bcgov/platform-services-registry/commit/e697a6ac7d386bcc0f9c55ad4b2e013a344083cd))
 ## [0.51.0](https://github.com/bcgov/platform-services-registry/compare/v0.50.0...v0.51.0) (2025-03-19)
 
 ### Features
