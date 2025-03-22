@@ -1,6 +1,4 @@
-import forEach from 'lodash-es/forEach';
 import _isString from 'lodash-es/isString';
-import keyBy from 'lodash-es/keyBy';
 import { z } from 'zod';
 import { GlobalRole } from '@/constants';
 import createApiHandler from '@/core/api-handler';
@@ -8,21 +6,10 @@ import prisma from '@/core/prisma';
 import { OkResponse } from '@/core/responses';
 import { prepareUserData } from '@/services/db';
 import { listUsersByEmail } from '@/services/msgraph';
-import { AppUser } from '@/types/user';
 
 const userSearchBodySchema = z.object({
   email: z.string().max(40),
 });
-
-function syncUsersByEmail(appUsers: AppUser[], dbUsers: any) {
-  const mappedbUsers = keyBy(dbUsers, 'email');
-
-  forEach(appUsers, (appUser, index) => {
-    if (appUser.email && mappedbUsers[appUser.email]) {
-      appUsers[index] = mappedbUsers[appUser.email];
-    }
-  });
-}
 
 export const POST = createApiHandler({
   roles: [GlobalRole.User],
@@ -68,10 +55,10 @@ export const POST = createApiHandler({
           },
         });
       }
+      user.id = user.providerUserId;
+      return user;
     }),
   );
 
-  syncUsersByEmail(users, dbUsers);
-
-  return OkResponse({ data: users, totalCount: users.length });
+  return OkResponse({ data: dbUsers, totalCount: users.length });
 });
