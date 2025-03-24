@@ -1,3 +1,8 @@
+## [0.53.0](https://github.com/bcgov/platform-services-registry/compare/v0.52.0...v0.53.0) (2025-03-24)
+
+### Features
+
+* **5092:** add artifactory project to pre-deletion check ([03762d6](https://github.com/bcgov/platform-services-registry/commit/03762d609e62f5f142d5d8888bef495f67b50f03))
 ## [0.52.0](https://github.com/bcgov/platform-services-registry/compare/v0.51.0...v0.52.0) (2025-03-22)
 
 ### Features
