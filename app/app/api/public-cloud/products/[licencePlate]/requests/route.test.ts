@@ -6,9 +6,9 @@ import prisma from '@/core/prisma';
 import { createSamplePublicCloudProductData } from '@/helpers/mock-resources';
 import { mockNoRoleUsers, findMockUserByIdr, findOtherMockUsers } from '@/helpers/mock-users';
 import { mockSessionByEmail, mockSessionByRole } from '@/services/api-test/core';
-import { provisionPublicCloudProject } from '@/services/api-test/public-cloud';
+import { provisionPublicCloudProduct } from '@/services/api-test/public-cloud';
 import {
-  createPublicCloudProject,
+  createPublicCloudProduct,
   listPublicCloudProductRequests,
   signPublicCloudBilling,
   reviewPublicCloudBilling,
@@ -36,7 +36,7 @@ describe('List Public Cloud Product Requests - Permissions', () => {
     const requestData = createSamplePublicCloudProductData({
       data: { ...memberData, ministry: Ministry.PSA, provider: Provider.AWS },
     });
-    const res1 = await createPublicCloudProject(requestData);
+    const res1 = await createPublicCloudProduct(requestData);
     const dat1 = await res1.json();
     licencePlate = dat1.licencePlate;
 
@@ -76,7 +76,7 @@ describe('List Public Cloud Product Requests - Permissions', () => {
     });
     expect(res2.status).toBe(200);
 
-    const res3 = await provisionPublicCloudProject(dat1.licencePlate);
+    const res3 = await provisionPublicCloudProduct(dat1.licencePlate);
     expect(res3.status).toBe(200);
   });
 

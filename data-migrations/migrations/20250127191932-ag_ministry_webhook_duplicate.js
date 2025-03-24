@@ -3,12 +3,12 @@ export const up = async (db, client) => {
 
   await session.withTransaction(async () => {
     const PrivateCloudProductWebhook = db.collection('PrivateCloudProductWebhook');
-    const PrivateCloudProject = db.collection('PrivateCloudProject');
+    const PrivateCloudProduct = db.collection('PrivateCloudProduct');
 
     const baseWebhook = await PrivateCloudProductWebhook.findOne({ licencePlate: { $eq: 'e5ced5' } });
     if (!baseWebhook) return;
 
-    const targetProducts = await PrivateCloudProject.find({
+    const targetProducts = await PrivateCloudProduct.find({
       ministry: { $in: ['AG', 'PSSG', 'EMBC'] },
       status: { $eq: 'ACTIVE' },
     })

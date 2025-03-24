@@ -37,10 +37,10 @@ export const up = async (db, client) => {
         results.push(user.email);
       };
 
-      await update('PrivateCloudProject');
-      await update('PrivateCloudRequestedProject');
-      await update('PublicCloudProject');
-      await update('PublicCloudRequestedProject');
+      await update('PrivateCloudProduct');
+      await update('PrivateCloudRequestData');
+      await update('PublicCloudProduct');
+      await update('PublicCloudRequestData');
 
       await db.collection('User').deleteMany({ _id: { $in: otherIds } });
     }

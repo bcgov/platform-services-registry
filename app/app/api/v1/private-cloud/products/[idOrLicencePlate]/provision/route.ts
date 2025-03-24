@@ -65,11 +65,11 @@ export const POST = apiHandler(async ({ pathParams, session }) => {
     const filter = { licencePlate };
     const upsertProject =
       request.type === RequestType.DELETE
-        ? prisma.privateCloudProject.update({
+        ? prisma.privateCloudProduct.update({
             where: filter,
             data: { status: ProjectStatus.INACTIVE },
           })
-        : prisma.privateCloudProject.upsert({
+        : prisma.privateCloudProduct.upsert({
             where: filter,
             update: decisionData,
             create: decisionData,

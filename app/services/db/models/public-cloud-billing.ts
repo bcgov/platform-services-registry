@@ -22,7 +22,7 @@ async function baseFilter(session: Session) {
     )
     .map((task) => (task.data as { licencePlate: string }).licencePlate);
 
-  const OR: Prisma.PublicCloudProjectWhereInput[] = [
+  const OR: Prisma.PublicCloudProductWhereInput[] = [
     { projectOwnerId: session.user.id },
     { primaryTechnicalLeadId: session.user.id },
     { secondaryTechnicalLeadId: session.user.id },
@@ -39,7 +39,7 @@ async function baseFilter(session: Session) {
     },
   ];
 
-  const products = await prisma.publicCloudProject.findMany({ where: { OR }, select: { licencePlate: true } });
+  const products = await prisma.publicCloudProduct.findMany({ where: { OR }, select: { licencePlate: true } });
   const productLicencePlates = products.map(({ licencePlate }) => licencePlate);
 
   const filter: Prisma.PublicCloudBillingWhereInput = {

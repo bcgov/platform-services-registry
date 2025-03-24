@@ -10,7 +10,7 @@ import HookFormTextInput from '@/components/generic/input/HookFormTextInput';
 import { privateCloudTeamEmail } from '@/constants';
 import { createModal } from '@/core/modal';
 import {
-  deletePrivateCloudProject,
+  deletePrivateCloudProduct,
   checkPrivateCloudProductDeletionAvailability,
 } from '@/services/backend/private-cloud/products';
 import { PrivateCloudProductDetailDecorated } from '@/types/private-cloud';
@@ -62,7 +62,7 @@ export const openPrivateCloudProductDeleteModal = createModal<ModalProps, ModalS
       isError: isDeleteProductError,
       error: deleteProductError,
     } = useMutation({
-      mutationFn: () => deletePrivateCloudProject(product.licencePlate),
+      mutationFn: () => deletePrivateCloudProduct(product.licencePlate),
     });
 
     const { handleSubmit, register } = methods;

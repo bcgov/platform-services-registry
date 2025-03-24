@@ -6,10 +6,10 @@ import prisma from '@/core/prisma';
 import { createSamplePublicCloudProductData } from '@/helpers/mock-resources';
 import { findOtherMockUsers } from '@/helpers/mock-users';
 import { mockSessionByEmail, mockSessionByRole } from '@/services/api-test/core';
-import { provisionPublicCloudProject } from '@/services/api-test/public-cloud';
+import { provisionPublicCloudProduct } from '@/services/api-test/public-cloud';
 import {
-  createPublicCloudProject,
-  deletePublicCloudProject,
+  createPublicCloudProduct,
+  deletePublicCloudProduct,
   signPublicCloudBilling,
   reviewPublicCloudBilling,
 } from '@/services/api-test/public-cloud/products';
@@ -29,7 +29,7 @@ describe('Delete Public Cloud Product - Permissions', () => {
   it('should successfully submit a create request for PO', async () => {
     await mockSessionByEmail(productData.main.projectOwner.email);
 
-    const response = await createPublicCloudProject(productData.main);
+    const response = await createPublicCloudProduct(productData.main);
     expect(response.status).toBe(200);
 
     requests.create = await response.json();
@@ -81,14 +81,14 @@ describe('Delete Public Cloud Product - Permissions', () => {
   it('should successfully provision the request', async () => {
     await mockSessionByEmail();
 
-    const response = await provisionPublicCloudProject(requests.create.licencePlate);
+    const response = await provisionPublicCloudProduct(requests.create.licencePlate);
     expect(response.status).toBe(200);
   });
 
   it('should successfully submit a delete request for PO', async () => {
     await mockSessionByEmail(productData.main.projectOwner.email);
 
-    const response = await deletePublicCloudProject(requests.create.licencePlate);
+    const response = await deletePublicCloudProduct(requests.create.licencePlate);
     expect(response.status).toBe(200);
 
     requests.delete = await response.json();
@@ -98,7 +98,7 @@ describe('Delete Public Cloud Product - Permissions', () => {
   it('should fail to submit the same request for PO', async () => {
     await mockSessionByEmail(productData.main.projectOwner.email);
 
-    const response = await deletePublicCloudProject(requests.delete.licencePlate);
+    const response = await deletePublicCloudProduct(requests.delete.licencePlate);
     expect(response.status).toBe(401);
   });
 
@@ -117,7 +117,7 @@ describe('Delete Public Cloud Product - Permissions', () => {
   it('should successfully submit a delete request for admin', async () => {
     await mockSessionByRole(GlobalRole.Admin);
 
-    const response = await deletePublicCloudProject(requests.delete.licencePlate);
+    const response = await deletePublicCloudProduct(requests.delete.licencePlate);
     expect(response.status).toBe(200);
 
     requests.delete = await response.json();
@@ -127,7 +127,7 @@ describe('Delete Public Cloud Product - Permissions', () => {
   it('should fail to submit the same request for admin', async () => {
     await mockSessionByRole(GlobalRole.Admin);
 
-    const response = await deletePublicCloudProject(requests.delete.licencePlate);
+    const response = await deletePublicCloudProduct(requests.delete.licencePlate);
     expect(response.status).toBe(401);
   });
 
@@ -152,7 +152,7 @@ describe('Delete Public Cloud Product - Permissions', () => {
 
     await mockSessionByEmail(otherUsers[0].email);
 
-    const response = await deletePublicCloudProject(requests.delete.licencePlate);
+    const response = await deletePublicCloudProduct(requests.delete.licencePlate);
     expect(response.status).toBe(401);
   });
 
@@ -160,7 +160,7 @@ describe('Delete Public Cloud Product - Permissions', () => {
     await mockSessionByEmail();
 
     const requestData = createSamplePublicCloudProductData();
-    const response = await createPublicCloudProject(requestData);
+    const response = await createPublicCloudProduct(requestData);
     expect(response.status).toBe(401);
   });
 });

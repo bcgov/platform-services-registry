@@ -13,7 +13,7 @@ const getRandomProvider = () => faker.helpers.arrayElement(providers);
 
 export function createSamplePrivateCloudProductData(args?: {
   data?: Partial<
-    Prisma.PrivateCloudProjectGetPayload<null> & {
+    Prisma.PrivateCloudProductGetPayload<null> & {
       projectOwner: any;
       primaryTechnicalLead: any;
       secondaryTechnicalLead: any;
@@ -50,7 +50,7 @@ export function createSamplePrivateCloudProductData(args?: {
 
 export function createSamplePublicCloudProductData(args?: {
   data?: Partial<
-    Prisma.PublicCloudProjectGetPayload<null> & {
+    Prisma.PublicCloudProductGetPayload<null> & {
       projectOwner: any;
       primaryTechnicalLead: any;
       secondaryTechnicalLead: any;

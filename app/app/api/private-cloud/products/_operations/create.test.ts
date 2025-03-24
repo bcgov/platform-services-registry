@@ -5,7 +5,7 @@ import { createSamplePrivateCloudProductData } from '@/helpers/mock-resources';
 import { findOtherMockUsers } from '@/helpers/mock-users';
 import { pickProductData } from '@/helpers/product';
 import { mockSessionByEmail, mockSessionByRole } from '@/services/api-test/core';
-import { createPrivateCloudProject } from '@/services/api-test/private-cloud/products';
+import { createPrivateCloudProduct } from '@/services/api-test/private-cloud/products';
 
 const fieldsToCompare = [
   'name',
@@ -24,7 +24,7 @@ describe('Create Private Cloud Product - Permissions', () => {
     await mockSessionByEmail();
 
     const requestData = createSamplePrivateCloudProductData();
-    const response = await createPrivateCloudProject(requestData);
+    const response = await createPrivateCloudProduct(requestData);
     expect(response.status).toBe(401);
   });
 
@@ -32,7 +32,7 @@ describe('Create Private Cloud Product - Permissions', () => {
     const requestData = createSamplePrivateCloudProductData();
     await mockSessionByEmail(requestData.projectOwner.email);
 
-    const response = await createPrivateCloudProject(requestData);
+    const response = await createPrivateCloudProduct(requestData);
     expect(response.status).toBe(200);
 
     const resData = await response.json();
@@ -45,7 +45,7 @@ describe('Create Private Cloud Product - Permissions', () => {
     const requestData = createSamplePrivateCloudProductData();
     await mockSessionByEmail(requestData.primaryTechnicalLead.email);
 
-    const response = await createPrivateCloudProject(requestData);
+    const response = await createPrivateCloudProduct(requestData);
     expect(response.status).toBe(200);
 
     const resData = await response.json();
@@ -58,7 +58,7 @@ describe('Create Private Cloud Product - Permissions', () => {
     const requestData = createSamplePrivateCloudProductData();
     await mockSessionByEmail(requestData.secondaryTechnicalLead.email);
 
-    const response = await createPrivateCloudProject(requestData);
+    const response = await createPrivateCloudProduct(requestData);
     expect(response.status).toBe(200);
 
     const resData = await response.json();
@@ -77,7 +77,7 @@ describe('Create Private Cloud Product - Permissions', () => {
 
     await mockSessionByEmail(otherUsers[0].email);
 
-    const response = await createPrivateCloudProject(requestData);
+    const response = await createPrivateCloudProduct(requestData);
     expect(response.status).toBe(401);
   });
 
@@ -85,7 +85,7 @@ describe('Create Private Cloud Product - Permissions', () => {
     const requestData = createSamplePrivateCloudProductData();
     await mockSessionByRole(GlobalRole.Admin);
 
-    const response = await createPrivateCloudProject(requestData);
+    const response = await createPrivateCloudProduct(requestData);
     expect(response.status).toBe(200);
 
     const resData = await response.json();
@@ -98,7 +98,7 @@ describe('Create Private Cloud Product - Permissions', () => {
     const requestData = createSamplePrivateCloudProductData();
     await mockSessionByRole(GlobalRole.Reader);
 
-    const response = await createPrivateCloudProject(requestData);
+    const response = await createPrivateCloudProduct(requestData);
     expect(response.status).toBe(401);
   });
 
@@ -106,7 +106,7 @@ describe('Create Private Cloud Product - Permissions', () => {
     const requestData = createSamplePrivateCloudProductData();
     await mockSessionByRole(GlobalRole.PrivateAdmin);
 
-    const response = await createPrivateCloudProject(requestData);
+    const response = await createPrivateCloudProduct(requestData);
     expect(response.status).toBe(200);
 
     const resData = await response.json();
@@ -123,7 +123,7 @@ describe('Create Private Cloud Request - Validations', () => {
 
     requestData.name = '';
 
-    const response = await createPrivateCloudProject(requestData);
+    const response = await createPrivateCloudProduct(requestData);
     expect(response.status).toBe(400);
 
     const resData = await response.json();
@@ -138,7 +138,7 @@ describe('Create Private Cloud Request - Validations', () => {
 
     requestData.description = '';
 
-    const response = await createPrivateCloudProject(requestData);
+    const response = await createPrivateCloudProduct(requestData);
     expect(response.status).toBe(400);
 
     const resData = await response.json();
@@ -153,7 +153,7 @@ describe('Create Private Cloud Request - Validations', () => {
 
     requestData.cluster = 'INVALID' as Cluster;
 
-    const response = await createPrivateCloudProject(requestData);
+    const response = await createPrivateCloudProduct(requestData);
     expect(response.status).toBe(400);
 
     const resData = await response.json();
@@ -168,7 +168,7 @@ describe('Create Private Cloud Request - Validations', () => {
 
     requestData.ministry = 'INVALID' as Ministry;
 
-    const response = await createPrivateCloudProject(requestData);
+    const response = await createPrivateCloudProduct(requestData);
     expect(response.status).toBe(400);
 
     const resData = await response.json();
@@ -183,7 +183,7 @@ describe('Create Private Cloud Request - Validations', () => {
 
     requestData.projectOwner = undefined;
 
-    const response = await createPrivateCloudProject(requestData);
+    const response = await createPrivateCloudProduct(requestData);
     expect(response.status).toBe(400);
 
     const resData = await response.json();
@@ -200,7 +200,7 @@ describe('Create Private Cloud Request - Validations', () => {
 
     requestData.primaryTechnicalLead = undefined;
 
-    const response = await createPrivateCloudProject(requestData);
+    const response = await createPrivateCloudProduct(requestData);
     expect(response.status).toBe(400);
 
     const resData = await response.json();
@@ -217,7 +217,7 @@ describe('Create Private Cloud Request - Validations', () => {
 
     requestData.secondaryTechnicalLead = null as any;
 
-    const response = await createPrivateCloudProject(requestData);
+    const response = await createPrivateCloudProduct(requestData);
     expect(response.status).toBe(200);
   });
 });

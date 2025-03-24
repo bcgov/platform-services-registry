@@ -15,10 +15,10 @@ export const up = async (db, client) => {
 
     const query = { licencePlate: { $eq: request.licencePlate } };
 
-    const project = await db.collection('PublicCloudProject').findOne(query);
+    const project = await db.collection('PublicCloudProduct').findOne(query);
     if (!project) {
       await db.collection('PublicCloudRequest').deleteMany(query);
-      await db.collection('PublicCloudRequestedProject').deleteMany(query);
+      await db.collection('PublicCloudRequestData').deleteMany(query);
     }
   }
 };

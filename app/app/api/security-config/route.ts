@@ -21,8 +21,8 @@ export const PUT = apiHandler(async ({ body, session }) => {
   if (count === 0) {
     count =
       body.context === ProjectContext.PRIVATE
-        ? await prisma.privateCloudRequestedProject.count(existQuery)
-        : await prisma.publicCloudRequestedProject.count(existQuery);
+        ? await prisma.publicCloudRequestData.count(existQuery)
+        : await prisma.publicCloudRequestData.count(existQuery);
   }
 
   if (count === 0) {

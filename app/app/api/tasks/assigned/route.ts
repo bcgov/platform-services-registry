@@ -51,7 +51,7 @@ export const GET = apiHandler(async ({ session }) => {
         },
       },
     }),
-    prisma.publicCloudProject.findMany({
+    prisma.publicCloudProduct.findMany({
       where: { licencePlate: { in: cleanPublicCloudLicencePlates } },
       select: { id: true, licencePlate: true, name: true },
     }),

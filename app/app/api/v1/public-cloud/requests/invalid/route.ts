@@ -9,7 +9,7 @@ const apiHandler = createApiHandler({
   useServiceAccount: true,
 });
 export const GET = apiHandler(async () => {
-  const rproducts = await prisma.publicCloudRequestedProject.findMany({ select: { id: true } });
+  const rproducts = await prisma.publicCloudRequestData.findMany({ select: { id: true } });
   const rproductIds = rproducts.map((v) => v.id);
 
   const requests = await prisma.publicCloudRequest.findMany({

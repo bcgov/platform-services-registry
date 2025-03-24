@@ -5,8 +5,8 @@ import { createSamplePrivateCloudProductData } from '@/helpers/mock-resources';
 import { resourceRequests1, resourceRequests2 } from '@/helpers/mock-resources/private-cloud-product';
 import { findOtherMockUsers } from '@/helpers/mock-users';
 import { mockSessionByEmail, mockSessionByRole } from '@/services/api-test/core';
-import { provisionPrivateCloudProject } from '@/services/api-test/private-cloud';
-import { createPrivateCloudProject, editPrivateCloudProject } from '@/services/api-test/private-cloud/products';
+import { provisionPrivateCloudProduct } from '@/services/api-test/private-cloud';
+import { createPrivateCloudProduct, editPrivateCloudProduct } from '@/services/api-test/private-cloud/products';
 import { makePrivateCloudRequestDecision } from '@/services/api-test/private-cloud/requests';
 
 const productData = {
@@ -23,7 +23,7 @@ const requests = {
 };
 
 async function makeBasicProductChange(extra = {}) {
-  const response = await editPrivateCloudProject(requests.create.licencePlate, {
+  const response = await editPrivateCloudProduct(requests.create.licencePlate, {
     ...requests.create.decisionData,
     resourceRequests: resourceRequests2,
     ...extra,
@@ -38,7 +38,7 @@ describe('Update Private Cloud Product - Permissions', () => {
   it('should successfully submit a create request for PO', async () => {
     await mockSessionByEmail(productData.main.projectOwner.email);
 
-    const response = await createPrivateCloudProject(productData.main);
+    const response = await createPrivateCloudProduct(productData.main);
     expect(response.status).toBe(200);
 
     requests.create = await response.json();
@@ -59,7 +59,7 @@ describe('Update Private Cloud Product - Permissions', () => {
   it('should successfully provision the request', async () => {
     await mockSessionByEmail();
 
-    const response = await provisionPrivateCloudProject(requests.create.licencePlate);
+    const response = await provisionPrivateCloudProduct(requests.create.licencePlate);
     expect(response.status).toBe(200);
   });
 

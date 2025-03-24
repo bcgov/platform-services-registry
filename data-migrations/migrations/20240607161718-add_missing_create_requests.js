@@ -2,7 +2,7 @@ export const up = async (db, client) => {
   const session = client.startSession();
 
   await session.withTransaction(async () => {
-    const privateCloudProducts = await db.collection('PrivateCloudProject').find({}).sort({ createdAt: 1 }).toArray();
+    const privateCloudProducts = await db.collection('PrivateCloudProduct').find({}).sort({ createdAt: 1 }).toArray();
 
     const result = [];
 
@@ -35,8 +35,8 @@ export const up = async (db, client) => {
             createdAt: product.createdAt,
           };
 
-          const decisionData = await db.collection('PrivateCloudRequestedProject').insertOne({ ...reqObj });
-          const requestData = await db.collection('PrivateCloudRequestedProject').insertOne({ ...reqObj });
+          const decisionData = await db.collection('PrivateCloudRequestData').insertOne({ ...reqObj });
+          const requestData = await db.collection('PrivateCloudRequestData').insertOne({ ...reqObj });
 
           await db.collection('PrivateCloudRequest').insertOne({
             licencePlate: product.licencePlate,

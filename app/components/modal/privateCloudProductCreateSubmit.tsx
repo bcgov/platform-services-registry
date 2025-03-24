@@ -10,7 +10,7 @@ import FormCheckbox from '@/components/generic/checkbox/FormCheckbox';
 import FormError from '@/components/generic/FormError';
 import HookFormTextarea from '@/components/generic/input/HookFormTextarea';
 import { createModal } from '@/core/modal';
-import { createPrivateCloudProject } from '@/services/backend/private-cloud/products';
+import { createPrivateCloudProduct } from '@/services/backend/private-cloud/products';
 import { success } from '../notification';
 import { openNotificationModal } from './notification';
 
@@ -47,7 +47,7 @@ export const openPrivateCloudProductCreateSubmitModal = createModal<ModalProps, 
       isError: isCreateError,
       error: createError,
     } = useMutation({
-      mutationFn: (data: any) => createPrivateCloudProject(data),
+      mutationFn: (data: any) => createPrivateCloudProduct(data),
       onSuccess: () => {
         state.success = true;
         success();
