@@ -150,9 +150,9 @@ function UserDetails({ data }: { data?: UserDetailWithColeagues }) {
               <div className="mr-1">
                 <IconMail className="text-gray-600" />
               </div>
-              <div>
+              <div className="w-fit min-w-0 break-words whitespace-normal">
                 <div className="text-gray-600 leading-6">Email</div>
-                <div className="">
+                <div>
                   <MailLink to={data.email} displayIcon={false} />
                 </div>
               </div>
@@ -164,7 +164,7 @@ function UserDetails({ data }: { data?: UserDetailWithColeagues }) {
               <div>
                 <div className="text-gray-600 leading-6">IDIR</div>
                 <div className="text-xs">
-                  {data.idir ? <CopyableButton>{data.idir}</CopyableButton> : <span>&nbsp;</span>}
+                  {data.idir ? <CopyableButton className="break-all">{data.idir}</CopyableButton> : <span>&nbsp;</span>}
                 </div>
               </div>
             </div>
@@ -175,7 +175,7 @@ function UserDetails({ data }: { data?: UserDetailWithColeagues }) {
               <div>
                 <div className="text-gray-600 leading-6">UPN</div>
                 <div className="text-xs">
-                  {data.upn ? <CopyableButton>{data.upn}</CopyableButton> : <span>&nbsp;</span>}
+                  {data.upn ? <CopyableButton className="break-all">{data.upn}</CopyableButton> : <span>&nbsp;</span>}
                 </div>
               </div>
             </div>
@@ -187,7 +187,9 @@ function UserDetails({ data }: { data?: UserDetailWithColeagues }) {
                 <div className="text-gray-600 leading-6">Ministry</div>
                 <div className="text-xs">
                   {data.ministry ? (
-                    <CopyableButton>{ministryMap[data.ministry] ?? data.ministry}</CopyableButton>
+                    <CopyableButton className="break-words">
+                      {ministryMap[data.ministry] ?? data.ministry}
+                    </CopyableButton>
                   ) : (
                     <span>&nbsp;</span>
                   )}
@@ -201,7 +203,11 @@ function UserDetails({ data }: { data?: UserDetailWithColeagues }) {
               <div>
                 <div className="text-gray-600 leading-6">Location</div>
                 <div className="text-xs">
-                  {data.officeLocation ? <CopyableButton>{data.officeLocation}</CopyableButton> : <span>&nbsp;</span>}
+                  {data.officeLocation ? (
+                    <CopyableButton className="break-words">{data.officeLocation}</CopyableButton>
+                  ) : (
+                    <span>&nbsp;</span>
+                  )}
                 </div>
               </div>
             </div>
@@ -212,7 +218,11 @@ function UserDetails({ data }: { data?: UserDetailWithColeagues }) {
               <div>
                 <div className="text-gray-600 leading-6">Job title</div>
                 <div className="text-xs">
-                  {data.jobTitle ? <CopyableButton>{data.jobTitle}</CopyableButton> : <span>&nbsp;</span>}
+                  {data.jobTitle ? (
+                    <CopyableButton className="break-words">{data.jobTitle}</CopyableButton>
+                  ) : (
+                    <span>&nbsp;</span>
+                  )}
                 </div>
               </div>
             </div>
@@ -228,7 +238,7 @@ function UserDetails({ data }: { data?: UserDetailWithColeagues }) {
           <div className="grid grid-cols-2 gap-4">
             <div className="col-span-1">
               <h3 className="font-semibold mt-6 underline mb-2">Private Cloud Products</h3>
-              <ul className="">
+              <ul>
                 {privateCloudProducts.length > 0 ? (
                   privateCloudProducts.map((prod) => {
                     return (
@@ -252,7 +262,7 @@ function UserDetails({ data }: { data?: UserDetailWithColeagues }) {
             </div>
             <div className="col-span-1">
               <h3 className="font-semibold mt-6 underline mb-2">Public Cloud Products</h3>
-              <ul className="">
+              <ul>
                 {publicCloudProducts.length > 0 ? (
                   publicCloudProducts.map((prod) => {
                     return (
