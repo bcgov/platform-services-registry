@@ -1,3 +1,8 @@
+## [0.54.0](https://github.com/bcgov/platform-services-registry/compare/v0.53.0...v0.54.0) (2025-03-24)
+
+### Features
+
+* **4980:** add user profile modal ([0bd8b9b](https://github.com/bcgov/platform-services-registry/commit/0bd8b9bc290e9b9e742e76c7c38b69082a3f18e6))
 ## [0.53.0](https://github.com/bcgov/platform-services-registry/compare/v0.52.0...v0.53.0) (2025-03-24)
 
 ### Features
