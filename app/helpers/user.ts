@@ -1,11 +1,14 @@
-export function formatFullName(user: { [key: string]: any } | null | undefined): string {
+export function formatFullName(user: { [key: string]: any } | null | undefined, lastNameFirst = false): string {
   if (!user) {
     return '';
   }
 
-  const firstName = user.firstName || '';
-  const lastName = user.lastName || '';
-  return `${firstName} ${lastName}`.trim();
+  const firstName = (user.firstName || '').trim();
+  const lastName = (user.lastName || '').trim();
+  const names = [firstName, lastName];
+
+  if (lastNameFirst) return [lastName, firstName].join(', ');
+  return [firstName, lastName].join(' ');
 }
 
 export const parseMinistryFromDisplayName = (displayName: string) => {
