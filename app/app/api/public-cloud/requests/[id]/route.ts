@@ -4,7 +4,8 @@ import { GlobalRole } from '@/constants';
 import createApiHandler from '@/core/api-handler';
 import prisma from '@/core/prisma';
 import { OkResponse, UnauthorizedResponse } from '@/core/responses';
-import { createEvent, models } from '@/services/db';
+import { sendRequestCancellationEmails } from '@/services/ches/public-cloud';
+import { createEvent, models, publicCloudRequestDetailInclude } from '@/services/db';
 
 const pathParamSchema = z.object({
   id: z.string(),
@@ -35,23 +36,27 @@ export const PUT = apiHandler(async ({ pathParams, session }) => {
     return UnauthorizedResponse();
   }
 
-  const { type, licencePlate, requestDataId, decisionDataId } = request;
+  const updated = await prisma.publicCloudRequest.update({
+    where: {
+      id,
+      decisionStatus: DecisionStatus.PENDING,
+      active: true,
+    },
+    data: {
+      active: false,
+      decisionStatus: DecisionStatus.CANCELLED,
+      cancelledAt: new Date(),
+      cancelledById: session.user.id,
+    },
+    include: publicCloudRequestDetailInclude,
+  });
+
+  const decoratedRequest = await models.publicCloudRequest.decorate(updated, session, true);
+
+  const { type, licencePlate } = request;
 
   const proms: any[] = [
-    prisma.publicCloudRequest.update({
-      where: {
-        id,
-        decisionStatus: DecisionStatus.PENDING,
-        active: true,
-      },
-      data: {
-        decisionStatus: DecisionStatus.CANCELLED,
-        active: false,
-      },
-      select: {
-        licencePlate: true,
-      },
-    }),
+    sendRequestCancellationEmails(decoratedRequest, session.user.name),
     createEvent(EventType.CANCEL_PUBLIC_CLOUD_REQUEST, session.user.id, { requestId: id }),
   ];
 

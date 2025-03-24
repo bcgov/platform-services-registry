@@ -2,14 +2,16 @@
 
 import { Avatar, Group, Tooltip, UnstyledButton } from '@mantine/core';
 import { User } from '@prisma/client';
-import { IconEdit } from '@tabler/icons-react';
+import { IconEdit, IconExclamationCircleFilled } from '@tabler/icons-react';
 import MinistryBadge from '@/components/badges/MinistryBadge';
 import { openUserDetailModal } from '@/components/modal/userDetail';
 import { formatFullName } from '@/helpers/user';
 import { getUserImageData } from '@/helpers/user-image';
 import { cn } from '@/utils/js';
 
-export type UserPickerData = Pick<User, 'email' | 'firstName' | 'lastName' | 'ministry' | 'image'> & { id?: string };
+export type UserPickerData = Pick<User, 'email' | 'firstName' | 'lastName' | 'ministry' | 'image' | 'upn' | 'idir'> & {
+  id?: string;
+};
 
 interface Props {
   data?: UserPickerData;
@@ -26,8 +28,13 @@ export default function UserProfile({ data, onClick, text = 'Click to select mem
       ministry: '',
       firstName: '',
       lastName: '',
+      upn: '',
+      idir: '',
     };
   }
+  const missingProps = ['UPN', 'IDIR'].filter((prop) => !data[prop.toLowerCase()]);
+  const isInvalid = data.email && missingProps.length > 0;
+  const invalidTooltip = isInvalid ? `The user's ${missingProps.join(' and ')} attributes are missing` : '';
 
   const isSavedUser = !!data.id;
 
@@ -51,7 +58,12 @@ export default function UserProfile({ data, onClick, text = 'Click to select mem
                 <div className="flex">
                   {formatFullName(data)}
                   <MinistryBadge className="ml-1" ministry={data.ministry} />
-                  {onClick && <IconEdit className="ml-2 cursor-pointer" onClick={onClick} />}
+                  {onClick && <IconEdit className="ml-2 cursor-pointer" />}
+                  {isInvalid && (
+                    <Tooltip label={invalidTooltip}>
+                      <IconExclamationCircleFilled className="ml-2 text-red-500" />
+                    </Tooltip>
+                  )}
                 </div>
               ) : (
                 onClick && <UnstyledButton className="text-gray-700 hover:underline">{text}</UnstyledButton>

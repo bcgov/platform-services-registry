@@ -216,7 +216,7 @@ export const accountCodingSchema = z.object({
   rc: z
     .string()
     .length(5, 'Must be exactly 5 characters long')
-    .regex(/^[a-z0-9]+$/, 'Must contain only letters and numbers'),
+    .regex(/^[A-Z0-9]+$/, 'Must contain only letters and numbers'),
   sl: z
     .string()
     .length(5, 'Must be exactly 5 characters long')
@@ -229,7 +229,7 @@ export const accountCodingSchema = z.object({
   pc: z
     .string()
     .length(7, 'Must be exactly 7 characters long')
-    .regex(/^[a-z0-9]+$/, 'Must contain only letters and numbers'),
+    .regex(/^[A-Z0-9]+$/, 'Must contain only letters and numbers'),
 });
 
 export const publicCloudBillingBodySchema = z.object({

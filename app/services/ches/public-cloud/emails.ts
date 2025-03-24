@@ -19,6 +19,7 @@ import TeamDeleteRequestCompletionTemplate from '@/emails/_templates/public-clou
 import TeamDeleteRequestRejectionTemplate from '@/emails/_templates/public-cloud/TeamDeleteRequestRejection';
 import TeamEditRequestTemplate from '@/emails/_templates/public-cloud/TeamEditRequest';
 import TeamEditRequestCompletionTemplate from '@/emails/_templates/public-cloud/TeamEditRequestCompletion';
+import TeamRequestCancellationTemplate from '@/emails/_templates/public-cloud/TeamRequestCancellation';
 import { getPublicCloudEmouFileName } from '@/helpers/emou';
 import { generateEmouPdf } from '@/helpers/pdfs/emou';
 import { safeSendEmail, sendEmail } from '@/services/ches/core';
@@ -105,6 +106,16 @@ export async function sendTeamCreateRequestRejection(request: PublicCloudRequest
 
   return sendEmail({
     subject: 'Your provisioning request has been rejected',
+    to: await getTeamEmails(request),
+    body: content,
+  });
+}
+
+export async function sendTeamRequestCancellation(request: PublicCloudRequestDetailDecorated, requester: string) {
+  const content = await getContent(TeamRequestCancellationTemplate({ request, requester }));
+
+  return sendEmail({
+    subject: 'Your request has been cancelled',
     to: await getTeamEmails(request),
     body: content,
   });

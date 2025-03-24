@@ -23,6 +23,16 @@ jobs:
       run: exit 1
       if: ${{ !startsWith(github.ref, 'refs/heads/') }}
 
+    - uses: hmarr/debug-action@f7318c783045ac39ed9bb497e22ce835fdafbfe6
+    - uses: actions/checkout@85e6279cec87321a52edac9c87bce653a07cf6c2
+      with:
+        ssh-key: ${{ secrets.SSH_KEY }}
+        fetch-depth: 0
+        fetch-tags: true
+
+    - name: List Tags
+      run: git tag
+
     - name: Determine Tag Version
       id: new-tag
       run: |
@@ -31,18 +41,29 @@ jobs:
             echo "Error: provided tag does not follow semantic versioning (major.minor.patch)" >&2
             exit 1
           fi
-          TAG="${{ github.event.inputs.tag }}"
+          NEXT_VERSION="${{ github.event.inputs.tag }}"
+          NEXT_VERSION=${NEXT_VERSION//v}
         else
           LAST_TAG=$(git describe --tags --abbrev=0 2>/dev/null || echo "")
           if [ -z "$LAST_TAG" ]; then
             echo "Error: no previous tag found and no tag input provided" >&2
             exit 1
           fi
+
+          if [[ $LAST_TAG =~ v([0-9]+)\.([0-9]+)\.([0-9]+) ]]; then
+            MAJOR="${BASH_REMATCH[1]}"
+            MINOR="${BASH_REMATCH[2]}"
+            PATCH="${BASH_REMATCH[3]}"
+          else
+            echo "Error: last tag '$LAST_TAG' does not follow expected format" >&2
+            exit 1
+          fi
+
           echo "Last tag: $LAST_TAG"
           COMMIT_MESSAGES=$(git log ${LAST_TAG}..HEAD --pretty=format:%B)
           echo "Commit messages since last tag:"
           echo "$COMMIT_MESSAGES"
-          BUMP=""
+
           if echo "$COMMIT_MESSAGES" | grep -q -E 'BREAKING CHANGE:' || \
              echo "$COMMIT_MESSAGES" | grep -q -E '^(feat|fix|refactor|chore|docs|style|test)(\(.+\))?!:'; then
             BUMP="major"
@@ -52,37 +73,27 @@ jobs:
             BUMP="patch"
           fi
           echo "Bump type: $BUMP"
-          VERSION_REGEX="v([0-9]+)\.([0-9]+)\.([0-9]+)"
-          if [[ $LAST_TAG =~ $VERSION_REGEX ]]; then
-            MAJOR="${BASH_REMATCH[1]}"
-            MINOR="${BASH_REMATCH[2]}"
-            PATCH="${BASH_REMATCH[3]}"
-          else
-            echo "Error: last tag '$LAST_TAG' does not follow expected format" >&2
-            exit 1
-          fi
-          if [ "$BUMP" = "major" ]; then
-            MAJOR=$((MAJOR + 1))
-            MINOR=0
-            PATCH=0
-          elif [ "$BUMP" = "minor" ]; then
-            MINOR=$((MINOR + 1))
-            PATCH=0
-          else
-            PATCH=$((PATCH + 1))
-          fi
-          NEXT_VERSION="v${MAJOR}.${MINOR}.${PATCH}"
+
+          case "$BUMP" in
+            major)
+              MAJOR=$((MAJOR + 1))
+              MINOR=0
+              PATCH=0
+              ;;
+            minor)
+              MINOR=$((MINOR + 1))
+              PATCH=0
+              ;;
+            patch)
+              PATCH=$((PATCH + 1))
+              ;;
+          esac
+
+          NEXT_VERSION="${MAJOR}.${MINOR}.${PATCH}"
           echo "Determined next version: ${NEXT_VERSION}"
-          TAG=${NEXT_VERSION//v/}
         fi
-        echo "tag=$TAG" >> $GITHUB_OUTPUT
 
-    - uses: hmarr/debug-action@f7318c783045ac39ed9bb497e22ce835fdafbfe6
-
-    - uses: actions/checkout@85e6279cec87321a52edac9c87bce653a07cf6c2
-      with:
-        ssh-key: ${{ secrets.SSH_KEY }}
-        fetch-depth: 0
+        echo "tag=${NEXT_VERSION}" >> $GITHUB_OUTPUT
 
     - name: Setup Tools
       uses: ./.github/actions/setup-tools
@@ -97,12 +108,26 @@ jobs:
         git config commit.gpgsign false
 
         branch=changelog/${{ steps.new-tag.outputs.tag }}
+
+        # Delete the branch locally if it exists
+        if git show-ref --verify --quiet "refs/heads/$branch"; then
+            git branch -D "$branch"
+        fi
+
+        # Delete the branch remotely if it exists
+        if git ls-remote --exit-code --heads origin "$branch"; then
+            git push origin --delete "$branch"
+        fi
+
         git checkout -b "$branch"
         git push --set-upstream origin "$branch"
 
         git status
         git reset --hard
-        ./node_modules/.bin/release-it v${{ steps.new-tag.outputs.tag }} --ci
+
+        # Pass the computed version WITHOUT a leading 'v'.
+        # Release-it will prepend 'v' itself, producing 'vX.Y.Z'.
+        ./node_modules/.bin/release-it ${{ steps.new-tag.outputs.tag }} --ci
 
     - name: Set output variables
       id: vars
@@ -125,9 +150,9 @@ jobs:
           const result = await github.rest.pulls.create({
             owner,
             repo,
-            head: 'changelog/${{ steps.new-tag.outputs.tag }}',
-            base: '${{ steps.vars.outputs.base }}',
-            title: '${{ steps.vars.outputs.pr_title }}',
+            head: `changelog/${{ steps.new-tag.outputs.tag }}`,
+            base: `${{ steps.vars.outputs.base }}`,
+            title: `chore(release): release candidate v${{ steps.new-tag.outputs.tag }}`,
             body: `### Commits
           ${{ steps.vars.outputs.pr_body }}
           ### GitHub Action
@@ -138,5 +163,5 @@ jobs:
             owner,
             repo,
             issue_number: result.data.number,
-            labels: ['changelog', 'v${{ steps.new-tag.outputs.tag }}']
+            labels: ['changelog', `v${{ steps.new-tag.outputs.tag }}`]
           });

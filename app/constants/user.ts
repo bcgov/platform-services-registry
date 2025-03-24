@@ -25,6 +25,9 @@ export enum GlobalPermissions {
   EditAllPublicProductComments = 'editAllPublicProductComments',
   DeleteAllPublicProductComments = 'deleteAllPublicProductComments',
 
+  ViewPrivateProductWebhook = 'viewPrivateProductWebhook',
+  EditPrivateProductWebhook = 'editPrivateProductWebhook',
+
   ViewZapscanResults = 'viewZapscanResults',
   ViewSonarscanResults = 'viewSonarscanResults',
   ViewGeneralAnalytics = 'viewGeneralAnalytics',

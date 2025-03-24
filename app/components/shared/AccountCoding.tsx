@@ -2,6 +2,7 @@ import { Alert, Button } from '@mantine/core';
 import _compact from 'lodash-es/compact';
 import _get from 'lodash-es/get';
 import _isEqual from 'lodash-es/isEqual';
+import _toUpper from 'lodash-es/toUpper';
 import { ReactNode, useCallback, useEffect, useState } from 'react';
 import { useFormContext } from 'react-hook-form';
 import FormTextInput from '@/components/generic/input/FormTextInput';
@@ -46,7 +47,12 @@ export default function AccountCoding({
           placeholder="00000"
           disabled={disabled}
           required
-          options={{ maxLength: 5 }}
+          options={{
+            maxLength: 5,
+            onChange: (e) => {
+              setValue('accountCoding.rc', _toUpper(e.target.value));
+            },
+          }}
           maxLength={5}
           info="5 Characters, Can contain only numbers and letters. No special characters (e.g. !@#$%^&*)"
           classNames={{ wrapper: 'sm:col-span-3' }}
@@ -79,7 +85,12 @@ export default function AccountCoding({
           placeholder="0000000"
           disabled={disabled}
           required
-          options={{ maxLength: 7 }}
+          options={{
+            maxLength: 7,
+            onChange: (e) => {
+              setValue('accountCoding.pc', _toUpper(e.target.value));
+            },
+          }}
           maxLength={7}
           info="7 Characters, Can contain only numbers and letters. No special characters (e.g. !@#$%^&*)"
           classNames={{ wrapper: 'sm:col-span-3' }}

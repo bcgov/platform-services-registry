@@ -77,6 +77,8 @@ export async function searchTasks({
             ministry: true,
             jobTitle: true,
             image: true,
+            idir: true,
+            upn: true,
           },
         },
       },
@@ -98,6 +100,8 @@ export async function searchTasks({
       email: true,
       firstName: true,
       lastName: true,
+      idir: true,
+      upn: true,
     },
   });
 

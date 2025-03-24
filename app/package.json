@@ -1,7 +1,7 @@
 {
   "name": "pltsvc-app",
   "description": "B.C. Government's Platform Product Registry - App",
-  "version": "0.47.0",
+  "version": "0.52.0",
   "private": true,
   "scripts": {
     "dev": "next dev",
@@ -40,7 +40,7 @@
     "@mantine/notifications": "^7.9.2",
     "@mantine/tiptap": "^7.10.2",
     "@prisma/client": "^6.0.0",
-    "@react-email/components": "^0.0.33",
+    "@react-email/components": "^0.0.34",
     "@react-email/render": "1.0.5",
     "@react-email/tailwind": "^1.0.0",
     "@tabler/icons-react": "^3.3.0",
@@ -60,7 +60,7 @@
     "@tiptap/react": "^2.4.0",
     "@tiptap/starter-kit": "^2.4.0",
     "@tremor/react": "^3.18.7",
-    "@types/react": "19.0.10",
+    "@types/react": "19.0.12",
     "@types/react-dom": "19.0.4",
     "autoprefixer": "10.4.21",
     "axios": "^1.5.1",
@@ -126,7 +126,7 @@
     "jest-mock": "^29.7.0",
     "knip": "^5.44.1",
     "lodash": "^4.17.21",
-    "prisma": "~6.4.0",
+    "prisma": "~6.5.0",
     "ts-jest": "^29.1.1",
     "ts-node": "^10.9.1",
     "typescript": "^5.3.3"

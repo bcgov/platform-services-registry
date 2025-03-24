@@ -37,6 +37,8 @@ services:
       context: ./
       dockerfile: ./keycloak-provision/Dockerfile
     environment:
+      PROVISION_SERVICE_ACCOUNT_ID: provision-service-account-id
+      PROVISION_SERVICE_ACCOUNT_SECRET: testsecret # pragma: allowlist secret
       KEYCLOAK_URL: http://keycloak:8080
       MASTER_ADMIN: admin
       MASTER_ADMIN_PASSWORD: password # pragma: allowlist secret
@@ -88,7 +90,7 @@ services:
     platform: linux/amd64
     container_name: mongodb
     # See https://hub.docker.com/r/bitnami/mongodb/tags
-    image: bitnami/mongodb:8.0.5-debian-12-r0
+    image: bitnami/mongodb:8.0.6-debian-12-r0
     environment:
     - MONGODB_ADVERTISED_HOSTNAME=127.0.0.1
     - MONGODB_REPLICA_SET_MODE=primary
@@ -115,7 +117,7 @@ services:
   nats:
     platform: linux/amd64
     container_name: nats
-    image: nats:2.10.26
+    image: nats:2.11.0
     ports:
     - 4222:4222
 
@@ -126,13 +128,17 @@ services:
       context: ./
       dockerfile: ./nats-provision/Dockerfile
     environment:
+      PROVISION_SERVICE_ACCOUNT_ID: provision-service-account-id
+      PROVISION_SERVICE_ACCOUNT_SECRET: testsecret # pragma: allowlist secret
       NATS_HOST: nats
       NATS_PORT: 4222
       APP_URL: http://${MACHINE_HOST_IP}:3000
+      AUTH_REALM_NAME: platform-services
       KEYCLOAK_URL: http://keycloak:8080
       PUBLIC_CLOUD_REALM_NAME: public-cloud
       PUBLIC_CLOUD_CLIENT_ID: roles
       PUBLIC_CLOUD_CLIENT_SECRET: testsecret # pragma: allowlist secret
+
     depends_on:
     - nats
 
@@ -146,7 +152,7 @@ services:
 
   mailpit:
     # See https://hub.docker.com/r/axllent/mailpit/tags
-    image: axllent/mailpit:v1.23.1
+    image: axllent/mailpit:v1.23.2
     container_name: mailpit
     restart: unless-stopped
     volumes:

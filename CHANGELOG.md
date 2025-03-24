@@ -1,3 +1,42 @@
+## [0.52.0](https://github.com/bcgov/platform-services-registry/compare/v0.51.0...v0.52.0) (2025-03-22)
+
+### Features
+
+* **4721:** update airflow with new provision api endpoint ([e014d0a](https://github.com/bcgov/platform-services-registry/commit/e014d0ab992dbf63ca6c6808a1766ab77a319aae))
+* **4721:** update nats-provision with new provision api ([22ce701](https://github.com/bcgov/platform-services-registry/commit/22ce701b7b8d94b88dbcda3899cbd1b8776d9481))
+* **4851:** make webhook visible and editable for global roles accordingly ([3ca9700](https://github.com/bcgov/platform-services-registry/commit/3ca9700f25ef46e3b34fd6cea56f33f473784d4b))
+* **5257:** add tooltip for emerald cluster namespace subnets ([bd94c86](https://github.com/bcgov/platform-services-registry/commit/bd94c86183716cf4e314f9b3474afcbadb9c30a6))
+* **5257:** reword tooltip message ([e697a6a](https://github.com/bcgov/platform-services-registry/commit/e697a6ac7d386bcc0f9c55ad4b2e013a344083cd))
+## [0.51.0](https://github.com/bcgov/platform-services-registry/compare/v0.50.0...v0.51.0) (2025-03-19)
+
+### Features
+
+* **4966:** deprecate Bootstrap library in maintainance page ([c8da3ea](https://github.com/bcgov/platform-services-registry/commit/c8da3ea1dcad99cb7edbfe6ac7fc7d409aef1369))
+## [0.50.0](https://github.com/bcgov/platform-services-registry/compare/v0.49.0...v0.50.0) (2025-03-14)
+
+### Features
+
+* **4721:** generate service account for new provision endpoint ([c0fa2bc](https://github.com/bcgov/platform-services-registry/commit/c0fa2bc47446d3c84d951e867a881e49c1e2a99d))
+* **4750:** send cancellation notification emails ([16b3ffb](https://github.com/bcgov/platform-services-registry/commit/16b3ffb590bc5be6ce4e5368daa7402fa5d136e0))
+* **5196:** convert lower cases into upper in account coding ([db51da8](https://github.com/bcgov/platform-services-registry/commit/db51da8a07c52e57faf30b23faac85e67464752a))
+## [0.49.0](https://github.com/bcgov/platform-services-registry/compare/v0.48.0...v0.49.0) (2025-03-14)
+
+### Features
+
+* **0000:** give public admin billing privileges ([aa2055e](https://github.com/bcgov/platform-services-registry/commit/aa2055e0ae270e8e24e98cf40410eef73c6a881d))
+* **4981:** include additional request details for cancellations ([483673f](https://github.com/bcgov/platform-services-registry/commit/483673fd03aaa9a6d545745c183b36bf68204f60))
+## [0.48.0](https://github.com/bcgov/platform-services-registry/compare/v0.47.0...v0.48.0) (2025-03-13)
+
+### Features
+
+* **4742:** highlight the users missing with mandatory attributes ([f7175eb](https://github.com/bcgov/platform-services-registry/commit/f7175ebc1a15659673bd1180e09b1d652db9f45b))
+* **4927:** add reusable TooltipTableHeader component ([0dbcf2e](https://github.com/bcgov/platform-services-registry/commit/0dbcf2e64778354ff57892055f41bf81cd3762f4))
+* **5059:** update deploy dispatch workflow for automated versioning ([5d0bce8](https://github.com/bcgov/platform-services-registry/commit/5d0bce8b35132bb1114f43424679523735c73a1a))
+* **5164:** update ministries list with Water, Land and Resource Stewardship ministry ([f7f3bbb](https://github.com/bcgov/platform-services-registry/commit/f7f3bbb53c4ca23d610b16d7984bca94a5a4a738))
+
+### Bug Fixes
+
+* **5188:** resolve EA signing eMOU ([9329daa](https://github.com/bcgov/platform-services-registry/commit/9329daab0bdd8bd119a8d250a2b463ffedf689b2))
 ## [0.47.0](https://github.com/bcgov/platform-services-registry/compare/v0.46.2...v0.47.0) (2025-03-11)
 
 ### Bug Fixes

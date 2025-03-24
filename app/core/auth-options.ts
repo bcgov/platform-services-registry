@@ -243,6 +243,15 @@ export async function generateSession({
     editAssignedPrivateCloudProducts: session.isUser,
     deleteAssignedPrivateCloudProducts: session.isUser,
 
+    editPrivateProductWebhook: session.isAdmin || session.isEditor || session.isPrivateAdmin || session.isPrivateEditor,
+    viewPrivateProductWebhook:
+      session.isAdmin ||
+      session.isEditor ||
+      session.isReader ||
+      session.isPrivateAdmin ||
+      session.isPrivateEditor ||
+      session.isPrivateReader,
+
     // Public Products
     createPublicCloudProducts: session.isAdmin || session.isPublicAdmin,
     viewAllPublicCloudProducts:
@@ -286,10 +295,21 @@ export async function generateSession({
     viewPrivateAnalytics: session.isAdmin || session.isAnalyzer || session.isPrivateAnalyzer,
 
     reviewPublicCloudBilling: session.isAdmin || session.isBillingReviewer,
+
     viewPublicCloudBilling:
-      session.isAdmin || session.isBillingReviewer || session.isBillingManager || session.isBillingReader,
+      session.isAdmin ||
+      session.isPublicAdmin ||
+      session.isPublicReviewer ||
+      session.isBillingReviewer ||
+      session.isBillingManager ||
+      session.isBillingReader,
+
     downloadPublicCloudBillingMou:
-      session.isAdmin || session.isBillingReviewer || session.isBillingManager || session.isBillingReader,
+      session.isAdmin ||
+      session.isPublicAdmin ||
+      session.isBillingReviewer ||
+      session.isBillingManager ||
+      session.isBillingReader,
 
     viewUsers: session.isAdmin || session.isUserReader,
     viewEvents: session.isAdmin || session.isEventReader,

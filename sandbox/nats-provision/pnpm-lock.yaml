@@ -10,17 +10,17 @@ importers:
     dependencies:
       '@keycloak/keycloak-admin-client':
         specifier: ^26.0.0
-        version: 26.1.3
+        version: 26.1.4
       nats:
         specifier: ^2.19.0
-        version: 2.29.2
+        version: 2.29.3
       wait-on:
         specifier: ^8.0.0
         version: 8.0.3
     devDependencies:
       '@types/node':
         specifier: ^22.0.0
-        version: 22.13.10
+        version: 22.13.13
       '@types/wait-on':
         specifier: ^5.3.4
         version: 5.3.4
@@ -196,8 +196,8 @@ packages:
     resolution: {integrity: sha512-O8jcjabXaleOG9DQ0+ARXWZBTfnP4WNAqzuiJK7ll44AmxGKv/J2M4TPjxjY3znBCfvBXFzucm1twdyFybFqEA==}
     engines: {node: '>=12'}
 
-  '@keycloak/keycloak-admin-client@26.1.3':
-    resolution: {integrity: sha512-VFIfCEq050hs3ufj0apkvIDTdVn0LvcLsZEZA8eOyr6QOuSkKIzYOsW6Kf4uV2g6CVERJUPLZ9OF+bhEDSaV5g==}
+  '@keycloak/keycloak-admin-client@26.1.4':
+    resolution: {integrity: sha512-zJJM7uhtzUUD0Uf6Q2xhFrUqT+qvfj5WhBqTwKtO8k4jbxu4uNmk5qRDa8fnkk0sHyPzlD+d875H2Jora/W2gw==}
     engines: {node: '>=18'}
 
   '@sideway/address@4.1.5':
@@ -209,8 +209,8 @@ packages:
   '@sideway/pinpoint@2.0.0':
     resolution: {integrity: sha512-RNiOoTPkptFtSVzQevY/yWtZwf/RxyVnPy/OcA9HBM3MlGDnBEYL5B41H0MTn0Uec8Hi+2qUtTfG2WWZBmMejQ==}
 
-  '@types/node@22.13.10':
-    resolution: {integrity: sha512-I6LPUvlRH+O6VRUqYOcMudhaIdUVWfsjnZavnsraHvpBwaEyMN29ry+0UVJhImYL16xsscu0aske3yA+uPOWfw==}
+  '@types/node@22.13.13':
+    resolution: {integrity: sha512-ClsL5nMwKaBRwPcCvH8E7+nU4GxHVx1axNvMZTFHMEfNI7oahimt26P5zjVCRrjiIWj6YFXfE1v3dEp94wLcGQ==}
 
   '@types/wait-on@5.3.4':
     resolution: {integrity: sha512-EBsPjFMrFlMbbUFf9D1Fp+PAB2TwmUn7a3YtHyD9RLuTIk1jDd8SxXVAoez2Ciy+8Jsceo2MYEYZzJ/DvorOKw==}
@@ -405,8 +405,8 @@ packages:
     resolution: {integrity: sha512-qOOzS1cBTWYF4BH8fVePDBOO9iptMnGUEZwNc/cMWnTV2nVLZ7VoNWEPHkYczZA0pdoA7dl6e7FL659nX9S2aw==}
     engines: {node: '>=16 || 14 >=14.17'}
 
-  nats@2.29.2:
-    resolution: {integrity: sha512-HfzEZa/67fAmRXchLv/sFGeZFF27TRf6kuNbuze2+Md+0M4xADoiUf7YColV9CMjlf2nIkFPnlXcpOTdtlhbPg==}
+  nats@2.29.3:
+    resolution: {integrity: sha512-tOQCRCwC74DgBTk4pWZ9V45sk4d7peoE2njVprMRCBXrhJ5q5cYM7i6W+Uvw2qUrcfOSnuisrX7bEx3b3Wx4QA==}
     engines: {node: '>= 14.0.0'}
 
   nkeys.js@1.1.0:
@@ -603,7 +603,7 @@ snapshots:
       wrap-ansi: 8.1.0
       wrap-ansi-cjs: wrap-ansi@7.0.0
 
-  '@keycloak/keycloak-admin-client@26.1.3':
+  '@keycloak/keycloak-admin-client@26.1.4':
     dependencies:
       camelize-ts: 3.0.0
       url-join: 5.0.0
@@ -617,13 +617,13 @@ snapshots:
 
   '@sideway/pinpoint@2.0.0': {}
 
-  '@types/node@22.13.10':
+  '@types/node@22.13.13':
     dependencies:
       undici-types: 6.20.0
 
   '@types/wait-on@5.3.4':
     dependencies:
-      '@types/node': 22.13.10
+      '@types/node': 22.13.13
 
   ansi-regex@5.0.1: {}
 
@@ -829,7 +829,7 @@ snapshots:
 
   minipass@7.1.2: {}
 
-  nats@2.29.2:
+  nats@2.29.3:
     dependencies:
       nkeys.js: 1.1.0
 

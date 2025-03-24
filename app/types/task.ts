@@ -23,6 +23,8 @@ export type SearchTask = Prisma.TaskGetPayload<{
         ministry: true;
         jobTitle: true;
         image: true;
+        upn: true;
+        idir: true;
       };
     };
   };
@@ -34,6 +36,8 @@ export type SearchTask = Prisma.TaskGetPayload<{
     email: string;
     firstName: string;
     lastName: string;
+    idir: string | null;
+    upn: string | null;
   }[];
 };
 

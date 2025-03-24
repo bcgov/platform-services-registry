@@ -115,6 +115,10 @@ export const ministryOptions = [
     value: 'HOUS',
     label: 'Ministry of Housing',
   },
+  {
+    value: 'WLRS',
+    label: 'Water, Land and Resource Stewardship',
+  },
 ];
 
 export const AGMinistries = ['AG', 'PSSG', 'EMBC', 'HOUS'];

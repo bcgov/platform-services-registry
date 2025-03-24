@@ -1,4 +1,5 @@
 import axios from 'axios';
+import { PrivateCloudProductWebhookDetailDecorated } from '@/types/private-cloud';
 import { PrivateCloudProductWebhookBody } from '@/validation-schemas/private-cloud';
 import { instance as parentInstance } from './instance';
 
@@ -8,7 +9,9 @@ export const instance = axios.create({
 });
 
 export async function getPrivateCloudProductWebhook(licencePlate: string) {
-  const result = await instance.get<PrivateCloudProductWebhookBody>(`/${licencePlate}`).then((res) => res.data);
+  const result = await instance
+    .get<PrivateCloudProductWebhookDetailDecorated>(`/${licencePlate}`)
+    .then((res) => res.data);
   return result;
 }
 

@@ -5,3 +5,6 @@ export const KEYCLOAK_URL = process.env.KEYCLOAK_URL || 'http://localhost:8080';
 export const PUBLIC_CLOUD_REALM_NAME = process.env.PUBLIC_CLOUD_REALM_NAME || 'public-cloud';
 export const PUBLIC_CLOUD_CLIENT_ID = process.env.PUBLIC_CLOUD_CLIENT_ID || 'roles';
 export const PUBLIC_CLOUD_CLIENT_SECRET = process.env.PUBLIC_CLOUD_CLIENT_SECRET || 'testsecret';
+export const PROVISION_SERVICE_ACCOUNT_ID = process.env.PROVISION_SERVICE_ACCOUNT_ID || '';
+export const PROVISION_SERVICE_ACCOUNT_SECRET = process.env.PROVISION_SERVICE_ACCOUNT_SECRET || '';
+export const AUTH_REALM_NAME = process.env.AUTH_REALM_NAME || '';
