@@ -21,7 +21,6 @@ export default function SiloAccordion({ product, className }: SiloAccordionProps
     enabled: !!product.licencePlate,
   });
 
-  if (isWebhookLoading) return <Loader color="pink" type="bars" />;
   if (!webhook || !webhook._permissions.view) return null;
 
   const accordionItems = [
