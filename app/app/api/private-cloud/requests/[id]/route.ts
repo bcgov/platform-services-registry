@@ -1,4 +1,4 @@
-import { DecisionStatus, EventType } from '@prisma/client';
+import { DecisionStatus, EventType, TaskStatus, TaskType } from '@prisma/client';
 import { z } from 'zod';
 import { GlobalRole } from '@/constants';
 import createApiHandler from '@/core/api-handler';
@@ -55,6 +55,18 @@ export const PUT = apiHandler(async ({ pathParams, session }) => {
   const decoratedRequest = await models.privateCloudRequest.decorate(updated, session, true);
 
   await Promise.all([
+    prisma.task.deleteMany({
+      where: {
+        type: { in: [TaskType.REVIEW_PRIVATE_CLOUD_REQUEST] },
+        status: TaskStatus.ASSIGNED,
+        data: {
+          equals: {
+            requestId: updated.id,
+            licencePlate: updated.licencePlate,
+          },
+        },
+      },
+    }),
     sendRequestCancellationEmails(decoratedRequest, session.user.name),
     createEvent(EventType.CANCEL_PRIVATE_CLOUD_REQUEST, session.user.id, { requestId: id }),
   ]);
