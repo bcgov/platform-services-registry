@@ -1,5 +1,6 @@
 import _isString from 'lodash-es/isString';
 import { z } from 'zod';
+import { IS_LOCAL } from '@/config';
 import { GlobalRole } from '@/constants';
 import createApiHandler from '@/core/api-handler';
 import prisma from '@/core/prisma';
@@ -22,6 +23,17 @@ export const POST = createApiHandler({
 
   const users = await listUsersByEmail(email);
 
+  // This simulates missing idir, upn, and ministry
+
+  if (IS_LOCAL) {
+    users.forEach((user, index) => {
+      if (index % 2 === 0) {
+        user.upn = '';
+        user.idir = '';
+        user.ministry = '';
+      }
+    });
+  }
   const dbUsers = await Promise.all(
     users.map(async (user) => {
       const data = await prepareUserData(user);
