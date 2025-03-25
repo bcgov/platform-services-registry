@@ -11,7 +11,7 @@ import FormCheckbox from '@/components/generic/checkbox/FormCheckbox';
 import FormError from '@/components/generic/FormError';
 import { publicCloudTeamEmail } from '@/constants';
 import { createModal } from '@/core/modal';
-import { createPublicCloudProject } from '@/services/backend/public-cloud/products';
+import { createPublicCloudProduct } from '@/services/backend/public-cloud/products';
 import { success } from '../notification';
 import { openNotificationModal } from './notification';
 
@@ -48,7 +48,7 @@ export const openPublicCloudProductCreateSubmitModal = createModal<ModalProps, M
       isError: isCreateError,
       error: createError,
     } = useMutation({
-      mutationFn: (data: any) => createPublicCloudProject(data),
+      mutationFn: (data: any) => createPublicCloudProduct(data),
       onSuccess: () => {
         state.success = true;
         success();

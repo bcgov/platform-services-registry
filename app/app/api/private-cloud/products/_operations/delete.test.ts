@@ -4,8 +4,8 @@ import { GlobalRole } from '@/constants';
 import { createSamplePrivateCloudProductData } from '@/helpers/mock-resources';
 import { findOtherMockUsers } from '@/helpers/mock-users';
 import { mockSessionByEmail, mockSessionByRole } from '@/services/api-test/core';
-import { provisionPrivateCloudProject } from '@/services/api-test/private-cloud';
-import { createPrivateCloudProject, deletePrivateCloudProject } from '@/services/api-test/private-cloud/products';
+import { provisionPrivateCloudProduct } from '@/services/api-test/private-cloud';
+import { createPrivateCloudProduct, deletePrivateCloudProduct } from '@/services/api-test/private-cloud/products';
 import { makePrivateCloudRequestDecision } from '@/services/api-test/private-cloud/requests';
 
 const productData = {
@@ -22,7 +22,7 @@ describe('Delete Private Cloud Product - Permissions', () => {
   it('should successfully submit a create request for PO', async () => {
     await mockSessionByEmail(productData.main.projectOwner.email);
 
-    const response = await createPrivateCloudProject(productData.main);
+    const response = await createPrivateCloudProduct(productData.main);
     expect(response.status).toBe(200);
 
     requests.create = await response.json();
@@ -43,14 +43,14 @@ describe('Delete Private Cloud Product - Permissions', () => {
   it('should successfully provision the request', async () => {
     await mockSessionByEmail();
 
-    const response = await provisionPrivateCloudProject(requests.create.licencePlate);
+    const response = await provisionPrivateCloudProduct(requests.create.licencePlate);
     expect(response.status).toBe(200);
   });
 
   it('should successfully submit a delete request for PO', async () => {
     await mockSessionByEmail(productData.main.projectOwner.email);
 
-    const response = await deletePrivateCloudProject(requests.create.licencePlate);
+    const response = await deletePrivateCloudProduct(requests.create.licencePlate);
     expect(response.status).toBe(200);
 
     requests.delete = await response.json();
@@ -60,7 +60,7 @@ describe('Delete Private Cloud Product - Permissions', () => {
   it('should fail to submit the same request for PO', async () => {
     await mockSessionByEmail(productData.main.projectOwner.email);
 
-    const response = await deletePrivateCloudProject(requests.delete.licencePlate);
+    const response = await deletePrivateCloudProduct(requests.delete.licencePlate);
     expect(response.status).toBe(401);
   });
 
@@ -79,7 +79,7 @@ describe('Delete Private Cloud Product - Permissions', () => {
   it('should successfully submit a delete request for admin', async () => {
     await mockSessionByRole(GlobalRole.Admin);
 
-    const response = await deletePrivateCloudProject(requests.delete.licencePlate);
+    const response = await deletePrivateCloudProduct(requests.delete.licencePlate);
     expect(response.status).toBe(200);
 
     requests.delete = await response.json();
@@ -89,7 +89,7 @@ describe('Delete Private Cloud Product - Permissions', () => {
   it('should fail to submit the same request for admin', async () => {
     await mockSessionByRole(GlobalRole.Admin);
 
-    const response = await deletePrivateCloudProject(requests.delete.licencePlate);
+    const response = await deletePrivateCloudProduct(requests.delete.licencePlate);
     expect(response.status).toBe(401);
   });
 
@@ -114,7 +114,7 @@ describe('Delete Private Cloud Product - Permissions', () => {
 
     await mockSessionByEmail(otherUsers[0].email);
 
-    const response = await deletePrivateCloudProject(requests.delete.licencePlate);
+    const response = await deletePrivateCloudProduct(requests.delete.licencePlate);
     expect(response.status).toBe(401);
   });
 
@@ -122,7 +122,7 @@ describe('Delete Private Cloud Product - Permissions', () => {
     await mockSessionByEmail();
 
     const requestData = createSamplePrivateCloudProductData();
-    const response = await createPrivateCloudProject(requestData);
+    const response = await createPrivateCloudProduct(requestData);
     expect(response.status).toBe(401);
   });
 });

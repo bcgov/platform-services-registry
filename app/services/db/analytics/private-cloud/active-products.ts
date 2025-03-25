@@ -11,7 +11,7 @@ async function productsCreatedPerMonth(
   dateFilter?: Record<string, any>,
 ) {
   const [products, deleteRequests] = await Promise.all([
-    prisma.privateCloudProject.findMany({
+    prisma.privateCloudProduct.findMany({
       where: {
         licencePlate: { in: licencePlatesList },
         cluster: { in: clusters },

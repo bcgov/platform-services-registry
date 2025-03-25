@@ -23,8 +23,8 @@ export default async function generateLicencePlate() {
   while (true) {
     const licencePlate = generateRandomString();
     const [cnt1, cnt2] = await Promise.all([
-      prisma.privateCloudProject.count({ where: { licencePlate } }),
-      prisma.publicCloudProject.count({ where: { licencePlate } }),
+      prisma.privateCloudProduct.count({ where: { licencePlate } }),
+      prisma.publicCloudProduct.count({ where: { licencePlate } }),
     ]);
 
     if (cnt1 + cnt2 === 0) return licencePlate;

@@ -8,7 +8,7 @@ export async function getCommentCountOp(licencePlate: string, requestId?: string
     return { count: commentCount };
   }
 
-  const project = await prisma.privateCloudProject.findUnique({
+  const project = await prisma.privateCloudProduct.findUnique({
     where: { licencePlate },
     select: { id: true },
   });

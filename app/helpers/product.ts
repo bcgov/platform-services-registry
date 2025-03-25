@@ -1,4 +1,4 @@
-import { PrivateCloudProductMemberRole, PrivateCloudProject } from '@prisma/client';
+import { PrivateCloudProductMemberRole, PrivateCloudProduct } from '@prisma/client';
 import _forEach from 'lodash-es/forEach';
 import _get from 'lodash-es/get';
 import _isPlainObject from 'lodash-es/isPlainObject';
@@ -98,7 +98,7 @@ export const getTotalQuotaStr = (...values: string[]) => String(getTotalQuota(..
 
 export function getPrivateCloudProductContext(
   product: Pick<
-    PrivateCloudProject,
+    PrivateCloudProduct,
     'projectOwnerId' | 'primaryTechnicalLeadId' | 'secondaryTechnicalLeadId' | 'members' | 'ministry'
   >,
   session: Session,

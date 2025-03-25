@@ -9,7 +9,7 @@ import json
 def fetch_unique_emails(mongo_conn_id):
     try:
         db = get_mongo_db(mongo_conn_id)
-        projects_collection = db["PrivateCloudProject"]
+        projects_collection = db["PrivateCloudProduct"]
         users_collection = db["User"]
         query = {"status": "ACTIVE"}
         projection = {

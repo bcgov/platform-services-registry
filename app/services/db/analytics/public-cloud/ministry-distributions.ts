@@ -26,7 +26,7 @@ function getAggByProvider(licencePlatesList: string[], provider?: string, dateFi
     },
   ];
 
-  return prisma.publicCloudProject.aggregateRaw({ pipeline });
+  return prisma.publicCloudProduct.aggregateRaw({ pipeline });
 }
 
 export async function getMinistryDistributions({

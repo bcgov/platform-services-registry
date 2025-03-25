@@ -6,11 +6,11 @@ import prisma from '@/core/prisma';
 import { createSamplePublicCloudProductData } from '@/helpers/mock-resources';
 import { pickProductData } from '@/helpers/product';
 import { mockSessionByEmail, mockSessionByRole } from '@/services/api-test/core';
-import { provisionPublicCloudProject } from '@/services/api-test/public-cloud';
+import { provisionPublicCloudProduct } from '@/services/api-test/public-cloud';
 import {
-  createPublicCloudProject,
-  editPublicCloudProject,
-  deletePublicCloudProject,
+  createPublicCloudProduct,
+  editPublicCloudProduct,
+  deletePublicCloudProduct,
   signPublicCloudBilling,
   reviewPublicCloudBilling,
 } from '@/services/api-test/public-cloud/products';
@@ -100,7 +100,7 @@ describe('Review Public Cloud Create Request - Permissions', () => {
   it('should successfully submit a create request for PO', async () => {
     await mockSessionByEmail(productData.main.projectOwner.email);
 
-    const response = await createPublicCloudProject(productData.main);
+    const response = await createPublicCloudProduct(productData.main);
     expect(response.status).toBe(200);
 
     requests.main = await response.json();
@@ -160,7 +160,7 @@ describe('Review Public Cloud Create Request - Permissions', () => {
   it('should successfully provision the create request', async () => {
     await mockSessionByEmail();
 
-    const response = await provisionPublicCloudProject(requests.main.licencePlate);
+    const response = await provisionPublicCloudProduct(requests.main.licencePlate);
     expect(response.status).toBe(200);
   });
 });
@@ -169,7 +169,7 @@ describe('Review Public Cloud Update Request - Permissions', () => {
   it('should successfully submit a update request for TL1', async () => {
     await mockSessionByEmail(productData.main.primaryTechnicalLead.email);
 
-    const response = await editPublicCloudProject(requests.main.licencePlate, {
+    const response = await editPublicCloudProduct(requests.main.licencePlate, {
       ...requests.main.decisionData,
       environmentsEnabled: newEnvironmentsEnabled,
       isAgMinistryChecked: true,
@@ -219,7 +219,7 @@ describe('Review Public Cloud Update Request - Permissions', () => {
   it('should successfully provision the update request', async () => {
     await mockSessionByEmail();
 
-    const response = await provisionPublicCloudProject(requests.main.licencePlate);
+    const response = await provisionPublicCloudProduct(requests.main.licencePlate);
     expect(response.status).toBe(200);
   });
 });
@@ -228,7 +228,7 @@ describe('Review Public Cloud Delete Request - Permissions', () => {
   it('should successfully submit a delete request for TL1', async () => {
     await mockSessionByEmail(productData.main.primaryTechnicalLead.email);
 
-    const response = await deletePublicCloudProject(requests.main.licencePlate);
+    const response = await deletePublicCloudProduct(requests.main.licencePlate);
     expect(response.status).toBe(200);
 
     requests.main = await response.json();
@@ -282,7 +282,7 @@ describe('Review Public Cloud Delete Request - Permissions', () => {
   it('should successfully provision the delete request', async () => {
     await mockSessionByEmail();
 
-    const response = await provisionPublicCloudProject(requests.main.licencePlate);
+    const response = await provisionPublicCloudProduct(requests.main.licencePlate);
     expect(response.status).toBe(200);
   });
 });
@@ -291,7 +291,7 @@ describe('Review Public Cloud Request - Validations', () => {
   it('should successfully submit a create request for TL1', async () => {
     await mockSessionByEmail(productData.main.primaryTechnicalLead.email);
 
-    const response = await createPublicCloudProject(productData.main);
+    const response = await createPublicCloudProduct(productData.main);
     expect(response.status).toBe(200);
 
     requests.main = await response.json();

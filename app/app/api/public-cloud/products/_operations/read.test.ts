@@ -7,10 +7,10 @@ import { createSamplePublicCloudProductData } from '@/helpers/mock-resources';
 import { findOtherMockUsers } from '@/helpers/mock-users';
 import { pickProductData } from '@/helpers/product';
 import { mockSessionByEmail, mockSessionByRole } from '@/services/api-test/core';
-import { provisionPublicCloudProject } from '@/services/api-test/public-cloud';
+import { provisionPublicCloudProduct } from '@/services/api-test/public-cloud';
 import {
-  createPublicCloudProject,
-  getPublicCloudProject,
+  createPublicCloudProduct,
+  getPublicCloudProduct,
   signPublicCloudBilling,
   reviewPublicCloudBilling,
 } from '@/services/api-test/public-cloud/products';
@@ -43,7 +43,7 @@ describe('Read Public Cloud Product - Permissions', () => {
   it('should successfully submit a create request for PO', async () => {
     await mockSessionByEmail(productData.main.projectOwner.email);
 
-    const response = await createPublicCloudProject(productData.main);
+    const response = await createPublicCloudProduct(productData.main);
     expect(response.status).toBe(200);
 
     requests.create = await response.json();
@@ -96,14 +96,14 @@ describe('Read Public Cloud Product - Permissions', () => {
   it('should successfully provision the request', async () => {
     await mockSessionByEmail();
 
-    const response = await provisionPublicCloudProject(requests.create.licencePlate);
+    const response = await provisionPublicCloudProduct(requests.create.licencePlate);
     expect(response.status).toBe(200);
   });
 
   it('should return 401 for unauthenticated user', async () => {
     await mockSessionByEmail();
 
-    const response = await getPublicCloudProject(requests.create.decisionData.licencePlate);
+    const response = await getPublicCloudProduct(requests.create.decisionData.licencePlate);
 
     expect(response.status).toBe(401);
   });
@@ -111,7 +111,7 @@ describe('Read Public Cloud Product - Permissions', () => {
   it('should successfully read the product for admin', async () => {
     await mockSessionByRole(GlobalRole.Admin);
 
-    const response = await getPublicCloudProject(requests.create.decisionData.licencePlate);
+    const response = await getPublicCloudProduct(requests.create.decisionData.licencePlate);
 
     expect(response.status).toBe(200);
 
@@ -124,7 +124,7 @@ describe('Read Public Cloud Product - Permissions', () => {
   it('should successfully read the product for PO', async () => {
     await mockSessionByEmail(productData.main.projectOwner.email);
 
-    const response = await getPublicCloudProject(requests.create.decisionData.licencePlate);
+    const response = await getPublicCloudProduct(requests.create.decisionData.licencePlate);
 
     expect(response.status).toBe(200);
 
@@ -137,7 +137,7 @@ describe('Read Public Cloud Product - Permissions', () => {
   it('should successfully read the product for TL1', async () => {
     await mockSessionByEmail(productData.main.primaryTechnicalLead.email);
 
-    const response = await getPublicCloudProject(requests.create.decisionData.licencePlate);
+    const response = await getPublicCloudProduct(requests.create.decisionData.licencePlate);
 
     expect(response.status).toBe(200);
 
@@ -150,7 +150,7 @@ describe('Read Public Cloud Product - Permissions', () => {
   it('should successfully read the product for TL2', async () => {
     await mockSessionByEmail(productData.main.secondaryTechnicalLead.email);
 
-    const response = await getPublicCloudProject(requests.create.decisionData.licencePlate);
+    const response = await getPublicCloudProduct(requests.create.decisionData.licencePlate);
 
     expect(response.status).toBe(200);
 
@@ -169,7 +169,7 @@ describe('Read Public Cloud Product - Permissions', () => {
 
     await mockSessionByEmail(otherUsers[0].email);
 
-    const response = await getPublicCloudProject(requests.create.decisionData.licencePlate);
+    const response = await getPublicCloudProduct(requests.create.decisionData.licencePlate);
 
     expect(response.status).toBe(401);
   });
