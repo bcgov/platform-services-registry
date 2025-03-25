@@ -204,7 +204,7 @@ postgresql:
           userPasswordKey: user-password # pragma: allowlist secret
           replicationPasswordKey: replication-password # pragma: allowlist secret
 
-# See https://github.com/SonarSource/helm-chart-sonarqube/blob/master/charts/sonarqube/values.yaml
+# See https://github.com/SonarSource/helm-chart-sonarqube/blob/87cf0af9db9e573476803b811f95edc7088169f6/charts/sonarqube/values.yaml
 sonarqube:
   enabled: true
   route:
@@ -218,6 +218,9 @@ sonarqube:
   containerSecurityContext:
     runAsUser:
     runAsGroup:
+
+  # See https://github.com/SonarSource/helm-chart-sonarqube/blob/87cf0af9db9e573476803b811f95edc7088169f6/charts/sonarqube/values.yaml#L52
+  edition: developer
 
   initContainers:
     securityContext:
@@ -244,6 +247,9 @@ sonarqube:
     jdbcUsername: nonroot
     jdbcSecretName: secdash-postgresql # pragma: allowlist secret
     jdbcSecretPasswordKey: user-password # pragma: allowlist secret
+
+  # See https://github.com/SonarSource/helm-chart-sonarqube/blob/87cf0af9db9e573476803b811f95edc7088169f6/charts/sonarqube/values.yaml#L433C3-L433C21
+  monitoringPasscode: "secdash-monitoring"
 
   postgresql:
     enabled: false
