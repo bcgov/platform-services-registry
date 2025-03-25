@@ -7,10 +7,30 @@ import prisma from '@/core/prisma';
 import { OkResponse } from '@/core/responses';
 import { prepareUserData } from '@/services/db';
 import { listUsersByEmail } from '@/services/msgraph';
+import { AppUser } from '@/types/user';
 
 const userSearchBodySchema = z.object({
   email: z.string().max(40),
 });
+
+function convertToDBUserType(user: AppUser) {
+  return {
+    id: user.providerUserId,
+    firstName: user.firstName,
+    lastName: user.lastName,
+    email: user.email,
+    upn: user.upn,
+    idir: user.idir,
+    officeLocation: user.officeLocation,
+    jobTitle: user.jobTitle,
+    image: '',
+    ministry: user.ministry,
+    archived: false,
+    createdAt: null,
+    updatedAt: null,
+    lastSeen: null,
+  };
+}
 
 export const POST = createApiHandler({
   roles: [GlobalRole.User],
@@ -67,8 +87,8 @@ export const POST = createApiHandler({
           },
         });
       }
-      user.id = user.providerUserId;
-      return user;
+      const convertedUser = convertToDBUserType(user);
+      return convertedUser;
     }),
   );
 
