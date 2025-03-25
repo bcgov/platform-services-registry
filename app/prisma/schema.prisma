@@ -12,50 +12,50 @@ datasource db {
 }
 
 model User {
-  id                                                   String                    @id @default(auto()) @map("_id") @db.ObjectId
-  providerUserId                                       String?
-  firstName                                            String?
-  lastName                                             String?
-  email                                                String                    @unique
-  upn                                                  String?
-  idir                                                 String?
-  idirGuid                                             String?
-  officeLocation                                       String?
-  jobTitle                                             String?
-  image                                                String?
-  ministry                                             String?
-  archived                                             Boolean                   @default(false)
-  createdAt                                            DateTime                  @default(now())
-  updatedAt                                            DateTime                  @updatedAt
-  lastSeen                                             DateTime?
-  onboardingDate                                       DateTime?
-  privateCloudProductsAsProjectOwner                   PrivateCloudProduct[]     @relation("projectOwner")
-  privateCloudProductsAsPrimaryTechnicalLead           PrivateCloudProduct[]     @relation("primaryTechnicalLead")
-  privateCloudProductsAsSecondaryTechnicalLead         PrivateCloudProduct[]     @relation("secondaryTechnicalLead")
-  PrivateCloudRequestDatasAsProjectOwner               PrivateCloudRequestData[] @relation("projectOwner")
-  PrivateCloudRequestDatasAsPrimaryTechnicalLead       PrivateCloudRequestData[] @relation("primaryTechnicalLead")
-  PrivateCloudRequestDatasAsSecondaryTechnicalLead     PrivateCloudRequestData[] @relation("secondaryTechnicalLead")
-  publicCloudProductsAsProjectOwner                    PublicCloudProduct[]      @relation("projectOwner")
-  publicCloudProductsAsPrimaryTechnicalLead            PublicCloudProduct[]      @relation("primaryTechnicalLead")
-  publicCloudProductsAsSecondaryTechnicalLead          PublicCloudProduct[]      @relation("secondaryTechnicalLead")
-  publicCloudProductsAsExpenseAuthority                PublicCloudProduct[]      @relation("expenseAuthority")
-  publicCloudRequestedProjectsAsProjectOwner           PublicCloudRequestData[]  @relation("projectOwner")
-  publicCloudRequestedProjectsAsPrimaryTechnicalLead   PublicCloudRequestData[]  @relation("primaryTechnicalLead")
-  publicCloudRequestedProjectsAsSecondaryTechnicalLead PublicCloudRequestData[]  @relation("secondaryTechnicalLead")
-  publicCloudRequestedProjectsAsExpenseAuthority       PublicCloudRequestData[]  @relation("expenseAuthority")
-  privateCloudComments                                 PrivateCloudComment[]     @relation("user")
-  reactions                                            Reaction[]                @relation("user")
-  publicCloudBillingSigned                             PublicCloudBilling[]      @relation("signedBy")
-  publicCloudBillingApproved                           PublicCloudBilling[]      @relation("approvedBy")
-  publicCloudBillingAsExpenseAuthority                 PublicCloudBilling[]      @relation("expenseAuthority")
-  privateCloudRequestsAsRequester                      PrivateCloudRequest[]     @relation("createdBy")
-  publicCloudRequestsAsRequester                       PublicCloudRequest[]      @relation("createdBy")
-  privateCloudRequestsAsDecisionMaker                  PrivateCloudRequest[]     @relation("decisionMaker")
-  publicCloudRequestsAsDecisionMaker                   PublicCloudRequest[]      @relation("decisionMaker")
-  events                                               Event[]                   @relation("UserToEvents")
-  Task                                                 Task[]                    @relation("UserToTasks")
-  privateCloudRequestsAsCanceler                       PrivateCloudRequest[]     @relation("cancelledBy")
-  publicCloudRequestsAsCanceler                        PublicCloudRequest[]      @relation("cancelledBy")
+  id                                                    String                    @id @default(auto()) @map("_id") @db.ObjectId
+  providerUserId                                        String?
+  firstName                                             String?
+  lastName                                              String?
+  email                                                 String                    @unique
+  upn                                                   String?
+  idir                                                  String?
+  idirGuid                                              String?
+  officeLocation                                        String?
+  jobTitle                                              String?
+  image                                                 String?
+  ministry                                              String?
+  archived                                              Boolean                   @default(false)
+  createdAt                                             DateTime                  @default(now())
+  updatedAt                                             DateTime                  @updatedAt
+  lastSeen                                              DateTime?
+  onboardingDate                                        DateTime?
+  privateCloudProjectsAsProjectOwner                    PrivateCloudProduct[]     @relation("projectOwner")
+  privateCloudProjectsAsPrimaryTechnicalLead            PrivateCloudProduct[]     @relation("primaryTechnicalLead")
+  privateCloudProjectsAsSecondaryTechnicalLead          PrivateCloudProduct[]     @relation("secondaryTechnicalLead")
+  privateCloudRequestedProjectsAsProjectOwner           PrivateCloudRequestData[] @relation("projectOwner")
+  privateCloudRequestedProjectsAsPrimaryTechnicalLead   PrivateCloudRequestData[] @relation("primaryTechnicalLead")
+  privateCloudRequestedProjectsAsSecondaryTechnicalLead PrivateCloudRequestData[] @relation("secondaryTechnicalLead")
+  publicCloudProjectsAsProjectOwner                     PublicCloudProduct[]      @relation("projectOwner")
+  publicCloudProjectsAsPrimaryTechnicalLead             PublicCloudProduct[]      @relation("primaryTechnicalLead")
+  publicCloudProjectsAsSecondaryTechnicalLead           PublicCloudProduct[]      @relation("secondaryTechnicalLead")
+  publicCloudProjectsAsExpenseAuthority                 PublicCloudProduct[]      @relation("expenseAuthority")
+  publicCloudRequestedProjectsAsProjectOwner            PublicCloudRequestData[]  @relation("projectOwner")
+  publicCloudRequestedProjectsAsPrimaryTechnicalLead    PublicCloudRequestData[]  @relation("primaryTechnicalLead")
+  publicCloudRequestedProjectsAsSecondaryTechnicalLead  PublicCloudRequestData[]  @relation("secondaryTechnicalLead")
+  publicCloudRequestedProjectsAsExpenseAuthority        PublicCloudRequestData[]  @relation("expenseAuthority")
+  privateCloudComments                                  PrivateCloudComment[]     @relation("user")
+  reactions                                             Reaction[]                @relation("user")
+  publicCloudBillingSigned                              PublicCloudBilling[]      @relation("signedBy")
+  publicCloudBillingApproved                            PublicCloudBilling[]      @relation("approvedBy")
+  publicCloudBillingAsExpenseAuthority                  PublicCloudBilling[]      @relation("expenseAuthority")
+  privateCloudRequestsAsRequester                       PrivateCloudRequest[]     @relation("createdBy")
+  publicCloudRequestsAsRequester                        PublicCloudRequest[]      @relation("createdBy")
+  privateCloudRequestsAsDecisionMaker                   PrivateCloudRequest[]     @relation("decisionMaker")
+  publicCloudRequestsAsDecisionMaker                    PublicCloudRequest[]      @relation("decisionMaker")
+  events                                                Event[]                   @relation("UserToEvents")
+  Tasks                                                 Task[]                    @relation("UserToTasks")
+  privateCloudRequestsAsCanceler                        PrivateCloudRequest[]     @relation("cancelledBy")
+  publicCloudRequestsAsCanceler                         PublicCloudRequest[]      @relation("cancelledBy")
 }
 
 model UserSession {
