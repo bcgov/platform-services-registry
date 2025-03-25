@@ -28,7 +28,7 @@ jobs:
     - uses: actions/checkout@85e6279cec87321a52edac9c87bce653a07cf6c2
 
     - name: Build and Push Docker Image
-      uses: egose/actions/docker-build-push@d332879a3c9461112ec4659676f61d3996d30e8b
+      uses: egose/actions/docker-build-push@84aba5debe130a8cbc7f6e0f369c6524f286d5a2
       with:
         registry-url: ${{ env.GITHUB_REGISTRY }}
         registry-username: ${{ github.actor }}
