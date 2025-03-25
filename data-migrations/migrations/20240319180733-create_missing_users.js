@@ -51,10 +51,10 @@ export const up = async (db, client) => {
     }
   }
 
-  await check('PrivateCloudProduct');
-  await check('PrivateCloudRequestData');
-  await check('PublicCloudProduct');
-  await check('PublicCloudRequestData');
+  await check('PrivateCloudProject');
+  await check('PrivateCloudRequestedProject');
+  await check('PublicCloudProject');
+  await check('PublicCloudRequestedProject');
 
   console.log('create_missing_users:', count);
 };

@@ -15,7 +15,7 @@ export const up = async (db, client) => {
     if (!request.decisionDataId) continue;
 
     const decisionData = await db
-      .collection('PublicCloudRequestData')
+      .collection('PublicCloudRequestedProject')
       .findOne({ _id: { $eq: request.decisionDataId } });
     if (!decisionData) continue;
 
@@ -43,7 +43,7 @@ export const up = async (db, client) => {
     }
 
     await db
-      .collection('PublicCloudRequestData')
+      .collection('PublicCloudRequestedProject')
       .updateMany({ licencePlate: { $eq: decisionData.licencePlate } }, { $set: { billingId } });
   }
 };

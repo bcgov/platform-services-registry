@@ -2,13 +2,13 @@ export const up = async (db, client) => {
   const session = client.startSession();
 
   await session.withTransaction(async () => {
-    const privateCloudProducts = await db
-      .collection('PrivateCloudProduct')
+    const privateCloudProjects = await db
+      .collection('PrivateCloudProject')
       .find({ webhookUrl: { $exists: true } })
       .project({ licencePlate: 1, webhookUrl: 1 })
       .toArray();
 
-    const webhookDocs = privateCloudProducts
+    const webhookDocs = privateCloudProjects
       .map((proj) => {
         return {
           licencePlate: proj.licencePlate,

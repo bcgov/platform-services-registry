@@ -1,10 +1,10 @@
 export const up = async (db, client) => {
   const privateProjectProm = db
-    .collection('PrivateCloudProduct')
+    .collection('PrivateCloudProject')
     .updateMany({ isTest: { $exists: false } }, [{ $set: { isTest: false } }]);
 
   const privateRequestedProjectProm = db
-    .collection('PrivateCloudRequestData')
+    .collection('PrivateCloudRequestedProject')
     .updateMany({ isTest: { $exists: false } }, [{ $set: { isTest: false } }]);
 
   const result = await Promise.all([privateProjectProm, privateRequestedProjectProm]);
