@@ -8,6 +8,7 @@ import { useState } from 'react';
 import ExternalLink from '@/components/generic/button/ExternalLink';
 import UserAutocomplete from '@/components/users/UserAutocomplete';
 import { createModal } from '@/core/modal';
+import { cn } from '@/utils/js';
 
 interface ModalProps {
   initialValue?: User | null;
@@ -45,8 +46,6 @@ export const openUserPickerModal = createModal<ModalProps, ModalState>({
 
     let warnings: Warning[] = [];
 
-    let hasIdirError = false;
-
     if (user) {
       warnings = [
         { condition: !user.ministry, message: 'Your home ministry name is missing' },
@@ -55,10 +54,12 @@ export const openUserPickerModal = createModal<ModalProps, ModalState>({
           message: 'Your IDIR is missing',
         },
         { condition: !user.upn, message: 'Your UPN is missing' },
-      ];
+      ].filter((warning) => warning.condition);
     }
 
-    const hasUpnOrIdir = !user?.idir || !user?.upn;
+    const doesntHaveUpnOrIdir = !user?.idir || !user?.upn;
+
+    const hasIdirWarning = warnings.length > 0;
 
     return (
       <>
@@ -70,14 +71,11 @@ export const openUserPickerModal = createModal<ModalProps, ModalState>({
           initialValue={user}
         />
 
-        {warnings
-          .filter((warning) => warning.condition)
-          .map((warning, index) => {
-            hasIdirError = true;
-            return <WarningMessage key={index} message={warning.message} />;
-          })}
+        {warnings.map((warning, index) => {
+          return <WarningMessage key={index} message={warning.message} />;
+        })}
 
-        {hasIdirError && (
+        {hasIdirWarning && (
           <div className="mt-5">
             <span>Please visit this page to update your missing profile information: </span>
             <ExternalLink href="https://www2.gov.bc.ca/gov/content/governments/services-for-government/information-management-technology/id-services">
@@ -107,8 +105,8 @@ export const openUserPickerModal = createModal<ModalProps, ModalState>({
 
             <Button
               color="primary"
-              disabled={hasUpnOrIdir}
-              className={hasUpnOrIdir ? 'opacity-50 cursor-not-allowed' : ''}
+              disabled={doesntHaveUpnOrIdir}
+              className={cn(doesntHaveUpnOrIdir && 'opacity-50 cursor-not-allowed')}
               onClick={() => {
                 state.user = user;
                 closeModal();

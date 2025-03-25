@@ -13,23 +13,20 @@ const userSearchBodySchema = z.object({
   email: z.string().max(40),
 });
 
-function convertToDBUserType(user: AppUser) {
+function updateUserFields(user: any) {
+  const { providerUserId, idirGuid, ...rest } = user;
   return {
+    ...rest,
     id: user.providerUserId,
-    firstName: user.firstName,
-    lastName: user.lastName,
-    email: user.email,
-    upn: user.upn,
-    idir: user.idir,
-    officeLocation: user.officeLocation,
-    jobTitle: user.jobTitle,
-    image: '',
-    ministry: user.ministry,
     archived: false,
     createdAt: null,
     updatedAt: null,
     lastSeen: null,
   };
+}
+
+function withMissingAttributes(user: AppUser) {
+  return { ...user, upn: '', idir: '', ministry: '' };
 }
 
 export const POST = createApiHandler({
@@ -43,23 +40,15 @@ export const POST = createApiHandler({
 
   const users = await listUsersByEmail(email);
 
-  // This simulates missing idir, upn, and ministry
+  const processedUsers = IS_LOCAL
+    ? users.map((user, index) => (index % 2 === 0 ? withMissingAttributes(user) : user))
+    : users;
 
-  if (IS_LOCAL) {
-    users.forEach((user, index) => {
-      if (index % 2 === 0) {
-        user.upn = '';
-        user.idir = '';
-        user.ministry = '';
-      }
-    });
-  }
   const dbUsers = await Promise.all(
-    users.map(async (user) => {
+    processedUsers.map(async (user) => {
       const data = await prepareUserData(user);
       // The upsert method returns { count: x } when updating data instead of the document.
       // Related issue: https://github.com/prisma/prisma/issues/10935
-
       if (data.idir && data.upn) {
         await prisma.user.upsert({
           where: { email: data.email },
@@ -87,8 +76,8 @@ export const POST = createApiHandler({
           },
         });
       }
-      const convertedUser = convertToDBUserType(user);
-      return convertedUser;
+      const userWithUpdatedFields = updateUserFields(data);
+      return userWithUpdatedFields;
     }),
   );
 
