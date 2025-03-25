@@ -45,7 +45,7 @@ export const openUserPickerModal = createModal<ModalProps, ModalState>({
 
     let warnings: Warning[] = [];
 
-    let hasError = false;
+    let hasIdirError = false;
 
     if (user) {
       warnings = [
@@ -73,11 +73,11 @@ export const openUserPickerModal = createModal<ModalProps, ModalState>({
         {warnings
           .filter((warning) => warning.condition)
           .map((warning, index) => {
-            hasError = true;
+            hasIdirError = true;
             return <WarningMessage key={index} message={warning.message} />;
           })}
 
-        {hasError && (
+        {hasIdirError && (
           <div className="mt-5">
             <span>Please visit this page to update your missing profile information: </span>
             <ExternalLink href="https://www2.gov.bc.ca/gov/content/governments/services-for-government/information-management-technology/id-services">
