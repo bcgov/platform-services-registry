@@ -8,6 +8,7 @@
   "license": "UNLICENSED",
   "devDependencies": {
     "dotenv": "^16.4.5",
-    "migrate-mongo": "^12.0.0"
+    "migrate-mongo": "^12.0.0",
+    "mongodb": "^6.15.0"
   }
 }
