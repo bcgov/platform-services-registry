@@ -8,7 +8,7 @@
 #     And User types "Automated Test Description" in "Description"
 #     And User selects "Citizens Services" in "Ministry"
 #     And User selects "SILVER" in "Hosting Tier"
-#     And User clicks tab "Team contacts"
+#     And User clicks tab "Team members"
 #     And User types and selects "james.smith@gov.bc.ca" in "Product Owner Email"
 #     And User types and selects "john.doe@gov.bc.ca" in "Technical Lead Email"
 #     And User clicks button "SUBMIT REQUEST"

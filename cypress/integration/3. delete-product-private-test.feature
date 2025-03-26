@@ -7,11 +7,11 @@ Feature: Delete Request
     And User types "Automated Test Description" in "Description"
     And User selects "Citizens Services" in "Ministry"
     And User clicks and selects "SILVER" in "Hosting tier"
-    And User clicks tab "Team contacts"
-    And User types and selects "james.smith@gov.bc.ca" in "Project Owner"
-    And User waits for "2" seconds
-    And User types and selects "john.doe@gov.bc.ca" in "Primary Technical Lead"
-    And User makes a screenshot
+    And User clicks tab "Team members"
+   And User chooses to edit contact "Project Owner"
+    And User types and selects email "james.smith@gov.bc.ca"
+    And User chooses to edit contact "Primary Technical Lead"
+    And User types and selects email "john.doe@gov.bc.ca"
     And User clicks button "Submit"
     And User checks checkbox "By checking this box..."
     And User clicks modal window button "Submit"
@@ -32,9 +32,8 @@ Feature: Delete Request
     And User logs out
     And User logs in with username "james.smith@gov.bc.ca" and password "james.smith@gov.bc.ca"
     And User clicks tab "PRIVATE CLOUD OPENSHIFT"
-    And User clicks tab "PRIVATE CLOUD OPENSHIFT"
     And User clicks link "Automated Test Product Name"
-    And User waits for "10" seconds
+    And User waits for "3" seconds
     And User clicks button "Delete"
     And User copies value of "Licence plate"
     And User pastes from clipboard to "Licence plate number"

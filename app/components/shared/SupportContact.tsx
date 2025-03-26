@@ -2,7 +2,7 @@ import HookFormMaskInput from '@/components/generic/input/HookFormMaskInput';
 
 export default function SupportContact({ disabled }: { disabled?: boolean }) {
   return (
-    <div className="mt-6 flex flex-col flex-start">
+    <div className="mt-6 flex flex-col flex-start text-input">
       <h3 className="text-base 2xl:text-xl font-semibold leading-7 text-gray-900">
         After-Hours support contact (optional)
       </h3>
