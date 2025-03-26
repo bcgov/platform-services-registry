@@ -1,19 +1,19 @@
 'use client';
 
 import { randomId } from '@mantine/hooks';
-import { User } from '@prisma/client';
 import _kebabCase from 'lodash-es/kebabCase';
 import { useState } from 'react';
 import { openUserPickerModal } from '@/components/modal/userPicker';
 import UserProfile, { UserPickerData } from '@/components/users/UserProfile';
+import { SearchedUser } from '@/types/user';
 import { cn } from '@/utils/js';
 import Label from '../Label';
 
 export interface FormUserPickerProps {
   id?: string;
   label?: string;
-  onChange: (value?: User | null) => void;
-  value?: User;
+  onChange: (value?: SearchedUser | null) => void;
+  value?: SearchedUser;
   disabled?: boolean;
   classNames?: {
     wrapper?: string;
@@ -29,7 +29,7 @@ export default function FormUserPicker({
   value,
   disabled = false,
 }: FormUserPickerProps) {
-  const [user, setUser] = useState<User | null>(value ?? null);
+  const [user, setUser] = useState<SearchedUser | null>(value ?? null);
   if (!id) id = randomId();
 
   return (

@@ -1,13 +1,13 @@
 import { Combobox, Loader, Avatar, Group, Text, TextInput, useCombobox, Badge } from '@mantine/core';
-import { User } from '@prisma/client';
 import { IconSearch } from '@tabler/icons-react';
 import _throttle from 'lodash-es/throttle';
 import { useRef, useState, ReactNode } from 'react';
 import { formatFullName } from '@/helpers/user';
 import { getUserImageData } from '@/helpers/user-image';
 import { searchMSUsers } from '@/services/backend/msgraph';
+import { SearchedUser } from '@/types/user';
 
-function UserOption({ data }: { data: User }) {
+function UserOption({ data }: { data: SearchedUser }) {
   return (
     <Group gap="sm">
       <Avatar src={getUserImageData(data.image)} size={36} radius="xl" />
@@ -21,7 +21,7 @@ function UserOption({ data }: { data: User }) {
   );
 }
 
-function UserOptionDetail({ data }: { data: User }) {
+function UserOptionDetail({ data }: { data: SearchedUser }) {
   return (
     <Group gap="sm">
       <Avatar src={getUserImageData(data.image)} size={56} radius="xl" />
@@ -51,16 +51,16 @@ export default function UserAutocomplete({
   onSelect,
   initialValue,
 }: {
-  onSelect: (user?: User) => void;
-  initialValue?: User | null;
+  onSelect: (user?: SearchedUser) => void;
+  initialValue?: SearchedUser | null;
 }) {
   const combobox = useCombobox({
     onDropdownClose: () => combobox.resetSelectedOption(),
   });
 
   const [loading, setLoading] = useState(false);
-  const [data, setData] = useState<User[]>([]);
-  const [value, setValue] = useState<User>();
+  const [data, setData] = useState<SearchedUser[]>([]);
+  const [value, setValue] = useState<SearchedUser>();
   const [searching, setSearching] = useState(false);
   const [searched, setSearched] = useState(false);
 

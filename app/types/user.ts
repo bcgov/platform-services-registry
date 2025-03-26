@@ -1,4 +1,4 @@
-import { User } from '@prisma/client';
+import { Prisma, User } from '@prisma/client';
 
 export interface MsUser {
   id: string;
@@ -37,3 +37,22 @@ export type AdminViewUser = User & {
   privateProducts: { name: string; licencePlate: string }[];
   publicProducts: { name: string; licencePlate: string }[];
 };
+
+export type SearchedUser = Prisma.UserGetPayload<{
+  select: {
+    id: true;
+    firstName: true;
+    lastName: true;
+    email: true;
+    upn: true;
+    idir: true;
+    officeLocation: true;
+    jobTitle: true;
+    image: true;
+    ministry: true;
+    archived: true;
+    createdAt: true;
+    updatedAt: true;
+    lastSeen: true;
+  };
+}>;

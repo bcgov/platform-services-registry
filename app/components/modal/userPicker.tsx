@@ -2,20 +2,20 @@
 
 import { Button, Divider, Grid } from '@mantine/core';
 import { randomId } from '@mantine/hooks';
-import { User } from '@prisma/client';
 import { IconInfoSquareFilled } from '@tabler/icons-react';
 import { useState } from 'react';
 import ExternalLink from '@/components/generic/button/ExternalLink';
 import UserAutocomplete from '@/components/users/UserAutocomplete';
 import { createModal } from '@/core/modal';
+import { SearchedUser } from '@/types/user';
 import { cn } from '@/utils/js';
 
 interface ModalProps {
-  initialValue?: User | null;
+  initialValue?: SearchedUser | null;
 }
 
 interface ModalState {
-  user?: User | null;
+  user?: SearchedUser | null;
 }
 
 interface Warning {
@@ -41,7 +41,7 @@ export const openUserPickerModal = createModal<ModalProps, ModalState>({
     },
   },
   Component: function ({ initialValue, state, closeModal }) {
-    const [user, setUser] = useState<User | null>(initialValue && initialValue.id ? initialValue : null);
+    const [user, setUser] = useState<SearchedUser | null>(initialValue && initialValue.id ? initialValue : null);
     const [autocompId, setAutocompId] = useState(randomId());
 
     let warnings: Warning[] = [];
@@ -106,7 +106,7 @@ export const openUserPickerModal = createModal<ModalProps, ModalState>({
             <Button
               color="primary"
               disabled={doesntHaveUpnOrIdir}
-              className={cn(doesntHaveUpnOrIdir && 'opacity-50 cursor-not-allowed')}
+              className={cn({ 'opacity-50 cursor-not-allowed': doesntHaveUpnOrIdir })}
               onClick={() => {
                 state.user = user;
                 closeModal();

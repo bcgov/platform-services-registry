@@ -1,33 +1,16 @@
 import _isString from 'lodash-es/isString';
 import { z } from 'zod';
-import { IS_LOCAL } from '@/config';
 import { GlobalRole } from '@/constants';
 import createApiHandler from '@/core/api-handler';
 import prisma from '@/core/prisma';
 import { OkResponse } from '@/core/responses';
 import { prepareUserData } from '@/services/db';
 import { listUsersByEmail } from '@/services/msgraph';
-import { AppUser } from '@/types/user';
+import { SearchedUser } from '@/types/user';
 
 const userSearchBodySchema = z.object({
   email: z.string().max(40),
 });
-
-function updateUserFields(user: any) {
-  const { providerUserId, idirGuid, ...rest } = user;
-  return {
-    ...rest,
-    id: user.providerUserId,
-    archived: false,
-    createdAt: null,
-    updatedAt: null,
-    lastSeen: null,
-  };
-}
-
-function withMissingAttributes(user: AppUser) {
-  return { ...user, upn: '', idir: '', ministry: '' };
-}
 
 export const POST = createApiHandler({
   roles: [GlobalRole.User],
@@ -38,13 +21,9 @@ export const POST = createApiHandler({
     return OkResponse({ data: [], totalCount: 0 });
   }
 
-  const users = await listUsersByEmail(email);
+  const processedUsers = await listUsersByEmail(email);
 
-  const processedUsers = IS_LOCAL
-    ? users.map((user, index) => (index % 2 === 0 ? withMissingAttributes(user) : user))
-    : users;
-
-  const dbUsers = await Promise.all(
+  const dbUsers: (SearchedUser | null)[] = await Promise.all(
     processedUsers.map(async (user) => {
       const data = await prepareUserData(user);
       // The upsert method returns { count: x } when updating data instead of the document.
@@ -76,10 +55,18 @@ export const POST = createApiHandler({
           },
         });
       }
-      const userWithUpdatedFields = updateUserFields(data);
-      return userWithUpdatedFields;
+
+      const now = new Date();
+      return {
+        ...data,
+        id: data.providerUserId,
+        archived: false,
+        createdAt: now,
+        updatedAt: now,
+        lastSeen: null,
+      };
     }),
   );
 
-  return OkResponse({ data: dbUsers, totalCount: users.length });
+  return OkResponse({ data: dbUsers, totalCount: dbUsers.length });
 });
