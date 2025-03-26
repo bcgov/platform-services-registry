@@ -62,6 +62,11 @@ export default privateCloudProductLayout(({ getPathParams, session, children }) 
       name: 'requests',
       href: `/private-cloud/products/${licencePlate}/requests`,
     },
+    {
+      label: 'RESOURCE USAGE',
+      name: 'usage',
+      href: `/private-cloud/products/${licencePlate}/usage`,
+    },
   ];
 
   if (session?.permissions.viewAllPrivateProductComments) {
@@ -87,14 +92,6 @@ export default privateCloudProductLayout(({ getPathParams, session, children }) 
       label: 'HISTORY',
       name: 'history',
       href: `/private-cloud/products/${licencePlate}/history`,
-    });
-  }
-
-  if (!IS_PROD) {
-    tabs.push({
-      label: 'RESOURCE USAGE',
-      name: 'usage',
-      href: `/private-cloud/products/${licencePlate}/usage`,
     });
   }
 

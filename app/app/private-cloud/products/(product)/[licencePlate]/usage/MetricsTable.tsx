@@ -44,7 +44,7 @@ const getPVCMetricValue = (row: TransformedPVCData, key: 'usage' | 'requests'): 
 export default function MetricsTable({ rows, resource, totalMetrics, productRequest }: TableProps) {
   return (
     <>
-      <div className="border-2 rounded-xl overflow-hidden">
+      <div className="border-2 rounded-xl overflow-hidden my-6">
         <TableHeader
           title={`${resource === ResourceType.cpu ? resource.toUpperCase() : capitalizeFirstLetter(resource)} metrics`}
         />
@@ -105,32 +105,34 @@ export default function MetricsTable({ rows, resource, totalMetrics, productRequ
           })}
         </div>
       </div>
-      <div className="border-2 rounded-xl max-w-4xl my-6">
-        <div className="divide-y divide-grey-200/5">
-          <div className="grid grid-cols-1 md:grid-cols-12 lg:grid-cols-12 gap-4 px-4 py-3 sm:px-6 lg:px-8 bg-gray-100">
-            <div className="md:col-span-3 lg:col-span-3 text-center font-bold">Hard {resource} limit</div>
-            <div className="md:col-span-3 lg:col-span-3 text-center font-bold">Total {resource} request</div>
-            <div className="md:col-span-3 lg:col-span-3 text-center font-bold">Current {resource} usage</div>
-            <div className="md:col-span-3 lg:col-span-3 text-center font-bold">Utilization rate</div>
-          </div>
-          <div className="grid grid-cols-1 md:grid-cols-12 lg:grid-cols-12 gap-4 px-4 py-3 sm:px-6 lg:px-8 ">
-            <div className={cn('md:col-span-3 lg:col-span-3 text-center')}>
-              {formatMetric(resource, productRequest)}
+      {rows.length > 1 && (
+        <div className="border-2 rounded-xl max-w-4xl">
+          <div className="divide-y divide-grey-200/5">
+            <div className="grid grid-cols-1 md:grid-cols-12 lg:grid-cols-12 gap-4 px-4 py-3 sm:px-6 lg:px-8 bg-gray-100">
+              <div className="md:col-span-3 lg:col-span-3 text-center font-bold">Product {resource} request</div>
+              <div className="md:col-span-3 lg:col-span-3 text-center font-bold">Total {resource} request</div>
+              <div className="md:col-span-3 lg:col-span-3 text-center font-bold">Current {resource} usage</div>
+              <div className="md:col-span-3 lg:col-span-3 text-center font-bold">Utilization rate</div>
             </div>
-            <div className={cn('md:col-span-3 lg:col-span-3 text-center')}>
-              {formatMetric(resource, totalMetrics.totalRequest)}
-            </div>
-            <div className={cn('md:col-span-3 lg:col-span-3 text-center')}>
-              {formatMetric(resource, totalMetrics.totalUsage)}
-            </div>
-            <div className={cn('md:col-span-3 lg:col-span-3 text-center')}>
-              {productRequest && productRequest > 0
-                ? `${((totalMetrics.totalUsage / productRequest) * 100).toFixed(2)}%`
-                : 'N/A'}
+            <div className="grid grid-cols-1 md:grid-cols-12 lg:grid-cols-12 gap-4 px-4 py-3 sm:px-6 lg:px-8 ">
+              <div className={cn('md:col-span-3 lg:col-span-3 text-center')}>
+                {formatMetric(resource, productRequest)}
+              </div>
+              <div className={cn('md:col-span-3 lg:col-span-3 text-center')}>
+                {formatMetric(resource, totalMetrics.totalRequest)}
+              </div>
+              <div className={cn('md:col-span-3 lg:col-span-3 text-center')}>
+                {formatMetric(resource, totalMetrics.totalUsage)}
+              </div>
+              <div className={cn('md:col-span-3 lg:col-span-3 text-center')}>
+                {productRequest && productRequest > 0
+                  ? `${((totalMetrics.totalUsage / productRequest) * 100).toFixed(2)}%`
+                  : 'N/A'}
+              </div>
             </div>
           </div>
         </div>
-      </div>
+      )}
     </>
   );
 }
