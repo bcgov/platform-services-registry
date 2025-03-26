@@ -112,3 +112,22 @@ export type UserDetailWithColeagues = Prisma.UserGetPayload<{
     publicCloudProjectsAsExpenseAuthority: UserDetailProduct;
   };
 }> & { colleagues: UserDetailColeagues[] };
+
+export type SearchedUser = Prisma.UserGetPayload<{
+  select: {
+    id: true;
+    firstName: true;
+    lastName: true;
+    email: true;
+    upn: true;
+    idir: true;
+    officeLocation: true;
+    jobTitle: true;
+    image: true;
+    ministry: true;
+    archived: true;
+    createdAt: true;
+    updatedAt: true;
+    lastSeen: true;
+  };
+}>;

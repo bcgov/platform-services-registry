@@ -14,7 +14,7 @@ export default async function readOp({
 }) {
   const { licencePlate } = pathParams;
 
-  const product = await prisma.privateCloudProject.findFirst({ where: { licencePlate }, select: { id: true } });
+  const product = await prisma.privateCloudProduct.findFirst({ where: { licencePlate }, select: { id: true } });
   if (!product) {
     return BadRequestResponse('invalid licence plate');
   }

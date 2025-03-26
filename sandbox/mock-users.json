@@ -298,5 +298,41 @@
     "surname": "System",
     "jobTitle": "public-admin, public-reviewer",
     "officeLocation": ""
+  },
+  {
+    "id": "a008b857-36c8-4a17-a79a-518e33effed3",
+    "extension_85cc52e9286540fcb1f97ed86114a0e5_bcgovGUID": "a008b85736c84a17a79a518e33effed3",
+    "onPremisesSamAccountName": "",
+    "userPrincipalName": "invalid.idir@gov.bc.ca",
+    "mail": "invalid.idir@gov.bc.ca",
+    "displayName": "INVALID, IDIR",
+    "givenName": "Invalid IDIR",
+    "surname": "Invalid",
+    "jobTitle": "",
+    "officeLocation": ""
+  },
+  {
+    "id": "a008b857-36c8-4a17-a79a-518e33effed4",
+    "extension_85cc52e9286540fcb1f97ed86114a0e5_bcgovGUID": "a008b85736c84a17a79a518e33effed4",
+    "onPremisesSamAccountName": "INVALID_UPN",
+    "userPrincipalName": "",
+    "mail": "invalid.upn@gov.bc.ca",
+    "displayName": "INVALID, UPN",
+    "givenName": "Invalid UPN",
+    "surname": "Invalid",
+    "jobTitle": "",
+    "officeLocation": ""
+  },
+  {
+    "id": "a008b857-36c8-4a17-a79a-518e33effed5",
+    "extension_85cc52e9286540fcb1f97ed86114a0e5_bcgovGUID": "a008b85736c84a17a79a518e33effed5",
+    "onPremisesSamAccountName": "",
+    "userPrincipalName": "",
+    "mail": "invalid.idirupn@gov.bc.ca",
+    "displayName": "INVALID, IDIR-UPN",
+    "givenName": "Invalid IDIR-UPN",
+    "surname": "Invalid",
+    "jobTitle": "",
+    "officeLocation": ""
   }
 ]

@@ -2,17 +2,34 @@
 
 import { Button, Divider, Grid } from '@mantine/core';
 import { randomId } from '@mantine/hooks';
-import { User } from '@prisma/client';
+import { IconInfoSquareFilled } from '@tabler/icons-react';
 import { useState } from 'react';
+import ExternalLink from '@/components/generic/button/ExternalLink';
 import UserAutocomplete from '@/components/users/UserAutocomplete';
 import { createModal } from '@/core/modal';
+import { SearchedUser } from '@/types/user';
+import { cn } from '@/utils/js';
 
 interface ModalProps {
-  initialValue?: User | null;
+  initialValue?: SearchedUser | null;
 }
 
 interface ModalState {
-  user?: User | null;
+  user?: SearchedUser | null;
+}
+
+interface Warning {
+  condition: boolean;
+  message: string;
+}
+
+function WarningMessage({ message }) {
+  return (
+    <div className="mt-3">
+      <IconInfoSquareFilled color="red" className="inline-block" />
+      <span className="ml-2 text-red-500 font-bold">{message}</span>
+    </div>
+  );
 }
 
 export const openUserPickerModal = createModal<ModalProps, ModalState>({
@@ -24,8 +41,25 @@ export const openUserPickerModal = createModal<ModalProps, ModalState>({
     },
   },
   Component: function ({ initialValue, state, closeModal }) {
-    const [user, setUser] = useState<User | null>(initialValue && initialValue.id ? initialValue : null);
+    const [user, setUser] = useState<SearchedUser | null>(initialValue && initialValue.id ? initialValue : null);
     const [autocompId, setAutocompId] = useState(randomId());
+
+    let warnings: Warning[] = [];
+
+    if (user) {
+      warnings = [
+        { condition: !user.ministry, message: 'Your home ministry name is missing' },
+        {
+          condition: !user.idir,
+          message: 'Your IDIR is missing',
+        },
+        { condition: !user.upn, message: 'Your UPN is missing' },
+      ].filter((warning) => warning.condition);
+    }
+
+    const doesntHaveUpnOrIdir = !user?.idir || !user?.upn;
+
+    const hasIdirWarning = warnings.length > 0;
 
     return (
       <>
@@ -37,8 +71,20 @@ export const openUserPickerModal = createModal<ModalProps, ModalState>({
           initialValue={user}
         />
 
-        <Divider my="md" />
+        {warnings.map((warning, index) => {
+          return <WarningMessage key={index} message={warning.message} />;
+        })}
 
+        {hasIdirWarning && (
+          <div className="mt-5">
+            <span>Please visit this page to update your missing profile information: </span>
+            <ExternalLink href="https://www2.gov.bc.ca/gov/content/governments/services-for-government/information-management-technology/id-services">
+              IDIR Services - Government of BC
+            </ExternalLink>
+          </div>
+        )}
+
+        <Divider my="md" />
         <Grid>
           <Grid.Col span={4}>
             <Button
@@ -56,8 +102,11 @@ export const openUserPickerModal = createModal<ModalProps, ModalState>({
             <Button color="secondary" onClick={() => closeModal()} className="mr-1">
               Close
             </Button>
+
             <Button
               color="primary"
+              disabled={doesntHaveUpnOrIdir}
+              className={cn({ 'opacity-50 cursor-not-allowed': doesntHaveUpnOrIdir })}
               onClick={() => {
                 state.user = user;
                 closeModal();
