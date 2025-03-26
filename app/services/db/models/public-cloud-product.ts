@@ -1,7 +1,7 @@
 import { Prisma, Ministry, ProjectStatus, TaskType, TaskStatus, PublicCloudProductMemberRole } from '@prisma/client';
 import { Session } from 'next-auth';
 import prisma from '@/core/prisma';
-import { PublicCloudProjectDecorate } from '@/types/doc-decorate';
+import { PublicCloudProductDecorate } from '@/types/doc-decorate';
 import {
   PublicCloudProductDetail,
   PublicCloudProductDetailDecorated,
@@ -16,7 +16,7 @@ async function baseFilter(session: Session) {
   if (!session.isUser && !session.isServiceAccount) return false;
   if (session.permissions.viewAllPublicCloudProducts) return true;
 
-  const OR: Prisma.PublicCloudProjectWhereInput[] = [
+  const OR: Prisma.PublicCloudProductWhereInput[] = [
     { ministry: { in: session.ministries.editor as Ministry[] } },
     { ministry: { in: session.ministries.reader as Ministry[] } },
   ];
@@ -50,7 +50,7 @@ async function baseFilter(session: Session) {
     );
   }
 
-  const filter: Prisma.PublicCloudProjectWhereInput = { OR };
+  const filter: Prisma.PublicCloudProductWhereInput = { OR };
   return filter;
 }
 
@@ -133,7 +133,7 @@ async function decorate<T extends PublicCloudProductSimple & Partial<PublicCloud
     });
   }
 
-  const decoratedDoc = doc as T & PublicCloudProjectDecorate;
+  const decoratedDoc = doc as T & PublicCloudProductDecorate;
 
   decoratedDoc._permissions = {
     view: canView || canSignMou || canApproveMou,
@@ -159,12 +159,12 @@ export const publicCloudProductModel = createSessionModel<
   PublicCloudProductDetail,
   PublicCloudProductSimpleDecorated,
   PublicCloudProductDetailDecorated,
-  NonNullable<Parameters<typeof prisma.publicCloudProject.create>[0]>,
-  NonNullable<Parameters<typeof prisma.publicCloudProject.findFirst>[0]>,
-  NonNullable<Parameters<typeof prisma.publicCloudProject.update>[0]>,
-  NonNullable<Parameters<typeof prisma.publicCloudProject.upsert>[0]>
+  NonNullable<Parameters<typeof prisma.publicCloudProduct.create>[0]>,
+  NonNullable<Parameters<typeof prisma.publicCloudProduct.findFirst>[0]>,
+  NonNullable<Parameters<typeof prisma.publicCloudProduct.update>[0]>,
+  NonNullable<Parameters<typeof prisma.publicCloudProduct.upsert>[0]>
 >({
-  model: prisma.publicCloudProject,
+  model: prisma.publicCloudProduct,
   includeDetail: publicCloudProductDetailInclude,
   includeSimple: publicCloudProductSimpleInclude,
   baseFilter,

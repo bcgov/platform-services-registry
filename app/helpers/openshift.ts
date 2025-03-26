@@ -15,6 +15,7 @@ export interface DeletableField {
   namespaceDeletability: boolean;
   podsDeletability: boolean;
   pvcDeletability: boolean;
+  artifactoryDeletability: boolean;
   provisionerDeletionChecked: boolean;
 }
 
@@ -34,6 +35,7 @@ export default async function openshiftDeletionCheck(
       namespaceDeletability: true,
       podsDeletability: true,
       pvcDeletability: true,
+      artifactoryDeletability: true,
       provisionerDeletionChecked: true,
     };
   }
@@ -62,6 +64,7 @@ export default async function openshiftDeletionCheck(
     namespaceDeletability: false,
     podsDeletability: false,
     pvcDeletability: false,
+    artifactoryDeletability: false,
     provisionerDeletionChecked: true,
   };
 
@@ -71,6 +74,7 @@ export default async function openshiftDeletionCheck(
       namespaceDeletability: true,
       podsDeletability: true,
       pvcDeletability: true,
+      artifactoryDeletability: true,
       provisionerDeletionChecked: true,
     };
   }
@@ -101,6 +105,27 @@ export default async function openshiftDeletionCheck(
 
   if (checkResult.namespaceDeletability) {
     try {
+      // artifactory projects check
+      const artifactoryProjectResponses = await Promise.all(
+        allNamespacesUnderProject.map(async (namespace) =>
+          axios.get(`${url}/apis/artifactory.devops.gov.bc.ca/v1alpha1/namespaces/${namespace}/artifactoryprojects`, {
+            headers: OC_HEADER,
+            withCredentials: true,
+          }),
+        ),
+      );
+
+      const artifactoryProjectsPerNamespace = artifactoryProjectResponses.map((response) => response.data.items);
+
+      checkResult.artifactoryDeletability = artifactoryProjectsPerNamespace.every((projects) => projects.length === 0);
+
+      if (!checkResult.artifactoryDeletability) {
+        logger.error(
+          'openshiftDeletionCheck: Artifactory deletion check failed. One or more namespaces still contain artifactory projects. Please remove them before proceeding with deletion.',
+        );
+        return checkResult;
+      }
+
       // Pod and pvcdeletion checkcheck
       const allPodInProject: any = [];
       const podResponse = await Promise.all(

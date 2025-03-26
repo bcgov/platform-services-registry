@@ -56,6 +56,18 @@ export const PUT = apiHandler(async ({ pathParams, session }) => {
   const { type, licencePlate } = request;
 
   const proms: any[] = [
+    prisma.task.deleteMany({
+      where: {
+        type: { in: [TaskType.REVIEW_PUBLIC_CLOUD_REQUEST] },
+        status: TaskStatus.ASSIGNED,
+        data: {
+          equals: {
+            requestId: updated.id,
+            licencePlate: updated.licencePlate,
+          },
+        },
+      },
+    }),
     sendRequestCancellationEmails(decoratedRequest, session.user.name),
     createEvent(EventType.CANCEL_PUBLIC_CLOUD_REQUEST, session.user.id, { requestId: id }),
   ];

@@ -1,4 +1,4 @@
-import { Loader } from '@mantine/core';
+import { Loader, Tooltip } from '@mantine/core';
 import { Cluster, ResourceRequestsEnv, ResourceRequests } from '@prisma/client';
 import { useQueries } from '@tanstack/react-query';
 import _startCase from 'lodash-es/startCase';
@@ -79,7 +79,11 @@ export default function Quotas({
               subnetInfo = <Loader color="blue" type="dots" />;
             } else {
               if (subnetInformation[index].data) {
-                subnetInfo = <p className="text-base font-semibold mb-3">{subnetInformation[index].data}</p>;
+                subnetInfo = (
+                  <Tooltip arrowSize={10} label="IP address range for this namespace" withArrow position="top-start">
+                    <p className="text-base font-semibold mb-3">{subnetInformation[index].data}</p>
+                  </Tooltip>
+                );
               } else {
                 subnetInfo = (
                   <p className="text-base font-semibold mb-3 text-gray-500">No subnet information available</p>

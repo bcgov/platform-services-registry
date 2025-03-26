@@ -1,6 +1,6 @@
 import { Ministry, Cluster, User, Prisma, PrivateCloudProductMember } from '@prisma/client';
 import {
-  PrivateCloudProjectDecorate,
+  PrivateCloudProductDecorate,
   PrivateCloudRequestDecorate,
   PrivateCloudProductWebhookDecorate,
 } from './doc-decorate';
@@ -11,7 +11,7 @@ interface ExtendedPrivateCloudProductMembersData {
   members: ExtendedPrivateCloudProductMember[];
 }
 
-export type PrivateCloudProductSimple = Prisma.PrivateCloudProjectGetPayload<{
+export type PrivateCloudProductSimple = Prisma.PrivateCloudProductGetPayload<{
   include: {
     projectOwner: true;
     primaryTechnicalLead: true;
@@ -26,9 +26,9 @@ export type PrivateCloudProductSimple = Prisma.PrivateCloudProjectGetPayload<{
   activeRequest?: Prisma.PrivateCloudRequestGetPayload<null> | null;
 };
 
-export type PrivateCloudProductSimpleDecorated = PrivateCloudProductSimple & PrivateCloudProjectDecorate;
+export type PrivateCloudProductSimpleDecorated = PrivateCloudProductSimple & PrivateCloudProductDecorate;
 
-export type PrivateCloudProductDetail = Prisma.PrivateCloudProjectGetPayload<{
+export type PrivateCloudProductDetail = Prisma.PrivateCloudProductGetPayload<{
   include: {
     projectOwner: true;
     primaryTechnicalLead: true;
@@ -45,12 +45,18 @@ export type PrivateCloudProductDetail = Prisma.PrivateCloudProjectGetPayload<{
 
 type _PrivateCloudProductDetail = Omit<PrivateCloudProductDetail, 'members'> & ExtendedPrivateCloudProductMembersData;
 
-export type PrivateCloudProductDetailDecorated = _PrivateCloudProductDetail & PrivateCloudProjectDecorate;
+export type PrivateCloudProductDetailDecorated = _PrivateCloudProductDetail & PrivateCloudProductDecorate;
 
 export type PrivateCloudProductSearch = {
   docs: PrivateCloudProductSimpleDecorated[];
   totalCount: number;
 };
+
+export enum DeletionStatus {
+  NOT_DELETABLE = 'NOT_DELETABLE',
+  ARTIFACTORY_NOT_DELETABLE = 'ARTIFACTORY_NOT_DELETABLE',
+  OK_TO_DELETE = 'OK_TO_DELETE',
+}
 
 export type PrivateCloudRequestDetail = Prisma.PrivateCloudRequestGetPayload<{
   include: {

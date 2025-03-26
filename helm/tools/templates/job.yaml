@@ -10,7 +10,7 @@ metadata:
     "helm.sh/hook-weight": "-5"
 spec:
   backoffLimit: 0
-  activeDeadlineSeconds: 100
+  activeDeadlineSeconds: 600
   template:
     metadata:
       name: {{ include "main.fullname" . }}-airflow-dags-copy

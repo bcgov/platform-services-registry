@@ -36,7 +36,7 @@ export default async function Page({
 
   const { page, skip, take } = parsePaginationParams(pageStr, pageSizeStr, 10);
 
-  const where: Prisma.PrivateCloudProjectZapResultWhereInput = {
+  const where: Prisma.PrivateCloudProductZapResultWhereInput = {
     html: { not: null },
     licencePlate: params.licencePlate,
   };

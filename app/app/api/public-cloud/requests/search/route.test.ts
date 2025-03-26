@@ -6,10 +6,10 @@ import prisma from '@/core/prisma';
 import { createSamplePublicCloudProductData } from '@/helpers/mock-resources';
 import { mockNoRoleUsers, findMockUserByIdr, findOtherMockUsers } from '@/helpers/mock-users';
 import { mockSessionByEmail, mockSessionByRole } from '@/services/api-test/core';
-import { provisionPublicCloudProject } from '@/services/api-test/public-cloud';
+import { provisionPublicCloudProduct } from '@/services/api-test/public-cloud';
 import {
-  createPublicCloudProject,
-  editPublicCloudProject,
+  createPublicCloudProduct,
+  editPublicCloudProduct,
   signPublicCloudBilling,
   reviewPublicCloudBilling,
 } from '@/services/api-test/public-cloud/products';
@@ -41,7 +41,7 @@ const randomMemberData = {
 // TODO: add tests for ministry roles
 describe('Search Public Cloud Requests - Permissions', () => {
   it('should successfully delete all public cloud products', async () => {
-    await Promise.all([prisma.publicCloudProject.deleteMany(), prisma.publicCloudRequest.deleteMany()]);
+    await Promise.all([prisma.publicCloudProduct.deleteMany(), prisma.publicCloudRequest.deleteMany()]);
   });
 
   it('should successfully create a product by PO and approved by admin', async () => {
@@ -50,7 +50,7 @@ describe('Search Public Cloud Requests - Permissions', () => {
     const requestData = createSamplePublicCloudProductData({
       data: { ...memberData, ministry: Ministry.PSA, provider: Provider.AWS },
     });
-    const res1 = await createPublicCloudProject(requestData);
+    const res1 = await createPublicCloudProduct(requestData);
     const dat1 = await res1.json();
     expect(res1.status).toBe(200);
 
@@ -89,7 +89,7 @@ describe('Search Public Cloud Requests - Permissions', () => {
 
     expect(res2.status).toBe(200);
 
-    const res3 = await provisionPublicCloudProject(dat1.licencePlate);
+    const res3 = await provisionPublicCloudProduct(dat1.licencePlate);
     expect(res3.status).toBe(200);
   });
 
@@ -129,7 +129,7 @@ describe('Search Public Cloud Requests - Permissions', () => {
     const requestData = createSamplePublicCloudProductData({
       data: { ...randomMemberData, ministry: Ministry.PSA, provider: Provider.AWS },
     });
-    const res1 = await createPublicCloudProject(requestData);
+    const res1 = await createPublicCloudProduct(requestData);
     const dat1 = await res1.json();
     expect(res1.status).toBe(200);
 
@@ -142,7 +142,7 @@ describe('Search Public Cloud Requests - Permissions', () => {
     });
     expect(res2.status).toBe(200);
 
-    const res3 = await provisionPublicCloudProject(dat1.licencePlate);
+    const res3 = await provisionPublicCloudProduct(dat1.licencePlate);
     expect(res3.status).toBe(200);
   });
 
@@ -199,7 +199,7 @@ describe('Search Public Cloud Requests - Permissions', () => {
 
 describe('Search Public Cloud Requests - Validations', () => {
   it('should successfully delete all public cloud products', async () => {
-    await Promise.all([prisma.publicCloudProject.deleteMany(), prisma.publicCloudRequest.deleteMany()]);
+    await Promise.all([prisma.publicCloudProduct.deleteMany(), prisma.publicCloudRequest.deleteMany()]);
   });
 
   it('should successfully create products by admin', async () => {
@@ -223,7 +223,7 @@ describe('Search Public Cloud Requests - Validations', () => {
 
     const results = await Promise.all(
       datasets.map(async (data) => {
-        const res1 = await createPublicCloudProject(data);
+        const res1 = await createPublicCloudProduct(data);
         const dat1 = await res1.json();
 
         const billing = await prisma.publicCloudBilling.findFirst({
@@ -259,14 +259,14 @@ describe('Search Public Cloud Requests - Validations', () => {
           decision: DecisionStatus.APPROVED,
         });
 
-        await provisionPublicCloudProject(dat1.licencePlate);
+        await provisionPublicCloudProduct(dat1.licencePlate);
         return req;
       }),
     );
 
     await mockSessionByRole(GlobalRole.Admin);
     const firstReq = await results[0].json();
-    const res = await editPublicCloudProject(firstReq.licencePlate, {
+    const res = await editPublicCloudProduct(firstReq.licencePlate, {
       ...firstReq.decisionData,
       name: `${firstReq.decisionData.name}updated`,
     });

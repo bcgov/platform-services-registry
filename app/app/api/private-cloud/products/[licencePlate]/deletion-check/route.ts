@@ -4,6 +4,7 @@ import createApiHandler from '@/core/api-handler';
 import { BadRequestResponse, OkResponse, UnauthorizedResponse } from '@/core/responses';
 import openshiftDeletionCheck from '@/helpers/openshift';
 import { models } from '@/services/db';
+import { DeletionStatus } from '@/types/private-cloud';
 
 const pathParamSchema = z.object({
   licencePlate: string(),
@@ -24,10 +25,12 @@ export const GET = apiHandler(async ({ pathParams, session }) => {
 
   const deleteCheckList = await openshiftDeletionCheck(licencePlate, product.cluster);
 
-  let result = 'NOT_DELETABLE';
+  let result: DeletionStatus = DeletionStatus.NOT_DELETABLE;
 
-  if (Object.values(deleteCheckList).every((field) => field)) {
-    result = 'OK_TO_DELETE';
+  if (!deleteCheckList.artifactoryDeletability) {
+    result = DeletionStatus.ARTIFACTORY_NOT_DELETABLE;
+  } else if (Object.values(deleteCheckList).every((field) => field)) {
+    result = DeletionStatus.OK_TO_DELETE;
   }
 
   return OkResponse(result);

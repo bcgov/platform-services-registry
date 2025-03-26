@@ -1,14 +1,6 @@
 'use client';
 
-import { PrivateCloudProject } from '@prisma/client';
-import {
-  IconInfoCircle,
-  IconUsersGroup,
-  IconSettings,
-  IconComponents,
-  IconMessage,
-  IconWebhook,
-} from '@tabler/icons-react';
+import { IconInfoCircle, IconUsersGroup, IconSettings } from '@tabler/icons-react';
 import { useEffect, useState } from 'react';
 import { FormProvider, useForm } from 'react-hook-form';
 import { z } from 'zod';

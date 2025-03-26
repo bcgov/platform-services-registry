@@ -13,7 +13,10 @@ importers:
         version: 16.4.7
       migrate-mongo:
         specifier: ^12.0.0
-        version: 12.1.3(mongodb@6.11.0)
+        version: 12.1.3(mongodb@6.15.0)
+      mongodb:
+        specifier: ^6.15.0
+        version: 6.15.0
 
 packages:
 
@@ -38,8 +41,8 @@ packages:
     resolution: {integrity: sha512-quJQXlTSUGL2LH9SUXo8VwsY4soanhgo6LNSm84E1LBcE8s3O0wpdiRzyR9z/ZZJMlMWv37qOOb9pdJlMUEKFQ==}
     engines: {node: '>=8'}
 
-  bson@6.10.2:
-    resolution: {integrity: sha512-5afhLTjqDSA3akH56E+/2J6kTDuSIlBxyXPdQslj9hcIgOUE378xdOfZvC/9q3LifJNI6KR/juZ+d0NRNYBwXg==}
+  bson@6.10.3:
+    resolution: {integrity: sha512-MTxGsqgYTwfshYWTRdmZRC+M7FnG1b4y7RO7p2k3X24Wq0yv1m77Wsj0BzlPzd/IowgESfsruQCUToa7vbOpPQ==}
     engines: {node: '>=16.20.1'}
 
   cli-table3@0.6.5:
@@ -111,12 +114,12 @@ packages:
   mongodb-connection-string-url@3.0.2:
     resolution: {integrity: sha512-rMO7CGo/9BFwyZABcKAWL8UJwH/Kc2x0g72uhDWzG48URRax5TCIcJ7Rc3RZqffZzO/Gwff/jyKwCU9TN8gehA==}
 
-  mongodb@6.11.0:
-    resolution: {integrity: sha512-yVbPw0qT268YKhG241vAMLaDQAPbRyTgo++odSgGc9kXnzOujQI60Iyj23B9sQQFPSvmNPvMZ3dsFz0aN55KgA==}
+  mongodb@6.15.0:
+    resolution: {integrity: sha512-ifBhQ0rRzHDzqp9jAQP6OwHSH7dbYIQjD3SbJs9YYk9AikKEettW/9s/tbSFDTpXcRbF+u1aLrhHxDFaYtZpFQ==}
     engines: {node: '>=16.20.1'}
     peerDependencies:
       '@aws-sdk/credential-providers': ^3.188.0
-      '@mongodb-js/zstd': ^1.1.0
+      '@mongodb-js/zstd': ^1.1.0 || ^2.0.0
       gcp-metadata: ^5.2.0
       kerberos: ^2.0.1
       mongodb-client-encryption: '>=6.0.0 <7'
@@ -197,7 +200,7 @@ snapshots:
 
   ansi-regex@5.0.1: {}
 
-  bson@6.10.2: {}
+  bson@6.10.3: {}
 
   cli-table3@0.6.5:
     dependencies:
@@ -247,7 +250,7 @@ snapshots:
 
   memory-pager@1.5.0: {}
 
-  migrate-mongo@12.1.3(mongodb@6.11.0):
+  migrate-mongo@12.1.3(mongodb@6.15.0):
     dependencies:
       cli-table3: 0.6.5
       commander: 9.5.0
@@ -260,7 +263,7 @@ snapshots:
       lodash.isempty: 4.4.0
       lodash.last: 3.0.0
       lodash.values: 4.3.0
-      mongodb: 6.11.0
+      mongodb: 6.15.0
       p-each-series: 2.2.0
 
   mongodb-connection-string-url@3.0.2:
@@ -268,10 +271,10 @@ snapshots:
       '@types/whatwg-url': 11.0.5
       whatwg-url: 14.1.0
 
-  mongodb@6.11.0:
+  mongodb@6.15.0:
     dependencies:
       '@mongodb-js/saslprep': 1.1.9
-      bson: 6.10.2
+      bson: 6.10.3
       mongodb-connection-string-url: 3.0.2
 
   p-each-series@2.2.0: {}

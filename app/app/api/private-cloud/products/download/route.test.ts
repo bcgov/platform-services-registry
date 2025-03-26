@@ -8,8 +8,8 @@ import { mockNoRoleUsers, findMockUserByIdr, findOtherMockUsers } from '@/helper
 import { ministryKeyToName, getTotalQuotaStr } from '@/helpers/product';
 import { formatFullName } from '@/helpers/user';
 import { mockSessionByEmail, mockSessionByRole } from '@/services/api-test/core';
-import { provisionPrivateCloudProject } from '@/services/api-test/private-cloud';
-import { createPrivateCloudProject, downloadPrivateCloudProjects } from '@/services/api-test/private-cloud/products';
+import { provisionPrivateCloudProduct } from '@/services/api-test/private-cloud';
+import { createPrivateCloudProduct, downloadPrivateCloudProducts } from '@/services/api-test/private-cloud/products';
 import { makePrivateCloudRequestDecision } from '@/services/api-test/private-cloud/requests';
 import { PrivateProductCsvRecord } from '@/types/csv';
 import { formatDateSimple } from '@/utils/js';
@@ -50,13 +50,13 @@ const requests = {
 // TODO: add tests for ministry roles
 describe('Download Private Cloud Products - Permissions', () => {
   it('should successfully delete all private cloud products', async () => {
-    await prisma.privateCloudProject.deleteMany();
+    await prisma.privateCloudProduct.deleteMany();
   });
 
   it('should successfully create a product by PO and approved by admin', async () => {
     await mockSessionByEmail(PO.email);
 
-    const res1 = await createPrivateCloudProject(productData.one);
+    const res1 = await createPrivateCloudProduct(productData.one);
     const dat1 = await res1.json();
     expect(res1.status).toBe(200);
 
@@ -70,14 +70,14 @@ describe('Download Private Cloud Products - Permissions', () => {
     expect(res2.status).toBe(200);
     requests.one = await res2.json();
 
-    const res3 = await provisionPrivateCloudProject(dat1.licencePlate);
+    const res3 = await provisionPrivateCloudProduct(dat1.licencePlate);
     expect(res3.status).toBe(200);
   });
 
   it('should successfully download 1 project by PO', async () => {
     await mockSessionByEmail(PO.email);
 
-    const res1 = await downloadPrivateCloudProjects({});
+    const res1 = await downloadPrivateCloudProducts({});
     expect(res1.status).toBe(200);
     expect(res1.headers.get('Content-Type')).toBe('text/csv');
     const csvContent = await res1.text();
@@ -86,7 +86,7 @@ describe('Download Private Cloud Products - Permissions', () => {
     expect(records.length).toBe(1);
 
     const record1 = records[0];
-    const project = await prisma.privateCloudProject.findUnique({
+    const project = await prisma.privateCloudProduct.findUnique({
       where: { licencePlate: requests.one.licencePlate },
       include: { projectOwner: true, primaryTechnicalLead: true, secondaryTechnicalLead: true },
     });
@@ -110,7 +110,7 @@ describe('Download Private Cloud Products - Permissions', () => {
   it('should successfully download 1 project by TL1', async () => {
     await mockSessionByEmail(TL1.email);
 
-    const res1 = await downloadPrivateCloudProjects({});
+    const res1 = await downloadPrivateCloudProducts({});
     expect(res1.status).toBe(200);
     expect(res1.headers.get('Content-Type')).toBe('text/csv');
     const csvContent = await res1.text();
@@ -122,7 +122,7 @@ describe('Download Private Cloud Products - Permissions', () => {
   it('should successfully download 1 project by TL2', async () => {
     await mockSessionByEmail(TL2.email);
 
-    const res1 = await downloadPrivateCloudProjects({});
+    const res1 = await downloadPrivateCloudProducts({});
     expect(res1.status).toBe(200);
     expect(res1.headers.get('Content-Type')).toBe('text/csv');
     const csvContent = await res1.text();
@@ -134,7 +134,7 @@ describe('Download Private Cloud Products - Permissions', () => {
   it('should successfully create a product by a random user and approved by admin', async () => {
     await mockSessionByEmail(RANDOM1.email);
 
-    const res1 = await createPrivateCloudProject(productData.two);
+    const res1 = await createPrivateCloudProduct(productData.two);
     const dat1 = await res1.json();
     expect(res1.status).toBe(200);
 
@@ -148,14 +148,14 @@ describe('Download Private Cloud Products - Permissions', () => {
     expect(res2.status).toBe(200);
     requests.two = await res2.json();
 
-    const res3 = await provisionPrivateCloudProject(dat1.licencePlate);
+    const res3 = await provisionPrivateCloudProduct(dat1.licencePlate);
     expect(res3.status).toBe(200);
   });
 
   it('should successfully download 1 project by the random user', async () => {
     await mockSessionByEmail(RANDOM1.email);
 
-    const res1 = await downloadPrivateCloudProjects({});
+    const res1 = await downloadPrivateCloudProducts({});
     expect(res1.status).toBe(200);
     expect(res1.headers.get('Content-Type')).toBe('text/csv');
     const csvContent = await res1.text();
@@ -167,7 +167,7 @@ describe('Download Private Cloud Products - Permissions', () => {
   it('should successfully download 1 project by PO', async () => {
     await mockSessionByEmail(PO.email);
 
-    const res1 = await downloadPrivateCloudProjects({});
+    const res1 = await downloadPrivateCloudProducts({});
     expect(res1.status).toBe(200);
     expect(res1.headers.get('Content-Type')).toBe('text/csv');
     const csvContent = await res1.text();
@@ -179,7 +179,7 @@ describe('Download Private Cloud Products - Permissions', () => {
   it('should successfully download 1 project by TL1', async () => {
     await mockSessionByEmail(TL1.email);
 
-    const res1 = await downloadPrivateCloudProjects({});
+    const res1 = await downloadPrivateCloudProducts({});
     expect(res1.status).toBe(200);
     expect(res1.headers.get('Content-Type')).toBe('text/csv');
     const csvContent = await res1.text();
@@ -191,7 +191,7 @@ describe('Download Private Cloud Products - Permissions', () => {
   it('should successfully download 1 project by TL2', async () => {
     await mockSessionByEmail(TL2.email);
 
-    const res1 = await downloadPrivateCloudProjects({});
+    const res1 = await downloadPrivateCloudProducts({});
     expect(res1.status).toBe(200);
     expect(res1.headers.get('Content-Type')).toBe('text/csv');
     const csvContent = await res1.text();
@@ -203,7 +203,7 @@ describe('Download Private Cloud Products - Permissions', () => {
   it('should successfully download 2 projects by admin', async () => {
     await mockSessionByRole(GlobalRole.Admin);
 
-    const res1 = await downloadPrivateCloudProjects({});
+    const res1 = await downloadPrivateCloudProducts({});
     expect(res1.status).toBe(200);
     expect(res1.headers.get('Content-Type')).toBe('text/csv');
     const csvContent = await res1.text();
@@ -215,7 +215,7 @@ describe('Download Private Cloud Products - Permissions', () => {
 
 describe('Download Private Cloud Products - Validations', () => {
   it('should successfully delete all private cloud products', async () => {
-    await prisma.privateCloudProject.deleteMany();
+    await prisma.privateCloudProduct.deleteMany();
   });
 
   it('should successfully create products by admin', async () => {
@@ -239,7 +239,7 @@ describe('Download Private Cloud Products - Validations', () => {
 
     await Promise.all(
       datasets.map(async (data) => {
-        const res1 = await createPrivateCloudProject(data);
+        const res1 = await createPrivateCloudProduct(data);
         const dat1 = await res1.json();
 
         await mockSessionByRole(GlobalRole.PrivateReviewer);
@@ -249,7 +249,7 @@ describe('Download Private Cloud Products - Validations', () => {
           decision: DecisionStatus.APPROVED,
         });
 
-        await provisionPrivateCloudProject(dat1.licencePlate);
+        await provisionPrivateCloudProduct(dat1.licencePlate);
       }),
     );
   });
@@ -257,7 +257,7 @@ describe('Download Private Cloud Products - Validations', () => {
   it('should successfully download 10 projects by admin', async () => {
     await mockSessionByRole(GlobalRole.Admin);
 
-    const res1 = await downloadPrivateCloudProjects({});
+    const res1 = await downloadPrivateCloudProducts({});
     expect(res1.status).toBe(200);
     expect(res1.headers.get('Content-Type')).toBe('text/csv');
     const csvContent = await res1.text();
@@ -269,7 +269,7 @@ describe('Download Private Cloud Products - Validations', () => {
   it('should successfully download 5 projects by admin with search criteria', async () => {
     await mockSessionByRole(GlobalRole.Admin);
 
-    const res1 = await downloadPrivateCloudProjects({
+    const res1 = await downloadPrivateCloudProducts({
       ministries: [Ministry.AEST],
       clusters: [Cluster.CLAB],
       status: [ProjectStatus.ACTIVE],
@@ -286,7 +286,7 @@ describe('Download Private Cloud Products - Validations', () => {
   it('should successfully download 1 project by admin with search criteria', async () => {
     await mockSessionByRole(GlobalRole.Admin);
 
-    const res1 = await downloadPrivateCloudProjects({
+    const res1 = await downloadPrivateCloudProducts({
       search: '______name______',
     });
 
@@ -301,7 +301,7 @@ describe('Download Private Cloud Products - Validations', () => {
   it('should successfully download 0 project by admin with search criteria', async () => {
     await mockSessionByRole(GlobalRole.Admin);
 
-    const res1 = await downloadPrivateCloudProjects({
+    const res1 = await downloadPrivateCloudProducts({
       search: '______nonexistent______',
     });
 
@@ -311,7 +311,7 @@ describe('Download Private Cloud Products - Validations', () => {
   it('should fail to download projects by admin due to an invalid cluster', async () => {
     await mockSessionByRole(GlobalRole.Admin);
 
-    const res1 = await downloadPrivateCloudProjects({
+    const res1 = await downloadPrivateCloudProducts({
       clusters: ['INVALID' as Cluster],
     });
 
@@ -321,7 +321,7 @@ describe('Download Private Cloud Products - Validations', () => {
   it('should fail to download projects by admin due to an invalid ministry', async () => {
     await mockSessionByRole(GlobalRole.Admin);
 
-    const res1 = await downloadPrivateCloudProjects({
+    const res1 = await downloadPrivateCloudProducts({
       ministries: ['INVALID' as Ministry],
     });
 

@@ -38,6 +38,81 @@ export type AdminViewUser = User & {
   publicProducts: { name: string; licencePlate: string }[];
 };
 
+type UserDetailProduct = {
+  select: { id: true; name: true; projectOwnerId: true; primaryTechnicalLeadId: true; secondaryTechnicalLeadId: true };
+};
+export type UserDetail = Prisma.UserGetPayload<{
+  select: {
+    id: true;
+    providerUserId: true;
+    firstName: true;
+    lastName: true;
+    email: true;
+    upn: true;
+    idir: true;
+    idirGuid: true;
+    officeLocation: true;
+    jobTitle: true;
+    image: true;
+    ministry: true;
+    archived: true;
+    lastSeen: true;
+    onboardingDate: true;
+    privateCloudProjectsAsProjectOwner: UserDetailProduct;
+    privateCloudProjectsAsPrimaryTechnicalLead: UserDetailProduct;
+    privateCloudProjectsAsSecondaryTechnicalLead: UserDetailProduct;
+    publicCloudProjectsAsProjectOwner: UserDetailProduct;
+    publicCloudProjectsAsPrimaryTechnicalLead: UserDetailProduct;
+    publicCloudProjectsAsSecondaryTechnicalLead: UserDetailProduct;
+    publicCloudProjectsAsExpenseAuthority: UserDetailProduct;
+  };
+}>;
+
+export type UserDetailColeagues = Prisma.UserGetPayload<{
+  select: {
+    id: true;
+    firstName: true;
+    lastName: true;
+    email: true;
+    upn: true;
+    idir: true;
+    idirGuid: true;
+    officeLocation: true;
+    jobTitle: true;
+    image: true;
+    ministry: true;
+    archived: true;
+    lastSeen: true;
+  };
+}>;
+
+export type UserDetailWithColeagues = Prisma.UserGetPayload<{
+  select: {
+    id: true;
+    providerUserId: true;
+    firstName: true;
+    lastName: true;
+    email: true;
+    upn: true;
+    idir: true;
+    idirGuid: true;
+    officeLocation: true;
+    jobTitle: true;
+    image: true;
+    ministry: true;
+    archived: true;
+    lastSeen: true;
+    onboardingDate: true;
+    privateCloudProjectsAsProjectOwner: UserDetailProduct;
+    privateCloudProjectsAsPrimaryTechnicalLead: UserDetailProduct;
+    privateCloudProjectsAsSecondaryTechnicalLead: UserDetailProduct;
+    publicCloudProjectsAsProjectOwner: UserDetailProduct;
+    publicCloudProjectsAsPrimaryTechnicalLead: UserDetailProduct;
+    publicCloudProjectsAsSecondaryTechnicalLead: UserDetailProduct;
+    publicCloudProjectsAsExpenseAuthority: UserDetailProduct;
+  };
+}> & { colleagues: UserDetailColeagues[] };
+
 export type SearchedUser = Prisma.UserGetPayload<{
   select: {
     id: true;

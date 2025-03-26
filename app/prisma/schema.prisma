@@ -12,11 +12,11 @@ datasource db {
 }
 
 model User {
-  id                                                    String                         @id @default(auto()) @map("_id") @db.ObjectId
+  id                                                    String                    @id @default(auto()) @map("_id") @db.ObjectId
   providerUserId                                        String?
   firstName                                             String?
   lastName                                              String?
-  email                                                 String                         @unique
+  email                                                 String                    @unique
   upn                                                   String?
   idir                                                  String?
   idirGuid                                              String?
@@ -24,38 +24,38 @@ model User {
   jobTitle                                              String?
   image                                                 String?
   ministry                                              String?
-  archived                                              Boolean                        @default(false)
-  createdAt                                             DateTime                       @default(now())
-  updatedAt                                             DateTime                       @updatedAt
+  archived                                              Boolean                   @default(false)
+  createdAt                                             DateTime                  @default(now())
+  updatedAt                                             DateTime                  @updatedAt
   lastSeen                                              DateTime?
   onboardingDate                                        DateTime?
-  privateCloudProjectsAsProjectOwner                    PrivateCloudProject[]          @relation("projectOwner")
-  privateCloudProjectsAsPrimaryTechnicalLead            PrivateCloudProject[]          @relation("primaryTechnicalLead")
-  privateCloudProjectsAsSecondaryTechnicalLead          PrivateCloudProject[]          @relation("secondaryTechnicalLead")
-  privateCloudRequestedProjectsAsProjectOwner           PrivateCloudRequestedProject[] @relation("projectOwner")
-  privateCloudRequestedProjectsAsPrimaryTechnicalLead   PrivateCloudRequestedProject[] @relation("primaryTechnicalLead")
-  privateCloudRequestedProjectsAsSecondaryTechnicalLead PrivateCloudRequestedProject[] @relation("secondaryTechnicalLead")
-  publicCloudProjectsAsProjectOwner                     PublicCloudProject[]           @relation("projectOwner")
-  publicCloudProjectsAsPrimaryTechnicalLead             PublicCloudProject[]           @relation("primaryTechnicalLead")
-  publicCloudProjectsAsSecondaryTechnicalLead           PublicCloudProject[]           @relation("secondaryTechnicalLead")
-  publicCloudProjectsAsExpenseAuthority                 PublicCloudProject[]           @relation("expenseAuthority")
-  publicCloudRequestedProjectsAsProjectOwner            PublicCloudRequestedProject[]  @relation("projectOwner")
-  publicCloudRequestedProjectsAsPrimaryTechnicalLead    PublicCloudRequestedProject[]  @relation("primaryTechnicalLead")
-  publicCloudRequestedProjectsAsSecondaryTechnicalLead  PublicCloudRequestedProject[]  @relation("secondaryTechnicalLead")
-  publicCloudRequestedProjectsAsExpenseAuthority        PublicCloudRequestedProject[]  @relation("expenseAuthority")
-  privateCloudComments                                  PrivateCloudComment[]          @relation("user")
-  reactions                                             Reaction[]                     @relation("user")
-  publicCloudBillingSigned                              PublicCloudBilling[]           @relation("signedBy")
-  publicCloudBillingApproved                            PublicCloudBilling[]           @relation("approvedBy")
-  publicCloudBillingAsExpenseAuthority                  PublicCloudBilling[]           @relation("expenseAuthority")
-  privateCloudRequestsAsRequester                       PrivateCloudRequest[]          @relation("createdBy")
-  publicCloudRequestsAsRequester                        PublicCloudRequest[]           @relation("createdBy")
-  privateCloudRequestsAsDecisionMaker                   PrivateCloudRequest[]          @relation("decisionMaker")
-  publicCloudRequestsAsDecisionMaker                    PublicCloudRequest[]           @relation("decisionMaker")
-  events                                                Event[]                        @relation("UserToEvents")
-  Task                                                  Task[]                         @relation("UserToTasks")
-  privateCloudRequestsAsCanceler                        PrivateCloudRequest[]          @relation("cancelledBy")
-  publicCloudRequestsAsCanceler                         PublicCloudRequest[]           @relation("cancelledBy")
+  privateCloudProjectsAsProjectOwner                    PrivateCloudProduct[]     @relation("projectOwner")
+  privateCloudProjectsAsPrimaryTechnicalLead            PrivateCloudProduct[]     @relation("primaryTechnicalLead")
+  privateCloudProjectsAsSecondaryTechnicalLead          PrivateCloudProduct[]     @relation("secondaryTechnicalLead")
+  privateCloudRequestedProjectsAsProjectOwner           PrivateCloudRequestData[] @relation("projectOwner")
+  privateCloudRequestedProjectsAsPrimaryTechnicalLead   PrivateCloudRequestData[] @relation("primaryTechnicalLead")
+  privateCloudRequestedProjectsAsSecondaryTechnicalLead PrivateCloudRequestData[] @relation("secondaryTechnicalLead")
+  publicCloudProjectsAsProjectOwner                     PublicCloudProduct[]      @relation("projectOwner")
+  publicCloudProjectsAsPrimaryTechnicalLead             PublicCloudProduct[]      @relation("primaryTechnicalLead")
+  publicCloudProjectsAsSecondaryTechnicalLead           PublicCloudProduct[]      @relation("secondaryTechnicalLead")
+  publicCloudProjectsAsExpenseAuthority                 PublicCloudProduct[]      @relation("expenseAuthority")
+  publicCloudRequestedProjectsAsProjectOwner            PublicCloudRequestData[]  @relation("projectOwner")
+  publicCloudRequestedProjectsAsPrimaryTechnicalLead    PublicCloudRequestData[]  @relation("primaryTechnicalLead")
+  publicCloudRequestedProjectsAsSecondaryTechnicalLead  PublicCloudRequestData[]  @relation("secondaryTechnicalLead")
+  publicCloudRequestedProjectsAsExpenseAuthority        PublicCloudRequestData[]  @relation("expenseAuthority")
+  privateCloudComments                                  PrivateCloudComment[]     @relation("user")
+  reactions                                             Reaction[]                @relation("user")
+  publicCloudBillingSigned                              PublicCloudBilling[]      @relation("signedBy")
+  publicCloudBillingApproved                            PublicCloudBilling[]      @relation("approvedBy")
+  publicCloudBillingAsExpenseAuthority                  PublicCloudBilling[]      @relation("expenseAuthority")
+  privateCloudRequestsAsRequester                       PrivateCloudRequest[]     @relation("createdBy")
+  publicCloudRequestsAsRequester                        PublicCloudRequest[]      @relation("createdBy")
+  privateCloudRequestsAsDecisionMaker                   PrivateCloudRequest[]     @relation("decisionMaker")
+  publicCloudRequestsAsDecisionMaker                    PublicCloudRequest[]      @relation("decisionMaker")
+  events                                                Event[]                   @relation("UserToEvents")
+  Tasks                                                 Task[]                    @relation("UserToTasks")
+  privateCloudRequestsAsCanceler                        PrivateCloudRequest[]     @relation("cancelledBy")
+  publicCloudRequestsAsCanceler                         PublicCloudRequest[]      @relation("cancelledBy")
 }
 
 model UserSession {
@@ -76,39 +76,39 @@ type Team {
 }
 
 model PrivateCloudRequest {
-  id                             String                        @id @default(auto()) @map("_id") @db.ObjectId
+  id                             String                          @id @default(auto()) @map("_id") @db.ObjectId
   licencePlate                   String
   createdByEmail                 String?
-  createdBy                      User?                         @relation("createdBy", fields: [createdByEmail], references: [email])
+  createdBy                      User?                           @relation("createdBy", fields: [createdByEmail], references: [email])
   decisionMakerEmail             String?
-  decisionMaker                  User?                         @relation("decisionMaker", fields: [decisionMakerEmail], references: [email])
+  decisionMaker                  User?                           @relation("decisionMaker", fields: [decisionMakerEmail], references: [email])
   quotaContactName               String?
   quotaContactEmail              String?
   quotaJustification             String?
   type                           RequestType
   decisionStatus                 DecisionStatus
-  isQuotaChanged                 Boolean?                      @default(false)
+  isQuotaChanged                 Boolean?                        @default(false)
   requestComment                 String?
   decisionComment                String?
-  active                         Boolean                       @default(true)
-  createdAt                      DateTime                      @default(now())
-  updatedAt                      DateTime                      @updatedAt
+  active                         Boolean                         @default(true)
+  createdAt                      DateTime                        @default(now())
+  updatedAt                      DateTime                        @updatedAt
   cancelledAt                    DateTime?
-  cancelledById                  String?                       @db.ObjectId
-  cancelledBy                    User?                         @relation("cancelledBy", fields: [cancelledById], references: [id])
+  cancelledById                  String?                         @db.ObjectId
+  cancelledBy                    User?                           @relation("cancelledBy", fields: [cancelledById], references: [id])
   decisionDate                   DateTime?
   provisionedDate                DateTime?
-  projectId                      String?                       @db.ObjectId
-  project                        PrivateCloudProject?          @relation("project", fields: [projectId], references: [id], onDelete: Cascade)
-  decisionDataId                 String                        @db.ObjectId
-  decisionData                   PrivateCloudRequestedProject  @relation("decisionData", fields: [decisionDataId], references: [id])
-  requestDataId                  String                        @db.ObjectId
-  requestData                    PrivateCloudRequestedProject  @relation("requestData", fields: [requestDataId], references: [id])
-  originalDataId                 String?                       @db.ObjectId
-  originalData                   PrivateCloudRequestedProject? @relation("originalData", fields: [originalDataId], references: [id])
+  projectId                      String?                         @db.ObjectId
+  project                        PrivateCloudProduct?            @relation("project", fields: [projectId], references: [id], onDelete: Cascade)
+  decisionDataId                 String                          @db.ObjectId
+  decisionData                   PrivateCloudRequestData         @relation("decisionData", fields: [decisionDataId], references: [id])
+  requestDataId                  String                          @db.ObjectId
+  requestData                    PrivateCloudRequestData         @relation("requestData", fields: [requestDataId], references: [id])
+  originalDataId                 String?                         @db.ObjectId
+  originalData                   PrivateCloudRequestData?        @relation("originalData", fields: [originalDataId], references: [id])
   quotaUpgradeResourceDetailList QuotaUpgradeResourceDetail[]
-  changes                        PrivateCloudDataChanges?
-  comments                       PrivateCloudComment[]         @relation("request")
+  changes                        PrivateCloudRequestDataChanges?
+  comments                       PrivateCloudComment[]           @relation("request")
 }
 
 type QuotaUpgradeResourceDetail {
@@ -129,7 +129,7 @@ type QuotaUpgradeResourceDeployment {
   usage   Int
 }
 
-type PrivateCloudDataChanges {
+type PrivateCloudRequestDataChanges {
   profileChanged  Boolean?
   contactsChanged Boolean?
   membersChanged  Boolean?
@@ -138,7 +138,7 @@ type PrivateCloudDataChanges {
   parentPaths     String[]
 }
 
-model PrivateCloudProject {
+model PrivateCloudProduct {
   id                               String                      @id @default(auto()) @map("_id") @db.ObjectId
   licencePlate                     String                      @unique
   name                             String
@@ -164,7 +164,7 @@ model PrivateCloudProject {
   comments                         PrivateCloudComment[]       @relation("project")
 }
 
-model PrivateCloudRequestedProject {
+model PrivateCloudRequestData {
   id                       String                      @id @default(auto()) @map("_id") @db.ObjectId
   name                     String
   description              String
@@ -211,7 +211,7 @@ model PrivateCloudComment {
   userId    String                @db.ObjectId
   user      User                  @relation("user", fields: [userId], references: [id])
   projectId String?               @db.ObjectId
-  project   PrivateCloudProject?  @relation("project", fields: [projectId], references: [id])
+  project   PrivateCloudProduct?  @relation("project", fields: [projectId], references: [id])
   requestId String?               @db.ObjectId
   request   PrivateCloudRequest?  @relation("request", fields: [requestId], references: [id])
   replies   PrivateCloudComment[] @relation("parent")
@@ -232,32 +232,32 @@ model Reaction {
 }
 
 model PublicCloudRequest {
-  id                 String                       @id @default(auto()) @map("_id") @db.ObjectId
+  id                 String                  @id @default(auto()) @map("_id") @db.ObjectId
   licencePlate       String
   createdByEmail     String
-  createdBy          User                         @relation("createdBy", fields: [createdByEmail], references: [email])
+  createdBy          User                    @relation("createdBy", fields: [createdByEmail], references: [email])
   decisionMakerEmail String?
-  decisionMaker      User?                        @relation("decisionMaker", fields: [decisionMakerEmail], references: [email])
+  decisionMaker      User?                   @relation("decisionMaker", fields: [decisionMakerEmail], references: [email])
   type               PublicCloudRequestType
   decisionStatus     DecisionStatus
   requestComment     String?
   decisionComment    String?
-  active             Boolean                      @default(true)
-  createdAt          DateTime                     @default(now())
-  updatedAt          DateTime                     @updatedAt
+  active             Boolean                 @default(true)
+  createdAt          DateTime                @default(now())
+  updatedAt          DateTime                @updatedAt
   cancelledAt        DateTime?
-  cancelledById      String?                      @db.ObjectId
-  cancelledBy        User?                        @relation("cancelledBy", fields: [cancelledById], references: [id])
+  cancelledById      String?                 @db.ObjectId
+  cancelledBy        User?                   @relation("cancelledBy", fields: [cancelledById], references: [id])
   decisionDate       DateTime?
   provisionedDate    DateTime?
-  projectId          String?                      @db.ObjectId
-  project            PublicCloudProject?          @relation("project", fields: [projectId], references: [id], onDelete: Cascade)
-  decisionDataId     String                       @db.ObjectId
-  decisionData       PublicCloudRequestedProject  @relation("decisionData", fields: [decisionDataId], references: [id])
-  requestDataId      String                       @db.ObjectId
-  requestData        PublicCloudRequestedProject  @relation("requestData", fields: [requestDataId], references: [id])
-  originalDataId     String?                      @db.ObjectId
-  originalData       PublicCloudRequestedProject? @relation("originalData", fields: [originalDataId], references: [id])
+  projectId          String?                 @db.ObjectId
+  project            PublicCloudProduct?     @relation("project", fields: [projectId], references: [id], onDelete: Cascade)
+  decisionDataId     String                  @db.ObjectId
+  decisionData       PublicCloudRequestData  @relation("decisionData", fields: [decisionDataId], references: [id])
+  requestDataId      String                  @db.ObjectId
+  requestData        PublicCloudRequestData  @relation("requestData", fields: [requestDataId], references: [id])
+  originalDataId     String?                 @db.ObjectId
+  originalData       PublicCloudRequestData? @relation("originalData", fields: [originalDataId], references: [id])
   changes            PublicCloudDataChanges?
 }
 
@@ -296,7 +296,7 @@ type PublicCloudDataChanges {
   parentPaths     String[]
 }
 
-model PublicCloudProject {
+model PublicCloudProduct {
   id                           String                     @id @default(auto()) @map("_id") @db.ObjectId
   licencePlate                 String                     @unique
   name                         String
@@ -327,7 +327,7 @@ type PublicCloudProductMember {
   roles  PublicCloudProductMemberRole[]
 }
 
-model PublicCloudRequestedProject {
+model PublicCloudRequestData {
   id                           String                     @id @default(auto()) @map("_id") @db.ObjectId
   licencePlate                 String
   name                         String
@@ -385,7 +385,7 @@ model Task {
   closedMetadata  Json?
 }
 
-model PrivateCloudProjectZapResult {
+model PrivateCloudProductZapResult {
   id           String   @id @default(auto()) @map("_id") @db.ObjectId
   licencePlate String
   cluster      String

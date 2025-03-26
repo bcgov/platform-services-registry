@@ -6,10 +6,12 @@ export default function MailLink({
   to,
   className = '',
   children,
+  displayIcon = true,
 }: {
   to: string;
   className?: string;
   children?: React.ReactNode;
+  displayIcon?: boolean;
 }) {
   const href = `mailto:${to}`;
 
@@ -21,7 +23,7 @@ export default function MailLink({
         event.stopPropagation();
       }}
     >
-      <IconMail className="mr-[1px] h-4 w-4 inline-block" aria-hidden="true" />
+      {displayIcon && <IconMail className="mr-[1px] h-4 w-4 inline-block" aria-hidden="true" />}
       {children ?? to}
     </a>
   );

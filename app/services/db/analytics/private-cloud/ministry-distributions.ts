@@ -26,7 +26,7 @@ function getAggByCluster(licencePlatesList: string[], cluster?: string, dateFilt
     },
   ];
 
-  return prisma.privateCloudProject.aggregateRaw({ pipeline });
+  return prisma.privateCloudProduct.aggregateRaw({ pipeline });
 }
 
 export async function getMinistryDistributions({

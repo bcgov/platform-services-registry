@@ -1,7 +1,7 @@
 import { Prisma } from '@prisma/client';
 import axios from 'axios';
 import { userSorts } from '@/constants';
-import { AdminViewUser } from '@/types/user';
+import { AdminViewUser, UserDetailWithColeagues } from '@/types/user';
 import { downloadFile } from '@/utils/browser';
 import { UserSearchBody, UserUpdateBody } from '@/validation-schemas';
 import { instance as baseInstance } from './axios';
@@ -31,6 +31,11 @@ export async function searchUsers(data: UserSearchBody) {
   const result = await instance
     .post<{ data: AdminViewUser[]; totalCount: number }>('/search', reqData)
     .then((res) => res.data);
+  return result;
+}
+
+export async function getUser(userId: string) {
+  const result = await instance.get<UserDetailWithColeagues>(`/${userId}`).then((res) => res.data);
   return result;
 }
 
