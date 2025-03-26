@@ -17,9 +17,7 @@ runs:
         ${{ runner.os }}-nextjs-${{ hashFiles('**/pnpm-lock.yaml') }}-
 
   - name: Install Root NPM packages
-    run: |
-      pnpm install --no-frozen-lockfile
-      pnpm cypress install
+    run: pnpm install --no-frozen-lockfile && pnpm install cypress
     shell: bash
 
   - name: Install App NPM packages
