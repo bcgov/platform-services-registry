@@ -123,7 +123,7 @@ export default function UserAutocomplete({
       floatingStrategy="fixed"
     >
       <Combobox.Target>
-        <div>
+        <div className="email-input">
           <TextInput
             label=""
             placeholder="Enter email..."

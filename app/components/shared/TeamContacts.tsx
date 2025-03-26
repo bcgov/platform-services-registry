@@ -63,7 +63,7 @@ export default function TeamContacts({ disabled, userAttributes }: Props) {
           {role}
           {isOptional && <span className="italic font-bold"> (Optional)</span>}
         </Table.Td>
-        <Table.Td>
+        <Table.Td className="user-button">
           <UserProfile data={user} onClick={disabled ? undefined : handleUserChange} />
         </Table.Td>
 

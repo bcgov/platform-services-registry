@@ -14,23 +14,18 @@ Feature: Delete Request
     And User clicks button "Select None"
     And User checks checkbox "Test account"
     And User checks checkbox "Tools account"
-    And User clicks tab "Team contacts"
-    And User types and selects "james.smith@gov.bc.ca" in "Project Owner"
-    And User waits for "2" seconds
-    And User types and selects "john.doe@gov.bc.ca" in "Primary Technical Lead"
-    And User clicks tab "Expense authority"
-    And User types and selects "public.admin.system@gov.bc.ca" in "Expense Authority email"
+    And User clicks tab "Team members"
+    And User chooses to edit contact "Project Owner"
+    And User types and selects email "james.smith@gov.bc.ca"
+    And User chooses to edit contact "Primary Technical Lead"
+    And User types and selects email "john.doe@gov.bc.ca"
+    And User chooses to edit contact "Expense Authority"
+    And User types and selects email "michael.brown@gov.bc.ca"
     And User clicks tab "Project budget"
     And User types "77.33" in "Estimated average monthly spend - Test..."
     And User types "111.22" in "Estimated average monthly spend - Tool..."
-    And User clicks tab "Billing (account coding)"
-    And User types "213" in "Client Code"
-    And User types "4A5B6" in "Responsibility Centre (RC)"
-    And User types "78901" in "Service Line (SL)"
-    And User types "2345" in "Standard Object of Expense (STOB)"
-    And User types "6789016" in "Project Code"
     And User clicks button "Submit"
-    And User checks checkbox "No eMOU exists for this account coding."
+    And User checks checkbox "...an email to the EA for their signature..."
     And User checks checkbox "...team is liable to pay the base charge..."
     And User clicks modal window button "Submit"
     And User waits for "4" seconds
@@ -38,35 +33,42 @@ Feature: Delete Request
     Then User should be redirected to Requests tab
     And User should see "Automated Test Product Name"
     And User logs out
-    And User logs in with username "public.admin.system@gov.bc.ca" and password "public.admin.system@gov.bc.ca"
-    And User waits for "3" seconds
+    And User logs in with username "michael.brown@gov.bc.ca" and password "michael.brown@gov.bc.ca"
+    And User waits for "2" seconds
     When User clicks tab "PUBLIC CLOUD LANDING ZONES"
-    And User waits for "3" seconds
+    And User waits for "2" seconds
     And User clicks tab "Requests"
-    And User waits for "3" seconds
+    And User waits for "2" seconds
     And User clicks link "Automated Test Product Name"
+    And User waits for "2" seconds
     And User clicks button "Sign eMOU"
+    And User types "132" in "Client Code"
+    And User types "4a5b6" in "Responsibility Centre (RC)"
+    And User types "78901" in "Service Line (SL)"
+    And User types "2345" in "Standard Object of Expense (STOB)"
+    And User types "67890cd" in "Project Code"
     And User checks checkbox "By checking this box, I confirm..."
     And User clicks modal window button "Confirm"
     And User logs out
     And User logs in with username "billing.reviewer.system@gov.bc.ca" and password "billing.reviewer.system@gov.bc.ca"
-    And User waits for "3" seconds
+    And User waits for "1" seconds
     When User clicks tab "PUBLIC CLOUD LANDING ZONES"
-    And User waits for "3" seconds
+    And User waits for "1" seconds
     And User clicks tab "Requests"
-    And User waits for "3" seconds
+    And User waits for "1" seconds
     And User clicks link "Automated Test Product Name"
+    And User waits for "2" seconds
     And User clicks button "Review eMOU"
     And User checks checkbox "By checking this box, I confirm..."
     And User clicks modal window button "Confirm"
     And User waits for "5" seconds
     And User logs out
     And User logs in with username "public.reviewer.system@gov.bc.ca" and password "public.reviewer.system@gov.bc.ca"
-    And User waits for "3" seconds
+    And User waits for "1" seconds
     When User clicks tab "PUBLIC CLOUD LANDING ZONES"
-    And User waits for "3" seconds
+    And User waits for "1" seconds
     And User clicks tab "Requests"
-    And User waits for "3" seconds
+    And User waits for "1" seconds
     And User clicks link "Automated Test Product Name"
     And User clicks button "Approve"
     And User clicks modal window button "Submit"
@@ -75,7 +77,7 @@ Feature: Delete Request
      And User logs in with username "james.smith@gov.bc.ca" and password "james.smith@gov.bc.ca"
     And User clicks tab "PUBLIC CLOUD LANDING ZONES"
     And User clicks link "Automated Test Product Name"
-    And User waits for "10" seconds
+    And User waits for "3" seconds
     And User clicks button "Delete"
     And User copies value of "Licence plate"
     And User pastes from clipboard to "Licence plate number"
