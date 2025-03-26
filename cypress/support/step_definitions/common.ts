@@ -33,7 +33,7 @@ When(/^User clicks link "(.*)"$/, (linkText: string) => {
 });
 
 When(/^User types (?!.*\band selects\b)"(.*)" in "?(.*?)(?:\.\.\.)?"$/, (text: string, textFieldLabel: string) => {
-  cy.contains('label', textFieldLabel)
+  cy.contains('label, h3', textFieldLabel)
     .closest('.text-input, .textarea, .dollar-input')
     .find('input, textarea')
     .scrollIntoView()
@@ -41,18 +41,23 @@ When(/^User types (?!.*\band selects\b)"(.*)" in "?(.*?)(?:\.\.\.)?"$/, (text: s
     .type(text);
 });
 
-When(/^User types and selects "(.*)" in "(.*)"$/, (contactEmail: string, contactLabel: string) => {
-  cy.contains('td', contactLabel).parent().find('button').first().click();
-  cy.get('input[placeholder="Enter email..."]').click().clear().type(contactEmail);
-  cy.contains('p', contactEmail).scrollIntoView().click();
-  cy.contains('button', 'Select').click();
+When(/^User chooses to edit contact "(.*)"$/, (contactLabel: string) => {
+  cy.contains('td, th', contactLabel).parent().find('.user-button').click();
 });
 
-When(/^User changes "(.*)" to "(.*)"$/, (contactLabel: string, contactEmail: string) => {
-  cy.contains('td', contactLabel).scrollIntoView().parent().find('td').eq(1).click();
-  cy.get('input[placeholder="Enter email..."]').click().clear().type(contactEmail);
+When('User chooses to edit additional team member', () => {
+  cy.get('button').contains('Click to select member').click();
+});
+
+When(/^User types and selects email "(.*)"$/, (contactEmail: string) => {
+  cy.get('.email-input').find('input').click().clear().type(contactEmail);
+  cy.wait(1000);
   cy.contains('p', contactEmail).scrollIntoView().click();
-  cy.contains('button', 'Select').click();
+  cy.get('div[aria-modal="true"], section[role="dialog"]').find('button').contains('Select').click();
+});
+
+When(/^User chooses to change "(.*)" to "(.*)"$/, (contactLabel: string) => {
+  cy.contains('td', contactLabel).scrollIntoView().parent().find('td').eq(1).click();
 });
 
 When(/^User types justification "(.*)" in "(.*)"$/, (fieldText: string, fieldHeader) => {
@@ -92,6 +97,20 @@ When(/^User types quota "(.*)" in "(.*)" for "(.*)"$/, (value: string, resourceT
     .type(value);
 });
 
+When(
+  /^User verifies quota value is "(.*)" in "(.*)" for "(.*)"$/,
+  (value: string, resourceType: string, envLabel: string) => {
+    cy.contains('h3', envLabel)
+      .parent()
+      .find('label')
+      .contains(resourceType)
+      .closest('.text-input')
+      .find('input')
+      .scrollIntoView()
+      .should('have.value', value);
+  },
+);
+
 When(/^User checks checkbox "(?:\.\.\.)?(.*?)(?:\.\.\.)?"$/, (checkboxLabel: string) => {
   cy.contains('label', checkboxLabel).scrollIntoView().parent().parent().find('input').first().click();
 });
@@ -117,13 +136,19 @@ When('User makes a screenshot', () => {
 });
 
 When(/^User sees "(.*)" in "?(.*?)(?:\.\.\.)?"$/, (text: string, textFieldLabel: string) => {
-  cy.contains('label', textFieldLabel)
+  cy.contains('label, h3, th', textFieldLabel)
     .parents()
     .eq(2)
     .find('input, textarea, select')
-    .first()
-    .scrollIntoView()
     .should('have.value', text);
+});
+
+When(/^User checks "(.*)" is set to "(.*)"$/, (contactLabel: string, contactEmail: string) => {
+  cy.contains('td, p', contactLabel).parent().find('div').contains(contactEmail);
+});
+
+When(/^User confirms Additional team members is set to "(.*)"$/, (contactEmail: string) => {
+  cy.contains('span', 'Add New').parents().eq(2).find('div').contains(contactEmail);
 });
 
 When(/^User copies value of "(.*)"$/, (elementLabel: string) => {

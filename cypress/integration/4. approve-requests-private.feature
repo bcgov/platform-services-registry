@@ -7,11 +7,11 @@ Feature: Requests Review Private Cloud
     And User types "Automated Test Description" in "Description"
     And User selects "Citizens Services" in "Ministry"
     And User clicks and selects "SILVER" in "Hosting tier"
-    And User clicks tab "Team contacts"
-    And User types and selects "james.smith@gov.bc.ca" in "Project Owner"
-    And User waits for "2" seconds
-    And User types and selects "john.doe@gov.bc.ca" in "Primary Technical Lead"
-    And User makes a screenshot
+    And User clicks tab "Team members"
+    And User chooses to edit contact "Project Owner"
+    And User types and selects email "james.smith@gov.bc.ca"
+    And User chooses to edit contact "Primary Technical Lead"
+    And User types and selects email "john.doe@gov.bc.ca"
     And User clicks button "Submit"
     And User checks checkbox "By checking this box..."
     And User clicks modal window button "Submit"
@@ -36,15 +36,17 @@ Scenario: Approval Admin reviews Edit Request
     When User logs in with username "james.smith@gov.bc.ca" and password "james.smith@gov.bc.ca"
     And User clicks tab "PRIVATE CLOUD OPENSHIFT"
     When User clicks link "Automated Test Product Name"
-    And User waits for "10" seconds
+    And User waits for "3" seconds
     And User types "Automated Test Edit Request" in "Product name"
     And User types "Automated Test Description Edit" in "Description"
     And User selects "Finance" in "Ministry"
-    And User clicks tab "Team contacts"
-    And User changes "Project Owner" to "david.johnson@gov.bc.ca"
-    And User waits for "2" seconds
-    And User changes "Primary Technical Lead" to "sarah.williams@gov.bc.ca"
-    And User types and selects "michael.brown@gov.bc.ca" in "Secondary Technical Lead"
+    And User clicks tab "Team members"
+    And User chooses to edit contact "Project Owner"
+    And User types and selects email "david.johnson@gov.bc.ca"
+    And User chooses to edit contact "Primary Technical Lead"
+    And User types and selects email "sarah.williams@gov.bc.ca"
+    And User chooses to edit contact "Secondary Technical Lead"
+    And User types and selects email "michael.brown@gov.bc.ca"
     And User clicks tab "Quotas"
     And User types quota "1" in "CPU" for "Development"
     And User types quota "3" in "MEMORY" for "Development"
@@ -72,7 +74,7 @@ Scenario: Approval Admin reviews Edit Request
     And User clicks tab "PRIVATE CLOUD OPENSHIFT"
     And User waits for "3" seconds
     And User clicks tab "Requests"
-    And User waits for "10" seconds
+    And User waits for "3" seconds
     And User clicks link "Automated Test Edit Request"
     And User clicks button "Approve"
     And User clicks modal window button "Submit"
@@ -81,7 +83,6 @@ Scenario: Approval Admin reviews Edit Request
     Then User should see "Automated Test Edit Request"
     And User logs out
     And User logs in with username "david.johnson@gov.bc.ca" and password "david.johnson@gov.bc.ca"
-    And User clicks tab "PRIVATE CLOUD OPENSHIFT"
     And User clicks tab "PRIVATE CLOUD OPENSHIFT"
     And User clicks link "Automated Test Edit Request"
     And User waits for "5" seconds
@@ -93,7 +94,7 @@ Scenario: Approval Admin reviews Delete Request
     When User logs in with username "david.johnson@gov.bc.ca" and password "david.johnson@gov.bc.ca"
     And User clicks tab "PRIVATE CLOUD OPENSHIFT"
     And User clicks link "Automated Test Edit Request"
-    And User waits for "10" seconds
+    And User waits for "3" seconds
     And User clicks button "Delete"
     And User copies value of "Licence plate"
     And User pastes from clipboard to "Licence plate number"
@@ -109,7 +110,7 @@ Scenario: Approval Admin reviews Delete Request
     And User clicks tab "PRIVATE CLOUD OPENSHIFT"
     And User waits for "3" seconds
     And User clicks tab "Requests"
-    And User waits for "10" seconds
+    And User waits for "3" seconds
     And User clicks link "Automated Test Edit Request"
     And User waits for "5" seconds
     And User clicks button "Approve"
