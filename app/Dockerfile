@@ -25,15 +25,17 @@ FROM node:22.12.0-alpine3.19
 
 WORKDIR /app
 
-COPY --from=build /app/.next ./.next
+COPY --from=build /app/.next .next
 COPY --from=build /app/next.config.js ./
-COPY --from=build /app/public ./public
-COPY --from=build /app/package.json ./
-COPY --from=build /app/node_modules ./node_modules
+COPY --from=build /app/public public
+COPY --from=build /app/package.json package.json
+COPY --from=build /app/node_modules node_modules
 
-RUN mkdir -p .next/cache/images &&\
+RUN mkdir -p .next/cache/images && \
     chmod -R 777 .next/cache/images
 
+ARG BUILD_TIMESTAMP
+ENV BUILD_TIMESTAMP=${BUILD_TIMESTAMP}
 ENV NEXTAUTH_SECRET=changeme
 ENV TZ=America/Vancouver
 

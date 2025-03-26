@@ -20,6 +20,7 @@ export const { state: appState, useValtioState: useAppState } = createGlobalValt
   cloud: Cloud;
   info: {
     DEPLOYMENT_TAG: string;
+    BUILD_TIMESTAMP: string;
     APP_ENV: string;
     IS_LOCAL: boolean;
     IS_DEV: boolean;
@@ -33,6 +34,7 @@ export const { state: appState, useValtioState: useAppState } = createGlobalValt
   cloud: null,
   info: {
     DEPLOYMENT_TAG: '',
+    BUILD_TIMESTAMP: '',
     APP_ENV: '',
     IS_LOCAL: false,
     IS_DEV: false,
