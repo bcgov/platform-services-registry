@@ -1,3 +1,20 @@
+## [0.55.0](https://github.com/bcgov/platform-services-registry/compare/v0.54.0...v0.55.0) (2025-03-27)
+
+### Features
+
+* **4743:** show users with incomplete idir profile ([d0ca5f5](https://github.com/bcgov/platform-services-registry/commit/d0ca5f5703af8c3051a11dcbe2dfe42500bdc186))
+* **5109:** enable view profile for user records ([5c5b706](https://github.com/bcgov/platform-services-registry/commit/5c5b7067ebd5c8de76029bd53a82752d837189fa))
+* **5244:** remove request review tasks on cancellation ([f0476a0](https://github.com/bcgov/platform-services-registry/commit/f0476a0026439af8fae2d0b400cda215f0bada59))
+* **5282:** create webhook document if not exist ([d0186c1](https://github.com/bcgov/platform-services-registry/commit/d0186c117c499c82f9eaf7a71ceb84a3e916086e))
+* **5308:** display build timestamp in footer ([6afa5ce](https://github.com/bcgov/platform-services-registry/commit/6afa5ce7eb03776c97437a81267a71557efb7b08))
+
+### Refactors
+
+* **5041:** rename db schemas and prepare migration script ([1acc920](https://github.com/bcgov/platform-services-registry/commit/1acc9202c7cc5b69691e067e7cbe10212bd80caa))
+
+### End-to-end Testing
+
+* **4167:** add compare data after edit request and refactoring ([59cc808](https://github.com/bcgov/platform-services-registry/commit/59cc808dfa6d1697d72d5412965427bb6f7e5c75))
 ## [0.54.0](https://github.com/bcgov/platform-services-registry/compare/v0.53.0...v0.54.0) (2025-03-24)
 
 ### Features
