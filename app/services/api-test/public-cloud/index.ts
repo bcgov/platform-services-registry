@@ -4,17 +4,8 @@ import { createRoute } from '../core';
 const publicCloudRoute = createRoute('/v1/public-cloud/products');
 
 export async function provisionPublicCloudProduct(idOrLicencePlate: string) {
-  const result = await publicCloudRoute.post(
-    _provisionPublicCloudProduct,
-    '/{{idOrLicencePlate}}/provision',
-    null,
-    {
-      pathParams: { idOrLicencePlate },
-    },
-    {
-      Authorization: 'Bearer ' + '',
-      'Content-Type': 'application/json',
-    },
-  );
+  const result = await publicCloudRoute.post(_provisionPublicCloudProduct, '/{{idOrLicencePlate}}/provision', null, {
+    pathParams: { idOrLicencePlate },
+  });
   return result;
 }
