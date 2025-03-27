@@ -55,9 +55,10 @@ jobs:
       id: plan
       if: github.event_name == 'pull_request'
       run: |
-        PLAN_OUTPUT=$(terraform plan -no-color | tee ./terraform/sysdig/terraform-plan.log)
+        PLAN_OUTPUT=$(terraform plan -no-color)
+        echo "${PLAN_OUTPUT}"
         echo "PLAN<<EOF" >> $GITHUB_ENV
-        echo "$PLAN_OUTPUT" >> $GITHUB_ENV
+        echo "${PLAN_OUTPUT}" >> $GITHUB_ENV
         echo "EOF" >> $GITHUB_ENV
       working-directory: ./terraform/sysdig
       continue-on-error: true
