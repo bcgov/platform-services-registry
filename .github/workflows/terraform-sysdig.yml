@@ -54,24 +54,28 @@ jobs:
     - name: Terraform Plan
       id: plan
       if: github.event_name == 'pull_request'
-      run: terraform plan -no-color
+      run: |
+        PLAN_OUTPUT=$(terraform plan -no-color | tee ./terraform/sysdig/terraform-plan.log)
+        echo "PLAN<<EOF" >> $GITHUB_ENV
+        echo "$PLAN_OUTPUT" >> $GITHUB_ENV
+        echo "EOF" >> $GITHUB_ENV
       working-directory: ./terraform/sysdig
       continue-on-error: true
 
     - name: Create Comment
       uses: actions/github-script@3908079ba1e7bce10117ad701c321d07e89017a9
       if: github.event_name == 'pull_request'
-      env:
-        PLAN: "terraform\n${{ steps.plan.outputs.stdout }}"
       with:
         github-token: ${{ secrets.GITHUB_TOKEN }}
         script: |
+          const planDetail = process.env.PLAN || "No plan output available.";
+
           const output = `#### Terraform Format and Style 🖌\`${{ steps.fmt.outcome }}\`
           #### Terraform Initialization ⚙️\`${{ steps.init.outcome }}\`
           #### Terraform Plan 📖\`${{ steps.plan.outcome }}\`
           <details><summary>Show Plan</summary>
 
-          \`\`\`${process.env.PLAN}\`\`\`
+          \`\`\`\n${planDetail}\n\`\`\`
 
           </details>
 
@@ -82,7 +86,7 @@ jobs:
             owner: context.repo.owner,
             repo: context.repo.repo,
             body: output
-          })
+          });
 
     - name: Terraform Plan Status
       if: steps.plan.outcome == 'failure'
