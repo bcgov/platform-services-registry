@@ -40,39 +40,41 @@ export default function UserProfile({ data, onClick, text = 'Click to select mem
 
   return (
     <>
-      <Tooltip label="Edit" disabled={!(onClick && data.email)}>
-        <Group
-          gap="sm"
-          className={cn({ 'cursor-pointer': !!onClick || isSavedUser })}
-          onClick={
-            onClick ||
-            function () {
-              if (data.id) openUserDetailModal({ userId: data.id });
-            }
-          }
-        >
-          <Avatar src={getUserImageData(data.image)} size={36} radius="xl" />
-          <div>
-            <div className="text-sm font-semibold">
-              {data.email ? (
-                <div className="flex">
-                  {formatFullName(data)}
-                  <MinistryBadge className="ml-1" ministry={data.ministry} />
-                  {onClick && <IconEdit className="ml-2 cursor-pointer" />}
-                  {isInvalid && (
-                    <Tooltip label={invalidTooltip}>
-                      <IconExclamationCircleFilled className="ml-2 text-red-500" />
-                    </Tooltip>
-                  )}
-                </div>
-              ) : (
-                onClick && <UnstyledButton className="text-gray-700 hover:underline">{text}</UnstyledButton>
-              )}
+      <div className="flex">
+        <Tooltip label="View" disabled={!isSavedUser}>
+          <Group
+            gap="sm"
+            className={cn({ 'cursor-pointer': isSavedUser })}
+            onClick={() => (data.id ? openUserDetailModal({ userId: data.id }) : onClick?.())}
+          >
+            <Avatar src={getUserImageData(data.image)} size={36} radius="xl" />
+            <div>
+              <div className="text-sm font-semibold">
+                {data.email ? (
+                  <div className="flex">
+                    {formatFullName(data)}
+                    <MinistryBadge className="ml-1" ministry={data.ministry} />
+                  </div>
+                ) : (
+                  onClick && <UnstyledButton className="text-gray-700 hover:underline">{text}</UnstyledButton>
+                )}
+              </div>
+              <div className="text-xs font-semibold opacity-50">{data.email}</div>
             </div>
-            <div className="text-xs font-semibold opacity-50">{data.email}</div>
-          </div>
-        </Group>
-      </Tooltip>
+          </Group>
+        </Tooltip>
+        {isSavedUser && onClick && (
+          <Tooltip label="Edit">
+            <IconEdit className="ml-2 cursor-pointer" onClick={onClick} />
+          </Tooltip>
+        )}
+        {isInvalid && (
+          <Tooltip label={invalidTooltip}>
+            <IconExclamationCircleFilled className="ml-2 text-red-500" />
+          </Tooltip>
+        )}
+      </div>
+
       {children}
     </>
   );

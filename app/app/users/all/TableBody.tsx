@@ -127,7 +127,7 @@ export default function TableBody({ data, availableRoles = [], session }: TableP
               value={item.onboardingDate}
               loading={savingOnboardingDate}
               classNames={{ wrapper: 'col-span-4' }}
-              placeholder="not onboarded yet"
+              placeholder="not available"
             />
           ) : (
             formatDate(item.onboardingDate) || ''
