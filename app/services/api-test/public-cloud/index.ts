@@ -1,12 +1,20 @@
-import { PUT as _provisionPublicCloudProduct } from '@/app/api/public-cloud/provision/[licencePlate]/route';
+import { POST as _provisionPublicCloudProduct } from '@/app/api/v1/public-cloud/products/[idOrLicencePlate]/provision/route';
 import { createRoute } from '../core';
 
-const publicCloudRoute = createRoute('/public-cloud');
+const publicCloudRoute = createRoute('/v1/public-cloud/products');
 
-export async function provisionPublicCloudProduct(licencePlate: string) {
-  const result = await publicCloudRoute.put(_provisionPublicCloudProduct, '/provision/{{licencePlate}}', null, {
-    pathParams: { licencePlate },
-  });
-
+export async function provisionPublicCloudProduct(idOrLicencePlate: string) {
+  const result = await publicCloudRoute.post(
+    _provisionPublicCloudProduct,
+    '/{{idOrLicencePlate}}/provision',
+    null,
+    {
+      pathParams: { idOrLicencePlate },
+    },
+    {
+      Authorization: 'Bearer ' + '',
+      'Content-Type': 'application/json',
+    },
+  );
   return result;
 }
