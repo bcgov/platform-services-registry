@@ -62,7 +62,7 @@ jobs:
         echo "PLAN<<EOF" >> $GITHUB_ENV
         echo "${PLAN_OUTPUT}" >> $GITHUB_ENV
         echo "EOF" >> $GITHUB_ENV
-      working-directory: ./terraform/sysdig
+      working-directory: ./terraform/keycloak
       continue-on-error: true
 
     - name: Create Comment
