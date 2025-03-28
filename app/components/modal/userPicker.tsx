@@ -33,10 +33,7 @@ function WarningMessage({ message }) {
   );
 }
 
-const isUserDuplicate = <T extends { id?: string | null }>(
-  users: (T | null | undefined)[],
-  userId: string | undefined | null,
-): boolean => {
+const isUserDuplicate = (users: ({ id?: string | null } | null | undefined)[], userId: string | undefined | null) => {
   if (!userId) return false;
   return users.filter((u) => u?.id === userId).length > 1;
 };
