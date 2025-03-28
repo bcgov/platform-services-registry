@@ -16,6 +16,7 @@ interface ModalProps {
 
 interface ModalState {
   user?: SearchedUser | null;
+  users?: SearchedUser[] | null;
 }
 
 interface Warning {
@@ -31,6 +32,14 @@ function WarningMessage({ message }) {
     </div>
   );
 }
+
+const isUserDuplicate = <T extends { id?: string | null }>(
+  users: (T | null | undefined)[],
+  userId: string | undefined | null,
+): boolean => {
+  if (!userId) return false;
+  return users.filter((u) => u?.id === userId).length > 1;
+};
 
 export const openUserPickerModal = createModal<ModalProps, ModalState>({
   settings: {
@@ -57,9 +66,20 @@ export const openUserPickerModal = createModal<ModalProps, ModalState>({
       ].filter((warning) => warning.condition);
     }
 
+    const currentUsers = (state.users ?? []).filter(Boolean);
+    const simulatedUsers = user ? [...currentUsers, user] : currentUsers;
+    const isDuplicateUser = user ? isUserDuplicate(simulatedUsers, user.id) : false;
+
+    if (isDuplicateUser) {
+      warnings.push({
+        condition: true,
+        message: 'Each role must be assigned to a unique person',
+      });
+    }
+
     const doesntHaveUpnOrIdir = !user?.idir || !user?.upn;
 
-    const hasIdirWarning = warnings.length > 0;
+    const hasIdirWarning = warnings.length > 0 && !isDuplicateUser;
 
     return (
       <>
@@ -105,7 +125,7 @@ export const openUserPickerModal = createModal<ModalProps, ModalState>({
 
             <Button
               color="primary"
-              disabled={doesntHaveUpnOrIdir}
+              disabled={doesntHaveUpnOrIdir || isDuplicateUser}
               className={cn({ 'opacity-50 cursor-not-allowed': doesntHaveUpnOrIdir })}
               onClick={() => {
                 state.user = user;
