@@ -37,7 +37,10 @@ export default function TeamContacts({ disabled, userAttributes }: Props) {
     const handleUserChange = async () => {
       if (disabled) return;
 
-      const { state } = await openUserPickerModal({ initialValue: user }, { initialState: { user } });
+      const initialState = role === 'Expense Authority (EA)' ? { user } : { user, users };
+
+      const { state } = await openUserPickerModal({ initialValue: user }, { initialState });
+
       const updatedUser = state.user ? { ...state.user } : { id: null };
 
       setValue(`${key}Id`, updatedUser.id);
@@ -102,6 +105,10 @@ export default function TeamContacts({ disabled, userAttributes }: Props) {
           </li>
         ))}
       </ul>
+      <p className="my-2 ml-2">
+        Please ensure that all contacts listed are <span className="font-bold text-red-600">different</span>{' '}
+        individuals. Each role must be assigned to a <span className="font-bold text-red-600">unique</span> person.
+      </p>
       <Table.ScrollContainer minWidth={800}>
         <Table verticalSpacing="sm">
           <Table.Thead>
