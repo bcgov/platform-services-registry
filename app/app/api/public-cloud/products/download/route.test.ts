@@ -9,7 +9,6 @@ import { mockNoRoleUsers, findMockUserByIdr, findOtherMockUsers } from '@/helper
 import { ministryKeyToName, getTotalQuotaStr } from '@/helpers/product';
 import { formatFullName } from '@/helpers/user';
 import { mockSessionByEmail, mockSessionByRole } from '@/services/api-test/core';
-import { provisionPublicCloudProduct } from '@/services/api-test/public-cloud';
 import {
   createPublicCloudProduct,
   downloadPublicCloudProducts,
@@ -17,6 +16,7 @@ import {
   reviewPublicCloudBilling,
 } from '@/services/api-test/public-cloud/products';
 import { makePublicCloudRequestDecision } from '@/services/api-test/public-cloud/requests';
+import { provisionPublicCloudProduct } from '@/services/api-test/v1/public-cloud';
 import { PublicProductCsvRecord } from '@/types/csv';
 import { formatDateSimple } from '@/utils/js';
 
