@@ -1,6 +1,8 @@
 import {
   DEPLOYMENT_TAG,
   BUILD_TIMESTAMP,
+  YEARLY_UNIT_PRICE_CPU,
+  YEARLY_UNIT_PRICE_STORAGE,
   APP_ENV,
   IS_LOCAL,
   IS_DEV,
@@ -21,6 +23,8 @@ export const GET = apiHandler(async () => {
   return OkResponse({
     DEPLOYMENT_TAG,
     BUILD_TIMESTAMP,
+    YEARLY_UNIT_PRICE_CPU,
+    YEARLY_UNIT_PRICE_STORAGE,
     APP_ENV,
     IS_LOCAL,
     IS_DEV,

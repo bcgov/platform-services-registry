@@ -216,6 +216,7 @@ export async function generateSession({
     apiAccount: !IS_PROD,
     azure: session.isAdmin || session.isPublicAdmin,
     awsLza: session.isAdmin || session.isPublicAdmin,
+    costRecovery: !IS_PROD,
   };
 
   session.permissions = {
