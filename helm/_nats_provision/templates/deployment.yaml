@@ -26,6 +26,8 @@ spec:
           {{`{{ with secret "`}}{{ .Values.global.vault.role }}/{{ .Values.global.vault.subPath }}{{`" -}}
             export PUBLIC_CLOUD_CLIENT_ID='{{ .Data.data.AWS_ROLES_CLIENT_ID }}'
             export PUBLIC_CLOUD_CLIENT_SECRET='{{ .Data.data.AWS_ROLES_CLIENT_SECRET }}'
+            export PROVISION_SERVICE_ACCOUNT_ID='{{ .Data.data.PROVISION_SERVICE_ACCOUNT_ID }}'
+            export PROVISION_SERVICE_ACCOUNT_SECRET='{{ .Data.data.PROVISION_SERVICE_ACCOUNT_SECRET }}'
           {{- end }}`}}
       labels:
         {{- include "app.labels" . | nindent 8 }}
@@ -47,6 +49,9 @@ spec:
             {{- toYaml .Values.securityContext | nindent 12 }}
           image: "{{ .Values.image.repository }}:{{ $deploymentTag }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
+          command: ["/bin/sh", "-c"]
+          args:
+            ['. /vault/secrets/secrets.env && node context/main.js']
           env:
             - name: DEPLOYMENT_TAG
               value: {{ $deploymentTag | quote }}

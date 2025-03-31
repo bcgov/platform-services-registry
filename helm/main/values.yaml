@@ -170,6 +170,7 @@ nats-provision:
     "APP_URL": "http://pltsvc-app:3000"
     "KEYCLOAK_URL": ""
     "PUBLIC_CLOUD_REALM_NAME": "public-cloud"
+    "AUTH_REALM_NAME": 'platform-services'
 
   # resources:
   #   limits:
