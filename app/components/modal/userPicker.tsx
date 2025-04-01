@@ -34,19 +34,6 @@ function WarningMessage({ message }) {
   );
 }
 
-const isUserDuplicate = (
-  users: Array<{ id?: string | null } | null | undefined>,
-  userId: string | undefined | null,
-) => {
-  if (!userId) return false;
-
-  const matchingCount = users.reduce((count, user) => {
-    return user?.id === userId ? count + 1 : count;
-  }, 0);
-
-  return matchingCount > 1;
-};
-
 export const openUserPickerModal = createModal<ModalProps, ModalState>({
   settings: {
     size: 'xl',
