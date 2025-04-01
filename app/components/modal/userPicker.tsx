@@ -12,8 +12,9 @@ import { cn } from '@/utils/js';
 
 interface ModalProps {
   initialValue?: SearchedUser | null;
+  blackListIds?: string[];
+  blackListMessage?: string;
 }
-
 interface ModalState {
   user?: SearchedUser | null;
   users?: SearchedUser[] | null;
@@ -54,7 +55,7 @@ export const openUserPickerModal = createModal<ModalProps, ModalState>({
       content: 'overflow-y-visible',
     },
   },
-  Component: function ({ initialValue, state, closeModal }) {
+  Component: function ({ initialValue, blackListIds, blackListMessage, state, closeModal }) {
     const [user, setUser] = useState<SearchedUser | null>(initialValue && initialValue.id ? initialValue : null);
     const [autocompId, setAutocompId] = useState(randomId());
 
@@ -70,23 +71,16 @@ export const openUserPickerModal = createModal<ModalProps, ModalState>({
         { condition: !user.upn, message: 'Your UPN is missing' },
       ].filter((warning) => warning.condition);
     }
+    const isBlacklisted = !!user?.id && blackListIds?.includes(user.id);
 
-    let isDuplicateUser = false;
-
-    if (state.users && user?.id) {
-      const currentUsers = state.users.filter(Boolean);
-      const simulatedUsers = [...currentUsers, user];
-      isDuplicateUser = isUserDuplicate(simulatedUsers, user.id);
-    }
-
-    if (isDuplicateUser) {
+    if (isBlacklisted && blackListMessage) {
       warnings.push({
         condition: true,
-        message: 'Each role must be assigned to a unique person',
+        message: blackListMessage,
       });
     }
 
-    const shouldDisableSelect = !user?.idir || !user?.upn || isDuplicateUser;
+    const shouldDisableSelect = !user?.idir || !user?.upn || isBlacklisted;
 
     return (
       <>
@@ -105,11 +99,11 @@ export const openUserPickerModal = createModal<ModalProps, ModalState>({
         {warnings.length > 0 && (
           <div className="mt-5">
             <span>
-              {isDuplicateUser &&
+              {isBlacklisted &&
                 warnings.length > 1 &&
                 'This user is already assigned to another role and also has missing profile information.'}
             </span>
-            {(!isDuplicateUser || warnings.length > 1) && (
+            {(!isBlacklisted || warnings.length > 1) && (
               <span>
                 This user has missing profile information. Please update their details here:{' '}
                 <ExternalLink href="https://www2.gov.bc.ca/gov/content/governments/services-for-government/information-management-technology/id-services">

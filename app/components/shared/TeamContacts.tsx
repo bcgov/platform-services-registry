@@ -39,18 +39,21 @@ export default function TeamContacts({ disabled, userAttributes }: Props) {
     const handleUserChange = async () => {
       if (disabled) return;
 
-      let uniqueUsers: User[] | undefined = undefined;
+      let blackListIds: string[] | undefined;
+      let blackListMessage: string | undefined;
 
       if (requiresUniqueUser) {
-        uniqueUsers = userAttributes
-          .filter((attr, i) => attr.requiresUniqueUser && attr.key !== key)
-          .map((attr) => users[userAttributes.findIndex((u) => u.key === attr.key)])
+        const otherKeys = userAttributes.filter((attr) => attr.requiresUniqueUser && attr.key !== key);
+        blackListIds = otherKeys
+          .map((attr) => users[userAttributes.findIndex((u) => u.key === attr.key)]?.id)
           .filter(Boolean);
+
+        blackListMessage = 'Project Owner and Primary Technical Lead must be different users.';
       }
 
       const { state } = await openUserPickerModal(
-        { initialValue: user },
-        { initialState: { user, users: uniqueUsers } },
+        { initialValue: user, blackListIds, blackListMessage },
+        { initialState: { user } },
       );
 
       const updatedUser = state.user ? { ...state.user } : { id: null };
