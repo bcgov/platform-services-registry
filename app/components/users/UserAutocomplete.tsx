@@ -1,4 +1,4 @@
-import { Combobox, Loader, Avatar, Group, Text, TextInput, useCombobox, Badge } from '@mantine/core';
+import { Combobox, Loader, Avatar, Group, Text, TextInput, useCombobox, Badge, Box } from '@mantine/core';
 import { IconSearch } from '@tabler/icons-react';
 import _throttle from 'lodash-es/throttle';
 import { useRef, useState, ReactNode } from 'react';
@@ -31,14 +31,14 @@ function UserOptionDetail({ data }: { data: SearchedUser }) {
             {data.jobTitle} {data.officeLocation && <span>/ {data.officeLocation}</span>}
           </Text>
         )}
-        <Text size="md" className="font-semibold">
+        <Box size="md" className="font-semibold">
           {formatFullName(data)}
           {data.ministry && (
             <Badge color="dark" variant="light" className="ml-1">
               {data.ministry}
             </Badge>
           )}
-        </Text>
+        </Box>
         <Text size="sm" opacity={0.5}>
           {data.email}
         </Text>

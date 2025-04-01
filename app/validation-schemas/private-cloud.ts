@@ -10,6 +10,7 @@ import {
 import _isString from 'lodash-es/isString';
 import { string, z } from 'zod';
 import { AGMinistries, phoneNumberRegex } from '@/constants';
+import { validateDistinctPOandTl } from '@/helpers/user';
 import { processEnumString, processBoolean } from '@/utils/js';
 import { RequestDecision } from './shared';
 
@@ -100,11 +101,6 @@ export const privateCloudProductWebhookBodySchema = z.object({
   password: z.string().min(2).max(40).or(z.literal('')).or(z.null()).optional(),
 });
 
-const isEmailUnique = (data: any) => {
-  const { projectOwnerId, primaryTechnicalLeadId } = data;
-  return projectOwnerId !== primaryTechnicalLeadId;
-};
-
 export const privateCloudCreateRequestBodySchema = _privateCloudCreateRequestBodySchema
   .merge(
     z.object({
@@ -121,9 +117,9 @@ export const privateCloudCreateRequestBodySchema = _privateCloudCreateRequestBod
       path: ['isAgMinistryChecked'],
     },
   )
-  .refine(isEmailUnique, {
+  .refine(validateDistinctPOandTl, {
     message: 'The Project Owner and Primary Technical Lead must be different.',
-    path: ['primaryTechnicalLead'],
+    path: ['primaryTechnicalLeadId'],
   });
 
 const _privateCloudEditRequestBodySchema = _privateCloudCreateRequestBodySchema.merge(
@@ -148,9 +144,9 @@ export const privateCloudEditRequestBodySchema = _privateCloudEditRequestBodySch
       path: ['isAgMinistryChecked'],
     },
   )
-  .refine(isEmailUnique, {
+  .refine(validateDistinctPOandTl, {
     message: 'The Project Owner and Primary Technical Lead must be different.',
-    path: ['primaryTechnicalLead'],
+    path: ['primaryTechnicalLeadId'],
   });
 
 export const privateCloudRequestDecisionBodySchema = _privateCloudEditRequestBodySchema.merge(

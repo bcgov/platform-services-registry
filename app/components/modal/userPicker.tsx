@@ -12,15 +12,12 @@ import { cn } from '@/utils/js';
 
 interface ModalProps {
   initialValue?: SearchedUser | null;
+  blacklistIds?: string[];
+  blacklistMessage?: string;
 }
 
 interface ModalState {
   user?: SearchedUser | null;
-}
-
-interface Warning {
-  condition: boolean;
-  message: string;
 }
 
 function WarningMessage({ message }) {
@@ -40,26 +37,29 @@ export const openUserPickerModal = createModal<ModalProps, ModalState>({
       content: 'overflow-y-visible',
     },
   },
-  Component: function ({ initialValue, state, closeModal }) {
+  Component: function ({ initialValue, blacklistIds = [], blacklistMessage, state, closeModal }) {
     const [user, setUser] = useState<SearchedUser | null>(initialValue && initialValue.id ? initialValue : null);
     const [autocompId, setAutocompId] = useState(randomId());
 
-    let warnings: Warning[] = [];
+    const isBlacklisted = !!(user?.id && blacklistIds.includes(user.id));
 
-    if (user) {
-      warnings = [
-        { condition: !user.ministry, message: 'Your home ministry name is missing' },
-        {
-          condition: !user.idir,
-          message: 'Your IDIR is missing',
-        },
-        { condition: !user.upn, message: 'Your UPN is missing' },
-      ].filter((warning) => warning.condition);
+    const profileWarnings: string[] = user
+      ? [
+          !user.ministry && 'Your home ministry name is missing',
+          !user.idir && 'Your IDIR is missing',
+          !user.upn && 'Your UPN is missing',
+        ].filter((msg): msg is string => Boolean(msg))
+      : [];
+
+    const showIdirHelp = profileWarnings.length > 0;
+
+    const warnings = [...profileWarnings];
+
+    if (isBlacklisted && blacklistMessage) {
+      warnings.push(blacklistMessage);
     }
 
-    const doesntHaveUpnOrIdir = !user?.idir || !user?.upn;
-
-    const hasIdirWarning = warnings.length > 0;
+    const shouldDisableSelect = !!(!user?.idir || !user?.upn || isBlacklisted);
 
     return (
       <>
@@ -72,10 +72,10 @@ export const openUserPickerModal = createModal<ModalProps, ModalState>({
         />
 
         {warnings.map((warning, index) => {
-          return <WarningMessage key={index} message={warning.message} />;
+          return <WarningMessage key={index} message={warning} />;
         })}
 
-        {hasIdirWarning && (
+        {showIdirHelp && (
           <div className="mt-5">
             <span>Please visit this page to update your missing profile information: </span>
             <ExternalLink href="https://www2.gov.bc.ca/gov/content/governments/services-for-government/information-management-technology/id-services">
@@ -105,8 +105,8 @@ export const openUserPickerModal = createModal<ModalProps, ModalState>({
 
             <Button
               color="primary"
-              disabled={doesntHaveUpnOrIdir}
-              className={cn({ 'opacity-50 cursor-not-allowed': doesntHaveUpnOrIdir })}
+              disabled={shouldDisableSelect}
+              className={cn({ 'opacity-50 cursor-not-allowed': shouldDisableSelect })}
               onClick={() => {
                 state.user = user;
                 closeModal();
