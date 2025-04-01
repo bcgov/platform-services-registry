@@ -15,7 +15,8 @@ interface UserAttribute {
   content: string;
   key: string;
   isOptional?: boolean;
-  requiresUniqueUser?: boolean;
+  blackListMessage?: string;
+  blackListIds?: string[];
 }
 
 interface Props {
@@ -33,26 +34,25 @@ export default function TeamContacts({ disabled, userAttributes }: Props) {
 
   const users = watch(userAttributes.map(({ key }) => key));
 
-  const tableBody = userAttributes.map(({ role, key, isOptional, requiresUniqueUser }, index) => {
+  const tableBody = userAttributes.map(({ role, key, isOptional, blackListIds = [], blackListMessage }, index) => {
     const user = users[index] ?? {};
     const canDelete = !disabled && isOptional;
     const handleUserChange = async () => {
       if (disabled) return;
 
-      let blackListIds: string[] | undefined;
-      let blackListMessage: string | undefined;
-
-      if (requiresUniqueUser) {
-        const otherKeys = userAttributes.filter((attr) => attr.requiresUniqueUser && attr.key !== key);
-        blackListIds = otherKeys
-          .map((attr) => users[userAttributes.findIndex((u) => u.key === attr.key)]?.id)
-          .filter(Boolean);
-
-        blackListMessage = 'Project Owner and Primary Technical Lead must be different users.';
-      }
+      const resolvedBlacklistIds = blackListIds
+        .map((idKey) => {
+          const idx = userAttributes.findIndex((attr) => `${attr.key}Id` === idKey);
+          return users[idx]?.id;
+        })
+        .filter(Boolean);
 
       const { state } = await openUserPickerModal(
-        { initialValue: user, blackListIds, blackListMessage },
+        {
+          initialValue: user,
+          blackListIds: resolvedBlacklistIds,
+          blackListMessage,
+        },
         { initialState: { user } },
       );
 

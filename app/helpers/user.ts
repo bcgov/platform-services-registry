@@ -22,7 +22,9 @@ export const parseMinistryFromDisplayName = (displayName: string) => {
   return ministry;
 };
 
-export const validateDistinctPOandTl = (data: any) => {
-  const { projectOwnerId, primaryTechnicalLeadId } = data;
-  return projectOwnerId !== primaryTechnicalLeadId;
+export const validateDistinctPOandTl = (data: {
+  projectOwnerId?: string | null;
+  primaryTechnicalLeadId?: string | null;
+}) => {
+  return data.projectOwnerId !== data.primaryTechnicalLeadId;
 };

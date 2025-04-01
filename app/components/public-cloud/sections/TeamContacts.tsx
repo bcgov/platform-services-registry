@@ -12,7 +12,8 @@ const userAttributes = [
       'This is the business owner of the application. They are the primary point of contact for non-technical inquiries, and their contact information will be used for such purposes.',
     key: 'projectOwner',
     isOptional: false,
-    requiresUniqueUser: true,
+    blackListMessage: 'Project Owner and Primary Technical Lead must be different users.',
+    blackListIds: ['primaryTechnicalLeadId'],
   },
   {
     role: 'Primary Technical Lead (TL)',
@@ -20,7 +21,8 @@ const userAttributes = [
       'This is the DevOps specialist who is responsible for handling technical queries and managing platform updates. This role is mandatory, and they serve as the main point of contact for all technical matters.',
     key: 'primaryTechnicalLead',
     isOptional: false,
-    requiresUniqueUser: true,
+    blackListMessage: 'Project Owner and Primary Technical Lead must be different users.',
+    blackListIds: ['projectOwnerId'],
   },
   {
     role: 'Secondary Technical Lead (TL)',

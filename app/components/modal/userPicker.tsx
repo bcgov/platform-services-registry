@@ -15,14 +15,9 @@ interface ModalProps {
   blackListIds?: string[];
   blackListMessage?: string;
 }
+
 interface ModalState {
   user?: SearchedUser | null;
-  users?: SearchedUser[] | null;
-}
-
-interface Warning {
-  condition: boolean;
-  message: string;
 }
 
 function WarningMessage({ message }) {
@@ -46,28 +41,23 @@ export const openUserPickerModal = createModal<ModalProps, ModalState>({
     const [user, setUser] = useState<SearchedUser | null>(initialValue && initialValue.id ? initialValue : null);
     const [autocompId, setAutocompId] = useState(randomId());
 
-    let warnings: Warning[] = [];
+    const isBlacklisted = !!(user?.id && blackListIds?.includes(user.id));
+    const profileWarnings = user
+      ? ([
+          !user.ministry && 'Your home ministry name is missing',
+          !user.idir && 'Your IDIR is missing',
+          !user.upn && 'Your UPN is missing',
+        ].filter(Boolean) as string[])
+      : [];
 
-    if (user) {
-      warnings = [
-        { condition: !user.ministry, message: 'Your home ministry name is missing' },
-        {
-          condition: !user.idir,
-          message: 'Your IDIR is missing',
-        },
-        { condition: !user.upn, message: 'Your UPN is missing' },
-      ].filter((warning) => warning.condition);
-    }
-    const isBlacklisted = !!user?.id && blackListIds?.includes(user.id);
+    const showIdirHelp = profileWarnings.length > 0;
 
-    if (isBlacklisted && blackListMessage) {
-      warnings.push({
-        condition: true,
-        message: blackListMessage,
-      });
-    }
+    const warnings = [
+      ...profileWarnings.map((msg) => ({ condition: true, message: msg })),
+      ...(isBlacklisted && blackListMessage ? [{ condition: true, message: blackListMessage }] : []),
+    ];
 
-    const shouldDisableSelect = !user?.idir || !user?.upn || isBlacklisted;
+    const shouldDisableSelect = !!(!user?.idir || !user?.upn || isBlacklisted);
 
     return (
       <>
@@ -83,21 +73,12 @@ export const openUserPickerModal = createModal<ModalProps, ModalState>({
           return <WarningMessage key={index} message={warning.message} />;
         })}
 
-        {warnings.length > 0 && (
+        {showIdirHelp && (
           <div className="mt-5">
-            <span>
-              {isBlacklisted &&
-                warnings.length > 1 &&
-                'This user is already assigned to another role and also has missing profile information.'}
-            </span>
-            {(!isBlacklisted || warnings.length > 1) && (
-              <span>
-                This user has missing profile information. Please update their details here:{' '}
-                <ExternalLink href="https://www2.gov.bc.ca/gov/content/governments/services-for-government/information-management-technology/id-services">
-                  IDIR Services - Government of BC
-                </ExternalLink>
-              </span>
-            )}
+            <span>Please visit this page to update your missing profile information: </span>
+            <ExternalLink href="https://www2.gov.bc.ca/gov/content/governments/services-for-government/information-management-technology/id-services">
+              IDIR Services - Government of BC
+            </ExternalLink>
           </div>
         )}
 
