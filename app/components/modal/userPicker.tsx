@@ -42,12 +42,13 @@ export const openUserPickerModal = createModal<ModalProps, ModalState>({
     const [autocompId, setAutocompId] = useState(randomId());
 
     const isBlacklisted = !!(user?.id && blacklistIds.includes(user.id));
+
     const profileWarnings: string[] = user
-      ? ([
+      ? [
           !user.ministry && 'Your home ministry name is missing',
           !user.idir && 'Your IDIR is missing',
           !user.upn && 'Your UPN is missing',
-        ].filter(Boolean) as string[])
+        ].filter((msg): msg is string => Boolean(msg))
       : [];
 
     const showIdirHelp = profileWarnings.length > 0;
