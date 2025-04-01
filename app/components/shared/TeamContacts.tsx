@@ -1,5 +1,4 @@
 import { Badge, Table, Button } from '@mantine/core';
-import { User } from '@prisma/client';
 import { IconMinus } from '@tabler/icons-react';
 import React from 'react';
 import { useFormContext } from 'react-hook-form';
@@ -15,8 +14,8 @@ interface UserAttribute {
   content: string;
   key: string;
   isOptional?: boolean;
-  blackListMessage?: string;
-  blackListIds?: string[];
+  blacklistMessage?: string;
+  blacklistFields?: string[];
 }
 
 interface Props {
@@ -34,15 +33,15 @@ export default function TeamContacts({ disabled, userAttributes }: Props) {
 
   const users = watch(userAttributes.map(({ key }) => key));
 
-  const tableBody = userAttributes.map(({ role, key, isOptional, blackListIds = [], blackListMessage }, index) => {
+  const tableBody = userAttributes.map(({ role, key, isOptional, blacklistFields = [], blacklistMessage }, index) => {
     const user = users[index] ?? {};
     const canDelete = !disabled && isOptional;
     const handleUserChange = async () => {
       if (disabled) return;
 
-      const resolvedBlacklistIds = blackListIds
-        .map((idKey) => {
-          const idx = userAttributes.findIndex((attr) => `${attr.key}Id` === idKey);
+      const resolvedBlacklistIds = blacklistFields
+        .map((field) => {
+          const idx = userAttributes.findIndex((attr) => `${attr.key}Id` === field);
           return users[idx]?.id;
         })
         .filter(Boolean);
@@ -50,8 +49,8 @@ export default function TeamContacts({ disabled, userAttributes }: Props) {
       const { state } = await openUserPickerModal(
         {
           initialValue: user,
-          blackListIds: resolvedBlacklistIds,
-          blackListMessage,
+          blacklistIds: resolvedBlacklistIds,
+          blacklistMessage,
         },
         { initialState: { user } },
       );

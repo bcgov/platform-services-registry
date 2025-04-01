@@ -12,8 +12,8 @@ import { cn } from '@/utils/js';
 
 interface ModalProps {
   initialValue?: SearchedUser | null;
-  blackListIds?: string[];
-  blackListMessage?: string;
+  blacklistIds?: string[];
+  blacklistMessage?: string;
 }
 
 interface ModalState {
@@ -37,12 +37,12 @@ export const openUserPickerModal = createModal<ModalProps, ModalState>({
       content: 'overflow-y-visible',
     },
   },
-  Component: function ({ initialValue, blackListIds, blackListMessage, state, closeModal }) {
+  Component: function ({ initialValue, blacklistIds = [], blacklistMessage, state, closeModal }) {
     const [user, setUser] = useState<SearchedUser | null>(initialValue && initialValue.id ? initialValue : null);
     const [autocompId, setAutocompId] = useState(randomId());
 
-    const isBlacklisted = !!(user?.id && blackListIds?.includes(user.id));
-    const profileWarnings = user
+    const isBlacklisted = !!(user?.id && blacklistIds.includes(user.id));
+    const profileWarnings: string[] = user
       ? ([
           !user.ministry && 'Your home ministry name is missing',
           !user.idir && 'Your IDIR is missing',
@@ -52,10 +52,11 @@ export const openUserPickerModal = createModal<ModalProps, ModalState>({
 
     const showIdirHelp = profileWarnings.length > 0;
 
-    const warnings = [
-      ...profileWarnings.map((msg) => ({ condition: true, message: msg })),
-      ...(isBlacklisted && blackListMessage ? [{ condition: true, message: blackListMessage }] : []),
-    ];
+    const warnings = [...profileWarnings];
+
+    if (isBlacklisted && blacklistMessage) {
+      warnings.push(blacklistMessage);
+    }
 
     const shouldDisableSelect = !!(!user?.idir || !user?.upn || isBlacklisted);
 
@@ -70,7 +71,7 @@ export const openUserPickerModal = createModal<ModalProps, ModalState>({
         />
 
         {warnings.map((warning, index) => {
-          return <WarningMessage key={index} message={warning.message} />;
+          return <WarningMessage key={index} message={warning} />;
         })}
 
         {showIdirHelp && (
