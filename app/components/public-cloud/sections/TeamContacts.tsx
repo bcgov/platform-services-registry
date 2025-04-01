@@ -30,7 +30,6 @@ const userAttributes = [
       'This is an optional role, typically filled by another DevOps specialist. They may be contacted for technical questions or notified about platform events as a backup to the Primary Technical Lead.',
     key: 'secondaryTechnicalLead',
     isOptional: true,
-    requiresUniqueUser: false,
   },
   {
     role: 'Expense Authority (EA)',
@@ -38,7 +37,6 @@ const userAttributes = [
       'This is typically refers to the permission granted to an individual to incur expenses on behalf of the organization within specified limits and guidelines.',
     key: 'expenseAuthority',
     isOptional: false,
-    requiresUniqueUser: false,
   },
 ];
 

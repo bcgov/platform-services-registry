@@ -31,7 +31,6 @@ const userAttributes = [
       'This is an optional role, typically filled by another DevOps specialist. They may be contacted for technical questions or notified about platform events as a backup to the Primary Technical Lead.',
     key: 'secondaryTechnicalLead',
     isOptional: true,
-    requiresUniqueUser: false,
   },
 ];
 
