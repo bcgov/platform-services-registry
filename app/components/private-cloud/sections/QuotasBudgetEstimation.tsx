@@ -1,4 +1,4 @@
-import { Table } from '@mantine/core';
+import { Badge, Table } from '@mantine/core';
 import { ResourceRequestsEnv } from '@prisma/client';
 import { IconArrowNarrowDownDashed } from '@tabler/icons-react';
 import _get from 'lodash-es/get';
@@ -149,11 +149,10 @@ function EnvDetails({ envData, division = 1 }: { envData: EnvironmentMetadata; d
   );
 }
 
-const scenarios = [
-  { label: 'Daily', division: 365 },
-  { label: 'Monthly', division: 12 },
-  { label: 'Yearly', division: 1 },
-];
+function isLeapYear() {
+  const year = new Date().getFullYear();
+  return (year % 4 === 0 && year % 100 !== 0) || year % 400 === 0;
+}
 
 export default function QuotasBudgetEstimation({
   originalData,
@@ -306,6 +305,13 @@ export default function QuotasBudgetEstimation({
     metadata.total.subtotal.changed = metadata.total.subtotal.old.price !== metadata.total.subtotal.new.price;
   }
 
+  const leapYear = isLeapYear();
+  const scenarios = [
+    { label: 'Daily', division: leapYear ? 366 : 365, leapYear },
+    { label: 'Monthly', division: 12 },
+    { label: 'Yearly', division: 1 },
+  ];
+
   return (
     <>
       <div className="font-bold text-lg">Cost Estimation</div>
@@ -327,7 +333,12 @@ export default function QuotasBudgetEstimation({
                 <Fragment key={scenario.label}>
                   <Table.Tr className="border-t-2 border-t-gray-800">
                     <Table.Td colSpan={5}>
-                      <span className="font-bold mr-3">{scenario.label}</span>
+                      <span className="font-bold mr-1">{scenario.label}</span>
+                      {scenario.leapYear && (
+                        <Badge size="sm" className="mr-3">
+                          Leap year
+                        </Badge>
+                      )}
                       <span className="text-sm italic text-gray-600">
                         {formatCurrency(unitPriceCpu / scenario.division)} per CPU Core /{' '}
                         {formatCurrency(unitPriceStorage / scenario.division)} per Storage GiB
