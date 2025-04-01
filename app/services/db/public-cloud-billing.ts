@@ -255,7 +255,7 @@ export async function upsertPublicCloudBillings({
   }
 
   await Promise.all([
-    prisma.publicCloudBilling.deleteMany({ where: { OR: [{ signed: false }, { approved: false }] } }),
+    prisma.publicCloudBilling.deleteMany({ where: { licencePlate, OR: [{ signed: false }, { approved: false }] } }),
     prisma.task.deleteMany({
       where: {
         type: { in: [TaskType.SIGN_PUBLIC_CLOUD_MOU, TaskType.REVIEW_PUBLIC_CLOUD_MOU] },
