@@ -10,8 +10,9 @@ import {
 import _isString from 'lodash-es/isString';
 import { string, z } from 'zod';
 import { AGMinistries } from '@/constants';
+import { validateDistinctPOandTl } from '@/helpers/user';
 import { processEnumString } from '@/utils/js';
-import { userSchema, RequestDecision } from './shared';
+import { RequestDecision } from './shared';
 
 export const getBudgetSchema = (provider: Provider) => {
   if (provider === Provider.AZURE) {
@@ -86,11 +87,6 @@ const _publicCloudCreateRequestBodySchema = z.object({
     ),
 });
 
-const isEmailUnique = (data: any) => {
-  const { projectOwnerId, primaryTechnicalLeadId } = data;
-  return projectOwnerId !== primaryTechnicalLeadId;
-};
-
 export const publicCloudCreateRequestBodySchema = _publicCloudCreateRequestBodySchema
   .merge(
     z.object({
@@ -106,9 +102,9 @@ export const publicCloudCreateRequestBodySchema = _publicCloudCreateRequestBodyS
       path: ['isAgMinistryChecked'],
     },
   )
-  .refine(isEmailUnique, {
+  .refine(validateDistinctPOandTl, {
     message: 'The Project Owner and Primary Technical Lead must be different.',
-    path: ['primaryTechnicalLead'],
+    path: ['primaryTechnicalLeadId'],
   })
   .superRefine((data, ctx) => {
     const budgetSchema = getBudgetSchema(data.provider);
@@ -142,9 +138,9 @@ export const publicCloudEditRequestBodySchema = _publicCloudEditRequestBodySchem
       path: ['isAgMinistryChecked'],
     },
   )
-  .refine(isEmailUnique, {
+  .refine(validateDistinctPOandTl, {
     message: 'The Project Owner and Primary Technical Lead must be different.',
-    path: ['primaryTechnicalLead'],
+    path: ['primaryTechnicalLeadId'],
   });
 
 export const publicCloudRequestDecisionBodySchema = _publicCloudEditRequestBodySchema.merge(

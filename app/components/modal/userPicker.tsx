@@ -33,9 +33,17 @@ function WarningMessage({ message }) {
   );
 }
 
-const isUserDuplicate = (users: ({ id?: string | null } | null | undefined)[], userId: string | undefined | null) => {
+const isUserDuplicate = (
+  users: Array<{ id?: string | null } | null | undefined>,
+  userId: string | undefined | null,
+) => {
   if (!userId) return false;
-  return users.filter((u) => u?.id === userId).length > 1;
+
+  const matchingCount = users.reduce((count, user) => {
+    return user?.id === userId ? count + 1 : count;
+  }, 0);
+
+  return matchingCount > 1;
 };
 
 export const openUserPickerModal = createModal<ModalProps, ModalState>({
@@ -63,9 +71,13 @@ export const openUserPickerModal = createModal<ModalProps, ModalState>({
       ].filter((warning) => warning.condition);
     }
 
-    const currentUsers = (state.users ?? []).filter(Boolean);
-    const simulatedUsers = user ? [...currentUsers, user] : currentUsers;
-    const isDuplicateUser = user ? isUserDuplicate(simulatedUsers, user.id) : false;
+    let isDuplicateUser = false;
+
+    if (state.users && user?.id) {
+      const currentUsers = state.users.filter(Boolean);
+      const simulatedUsers = [...currentUsers, user];
+      isDuplicateUser = isUserDuplicate(simulatedUsers, user.id);
+    }
 
     if (isDuplicateUser) {
       warnings.push({
@@ -74,9 +86,7 @@ export const openUserPickerModal = createModal<ModalProps, ModalState>({
       });
     }
 
-    const doesntHaveUpnOrIdir = !user?.idir || !user?.upn;
-
-    const hasIdirWarning = warnings.length > 0 && !isDuplicateUser;
+    const shouldDisableSelect = !user?.idir || !user?.upn || isDuplicateUser;
 
     return (
       <>
@@ -92,12 +102,21 @@ export const openUserPickerModal = createModal<ModalProps, ModalState>({
           return <WarningMessage key={index} message={warning.message} />;
         })}
 
-        {hasIdirWarning && (
+        {warnings.length > 0 && (
           <div className="mt-5">
-            <span>Please visit this page to update your missing profile information: </span>
-            <ExternalLink href="https://www2.gov.bc.ca/gov/content/governments/services-for-government/information-management-technology/id-services">
-              IDIR Services - Government of BC
-            </ExternalLink>
+            <span>
+              {isDuplicateUser &&
+                warnings.length > 1 &&
+                'This user is already assigned to another role and also has missing profile information.'}
+            </span>
+            {(!isDuplicateUser || warnings.length > 1) && (
+              <span>
+                This user has missing profile information. Please update their details here:{' '}
+                <ExternalLink href="https://www2.gov.bc.ca/gov/content/governments/services-for-government/information-management-technology/id-services">
+                  IDIR Services - Government of BC
+                </ExternalLink>
+              </span>
+            )}
           </div>
         )}
 
@@ -122,8 +141,8 @@ export const openUserPickerModal = createModal<ModalProps, ModalState>({
 
             <Button
               color="primary"
-              disabled={doesntHaveUpnOrIdir || isDuplicateUser}
-              className={cn({ 'opacity-50 cursor-not-allowed': doesntHaveUpnOrIdir })}
+              disabled={shouldDisableSelect}
+              className={cn({ 'opacity-50 cursor-not-allowed': shouldDisableSelect })}
               onClick={() => {
                 state.user = user;
                 closeModal();

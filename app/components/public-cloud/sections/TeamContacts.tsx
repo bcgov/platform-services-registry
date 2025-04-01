@@ -12,6 +12,7 @@ const userAttributes = [
       'This is the business owner of the application. They are the primary point of contact for non-technical inquiries, and their contact information will be used for such purposes.',
     key: 'projectOwner',
     isOptional: false,
+    requiresUniqueUser: true,
   },
   {
     role: 'Primary Technical Lead (TL)',
@@ -19,6 +20,7 @@ const userAttributes = [
       'This is the DevOps specialist who is responsible for handling technical queries and managing platform updates. This role is mandatory, and they serve as the main point of contact for all technical matters.',
     key: 'primaryTechnicalLead',
     isOptional: false,
+    requiresUniqueUser: true,
   },
   {
     role: 'Secondary Technical Lead (TL)',
@@ -26,6 +28,7 @@ const userAttributes = [
       'This is an optional role, typically filled by another DevOps specialist. They may be contacted for technical questions or notified about platform events as a backup to the Primary Technical Lead.',
     key: 'secondaryTechnicalLead',
     isOptional: true,
+    requiresUniqueUser: false,
   },
   {
     role: 'Expense Authority (EA)',
@@ -33,6 +36,7 @@ const userAttributes = [
       'This is typically refers to the permission granted to an individual to incur expenses on behalf of the organization within specified limits and guidelines.',
     key: 'expenseAuthority',
     isOptional: false,
+    requiresUniqueUser: false,
   },
 ];
 

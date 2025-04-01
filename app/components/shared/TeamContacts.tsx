@@ -1,4 +1,5 @@
 import { Badge, Table, Button } from '@mantine/core';
+import { User } from '@prisma/client';
 import { IconMinus } from '@tabler/icons-react';
 import React from 'react';
 import { useFormContext } from 'react-hook-form';
@@ -6,6 +7,7 @@ import { openConfirmModal } from '@/components/modal/confirm';
 import { openUserPickerModal } from '@/components/modal/userPicker';
 import UserProfile from '@/components/users/UserProfile';
 import { cn, formatDate } from '@/utils/js';
+import FormError from '../generic/FormError';
 import TooltipTableHeader from './TooltipTableHeader';
 
 interface UserAttribute {
@@ -13,6 +15,7 @@ interface UserAttribute {
   content: string;
   key: string;
   isOptional?: boolean;
+  requiresUniqueUser?: boolean;
 }
 
 interface Props {
@@ -30,16 +33,25 @@ export default function TeamContacts({ disabled, userAttributes }: Props) {
 
   const users = watch(userAttributes.map(({ key }) => key));
 
-  const tableBody = userAttributes.map(({ role, key, isOptional }, index) => {
+  const tableBody = userAttributes.map(({ role, key, isOptional, requiresUniqueUser }, index) => {
     const user = users[index] ?? {};
     const canDelete = !disabled && isOptional;
-
     const handleUserChange = async () => {
       if (disabled) return;
 
-      const initialState = role === 'Expense Authority (EA)' ? { user } : { user, users };
+      let uniqueUsers: User[] | undefined = undefined;
 
-      const { state } = await openUserPickerModal({ initialValue: user }, { initialState });
+      if (requiresUniqueUser) {
+        uniqueUsers = userAttributes
+          .filter((attr, i) => attr.requiresUniqueUser && attr.key !== key)
+          .map((attr) => users[userAttributes.findIndex((u) => u.key === attr.key)])
+          .filter(Boolean);
+      }
+
+      const { state } = await openUserPickerModal(
+        { initialValue: user },
+        { initialState: { user, users: uniqueUsers } },
+      );
 
       const updatedUser = state.user ? { ...state.user } : { id: null };
 
@@ -68,6 +80,7 @@ export default function TeamContacts({ disabled, userAttributes }: Props) {
         </Table.Td>
         <Table.Td className="user-button">
           <UserProfile data={user} onClick={disabled ? undefined : handleUserChange} />
+          <FormError field={`${key}Id`} className="mt-1" />
         </Table.Td>
 
         <Table.Td>
@@ -106,8 +119,8 @@ export default function TeamContacts({ disabled, userAttributes }: Props) {
         ))}
       </ul>
       <p className="my-2 ml-2">
-        Please ensure that all contacts listed are <span className="font-bold text-red-600">different</span>{' '}
-        individuals. Each role must be assigned to a <span className="font-bold text-red-600">unique</span> person.
+        Please ensure that the Product Owner and Primary Technical Lead are assigned to{' '}
+        <span className="font-bold text-red-600">different</span> individuals.
       </p>
       <Table.ScrollContainer minWidth={800}>
         <Table verticalSpacing="sm">
