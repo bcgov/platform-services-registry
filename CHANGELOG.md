@@ -1,3 +1,15 @@
+## [0.56.0](https://github.com/bcgov/platform-services-registry/compare/v0.55.0...v0.56.0) (2025-04-01)
+
+### Features
+
+* **5285:** add cost estimation on Quota section ([9acfb52](https://github.com/bcgov/platform-services-registry/commit/9acfb528b3d0f5d3e5683998a45a23eacf8d7133))
+
+### Bug Fixes
+
+* **0000:** add provision client credentials on nats-provision ([5abe34c](https://github.com/bcgov/platform-services-registry/commit/5abe34cd94ae9db1d1ad487c4108347044f1aa93))
+* **5302:** resolve issue of empty TF plan detail ([abd814d](https://github.com/bcgov/platform-services-registry/commit/abd814d22d790360bf403ddf1a748cf303eca670))
+* **5304:** restrict same id users to be added to team contacts ([a67f6ec](https://github.com/bcgov/platform-services-registry/commit/a67f6ecaeeb5765b5e450f9c11b9c4cd52f5e7c8))
+* **5337:** delete only pending billings for the current project ([fa1785f](https://github.com/bcgov/platform-services-registry/commit/fa1785fa04f015e982b67230bf0ae5039320ed67))
 ## [0.55.0](https://github.com/bcgov/platform-services-registry/compare/v0.54.0...v0.55.0) (2025-03-27)
 
 ### Features
