@@ -9,10 +9,7 @@ const NUM_TO_DISPLAY = 5;
 
 export default function FormErrorNotification() {
   const { formState } = useFormContext();
-  const getErrorMessage = (key: string): string => {
-    const error = formState.errors[key];
-    return typeof error === 'object' && error && 'message' in error ? String(error.message) : _startCase(key);
-  };
+
   useEffect(() => {
     const keys = Object.keys(formState.errors);
     if (keys.length > 0) {
@@ -27,7 +24,7 @@ export default function FormErrorNotification() {
             {keysToDisplay.map((key) => (
               <li key={key}>
                 <IconPoint className="inline-block" />
-                {getErrorMessage(key)}
+                {_startCase(key)}
               </li>
             ))}
             {remaining > 0 && (
