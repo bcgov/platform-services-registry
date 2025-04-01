@@ -87,7 +87,6 @@ describe('Search Public Cloud Requests - Permissions', () => {
       decision: DecisionStatus.APPROVED,
     });
 
-    console.log(res2.body);
     expect(res2.status).toBe(200);
 
     const res3 = await provisionPublicCloudProduct(dat1.licencePlate);
