@@ -4,9 +4,9 @@ import { GlobalRole } from '@/constants';
 import { createSamplePrivateCloudProductData } from '@/helpers/mock-resources';
 import { mockNoRoleUsers, findMockUserByIdr, findOtherMockUsers } from '@/helpers/mock-users';
 import { mockSessionByEmail, mockSessionByRole } from '@/services/api-test/core';
-import { provisionPrivateCloudProduct } from '@/services/api-test/private-cloud';
 import { createPrivateCloudProduct, listPrivateCloudProductRequests } from '@/services/api-test/private-cloud/products';
 import { makePrivateCloudRequestDecision } from '@/services/api-test/private-cloud/requests';
+import { provisionPrivateCloudProduct } from '@/services/api-test/v1/private-cloud';
 
 const PO = mockNoRoleUsers[0];
 const TL1 = mockNoRoleUsers[1];

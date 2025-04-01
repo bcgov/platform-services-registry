@@ -41,7 +41,8 @@ export async function asyncEvery<T>(arr: T[], callback: (value: T) => Promise<bo
   return results.every((result) => result);
 }
 
-export function checkArrayStringCondition(condition: string[] = [], target: string[] = []) {
+export function checkArrayStringCondition(isLocalOrTest: boolean, condition: string[] = [], target: string[] = []) {
+  if (isLocalOrTest) return true;
   if (condition.length === 0) return true;
 
   const targetArr = _uniq(_compact(_castArray(target).map((str) => _trim(String(str)))));

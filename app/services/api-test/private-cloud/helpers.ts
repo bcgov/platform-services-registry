@@ -3,13 +3,13 @@ import { GlobalRole } from '@/constants';
 import { createSamplePrivateCloudProductData } from '@/helpers/mock-resources';
 import { resourceRequests1, resourceRequests2 } from '@/helpers/mock-resources/private-cloud-product';
 import { mockSessionByEmail, mockSessionByRole } from '@/services/api-test/core';
-import { provisionPrivateCloudProduct } from '@/services/api-test/private-cloud';
 import {
   createPrivateCloudProduct as createPrivateCloudProductTest,
   editPrivateCloudProduct,
   deletePrivateCloudProduct as deletePrivateCloudProductTest,
 } from '@/services/api-test/private-cloud/products';
 import { makePrivateCloudRequestDecision } from '@/services/api-test/private-cloud/requests';
+import { provisionPrivateCloudProduct } from '@/services/api-test/v1/private-cloud';
 import { PrivateCloudRequestDetail } from '@/types/private-cloud';
 
 export async function createPrivateCloudProduct() {

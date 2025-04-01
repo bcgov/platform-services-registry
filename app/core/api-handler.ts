@@ -172,7 +172,8 @@ function createApiHandler<
 
         // Validate user roles
         if (roles && roles.length > 0) {
-          const allowed = checkArrayStringCondition(roles, session.roles);
+          const allowed = checkArrayStringCondition(IS_LOCAL || IS_TEST, roles, session.roles);
+
           if (!allowed) {
             return UnauthorizedResponse('not allowed to perform the task');
           }

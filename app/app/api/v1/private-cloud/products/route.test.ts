@@ -10,9 +10,9 @@ import {
   mockUserServiceAccountByEmail,
   mockUserServiceAccountByRole,
 } from '@/services/api-test/core';
-import { provisionPrivateCloudProduct } from '@/services/api-test/private-cloud';
 import { createPrivateCloudProduct } from '@/services/api-test/private-cloud/products';
 import { makePrivateCloudRequestDecision } from '@/services/api-test/private-cloud/requests';
+import { provisionPrivateCloudProduct } from '@/services/api-test/v1/private-cloud';
 import { listPrivateCloudProductApi } from '@/services/api-test/v1/private-cloud/products';
 
 const PO = mockNoRoleUsers[0];
@@ -115,6 +115,7 @@ describe('API: List Private Cloud Products - Permissions', () => {
     await mockUserServiceAccountByEmail(RANDOM1.email);
 
     const res1 = await listPrivateCloudProductApi();
+
     expect(res1.status).toBe(200);
     const dat1 = await res1.json();
 

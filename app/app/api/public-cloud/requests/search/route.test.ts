@@ -6,7 +6,6 @@ import prisma from '@/core/prisma';
 import { createSamplePublicCloudProductData } from '@/helpers/mock-resources';
 import { mockNoRoleUsers, findMockUserByIdr, findOtherMockUsers } from '@/helpers/mock-users';
 import { mockSessionByEmail, mockSessionByRole } from '@/services/api-test/core';
-import { provisionPublicCloudProduct } from '@/services/api-test/public-cloud';
 import {
   createPublicCloudProduct,
   editPublicCloudProduct,
@@ -14,6 +13,7 @@ import {
   reviewPublicCloudBilling,
 } from '@/services/api-test/public-cloud/products';
 import { searchPublicCloudRequests, makePublicCloudRequestDecision } from '@/services/api-test/public-cloud/requests';
+import { provisionPublicCloudProduct } from '@/services/api-test/v1/public-cloud';
 
 const PO = mockNoRoleUsers[0];
 const TL1 = mockNoRoleUsers[1];

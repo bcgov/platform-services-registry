@@ -3,7 +3,6 @@ import { DecisionStatus, RequestType } from '@prisma/client';
 import { GlobalRole } from '@/constants';
 import { createSamplePrivateCloudProductData } from '@/helpers/mock-resources';
 import { mockSessionByEmail, mockSessionByRole } from '@/services/api-test/core';
-import { provisionPrivateCloudProduct } from '@/services/api-test/private-cloud';
 import {
   createPrivateCloudProduct,
   getPrivateCloudProduct,
@@ -11,6 +10,7 @@ import {
   getAllPrivateCloudComments,
 } from '@/services/api-test/private-cloud/products';
 import { makePrivateCloudRequestDecision } from '@/services/api-test/private-cloud/requests';
+import { provisionPrivateCloudProduct } from '@/services/api-test/v1/private-cloud';
 
 let globalLicencePlate: string;
 const globalProductData = createSamplePrivateCloudProductData();

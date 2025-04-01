@@ -3,7 +3,7 @@ import _isNil from 'lodash-es/isNil';
 import { GET as _listPublicCloudProduct } from '@/app/api/v1/public-cloud/products/route';
 import { createRoute, ParamData } from '../../core';
 
-const productCollectionRoute = createRoute('/api/public-cloud/products');
+const productCollectionRoute = createRoute('/api/v1/public-cloud/products');
 
 interface ListPublicCloudProductApiProps {
   page?: number;

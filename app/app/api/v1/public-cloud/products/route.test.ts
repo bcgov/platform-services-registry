@@ -11,13 +11,13 @@ import {
   mockUserServiceAccountByEmail,
   mockUserServiceAccountByRole,
 } from '@/services/api-test/core';
-import { provisionPublicCloudProduct } from '@/services/api-test/public-cloud';
 import {
   createPublicCloudProduct,
   signPublicCloudBilling,
   reviewPublicCloudBilling,
 } from '@/services/api-test/public-cloud/products';
 import { makePublicCloudRequestDecision } from '@/services/api-test/public-cloud/requests';
+import { provisionPublicCloudProduct } from '@/services/api-test/v1/public-cloud';
 import { listPublicCloudProductApi } from '@/services/api-test/v1/public-cloud/products';
 
 const PO = mockNoRoleUsers[0];
@@ -149,6 +149,7 @@ describe('API: List Public Cloud Products - Permissions', () => {
     await mockUserServiceAccountByEmail(RANDOM1.email);
 
     const res1 = await listPublicCloudProductApi({});
+
     expect(res1.status).toBe(200);
     const dat1 = await res1.json();
 
