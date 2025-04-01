@@ -6,8 +6,10 @@ import { ReactNode } from 'react';
 import { useFormContext } from 'react-hook-form';
 import ExternalLink from '@/components/generic/button/ExternalLink';
 import HookFormTextInput from '@/components/generic/input/HookFormTextInput';
+import { namespaceKeys, resourceKeys } from '@/constants';
 import { getSubnetForEmerald } from '@/services/backend/private-cloud/products';
 import { cn } from '@/utils/js';
+import QuotasBudgetEstimation from './QuotasBudgetEstimation';
 import QuotasChangeInfo from './QuotasChangeInfo';
 import QuotasDescription from './QuotasDescription';
 
@@ -23,12 +25,6 @@ const resourceUnit = {
   memory: 'GiB',
   storage: 'GiB',
 };
-
-type ResourceRequestsEnvKeys = Array<keyof ResourceRequestsEnv>;
-type ResourceRequestsKeys = Array<keyof ResourceRequests>;
-
-const namespaceKeys: ResourceRequestsEnvKeys = ['development', 'test', 'production', 'tools'];
-const resourceKeys: ResourceRequestsKeys = ['cpu', 'memory', 'storage'];
 
 export default function Quotas({
   disabled,
@@ -150,6 +146,8 @@ export default function Quotas({
           );
         })}
       </div>
+
+      <QuotasBudgetEstimation className="mt-10" originalData={originalResourceRequests} formData={resourceRequests} />
       {quotaContactRequired && <QuotasChangeInfo disabled={disabled} />}
     </>
   );

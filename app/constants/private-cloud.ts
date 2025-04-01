@@ -1,4 +1,4 @@
-import { Cluster, Prisma, PrivateCloudProductMemberRole } from '@prisma/client';
+import { Cluster, Prisma, ResourceRequestsEnv, ResourceRequests, PrivateCloudProductMemberRole } from '@prisma/client';
 import _orderBy from 'lodash-es/orderBy';
 import { productSorts } from './common';
 
@@ -77,3 +77,9 @@ export const environmentLongNames = {
   prod: 'production',
   tools: 'tools',
 };
+
+export type ResourceRequestsEnvKeys = Array<keyof ResourceRequestsEnv>;
+export type ResourceRequestsKeys = Array<keyof ResourceRequests>;
+
+export const namespaceKeys: ResourceRequestsEnvKeys = ['development', 'test', 'production', 'tools'];
+export const resourceKeys: ResourceRequestsKeys = ['cpu', 'memory', 'storage'];

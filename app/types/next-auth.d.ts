@@ -109,6 +109,7 @@ declare module 'next-auth' {
       apiAccount: boolean;
       azure: boolean;
       awsLza: boolean;
+      costRecovery: boolean;
     };
     permissionList: string[];
     requiresRelogin: boolean;
