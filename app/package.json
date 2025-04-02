@@ -83,7 +83,7 @@
     "postcss": "8.5.3",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
-    "react-email": "^3.0.0",
+    "react-email": "^4.0.0",
     "react-hook-form": "^7.45.1",
     "react-imask": "^7.6.1",
     "react-select": "^5.7.3",
