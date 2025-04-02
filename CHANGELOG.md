@@ -1,3 +1,8 @@
+## [0.59.0](https://github.com/bcgov/platform-services-registry/compare/v0.58.0...v0.59.0) (2025-04-02)
+
+### Features
+
+* **5350:** add billing status filter to public cloud list page ([1ca9d86](https://github.com/bcgov/platform-services-registry/commit/1ca9d86ccdadd8b1b4520fe91db435e0a4f6fcb4))
 ## [0.58.0](https://github.com/bcgov/platform-services-registry/compare/v0.57.0...v0.58.0) (2025-04-02)
 
 ### Features
