@@ -27,7 +27,7 @@ export default async function createPublicCloudNatsMessage(
   const currentProject = request.project;
 
   const billing = await prisma.publicCloudBilling.findFirst({
-    where: { licencePlate: decisionData.licencePlate },
+    where: { licencePlate: decisionData.licencePlate, signed: true, approved: true },
     orderBy: { createdAt: Prisma.SortOrder.desc },
   });
 
