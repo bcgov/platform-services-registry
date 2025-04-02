@@ -51,14 +51,6 @@ jest.mock('@/services/keycloak/app-realm', () => ({
   findUserEmailsByAuthRole: jest.fn(async () => []),
 }));
 
-jest.mock('@/utils/node/jwt', () => ({
-  parseKeycloakJwtTokenSafe: jest.fn(async () => ({
-    roles: 'private-admin,public-admin',
-    service_account_type: 'team',
-  })),
-  verifyKeycloakJwtTokenSafe: jest.fn(async () => ({ service_account_type: 'user', 'kc-userid': 'xxxxxxxxxxxx' })),
-}));
-
 jest.mock('@/helpers/pdfs/emou/index', () => ({
   generateEmouPdf: jest.fn(async () => Buffer.alloc(0)),
 }));
