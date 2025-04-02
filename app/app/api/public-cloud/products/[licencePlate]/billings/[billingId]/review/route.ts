@@ -1,12 +1,14 @@
-import { RequestType, TaskStatus, TaskType } from '@prisma/client';
+import { Prisma, RequestType, TaskStatus, TaskType } from '@prisma/client';
 import { z } from 'zod';
 import { GlobalRole } from '@/constants';
 import createApiHandler from '@/core/api-handler';
+import { logger } from '@/core/logging';
 import prisma from '@/core/prisma';
 import { OkResponse, UnauthorizedResponse } from '@/core/responses';
 import { formatFullName } from '@/helpers/user';
 import { sendAdminCreateRequestEmails } from '@/services/ches/public-cloud';
 import { models, publicCloudBillingDetailInclude, publicCloudRequestDetailInclude, tasks } from '@/services/db';
+import { sendPublicCloudNatsMessage } from '@/services/nats';
 import { objectId } from '@/validation-schemas';
 
 const pathParamSchema = z.object({
@@ -72,6 +74,20 @@ export const POST = apiHandler(async ({ pathParams, body, session }) => {
         }),
         sendAdminCreateRequestEmails(requestDecorated, requesterName, billingDecorated),
       ]);
+    } else {
+      const msgId = `emou-complete-${new Date().getTime()}`;
+      const lastRequest = await prisma.publicCloudRequest.findFirst({
+        where: { licencePlate, active: false },
+        orderBy: { createdAt: Prisma.SortOrder.desc },
+        include: publicCloudRequestDetailInclude,
+      });
+
+      if (lastRequest) {
+        const decoratedRequest = await models.publicCloudRequest.decorate(lastRequest, session, true);
+        await sendPublicCloudNatsMessage({ ...decoratedRequest, id: msgId });
+      } else {
+        logger.error(`[MOU Review] No request found for licence plate ${licencePlate}`);
+      }
     }
   }
 
