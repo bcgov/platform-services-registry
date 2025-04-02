@@ -1,3 +1,8 @@
+## [0.58.0](https://github.com/bcgov/platform-services-registry/compare/v0.57.0...v0.58.0) (2025-04-02)
+
+### Features
+
+* **5357:** add data migration to create missing billings ([ff99265](https://github.com/bcgov/platform-services-registry/commit/ff99265b0a0b43e777ab542b9b18bf6e59242a32))
 ## [0.57.0](https://github.com/bcgov/platform-services-registry/compare/v0.56.0...v0.57.0) (2025-04-02)
 
 ### Features
