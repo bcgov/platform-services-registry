@@ -41,8 +41,11 @@ describe('API: List Private Cloud Products - Permissions', () => {
     const requestData = createSamplePrivateCloudProductData({
       data: { ...memberData },
     });
+
     const res1 = await createPrivateCloudProduct(requestData);
+
     const dat1 = await res1.json();
+
     expect(res1.status).toBe(200);
 
     await mockSessionByRole(GlobalRole.PrivateReviewer);
@@ -52,9 +55,11 @@ describe('API: List Private Cloud Products - Permissions', () => {
       type: RequestType.CREATE,
       decision: DecisionStatus.APPROVED,
     });
+
     expect(res2.status).toBe(200);
 
     const res3 = await provisionPrivateCloudProduct(dat1.licencePlate);
+
     expect(res3.status).toBe(200);
   });
 
@@ -62,6 +67,8 @@ describe('API: List Private Cloud Products - Permissions', () => {
     await mockUserServiceAccountByEmail(PO.email);
 
     const res1 = await listPrivateCloudProductApi();
+    console.log('All Res1: ', res1);
+    console.log('All Res1 Status: ', res1.status);
     expect(res1.status).toBe(200);
     const dat1 = await res1.json();
 
@@ -118,6 +125,7 @@ describe('API: List Private Cloud Products - Permissions', () => {
 
     expect(res1.status).toBe(200);
     const dat1 = await res1.json();
+    console.dir(dat1, { depth: Infinity });
 
     expect(dat1.totalCount).toBe(1);
   });

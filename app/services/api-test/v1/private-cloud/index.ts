@@ -16,6 +16,8 @@ export async function provisionPrivateCloudProduct(idOrLicencePlate: string) {
     secret,
   });
 
+  console.log('Signature: ', signature);
+
   const result = await privateCloudRoute.post(
     _provisionPrivateCloudProduct,
     '/{{idOrLicencePlate}}/provision',

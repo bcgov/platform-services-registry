@@ -108,12 +108,16 @@ function createApiHandler<
               return UnauthorizedResponse('not allowed to perform the task');
             }
 
+            console.log('bearerToken: ', bearerToken);
+
             jwtData = await verifyKeycloakJwtToken({
               jwtToken: bearerToken,
               authUrl: AUTH_SERVER_URL,
               realm: AUTH_RELM,
               requiredClaims: ['service_account_type'],
             });
+
+            console.log('My JwtData: ', jwtData);
 
             if (!jwtData) {
               return UnauthorizedResponse('invalid token');
@@ -172,7 +176,7 @@ function createApiHandler<
 
         // Validate user roles
         if (roles && roles.length > 0) {
-          const allowed = checkArrayStringCondition(IS_LOCAL || IS_TEST, roles, session.roles);
+          const allowed = checkArrayStringCondition(roles, session.roles);
 
           if (!allowed) {
             return UnauthorizedResponse('not allowed to perform the task');

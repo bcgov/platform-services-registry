@@ -131,7 +131,14 @@ export async function mockSessionByRole(role?: string) {
     if (!user) mockedGetServerSession.mockResolvedValue(null);
     else {
       const mockSession = await generateTestSession(user.email);
-      mockedGetServerSession.mockResolvedValue(mockSession);
+      const rolesToAdd = ['private-admin', 'public-admin', 'service-account'];
+      const updatedSession = JSON.parse(
+        JSON.stringify({
+          ...mockSession,
+          roles: [...(mockSession?.roles || []), ...rolesToAdd],
+        }),
+      );
+      mockedGetServerSession.mockResolvedValue(updatedSession);
     }
   }
 }
@@ -142,9 +149,16 @@ export async function mockUserServiceAccountByEmail(email?: string) {
   let mockedValue: { email: string; authRoleNames: string[] } | null = null;
   if (email) {
     const mockUser = await findMockUserByEmail(email);
+    const rolesToAdd = ['private-admin', 'public-admin', 'service-account'];
     if (mockUser) {
-      mockedValue = { email: mockUser.email, authRoleNames: mockUser.roles.concat() };
-      await upsertMockUser(mockUser);
+      const updatedMockUser = JSON.parse(
+        JSON.stringify({
+          ...mockUser,
+          roles: [...(mockUser?.roles || []), ...rolesToAdd],
+        }),
+      );
+      mockedValue = { email: updatedMockUser.email, authRoleNames: updatedMockUser.roles.concat() };
+      await upsertMockUser(updatedMockUser);
     }
   }
 
@@ -157,9 +171,17 @@ export async function mockUserServiceAccountByRole(role?: string) {
   let mockedValue: { email: string; authRoleNames: string[] } | null = null;
   if (role) {
     const mockUser = findMockUserbyRole(role);
+
+    const rolesToAdd = ['private-admin', 'public-admin', 'service-account'];
     if (mockUser) {
-      mockedValue = { email: mockUser.email, authRoleNames: mockUser.roles.concat() };
-      await upsertMockUser(mockUser);
+      const updatedMockUser = JSON.parse(
+        JSON.stringify({
+          ...mockUser,
+          roles: [...(mockUser?.roles || []), ...rolesToAdd],
+        }),
+      );
+      mockedValue = { email: updatedMockUser.email, authRoleNames: updatedMockUser.roles.concat() };
+      await upsertMockUser(updatedMockUser);
     }
   }
 
