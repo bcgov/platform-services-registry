@@ -4,7 +4,7 @@
   "version": "0.59.0",
   "private": true,
   "scripts": {
-    "dev": "next dev",
+    "dev": "next dev --turbo",
     "build": "next build",
     "start": "dotenv -e .env.test next start",
     "postinstall": "pnpm prisma-generate",

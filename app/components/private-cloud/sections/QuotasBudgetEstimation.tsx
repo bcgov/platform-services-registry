@@ -72,12 +72,25 @@ interface Metadata {
   total: EnvironmentMetadata;
 }
 
-function EnvDetails({ envData, division = 1 }: { envData: EnvironmentMetadata; division?: number }) {
-  const totalDiff = envData.subtotal.new.price - envData.subtotal.old.price;
+function EnvDetails({
+  envData,
+  division = 1,
+  isTotal = false,
+}: {
+  envData: EnvironmentMetadata;
+  division?: number;
+  isTotal?: boolean;
+}) {
+  const totalDiff = envData.subtotal.changed ? envData.subtotal.new.price - envData.subtotal.old.price : 0;
   const increased = totalDiff > 0;
   const decreased = totalDiff < 0;
 
-  let summary = <div className={cn('text-right text-gray-700 italic')}>No changes</div>;
+  let summary = envData.subtotal.changed ? (
+    <div className={cn('text-right text-gray-700 italic')}>No changes</div>
+  ) : (
+    <></>
+  );
+
   if (increased) {
     summary = (
       <div className={cn('text-right text-red-600 italic')}>
@@ -101,7 +114,7 @@ function EnvDetails({ envData, division = 1 }: { envData: EnvironmentMetadata; d
           <Table.Tr>
             <Table.Th className="text-center text-sm px-1">CPU</Table.Th>
             <Table.Th className="text-center text-sm px-1">Storage</Table.Th>
-            <Table.Th className="text-center text-sm px-1">Subtotal</Table.Th>
+            <Table.Th className="text-center text-sm px-1">{isTotal ? 'Grand Total' : 'Subtotal'}</Table.Th>
           </Table.Tr>
         </Table.Thead>
         <Table.Tbody>
@@ -116,7 +129,7 @@ function EnvDetails({ envData, division = 1 }: { envData: EnvironmentMetadata; d
               <CpuEstimation
                 value={envData.cpu.new.value}
                 price={envData.cpu.new.price / division}
-                diff={envData.cpu.new.price - envData.cpu.old.price}
+                diff={envData.cpu.changed ? envData.cpu.new.price - envData.cpu.old.price : 0}
               />
             </Table.Td>
             <Table.Td className="text-center px-1 align-top">
@@ -129,7 +142,7 @@ function EnvDetails({ envData, division = 1 }: { envData: EnvironmentMetadata; d
               <StorageEstimation
                 value={envData.storage.new.value}
                 price={envData.storage.new.price / division}
-                diff={envData.storage.new.price - envData.storage.old.price}
+                diff={envData.storage.changed ? envData.storage.new.price - envData.storage.old.price : 0}
               />
             </Table.Td>
             <Table.Td className="text-center px-1 align-top">
@@ -354,7 +367,7 @@ export default function QuotasBudgetEstimation({
                       );
                     })}
                     <Table.Td className="align-top px-1">
-                      <EnvDetails envData={metadata.total} division={scenario.division} />
+                      <EnvDetails envData={metadata.total} division={scenario.division} isTotal />
                     </Table.Td>
                   </Table.Tr>
                 </Fragment>
