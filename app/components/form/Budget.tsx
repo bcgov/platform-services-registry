@@ -7,9 +7,8 @@ import { useFormContext } from 'react-hook-form';
 import ExternalLink from '@/components/generic/button/ExternalLink';
 import FormDollarInput from '@/components/generic/input/FormDollarInput';
 import HookFormDollarInput from '@/components/generic/input/HookFormDollarInput';
-import { cn } from '@/utils/js';
 
-export default function Budget({ disabled }: { disabled?: boolean }) {
+export default function Budget({ disabled, mode }: { disabled?: boolean; mode?: 'create' | 'edit' }) {
   const {
     formState: { errors },
     setValue,
@@ -21,6 +20,8 @@ export default function Budget({ disabled }: { disabled?: boolean }) {
   const environmentsEnabled = watch('environmentsEnabled', {});
 
   useEffect(() => {
+    if (mode !== 'create') return;
+
     ['budget.dev', 'budget.test', 'budget.prod', 'budget.tools'].forEach((key) => {
       setValue(key, provider === Provider.AZURE ? 0 : 50, { shouldDirty: true });
     });

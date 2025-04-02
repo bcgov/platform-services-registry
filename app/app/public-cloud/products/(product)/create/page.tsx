@@ -71,7 +71,9 @@ export default publicCloudProductNew(({}) => {
       label: 'Project budget',
       description: '',
       Component: Budget,
-      componentArgs: {},
+      componentArgs: {
+        mode: 'create',
+      },
     },
   ];
 
