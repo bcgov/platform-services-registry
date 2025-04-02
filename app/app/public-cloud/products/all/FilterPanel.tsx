@@ -2,7 +2,8 @@ import { Provider, Prisma, Ministry, ProjectStatus } from '@prisma/client';
 import { useSession } from 'next-auth/react';
 import { useSnapshot, subscribe } from 'valtio';
 import FormMultiSelect from '@/components/generic/select/FormMultiSelect';
-import { ministryOptions, getAllowedOptions } from '@/constants';
+import { ministryOptions, getAllowedOptions, productBillingStatusOptions } from '@/constants';
+import { ProductBiliingStatus } from '@/types';
 import { pageState } from './state';
 
 export default function FilterPanel() {
@@ -21,7 +22,7 @@ export default function FilterPanel() {
           pageState.ministries = value as Ministry[];
           pageState.page = 1;
         }}
-        classNames={{ wrapper: 'col-span-6' }}
+        classNames={{ wrapper: 'col-span-5' }}
       />
       <FormMultiSelect
         name="provider"
@@ -30,6 +31,17 @@ export default function FilterPanel() {
         data={getAllowedOptions(session)}
         onChange={(value) => {
           pageState.providers = value as Provider[];
+          pageState.page = 1;
+        }}
+        classNames={{ wrapper: 'col-span-2' }}
+      />
+      <FormMultiSelect
+        name="billingStatus"
+        label="Billing Status"
+        value={pageSnapshot.billingStatus ?? []}
+        data={productBillingStatusOptions}
+        onChange={(value) => {
+          pageState.billingStatus = value as ProductBiliingStatus[];
           pageState.page = 1;
         }}
         classNames={{ wrapper: 'col-span-3' }}
@@ -43,7 +55,7 @@ export default function FilterPanel() {
           pageState.status = value as ProjectStatus[];
           pageState.page = 1;
         }}
-        classNames={{ wrapper: 'col-span-3' }}
+        classNames={{ wrapper: 'col-span-2' }}
       />
     </div>
   );

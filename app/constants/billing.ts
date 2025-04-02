@@ -1,4 +1,5 @@
 import { Prisma } from '@prisma/client';
+import { ProductBiliingStatus } from '@/types';
 
 export const billingSorts = [
   {
@@ -41,4 +42,10 @@ export const billingSorts = [
     sortKey: 'approvedAt',
     sortOrder: Prisma.SortOrder.asc,
   },
+];
+
+export const productBillingStatusOptions = [
+  { value: ProductBiliingStatus.NO_BILLING, label: 'No billing' },
+  { value: ProductBiliingStatus.PENDING, label: 'Pending' },
+  { value: ProductBiliingStatus.COMPLETED, label: 'Completed' },
 ];
