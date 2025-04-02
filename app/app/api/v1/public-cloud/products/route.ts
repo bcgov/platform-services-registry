@@ -20,7 +20,7 @@ const queryParamSchema = z.object({
   status: z.preprocess(processUpperEnumString, z.nativeEnum(ProjectStatus).optional()),
 });
 
-export const GET = createApiHandler({
+export const POST = createApiHandler({
   roles: ['service-account'],
   useServiceAccount: true,
   validations: { queryParams: queryParamSchema },
@@ -43,6 +43,6 @@ export const GET = createApiHandler({
 
 // Important! It appears there is a bug in NextJS where it caches route information, including response data from third-party services (Keycloak)
 // when only the GET method is used. Adding a placeholder POST method ensures that NextJS handles the requests correctly and avoids this caching issue. :()
-export const POST = function () {
-  return BadRequestResponse('placeholder route');
-};
+// export const POST = function () {
+//   return BadRequestResponse('placeholder route');
+// };
