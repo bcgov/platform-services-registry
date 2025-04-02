@@ -1,3 +1,12 @@
+## [0.57.0](https://github.com/bcgov/platform-services-registry/compare/v0.56.0...v0.57.0) (2025-04-02)
+
+### Features
+
+* **5357:** send NATs message when eMOU completed ([c01fd24](https://github.com/bcgov/platform-services-registry/commit/c01fd24622928d12b2177373162f1e05ce56f326))
+
+### Bug Fixes
+
+* **5355:** remove logic to set default value on edit page ([a43488b](https://github.com/bcgov/platform-services-registry/commit/a43488be57af9132df51911009159b23eb2889af))
 ## [0.56.0](https://github.com/bcgov/platform-services-registry/compare/v0.55.0...v0.56.0) (2025-04-01)
 
 ### Features
