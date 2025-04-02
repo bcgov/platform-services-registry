@@ -10,6 +10,7 @@ const initialValue = {
   pageSize: 10,
   ministries: [],
   providers: [],
+  billingStatus: [],
   status: [ProjectStatus.ACTIVE],
   sortValue: publicCloudProductSorts[0].label,
   sortKey: publicCloudProductSorts[0].sortKey,

@@ -11,6 +11,7 @@ import _isString from 'lodash-es/isString';
 import { string, z } from 'zod';
 import { AGMinistries } from '@/constants';
 import { validateDistinctPOandTl } from '@/helpers/user';
+import { ProductBiliingStatus } from '@/types';
 import { processEnumString } from '@/utils/js';
 import { RequestDecision } from './shared';
 
@@ -155,6 +156,7 @@ export const publicCloudProductSearchNoPaginationBodySchema = z.object({
   search: z.string().optional(),
   ministries: z.array(z.nativeEnum(Ministry)).optional(),
   providers: z.array(z.nativeEnum(Provider)).optional(),
+  billingStatus: z.array(z.nativeEnum(ProductBiliingStatus)).optional(),
   status: z.array(z.nativeEnum(ProjectStatus)).optional(),
   sortValue: z.string().optional(),
   sortKey: z.string().optional(),
