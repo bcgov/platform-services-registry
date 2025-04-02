@@ -77,6 +77,7 @@ jest.mock('@/services/k8s', () => ({
 [
   'castArray',
   'compact',
+  'difference',
   'forEach',
   'get',
   'isArray',
