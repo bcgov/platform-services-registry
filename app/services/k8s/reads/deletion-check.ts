@@ -10,13 +10,6 @@ export interface DeletionCheck {
   artifactory: boolean;
 }
 
-export enum ProjectSetNamespace {
-  Prod = 'prod',
-  Test = 'test',
-  Dev = 'dev',
-  Tools = 'tools',
-}
-
 export async function checkDeletionAvailability(licencePlate: string, cluster: Cluster): Promise<DeletionCheck> {
   if (!ENABLE_DELETION_CHECK || licencePlate === '261403') {
     return {
