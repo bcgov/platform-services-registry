@@ -13,7 +13,7 @@ const getRandomBool = () => faker.helpers.arrayElement([true, false]);
 const getRandomMinistry = () => faker.helpers.arrayElement(ministries);
 const getRandomCluster = () => faker.helpers.arrayElement(clusters);
 const getRandomProvider = () => faker.helpers.arrayElement(providers);
-const userSecret = 'testsecret'; // pragma: allowlist secret
+const secret = 'testsecret'; // pragma: allowlist secret
 
 export function createSamplePrivateCloudProductData(args?: {
   data?: Partial<
@@ -119,21 +119,33 @@ export function createSamplePrivateCloudCommentData(args?: { data?: Partial<Pris
   return _data;
 }
 
-export function generateTestJwt(user?: AppUserWithRoles) {
+export function getUserTestAuthHeader(user?: AppUserWithRoles) {
   const stringifiedRoles = _join(user?.roles, ',');
-  return jws.sign({
+  const signature = jws.sign({
     header: { alg: 'HS256', typ: 'JWT' },
     payload: {
       roles: stringifiedRoles,
       service_account_type: 'user',
       'kc-userid': user?.id,
     },
-    secret: userSecret,
+    secret,
   });
+  return {
+    Authorization: 'Bearer ' + signature,
+    'Content-Type': 'application/json',
+  };
 }
 
-export function getTestAuthHeader(user?: AppUserWithRoles) {
-  const signature = generateTestJwt(user);
+export function getProvisionTestAuthHeader() {
+  const signature = jws.sign({
+    header: { alg: 'HS256', typ: 'JWT' },
+    payload: {
+      roles: 'private-admin,public-admin',
+      service_account_type: 'team',
+    },
+    secret,
+  });
+
   return {
     Authorization: 'Bearer ' + signature,
     'Content-Type': 'application/json',
