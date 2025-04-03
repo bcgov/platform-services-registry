@@ -79,6 +79,7 @@ jest.mock('@/services/k8s', () => ({
   'isBoolean',
   'isDate',
   'isEqual',
+  'join',
   'isNil',
   'isNumber',
   'isPlainObject',

@@ -1,8 +1,10 @@
 import { Ministry, Cluster, ProjectStatus } from '@prisma/client';
 import jws from 'jws';
 import _isNil from 'lodash-es/isNil';
+import _join from 'lodash-es/join';
 import { POST as _listPrivateCloudProduct } from '@/app/api/v1/private-cloud/products/route';
-import { createRoute, ParamData } from '../../core';
+import { AppUserWithRoles } from '@/types/user';
+import { createRoute } from '../../core';
 
 const productCollectionRoute = createRoute('/api/v1/private-cloud/products');
 
@@ -16,12 +18,17 @@ interface ListPrivateCloudProductApiProps {
   status?: ProjectStatus;
 }
 
-export async function listPrivateCloudProductApi(queryParams?: ListPrivateCloudProductApiProps) {
+export async function listPrivateCloudProductApi(
+  queryParams?: ListPrivateCloudProductApiProps,
+  user?: AppUserWithRoles,
+) {
+  const stringifiedRoles = _join(user?.roles, ',');
   const signature = jws.sign({
     header: { alg: 'HS256', typ: 'JWT' },
     payload: {
-      roles: 'private-admin',
-      service_account_type: 'team',
+      roles: stringifiedRoles,
+      service_account_type: 'user',
+      'kc-userid': user?.id,
     },
     secret,
   });

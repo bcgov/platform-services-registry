@@ -4,7 +4,7 @@ import { GlobalRole } from '@/constants';
 import { defaultAccountCoding } from '@/constants';
 import prisma from '@/core/prisma';
 import { createSamplePublicCloudProductData } from '@/helpers/mock-resources';
-import { mockNoRoleUsers, findMockUserByIdr, findOtherMockUsers } from '@/helpers/mock-users';
+import { mockNoRoleUsers, findMockUserByIdr, findOtherMockUsers, findMockUserbyRole } from '@/helpers/mock-users';
 import {
   mockSessionByEmail,
   mockSessionByRole,
@@ -95,7 +95,7 @@ describe('API: List Public Cloud Products - Permissions', () => {
   it('should successfully list 1 project by PO', async () => {
     await mockUserServiceAccountByEmail(PO.email);
 
-    const res1 = await listPublicCloudProductApi({});
+    const res1 = await listPublicCloudProductApi({}, PO);
     expect(res1.status).toBe(200);
     const dat1 = await res1.json();
 
@@ -105,7 +105,7 @@ describe('API: List Public Cloud Products - Permissions', () => {
   it('should successfully list 1 project by TL1', async () => {
     await mockUserServiceAccountByEmail(TL1.email);
 
-    const res1 = await listPublicCloudProductApi({});
+    const res1 = await listPublicCloudProductApi({}, TL1);
     expect(res1.status).toBe(200);
     const dat1 = await res1.json();
 
@@ -115,7 +115,7 @@ describe('API: List Public Cloud Products - Permissions', () => {
   it('should successfully list 1 project by TL2', async () => {
     await mockUserServiceAccountByEmail(TL2.email);
 
-    const res1 = await listPublicCloudProductApi({});
+    const res1 = await listPublicCloudProductApi({}, TL2);
     expect(res1.status).toBe(200);
     const dat1 = await res1.json();
 
@@ -148,7 +148,7 @@ describe('API: List Public Cloud Products - Permissions', () => {
   it('should successfully list 1 project by the random user', async () => {
     await mockUserServiceAccountByEmail(RANDOM1.email);
 
-    const res1 = await listPublicCloudProductApi({});
+    const res1 = await listPublicCloudProductApi({}, RANDOM1);
 
     expect(res1.status).toBe(200);
     const dat1 = await res1.json();
@@ -159,7 +159,7 @@ describe('API: List Public Cloud Products - Permissions', () => {
   it('should successfully list 1 project by PO', async () => {
     await mockUserServiceAccountByEmail(PO.email);
 
-    const res1 = await listPublicCloudProductApi({});
+    const res1 = await listPublicCloudProductApi({}, PO);
     expect(res1.status).toBe(200);
     const dat1 = await res1.json();
 
@@ -169,7 +169,7 @@ describe('API: List Public Cloud Products - Permissions', () => {
   it('should successfully list 1 project by TL1', async () => {
     await mockUserServiceAccountByEmail(TL1.email);
 
-    const res1 = await listPublicCloudProductApi({});
+    const res1 = await listPublicCloudProductApi({}, TL1);
     expect(res1.status).toBe(200);
     const dat1 = await res1.json();
 
@@ -179,7 +179,7 @@ describe('API: List Public Cloud Products - Permissions', () => {
   it('should successfully list 1 project by TL2', async () => {
     await mockUserServiceAccountByEmail(TL2.email);
 
-    const res1 = await listPublicCloudProductApi({});
+    const res1 = await listPublicCloudProductApi({}, TL2);
     expect(res1.status).toBe(200);
     const dat1 = await res1.json();
 
@@ -188,8 +188,9 @@ describe('API: List Public Cloud Products - Permissions', () => {
 
   it('should successfully list 2 projects by admin', async () => {
     await mockUserServiceAccountByRole(GlobalRole.Admin);
+    const mockUser = findMockUserbyRole(GlobalRole.Admin);
 
-    const res1 = await listPublicCloudProductApi({});
+    const res1 = await listPublicCloudProductApi({}, mockUser);
     expect(res1.status).toBe(200);
     const dat1 = await res1.json();
 
@@ -238,8 +239,9 @@ describe('API: List Public Cloud Products - Validations', () => {
 
   it('should successfully list 10 projects by admin', async () => {
     await mockUserServiceAccountByRole(GlobalRole.Admin);
+    const mockUser = findMockUserbyRole(GlobalRole.Admin);
 
-    const res1 = await listPublicCloudProductApi({});
+    const res1 = await listPublicCloudProductApi({}, mockUser);
     expect(res1.status).toBe(200);
     const dat1 = await res1.json();
 
@@ -248,11 +250,15 @@ describe('API: List Public Cloud Products - Validations', () => {
 
   it('should successfully list 5 projects by admin with search criteria', async () => {
     await mockUserServiceAccountByRole(GlobalRole.Admin);
+    const mockUser = findMockUserbyRole(GlobalRole.Admin);
 
-    const res1 = await listPublicCloudProductApi({
-      ministry: Ministry.AEST,
-      provider: Provider.AWS,
-    });
+    const res1 = await listPublicCloudProductApi(
+      {
+        ministry: Ministry.AEST,
+        provider: Provider.AWS,
+      },
+      mockUser,
+    );
 
     expect(res1.status).toBe(200);
     const dat1 = await res1.json();
@@ -262,10 +268,14 @@ describe('API: List Public Cloud Products - Validations', () => {
 
   it('should successfully list 0 projects by admin with search criteria', async () => {
     await mockUserServiceAccountByRole(GlobalRole.Admin);
+    const mockUser = findMockUserbyRole(GlobalRole.Admin);
 
-    const res1 = await listPublicCloudProductApi({
-      status: ProjectStatus.INACTIVE,
-    });
+    const res1 = await listPublicCloudProductApi(
+      {
+        status: ProjectStatus.INACTIVE,
+      },
+      mockUser,
+    );
 
     expect(res1.status).toBe(200);
     const dat1 = await res1.json();
@@ -275,8 +285,9 @@ describe('API: List Public Cloud Products - Validations', () => {
 
   it('should fail to list products due to an invalid ministry property', async () => {
     await mockUserServiceAccountByRole(GlobalRole.Admin);
+    const mockUser = findMockUserbyRole(GlobalRole.Admin);
 
-    const response = await listPublicCloudProductApi({ ministry: 'INVALID' as Ministry });
+    const response = await listPublicCloudProductApi({ ministry: 'INVALID' as Ministry }, mockUser);
 
     expect(response.status).toBe(400);
 

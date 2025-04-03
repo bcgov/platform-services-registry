@@ -3,7 +3,7 @@ import { DecisionStatus, ProjectStatus, Ministry, Cluster, RequestType } from '@
 import { GlobalRole } from '@/constants';
 import prisma from '@/core/prisma';
 import { createSamplePrivateCloudProductData } from '@/helpers/mock-resources';
-import { mockNoRoleUsers, findMockUserByIdr, findOtherMockUsers } from '@/helpers/mock-users';
+import { mockNoRoleUsers, findMockUserByIdr, findOtherMockUsers, findMockUserbyRole } from '@/helpers/mock-users';
 import {
   mockSessionByEmail,
   mockSessionByRole,
@@ -66,9 +66,7 @@ describe('API: List Private Cloud Products - Permissions', () => {
   it('should successfully list 1 project by PO', async () => {
     await mockUserServiceAccountByEmail(PO.email);
 
-    const res1 = await listPrivateCloudProductApi();
-    console.log('All Res1: ', res1);
-    console.log('All Res1 Status: ', res1.status);
+    const res1 = await listPrivateCloudProductApi({}, PO);
     expect(res1.status).toBe(200);
     const dat1 = await res1.json();
 
@@ -78,7 +76,7 @@ describe('API: List Private Cloud Products - Permissions', () => {
   it('should successfully list 1 project by TL1', async () => {
     await mockUserServiceAccountByEmail(TL1.email);
 
-    const res1 = await listPrivateCloudProductApi();
+    const res1 = await listPrivateCloudProductApi({}, TL1);
     expect(res1.status).toBe(200);
     const dat1 = await res1.json();
 
@@ -88,7 +86,7 @@ describe('API: List Private Cloud Products - Permissions', () => {
   it('should successfully list 1 project by TL2', async () => {
     await mockUserServiceAccountByEmail(TL2.email);
 
-    const res1 = await listPrivateCloudProductApi();
+    const res1 = await listPrivateCloudProductApi({}, TL2);
     expect(res1.status).toBe(200);
     const dat1 = await res1.json();
 
@@ -121,11 +119,10 @@ describe('API: List Private Cloud Products - Permissions', () => {
   it('should successfully list 1 project by the random user', async () => {
     await mockUserServiceAccountByEmail(RANDOM1.email);
 
-    const res1 = await listPrivateCloudProductApi();
+    const res1 = await listPrivateCloudProductApi({}, RANDOM1);
 
     expect(res1.status).toBe(200);
     const dat1 = await res1.json();
-    console.dir(dat1, { depth: Infinity });
 
     expect(dat1.totalCount).toBe(1);
   });
@@ -133,7 +130,7 @@ describe('API: List Private Cloud Products - Permissions', () => {
   it('should successfully list 1 project by PO', async () => {
     await mockUserServiceAccountByEmail(PO.email);
 
-    const res1 = await listPrivateCloudProductApi();
+    const res1 = await listPrivateCloudProductApi({}, PO);
     expect(res1.status).toBe(200);
     const dat1 = await res1.json();
 
@@ -143,7 +140,7 @@ describe('API: List Private Cloud Products - Permissions', () => {
   it('should successfully list 1 project by TL1', async () => {
     await mockUserServiceAccountByEmail(TL1.email);
 
-    const res1 = await listPrivateCloudProductApi();
+    const res1 = await listPrivateCloudProductApi({}, TL1);
     expect(res1.status).toBe(200);
     const dat1 = await res1.json();
 
@@ -153,7 +150,7 @@ describe('API: List Private Cloud Products - Permissions', () => {
   it('should successfully list 1 project by TL2', async () => {
     await mockUserServiceAccountByEmail(TL2.email);
 
-    const res1 = await listPrivateCloudProductApi();
+    const res1 = await listPrivateCloudProductApi({}, TL2);
     expect(res1.status).toBe(200);
     const dat1 = await res1.json();
 
@@ -162,8 +159,9 @@ describe('API: List Private Cloud Products - Permissions', () => {
 
   it('should successfully list 2 projects by admin', async () => {
     await mockUserServiceAccountByRole(GlobalRole.Admin);
+    const mockUser = findMockUserbyRole(GlobalRole.Admin);
 
-    const res1 = await listPrivateCloudProductApi();
+    const res1 = await listPrivateCloudProductApi({}, mockUser);
     expect(res1.status).toBe(200);
     const dat1 = await res1.json();
 
@@ -212,8 +210,9 @@ describe('API: List Private Cloud Products - Validations', () => {
 
   it('should successfully list 10 projects by admin', async () => {
     await mockUserServiceAccountByRole(GlobalRole.Admin);
+    const mockUser = findMockUserbyRole(GlobalRole.Admin);
 
-    const res1 = await listPrivateCloudProductApi({});
+    const res1 = await listPrivateCloudProductApi({}, mockUser);
     expect(res1.status).toBe(200);
     const dat1 = await res1.json();
 
@@ -222,11 +221,15 @@ describe('API: List Private Cloud Products - Validations', () => {
 
   it('should successfully list 5 projects by admin with search criteria', async () => {
     await mockUserServiceAccountByRole(GlobalRole.Admin);
+    const mockUser = findMockUserbyRole(GlobalRole.Admin);
 
-    const res1 = await listPrivateCloudProductApi({
-      ministry: Ministry.AEST,
-      cluster: Cluster.CLAB,
-    });
+    const res1 = await listPrivateCloudProductApi(
+      {
+        ministry: Ministry.AEST,
+        cluster: Cluster.CLAB,
+      },
+      mockUser,
+    );
 
     expect(res1.status).toBe(200);
     const dat1 = await res1.json();
@@ -236,10 +239,14 @@ describe('API: List Private Cloud Products - Validations', () => {
 
   it('should successfully list 0 projects by admin with search criteria', async () => {
     await mockUserServiceAccountByRole(GlobalRole.Admin);
+    const mockUser = findMockUserbyRole(GlobalRole.Admin);
 
-    const res1 = await listPrivateCloudProductApi({
-      status: ProjectStatus.INACTIVE,
-    });
+    const res1 = await listPrivateCloudProductApi(
+      {
+        status: ProjectStatus.INACTIVE,
+      },
+      mockUser,
+    );
 
     expect(res1.status).toBe(200);
     const dat1 = await res1.json();
@@ -249,8 +256,9 @@ describe('API: List Private Cloud Products - Validations', () => {
 
   it('should fail to list products due to an invalid ministry property', async () => {
     await mockUserServiceAccountByRole(GlobalRole.Admin);
+    const mockUser = findMockUserbyRole(GlobalRole.Admin);
 
-    const response = await listPrivateCloudProductApi({ ministry: 'INVALID' as Ministry });
+    const response = await listPrivateCloudProductApi({ ministry: 'INVALID' as Ministry }, mockUser);
 
     expect(response.status).toBe(400);
 

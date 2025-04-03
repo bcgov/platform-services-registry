@@ -149,12 +149,11 @@ export async function mockUserServiceAccountByEmail(email?: string) {
   let mockedValue: { email: string; authRoleNames: string[] } | null = null;
   if (email) {
     const mockUser = await findMockUserByEmail(email);
-    const rolesToAdd = ['private-admin', 'public-admin', 'service-account'];
     if (mockUser) {
       const updatedMockUser = JSON.parse(
         JSON.stringify({
           ...mockUser,
-          roles: [...(mockUser?.roles || []), ...rolesToAdd],
+          roles: [...(mockUser?.roles || []), ...(mockUser?.roles || '')],
         }),
       );
       mockedValue = { email: updatedMockUser.email, authRoleNames: updatedMockUser.roles.concat() };
@@ -172,12 +171,11 @@ export async function mockUserServiceAccountByRole(role?: string) {
   if (role) {
     const mockUser = findMockUserbyRole(role);
 
-    const rolesToAdd = ['private-admin', 'public-admin', 'service-account'];
     if (mockUser) {
       const updatedMockUser = JSON.parse(
         JSON.stringify({
           ...mockUser,
-          roles: [...(mockUser?.roles || []), ...rolesToAdd],
+          roles: [...(mockUser?.roles || []), ...(mockUser?.roles || '')],
         }),
       );
       mockedValue = { email: updatedMockUser.email, authRoleNames: updatedMockUser.roles.concat() };

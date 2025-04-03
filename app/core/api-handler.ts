@@ -83,6 +83,7 @@ function createApiHandler<
         let jwtData!: any;
 
         if (!session) {
+          console.log('there is no session here');
           if (keycloakOauth2) {
             const bearerToken = req.headers.get('authorization');
             if (!bearerToken) {
@@ -117,13 +118,13 @@ function createApiHandler<
               requiredClaims: ['service_account_type'],
             });
 
-            console.log('My JwtData: ', jwtData);
-
             if (!jwtData) {
               return UnauthorizedResponse('invalid token');
             }
 
             const saType = jwtData.service_account_type;
+
+            console.log('satype: ', saType);
 
             if (saType === 'user') {
               const kcUserId = jwtData['kc-userid'];
