@@ -1,5 +1,4 @@
 import { Cluster } from '@prisma/client';
-import _get from 'lodash-es/get';
 import { ENABLE_DELETION_CHECK } from '@/config';
 import { getK8sClients } from './core';
 
