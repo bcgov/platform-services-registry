@@ -119,7 +119,7 @@ export function createSamplePrivateCloudCommentData(args?: { data?: Partial<Pris
   return _data;
 }
 
-export function getUserTestAuthHeader(user?: AppUserWithRoles) {
+export function getUserServiceAccountAuthHeader(user?: AppUserWithRoles) {
   const stringifiedRoles = _join(user?.roles, ',');
   const signature = jws.sign({
     header: { alg: 'HS256', typ: 'JWT' },
@@ -136,7 +136,7 @@ export function getUserTestAuthHeader(user?: AppUserWithRoles) {
   };
 }
 
-export function getProvisionTestAuthHeader() {
+export function getTeamServiceAccountAuthHeader() {
   const signature = jws.sign({
     header: { alg: 'HS256', typ: 'JWT' },
     payload: {

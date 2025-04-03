@@ -1,8 +1,8 @@
 import { Ministry, Cluster, ProjectStatus } from '@prisma/client';
 import _isNil from 'lodash-es/isNil';
 import _join from 'lodash-es/join';
-import { POST as _listPrivateCloudProduct } from '@/app/api/v1/private-cloud/products/route';
-import { getUserTestAuthHeader } from '@/helpers/mock-resources';
+import { GET as _listPrivateCloudProduct } from '@/app/api/v1/private-cloud/products/route';
+import { getUserServiceAccountAuthHeader } from '@/helpers/mock-resources';
 import { AppUserWithRoles } from '@/types/user';
 import { createRoute } from '../../core';
 
@@ -20,12 +20,11 @@ export async function listPrivateCloudProductApi(
   queryParams?: ListPrivateCloudProductApiProps,
   user?: AppUserWithRoles,
 ) {
-  const result = await productCollectionRoute.post(
+  const result = await productCollectionRoute.get(
     _listPrivateCloudProduct,
     '',
-    JSON.stringify({}),
     { queryParams: queryParams || {} },
-    getUserTestAuthHeader(user),
+    getUserServiceAccountAuthHeader(user),
   );
 
   return result;

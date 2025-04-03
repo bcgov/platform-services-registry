@@ -132,13 +132,13 @@ export async function mockSessionByRole(role?: string) {
     else {
       const mockSession = await generateTestSession(user.email);
       const rolesToAdd = ['private-admin', 'public-admin', 'service-account'];
-      const updatedSession = JSON.parse(
+      const updatedMockSession = JSON.parse(
         JSON.stringify({
           ...mockSession,
           roles: [...(mockSession?.roles || []), ...rolesToAdd],
         }),
       );
-      mockedGetServerSession.mockResolvedValue(updatedSession);
+      mockedGetServerSession.mockResolvedValue(updatedMockSession);
     }
   }
 }
@@ -148,16 +148,10 @@ export async function mockUserServiceAccountByEmail(email?: string) {
 
   let mockedValue: { email: string; authRoleNames: string[] } | null = null;
   if (email) {
-    const mockUser = await findMockUserByEmail(email);
+    const mockUser = findMockUserByEmail(email);
     if (mockUser) {
-      const updatedMockUser = JSON.parse(
-        JSON.stringify({
-          ...mockUser,
-          roles: [...(mockUser?.roles || []), ...(mockUser?.roles || '')],
-        }),
-      );
-      mockedValue = { email: updatedMockUser.email, authRoleNames: updatedMockUser.roles.concat() };
-      await upsertMockUser(updatedMockUser);
+      mockedValue = { email: mockUser.email, authRoleNames: mockUser.roles.concat() };
+      await upsertMockUser(mockUser);
     }
   }
 
@@ -171,14 +165,8 @@ export async function mockUserServiceAccountByRole(role?: string) {
   if (role) {
     const mockUser = findMockUserbyRole(role);
     if (mockUser) {
-      const updatedMockUser = JSON.parse(
-        JSON.stringify({
-          ...mockUser,
-          roles: [...(mockUser?.roles || []), ...(mockUser?.roles || '')],
-        }),
-      );
-      mockedValue = { email: updatedMockUser.email, authRoleNames: updatedMockUser.roles.concat() };
-      await upsertMockUser(updatedMockUser);
+      mockedValue = { email: mockUser.email, authRoleNames: mockUser.roles.concat() };
+      await upsertMockUser(mockUser);
     }
   }
 
