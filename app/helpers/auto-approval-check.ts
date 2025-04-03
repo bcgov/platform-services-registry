@@ -6,7 +6,7 @@ import {
   ResourceRequests,
 } from '@prisma/client';
 import _each from 'lodash-es/each';
-import { getResourceDetails } from '@/services/k8s';
+import { getResourceDetails } from '@/services/k8s/metrics';
 import { iterateObject } from '@/utils/js';
 
 const allowedAutoApprovalPercentage = 50;

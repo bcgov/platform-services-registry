@@ -7,7 +7,7 @@ import {
 } from '@prisma/client';
 import _each from 'lodash-es/each';
 import { getTotalMetrics, memoryUnitMultipliers, cpuCoreToMillicoreMultiplier } from '@/helpers/resource-metrics';
-import { getPodMetrics } from '@/services/k8s';
+import { getPodMetrics } from '@/services/k8s/metrics';
 
 export async function getResourceDetails({
   licencePlate,

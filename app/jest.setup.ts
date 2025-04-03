@@ -59,7 +59,7 @@ jest.mock('@/helpers/pdfs/emou/index', () => ({
   generateEmouPdf: jest.fn(async () => Buffer.alloc(0)),
 }));
 
-jest.mock('@/services/k8s', () => ({
+jest.mock('@/services/k8s/metrics', () => ({
   getResourceDetails: jest.fn(async () => ({
     env: 'dev',
     allocation: {
