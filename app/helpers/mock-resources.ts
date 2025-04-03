@@ -1,7 +1,10 @@
 import { faker } from '@faker-js/faker';
 import { Prisma, Cluster } from '@prisma/client';
+import jws from 'jws';
+import _join from 'lodash-es/join';
 import { ministries, clusters, providers } from '@/constants';
 import { mockNoRoleUsers } from '@/helpers/mock-users';
+import { AppUserWithRoles } from '@/types/user';
 import { generateShortId } from '@/utils/js';
 import { getRandomCloudProviderSelectionReasons, getRandomProviderReasonsNote } from './mock-resources/core';
 import { resourceRequests1 } from './mock-resources/private-cloud-product';
@@ -10,6 +13,7 @@ const getRandomBool = () => faker.helpers.arrayElement([true, false]);
 const getRandomMinistry = () => faker.helpers.arrayElement(ministries);
 const getRandomCluster = () => faker.helpers.arrayElement(clusters);
 const getRandomProvider = () => faker.helpers.arrayElement(providers);
+const userSecret = 'testsecret'; // pragma: allowlist secret
 
 export function createSamplePrivateCloudProductData(args?: {
   data?: Partial<
@@ -113,4 +117,25 @@ export function createSamplePrivateCloudCommentData(args?: { data?: Partial<Pris
   };
 
   return _data;
+}
+
+export function generateTestJwt(user?: AppUserWithRoles) {
+  const stringifiedRoles = _join(user?.roles, ',');
+  return jws.sign({
+    header: { alg: 'HS256', typ: 'JWT' },
+    payload: {
+      roles: stringifiedRoles,
+      service_account_type: 'user',
+      'kc-userid': user?.id,
+    },
+    secret: userSecret,
+  });
+}
+
+export function getTestAuthHeader(user?: AppUserWithRoles) {
+  const signature = generateTestJwt(user);
+  return {
+    Authorization: 'Bearer ' + signature,
+    'Content-Type': 'application/json',
+  };
 }
