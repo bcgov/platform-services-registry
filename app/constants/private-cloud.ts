@@ -69,14 +69,18 @@ export const environmentShortNames = {
   test: 'test',
   production: 'prod',
   tools: 'tools',
-};
+} as const;
+
+export const environmentLongKeys = Object.keys(environmentShortNames) as Array<keyof typeof environmentShortNames>;
 
 export const environmentLongNames = {
   dev: 'development',
   test: 'test',
   prod: 'production',
   tools: 'tools',
-};
+} as const;
+
+export const environmentShortKeys = Object.keys(environmentLongNames) as Array<keyof typeof environmentLongNames>;
 
 export type ResourceRequestsEnvKeys = Array<keyof ResourceRequestsEnv>;
 export type ResourceRequestsKeys = Array<keyof ResourceRequests>;

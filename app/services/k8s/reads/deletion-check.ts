@@ -1,5 +1,6 @@
 import { Cluster } from '@prisma/client';
 import { ENABLE_DELETION_CHECK } from '@/config';
+import { environmentShortKeys } from '@/constants';
 import { getK8sClients } from './core';
 
 export interface DeletionCheck {
@@ -28,7 +29,7 @@ export async function checkDeletionAvailability(licencePlate: string, cluster: C
     artifactory: false,
   };
 
-  const namespaceNames = ['dev', 'test', 'dev', 'tools'].map((env) => `${licencePlate}-${env.toLowerCase()}`);
+  const namespaceNames = environmentShortKeys.map((env) => `${licencePlate}-${env.toLowerCase()}`);
   const { apiClient, customClient } = getK8sClients(cluster);
 
   const checkNamespace = async () => {
