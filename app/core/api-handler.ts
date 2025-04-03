@@ -83,7 +83,6 @@ function createApiHandler<
         let jwtData!: any;
 
         if (!session) {
-          console.log('there is no session here');
           if (keycloakOauth2) {
             const bearerToken = req.headers.get('authorization');
             if (!bearerToken) {
@@ -109,8 +108,6 @@ function createApiHandler<
               return UnauthorizedResponse('not allowed to perform the task');
             }
 
-            console.log('bearerToken: ', bearerToken);
-
             jwtData = await verifyKeycloakJwtToken({
               jwtToken: bearerToken,
               authUrl: AUTH_SERVER_URL,
@@ -123,8 +120,6 @@ function createApiHandler<
             }
 
             const saType = jwtData.service_account_type;
-
-            console.log('satype: ', saType);
 
             if (saType === 'user') {
               const kcUserId = jwtData['kc-userid'];
@@ -178,7 +173,6 @@ function createApiHandler<
         // Validate user roles
         if (roles && roles.length > 0) {
           const allowed = checkArrayStringCondition(roles, session.roles);
-
           if (!allowed) {
             return UnauthorizedResponse('not allowed to perform the task');
           }

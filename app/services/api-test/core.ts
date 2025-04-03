@@ -170,7 +170,6 @@ export async function mockUserServiceAccountByRole(role?: string) {
   let mockedValue: { email: string; authRoleNames: string[] } | null = null;
   if (role) {
     const mockUser = findMockUserbyRole(role);
-
     if (mockUser) {
       const updatedMockUser = JSON.parse(
         JSON.stringify({

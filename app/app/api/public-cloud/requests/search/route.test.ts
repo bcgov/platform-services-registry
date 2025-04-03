@@ -90,7 +90,6 @@ describe('Search Public Cloud Requests - Permissions', () => {
     expect(res2.status).toBe(200);
 
     const res3 = await provisionPublicCloudProduct(dat1.licencePlate);
-
     expect(res3.status).toBe(200);
   });
 

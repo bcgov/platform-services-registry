@@ -41,11 +41,8 @@ describe('API: List Private Cloud Products - Permissions', () => {
     const requestData = createSamplePrivateCloudProductData({
       data: { ...memberData },
     });
-
     const res1 = await createPrivateCloudProduct(requestData);
-
     const dat1 = await res1.json();
-
     expect(res1.status).toBe(200);
 
     await mockSessionByRole(GlobalRole.PrivateReviewer);
@@ -55,11 +52,9 @@ describe('API: List Private Cloud Products - Permissions', () => {
       type: RequestType.CREATE,
       decision: DecisionStatus.APPROVED,
     });
-
     expect(res2.status).toBe(200);
 
     const res3 = await provisionPrivateCloudProduct(dat1.licencePlate);
-
     expect(res3.status).toBe(200);
   });
 

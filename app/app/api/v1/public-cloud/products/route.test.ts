@@ -149,7 +149,6 @@ describe('API: List Public Cloud Products - Permissions', () => {
     await mockUserServiceAccountByEmail(RANDOM1.email);
 
     const res1 = await listPublicCloudProductApi({}, RANDOM1);
-
     expect(res1.status).toBe(200);
     const dat1 = await res1.json();
 
