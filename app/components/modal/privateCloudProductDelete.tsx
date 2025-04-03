@@ -14,7 +14,7 @@ import {
   checkPrivateCloudProductDeletionAvailability,
 } from '@/services/backend/private-cloud/products';
 import { PrivateCloudProductDetailDecorated } from '@/types/private-cloud';
-import { DeletionStatus } from '@/types/private-cloud';
+import { cn } from '@/utils/js';
 import MailLink from '../generic/button/MailLink';
 import { openNotificationModal } from './notification';
 
@@ -45,43 +45,31 @@ export const openPrivateCloudProductDeleteModal = createModal<ModalProps, ModalS
       },
     });
 
-    const {
-      data: deletionAvailability,
-      isLoading: isCheckingDeletionAvailability,
-      isError: isDeletionAvailabilityError,
-      error: deletionAvailabilityError,
-    } = useQuery<any, Error>({
+    const { data: deletionCheck, isLoading: isCheckingDeletion } = useQuery({
       queryKey: ['apiAccount'],
       queryFn: () => checkPrivateCloudProductDeletionAvailability(product.licencePlate),
       enabled: !!product.licencePlate,
     });
 
-    const {
-      mutateAsync: deleteProduct,
-      isPending: isDeletingProduct,
-      isError: isDeleteProductError,
-      error: deleteProductError,
-    } = useMutation({
+    const { mutateAsync: deleteProduct, isPending: isDeletingProduct } = useMutation({
       mutationFn: () => deletePrivateCloudProduct(product.licencePlate),
     });
 
-    const { handleSubmit, register } = methods;
+    const { handleSubmit } = methods;
+
+    const canDelete = deletionCheck && Object.values(deletionCheck).every((field) => field);
 
     return (
       <Box pos="relative">
         <LoadingOverlay
-          visible={isCheckingDeletionAvailability || isDeletingProduct}
+          visible={isCheckingDeletion || isDeletingProduct}
           zIndex={1000}
           overlayProps={{ radius: 'sm', blur: 2 }}
         />
 
         <div className="flex items-center justify-between">
-          <span
-            className={`flex items-center text-sm ${
-              deletionAvailability === DeletionStatus.OK_TO_DELETE ? 'text-green-600' : 'text-red-600'
-            }`}
-          >
-            {deletionAvailability === DeletionStatus.OK_TO_DELETE ? (
+          <span className={cn('flex items-center text-sm', canDelete ? 'text-green-600' : 'text-red-600')}>
+            {canDelete ? (
               <>
                 <IconCircleCheck className="h-5 w-5 mr-2 flex-shrink-0" aria-hidden="true" />
                 Ready to Delete
@@ -89,7 +77,7 @@ export const openPrivateCloudProductDeleteModal = createModal<ModalProps, ModalS
             ) : (
               <>
                 <IconExclamationCircle className="h-5 w-5 mr-2 flex-shrink-0" aria-hidden="true" />
-                {deletionAvailability === DeletionStatus.ARTIFACTORY_NOT_DELETABLE ? (
+                {deletionCheck && !deletionCheck.artifactory ? (
                   <div className="text-left">
                     Your project set cannot be deleted, because you have an Artifactory project object in your
                     namespaces and probably artifacts in Artifactory. If you need to delete them, please contact
@@ -104,9 +92,7 @@ export const openPrivateCloudProductDeleteModal = createModal<ModalProps, ModalS
               </>
             )}
           </span>
-          <p className="text-sm text-gray-500">
-            Deletion check has {deletionAvailability === DeletionStatus.OK_TO_DELETE ? 'passed.' : 'failed.'}
-          </p>
+          <p className="text-sm text-gray-500">Deletion check has {canDelete ? 'passed.' : 'failed.'}</p>
         </div>
 
         <Divider my="md" />
@@ -126,7 +112,7 @@ export const openPrivateCloudProductDeleteModal = createModal<ModalProps, ModalS
           </span>
         </div>
 
-        {deletionAvailability === DeletionStatus.OK_TO_DELETE ? (
+        {canDelete ? (
           <>
             <p className="mt-8 text-sm">
               Are you sure you want to delete this product? Enter the following data to proceed:

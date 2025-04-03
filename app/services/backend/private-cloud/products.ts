@@ -1,6 +1,7 @@
 import { Prisma, PrivateCloudComment, QuotaUpgradeResourceDetail, ResourceRequestsEnv } from '@prisma/client';
 import axios from 'axios';
 import { privateCloudProductSorts } from '@/constants';
+import { DeletionCheck } from '@/services/k8s/reads';
 import {
   PrivateCloudRequestSimpleDecorated,
   PrivateCloudProductDetailDecorated,
@@ -76,8 +77,8 @@ export async function deletePrivateCloudProduct(licencePlate: string) {
 }
 
 export async function checkPrivateCloudProductDeletionAvailability(licencePlate: string) {
-  const result = await instance.get(`/${licencePlate}/deletion-check`).then((res) => res.data);
-  return result as string;
+  const result = await instance.get<DeletionCheck>(`/${licencePlate}/deletion-check`).then((res) => res.data);
+  return result;
 }
 
 export async function reprovisionPrivateCloudProduct(licencePlate: string) {
