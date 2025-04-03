@@ -9,8 +9,10 @@ export interface DeletionCheck {
   artifactory: boolean;
 }
 
+const IAN_TEST_LICENCE_PLATE = '261403';
+
 export async function checkDeletionAvailability(licencePlate: string, cluster: Cluster): Promise<DeletionCheck> {
-  if (!ENABLE_DELETION_CHECK || licencePlate === '261403') {
+  if (!ENABLE_DELETION_CHECK || licencePlate === IAN_TEST_LICENCE_PLATE) {
     return {
       namespace: true,
       pods: true,
