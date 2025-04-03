@@ -1,4 +1,3 @@
-import jws from 'jws';
 import { POST as _provisionPublicCloudProduct } from '@/app/api/v1/public-cloud/products/[idOrLicencePlate]/provision/route';
 import { getProvisionTestAuthHeader } from '@/helpers/mock-resources';
 import { createRoute } from '../../core';
