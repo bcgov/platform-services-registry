@@ -3,6 +3,7 @@ import _isNil from 'lodash-es/isNil';
 import _join from 'lodash-es/join';
 import { GET as _listPublicCloudProduct } from '@/app/api/v1/public-cloud/products/route';
 import { getUserServiceAccountAuthHeader } from '@/helpers/mock-resources';
+import { SERVICES_KEYCLOAK_APP_REALM } from '@/jest.mock';
 import { AppUserWithRoles } from '@/types/user';
 import { createRoute } from '../../core';
 
@@ -16,12 +17,12 @@ interface ListPublicCloudProductApiProps {
   status?: ProjectStatus;
 }
 
-export async function listPublicCloudProductApi(queryParams?: ListPublicCloudProductApiProps, user?: AppUserWithRoles) {
+export async function listPublicCloudProductApi(queryParams?: ListPublicCloudProductApiProps) {
   const result = await productCollectionRoute.get(
     _listPublicCloudProduct,
     '',
     { queryParams: queryParams || {} },
-    getUserServiceAccountAuthHeader(user),
+    getUserServiceAccountAuthHeader(),
   );
 
   return result;

@@ -4,7 +4,7 @@ import jws from 'jws';
 import _join from 'lodash-es/join';
 import { ministries, clusters, providers } from '@/constants';
 import { mockNoRoleUsers } from '@/helpers/mock-users';
-import { AppUserWithRoles } from '@/types/user';
+import { SERVICES_KEYCLOAK_APP_REALM } from '@/jest.mock';
 import { generateShortId } from '@/utils/js';
 import { getRandomCloudProviderSelectionReasons, getRandomProviderReasonsNote } from './mock-resources/core';
 import { resourceRequests1 } from './mock-resources/private-cloud-product';
@@ -14,6 +14,11 @@ const getRandomMinistry = () => faker.helpers.arrayElement(ministries);
 const getRandomCluster = () => faker.helpers.arrayElement(clusters);
 const getRandomProvider = () => faker.helpers.arrayElement(providers);
 const secret = 'testsecret'; // pragma: allowlist secret
+
+interface ServiceKeyCloakRealmUser {
+  email?: string;
+  authRoleNames?: string[];
+}
 
 export function createSamplePrivateCloudProductData(args?: {
   data?: Partial<
@@ -120,7 +125,7 @@ export function createSamplePrivateCloudCommentData(args?: { data?: Partial<Pris
 }
 
 export function getServiceAccountAuthHeader(options: {
-  user?: AppUserWithRoles;
+  user?: ServiceKeyCloakRealmUser;
   roles?: string[];
   serviceAccountType: 'user' | 'team';
 }) {
@@ -131,8 +136,8 @@ export function getServiceAccountAuthHeader(options: {
   };
 
   if (serviceAccountType === 'user' && user) {
-    payload.roles = _join(user?.roles, ',');
-    payload['kc-userid'] = user?.id;
+    payload.roles = _join(user?.authRoleNames, ',');
+    payload['kc-userid'] = user?.email;
   } else if (roles) {
     payload.roles = _join(roles, ',');
   }
@@ -149,9 +154,9 @@ export function getServiceAccountAuthHeader(options: {
   };
 }
 
-export function getUserServiceAccountAuthHeader(user?: AppUserWithRoles) {
+export function getUserServiceAccountAuthHeader() {
   return getServiceAccountAuthHeader({
-    user,
+    user: SERVICES_KEYCLOAK_APP_REALM.findUser || undefined,
     serviceAccountType: 'user',
   });
 }
