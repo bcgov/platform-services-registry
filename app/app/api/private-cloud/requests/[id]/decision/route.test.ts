@@ -5,13 +5,14 @@ import { createSamplePrivateCloudProductData } from '@/helpers/mock-resources';
 import { resourceRequests1, resourceRequests2 } from '@/helpers/mock-resources/private-cloud-product';
 import { pickProductData } from '@/helpers/product';
 import { mockSessionByEmail, mockSessionByRole } from '@/services/api-test/core';
-import { provisionPrivateCloudProduct } from '@/services/api-test/private-cloud';
+import { mockTeamServiceAccount } from '@/services/api-test/core';
 import {
   createPrivateCloudProduct,
   editPrivateCloudProduct,
   deletePrivateCloudProduct,
 } from '@/services/api-test/private-cloud/products';
 import { makePrivateCloudRequestDecision } from '@/services/api-test/private-cloud/requests';
+import { provisionPrivateCloudProduct } from '@/services/api-test/v1/private-cloud';
 
 const fieldsToCompare = [
   'name',
@@ -107,7 +108,7 @@ describe('Review Private Cloud Create Request - Permissions', () => {
   });
 
   it('should successfully provision the create request', async () => {
-    await mockSessionByEmail();
+    await mockTeamServiceAccount(['private-admin']);
 
     const response = await provisionPrivateCloudProduct(requests.main.licencePlate);
     expect(response.status).toBe(200);
@@ -175,7 +176,7 @@ describe('Review Private Cloud Update Request - Permissions', () => {
   });
 
   it('should successfully provision the update request', async () => {
-    await mockSessionByEmail();
+    await mockTeamServiceAccount(['private-admin']);
 
     const response = await provisionPrivateCloudProduct(requests.main.licencePlate);
     expect(response.status).toBe(200);
@@ -235,7 +236,7 @@ describe('Review Private Cloud Delete Request - Permissions', () => {
   });
 
   it('should successfully provision the delete request', async () => {
-    await mockSessionByEmail();
+    await mockTeamServiceAccount(['private-admin']);
 
     const response = await provisionPrivateCloudProduct(requests.main.licencePlate);
     expect(response.status).toBe(200);

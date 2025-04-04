@@ -3,13 +3,14 @@ import { GlobalRole } from '@/constants';
 import { createSamplePrivateCloudProductData } from '@/helpers/mock-resources';
 import { resourceRequests1, resourceRequests2 } from '@/helpers/mock-resources/private-cloud-product';
 import { mockSessionByEmail, mockSessionByRole } from '@/services/api-test/core';
-import { provisionPrivateCloudProduct } from '@/services/api-test/private-cloud';
+import { mockTeamServiceAccount } from '@/services/api-test/core';
 import {
   createPrivateCloudProduct as createPrivateCloudProductTest,
   editPrivateCloudProduct,
   deletePrivateCloudProduct as deletePrivateCloudProductTest,
 } from '@/services/api-test/private-cloud/products';
 import { makePrivateCloudRequestDecision } from '@/services/api-test/private-cloud/requests';
+import { provisionPrivateCloudProduct } from '@/services/api-test/v1/private-cloud';
 import { PrivateCloudRequestDetail } from '@/types/private-cloud';
 
 export async function createPrivateCloudProduct() {
@@ -35,6 +36,7 @@ export async function createPrivateCloudProduct() {
   resData = await response.json();
   decisionData = resData.decisionData;
 
+  await mockTeamServiceAccount(['private-admin']);
   response = await provisionPrivateCloudProduct(decisionData.licencePlate);
   if (response.status !== 200) return null;
 
@@ -70,6 +72,7 @@ export async function updatePrivateCloudProduct() {
   resData = await response.json();
   decisionData = resData.decisionData;
 
+  await mockTeamServiceAccount(['private-admin']);
   response = await provisionPrivateCloudProduct(decisionData.licencePlate);
   if (response.status !== 200) return null;
 
@@ -97,6 +100,7 @@ export async function updatePrivateCloudProduct() {
   const decisionResData: PrivateCloudRequestDetail = await response.json();
   const decisionResdecisionData = decisionResData.decisionData;
 
+  await mockTeamServiceAccount(['private-admin']);
   response = await provisionPrivateCloudProduct(decisionResdecisionData.licencePlate);
   if (response.status !== 200) return null;
 
@@ -127,6 +131,7 @@ export async function deletePrivateCloudProduct() {
   resData = await response.json();
   decisionData = resData.decisionData;
 
+  await mockTeamServiceAccount(['private-admin']);
   response = await provisionPrivateCloudProduct(decisionData.licencePlate);
   if (response.status !== 200) return null;
 
@@ -150,6 +155,7 @@ export async function deletePrivateCloudProduct() {
   const decisionResData: PrivateCloudRequestDetail = await response.json();
   const decisionResdecisionData = decisionResData.decisionData;
 
+  await mockTeamServiceAccount(['private-admin']);
   response = await provisionPrivateCloudProduct(decisionResdecisionData.licencePlate);
   if (response.status !== 200) return null;
 

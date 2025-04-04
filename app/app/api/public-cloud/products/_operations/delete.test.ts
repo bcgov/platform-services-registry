@@ -6,7 +6,7 @@ import prisma from '@/core/prisma';
 import { createSamplePublicCloudProductData } from '@/helpers/mock-resources';
 import { findOtherMockUsers } from '@/helpers/mock-users';
 import { mockSessionByEmail, mockSessionByRole } from '@/services/api-test/core';
-import { provisionPublicCloudProduct } from '@/services/api-test/public-cloud';
+import { mockTeamServiceAccount } from '@/services/api-test/core';
 import {
   createPublicCloudProduct,
   deletePublicCloudProduct,
@@ -14,6 +14,7 @@ import {
   reviewPublicCloudBilling,
 } from '@/services/api-test/public-cloud/products';
 import { makePublicCloudRequestDecision } from '@/services/api-test/public-cloud/requests';
+import { provisionPublicCloudProduct } from '@/services/api-test/v1/public-cloud';
 
 const productData = {
   main: createSamplePublicCloudProductData(),
@@ -79,7 +80,7 @@ describe('Delete Public Cloud Product - Permissions', () => {
   });
 
   it('should successfully provision the request', async () => {
-    await mockSessionByEmail();
+    await mockTeamServiceAccount(['public-admin']);
 
     const response = await provisionPublicCloudProduct(requests.create.licencePlate);
     expect(response.status).toBe(200);

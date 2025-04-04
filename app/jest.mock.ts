@@ -1,1 +1,4 @@
-export const SERVICES_KEYCLOAK_APP_REALM = { findUser: null as { email: string; authRoleNames: string[] } | null };
+export const SERVICE_ACCOUNT_DATA = {
+  user: null as { email: string; authRoleNames: string[] } | null,
+  team: null as { roles: string[] } | null,
+};

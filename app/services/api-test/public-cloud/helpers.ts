@@ -3,7 +3,7 @@ import { GlobalRole } from '@/constants';
 import prisma from '@/core/prisma';
 import { createSamplePublicCloudProductData } from '@/helpers/mock-resources';
 import { mockSessionByEmail, mockSessionByRole } from '@/services/api-test/core';
-import { provisionPublicCloudProduct } from '@/services/api-test/public-cloud';
+import { mockTeamServiceAccount } from '@/services/api-test/core';
 import {
   createPublicCloudProduct as createPublicCloudProductTest,
   editPublicCloudProduct,
@@ -12,6 +12,7 @@ import {
   reviewPublicCloudBilling,
 } from '@/services/api-test/public-cloud/products';
 import { makePublicCloudRequestDecision } from '@/services/api-test/public-cloud/requests';
+import { provisionPublicCloudProduct } from '@/services/api-test/v1/public-cloud';
 
 async function runPublicCloudMouWorkflows(reqData: any) {
   const decisionData = reqData.decisionData;
@@ -56,7 +57,7 @@ async function approveAndProvisionRequest(reqData: any) {
   const resData = await response.json();
   decisionData = resData.decisionData;
 
-  await mockSessionByRole(GlobalRole.Admin);
+  await mockTeamServiceAccount(['public-admin']);
   response = await provisionPublicCloudProduct(decisionData.licencePlate);
   if (response.status !== 200) return null;
 
@@ -107,6 +108,7 @@ export async function updatePublicCloudProduct() {
   let resData = await response.json();
   const decisionData = await approveAndProvisionRequest(resData);
 
+  await mockSessionByRole(GlobalRole.Admin);
   response = await editPublicCloudProduct(decisionData.licencePlate, {
     ...decisionData,
     environmentsEnabled: newEnvironmentsEnabled,
@@ -129,6 +131,7 @@ export async function deletePublicCloudProduct() {
   let resData = await response.json();
   let decisionData = await approveAndProvisionRequest(resData);
 
+  await mockSessionByRole(GlobalRole.Admin);
   response = await deletePublicCloudProductTest(decisionData.licencePlate);
   if (response.status !== 200) return null;
 

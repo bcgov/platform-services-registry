@@ -1,9 +1,11 @@
 import { Ministry, Provider, ProjectStatus } from '@prisma/client';
 import _isNil from 'lodash-es/isNil';
+import _join from 'lodash-es/join';
 import { GET as _listPublicCloudProduct } from '@/app/api/v1/public-cloud/products/route';
-import { createRoute, ParamData } from '../../core';
+import { getServiceAccountAuthHeader } from '@/helpers/mock-resources';
+import { createRoute } from '../../core';
 
-const productCollectionRoute = createRoute('/api/public-cloud/products');
+const productCollectionRoute = createRoute('/api/v1/public-cloud/products');
 
 interface ListPublicCloudProductApiProps {
   page?: number;
@@ -18,7 +20,7 @@ export async function listPublicCloudProductApi(queryParams?: ListPublicCloudPro
     _listPublicCloudProduct,
     '',
     { queryParams: queryParams || {} },
-    { authorization: 'dummy' },
+    getServiceAccountAuthHeader(),
   );
 
   return result;

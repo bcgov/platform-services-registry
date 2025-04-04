@@ -1,9 +1,11 @@
 import { Ministry, Cluster, ProjectStatus } from '@prisma/client';
 import _isNil from 'lodash-es/isNil';
+import _join from 'lodash-es/join';
 import { GET as _listPrivateCloudProduct } from '@/app/api/v1/private-cloud/products/route';
-import { createRoute, ParamData } from '../../core';
+import { getServiceAccountAuthHeader } from '@/helpers/mock-resources';
+import { createRoute } from '../../core';
 
-const productCollectionRoute = createRoute('/api/private-cloud/products');
+const productCollectionRoute = createRoute('/api/v1/private-cloud/products');
 
 interface ListPrivateCloudProductApiProps {
   page?: number;
@@ -18,7 +20,7 @@ export async function listPrivateCloudProductApi(queryParams?: ListPrivateCloudP
     _listPrivateCloudProduct,
     '',
     { queryParams: queryParams || {} },
-    { authorization: 'dummy' },
+    getServiceAccountAuthHeader(),
   );
 
   return result;

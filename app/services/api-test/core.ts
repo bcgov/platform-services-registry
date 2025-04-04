@@ -3,7 +3,7 @@ import { NextRequest } from 'next/server';
 import { getServerSession } from 'next-auth/next';
 import { BASE_URL } from '@/config';
 import { generateTestSession, findMockUserbyRole, findMockUserByEmail, upsertMockUser } from '@/helpers/mock-users';
-import { SERVICES_KEYCLOAK_APP_REALM } from '@/jest.mock';
+import { SERVICE_ACCOUNT_DATA } from '@/jest.mock';
 import { stringifyQuery } from '@/utils/js';
 
 type Handler = (req: NextRequest, Options?: { params: any }) => Promise<Response>;
@@ -141,14 +141,15 @@ export async function mockUserServiceAccountByEmail(email?: string) {
 
   let mockedValue: { email: string; authRoleNames: string[] } | null = null;
   if (email) {
-    const mockUser = await findMockUserByEmail(email);
+    const mockUser = findMockUserByEmail(email);
     if (mockUser) {
       mockedValue = { email: mockUser.email, authRoleNames: mockUser.roles.concat() };
       await upsertMockUser(mockUser);
     }
   }
 
-  SERVICES_KEYCLOAK_APP_REALM.findUser = mockedValue;
+  SERVICE_ACCOUNT_DATA.user = mockedValue;
+  SERVICE_ACCOUNT_DATA.team = null;
 }
 
 export async function mockUserServiceAccountByRole(role?: string) {
@@ -163,5 +164,13 @@ export async function mockUserServiceAccountByRole(role?: string) {
     }
   }
 
-  SERVICES_KEYCLOAK_APP_REALM.findUser = mockedValue;
+  SERVICE_ACCOUNT_DATA.user = mockedValue;
+  SERVICE_ACCOUNT_DATA.team = null;
+}
+
+export async function mockTeamServiceAccount(roles: string[]) {
+  mockedGetServerSession.mockResolvedValue(null);
+
+  SERVICE_ACCOUNT_DATA.user = null;
+  SERVICE_ACCOUNT_DATA.team = { roles };
 }

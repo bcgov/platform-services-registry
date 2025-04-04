@@ -5,9 +5,10 @@ import prisma from '@/core/prisma';
 import { createSamplePrivateCloudProductData } from '@/helpers/mock-resources';
 import { mockNoRoleUsers, findMockUserByIdr, findOtherMockUsers } from '@/helpers/mock-users';
 import { mockSessionByEmail, mockSessionByRole } from '@/services/api-test/core';
-import { provisionPrivateCloudProduct } from '@/services/api-test/private-cloud';
+import { mockTeamServiceAccount } from '@/services/api-test/core';
 import { createPrivateCloudProduct, searchPrivateCloudProducts } from '@/services/api-test/private-cloud/products';
 import { makePrivateCloudRequestDecision } from '@/services/api-test/private-cloud/requests';
+import { provisionPrivateCloudProduct } from '@/services/api-test/v1/private-cloud';
 
 const PO = mockNoRoleUsers[0];
 const TL1 = mockNoRoleUsers[1];
@@ -53,6 +54,7 @@ describe('Search Private Cloud Products - Permissions', () => {
     });
     expect(res2.status).toBe(200);
 
+    await mockTeamServiceAccount(['private-admin']);
     const res3 = await provisionPrivateCloudProduct(dat1.licencePlate);
     expect(res3.status).toBe(200);
   });
@@ -106,6 +108,7 @@ describe('Search Private Cloud Products - Permissions', () => {
     });
     expect(res2.status).toBe(200);
 
+    await mockTeamServiceAccount(['private-admin']);
     const res3 = await provisionPrivateCloudProduct(dat1.licencePlate);
     expect(res3.status).toBe(200);
   });
@@ -197,6 +200,7 @@ describe('Search Private Cloud Products - Validations', () => {
           decision: DecisionStatus.APPROVED,
         });
 
+        await mockTeamServiceAccount(['private-admin']);
         await provisionPrivateCloudProduct(dat1.licencePlate);
       }),
     );

@@ -1,7 +1,9 @@
 import { faker } from '@faker-js/faker';
 import { Prisma, Cluster } from '@prisma/client';
+import jws from 'jws';
 import { ministries, clusters, providers } from '@/constants';
 import { mockNoRoleUsers } from '@/helpers/mock-users';
+import { SERVICE_ACCOUNT_DATA } from '@/jest.mock';
 import { generateShortId } from '@/utils/js';
 import { getRandomCloudProviderSelectionReasons, getRandomProviderReasonsNote } from './mock-resources/core';
 import { resourceRequests1 } from './mock-resources/private-cloud-product';
@@ -10,6 +12,7 @@ const getRandomBool = () => faker.helpers.arrayElement([true, false]);
 const getRandomMinistry = () => faker.helpers.arrayElement(ministries);
 const getRandomCluster = () => faker.helpers.arrayElement(clusters);
 const getRandomProvider = () => faker.helpers.arrayElement(providers);
+const secret = 'testsecret'; // pragma: allowlist secret
 
 export function createSamplePrivateCloudProductData(args?: {
   data?: Partial<
@@ -113,4 +116,29 @@ export function createSamplePrivateCloudCommentData(args?: { data?: Partial<Pris
   };
 
   return _data;
+}
+export function getServiceAccountAuthHeader() {
+  let payload = {};
+  if (SERVICE_ACCOUNT_DATA.user) {
+    payload = {
+      service_account_type: 'user',
+      'kc-userid': 'PLACEHOLDER',
+    };
+  } else if (SERVICE_ACCOUNT_DATA.team) {
+    payload = {
+      service_account_type: 'team',
+      roles: SERVICE_ACCOUNT_DATA.team.roles.join(','),
+    };
+  }
+
+  const signature = jws.sign({
+    header: { alg: 'HS256', typ: 'JWT' },
+    payload,
+    secret,
+  });
+
+  return {
+    Authorization: 'Bearer ' + signature,
+    'Content-Type': 'application/json',
+  };
 }

@@ -5,7 +5,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { Session, PermissionsKey } from 'next-auth';
 import { getServerSession } from 'next-auth/next';
 import { z, TypeOf, ZodType } from 'zod';
-import { AUTH_SERVER_URL, AUTH_RELM, IS_LOCAL } from '@/config';
+import { AUTH_SERVER_URL, AUTH_RELM, IS_LOCAL, IS_TEST } from '@/config';
 import { GlobalRole } from '@/constants';
 import { authOptions, generateSession } from '@/core/auth-options';
 import { findUser } from '@/services/keycloak/app-realm';
@@ -21,7 +21,7 @@ import {
   OkResponse,
 } from './responses';
 
-const verifyKeycloakJwtToken = IS_LOCAL ? parseKeycloakJwtTokenSafe : verifyKeycloakJwtTokenSafe;
+const verifyKeycloakJwtToken = IS_LOCAL || IS_TEST ? parseKeycloakJwtTokenSafe : verifyKeycloakJwtTokenSafe;
 
 interface HandlerProps<TPathParams, TQueryParams, TBody> {
   roles?: string[];

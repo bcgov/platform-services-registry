@@ -4,20 +4,21 @@ import { GlobalRole } from '@/constants';
 import { defaultAccountCoding } from '@/constants';
 import prisma from '@/core/prisma';
 import { createSamplePublicCloudProductData } from '@/helpers/mock-resources';
-import { mockNoRoleUsers, findMockUserByIdr, findOtherMockUsers } from '@/helpers/mock-users';
+import { mockNoRoleUsers, findMockUserByIdr, findOtherMockUsers, findMockUserbyRole } from '@/helpers/mock-users';
 import {
   mockSessionByEmail,
   mockSessionByRole,
   mockUserServiceAccountByEmail,
   mockUserServiceAccountByRole,
 } from '@/services/api-test/core';
-import { provisionPublicCloudProduct } from '@/services/api-test/public-cloud';
+import { mockTeamServiceAccount } from '@/services/api-test/core';
 import {
   createPublicCloudProduct,
   signPublicCloudBilling,
   reviewPublicCloudBilling,
 } from '@/services/api-test/public-cloud/products';
 import { makePublicCloudRequestDecision } from '@/services/api-test/public-cloud/requests';
+import { provisionPublicCloudProduct } from '@/services/api-test/v1/public-cloud';
 import { listPublicCloudProductApi } from '@/services/api-test/v1/public-cloud/products';
 
 const PO = mockNoRoleUsers[0];
@@ -88,6 +89,7 @@ describe('API: List Public Cloud Products - Permissions', () => {
     });
     expect(res2.status).toBe(200);
 
+    await mockTeamServiceAccount(['public-admin']);
     const res3 = await provisionPublicCloudProduct(dat1.licencePlate);
     expect(res3.status).toBe(200);
   });
@@ -141,6 +143,7 @@ describe('API: List Public Cloud Products - Permissions', () => {
     });
     expect(res2.status).toBe(200);
 
+    await mockTeamServiceAccount(['public-admin']);
     const res3 = await provisionPublicCloudProduct(dat1.licencePlate);
     expect(res3.status).toBe(200);
   });
@@ -230,6 +233,7 @@ describe('API: List Public Cloud Products - Validations', () => {
           decision: DecisionStatus.APPROVED,
         });
 
+        await mockTeamServiceAccount(['public-admin']);
         await provisionPublicCloudProduct(dat1.licencePlate);
       }),
     );
