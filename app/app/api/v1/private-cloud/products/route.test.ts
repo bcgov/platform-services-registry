@@ -10,6 +10,7 @@ import {
   mockUserServiceAccountByEmail,
   mockUserServiceAccountByRole,
 } from '@/services/api-test/core';
+import { mockTeamServiceAccount } from '@/services/api-test/core';
 import { createPrivateCloudProduct } from '@/services/api-test/private-cloud/products';
 import { makePrivateCloudRequestDecision } from '@/services/api-test/private-cloud/requests';
 import { provisionPrivateCloudProduct } from '@/services/api-test/v1/private-cloud';
@@ -54,6 +55,7 @@ describe('API: List Private Cloud Products - Permissions', () => {
     });
     expect(res2.status).toBe(200);
 
+    await mockTeamServiceAccount(['private-admin']);
     const res3 = await provisionPrivateCloudProduct(dat1.licencePlate);
     expect(res3.status).toBe(200);
   });
@@ -107,6 +109,7 @@ describe('API: List Private Cloud Products - Permissions', () => {
     });
     expect(res2.status).toBe(200);
 
+    await mockTeamServiceAccount(['private-admin']);
     const res3 = await provisionPrivateCloudProduct(dat1.licencePlate);
     expect(res3.status).toBe(200);
   });
@@ -196,6 +199,7 @@ describe('API: List Private Cloud Products - Validations', () => {
           decision: DecisionStatus.APPROVED,
         });
 
+        await mockTeamServiceAccount(['private-admin']);
         await provisionPrivateCloudProduct(dat1.licencePlate);
       }),
     );

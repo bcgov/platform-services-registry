@@ -5,6 +5,7 @@ import prisma from '@/core/prisma';
 import { createSamplePrivateCloudProductData } from '@/helpers/mock-resources';
 import { mockNoRoleUsers, findMockUserByIdr, findOtherMockUsers } from '@/helpers/mock-users';
 import { mockSessionByEmail, mockSessionByRole } from '@/services/api-test/core';
+import { mockTeamServiceAccount } from '@/services/api-test/core';
 import { createPrivateCloudProduct, editPrivateCloudProduct } from '@/services/api-test/private-cloud/products';
 import {
   searchPrivateCloudRequests,
@@ -56,6 +57,7 @@ describe('Search Private Cloud Requests - Permissions', () => {
     });
     expect(res2.status).toBe(200);
 
+    await mockTeamServiceAccount(['private-admin']);
     const res3 = await provisionPrivateCloudProduct(dat1.licencePlate);
     expect(res3.status).toBe(200);
   });
@@ -109,6 +111,7 @@ describe('Search Private Cloud Requests - Permissions', () => {
     });
     expect(res2.status).toBe(200);
 
+    await mockTeamServiceAccount(['private-admin']);
     const res3 = await provisionPrivateCloudProduct(dat1.licencePlate);
     expect(res3.status).toBe(200);
   });
@@ -200,6 +203,7 @@ describe('Search Private Cloud Requests - Validations', () => {
           decision: DecisionStatus.APPROVED,
         });
 
+        await mockTeamServiceAccount(['private-admin']);
         await provisionPrivateCloudProduct(dat1.licencePlate);
         return req;
       }),

@@ -3,7 +3,7 @@ import '@testing-library/jest-dom';
 import _ from 'lodash';
 import { logger } from '@/core/logging';
 import prisma from '@/core/prisma';
-import { SERVICES_KEYCLOAK_APP_REALM } from './jest.mock';
+import { SERVICE_ACCOUNT_DATA } from './jest.mock';
 
 jest.setTimeout(75000);
 
@@ -46,7 +46,7 @@ jest.mock('@/services/ches/private-cloud', () => ({
 jest.mock('@/services/keycloak/app-realm', () => ({
   getKcAdminClient: jest.fn(async () => null),
   findClient: jest.fn(async () => null),
-  findUser: jest.fn(async () => SERVICES_KEYCLOAK_APP_REALM.findUser),
+  findUser: jest.fn(async () => SERVICE_ACCOUNT_DATA.user),
   findUsersByClientRole: jest.fn(async () => []),
   findUserEmailsByAuthRole: jest.fn(async () => []),
 }));

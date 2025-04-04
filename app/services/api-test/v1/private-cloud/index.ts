@@ -1,5 +1,5 @@
 import { POST as _provisionPrivateCloudProduct } from '@/app/api/v1/private-cloud/products/[idOrLicencePlate]/provision/route';
-import { getTeamServiceAccountAuthHeader } from '@/helpers/mock-resources';
+import { getServiceAccountAuthHeader } from '@/helpers/mock-resources';
 import { createRoute } from '../../core';
 
 const privateCloudRoute = createRoute('/v1/private-cloud/products');
@@ -12,7 +12,7 @@ export async function provisionPrivateCloudProduct(idOrLicencePlate: string) {
     {
       pathParams: { idOrLicencePlate },
     },
-    getTeamServiceAccountAuthHeader(),
+    getServiceAccountAuthHeader(),
   );
 
   return result;

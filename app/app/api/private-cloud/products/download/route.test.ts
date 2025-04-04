@@ -8,6 +8,7 @@ import { mockNoRoleUsers, findMockUserByIdr, findOtherMockUsers } from '@/helper
 import { ministryKeyToName, getTotalQuotaStr } from '@/helpers/product';
 import { formatFullName } from '@/helpers/user';
 import { mockSessionByEmail, mockSessionByRole } from '@/services/api-test/core';
+import { mockTeamServiceAccount } from '@/services/api-test/core';
 import { createPrivateCloudProduct, downloadPrivateCloudProducts } from '@/services/api-test/private-cloud/products';
 import { makePrivateCloudRequestDecision } from '@/services/api-test/private-cloud/requests';
 import { provisionPrivateCloudProduct } from '@/services/api-test/v1/private-cloud';
@@ -70,6 +71,7 @@ describe('Download Private Cloud Products - Permissions', () => {
     expect(res2.status).toBe(200);
     requests.one = await res2.json();
 
+    await mockTeamServiceAccount(['private-admin']);
     const res3 = await provisionPrivateCloudProduct(dat1.licencePlate);
     expect(res3.status).toBe(200);
   });
@@ -148,6 +150,7 @@ describe('Download Private Cloud Products - Permissions', () => {
     expect(res2.status).toBe(200);
     requests.two = await res2.json();
 
+    await mockTeamServiceAccount(['private-admin']);
     const res3 = await provisionPrivateCloudProduct(dat1.licencePlate);
     expect(res3.status).toBe(200);
   });
@@ -249,6 +252,7 @@ describe('Download Private Cloud Products - Validations', () => {
           decision: DecisionStatus.APPROVED,
         });
 
+        await mockTeamServiceAccount(['private-admin']);
         await provisionPrivateCloudProduct(dat1.licencePlate);
       }),
     );

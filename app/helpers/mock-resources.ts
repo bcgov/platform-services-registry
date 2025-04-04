@@ -1,10 +1,9 @@
 import { faker } from '@faker-js/faker';
 import { Prisma, Cluster } from '@prisma/client';
 import jws from 'jws';
-import _join from 'lodash-es/join';
 import { ministries, clusters, providers } from '@/constants';
 import { mockNoRoleUsers } from '@/helpers/mock-users';
-import { SERVICES_KEYCLOAK_APP_REALM } from '@/jest.mock';
+import { SERVICE_ACCOUNT_DATA } from '@/jest.mock';
 import { generateShortId } from '@/utils/js';
 import { getRandomCloudProviderSelectionReasons, getRandomProviderReasonsNote } from './mock-resources/core';
 import { resourceRequests1 } from './mock-resources/private-cloud-product';
@@ -14,11 +13,6 @@ const getRandomMinistry = () => faker.helpers.arrayElement(ministries);
 const getRandomCluster = () => faker.helpers.arrayElement(clusters);
 const getRandomProvider = () => faker.helpers.arrayElement(providers);
 const secret = 'testsecret'; // pragma: allowlist secret
-
-interface ServiceKeyCloakRealmUser {
-  email?: string;
-  authRoleNames?: string[];
-}
 
 export function createSamplePrivateCloudProductData(args?: {
   data?: Partial<
@@ -123,23 +117,18 @@ export function createSamplePrivateCloudCommentData(args?: { data?: Partial<Pris
 
   return _data;
 }
-
-export function getServiceAccountAuthHeader(options: {
-  user?: ServiceKeyCloakRealmUser;
-  roles?: string[];
-  serviceAccountType: 'user' | 'team';
-}) {
-  const { user, roles, serviceAccountType } = options;
-
-  const payload: Record<string, any> = {
-    service_account_type: serviceAccountType,
-  };
-
-  if (serviceAccountType === 'user' && user) {
-    payload.roles = _join(user?.authRoleNames, ',');
-    payload['kc-userid'] = user?.email;
-  } else if (roles) {
-    payload.roles = _join(roles, ',');
+export function getServiceAccountAuthHeader() {
+  let payload = {};
+  if (SERVICE_ACCOUNT_DATA.user) {
+    payload = {
+      service_account_type: 'user',
+      'kc-userid': 'PLACEHOLDER',
+    };
+  } else if (SERVICE_ACCOUNT_DATA.team) {
+    payload = {
+      service_account_type: 'team',
+      roles: SERVICE_ACCOUNT_DATA.team.roles.join(','),
+    };
   }
 
   const signature = jws.sign({
@@ -152,18 +141,4 @@ export function getServiceAccountAuthHeader(options: {
     Authorization: 'Bearer ' + signature,
     'Content-Type': 'application/json',
   };
-}
-
-export function getUserServiceAccountAuthHeader() {
-  return getServiceAccountAuthHeader({
-    user: SERVICES_KEYCLOAK_APP_REALM.findUser || undefined,
-    serviceAccountType: 'user',
-  });
-}
-
-export function getTeamServiceAccountAuthHeader() {
-  return getServiceAccountAuthHeader({
-    roles: ['private-admin', 'public-admin'],
-    serviceAccountType: 'team',
-  });
 }

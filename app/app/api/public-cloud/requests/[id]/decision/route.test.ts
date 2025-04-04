@@ -6,6 +6,7 @@ import prisma from '@/core/prisma';
 import { createSamplePublicCloudProductData } from '@/helpers/mock-resources';
 import { pickProductData } from '@/helpers/product';
 import { mockSessionByEmail, mockSessionByRole } from '@/services/api-test/core';
+import { mockTeamServiceAccount } from '@/services/api-test/core';
 import {
   createPublicCloudProduct,
   editPublicCloudProduct,
@@ -158,8 +159,7 @@ describe('Review Public Cloud Create Request - Permissions', () => {
   });
 
   it('should successfully provision the create request', async () => {
-    await mockSessionByEmail();
-
+    await mockTeamServiceAccount(['public-admin']);
     const response = await provisionPublicCloudProduct(requests.main.licencePlate);
     expect(response.status).toBe(200);
   });
@@ -217,7 +217,7 @@ describe('Review Public Cloud Update Request - Permissions', () => {
   });
 
   it('should successfully provision the update request', async () => {
-    await mockSessionByEmail();
+    await mockTeamServiceAccount(['public-admin']);
 
     const response = await provisionPublicCloudProduct(requests.main.licencePlate);
     expect(response.status).toBe(200);
@@ -280,7 +280,7 @@ describe('Review Public Cloud Delete Request - Permissions', () => {
   });
 
   it('should successfully provision the delete request', async () => {
-    await mockSessionByEmail();
+    await mockTeamServiceAccount(['public-admin']);
 
     const response = await provisionPublicCloudProduct(requests.main.licencePlate);
     expect(response.status).toBe(200);

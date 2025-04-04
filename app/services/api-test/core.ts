@@ -3,7 +3,7 @@ import { NextRequest } from 'next/server';
 import { getServerSession } from 'next-auth/next';
 import { BASE_URL } from '@/config';
 import { generateTestSession, findMockUserbyRole, findMockUserByEmail, upsertMockUser } from '@/helpers/mock-users';
-import { SERVICES_KEYCLOAK_APP_REALM } from '@/jest.mock';
+import { SERVICE_ACCOUNT_DATA } from '@/jest.mock';
 import { stringifyQuery } from '@/utils/js';
 
 type Handler = (req: NextRequest, Options?: { params: any }) => Promise<Response>;
@@ -131,14 +131,7 @@ export async function mockSessionByRole(role?: string) {
     if (!user) mockedGetServerSession.mockResolvedValue(null);
     else {
       const mockSession = await generateTestSession(user.email);
-      const rolesToAdd = ['private-admin', 'public-admin', 'service-account'];
-      const updatedMockSession = JSON.parse(
-        JSON.stringify({
-          ...mockSession,
-          roles: [...(mockSession?.roles || []), ...rolesToAdd],
-        }),
-      );
-      mockedGetServerSession.mockResolvedValue(updatedMockSession);
+      mockedGetServerSession.mockResolvedValue(mockSession);
     }
   }
 }
@@ -155,7 +148,8 @@ export async function mockUserServiceAccountByEmail(email?: string) {
     }
   }
 
-  SERVICES_KEYCLOAK_APP_REALM.findUser = mockedValue;
+  SERVICE_ACCOUNT_DATA.user = mockedValue;
+  SERVICE_ACCOUNT_DATA.team = null;
 }
 
 export async function mockUserServiceAccountByRole(role?: string) {
@@ -170,5 +164,13 @@ export async function mockUserServiceAccountByRole(role?: string) {
     }
   }
 
-  SERVICES_KEYCLOAK_APP_REALM.findUser = mockedValue;
+  SERVICE_ACCOUNT_DATA.user = mockedValue;
+  SERVICE_ACCOUNT_DATA.team = null;
+}
+
+export async function mockTeamServiceAccount(roles: string[]) {
+  mockedGetServerSession.mockResolvedValue(null);
+
+  SERVICE_ACCOUNT_DATA.user = null;
+  SERVICE_ACCOUNT_DATA.team = { roles };
 }

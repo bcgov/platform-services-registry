@@ -5,6 +5,7 @@ import { createSamplePrivateCloudProductData } from '@/helpers/mock-resources';
 import { resourceRequests1, resourceRequests2 } from '@/helpers/mock-resources/private-cloud-product';
 import { findOtherMockUsers } from '@/helpers/mock-users';
 import { mockSessionByEmail, mockSessionByRole } from '@/services/api-test/core';
+import { mockTeamServiceAccount } from '@/services/api-test/core';
 import { createPrivateCloudProduct, editPrivateCloudProduct } from '@/services/api-test/private-cloud/products';
 import { makePrivateCloudRequestDecision } from '@/services/api-test/private-cloud/requests';
 import { provisionPrivateCloudProduct } from '@/services/api-test/v1/private-cloud';
@@ -57,7 +58,7 @@ describe('Update Private Cloud Product - Permissions', () => {
   });
 
   it('should successfully provision the request', async () => {
-    await mockSessionByEmail();
+    await mockTeamServiceAccount(['private-admin']);
 
     const response = await provisionPrivateCloudProduct(requests.create.licencePlate);
     expect(response.status).toBe(200);

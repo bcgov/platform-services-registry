@@ -3,6 +3,7 @@ import { DecisionStatus, RequestType } from '@prisma/client';
 import { GlobalRole } from '@/constants';
 import { createSamplePrivateCloudProductData } from '@/helpers/mock-resources';
 import { mockSessionByEmail, mockSessionByRole } from '@/services/api-test/core';
+import { mockTeamServiceAccount } from '@/services/api-test/core';
 import {
   createPrivateCloudProduct,
   getPrivateCloudProduct,
@@ -43,7 +44,7 @@ describe('Private Cloud Comments - Permissions', () => {
   });
 
   it('should successfully provision the request', async () => {
-    await mockSessionByEmail();
+    await mockTeamServiceAccount(['private-admin']);
 
     const response = await provisionPrivateCloudProduct(globalLicencePlate);
     expect(response.status).toBe(200);
@@ -136,6 +137,7 @@ describe('Private Cloud Comments - Validations', () => {
     });
     expect(approveResponse.status).toBe(200);
 
+    await mockTeamServiceAccount(['private-admin']);
     const provisionResponse = await provisionPrivateCloudProduct(localLicencePlate);
     expect(provisionResponse.status).toBe(200);
   });

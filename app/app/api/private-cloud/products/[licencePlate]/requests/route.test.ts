@@ -4,6 +4,7 @@ import { GlobalRole } from '@/constants';
 import { createSamplePrivateCloudProductData } from '@/helpers/mock-resources';
 import { mockNoRoleUsers, findMockUserByIdr, findOtherMockUsers } from '@/helpers/mock-users';
 import { mockSessionByEmail, mockSessionByRole } from '@/services/api-test/core';
+import { mockTeamServiceAccount } from '@/services/api-test/core';
 import { createPrivateCloudProduct, listPrivateCloudProductRequests } from '@/services/api-test/private-cloud/products';
 import { makePrivateCloudRequestDecision } from '@/services/api-test/private-cloud/requests';
 import { provisionPrivateCloudProduct } from '@/services/api-test/v1/private-cloud';
@@ -46,6 +47,7 @@ describe('List Private Cloud Product Requests - Permissions', () => {
     });
     expect(res2.status).toBe(200);
 
+    await mockTeamServiceAccount(['private-admin']);
     const res3 = await provisionPrivateCloudProduct(dat1.licencePlate);
     expect(res3.status).toBe(200);
   });

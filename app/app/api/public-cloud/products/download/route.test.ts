@@ -9,6 +9,7 @@ import { mockNoRoleUsers, findMockUserByIdr, findOtherMockUsers } from '@/helper
 import { ministryKeyToName, getTotalQuotaStr } from '@/helpers/product';
 import { formatFullName } from '@/helpers/user';
 import { mockSessionByEmail, mockSessionByRole } from '@/services/api-test/core';
+import { mockTeamServiceAccount } from '@/services/api-test/core';
 import {
   createPublicCloudProduct,
   downloadPublicCloudProducts,
@@ -105,6 +106,7 @@ describe('Download Public Cloud Products - Permissions', () => {
     expect(res2.status).toBe(200);
     requests.one = await res2.json();
 
+    await mockTeamServiceAccount(['public-admin']);
     const res3 = await provisionPublicCloudProduct(dat1.licencePlate);
     expect(res3.status).toBe(200);
   });
@@ -185,6 +187,7 @@ describe('Download Public Cloud Products - Permissions', () => {
     expect(res2.status).toBe(200);
     requests.two = await res2.json();
 
+    await mockTeamServiceAccount(['public-admin']);
     const res3 = await provisionPublicCloudProduct(dat1.licencePlate);
     expect(res3.status).toBe(200);
   });
@@ -286,6 +289,7 @@ describe('Download Public Cloud Products - Validations', () => {
           decision: DecisionStatus.APPROVED,
         });
 
+        await mockTeamServiceAccount(['public-admin']);
         await provisionPublicCloudProduct(dat1.licencePlate);
       }),
     );

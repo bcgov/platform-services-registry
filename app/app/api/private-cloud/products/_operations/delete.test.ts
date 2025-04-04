@@ -4,6 +4,7 @@ import { GlobalRole } from '@/constants';
 import { createSamplePrivateCloudProductData } from '@/helpers/mock-resources';
 import { findOtherMockUsers } from '@/helpers/mock-users';
 import { mockSessionByEmail, mockSessionByRole } from '@/services/api-test/core';
+import { mockTeamServiceAccount } from '@/services/api-test/core';
 import { createPrivateCloudProduct, deletePrivateCloudProduct } from '@/services/api-test/private-cloud/products';
 import { makePrivateCloudRequestDecision } from '@/services/api-test/private-cloud/requests';
 import { provisionPrivateCloudProduct } from '@/services/api-test/v1/private-cloud';
@@ -41,8 +42,7 @@ describe('Delete Private Cloud Product - Permissions', () => {
   });
 
   it('should successfully provision the request', async () => {
-    await mockSessionByEmail();
-
+    await mockTeamServiceAccount(['private-admin']);
     const response = await provisionPrivateCloudProduct(requests.create.licencePlate);
     expect(response.status).toBe(200);
   });
