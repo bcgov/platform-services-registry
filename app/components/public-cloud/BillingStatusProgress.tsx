@@ -1,7 +1,7 @@
 import { Button, Stepper, rem } from '@mantine/core';
 import { Provider, TaskStatus, TaskType } from '@prisma/client';
 import { IconConfetti } from '@tabler/icons-react';
-import { useQuery, useMutation } from '@tanstack/react-query';
+import { useMutation } from '@tanstack/react-query';
 import { useSession } from 'next-auth/react';
 import { useState } from 'react';
 import { openPublicCloudMouReviewModal } from '@/components/modal/publicCloudMouReview';
@@ -19,6 +19,28 @@ function BillingDate({ date }: { date?: Date | null }) {
 
   return <div className="text-sm text-gray-400 mt-1">{formatDate(date)}</div>;
 }
+
+const handleOpenPublicCloudMouSignModal = async ({
+  billing,
+  data,
+  editable,
+}: {
+  billing: PublicCloudBillingDetailDecorated;
+  data: { name: string; provider: Provider };
+  editable: boolean;
+}) => {
+  const res = await openPublicCloudMouSignModal({
+    billingId: billing.id,
+    licencePlate: billing.licencePlate,
+    accountCoding: billing.accountCoding,
+    name: data.name,
+    provider: data.provider,
+    editable,
+  });
+
+  if (res.state.confirmed) {
+  }
+};
 
 export default function BillingStatusProgress({
   billing,
@@ -49,6 +71,10 @@ export default function BillingStatusProgress({
         (task.data as { licencePlate: string }).licencePlate === billing.licencePlate,
     );
 
+  const isUserExpenseAuthority = billing.expenseAuthorityId === session?.userId;
+
+  const canEdit = billing.signed && !billing.approved && isUserExpenseAuthority && editable;
+
   const canReview =
     !billing.approved &&
     !!userSnap.assignedTasks.find(
@@ -69,6 +95,11 @@ export default function BillingStatusProgress({
     <>
       {billing.signedBy && <UserProfile data={billing.signedBy} />}
       <BillingDate date={billing.signedAt} />
+      {canEdit && (
+        <Button onClick={() => data && handleOpenPublicCloudMouSignModal({ billing, data, editable })}>
+          Edit eMOU
+        </Button>
+      )}
     </>
   );
 
@@ -82,7 +113,6 @@ export default function BillingStatusProgress({
           loading={downloading}
           onClick={async () => {
             if (!data) return;
-
             setDownloading(true);
             await downloadPublicCloudBillingPDF(billing.id, getPublicCloudEmouFileName(data.name, data.provider));
             setDownloading(false);
@@ -97,22 +127,7 @@ export default function BillingStatusProgress({
   const getSiningContent = () => (
     <>
       {canSign && data ? (
-        <Button
-          onClick={async () => {
-            if (!data) return;
-            const res = await openPublicCloudMouSignModal({
-              billingId: billing.id,
-              licencePlate: billing.licencePlate,
-              accountCoding: billing.accountCoding,
-              name: data.name,
-              provider: data.provider,
-              editable,
-            });
-
-            if (res.state.confirmed) {
-            }
-          }}
-        >
+        <Button onClick={() => data && handleOpenPublicCloudMouSignModal({ billing, data, editable })}>
           Sign eMOU
         </Button>
       ) : (
@@ -208,6 +223,7 @@ export default function BillingStatusProgress({
     <Stepper active={2} iconSize={35} className={cn(className)}>
       <Stepper.Step label="Assigned" description={getAssignedContent()} />
       <Stepper.Step label="Sign" description={getSiningContent()} loading />
+
       <Stepper.Step
         label="Review"
         description={

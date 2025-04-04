@@ -1,4 +1,4 @@
-import { Prisma, Ministry, ProjectStatus, TaskType, TaskStatus, PublicCloudProductMemberRole } from '@prisma/client';
+import { Prisma, Ministry, ProjectStatus, TaskType, PublicCloudProductMemberRole } from '@prisma/client';
 import { Session } from 'next-auth';
 import prisma from '@/core/prisma';
 import { PublicCloudProductDecorate } from '@/types/doc-decorate';
@@ -32,6 +32,7 @@ async function baseFilter(session: Session) {
       { projectOwnerId: session.user.id as string },
       { primaryTechnicalLeadId: session.user.id as string },
       { secondaryTechnicalLeadId: session.user.id },
+      { expenseAuthorityId: session.user.id },
       { licencePlate: { in: getUniqueNonFalsyItems(licencePlatesFromTasks) } },
       {
         members: {

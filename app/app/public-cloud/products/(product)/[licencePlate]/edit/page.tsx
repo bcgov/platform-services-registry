@@ -2,14 +2,7 @@
 
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Button } from '@mantine/core';
-import {
-  IconInfoCircle,
-  IconUsersGroup,
-  IconUserDollar,
-  IconLayoutGridAdd,
-  IconMoneybag,
-  IconReceipt2,
-} from '@tabler/icons-react';
+import { IconInfoCircle, IconUsersGroup, IconLayoutGridAdd, IconMoneybag } from '@tabler/icons-react';
 import { useEffect, useState } from 'react';
 import { FormProvider, useForm } from 'react-hook-form';
 import { z } from 'zod';
@@ -22,7 +15,7 @@ import FormErrorNotification from '@/components/generic/FormErrorNotification';
 import { openPublicCloudProductEditSubmitModal } from '@/components/modal/publicCloudProductEditSubmit';
 import AdditionalTeamMembers from '@/components/public-cloud/sections/AdditionalTeamMembers';
 import TeamContacts from '@/components/public-cloud/sections/TeamContacts';
-import { AGMinistries, GlobalRole } from '@/constants';
+import { GlobalRole } from '@/constants';
 import createClientPage from '@/core/client-page';
 import { usePublicProductState } from '@/states/global';
 import { publicCloudEditRequestBodySchema } from '@/validation-schemas/public-cloud';
@@ -35,7 +28,7 @@ const publicCloudProductEdit = createClientPage({
   roles: [GlobalRole.User],
   validations: { pathParams: pathParamSchema },
 });
-export default publicCloudProductEdit(({}) => {
+export default publicCloudProductEdit(({ session }) => {
   const [, snap] = usePublicProductState();
   const [isDisabled, setDisabled] = useState(false);
 
@@ -50,10 +43,19 @@ export default publicCloudProductEdit(({}) => {
   const { formState } = methods;
 
   useEffect(() => {
-    if (!snap.currentProduct) return;
+    if (!snap.currentProduct || !session?.user.id) return;
 
-    setDisabled(!snap.currentProduct?._permissions.edit);
-  }, [snap.currentProduct]);
+    const { projectOwnerId, expenseAuthorityId, primaryTechnicalLeadId, _permissions } = snap.currentProduct;
+
+    const isUserEA = expenseAuthorityId === session?.user.id;
+    const isUserPO = projectOwnerId === session?.user.id;
+    const isUserTL = primaryTechnicalLeadId === session?.user.id;
+
+    const isOnlyEA = isUserEA && !isUserPO && !isUserTL;
+    const canEdit = _permissions.edit;
+
+    setDisabled(isOnlyEA || !canEdit);
+  }, [snap.currentProduct, session?.user.id]);
 
   const isSubmitEnabled = Object.keys(formState.dirtyFields).length > 0;
 
