@@ -156,7 +156,7 @@ export default publicCloudProductRequest(({ router }) => {
       componentArgs: {} as any,
     });
   }
-  console.log('billingData', billingData);
+
   return (
     <div>
       {billingData && billingData.data.length > 0 && (
