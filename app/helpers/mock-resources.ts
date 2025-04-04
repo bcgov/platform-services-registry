@@ -119,35 +119,46 @@ export function createSamplePrivateCloudCommentData(args?: { data?: Partial<Pris
   return _data;
 }
 
-export function getUserServiceAccountAuthHeader(user?: AppUserWithRoles) {
-  const stringifiedRoles = _join(user?.roles, ',');
+export function getServiceAccountAuthHeader(options: {
+  user?: AppUserWithRoles;
+  roles?: string[];
+  serviceAccountType: 'user' | 'team';
+}) {
+  const { user, roles, serviceAccountType } = options;
+
+  const payload: Record<string, any> = {
+    service_account_type: serviceAccountType,
+  };
+
+  if (serviceAccountType === 'user' && user) {
+    payload.roles = _join(user?.roles, ',');
+    payload['kc-userid'] = user?.id;
+  } else if (roles) {
+    payload.roles = _join(roles, ',');
+  }
+
   const signature = jws.sign({
     header: { alg: 'HS256', typ: 'JWT' },
-    payload: {
-      roles: stringifiedRoles,
-      service_account_type: 'user',
-      'kc-userid': user?.id,
-    },
+    payload,
     secret,
   });
+
   return {
     Authorization: 'Bearer ' + signature,
     'Content-Type': 'application/json',
   };
 }
 
-export function getTeamServiceAccountAuthHeader() {
-  const signature = jws.sign({
-    header: { alg: 'HS256', typ: 'JWT' },
-    payload: {
-      roles: 'private-admin,public-admin',
-      service_account_type: 'team',
-    },
-    secret,
+export function getUserServiceAccountAuthHeader(user?: AppUserWithRoles) {
+  return getServiceAccountAuthHeader({
+    user,
+    serviceAccountType: 'user',
   });
+}
 
-  return {
-    Authorization: 'Bearer ' + signature,
-    'Content-Type': 'application/json',
-  };
+export function getTeamServiceAccountAuthHeader() {
+  return getServiceAccountAuthHeader({
+    roles: ['private-admin', 'public-admin'],
+    serviceAccountType: 'team',
+  });
 }
