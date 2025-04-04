@@ -107,7 +107,7 @@ export default publicCloudProductBillings(({ getPathParams, session }) => {
     billings = billingData.data;
     totalCount = billingData.totalCount;
   }
-  console.log('billingData', billingData);
+
   return (
     <>
       {!isLoading && (
