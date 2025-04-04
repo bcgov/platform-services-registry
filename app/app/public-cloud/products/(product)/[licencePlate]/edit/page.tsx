@@ -43,19 +43,10 @@ export default publicCloudProductEdit(({ session }) => {
   const { formState } = methods;
 
   useEffect(() => {
-    if (!snap.currentProduct || !session?.user.id) return;
+    if (!snap.currentProduct) return;
 
-    const { projectOwnerId, expenseAuthorityId, primaryTechnicalLeadId, _permissions } = snap.currentProduct;
-
-    const isUserEA = expenseAuthorityId === session?.user.id;
-    const isUserPO = projectOwnerId === session?.user.id;
-    const isUserTL = primaryTechnicalLeadId === session?.user.id;
-
-    const isOnlyEA = isUserEA && !isUserPO && !isUserTL;
-    const canEdit = _permissions.edit;
-
-    setDisabled(isOnlyEA || !canEdit);
-  }, [snap.currentProduct, session?.user.id]);
+    setDisabled(!snap.currentProduct?._permissions.edit);
+  }, [snap.currentProduct]);
 
   const isSubmitEnabled = Object.keys(formState.dirtyFields).length > 0;
 

@@ -165,6 +165,7 @@ describe('Read Public Cloud Product - Permissions', () => {
       productData.main.projectOwner.email,
       productData.main.primaryTechnicalLead.email,
       productData.main.secondaryTechnicalLead.email,
+      productData.main.expenseAuthority.email,
     ]);
 
     await mockSessionByEmail(otherUsers[0].email);

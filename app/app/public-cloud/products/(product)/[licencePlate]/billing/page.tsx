@@ -23,9 +23,11 @@ import TableBody from './TableBody';
 function AccountCodingForm({
   accountCoding,
   licencePlate,
+  isDisabled,
 }: {
   accountCoding?: AccountCoding | null;
   licencePlate: string;
+  isDisabled: boolean;
 }) {
   const [, publicCloudSnap] = usePublicProductState();
 
@@ -64,7 +66,10 @@ function AccountCodingForm({
         })}
         autoComplete="off"
       >
-        <AccountCodingSection isSubmitting={isUpdatingAccountCoding} disabled={!canEdit} />
+        <AccountCodingSection
+          isSubmitting={isUpdatingAccountCoding}
+          disabled={!canEdit || isUpdatingAccountCoding || isDisabled}
+        />
       </form>
     </FormProvider>
   );
@@ -102,7 +107,7 @@ export default publicCloudProductBillings(({ getPathParams, session }) => {
     billings = billingData.data;
     totalCount = billingData.totalCount;
   }
-
+  console.log('billingData', billingData);
   return (
     <>
       {!isLoading && (
@@ -110,6 +115,7 @@ export default publicCloudProductBillings(({ getPathParams, session }) => {
           key={billings[0]?.id}
           accountCoding={billings.length > 0 ? billings[0].accountCoding : null}
           licencePlate={licencePlate}
+          isDisabled={!billingData?.data[0].approved}
         />
       )}
 

@@ -69,18 +69,18 @@ async function decorate<T extends PublicCloudProductSimple & Partial<PublicCloud
   }
 
   const isActive = doc.status === ProjectStatus.ACTIVE;
-  const isMyProduct = [
-    doc.projectOwnerId,
-    doc.primaryTechnicalLeadId,
-    doc.secondaryTechnicalLeadId,
-    doc.expenseAuthorityId,
-  ].includes(session.user.id);
+  const isMyProduct = [doc.projectOwnerId, doc.primaryTechnicalLeadId, doc.secondaryTechnicalLeadId].includes(
+    session.user.id,
+  );
+
+  const isExpenseAuthority = doc.expenseAuthorityId === session.user.id;
 
   const members = doc.members || [];
 
   const canView =
     session.permissions.viewAllPublicCloudProducts ||
     isMyProduct ||
+    isExpenseAuthority ||
     session.ministries.reader.includes(doc.ministry) ||
     session.ministries.editor.includes(doc.ministry) ||
     members.some(

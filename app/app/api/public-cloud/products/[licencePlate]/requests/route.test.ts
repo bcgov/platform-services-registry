@@ -18,12 +18,14 @@ import { makePublicCloudRequestDecision } from '@/services/api-test/public-cloud
 const PO = mockNoRoleUsers[0];
 const TL1 = mockNoRoleUsers[1];
 const TL2 = mockNoRoleUsers[2];
-const RANDOM1 = mockNoRoleUsers[3];
+const EA = mockNoRoleUsers[3];
+const RANDOM1 = mockNoRoleUsers[4];
 
 const memberData = {
   projectOwner: PO,
   primaryTechnicalLead: TL1,
   secondaryTechnicalLead: TL2,
+  ExpenseAuthority: EA,
 };
 
 let licencePlate = '';
