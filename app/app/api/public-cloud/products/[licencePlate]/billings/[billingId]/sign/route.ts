@@ -1,16 +1,10 @@
-import { Prisma, TaskStatus, TaskType } from '@prisma/client';
+import { DecisionStatus, RequestType, TaskStatus, TaskType } from '@prisma/client';
 import { z } from 'zod';
 import { GlobalRole } from '@/constants';
 import createApiHandler from '@/core/api-handler';
 import prisma from '@/core/prisma';
 import { BadRequestResponse, OkResponse, UnauthorizedResponse } from '@/core/responses';
-import {
-  models,
-  tasks,
-  getMostRecentPublicCloudRequest,
-  publicCloudProductDetailInclude,
-  publicCloudBillingDetailInclude,
-} from '@/services/db';
+import { tasks, publicCloudProductDetailInclude } from '@/services/db';
 import { getPublicCloudBillingResources } from '@/services/db/public-cloud-billing';
 import { objectId, accountCodingSchema } from '@/validation-schemas';
 
@@ -45,8 +39,34 @@ export const POST = apiHandler(async ({ pathParams, body, session }) => {
     prisma.publicCloudProduct.findFirst({ where: { licencePlate }, include: publicCloudProductDetailInclude }),
   ]);
 
+  let isExpenseAuthority = false;
+
   if (!assignedTask) {
-    return UnauthorizedResponse();
+    if (product?.expenseAuthorityId === session.user.id) {
+      isExpenseAuthority = true;
+    } else {
+      // fallback to checking request EA if no product
+      const request = await prisma.publicCloudRequest.findFirst({
+        where: {
+          licencePlate,
+          type: RequestType.CREATE,
+          decisionStatus: DecisionStatus.PENDING,
+        },
+        select: {
+          decisionData: {
+            select: {
+              expenseAuthorityId: true,
+            },
+          },
+        },
+      });
+
+      isExpenseAuthority = request?.decisionData?.expenseAuthorityId === session.user.id;
+    }
+
+    if (!isExpenseAuthority) {
+      return UnauthorizedResponse();
+    }
   }
 
   await Promise.all([

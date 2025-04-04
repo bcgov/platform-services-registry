@@ -36,9 +36,28 @@ async function baseFilter(session: Session) {
     )
     .map((task) => (task.data as { requestId: string }).requestId);
 
+  const billingRecords = await prisma.publicCloudBilling.findMany({
+    where: {
+      expenseAuthority: {
+        id: session.user.id,
+      },
+      signed: true,
+      approved: false,
+    },
+    select: {
+      licencePlate: true,
+    },
+  });
+
+  const licencePlatesAsEa = billingRecords.map((b) => b.licencePlate);
+
   const filter: Prisma.PublicCloudRequestWhereInput = {
     OR: [
-      { licencePlate: { in: getUniqueNonFalsyItems([...licencePlates, ...licencePlatesFromTasks]) } },
+      {
+        licencePlate: {
+          in: getUniqueNonFalsyItems([...licencePlates, ...licencePlatesFromTasks, ...licencePlatesAsEa]),
+        },
+      },
       { id: { in: getUniqueNonFalsyItems([...requestIdsFromTasks]) } },
       { type: RequestType.CREATE, createdByEmail: { equals: session.user.email, mode: 'insensitive' } },
     ],
@@ -55,11 +74,13 @@ async function decorate<T extends PublicCloudRequestSimple | PublicCloudRequestD
   let canReview = false;
   let canSignMou = false;
   let canApproveMou = false;
+  let canEditAsEa = false;
 
   if (doc.decisionStatus === DecisionStatus.PENDING) {
     if (doc.type === RequestType.CREATE) {
       const billing = await prisma.publicCloudBilling.findFirst({
         where: { licencePlate: doc.licencePlate },
+        include: { expenseAuthority: true },
         orderBy: { createdAt: Prisma.SortOrder.desc },
       });
 
@@ -87,6 +108,8 @@ async function decorate<T extends PublicCloudRequestSimple | PublicCloudRequestD
             .filter((task) => task.type === TaskType.REVIEW_PUBLIC_CLOUD_REQUEST && task.status === TaskStatus.ASSIGNED)
             .map((task) => (task.data as { requestId: string }).requestId)
             .includes(doc.id);
+
+        canEditAsEa = billing.signed && !billing.approved && billing.expenseAuthority?.id === session.user.id;
       }
     } else if (doc.type === RequestType.DELETE) {
       canReview =
@@ -99,7 +122,7 @@ async function decorate<T extends PublicCloudRequestSimple | PublicCloudRequestD
   }
 
   const canCancel = doc.decisionStatus === DecisionStatus.PENDING && session.user.email === doc.createdBy?.email;
-  const canEdit = canReview && doc.type !== RequestType.DELETE;
+  const canEdit = (canReview && doc.type !== RequestType.DELETE) || canEditAsEa;
 
   const canResend =
     (doc.decisionStatus === DecisionStatus.APPROVED || doc.decisionStatus === DecisionStatus.AUTO_APPROVED) &&
