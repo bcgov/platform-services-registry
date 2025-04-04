@@ -1,9 +1,7 @@
 import { RequestType, DecisionStatus, ProjectStatus, EventType, Prisma, TaskType } from '@prisma/client';
 import { Session } from 'next-auth';
 import { z, TypeOf, ZodType } from 'zod';
-import prisma from '@/core/prisma';
 import { BadRequestResponse, OkResponse, UnauthorizedResponse, UnprocessableEntityResponse } from '@/core/responses';
-import { isEligibleForDeletion } from '@/helpers/openshift';
 import { sendDeleteRequestEmails } from '@/services/ches/private-cloud';
 import {
   createEvent,
@@ -13,6 +11,7 @@ import {
   getLastClosedPrivateCloudRequest,
   tasks,
 } from '@/services/db';
+import { isEligibleForDeletion } from '@/services/k8s/reads';
 import { deletePathParamSchema } from '../[licencePlate]/schema';
 
 export default async function deleteOp({

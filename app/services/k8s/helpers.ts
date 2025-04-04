@@ -1,4 +1,4 @@
-import { KubeConfig, CoreV1Api, Metrics } from '@kubernetes/client-node';
+import { KubeConfig, CoreV1Api, CustomObjectsApi, Metrics } from '@kubernetes/client-node';
 import { Cluster } from '@prisma/client';
 
 function configureKubeConfig(cluster: string, token: string) {
@@ -57,10 +57,12 @@ export function createK8sClusterConfigs(tokens: {
     const kc = k8sConfigs[cluster];
     const apiClient = kc.makeApiClient(CoreV1Api);
     const metricsClient = new Metrics(kc);
+    const customClient = kc.makeApiClient(CustomObjectsApi);
 
     return {
       apiClient,
       metricsClient,
+      customClient,
     };
   }
 

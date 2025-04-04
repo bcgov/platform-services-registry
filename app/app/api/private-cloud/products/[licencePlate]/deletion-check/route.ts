@@ -2,9 +2,8 @@ import { string, z } from 'zod';
 import { GlobalRole } from '@/constants';
 import createApiHandler from '@/core/api-handler';
 import { BadRequestResponse, OkResponse, UnauthorizedResponse } from '@/core/responses';
-import openshiftDeletionCheck from '@/helpers/openshift';
 import { models } from '@/services/db';
-import { DeletionStatus } from '@/types/private-cloud';
+import { checkDeletionAvailability } from '@/services/k8s/reads';
 
 const pathParamSchema = z.object({
   licencePlate: string(),
@@ -23,15 +22,6 @@ export const GET = apiHandler(async ({ pathParams, session }) => {
     return UnauthorizedResponse();
   }
 
-  const deleteCheckList = await openshiftDeletionCheck(licencePlate, product.cluster);
-
-  let result: DeletionStatus = DeletionStatus.NOT_DELETABLE;
-
-  if (!deleteCheckList.artifactoryDeletability) {
-    result = DeletionStatus.ARTIFACTORY_NOT_DELETABLE;
-  } else if (Object.values(deleteCheckList).every((field) => field)) {
-    result = DeletionStatus.OK_TO_DELETE;
-  }
-
-  return OkResponse(result);
+  const deleteCheckList = await checkDeletionAvailability(licencePlate, product.cluster);
+  return OkResponse(deleteCheckList);
 });

@@ -74,6 +74,16 @@ jest.mock('@/services/k8s/metrics', () => ({
   })),
 }));
 
+jest.mock('@/services/k8s/reads/deletion-check', () => ({
+  checkDeletionAvailability: jest.fn(async () => ({
+    namespace: true,
+    pods: true,
+    pvc: true,
+    artifactory: true,
+  })),
+  isEligibleForDeletion: jest.fn(async () => true),
+}));
+
 [
   'castArray',
   'compact',

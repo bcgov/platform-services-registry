@@ -1,0 +1,23 @@
+import { Cluster } from '@prisma/client';
+import {
+  CLAB_SERVICE_ACCOUNT_TOKEN,
+  KLAB_SERVICE_ACCOUNT_TOKEN,
+  KLAB2_SERVICE_ACCOUNT_TOKEN,
+  GOLDDR_SERVICE_ACCOUNT_TOKEN,
+  GOLD_SERVICE_ACCOUNT_TOKEN,
+  SILVER_SERVICE_ACCOUNT_TOKEN,
+  EMERALD_SERVICE_ACCOUNT_TOKEN,
+} from '@/config';
+import { createK8sClusterConfigs } from '../helpers';
+
+const { getK8sClusterClients } = createK8sClusterConfigs({
+  [Cluster.KLAB]: KLAB_SERVICE_ACCOUNT_TOKEN,
+  [Cluster.CLAB]: CLAB_SERVICE_ACCOUNT_TOKEN,
+  [Cluster.KLAB2]: KLAB2_SERVICE_ACCOUNT_TOKEN,
+  [Cluster.GOLDDR]: GOLDDR_SERVICE_ACCOUNT_TOKEN,
+  [Cluster.GOLD]: GOLD_SERVICE_ACCOUNT_TOKEN,
+  [Cluster.SILVER]: SILVER_SERVICE_ACCOUNT_TOKEN,
+  [Cluster.EMERALD]: EMERALD_SERVICE_ACCOUNT_TOKEN,
+});
+
+export const getK8sClients = getK8sClusterClients;
