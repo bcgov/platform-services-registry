@@ -16,6 +16,6 @@ class Keycloak:
         response.raise_for_status()
         return response.json()
 
-    def get_access_token(self):
+    def _get_access_token(self):
         token_data = self._request_token()
         return token_data.get("access_token", "")
