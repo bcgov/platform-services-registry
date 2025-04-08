@@ -50,7 +50,6 @@ async function baseFilter(session: Session) {
 
 async function decorate<T extends PublicCloudBillingSimple | PublicCloudBillingDetail>(doc: T, session: Session) {
   const decoratedDoc = doc as T & PublicCloudBillingDecorate;
-  console.log('doc', doc);
   decoratedDoc._permissions = {
     view: true,
     edit: doc.signed && !doc.approved && doc.expenseAuthorityId === session.user.id,

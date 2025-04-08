@@ -67,7 +67,7 @@ export default function BillingStatusProgress({
     </>
   );
 
-  const handleOpenPublicCloudMouSignModal = async () => {
+  const handleSignButtonClick = async () => {
     const res = await openPublicCloudMouSignModal({
       billingId: billing.id,
       licencePlate: billing.licencePlate,
@@ -85,7 +85,7 @@ export default function BillingStatusProgress({
     <>
       {billing.signedBy && <UserProfile data={billing.signedBy} />}
       <BillingDate date={billing.signedAt} />
-      {canEdit && editable && <Button onClick={handleOpenPublicCloudMouSignModal}>Re-sign eMOU</Button>}
+      {canEdit && editable && <Button onClick={handleSignButtonClick}>Re-sign eMOU</Button>}
     </>
   );
 
@@ -113,7 +113,7 @@ export default function BillingStatusProgress({
   const getSiningContent = () => (
     <>
       {canSign && data ? (
-        <Button onClick={handleOpenPublicCloudMouSignModal}>Sign eMOU</Button>
+        <Button onClick={handleSignButtonClick}>Sign eMOU</Button>
       ) : (
         <>
           <div>

@@ -28,7 +28,7 @@ export const POST = apiHandler(async ({ pathParams, body, session }) => {
 
   if (!confirmed) return BadRequestResponse('not confirmed');
 
-  const [assignedTask, request] = await Promise.all([
+  const [assignedTask, resignableBilling] = await Promise.all([
     prisma.task.findFirst({
       where: {
         type: TaskType.SIGN_PUBLIC_CLOUD_MOU,
@@ -36,15 +36,17 @@ export const POST = apiHandler(async ({ pathParams, body, session }) => {
         data: { equals: { licencePlate } },
       },
     }),
-    prisma.publicCloudRequest.findFirst({
-      where: { type: RequestType.CREATE, decisionStatus: DecisionStatus.PENDING, licencePlate },
-      include: publicCloudRequestDetailInclude,
+    await prisma.publicCloudBilling.findFirst({
+      where: {
+        id: billingId,
+        signed: true,
+        approved: false,
+        expenseAuthorityId: session.user.id,
+      },
     }),
   ]);
 
-  const isExpenseAuthority = request?.requestData?.expenseAuthorityId === session.user.id;
-
-  if (!(!!assignedTask || isExpenseAuthority)) {
+  if (!resignableBilling && !assignedTask) {
     return UnauthorizedResponse();
   }
 
@@ -71,7 +73,7 @@ export const POST = apiHandler(async ({ pathParams, body, session }) => {
   });
 
   if (billingDecorated) {
-    const existingReviewTask = await prisma.task.findFirst({
+    await prisma.task.updateMany({
       where: {
         type: TaskType.REVIEW_PUBLIC_CLOUD_MOU,
         status: TaskStatus.ASSIGNED,
@@ -79,15 +81,10 @@ export const POST = apiHandler(async ({ pathParams, body, session }) => {
           equals: { licencePlate },
         },
       },
+      data: {
+        status: TaskStatus.CANCELED,
+      },
     });
-
-    if (existingReviewTask) {
-      console.log('existingReviewTask2', existingReviewTask);
-      await prisma.task.update({
-        where: { id: existingReviewTask.id },
-        data: { status: TaskStatus.CANCELED },
-      });
-    }
 
     await tasks.create(TaskType.REVIEW_PUBLIC_CLOUD_MOU, {
       product: productDecorated,
