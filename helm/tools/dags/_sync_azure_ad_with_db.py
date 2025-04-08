@@ -2,38 +2,48 @@ from _projects import get_mongo_db
 from helm.tools.dags._msgraph import MsGraph
 
 
+def parse_ministry_from_display_name(display_name: str):
+    ministry = ""
+    if display_name and len(display_name) > 0:
+        divided_string = display_name.split()
+        if len(divided_string) >= 2:
+            ministry = divided_string[-1].split(":", 1)[0]
+    return ministry
+
+
 def sync_db_users_with_azure_ad(
     mongo_conn_id, ms_graph_api_tenant_id, ms_graph_api_client_id, ms_graph_api_client_secret
 ):
     try:
         db = get_mongo_db(mongo_conn_id)
+        projection = {"image": 0, "lastseen": 0, "updatedAt": 0, "createdAt": 0}
         users_collection = db["User"]
-        projection = {"image": 0, "ministry": 0, "lastseen": 0, "updatedAt": 0, "createdAt": 0}
-        db_users = users_collection.find({}, projection)
+        db_users = users_collection.find({"lastSeen": {"$ne": None}}, projection)
 
         ms_graph = MsGraph(ms_graph_api_tenant_id, ms_graph_api_client_id, ms_graph_api_client_secret)
-        azure_users = ms_graph.get_azure_users()
-        azure_users_with_email_as_key = {u["mail"].lower(): u for u in azure_users if u["mail"]}
 
         for db_user in db_users:
             db_user_email = db_user["email"].lower()
-
-            if db_user_email in azure_users_with_email_as_key:
-                azure_user_data = azure_users_with_email_as_key[db_user_email]
-                valid_data_to_update = {
-                    k: v
-                    for k, v in {
-                        "officeLocation": azure_user_data.get("officeLocation"),
-                        "jobTitle": azure_user_data.get("jobTitle"),
-                        "upn": azure_user_data.get("userPrincipalName"),
-                        "providerUserId": azure_user_data.get("id"),
-                    }.items()
-                    if v is not None
+            azure_user = ms_graph.fetch_azure_user(db_user_email)
+            if azure_user is not None:
+                update_data = {
+                    "officeLocation": azure_user.get("officeLocation"),
+                    "jobTitle": azure_user.get("jobTitle"),
+                    "upn": azure_user.get("userPrincipalName"),
+                    "providerUserId": azure_user.get("id"),
+                    "ministry": parse_ministry_from_display_name(
+                        azure_user.get("displayName"),
+                    ),
+                    "firstName": azure_user.get("givenName"),
+                    "lastName": azure_user.get("surname"),
+                    "email": azure_user.get("mail").lower(),
                 }
-                if valid_data_to_update:
-                    users_collection.update_one({"_id": db_user["_id"]}, {"$set": valid_data_to_update})
+
+                update_data = {k: v for k, v in update_data.items() if v is not None}
+
+                users_collection.update_one({"_id": db_user["_id"]}, {"$set": update_data})
             else:
-                users_collection.update_one({"_id": db_user["_id"]}, {"$set": {"archived": False}})
+                users_collection.update_one({"_id": db_user["_id"]}, {"$set": {"archived": True}})
 
     except Exception as e:
         print(f"[sync_users_in_db_and_azure_ad] Error: {e}")

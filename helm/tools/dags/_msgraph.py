@@ -1,4 +1,5 @@
 import requests
+from urllib.parse import quote
 
 
 class MsGraph:
@@ -24,13 +25,22 @@ class MsGraph:
         token_data = self._request_token()
         return token_data.get("access_token", "")
 
-    def get_azure_users(self):
+    def fetch_azure_user(self, matching_email):
         access_token = self._get_access_token()
-        graph_url = "https://graph.microsoft.com/v1.0/users"
+        encoded_user_email = quote(f"'{matching_email}'")
+        graph_url = (
+            f"https://graph.microsoft.com/v1.0/users"
+            f"?$filter=mail eq {encoded_user_email}"
+            f"&$select=officeLocation,jobTitle,userPrincipalName,id,displayName,givenName,surname,mail"
+        )
         headers = {
             "Authorization": f"Bearer {access_token}",
-            "Content-Type": "application/json",
+            "ConsistencyLevel": "eventual",
         }
-        response = requests.get(graph_url, headers=headers)
-        response.raise_for_status()
-        return response.json().get("value", "")
+        try:
+            response = requests.get(graph_url, headers=headers)
+            response.raise_for_status()
+            users = response.json().get("value", [])
+            return users[0] if users else None
+        except requests.exceptions.RequestException as e:
+            raise Exception(f"Failed to fetch user: {str(e)}")
