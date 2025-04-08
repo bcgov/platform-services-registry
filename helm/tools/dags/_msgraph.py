@@ -9,8 +9,9 @@ class MsGraph:
         self.client_secret = client_secret
         self.token_url = f"https://login.microsoftonline.com/{tenant_id}/oauth2/v2.0/token"
         self.scope = "https://graph.microsoft.com/.default"
+        self.access_token = self._get_access_token()
 
-    def _request_token(self):
+    def _get_access_token(self):
         payload = {
             "client_id": self.client_id,
             "client_secret": self.client_secret,
@@ -19,28 +20,29 @@ class MsGraph:
         }
         response = requests.post(self.token_url, data=payload)
         response.raise_for_status()
-        return response.json()
+        return response.json().get("access_token", "")
 
-    def _get_access_token(self):
-        token_data = self._request_token()
-        return token_data.get("access_token", "")
-
-    def fetch_azure_user(self, matching_email):
-        access_token = self._get_access_token()
-        encoded_user_email = quote(f"'{matching_email}'")
-        graph_url = (
-            f"https://graph.microsoft.com/v1.0/users"
-            f"?$filter=mail eq {encoded_user_email}"
-            f"&$select=officeLocation,jobTitle,userPrincipalName,id,displayName,givenName,surname,mail"
-        )
+    def fetch_azure_user(self, matching_email, retry=True):
         headers = {
-            "Authorization": f"Bearer {access_token}",
+            "Authorization": f"Bearer {self.access_token}",
             "ConsistencyLevel": "eventual",
         }
+        encoded_email = quote(f"'{matching_email}'")
+        graph_url = (
+            f"https://graph.microsoft.com/v1.0/users"
+            f"?$filter=mail eq {encoded_email}"
+            f"&$select=officeLocation,jobTitle,userPrincipalName,id,displayName,givenName,surname,mail"
+        )
+
         try:
             response = requests.get(graph_url, headers=headers)
+            if response.status_code == 401 and retry:
+                self.access_token = self._get_access_token()
+                return self.fetch_azure_user(matching_email, retry=False)
+
             response.raise_for_status()
             users = response.json().get("value", [])
             return users[0] if users else None
+
         except requests.exceptions.RequestException as e:
             raise Exception(f"Failed to fetch user: {str(e)}")
