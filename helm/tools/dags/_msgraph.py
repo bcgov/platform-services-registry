@@ -40,8 +40,10 @@ class MsGraph:
                 self.access_token = self._get_access_token()
                 return self.fetch_azure_user(matching_email, retry=False)
 
-            response.raise_for_status()
-            users = response.json().get("value", [])
+            if response.status_code == 200:
+                users = response.json().get("value", [])
+            else:
+                response.raise_for_status()
             return users[0] if users else None
 
         except requests.exceptions.RequestException as e:

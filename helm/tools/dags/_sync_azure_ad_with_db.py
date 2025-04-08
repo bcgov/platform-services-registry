@@ -18,7 +18,7 @@ def sync_db_users_with_azure_ad(
         db = get_mongo_db(mongo_conn_id)
         projection = {"image": 0, "lastseen": 0, "updatedAt": 0, "createdAt": 0}
         users_collection = db["User"]
-        db_users = users_collection.find({"lastSeen": {"$ne": None}}, projection)
+        db_users = users_collection.find({"archived": {"$eq": False}}, projection)
 
         ms_graph = MsGraph(ms_graph_api_tenant_id, ms_graph_api_client_id, ms_graph_api_client_secret)
 
@@ -27,16 +27,16 @@ def sync_db_users_with_azure_ad(
             azure_user = ms_graph.fetch_azure_user(db_user_email)
             if azure_user is not None:
                 update_data = {
-                    "officeLocation": azure_user.get("officeLocation"),
-                    "jobTitle": azure_user.get("jobTitle"),
-                    "upn": azure_user.get("userPrincipalName"),
-                    "providerUserId": azure_user.get("id"),
+                    "officeLocation": azure_user.get("officeLocation", ""),
+                    "jobTitle": azure_user.get("jobTitle", ""),
+                    "upn": azure_user.get("userPrincipalName", ""),
+                    "providerUserId": azure_user.get("id", ""),
                     "ministry": parse_ministry_from_display_name(
-                        azure_user.get("displayName"),
+                        azure_user.get("displayName", ""),
                     ),
-                    "firstName": azure_user.get("givenName"),
-                    "lastName": azure_user.get("surname"),
-                    "email": azure_user.get("mail").lower(),
+                    "firstName": azure_user.get("givenName", ""),
+                    "lastName": azure_user.get("surname", ""),
+                    "email": azure_user.get("mail", "").lower(),
                 }
 
                 update_data = {k: v for k, v in update_data.items() if v is not None}
