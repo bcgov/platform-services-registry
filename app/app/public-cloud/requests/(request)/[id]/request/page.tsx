@@ -67,7 +67,7 @@ export default publicCloudProductRequest(({ router }) => {
     refetchInterval: 1000,
     enabled: publicProductSnap?.currentRequest?.type === RequestType.CREATE,
   });
-  console.log('billingData', billingData);
+
   const form = useForm({
     resolver: (...args) => {
       const [values] = args;

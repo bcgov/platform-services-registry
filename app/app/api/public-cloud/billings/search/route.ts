@@ -18,6 +18,7 @@ export const POST = createApiHandler({
   let metadata: PublicCloudBillingSearchResponseMetadata = null;
   if (includeMetadata) {
     const licencePlates = _uniq(data.map(({ licencePlate }) => licencePlate));
+
     const [publicProducts, publicCreateRequests, tasks] = await Promise.all([
       prisma.publicCloudProduct.findMany({
         where: { licencePlate: { in: licencePlates } },

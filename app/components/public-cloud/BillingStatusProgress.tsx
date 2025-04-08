@@ -39,7 +39,7 @@ export default function BillingStatusProgress({
   const { mutateAsync: sendTaskEmail, isPending: isSendingTaskEmail } = useMutation({
     mutationFn: _sendTaskEmail,
   });
-  console.log('billingData', billing);
+
   const canSign =
     !billing.signed &&
     !!userSnap.assignedTasks.find(
@@ -207,7 +207,6 @@ export default function BillingStatusProgress({
     <Stepper active={2} iconSize={35} className={cn(className)}>
       <Stepper.Step label="Assigned" description={getAssignedContent()} />
       <Stepper.Step label="Sign" description={getSiningContent()} loading />
-
       <Stepper.Step
         label="Review"
         description={

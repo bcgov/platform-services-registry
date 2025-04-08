@@ -80,7 +80,7 @@ export const POST = apiHandler(async ({ pathParams, body, session }) => {
         },
       },
     });
-    console.log('existingReviewTask', existingReviewTask);
+
     if (existingReviewTask) {
       console.log('existingReviewTask2', existingReviewTask);
       await prisma.task.update({
