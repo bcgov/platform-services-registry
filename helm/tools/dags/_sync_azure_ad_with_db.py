@@ -37,6 +37,7 @@ def sync_db_users_with_azure_ad(
                     "firstName": azure_user.get("givenName", ""),
                     "lastName": azure_user.get("surname", ""),
                     "email": azure_user.get("mail", "").lower(),
+                    "idirGuid": ms_graph.get_idir_guid(azure_user.get("id", "")),
                 }
 
                 update_data = {k: v for k, v in update_data.items() if v is not None}
