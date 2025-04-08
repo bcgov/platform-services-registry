@@ -32,6 +32,7 @@ class MsGraph:
             f"https://graph.microsoft.com/v1.0/users"
             f"?$filter=mail eq {encoded_email}"
             f"&$select=officeLocation,jobTitle,userPrincipalName,id,displayName,givenName,surname,mail"
+            f"&$top=1"
         )
 
         try:
