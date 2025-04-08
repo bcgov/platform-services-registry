@@ -2,7 +2,7 @@ Feature: Edit Request
 
   Scenario: Create Public Cloud Edit Request and check visibility
     Given User logs in with username "james.smith@gov.bc.ca" and password "james.smith@gov.bc.ca"
-    And User waits for "3" seconds
+    And User waits for "1" seconds
     When User clicks tab "PUBLIC CLOUD LANDING ZONES"
     And User clicks button "Request a new product"
     And User types "Automated Test Product Name" in "Product name"
@@ -16,11 +16,11 @@ Feature: Edit Request
     And User checks checkbox "Test account"
     And User checks checkbox "Tools account"
     And User clicks tab "Team members"
-    And User chooses to edit contact "Project Owner"
+    And User chooses to add contact "Project Owner"
     And User types and selects email "james.smith@gov.bc.ca"
-    And User chooses to edit contact "Primary Technical Lead"
+    And User chooses to add contact "Primary Technical Lead"
     And User types and selects email "john.doe@gov.bc.ca"
-    And User chooses to edit contact "Expense Authority"
+    And User chooses to add contact "Expense Authority"
     And User types and selects email "michael.brown@gov.bc.ca"
     And User clicks tab "Project budget"
     And User types "77.33" in "Estimated average monthly spend - Test..."
@@ -29,7 +29,7 @@ Feature: Edit Request
     And User checks checkbox "...an email to the EA for their signature..."
     And User checks checkbox "...team is liable to pay the base charge..."
     And User clicks modal window button "Submit"
-    And User waits for "4" seconds
+    And User waits for "2" seconds
     And User clicks modal window button "Close"
     Then User should be redirected to Requests tab
     And User should see "Automated Test Product Name"
@@ -52,13 +52,13 @@ Feature: Edit Request
     And User clicks modal window button "Confirm"
     And User logs out
     And User logs in with username "billing.reviewer.system@gov.bc.ca" and password "billing.reviewer.system@gov.bc.ca"
-    And User waits for "3" seconds
+    And User waits for "1" seconds
     When User clicks tab "PUBLIC CLOUD LANDING ZONES"
-    And User waits for "3" seconds
+    And User waits for "1" seconds
     And User clicks tab "Requests"
-    And User waits for "3" seconds
+    And User waits for "1" seconds
     And User clicks link "Automated Test Product Name"
-    And User waits for "2" seconds
+    And User waits for "1" seconds
     And User clicks button "Review eMOU"
     And User waits for "1" seconds
     And User checks checkbox "By checking this box, I confirm..."
@@ -76,17 +76,16 @@ Feature: Edit Request
     And User clicks modal window button "Submit"
     And User clicks modal window button "Return to Dashboard"
     And User clicks tab "Products"
-    And User waits for "3" seconds
     And User reloads the page
     And User waits for "3" seconds
     Then User should see "Automated Test Product Name"
     And User logs out
     And User logs in with username "james.smith@gov.bc.ca" and password "james.smith@gov.bc.ca"
-    And User waits for "3" seconds
+    And User waits for "1" seconds
     When User clicks tab "PUBLIC CLOUD LANDING ZONES"
-    And User waits for "3" seconds
+    And User waits for "1" seconds
     And User clicks link "Automated Test Product Name"
-    And User waits for "3" seconds
+    And User waits for "1" seconds
     And User types "Automated Test Edit Request" in "Product name"
     And User types "Automated Test Description Edit" in "Description"
     And User selects "Finance" in "Ministry"
@@ -97,7 +96,7 @@ Feature: Edit Request
     And User types and selects email "david.johnson@gov.bc.ca"
     And User chooses to edit contact "Primary Technical Lead"
     And User types and selects email "sarah.williams@gov.bc.ca"
-    And User chooses to edit contact "Secondary Technical Lead"
+    And User chooses to add contact "Secondary Technical Lead"
     And User types and selects email "michael.brown@gov.bc.ca"
     And User chooses to edit contact "Expense Authority"
     And User types and selects email "sarah.williams@gov.bc.ca"
@@ -111,8 +110,8 @@ Feature: Edit Request
     And User clicks modal window button "Close"
     And User logs out
     And User logs in with username "sarah.williams@gov.bc.ca" and password "sarah.williams@gov.bc.ca"
-    And User waits for "3" seconds
+    And User waits for "1" seconds
     When User clicks tab "PUBLIC CLOUD LANDING ZONES"
-    And User waits for "3" seconds
+    And User waits for "1" seconds
     Then User should see "Automated Test Edit Request"
     And User logs out
