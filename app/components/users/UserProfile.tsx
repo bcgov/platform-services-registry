@@ -65,7 +65,7 @@ export default function UserProfile({ data, onClick, text = 'Click to select mem
         </Tooltip>
         {isSavedUser && onClick && (
           <Tooltip label="Edit">
-            <IconEdit className="ml-2 cursor-pointer" onClick={onClick} />
+            <IconEdit className="ml-2 cursor-pointer edit-user-icon" onClick={onClick} />
           </Tooltip>
         )}
         {isInvalid && (

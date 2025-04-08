@@ -41,8 +41,12 @@ When(/^User types (?!.*\band selects\b)"(.*)" in "?(.*?)(?:\.\.\.)?"$/, (text: s
     .type(text);
 });
 
-When(/^User chooses to edit contact "(.*)"$/, (contactLabel: string) => {
+When(/^User chooses to add contact "(.*)"$/, (contactLabel: string) => {
   cy.contains('td, th', contactLabel).parent().find('.user-button').click();
+});
+
+When(/^User chooses to edit contact "(.*)"$/, (contactLabel: string) => {
+  cy.contains('td, th', contactLabel).parent().find('.edit-user-icon').click();
 });
 
 When('User chooses to edit additional team member', () => {
@@ -149,6 +153,18 @@ When(/^User checks "(.*)" is set to "(.*)"$/, (contactLabel: string, contactEmai
 
 When(/^User confirms Additional team members is set to "(.*)"$/, (contactEmail: string) => {
   cy.contains('span', 'Add New').parents().eq(2).find('div').contains(contactEmail);
+});
+
+When(/^User checks that select "(.*)" value is "(.*)"$/, (selectLabel: string, selectValue: string) => {
+  cy.contains('label', selectLabel).parent().find('select').should('have.value', selectValue);
+});
+
+When(/^User confirms checkbox "(.*)" is checked$/, (checkboxLabel: string) => {
+  cy.contains('label', checkboxLabel).parents().eq(1).find('input[type="checkbox"]').should('be.checked');
+});
+
+When(/^User confirms multiselect "(.*)" has value "(.*)"$/, (multiselectLabel: string, multiselectValue: string) => {
+  cy.contains('label', multiselectLabel).parents().eq(2).find('span').contains(multiselectValue);
 });
 
 When(/^User copies value of "(.*)"$/, (elementLabel: string) => {
