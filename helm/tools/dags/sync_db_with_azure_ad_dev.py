@@ -11,7 +11,7 @@ MS_GRAPH_API_CLIENT_ID = os.getenv("MS_GRAPH_API_CLIENT_ID")
 MS_GRAPH_API_CLIENT_SECRET = os.getenv("MS_GRAPH_API_CLIENT_SECRET")
 
 with DAG(
-    dag_id="sync_user_dbs_prod",
+    dag_id="sync_user_dbs_dev",
     schedule_interval="0 0 * * *",
     start_date=datetime.now() - timedelta(days=1),
     catchup=False,
