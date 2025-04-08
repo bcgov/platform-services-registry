@@ -5,13 +5,13 @@ from datetime import datetime, timedelta
 from _task_failure_callback import send_alert
 from helm.tools.dags._sync_azure_ad_with_db import sync_db_users_with_azure_ad
 
-MONGO_CONN_ID = "pltsvc-prod"
+MONGO_CONN_ID = "pltsvc-test"
 TEST_MS_GRAPH_API_TENANT_ID = os.getenv("TEST_MS_GRAPH_API_AUTHORITY").split("/")[-1]
 TEST_MS_GRAPH_API_CLIENT_ID = os.getenv("TEST_MS_GRAPH_API_CLIENT_ID")
 TEST_MS_GRAPH_API_CLIENT_SECRET = os.getenv("TEST_MS_GRAPH_API_CLIENT_SECRET")
 
 with DAG(
-    dag_id="sync_user_dbs_prod",
+    dag_id="sync_user_dbs_test",
     schedule_interval="0 0 * * *",
     start_date=datetime.now() - timedelta(days=1),
     catchup=False,
