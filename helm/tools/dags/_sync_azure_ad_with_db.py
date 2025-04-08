@@ -13,13 +13,13 @@ def sync_db_users_with_azure_ad(
 
         ms_graph = MsGraph(ms_graph_api_tenant_id, ms_graph_api_client_id, ms_graph_api_client_secret)
         azure_users = ms_graph.get_azure_users()
-        azure_emails = {u["mail"].lower(): u for u in azure_users if u["mail"]}
+        azure_users_with_email_as_key = {u["mail"].lower(): u for u in azure_users if u["mail"]}
 
         for db_user in db_users:
             db_user_email = db_user["email"].lower()
 
-            if db_user_email in azure_emails:
-                azure_user_data = azure_emails[db_user_email]
+            if db_user_email in azure_users_with_email_as_key:
+                azure_user_data = azure_users_with_email_as_key[db_user_email]
                 valid_data_to_update = {
                     k: v
                     for k, v in {
