@@ -69,7 +69,7 @@ async function decorate<T extends PublicCloudProductSimple & Partial<PublicCloud
   }
 
   const isActive = doc.status === ProjectStatus.ACTIVE;
-  const isMyProduct = [doc.projectOwnerId, doc.primaryTechnicalLeadId, doc.secondaryTechnicalLeadId].includes(
+  const isMaintainer = [doc.projectOwnerId, doc.primaryTechnicalLeadId, doc.secondaryTechnicalLeadId].includes(
     session.user.id,
   );
 
@@ -79,7 +79,7 @@ async function decorate<T extends PublicCloudProductSimple & Partial<PublicCloud
 
   const canView =
     session.permissions.viewAllPublicCloudProducts ||
-    isMyProduct ||
+    isMaintainer ||
     isExpenseAuthority ||
     session.ministries.reader.includes(doc.ministry) ||
     session.ministries.editor.includes(doc.ministry) ||
@@ -97,7 +97,7 @@ async function decorate<T extends PublicCloudProductSimple & Partial<PublicCloud
     (isActive &&
       !hasActiveRequest &&
       (session.permissions.editAllPublicCloudProducts ||
-        isMyProduct ||
+        isMaintainer ||
         session.ministries.editor.includes(doc.ministry))) ||
     members.some(
       (member) =>

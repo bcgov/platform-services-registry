@@ -4,7 +4,7 @@ import { GlobalRole } from '@/constants';
 import createApiHandler from '@/core/api-handler';
 import prisma from '@/core/prisma';
 import { BadRequestResponse, OkResponse, UnauthorizedResponse } from '@/core/responses';
-import { tasks, publicCloudProductDetailInclude } from '@/services/db';
+import { tasks, publicCloudRequestDetailInclude } from '@/services/db';
 import { getPublicCloudBillingResources } from '@/services/db/public-cloud-billing';
 import { objectId, accountCodingSchema } from '@/validation-schemas';
 
@@ -28,7 +28,7 @@ export const POST = apiHandler(async ({ pathParams, body, session }) => {
 
   if (!confirmed) return BadRequestResponse('not confirmed');
 
-  const [assignedTask, product] = await Promise.all([
+  const [assignedTask, request] = await Promise.all([
     prisma.task.findFirst({
       where: {
         type: TaskType.SIGN_PUBLIC_CLOUD_MOU,
@@ -36,37 +36,16 @@ export const POST = apiHandler(async ({ pathParams, body, session }) => {
         data: { equals: { licencePlate } },
       },
     }),
-    prisma.publicCloudProduct.findFirst({ where: { licencePlate }, include: publicCloudProductDetailInclude }),
+    prisma.publicCloudRequest.findFirst({
+      where: { type: RequestType.CREATE, decisionStatus: DecisionStatus.PENDING, licencePlate },
+      include: publicCloudRequestDetailInclude,
+    }),
   ]);
 
-  let isExpenseAuthority = false;
+  const isExpenseAuthority = request?.requestData?.expenseAuthorityId === session.user.id;
 
-  if (!assignedTask) {
-    if (product?.expenseAuthorityId === session.user.id) {
-      isExpenseAuthority = true;
-    } else {
-      // fallback to checking request EA if no product
-      const request = await prisma.publicCloudRequest.findFirst({
-        where: {
-          licencePlate,
-          type: RequestType.CREATE,
-          decisionStatus: DecisionStatus.PENDING,
-        },
-        select: {
-          decisionData: {
-            select: {
-              expenseAuthorityId: true,
-            },
-          },
-        },
-      });
-
-      isExpenseAuthority = request?.decisionData?.expenseAuthorityId === session.user.id;
-    }
-
-    if (!isExpenseAuthority) {
-      return UnauthorizedResponse();
-    }
+  if (!(!!assignedTask || isExpenseAuthority)) {
+    return UnauthorizedResponse();
   }
 
   await Promise.all([
@@ -92,6 +71,24 @@ export const POST = apiHandler(async ({ pathParams, body, session }) => {
   });
 
   if (billingDecorated) {
+    const existingReviewTask = await prisma.task.findFirst({
+      where: {
+        type: TaskType.REVIEW_PUBLIC_CLOUD_MOU,
+        status: TaskStatus.ASSIGNED,
+        data: {
+          equals: { licencePlate },
+        },
+      },
+    });
+    console.log('existingReviewTask', existingReviewTask);
+    if (existingReviewTask) {
+      console.log('existingReviewTask2', existingReviewTask);
+      await prisma.task.update({
+        where: { id: existingReviewTask.id },
+        data: { status: TaskStatus.CANCELED },
+      });
+    }
+
     await tasks.create(TaskType.REVIEW_PUBLIC_CLOUD_MOU, {
       product: productDecorated,
       request: requestDecorated,

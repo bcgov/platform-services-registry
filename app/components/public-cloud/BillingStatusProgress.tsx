@@ -20,28 +20,6 @@ function BillingDate({ date }: { date?: Date | null }) {
   return <div className="text-sm text-gray-400 mt-1">{formatDate(date)}</div>;
 }
 
-const handleOpenPublicCloudMouSignModal = async ({
-  billing,
-  data,
-  editable,
-}: {
-  billing: PublicCloudBillingDetailDecorated;
-  data: { name: string; provider: Provider };
-  editable: boolean;
-}) => {
-  const res = await openPublicCloudMouSignModal({
-    billingId: billing.id,
-    licencePlate: billing.licencePlate,
-    accountCoding: billing.accountCoding,
-    name: data.name,
-    provider: data.provider,
-    editable,
-  });
-
-  if (res.state.confirmed) {
-  }
-};
-
 export default function BillingStatusProgress({
   billing,
   data,
@@ -61,7 +39,7 @@ export default function BillingStatusProgress({
   const { mutateAsync: sendTaskEmail, isPending: isSendingTaskEmail } = useMutation({
     mutationFn: _sendTaskEmail,
   });
-
+  console.log('billingData', billing);
   const canSign =
     !billing.signed &&
     !!userSnap.assignedTasks.find(
@@ -71,9 +49,7 @@ export default function BillingStatusProgress({
         (task.data as { licencePlate: string }).licencePlate === billing.licencePlate,
     );
 
-  const isUserExpenseAuthority = billing.expenseAuthorityId === session?.userId;
-
-  const canEdit = billing.signed && !billing.approved && isUserExpenseAuthority && editable;
+  const canEdit = billing._permissions.edit;
 
   const canReview =
     !billing.approved &&
@@ -91,15 +67,25 @@ export default function BillingStatusProgress({
     </>
   );
 
+  const handleOpenPublicCloudMouSignModal = async () => {
+    const res = await openPublicCloudMouSignModal({
+      billingId: billing.id,
+      licencePlate: billing.licencePlate,
+      accountCoding: billing.accountCoding,
+      name: data.name,
+      provider: data.provider,
+      editable,
+    });
+
+    if (res.state.confirmed) {
+    }
+  };
+
   const getSignedContent = () => (
     <>
       {billing.signedBy && <UserProfile data={billing.signedBy} />}
       <BillingDate date={billing.signedAt} />
-      {canEdit && (
-        <Button onClick={() => data && handleOpenPublicCloudMouSignModal({ billing, data, editable })}>
-          Edit eMOU
-        </Button>
-      )}
+      {canEdit && editable && <Button onClick={handleOpenPublicCloudMouSignModal}>Re-sign eMOU</Button>}
     </>
   );
 
@@ -127,9 +113,7 @@ export default function BillingStatusProgress({
   const getSiningContent = () => (
     <>
       {canSign && data ? (
-        <Button onClick={() => data && handleOpenPublicCloudMouSignModal({ billing, data, editable })}>
-          Sign eMOU
-        </Button>
+        <Button onClick={handleOpenPublicCloudMouSignModal}>Sign eMOU</Button>
       ) : (
         <>
           <div>

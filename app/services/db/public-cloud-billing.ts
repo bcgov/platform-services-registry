@@ -160,6 +160,28 @@ export async function searchPublicCloudBillings({
     session,
   );
 
+  if (data.length === 0 && !session.permissions.viewPublicCloudBilling && licencePlate) {
+    const eaBillings = await prisma.publicCloudBilling.findMany({
+      where: {
+        expenseAuthorityId: session.user.id,
+        signed: true,
+        licencePlate,
+      },
+      orderBy: { createdAt: 'desc' },
+      include: {
+        expenseAuthority: true,
+      },
+    });
+
+    const decoratedData = await Promise.all(
+      eaBillings.map((b) => models.publicCloudBilling.decorate(b, session, false)),
+    );
+
+    return {
+      data: decoratedData,
+      totalCount: decoratedData.length,
+    };
+  }
   return { data, totalCount } as PublicCloudBillingSearch;
 }
 

@@ -693,6 +693,7 @@ enum TaskType {
 enum TaskStatus {
   ASSIGNED
   COMPLETED
+  CANCELED
 }
 
 enum Env {
