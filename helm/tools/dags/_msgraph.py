@@ -32,7 +32,7 @@ class MsGraph:
         graph_url = (
             f"https://graph.microsoft.com/v1.0/users"
             f"?$filter=mail eq {encoded_email}"
-            f"&$select=officeLocation,jobTitle,userPrincipalName,id,displayName,givenName,surname,mail"
+            f"&$select=officeLocation,jobTitle,userPrincipalName,id,displayName,givenName,surname,mail,{self.extension_attribute}"
             f"&$top=1"
         )
 
@@ -46,7 +46,7 @@ class MsGraph:
                 users = response.json().get("value", [])
             else:
                 response.raise_for_status()
-            return users[0] if users else None
+            return {**users[0], "idirGuid": users[0].get(self.extension_attribute)} if users else None
 
         except requests.exceptions.RequestException as e:
             raise Exception(f"Failed to fetch user: {str(e)}")
