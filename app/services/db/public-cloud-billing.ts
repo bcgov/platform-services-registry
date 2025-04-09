@@ -57,6 +57,7 @@ export async function searchPublicCloudBillings({
   if (!_isNumber(skip) && !_isNumber(take) && page && pageSize) {
     ({ skip, take } = parsePaginationParams(page, pageSize, 10));
   }
+
   const where: Prisma.PublicCloudBillingWhereInput = {};
   const orderBy = { [sortKey || defaultSortKey]: Prisma.SortOrder[sortOrder] };
 
