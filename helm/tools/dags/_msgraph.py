@@ -50,23 +50,3 @@ class MsGraph:
 
         except requests.exceptions.RequestException as e:
             raise Exception(f"Failed to fetch user: {str(e)}")
-
-    def get_idir_guid(self, id, retry=True):
-        headers = {"Authorization": f"Bearer {self.access_token}"}
-        graph_url = f"https://graph.microsoft.com/v1.0/users/{quote(id)}?$select=id,{self.extension_attribute}"
-
-        try:
-            response = requests.get(graph_url, headers=headers)
-
-            if response.status_code == 401 and retry:
-                self.access_token = self._get_access_token()
-                return self.get_idir_guid(id, retry=False)
-
-            if response.status_code == 200:
-                user_data = response.json()
-            else:
-                response.raise_for_status()
-            return user_data.get(self.extension_attribute) or user_data.get("id")
-
-        except requests.exceptions.RequestException as e:
-            raise Exception(f"Failed to fetch IDIR GUID: {str(e)}")
