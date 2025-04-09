@@ -36,7 +36,7 @@ export const POST = apiHandler(async ({ pathParams, body, session }) => {
         data: { equals: { licencePlate } },
       },
     }),
-    await prisma.publicCloudBilling.findFirst({
+    prisma.publicCloudBilling.findFirst({
       where: {
         id: billingId,
         signed: true,

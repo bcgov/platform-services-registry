@@ -41,17 +41,20 @@ async function baseFilter(session: Session) {
 
   const products = await prisma.publicCloudProduct.findMany({ where: { OR }, select: { licencePlate: true } });
   const productLicencePlates = products.map(({ licencePlate }) => licencePlate);
-  const billings = await prisma.publicCloudBilling.findMany({
-    where: { expenseAuthorityId: session.user.id },
-    select: { licencePlate: true },
-  });
-  const billingLicencePlates = billings.map(({ licencePlate }) => licencePlate);
 
   const filter: Prisma.PublicCloudBillingWhereInput = {
-    licencePlate: {
-      in: getUniqueNonFalsyItems([...productLicencePlates, ...licencePlatesFromTasks, ...billingLicencePlates]),
-    },
+    OR: [
+      {
+        licencePlate: {
+          in: getUniqueNonFalsyItems([...productLicencePlates, ...licencePlatesFromTasks]),
+        },
+      },
+      {
+        expenseAuthorityId: session.user.id,
+      },
+    ],
   };
+
   return filter;
 }
 

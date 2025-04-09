@@ -57,20 +57,7 @@ export async function searchPublicCloudBillings({
   if (!_isNumber(skip) && !_isNumber(take) && page && pageSize) {
     ({ skip, take } = parsePaginationParams(page, pageSize, 10));
   }
-
-  const taskLicencePlates = session.tasks
-    .filter((task) =>
-      ([TaskType.SIGN_PUBLIC_CLOUD_MOU, TaskType.REVIEW_PUBLIC_CLOUD_MOU] as TaskType[]).includes(task.type),
-    )
-    .map((task) => (task.data as { licencePlate: string }).licencePlate)
-    .filter(Boolean);
-
-  const where: Prisma.PublicCloudBillingWhereInput = {
-    OR: [
-      { expenseAuthorityId: session.user.id },
-      ...(taskLicencePlates.length > 0 ? [{ licencePlate: { in: taskLicencePlates } }] : []),
-    ],
-  };
+  const where: Prisma.PublicCloudBillingWhereInput = {};
   const orderBy = { [sortKey || defaultSortKey]: Prisma.SortOrder[sortOrder] };
 
   search = search.trim();
