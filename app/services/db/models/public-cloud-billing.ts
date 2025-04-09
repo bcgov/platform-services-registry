@@ -15,7 +15,7 @@ import { createSessionModel } from './core';
 async function baseFilter(session: Session) {
   if (!session?.user.id) return false;
   if (session.permissions.viewPublicCloudBilling) return true;
-  console.log('session.tasks', session.tasks);
+
   const licencePlatesFromTasks = session.tasks
     .filter((task) =>
       ([TaskType.SIGN_PUBLIC_CLOUD_MOU, TaskType.REVIEW_PUBLIC_CLOUD_MOU] as TaskType[]).includes(task.type),
@@ -41,6 +41,11 @@ async function baseFilter(session: Session) {
 
   const products = await prisma.publicCloudProduct.findMany({ where: { OR }, select: { licencePlate: true } });
   const productLicencePlates = products.map(({ licencePlate }) => licencePlate);
+  const billings = await prisma.publicCloudBilling.findMany({
+    where: { expenseAuthorityId: session.user.id },
+    select: { licencePlate: true },
+  });
+  const billingLicencePlates = billings.map(({ licencePlate }) => licencePlate);
 
   const filter: Prisma.PublicCloudBillingWhereInput = {
     licencePlate: {
