@@ -58,7 +58,19 @@ export async function searchPublicCloudBillings({
     ({ skip, take } = parsePaginationParams(page, pageSize, 10));
   }
 
-  const where: Prisma.PublicCloudBillingWhereInput = {};
+  const taskLicencePlates = session.tasks
+    .filter((task) =>
+      ([TaskType.SIGN_PUBLIC_CLOUD_MOU, TaskType.REVIEW_PUBLIC_CLOUD_MOU] as TaskType[]).includes(task.type),
+    )
+    .map((task) => (task.data as { licencePlate: string }).licencePlate)
+    .filter(Boolean);
+
+  const where: Prisma.PublicCloudBillingWhereInput = {
+    OR: [
+      { expenseAuthorityId: session.user.id },
+      ...(taskLicencePlates.length > 0 ? [{ licencePlate: { in: taskLicencePlates } }] : []),
+    ],
+  };
   const orderBy = { [sortKey || defaultSortKey]: Prisma.SortOrder[sortOrder] };
 
   search = search.trim();
@@ -160,28 +172,6 @@ export async function searchPublicCloudBillings({
     session,
   );
 
-  if (data.length === 0 && !session.permissions.viewPublicCloudBilling && licencePlate) {
-    const eaBillings = await prisma.publicCloudBilling.findMany({
-      where: {
-        expenseAuthorityId: session.user.id,
-        signed: true,
-        licencePlate,
-      },
-      orderBy: { createdAt: 'desc' },
-      include: {
-        expenseAuthority: true,
-      },
-    });
-
-    const decoratedData = await Promise.all(
-      eaBillings.map((b) => models.publicCloudBilling.decorate(b, session, false)),
-    );
-
-    return {
-      data: decoratedData,
-      totalCount: decoratedData.length,
-    };
-  }
   return { data, totalCount } as PublicCloudBillingSearch;
 }
 
