@@ -12,7 +12,7 @@ MS_GRAPH_API_CLIENT_SECRET = os.getenv("MS_GRAPH_API_CLIENT_SECRET")
 
 with DAG(
     dag_id="sync_user_dbs_test",
-    schedule_interval="0 0 * * *",
+    schedule_interval="0 1 * * *",
     start_date=datetime.now() - timedelta(days=1),
     catchup=False,
 ) as dag:

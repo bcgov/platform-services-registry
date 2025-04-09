@@ -12,9 +12,10 @@ MS_GRAPH_API_CLIENT_SECRET = os.getenv("MS_GRAPH_API_CLIENT_SECRET")
 
 with DAG(
     dag_id="sync_user_dbs_prod",
-    schedule_interval="0 0 * * *",
+    schedule_interval="30 0 * * *",
     start_date=datetime.now() - timedelta(days=1),
     catchup=False,
+    is_paused_upon_creation=True,
 ) as dag:
     t1 = PythonOperator(
         task_id="sync-db-users-with-azure-ad-prod",
