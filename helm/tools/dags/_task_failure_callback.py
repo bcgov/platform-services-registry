@@ -13,7 +13,7 @@ def send_alert(context, dag):
     airflow_dag_logs = f"https://secdash-airflow.apps.silver.devops.gov.bc.ca/dags/{dag}/grid"
 
     payload = {
-        "text": f":warning: Airlow: **{dag}**",
+        "text": f":warning: Airflow: **{dag}**",
         "attachments": [
             {
                 "color": "#d03ae8",
