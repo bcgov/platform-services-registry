@@ -1,5 +1,4 @@
 import requests
-from urllib.parse import quote
 
 
 class MsGraph:

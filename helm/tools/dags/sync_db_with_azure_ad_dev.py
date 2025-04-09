@@ -3,7 +3,7 @@ from airflow import DAG
 from airflow.operators.python_operator import PythonOperator
 from datetime import datetime, timedelta
 from _task_failure_callback import send_alert
-from helm.tools.dags._sync_azure_ad_with_db import sync_db_users_with_azure_ad
+from _sync_azure_ad_with_db import sync_db_users_with_azure_ad
 
 MONGO_CONN_ID = "pltsvc-dev"
 MS_GRAPH_API_TENANT_ID = os.getenv("MS_GRAPH_API_TENANT_ID")

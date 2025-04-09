@@ -1,5 +1,5 @@
 from _projects import get_mongo_db
-from helm.tools.dags._msgraph import MsGraph
+from _msgraph import MsGraph
 
 
 def parse_ministry_from_display_name(display_name: str):
