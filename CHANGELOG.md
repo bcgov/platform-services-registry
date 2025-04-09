@@ -1,3 +1,13 @@
+## [0.60.0](https://github.com/bcgov/platform-services-registry/compare/v0.59.0...v0.60.0) (2025-04-09)
+
+### Refactors
+
+* **5235:** encapsulate logic for cluster config generation ([ece279e](https://github.com/bcgov/platform-services-registry/commit/ece279ec4784ae169073627d8d046b774f9b9e67))
+* **5235:** use k8s package to check deletion availability ([ba22722](https://github.com/bcgov/platform-services-registry/commit/ba2272245316dcccde549efb1e70cdc093ee914a))
+
+### End-to-end Testing
+
+* **5314:** add public cloud edit request compare data test ([62b6fca](https://github.com/bcgov/platform-services-registry/commit/62b6fca371d77af5717f54a9f618f76fb6b40327))
 ## [0.59.0](https://github.com/bcgov/platform-services-registry/compare/v0.58.0...v0.59.0) (2025-04-02)
 
 ### Features
