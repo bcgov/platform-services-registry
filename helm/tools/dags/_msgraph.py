@@ -33,7 +33,7 @@ class MsGraph:
         filter_value = f"mail eq '{escaped_email}'"
         params = {
             "$filter": filter_value,
-            "$select": f"officeLocation,jobTitle,userPrincipalName,id,displayName,givenName,surname,mail,{self.extension_attribute}",
+            "$select": f"officeLocation,jobTitle,userPrincipalName,id,displayName,givenName,surname,mail,onPremisesSamAccountName, {self.extension_attribute}",
             "$top": "1",
         }
 
