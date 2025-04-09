@@ -28,16 +28,18 @@ class MsGraph:
             "Authorization": f"Bearer {self.access_token}",
             "ConsistencyLevel": "eventual",
         }
-        encoded_email = quote(f"'{matching_email}'")
-        graph_url = (
-            f"https://graph.microsoft.com/v1.0/users"
-            f"?$filter=mail eq {encoded_email}"
-            f"&$select=officeLocation,jobTitle,userPrincipalName,id,displayName,givenName,surname,mail,{self.extension_attribute}"
-            f"&$top=1"
-        )
+
+        escaped_email = matching_email.replace("'", "''")
+        filter_value = f"mail eq '{escaped_email}'"
+        params = {
+            "$filter": filter_value,
+            "$select": f"officeLocation,jobTitle,userPrincipalName,id,displayName,givenName,surname,mail,{self.extension_attribute}",
+            "$top": "1",
+        }
 
         try:
-            response = requests.get(graph_url, headers=headers)
+            response = requests.get("https://graph.microsoft.com/v1.0/users", params=params, headers=headers)
+
             if response.status_code == 401 and retry:
                 self.access_token = self._get_access_token()
                 return self.fetch_azure_user(matching_email, retry=False)

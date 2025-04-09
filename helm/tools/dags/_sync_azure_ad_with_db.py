@@ -41,8 +41,13 @@ def sync_db_users_with_azure_ad(
                 }
 
                 if "idir" in db_user and db_user["idir"] is None:
-                    idir = f"{azure_user.get("givenName", "")[0].upper()}{azure_user.get("surname", "").upper()}"
-                    update_data["idir"] = idir
+                    if azure_user["givenName"] is not None and azure_user["surname"] is not None:
+                        new_idir = f"{azure_user["givenName"][0].upper()}{azure_user["surname"].upper()}"
+                        update_data["idir"] = new_idir
+
+                    elif db_user["firstName"] is not None and db_user["lastName"] is not None:
+                        new_idir = f"{db_user["firstName"][0].upper()}{db_user["lastName"].upper()}"
+                        update_data["idir"] = new_idir
 
                 update_data = {k: v for k, v in update_data.items() if v is not None}
 
