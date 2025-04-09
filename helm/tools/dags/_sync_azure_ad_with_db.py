@@ -40,6 +40,10 @@ def sync_db_users_with_azure_ad(
                     "idirGuid": azure_user.get("idirGuid", ""),
                 }
 
+                if "idir" in db_user and db_user["idir"] is None:
+                    idir = f"{azure_user.get("givenName", "")[0].upper()}{azure_user.get("surname", "").upper()}"
+                    update_data["idir"] = idir
+
                 update_data = {k: v for k, v in update_data.items() if v is not None}
 
                 users_collection.update_one({"_id": db_user["_id"]}, {"$set": update_data})
