@@ -43,8 +43,18 @@ async function baseFilter(session: Session) {
   const productLicencePlates = products.map(({ licencePlate }) => licencePlate);
 
   const filter: Prisma.PublicCloudBillingWhereInput = {
-    licencePlate: { in: getUniqueNonFalsyItems([...productLicencePlates, ...licencePlatesFromTasks]) },
+    OR: [
+      {
+        licencePlate: {
+          in: getUniqueNonFalsyItems([...productLicencePlates, ...licencePlatesFromTasks]),
+        },
+      },
+      {
+        expenseAuthorityId: session.user.id,
+      },
+    ],
   };
+
   return filter;
 }
 
@@ -52,8 +62,8 @@ async function decorate<T extends PublicCloudBillingSimple | PublicCloudBillingD
   const decoratedDoc = doc as T & PublicCloudBillingDecorate;
   decoratedDoc._permissions = {
     view: true,
-    edit: true,
-    delete: true,
+    edit: doc.signed && !doc.approved && doc.expenseAuthorityId === session.user.id,
+    delete: false,
   };
 
   return decoratedDoc;

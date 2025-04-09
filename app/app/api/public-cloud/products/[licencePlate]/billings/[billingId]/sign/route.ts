@@ -1,16 +1,10 @@
-import { Prisma, TaskStatus, TaskType } from '@prisma/client';
+import { DecisionStatus, RequestType, TaskStatus, TaskType } from '@prisma/client';
 import { z } from 'zod';
 import { GlobalRole } from '@/constants';
 import createApiHandler from '@/core/api-handler';
 import prisma from '@/core/prisma';
 import { BadRequestResponse, OkResponse, UnauthorizedResponse } from '@/core/responses';
-import {
-  models,
-  tasks,
-  getMostRecentPublicCloudRequest,
-  publicCloudProductDetailInclude,
-  publicCloudBillingDetailInclude,
-} from '@/services/db';
+import { tasks, publicCloudRequestDetailInclude } from '@/services/db';
 import { getPublicCloudBillingResources } from '@/services/db/public-cloud-billing';
 import { objectId, accountCodingSchema } from '@/validation-schemas';
 
@@ -34,7 +28,7 @@ export const POST = apiHandler(async ({ pathParams, body, session }) => {
 
   if (!confirmed) return BadRequestResponse('not confirmed');
 
-  const [assignedTask, product] = await Promise.all([
+  const [assignedTask, resignableBilling] = await Promise.all([
     prisma.task.findFirst({
       where: {
         type: TaskType.SIGN_PUBLIC_CLOUD_MOU,
@@ -42,10 +36,17 @@ export const POST = apiHandler(async ({ pathParams, body, session }) => {
         data: { equals: { licencePlate } },
       },
     }),
-    prisma.publicCloudProduct.findFirst({ where: { licencePlate }, include: publicCloudProductDetailInclude }),
+    prisma.publicCloudBilling.findFirst({
+      where: {
+        id: billingId,
+        signed: true,
+        approved: false,
+        expenseAuthorityId: session.user.id,
+      },
+    }),
   ]);
 
-  if (!assignedTask) {
+  if (!resignableBilling && !assignedTask) {
     return UnauthorizedResponse();
   }
 
@@ -72,6 +73,19 @@ export const POST = apiHandler(async ({ pathParams, body, session }) => {
   });
 
   if (billingDecorated) {
+    await prisma.task.updateMany({
+      where: {
+        type: TaskType.REVIEW_PUBLIC_CLOUD_MOU,
+        status: TaskStatus.ASSIGNED,
+        data: {
+          equals: { licencePlate },
+        },
+      },
+      data: {
+        status: TaskStatus.CANCELED,
+      },
+    });
+
     await tasks.create(TaskType.REVIEW_PUBLIC_CLOUD_MOU, {
       product: productDecorated,
       request: requestDecorated,

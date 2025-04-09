@@ -1,4 +1,4 @@
-import { Prisma, Ministry, ProjectStatus, TaskType, TaskStatus, PublicCloudProductMemberRole } from '@prisma/client';
+import { Prisma, Ministry, ProjectStatus, TaskType, PublicCloudProductMemberRole } from '@prisma/client';
 import { Session } from 'next-auth';
 import prisma from '@/core/prisma';
 import { PublicCloudProductDecorate } from '@/types/doc-decorate';
@@ -32,6 +32,7 @@ async function baseFilter(session: Session) {
       { projectOwnerId: session.user.id as string },
       { primaryTechnicalLeadId: session.user.id as string },
       { secondaryTechnicalLeadId: session.user.id },
+      { expenseAuthorityId: session.user.id },
       { licencePlate: { in: getUniqueNonFalsyItems(licencePlatesFromTasks) } },
       {
         members: {
@@ -68,18 +69,18 @@ async function decorate<T extends PublicCloudProductSimple & Partial<PublicCloud
   }
 
   const isActive = doc.status === ProjectStatus.ACTIVE;
-  const isMyProduct = [
-    doc.projectOwnerId,
-    doc.primaryTechnicalLeadId,
-    doc.secondaryTechnicalLeadId,
-    doc.expenseAuthorityId,
-  ].includes(session.user.id);
+  const isMaintainer = [doc.projectOwnerId, doc.primaryTechnicalLeadId, doc.secondaryTechnicalLeadId].includes(
+    session.user.id,
+  );
+
+  const isExpenseAuthority = doc.expenseAuthorityId === session.user.id;
 
   const members = doc.members || [];
 
   const canView =
     session.permissions.viewAllPublicCloudProducts ||
-    isMyProduct ||
+    isMaintainer ||
+    isExpenseAuthority ||
     session.ministries.reader.includes(doc.ministry) ||
     session.ministries.editor.includes(doc.ministry) ||
     members.some(
@@ -96,7 +97,7 @@ async function decorate<T extends PublicCloudProductSimple & Partial<PublicCloud
     (isActive &&
       !hasActiveRequest &&
       (session.permissions.editAllPublicCloudProducts ||
-        isMyProduct ||
+        isMaintainer ||
         session.ministries.editor.includes(doc.ministry))) ||
     members.some(
       (member) =>

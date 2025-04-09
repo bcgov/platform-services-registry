@@ -36,9 +36,28 @@ async function baseFilter(session: Session) {
     )
     .map((task) => (task.data as { requestId: string }).requestId);
 
+  const billingRecords = await prisma.publicCloudBilling.findMany({
+    where: {
+      expenseAuthority: {
+        id: session.user.id,
+      },
+      signed: true,
+      approved: false,
+    },
+    select: {
+      licencePlate: true,
+    },
+  });
+
+  const licencePlatesAsEa = billingRecords.map((b) => b.licencePlate);
+
   const filter: Prisma.PublicCloudRequestWhereInput = {
     OR: [
-      { licencePlate: { in: getUniqueNonFalsyItems([...licencePlates, ...licencePlatesFromTasks]) } },
+      {
+        licencePlate: {
+          in: getUniqueNonFalsyItems([...licencePlates, ...licencePlatesFromTasks, ...licencePlatesAsEa]),
+        },
+      },
       { id: { in: getUniqueNonFalsyItems([...requestIdsFromTasks]) } },
       { type: RequestType.CREATE, createdByEmail: { equals: session.user.email, mode: 'insensitive' } },
     ],
@@ -60,6 +79,7 @@ async function decorate<T extends PublicCloudRequestSimple | PublicCloudRequestD
     if (doc.type === RequestType.CREATE) {
       const billing = await prisma.publicCloudBilling.findFirst({
         where: { licencePlate: doc.licencePlate },
+        include: { expenseAuthority: true },
         orderBy: { createdAt: Prisma.SortOrder.desc },
       });
 

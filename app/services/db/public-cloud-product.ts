@@ -59,6 +59,7 @@ export async function searchPublicCloudProducts({
         { projectOwnerId: { in: matchingUserIds } },
         { primaryTechnicalLeadId: { in: matchingUserIds } },
         { secondaryTechnicalLeadId: { in: matchingUserIds } },
+        { expenseAuthorityId: { in: matchingUserIds } },
       );
     }
   }
