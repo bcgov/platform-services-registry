@@ -53,6 +53,11 @@ function createClientPage<TPathParams extends ZodType<any, any>, TQueryParams ex
         updateSession();
       }, []);
 
+      if (!session) {
+        const path = window.location.pathname + window.location.search;
+        localStorage.setItem('postLoginRedirect', path);
+      }
+
       if (session?.requiresRelogin) appSignOut();
 
       // Wait until the session is fetched by the backend

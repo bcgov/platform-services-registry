@@ -34,7 +34,7 @@ export default function Header() {
         variant="outline"
         leftSection={<IconLogin2 />}
         className="bg-white hover:bg-white"
-        onClick={() => signIn('keycloak', { callbackUrl: '/home' })}
+        onClick={() => signIn('keycloak', { callbackUrl: localStorage.getItem('postLoginRedirect') || '/home' })}
       >
         Login
       </Button>
