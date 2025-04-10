@@ -1,3 +1,13 @@
+## [0.61.0](https://github.com/bcgov/platform-services-registry/compare/v0.60.0...v0.61.0) (2025-04-10)
+
+### Features
+
+* **5123:** make billing account coding editable for EA ([92d2888](https://github.com/bcgov/platform-services-registry/commit/92d2888963ee07a14e49b4b7d81fd132ecdfc676))
+* **5124:** sync registry users with azure ad ([04e0b62](https://github.com/bcgov/platform-services-registry/commit/04e0b62b14de823525a3a03c2047903309eceea9))
+
+### Bug Fixes
+
+* **5124:** fix import aiflow import errors ([4b969fd](https://github.com/bcgov/platform-services-registry/commit/4b969fd42c5bd9b84533abde4d5a76d7b1a18b60))
 ## [0.60.0](https://github.com/bcgov/platform-services-registry/compare/v0.59.0...v0.60.0) (2025-04-09)
 
 ### Refactors
