@@ -54,6 +54,7 @@ function createClientPage<TPathParams extends ZodType<any, any>, TQueryParams ex
       }, []);
 
       if (!session) {
+        if (typeof window === 'undefined') return;
         const path = window.location.pathname + window.location.search;
         localStorage.setItem('postLoginRedirect', path);
       }
