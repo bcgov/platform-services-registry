@@ -52,6 +52,8 @@ declare module 'next-auth' {
     editUserRoles: boolean;
     editUserOnboardingDate: boolean;
     viewTasks: boolean;
+    viewPrivateCloudUnitPrices: boolean;
+    managePrivateCloudUnitPrices: boolean;
     sendTaskEmails: boolean;
 
     cancelPrivateCloudRequest: boolean;
@@ -94,6 +96,7 @@ declare module 'next-auth' {
     isBillingReviewer: boolean;
     isBillingManager: boolean;
     isBillingReader: boolean;
+    isFinanceManager: boolean;
     isTaskReader: boolean;
     roles: string[];
     teams: { clientId: string; roles: string[] }[];

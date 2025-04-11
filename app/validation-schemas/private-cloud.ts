@@ -194,6 +194,23 @@ export const privateCloudAdminUpdateBodySchema = z.object({
   isTest: z.preprocess(processBoolean, z.boolean()),
 });
 
+const minCpu = 1;
+const maxCpu = 100000;
+const minStorage = 1;
+const maxStorage = 100000;
+
+export const privateCloudUnitPriceBodySchema = z.object({
+  cpu: z
+    .number()
+    .min(minCpu, { message: `CPU per 1Core must be at least $${minCpu}` })
+    .max(maxCpu, { message: `CPU per 1Core must be at most $${maxCpu.toLocaleString()}` }),
+
+  storage: z
+    .number()
+    .min(minStorage, { message: `Storage per 1GiB must be at least $${minStorage}` })
+    .max(maxStorage, { message: `Storage per 1GiB must be at most $${maxStorage.toLocaleString()}` }),
+});
+
 export type PrivateCloudCreateRequestBody = z.infer<typeof privateCloudCreateRequestBodySchema>;
 export type PrivateCloudEditRequestBody = z.infer<typeof privateCloudEditRequestBodySchema>;
 export type PrivateCloudRequestDecisionBody = z.infer<typeof privateCloudRequestDecisionBodySchema>;
@@ -202,3 +219,4 @@ export type PrivateCloudProductSearchBody = z.infer<typeof privateCloudProductSe
 export type PrivateCloudRequestSearchBody = z.infer<typeof privateCloudRequestSearchBodySchema>;
 export type PrivateCloudAdminUpdateBody = z.infer<typeof privateCloudAdminUpdateBodySchema>;
 export type PrivateCloudProductWebhookBody = z.infer<typeof privateCloudProductWebhookBodySchema>;
+export type PrivateCloudUnitPriceBody = z.infer<typeof privateCloudUnitPriceBodySchema>;
