@@ -2,7 +2,7 @@
 
 import _isUndefined from 'lodash-es/isUndefined';
 import { AppRouterInstance } from 'next/dist/shared/lib/app-router-context.shared-runtime';
-import { useRouter } from 'next/navigation';
+import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import { Session, PermissionsKey } from 'next-auth';
 import { useSession, signOut as appSignOut } from 'next-auth/react';
 import React, { useEffect } from 'react';
@@ -46,18 +46,26 @@ function createClientPage<TPathParams extends ZodType<any, any>, TQueryParams ex
   return function clientPage(Component: React.FC<ComponentProps<TypeOf<TPathParams>, TypeOf<TQueryParams>>>) {
     return function Wrapper({ params: paramsProm, searchParams: searchParamsProm, children }: any) {
       const router = useRouter();
-
-      const { data: session, update: updateSession } = useSession();
+      const pathname = usePathname();
+      const searchParams = useSearchParams();
+      const { data: session, update: updateSession, status } = useSession();
 
       useEffect(() => {
         updateSession();
       }, []);
 
-      if (!session) {
+      useEffect(() => {
         if (typeof window === 'undefined') return;
-        const path = window.location.pathname + window.location.search;
-        localStorage.setItem('postLoginRedirect', path);
-      }
+        if (status !== 'unauthenticated') return;
+
+        const redirectPathStored = localStorage.getItem('postLoginRedirect');
+        const currentFullPath = pathname + (searchParams.toString() ? `?${searchParams.toString()}` : '');
+
+        if (!redirectPathStored && pathname !== '/home') {
+          localStorage.setItem('postLoginRedirect', currentFullPath);
+          router.replace('/home');
+        }
+      }, [status, pathname, searchParams, router]);
 
       if (session?.requiresRelogin) appSignOut();
 
