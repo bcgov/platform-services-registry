@@ -4,6 +4,7 @@
   "ignore": ["**/types/**/*.d.ts", ".next/**/*"],
   "ignoreDependencies": [
     "sharp",
+    "prettier",
     "@testing-library/react",
     "@testing-library/user-event",
     "@types/eslint-config-prettier",
