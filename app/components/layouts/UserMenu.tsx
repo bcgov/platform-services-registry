@@ -14,12 +14,14 @@ import {
   IconCalendarEvent,
   IconSignLeft,
   IconCheckupList,
+  IconClockDollar,
 } from '@tabler/icons-react';
 import Link from 'next/link';
 import { Permissions } from 'next-auth';
 import { useSession } from 'next-auth/react';
 import { ForwardRefExoticComponent, RefAttributes } from 'react';
 import { openUserProfileModal } from '@/components/modal/userProfile';
+import { GlobalPermissions } from '@/constants';
 import { signOut } from '@/helpers/auth';
 import { useAppState } from '@/states/global';
 import ProfileImage from '../ProfileImage';
@@ -98,6 +100,12 @@ export default function UserMenu() {
       Icon: IconCheckupList,
       href: '/tasks/all',
       permission: 'viewTasks',
+    },
+    {
+      text: 'Private Cloud Unit Prices',
+      Icon: IconClockDollar,
+      href: '/private-cloud/unit-prices/all',
+      permission: GlobalPermissions.ViewPrivateCloudUnitPrices,
     },
     {
       text: 'Public Cloud Billings',

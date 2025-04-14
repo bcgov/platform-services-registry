@@ -100,6 +100,7 @@ export const RoleToSessionProp = {
   [GlobalRole.BillingReviewer]: 'isBillingReviewer',
   [GlobalRole.BillingManager]: 'isBillingManager',
   [GlobalRole.Billingreader]: 'isBillingReader',
+  [GlobalRole.FinanceManager]: 'isFinanceManager',
 };
 
 export const sessionRolePropKeys = Object.values(RoleToSessionProp);

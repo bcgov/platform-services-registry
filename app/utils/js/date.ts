@@ -2,6 +2,7 @@ import { format } from 'date-fns/format';
 import { isEqual } from 'date-fns/isEqual';
 import _isDate from 'lodash-es/isDate';
 import _isNil from 'lodash-es/isNil';
+import { YyyyMmDd } from '@/validation-schemas';
 
 export function formatDate(date: string | number | Date | null | undefined, formatStr = 'yyyy-MM-dd hh:mm:ss aa') {
   if (!date) return '';
@@ -77,4 +78,8 @@ export function isEqualDates(dt1: [Date | null, Date | null], dt2: [Date | null,
   const dt22 = dt2[1];
 
   return isEqualDate(dt11, dt21) && isEqualDate(dt12, dt22);
+}
+
+export function getYyyyMmDd(date: Date) {
+  return date.toISOString().substring(0, 10);
 }
