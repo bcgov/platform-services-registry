@@ -1,5 +1,3 @@
-// components/guards/PostLoginGuard.tsx
-
 'use client';
 
 import { usePathname, useSearchParams, useRouter } from 'next/navigation';
