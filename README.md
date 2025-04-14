@@ -98,12 +98,12 @@ These technologies foster rapid iterative development, polished user interfaces,
 
 ```mermaid
 graph TD
-    frontendApp-->|HTTP requests| backendAPI;
-    backendAPI-->|Queries| database;
-    backendAPI-->|Sends emails| emailService(CHES);
-    backendAPI-->|Provisions namespaces| namespaceProvisioner(NATS);
-    backendAPI-->|Queries| MSGraphAPI(MS graph API);
-    backendAPI-->|Handles authentication & authorization| authAuthorization(Keycloak);
-    backendAPI-->|Manages publice cloud users| publicCloudUserManagement(Keycloak);
-    backendAPI-->|Interacts with| openshiftAPI(Openshift API);
+    frontend-->|HTTP requests| backendAPI;
+    backend API-->|Queries| database;
+    backend API-->|Sends emails| emailService(CHES);
+    backend API-->|Provisions namespaces| namespaceProvisioner(NATS);
+    backend API-->|Queries| MSGraphAPI(MS graph API);
+    backend API-->|Handles authentication & authorization| authAuthorization(Keycloak);
+    backend API-->|Manages publice cloud users| publicCloudUserManagement(Keycloak);
+    backend API-->|Interacts with| openshiftAPI(Openshift API);
 ```
