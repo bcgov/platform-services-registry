@@ -118,6 +118,14 @@ resource "keycloak_role" "pltsvc_billing_reader" {
   description = "Registry Billing Reader"
 }
 
+resource "keycloak_role" "pltsvc_finance_manager" {
+  realm_id  = data.keycloak_realm.pltsvc.id
+  client_id = keycloak_openid_client.pltsvc.id
+
+  name        = "finance-manager"
+  description = "Registry Finance Manager"
+}
+
 resource "keycloak_role" "pltsvc_private_reviewer" {
   realm_id  = data.keycloak_realm.pltsvc.id
   client_id = keycloak_openid_client.pltsvc.id

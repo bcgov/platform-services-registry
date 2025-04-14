@@ -130,6 +130,7 @@ async function main() {
 
   await kc.createClientRole(AUTH_REALM_NAME, authClient?.id as string, `billing-reviewer`);
   await kc.createClientRole(AUTH_REALM_NAME, authClient?.id as string, `billing-reader`);
+  await kc.createClientRole(AUTH_REALM_NAME, authClient?.id as string, `finance-manager`);
   await kc.createClientRole(AUTH_REALM_NAME, authClient?.id as string, `private-reviewer`);
   await kc.createClientRole(AUTH_REALM_NAME, authClient?.id as string, `public-reviewer`);
   await kc.createClientRole(AUTH_REALM_NAME, authClient?.id as string, `user-reader`);
