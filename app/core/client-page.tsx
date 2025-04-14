@@ -2,12 +2,11 @@
 
 import _isUndefined from 'lodash-es/isUndefined';
 import { AppRouterInstance } from 'next/dist/shared/lib/app-router-context.shared-runtime';
-import { useRouter } from 'next/navigation';
+import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import { Session, PermissionsKey } from 'next-auth';
 import { useSession, signOut as appSignOut } from 'next-auth/react';
-import React, { useEffect, Suspense } from 'react';
+import React, { Suspense, useEffect } from 'react';
 import { z, TypeOf, ZodType } from 'zod';
-import PostLoginGuard from '@/components/auth/PostLoginGuard';
 import { arrayIntersection, parseQueryString } from '@/utils/js';
 
 interface HandlerProps<TPathParams, TQueryParams> {
@@ -33,7 +32,9 @@ interface PageProp {
   searchParams: URLSearchParams;
   children: React.ReactNode;
 }
-
+function Loading() {
+  return <h2>🌀 Loading...</h2>;
+}
 function createClientPage<TPathParams extends ZodType<any, any>, TQueryParams extends ZodType<any, any>>({
   roles,
   permissions,
@@ -47,12 +48,24 @@ function createClientPage<TPathParams extends ZodType<any, any>, TQueryParams ex
   return function clientPage(Component: React.FC<ComponentProps<TypeOf<TPathParams>, TypeOf<TQueryParams>>>) {
     return function Wrapper({ params: paramsProm, searchParams: searchParamsProm, children }: any) {
       const router = useRouter();
-
+      const pathname = usePathname();
       const { data: session, update: updateSession, status } = useSession();
 
       useEffect(() => {
         updateSession();
       }, []);
+
+      useEffect(() => {
+        if (typeof window === 'undefined') return;
+        if (status !== 'unauthenticated') return;
+
+        const stored = localStorage.getItem('postLoginRedirect');
+
+        if (!stored && pathname !== '/home') {
+          localStorage.setItem('postLoginRedirect', pathname);
+          router.replace('/home');
+        }
+      }, [status, router]);
 
       if (session?.requiresRelogin) appSignOut();
 
@@ -110,12 +123,9 @@ function createClientPage<TPathParams extends ZodType<any, any>, TQueryParams ex
       };
 
       return (
-        <Suspense fallback={null}>
-          <PostLoginGuard status={status} />
-          <Component session={session} getPathParams={getPathParams} getQueryParams={getQueryParams} router={router}>
-            {children}
-          </Component>
-        </Suspense>
+        <Component session={session} getPathParams={getPathParams} getQueryParams={getQueryParams} router={router}>
+          {children}
+        </Component>
       );
     };
   };
