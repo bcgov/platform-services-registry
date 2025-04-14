@@ -13,7 +13,7 @@ importers:
     dependencies:
       '@azure/msal-node':
         specifier: ^3.0.0
-        version: 3.4.1
+        version: 3.5.0
       '@faker-js/faker':
         specifier: ^9.0.0
         version: 9.6.0
@@ -332,12 +332,12 @@ packages:
     resolution: {integrity: sha512-30iZtAPgz+LTIYoeivqYo853f02jBYSd5uGnGpkFV0M3xOt9aN73erkgYAmZU43x4VfqcnLxW9Kpg3R5LC4YYw==}
     engines: {node: '>=6.0.0'}
 
-  '@azure/msal-common@15.4.0':
-    resolution: {integrity: sha512-reeIUDXt6Xc+FpCBDEbUFQWvJ6SjE0JwsGYIfa3ZCR6Tpzjc9J1v+/InQgfCeJzfTRd7PDJVxI6TSzOmOd7+Ag==}
+  '@azure/msal-common@15.5.0':
+    resolution: {integrity: sha512-u97AJ6m4PB24/Plms9e9iydRcOaxxrHWkan1px5GeWGJfakY1D/r1DmY1+Typ8zWC/5JbNzH1GYpXrorPymz5g==}
     engines: {node: '>=0.8.0'}
 
-  '@azure/msal-node@3.4.1':
-    resolution: {integrity: sha512-VlW6ygnKBIqUKIHnA/ubQ+F3rZ8aW3K6VA1bpZ90Ln0vlE4XaA6yGB/FibPJxet7gWinAG1oSpQqPN/PL9AqIw==}
+  '@azure/msal-node@3.5.0':
+    resolution: {integrity: sha512-9cLUmcOZ5FODz3uAhS2C9A1U7xDUTCHVcaNQBYpOd5qCKdKM6ft/ydAfw27vEntuaDgnh5jytOAKsEzEbtoQ1Q==}
     engines: {node: '>=16'}
 
   '@babel/code-frame@7.26.2':
@@ -5638,11 +5638,11 @@ snapshots:
       '@jridgewell/gen-mapping': 0.3.8
       '@jridgewell/trace-mapping': 0.3.25
 
-  '@azure/msal-common@15.4.0': {}
+  '@azure/msal-common@15.5.0': {}
 
-  '@azure/msal-node@3.4.1':
+  '@azure/msal-node@3.5.0':
     dependencies:
-      '@azure/msal-common': 15.4.0
+      '@azure/msal-common': 15.5.0
       jsonwebtoken: 9.0.2
       uuid: 8.3.2
 
