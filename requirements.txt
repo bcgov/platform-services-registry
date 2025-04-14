@@ -5,3 +5,4 @@ black==25.1.0
 mkdocs-material==9.6.11
 pymdown-extensions==10.14.3
 pygments==2.19.1
+mkdocs-mermaid2-plugin==1.2.1

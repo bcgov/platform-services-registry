@@ -102,7 +102,11 @@ markdown_extensions:
 - pymdownx.inlinehilite
 - pymdownx.arithmatex
 - pymdownx.details
-- pymdownx.superfences
+- pymdownx.superfences:
+    custom_fences:
+    - name: mermaid
+      class: mermaid
+      format: '!!python/name:mermaid2.fence_mermaid_custom'
 - pymdownx.tabbed:
     alternate_style: true
 - pymdownx.tilde
@@ -119,3 +123,6 @@ extra_javascript:
 
 extra_css:
 - https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.11.1/styles/github.min.css
+
+plugins:
+- mermaid2
