@@ -7,15 +7,7 @@ import { useSession } from 'next-auth/react';
 import { Fragment } from 'react';
 import { namespaceKeys, resourceKeys } from '@/constants';
 import { useAppState } from '@/states/global';
-import { cn } from '@/utils/js';
-
-const formatCurrency = (value: number) => {
-  return new Intl.NumberFormat('en-US', {
-    style: 'currency',
-    currency: 'CAD',
-    minimumFractionDigits: 2,
-  }).format(value);
-};
+import { cn, formatCurrency } from '@/utils/js';
 
 function Estimation({ value, price, unit, diff = 0 }: { value: number; price: number; unit: string; diff?: number }) {
   const increased = diff > 0;
