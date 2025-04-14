@@ -2,10 +2,10 @@
 
 import _isUndefined from 'lodash-es/isUndefined';
 import { AppRouterInstance } from 'next/dist/shared/lib/app-router-context.shared-runtime';
-import { usePathname, useRouter, useSearchParams } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
 import { Session, PermissionsKey } from 'next-auth';
 import { useSession, signOut as appSignOut } from 'next-auth/react';
-import React, { Suspense, useEffect } from 'react';
+import React, { useEffect } from 'react';
 import { z, TypeOf, ZodType } from 'zod';
 import { arrayIntersection, parseQueryString } from '@/utils/js';
 
@@ -32,9 +32,7 @@ interface PageProp {
   searchParams: URLSearchParams;
   children: React.ReactNode;
 }
-function Loading() {
-  return <h2>🌀 Loading...</h2>;
-}
+
 function createClientPage<TPathParams extends ZodType<any, any>, TQueryParams extends ZodType<any, any>>({
   roles,
   permissions,
