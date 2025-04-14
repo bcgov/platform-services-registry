@@ -41,6 +41,8 @@ export enum GlobalPermissions {
   ViewEvents = 'viewEvents',
   ViewUsers = 'viewUsers',
   ViewTasks = 'viewTasks',
+  ViewPrivateCloudUnitPrices = 'viewPrivateCloudUnitPrices',
+  ManagePrivateCloudUnitPrices = 'managePrivateCloudUnitPrices',
   SendTaskEmails = 'sendTaskEmails',
   EditUsers = 'editUsers',
   EditUserRoles = 'editUserRoles',
@@ -69,6 +71,7 @@ export enum GlobalRole {
   BillingReviewer = 'billing-reviewer',
   BillingManager = 'billing-manager',
   Billingreader = 'billing-reader',
+  FinanceManager = 'finance-manager',
   EventReader = 'event-reader',
   TaskReader = 'task-reader',
 }
