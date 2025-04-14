@@ -11,9 +11,7 @@ import UserMenu from '@/components/layouts/UserMenu';
 import SideTasks from './SideTasks';
 
 function loginWithRedirect(defaultPath = '/home') {
-  console.log('defaultPath', defaultPath);
   const stored = localStorage.getItem('postLoginRedirect');
-  console.log('stored', stored);
   const path = stored ? stored : defaultPath;
 
   if (stored) localStorage.removeItem('postLoginRedirect');
