@@ -2,11 +2,12 @@
 
 import _isUndefined from 'lodash-es/isUndefined';
 import { AppRouterInstance } from 'next/dist/shared/lib/app-router-context.shared-runtime';
-import { usePathname, useRouter, useSearchParams } from 'next/navigation';
+import { useRouter } from 'next/navigation';
 import { Session, PermissionsKey } from 'next-auth';
 import { useSession, signOut as appSignOut } from 'next-auth/react';
-import React, { useEffect } from 'react';
+import React, { useEffect, Suspense } from 'react';
 import { z, TypeOf, ZodType } from 'zod';
+import PostLoginGuard from '@/components/auth/PostLoginGuard';
 import { arrayIntersection, parseQueryString } from '@/utils/js';
 
 interface HandlerProps<TPathParams, TQueryParams> {
@@ -46,26 +47,12 @@ function createClientPage<TPathParams extends ZodType<any, any>, TQueryParams ex
   return function clientPage(Component: React.FC<ComponentProps<TypeOf<TPathParams>, TypeOf<TQueryParams>>>) {
     return function Wrapper({ params: paramsProm, searchParams: searchParamsProm, children }: any) {
       const router = useRouter();
-      const pathname = usePathname();
-      const searchParams = useSearchParams();
+
       const { data: session, update: updateSession, status } = useSession();
 
       useEffect(() => {
         updateSession();
       }, []);
-
-      useEffect(() => {
-        if (typeof window === 'undefined') return;
-        if (status !== 'unauthenticated') return;
-
-        const redirectPathStored = localStorage.getItem('postLoginRedirect');
-        const currentFullPath = pathname + (searchParams.toString() ? `?${searchParams.toString()}` : '');
-
-        if (!redirectPathStored && pathname !== '/home') {
-          localStorage.setItem('postLoginRedirect', currentFullPath);
-          router.replace('/home');
-        }
-      }, [status, pathname, searchParams, router]);
 
       if (session?.requiresRelogin) appSignOut();
 
@@ -123,9 +110,12 @@ function createClientPage<TPathParams extends ZodType<any, any>, TQueryParams ex
       };
 
       return (
-        <Component session={session} getPathParams={getPathParams} getQueryParams={getQueryParams} router={router}>
-          {children}
-        </Component>
+        <Suspense fallback={null}>
+          <PostLoginGuard status={status} />
+          <Component session={session} getPathParams={getPathParams} getQueryParams={getQueryParams} router={router}>
+            {children}
+          </Component>
+        </Suspense>
       );
     };
   };
