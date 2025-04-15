@@ -35,7 +35,7 @@ interface PageProp {
 
 function createClientPage<TPathParams extends ZodType<any, any>, TQueryParams extends ZodType<any, any>>({
   roles,
-  permissions,
+  permissions = [],
   fallbackUrl = '/',
   validations,
 }: HandlerProps<TPathParams, TQueryParams>) {
@@ -51,18 +51,18 @@ function createClientPage<TPathParams extends ZodType<any, any>, TQueryParams ex
 
       useEffect(() => {
         updateSession();
+        if (status === 'authenticated' && localStorage.getItem('postLoginRedirect')) {
+          localStorage.removeItem('postLoginRedirect');
+        }
       }, []);
 
-      useEffect(() => {
-        if (typeof window === 'undefined') return;
-        if (status !== 'unauthenticated') return;
-        if (pathname === '/home' || pathname === '/login') return;
-
-        const alreadyStored = !!localStorage.getItem('postLoginRedirect');
-        if (!alreadyStored) {
+      function handleAccessRedirect() {
+        if (status === 'unauthenticated') {
           localStorage.setItem('postLoginRedirect', pathname);
+          return null;
         }
-      }, [status, pathname]);
+        return router.push(fallbackUrl);
+      }
 
       if (session?.requiresRelogin) appSignOut();
 
@@ -76,7 +76,7 @@ function createClientPage<TPathParams extends ZodType<any, any>, TQueryParams ex
       if (roles && roles.length > 0) {
         const allowed = arrayIntersection(roles, _roles).length > 0;
         if (!allowed) {
-          return router.push(fallbackUrl);
+          handleAccessRedirect();
         }
       }
 
@@ -84,7 +84,7 @@ function createClientPage<TPathParams extends ZodType<any, any>, TQueryParams ex
       if (permissions && permissions.length > 0) {
         const allowed = permissions.some((permKey) => _permissions[permKey as keyof typeof _permissions]);
         if (!allowed) {
-          return router.push(fallbackUrl);
+          handleAccessRedirect();
         }
       }
 
@@ -94,7 +94,7 @@ function createClientPage<TPathParams extends ZodType<any, any>, TQueryParams ex
           const params = await paramsProm;
           const parsed = validations?.pathParams.safeParse(params);
           if (!parsed.success) {
-            return router.push(fallbackUrl);
+            handleAccessRedirect();
           }
 
           return parsed.data;
@@ -110,7 +110,7 @@ function createClientPage<TPathParams extends ZodType<any, any>, TQueryParams ex
           const query = parseQueryString(searchParams);
           const parsed = validations?.queryParams.safeParse(query);
           if (!parsed.success) {
-            return router.push(fallbackUrl);
+            handleAccessRedirect();
           }
 
           return parsed.data;

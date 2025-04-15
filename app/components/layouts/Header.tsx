@@ -14,7 +14,6 @@ function loginWithRedirect(defaultPath = '/home') {
   const stored = localStorage.getItem('postLoginRedirect');
   const path = stored ? stored : defaultPath;
 
-  if (stored) localStorage.removeItem('postLoginRedirect');
   signIn('keycloak', { callbackUrl: path });
 }
 
