@@ -35,7 +35,7 @@ interface PageProp {
 
 function createClientPage<TPathParams extends ZodType<any, any>, TQueryParams extends ZodType<any, any>>({
   roles,
-  permissions = [],
+  permissions,
   fallbackUrl = '/',
   validations,
 }: HandlerProps<TPathParams, TQueryParams>) {
