@@ -66,7 +66,12 @@ theme:
 nav:
 - Home: index.md
 - Clean code:
-  - clean-codes/return-early.md
+  - clean-code/return-early.md
+  - clean-code/descriptive-function-names.md
+  - clean-code/react-handler-naming.md
+  - clean-code/falsy-check-early.md
+  - clean-code/small-components-functions.md
+  - clean-code/utils-helpers-shared-components.md
 - Docs:
   - developer-guide.md
   - api-testing.md
