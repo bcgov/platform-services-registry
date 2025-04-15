@@ -9,10 +9,6 @@
          <lastmod>2025-04-15</lastmod>
     </url>
     <url>
-         <loc>https://bcgov.github.io/platform-services-registry/bot-pr-review.html</loc>
-         <lastmod>2025-04-15</lastmod>
-    </url>
-    <url>
          <loc>https://bcgov.github.io/platform-services-registry/ci-cd.html</loc>
          <lastmod>2025-04-15</lastmod>
     </url>
@@ -25,10 +21,6 @@
          <lastmod>2025-04-15</lastmod>
     </url>
     <url>
-         <loc>https://bcgov.github.io/platform-services-registry/developer-guide.html</loc>
-         <lastmod>2025-04-15</lastmod>
-    </url>
-    <url>
          <loc>https://bcgov.github.io/platform-services-registry/email-scenarios-private-cloud.html</loc>
          <lastmod>2025-04-15</lastmod>
     </url>
@@ -38,10 +30,6 @@
     </url>
     <url>
          <loc>https://bcgov.github.io/platform-services-registry/emou-workflow.html</loc>
-         <lastmod>2025-04-15</lastmod>
-    </url>
-    <url>
-         <loc>https://bcgov.github.io/platform-services-registry/git-tips.html</loc>
          <lastmod>2025-04-15</lastmod>
     </url>
     <url>
@@ -94,6 +82,26 @@
     </url>
     <url>
          <loc>https://bcgov.github.io/platform-services-registry/clean-code/utils-helpers-shared-components.html</loc>
+         <lastmod>2025-04-15</lastmod>
+    </url>
+    <url>
+         <loc>https://bcgov.github.io/platform-services-registry/development-setup/local-development-environment.html</loc>
+         <lastmod>2025-04-15</lastmod>
+    </url>
+    <url>
+         <loc>https://bcgov.github.io/platform-services-registry/development-setup/sandbox.html</loc>
+         <lastmod>2025-04-15</lastmod>
+    </url>
+    <url>
+         <loc>https://bcgov.github.io/platform-services-registry/github/bot-pr-review.html</loc>
+         <lastmod>2025-04-15</lastmod>
+    </url>
+    <url>
+         <loc>https://bcgov.github.io/platform-services-registry/github/clean-pr.html</loc>
+         <lastmod>2025-04-15</lastmod>
+    </url>
+    <url>
+         <loc>https://bcgov.github.io/platform-services-registry/github/new-task.html</loc>
          <lastmod>2025-04-15</lastmod>
     </url>
     <url>
