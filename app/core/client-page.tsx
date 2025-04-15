@@ -56,14 +56,13 @@ function createClientPage<TPathParams extends ZodType<any, any>, TQueryParams ex
       useEffect(() => {
         if (typeof window === 'undefined') return;
         if (status !== 'unauthenticated') return;
+        if (pathname === '/home' || pathname === '/login') return;
 
-        const stored = localStorage.getItem('postLoginRedirect');
-
-        if (!stored && pathname !== '/home') {
+        const alreadyStored = !!localStorage.getItem('postLoginRedirect');
+        if (!alreadyStored) {
           localStorage.setItem('postLoginRedirect', pathname);
-          router.replace('/home');
         }
-      }, [status, router]);
+      }, [status, pathname]);
 
       if (session?.requiresRelogin) appSignOut();
 
