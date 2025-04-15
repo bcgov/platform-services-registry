@@ -1,6 +1,4 @@
-# Git Tips
-
-## How to create a clean PR
+# Clean task PR
 
 In certain scenarios, it becomes necessary to refine commit history and generate a pristine pull request for the target branch. While [Git rebase](https://docs.github.com/en/get-started/using-git/about-git-rebase) is a useful tool for this purpose, its application can be less straightforward, especially when the working branch incorporates changes from other pull requests.
 
