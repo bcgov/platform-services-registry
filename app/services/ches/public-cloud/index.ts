@@ -1,4 +1,4 @@
-import { PublicCloudBilling, RequestType } from '@prisma/client';
+import { RequestType } from '@prisma/client';
 import { logger } from '@/core/logging';
 import { PublicCloudBillingDetailDecorated, PublicCloudRequestDetailDecorated } from '@/types/public-cloud';
 import {
@@ -14,10 +14,8 @@ import {
   sendTeamDeleteRequestRejection,
   sendTeamEditRequest,
   sendTeamEditRequestCompletion,
-  sendBillingReviewerMou,
   sendEmouServiceAgreement,
   sendExpenseAuthority,
-  sendExpenseAuthorityMou,
   sendTeamRequestCancellation,
 } from './emails';
 

@@ -1,8 +1,7 @@
 import { PublicCloudRequestType, DecisionStatus, ProjectStatus, EventType, TaskType } from '@prisma/client';
 import { Session } from 'next-auth';
-import { z, TypeOf, ZodType } from 'zod';
-import prisma from '@/core/prisma';
-import { BadRequestResponse, OkResponse, UnauthorizedResponse, UnprocessableEntityResponse } from '@/core/responses';
+import { TypeOf } from 'zod';
+import { OkResponse, UnauthorizedResponse } from '@/core/responses';
 import { sendDeleteRequestEmails } from '@/services/ches/public-cloud';
 import {
   createEvent,

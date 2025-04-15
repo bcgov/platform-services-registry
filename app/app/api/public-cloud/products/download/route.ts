@@ -1,4 +1,4 @@
-import { EventType, ProjectStatus } from '@prisma/client';
+import { EventType } from '@prisma/client';
 import { GlobalRole } from '@/constants';
 import createApiHandler from '@/core/api-handler';
 import { NoContent, CsvResponse } from '@/core/responses';

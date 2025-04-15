@@ -1,6 +1,6 @@
 import { Cluster, RequestType } from '@prisma/client';
 import { sendPrivateCloudNatsMessage } from '@/services/nats';
-import { PrivateCloudRequestDetail, PrivateCloudRequestDetailDecorated } from '@/types/private-cloud';
+import { PrivateCloudRequestDetailDecorated } from '@/types/private-cloud';
 
 interface User {
   email?: string;

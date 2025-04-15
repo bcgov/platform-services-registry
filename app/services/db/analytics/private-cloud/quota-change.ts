@@ -1,6 +1,4 @@
-import { DecisionStatus, Prisma, User } from '@prisma/client';
-import _isEqual from 'lodash-es/isEqual';
-import _uniqWith from 'lodash-es/uniqWith';
+import { DecisionStatus } from '@prisma/client';
 import prisma from '@/core/prisma';
 import { dateToShortDateString } from '@/utils/js/date';
 

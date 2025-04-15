@@ -1,5 +1,5 @@
 import { expect } from '@jest/globals';
-import { DecisionStatus, TaskType, TaskStatus, RequestType } from '@prisma/client';
+import { DecisionStatus, RequestType } from '@prisma/client';
 import { GlobalRole } from '@/constants';
 import { defaultAccountCoding } from '@/constants';
 import prisma from '@/core/prisma';

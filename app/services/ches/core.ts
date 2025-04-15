@@ -1,4 +1,3 @@
-import { render } from '@react-email/render';
 import _castArray from 'lodash-es/castArray';
 import _compact from 'lodash-es/compact';
 import _toLower from 'lodash-es/toLower';

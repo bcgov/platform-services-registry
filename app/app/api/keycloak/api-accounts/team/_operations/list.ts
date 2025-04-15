@@ -1,6 +1,6 @@
 import { Session } from 'next-auth';
 import { TEAM_SA_PREFIX } from '@/constants';
-import { OkResponse, BadRequestResponse } from '@/core/responses';
+import { OkResponse } from '@/core/responses';
 import { getKcAdminClient, findClients } from '@/services/keycloak/app-realm';
 
 export default async function listOp({ session }: { session: Session }) {

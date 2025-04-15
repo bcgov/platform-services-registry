@@ -1,4 +1,4 @@
-import { AccountCoding, Prisma } from '@prisma/client';
+import { Prisma } from '@prisma/client';
 import prisma from '@/core/prisma';
 import { getAccountCodingString } from '@/helpers/billing';
 import { formatFullName } from '@/helpers/user';

@@ -1,6 +1,5 @@
-import { Prisma, Task } from '@prisma/client';
-import { User } from 'next-auth';
-import NextAuth, { DefaultSession, JWT } from 'next-auth/jwt';
+import { Task } from '@prisma/client';
+import { DefaultSession } from 'next-auth/jwt';
 
 declare module 'next-auth' {
   interface Permissions {

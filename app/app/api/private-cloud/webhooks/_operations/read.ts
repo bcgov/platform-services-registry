@@ -1,5 +1,5 @@
 import { Session } from 'next-auth';
-import { z, TypeOf, ZodType } from 'zod';
+import { TypeOf } from 'zod';
 import prisma from '@/core/prisma';
 import { BadRequestResponse, OkResponse, UnauthorizedResponse } from '@/core/responses';
 import { models } from '@/services/db';

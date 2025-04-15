@@ -1,4 +1,4 @@
-import { DecisionStatus, ProjectStatus, RequestType, TaskStatus, TaskType, EventType, Provider } from '@prisma/client';
+import { DecisionStatus, ProjectStatus, RequestType, TaskType, EventType } from '@prisma/client';
 import { Session } from 'next-auth';
 import { BadRequestResponse, OkResponse, UnauthorizedResponse } from '@/core/responses';
 import generateLicencePlate from '@/helpers/licence-plate';

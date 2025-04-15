@@ -1,6 +1,5 @@
-import _isEqual from 'lodash-es/isEqual';
 import { z } from 'zod';
-import { GlobalPermissions, GlobalRole } from '@/constants';
+import { GlobalRole } from '@/constants';
 import createApiHandler from '@/core/api-handler';
 import { BadRequestResponse, OkResponse, UnauthorizedResponse } from '@/core/responses';
 import { models } from '@/services/db';

@@ -1,6 +1,6 @@
 import { TaskType } from '@prisma/client';
 import { z } from 'zod';
-import { GlobalPermissions, GlobalRole } from '@/constants';
+import { GlobalPermissions } from '@/constants';
 import createApiHandler from '@/core/api-handler';
 import prisma from '@/core/prisma';
 import { BadRequestResponse, OkResponse } from '@/core/responses';

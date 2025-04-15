@@ -1,5 +1,4 @@
 import { Cluster, Prisma, ResourceRequestsEnv, ResourceRequests, PrivateCloudProductMemberRole } from '@prisma/client';
-import _orderBy from 'lodash-es/orderBy';
 import { productSorts } from './common';
 
 export const privateCloudProductMemberRoles = Object.values(PrivateCloudProductMemberRole);

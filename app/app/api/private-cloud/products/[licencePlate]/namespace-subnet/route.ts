@@ -1,4 +1,3 @@
-import { Cluster } from '@prisma/client';
 import { z, string } from 'zod';
 import { GlobalRole } from '@/constants';
 import createApiHandler from '@/core/api-handler';

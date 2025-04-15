@@ -5,7 +5,6 @@ import {
   ResourceRequestsEnv,
   ResourceRequests,
 } from '@prisma/client';
-import _each from 'lodash-es/each';
 import { getTotalMetrics, memoryUnitMultipliers, cpuCoreToMillicoreMultiplier } from '@/helpers/resource-metrics';
 import { getPodMetrics } from '@/services/k8s/metrics';
 

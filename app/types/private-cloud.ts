@@ -1,4 +1,4 @@
-import { Ministry, Cluster, User, Prisma, PrivateCloudProductMember } from '@prisma/client';
+import { User, Prisma, PrivateCloudProductMember } from '@prisma/client';
 import {
   PrivateCloudProductDecorate,
   PrivateCloudRequestDecorate,

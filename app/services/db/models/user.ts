@@ -1,8 +1,4 @@
 import { Prisma, Ministry, User } from '@prisma/client';
-import _castArray from 'lodash-es/castArray';
-import _compact from 'lodash-es/compact';
-import _forEach from 'lodash-es/forEach';
-import _uniq from 'lodash-es/uniq';
 import { Session } from 'next-auth';
 import prisma from '@/core/prisma';
 import { UserDecorate } from '@/types/doc-decorate';

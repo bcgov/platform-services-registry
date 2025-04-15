@@ -1,4 +1,4 @@
-import { DecisionStatus, Prisma, RequestType, EventType, TaskType } from '@prisma/client';
+import { DecisionStatus, RequestType, EventType } from '@prisma/client';
 import { Session } from 'next-auth';
 import { TypeOf } from 'zod';
 import { OkResponse, UnauthorizedResponse } from '@/core/responses';

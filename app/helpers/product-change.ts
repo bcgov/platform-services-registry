@@ -1,9 +1,3 @@
-import _forEach from 'lodash-es/forEach';
-import _get from 'lodash-es/get';
-import _isPlainObject from 'lodash-es/isPlainObject';
-import _isString from 'lodash-es/isString';
-import _mapValues from 'lodash-es/mapValues';
-import _pick from 'lodash-es/pick';
 import _uniq from 'lodash-es/uniq';
 import { ExtendedPrivateCloudProductMember } from '@/types/private-cloud';
 import { ExtendedPublicCloudProductMember } from '@/types/public-cloud';
