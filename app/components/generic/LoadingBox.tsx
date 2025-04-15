@@ -1,9 +1,18 @@
 import { Box, LoadingOverlay } from '@mantine/core';
 import { ReactNode } from 'react';
+import { cn } from '@/utils/js';
 
-export default function LoadingBox({ children, isLoading = false }: { children: ReactNode; isLoading?: boolean }) {
+export default function LoadingBox({
+  children,
+  isLoading = false,
+  className,
+}: {
+  children: ReactNode;
+  isLoading?: boolean;
+  className?: string;
+}) {
   return (
-    <Box pos="relative">
+    <Box pos="relative" className={cn(className)}>
       <LoadingOverlay
         visible={isLoading}
         zIndex={1000}

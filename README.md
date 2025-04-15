@@ -97,8 +97,8 @@ These technologies foster rapid iterative development, polished user interfaces,
 ## Service Diagrams
 
 ```mermaid
-graph TD;
-    frontendApp-->|HTTP requests| backendAPI;
+graph TD
+    Frontend-->|HTTP requests| backendAPI[Backend API];
     backendAPI-->|Queries| database;
     backendAPI-->|Sends emails| emailService(CHES);
     backendAPI-->|Provisions namespaces| namespaceProvisioner(NATS);

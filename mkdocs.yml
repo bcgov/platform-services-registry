@@ -24,17 +24,18 @@ theme:
   search_index_only: true
 
   language: en
+
   features:
   - content.code.annotate
   - content.code.copy
   - content.tabs.link
-    # - header.autohide
-    # - navigation.expand
+  # - header.autohide
+  # - navigation.expand
   - navigation.indexes
-    # - navigation.instant
-  - navigation.sections
+  - navigation.instant
+  # - navigation.sections
   - navigation.tabs
-    # - navigation.tabs.sticky
+  - navigation.tabs.sticky
   - navigation.top
   - navigation.tracking
   - search.highlight
@@ -64,19 +65,28 @@ theme:
 
 nav:
 - Home: index.md
+- Development setup:
+  - development-setup/local-development-environment.md
+  - development-setup/sandbox.md
+- Git & Github:
+  - github/new-task.md
+  - github/clean-pr.md
+  - github/bot-pr-review.md
+- Clean code:
+  - clean-code/return-early.md
+  - clean-code/descriptive-function-names.md
+  - clean-code/react-handler-naming.md
+  - clean-code/falsy-check-early.md
+  - clean-code/small-components-functions.md
+  - clean-code/utils-helpers-shared-components.md
 - Docs:
-  - Clean Code:
-    - clean-codes/return-early.md
-  - developer-guide.md
   - api-testing.md
-  - bot-pr-review.md
   - ci-cd.md
   - database.md
   - debug-deployments.md
   - email-scenarios-private-cloud.md
   - email-scenarios-public-cloud.md
   - emou-workflow.md
-  - git-tips.md
   - onboarding-offboarding.md
   - react-email.md
   - resource-metrics.md
@@ -97,12 +107,17 @@ markdown_extensions:
 - md_in_html
 - pymdownx.highlight:
     anchor_linenums: true
+    linenums: true
     line_spans: __span
     pygments_lang_class: true
 - pymdownx.inlinehilite
 - pymdownx.arithmatex
 - pymdownx.details
-- pymdownx.superfences
+- pymdownx.superfences:
+    custom_fences:
+    - name: mermaid
+      class: mermaid
+      format: !!python/name:mermaid2.fence_mermaid_custom
 - pymdownx.tabbed:
     alternate_style: true
 - pymdownx.tilde
@@ -112,10 +127,5 @@ markdown_extensions:
 - toc:
     permalink: true
 
-extra_javascript:
-- https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.11.1/highlight.min.js
-- https://cdnjs.cloudflare.com/ajax/libs/js-polyfills/0.1.43/polyfill.min.js
-- _javascripts/highlight.js
-
-extra_css:
-- https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.11.1/styles/github.min.css
+plugins:
+- mermaid2

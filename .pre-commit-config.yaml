@@ -8,12 +8,12 @@ repos:
   - id: check-json
   - id: check-vcs-permalinks
   - id: check-yaml
-    exclude: ^helm
+    exclude: ^(helm|mkdocs\.yml$)
   - id: check-ast
   - id: end-of-file-fixer
   - id: trailing-whitespace
 - repo: https://github.com/macisamuele/language-formatters-pre-commit-hooks
-  rev: v2.13.0
+  rev: v2.14.0
   hooks:
   - id: pretty-format-yaml
     exclude: ^helm

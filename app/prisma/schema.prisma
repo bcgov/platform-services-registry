@@ -231,6 +231,15 @@ model Reaction {
   comment   PrivateCloudComment @relation("comment", fields: [commentId], references: [id])
 }
 
+model PrivateCloudUnitPrice {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  cpu       Float
+  storage   Float
+  date      String   @unique
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
 model PublicCloudRequest {
   id                 String                  @id @default(auto()) @map("_id") @db.ObjectId
   licencePlate       String
