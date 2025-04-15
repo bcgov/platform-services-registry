@@ -10,28 +10,28 @@
         <meta name="author" content="Platform Services Team">
       
       
-        <link rel="canonical" href="https://bcgov.github.io/platform-services-registry/rocketchat-notifications.html">
+        <link rel="canonical" href="https://bcgov.github.io/platform-services-registry/clean-code/descriptive-function-names.html">
       
       
-        <link rel="prev" href="resource-metrics.html">
+        <link rel="prev" href="return-early.html">
       
       
-        <link rel="next" href="selecting-image-scanner.html">
+        <link rel="next" href="react-handler-naming.html">
       
       
-      <link rel="icon" href="_assets/logo.png">
+      <link rel="icon" href="../_assets/logo.png">
       <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.6.11">
     
     
       
-        <title>RocketChat Deployment Notifications Setup - Platform Services Registry</title>
+        <title>Use Descriptive Function Names - Platform Services Registry</title>
       
     
     
-      <link rel="stylesheet" href="assets/stylesheets/main.4af4bdda.min.css">
+      <link rel="stylesheet" href="../assets/stylesheets/main.4af4bdda.min.css">
       
         
-        <link rel="stylesheet" href="assets/stylesheets/palette.06af60db.min.css">
+        <link rel="stylesheet" href="../assets/stylesheets/palette.06af60db.min.css">
       
       
 
@@ -50,7 +50,7 @@
       
     
     
-    <script>__md_scope=new URL(".",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    <script>__md_scope=new URL("..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
     
       
 
@@ -76,7 +76,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#rocketchat-deployment-notifications-setup" class="md-skip">
+        <a href="#use-descriptive-function-names" class="md-skip">
           Skip to content
         </a>
       
@@ -92,9 +92,9 @@
 
 <header class="md-header md-header--shadow md-header--lifted" data-md-component="header">
   <nav class="md-header__inner md-grid" aria-label="Header">
-    <a href="index.html" title="Platform Services Registry" class="md-header__button md-logo" aria-label="Platform Services Registry" data-md-component="logo">
+    <a href="../index.html" title="Platform Services Registry" class="md-header__button md-logo" aria-label="Platform Services Registry" data-md-component="logo">
       
-  <img src="_assets/logo.png" alt="logo">
+  <img src="../_assets/logo.png" alt="logo">
 
     </a>
     <label class="md-header__button md-icon" for="__drawer">
@@ -111,7 +111,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              RocketChat Deployment Notifications Setup
+              Use Descriptive Function Names
             
           </span>
         </div>
@@ -176,7 +176,7 @@
   
   
     <li class="md-tabs__item">
-      <a href="index.html" class="md-tabs__link">
+      <a href="../index.html" class="md-tabs__link">
         
   
   
@@ -193,11 +193,13 @@
   
   
   
+    
+  
   
     
     
-      <li class="md-tabs__item">
-        <a href="clean-code/return-early.html" class="md-tabs__link">
+      <li class="md-tabs__item md-tabs__item--active">
+        <a href="return-early.html" class="md-tabs__link">
           
   
   
@@ -215,13 +217,11 @@
   
   
   
-    
-  
   
     
     
-      <li class="md-tabs__item md-tabs__item--active">
-        <a href="developer-guide.html" class="md-tabs__link">
+      <li class="md-tabs__item">
+        <a href="../developer-guide.html" class="md-tabs__link">
           
   
   
@@ -263,9 +263,9 @@
 
 <nav class="md-nav md-nav--primary md-nav--lifted" aria-label="Navigation" data-md-level="0">
   <label class="md-nav__title" for="__drawer">
-    <a href="index.html" title="Platform Services Registry" class="md-nav__button md-logo" aria-label="Platform Services Registry" data-md-component="logo">
+    <a href="../index.html" title="Platform Services Registry" class="md-nav__button md-logo" aria-label="Platform Services Registry" data-md-component="logo">
       
-  <img src="_assets/logo.png" alt="logo">
+  <img src="../_assets/logo.png" alt="logo">
 
     </a>
     Platform Services Registry
@@ -292,7 +292,7 @@
   
   
     <li class="md-nav__item">
-      <a href="index.html" class="md-nav__link">
+      <a href="../index.html" class="md-nav__link">
         
   
   
@@ -311,234 +311,12 @@
       
   
   
-  
-  
-    
-    
-      
-        
-      
-        
-      
-        
-      
-        
-      
-        
-      
-        
-      
-    
-    
-    
-      
-      
-    
-    
-    <li class="md-nav__item md-nav__item--nested">
-      
-        
-        
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" >
-        
-          
-          <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="0">
-            
-  
-  
-  <span class="md-ellipsis">
-    Clean code
-    
-  </span>
-  
-
-            <span class="md-nav__icon md-icon"></span>
-          </label>
-        
-        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_2">
-            <span class="md-nav__icon md-icon"></span>
-            Clean code
-          </label>
-          <ul class="md-nav__list" data-md-scrollfix>
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="clean-code/return-early.html" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    Return Early Pattern
-    
-  </span>
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="clean-code/descriptive-function-names.html" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    Use Descriptive Function Names
-    
-  </span>
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="clean-code/react-handler-naming.html" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    Naming React Callback Props and Handlers
-    
-  </span>
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="clean-code/falsy-check-early.html" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    Check Falsy Conditions Early
-    
-  </span>
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="clean-code/small-components-functions.html" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    Split Large Components/Functions Into Smaller Ones
-    
-  </span>
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="clean-code/utils-helpers-shared-components.html" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    Use Utils, Helpers, and Shared Components
-    
-  </span>
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-          </ul>
-        </nav>
-      
-    </li>
-  
-
-    
-      
-      
-  
-  
     
   
   
   
     
     
-      
-        
-      
-        
-      
-        
-      
-        
-      
-        
-      
-        
-      
-        
-      
-        
-      
-        
-      
-        
-      
-        
       
         
       
@@ -566,15 +344,15 @@
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" checked>
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" checked>
         
           
-          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="">
+          <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="">
             
   
   
   <span class="md-ellipsis">
-    Docs
+    Clean code
     
   </span>
   
@@ -582,10 +360,10 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="true">
-          <label class="md-nav__title" for="__nav_3">
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_2">
             <span class="md-nav__icon md-icon"></span>
-            Docs
+            Clean code
           </label>
           <ul class="md-nav__list" data-md-scrollfix>
             
@@ -596,288 +374,12 @@
   
   
     <li class="md-nav__item">
-      <a href="developer-guide.html" class="md-nav__link">
+      <a href="return-early.html" class="md-nav__link">
         
   
   
   <span class="md-ellipsis">
-    Developer Guidelines
-    
-  </span>
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="api-testing.html" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    API Testing
-    
-  </span>
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="bot-pr-review.html" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    Renovate Bot PR Review
-    
-  </span>
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="ci-cd.html" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    CI/CD Pipelines
-    
-  </span>
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="database.html" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    Database
-    
-  </span>
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="debug-deployments.html" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    Debugging Helm Deployment Failure Issues
-    
-  </span>
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="email-scenarios-private-cloud.html" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    Email scenarios private cloud
-    
-  </span>
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="email-scenarios-public-cloud.html" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    Email scenarios public cloud
-    
-  </span>
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="emou-workflow.html" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    Emou workflow
-    
-  </span>
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="git-tips.html" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    Git Tips
-    
-  </span>
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="onboarding-offboarding.html" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    Onboarding and Offboarding Documentation
-    
-  </span>
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="react-email.html" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    React email
-    
-  </span>
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="resource-metrics.html" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    Resource metrics
+    Return Early Pattern
     
   </span>
   
@@ -909,7 +411,7 @@
   
   
   <span class="md-ellipsis">
-    RocketChat Deployment Notifications Setup
+    Use Descriptive Function Names
     
   </span>
   
@@ -917,12 +419,12 @@
           <span class="md-nav__icon md-icon"></span>
         </label>
       
-      <a href="rocketchat-notifications.html" class="md-nav__link md-nav__link--active">
+      <a href="descriptive-function-names.html" class="md-nav__link md-nav__link--active">
         
   
   
   <span class="md-ellipsis">
-    RocketChat Deployment Notifications Setup
+    Use Descriptive Function Names
     
   </span>
   
@@ -945,37 +447,55 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#prerequisites" class="md-nav__link">
+  <a href="#benefits" class="md-nav__link">
     <span class="md-ellipsis">
-      Prerequisites
+      Benefits
     </span>
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#setting-up-and-updating-the-notification-bot" class="md-nav__link">
+  <a href="#examples" class="md-nav__link">
     <span class="md-ellipsis">
-      Setting Up and Updating the Notification Bot
+      Examples
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="Setting Up and Updating the Notification Bot">
+    <nav class="md-nav" aria-label="Examples">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#1-create-a-rocketchat-webhook" class="md-nav__link">
+  <a href="#good-example-descriptive-name" class="md-nav__link">
     <span class="md-ellipsis">
-      1. Create a RocketChat Webhook
+      Good Example (Descriptive Name)
     </span>
   </a>
   
 </li>
         
           <li class="md-nav__item">
-  <a href="#2-update-the-repository-to-use-the-webhook" class="md-nav__link">
+  <a href="#bad-example-vague-name" class="md-nav__link">
     <span class="md-ellipsis">
-      2. Update the Repository to Use the Webhook
+      Bad Example (Vague Name)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#another-good-example" class="md-nav__link">
+    <span class="md-ellipsis">
+      Another Good Example
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#another-bad-example" class="md-nav__link">
+    <span class="md-ellipsis">
+      Another Bad Example
     </span>
   </a>
   
@@ -983,6 +503,15 @@
         
       </ul>
     </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#considerations-for-long-function-names" class="md-nav__link">
+    <span class="md-ellipsis">
+      Considerations for Long Function Names
+    </span>
+  </a>
   
 </li>
       
@@ -1002,7 +531,505 @@
   
   
     <li class="md-nav__item">
-      <a href="selecting-image-scanner.html" class="md-nav__link">
+      <a href="react-handler-naming.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Naming React Callback Props and Handlers
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="falsy-check-early.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Check Falsy Conditions Early
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="small-components-functions.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Split Large Components/Functions Into Smaller Ones
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="utils-helpers-shared-components.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Use Utils, Helpers, and Shared Components
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    Docs
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3">
+            <span class="md-nav__icon md-icon"></span>
+            Docs
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../developer-guide.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Developer Guidelines
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../api-testing.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    API Testing
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../bot-pr-review.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Renovate Bot PR Review
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ci-cd.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    CI/CD Pipelines
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../database.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Database
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../debug-deployments.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Debugging Helm Deployment Failure Issues
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../email-scenarios-private-cloud.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Email scenarios private cloud
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../email-scenarios-public-cloud.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Email scenarios public cloud
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../emou-workflow.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Emou workflow
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../git-tips.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Git Tips
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../onboarding-offboarding.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Onboarding and Offboarding Documentation
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../react-email.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    React email
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../resource-metrics.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Resource metrics
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../rocketchat-notifications.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    RocketChat Deployment Notifications Setup
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../selecting-image-scanner.html" class="md-nav__link">
         
   
   
@@ -1025,7 +1052,7 @@
   
   
     <li class="md-nav__item">
-      <a href="team-conventions.html" class="md-nav__link">
+      <a href="../team-conventions.html" class="md-nav__link">
         
   
   
@@ -1048,7 +1075,7 @@
   
   
     <li class="md-nav__item">
-      <a href="terraform.html" class="md-nav__link">
+      <a href="../terraform.html" class="md-nav__link">
         
   
   
@@ -1098,37 +1125,55 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#prerequisites" class="md-nav__link">
+  <a href="#benefits" class="md-nav__link">
     <span class="md-ellipsis">
-      Prerequisites
+      Benefits
     </span>
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#setting-up-and-updating-the-notification-bot" class="md-nav__link">
+  <a href="#examples" class="md-nav__link">
     <span class="md-ellipsis">
-      Setting Up and Updating the Notification Bot
+      Examples
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="Setting Up and Updating the Notification Bot">
+    <nav class="md-nav" aria-label="Examples">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#1-create-a-rocketchat-webhook" class="md-nav__link">
+  <a href="#good-example-descriptive-name" class="md-nav__link">
     <span class="md-ellipsis">
-      1. Create a RocketChat Webhook
+      Good Example (Descriptive Name)
     </span>
   </a>
   
 </li>
         
           <li class="md-nav__item">
-  <a href="#2-update-the-repository-to-use-the-webhook" class="md-nav__link">
+  <a href="#bad-example-vague-name" class="md-nav__link">
     <span class="md-ellipsis">
-      2. Update the Repository to Use the Webhook
+      Bad Example (Vague Name)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#another-good-example" class="md-nav__link">
+    <span class="md-ellipsis">
+      Another Good Example
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#another-bad-example" class="md-nav__link">
+    <span class="md-ellipsis">
+      Another Bad Example
     </span>
   </a>
   
@@ -1136,6 +1181,15 @@
         
       </ul>
     </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#considerations-for-long-function-names" class="md-nav__link">
+    <span class="md-ellipsis">
+      Considerations for Long Function Names
+    </span>
+  </a>
   
 </li>
       
@@ -1158,37 +1212,60 @@
   
 
 
-<h1 id="rocketchat-deployment-notifications-setup">RocketChat Deployment Notifications Setup<a class="headerlink" href="#rocketchat-deployment-notifications-setup" title="Permanent link">&para;</a></h1>
-<p>To facilitate efficient communication of deployment actions, we have set up a notification bot to notify developers and stakeholders about the status of our deployments, as well as provide a convenient link to the changes made.</p>
-<h2 id="prerequisites">Prerequisites<a class="headerlink" href="#prerequisites" title="Permanent link">&para;</a></h2>
-<ul>
-<li>You must be an admin of this repository.</li>
-<li>You must be a member of the <code>#app-dev-team</code> RocketChat channel.</li>
-</ul>
-<h2 id="setting-up-and-updating-the-notification-bot">Setting Up and Updating the Notification Bot<a class="headerlink" href="#setting-up-and-updating-the-notification-bot" title="Permanent link">&para;</a></h2>
-<h3 id="1-create-a-rocketchat-webhook">1. Create a RocketChat Webhook<a class="headerlink" href="#1-create-a-rocketchat-webhook" title="Permanent link">&para;</a></h3>
-<p>To create a webhook in RocketChat for deployment notifications:</p>
+<h1 id="use-descriptive-function-names">Use Descriptive Function Names<a class="headerlink" href="#use-descriptive-function-names" title="Permanent link">&para;</a></h1>
+<p>Using descriptive function names is a fundamental practice in writing clean, maintainable code. A well-named function communicates its purpose clearly, reducing the need for additional comments or documentation. This pattern encourages developers to write self-explanatory code that is easier to read, understand, and debug.</p>
+<h2 id="benefits">Benefits<a class="headerlink" href="#benefits" title="Permanent link">&para;</a></h2>
+<p>Here are some benefits of using descriptive function names:</p>
 <ol>
-<li>Open RocketChat and click on the <strong>vertical 3-dot menu</strong> at the top-left of the application.</li>
-<li>Select <strong>Workspace</strong> under the <strong>Administration</strong> heading.</li>
-<li>At the top-right, click the <strong>New</strong> button to create a new integration.</li>
-<li>Ensure that the <strong>Enabled</strong> toggle is switched on to activate this integration.</li>
-<li>Fill in the <strong>Integration Name</strong> with a descriptive name (e.g., "App Deployment Notification").</li>
-<li>In the <strong>Post to Channel</strong> field, enter <code>#app-dev-team</code>.</li>
-<li>In the <strong>Post As</strong> field, enter your own username or another account name for clarity.</li>
-<li>Set the <strong>Alias</strong> to <code>app-dev-deployment</code> to identify the source of the notification.</li>
-<li>To help differentiate automated bot messages from user-generated messages, you can:</li>
-<li>Add an emoji (e.g., <code>:robot:</code>) in the <strong>Emoji</strong> field, which will replace the default avatar.</li>
-<li>Alternatively, use a custom avatar by inserting an image URL (e.g., <code>https://i.imgur.com/7U3Yv1e.png</code>).</li>
-<li>Once the fields are filled, click <strong>Save</strong> at the bottom-right to create the integration.</li>
+<li>
+<p><code>Improved Readability</code>: A descriptive name tells you exactly what the function does, without needing to read the entire implementation. This makes it easier for developers to scan and understand code quickly.</p>
+</li>
+<li>
+<p><code>Reduced Need for Comments</code>: When a function name clearly describes its behavior, there's less need to add comments explaining what it does. The name itself serves as documentation.</p>
+</li>
+<li>
+<p><code>Easier Maintenance</code>: Descriptive names help you identify the right function when modifying or debugging code. They make refactoring and collaboration less error-prone, as you don't need to trace every line to understand a function's role.</p>
+</li>
+<li>
+<p><code>Enhanced Code Navigation</code>: In larger codebases or IDEs, descriptive names make it easier to search for and locate specific functionality without digging through lines of code.</p>
+</li>
+<li>
+<p><code>Better Naming Encourages Better Design</code>: When you're forced to think of a good name for a function, it often reveals whether the function is doing too much. If you can't summarize its behavior in a short, clear name, it might need to be split into smaller, more focused functions.</p>
+</li>
 </ol>
-<h3 id="2-update-the-repository-to-use-the-webhook">2. Update the Repository to Use the Webhook<a class="headerlink" href="#2-update-the-repository-to-use-the-webhook" title="Permanent link">&para;</a></h3>
-<p>After setting up the webhook in RocketChat, you need to update your repository to use it:</p>
-<ol>
-<li>Navigate to the <strong>Settings</strong> tab of this repository on GitHub.</li>
-<li>Click on the <strong>Environments</strong> menu.</li>
-<li>Under the <strong>Environment Secrets</strong> section, update the <code>ROCKETCHAT_WEBHOOK_URL</code> with the new webhook URL from RocketChat.</li>
-</ol>
+<h2 id="examples">Examples<a class="headerlink" href="#examples" title="Permanent link">&para;</a></h2>
+<h3 id="good-example-descriptive-name">Good Example (Descriptive Name)<a class="headerlink" href="#good-example-descriptive-name" title="Permanent link">&para;</a></h3>
+<div class="language-js highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-0-1">1</a></span>
+<span class="normal"><a href="#__codelineno-0-2">2</a></span>
+<span class="normal"><a href="#__codelineno-0-3">3</a></span></pre></div></td><td class="code"><div><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1"></a><span class="kd">function</span><span class="w"> </span><span class="nx">sendWelcomeEmail</span><span class="p">(</span><span class="nx">userEmail</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2"></a><span class="w">  </span><span class="c1">// Logic to send a welcome email to a new user</span>
+</span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3"></a><span class="p">}</span>
+</span></code></pre></div></td></tr></table></div>
+<h3 id="bad-example-vague-name">Bad Example (Vague Name)<a class="headerlink" href="#bad-example-vague-name" title="Permanent link">&para;</a></h3>
+<div class="language-js highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-1-1">1</a></span>
+<span class="normal"><a href="#__codelineno-1-2">2</a></span>
+<span class="normal"><a href="#__codelineno-1-3">3</a></span></pre></div></td><td class="code"><div><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1"></a><span class="kd">function</span><span class="w"> </span><span class="nx">handleEmail</span><span class="p">(</span><span class="nx">userEmail</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-1-2"><a id="__codelineno-1-2" name="__codelineno-1-2"></a><span class="w">  </span><span class="c1">// What kind of email? Unclear without reading the implementation</span>
+</span><span id="__span-1-3"><a id="__codelineno-1-3" name="__codelineno-1-3"></a><span class="p">}</span>
+</span></code></pre></div></td></tr></table></div>
+<p>In the good example, <code>sendWelcomeEmail</code> clearly indicates what the function does. In the bad example, <code>handleEmail</code> is vague—it could mean sending, receiving, validating, or logging an email.</p>
+<h3 id="another-good-example">Another Good Example<a class="headerlink" href="#another-good-example" title="Permanent link">&para;</a></h3>
+<div class="language-js highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-2-1">1</a></span>
+<span class="normal"><a href="#__codelineno-2-2">2</a></span>
+<span class="normal"><a href="#__codelineno-2-3">3</a></span></pre></div></td><td class="code"><div><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1"></a><span class="kd">function</span><span class="w"> </span><span class="nx">calculateInvoiceTotal</span><span class="p">(</span><span class="nx">invoiceItems</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-2-2"><a id="__codelineno-2-2" name="__codelineno-2-2"></a><span class="w">  </span><span class="c1">// Logic to sum up item prices, apply taxes or discounts, etc.</span>
+</span><span id="__span-2-3"><a id="__codelineno-2-3" name="__codelineno-2-3"></a><span class="p">}</span>
+</span></code></pre></div></td></tr></table></div>
+<h3 id="another-bad-example">Another Bad Example<a class="headerlink" href="#another-bad-example" title="Permanent link">&para;</a></h3>
+<div class="language-js highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-3-1">1</a></span>
+<span class="normal"><a href="#__codelineno-3-2">2</a></span>
+<span class="normal"><a href="#__codelineno-3-3">3</a></span></pre></div></td><td class="code"><div><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1"></a><span class="kd">function</span><span class="w"> </span><span class="nx">doStuff</span><span class="p">(</span><span class="nx">items</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-3-2"><a id="__codelineno-3-2" name="__codelineno-3-2"></a><span class="w">  </span><span class="c1">// Unclear what &quot;stuff&quot; means—hard to reason about</span>
+</span><span id="__span-3-3"><a id="__codelineno-3-3" name="__codelineno-3-3"></a><span class="p">}</span>
+</span></code></pre></div></td></tr></table></div>
+<h2 id="considerations-for-long-function-names">Considerations for Long Function Names<a class="headerlink" href="#considerations-for-long-function-names" title="Permanent link">&para;</a></h2>
+<p>While descriptive function names are encouraged, excessively long names can make the code harder to read and maintain. Aim for a <strong>balance between clarity and brevity</strong>. For example, <code>getUserFullName</code> is usually better than <code>getTheCompleteFullNameOfAUserFromTheDatabase</code>.</p>
+<p>When in doubt, prioritize <strong>clarity</strong> over shortness—especially if the function is part of a shared or public API.</p>
 
 
 
@@ -1249,10 +1326,10 @@
     
     
       
-      <script id="__config" type="application/json">{"base": ".", "features": ["content.code.annotate", "content.code.copy", "content.tabs.link", "navigation.indexes", "navigation.instant", "navigation.tabs", "navigation.tabs.sticky", "navigation.top", "navigation.tracking", "search.highlight", "search.share", "search.suggest"], "search": "assets/javascripts/workers/search.f8cc74c7.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+      <script id="__config" type="application/json">{"base": "..", "features": ["content.code.annotate", "content.code.copy", "content.tabs.link", "navigation.indexes", "navigation.instant", "navigation.tabs", "navigation.tabs.sticky", "navigation.top", "navigation.tracking", "search.highlight", "search.share", "search.suggest"], "search": "../assets/javascripts/workers/search.f8cc74c7.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
     
     
-      <script src="assets/javascripts/bundle.c8b220af.min.js"></script>
+      <script src="../assets/javascripts/bundle.c8b220af.min.js"></script>
       
     
   </body>

@@ -10,9 +10,13 @@
         <meta name="author" content="Platform Services Team">
       
       
-        <link rel="canonical" href="https://bcgov.github.io/platform-services-registry/poc/security-dashboard.html">
+        <link rel="canonical" href="https://bcgov.github.io/platform-services-registry/clean-code/falsy-check-early.html">
       
       
+        <link rel="prev" href="react-handler-naming.html">
+      
+      
+        <link rel="next" href="small-components-functions.html">
       
       
       <link rel="icon" href="../_assets/logo.png">
@@ -20,7 +24,7 @@
     
     
       
-        <title>Security Dashboard Research - Platform Services Registry</title>
+        <title>Check Falsy Conditions Early - Platform Services Registry</title>
       
     
     
@@ -72,7 +76,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#security-dashboard-research" class="md-skip">
+        <a href="#check-falsy-conditions-early" class="md-skip">
           Skip to content
         </a>
       
@@ -107,7 +111,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              Security Dashboard Research
+              Check Falsy Conditions Early
             
           </span>
         </div>
@@ -189,11 +193,13 @@
   
   
   
+    
+  
   
     
     
-      <li class="md-tabs__item">
-        <a href="../clean-code/return-early.html" class="md-tabs__link">
+      <li class="md-tabs__item md-tabs__item--active">
+        <a href="return-early.html" class="md-tabs__link">
           
   
   
@@ -305,8 +311,10 @@
       
   
   
+    
   
   
+  
     
     
       
@@ -326,17 +334,20 @@
     
     
       
+        
+        
+      
       
     
     
-    <li class="md-nav__item md-nav__item--nested">
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" >
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" checked>
         
           
-          <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="0">
+          <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="">
             
   
   
@@ -349,7 +360,7 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="false">
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="true">
           <label class="md-nav__title" for="__nav_2">
             <span class="md-nav__icon md-icon"></span>
             Clean code
@@ -363,7 +374,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../clean-code/return-early.html" class="md-nav__link">
+      <a href="return-early.html" class="md-nav__link">
         
   
   
@@ -386,7 +397,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../clean-code/descriptive-function-names.html" class="md-nav__link">
+      <a href="descriptive-function-names.html" class="md-nav__link">
         
   
   
@@ -409,7 +420,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../clean-code/react-handler-naming.html" class="md-nav__link">
+      <a href="react-handler-naming.html" class="md-nav__link">
         
   
   
@@ -429,10 +440,32 @@
                 
   
   
+    
   
   
-    <li class="md-nav__item">
-      <a href="../clean-code/falsy-check-early.html" class="md-nav__link">
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    Check Falsy Conditions Early
+    
+  </span>
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="falsy-check-early.html" class="md-nav__link md-nav__link--active">
         
   
   
@@ -443,6 +476,86 @@
   
 
       </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#benefits" class="md-nav__link">
+    <span class="md-ellipsis">
+      Benefits
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#examples" class="md-nav__link">
+    <span class="md-ellipsis">
+      Examples
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Examples">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#good-example-early-falsy-check" class="md-nav__link">
+    <span class="md-ellipsis">
+      Good Example (Early Falsy Check)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#bad-example-avoiding-the-check" class="md-nav__link">
+    <span class="md-ellipsis">
+      Bad Example (Avoiding the Check)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#better-if-you-want-a-fallback-value" class="md-nav__link">
+    <span class="md-ellipsis">
+      Better (If You Want a Fallback Value)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#considerations-for-optional-fields" class="md-nav__link">
+    <span class="md-ellipsis">
+      Considerations for Optional Fields
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
     </li>
   
 
@@ -455,7 +568,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../clean-code/small-components-functions.html" class="md-nav__link">
+      <a href="small-components-functions.html" class="md-nav__link">
         
   
   
@@ -478,7 +591,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../clean-code/utils-helpers-shared-components.html" class="md-nav__link">
+      <a href="utils-helpers-shared-components.html" class="md-nav__link">
         
   
   
@@ -1003,46 +1116,55 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#requirements" class="md-nav__link">
+  <a href="#benefits" class="md-nav__link">
     <span class="md-ellipsis">
-      Requirements
+      Benefits
     </span>
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#proposals" class="md-nav__link">
+  <a href="#examples" class="md-nav__link">
     <span class="md-ellipsis">
-      Proposals
+      Examples
     </span>
   </a>
   
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#sonarqube-deployment" class="md-nav__link">
-    <span class="md-ellipsis">
-      SonarQube Deployment
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#scheduler-runner-deployment" class="md-nav__link">
-    <span class="md-ellipsis">
-      Scheduler Runner Deployment
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="Scheduler Runner Deployment">
+    <nav class="md-nav" aria-label="Examples">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#platform-service-application" class="md-nav__link">
+  <a href="#good-example-early-falsy-check" class="md-nav__link">
     <span class="md-ellipsis">
-      Platform Service Application
+      Good Example (Early Falsy Check)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#bad-example-avoiding-the-check" class="md-nav__link">
+    <span class="md-ellipsis">
+      Bad Example (Avoiding the Check)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#better-if-you-want-a-fallback-value" class="md-nav__link">
+    <span class="md-ellipsis">
+      Better (If You Want a Fallback Value)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#considerations-for-optional-fields" class="md-nav__link">
+    <span class="md-ellipsis">
+      Considerations for Optional Fields
     </span>
   </a>
   
@@ -1072,30 +1194,78 @@
   
 
 
-<h1 id="security-dashboard-research">Security Dashboard Research<a class="headerlink" href="#security-dashboard-research" title="Permanent link">&para;</a></h1>
-<h2 id="requirements">Requirements<a class="headerlink" href="#requirements" title="Permanent link">&para;</a></h2>
-<p>Our primary goal is to enhance the security monitoring of applications deployed on Openshift. To achieve this, we aim to implement both Static Application Security Testing (SAST) and Dynamic Application Security Testing (DAST) processes. Key requirements include:</p>
-<ul>
-<li><code>SAST and DAST Implementation</code>: Utilize tools such as SonarQube for SAST and ZAP (Zed Attack Proxy) for DAST to assess the security status of applications.</li>
-<li><code>Support for Private Repositories</code>: Ensure that the security scanning processes extend support to projects hosted in private repositories.</li>
-</ul>
-<h2 id="proposals">Proposals<a class="headerlink" href="#proposals" title="Permanent link">&para;</a></h2>
-<h2 id="sonarqube-deployment">SonarQube Deployment<a class="headerlink" href="#sonarqube-deployment" title="Permanent link">&para;</a></h2>
-<p>In order to efficiently run and collect security scan results, we propose deploying a dedicated instance of <code>SonarQube</code>. This deployment will serve as a centralized platform for managing and analyzing the security posture of the applications.</p>
-<h2 id="scheduler-runner-deployment">Scheduler Runner Deployment<a class="headerlink" href="#scheduler-runner-deployment" title="Permanent link">&para;</a></h2>
-<p>To facilitate the automation of security scans, we propose the deployment of a custom scheduler runner. This runner should have sufficient privileges to access both public and private repositories, as well as the Openshift cluster's Route objects.</p>
-<p>The scheduler runner will conduct security scans on both the repository codebases and live URLs identified in Openshift Route objects. Following the completion of the scans, the runner will transmit the results to the Platform Service application.</p>
-<h3 id="platform-service-application">Platform Service Application<a class="headerlink" href="#platform-service-application" title="Permanent link">&para;</a></h3>
-<p>To enhance the overall functionality of the security dashboard, we suggest implementing the following updates to the Platform Service application:</p>
-<ul>
+<h1 id="check-falsy-conditions-early">Check Falsy Conditions Early<a class="headerlink" href="#check-falsy-conditions-early" title="Permanent link">&para;</a></h1>
+<p>When working with variables that might be <code>null</code>, <code>undefined</code>, or otherwise falsy, it’s a good practice to check for those cases explicitly and return early. This avoids relying on optional chaining (<code>?.</code>) or other defensive programming techniques that obscure the intent or silently mask potential bugs.</p>
+<p>Instead of allowing code execution to continue when a required value is missing, a clear early return improves <strong>readability</strong>, <strong>safety</strong>, and <strong>debuggability</strong>.</p>
+<h2 id="benefits">Benefits<a class="headerlink" href="#benefits" title="Permanent link">&para;</a></h2>
+<ol>
 <li>
-<p><code>UI Enhancement</code>: Revise the user interface to incorporate a feature allowing users to input <code>repository URLs</code>, thereby enabling Static Application Security Testing (SAST) through SonarQube.</p>
+<p><code>Improved Readability</code>: The intent is clearer when you check for invalid conditions early. The reader immediately knows you're guarding against a falsy value.</p>
 </li>
 <li>
-<p><code>Result Storage Endpoint</code>: Introduce a new endpoint in the application to receive and store the scanning results generated by the <code>scheduler runner</code>. This endpoint will play a crucial role in maintaining a comprehensive database of security information.</p>
+<p><code>Avoids Silent Failures</code>: Optional chaining can hide errors that should be handled explicitly—especially when a value is <em>expected</em> to exist.</p>
 </li>
-</ul>
-<p>By implementing these proposals, we aim to establish a robust and automated security monitoring system that not only supports the latest security testing methodologies but also provides a seamless and user-friendly experience for managing and analyzing security scan results.</p>
+<li>
+<p><code>Cleaner Expressions</code>: Returning early keeps the remaining logic free from unnecessary safety checks, making the main flow more readable.</p>
+</li>
+<li>
+<p><code>Better Debugging</code>: It's easier to trace why a function exited early than to track down <code>undefined</code> values in deeply nested optional expressions.</p>
+</li>
+<li>
+<p><code>Explicit Intent</code>: You make it clear what you're checking for and what conditions are considered invalid.</p>
+</li>
+</ol>
+<h2 id="examples">Examples<a class="headerlink" href="#examples" title="Permanent link">&para;</a></h2>
+<h3 id="good-example-early-falsy-check">Good Example (Early Falsy Check)<a class="headerlink" href="#good-example-early-falsy-check" title="Permanent link">&para;</a></h3>
+<div class="language-js highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-0-1">1</a></span>
+<span class="normal"><a href="#__codelineno-0-2">2</a></span>
+<span class="normal"><a href="#__codelineno-0-3">3</a></span>
+<span class="normal"><a href="#__codelineno-0-4">4</a></span>
+<span class="normal"><a href="#__codelineno-0-5">5</a></span>
+<span class="normal"><a href="#__codelineno-0-6">6</a></span>
+<span class="normal"><a href="#__codelineno-0-7">7</a></span></pre></div></td><td class="code"><div><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1"></a><span class="kd">function</span><span class="w"> </span><span class="nx">getUserDisplayName</span><span class="p">(</span><span class="nx">user</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2"></a><span class="w">  </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="o">!</span><span class="nx">user</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3"></a><span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="s1">&#39;&#39;</span><span class="p">;</span>
+</span><span id="__span-0-4"><a id="__codelineno-0-4" name="__codelineno-0-4"></a><span class="w">  </span><span class="p">}</span>
+</span><span id="__span-0-5"><a id="__codelineno-0-5" name="__codelineno-0-5"></a>
+</span><span id="__span-0-6"><a id="__codelineno-0-6" name="__codelineno-0-6"></a><span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="sb">`</span><span class="si">${</span><span class="nx">user</span><span class="p">.</span><span class="nx">firstname</span><span class="si">}</span><span class="sb"> </span><span class="si">${</span><span class="nx">user</span><span class="p">.</span><span class="nx">lastname</span><span class="si">}</span><span class="sb">`</span><span class="p">;</span>
+</span><span id="__span-0-7"><a id="__codelineno-0-7" name="__codelineno-0-7"></a><span class="p">}</span>
+</span></code></pre></div></td></tr></table></div>
+<h3 id="bad-example-avoiding-the-check">Bad Example (Avoiding the Check)<a class="headerlink" href="#bad-example-avoiding-the-check" title="Permanent link">&para;</a></h3>
+<div class="language-js highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-1-1">1</a></span>
+<span class="normal"><a href="#__codelineno-1-2">2</a></span>
+<span class="normal"><a href="#__codelineno-1-3">3</a></span></pre></div></td><td class="code"><div><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1"></a><span class="kd">function</span><span class="w"> </span><span class="nx">getUserDisplayName</span><span class="p">(</span><span class="nx">user</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-1-2"><a id="__codelineno-1-2" name="__codelineno-1-2"></a><span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="sb">`</span><span class="si">${</span><span class="nx">user</span><span class="o">?</span><span class="p">.</span><span class="nx">firstname</span><span class="si">}</span><span class="sb"> </span><span class="si">${</span><span class="nx">user</span><span class="o">?</span><span class="p">.</span><span class="nx">lastname</span><span class="si">}</span><span class="sb">`</span><span class="p">;</span>
+</span><span id="__span-1-3"><a id="__codelineno-1-3" name="__codelineno-1-3"></a><span class="p">}</span>
+</span></code></pre></div></td></tr></table></div>
+<p>In the bad example, the use of optional chaining hides the fact that <code>user</code> might be missing entirely. If <code>user</code> is required for this function to make sense, it’s better to fail fast or exit early.</p>
+<h3 id="better-if-you-want-a-fallback-value">Better (If You Want a Fallback Value)<a class="headerlink" href="#better-if-you-want-a-fallback-value" title="Permanent link">&para;</a></h3>
+<div class="language-js highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-2-1">1</a></span>
+<span class="normal"><a href="#__codelineno-2-2">2</a></span>
+<span class="normal"><a href="#__codelineno-2-3">3</a></span>
+<span class="normal"><a href="#__codelineno-2-4">4</a></span>
+<span class="normal"><a href="#__codelineno-2-5">5</a></span>
+<span class="normal"><a href="#__codelineno-2-6">6</a></span>
+<span class="normal"><a href="#__codelineno-2-7">7</a></span></pre></div></td><td class="code"><div><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1"></a><span class="kd">function</span><span class="w"> </span><span class="nx">getUserDisplayName</span><span class="p">(</span><span class="nx">user</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-2-2"><a id="__codelineno-2-2" name="__codelineno-2-2"></a><span class="w">  </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="o">!</span><span class="nx">user</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-2-3"><a id="__codelineno-2-3" name="__codelineno-2-3"></a><span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="s1">&#39;Unknown User&#39;</span><span class="p">;</span>
+</span><span id="__span-2-4"><a id="__codelineno-2-4" name="__codelineno-2-4"></a><span class="w">  </span><span class="p">}</span>
+</span><span id="__span-2-5"><a id="__codelineno-2-5" name="__codelineno-2-5"></a>
+</span><span id="__span-2-6"><a id="__codelineno-2-6" name="__codelineno-2-6"></a><span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="sb">`</span><span class="si">${</span><span class="nx">user</span><span class="p">.</span><span class="nx">firstname</span><span class="si">}</span><span class="sb"> </span><span class="si">${</span><span class="nx">user</span><span class="p">.</span><span class="nx">lastname</span><span class="si">}</span><span class="sb">`</span><span class="p">;</span>
+</span><span id="__span-2-7"><a id="__codelineno-2-7" name="__codelineno-2-7"></a><span class="p">}</span>
+</span></code></pre></div></td></tr></table></div>
+<h3 id="considerations-for-optional-fields">Considerations for Optional Fields<a class="headerlink" href="#considerations-for-optional-fields" title="Permanent link">&para;</a></h3>
+<p>If you are dealing with optional <em>fields</em> inside an object (not the object itself), optional chaining can still be appropriate. However, use it sparingly and only when it's truly optional, not when you're trying to gloss over missing data that should be handled explicitly.</p>
+<div class="language-js highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-3-1">1</a></span>
+<span class="normal"><a href="#__codelineno-3-2">2</a></span>
+<span class="normal"><a href="#__codelineno-3-3">3</a></span>
+<span class="normal"><a href="#__codelineno-3-4">4</a></span>
+<span class="normal"><a href="#__codelineno-3-5">5</a></span></pre></div></td><td class="code"><div><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1"></a><span class="kd">function</span><span class="w"> </span><span class="nx">getUserLocation</span><span class="p">(</span><span class="nx">user</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-3-2"><a id="__codelineno-3-2" name="__codelineno-3-2"></a><span class="w">  </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="o">!</span><span class="nx">user</span><span class="p">)</span><span class="w"> </span><span class="k">return</span><span class="p">;</span>
+</span><span id="__span-3-3"><a id="__codelineno-3-3" name="__codelineno-3-3"></a>
+</span><span id="__span-3-4"><a id="__codelineno-3-4" name="__codelineno-3-4"></a><span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="nx">user</span><span class="p">.</span><span class="nx">address</span><span class="o">?</span><span class="p">.</span><span class="nx">city</span><span class="w"> </span><span class="o">||</span><span class="w"> </span><span class="s1">&#39;City unknown&#39;</span><span class="p">;</span>
+</span><span id="__span-3-5"><a id="__codelineno-3-5" name="__codelineno-3-5"></a><span class="p">}</span>
+</span></code></pre></div></td></tr></table></div>
 
 
 

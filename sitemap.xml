@@ -2,82 +2,102 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
     <url>
          <loc>https://bcgov.github.io/platform-services-registry/index.html</loc>
-         <lastmod>2025-04-14</lastmod>
+         <lastmod>2025-04-15</lastmod>
     </url>
     <url>
          <loc>https://bcgov.github.io/platform-services-registry/api-testing.html</loc>
-         <lastmod>2025-04-14</lastmod>
+         <lastmod>2025-04-15</lastmod>
     </url>
     <url>
          <loc>https://bcgov.github.io/platform-services-registry/bot-pr-review.html</loc>
-         <lastmod>2025-04-14</lastmod>
+         <lastmod>2025-04-15</lastmod>
     </url>
     <url>
          <loc>https://bcgov.github.io/platform-services-registry/ci-cd.html</loc>
-         <lastmod>2025-04-14</lastmod>
+         <lastmod>2025-04-15</lastmod>
     </url>
     <url>
          <loc>https://bcgov.github.io/platform-services-registry/database.html</loc>
-         <lastmod>2025-04-14</lastmod>
+         <lastmod>2025-04-15</lastmod>
     </url>
     <url>
          <loc>https://bcgov.github.io/platform-services-registry/debug-deployments.html</loc>
-         <lastmod>2025-04-14</lastmod>
+         <lastmod>2025-04-15</lastmod>
     </url>
     <url>
          <loc>https://bcgov.github.io/platform-services-registry/developer-guide.html</loc>
-         <lastmod>2025-04-14</lastmod>
+         <lastmod>2025-04-15</lastmod>
     </url>
     <url>
          <loc>https://bcgov.github.io/platform-services-registry/email-scenarios-private-cloud.html</loc>
-         <lastmod>2025-04-14</lastmod>
+         <lastmod>2025-04-15</lastmod>
     </url>
     <url>
          <loc>https://bcgov.github.io/platform-services-registry/email-scenarios-public-cloud.html</loc>
-         <lastmod>2025-04-14</lastmod>
+         <lastmod>2025-04-15</lastmod>
     </url>
     <url>
          <loc>https://bcgov.github.io/platform-services-registry/emou-workflow.html</loc>
-         <lastmod>2025-04-14</lastmod>
+         <lastmod>2025-04-15</lastmod>
     </url>
     <url>
          <loc>https://bcgov.github.io/platform-services-registry/git-tips.html</loc>
-         <lastmod>2025-04-14</lastmod>
+         <lastmod>2025-04-15</lastmod>
     </url>
     <url>
          <loc>https://bcgov.github.io/platform-services-registry/onboarding-offboarding.html</loc>
-         <lastmod>2025-04-14</lastmod>
+         <lastmod>2025-04-15</lastmod>
     </url>
     <url>
          <loc>https://bcgov.github.io/platform-services-registry/react-email.html</loc>
-         <lastmod>2025-04-14</lastmod>
+         <lastmod>2025-04-15</lastmod>
     </url>
     <url>
          <loc>https://bcgov.github.io/platform-services-registry/resource-metrics.html</loc>
-         <lastmod>2025-04-14</lastmod>
+         <lastmod>2025-04-15</lastmod>
     </url>
     <url>
          <loc>https://bcgov.github.io/platform-services-registry/rocketchat-notifications.html</loc>
-         <lastmod>2025-04-14</lastmod>
+         <lastmod>2025-04-15</lastmod>
     </url>
     <url>
          <loc>https://bcgov.github.io/platform-services-registry/selecting-image-scanner.html</loc>
-         <lastmod>2025-04-14</lastmod>
+         <lastmod>2025-04-15</lastmod>
     </url>
     <url>
          <loc>https://bcgov.github.io/platform-services-registry/team-conventions.html</loc>
-         <lastmod>2025-04-14</lastmod>
+         <lastmod>2025-04-15</lastmod>
     </url>
     <url>
          <loc>https://bcgov.github.io/platform-services-registry/terraform.html</loc>
-         <lastmod>2025-04-14</lastmod>
+         <lastmod>2025-04-15</lastmod>
     </url>
     <url>
-         <loc>https://bcgov.github.io/platform-services-registry/clean-codes/return-early.html</loc>
-         <lastmod>2025-04-14</lastmod>
+         <loc>https://bcgov.github.io/platform-services-registry/clean-code/descriptive-function-names.html</loc>
+         <lastmod>2025-04-15</lastmod>
+    </url>
+    <url>
+         <loc>https://bcgov.github.io/platform-services-registry/clean-code/falsy-check-early.html</loc>
+         <lastmod>2025-04-15</lastmod>
+    </url>
+    <url>
+         <loc>https://bcgov.github.io/platform-services-registry/clean-code/react-handler-naming.html</loc>
+         <lastmod>2025-04-15</lastmod>
+    </url>
+    <url>
+         <loc>https://bcgov.github.io/platform-services-registry/clean-code/return-early.html</loc>
+         <lastmod>2025-04-15</lastmod>
+    </url>
+    <url>
+         <loc>https://bcgov.github.io/platform-services-registry/clean-code/small-components-functions.html</loc>
+         <lastmod>2025-04-15</lastmod>
+    </url>
+    <url>
+         <loc>https://bcgov.github.io/platform-services-registry/clean-code/utils-helpers-shared-components.html</loc>
+         <lastmod>2025-04-15</lastmod>
     </url>
     <url>
          <loc>https://bcgov.github.io/platform-services-registry/poc/security-dashboard.html</loc>
-         <lastmod>2025-04-14</lastmod>
+         <lastmod>2025-04-15</lastmod>
     </url>
 </urlset>

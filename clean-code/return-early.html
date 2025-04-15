@@ -10,9 +10,13 @@
         <meta name="author" content="Platform Services Team">
       
       
-        <link rel="canonical" href="https://bcgov.github.io/platform-services-registry/poc/security-dashboard.html">
+        <link rel="canonical" href="https://bcgov.github.io/platform-services-registry/clean-code/return-early.html">
       
       
+        <link rel="prev" href="../index.html">
+      
+      
+        <link rel="next" href="descriptive-function-names.html">
       
       
       <link rel="icon" href="../_assets/logo.png">
@@ -20,7 +24,7 @@
     
     
       
-        <title>Security Dashboard Research - Platform Services Registry</title>
+        <title>Return Early Pattern - Platform Services Registry</title>
       
     
     
@@ -72,7 +76,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#security-dashboard-research" class="md-skip">
+        <a href="#return-early-pattern" class="md-skip">
           Skip to content
         </a>
       
@@ -107,7 +111,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              Security Dashboard Research
+              Return Early Pattern
             
           </span>
         </div>
@@ -189,11 +193,13 @@
   
   
   
+    
+  
   
     
     
-      <li class="md-tabs__item">
-        <a href="../clean-code/return-early.html" class="md-tabs__link">
+      <li class="md-tabs__item md-tabs__item--active">
+        <a href="return-early.html" class="md-tabs__link">
           
   
   
@@ -305,8 +311,10 @@
       
   
   
+    
   
   
+  
     
     
       
@@ -326,17 +334,20 @@
     
     
       
+        
+        
+      
       
     
     
-    <li class="md-nav__item md-nav__item--nested">
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" >
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" checked>
         
           
-          <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="0">
+          <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="">
             
   
   
@@ -349,7 +360,7 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="false">
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="true">
           <label class="md-nav__title" for="__nav_2">
             <span class="md-nav__icon md-icon"></span>
             Clean code
@@ -360,10 +371,32 @@
                 
   
   
+    
   
   
-    <li class="md-nav__item">
-      <a href="../clean-code/return-early.html" class="md-nav__link">
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    Return Early Pattern
+    
+  </span>
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="return-early.html" class="md-nav__link md-nav__link--active">
         
   
   
@@ -374,6 +407,77 @@
   
 
       </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#benefits" class="md-nav__link">
+    <span class="md-ellipsis">
+      Benefits
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#examples" class="md-nav__link">
+    <span class="md-ellipsis">
+      Examples
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Examples">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#good-example-using-return-early-pattern" class="md-nav__link">
+    <span class="md-ellipsis">
+      Good Example (Using "Return Early" Pattern)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#bad-example-without-return-early-pattern" class="md-nav__link">
+    <span class="md-ellipsis">
+      Bad Example (Without "Return Early" Pattern)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#considerations-for-complex-control-flow" class="md-nav__link">
+    <span class="md-ellipsis">
+      Considerations for Complex Control Flow
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
     </li>
   
 
@@ -386,7 +490,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../clean-code/descriptive-function-names.html" class="md-nav__link">
+      <a href="descriptive-function-names.html" class="md-nav__link">
         
   
   
@@ -409,7 +513,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../clean-code/react-handler-naming.html" class="md-nav__link">
+      <a href="react-handler-naming.html" class="md-nav__link">
         
   
   
@@ -432,7 +536,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../clean-code/falsy-check-early.html" class="md-nav__link">
+      <a href="falsy-check-early.html" class="md-nav__link">
         
   
   
@@ -455,7 +559,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../clean-code/small-components-functions.html" class="md-nav__link">
+      <a href="small-components-functions.html" class="md-nav__link">
         
   
   
@@ -478,7 +582,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../clean-code/utils-helpers-shared-components.html" class="md-nav__link">
+      <a href="utils-helpers-shared-components.html" class="md-nav__link">
         
   
   
@@ -1003,46 +1107,46 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#requirements" class="md-nav__link">
+  <a href="#benefits" class="md-nav__link">
     <span class="md-ellipsis">
-      Requirements
+      Benefits
     </span>
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#proposals" class="md-nav__link">
+  <a href="#examples" class="md-nav__link">
     <span class="md-ellipsis">
-      Proposals
+      Examples
     </span>
   </a>
   
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#sonarqube-deployment" class="md-nav__link">
-    <span class="md-ellipsis">
-      SonarQube Deployment
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#scheduler-runner-deployment" class="md-nav__link">
-    <span class="md-ellipsis">
-      Scheduler Runner Deployment
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="Scheduler Runner Deployment">
+    <nav class="md-nav" aria-label="Examples">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#platform-service-application" class="md-nav__link">
+  <a href="#good-example-using-return-early-pattern" class="md-nav__link">
     <span class="md-ellipsis">
-      Platform Service Application
+      Good Example (Using "Return Early" Pattern)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#bad-example-without-return-early-pattern" class="md-nav__link">
+    <span class="md-ellipsis">
+      Bad Example (Without "Return Early" Pattern)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#considerations-for-complex-control-flow" class="md-nav__link">
+    <span class="md-ellipsis">
+      Considerations for Complex Control Flow
     </span>
   </a>
   
@@ -1072,30 +1176,97 @@
   
 
 
-<h1 id="security-dashboard-research">Security Dashboard Research<a class="headerlink" href="#security-dashboard-research" title="Permanent link">&para;</a></h1>
-<h2 id="requirements">Requirements<a class="headerlink" href="#requirements" title="Permanent link">&para;</a></h2>
-<p>Our primary goal is to enhance the security monitoring of applications deployed on Openshift. To achieve this, we aim to implement both Static Application Security Testing (SAST) and Dynamic Application Security Testing (DAST) processes. Key requirements include:</p>
-<ul>
-<li><code>SAST and DAST Implementation</code>: Utilize tools such as SonarQube for SAST and ZAP (Zed Attack Proxy) for DAST to assess the security status of applications.</li>
-<li><code>Support for Private Repositories</code>: Ensure that the security scanning processes extend support to projects hosted in private repositories.</li>
-</ul>
-<h2 id="proposals">Proposals<a class="headerlink" href="#proposals" title="Permanent link">&para;</a></h2>
-<h2 id="sonarqube-deployment">SonarQube Deployment<a class="headerlink" href="#sonarqube-deployment" title="Permanent link">&para;</a></h2>
-<p>In order to efficiently run and collect security scan results, we propose deploying a dedicated instance of <code>SonarQube</code>. This deployment will serve as a centralized platform for managing and analyzing the security posture of the applications.</p>
-<h2 id="scheduler-runner-deployment">Scheduler Runner Deployment<a class="headerlink" href="#scheduler-runner-deployment" title="Permanent link">&para;</a></h2>
-<p>To facilitate the automation of security scans, we propose the deployment of a custom scheduler runner. This runner should have sufficient privileges to access both public and private repositories, as well as the Openshift cluster's Route objects.</p>
-<p>The scheduler runner will conduct security scans on both the repository codebases and live URLs identified in Openshift Route objects. Following the completion of the scans, the runner will transmit the results to the Platform Service application.</p>
-<h3 id="platform-service-application">Platform Service Application<a class="headerlink" href="#platform-service-application" title="Permanent link">&para;</a></h3>
-<p>To enhance the overall functionality of the security dashboard, we suggest implementing the following updates to the Platform Service application:</p>
-<ul>
+<h1 id="return-early-pattern">Return Early Pattern<a class="headerlink" href="#return-early-pattern" title="Permanent link">&para;</a></h1>
+<p>The <code>Return Early</code> pattern for functions is a programming practice where you structure your code in such a way that you check for certain conditions at the beginning of a function and return immediately if those conditions are met. This pattern is often used to improve code readability, reduce nesting, and make the code more concise.</p>
+<h2 id="benefits">Benefits<a class="headerlink" href="#benefits" title="Permanent link">&para;</a></h2>
+<p>Here are some benefits of using the <code>Return Early</code> pattern:</p>
+<ol>
 <li>
-<p><code>UI Enhancement</code>: Revise the user interface to incorporate a feature allowing users to input <code>repository URLs</code>, thereby enabling Static Application Security Testing (SAST) through SonarQube.</p>
+<p><code>Improved Readability</code>: By checking for special cases or error conditions at the beginning of a function and returning early, you make the code easier to read and understand. Developers can quickly grasp the main flow of the function without getting bogged down in nested if statements.</p>
 </li>
 <li>
-<p><code>Result Storage Endpoint</code>: Introduce a new endpoint in the application to receive and store the scanning results generated by the <code>scheduler runner</code>. This endpoint will play a crucial role in maintaining a comprehensive database of security information.</p>
+<p><code>Reduced Nesting</code>: Avoiding deep nesting of if statements or other control structures makes the code more readable and less prone to errors. Each early return eliminates a level of indentation, making the code flatter and easier to follow.</p>
 </li>
-</ul>
-<p>By implementing these proposals, we aim to establish a robust and automated security monitoring system that not only supports the latest security testing methodologies but also provides a seamless and user-friendly experience for managing and analyzing security scan results.</p>
+<li>
+<p><code>Faster Execution</code>: In some cases, the <code>Return Early</code> pattern can lead to faster execution. If the function encounters a condition that allows it to exit early, it doesn't need to execute the rest of the code. This can be beneficial for performance, especially in situations where the conditions for early return are frequently met.</p>
+</li>
+<li>
+<p><code>Easier Maintenance</code>: Code that follows the <code>Return Early</code> pattern is often easier to maintain. When you need to make changes or add new features, you can focus on specific sections of the function without having to understand the entire flow. This can lead to more modular and maintainable code.</p>
+</li>
+<li>
+<p><code>Clearer Intent</code>: The pattern helps express the intent of the code more clearly. When you check for special cases first and return early, it highlights the primary path of the function. This can be helpful for anyone reading the code, including the original developer and others who may need to maintain or debug the code later.</p>
+</li>
+</ol>
+<h2 id="examples">Examples<a class="headerlink" href="#examples" title="Permanent link">&para;</a></h2>
+<h3 id="good-example-using-return-early-pattern">Good Example (Using "Return Early" Pattern)<a class="headerlink" href="#good-example-using-return-early-pattern" title="Permanent link">&para;</a></h3>
+<div class="language-js highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-0-1"> 1</a></span>
+<span class="normal"><a href="#__codelineno-0-2"> 2</a></span>
+<span class="normal"><a href="#__codelineno-0-3"> 3</a></span>
+<span class="normal"><a href="#__codelineno-0-4"> 4</a></span>
+<span class="normal"><a href="#__codelineno-0-5"> 5</a></span>
+<span class="normal"><a href="#__codelineno-0-6"> 6</a></span>
+<span class="normal"><a href="#__codelineno-0-7"> 7</a></span>
+<span class="normal"><a href="#__codelineno-0-8"> 8</a></span>
+<span class="normal"><a href="#__codelineno-0-9"> 9</a></span>
+<span class="normal"><a href="#__codelineno-0-10">10</a></span>
+<span class="normal"><a href="#__codelineno-0-11">11</a></span>
+<span class="normal"><a href="#__codelineno-0-12">12</a></span>
+<span class="normal"><a href="#__codelineno-0-13">13</a></span></pre></div></td><td class="code"><div><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1"></a><span class="kd">function</span><span class="w"> </span><span class="nx">calculateTotal</span><span class="p">(</span><span class="nx">price</span><span class="p">,</span><span class="w"> </span><span class="nx">quantity</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2"></a><span class="w">  </span><span class="c1">// Check for invalid inputs</span>
+</span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3"></a><span class="w">  </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="nx">price</span><span class="w"> </span><span class="o">&lt;=</span><span class="w"> </span><span class="mf">0</span><span class="w"> </span><span class="o">||</span><span class="w"> </span><span class="nx">quantity</span><span class="w"> </span><span class="o">&lt;=</span><span class="w"> </span><span class="mf">0</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-0-4"><a id="__codelineno-0-4" name="__codelineno-0-4"></a><span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="mf">0</span><span class="p">;</span><span class="w"> </span><span class="c1">// Return early if inputs are invalid</span>
+</span><span id="__span-0-5"><a id="__codelineno-0-5" name="__codelineno-0-5"></a><span class="w">  </span><span class="p">}</span>
+</span><span id="__span-0-6"><a id="__codelineno-0-6" name="__codelineno-0-6"></a>
+</span><span id="__span-0-7"><a id="__codelineno-0-7" name="__codelineno-0-7"></a><span class="w">  </span><span class="c1">// Main calculation</span>
+</span><span id="__span-0-8"><a id="__codelineno-0-8" name="__codelineno-0-8"></a><span class="w">  </span><span class="kd">let</span><span class="w"> </span><span class="nx">total</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">price</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="nx">quantity</span><span class="p">;</span>
+</span><span id="__span-0-9"><a id="__codelineno-0-9" name="__codelineno-0-9"></a>
+</span><span id="__span-0-10"><a id="__codelineno-0-10" name="__codelineno-0-10"></a><span class="w">  </span><span class="c1">// Additional calculations or logic</span>
+</span><span id="__span-0-11"><a id="__codelineno-0-11" name="__codelineno-0-11"></a>
+</span><span id="__span-0-12"><a id="__codelineno-0-12" name="__codelineno-0-12"></a><span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="nx">total</span><span class="p">;</span>
+</span><span id="__span-0-13"><a id="__codelineno-0-13" name="__codelineno-0-13"></a><span class="p">}</span>
+</span></code></pre></div></td></tr></table></div>
+<h3 id="bad-example-without-return-early-pattern">Bad Example (Without "Return Early" Pattern)<a class="headerlink" href="#bad-example-without-return-early-pattern" title="Permanent link">&para;</a></h3>
+<div class="language-js highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-1-1"> 1</a></span>
+<span class="normal"><a href="#__codelineno-1-2"> 2</a></span>
+<span class="normal"><a href="#__codelineno-1-3"> 3</a></span>
+<span class="normal"><a href="#__codelineno-1-4"> 4</a></span>
+<span class="normal"><a href="#__codelineno-1-5"> 5</a></span>
+<span class="normal"><a href="#__codelineno-1-6"> 6</a></span>
+<span class="normal"><a href="#__codelineno-1-7"> 7</a></span>
+<span class="normal"><a href="#__codelineno-1-8"> 8</a></span>
+<span class="normal"><a href="#__codelineno-1-9"> 9</a></span>
+<span class="normal"><a href="#__codelineno-1-10">10</a></span>
+<span class="normal"><a href="#__codelineno-1-11">11</a></span>
+<span class="normal"><a href="#__codelineno-1-12">12</a></span>
+<span class="normal"><a href="#__codelineno-1-13">13</a></span>
+<span class="normal"><a href="#__codelineno-1-14">14</a></span>
+<span class="normal"><a href="#__codelineno-1-15">15</a></span>
+<span class="normal"><a href="#__codelineno-1-16">16</a></span>
+<span class="normal"><a href="#__codelineno-1-17">17</a></span>
+<span class="normal"><a href="#__codelineno-1-18">18</a></span>
+<span class="normal"><a href="#__codelineno-1-19">19</a></span></pre></div></td><td class="code"><div><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1"></a><span class="kd">function</span><span class="w"> </span><span class="nx">calculateTotal</span><span class="p">(</span><span class="nx">price</span><span class="p">,</span><span class="w"> </span><span class="nx">quantity</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-1-2"><a id="__codelineno-1-2" name="__codelineno-1-2"></a><span class="w">  </span><span class="c1">// No &quot;Return Early&quot; pattern, using nested if statements</span>
+</span><span id="__span-1-3"><a id="__codelineno-1-3" name="__codelineno-1-3"></a>
+</span><span id="__span-1-4"><a id="__codelineno-1-4" name="__codelineno-1-4"></a><span class="w">  </span><span class="c1">// Check for invalid inputs</span>
+</span><span id="__span-1-5"><a id="__codelineno-1-5" name="__codelineno-1-5"></a><span class="w">  </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="nx">price</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="mf">0</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-1-6"><a id="__codelineno-1-6" name="__codelineno-1-6"></a><span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="nx">quantity</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="mf">0</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-1-7"><a id="__codelineno-1-7" name="__codelineno-1-7"></a><span class="w">      </span><span class="c1">// Main calculation</span>
+</span><span id="__span-1-8"><a id="__codelineno-1-8" name="__codelineno-1-8"></a><span class="w">      </span><span class="kd">let</span><span class="w"> </span><span class="nx">total</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">price</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="nx">quantity</span><span class="p">;</span>
+</span><span id="__span-1-9"><a id="__codelineno-1-9" name="__codelineno-1-9"></a>
+</span><span id="__span-1-10"><a id="__codelineno-1-10" name="__codelineno-1-10"></a><span class="w">      </span><span class="c1">// Additional calculations or logic</span>
+</span><span id="__span-1-11"><a id="__codelineno-1-11" name="__codelineno-1-11"></a>
+</span><span id="__span-1-12"><a id="__codelineno-1-12" name="__codelineno-1-12"></a><span class="w">      </span><span class="k">return</span><span class="w"> </span><span class="nx">total</span><span class="p">;</span>
+</span><span id="__span-1-13"><a id="__codelineno-1-13" name="__codelineno-1-13"></a><span class="w">    </span><span class="p">}</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-1-14"><a id="__codelineno-1-14" name="__codelineno-1-14"></a><span class="w">      </span><span class="k">return</span><span class="w"> </span><span class="mf">0</span><span class="p">;</span><span class="w"> </span><span class="c1">// Return if quantity is invalid</span>
+</span><span id="__span-1-15"><a id="__codelineno-1-15" name="__codelineno-1-15"></a><span class="w">    </span><span class="p">}</span>
+</span><span id="__span-1-16"><a id="__codelineno-1-16" name="__codelineno-1-16"></a><span class="w">  </span><span class="p">}</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-1-17"><a id="__codelineno-1-17" name="__codelineno-1-17"></a><span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="mf">0</span><span class="p">;</span><span class="w"> </span><span class="c1">// Return if price is invalid</span>
+</span><span id="__span-1-18"><a id="__codelineno-1-18" name="__codelineno-1-18"></a><span class="w">  </span><span class="p">}</span>
+</span><span id="__span-1-19"><a id="__codelineno-1-19" name="__codelineno-1-19"></a><span class="p">}</span>
+</span></code></pre></div></td></tr></table></div>
+<p>In the bad example, the absence of the <code>Return Early</code> pattern leads to nested if statements. This can make the code harder to read and understand, especially as the complexity of the function increases. The good example using the <code>Return Early</code> pattern is more concise, readable, and easier to maintain. It avoids unnecessary nesting and clearly expresses the main flow of the function.</p>
+<h3 id="considerations-for-complex-control-flow">Considerations for Complex Control Flow<a class="headerlink" href="#considerations-for-complex-control-flow" title="Permanent link">&para;</a></h3>
+<p>In scenarios where a function exhibits highly complex control flow with multiple conditions and branches, it might be advisable to exercise caution in employing the <code>Early Return</code> pattern. Excessive use in such cases could lead to fragmented and less readable code. Striking a balance by maintaining a structured flow with fewer early returns may be more appropriate in such intricate contexts.</p>
 
 
 
