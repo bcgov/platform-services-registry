@@ -59,9 +59,9 @@ function createClientPage<TPathParams extends ZodType<any, any>, TQueryParams ex
       function handleAccessRedirect() {
         if (status === 'unauthenticated') {
           localStorage.setItem('postLoginRedirect', pathname);
-          return null;
+        } else {
+          router.push(fallbackUrl);
         }
-        return router.push(fallbackUrl);
       }
 
       if (session?.requiresRelogin) appSignOut();
@@ -77,6 +77,7 @@ function createClientPage<TPathParams extends ZodType<any, any>, TQueryParams ex
         const allowed = arrayIntersection(roles, _roles).length > 0;
         if (!allowed) {
           handleAccessRedirect();
+          return;
         }
       }
 
@@ -85,6 +86,7 @@ function createClientPage<TPathParams extends ZodType<any, any>, TQueryParams ex
         const allowed = permissions.some((permKey) => _permissions[permKey as keyof typeof _permissions]);
         if (!allowed) {
           handleAccessRedirect();
+          return;
         }
       }
 
@@ -95,6 +97,7 @@ function createClientPage<TPathParams extends ZodType<any, any>, TQueryParams ex
           const parsed = validations?.pathParams.safeParse(params);
           if (!parsed.success) {
             handleAccessRedirect();
+            return;
           }
 
           return parsed.data;
@@ -111,6 +114,7 @@ function createClientPage<TPathParams extends ZodType<any, any>, TQueryParams ex
           const parsed = validations?.queryParams.safeParse(query);
           if (!parsed.success) {
             handleAccessRedirect();
+            return;
           }
 
           return parsed.data;
