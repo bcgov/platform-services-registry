@@ -1,7 +1,7 @@
 import { Session } from 'next-auth';
 import { AUTH_RELM } from '@/config';
-import { OkResponse, BadRequestResponse } from '@/core/responses';
-import { getKcAdminClient, findClient } from '@/services/keycloak/app-realm';
+import { OkResponse } from '@/core/responses';
+import { getKcAdminClient } from '@/services/keycloak/app-realm';
 
 export default async function getOp({ id, session }: { id: string; session: Session }) {
   const kcAdminClient = await getKcAdminClient();

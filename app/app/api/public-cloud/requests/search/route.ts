@@ -1,4 +1,3 @@
-import _isString from 'lodash-es/isString';
 import { GlobalRole } from '@/constants';
 import createApiHandler from '@/core/api-handler';
 import { OkResponse } from '@/core/responses';

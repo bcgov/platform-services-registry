@@ -3,7 +3,7 @@ import { z } from 'zod';
 import createApiHandler from '@/core/api-handler';
 import { logger } from '@/core/logging';
 import prisma from '@/core/prisma';
-import { NotFoundResponse, OkResponse, UnprocessableEntityResponse } from '@/core/responses';
+import { NotFoundResponse, OkResponse } from '@/core/responses';
 import { sendRequestCompletionEmails } from '@/services/ches/public-cloud';
 import { models, publicCloudRequestDetailInclude } from '@/services/db';
 import { upsertPublicCloudBillings } from '@/services/db/public-cloud-billing';

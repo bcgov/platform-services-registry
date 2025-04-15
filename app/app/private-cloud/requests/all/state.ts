@@ -1,5 +1,5 @@
 import { DecisionStatus } from '@prisma/client';
-import { proxy, useSnapshot } from 'valtio';
+import { proxy } from 'valtio';
 import { requestSorts } from '@/constants';
 import { PrivateCloudRequestSearchBody } from '@/validation-schemas/private-cloud';
 

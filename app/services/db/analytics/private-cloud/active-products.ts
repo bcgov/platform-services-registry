@@ -1,5 +1,4 @@
 import { Cluster, RequestType, DecisionStatus } from '@prisma/client';
-import _forEach from 'lodash-es/forEach';
 import _uniq from 'lodash-es/uniq';
 import { clusters } from '@/constants';
 import prisma from '@/core/prisma';

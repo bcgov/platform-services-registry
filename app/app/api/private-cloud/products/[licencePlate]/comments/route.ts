@@ -1,7 +1,7 @@
 import { z } from 'zod';
 import { GlobalRole, GlobalPermissions } from '@/constants';
 import createApiHandler from '@/core/api-handler';
-import { CreatedResponse, OkResponse, BadRequestResponse } from '@/core/responses';
+import { CreatedResponse, OkResponse } from '@/core/responses';
 import { createOp } from './_operations/create';
 import { listOp } from './_operations/list';
 

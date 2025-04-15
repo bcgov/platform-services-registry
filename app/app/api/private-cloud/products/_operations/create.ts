@@ -1,7 +1,7 @@
 import { DecisionStatus, ProjectStatus, RequestType, EventType, TaskType } from '@prisma/client';
 import { Session } from 'next-auth';
 import prisma from '@/core/prisma';
-import { OkResponse, UnauthorizedResponse, UnprocessableEntityResponse } from '@/core/responses';
+import { OkResponse, UnauthorizedResponse } from '@/core/responses';
 import generateLicencePlate from '@/helpers/licence-plate';
 import { sendRequestNatsMessage } from '@/helpers/nats-message';
 import { sendCreateRequestEmails, sendRequestApprovalEmails } from '@/services/ches/private-cloud';

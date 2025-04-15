@@ -12,14 +12,7 @@ import { findUser } from '@/services/keycloak/app-realm';
 import { checkArrayStringCondition, parseQueryString } from '@/utils/js';
 import { verifyKeycloakJwtTokenSafe, parseKeycloakJwtTokenSafe } from '@/utils/node';
 import { logger } from './logging';
-import {
-  BadRequestResponse,
-  UnauthorizedResponse,
-  ForbiddenResponse,
-  NotFoundResponse,
-  InternalServerErrorResponse,
-  OkResponse,
-} from './responses';
+import { BadRequestResponse, UnauthorizedResponse, InternalServerErrorResponse } from './responses';
 
 const verifyKeycloakJwtToken = IS_LOCAL || IS_TEST ? parseKeycloakJwtTokenSafe : verifyKeycloakJwtTokenSafe;
 

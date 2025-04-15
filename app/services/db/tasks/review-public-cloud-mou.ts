@@ -1,6 +1,6 @@
 import { TaskStatus, TaskType } from '@prisma/client';
 import { Session } from 'next-auth';
-import { GlobalPermissions, GlobalRole } from '@/constants';
+import { GlobalRole } from '@/constants';
 import prisma from '@/core/prisma';
 import { sendBillingReviewerMou, sendBillingReviewerMouProduct } from '@/services/ches/public-cloud/emails';
 import {

@@ -7,7 +7,6 @@ import {
   PublicCloudProductSearch,
   PublicCloudRequestDetail,
   PublicCloudBillingSimpleDecorated,
-  PublicCloudBillingSearch,
 } from '@/types/public-cloud';
 import { downloadFile } from '@/utils/browser';
 import {

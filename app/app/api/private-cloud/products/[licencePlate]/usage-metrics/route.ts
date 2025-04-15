@@ -1,5 +1,5 @@
 import { Cluster, ResourceRequestsEnv } from '@prisma/client';
-import { z, string } from 'zod';
+import { z } from 'zod';
 import { IS_PROD, IS_TEST } from '@/config';
 import { environmentLongNames, GlobalRole } from '@/constants';
 import createApiHandler from '@/core/api-handler';

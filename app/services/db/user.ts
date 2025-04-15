@@ -1,17 +1,15 @@
 import UserRepresentation from '@keycloak/keycloak-admin-client/lib/defs/userRepresentation';
-import { Prisma, User } from '@prisma/client';
+import { Prisma } from '@prisma/client';
 import _castArray from 'lodash-es/castArray';
 import _compact from 'lodash-es/compact';
-import _forEach from 'lodash-es/forEach';
 import _isNumber from 'lodash-es/isNumber';
-import _isString from 'lodash-es/isString';
 import _uniq from 'lodash-es/uniq';
 import { logger } from '@/core/logging';
 import prisma from '@/core/prisma';
 import { parsePaginationParams } from '@/helpers/pagination';
 import { listUsersByRoles, findUserByEmail, getKcAdminClient } from '@/services/keycloak/app-realm';
-import { getUserByEmail, getUserPhoto, processMsUser } from '@/services/msgraph';
-import { MsUser, AppUser } from '@/types/user';
+import { getUserByEmail, getUserPhoto } from '@/services/msgraph';
+import { AppUser } from '@/types/user';
 import { arrayBufferToBase64 } from '@/utils/js';
 import { UserSearchBody } from '@/validation-schemas';
 

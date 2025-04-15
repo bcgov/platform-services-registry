@@ -1,6 +1,5 @@
 import _isBoolean from 'lodash-es/isBoolean';
 import _isNil from 'lodash-es/isNil';
-import _isNumber from 'lodash-es/isNumber';
 import _isString from 'lodash-es/isString';
 
 export function processUpperEnumString(str?: unknown) {

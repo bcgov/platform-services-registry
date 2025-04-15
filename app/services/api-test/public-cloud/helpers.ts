@@ -1,4 +1,4 @@
-import { DecisionStatus, TaskType, TaskStatus, RequestType } from '@prisma/client';
+import { DecisionStatus, RequestType } from '@prisma/client';
 import { GlobalRole } from '@/constants';
 import prisma from '@/core/prisma';
 import { createSamplePublicCloudProductData } from '@/helpers/mock-resources';

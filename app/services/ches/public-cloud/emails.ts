@@ -1,4 +1,4 @@
-import { PublicCloudBilling, PublicCloudProductMemberRole } from '@prisma/client';
+import { PublicCloudProductMemberRole } from '@prisma/client';
 import { IS_PROD } from '@/config';
 import { publicCloudTeamEmail, GlobalRole } from '@/constants';
 import AdminCreateRequestTemplate from '@/emails/_templates/public-cloud/AdminCreateRequest';

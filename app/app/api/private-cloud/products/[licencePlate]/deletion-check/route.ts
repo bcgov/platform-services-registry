@@ -1,7 +1,7 @@
 import { string, z } from 'zod';
 import { GlobalRole } from '@/constants';
 import createApiHandler from '@/core/api-handler';
-import { BadRequestResponse, OkResponse, UnauthorizedResponse } from '@/core/responses';
+import { OkResponse, UnauthorizedResponse } from '@/core/responses';
 import { models } from '@/services/db';
 import { checkDeletionAvailability } from '@/services/k8s/reads';
 

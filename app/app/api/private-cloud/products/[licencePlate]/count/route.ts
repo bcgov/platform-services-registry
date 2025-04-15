@@ -1,7 +1,7 @@
 import { z } from 'zod';
 import { GlobalRole, GlobalPermissions } from '@/constants';
 import createApiHandler from '@/core/api-handler';
-import { OkResponse, BadRequestResponse } from '@/core/responses';
+import { OkResponse } from '@/core/responses';
 import { getCommentCountOp } from './_operations/count';
 
 const pathParamsSchema = z.object({

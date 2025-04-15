@@ -1,18 +1,8 @@
 import { PrivateProductChange, PublicProductChange } from '@/helpers/product-change';
 import { createGlobalValtio } from '@/helpers/valtio';
 import { QuotaChangeStatus } from '@/services/backend/private-cloud/products';
-import {
-  PrivateCloudProductSimpleDecorated,
-  PrivateCloudRequestSimpleDecorated,
-  PrivateCloudProductDetailDecorated,
-  PrivateCloudRequestDetailDecorated,
-} from '@/types/private-cloud';
-import {
-  PublicCloudProductSimpleDecorated,
-  PublicCloudRequestSimpleDecorated,
-  PublicCloudProductDetailDecorated,
-  PublicCloudRequestDetailDecorated,
-} from '@/types/public-cloud';
+import { PrivateCloudProductDetailDecorated, PrivateCloudRequestDetailDecorated } from '@/types/private-cloud';
+import { PublicCloudProductDetailDecorated, PublicCloudRequestDetailDecorated } from '@/types/public-cloud';
 
 export type Cloud = 'private-cloud' | 'public-cloud' | null;
 

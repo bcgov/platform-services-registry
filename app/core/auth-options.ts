@@ -8,15 +8,7 @@ import _uniq from 'lodash-es/uniq';
 import { Account, AuthOptions, Session, User, SessionKeys, Permissions, SessionTokenTeams } from 'next-auth';
 import { JWT } from 'next-auth/jwt';
 import KeycloakProvider, { KeycloakProfile } from 'next-auth/providers/keycloak';
-import {
-  IS_PROD,
-  AUTH_SERVER_URL,
-  AUTH_RELM,
-  AUTH_RESOURCE,
-  AUTH_SECRET,
-  PUBLIC_AZURE_ACCESS_EMAILS,
-  USER_TOKEN_REFRESH_INTERVAL,
-} from '@/config';
+import { IS_PROD, AUTH_SERVER_URL, AUTH_RELM, AUTH_RESOURCE, AUTH_SECRET, USER_TOKEN_REFRESH_INTERVAL } from '@/config';
 import { TEAM_SA_PREFIX, GlobalRole, RoleToSessionProp, sessionRolePropKeys } from '@/constants';
 import prisma from '@/core/prisma';
 import { createEvent } from '@/services/db';

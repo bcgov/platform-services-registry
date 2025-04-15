@@ -1,6 +1,6 @@
 import { Session } from 'next-auth';
-import { z, TypeOf, ZodType } from 'zod';
-import { BadRequestResponse, OkResponse, UnauthorizedResponse } from '@/core/responses';
+import { TypeOf } from 'zod';
+import { OkResponse, UnauthorizedResponse } from '@/core/responses';
 import { models } from '@/services/db';
 import { getPathParamSchema } from '../[licencePlate]/schema';
 

@@ -1,6 +1,4 @@
 import { expect } from '@jest/globals';
-import _castArray from 'lodash-es/castArray';
-import _kebabCase from 'lodash-es/kebabCase';
 import { GlobalRole } from '@/constants';
 import {
   createPublicCloudProduct,

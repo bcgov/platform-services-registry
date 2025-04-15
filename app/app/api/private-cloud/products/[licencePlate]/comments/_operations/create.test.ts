@@ -1,7 +1,7 @@
 import { expect } from '@jest/globals';
 import { GlobalRole } from '@/constants';
 import { createSamplePrivateCloudCommentData } from '@/helpers/mock-resources';
-import { findOtherMockUsers, generateTestSession } from '@/helpers/mock-users';
+import { findOtherMockUsers } from '@/helpers/mock-users';
 import { mockSessionByEmail, mockSessionByRole } from '@/services/api-test/core';
 import { createPrivateCloudComment } from '@/services/api-test/private-cloud/products';
 
