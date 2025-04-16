@@ -69,6 +69,9 @@ nav:
   - development-setup/local-development-environment.md
   - development-setup/sandbox.md
   - development-setup/onboarding-offboarding.md
+  - development-setup/react-email.md
+  - development-setup/resource-metrics.md
+  - development-setup/terraform.md
 - Git & Github:
   - github/new-task.md
   - github/clean-pr.md
@@ -77,29 +80,26 @@ nav:
 - CI / CD:
   - CD (Continuous Deployment):
     - ci-cd/release-tag-dispatch.md
-- Clean code:
-  - clean-code/return-early.md
-  - clean-code/descriptive-function-names.md
-  - clean-code/react-handler-naming.md
-  - clean-code/falsy-check-early.md
-  - clean-code/small-components-functions.md
-  - clean-code/utils-helpers-shared-components.md
+    - ci-cd/debug-failed-deployments.md
+    - ci-cd/database.md
+- Code conventions:
+  - Clean code:
+    - clean-code/return-early.md
+    - clean-code/descriptive-function-names.md
+    - clean-code/react-handler-naming.md
+    - clean-code/falsy-check-early.md
+    - clean-code/small-components-functions.md
+    - clean-code/utils-helpers-shared-components.md
+  - code-conventions/team-conventions.md
 - Business logic:
   - business-logic/public-cloud-emou-workflow.md
+  - Email Scenarios:
+    - business-logic/email-scenarios/private-cloud.md
+    - business-logic/email-scenarios/public-cloud.md
 - Research:
   - research/image-scanner.md
 - Tests:
   - tests/api-testing.md
-- Docs:
-  - database.md
-  - debug-deployments.md
-  - email-scenarios-private-cloud.md
-  - email-scenarios-public-cloud.md
-  - react-email.md
-  - resource-metrics.md
-  - selecting-image-scanner.md
-  - team-conventions.md
-  - terraform.md
 
 # Extensions
 markdown_extensions:
