@@ -1,6 +1,4 @@
-# CI/CD Pipelines
-
-## Release Tag Dispatch Workflow
+# Release Tag Dispatch Workflow
 
 When creating a new tag using the repository's default `GITHUB_TOKEN` to perform tasks on behalf of the GitHub Actions, events triggered by the `GITHUB_TOKEN` will not create a new workflow run. To address this behavior, we need to set up an `SSH Key` when fetching the repository in the pipeline.
 
