@@ -57,11 +57,10 @@ function createClientPage<TPathParams extends ZodType<any, any>, TQueryParams ex
       }, []);
 
       function handleAccessRedirect() {
-        if (status === 'unauthenticated') {
+        if (status === 'unauthenticated' && !['/home', '/', '/login'].includes(pathname)) {
           localStorage.setItem('postLoginRedirect', pathname);
-        } else {
-          router.push(fallbackUrl);
         }
+        router.push(fallbackUrl);
       }
 
       if (session?.requiresRelogin) appSignOut();
