@@ -1,8 +1,6 @@
-## Email Scenarios
+# Private Cloud
 
-### Private Cloud
-
-#### Scenario 1. Product Create Request
+## Scenario 1. Product Create Request
 
 **Description**: A new or existing user submits a request via the registry to have a namespace for their product.
 This is assuming the user has already had an onboarding meeting, and meets the requirements for submitting a create request. Upon submitting the create request, the following emails may trigger.
@@ -43,7 +41,7 @@ flowchart LR
     C -->|Create Request Rejected| E(PrivateCloudCreateRejected)
 ```
 
-#### Scenario 2. Edit Request: Resource Quota Increase
+## Scenario 2. Edit Request: Resource Quota Increase
 
 **Description**: A PO/TLs of a product submits a request for more CPU, memory, and/or storage of 1 or more namepspaces. Upon submitting the edit resource request, the following emails will trigger.
 
@@ -86,7 +84,7 @@ flowchart LR
     D -->|Changes provisioned| F(PrivateCloudResourceRequestCompleted)
 ```
 
-#### Scenario 3. Edit Request: No Resource Quota Increase
+## Scenario 3. Edit Request: No Resource Quota Increase
 
 **Description**: When a PO/TLs of a product edit their product where there is no increase in resources requested, the following emails will trigger.
 
@@ -107,7 +105,7 @@ flowchart LR
 
 ```
 
-#### Scenario 4. Mixed Edit Request: Quota Increase and Contact Change
+## Scenario 4. Mixed Edit Request: Quota Increase and Contact Change
 
 **Description**: When a PO/TLs of a product edit their product with both Quota Increase and Contact Change.
 
@@ -146,7 +144,7 @@ flowchart LR
     D -->|Changes provisioned| F(PrivateCloudResourceRequestCompleted)
 ```
 
-#### Scenario 5. Delete request is submitted
+## Scenario 5. Delete request is submitted
 
 **Description**: When a PO/TLs of a product have removed all PVC's and resources deployed on their namespaces of a given product, then a user is eligible to submit a delete request. Upon a successful deletion check the user can submit the delete request and thus the following emails may trigger.
 
