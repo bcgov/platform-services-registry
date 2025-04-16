@@ -10,13 +10,13 @@
         <meta name="author" content="Platform Services Team">
       
       
-        <link rel="canonical" href="https://bcgov.github.io/platform-services-registry/clean-code/descriptive-function-names.html">
+        <link rel="canonical" href="https://bcgov.github.io/platform-services-registry/git-github/bot-pr-review.html">
       
       
-        <link rel="prev" href="return-early.html">
+        <link rel="prev" href="clean-pr.html">
       
       
-        <link rel="next" href="react-handler-naming.html">
+        <link rel="next" href="rocketchat-notification.html">
       
       
       <link rel="icon" href="../_assets/logo.png">
@@ -24,7 +24,7 @@
     
     
       
-        <title>Use Descriptive Function Names - Platform Services Registry</title>
+        <title>Renovate Bot PR Review - Platform Services Registry</title>
       
     
     
@@ -76,7 +76,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#use-descriptive-function-names" class="md-skip">
+        <a href="#renovate-bot-pr-review" class="md-skip">
           Skip to content
         </a>
       
@@ -111,7 +111,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              Use Descriptive Function Names
+              Renovate Bot PR Review
             
           </span>
         </div>
@@ -215,11 +215,13 @@
   
   
   
+    
+  
   
     
     
-      <li class="md-tabs__item">
-        <a href="../git-github/branching-model.html" class="md-tabs__link">
+      <li class="md-tabs__item md-tabs__item--active">
+        <a href="branching-model.html" class="md-tabs__link">
           
   
   
@@ -269,8 +271,6 @@
   
   
   
-    
-  
   
     
     
@@ -278,13 +278,11 @@
   
   
   
-    
-  
   
     
     
-      <li class="md-tabs__item md-tabs__item--active">
-        <a href="return-early.html" class="md-tabs__link">
+      <li class="md-tabs__item">
+        <a href="../clean-code/return-early.html" class="md-tabs__link">
           
   
   
@@ -643,8 +641,10 @@
       
   
   
+    
   
   
+  
     
     
       
@@ -662,17 +662,20 @@
     
     
       
+        
+        
+      
       
     
     
-    <li class="md-nav__item md-nav__item--nested">
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" >
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" checked>
         
           
-          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="0">
+          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="">
             
   
   
@@ -685,7 +688,7 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="true">
           <label class="md-nav__title" for="__nav_3">
             <span class="md-nav__icon md-icon"></span>
             Git & Github
@@ -699,7 +702,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../git-github/branching-model.html" class="md-nav__link">
+      <a href="branching-model.html" class="md-nav__link">
         
   
   
@@ -722,7 +725,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../git-github/new-task.html" class="md-nav__link">
+      <a href="new-task.html" class="md-nav__link">
         
   
   
@@ -745,7 +748,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../git-github/clean-pr.html" class="md-nav__link">
+      <a href="clean-pr.html" class="md-nav__link">
         
   
   
@@ -765,10 +768,32 @@
                 
   
   
+    
   
   
-    <li class="md-nav__item">
-      <a href="../git-github/bot-pr-review.html" class="md-nav__link">
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    Renovate Bot PR Review
+    
+  </span>
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="bot-pr-review.html" class="md-nav__link md-nav__link--active">
         
   
   
@@ -779,6 +804,44 @@
   
 
       </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#review-criteria" class="md-nav__link">
+    <span class="md-ellipsis">
+      Review Criteria
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#handling-failed-checks" class="md-nav__link">
+    <span class="md-ellipsis">
+      Handling Failed Checks
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
     </li>
   
 
@@ -791,7 +854,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../git-github/rocketchat-notification.html" class="md-nav__link">
+      <a href="rocketchat-notification.html" class="md-nav__link">
         
   
   
@@ -1174,10 +1237,8 @@
       
   
   
-    
   
   
-  
     
     
       
@@ -1189,20 +1250,17 @@
     
     
       
-        
-        
-      
       
     
     
-    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+    <li class="md-nav__item md-nav__item--nested">
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5" checked>
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5" >
         
           
-          <label class="md-nav__link" for="__nav_5" id="__nav_5_label" tabindex="">
+          <label class="md-nav__link" for="__nav_5" id="__nav_5_label" tabindex="0">
             
   
   
@@ -1215,7 +1273,7 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_5_label" aria-expanded="true">
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_5_label" aria-expanded="false">
           <label class="md-nav__title" for="__nav_5">
             <span class="md-nav__icon md-icon"></span>
             Code conventions
@@ -1226,10 +1284,8 @@
                 
   
   
-    
   
   
-  
     
     
       
@@ -1252,11 +1308,11 @@
       
     
     
-    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+    <li class="md-nav__item md-nav__item--nested">
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5_1" checked>
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5_1" >
         
           
           <label class="md-nav__link" for="__nav_5_1" id="__nav_5_1_label" tabindex="0">
@@ -1272,7 +1328,7 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_5_1_label" aria-expanded="true">
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_5_1_label" aria-expanded="false">
           <label class="md-nav__title" for="__nav_5_1">
             <span class="md-nav__icon md-icon"></span>
             Clean code
@@ -1286,7 +1342,7 @@
   
   
     <li class="md-nav__item">
-      <a href="return-early.html" class="md-nav__link">
+      <a href="../clean-code/return-early.html" class="md-nav__link">
         
   
   
@@ -1306,32 +1362,10 @@
                 
   
   
-    
   
   
-  
-    <li class="md-nav__item md-nav__item--active">
-      
-      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
-      
-      
-        
-      
-      
-        <label class="md-nav__link md-nav__link--active" for="__toc">
-          
-  
-  
-  <span class="md-ellipsis">
-    Use Descriptive Function Names
-    
-  </span>
-  
-
-          <span class="md-nav__icon md-icon"></span>
-        </label>
-      
-      <a href="descriptive-function-names.html" class="md-nav__link md-nav__link--active">
+    <li class="md-nav__item">
+      <a href="../clean-code/descriptive-function-names.html" class="md-nav__link">
         
   
   
@@ -1342,95 +1376,6 @@
   
 
       </a>
-      
-        
-
-<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
-  
-  
-  
-    
-  
-  
-    <label class="md-nav__title" for="__toc">
-      <span class="md-nav__icon md-icon"></span>
-      Table of contents
-    </label>
-    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
-      
-        <li class="md-nav__item">
-  <a href="#benefits" class="md-nav__link">
-    <span class="md-ellipsis">
-      Benefits
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#examples" class="md-nav__link">
-    <span class="md-ellipsis">
-      Examples
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="Examples">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#good-example-descriptive-name" class="md-nav__link">
-    <span class="md-ellipsis">
-      Good Example (Descriptive Name)
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#bad-example-vague-name" class="md-nav__link">
-    <span class="md-ellipsis">
-      Bad Example (Vague Name)
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#another-good-example" class="md-nav__link">
-    <span class="md-ellipsis">
-      Another Good Example
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#another-bad-example" class="md-nav__link">
-    <span class="md-ellipsis">
-      Another Bad Example
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#considerations-for-long-function-names" class="md-nav__link">
-    <span class="md-ellipsis">
-      Considerations for Long Function Names
-    </span>
-  </a>
-  
-</li>
-      
-    </ul>
-  
-</nav>
-      
     </li>
   
 
@@ -1443,7 +1388,7 @@
   
   
     <li class="md-nav__item">
-      <a href="react-handler-naming.html" class="md-nav__link">
+      <a href="../clean-code/react-handler-naming.html" class="md-nav__link">
         
   
   
@@ -1466,7 +1411,7 @@
   
   
     <li class="md-nav__item">
-      <a href="falsy-check-early.html" class="md-nav__link">
+      <a href="../clean-code/falsy-check-early.html" class="md-nav__link">
         
   
   
@@ -1489,7 +1434,7 @@
   
   
     <li class="md-nav__item">
-      <a href="small-components-functions.html" class="md-nav__link">
+      <a href="../clean-code/small-components-functions.html" class="md-nav__link">
         
   
   
@@ -1512,7 +1457,7 @@
   
   
     <li class="md-nav__item">
-      <a href="utils-helpers-shared-components.html" class="md-nav__link">
+      <a href="../clean-code/utils-helpers-shared-components.html" class="md-nav__link">
         
   
   
@@ -1921,69 +1866,18 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#benefits" class="md-nav__link">
+  <a href="#review-criteria" class="md-nav__link">
     <span class="md-ellipsis">
-      Benefits
+      Review Criteria
     </span>
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#examples" class="md-nav__link">
+  <a href="#handling-failed-checks" class="md-nav__link">
     <span class="md-ellipsis">
-      Examples
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="Examples">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#good-example-descriptive-name" class="md-nav__link">
-    <span class="md-ellipsis">
-      Good Example (Descriptive Name)
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#bad-example-vague-name" class="md-nav__link">
-    <span class="md-ellipsis">
-      Bad Example (Vague Name)
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#another-good-example" class="md-nav__link">
-    <span class="md-ellipsis">
-      Another Good Example
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#another-bad-example" class="md-nav__link">
-    <span class="md-ellipsis">
-      Another Bad Example
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#considerations-for-long-function-names" class="md-nav__link">
-    <span class="md-ellipsis">
-      Considerations for Long Function Names
+      Handling Failed Checks
     </span>
   </a>
   
@@ -2008,60 +1902,42 @@
   
 
 
-<h1 id="use-descriptive-function-names">Use Descriptive Function Names<a class="headerlink" href="#use-descriptive-function-names" title="Permanent link">&para;</a></h1>
-<p>Using descriptive function names is a fundamental practice in writing clean, maintainable code. A well-named function communicates its purpose clearly, reducing the need for additional comments or documentation. This pattern encourages developers to write self-explanatory code that is easier to read, understand, and debug.</p>
-<h2 id="benefits">Benefits<a class="headerlink" href="#benefits" title="Permanent link">&para;</a></h2>
-<p>Here are some benefits of using descriptive function names:</p>
+<h1 id="renovate-bot-pr-review">Renovate Bot PR Review<a class="headerlink" href="#renovate-bot-pr-review" title="Permanent link">&para;</a></h1>
+<p>Renovate Bot is our tool for automatically updating dependencies. However, a manual PR review process is necessary when the bot creates PRs for dependency updates.</p>
+<h2 id="review-criteria">Review Criteria<a class="headerlink" href="#review-criteria" title="Permanent link">&para;</a></h2>
+<p>When reviewing a Renovate Bot PR, consider the following to assess whether it's safe to merge into the main branch:</p>
 <ol>
 <li>
-<p><code>Improved Readability</code>: A descriptive name tells you exactly what the function does, without needing to read the entire implementation. This makes it easier for developers to scan and understand code quickly.</p>
+<p><strong>Area of Usage</strong>
+   Identify where the tool or package is used:</p>
 </li>
 <li>
-<p><code>Reduced Need for Comments</code>: When a function name clearly describes its behavior, there's less need to add comments explaining what it does. The name itself serves as documentation.</p>
+<p>Application production</p>
+</li>
+<li>Application development</li>
+<li>Sandbox services</li>
+<li>Terraform</li>
+<li>Helm charts</li>
+<li>Continuous integration/Code quality</li>
+<li>
+<p>Low-level tools</p>
 </li>
 <li>
-<p><code>Easier Maintenance</code>: Descriptive names help you identify the right function when modifying or debugging code. They make refactoring and collaboration less error-prone, as you don't need to trace every line to understand a function's role.</p>
+<p><strong>Functionality</strong>
+   Understand what the tool or package does within the identified area.</p>
 </li>
 <li>
-<p><code>Enhanced Code Navigation</code>: In larger codebases or IDEs, descriptive names make it easier to search for and locate specific functionality without digging through lines of code.</p>
+<p><strong>Upgrade Level</strong>
+   Determine the upgrade type: major, minor, or patch.</p>
 </li>
 <li>
-<p><code>Better Naming Encourages Better Design</code>: When you're forced to think of a good name for a function, it often reveals whether the function is doing too much. If you can't summarize its behavior in a short, clear name, it might need to be split into smaller, more focused functions.</p>
+<p><strong>Pipeline Checks</strong>
+   Review if any checks are related to the changes and ensure they pass.</p>
 </li>
 </ol>
-<h2 id="examples">Examples<a class="headerlink" href="#examples" title="Permanent link">&para;</a></h2>
-<h3 id="good-example-descriptive-name">Good Example (Descriptive Name)<a class="headerlink" href="#good-example-descriptive-name" title="Permanent link">&para;</a></h3>
-<div class="language-js highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-0-1">1</a></span>
-<span class="normal"><a href="#__codelineno-0-2">2</a></span>
-<span class="normal"><a href="#__codelineno-0-3">3</a></span></pre></div></td><td class="code"><div><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1"></a><span class="kd">function</span><span class="w"> </span><span class="nx">sendWelcomeEmail</span><span class="p">(</span><span class="nx">userEmail</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
-</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2"></a><span class="w">  </span><span class="c1">// Logic to send a welcome email to a new user</span>
-</span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3"></a><span class="p">}</span>
-</span></code></pre></div></td></tr></table></div>
-<h3 id="bad-example-vague-name">Bad Example (Vague Name)<a class="headerlink" href="#bad-example-vague-name" title="Permanent link">&para;</a></h3>
-<div class="language-js highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-1-1">1</a></span>
-<span class="normal"><a href="#__codelineno-1-2">2</a></span>
-<span class="normal"><a href="#__codelineno-1-3">3</a></span></pre></div></td><td class="code"><div><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1"></a><span class="kd">function</span><span class="w"> </span><span class="nx">handleEmail</span><span class="p">(</span><span class="nx">userEmail</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
-</span><span id="__span-1-2"><a id="__codelineno-1-2" name="__codelineno-1-2"></a><span class="w">  </span><span class="c1">// What kind of email? Unclear without reading the implementation</span>
-</span><span id="__span-1-3"><a id="__codelineno-1-3" name="__codelineno-1-3"></a><span class="p">}</span>
-</span></code></pre></div></td></tr></table></div>
-<p>In the good example, <code>sendWelcomeEmail</code> clearly indicates what the function does. In the bad example, <code>handleEmail</code> is vague—it could mean sending, receiving, validating, or logging an email.</p>
-<h3 id="another-good-example">Another Good Example<a class="headerlink" href="#another-good-example" title="Permanent link">&para;</a></h3>
-<div class="language-js highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-2-1">1</a></span>
-<span class="normal"><a href="#__codelineno-2-2">2</a></span>
-<span class="normal"><a href="#__codelineno-2-3">3</a></span></pre></div></td><td class="code"><div><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1"></a><span class="kd">function</span><span class="w"> </span><span class="nx">calculateInvoiceTotal</span><span class="p">(</span><span class="nx">invoiceItems</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
-</span><span id="__span-2-2"><a id="__codelineno-2-2" name="__codelineno-2-2"></a><span class="w">  </span><span class="c1">// Logic to sum up item prices, apply taxes or discounts, etc.</span>
-</span><span id="__span-2-3"><a id="__codelineno-2-3" name="__codelineno-2-3"></a><span class="p">}</span>
-</span></code></pre></div></td></tr></table></div>
-<h3 id="another-bad-example">Another Bad Example<a class="headerlink" href="#another-bad-example" title="Permanent link">&para;</a></h3>
-<div class="language-js highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-3-1">1</a></span>
-<span class="normal"><a href="#__codelineno-3-2">2</a></span>
-<span class="normal"><a href="#__codelineno-3-3">3</a></span></pre></div></td><td class="code"><div><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1"></a><span class="kd">function</span><span class="w"> </span><span class="nx">doStuff</span><span class="p">(</span><span class="nx">items</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
-</span><span id="__span-3-2"><a id="__codelineno-3-2" name="__codelineno-3-2"></a><span class="w">  </span><span class="c1">// Unclear what &quot;stuff&quot; means—hard to reason about</span>
-</span><span id="__span-3-3"><a id="__codelineno-3-3" name="__codelineno-3-3"></a><span class="p">}</span>
-</span></code></pre></div></td></tr></table></div>
-<h2 id="considerations-for-long-function-names">Considerations for Long Function Names<a class="headerlink" href="#considerations-for-long-function-names" title="Permanent link">&para;</a></h2>
-<p>While descriptive function names are encouraged, excessively long names can make the code harder to read and maintain. Aim for a <strong>balance between clarity and brevity</strong>. For example, <code>getUserFullName</code> is usually better than <code>getTheCompleteFullNameOfAUserFromTheDatabase</code>.</p>
-<p>When in doubt, prioritize <strong>clarity</strong> over shortness—especially if the function is part of a shared or public API.</p>
+<p>Based on these criteria, assess the risk to decide whether to merge the PR.</p>
+<h2 id="handling-failed-checks">Handling Failed Checks<a class="headerlink" href="#handling-failed-checks" title="Permanent link">&para;</a></h2>
+<p>If a pipeline check fails after an upgrade, it indicates a potential breaking change. Investigate the specific failed check and review the detailed error message to identify the root cause. If a codebase change is required, check out the PR branch locally to debug and make the necessary updates directly on the PR branch.</p>
 
 
 

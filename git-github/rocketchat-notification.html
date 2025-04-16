@@ -10,28 +10,28 @@
         <meta name="author" content="Platform Services Team">
       
       
-        <link rel="canonical" href="https://bcgov.github.io/platform-services-registry/debug-deployments.html">
+        <link rel="canonical" href="https://bcgov.github.io/platform-services-registry/git-github/rocketchat-notification.html">
       
       
-        <link rel="prev" href="database.html">
+        <link rel="prev" href="bot-pr-review.html">
       
       
-        <link rel="next" href="email-scenarios-private-cloud.html">
+        <link rel="next" href="../ci-cd/ci/peer-review.html">
       
       
-      <link rel="icon" href="_assets/logo.png">
+      <link rel="icon" href="../_assets/logo.png">
       <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.6.11">
     
     
       
-        <title>Debugging Helm Deployment Failure Issues - Platform Services Registry</title>
+        <title>RocketChat Deployment Notifications - Platform Services Registry</title>
       
     
     
-      <link rel="stylesheet" href="assets/stylesheets/main.4af4bdda.min.css">
+      <link rel="stylesheet" href="../assets/stylesheets/main.4af4bdda.min.css">
       
         
-        <link rel="stylesheet" href="assets/stylesheets/palette.06af60db.min.css">
+        <link rel="stylesheet" href="../assets/stylesheets/palette.06af60db.min.css">
       
       
 
@@ -50,7 +50,7 @@
       
     
     
-    <script>__md_scope=new URL(".",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    <script>__md_scope=new URL("..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
     
       
 
@@ -76,7 +76,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#debugging-helm-deployment-failure-issues" class="md-skip">
+        <a href="#rocketchat-deployment-notifications" class="md-skip">
           Skip to content
         </a>
       
@@ -92,9 +92,9 @@
 
 <header class="md-header md-header--shadow md-header--lifted" data-md-component="header">
   <nav class="md-header__inner md-grid" aria-label="Header">
-    <a href="index.html" title="Platform Services Registry" class="md-header__button md-logo" aria-label="Platform Services Registry" data-md-component="logo">
+    <a href="../index.html" title="Platform Services Registry" class="md-header__button md-logo" aria-label="Platform Services Registry" data-md-component="logo">
       
-  <img src="_assets/logo.png" alt="logo">
+  <img src="../_assets/logo.png" alt="logo">
 
     </a>
     <label class="md-header__button md-icon" for="__drawer">
@@ -111,7 +111,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              Debugging Helm Deployment Failure Issues
+              RocketChat Deployment Notifications
             
           </span>
         </div>
@@ -176,7 +176,7 @@
   
   
     <li class="md-tabs__item">
-      <a href="index.html" class="md-tabs__link">
+      <a href="../index.html" class="md-tabs__link">
         
   
   
@@ -197,7 +197,7 @@
     
     
       <li class="md-tabs__item">
-        <a href="development-setup/local-development-environment.html" class="md-tabs__link">
+        <a href="../development-setup/local-development-environment.html" class="md-tabs__link">
           
   
   
@@ -215,11 +215,13 @@
   
   
   
+    
+  
   
     
     
-      <li class="md-tabs__item">
-        <a href="github/new-task.html" class="md-tabs__link">
+      <li class="md-tabs__item md-tabs__item--active">
+        <a href="branching-model.html" class="md-tabs__link">
           
   
   
@@ -248,7 +250,7 @@
     
     
       <li class="md-tabs__item">
-        <a href="ci-cd/release-tag-dispatch.html" class="md-tabs__link">
+        <a href="../ci-cd/ci/peer-review.html" class="md-tabs__link">
           
   
   
@@ -272,17 +274,27 @@
   
     
     
+      
+  
+  
+  
+  
+    
+    
       <li class="md-tabs__item">
-        <a href="clean-code/return-early.html" class="md-tabs__link">
+        <a href="../clean-code/return-early.html" class="md-tabs__link">
           
   
   
     
   
-  Clean code
+  Code conventions
 
         </a>
       </li>
+    
+  
+
     
   
 
@@ -295,7 +307,7 @@
     
     
       <li class="md-tabs__item">
-        <a href="business-logic/public-cloud-emou-workflow.html" class="md-tabs__link">
+        <a href="../business-logic/public-cloud-emou-workflow.html" class="md-tabs__link">
           
   
   
@@ -317,7 +329,7 @@
     
     
       <li class="md-tabs__item">
-        <a href="research/image-scanner.html" class="md-tabs__link">
+        <a href="../research/image-scanner.html" class="md-tabs__link">
           
   
   
@@ -339,37 +351,13 @@
     
     
       <li class="md-tabs__item">
-        <a href="tests/api-testing.html" class="md-tabs__link">
+        <a href="../tests/api-testing.html" class="md-tabs__link">
           
   
   
     
   
   Tests
-
-        </a>
-      </li>
-    
-  
-
-      
-        
-  
-  
-  
-    
-  
-  
-    
-    
-      <li class="md-tabs__item md-tabs__item--active">
-        <a href="database.html" class="md-tabs__link">
-          
-  
-  
-    
-  
-  Docs
 
         </a>
       </li>
@@ -405,9 +393,9 @@
 
 <nav class="md-nav md-nav--primary md-nav--lifted" aria-label="Navigation" data-md-level="0">
   <label class="md-nav__title" for="__drawer">
-    <a href="index.html" title="Platform Services Registry" class="md-nav__button md-logo" aria-label="Platform Services Registry" data-md-component="logo">
+    <a href="../index.html" title="Platform Services Registry" class="md-nav__button md-logo" aria-label="Platform Services Registry" data-md-component="logo">
       
-  <img src="_assets/logo.png" alt="logo">
+  <img src="../_assets/logo.png" alt="logo">
 
     </a>
     Platform Services Registry
@@ -434,7 +422,7 @@
   
   
     <li class="md-nav__item">
-      <a href="index.html" class="md-nav__link">
+      <a href="../index.html" class="md-nav__link">
         
   
   
@@ -457,6 +445,12 @@
   
     
     
+      
+        
+      
+        
+      
+        
       
         
       
@@ -505,7 +499,7 @@
   
   
     <li class="md-nav__item">
-      <a href="development-setup/local-development-environment.html" class="md-nav__link">
+      <a href="../development-setup/local-development-environment.html" class="md-nav__link">
         
   
   
@@ -528,7 +522,7 @@
   
   
     <li class="md-nav__item">
-      <a href="development-setup/sandbox.html" class="md-nav__link">
+      <a href="../development-setup/sandbox.html" class="md-nav__link">
         
   
   
@@ -551,12 +545,81 @@
   
   
     <li class="md-nav__item">
-      <a href="development-setup/onboarding-offboarding.html" class="md-nav__link">
+      <a href="../development-setup/onboarding-offboarding.html" class="md-nav__link">
         
   
   
   <span class="md-ellipsis">
     Onboarding and Offboarding Guide
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../development-setup/react-email.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    React Emails
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../development-setup/resource-metrics.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Resource Metrics
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../development-setup/terraform.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Infrastructure Provisioning
     
   </span>
   
@@ -578,8 +641,10 @@
       
   
   
+    
   
   
+  
     
     
       
@@ -591,21 +656,26 @@
       
         
       
-    
-    
-    
-      
+        
       
     
     
-    <li class="md-nav__item md-nav__item--nested">
+    
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" >
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" checked>
         
           
-          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="0">
+          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="">
             
   
   
@@ -618,7 +688,7 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="true">
           <label class="md-nav__title" for="__nav_3">
             <span class="md-nav__icon md-icon"></span>
             Git & Github
@@ -632,7 +702,30 @@
   
   
     <li class="md-nav__item">
-      <a href="github/new-task.html" class="md-nav__link">
+      <a href="branching-model.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Git Branching Model
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="new-task.html" class="md-nav__link">
         
   
   
@@ -655,7 +748,7 @@
   
   
     <li class="md-nav__item">
-      <a href="github/clean-pr.html" class="md-nav__link">
+      <a href="clean-pr.html" class="md-nav__link">
         
   
   
@@ -678,7 +771,7 @@
   
   
     <li class="md-nav__item">
-      <a href="github/bot-pr-review.html" class="md-nav__link">
+      <a href="bot-pr-review.html" class="md-nav__link">
         
   
   
@@ -698,10 +791,32 @@
                 
   
   
+    
   
   
-    <li class="md-nav__item">
-      <a href="github/rocketchat-notification.html" class="md-nav__link">
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    RocketChat Deployment Notifications
+    
+  </span>
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="rocketchat-notification.html" class="md-nav__link md-nav__link--active">
         
   
   
@@ -712,6 +827,68 @@
   
 
       </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#prerequisites" class="md-nav__link">
+    <span class="md-ellipsis">
+      Prerequisites
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#setting-up-and-updating-the-notification-bot" class="md-nav__link">
+    <span class="md-ellipsis">
+      Setting Up and Updating the Notification Bot
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Setting Up and Updating the Notification Bot">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#1-create-a-rocketchat-webhook" class="md-nav__link">
+    <span class="md-ellipsis">
+      1. Create a RocketChat Webhook
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#2-update-the-repository-to-use-the-webhook" class="md-nav__link">
+    <span class="md-ellipsis">
+      2. Update the Repository to Use the Webhook
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
     </li>
   
 
@@ -732,6 +909,8 @@
   
     
     
+      
+        
       
         
       
@@ -780,6 +959,12 @@
       
         
       
+        
+      
+        
+      
+        
+      
     
     
     
@@ -799,7 +984,7 @@
   
   
   <span class="md-ellipsis">
-    CD (Continuous Deployment)
+    CI (Continuous Integration)
     
   </span>
   
@@ -809,6 +994,157 @@
         
         <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_4_1_label" aria-expanded="false">
           <label class="md-nav__title" for="__nav_4_1">
+            <span class="md-nav__icon md-icon"></span>
+            CI (Continuous Integration)
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ci-cd/ci/peer-review.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Peer Review Protocol
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ci-cd/ci/checks.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    CI Pipeline Checks
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ci-cd/ci/dependency-update.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Automated Dependency Updates
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ci-cd/ci/secret-scanning.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Secret Scanning
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_4_2" id="__nav_4_2_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    CD (Continuous Deployment)
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_4_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4_2">
             <span class="md-nav__icon md-icon"></span>
             CD (Continuous Deployment)
           </label>
@@ -821,12 +1157,81 @@
   
   
     <li class="md-nav__item">
-      <a href="ci-cd/release-tag-dispatch.html" class="md-nav__link">
+      <a href="../ci-cd/cd/deployment-release.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Deployment &amp; Release Life Cycle
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ci-cd/cd/release-tag-dispatch.html" class="md-nav__link">
         
   
   
   <span class="md-ellipsis">
     Release Tag Dispatch Workflow
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ci-cd/cd/debug-failed-deployments.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Debugging Helm Deployment Failure Issues
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ci-cd/cd/database.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Database
     
   </span>
   
@@ -860,14 +1265,6 @@
   
     
     
-      
-        
-      
-        
-      
-        
-      
-        
       
         
       
@@ -892,7 +1289,7 @@
   
   
   <span class="md-ellipsis">
-    Clean code
+    Code conventions
     
   </span>
   
@@ -902,6 +1299,61 @@
         
         <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_5_label" aria-expanded="false">
           <label class="md-nav__title" for="__nav_5">
+            <span class="md-nav__icon md-icon"></span>
+            Code conventions
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5_1" >
+        
+          
+          <label class="md-nav__link" for="__nav_5_1" id="__nav_5_1_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    Clean code
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_5_1_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_5_1">
             <span class="md-nav__icon md-icon"></span>
             Clean code
           </label>
@@ -914,7 +1366,7 @@
   
   
     <li class="md-nav__item">
-      <a href="clean-code/return-early.html" class="md-nav__link">
+      <a href="../clean-code/return-early.html" class="md-nav__link">
         
   
   
@@ -937,7 +1389,7 @@
   
   
     <li class="md-nav__item">
-      <a href="clean-code/descriptive-function-names.html" class="md-nav__link">
+      <a href="../clean-code/descriptive-function-names.html" class="md-nav__link">
         
   
   
@@ -960,7 +1412,7 @@
   
   
     <li class="md-nav__item">
-      <a href="clean-code/react-handler-naming.html" class="md-nav__link">
+      <a href="../clean-code/react-handler-naming.html" class="md-nav__link">
         
   
   
@@ -983,7 +1435,7 @@
   
   
     <li class="md-nav__item">
-      <a href="clean-code/falsy-check-early.html" class="md-nav__link">
+      <a href="../clean-code/falsy-check-early.html" class="md-nav__link">
         
   
   
@@ -1006,7 +1458,7 @@
   
   
     <li class="md-nav__item">
-      <a href="clean-code/small-components-functions.html" class="md-nav__link">
+      <a href="../clean-code/small-components-functions.html" class="md-nav__link">
         
   
   
@@ -1029,12 +1481,43 @@
   
   
     <li class="md-nav__item">
-      <a href="clean-code/utils-helpers-shared-components.html" class="md-nav__link">
+      <a href="../clean-code/utils-helpers-shared-components.html" class="md-nav__link">
         
   
   
   <span class="md-ellipsis">
     Use Utils, Helpers, and Shared Components
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../code-conventions/naming-conventions.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Naming Conventions
     
   </span>
   
@@ -1060,6 +1543,8 @@
   
     
     
+      
+        
       
         
       
@@ -1104,7 +1589,7 @@
   
   
     <li class="md-nav__item">
-      <a href="business-logic/public-cloud-emou-workflow.html" class="md-nav__link">
+      <a href="../business-logic/public-cloud-emou-workflow.html" class="md-nav__link">
         
   
   
@@ -1115,6 +1600,107 @@
   
 
       </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_6_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_6_2" id="__nav_6_2_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    Email Scenarios
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_6_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_6_2">
+            <span class="md-nav__icon md-icon"></span>
+            Email Scenarios
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../business-logic/email-scenarios/private-cloud.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Private Cloud
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../business-logic/email-scenarios/public-cloud.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Public Cloud
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
     </li>
   
 
@@ -1179,7 +1765,7 @@
   
   
     <li class="md-nav__item">
-      <a href="research/image-scanner.html" class="md-nav__link">
+      <a href="../research/image-scanner.html" class="md-nav__link">
         
   
   
@@ -1254,367 +1840,12 @@
   
   
     <li class="md-nav__item">
-      <a href="tests/api-testing.html" class="md-nav__link">
+      <a href="../tests/api-testing.html" class="md-nav__link">
         
   
   
   <span class="md-ellipsis">
     API Testing
-    
-  </span>
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-          </ul>
-        </nav>
-      
-    </li>
-  
-
-    
-      
-      
-  
-  
-    
-  
-  
-  
-    
-    
-      
-        
-      
-        
-      
-        
-      
-        
-      
-        
-      
-        
-      
-        
-      
-        
-      
-        
-      
-    
-    
-    
-      
-        
-        
-      
-      
-    
-    
-    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
-      
-        
-        
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_9" checked>
-        
-          
-          <label class="md-nav__link" for="__nav_9" id="__nav_9_label" tabindex="">
-            
-  
-  
-  <span class="md-ellipsis">
-    Docs
-    
-  </span>
-  
-
-            <span class="md-nav__icon md-icon"></span>
-          </label>
-        
-        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_9_label" aria-expanded="true">
-          <label class="md-nav__title" for="__nav_9">
-            <span class="md-nav__icon md-icon"></span>
-            Docs
-          </label>
-          <ul class="md-nav__list" data-md-scrollfix>
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="database.html" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    Database
-    
-  </span>
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-    
-  
-  
-  
-    <li class="md-nav__item md-nav__item--active">
-      
-      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
-      
-      
-        
-      
-      
-        <label class="md-nav__link md-nav__link--active" for="__toc">
-          
-  
-  
-  <span class="md-ellipsis">
-    Debugging Helm Deployment Failure Issues
-    
-  </span>
-  
-
-          <span class="md-nav__icon md-icon"></span>
-        </label>
-      
-      <a href="debug-deployments.html" class="md-nav__link md-nav__link--active">
-        
-  
-  
-  <span class="md-ellipsis">
-    Debugging Helm Deployment Failure Issues
-    
-  </span>
-  
-
-      </a>
-      
-        
-
-<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
-  
-  
-  
-    
-  
-  
-    <label class="md-nav__title" for="__toc">
-      <span class="md-nav__icon md-icon"></span>
-      Table of contents
-    </label>
-    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
-      
-        <li class="md-nav__item">
-  <a href="#error-upgrade-failed-another-operation-installupgraderollback-is-in-progress" class="md-nav__link">
-    <span class="md-ellipsis">
-      Error: UPGRADE FAILED: another operation (install/upgrade/rollback) is in progress
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="Error: UPGRADE FAILED: another operation (install/upgrade/rollback) is in progress">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#using-the-ocp-ui" class="md-nav__link">
-    <span class="md-ellipsis">
-      Using the OCP UI
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#using-the-cli" class="md-nav__link">
-    <span class="md-ellipsis">
-      Using the CLI
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-    </ul>
-  
-</nav>
-      
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="email-scenarios-private-cloud.html" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    Email scenarios private cloud
-    
-  </span>
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="email-scenarios-public-cloud.html" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    Email scenarios public cloud
-    
-  </span>
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="react-email.html" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    React email
-    
-  </span>
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="resource-metrics.html" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    Resource metrics
-    
-  </span>
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="selecting-image-scanner.md" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    None
-    
-  </span>
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="team-conventions.html" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    Team Conventions
-    
-  </span>
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="terraform.html" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    Terraform Configuration for Infrastructure Provisioning
     
   </span>
   
@@ -1659,28 +1890,37 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#error-upgrade-failed-another-operation-installupgraderollback-is-in-progress" class="md-nav__link">
+  <a href="#prerequisites" class="md-nav__link">
     <span class="md-ellipsis">
-      Error: UPGRADE FAILED: another operation (install/upgrade/rollback) is in progress
+      Prerequisites
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="Error: UPGRADE FAILED: another operation (install/upgrade/rollback) is in progress">
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#setting-up-and-updating-the-notification-bot" class="md-nav__link">
+    <span class="md-ellipsis">
+      Setting Up and Updating the Notification Bot
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Setting Up and Updating the Notification Bot">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#using-the-ocp-ui" class="md-nav__link">
+  <a href="#1-create-a-rocketchat-webhook" class="md-nav__link">
     <span class="md-ellipsis">
-      Using the OCP UI
+      1. Create a RocketChat Webhook
     </span>
   </a>
   
 </li>
         
           <li class="md-nav__item">
-  <a href="#using-the-cli" class="md-nav__link">
+  <a href="#2-update-the-repository-to-use-the-webhook" class="md-nav__link">
     <span class="md-ellipsis">
-      Using the CLI
+      2. Update the Repository to Use the Webhook
     </span>
   </a>
   
@@ -1710,48 +1950,36 @@
   
 
 
-<h1 id="debugging-helm-deployment-failure-issues">Debugging Helm Deployment Failure Issues<a class="headerlink" href="#debugging-helm-deployment-failure-issues" title="Permanent link">&para;</a></h1>
-<h2 id="error-upgrade-failed-another-operation-installupgraderollback-is-in-progress">Error: UPGRADE FAILED: another operation (install/upgrade/rollback) is in progress<a class="headerlink" href="#error-upgrade-failed-another-operation-installupgraderollback-is-in-progress" title="Permanent link">&para;</a></h2>
-<p>This error usually occurs when multiple Helm operations—install, upgrade, or rollback—are triggered in quick succession. Here’s how to resolve it:</p>
-<h3 id="using-the-ocp-ui">Using the OCP UI<a class="headerlink" href="#using-the-ocp-ui" title="Permanent link">&para;</a></h3>
+<h1 id="rocketchat-deployment-notifications">RocketChat Deployment Notifications<a class="headerlink" href="#rocketchat-deployment-notifications" title="Permanent link">&para;</a></h1>
+<p>To facilitate efficient communication of deployment actions, we have set up a notification bot to notify developers and stakeholders about the status of our deployments, as well as provide a convenient link to the changes made.</p>
+<h2 id="prerequisites">Prerequisites<a class="headerlink" href="#prerequisites" title="Permanent link">&para;</a></h2>
+<ul>
+<li>You must be an admin of this repository.</li>
+<li>You must be a member of the <code>#app-dev-team</code> RocketChat channel.</li>
+</ul>
+<h2 id="setting-up-and-updating-the-notification-bot">Setting Up and Updating the Notification Bot<a class="headerlink" href="#setting-up-and-updating-the-notification-bot" title="Permanent link">&para;</a></h2>
+<h3 id="1-create-a-rocketchat-webhook">1. Create a RocketChat Webhook<a class="headerlink" href="#1-create-a-rocketchat-webhook" title="Permanent link">&para;</a></h3>
+<p>To create a webhook in RocketChat for deployment notifications:</p>
 <ol>
-<li>Log in to the OCP namespace.</li>
-<li>From the left sidebar, select <strong>Helm</strong>.</li>
-<li>Go to the <strong>Helm Releases</strong> tab and find the target release.</li>
-<li>Open the <strong>Revision History</strong> tab.</li>
-<li>Locate the most recent successful release (Status: <em>Deployed</em>).</li>
-<li>Click the three dots on the right and select <strong>Rollback</strong>.</li>
-<li>Wait for the rollback to finish.</li>
-<li>Rerun the failed GitHub Action deployment pipeline.</li>
+<li>Open RocketChat and click on the <strong>vertical 3-dot menu</strong> at the top-left of the application.</li>
+<li>Select <strong>Workspace</strong> under the <strong>Administration</strong> heading.</li>
+<li>At the top-right, click the <strong>New</strong> button to create a new integration.</li>
+<li>Ensure that the <strong>Enabled</strong> toggle is switched on to activate this integration.</li>
+<li>Fill in the <strong>Integration Name</strong> with a descriptive name (e.g., "App Deployment Notification").</li>
+<li>In the <strong>Post to Channel</strong> field, enter <code>#app-dev-team</code>.</li>
+<li>In the <strong>Post As</strong> field, enter your own username or another account name for clarity.</li>
+<li>Set the <strong>Alias</strong> to <code>app-dev-deployment</code> to identify the source of the notification.</li>
+<li>To help differentiate automated bot messages from user-generated messages, you can:</li>
+<li>Add an emoji (e.g., <code>:robot:</code>) in the <strong>Emoji</strong> field, which will replace the default avatar.</li>
+<li>Alternatively, use a custom avatar by inserting an image URL (e.g., <code>https://i.imgur.com/7U3Yv1e.png</code>).</li>
+<li>Once the fields are filled, click <strong>Save</strong> at the bottom-right to create the integration.</li>
 </ol>
-<h3 id="using-the-cli">Using the CLI<a class="headerlink" href="#using-the-cli" title="Permanent link">&para;</a></h3>
+<h3 id="2-update-the-repository-to-use-the-webhook">2. Update the Repository to Use the Webhook<a class="headerlink" href="#2-update-the-repository-to-use-the-webhook" title="Permanent link">&para;</a></h3>
+<p>After setting up the webhook in RocketChat, you need to update your repository to use it:</p>
 <ol>
-<li><strong>Check the current status</strong> of the release:</li>
-</ol>
-<div class="language-bash highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-0-1">1</a></span></pre></div></td><td class="code"><div><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1"></a>helm<span class="w"> </span>status<span class="w"> </span>pltsvc
-</span></code></pre></div></td></tr></table></div>
-<ol>
-<li><strong>List all revisions</strong> for the <code>pltsvc</code> release:</li>
-</ol>
-<div class="language-bash highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-1-1">1</a></span></pre></div></td><td class="code"><div><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1"></a>helm<span class="w"> </span><span class="nb">history</span><span class="w"> </span>pltsvc
-</span></code></pre></div></td></tr></table></div>
-<p>This command displays the release history, showing revision numbers and statuses such as <code>DEPLOYED</code>, <code>FAILED</code>, or <code>SUPERSEDED</code>.</p>
-<ol>
-<li>
-<p><strong>Identify the last successful release</strong>:
-   Look for the latest revision with a <code>DEPLOYED</code> status.</p>
-</li>
-<li>
-<p><strong>Rollback to the desired revision</strong>:</p>
-</li>
-</ol>
-<div class="language-bash highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-2-1">1</a></span></pre></div></td><td class="code"><div><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1"></a>helm<span class="w"> </span>rollback<span class="w"> </span>pltsvc<span class="w"> </span>&lt;revision_number&gt;
-</span></code></pre></div></td></tr></table></div>
-<p>Replace <code>&lt;revision_number&gt;</code> with the number of the last successful revision.</p>
-<ol>
-<li><strong>Verify the rollback</strong> by checking the release status:
-   <div class="language-bash highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-3-1">1</a></span></pre></div></td><td class="code"><div><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1"></a>helm<span class="w"> </span>status<span class="w"> </span>pltsvc
-</span></code></pre></div></td></tr></table></div></li>
+<li>Navigate to the <strong>Settings</strong> tab of this repository on GitHub.</li>
+<li>Click on the <strong>Environments</strong> menu.</li>
+<li>Under the <strong>Environment Secrets</strong> section, update the <code>ROCKETCHAT_WEBHOOK_URL</code> with the new webhook URL from RocketChat.</li>
 </ol>
 
 
@@ -1813,10 +2041,10 @@
     
     
       
-      <script id="__config" type="application/json">{"base": ".", "features": ["content.code.annotate", "content.code.copy", "content.tabs.link", "navigation.indexes", "navigation.instant", "navigation.tabs", "navigation.tabs.sticky", "navigation.top", "navigation.tracking", "search.highlight", "search.share", "search.suggest"], "search": "assets/javascripts/workers/search.f8cc74c7.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+      <script id="__config" type="application/json">{"base": "..", "features": ["content.code.annotate", "content.code.copy", "content.tabs.link", "navigation.indexes", "navigation.instant", "navigation.tabs", "navigation.tabs.sticky", "navigation.top", "navigation.tracking", "search.highlight", "search.share", "search.suggest"], "search": "../assets/javascripts/workers/search.f8cc74c7.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
     
     
-      <script src="assets/javascripts/bundle.c8b220af.min.js"></script>
+      <script src="../assets/javascripts/bundle.c8b220af.min.js"></script>
       
     
   </body>

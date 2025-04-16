@@ -10,26 +10,28 @@
         <meta name="author" content="Platform Services Team">
       
       
-        <link rel="canonical" href="https://bcgov.github.io/platform-services-registry/terraform.html">
+        <link rel="canonical" href="https://bcgov.github.io/platform-services-registry/git-github/clean-pr.html">
       
       
-        <link rel="prev" href="team-conventions.html">
+        <link rel="prev" href="new-task.html">
       
       
+        <link rel="next" href="bot-pr-review.html">
       
-      <link rel="icon" href="_assets/logo.png">
+      
+      <link rel="icon" href="../_assets/logo.png">
       <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.6.11">
     
     
       
-        <title>Terraform Configuration for Infrastructure Provisioning - Platform Services Registry</title>
+        <title>Clean task PR - Platform Services Registry</title>
       
     
     
-      <link rel="stylesheet" href="assets/stylesheets/main.4af4bdda.min.css">
+      <link rel="stylesheet" href="../assets/stylesheets/main.4af4bdda.min.css">
       
         
-        <link rel="stylesheet" href="assets/stylesheets/palette.06af60db.min.css">
+        <link rel="stylesheet" href="../assets/stylesheets/palette.06af60db.min.css">
       
       
 
@@ -48,7 +50,7 @@
       
     
     
-    <script>__md_scope=new URL(".",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    <script>__md_scope=new URL("..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
     
       
 
@@ -74,7 +76,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#terraform-configuration-for-infrastructure-provisioning" class="md-skip">
+        <a href="#clean-task-pr" class="md-skip">
           Skip to content
         </a>
       
@@ -90,9 +92,9 @@
 
 <header class="md-header md-header--shadow md-header--lifted" data-md-component="header">
   <nav class="md-header__inner md-grid" aria-label="Header">
-    <a href="index.html" title="Platform Services Registry" class="md-header__button md-logo" aria-label="Platform Services Registry" data-md-component="logo">
+    <a href="../index.html" title="Platform Services Registry" class="md-header__button md-logo" aria-label="Platform Services Registry" data-md-component="logo">
       
-  <img src="_assets/logo.png" alt="logo">
+  <img src="../_assets/logo.png" alt="logo">
 
     </a>
     <label class="md-header__button md-icon" for="__drawer">
@@ -109,7 +111,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              Terraform Configuration for Infrastructure Provisioning
+              Clean task PR
             
           </span>
         </div>
@@ -174,7 +176,7 @@
   
   
     <li class="md-tabs__item">
-      <a href="index.html" class="md-tabs__link">
+      <a href="../index.html" class="md-tabs__link">
         
   
   
@@ -195,7 +197,7 @@
     
     
       <li class="md-tabs__item">
-        <a href="development-setup/local-development-environment.html" class="md-tabs__link">
+        <a href="../development-setup/local-development-environment.html" class="md-tabs__link">
           
   
   
@@ -213,11 +215,13 @@
   
   
   
+    
+  
   
     
     
-      <li class="md-tabs__item">
-        <a href="github/new-task.html" class="md-tabs__link">
+      <li class="md-tabs__item md-tabs__item--active">
+        <a href="branching-model.html" class="md-tabs__link">
           
   
   
@@ -246,7 +250,7 @@
     
     
       <li class="md-tabs__item">
-        <a href="ci-cd/release-tag-dispatch.html" class="md-tabs__link">
+        <a href="../ci-cd/ci/peer-review.html" class="md-tabs__link">
           
   
   
@@ -270,17 +274,27 @@
   
     
     
+      
+  
+  
+  
+  
+    
+    
       <li class="md-tabs__item">
-        <a href="clean-code/return-early.html" class="md-tabs__link">
+        <a href="../clean-code/return-early.html" class="md-tabs__link">
           
   
   
     
   
-  Clean code
+  Code conventions
 
         </a>
       </li>
+    
+  
+
     
   
 
@@ -293,7 +307,7 @@
     
     
       <li class="md-tabs__item">
-        <a href="business-logic/public-cloud-emou-workflow.html" class="md-tabs__link">
+        <a href="../business-logic/public-cloud-emou-workflow.html" class="md-tabs__link">
           
   
   
@@ -315,7 +329,7 @@
     
     
       <li class="md-tabs__item">
-        <a href="research/image-scanner.html" class="md-tabs__link">
+        <a href="../research/image-scanner.html" class="md-tabs__link">
           
   
   
@@ -337,37 +351,13 @@
     
     
       <li class="md-tabs__item">
-        <a href="tests/api-testing.html" class="md-tabs__link">
+        <a href="../tests/api-testing.html" class="md-tabs__link">
           
   
   
     
   
   Tests
-
-        </a>
-      </li>
-    
-  
-
-      
-        
-  
-  
-  
-    
-  
-  
-    
-    
-      <li class="md-tabs__item md-tabs__item--active">
-        <a href="database.html" class="md-tabs__link">
-          
-  
-  
-    
-  
-  Docs
 
         </a>
       </li>
@@ -403,9 +393,9 @@
 
 <nav class="md-nav md-nav--primary md-nav--lifted" aria-label="Navigation" data-md-level="0">
   <label class="md-nav__title" for="__drawer">
-    <a href="index.html" title="Platform Services Registry" class="md-nav__button md-logo" aria-label="Platform Services Registry" data-md-component="logo">
+    <a href="../index.html" title="Platform Services Registry" class="md-nav__button md-logo" aria-label="Platform Services Registry" data-md-component="logo">
       
-  <img src="_assets/logo.png" alt="logo">
+  <img src="../_assets/logo.png" alt="logo">
 
     </a>
     Platform Services Registry
@@ -432,7 +422,7 @@
   
   
     <li class="md-nav__item">
-      <a href="index.html" class="md-nav__link">
+      <a href="../index.html" class="md-nav__link">
         
   
   
@@ -455,6 +445,12 @@
   
     
     
+      
+        
+      
+        
+      
+        
       
         
       
@@ -503,7 +499,7 @@
   
   
     <li class="md-nav__item">
-      <a href="development-setup/local-development-environment.html" class="md-nav__link">
+      <a href="../development-setup/local-development-environment.html" class="md-nav__link">
         
   
   
@@ -526,7 +522,7 @@
   
   
     <li class="md-nav__item">
-      <a href="development-setup/sandbox.html" class="md-nav__link">
+      <a href="../development-setup/sandbox.html" class="md-nav__link">
         
   
   
@@ -549,12 +545,81 @@
   
   
     <li class="md-nav__item">
-      <a href="development-setup/onboarding-offboarding.html" class="md-nav__link">
+      <a href="../development-setup/onboarding-offboarding.html" class="md-nav__link">
         
   
   
   <span class="md-ellipsis">
     Onboarding and Offboarding Guide
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../development-setup/react-email.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    React Emails
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../development-setup/resource-metrics.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Resource Metrics
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../development-setup/terraform.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Infrastructure Provisioning
     
   </span>
   
@@ -576,8 +641,10 @@
       
   
   
+    
   
   
+  
     
     
       
@@ -589,21 +656,26 @@
       
         
       
-    
-    
-    
-      
+        
       
     
     
-    <li class="md-nav__item md-nav__item--nested">
+    
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" >
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" checked>
         
           
-          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="0">
+          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="">
             
   
   
@@ -616,7 +688,7 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="true">
           <label class="md-nav__title" for="__nav_3">
             <span class="md-nav__icon md-icon"></span>
             Git & Github
@@ -630,7 +702,30 @@
   
   
     <li class="md-nav__item">
-      <a href="github/new-task.html" class="md-nav__link">
+      <a href="branching-model.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Git Branching Model
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="new-task.html" class="md-nav__link">
         
   
   
@@ -650,10 +745,19 @@
                 
   
   
+    
   
   
-    <li class="md-nav__item">
-      <a href="github/clean-pr.html" class="md-nav__link">
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+      <a href="clean-pr.html" class="md-nav__link md-nav__link--active">
         
   
   
@@ -664,6 +768,7 @@
   
 
       </a>
+      
     </li>
   
 
@@ -676,7 +781,7 @@
   
   
     <li class="md-nav__item">
-      <a href="github/bot-pr-review.html" class="md-nav__link">
+      <a href="bot-pr-review.html" class="md-nav__link">
         
   
   
@@ -699,7 +804,7 @@
   
   
     <li class="md-nav__item">
-      <a href="github/rocketchat-notification.html" class="md-nav__link">
+      <a href="rocketchat-notification.html" class="md-nav__link">
         
   
   
@@ -730,6 +835,8 @@
   
     
     
+      
+        
       
         
       
@@ -778,6 +885,12 @@
       
         
       
+        
+      
+        
+      
+        
+      
     
     
     
@@ -797,7 +910,7 @@
   
   
   <span class="md-ellipsis">
-    CD (Continuous Deployment)
+    CI (Continuous Integration)
     
   </span>
   
@@ -807,6 +920,157 @@
         
         <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_4_1_label" aria-expanded="false">
           <label class="md-nav__title" for="__nav_4_1">
+            <span class="md-nav__icon md-icon"></span>
+            CI (Continuous Integration)
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ci-cd/ci/peer-review.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Peer Review Protocol
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ci-cd/ci/checks.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    CI Pipeline Checks
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ci-cd/ci/dependency-update.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Automated Dependency Updates
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ci-cd/ci/secret-scanning.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Secret Scanning
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_4_2" id="__nav_4_2_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    CD (Continuous Deployment)
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_4_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4_2">
             <span class="md-nav__icon md-icon"></span>
             CD (Continuous Deployment)
           </label>
@@ -819,12 +1083,81 @@
   
   
     <li class="md-nav__item">
-      <a href="ci-cd/release-tag-dispatch.html" class="md-nav__link">
+      <a href="../ci-cd/cd/deployment-release.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Deployment &amp; Release Life Cycle
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ci-cd/cd/release-tag-dispatch.html" class="md-nav__link">
         
   
   
   <span class="md-ellipsis">
     Release Tag Dispatch Workflow
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ci-cd/cd/debug-failed-deployments.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Debugging Helm Deployment Failure Issues
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ci-cd/cd/database.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Database
     
   </span>
   
@@ -858,14 +1191,6 @@
   
     
     
-      
-        
-      
-        
-      
-        
-      
-        
       
         
       
@@ -890,7 +1215,7 @@
   
   
   <span class="md-ellipsis">
-    Clean code
+    Code conventions
     
   </span>
   
@@ -900,6 +1225,61 @@
         
         <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_5_label" aria-expanded="false">
           <label class="md-nav__title" for="__nav_5">
+            <span class="md-nav__icon md-icon"></span>
+            Code conventions
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5_1" >
+        
+          
+          <label class="md-nav__link" for="__nav_5_1" id="__nav_5_1_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    Clean code
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_5_1_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_5_1">
             <span class="md-nav__icon md-icon"></span>
             Clean code
           </label>
@@ -912,7 +1292,7 @@
   
   
     <li class="md-nav__item">
-      <a href="clean-code/return-early.html" class="md-nav__link">
+      <a href="../clean-code/return-early.html" class="md-nav__link">
         
   
   
@@ -935,7 +1315,7 @@
   
   
     <li class="md-nav__item">
-      <a href="clean-code/descriptive-function-names.html" class="md-nav__link">
+      <a href="../clean-code/descriptive-function-names.html" class="md-nav__link">
         
   
   
@@ -958,7 +1338,7 @@
   
   
     <li class="md-nav__item">
-      <a href="clean-code/react-handler-naming.html" class="md-nav__link">
+      <a href="../clean-code/react-handler-naming.html" class="md-nav__link">
         
   
   
@@ -981,7 +1361,7 @@
   
   
     <li class="md-nav__item">
-      <a href="clean-code/falsy-check-early.html" class="md-nav__link">
+      <a href="../clean-code/falsy-check-early.html" class="md-nav__link">
         
   
   
@@ -1004,7 +1384,7 @@
   
   
     <li class="md-nav__item">
-      <a href="clean-code/small-components-functions.html" class="md-nav__link">
+      <a href="../clean-code/small-components-functions.html" class="md-nav__link">
         
   
   
@@ -1027,12 +1407,43 @@
   
   
     <li class="md-nav__item">
-      <a href="clean-code/utils-helpers-shared-components.html" class="md-nav__link">
+      <a href="../clean-code/utils-helpers-shared-components.html" class="md-nav__link">
         
   
   
   <span class="md-ellipsis">
     Use Utils, Helpers, and Shared Components
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../code-conventions/naming-conventions.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Naming Conventions
     
   </span>
   
@@ -1058,6 +1469,8 @@
   
     
     
+      
+        
       
         
       
@@ -1102,7 +1515,7 @@
   
   
     <li class="md-nav__item">
-      <a href="business-logic/public-cloud-emou-workflow.html" class="md-nav__link">
+      <a href="../business-logic/public-cloud-emou-workflow.html" class="md-nav__link">
         
   
   
@@ -1113,6 +1526,107 @@
   
 
       </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_6_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_6_2" id="__nav_6_2_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    Email Scenarios
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_6_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_6_2">
+            <span class="md-nav__icon md-icon"></span>
+            Email Scenarios
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../business-logic/email-scenarios/private-cloud.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Private Cloud
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../business-logic/email-scenarios/public-cloud.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Public Cloud
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
     </li>
   
 
@@ -1177,7 +1691,7 @@
   
   
     <li class="md-nav__item">
-      <a href="research/image-scanner.html" class="md-nav__link">
+      <a href="../research/image-scanner.html" class="md-nav__link">
         
   
   
@@ -1252,7 +1766,7 @@
   
   
     <li class="md-nav__item">
-      <a href="tests/api-testing.html" class="md-nav__link">
+      <a href="../tests/api-testing.html" class="md-nav__link">
         
   
   
@@ -1263,361 +1777,6 @@
   
 
       </a>
-    </li>
-  
-
-              
-            
-          </ul>
-        </nav>
-      
-    </li>
-  
-
-    
-      
-      
-  
-  
-    
-  
-  
-  
-    
-    
-      
-        
-      
-        
-      
-        
-      
-        
-      
-        
-      
-        
-      
-        
-      
-        
-      
-        
-      
-    
-    
-    
-      
-        
-        
-      
-      
-    
-    
-    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
-      
-        
-        
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_9" checked>
-        
-          
-          <label class="md-nav__link" for="__nav_9" id="__nav_9_label" tabindex="">
-            
-  
-  
-  <span class="md-ellipsis">
-    Docs
-    
-  </span>
-  
-
-            <span class="md-nav__icon md-icon"></span>
-          </label>
-        
-        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_9_label" aria-expanded="true">
-          <label class="md-nav__title" for="__nav_9">
-            <span class="md-nav__icon md-icon"></span>
-            Docs
-          </label>
-          <ul class="md-nav__list" data-md-scrollfix>
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="database.html" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    Database
-    
-  </span>
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="debug-deployments.html" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    Debugging Helm Deployment Failure Issues
-    
-  </span>
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="email-scenarios-private-cloud.html" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    Email scenarios private cloud
-    
-  </span>
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="email-scenarios-public-cloud.html" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    Email scenarios public cloud
-    
-  </span>
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="react-email.html" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    React email
-    
-  </span>
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="resource-metrics.html" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    Resource metrics
-    
-  </span>
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="selecting-image-scanner.md" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    None
-    
-  </span>
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="team-conventions.html" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    Team Conventions
-    
-  </span>
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-    
-  
-  
-  
-    <li class="md-nav__item md-nav__item--active">
-      
-      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
-      
-      
-        
-      
-      
-        <label class="md-nav__link md-nav__link--active" for="__toc">
-          
-  
-  
-  <span class="md-ellipsis">
-    Terraform Configuration for Infrastructure Provisioning
-    
-  </span>
-  
-
-          <span class="md-nav__icon md-icon"></span>
-        </label>
-      
-      <a href="terraform.html" class="md-nav__link md-nav__link--active">
-        
-  
-  
-  <span class="md-ellipsis">
-    Terraform Configuration for Infrastructure Provisioning
-    
-  </span>
-  
-
-      </a>
-      
-        
-
-<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
-  
-  
-  
-    
-  
-  
-    <label class="md-nav__title" for="__toc">
-      <span class="md-nav__icon md-icon"></span>
-      Table of contents
-    </label>
-    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
-      
-        <li class="md-nav__item">
-  <a href="#sysdig" class="md-nav__link">
-    <span class="md-ellipsis">
-      Sysdig
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="Sysdig">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#local-machine-modifications" class="md-nav__link">
-    <span class="md-ellipsis">
-      Local Machine Modifications
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#cd-pipeline-driven-modifications" class="md-nav__link">
-    <span class="md-ellipsis">
-      CD Pipeline-driven Modifications
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-    </ul>
-  
-</nav>
-      
     </li>
   
 
@@ -1650,47 +1809,6 @@
     
   
   
-    <label class="md-nav__title" for="__toc">
-      <span class="md-nav__icon md-icon"></span>
-      Table of contents
-    </label>
-    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
-      
-        <li class="md-nav__item">
-  <a href="#sysdig" class="md-nav__link">
-    <span class="md-ellipsis">
-      Sysdig
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="Sysdig">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#local-machine-modifications" class="md-nav__link">
-    <span class="md-ellipsis">
-      Local Machine Modifications
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#cd-pipeline-driven-modifications" class="md-nav__link">
-    <span class="md-ellipsis">
-      CD Pipeline-driven Modifications
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-    </ul>
-  
 </nav>
                   </div>
                 </div>
@@ -1708,25 +1826,47 @@
   
 
 
-<h1 id="terraform-configuration-for-infrastructure-provisioning">Terraform Configuration for Infrastructure Provisioning<a class="headerlink" href="#terraform-configuration-for-infrastructure-provisioning" title="Permanent link">&para;</a></h1>
-<p>We employ <code>Terraform</code> as the <code>configuration code</code> to <code>provision resources</code> within our infrastructure, encompassing <code>OCP Deployer Service Accounts</code>, <code>Keycloak</code>, and <code>Sysdig</code>.</p>
-<h2 id="sysdig">Sysdig<a class="headerlink" href="#sysdig" title="Permanent link">&para;</a></h2>
-<p>The main point for the <code>Sysdig Terraform</code> is situated at <a href="../terraform/sysdig">terraform/sysdig</a>, featuring individual sub-modules for each Openshift project.</p>
-<h3 id="local-machine-modifications">Local Machine Modifications<a class="headerlink" href="#local-machine-modifications" title="Permanent link">&para;</a></h3>
-<p>For making changes on a local machine, please consult the <a href="../terraform/sysdig/README.md">Sysdig Terraform Readme</a> for comprehensive instructions.</p>
-<h3 id="cd-pipeline-driven-modifications">CD Pipeline-driven Modifications<a class="headerlink" href="#cd-pipeline-driven-modifications" title="Permanent link">&para;</a></h3>
-<p>The Sysdig Terraform scripts are integrated into the <code>Continuous Deployment (CD) pipeline</code>, specifically the <a href="../.github/workflows/terraform-sysdig.yml">Sysdig Terraform Action</a>.
-The process involves two distinct phases:</p>
+<h1 id="clean-task-pr">Clean task PR<a class="headerlink" href="#clean-task-pr" title="Permanent link">&para;</a></h1>
+<p>In certain scenarios, it becomes necessary to refine commit history and generate a pristine pull request for the target branch. While <a href="https://docs.github.com/en/get-started/using-git/about-git-rebase">Git rebase</a> is a useful tool for this purpose, its application can be less straightforward, especially when the working branch incorporates changes from other pull requests.</p>
+<p>To address this, a practical workaround involves resetting all commits on the base branch. Here's a simple guide to follow:</p>
 <ol>
-<li>
-<p>PR creation
-   Upon the <code>creation of a pull request</code> that includes changes to the Sysdig Terraform script, the pipeline executes a <code>Terraform Plan</code> and comments on the PR regarding the proposed alterations.</p>
-</li>
-<li>
-<p>PR merging
-   Upon approval and <code>merging of the pull request</code>, the pipeline executes a <code>Terraform Apply</code>, implementing the approved changes into the infrastructure.</p>
-</li>
+<li>Confirm that you are on the working branch with a cluttered commit history.</li>
+<li>Create a new branch:</li>
 </ol>
+<div class="language-sh highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-0-1">1</a></span></pre></div></td><td class="code"><div><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1"></a>git<span class="w"> </span>checkout<span class="w"> </span>-b<span class="w"> </span>&lt;new-branch&gt;
+</span></code></pre></div></td></tr></table></div>
+<ol>
+<li>Pull Changes from the Base Branch:</li>
+</ol>
+<div class="language-sh highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-1-1">1</a></span></pre></div></td><td class="code"><div><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1"></a>git<span class="w"> </span>pull<span class="w"> </span>origin<span class="w"> </span>&lt;base-branch&gt;<span class="w"> </span>--no-rebase
+</span></code></pre></div></td></tr></table></div>
+<ul>
+<li>
+<p>Resolve any merge conflicts and commit the changes.</p>
+</li>
+<li>
+<p>Reset all commits based on the base branch (usually the default repository branch):
+   <div class="language-sh highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-2-1">1</a></span></pre></div></td><td class="code"><div><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1"></a>git<span class="w"> </span>reset<span class="w"> </span>--soft<span class="w"> </span>origin/&lt;base-branch&gt;
+</span></code></pre></div></td></tr></table></div></p>
+</li>
+<li>
+<p>For instance:</p>
+</li>
+</ul>
+<div class="language-sh highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-3-1">1</a></span>
+<span class="normal"><a href="#__codelineno-3-2">2</a></span>
+<span class="normal"><a href="#__codelineno-3-3">3</a></span>
+<span class="normal"><a href="#__codelineno-3-4">4</a></span>
+<span class="normal"><a href="#__codelineno-3-5">5</a></span>
+<span class="normal"><a href="#__codelineno-3-6">6</a></span>
+<span class="normal"><a href="#__codelineno-3-7">7</a></span></pre></div></td><td class="code"><div><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1"></a>git<span class="w"> </span>checkout<span class="w"> </span>-b<span class="w"> </span>feat/1234-1
+</span><span id="__span-3-2"><a id="__codelineno-3-2" name="__codelineno-3-2"></a>git<span class="w"> </span>pull<span class="w"> </span>origin<span class="w"> </span>main<span class="w"> </span>--no-rebase
+</span><span id="__span-3-3"><a id="__codelineno-3-3" name="__codelineno-3-3"></a>git<span class="w"> </span>add<span class="w"> </span>.
+</span><span id="__span-3-4"><a id="__codelineno-3-4" name="__codelineno-3-4"></a>git<span class="w"> </span>commit<span class="w"> </span>-m<span class="w"> </span><span class="s2">&quot;chore(0000): temporary message&quot;</span>
+</span><span id="__span-3-5"><a id="__codelineno-3-5" name="__codelineno-3-5"></a>git<span class="w"> </span>reset<span class="w"> </span>--soft<span class="w"> </span>origin/main
+</span><span id="__span-3-6"><a id="__codelineno-3-6" name="__codelineno-3-6"></a>git<span class="w"> </span>add<span class="w"> </span>.
+</span><span id="__span-3-7"><a id="__codelineno-3-7" name="__codelineno-3-7"></a>git<span class="w"> </span>commit<span class="w"> </span>-m<span class="w"> </span><span class="s2">&quot;feat(0000): &lt;commit-message&gt;&quot;</span>
+</span></code></pre></div></td></tr></table></div>
 
 
 
@@ -1787,10 +1927,10 @@ The process involves two distinct phases:</p>
     
     
       
-      <script id="__config" type="application/json">{"base": ".", "features": ["content.code.annotate", "content.code.copy", "content.tabs.link", "navigation.indexes", "navigation.instant", "navigation.tabs", "navigation.tabs.sticky", "navigation.top", "navigation.tracking", "search.highlight", "search.share", "search.suggest"], "search": "assets/javascripts/workers/search.f8cc74c7.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+      <script id="__config" type="application/json">{"base": "..", "features": ["content.code.annotate", "content.code.copy", "content.tabs.link", "navigation.indexes", "navigation.instant", "navigation.tabs", "navigation.tabs.sticky", "navigation.top", "navigation.tracking", "search.highlight", "search.share", "search.suggest"], "search": "../assets/javascripts/workers/search.f8cc74c7.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
     
     
-      <script src="assets/javascripts/bundle.c8b220af.min.js"></script>
+      <script src="../assets/javascripts/bundle.c8b220af.min.js"></script>
       
     
   </body>

@@ -10,13 +10,13 @@
         <meta name="author" content="Platform Services Team">
       
       
-        <link rel="canonical" href="https://bcgov.github.io/platform-services-registry/clean-code/descriptive-function-names.html">
+        <link rel="canonical" href="https://bcgov.github.io/platform-services-registry/development-setup/terraform.html">
       
       
-        <link rel="prev" href="return-early.html">
+        <link rel="prev" href="resource-metrics.html">
       
       
-        <link rel="next" href="react-handler-naming.html">
+        <link rel="next" href="../git-github/branching-model.html">
       
       
       <link rel="icon" href="../_assets/logo.png">
@@ -24,7 +24,7 @@
     
     
       
-        <title>Use Descriptive Function Names - Platform Services Registry</title>
+        <title>Infrastructure Provisioning - Platform Services Registry</title>
       
     
     
@@ -76,7 +76,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#use-descriptive-function-names" class="md-skip">
+        <a href="#infrastructure-provisioning" class="md-skip">
           Skip to content
         </a>
       
@@ -111,7 +111,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              Use Descriptive Function Names
+              Infrastructure Provisioning
             
           </span>
         </div>
@@ -193,11 +193,13 @@
   
   
   
+    
+  
   
     
     
-      <li class="md-tabs__item">
-        <a href="../development-setup/local-development-environment.html" class="md-tabs__link">
+      <li class="md-tabs__item md-tabs__item--active">
+        <a href="local-development-environment.html" class="md-tabs__link">
           
   
   
@@ -269,8 +271,6 @@
   
   
   
-    
-  
   
     
     
@@ -278,13 +278,11 @@
   
   
   
-    
-  
   
     
     
-      <li class="md-tabs__item md-tabs__item--active">
-        <a href="return-early.html" class="md-tabs__link">
+      <li class="md-tabs__item">
+        <a href="../clean-code/return-early.html" class="md-tabs__link">
           
   
   
@@ -443,8 +441,10 @@
       
   
   
+    
   
   
+  
     
     
       
@@ -464,17 +464,20 @@
     
     
       
+        
+        
+      
       
     
     
-    <li class="md-nav__item md-nav__item--nested">
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" >
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" checked>
         
           
-          <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="0">
+          <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="">
             
   
   
@@ -487,7 +490,7 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="false">
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="true">
           <label class="md-nav__title" for="__nav_2">
             <span class="md-nav__icon md-icon"></span>
             Development setup
@@ -501,7 +504,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../development-setup/local-development-environment.html" class="md-nav__link">
+      <a href="local-development-environment.html" class="md-nav__link">
         
   
   
@@ -524,7 +527,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../development-setup/sandbox.html" class="md-nav__link">
+      <a href="sandbox.html" class="md-nav__link">
         
   
   
@@ -547,7 +550,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../development-setup/onboarding-offboarding.html" class="md-nav__link">
+      <a href="onboarding-offboarding.html" class="md-nav__link">
         
   
   
@@ -570,7 +573,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../development-setup/react-email.html" class="md-nav__link">
+      <a href="react-email.html" class="md-nav__link">
         
   
   
@@ -593,7 +596,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../development-setup/resource-metrics.html" class="md-nav__link">
+      <a href="resource-metrics.html" class="md-nav__link">
         
   
   
@@ -613,10 +616,32 @@
                 
   
   
+    
   
   
-    <li class="md-nav__item">
-      <a href="../development-setup/terraform.html" class="md-nav__link">
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    Infrastructure Provisioning
+    
+  </span>
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="terraform.html" class="md-nav__link md-nav__link--active">
         
   
   
@@ -627,6 +652,59 @@
   
 
       </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#sysdig" class="md-nav__link">
+    <span class="md-ellipsis">
+      Sysdig
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Sysdig">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#local-machine-modifications" class="md-nav__link">
+    <span class="md-ellipsis">
+      Local Machine Modifications
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#cd-pipeline-driven-modifications" class="md-nav__link">
+    <span class="md-ellipsis">
+      CD Pipeline-driven Modifications
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
     </li>
   
 
@@ -1174,10 +1252,8 @@
       
   
   
-    
   
   
-  
     
     
       
@@ -1189,20 +1265,17 @@
     
     
       
-        
-        
-      
       
     
     
-    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+    <li class="md-nav__item md-nav__item--nested">
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5" checked>
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5" >
         
           
-          <label class="md-nav__link" for="__nav_5" id="__nav_5_label" tabindex="">
+          <label class="md-nav__link" for="__nav_5" id="__nav_5_label" tabindex="0">
             
   
   
@@ -1215,7 +1288,7 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_5_label" aria-expanded="true">
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_5_label" aria-expanded="false">
           <label class="md-nav__title" for="__nav_5">
             <span class="md-nav__icon md-icon"></span>
             Code conventions
@@ -1226,10 +1299,8 @@
                 
   
   
-    
   
   
-  
     
     
       
@@ -1252,11 +1323,11 @@
       
     
     
-    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+    <li class="md-nav__item md-nav__item--nested">
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5_1" checked>
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5_1" >
         
           
           <label class="md-nav__link" for="__nav_5_1" id="__nav_5_1_label" tabindex="0">
@@ -1272,7 +1343,7 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_5_1_label" aria-expanded="true">
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_5_1_label" aria-expanded="false">
           <label class="md-nav__title" for="__nav_5_1">
             <span class="md-nav__icon md-icon"></span>
             Clean code
@@ -1286,7 +1357,7 @@
   
   
     <li class="md-nav__item">
-      <a href="return-early.html" class="md-nav__link">
+      <a href="../clean-code/return-early.html" class="md-nav__link">
         
   
   
@@ -1306,32 +1377,10 @@
                 
   
   
-    
   
   
-  
-    <li class="md-nav__item md-nav__item--active">
-      
-      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
-      
-      
-        
-      
-      
-        <label class="md-nav__link md-nav__link--active" for="__toc">
-          
-  
-  
-  <span class="md-ellipsis">
-    Use Descriptive Function Names
-    
-  </span>
-  
-
-          <span class="md-nav__icon md-icon"></span>
-        </label>
-      
-      <a href="descriptive-function-names.html" class="md-nav__link md-nav__link--active">
+    <li class="md-nav__item">
+      <a href="../clean-code/descriptive-function-names.html" class="md-nav__link">
         
   
   
@@ -1342,95 +1391,6 @@
   
 
       </a>
-      
-        
-
-<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
-  
-  
-  
-    
-  
-  
-    <label class="md-nav__title" for="__toc">
-      <span class="md-nav__icon md-icon"></span>
-      Table of contents
-    </label>
-    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
-      
-        <li class="md-nav__item">
-  <a href="#benefits" class="md-nav__link">
-    <span class="md-ellipsis">
-      Benefits
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#examples" class="md-nav__link">
-    <span class="md-ellipsis">
-      Examples
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="Examples">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#good-example-descriptive-name" class="md-nav__link">
-    <span class="md-ellipsis">
-      Good Example (Descriptive Name)
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#bad-example-vague-name" class="md-nav__link">
-    <span class="md-ellipsis">
-      Bad Example (Vague Name)
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#another-good-example" class="md-nav__link">
-    <span class="md-ellipsis">
-      Another Good Example
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#another-bad-example" class="md-nav__link">
-    <span class="md-ellipsis">
-      Another Bad Example
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#considerations-for-long-function-names" class="md-nav__link">
-    <span class="md-ellipsis">
-      Considerations for Long Function Names
-    </span>
-  </a>
-  
-</li>
-      
-    </ul>
-  
-</nav>
-      
     </li>
   
 
@@ -1443,7 +1403,7 @@
   
   
     <li class="md-nav__item">
-      <a href="react-handler-naming.html" class="md-nav__link">
+      <a href="../clean-code/react-handler-naming.html" class="md-nav__link">
         
   
   
@@ -1466,7 +1426,7 @@
   
   
     <li class="md-nav__item">
-      <a href="falsy-check-early.html" class="md-nav__link">
+      <a href="../clean-code/falsy-check-early.html" class="md-nav__link">
         
   
   
@@ -1489,7 +1449,7 @@
   
   
     <li class="md-nav__item">
-      <a href="small-components-functions.html" class="md-nav__link">
+      <a href="../clean-code/small-components-functions.html" class="md-nav__link">
         
   
   
@@ -1512,7 +1472,7 @@
   
   
     <li class="md-nav__item">
-      <a href="utils-helpers-shared-components.html" class="md-nav__link">
+      <a href="../clean-code/utils-helpers-shared-components.html" class="md-nav__link">
         
   
   
@@ -1921,55 +1881,28 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#benefits" class="md-nav__link">
+  <a href="#sysdig" class="md-nav__link">
     <span class="md-ellipsis">
-      Benefits
+      Sysdig
     </span>
   </a>
   
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#examples" class="md-nav__link">
-    <span class="md-ellipsis">
-      Examples
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="Examples">
+    <nav class="md-nav" aria-label="Sysdig">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#good-example-descriptive-name" class="md-nav__link">
+  <a href="#local-machine-modifications" class="md-nav__link">
     <span class="md-ellipsis">
-      Good Example (Descriptive Name)
+      Local Machine Modifications
     </span>
   </a>
   
 </li>
         
           <li class="md-nav__item">
-  <a href="#bad-example-vague-name" class="md-nav__link">
+  <a href="#cd-pipeline-driven-modifications" class="md-nav__link">
     <span class="md-ellipsis">
-      Bad Example (Vague Name)
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#another-good-example" class="md-nav__link">
-    <span class="md-ellipsis">
-      Another Good Example
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#another-bad-example" class="md-nav__link">
-    <span class="md-ellipsis">
-      Another Bad Example
+      CD Pipeline-driven Modifications
     </span>
   </a>
   
@@ -1977,15 +1910,6 @@
         
       </ul>
     </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#considerations-for-long-function-names" class="md-nav__link">
-    <span class="md-ellipsis">
-      Considerations for Long Function Names
-    </span>
-  </a>
   
 </li>
       
@@ -2008,60 +1932,25 @@
   
 
 
-<h1 id="use-descriptive-function-names">Use Descriptive Function Names<a class="headerlink" href="#use-descriptive-function-names" title="Permanent link">&para;</a></h1>
-<p>Using descriptive function names is a fundamental practice in writing clean, maintainable code. A well-named function communicates its purpose clearly, reducing the need for additional comments or documentation. This pattern encourages developers to write self-explanatory code that is easier to read, understand, and debug.</p>
-<h2 id="benefits">Benefits<a class="headerlink" href="#benefits" title="Permanent link">&para;</a></h2>
-<p>Here are some benefits of using descriptive function names:</p>
+<h1 id="infrastructure-provisioning">Infrastructure Provisioning<a class="headerlink" href="#infrastructure-provisioning" title="Permanent link">&para;</a></h1>
+<p>We employ <code>Terraform</code> as the <code>configuration code</code> to <code>provision resources</code> within our infrastructure, encompassing <code>OCP Deployer Service Accounts</code>, <code>Keycloak</code>, and <code>Sysdig</code>.</p>
+<h2 id="sysdig">Sysdig<a class="headerlink" href="#sysdig" title="Permanent link">&para;</a></h2>
+<p>The main point for the <code>Sysdig Terraform</code> is situated at <a href="../terraform/sysdig">terraform/sysdig</a>, featuring individual sub-modules for each Openshift project.</p>
+<h3 id="local-machine-modifications">Local Machine Modifications<a class="headerlink" href="#local-machine-modifications" title="Permanent link">&para;</a></h3>
+<p>For making changes on a local machine, please consult the <a href="../terraform/sysdig/README.md">Sysdig Terraform Readme</a> for comprehensive instructions.</p>
+<h3 id="cd-pipeline-driven-modifications">CD Pipeline-driven Modifications<a class="headerlink" href="#cd-pipeline-driven-modifications" title="Permanent link">&para;</a></h3>
+<p>The Sysdig Terraform scripts are integrated into the <code>Continuous Deployment (CD) pipeline</code>, specifically the <a href="../.github/workflows/terraform-sysdig.yml">Sysdig Terraform Action</a>.
+The process involves two distinct phases:</p>
 <ol>
 <li>
-<p><code>Improved Readability</code>: A descriptive name tells you exactly what the function does, without needing to read the entire implementation. This makes it easier for developers to scan and understand code quickly.</p>
+<p>PR creation
+   Upon the <code>creation of a pull request</code> that includes changes to the Sysdig Terraform script, the pipeline executes a <code>Terraform Plan</code> and comments on the PR regarding the proposed alterations.</p>
 </li>
 <li>
-<p><code>Reduced Need for Comments</code>: When a function name clearly describes its behavior, there's less need to add comments explaining what it does. The name itself serves as documentation.</p>
-</li>
-<li>
-<p><code>Easier Maintenance</code>: Descriptive names help you identify the right function when modifying or debugging code. They make refactoring and collaboration less error-prone, as you don't need to trace every line to understand a function's role.</p>
-</li>
-<li>
-<p><code>Enhanced Code Navigation</code>: In larger codebases or IDEs, descriptive names make it easier to search for and locate specific functionality without digging through lines of code.</p>
-</li>
-<li>
-<p><code>Better Naming Encourages Better Design</code>: When you're forced to think of a good name for a function, it often reveals whether the function is doing too much. If you can't summarize its behavior in a short, clear name, it might need to be split into smaller, more focused functions.</p>
+<p>PR merging
+   Upon approval and <code>merging of the pull request</code>, the pipeline executes a <code>Terraform Apply</code>, implementing the approved changes into the infrastructure.</p>
 </li>
 </ol>
-<h2 id="examples">Examples<a class="headerlink" href="#examples" title="Permanent link">&para;</a></h2>
-<h3 id="good-example-descriptive-name">Good Example (Descriptive Name)<a class="headerlink" href="#good-example-descriptive-name" title="Permanent link">&para;</a></h3>
-<div class="language-js highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-0-1">1</a></span>
-<span class="normal"><a href="#__codelineno-0-2">2</a></span>
-<span class="normal"><a href="#__codelineno-0-3">3</a></span></pre></div></td><td class="code"><div><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1"></a><span class="kd">function</span><span class="w"> </span><span class="nx">sendWelcomeEmail</span><span class="p">(</span><span class="nx">userEmail</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
-</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2"></a><span class="w">  </span><span class="c1">// Logic to send a welcome email to a new user</span>
-</span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3"></a><span class="p">}</span>
-</span></code></pre></div></td></tr></table></div>
-<h3 id="bad-example-vague-name">Bad Example (Vague Name)<a class="headerlink" href="#bad-example-vague-name" title="Permanent link">&para;</a></h3>
-<div class="language-js highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-1-1">1</a></span>
-<span class="normal"><a href="#__codelineno-1-2">2</a></span>
-<span class="normal"><a href="#__codelineno-1-3">3</a></span></pre></div></td><td class="code"><div><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1"></a><span class="kd">function</span><span class="w"> </span><span class="nx">handleEmail</span><span class="p">(</span><span class="nx">userEmail</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
-</span><span id="__span-1-2"><a id="__codelineno-1-2" name="__codelineno-1-2"></a><span class="w">  </span><span class="c1">// What kind of email? Unclear without reading the implementation</span>
-</span><span id="__span-1-3"><a id="__codelineno-1-3" name="__codelineno-1-3"></a><span class="p">}</span>
-</span></code></pre></div></td></tr></table></div>
-<p>In the good example, <code>sendWelcomeEmail</code> clearly indicates what the function does. In the bad example, <code>handleEmail</code> is vague—it could mean sending, receiving, validating, or logging an email.</p>
-<h3 id="another-good-example">Another Good Example<a class="headerlink" href="#another-good-example" title="Permanent link">&para;</a></h3>
-<div class="language-js highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-2-1">1</a></span>
-<span class="normal"><a href="#__codelineno-2-2">2</a></span>
-<span class="normal"><a href="#__codelineno-2-3">3</a></span></pre></div></td><td class="code"><div><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1"></a><span class="kd">function</span><span class="w"> </span><span class="nx">calculateInvoiceTotal</span><span class="p">(</span><span class="nx">invoiceItems</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
-</span><span id="__span-2-2"><a id="__codelineno-2-2" name="__codelineno-2-2"></a><span class="w">  </span><span class="c1">// Logic to sum up item prices, apply taxes or discounts, etc.</span>
-</span><span id="__span-2-3"><a id="__codelineno-2-3" name="__codelineno-2-3"></a><span class="p">}</span>
-</span></code></pre></div></td></tr></table></div>
-<h3 id="another-bad-example">Another Bad Example<a class="headerlink" href="#another-bad-example" title="Permanent link">&para;</a></h3>
-<div class="language-js highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-3-1">1</a></span>
-<span class="normal"><a href="#__codelineno-3-2">2</a></span>
-<span class="normal"><a href="#__codelineno-3-3">3</a></span></pre></div></td><td class="code"><div><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1"></a><span class="kd">function</span><span class="w"> </span><span class="nx">doStuff</span><span class="p">(</span><span class="nx">items</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
-</span><span id="__span-3-2"><a id="__codelineno-3-2" name="__codelineno-3-2"></a><span class="w">  </span><span class="c1">// Unclear what &quot;stuff&quot; means—hard to reason about</span>
-</span><span id="__span-3-3"><a id="__codelineno-3-3" name="__codelineno-3-3"></a><span class="p">}</span>
-</span></code></pre></div></td></tr></table></div>
-<h2 id="considerations-for-long-function-names">Considerations for Long Function Names<a class="headerlink" href="#considerations-for-long-function-names" title="Permanent link">&para;</a></h2>
-<p>While descriptive function names are encouraged, excessively long names can make the code harder to read and maintain. Aim for a <strong>balance between clarity and brevity</strong>. For example, <code>getUserFullName</code> is usually better than <code>getTheCompleteFullNameOfAUserFromTheDatabase</code>.</p>
-<p>When in doubt, prioritize <strong>clarity</strong> over shortness—especially if the function is part of a shared or public API.</p>
 
 
 

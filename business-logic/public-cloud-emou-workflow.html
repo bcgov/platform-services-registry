@@ -7,8 +7,8 @@
 <meta content="width=device-width,initial-scale=1" name="viewport"/>
 <meta content="Platform Services Team" name="author"/>
 <link href="https://bcgov.github.io/platform-services-registry/business-logic/public-cloud-emou-workflow.html" rel="canonical"/>
-<link href="../clean-code/utils-helpers-shared-components.html" rel="prev"/>
-<link href="../research/image-scanner.html" rel="next"/>
+<link href="../code-conventions/naming-conventions.html" rel="prev"/>
+<link href="email-scenarios/private-cloud.html" rel="next"/>
 <link href="../_assets/logo.png" rel="icon"/>
 <meta content="mkdocs-1.6.1, mkdocs-material-9.6.11" name="generator"/>
 <title>Public Cloud eMOU Workflow Diagram - Platform Services Registry</title>
@@ -102,7 +102,7 @@
         </a>
 </li>
 <li class="md-tabs__item">
-<a class="md-tabs__link" href="../github/new-task.html">
+<a class="md-tabs__link" href="../git-github/branching-model.html">
           
   
   
@@ -113,7 +113,7 @@
         </a>
 </li>
 <li class="md-tabs__item">
-<a class="md-tabs__link" href="../ci-cd/release-tag-dispatch.html">
+<a class="md-tabs__link" href="../ci-cd/ci/peer-review.html">
           
   
   
@@ -130,7 +130,7 @@
   
     
   
-  Clean code
+  Code conventions
 
         </a>
 </li>
@@ -164,17 +164,6 @@
     
   
   Tests
-
-        </a>
-</li>
-<li class="md-tabs__item">
-<a class="md-tabs__link" href="../database.html">
-          
-  
-  
-    
-  
-  Docs
 
         </a>
 </li>
@@ -253,6 +242,30 @@
   </span>
 </a>
 </li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../development-setup/react-email.html">
+<span class="md-ellipsis">
+    React Emails
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../development-setup/resource-metrics.html">
+<span class="md-ellipsis">
+    Resource Metrics
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../development-setup/terraform.html">
+<span class="md-ellipsis">
+    Infrastructure Provisioning
+    
+  </span>
+</a>
+</li>
 </ul>
 </nav>
 </li>
@@ -272,7 +285,15 @@
           </label>
 <ul class="md-nav__list" data-md-scrollfix="">
 <li class="md-nav__item">
-<a class="md-nav__link" href="../github/new-task.html">
+<a class="md-nav__link" href="../git-github/branching-model.html">
+<span class="md-ellipsis">
+    Git Branching Model
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../git-github/new-task.html">
 <span class="md-ellipsis">
     New Task branch
     
@@ -280,7 +301,7 @@
 </a>
 </li>
 <li class="md-nav__item">
-<a class="md-nav__link" href="../github/clean-pr.html">
+<a class="md-nav__link" href="../git-github/clean-pr.html">
 <span class="md-ellipsis">
     Clean task PR
     
@@ -288,7 +309,7 @@
 </a>
 </li>
 <li class="md-nav__item">
-<a class="md-nav__link" href="../github/bot-pr-review.html">
+<a class="md-nav__link" href="../git-github/bot-pr-review.html">
 <span class="md-ellipsis">
     Renovate Bot PR Review
     
@@ -296,7 +317,7 @@
 </a>
 </li>
 <li class="md-nav__item">
-<a class="md-nav__link" href="../github/rocketchat-notification.html">
+<a class="md-nav__link" href="../git-github/rocketchat-notification.html">
 <span class="md-ellipsis">
     RocketChat Deployment Notifications
     
@@ -325,7 +346,7 @@
 <input class="md-nav__toggle md-toggle" id="__nav_4_1" type="checkbox"/>
 <label class="md-nav__link" for="__nav_4_1" id="__nav_4_1_label" tabindex="0">
 <span class="md-ellipsis">
-    CD (Continuous Deployment)
+    CI (Continuous Integration)
     
   </span>
 <span class="md-nav__icon md-icon"></span>
@@ -333,13 +354,87 @@
 <nav aria-expanded="false" aria-labelledby="__nav_4_1_label" class="md-nav" data-md-level="2">
 <label class="md-nav__title" for="__nav_4_1">
 <span class="md-nav__icon md-icon"></span>
+            CI (Continuous Integration)
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../ci-cd/ci/peer-review.html">
+<span class="md-ellipsis">
+    Peer Review Protocol
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../ci-cd/ci/checks.html">
+<span class="md-ellipsis">
+    CI Pipeline Checks
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../ci-cd/ci/dependency-update.html">
+<span class="md-ellipsis">
+    Automated Dependency Updates
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../ci-cd/ci/secret-scanning.html">
+<span class="md-ellipsis">
+    Secret Scanning
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle" id="__nav_4_2" type="checkbox"/>
+<label class="md-nav__link" for="__nav_4_2" id="__nav_4_2_label" tabindex="0">
+<span class="md-ellipsis">
+    CD (Continuous Deployment)
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_4_2_label" class="md-nav" data-md-level="2">
+<label class="md-nav__title" for="__nav_4_2">
+<span class="md-nav__icon md-icon"></span>
             CD (Continuous Deployment)
           </label>
 <ul class="md-nav__list" data-md-scrollfix="">
 <li class="md-nav__item">
-<a class="md-nav__link" href="../ci-cd/release-tag-dispatch.html">
+<a class="md-nav__link" href="../ci-cd/cd/deployment-release.html">
+<span class="md-ellipsis">
+    Deployment &amp; Release Life Cycle
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../ci-cd/cd/release-tag-dispatch.html">
 <span class="md-ellipsis">
     Release Tag Dispatch Workflow
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../ci-cd/cd/debug-failed-deployments.html">
+<span class="md-ellipsis">
+    Debugging Helm Deployment Failure Issues
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../ci-cd/cd/database.html">
+<span class="md-ellipsis">
+    Database
     
   </span>
 </a>
@@ -354,13 +449,28 @@
 <input class="md-nav__toggle md-toggle" id="__nav_5" type="checkbox"/>
 <label class="md-nav__link" for="__nav_5" id="__nav_5_label" tabindex="0">
 <span class="md-ellipsis">
-    Clean code
+    Code conventions
     
   </span>
 <span class="md-nav__icon md-icon"></span>
 </label>
 <nav aria-expanded="false" aria-labelledby="__nav_5_label" class="md-nav" data-md-level="1">
 <label class="md-nav__title" for="__nav_5">
+<span class="md-nav__icon md-icon"></span>
+            Code conventions
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle" id="__nav_5_1" type="checkbox"/>
+<label class="md-nav__link" for="__nav_5_1" id="__nav_5_1_label" tabindex="0">
+<span class="md-ellipsis">
+    Clean code
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_5_1_label" class="md-nav" data-md-level="2">
+<label class="md-nav__title" for="__nav_5_1">
 <span class="md-nav__icon md-icon"></span>
             Clean code
           </label>
@@ -409,6 +519,17 @@
 <a class="md-nav__link" href="../clean-code/utils-helpers-shared-components.html">
 <span class="md-ellipsis">
     Use Utils, Helpers, and Shared Components
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../code-conventions/naming-conventions.html">
+<span class="md-ellipsis">
+    Naming Conventions
     
   </span>
 </a>
@@ -476,6 +597,40 @@
 </ul>
 </nav>
 </li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle" id="__nav_6_2" type="checkbox"/>
+<label class="md-nav__link" for="__nav_6_2" id="__nav_6_2_label" tabindex="0">
+<span class="md-ellipsis">
+    Email Scenarios
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_6_2_label" class="md-nav" data-md-level="2">
+<label class="md-nav__title" for="__nav_6_2">
+<span class="md-nav__icon md-icon"></span>
+            Email Scenarios
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="email-scenarios/private-cloud.html">
+<span class="md-ellipsis">
+    Private Cloud
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="email-scenarios/public-cloud.html">
+<span class="md-ellipsis">
+    Public Cloud
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
 </ul>
 </nav>
 </li>
@@ -524,96 +679,6 @@
 <a class="md-nav__link" href="../tests/api-testing.html">
 <span class="md-ellipsis">
     API Testing
-    
-  </span>
-</a>
-</li>
-</ul>
-</nav>
-</li>
-<li class="md-nav__item md-nav__item--nested">
-<input class="md-nav__toggle md-toggle" id="__nav_9" type="checkbox"/>
-<label class="md-nav__link" for="__nav_9" id="__nav_9_label" tabindex="0">
-<span class="md-ellipsis">
-    Docs
-    
-  </span>
-<span class="md-nav__icon md-icon"></span>
-</label>
-<nav aria-expanded="false" aria-labelledby="__nav_9_label" class="md-nav" data-md-level="1">
-<label class="md-nav__title" for="__nav_9">
-<span class="md-nav__icon md-icon"></span>
-            Docs
-          </label>
-<ul class="md-nav__list" data-md-scrollfix="">
-<li class="md-nav__item">
-<a class="md-nav__link" href="../database.html">
-<span class="md-ellipsis">
-    Database
-    
-  </span>
-</a>
-</li>
-<li class="md-nav__item">
-<a class="md-nav__link" href="../debug-deployments.html">
-<span class="md-ellipsis">
-    Debugging Helm Deployment Failure Issues
-    
-  </span>
-</a>
-</li>
-<li class="md-nav__item">
-<a class="md-nav__link" href="../email-scenarios-private-cloud.html">
-<span class="md-ellipsis">
-    Email scenarios private cloud
-    
-  </span>
-</a>
-</li>
-<li class="md-nav__item">
-<a class="md-nav__link" href="../email-scenarios-public-cloud.html">
-<span class="md-ellipsis">
-    Email scenarios public cloud
-    
-  </span>
-</a>
-</li>
-<li class="md-nav__item">
-<a class="md-nav__link" href="../react-email.html">
-<span class="md-ellipsis">
-    React email
-    
-  </span>
-</a>
-</li>
-<li class="md-nav__item">
-<a class="md-nav__link" href="../resource-metrics.html">
-<span class="md-ellipsis">
-    Resource metrics
-    
-  </span>
-</a>
-</li>
-<li class="md-nav__item">
-<a class="md-nav__link" href="../selecting-image-scanner.md">
-<span class="md-ellipsis">
-    None
-    
-  </span>
-</a>
-</li>
-<li class="md-nav__item">
-<a class="md-nav__link" href="../team-conventions.html">
-<span class="md-ellipsis">
-    Team Conventions
-    
-  </span>
-</a>
-</li>
-<li class="md-nav__item">
-<a class="md-nav__link" href="../terraform.html">
-<span class="md-ellipsis">
-    Terraform Configuration for Infrastructure Provisioning
     
   </span>
 </a>
