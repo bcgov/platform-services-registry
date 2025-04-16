@@ -73,15 +73,22 @@ nav:
   - development-setup/resource-metrics.md
   - development-setup/terraform.md
 - Git & Github:
-  - github/new-task.md
-  - github/clean-pr.md
-  - github/bot-pr-review.md
-  - github/rocketchat-notification.md
+  - git-github/branching-model.md
+  - git-github/new-task.md
+  - git-github/clean-pr.md
+  - git-github/bot-pr-review.md
+  - git-github/rocketchat-notification.md
 - CI / CD:
+  - CI (Continuous Integration):
+    - ci-cd/ci/peer-review.md
+    - ci-cd/ci/checks.md
+    - ci-cd/ci/dependency-update.md
+    - ci-cd/ci/secret-scanning.md
   - CD (Continuous Deployment):
-    - ci-cd/release-tag-dispatch.md
-    - ci-cd/debug-failed-deployments.md
-    - ci-cd/database.md
+    - ci-cd/cd/deployment-release.md
+    - ci-cd/cd/release-tag-dispatch.md
+    - ci-cd/cd/debug-failed-deployments.md
+    - ci-cd/cd/database.md
 - Code conventions:
   - Clean code:
     - clean-code/return-early.md
@@ -90,7 +97,7 @@ nav:
     - clean-code/falsy-check-early.md
     - clean-code/small-components-functions.md
     - clean-code/utils-helpers-shared-components.md
-  - code-conventions/team-conventions.md
+  - code-conventions/naming-conventions.md
 - Business logic:
   - business-logic/public-cloud-emou-workflow.md
   - Email Scenarios:
