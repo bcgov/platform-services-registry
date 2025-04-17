@@ -95,8 +95,7 @@ function createClientPage<TPathParams extends ZodType<any, any>, TQueryParams ex
           const params = await paramsProm;
           const parsed = validations?.pathParams.safeParse(params);
           if (!parsed.success) {
-            handleAccessRedirect();
-            return;
+            return router.push(fallbackUrl);
           }
 
           return parsed.data;
@@ -112,8 +111,7 @@ function createClientPage<TPathParams extends ZodType<any, any>, TQueryParams ex
           const query = parseQueryString(searchParams);
           const parsed = validations?.queryParams.safeParse(query);
           if (!parsed.success) {
-            handleAccessRedirect();
-            return;
+            return router.push(fallbackUrl);
           }
 
           return parsed.data;
