@@ -4,7 +4,7 @@
 
 Conventional Commits provide a structured way to format commit messages. This improves readability, enables automated processes like changelog generation and versioning, and enhances collaboration through clearer communication in code repositories.
 
-- Please refer to https://www.conventionalcommits.org/ for more detailed information.
+- Please refer to [Conventional Commits](https://www.conventionalcommits.org/){target="\_blank" rel="noopener noreferrer"} for more detailed information.
 
 ### Examples
 
