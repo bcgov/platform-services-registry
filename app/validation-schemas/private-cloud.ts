@@ -12,6 +12,7 @@ import { AGMinistries, phoneNumberRegex } from '@/constants';
 import { validateDistinctPOandTl } from '@/helpers/user';
 import { processEnumString, processBoolean } from '@/utils/js';
 import { RequestDecision } from './shared';
+import { commentSchema } from './shared';
 
 export const resourceRequestsSchema = z.object({
   cpu: z
@@ -82,7 +83,7 @@ export const _privateCloudCreateRequestBodySchema = z.object({
         message: 'Invalid phone number format. Expected format: +1 (xxx) xxx-xxxx',
       },
     ),
-  requestComment: string().nullable(),
+  requestComment: commentSchema,
 });
 
 export const privateCloudProductWebhookBodySchema = z.object({
@@ -123,7 +124,7 @@ export const privateCloudCreateRequestBodySchema = _privateCloudCreateRequestBod
 
 const _privateCloudEditRequestBodySchema = _privateCloudCreateRequestBodySchema.merge(
   z.object({
-    requestComment: string().nullable(),
+    requestComment: commentSchema,
     members: privateCloudProductMembers,
   }),
 );
@@ -152,7 +153,7 @@ export const privateCloudRequestDecisionBodySchema = _privateCloudEditRequestBod
   z.object({
     type: z.nativeEnum(RequestType),
     decision: z.nativeEnum(RequestDecision),
-    decisionComment: string().nullable(),
+    decisionComment: commentSchema,
   }),
 );
 
