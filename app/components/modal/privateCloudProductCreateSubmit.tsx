@@ -11,6 +11,7 @@ import FormError from '@/components/generic/FormError';
 import HookFormTextarea from '@/components/generic/input/HookFormTextarea';
 import { createModal } from '@/core/modal';
 import { createPrivateCloudProduct } from '@/services/backend/private-cloud/products';
+import { commentSchema } from '@/validation-schemas';
 import { success } from '../notification';
 import { openNotificationModal } from './notification';
 
@@ -32,7 +33,7 @@ export const openPrivateCloudProductCreateSubmitModal = createModal<ModalProps, 
       resolver: zodResolver(
         z.object({
           confirmed: z.boolean().refine((bool) => bool == true, { message: 'Please confirm the agreement.' }),
-          requestComment: z.string().max(1000).optional(),
+          requestComment: commentSchema,
         }),
       ),
       defaultValues: {

@@ -1,5 +1,5 @@
 import { DecisionStatus, RequestType } from '@prisma/client';
-import { GlobalRole } from '@/constants';
+import { defaultAccountCoding, GlobalRole } from '@/constants';
 import prisma from '@/core/prisma';
 import { createSamplePublicCloudProductData } from '@/helpers/mock-resources';
 import { mockSessionByEmail, mockSessionByRole } from '@/services/api-test/core';
@@ -24,7 +24,7 @@ async function runPublicCloudMouWorkflows(reqData: any) {
 
   await mockSessionByEmail(decisionData.expenseAuthority.email);
   let response = await signPublicCloudBilling(reqData.licencePlate, billing.id, {
-    accountCoding: billing.accountCoding,
+    accountCoding: billing.accountCoding.cc ? billing.accountCoding : defaultAccountCoding,
     confirmed: true,
   });
 

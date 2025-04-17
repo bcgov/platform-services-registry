@@ -12,7 +12,7 @@ import { AGMinistries } from '@/constants';
 import { validateDistinctPOandTl } from '@/helpers/user';
 import { ProductBiliingStatus } from '@/types';
 import { processEnumString } from '@/utils/js';
-import { RequestDecision } from './shared';
+import { RequestDecision, commentSchema } from './shared';
 
 export const getBudgetSchema = (provider: Provider) => {
   if (provider === Provider.AZURE) {
@@ -36,10 +36,10 @@ export const getBudgetSchema = (provider: Provider) => {
 };
 
 const budgetSchema = z.object({
-  dev: z.number().min(0).default(0),
-  test: z.number().min(0).default(0),
-  prod: z.number().min(0).default(0),
-  tools: z.number().min(0).default(0),
+  dev: z.number().min(0),
+  test: z.number().min(0),
+  prod: z.number().min(0),
+  tools: z.number().min(0),
 });
 
 const publicCloudProductMembers = z
@@ -69,7 +69,7 @@ const _publicCloudCreateRequestBodySchema = z.object({
   primaryTechnicalLeadId: z.string().length(24),
   secondaryTechnicalLeadId: z.string().length(24).or(z.literal('')).nullable().optional(),
   expenseAuthorityId: z.string().length(24),
-  requestComment: string().optional(),
+  requestComment: commentSchema,
   environmentsEnabled: z
     .object({
       development: z.boolean(),
@@ -147,7 +147,7 @@ export const publicCloudRequestDecisionBodySchema = _publicCloudEditRequestBodyS
   z.object({
     type: z.nativeEnum(RequestType),
     decision: z.nativeEnum(RequestDecision),
-    decisionComment: string().optional(),
+    decisionComment: commentSchema,
   }),
 );
 

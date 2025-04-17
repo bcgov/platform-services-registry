@@ -68,9 +68,8 @@ export default publicCloudProductRequest(({ router }) => {
     enabled: publicProductSnap?.currentRequest?.type === RequestType.CREATE,
   });
 
-  const form = useForm({
-    resolver: (...args) => {
-      const [values] = args;
+  const form = useForm<PublicCloudRequestDecisionBody>({
+    resolver: (values, context, options) => {
       const isDeleteRequest = values.type === RequestType.DELETE;
 
       // Ignore form validation if a DELETE request
@@ -81,13 +80,15 @@ export default publicCloudProductRequest(({ router }) => {
         };
       }
 
-      return zodResolver(publicCloudRequestDecisionBodySchema)(...args);
+      return zodResolver(publicCloudRequestDecisionBodySchema)(values, context, options);
     },
     defaultValues: {
+      requestComment: '',
       decisionComment: '',
-      decision: RequestDecision.APPROVED as RequestDecision,
+      decision: RequestDecision.APPROVED,
       type: publicProductSnap.currentRequest?.type,
       ...publicProductSnap.currentRequest?.decisionData,
+      expenseAuthorityId: publicProductSnap.currentRequest?.decisionData?.expenseAuthorityId ?? '',
     },
   });
 
@@ -184,7 +185,7 @@ export default publicCloudProductRequest(({ router }) => {
             await openPublicCloudRequestReviewModal(
               {
                 request: publicProductSnap.currentRequest,
-                finalData: formData as PublicCloudRequestDecisionBody,
+                finalData: formData,
               },
               { settings: { title: `${decision === RequestDecision.APPROVED ? 'Approve' : 'Reject'} Request` } },
             );

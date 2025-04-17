@@ -15,6 +15,7 @@ import { createModal } from '@/core/modal';
 import { comparePrivateProductData, PrivateProductChange } from '@/helpers/product-change';
 import { editPrivateCloudProduct } from '@/services/backend/private-cloud/products';
 import { usePrivateProductState } from '@/states/global';
+import { commentSchema } from '@/validation-schemas';
 import { openNotificationModal } from './notification';
 
 interface ModalProps {
@@ -38,7 +39,7 @@ export const openPrivateCloudProductEditSubmitModal = createModal<ModalProps, Mo
     const methods = useForm({
       resolver: zodResolver(
         z.object({
-          requestComment: z.string().max(1000).optional(),
+          requestComment: commentSchema,
         }),
       ),
       defaultValues: {
