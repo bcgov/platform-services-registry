@@ -2,14 +2,7 @@
 
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Button } from '@mantine/core';
-import {
-  IconInfoCircle,
-  IconUsersGroup,
-  IconUserDollar,
-  IconLayoutGridAdd,
-  IconMoneybag,
-  IconReceipt2,
-} from '@tabler/icons-react';
+import { IconInfoCircle, IconUsersGroup, IconLayoutGridAdd, IconMoneybag } from '@tabler/icons-react';
 import { useEffect, useState } from 'react';
 import { FormProvider, useForm } from 'react-hook-form';
 import { z } from 'zod';
@@ -22,9 +15,10 @@ import FormErrorNotification from '@/components/generic/FormErrorNotification';
 import { openPublicCloudProductEditSubmitModal } from '@/components/modal/publicCloudProductEditSubmit';
 import AdditionalTeamMembers from '@/components/public-cloud/sections/AdditionalTeamMembers';
 import TeamContacts from '@/components/public-cloud/sections/TeamContacts';
-import { AGMinistries, GlobalRole } from '@/constants';
+import { GlobalRole } from '@/constants';
 import createClientPage from '@/core/client-page';
 import { usePublicProductState } from '@/states/global';
+import { PublicCloudProductDetailDecorated } from '@/types/public-cloud';
 import { publicCloudEditRequestBodySchema } from '@/validation-schemas/public-cloud';
 
 const pathParamSchema = z.object({
@@ -42,7 +36,7 @@ export default publicCloudProductEdit(({}) => {
   const methods = useForm({
     resolver: zodResolver(publicCloudEditRequestBodySchema),
     defaultValues: {
-      ...snap.currentProduct,
+      ...(snap.currentProduct as PublicCloudProductDetailDecorated & { expenseAuthorityId: string }),
       isAgMinistryChecked: true,
     },
   });

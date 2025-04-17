@@ -58,9 +58,8 @@ export default privateCloudRequestDecision(({ getPathParams, session, router }) 
       return;
     }
   }, [snap.currentRequest, router]);
-  const methods = useForm({
-    resolver: (...args) => {
-      const [values] = args;
+  const methods = useForm<PrivateCloudRequestDecisionBody>({
+    resolver: (values, context, options) => {
       const isDeleteRequest = values.type === RequestType.DELETE;
 
       // Ignore form validation if a DELETE request
@@ -71,7 +70,7 @@ export default privateCloudRequestDecision(({ getPathParams, session, router }) 
         };
       }
 
-      return zodResolver(privateCloudRequestDecisionBodySchema)(...args);
+      return zodResolver(privateCloudRequestDecisionBodySchema)(values, context, options);
     },
     defaultValues: {
       decisionComment: '',

@@ -20,7 +20,7 @@ import { GlobalRole } from '@/constants';
 import createClientPage from '@/core/client-page';
 import { getQuotaChangeStatus } from '@/services/backend/private-cloud/products';
 import { usePrivateProductState } from '@/states/global';
-import { privateCloudEditRequestBodySchema } from '@/validation-schemas/private-cloud';
+import { PrivateCloudEditRequestBody, privateCloudEditRequestBodySchema } from '@/validation-schemas/private-cloud';
 
 const pathParamSchema = z.object({
   licencePlate: z.string(),
@@ -34,9 +34,9 @@ export default privateCloudProductEdit(({ session }) => {
   const [, snap] = usePrivateProductState();
   const [isDisabled, setDisabled] = useState(false);
 
-  const methods = useForm({
-    resolver: async (...args) => {
-      const { resourceRequests } = args[0];
+  const methods = useForm<PrivateCloudEditRequestBody>({
+    resolver: async (values, context, options) => {
+      const { resourceRequests } = values;
 
       const quotaChangeStatus = await getQuotaChangeStatus(snap.licencePlate, resourceRequests as ResourceRequestsEnv);
 
@@ -81,7 +81,7 @@ export default privateCloudProductEdit(({ session }) => {
 
             return formData;
           }),
-      )(...args);
+      )(values, context, options);
     },
     defaultValues: {
       ...snap.currentProduct,
