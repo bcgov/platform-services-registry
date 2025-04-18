@@ -64,7 +64,7 @@ theme:
     logo: logo
 
 nav:
-- Home: index.md
+- Home: home/main.md
 - Development setup:
   - development-setup/local-development-environment.md
   - development-setup/sandbox.md
@@ -98,6 +98,12 @@ nav:
     - clean-code/small-components-functions.md
     - clean-code/utils-helpers-shared-components.md
   - code-conventions/naming-conventions.md
+  - Data Communication:
+    - code-conventions/data-communication/data-communication.md
+    - code-conventions/data-communication/backend-api.md
+    - code-conventions/data-communication/service-layer.md
+    - code-conventions/data-communication/data-fetching.md
+    - code-conventions/data-communication/react-view-layer.md
 - Business logic:
   - business-logic/public-cloud-emou-workflow.md
   - Email Scenarios:
