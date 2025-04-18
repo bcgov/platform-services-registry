@@ -10,13 +10,13 @@
         <meta name="author" content="Platform Services Team">
       
       
-        <link rel="canonical" href="https://bcgov.github.io/platform-services-registry/ci-cd/cd/database.html">
+        <link rel="canonical" href="https://bcgov.github.io/platform-services-registry/code-conventions/data-communication/react-view-layer.html">
       
       
-        <link rel="prev" href="debug-failed-deployments.html">
+        <link rel="prev" href="data-fetching.html">
       
       
-        <link rel="next" href="../../clean-code/return-early.html">
+        <link rel="next" href="../../business-logic/public-cloud-emou-workflow.html">
       
       
       <link rel="icon" href="../../_assets/logo.png">
@@ -24,7 +24,7 @@
     
     
       
-        <title>Database - Platform Services Registry</title>
+        <title>React View Layer - Platform Services Registry</title>
       
     
     
@@ -76,7 +76,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#database" class="md-skip">
+        <a href="#react-view-layer" class="md-skip">
           Skip to content
         </a>
       
@@ -111,7 +111,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              Database
+              React View Layer
             
           </span>
         </div>
@@ -237,8 +237,6 @@
   
   
   
-    
-  
   
     
     
@@ -246,13 +244,11 @@
   
   
   
-    
-  
   
     
     
-      <li class="md-tabs__item md-tabs__item--active">
-        <a href="../ci/peer-review.html" class="md-tabs__link">
+      <li class="md-tabs__item">
+        <a href="../../ci-cd/ci/peer-review.html" class="md-tabs__link">
           
   
   
@@ -273,6 +269,8 @@
   
   
   
+    
+  
   
     
     
@@ -280,10 +278,12 @@
   
   
   
+    
+  
   
     
     
-      <li class="md-tabs__item">
+      <li class="md-tabs__item md-tabs__item--active">
         <a href="../../clean-code/return-early.html" class="md-tabs__link">
           
   
@@ -818,10 +818,8 @@
       
   
   
-    
   
   
-  
     
     
       
@@ -833,20 +831,17 @@
     
     
       
-        
-        
-      
       
     
     
-    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+    <li class="md-nav__item md-nav__item--nested">
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4" checked>
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4" >
         
           
-          <label class="md-nav__link" for="__nav_4" id="__nav_4_label" tabindex="">
+          <label class="md-nav__link" for="__nav_4" id="__nav_4_label" tabindex="0">
             
   
   
@@ -859,7 +854,7 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="true">
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="false">
           <label class="md-nav__title" for="__nav_4">
             <span class="md-nav__icon md-icon"></span>
             CI / CD
@@ -924,7 +919,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../ci/peer-review.html" class="md-nav__link">
+      <a href="../../ci-cd/ci/peer-review.html" class="md-nav__link">
         
   
   
@@ -947,7 +942,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../ci/checks.html" class="md-nav__link">
+      <a href="../../ci-cd/ci/checks.html" class="md-nav__link">
         
   
   
@@ -970,7 +965,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../ci/dependency-update.html" class="md-nav__link">
+      <a href="../../ci-cd/ci/dependency-update.html" class="md-nav__link">
         
   
   
@@ -993,7 +988,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../ci/secret-scanning.html" class="md-nav__link">
+      <a href="../../ci-cd/ci/secret-scanning.html" class="md-nav__link">
         
   
   
@@ -1021,10 +1016,8 @@
                 
   
   
-    
   
   
-  
     
     
       
@@ -1043,11 +1036,11 @@
       
     
     
-    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+    <li class="md-nav__item md-nav__item--nested">
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4_2" checked>
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4_2" >
         
           
           <label class="md-nav__link" for="__nav_4_2" id="__nav_4_2_label" tabindex="0">
@@ -1063,7 +1056,7 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_4_2_label" aria-expanded="true">
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_4_2_label" aria-expanded="false">
           <label class="md-nav__title" for="__nav_4_2">
             <span class="md-nav__icon md-icon"></span>
             CD (Continuous Deployment)
@@ -1077,7 +1070,7 @@
   
   
     <li class="md-nav__item">
-      <a href="deployment-release.html" class="md-nav__link">
+      <a href="../../ci-cd/cd/deployment-release.html" class="md-nav__link">
         
   
   
@@ -1100,7 +1093,7 @@
   
   
     <li class="md-nav__item">
-      <a href="release-tag-dispatch.html" class="md-nav__link">
+      <a href="../../ci-cd/cd/release-tag-dispatch.html" class="md-nav__link">
         
   
   
@@ -1123,7 +1116,7 @@
   
   
     <li class="md-nav__item">
-      <a href="debug-failed-deployments.html" class="md-nav__link">
+      <a href="../../ci-cd/cd/debug-failed-deployments.html" class="md-nav__link">
         
   
   
@@ -1143,32 +1136,10 @@
                 
   
   
-    
   
   
-  
-    <li class="md-nav__item md-nav__item--active">
-      
-      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
-      
-      
-        
-      
-      
-        <label class="md-nav__link md-nav__link--active" for="__toc">
-          
-  
-  
-  <span class="md-ellipsis">
-    Database
-    
-  </span>
-  
-
-          <span class="md-nav__icon md-icon"></span>
-        </label>
-      
-      <a href="database.html" class="md-nav__link md-nav__link--active">
+    <li class="md-nav__item">
+      <a href="../../ci-cd/cd/database.html" class="md-nav__link">
         
   
   
@@ -1179,68 +1150,6 @@
   
 
       </a>
-      
-        
-
-<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
-  
-  
-  
-    
-  
-  
-    <label class="md-nav__title" for="__toc">
-      <span class="md-nav__icon md-icon"></span>
-      Table of contents
-    </label>
-    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
-      
-        <li class="md-nav__item">
-  <a href="#backup-and-restore-procedures" class="md-nav__link">
-    <span class="md-ellipsis">
-      Backup and Restore Procedures
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="Backup and Restore Procedures">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#backup-configuration" class="md-nav__link">
-    <span class="md-ellipsis">
-      Backup Configuration
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#backup-steps" class="md-nav__link">
-    <span class="md-ellipsis">
-      Backup Steps
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#restore-steps" class="md-nav__link">
-    <span class="md-ellipsis">
-      Restore Steps
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-    </ul>
-  
-</nav>
-      
     </li>
   
 
@@ -1265,8 +1174,10 @@
       
   
   
+    
   
   
+  
     
     
       
@@ -1280,17 +1191,20 @@
     
     
       
+        
+        
+      
       
     
     
-    <li class="md-nav__item md-nav__item--nested">
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5" >
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5" checked>
         
           
-          <label class="md-nav__link" for="__nav_5" id="__nav_5_label" tabindex="0">
+          <label class="md-nav__link" for="__nav_5" id="__nav_5_label" tabindex="">
             
   
   
@@ -1303,7 +1217,7 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_5_label" aria-expanded="false">
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_5_label" aria-expanded="true">
           <label class="md-nav__title" for="__nav_5">
             <span class="md-nav__icon md-icon"></span>
             Code conventions
@@ -1518,7 +1432,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../code-conventions/naming-conventions.html" class="md-nav__link">
+      <a href="../naming-conventions.html" class="md-nav__link">
         
   
   
@@ -1538,8 +1452,10 @@
                 
   
   
+    
   
   
+  
     
     
       
@@ -1560,11 +1476,11 @@
       
     
     
-    <li class="md-nav__item md-nav__item--nested">
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5_3" >
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5_3" checked>
         
           
           <label class="md-nav__link" for="__nav_5_3" id="__nav_5_3_label" tabindex="0">
@@ -1580,7 +1496,7 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_5_3_label" aria-expanded="false">
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_5_3_label" aria-expanded="true">
           <label class="md-nav__title" for="__nav_5_3">
             <span class="md-nav__icon md-icon"></span>
             Data Communication
@@ -1594,7 +1510,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../code-conventions/data-communication/data-communication.html" class="md-nav__link">
+      <a href="data-communication.html" class="md-nav__link">
         
   
   
@@ -1617,7 +1533,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../code-conventions/data-communication/backend-api.html" class="md-nav__link">
+      <a href="backend-api.html" class="md-nav__link">
         
   
   
@@ -1640,7 +1556,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../code-conventions/data-communication/service-layer.html" class="md-nav__link">
+      <a href="service-layer.html" class="md-nav__link">
         
   
   
@@ -1663,7 +1579,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../code-conventions/data-communication/data-fetching.html" class="md-nav__link">
+      <a href="data-fetching.html" class="md-nav__link">
         
   
   
@@ -1683,10 +1599,32 @@
                 
   
   
+    
   
   
-    <li class="md-nav__item">
-      <a href="../../code-conventions/data-communication/react-view-layer.html" class="md-nav__link">
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    React View Layer
+    
+  </span>
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="react-view-layer.html" class="md-nav__link md-nav__link--active">
         
   
   
@@ -1697,6 +1635,50 @@
   
 
       </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#conventions" class="md-nav__link">
+    <span class="md-ellipsis">
+      Conventions
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Conventions">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#example" class="md-nav__link">
+    <span class="md-ellipsis">
+      Example
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
     </li>
   
 
@@ -2072,37 +2054,19 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#backup-and-restore-procedures" class="md-nav__link">
+  <a href="#conventions" class="md-nav__link">
     <span class="md-ellipsis">
-      Backup and Restore Procedures
+      Conventions
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="Backup and Restore Procedures">
+    <nav class="md-nav" aria-label="Conventions">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#backup-configuration" class="md-nav__link">
+  <a href="#example" class="md-nav__link">
     <span class="md-ellipsis">
-      Backup Configuration
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#backup-steps" class="md-nav__link">
-    <span class="md-ellipsis">
-      Backup Steps
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#restore-steps" class="md-nav__link">
-    <span class="md-ellipsis">
-      Restore Steps
+      Example
     </span>
   </a>
   
@@ -2132,28 +2096,186 @@
   
 
 
-<h1 id="database">Database<a class="headerlink" href="#database" title="Permanent link">&para;</a></h1>
-<h2 id="backup-and-restore-procedures">Backup and Restore Procedures<a class="headerlink" href="#backup-and-restore-procedures" title="Permanent link">&para;</a></h2>
-<p>To facilitate the backup and restore processes, we utilize a container running MongoDB tools available at <a href="https://github.com/egose/database-tools" rel="noopener noreferrer" target="_blank">database-tools</a>.</p>
-<h3 id="backup-configuration">Backup Configuration<a class="headerlink" href="#backup-configuration" title="Permanent link">&para;</a></h3>
-<ul>
-<li>The Kubernetes deployment template for the backup process can be found at <a href="https://github.com/bcgov/platform-services-registry/blob/main/helm/main/templates/mongodb-backup.yaml" rel="noopener noreferrer" target="_blank">mongodb-backup.yaml</a>. This template orchestrates the deployment of the MongoDB tools container.</li>
-<li>A notification mechanism has been set up to inform the designated RocketChat channel about the status of the backup operation.</li>
-</ul>
-<h3 id="backup-steps">Backup Steps<a class="headerlink" href="#backup-steps" title="Permanent link">&para;</a></h3>
-<p>The backup procedure is initiated at regular intervals according to the cron schedule set by the backup container. However, there are occasions when manual backup is required, such as before deploying to the production environment. To back up the database, follow these steps:</p>
-<div class="language-sh highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-0-1">1</a></span>
-<span class="normal"><a href="#__codelineno-0-2">2</a></span></pre></div></td><td class="code"><div><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1"></a>oc<span class="w"> </span>rsh<span class="w"> </span>&lt;backup-pod-name&gt;
-</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2"></a>mongo-archive<span class="w"> </span>--db<span class="o">=</span>pltsvc<span class="w"> </span>--read-preference<span class="o">=</span>secondaryPreferred<span class="w"> </span>--force-table-scan<span class="w"> </span>--cron<span class="o">=</span><span class="nb">false</span>
+<h1 id="react-view-layer">React View Layer<a class="headerlink" href="#react-view-layer" title="Permanent link">&para;</a></h1>
+<p>The React view layer is responsible for displaying data and handling user interactions. We use <a href="https://react-hook-form.com/" rel="noopener noreferrer" target="_blank">React Hook Form</a> to collect and validate form data for creating or modifying resources.</p>
+<h2 id="conventions">Conventions<a class="headerlink" href="#conventions" title="Permanent link">&para;</a></h2>
+<p>Form components are built using <code>React Hook Form</code>, with schema validation provided by <code>zod</code> via the <code>@hookform/resolvers/zod</code> package. This pattern ensures consistent validation logic on both the client and server sides.</p>
+<h3 id="example">Example<a class="headerlink" href="#example" title="Permanent link">&para;</a></h3>
+<div class="language-ts highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-0-1"> 1</a></span>
+<span class="normal"><a href="#__codelineno-0-2"> 2</a></span>
+<span class="normal"><a href="#__codelineno-0-3"> 3</a></span>
+<span class="normal"><a href="#__codelineno-0-4"> 4</a></span>
+<span class="normal"><a href="#__codelineno-0-5"> 5</a></span>
+<span class="normal"><a href="#__codelineno-0-6"> 6</a></span>
+<span class="normal"><a href="#__codelineno-0-7"> 7</a></span>
+<span class="normal"><a href="#__codelineno-0-8"> 8</a></span>
+<span class="normal"><a href="#__codelineno-0-9"> 9</a></span>
+<span class="normal"><a href="#__codelineno-0-10">10</a></span>
+<span class="normal"><a href="#__codelineno-0-11">11</a></span>
+<span class="normal"><a href="#__codelineno-0-12">12</a></span>
+<span class="normal"><a href="#__codelineno-0-13">13</a></span>
+<span class="normal"><a href="#__codelineno-0-14">14</a></span>
+<span class="normal"><a href="#__codelineno-0-15">15</a></span>
+<span class="normal"><a href="#__codelineno-0-16">16</a></span>
+<span class="normal"><a href="#__codelineno-0-17">17</a></span>
+<span class="normal"><a href="#__codelineno-0-18">18</a></span>
+<span class="normal"><a href="#__codelineno-0-19">19</a></span>
+<span class="normal"><a href="#__codelineno-0-20">20</a></span>
+<span class="normal"><a href="#__codelineno-0-21">21</a></span>
+<span class="normal"><a href="#__codelineno-0-22">22</a></span>
+<span class="normal"><a href="#__codelineno-0-23">23</a></span>
+<span class="normal"><a href="#__codelineno-0-24">24</a></span>
+<span class="normal"><a href="#__codelineno-0-25">25</a></span>
+<span class="normal"><a href="#__codelineno-0-26">26</a></span>
+<span class="normal"><a href="#__codelineno-0-27">27</a></span>
+<span class="normal"><a href="#__codelineno-0-28">28</a></span>
+<span class="normal"><a href="#__codelineno-0-29">29</a></span>
+<span class="normal"><a href="#__codelineno-0-30">30</a></span>
+<span class="normal"><a href="#__codelineno-0-31">31</a></span>
+<span class="normal"><a href="#__codelineno-0-32">32</a></span>
+<span class="normal"><a href="#__codelineno-0-33">33</a></span>
+<span class="normal"><a href="#__codelineno-0-34">34</a></span>
+<span class="normal"><a href="#__codelineno-0-35">35</a></span>
+<span class="normal"><a href="#__codelineno-0-36">36</a></span>
+<span class="normal"><a href="#__codelineno-0-37">37</a></span>
+<span class="normal"><a href="#__codelineno-0-38">38</a></span>
+<span class="normal"><a href="#__codelineno-0-39">39</a></span>
+<span class="normal"><a href="#__codelineno-0-40">40</a></span>
+<span class="normal"><a href="#__codelineno-0-41">41</a></span>
+<span class="normal"><a href="#__codelineno-0-42">42</a></span>
+<span class="normal"><a href="#__codelineno-0-43">43</a></span>
+<span class="normal"><a href="#__codelineno-0-44">44</a></span>
+<span class="normal"><a href="#__codelineno-0-45">45</a></span>
+<span class="normal"><a href="#__codelineno-0-46">46</a></span>
+<span class="normal"><a href="#__codelineno-0-47">47</a></span>
+<span class="normal"><a href="#__codelineno-0-48">48</a></span>
+<span class="normal"><a href="#__codelineno-0-49">49</a></span>
+<span class="normal"><a href="#__codelineno-0-50">50</a></span>
+<span class="normal"><a href="#__codelineno-0-51">51</a></span>
+<span class="normal"><a href="#__codelineno-0-52">52</a></span>
+<span class="normal"><a href="#__codelineno-0-53">53</a></span>
+<span class="normal"><a href="#__codelineno-0-54">54</a></span>
+<span class="normal"><a href="#__codelineno-0-55">55</a></span>
+<span class="normal"><a href="#__codelineno-0-56">56</a></span>
+<span class="normal"><a href="#__codelineno-0-57">57</a></span>
+<span class="normal"><a href="#__codelineno-0-58">58</a></span>
+<span class="normal"><a href="#__codelineno-0-59">59</a></span>
+<span class="normal"><a href="#__codelineno-0-60">60</a></span>
+<span class="normal"><a href="#__codelineno-0-61">61</a></span>
+<span class="normal"><a href="#__codelineno-0-62">62</a></span>
+<span class="normal"><a href="#__codelineno-0-63">63</a></span>
+<span class="normal"><a href="#__codelineno-0-64">64</a></span>
+<span class="normal"><a href="#__codelineno-0-65">65</a></span>
+<span class="normal"><a href="#__codelineno-0-66">66</a></span>
+<span class="normal"><a href="#__codelineno-0-67">67</a></span>
+<span class="normal"><a href="#__codelineno-0-68">68</a></span>
+<span class="normal"><a href="#__codelineno-0-69">69</a></span>
+<span class="normal"><a href="#__codelineno-0-70">70</a></span>
+<span class="normal"><a href="#__codelineno-0-71">71</a></span>
+<span class="normal"><a href="#__codelineno-0-72">72</a></span>
+<span class="normal"><a href="#__codelineno-0-73">73</a></span>
+<span class="normal"><a href="#__codelineno-0-74">74</a></span>
+<span class="normal"><a href="#__codelineno-0-75">75</a></span>
+<span class="normal"><a href="#__codelineno-0-76">76</a></span>
+<span class="normal"><a href="#__codelineno-0-77">77</a></span>
+<span class="normal"><a href="#__codelineno-0-78">78</a></span>
+<span class="normal"><a href="#__codelineno-0-79">79</a></span>
+<span class="normal"><a href="#__codelineno-0-80">80</a></span>
+<span class="normal"><a href="#__codelineno-0-81">81</a></span>
+<span class="normal"><a href="#__codelineno-0-82">82</a></span>
+<span class="normal"><a href="#__codelineno-0-83">83</a></span>
+<span class="normal"><a href="#__codelineno-0-84">84</a></span>
+<span class="normal"><a href="#__codelineno-0-85">85</a></span>
+<span class="normal"><a href="#__codelineno-0-86">86</a></span>
+<span class="normal"><a href="#__codelineno-0-87">87</a></span></pre></div></td><td class="code"><div><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1"></a><span class="k">import</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">z</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="kr">from</span><span class="w"> </span><span class="s2">&quot;zod&quot;</span><span class="p">;</span>
+</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2"></a><span class="k">import</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">zodResolver</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="kr">from</span><span class="w"> </span><span class="s2">&quot;@hookform/resolvers/zod&quot;</span><span class="p">;</span>
+</span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3"></a><span class="k">import</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">FormProvider</span><span class="p">,</span><span class="w"> </span><span class="nx">useForm</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="kr">from</span><span class="w"> </span><span class="s2">&quot;react-hook-form&quot;</span><span class="p">;</span>
+</span><span id="__span-0-4"><a id="__codelineno-0-4" name="__codelineno-0-4"></a>
+</span><span id="__span-0-5"><a id="__codelineno-0-5" name="__codelineno-0-5"></a><span class="kd">const</span><span class="w"> </span><span class="nx">productSchema</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">z</span><span class="p">.</span><span class="nx">object</span><span class="p">({</span>
+</span><span id="__span-0-6"><a id="__codelineno-0-6" name="__codelineno-0-6"></a><span class="w">  </span><span class="nx">name</span><span class="o">:</span><span class="w"> </span><span class="kt">z.string</span><span class="p">().</span><span class="nx">min</span><span class="p">(</span><span class="mf">1</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;Name is required&quot;</span><span class="p">),</span>
+</span><span id="__span-0-7"><a id="__codelineno-0-7" name="__codelineno-0-7"></a><span class="w">  </span><span class="nx">age</span><span class="o">:</span><span class="w"> </span><span class="kt">z.number</span><span class="p">().</span><span class="nx">min</span><span class="p">(</span><span class="mf">0</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;Age must be a positive number&quot;</span><span class="p">),</span>
+</span><span id="__span-0-8"><a id="__codelineno-0-8" name="__codelineno-0-8"></a><span class="p">});</span>
+</span><span id="__span-0-9"><a id="__codelineno-0-9" name="__codelineno-0-9"></a>
+</span><span id="__span-0-10"><a id="__codelineno-0-10" name="__codelineno-0-10"></a><span class="kr">type</span><span class="w"> </span><span class="nx">ProductFormData</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">z</span><span class="p">.</span><span class="nx">infer</span><span class="o">&lt;</span><span class="ow">typeof</span><span class="w"> </span><span class="nx">productSchema</span><span class="o">&gt;</span><span class="p">;</span>
+</span><span id="__span-0-11"><a id="__codelineno-0-11" name="__codelineno-0-11"></a>
+</span><span id="__span-0-12"><a id="__codelineno-0-12" name="__codelineno-0-12"></a><span class="kr">type</span><span class="w"> </span><span class="nx">Product</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-0-13"><a id="__codelineno-0-13" name="__codelineno-0-13"></a><span class="w">  </span><span class="nx">id</span><span class="o">:</span><span class="w"> </span><span class="kt">string</span><span class="p">;</span>
+</span><span id="__span-0-14"><a id="__codelineno-0-14" name="__codelineno-0-14"></a><span class="w">  </span><span class="nx">name</span><span class="o">:</span><span class="w"> </span><span class="kt">string</span><span class="p">;</span>
+</span><span id="__span-0-15"><a id="__codelineno-0-15" name="__codelineno-0-15"></a><span class="w">  </span><span class="nx">age</span><span class="o">:</span><span class="w"> </span><span class="kt">number</span><span class="p">;</span>
+</span><span id="__span-0-16"><a id="__codelineno-0-16" name="__codelineno-0-16"></a><span class="p">};</span>
+</span><span id="__span-0-17"><a id="__codelineno-0-17" name="__codelineno-0-17"></a>
+</span><span id="__span-0-18"><a id="__codelineno-0-18" name="__codelineno-0-18"></a><span class="kr">type</span><span class="w"> </span><span class="nx">Props</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-0-19"><a id="__codelineno-0-19" name="__codelineno-0-19"></a><span class="w">  </span><span class="nx">products</span><span class="o">:</span><span class="w"> </span><span class="kt">Product</span><span class="p">[];</span>
+</span><span id="__span-0-20"><a id="__codelineno-0-20" name="__codelineno-0-20"></a><span class="w">  </span><span class="nx">createProductMutation</span><span class="o">:</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-0-21"><a id="__codelineno-0-21" name="__codelineno-0-21"></a><span class="w">    </span><span class="nx">mutateAsync</span><span class="o">:</span><span class="w"> </span><span class="p">(</span><span class="nx">formData</span><span class="o">:</span><span class="w"> </span><span class="kt">ProductFormData</span><span class="p">)</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="nb">Promise</span><span class="o">&lt;</span><span class="nx">any</span><span class="o">&gt;</span><span class="p">;</span>
+</span><span id="__span-0-22"><a id="__codelineno-0-22" name="__codelineno-0-22"></a><span class="w">    </span><span class="nx">isPending</span><span class="o">:</span><span class="w"> </span><span class="kt">boolean</span><span class="p">;</span>
+</span><span id="__span-0-23"><a id="__codelineno-0-23" name="__codelineno-0-23"></a><span class="w">    </span><span class="nx">isError</span><span class="o">:</span><span class="w"> </span><span class="kt">boolean</span><span class="p">;</span>
+</span><span id="__span-0-24"><a id="__codelineno-0-24" name="__codelineno-0-24"></a><span class="w">    </span><span class="nx">error</span><span class="o">:</span><span class="w"> </span><span class="kt">Error</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="kc">null</span><span class="p">;</span>
+</span><span id="__span-0-25"><a id="__codelineno-0-25" name="__codelineno-0-25"></a><span class="w">  </span><span class="p">};</span>
+</span><span id="__span-0-26"><a id="__codelineno-0-26" name="__codelineno-0-26"></a><span class="p">};</span>
+</span><span id="__span-0-27"><a id="__codelineno-0-27" name="__codelineno-0-27"></a>
+</span><span id="__span-0-28"><a id="__codelineno-0-28" name="__codelineno-0-28"></a><span class="k">export</span><span class="w"> </span><span class="kd">function</span><span class="w"> </span><span class="nx">ProductList</span><span class="p">({</span>
+</span><span id="__span-0-29"><a id="__codelineno-0-29" name="__codelineno-0-29"></a><span class="w">  </span><span class="nx">products</span><span class="p">,</span>
+</span><span id="__span-0-30"><a id="__codelineno-0-30" name="__codelineno-0-30"></a><span class="w">  </span><span class="nx">createProductMutation</span><span class="p">,</span>
+</span><span id="__span-0-31"><a id="__codelineno-0-31" name="__codelineno-0-31"></a><span class="p">}</span><span class="o">:</span><span class="w"> </span><span class="nx">Props</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-0-32"><a id="__codelineno-0-32" name="__codelineno-0-32"></a><span class="w">  </span><span class="kd">const</span><span class="w"> </span><span class="nx">methods</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">useForm</span><span class="o">&lt;</span><span class="nx">ProductFormData</span><span class="o">&gt;</span><span class="p">({</span>
+</span><span id="__span-0-33"><a id="__codelineno-0-33" name="__codelineno-0-33"></a><span class="w">    </span><span class="nx">resolver</span><span class="o">:</span><span class="w"> </span><span class="kt">zodResolver</span><span class="p">(</span><span class="nx">productSchema</span><span class="p">),</span>
+</span><span id="__span-0-34"><a id="__codelineno-0-34" name="__codelineno-0-34"></a><span class="w">    </span><span class="nx">defaultValues</span><span class="o">:</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-0-35"><a id="__codelineno-0-35" name="__codelineno-0-35"></a><span class="w">      </span><span class="nx">name</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;&quot;</span><span class="p">,</span>
+</span><span id="__span-0-36"><a id="__codelineno-0-36" name="__codelineno-0-36"></a><span class="w">      </span><span class="nx">age</span><span class="o">:</span><span class="w"> </span><span class="kt">0</span><span class="p">,</span>
+</span><span id="__span-0-37"><a id="__codelineno-0-37" name="__codelineno-0-37"></a><span class="w">    </span><span class="p">},</span>
+</span><span id="__span-0-38"><a id="__codelineno-0-38" name="__codelineno-0-38"></a><span class="w">  </span><span class="p">});</span>
+</span><span id="__span-0-39"><a id="__codelineno-0-39" name="__codelineno-0-39"></a>
+</span><span id="__span-0-40"><a id="__codelineno-0-40" name="__codelineno-0-40"></a><span class="w">  </span><span class="kd">const</span><span class="w"> </span><span class="nx">onSubmit</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">async</span><span class="w"> </span><span class="p">(</span><span class="nx">formData</span><span class="o">:</span><span class="w"> </span><span class="kt">ProductFormData</span><span class="p">)</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-0-41"><a id="__codelineno-0-41" name="__codelineno-0-41"></a><span class="w">    </span><span class="k">await</span><span class="w"> </span><span class="nx">createProductMutation</span><span class="p">.</span><span class="nx">mutateAsync</span><span class="p">(</span><span class="nx">formData</span><span class="p">);</span>
+</span><span id="__span-0-42"><a id="__codelineno-0-42" name="__codelineno-0-42"></a><span class="w">    </span><span class="nx">methods</span><span class="p">.</span><span class="nx">reset</span><span class="p">();</span>
+</span><span id="__span-0-43"><a id="__codelineno-0-43" name="__codelineno-0-43"></a><span class="w">  </span><span class="p">};</span>
+</span><span id="__span-0-44"><a id="__codelineno-0-44" name="__codelineno-0-44"></a>
+</span><span id="__span-0-45"><a id="__codelineno-0-45" name="__codelineno-0-45"></a><span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="p">(</span>
+</span><span id="__span-0-46"><a id="__codelineno-0-46" name="__codelineno-0-46"></a><span class="w">    </span><span class="o">&lt;&gt;</span>
+</span><span id="__span-0-47"><a id="__codelineno-0-47" name="__codelineno-0-47"></a><span class="w">      </span><span class="o">&lt;</span><span class="nx">ul</span><span class="o">&gt;</span>
+</span><span id="__span-0-48"><a id="__codelineno-0-48" name="__codelineno-0-48"></a><span class="w">        </span><span class="p">{</span><span class="nx">products</span><span class="p">.</span><span class="nx">map</span><span class="p">((</span><span class="nx">product</span><span class="p">)</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="p">(</span>
+</span><span id="__span-0-49"><a id="__codelineno-0-49" name="__codelineno-0-49"></a><span class="w">          </span><span class="o">&lt;</span><span class="nx">li</span><span class="w"> </span><span class="nx">key</span><span class="o">=</span><span class="p">{</span><span class="nx">product</span><span class="p">.</span><span class="nx">id</span><span class="p">}</span><span class="o">&gt;</span>
+</span><span id="__span-0-50"><a id="__codelineno-0-50" name="__codelineno-0-50"></a><span class="w">            </span><span class="p">{</span><span class="nx">product</span><span class="p">.</span><span class="nx">name</span><span class="p">}</span><span class="w"> </span><span class="p">({</span><span class="nx">product</span><span class="p">.</span><span class="nx">age</span><span class="p">})</span>
+</span><span id="__span-0-51"><a id="__codelineno-0-51" name="__codelineno-0-51"></a><span class="w">          </span><span class="o">&lt;</span><span class="err">/li&gt;</span>
+</span><span id="__span-0-52"><a id="__codelineno-0-52" name="__codelineno-0-52"></a><span class="w">        </span><span class="p">))}</span>
+</span><span id="__span-0-53"><a id="__codelineno-0-53" name="__codelineno-0-53"></a><span class="w">      </span><span class="o">&lt;</span><span class="err">/ul&gt;</span>
+</span><span id="__span-0-54"><a id="__codelineno-0-54" name="__codelineno-0-54"></a>
+</span><span id="__span-0-55"><a id="__codelineno-0-55" name="__codelineno-0-55"></a><span class="w">      </span><span class="o">&lt;</span><span class="nx">FormProvider</span><span class="w"> </span><span class="p">{...</span><span class="nx">methods</span><span class="p">}</span><span class="o">&gt;</span>
+</span><span id="__span-0-56"><a id="__codelineno-0-56" name="__codelineno-0-56"></a><span class="w">        </span><span class="o">&lt;</span><span class="nx">form</span><span class="w"> </span><span class="nx">autoComplete</span><span class="o">=</span><span class="s2">&quot;off&quot;</span><span class="w"> </span><span class="nx">onSubmit</span><span class="o">=</span><span class="p">{</span><span class="nx">methods</span><span class="p">.</span><span class="nx">handleSubmit</span><span class="p">(</span><span class="nx">onSubmit</span><span class="p">)}</span><span class="o">&gt;</span>
+</span><span id="__span-0-57"><a id="__codelineno-0-57" name="__codelineno-0-57"></a><span class="w">          </span><span class="o">&lt;</span><span class="nx">div</span><span class="o">&gt;</span>
+</span><span id="__span-0-58"><a id="__codelineno-0-58" name="__codelineno-0-58"></a><span class="w">            </span><span class="o">&lt;</span><span class="nx">label</span><span class="o">&gt;</span><span class="nx">Name</span><span class="o">&lt;</span><span class="err">/label&gt;</span>
+</span><span id="__span-0-59"><a id="__codelineno-0-59" name="__codelineno-0-59"></a><span class="w">            </span><span class="o">&lt;</span><span class="nx">input</span><span class="w"> </span><span class="p">{...</span><span class="nx">methods</span><span class="p">.</span><span class="nx">register</span><span class="p">(</span><span class="s2">&quot;name&quot;</span><span class="p">)}</span><span class="w"> </span><span class="o">/&gt;</span>
+</span><span id="__span-0-60"><a id="__codelineno-0-60" name="__codelineno-0-60"></a><span class="w">            </span><span class="p">{</span><span class="nx">methods</span><span class="p">.</span><span class="nx">formState</span><span class="p">.</span><span class="nx">errors</span><span class="p">.</span><span class="nx">name</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="p">(</span>
+</span><span id="__span-0-61"><a id="__codelineno-0-61" name="__codelineno-0-61"></a><span class="w">              </span><span class="o">&lt;</span><span class="nx">span</span><span class="o">&gt;</span><span class="p">{</span><span class="nx">methods</span><span class="p">.</span><span class="nx">formState</span><span class="p">.</span><span class="nx">errors</span><span class="p">.</span><span class="nx">name</span><span class="p">.</span><span class="nx">message</span><span class="p">}</span><span class="o">&lt;</span><span class="err">/span&gt;</span>
+</span><span id="__span-0-62"><a id="__codelineno-0-62" name="__codelineno-0-62"></a><span class="w">            </span><span class="p">)}</span>
+</span><span id="__span-0-63"><a id="__codelineno-0-63" name="__codelineno-0-63"></a><span class="w">          </span><span class="o">&lt;</span><span class="err">/div&gt;</span>
+</span><span id="__span-0-64"><a id="__codelineno-0-64" name="__codelineno-0-64"></a>
+</span><span id="__span-0-65"><a id="__codelineno-0-65" name="__codelineno-0-65"></a><span class="w">          </span><span class="o">&lt;</span><span class="nx">div</span><span class="o">&gt;</span>
+</span><span id="__span-0-66"><a id="__codelineno-0-66" name="__codelineno-0-66"></a><span class="w">            </span><span class="o">&lt;</span><span class="nx">label</span><span class="o">&gt;</span><span class="nx">Age</span><span class="o">&lt;</span><span class="err">/label&gt;</span>
+</span><span id="__span-0-67"><a id="__codelineno-0-67" name="__codelineno-0-67"></a><span class="w">            </span><span class="o">&lt;</span><span class="nx">input</span>
+</span><span id="__span-0-68"><a id="__codelineno-0-68" name="__codelineno-0-68"></a><span class="w">              </span><span class="kr">type</span><span class="o">=</span><span class="s2">&quot;number&quot;</span>
+</span><span id="__span-0-69"><a id="__codelineno-0-69" name="__codelineno-0-69"></a><span class="w">              </span><span class="p">{...</span><span class="nx">methods</span><span class="p">.</span><span class="nx">register</span><span class="p">(</span><span class="s2">&quot;age&quot;</span><span class="p">,</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">valueAsNumber</span><span class="o">:</span><span class="w"> </span><span class="kt">true</span><span class="w"> </span><span class="p">})}</span>
+</span><span id="__span-0-70"><a id="__codelineno-0-70" name="__codelineno-0-70"></a><span class="w">            </span><span class="o">/&gt;</span>
+</span><span id="__span-0-71"><a id="__codelineno-0-71" name="__codelineno-0-71"></a><span class="w">            </span><span class="p">{</span><span class="nx">methods</span><span class="p">.</span><span class="nx">formState</span><span class="p">.</span><span class="nx">errors</span><span class="p">.</span><span class="nx">age</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="p">(</span>
+</span><span id="__span-0-72"><a id="__codelineno-0-72" name="__codelineno-0-72"></a><span class="w">              </span><span class="o">&lt;</span><span class="nx">span</span><span class="o">&gt;</span><span class="p">{</span><span class="nx">methods</span><span class="p">.</span><span class="nx">formState</span><span class="p">.</span><span class="nx">errors</span><span class="p">.</span><span class="nx">age</span><span class="p">.</span><span class="nx">message</span><span class="p">}</span><span class="o">&lt;</span><span class="err">/span&gt;</span>
+</span><span id="__span-0-73"><a id="__codelineno-0-73" name="__codelineno-0-73"></a><span class="w">            </span><span class="p">)}</span>
+</span><span id="__span-0-74"><a id="__codelineno-0-74" name="__codelineno-0-74"></a><span class="w">          </span><span class="o">&lt;</span><span class="err">/div&gt;</span>
+</span><span id="__span-0-75"><a id="__codelineno-0-75" name="__codelineno-0-75"></a>
+</span><span id="__span-0-76"><a id="__codelineno-0-76" name="__codelineno-0-76"></a><span class="w">          </span><span class="o">&lt;</span><span class="nx">button</span><span class="w"> </span><span class="kr">type</span><span class="o">=</span><span class="s2">&quot;submit&quot;</span><span class="w"> </span><span class="nx">disabled</span><span class="o">=</span><span class="p">{</span><span class="nx">createProductMutation</span><span class="p">.</span><span class="nx">isPending</span><span class="p">}</span><span class="o">&gt;</span>
+</span><span id="__span-0-77"><a id="__codelineno-0-77" name="__codelineno-0-77"></a><span class="w">            </span><span class="p">{</span><span class="nx">createProductMutation</span><span class="p">.</span><span class="nx">isPending</span><span class="w"> </span><span class="o">?</span><span class="w"> </span><span class="s2">&quot;Creating...&quot;</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;Create Product&quot;</span><span class="p">}</span>
+</span><span id="__span-0-78"><a id="__codelineno-0-78" name="__codelineno-0-78"></a><span class="w">          </span><span class="o">&lt;</span><span class="err">/button&gt;</span>
+</span><span id="__span-0-79"><a id="__codelineno-0-79" name="__codelineno-0-79"></a>
+</span><span id="__span-0-80"><a id="__codelineno-0-80" name="__codelineno-0-80"></a><span class="w">          </span><span class="p">{</span><span class="nx">createProductMutation</span><span class="p">.</span><span class="nx">isError</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="nx">createProductMutation</span><span class="p">.</span><span class="nx">error</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="p">(</span>
+</span><span id="__span-0-81"><a id="__codelineno-0-81" name="__codelineno-0-81"></a><span class="w">            </span><span class="o">&lt;</span><span class="nx">div</span><span class="o">&gt;</span><span class="ne">Error</span><span class="o">:</span><span class="w"> </span><span class="p">{</span><span class="nx">createProductMutation</span><span class="p">.</span><span class="nx">error</span><span class="p">.</span><span class="nx">message</span><span class="p">}</span><span class="o">&lt;</span><span class="err">/div&gt;</span>
+</span><span id="__span-0-82"><a id="__codelineno-0-82" name="__codelineno-0-82"></a><span class="w">          </span><span class="p">)}</span>
+</span><span id="__span-0-83"><a id="__codelineno-0-83" name="__codelineno-0-83"></a><span class="w">        </span><span class="o">&lt;</span><span class="err">/form&gt;</span>
+</span><span id="__span-0-84"><a id="__codelineno-0-84" name="__codelineno-0-84"></a><span class="w">      </span><span class="o">&lt;</span><span class="err">/FormProvider&gt;</span>
+</span><span id="__span-0-85"><a id="__codelineno-0-85" name="__codelineno-0-85"></a><span class="w">    </span><span class="o">&lt;</span><span class="err">/&gt;</span>
+</span><span id="__span-0-86"><a id="__codelineno-0-86" name="__codelineno-0-86"></a><span class="w">  </span><span class="p">);</span>
+</span><span id="__span-0-87"><a id="__codelineno-0-87" name="__codelineno-0-87"></a><span class="p">}</span>
 </span></code></pre></div></td></tr></table></div>
-<p>Ensure that the new backup file is generated in the designated backup directory <code>/home/nonroot/backup</code>.</p>
-<h3 id="restore-steps">Restore Steps<a class="headerlink" href="#restore-steps" title="Permanent link">&para;</a></h3>
-<p>To restore the database, follow these steps:</p>
-<div class="language-sh highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-1-1">1</a></span>
-<span class="normal"><a href="#__codelineno-1-2">2</a></span></pre></div></td><td class="code"><div><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1"></a>oc<span class="w"> </span>rsh<span class="w"> </span>&lt;backup-pod-name&gt;
-</span><span id="__span-1-2"><a id="__codelineno-1-2" name="__codelineno-1-2"></a>mongo-unarchive<span class="w"> </span>--uri<span class="o">=</span><span class="s2">&quot;mongodb://&lt;primary-pod-name&gt;.pltsvc-mongodb-headless/?authSource=admin&quot;</span><span class="w"> </span>--db<span class="o">=</span>pltsvc
-</span></code></pre></div></td></tr></table></div>
-<p>Execute the provided shell commands to access the backup pod and initiate the restoration process. The mongo-unarchive command uses the specified MongoDB URI, which includes the <code>primary pod name</code> and authentication details from the admin source. The restoration is targeted for the <code>pltsvc</code> database.</p>
+<p>This approach keeps your components clean and focuses each part of the view layer on its specific job: rendering lists, handling input, and calling mutation hooks when needed.</p>
 
 
 

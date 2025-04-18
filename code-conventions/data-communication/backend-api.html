@@ -10,13 +10,13 @@
         <meta name="author" content="Platform Services Team">
       
       
-        <link rel="canonical" href="https://bcgov.github.io/platform-services-registry/ci-cd/cd/database.html">
+        <link rel="canonical" href="https://bcgov.github.io/platform-services-registry/code-conventions/data-communication/backend-api.html">
       
       
-        <link rel="prev" href="debug-failed-deployments.html">
+        <link rel="prev" href="data-communication.html">
       
       
-        <link rel="next" href="../../clean-code/return-early.html">
+        <link rel="next" href="service-layer.html">
       
       
       <link rel="icon" href="../../_assets/logo.png">
@@ -24,7 +24,7 @@
     
     
       
-        <title>Database - Platform Services Registry</title>
+        <title>Backend API Endpoints - Platform Services Registry</title>
       
     
     
@@ -76,7 +76,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#database" class="md-skip">
+        <a href="#backend-api-endpoints" class="md-skip">
           Skip to content
         </a>
       
@@ -111,7 +111,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              Database
+              Backend API Endpoints
             
           </span>
         </div>
@@ -237,8 +237,6 @@
   
   
   
-    
-  
   
     
     
@@ -246,13 +244,11 @@
   
   
   
-    
-  
   
     
     
-      <li class="md-tabs__item md-tabs__item--active">
-        <a href="../ci/peer-review.html" class="md-tabs__link">
+      <li class="md-tabs__item">
+        <a href="../../ci-cd/ci/peer-review.html" class="md-tabs__link">
           
   
   
@@ -273,6 +269,8 @@
   
   
   
+    
+  
   
     
     
@@ -280,10 +278,12 @@
   
   
   
+    
+  
   
     
     
-      <li class="md-tabs__item">
+      <li class="md-tabs__item md-tabs__item--active">
         <a href="../../clean-code/return-early.html" class="md-tabs__link">
           
   
@@ -818,10 +818,8 @@
       
   
   
-    
   
   
-  
     
     
       
@@ -833,20 +831,17 @@
     
     
       
-        
-        
-      
       
     
     
-    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+    <li class="md-nav__item md-nav__item--nested">
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4" checked>
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4" >
         
           
-          <label class="md-nav__link" for="__nav_4" id="__nav_4_label" tabindex="">
+          <label class="md-nav__link" for="__nav_4" id="__nav_4_label" tabindex="0">
             
   
   
@@ -859,7 +854,7 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="true">
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="false">
           <label class="md-nav__title" for="__nav_4">
             <span class="md-nav__icon md-icon"></span>
             CI / CD
@@ -924,7 +919,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../ci/peer-review.html" class="md-nav__link">
+      <a href="../../ci-cd/ci/peer-review.html" class="md-nav__link">
         
   
   
@@ -947,7 +942,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../ci/checks.html" class="md-nav__link">
+      <a href="../../ci-cd/ci/checks.html" class="md-nav__link">
         
   
   
@@ -970,7 +965,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../ci/dependency-update.html" class="md-nav__link">
+      <a href="../../ci-cd/ci/dependency-update.html" class="md-nav__link">
         
   
   
@@ -993,7 +988,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../ci/secret-scanning.html" class="md-nav__link">
+      <a href="../../ci-cd/ci/secret-scanning.html" class="md-nav__link">
         
   
   
@@ -1021,10 +1016,8 @@
                 
   
   
-    
   
   
-  
     
     
       
@@ -1043,11 +1036,11 @@
       
     
     
-    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+    <li class="md-nav__item md-nav__item--nested">
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4_2" checked>
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4_2" >
         
           
           <label class="md-nav__link" for="__nav_4_2" id="__nav_4_2_label" tabindex="0">
@@ -1063,7 +1056,7 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_4_2_label" aria-expanded="true">
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_4_2_label" aria-expanded="false">
           <label class="md-nav__title" for="__nav_4_2">
             <span class="md-nav__icon md-icon"></span>
             CD (Continuous Deployment)
@@ -1077,7 +1070,7 @@
   
   
     <li class="md-nav__item">
-      <a href="deployment-release.html" class="md-nav__link">
+      <a href="../../ci-cd/cd/deployment-release.html" class="md-nav__link">
         
   
   
@@ -1100,7 +1093,7 @@
   
   
     <li class="md-nav__item">
-      <a href="release-tag-dispatch.html" class="md-nav__link">
+      <a href="../../ci-cd/cd/release-tag-dispatch.html" class="md-nav__link">
         
   
   
@@ -1123,7 +1116,7 @@
   
   
     <li class="md-nav__item">
-      <a href="debug-failed-deployments.html" class="md-nav__link">
+      <a href="../../ci-cd/cd/debug-failed-deployments.html" class="md-nav__link">
         
   
   
@@ -1143,32 +1136,10 @@
                 
   
   
-    
   
   
-  
-    <li class="md-nav__item md-nav__item--active">
-      
-      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
-      
-      
-        
-      
-      
-        <label class="md-nav__link md-nav__link--active" for="__toc">
-          
-  
-  
-  <span class="md-ellipsis">
-    Database
-    
-  </span>
-  
-
-          <span class="md-nav__icon md-icon"></span>
-        </label>
-      
-      <a href="database.html" class="md-nav__link md-nav__link--active">
+    <li class="md-nav__item">
+      <a href="../../ci-cd/cd/database.html" class="md-nav__link">
         
   
   
@@ -1179,68 +1150,6 @@
   
 
       </a>
-      
-        
-
-<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
-  
-  
-  
-    
-  
-  
-    <label class="md-nav__title" for="__toc">
-      <span class="md-nav__icon md-icon"></span>
-      Table of contents
-    </label>
-    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
-      
-        <li class="md-nav__item">
-  <a href="#backup-and-restore-procedures" class="md-nav__link">
-    <span class="md-ellipsis">
-      Backup and Restore Procedures
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="Backup and Restore Procedures">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#backup-configuration" class="md-nav__link">
-    <span class="md-ellipsis">
-      Backup Configuration
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#backup-steps" class="md-nav__link">
-    <span class="md-ellipsis">
-      Backup Steps
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#restore-steps" class="md-nav__link">
-    <span class="md-ellipsis">
-      Restore Steps
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-    </ul>
-  
-</nav>
-      
     </li>
   
 
@@ -1265,8 +1174,10 @@
       
   
   
+    
   
   
+  
     
     
       
@@ -1280,17 +1191,20 @@
     
     
       
+        
+        
+      
       
     
     
-    <li class="md-nav__item md-nav__item--nested">
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5" >
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5" checked>
         
           
-          <label class="md-nav__link" for="__nav_5" id="__nav_5_label" tabindex="0">
+          <label class="md-nav__link" for="__nav_5" id="__nav_5_label" tabindex="">
             
   
   
@@ -1303,7 +1217,7 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_5_label" aria-expanded="false">
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_5_label" aria-expanded="true">
           <label class="md-nav__title" for="__nav_5">
             <span class="md-nav__icon md-icon"></span>
             Code conventions
@@ -1518,7 +1432,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../code-conventions/naming-conventions.html" class="md-nav__link">
+      <a href="../naming-conventions.html" class="md-nav__link">
         
   
   
@@ -1538,8 +1452,10 @@
                 
   
   
+    
   
   
+  
     
     
       
@@ -1560,11 +1476,11 @@
       
     
     
-    <li class="md-nav__item md-nav__item--nested">
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5_3" >
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5_3" checked>
         
           
           <label class="md-nav__link" for="__nav_5_3" id="__nav_5_3_label" tabindex="0">
@@ -1580,7 +1496,7 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_5_3_label" aria-expanded="false">
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_5_3_label" aria-expanded="true">
           <label class="md-nav__title" for="__nav_5_3">
             <span class="md-nav__icon md-icon"></span>
             Data Communication
@@ -1594,7 +1510,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../code-conventions/data-communication/data-communication.html" class="md-nav__link">
+      <a href="data-communication.html" class="md-nav__link">
         
   
   
@@ -1614,10 +1530,32 @@
                 
   
   
+    
   
   
-    <li class="md-nav__item">
-      <a href="../../code-conventions/data-communication/backend-api.html" class="md-nav__link">
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    Backend API Endpoints
+    
+  </span>
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="backend-api.html" class="md-nav__link md-nav__link--active">
         
   
   
@@ -1628,6 +1566,86 @@
   
 
       </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#rest-api-conventions" class="md-nav__link">
+    <span class="md-ellipsis">
+      REST API Conventions
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#directory-structure" class="md-nav__link">
+    <span class="md-ellipsis">
+      Directory Structure
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#api-handler-wrapper" class="md-nav__link">
+    <span class="md-ellipsis">
+      API Handler Wrapper
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#examples" class="md-nav__link">
+    <span class="md-ellipsis">
+      Examples
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Examples">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#collection-level-operations-appapiproductsroutets" class="md-nav__link">
+    <span class="md-ellipsis">
+      Collection-Level Operations (/app/api/products/route.ts)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#resource-level-operations-appapiproductsidroutets" class="md-nav__link">
+    <span class="md-ellipsis">
+      Resource-Level Operations (/app/api/products/[id]/route.ts)
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
     </li>
   
 
@@ -1640,7 +1658,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../code-conventions/data-communication/service-layer.html" class="md-nav__link">
+      <a href="service-layer.html" class="md-nav__link">
         
   
   
@@ -1663,7 +1681,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../code-conventions/data-communication/data-fetching.html" class="md-nav__link">
+      <a href="data-fetching.html" class="md-nav__link">
         
   
   
@@ -1686,7 +1704,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../code-conventions/data-communication/react-view-layer.html" class="md-nav__link">
+      <a href="react-view-layer.html" class="md-nav__link">
         
   
   
@@ -2072,37 +2090,55 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#backup-and-restore-procedures" class="md-nav__link">
+  <a href="#rest-api-conventions" class="md-nav__link">
     <span class="md-ellipsis">
-      Backup and Restore Procedures
+      REST API Conventions
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="Backup and Restore Procedures">
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#directory-structure" class="md-nav__link">
+    <span class="md-ellipsis">
+      Directory Structure
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#api-handler-wrapper" class="md-nav__link">
+    <span class="md-ellipsis">
+      API Handler Wrapper
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#examples" class="md-nav__link">
+    <span class="md-ellipsis">
+      Examples
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Examples">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#backup-configuration" class="md-nav__link">
+  <a href="#collection-level-operations-appapiproductsroutets" class="md-nav__link">
     <span class="md-ellipsis">
-      Backup Configuration
+      Collection-Level Operations (/app/api/products/route.ts)
     </span>
   </a>
   
 </li>
         
           <li class="md-nav__item">
-  <a href="#backup-steps" class="md-nav__link">
+  <a href="#resource-level-operations-appapiproductsidroutets" class="md-nav__link">
     <span class="md-ellipsis">
-      Backup Steps
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#restore-steps" class="md-nav__link">
-    <span class="md-ellipsis">
-      Restore Steps
+      Resource-Level Operations (/app/api/products/[id]/route.ts)
     </span>
   </a>
   
@@ -2132,28 +2168,189 @@
   
 
 
-<h1 id="database">Database<a class="headerlink" href="#database" title="Permanent link">&para;</a></h1>
-<h2 id="backup-and-restore-procedures">Backup and Restore Procedures<a class="headerlink" href="#backup-and-restore-procedures" title="Permanent link">&para;</a></h2>
-<p>To facilitate the backup and restore processes, we utilize a container running MongoDB tools available at <a href="https://github.com/egose/database-tools" rel="noopener noreferrer" target="_blank">database-tools</a>.</p>
-<h3 id="backup-configuration">Backup Configuration<a class="headerlink" href="#backup-configuration" title="Permanent link">&para;</a></h3>
+<h1 id="backend-api-endpoints">Backend API Endpoints<a class="headerlink" href="#backend-api-endpoints" title="Permanent link">&para;</a></h1>
+<p>To ensure consistency and simplicity in building backend API endpoints, we use <a href="https://nextjs.org/docs/app/building-your-application/routing/route-handlers" rel="noopener noreferrer" target="_blank">Next.js Route Handlers</a> as the foundation, combined with a shared core wrapper that handles common logic such as role/permission-based access control and data validation.</p>
+<h2 id="rest-api-conventions">REST API Conventions<a class="headerlink" href="#rest-api-conventions" title="Permanent link">&para;</a></h2>
+<p>Although following strict RESTful URL conventions in the Next.js framework can be tedious, our team has agreed on a standardized approach to keep things as RESTful as possible. Each endpoint is structured to support typical CRUD operations along with common extensions:</p>
 <ul>
-<li>The Kubernetes deployment template for the backup process can be found at <a href="https://github.com/bcgov/platform-services-registry/blob/main/helm/main/templates/mongodb-backup.yaml" rel="noopener noreferrer" target="_blank">mongodb-backup.yaml</a>. This template orchestrates the deployment of the MongoDB tools container.</li>
-<li>A notification mechanism has been set up to inform the designated RocketChat channel about the status of the backup operation.</li>
+<li><strong>CREATE</strong>: Create a new resource</li>
+<li><strong>READ</strong>: Retrieve a single resource</li>
+<li><strong>UPDATE</strong>: Update an existing resource</li>
+<li><strong>DELETE</strong>: Delete a resource</li>
+<li><strong>LIST</strong>: Retrieve a list of resources</li>
+<li><strong>SEARCH</strong>: Search resources with more flexible criteria beyond pagination</li>
 </ul>
-<h3 id="backup-steps">Backup Steps<a class="headerlink" href="#backup-steps" title="Permanent link">&para;</a></h3>
-<p>The backup procedure is initiated at regular intervals according to the cron schedule set by the backup container. However, there are occasions when manual backup is required, such as before deploying to the production environment. To back up the database, follow these steps:</p>
-<div class="language-sh highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-0-1">1</a></span>
-<span class="normal"><a href="#__codelineno-0-2">2</a></span></pre></div></td><td class="code"><div><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1"></a>oc<span class="w"> </span>rsh<span class="w"> </span>&lt;backup-pod-name&gt;
-</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2"></a>mongo-archive<span class="w"> </span>--db<span class="o">=</span>pltsvc<span class="w"> </span>--read-preference<span class="o">=</span>secondaryPreferred<span class="w"> </span>--force-table-scan<span class="w"> </span>--cron<span class="o">=</span><span class="nb">false</span>
+<h2 id="directory-structure">Directory Structure<a class="headerlink" href="#directory-structure" title="Permanent link">&para;</a></h2>
+<p>Our RESTful API endpoints are organized by database entities. For each entity:</p>
+<ul>
+<li>Use a pluralized directory name (e.g., <code>products</code>)</li>
+<li>Add a <code>route.ts</code> file for collection-level operations (<code>CREATE</code>, <code>LIST</code>, <code>SEARCH</code>)</li>
+<li>Add a <code>[id]/route.ts</code> file for resource-level operations (<code>READ</code>, <code>UPDATE</code>, <code>DELETE</code>)</li>
+</ul>
+<h2 id="api-handler-wrapper">API Handler Wrapper<a class="headerlink" href="#api-handler-wrapper" title="Permanent link">&para;</a></h2>
+<p>A shared core module (<code>createApiHandler</code>) encapsulates common backend logic, including:</p>
+<ul>
+<li>Role/permission-based privilege checks</li>
+<li>Request validation (path params, query params, and body)</li>
+</ul>
+<p>This helps reduce boilerplate and ensure consistent enforcement of access control and data validation.</p>
+<h2 id="examples">Examples<a class="headerlink" href="#examples" title="Permanent link">&para;</a></h2>
+<h3 id="collection-level-operations-appapiproductsroutets">Collection-Level Operations (<code>/app/api/products/route.ts</code>)<a class="headerlink" href="#collection-level-operations-appapiproductsroutets" title="Permanent link">&para;</a></h3>
+<div class="language-ts highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-0-1"> 1</a></span>
+<span class="normal"><a href="#__codelineno-0-2"> 2</a></span>
+<span class="normal"><a href="#__codelineno-0-3"> 3</a></span>
+<span class="normal"><a href="#__codelineno-0-4"> 4</a></span>
+<span class="normal"><a href="#__codelineno-0-5"> 5</a></span>
+<span class="normal"><a href="#__codelineno-0-6"> 6</a></span>
+<span class="normal"><a href="#__codelineno-0-7"> 7</a></span>
+<span class="normal"><a href="#__codelineno-0-8"> 8</a></span>
+<span class="normal"><a href="#__codelineno-0-9"> 9</a></span>
+<span class="normal"><a href="#__codelineno-0-10">10</a></span>
+<span class="normal"><a href="#__codelineno-0-11">11</a></span>
+<span class="normal"><a href="#__codelineno-0-12">12</a></span>
+<span class="normal"><a href="#__codelineno-0-13">13</a></span>
+<span class="normal"><a href="#__codelineno-0-14">14</a></span>
+<span class="normal"><a href="#__codelineno-0-15">15</a></span>
+<span class="normal"><a href="#__codelineno-0-16">16</a></span>
+<span class="normal"><a href="#__codelineno-0-17">17</a></span>
+<span class="normal"><a href="#__codelineno-0-18">18</a></span>
+<span class="normal"><a href="#__codelineno-0-19">19</a></span>
+<span class="normal"><a href="#__codelineno-0-20">20</a></span>
+<span class="normal"><a href="#__codelineno-0-21">21</a></span>
+<span class="normal"><a href="#__codelineno-0-22">22</a></span>
+<span class="normal"><a href="#__codelineno-0-23">23</a></span>
+<span class="normal"><a href="#__codelineno-0-24">24</a></span>
+<span class="normal"><a href="#__codelineno-0-25">25</a></span>
+<span class="normal"><a href="#__codelineno-0-26">26</a></span>
+<span class="normal"><a href="#__codelineno-0-27">27</a></span>
+<span class="normal"><a href="#__codelineno-0-28">28</a></span>
+<span class="normal"><a href="#__codelineno-0-29">29</a></span>
+<span class="normal"><a href="#__codelineno-0-30">30</a></span>
+<span class="normal"><a href="#__codelineno-0-31">31</a></span></pre></div></td><td class="code"><div><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1"></a><span class="k">import</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">z</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="kr">from</span><span class="w"> </span><span class="s1">&#39;zod&#39;</span><span class="p">;</span>
+</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2"></a><span class="k">import</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">GlobalRole</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="kr">from</span><span class="w"> </span><span class="s1">&#39;@/constants&#39;</span><span class="p">;</span>
+</span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3"></a><span class="k">import</span><span class="w"> </span><span class="nx">createApiHandler</span><span class="w"> </span><span class="kr">from</span><span class="w"> </span><span class="s1">&#39;@/core/api-handler&#39;</span><span class="p">;</span>
+</span><span id="__span-0-4"><a id="__codelineno-0-4" name="__codelineno-0-4"></a><span class="k">import</span><span class="w"> </span><span class="nx">createOp</span><span class="w"> </span><span class="kr">from</span><span class="w"> </span><span class="s1">&#39;./_operations/create&#39;</span><span class="p">;</span>
+</span><span id="__span-0-5"><a id="__codelineno-0-5" name="__codelineno-0-5"></a><span class="k">import</span><span class="w"> </span><span class="nx">listOp</span><span class="w"> </span><span class="kr">from</span><span class="w"> </span><span class="s1">&#39;./_operations/list&#39;</span><span class="p">;</span>
+</span><span id="__span-0-6"><a id="__codelineno-0-6" name="__codelineno-0-6"></a>
+</span><span id="__span-0-7"><a id="__codelineno-0-7" name="__codelineno-0-7"></a><span class="c1">// CREATE</span>
+</span><span id="__span-0-8"><a id="__codelineno-0-8" name="__codelineno-0-8"></a><span class="k">export</span><span class="w"> </span><span class="kd">const</span><span class="w"> </span><span class="nx">POST</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">createApiHandler</span><span class="p">({</span>
+</span><span id="__span-0-9"><a id="__codelineno-0-9" name="__codelineno-0-9"></a><span class="w">  </span><span class="nx">roles</span><span class="o">:</span><span class="w"> </span><span class="p">[</span><span class="nx">GlobalRole</span><span class="p">.</span><span class="nx">Admin</span><span class="p">],</span>
+</span><span id="__span-0-10"><a id="__codelineno-0-10" name="__codelineno-0-10"></a><span class="w">  </span><span class="nx">validations</span><span class="o">:</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-0-11"><a id="__codelineno-0-11" name="__codelineno-0-11"></a><span class="w">    </span><span class="nx">body</span><span class="o">:</span><span class="w"> </span><span class="kt">z.object</span><span class="p">({</span>
+</span><span id="__span-0-12"><a id="__codelineno-0-12" name="__codelineno-0-12"></a><span class="w">      </span><span class="nx">name</span><span class="o">:</span><span class="w"> </span><span class="kt">z.string</span><span class="p">(),</span>
+</span><span id="__span-0-13"><a id="__codelineno-0-13" name="__codelineno-0-13"></a><span class="w">      </span><span class="nx">age</span><span class="o">:</span><span class="w"> </span><span class="kt">z.number</span><span class="p">(),</span>
+</span><span id="__span-0-14"><a id="__codelineno-0-14" name="__codelineno-0-14"></a><span class="w">    </span><span class="p">}),</span>
+</span><span id="__span-0-15"><a id="__codelineno-0-15" name="__codelineno-0-15"></a><span class="w">  </span><span class="p">},</span>
+</span><span id="__span-0-16"><a id="__codelineno-0-16" name="__codelineno-0-16"></a><span class="p">})(</span><span class="k">async</span><span class="w"> </span><span class="p">({</span><span class="w"> </span><span class="nx">session</span><span class="p">,</span><span class="w"> </span><span class="nx">body</span><span class="w"> </span><span class="p">})</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-0-17"><a id="__codelineno-0-17" name="__codelineno-0-17"></a><span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="k">await</span><span class="w"> </span><span class="nx">createOp</span><span class="p">({</span><span class="w"> </span><span class="nx">session</span><span class="p">,</span><span class="w"> </span><span class="nx">body</span><span class="w"> </span><span class="p">});</span>
+</span><span id="__span-0-18"><a id="__codelineno-0-18" name="__codelineno-0-18"></a><span class="p">});</span>
+</span><span id="__span-0-19"><a id="__codelineno-0-19" name="__codelineno-0-19"></a>
+</span><span id="__span-0-20"><a id="__codelineno-0-20" name="__codelineno-0-20"></a><span class="c1">// LIST</span>
+</span><span id="__span-0-21"><a id="__codelineno-0-21" name="__codelineno-0-21"></a><span class="k">export</span><span class="w"> </span><span class="kd">const</span><span class="w"> </span><span class="nx">GET</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">createApiHandler</span><span class="p">({</span>
+</span><span id="__span-0-22"><a id="__codelineno-0-22" name="__codelineno-0-22"></a><span class="w">  </span><span class="nx">roles</span><span class="o">:</span><span class="w"> </span><span class="p">[</span><span class="nx">GlobalRole</span><span class="p">.</span><span class="nx">User</span><span class="p">],</span>
+</span><span id="__span-0-23"><a id="__codelineno-0-23" name="__codelineno-0-23"></a><span class="w">  </span><span class="nx">validations</span><span class="o">:</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-0-24"><a id="__codelineno-0-24" name="__codelineno-0-24"></a><span class="w">    </span><span class="nx">queryParams</span><span class="o">:</span><span class="w"> </span><span class="kt">z.object</span><span class="p">({</span>
+</span><span id="__span-0-25"><a id="__codelineno-0-25" name="__codelineno-0-25"></a><span class="w">      </span><span class="nx">page</span><span class="o">:</span><span class="w"> </span><span class="kt">z.number</span><span class="p">(),</span>
+</span><span id="__span-0-26"><a id="__codelineno-0-26" name="__codelineno-0-26"></a><span class="w">      </span><span class="nx">pageSize</span><span class="o">:</span><span class="w"> </span><span class="kt">z.number</span><span class="p">(),</span>
+</span><span id="__span-0-27"><a id="__codelineno-0-27" name="__codelineno-0-27"></a><span class="w">    </span><span class="p">}),</span>
+</span><span id="__span-0-28"><a id="__codelineno-0-28" name="__codelineno-0-28"></a><span class="w">  </span><span class="p">},</span>
+</span><span id="__span-0-29"><a id="__codelineno-0-29" name="__codelineno-0-29"></a><span class="p">})(</span><span class="k">async</span><span class="w"> </span><span class="p">({</span><span class="w"> </span><span class="nx">session</span><span class="w"> </span><span class="p">})</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-0-30"><a id="__codelineno-0-30" name="__codelineno-0-30"></a><span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="k">await</span><span class="w"> </span><span class="nx">listOp</span><span class="p">({</span><span class="w"> </span><span class="nx">session</span><span class="w"> </span><span class="p">});</span>
+</span><span id="__span-0-31"><a id="__codelineno-0-31" name="__codelineno-0-31"></a><span class="p">});</span>
 </span></code></pre></div></td></tr></table></div>
-<p>Ensure that the new backup file is generated in the designated backup directory <code>/home/nonroot/backup</code>.</p>
-<h3 id="restore-steps">Restore Steps<a class="headerlink" href="#restore-steps" title="Permanent link">&para;</a></h3>
-<p>To restore the database, follow these steps:</p>
-<div class="language-sh highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-1-1">1</a></span>
-<span class="normal"><a href="#__codelineno-1-2">2</a></span></pre></div></td><td class="code"><div><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1"></a>oc<span class="w"> </span>rsh<span class="w"> </span>&lt;backup-pod-name&gt;
-</span><span id="__span-1-2"><a id="__codelineno-1-2" name="__codelineno-1-2"></a>mongo-unarchive<span class="w"> </span>--uri<span class="o">=</span><span class="s2">&quot;mongodb://&lt;primary-pod-name&gt;.pltsvc-mongodb-headless/?authSource=admin&quot;</span><span class="w"> </span>--db<span class="o">=</span>pltsvc
+<h3 id="resource-level-operations-appapiproductsidroutets">Resource-Level Operations (<code>/app/api/products/[id]/route.ts</code>)<a class="headerlink" href="#resource-level-operations-appapiproductsidroutets" title="Permanent link">&para;</a></h3>
+<div class="language-ts highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-1-1"> 1</a></span>
+<span class="normal"><a href="#__codelineno-1-2"> 2</a></span>
+<span class="normal"><a href="#__codelineno-1-3"> 3</a></span>
+<span class="normal"><a href="#__codelineno-1-4"> 4</a></span>
+<span class="normal"><a href="#__codelineno-1-5"> 5</a></span>
+<span class="normal"><a href="#__codelineno-1-6"> 6</a></span>
+<span class="normal"><a href="#__codelineno-1-7"> 7</a></span>
+<span class="normal"><a href="#__codelineno-1-8"> 8</a></span>
+<span class="normal"><a href="#__codelineno-1-9"> 9</a></span>
+<span class="normal"><a href="#__codelineno-1-10">10</a></span>
+<span class="normal"><a href="#__codelineno-1-11">11</a></span>
+<span class="normal"><a href="#__codelineno-1-12">12</a></span>
+<span class="normal"><a href="#__codelineno-1-13">13</a></span>
+<span class="normal"><a href="#__codelineno-1-14">14</a></span>
+<span class="normal"><a href="#__codelineno-1-15">15</a></span>
+<span class="normal"><a href="#__codelineno-1-16">16</a></span>
+<span class="normal"><a href="#__codelineno-1-17">17</a></span>
+<span class="normal"><a href="#__codelineno-1-18">18</a></span>
+<span class="normal"><a href="#__codelineno-1-19">19</a></span>
+<span class="normal"><a href="#__codelineno-1-20">20</a></span>
+<span class="normal"><a href="#__codelineno-1-21">21</a></span>
+<span class="normal"><a href="#__codelineno-1-22">22</a></span>
+<span class="normal"><a href="#__codelineno-1-23">23</a></span>
+<span class="normal"><a href="#__codelineno-1-24">24</a></span>
+<span class="normal"><a href="#__codelineno-1-25">25</a></span>
+<span class="normal"><a href="#__codelineno-1-26">26</a></span>
+<span class="normal"><a href="#__codelineno-1-27">27</a></span>
+<span class="normal"><a href="#__codelineno-1-28">28</a></span>
+<span class="normal"><a href="#__codelineno-1-29">29</a></span>
+<span class="normal"><a href="#__codelineno-1-30">30</a></span>
+<span class="normal"><a href="#__codelineno-1-31">31</a></span>
+<span class="normal"><a href="#__codelineno-1-32">32</a></span>
+<span class="normal"><a href="#__codelineno-1-33">33</a></span>
+<span class="normal"><a href="#__codelineno-1-34">34</a></span>
+<span class="normal"><a href="#__codelineno-1-35">35</a></span>
+<span class="normal"><a href="#__codelineno-1-36">36</a></span>
+<span class="normal"><a href="#__codelineno-1-37">37</a></span>
+<span class="normal"><a href="#__codelineno-1-38">38</a></span>
+<span class="normal"><a href="#__codelineno-1-39">39</a></span>
+<span class="normal"><a href="#__codelineno-1-40">40</a></span>
+<span class="normal"><a href="#__codelineno-1-41">41</a></span>
+<span class="normal"><a href="#__codelineno-1-42">42</a></span>
+<span class="normal"><a href="#__codelineno-1-43">43</a></span>
+<span class="normal"><a href="#__codelineno-1-44">44</a></span>
+<span class="normal"><a href="#__codelineno-1-45">45</a></span>
+<span class="normal"><a href="#__codelineno-1-46">46</a></span></pre></div></td><td class="code"><div><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1"></a><span class="k">import</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">z</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="kr">from</span><span class="w"> </span><span class="s1">&#39;zod&#39;</span><span class="p">;</span>
+</span><span id="__span-1-2"><a id="__codelineno-1-2" name="__codelineno-1-2"></a><span class="k">import</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">GlobalRole</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="kr">from</span><span class="w"> </span><span class="s1">&#39;@/constants&#39;</span><span class="p">;</span>
+</span><span id="__span-1-3"><a id="__codelineno-1-3" name="__codelineno-1-3"></a><span class="k">import</span><span class="w"> </span><span class="nx">createApiHandler</span><span class="w"> </span><span class="kr">from</span><span class="w"> </span><span class="s1">&#39;@/core/api-handler&#39;</span><span class="p">;</span>
+</span><span id="__span-1-4"><a id="__codelineno-1-4" name="__codelineno-1-4"></a><span class="k">import</span><span class="w"> </span><span class="nx">readOp</span><span class="w"> </span><span class="kr">from</span><span class="w"> </span><span class="s1">&#39;../_operations/read&#39;</span><span class="p">;</span>
+</span><span id="__span-1-5"><a id="__codelineno-1-5" name="__codelineno-1-5"></a><span class="k">import</span><span class="w"> </span><span class="nx">updateOp</span><span class="w"> </span><span class="kr">from</span><span class="w"> </span><span class="s1">&#39;../_operations/update&#39;</span><span class="p">;</span>
+</span><span id="__span-1-6"><a id="__codelineno-1-6" name="__codelineno-1-6"></a><span class="k">import</span><span class="w"> </span><span class="nx">deleteOp</span><span class="w"> </span><span class="kr">from</span><span class="w"> </span><span class="s1">&#39;../_operations/delete&#39;</span><span class="p">;</span>
+</span><span id="__span-1-7"><a id="__codelineno-1-7" name="__codelineno-1-7"></a>
+</span><span id="__span-1-8"><a id="__codelineno-1-8" name="__codelineno-1-8"></a><span class="c1">// READ</span>
+</span><span id="__span-1-9"><a id="__codelineno-1-9" name="__codelineno-1-9"></a><span class="k">export</span><span class="w"> </span><span class="kd">const</span><span class="w"> </span><span class="nx">GET</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">createApiHandler</span><span class="p">({</span>
+</span><span id="__span-1-10"><a id="__codelineno-1-10" name="__codelineno-1-10"></a><span class="w">  </span><span class="nx">roles</span><span class="o">:</span><span class="w"> </span><span class="p">[</span><span class="nx">GlobalRole</span><span class="p">.</span><span class="nx">User</span><span class="p">],</span>
+</span><span id="__span-1-11"><a id="__codelineno-1-11" name="__codelineno-1-11"></a><span class="w">  </span><span class="nx">validations</span><span class="o">:</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-1-12"><a id="__codelineno-1-12" name="__codelineno-1-12"></a><span class="w">    </span><span class="nx">pathParams</span><span class="o">:</span><span class="w"> </span><span class="kt">z.object</span><span class="p">({</span>
+</span><span id="__span-1-13"><a id="__codelineno-1-13" name="__codelineno-1-13"></a><span class="w">      </span><span class="nx">licencePlate</span><span class="o">:</span><span class="w"> </span><span class="kt">z.string</span><span class="p">(),</span>
+</span><span id="__span-1-14"><a id="__codelineno-1-14" name="__codelineno-1-14"></a><span class="w">    </span><span class="p">}),</span>
+</span><span id="__span-1-15"><a id="__codelineno-1-15" name="__codelineno-1-15"></a><span class="w">  </span><span class="p">},</span>
+</span><span id="__span-1-16"><a id="__codelineno-1-16" name="__codelineno-1-16"></a><span class="p">})(</span><span class="k">async</span><span class="w"> </span><span class="p">({</span><span class="w"> </span><span class="nx">session</span><span class="p">,</span><span class="w"> </span><span class="nx">pathParams</span><span class="w"> </span><span class="p">})</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-1-17"><a id="__codelineno-1-17" name="__codelineno-1-17"></a><span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="k">await</span><span class="w"> </span><span class="nx">readOp</span><span class="p">({</span><span class="w"> </span><span class="nx">session</span><span class="p">,</span><span class="w"> </span><span class="nx">pathParams</span><span class="w"> </span><span class="p">});</span>
+</span><span id="__span-1-18"><a id="__codelineno-1-18" name="__codelineno-1-18"></a><span class="p">});</span>
+</span><span id="__span-1-19"><a id="__codelineno-1-19" name="__codelineno-1-19"></a>
+</span><span id="__span-1-20"><a id="__codelineno-1-20" name="__codelineno-1-20"></a><span class="c1">// UPDATE</span>
+</span><span id="__span-1-21"><a id="__codelineno-1-21" name="__codelineno-1-21"></a><span class="k">export</span><span class="w"> </span><span class="kd">const</span><span class="w"> </span><span class="nx">PUT</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">createApiHandler</span><span class="p">({</span>
+</span><span id="__span-1-22"><a id="__codelineno-1-22" name="__codelineno-1-22"></a><span class="w">  </span><span class="nx">roles</span><span class="o">:</span><span class="w"> </span><span class="p">[</span><span class="nx">GlobalRole</span><span class="p">.</span><span class="nx">Admin</span><span class="p">],</span>
+</span><span id="__span-1-23"><a id="__codelineno-1-23" name="__codelineno-1-23"></a><span class="w">  </span><span class="nx">validations</span><span class="o">:</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-1-24"><a id="__codelineno-1-24" name="__codelineno-1-24"></a><span class="w">    </span><span class="nx">pathParams</span><span class="o">:</span><span class="w"> </span><span class="kt">z.object</span><span class="p">({</span>
+</span><span id="__span-1-25"><a id="__codelineno-1-25" name="__codelineno-1-25"></a><span class="w">      </span><span class="nx">licencePlate</span><span class="o">:</span><span class="w"> </span><span class="kt">z.string</span><span class="p">(),</span>
+</span><span id="__span-1-26"><a id="__codelineno-1-26" name="__codelineno-1-26"></a><span class="w">    </span><span class="p">}),</span>
+</span><span id="__span-1-27"><a id="__codelineno-1-27" name="__codelineno-1-27"></a><span class="w">    </span><span class="nx">body</span><span class="o">:</span><span class="w"> </span><span class="kt">z.object</span><span class="p">({</span>
+</span><span id="__span-1-28"><a id="__codelineno-1-28" name="__codelineno-1-28"></a><span class="w">      </span><span class="nx">name</span><span class="o">:</span><span class="w"> </span><span class="kt">z.string</span><span class="p">(),</span>
+</span><span id="__span-1-29"><a id="__codelineno-1-29" name="__codelineno-1-29"></a><span class="w">      </span><span class="nx">age</span><span class="o">:</span><span class="w"> </span><span class="kt">z.number</span><span class="p">(),</span>
+</span><span id="__span-1-30"><a id="__codelineno-1-30" name="__codelineno-1-30"></a><span class="w">    </span><span class="p">}),</span>
+</span><span id="__span-1-31"><a id="__codelineno-1-31" name="__codelineno-1-31"></a><span class="w">  </span><span class="p">},</span>
+</span><span id="__span-1-32"><a id="__codelineno-1-32" name="__codelineno-1-32"></a><span class="p">})(</span><span class="k">async</span><span class="w"> </span><span class="p">({</span><span class="w"> </span><span class="nx">session</span><span class="p">,</span><span class="w"> </span><span class="nx">pathParams</span><span class="p">,</span><span class="w"> </span><span class="nx">body</span><span class="w"> </span><span class="p">})</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-1-33"><a id="__codelineno-1-33" name="__codelineno-1-33"></a><span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="k">await</span><span class="w"> </span><span class="nx">updateOp</span><span class="p">({</span><span class="w"> </span><span class="nx">session</span><span class="p">,</span><span class="w"> </span><span class="nx">pathParams</span><span class="p">,</span><span class="w"> </span><span class="nx">body</span><span class="w"> </span><span class="p">});</span>
+</span><span id="__span-1-34"><a id="__codelineno-1-34" name="__codelineno-1-34"></a><span class="p">});</span>
+</span><span id="__span-1-35"><a id="__codelineno-1-35" name="__codelineno-1-35"></a>
+</span><span id="__span-1-36"><a id="__codelineno-1-36" name="__codelineno-1-36"></a><span class="c1">// DELETE</span>
+</span><span id="__span-1-37"><a id="__codelineno-1-37" name="__codelineno-1-37"></a><span class="k">export</span><span class="w"> </span><span class="kd">const</span><span class="w"> </span><span class="nx">DELETE</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">createApiHandler</span><span class="p">({</span>
+</span><span id="__span-1-38"><a id="__codelineno-1-38" name="__codelineno-1-38"></a><span class="w">  </span><span class="nx">roles</span><span class="o">:</span><span class="w"> </span><span class="p">[</span><span class="nx">GlobalRole</span><span class="p">.</span><span class="nx">Admin</span><span class="p">],</span>
+</span><span id="__span-1-39"><a id="__codelineno-1-39" name="__codelineno-1-39"></a><span class="w">  </span><span class="nx">validations</span><span class="o">:</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-1-40"><a id="__codelineno-1-40" name="__codelineno-1-40"></a><span class="w">    </span><span class="nx">pathParams</span><span class="o">:</span><span class="w"> </span><span class="kt">z.object</span><span class="p">({</span>
+</span><span id="__span-1-41"><a id="__codelineno-1-41" name="__codelineno-1-41"></a><span class="w">      </span><span class="nx">licencePlate</span><span class="o">:</span><span class="w"> </span><span class="kt">z.string</span><span class="p">(),</span>
+</span><span id="__span-1-42"><a id="__codelineno-1-42" name="__codelineno-1-42"></a><span class="w">    </span><span class="p">}),</span>
+</span><span id="__span-1-43"><a id="__codelineno-1-43" name="__codelineno-1-43"></a><span class="w">  </span><span class="p">},</span>
+</span><span id="__span-1-44"><a id="__codelineno-1-44" name="__codelineno-1-44"></a><span class="p">})(</span><span class="k">async</span><span class="w"> </span><span class="p">({</span><span class="w"> </span><span class="nx">session</span><span class="p">,</span><span class="w"> </span><span class="nx">pathParams</span><span class="w"> </span><span class="p">})</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-1-45"><a id="__codelineno-1-45" name="__codelineno-1-45"></a><span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="k">await</span><span class="w"> </span><span class="nx">deleteOp</span><span class="p">({</span><span class="w"> </span><span class="nx">session</span><span class="p">,</span><span class="w"> </span><span class="nx">pathParams</span><span class="w"> </span><span class="p">});</span>
+</span><span id="__span-1-46"><a id="__codelineno-1-46" name="__codelineno-1-46"></a><span class="p">});</span>
 </span></code></pre></div></td></tr></table></div>
-<p>Execute the provided shell commands to access the backup pod and initiate the restoration process. The mongo-unarchive command uses the specified MongoDB URI, which includes the <code>primary pod name</code> and authentication details from the admin source. The restoration is targeted for the <code>pltsvc</code> database.</p>
 
 
 
