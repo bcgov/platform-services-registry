@@ -1,4 +1,4 @@
-## React Emails
+# React Emails
 
 react-emails is a package that allows for the creation of emails using React and TypeScript. For more info checkout the following links:
 

@@ -1,3 +1,20 @@
+## [0.62.0](https://github.com/bcgov/platform-services-registry/compare/v0.61.0...v0.62.0) (2025-04-22)
+
+### Features
+
+* **5343:** redirect anauthorized user to original url after login ([194ad5b](https://github.com/bcgov/platform-services-registry/commit/194ad5be4fc8e8e6c90b39fb991071bcb9b8a081))
+* **5382:** implement backend support for Private Cloud unit price page ([20a2dc4](https://github.com/bcgov/platform-services-registry/commit/20a2dc4be472a3e2a33797ae72bb237d6de1127a))
+* **5382:** implement frontend page for Private Cloud unit price page ([bb939a4](https://github.com/bcgov/platform-services-registry/commit/bb939a44ec3e5a25ddf208f5e11a6b69bbc9d11d))
+* **5421:** enforce eslint rule to check unused imports ([d5b0940](https://github.com/bcgov/platform-services-registry/commit/d5b09405d28891d965f65a9af353fe65e72a3b37))
+
+### Docs
+
+* **5424:** add clean code contents ([9adcf38](https://github.com/bcgov/platform-services-registry/commit/9adcf3885ff657c669331a59c6630f7ff88f0690))
+* **5424:** add data communication workflow ([68a0abf](https://github.com/bcgov/platform-services-registry/commit/68a0abf0f0d53fe24d4634a3a3861454f41c6415))
+* **5424:** add mermaid plugin for Mkdocs ([e04d9c2](https://github.com/bcgov/platform-services-registry/commit/e04d9c29759bcce24a351432c17c9f80dc17b8f6))
+* **5424:** update development setup ([f6b0fd9](https://github.com/bcgov/platform-services-registry/commit/f6b0fd98d969bb916eb509b3daeb30fe20232459))
+* **5425:** re-organize exisiting contents ([5b47ade](https://github.com/bcgov/platform-services-registry/commit/5b47ade9facf8d5cac279ec50d65d406e1434f16))
+* **5425:** re-organize exisiting contents cont' ([99b10d4](https://github.com/bcgov/platform-services-registry/commit/99b10d42d15e6009c163746aeb41d52eb2d00de7))
 ## [0.61.0](https://github.com/bcgov/platform-services-registry/compare/v0.60.0...v0.61.0) (2025-04-10)
 
 ### Features

@@ -8,6 +8,8 @@ export const RequestDecision = {
 
 export type RequestDecision = (typeof RequestDecision)[keyof typeof RequestDecision];
 
+export const commentSchema = z.string().max(1000).nullable().default(null).optional();
+
 export const userSchema = z.object({
   firstName: z.string().min(1, 'First name is required').max(50, 'First name must be 50 characters or less'),
   lastName: z.string().min(1, 'Last name is required').max(50, 'Last name must be 50 characters or less'),
@@ -25,7 +27,7 @@ export const userSchema = z.object({
 export const deleteRequestDecisionBodySchema = z.object({
   type: z.literal(RequestType.DELETE),
   decision: z.nativeEnum(RequestDecision),
-  decisionComment: z.string().optional(),
+  decisionComment: commentSchema,
 });
 
 export type User = z.infer<typeof userSchema>;

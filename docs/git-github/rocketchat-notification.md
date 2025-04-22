@@ -1,4 +1,4 @@
-# RocketChat Deployment Notifications Setup
+# RocketChat Deployment Notifications
 
 To facilitate efficient communication of deployment actions, we have set up a notification bot to notify developers and stakeholders about the status of our deployments, as well as provide a convenient link to the changes made.
 

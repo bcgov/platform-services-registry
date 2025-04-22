@@ -10,6 +10,13 @@ import Logo from '@/components/assets/logo.svg';
 import UserMenu from '@/components/layouts/UserMenu';
 import SideTasks from './SideTasks';
 
+function loginWithRedirect(defaultPath = '/home') {
+  const stored = localStorage.getItem('postLoginRedirect');
+  const path = stored ? stored : defaultPath;
+
+  signIn('keycloak', { callbackUrl: path });
+}
+
 export default function Header() {
   const { data: session, status: sessionStatus } = useSession();
   const pathname = usePathname();
@@ -34,7 +41,7 @@ export default function Header() {
         variant="outline"
         leftSection={<IconLogin2 />}
         className="bg-white hover:bg-white"
-        onClick={() => signIn('keycloak', { callbackUrl: '/home' })}
+        onClick={() => loginWithRedirect()}
       >
         Login
       </Button>

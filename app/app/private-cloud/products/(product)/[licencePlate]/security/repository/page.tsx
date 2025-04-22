@@ -8,9 +8,9 @@ import { useEffect, useState } from 'react';
 import { FormProvider, useForm, useFieldArray } from 'react-hook-form';
 import HookFormTextInput from '@/components/generic/input/HookFormTextInput';
 import { success, failure } from '@/components/notification';
-import { SecurityConfig, ProjectContext } from '@/prisma/types';
+import { ProjectContext} from '@/prisma/types';
 import { getSecurityConfig, upsertSecurityConfig } from '@/services/backend/security-config';
-import { securityConfigSchema } from '@/validation-schemas/security-config';
+import { SecurityConfig, securityConfigSchema } from '@/validation-schemas';
 
 export default function Repository({ params: getParams }: { params: Promise<{ licencePlate: string }> }) {
   const [params, setParams] = useState<{ licencePlate: string }>({ licencePlate: '' });

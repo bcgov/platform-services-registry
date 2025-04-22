@@ -1,4 +1,5 @@
-import { SecurityConfig, ProjectContext } from '@/prisma/types';
+import { ProjectContext } from '@/prisma/types';
+import { SecurityConfig } from '@/validation-schemas';
 import { instance } from './axios';
 
 export async function getSecurityConfig(licencePlate: string, context: ProjectContext) {

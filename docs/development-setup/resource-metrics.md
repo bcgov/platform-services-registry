@@ -1,4 +1,4 @@
-## Resource Metrics Setup
+# Resource Metrics
 
 For Registry to get metrics from Prometheus, the following things are needed:
 
