@@ -1,8 +1,8 @@
-import { EventType } from '@prisma/client';
 import { z } from 'zod';
 import { GlobalRole } from '@/constants';
 import createApiHandler from '@/core/api-handler';
 import { OkResponse, UnauthorizedResponse } from '@/core/responses';
+import { EventType } from '@/prisma/types';
 import { createEvent, models } from '@/services/db';
 import { sendPublicCloudNatsMessage } from '@/services/nats';
 

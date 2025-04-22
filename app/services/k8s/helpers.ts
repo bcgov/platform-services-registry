@@ -1,5 +1,5 @@
 import { KubeConfig, CoreV1Api, CustomObjectsApi, Metrics } from '@kubernetes/client-node';
-import { Cluster } from '@prisma/client';
+import { Cluster } from '@/prisma/types';
 
 function configureKubeConfig(cluster: string, token: string) {
   const kc = new KubeConfig();

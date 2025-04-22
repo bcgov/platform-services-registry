@@ -1,5 +1,4 @@
-import { Task } from '@prisma/client';
-import { Prisma } from '@prisma/client';
+import { Task, Prisma } from '@/prisma/types';
 
 export type SearchTask = Prisma.TaskGetPayload<{
   select: {

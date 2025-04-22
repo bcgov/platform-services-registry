@@ -1,4 +1,3 @@
-import { PublicCloudProductMemberRole } from '@prisma/client';
 import { IS_PROD } from '@/config';
 import { publicCloudTeamEmail, GlobalRole } from '@/constants';
 import AdminCreateRequestTemplate from '@/emails/_templates/public-cloud/AdminCreateRequest';
@@ -22,6 +21,7 @@ import TeamEditRequestCompletionTemplate from '@/emails/_templates/public-cloud/
 import TeamRequestCancellationTemplate from '@/emails/_templates/public-cloud/TeamRequestCancellation';
 import { getPublicCloudEmouFileName } from '@/helpers/emou';
 import { generateEmouPdf } from '@/helpers/pdfs/emou';
+import { PublicCloudProductMemberRole } from '@/prisma/types';
 import { safeSendEmail, sendEmail } from '@/services/ches/core';
 import { getContent } from '@/services/ches/helpers';
 import { findUserEmailsByAuthRole } from '@/services/keycloak/app-realm';

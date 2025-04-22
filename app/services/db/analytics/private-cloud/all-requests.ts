@@ -1,8 +1,8 @@
-import { RequestType } from '@prisma/client';
 import _forEach from 'lodash-es/forEach';
 import _groupBy from 'lodash-es/groupBy';
 import _map from 'lodash-es/map';
 import prisma from '@/core/prisma';
+import { RequestType } from '@/prisma/types';
 import { dateToShortDateString } from '@/utils/js/date';
 
 export async function getAllRequests({

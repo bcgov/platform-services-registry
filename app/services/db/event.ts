@@ -1,10 +1,10 @@
-import { EventType, Prisma } from '@prisma/client';
 import { addDays } from 'date-fns';
 import _isNumber from 'lodash-es/isNumber';
 import { z } from 'zod';
 import { logger } from '@/core/logging';
 import prisma from '@/core/prisma';
 import { parsePaginationParams } from '@/helpers/pagination';
+import { EventType, Prisma } from '@/prisma/types';
 import { EventSearchBody } from '@/validation-schemas/event';
 
 const validationSchemas = {

@@ -1,5 +1,5 @@
 import { Tooltip, Badge } from '@mantine/core';
-import { Cluster } from '@prisma/client';
+import { Cluster } from '@/prisma/types';
 
 export default function ClusterBadge({ cluster }: { cluster: Cluster }) {
   let clusterColor = 'gray';

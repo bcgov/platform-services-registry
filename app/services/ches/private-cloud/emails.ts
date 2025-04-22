@@ -1,4 +1,3 @@
-import { PrivateCloudProductMemberRole } from '@prisma/client';
 import { IS_PROD } from '@/config';
 import { GlobalRole, privateCloudTeamEmail } from '@/constants';
 import AdminCreateRequestTemplate from '@/emails/_templates/private-cloud/AdminCreateRequest';
@@ -18,6 +17,7 @@ import TeamEditRequestApprovalTemplate from '@/emails/_templates/private-cloud/T
 import TeamEditRequestCompletionTemplate from '@/emails/_templates/private-cloud/TeamEditRequestCompletion';
 import TeamEditRequestRejectionTemplate from '@/emails/_templates/private-cloud/TeamEditRequestRejection';
 import TeamRequestCancellationTemplate from '@/emails/_templates/private-cloud/TeamRequestCancellation';
+import { PrivateCloudProductMemberRole } from '@/prisma/types';
 import { sendEmail } from '@/services/ches/core';
 import { getContent } from '@/services/ches/helpers';
 import { findUserEmailsByAuthRole } from '@/services/keycloak/app-realm';

@@ -1,7 +1,6 @@
 'use client';
 
 import { Tooltip, Badge } from '@mantine/core';
-import { ProjectStatus } from '@prisma/client';
 import _truncate from 'lodash-es/truncate';
 import { usePathname, useRouter } from 'next/navigation';
 import React, { useState } from 'react';
@@ -9,6 +8,7 @@ import ActiveRequestBox from '@/components/form/ActiveRequestBox';
 import CopyableButton from '@/components/generic/button/CopyableButton';
 import UserCard from '@/components/UserCard';
 import { ministryKeyToName } from '@/helpers/product';
+import { ProjectStatus } from '@/prisma/types';
 import { PublicCloudProductSimpleDecorated } from '@/types/public-cloud';
 import { formatDate } from '@/utils/js';
 import EmptySearch from './EmptySearch';

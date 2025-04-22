@@ -1,7 +1,6 @@
 'use client';
 
 import { Alert, Button } from '@mantine/core';
-import { RequestType } from '@prisma/client';
 import { IconArrowBack, IconInfoCircle, IconFile, IconExclamationCircle } from '@tabler/icons-react';
 import { useQuery } from '@tanstack/react-query';
 import { useEffect, useState } from 'react';
@@ -13,6 +12,7 @@ import RequestBadge from '@/components/private-cloud/RequestBadge';
 import { GlobalRole } from '@/constants';
 import createClientPage from '@/core/client-page';
 import { comparePrivateProductData } from '@/helpers/product-change';
+import { RequestType } from '@/prisma/types';
 import { getPrivateCloudRequest } from '@/services/backend/private-cloud/requests';
 import { usePrivateProductState } from '@/states/global';
 

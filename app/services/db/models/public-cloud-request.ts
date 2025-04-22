@@ -1,6 +1,6 @@
-import { Prisma, TaskType, TaskStatus, RequestType, DecisionStatus } from '@prisma/client';
 import { Session } from 'next-auth';
 import prisma from '@/core/prisma';
+import { Prisma, TaskType, TaskStatus, RequestType, DecisionStatus } from '@/prisma/types';
 import { PublicCloudRequestDecorate } from '@/types/doc-decorate';
 import {
   PublicCloudRequestDetail,

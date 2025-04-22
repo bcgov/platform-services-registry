@@ -1,4 +1,4 @@
-import { Provider } from '@prisma/client';
+import { Provider } from '@/prisma/types';
 
 export function getPublicCloudEmouFileName(productName: string, provider: Provider) {
   const isAWS = provider === Provider.AWS || provider === Provider.AWS_LZA;

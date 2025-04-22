@@ -1,7 +1,6 @@
 'use client';
 
 import { zodResolver } from '@hookform/resolvers/zod';
-import { AccountCoding } from '@prisma/client';
 import { useQuery, useMutation } from '@tanstack/react-query';
 import { useEffect, useState } from 'react';
 import { FormProvider, useForm } from 'react-hook-form';
@@ -12,6 +11,7 @@ import { openConfirmModal } from '@/components/modal/confirm';
 import AccountCodingSection from '@/components/public-cloud/sections/AccountCoding';
 import { requestSortsInProduct, GlobalRole } from '@/constants';
 import createClientPage from '@/core/client-page';
+import { AccountCoding } from '@/prisma/types';
 import { searchPublicCloudBillings } from '@/services/backend/public-cloud/billings';
 import { updateAccountCoding as _updateAccountCoding } from '@/services/backend/public-cloud/products';
 import { usePublicProductState } from '@/states/global';

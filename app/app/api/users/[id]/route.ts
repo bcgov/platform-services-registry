@@ -1,4 +1,3 @@
-import { ProjectStatus } from '@prisma/client';
 import _uniq from 'lodash-es//uniq';
 import _compact from 'lodash-es/compact';
 import _remove from 'lodash-es/remove';
@@ -6,6 +5,7 @@ import { GlobalPermissions, GlobalRole } from '@/constants';
 import createApiHandler from '@/core/api-handler';
 import prisma from '@/core/prisma';
 import { OkResponse } from '@/core/responses';
+import { ProjectStatus } from '@/prisma/types';
 import { UserDetail } from '@/types/user';
 import { userUpdateBodySchema } from '@/validation-schemas';
 import updateOp from '../_operations/update';

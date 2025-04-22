@@ -2,13 +2,13 @@
 
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Button } from '@mantine/core';
-import { SecurityConfig, ProjectContext } from '@prisma/client';
 import { useQuery, useMutation } from '@tanstack/react-query';
 import _get from 'lodash-es/get';
 import { useEffect, useState } from 'react';
 import { FormProvider, useForm, useFieldArray } from 'react-hook-form';
 import HookFormTextInput from '@/components/generic/input/HookFormTextInput';
 import { success, failure } from '@/components/notification';
+import { SecurityConfig, ProjectContext } from '@/prisma/types';
 import { getSecurityConfig, upsertSecurityConfig } from '@/services/backend/security-config';
 import { securityConfigSchema } from '@/validation-schemas/security-config';
 

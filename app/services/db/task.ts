@@ -1,8 +1,8 @@
-import { Prisma } from '@prisma/client';
 import _isNumber from 'lodash-es/isNumber';
 import _uniq from 'lodash-es/uniq';
 import prisma from '@/core/prisma';
 import { parsePaginationParams } from '@/helpers/pagination';
+import { Prisma } from '@/prisma/types';
 import { TaskSearchBody } from '@/validation-schemas/task';
 
 const defaultSortKey = 'createdAt';

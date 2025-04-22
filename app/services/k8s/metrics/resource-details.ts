@@ -1,11 +1,11 @@
+import { getTotalMetrics, memoryUnitMultipliers, cpuCoreToMillicoreMultiplier } from '@/helpers/resource-metrics';
 import {
   Cluster,
   ResourceType,
   QuotaUpgradeResourceDetail,
   ResourceRequestsEnv,
   ResourceRequests,
-} from '@prisma/client';
-import { getTotalMetrics, memoryUnitMultipliers, cpuCoreToMillicoreMultiplier } from '@/helpers/resource-metrics';
+} from '@/prisma/types';
 import { getPodMetrics } from '@/services/k8s/metrics';
 
 export async function getResourceDetails({

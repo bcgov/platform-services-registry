@@ -1,9 +1,9 @@
-import { Cluster, Ministry } from '@prisma/client';
 import { useSnapshot } from 'valtio';
 import FormDateRangePicker from '@/components/generic/select/FormDateRangePicker';
 import FormMultiSelect from '@/components/generic/select/FormMultiSelect';
 import FormUserPicker from '@/components/generic/select/FormUserPicker';
 import { clusters, ministryOptions } from '@/constants';
+import { Cluster, Ministry } from '@/prisma/types';
 import { pageState } from './state';
 
 export default function FilterPanel() {

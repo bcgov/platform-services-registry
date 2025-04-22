@@ -1,4 +1,3 @@
-import { AccountCoding } from '@prisma/client';
 import { POST as _reviewPublicCloudBilling } from '@/app/api/public-cloud/products/[licencePlate]/billings/[billingId]/review/route';
 import { POST as _signPublicCloudBilling } from '@/app/api/public-cloud/products/[licencePlate]/billings/[billingId]/sign/route';
 import { GET as _listPublicCloudProductRequests } from '@/app/api/public-cloud/products/[licencePlate]/requests/route';
@@ -13,6 +12,7 @@ import {
   POST as _createPublicCloudProduct,
 } from '@/app/api/public-cloud/products/route';
 import { POST as _searchPublicCloudProducts } from '@/app/api/public-cloud/products/search/route';
+import { AccountCoding } from '@/prisma/types';
 import {
   PublicCloudEditRequestBody,
   PublicCloudProductSearchBody,

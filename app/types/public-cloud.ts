@@ -1,4 +1,4 @@
-import { Prisma, User, PublicCloudProductMember, Provider } from '@prisma/client';
+import { Prisma, User, PublicCloudProductMember, Provider } from '@/prisma/types';
 import { PublicCloudProductDecorate, PublicCloudRequestDecorate, PublicCloudBillingDecorate } from './doc-decorate';
 
 export type ExtendedPublicCloudProductMember = PublicCloudProductMember & User;

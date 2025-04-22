@@ -1,4 +1,4 @@
-import { Prisma, User } from '@prisma/client';
+import { Prisma, User } from '@/prisma/types';
 
 export interface MsUser {
   id: string;

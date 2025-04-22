@@ -1,9 +1,9 @@
-import { TaskType } from '@prisma/client';
 import { z } from 'zod';
 import { GlobalPermissions } from '@/constants';
 import createApiHandler from '@/core/api-handler';
 import prisma from '@/core/prisma';
 import { BadRequestResponse, OkResponse } from '@/core/responses';
+import { TaskType } from '@/prisma/types';
 import { models, tasks, privateCloudRequestDetailInclude, publicCloudRequestDetailInclude } from '@/services/db';
 import { getPublicCloudBillingResources } from '@/services/db/public-cloud-billing';
 import { objectId } from '@/validation-schemas';

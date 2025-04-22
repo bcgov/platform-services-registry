@@ -1,3 +1,6 @@
+import { string, z } from 'zod';
+import { AGMinistries } from '@/constants';
+import { validateDistinctPOandTl } from '@/helpers/user';
 import {
   Ministry,
   Provider,
@@ -6,10 +9,7 @@ import {
   ProjectStatus,
   DecisionStatus,
   PublicCloudProductMemberRole,
-} from '@prisma/client';
-import { string, z } from 'zod';
-import { AGMinistries } from '@/constants';
-import { validateDistinctPOandTl } from '@/helpers/user';
+} from '@/prisma/types';
 import { ProductBiliingStatus } from '@/types';
 import { processEnumString } from '@/utils/js';
 import { RequestDecision } from './shared';

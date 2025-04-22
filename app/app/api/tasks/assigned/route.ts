@@ -1,8 +1,8 @@
-import { TaskType } from '@prisma/client';
 import { GlobalRole } from '@/constants';
 import createApiHandler from '@/core/api-handler';
 import prisma from '@/core/prisma';
 import { OkResponse } from '@/core/responses';
+import { TaskType } from '@/prisma/types';
 import { getUniqueNonFalsyItems } from '@/utils/js';
 
 const apiHandler = createApiHandler({

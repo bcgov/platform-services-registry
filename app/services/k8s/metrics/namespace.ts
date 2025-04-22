@@ -1,5 +1,5 @@
-import { Cluster } from '@prisma/client';
 import _get from 'lodash-es/get';
+import { Cluster } from '@/prisma/types';
 import { getK8sClients } from './core';
 
 export async function getNamespace(namespace: string, cluster: Cluster) {

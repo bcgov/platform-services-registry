@@ -4,7 +4,7 @@ import {
   ResourceType,
   ResourceRequestsEnv,
   ResourceRequests,
-} from '@prisma/client';
+} from '@/prisma/types';
 import { getResourceDetails } from '@/services/k8s/metrics';
 import { iterateObject } from '@/utils/js';
 

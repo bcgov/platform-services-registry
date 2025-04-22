@@ -2,7 +2,6 @@
 
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Button } from '@mantine/core';
-import { DecisionStatus, ProjectContext, RequestType } from '@prisma/client';
 import {
   IconInfoCircle,
   IconUsersGroup,
@@ -25,6 +24,7 @@ import Quotas from '@/components/private-cloud/sections/Quotas';
 import TeamContacts from '@/components/private-cloud/sections/TeamContacts';
 import { GlobalRole } from '@/constants';
 import createClientPage from '@/core/client-page';
+import { DecisionStatus, ProjectContext, RequestType } from '@/prisma/types';
 import { usePrivateProductState } from '@/states/global';
 import {
   privateCloudRequestDecisionBodySchema,

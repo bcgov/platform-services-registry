@@ -1,5 +1,4 @@
 import { expect } from '@jest/globals';
-import { DecisionStatus, Ministry, Provider, ProjectStatus, RequestType } from '@prisma/client';
 import { parse } from 'csv-parse/sync';
 import { GlobalRole } from '@/constants';
 import { defaultAccountCoding } from '@/constants';
@@ -8,6 +7,7 @@ import { createSamplePublicCloudProductData } from '@/helpers/mock-resources';
 import { mockNoRoleUsers } from '@/helpers/mock-users';
 import { ministryKeyToName } from '@/helpers/product';
 import { formatFullName } from '@/helpers/user';
+import { DecisionStatus, Ministry, Provider, ProjectStatus, RequestType } from '@/prisma/types';
 import { mockSessionByEmail, mockSessionByRole } from '@/services/api-test/core';
 import { mockTeamServiceAccount } from '@/services/api-test/core';
 import {

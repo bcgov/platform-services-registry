@@ -1,5 +1,5 @@
-import { AccountCoding } from '@prisma/client';
 import _compact from 'lodash-es/compact';
+import { AccountCoding } from '@/prisma/types';
 
 export function getAccountCodingString(accountCoding: AccountCoding, separator = ' ') {
   return _compact([accountCoding.cc, accountCoding.rc, accountCoding.sl, accountCoding.stob, accountCoding.pc]).join(

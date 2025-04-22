@@ -1,13 +1,13 @@
 'use client';
 
 import { Alert } from '@mantine/core';
-import { DecisionStatus, ProjectContext, RequestType } from '@prisma/client';
 import { IconInfoCircle } from '@tabler/icons-react';
 import { z } from 'zod';
 import CancelRequest from '@/components/buttons/CancelButton';
 import ProductComparison from '@/components/ProductComparison';
 import { GlobalRole } from '@/constants';
 import createClientPage from '@/core/client-page';
+import { DecisionStatus, ProjectContext, RequestType } from '@/prisma/types';
 import { usePublicProductState } from '@/states/global';
 import { DiffChange } from '@/utils/js';
 

@@ -1,7 +1,7 @@
-import { DecisionStatus, RequestType, TaskStatus, TaskType } from '@prisma/client';
 import { Session } from 'next-auth';
 import { GlobalPermissions } from '@/constants';
 import prisma from '@/core/prisma';
+import { DecisionStatus, RequestType, TaskStatus, TaskType } from '@/prisma/types';
 import { sendAdminCreateRequestEmail, sendAdminDeleteRequestEmail } from '@/services/ches/public-cloud';
 import { PublicCloudRequestDetailDecorated } from '@/types/public-cloud';
 import { RequestDecision } from '@/validation-schemas';

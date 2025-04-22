@@ -1,10 +1,10 @@
 'use client';
 
 import { Button, LoadingOverlay, Box } from '@mantine/core';
-import { ProjectContext } from '@prisma/client';
 import { useMutation } from '@tanstack/react-query';
 import { lowerCase } from 'lodash-es';
 import { createModal } from '@/core/modal';
+import { ProjectContext } from '@/prisma/types';
 import { cancelPrivateCloudRequest } from '@/services/backend/private-cloud/requests';
 import { cancelPublicCloudRequest } from '@/services/backend/public-cloud/requests';
 import { success, failure } from '../notification';

@@ -1,8 +1,8 @@
-import { RequestType } from '@prisma/client';
 import { z } from 'zod';
 import createApiHandler from '@/core/api-handler';
 import prisma from '@/core/prisma';
 import { BadRequestResponse, OkResponse } from '@/core/responses';
+import { RequestType } from '@/prisma/types';
 import createPrivateCloudNatsMessage from '@/services/nats/private-cloud';
 
 const pathParamSchema = z.object({

@@ -1,6 +1,6 @@
-import { Ministry, PublicCloudProductMemberRole, ResourceRequestsEnv } from '@prisma/client';
 import { environmentShortNames } from '@/constants';
 import prisma from '@/core/prisma';
+import { Ministry, PublicCloudProductMemberRole, ResourceRequestsEnv } from '@/prisma/types';
 import { PrivateCloudRequestDetail } from '@/types/private-cloud';
 
 type ResourceRequestsEnvKeys = Array<keyof ResourceRequestsEnv>;

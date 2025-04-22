@@ -1,7 +1,7 @@
-import { Prisma } from '@prisma/client';
 import _isNumber from 'lodash-es/isNumber';
 import { Session } from 'next-auth';
 import { parsePaginationParams } from '@/helpers/pagination';
+import { Prisma } from '@/prisma/types';
 import { models } from '@/services/db';
 import { PrivateCloudProductDetailDecorated } from '@/types/private-cloud';
 import { PrivateCloudProductSearchBody } from '@/validation-schemas/private-cloud';

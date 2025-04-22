@@ -1,7 +1,7 @@
-import { Prisma } from '@prisma/client';
 import PagninationButtons from '@/components/buttons/PaginationButtons';
 import ExternalLink from '@/components/generic/button/ExternalLink';
 import TableTop from '@/components/table/TableTop';
+import { Prisma } from '@/prisma/types';
 import { formatDateSimple } from '@/utils/js';
 import SearchPanel from './SearchPanel';
 

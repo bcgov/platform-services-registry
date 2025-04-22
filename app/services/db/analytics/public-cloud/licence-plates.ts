@@ -1,5 +1,5 @@
-import { Provider, Ministry } from '@prisma/client';
 import prisma from '@/core/prisma';
+import { Provider, Ministry } from '@/prisma/types';
 
 export async function getPublicLicencePlates({
   userId,

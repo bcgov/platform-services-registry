@@ -1,10 +1,10 @@
 import { expect } from '@jest/globals';
-import { DecisionStatus, Cluster, RequestType } from '@prisma/client';
 import { GlobalRole } from '@/constants';
 import { defaultAccountCoding } from '@/constants';
 import prisma from '@/core/prisma';
 import { createSamplePublicCloudProductData } from '@/helpers/mock-resources';
 import { pickProductData } from '@/helpers/product';
+import { DecisionStatus, Cluster, RequestType } from '@/prisma/types';
 import { mockSessionByEmail, mockSessionByRole } from '@/services/api-test/core';
 import { mockTeamServiceAccount } from '@/services/api-test/core';
 import {

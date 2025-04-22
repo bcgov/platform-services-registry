@@ -1,6 +1,6 @@
 import { Badge } from '@mantine/core';
-import { RequestType, DecisionStatus } from '@prisma/client';
 import LicencePlateBadge from '@/components/shared/LicencePlateBadge';
+import { RequestType, DecisionStatus } from '@/prisma/types';
 import { PublicCloudRequestDetailDecorated } from '@/types/public-cloud';
 import { cn } from '@/utils/js';
 

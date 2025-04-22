@@ -1,9 +1,9 @@
-import { Prisma, ProjectContext } from '@prisma/client';
 import { redirect } from 'next/navigation';
 import { getServerSession } from 'next-auth/next';
 import SonarScanResults from '@/components/sonarscan/SonarScanResults';
 import { authOptions } from '@/core/auth-options';
 import { parsePaginationParams } from '@/helpers/pagination';
+import { Prisma, ProjectContext } from '@/prisma/types';
 import { models } from '@/services/db';
 
 export default async function Page({

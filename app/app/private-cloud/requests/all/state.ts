@@ -1,6 +1,6 @@
-import { DecisionStatus } from '@prisma/client';
 import { proxy } from 'valtio';
 import { requestSorts } from '@/constants';
+import { DecisionStatus } from '@/prisma/types';
 import { PrivateCloudRequestSearchBody } from '@/validation-schemas/private-cloud';
 
 export const pageState = proxy<PrivateCloudRequestSearchBody>({

@@ -1,4 +1,4 @@
-import { Ministry, Prisma } from '@prisma/client';
+import { Ministry, Prisma } from '@/prisma/types';
 
 export const ministries = Object.values(Ministry);
 

@@ -1,4 +1,3 @@
-import { EventType, TaskStatus, UserSession } from '@prisma/client';
 import axios from 'axios';
 import { addMinutes } from 'date-fns';
 import jwt from 'jsonwebtoken';
@@ -11,6 +10,7 @@ import KeycloakProvider, { KeycloakProfile } from 'next-auth/providers/keycloak'
 import { IS_PROD, AUTH_SERVER_URL, AUTH_RELM, AUTH_RESOURCE, AUTH_SECRET, USER_TOKEN_REFRESH_INTERVAL } from '@/config';
 import { TEAM_SA_PREFIX, GlobalRole, RoleToSessionProp, sessionRolePropKeys } from '@/constants';
 import prisma from '@/core/prisma';
+import { EventType, TaskStatus, UserSession } from '@/prisma/types';
 import { createEvent } from '@/services/db';
 import { upsertUser } from '@/services/db/user';
 

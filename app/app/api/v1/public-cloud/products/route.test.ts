@@ -1,10 +1,10 @@
 import { expect } from '@jest/globals';
-import { DecisionStatus, ProjectStatus, Ministry, Provider, RequestType } from '@prisma/client';
 import { GlobalRole } from '@/constants';
 import { defaultAccountCoding } from '@/constants';
 import prisma from '@/core/prisma';
 import { createSamplePublicCloudProductData } from '@/helpers/mock-resources';
 import { mockNoRoleUsers } from '@/helpers/mock-users';
+import { DecisionStatus, ProjectStatus, Ministry, Provider, RequestType } from '@/prisma/types';
 import {
   mockSessionByEmail,
   mockSessionByRole,

@@ -1,9 +1,9 @@
-import { Cluster, ResourceRequestsEnv } from '@prisma/client';
 import { z } from 'zod';
 import { IS_PROD, IS_TEST } from '@/config';
 import { environmentLongNames, GlobalRole } from '@/constants';
 import createApiHandler from '@/core/api-handler';
 import { OkResponse, UnauthorizedResponse } from '@/core/responses';
+import { Cluster, ResourceRequestsEnv } from '@/prisma/types';
 import { models } from '@/services/db';
 import { getPodMetrics } from '@/services/k8s/metrics';
 import { getPathParamSchema } from '../schema';

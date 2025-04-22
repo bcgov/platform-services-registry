@@ -1,11 +1,11 @@
 'use client';
 
-import { ResourceType } from '@prisma/client';
 import _truncate from 'lodash-es/truncate';
 import React from 'react';
 import TableHeader from '@/components/generic/table/TableHeader';
 import TruncatedTooltip from '@/components/table/TruncatedTooltip';
 import { formatBinaryMetric, formatCpu, TransformedPodData, TransformedPVCData } from '@/helpers/resource-metrics';
+import { ResourceType } from '@/prisma/types';
 import { capitalizeFirstLetter, cn } from '@/utils/js';
 
 interface MetricsSummary {

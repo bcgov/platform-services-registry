@@ -1,11 +1,11 @@
 import { Badge, Table } from '@mantine/core';
-import { ResourceRequestsEnv } from '@prisma/client';
 import { IconArrowNarrowDownDashed } from '@tabler/icons-react';
 import _get from 'lodash-es/get';
 import _startCase from 'lodash-es/startCase';
 import { useSession } from 'next-auth/react';
 import { Fragment } from 'react';
 import { namespaceKeys, resourceKeys } from '@/constants';
+import { ResourceRequestsEnv } from '@/prisma/types';
 import { useAppState } from '@/states/global';
 import { cn, formatCurrency } from '@/utils/js';
 

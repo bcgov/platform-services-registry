@@ -1,7 +1,7 @@
-import { ProjectStatus } from '@prisma/client';
 import { Session } from 'next-auth';
 import { BadRequestResponse, OkResponse } from '@/core/responses';
 import { ministryKeyToName } from '@/helpers/product';
+import { ProjectStatus } from '@/prisma/types';
 import { models } from '@/services/db';
 
 export default async function readOp({ session, idOrLicencePlate }: { session: Session; idOrLicencePlate: string }) {

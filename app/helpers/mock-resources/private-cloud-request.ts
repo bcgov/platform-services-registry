@@ -1,5 +1,5 @@
 import { faker } from '@faker-js/faker';
-import { ProjectStatus, RequestType, DecisionStatus } from '@prisma/client';
+import { ProjectStatus, RequestType, DecisionStatus } from '@/prisma/types';
 import { PrivateCloudRequestDetail } from '@/types/private-cloud';
 import { generateShortId } from '@/utils/js';
 import { getRandomMinistry, getRandomCluster, getRandomUser } from './core';

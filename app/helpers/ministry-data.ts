@@ -1,6 +1,6 @@
-import { Cluster, Provider } from '@prisma/client';
 import { clusters, providers } from '@/constants';
 import { ministryKeyToName } from '@/helpers/product';
+import { Cluster, Provider } from '@/prisma/types';
 
 export const transformMinistryData = (items: { _id: string; value: number }[]) =>
   items.map(({ _id, value }) => ({ label: ministryKeyToName(_id), value }));

@@ -1,6 +1,6 @@
-import { DecisionStatus, RequestType } from '@prisma/client';
 import { useSnapshot } from 'valtio';
 import FormMultiSelect from '@/components/generic/select/FormMultiSelect';
+import { DecisionStatus, RequestType } from '@/prisma/types';
 import { pageState } from './state';
 
 export default function FilterPanel() {

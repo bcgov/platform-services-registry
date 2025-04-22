@@ -1,7 +1,6 @@
 'use client';
 
 import { Alert, Button } from '@mantine/core';
-import { RequestType } from '@prisma/client';
 import { IconArrowBack, IconInfoCircle, IconFile } from '@tabler/icons-react';
 import { useQuery } from '@tanstack/react-query';
 import { useEffect, useState } from 'react';
@@ -12,6 +11,7 @@ import RequestBadge from '@/components/public-cloud/RequestBadge';
 import { GlobalRole } from '@/constants';
 import createClientPage from '@/core/client-page';
 import { comparePublicProductData } from '@/helpers/product-change';
+import { RequestType } from '@/prisma/types';
 import { getPublicCloudRequest } from '@/services/backend/public-cloud/requests';
 import { usePublicProductState } from '@/states/global';
 

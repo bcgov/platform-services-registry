@@ -1,4 +1,4 @@
-import { Task, TaskType } from '@prisma/client';
+import { Task, TaskType } from '@/prisma/types';
 import {
   sendReviewPrivateCloudRequestTaskEmail,
   createReviewPrivateCloudRequestTask,

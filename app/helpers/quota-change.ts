@@ -1,4 +1,4 @@
-import { ResourceRequestsEnv } from '@prisma/client';
+import { ResourceRequestsEnv } from '@/prisma/types';
 import { extractNumbers } from '@/utils/js';
 
 export const isResourseDowngrade = (req: string, prod: string) => {

@@ -1,8 +1,8 @@
-import { DecisionStatus, RequestType, EventType } from '@prisma/client';
 import { Session } from 'next-auth';
 import { TypeOf } from 'zod';
 import { OkResponse, UnauthorizedResponse } from '@/core/responses';
 import { comparePublicProductData } from '@/helpers/product-change';
+import { DecisionStatus, RequestType, EventType } from '@/prisma/types';
 import { sendEditRequestEmails } from '@/services/ches/public-cloud';
 import { createEvent, getLastClosedPublicCloudRequest, models } from '@/services/db';
 import { sendPublicCloudNatsMessage } from '@/services/nats';

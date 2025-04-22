@@ -1,6 +1,6 @@
-import { Provider } from '@prisma/client';
 import { proxy } from 'valtio';
 import { deepClone } from 'valtio/utils';
+import { Provider } from '@/prisma/types';
 import { AnalyticsPublicCloudFilterBody } from '@/validation-schemas/analytics-public-cloud';
 
 const initialValue = {
