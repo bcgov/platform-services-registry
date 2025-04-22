@@ -64,14 +64,19 @@ theme:
     logo: logo
 
 nav:
-- Home: home/main.md
+- Home:
+  - About: home/main.md
+  - Technologies:
+    - Terraform: technologies/terraform.md
+    - Airflow: technologies/airflow.md
+    - Database Tools: technologies/database-tools.md
+    - WeasyPrint: technologies/weasyprint.md
 - Development setup:
   - development-setup/local-development-environment.md
   - development-setup/sandbox.md
   - development-setup/onboarding-offboarding.md
   - development-setup/react-email.md
   - development-setup/resource-metrics.md
-  - development-setup/terraform.md
 - Git & Github:
   - git-github/branching-model.md
   - git-github/new-task.md
@@ -105,14 +110,20 @@ nav:
     - code-conventions/data-communication/data-fetching.md
     - code-conventions/data-communication/react-view-layer.md
 - Business logic:
-  - business-logic/public-cloud-emou-workflow.md
-  - Email Scenarios:
-    - business-logic/email-scenarios/private-cloud.md
-    - business-logic/email-scenarios/public-cloud.md
+  - business-logic/roles-permissions.md
+  - business-logic/service-accounts.md
+  - Private Cloud:
+    - Request Workflow: business-logic/private-cloud/request-workflow.md
+    - Email Scenario: business-logic/private-cloud/email-scenario.md
+  - Public Cloud:
+    - Request Workflow: business-logic/public-cloud/request-workflow.md
+    - EMou Workflow: business-logic/public-cloud/emou-workflow.md
+    - Email Scenario: business-logic/public-cloud/email-scenario.md
 - Research:
   - research/image-scanner.md
 - Tests:
   - tests/api-testing.md
+  - tests/e2e.md
 
 # Extensions
 markdown_extensions:
