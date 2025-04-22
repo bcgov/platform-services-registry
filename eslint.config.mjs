@@ -62,7 +62,6 @@ export default [
       '@typescript-eslint/no-empty-object-type': 'off',
       '@typescript-eslint/no-require-imports': 'off',
       '@typescript-eslint/prefer-namespace-keyword': 'off',
-      '@typescript-eslint/no-unsafe-function-type': 'off',
       'react-hooks/exhaustive-deps': 'off',
       'no-fallthrough': 'off',
       'no-prototype-builtins': 'off',
