@@ -1,4 +1,4 @@
-# Public Cloud
+# Public Cloud Email Scenario
 
 ## Scenario 1. Product Create Request
 
