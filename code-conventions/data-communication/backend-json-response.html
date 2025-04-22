@@ -10,28 +10,24 @@
         <meta name="author" content="Platform Services Team">
       
       
-        <link rel="canonical" href="https://bcgov.github.io/platform-services-registry/development-setup/terraform.html">
+        <link rel="canonical" href="https://bcgov.github.io/platform-services-registry/code-conventions/data-communication/backend-json-response.html">
       
       
-        <link rel="prev" href="resource-metrics.html">
       
       
-        <link rel="next" href="../git-github/branching-model.html">
-      
-      
-      <link rel="icon" href="../_assets/logo.png">
-      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.6.11">
+      <link rel="icon" href="../../_assets/logo.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.6.12">
     
     
       
-        <title>Infrastructure Provisioning - Platform Services Registry</title>
+        <title>Backend JSON Response - Platform Services Registry</title>
       
     
     
-      <link rel="stylesheet" href="../assets/stylesheets/main.4af4bdda.min.css">
+      <link rel="stylesheet" href="../../assets/stylesheets/main.2afb09e1.min.css">
       
         
-        <link rel="stylesheet" href="../assets/stylesheets/palette.06af60db.min.css">
+        <link rel="stylesheet" href="../../assets/stylesheets/palette.06af60db.min.css">
       
       
 
@@ -50,7 +46,7 @@
       
     
     
-    <script>__md_scope=new URL("..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
     
       
 
@@ -76,7 +72,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#infrastructure-provisioning" class="md-skip">
+        <a href="#backend-json-response" class="md-skip">
           Skip to content
         </a>
       
@@ -92,9 +88,9 @@
 
 <header class="md-header md-header--shadow md-header--lifted" data-md-component="header">
   <nav class="md-header__inner md-grid" aria-label="Header">
-    <a href=".." title="Platform Services Registry" class="md-header__button md-logo" aria-label="Platform Services Registry" data-md-component="logo">
+    <a href="../.." title="Platform Services Registry" class="md-header__button md-logo" aria-label="Platform Services Registry" data-md-component="logo">
       
-  <img src="../_assets/logo.png" alt="logo">
+  <img src="../../_assets/logo.png" alt="logo">
 
     </a>
     <label class="md-header__button md-icon" for="__drawer">
@@ -111,7 +107,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              Infrastructure Provisioning
+              Backend JSON Response
             
           </span>
         </div>
@@ -175,17 +171,20 @@
   
   
   
-    <li class="md-tabs__item">
-      <a href="../home/main.html" class="md-tabs__link">
-        
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../home/main.html" class="md-tabs__link">
+          
   
   
     
   
   Home
 
-      </a>
-    </li>
+        </a>
+      </li>
+    
   
 
       
@@ -193,13 +192,11 @@
   
   
   
-    
-  
   
     
     
-      <li class="md-tabs__item md-tabs__item--active">
-        <a href="local-development-environment.html" class="md-tabs__link">
+      <li class="md-tabs__item">
+        <a href="../../development-setup/local-development-environment.html" class="md-tabs__link">
           
   
   
@@ -221,7 +218,7 @@
     
     
       <li class="md-tabs__item">
-        <a href="../git-github/branching-model.html" class="md-tabs__link">
+        <a href="../../git-github/branching-model.html" class="md-tabs__link">
           
   
   
@@ -250,7 +247,7 @@
     
     
       <li class="md-tabs__item">
-        <a href="../ci-cd/ci/peer-review.html" class="md-tabs__link">
+        <a href="../../ci-cd/ci/peer-review.html" class="md-tabs__link">
           
   
   
@@ -282,7 +279,7 @@
     
     
       <li class="md-tabs__item">
-        <a href="../clean-code/return-early.html" class="md-tabs__link">
+        <a href="../../clean-code/return-early.html" class="md-tabs__link">
           
   
   
@@ -307,7 +304,7 @@
     
     
       <li class="md-tabs__item">
-        <a href="../business-logic/public-cloud-emou-workflow.html" class="md-tabs__link">
+        <a href="../../business-logic/roles-permissions.html" class="md-tabs__link">
           
   
   
@@ -329,7 +326,7 @@
     
     
       <li class="md-tabs__item">
-        <a href="../research/image-scanner.html" class="md-tabs__link">
+        <a href="../../research/image-scanner.html" class="md-tabs__link">
           
   
   
@@ -351,7 +348,7 @@
     
     
       <li class="md-tabs__item">
-        <a href="../tests/api-testing.html" class="md-tabs__link">
+        <a href="../../tests/api-testing.html" class="md-tabs__link">
           
   
   
@@ -393,9 +390,9 @@
 
 <nav class="md-nav md-nav--primary md-nav--lifted" aria-label="Navigation" data-md-level="0">
   <label class="md-nav__title" for="__drawer">
-    <a href=".." title="Platform Services Registry" class="md-nav__button md-logo" aria-label="Platform Services Registry" data-md-component="logo">
+    <a href="../.." title="Platform Services Registry" class="md-nav__button md-logo" aria-label="Platform Services Registry" data-md-component="logo">
       
-  <img src="../_assets/logo.png" alt="logo">
+  <img src="../../_assets/logo.png" alt="logo">
 
     </a>
     Platform Services Registry
@@ -421,9 +418,29 @@
   
   
   
-    <li class="md-nav__item">
-      <a href="../home/main.html" class="md-nav__link">
+    
+    
+      
         
+      
+        
+      
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_1" >
+        
+          
+          <label class="md-nav__link" for="__nav_1" id="__nav_1_label" tabindex="0">
+            
   
   
   <span class="md-ellipsis">
@@ -432,7 +449,193 @@
   </span>
   
 
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_1_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_1">
+            <span class="md-nav__icon md-icon"></span>
+            Home
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../home/main.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    About
+    
+  </span>
+  
+
       </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_1_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_1_2" id="__nav_1_2_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    Technologies
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_1_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_1_2">
+            <span class="md-nav__icon md-icon"></span>
+            Technologies
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../technologies/terraform.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Terraform
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../technologies/airflow.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Airflow
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../technologies/database-tools.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Database Tools
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../technologies/weasyprint.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    WeasyPrint
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
     </li>
   
 
@@ -441,14 +644,10 @@
       
   
   
-    
   
   
-  
     
     
-      
-        
       
         
       
@@ -464,20 +663,17 @@
     
     
       
-        
-        
-      
       
     
     
-    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+    <li class="md-nav__item md-nav__item--nested">
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" checked>
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" >
         
           
-          <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="">
+          <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="0">
             
   
   
@@ -490,7 +686,7 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="true">
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="false">
           <label class="md-nav__title" for="__nav_2">
             <span class="md-nav__icon md-icon"></span>
             Development setup
@@ -504,7 +700,7 @@
   
   
     <li class="md-nav__item">
-      <a href="local-development-environment.html" class="md-nav__link">
+      <a href="../../development-setup/local-development-environment.html" class="md-nav__link">
         
   
   
@@ -527,7 +723,7 @@
   
   
     <li class="md-nav__item">
-      <a href="sandbox.html" class="md-nav__link">
+      <a href="../../development-setup/sandbox.html" class="md-nav__link">
         
   
   
@@ -550,7 +746,7 @@
   
   
     <li class="md-nav__item">
-      <a href="onboarding-offboarding.html" class="md-nav__link">
+      <a href="../../development-setup/onboarding-offboarding.html" class="md-nav__link">
         
   
   
@@ -573,7 +769,7 @@
   
   
     <li class="md-nav__item">
-      <a href="react-email.html" class="md-nav__link">
+      <a href="../../development-setup/react-email.html" class="md-nav__link">
         
   
   
@@ -596,7 +792,7 @@
   
   
     <li class="md-nav__item">
-      <a href="resource-metrics.html" class="md-nav__link">
+      <a href="../../development-setup/resource-metrics.html" class="md-nav__link">
         
   
   
@@ -607,104 +803,6 @@
   
 
       </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-    
-  
-  
-  
-    <li class="md-nav__item md-nav__item--active">
-      
-      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
-      
-      
-        
-      
-      
-        <label class="md-nav__link md-nav__link--active" for="__toc">
-          
-  
-  
-  <span class="md-ellipsis">
-    Infrastructure Provisioning
-    
-  </span>
-  
-
-          <span class="md-nav__icon md-icon"></span>
-        </label>
-      
-      <a href="terraform.html" class="md-nav__link md-nav__link--active">
-        
-  
-  
-  <span class="md-ellipsis">
-    Infrastructure Provisioning
-    
-  </span>
-  
-
-      </a>
-      
-        
-
-<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
-  
-  
-  
-    
-  
-  
-    <label class="md-nav__title" for="__toc">
-      <span class="md-nav__icon md-icon"></span>
-      Table of contents
-    </label>
-    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
-      
-        <li class="md-nav__item">
-  <a href="#sysdig" class="md-nav__link">
-    <span class="md-ellipsis">
-      Sysdig
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="Sysdig">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#local-machine-modifications" class="md-nav__link">
-    <span class="md-ellipsis">
-      Local Machine Modifications
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#cd-pipeline-driven-modifications" class="md-nav__link">
-    <span class="md-ellipsis">
-      CD Pipeline-driven Modifications
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-    </ul>
-  
-</nav>
-      
     </li>
   
 
@@ -777,7 +875,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../git-github/branching-model.html" class="md-nav__link">
+      <a href="../../git-github/branching-model.html" class="md-nav__link">
         
   
   
@@ -800,7 +898,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../git-github/new-task.html" class="md-nav__link">
+      <a href="../../git-github/new-task.html" class="md-nav__link">
         
   
   
@@ -823,7 +921,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../git-github/clean-pr.html" class="md-nav__link">
+      <a href="../../git-github/clean-pr.html" class="md-nav__link">
         
   
   
@@ -846,7 +944,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../git-github/bot-pr-review.html" class="md-nav__link">
+      <a href="../../git-github/bot-pr-review.html" class="md-nav__link">
         
   
   
@@ -869,7 +967,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../git-github/rocketchat-notification.html" class="md-nav__link">
+      <a href="../../git-github/rocketchat-notification.html" class="md-nav__link">
         
   
   
@@ -997,7 +1095,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../ci-cd/ci/peer-review.html" class="md-nav__link">
+      <a href="../../ci-cd/ci/peer-review.html" class="md-nav__link">
         
   
   
@@ -1020,7 +1118,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../ci-cd/ci/checks.html" class="md-nav__link">
+      <a href="../../ci-cd/ci/checks.html" class="md-nav__link">
         
   
   
@@ -1043,7 +1141,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../ci-cd/ci/dependency-update.html" class="md-nav__link">
+      <a href="../../ci-cd/ci/dependency-update.html" class="md-nav__link">
         
   
   
@@ -1066,7 +1164,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../ci-cd/ci/secret-scanning.html" class="md-nav__link">
+      <a href="../../ci-cd/ci/secret-scanning.html" class="md-nav__link">
         
   
   
@@ -1148,7 +1246,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../ci-cd/cd/deployment-release.html" class="md-nav__link">
+      <a href="../../ci-cd/cd/deployment-release.html" class="md-nav__link">
         
   
   
@@ -1171,7 +1269,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../ci-cd/cd/release-tag-dispatch.html" class="md-nav__link">
+      <a href="../../ci-cd/cd/release-tag-dispatch.html" class="md-nav__link">
         
   
   
@@ -1194,7 +1292,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../ci-cd/cd/debug-failed-deployments.html" class="md-nav__link">
+      <a href="../../ci-cd/cd/debug-failed-deployments.html" class="md-nav__link">
         
   
   
@@ -1217,7 +1315,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../ci-cd/cd/database.html" class="md-nav__link">
+      <a href="../../ci-cd/cd/database.html" class="md-nav__link">
         
   
   
@@ -1359,7 +1457,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../clean-code/return-early.html" class="md-nav__link">
+      <a href="../../clean-code/return-early.html" class="md-nav__link">
         
   
   
@@ -1382,7 +1480,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../clean-code/descriptive-function-names.html" class="md-nav__link">
+      <a href="../../clean-code/descriptive-function-names.html" class="md-nav__link">
         
   
   
@@ -1405,7 +1503,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../clean-code/react-handler-naming.html" class="md-nav__link">
+      <a href="../../clean-code/react-handler-naming.html" class="md-nav__link">
         
   
   
@@ -1428,7 +1526,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../clean-code/falsy-check-early.html" class="md-nav__link">
+      <a href="../../clean-code/falsy-check-early.html" class="md-nav__link">
         
   
   
@@ -1451,7 +1549,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../clean-code/small-components-functions.html" class="md-nav__link">
+      <a href="../../clean-code/small-components-functions.html" class="md-nav__link">
         
   
   
@@ -1474,7 +1572,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../clean-code/utils-helpers-shared-components.html" class="md-nav__link">
+      <a href="../../clean-code/utils-helpers-shared-components.html" class="md-nav__link">
         
   
   
@@ -1505,7 +1603,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../code-conventions/naming-conventions.html" class="md-nav__link">
+      <a href="../naming-conventions.html" class="md-nav__link">
         
   
   
@@ -1581,7 +1679,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../code-conventions/data-communication/data-communication.html" class="md-nav__link">
+      <a href="data-communication.html" class="md-nav__link">
         
   
   
@@ -1604,7 +1702,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../code-conventions/data-communication/backend-api.html" class="md-nav__link">
+      <a href="backend-api.html" class="md-nav__link">
         
   
   
@@ -1627,7 +1725,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../code-conventions/data-communication/service-layer.html" class="md-nav__link">
+      <a href="service-layer.html" class="md-nav__link">
         
   
   
@@ -1650,7 +1748,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../code-conventions/data-communication/data-fetching.html" class="md-nav__link">
+      <a href="data-fetching.html" class="md-nav__link">
         
   
   
@@ -1673,7 +1771,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../code-conventions/data-communication/react-view-layer.html" class="md-nav__link">
+      <a href="react-view-layer.html" class="md-nav__link">
         
   
   
@@ -1712,6 +1810,10 @@
   
     
     
+      
+        
+      
+        
       
         
       
@@ -1758,12 +1860,35 @@
   
   
     <li class="md-nav__item">
-      <a href="../business-logic/public-cloud-emou-workflow.html" class="md-nav__link">
+      <a href="../../business-logic/roles-permissions.html" class="md-nav__link">
         
   
   
   <span class="md-ellipsis">
-    Public Cloud eMOU Workflow Diagram
+    Roles and Permissions
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../business-logic/service-accounts.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Service Accounts
     
   </span>
   
@@ -1798,15 +1923,15 @@
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_6_2" >
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_6_3" >
         
           
-          <label class="md-nav__link" for="__nav_6_2" id="__nav_6_2_label" tabindex="0">
+          <label class="md-nav__link" for="__nav_6_3" id="__nav_6_3_label" tabindex="0">
             
   
   
   <span class="md-ellipsis">
-    Email Scenarios
+    Private Cloud
     
   </span>
   
@@ -1814,10 +1939,10 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_6_2_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_6_2">
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_6_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_6_3">
             <span class="md-nav__icon md-icon"></span>
-            Email Scenarios
+            Private Cloud
           </label>
           <ul class="md-nav__list" data-md-scrollfix>
             
@@ -1828,12 +1953,12 @@
   
   
     <li class="md-nav__item">
-      <a href="../business-logic/email-scenarios/private-cloud.html" class="md-nav__link">
+      <a href="../../business-logic/private-cloud/request-workflow.html" class="md-nav__link">
         
   
   
   <span class="md-ellipsis">
-    Private Cloud
+    Request Workflow
     
   </span>
   
@@ -1851,12 +1976,138 @@
   
   
     <li class="md-nav__item">
-      <a href="../business-logic/email-scenarios/public-cloud.html" class="md-nav__link">
+      <a href="../../business-logic/private-cloud/email-scenario.html" class="md-nav__link">
         
   
   
   <span class="md-ellipsis">
+    Email Scenario
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_6_4" >
+        
+          
+          <label class="md-nav__link" for="__nav_6_4" id="__nav_6_4_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
     Public Cloud
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_6_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_6_4">
+            <span class="md-nav__icon md-icon"></span>
+            Public Cloud
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../business-logic/public-cloud/request-workflow.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Request Workflow
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../business-logic/public-cloud/emou-workflow.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    EMou Workflow
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../business-logic/public-cloud/email-scenario.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Email Scenario
     
   </span>
   
@@ -1934,7 +2185,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../research/image-scanner.html" class="md-nav__link">
+      <a href="../../research/image-scanner.html" class="md-nav__link">
         
   
   
@@ -1965,6 +2216,8 @@
   
     
     
+      
+        
       
         
       
@@ -2009,12 +2262,35 @@
   
   
     <li class="md-nav__item">
-      <a href="../tests/api-testing.html" class="md-nav__link">
+      <a href="../../tests/api-testing.html" class="md-nav__link">
         
   
   
   <span class="md-ellipsis">
     API Testing
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../tests/e2e.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    E2E Cypress
     
   </span>
   
@@ -2052,47 +2328,6 @@
     
   
   
-    <label class="md-nav__title" for="__toc">
-      <span class="md-nav__icon md-icon"></span>
-      Table of contents
-    </label>
-    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
-      
-        <li class="md-nav__item">
-  <a href="#sysdig" class="md-nav__link">
-    <span class="md-ellipsis">
-      Sysdig
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="Sysdig">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#local-machine-modifications" class="md-nav__link">
-    <span class="md-ellipsis">
-      Local Machine Modifications
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#cd-pipeline-driven-modifications" class="md-nav__link">
-    <span class="md-ellipsis">
-      CD Pipeline-driven Modifications
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-    </ul>
-  
 </nav>
                   </div>
                 </div>
@@ -2110,25 +2345,7 @@
   
 
 
-<h1 id="infrastructure-provisioning">Infrastructure Provisioning<a class="headerlink" href="#infrastructure-provisioning" title="Permanent link">&para;</a></h1>
-<p>We employ <code>Terraform</code> as the <code>configuration code</code> to <code>provision resources</code> within our infrastructure, encompassing <code>OCP Deployer Service Accounts</code>, <code>Keycloak</code>, and <code>Sysdig</code>.</p>
-<h2 id="sysdig">Sysdig<a class="headerlink" href="#sysdig" title="Permanent link">&para;</a></h2>
-<p>The main point for the <code>Sysdig Terraform</code> is situated at <a href="../terraform/sysdig">terraform/sysdig</a>, featuring individual sub-modules for each Openshift project.</p>
-<h3 id="local-machine-modifications">Local Machine Modifications<a class="headerlink" href="#local-machine-modifications" title="Permanent link">&para;</a></h3>
-<p>For making changes on a local machine, please consult the <a href="../terraform/sysdig/README.md">Sysdig Terraform Readme</a> for comprehensive instructions.</p>
-<h3 id="cd-pipeline-driven-modifications">CD Pipeline-driven Modifications<a class="headerlink" href="#cd-pipeline-driven-modifications" title="Permanent link">&para;</a></h3>
-<p>The Sysdig Terraform scripts are integrated into the <code>Continuous Deployment (CD) pipeline</code>, specifically the <a href="../.github/workflows/terraform-sysdig.yml">Sysdig Terraform Action</a>.
-The process involves two distinct phases:</p>
-<ol>
-<li>
-<p>PR creation
-   Upon the <code>creation of a pull request</code> that includes changes to the Sysdig Terraform script, the pipeline executes a <code>Terraform Plan</code> and comments on the PR regarding the proposed alterations.</p>
-</li>
-<li>
-<p>PR merging
-   Upon approval and <code>merging of the pull request</code>, the pipeline executes a <code>Terraform Apply</code>, implementing the approved changes into the infrastructure.</p>
-</li>
-</ol>
+<h1 id="backend-json-response">Backend JSON Response<a class="headerlink" href="#backend-json-response" title="Permanent link">&para;</a></h1>
 
 
 
@@ -2189,10 +2406,10 @@ The process involves two distinct phases:</p>
     
     
       
-      <script id="__config" type="application/json">{"base": "..", "features": ["content.code.annotate", "content.code.copy", "content.tabs.link", "navigation.indexes", "navigation.instant", "navigation.tabs", "navigation.tabs.sticky", "navigation.top", "navigation.tracking", "search.highlight", "search.share", "search.suggest"], "search": "../assets/javascripts/workers/search.f8cc74c7.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+      <script id="__config" type="application/json">{"base": "../..", "features": ["content.code.annotate", "content.code.copy", "content.tabs.link", "navigation.indexes", "navigation.instant", "navigation.tabs", "navigation.tabs.sticky", "navigation.top", "navigation.tracking", "search.highlight", "search.share", "search.suggest"], "search": "../../assets/javascripts/workers/search.f8cc74c7.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
     
     
-      <script src="../assets/javascripts/bundle.c8b220af.min.js"></script>
+      <script src="../../assets/javascripts/bundle.c8b220af.min.js"></script>
       
     
   </body>
