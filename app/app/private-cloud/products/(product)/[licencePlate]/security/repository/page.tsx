@@ -7,8 +7,8 @@ import _get from 'lodash-es/get';
 import { useEffect, useState } from 'react';
 import { FormProvider, useForm, useFieldArray } from 'react-hook-form';
 import HookFormTextInput from '@/components/generic/input/HookFormTextInput';
-import { success, failure } from '@/components/notification';
-import { ProjectContext} from '@/prisma/types';
+import { success } from '@/components/notification';
+import { ProjectContext } from '@/prisma/types';
 import { getSecurityConfig, upsertSecurityConfig } from '@/services/backend/security-config';
 import { SecurityConfig, securityConfigSchema } from '@/validation-schemas';
 
