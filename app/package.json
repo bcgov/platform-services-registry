@@ -39,7 +39,6 @@
     "@mantine/modals": "^7.16.2",
     "@mantine/notifications": "^7.9.2",
     "@mantine/tiptap": "^7.10.2",
-    "@prisma/client": "^6.0.0",
     "@react-email/components": "^0.0.36",
     "@react-email/render": "1.0.6",
     "@react-email/tailwind": "^1.0.0",
