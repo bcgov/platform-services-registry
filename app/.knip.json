@@ -11,7 +11,8 @@
     "ts-jest",
     "ts-node",
     "eslint-config-next",
-    "@next/swc-*"
+    "@next/swc-*",
+    "@prisma/client"
   ],
   "rules": {
     "binaries": "off",
