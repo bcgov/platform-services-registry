@@ -1,8 +1,8 @@
 import { z } from 'zod';
 // import { GlobalRole, GlobalPermissions } from '@/constants';
 import createApiHandler from '@/core/api-handler';
-import { OkResponse, NotFoundResponse } from '@/core/responses';
-import { readMonthlyCosts } from '@/services/backend/private-cloud/costs';
+import { OkResponse } from '@/core/responses';
+import { getMonthlyCosts } from '@/services/db/private-cloud-costs';
 
 const pathParamSchema = z.object({
   licencePlate: z.string(),
@@ -17,11 +17,7 @@ export const GET = createApiHandler({
   },
 })(async ({ pathParams }) => {
   const { licencePlate, 'year-month': yearMonth } = pathParams;
-
-  const monthlyCosts = await readMonthlyCosts(licencePlate, yearMonth);
-  if (!monthlyCosts) {
-    return NotFoundResponse('Monthly costs not found');
-  }
-
+  const [year, month] = yearMonth.split('-').map(Number);
+  const monthlyCosts = await getMonthlyCosts(licencePlate, year, month);
   return OkResponse(monthlyCosts);
 });
