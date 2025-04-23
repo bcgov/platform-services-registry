@@ -27,7 +27,7 @@ export default [
       '.swc',
       '.vscode',
       'app/.next',
-      '**/app/prisma/types',
+      'app/prisma/types',
       'docs',
       'helm',
       'site',
@@ -53,7 +53,6 @@ export default [
   {
     rules: {
       '@typescript-eslint/ban-ts-comment': 'off',
-      '@typescript-eslint/no-unnecessary-type-constraint': 'off',
       '@typescript-eslint/naming-convention': 'off',
       '@typescript-eslint/no-explicit-any': 'off',
       '@typescript-eslint/no-unsafe-function-type': 'off',
@@ -62,7 +61,6 @@ export default [
       '@typescript-eslint/no-empty-object-type': 'off',
       '@typescript-eslint/no-require-imports': 'off',
       '@typescript-eslint/prefer-namespace-keyword': 'off',
-      'react-hooks/exhaustive-deps': 'off',
       'no-fallthrough': 'off',
       'no-prototype-builtins': 'off',
       'no-undef': 'off',
