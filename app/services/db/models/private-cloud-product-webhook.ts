@@ -1,7 +1,7 @@
 import { Session } from 'next-auth';
 import prisma from '@/core/prisma';
 import { getPrivateCloudProductContext } from '@/helpers/product';
-import { Ministry, Prisma, PrivateCloudProductMemberRole } from '@/prisma/types';
+import { Ministry, Prisma, PrivateCloudProductMemberRole } from '@/prisma/client';
 import { PrivateCloudProductWebhookDecorate } from '@/types/doc-decorate';
 import {
   PrivateCloudProductWebhookDetail,

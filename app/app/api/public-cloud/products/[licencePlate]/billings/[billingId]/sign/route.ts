@@ -3,7 +3,7 @@ import { GlobalRole } from '@/constants';
 import createApiHandler from '@/core/api-handler';
 import prisma from '@/core/prisma';
 import { BadRequestResponse, OkResponse, UnauthorizedResponse } from '@/core/responses';
-import { TaskStatus, TaskType } from '@/prisma/types';
+import { TaskStatus, TaskType } from '@/prisma/client';
 import { tasks } from '@/services/db';
 import { getPublicCloudBillingResources } from '@/services/db/public-cloud-billing';
 import { objectId, accountCodingSchema } from '@/validation-schemas';

@@ -1,7 +1,7 @@
 import prisma from '@/core/prisma';
 import { getAccountCodingString } from '@/helpers/billing';
 import { formatFullName } from '@/helpers/user';
-import { Prisma } from '@/prisma/types';
+import { Prisma } from '@/prisma/client';
 import { PublicCloudRequestDetail } from '@/types/public-cloud';
 
 function prepareUser(user?: Prisma.UserGetPayload<null> | null) {

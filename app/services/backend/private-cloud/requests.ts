@@ -1,6 +1,6 @@
 import axios from 'axios';
 import { requestSorts } from '@/constants';
-import { Prisma } from '@/prisma/types';
+import { Prisma } from '@/prisma/client';
 import {
   PrivateCloudRequestDetail,
   PrivateCloudRequestDetailDecorated,

@@ -1,4 +1,4 @@
-import { Prisma } from '@/prisma/types';
+import { Prisma } from '@/prisma/client';
 import { ProductBiliingStatus } from '@/types';
 
 export const billingSorts = [

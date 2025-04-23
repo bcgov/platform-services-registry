@@ -12,7 +12,7 @@ import {
   POST as _createPublicCloudProduct,
 } from '@/app/api/public-cloud/products/route';
 import { POST as _searchPublicCloudProducts } from '@/app/api/public-cloud/products/search/route';
-import { AccountCoding } from '@/prisma/types';
+import { AccountCoding } from '@/prisma/client';
 import {
   PublicCloudEditRequestBody,
   PublicCloudProductSearchBody,

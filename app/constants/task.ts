@@ -1,4 +1,4 @@
-import { Prisma, DecisionStatus, TaskType } from '@/prisma/types';
+import { Prisma, DecisionStatus, TaskType } from '@/prisma/client';
 
 export const taskTypeMap: Record<TaskType, string> = {
   [TaskType.REVIEW_PRIVATE_CLOUD_REQUEST]: 'Review Private Cloud Request',

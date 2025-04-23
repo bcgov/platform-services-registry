@@ -1,5 +1,5 @@
 import { DefaultSession } from 'next-auth/jwt';
-import { Task } from '@/prisma/types';
+import { Task } from '@/prisma/client';
 
 declare module 'next-auth' {
   interface Permissions {

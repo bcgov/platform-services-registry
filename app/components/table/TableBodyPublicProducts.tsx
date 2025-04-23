@@ -8,7 +8,7 @@ import ActiveRequestBox from '@/components/form/ActiveRequestBox';
 import CopyableButton from '@/components/generic/button/CopyableButton';
 import UserCard from '@/components/UserCard';
 import { ministryKeyToName } from '@/helpers/product';
-import { ProjectStatus } from '@/prisma/types';
+import { ProjectStatus } from '@/prisma/client';
 import { PublicCloudProductSimpleDecorated } from '@/types/public-cloud';
 import { formatDate } from '@/utils/js';
 import EmptySearch from './EmptySearch';

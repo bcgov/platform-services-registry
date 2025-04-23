@@ -1,6 +1,6 @@
 import { faker } from '@faker-js/faker';
 import { deepClone } from 'valtio/utils';
-import { ProjectStatus, RequestType, DecisionStatus } from '@/prisma/types';
+import { ProjectStatus, RequestType, DecisionStatus } from '@/prisma/client';
 import { PublicCloudRequestDetail } from '@/types/public-cloud';
 import { generateShortId } from '@/utils/js';
 import {

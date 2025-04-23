@@ -1,4 +1,4 @@
-import { Prisma } from '@/prisma/types';
+import { Prisma } from '@/prisma/client';
 
 export enum GlobalPermissions {
   CreatePrivateCloudProducts = 'createPrivateCloudProducts',

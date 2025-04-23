@@ -1,6 +1,6 @@
 import { Session } from 'next-auth';
 import prisma from '@/core/prisma';
-import { Prisma, ProjectContext, SecurityConfig } from '@/prisma/types';
+import { Prisma, ProjectContext, SecurityConfig } from '@/prisma/client';
 import { SecurityConfigDecorate } from '@/types/doc-decorate';
 import { createSessionModel } from './core';
 import { privateCloudProductModel } from './private-cloud-product';

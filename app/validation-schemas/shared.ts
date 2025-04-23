@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { RequestType } from '@/prisma/types';
+import { RequestType } from '@/prisma/client';
 
 export const RequestDecision = {
   APPROVED: 'APPROVED',

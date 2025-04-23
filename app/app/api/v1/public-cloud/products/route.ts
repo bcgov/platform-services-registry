@@ -2,7 +2,7 @@ import { z } from 'zod';
 import createApiHandler from '@/core/api-handler';
 import { BadRequestResponse } from '@/core/responses';
 import { parsePaginationParams } from '@/helpers/pagination';
-import { ProjectStatus, Ministry, Provider } from '@/prisma/types';
+import { ProjectStatus, Ministry, Provider } from '@/prisma/client';
 import { processNumber, processUpperEnumString } from '@/utils/js';
 import listOp from './_operations/list';
 

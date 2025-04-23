@@ -3,7 +3,7 @@ import { GlobalRole } from '@/constants';
 import createApiHandler from '@/core/api-handler';
 import prisma from '@/core/prisma';
 import { OkResponse } from '@/core/responses';
-import { RequestType, TaskStatus, TaskType } from '@/prisma/types';
+import { RequestType, TaskStatus, TaskType } from '@/prisma/client';
 import { searchPublicCloudBillings } from '@/services/db/public-cloud-billing';
 import { PublicCloudBillingSearchResponseMetadata } from '@/types/public-cloud';
 import { publicCloudBillingSearchBodySchema } from '@/validation-schemas';

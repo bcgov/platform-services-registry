@@ -13,7 +13,7 @@ import {
 import { useQuery } from '@tanstack/react-query';
 import { useRouter } from 'next/navigation';
 import { useSession } from 'next-auth/react';
-import { RequestType, DecisionStatus } from '@/prisma/types';
+import { RequestType, DecisionStatus } from '@/prisma/client';
 import { getPrivateCloudCommentCount } from '@/services/backend/private-cloud/products';
 import { cn } from '@/utils/js';
 

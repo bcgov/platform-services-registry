@@ -4,7 +4,7 @@ import _uniq from 'lodash-es/uniq';
 import { Session } from 'next-auth';
 import prisma from '@/core/prisma';
 import { parsePaginationParams } from '@/helpers/pagination';
-import { Prisma } from '@/prisma/types';
+import { Prisma } from '@/prisma/client';
 import { models } from '@/services/db';
 import { ProductBiliingStatus } from '@/types';
 import { PublicCloudProductSearch, PublicCloudProductDetailDecorated } from '@/types/public-cloud';

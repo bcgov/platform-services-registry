@@ -4,7 +4,7 @@ import createApiHandler from '@/core/api-handler';
 import { NoContent, CsvResponse } from '@/core/responses';
 import { ministryKeyToName } from '@/helpers/product';
 import { formatFullName } from '@/helpers/user';
-import { Cluster, EventType } from '@/prisma/types';
+import { Cluster, EventType } from '@/prisma/client';
 import { createEvent, searchPrivateCloudProducts } from '@/services/db';
 import { PrivateProductCsvRecord } from '@/types/csv';
 import { formatDateSimple } from '@/utils/js';

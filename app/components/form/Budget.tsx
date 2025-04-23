@@ -6,7 +6,7 @@ import { useFormContext } from 'react-hook-form';
 import ExternalLink from '@/components/generic/button/ExternalLink';
 import FormDollarInput from '@/components/generic/input/FormDollarInput';
 import HookFormDollarInput from '@/components/generic/input/HookFormDollarInput';
-import { Provider } from '@/prisma/types';
+import { Provider } from '@/prisma/client';
 
 export default function Budget({ disabled, mode }: { disabled?: boolean; mode?: 'create' | 'edit' }) {
   const {

@@ -1,6 +1,6 @@
 import _uniqWith from 'lodash-es/uniqWith';
 import prisma from '@/core/prisma';
-import { User } from '@/prisma/types';
+import { User } from '@/prisma/client';
 
 export async function usersWithQuotaEditRequests({
   licencePlatesList,

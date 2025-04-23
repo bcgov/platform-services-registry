@@ -24,7 +24,7 @@ import Quotas from '@/components/private-cloud/sections/Quotas';
 import TeamContacts from '@/components/private-cloud/sections/TeamContacts';
 import { GlobalRole } from '@/constants';
 import createClientPage from '@/core/client-page';
-import { DecisionStatus, ProjectContext, RequestType } from '@/prisma/types';
+import { DecisionStatus, ProjectContext, RequestType } from '@/prisma/client';
 import { usePrivateProductState } from '@/states/global';
 import {
   privateCloudRequestDecisionBodySchema,

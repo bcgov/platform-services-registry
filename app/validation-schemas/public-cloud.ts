@@ -9,7 +9,7 @@ import {
   ProjectStatus,
   DecisionStatus,
   PublicCloudProductMemberRole,
-} from '@/prisma/types';
+} from '@/prisma/client';
 import { ProductBiliingStatus } from '@/types';
 import { processEnumString } from '@/utils/js';
 import { RequestDecision, commentSchema } from './shared';

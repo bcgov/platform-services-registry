@@ -6,7 +6,7 @@ import { createSamplePrivateCloudProductData } from '@/helpers/mock-resources';
 import { mockNoRoleUsers } from '@/helpers/mock-users';
 import { ministryKeyToName } from '@/helpers/product';
 import { formatFullName } from '@/helpers/user';
-import { DecisionStatus, Ministry, Cluster, ProjectStatus, RequestType } from '@/prisma/types';
+import { DecisionStatus, Ministry, Cluster, ProjectStatus, RequestType } from '@/prisma/client';
 import { mockSessionByEmail, mockSessionByRole } from '@/services/api-test/core';
 import { mockTeamServiceAccount } from '@/services/api-test/core';
 import { createPrivateCloudProduct, downloadPrivateCloudProducts } from '@/services/api-test/private-cloud/products';

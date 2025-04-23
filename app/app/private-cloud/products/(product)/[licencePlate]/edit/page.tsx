@@ -17,7 +17,7 @@ import TeamContacts from '@/components/private-cloud/sections/TeamContacts';
 import SiloAccordion from '@/components/private-cloud/SiloAccordion';
 import { GlobalRole } from '@/constants';
 import createClientPage from '@/core/client-page';
-import { ResourceRequestsEnv } from '@/prisma/types';
+import { ResourceRequestsEnv } from '@/prisma/client';
 import { getQuotaChangeStatus } from '@/services/backend/private-cloud/products';
 import { usePrivateProductState } from '@/states/global';
 import { PrivateCloudEditRequestBody, privateCloudEditRequestBodySchema } from '@/validation-schemas/private-cloud';

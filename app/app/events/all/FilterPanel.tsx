@@ -4,7 +4,7 @@ import FormDateRangePicker from '@/components/generic/select/FormDateRangePicker
 import FormMultiSelect from '@/components/generic/select/FormMultiSelect';
 import FormUserPicker from '@/components/generic/select/FormUserPicker';
 import { eventTypeOptions } from '@/constants/event';
-import { EventType } from '@/prisma/types';
+import { EventType } from '@/prisma/client';
 import { pageState } from './state';
 
 export default function FilterPanel({ isLoading = false }: { isLoading?: boolean }) {

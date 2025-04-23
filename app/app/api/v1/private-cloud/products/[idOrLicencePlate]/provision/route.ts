@@ -4,7 +4,7 @@ import { logger } from '@/core/logging';
 import prisma from '@/core/prisma';
 import { NotFoundResponse, OkResponse } from '@/core/responses';
 import { sendWebhookMessage } from '@/helpers/webhook';
-import { DecisionStatus, RequestType, ProjectStatus } from '@/prisma/types';
+import { DecisionStatus, RequestType, ProjectStatus } from '@/prisma/client';
 import { sendRequestCompletionEmails } from '@/services/ches/private-cloud';
 import { models, privateCloudRequestDetailInclude } from '@/services/db';
 

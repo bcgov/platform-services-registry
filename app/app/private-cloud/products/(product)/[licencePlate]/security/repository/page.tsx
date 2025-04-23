@@ -8,7 +8,7 @@ import { useEffect, useState } from 'react';
 import { FormProvider, useForm, useFieldArray } from 'react-hook-form';
 import HookFormTextInput from '@/components/generic/input/HookFormTextInput';
 import { success } from '@/components/notification';
-import { ProjectContext } from '@/prisma/types';
+import { ProjectContext } from '@/prisma/client';
 import { getSecurityConfig, upsertSecurityConfig } from '@/services/backend/security-config';
 import { SecurityConfig, securityConfigSchema } from '@/validation-schemas';
 

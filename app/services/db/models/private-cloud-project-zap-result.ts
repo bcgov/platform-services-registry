@@ -1,6 +1,6 @@
 import { Session } from 'next-auth';
 import prisma from '@/core/prisma';
-import { Prisma, PrivateCloudProductZapResult } from '@/prisma/types';
+import { Prisma, PrivateCloudProductZapResult } from '@/prisma/client';
 import { PrivateCloudProductZapResultDecorate } from '@/types/doc-decorate';
 import { createSessionModel } from './core';
 import { privateCloudProductModel } from './private-cloud-product';

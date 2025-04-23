@@ -2,7 +2,7 @@ import { useSession } from 'next-auth/react';
 import { useSnapshot } from 'valtio';
 import FormMultiSelect from '@/components/generic/select/FormMultiSelect';
 import { ministryOptions, getAllowedOptions } from '@/constants';
-import { DecisionStatus, Ministry, Prisma, Provider, RequestType } from '@/prisma/types';
+import { DecisionStatus, Ministry, Prisma, Provider, RequestType } from '@/prisma/client';
 import { pageState } from './state';
 
 export default function FilterPanel() {

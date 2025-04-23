@@ -5,7 +5,7 @@ import _startCase from 'lodash-es/startCase';
 import { useSession } from 'next-auth/react';
 import { Fragment } from 'react';
 import { namespaceKeys, resourceKeys } from '@/constants';
-import { ResourceRequestsEnv } from '@/prisma/types';
+import { ResourceRequestsEnv } from '@/prisma/client';
 import { useAppState } from '@/states/global';
 import { cn, formatCurrency } from '@/utils/js';
 

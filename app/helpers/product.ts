@@ -2,7 +2,7 @@ import _forEach from 'lodash-es/forEach';
 import _pick from 'lodash-es/pick';
 import { Session } from 'next-auth';
 import { ministryOptions } from '@/constants';
-import { PrivateCloudProductMemberRole, PrivateCloudProduct } from '@/prisma/types';
+import { PrivateCloudProductMemberRole, PrivateCloudProduct } from '@/prisma/client';
 import { extractNumbers } from '@/utils/js';
 
 export function ministryKeyToName(key: string) {

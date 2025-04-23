@@ -1,4 +1,4 @@
-import { EventType, Prisma, User, Event } from '@/prisma/types';
+import { EventType, Prisma, User, Event } from '@/prisma/client';
 
 export const eventTypeNames: Record<EventType, string> = {
   [EventType.LOGIN]: 'Login',

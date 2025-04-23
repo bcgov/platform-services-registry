@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { Provider, Ministry } from '@/prisma/types';
+import { Provider, Ministry } from '@/prisma/client';
 import { isValidISODateString } from '@/utils/js';
 
 export const analyticsPublicCloudFilterSchema = z.object({

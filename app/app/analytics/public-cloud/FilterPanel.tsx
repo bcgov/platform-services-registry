@@ -3,7 +3,7 @@ import FormDateRangePicker from '@/components/generic/select/FormDateRangePicker
 import FormMultiSelect from '@/components/generic/select/FormMultiSelect';
 import FormUserPicker from '@/components/generic/select/FormUserPicker';
 import { providers, ministryOptions } from '@/constants';
-import { Ministry, Provider } from '@/prisma/types';
+import { Ministry, Provider } from '@/prisma/client';
 import { pageState } from './state';
 
 export default function FilterPanel() {

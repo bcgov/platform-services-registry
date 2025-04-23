@@ -1,6 +1,6 @@
 import { Stepper, Popover, rem, HoverCard } from '@mantine/core';
 import { IconCircleX, IconConfetti, IconCancel } from '@tabler/icons-react';
-import { DecisionStatus } from '@/prisma/types';
+import { DecisionStatus } from '@/prisma/client';
 import { PrivateCloudRequestDetail } from '@/types/private-cloud';
 import { formatDate } from '@/utils/js';
 import AutoResizeTextArea from './generic/input/AutoResizeTextArea';

@@ -4,7 +4,7 @@ import createApiHandler from '@/core/api-handler';
 import prisma from '@/core/prisma';
 import { BadRequestResponse, OkResponse, UnprocessableEntityResponse } from '@/core/responses';
 import { sendRequestNatsMessage } from '@/helpers/nats-message';
-import { DecisionStatus, Prisma, ProjectStatus, RequestType, EventType, TaskType } from '@/prisma/types';
+import { DecisionStatus, Prisma, ProjectStatus, RequestType, EventType, TaskType } from '@/prisma/client';
 import { sendRequestRejectionEmails, sendRequestApprovalEmails } from '@/services/ches/private-cloud';
 import { createEvent, models, privateCloudRequestDetailInclude, tasks } from '@/services/db';
 import {

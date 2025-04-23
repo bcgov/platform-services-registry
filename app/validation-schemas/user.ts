@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { Prisma } from '@/prisma/types';
+import { Prisma } from '@/prisma/client';
 import { processEnumString } from '@/utils/js';
 
 export const userSearchBodySchema = z.object({

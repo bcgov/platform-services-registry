@@ -8,7 +8,7 @@ import { openConfirmModal } from '@/components/modal/confirm';
 import { openUserPickerModal } from '@/components/modal/userPicker';
 import UserProfile from '@/components/users/UserProfile';
 import { formatFullName } from '@/helpers/user';
-import { User } from '@/prisma/types';
+import { User } from '@/prisma/client';
 import { formatDate, cn } from '@/utils/js';
 import TooltipTableHeader from './TooltipTableHeader';
 

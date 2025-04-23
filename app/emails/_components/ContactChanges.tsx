@@ -1,5 +1,5 @@
 import { Heading, Link, Text } from '@react-email/components';
-import { User } from '@/prisma/types';
+import { User } from '@/prisma/client';
 
 export default function ContactChanges({
   poCurrent,

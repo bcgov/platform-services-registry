@@ -1,7 +1,7 @@
 import _uniq from 'lodash-es/uniq';
 import { providers } from '@/constants';
 import prisma from '@/core/prisma';
-import { Provider, RequestType, DecisionStatus } from '@/prisma/types';
+import { Provider, RequestType, DecisionStatus } from '@/prisma/client';
 import { dateToShortDateString, shortDateStringToDate } from '@/utils/js';
 
 async function productsCreatedPerMonth(

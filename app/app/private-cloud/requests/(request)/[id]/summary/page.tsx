@@ -14,7 +14,7 @@ import PageAccordion, { PageAccordionItem } from '@/components/generic/accordion
 import ProductComparison from '@/components/ProductComparison';
 import { GlobalRole } from '@/constants';
 import createClientPage from '@/core/client-page';
-import { DecisionStatus, ProjectContext, RequestType } from '@/prisma/types';
+import { DecisionStatus, ProjectContext, RequestType } from '@/prisma/client';
 import { usePrivateProductState } from '@/states/global';
 import { DiffChange } from '@/utils/js';
 

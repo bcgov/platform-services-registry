@@ -1,5 +1,5 @@
 import PublicHistorySubItem from '@/components/history/PublicHistorySubItem';
-import { PublicCloudRequest } from '@/prisma/types';
+import { PublicCloudRequest } from '@/prisma/client';
 
 export default function PublicHistoryItem(request: Omit<PublicCloudRequest, 'provisionedDate' | 'changes'>) {
   return [

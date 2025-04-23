@@ -2,7 +2,7 @@ import { z } from 'zod';
 import { GlobalRole } from '@/constants';
 import createApiHandler from '@/core/api-handler';
 import { OkResponse, UnauthorizedResponse } from '@/core/responses';
-import { RequestType, Cluster, EventType } from '@/prisma/types';
+import { RequestType, Cluster, EventType } from '@/prisma/client';
 import { createEvent, models } from '@/services/db';
 import { sendPrivateCloudNatsMessage } from '@/services/nats';
 

@@ -7,7 +7,7 @@ import CancelRequest from '@/components/buttons/CancelButton';
 import ProductComparison from '@/components/ProductComparison';
 import { GlobalRole } from '@/constants';
 import createClientPage from '@/core/client-page';
-import { DecisionStatus, ProjectContext, RequestType } from '@/prisma/types';
+import { DecisionStatus, ProjectContext, RequestType } from '@/prisma/client';
 import { usePublicProductState } from '@/states/global';
 import { DiffChange } from '@/utils/js';
 

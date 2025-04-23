@@ -2,7 +2,7 @@ import { Heading, Link, Text, Hr } from '@react-email/components';
 import _groupBy from 'lodash-es/groupBy';
 import _orderBy from 'lodash-es/orderBy';
 import { formatCpu, formatBinaryMetric } from '@/helpers/resource-metrics';
-import { QuotaUpgradeResourceDetail, ResourceType, Env } from '@/prisma/types';
+import { QuotaUpgradeResourceDetail, ResourceType, Env } from '@/prisma/client';
 
 export default function QuotaUpgradeResources({
   resourceDetailList,

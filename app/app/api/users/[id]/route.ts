@@ -5,7 +5,7 @@ import { GlobalPermissions, GlobalRole } from '@/constants';
 import createApiHandler from '@/core/api-handler';
 import prisma from '@/core/prisma';
 import { OkResponse } from '@/core/responses';
-import { ProjectStatus } from '@/prisma/types';
+import { ProjectStatus } from '@/prisma/client';
 import { UserDetail } from '@/types/user';
 import { userUpdateBodySchema } from '@/validation-schemas';
 import updateOp from '../_operations/update';

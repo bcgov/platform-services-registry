@@ -13,7 +13,7 @@ import ProductBadge from '@/components/private-cloud/ProductBadge';
 import { IS_PROD } from '@/config';
 import { GlobalRole } from '@/constants';
 import createClientPage from '@/core/client-page';
-import { Cluster } from '@/prisma/types';
+import { Cluster } from '@/prisma/client';
 import { getPrivateCloudProduct, getSubnetForEmerald } from '@/services/backend/private-cloud/products';
 import { usePrivateProductState } from '@/states/global';
 import { resetState as resetRequestsState } from './requests/state';

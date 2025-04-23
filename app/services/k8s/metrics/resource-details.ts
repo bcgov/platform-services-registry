@@ -5,7 +5,7 @@ import {
   QuotaUpgradeResourceDetail,
   ResourceRequestsEnv,
   ResourceRequests,
-} from '@/prisma/types';
+} from '@/prisma/client';
 import { getPodMetrics } from '@/services/k8s/metrics';
 
 export async function getResourceDetails({

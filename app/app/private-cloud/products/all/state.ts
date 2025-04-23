@@ -1,7 +1,7 @@
 import { proxy } from 'valtio';
 import { deepClone } from 'valtio/utils';
 import { privateCloudProductSorts } from '@/constants';
-import { ProjectStatus } from '@/prisma/types';
+import { ProjectStatus } from '@/prisma/client';
 import { PrivateCloudProductSearchBody } from '@/validation-schemas/private-cloud';
 
 const initialValue = {

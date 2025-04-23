@@ -11,7 +11,7 @@ import { openConfirmModal } from '@/components/modal/confirm';
 import AccountCodingSection from '@/components/public-cloud/sections/AccountCoding';
 import { requestSortsInProduct, GlobalRole } from '@/constants';
 import createClientPage from '@/core/client-page';
-import { AccountCoding } from '@/prisma/types';
+import { AccountCoding } from '@/prisma/client';
 import { searchPublicCloudBillings } from '@/services/backend/public-cloud/billings';
 import { updateAccountCoding as _updateAccountCoding } from '@/services/backend/public-cloud/products';
 import { usePublicProductState } from '@/states/global';

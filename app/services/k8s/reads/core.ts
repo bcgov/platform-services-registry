@@ -7,7 +7,7 @@ import {
   SILVER_SERVICE_ACCOUNT_TOKEN,
   EMERALD_SERVICE_ACCOUNT_TOKEN,
 } from '@/config';
-import { Cluster } from '@/prisma/types';
+import { Cluster } from '@/prisma/client';
 import { createK8sClusterConfigs } from '../helpers';
 
 const { getK8sClusterClients } = createK8sClusterConfigs({

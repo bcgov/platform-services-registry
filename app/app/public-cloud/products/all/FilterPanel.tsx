@@ -2,7 +2,7 @@ import { useSession } from 'next-auth/react';
 import { useSnapshot, subscribe } from 'valtio';
 import FormMultiSelect from '@/components/generic/select/FormMultiSelect';
 import { ministryOptions, getAllowedOptions, productBillingStatusOptions } from '@/constants';
-import { Provider, Prisma, Ministry, ProjectStatus } from '@/prisma/types';
+import { Provider, Prisma, Ministry, ProjectStatus } from '@/prisma/client';
 import { ProductBiliingStatus } from '@/types';
 import { pageState } from './state';
 

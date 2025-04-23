@@ -1,6 +1,6 @@
 import { providers } from '@/constants';
 import prisma from '@/core/prisma';
-import { Prisma } from '@/prisma/types';
+import { Prisma } from '@/prisma/client';
 
 function getAggByProvider(licencePlatesList: string[], provider?: string, dateFilter?: Record<string, any>) {
   const matchStage: Record<string, any> = {

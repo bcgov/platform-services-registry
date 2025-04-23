@@ -5,7 +5,7 @@ import { logger } from '@/core/logging';
 import prisma from '@/core/prisma';
 import { OkResponse, UnauthorizedResponse } from '@/core/responses';
 import { formatFullName } from '@/helpers/user';
-import { Prisma, RequestType, TaskStatus, TaskType } from '@/prisma/types';
+import { Prisma, RequestType, TaskStatus, TaskType } from '@/prisma/client';
 import { sendAdminCreateRequestEmails } from '@/services/ches/public-cloud';
 import { models, publicCloudBillingDetailInclude, publicCloudRequestDetailInclude, tasks } from '@/services/db';
 import { sendPublicCloudNatsMessage } from '@/services/nats';

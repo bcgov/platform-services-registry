@@ -1,6 +1,6 @@
 import { useFormContext } from 'react-hook-form';
 import FormCheckbox from '@/components/generic/checkbox/FormCheckbox';
-import { Cluster } from '@/prisma/types';
+import { Cluster } from '@/prisma/client';
 
 export default function GolddrCheckbox({ disabled }: { disabled?: boolean }) {
   const { watch, register, formState } = useFormContext();

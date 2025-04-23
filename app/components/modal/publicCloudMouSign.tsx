@@ -12,7 +12,7 @@ import FormCheckbox from '@/components/generic/checkbox/FormCheckbox';
 import FormError from '@/components/generic/FormError';
 import AccountCodingBase from '@/components/shared/AccountCoding';
 import { createModal } from '@/core/modal';
-import { AccountCoding, Provider, TaskStatus, TaskType } from '@/prisma/types';
+import { AccountCoding, Provider, TaskStatus, TaskType } from '@/prisma/client';
 import { signPublicCloudProductBilling } from '@/services/backend/public-cloud/products';
 import { publicCloudBillingBodySchema } from '@/validation-schemas';
 import { failure, success } from '../notification';

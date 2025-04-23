@@ -1,4 +1,4 @@
-import { ResourceType } from '@/prisma/types';
+import { ResourceType } from '@/prisma/client';
 
 export type resourceMetrics = {
   podMetrics: Pod[];

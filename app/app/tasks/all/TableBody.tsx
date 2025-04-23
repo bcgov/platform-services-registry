@@ -7,7 +7,7 @@ import { Fragment, ReactNode } from 'react';
 import KeyValueTable from '@/components/generic/KeyValueTable';
 import UserProfile from '@/components/users/UserProfile';
 import { taskTypeMap } from '@/constants/task';
-import { TaskStatus } from '@/prisma/types';
+import { TaskStatus } from '@/prisma/client';
 import { sendTaskEmail } from '@/services/backend/tasks';
 import { SearchTask } from '@/types/task';
 import { formatDate } from '@/utils/js';

@@ -3,7 +3,7 @@ import _get from 'lodash-es/get';
 import ExternalLink from '@/components/generic/button/ExternalLink';
 import HookFormPasswordInput from '@/components/generic/input/HookFormPasswordInput';
 import HookFormTextInput from '@/components/generic/input/HookFormTextInput';
-import { RequestType } from '@/prisma/types';
+import { RequestType } from '@/prisma/client';
 import { cn } from '@/utils/js';
 
 export default function Webhooks({ disabled, className }: { disabled: boolean; className?: string }) {

@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { getRandomUser } from '@/helpers/mock-resources/core';
 import { createSamplePublicCloudRequest } from '@/helpers/mock-resources/public-cloud-request';
-import { PublicCloudProductMemberRole } from '@/prisma/types';
+import { PublicCloudProductMemberRole } from '@/prisma/client';
 import { PublicCloudRequestDetailDecorated } from '@/types/public-cloud';
 import Template from '../_templates/public-cloud/TeamEditRequest';
 

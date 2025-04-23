@@ -7,7 +7,7 @@ import { openPublicCloudMouReviewModal } from '@/components/modal/publicCloudMou
 import { openPublicCloudMouSignModal } from '@/components/modal/publicCloudMouSign';
 import UserProfile from '@/components/users/UserProfile';
 import { getPublicCloudEmouFileName } from '@/helpers/emou';
-import { Provider, TaskStatus, TaskType } from '@/prisma/types';
+import { Provider, TaskStatus, TaskType } from '@/prisma/client';
 import { downloadPublicCloudBillingPDF } from '@/services/backend/public-cloud/billings';
 import { sendTaskEmail as _sendTaskEmail } from '@/services/backend/tasks';
 import { useUserState } from '@/states/user';

@@ -2,7 +2,7 @@ import { z } from 'zod';
 import { GlobalRole } from '@/constants';
 import createApiHandler from '@/core/api-handler';
 import { OkResponse } from '@/core/responses';
-import { Prisma } from '@/prisma/types';
+import { Prisma } from '@/prisma/client';
 import { models } from '@/services/db';
 import { processBoolean } from '@/utils/js';
 

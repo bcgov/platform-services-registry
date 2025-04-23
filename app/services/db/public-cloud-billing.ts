@@ -14,7 +14,7 @@ import {
   RequestType,
   TaskStatus,
   TaskType,
-} from '@/prisma/types';
+} from '@/prisma/client';
 import {
   PublicCloudBillingDetail,
   PublicCloudBillingDetailDecorated,

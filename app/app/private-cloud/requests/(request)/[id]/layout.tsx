@@ -12,7 +12,7 @@ import RequestBadge from '@/components/private-cloud/RequestBadge';
 import { GlobalRole } from '@/constants';
 import createClientPage from '@/core/client-page';
 import { comparePrivateProductData } from '@/helpers/product-change';
-import { RequestType } from '@/prisma/types';
+import { RequestType } from '@/prisma/client';
 import { getPrivateCloudRequest } from '@/services/backend/private-cloud/requests';
 import { usePrivateProductState } from '@/states/global';
 

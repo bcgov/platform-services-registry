@@ -3,7 +3,7 @@ import _isArray from 'lodash-es/isArray';
 import _isFunction from 'lodash-es/isFunction';
 import _lowerCase from 'lodash-es/lowerCase';
 import _startCase from 'lodash-es/startCase';
-import { Prisma } from '@/prisma/types';
+import { Prisma } from '@/prisma/client';
 import Table, { Header, CellProcess } from './Table';
 
 type Alert = Prisma.AcsResultAlertGetPayload<{

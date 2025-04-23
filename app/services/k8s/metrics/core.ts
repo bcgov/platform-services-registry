@@ -8,7 +8,7 @@ import {
   SILVER_METRICS_READER_TOKEN,
   EMERALD_METRICS_READER_TOKEN,
 } from '@/config';
-import { Cluster } from '@/prisma/types';
+import { Cluster } from '@/prisma/client';
 import { createK8sClusterConfigs } from '../helpers';
 
 type PrometheusMetricResult = {

@@ -1,6 +1,6 @@
 import { useSnapshot, subscribe } from 'valtio';
 import FormMultiSelect from '@/components/generic/select/FormMultiSelect';
-import { Cluster, DecisionStatus, Ministry, Prisma, RequestType } from '@/prisma/types';
+import { Cluster, DecisionStatus, Ministry, Prisma, RequestType } from '@/prisma/client';
 import { pageState } from './state';
 
 export default function FilterPanel() {

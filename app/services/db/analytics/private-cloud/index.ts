@@ -1,6 +1,6 @@
 import { startOfDay, endOfDay } from 'date-fns';
 import { fromZonedTime } from 'date-fns-tz';
-import { Cluster, Ministry } from '@/prisma/types';
+import { Cluster, Ministry } from '@/prisma/client';
 import { getActiveProducts } from './active-products';
 import { getAllRequests } from './all-requests';
 import { getContactChangeRequests } from './contact-changes';

@@ -4,7 +4,7 @@ import { z } from 'zod';
 import { logger } from '@/core/logging';
 import prisma from '@/core/prisma';
 import { parsePaginationParams } from '@/helpers/pagination';
-import { EventType, Prisma } from '@/prisma/types';
+import { EventType, Prisma } from '@/prisma/client';
 import { EventSearchBody } from '@/validation-schemas/event';
 
 const validationSchemas = {

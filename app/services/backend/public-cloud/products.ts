@@ -1,6 +1,6 @@
 import axios from 'axios';
 import { publicCloudProductSorts } from '@/constants';
-import { AccountCoding, Prisma } from '@/prisma/types';
+import { AccountCoding, Prisma } from '@/prisma/client';
 import {
   PublicCloudRequestSimpleDecorated,
   PublicCloudProductDetailDecorated,

@@ -1,4 +1,4 @@
-import { User, Prisma, PrivateCloudProductMember } from '@/prisma/types';
+import { User, Prisma, PrivateCloudProductMember } from '@/prisma/client';
 import {
   PrivateCloudProductDecorate,
   PrivateCloudRequestDecorate,

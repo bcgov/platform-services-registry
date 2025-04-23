@@ -1,5 +1,5 @@
 import prisma from '@/core/prisma';
-import { DecisionStatus } from '@/prisma/types';
+import { DecisionStatus } from '@/prisma/client';
 import { dateToShortDateString } from '@/utils/js/date';
 
 interface QuotaChanges {

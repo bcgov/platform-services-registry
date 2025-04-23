@@ -1,6 +1,6 @@
 import { Button } from '@mantine/core';
 import { IconCancel } from '@tabler/icons-react';
-import { ProjectContext } from '@/prisma/types';
+import { ProjectContext } from '@/prisma/client';
 import { openRequestCancelModal } from '../modal/CancelRequest';
 
 export default function CancelRequest({ id, context }: { id: string; context: ProjectContext }) {

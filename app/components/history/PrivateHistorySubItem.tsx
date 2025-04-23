@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import { RequestType, DecisionStatus } from '@/prisma/types';
+import { RequestType, DecisionStatus } from '@/prisma/client';
 import { formatDateSimple } from '@/utils/js';
 
 export default function PrivateHistorySubItem({

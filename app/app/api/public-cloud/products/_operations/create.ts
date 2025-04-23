@@ -1,7 +1,7 @@
 import { Session } from 'next-auth';
 import { BadRequestResponse, OkResponse, UnauthorizedResponse } from '@/core/responses';
 import generateLicencePlate from '@/helpers/licence-plate';
-import { DecisionStatus, ProjectStatus, RequestType, TaskType, EventType } from '@/prisma/types';
+import { DecisionStatus, ProjectStatus, RequestType, TaskType, EventType } from '@/prisma/client';
 import { sendCreateRequestEmails } from '@/services/ches/public-cloud';
 import { createEvent, models, publicCloudRequestDetailInclude, tasks } from '@/services/db';
 import { PublicCloudCreateRequestBody } from '@/validation-schemas/public-cloud';

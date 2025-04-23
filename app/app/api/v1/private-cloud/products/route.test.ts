@@ -3,7 +3,7 @@ import { GlobalRole } from '@/constants';
 import prisma from '@/core/prisma';
 import { createSamplePrivateCloudProductData } from '@/helpers/mock-resources';
 import { mockNoRoleUsers } from '@/helpers/mock-users';
-import { DecisionStatus, ProjectStatus, Ministry, Cluster, RequestType } from '@/prisma/types';
+import { DecisionStatus, ProjectStatus, Ministry, Cluster, RequestType } from '@/prisma/client';
 import {
   mockSessionByEmail,
   mockSessionByRole,

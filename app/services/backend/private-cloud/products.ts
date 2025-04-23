@@ -1,6 +1,6 @@
 import axios from 'axios';
 import { privateCloudProductSorts } from '@/constants';
-import { Prisma, PrivateCloudComment, QuotaUpgradeResourceDetail, ResourceRequestsEnv } from '@/prisma/types';
+import { Prisma, PrivateCloudComment, QuotaUpgradeResourceDetail, ResourceRequestsEnv } from '@/prisma/client';
 import { DeletionCheck } from '@/services/k8s/reads';
 import {
   PrivateCloudRequestSimpleDecorated,

@@ -2,7 +2,7 @@ import _get from 'lodash-es/get';
 import React from 'react';
 import SharedAdditionalTeamMembers from '@/components/shared/AdditionalTeamMembers';
 import { publicCloudProductMemberRoles } from '@/constants';
-import { PublicCloudProductMember } from '@/prisma/types';
+import { PublicCloudProductMember } from '@/prisma/client';
 
 export default function AdditionalTeamMembers({ disabled }: { disabled?: boolean }) {
   return (

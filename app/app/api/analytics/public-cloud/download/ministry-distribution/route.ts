@@ -2,7 +2,7 @@ import { GlobalPermissions } from '@/constants';
 import createApiHandler from '@/core/api-handler';
 import { NoContent, CsvResponse } from '@/core/responses';
 import { mapProviderData, validProviders } from '@/helpers/ministry-data';
-import { Provider } from '@/prisma/types';
+import { Provider } from '@/prisma/client';
 import { getPublicLicencePlates } from '@/services/db/analytics/public-cloud/licence-plates';
 import { getMinistryDistributions } from '@/services/db/analytics/public-cloud/ministry-distributions';
 import { analyticsPublicCloudFilterSchema } from '@/validation-schemas/analytics-public-cloud';

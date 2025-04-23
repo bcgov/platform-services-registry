@@ -1,6 +1,6 @@
 import { Session } from 'next-auth';
 import prisma from '@/core/prisma';
-import { Prisma, Ministry, ProjectStatus, TaskType, PublicCloudProductMemberRole } from '@/prisma/types';
+import { Prisma, Ministry, ProjectStatus, TaskType, PublicCloudProductMemberRole } from '@/prisma/client';
 import { PublicCloudProductDecorate } from '@/types/doc-decorate';
 import {
   PublicCloudProductDetail,

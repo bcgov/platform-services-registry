@@ -11,7 +11,7 @@ import RequestBadge from '@/components/public-cloud/RequestBadge';
 import { GlobalRole } from '@/constants';
 import createClientPage from '@/core/client-page';
 import { comparePublicProductData } from '@/helpers/product-change';
-import { RequestType } from '@/prisma/types';
+import { RequestType } from '@/prisma/client';
 import { getPublicCloudRequest } from '@/services/backend/public-cloud/requests';
 import { usePublicProductState } from '@/states/global';
 

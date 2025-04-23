@@ -1,6 +1,6 @@
 import { ENABLE_DELETION_CHECK } from '@/config';
 import { environmentShortKeys } from '@/constants';
-import { Cluster } from '@/prisma/types';
+import { Cluster } from '@/prisma/client';
 import { getK8sClients } from './core';
 
 export interface DeletionCheck {

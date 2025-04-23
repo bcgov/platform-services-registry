@@ -3,7 +3,7 @@ import { z } from 'zod';
 import createApiHandler from '@/core/api-handler';
 import prisma from '@/core/prisma';
 import { OkResponse } from '@/core/responses';
-import { Prisma, Cluster } from '@/prisma/types';
+import { Prisma, Cluster } from '@/prisma/client';
 import { processBooleanPositive } from '@/utils/js';
 
 const queryParamSchema = z.object({

@@ -1,6 +1,6 @@
 import { Session } from 'next-auth';
 import prisma from '@/core/prisma';
-import { Prisma } from '@/prisma/types';
+import { Prisma } from '@/prisma/client';
 
 export default async function listOp({ session }: { session: Session }) {
   const unitPrices = await prisma.privateCloudUnitPrice.findMany({ orderBy: { date: Prisma.SortOrder.asc } });

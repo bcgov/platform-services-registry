@@ -2,7 +2,7 @@ import { GlobalPermissions } from '@/constants';
 import createApiHandler from '@/core/api-handler';
 import { NoContent, CsvResponse } from '@/core/responses';
 import { mapClusterData, validClusters } from '@/helpers/ministry-data';
-import { Cluster } from '@/prisma/types';
+import { Cluster } from '@/prisma/client';
 import { getPrivateLicencePlates } from '@/services/db/analytics/private-cloud/licence-plates';
 import { getMinistryDistributions } from '@/services/db/analytics/private-cloud/ministry-distributions';
 import { analyticsPrivateCloudFilterSchema } from '@/validation-schemas/analytics-private-cloud';

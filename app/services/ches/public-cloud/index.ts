@@ -1,5 +1,5 @@
 import { logger } from '@/core/logging';
-import { RequestType } from '@/prisma/types';
+import { RequestType } from '@/prisma/client';
 import { PublicCloudBillingDetailDecorated, PublicCloudRequestDetailDecorated } from '@/types/public-cloud';
 import {
   sendAdminCreateRequest,

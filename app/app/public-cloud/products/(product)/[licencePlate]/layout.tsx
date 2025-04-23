@@ -8,7 +8,7 @@ import Tabs, { ITab } from '@/components/generic/tabs/BasicTabs';
 import ProductBadge from '@/components/public-cloud/ProductBadge';
 import { GlobalRole } from '@/constants';
 import createClientPage from '@/core/client-page';
-import { Provider } from '@/prisma/types';
+import { Provider } from '@/prisma/client';
 import { getPublicCloudProduct } from '@/services/backend/public-cloud/products';
 import { usePublicProductState } from '@/states/global';
 import { resetState as resetRequestsState } from './requests/state';

@@ -2,7 +2,7 @@ import { Session } from 'next-auth';
 import { AUTH_RELM } from '@/config';
 import { TEAM_SA_PREFIX } from '@/constants';
 import { OkResponse, BadRequestResponse } from '@/core/responses';
-import { EventType } from '@/prisma/types';
+import { EventType } from '@/prisma/client';
 import { createEvent } from '@/services/db';
 import { getKcAdminClient, findClient } from '@/services/keycloak/app-realm';
 import { generateShortId } from '@/utils/js';

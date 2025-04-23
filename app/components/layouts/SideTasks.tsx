@@ -6,7 +6,7 @@ import { IconChecklist } from '@tabler/icons-react';
 import { useQuery } from '@tanstack/react-query';
 import Link from 'next/link';
 import { useEffect } from 'react';
-import { TaskStatus, TaskType } from '@/prisma/types';
+import { TaskStatus, TaskType } from '@/prisma/client';
 import { getAssignedTasks } from '@/services/backend/tasks';
 import { formatDate, cn } from '@/utils/js';
 

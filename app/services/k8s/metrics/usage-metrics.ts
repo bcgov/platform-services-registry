@@ -2,7 +2,7 @@ import { PodMetric } from '@kubernetes/client-node';
 import { environmentShortNames } from '@/constants';
 import { logger } from '@/core/logging';
 import { normalizeMemory, normalizeCpu, PVC, resourceMetrics } from '@/helpers/resource-metrics';
-import { Cluster, ResourceRequestsEnv } from '@/prisma/types';
+import { Cluster, ResourceRequestsEnv } from '@/prisma/client';
 import { getK8sClients, queryPrometheus } from './core';
 
 async function getLastTwoWeeksAvgUsage(namespace: string, podName: string, cluster: Cluster) {

@@ -1,6 +1,6 @@
 import { OkResponse } from '@/core/responses';
 import { ministryKeyToName } from '@/helpers/product';
-import { ProjectStatus } from '@/prisma/types';
+import { ProjectStatus } from '@/prisma/client';
 import { searchPrivateCloudProducts, SearchPrivateCloudProductsProps } from '@/services/db';
 
 export default async function listOp({

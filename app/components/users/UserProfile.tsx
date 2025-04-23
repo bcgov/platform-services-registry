@@ -6,7 +6,7 @@ import MinistryBadge from '@/components/badges/MinistryBadge';
 import { openUserDetailModal } from '@/components/modal/userDetail';
 import { formatFullName } from '@/helpers/user';
 import { getUserImageData } from '@/helpers/user-image';
-import { User } from '@/prisma/types';
+import { User } from '@/prisma/client';
 import { cn } from '@/utils/js';
 
 export type UserPickerData = Pick<User, 'email' | 'firstName' | 'lastName' | 'ministry' | 'image' | 'upn' | 'idir'> & {

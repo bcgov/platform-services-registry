@@ -2,7 +2,7 @@ import { GlobalRole } from '@/constants';
 import createApiHandler from '@/core/api-handler';
 import prisma from '@/core/prisma';
 import { OkResponse } from '@/core/responses';
-import { ProjectContext } from '@/prisma/types';
+import { ProjectContext } from '@/prisma/client';
 import { models } from '@/services/db';
 import { securityConfigSchema } from '@/validation-schemas/security-config';
 
