@@ -27,7 +27,7 @@ export default [
       '.swc',
       '.vscode',
       'app/.next',
-      'app/prisma/types',
+      'app/prisma/client',
       'docs',
       'helm',
       'site',

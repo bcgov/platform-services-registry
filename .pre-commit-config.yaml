@@ -90,4 +90,4 @@ repos:
   - id: codespell
     exclude: .git/COMMIT_EDITMSG
 
-exclude: ^(app/.react-email|CHANGELOG\.md|pnpm-lock\.yaml|.*/pnpm-lock\.yaml|app/prisma/types/.*)$
+exclude: ^(app/.react-email|CHANGELOG\.md|pnpm-lock\.yaml|.*/pnpm-lock\.yaml|app/prisma/client/.*)$
