@@ -120,6 +120,7 @@ nav:
     - EMou Workflow: business-logic/public-cloud/emou-workflow.md
     - Email Scenario: business-logic/public-cloud/email-scenario.md
 - Research:
+  - research/gold-migration-and-dr.md
   - research/image-scanner.md
 - Tests:
   - tests/api-testing.md
