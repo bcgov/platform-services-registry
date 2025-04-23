@@ -1,5 +1,5 @@
-import { ProjectContext } from '@prisma/client';
 import { z } from 'zod';
+import { ProjectContext } from '@/prisma/client';
 
 export const securityConfigSchema = z.object({
   licencePlate: z.string(),

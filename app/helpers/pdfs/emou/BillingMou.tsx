@@ -1,6 +1,6 @@
-import { Provider } from '@prisma/client';
 import _sumBy from 'lodash-es/sumBy';
 import { formatFullName } from '@/helpers/user';
+import { Provider } from '@/prisma/client';
 import { PublicCloudBillingDetailDecorated } from '@/types/public-cloud';
 import { formatDate } from '@/utils/js';
 import { Product } from './types';

@@ -2,7 +2,6 @@
 
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Alert, Button } from '@mantine/core';
-import { DecisionStatus, ProjectContext, RequestType, TaskStatus, TaskType } from '@prisma/client';
 import {
   IconInfoCircle,
   IconUsersGroup,
@@ -31,6 +30,7 @@ import AdditionalTeamMembers from '@/components/public-cloud/sections/Additional
 import TeamContacts from '@/components/public-cloud/sections/TeamContacts';
 import { GlobalRole } from '@/constants';
 import createClientPage from '@/core/client-page';
+import { DecisionStatus, ProjectContext, RequestType, TaskStatus, TaskType } from '@/prisma/client';
 import { searchPublicCloudBillings } from '@/services/backend/public-cloud/billings';
 import { usePublicProductState } from '@/states/global';
 import {

@@ -27,3 +27,4 @@ next-env.d.ts
 mnt
 tmp
 site
+app/prisma/client

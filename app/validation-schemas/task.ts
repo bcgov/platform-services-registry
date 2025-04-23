@@ -1,5 +1,5 @@
-import { TaskType, Prisma, TaskStatus } from '@prisma/client';
 import { z } from 'zod';
+import { TaskType, Prisma, TaskStatus } from '@/prisma/client';
 import { processEnumString } from '@/utils/js';
 
 export const taskSearchBodySchema = z.object({

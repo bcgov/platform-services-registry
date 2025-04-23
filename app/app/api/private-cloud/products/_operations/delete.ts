@@ -1,7 +1,7 @@
-import { RequestType, DecisionStatus, ProjectStatus, EventType, Prisma, TaskType } from '@prisma/client';
 import { Session } from 'next-auth';
 import { TypeOf } from 'zod';
 import { BadRequestResponse, OkResponse, UnauthorizedResponse } from '@/core/responses';
+import { DecisionStatus, EventType, Prisma, ProjectStatus, RequestType, TaskType } from '@/prisma/client';
 import { sendDeleteRequestEmails } from '@/services/ches/private-cloud';
 import {
   createEvent,

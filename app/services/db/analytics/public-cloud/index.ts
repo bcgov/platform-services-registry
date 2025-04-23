@@ -1,4 +1,4 @@
-import { Provider, Ministry } from '@prisma/client';
+import { Provider, Ministry } from '@/prisma/client';
 import { getActiveProducts } from './active-products';
 import { getAllRequests } from './all-requests';
 import { getContactChangeRequests } from './contact-changes';

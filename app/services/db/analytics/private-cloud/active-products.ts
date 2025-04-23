@@ -1,7 +1,7 @@
-import { Cluster, RequestType, DecisionStatus } from '@prisma/client';
 import _uniq from 'lodash-es/uniq';
 import { clusters } from '@/constants';
 import prisma from '@/core/prisma';
+import { Cluster, RequestType, DecisionStatus } from '@/prisma/client';
 import { dateToShortDateString, shortDateStringToDate } from '@/utils/js';
 
 async function productsCreatedPerMonth(

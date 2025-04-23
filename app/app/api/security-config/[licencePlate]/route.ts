@@ -1,8 +1,8 @@
-import { ProjectContext } from '@prisma/client';
 import { z } from 'zod';
 import { GlobalRole } from '@/constants';
 import createApiHandler from '@/core/api-handler';
 import { OkResponse } from '@/core/responses';
+import { ProjectContext } from '@/prisma/client';
 import { models } from '@/services/db';
 
 const pathParamSchema = z.object({

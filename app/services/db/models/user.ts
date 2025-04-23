@@ -1,6 +1,6 @@
-import { Prisma, Ministry, User } from '@prisma/client';
 import { Session } from 'next-auth';
 import prisma from '@/core/prisma';
+import { Prisma, Ministry, User } from '@/prisma/client';
 import { UserDecorate } from '@/types/doc-decorate';
 import { createSessionModel } from './core';
 

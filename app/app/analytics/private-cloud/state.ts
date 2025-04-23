@@ -1,6 +1,6 @@
-import { Cluster } from '@prisma/client';
 import { proxy } from 'valtio';
 import { deepClone } from 'valtio/utils';
+import { Cluster } from '@/prisma/client';
 import { AnalyticsPrivateCloudFilterBody } from '@/validation-schemas/analytics-private-cloud';
 
 const initialValue = {

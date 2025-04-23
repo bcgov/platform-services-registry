@@ -2,7 +2,6 @@
 
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Button } from '@mantine/core';
-import { ResourceRequestsEnv } from '@prisma/client';
 import { IconInfoCircle, IconUsersGroup, IconSettings } from '@tabler/icons-react';
 import { useEffect, useState } from 'react';
 import { FormProvider, useForm } from 'react-hook-form';
@@ -18,6 +17,7 @@ import TeamContacts from '@/components/private-cloud/sections/TeamContacts';
 import SiloAccordion from '@/components/private-cloud/SiloAccordion';
 import { GlobalRole } from '@/constants';
 import createClientPage from '@/core/client-page';
+import { ResourceRequestsEnv } from '@/prisma/client';
 import { getQuotaChangeStatus } from '@/services/backend/private-cloud/products';
 import { usePrivateProductState } from '@/states/global';
 import { PrivateCloudEditRequestBody, privateCloudEditRequestBodySchema } from '@/validation-schemas/private-cloud';

@@ -1,10 +1,10 @@
 import { RoleMappingPayload } from '@keycloak/keycloak-admin-client/lib/defs/roleRepresentation';
-import { EventType } from '@prisma/client';
 import { z } from 'zod';
 import { AUTH_RELM } from '@/config';
 import { GlobalRole } from '@/constants';
 import createApiHandler from '@/core/api-handler';
 import { OkResponse } from '@/core/responses';
+import { EventType } from '@/prisma/client';
 import { createEvent } from '@/services/db';
 import { getKcAdminClient } from '@/services/keycloak/app-realm';
 

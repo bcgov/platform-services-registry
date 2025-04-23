@@ -1,7 +1,7 @@
-import { EventType } from '@prisma/client';
 import { endOfDay, startOfDay } from 'date-fns';
 import { format, toZonedTime } from 'date-fns-tz';
 import prisma from '@/core/prisma';
+import { EventType } from '@/prisma/client';
 import { AnalyticsGeneralFilterBody } from '@/validation-schemas/analytics-general';
 
 export async function getAnalyticsGeneral({ dates = [], userId = '' }: AnalyticsGeneralFilterBody) {

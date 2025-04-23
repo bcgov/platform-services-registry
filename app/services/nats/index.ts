@@ -1,5 +1,5 @@
-import { RequestType } from '@prisma/client';
 import { PRIVATE_NATS_URL, PUBLIC_NATS_URL } from '@/config';
+import { RequestType } from '@/prisma/client';
 import { isEligibleForDeletion } from '@/services/k8s/reads';
 import createPrivateCloudNatsMessage from '@/services/nats/private-cloud';
 import createPublicCloudNatsMessage from '@/services/nats/public-cloud';

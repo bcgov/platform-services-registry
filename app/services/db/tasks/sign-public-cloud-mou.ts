@@ -1,6 +1,6 @@
-import { TaskStatus, TaskType } from '@prisma/client';
 import { Session } from 'next-auth';
 import prisma from '@/core/prisma';
+import { TaskStatus, TaskType } from '@/prisma/client';
 import { sendExpenseAuthorityMou, sendExpenseAuthorityMouProduct } from '@/services/ches/public-cloud/emails';
 import {
   PublicCloudRequestDetailDecorated,

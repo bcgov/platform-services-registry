@@ -1,9 +1,9 @@
-import { Prisma, RequestType } from '@prisma/client';
 import _isNumber from 'lodash-es/isNumber';
 import { Session } from 'next-auth';
 import { requestSorts } from '@/constants';
 import prisma from '@/core/prisma';
 import { parsePaginationParams } from '@/helpers/pagination';
+import { Prisma, RequestType } from '@/prisma/client';
 import { models, publicCloudRequestDetailInclude } from '@/services/db';
 import { PrivateCloudRequestSearch } from '@/types/private-cloud';
 import { PrivateCloudRequestSearchBody } from '@/validation-schemas/private-cloud';

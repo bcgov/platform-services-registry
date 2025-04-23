@@ -1,5 +1,5 @@
-import { EventType, Prisma } from '@prisma/client';
 import { z } from 'zod';
+import { EventType, Prisma } from '@/prisma/client';
 import { processEnumString } from '@/utils/js';
 import { isValidISODateString } from '@/utils/js';
 

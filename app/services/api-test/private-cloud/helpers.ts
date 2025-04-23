@@ -1,7 +1,7 @@
-import { Cluster, DecisionStatus, RequestType } from '@prisma/client';
 import { GlobalRole } from '@/constants';
 import { createSamplePrivateCloudProductData } from '@/helpers/mock-resources';
 import { resourceRequests1, resourceRequests2 } from '@/helpers/mock-resources/private-cloud-product';
+import { Cluster, DecisionStatus, RequestType } from '@/prisma/client';
 import { mockSessionByEmail, mockSessionByRole } from '@/services/api-test/core';
 import { mockTeamServiceAccount } from '@/services/api-test/core';
 import {

@@ -1,5 +1,4 @@
 import { Loader, Tooltip } from '@mantine/core';
-import { Cluster, ResourceRequestsEnv, ResourceRequests } from '@prisma/client';
 import { useQueries } from '@tanstack/react-query';
 import _startCase from 'lodash-es/startCase';
 import { ReactNode } from 'react';
@@ -7,6 +6,7 @@ import { useFormContext } from 'react-hook-form';
 import ExternalLink from '@/components/generic/button/ExternalLink';
 import HookFormTextInput from '@/components/generic/input/HookFormTextInput';
 import { namespaceKeys, resourceKeys } from '@/constants';
+import { Cluster, ResourceRequestsEnv, ResourceRequests } from '@/prisma/client';
 import { getSubnetForEmerald } from '@/services/backend/private-cloud/products';
 import { cn } from '@/utils/js';
 import QuotasBudgetEstimation from './QuotasBudgetEstimation';

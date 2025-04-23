@@ -1,6 +1,6 @@
-import { Prisma } from '@prisma/client';
 import axios from 'axios';
 import { billingSorts } from '@/constants/billing';
+import { Prisma } from '@/prisma/client';
 import { PublicCloudBillingSearch } from '@/types/public-cloud';
 import { downloadFile } from '@/utils/browser';
 import { PublicCloudBillingSearchBody } from '@/validation-schemas';

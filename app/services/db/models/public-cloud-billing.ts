@@ -1,6 +1,6 @@
-import { Prisma, PublicCloudProductMemberRole, TaskType } from '@prisma/client';
 import { Session } from 'next-auth';
 import prisma from '@/core/prisma';
+import { Prisma, PublicCloudProductMemberRole, TaskType } from '@/prisma/client';
 import { PublicCloudBillingDecorate } from '@/types/doc-decorate';
 import {
   PublicCloudBillingDetail,

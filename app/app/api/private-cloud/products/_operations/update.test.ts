@@ -1,9 +1,9 @@
 import { expect } from '@jest/globals';
-import { DecisionStatus, Cluster, RequestType } from '@prisma/client';
 import { GlobalRole } from '@/constants';
 import { createSamplePrivateCloudProductData } from '@/helpers/mock-resources';
 import { resourceRequests1, resourceRequests2 } from '@/helpers/mock-resources/private-cloud-product';
 import { findOtherMockUsers } from '@/helpers/mock-users';
+import { DecisionStatus, Cluster, RequestType } from '@/prisma/client';
 import { mockSessionByEmail, mockSessionByRole } from '@/services/api-test/core';
 import { mockTeamServiceAccount } from '@/services/api-test/core';
 import { createPrivateCloudProduct, editPrivateCloudProduct } from '@/services/api-test/private-cloud/products';

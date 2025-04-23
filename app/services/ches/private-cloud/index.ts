@@ -1,5 +1,5 @@
-import { DecisionStatus, RequestType } from '@prisma/client';
 import { logger } from '@/core/logging';
+import { DecisionStatus, RequestType } from '@/prisma/client';
 import { PrivateCloudRequestDetailDecorated } from '@/types/private-cloud';
 import {
   sendAdminCreateRequest,

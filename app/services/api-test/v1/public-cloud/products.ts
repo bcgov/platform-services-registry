@@ -1,6 +1,6 @@
-import { Ministry, Provider, ProjectStatus } from '@prisma/client';
 import { GET as _listPublicCloudProduct } from '@/app/api/v1/public-cloud/products/route';
 import { getServiceAccountAuthHeader } from '@/helpers/mock-resources';
+import { Ministry, Provider, ProjectStatus } from '@/prisma/client';
 import { createRoute } from '../../core';
 
 const productCollectionRoute = createRoute('/api/v1/public-cloud/products');

@@ -1,9 +1,9 @@
-import { EventType, DecisionStatus, Prisma, ProjectStatus, RequestType, TaskType } from '@prisma/client';
 import { z } from 'zod';
 import { GlobalRole, GlobalPermissions } from '@/constants';
 import createApiHandler from '@/core/api-handler';
 import prisma from '@/core/prisma';
 import { BadRequestResponse, OkResponse, UnprocessableEntityResponse } from '@/core/responses';
+import { EventType, DecisionStatus, Prisma, ProjectStatus, RequestType, TaskType } from '@/prisma/client';
 import { sendRequestRejectionEmails, sendRequestApprovalEmails } from '@/services/ches/public-cloud';
 import { createEvent, models, publicCloudRequestDetailInclude, tasks } from '@/services/db';
 import { sendPublicCloudNatsMessage } from '@/services/nats';

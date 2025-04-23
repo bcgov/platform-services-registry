@@ -1,5 +1,5 @@
-import { Cluster, Ministry } from '@prisma/client';
 import prisma from '@/core/prisma';
+import { Cluster, Ministry } from '@/prisma/client';
 
 export async function getPrivateLicencePlates({
   userId,

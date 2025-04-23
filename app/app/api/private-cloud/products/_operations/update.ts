@@ -1,10 +1,10 @@
-import { DecisionStatus, Cluster, RequestType, EventType, TaskType } from '@prisma/client';
 import { Session } from 'next-auth';
 import { TypeOf } from 'zod';
 import { OkResponse, UnauthorizedResponse } from '@/core/responses';
 import { getQuotaChangeStatus } from '@/helpers/auto-approval-check';
 import { sendRequestNatsMessage } from '@/helpers/nats-message';
 import { comparePrivateProductData } from '@/helpers/product-change';
+import { DecisionStatus, Cluster, RequestType, EventType, TaskType } from '@/prisma/client';
 import { sendEditRequestEmails, sendRequestApprovalEmails } from '@/services/ches/private-cloud';
 import {
   createEvent,

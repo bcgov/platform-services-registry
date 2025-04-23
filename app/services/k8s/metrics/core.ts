@@ -1,4 +1,3 @@
-import { Cluster } from '@prisma/client';
 import axios from 'axios';
 import {
   CLAB_METRICS_READER_TOKEN,
@@ -9,6 +8,7 @@ import {
   SILVER_METRICS_READER_TOKEN,
   EMERALD_METRICS_READER_TOKEN,
 } from '@/config';
+import { Cluster } from '@/prisma/client';
 import { createK8sClusterConfigs } from '../helpers';
 
 type PrometheusMetricResult = {

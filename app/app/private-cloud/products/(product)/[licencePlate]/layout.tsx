@@ -1,7 +1,6 @@
 'use client';
 
 import { Alert, Loader } from '@mantine/core';
-import { Cluster } from '@prisma/client';
 import { IconInfoCircle, IconLicense } from '@tabler/icons-react';
 import { useQuery } from '@tanstack/react-query';
 import Link from 'next/link';
@@ -14,6 +13,7 @@ import ProductBadge from '@/components/private-cloud/ProductBadge';
 import { IS_PROD } from '@/config';
 import { GlobalRole } from '@/constants';
 import createClientPage from '@/core/client-page';
+import { Cluster } from '@/prisma/client';
 import { getPrivateCloudProduct, getSubnetForEmerald } from '@/services/backend/private-cloud/products';
 import { usePrivateProductState } from '@/states/global';
 import { resetState as resetRequestsState } from './requests/state';

@@ -1,7 +1,7 @@
 import { Badge } from '@mantine/core';
-import { ProjectStatus } from '@prisma/client';
-import { PrivateCloudProduct } from '@prisma/client';
 import LicencePlateBadge from '@/components/shared/LicencePlateBadge';
+import { ProjectStatus } from '@/prisma/client';
+import { PrivateCloudProduct } from '@/prisma/client';
 import { cn } from '@/utils/js';
 import ClusterBadge from './ClusterBadge';
 

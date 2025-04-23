@@ -1,9 +1,9 @@
-import { EventType } from '@prisma/client';
 import { GlobalRole } from '@/constants';
 import createApiHandler from '@/core/api-handler';
 import { NoContent, CsvResponse } from '@/core/responses';
 import { ministryKeyToName } from '@/helpers/product';
 import { formatFullName } from '@/helpers/user';
+import { EventType } from '@/prisma/client';
 import { createEvent, searchPublicCloudProducts } from '@/services/db';
 import { formatDateSimple } from '@/utils/js';
 import { publicCloudProductSearchNoPaginationBodySchema } from '@/validation-schemas/public-cloud';

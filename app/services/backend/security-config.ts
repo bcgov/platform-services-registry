@@ -1,4 +1,4 @@
-import { ProjectContext } from '@prisma/client';
+import { ProjectContext } from '@/prisma/client';
 import { SecurityConfig } from '@/validation-schemas';
 import { instance } from './axios';
 

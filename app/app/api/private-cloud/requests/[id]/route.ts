@@ -1,9 +1,9 @@
-import { DecisionStatus, EventType, TaskStatus, TaskType } from '@prisma/client';
 import { z } from 'zod';
 import { GlobalRole } from '@/constants';
 import createApiHandler from '@/core/api-handler';
 import prisma from '@/core/prisma';
 import { OkResponse, UnauthorizedResponse } from '@/core/responses';
+import { DecisionStatus, EventType, TaskStatus, TaskType } from '@/prisma/client';
 import { sendRequestCancellationEmails } from '@/services/ches/private-cloud';
 import { createEvent, models, privateCloudRequestDetailInclude } from '@/services/db';
 

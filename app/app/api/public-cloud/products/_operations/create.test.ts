@@ -1,9 +1,9 @@
 import { expect } from '@jest/globals';
-import { Ministry, Provider } from '@prisma/client';
 import { GlobalRole } from '@/constants';
 import { createSamplePublicCloudProductData } from '@/helpers/mock-resources';
 import { findOtherMockUsers } from '@/helpers/mock-users';
 import { pickProductData } from '@/helpers/product';
+import { Ministry, Provider } from '@/prisma/client';
 import { mockSessionByEmail, mockSessionByRole } from '@/services/api-test/core';
 import { createPublicCloudProduct } from '@/services/api-test/public-cloud/products';
 

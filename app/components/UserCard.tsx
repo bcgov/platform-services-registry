@@ -1,9 +1,9 @@
 import { HoverCard, Group } from '@mantine/core';
 import { useDisclosure } from '@mantine/hooks';
-import { User } from '@prisma/client';
 import MailLink from '@/components/generic/button/MailLink';
 import { openUserDetailModal } from '@/components/modal/userDetail';
 import { formatFullName } from '@/helpers/user';
+import { User } from '@/prisma/client';
 import { cn } from '@/utils/js';
 import ProfileImage from './ProfileImage';
 

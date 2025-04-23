@@ -1,5 +1,4 @@
 import { Badge, Table, Button } from '@mantine/core';
-import { User } from '@prisma/client';
 import { IconPlus } from '@tabler/icons-react';
 import _get from 'lodash-es/get';
 import React from 'react';
@@ -9,6 +8,7 @@ import { openConfirmModal } from '@/components/modal/confirm';
 import { openUserPickerModal } from '@/components/modal/userPicker';
 import UserProfile from '@/components/users/UserProfile';
 import { formatFullName } from '@/helpers/user';
+import { User } from '@/prisma/client';
 import { formatDate, cn } from '@/utils/js';
 import TooltipTableHeader from './TooltipTableHeader';
 

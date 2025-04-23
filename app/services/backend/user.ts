@@ -1,6 +1,6 @@
-import { Prisma } from '@prisma/client';
 import axios from 'axios';
 import { userSorts } from '@/constants';
+import { Prisma } from '@/prisma/client';
 import { AdminViewUser, UserDetailWithColeagues } from '@/types/user';
 import { downloadFile } from '@/utils/browser';
 import { UserSearchBody, UserUpdateBody } from '@/validation-schemas';

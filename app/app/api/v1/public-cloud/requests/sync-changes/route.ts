@@ -1,9 +1,9 @@
-import { RequestType } from '@prisma/client';
 import { GlobalRole } from '@/constants';
 import createApiHandler from '@/core/api-handler';
 import prisma from '@/core/prisma';
 import { OkResponse } from '@/core/responses';
 import { comparePublicProductData } from '@/helpers/product-change';
+import { RequestType } from '@/prisma/client';
 
 const apiHandler = createApiHandler({
   roles: [GlobalRole.Admin],
