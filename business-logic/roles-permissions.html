@@ -332,7 +332,7 @@
     
     
       <li class="md-tabs__item">
-        <a href="../research/image-scanner.html" class="md-tabs__link">
+        <a href="../research/gold-migration-and-dr.html" class="md-tabs__link">
           
   
   
@@ -1880,6 +1880,19 @@
         
       
       
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    Roles and Permissions
+    
+  </span>
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
       <a href="roles-permissions.html" class="md-nav__link md-nav__link--active">
         
   
@@ -1891,6 +1904,52 @@
   
 
       </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#global-roles" class="md-nav__link">
+    <span class="md-ellipsis">
+      Global Roles
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#global-permissions" class="md-nav__link">
+    <span class="md-ellipsis">
+      Global Permissions
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#document-level-permissions" class="md-nav__link">
+    <span class="md-ellipsis">
+      Document-Level Permissions
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
       
     </li>
   
@@ -2165,6 +2224,8 @@
       
         
       
+        
+      
     
     
     
@@ -2198,6 +2259,29 @@
             Research
           </label>
           <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../research/gold-migration-and-dr.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Gold Cluster Migration and Disaster Recovery
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
             
               
                 
@@ -2349,6 +2433,41 @@
     
   
   
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#global-roles" class="md-nav__link">
+    <span class="md-ellipsis">
+      Global Roles
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#global-permissions" class="md-nav__link">
+    <span class="md-ellipsis">
+      Global Permissions
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#document-level-permissions" class="md-nav__link">
+    <span class="md-ellipsis">
+      Document-Level Permissions
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
 </nav>
                   </div>
                 </div>
@@ -2367,7 +2486,14 @@
 
 
 <h1 id="roles-and-permissions">Roles and Permissions<a class="headerlink" href="#roles-and-permissions" title="Permanent link">&para;</a></h1>
-<p><strong><em>TO BE COMPLETED</em></strong></p>
+<p>The Registry application supports complex and flexible permission use cases through a two-level system of roles and permissions: <strong>global-level</strong> and <strong>document-level</strong> (e.g., product-specific).</p>
+<h2 id="global-roles">Global Roles<a class="headerlink" href="#global-roles" title="Permanent link">&para;</a></h2>
+<p>Global roles are defined in <strong>Keycloak</strong>. When a user logs in, the system retrieves their roles from the JWT token issued by Keycloak. These roles are available in the user's session data on both the backend and frontend.</p>
+<h2 id="global-permissions">Global Permissions<a class="headerlink" href="#global-permissions" title="Permanent link">&para;</a></h2>
+<p>Global permissions are defined in the backend codebase. They are assigned based on the user's roles and are also included in the session data, accessible from both the backend and frontend.</p>
+<h2 id="document-level-permissions">Document-Level Permissions<a class="headerlink" href="#document-level-permissions" title="Permanent link">&para;</a></h2>
+<p>When a document is retrieved using one of the system’s core database wrapper modules (located under <code>/services/db/models</code>), it is automatically decorated with additional fields—most notably, a <code>_permissions</code> field. This field reflects the document-level permissions, taking into account both the document context and the user's global permissions.</p>
+<p>Since documents are fetched from this core module, the frontend is expected to rely on the decorated permissions to configure UI behavior. This approach simplifies privilege-related logic on the frontend and ensures consistent permission handling across the application.</p>
 
 
 
