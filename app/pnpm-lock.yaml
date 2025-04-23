@@ -25,7 +25,7 @@ importers:
         version: 5.0.1(react-hook-form@7.56.1(react@19.1.0))
       '@keycloak/keycloak-admin-client':
         specifier: ^26.0.0
-        version: 26.2.0
+        version: 26.2.1
       '@kubernetes/client-node':
         specifier: ^1.0.0
         version: 1.1.2
@@ -1345,8 +1345,8 @@ packages:
     peerDependencies:
       jsep: ^0.4.0||^1.0.0
 
-  '@keycloak/keycloak-admin-client@26.2.0':
-    resolution: {integrity: sha512-Pt0d2j1l+DgXZfTNoLXsqKT3i6HnwCAdMLfpuFD2O+k+CQJD3DtDa3WoC2/T0VXrdcUAKiK30QGGh8JKVB+i9Q==}
+  '@keycloak/keycloak-admin-client@26.2.1':
+    resolution: {integrity: sha512-K1/3NSh1YyoWZy2H+cNxvidAVIdCW71EGXZl5hL6v0n6pbXFc7J2xx4rXvNaxFvfWHlZhLY7RggaRIVEarJnoA==}
     engines: {node: '>=18'}
 
   '@kubernetes/client-node@1.1.2':
@@ -6632,7 +6632,7 @@ snapshots:
     dependencies:
       jsep: 1.4.0
 
-  '@keycloak/keycloak-admin-client@26.2.0':
+  '@keycloak/keycloak-admin-client@26.2.1':
     dependencies:
       camelize-ts: 3.0.0
       url-join: 5.0.0
