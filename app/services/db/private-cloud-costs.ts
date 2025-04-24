@@ -1,9 +1,11 @@
-import { DecisionStatus, Prisma, RequestType } from '@prisma/client';
+import { DecisionStatus, Prisma, RequestType, PrivateCloudUnitPrice } from '@prisma/client';
 import _filter from 'lodash-es/filter';
-import _last from 'lodash-es/last';
+import _find from 'lodash-es/find';
 import _orderBy from 'lodash-es/orderBy';
 import { namespaceKeys } from '@/constants';
 import prisma from '@/core/prisma';
+import { PrivateCloudRequestWithDecisionData } from '@/types/private-cloud';
+
 export interface CostItem {
   startDate: Date;
   endDate: Date;
@@ -15,30 +17,36 @@ export interface CostItem {
   unitPriceId?: string;
 }
 
-export async function getUnitsPrices(endDate: Date) {
-  const unitPrices = await prisma.privateCloudUnitPrice.findMany({
-    where: {
-      createdAt: { lte: endDate },
-    },
-    orderBy: { date: Prisma.SortOrder.desc },
-  });
-  return unitPrices;
-}
-
-export async function getCostItemsForRange(licencePlate: string, startDate: Date, endDate: Date): Promise<CostItem[]> {
-  const [unitPrices, allRequests] = await Promise.all([
-    getUnitsPrices(endDate),
-    prisma.privateCloudRequest.findMany({
-      where: {
-        licencePlate,
-        decisionStatus: { in: [DecisionStatus.PROVISIONED] },
-        provisionedDate: { not: null, lte: endDate },
-        OR: [{ type: RequestType.CREATE }, { isQuotaChanged: true }],
-      },
-      include: { decisionData: true },
-      orderBy: { provisionedDate: 'asc' },
-    }),
-  ]);
+export async function getCostItemsForRange(
+  licencePlate: string,
+  startDate: Date,
+  endDate: Date,
+): Promise<{
+  items: CostItem[];
+  cpuCost: number;
+  storageCost: number;
+  totalCost: number;
+}> {
+  const [unitPrices, allRequests]: [PrivateCloudUnitPrice[], PrivateCloudRequestWithDecisionData[]] = await Promise.all(
+    [
+      prisma.privateCloudUnitPrice.findMany({
+        where: {
+          createdAt: { lte: endDate },
+        },
+        orderBy: { date: Prisma.SortOrder.desc },
+      }),
+      prisma.privateCloudRequest.findMany({
+        where: {
+          licencePlate,
+          decisionStatus: { in: [DecisionStatus.PROVISIONED] },
+          provisionedDate: { not: null, lte: endDate },
+          OR: [{ type: RequestType.CREATE }, { isQuotaChanged: true }],
+        },
+        include: { decisionData: true },
+        orderBy: { provisionedDate: Prisma.SortOrder.desc },
+      }),
+    ],
+  );
 
   const changePoints = new Set<number>();
 
@@ -53,8 +61,7 @@ export async function getCostItemsForRange(licencePlate: string, startDate: Date
   changePoints.add(startDate.getTime());
   changePoints.add(endDate.getTime());
 
-  const sortedPoints = _orderBy(Array.from(changePoints), undefined, 'asc').map((ms) => new Date(ms));
-
+  const sortedPoints = _orderBy(Array.from(changePoints), [], 'asc').map((ms) => new Date(ms));
   const costItems: CostItem[] = [];
 
   for (let i = 0; i < sortedPoints.length - 1; i++) {
@@ -63,30 +70,25 @@ export async function getCostItemsForRange(licencePlate: string, startDate: Date
 
     if (intervalEnd <= startDate || intervalStart >= endDate) continue;
 
-    const quota = _last(
+    const quota = _find(
       _filter(
         allRequests,
-        (
-          req,
-        ): req is (typeof allRequests)[number] & {
-          decisionData: { resourceRequests: Record<string, { cpu: number; storage: number }> };
-        } => !!req.provisionedDate && req.provisionedDate <= intervalStart,
+        (req): req is PrivateCloudRequestWithDecisionData =>
+          !!req.provisionedDate && req.provisionedDate <= intervalStart,
       ),
     );
-
-    const price = _last(_filter(unitPrices, (p) => new Date(p.date) <= intervalStart)) ?? {
+    const price = _find(_filter(unitPrices, (p) => new Date(p.date) <= intervalStart)) ?? {
       id: 'fallback-zero',
       cpu: 0,
       storage: 0,
       date: intervalStart,
     };
 
-    if (!quota || !price) continue;
+    if (!quota) continue;
 
     let totalCpu = 0;
     let totalStorage = 0;
 
-    if (!quota) continue;
     const envs = quota.decisionData.resourceRequests;
     for (const env of namespaceKeys) {
       const usage = envs[env];
@@ -97,7 +99,9 @@ export async function getCostItemsForRange(licencePlate: string, startDate: Date
     }
 
     const durationMinutes = (intervalEnd.getTime() - intervalStart.getTime()) / (1000 * 60);
-    const durationFraction = durationMinutes / (1000 * 60 * 60 * 24);
+    // durationFraction = how many days (or portion of days) the interval covers
+    const durationFraction = durationMinutes / (60 * 24);
+
     const cpuCost = totalCpu * price.cpu * durationFraction;
     const storageCost = totalStorage * price.storage * durationFraction;
     const totalCost = cpuCost + storageCost;
@@ -114,7 +118,16 @@ export async function getCostItemsForRange(licencePlate: string, startDate: Date
     });
   }
 
-  return costItems;
+  const cpuCost = costItems.reduce((sum, item) => sum + item.cpuCost, 0);
+  const storageCost = costItems.reduce((sum, item) => sum + item.storageCost, 0);
+  const totalCost = cpuCost + storageCost;
+
+  return {
+    items: costItems,
+    cpuCost,
+    storageCost,
+    totalCost,
+  };
 }
 
 export function estimateMonthTotal(currentTotal: number, year: number, month: number, lastItem?: CostItem) {
@@ -131,24 +144,50 @@ export function estimateMonthTotal(currentTotal: number, year: number, month: nu
 }
 
 export async function getMonthlyCosts(licencePlate: string, year: number, month: number) {
-  const startDate = new Date(Date.UTC(year, month - 1, 1));
-  const endDate = new Date(Date.UTC(year, month, 0, 23, 59, 59, 999));
+  const startDate = new Date(year, month - 1, 1);
+  const endDate = new Date(year, month, 0, 23, 59, 59, 999);
 
   const now = new Date();
   const isCurrentMonth = now.getUTCFullYear() === year && now.getUTCMonth() === month - 1;
 
-  const costItems = await getCostItemsForRange(licencePlate, startDate, endDate);
+  const {
+    items: costItems,
+    cpuCost,
+    storageCost,
+    totalCost: currentTotal,
+  } = await getCostItemsForRange(licencePlate, startDate, endDate);
 
-  let currentTotal: number | undefined = undefined;
-  let estimatedGrandTotal: number | undefined = undefined;
-  let grandTotal: number | undefined = undefined;
+  let estimatedGrandTotal = -1;
+  let grandTotal = -1;
 
   if (isCurrentMonth) {
-    currentTotal = costItems.reduce((sum, i) => sum + i.totalCost, 0);
     const lastItem = costItems.at(-1);
     estimatedGrandTotal = estimateMonthTotal(currentTotal, year, month - 1, lastItem);
+
+    if (lastItem) {
+      const lastDay = lastItem.endDate.getDate();
+      const daysInMonth = new Date(year, month, 0).getDate();
+      const elapsedDays = Math.max(lastDay, 1);
+      const remaining = daysInMonth - elapsedDays;
+
+      if (remaining > 0) {
+        const dailyCost = lastItem.totalCost / elapsedDays;
+        const estimatedRemainingCost = dailyCost * remaining;
+
+        costItems.push({
+          startDate: new Date(year, month - 1, lastDay + 1),
+          endDate: new Date(year, month - 1, daysInMonth, 23, 59, 59, 999),
+          cpu: lastItem.cpu,
+          storage: lastItem.storage,
+          cpuCost: lastItem.cpuCost * (remaining / elapsedDays),
+          storageCost: lastItem.storageCost * (remaining / elapsedDays),
+          totalCost: estimatedRemainingCost,
+          unitPriceId: lastItem.unitPriceId,
+        });
+      }
+    }
   } else {
-    grandTotal = costItems.reduce((sum, i) => sum + i.totalCost, 0);
+    grandTotal = currentTotal;
   }
 
   return {
@@ -160,6 +199,8 @@ export async function getMonthlyCosts(licencePlate: string, year: number, month:
     estimatedGrandTotal,
     grandTotal,
     items: costItems,
+    cpuCost,
+    storageCost,
   };
 }
 
@@ -171,11 +212,7 @@ export async function getYearlyCosts(licencePlate: string, year: string) {
       const startDate = new Date(numericYear, i, 1);
       const endDate = new Date(numericYear, i + 1, 0, 23, 59, 59, 999);
 
-      const monthlyItems = await getCostItemsForRange(licencePlate, startDate, endDate);
-
-      const cpuCost = monthlyItems.reduce((sum, req) => sum + req.cpuCost, 0);
-      const storageCost = monthlyItems.reduce((sum, req) => sum + req.storageCost, 0);
-      const totalCost = cpuCost + storageCost;
+      const { cpuCost, storageCost, totalCost } = await getCostItemsForRange(licencePlate, startDate, endDate);
 
       return {
         year: numericYear,
