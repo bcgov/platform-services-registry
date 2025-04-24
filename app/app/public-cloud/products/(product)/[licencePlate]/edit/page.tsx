@@ -36,7 +36,7 @@ export default publicCloudProductEdit(({}) => {
   const methods = useForm({
     resolver: zodResolver(publicCloudEditRequestBodySchema),
     defaultValues: {
-      ...(snap.currentProduct as PublicCloudProductDetailDecorated & { expenseAuthorityId: string }),
+      ...snap.currentProduct,
       isAgMinistryChecked: true,
     },
   });
