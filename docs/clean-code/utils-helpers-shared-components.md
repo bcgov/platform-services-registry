@@ -20,21 +20,21 @@ Utility functions are small, focused pieces of logic that perform specific tasks
 ```js
 // utils/formatters.js
 export function formatCurrency(amount) {
-  return `$${amount.toFixed(2)}`;
+    return `$${amount.toFixed(2)}`;
 }
 
 export function formatDate(date) {
-  return date.toLocaleDateString();
+    return date.toLocaleDateString();
 }
 
 // main.js
 import { formatCurrency, formatDate } from './utils/formatters';
 
 function displayTransaction(transaction) {
-  const formattedAmount = formatCurrency(transaction.amount);
-  const formattedDate = formatDate(transaction.date);
+    const formattedAmount = formatCurrency(transaction.amount);
+    const formattedDate = formatDate(transaction.date);
 
-  console.log(`Transaction: ${formattedAmount} on ${formattedDate}`);
+    console.log(`Transaction: ${formattedAmount} on ${formattedDate}`);
 }
 ```
 
@@ -44,11 +44,11 @@ Here, `formatCurrency` and `formatDate` are utility functions that can be reused
 
 ```js
 function displayTransaction(transaction) {
-  // Code duplication within the main function
-  const formattedAmount = `$${transaction.amount.toFixed(2)}`;
-  const formattedDate = transaction.date.toLocaleDateString();
+    // Code duplication within the main function
+    const formattedAmount = `$${transaction.amount.toFixed(2)}`;
+    const formattedDate = transaction.date.toLocaleDateString();
 
-  console.log(`Transaction: ${formattedAmount} on ${formattedDate}`);
+    console.log(`Transaction: ${formattedAmount} on ${formattedDate}`);
 }
 ```
 
@@ -63,17 +63,17 @@ Helper functions are similar to utils but tend to be slightly more application-s
 ```js
 // helpers/validators.js
 export function isPositiveNumber(number) {
-  return number > 0;
+    return number > 0;
 }
 
 // main.js
 import { isPositiveNumber } from './helpers/validators';
 
 function calculateTotal(price, quantity) {
-  if (!isPositiveNumber(price) || !isPositiveNumber(quantity)) {
-    return 0;
-  }
-  return price * quantity;
+    if (!isPositiveNumber(price) || !isPositiveNumber(quantity)) {
+        return 0;
+    }
+    return price * quantity;
 }
 ```
 
@@ -83,10 +83,10 @@ In this example, `isPositiveNumber` is a helper function that checks whether a n
 
 ```js
 function calculateTotal(price, quantity) {
-  if (price <= 0 || quantity <= 0) {
-    return 0;
-  }
-  return price * quantity;
+    if (price <= 0 || quantity <= 0) {
+        return 0;
+    }
+    return price * quantity;
 }
 ```
 
@@ -101,25 +101,25 @@ Shared components are UI elements that are reused across different parts of the 
 ```tsx
 // components/Button.tsx
 export function Button({ label, onClick }) {
-  return <button onClick={onClick}>{label}</button>;
+    return <button onClick={onClick}>{label}</button>;
 }
 
 // pages/Home.tsx
 import { Button } from '../components/Button';
 
 function Home() {
-  const handleClick = () => alert('Button clicked!');
+    const handleClick = () => alert('Button clicked!');
 
-  return <Button label="Click Me" onClick={handleClick} />;
+    return <Button label="Click Me" onClick={handleClick} />;
 }
 
 // pages/About.tsx
 import { Button } from '../components/Button';
 
 function About() {
-  const handleClick = () => alert('About button clicked!');
+    const handleClick = () => alert('About button clicked!');
 
-  return <Button label="Learn More" onClick={handleClick} />;
+    return <Button label="Learn More" onClick={handleClick} />;
 }
 ```
 
@@ -129,15 +129,15 @@ In this example, the `Button` component is shared between the `Home` and `About`
 
 ```tsx
 function Home() {
-  const handleClick = () => alert('Button clicked!');
+    const handleClick = () => alert('Button clicked!');
 
-  return <button onClick={handleClick}>Click Me</button>;
+    return <button onClick={handleClick}>Click Me</button>;
 }
 
 function About() {
-  const handleClick = () => alert('About button clicked!');
+    const handleClick = () => alert('About button clicked!');
 
-  return <button onClick={handleClick}>Learn More</button>;
+    return <button onClick={handleClick}>Learn More</button>;
 }
 ```
 

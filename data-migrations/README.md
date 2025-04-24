@@ -40,16 +40,16 @@ A new migration file is created in the `migrations` directory:
 
 ```javascript
 export const up = async (db, client) => {
-  // TODO write your migration here.
-  // See https://github.com/seppevs/migrate-mongo/#creating-a-new-migration-script
-  // Example:
-  // await db.collection('albums').updateOne({artist: 'The Beatles'}, {$set: {blacklisted: true}});
+    // TODO write your migration here.
+    // See https://github.com/seppevs/migrate-mongo/#creating-a-new-migration-script
+    // Example:
+    // await db.collection('albums').updateOne({artist: 'The Beatles'}, {$set: {blacklisted: true}});
 };
 
 export const down = async (db, client) => {
-  // TODO write the statements to rollback your migration (if possible)
-  // Example:
-  // await db.collection('albums').updateOne({artist: 'The Beatles'}, {$set: {blacklisted: false}});
+    // TODO write the statements to rollback your migration (if possible)
+    // Example:
+    // await db.collection('albums').updateOne({artist: 'The Beatles'}, {$set: {blacklisted: false}});
 };
 ```
 
@@ -65,19 +65,19 @@ There are 3 options to implement the `up` and `down` functions of your migration
 
 Always make sure the implementation matches the function signature:
 
-- `function up(db, client) { /* */ }` should return `Promise`
-- `async function up(db, client) { /* */ }` should contain `await` keyword(s) and return `Promise`
-- `function up(db, client, next) { /* */ }` should callback `next`
+-   `function up(db, client) { /* */ }` should return `Promise`
+-   `async function up(db, client) { /* */ }` should contain `await` keyword(s) and return `Promise`
+-   `function up(db, client, next) { /* */ }` should callback `next`
 
 #### Example 1: Return a Promise
 
 ```javascript
 export const up = async (db, client) => {
-  return db.collection('albums').updateOne({ artist: 'The Beatles' }, { $set: { blacklisted: true } });
+    return db.collection('albums').updateOne({ artist: 'The Beatles' }, { $set: { blacklisted: true } });
 };
 
 export const down = async (db, client) => {
-  return db.collection('albums').updateOne({ artist: 'The Beatles' }, { $set: { blacklisted: false } });
+    return db.collection('albums').updateOne({ artist: 'The Beatles' }, { $set: { blacklisted: false } });
 };
 ```
 
@@ -87,13 +87,13 @@ Async & await is especially useful if you want to perform multiple operations ag
 
 ```javascript
 export const up = async (db, client) => {
-  await db.collection('albums').updateOne({ artist: 'The Beatles' }, { $set: { blacklisted: true } });
-  await db.collection('albums').updateOne({ artist: 'The Doors' }, { $set: { stars: 5 } });
+    await db.collection('albums').updateOne({ artist: 'The Beatles' }, { $set: { blacklisted: true } });
+    await db.collection('albums').updateOne({ artist: 'The Doors' }, { $set: { stars: 5 } });
 };
 
 export const down = async (db, client) => {
-  await db.collection('albums').updateOne({ artist: 'The Doors' }, { $set: { stars: 0 } });
-  await db.collection('albums').updateOne({ artist: 'The Beatles' }, { $set: { blacklisted: false } });
+    await db.collection('albums').updateOne({ artist: 'The Doors' }, { $set: { stars: 0 } });
+    await db.collection('albums').updateOne({ artist: 'The Beatles' }, { $set: { blacklisted: false } });
 };
 ```
 
@@ -183,8 +183,8 @@ You can make use of the [MongoDB Transaction API](https://docs.mongodb.com/manua
 
 Note: this requires both:
 
-- MongoDB 4.0 or higher
-- migrate-mongo 7.0.0 or higher
+-   MongoDB 4.0 or higher
+-   migrate-mongo 7.0.0 or higher
 
 migrate-mongo will call your migration `up` and `down` function with a second argument: `client`.
 This `client` argument is an [MongoClient](https://mongodb.github.io/node-mongodb-native/3.3/api/MongoClient.html) instance, it gives you access to the `startSession` function.
@@ -193,27 +193,31 @@ Example:
 
 ```javascript
 export const up = async (db, client) => {
-  const session = client.startSession();
-  try {
-    await session.withTransaction(async () => {
-      await db.collection('albums').updateOne({ artist: 'The Beatles' }, { $set: { blacklisted: true } }, { session });
-      await db.collection('albums').updateOne({ artist: 'The Doors' }, { $set: { stars: 5 } }, { session });
-    });
-  } finally {
-    await session.endSession();
-  }
+    const session = client.startSession();
+    try {
+        await session.withTransaction(async () => {
+            await db
+                .collection('albums')
+                .updateOne({ artist: 'The Beatles' }, { $set: { blacklisted: true } }, { session });
+            await db.collection('albums').updateOne({ artist: 'The Doors' }, { $set: { stars: 5 } }, { session });
+        });
+    } finally {
+        await session.endSession();
+    }
 };
 
 export const down = async (db, client) => {
-  const session = client.startSession();
-  try {
-    await session.withTransaction(async () => {
-      await db.collection('albums').updateOne({ artist: 'The Beatles' }, { $set: { blacklisted: false } }, { session });
-      await db.collection('albums').updateOne({ artist: 'The Doors' }, { $set: { stars: 0 } }, { session });
-    });
-  } finally {
-    await session.endSession();
-  }
+    const session = client.startSession();
+    try {
+        await session.withTransaction(async () => {
+            await db
+                .collection('albums')
+                .updateOne({ artist: 'The Beatles' }, { $set: { blacklisted: false } }, { session });
+            await db.collection('albums').updateOne({ artist: 'The Doors' }, { $set: { stars: 0 } }, { session });
+        });
+    } finally {
+        await session.endSession();
+    }
 };
 ```
 

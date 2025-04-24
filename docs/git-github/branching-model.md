@@ -9,8 +9,8 @@ Considering the relatively small size of the project, this project adopts [GitHu
 1. Create a Branch:
    When starting work on a new feature, improvement, or bug fix, create a new branch. This branch will contain all the changes related to the task.
 
-   - `feat/<ticket#>`
-   - `fix/<ticket#>`
+    - `feat/<ticket#>`
+    - `fix/<ticket#>`
 
 2. Add Commits:
    Make small, incremental commits to the branch as you work on the feature or fix. Each commit should represent a logical, standalone change.
@@ -37,21 +37,21 @@ Considering the relatively small size of the project, this project adopts [GitHu
 
 ## Considerations
 
-- Draft Pull Request:
+-   Draft Pull Request:
 
-  A `Draft Pull Request` in GitHub is a special type of pull request that indicates that the changes it contains are still a work in progress and not yet ready for review or merging. This feature is useful when you want to share your work with others for visibility or collaboration, but you're not seeking immediate feedback or approval.
+    A `Draft Pull Request` in GitHub is a special type of pull request that indicates that the changes it contains are still a work in progress and not yet ready for review or merging. This feature is useful when you want to share your work with others for visibility or collaboration, but you're not seeking immediate feedback or approval.
 
-  - Please refer to https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/proposing-changes-to-your-work-with-pull-requests/about-pull-requests#draft-pull-requests for more detailed information.
+    -   Please refer to https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/proposing-changes-to-your-work-with-pull-requests/about-pull-requests#draft-pull-requests for more detailed information.
 
-- Interactive Rebasing:
+-   Interactive Rebasing:
 
-  `Interactive rebasing` allows you to have fine-grained control over your commit history, enabling you to clean up, reorder, and squash commits for a cleaner commit history, reducing noise in pull requests.
+    `Interactive rebasing` allows you to have fine-grained control over your commit history, enabling you to clean up, reorder, and squash commits for a cleaner commit history, reducing noise in pull requests.
 
-  For more information, visit:
+    For more information, visit:
 
-  - [Git Rebase Documentation](https://git-scm.com/docs/git-rebase)
-  - [Git Tools - Rewriting History](https://git-scm.com/book/en/v2/Git-Tools-Rewriting-History)
+    -   [Git Rebase Documentation](https://git-scm.com/docs/git-rebase)
+    -   [Git Tools - Rewriting History](https://git-scm.com/book/en/v2/Git-Tools-Rewriting-History)
 
-- Frequent Rebasing:
+-   Frequent Rebasing:
 
-  `Frequent rebasing` is a vital practice in our workflow, ensuring your feature branch is based on the latest code. This `minimizes conflicts and eases integration`. To rebase, use `git pull origin main --rebase` in your feature branch. This promotes a smoother, collaborative development process.
+    `Frequent rebasing` is a vital practice in our workflow, ensuring your feature branch is based on the latest code. This `minimizes conflicts and eases integration`. To rebase, use `git pull origin main --rebase` in your feature branch. This promotes a smoother, collaborative development process.

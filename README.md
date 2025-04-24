@@ -10,55 +10,55 @@
 
 ### Application
 
-- [Next.js](https://nextjs.org/): Utilized for crafting full-stack web applications, Next.js extends React capabilities and integrates powerful Rust-based JavaScript tools, heightening performance by delivering fully-rendered HTML to the client.
+-   [Next.js](https://nextjs.org/): Utilized for crafting full-stack web applications, Next.js extends React capabilities and integrates powerful Rust-based JavaScript tools, heightening performance by delivering fully-rendered HTML to the client.
 
-- [Tailwind UI](https://tailwindui.com/): Harnessed for swift UI development, Tailwind UI's pre-built HTML snippets streamline design workflows by enabling direct style additions to HTML elements.
+-   [Tailwind UI](https://tailwindui.com/): Harnessed for swift UI development, Tailwind UI's pre-built HTML snippets streamline design workflows by enabling direct style additions to HTML elements.
 
-- [React Hook Form](https://react-hook-form.com/): Simplifies complex form building by reducing code volume and unnecessary re-renders.
+-   [React Hook Form](https://react-hook-form.com/): Simplifies complex form building by reducing code volume and unnecessary re-renders.
 
-- [Zod](https://zod.dev/): A TypeScript-first schema declaration and validation library leveraged for its developer-friendly features and elimination of duplicative type declarations.
+-   [Zod](https://zod.dev/): A TypeScript-first schema declaration and validation library leveraged for its developer-friendly features and elimination of duplicative type declarations.
 
-- [Mailpit](https://mailpit.axllent.org/): An email testing tool for developers that acts as an SMTP server, providing a web interface to capture, view, and debug emails.
+-   [Mailpit](https://mailpit.axllent.org/): An email testing tool for developers that acts as an SMTP server, providing a web interface to capture, view, and debug emails.
 
 These technologies foster rapid iterative development, polished user interfaces, and a user-centric experience for application development.
 
 ### Database & ORM
 
-- [MongoDB](https://www.mongodb.com/): Selected for its flexible schema, scalability, high performance, rich querying, automatic failover, and robust community support, making it an ideal choice for diverse applications.
+-   [MongoDB](https://www.mongodb.com/): Selected for its flexible schema, scalability, high performance, rich querying, automatic failover, and robust community support, making it an ideal choice for diverse applications.
 
-- [Prisma](https://www.prisma.io/): Utilized for its streamlined development processes, error reduction, and enhanced maintainability, enabling developers to focus more on feature development rather than managing database interactions.
+-   [Prisma](https://www.prisma.io/): Utilized for its streamlined development processes, error reduction, and enhanced maintainability, enabling developers to focus more on feature development rather than managing database interactions.
 
 ### Run-time Package Version Manager
 
-- [asdf](https://asdf-vm.com/): Employed for managing multiple runtime versions, simplifying dependency management, and ensuring consistency across development environments.
+-   [asdf](https://asdf-vm.com/): Employed for managing multiple runtime versions, simplifying dependency management, and ensuring consistency across development environments.
 
 ### Linters & Formatters
 
-- [pre-commit](https://pre-commit.com/): Employed for managing and maintaining multi-language pre-commit hooks to enforce project standards and best practices, reducing the likelihood of bugs or inconsistencies.
+-   [pre-commit](https://pre-commit.com/): Employed for managing and maintaining multi-language pre-commit hooks to enforce project standards and best practices, reducing the likelihood of bugs or inconsistencies.
 
-- [ESLint](https://eslint.org/): A static code analysis tool ensuring adherence to coding conventions and identifying problematic patterns in JavaScript/Typescript code.
+-   [ESLint](https://eslint.org/): A static code analysis tool ensuring adherence to coding conventions and identifying problematic patterns in JavaScript/Typescript code.
 
-- [ShellCheck](https://www.shellcheck.net/): Utilized for static analysis of shell scripts, suggesting improvements and ensuring safer, more efficient, and portable script code.
+-   [ShellCheck](https://www.shellcheck.net/): Utilized for static analysis of shell scripts, suggesting improvements and ensuring safer, more efficient, and portable script code.
 
 ### Testing Framework
 
-- [Jest](https://jestjs.io/): Employed for JavaScript code testing, providing built-in mocking, assertion utilities, and code coverage analysis for efficient and intuitive testing.
+-   [Jest](https://jestjs.io/): Employed for JavaScript code testing, providing built-in mocking, assertion utilities, and code coverage analysis for efficient and intuitive testing.
 
-- [Cypress](https://www.cypress.io/): Utilized for end-to-end testing of web applications, offering automatic waiting, real-time reloading, and an interactive test runner for seamless test creation and debugging.
+-   [Cypress](https://www.cypress.io/): Utilized for end-to-end testing of web applications, offering automatic waiting, real-time reloading, and an interactive test runner for seamless test creation and debugging.
 
 ### Deployment Tools
 
-- [GitHub Actions](https://docs.github.com/en/actions/learn-github-actions/understanding-github-actions): A robust CI/CD platform automating various tasks and processes within GitHub repositories, including building, testing, and deploying applications.
+-   [GitHub Actions](https://docs.github.com/en/actions/learn-github-actions/understanding-github-actions): A robust CI/CD platform automating various tasks and processes within GitHub repositories, including building, testing, and deploying applications.
 
-- [GitHub Packages](https://docs.github.com/en/packages/quickstart): A package hosting service integrated with GitHub repositories, facilitating version control, access control, and dependency management for software packages.
+-   [GitHub Packages](https://docs.github.com/en/packages/quickstart): A package hosting service integrated with GitHub repositories, facilitating version control, access control, and dependency management for software packages.
 
-- [Helm](https://helm.sh/docs/): A Kubernetes package manager simplifying deployment, management, and scaling of applications in Kubernetes clusters.
+-   [Helm](https://helm.sh/docs/): A Kubernetes package manager simplifying deployment, management, and scaling of applications in Kubernetes clusters.
 
-- [release-it](https://github.com/release-it/release-it): An open-source command-line interface (CLI) tool designed to automate the release process of software projects. It streamlines tasks such as versioning, changelog generation, tagging, and publishing releases to version control systems.
+-   [release-it](https://github.com/release-it/release-it): An open-source command-line interface (CLI) tool designed to automate the release process of software projects. It streamlines tasks such as versioning, changelog generation, tagging, and publishing releases to version control systems.
 
 ### Configuration of Code
 
-- [Terraform](https://www.terraform.io/): An open-source IaC tool automating provisioning and management of infrastructure resources across various cloud providers, ensuring standardized and efficient deployment with seamless peer review processes and change history tracking within the source control platform.
+-   [Terraform](https://www.terraform.io/): An open-source IaC tool automating provisioning and management of infrastructure resources across various cloud providers, ensuring standardized and efficient deployment with seamless peer review processes and change history tracking within the source control platform.
 
 ## Challenges and Solutions / Lessons Learned
 
@@ -88,11 +88,11 @@ These technologies foster rapid iterative development, polished user interfaces,
 
 ## Useful Links
 
-- Git Pre-commit Hooks: https://github.com/bcgov/platform-services-registry/blob/main/.pre-commit-config.yaml
-- CI/CD Pipelines: https://github.com/bcgov/platform-services-registry/tree/main/.github/workflows
-- Helm Charts: https://github.com/bcgov/platform-services-registry/tree/main/helm
-- Terraform Scripts: https://github.com/bcgov/platform-services-registry/tree/main/terraform
-- Documentations: https://github.com/bcgov/platform-services-registry/tree/main/docs
+-   Git Pre-commit Hooks: https://github.com/bcgov/platform-services-registry/blob/main/.pre-commit-config.yaml
+-   CI/CD Pipelines: https://github.com/bcgov/platform-services-registry/tree/main/.github/workflows
+-   Helm Charts: https://github.com/bcgov/platform-services-registry/tree/main/helm
+-   Terraform Scripts: https://github.com/bcgov/platform-services-registry/tree/main/terraform
+-   Documentations: https://github.com/bcgov/platform-services-registry/tree/main/docs
 
 ## Service Diagrams
 

@@ -10,19 +10,19 @@ The Terraform state is securely stored within the project's namespace `101ed4-pr
 
 1. Log in to Openshift to gain access to the backend state:
 
-   ```sh
-   oc login --token=<token> --server=https://api.silver.devops.gov.bc.ca:6443
-   ```
+    ```sh
+    oc login --token=<token> --server=https://api.silver.devops.gov.bc.ca:6443
+    ```
 
 2. Initialize the working directory that contains the Terraform configuration files:
-   ```sh
-   terraform init
-   ```
+    ```sh
+    terraform init
+    ```
 3. Preview the changes that Terraform intends to apply to your infrastructure:
-   ```sh
-   terraform plan
-   ```
+    ```sh
+    terraform plan
+    ```
 4. Execute the actions specified in the Terraform plan:
-   ```sh
-   terraform apply
-   ```
+    ```sh
+    terraform apply
+    ```

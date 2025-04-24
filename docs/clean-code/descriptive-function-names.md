@@ -22,7 +22,7 @@ Here are some benefits of using descriptive function names:
 
 ```js
 function sendWelcomeEmail(userEmail) {
-  // Logic to send a welcome email to a new user
+    // Logic to send a welcome email to a new user
 }
 ```
 
@@ -30,7 +30,7 @@ function sendWelcomeEmail(userEmail) {
 
 ```js
 function handleEmail(userEmail) {
-  // What kind of email? Unclear without reading the implementation
+    // What kind of email? Unclear without reading the implementation
 }
 ```
 
@@ -40,7 +40,7 @@ In the good example, `sendWelcomeEmail` clearly indicates what the function does
 
 ```js
 function calculateInvoiceTotal(invoiceItems) {
-  // Logic to sum up item prices, apply taxes or discounts, etc.
+    // Logic to sum up item prices, apply taxes or discounts, etc.
 }
 ```
 
@@ -48,7 +48,7 @@ function calculateInvoiceTotal(invoiceItems) {
 
 ```js
 function doStuff(items) {
-  // Unclear what "stuff" means—hard to reason about
+    // Unclear what "stuff" means—hard to reason about
 }
 ```
 

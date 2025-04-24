@@ -19,30 +19,30 @@ This error usually occurs when multiple Helm operations—install, upgrade, or r
 
 1. **Check the current status** of the release:
 
-   ```bash
-   helm status pltsvc
-   ```
+    ```bash
+    helm status pltsvc
+    ```
 
 2. **List all revisions** for the `pltsvc` release:
 
-   ```bash
-   helm history pltsvc
-   ```
+    ```bash
+    helm history pltsvc
+    ```
 
-   This command displays the release history, showing revision numbers and statuses such as `DEPLOYED`, `FAILED`, or `SUPERSEDED`.
+    This command displays the release history, showing revision numbers and statuses such as `DEPLOYED`, `FAILED`, or `SUPERSEDED`.
 
 3. **Identify the last successful release**:
    Look for the latest revision with a `DEPLOYED` status.
 
 4. **Rollback to the desired revision**:
 
-   ```bash
-   helm rollback pltsvc <revision_number>
-   ```
+    ```bash
+    helm rollback pltsvc <revision_number>
+    ```
 
-   Replace `<revision_number>` with the number of the last successful revision.
+    Replace `<revision_number>` with the number of the last successful revision.
 
 5. **Verify the rollback** by checking the release status:
-   ```bash
-   helm status pltsvc
-   ```
+    ```bash
+    helm status pltsvc
+    ```

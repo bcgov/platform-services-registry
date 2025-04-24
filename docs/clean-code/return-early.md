@@ -22,17 +22,17 @@ Here are some benefits of using the `Return Early` pattern:
 
 ```js
 function calculateTotal(price, quantity) {
-  // Check for invalid inputs
-  if (price <= 0 || quantity <= 0) {
-    return 0; // Return early if inputs are invalid
-  }
+    // Check for invalid inputs
+    if (price <= 0 || quantity <= 0) {
+        return 0; // Return early if inputs are invalid
+    }
 
-  // Main calculation
-  let total = price * quantity;
+    // Main calculation
+    let total = price * quantity;
 
-  // Additional calculations or logic
+    // Additional calculations or logic
 
-  return total;
+    return total;
 }
 ```
 
@@ -40,23 +40,23 @@ function calculateTotal(price, quantity) {
 
 ```js
 function calculateTotal(price, quantity) {
-  // No "Return Early" pattern, using nested if statements
+    // No "Return Early" pattern, using nested if statements
 
-  // Check for invalid inputs
-  if (price > 0) {
-    if (quantity > 0) {
-      // Main calculation
-      let total = price * quantity;
+    // Check for invalid inputs
+    if (price > 0) {
+        if (quantity > 0) {
+            // Main calculation
+            let total = price * quantity;
 
-      // Additional calculations or logic
+            // Additional calculations or logic
 
-      return total;
+            return total;
+        } else {
+            return 0; // Return if quantity is invalid
+        }
     } else {
-      return 0; // Return if quantity is invalid
+        return 0; // Return if price is invalid
     }
-  } else {
-    return 0; // Return if price is invalid
-  }
 }
 ```
 

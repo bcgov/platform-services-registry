@@ -20,17 +20,17 @@ Breaking down large, monolithic components or functions into smaller, manageable
 
 ```js
 function calculateDiscount(price, discount) {
-  return price * discount;
+    return price * discount;
 }
 
 function calculateTax(price, taxRate) {
-  return price * taxRate;
+    return price * taxRate;
 }
 
 function calculateTotal(price, discount, taxRate) {
-  const discountedPrice = calculateDiscount(price, discount);
-  const tax = calculateTax(discountedPrice, taxRate);
-  return discountedPrice + tax;
+    const discountedPrice = calculateDiscount(price, discount);
+    const tax = calculateTax(discountedPrice, taxRate);
+    return discountedPrice + tax;
 }
 ```
 
@@ -40,15 +40,15 @@ In this example, each function has a single responsibility: calculating discount
 
 ```js
 function calculateTotal(price, discount, taxRate) {
-  if (discount > 0) {
-    price = price - price * discount;
-  }
+    if (discount > 0) {
+        price = price - price * discount;
+    }
 
-  if (taxRate > 0) {
-    price = price + price * taxRate;
-  }
+    if (taxRate > 0) {
+        price = price + price * taxRate;
+    }
 
-  return price;
+    return price;
 }
 ```
 
@@ -58,26 +58,26 @@ In this example, the `calculateTotal` function is doing too much. It handles bot
 
 ```tsx
 function Button({ label, onClick }) {
-  return <button onClick={onClick}>{label}</button>;
+    return <button onClick={onClick}>{label}</button>;
 }
 
 function IconButton({ icon, onClick }) {
-  return (
-    <button onClick={onClick}>
-      <img src={icon} alt="icon" />
-    </button>
-  );
+    return (
+        <button onClick={onClick}>
+            <img src={icon} alt="icon" />
+        </button>
+    );
 }
 
 function App() {
-  const handleClick = () => console.log('Button clicked!');
+    const handleClick = () => console.log('Button clicked!');
 
-  return (
-    <div>
-      <Button label="Click me" onClick={handleClick} />
-      <IconButton icon="path-to-icon.svg" onClick={handleClick} />
-    </div>
-  );
+    return (
+        <div>
+            <Button label="Click me" onClick={handleClick} />
+            <IconButton icon="path-to-icon.svg" onClick={handleClick} />
+        </div>
+    );
 }
 ```
 
@@ -87,16 +87,16 @@ In this React example, the `Button` and `IconButton` components each have a spec
 
 ```tsx
 function App() {
-  const handleClick = () => console.log('Button clicked!');
+    const handleClick = () => console.log('Button clicked!');
 
-  return (
-    <div>
-      <button onClick={handleClick}>Click me</button>
-      <button onClick={handleClick}>
-        <img src="path-to-icon.svg" alt="icon" />
-      </button>
-    </div>
-  );
+    return (
+        <div>
+            <button onClick={handleClick}>Click me</button>
+            <button onClick={handleClick}>
+                <img src="path-to-icon.svg" alt="icon" />
+            </button>
+        </div>
+    );
 }
 ```
 

@@ -2,9 +2,9 @@
 
 For Registry to get metrics from Prometheus, the following things are needed:
 
-- a Service Account `registry-metrics-reader`
-- the cluster role and rolebinding for the SA to access metrics from all namespaces
-- a non-rotating service account token secret `registry-metrics-reader-sa-token` that can be used for Prometheus query
+-   a Service Account `registry-metrics-reader`
+-   the cluster role and rolebinding for the SA to access metrics from all namespaces
+-   a non-rotating service account token secret `registry-metrics-reader-sa-token` that can be used for Prometheus query
 
 These are created as part of the CCM from https://github.com/bcgov-c/platform-gitops-gen/tree/master/roles/cluster_checks/files
 

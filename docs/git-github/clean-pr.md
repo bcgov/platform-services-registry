@@ -7,31 +7,31 @@ To address this, a practical workaround involves resetting all commits on the ba
 1. Confirm that you are on the working branch with a cluttered commit history.
 2. Create a new branch:
 
-   ```sh
-   git checkout -b <new-branch>
-   ```
+    ```sh
+    git checkout -b <new-branch>
+    ```
 
 3. Pull Changes from the Base Branch:
 
-   ```sh
-   git pull origin <base-branch> --no-rebase
-   ```
+    ```sh
+    git pull origin <base-branch> --no-rebase
+    ```
 
-   - Resolve any merge conflicts and commit the changes.
+    - Resolve any merge conflicts and commit the changes.
 
 4. Reset all commits based on the base branch (usually the default repository branch):
-   ```sh
-   git reset --soft origin/<base-branch>
-   ```
+    ```sh
+    git reset --soft origin/<base-branch>
+    ```
 
-- For instance:
+-   For instance:
 
-  ```sh
-  git checkout -b feat/1234-1
-  git pull origin main --no-rebase
-  git add .
-  git commit -m "chore(0000): temporary message"
-  git reset --soft origin/main
-  git add .
-  git commit -m "feat(0000): <commit-message>"
-  ```
+    ```sh
+    git checkout -b feat/1234-1
+    git pull origin main --no-rebase
+    git add .
+    git commit -m "chore(0000): temporary message"
+    git reset --soft origin/main
+    git add .
+    git commit -m "feat(0000): <commit-message>"
+    ```

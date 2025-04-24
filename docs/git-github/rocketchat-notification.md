@@ -4,8 +4,8 @@ To facilitate efficient communication of deployment actions, we have set up a no
 
 ## Prerequisites
 
-- You must be an admin of this repository.
-- You must be a member of the `#app-dev-team` RocketChat channel.
+-   You must be an admin of this repository.
+-   You must be a member of the `#app-dev-team` RocketChat channel.
 
 ## Setting Up and Updating the Notification Bot
 
@@ -22,8 +22,8 @@ To create a webhook in RocketChat for deployment notifications:
 7. In the **Post As** field, enter your own username or another account name for clarity.
 8. Set the **Alias** to `app-dev-deployment` to identify the source of the notification.
 9. To help differentiate automated bot messages from user-generated messages, you can:
-   - Add an emoji (e.g., `:robot:`) in the **Emoji** field, which will replace the default avatar.
-   - Alternatively, use a custom avatar by inserting an image URL (e.g., `https://i.imgur.com/7U3Yv1e.png`).
+    - Add an emoji (e.g., `:robot:`) in the **Emoji** field, which will replace the default avatar.
+    - Alternatively, use a custom avatar by inserting an image URL (e.g., `https://i.imgur.com/7U3Yv1e.png`).
 10. Once the fields are filled, click **Save** at the bottom-right to create the integration.
 
 ### 2. Update the Repository to Use the Webhook
