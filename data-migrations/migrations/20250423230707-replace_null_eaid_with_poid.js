@@ -1,23 +1,34 @@
 export const up = async (db, client) => {
-  const collectionNames = ['PublicCloudProduct', 'PublicCloudRequestData'];
-  await Promise.all(
-    collectionNames.map(async (collectionName) => {
-      const collection = await db.collection(collectionName);
-      const documentToUpdate = await collection
-        .find({
-          $or: [{ expenseAuthorityId: null }, { expenseAuthorityId: { $exists: false } }, { expenseAuthorityId: '' }],
-        })
-        .toArray();
-      console.log(`Updating ${documentToUpdate.length} documents in ${collectionName}`);
-
-      await Promise.all(
-        documentToUpdate.map((doc) => {
-          collection.updateOne({ _id: doc._id }, { $set: { expenseAuthorityId: doc.projectOwnerId } });
-        }),
-      );
-      console.log(`Finished Updating ${collectionName}`);
-    }),
+  const PublicCloudProductProm = db.collection('PublicCloudProduct').updateMany(
+    {
+      $or: [{ expenseAuthorityId: null }, { expenseAuthorityId: { $exists: false } }, { expenseAuthorityId: '' }],
+    },
+    [
+      {
+        $set: {
+          expenseAuthorityId: '$projectOwnerId',
+        },
+      },
+    ],
   );
+
+  const PublicCloudRequestDataProm = db.collection('PublicCloudRequestData').updateMany(
+    {
+      $or: [{ expenseAuthorityId: null }, { expenseAuthorityId: { $exists: false } }, { expenseAuthorityId: '' }],
+    },
+    [
+      {
+        $set: {
+          expenseAuthorityId: '$projectOwnerId',
+        },
+      },
+    ],
+  );
+
+  const [productResult, requestDataResult] = await Promise.all([PublicCloudProductProm, PublicCloudRequestDataProm]);
+
+  console.log(`Updated ${productResult.modifiedCount} documents in PublicCloudProject`);
+  console.log(`Updated ${requestDataResult.modifiedCount} documents in PublicCloudProject`);
 };
 
 export const down = async (db, client) => {};
