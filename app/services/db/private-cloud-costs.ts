@@ -2,9 +2,11 @@ import { DecisionStatus, Prisma, RequestType, PrivateCloudUnitPrice } from '@pri
 import _filter from 'lodash-es/filter';
 import _find from 'lodash-es/find';
 import _orderBy from 'lodash-es/orderBy';
+import _reduce from 'lodash-es/reduce';
 import { namespaceKeys } from '@/constants';
 import prisma from '@/core/prisma';
 import { PrivateCloudRequestWithDecisionData } from '@/types/private-cloud';
+import { dateToShortDateString, getMinutesInYear } from '@/utils/js/date';
 
 export interface CostItem {
   startDate: Date;
@@ -19,14 +21,17 @@ export interface CostItem {
 
 export async function getCostItemsForRange(
   licencePlate: string,
-  startDate: Date,
-  endDate: Date,
+  year: number,
+  month: number,
 ): Promise<{
   items: CostItem[];
   cpuCost: number;
   storageCost: number;
   totalCost: number;
 }> {
+  const startDate = new Date(year, month - 1, 1);
+  const endDate = new Date(year, month, 0, 23, 59, 59);
+
   const [unitPrices, allRequests]: [PrivateCloudUnitPrice[], PrivateCloudRequestWithDecisionData[]] = await Promise.all(
     [
       prisma.privateCloudUnitPrice.findMany({
@@ -59,21 +64,22 @@ export async function getCostItemsForRange(
   }
 
   changePoints.add(startDate.getTime());
+  changePoints.add(new Date().getTime());
   changePoints.add(endDate.getTime());
 
-  const sortedPoints = _orderBy(Array.from(changePoints), [], 'asc').map((ms) => new Date(ms));
+  const sortedChangePoints = _orderBy(Array.from(changePoints), [], 'asc').map((ms) => new Date(ms));
   const costItems: CostItem[] = [];
 
-  for (let i = 0; i < sortedPoints.length - 1; i++) {
-    const intervalStart = sortedPoints[i];
-    const intervalEnd = sortedPoints[i + 1];
+  for (let changePoint = 0; changePoint < sortedChangePoints.length - 1; changePoint++) {
+    const intervalStart = sortedChangePoints[changePoint];
+    const intervalEnd = sortedChangePoints[changePoint + 1];
 
     if (intervalEnd <= startDate || intervalStart >= endDate) continue;
 
     const quota = _find(allRequests, (req) => !!req.provisionedDate && req.provisionedDate <= intervalStart);
     if (!quota) continue;
 
-    const price = _find(unitPrices, (p) => new Date(p.date) <= intervalStart) ?? {
+    const price = _find(unitPrices, (unitPrice) => new Date(unitPrice.date) <= intervalStart) ?? {
       id: 'fallback-zero',
       cpu: 0,
       storage: 0,
@@ -94,10 +100,9 @@ export async function getCostItemsForRange(
 
     // Duration in minutes for this interval
     const durationMinutes = (intervalEnd.getTime() - intervalStart.getTime()) / (1000 * 60);
-
-    // Calculate the cost for this interval using per-minute price units
-    const cpuCost = totalCpu * price.cpu * durationMinutes;
-    const storageCost = totalStorage * price.storage * durationMinutes;
+    const minutesInYear = getMinutesInYear(year);
+    const cpuCost = totalCpu * (price.cpu / minutesInYear) * durationMinutes;
+    const storageCost = totalStorage * (price.storage / minutesInYear) * durationMinutes;
 
     const totalCost = cpuCost + storageCost;
 
@@ -113,8 +118,8 @@ export async function getCostItemsForRange(
     });
   }
 
-  const cpuCost = costItems.reduce((sum, item) => sum + item.cpuCost, 0);
-  const storageCost = costItems.reduce((sum, item) => sum + item.storageCost, 0);
+  const cpuCost = _reduce(costItems, (sum, item) => sum + item.cpuCost, 0);
+  const storageCost = _reduce(costItems, (sum, item) => sum + item.storageCost, 0);
   const totalCost = cpuCost + storageCost;
 
   return {
@@ -125,71 +130,30 @@ export async function getCostItemsForRange(
   };
 }
 
-export function estimateMonthTotal(currentTotal: number, year: number, month: number, lastItem?: CostItem) {
-  if (!lastItem) return currentTotal;
-
-  const lastDay = lastItem.endDate.getUTCDate();
-  const daysInMonth = new Date(year, month + 1, 0).getUTCDate();
-
-  const elapsedDays = Math.max(lastDay, 1);
-  const remaining = daysInMonth - elapsedDays;
-
-  const dailyCost = lastItem.totalCost / elapsedDays;
-  return currentTotal + dailyCost * remaining;
-}
-
 export async function getMonthlyCosts(licencePlate: string, year: number, month: number) {
   const startDate = new Date(year, month - 1, 1);
-  const endDate = new Date(year, month, 0, 23, 59, 59, 999);
 
   const now = new Date();
-  const isCurrentMonth = now.getUTCFullYear() === year && now.getUTCMonth() === month - 1;
+  const isCurrentMonth = now.getFullYear() === year && now.getMonth() === month - 1;
 
-  const {
-    items: costItems,
-    cpuCost,
-    storageCost,
-    totalCost: currentTotal,
-  } = await getCostItemsForRange(licencePlate, startDate, endDate);
+  const { items: costItems, cpuCost, storageCost, totalCost } = await getCostItemsForRange(licencePlate, year, month);
 
+  let currentTotal = -1;
   let estimatedGrandTotal = -1;
   let grandTotal = -1;
 
   if (isCurrentMonth) {
-    const lastItem = costItems.at(-1);
-    estimatedGrandTotal = estimateMonthTotal(currentTotal, year, month - 1, lastItem);
+    estimatedGrandTotal = totalCost;
 
-    if (lastItem) {
-      const lastDay = lastItem.endDate.getDate();
-      const daysInMonth = new Date(year, month, 0).getDate();
-      const elapsedDays = Math.max(lastDay, 1);
-      const remaining = daysInMonth - elapsedDays;
-
-      if (remaining > 0) {
-        const dailyCost = lastItem.totalCost / elapsedDays;
-        const estimatedRemainingCost = dailyCost * remaining;
-
-        costItems.push({
-          startDate: new Date(year, month - 1, lastDay + 1),
-          endDate: new Date(year, month - 1, daysInMonth, 23, 59, 59, 999),
-          cpu: lastItem.cpu,
-          storage: lastItem.storage,
-          cpuCost: lastItem.cpuCost * (remaining / elapsedDays),
-          storageCost: lastItem.storageCost * (remaining / elapsedDays),
-          totalCost: estimatedRemainingCost,
-          unitPriceId: lastItem.unitPriceId,
-        });
-      }
-    }
+    const pastItems = _filter(costItems, (item) => item.endDate <= now);
+    currentTotal = _reduce(pastItems, (sum, item) => sum + item.totalCost, 0);
   } else {
-    grandTotal = currentTotal;
+    grandTotal = totalCost;
   }
 
   return {
     accountCoding: '123ABC', // placeholder
-    billingPeriod: `${new Intl.DateTimeFormat('en', { month: 'long', timeZone: 'UTC' }).format(
-      startDate,
-    )} ${startDate.getUTCFullYear()}`,
+    billingPeriod: dateToShortDateString(startDate),
     currentTotal,
     estimatedGrandTotal,
     grandTotal,
@@ -199,19 +163,16 @@ export async function getMonthlyCosts(licencePlate: string, year: number, month:
   };
 }
 
-export async function getYearlyCosts(licencePlate: string, year: string) {
-  const numericYear = parseInt(year, 10);
+export async function getYearlyCosts(licencePlate: string, yearString: string) {
+  const year = parseInt(yearString, 10);
 
   const yearlyCostsByMonth = await Promise.all(
-    Array.from({ length: 12 }, async (_, i) => {
-      const startDate = new Date(numericYear, i, 1);
-      const endDate = new Date(numericYear, i + 1, 0, 23, 59, 59, 999);
-
-      const { cpuCost, storageCost, totalCost } = await getCostItemsForRange(licencePlate, startDate, endDate);
+    Array.from({ length: 12 }, async (_, month) => {
+      const { cpuCost, storageCost, totalCost } = await getCostItemsForRange(licencePlate, year, month);
 
       return {
-        year: numericYear,
-        month: i,
+        year,
+        month,
         cpuCost,
         storageCost,
         totalCost,
@@ -233,7 +194,8 @@ export async function getAdminMonthlyCosts(year: number, month: number) {
   const items = await Promise.all(
     products.map(async (product) => {
       const monthly = await getMonthlyCosts(product.licencePlate, year, month);
-      const cost = monthly.grandTotal ?? monthly.estimatedGrandTotal ?? 0;
+      const cost = monthly.grandTotal > 0 ? monthly.grandTotal : monthly.estimatedGrandTotal ?? 0;
+
       return {
         product,
         cost,
