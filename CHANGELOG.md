@@ -1,3 +1,8 @@
+## [0.62.1](https://github.com/bcgov/platform-services-registry/compare/v0.62.0...v0.62.1) (2025-04-25)
+
+### Bug Fixes
+
+* **5510:** exclude request comments from decision data ([fb08deb](https://github.com/bcgov/platform-services-registry/commit/fb08deb718d65d8e6b69c509211931ec86ae03bd))
 ## [0.62.0](https://github.com/bcgov/platform-services-registry/compare/v0.61.0...v0.62.0) (2025-04-22)
 
 ### Features
