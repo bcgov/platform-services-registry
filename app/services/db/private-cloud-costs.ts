@@ -19,19 +19,25 @@ export interface CostItem {
   unitPriceId?: string;
 }
 
+function getMonthStartEndDate(year: number, month: number) {
+  const startDate = new Date(year, month - 1, 1);
+  const endDate = new Date(year, month, 1, 0, 0, 0, -1);
+  return {
+    startDate,
+    endDate,
+  };
+}
+
 export async function getCostItemsForRange(
   licencePlate: string,
-  year: number,
-  month: number,
+  startDate: Date,
+  endDate: Date,
 ): Promise<{
   items: CostItem[];
   cpuCost: number;
   storageCost: number;
   totalCost: number;
 }> {
-  const startDate = new Date(year, month - 1, 1);
-  const endDate = new Date(year, month, 0, 23, 59, 59);
-
   const [unitPrices, allRequests]: [PrivateCloudUnitPrice[], PrivateCloudRequestWithDecisionData[]] = await Promise.all(
     [
       prisma.privateCloudUnitPrice.findMany({
@@ -90,6 +96,7 @@ export async function getCostItemsForRange(
     let totalStorage = 0;
 
     const envs = quota.decisionData.resourceRequests;
+
     for (const env of namespaceKeys) {
       const usage = envs[env];
       if (usage) {
@@ -100,7 +107,7 @@ export async function getCostItemsForRange(
 
     // Duration in minutes for this interval
     const durationMinutes = (intervalEnd.getTime() - intervalStart.getTime()) / (1000 * 60);
-    const minutesInYear = getMinutesInYear(year);
+    const minutesInYear = getMinutesInYear(startDate.getFullYear());
     const cpuCost = totalCpu * (price.cpu / minutesInYear) * durationMinutes;
     const storageCost = totalStorage * (price.storage / minutesInYear) * durationMinutes;
 
@@ -131,12 +138,16 @@ export async function getCostItemsForRange(
 }
 
 export async function getMonthlyCosts(licencePlate: string, year: number, month: number) {
-  const startDate = new Date(year, month - 1, 1);
-
+  const { startDate, endDate } = getMonthStartEndDate(year, month);
   const now = new Date();
   const isCurrentMonth = now.getFullYear() === year && now.getMonth() === month - 1;
 
-  const { items: costItems, cpuCost, storageCost, totalCost } = await getCostItemsForRange(licencePlate, year, month);
+  const {
+    items: costItems,
+    cpuCost,
+    storageCost,
+    totalCost,
+  } = await getCostItemsForRange(licencePlate, startDate, endDate);
 
   let currentTotal = -1;
   let estimatedGrandTotal = -1;
@@ -168,7 +179,8 @@ export async function getYearlyCosts(licencePlate: string, yearString: string) {
 
   const yearlyCostsByMonth = await Promise.all(
     Array.from({ length: 12 }, async (_, month) => {
-      const { cpuCost, storageCost, totalCost } = await getCostItemsForRange(licencePlate, year, month);
+      const { startDate, endDate } = getMonthStartEndDate(year, month);
+      const { cpuCost, storageCost, totalCost } = await getCostItemsForRange(licencePlate, startDate, endDate);
 
       return {
         year,
@@ -194,8 +206,7 @@ export async function getAdminMonthlyCosts(year: number, month: number) {
   const items = await Promise.all(
     products.map(async (product) => {
       const monthly = await getMonthlyCosts(product.licencePlate, year, month);
-      const cost = monthly.grandTotal > 0 ? monthly.grandTotal : monthly.estimatedGrandTotal ?? 0;
-
+      const cost = monthly.grandTotal > -1 ? monthly.grandTotal : monthly.estimatedGrandTotal ?? 0;
       return {
         product,
         cost,
