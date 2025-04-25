@@ -11,17 +11,17 @@ This package comes with a [CLI](https://react.email/docs/cli) that creates a dev
 
 1. Run the react-email development server that will run on `localhost:3001`
 
-   ```sh
-   npm run email
-   ```
+    ```sh
+    npm run email
+    ```
 
-   - If you want to view images, you will also have to run the normal development server with `npm run dev`
+    - If you want to view images, you will also have to run the normal development server with `npm run dev`
 
 1. Go to http://localhost:3001/ to view the email dashboard
 
 1. react-email will only display the .tsx files in the base `emails` folder
-   - The `templates` folder contains the templates that are called by the emailHandler
-   - `/components/params.tsx` contains the mock data to view the email templates
+    - The `templates` folder contains the templates that are called by the emailHandler
+    - `/components/params.tsx` contains the mock data to view the email templates
 
 ## React-Email Commands
 

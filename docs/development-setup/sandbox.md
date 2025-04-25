@@ -4,9 +4,9 @@ The development sandbox serves as an isolated environment for local development 
 
 ## Pre-requisites
 
-- **[Docker Desktop](https://www.docker.com/products/docker-desktop/)** must be installed and running on your machine.
-  - For Windows, WSL2 is required.
-  - For macOS (Intel or Apple Silicon), ensure Docker Desktop is configured to use the appropriate architecture.
+-   **[Docker Desktop](https://www.docker.com/products/docker-desktop/)** must be installed and running on your machine.
+    -   For Windows, WSL2 is required.
+    -   For macOS (Intel or Apple Silicon), ensure Docker Desktop is configured to use the appropriate architecture.
 
 ## Getting Started
 
@@ -99,15 +99,15 @@ Within the local Docker container environment, **10 services** are available:
 
 ### Access Details
 
-- **Keycloak (HTTP)**: [http://localhost:8080](http://localhost:8080)
-- **Keycloak (HTTPS)**: [https://localhost:8443](https://localhost:8443)
-- **Keycloak Realm**: `platform-services`
-- **Keycloak Client ID**: `pltsvc`
-- **Keycloak Client Secret**: `testsecret`
-- **MongoDB URL**: `mongodb://localhost:27017`
-- **Microsoft 365 Proxy URL**: [http://localhost:8000](http://localhost:8000)
-- **CHES Mock URL**: [http://localhost:3025](http://localhost:3025)
-- **Mailpit URL**: [http://localhost:8025](http://localhost:8025)
+-   **Keycloak (HTTP)**: [http://localhost:8080](http://localhost:8080)
+-   **Keycloak (HTTPS)**: [https://localhost:8443](https://localhost:8443)
+-   **Keycloak Realm**: `platform-services`
+-   **Keycloak Client ID**: `pltsvc`
+-   **Keycloak Client Secret**: `testsecret`
+-   **MongoDB URL**: `mongodb://localhost:27017`
+-   **Microsoft 365 Proxy URL**: [http://localhost:8000](http://localhost:8000)
+-   **CHES Mock URL**: [http://localhost:3025](http://localhost:3025)
+-   **Mailpit URL**: [http://localhost:8025](http://localhost:8025)
 
 > Mock user details can be found in the [mock-users.json](https://github.com/bcgov/platform-services-registry/blob/main/sandbox/mock-users.json){target="\_blank" rel="noopener noreferrer"} file.
 > Passwords are derived by converting user email addresses to lowercase.

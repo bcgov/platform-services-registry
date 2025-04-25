@@ -22,11 +22,11 @@ Instead of allowing code execution to continue when a required value is missing,
 
 ```js
 function getUserDisplayName(user) {
-  if (!user) {
-    return '';
-  }
+    if (!user) {
+        return '';
+    }
 
-  return `${user.firstname} ${user.lastname}`;
+    return `${user.firstname} ${user.lastname}`;
 }
 ```
 
@@ -34,7 +34,7 @@ function getUserDisplayName(user) {
 
 ```js
 function getUserDisplayName(user) {
-  return `${user?.firstname} ${user?.lastname}`;
+    return `${user?.firstname} ${user?.lastname}`;
 }
 ```
 
@@ -44,11 +44,11 @@ In the bad example, the use of optional chaining hides the fact that `user` migh
 
 ```js
 function getUserDisplayName(user) {
-  if (!user) {
-    return 'Unknown User';
-  }
+    if (!user) {
+        return 'Unknown User';
+    }
 
-  return `${user.firstname} ${user.lastname}`;
+    return `${user.firstname} ${user.lastname}`;
 }
 ```
 
@@ -58,8 +58,8 @@ If you are dealing with optional _fields_ inside an object (not the object itsel
 
 ```js
 function getUserLocation(user) {
-  if (!user) return;
+    if (!user) return;
 
-  return user.address?.city || 'City unknown';
+    return user.address?.city || 'City unknown';
 }
 ```

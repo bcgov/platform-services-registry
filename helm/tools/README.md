@@ -12,7 +12,7 @@ To deploy the Helm charts, simply execute the following command:
 make upgrade NAMESPACE=101ed4-tools
 ```
 
-- If the initial deployment fails because of `Airflow`'s dependency on `PostgreSQL`, just rerun the above command.
+-   If the initial deployment fails because of `Airflow`'s dependency on `PostgreSQL`, just rerun the above command.
 
 ## Upgrading DAGs
 
@@ -24,11 +24,11 @@ make dags NAMESPACE=101ed4-tools
 
 ## Considerations
 
-- Prior to the deployment of `Airflow`, a [job]('./templates/templates/job.yaml) runs to `synchronize the dags`. Due to the upload mechanism using a [config map]('./templates/templates/configmap.yaml), there is a file `size limitation of 1MB` for the total dag files. If the size of dag files grows in the future, alternative methods for file synchronization will need to be explored.
+-   Prior to the deployment of `Airflow`, a [job]('./templates/templates/job.yaml) runs to `synchronize the dags`. Due to the upload mechanism using a [config map]('./templates/templates/configmap.yaml), there is a file `size limitation of 1MB` for the total dag files. If the size of dag files grows in the future, alternative methods for file synchronization will need to be explored.
 
 ## Upgrade SonarQube Server
 
-- After completing the SonarQube version upgrade, navigate to `/setup` to finalize the database migration.
+-   After completing the SonarQube version upgrade, navigate to `/setup` to finalize the database migration.
 
 ## ACS API Token
 

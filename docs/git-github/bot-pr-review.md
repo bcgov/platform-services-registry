@@ -9,13 +9,13 @@ When reviewing a Renovate Bot PR, consider the following to assess whether it's 
 1. **Area of Usage**
    Identify where the tool or package is used:
 
-   - Application production
-   - Application development
-   - Sandbox services
-   - Terraform
-   - Helm charts
-   - Continuous integration/Code quality
-   - Low-level tools
+    - Application production
+    - Application development
+    - Sandbox services
+    - Terraform
+    - Helm charts
+    - Continuous integration/Code quality
+    - Low-level tools
 
 2. **Functionality**
    Understand what the tool or package does within the identified area.

@@ -4,11 +4,11 @@ When creating a new tag using the repository's default `GITHUB_TOKEN` to perform
 
 1. Generate a new OpenSSH Key:
 
-   ```sh
-   ssh-keygen -t ed25519 -f id_ed25519 -N "" -q -C ""
-   ```
+    ```sh
+    ssh-keygen -t ed25519 -f id_ed25519 -N "" -q -C ""
+    ```
 
-   This command will generate a private key `id_ed25519` and a corresponding public key `id_ed25519.pub` in the working directory.
+    This command will generate a private key `id_ed25519` and a corresponding public key `id_ed25519.pub` in the working directory.
 
 2. Add the private key to GitHub's `Secrets`, naming it `SSH_KEY` in the repository.
 3. Add the public key to GitHub's `Deploy keys`, also naming it `SSH_KEY` in the repository.

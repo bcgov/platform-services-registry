@@ -2,8 +2,8 @@
 
 In React development, consistent naming of callback props and their internal handler functions improves clarity, reduces mental overhead, and makes components easier to understand and maintain. Two common naming patterns are:
 
-- `onX`: for **props** passed to a component (e.g., `onClick`, `onSubmit`)
-- `handleX`: for **internal handler functions** that implement the logic (e.g., `handleClick`, `handleSubmit`)
+-   `onX`: for **props** passed to a component (e.g., `onClick`, `onSubmit`)
+-   `handleX`: for **internal handler functions** that implement the logic (e.g., `handleClick`, `handleSubmit`)
 
 Following this convention helps developers immediately distinguish **event sources** from **event handlers** and navigate through the code more intuitively.
 
@@ -23,41 +23,41 @@ Following this convention helps developers immediately distinguish **event sourc
 
 ```tsx
 function Button({ onClick }: { onClick: () => void }) {
-  return <button onClick={onClick}>Click me</button>;
+    return <button onClick={onClick}>Click me</button>;
 }
 
 function ParentComponent() {
-  const handleClick = () => {
-    console.log('Button clicked!');
-  };
+    const handleClick = () => {
+        console.log('Button clicked!');
+    };
 
-  return <Button onClick={handleClick} />;
+    return <Button onClick={handleClick} />;
 }
 ```
 
-- `onClick`: prop expected by the `Button` component
-- `handleClick`: local handler in `ParentComponent`
+-   `onClick`: prop expected by the `Button` component
+-   `handleClick`: local handler in `ParentComponent`
 
 ### Bad Example
 
 ```tsx
 function Button({ clickHandler }: { clickHandler: () => void }) {
-  return <button onClick={clickHandler}>Click me</button>;
+    return <button onClick={clickHandler}>Click me</button>;
 }
 
 function ParentComponent() {
-  const clicked = () => {
-    console.log('Button clicked!');
-  };
+    const clicked = () => {
+        console.log('Button clicked!');
+    };
 
-  return <Button clickHandler={clicked} />;
+    return <Button clickHandler={clicked} />;
 }
 ```
 
 This version is less clear:
 
-- `clickHandler` could be either a prop or a local function
-- `clicked` lacks verb clarity and doesn’t indicate its purpose or trigger
+-   `clickHandler` could be either a prop or a local function
+-   `clicked` lacks verb clarity and doesn’t indicate its purpose or trigger
 
 ## Naming Guidelines
 
@@ -69,12 +69,12 @@ This version is less clear:
 
 Examples:
 
-- `onFormSubmit` → `handleFormSubmit`
-- `onItemSelect` → `handleItemSelect`
-- `onMouseEnter` → `handleMouseEnter`
+-   `onFormSubmit` → `handleFormSubmit`
+-   `onItemSelect` → `handleItemSelect`
+-   `onMouseEnter` → `handleMouseEnter`
 
 ## Considerations
 
-- Use **verbs** in your function names (`handleSubmit`, not `submissionHandler`)
-- Avoid inconsistent or ambiguous names like `clickedFn`, `myHandler`, or `cb`
-- Stick to **camelCase** for handlers, even in large codebases
+-   Use **verbs** in your function names (`handleSubmit`, not `submissionHandler`)
+-   Avoid inconsistent or ambiguous names like `clickedFn`, `myHandler`, or `cb`
+-   Stick to **camelCase** for handlers, even in large codebases

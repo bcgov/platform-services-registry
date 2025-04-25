@@ -13,5 +13,13 @@
   "insertPragma": false,
   "proseWrap": "preserve",
   "endOfLine": "lf",
-  "singleAttributePerLine": false
+  "singleAttributePerLine": false,
+  "overrides": [
+    {
+      "files": "*.md",
+      "options": {
+        "tabWidth": 4
+      }
+    }
+  ]
 }

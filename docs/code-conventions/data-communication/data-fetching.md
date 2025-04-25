@@ -12,14 +12,14 @@ Use `useQuery` to fetch and cache data. Each query is identified by a unique `qu
 
 ```ts
 const {
-  data: product,
-  isLoading: isProductLoading,
-  isError: isProductError,
-  error: productError,
-  refetch: refetchProduct,
+    data: product,
+    isLoading: isProductLoading,
+    isError: isProductError,
+    error: productError,
+    refetch: refetchProduct,
 } = useQuery({
-  queryKey: ['product', productId],
-  queryFn: () => getProduct(productId),
+    queryKey: ['product', productId],
+    queryFn: () => getProduct(productId),
 });
 ```
 
@@ -27,15 +27,15 @@ You can also enable polling with `refetchInterval`, which re-fetches data at the
 
 ```ts
 const {
-  data: products,
-  isLoading: isProductsLoading,
-  isError: isProductsError,
-  error: productsError,
-  refetch: refetchProducts,
+    data: products,
+    isLoading: isProductsLoading,
+    isError: isProductsError,
+    error: productsError,
+    refetch: refetchProducts,
 } = useQuery({
-  queryKey: ['products'],
-  queryFn: () => getProducts(),
-  refetchInterval: 2000, // refetch every 2 seconds
+    queryKey: ['products'],
+    queryFn: () => getProducts(),
+    refetchInterval: 2000, // refetch every 2 seconds
 });
 ```
 
@@ -45,12 +45,12 @@ Use `useMutation` to create, update, or delete data. The mutation hook provides 
 
 ```ts
 const {
-  mutateAsync: createProduct,
-  isPending: isCreatingProduct,
-  isError: isCreateProductError,
-  error: createProductError,
+    mutateAsync: createProduct,
+    isPending: isCreatingProduct,
+    isError: isCreateProductError,
+    error: createProductError,
 } = useMutation({
-  mutationFn: createProductService,
+    mutationFn: createProductService,
 });
 ```
 

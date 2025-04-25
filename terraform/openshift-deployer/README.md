@@ -5,14 +5,14 @@ In order to implement `configuration as code` and streamline the process of crea
 ## Procedure
 
 1. Initialize the working directory that contains the Terraform configuration files:
-   ```sh
-   terraform init
-   ```
+    ```sh
+    terraform init
+    ```
 2. Preview the changes that Terraform intends to apply to your infrastructure:
-   ```sh
-   terraform plan
-   ```
+    ```sh
+    terraform plan
+    ```
 3. Execute the actions specified in the Terraform plan:
-   ```sh
-   terraform apply
-   ```
+    ```sh
+    terraform apply
+    ```

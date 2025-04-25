@@ -11,8 +11,8 @@ import axios from 'axios';
 import { instance as baseInstance } from './axios';
 
 export const instance = axios.create({
-  ...baseInstance.defaults,
-  baseURL: `${baseInstance.defaults.baseURL}/tasks`,
+    ...baseInstance.defaults,
+    baseURL: `${baseInstance.defaults.baseURL}/tasks`,
 });
 ```
 
@@ -20,8 +20,8 @@ Each service method begins with a verb (e.g., `get`, `create`, `update`) and ret
 
 ```ts
 export async function getTask(id: string) {
-  const result = await instance.get<Task>(`/${id}`).then((res) => res.data);
-  return result;
+    const result = await instance.get<Task>(`/${id}`).then((res) => res.data);
+    return result;
 }
 ```
 
