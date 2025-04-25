@@ -51,6 +51,7 @@ export const POST = apiHandler(async ({ pathParams, body, session }) => {
     type,
     decision,
     decisionComment,
+    requestComment,
     quotaContactName,
     quotaContactEmail,
     quotaJustification,
