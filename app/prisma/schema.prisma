@@ -321,8 +321,8 @@ model PublicCloudProduct {
   primaryTechnicalLead         User                       @relation("primaryTechnicalLead", fields: [primaryTechnicalLeadId], references: [id])
   secondaryTechnicalLeadId     String?                    @db.ObjectId
   secondaryTechnicalLead       User?                      @relation("secondaryTechnicalLead", fields: [secondaryTechnicalLeadId], references: [id])
-  expenseAuthorityId           String?                    @db.ObjectId
-  expenseAuthority             User?                      @relation("expenseAuthority", fields: [expenseAuthorityId], references: [id])
+  expenseAuthorityId           String                     @db.ObjectId
+  expenseAuthority             User                       @relation("expenseAuthority", fields: [expenseAuthorityId], references: [id])
   ministry                     Ministry
   provider                     Provider
   providerSelectionReasons     String[]
@@ -351,8 +351,8 @@ model PublicCloudRequestData {
   primaryTechnicalLead         User                       @relation("primaryTechnicalLead", fields: [primaryTechnicalLeadId], references: [id])
   secondaryTechnicalLeadId     String?                    @db.ObjectId
   secondaryTechnicalLead       User?                      @relation("secondaryTechnicalLead", fields: [secondaryTechnicalLeadId], references: [id])
-  expenseAuthorityId           String?                    @db.ObjectId
-  expenseAuthority             User?                      @relation("expenseAuthority", fields: [expenseAuthorityId], references: [id])
+  expenseAuthorityId           String                     @db.ObjectId
+  expenseAuthority             User                       @relation("expenseAuthority", fields: [expenseAuthorityId], references: [id])
   ministry                     Ministry
   provider                     Provider
   providerSelectionReasons     String[]

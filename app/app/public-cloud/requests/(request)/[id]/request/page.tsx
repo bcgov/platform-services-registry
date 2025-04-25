@@ -88,7 +88,7 @@ export default publicCloudProductRequest(({ router }) => {
       decision: RequestDecision.APPROVED,
       type: publicProductSnap.currentRequest?.type,
       ...publicProductSnap.currentRequest?.decisionData,
-      expenseAuthorityId: publicProductSnap.currentRequest?.decisionData?.expenseAuthorityId ?? '',
+      expenseAuthorityId: publicProductSnap.currentRequest?.decisionData?.expenseAuthorityId,
     },
   });
 

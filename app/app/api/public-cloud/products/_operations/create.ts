@@ -44,7 +44,7 @@ export default async function createOp({ session, body }: { session: Session; bo
     projectOwner: { connect: { id: projectOwnerId } },
     primaryTechnicalLead: { connect: { id: primaryTechnicalLeadId } },
     secondaryTechnicalLead: secondaryTechnicalLeadId ? { connect: { id: secondaryTechnicalLeadId } } : undefined,
-    expenseAuthority: expenseAuthorityId ? { connect: { id: expenseAuthorityId } } : undefined,
+    expenseAuthority: { connect: { id: expenseAuthorityId } },
   };
 
   const newRequest = (

@@ -49,7 +49,7 @@ export default async function updateOp({
     projectOwner: { connect: { id: projectOwnerId } },
     primaryTechnicalLead: { connect: { id: primaryTechnicalLeadId } },
     secondaryTechnicalLead: secondaryTechnicalLeadId ? { connect: { id: secondaryTechnicalLeadId } } : undefined,
-    expenseAuthority: expenseAuthorityId ? { connect: { id: expenseAuthorityId } } : undefined,
+    expenseAuthority: { connect: { id: expenseAuthorityId } },
   };
 
   // Retrieve the latest request data to acquire the decision data ID that can be assigned to the incoming request's original data.
