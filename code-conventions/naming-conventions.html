@@ -2608,20 +2608,22 @@ We've identified three distinct use cases for these common functions, each follo
 <ul>
 <li>
 <p><code>Lower Level Functions</code>: Reserved for functions essential at the project's lower level, such as framework-level wrappers and helpers.</p>
-</li>
-<li>
-<p>These functions reside in the <code>/core</code> directory.</p>
+<ul>
+<li>These functions reside in the <code>/core</code> directory.</li>
+</ul>
 </li>
 <li>
 <p><code>Very Generic Functions</code>: Generic functions versatile enough for use in any project, not limited to the current one.</p>
-</li>
-<li>
-<p>These functions are stored in the <code>/utils</code> directory.</p>
+<ul>
+<li>These functions are stored in the <code>/utils</code> directory.</li>
+</ul>
 </li>
 <li>
 <p><code>Less Generic Functions</code>: Functions serving as helpers specifically within this project.</p>
-</li>
+<ul>
 <li>These functions are housed in the <code>/helpers</code> directory.</li>
+</ul>
+</li>
 </ul>
 <p>As a team consensus, we aim to include <code>one or multiple common functions per file</code> and refrain from using <code>export default</code>.</p>
 <h2 id="validation-schema-enum-naming-conventions">Validation Schema &amp; Enum Naming Conventions<a class="headerlink" href="#validation-schema-enum-naming-conventions" title="Permanent link">&para;</a></h2>
@@ -2629,55 +2631,53 @@ We've identified three distinct use cases for these common functions, each follo
 <ol>
 <li>
 <p><strong>Validation Schema:</strong></p>
-</li>
-<li>
-<p><strong>Naming:</strong> Schema objects are named in camelCase and end with <code>Schema</code>.</p>
-</li>
+<ul>
+<li><strong>Naming:</strong> Schema objects are named in camelCase and end with <code>Schema</code>.</li>
 <li><strong>Type:</strong> The TypeScript type derived from the schema object is in PascalCase.</li>
-</ol>
+</ul>
 <div class="language-typescript highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-0-1">1</a></span>
 <span class="normal"><a href="#__codelineno-0-2">2</a></span>
 <span class="normal"><a href="#__codelineno-0-3">3</a></span>
 <span class="normal"><a href="#__codelineno-0-4">4</a></span>
 <span class="normal"><a href="#__codelineno-0-5">5</a></span>
 <span class="normal"><a href="#__codelineno-0-6">6</a></span></pre></div></td><td class="code"><div><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1"></a><span class="kd">const</span><span class="w"> </span><span class="nx">userSchema</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">z</span><span class="p">.</span><span class="nx">object</span><span class="p">({</span>
-</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2"></a><span class="w">  </span><span class="nx">name</span><span class="o">:</span><span class="w"> </span><span class="kt">z.string</span><span class="p">().</span><span class="nx">min</span><span class="p">(</span><span class="mf">1</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;Name is required&#39;</span><span class="p">),</span>
-</span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3"></a><span class="w">  </span><span class="nx">age</span><span class="o">:</span><span class="w"> </span><span class="kt">z.number</span><span class="p">().</span><span class="nx">min</span><span class="p">(</span><span class="mf">0</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;Age must be a non-negative number&#39;</span><span class="p">),</span>
+</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2"></a><span class="w">    </span><span class="nx">name</span><span class="o">:</span><span class="w"> </span><span class="kt">z.string</span><span class="p">().</span><span class="nx">min</span><span class="p">(</span><span class="mf">1</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;Name is required&#39;</span><span class="p">),</span>
+</span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3"></a><span class="w">    </span><span class="nx">age</span><span class="o">:</span><span class="w"> </span><span class="kt">z.number</span><span class="p">().</span><span class="nx">min</span><span class="p">(</span><span class="mf">0</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;Age must be a non-negative number&#39;</span><span class="p">),</span>
 </span><span id="__span-0-4"><a id="__codelineno-0-4" name="__codelineno-0-4"></a><span class="p">});</span>
 </span><span id="__span-0-5"><a id="__codelineno-0-5" name="__codelineno-0-5"></a>
 </span><span id="__span-0-6"><a id="__codelineno-0-6" name="__codelineno-0-6"></a><span class="kr">type</span><span class="w"> </span><span class="nx">User</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">z</span><span class="p">.</span><span class="nx">infer</span><span class="o">&lt;</span><span class="ow">typeof</span><span class="w"> </span><span class="nx">userSchema</span><span class="o">&gt;</span><span class="p">;</span>
 </span></code></pre></div></td></tr></table></div>
-<ol>
+</li>
 <li>
 <p><strong>Enum:</strong></p>
-</li>
-<li>
-<p><strong>Naming:</strong> Enum objects are named in PascalCase and end with <code>Enum</code>.</p>
-</li>
+<ul>
+<li><strong>Naming:</strong> Enum objects are named in PascalCase and end with <code>Enum</code>.</li>
 <li><strong>Type:</strong> The TypeScript type derived from the enum object is in PascalCase.</li>
-</ol>
+</ul>
 <div class="language-typescript highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-1-1">1</a></span>
 <span class="normal"><a href="#__codelineno-1-2">2</a></span>
 <span class="normal"><a href="#__codelineno-1-3">3</a></span></pre></div></td><td class="code"><div><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1"></a><span class="kd">const</span><span class="w"> </span><span class="nx">ColorEnum</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">z</span><span class="p">.</span><span class="kd">enum</span><span class="p">([</span><span class="s1">&#39;Red&#39;</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;Green&#39;</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;Blue&#39;</span><span class="p">]);</span>
 </span><span id="__span-1-2"><a id="__codelineno-1-2" name="__codelineno-1-2"></a>
 </span><span id="__span-1-3"><a id="__codelineno-1-3" name="__codelineno-1-3"></a><span class="kr">type</span><span class="w"> </span><span class="nx">Color</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">z</span><span class="p">.</span><span class="nx">infer</span><span class="o">&lt;</span><span class="ow">typeof</span><span class="w"> </span><span class="nx">ColorEnum</span><span class="o">&gt;</span><span class="p">;</span>
 </span></code></pre></div></td></tr></table></div>
+</li>
+</ol>
 <h3 id="explanation">Explanation:<a class="headerlink" href="#explanation" title="Permanent link">&para;</a></h3>
 <ul>
 <li>
 <p><strong>Validation Schema Naming:</strong></p>
-</li>
-<li>
-<p><code>userSchema</code>: The schema object for user data, named in camelCase and ending with <code>Schema</code>.</p>
-</li>
-<li>
-<p><code>User</code>: The TypeScript type inferred from <code>userSchema</code>, named in PascalCase.</p>
+<ul>
+<li><code>userSchema</code>: The schema object for user data, named in camelCase and ending with <code>Schema</code>.</li>
+<li><code>User</code>: The TypeScript type inferred from <code>userSchema</code>, named in PascalCase.</li>
+</ul>
 </li>
 <li>
 <p><strong>Enum Naming:</strong></p>
-</li>
+<ul>
 <li><code>ColorEnum</code>: The enum object for color options, named in PascalCase and ending with <code>Enum</code>.</li>
 <li><code>Color</code>: The TypeScript type inferred from <code>ColorEnum</code>, named in PascalCase.</li>
+</ul>
+</li>
 </ul>
 
 

@@ -2599,14 +2599,14 @@
 <div class="language-js highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-0-1">1</a></span>
 <span class="normal"><a href="#__codelineno-0-2">2</a></span>
 <span class="normal"><a href="#__codelineno-0-3">3</a></span></pre></div></td><td class="code"><div><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1"></a><span class="kd">function</span><span class="w"> </span><span class="nx">sendWelcomeEmail</span><span class="p">(</span><span class="nx">userEmail</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
-</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2"></a><span class="w">  </span><span class="c1">// Logic to send a welcome email to a new user</span>
+</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2"></a><span class="w">    </span><span class="c1">// Logic to send a welcome email to a new user</span>
 </span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3"></a><span class="p">}</span>
 </span></code></pre></div></td></tr></table></div>
 <h3 id="bad-example-vague-name">Bad Example (Vague Name)<a class="headerlink" href="#bad-example-vague-name" title="Permanent link">&para;</a></h3>
 <div class="language-js highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-1-1">1</a></span>
 <span class="normal"><a href="#__codelineno-1-2">2</a></span>
 <span class="normal"><a href="#__codelineno-1-3">3</a></span></pre></div></td><td class="code"><div><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1"></a><span class="kd">function</span><span class="w"> </span><span class="nx">handleEmail</span><span class="p">(</span><span class="nx">userEmail</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
-</span><span id="__span-1-2"><a id="__codelineno-1-2" name="__codelineno-1-2"></a><span class="w">  </span><span class="c1">// What kind of email? Unclear without reading the implementation</span>
+</span><span id="__span-1-2"><a id="__codelineno-1-2" name="__codelineno-1-2"></a><span class="w">    </span><span class="c1">// What kind of email? Unclear without reading the implementation</span>
 </span><span id="__span-1-3"><a id="__codelineno-1-3" name="__codelineno-1-3"></a><span class="p">}</span>
 </span></code></pre></div></td></tr></table></div>
 <p>In the good example, <code>sendWelcomeEmail</code> clearly indicates what the function does. In the bad example, <code>handleEmail</code> is vague—it could mean sending, receiving, validating, or logging an email.</p>
@@ -2614,14 +2614,14 @@
 <div class="language-js highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-2-1">1</a></span>
 <span class="normal"><a href="#__codelineno-2-2">2</a></span>
 <span class="normal"><a href="#__codelineno-2-3">3</a></span></pre></div></td><td class="code"><div><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1"></a><span class="kd">function</span><span class="w"> </span><span class="nx">calculateInvoiceTotal</span><span class="p">(</span><span class="nx">invoiceItems</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
-</span><span id="__span-2-2"><a id="__codelineno-2-2" name="__codelineno-2-2"></a><span class="w">  </span><span class="c1">// Logic to sum up item prices, apply taxes or discounts, etc.</span>
+</span><span id="__span-2-2"><a id="__codelineno-2-2" name="__codelineno-2-2"></a><span class="w">    </span><span class="c1">// Logic to sum up item prices, apply taxes or discounts, etc.</span>
 </span><span id="__span-2-3"><a id="__codelineno-2-3" name="__codelineno-2-3"></a><span class="p">}</span>
 </span></code></pre></div></td></tr></table></div>
 <h3 id="another-bad-example">Another Bad Example<a class="headerlink" href="#another-bad-example" title="Permanent link">&para;</a></h3>
 <div class="language-js highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-3-1">1</a></span>
 <span class="normal"><a href="#__codelineno-3-2">2</a></span>
 <span class="normal"><a href="#__codelineno-3-3">3</a></span></pre></div></td><td class="code"><div><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1"></a><span class="kd">function</span><span class="w"> </span><span class="nx">doStuff</span><span class="p">(</span><span class="nx">items</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
-</span><span id="__span-3-2"><a id="__codelineno-3-2" name="__codelineno-3-2"></a><span class="w">  </span><span class="c1">// Unclear what &quot;stuff&quot; means—hard to reason about</span>
+</span><span id="__span-3-2"><a id="__codelineno-3-2" name="__codelineno-3-2"></a><span class="w">    </span><span class="c1">// Unclear what &quot;stuff&quot; means—hard to reason about</span>
 </span><span id="__span-3-3"><a id="__codelineno-3-3" name="__codelineno-3-3"></a><span class="p">}</span>
 </span></code></pre></div></td></tr></table></div>
 <h2 id="considerations-for-long-function-names">Considerations for Long Function Names<a class="headerlink" href="#considerations-for-long-function-names" title="Permanent link">&para;</a></h2>

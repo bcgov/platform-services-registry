@@ -2525,51 +2525,49 @@
 <ol>
 <li>
 <p><strong>Request a GSLB (Global Service Load Balancer) domain via iStore</strong></p>
-</li>
-<li>
-<p>This requires the health check endpoints of the Registry application.</p>
+<ul>
+<li>This requires the health check endpoints of the Registry application.</li>
+</ul>
 </li>
 <li>
 <p><strong>Update DNS Configuration via NNR (Remedy App)</strong></p>
-</li>
-<li>
-<p>Configure the <code>CNAME</code> of the Registry vanity URL to point to the GSLB domain.</p>
+<ul>
+<li>Configure the <code>CNAME</code> of the Registry vanity URL to point to the GSLB domain.</li>
+</ul>
 </li>
 <li>
 <p><strong>Build &amp; Deploy a Switchover Agent</strong></p>
-</li>
-<li>
-<p>This server monitors the IP address of the GSLB domain and triggers custom logic during a failover event.</p>
-</li>
-<li>
-<p>The agent should ideally run in both clusters, or at least in the DR cluster.</p>
+<ul>
+<li>This server monitors the IP address of the GSLB domain and triggers custom logic during a failover event.</li>
+<li>The agent should ideally run in both clusters, or at least in the DR cluster.</li>
+</ul>
 </li>
 <li>
 <p><strong>Update CI/CD Pipelines (e.g., GitHub Actions)</strong></p>
-</li>
-<li>
-<p>Ensure necessary deployments and StatefulSets are included for the GoldDR cluster.</p>
+<ul>
+<li>Ensure necessary deployments and StatefulSets are included for the GoldDR cluster.</li>
+</ul>
 </li>
 <li>
 <p><strong>MongoDB Data Sync Strategy</strong></p>
-</li>
-<li>
-<p>Syncing data between MongoDB instances in the Gold and GoldDR clusters requires further investigation.</p>
-</li>
-<li>Unlike PostgreSQL (e.g., using <code>Patroni</code> with <code>TransportServerClaim</code>), MongoDB does not provide a built-in, cross-cluster active-standby replication mechanism.</li>
-<li>
-<p>A possible fallback is to perform frequent backups from the Gold cluster and restore them in the GoldDR cluster.</p>
 <ul>
+<li>Syncing data between MongoDB instances in the Gold and GoldDR clusters requires further investigation.</li>
+<li>Unlike PostgreSQL (e.g., using <code>Patroni</code> with <code>TransportServerClaim</code>), MongoDB does not provide a built-in, cross-cluster active-standby replication mechanism.</li>
+<li>A possible fallback is to perform frequent backups from the Gold cluster and restore them in the GoldDR cluster.<ul>
 <li>However, this approach introduces <strong>data integrity risks</strong>, particularly in failover scenarios where recent data changes could be lost.</li>
 <li>Restoring data back to Gold once it becomes available again also presents significant operational challenges.</li>
 <li>This method would require storing backup files in object storage (e.g., an AWS S3 bucket or equivalent), rather than using PVCs.</li>
 </ul>
 </li>
+</ul>
+</li>
 <li>
 <p><strong>Stateless Provisioner Services (13–15 services)</strong></p>
-</li>
+<ul>
 <li>There are no data persistence concerns, but the services must run continuously in both clusters.</li>
 <li>Otherwise, they must be recreated in the DR cluster during failover by the switchover agent.</li>
+</ul>
+</li>
 </ol>
 <h3 id="additional-considerations">Additional Considerations<a class="headerlink" href="#additional-considerations" title="Permanent link">&para;</a></h3>
 <ul>
@@ -2580,19 +2578,19 @@
 <ol>
 <li>
 <p><strong>Display a Maintenance Page</strong></p>
-</li>
-<li>
-<p>Use the DR cluster to serve a maintenance page during outages or failover events.</p>
-</li>
-<li>
-<p>This provides users with a clear and professional message, rather than an empty or broken page.</p>
+<ul>
+<li>Use the DR cluster to serve a maintenance page during outages or failover events.</li>
+<li>This provides users with a clear and professional message, rather than an empty or broken page.</li>
+</ul>
 </li>
 <li>
 <p><strong>Run the Registry in Read-Only Mode</strong></p>
-</li>
+<ul>
 <li>Serve a limited, read-only version of the Registry application from the DR cluster.</li>
 <li>While this still requires a data synchronization strategy, it eliminates the need to failover provisioner services, since they aren’t necessary in read-only mode.</li>
 <li>This option provides partial availability while minimizing operational complexity.</li>
+</ul>
+</li>
 </ol>
 
 

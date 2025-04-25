@@ -2475,12 +2475,10 @@
 <li>
 <p>Create a Branch:
    When starting work on a new feature, improvement, or bug fix, create a new branch. This branch will contain all the changes related to the task.</p>
-</li>
-<li>
-<p><code>feat/&lt;ticket#&gt;</code></p>
-</li>
-<li>
-<p><code>fix/&lt;ticket#&gt;</code></p>
+<ul>
+<li><code>feat/&lt;ticket#&gt;</code></li>
+<li><code>fix/&lt;ticket#&gt;</code></li>
+</ul>
 </li>
 <li>
 <p>Add Commits:
@@ -2514,29 +2512,27 @@
 <p><code>GitHub Flow</code> is often favored for its simplicity and speed. It encourages a continuous delivery approach, where changes are deployed <code>frequently and in smaller increments</code>, reducing the risk associated with large, infrequent releases. This workflow is well-suited for teams working on web applications and services where rapid iteration and deployment are crucial.</p>
 <h2 id="considerations">Considerations<a class="headerlink" href="#considerations" title="Permanent link">&para;</a></h2>
 <ul>
-<li>Draft Pull Request:</li>
-</ul>
+<li>
+<p>Draft Pull Request:</p>
 <p>A <code>Draft Pull Request</code> in GitHub is a special type of pull request that indicates that the changes it contains are still a work in progress and not yet ready for review or merging. This feature is useful when you want to share your work with others for visibility or collaboration, but you're not seeking immediate feedback or approval.</p>
 <ul>
-<li>
-<p>Please refer to https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/proposing-changes-to-your-work-with-pull-requests/about-pull-requests#draft-pull-requests for more detailed information.</p>
+<li>Please refer to https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/proposing-changes-to-your-work-with-pull-requests/about-pull-requests#draft-pull-requests for more detailed information.</li>
+</ul>
 </li>
 <li>
 <p>Interactive Rebasing:</p>
-</li>
-</ul>
 <p><code>Interactive rebasing</code> allows you to have fine-grained control over your commit history, enabling you to clean up, reorder, and squash commits for a cleaner commit history, reducing noise in pull requests.</p>
 <p>For more information, visit:</p>
 <ul>
 <li><a href="https://git-scm.com/docs/git-rebase">Git Rebase Documentation</a></li>
-<li>
-<p><a href="https://git-scm.com/book/en/v2/Git-Tools-Rewriting-History">Git Tools - Rewriting History</a></p>
+<li><a href="https://git-scm.com/book/en/v2/Git-Tools-Rewriting-History">Git Tools - Rewriting History</a></li>
+</ul>
 </li>
 <li>
 <p>Frequent Rebasing:</p>
+<p><code>Frequent rebasing</code> is a vital practice in our workflow, ensuring your feature branch is based on the latest code. This <code>minimizes conflicts and eases integration</code>. To rebase, use <code>git pull origin main --rebase</code> in your feature branch. This promotes a smoother, collaborative development process.</p>
 </li>
 </ul>
-<p><code>Frequent rebasing</code> is a vital practice in our workflow, ensuring your feature branch is based on the latest code. This <code>minimizes conflicts and eases integration</code>. To rebase, use <code>git pull origin main --rebase</code> in your feature branch. This promotes a smoother, collaborative development process.</p>
 
 
 

@@ -2396,28 +2396,26 @@
 <p>To address this, a practical workaround involves resetting all commits on the base branch. Here's a simple guide to follow:</p>
 <ol>
 <li>Confirm that you are on the working branch with a cluttered commit history.</li>
-<li>Create a new branch:</li>
-</ol>
+<li>
+<p>Create a new branch:</p>
 <div class="language-sh highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-0-1">1</a></span></pre></div></td><td class="code"><div><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1"></a>git<span class="w"> </span>checkout<span class="w"> </span>-b<span class="w"> </span>&lt;new-branch&gt;
 </span></code></pre></div></td></tr></table></div>
-<ol>
-<li>Pull Changes from the Base Branch:</li>
-</ol>
+</li>
+<li>
+<p>Pull Changes from the Base Branch:</p>
 <div class="language-sh highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-1-1">1</a></span></pre></div></td><td class="code"><div><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1"></a>git<span class="w"> </span>pull<span class="w"> </span>origin<span class="w"> </span>&lt;base-branch&gt;<span class="w"> </span>--no-rebase
 </span></code></pre></div></td></tr></table></div>
 <ul>
-<li>
-<p>Resolve any merge conflicts and commit the changes.</p>
+<li>Resolve any merge conflicts and commit the changes.</li>
+</ul>
 </li>
 <li>
 <p>Reset all commits based on the base branch (usually the default repository branch):
-   <div class="language-sh highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-2-1">1</a></span></pre></div></td><td class="code"><div><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1"></a>git<span class="w"> </span>reset<span class="w"> </span>--soft<span class="w"> </span>origin/&lt;base-branch&gt;
+    <div class="language-sh highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-2-1">1</a></span></pre></div></td><td class="code"><div><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1"></a>git<span class="w"> </span>reset<span class="w"> </span>--soft<span class="w"> </span>origin/&lt;base-branch&gt;
 </span></code></pre></div></td></tr></table></div></p>
 </li>
 <li>
 <p>For instance:</p>
-</li>
-</ul>
 <div class="language-sh highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-3-1">1</a></span>
 <span class="normal"><a href="#__codelineno-3-2">2</a></span>
 <span class="normal"><a href="#__codelineno-3-3">3</a></span>
@@ -2432,6 +2430,8 @@
 </span><span id="__span-3-6"><a id="__codelineno-3-6" name="__codelineno-3-6"></a>git<span class="w"> </span>add<span class="w"> </span>.
 </span><span id="__span-3-7"><a id="__codelineno-3-7" name="__codelineno-3-7"></a>git<span class="w"> </span>commit<span class="w"> </span>-m<span class="w"> </span><span class="s2">&quot;feat(0000): &lt;commit-message&gt;&quot;</span>
 </span></code></pre></div></td></tr></table></div>
+</li>
+</ol>
 
 
 

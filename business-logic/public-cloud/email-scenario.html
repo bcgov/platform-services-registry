@@ -775,21 +775,21 @@
 <li class="md-nav__item">
 <a class="md-nav__link" href="#scenario-1-product-create-request">
 <span class="md-ellipsis">
-      Scenario 1. Product Create Request
+      Scenario 1: Product Create Request
     </span>
 </a>
 </li>
 <li class="md-nav__item">
 <a class="md-nav__link" href="#scenario-2-edit-request">
 <span class="md-ellipsis">
-      Scenario 2. Edit Request
+      Scenario 2: Edit Request
     </span>
 </a>
 </li>
 <li class="md-nav__item">
-<a class="md-nav__link" href="#scenario-3-delete-request-is-submitted">
+<a class="md-nav__link" href="#scenario-3-delete-request">
 <span class="md-ellipsis">
-      Scenario 3. Delete request is submitted
+      Scenario 3: Delete Request
     </span>
 </a>
 </li>
@@ -887,21 +887,21 @@
 <li class="md-nav__item">
 <a class="md-nav__link" href="#scenario-1-product-create-request">
 <span class="md-ellipsis">
-      Scenario 1. Product Create Request
+      Scenario 1: Product Create Request
     </span>
 </a>
 </li>
 <li class="md-nav__item">
 <a class="md-nav__link" href="#scenario-2-edit-request">
 <span class="md-ellipsis">
-      Scenario 2. Edit Request
+      Scenario 2: Edit Request
     </span>
 </a>
 </li>
 <li class="md-nav__item">
-<a class="md-nav__link" href="#scenario-3-delete-request-is-submitted">
+<a class="md-nav__link" href="#scenario-3-delete-request">
 <span class="md-ellipsis">
-      Scenario 3. Delete request is submitted
+      Scenario 3: Delete Request
     </span>
 </a>
 </li>
@@ -913,126 +913,135 @@
 <div class="md-content" data-md-component="content">
 <article class="md-content__inner md-typeset">
 <h1 id="public-cloud-email-scenario">Public Cloud Email Scenario<a class="headerlink" href="#public-cloud-email-scenario" title="Permanent link">¶</a></h1>
-<h2 id="scenario-1-product-create-request">Scenario 1. Product Create Request<a class="headerlink" href="#scenario-1-product-create-request" title="Permanent link">¶</a></h2>
-<p><strong>Description</strong>: A new or existing user submits a request via the registry to have a product on the Public Cloud Landing Zone. This is assuming the user has already had an onboarding meeting, and meets the requirements for submitting a create request. Upon submitting the create request, the following emails may trigger.</p>
+<h2 id="scenario-1-product-create-request">Scenario 1: Product Create Request<a class="headerlink" href="#scenario-1-product-create-request" title="Permanent link">¶</a></h2>
+<p><strong>Description</strong>:
+A new or existing user submits a request via the Registry to create a product in the Public Cloud Landing Zone. This assumes the user has already completed an onboarding meeting and is eligible to submit a create request. Upon submission, the following emails may be triggered:</p>
 <ol>
 <li>
-<p><strong>Notification sent to admins</strong> containing:
- <br/>
-<ol type="a">
-<li>Product Details (Name, Description, Ministry, Contacts of PO/TL(s)/EA)</li>
-<li>Landing Zone Details (Provider, Budget details, Account Coding)</li>
-<li>First/Last name of a user who actioned the request</li>
-</ol></p>
+<p><strong>Notification to Admins</strong> containing:</p>
+<ul>
+<li>Product Details: Name, Description, Ministry, and Contacts (PO/TL(s)/EA)</li>
+<li>Landing Zone Details: Cloud Provider, Budget Info, Account Coding</li>
+<li>First/Last name of the user who submitted the request</li>
+</ul>
 </li>
 <li>
-<p><strong>Notification sent to Product PO/TL(s)</strong> containing:
-    <ol type="a">
-<li>Product Details (Name, Description, Ministry, Contacts of PO/TL(s)/EA)</li>
-<li>Landing Zone Details (Provider, Budget details, Account Coding)</li>
-</ol></p>
+<p><strong>Notification to Product PO/TL(s)</strong> containing:</p>
+<ul>
+<li>Product Details: Name, Description, Ministry, and Contacts (PO/TL(s)/EA)</li>
+<li>Landing Zone Details: Cloud Provider, Budget Info, Account Coding</li>
+</ul>
 </li>
 <li>
-<p><strong>Decision: Create request Approval/Rejection by Admin</strong></p>
+<p><strong>Admin Decision: Approve or Reject the Create Request</strong></p>
+<ul>
+<li>
+<p><strong>If Approved</strong>:</p>
+<ul>
+<li><strong>Notification to PO/TL(s)</strong> containing:<ul>
+<li>Product and Landing Zone Details (as above)</li>
+</ul>
+</li>
+<li><strong>Notification to Expense Authority</strong> containing:<ul>
+<li>Product Details, including Licence Plate</li>
+</ul>
+</li>
+</ul>
 </li>
 <li>
-<p><strong>3a.I. Approval sent to PO/TLs</strong> containing:
- <br/>
-<ol type="a">
-<li>Product Details (Name, Description, Ministry, Contacts of PO/TL(s)/EA)</li>
-<li>Landing Zone Details (Provider, Budget details, Account Coding)</li>
-</ol></p>
+<p><strong>If Rejected</strong>:</p>
+<ul>
+<li><strong>Notification to PO/TL(s)</strong> containing:<ul>
+<li>Product Details (as above)</li>
+<li>Admin Review Comments</li>
+</ul>
 </li>
-<li>
-<p><strong>3a.II. Notification sent to Expense Authority</strong> containing:
- <br/>
-<ol type="a">
-<li>Product Details (Name, Description, Ministry, Contacts of PO/TL(s)/EA, Licence Plate)</li>
-</ol></p>
+</ul>
 </li>
-<li>
-<p><strong>3b. Rejection sent to PO/TLs</strong> containing:
- <br/>
-<ol type="a">
-<li>Product Details (Name, Description, Ministry, Contacts of PO/TL(s)/EA)</li>
-<li>Admin review comments</li>
+</ul>
+</li>
 </ol>
-</p>
-</li>
-</ol>
-<pre class="mermaid"><code> flowchart LR
+<pre class="mermaid"><code>flowchart LR
     A((User Submits a <br/> Create Request)) --&gt; B(PublicCloudAdminCreateRequest<br/>PublicCloudCreateRequest)
-    B --&gt; C{Admin decides on the create request}
-    C --&gt;|Create Request Approved and Provisioned| D(PublicCloudRequestProvisioned<br/>ExpenseAuthorityNotification)
-    C --&gt;|Create Request Rejected| E(PublicCloudCreateRejected)
+    B --&gt; C{Admin Decision}
+    C --&gt;|Approved &amp; Provisioned| D(PublicCloudRequestProvisioned<br/>ExpenseAuthorityNotification)
+    C --&gt;|Rejected| E(PublicCloudCreateRejected)
 </code></pre>
-<h2 id="scenario-2-edit-request">Scenario 2. Edit Request<a class="headerlink" href="#scenario-2-edit-request" title="Permanent link">¶</a></h2>
-<p><strong>Description</strong>: A PO/TLs of a product submits a request changing some details of the existing product. Since there is no decision process for editing a product, a summary of the previous and updated changes are triggered.</p>
+<h2 id="scenario-2-edit-request">Scenario 2: Edit Request<a class="headerlink" href="#scenario-2-edit-request" title="Permanent link">¶</a></h2>
+<p><strong>Description</strong>:
+A PO/TL submits an edit request to change product details. Since no approval is needed, a summary email is sent instead.</p>
 <ol>
 <li>
-<p><strong>Summary sent to PO/TLs</strong> containing:
- <br>
-<ol type="a">
+<p><strong>Summary to PO/TL(s)</strong> containing:</p>
+<ul>
 <li>User Comments</li>
-<li>Description Changes (Name, Description, Ministry)</li>
+<li>Description Changes: Name, Description, Ministry</li>
 <li>Contact Changes</li>
 <li>Budget Changes</li>
 <li>Account Coding Changes</li>
-</ol></br></p>
+</ul>
 </li>
 <li>
-<p><strong>If EX changed summary sent to EA</strong> containing:</p>
+<p><strong>If Expense Authority changed, summary to EA</strong> containing:</p>
+<ul>
+<li>Product Details: Name, Description, Ministry, Contacts (PO/TL(s)/EA), and Licence Plate</li>
+</ul>
 </li>
-</ol>
-<ol type="a">
-<li>Product Details (Name, Description, Ministry, Contacts of PO/TL(s)/EA, Licence Plate)</li>
-</ol>
-<pre class="mermaid"><code>   flowchart LR
-     A((User Submits an <br/> Edit Request)) --&gt; |Request Provisioned|B(Edit Request Received sent to PO/TLs)
-   B(PublicCloudEditSummary) --&gt; C{EX changed}
-    C --&gt;|EX was changed| D(ExpenseAuthorityNotification)
-</code></pre>
-<h2 id="scenario-3-delete-request-is-submitted">Scenario 3. Delete request is submitted<a class="headerlink" href="#scenario-3-delete-request-is-submitted" title="Permanent link">¶</a></h2>
-<p><strong>Description</strong>: When a PO/TLs of a product are ready to decomission their product off the Public Cloud Landing Zone the user can submit a delete request and thus the following emails may trigger.</p>
-<ol>
-<li>
-<p><strong>A notification sent to admins</strong> containing:
- <br>
-<ol type="a">
-<li>Product Details (Name, Description, Ministry, Contacts of PO/TL(s))</li>
-<li>Landing Zone Details (Provider, Budget details, Account Coding)</li>
-<li>First/Last name of a user who actioned the request</li>
-</ol></br></p>
-</li>
-<li>
-<p><strong>A summary sent to PO/TLs</strong> containing:
- <br>
-<ol type="a">
-<li>Product Details (Name, Description, Ministry, Contacts of PO/TL(s))</li>
-<li>Landing Zone Details (Provider, Budget details, Account Coding)</li>
-</ol></br></p>
-</li>
-<li>
-<p><strong>Decision: Product Deletion Approval/Rejecton by admins</strong></p>
-</li>
-<li>
-<p><strong>3a. Approval confirmation sent to PO/TLs</strong> containing:
-    <ol type="a">
-<li>Product Details (Name, Description, Ministry, Contacts of PO/TL(s)/EA)</li>
-<li>Landing Zone Details (Provider, Budget details, Account Coding)</li>
-</ol></p>
-</li>
-<li><strong>3a. Rejection sent to PO/TLs</strong> containing:
-    <ol type="a">
-<li>Product Details (Name, Description, Ministry, Contacts of PO/TL(s)/EA)</li>
-<li>Review comments</li>
-</ol></li>
 </ol>
 <pre class="mermaid"><code>flowchart LR
-    A((User submits a <br/> delete request)) --&gt; B(PublicCloudAdminDeleteRequest<br/>PublicCloudDeleteRequest)
-    B --&gt; C{Admin decides on the request}
-    C --&gt;|Request approved| D(PublicCloudDeleteApproved)
-    C --&gt;|Request rejected| E(PublicCloudDeleteRejected)
+    A((User Submits an <br/> Edit Request)) --&gt; B(PublicCloudEditSummary)
+    B --&gt; C{EA Changed?}
+    C --&gt;|Yes| D(ExpenseAuthorityNotification)
+</code></pre>
+<h2 id="scenario-3-delete-request">Scenario 3: Delete Request<a class="headerlink" href="#scenario-3-delete-request" title="Permanent link">¶</a></h2>
+<p><strong>Description</strong>:
+When a PO/TL is ready to decommission their product from the Public Cloud Landing Zone, they submit a delete request. The following emails may be triggered:</p>
+<ol>
+<li>
+<p><strong>Notification to Admins</strong> containing:</p>
+<ul>
+<li>Product Details: Name, Description, Ministry, and Contacts (PO/TL(s))</li>
+<li>Landing Zone Details: Cloud Provider, Budget Info, Account Coding</li>
+<li>First/Last name of the user who submitted the request</li>
+</ul>
+</li>
+<li>
+<p><strong>Summary to PO/TL(s)</strong> containing:</p>
+<ul>
+<li>Product and Landing Zone Details (as above)</li>
+</ul>
+</li>
+<li>
+<p><strong>Admin Decision: Approve or Reject the Delete Request</strong></p>
+<ul>
+<li>
+<p><strong>If Approved</strong>:</p>
+<ul>
+<li><strong>Confirmation to PO/TL(s)</strong> containing:<ul>
+<li>Product and Landing Zone Details</li>
+<li>Expense Authority Contact</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>
+<p><strong>If Rejected</strong>:</p>
+<ul>
+<li><strong>Notification to PO/TL(s)</strong> containing:<ul>
+<li>Product Details (as above)</li>
+<li>Review Comments</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ol>
+<pre class="mermaid"><code>flowchart LR
+    A((User Submits a <br/> Delete Request)) --&gt; B(PublicCloudAdminDeleteRequest<br/>PublicCloudDeleteRequest)
+    B --&gt; C{Admin Decision}
+    C --&gt;|Approved| D(PublicCloudDeleteApproved)
+    C --&gt;|Rejected| E(PublicCloudDeleteRejected)
 </code></pre>
 </article>
 </div>

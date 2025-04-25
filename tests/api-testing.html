@@ -2453,8 +2453,10 @@
 <p>We use <code>Jest</code> to test our application's API endpoints, focusing on access permissions and parameter validations.</p>
 <h2 id="steps-to-add-api-test-scripts">Steps to Add API Test Scripts<a class="headerlink" href="#steps-to-add-api-test-scripts" title="Permanent link">&para;</a></h2>
 <ol>
-<li>Add the corresponding API service methods to encapsulate endpoint information and structure in the <code>/app/services/api-test</code> directory.</li>
+<li>Add the corresponding API service methods to encapsulate endpoint information and structure in the <code>/app/services/api-test</code> directory.<ul>
 <li>The names and method arguments should ideally be similar to those in <code>/app/services/backend</code>.</li>
+</ul>
+</li>
 <li>Add the test script, such as <code>route.test.ts</code>, in the same directory as the API route file.</li>
 <li>The test script should focus on the permission checks and parameter validations of the route itself. When using other endpoint methods from <code>/app/services/api-test</code>, only check the status codes to prevent the test script from becoming overly bloated with excessive validations; concentrate on the route tests for each test script.</li>
 </ol>

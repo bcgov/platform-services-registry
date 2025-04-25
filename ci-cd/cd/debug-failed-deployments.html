@@ -2517,32 +2517,32 @@
 </ol>
 <h3 id="using-the-cli">Using the CLI<a class="headerlink" href="#using-the-cli" title="Permanent link">&para;</a></h3>
 <ol>
-<li><strong>Check the current status</strong> of the release:</li>
-</ol>
+<li>
+<p><strong>Check the current status</strong> of the release:</p>
 <div class="language-bash highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-0-1">1</a></span></pre></div></td><td class="code"><div><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1"></a>helm<span class="w"> </span>status<span class="w"> </span>pltsvc
 </span></code></pre></div></td></tr></table></div>
-<ol>
-<li><strong>List all revisions</strong> for the <code>pltsvc</code> release:</li>
-</ol>
+</li>
+<li>
+<p><strong>List all revisions</strong> for the <code>pltsvc</code> release:</p>
 <div class="language-bash highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-1-1">1</a></span></pre></div></td><td class="code"><div><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1"></a>helm<span class="w"> </span><span class="nb">history</span><span class="w"> </span>pltsvc
 </span></code></pre></div></td></tr></table></div>
 <p>This command displays the release history, showing revision numbers and statuses such as <code>DEPLOYED</code>, <code>FAILED</code>, or <code>SUPERSEDED</code>.</p>
-<ol>
+</li>
 <li>
 <p><strong>Identify the last successful release</strong>:
    Look for the latest revision with a <code>DEPLOYED</code> status.</p>
 </li>
 <li>
 <p><strong>Rollback to the desired revision</strong>:</p>
-</li>
-</ol>
 <div class="language-bash highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-2-1">1</a></span></pre></div></td><td class="code"><div><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1"></a>helm<span class="w"> </span>rollback<span class="w"> </span>pltsvc<span class="w"> </span>&lt;revision_number&gt;
 </span></code></pre></div></td></tr></table></div>
 <p>Replace <code>&lt;revision_number&gt;</code> with the number of the last successful revision.</p>
-<ol>
-<li><strong>Verify the rollback</strong> by checking the release status:
-   <div class="language-bash highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-3-1">1</a></span></pre></div></td><td class="code"><div><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1"></a>helm<span class="w"> </span>status<span class="w"> </span>pltsvc
-</span></code></pre></div></td></tr></table></div></li>
+</li>
+<li>
+<p><strong>Verify the rollback</strong> by checking the release status:
+    <div class="language-bash highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-3-1">1</a></span></pre></div></td><td class="code"><div><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1"></a>helm<span class="w"> </span>status<span class="w"> </span>pltsvc
+</span></code></pre></div></td></tr></table></div></p>
+</li>
 </ol>
 
 

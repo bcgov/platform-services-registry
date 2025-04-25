@@ -2398,13 +2398,15 @@
 <h1 id="release-tag-dispatch-workflow">Release Tag Dispatch Workflow<a class="headerlink" href="#release-tag-dispatch-workflow" title="Permanent link">&para;</a></h1>
 <p>When creating a new tag using the repository's default <code>GITHUB_TOKEN</code> to perform tasks on behalf of the GitHub Actions, events triggered by the <code>GITHUB_TOKEN</code> will not create a new workflow run. To address this behavior, we need to set up an <code>SSH Key</code> when fetching the repository in the pipeline.</p>
 <ol>
-<li>Generate a new OpenSSH Key:</li>
-</ol>
+<li>
+<p>Generate a new OpenSSH Key:</p>
 <div class="language-sh highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-0-1">1</a></span></pre></div></td><td class="code"><div><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1"></a>ssh-keygen<span class="w"> </span>-t<span class="w"> </span>ed25519<span class="w"> </span>-f<span class="w"> </span>id_ed25519<span class="w"> </span>-N<span class="w"> </span><span class="s2">&quot;&quot;</span><span class="w"> </span>-q<span class="w"> </span>-C<span class="w"> </span><span class="s2">&quot;&quot;</span>
 </span></code></pre></div></td></tr></table></div>
 <p>This command will generate a private key <code>id_ed25519</code> and a corresponding public key <code>id_ed25519.pub</code> in the working directory.</p>
-<ol>
-<li>Add the private key to GitHub's <code>Secrets</code>, naming it <code>SSH_KEY</code> in the repository.</li>
+</li>
+<li>
+<p>Add the private key to GitHub's <code>Secrets</code>, naming it <code>SSH_KEY</code> in the repository.</p>
+</li>
 <li>Add the public key to GitHub's <code>Deploy keys</code>, also naming it <code>SSH_KEY</code> in the repository.</li>
 <li>In the GitHub Actions, specify the <code>ssh-key</code> option:</li>
 </ol>

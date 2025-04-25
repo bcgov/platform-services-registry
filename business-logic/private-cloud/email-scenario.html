@@ -946,26 +946,24 @@
 This is assuming the user has already had an onboarding meeting, and meets the requirements for submitting a create request. Upon submitting the create request, the following emails may trigger.</p>
 <ol>
 <li>
-<p><strong>Notification sent to admins</strong> containing:
- <br/>
-<ol type="a">
+<p><strong>Notification sent to admins</strong> containing:</p>
+<ul>
 <li>Product Details (Name, Description, Ministry, Contacts of PO/TL(s), Cluster)</li>
 <li>Actioned by text (who submitted the request)</li>
-</ol></p>
+</ul>
 </li>
 <li>
-<p><strong>Notification sent to Product PO/TL(s)</strong> containing:
-    <ol type="a">
+<p><strong>Notification sent to Product PO/TL(s)</strong> containing:</p>
+<ul>
 <li>Product Details (Name, Description, Ministry, Contacts of PO/TL(s), Cluster)</li>
-</ol></p>
+</ul>
 </li>
 <li>
 <p><strong>Decision: Create request Approval/Rejection by Admin</strong></p>
-</li>
+<ul>
 <li>
-<p><strong>3a. Approval sent to PO/TLs</strong> containing:
- <br/>
-<ol type="a">
+<p><strong>3a. Approval sent to PO/TLs</strong> containing:</p>
+<ul>
 <li>Product Details (Name, Description, Ministry, Contacts of PO/TL(s))</li>
 <li>Namespace Details (Cluster, Link to all four namespaces, Default values of namespaces)</li>
 <li>Security Tools Info</li>
@@ -973,17 +971,16 @@ This is assuming the user has already had an onboarding meeting, and meets the r
 <li>Vault Info</li>
 <li>ACS Info</li>
 <li>Sysdig Info</li>
-</ol>
-</p>
+</ul>
 </li>
 <li>
-<p><strong>3b. Rejection sent to PO/TLs</strong> containing:
- <br/>
-<ol type="a">
+<p><strong>3b. Rejection sent to PO/TLs</strong> containing:</p>
+<ul>
 <li>Product Details (Name)</li>
 <li>Admin review comments</li>
-</ol>
-</p>
+</ul>
+</li>
+</ul>
 </li>
 </ol>
 <pre class="mermaid"><code>flowchart LR
@@ -993,50 +990,46 @@ This is assuming the user has already had an onboarding meeting, and meets the r
     C --&gt;|Create Request Rejected| E(PrivateCloudCreateRejected)
 </code></pre>
 <h2 id="scenario-2-edit-request-resource-quota-increase">Scenario 2. Edit Request: Resource Quota Increase<a class="headerlink" href="#scenario-2-edit-request-resource-quota-increase" title="Permanent link">¶</a></h2>
-<p><strong>Description</strong>: A PO/TLs of a product submits a request for more CPU, memory, and/or storage of 1 or more namepspaces. Upon submitting the edit resource request, the following emails will trigger.</p>
+<p><strong>Description</strong>: A PO/TLs of a product submits a request for more CPU, memory, and/or storage of 1 or more namespaces. Upon submitting the edit resource request, the following emails will trigger.</p>
 <ol>
 <li>
-<p><strong>Notification sent to admins</strong> containing:
- <br>
-<ol type="a">
+<p><strong>Notification sent to admins</strong> containing:</p>
+<ul>
 <li>Description Changes (Product Name, Description, Ministry)</li>
 <li>Contact Changes (Product Owner, Primary Technical Lead, Secondary Technical Lead)</li>
 <li>Comments by user if provided</li>
 <li>Resource Quotas with Current and Requested</li>
 <li>Actioned by text (who submitted the request)</li>
-</ol></br></p>
+</ul>
 </li>
 <li>
-<p><strong>Notification sent to PO/TL(s)</strong> containing:
- <br>
-<ol type="a">
+<p><strong>Notification sent to PO/TL(s)</strong> containing:</p>
+<ul>
 <li>Description Changes (Product Name, Description, Ministry)</li>
 <li>Contact Changes (Product Owner, Primary Technical Lead, Secondary Technical Lead)</li>
 <li>Comments by user if provided</li>
 <li>Resource Quotas with Current and Requested</li>
-</ol></br></p>
+</ul>
 </li>
 <li>
 <p><strong>Decision: Resource Quota Edit Request Approval/Rejection by admins</strong></p>
-</li>
+<ul>
 <li>
-<p><strong>3a. Approval sent to PO/TLs</strong> containing:
- <br/>
-<ol type="a">
+<p><strong>3a. Approval sent to PO/TLs</strong> containing:</p>
+<ul>
 <li>Product Details (Name, Description, Ministry, Contacts of PO/TL(s))</li>
 <li>Namespace Details with Previous and Approved values (Cluster, Link to all four namespaces)</li>
-</ol>
-</p>
+</ul>
 </li>
 <li>
-<p><strong>3b. Rejection Sub-Scenario</strong> containing:
- <br/>
-<ol type="a">
+<p><strong>3b. Rejection Sub-Scenario</strong> containing:</p>
+<ul>
 <li>Product Details (Name, Description, Ministry, Contacts of PO/TL(s))</li>
 <li>Admin review comments</li>
 <li>Namespace Details with Previous and Rejected values (Cluster, Link to all four namespaces)</li>
-</ol>
-</p>
+</ul>
+</li>
+</ul>
 </li>
 </ol>
 <pre class="mermaid"><code>flowchart LR
@@ -1049,9 +1042,7 @@ This is assuming the user has already had an onboarding meeting, and meets the r
 <h2 id="scenario-3-edit-request-no-resource-quota-increase">Scenario 3. Edit Request: No Resource Quota Increase<a class="headerlink" href="#scenario-3-edit-request-no-resource-quota-increase" title="Permanent link">¶</a></h2>
 <p><strong>Description</strong>: When a PO/TLs of a product edit their product where there is no increase in resources requested, the following emails will trigger.</p>
 <ol>
-<li><strong>Summary of the changes provisioned sent to PO/TLs</strong> containing:
- <br>
-<ol type="a">
+<li><strong>Summary of the changes provisioned sent to PO/TLs</strong> containing:<ul>
 <li>Updated Description Changes (Product Name, Description, Ministry)</li>
 <li>Updated Contact Changes</li>
 <li>Updated Resource Quota Downgrades</li>
@@ -1059,52 +1050,47 @@ This is assuming the user has already had an onboarding meeting, and meets the r
 <li>Contact Changes (Product Owner, Primary Technical Lead, Secondary Technical Lead)</li>
 <li>Comments by user if provided</li>
 <li>Resource Quotas with Current and Requested</li>
-</ol>
-</br></li>
+</ul>
+</li>
 </ol>
 <pre class="mermaid"><code>flowchart LR
     A((User Submits Edit w/ <br/> No Resource Increase)) --&gt;|Request Automatically Approved and Provisioned| C(PrivateCloudEditApprovedAndProvisioned)
-
 </code></pre>
 <h2 id="scenario-4-mixed-edit-request-quota-increase-and-contact-change">Scenario 4. Mixed Edit Request: Quota Increase and Contact Change<a class="headerlink" href="#scenario-4-mixed-edit-request-quota-increase-and-contact-change" title="Permanent link">¶</a></h2>
 <p><strong>Description</strong>: When a PO/TLs of a product edit their product with both Quota Increase and Contact Change.</p>
 <ol>
 <li>
-<p><strong>A notification sent to admins</strong> containing:
-    <ol type="a">
+<p><strong>A notification sent to admins</strong> containing:</p>
+<ul>
 <li>Comments by user if provided</li>
 <li>Name, Description, Ministry, Cluster, Contacts (all can be with Current and Requested sections if they are changed)</li>
 <li>Quota Changes with Current and Requested sections</li>
-</ol></p>
+</ul>
 </li>
 <li>
-<p><strong>Summary of changes submitted sent to PO/TLs</strong> containing:
- <br>
-<ol type="a">
+<p><strong>Summary of changes submitted sent to PO/TLs</strong> containing:</p>
+<ul>
 <li>Product Details that were changed, Current and Requested (Name, Description, Ministry, Contacts of PO/TL(s), Quota)</li>
-</ol>
-</br></p>
+</ul>
 </li>
 <li>
 <p><strong>Decision: Mixed Quota Increase and Contact Change Request Approval/Rejection by admins</strong></p>
-</li>
+<ul>
 <li>
-<p><strong>3a. Approval sent to PO/TLs</strong> containing:
- <br>
-<ol type="a">
+<p><strong>3a. Approval sent to PO/TLs</strong> containing:</p>
+<ul>
 <li>Product Details (Name, Description, Ministry, Contacts of PO/TL(s))</li>
 <li>Namespace Details with Previous and Approved values (with link to the namespace that changes were made on)</li>
-</ol>
-</br></p>
+</ul>
 </li>
 <li>
-<p><strong>3b. Rejection Sub-Scenario</strong> containing:
- <br>
-<ol type="a">
+<p><strong>3b. Rejection Sub-Scenario</strong> containing:</p>
+<ul>
 <li>Product Details that were changed with Current and Rejected Quota</li>
 <li>Admin review comments</li>
-</ol>
-</br></p>
+</ul>
+</li>
+</ul>
 </li>
 </ol>
 <pre class="mermaid"><code>flowchart LR
@@ -1115,38 +1101,40 @@ This is assuming the user has already had an onboarding meeting, and meets the r
     D --&gt;|Changes provisioned| F(PrivateCloudResourceRequestCompleted)
 </code></pre>
 <h2 id="scenario-5-delete-request-is-submitted">Scenario 5. Delete request is submitted<a class="headerlink" href="#scenario-5-delete-request-is-submitted" title="Permanent link">¶</a></h2>
-<p><strong>Description</strong>: When a PO/TLs of a product have removed all PVC's and resources deployed on their namespaces of a given product, then a user is eligible to submit a delete request. Upon a successful deletion check the user can submit the delete request and thus the following emails may trigger.</p>
+<p><strong>Description</strong>: When a PO/TLs of a product have removed all PVCs and resources deployed on their namespaces of a given product, then a user is eligible to submit a delete request. Upon a successful deletion check the user can submit the delete request and thus the following emails may trigger.</p>
 <ol>
 <li>
-<p><strong>A notification sent to admins</strong> containing:
- <br>
-<ol type="a">
+<p><strong>A notification sent to admins</strong> containing:</p>
+<ul>
 <li>Product Details (Name, Description, Ministry, Contacts of PO/TL(s))</li>
 <li>Actioned by text (who submitted the request)</li>
-</ol></br></p>
+</ul>
 </li>
 <li>
-<p><strong>A summary sent to PO/TLs</strong> containing:
- <br>
-<ol type="a">
-<li>Product Details (Name, Description, Ministry, Contacts of PO/TL(s))</li>
-<li>Namespace Details (Cluster and Link to the 4 namespaces)<li>
-</li></li></ol></br></p>
-</li>
-<li>
-<p><strong>Decision: Product Deletion Approval/Rejecton by admins</strong></p>
-</li>
-<li>
-<p><strong>3a. Approval confirmation sent to PO/TLs</strong> containing:
-    <ol type="a">
+<p><strong>A summary sent to PO/TLs</strong> containing:</p>
+<ul>
 <li>Product Details (Name, Description, Ministry, Contacts of PO/TL(s))</li>
 <li>Namespace Details (Cluster and Link to the 4 namespaces)</li>
-</ol></p>
+</ul>
 </li>
-<li><strong>3a. Rejection sent to PO/TLs</strong> containing:
-    <ol type="a">
+<li>
+<p><strong>Decision: Product Deletion Approval/Rejection by admins</strong></p>
+<ul>
+<li>
+<p><strong>3a. Approval confirmation sent to PO/TLs</strong> containing:</p>
+<ul>
+<li>Product Details (Name, Description, Ministry, Contacts of PO/TL(s))</li>
+<li>Namespace Details (Cluster and Link to the 4 namespaces)</li>
+</ul>
+</li>
+<li>
+<p><strong>3b. Rejection sent to PO/TLs</strong> containing:</p>
+<ul>
 <li>Review comments</li>
-</ol></li>
+</ul>
+</li>
+</ul>
+</li>
 </ol>
 <pre class="mermaid"><code>flowchart LR
     A((User submits a <br/> delete request)) --&gt; B(PrivateCloudAdminDeleteRequest<br/>PrivateCloudDeleteRequest)

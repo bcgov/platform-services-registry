@@ -2494,23 +2494,25 @@
 <h2 id="development-email-templates-server">Development Email-Templates Server<a class="headerlink" href="#development-email-templates-server" title="Permanent link">&para;</a></h2>
 <p>This package comes with a <a href="https://react.email/docs/cli">CLI</a> that creates a dev server for you to view the emails.</p>
 <ol>
-<li>Run the react-email development server that will run on <code>localhost:3001</code></li>
-</ol>
+<li>
+<p>Run the react-email development server that will run on <code>localhost:3001</code></p>
 <div class="language-sh highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-0-1">1</a></span></pre></div></td><td class="code"><div><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1"></a>npm<span class="w"> </span>run<span class="w"> </span>email
 </span></code></pre></div></td></tr></table></div>
 <ul>
-<li>
-<p>If you want to view images, you will also have to run the normal development server with <code>npm run dev</code></p>
+<li>If you want to view images, you will also have to run the normal development server with <code>npm run dev</code></li>
+</ul>
 </li>
 <li>
 <p>Go to http://localhost:3001/ to view the email dashboard</p>
 </li>
 <li>
 <p>react-email will only display the .tsx files in the base <code>emails</code> folder</p>
-</li>
+<ul>
 <li>The <code>templates</code> folder contains the templates that are called by the emailHandler</li>
 <li><code>/components/params.tsx</code> contains the mock data to view the email templates</li>
 </ul>
+</li>
+</ol>
 <h2 id="react-email-commands">React-Email Commands<a class="headerlink" href="#react-email-commands" title="Permanent link">&para;</a></h2>
 <p>react-email comes with a <code>dev</code>, <code>build</code>, <code>start</code> and <code>export</code> command. The way these commands can be called are found within the <code>package.json</code> script.</p>
 <p>The <code>dev</code>, <code>build</code> and <code>start</code> commands work like your normal npm commands, with the difference being that project it generates is a dashboard which shows your email templates. They create a folder called .react-email which can essentially be treated as another project folder. It is important to note that running these commands in the will overwrite some of the folders in .react-email, such as the package.json file.</p>
