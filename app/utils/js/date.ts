@@ -96,3 +96,9 @@ export function getNumberOfDaysForYear(year = new Date().getFullYear()) {
 export function getMinutesInYear(year = new Date().getFullYear()) {
   return getNumberOfDaysForYear(year) * 24 * 60;
 }
+
+export function getNowInPacificTime(): Date {
+  const now = new Date();
+  const pacificString = now.toLocaleString('en-US', { timeZone: 'America/Vancouver' });
+  return new Date(pacificString);
+}

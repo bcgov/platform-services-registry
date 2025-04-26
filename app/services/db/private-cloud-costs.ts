@@ -6,7 +6,7 @@ import _reduce from 'lodash-es/reduce';
 import { namespaceKeys } from '@/constants';
 import prisma from '@/core/prisma';
 import { PrivateCloudRequestWithDecisionData } from '@/types/private-cloud';
-import { dateToShortDateString, getMinutesInYear } from '@/utils/js/date';
+import { dateToShortDateString, getMinutesInYear, getNowInPacificTime } from '@/utils/js/date';
 
 export interface CostItem {
   startDate: Date;
@@ -70,7 +70,7 @@ export async function getCostItemsForRange(
   }
 
   changePoints.add(startDate.getTime());
-  changePoints.add(new Date().getTime());
+  changePoints.add(getNowInPacificTime().getTime());
   changePoints.add(endDate.getTime());
 
   const sortedChangePoints = _orderBy(Array.from(changePoints), [], 'asc').map((ms) => new Date(ms));
@@ -206,7 +206,8 @@ export async function getAdminMonthlyCosts(year: number, month: number) {
   const items = await Promise.all(
     products.map(async (product) => {
       const monthly = await getMonthlyCosts(product.licencePlate, year, month);
-      const cost = (monthly.cpuCost ?? 0) + (monthly.storageCost ?? 0);
+      const cost = monthly.grandTotal > -1 ? monthly.grandTotal : monthly.currentTotal ?? 0;
+
       return {
         product,
         cost,
