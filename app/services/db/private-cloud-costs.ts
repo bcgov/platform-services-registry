@@ -206,7 +206,7 @@ export async function getAdminMonthlyCosts(year: number, month: number) {
   const items = await Promise.all(
     products.map(async (product) => {
       const monthly = await getMonthlyCosts(product.licencePlate, year, month);
-      const cost = monthly.grandTotal > -1 ? monthly.grandTotal : monthly.estimatedGrandTotal ?? 0;
+      const cost = (monthly.cpuCost ?? 0) + (monthly.storageCost ?? 0);
       return {
         product,
         cost,
