@@ -76,7 +76,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#airflow" class="md-skip">
+        <a href="#apache-airflow" class="md-skip">
           Skip to content
         </a>
       
@@ -585,6 +585,19 @@
         
       
       
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    Airflow
+    
+  </span>
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
       <a href="airflow.html" class="md-nav__link md-nav__link--active">
         
   
@@ -596,6 +609,76 @@
   
 
       </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#key-points" class="md-nav__link">
+    <span class="md-ellipsis">
+      Key Points
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#executor-type" class="md-nav__link">
+    <span class="md-ellipsis">
+      Executor Type
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#dag-synchronization" class="md-nav__link">
+    <span class="md-ellipsis">
+      DAG Synchronization
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="DAG Synchronization">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#considerations" class="md-nav__link">
+    <span class="md-ellipsis">
+      Considerations
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#deployment-and-secrets" class="md-nav__link">
+    <span class="md-ellipsis">
+      Deployment and Secrets
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
       
     </li>
   
@@ -2376,6 +2459,65 @@
     
   
   
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#key-points" class="md-nav__link">
+    <span class="md-ellipsis">
+      Key Points
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#executor-type" class="md-nav__link">
+    <span class="md-ellipsis">
+      Executor Type
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#dag-synchronization" class="md-nav__link">
+    <span class="md-ellipsis">
+      DAG Synchronization
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="DAG Synchronization">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#considerations" class="md-nav__link">
+    <span class="md-ellipsis">
+      Considerations
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#deployment-and-secrets" class="md-nav__link">
+    <span class="md-ellipsis">
+      Deployment and Secrets
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
 </nav>
                   </div>
                 </div>
@@ -2393,8 +2535,46 @@
   
 
 
-<h1 id="airflow">Airflow<a class="headerlink" href="#airflow" title="Permanent link">&para;</a></h1>
-<p><strong><em>TO BE COMPLETED</em></strong></p>
+<h1 id="apache-airflow">Apache Airflow<a class="headerlink" href="#apache-airflow" title="Permanent link">&para;</a></h1>
+<p>Scheduled tasks are a common requirement in applications, and the Registry app also needs to run regular jobs. Among the available options — such as Kubernetes CronJobs or a custom-built service — we decided to deploy one of the most popular open-source scheduling platforms: <strong>Apache Airflow</strong>, a system designed for orchestrating and managing complex workflows and data pipelines.</p>
+<h2 id="key-points">Key Points<a class="headerlink" href="#key-points" title="Permanent link">&para;</a></h2>
+<ul>
+<li>Workflows are defined as Python code, called <strong>DAGs</strong> (Directed Acyclic Graphs).</li>
+<li>Each task in a DAG can perform actions such as running a script, moving files, triggering an API, or loading data into a database.</li>
+<li>Airflow provides features like task retries, pause/resume functionality, scheduling (similar to cron jobs), and monitoring via a web UI.</li>
+</ul>
+<h2 id="executor-type">Executor Type<a class="headerlink" href="#executor-type" title="Permanent link">&para;</a></h2>
+<p>Airflow supports multiple types of executors that determine <strong>how</strong> tasks are run:</p>
+<ul>
+<li><strong>Sequential Executor</strong>: Runs tasks one at a time. Mainly used for local development or testing.</li>
+<li><strong>Local Executor</strong>: Runs multiple tasks in parallel on the same machine.</li>
+<li><strong>Celery Executor</strong>: Distributes tasks across multiple worker machines using a message broker (like RabbitMQ or Redis).</li>
+<li><strong>Kubernetes Executor</strong>: Creates a new Kubernetes pod for each task, achieving full task-level isolation and scalability.</li>
+</ul>
+<p>We use the <strong>Kubernetes Executor</strong> for the following benefits:</p>
+<ul>
+<li><strong>Dynamic scalability</strong>: Each task runs in its own isolated pod, allowing better resource management.</li>
+<li><strong>Improved fault isolation</strong>: Failures in one task do not affect others.</li>
+<li><strong>Native Kubernetes integration</strong>: Airflow tasks can natively use Kubernetes features like pod auto-scaling, node pools, and custom resource configurations.</li>
+<li><strong>No need for a separate worker pool</strong>: Unlike Celery, the Kubernetes Executor does not require maintaining a separate fleet of workers.</li>
+</ul>
+<p>This setup aligns well with our infrastructure strategy, as the platform is already Kubernetes-based.</p>
+<h2 id="dag-synchronization">DAG Synchronization<a class="headerlink" href="#dag-synchronization" title="Permanent link">&para;</a></h2>
+<p>All Airflow DAGs are located in the <code>helm/tools/dags</code> directory. They are synchronized to the Airflow deployment by mounting a Kubernetes <code>ConfigMap</code> to the Airflow service's <code>dags</code> directory. Although other synchronization methods exist (e.g., syncing via Git-Sync Sidecar), we chose this approach because it is straightforward and the number of DAGs is currently small.</p>
+<p>To sync DAGs without triggering a full Airflow redeployment (to reduce deployment time), run:</p>
+<div class="language-sh highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-0-1">1</a></span>
+<span class="normal"><a href="#__codelineno-0-2">2</a></span></pre></div></td><td class="code"><div><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1"></a><span class="nb">cd</span><span class="w"> </span>helm/tools
+</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2"></a>make<span class="w"> </span>dags
+</span></code></pre></div></td></tr></table></div>
+<h3 id="considerations">Considerations<a class="headerlink" href="#considerations" title="Permanent link">&para;</a></h3>
+<p>Because DAGs are uploaded via a <a href="./templates/templates/configmap.yaml">ConfigMap</a>, there is a <strong>1MB size limit</strong> for the total DAG files.
+If the DAG files exceed this limit in the future, alternative synchronization methods will need to be explored.</p>
+<h2 id="deployment-and-secrets">Deployment and Secrets<a class="headerlink" href="#deployment-and-secrets" title="Permanent link">&para;</a></h2>
+<p>Airflow is deployed as part of the group of tools in the <code>tools</code> namespace. Two secrets must be managed manually:</p>
+<ul>
+<li><code>airflow-ui-creds</code>: Contains the admin credentials for the Airflow UI console.</li>
+<li><code>airflow-variables</code>: Stores environment variables used by Airflow tasks.</li>
+</ul>
 
 
 
