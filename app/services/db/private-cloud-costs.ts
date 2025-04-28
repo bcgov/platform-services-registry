@@ -1,9 +1,7 @@
 import { DecisionStatus, Prisma, RequestType } from '@prisma/client';
 import _cloneDeep from 'lodash-es/cloneDeep';
-import _filter from 'lodash-es/filter';
 import _find from 'lodash-es/find';
 import _orderBy from 'lodash-es/orderBy';
-import _reduce from 'lodash-es/reduce';
 import { namespaceKeys } from '@/constants';
 import prisma from '@/core/prisma';
 import { dateToShortDateString, getMinutesInYear, getDateFromYyyyMmDd } from '@/utils/js/date';
@@ -162,16 +160,16 @@ async function getCostDetailsForRange(licencePlate: string, startDate: Date, end
         if (isPast) {
           cpu.costToDate += environments[env].cpu.cost;
           storage.costToDate += environments[env].storage.cost;
-          total.costToDate += cpu.costToDate + storage.costToDate;
+          total.costToDate += environments[env].subtotal.cost;
         } else {
           cpu.costToProjected += environments[env].cpu.cost;
           storage.costToProjected += environments[env].storage.cost;
-          total.costToProjected += cpu.costToProjected + storage.costToProjected;
+          total.costToProjected += environments[env].subtotal.cost;
         }
 
         cpu.costToTotal += environments[env].cpu.cost;
         storage.costToTotal += environments[env].storage.cost;
-        total.costToTotal += cpu.costToTotal + storage.costToTotal;
+        total.costToTotal += environments[env].subtotal.cost;
       }
     }
 
@@ -197,7 +195,7 @@ export async function getMonthlyCosts(licencePlate: string, year: number, oneInd
   const now = new Date();
 
   const isCurrentMonth = now.getFullYear() === year && now.getMonth() === oneIndexedMonth - 1;
-  const { items, cpu, storage, total } = await getCostDetailsForRange(licencePlate, startDate, endDate);
+  const { items, total } = await getCostDetailsForRange(licencePlate, startDate, endDate);
 
   let currentTotal = -1;
   let estimatedGrandTotal = -1;
