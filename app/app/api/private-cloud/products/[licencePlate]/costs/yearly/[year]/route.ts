@@ -17,6 +17,6 @@ export const GET = createApiHandler({
   },
 })(async ({ pathParams }) => {
   const { licencePlate, year } = pathParams;
-  const yearlyCosts = await getYearlyCosts(licencePlate, year);
-  return OkResponse(yearlyCosts);
+  const result = await getYearlyCosts(licencePlate, year);
+  return OkResponse(result);
 });

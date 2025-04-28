@@ -141,10 +141,6 @@ export type PrivateCloudComment = Prisma.PrivateCloudCommentGetPayload<{
   };
 }>;
 
-export type PrivateCloudRequestWithDecisionData = Prisma.PrivateCloudRequestGetPayload<{
-  include: { decisionData: true };
-}>;
-
 export type PrivateCloudProductWebhookDetail = Prisma.PrivateCloudProductWebhookGetPayload<object>;
 export type PrivateCloudProductWebhookDetailDecorated = PrivateCloudProductWebhookDetail &
   PrivateCloudProductWebhookDecorate;

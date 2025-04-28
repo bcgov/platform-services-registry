@@ -16,6 +16,7 @@ export const GET = createApiHandler({
 })(async ({ pathParams }) => {
   const { 'year-month': yearMonth } = pathParams;
   const [year, month] = yearMonth.split('-').map(Number);
-  const monthlyCosts = await getAdminMonthlyCosts(year, month);
-  return OkResponse(monthlyCosts);
+
+  const result = await getAdminMonthlyCosts(year, month);
+  return OkResponse(result);
 });
