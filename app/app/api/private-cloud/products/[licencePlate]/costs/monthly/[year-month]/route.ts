@@ -18,6 +18,6 @@ export const GET = createApiHandler({
 })(async ({ pathParams }) => {
   const { licencePlate, 'year-month': yearMonth } = pathParams;
   const [year, month] = yearMonth.split('-').map(Number);
-  const monthlyCosts = await getMonthlyCosts(licencePlate, year, month);
-  return OkResponse(monthlyCosts);
+  const result = await getMonthlyCosts(licencePlate, year, month);
+  return OkResponse(result);
 });
