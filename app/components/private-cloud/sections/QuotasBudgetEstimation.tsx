@@ -7,7 +7,7 @@ import { Fragment } from 'react';
 import { namespaceKeys, resourceKeys } from '@/constants';
 import { ResourceRequestsEnv } from '@/prisma/client';
 import { useAppState } from '@/states/global';
-import { cn, formatCurrency } from '@/utils/js';
+import { cn, formatCurrency, isLeapYear } from '@/utils/js';
 
 function Estimation({ value, price, unit, diff = 0 }: { value: number; price: number; unit: string; diff?: number }) {
   const increased = diff > 0;
@@ -152,11 +152,6 @@ function EnvDetails({
       {summary}
     </>
   );
-}
-
-function isLeapYear() {
-  const year = new Date().getFullYear();
-  return (year % 4 === 0 && year % 100 !== 0) || year % 400 === 0;
 }
 
 export default function QuotasBudgetEstimation({
