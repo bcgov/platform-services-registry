@@ -157,3 +157,21 @@ export async function getQuotaChangeStatus(licencePlate: string, resourceRequest
   const response = await instance.post<QuotaChangeStatus>(`/${licencePlate}/quota-change-status`, { resourceRequests });
   return response.data;
 }
+
+export async function getMonthlyCosts(licencePlate: string, yearMonth: string) {
+  const response = await instance.get(`/${licencePlate}/costs/monthly/${yearMonth}`).then((res) => res.data);
+  return response;
+}
+
+export async function downloadPrivateCloudMonthlyCosts(licencePlate: string, yearMonth: string) {
+  console.log('year-month', yearMonth);
+  const result = await instance
+    .post(`/${licencePlate}/costs/monthly/${yearMonth}/download`, {}, { responseType: 'blob' })
+    .then((res) => {
+      if (res.status === 204) return false;
+      downloadFile(res.data, `monthly-costs-${yearMonth}.csv`);
+      return true;
+    });
+
+  return result;
+}

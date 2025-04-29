@@ -1,5 +1,5 @@
 import { z } from 'zod';
-// import { GlobalRole, GlobalPermissions } from '@/constants';
+import { GlobalRole, GlobalPermissions } from '@/constants';
 import createApiHandler from '@/core/api-handler';
 import { OkResponse } from '@/core/responses';
 import { getMonthlyCosts } from '@/services/db/private-cloud-costs';
@@ -10,7 +10,7 @@ const pathParamSchema = z.object({
 });
 
 export const GET = createApiHandler({
-  // roles: [GlobalRole.User],
+  roles: [GlobalRole.User],
   // permissions: [],
   validations: {
     pathParams: pathParamSchema,
