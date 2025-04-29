@@ -93,7 +93,7 @@ function createApiHandler<
             });
 
             if (!jwtData) {
-              return UnauthorizedResponse('invalid token');
+              return UnauthorizedResponse('token verification failed: missing or invalid claims');
             }
           } else if (useServiceAccount) {
             const bearerToken = req.headers.get('authorization');
@@ -109,14 +109,14 @@ function createApiHandler<
             });
 
             if (!jwtData) {
-              return UnauthorizedResponse('invalid token');
+              return UnauthorizedResponse('token verification failed: missing or invalid claims');
             }
 
             const saType = jwtData.service_account_type;
 
             if (saType === 'user') {
               const kcUserId = jwtData['kc-userid'];
-              if (!kcUserId) return UnauthorizedResponse('invalid token');
+              if (!kcUserId) return UnauthorizedResponse("token missing required 'kc-userid' claim");
 
               const kcUser = await findUser(kcUserId);
               if (!kcUser) return BadRequestResponse('keycloak user not found');
@@ -156,7 +156,7 @@ function createApiHandler<
                 },
               });
             } else {
-              return UnauthorizedResponse('invalid token');
+              return UnauthorizedResponse('invalid service account type');
             }
           }
         }
