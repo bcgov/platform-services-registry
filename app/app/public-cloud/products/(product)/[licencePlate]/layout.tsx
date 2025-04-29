@@ -1,6 +1,9 @@
 'use client';
 
+import { Alert } from '@mantine/core';
+import { IconInfoCircle } from '@tabler/icons-react';
 import { useQuery } from '@tanstack/react-query';
+import Link from 'next/link';
 import { useEffect, useState } from 'react';
 import { z } from 'zod';
 import PublicCloudProductOptions from '@/components/dropdowns/PublicCloudProductOptions';
@@ -93,7 +96,18 @@ export default publicCloudProductSecurityACS(({ getPathParams, children }) => {
         <ProductBadge data={snap.currentProduct} />
       </h1>
       <h3 className="mt-0 italic"> Public Cloud Landing Zone</h3>
-
+      {snap.currentProduct.requests.length > 0 && (
+        <Alert variant="light" color="blue" title="" icon={<IconInfoCircle />}>
+          There is already an{' '}
+          <Link
+            className="underline text-blue-500 font-bold text-lg"
+            href={`/public-cloud/requests/${snap.currentProduct.requests[0].id}/request`}
+          >
+            active request
+          </Link>{' '}
+          for this product. You can not edit this product at this time.
+        </Alert>
+      )}
       <Tabs tabs={tabs}>
         <PublicCloudProductOptions disabled={!currentProduct?._permissions?.delete} />
       </Tabs>
