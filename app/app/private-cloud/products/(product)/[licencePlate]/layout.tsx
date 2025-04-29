@@ -78,7 +78,7 @@ export default privateCloudProductLayout(({ getPathParams, session, children }) 
     });
   }
 
-  if (!session?.previews.costRecovery) {
+  if (session?.previews.costRecovery) {
     tabs.push({
       label: 'MONTHLY COST',
       name: 'monthly cost',

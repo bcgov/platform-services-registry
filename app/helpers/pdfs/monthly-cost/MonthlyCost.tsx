@@ -1,6 +1,7 @@
 import React from 'react';
-import { formatDate } from '@/utils/js';
+import { formatCurrency, formatDate, getMonthStartEndDate } from '@/utils/js';
 import { normalizeDailyCosts } from '@/utils/js/normalizeDailyCosts';
+import MonthlyCostPrintBarChart from './MonthlyCostPrintBarChart';
 
 export const css = `
 @page {
@@ -73,26 +74,26 @@ tr:nth-child(even) {
 
 .bar-chart {
   display: flex;
-  gap: 4px;
+  justify-content: space-between;
   align-items: flex-end;
   height: 160px;
-  margin-bottom: 1.5rem;
-  margin-top: 1rem;
+  margin: 1rem 0;
   flex-wrap: nowrap;
   width: 100%;
+  box-sizing: border-box;
 }
 
 .bar-column {
-  flex: 0 0 auto;
+  flex: 1;
   display: flex;
   flex-direction: column;
   align-items: center;
   font-size: 8px;
-  width: 20px;
+  min-width: 8px;
 }
 
 .bar-value {
-  font-size: 7px;
+  font-size: 8px;
   margin-bottom: 2px;
   text-align: center;
   width: 100%;
@@ -120,7 +121,6 @@ tr:nth-child(even) {
 
 .bar-label {
   margin-top: 16px;
-  transform: rotate(-45deg);
   width: 30px;
   text-align: center;
 }
@@ -166,11 +166,18 @@ export default function MonthlyCost({
   grandTotal,
 }: Props) {
   const [year, month] = yearMonth.split('-').map(Number);
+  const { startDate, endDate } = getMonthStartEndDate(year, month);
 
-  const normalizedItems = normalizeDailyCosts(items, new Date(year, month - 1, 1), new Date(year, month, 0));
-
-  const maxCost = Math.max(...normalizedItems.map((i) => parseFloat(i.totalCost.toString())), 1);
-  const maxBarHeight = 80;
+  const normalizedChartItems = normalizeDailyCosts(
+    items.map((i) => ({
+      startDate: i.startDate,
+      cpuCost: parseFloat(i.cpuCost),
+      storageCost: parseFloat(i.storageCost),
+      totalCost: parseFloat(i.totalCost),
+    })),
+    startDate,
+    endDate,
+  );
 
   return (
     <div>
@@ -181,49 +188,28 @@ export default function MonthlyCost({
 
       {currentTotal !== -1 && (
         <div className="mb-2">
-          <strong>Current Total:</strong> ${currentTotal.toFixed(2)}
+          <strong>Current Total:</strong> {formatCurrency(currentTotal)}
         </div>
       )}
       {estimatedGrandTotal !== -1 && (
         <div className="mb-2">
-          <strong>Estimated Grand Total:</strong> ${estimatedGrandTotal.toFixed(2)}
+          <strong>Estimated Grand Total:</strong> {formatCurrency(estimatedGrandTotal)}
         </div>
       )}
       {grandTotal !== -1 && (
         <div className="mb-2">
-          <strong>Grand Total:</strong> ${grandTotal.toFixed(2)}
+          <strong>Grand Total:</strong> {formatCurrency(grandTotal)}
         </div>
       )}
 
       <h2 className="mt-0 mb-2">Daily Cost Breakdown</h2>
 
       <div className="legend">
-        <span style={{ backgroundColor: '#6366f1' }}></span> CPU Cost
-        <span style={{ backgroundColor: '#10b981', marginLeft: '12px' }}></span> Storage Cost
+        <span style={{ backgroundColor: '#6366f1' }}></span> CPU Cost (CA$)
+        <span style={{ backgroundColor: '#10b981', marginLeft: '12px' }}></span> Storage Cost (CA$)
       </div>
 
-      <div className="bar-chart">
-        {normalizedItems.map((item, idx) => {
-          const cpuCost = parseFloat(item.cpuCost.toString());
-          const storageCost = parseFloat(item.storageCost.toString());
-          const totalCost = parseFloat(item.totalCost.toString());
-
-          const totalHeight = (totalCost / maxCost) * maxBarHeight;
-          const cpuHeight = Math.max((cpuCost / totalCost) * totalHeight || 0, 2);
-          const storageHeight = Math.max((storageCost / totalCost) * totalHeight || 0, 2);
-
-          return (
-            <div key={idx} className="bar-column">
-              <div className="bar-value">${totalCost.toFixed(2)}</div>
-              <div className="bar-stack" style={{ height: `${cpuHeight + storageHeight}px` }}>
-                <div className="cpu-bar" style={{ height: `${cpuHeight}px` }}></div>
-                <div className="storage-bar" style={{ height: `${storageHeight}px` }}></div>
-              </div>
-              <div className="bar-label">{item.date}</div>
-            </div>
-          );
-        })}
-      </div>
+      <MonthlyCostPrintBarChart data={normalizedChartItems} />
 
       <table>
         <thead>
@@ -232,9 +218,9 @@ export default function MonthlyCost({
             <th>End Date</th>
             <th>CPU cores</th>
             <th>Storage (GiB)</th>
-            <th>CPU Cost ($)</th>
-            <th>Storage Cost ($)</th>
-            <th>Total Cost ($)</th>
+            <th>CPU Cost (CA$)</th>
+            <th>Storage Cost (CA$)</th>
+            <th>Total Cost (CA$)</th>
           </tr>
         </thead>
         <tbody>
@@ -244,9 +230,9 @@ export default function MonthlyCost({
               <td>{item.endDate}</td>
               <td>{item.cpuCores}</td>
               <td>{item.storageGiB}</td>
-              <td>{item.cpuCost}</td>
-              <td>{item.storageCost}</td>
-              <td>{item.totalCost}</td>
+              <td>{formatCurrency(parseFloat(item.cpuCost))}</td>
+              <td>{formatCurrency(parseFloat(item.storageCost))}</td>
+              <td>{formatCurrency(parseFloat(item.totalCost))}</td>
             </tr>
           ))}
         </tbody>

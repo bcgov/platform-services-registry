@@ -1,78 +1,44 @@
 'use client';
 
-import { BarChart, Card, Subtitle, Title } from '@tremor/react';
+import { BarChart, Card, Title } from '@tremor/react';
+import { formatCurrency } from '@/utils/js';
+import { getMonthStartEndDate } from '@/utils/js/date';
+import { normalizeDailyCosts } from '@/utils/js/normalizeDailyCosts';
 
-type DailyCost = {
-  date: string;
-  'CPU Cost ($)': number;
-  'Storage Cost ($)': number;
-  'Total Cost ($)': number;
+type InputItem = {
+  startDate: string;
+  cpuCost: number;
+  storageCost: number;
+  totalCost: number;
 };
 
 interface MonthlyCostChartProps {
-  items: {
-    startDate: string;
-    cpuCost: number;
-    storageCost: number;
-    totalCost: number;
-  }[];
+  items: InputItem[];
   selectedDate: Date;
 }
 
-function normalizeDailyCosts(items: MonthlyCostChartProps['items'], startDate: Date, endDate: Date): DailyCost[] {
-  const dailyData: DailyCost[] = [];
-  let currentCpuCost = 0;
-  let currentStorageCost = 0;
-  let currentTotalCost = 0;
-
-  const sortedItems = [...items].sort((a, b) => new Date(a.startDate).getTime() - new Date(b.startDate).getTime());
-
-  let itemIndex = 0;
-  let currentItem = sortedItems[itemIndex];
-
-  for (let d = new Date(startDate); d <= endDate; d.setDate(d.getDate() + 1)) {
-    while (currentItem && new Date(currentItem.startDate).getTime() <= d.getTime()) {
-      currentCpuCost = currentItem.cpuCost;
-      currentStorageCost = currentItem.storageCost;
-      currentTotalCost = currentItem.totalCost;
-      itemIndex++;
-      currentItem = sortedItems[itemIndex];
-    }
-
-    dailyData.push({
-      date: new Date(d).toLocaleDateString('en-CA'),
-      'CPU Cost ($)': currentCpuCost,
-      'Storage Cost ($)': currentStorageCost,
-      'Total Cost ($)': currentTotalCost,
-    });
-  }
-
-  return dailyData;
-}
-
-const valueFormatter = (number: number) =>
-  `$${new Intl.NumberFormat('us', { maximumFractionDigits: 2 }).format(number)}`;
-
 export default function MonthlyCostChart({ items, selectedDate }: MonthlyCostChartProps) {
-  const chartData = normalizeDailyCosts(
-    items,
-    new Date(selectedDate.getFullYear(), selectedDate.getMonth(), 1),
-    new Date(selectedDate.getFullYear(), selectedDate.getMonth() + 1, 0),
-  );
+  const { startDate, endDate } = getMonthStartEndDate(selectedDate.getFullYear(), selectedDate.getMonth() + 1);
+
+  const chartData = normalizeDailyCosts(items, startDate, endDate).map((d) => ({
+    day: d.day,
+    'CPU Cost (CA$)': d.cpuCost,
+    'Storage Cost (CA$)': d.storageCost,
+  }));
 
   return (
     <Card>
-      <Title>Daily Cost Breakdown</Title>
-      <Subtitle>Provisioned daily CPU and Storage costs for the selected month.</Subtitle>
+      <Title>Daily Cost Breakdown for the selected month</Title>
       <div className="relative">
         <BarChart
           className="mt-6"
           data={chartData}
-          index="date"
-          categories={['CPU Cost ($)', 'Storage Cost ($)', 'Total Cost ($)']}
-          colors={['indigo', 'cyan', 'emerald']}
-          valueFormatter={valueFormatter}
+          index="day"
+          categories={['CPU Cost (CA$)', 'Storage Cost (CA$)']}
+          colors={['indigo', 'cyan']}
+          valueFormatter={formatCurrency}
           yAxisWidth={80}
+          stack={true}
         />
       </div>
     </Card>

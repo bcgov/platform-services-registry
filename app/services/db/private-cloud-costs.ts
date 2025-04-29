@@ -4,7 +4,7 @@ import _orderBy from 'lodash-es/orderBy';
 import { namespaceKeys } from '@/constants';
 import prisma from '@/core/prisma';
 import { DecisionStatus, Prisma, RequestType } from '@/prisma/client';
-import { dateToShortDateString, getMinutesInYear, getDateFromYyyyMmDd } from '@/utils/js/date';
+import { dateToShortDateString, getMinutesInYear, getDateFromYyyyMmDd, getMonthStartEndDate } from '@/utils/js/date';
 
 interface EnvironmentDetails {
   cpu: {
@@ -30,15 +30,6 @@ interface CostItem {
   production: EnvironmentDetails;
   tools: EnvironmentDetails;
   total: EnvironmentDetails;
-}
-
-function getMonthStartEndDate(year: number, oneIndexedMonth: number) {
-  const startDate = new Date(year, oneIndexedMonth - 1, 1);
-  const endDate = new Date(year, oneIndexedMonth, 1, 0, 0, 0, -1);
-  return {
-    startDate,
-    endDate,
-  };
 }
 
 function getDetaultRangeCost() {

@@ -1,17 +1,18 @@
 'use client';
 
 import { Table } from '@mantine/core';
+import { Button } from '@mantine/core';
 import { MonthPickerInput } from '@mantine/dates';
 import { useQuery } from '@tanstack/react-query';
-import { BarChart, Card, Subtitle, Title } from '@tremor/react';
 import { format } from 'date-fns';
 import { useEffect, useState } from 'react';
 import { z } from 'zod';
-import ExportButton from '@/components/buttons/ExportButton';
 import LoadingBox from '@/components/generic/LoadingBox';
 import { GlobalRole } from '@/constants';
 import createClientPage from '@/core/client-page';
 import { downloadPrivateCloudMonthlyCosts, getMonthlyCosts } from '@/services/backend/private-cloud/products';
+import { formatDate } from '@/utils/js/date';
+import { formatCurrency } from '@/utils/js/number';
 import MonthlyCostChart from './MonthyCostChart';
 
 const pathParamSchema = z.object({
@@ -26,7 +27,7 @@ const privateCloudProductMonthlyCost = createClientPage({
 export default privateCloudProductMonthlyCost(({ getPathParams, session }) => {
   const [pathParams, setPathParams] = useState<z.infer<typeof pathParamSchema>>();
   const [selectedDate, setSelectedDate] = useState<Date>(new Date());
-
+  const [downloading, setDownloading] = useState(false);
   useEffect(() => {
     getPathParams().then((v) => setPathParams(v));
   }, [getPathParams]);
@@ -60,13 +61,17 @@ export default privateCloudProductMonthlyCost(({ getPathParams, session }) => {
           clearable
         />
         <div className="ml-auto">
-          <ExportButton
-            onExport={async () => {
-              if (!licencePlate || !selectedDate) return false;
-              const result = await downloadPrivateCloudMonthlyCosts(licencePlate, format(selectedDate, 'yyyy-MM'));
-              return result;
+          <Button
+            loading={downloading}
+            onClick={async () => {
+              if (!data) return;
+              setDownloading(true);
+              await downloadPrivateCloudMonthlyCosts(licencePlate, format(selectedDate, 'yyyy-MM'));
+              setDownloading(false);
             }}
-          />
+          >
+            Download PDF
+          </Button>
         </div>
       </div>
 
@@ -80,17 +85,17 @@ export default privateCloudProductMonthlyCost(({ getPathParams, session }) => {
           </div>
           {data.currentTotal !== -1 && (
             <div>
-              <strong>Current Total:</strong> ${data.currentTotal?.toFixed(2)}
+              <strong>Current Total:</strong> {formatCurrency(data.currentTotal)}
             </div>
           )}
           {data.currentTotal !== -1 && (
             <div>
-              <strong>Estimated Grand Total:</strong> ${data.estimatedGrandTotal?.toFixed(2)}
+              <strong>Estimated Grand Total:</strong> {formatCurrency(data.estimatedGrandTotal)}
             </div>
           )}
           {data.grandTotal !== -1 && (
             <div>
-              <strong>Grand Total:</strong> ${data.grandTotal?.toFixed(2)}
+              <strong>Grand Total:</strong> {formatCurrency(data.grandTotal)}
             </div>
           )}
         </div>
@@ -116,15 +121,14 @@ export default privateCloudProductMonthlyCost(({ getPathParams, session }) => {
             {data.items.map((item: any, idx: number) => (
               <Table.Tr key={idx}>
                 <Table.Td>
-                  {new Date(item.startDate).toLocaleString()}
-                  <br />
-                  {new Date(item.endDate).toLocaleString()}
+                  {formatDate(item.startDate, 'yyyy-MM-dd HH:mm')} &ndash;{' '}
+                  {formatDate(item.endDate, 'yyyy-MM-dd HH:mm')}
                 </Table.Td>
                 <Table.Td className="text-right">{item.cpu}</Table.Td>
                 <Table.Td className="text-right">{item.storage}</Table.Td>
-                <Table.Td className="text-right">${item.cpuCost?.toFixed(2)}</Table.Td>
-                <Table.Td className="text-right">${item.storageCost?.toFixed(2)}</Table.Td>
-                <Table.Td className="text-right">${item.totalCost?.toFixed(2)}</Table.Td>
+                <Table.Td className="text-right">{formatCurrency(item.cpuCost)}</Table.Td>
+                <Table.Td className="text-right">{formatCurrency(item.storageCost)}</Table.Td>
+                <Table.Td className="text-right">{formatCurrency(item.totalCost)}</Table.Td>
               </Table.Tr>
             ))}
           </Table.Tbody>
