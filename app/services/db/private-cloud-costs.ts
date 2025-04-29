@@ -1,9 +1,9 @@
-import { DecisionStatus, Prisma, RequestType } from '@prisma/client';
 import _cloneDeep from 'lodash-es/cloneDeep';
 import _find from 'lodash-es/find';
 import _orderBy from 'lodash-es/orderBy';
 import { namespaceKeys } from '@/constants';
 import prisma from '@/core/prisma';
+import { DecisionStatus, Prisma, RequestType } from '@/prisma/client';
 import { dateToShortDateString, getMinutesInYear, getDateFromYyyyMmDd } from '@/utils/js/date';
 
 interface EnvironmentDetails {
