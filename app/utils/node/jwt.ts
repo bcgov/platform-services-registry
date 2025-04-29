@@ -135,7 +135,7 @@ export async function verifyKeycloakJwtTokenSafe({
     const result = await verifyJwtToken({ jwtToken, issuer, jwksUri, audience, authorizedPresenter, requiredClaims });
     return result;
   } catch (error) {
-    logger.error('verifyKeycloakJwtTokenSafe:', error);
+    logger.error('verifyKeycloakJwtTokenSafe:', { error, token: jwtToken });
     return null;
   }
 }
