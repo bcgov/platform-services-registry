@@ -1,7 +1,8 @@
 import { z } from 'zod';
 import { GlobalRole } from '@/constants';
 import createApiHandler from '@/core/api-handler';
-import { NoContent, CsvResponse } from '@/core/responses';
+import { NoContent, PdfResponse } from '@/core/responses';
+import { generateMonthlyCostPdf } from '@/helpers/pdfs/monthly-cost';
 import { getMonthlyCosts } from '@/services/db/private-cloud-costs';
 import { formatDateSimple } from '@/utils/js';
 
@@ -25,15 +26,18 @@ export const POST = createApiHandler({
     return NoContent();
   }
 
-  const formattedData = monthlyData.items.map((item) => ({
-    'Start Date': formatDateSimple(item.startDate),
-    'End Date': formatDateSimple(item.endDate),
-    'CPU cores': item.cpu,
-    'Storage (GiB)': item.storage,
-    'CPU Cost ($)': item.cpuCost.toFixed(2),
-    'Storage Cost ($)': item.storageCost.toFixed(2),
-    'Total Cost ($)': item.totalCost.toFixed(2),
+  const formattedItems = monthlyData.items.map((item) => ({
+    startDate: formatDateSimple(item.startDate),
+    endDate: formatDateSimple(item.endDate),
+    cpuCores: item.cpu,
+    storageGiB: item.storage,
+    cpuCost: item.cpuCost.toFixed(2),
+    storageCost: item.storageCost.toFixed(2),
+    totalCost: item.totalCost.toFixed(2),
   }));
 
-  return CsvResponse(formattedData, `monthly-costs-${yearMonth}.csv`);
+  const accountCodingString = monthlyData.accountCoding;
+
+  const pdfBuffer = await generateMonthlyCostPdf(formattedItems, yearMonth, accountCodingString);
+  return PdfResponse(pdfBuffer, `monthly-costs-${yearMonth}.pdf`);
 });

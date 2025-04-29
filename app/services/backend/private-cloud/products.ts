@@ -169,7 +169,7 @@ export async function downloadPrivateCloudMonthlyCosts(licencePlate: string, yea
     .post(`/${licencePlate}/costs/monthly/${yearMonth}/download`, {}, { responseType: 'blob' })
     .then((res) => {
       if (res.status === 204) return false;
-      downloadFile(res.data, `monthly-costs-${yearMonth}.csv`);
+      downloadFile(res.data, `monthly-costs-${yearMonth}.pdf`);
       return true;
     });
 
