@@ -1,5 +1,6 @@
 import React from 'react';
 import { formatDate } from '@/utils/js';
+import { normalizeDailyCosts } from '@/utils/js/normalizeDailyCosts';
 
 export const css = `
 @page {
@@ -69,6 +70,72 @@ tr:nth-child(even) {
 .mb-2 {
   margin-bottom: 0.5rem;
 }
+
+.bar-chart {
+  display: flex;
+  gap: 4px;
+  align-items: flex-end;
+  height: 160px;
+  margin-bottom: 1.5rem;
+  margin-top: 1rem;
+  flex-wrap: nowrap;
+  width: 100%;
+}
+
+.bar-column {
+  flex: 0 0 auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  font-size: 8px;
+  width: 20px;
+}
+
+.bar-value {
+  font-size: 7px;
+  margin-bottom: 2px;
+  text-align: center;
+  width: 100%;
+}
+
+.bar-stack {
+  width: 8px;
+  display: flex;
+  flex-direction: column;
+}
+
+.cpu-bar {
+  background-color: #6366f1;
+  width: 8px;
+  display: block;
+  min-height: 2px;
+}
+
+.storage-bar {
+  background-color: #10b981;
+  width: 8px;
+  display: block;
+  min-height: 2px;
+}
+
+.bar-label {
+  margin-top: 16px;
+  transform: rotate(-45deg);
+  width: 30px;
+  text-align: center;
+}
+
+.legend {
+  font-size: 10px;
+  margin-bottom: 1rem;
+}
+
+.legend span {
+  display: inline-block;
+  width: 12px;
+  height: 12px;
+  margin-right: 4px;
+}
 `;
 
 export interface MonthlyCostItem {
@@ -85,15 +152,79 @@ interface Props {
   yearMonth: string;
   items: MonthlyCostItem[];
   accountCoding: string;
+  currentTotal: number;
+  estimatedGrandTotal: number;
+  grandTotal: number;
 }
 
-export default function MonthlyCost({ yearMonth, items, accountCoding }: Props) {
+export default function MonthlyCost({
+  yearMonth,
+  items,
+  accountCoding,
+  currentTotal,
+  estimatedGrandTotal,
+  grandTotal,
+}: Props) {
+  const [year, month] = yearMonth.split('-').map(Number);
+
+  const normalizedItems = normalizeDailyCosts(items, new Date(year, month - 1, 1), new Date(year, month, 0));
+
+  const maxCost = Math.max(...normalizedItems.map((i) => parseFloat(i.totalCost.toString())), 1);
+  const maxBarHeight = 80;
+
   return (
     <div>
       <div className="header">Printed on {formatDate(new Date())}</div>
       <h1 className="text-center">Monthly Costs Report</h1>
       <p className="text-center font-semibold">Billing Period: {yearMonth}</p>
       <h2 className="mt-0 mb-2">Account Coding: {accountCoding}</h2>
+
+      {currentTotal !== -1 && (
+        <div className="mb-2">
+          <strong>Current Total:</strong> ${currentTotal.toFixed(2)}
+        </div>
+      )}
+      {estimatedGrandTotal !== -1 && (
+        <div className="mb-2">
+          <strong>Estimated Grand Total:</strong> ${estimatedGrandTotal.toFixed(2)}
+        </div>
+      )}
+      {grandTotal !== -1 && (
+        <div className="mb-2">
+          <strong>Grand Total:</strong> ${grandTotal.toFixed(2)}
+        </div>
+      )}
+
+      <h2 className="mt-0 mb-2">Daily Cost Breakdown</h2>
+
+      <div className="legend">
+        <span style={{ backgroundColor: '#6366f1' }}></span> CPU Cost
+        <span style={{ backgroundColor: '#10b981', marginLeft: '12px' }}></span> Storage Cost
+      </div>
+
+      <div className="bar-chart">
+        {normalizedItems.map((item, idx) => {
+          const cpuCost = parseFloat(item.cpuCost.toString());
+          const storageCost = parseFloat(item.storageCost.toString());
+          const totalCost = parseFloat(item.totalCost.toString());
+
+          const totalHeight = (totalCost / maxCost) * maxBarHeight;
+          const cpuHeight = Math.max((cpuCost / totalCost) * totalHeight || 0, 2);
+          const storageHeight = Math.max((storageCost / totalCost) * totalHeight || 0, 2);
+
+          return (
+            <div key={idx} className="bar-column">
+              <div className="bar-value">${totalCost.toFixed(2)}</div>
+              <div className="bar-stack" style={{ height: `${cpuHeight + storageHeight}px` }}>
+                <div className="cpu-bar" style={{ height: `${cpuHeight}px` }}></div>
+                <div className="storage-bar" style={{ height: `${storageHeight}px` }}></div>
+              </div>
+              <div className="bar-label">{item.date}</div>
+            </div>
+          );
+        })}
+      </div>
+
       <table>
         <thead>
           <tr>

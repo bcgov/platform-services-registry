@@ -38,6 +38,13 @@ export const POST = createApiHandler({
 
   const accountCodingString = monthlyData.accountCoding;
 
-  const pdfBuffer = await generateMonthlyCostPdf(formattedItems, yearMonth, accountCodingString);
+  const pdfBuffer = await generateMonthlyCostPdf(
+    formattedItems,
+    yearMonth,
+    accountCodingString,
+    monthlyData.currentTotal,
+    monthlyData.estimatedGrandTotal,
+    monthlyData.grandTotal,
+  );
   return PdfResponse(pdfBuffer, `monthly-costs-${yearMonth}.pdf`);
 });

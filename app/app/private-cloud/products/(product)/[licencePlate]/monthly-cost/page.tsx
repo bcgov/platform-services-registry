@@ -3,6 +3,7 @@
 import { Table } from '@mantine/core';
 import { MonthPickerInput } from '@mantine/dates';
 import { useQuery } from '@tanstack/react-query';
+import { BarChart, Card, Subtitle, Title } from '@tremor/react';
 import { format } from 'date-fns';
 import { useEffect, useState } from 'react';
 import { z } from 'zod';
@@ -11,6 +12,7 @@ import LoadingBox from '@/components/generic/LoadingBox';
 import { GlobalRole } from '@/constants';
 import createClientPage from '@/core/client-page';
 import { downloadPrivateCloudMonthlyCosts, getMonthlyCosts } from '@/services/backend/private-cloud/products';
+import MonthlyCostChart from './MonthyCostChart';
 
 const pathParamSchema = z.object({
   licencePlate: z.string(),
@@ -21,9 +23,10 @@ const privateCloudProductMonthlyCost = createClientPage({
   validations: { pathParams: pathParamSchema },
 });
 
-export default privateCloudProductMonthlyCost(({ getPathParams }) => {
+export default privateCloudProductMonthlyCost(({ getPathParams, session }) => {
   const [pathParams, setPathParams] = useState<z.infer<typeof pathParamSchema>>();
   const [selectedDate, setSelectedDate] = useState<Date>(new Date());
+
   useEffect(() => {
     getPathParams().then((v) => setPathParams(v));
   }, [getPathParams]);
@@ -35,7 +38,8 @@ export default privateCloudProductMonthlyCost(({ getPathParams }) => {
     queryFn: () => getMonthlyCosts(licencePlate, format(selectedDate!, 'yyyy-MM')),
     enabled: !!licencePlate && !!selectedDate,
   });
-  if (!data) {
+
+  if (!data || !session?.previews.costRecovery) {
     return null;
   }
 
@@ -65,6 +69,7 @@ export default privateCloudProductMonthlyCost(({ getPathParams }) => {
           />
         </div>
       </div>
+
       <div className="my-6">
         <div className="border rounded p-4 grid grid-cols-2 gap-4 bg-gray-50">
           <div>
@@ -89,6 +94,10 @@ export default privateCloudProductMonthlyCost(({ getPathParams }) => {
             </div>
           )}
         </div>
+      </div>
+
+      <div className="my-8">
+        <MonthlyCostChart items={data.items} selectedDate={selectedDate} />
       </div>
 
       <LoadingBox isLoading={isLoading}>
