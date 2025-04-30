@@ -76,8 +76,6 @@ tr:nth-child(even) {
 `;
 
 export default function YearlyCostHistory({ resources, year }: ChartAndTableProps) {
-  console.log('Resources Data: ', resources);
-
   const rows =
     resources.length &&
     resources.map((resource, index) => (
