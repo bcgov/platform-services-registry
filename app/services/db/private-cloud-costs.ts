@@ -4,7 +4,7 @@ import _orderBy from 'lodash-es/orderBy';
 import { namespaceKeys } from '@/constants';
 import prisma from '@/core/prisma';
 import { DecisionStatus, Prisma, RequestType } from '@/prisma/client';
-import { dateToShortDateString, getMinutesInYear, getDateFromYyyyMmDd } from '@/utils/js/date';
+import { dateToShortDateString, getMinutesInYear, getDateFromYyyyMmDd, getMonthStartEndDate } from '@/utils/js/date';
 
 interface EnvironmentDetails {
   cpu: {
@@ -32,13 +32,23 @@ interface CostItem {
   total: EnvironmentDetails;
 }
 
-function getMonthStartEndDate(year: number, oneIndexedMonth: number) {
-  const startDate = new Date(year, oneIndexedMonth - 1, 1);
-  const endDate = new Date(year, oneIndexedMonth, 1, 0, 0, 0, -1);
-  return {
-    startDate,
-    endDate,
-  };
+const roundToTwoDecimals = (value: number) => Number(value.toFixed(2));
+
+function formatDecimals<T>(obj: T): T {
+  if (Array.isArray(obj)) {
+    return obj.map(formatDecimals) as unknown as T;
+  } else if (obj instanceof Date) {
+    return obj;
+  } else if (obj !== null && typeof obj === 'object') {
+    const result: any = {};
+    for (const [key, value] of Object.entries(obj)) {
+      result[key] = formatDecimals(value);
+    }
+    return result;
+  } else if (typeof obj === 'number' && !Number.isInteger(obj)) {
+    return roundToTwoDecimals(obj) as unknown as T;
+  }
+  return obj;
 }
 
 function getDetaultRangeCost() {
@@ -182,12 +192,12 @@ async function getCostDetailsForRange(licencePlate: string, startDate: Date, end
     });
   }
 
-  return {
+  return formatDecimals({
     items: costItems,
     cpu,
     storage,
     total,
-  };
+  });
 }
 
 export async function getMonthlyCosts(licencePlate: string, year: number, oneIndexedMonth: number) {
