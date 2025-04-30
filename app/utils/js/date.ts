@@ -22,6 +22,11 @@ export function formatDateSimple(date: string | Date) {
   return `${d.getDate()} ${monthNames[d.getMonth()]} ${d.getFullYear()}`;
 }
 
+export function getAllMonthNames() {
+  const monthNames = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+  return monthNames;
+}
+
 const shortDateFormat = new Intl.DateTimeFormat('en', { month: 'short', year: 'numeric' });
 
 export function dateToShortDateString(date: Date) {

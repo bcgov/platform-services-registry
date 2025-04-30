@@ -211,6 +211,10 @@ export const privateCloudUnitPriceBodySchema = z.object({
     .max(maxStorage, { message: `Storage per 1GiB must be at most $${maxStorage.toLocaleString()}` }),
 });
 
+export const yearlyCostPrivateCloudFilterScheme = z.object({
+  year: z.string().length(4, 'year must be in YYY format'),
+});
+
 export type PrivateCloudCreateRequestBody = z.infer<typeof privateCloudCreateRequestBodySchema>;
 export type PrivateCloudEditRequestBody = z.infer<typeof privateCloudEditRequestBodySchema>;
 export type PrivateCloudRequestDecisionBody = z.infer<typeof privateCloudRequestDecisionBodySchema>;
@@ -220,3 +224,4 @@ export type PrivateCloudRequestSearchBody = z.infer<typeof privateCloudRequestSe
 export type PrivateCloudAdminUpdateBody = z.infer<typeof privateCloudAdminUpdateBodySchema>;
 export type PrivateCloudProductWebhookBody = z.infer<typeof privateCloudProductWebhookBodySchema>;
 export type PrivateCloudUnitPriceBody = z.infer<typeof privateCloudUnitPriceBodySchema>;
+export type YearlyCostPrivateCloudFilterBody = z.infer<typeof yearlyCostPrivateCloudFilterScheme>;

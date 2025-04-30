@@ -3,7 +3,7 @@ import _pick from 'lodash-es/pick';
 import { Session } from 'next-auth';
 import { ministryOptions } from '@/constants';
 import { PrivateCloudProductMemberRole, PrivateCloudProduct } from '@/prisma/client';
-import { extractNumbers } from '@/utils/js';
+import { extractNumbers, getAllMonthNames } from '@/utils/js';
 
 export function ministryKeyToName(key: string) {
   return ministryOptions.find((item) => item.value === key)?.label ?? '';
@@ -139,3 +139,46 @@ export function getPrivateCloudProductContext(
     isMinistryEditor,
   };
 }
+
+export interface MonthlyCostData {
+  month: number;
+  cpuCost: number;
+  storageCost: number;
+  totalCost: number;
+}
+
+export interface ChartCompatibleMonthlyCostData {
+  month: string;
+  'CPU Cost': number;
+  'Storage Cost': number;
+  'Total Cost': number;
+}
+
+export interface CostDataWithMonthName {
+  month: string;
+  cpuCost: number;
+  storageCost: number;
+  totalCost: number;
+}
+
+export function transformToChartData(
+  items: CostDataWithMonthName[],
+  monthNames: string[],
+): ChartCompatibleMonthlyCostData[] {
+  return items?.map((item, index) => ({
+    month: monthNames[index],
+    'CPU Cost': item.cpuCost,
+    'Storage Cost': item.storageCost,
+    'Total Cost': item.totalCost,
+  }));
+}
+
+export const getTransformedCostData = (items: MonthlyCostData[]) => {
+  const monthNames = getAllMonthNames();
+  return items?.map((item: MonthlyCostData, index) => ({
+    month: monthNames[index],
+    cpuCost: item.cpuCost,
+    storageCost: item.storageCost,
+    totalCost: item.totalCost,
+  }));
+};

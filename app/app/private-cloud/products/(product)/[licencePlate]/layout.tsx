@@ -69,6 +69,19 @@ export default privateCloudProductLayout(({ getPathParams, session, children }) 
     },
   ];
 
+  const isMyProduct = [
+    snap.currentProduct?.projectOwnerId,
+    snap.currentProduct?.primaryTechnicalLeadId,
+    snap.currentProduct?.secondaryTechnicalLeadId,
+  ].includes(session?.user.id);
+
+  if (session?.previews.costRecovery && (session?.isAdmin || session?.isPrivateAdmin || isMyProduct)) {
+    tabs.push({
+      label: 'COST HISTORY',
+      name: 'billhistory',
+      href: `/private-cloud/products/${licencePlate}/costs/history`,
+    });
+  }
   if (session?.permissions.viewAllPrivateProductComments) {
     tabs.push({
       label: 'ADMIN NOTES',
@@ -89,7 +102,7 @@ export default privateCloudProductLayout(({ getPathParams, session, children }) 
 
   if (snap.currentProduct?._permissions.viewHistory) {
     tabs.push({
-      label: 'HISTORY',
+      label: 'REQUEST HISTORY',
       name: 'history',
       href: `/private-cloud/products/${licencePlate}/history`,
     });
