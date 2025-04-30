@@ -102,3 +102,12 @@ export function getDateFromYyyyMmDd(dateString: string) {
 
   return new Date(year, month - 1, day);
 }
+
+export function getMonthStartEndDate(year: number, oneIndexedMonth: number) {
+  const startDate = new Date(year, oneIndexedMonth - 1, 1);
+  const endDate = new Date(year, oneIndexedMonth, 1, 0, 0, 0, -1);
+  return {
+    startDate,
+    endDate,
+  };
+}
