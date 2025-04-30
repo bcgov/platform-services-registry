@@ -12,7 +12,7 @@ import { GlobalRole } from '@/constants';
 import createClientPage from '@/core/client-page';
 import { getTransformedCostData } from '@/helpers/product';
 import {
-  downloadPrivateCloudYearlyCosts,
+  downloadPrivateCloudYearlyCostHstory,
   getPrivateCloudProductYearlyCostHistory,
 } from '@/services/backend/private-cloud/products';
 import { pageState } from './state';
@@ -75,7 +75,7 @@ export default privateCloudProductCostHistory(({ getPathParams, session }) => {
                   loading={downloading}
                   onClick={async () => {
                     setDownloading(true);
-                    await downloadPrivateCloudYearlyCosts(licencePlate, year);
+                    await downloadPrivateCloudYearlyCostHstory(licencePlate, year);
                     setDownloading(false);
                   }}
                 >
