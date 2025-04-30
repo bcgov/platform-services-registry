@@ -23,6 +23,7 @@ interface EnvironmentDetails {
 interface CostItem {
   startDate: Date;
   endDate: Date;
+  minutes: number;
   isPast: boolean;
   unitPriceId?: string;
   development: EnvironmentDetails;
@@ -78,9 +79,7 @@ function getDetaultEnvironmentDetails() {
 async function getCostDetailsForRange(licencePlate: string, startDate: Date, endDate: Date) {
   const [unitPrices, allRequests] = await Promise.all([
     prisma.privateCloudUnitPrice.findMany({
-      where: {
-        createdAt: { lte: endDate },
-      },
+      where: {},
       orderBy: { date: Prisma.SortOrder.desc },
     }),
     prisma.privateCloudRequest.findMany({
@@ -186,6 +185,7 @@ async function getCostDetailsForRange(licencePlate: string, startDate: Date, end
     costItems.push({
       startDate: intervalStart,
       endDate: intervalEnd,
+      minutes: durationMinutes,
       isPast,
       unitPriceId: price.id,
       ...environments,
