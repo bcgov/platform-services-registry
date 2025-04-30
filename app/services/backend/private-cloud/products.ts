@@ -8,6 +8,7 @@ import {
   PrivateCloudProductSearch,
   PrivateCloudRequestDetail,
 } from '@/types/private-cloud';
+import { CostItem } from '@/types/private-cloud';
 import { downloadFile } from '@/utils/browser';
 import {
   PrivateCloudProductSearchBody,
@@ -156,4 +157,39 @@ export interface QuotaChangeStatus {
 export async function getQuotaChangeStatus(licencePlate: string, resourceRequests: ResourceRequestsEnv) {
   const response = await instance.post<QuotaChangeStatus>(`/${licencePlate}/quota-change-status`, { resourceRequests });
   return response.data;
+}
+
+export interface MonthlyCost {
+  accountCoding: string;
+  billingPeriod: string;
+  currentTotal: number;
+  estimatedGrandTotal: number;
+  grandTotal: number;
+  items: CostItem[];
+  days: number[];
+  dayDetails: {
+    cpuToDate: number[];
+    cpuToProjected: number[];
+    storageToDate: number[];
+    storageToProjected: number[];
+  };
+}
+
+export async function getMonthlyCosts(licencePlate: string, yearMonth: string) {
+  const response = await instance
+    .get<MonthlyCost>(`/${licencePlate}/costs/monthly/${yearMonth}`)
+    .then((res) => res.data);
+  return response;
+}
+
+export async function downloadPrivateCloudMonthlyCosts(licencePlate: string, yearMonth: string) {
+  const result = await instance
+    .post(`/${licencePlate}/costs/monthly/${yearMonth}/download`, {}, { responseType: 'blob' })
+    .then((res) => {
+      if (res.status === 204) return false;
+      downloadFile(res.data, `monthly-costs-${yearMonth}.pdf`);
+      return true;
+    });
+
+  return result;
 }

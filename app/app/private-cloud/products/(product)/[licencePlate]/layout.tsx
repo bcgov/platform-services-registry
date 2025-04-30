@@ -78,6 +78,14 @@ export default privateCloudProductLayout(({ getPathParams, session, children }) 
     });
   }
 
+  if (session?.previews.costRecovery) {
+    tabs.push({
+      label: 'MONTHLY COST',
+      name: 'monthly cost',
+      href: `/private-cloud/products/${licencePlate}/monthly-cost`,
+    });
+  }
+
   if (session?.previews.security) {
     tabs.push({
       label: 'SECURITY',
