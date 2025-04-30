@@ -212,7 +212,7 @@ export const privateCloudUnitPriceBodySchema = z.object({
 });
 
 export const yearlyCostPrivateCloudFilterScheme = z.object({
-  year: z.string().length(4, 'year must be in YYY format'),
+  year: z.string().length(4, 'year must be in YYYY format'),
 });
 
 export type PrivateCloudCreateRequestBody = z.infer<typeof privateCloudCreateRequestBodySchema>;
