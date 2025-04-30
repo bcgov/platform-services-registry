@@ -6,6 +6,7 @@ const weasyClient = new WeasyPrint();
 export async function generateMonthlyCostPdf(
   items: MonthlyCostItem[],
   yearMonth: string,
+  billingPeriod: string,
   accountCoding: string,
   currentTotal: number,
   estimatedGrandTotal: number,
@@ -16,6 +17,7 @@ export async function generateMonthlyCostPdf(
   const html = ReactDOMServer.renderToStaticMarkup(
     <MonthlyCost
       yearMonth={yearMonth}
+      billingPeriod={billingPeriod}
       items={items}
       accountCoding={accountCoding}
       currentTotal={currentTotal}

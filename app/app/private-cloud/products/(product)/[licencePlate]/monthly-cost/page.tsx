@@ -13,6 +13,7 @@ import createClientPage from '@/core/client-page';
 import { downloadPrivateCloudMonthlyCosts, getMonthlyCosts } from '@/services/backend/private-cloud/products';
 import { formatDate } from '@/utils/js/date';
 import { formatCurrency } from '@/utils/js/number';
+import BillingTotals from './BillingTotals';
 import MonthlyCostChart from './MonthyCostChart';
 
 const pathParamSchema = z.object({
@@ -60,44 +61,32 @@ export default privateCloudProductMonthlyCost(({ getPathParams, session }) => {
           maw={200}
           clearable
         />
-        <div className="ml-auto">
-          <Button
-            loading={downloading}
-            onClick={async () => {
-              if (!data) return;
-              setDownloading(true);
-              await downloadPrivateCloudMonthlyCosts(licencePlate, format(selectedDate, 'yyyy-MM'));
-              setDownloading(false);
-            }}
-          >
-            Download PDF
-          </Button>
-        </div>
+        {data.items.length > 0 && (
+          <div className="ml-auto">
+            <Button
+              loading={downloading}
+              onClick={async () => {
+                if (!data) return;
+                setDownloading(true);
+                await downloadPrivateCloudMonthlyCosts(licencePlate, format(selectedDate, 'yyyy-MM'));
+                setDownloading(false);
+              }}
+            >
+              Download PDF
+            </Button>
+          </div>
+        )}
       </div>
 
       <div className="my-6">
         <div className="border rounded p-4 grid grid-cols-2 gap-4 bg-gray-50">
-          <div>
-            <strong>Account Coding:</strong> {data.accountCoding}
-          </div>
-          <div>
-            <strong>Billing Period:</strong> {data.billingPeriod}
-          </div>
-          {data.currentTotal !== -1 && (
-            <div>
-              <strong>Current Total:</strong> {formatCurrency(data.currentTotal)}
-            </div>
-          )}
-          {data.currentTotal !== -1 && (
-            <div>
-              <strong>Estimated Grand Total:</strong> {formatCurrency(data.estimatedGrandTotal)}
-            </div>
-          )}
-          {data.grandTotal !== -1 && (
-            <div>
-              <strong>Grand Total:</strong> {formatCurrency(data.grandTotal)}
-            </div>
-          )}
+          <BillingTotals
+            accountCoding={data.accountCoding}
+            billingPeriod={data.billingPeriod}
+            currentTotal={data.currentTotal}
+            estimatedGrandTotal={data.estimatedGrandTotal}
+            grandTotal={data.grandTotal}
+          />
         </div>
       </div>
 

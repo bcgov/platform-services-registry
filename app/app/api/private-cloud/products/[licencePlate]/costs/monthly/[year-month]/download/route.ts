@@ -37,10 +37,11 @@ export const POST = createApiHandler({
   }));
 
   const accountCodingString = monthlyData.accountCoding;
-
+  const billingPeriod = monthlyData.billingPeriod;
   const pdfBuffer = await generateMonthlyCostPdf(
     formattedItems,
     yearMonth,
+    billingPeriod,
     accountCodingString,
     monthlyData.currentTotal,
     monthlyData.estimatedGrandTotal,

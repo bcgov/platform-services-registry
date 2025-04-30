@@ -1,5 +1,6 @@
 import React from 'react';
-import { formatCurrency, formatDate, getMonthStartEndDate } from '@/utils/js';
+import BillingTotals from '@/app/private-cloud/products/(product)/[licencePlate]/monthly-cost/BillingTotals';
+import { formatDateSimple, formatCurrency, formatDate, getMonthStartEndDate } from '@/utils/js';
 import { normalizeDailyCosts } from '@/utils/js/normalizeDailyCosts';
 import MonthlyCostPrintBarChart from './MonthlyCostPrintBarChart';
 
@@ -112,6 +113,7 @@ tr:nth-child(even) {
   min-height: 2px;
 }
 
+
 .storage-bar {
   background-color: #10b981;
   width: 8px;
@@ -125,14 +127,9 @@ tr:nth-child(even) {
   text-align: center;
 }
 
-.legend {
-  font-size: 10px;
-  margin-bottom: 1rem;
-}
-
-.legend span {
+span {
   display: inline-block;
-  width: 12px;
+  min-width: 12px;
   height: 12px;
   margin-right: 4px;
 }
@@ -150,6 +147,7 @@ export interface MonthlyCostItem {
 
 interface Props {
   yearMonth: string;
+  billingPeriod: string;
   items: MonthlyCostItem[];
   accountCoding: string;
   currentTotal: number;
@@ -159,6 +157,7 @@ interface Props {
 
 export default function MonthlyCost({
   yearMonth,
+  billingPeriod,
   items,
   accountCoding,
   currentTotal,
@@ -183,28 +182,20 @@ export default function MonthlyCost({
     <div>
       <div className="header">Printed on {formatDate(new Date())}</div>
       <h1 className="text-center">Monthly Costs Report</h1>
-      <p className="text-center font-semibold">Billing Period: {yearMonth}</p>
-      <h2 className="mt-0 mb-2">Account Coding: {accountCoding}</h2>
-
-      {currentTotal !== -1 && (
-        <div className="mb-2">
-          <strong>Current Total:</strong> {formatCurrency(currentTotal)}
-        </div>
-      )}
-      {estimatedGrandTotal !== -1 && (
-        <div className="mb-2">
-          <strong>Estimated Grand Total:</strong> {formatCurrency(estimatedGrandTotal)}
-        </div>
-      )}
-      {grandTotal !== -1 && (
-        <div className="mb-2">
-          <strong>Grand Total:</strong> {formatCurrency(grandTotal)}
-        </div>
-      )}
+      <h2 className="mt-0 mb-2">Billing Summary</h2>
+      <div className="mb-2">
+        <BillingTotals
+          accountCoding={accountCoding}
+          billingPeriod={billingPeriod}
+          currentTotal={currentTotal}
+          estimatedGrandTotal={estimatedGrandTotal}
+          grandTotal={grandTotal}
+        />
+      </div>
 
       <h2 className="mt-0 mb-2">Daily Cost Breakdown</h2>
 
-      <div className="legend">
+      <div>
         <span style={{ backgroundColor: '#6366f1' }}></span> CPU Cost (CA$)
         <span style={{ backgroundColor: '#10b981', marginLeft: '12px' }}></span> Storage Cost (CA$)
       </div>
