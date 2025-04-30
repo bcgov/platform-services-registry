@@ -163,7 +163,7 @@ export async function getPrivateCloudProductYearlyCostHistory(licencePlate: stri
   return response;
 }
 
-export async function downloadPrivateCloudYearlyCosts(licencePlate: string, year: string) {
+export async function downloadPrivateCloudYearlyCostHstory(licencePlate: string, year: string) {
   const result = await instance
     .post(`/${licencePlate}/costs/yearly/${year}/download`, {}, { responseType: 'blob' })
     .then((res) => {
