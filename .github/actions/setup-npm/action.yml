@@ -24,10 +24,10 @@ runs:
 
   - name: Install App NPM packages
     run: |
-      pnpm store prune
       pnpm install --no-frozen-lockfile
       # Ensure the canvas package version is updated whenever the version in package.json changes
       cd node_modules/.pnpm/canvas@3.1.0/node_modules/canvas
-      pnpm exec node-gyp rebuild
+      npm install -g node-gyp
+      node-gyp rebuild
     shell: bash
     working-directory: app
