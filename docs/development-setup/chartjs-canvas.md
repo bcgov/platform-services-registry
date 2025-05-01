@@ -37,3 +37,12 @@ brew install pkg-config cairo pango libpng jpeg giflib librsvg
 | giflib                                   | GIF support                    |
 | librsvg                                  | SVG support (optional)         |
 | build tools (build-essential/pkg-config) | Compilers and flags management |
+
+## Managing the `canvas` package
+
+-   **Rebuild `canvas`** if you encounter runtime errors, especially after dependency or environment changes.
+
+```bash
+cd node_modules/.pnpm/canvas@3.1.0/node_modules/canvas
+pnpm exec node-gyp rebuild
+```
