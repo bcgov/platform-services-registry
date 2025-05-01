@@ -1,45 +1,47 @@
-'use client';
-
-import { Table } from '@mantine/core';
-import { MonthlyCost } from '@/services/backend/private-cloud/products';
+import { MonthlyCost } from '@/types/private-cloud';
 import { formatDate } from '@/utils/js/date';
 import { formatCurrency } from '@/utils/js/number';
 
 export default function MonthlyCostTable({ data }: { data: Pick<MonthlyCost, 'items'> }) {
   return (
-    <Table striped verticalSpacing="sm">
-      <Table.Thead>
-        <Table.Tr>
-          <Table.Th>Date Range</Table.Th>
-          <Table.Th className="text-right">CPU (cores)</Table.Th>
-          <Table.Th className="text-right">Storage (GiB)</Table.Th>
-          <Table.Th className="text-right">CPU Cost</Table.Th>
-          <Table.Th className="text-right">Storage Cost</Table.Th>
-          <Table.Th className="text-right">Total Cost</Table.Th>
-        </Table.Tr>
-      </Table.Thead>
-      <Table.Tbody>
+    <table className="w-full text-sm border-collapse">
+      <thead>
+        <tr className="bg-gray-100 dark:bg-gray-800">
+          <th className="text-left p-2 border-b">Date Range</th>
+          <th className="text-right p-2 border-b">CPU (cores)</th>
+          <th className="text-right p-2 border-b">Storage (GiB)</th>
+          <th className="text-right p-2 border-b">CPU Cost</th>
+          <th className="text-right p-2 border-b">Storage Cost</th>
+          <th className="text-right p-2 border-b">Total Cost</th>
+        </tr>
+      </thead>
+      <tbody>
         {data.items.length > 0 ? (
           data.items.map((item, idx: number) => (
-            <Table.Tr key={idx}>
-              <Table.Td>
-                {formatDate(item.startDate, 'yyyy-MM-dd HH:mm')} &ndash; {formatDate(item.endDate, 'yyyy-MM-dd HH:mm')}
-              </Table.Td>
-              <Table.Td className="text-right">{item.total.cpu.value}</Table.Td>
-              <Table.Td className="text-right">{item.total.storage.value}</Table.Td>
-              <Table.Td className="text-right">{formatCurrency(item.total.cpu.cost)}</Table.Td>
-              <Table.Td className="text-right">{formatCurrency(item.total.storage.cost)}</Table.Td>
-              <Table.Td className="text-right">{formatCurrency(item.total.subtotal.cost)}</Table.Td>
-            </Table.Tr>
+            <tr key={idx} className={idx % 2 === 0 ? 'bg-white dark:bg-gray-900' : 'bg-gray-50 dark:bg-gray-800'}>
+              <td className="p-2 border-b align-top">
+                {formatDate(item.startDate, 'yyyy-MM-dd HH:mm')} &ndash; {formatDate(item.endDate, 'yyyy-MM-dd HH:mm')}{' '}
+                {!item.isPast && (
+                  <span className="ml-2 inline-block rounded bg-blue-500 px-2 py-0.5 text-xs font-semibold text-white">
+                    Projected
+                  </span>
+                )}
+              </td>
+              <td className="p-2 border-b text-right align-top">{item.total.cpu.value}</td>
+              <td className="p-2 border-b text-right align-top">{item.total.storage.value}</td>
+              <td className="p-2 border-b text-right align-top">{formatCurrency(item.total.cpu.cost)}</td>
+              <td className="p-2 border-b text-right align-top">{formatCurrency(item.total.storage.cost)}</td>
+              <td className="p-2 border-b text-right align-top">{formatCurrency(item.total.subtotal.cost)}</td>
+            </tr>
           ))
         ) : (
-          <Table.Tr>
-            <Table.Td colSpan={6} className="italic">
+          <tr>
+            <td colSpan={6} className="p-2 border-b italic text-center">
               No data available for the selected month.
-            </Table.Td>
-          </Table.Tr>
+            </td>
+          </tr>
         )}
-      </Table.Tbody>
-    </Table>
+      </tbody>
+    </table>
   );
 }

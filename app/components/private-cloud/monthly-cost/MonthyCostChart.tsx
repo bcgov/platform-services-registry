@@ -1,5 +1,3 @@
-'use client';
-
 import { Card, Title } from '@tremor/react';
 import {
   Chart as ChartJS,
@@ -12,7 +10,7 @@ import {
   TooltipItem,
 } from 'chart.js';
 import { Bar } from 'react-chartjs-2';
-import { MonthlyCost } from '@/services/backend/private-cloud/products';
+import { MonthlyCost } from '@/types/private-cloud';
 import { formatCurrency } from '@/utils/js';
 
 ChartJS.register(CategoryScale, LinearScale, BarElement, ChartTitle, Tooltip, Legend);
@@ -22,7 +20,7 @@ interface MonthlyCostChartProps {
   selectedDate: Date;
 }
 
-export const options = {
+const options = {
   plugins: {
     title: {
       display: false,
