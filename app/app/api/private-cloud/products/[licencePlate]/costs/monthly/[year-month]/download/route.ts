@@ -1,7 +1,8 @@
 import { z } from 'zod';
-import { GlobalRole, GlobalPermissions } from '@/constants';
+import { GlobalRole } from '@/constants';
 import createApiHandler from '@/core/api-handler';
-import { OkResponse, UnauthorizedResponse } from '@/core/responses';
+import { UnauthorizedResponse, PdfResponse } from '@/core/responses';
+import { generateMonthlyCostPdf } from '@/helpers/pdfs/monthly-cost';
 import { models } from '@/services/db';
 import { getMonthlyCosts } from '@/services/db/private-cloud-costs';
 
@@ -10,7 +11,7 @@ const pathParamSchema = z.object({
   'year-month': z.string(),
 });
 
-export const GET = createApiHandler({
+export const POST = createApiHandler({
   roles: [GlobalRole.User],
   validations: {
     pathParams: pathParamSchema,
@@ -31,7 +32,8 @@ export const GET = createApiHandler({
   }
 
   const [year, month] = yearMonth.split('-').map(Number);
-  const result = await getMonthlyCosts(licencePlate, year, month);
+  const monthlyData = await getMonthlyCosts(licencePlate, year, month);
 
-  return OkResponse(result);
+  const pdfBuffer = await generateMonthlyCostPdf({ year, month, data: monthlyData });
+  return PdfResponse(pdfBuffer, `monthly-costs-${yearMonth}.pdf`);
 });

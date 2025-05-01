@@ -76,9 +76,7 @@ export default privateCloudProductMonthlyCost(({ getPathParams, session }) => {
         )}
       </div>
 
-      <div className="border rounded p-4 grid grid-cols-2 gap-4 bg-gray-50 my-6">
-        <MonthlyCostSummary data={data} />
-      </div>
+      <MonthlyCostSummary data={data} />
 
       <div className="my-8">
         <MonthlyCostChart data={{ days: data.days, dayDetails: data.dayDetails }} selectedDate={selectedDate} />

@@ -112,7 +112,7 @@ async function getCostDetailsForRange(licencePlate: string, startDate: Date, end
     const minutesInYear = getMinutesInYear(startDate.getFullYear()); // TODO: handle multiple years
     const cpuPricePerMinute = price.cpu / minutesInYear;
     const storagePricePerMinute = price.storage / minutesInYear;
-    const isPast = isTodayWithinRange && intervalEnd <= today;
+    const isPast = intervalEnd <= today;
 
     const environments = {
       development: getDetaultEnvironmentDetails(),
