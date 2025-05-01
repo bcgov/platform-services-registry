@@ -9,8 +9,7 @@ import { z } from 'zod';
 import Empty from '@/components/assets/empty.svg';
 import LoadingBox from '@/components/generic/LoadingBox';
 import FormYearPicker from '@/components/generic/select/FormYearPicker';
-import YearlyCostBarChart from '@/components/private-cloud/charts/YearlyCostBarChart';
-import YearlyCostStackBarChart from '@/components/private-cloud/charts/YearlyCostStackBarChart';
+import YearlyCostChart from '@/components/private-cloud/yearly-cost/YearlyCostChart';
 import { GlobalRole } from '@/constants';
 import createClientPage from '@/core/client-page';
 import { getTransformedCostData, transformToChartData } from '@/helpers/product';
@@ -89,7 +88,7 @@ export default privateCloudProductCostHistory(({ getPathParams, session }) => {
               </div>
             )}
 
-            <YearlyCostStackBarChart isLoading={isLoading} chartData={chartData} title={`Cost History for ${year}`} />
+            <YearlyCostChart isLoading={isLoading} chartData={chartData} title={`Cost History for ${year}`} />
             <TableBody data={transformedData} currentYear={year} />
           </>
         </LoadingBox>

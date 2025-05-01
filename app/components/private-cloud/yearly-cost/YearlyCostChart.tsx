@@ -33,7 +33,7 @@ const datasetConfigs = [
   },
 ];
 
-export default function YearlyCostStackBarChart({ chartData, title, isLoading = false }: YearlyCostBarChartProps) {
+export default function YearlyCostChart({ chartData, title, isLoading = false }: YearlyCostBarChartProps) {
   const getChartProperties = () => {
     return {
       labels: chartData.map((item) => item.month),
