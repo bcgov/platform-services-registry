@@ -12,12 +12,11 @@ import FormYearPicker from '@/components/generic/select/FormYearPicker';
 import YearlyCostChart from '@/components/private-cloud/yearly-cost/YearlyCostChart';
 import { GlobalRole } from '@/constants';
 import createClientPage from '@/core/client-page';
-import { getTransformedCostData, transformToChartData } from '@/helpers/product';
+import { getTransformedCostData } from '@/helpers/product';
 import {
   downloadPrivateCloudYearlyCostHstory,
   getPrivateCloudProductYearlyCostHistory,
 } from '@/services/backend/private-cloud/products';
-import { getAllMonthNames } from '@/utils/js';
 import { pageState } from './state';
 import TableBody from './TableBody';
 
@@ -56,8 +55,7 @@ export default privateCloudProductCostHistory(({ getPathParams, session }) => {
     }
   };
   const yearlyCostData = data?.items;
-  const transformedData = getTransformedCostData(yearlyCostData || []);
-  const chartData = transformToChartData(transformedData, getAllMonthNames());
+  const transformedYearlyCostData = getTransformedCostData(yearlyCostData || []);
 
   return (
     <>
@@ -68,45 +66,41 @@ export default privateCloudProductCostHistory(({ getPathParams, session }) => {
         placeholder="Choose a year"
         defaultCurrentYear={true}
       />
-
-      {yearlyCostData && yearlyCostData.length > 0 ? (
-        <LoadingBox isLoading={isLoading}>
+      <LoadingBox isLoading={isLoading}>
+        {yearlyCostData && yearlyCostData.length > 0 ? (
           <>
-            {yearlyCostData.length > 0 && (
-              <div className="flex justify-end mb-4">
-                <Button
-                  color="success"
-                  loading={downloading}
-                  onClick={async () => {
-                    setDownloading(true);
-                    await downloadPrivateCloudYearlyCostHstory(licencePlate, year);
-                    setDownloading(false);
-                  }}
-                >
-                  Download PDF
-                </Button>
-              </div>
-            )}
-
-            <YearlyCostChart isLoading={isLoading} chartData={chartData} title={`Cost History for ${year}`} />
-            <TableBody data={transformedData} currentYear={year} />
+            <div className="flex justify-end mb-4">
+              <Button
+                color="success"
+                loading={downloading}
+                onClick={async () => {
+                  setDownloading(true);
+                  await downloadPrivateCloudYearlyCostHstory(licencePlate, year);
+                  setDownloading(false);
+                }}
+              >
+                Download PDF
+              </Button>
+            </div>
+            <YearlyCostChart chartData={transformedYearlyCostData} title={`Cost History for ${year}`} />
+            <TableBody data={transformedYearlyCostData} currentYear={year} />
           </>
-        </LoadingBox>
-      ) : (
-        <div className="flex flex-col items-center justify-center py-12 mt-12">
-          <Image
-            alt="Empty"
-            src={Empty}
-            width={172}
-            height={128}
-            style={{
-              maxWidth: '100%',
-              height: 'auto',
-            }}
-          />
-          <span className="text-xl font-bold text-mediumgrey mt-4">There is no cost history for {year}</span>
-        </div>
-      )}
+        ) : (
+          <div className="flex flex-col items-center justify-center py-12 mt-12">
+            <Image
+              alt="Empty"
+              src={Empty}
+              width={172}
+              height={128}
+              style={{
+                maxWidth: '100%',
+                height: 'auto',
+              }}
+            />
+            <span className="text-xl font-bold text-mediumgrey mt-4">There is no cost history for {year}</span>
+          </div>
+        )}
+      </LoadingBox>
     </>
   );
 });

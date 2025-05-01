@@ -140,42 +140,23 @@ export function getPrivateCloudProductContext(
   };
 }
 
-export interface MonthlyCostData {
+export interface YearlyCostData {
   month: number;
   cpuCost: number;
   storageCost: number;
   totalCost: number;
 }
 
-export interface ChartCompatibleMonthlyCostData {
-  month: string;
-  'CPU Cost': number;
-  'Storage Cost': number;
-  'Total Cost': number;
-}
-
-export interface CostDataWithMonthName {
+export interface YearlyCostDataWithMonthName {
   month: string;
   cpuCost: number;
   storageCost: number;
   totalCost: number;
 }
 
-export function transformToChartData(
-  items: CostDataWithMonthName[],
-  monthNames: string[],
-): ChartCompatibleMonthlyCostData[] {
-  return items?.map((item, index) => ({
-    month: monthNames[index],
-    'CPU Cost': item.cpuCost,
-    'Storage Cost': item.storageCost,
-    'Total Cost': item.totalCost,
-  }));
-}
-
-export const getTransformedCostData = (items: MonthlyCostData[]) => {
+export const getTransformedCostData = (items: YearlyCostData[]) => {
   const monthNames = getAllMonthNames();
-  return items?.map((item: MonthlyCostData, index) => ({
+  return items?.map((item: YearlyCostData, index) => ({
     month: monthNames[index],
     cpuCost: item.cpuCost,
     storageCost: item.storageCost,

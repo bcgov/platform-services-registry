@@ -1,8 +1,8 @@
-import { ChartCompatibleMonthlyCostData, CostDataWithMonthName } from '@/helpers/product';
+import { YearlyCostDataWithMonthName } from '@/helpers/product';
 import { formatDate } from '@/utils/js';
 
 export interface ChartAndTableProps {
-  resources: ChartCompatibleMonthlyCostData[];
+  resources: YearlyCostDataWithMonthName[];
   year: string;
 }
 
@@ -83,9 +83,9 @@ export default function YearlyCostHistory({ resources, year }: ChartAndTableProp
         <td>
           {resource.month} {year}
         </td>
-        <td>{resource['CPU Cost']}</td>
-        <td>{resource['Storage Cost']}</td>
-        <td>{resource['Total Cost']}</td>
+        <td>{resource.cpuCost}</td>
+        <td>{resource.storageCost}</td>
+        <td>{resource.totalCost}</td>
       </tr>
     ));
   return (

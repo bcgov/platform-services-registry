@@ -1,10 +1,10 @@
 'use client';
 
 import { Table } from '@mantine/core';
-import { CostDataWithMonthName } from '@/helpers/product';
+import { YearlyCostDataWithMonthName } from '@/helpers/product';
 
 export interface TableProps {
-  data: CostDataWithMonthName[];
+  data: YearlyCostDataWithMonthName[];
   currentYear: string;
 }
 
