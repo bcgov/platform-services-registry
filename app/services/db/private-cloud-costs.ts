@@ -4,34 +4,8 @@ import _orderBy from 'lodash-es/orderBy';
 import { namespaceKeys } from '@/constants';
 import prisma from '@/core/prisma';
 import { DecisionStatus, Prisma, RequestType } from '@/prisma/client';
+import { CostItem } from '@/types/private-cloud';
 import { dateToShortDateString, getMinutesInYear, getDateFromYyyyMmDd, getMonthStartEndDate } from '@/utils/js/date';
-
-interface EnvironmentDetails {
-  cpu: {
-    value: number;
-    cost: number;
-  };
-  storage: {
-    value: number;
-    cost: number;
-  };
-  subtotal: {
-    cost: number;
-  };
-}
-
-interface CostItem {
-  startDate: Date;
-  endDate: Date;
-  minutes: number;
-  isPast: boolean;
-  unitPriceId?: string;
-  development: EnvironmentDetails;
-  test: EnvironmentDetails;
-  production: EnvironmentDetails;
-  tools: EnvironmentDetails;
-  total: EnvironmentDetails;
-}
 
 const roundToTwoDecimals = (value: number) => Number(value.toFixed(2));
 
@@ -186,25 +160,29 @@ async function getCostDetailsForRange(licencePlate: string, startDate: Date, end
       startDate: intervalStart,
       endDate: intervalEnd,
       minutes: durationMinutes,
+      cpuPricePerMinute,
+      storagePricePerMinute,
       isPast,
       unitPriceId: price.id,
       ...environments,
     });
   }
 
-  return formatDecimals({
+  return {
     items: costItems,
     cpu,
     storage,
     total,
-  });
+  };
 }
 
 export async function getMonthlyCosts(licencePlate: string, year: number, oneIndexedMonth: number) {
   const { startDate, endDate } = getMonthStartEndDate(year, oneIndexedMonth);
-  const now = new Date();
+  const month = oneIndexedMonth - 1;
+  const today = new Date();
+  const todayDay = today.getDate();
 
-  const isCurrentMonth = now.getFullYear() === year && now.getMonth() === oneIndexedMonth - 1;
+  const isCurrentMonth = today.getFullYear() === year && today.getMonth() === month;
   const { items, total } = await getCostDetailsForRange(licencePlate, startDate, endDate);
 
   let currentTotal = -1;
@@ -218,23 +196,64 @@ export async function getMonthlyCosts(licencePlate: string, year: number, oneInd
     grandTotal = total.costToTotal;
   }
 
+  const numDays = new Date(year, month + 1, 0).getDate();
+  const days: number[] = Array.from({ length: numDays }, (_, i) => i + 1);
+
+  const cpuToDate = new Array(numDays).fill(0);
+  const cpuToProjected = new Array(numDays).fill(0);
+  const storageToDate = new Array(numDays).fill(0);
+  const storageToProjected = new Array(numDays).fill(0);
+
+  const sortedItems = _orderBy(items, ['startDate'], ['desc']);
+
+  for (let day = 1; day <= numDays; day++) {
+    const dayStart = new Date(year, month, day);
+    const dayEnd = new Date(year, month, day + 1, 0, 0, 0, -1);
+
+    const changePoints = new Set<Date>();
+
+    changePoints.add(dayStart);
+    changePoints.add(dayEnd);
+    if (isCurrentMonth && day === todayDay) {
+      changePoints.add(today);
+    }
+
+    const sortedChangePoints = _orderBy(Array.from(changePoints), [], 'asc');
+    for (let changePoint = 0; changePoint < sortedChangePoints.length - 1; changePoint++) {
+      const intervalStart = sortedChangePoints[changePoint];
+      const intervalEnd = sortedChangePoints[changePoint + 1];
+
+      const meta = _find(sortedItems, (item) => item.startDate <= dayStart);
+      if (!meta) continue;
+
+      const durationMinutes = (intervalEnd.getTime() - intervalStart.getTime()) / (1000 * 60);
+      const cpuPrice = meta.cpuPricePerMinute * durationMinutes;
+      const storagePrice = meta.storagePricePerMinute * durationMinutes;
+
+      if (intervalEnd <= today) {
+        cpuToDate[day - 1] = cpuPrice;
+        storageToDate[day - 1] = storagePrice;
+      } else {
+        cpuToProjected[day - 1] = cpuPrice;
+        storageToProjected[day - 1] = storagePrice;
+      }
+    }
+  }
+
   return {
     accountCoding: '123ABC', // placeholder
     billingPeriod: dateToShortDateString(startDate),
     currentTotal,
     estimatedGrandTotal,
     grandTotal,
-    items: items.map((item) => {
-      return {
-        startDate: item.startDate,
-        endDate: item.endDate,
-        cpu: item.total.cpu.value,
-        storage: item.total.storage.value,
-        cpuCost: item.total.cpu.cost,
-        storageCost: item.total.storage.cost,
-        totalCost: item.total.subtotal.cost,
-      };
-    }),
+    items,
+    days,
+    dayDetails: {
+      cpuToDate,
+      cpuToProjected,
+      storageToDate,
+      storageToProjected,
+    },
   };
 }
 

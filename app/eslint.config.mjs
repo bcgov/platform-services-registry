@@ -26,7 +26,7 @@ export default [
     },
   },
   {
-    ignores: ['**/*.js', '**/*.jsx', '**/*.mjs', 'node_modules', '.next', '.react-email'],
+    ignores: ['**/*.js', '**/*.jsx', '**/*.mjs', 'node_modules', '.next', '.react-email', 'prisma/client'],
   },
   {
     files: ['*.ts', '*.tsx'],

@@ -147,3 +147,31 @@ export type PrivateCloudProductWebhookDetailDecorated = PrivateCloudProductWebho
 export type PrivateCloudProductWebhookSimple = Prisma.PrivateCloudProductWebhookGetPayload<object>;
 export type PrivateCloudProductWebhookSimpleDecorated = PrivateCloudProductWebhookSimple &
   PrivateCloudProductWebhookDecorate;
+
+export interface EnvironmentDetails {
+  cpu: {
+    value: number;
+    cost: number;
+  };
+  storage: {
+    value: number;
+    cost: number;
+  };
+  subtotal: {
+    cost: number;
+  };
+}
+export interface CostItem {
+  startDate: Date;
+  endDate: Date;
+  minutes: number;
+  cpuPricePerMinute: number;
+  storagePricePerMinute: number;
+  isPast: boolean;
+  unitPriceId?: string;
+  development: EnvironmentDetails;
+  test: EnvironmentDetails;
+  production: EnvironmentDetails;
+  tools: EnvironmentDetails;
+  total: EnvironmentDetails;
+}
