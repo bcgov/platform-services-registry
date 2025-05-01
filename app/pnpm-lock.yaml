@@ -304,7 +304,7 @@ importers:
         specifier: ^29.7.0
         version: 29.7.0
       knip:
-        specifier: ^5.44.1
+        specifier: ^5.52.0
         version: 5.52.0(@types/node@22.15.3)(typescript@5.8.3)
       lodash:
         specifier: ^4.17.21

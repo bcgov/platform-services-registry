@@ -1,10 +1,10 @@
 import React from 'react';
-import { MonthlyCost } from '@/services/backend/private-cloud/products';
+import { MonthlyCost } from '@/types/private-cloud';
 import { formatCurrency } from '@/utils/js';
 
 export default function MonthlyCostSummary({ data }: { data: MonthlyCost }) {
   return (
-    <>
+    <div className="border rounded p-4 grid grid-cols-2 gap-4 bg-gray-50 my-6">
       <div>
         <strong>Account Coding:</strong> {data.accountCoding}
       </div>
@@ -26,6 +26,6 @@ export default function MonthlyCostSummary({ data }: { data: MonthlyCost }) {
           <strong>Grand Total:</strong> {formatCurrency(data.grandTotal)}
         </div>
       )}
-    </>
+    </div>
   );
 }

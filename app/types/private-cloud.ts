@@ -175,3 +175,19 @@ export interface CostItem {
   tools: EnvironmentDetails;
   total: EnvironmentDetails;
 }
+
+export interface MonthlyCost {
+  accountCoding: string;
+  billingPeriod: string;
+  currentTotal: number;
+  estimatedGrandTotal: number;
+  grandTotal: number;
+  items: CostItem[];
+  days: number[];
+  dayDetails: {
+    cpuToDate: number[];
+    cpuToProjected: number[];
+    storageToDate: number[];
+    storageToProjected: number[];
+  };
+}

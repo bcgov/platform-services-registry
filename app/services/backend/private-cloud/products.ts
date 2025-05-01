@@ -8,7 +8,7 @@ import {
   PrivateCloudProductSearch,
   PrivateCloudRequestDetail,
 } from '@/types/private-cloud';
-import { CostItem } from '@/types/private-cloud';
+import { MonthlyCost } from '@/types/private-cloud';
 import { downloadFile } from '@/utils/browser';
 import {
   PrivateCloudProductSearchBody,
@@ -157,22 +157,6 @@ export interface QuotaChangeStatus {
 export async function getQuotaChangeStatus(licencePlate: string, resourceRequests: ResourceRequestsEnv) {
   const response = await instance.post<QuotaChangeStatus>(`/${licencePlate}/quota-change-status`, { resourceRequests });
   return response.data;
-}
-
-export interface MonthlyCost {
-  accountCoding: string;
-  billingPeriod: string;
-  currentTotal: number;
-  estimatedGrandTotal: number;
-  grandTotal: number;
-  items: CostItem[];
-  days: number[];
-  dayDetails: {
-    cpuToDate: number[];
-    cpuToProjected: number[];
-    storageToDate: number[];
-    storageToProjected: number[];
-  };
 }
 
 export async function getMonthlyCosts(licencePlate: string, yearMonth: string) {
