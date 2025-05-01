@@ -7,6 +7,7 @@ import {
   BarElement,
   Title as ChartTitle,
   Tooltip,
+  TooltipItem,
   Legend,
 } from 'chart.js';
 import { Chart } from 'react-chartjs-2';
@@ -72,7 +73,7 @@ export default function YearlyCostChart({ chartData, title, isLoading = false }:
     plugins: {
       tooltip: {
         callbacks: {
-          afterBody: function (context: any) {
+          afterBody: function (context: TooltipItem<'bar'>[]) {
             const dataIndex = context[0].dataIndex;
             return `Total Cost: $${chartData[dataIndex]['Total Cost']}`;
           },
