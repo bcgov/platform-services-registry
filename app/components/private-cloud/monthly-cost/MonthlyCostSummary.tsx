@@ -4,7 +4,7 @@ import { formatCurrency } from '@/utils/js';
 
 export default function MonthlyCostSummary({ data }: { data: MonthlyCost }) {
   return (
-    <div className="border rounded p-4 grid grid-cols-2 gap-4 bg-gray-50 my-6">
+    <div className="border border-gray-200 border-solid rounded p-4 grid grid-cols-2 gap-4 bg-gray-50 my-6">
       <div>
         <strong>Account Coding:</strong> {data.accountCoding}
       </div>
