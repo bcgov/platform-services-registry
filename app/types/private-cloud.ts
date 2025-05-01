@@ -147,3 +147,17 @@ export type PrivateCloudProductWebhookDetailDecorated = PrivateCloudProductWebho
 export type PrivateCloudProductWebhookSimple = Prisma.PrivateCloudProductWebhookGetPayload<object>;
 export type PrivateCloudProductWebhookSimpleDecorated = PrivateCloudProductWebhookSimple &
   PrivateCloudProductWebhookDecorate;
+
+export interface YearlyCostData {
+  month: number;
+  cpuCost: number;
+  storageCost: number;
+  totalCost: number;
+}
+
+export interface YearlyCostDataWithMonthName {
+  month: string;
+  cpuCost: number;
+  storageCost: number;
+  totalCost: number;
+}

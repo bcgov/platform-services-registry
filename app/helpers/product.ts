@@ -3,6 +3,7 @@ import _pick from 'lodash-es/pick';
 import { Session } from 'next-auth';
 import { ministryOptions } from '@/constants';
 import { PrivateCloudProductMemberRole, PrivateCloudProduct } from '@/prisma/client';
+import { YearlyCostData } from '@/types/private-cloud';
 import { extractNumbers, getAllMonthNames } from '@/utils/js';
 
 export function ministryKeyToName(key: string) {
@@ -138,20 +139,6 @@ export function getPrivateCloudProductContext(
     isMinistryReader,
     isMinistryEditor,
   };
-}
-
-export interface YearlyCostData {
-  month: number;
-  cpuCost: number;
-  storageCost: number;
-  totalCost: number;
-}
-
-export interface YearlyCostDataWithMonthName {
-  month: string;
-  cpuCost: number;
-  storageCost: number;
-  totalCost: number;
 }
 
 export const getTransformedCostData = (items: YearlyCostData[]) => {

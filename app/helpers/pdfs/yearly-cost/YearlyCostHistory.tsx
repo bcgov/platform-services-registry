@@ -1,4 +1,4 @@
-import { YearlyCostDataWithMonthName } from '@/helpers/product';
+import { YearlyCostDataWithMonthName } from '@/types/private-cloud';
 import { formatDate } from '@/utils/js';
 
 export interface ChartAndTableProps {

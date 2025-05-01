@@ -16,7 +16,7 @@ export interface FormYearPickerProps {
   loading?: boolean;
   value?: Date | null;
   disabled?: boolean;
-  defaultCurrentYear?: boolean;
+  defaultValue?: boolean;
   classNames?: {
     wrapper?: string;
     label?: string;
@@ -32,18 +32,17 @@ export default function FormYearPicker({
   loading = false,
   value,
   disabled = false,
-  defaultCurrentYear = false,
+  defaultValue = false,
 }: FormYearPickerProps) {
   const [year, setYear] = useState<Date | null>(value ?? null);
 
   useEffect(() => {
-    if (defaultCurrentYear && !value && !year) {
-      const currentYear = new Date();
-      currentYear.setMonth(0, 1);
-      setYear(currentYear);
-      onChange(currentYear);
-    }
-  }, [defaultCurrentYear, value, onChange, year]);
+    if (!defaultValue || value || year) return;
+    const currentYear = new Date();
+    currentYear.setMonth(0, 1);
+    setYear(currentYear);
+    onChange(currentYear);
+  }, [defaultValue, value, onChange, year]);
 
   if (!id) id = randomId();
 

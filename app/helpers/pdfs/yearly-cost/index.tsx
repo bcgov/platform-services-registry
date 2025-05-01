@@ -1,5 +1,5 @@
-import { YearlyCostDataWithMonthName } from '@/helpers/product';
 import { WeasyPrint } from '@/services/weasyprint/client';
+import { YearlyCostDataWithMonthName } from '@/types/private-cloud';
 import YearlyCostHistory, { css } from './YearlyCostHistory';
 
 const weasyClient = new WeasyPrint();

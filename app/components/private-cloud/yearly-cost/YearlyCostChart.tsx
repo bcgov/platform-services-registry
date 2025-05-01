@@ -10,55 +10,62 @@ import {
   Legend,
 } from 'chart.js';
 import { Bar } from 'react-chartjs-2';
-import { YearlyCostDataWithMonthName } from '@/helpers/product';
+import { YearlyCostDataWithMonthName } from '@/types/private-cloud';
+import { formatCurrency } from '@/utils/js';
 
 ChartJS.register(CategoryScale, LinearScale, BarElement, ChartTitle, Tooltip, Legend);
 
 interface YearlyCostChartProps {
-  chartData: YearlyCostDataWithMonthName[];
+  data: YearlyCostDataWithMonthName[];
   title: string;
 }
 
-export default function YearlyCostChart({ chartData, title }: YearlyCostChartProps) {
-  const chartProperties = {
-    labels: chartData.map((item) => item.month),
-    datasets: [
-      {
-        label: 'CPU Cost',
-        data: chartData.map((item) => item.cpuCost),
-        backgroundColor: '#36A2EB',
-        hoverBackgroundColor: '#36A2EB',
-      },
-      {
-        label: 'Storage Cost',
-        data: chartData.map((item) => item.storageCost),
-        backgroundColor: '#9966FF',
-        hoverBackgroundColor: '#9966FF',
-      },
-    ],
-  };
-
-  const options = {
-    responsive: true,
-    maintainAspectRatio: false,
-    scales: {
-      x: {
-        stacked: true,
-      },
-      y: {
-        stacked: true,
-      },
+export const options = {
+  plugins: {
+    title: {
+      display: false,
     },
-    plugins: {
-      tooltip: {
-        callbacks: {
-          afterBody: function (context: TooltipItem<'bar'>[]) {
-            const dataIndex = context[0].dataIndex;
-            return `Total Cost: ${chartData[dataIndex]['Total Cost']}`;
-          },
+    tooltip: {
+      callbacks: {
+        label: function (context: TooltipItem<'bar'>) {
+          const value = context.parsed.y;
+          return formatCurrency(value);
         },
       },
     },
+  },
+  responsive: true,
+  maintainAspectRatio: false,
+  scales: {
+    x: {
+      stacked: true,
+    },
+    y: {
+      stacked: true,
+      ticks: {
+        callback: function (value: string | number, index: number, ticks: any) {
+          return formatCurrency(Number(value));
+        },
+      },
+    },
+  },
+};
+
+export default function YearlyCostChart({ data, title }: YearlyCostChartProps) {
+  const chartData = {
+    labels: data.map((item) => item.month),
+    datasets: [
+      {
+        label: 'CPU Cost CA($)',
+        data: data.map((item) => item.cpuCost),
+        backgroundColor: '#36A2EB',
+      },
+      {
+        label: 'Storage Cost CA($)',
+        data: data.map((item) => item.storageCost),
+        backgroundColor: '#9966FF',
+      },
+    ],
   };
 
   return (
@@ -67,14 +74,7 @@ export default function YearlyCostChart({ chartData, title }: YearlyCostChartPro
         {title}
       </Title>
       <div className="relative h-96 w-full">
-        <Bar
-          data={chartProperties}
-          options={options}
-          style={{
-            width: '100%',
-            height: '100%',
-          }}
-        />
+        <Bar data={chartData} options={options} />
       </div>
     </Card>
   );

@@ -1,6 +1,7 @@
 'use client';
 
 import { Button } from '@mantine/core';
+import { YearPickerInput } from '@mantine/dates';
 import { useQuery } from '@tanstack/react-query';
 import Image from 'next/image';
 import { useEffect, useState } from 'react';
@@ -8,8 +9,8 @@ import { useSnapshot } from 'valtio';
 import { z } from 'zod';
 import Empty from '@/components/assets/empty.svg';
 import LoadingBox from '@/components/generic/LoadingBox';
-import FormYearPicker from '@/components/generic/select/FormYearPicker';
 import YearlyCostChart from '@/components/private-cloud/yearly-cost/YearlyCostChart';
+import YearlyCostTable from '@/components/private-cloud/yearly-cost/YearlyCostTable';
 import { GlobalRole } from '@/constants';
 import createClientPage from '@/core/client-page';
 import { getTransformedCostData } from '@/helpers/product';
@@ -18,7 +19,6 @@ import {
   getPrivateCloudProductYearlyCostHistory,
 } from '@/services/backend/private-cloud/products';
 import { pageState } from './state';
-import TableBody from './TableBody';
 
 const pathParamSchema = z.object({
   licencePlate: z.string(),
@@ -59,12 +59,13 @@ export default privateCloudProductCostHistory(({ getPathParams, session }) => {
 
   return (
     <>
-      <FormYearPicker
+      <YearPickerInput
         label="Select Year"
+        placeholder="Select Year"
         value={new Date(parseInt(year), 0, 1)}
         onChange={(year) => setSelectedYear(year)}
-        placeholder="Choose a year"
-        defaultCurrentYear={true}
+        maw={200}
+        clearable
       />
       <LoadingBox isLoading={isLoading}>
         {yearlyCostData && yearlyCostData.length > 0 ? (
@@ -82,8 +83,8 @@ export default privateCloudProductCostHistory(({ getPathParams, session }) => {
                 Download PDF
               </Button>
             </div>
-            <YearlyCostChart chartData={transformedYearlyCostData} title={`Cost History for ${year}`} />
-            <TableBody data={transformedYearlyCostData} currentYear={year} />
+            <YearlyCostChart data={transformedYearlyCostData} title={`Cost History for ${year}`} />
+            <YearlyCostTable data={transformedYearlyCostData} currentYear={year} />
           </>
         ) : (
           <div className="flex flex-col items-center justify-center py-12 mt-12">
