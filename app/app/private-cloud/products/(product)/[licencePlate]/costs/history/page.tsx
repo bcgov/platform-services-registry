@@ -2,19 +2,23 @@
 
 import { Button } from '@mantine/core';
 import { useQuery } from '@tanstack/react-query';
+import Image from 'next/image';
 import { useEffect, useState } from 'react';
 import { useSnapshot } from 'valtio';
 import { z } from 'zod';
+import Empty from '@/components/assets/empty.svg';
 import LoadingBox from '@/components/generic/LoadingBox';
 import FormYearPicker from '@/components/generic/select/FormYearPicker';
 import YearlyCostBarChart from '@/components/private-cloud/charts/YearlyCostBarChart';
+import YearlyCostStackBarChart from '@/components/private-cloud/charts/YearlyCostStackBarChart';
 import { GlobalRole } from '@/constants';
 import createClientPage from '@/core/client-page';
-import { getTransformedCostData } from '@/helpers/product';
+import { getTransformedCostData, transformToChartData } from '@/helpers/product';
 import {
   downloadPrivateCloudYearlyCostHstory,
   getPrivateCloudProductYearlyCostHistory,
 } from '@/services/backend/private-cloud/products';
+import { getAllMonthNames } from '@/utils/js';
 import { pageState } from './state';
 import TableBody from './TableBody';
 
@@ -54,6 +58,7 @@ export default privateCloudProductCostHistory(({ getPathParams, session }) => {
   };
   const yearlyCostData = data?.items;
   const transformedData = getTransformedCostData(yearlyCostData || []);
+  const chartData = transformToChartData(transformedData, getAllMonthNames());
 
   return (
     <>
@@ -65,7 +70,7 @@ export default privateCloudProductCostHistory(({ getPathParams, session }) => {
         defaultCurrentYear={true}
       />
 
-      {yearlyCostData && (
+      {yearlyCostData && yearlyCostData.length > 0 ? (
         <LoadingBox isLoading={isLoading}>
           <>
             {yearlyCostData.length > 0 && (
@@ -84,16 +89,24 @@ export default privateCloudProductCostHistory(({ getPathParams, session }) => {
               </div>
             )}
 
-            <YearlyCostBarChart
-              isLoading={isLoading}
-              index="month"
-              chartData={transformedData}
-              title={`Cost History for ${year}`}
-              categories={['CPU Cost', 'Storage Cost']}
-            />
+            <YearlyCostStackBarChart isLoading={isLoading} chartData={chartData} title={`Cost History for ${year}`} />
             <TableBody data={transformedData} currentYear={year} />
           </>
         </LoadingBox>
+      ) : (
+        <div className="flex flex-col items-center justify-center py-12 mt-12">
+          <Image
+            alt="Empty"
+            src={Empty}
+            width={172}
+            height={128}
+            style={{
+              maxWidth: '100%',
+              height: 'auto',
+            }}
+          />
+          <span className="text-xl font-bold text-mediumgrey mt-4">There is no cost history for {year}</span>
+        </div>
       )}
     </>
   );
