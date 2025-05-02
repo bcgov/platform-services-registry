@@ -13,7 +13,7 @@ COPY .prettierignore .prettierrc ./
 ENV SECURE_HEADERS=true \
   DEPLOYMENT_TAG=${deployment_tag}
 
-# Install system dependencies (for canvas)
+# Install system dependencies (for compiling canvas)
 RUN apk add --no-cache \
     build-base \
     cairo-dev \
@@ -42,6 +42,7 @@ FROM node:22.12.0-alpine3.19
 
 WORKDIR /app
 
+# Copy built artifacts from build stage
 COPY --from=build /app/.next .next
 COPY --from=build /app/next.config.js ./
 COPY --from=build /app/public public
@@ -49,13 +50,23 @@ COPY --from=build /app/package.json package.json
 COPY --from=build /app/node_modules node_modules
 COPY --from=build /app/prisma/client prisma/client
 
-RUN mkdir -p .next/cache/images && \
-    chmod -R 777 .next/cache/images
+# Install system dependencies (for running canvas)
+RUN apk add --no-cache \
+    cairo \
+    pango \
+    jpeg \
+    giflib \
+    libpng \
+    librsvg
 
+# Ensure Next.js image cache dir is writable
+RUN install -d -m 0777 .next/cache/images
+
+# Set environment variables
 ARG BUILD_TIMESTAMP
-ENV BUILD_TIMESTAMP=${BUILD_TIMESTAMP}
-ENV NEXTAUTH_SECRET=changeme
-ENV TZ=America/Vancouver
+ENV BUILD_TIMESTAMP=${BUILD_TIMESTAMP} \
+    NEXTAUTH_SECRET=changeme \
+    TZ=America/Vancouver
 
 EXPOSE 3000
 CMD ["node_modules/.bin/next", "start"]
