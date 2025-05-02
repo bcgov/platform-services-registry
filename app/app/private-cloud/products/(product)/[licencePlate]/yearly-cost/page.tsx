@@ -51,18 +51,18 @@ export default privateCloudProductYearlyCost(({ getPathParams, session }) => {
   return (
     <div className="p-4">
       <h1 className="text-2xl font-bold mb-4">Yearly Bills</h1>
-      <div className="flex items-center gap-4 mb-6">
-        <YearPickerInput
-          label="Select Year"
-          placeholder="Pick Year"
-          value={selectedYear}
-          onChange={handleChange}
-          maw={200}
-          clearable
-        />
-      </div>
-      {data.items.length > 0 && (
-        <div className="ml-auto">
+      <div className="flex items-center justify-between w-full mb-6">
+        <div className="flex items-center gap-4">
+          <YearPickerInput
+            label="Select Year"
+            placeholder="Pick Year"
+            value={selectedYear}
+            onChange={handleChange}
+            maw={200}
+            clearable
+          />
+        </div>
+        {yearlyCostData.length > 0 && (
           <Button
             loading={downloading}
             onClick={async () => {
@@ -74,8 +74,9 @@ export default privateCloudProductYearlyCost(({ getPathParams, session }) => {
           >
             Download PDF
           </Button>
-        </div>
-      )}
+        )}
+      </div>
+
       <div className="my-8">
         <YearlyCostChart yearlyCostData={yearlyCostData} />
       </div>
