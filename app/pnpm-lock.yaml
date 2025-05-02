@@ -125,12 +125,9 @@ importers:
       axios:
         specifier: ^1.5.1
         version: 1.9.0
-<<<<<<< HEAD
-=======
       canvas:
         specifier: 3.1.0
         version: 3.1.0
->>>>>>> origin/main
       chart.js:
         specifier: ^4.4.9
         version: 4.4.9
@@ -4899,13 +4896,10 @@ packages:
   queue-microtask@1.2.3:
     resolution: {integrity: sha512-NuaNSa6flKT5JaSYQzJok04JzTL1CA6aGhv5rfLW3PgqA+M2ChpZQnAC8h8i4ZFkBS8X5RqkDBHA7r4hej3K9A==}
 
-<<<<<<< HEAD
-=======
   rc@1.2.8:
     resolution: {integrity: sha512-y3bGgqKj3QBdxLbLkomlohkvsA8gdAiUQlSBJnBhfn+BPxg4bc62d8TcBW15wavDfgexCgccckhcZvywyQYPOw==}
     hasBin: true
 
->>>>>>> origin/main
   react-chartjs-2@5.3.0:
     resolution: {integrity: sha512-UfZZFnDsERI3c3CZGxzvNJd02SHjaSJ8kgW1djn65H1KK8rehwTjyrRKOG3VTMG8wtHZ5rgAO5oTHtHi9GCCmw==}
     peerDependencies:
@@ -10984,8 +10978,6 @@ snapshots:
 
   queue-microtask@1.2.3: {}
 
-<<<<<<< HEAD
-=======
   rc@1.2.8:
     dependencies:
       deep-extend: 0.6.0
@@ -10993,7 +10985,6 @@ snapshots:
       minimist: 1.2.8
       strip-json-comments: 2.0.1
 
->>>>>>> origin/main
   react-chartjs-2@5.3.0(chart.js@4.4.9)(react@19.1.0):
     dependencies:
       chart.js: 4.4.9

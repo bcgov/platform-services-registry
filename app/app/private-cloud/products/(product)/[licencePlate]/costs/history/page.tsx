@@ -14,10 +14,7 @@ import YearlyCostTable from '@/components/private-cloud/yearly-cost/YearlyCostTa
 import { GlobalRole } from '@/constants';
 import createClientPage from '@/core/client-page';
 import { getTransformedCostData } from '@/helpers/product';
-import {
-  downloadPrivateCloudYearlyCostHstory,
-  getPrivateCloudProductYearlyCostHistory,
-} from '@/services/backend/private-cloud/products';
+import { getPrivateCloudProductYearlyCostHistory } from '@/services/backend/private-cloud/products';
 import { pageState } from './state';
 
 const pathParamSchema = z.object({
@@ -70,19 +67,6 @@ export default privateCloudProductCostHistory(({ getPathParams, session }) => {
       <LoadingBox isLoading={isLoading}>
         {yearlyCostData && yearlyCostData.length > 0 ? (
           <>
-            <div className="flex justify-end mb-4">
-              <Button
-                color="success"
-                loading={downloading}
-                onClick={async () => {
-                  setDownloading(true);
-                  await downloadPrivateCloudYearlyCostHstory(licencePlate, year);
-                  setDownloading(false);
-                }}
-              >
-                Download PDF
-              </Button>
-            </div>
             <YearlyCostChart data={transformedYearlyCostData} title={`Cost History for ${year}`} />
             <YearlyCostTable data={transformedYearlyCostData} currentYear={year} />
           </>
