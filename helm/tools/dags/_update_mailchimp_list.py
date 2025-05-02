@@ -1,9 +1,10 @@
+import time
+import json
+from bson.objectid import ObjectId
 import mailchimp_marketing as MailchimpMarketing
 from mailchimp_marketing.api_client import ApiClientError
 from _utils import generate_md5_hash
 from _projects import get_mongo_db
-from bson.objectid import ObjectId
-import json
 
 
 def fetch_unique_emails(mongo_conn_id):
@@ -108,12 +109,30 @@ class MailchimpManager:
     def wait_for_batch_complete(self, batch_id):
         if batch_id is None:
             return
+
+        max_exceptions = 20
+        exception_count = 0
+
         while True:
-            response = self.client.batches.status(batch_id)
-            status = response.get("status")
-            print(f"batch status check: '{batch_id}' - '{status}'")
+            try:
+                response = self.client.batches.status(batch_id)
+                status = response.get("status")
+                print(f"batch status check: '{batch_id}' - '{status}'")
+            except ApiClientError as e:
+                exception_count += 1
+                print(f"Error while checking batch status (attempt {exception_count}): {e}")
+                if exception_count > max_exceptions:
+                    raise RuntimeError(f"Too many errors while checking batch status (>{max_exceptions})") from e
+                time.sleep(5)
+                continue
+
+            # Reset counter after a successful call
+            exception_count = 0
+
             if status == "finished":
                 break
+
+            time.sleep(5)
 
     def get_all_members(self):
         members = []
