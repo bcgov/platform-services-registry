@@ -1,5 +1,5 @@
 import { TooltipItem } from 'chart.js';
-import { YearlyCostChartProps } from '@/types/private-cloud';
+import { YearlyCostData } from '@/types/private-cloud';
 import { formatCurrency } from '@/utils/js';
 
 export const options = {
@@ -32,18 +32,18 @@ export const options = {
   },
 };
 
-export function getYearlyCostChartConfig(yearlyData: YearlyCostChartProps) {
+export function getYearlyCostChartConfig(yearlyData: YearlyCostData[]) {
   const chartData = {
-    labels: yearlyData.data.map((item) => item.month),
+    labels: yearlyData.map((item) => item.monthName),
     datasets: [
       {
         label: 'CPU Cost CA($)',
-        data: yearlyData.data.map((item) => item.cpuCost),
+        data: yearlyData.map((item) => item.cpuCost),
         backgroundColor: '#36A2EB',
       },
       {
         label: 'Storage Cost CA($)',
-        data: yearlyData.data.map((item) => item.storageCost),
+        data: yearlyData.map((item) => item.storageCost),
         backgroundColor: '#9966FF',
       },
     ],

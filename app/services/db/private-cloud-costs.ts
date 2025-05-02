@@ -1,7 +1,7 @@
 import _cloneDeep from 'lodash-es/cloneDeep';
 import _find from 'lodash-es/find';
 import _orderBy from 'lodash-es/orderBy';
-import { namespaceKeys } from '@/constants';
+import { monthNames, namespaceKeys } from '@/constants';
 import prisma from '@/core/prisma';
 import { DecisionStatus, Prisma, RequestType } from '@/prisma/client';
 import { CostItem } from '@/types/private-cloud';
@@ -268,6 +268,7 @@ export async function getYearlyCosts(licencePlate: string, yearString: string) {
       return {
         year,
         month: zeroIndexedMonth,
+        monthName: monthNames[zeroIndexedMonth],
         cpuCost: cpu.costToDate,
         storageCost: storage.costToDate,
         totalCost: total.costToDate,

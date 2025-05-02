@@ -1,30 +1,26 @@
 'use client';
 import { YearPickerInput } from '@mantine/dates';
 import { useQuery } from '@tanstack/react-query';
-import { format } from 'date-fns';
-import Image from 'next/image';
 import { useEffect, useState } from 'react';
-import { useSnapshot } from 'valtio';
 import { z } from 'zod';
-import Empty from '@/components/assets/empty.svg';
 import LoadingBox from '@/components/generic/LoadingBox';
 import YearlyCostChart from '@/components/private-cloud/yearly-cost/YearlyCostChart';
 import YearlyCostTable from '@/components/private-cloud/yearly-cost/YearlyCostTable';
 import { GlobalRole } from '@/constants';
 import createClientPage from '@/core/client-page';
-import { getTransformedCostData } from '@/helpers/product';
 import { getYearlyCosts } from '@/services/backend/private-cloud/products';
+import { YearlyCostData } from '@/types/private-cloud';
 
 const pathParamSchema = z.object({
   licencePlate: z.string(),
 });
 
-const privateCloudProductCostHistory = createClientPage({
+const privateCloudProductYearlyCost = createClientPage({
   roles: [GlobalRole.User],
   validations: { pathParams: pathParamSchema },
 });
 
-export default privateCloudProductCostHistory(({ getPathParams, session }) => {
+export default privateCloudProductYearlyCost(({ getPathParams, session }) => {
   const [pathParams, setPathParams] = useState<z.infer<typeof pathParamSchema>>();
   const [selectedYear, setSelectedYear] = useState<Date>(new Date());
 
@@ -50,7 +46,7 @@ export default privateCloudProductCostHistory(({ getPathParams, session }) => {
   };
 
   const yearlyCostData = data?.items;
-  const transformedData = getTransformedCostData(yearlyCostData || []);
+  console.log('THis is the yearly cost Data: ', yearlyCostData);
 
   return (
     <div className="p-4">
@@ -66,10 +62,10 @@ export default privateCloudProductCostHistory(({ getPathParams, session }) => {
         />
       </div>
       <div className="my-8">
-        <YearlyCostChart data={transformedData} />
+        <YearlyCostChart yearlyCostData={yearlyCostData} />
       </div>
       <LoadingBox isLoading={isLoading}>
-        <YearlyCostTable data={transformedData} currentYear={year} />
+        <YearlyCostTable yearlyCostData={yearlyCostData} currentYear={year} />
       </LoadingBox>
     </div>
   );

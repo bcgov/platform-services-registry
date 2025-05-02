@@ -149,21 +149,10 @@ export type PrivateCloudProductWebhookSimpleDecorated = PrivateCloudProductWebho
   PrivateCloudProductWebhookDecorate;
 
 export interface YearlyCostData {
-  month: number;
+  monthName: string;
   cpuCost: number;
   storageCost: number;
   totalCost: number;
-}
-
-export interface YearlyCostDataWithMonthName {
-  month: string;
-  cpuCost: number;
-  storageCost: number;
-  totalCost: number;
-}
-
-export interface YearlyCostChartProps {
-  data: YearlyCostDataWithMonthName[];
 }
 
 export interface EnvironmentDetails {

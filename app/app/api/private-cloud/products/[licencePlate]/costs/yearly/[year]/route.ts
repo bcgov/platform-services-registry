@@ -1,7 +1,8 @@
 import { z } from 'zod';
-// import { GlobalRole, GlobalPermissions } from '@/constants';
+import { GlobalRole } from '@/constants';
 import createApiHandler from '@/core/api-handler';
-import { OkResponse, NotFoundResponse } from '@/core/responses';
+import { OkResponse, UnauthorizedResponse } from '@/core/responses';
+import { models } from '@/services/db';
 import { getYearlyCosts } from '@/services/db/private-cloud-costs';
 
 const pathParamSchema = z.object({
@@ -10,13 +11,25 @@ const pathParamSchema = z.object({
 });
 
 export const GET = createApiHandler({
-  // roles: [GlobalRole.User],
-  // permissions: [],
+  roles: [GlobalRole.User],
   validations: {
     pathParams: pathParamSchema,
   },
-})(async ({ pathParams }) => {
+})(async ({ pathParams, session }) => {
   const { licencePlate, year } = pathParams;
+  const { data: product } = await models.privateCloudProduct.get(
+    {
+      where: {
+        licencePlate,
+      },
+    },
+    session,
+  );
+
+  if (!product?._permissions.view) {
+    return UnauthorizedResponse();
+  }
+
   const result = await getYearlyCosts(licencePlate, year);
   return OkResponse(result);
 });
