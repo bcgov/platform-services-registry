@@ -60,8 +60,7 @@ RUN apk add --no-cache \
     librsvg \
     fontconfig \
     freetype \
-    noto-sans \
-    noto-sans-cjk
+    ttf-dejavu
 
 # Ensure Next.js image cache dir is writable
 RUN install -d -m 0777 .next/cache/images
