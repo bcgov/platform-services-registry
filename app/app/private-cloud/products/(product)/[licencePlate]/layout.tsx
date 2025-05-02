@@ -69,19 +69,20 @@ export default privateCloudProductLayout(({ getPathParams, session, children }) 
     },
   ];
 
-  if (session?.previews.costRecovery) {
-    tabs.push({
-      label: 'YEARLY COST',
-      name: 'billhistory',
-      href: `/private-cloud/products/${licencePlate}/costs/history`,
-    });
-  }
   if (session?.permissions.viewAllPrivateProductComments) {
     tabs.push({
       label: 'ADMIN NOTES',
       name: 'comments',
       href: `/private-cloud/products/${licencePlate}/comments`,
       tooltip: 'Admin only',
+    });
+  }
+
+  if (session?.previews.costRecovery) {
+    tabs.push({
+      label: 'YEARLY COST',
+      name: 'yearly cost',
+      href: `/private-cloud/products/${licencePlate}/yearly-cost`,
     });
   }
 

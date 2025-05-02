@@ -1,6 +1,6 @@
 import axios from 'axios';
 import { PrivateCloudUnitPrice } from '@/prisma/client';
-import { Yyyy, YyyyMmDd } from '@/validation-schemas';
+import { YyyyMmDd } from '@/validation-schemas';
 import { PrivateCloudUnitPriceBody } from '@/validation-schemas/private-cloud';
 import { instance as parentInstance } from './instance';
 

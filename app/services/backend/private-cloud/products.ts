@@ -159,7 +159,7 @@ export async function getQuotaChangeStatus(licencePlate: string, resourceRequest
   return response.data;
 }
 
-export async function getPrivateCloudProductYearlyCostHistory(licencePlate: string, year: string) {
+export async function getYearlyCosts(licencePlate: string, year: string) {
   const response = await instance.get(`/${licencePlate}/costs/yearly/${year}`).then((res) => res.data);
   return response;
 }

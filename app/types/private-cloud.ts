@@ -162,6 +162,10 @@ export interface YearlyCostDataWithMonthName {
   totalCost: number;
 }
 
+export interface YearlyCostChartProps {
+  data: YearlyCostDataWithMonthName[];
+}
+
 export interface EnvironmentDetails {
   cpu: {
     value: number;

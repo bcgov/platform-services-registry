@@ -1,4 +1,4 @@
-import { Card, Title } from '@mantine/core';
+import { Card, Title } from '@tremor/react';
 import {
   Chart as ChartJS,
   CategoryScale,
@@ -6,75 +6,22 @@ import {
   BarElement,
   Title as ChartTitle,
   Tooltip,
-  TooltipItem,
   Legend,
 } from 'chart.js';
 import { Bar } from 'react-chartjs-2';
-import { YearlyCostDataWithMonthName } from '@/types/private-cloud';
-import { formatCurrency } from '@/utils/js';
+import { YearlyCostChartProps } from '@/types/private-cloud';
+import { getYearlyCostChartConfig } from './yearly-cost-chart-data';
 
 ChartJS.register(CategoryScale, LinearScale, BarElement, ChartTitle, Tooltip, Legend);
 
-interface YearlyCostChartProps {
-  data: YearlyCostDataWithMonthName[];
-  title: string;
-}
-
-export const options = {
-  plugins: {
-    title: {
-      display: false,
-    },
-    tooltip: {
-      callbacks: {
-        label: function (context: TooltipItem<'bar'>) {
-          const value = context.parsed.y;
-          return formatCurrency(value);
-        },
-      },
-    },
-  },
-  responsive: true,
-  maintainAspectRatio: false,
-  scales: {
-    x: {
-      stacked: true,
-    },
-    y: {
-      stacked: true,
-      ticks: {
-        callback: function (value: string | number, index: number, ticks: any) {
-          return formatCurrency(Number(value));
-        },
-      },
-    },
-  },
-};
-
-export default function YearlyCostChart({ data, title }: YearlyCostChartProps) {
-  const chartData = {
-    labels: data.map((item) => item.month),
-    datasets: [
-      {
-        label: 'CPU Cost CA($)',
-        data: data.map((item) => item.cpuCost),
-        backgroundColor: '#36A2EB',
-      },
-      {
-        label: 'Storage Cost CA($)',
-        data: data.map((item) => item.storageCost),
-        backgroundColor: '#9966FF',
-      },
-    ],
-  };
+export default function YearlyCostChart(yearlyData: YearlyCostChartProps) {
+  const { options, data: chartData } = getYearlyCostChartConfig(yearlyData);
 
   return (
-    <Card className="w-full mb-6 rounded-md border p-6 shadow-sm">
-      <Title order={2} className="text-center mb-4">
-        {title}
-      </Title>
-      <div className="relative h-96 w-full">
-        <Bar data={chartData} options={options} />
+    <Card>
+      <Title>Monthly Cost Breakdown for the selected year</Title>
+      <div className="relative">
+        <Bar options={options} data={chartData} />
       </div>
     </Card>
   );
