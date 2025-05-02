@@ -8,16 +8,33 @@ WORKDIR /app
 COPY app .
 COPY sandbox/types.ts /sandbox/types.ts
 COPY sandbox/mock-users.json /sandbox/mock-users.json
-COPY .prettierignore .
-COPY .prettierrc .
+COPY .prettierignore .prettierrc ./
 
 ENV SECURE_HEADERS=true \
   DEPLOYMENT_TAG=${deployment_tag}
 
-RUN npm install -g turbo pnpm
-RUN pnpm install --frozen-lockfile
-RUN npx ts-node scripts/render-react-email-tailwind-style.ts
-RUN pnpm build
+# Install system dependencies (for canvas)
+RUN apk add --no-cache \
+    build-base \
+    cairo-dev \
+    pango-dev \
+    jpeg-dev \
+    giflib-dev \
+    libpng-dev \
+    librsvg-dev
+
+# Install Node tools and dependencies
+RUN npm install -g turbo pnpm && \
+    pnpm install --frozen-lockfile
+
+# Rebuild canvas
+RUN cd node_modules/.pnpm/canvas@3.1.0/node_modules/canvas && \
+    pnpm add -D node-gyp && \
+    pnpm exec node-gyp rebuild
+
+# Run project build steps
+RUN npx ts-node scripts/render-react-email-tailwind-style.ts && \
+    pnpm build
 
 # 2nd stage to copy image and create a smaller final image
 # FROM gcr.io/distroless/nodejs18-debian12
