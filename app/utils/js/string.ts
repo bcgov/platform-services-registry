@@ -37,3 +37,39 @@ export function camelCaseToWords(text: string) {
     .replace(/^[a-z]/, (char) => char.toUpperCase())
     .trim();
 }
+
+export function replaceString(input: string, searchString: string, replacementString: string) {
+  const escapedSearchString = searchString.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+  const regex = new RegExp(escapedSearchString, 'g');
+  return input.replace(regex, replacementString);
+}
+
+export function styleObjectToString(style: Record<string, string>): string {
+  return Object.entries(style)
+    .map(([key, value]) => {
+      const kebabKey = key.replace(/([a-z0-9])([A-Z])/g, '$1-$2').toLowerCase();
+      return `${kebabKey}: ${value};`;
+    })
+    .join(' ');
+}
+
+export function replaceClassNameToStyleObject(
+  input: string,
+  styleCallback: (className: string) => Record<string, string>,
+) {
+  const regex = /className\s*=\s*"([^"]*)"/;
+
+  return input.replace(regex, (match, className) => {
+    const styleObject = styleCallback(className);
+    return `style={${JSON.stringify(styleObject)}}`;
+  });
+}
+
+export function replaceClassToStyleString(input: string, styleCallback: (className: string) => Record<string, string>) {
+  const regex = /class\s*=\s*"([^"]*)"/g;
+
+  return input.replace(regex, (match, className) => {
+    const styleObject = styleCallback(className);
+    return `style="${styleObjectToString(styleObject)}"`;
+  });
+}

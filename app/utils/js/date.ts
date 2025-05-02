@@ -88,3 +88,31 @@ export function isEqualDates(dt1: [Date | null, Date | null], dt2: [Date | null,
 export function getYyyyMmDd(date: Date) {
   return date.toISOString().substring(0, 10);
 }
+
+export function isLeapYear(year = new Date().getFullYear()) {
+  return (year % 4 === 0 && year % 100 !== 0) || year % 400 === 0;
+}
+
+export function getNumberOfDaysForYear(year = new Date().getFullYear()) {
+  const leapYear = isLeapYear(year);
+  return leapYear ? 366 : 365;
+}
+
+export function getMinutesInYear(year = new Date().getFullYear()) {
+  return getNumberOfDaysForYear(year) * 24 * 60;
+}
+
+export function getDateFromYyyyMmDd(dateString: string) {
+  const [year, month, day] = dateString.split('-').map(Number);
+
+  return new Date(year, month - 1, day);
+}
+
+export function getMonthStartEndDate(year: number, oneIndexedMonth: number) {
+  const startDate = new Date(year, oneIndexedMonth - 1, 1);
+  const endDate = new Date(year, oneIndexedMonth, 1, 0, 0, 0, -1);
+  return {
+    startDate,
+    endDate,
+  };
+}

@@ -8,6 +8,7 @@ import {
   PrivateCloudProductSearch,
   PrivateCloudRequestDetail,
 } from '@/types/private-cloud';
+import { MonthlyCost } from '@/types/private-cloud';
 import { downloadFile } from '@/utils/browser';
 import {
   PrivateCloudProductSearchBody,
@@ -159,7 +160,7 @@ export async function getQuotaChangeStatus(licencePlate: string, resourceRequest
 }
 
 export async function getPrivateCloudProductYearlyCostHistory(licencePlate: string, year: string) {
-  const response = await instance.post(`/${licencePlate}/costs/yearly/${year}`).then((res) => res.data);
+  const response = await instance.get(`/${licencePlate}/costs/yearly/${year}`).then((res) => res.data);
   return response;
 }
 
@@ -169,6 +170,25 @@ export async function downloadPrivateCloudYearlyCostHstory(licencePlate: string,
     .then((res) => {
       if (res.status === 204) return false;
       downloadFile(res.data, `cost-history-for-${year}.pdf`);
+      return true;
+    });
+
+  return result;
+}
+
+export async function getMonthlyCosts(licencePlate: string, yearMonth: string) {
+  const response = await instance
+    .get<MonthlyCost>(`/${licencePlate}/costs/monthly/${yearMonth}`)
+    .then((res) => res.data);
+  return response;
+}
+
+export async function downloadPrivateCloudMonthlyCosts(licencePlate: string, yearMonth: string) {
+  const result = await instance
+    .post(`/${licencePlate}/costs/monthly/${yearMonth}/download`, {}, { responseType: 'blob' })
+    .then((res) => {
+      if (res.status === 204) return false;
+      downloadFile(res.data, `monthly-costs-${yearMonth}.pdf`);
       return true;
     });
 

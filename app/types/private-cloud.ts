@@ -161,3 +161,47 @@ export interface YearlyCostDataWithMonthName {
   storageCost: number;
   totalCost: number;
 }
+
+export interface EnvironmentDetails {
+  cpu: {
+    value: number;
+    cost: number;
+  };
+  storage: {
+    value: number;
+    cost: number;
+  };
+  subtotal: {
+    cost: number;
+  };
+}
+export interface CostItem {
+  startDate: Date;
+  endDate: Date;
+  minutes: number;
+  cpuPricePerMinute: number;
+  storagePricePerMinute: number;
+  isPast: boolean;
+  unitPriceId?: string;
+  development: EnvironmentDetails;
+  test: EnvironmentDetails;
+  production: EnvironmentDetails;
+  tools: EnvironmentDetails;
+  total: EnvironmentDetails;
+}
+
+export interface MonthlyCost {
+  accountCoding: string;
+  billingPeriod: string;
+  currentTotal: number;
+  estimatedGrandTotal: number;
+  grandTotal: number;
+  items: CostItem[];
+  days: number[];
+  dayDetails: {
+    cpuToDate: number[];
+    cpuToProjected: number[];
+    storageToDate: number[];
+    storageToProjected: number[];
+  };
+}

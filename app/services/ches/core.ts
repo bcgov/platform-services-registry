@@ -97,7 +97,7 @@ export async function sendEmail(email: Email) {
     },
   );
 
-  logger.info(`email body: ${JSON.stringify(body)}`);
+  logger.info(`sending email: ${subject}`);
 
   const response = await fetchWithTimeout(`${apiUrl}/email`, {
     method: 'POST',
@@ -108,7 +108,7 @@ export async function sendEmail(email: Email) {
     body: JSON.stringify({
       bodyType: email.bodyType || 'html',
       from: email.from || `Registry <${privateCloudTeamEmail}>`,
-      subject: subject,
+      subject,
       body,
       to: safeEmails(email.to),
       // Provide an empty array as a fallback if bcc or cc is undefined

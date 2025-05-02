@@ -1,3 +1,23 @@
+## [0.63.0](https://github.com/bcgov/platform-services-registry/compare/v0.62.1...v0.63.0) (2025-04-29)
+
+### Features
+
+* **5384:** add private-cloud cost endpoints ([a5821b3](https://github.com/bcgov/platform-services-registry/commit/a5821b3656a065f8b7703ca9e3a6b3d80d023315))
+* **5417:** store prisma types in codebase ([99e464b](https://github.com/bcgov/platform-services-registry/commit/99e464b1773f9f1ccadc800667d45e6bb3168a0d))
+* **5473:** make expenseAuthorityId field mandatory ([74c8422](https://github.com/bcgov/platform-services-registry/commit/74c84225361f80f7f73fd5118ec6c18247bc05d5))
+* **5533:** display active request alert on public cloud product ([6ada78b](https://github.com/bcgov/platform-services-registry/commit/6ada78bfe3ed51eb7d2fa1fad624ce4c7dd13198))
+
+### Bug Fixes
+
+* **5511:** fix prisma client error in dev env ([46846db](https://github.com/bcgov/platform-services-registry/commit/46846dbc66afa42ecd2cf89bba66e73f190b68ae))
+
+### Docs
+
+* **1095:** add documentation for Apache Airflow ([b93b1d0](https://github.com/bcgov/platform-services-registry/commit/b93b1d06e485b65afae2ff35cb3f37b771134bc7))
+* **1095:** add Gold cluster migration research ([0b90226](https://github.com/bcgov/platform-services-registry/commit/0b90226de104403b4f52123c6c32f66d8abae0a8))
+* **1095:** add roles and permissions system ([2fbba42](https://github.com/bcgov/platform-services-registry/commit/2fbba42ba42fcfe947df7e91da6f0d3113d9d2ea))
+* **1095:** document request workflows ([01d3168](https://github.com/bcgov/platform-services-registry/commit/01d3168e546763b100ab7865b5ec6a27c12046de))
+* **1095:** document user and team service account types and usage ([302fa50](https://github.com/bcgov/platform-services-registry/commit/302fa50d94dcc8d4073adb4b10d9bb5ad78f06d1))
 ## [0.62.1](https://github.com/bcgov/platform-services-registry/compare/v0.62.0...v0.62.1) (2025-04-25)
 
 ### Bug Fixes

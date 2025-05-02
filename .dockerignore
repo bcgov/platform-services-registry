@@ -5,3 +5,4 @@
 !sandbox/mock-users.json
 !.prettierignore
 !.prettierrc
+**/node_modules

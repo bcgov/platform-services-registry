@@ -2,7 +2,7 @@ services:
   mongodb:
     platform: linux/arm64
     # See https://github.com/zcube/bitnami-compat/pkgs/container/bitnami-compat%2Fmongodb
-    image: ghcr.io/zcube/bitnami-compat/mongodb:6.0-debian-11-r64@sha256:2733db3d24c98ee9319f467174aad6e43950a49fd506be272af8671dd2a03e5b
+    image: ghcr.io/zcube/bitnami-compat/mongodb:6.0-debian-11-r64@sha256:42b6d774c37dab8cb2a55a8a476281e56bb0eedd707c75956c7061c5904a1859
 
   keycloak:
     platform: linux/arm64
