@@ -1,4 +1,5 @@
 'use client';
+import { Button } from '@mantine/core';
 import { YearPickerInput } from '@mantine/dates';
 import { useQuery } from '@tanstack/react-query';
 import { useEffect, useState } from 'react';
@@ -8,8 +9,7 @@ import YearlyCostChart from '@/components/private-cloud/yearly-cost/YearlyCostCh
 import YearlyCostTable from '@/components/private-cloud/yearly-cost/YearlyCostTable';
 import { GlobalRole } from '@/constants';
 import createClientPage from '@/core/client-page';
-import { getYearlyCosts } from '@/services/backend/private-cloud/products';
-import { YearlyCostData } from '@/types/private-cloud';
+import { downloadPrivateCloudYearlyCosts, getYearlyCosts } from '@/services/backend/private-cloud/products';
 
 const pathParamSchema = z.object({
   licencePlate: z.string(),
@@ -23,6 +23,7 @@ const privateCloudProductYearlyCost = createClientPage({
 export default privateCloudProductYearlyCost(({ getPathParams, session }) => {
   const [pathParams, setPathParams] = useState<z.infer<typeof pathParamSchema>>();
   const [selectedYear, setSelectedYear] = useState<Date>(new Date());
+  const [downloading, setDownloading] = useState(false);
 
   useEffect(() => {
     getPathParams().then((v) => setPathParams(v));
@@ -50,16 +51,32 @@ export default privateCloudProductYearlyCost(({ getPathParams, session }) => {
   return (
     <div className="p-4">
       <h1 className="text-2xl font-bold mb-4">Yearly Bills</h1>
-      <div className="flex items-center gap-4 mb-6">
-        <YearPickerInput
-          label="Select Year"
-          placeholder="Pick Year"
-          value={selectedYear}
-          onChange={handleChange}
-          maw={200}
-          clearable
-        />
+      <div className="flex items-center justify-between w-full mb-6">
+        <div className="flex items-center gap-4">
+          <YearPickerInput
+            label="Select Year"
+            placeholder="Pick Year"
+            value={selectedYear}
+            onChange={handleChange}
+            maw={200}
+            clearable
+          />
+        </div>
+        {yearlyCostData.length > 0 && (
+          <Button
+            loading={downloading}
+            onClick={async () => {
+              if (!data) return;
+              setDownloading(true);
+              await downloadPrivateCloudYearlyCosts(licencePlate, year);
+              setDownloading(false);
+            }}
+          >
+            Download PDF
+          </Button>
+        )}
       </div>
+
       <div className="my-8">
         <YearlyCostChart yearlyCostData={yearlyCostData} />
       </div>

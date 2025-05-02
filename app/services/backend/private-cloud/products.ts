@@ -164,6 +164,18 @@ export async function getYearlyCosts(licencePlate: string, year: string) {
   return response;
 }
 
+export async function downloadPrivateCloudYearlyCosts(licencePlate: string, year: string) {
+  const result = await instance
+    .post(`/${licencePlate}/costs/yearly/${year}/download`, {}, { responseType: 'blob' })
+    .then((res) => {
+      if (res.status === 204) return false;
+      downloadFile(res.data, `yearly-costs-${year}.pdf`);
+      return true;
+    });
+
+  return result;
+}
+
 export async function getMonthlyCosts(licencePlate: string, yearMonth: string) {
   const response = await instance
     .get<MonthlyCost>(`/${licencePlate}/costs/monthly/${yearMonth}`)
