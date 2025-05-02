@@ -266,3 +266,5 @@ export const requestSorts = [
 ];
 
 export const requestSortsInProduct = requestSorts.filter((v) => v.sortKey !== 'licencePlate');
+
+export const monthNames = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];

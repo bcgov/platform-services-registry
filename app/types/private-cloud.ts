@@ -148,6 +148,13 @@ export type PrivateCloudProductWebhookSimple = Prisma.PrivateCloudProductWebhook
 export type PrivateCloudProductWebhookSimpleDecorated = PrivateCloudProductWebhookSimple &
   PrivateCloudProductWebhookDecorate;
 
+export interface YearlyCostData {
+  monthName: string;
+  cpuCost: number;
+  storageCost: number;
+  totalCost: number;
+}
+
 export interface EnvironmentDetails {
   cpu: {
     value: number;

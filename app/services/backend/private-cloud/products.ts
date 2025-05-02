@@ -159,6 +159,11 @@ export async function getQuotaChangeStatus(licencePlate: string, resourceRequest
   return response.data;
 }
 
+export async function getYearlyCosts(licencePlate: string, year: string) {
+  const response = await instance.get(`/${licencePlate}/costs/yearly/${year}`).then((res) => res.data);
+  return response;
+}
+
 export async function getMonthlyCosts(licencePlate: string, yearMonth: string) {
   const response = await instance
     .get<MonthlyCost>(`/${licencePlate}/costs/monthly/${yearMonth}`)
