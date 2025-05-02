@@ -1,5 +1,3 @@
-'use client';
-
 import { YearlyCostData } from '@/types/private-cloud';
 import { formatCurrency } from '@/utils/js';
 
