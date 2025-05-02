@@ -2,37 +2,52 @@ import { TooltipItem } from 'chart.js';
 import { MonthlyCost } from '@/types/private-cloud';
 import { formatCurrency } from '@/utils/js';
 
-const options = {
-  plugins: {
-    title: {
-      display: false,
-    },
-    tooltip: {
-      callbacks: {
-        label: function (context: TooltipItem<'bar'>) {
-          const value = context.parsed.y;
-          return formatCurrency(value);
-        },
-      },
-    },
-  },
-  responsive: true,
-  scales: {
-    x: {
-      stacked: true,
-    },
-    y: {
-      stacked: true,
-      ticks: {
-        callback: function (value: string | number, index: number, ticks: any) {
-          return formatCurrency(Number(value));
-        },
-      },
-    },
-  },
-};
-
 export function getMonthlyCostChartConfig({ data }: { data: Pick<MonthlyCost, 'days' | 'dayDetails'> }) {
+  const options = {
+    plugins: {
+      title: {
+        display: false,
+      },
+      legend: {
+        labels: {
+          font: {
+            size: 12,
+          },
+        },
+      },
+      tooltip: {
+        callbacks: {
+          label: function (context: TooltipItem<'bar'>) {
+            const value = context.parsed.y;
+            return formatCurrency(value);
+          },
+        },
+      },
+    },
+    responsive: true,
+    scales: {
+      x: {
+        stacked: true,
+        ticks: {
+          font: {
+            size: 12,
+          },
+        },
+      },
+      y: {
+        stacked: true,
+        ticks: {
+          font: {
+            size: 12,
+          },
+          callback: function (value: string | number, index: number, ticks: any) {
+            return formatCurrency(Number(value));
+          },
+        },
+      },
+    },
+  };
+
   const chartData = {
     labels: data.days,
     datasets: [
