@@ -46,7 +46,6 @@ export default privateCloudProductYearlyCost(({ getPathParams, session }) => {
   };
 
   const yearlyCostData = data?.items;
-  console.log('THis is the yearly cost Data: ', yearlyCostData);
 
   return (
     <div className="p-4">
