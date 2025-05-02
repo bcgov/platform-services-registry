@@ -57,7 +57,12 @@ RUN apk add --no-cache \
     jpeg \
     giflib \
     libpng \
-    librsvg
+    librsvg \
+    fontconfig \
+    freetype \
+    noto-fonts \
+    noto-fonts-cjk \
+    noto-fonts-emoji
 
 # Ensure Next.js image cache dir is writable
 RUN install -d -m 0777 .next/cache/images

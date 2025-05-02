@@ -43,12 +43,9 @@ app:
   fullnameOverride: pltsvc-app
 
   resources:
-    limits:
-      cpu: 300m
-      memory: 512Mi
     requests:
-      cpu: 30m
-      memory: 128Mi
+      cpu: 200m
+      memory: 512Mi
 
   env:
     "APP_ENV": ""
@@ -87,9 +84,6 @@ email:
   fullnameOverride: pltsvc-email
 
   resources:
-    limits:
-      cpu: 200m
-      memory: 256Mi
     requests:
       cpu: 10m
       memory: 128Mi
@@ -115,9 +109,6 @@ mongodb:
     size: 5Gi
 
   resources:
-    limits:
-      cpu: 1
-      memory: 1500Mi
     requests:
       cpu: 0.5
       memory: 500Mi
@@ -151,9 +142,6 @@ nats:
   fullnameOverride: pltsvc-mock-nats
 
   # resources:
-  #   limits:
-  #     cpu: 200m
-  #     memory: 256Mi
   #   requests:
   #     cpu: 10m
   #     memory: 128Mi
@@ -175,9 +163,6 @@ nats-provision:
     "AUTH_REALM_NAME": 'platform-services'
 
   # resources:
-  #   limits:
-  #     cpu: 200m
-  #     memory: 256Mi
   #   requests:
   #     cpu: 10m
   #     memory: 128Mi
