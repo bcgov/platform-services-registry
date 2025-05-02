@@ -1,7 +1,11 @@
+import { createCanvas } from 'canvas';
+import Chart from 'chart.js/auto';
 import { tailwindToCSS } from 'tw-to-css';
+import { getMonthlyCostChartConfig } from '@/components/private-cloud/monthly-cost/monthly-cost-chart-data';
 import MonthlyCostSummary from '@/components/private-cloud/monthly-cost/MonthlyCostSummary';
 import MonthlyCostTable from '@/components/private-cloud/monthly-cost/MonthlyCostTable';
 import { WeasyPrint } from '@/services/weasyprint/client';
+import { MonthlyCost, PrivateCloudProductDetailDecorated } from '@/types/private-cloud';
 import { replaceClassToStyleString } from '@/utils/js';
 
 const weasyClient = new WeasyPrint();
@@ -10,10 +14,18 @@ const { twi, twj } = tailwindToCSS({
   config: {},
 });
 
+const LETTER_WIDTH = 216;
+const LETTER_HEIGHT = 279;
+const SCALE = 1.5;
+
 const css = `
-@page {
-  size: LETTER;
-  margin: 0.5cm;
+  @page {
+    size: ${LETTER_WIDTH * SCALE}mm ${LETTER_HEIGHT * SCALE}mm;
+    margin-top: 10mm;
+    margin-bottom: 10mm;
+    margin-right: 5mm;
+    margin-left: 5mm;
+  }
 
   @top-left {
     content: element(header);
@@ -34,12 +46,43 @@ const css = `
 }
 `;
 
-export async function generateMonthlyCostPdf({ year, month, data }: { year: number; month: number; data: any }) {
+// See https://www.chartjs.org/docs/latest/getting-started/using-from-node-js.html
+async function getChartDataURL(data) {
+  const { options, data: chartData } = getMonthlyCostChartConfig({ data });
+
+  const canvas = createCanvas(1600 * SCALE, 800 * SCALE);
+  const ctx = canvas.getContext('2d');
+
+  new Chart(ctx as any, {
+    type: 'bar',
+    data: chartData,
+    options,
+  });
+
+  const dataURL = canvas.toDataURL();
+  return dataURL;
+}
+
+export async function generateMonthlyCostPdf({
+  product,
+  data,
+}: {
+  product: PrivateCloudProductDetailDecorated;
+  data: MonthlyCost;
+}) {
   const ReactDOMServer = (await import('react-dom/server')).default;
 
+  const chartImageDataURL = await getChartDataURL(data);
   const html = ReactDOMServer.renderToStaticMarkup(
     <>
+      <h1 className="font-semibold text-xl">{product.name}</h1>
+      <i className="italic text-sm">{product.description}</i>
       <MonthlyCostSummary data={data} />
+      <div className="border border-gray-200 border-solid rounded p-4 bg-white my-6">
+        <div className="relative w-full">
+          <img src={chartImageDataURL} className="w-full h-auto" alt="Monthly Cost Chart" />
+        </div>
+      </div>
       <MonthlyCostTable data={{ items: data.items }} />
     </>,
   );

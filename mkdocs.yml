@@ -73,6 +73,7 @@ nav:
     - WeasyPrint: technologies/weasyprint.md
 - Development setup:
   - development-setup/local-development-environment.md
+  - development-setup/chartjs-canvas.md
   - development-setup/sandbox.md
   - development-setup/onboarding-offboarding.md
   - development-setup/react-email.md

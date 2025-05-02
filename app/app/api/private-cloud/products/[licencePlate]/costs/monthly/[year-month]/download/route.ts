@@ -34,6 +34,6 @@ export const POST = createApiHandler({
   const [year, month] = yearMonth.split('-').map(Number);
   const monthlyData = await getMonthlyCosts(licencePlate, year, month);
 
-  const pdfBuffer = await generateMonthlyCostPdf({ year, month, data: monthlyData });
+  const pdfBuffer = await generateMonthlyCostPdf({ product, data: monthlyData });
   return PdfResponse(pdfBuffer, `monthly-costs-${yearMonth}.pdf`);
 });

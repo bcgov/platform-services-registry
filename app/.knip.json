@@ -5,6 +5,7 @@
   "ignoreDependencies": [
     "sharp",
     "prettier",
+    "node-gyp",
     "@testing-library/react",
     "@testing-library/user-event",
     "@types/eslint-config-prettier",

@@ -79,7 +79,7 @@ export default privateCloudProductMonthlyCost(({ getPathParams, session }) => {
       <MonthlyCostSummary data={data} />
 
       <div className="my-8">
-        <MonthlyCostChart data={{ days: data.days, dayDetails: data.dayDetails }} selectedDate={selectedDate} />
+        <MonthlyCostChart data={{ days: data.days, dayDetails: data.dayDetails }} />
       </div>
 
       <LoadingBox isLoading={isLoading}>
