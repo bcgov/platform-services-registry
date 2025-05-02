@@ -19,22 +19,21 @@ const LETTER_HEIGHT = 279;
 const SCALE = 1.5;
 
 const css = `
-  @page {
-    size: ${LETTER_WIDTH * SCALE}mm ${LETTER_HEIGHT * SCALE}mm;
-    margin-top: 10mm;
-    margin-bottom: 10mm;
-    margin-right: 5mm;
-    margin-left: 5mm;
-  }
+@page {
+  size: ${LETTER_WIDTH * SCALE}mm ${LETTER_HEIGHT * SCALE}mm;
+  margin-top: 10mm;
+  margin-bottom: 10mm;
+  margin-right: 5mm;
+  margin-left: 5mm;
+}
 
-  @top-left {
-    content: element(header);
-  }
+@top-left {
+  content: element(header);
+}
 
-  @top-right {
-    content: "Page " counter(page) " of " counter(pages);
-    font-style: italic;
-  }
+@top-right {
+  content: "Page " counter(page) " of " counter(pages);
+  font-style: italic;
 }
 
 * {
@@ -49,6 +48,10 @@ const css = `
 // See https://www.chartjs.org/docs/latest/getting-started/using-from-node-js.html
 async function getChartDataURL(data) {
   const { options, data: chartData } = getMonthlyCostChartConfig({ data });
+
+  options.plugins.legend.labels.font.size = 30;
+  options.scales.x.ticks.font.size = 30;
+  options.scales.y.ticks.font.size = 30;
 
   const canvas = createCanvas(1600 * SCALE, 800 * SCALE);
   const ctx = canvas.getContext('2d');
@@ -75,8 +78,8 @@ export async function generateMonthlyCostPdf({
   const chartImageDataURL = await getChartDataURL(data);
   const html = ReactDOMServer.renderToStaticMarkup(
     <>
-      <h1 className="font-semibold text-xl">{product.name}</h1>
-      <i className="italic text-sm">{product.description}</i>
+      <h1 className="font-semibold text-3xl mb-1">{product.name}</h1>
+      <i className="italic text-lg">{product.description}</i>
       <MonthlyCostSummary data={data} />
       <div className="border border-gray-200 border-solid rounded p-4 bg-white my-6">
         <div className="relative w-full">
