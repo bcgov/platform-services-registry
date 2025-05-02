@@ -32,24 +32,15 @@ export default function FormYearPicker({
   loading = false,
   value,
   disabled = false,
-  defaultValue = false,
 }: FormYearPickerProps) {
   const [year, setYear] = useState<Date | null>(value ?? null);
-
-  useEffect(() => {
-    if (!defaultValue || value || year) return;
-    const currentYear = new Date();
-    currentYear.setMonth(0, 1);
-    setYear(currentYear);
-    onChange(currentYear);
-  }, [defaultValue, value, onChange, year]);
 
   if (!id) id = randomId();
 
   return (
     <div className={cn(classNames?.wrapper)}>
       {label && (
-        <Label htmlFor={id} className={`font-bold ${classNames?.label}`}>
+        <Label htmlFor={id} className={`font-medium ${classNames?.label}`}>
           {label}
         </Label>
       )}
