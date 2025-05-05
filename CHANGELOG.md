@@ -1,3 +1,18 @@
+## [0.64.0](https://github.com/bcgov/platform-services-registry/compare/v0.63.0...v0.64.0) (2025-05-05)
+
+### Features
+
+* **5383:** add monthly cost product page ([6d1245c](https://github.com/bcgov/platform-services-registry/commit/6d1245c3ed37d0621f3d71ab8ba45ba360f45bd6))
+* **5383:** generate chart images backend for PDF download ([e345ad2](https://github.com/bcgov/platform-services-registry/commit/e345ad2dc17082ac660ee66406d3ca1d631fa914))
+* **5383:** generate PDF with shared components ([ee21d54](https://github.com/bcgov/platform-services-registry/commit/ee21d54654b02fb5d89298269d27e9ecaf6458d2))
+* **5386:** add custom year picker common component ([1d055d6](https://github.com/bcgov/platform-services-registry/commit/1d055d6afe1684975635b3f9f2a40a650709979e))
+* **5386:** generate cost history page for a given year ([f23c5f4](https://github.com/bcgov/platform-services-registry/commit/f23c5f406fda1e062bc21d7b78e475295d3df414))
+* **5386:** implement PDF download for yearly cost ([6b2e975](https://github.com/bcgov/platform-services-registry/commit/6b2e9755dc10f08c9a396dfeaa352052abe812e1))
+* **5575:** enable Azure option in production ([3d38c20](https://github.com/bcgov/platform-services-registry/commit/3d38c209a764e235a7730e5bd9dc2bc16824f7c3))
+
+### Bug Fixes
+
+* **5575:** add retry with delay for Mailchimp email update errors ([db2c75c](https://github.com/bcgov/platform-services-registry/commit/db2c75cb7546ff316992145d9849791191017177))
 ## [0.63.0](https://github.com/bcgov/platform-services-registry/compare/v0.62.1...v0.63.0) (2025-04-29)
 
 ### Features
