@@ -9,7 +9,7 @@
   "license": "MIT",
   "devDependencies": {
     "express": "^5.0.1",
-    "nodemailer": "^6.9.16",
+    "nodemailer": "^7.0.0",
     "sanitize-html": "^2.13.1"
   },
   "dependencies": {
