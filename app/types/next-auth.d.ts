@@ -109,7 +109,6 @@ declare module 'next-auth' {
     previews: {
       security: boolean;
       apiAccount: boolean;
-      azure: boolean;
       awsLza: boolean;
       costRecovery: boolean;
     };

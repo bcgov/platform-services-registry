@@ -19,7 +19,6 @@ export const providerOptions = providers.map((value) => ({
 export function getAllowedOptions(session: Session) {
   return providerOptions.filter((opt) => {
     if (opt.value === Provider.AWS_LZA) return session?.previews.awsLza;
-    if (opt.value === Provider.AZURE) return session?.previews.azure;
     return true;
   });
 }
