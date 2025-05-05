@@ -3,7 +3,7 @@ replicaCount: 1
 # https://hub.docker.com/r/axllent/mailpit/tags
 image:
   repository: axllent/mailpit
-  tag: v1.24.1
+  tag: v1.24.2
   pullPolicy: Always
 
 imagePullSecrets: []
