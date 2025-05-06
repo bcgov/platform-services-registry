@@ -10,8 +10,8 @@ import Table from '@/components/generic/table/Table';
 import { GlobalPermissions } from '@/constants';
 import createClientPage from '@/core/client-page';
 import { getPrivateCloudAdminMonthlyCosts } from '@/services/backend/admin';
+import AdminCostTable from './AdminCostTable';
 import { pageState } from './state';
-import AdminCostTable from './TableBody';
 
 const billingPage = createClientPage({
   permissions: [GlobalPermissions.ViewPrivateCloudBilling],
