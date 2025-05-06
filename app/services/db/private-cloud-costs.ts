@@ -294,7 +294,7 @@ async function computeTotalCost(allProducts: { licencePlate: string }[], year: n
 export async function getAdminMonthlyCosts(year: number, oneIndexedMonth: number, page = 1, pageSize = 10) {
   const skip = (page - 1) * pageSize;
   const take = pageSize;
-  const total = await prisma.privateCloudProduct.count();
+  const totalCount = await prisma.privateCloudProduct.count();
 
   const paginatedProducts = await prisma.privateCloudProduct.findMany({
     select: { name: true, licencePlate: true },
@@ -324,7 +324,7 @@ export async function getAdminMonthlyCosts(year: number, oneIndexedMonth: number
   return {
     year,
     month: oneIndexedMonth - 1,
-    total,
+    totalCount,
     totalCost,
     items,
   };

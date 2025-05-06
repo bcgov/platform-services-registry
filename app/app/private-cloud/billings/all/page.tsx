@@ -6,7 +6,7 @@ import { useQuery } from '@tanstack/react-query';
 import { format } from 'date-fns';
 import { useState } from 'react';
 import { useSnapshot } from 'valtio/react';
-import { GlobalRole } from '@/constants';
+import { GlobalPermissions, GlobalRole } from '@/constants';
 import createClientPage from '@/core/client-page';
 import { getPrivateCloudAdminMonthlyCosts } from '@/services/backend/admin';
 import { pageState } from './state';
@@ -14,7 +14,7 @@ import Table from './Table';
 import TableBody from './TableBody';
 
 const billingPage = createClientPage({
-  roles: [GlobalRole.Admin, GlobalRole.BillingManager, GlobalRole.Billingreader],
+  permissions: [GlobalPermissions.ViewPrivateCloudBilling],
   fallbackUrl: 'login?callbackUrl=/home',
 });
 
@@ -34,7 +34,7 @@ export default billingPage(({ session }) => {
 
   if (!isLoading && data) {
     billings = data.items;
-    totalCount = data.total;
+    totalCount = data.totalCount;
     totalCost = data.totalCost;
   }
 
