@@ -19,6 +19,5 @@ export async function getPrivateCloudAdminMonthlyCosts(yearMonth: string) {
   const response = await instance
     .get<AdminMonthlyCostData>(`/private-cloud/costs/monthly/${yearMonth}`, {})
     .then((res) => res.data);
-  console.log('Here is the response: ', response);
   return response;
 }
