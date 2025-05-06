@@ -1,6 +1,5 @@
 import axios from 'axios';
 import { PrivateCloudProductDetailDecorated } from '@/types/private-cloud';
-import { downloadFile } from '@/utils/browser';
 import { PrivateCloudAdminUpdateBody } from '@/validation-schemas/private-cloud';
 import { instance as baseInstance } from './axios';
 

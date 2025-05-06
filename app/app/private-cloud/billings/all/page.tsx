@@ -1,12 +1,12 @@
 'use client';
 
-import { Button, Table as CustomTable } from '@mantine/core';
+import { Button } from '@mantine/core';
 import { MonthPickerInput } from '@mantine/dates';
 import { useQuery } from '@tanstack/react-query';
 import { format } from 'date-fns';
 import { useState } from 'react';
 import { useSnapshot } from 'valtio/react';
-import { GlobalPermissions, GlobalRole } from '@/constants';
+import { GlobalPermissions } from '@/constants';
 import createClientPage from '@/core/client-page';
 import { getPrivateCloudAdminMonthlyCosts } from '@/services/backend/admin';
 import { pageState } from './state';

@@ -1,6 +1,5 @@
 import { proxy } from 'valtio';
 import { deepClone } from 'valtio/utils';
-import { billingSorts } from '@/constants/billing';
 import { PrivateCloudBillingSearchBody } from '@/validation-schemas/private-cloud';
 
 const initialValue = {

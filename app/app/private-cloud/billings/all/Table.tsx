@@ -1,6 +1,6 @@
 'use client';
 
-import { LoadingOverlay, Box, ComboboxData } from '@mantine/core';
+import { LoadingOverlay, Box } from '@mantine/core';
 import Pagination from '@/components/generic/table/Pagination';
 import TableFooter from '@/components/generic/table/TableFooter';
 import TableHeader from '@/components/generic/table/TableHeader';
