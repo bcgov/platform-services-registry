@@ -13,7 +13,7 @@ export const GET = createApiHandler({
   validations: {
     pathParams: pathParamSchema,
   },
-})(async ({ pathParams, queryParams }) => {
+})(async ({ pathParams }) => {
   const { 'year-month': yearMonth } = pathParams;
 
   const [year, month] = yearMonth.split('-').map(Number);
