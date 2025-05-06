@@ -6,12 +6,12 @@ import { useQuery } from '@tanstack/react-query';
 import { format } from 'date-fns';
 import { useState } from 'react';
 import { useSnapshot } from 'valtio/react';
+import Table from '@/components/generic/table/Table';
 import { GlobalPermissions } from '@/constants';
 import createClientPage from '@/core/client-page';
 import { getPrivateCloudAdminMonthlyCosts } from '@/services/backend/admin';
 import { pageState } from './state';
-import Table from './Table';
-import TableBody from './TableBody';
+import AdminCostTable from './TableBody';
 
 const billingPage = createClientPage({
   permissions: [GlobalPermissions.ViewPrivateCloudBilling],
@@ -23,21 +23,16 @@ export default billingPage(({ session }) => {
   const snap = useSnapshot(pageState);
   const [selectedDate, setSelectedDate] = useState<Date>(new Date());
   const [downloading, setDownloading] = useState(false);
-  let totalCount = 0;
-  let billings = [];
-  let totalCost = 0;
 
   const { data, isLoading } = useQuery({
-    queryKey: ['costItem', snap.yearMonth, snap.page, snap.pageSize],
-    queryFn: () => getPrivateCloudAdminMonthlyCosts(format(snap.yearMonth!, 'yyyy-MM'), snap.page, snap.pageSize),
+    queryKey: ['costItem', snap.yearMonth],
+    queryFn: () => getPrivateCloudAdminMonthlyCosts(format(snap.yearMonth!, 'yyyy-MM')),
     refetchInterval: 2000,
   });
 
-  if (!isLoading && data) {
-    billings = data.items;
-    totalCount = data.totalCount;
-    totalCost = data.totalCost;
-  }
+  const totalCount = data?.totalCount || 0;
+  const totalCost = data?.totalCost || 0;
+  const allBillings = data?.items || [];
 
   const handleChange = (date: Date | null) => {
     setSelectedDate(date || new Date());
@@ -47,8 +42,12 @@ export default billingPage(({ session }) => {
 
   const year = selectedDate.getFullYear();
   const month = (selectedDate.getMonth() + 1).toString().padStart(2, '0');
+  const page = snap.page;
+  const pageSize = snap.pageSize;
+  const currentPageBillings = allBillings.slice((page - 1) * pageSize, page * pageSize);
 
   pageState.yearMonth = `${year}-${month}`;
+  const yearMonth = snap.yearMonth;
 
   const monthPicker = (
     <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 w-full">
@@ -63,7 +62,7 @@ export default billingPage(({ session }) => {
         />
       </div>
 
-      {billings.length > 0 && (
+      {allBillings.length > 0 && (
         <div className="w-full md:w-auto flex justify-end">
           <Button loading={downloading} onClick={async () => {}} className="ml-auto">
             Download PDF
@@ -84,10 +83,10 @@ export default billingPage(({ session }) => {
           pageState.page = page;
           pageState.pageSize = pageSize;
         }}
-        monthPicker={monthPicker}
+        picker={monthPicker}
         isLoading={isLoading}
       >
-        <TableBody {...{ billings, totalCost, totalCount, yearMonth: snap.yearMonth, page: snap.page }} />
+        <AdminCostTable {...{ data: currentPageBillings, totalCost, totalCount, yearMonth, page, pageSize }} />
       </Table>
     </>
   );

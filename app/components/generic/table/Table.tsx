@@ -1,7 +1,6 @@
 'use client';
 
 import { LoadingOverlay, Box, ComboboxData } from '@mantine/core';
-import { useState } from 'react';
 import Pagination from './Pagination';
 import SearchFilterExport from './SearchFilterExport';
 import TableFooter from './TableFooter';
@@ -21,6 +20,7 @@ export default function Table({
   sortOptions = [],
   sortKey = '',
   filters,
+  picker,
   isLoading = false,
   children,
 }: {
@@ -37,24 +37,28 @@ export default function Table({
   sortOptions?: ComboboxData;
   sortKey?: string;
   filters?: React.ReactNode;
+  picker?: React.ReactNode;
   isLoading?: boolean;
   children: React.ReactNode;
 }) {
   return (
     <div className="border-2 rounded-xl overflow-hidden">
       <TableHeader title={title} description={description}>
-        {(onSearch || onExport || filters) && (
-          <SearchFilterExport
-            initialSearch={search}
-            onSearch={onSearch}
-            onExport={onExport}
-            onSort={onSort}
-            sortOptions={sortOptions}
-            sortKey={sortKey}
-          >
-            {filters}
-          </SearchFilterExport>
-        )}
+        <>
+          {(onSearch || onExport || filters) && (
+            <SearchFilterExport
+              initialSearch={search}
+              onSearch={onSearch}
+              onExport={onExport}
+              onSort={onSort}
+              sortOptions={sortOptions}
+              sortKey={sortKey}
+            >
+              {filters}
+            </SearchFilterExport>
+          )}
+          {picker}
+        </>
       </TableHeader>
 
       <Box pos="relative" className="min-h-96">
