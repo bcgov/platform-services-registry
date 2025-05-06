@@ -1,5 +1,5 @@
 import { ENABLE_DELETION_CHECK } from '@/config';
-import { environmentShortKeys } from '@/constants';
+import { environmentShortKeys } from '@/constants/private-cloud';
 import { Cluster } from '@/prisma/client';
 import { getK8sClients } from './core';
 
