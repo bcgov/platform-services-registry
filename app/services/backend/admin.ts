@@ -16,7 +16,7 @@ export async function updatePrivateCloudProductAdmin(licencePlate: string, data:
   return result;
 }
 
-export async function getAdminMonthlyCosts(yearMonth: string, page = 1, pageSize = 10) {
+export async function getPrivateCloudAdminMonthlyCosts(yearMonth: string, page = 1, pageSize = 10) {
   const response = await instance
     .get(`/private-cloud/costs/monthly/${yearMonth}`, {
       params: { page, pageSize },

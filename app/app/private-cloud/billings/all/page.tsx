@@ -8,7 +8,7 @@ import { useState } from 'react';
 import { useSnapshot } from 'valtio/react';
 import { GlobalRole } from '@/constants';
 import createClientPage from '@/core/client-page';
-import { getAdminMonthlyCosts } from '@/services/backend/admin';
+import { getPrivateCloudAdminMonthlyCosts } from '@/services/backend/admin';
 import { pageState } from './state';
 import Table from './Table';
 import TableBody from './TableBody';
@@ -28,7 +28,7 @@ export default billingPage(({ session }) => {
 
   const { data, isLoading } = useQuery({
     queryKey: ['costItem', snap.yearMonth, snap.page, snap.pageSize],
-    queryFn: () => getAdminMonthlyCosts(format(snap.yearMonth!, 'yyyy-MM'), snap.page, snap.pageSize),
+    queryFn: () => getPrivateCloudAdminMonthlyCosts(format(snap.yearMonth!, 'yyyy-MM'), snap.page, snap.pageSize),
     refetchInterval: 2000,
   });
 
