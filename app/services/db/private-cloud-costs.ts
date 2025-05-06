@@ -279,18 +279,6 @@ export async function getYearlyCosts(licencePlate: string, yearString: string) {
   return { items };
 }
 
-async function computeTotalCost(allProducts: { licencePlate: string }[], year: number, month: number): Promise<number> {
-  let totalCost = 0;
-
-  for (const { licencePlate } of allProducts) {
-    const { currentTotal, grandTotal } = await getMonthlyCosts(licencePlate, year, month);
-    const cost = grandTotal > -1 ? grandTotal : currentTotal;
-    totalCost += cost;
-  }
-
-  return totalCost;
-}
-
 export async function getAdminMonthlyCosts(year: number, oneIndexedMonth: number) {
   const [products, totalCount] = await Promise.all([
     prisma.privateCloudProduct.findMany({
@@ -299,12 +287,12 @@ export async function getAdminMonthlyCosts(year: number, oneIndexedMonth: number
     prisma.privateCloudProduct.count(),
   ]);
 
-  const totalCost = await computeTotalCost(products, year, oneIndexedMonth);
-
+  let totalCost = 0;
   const items = await Promise.all(
     products.map(async (product) => {
       const { currentTotal, grandTotal } = await getMonthlyCosts(product.licencePlate, year, oneIndexedMonth);
       const cost = grandTotal > -1 ? grandTotal : currentTotal;
+      totalCost += cost;
 
       return {
         product,

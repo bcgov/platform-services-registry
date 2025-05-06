@@ -1,8 +1,8 @@
 import { monthNames } from '@/constants';
-import { ProductInformation } from '@/types/private-cloud';
+import { MonthlyProductCostData } from '@/types/private-cloud';
 import { formatCurrency } from '@/utils/js';
 
-export default function AdminCostTable({
+export default function AdminCostTableBody({
   data,
   totalCost,
   totalCount,
@@ -10,7 +10,7 @@ export default function AdminCostTable({
   page,
   pageSize,
 }: {
-  data: ProductInformation[];
+  data: MonthlyProductCostData[];
   totalCost: number;
   totalCount: number;
   yearMonth: string;
@@ -42,14 +42,14 @@ export default function AdminCostTable({
   );
 
   const rows = data.map((item, idx: number) => (
-    <tr key={idx} className={idx % 2 === 0 ? 'bg-white dark:bg-gray-900' : 'bg-gray-50 dark:bg-gray-800'}>
+    <tr key={idx} className="even:bg-gray-50">
       <td className="p-2 border-b text-left align-top">{item.product.name}</td>
       <td className="p-2 border-b text-left align-top">{formatCurrency(item.cost)}</td>
     </tr>
   ));
 
   const footer = (
-    <tr className="bg-gray-100">
+    <tr>
       <td className="p-2 border-b text-left align-top font-semibold">Total Cost</td>
       <td className="p-2 border-b text-left align-top font-semibold">{formatCurrency(totalCost)}</td>
     </tr>

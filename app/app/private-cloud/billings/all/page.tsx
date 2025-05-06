@@ -4,13 +4,13 @@ import { Button } from '@mantine/core';
 import { MonthPickerInput } from '@mantine/dates';
 import { useQuery } from '@tanstack/react-query';
 import { format } from 'date-fns';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useSnapshot } from 'valtio/react';
 import Table from '@/components/generic/table/Table';
 import { GlobalPermissions } from '@/constants';
 import createClientPage from '@/core/client-page';
 import { getPrivateCloudAdminMonthlyCosts } from '@/services/backend/admin';
-import AdminCostTable from './AdminCostTable';
+import AdminCostTableBody from './AdminCostTableBody';
 import { pageState } from './state';
 
 const billingPage = createClientPage({
@@ -19,7 +19,6 @@ const billingPage = createClientPage({
 });
 
 export default billingPage(({ session }) => {
-  if (!session?.previews.costRecovery) return null;
   const snap = useSnapshot(pageState);
   const [selectedDate, setSelectedDate] = useState<Date>(new Date());
   const [downloading, setDownloading] = useState(false);
@@ -27,8 +26,15 @@ export default billingPage(({ session }) => {
   const { data, isLoading } = useQuery({
     queryKey: ['costItem', snap.yearMonth],
     queryFn: () => getPrivateCloudAdminMonthlyCosts(format(snap.yearMonth!, 'yyyy-MM')),
-    refetchInterval: 2000,
   });
+
+  useEffect(() => {
+    const year = selectedDate.getFullYear();
+    const month = (selectedDate.getMonth() + 1).toString().padStart(2, '0');
+    pageState.yearMonth = `${year}-${month}`;
+  }, [selectedDate]);
+
+  if (!session?.previews.costRecovery) return null;
 
   const totalCount = data?.totalCount || 0;
   const totalCost = data?.totalCost || 0;
@@ -40,13 +46,9 @@ export default billingPage(({ session }) => {
     pageState.pageSize = 10;
   };
 
-  const year = selectedDate.getFullYear();
-  const month = (selectedDate.getMonth() + 1).toString().padStart(2, '0');
   const page = snap.page;
   const pageSize = snap.pageSize;
   const currentPageBillings = allBillings.slice((page - 1) * pageSize, page * pageSize);
-
-  pageState.yearMonth = `${year}-${month}`;
   const yearMonth = snap.yearMonth;
 
   const monthPicker = (
@@ -83,10 +85,10 @@ export default billingPage(({ session }) => {
           pageState.page = page;
           pageState.pageSize = pageSize;
         }}
-        picker={monthPicker}
+        headerContent={monthPicker}
         isLoading={isLoading}
       >
-        <AdminCostTable {...{ data: currentPageBillings, totalCost, totalCount, yearMonth, page, pageSize }} />
+        <AdminCostTableBody {...{ data: currentPageBillings, totalCost, totalCount, yearMonth, page, pageSize }} />
       </Table>
     </>
   );

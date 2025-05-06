@@ -20,7 +20,7 @@ export default function Table({
   sortOptions = [],
   sortKey = '',
   filters,
-  picker,
+  headerContent,
   isLoading = false,
   children,
 }: {
@@ -37,7 +37,7 @@ export default function Table({
   sortOptions?: ComboboxData;
   sortKey?: string;
   filters?: React.ReactNode;
-  picker?: React.ReactNode;
+  headerContent?: React.ReactNode;
   isLoading?: boolean;
   children: React.ReactNode;
 }) {
@@ -57,7 +57,7 @@ export default function Table({
               {filters}
             </SearchFilterExport>
           )}
-          {picker}
+          {headerContent}
         </>
       </TableHeader>
 
