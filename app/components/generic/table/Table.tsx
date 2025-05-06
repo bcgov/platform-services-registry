@@ -45,6 +45,7 @@ export default function Table({
     <div className="border-2 rounded-xl overflow-hidden">
       <TableHeader title={title} description={description}>
         <>
+          {headerContent}
           {(onSearch || onExport || filters) && (
             <SearchFilterExport
               initialSearch={search}
@@ -57,7 +58,6 @@ export default function Table({
               {filters}
             </SearchFilterExport>
           )}
-          {headerContent}
         </>
       </TableHeader>
 

@@ -22,10 +22,11 @@ export default billingPage(({ session }) => {
   const snap = useSnapshot(pageState);
   const [selectedDate, setSelectedDate] = useState<Date>(new Date());
   const [downloading, setDownloading] = useState(false);
+  const formattedYearMonth = format(snap.yearMonth!, 'yyyy-MM');
 
   const { data, isLoading } = useQuery({
     queryKey: ['costItem', snap.yearMonth],
-    queryFn: () => getPrivateCloudAdminMonthlyCosts(format(snap.yearMonth!, 'yyyy-MM')),
+    queryFn: () => getPrivateCloudAdminMonthlyCosts(formattedYearMonth),
   });
 
   useEffect(() => {

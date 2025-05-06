@@ -21,11 +21,9 @@ export default function AdminCostTableBody({
 
   if (data.length === 0)
     return (
-      <tr>
-        <td colSpan={6} className="p-2 border-b italic text-center">
-          No billing data available
-        </td>
-      </tr>
+      <div className="flex items-center justify-center h-[300px] w-full border">
+        <span className="italic">No billing data available</span>
+      </div>
     );
 
   const header = (
