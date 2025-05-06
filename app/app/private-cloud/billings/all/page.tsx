@@ -19,6 +19,7 @@ const billingPage = createClientPage({
 });
 
 export default billingPage(({ session }) => {
+  if (!session?.previews.costRecovery) return null;
   const snap = useSnapshot(pageState);
   const [selectedDate, setSelectedDate] = useState<Date>(new Date());
   const [downloading, setDownloading] = useState(false);
