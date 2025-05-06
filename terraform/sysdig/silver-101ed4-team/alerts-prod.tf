@@ -2,7 +2,7 @@ resource "sysdig_monitor_alert_metric" "prod_pltsvc_db_pod_memory" {
   name        = "[Prod] Registry MongoDB - Memory"
   description = "Prod: Registry MongoDB pod is using 90% of the memory limit"
   severity    = 2
-  enabled     = true
+  enabled     = false
 
   metric                = "avg(avg(sysdig_container_memory_limit_used_percent)) > 90"
   trigger_after_minutes = 5
@@ -20,7 +20,7 @@ resource "sysdig_monitor_alert_metric" "prod_pltsvc_db_pod_cpu" {
   name        = "[Prod] Registry MongoDB - CPU"
   description = "Prod: Any of Registry MongoDB pod is using more than 80% of limited CPU"
   severity    = 2
-  enabled     = true
+  enabled     = false
 
   metric                = "avg(avg(sysdig_container_cpu_cores_used_percent)) > 80"
   trigger_after_minutes = 5
@@ -38,7 +38,7 @@ resource "sysdig_monitor_alert_metric" "prod_pltsvc_app_pod_memory" {
   name        = "[Prod] Registry App - Memory"
   description = "Prod: Registry app pod is using 90% of the memory limit"
   severity    = 2
-  enabled     = true
+  enabled     = false
 
   metric                = "avg(avg(sysdig_container_memory_limit_used_percent)) > 90"
   trigger_after_minutes = 5
@@ -56,7 +56,7 @@ resource "sysdig_monitor_alert_metric" "prod_pltsvc_app_pod_cpu" {
   name        = "[Prod] Registry App - CPU"
   description = "Prod: Any of Registry App pod is using more than 80% of limited CPU"
   severity    = 2
-  enabled     = true
+  enabled     = false
 
   metric                = "avg(avg(sysdig_container_cpu_cores_used_percent)) > 80"
   trigger_after_minutes = 5
