@@ -287,10 +287,12 @@ export async function getAdminMonthlyCosts(year: number, oneIndexedMonth: number
     },
   });
 
+  let totalCost = 0;
   const items = await Promise.all(
     products.map(async (product) => {
       const { currentTotal, grandTotal } = await getMonthlyCosts(product.licencePlate, year, oneIndexedMonth);
       const cost = grandTotal > -1 ? grandTotal : currentTotal;
+      totalCost += cost;
 
       return {
         product,
@@ -302,6 +304,8 @@ export async function getAdminMonthlyCosts(year: number, oneIndexedMonth: number
   return {
     year,
     month: oneIndexedMonth - 1,
+    totalCount: products.length,
+    totalCost,
     items,
   };
 }

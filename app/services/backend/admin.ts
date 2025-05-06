@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { PrivateCloudProductDetailDecorated } from '@/types/private-cloud';
+import { AdminMonthlyCostData, PrivateCloudProductDetailDecorated } from '@/types/private-cloud';
 import { PrivateCloudAdminUpdateBody } from '@/validation-schemas/private-cloud';
 import { instance as baseInstance } from './axios';
 
@@ -13,4 +13,11 @@ export async function updatePrivateCloudProductAdmin(licencePlate: string, data:
     .put<PrivateCloudProductDetailDecorated>(`/private-cloud/products/${licencePlate}`, data)
     .then((res) => res.data);
   return result;
+}
+
+export async function getPrivateCloudAdminMonthlyCosts(yearMonth: string) {
+  const response = await instance
+    .get<AdminMonthlyCostData>(`/private-cloud/costs/monthly/${yearMonth}`, {})
+    .then((res) => res.data);
+  return response;
 }

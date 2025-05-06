@@ -108,6 +108,12 @@ export default function UserMenu() {
       permission: GlobalPermissions.ViewPrivateCloudUnitPrices,
     },
     {
+      text: 'Private Cloud Billings',
+      Icon: IconSignLeft,
+      href: '/private-cloud/billings/all',
+      permission: 'viewPrivateCloudBilling',
+    },
+    {
       text: 'Public Cloud Billings',
       Icon: IconSignLeft,
       href: '/public-cloud/billings/all',

@@ -30,6 +30,8 @@ declare module 'next-auth' {
     editAllPrivateProductComments: boolean;
     deleteAllPrivateProductComments: boolean;
 
+    viewPrivateCloudBilling: boolean;
+
     createPublicProductComments: boolean;
     viewAllPublicProductComments: boolean;
     editAllPublicProductComments: boolean;

@@ -20,6 +20,8 @@ export enum GlobalPermissions {
   EditAllPrivateProductComments = 'editAllPrivateProductComments',
   DeleteAllPrivateProductComments = 'deleteAllPrivateProductComments',
 
+  ViewPrivateCloudBilling = 'viewPrivateCloudBilling',
+
   CreatePublicProductComments = 'createPublicProductComments',
   ViewAllPublicProductComments = 'viewAllPublicProductComments',
   EditAllPublicProductComments = 'editAllPublicProductComments',

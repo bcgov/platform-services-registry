@@ -9,12 +9,13 @@ const pathParamSchema = z.object({
 });
 
 export const GET = createApiHandler({
-  //   roles: [GlobalRole.Admin],
+  roles: [GlobalRole.Admin, GlobalRole.BillingManager, GlobalRole.Billingreader],
   validations: {
     pathParams: pathParamSchema,
   },
 })(async ({ pathParams }) => {
   const { 'year-month': yearMonth } = pathParams;
+
   const [year, month] = yearMonth.split('-').map(Number);
 
   const result = await getAdminMonthlyCosts(year, month);

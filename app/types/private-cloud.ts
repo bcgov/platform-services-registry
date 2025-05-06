@@ -155,6 +155,22 @@ export interface YearlyCostData {
   totalCost: number;
 }
 
+export interface MonthlyProductCostData {
+  product: {
+    name: string;
+    licencePlate: string;
+  };
+  cost: number;
+}
+
+export interface AdminMonthlyCostData {
+  year: number;
+  month: number;
+  totalCount: number;
+  totalCost: number;
+  items: MonthlyProductCostData[];
+}
+
 export interface EnvironmentDetails {
   cpu: {
     value: number;
