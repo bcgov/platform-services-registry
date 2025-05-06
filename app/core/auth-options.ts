@@ -297,6 +297,14 @@ export async function generateSession({
       session.isBillingManager ||
       session.isBillingReader,
 
+    viewPrivateCloudBilling:
+      session.isAdmin ||
+      session.isPrivateAdmin ||
+      session.isPrivateReviewer ||
+      session.isBillingReviewer ||
+      session.isBillingManager ||
+      session.isBillingReader,
+
     downloadPublicCloudBillingMou:
       session.isAdmin ||
       session.isPublicAdmin ||

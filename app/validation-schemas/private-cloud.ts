@@ -14,6 +14,14 @@ import { processEnumString, processBoolean } from '@/utils/js';
 import { RequestDecision } from './shared';
 import { commentSchema } from './shared';
 
+export const privateCloudBillingSearchBodySchema = z.object({
+  yearMonth: z.string().length(8, 'Date must be in YYYY-MMM'),
+  page: z.coerce.number().min(1).default(1),
+  pageSize: z.coerce.number().min(1).max(100).default(10),
+});
+
+export type PrivateCloudBillingSearchBody = z.infer<typeof privateCloudBillingSearchBodySchema>;
+
 export const resourceRequestsSchema = z.object({
   cpu: z
     .number()

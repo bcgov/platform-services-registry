@@ -155,6 +155,14 @@ export interface YearlyCostData {
   totalCost: number;
 }
 
+export interface ProductInformation {
+  product: {
+    name: string;
+    licencePlate: string;
+  };
+  cost: number;
+}
+
 export interface EnvironmentDetails {
   cpu: {
     value: number;
