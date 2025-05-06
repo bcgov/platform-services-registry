@@ -19,23 +19,21 @@ export default function AdminCostTable({
 }) {
   const [year, month] = yearMonth.split('-');
 
-  const rows =
-    data.length > 0 ? (
-      data.map((item, idx: number) => (
-        <tr key={idx} className={idx % 2 === 0 ? 'bg-white dark:bg-gray-900' : 'bg-gray-50 dark:bg-gray-800'}>
-          <td className="p-2 border-b text-left align-top">{item.product.name}</td>
-          <td className="p-2 border-b text-left align-top">{formatCurrency(item.cost)}</td>
-        </tr>
-      ))
-    ) : (
-      <tr>
-        <td colSpan={6} className="p-2 border-b italic text-center">
-          No billing data available
-        </td>
-      </tr>
-    );
+  if (data.length === 0)
+    <tr>
+      <td colSpan={6} className="p-2 border-b italic text-center">
+        No billing data available
+      </td>
+    </tr>;
 
-  const footer = data.length && (
+  const rows = data.map((item, idx: number) => (
+    <tr key={idx} className={idx % 2 === 0 ? 'bg-white dark:bg-gray-900' : 'bg-gray-50 dark:bg-gray-800'}>
+      <td className="p-2 border-b text-left align-top">{item.product.name}</td>
+      <td className="p-2 border-b text-left align-top">{formatCurrency(item.cost)}</td>
+    </tr>
+  ));
+
+  const footer = (
     <tr className="bg-gray-100">
       <td className="p-2 border-b text-left align-top font-semibold">Total Cost</td>
       <td className="p-2 border-b text-left align-top font-semibold">{formatCurrency(totalCost)}</td>
@@ -48,11 +46,11 @@ export default function AdminCostTable({
         <h1 className="text-xl font-semibold flex-1 text-center">
           Billing Information for {monthNames[parseInt(month) - 1]}, {year}
         </h1>
-        {data.length > 0 && (
+        {
           <div className="text-sm text-gray-700 pr-5">
             | Page {page} of {Math.ceil(totalCount / pageSize)}
           </div>
-        )}
+        }
       </div>
       <table className="w-full text-sm border-collapse">
         <thead>
