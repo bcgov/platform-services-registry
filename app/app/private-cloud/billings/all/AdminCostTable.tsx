@@ -20,11 +20,26 @@ export default function AdminCostTable({
   const [year, month] = yearMonth.split('-');
 
   if (data.length === 0)
-    <tr>
-      <td colSpan={6} className="p-2 border-b italic text-center">
-        No billing data available
-      </td>
-    </tr>;
+    return (
+      <tr>
+        <td colSpan={6} className="p-2 border-b italic text-center">
+          No billing data available
+        </td>
+      </tr>
+    );
+
+  const header = (
+    <div className="flex justify-between items-center my-3">
+      <h1 className="text-xl font-semibold flex-1 text-center">
+        Billing Information for {monthNames[parseInt(month) - 1]}, {year}
+      </h1>
+      {
+        <div className="text-sm text-gray-700 pr-5">
+          | Page {page} of {Math.ceil(totalCount / pageSize)}
+        </div>
+      }
+    </div>
+  );
 
   const rows = data.map((item, idx: number) => (
     <tr key={idx} className={idx % 2 === 0 ? 'bg-white dark:bg-gray-900' : 'bg-gray-50 dark:bg-gray-800'}>
@@ -42,16 +57,7 @@ export default function AdminCostTable({
 
   return (
     <>
-      <div className="flex justify-between items-center my-3">
-        <h1 className="text-xl font-semibold flex-1 text-center">
-          Billing Information for {monthNames[parseInt(month) - 1]}, {year}
-        </h1>
-        {
-          <div className="text-sm text-gray-700 pr-5">
-            | Page {page} of {Math.ceil(totalCount / pageSize)}
-          </div>
-        }
-      </div>
+      {header}
       <table className="w-full text-sm border-collapse">
         <thead>
           <tr className="bg-gray-100 dark:bg-gray-800">
