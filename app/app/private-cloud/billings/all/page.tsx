@@ -9,7 +9,7 @@ import { useSnapshot } from 'valtio/react';
 import Table from '@/components/generic/table/Table';
 import { GlobalPermissions } from '@/constants';
 import createClientPage from '@/core/client-page';
-import { getPrivateCloudAdminMonthlyCosts } from '@/services/backend/admin';
+import { downloadPrivateCloudAdminMonthlyCosts, getPrivateCloudAdminMonthlyCosts } from '@/services/backend/admin';
 import AdminCostTableBody from './AdminCostTableBody';
 import { pageState } from './state';
 
@@ -64,10 +64,18 @@ export default billingPage(({ session }) => {
           clearable
         />
       </div>
-
       {allBillings.length > 0 && (
         <div className="w-full md:w-auto flex justify-end">
-          <Button loading={downloading} onClick={async () => {}} className="ml-auto">
+          <Button
+            loading={downloading}
+            onClick={async () => {
+              if (!data) return;
+              setDownloading(true);
+              await downloadPrivateCloudAdminMonthlyCosts(yearMonth, data.totalCost);
+              setDownloading(false);
+            }}
+            className="ml-auto"
+          >
             Download PDF
           </Button>
         </div>

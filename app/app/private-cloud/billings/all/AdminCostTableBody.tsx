@@ -14,8 +14,8 @@ export default function AdminCostTableBody({
   totalCost: number;
   totalCount: number;
   yearMonth: string;
-  page: number;
-  pageSize: number;
+  page?: number;
+  pageSize?: number;
 }) {
   const [year, month] = yearMonth.split('-');
 
@@ -31,11 +31,11 @@ export default function AdminCostTableBody({
       <h1 className="text-xl font-semibold flex-1 text-center">
         Billing Information for {monthNames[parseInt(month) - 1]}, {year}
       </h1>
-      {
+      {pageSize && (
         <div className="text-sm text-gray-700 pr-5">
           | Page {page} of {Math.ceil(totalCount / pageSize)}
         </div>
-      }
+      )}
     </div>
   );
 
