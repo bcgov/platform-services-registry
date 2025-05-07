@@ -1,5 +1,6 @@
 import axios from 'axios';
 import { AdminMonthlyCostData, PrivateCloudProductDetailDecorated } from '@/types/private-cloud';
+import { downloadFile } from '@/utils/browser';
 import { PrivateCloudAdminUpdateBody } from '@/validation-schemas/private-cloud';
 import { instance as baseInstance } from './axios';
 
@@ -20,4 +21,16 @@ export async function getPrivateCloudAdminMonthlyCosts(yearMonth: string) {
     .get<AdminMonthlyCostData>(`/private-cloud/costs/monthly/${yearMonth}`, {})
     .then((res) => res.data);
   return response;
+}
+
+export async function downloadPrivateCloudAdminMonthlyCosts(yearMonth: string, totalCost: number) {
+  const result = await instance
+    .post(`/private-cloud/bills/monthly/${yearMonth}/download`, { totalCost }, { responseType: 'blob' })
+    .then((res) => {
+      if (res.status === 204) return false;
+      downloadFile(res.data, `admin-monthly-costs-${yearMonth}.pdf`);
+      return true;
+    });
+
+  return result;
 }
