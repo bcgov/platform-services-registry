@@ -18,9 +18,9 @@ const secret = 'testsecret'; // pragma: allowlist secret
 export function createSamplePrivateCloudProductData(args?: {
   data?: Partial<
     Prisma.PrivateCloudProductGetPayload<null> & {
-      projectOwner: ProductMember | null;
-      primaryTechnicalLead: ProductMember | null;
-      secondaryTechnicalLead: ProductMember | null;
+      projectOwner: ProductMember;
+      primaryTechnicalLead: ProductMember;
+      secondaryTechnicalLead: ProductMember;
     }
   >;
 }) {

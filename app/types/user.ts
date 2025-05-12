@@ -133,25 +133,27 @@ export type SearchedUser = Prisma.UserGetPayload<{
   };
 }>;
 
-export type ProductMember = Omit<
-  Prisma.UserGetPayload<{
-    select: {
-      id: true;
-      firstName: true;
-      lastName: true;
-      displayName: true;
-      email: true;
-      ministry: true;
-      idir: true;
-      upn: true;
-      roles: true;
-    };
-  }>,
-  'displayName' | 'roles'
-> & {
-  displayName?: string | null;
-  roles?: string[] | null;
-};
+export type ProductMember =
+  | (Omit<
+      Prisma.UserGetPayload<{
+        select: {
+          id: true;
+          firstName: true;
+          lastName: true;
+          displayName: true;
+          email: true;
+          ministry: true;
+          idir: true;
+          upn: true;
+          roles: true;
+        };
+      }>,
+      'displayName' | 'roles'
+    > & {
+      displayName?: string | null;
+      roles?: string[] | null;
+    })
+  | null;
 
 type PrivateCloudRequest = Prisma.PrivateCloudRequestGetPayload<{}>;
 type PrivateCloudRequestSelected = Prisma.PrivateCloudRequestGetPayload<{
