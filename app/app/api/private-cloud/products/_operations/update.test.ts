@@ -19,12 +19,9 @@ const productData = {
   }),
 };
 
-const requests: {
-  create: PrivateCloudRequestOperations;
-  update: PrivateCloudRequestOperations;
-} = {
-  create: null,
-  update: null,
+const requests = {
+  create: null as PrivateCloudRequestOperations,
+  update: null as PrivateCloudRequestOperations,
 };
 
 async function makeBasicProductChange(extra = {}) {

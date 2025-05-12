@@ -182,7 +182,7 @@ describe('Create Private Cloud Request - Validations', () => {
     const requestData = createSamplePrivateCloudProductData();
     await mockSessionByRole(GlobalRole.Admin);
 
-    requestData.projectOwner = null as unknown as MemberUser;
+    requestData.projectOwner = null;
 
     const response = await createPrivateCloudProduct(requestData);
     expect(response.status).toBe(400);

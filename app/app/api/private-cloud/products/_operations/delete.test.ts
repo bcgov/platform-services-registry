@@ -14,12 +14,9 @@ const productData = {
   main: createSamplePrivateCloudProductData(),
 };
 
-const requests: {
-  create: PrivateCloudRequestOperations;
-  delete: PrivateCloudRequestOperations;
-} = {
-  create: null,
-  delete: null,
+const requests = {
+  create: null as PrivateCloudRequestOperations,
+  delete: null as PrivateCloudRequestOperations,
 };
 
 // TODO: add tests for ministry roles

@@ -17,10 +17,8 @@ import { PrivateCloudRequestOperations } from '@/types/user';
 let globalLicencePlate: string;
 const globalProductData = createSamplePrivateCloudProductData();
 
-const requests: {
-  create: PrivateCloudRequestOperations;
-} = {
-  create: null,
+const requests = {
+  create: null as PrivateCloudRequestOperations,
 };
 
 describe('Private Cloud Comments - Permissions', () => {

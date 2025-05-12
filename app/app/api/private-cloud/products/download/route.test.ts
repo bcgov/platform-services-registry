@@ -45,12 +45,9 @@ const productData = {
   }),
 };
 
-const requests: {
-  one: PrivateCloudRequestOperations;
-  two: PrivateCloudRequestOperations;
-} = {
-  one: null,
-  two: null,
+const requests = {
+  one: null as PrivateCloudRequestOperations,
+  two: null as PrivateCloudRequestOperations,
 };
 // TODO: add tests for ministry roles
 describe('Download Private Cloud Products - Permissions', () => {
