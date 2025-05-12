@@ -20,7 +20,7 @@ import {
   upsertPrivateCloudUnitPrice,
   deletePrivateCloudUnitPrice,
 } from '@/services/backend/private-cloud/unit-prices';
-import { formatCurrency, getYyyyMmDd } from '@/utils/js';
+import { formatCurrency, getYyyyMmDd, getDateFromYyyyMmDd, toStartOfDay } from '@/utils/js';
 import { PrivateCloudUnitPriceBody, privateCloudUnitPriceBodySchema } from '@/validation-schemas';
 
 const PrivateCloudUnitPricesPage = createClientPage({
@@ -85,12 +85,8 @@ export default PrivateCloudUnitPricesPage(({ session }) => {
     isError: isDeletingPriceError,
     error: deletingPriceError,
   } = useMutation({
-    mutationFn: () => {
-      if (!date) {
-        return Promise.resolve({ cpu: -1, storage: -1 });
-      }
-
-      return deletePrivateCloudUnitPrice(getYyyyMmDd(date));
+    mutationFn: (date: string) => {
+      return deletePrivateCloudUnitPrice(date);
     },
   });
 
@@ -133,9 +129,18 @@ export default PrivateCloudUnitPricesPage(({ session }) => {
               color="danger"
               variant="outline"
               onClick={async () => {
-                const res = await openConfirmModal({});
+                const today = toStartOfDay(new Date());
+                const target = toStartOfDay(getDateFromYyyyMmDd(price.date));
+
+                const isAfterToday = target.getTime() > today.getTime();
+                const res = await openConfirmModal({
+                  content: isAfterToday
+                    ? 'Are you sure you want to proceed?'
+                    : 'You are about to delete a previous unit price, which will affect past cost calculations. Are you sure you want to proceed?',
+                });
+
                 if (res.state.confirmed) {
-                  await deleteUnitPrice();
+                  await deleteUnitPrice(price.date);
                 }
               }}
               disabled={!session.permissions.managePrivateCloudUnitPrices}
@@ -168,8 +173,24 @@ export default PrivateCloudUnitPricesPage(({ session }) => {
                 <FormErrorNotification />
                 <form
                   onSubmit={methods.handleSubmit(async (formData) => {
-                    await upsertUnitPrice(formData);
-                    await refetchUnitPrices();
+                    if (!date) return;
+
+                    const today = toStartOfDay(new Date());
+                    const target = toStartOfDay(date);
+
+                    let proceed = target.getTime() > today.getTime();
+                    if (!proceed) {
+                      const res = await openConfirmModal({
+                        content:
+                          'You are about to update the previous unit prices, which will affect past cost calculations. Are you sure you want to proceed?',
+                      });
+                      proceed = res.state.confirmed;
+                    }
+
+                    if (proceed) {
+                      await upsertUnitPrice(formData);
+                      await refetchUnitPrices();
+                    }
                   })}
                   autoComplete="off"
                 >
