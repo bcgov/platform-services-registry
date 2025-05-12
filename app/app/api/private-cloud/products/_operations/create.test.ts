@@ -6,7 +6,6 @@ import { pickProductData } from '@/helpers/product';
 import { Cluster, Ministry } from '@/prisma/client';
 import { mockSessionByEmail, mockSessionByRole } from '@/services/api-test/core';
 import { createPrivateCloudProduct } from '@/services/api-test/private-cloud/products';
-import { MemberUser } from '@/types/user';
 
 const fieldsToCompare = [
   'name',

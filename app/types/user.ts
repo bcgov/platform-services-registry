@@ -133,7 +133,7 @@ export type SearchedUser = Prisma.UserGetPayload<{
   };
 }>;
 
-export type MemberUser = Omit<
+export type ProductMember = Omit<
   Prisma.UserGetPayload<{
     select: {
       id: true;

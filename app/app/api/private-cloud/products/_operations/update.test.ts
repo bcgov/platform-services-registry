@@ -25,7 +25,6 @@ const requests = {
 };
 
 async function makeBasicProductChange(extra = {}) {
-  console.log('Request Create: ', requests.create);
   const response = await editPrivateCloudProduct(requests.create!.licencePlate, {
     ...requests.create!.decisionData,
     resourceRequests: resourceRequests2,
