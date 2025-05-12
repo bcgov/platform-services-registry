@@ -26,6 +26,38 @@ export type PrivateCloudProductSimple = Prisma.PrivateCloudProductGetPayload<{
   activeRequest?: Prisma.PrivateCloudRequestGetPayload<null> | null;
 };
 
+export type ProductMember = {
+  select: {
+    id: true;
+    firstName: true;
+    lastName: true;
+    displayName: true;
+    email: true;
+    ministry: true;
+    idir: true;
+    upn: true;
+    roles: true;
+  };
+};
+
+export type PrivateCloudSampleProductData = Prisma.PrivateCloudProductGetPayload<{
+  select: {
+    licencePlate: true;
+    name: true;
+    description: true;
+    cluster: true;
+    ministry: true;
+    projectOwner: ProductMember;
+    primaryTechnicalLead: ProductMember;
+    secondaryTechnicalLead: ProductMember;
+    resourceRequests: true;
+    isTest: true;
+    golddrEnabled: true;
+  };
+}> & {
+  isAgMinistryChecked: boolean;
+};
+
 export type PrivateCloudProductSimpleDecorated = PrivateCloudProductSimple & PrivateCloudProductDecorate;
 
 export type PrivateCloudProductDetail = Prisma.PrivateCloudProductGetPayload<{

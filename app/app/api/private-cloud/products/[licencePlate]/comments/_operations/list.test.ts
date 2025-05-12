@@ -12,30 +12,33 @@ import {
 } from '@/services/api-test/private-cloud/products';
 import { makePrivateCloudRequestDecision } from '@/services/api-test/private-cloud/requests';
 import { provisionPrivateCloudProduct } from '@/services/api-test/v1/private-cloud';
+import { PrivateCloudRequestOperations } from '@/types/user';
 
 let globalLicencePlate: string;
 const globalProductData = createSamplePrivateCloudProductData();
 
-const requests = {
-  create: null as any,
+const requests: {
+  create: PrivateCloudRequestOperations;
+} = {
+  create: null,
 };
 
 describe('Private Cloud Comments - Permissions', () => {
   it('should successfully submit a create request for PO', async () => {
-    await mockSessionByEmail(globalProductData.projectOwner.email);
+    await mockSessionByEmail(globalProductData.projectOwner?.email);
 
     const response = await createPrivateCloudProduct(globalProductData);
     expect(response.status).toBe(200);
 
     requests.create = await response.json();
-    globalLicencePlate = requests.create.licencePlate;
+    globalLicencePlate = requests.create!.licencePlate;
   });
 
   it('should successfully approve the request by admin', async () => {
     await mockSessionByRole(GlobalRole.PrivateReviewer);
 
-    const response = await makePrivateCloudRequestDecision(requests.create.id, {
-      ...requests.create.decisionData,
+    const response = await makePrivateCloudRequestDecision(requests.create!.id, {
+      ...requests.create?.decisionData,
       type: RequestType.CREATE,
       decision: DecisionStatus.APPROVED,
     });
@@ -56,7 +59,7 @@ describe('Private Cloud Comments - Permissions', () => {
     const projectData = await projectResponse.json();
     const activeProjectId = projectData?.id;
 
-    const adminUserId = globalProductData.projectOwner.id;
+    const adminUserId = globalProductData.projectOwner?.id;
 
     const commentData1 = {
       text: 'This is the first comment',

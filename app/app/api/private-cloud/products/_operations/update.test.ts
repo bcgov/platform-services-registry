@@ -9,6 +9,7 @@ import { mockTeamServiceAccount } from '@/services/api-test/core';
 import { createPrivateCloudProduct, editPrivateCloudProduct } from '@/services/api-test/private-cloud/products';
 import { makePrivateCloudRequestDecision } from '@/services/api-test/private-cloud/requests';
 import { provisionPrivateCloudProduct } from '@/services/api-test/v1/private-cloud';
+import { PrivateCloudRequestOperations } from '@/types/user';
 
 const productData = {
   main: createSamplePrivateCloudProductData({
@@ -18,14 +19,18 @@ const productData = {
   }),
 };
 
-const requests = {
-  create: null as any,
-  update: null as any,
+const requests: {
+  create: PrivateCloudRequestOperations;
+  update: PrivateCloudRequestOperations;
+} = {
+  create: null,
+  update: null,
 };
 
 async function makeBasicProductChange(extra = {}) {
-  const response = await editPrivateCloudProduct(requests.create.licencePlate, {
-    ...requests.create.decisionData,
+  console.log('Request Create: ', requests.create);
+  const response = await editPrivateCloudProduct(requests.create!.licencePlate, {
+    ...requests.create!.decisionData,
     resourceRequests: resourceRequests2,
     ...extra,
   });
@@ -37,7 +42,7 @@ async function makeBasicProductChange(extra = {}) {
 // TODO: test the emails templates if possible
 describe('Update Private Cloud Product - Permissions', () => {
   it('should successfully submit a create request for PO', async () => {
-    await mockSessionByEmail(productData.main.projectOwner.email);
+    await mockSessionByEmail(productData.main.projectOwner?.email);
 
     const response = await createPrivateCloudProduct(productData.main);
     expect(response.status).toBe(200);
@@ -48,8 +53,8 @@ describe('Update Private Cloud Product - Permissions', () => {
   it('should successfully approve the request by admin', async () => {
     await mockSessionByRole(GlobalRole.PrivateReviewer);
 
-    const response = await makePrivateCloudRequestDecision(requests.create.id, {
-      ...requests.create.decisionData,
+    const response = await makePrivateCloudRequestDecision(requests.create!.id, {
+      ...requests.create?.decisionData,
       type: RequestType.CREATE,
       decision: DecisionStatus.APPROVED,
     });
@@ -60,24 +65,24 @@ describe('Update Private Cloud Product - Permissions', () => {
   it('should successfully provision the request', async () => {
     await mockTeamServiceAccount(['private-admin']);
 
-    const response = await provisionPrivateCloudProduct(requests.create.licencePlate);
+    const response = await provisionPrivateCloudProduct(requests.create!.licencePlate);
     expect(response.status).toBe(200);
   });
 
   it('should successfully submit a update request for PO', async () => {
-    await mockSessionByEmail(productData.main.projectOwner.email);
+    await mockSessionByEmail(productData.main.projectOwner?.email);
 
     const response = await makeBasicProductChange();
 
     expect(response.status).toBe(200);
 
     requests.update = await response.json();
-    expect(requests.update.licencePlate).toBe(requests.create.licencePlate);
-    expect(requests.update.decisionData.resourceRequests).toEqual(resourceRequests2);
+    expect(requests.update?.licencePlate).toBe(requests.create?.licencePlate);
+    expect(requests.update?.decisionData.resourceRequests).toEqual(resourceRequests2);
   });
 
   it('should fail to submit the same request for PO', async () => {
-    await mockSessionByEmail(productData.main.projectOwner.email);
+    await mockSessionByEmail(productData.main.projectOwner?.email);
 
     const response = await makeBasicProductChange();
 
@@ -87,8 +92,8 @@ describe('Update Private Cloud Product - Permissions', () => {
   it('should successfully reject the request by admin', async () => {
     await mockSessionByRole(GlobalRole.PrivateReviewer);
 
-    const response = await makePrivateCloudRequestDecision(requests.update.id, {
-      ...requests.update.decisionData,
+    const response = await makePrivateCloudRequestDecision(requests.update!.id, {
+      ...requests.update?.decisionData,
       type: RequestType.EDIT,
       decision: DecisionStatus.REJECTED,
     });
@@ -104,8 +109,8 @@ describe('Update Private Cloud Product - Permissions', () => {
     expect(response.status).toBe(200);
 
     requests.update = await response.json();
-    expect(requests.update.licencePlate).toBe(requests.create.licencePlate);
-    expect(requests.update.decisionData.resourceRequests).toEqual(resourceRequests2);
+    expect(requests.update?.licencePlate).toBe(requests.create?.licencePlate);
+    expect(requests.update?.decisionData.resourceRequests).toEqual(resourceRequests2);
   });
 
   it('should fail to submit the same request for admin', async () => {
@@ -119,8 +124,8 @@ describe('Update Private Cloud Product - Permissions', () => {
   it('should successfully reject the request by admin', async () => {
     await mockSessionByRole(GlobalRole.PrivateReviewer);
 
-    const response = await makePrivateCloudRequestDecision(requests.update.id, {
-      ...requests.update.decisionData,
+    const response = await makePrivateCloudRequestDecision(requests.update!.id, {
+      ...requests.update?.decisionData,
       type: RequestType.EDIT,
       decision: DecisionStatus.REJECTED,
     });
@@ -130,9 +135,9 @@ describe('Update Private Cloud Product - Permissions', () => {
 
   it('should fail to submit a update request for a non-assigned user', async () => {
     const otherUsers = findOtherMockUsers([
-      productData.main.projectOwner.email,
-      productData.main.primaryTechnicalLead.email,
-      productData.main.secondaryTechnicalLead.email,
+      productData.main.projectOwner!.email,
+      productData.main.primaryTechnicalLead!.email,
+      productData.main.secondaryTechnicalLead!.email,
     ]);
 
     await mockSessionByEmail(otherUsers[0].email);
@@ -194,22 +199,22 @@ describe('Update Private Cloud Product - Validations', () => {
   it('should ignore the cluster change on a new update request', async () => {
     await mockSessionByRole(GlobalRole.Admin);
 
-    const newCluster = requests.create.decisionData.cluster === Cluster.SILVER ? Cluster.EMERALD : Cluster.SILVER;
+    const newCluster = requests.create?.decisionData.cluster === Cluster.SILVER ? Cluster.EMERALD : Cluster.SILVER;
 
     const response = await makeBasicProductChange({ cluster: newCluster });
 
     expect(response.status).toBe(200);
 
     requests.update = await response.json();
-    expect(requests.update.licencePlate).toBe(requests.create.licencePlate);
-    expect(requests.update.decisionData.cluster).not.toBe(newCluster);
+    expect(requests.update?.licencePlate).toBe(requests.create?.licencePlate);
+    expect(requests.update?.decisionData.cluster).not.toBe(newCluster);
   });
 
   it('should successfully reject the request by admin', async () => {
     await mockSessionByRole(GlobalRole.PrivateReviewer);
 
-    const response = await makePrivateCloudRequestDecision(requests.update.id, {
-      ...requests.update.decisionData,
+    const response = await makePrivateCloudRequestDecision(requests.update!.id, {
+      ...requests.update?.decisionData,
       type: RequestType.EDIT,
       decision: DecisionStatus.REJECTED,
     });
