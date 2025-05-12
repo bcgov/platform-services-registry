@@ -28,6 +28,8 @@ global:
 nameOverride: pltsvc
 fullnameOverride: pltsvc
 
+serviceAccountName:
+
 app:
   enabled: true
   image:
