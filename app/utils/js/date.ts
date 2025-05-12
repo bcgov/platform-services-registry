@@ -111,3 +111,7 @@ export function getMonthStartEndDate(year: number, oneIndexedMonth: number) {
     endDate,
   };
 }
+
+export function toStartOfDay(d: Date) {
+  return new Date(d.getFullYear(), d.getMonth(), d.getDate());
+}
