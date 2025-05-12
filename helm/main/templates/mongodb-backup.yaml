@@ -17,17 +17,34 @@ spec:
       {{- include "main.selectorLabels" . | nindent 6 }}
   template:
     metadata:
+      annotations:
+      {{- $podAnnotations := merge (.Values.podAnnotations | default dict) (.Values.global.vault.podAnnotations | default dict) -}}
+      {{- with $podAnnotations }}
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+        vault.hashicorp.com/role: {{ .Values.global.vault.role }}
+        vault.hashicorp.com/agent-inject-secret-secrets.env: {{ .Values.global.vault.role }}/{{ .Values.global.vault.subPath }}
+        vault.hashicorp.com/agent-inject-template-secrets.env: |
+          {{`{{ with secret "`}}{{ .Values.global.vault.role }}/{{ .Values.global.vault.subPath }}{{`" -}}
+            export MONGOARCHIVE__AWS_ENDPOINT='{{ .Data.data.S3_ENDPOINT_URL }}'
+            export MONGOARCHIVE__AWS_ACCESS_KEY_ID='{{ .Data.data.S3_ACCESS_KEY_ID }}'
+            export MONGOARCHIVE__AWS_SECRET_ACCESS_KEY='{{ .Data.data.S3_SECRET_ACCESS_KEY }}'
+            export MONGOARCHIVE__AWS_BUCKET='{{ .Data.data.S3_DB_BACKUP_BUCKET_NAME }}'
+          {{- end }}`}}
       labels:
         {{- include "main.labels" . | nindent 8 }}
     spec:
+      serviceAccountName: {{ default .Values.global.serviceAccountName .Values.serviceAccountName }}
       containers:
       - name: backup-job
-        image: ghcr.io/egose/database-tools:0.9.1
+        image: ghcr.io/egose/database-tools:0.11.0
         imagePullPolicy: IfNotPresent
         command: [/bin/sh, -c]
         args:
         - |
-          mongo-archive --db=pltsvc --read-preference=secondaryPreferred --force-table-scan
+          set -euo pipefail
+          . "/vault/secrets/secrets.env"
+          exec mongo-archive --db=pltsvc --read-preference=secondaryPreferred --force-table-scan --aws-s3-force-path-style=true
         env:
         - name: MONGOARCHIVE__URI
           value: "mongodb://pltsvc-mongodb-headless/?authSource=admin"
