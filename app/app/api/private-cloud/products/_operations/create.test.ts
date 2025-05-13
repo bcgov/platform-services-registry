@@ -215,7 +215,7 @@ describe('Create Private Cloud Request - Validations', () => {
     const requestData = createSamplePrivateCloudProductData();
     await mockSessionByRole(GlobalRole.Admin);
 
-    requestData.secondaryTechnicalLead = null;
+    requestData.secondaryTechnicalLead = null as any;
 
     const response = await createPrivateCloudProduct(requestData);
     expect(response.status).toBe(200);
