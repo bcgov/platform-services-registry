@@ -154,7 +154,7 @@ export function compareDatesByDay(dateA: Date, dateB: Date, operator: string) {
   }
 }
 
-export function compareDatesByMonth(dateA: Date, dateB: Date, operator: string): boolean {
+export function compareDatesByMonth(dateA: Date, dateB: Date, operator: string) {
   const monthA = format(dateA, 'yyyy-MM');
   const monthB = format(dateB, 'yyyy-MM');
 
@@ -174,7 +174,7 @@ export function compareDatesByMonth(dateA: Date, dateB: Date, operator: string):
   }
 }
 
-export function compareDatesByQuarter(dateA: Date, dateB: Date, operator: string): boolean {
+export function compareDatesByQuarter(dateA: Date, dateB: Date, operator: string) {
   const quarterA = `${format(dateA, 'yyyy')}-Q${getQuarter(dateA)}`;
   const quarterB = `${format(dateB, 'yyyy')}-Q${getQuarter(dateB)}`;
 
