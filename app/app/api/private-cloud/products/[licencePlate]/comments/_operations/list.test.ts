@@ -12,15 +12,13 @@ import {
 } from '@/services/api-test/private-cloud/products';
 import { makePrivateCloudRequestDecision } from '@/services/api-test/private-cloud/requests';
 import { provisionPrivateCloudProduct } from '@/services/api-test/v1/private-cloud';
-import { PrivateCloudProductSimpleDecorated, PrivateCloudRequestDetail } from '@/types/private-cloud';
+import { PrivateCloudRequestDetail } from '@/types/private-cloud';
 
 let globalLicencePlate: string;
 const globalProductData = createSamplePrivateCloudProductData();
 
-type PrivateCloudRequestOps = (PrivateCloudProductSimpleDecorated & PrivateCloudRequestDetail) | null;
-
 const requests = {
-  create: null as PrivateCloudRequestOps,
+  create: null as PrivateCloudRequestDetail | null,
 };
 
 describe('Private Cloud Comments - Permissions', () => {
