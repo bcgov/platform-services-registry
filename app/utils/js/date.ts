@@ -1,8 +1,8 @@
 import { format } from 'date-fns/format';
+import { getQuarter } from 'date-fns/getQuarter';
 import { isEqual } from 'date-fns/isEqual';
 import _isDate from 'lodash-es/isDate';
 import _isNil from 'lodash-es/isNil';
-import { YyyyMmDd } from '@/validation-schemas';
 
 export function formatDate(date: string | number | Date | null | undefined, formatStr = 'yyyy-MM-dd hh:mm:ss aa') {
   if (!date) return '';
@@ -112,6 +112,99 @@ export function getMonthStartEndDate(year: number, oneIndexedMonth: number) {
   };
 }
 
+export function getQuarterStartEndDate(year: number, quarter: number) {
+  const startMonth = (quarter - 1) * 3;
+  const startDate = new Date(year, startMonth, 1);
+  const endDate = new Date(year, startMonth + 3, 1, 0, 0, 0, -1);
+  return {
+    startDate,
+    endDate,
+  };
+}
+
+export function getQuarterMonths(quarter: number) {
+  const startMonth = (quarter - 1) * 3 + 1; // Convert to 1-indexed
+  return [startMonth, startMonth + 1, startMonth + 2];
+}
+
+export function getQuarterTitleWithMonths(year: number, quarter: number): string {
+  const monthNames = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+  const startMonth = (quarter - 1) * 3;
+  const endMonth = startMonth + 2;
+  return `Q${quarter} ${year} (${monthNames[startMonth]}–${monthNames[endMonth]})`;
+}
+
+export function compareDatesByDay(dateA: Date, dateB: Date, operator: string) {
+  const dayA = new Date(dateA).toISOString().slice(0, 10);
+  const dayB = new Date(dateB).toISOString().slice(0, 10);
+
+  switch (operator) {
+    case '<':
+      return dayA < dayB;
+    case '<=':
+      return dayA <= dayB;
+    case '>':
+      return dayA > dayB;
+    case '>=':
+      return dayA >= dayB;
+    case '!=':
+      return dayA !== dayB;
+    default:
+      return dayA === dayB;
+  }
+}
+
+export function compareDatesByMonth(dateA: Date, dateB: Date, operator: string): boolean {
+  const monthA = format(dateA, 'yyyy-MM');
+  const monthB = format(dateB, 'yyyy-MM');
+
+  switch (operator) {
+    case '<':
+      return monthA < monthB;
+    case '<=':
+      return monthA <= monthB;
+    case '>':
+      return monthA > monthB;
+    case '>=':
+      return monthA >= monthB;
+    case '!=':
+      return monthA !== monthB;
+    default:
+      return monthA === monthB;
+  }
+}
+
+export function compareDatesByQuarter(dateA: Date, dateB: Date, operator: string): boolean {
+  const quarterA = `${format(dateA, 'yyyy')}-Q${getQuarter(dateA)}`;
+  const quarterB = `${format(dateB, 'yyyy')}-Q${getQuarter(dateB)}`;
+
+  switch (operator) {
+    case '<':
+      return quarterA < quarterB;
+    case '<=':
+      return quarterA <= quarterB;
+    case '>':
+      return quarterA > quarterB;
+    case '>=':
+      return quarterA >= quarterB;
+    case '!=':
+      return quarterA !== quarterB;
+    default:
+      return quarterA === quarterB;
+  }
+}
+
 export function toStartOfDay(d: Date) {
   return new Date(d.getFullYear(), d.getMonth(), d.getDate());
+}
+
+export function formatAsYearQuarter(date: Date) {
+  const year = format(date, 'yyyy');
+  const quarter = getQuarter(date);
+  return `${year}-${quarter}`;
+}
+
+export function getMonthNameFromNumber(month: number): string {
+  const date = new Date(2000, month - 1); // month is 0-indexed
+  return format(date, 'LLLL');
 }

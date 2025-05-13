@@ -1,11 +1,22 @@
 import _cloneDeep from 'lodash-es/cloneDeep';
 import _find from 'lodash-es/find';
+import _findIndex from 'lodash-es/findIndex';
 import _orderBy from 'lodash-es/orderBy';
 import { monthNames, namespaceKeys } from '@/constants';
 import prisma from '@/core/prisma';
 import { DecisionStatus, Prisma, RequestType } from '@/prisma/client';
 import { CostItem } from '@/types/private-cloud';
-import { dateToShortDateString, getMinutesInYear, getDateFromYyyyMmDd, getMonthStartEndDate } from '@/utils/js/date';
+import {
+  dateToShortDateString,
+  getMinutesInYear,
+  getDateFromYyyyMmDd,
+  getMonthStartEndDate,
+  getQuarterStartEndDate,
+  getQuarterMonths,
+  getQuarterTitleWithMonths,
+  compareDatesByDay,
+  compareDatesByMonth,
+} from '@/utils/js/date';
 
 const roundToTwoDecimals = (value: number) => Number(value.toFixed(2));
 
@@ -214,17 +225,23 @@ export async function getMonthlyCosts(licencePlate: string, year: number, oneInd
 
     changePoints.add(dayStart);
     changePoints.add(dayEnd);
+
     if (isCurrentMonth && day === todayDay) {
       changePoints.add(today);
     }
 
     const sortedChangePoints = _orderBy(Array.from(changePoints), [], 'asc');
-    for (let changePoint = 0; changePoint < sortedChangePoints.length - 1; changePoint++) {
-      const intervalStart = sortedChangePoints[changePoint];
-      const intervalEnd = sortedChangePoints[changePoint + 1];
 
-      const meta = _find(sortedItems, (item) => item.startDate <= dayStart);
-      if (!meta) continue;
+    for (let j = 0; j < sortedChangePoints.length - 1; j++) {
+      let intervalStart = sortedChangePoints[j];
+      const intervalEnd = sortedChangePoints[j + 1];
+
+      const metaIndex = _findIndex(sortedItems, (item) => compareDatesByDay(item.startDate, intervalStart, '<='));
+      if (metaIndex === -1) continue;
+
+      const meta = sortedItems[metaIndex];
+      // Ensure minutes are calculated correctly for the day the product created
+      if (metaIndex === sortedItems.length - 1 && meta.startDate > intervalStart) intervalStart = meta.startDate;
 
       const durationMinutes = (intervalEnd.getTime() - intervalStart.getTime()) / (1000 * 60);
       const cpuPrice = meta.cpuPricePerMinute * durationMinutes;
@@ -249,6 +266,92 @@ export async function getMonthlyCosts(licencePlate: string, year: number, oneInd
     items,
     days,
     dayDetails: {
+      cpuToDate,
+      cpuToProjected,
+      storageToDate,
+      storageToProjected,
+    },
+  };
+}
+
+export async function getQuarterlyCosts(licencePlate: string, year: number, quarter: number) {
+  const { startDate, endDate } = getQuarterStartEndDate(year, quarter);
+  const today = new Date();
+
+  const isTodayInQuarter = today >= startDate && today <= endDate;
+  const { items, total } = await getCostDetailsForRange(licencePlate, startDate, endDate);
+
+  let currentTotal = -1;
+  let estimatedGrandTotal = -1;
+  let grandTotal = -1;
+
+  if (isTodayInQuarter) {
+    currentTotal = total.costToDate;
+    estimatedGrandTotal = total.costToTotal;
+  } else {
+    grandTotal = total.costToTotal;
+  }
+
+  const months = getQuarterMonths(quarter);
+
+  const cpuToDate = new Array(3).fill(0);
+  const cpuToProjected = new Array(3).fill(0);
+  const storageToDate = new Array(3).fill(0);
+  const storageToProjected = new Array(3).fill(0);
+
+  const sortedItems = _orderBy(items, ['startDate'], ['desc']);
+
+  for (let i = 0; i < months.length; i++) {
+    const month = months[i];
+    const jsMonth = month - 1; // convert to 0-indexed
+    const monthStart = new Date(year, jsMonth, 1);
+    const monthEnd = new Date(year, jsMonth + 1, 1, 0, 0, 0, -1);
+
+    const changePoints = new Set<Date>();
+
+    changePoints.add(monthStart);
+    changePoints.add(monthEnd);
+
+    if (today.getFullYear() === year && today.getMonth() === jsMonth) {
+      changePoints.add(today);
+    }
+
+    const sortedChangePoints = _orderBy(Array.from(changePoints), [], 'asc');
+
+    for (let j = 0; j < sortedChangePoints.length - 1; j++) {
+      let intervalStart = sortedChangePoints[j];
+      const intervalEnd = sortedChangePoints[j + 1];
+
+      const metaIndex = _findIndex(sortedItems, (item) => compareDatesByMonth(item.startDate, intervalStart, '<='));
+      if (metaIndex === -1) continue;
+
+      const meta = sortedItems[metaIndex];
+      // Ensure minutes are calculated correctly for the day the product created
+      if (metaIndex === sortedItems.length - 1 && meta.startDate > intervalStart) intervalStart = meta.startDate;
+
+      const durationMinutes = (intervalEnd.getTime() - intervalStart.getTime()) / (1000 * 60);
+      const cpuPrice = meta.cpuPricePerMinute * durationMinutes;
+      const storagePrice = meta.storagePricePerMinute * durationMinutes;
+
+      if (intervalEnd <= today) {
+        cpuToDate[i] += cpuPrice;
+        storageToDate[i] += storagePrice;
+      } else {
+        cpuToProjected[i] += cpuPrice;
+        storageToProjected[i] += storagePrice;
+      }
+    }
+  }
+
+  return {
+    accountCoding: '123ABC', // placeholder
+    billingPeriod: getQuarterTitleWithMonths(year, quarter),
+    currentTotal,
+    estimatedGrandTotal,
+    grandTotal,
+    items,
+    months,
+    monthDetails: {
       cpuToDate,
       cpuToProjected,
       storageToDate,
