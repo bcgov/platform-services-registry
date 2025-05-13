@@ -15,7 +15,7 @@ import { PrivateCloudRequestDetail } from '@/types/private-cloud';
 
 export async function createPrivateCloudProduct() {
   const requestData = await createSamplePrivateCloudProductData({ data: { cluster: Cluster.SILVER } });
-  await mockSessionByEmail(requestData.projectOwner?.email);
+  await mockSessionByEmail(requestData.projectOwner.email);
 
   let response = await createPrivateCloudProductTest(requestData);
   if (response.status !== 200) return null;
@@ -51,7 +51,7 @@ export async function updatePrivateCloudProduct() {
     },
   });
 
-  await mockSessionByEmail(productData.projectOwner?.email);
+  await mockSessionByEmail(productData.projectOwner.email);
 
   let response = await createPrivateCloudProductTest(productData);
   if (response.status !== 200) return null;
@@ -110,7 +110,7 @@ export async function updatePrivateCloudProduct() {
 export async function deletePrivateCloudProduct() {
   const productData = await createSamplePrivateCloudProductData({ data: { cluster: Cluster.SILVER } });
 
-  await mockSessionByEmail(productData.projectOwner?.email);
+  await mockSessionByEmail(productData.projectOwner.email);
 
   let response = await createPrivateCloudProductTest(productData);
   if (response.status !== 200) return null;

@@ -9,7 +9,6 @@ import { mockTeamServiceAccount } from '@/services/api-test/core';
 import { createPrivateCloudProduct, searchPrivateCloudProducts } from '@/services/api-test/private-cloud/products';
 import { makePrivateCloudRequestDecision } from '@/services/api-test/private-cloud/requests';
 import { provisionPrivateCloudProduct } from '@/services/api-test/v1/private-cloud';
-import { PrivateCloudSampleProductData } from '@/types/private-cloud';
 
 const PO = mockNoRoleUsers[0];
 const TL1 = mockNoRoleUsers[1];
@@ -173,38 +172,20 @@ describe('Search Private Cloud Products - Validations', () => {
   it('should successfully create products by admin', async () => {
     await mockSessionByRole(GlobalRole.Admin);
 
-    const datasets: PrivateCloudSampleProductData[] = [];
+    const datasets: any[] = [];
     datasets.push(
-      createSamplePrivateCloudProductData({
-        data: { ministry: Ministry.AEST, cluster: Cluster.CLAB },
-      }) as PrivateCloudSampleProductData,
-      createSamplePrivateCloudProductData({
-        data: { ministry: Ministry.AEST, cluster: Cluster.KLAB },
-      }) as PrivateCloudSampleProductData,
-      createSamplePrivateCloudProductData({
-        data: { ministry: Ministry.AEST, cluster: Cluster.CLAB },
-      }) as PrivateCloudSampleProductData,
-      createSamplePrivateCloudProductData({
-        data: { ministry: Ministry.AEST, cluster: Cluster.KLAB },
-      }) as PrivateCloudSampleProductData,
-      createSamplePrivateCloudProductData({
-        data: { ministry: Ministry.AEST, cluster: Cluster.CLAB },
-      }) as PrivateCloudSampleProductData,
-      createSamplePrivateCloudProductData({
-        data: { ministry: Ministry.CITZ, cluster: Cluster.KLAB },
-      }) as PrivateCloudSampleProductData,
-      createSamplePrivateCloudProductData({
-        data: { ministry: Ministry.CITZ, cluster: Cluster.CLAB },
-      }) as PrivateCloudSampleProductData,
-      createSamplePrivateCloudProductData({
-        data: { ministry: Ministry.CITZ, cluster: Cluster.KLAB },
-      }) as PrivateCloudSampleProductData,
-      createSamplePrivateCloudProductData({
-        data: { ministry: Ministry.CITZ, cluster: Cluster.CLAB },
-      }) as PrivateCloudSampleProductData,
+      createSamplePrivateCloudProductData({ data: { ministry: Ministry.AEST, cluster: Cluster.CLAB } }),
+      createSamplePrivateCloudProductData({ data: { ministry: Ministry.AEST, cluster: Cluster.KLAB } }),
+      createSamplePrivateCloudProductData({ data: { ministry: Ministry.AEST, cluster: Cluster.CLAB } }),
+      createSamplePrivateCloudProductData({ data: { ministry: Ministry.AEST, cluster: Cluster.KLAB } }),
+      createSamplePrivateCloudProductData({ data: { ministry: Ministry.AEST, cluster: Cluster.CLAB } }),
+      createSamplePrivateCloudProductData({ data: { ministry: Ministry.CITZ, cluster: Cluster.KLAB } }),
+      createSamplePrivateCloudProductData({ data: { ministry: Ministry.CITZ, cluster: Cluster.CLAB } }),
+      createSamplePrivateCloudProductData({ data: { ministry: Ministry.CITZ, cluster: Cluster.KLAB } }),
+      createSamplePrivateCloudProductData({ data: { ministry: Ministry.CITZ, cluster: Cluster.CLAB } }),
       createSamplePrivateCloudProductData({
         data: { ministry: Ministry.CITZ, cluster: Cluster.KLAB, name: '______name______' },
-      }) as PrivateCloudSampleProductData,
+      }),
     );
 
     await Promise.all(

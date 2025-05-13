@@ -30,7 +30,7 @@ describe('Create Private Cloud Product - Permissions', () => {
 
   it('should successfully submit a create request for PO', async () => {
     const requestData = createSamplePrivateCloudProductData();
-    await mockSessionByEmail(requestData.projectOwner?.email);
+    await mockSessionByEmail(requestData.projectOwner.email);
 
     const response = await createPrivateCloudProduct(requestData);
     expect(response.status).toBe(200);
@@ -43,7 +43,7 @@ describe('Create Private Cloud Product - Permissions', () => {
 
   it('should successfully submit a create request for TL1', async () => {
     const requestData = createSamplePrivateCloudProductData();
-    await mockSessionByEmail(requestData.primaryTechnicalLead?.email);
+    await mockSessionByEmail(requestData.primaryTechnicalLead.email);
 
     const response = await createPrivateCloudProduct(requestData);
     expect(response.status).toBe(200);
@@ -56,7 +56,7 @@ describe('Create Private Cloud Product - Permissions', () => {
 
   it('should successfully submit a create request for TL2', async () => {
     const requestData = createSamplePrivateCloudProductData();
-    await mockSessionByEmail(requestData.secondaryTechnicalLead?.email);
+    await mockSessionByEmail(requestData.secondaryTechnicalLead.email);
 
     const response = await createPrivateCloudProduct(requestData);
     expect(response.status).toBe(200);
@@ -70,9 +70,9 @@ describe('Create Private Cloud Product - Permissions', () => {
   it('should fail to submit a create request for a non-assigned user', async () => {
     const requestData = createSamplePrivateCloudProductData();
     const otherUsers = findOtherMockUsers([
-      requestData.projectOwner!.email,
-      requestData.primaryTechnicalLead!.email,
-      requestData.secondaryTechnicalLead!.email,
+      requestData.projectOwner.email,
+      requestData.primaryTechnicalLead.email,
+      requestData.secondaryTechnicalLead.email,
     ]);
 
     await mockSessionByEmail(otherUsers[0].email);
@@ -181,7 +181,7 @@ describe('Create Private Cloud Request - Validations', () => {
     const requestData = createSamplePrivateCloudProductData();
     await mockSessionByRole(GlobalRole.Admin);
 
-    requestData.projectOwner = null;
+    requestData.projectOwner = undefined;
 
     const response = await createPrivateCloudProduct(requestData);
     expect(response.status).toBe(400);
@@ -198,7 +198,7 @@ describe('Create Private Cloud Request - Validations', () => {
     const requestData = createSamplePrivateCloudProductData();
     await mockSessionByRole(GlobalRole.Admin);
 
-    requestData.primaryTechnicalLead = null;
+    requestData.primaryTechnicalLead = undefined;
 
     const response = await createPrivateCloudProduct(requestData);
     expect(response.status).toBe(400);

@@ -1,5 +1,4 @@
 import { Prisma, User } from '@/prisma/client';
-import { PrivateCloudRequestDecorate } from './doc-decorate';
 
 export interface MsUser {
   id: string;
@@ -132,41 +131,3 @@ export type SearchedUser = Prisma.UserGetPayload<{
     lastSeen: true;
   };
 }>;
-
-export type ProductMember =
-  | (Omit<
-      Prisma.UserGetPayload<{
-        select: {
-          id: true;
-          firstName: true;
-          lastName: true;
-          displayName: true;
-          email: true;
-          ministry: true;
-          idir: true;
-          upn: true;
-          roles: true;
-        };
-      }>,
-      'displayName' | 'roles'
-    > & {
-      displayName?: string | null;
-      roles?: string[] | null;
-    })
-  | null;
-
-type PrivateCloudRequest = Prisma.PrivateCloudRequestGetPayload<{}>;
-type PrivateCloudRequestSelected = Prisma.PrivateCloudRequestGetPayload<{
-  select: {
-    createdBy: true;
-    decisionMaker: true;
-    cancelledBy: true;
-    requestData: true;
-    decisionData: true;
-    originalData: true;
-  };
-}>;
-
-export type PrivateCloudRequestOperations =
-  | (PrivateCloudRequest & PrivateCloudRequestSelected & PrivateCloudRequestSelected & PrivateCloudRequestDecorate)
-  | null;

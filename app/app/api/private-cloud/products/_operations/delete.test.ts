@@ -8,21 +8,20 @@ import { mockTeamServiceAccount } from '@/services/api-test/core';
 import { createPrivateCloudProduct, deletePrivateCloudProduct } from '@/services/api-test/private-cloud/products';
 import { makePrivateCloudRequestDecision } from '@/services/api-test/private-cloud/requests';
 import { provisionPrivateCloudProduct } from '@/services/api-test/v1/private-cloud';
-import { PrivateCloudRequestOperations } from '@/types/user';
 
 const productData = {
   main: createSamplePrivateCloudProductData(),
 };
 
 const requests = {
-  create: null as PrivateCloudRequestOperations,
-  delete: null as PrivateCloudRequestOperations,
+  create: null as any,
+  delete: null as any,
 };
 
 // TODO: add tests for ministry roles
 describe('Delete Private Cloud Product - Permissions', () => {
   it('should successfully submit a create request for PO', async () => {
-    await mockSessionByEmail(productData.main.projectOwner?.email);
+    await mockSessionByEmail(productData.main.projectOwner.email);
 
     const response = await createPrivateCloudProduct(productData.main);
     expect(response.status).toBe(200);
@@ -33,8 +32,8 @@ describe('Delete Private Cloud Product - Permissions', () => {
   it('should successfully approve the request by admin', async () => {
     await mockSessionByRole(GlobalRole.PrivateReviewer);
 
-    const response = await makePrivateCloudRequestDecision(requests.create!.id, {
-      ...requests.create?.decisionData,
+    const response = await makePrivateCloudRequestDecision(requests.create.id, {
+      ...requests.create.decisionData,
       type: RequestType.CREATE,
       decision: DecisionStatus.APPROVED,
     });
@@ -44,32 +43,32 @@ describe('Delete Private Cloud Product - Permissions', () => {
 
   it('should successfully provision the request', async () => {
     await mockTeamServiceAccount(['private-admin']);
-    const response = await provisionPrivateCloudProduct(requests.create!.licencePlate);
+    const response = await provisionPrivateCloudProduct(requests.create.licencePlate);
     expect(response.status).toBe(200);
   });
 
   it('should successfully submit a delete request for PO', async () => {
-    await mockSessionByEmail(productData.main.projectOwner?.email);
+    await mockSessionByEmail(productData.main.projectOwner.email);
 
-    const response = await deletePrivateCloudProduct(requests.create!.licencePlate);
+    const response = await deletePrivateCloudProduct(requests.create.licencePlate);
     expect(response.status).toBe(200);
 
     requests.delete = await response.json();
-    expect(requests.delete?.licencePlate).toBe(requests.create?.licencePlate);
+    expect(requests.delete.licencePlate).toBe(requests.create.licencePlate);
   });
 
   it('should fail to submit the same request for PO', async () => {
-    await mockSessionByEmail(productData.main.projectOwner?.email);
+    await mockSessionByEmail(productData.main.projectOwner.email);
 
-    const response = await deletePrivateCloudProduct(requests.delete!.licencePlate);
+    const response = await deletePrivateCloudProduct(requests.delete.licencePlate);
     expect(response.status).toBe(401);
   });
 
   it('should successfully reject the request by admin', async () => {
     await mockSessionByRole(GlobalRole.PrivateReviewer);
 
-    const response = await makePrivateCloudRequestDecision(requests.delete!.id, {
-      ...requests.delete?.decisionData,
+    const response = await makePrivateCloudRequestDecision(requests.delete.id, {
+      ...requests.delete.decisionData,
       type: RequestType.DELETE,
       decision: DecisionStatus.REJECTED,
     });
@@ -80,25 +79,25 @@ describe('Delete Private Cloud Product - Permissions', () => {
   it('should successfully submit a delete request for admin', async () => {
     await mockSessionByRole(GlobalRole.Admin);
 
-    const response = await deletePrivateCloudProduct(requests.delete!.licencePlate);
+    const response = await deletePrivateCloudProduct(requests.delete.licencePlate);
     expect(response.status).toBe(200);
 
     requests.delete = await response.json();
-    expect(requests.delete?.licencePlate).toBe(requests.create?.licencePlate);
+    expect(requests.delete.licencePlate).toBe(requests.create.licencePlate);
   });
 
   it('should fail to submit the same request for admin', async () => {
     await mockSessionByRole(GlobalRole.Admin);
 
-    const response = await deletePrivateCloudProduct(requests.delete!.licencePlate);
+    const response = await deletePrivateCloudProduct(requests.delete.licencePlate);
     expect(response.status).toBe(401);
   });
 
   it('should successfully reject the request by admin', async () => {
     await mockSessionByRole(GlobalRole.PrivateReviewer);
 
-    const response = await makePrivateCloudRequestDecision(requests.delete!.id, {
-      ...requests.delete?.decisionData,
+    const response = await makePrivateCloudRequestDecision(requests.delete.id, {
+      ...requests.delete.decisionData,
       type: RequestType.DELETE,
       decision: DecisionStatus.REJECTED,
     });
@@ -108,14 +107,14 @@ describe('Delete Private Cloud Product - Permissions', () => {
 
   it('should fail to submit a delete request for a non-assigned user', async () => {
     const otherUsers = findOtherMockUsers([
-      productData.main.projectOwner!.email,
-      productData.main.primaryTechnicalLead!.email,
-      productData.main.secondaryTechnicalLead!.email,
+      productData.main.projectOwner.email,
+      productData.main.primaryTechnicalLead.email,
+      productData.main.secondaryTechnicalLead.email,
     ]);
 
     await mockSessionByEmail(otherUsers[0].email);
 
-    const response = await deletePrivateCloudProduct(requests.delete!.licencePlate);
+    const response = await deletePrivateCloudProduct(requests.delete.licencePlate);
     expect(response.status).toBe(401);
   });
 

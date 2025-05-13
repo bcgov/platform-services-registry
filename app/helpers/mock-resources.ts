@@ -4,7 +4,6 @@ import { ministries, clusters, providers } from '@/constants';
 import { mockNoRoleUsers } from '@/helpers/mock-users';
 import { SERVICE_ACCOUNT_DATA } from '@/jest.mock';
 import { Prisma, Cluster } from '@/prisma/client';
-import { ProductMember } from '@/types/user';
 import { generateShortId } from '@/utils/js';
 import { getRandomCloudProviderSelectionReasons, getRandomProviderReasonsNote } from './mock-resources/core';
 import { resourceRequests1 } from './mock-resources/private-cloud-product';
@@ -18,9 +17,9 @@ const secret = 'testsecret'; // pragma: allowlist secret
 export function createSamplePrivateCloudProductData(args?: {
   data?: Partial<
     Prisma.PrivateCloudProductGetPayload<null> & {
-      projectOwner: ProductMember;
-      primaryTechnicalLead: ProductMember;
-      secondaryTechnicalLead: ProductMember;
+      projectOwner: any;
+      primaryTechnicalLead: any;
+      secondaryTechnicalLead: any;
     }
   >;
 }) {
