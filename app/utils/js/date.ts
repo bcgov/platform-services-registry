@@ -3,6 +3,7 @@ import { getQuarter } from 'date-fns/getQuarter';
 import { isEqual } from 'date-fns/isEqual';
 import _isDate from 'lodash-es/isDate';
 import _isNil from 'lodash-es/isNil';
+import { monthNames } from '@/constants/common';
 
 export function formatDate(date: string | number | Date | null | undefined, formatStr = 'yyyy-MM-dd hh:mm:ss aa') {
   if (!date) return '';
@@ -16,7 +17,6 @@ export function formatDate(date: string | number | Date | null | undefined, form
 export function formatDateSimple(date: string | Date) {
   if (!date) return '';
 
-  const monthNames = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
   const d = new Date(date);
 
   return `${d.getDate()} ${monthNames[d.getMonth()]} ${d.getFullYear()}`;
@@ -128,7 +128,6 @@ export function getQuarterMonths(quarter: number) {
 }
 
 export function getQuarterTitleWithMonths(year: number, quarter: number): string {
-  const monthNames = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
   const startMonth = (quarter - 1) * 3;
   const endMonth = startMonth + 2;
   return `Q${quarter} ${year} (${monthNames[startMonth]}–${monthNames[endMonth]})`;
