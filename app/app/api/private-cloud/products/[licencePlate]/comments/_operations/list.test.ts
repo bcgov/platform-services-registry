@@ -14,7 +14,7 @@ import { makePrivateCloudRequestDecision } from '@/services/api-test/private-clo
 import { provisionPrivateCloudProduct } from '@/services/api-test/v1/private-cloud';
 import { PrivateCloudProductSimpleDecorated, PrivateCloudRequestDetail } from '@/types/private-cloud';
 
-let globalLicencePlate: string | undefined;
+let globalLicencePlate: string;
 const globalProductData = createSamplePrivateCloudProductData();
 
 type PrivateCloudRequestOps = (PrivateCloudProductSimpleDecorated & PrivateCloudRequestDetail) | null;
@@ -31,7 +31,7 @@ describe('Private Cloud Comments - Permissions', () => {
     expect(response.status).toBe(200);
 
     requests.create = await response.json();
-    globalLicencePlate = requests.create?.licencePlate;
+    globalLicencePlate = requests.create!.licencePlate;
   });
 
   it('should successfully approve the request by admin', async () => {
@@ -49,13 +49,13 @@ describe('Private Cloud Comments - Permissions', () => {
   it('should successfully provision the request', async () => {
     await mockTeamServiceAccount(['private-admin']);
 
-    const response = await provisionPrivateCloudProduct(globalLicencePlate!);
+    const response = await provisionPrivateCloudProduct(globalLicencePlate);
     expect(response.status).toBe(200);
   });
 
   it('should successfully create comments', async () => {
     await mockSessionByRole(GlobalRole.Admin);
-    const projectResponse = await getPrivateCloudProduct(globalLicencePlate!);
+    const projectResponse = await getPrivateCloudProduct(globalLicencePlate);
     const projectData = await projectResponse.json();
     const activeProjectId = projectData?.id;
 
@@ -73,24 +73,24 @@ describe('Private Cloud Comments - Permissions', () => {
       projectId: activeProjectId,
     };
 
-    const commentResponse1 = await createPrivateCloudComment(globalLicencePlate!, commentData1);
+    const commentResponse1 = await createPrivateCloudComment(globalLicencePlate, commentData1);
     expect(commentResponse1.status).toBe(201);
 
-    const commentResponse2 = await createPrivateCloudComment(globalLicencePlate!, commentData2);
+    const commentResponse2 = await createPrivateCloudComment(globalLicencePlate, commentData2);
     expect(commentResponse2.status).toBe(201);
   });
 
   it('should return 401 for unauthenticated user', async () => {
     await mockSessionByEmail();
 
-    const response = await getAllPrivateCloudComments(globalLicencePlate!);
+    const response = await getAllPrivateCloudComments(globalLicencePlate);
     expect(response.status).toBe(401);
   });
 
   it('should successfully list comments for admin', async () => {
     await mockSessionByRole(GlobalRole.Admin);
 
-    const response = await getAllPrivateCloudComments(globalLicencePlate!);
+    const response = await getAllPrivateCloudComments(globalLicencePlate);
     const responseBody = await response.json();
 
     expect(response.status).toBe(200);
@@ -101,7 +101,7 @@ describe('Private Cloud Comments - Permissions', () => {
   it('should successfully list comments for private-admin', async () => {
     await mockSessionByRole(GlobalRole.PrivateAdmin);
 
-    const response = await getAllPrivateCloudComments(globalLicencePlate!);
+    const response = await getAllPrivateCloudComments(globalLicencePlate);
     const responseBody = await response.json();
 
     expect(response.status).toBe(200);
@@ -112,7 +112,7 @@ describe('Private Cloud Comments - Permissions', () => {
   it('should return 401 for users with insufficient permissions', async () => {
     await mockSessionByRole(GlobalRole.Reader);
 
-    const response = await getAllPrivateCloudComments(globalLicencePlate!);
+    const response = await getAllPrivateCloudComments(globalLicencePlate);
 
     expect(response.status).toBe(401);
   });
