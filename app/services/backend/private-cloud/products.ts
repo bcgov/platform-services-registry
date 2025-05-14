@@ -7,6 +7,8 @@ import {
   PrivateCloudProductDetailDecorated,
   PrivateCloudProductSearch,
   PrivateCloudRequestDetail,
+  QuarterlyCost,
+  PrivateCloudRequestDetailDecorated,
 } from '@/types/private-cloud';
 import { MonthlyCost } from '@/types/private-cloud';
 import { downloadFile } from '@/utils/browser';
@@ -63,18 +65,20 @@ export async function getPrivateCloudProduct(licencePlate: string) {
 }
 
 export async function createPrivateCloudProduct(data: any) {
-  const result = await instance.post('', data).then((res) => res.data);
-  return result as PrivateCloudRequestDetail;
+  const result = await instance.post<PrivateCloudRequestDetailDecorated>('', data).then((res) => res.data);
+  return result;
 }
 
 export async function editPrivateCloudProduct(licencePlate: string, data: any) {
-  const result = await instance.put(`/${licencePlate}`, data).then((res) => res.data);
-  return result as PrivateCloudRequestDetail;
+  const result = await instance
+    .put<PrivateCloudRequestDetailDecorated>(`/${licencePlate}`, data)
+    .then((res) => res.data);
+  return result;
 }
 
 export async function deletePrivateCloudProduct(licencePlate: string) {
-  const result = await instance.delete(`/${licencePlate}`).then((res) => res.data);
-  return result as PrivateCloudRequestDetail;
+  const result = await instance.delete<PrivateCloudRequestDetailDecorated>(`/${licencePlate}`).then((res) => res.data);
+  return result;
 }
 
 export async function checkPrivateCloudProductDeletionAvailability(licencePlate: string) {
@@ -189,6 +193,27 @@ export async function downloadPrivateCloudMonthlyCosts(licencePlate: string, yea
     .then((res) => {
       if (res.status === 204) return false;
       downloadFile(res.data, `monthly-costs-${yearMonth}.pdf`);
+      return true;
+    });
+
+  return result;
+}
+
+export async function getQuarterlyCosts(licencePlate: string, yearMonth: string) {
+  const response = await instance
+    .get<QuarterlyCost>(`/${licencePlate}/costs/quarterly/${yearMonth}`)
+    .then((res) => res.data);
+  return response;
+}
+
+export async function downloadPrivateCloudQuarterlyCosts(licencePlate: string, yearQuarter: string) {
+  const result = await instance
+    .post(`/${licencePlate}/costs/quarterly/${yearQuarter}/download`, {}, { responseType: 'blob' })
+    .then((res) => {
+      if (res.status === 204) return false;
+
+      const [year, quarter] = yearQuarter.split('-').map(Number);
+      downloadFile(res.data, `quarterly-costs-${year}-Q${quarter}.pdf`);
       return true;
     });
 

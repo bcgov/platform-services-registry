@@ -79,19 +79,23 @@ export default privateCloudProductLayout(({ getPathParams, session, children }) 
   }
 
   if (session?.previews.costRecovery) {
-    tabs.push({
-      label: 'YEARLY COST',
-      name: 'yearly cost',
-      href: `/private-cloud/products/${licencePlate}/yearly-cost`,
-    });
-  }
-
-  if (session?.previews.costRecovery) {
-    tabs.push({
-      label: 'MONTHLY COST',
-      name: 'monthly cost',
-      href: `/private-cloud/products/${licencePlate}/monthly-cost`,
-    });
+    tabs.push(
+      {
+        label: 'MONTHLY COST',
+        name: 'monthly cost',
+        href: `/private-cloud/products/${licencePlate}/monthly-cost`,
+      },
+      {
+        label: 'QUARTERLY COST',
+        name: 'quarterly cost',
+        href: `/private-cloud/products/${licencePlate}/quarterly-cost`,
+      },
+      {
+        label: 'YEARLY COST',
+        name: 'yearly cost',
+        href: `/private-cloud/products/${licencePlate}/yearly-cost`,
+      },
+    );
   }
 
   if (session?.previews.security) {
