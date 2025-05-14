@@ -1,37 +1,19 @@
 'use client';
-import { Button } from '@mantine/core';
+import { Button, Tooltip } from '@mantine/core';
 import { YearPickerInput } from '@mantine/dates';
 import { useQuery } from '@tanstack/react-query';
+import { Session } from 'next-auth';
 import { useEffect, useState } from 'react';
-import { z } from 'zod';
 import LoadingBox from '@/components/generic/LoadingBox';
 import YearlyCostChart from '@/components/private-cloud/yearly-cost/YearlyCostChart';
 import YearlyCostTable from '@/components/private-cloud/yearly-cost/YearlyCostTable';
-import { GlobalRole } from '@/constants';
-import createClientPage from '@/core/client-page';
 import { downloadPrivateCloudYearlyCosts, getYearlyCosts } from '@/services/backend/private-cloud/products';
 
-const pathParamSchema = z.object({
-  licencePlate: z.string(),
-});
-
-const privateCloudProductYearlyCost = createClientPage({
-  roles: [GlobalRole.User],
-  validations: { pathParams: pathParamSchema },
-});
-
-export default privateCloudProductYearlyCost(({ getPathParams, session }) => {
-  const [pathParams, setPathParams] = useState<z.infer<typeof pathParamSchema>>();
+export default function Yearly({ licencePlate, session }: { licencePlate: string; session: Session }) {
   const [selectedYear, setSelectedYear] = useState<Date>(new Date());
   const [downloading, setDownloading] = useState(false);
 
-  useEffect(() => {
-    getPathParams().then((v) => setPathParams(v));
-  }, [getPathParams]);
-
-  const { licencePlate = '' } = pathParams ?? {};
   const year = selectedYear.getFullYear().toString();
-
   const { data, isLoading } = useQuery({
     queryKey: ['costItems', licencePlate, year],
     queryFn: () => getYearlyCosts(licencePlate, year),
@@ -49,18 +31,18 @@ export default privateCloudProductYearlyCost(({ getPathParams, session }) => {
   const yearlyCostData = data?.items;
 
   return (
-    <div className="p-4">
-      <h1 className="text-2xl font-bold mb-4">Yearly Bills</h1>
+    <div>
       <div className="flex items-center justify-between w-full mb-6">
         <div className="flex items-center gap-4">
-          <YearPickerInput
-            label="Select Year"
-            placeholder="Pick Year"
-            value={selectedYear}
-            onChange={handleChange}
-            maw={200}
-            clearable
-          />
+          <Tooltip label="Select a year">
+            <YearPickerInput
+              placeholder="Select a year"
+              value={selectedYear}
+              onChange={handleChange}
+              maw={200}
+              clearable
+            />
+          </Tooltip>
         </div>
         {yearlyCostData.length > 0 && (
           <Button
@@ -77,12 +59,15 @@ export default privateCloudProductYearlyCost(({ getPathParams, session }) => {
         )}
       </div>
 
-      <div className="my-8">
-        <YearlyCostChart yearlyCostData={yearlyCostData} />
-      </div>
+      {data.items.length > 0 && (
+        <div className="my-8">
+          <YearlyCostChart yearlyCostData={yearlyCostData} />
+        </div>
+      )}
+
       <LoadingBox isLoading={isLoading}>
         <YearlyCostTable yearlyCostData={yearlyCostData} currentYear={year} />
       </LoadingBox>
     </div>
   );
-});
+}

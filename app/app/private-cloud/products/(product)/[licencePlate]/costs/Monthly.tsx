@@ -1,37 +1,20 @@
 'use client';
 
-import { Button } from '@mantine/core';
+import { Button, Tooltip } from '@mantine/core';
 import { MonthPickerInput } from '@mantine/dates';
 import { useQuery } from '@tanstack/react-query';
 import { format } from 'date-fns';
+import { Session } from 'next-auth';
 import { useEffect, useState } from 'react';
-import { z } from 'zod';
 import LoadingBox from '@/components/generic/LoadingBox';
 import MonthlyCostSummary from '@/components/private-cloud/monthly-cost/MonthlyCostSummary';
 import MonthlyCostTable from '@/components/private-cloud/monthly-cost/MonthlyCostTable';
 import MonthlyCostChart from '@/components/private-cloud/monthly-cost/MonthyCostChart';
-import { GlobalRole } from '@/constants';
-import createClientPage from '@/core/client-page';
 import { downloadPrivateCloudMonthlyCosts, getMonthlyCosts } from '@/services/backend/private-cloud/products';
 
-const pathParamSchema = z.object({
-  licencePlate: z.string(),
-});
-
-const privateCloudProductMonthlyCost = createClientPage({
-  roles: [GlobalRole.User],
-  validations: { pathParams: pathParamSchema },
-});
-
-export default privateCloudProductMonthlyCost(({ getPathParams, session }) => {
-  const [pathParams, setPathParams] = useState<z.infer<typeof pathParamSchema>>();
+export default function Monthly({ licencePlate, session }: { licencePlate: string; session: Session }) {
   const [selectedDate, setSelectedDate] = useState<Date>(new Date());
   const [downloading, setDownloading] = useState(false);
-  useEffect(() => {
-    getPathParams().then((v) => setPathParams(v));
-  }, [getPathParams]);
-
-  const { licencePlate = '' } = pathParams ?? {};
 
   const { data, isLoading, isError } = useQuery({
     queryKey: ['costItems', licencePlate, selectedDate ? format(selectedDate, 'yyyy-MM') : null],
@@ -39,7 +22,7 @@ export default privateCloudProductMonthlyCost(({ getPathParams, session }) => {
     enabled: !!licencePlate && !!selectedDate,
   });
 
-  if (!data || !session?.previews.costRecovery) {
+  if (!data || !session.previews.costRecovery) {
     return null;
   }
 
@@ -48,17 +31,18 @@ export default privateCloudProductMonthlyCost(({ getPathParams, session }) => {
   };
 
   return (
-    <div className="p-4">
-      <h1 className="text-2xl font-bold mb-4">Monthly Bills</h1>
+    <div>
       <div className="flex items-center gap-4 mb-6">
-        <MonthPickerInput
-          label="Select Month"
-          placeholder="Pick month"
-          value={selectedDate}
-          onChange={handleChange}
-          maw={200}
-          clearable
-        />
+        <Tooltip label="Select a month">
+          <MonthPickerInput
+            placeholder="Select a month"
+            value={selectedDate}
+            onChange={handleChange}
+            maw={200}
+            clearable
+          />
+        </Tooltip>
+
         {data.items.length > 0 && (
           <div className="ml-auto">
             <Button
@@ -78,13 +62,15 @@ export default privateCloudProductMonthlyCost(({ getPathParams, session }) => {
 
       <MonthlyCostSummary data={data} />
 
-      <div className="my-8">
-        <MonthlyCostChart data={{ days: data.days, dayDetails: data.dayDetails }} />
-      </div>
+      {data.items.length > 0 && (
+        <div className="my-8">
+          <MonthlyCostChart data={{ days: data.days, dayDetails: data.dayDetails }} />
+        </div>
+      )}
 
       <LoadingBox isLoading={isLoading}>
-        <MonthlyCostTable data={{ items: data.items }} />
+        <MonthlyCostTable data={{ items: data.items, days: data.days, dayDetails: data.dayDetails }} />
       </LoadingBox>
     </div>
   );
-});
+}

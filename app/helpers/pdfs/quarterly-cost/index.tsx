@@ -86,7 +86,7 @@ export async function generateQuarterlyCostPdf({
           <img src={chartImageDataURL} className="w-full h-auto" alt="Quarterly Cost Chart" />
         </div>
       </div>
-      <QuarterlyCostTable data={{ items: data.items }} />
+      <QuarterlyCostTable data={{ items: data.items, months: data.months, monthDetails: data.monthDetails }} />
     </>,
   );
 
