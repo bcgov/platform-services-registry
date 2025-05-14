@@ -64,7 +64,7 @@ jobs:
       continue-on-error: true
 
     - name: Create Comment
-      uses: actions/github-script@e7aeb8c663f696059ebb5f9ab1425ed2ef511bdb
+      uses: actions/github-script@5ee2b97722aeebb4c5d5c867345a6745cd868065
       if: github.event_name == 'pull_request'
       with:
         github-token: ${{ secrets.GITHUB_TOKEN }}
