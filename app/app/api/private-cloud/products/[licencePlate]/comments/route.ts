@@ -5,7 +5,7 @@ import { CreatedResponse, OkResponse } from '@/core/responses';
 import { createOp } from './_operations/create';
 import { listOp } from './_operations/list';
 
-const createCommentBodySchema = z
+export const createCommentBodySchema = z
   .object({
     text: z.string().min(1, 'The comment text must not be empty'),
     projectId: z.string().optional(),

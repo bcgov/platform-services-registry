@@ -1,5 +1,6 @@
 import { expect } from '@jest/globals';
 import { GlobalRole } from '@/constants';
+import { getResponse } from '@/core/responses';
 import { createSamplePrivateCloudProductData } from '@/helpers/mock-resources';
 import { DecisionStatus, RequestType } from '@/prisma/client';
 import { mockSessionByEmail, mockSessionByRole } from '@/services/api-test/core';
@@ -12,13 +13,13 @@ import {
 } from '@/services/api-test/private-cloud/products';
 import { makePrivateCloudRequestDecision } from '@/services/api-test/private-cloud/requests';
 import { provisionPrivateCloudProduct } from '@/services/api-test/v1/private-cloud';
-import { PrivateCloudRequestDetail } from '@/types/private-cloud';
+import { PrivateCloudRequestDetailDecorated } from '@/types/private-cloud';
 
 let globalLicencePlate: string;
 const globalProductData = createSamplePrivateCloudProductData();
 
 const requests = {
-  create: null as PrivateCloudRequestDetail | null,
+  create: {} as unknown as PrivateCloudRequestDetailDecorated,
 };
 
 describe('Private Cloud Comments - Permissions', () => {
@@ -28,15 +29,15 @@ describe('Private Cloud Comments - Permissions', () => {
     const response = await createPrivateCloudProduct(globalProductData);
     expect(response.status).toBe(200);
 
-    requests.create = await response.json();
-    globalLicencePlate = requests.create!.licencePlate;
+    requests.create = await getResponse(response);
+    globalLicencePlate = requests.create.licencePlate;
   });
 
   it('should successfully approve the request by admin', async () => {
     await mockSessionByRole(GlobalRole.PrivateReviewer);
 
-    const response = await makePrivateCloudRequestDecision(requests.create!.id, {
-      ...requests.create?.decisionData,
+    const response = await makePrivateCloudRequestDecision(requests.create.id, {
+      ...requests.create.decisionData,
       type: RequestType.CREATE,
       decision: DecisionStatus.APPROVED,
     });
@@ -54,7 +55,8 @@ describe('Private Cloud Comments - Permissions', () => {
   it('should successfully create comments', async () => {
     await mockSessionByRole(GlobalRole.Admin);
     const projectResponse = await getPrivateCloudProduct(globalLicencePlate);
-    const projectData = await projectResponse.json();
+
+    const projectData = await getResponse(projectResponse);
     const activeProjectId = projectData?.id;
 
     const adminUserId = globalProductData.projectOwner.id;
@@ -89,7 +91,8 @@ describe('Private Cloud Comments - Permissions', () => {
     await mockSessionByRole(GlobalRole.Admin);
 
     const response = await getAllPrivateCloudComments(globalLicencePlate);
-    const responseBody = await response.json();
+
+    const responseBody = await getResponse(response);
 
     expect(response.status).toBe(200);
     expect(Array.isArray(responseBody)).toBe(true);
@@ -100,7 +103,8 @@ describe('Private Cloud Comments - Permissions', () => {
     await mockSessionByRole(GlobalRole.PrivateAdmin);
 
     const response = await getAllPrivateCloudComments(globalLicencePlate);
-    const responseBody = await response.json();
+
+    const responseBody = await getResponse(response);
 
     expect(response.status).toBe(200);
     expect(Array.isArray(responseBody)).toBe(true);
@@ -126,7 +130,8 @@ describe('Private Cloud Comments - Validations', () => {
 
     const createResponse = await createPrivateCloudProduct(productData);
     expect(createResponse.status).toBe(200);
-    const createResponseBody = await createResponse.json();
+
+    const createResponseBody = await getResponse(createResponse);
     localLicencePlate = createResponseBody.licencePlate;
     activeProjectId = createResponseBody.id;
 
@@ -156,7 +161,8 @@ describe('Private Cloud Comments - Validations', () => {
     await mockSessionByRole(GlobalRole.Admin);
 
     const response = await getAllPrivateCloudComments(localLicencePlate);
-    const responseBody = await response.json();
+
+    const responseBody = await getResponse(response);
 
     expect(response.status).toBe(200);
     expect(Array.isArray(responseBody)).toBe(true);

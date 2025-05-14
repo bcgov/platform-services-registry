@@ -65,3 +65,7 @@ export function CreatedResponse<T>(data: T) {
 export function NoContent() {
   return new Response(null, { status: 204 });
 }
+
+export function getResponse<T>(response: NextResponse<T>) {
+  return response.json();
+}

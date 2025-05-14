@@ -11,7 +11,7 @@ import {
   PrivateCloudProductMemberRole,
 } from '@/prisma/client';
 import { processEnumString, processBoolean } from '@/utils/js';
-import { RequestDecision } from './shared';
+import { deleteRequestDecisionBodySchema, RequestDecision } from './shared';
 import { commentSchema } from './shared';
 
 export const privateCloudBillingSearchBodySchema = z.object({
@@ -219,6 +219,8 @@ export const privateCloudUnitPriceBodySchema = z.object({
     .max(maxStorage, { message: `Storage per 1GiB must be at most $${maxStorage.toLocaleString()}` }),
 });
 
+const schema = z.union([deleteRequestDecisionBodySchema, privateCloudRequestDecisionBodySchema]);
+
 export type PrivateCloudCreateRequestBody = z.infer<typeof privateCloudCreateRequestBodySchema>;
 export type PrivateCloudEditRequestBody = z.infer<typeof privateCloudEditRequestBodySchema>;
 export type PrivateCloudRequestDecisionBody = z.infer<typeof privateCloudRequestDecisionBodySchema>;
@@ -228,3 +230,4 @@ export type PrivateCloudRequestSearchBody = z.infer<typeof privateCloudRequestSe
 export type PrivateCloudAdminUpdateBody = z.infer<typeof privateCloudAdminUpdateBodySchema>;
 export type PrivateCloudProductWebhookBody = z.infer<typeof privateCloudProductWebhookBodySchema>;
 export type PrivateCloudUnitPriceBody = z.infer<typeof privateCloudUnitPriceBodySchema>;
+export type PrivateCloudRequestDeleteDecisionBody = z.infer<typeof schema>;

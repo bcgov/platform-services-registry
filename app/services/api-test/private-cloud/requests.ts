@@ -1,11 +1,14 @@
 import { POST as _makePrivateCloudRequestDecision } from '@/app/api/private-cloud/requests/[id]/decision/route';
 import { POST as _searchPrivateCloudRequests } from '@/app/api/private-cloud/requests/search/route';
-import { PrivateCloudRequestSearchBody } from '@/validation-schemas/private-cloud';
+import {
+  PrivateCloudRequestDeleteDecisionBody,
+  PrivateCloudRequestSearchBody,
+} from '@/validation-schemas/private-cloud';
 import { createRoute } from '../core';
 
 const requestCollectionRoute = createRoute('/private-cloud/requests');
 
-export async function makePrivateCloudRequestDecision(id: string, data: any) {
+export async function makePrivateCloudRequestDecision(id: string, data: PrivateCloudRequestDeleteDecisionBody) {
   const result = await requestCollectionRoute.post(_makePrivateCloudRequestDecision, '/{{id}}/decision', data, {
     pathParams: { id },
   });
