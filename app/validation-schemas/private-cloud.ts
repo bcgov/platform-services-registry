@@ -219,7 +219,7 @@ export const privateCloudUnitPriceBodySchema = z.object({
     .max(maxStorage, { message: `Storage per 1GiB must be at most $${maxStorage.toLocaleString()}` }),
 });
 
-const privateCloudRequestDeleteDecisionBodySchema = z.union([
+export const privateCloudRequestDeleteDecisionBodySchema = z.union([
   deleteRequestDecisionBodySchema,
   privateCloudRequestDecisionBodySchema,
 ]);
