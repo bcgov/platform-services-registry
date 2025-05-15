@@ -1,7 +1,8 @@
 import prisma from '@/core/prisma';
+import { Prisma } from '@/prisma/client';
 
 export async function listOp(licencePlate: string, requestId?: string) {
-  let comments;
+  let comments: Prisma.PrivateCloudCommentGetPayload<{}>[];
 
   if (requestId === 'all') {
     const requests = await prisma.privateCloudRequest.findMany({

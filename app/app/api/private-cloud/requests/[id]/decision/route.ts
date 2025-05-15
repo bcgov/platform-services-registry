@@ -8,10 +8,9 @@ import { DecisionStatus, Prisma, ProjectStatus, RequestType, EventType, TaskType
 import { sendRequestRejectionEmails, sendRequestApprovalEmails } from '@/services/ches/private-cloud';
 import { createEvent, models, privateCloudRequestDetailInclude, tasks } from '@/services/db';
 import {
-  privateCloudRequestDecisionBodySchema,
   PrivateCloudRequestDecisionBody,
+  privateCloudRequestDeleteDecisionBodySchema,
 } from '@/validation-schemas/private-cloud';
-import { deleteRequestDecisionBodySchema } from '@/validation-schemas/shared';
 
 const pathParamSchema = z.object({
   id: z.string(),
@@ -22,7 +21,7 @@ const apiHandler = createApiHandler({
   permissions: [GlobalPermissions.ReviewAllPrivateCloudRequests],
   validations: {
     pathParams: pathParamSchema,
-    body: z.union([deleteRequestDecisionBodySchema, privateCloudRequestDecisionBodySchema]),
+    body: privateCloudRequestDeleteDecisionBodySchema,
   },
 });
 export const POST = apiHandler(async ({ pathParams, body, session }) => {
