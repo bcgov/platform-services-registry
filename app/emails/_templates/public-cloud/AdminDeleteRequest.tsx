@@ -1,11 +1,11 @@
 import { Button, Heading, Text, Hr } from '@react-email/components';
 import * as React from 'react';
+import Comment from '@/emails/_components/Comment';
 import PublicCloudLayout from '@/emails/_components/layout/PublicCloudLayout';
 import LinkButton from '@/emails/_components/LinkButton';
 import ProductDetails from '@/emails/_components/ProductDetails';
 import ProviderDetails from '@/emails/_components/ProviderDetails';
 import { PublicCloudRequestDetailDecorated } from '@/types/public-cloud';
-
 interface EmailProp {
   request: PublicCloudRequestDetailDecorated;
   requester: string;
@@ -27,7 +27,7 @@ export default function AdminDeleteRequest({ request, requester }: EmailProp) {
       </Text>
 
       <LinkButton href={`/public-cloud/requests/${request.id}/request`}>Review Request</LinkButton>
-
+      <Comment requestComment={request.requestComment} />
       <ProductDetails product={request.decisionData} />
 
       <ProviderDetails product={request.decisionData} />
