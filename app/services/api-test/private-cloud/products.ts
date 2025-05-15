@@ -7,7 +7,6 @@ import {
 import {
   POST as _createPrivateCloudComment,
   GET as _listPrivateCloudComments,
-  createCommentBodySchema,
 } from '@/app/api/private-cloud/products/[licencePlate]/comments/route';
 import { GET as _listPrivateCloudProductRequests } from '@/app/api/private-cloud/products/[licencePlate]/requests/route';
 import {
