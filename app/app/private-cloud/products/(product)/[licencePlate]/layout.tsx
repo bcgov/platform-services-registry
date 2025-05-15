@@ -95,14 +95,6 @@ export default privateCloudProductLayout(({ getPathParams, session, children }) 
     });
   }
 
-  if (snap.currentProduct?._permissions.viewHistory) {
-    tabs.push({
-      label: 'HISTORY',
-      name: 'history',
-      href: `/private-cloud/products/${licencePlate}/history`,
-    });
-  }
-
   if (!snap.currentProduct || snap.currentProduct.licencePlate !== licencePlate) {
     return null;
   }

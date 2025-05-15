@@ -1,18 +1,14 @@
 'use client';
 
-import { useQuery } from '@tanstack/react-query';
-import { useEffect, useState } from 'react';
-import { proxy, useSnapshot } from 'valtio';
+import { Switch, Tooltip } from '@mantine/core';
+import { IconListDetails, IconHistoryToggle } from '@tabler/icons-react';
+import { ReactNode, useEffect, useState } from 'react';
 import { z } from 'zod';
-import Table from '@/components/generic/table/Table';
-import TableBodyPrivateRequests from '@/components/table/TableBodyPrivateRequests';
-import { requestSortsInProduct, GlobalRole } from '@/constants';
+import { GlobalRole } from '@/constants';
 import createClientPage from '@/core/client-page';
-import { processPrivateCloudRequestData } from '@/helpers/row-mapper';
-import { searchPrivateCloudRequests } from '@/services/backend/private-cloud/requests';
-import { PrivateCloudRequestSimpleDecorated } from '@/types/private-cloud';
-import FilterPanel from './FilterPanel';
-import { pageState } from './state';
+import { usePrivateProductState } from '@/states/global';
+import HistoryView from './HistoryView';
+import ListView from './ListView';
 
 const pathParamSchema = z.object({
   licencePlate: z.string(),
@@ -24,54 +20,45 @@ const privateCloudProductRequests = createClientPage({
   fallbackUrl: '/login?callbackUrl=/home',
 });
 export default privateCloudProductRequests(({ getPathParams, session }) => {
+  const [, snap] = usePrivateProductState();
+  const [checked, setChecked] = useState(false);
   const [pathParams, setPathParams] = useState<z.infer<typeof pathParamSchema>>();
 
   useEffect(() => {
     getPathParams().then((v) => setPathParams(v));
   }, []);
 
-  const snap = useSnapshot(pageState);
   const { licencePlate = '' } = pathParams ?? {};
 
-  const { data, isLoading } = useQuery({
-    queryKey: ['requests', snap],
-    queryFn: () => searchPrivateCloudRequests({ ...snap, licencePlate }),
-    refetchInterval: 2000,
-    enabled: !!licencePlate,
-  });
-
-  let requests: PrivateCloudRequestSimpleDecorated[] = [];
-  let totalCount = 0;
-
-  if (!isLoading && data) {
-    requests = data.docs.map(processPrivateCloudRequestData);
-    totalCount = data.totalCount;
+  let toggle: ReactNode = null;
+  if (snap.currentProduct?._permissions.viewHistory) {
+    toggle = (
+      <div className="flex justify-end mb-2">
+        <Switch
+          checked={checked}
+          onChange={(event) => setChecked(event.currentTarget.checked)}
+          size="md"
+          color="dark.4"
+          onLabel={
+            <Tooltip label="List view">
+              <IconListDetails size={16} stroke={2.5} color="var(--mantine-color-blue-6)" />
+            </Tooltip>
+          }
+          offLabel={
+            <Tooltip label="History view">
+              <IconHistoryToggle size={16} stroke={2.5} color="var(--mantine-color-green-6)" />
+            </Tooltip>
+          }
+        />
+        <span className="ml-2 text-gray-500 text-sm">Switch mode</span>
+      </div>
+    );
   }
 
   return (
-    <Table
-      totalCount={totalCount}
-      page={snap.page ?? 1}
-      pageSize={snap.pageSize ?? 10}
-      search={snap.search}
-      sortKey={snap.sortValue}
-      onPagination={(page: number, pageSize: number) => {
-        pageState.page = page;
-        pageState.pageSize = pageSize;
-      }}
-      onSearch={(searchTerm: string) => {
-        pageState.page = 1;
-        pageState.search = searchTerm;
-      }}
-      onSort={(sortValue) => {
-        pageState.page = 1;
-        pageState.sortValue = sortValue;
-      }}
-      sortOptions={requestSortsInProduct.map((v) => v.label)}
-      filters={<FilterPanel />}
-      isLoading={isLoading}
-    >
-      <TableBodyPrivateRequests rows={requests} isLoading={isLoading} />
-    </Table>
+    <>
+      {toggle}
+      {checked ? <HistoryView licencePlate={licencePlate} /> : <ListView licencePlate={licencePlate} />}
+    </>
   );
 });
