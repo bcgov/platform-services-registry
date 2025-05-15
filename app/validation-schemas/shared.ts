@@ -10,6 +10,8 @@ export type RequestDecision = (typeof RequestDecision)[keyof typeof RequestDecis
 
 export const commentSchema = z.string().max(1000).nullable().default(null).optional();
 
+export type CommentSchemaType = z.infer<typeof commentSchema>;
+
 export const userSchema = z.object({
   firstName: z.string().min(1, 'First name is required').max(50, 'First name must be 50 characters or less'),
   lastName: z.string().min(1, 'Last name is required').max(50, 'Last name must be 50 characters or less'),

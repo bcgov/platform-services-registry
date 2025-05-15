@@ -5,7 +5,7 @@ import { Button, Divider, Grid, LoadingOverlay, Box } from '@mantine/core';
 import { IconExclamationCircle } from '@tabler/icons-react';
 import { useMutation } from '@tanstack/react-query';
 import { FormProvider, useForm } from 'react-hook-form';
-import { TypeOf, z } from 'zod';
+import { z } from 'zod';
 import ExternalLink from '@/components/generic/button/ExternalLink';
 import MailLink from '@/components/generic/button/MailLink';
 import HookFormTextInput from '@/components/generic/input/HookFormTextInput';
@@ -13,7 +13,7 @@ import { publicCloudTeamEmail } from '@/constants';
 import { createModal } from '@/core/modal';
 import { deletePublicCloudProduct } from '@/services/backend/public-cloud/products';
 import { PublicCloudProductDetailDecorated } from '@/types/public-cloud';
-import { commentSchema } from '@/validation-schemas/shared';
+import { commentSchema, CommentSchemaType } from '@/validation-schemas/shared';
 import HookFormTextarea from '../generic/input/HookFormTextarea';
 import { openNotificationModal } from './notification';
 
@@ -37,7 +37,7 @@ export const openPublicCloudProductDeleteModal = createModal<ModalProps, ModalSt
           licencePlate: z.literal(product.licencePlate),
           email: z.literal(product.projectOwner.email),
           requestComment: commentSchema.refine((comment) => comment && comment.trim().length > 0, {
-            message: 'Please provide a reason for deletion',
+            message: 'Please provide a reason for deletion.',
           }),
         }),
       ),
@@ -54,8 +54,7 @@ export const openPublicCloudProductDeleteModal = createModal<ModalProps, ModalSt
       isError: isDeleteProductError,
       error: deleteProductError,
     } = useMutation({
-      mutationFn: (requestComment: TypeOf<typeof commentSchema>) =>
-        deletePublicCloudProduct(product.licencePlate, requestComment),
+      mutationFn: (requestComment: CommentSchemaType) => deletePublicCloudProduct(product.licencePlate, requestComment),
     });
 
     const { handleSubmit, register } = methods;
@@ -131,7 +130,8 @@ export const openPublicCloudProductDeleteModal = createModal<ModalProps, ModalSt
                 <HookFormTextInput name="email" placeholder="Product owner email" classNames={{ wrapper: 'mt-1' }} />
                 <HookFormTextarea
                   name="requestComment"
-                  placeholder="Enter a reason..."
+                  label="Please specify the reason for deleting this product."
+                  placeholder="Enter a reason for deletion..."
                   classNames={{ wrapper: 'mt-2' }}
                 />
                 <Divider my="md" />

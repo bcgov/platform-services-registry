@@ -11,7 +11,7 @@ import {
   getLastClosedPublicCloudRequest,
   tasks,
 } from '@/services/db';
-import { commentSchema } from '@/validation-schemas/shared';
+import { CommentSchemaType } from '@/validation-schemas/shared';
 import { deletePathParamSchema } from '../[licencePlate]/schema';
 
 export default async function deleteOp({
@@ -20,7 +20,7 @@ export default async function deleteOp({
   pathParams,
 }: {
   session: Session;
-  requestComment: TypeOf<typeof commentSchema>;
+  requestComment: CommentSchemaType;
   pathParams: TypeOf<typeof deletePathParamSchema>;
 }) {
   const { licencePlate } = pathParams;
@@ -32,7 +32,6 @@ export default async function deleteOp({
   if (!product?._permissions.delete) {
     return UnauthorizedResponse();
   }
-
   const { id, requests, updatedAt, _permissions, ...rest } = product;
 
   // Retrieve the latest request data to acquire the decision data ID that can be assigned to the incoming request's original data.

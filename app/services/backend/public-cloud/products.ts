@@ -1,5 +1,4 @@
 import axios from 'axios';
-import { TypeOf } from 'zod';
 import { publicCloudProductSorts } from '@/constants';
 import { AccountCoding, Prisma } from '@/prisma/client';
 import {
@@ -15,7 +14,7 @@ import {
   PublicCloudProductSearchBody,
   PublicCloudProductSearchNoPaginationBody,
 } from '@/validation-schemas/public-cloud';
-import { commentSchema } from '@/validation-schemas/shared';
+import { CommentSchemaType } from '@/validation-schemas/shared';
 import { instance as parentInstance } from './instance';
 export const instance = axios.create({
   ...parentInstance.defaults,
@@ -81,14 +80,14 @@ export async function editPublicCloudProduct(licencePlate: string, data: any) {
   return result as PublicCloudRequestDetail;
 }
 
-export async function deletePublicCloudProduct(licencePlate: string, requestComment: TypeOf<typeof commentSchema>) {
-  const result = await instance.delete(`/${licencePlate}`, { data: { requestComment } }).then((res) => res.data);
+export async function deletePublicCloudProduct(licencePlate: string, requestComment: CommentSchemaType) {
+  console.log('requestComment service', requestComment);
+  const result = await instance.post(`/${licencePlate}/archive`, { requestComment }).then((res) => res.data);
   return result as PublicCloudRequestDetail;
 }
 
 export async function getPublicCloudProductRequests(licencePlate: string, active = false) {
   const result = await instance.get(`/${licencePlate}/requests?active=${active}`).then((res) => res.data);
-
   return result as PublicCloudRequestSimpleDecorated[];
 }
 
