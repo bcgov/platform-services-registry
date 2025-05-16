@@ -27,7 +27,9 @@ export default function AdminDeleteRequest({ request, requester }: EmailProp) {
       </Text>
 
       <LinkButton href={`/public-cloud/requests/${request.id}/request`}>Review Request</LinkButton>
+
       <Comment requestComment={request.requestComment} />
+
       <ProductDetails product={request.decisionData} />
 
       <ProviderDetails product={request.decisionData} />

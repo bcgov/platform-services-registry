@@ -16,6 +16,7 @@ import {
 } from '@/validation-schemas/public-cloud';
 import { CommentSchemaType } from '@/validation-schemas/shared';
 import { instance as parentInstance } from './instance';
+
 export const instance = axios.create({
   ...parentInstance.defaults,
   baseURL: `${parentInstance.defaults.baseURL}/products`,
@@ -81,13 +82,13 @@ export async function editPublicCloudProduct(licencePlate: string, data: any) {
 }
 
 export async function deletePublicCloudProduct(licencePlate: string, requestComment: CommentSchemaType) {
-  console.log('requestComment service', requestComment);
   const result = await instance.post(`/${licencePlate}/archive`, { requestComment }).then((res) => res.data);
   return result as PublicCloudRequestDetail;
 }
 
 export async function getPublicCloudProductRequests(licencePlate: string, active = false) {
   const result = await instance.get(`/${licencePlate}/requests?active=${active}`).then((res) => res.data);
+
   return result as PublicCloudRequestSimpleDecorated[];
 }
 

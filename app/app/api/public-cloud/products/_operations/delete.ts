@@ -32,6 +32,7 @@ export default async function deleteOp({
   if (!product?._permissions.delete) {
     return UnauthorizedResponse();
   }
+
   const { id, requests, updatedAt, _permissions, ...rest } = product;
 
   // Retrieve the latest request data to acquire the decision data ID that can be assigned to the incoming request's original data.

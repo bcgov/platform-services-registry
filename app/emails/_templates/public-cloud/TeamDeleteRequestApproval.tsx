@@ -32,7 +32,9 @@ export default function TeamDeleteRequestApproval({ request }: EmailProp) {
       </Text>
 
       <LinkButton href={`/public-cloud/requests/${request.id}/request`}>View Request</LinkButton>
+
       <Comment requestComment={request.requestComment} />
+
       <ProductDetails product={request.decisionData} />
 
       <ProviderDetails product={request.decisionData} />

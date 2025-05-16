@@ -20,11 +20,3 @@ export const PUT = createApiHandler({
   const response = await updateOp({ session, body, pathParams });
   return response;
 });
-
-// export const DELETE = createApiHandler({
-//   roles: [GlobalRole.User],
-//   validations: { pathParams: deletePathParamSchema },
-// })(async ({ pathParams, session }) => {
-//   const response = await deleteOp({ session, pathParams });
-//   return response;
-// });

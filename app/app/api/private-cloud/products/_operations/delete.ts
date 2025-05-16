@@ -12,13 +12,16 @@ import {
   tasks,
 } from '@/services/db';
 import { isEligibleForDeletion } from '@/services/k8s/reads';
+import { CommentSchemaType } from '@/validation-schemas/shared';
 import { deletePathParamSchema } from '../[licencePlate]/schema';
 
 export default async function deleteOp({
   session,
+  requestComment,
   pathParams,
 }: {
   session: Session;
+  requestComment: CommentSchemaType;
   pathParams: TypeOf<typeof deletePathParamSchema>;
 }) {
   const { licencePlate } = pathParams;
@@ -48,6 +51,7 @@ export default async function deleteOp({
     type: RequestType.DELETE,
     decisionStatus: DecisionStatus.PENDING,
     active: true,
+    requestComment,
     licencePlate: product.licencePlate,
     originalData: { connect: { id: previousRequest?.decisionDataId } },
     decisionData: { create: productData },

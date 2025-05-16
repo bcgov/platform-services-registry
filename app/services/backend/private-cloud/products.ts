@@ -16,6 +16,7 @@ import {
   PrivateCloudProductSearchBody,
   PrivateCloudProductSearchNoPaginationBody,
 } from '@/validation-schemas/private-cloud';
+import { CommentSchemaType } from '@/validation-schemas/shared';
 import { instance as parentInstance } from './instance';
 
 export const instance = axios.create({
@@ -76,8 +77,8 @@ export async function editPrivateCloudProduct(licencePlate: string, data: any) {
   return result;
 }
 
-export async function deletePrivateCloudProduct(licencePlate: string) {
-  const result = await instance.delete<PrivateCloudRequestDetailDecorated>(`/${licencePlate}`).then((res) => res.data);
+export async function deletePrivateCloudProduct(licencePlate: string, requestComment: CommentSchemaType) {
+  const result = await instance.post(`/${licencePlate}/archive`, { requestComment }).then((res) => res.data);
   return result;
 }
 

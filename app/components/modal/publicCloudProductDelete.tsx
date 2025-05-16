@@ -37,7 +37,7 @@ export const openPublicCloudProductDeleteModal = createModal<ModalProps, ModalSt
           licencePlate: z.literal(product.licencePlate),
           email: z.literal(product.projectOwner.email),
           requestComment: commentSchema.refine((comment) => comment && comment.trim().length > 0, {
-            message: 'Please provide a reason for deletion.',
+            message: 'Invalid input, expected a non-empty reason for deletion',
           }),
         }),
       ),

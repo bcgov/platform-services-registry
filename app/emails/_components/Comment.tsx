@@ -7,6 +7,7 @@ interface CommentProps {
 
 export default function Comment({ requestComment, decisionComment }: CommentProps) {
   if (!requestComment && !decisionComment) return null;
+
   return (
     <div>
       <Hr className="my-4" />
