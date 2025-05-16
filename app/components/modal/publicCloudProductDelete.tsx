@@ -13,6 +13,8 @@ import { publicCloudTeamEmail } from '@/constants';
 import { createModal } from '@/core/modal';
 import { deletePublicCloudProduct } from '@/services/backend/public-cloud/products';
 import { PublicCloudProductDetailDecorated } from '@/types/public-cloud';
+import { commentSchema, CommentSchemaType } from '@/validation-schemas/shared';
+import HookFormTextarea from '../generic/input/HookFormTextarea';
 import { openNotificationModal } from './notification';
 
 interface ModalProps {
@@ -34,11 +36,15 @@ export const openPublicCloudProductDeleteModal = createModal<ModalProps, ModalSt
         z.object({
           licencePlate: z.literal(product.licencePlate),
           email: z.literal(product.projectOwner.email),
+          requestComment: commentSchema.refine((comment) => comment && comment.trim().length > 0, {
+            message: 'Invalid input, expected a non-empty reason for deletion',
+          }),
         }),
       ),
       defaultValues: {
         licencePlate: '',
         email: '',
+        requestComment: '',
       },
     });
 
@@ -48,7 +54,7 @@ export const openPublicCloudProductDeleteModal = createModal<ModalProps, ModalSt
       isError: isDeleteProductError,
       error: deleteProductError,
     } = useMutation({
-      mutationFn: () => deletePublicCloudProduct(product.licencePlate),
+      mutationFn: (requestComment: CommentSchemaType) => deletePublicCloudProduct(product.licencePlate, requestComment),
     });
 
     const { handleSubmit, register } = methods;
@@ -87,8 +93,8 @@ export const openPublicCloudProductDeleteModal = createModal<ModalProps, ModalSt
             <FormProvider {...methods}>
               <form
                 autoComplete="off"
-                onSubmit={handleSubmit(async () => {
-                  const res = await deleteProduct();
+                onSubmit={handleSubmit(async (formData) => {
+                  const res = await deleteProduct(formData.requestComment);
                   if (res) {
                     closeModal();
                     await openNotificationModal(
@@ -122,7 +128,12 @@ export const openPublicCloudProductDeleteModal = createModal<ModalProps, ModalSt
                   classNames={{ wrapper: 'mt-1' }}
                 />
                 <HookFormTextInput name="email" placeholder="Product owner email" classNames={{ wrapper: 'mt-1' }} />
-
+                <HookFormTextarea
+                  name="requestComment"
+                  label="Please specify the reason for deleting this product."
+                  placeholder="Enter a reason for deletion..."
+                  classNames={{ wrapper: 'mt-2' }}
+                />
                 <Divider my="md" />
 
                 <Grid className="mt-2">

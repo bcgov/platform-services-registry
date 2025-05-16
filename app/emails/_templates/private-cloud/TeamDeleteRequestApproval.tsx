@@ -38,7 +38,7 @@ export default function TeamDeleteRequestApproval({ request }: EmailProp) {
 
       <LinkButton href={`/private-cloud/requests/${request.id}/decision`}>View Request</LinkButton>
 
-      <Comment decisionComment={request.decisionComment} />
+      <Comment requestComment={request.requestComment} decisionComment={request.decisionComment} />
 
       <ProductDetails product={request.decisionData} />
 

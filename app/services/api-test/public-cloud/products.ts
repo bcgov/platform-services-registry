@@ -1,10 +1,10 @@
+import { POST as _archivePublicCloudProduct } from '@/app/api/public-cloud/products/[licencePlate]/archive/route';
 import { POST as _reviewPublicCloudBilling } from '@/app/api/public-cloud/products/[licencePlate]/billings/[billingId]/review/route';
 import { POST as _signPublicCloudBilling } from '@/app/api/public-cloud/products/[licencePlate]/billings/[billingId]/sign/route';
 import { GET as _listPublicCloudProductRequests } from '@/app/api/public-cloud/products/[licencePlate]/requests/route';
 import {
   GET as _getPublicCloudProduct,
   PUT as _editPublicCloudProduct,
-  DELETE as _deletePublicCloudProduct,
 } from '@/app/api/public-cloud/products/[licencePlate]/route';
 import { POST as _downloadPublicCloudProducts } from '@/app/api/public-cloud/products/download/route';
 import {
@@ -77,10 +77,13 @@ export async function editPublicCloudProduct(
   return result;
 }
 
-export async function deletePublicCloudProduct(licencePlate: string) {
-  const result = await productCollectionRoute.delete(_deletePublicCloudProduct, '/{{licencePlate}}', {
-    pathParams: { licencePlate },
-  });
+export async function deletePublicCloudProduct(licencePlate: string, requestComment: string) {
+  const result = await productCollectionRoute.post(
+    _archivePublicCloudProduct,
+    '/{{licencePlate}}/archive',
+    { requestComment },
+    { pathParams: { licencePlate } },
+  );
 
   return result;
 }

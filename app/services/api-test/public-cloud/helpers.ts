@@ -132,7 +132,7 @@ export async function deletePublicCloudProduct() {
   let decisionData = await approveAndProvisionRequest(resData);
 
   await mockSessionByRole(GlobalRole.Admin);
-  response = await deletePublicCloudProductTest(decisionData.licencePlate);
+  response = await deletePublicCloudProductTest(decisionData.licencePlate, 'Test delete comment');
   if (response.status !== 200) return null;
 
   resData = await response.json();

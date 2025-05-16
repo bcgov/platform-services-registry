@@ -24,7 +24,7 @@ export default function TeamDeleteRequestRejection({ request }: EmailProp) {
         Your delete request for the product {name} on the Public Cloud Landing Zone has been rejected due to the
         following reason(s):
       </Text>
-      <Comment decisionComment={request.decisionComment} />
+      <Comment requestComment={request.requestComment} decisionComment={request.decisionComment} />
       <Text>Log in to the registry and create a new request if the reason(s) above no longer apply.</Text>
 
       <LinkButton href={`/public-cloud/requests/${request.id}/request`}>View Request</LinkButton>

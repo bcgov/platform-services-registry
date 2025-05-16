@@ -1,3 +1,4 @@
+import { POST as _archivePrivateCloudProduct } from '@/app/api/private-cloud/products/[licencePlate]/archive/route';
 import {
   GET as _getPrivateCloudComment,
   PUT as _updatePrivateCloudComment,
@@ -11,7 +12,6 @@ import { GET as _listPrivateCloudProductRequests } from '@/app/api/private-cloud
 import {
   GET as _getPrivateCloudProduct,
   PUT as _editPrivateCloudProduct,
-  DELETE as _deletePrivateCloudProduct,
 } from '@/app/api/private-cloud/products/[licencePlate]/route';
 import { POST as _downloadPrivateCloudProducts } from '@/app/api/private-cloud/products/download/route';
 import {
@@ -69,10 +69,15 @@ export async function editPrivateCloudProduct(licencePlate: string, data: Privat
   return result;
 }
 
-export async function deletePrivateCloudProduct(licencePlate: string) {
-  const result = await productCollectionRoute.delete(_deletePrivateCloudProduct, '/{{licencePlate}}', {
-    pathParams: { licencePlate },
-  });
+export async function deletePrivateCloudProduct(licencePlate: string, requestComment: string) {
+  const result = await productCollectionRoute.post(
+    _archivePrivateCloudProduct,
+    '/{{licencePlate}}/archive',
+    { requestComment },
+    {
+      pathParams: { licencePlate },
+    },
+  );
   return result;
 }
 
