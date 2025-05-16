@@ -7,6 +7,7 @@ import PrivateCloudLayout from '@/emails/_components/layout/PrivateCloudLayout';
 import LinkButton from '@/emails/_components/LinkButton';
 import ProductDetails from '@/emails/_components/ProductDetails';
 import { PrivateCloudRequestDetailDecorated } from '@/types/private-cloud';
+
 interface EmailProp {
   request: PrivateCloudRequestDetailDecorated;
 }

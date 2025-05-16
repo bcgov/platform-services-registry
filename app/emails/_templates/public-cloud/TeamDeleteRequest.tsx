@@ -6,6 +6,7 @@ import LinkButton from '@/emails/_components/LinkButton';
 import ProductDetails from '@/emails/_components/ProductDetails';
 import ProviderDetails from '@/emails/_components/ProviderDetails';
 import { PublicCloudRequestDetailDecorated } from '@/types/public-cloud';
+
 interface EmailProp {
   request: PublicCloudRequestDetailDecorated;
   requester: string;
