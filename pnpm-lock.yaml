@@ -16,7 +16,7 @@ importers:
         version: 22.0.1(@babel/core@7.26.7)(cypress@13.17.0)(typescript@5.8.3)
       '@bahmutov/cypress-esbuild-preprocessor':
         specifier: ^2.2.0
-        version: 2.2.4(esbuild@0.23.1)
+        version: 2.2.5(esbuild@0.23.1)
       '@commitlint/cli':
         specifier: ^19.5.0
         version: 19.8.1(@types/node@22.15.17)(typescript@5.8.3)
@@ -28,7 +28,7 @@ importers:
         version: 19.8.1
       '@eslint/js':
         specifier: ^9.19.0
-        version: 9.26.0
+        version: 9.27.0
       '@release-it/bumper':
         specifier: ^7.0.0
         version: 7.0.5(release-it@19.0.2(@types/node@22.15.17))
@@ -191,8 +191,8 @@ packages:
     peerDependencies:
       cypress: ^11.0.0 || ^12.0.0 || ^13.0.0 || ^14.0.0
 
-  '@bahmutov/cypress-esbuild-preprocessor@2.2.4':
-    resolution: {integrity: sha512-t5xOKK+a6PlsxgRBtZDzayUcPJGDLKJt1pwKK/Y8szuDPPF+DbEsrqL8fbKgE1+koPvOVaYMX4ggwQwqfk99hA==}
+  '@bahmutov/cypress-esbuild-preprocessor@2.2.5':
+    resolution: {integrity: sha512-T8jugcaKdK3G470eWTo9fxeLXupnlTHLdWrjcfWuFM9spkHrASkiG20IpmAKiSPUjeXU0+A1EDssD48XMMxaKg==}
     peerDependencies:
       esbuild: '>=0.17.0'
 
@@ -554,6 +554,10 @@ packages:
 
   '@eslint/js@9.26.0':
     resolution: {integrity: sha512-I9XlJawFdSMvWjDt6wksMCrgns5ggLNfFwFvnShsleWruvXM514Qxk8V246efTw+eo9JABvVz+u3q2RiAowKxQ==}
+    engines: {node: ^18.18.0 || ^20.9.0 || >=21.1.0}
+
+  '@eslint/js@9.27.0':
+    resolution: {integrity: sha512-G5JD9Tu5HJEu4z2Uo4aHY2sLV64B7CDMXxFzqzjl3NKd6RVzSXNoE80jk7Y0lJkTTkjiIhBAqmlYwjuBY3tvpA==}
     engines: {node: ^18.18.0 || ^20.9.0 || >=21.1.0}
 
   '@eslint/object-schema@2.1.6':
@@ -1229,8 +1233,8 @@ packages:
     resolution: {integrity: sha512-Gmy6FhYlCY7uOElZUSbxo2UCDH8owEk996gkbrpsgGtrJLM3J7jGxl9Ic7Qwwj4ivOE5AWZWRMecDdF7hqGjFA==}
     engines: {node: '>=10'}
 
-  caniuse-lite@1.0.30001717:
-    resolution: {integrity: sha512-auPpttCq6BDEG8ZAuHJIplGw6GODhjw+/11e7IjpnYCxZcW/ONgPs0KVBJ0d1bY3e2+7PRe5RCLyP+PfwVgkYw==}
+  caniuse-lite@1.0.30001718:
+    resolution: {integrity: sha512-AflseV1ahcSunK53NfEs9gFWgOEmzr0f+kaMFA4xiLZlr9Hzt7HxcSpIFcnNCUkz6R6dWKa54rUz3HUmI3nVcw==}
 
   capital-case@1.0.4:
     resolution: {integrity: sha512-ds37W8CytHgwnhGGTi88pcPyR15qoNkOpYwmMMfnWqqWgESapLqvDx6huFjQ5vqWSn2Z06173XNA7LtMOeUh1A==}
@@ -1569,6 +1573,15 @@ packages:
       supports-color:
         optional: true
 
+  debug@4.4.1:
+    resolution: {integrity: sha512-KcKCqiftBJcZr++7ykoDIEwSa3XWowTfNPo92BYxjXiyYEVrUQh2aLyhxBCwww+heortUFxEJYcRzosstTEBYQ==}
+    engines: {node: '>=6.0'}
+    peerDependencies:
+      supports-color: '*'
+    peerDependenciesMeta:
+      supports-color:
+        optional: true
+
   decamelize@4.0.0:
     resolution: {integrity: sha512-9iE1PgSik9HeIIw2JO94IidnE3eBoQrFJ3w7sFuzSX4DpmZ3v5sZpUiV5Swcf6mQEF+Y0ru8Neo+p+nyh2J+hQ==}
     engines: {node: '>=10'}
@@ -1722,8 +1735,8 @@ packages:
   ee-first@1.1.1:
     resolution: {integrity: sha512-WMwm9LhRUo+WUaRN+vRuETqG89IgZphVSNkdFgeb6sS/E4OrDIN7t48CAewSHXc6C8lefD8KKfr5vY61brQlow==}
 
-  electron-to-chromium@1.5.152:
-    resolution: {integrity: sha512-xBOfg/EBaIlVsHipHl2VdTPJRSvErNUaqW8ejTq5OlOlIYx1wOllCHsAvAIrr55jD1IYEfdR86miUEt8H5IeJg==}
+  electron-to-chromium@1.5.155:
+    resolution: {integrity: sha512-ps5KcGGmwL8VaeJlvlDlu4fORQpv3+GIcF5I3f9tUKUlJ/wsysh6HU8P5L1XWRYeXfA0oJd4PyM8ds8zTFf6Ng==}
 
   emoji-regex@10.4.0:
     resolution: {integrity: sha512-EC+0oUMY1Rqm4O6LLrgjtYDvcVYTy7chDnM4Q7030tP4Kwj3u/pR6gP9ygnp2CJMK5Gq+9Q2oqmrFJAz01DXjw==}
@@ -4035,7 +4048,7 @@ snapshots:
       '@babel/traverse': 7.27.1
       '@babel/types': 7.27.1
       convert-source-map: 2.0.0
-      debug: 4.4.0(supports-color@8.1.1)
+      debug: 4.4.1
       gensync: 1.0.0-beta.2
       json5: 2.2.3
       semver: 6.3.1
@@ -4117,7 +4130,7 @@ snapshots:
       '@babel/parser': 7.27.2
       '@babel/template': 7.27.2
       '@babel/types': 7.27.1
-      debug: 4.4.0(supports-color@8.1.1)
+      debug: 4.4.1
       globals: 11.12.0
     transitivePeerDependencies:
       - supports-color
@@ -4163,9 +4176,9 @@ snapshots:
       - supports-color
       - typescript
 
-  '@bahmutov/cypress-esbuild-preprocessor@2.2.4(esbuild@0.23.1)':
+  '@bahmutov/cypress-esbuild-preprocessor@2.2.5(esbuild@0.23.1)':
     dependencies:
-      debug: 4.4.0(supports-color@8.1.1)
+      debug: 4.4.1
       esbuild: 0.23.1
     transitivePeerDependencies:
       - supports-color
@@ -4302,7 +4315,7 @@ snapshots:
       '@cucumber/ci-environment': 10.0.1
       '@cucumber/cucumber-expressions': 18.0.1
       '@cucumber/gherkin': 30.0.4
-      '@cucumber/gherkin-streams': 5.0.1(@cucumber/gherkin@30.0.4)(@cucumber/message-streams@4.0.1(@cucumber/messages@27.2.0))(@cucumber/messages@27.0.2)
+      '@cucumber/gherkin-streams': 5.0.1(@cucumber/gherkin@30.0.4)(@cucumber/message-streams@4.0.1(@cucumber/messages@27.0.2))(@cucumber/messages@27.0.2)
       '@cucumber/gherkin-utils': 9.0.0
       '@cucumber/html-formatter': 21.7.0(@cucumber/messages@27.0.2)
       '@cucumber/junit-xml-formatter': 0.7.1(@cucumber/messages@27.0.2)
@@ -4341,7 +4354,7 @@ snapshots:
       yaml: 2.7.0
       yup: 1.2.0
 
-  '@cucumber/gherkin-streams@5.0.1(@cucumber/gherkin@30.0.4)(@cucumber/message-streams@4.0.1(@cucumber/messages@27.2.0))(@cucumber/messages@27.0.2)':
+  '@cucumber/gherkin-streams@5.0.1(@cucumber/gherkin@30.0.4)(@cucumber/message-streams@4.0.1(@cucumber/messages@27.0.2))(@cucumber/messages@27.0.2)':
     dependencies:
       '@cucumber/gherkin': 30.0.4
       '@cucumber/message-streams': 4.0.1(@cucumber/messages@27.0.2)
@@ -4586,6 +4599,8 @@ snapshots:
       - supports-color
 
   '@eslint/js@9.26.0': {}
+
+  '@eslint/js@9.27.0': {}
 
   '@eslint/object-schema@2.1.6': {}
 
@@ -4958,7 +4973,7 @@ snapshots:
       '@typescript-eslint/types': 8.32.1
       '@typescript-eslint/typescript-estree': 8.32.1(typescript@5.8.3)
       '@typescript-eslint/visitor-keys': 8.32.1
-      debug: 4.4.0(supports-color@8.1.1)
+      debug: 4.4.1
       eslint: 9.26.0(jiti@2.4.2)
       typescript: 5.8.3
     transitivePeerDependencies:
@@ -4973,7 +4988,7 @@ snapshots:
     dependencies:
       '@typescript-eslint/typescript-estree': 8.32.1(typescript@5.8.3)
       '@typescript-eslint/utils': 8.32.1(eslint@9.26.0(jiti@2.4.2))(typescript@5.8.3)
-      debug: 4.4.0(supports-color@8.1.1)
+      debug: 4.4.1
       eslint: 9.26.0(jiti@2.4.2)
       ts-api-utils: 2.1.0(typescript@5.8.3)
       typescript: 5.8.3
@@ -5002,7 +5017,7 @@ snapshots:
     dependencies:
       '@typescript-eslint/types': 8.32.1
       '@typescript-eslint/visitor-keys': 8.32.1
-      debug: 4.4.0(supports-color@8.1.1)
+      debug: 4.4.1
       fast-glob: 3.3.3
       is-glob: 4.0.3
       minimatch: 9.0.5
@@ -5249,8 +5264,8 @@ snapshots:
 
   browserslist@4.24.5:
     dependencies:
-      caniuse-lite: 1.0.30001717
-      electron-to-chromium: 1.5.152
+      caniuse-lite: 1.0.30001718
+      electron-to-chromium: 1.5.155
       node-releases: 2.0.19
       update-browserslist-db: 1.1.3(browserslist@4.24.5)
 
@@ -5312,7 +5327,7 @@ snapshots:
 
   camelcase@6.3.0: {}
 
-  caniuse-lite@1.0.30001717: {}
+  caniuse-lite@1.0.30001718: {}
 
   capital-case@1.0.4:
     dependencies:
@@ -5689,6 +5704,10 @@ snapshots:
     optionalDependencies:
       supports-color: 8.1.1
 
+  debug@4.4.1:
+    dependencies:
+      ms: 2.1.3
+
   decamelize@4.0.0: {}
 
   deep-equal@2.2.3:
@@ -5872,7 +5891,7 @@ snapshots:
 
   ee-first@1.1.1: {}
 
-  electron-to-chromium@1.5.152: {}
+  electron-to-chromium@1.5.155: {}
 
   emoji-regex@10.4.0: {}
 
@@ -6425,7 +6444,7 @@ snapshots:
     dependencies:
       basic-ftp: 5.0.5
       data-uri-to-buffer: 6.0.2
-      debug: 4.4.0(supports-color@8.1.1)
+      debug: 4.4.1
     transitivePeerDependencies:
       - supports-color
 
@@ -6591,7 +6610,7 @@ snapshots:
   http-proxy-agent@7.0.2:
     dependencies:
       agent-base: 7.1.3
-      debug: 4.4.0(supports-color@8.1.1)
+      debug: 4.4.1
     transitivePeerDependencies:
       - supports-color
 
@@ -6604,7 +6623,7 @@ snapshots:
   https-proxy-agent@7.0.6:
     dependencies:
       agent-base: 7.1.3
-      debug: 4.4.0(supports-color@8.1.1)
+      debug: 4.4.1
     transitivePeerDependencies:
       - supports-color
 
@@ -7271,7 +7290,7 @@ snapshots:
     dependencies:
       '@tootallnate/quickjs-emscripten': 0.23.0
       agent-base: 7.1.3
-      debug: 4.4.0(supports-color@8.1.1)
+      debug: 4.4.1
       get-uri: 6.0.4
       http-proxy-agent: 7.0.2
       https-proxy-agent: 7.0.6
@@ -7440,7 +7459,7 @@ snapshots:
   proxy-agent@6.5.0:
     dependencies:
       agent-base: 7.1.3
-      debug: 4.4.0(supports-color@8.1.1)
+      debug: 4.4.1
       http-proxy-agent: 7.0.2
       https-proxy-agent: 7.0.6
       lru-cache: 7.18.3
@@ -7788,7 +7807,7 @@ snapshots:
   socks-proxy-agent@8.0.5:
     dependencies:
       agent-base: 7.1.3
-      debug: 4.4.0(supports-color@8.1.1)
+      debug: 4.4.1
       socks: 2.8.4
     transitivePeerDependencies:
       - supports-color
