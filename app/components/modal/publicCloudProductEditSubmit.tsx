@@ -15,7 +15,7 @@ import { createModal } from '@/core/modal';
 import { comparePublicProductData, PublicProductChange } from '@/helpers/product-change';
 import { editPublicCloudProduct } from '@/services/backend/public-cloud/products';
 import { usePublicProductState } from '@/states/global';
-import { commentSchema } from '@/validation-schemas';
+import { optionalCommentSchema } from '@/validation-schemas';
 import { success } from '../notification';
 
 interface ModalProps {
@@ -39,7 +39,7 @@ export const openPublicCloudProductEditSubmitModal = createModal<ModalProps, Mod
     const methods = useForm({
       resolver: zodResolver(
         z.object({
-          requestComment: commentSchema,
+          requestComment: optionalCommentSchema,
         }),
       ),
       defaultValues: {

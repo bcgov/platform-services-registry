@@ -11,7 +11,7 @@ import {
   getLastClosedPublicCloudRequest,
   tasks,
 } from '@/services/db';
-import { CommentSchemaType } from '@/validation-schemas/shared';
+import { Comment } from '@/validation-schemas/shared';
 import { deletePathParamSchema } from '../[licencePlate]/schema';
 
 export default async function deleteOp({
@@ -20,7 +20,7 @@ export default async function deleteOp({
   pathParams,
 }: {
   session: Session;
-  requestComment: CommentSchemaType;
+  requestComment: Comment;
   pathParams: TypeOf<typeof deletePathParamSchema>;
 }) {
   const { licencePlate } = pathParams;

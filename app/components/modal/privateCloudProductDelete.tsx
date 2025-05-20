@@ -6,7 +6,6 @@ import { IconExclamationCircle, IconCircleCheck } from '@tabler/icons-react';
 import { useQuery, useMutation } from '@tanstack/react-query';
 import { FormProvider, useForm } from 'react-hook-form';
 import { z } from 'zod';
-import RequestComments from '@/app/private-cloud/products/(product)/[licencePlate]/comments/RequestComments';
 import HookFormTextInput from '@/components/generic/input/HookFormTextInput';
 import { privateCloudTeamEmail } from '@/constants';
 import { createModal } from '@/core/modal';
@@ -16,7 +15,7 @@ import {
 } from '@/services/backend/private-cloud/products';
 import { PrivateCloudProductDetailDecorated } from '@/types/private-cloud';
 import { cn } from '@/utils/js';
-import { commentSchema, CommentSchemaType } from '@/validation-schemas/shared';
+import { commentSchema, Comment } from '@/validation-schemas/shared';
 import MailLink from '../generic/button/MailLink';
 import HookFormTextarea from '../generic/input/HookFormTextarea';
 import { openNotificationModal } from './notification';
@@ -40,9 +39,7 @@ export const openPrivateCloudProductDeleteModal = createModal<ModalProps, ModalS
         z.object({
           licencePlate: z.literal(product.licencePlate),
           email: z.literal(product.projectOwner.email),
-          requestComment: commentSchema.refine((comment) => comment && comment.trim().length > 0, {
-            message: 'Invalid input, expected a non-empty reason for deletion',
-          }),
+          requestComment: commentSchema,
         }),
       ),
       defaultValues: {
@@ -58,8 +55,7 @@ export const openPrivateCloudProductDeleteModal = createModal<ModalProps, ModalS
     });
 
     const { mutateAsync: deleteProduct, isPending: isDeletingProduct } = useMutation({
-      mutationFn: (requestComment: CommentSchemaType) =>
-        deletePrivateCloudProduct(product.licencePlate, requestComment),
+      mutationFn: (requestComment: Comment) => deletePrivateCloudProduct(product.licencePlate, requestComment),
     });
 
     const { handleSubmit } = methods;

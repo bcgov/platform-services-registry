@@ -3,10 +3,10 @@ import { publicCloudProductSorts } from '@/constants';
 import { AccountCoding, Prisma } from '@/prisma/client';
 import {
   PublicCloudRequestSimpleDecorated,
-  PublicCloudProductDetailDecorated,
   PublicCloudProductSearch,
   PublicCloudRequestDetail,
   PublicCloudBillingSimpleDecorated,
+  PublicCloudProductDetailDecorated,
 } from '@/types/public-cloud';
 import { downloadFile } from '@/utils/browser';
 import {
@@ -14,7 +14,7 @@ import {
   PublicCloudProductSearchBody,
   PublicCloudProductSearchNoPaginationBody,
 } from '@/validation-schemas/public-cloud';
-import { CommentSchemaType } from '@/validation-schemas/shared';
+import { Comment } from '@/validation-schemas/shared';
 import { instance as parentInstance } from './instance';
 
 export const instance = axios.create({
@@ -39,11 +39,11 @@ function prepareSearchPayload(data: PublicCloudProductSearchBody) {
 
 export async function searchPublicCloudProducts(data: PublicCloudProductSearchBody) {
   const reqData = prepareSearchPayload(data);
-  const result = await instance.post(`/search`, reqData).then((res) => {
+  const result = await instance.post<PublicCloudProductSearch>(`/search`, reqData).then((res) => {
     return res.data;
   });
 
-  return result as PublicCloudProductSearch;
+  return result;
 }
 
 export async function downloadPublicCloudProducts(data: PublicCloudProductSearchNoPaginationBody) {
@@ -72,24 +72,28 @@ export async function getPublicCloudProduct(licencePlate: string) {
 }
 
 export async function createPublicCloudProduct(data: any) {
-  const result = await instance.post('/', data).then((res) => res.data);
-  return result as PublicCloudRequestDetail;
+  const result = await instance.post<PublicCloudRequestDetail>('/', data).then((res) => res.data);
+  return result;
 }
 
 export async function editPublicCloudProduct(licencePlate: string, data: any) {
-  const result = await instance.put(`/${licencePlate}`, data).then((res) => res.data);
-  return result as PublicCloudRequestDetail;
+  const result = await instance.put<PublicCloudRequestDetail>(`/${licencePlate}`, data).then((res) => res.data);
+  return result;
 }
 
-export async function deletePublicCloudProduct(licencePlate: string, requestComment: CommentSchemaType) {
-  const result = await instance.post(`/${licencePlate}/archive`, { requestComment }).then((res) => res.data);
-  return result as PublicCloudRequestDetail;
+export async function deletePublicCloudProduct(licencePlate: string, requestComment: Comment) {
+  const result = await instance
+    .post<PublicCloudRequestDetail>(`/${licencePlate}/archive`, { requestComment })
+    .then((res) => res.data);
+  return result;
 }
 
 export async function getPublicCloudProductRequests(licencePlate: string, active = false) {
-  const result = await instance.get(`/${licencePlate}/requests?active=${active}`).then((res) => res.data);
+  const result = await instance
+    .get<PublicCloudRequestSimpleDecorated[]>(`/${licencePlate}/requests?active=${active}`)
+    .then((res) => res.data);
 
-  return result as PublicCloudRequestSimpleDecorated[];
+  return result;
 }
 
 export async function getPublicCloudProductBilling(licencePlate: string, billingId: string) {
@@ -103,8 +107,10 @@ export async function signPublicCloudProductBilling(
   licencePlate: string,
   data: { billingId: string; accountCoding: AccountCoding; confirmed: boolean },
 ) {
-  const result = await instance.post(`/${licencePlate}/billings/${data.billingId}/sign`, data).then((res) => res.data);
-  return result as true;
+  const result = await instance
+    .post<true>(`/${licencePlate}/billings/${data.billingId}/sign`, data)
+    .then((res) => res.data);
+  return result;
 }
 
 export async function reviewPublicCloudProductBilling(
@@ -112,9 +118,9 @@ export async function reviewPublicCloudProductBilling(
   data: { billingId: string; decision: string },
 ) {
   const result = await instance
-    .post(`/${licencePlate}/billings/${data.billingId}/review`, data)
+    .post<true>(`/${licencePlate}/billings/${data.billingId}/review`, data)
     .then((res) => res.data);
-  return result as true;
+  return result;
 }
 
 export async function updateAccountCoding(licencePlate: string, data: PublicCloudBillingBody) {

@@ -13,7 +13,7 @@ import { publicCloudTeamEmail } from '@/constants';
 import { createModal } from '@/core/modal';
 import { deletePublicCloudProduct } from '@/services/backend/public-cloud/products';
 import { PublicCloudProductDetailDecorated } from '@/types/public-cloud';
-import { commentSchema, CommentSchemaType } from '@/validation-schemas/shared';
+import { commentSchema, Comment } from '@/validation-schemas/shared';
 import HookFormTextarea from '../generic/input/HookFormTextarea';
 import { openNotificationModal } from './notification';
 
@@ -36,9 +36,7 @@ export const openPublicCloudProductDeleteModal = createModal<ModalProps, ModalSt
         z.object({
           licencePlate: z.literal(product.licencePlate),
           email: z.literal(product.projectOwner.email),
-          requestComment: commentSchema.refine((comment) => comment && comment.trim().length > 0, {
-            message: 'Invalid input, expected a non-empty reason for deletion',
-          }),
+          requestComment: commentSchema,
         }),
       ),
       defaultValues: {
@@ -54,7 +52,7 @@ export const openPublicCloudProductDeleteModal = createModal<ModalProps, ModalSt
       isError: isDeleteProductError,
       error: deleteProductError,
     } = useMutation({
-      mutationFn: (requestComment: CommentSchemaType) => deletePublicCloudProduct(product.licencePlate, requestComment),
+      mutationFn: (requestComment: Comment) => deletePublicCloudProduct(product.licencePlate, requestComment),
     });
 
     const { handleSubmit, register } = methods;

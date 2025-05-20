@@ -12,7 +12,7 @@ import {
 } from '@/prisma/client';
 import { processEnumString, processBoolean } from '@/utils/js';
 import { RequestDecision } from './shared';
-import { commentSchema } from './shared';
+import { optionalCommentSchema } from './shared';
 
 export const privateCloudBillingSearchBodySchema = z.object({
   yearMonth: z.string().length(8, 'Date must be in YYYY-MMM'),
@@ -91,7 +91,7 @@ export const _privateCloudCreateRequestBodySchema = z.object({
         message: 'Invalid phone number format. Expected format: +1 (xxx) xxx-xxxx',
       },
     ),
-  requestComment: commentSchema,
+  requestComment: optionalCommentSchema,
 });
 
 export const privateCloudProductWebhookBodySchema = z.object({
@@ -132,7 +132,7 @@ export const privateCloudCreateRequestBodySchema = _privateCloudCreateRequestBod
 
 const _privateCloudEditRequestBodySchema = _privateCloudCreateRequestBodySchema.merge(
   z.object({
-    requestComment: commentSchema,
+    requestComment: optionalCommentSchema,
     members: privateCloudProductMembers,
   }),
 );
@@ -161,7 +161,7 @@ export const privateCloudRequestDecisionBodySchema = _privateCloudEditRequestBod
   z.object({
     type: z.nativeEnum(RequestType),
     decision: z.nativeEnum(RequestDecision),
-    decisionComment: commentSchema,
+    decisionComment: optionalCommentSchema,
   }),
 );
 

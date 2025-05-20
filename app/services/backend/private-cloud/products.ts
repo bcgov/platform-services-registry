@@ -16,7 +16,7 @@ import {
   PrivateCloudProductSearchBody,
   PrivateCloudProductSearchNoPaginationBody,
 } from '@/validation-schemas/private-cloud';
-import { CommentSchemaType } from '@/validation-schemas/shared';
+import { Comment } from '@/validation-schemas/shared';
 import { instance as parentInstance } from './instance';
 
 export const instance = axios.create({
@@ -41,11 +41,11 @@ function prepareSearchPayload(data: PrivateCloudProductSearchBody) {
 
 export async function searchPrivateCloudProducts(data: PrivateCloudProductSearchBody) {
   const reqData = prepareSearchPayload(data);
-  const result = await instance.post('/search', reqData).then((res) => {
+  const result = await instance.post<PrivateCloudProductSearch>('/search', reqData).then((res) => {
     return res.data;
   });
 
-  return result as PrivateCloudProductSearch;
+  return result;
 }
 
 export async function downloadPrivateCloudProducts(data: PrivateCloudProductSearchNoPaginationBody) {
@@ -61,8 +61,8 @@ export async function downloadPrivateCloudProducts(data: PrivateCloudProductSear
 }
 
 export async function getPrivateCloudProduct(licencePlate: string) {
-  const result = await instance.get(`/${licencePlate}`).then((res) => res.data);
-  return result as PrivateCloudProductDetailDecorated;
+  const result = await instance.get<PrivateCloudProductDetailDecorated>(`/${licencePlate}`).then((res) => res.data);
+  return result;
 }
 
 export async function createPrivateCloudProduct(data: any) {
@@ -77,7 +77,7 @@ export async function editPrivateCloudProduct(licencePlate: string, data: any) {
   return result;
 }
 
-export async function deletePrivateCloudProduct(licencePlate: string, requestComment: CommentSchemaType) {
+export async function deletePrivateCloudProduct(licencePlate: string, requestComment: Comment) {
   const result = await instance.post(`/${licencePlate}/archive`, { requestComment }).then((res) => res.data);
   return result;
 }
@@ -88,18 +88,20 @@ export async function checkPrivateCloudProductDeletionAvailability(licencePlate:
 }
 
 export async function reprovisionPrivateCloudProduct(licencePlate: string) {
-  const result = await instance.get(`/${licencePlate}/reprovision`).then((res) => res.data);
-  return result as true;
+  const result = await instance.get<true>(`/${licencePlate}/reprovision`).then((res) => res.data);
+  return result;
 }
 
 export async function getPrivateCloudProductRequests(licencePlate: string, active = false) {
-  const result = await instance.get(`/${licencePlate}/requests?active=${active}`).then((res) => res.data);
-  return result as PrivateCloudRequestSimpleDecorated[];
+  const result = await instance
+    .get<PrivateCloudRequestSimpleDecorated[]>(`/${licencePlate}/requests?active=${active}`)
+    .then((res) => res.data);
+  return result;
 }
 
 export async function getPrivateCloudComment(licencePlate: string, commentId: string) {
-  const response = await instance.get(`/${licencePlate}/comments/${commentId}`);
-  return response.data as PrivateCloudComment;
+  const response = await instance.get<PrivateCloudComment>(`/${licencePlate}/comments/${commentId}`);
+  return response.data;
 }
 
 export async function getAllPrivateCloudComments(licencePlate: string, requestId?: string) {
@@ -119,19 +121,19 @@ export async function createPrivateCloudComment(
   requestId?: string,
 ) {
   const data = { text, userId, projectId, requestId };
-  const response = await instance.post(`/${licencePlate}/comments`, data);
-  return response.data as PrivateCloudComment;
+  const response = await instance.post<PrivateCloudComment>(`/${licencePlate}/comments`, data);
+  return response.data;
 }
 
 export async function updatePrivateCloudComment(licencePlate: string, commentId: string, text: string) {
   const data = { text };
-  const response = await instance.put(`/${licencePlate}/comments/${commentId}`, data);
-  return response.data as PrivateCloudComment;
+  const response = await instance.put<PrivateCloudComment>(`/${licencePlate}/comments/${commentId}`, data);
+  return response.data;
 }
 
 export async function deletePrivateCloudComment(licencePlate: string, commentId: string) {
-  const response = await instance.delete(`/${licencePlate}/comments/${commentId}`);
-  return response.data as { success: boolean };
+  const response = await instance.delete<{ success: boolean }>(`/${licencePlate}/comments/${commentId}`);
+  return response.data;
 }
 
 export async function getPrivateCloudCommentCount(licencePlate: string, requestId?: string) {

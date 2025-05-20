@@ -8,9 +8,12 @@ export const RequestDecision = {
 
 export type RequestDecision = (typeof RequestDecision)[keyof typeof RequestDecision];
 
-export const commentSchema = z.string().max(1000).nullable().default(null).optional();
-
-export type CommentSchemaType = z.infer<typeof commentSchema>;
+export const commentSchema = z
+  .string()
+  .trim()
+  .min(1, { message: 'Invalid input, expected a non-empty comment' })
+  .max(1000);
+export const optionalCommentSchema = commentSchema.nullable().default(null).optional();
 
 export const userSchema = z.object({
   firstName: z.string().min(1, 'First name is required').max(50, 'First name must be 50 characters or less'),
@@ -33,3 +36,4 @@ export const deleteRequestDecisionBodySchema = z.object({
 });
 
 export type User = z.infer<typeof userSchema>;
+export type Comment = z.infer<typeof commentSchema>;
