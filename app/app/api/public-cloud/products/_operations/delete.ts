@@ -11,13 +11,16 @@ import {
   getLastClosedPublicCloudRequest,
   tasks,
 } from '@/services/db';
+import { Comment } from '@/validation-schemas/shared';
 import { deletePathParamSchema } from '../[licencePlate]/schema';
 
 export default async function deleteOp({
   session,
+  requestComment,
   pathParams,
 }: {
   session: Session;
+  requestComment: Comment;
   pathParams: TypeOf<typeof deletePathParamSchema>;
 }) {
   const { licencePlate } = pathParams;
@@ -45,6 +48,7 @@ export default async function deleteOp({
           active: true,
           createdBy: { connect: { email: session.user.email } },
           licencePlate: product.licencePlate,
+          requestComment,
           originalData: { connect: { id: previousRequest?.decisionDataId } },
           requestData: { create: productData },
           decisionData: { create: productData },

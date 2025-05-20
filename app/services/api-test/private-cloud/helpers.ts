@@ -136,7 +136,7 @@ export async function deletePrivateCloudProduct() {
   if (response.status !== 200) return null;
 
   await mockSessionByRole(GlobalRole.PrivateAdmin);
-  response = await deletePrivateCloudProductTest(decisionData.licencePlate);
+  response = await deletePrivateCloudProductTest(decisionData.licencePlate, 'Test delete comment');
 
   if (response.status !== 200) return null;
   resData = await response.json();

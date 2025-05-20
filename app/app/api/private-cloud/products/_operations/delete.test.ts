@@ -50,7 +50,7 @@ describe('Delete Private Cloud Product - Permissions', () => {
   it('should successfully submit a delete request for PO', async () => {
     await mockSessionByEmail(productData.main.projectOwner.email);
 
-    const response = await deletePrivateCloudProduct(requests.create.licencePlate);
+    const response = await deletePrivateCloudProduct(requests.create.licencePlate, 'Test delete comment');
     expect(response.status).toBe(200);
 
     requests.delete = await response.json();
@@ -60,7 +60,7 @@ describe('Delete Private Cloud Product - Permissions', () => {
   it('should fail to submit the same request for PO', async () => {
     await mockSessionByEmail(productData.main.projectOwner.email);
 
-    const response = await deletePrivateCloudProduct(requests.delete.licencePlate);
+    const response = await deletePrivateCloudProduct(requests.delete.licencePlate, 'Test delete comment');
     expect(response.status).toBe(401);
   });
 
@@ -79,7 +79,7 @@ describe('Delete Private Cloud Product - Permissions', () => {
   it('should successfully submit a delete request for admin', async () => {
     await mockSessionByRole(GlobalRole.Admin);
 
-    const response = await deletePrivateCloudProduct(requests.delete.licencePlate);
+    const response = await deletePrivateCloudProduct(requests.delete.licencePlate, 'Test delete comment');
     expect(response.status).toBe(200);
 
     requests.delete = await response.json();
@@ -89,7 +89,7 @@ describe('Delete Private Cloud Product - Permissions', () => {
   it('should fail to submit the same request for admin', async () => {
     await mockSessionByRole(GlobalRole.Admin);
 
-    const response = await deletePrivateCloudProduct(requests.delete.licencePlate);
+    const response = await deletePrivateCloudProduct(requests.delete.licencePlate, 'Test delete comment');
     expect(response.status).toBe(401);
   });
 
@@ -114,7 +114,7 @@ describe('Delete Private Cloud Product - Permissions', () => {
 
     await mockSessionByEmail(otherUsers[0].email);
 
-    const response = await deletePrivateCloudProduct(requests.delete.licencePlate);
+    const response = await deletePrivateCloudProduct(requests.delete.licencePlate, 'Test delete comment');
     expect(response.status).toBe(401);
   });
 

@@ -187,7 +187,7 @@ describe('Review Private Cloud Delete Request - Permissions', () => {
   it('should successfully submit a delete request for TL1', async () => {
     await mockSessionByEmail(productData.main.primaryTechnicalLead.email);
 
-    const response = await deletePrivateCloudProduct(requests.main.licencePlate);
+    const response = await deletePrivateCloudProduct(requests.main.licencePlate, 'Test delete comment');
     const responseData = await response.json();
     expect(response.status).toBe(200);
 
