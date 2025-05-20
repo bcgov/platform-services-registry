@@ -134,11 +134,13 @@ async function getCostDetailsForRange(licencePlate: string, startDate: Date, end
     };
 
     const envs = quota.decisionData.resourceRequests;
+
     for (const env of namespaceKeys) {
       const usage = envs[env];
       if (usage) {
-        environments[env].cpu.value = usage.cpu || 0;
-        environments[env].storage.value = usage.storage || 0;
+        const golddrMultiplier = quota.decisionData.golddrEnabled ? 2 : 1;
+        environments[env].cpu.value = usage.cpu * golddrMultiplier || 0;
+        environments[env].storage.value = usage.storage * golddrMultiplier || 0;
 
         environments[env].cpu.cost = environments[env].cpu.value * cpuPricePerMinute * durationMinutes;
         environments[env].storage.cost = environments[env].storage.value * storagePricePerMinute * durationMinutes;
