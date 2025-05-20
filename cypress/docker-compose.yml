@@ -1,0 +1,83 @@
+version: '3.6'
+
+services:
+  mongo:
+    image: mongo:4.4
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: admin
+      MONGO_INITDB_ROOT_PASSWORD: pass # pragma: allowlist secret
+    volumes:
+    - mongo-data:/data/db
+    ports:
+    - 27017:27017
+
+  director:
+    image: agoldis/sorry-cypress-director:latest
+    environment:
+      DASHBOARD_URL: http://localhost:8080
+      EXECUTION_DRIVER: ../execution/mongo/driver
+      MONGODB_URI: mongodb://admin:pass@mongo:27017 # pragma: allowlist secret
+      MONGODB_DATABASE: sorry-cypress
+
+      SCREENSHOTS_DRIVER: ../screenshots/minio.driver
+      GITLAB_JOB_RETRIES: 'false'
+      # MINIO_ACCESS_KEY: 'minuser'
+      # MINIO_SECRET_KEY: 'minpassword'
+      # MINIO_ENDPOINT: 'localhost:9090'
+      # MINIO_URL: 'http://localhost:9090'
+      # MINIO_PORT: '9000'
+      # MINIO_USESSL: 'false'
+      # MINIO_BUCKET: sorry-cypress
+      PROBE_LOGGER: 'false'
+    ports:
+    - 1234:1234
+    - 9000:9000
+    - 9090:9090
+    depends_on:
+    - mongo
+
+  api:
+    image: agoldis/sorry-cypress-api:latest
+    environment:
+      MONGODB_URI: mongodb://admin:pass@mongo:27017 # pragma: allowlist secret
+      MONGODB_DATABASE: sorry-cypress
+      APOLLO_PLAYGROUND: 'false'
+    ports:
+    - 4000:4000
+    depends_on:
+    - mongo
+
+  dashboard:
+    image: agoldis/sorry-cypress-dashboard:latest
+    environment:
+      GRAPHQL_SCHEMA_URL: http://localhost:4000
+      GRAPHQL_CLIENT_CREDENTIALS: ''
+      PORT: 8080
+      CI_URL: ''
+    ports:
+    - 8080:8080
+    depends_on:
+    - mongo
+    - api
+
+  storage:
+    image: minio/minio
+    network_mode: service:director
+    environment:
+      MINIO_ROOT_USER: minuser
+      MINIO_ROOT_PASSWORD: minpassword # pragma: allowlist secret
+    volumes:
+    - minio-data:/data
+    command: minio server --console-address ":9090" /data
+
+  createbuckets:
+    image: minio/mc
+    network_mode: service:director
+    depends_on:
+    - storage
+    entrypoint: >
+      /bin/sh -c " sleep 3; /usr/bin/mc config host add myminio http://localhost:9000 minuser minpassword; /usr/bin/mc rm -r --dangerous --force myminio/sorry-cypress; /usr/bin/mc mb myminio/sorry-cypress; /usr/bin/mc anonymous set download myminio/sorry-cypress; /usr/bin/mc anonymous set public myminio/sorry-cypress; exit 0; "
+
+volumes:
+  mongo-data:
+  minio-data:
