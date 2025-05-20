@@ -24,6 +24,7 @@
     "@types/eslint-config-prettier": "^6.11.3",
     "conventional-changelog-cli": "^5.0.0",
     "cypress": "^13.13.2",
+    "cypress-cloud": "^1.13.0",
     "cypress-keycloak": "^2.0.1",
     "eslint": "^9.19.0",
     "eslint-config-prettier": "^10.0.1",
