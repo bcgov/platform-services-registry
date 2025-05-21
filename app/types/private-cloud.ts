@@ -141,6 +141,8 @@ export type PrivateCloudComment = Prisma.PrivateCloudCommentGetPayload<{
   };
 }>;
 
+export type PrivateCloudCommentWithoutUser = Omit<PrivateCloudComment, 'user'>;
+
 export type PrivateCloudProductWebhookDetail = Prisma.PrivateCloudProductWebhookGetPayload<object>;
 export type PrivateCloudProductWebhookDetailDecorated = PrivateCloudProductWebhookDetail &
   PrivateCloudProductWebhookDecorate;

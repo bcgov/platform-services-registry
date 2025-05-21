@@ -21,7 +21,12 @@ import {
 } from '@/app/api/private-cloud/products/route';
 import { POST as _searchPrivateCloudProducts } from '@/app/api/private-cloud/products/search/route';
 import { Prisma } from '@/prisma/client';
-import { PrivateCloudRequestDetailDecorated } from '@/types/private-cloud';
+import {
+  PrivateCloudCommentWithoutUser,
+  PrivateCloudProductDetailDecorated,
+  PrivateCloudRequestDetailDecorated,
+} from '@/types/private-cloud';
+import { CreateCommentBody } from '@/validation-schemas';
 import {
   PrivateCloudCreateRequestBody,
   PrivateCloudEditRequestBody,
@@ -33,24 +38,18 @@ import { createRoute, ParamData } from '../core';
 const productCollectionRoute = createRoute('/private-cloud/products');
 
 export async function createPrivateCloudProduct(
-  data: Partial<
-    PrivateCloudCreateRequestBody & {
-      projectOwner: { id: string };
-      primaryTechnicalLead: { id: string };
-      secondaryTechnicalLead: { id: string };
-    }
-  >,
+  data: Partial<PrivateCloudCreateRequestBody> & {
+    projectOwner?: { id: string };
+    primaryTechnicalLead?: { id: string };
+    secondaryTechnicalLead?: { id: string };
+  },
   paramData?: ParamData,
-): Promise<NextResponse<PrivateCloudRequestDetailDecorated>> {
+) {
   data.projectOwnerId = data.projectOwner?.id ?? undefined;
   data.primaryTechnicalLeadId = data.primaryTechnicalLead?.id ?? undefined;
   data.secondaryTechnicalLeadId = data.secondaryTechnicalLead?.id ?? undefined;
 
-  const response = await productCollectionRoute.post(_createPrivateCloudProduct, '', data);
-
-  return NextResponse.json(await response.json(), {
-    status: response.status,
-  });
+  return productCollectionRoute.post<PrivateCloudRequestDetailDecorated>(_createPrivateCloudProduct, '', data);
 }
 
 export async function listPrivateCloudProduct(data: any) {
@@ -68,15 +67,15 @@ export async function downloadPrivateCloudProducts(data: Partial<PrivateCloudPro
   return result;
 }
 
-export async function getPrivateCloudProduct(
-  licencePlate: string,
-): Promise<NextResponse<PrivateCloudRequestDetailDecorated>> {
-  const result = await productCollectionRoute.get(_getPrivateCloudProduct, '/{{licencePlate}}', {
-    pathParams: { licencePlate },
-  });
-  return NextResponse.json(await result.json(), {
-    status: result.status,
-  });
+export async function getPrivateCloudProduct(licencePlate: string) {
+  const result = await productCollectionRoute.get<PrivateCloudProductDetailDecorated>(
+    _getPrivateCloudProduct,
+    '/{{licencePlate}}',
+    {
+      pathParams: { licencePlate },
+    },
+  );
+  return result;
 }
 
 export async function editPrivateCloudProduct(licencePlate: string, data: PrivateCloudEditRequestBody) {
@@ -107,28 +106,20 @@ export async function listPrivateCloudProductRequests(licencePlate: string, acti
 }
 
 // Private Cloud Comments
-export async function createPrivateCloudComment(
-  licencePlate: string,
-  data: Partial<Pick<Prisma.PrivateCloudCommentGetPayload<{}>, 'text' | 'projectId' | 'requestId'>>,
-) {
+export async function createPrivateCloudComment(licencePlate: string, data: CreateCommentBody) {
   const result = await productCollectionRoute.post(_createPrivateCloudComment, '/{{licencePlate}}/comments', data, {
     pathParams: { licencePlate },
   });
   return result;
 }
 
-export async function getAllPrivateCloudComments(
-  licencePlate: string,
-  requestId?: string,
-): Promise<NextResponse<Prisma.PrivateCloudCommentGetPayload<{}>[]>> {
+export async function getAllPrivateCloudComments(licencePlate: string, requestId?: string) {
   const queryParams = requestId ? { requestId } : {};
   const result = await productCollectionRoute.get(_listPrivateCloudComments, '/{{licencePlate}}/comments', {
     pathParams: { licencePlate },
     queryParams,
   });
-  return NextResponse.json(await result.json(), {
-    status: result.status,
-  });
+  return result;
 }
 
 export async function getPrivateCloudComment(licencePlate: string, commentId: string) {

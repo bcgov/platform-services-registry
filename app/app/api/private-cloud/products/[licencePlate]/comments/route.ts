@@ -2,19 +2,9 @@ import { z } from 'zod';
 import { GlobalRole, GlobalPermissions } from '@/constants';
 import createApiHandler from '@/core/api-handler';
 import { CreatedResponse, OkResponse } from '@/core/responses';
+import { createCommentBodySchema } from '@/validation-schemas/shared';
 import { createOp } from './_operations/create';
 import { listOp } from './_operations/list';
-
-const createCommentBodySchema = z
-  .object({
-    text: z.string().min(1, 'The comment text must not be empty'),
-    projectId: z.string().optional(),
-    requestId: z.string().optional(),
-  })
-  .refine((data) => data.projectId || data.requestId, {
-    message: 'Either projectId or requestId must be provided',
-    path: ['projectId', 'requestId'],
-  });
 
 export const POST = createApiHandler({
   roles: [GlobalRole.Admin, GlobalRole.PrivateAdmin],

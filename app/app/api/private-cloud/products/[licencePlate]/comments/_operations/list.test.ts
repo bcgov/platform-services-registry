@@ -1,6 +1,5 @@
 import { expect } from '@jest/globals';
 import { GlobalRole } from '@/constants';
-import { getResponse } from '@/core/responses';
 import { createSamplePrivateCloudProductData } from '@/helpers/mock-resources';
 import { DecisionStatus, RequestType } from '@/prisma/client';
 import { mockSessionByEmail, mockSessionByRole } from '@/services/api-test/core';
@@ -29,7 +28,8 @@ describe('Private Cloud Comments - Permissions', () => {
     const response = await createPrivateCloudProduct(globalProductData);
     expect(response.status).toBe(200);
 
-    requests.create = await getResponse(response);
+    requests.create = await response.json();
+
     globalLicencePlate = requests.create.licencePlate;
   });
 
@@ -56,7 +56,7 @@ describe('Private Cloud Comments - Permissions', () => {
     await mockSessionByRole(GlobalRole.Admin);
     const projectResponse = await getPrivateCloudProduct(globalLicencePlate);
 
-    const projectData = await getResponse(projectResponse);
+    const projectData = await projectResponse.json();
     const activeProjectId = projectData?.id;
 
     const adminUserId = globalProductData.projectOwner.id;
@@ -92,7 +92,7 @@ describe('Private Cloud Comments - Permissions', () => {
 
     const response = await getAllPrivateCloudComments(globalLicencePlate);
 
-    const responseBody = await getResponse(response);
+    const responseBody = await response.json();
 
     expect(response.status).toBe(200);
     expect(Array.isArray(responseBody)).toBe(true);
@@ -104,7 +104,7 @@ describe('Private Cloud Comments - Permissions', () => {
 
     const response = await getAllPrivateCloudComments(globalLicencePlate);
 
-    const responseBody = await getResponse(response);
+    const responseBody = await response.json();
 
     expect(response.status).toBe(200);
     expect(Array.isArray(responseBody)).toBe(true);
@@ -131,7 +131,7 @@ describe('Private Cloud Comments - Validations', () => {
     const createResponse = await createPrivateCloudProduct(productData);
     expect(createResponse.status).toBe(200);
 
-    const createResponseBody = await getResponse(createResponse);
+    const createResponseBody = await createResponse.json();
     localLicencePlate = createResponseBody.licencePlate;
     activeProjectId = createResponseBody.id;
 
@@ -162,7 +162,7 @@ describe('Private Cloud Comments - Validations', () => {
 
     const response = await getAllPrivateCloudComments(localLicencePlate);
 
-    const responseBody = await getResponse(response);
+    const responseBody = await response.json();
 
     expect(response.status).toBe(200);
     expect(Array.isArray(responseBody)).toBe(true);

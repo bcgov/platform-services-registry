@@ -30,4 +30,16 @@ export const deleteRequestDecisionBodySchema = z.object({
   decisionComment: commentSchema,
 });
 
+export const createCommentBodySchema = z
+  .object({
+    text: z.string().min(1, 'The comment text must not be empty'),
+    projectId: z.string().optional(),
+    requestId: z.string().optional(),
+  })
+  .refine((data) => data.projectId || data.requestId, {
+    message: 'Either projectId or requestId must be provided',
+    path: ['projectId', 'requestId'],
+  });
+
 export type User = z.infer<typeof userSchema>;
+export type CreateCommentBody = z.infer<typeof createCommentBodySchema>;
