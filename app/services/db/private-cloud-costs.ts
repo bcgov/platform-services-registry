@@ -4,7 +4,7 @@ import _findIndex from 'lodash-es/findIndex';
 import _orderBy from 'lodash-es/orderBy';
 import { monthNames, namespaceKeys } from '@/constants';
 import prisma from '@/core/prisma';
-import { DecisionStatus, Prisma, RequestType } from '@/prisma/client';
+import { Cluster, DecisionStatus, Prisma, RequestType } from '@/prisma/client';
 import { CostItem } from '@/types/private-cloud';
 import {
   dateToShortDateString,
@@ -138,7 +138,10 @@ async function getCostDetailsForRange(licencePlate: string, startDate: Date, end
     for (const env of namespaceKeys) {
       const usage = envs[env];
       if (usage) {
-        const golddrMultiplier = quota.decisionData.golddrEnabled ? 2 : 1;
+        const isGoldDrEnabled =
+          quota.decisionData.cluster === Cluster.GOLD && quota.decisionData.golddrEnabled === true;
+        const golddrMultiplier = isGoldDrEnabled ? 2 : 1;
+
         environments[env].cpu.value = usage.cpu * golddrMultiplier || 0;
         environments[env].storage.value = usage.storage * golddrMultiplier || 0;
 
