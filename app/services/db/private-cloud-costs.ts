@@ -138,12 +138,11 @@ async function getCostDetailsForRange(licencePlate: string, startDate: Date, end
     for (const env of namespaceKeys) {
       const usage = envs[env];
       if (usage) {
-        const isGoldDrEnabled =
-          quota.decisionData.cluster === Cluster.GOLD && quota.decisionData.golddrEnabled === true;
-        const golddrMultiplier = isGoldDrEnabled ? 2 : 1;
+        const isGoldDrEnabled = quota.decisionData.cluster === Cluster.GOLD && quota.decisionData.golddrEnabled;
+        const resourceMultiplier = isGoldDrEnabled ? 2 : 1;
 
-        environments[env].cpu.value = usage.cpu * golddrMultiplier || 0;
-        environments[env].storage.value = usage.storage * golddrMultiplier || 0;
+        environments[env].cpu.value = usage.cpu * resourceMultiplier || 0;
+        environments[env].storage.value = usage.storage * resourceMultiplier || 0;
 
         environments[env].cpu.cost = environments[env].cpu.value * cpuPricePerMinute * durationMinutes;
         environments[env].storage.cost = environments[env].storage.value * storagePricePerMinute * durationMinutes;
