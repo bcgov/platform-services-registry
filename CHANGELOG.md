@@ -1,3 +1,19 @@
+## [0.65.0](https://github.com/bcgov/platform-services-registry/compare/v0.64.0...v0.65.0) (2025-05-21)
+
+### Features
+
+* **5319:** identify dangling namespaces in the dev environment ([92e4b8e](https://github.com/bcgov/platform-services-registry/commit/92e4b8ef6ed7a5276ca1eee9c087751ddd6cc748))
+* **5387:** add admin page for private cloud bills mgt ([e3012df](https://github.com/bcgov/platform-services-registry/commit/e3012dfc67df503dce10e2765c2dba5b61b854d0))
+* **5475:** confirm unit price update or addition for past dates ([f2690fa](https://github.com/bcgov/platform-services-registry/commit/f2690fa93f330d202ddd00984a090a7e6ea941a2))
+* **5499:** upload DB buacks to OCIO S3 bucket ([5163460](https://github.com/bcgov/platform-services-registry/commit/51634603eaf0a0e958a0210316fd732cc5ed28e1))
+* **5526:** add reason for delete field to public and private cloud deletion modal and emails ([343ee4e](https://github.com/bcgov/platform-services-registry/commit/343ee4ea4d11cd10ffe4d43296a94c2bf6792d14))
+* **5592:** disable Sysdig alerts ([4009a22](https://github.com/bcgov/platform-services-registry/commit/4009a221c5cdc3626fa65220c89d59c642185be3))
+* **5609:** add backend API endpoint for quarterly costs page ([7257be7](https://github.com/bcgov/platform-services-registry/commit/7257be742a5707dd9b5433ea1a294e532560dee3))
+* **5609:** add frontend page for quarterly costs ([0449d12](https://github.com/bcgov/platform-services-registry/commit/0449d1238c8eb05f25ca5185ae861b09e2e9d335))
+* **5637:** save Cypress dashboard data to local files ([fdb38fd](https://github.com/bcgov/platform-services-registry/commit/fdb38fd28557bb20b668092340a200a7545d72ee))
+* **5648:** add toggle for list & history views in requests tab ([b164a85](https://github.com/bcgov/platform-services-registry/commit/b164a857eadb5f7aa720fe261020b3450525efeb))
+* **5648:** consolidate private cloud product cost pages ([9e362a1](https://github.com/bcgov/platform-services-registry/commit/9e362a17987e1bb55ee95f5cb2c9858c987ae122))
+* **5673:** double CPU and storage if golddrEnabled is true on GOLD cluster ([e14f709](https://github.com/bcgov/platform-services-registry/commit/e14f7098693b08da35cfa174379b402bed1f91ff))
 ## [0.64.0](https://github.com/bcgov/platform-services-registry/compare/v0.63.0...v0.64.0) (2025-05-05)
 
 ### Features
