@@ -8,14 +8,13 @@ export const RequestDecision = {
 
 export type RequestDecision = (typeof RequestDecision)[keyof typeof RequestDecision];
 
-const baseCommentSchema = z.string().trim().max(1000);
+export const commentSchema = z
+  .string()
+  .trim()
+  .min(1, { message: 'Invalid input, expected a non-empty comment' })
+  .max(1000);
 
-export const commentSchema = baseCommentSchema.min(1, { message: 'Invalid input, expected a non-empty comment' });
-
-export const optionalCommentSchema = baseCommentSchema
-  .transform((comment) => (comment === '' ? null : comment))
-  .nullable()
-  .optional();
+export const optionalCommentSchema = z.string().trim().nullable().default(null).optional();
 
 export const userSchema = z.object({
   firstName: z.string().min(1, 'First name is required').max(50, 'First name must be 50 characters or less'),
@@ -31,9 +30,15 @@ export const userSchema = z.object({
   // ministry: z.nativeEnum(Ministry), // Not using ministry enum as a new ministry may not be in our system yet
 });
 
-export const deleteRequestDecisionBodySchema = z.object({
+export const deleteRequestApproveBodySchema = z.object({
   type: z.literal(RequestType.DELETE),
-  decision: z.nativeEnum(RequestDecision),
+  decision: z.literal(RequestDecision.APPROVED),
+  decisionComment: optionalCommentSchema,
+});
+
+export const deleteRequestRejectBodySchema = z.object({
+  type: z.literal(RequestType.DELETE),
+  decision: z.literal(RequestDecision.REJECTED),
   decisionComment: commentSchema,
 });
 

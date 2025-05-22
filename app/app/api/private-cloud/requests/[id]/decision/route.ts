@@ -11,7 +11,7 @@ import {
   privateCloudRequestDecisionBodySchema,
   PrivateCloudRequestDecisionBody,
 } from '@/validation-schemas/private-cloud';
-import { deleteRequestDecisionBodySchema } from '@/validation-schemas/shared';
+import { deleteRequestApproveBodySchema, deleteRequestRejectBodySchema } from '@/validation-schemas/shared';
 
 const pathParamSchema = z.object({
   id: z.string(),
@@ -22,7 +22,11 @@ const apiHandler = createApiHandler({
   permissions: [GlobalPermissions.ReviewAllPrivateCloudRequests],
   validations: {
     pathParams: pathParamSchema,
-    body: z.union([deleteRequestDecisionBodySchema, privateCloudRequestDecisionBodySchema]),
+    body: z.union([
+      deleteRequestApproveBodySchema,
+      deleteRequestRejectBodySchema,
+      privateCloudRequestDecisionBodySchema,
+    ]),
   },
 });
 export const POST = apiHandler(async ({ pathParams, body, session }) => {
