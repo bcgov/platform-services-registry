@@ -13,7 +13,7 @@ importers:
         version: 5.0.2
       '@types/node':
         specifier: ^22.0.0
-        version: 22.15.19
+        version: 22.15.21
       '@types/nodemailer':
         specifier: ^6.4.17
         version: 6.4.17
@@ -31,7 +31,7 @@ importers:
         version: 5.8.3
       zod:
         specifier: ^3.23.8
-        version: 3.25.3
+        version: 3.25.20
     devDependencies:
       express:
         specifier: ^5.0.1
@@ -217,8 +217,8 @@ packages:
   '@types/mime@1.3.5':
     resolution: {integrity: sha512-/pyBZWSLD2n0dcHE3hq8s8ZvcETHtEuF+3E7XVt0Ig2nvsVQXdghHVcEkIWjy9A0wKfTn97a/PSDYohKIlnP/w==}
 
-  '@types/node@22.15.19':
-    resolution: {integrity: sha512-3vMNr4TzNQyjHcRZadojpRaD9Ofr6LsonZAoQ+HMUa/9ORTPoxVIw0e0mpqWpdjj8xybyCM+oKOUH2vwFu/oEw==}
+  '@types/node@22.15.21':
+    resolution: {integrity: sha512-EV/37Td6c+MgKAbkcLG6vqZ2zEYHD7bvSrzqqs2RIhbA6w3x+Dqz8MZM3sP6kGTeLrdoOgKZe+Xja7tUB2DNkQ==}
 
   '@types/nodemailer@6.4.17':
     resolution: {integrity: sha512-I9CCaIp6DTldEg7vyUTZi8+9Vo0hi1/T8gv3C89yk1rSAAzoKQ8H8ki/jBYJSFoH/BisgLP8tkZMlQ91CIquww==}
@@ -714,8 +714,8 @@ packages:
   wrappy@1.0.2:
     resolution: {integrity: sha512-l4Sp/DRseor9wL6EvV2+TuQn63dMkPjZ/sp9XkghTEbV9KlPS1xUsZ3u7/IQO4wxtcFB4bgpQPRcR3QCvezPcQ==}
 
-  zod@3.25.3:
-    resolution: {integrity: sha512-VGZqnyYNrl8JpEJRZaFPqeVNIuqgXNu4cXZ5cOb6zEUO1OxKbRnWB4UdDIXMmiERWncs0yDQukssHov8JUxykQ==}
+  zod@3.25.20:
+    resolution: {integrity: sha512-z03fqpTMDF1G02VLKUMt6vyACE7rNWkh3gpXVHgPTw28NPtDFRGvcpTtPwn2kMKtQ0idtYJUTxchytmnqYswcw==}
 
 snapshots:
 
@@ -806,15 +806,15 @@ snapshots:
   '@types/body-parser@1.19.5':
     dependencies:
       '@types/connect': 3.4.38
-      '@types/node': 22.15.19
+      '@types/node': 22.15.21
 
   '@types/connect@3.4.38':
     dependencies:
-      '@types/node': 22.15.19
+      '@types/node': 22.15.21
 
   '@types/express-serve-static-core@5.0.6':
     dependencies:
-      '@types/node': 22.15.19
+      '@types/node': 22.15.21
       '@types/qs': 6.9.18
       '@types/range-parser': 1.2.7
       '@types/send': 0.17.4
@@ -829,13 +829,13 @@ snapshots:
 
   '@types/mime@1.3.5': {}
 
-  '@types/node@22.15.19':
+  '@types/node@22.15.21':
     dependencies:
       undici-types: 6.21.0
 
   '@types/nodemailer@6.4.17':
     dependencies:
-      '@types/node': 22.15.19
+      '@types/node': 22.15.21
 
   '@types/qs@6.9.18': {}
 
@@ -848,12 +848,12 @@ snapshots:
   '@types/send@0.17.4':
     dependencies:
       '@types/mime': 1.3.5
-      '@types/node': 22.15.19
+      '@types/node': 22.15.21
 
   '@types/serve-static@1.15.7':
     dependencies:
       '@types/http-errors': 2.0.4
-      '@types/node': 22.15.19
+      '@types/node': 22.15.21
       '@types/send': 0.17.4
 
   accepts@2.0.0:
@@ -1379,4 +1379,4 @@ snapshots:
 
   wrappy@1.0.2: {}
 
-  zod@3.25.3: {}
+  zod@3.25.20: {}
