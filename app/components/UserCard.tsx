@@ -10,11 +10,14 @@ import ProfileImage from './ProfileImage';
 export default function UserCard({
   user,
   title,
-  className = '',
+  classNames = {},
 }: {
   user?: User | null;
   title?: string;
-  className?: string;
+  classNames?: {
+    wrapper?: string;
+    name?: string;
+  };
 }) {
   const [opened, { close, open }] = useDisclosure(false);
 
@@ -27,7 +30,7 @@ export default function UserCard({
       <HoverCard shadow="md" position="top">
         <HoverCard.Target>
           <div
-            className={cn('cursor-help', className)}
+            className={cn('cursor-help', classNames?.wrapper)}
             onMouseEnter={open}
             onMouseLeave={close}
             onClick={(e) => {
@@ -37,7 +40,9 @@ export default function UserCard({
               openUserDetailModal({ userId: user.id });
             }}
           >
-            <div className="text-base font-bold text-gray-700 group-hover:text-gray-900">{name}</div>
+            <div className={cn('text-base font-bold text-gray-700 group-hover:text-gray-900', classNames?.name)}>
+              {name}
+            </div>
             {title && <div className="text-sm text-gray-400 group-hover:text-gray-700">{title}</div>}
           </div>
         </HoverCard.Target>
