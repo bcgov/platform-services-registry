@@ -8,12 +8,14 @@ export const RequestDecision = {
 
 export type RequestDecision = (typeof RequestDecision)[keyof typeof RequestDecision];
 
-export const commentSchema = z
-  .string()
-  .trim()
-  .min(1, { message: 'Invalid input, expected a non-empty comment' })
-  .max(1000);
-export const optionalCommentSchema = commentSchema.nullable().default(null).optional();
+const baseCommentSchema = z.string().trim().max(1000);
+
+export const commentSchema = baseCommentSchema.min(1, { message: 'Invalid input, expected a non-empty comment' });
+
+export const optionalCommentSchema = baseCommentSchema
+  .transform((comment) => (comment === '' ? null : comment))
+  .nullable()
+  .optional();
 
 export const userSchema = z.object({
   firstName: z.string().min(1, 'First name is required').max(50, 'First name must be 50 characters or less'),

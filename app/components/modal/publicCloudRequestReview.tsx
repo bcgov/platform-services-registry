@@ -10,7 +10,7 @@ import { createModal } from '@/core/modal';
 import { makePublicCloudRequestDecision } from '@/services/backend/public-cloud/requests';
 import { PublicCloudRequestDetailDecorated } from '@/types/public-cloud';
 import { PublicCloudRequestDecisionBody } from '@/validation-schemas/public-cloud';
-import { RequestDecision } from '@/validation-schemas/shared';
+import { commentSchema, optionalCommentSchema, RequestDecision } from '@/validation-schemas/shared';
 import { success } from '../notification';
 import { openRequestDecisionCompleteModal } from './requestDecisionComplete';
 
@@ -31,10 +31,7 @@ export const openPublicCloudRequestReviewModal = createModal<ModalProps, ModalSt
     const methods = useForm({
       resolver: zodResolver(
         z.object({
-          decisionComment:
-            finalData.decision === RequestDecision.APPROVED
-              ? z.string().max(1000).optional()
-              : z.string().min(1).max(1000),
+          decisionComment: finalData.decision === RequestDecision.APPROVED ? optionalCommentSchema : commentSchema,
         }),
       ),
       defaultValues: {
