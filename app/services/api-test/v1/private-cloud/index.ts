@@ -5,7 +5,7 @@ import { createRoute } from '../../core';
 const privateCloudRoute = createRoute('/v1/private-cloud/products');
 
 export async function provisionPrivateCloudProduct(idOrLicencePlate: string) {
-  const result = await privateCloudRoute.post(
+  const result = await privateCloudRoute.post<{ success: boolean; message: string }>(
     _provisionPrivateCloudProduct,
     '/{{idOrLicencePlate}}/provision',
     {},

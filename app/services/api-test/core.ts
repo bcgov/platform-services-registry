@@ -6,7 +6,11 @@ import { generateTestSession, findMockUserbyRole, findMockUserByEmail, upsertMoc
 import { SERVICE_ACCOUNT_DATA } from '@/jest.mock';
 import { stringifyQuery } from '@/utils/js';
 
-type Handler = (req: NextRequest, Options?: { params: any }) => Promise<Response>;
+type Handler<T = any> = (req: NextRequest, Options?: { params: any }) => Promise<TypedResponse<T>>;
+
+interface TypedResponse<T> extends globalThis.Response {
+  json(): Promise<T>;
+}
 
 interface Params {
   [key: string]: any;
@@ -39,7 +43,7 @@ function populatePathParams(url: string, paramData?: ParamData) {
   };
 }
 
-async function wrapHanlder(handler: Handler, req: NextRequest, options?: { params: any; data?: any }) {
+async function wrapHanlder<T>(handler: Handler<T>, req: NextRequest, options?: { params: any; data?: any }) {
   const { params, data } = options ?? {};
   const res = await handler(req, { params });
 
@@ -81,30 +85,30 @@ async function wrapHanlder(handler: Handler, req: NextRequest, options?: { param
 
 export function createRoute(baseUrl: string) {
   return {
-    get: async function (handler: Handler, url: string, paramData?: ParamData, headers?: any) {
+    get: async function <T>(handler: Handler<T>, url: string, paramData?: ParamData, headers?: any) {
       const { url: _url, pathParams } = populatePathParams(`${baseUrl}${url}`, paramData);
       const req = new NextRequest(_url, { method: 'GET', headers });
       return wrapHanlder(handler, req, { params: pathParams });
     },
-    post: async function (handler: Handler, url: string, data: any, paramData?: ParamData, headers?: any) {
+    post: async function <T>(handler: Handler<T>, url: string, data: any, paramData?: ParamData, headers?: any) {
       const { url: _url, pathParams } = populatePathParams(`${baseUrl}${url}`, paramData);
       const jsonData = JSON.stringify(data);
       const req = new NextRequest(_url, { method: 'POST', body: jsonData, headers });
       return wrapHanlder(handler, req, { params: pathParams, data: jsonData });
     },
-    put: async function (handler: Handler, url: string, data: any, paramData?: ParamData, headers?: any) {
+    put: async function <T>(handler: Handler<T>, url: string, data: any, paramData?: ParamData, headers?: any) {
       const { url: _url, pathParams } = populatePathParams(`${baseUrl}${url}`, paramData);
       const jsonData = JSON.stringify(data);
       const req = new NextRequest(_url, { method: 'PUT', body: jsonData, headers });
       return wrapHanlder(handler, req, { params: pathParams, data: jsonData });
     },
-    patch: async function (handler: Handler, url: string, data: any, paramData?: ParamData, headers?: any) {
+    patch: async function <T>(handler: Handler<T>, url: string, data: any, paramData?: ParamData, headers?: any) {
       const { url: _url, pathParams } = populatePathParams(`${baseUrl}${url}`, paramData);
       const jsonData = JSON.stringify(data);
       const req = new NextRequest(_url, { method: 'PATCH', body: jsonData, headers });
       return wrapHanlder(handler, req, { params: pathParams, data: jsonData });
     },
-    delete: async function (handler: Handler, url: string, paramData?: ParamData, headers?: any) {
+    delete: async function <T>(handler: Handler<T>, url: string, paramData?: ParamData, headers?: any) {
       const { url: _url, pathParams } = populatePathParams(`${baseUrl}${url}`, paramData);
       const req = new NextRequest(_url, { method: 'DELETE', headers });
       return wrapHanlder(handler, req, { params: pathParams });

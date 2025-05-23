@@ -9,6 +9,7 @@ import { mockTeamServiceAccount } from '@/services/api-test/core';
 import { createPrivateCloudProduct, editPrivateCloudProduct } from '@/services/api-test/private-cloud/products';
 import { makePrivateCloudRequestDecision } from '@/services/api-test/private-cloud/requests';
 import { provisionPrivateCloudProduct } from '@/services/api-test/v1/private-cloud';
+import { PrivateCloudRequestDetailDecorated } from '@/types/private-cloud';
 
 const productData = {
   main: createSamplePrivateCloudProductData({
@@ -19,8 +20,8 @@ const productData = {
 };
 
 const requests = {
-  create: null as any,
-  update: null as any,
+  create: {} as unknown as PrivateCloudRequestDetailDecorated,
+  update: {} as unknown as PrivateCloudRequestDetailDecorated,
 };
 
 async function makeBasicProductChange(extra = {}) {

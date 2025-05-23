@@ -13,6 +13,7 @@ import {
 } from '@/services/api-test/private-cloud/products';
 import { makePrivateCloudRequestDecision } from '@/services/api-test/private-cloud/requests';
 import { provisionPrivateCloudProduct } from '@/services/api-test/v1/private-cloud';
+import { PrivateCloudRequestDetailDecorated, PrivateCloudRequestSimple } from '@/types/private-cloud';
 
 const fieldsToCompare = [
   'name',
@@ -33,7 +34,9 @@ const productData = {
   }),
 };
 
-const requests: any = { main: null };
+const requests = {
+  main: {} as unknown as PrivateCloudRequestDetailDecorated,
+};
 
 async function makeBasicProductReview(decision: DecisionStatus, extra = {}) {
   const decisionData = requests.main.decisionData;
@@ -41,7 +44,7 @@ async function makeBasicProductReview(decision: DecisionStatus, extra = {}) {
     type: RequestType.CREATE,
     ...decisionData,
     ...extra,
-    decision,
+    decision: decision as 'APPROVED' | 'REJECTED',
   });
 
   return response;

@@ -9,6 +9,7 @@ import { mockTeamServiceAccount } from '@/services/api-test/core';
 import { createPrivateCloudProduct, getPrivateCloudProduct } from '@/services/api-test/private-cloud/products';
 import { makePrivateCloudRequestDecision } from '@/services/api-test/private-cloud/requests';
 import { provisionPrivateCloudProduct } from '@/services/api-test/v1/private-cloud';
+import { PrivateCloudRequestDetailDecorated } from '@/types/private-cloud';
 
 const fieldsToCompare = [
   'name',
@@ -25,7 +26,7 @@ const productData = {
 };
 
 const requests = {
-  create: null as any,
+  create: {} as unknown as PrivateCloudRequestDetailDecorated,
 };
 
 // TODO: add tests for ministry roles
