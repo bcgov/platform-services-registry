@@ -59,21 +59,6 @@ const requests = {
   main: {} as unknown as PublicCloudRequestDetailDecorated,
 };
 
-function transformLeadFields(
-  data: typeof requests.main.decisionData & {
-    environmentsEnabled?: any;
-    isAgMinistryChecked?: boolean;
-  },
-) {
-  return {
-    ...data,
-    projectOwner: data.projectOwner ? { id: data.projectOwner.id } : undefined,
-    primaryTechnicalLead: data.primaryTechnicalLead ? { id: data.primaryTechnicalLead.id } : undefined,
-    secondaryTechnicalLead: data.secondaryTechnicalLead ? { id: data.secondaryTechnicalLead.id } : undefined,
-    expenseAuthority: data.expenseAuthority ? { id: data.expenseAuthority.id } : undefined,
-  };
-}
-
 async function makeBasicProductMouReview() {
   const requestId = requests.main.id;
   const decisionData = requests.main.decisionData;
@@ -183,7 +168,7 @@ describe('Review Public Cloud Create Request - Permissions', () => {
     expect(response.status).toBe(200);
   });
 });
-
+// as Parameters<typeof editPublicCloudProduct>[1]);
 describe('Review Public Cloud Update Request - Permissions', () => {
   it('should successfully submit a update request for TL1', async () => {
     await mockSessionByEmail(productData.main.primaryTechnicalLead.email);
