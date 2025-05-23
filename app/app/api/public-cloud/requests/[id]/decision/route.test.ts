@@ -168,7 +168,7 @@ describe('Review Public Cloud Create Request - Permissions', () => {
     expect(response.status).toBe(200);
   });
 });
-// as Parameters<typeof editPublicCloudProduct>[1]);
+
 describe('Review Public Cloud Update Request - Permissions', () => {
   it('should successfully submit a update request for TL1', async () => {
     await mockSessionByEmail(productData.main.primaryTechnicalLead.email);
