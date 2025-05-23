@@ -15,14 +15,15 @@ import {
 } from '@/services/api-test/public-cloud/products';
 import { makePublicCloudRequestDecision } from '@/services/api-test/public-cloud/requests';
 import { provisionPublicCloudProduct } from '@/services/api-test/v1/public-cloud';
+import { PublicCloudRequestDetailDecorated } from '@/types/public-cloud';
 
 const productData = {
   main: createSamplePublicCloudProductData(),
 };
 
 const requests = {
-  create: null as any,
-  delete: null as any,
+  create: {} as unknown as PublicCloudRequestDetailDecorated,
+  delete: {} as unknown as PublicCloudRequestDetailDecorated,
 };
 
 // TODO: add tests for ministry roles

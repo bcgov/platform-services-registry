@@ -46,7 +46,8 @@ async function approveAndProvisionRequest(reqData: any) {
   let decisionData = reqData.decisionData;
 
   await mockSessionByRole(GlobalRole.PublicReviewer);
-  let response = await makePublicCloudRequestDecision(reqData.id, {
+  let response: any;
+  response = await makePublicCloudRequestDecision(reqData.id, {
     ...decisionData,
     type: RequestType.CREATE,
     decision: DecisionStatus.APPROVED,

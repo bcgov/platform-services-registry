@@ -8,7 +8,7 @@ import { stringifyQuery } from '@/utils/js';
 
 type Handler<T = any> = (req: NextRequest, Options?: { params: any }) => Promise<TypedResponse<T>>;
 
-interface TypedResponse<T> extends globalThis.Response {
+export interface TypedResponse<T> extends globalThis.Response {
   json(): Promise<T>;
 }
 

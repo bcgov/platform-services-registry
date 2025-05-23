@@ -15,6 +15,7 @@ import {
 } from '@/services/api-test/public-cloud/products';
 import { makePublicCloudRequestDecision } from '@/services/api-test/public-cloud/requests';
 import { provisionPublicCloudProduct } from '@/services/api-test/v1/public-cloud';
+import { PublicCloudRequestDetailDecorated } from '@/types/public-cloud';
 
 const oldEnvironmentsEnabled = {
   production: true,
@@ -38,9 +39,11 @@ const productData = {
   }),
 };
 
+// PublicCloudRequestDetailDecorated
+
 const requests = {
-  create: null as any,
-  update: null as any,
+  create: null as unknown as PublicCloudRequestDetailDecorated,
+  update: null as unknown as PublicCloudRequestDetailDecorated,
 };
 
 async function makeBasicProductChange(extra = {}) {
@@ -49,7 +52,7 @@ async function makeBasicProductChange(extra = {}) {
     environmentsEnabled: newEnvironmentsEnabled,
     isAgMinistryChecked: true,
     ...extra,
-  });
+  } as Parameters<typeof editPublicCloudProduct>[1]);
 
   return response;
 }

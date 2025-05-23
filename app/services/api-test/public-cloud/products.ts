@@ -14,6 +14,14 @@ import {
 import { POST as _searchPublicCloudProducts } from '@/app/api/public-cloud/products/search/route';
 import { AccountCoding } from '@/prisma/client';
 import {
+  PublicCloudProductDetailDecorated,
+  PublicCloudProductSimpleDecorated,
+  PublicCloudProjectSummary,
+  PublicCloudRequestDetailDecorated,
+  PublicCloudRequestSimpleDecorated,
+} from '@/types/public-cloud';
+import {
+  PublicCloudCreateRequestBody,
   PublicCloudEditRequestBody,
   PublicCloudProductSearchBody,
   PublicCloudProductSearchNoPaginationBody,
@@ -22,13 +30,25 @@ import { createRoute, ParamData } from '../core';
 
 const productCollectionRoute = createRoute('/public-cloud/products');
 
-export async function createPublicCloudProduct(data: any, paramData?: ParamData) {
-  data.projectOwnerId = data.projectOwner?.id ?? null;
-  data.primaryTechnicalLeadId = data.primaryTechnicalLead?.id ?? null;
-  data.secondaryTechnicalLeadId = data.secondaryTechnicalLead?.id ?? null;
-  data.expenseAuthorityId = data.expenseAuthority?.id ?? null;
+type EmptyDocument = { id: string };
 
-  const result = await productCollectionRoute.post(_createPublicCloudProduct, '', data);
+export async function createPublicCloudProduct(
+  data: Partial<PublicCloudCreateRequestBody> & {
+    projectOwner?: EmptyDocument;
+    primaryTechnicalLead?: EmptyDocument;
+    secondaryTechnicalLead?: EmptyDocument;
+    expenseAuthority?: EmptyDocument;
+  },
+  paramData?: ParamData,
+) {
+  data.projectOwnerId = data.projectOwner?.id ?? undefined;
+  data.primaryTechnicalLeadId = data.primaryTechnicalLead?.id ?? undefined;
+  data.secondaryTechnicalLeadId = data.secondaryTechnicalLead?.id ?? undefined;
+  data.expenseAuthorityId = data.expenseAuthority?.id ?? undefined;
+
+  const result = await productCollectionRoute.post<
+    PublicCloudRequestDetailDecorated & { success: boolean; message: string; error: any }
+  >(_createPublicCloudProduct, '', data);
   return result;
 }
 
@@ -38,58 +58,85 @@ export async function listPublicCloudProduct(data: any) {
 }
 
 export async function searchPublicCloudProducts(data: Partial<PublicCloudProductSearchBody>) {
-  const result = await productCollectionRoute.post(_searchPublicCloudProducts, '/search', data);
+  const result = await productCollectionRoute.post<{ docs: PublicCloudProductSimpleDecorated[]; totalCount: number }>(
+    _searchPublicCloudProducts,
+    '/search',
+    data,
+  );
   return result;
 }
 
 export async function downloadPublicCloudProducts(data: Partial<PublicCloudProductSearchNoPaginationBody>) {
-  const result = await productCollectionRoute.post(_downloadPublicCloudProducts, '/download', data);
+  const result = await productCollectionRoute.post<PublicCloudProjectSummary>(
+    _downloadPublicCloudProducts,
+    '/download',
+    data,
+  );
   return result;
 }
 
 export async function getPublicCloudProduct(licencePlate: string) {
-  const result = await productCollectionRoute.get(_getPublicCloudProduct, '/{{licencePlate}}', {
-    pathParams: { licencePlate },
-  });
+  const result = await productCollectionRoute.get<PublicCloudProductDetailDecorated>(
+    _getPublicCloudProduct,
+    '/{{licencePlate}}',
+    {
+      pathParams: { licencePlate },
+    },
+  );
   return result;
 }
 
-type EmptyDocument = { id: string };
+export async function getTransformedLeadFields(
+  data: Partial<PublicCloudEditRequestBody> & {
+    projectOwner?: { id: string } | null;
+    primaryTechnicalLead?: { id: string } | null;
+    secondaryTechnicalLead?: { id: string } | null;
+    expenseAuthority?: { id: string } | null;
+  },
+) {
+  return {
+    ...data,
+    projectOwner: data.projectOwner ? { id: data.projectOwner.id } : undefined,
+    primaryTechnicalLead: data.primaryTechnicalLead ? { id: data.primaryTechnicalLead.id } : undefined,
+    secondaryTechnicalLead: data.secondaryTechnicalLead ? { id: data.secondaryTechnicalLead.id } : undefined,
+    expenseAuthority: data.expenseAuthority ? { id: data.expenseAuthority.id } : undefined,
+  };
+}
 
 export async function editPublicCloudProduct(
   licencePlate: string,
-  data: PublicCloudEditRequestBody & {
-    projectOwner: EmptyDocument;
-    primaryTechnicalLead: EmptyDocument;
-    secondaryTechnicalLead: EmptyDocument;
-    expenseAuthority: EmptyDocument;
+  data: Partial<PublicCloudEditRequestBody> & {
+    projectOwner?: { id: string };
+    primaryTechnicalLead?: { id: string };
+    secondaryTechnicalLead?: { id: string };
+    expenseAuthority?: { id: string };
+    isAgMinistryChecked?: boolean;
   },
 ) {
   data.isAgMinistryChecked = true;
-  data.projectOwnerId = data.projectOwner?.id ?? null;
-  data.primaryTechnicalLeadId = data.primaryTechnicalLead?.id ?? null;
-  data.secondaryTechnicalLeadId = data.secondaryTechnicalLead?.id ?? null;
-  data.expenseAuthorityId = data.expenseAuthority?.id ?? null;
+  data.projectOwnerId = data.projectOwner?.id ?? undefined;
+  data.primaryTechnicalLeadId = data.primaryTechnicalLead?.id ?? undefined;
+  data.secondaryTechnicalLeadId = data.secondaryTechnicalLead?.id ?? undefined;
+  data.expenseAuthorityId = data.expenseAuthority?.id ?? undefined;
 
-  const result = await productCollectionRoute.put(_editPublicCloudProduct, '/{{licencePlate}}', data, {
+  const result = await productCollectionRoute.put<
+    PublicCloudRequestDetailDecorated & { success: boolean; message: string; error: any }
+  >(_editPublicCloudProduct, '/{{licencePlate}}', data, {
     pathParams: { licencePlate },
   });
   return result;
 }
 
 export async function deletePublicCloudProduct(licencePlate: string, requestComment: string) {
-  const result = await productCollectionRoute.post(
-    _archivePublicCloudProduct,
-    '/{{licencePlate}}/archive',
-    { requestComment },
-    { pathParams: { licencePlate } },
-  );
+  const result = await productCollectionRoute.post<
+    PublicCloudRequestDetailDecorated & { success: boolean; message: string; error: any }
+  >(_archivePublicCloudProduct, '/{{licencePlate}}/archive', { requestComment }, { pathParams: { licencePlate } });
 
   return result;
 }
 
 export async function listPublicCloudProductRequests(licencePlate: string, active = false) {
-  const result = await productCollectionRoute.get(
+  const result = await productCollectionRoute.get<PublicCloudRequestSimpleDecorated[]>(
     _listPublicCloudProductRequests,
     `/{{licencePlate}}/requests?active=${active}`,
     {
@@ -105,7 +152,7 @@ export async function signPublicCloudBilling(
   billingId: string,
   data: { accountCoding: AccountCoding; confirmed: boolean },
 ) {
-  const result = await productCollectionRoute.post(
+  const result = await productCollectionRoute.post<true>(
     _signPublicCloudBilling,
     '/{{licencePlate}}/billings/{{billingId}}/sign',
     data,
@@ -117,7 +164,7 @@ export async function signPublicCloudBilling(
 }
 
 export async function reviewPublicCloudBilling(licencePlate: string, billingId: string, data: { decision: string }) {
-  const result = await productCollectionRoute.post(
+  const result = await productCollectionRoute.post<true>(
     _reviewPublicCloudBilling,
     '/{{licencePlate}}/billings/{{billingId}}/review',
     data,

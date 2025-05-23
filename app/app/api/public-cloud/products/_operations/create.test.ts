@@ -185,7 +185,7 @@ describe('Create Public Cloud Request - Validations', () => {
     const requestData = createSamplePublicCloudProductData();
     await mockSessionByRole(GlobalRole.Admin);
 
-    requestData.projectOwner = undefined;
+    requestData.projectOwner = undefined!;
 
     const response = await createPublicCloudProduct(requestData);
     expect(response.status).toBe(400);
@@ -202,7 +202,7 @@ describe('Create Public Cloud Request - Validations', () => {
     const requestData = createSamplePublicCloudProductData();
     await mockSessionByRole(GlobalRole.Admin);
 
-    requestData.primaryTechnicalLead = undefined;
+    requestData.primaryTechnicalLead = undefined!;
 
     const response = await createPublicCloudProduct(requestData);
     expect(response.status).toBe(400);
@@ -219,7 +219,7 @@ describe('Create Public Cloud Request - Validations', () => {
     const requestData = createSamplePublicCloudProductData();
     await mockSessionByRole(GlobalRole.Admin);
 
-    requestData.secondaryTechnicalLead = null as any;
+    requestData.secondaryTechnicalLead = null!;
 
     const response = await createPublicCloudProduct(requestData);
     expect(response.status).toBe(200);

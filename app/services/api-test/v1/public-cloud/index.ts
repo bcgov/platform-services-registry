@@ -5,7 +5,7 @@ import { createRoute } from '../../core';
 const publicCloudRoute = createRoute('/v1/public-cloud/products');
 
 export async function provisionPublicCloudProduct(idOrLicencePlate: string) {
-  const result = await publicCloudRoute.post(
+  const result = await publicCloudRoute.post<{ success: boolean; message: string }>(
     _provisionPublicCloudProduct,
     '/{{idOrLicencePlate}}/provision',
     {},
