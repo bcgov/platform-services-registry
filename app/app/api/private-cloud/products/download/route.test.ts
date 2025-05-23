@@ -13,6 +13,7 @@ import { createPrivateCloudProduct, downloadPrivateCloudProducts } from '@/servi
 import { makePrivateCloudRequestDecision } from '@/services/api-test/private-cloud/requests';
 import { provisionPrivateCloudProduct } from '@/services/api-test/v1/private-cloud';
 import { PrivateProductCsvRecord } from '@/types/csv';
+import { PrivateCloudRequestSimple } from '@/types/private-cloud';
 import { formatDateSimple } from '@/utils/js';
 
 const PO = mockNoRoleUsers[0];
@@ -44,8 +45,8 @@ const productData = {
 };
 
 const requests = {
-  one: null as any,
-  two: null as any,
+  one: {} as unknown as PrivateCloudRequestSimple,
+  two: {} as unknown as PrivateCloudRequestSimple,
 };
 
 // TODO: add tests for ministry roles

@@ -8,14 +8,15 @@ import { mockTeamServiceAccount } from '@/services/api-test/core';
 import { createPrivateCloudProduct, deletePrivateCloudProduct } from '@/services/api-test/private-cloud/products';
 import { makePrivateCloudRequestDecision } from '@/services/api-test/private-cloud/requests';
 import { provisionPrivateCloudProduct } from '@/services/api-test/v1/private-cloud';
+import { PrivateCloudRequestDetailDecorated } from '@/types/private-cloud';
 
 const productData = {
   main: createSamplePrivateCloudProductData(),
 };
 
 const requests = {
-  create: null as any,
-  delete: null as any,
+  create: {} as unknown as PrivateCloudRequestDetailDecorated,
+  delete: {} as unknown as PrivateCloudRequestDetailDecorated,
 };
 
 // TODO: add tests for ministry roles
