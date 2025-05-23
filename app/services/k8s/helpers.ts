@@ -30,15 +30,7 @@ function configureKubeConfig(cluster: string, token: string) {
   return kc;
 }
 
-export function createK8sClusterConfigs(tokens: {
-  [Cluster.KLAB]: string;
-  [Cluster.CLAB]: string;
-  [Cluster.KLAB2]: string;
-  [Cluster.GOLDDR]: string;
-  [Cluster.GOLD]: string;
-  [Cluster.SILVER]: string;
-  [Cluster.EMERALD]: string;
-}) {
+export function createK8sClusterConfigs(tokens: Record<Cluster, string>) {
   const k8sConfigs = {
     [Cluster.KLAB]: configureKubeConfig(Cluster.KLAB, tokens[Cluster.KLAB]),
     [Cluster.CLAB]: configureKubeConfig(Cluster.CLAB, tokens[Cluster.CLAB]),
@@ -50,7 +42,12 @@ export function createK8sClusterConfigs(tokens: {
   };
 
   function getK8sClusterToken(cluster: Cluster) {
-    return k8sConfigs[cluster];
+    const kc = k8sConfigs[cluster];
+    const user = kc.getCurrentUser();
+    if (!user?.token) {
+      throw new Error(`Missing token in KubeConfig for cluster ${cluster}`);
+    }
+    return user.token;
   }
 
   function getK8sClusterClients(cluster: Cluster) {
