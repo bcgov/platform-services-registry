@@ -1,3 +1,9 @@
+## [0.65.1](https://github.com/bcgov/platform-services-registry/compare/v0.65.0...v0.65.1) (2025-05-22)
+
+### Bug Fixes
+
+* **5677:** extract baseCommentSchema to share between required and optional comment rules ([db11623](https://github.com/bcgov/platform-services-registry/commit/db11623d08193a9f310b2a41b717a5ceee0da0ef))
+* **5677:** use separate delete request bodySchema for reject and approve ([599c4dc](https://github.com/bcgov/platform-services-registry/commit/599c4dc1f250d7ca029b36504ec1849794cbcc3a))
 ## [0.65.0](https://github.com/bcgov/platform-services-registry/compare/v0.64.0...v0.65.0) (2025-05-21)
 
 ### Features
