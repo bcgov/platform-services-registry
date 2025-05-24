@@ -19,6 +19,7 @@ import {
 import { makePublicCloudRequestDecision } from '@/services/api-test/public-cloud/requests';
 import { provisionPublicCloudProduct } from '@/services/api-test/v1/public-cloud';
 import { PublicProductCsvRecord } from '@/types/csv';
+import { PublicCloudRequestSimple } from '@/types/public-cloud';
 import { formatDateSimple } from '@/utils/js';
 
 const PO = mockNoRoleUsers[0];
@@ -54,8 +55,8 @@ const productData = {
 };
 
 const requests = {
-  one: null as any,
-  two: null as any,
+  one: {} as unknown as PublicCloudRequestSimple,
+  two: {} as unknown as PublicCloudRequestSimple,
 };
 
 // TODO: add tests for ministry roles

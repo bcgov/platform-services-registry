@@ -12,6 +12,7 @@ import {
   editPublicCloudProduct,
   signPublicCloudBilling,
   reviewPublicCloudBilling,
+  getTransformedLeadFields,
 } from '@/services/api-test/public-cloud/products';
 import { searchPublicCloudRequests, makePublicCloudRequestDecision } from '@/services/api-test/public-cloud/requests';
 import { provisionPublicCloudProduct } from '@/services/api-test/v1/public-cloud';
@@ -269,11 +270,15 @@ describe('Search Public Cloud Requests - Validations', () => {
     );
 
     await mockSessionByRole(GlobalRole.Admin);
-    const firstReq = await results[0].json();
-    const res = await editPublicCloudProduct(firstReq.licencePlate, {
-      ...firstReq.decisionData,
-      name: `${firstReq.decisionData.name}updated`,
-    });
+    const firstReq = await results[0]?.json();
+
+    const res = await editPublicCloudProduct(
+      firstReq!.licencePlate,
+      await getTransformedLeadFields({
+        ...firstReq?.decisionData,
+        name: `${firstReq?.decisionData.name}updated`,
+      }),
+    );
 
     expect(res.status).toBe(200);
   });

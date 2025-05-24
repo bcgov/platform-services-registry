@@ -55,10 +55,10 @@ export function createSamplePrivateCloudProductData(args?: {
 export function createSamplePublicCloudProductData(args?: {
   data?: Partial<
     Prisma.PublicCloudProductGetPayload<null> & {
-      projectOwner: any;
-      primaryTechnicalLead: any;
-      secondaryTechnicalLead: any;
-      expenseAuthority: any;
+      projectOwner: AppUserWithRoles;
+      primaryTechnicalLead: AppUserWithRoles;
+      secondaryTechnicalLead: AppUserWithRoles;
+      expenseAuthority: AppUserWithRoles;
     }
   >;
 }) {

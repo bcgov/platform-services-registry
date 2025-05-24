@@ -12,9 +12,11 @@ import {
   editPublicCloudProduct,
   signPublicCloudBilling,
   reviewPublicCloudBilling,
+  getTransformedLeadFields,
 } from '@/services/api-test/public-cloud/products';
 import { makePublicCloudRequestDecision } from '@/services/api-test/public-cloud/requests';
 import { provisionPublicCloudProduct } from '@/services/api-test/v1/public-cloud';
+import { PublicCloudRequestDetailDecorated } from '@/types/public-cloud';
 
 const oldEnvironmentsEnabled = {
   production: true,
@@ -39,18 +41,20 @@ const productData = {
 };
 
 const requests = {
-  create: null as any,
-  update: null as any,
+  create: null as unknown as PublicCloudRequestDetailDecorated,
+  update: null as unknown as PublicCloudRequestDetailDecorated,
 };
 
 async function makeBasicProductChange(extra = {}) {
-  const response = await editPublicCloudProduct(requests.create.licencePlate, {
-    ...requests.create.decisionData,
-    environmentsEnabled: newEnvironmentsEnabled,
-    isAgMinistryChecked: true,
-    ...extra,
-  });
-
+  const response = await editPublicCloudProduct(
+    requests.create.licencePlate,
+    await getTransformedLeadFields({
+      ...requests.create.decisionData,
+      environmentsEnabled: newEnvironmentsEnabled,
+      isAgMinistryChecked: true,
+      ...extra,
+    }),
+  );
   return response;
 }
 

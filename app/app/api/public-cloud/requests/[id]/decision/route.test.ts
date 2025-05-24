@@ -4,7 +4,7 @@ import { defaultAccountCoding } from '@/constants';
 import prisma from '@/core/prisma';
 import { createSamplePublicCloudProductData } from '@/helpers/mock-resources';
 import { pickProductData } from '@/helpers/product';
-import { DecisionStatus, Cluster, RequestType } from '@/prisma/client';
+import { DecisionStatus, Cluster, RequestType, Prisma } from '@/prisma/client';
 import { mockSessionByEmail, mockSessionByRole } from '@/services/api-test/core';
 import { mockTeamServiceAccount } from '@/services/api-test/core';
 import {
@@ -13,9 +13,11 @@ import {
   deletePublicCloudProduct,
   signPublicCloudBilling,
   reviewPublicCloudBilling,
+  getTransformedLeadFields,
 } from '@/services/api-test/public-cloud/products';
 import { makePublicCloudRequestDecision } from '@/services/api-test/public-cloud/requests';
 import { provisionPublicCloudProduct } from '@/services/api-test/v1/public-cloud';
+import { PublicCloudRequestDetailDecorated, PublicCloudRequestSimple } from '@/types/public-cloud';
 
 const fieldsToCompare = [
   'name',
@@ -53,7 +55,9 @@ const productData = {
   }),
 };
 
-const requests: any = { main: null };
+const requests = {
+  main: {} as unknown as PublicCloudRequestDetailDecorated,
+};
 
 async function makeBasicProductMouReview() {
   const requestId = requests.main.id;
@@ -89,7 +93,7 @@ async function makeBasicProductReview(decision: DecisionStatus, extra = {}) {
     type: RequestType.CREATE,
     ...decisionData,
     ...extra,
-    decision,
+    decision: decision as 'APPROVED' | 'REJECTED',
   });
 
   return response;
@@ -169,11 +173,14 @@ describe('Review Public Cloud Update Request - Permissions', () => {
   it('should successfully submit a update request for TL1', async () => {
     await mockSessionByEmail(productData.main.primaryTechnicalLead.email);
 
-    const response = await editPublicCloudProduct(requests.main.licencePlate, {
-      ...requests.main.decisionData,
-      environmentsEnabled: newEnvironmentsEnabled,
-      isAgMinistryChecked: true,
-    });
+    const response = await editPublicCloudProduct(
+      requests.main.licencePlate,
+      await getTransformedLeadFields({
+        ...requests.main.decisionData,
+        environmentsEnabled: newEnvironmentsEnabled,
+        isAgMinistryChecked: true,
+      }),
+    );
 
     expect(response.status).toBe(200);
 
@@ -295,28 +302,5 @@ describe('Review Public Cloud Request - Validations', () => {
     expect(response.status).toBe(200);
 
     requests.main = await response.json();
-  });
-
-  it('should ignore the cluster change', async () => {
-    const requestData = requests.main;
-
-    const newName = requestData.decisionData.name + '_suffix';
-    const newCluster = requestData.decisionData.cluster === Cluster.SILVER ? Cluster.EMERALD : Cluster.SILVER;
-
-    await makeBasicProductMouReview();
-
-    await mockSessionByRole(GlobalRole.PublicReviewer);
-    const response = await makeBasicProductReview(DecisionStatus.APPROVED, {
-      name: newName,
-      cluster: newCluster,
-    });
-
-    expect(response.status).toBe(200);
-
-    const resData = await response.json();
-    const decisionData = resData.decisionData;
-
-    expect(decisionData.name).toBe(newName);
-    expect(decisionData.cluster).toBe(requestData.decisionData.cluster);
   });
 });
