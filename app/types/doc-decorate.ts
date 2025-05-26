@@ -1,7 +1,6 @@
 export interface PrivateCloudProductDecorate {
   _permissions: {
     view: boolean;
-    viewHistory: boolean;
     edit: boolean;
     delete: boolean;
     reprovision: boolean;

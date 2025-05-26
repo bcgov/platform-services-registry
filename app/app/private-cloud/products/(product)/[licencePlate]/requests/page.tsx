@@ -30,30 +30,27 @@ export default privateCloudProductRequests(({ getPathParams, session }) => {
 
   const { licencePlate = '' } = pathParams ?? {};
 
-  let toggle: ReactNode = null;
-  if (snap.currentProduct?._permissions.viewHistory) {
-    toggle = (
-      <div className="flex justify-end mb-2">
-        <Switch
-          checked={checked}
-          onChange={(event) => setChecked(event.currentTarget.checked)}
-          size="md"
-          color="dark.4"
-          onLabel={
-            <Tooltip label="List view">
-              <IconListDetails size={16} stroke={2.5} color="var(--mantine-color-blue-6)" />
-            </Tooltip>
-          }
-          offLabel={
-            <Tooltip label="History view">
-              <IconHistoryToggle size={16} stroke={2.5} color="var(--mantine-color-green-6)" />
-            </Tooltip>
-          }
-        />
-        <span className="ml-2 text-gray-500 text-sm">Switch mode</span>
-      </div>
-    );
-  }
+  const toggle = (
+    <div className="flex justify-end mb-2">
+      <Switch
+        checked={checked}
+        onChange={(event) => setChecked(event.currentTarget.checked)}
+        size="md"
+        color="dark.4"
+        onLabel={
+          <Tooltip label="List view">
+            <IconListDetails size={16} stroke={2.5} color="var(--mantine-color-blue-6)" />
+          </Tooltip>
+        }
+        offLabel={
+          <Tooltip label="History view">
+            <IconHistoryToggle size={16} stroke={2.5} color="var(--mantine-color-green-6)" />
+          </Tooltip>
+        }
+      />
+      <span className="ml-2 text-gray-500 text-sm">Switch mode</span>
+    </div>
+  );
 
   return (
     <>

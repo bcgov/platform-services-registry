@@ -109,7 +109,6 @@ async function decorate<T extends PrivateCloudProductSimple | PrivateCloudProduc
   const decoratedDoc = doc as T & PrivateCloudProductDecorate;
   decoratedDoc._permissions = {
     view: canView,
-    viewHistory: canViewHistroy,
     edit: canEdit,
     delete: canEdit,
     reprovision: canReprovision,
