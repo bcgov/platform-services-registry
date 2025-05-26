@@ -14,16 +14,16 @@ export default function QuotasDescription() {
         <span className="font-bold text-red-600 uppercase">will not</span> be processed.
       </p>
       <div className="text-base leading-6 mt-5">
-        Your request for additional CPU, Memory, and Storage will be automatically approved if{' '}
-        <span className="font-bold text-red-600 uppercase">all</span> of the following conditions are met:
+        Your request for additional CPU, memory, and storage will be automatically approved if{' '}
+        <span className="font-bold text-red-600 uppercase">all</span> of the following conditions are met.
         <ol className="list-decimal pl-5">
-          <b>For CPU and Memory:</b>
+          <b>For CPU and memory:</b>
 
           <li>Your namespace&rsquo;s resource utilization rate is at least 35%.</li>
           <li>
             The adjustment satisfies one of the following:
             <ul className="list-disc pl-5">
-              <li>Starts from a minimum of 1 core for CPU and 2GiB for memory, or</li>
+              <li>Starts from a minimum of 1 core for CPU and 2GiB for memory, OR</li>
               <li>Does not exceed a 50% increase in the quota.</li>
             </ul>
           </li>
@@ -35,7 +35,7 @@ export default function QuotasDescription() {
           <li>
             The adjustment satisfies one of the following:
             <ul className="list-disc pl-5">
-              <li>Is 32GiB or less, or</li>
+              <li>Is 32GiB or less, OR</li>
               <li>Does not exceed a 50% increase in the current capacity.</li>
             </ul>
           </li>

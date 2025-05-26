@@ -1,34 +1,5 @@
 import { ResourceType } from '@/prisma/client';
-
-export type resourceMetrics = {
-  podMetrics: Pod[];
-  pvcMetrics: PVC[];
-};
-export type Pod = {
-  name: string;
-  containers: Container[];
-};
-
-export type PVC = {
-  name: string;
-  pvName: string;
-  storageClassName: string;
-  usage: number;
-  requests: number;
-  freeInodes: number;
-};
-
-export type Container = {
-  name: string;
-  usage: {
-    cpu: number;
-    memory: number;
-  };
-  requests: {
-    cpu: number;
-    memory: number;
-  };
-};
+import type { Pod, PVC } from '@/types/usage';
 
 // Conversion factors for resource units
 export const cpuCoreToMillicoreMultiplier = 1000;
@@ -162,61 +133,7 @@ export const getTotalMetrics = (data: Pod[] | PVC[], resource: ResourceType) => 
   return { totalUsage, totalRequest };
 };
 
-export type TransformedPodData = {
-  name: string;
-  containerName: string;
-  usage: {
-    cpu: number | string;
-    memory: number | string;
-  };
-  requests: {
-    cpu: number | string;
-    memory: number | string;
-  };
-};
-
-export type TransformedPVCData = {
-  name: string;
-  pvName: string;
-  storageClassName: string;
-  usage: number | string;
-  requests: number | string;
-  freeInodes: number | string;
-};
-
-export function transformPVCData(data: PVC[]) {
-  const transformedData: TransformedPVCData[] = [];
-  data.forEach((pvc) => {
-    transformedData.push({
-      name: pvc.name,
-      pvName: pvc.pvName,
-      storageClassName: pvc.storageClassName,
-      usage: pvc.usage,
-      requests: pvc.requests,
-      freeInodes: pvc.freeInodes,
-    });
-  });
-  return transformedData;
-}
-
-export function transformPodData(data: Pod[]) {
-  const transformedData: TransformedPodData[] = [];
-  data.forEach((pod) => {
-    pod.containers.forEach((container) => {
-      transformedData.push({
-        name: pod.name,
-        containerName: container.name,
-        usage: {
-          cpu: container.usage.cpu,
-          memory: container.usage.memory,
-        },
-        requests: {
-          cpu: container.requests.cpu,
-          memory: container.requests.memory,
-        },
-      });
-    });
-  });
-
-  return transformedData;
+export function getUsageRate(usage: number, request: number): string {
+  const value = usage > 0 ? ((usage / request) * 100).toFixed(2) : '0.00';
+  return `${value}%`;
 }

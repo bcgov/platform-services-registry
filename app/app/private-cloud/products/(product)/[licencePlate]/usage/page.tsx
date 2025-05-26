@@ -1,40 +1,29 @@
 'use client';
 
-import { LoadingOverlay, Box } from '@mantine/core';
-import { useQuery } from '@tanstack/react-query';
 import { useEffect, useState } from 'react';
 import { z } from 'zod';
 import FormSelect from '@/components/generic/select/FormSelect';
-import { environmentLongNames, environmentShortNames, GlobalRole } from '@/constants';
+import { environmentLongNames, GlobalRole } from '@/constants';
+import type { EnvironmentShortName } from '@/constants';
 import createClientPage from '@/core/client-page';
-import {
-  getTotalMetrics,
-  transformPVCData,
-  TransformedPVCData,
-  transformPodData,
-  TransformedPodData,
-  normalizeCpu,
-  normalizeMemory,
-} from '@/helpers/resource-metrics';
-import { getPodUsageMetrics } from '@/services/backend/private-cloud/products';
 import { usePrivateProductState } from '@/states/global';
-import MetricsTable from './MetricsTable';
+import NamespaceMetrics from './NamespaceMetrics';
 
-const selectOptions: { name: string; value: EnvironmentShort }[] = [
+const environmentOptions = [
   {
-    name: 'Development namespace',
+    label: 'Development',
     value: 'dev',
   },
   {
-    name: 'Test namespace',
+    label: 'Test',
     value: 'test',
   },
   {
-    name: 'Production namespace',
+    label: 'Production',
     value: 'prod',
   },
   {
-    name: 'Tools namespace',
+    label: 'Tools',
     value: 'tools',
   },
 ];
@@ -48,9 +37,6 @@ const privateCloudProductUsageMetrics = createClientPage({
   validations: { pathParams: pathParamSchema },
 });
 
-type EnvironmentShort = keyof typeof environmentLongNames;
-type EnvironmentLong = keyof typeof environmentShortNames;
-
 export default privateCloudProductUsageMetrics(({ getPathParams }) => {
   const [pathParams, setPathParams] = useState<z.infer<typeof pathParamSchema>>();
 
@@ -58,43 +44,13 @@ export default privateCloudProductUsageMetrics(({ getPathParams }) => {
     getPathParams().then((v) => setPathParams(v));
   }, []);
 
-  const [environment, setEnvironment] = useState<EnvironmentShort>('dev');
-
+  const [environment, setEnvironment] = useState('dev');
   const [, privateSnap] = usePrivateProductState();
-  const productRequest =
-    privateSnap.currentProduct?.resourceRequests[environmentLongNames[environment] as EnvironmentLong];
+
+  const currentProduct = privateSnap.currentProduct!;
 
   const { licencePlate = '' } = pathParams ?? {};
-
-  const { data = { podMetrics: [], pvcMetrics: [] }, isLoading } = useQuery({
-    queryKey: [environment, licencePlate],
-    queryFn: () => getPodUsageMetrics(licencePlate, environment, privateSnap.currentProduct?.cluster || ''),
-  });
-
-  const handleNamespaceChange = (namespace: EnvironmentShort) => {
-    setEnvironment(namespace);
-  };
-
-  const rowsPod: TransformedPodData[] = [
-    {
-      name: 'Pod name',
-      containerName: 'Container name',
-      usage: { cpu: 'CPU usage', memory: 'Memory usage' },
-      requests: { cpu: 'CPU request', memory: 'Memory request' },
-    },
-    ...transformPodData(data.podMetrics),
-  ];
-  const rowsPVC: TransformedPVCData[] = [
-    {
-      name: 'PVC name',
-      storageClassName: 'Storage class name',
-      pvName: 'PV name',
-      usage: 'PVC usage',
-      requests: 'PVC request',
-      freeInodes: 'Free inodes',
-    },
-    ...transformPVCData(data.pvcMetrics),
-  ];
+  const resourceRequests = currentProduct.resourceRequests[environmentLongNames[environment] as EnvironmentShortName];
 
   return (
     <div>
@@ -102,44 +58,23 @@ export default privateCloudProductUsageMetrics(({ getPathParams }) => {
         Average utilization rate for CPU and Memory is being counted based on the metrics of your namespace received in
         last 2 weeks
       </p>
-      <fieldset className="w-full md:w-48 2xl:w-64 pb-6">
+
+      <div className="max-w-sm mb-4">
         <FormSelect
-          id="id"
+          id="namespace"
           label="Filter by namespace"
-          options={selectOptions.map((v) => ({ label: v.name, value: v.value }))}
+          options={environmentOptions}
           defaultValue={environment}
-          onChange={(value) => handleNamespaceChange(value as EnvironmentShort)}
+          onChange={setEnvironment}
         />
-      </fieldset>
-      <Box pos="relative" className="min-h-96">
-        {data.length === 0 && !isLoading ? (
-          <span className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 p-5 bg-gray-100 rounded-lg">
-            This Namespace doesn&apos;t contain any running pods
-          </span>
-        ) : (
-          <>
-            <LoadingOverlay visible={isLoading} zIndex={1000} overlayProps={{ radius: 'sm', blur: 2 }} />
-            <MetricsTable
-              rows={rowsPod}
-              productRequest={normalizeCpu((productRequest?.cpu ?? 0) + 'c')}
-              resource="cpu"
-              totalMetrics={getTotalMetrics(data.podMetrics, 'cpu')}
-            />
-            <MetricsTable
-              rows={rowsPod}
-              productRequest={normalizeMemory((productRequest?.memory ?? 0) + 'Gi')}
-              resource="memory"
-              totalMetrics={getTotalMetrics(data.podMetrics, 'memory')}
-            />
-            <MetricsTable
-              rows={rowsPVC}
-              productRequest={normalizeMemory((productRequest?.storage ?? 0) + 'Gi')}
-              resource="storage"
-              totalMetrics={getTotalMetrics(data.pvcMetrics, 'storage')}
-            />
-          </>
-        )}
-      </Box>
+      </div>
+
+      <NamespaceMetrics
+        licencePlate={licencePlate}
+        cluster={currentProduct.cluster}
+        environment={environment as EnvironmentShortName}
+        resourceRequests={resourceRequests}
+      />
     </div>
   );
 });
