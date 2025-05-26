@@ -70,7 +70,8 @@ export const environmentShortNames = {
   tools: 'tools',
 } as const;
 
-export const environmentLongKeys = Object.keys(environmentShortNames) as Array<keyof typeof environmentShortNames>;
+export type EnvironmentShortName = keyof typeof environmentShortNames;
+export const environmentLongKeys = Object.keys(environmentShortNames) as Array<EnvironmentShortName>;
 
 export const environmentLongNames = {
   dev: 'development',

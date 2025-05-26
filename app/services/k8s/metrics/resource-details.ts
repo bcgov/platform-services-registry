@@ -6,7 +6,7 @@ import {
   ResourceRequestsEnv,
   ResourceRequests,
 } from '@/prisma/client';
-import { getPodMetrics } from '@/services/k8s/metrics';
+import { getUsageMetrics } from '@/services/k8s/metrics';
 
 export async function getResourceDetails({
   licencePlate,
@@ -36,8 +36,8 @@ export async function getResourceDetails({
   };
 
   const isStorage = resourceName === ResourceType.storage;
-  const namespaceData = await getPodMetrics(licencePlate, env, cluster);
-  const metricsData = isStorage ? namespaceData.pvcMetrics : namespaceData.podMetrics;
+  const metrics = await getUsageMetrics(licencePlate, env, cluster);
+  const metricsData = isStorage ? metrics.pvcMetrics : metrics.podMetrics;
   if (metricsData.length === 0) return result;
 
   const { totalRequest, totalUsage } = getTotalMetrics(metricsData, resourceName);

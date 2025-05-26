@@ -40,13 +40,13 @@ export default privateCloudProductCosts(({ getPathParams, session }) => {
     <Tabs variant="unstyled" defaultValue="monthly">
       <Tabs.List grow className="max-w-2xl">
         <Tabs.Tab value="monthly" className={tabClassname}>
-          Monthly Costs
+          Monthly
         </Tabs.Tab>
         <Tabs.Tab value="quarterly" className={tabClassname}>
-          Quarterly Costs
+          Quarterly
         </Tabs.Tab>
         <Tabs.Tab value="yearly" className={tabClassname}>
-          Yearly Costs
+          Yearly
         </Tabs.Tab>
       </Tabs.List>
 

@@ -11,6 +11,7 @@ import {
   PrivateCloudRequestDetailDecorated,
 } from '@/types/private-cloud';
 import { MonthlyCost } from '@/types/private-cloud';
+import { UsageMetrics } from '@/types/usage';
 import { downloadFile } from '@/utils/browser';
 import {
   PrivateCloudProductSearchBody,
@@ -142,8 +143,11 @@ export async function getPrivateCloudCommentCount(licencePlate: string, requestI
   return response.data;
 }
 
-export async function getPodUsageMetrics(licencePlate: string, environment: string, cluster: string) {
-  const response = await instance.get(`/${licencePlate}/usage-metrics?environment=${environment}&cluster=${cluster}`);
+export async function getUsageMetrics(licencePlate: string, cluster: string, environment: string) {
+  const response = await instance.get<UsageMetrics>(
+    `/${licencePlate}/usage-metrics?environment=${environment}&cluster=${cluster}`,
+  );
+
   return response.data;
 }
 
