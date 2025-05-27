@@ -48,10 +48,10 @@ export default function Yearly({ licencePlate, session }: { licencePlate: string
           <Button
             loading={downloading}
             onClick={async () => {
-              // if (!data) return;
-              // setDownloading(true);
-              // await downloadPrivateCloudYearlyCosts(licencePlate, year);
-              // setDownloading(false);
+              if (!data) return;
+              setDownloading(true);
+              await downloadPrivateCloudYearlyCosts(licencePlate, year);
+              setDownloading(false);
             }}
           >
             Download PDF

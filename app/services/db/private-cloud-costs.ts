@@ -316,7 +316,7 @@ async function getProjectedCostsBasedOnMonths(
     const month = months[i];
     const jsMonth = month - 1;
     const monthStart = new Date(year, jsMonth, 1);
-    const monthEnd = new Date(year, jsMonth + 1, 0, 0, 0, -1);
+    const monthEnd = new Date(year, jsMonth + 1, 1, 0, 0, 0, -1);
 
     const changePoints = new Set<Date>();
 

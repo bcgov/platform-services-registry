@@ -1,10 +1,11 @@
 import { createCanvas } from 'canvas';
 import Chart from 'chart.js/auto';
 import { tailwindToCSS } from 'tw-to-css';
-import { getYearlyCostChartConfig } from '@/components/private-cloud/yearly-cost/yearly-cost-chart-data';
+import { getQuarterlyCostChartConfig } from '@/components/private-cloud/quarterly-cost/quarterly-cost-chart-data';
+import YearlyCostSummary from '@/components/private-cloud/yearly-cost/YearlyCostSummary';
 import YearlyCostTable from '@/components/private-cloud/yearly-cost/YearlyCostTable';
 import { WeasyPrint } from '@/services/weasyprint/client';
-import { PrivateCloudProductDetailDecorated, YearlyCostData } from '@/types/private-cloud';
+import { PrivateCloudProductDetailDecorated, YearlyCost } from '@/types/private-cloud';
 import { replaceClassToStyleString } from '@/utils/js';
 
 const weasyClient = new WeasyPrint();
@@ -46,7 +47,7 @@ const css = `
 
 // See https://www.chartjs.org/docs/latest/getting-started/using-from-node-js.html
 async function getChartDataURL(data) {
-  const { options, data: chartData } = getYearlyCostChartConfig(data);
+  const { options, data: chartData } = getQuarterlyCostChartConfig({ data });
 
   options.plugins.legend.labels.font.size = 30;
   options.scales.x.ticks.font.size = 30;
@@ -68,11 +69,9 @@ async function getChartDataURL(data) {
 export async function generateYearlyCostPdf({
   product,
   data,
-  year,
 }: {
   product: PrivateCloudProductDetailDecorated;
-  data: YearlyCostData[];
-  year: string;
+  data: YearlyCost;
 }) {
   const ReactDOMServer = (await import('react-dom/server')).default;
 
@@ -81,12 +80,13 @@ export async function generateYearlyCostPdf({
     <>
       <h1 className="font-semibold text-3xl mb-1">{product.name}</h1>
       <i className="italic text-lg">{product.description}</i>
+      <YearlyCostSummary data={data} />
       <div className="border border-gray-200 border-solid rounded p-4 bg-white my-6">
         <div className="relative w-full">
-          <img src={chartImageDataURL} className="w-full h-auto" alt="Monthly Cost Chart" />
+          <img src={chartImageDataURL} className="w-full h-auto" alt="Quarterly Cost Chart" />
         </div>
       </div>
-      <YearlyCostTable yearlyCostData={data} currentYear={year} />
+      <YearlyCostTable data={{ items: data.items, months: data.months, monthDetails: data.monthDetails }} />
     </>,
   );
 
