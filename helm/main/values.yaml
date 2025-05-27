@@ -137,7 +137,7 @@ nats:
   enabled: false
   image:
     repository: nats
-    tag: 2.11.3
+    tag: 2.11.4
     pullPolicy: IfNotPresent
 
   nameOverride: pltsvc-mock-nats
