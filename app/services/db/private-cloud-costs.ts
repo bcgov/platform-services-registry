@@ -279,15 +279,7 @@ export async function getMonthlyCosts(licencePlate: string, year: number, oneInd
   };
 }
 
-async function getCostsBasedOnMonths({
-  licencePlate,
-  startDate,
-  endDate,
-}: {
-  licencePlate: string;
-  startDate: Date;
-  endDate: Date;
-}) {
+async function getCostsBasedOnMonths(licencePlate: string, startDate: Date, endDate: Date) {
   const today = new Date();
   const year = startDate.getFullYear();
   const months = getMonthsArrayFromDates(startDate, endDate);
@@ -307,10 +299,10 @@ async function getCostsBasedOnMonths({
     grandTotal = total.costToTotal;
   }
 
-  const cpuToDate: number[] = new Array(numberOfMonths).fill(0);
-  const cpuToProjected: number[] = new Array(numberOfMonths).fill(0);
-  const storageToDate: number[] = new Array(numberOfMonths).fill(0);
-  const storageToProjected: number[] = new Array(numberOfMonths).fill(0);
+  const cpuToDate = new Array(numberOfMonths).fill(0);
+  const cpuToProjected = new Array(numberOfMonths).fill(0);
+  const storageToDate = new Array(numberOfMonths).fill(0);
+  const storageToProjected = new Array(numberOfMonths).fill(0);
 
   const sortedItems = _orderBy(items, ['startDate'], ['desc']);
 
@@ -376,7 +368,7 @@ export async function getQuarterlyCosts(licencePlate: string, year: number, quar
   const { startDate, endDate } = getQuarterStartEndDate(year, quarter);
 
   const result = {
-    ...(await getCostsBasedOnMonths({ licencePlate, startDate, endDate })),
+    ...(await getCostsBasedOnMonths(licencePlate, startDate, endDate)),
     billingPeriod: getQuarterTitleWithMonths(year, quarter),
   };
   return result;
@@ -386,7 +378,7 @@ export async function getYearlyCosts(licencePlate: string, yearString: string) {
   const year = parseInt(yearString, 10);
   const { startDate, endDate } = getYearlyStartEndDate(year);
   const result = {
-    ...(await getCostsBasedOnMonths({ licencePlate, startDate, endDate })),
+    ...(await getCostsBasedOnMonths(licencePlate, startDate, endDate)),
     billingPeriod: `${year} (Jan–Dec)`,
   };
   return result;
