@@ -32,7 +32,7 @@ export default async function createPrivateCloudNatsMessage(
   let allianceLabel = '';
   switch (ministry) {
     case Ministry.AG:
-    case Ministry.EMBC:
+    case Ministry.EMCR:
     case Ministry.HOUS:
     case Ministry.MAH:
     case Ministry.PSSG:

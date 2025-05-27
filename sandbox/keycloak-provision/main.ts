@@ -103,7 +103,7 @@ async function main() {
     'dbc',
     'eao',
     'educ',
-    'embc',
+    'emcr',
     'empr',
     'env',
     'fin',

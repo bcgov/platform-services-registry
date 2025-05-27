@@ -40,8 +40,8 @@ export const ministryOptions = [
     label: 'Education and Child Care',
   },
   {
-    value: 'EMBC',
-    label: 'Emergency Management',
+    value: 'EMCR',
+    label: 'Emergency Management and Climate Readiness',
   },
   {
     value: 'EMPR',
