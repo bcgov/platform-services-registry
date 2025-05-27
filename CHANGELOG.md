@@ -1,3 +1,22 @@
+## [0.66.0](https://github.com/bcgov/platform-services-registry/compare/v0.65.1...v0.66.0) (2025-05-27)
+
+### Features
+
+* **2224:** rename ministry EMBC to EMCR ([392a4c5](https://github.com/bcgov/platform-services-registry/commit/392a4c56bccd0b22dbcb3700fe1c64d79cb2b7db))
+* **5600:** display projected values for yearly cost page ([29bbc68](https://github.com/bcgov/platform-services-registry/commit/29bbc68ad098f385e9e7495341f2443676fa0f27))
+* **5654:** allow project team access history tab ([1e91f74](https://github.com/bcgov/platform-services-registry/commit/1e91f74982d37ce7f691bb6af995ecef84f0fd11))
+* **5654:** redesign history view ([8a82ddd](https://github.com/bcgov/platform-services-registry/commit/8a82dddf705fbda3e81372718f69942af8809297))
+* **5689:** update Sysdig Terraform package version ([c4a337e](https://github.com/bcgov/platform-services-registry/commit/c4a337e401cbc28738e394188188920acf905119))
+
+### Bug Fixes
+
+* **5702:** ensure token string is passed for prometheus auth ([e02e843](https://github.com/bcgov/platform-services-registry/commit/e02e8436ec454bea853f74698a4e5012b25e22f6))
+
+### Refactors
+
+* **5312:** improve the resource usage page ([b468bb8](https://github.com/bcgov/platform-services-registry/commit/b468bb8cb12e73a7925fb2589a958b8faf23f10b))
+* **5472:** enforce strict types in private cloud codebase ([bee6fe1](https://github.com/bcgov/platform-services-registry/commit/bee6fe1cba6fe7865e1ed639ae72e0cea1e752c1))
+* **5472:** enforce strict types in public cloud test codebase ([b2f0593](https://github.com/bcgov/platform-services-registry/commit/b2f05930e444b3b138ef1ac014004caedcfc7d54))
 ## [0.65.1](https://github.com/bcgov/platform-services-registry/compare/v0.65.0...v0.65.1) (2025-05-22)
 
 ### Bug Fixes
