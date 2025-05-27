@@ -31,8 +31,8 @@ export const POST = createApiHandler({
     return UnauthorizedResponse();
   }
 
-  const yearlyData = await getYearlyCosts(licencePlate, year);
+  const result = await getYearlyCosts(licencePlate, year);
 
-  const pdfBuffer = await generateYearlyCostPdf({ product, data: yearlyData.items, year });
+  const pdfBuffer = await generateYearlyCostPdf({ product, data: result });
   return PdfResponse(pdfBuffer, `yearly-costs-${year}.pdf`);
 });

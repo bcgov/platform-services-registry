@@ -1,8 +1,8 @@
 import { TooltipItem } from 'chart.js';
-import { YearlyCostData } from '@/types/private-cloud';
-import { formatCurrency } from '@/utils/js';
+import { YearlyCost } from '@/types/private-cloud';
+import { formatCurrency, getMonthNameFromNumber } from '@/utils/js';
 
-export function getYearlyCostChartConfig(yearlyData: YearlyCostData[]) {
+export function getYearlyCostChartConfig({ data }: { data: Pick<YearlyCost, 'months' | 'monthDetails'> }) {
   const options = {
     plugins: {
       title: {
@@ -49,17 +49,27 @@ export function getYearlyCostChartConfig(yearlyData: YearlyCostData[]) {
   };
 
   const chartData = {
-    labels: yearlyData.map((item) => item.monthName),
+    labels: data.months.map(getMonthNameFromNumber),
     datasets: [
       {
-        label: 'CPU Cost CA($)',
-        data: yearlyData.map((item) => item.cpuCost),
-        backgroundColor: '#36A2EB',
+        label: 'CPU Cost (CA$)',
+        data: data.monthDetails.cpuToDate,
+        backgroundColor: '#1E3A8A',
       },
       {
-        label: 'Storage Cost CA($)',
-        data: yearlyData.map((item) => item.storageCost),
-        backgroundColor: '#9966FF',
+        label: 'Storage Cost (CA$)',
+        data: data.monthDetails.storageToDate,
+        backgroundColor: '#047857',
+      },
+      {
+        label: 'CPU Cost - Projected (CA$)',
+        data: data.monthDetails.cpuToProjected,
+        backgroundColor: '#A7C7E7',
+      },
+      {
+        label: 'Storage Cost - Projected (CA$)',
+        data: data.monthDetails.storageToProjected,
+        backgroundColor: '#A8D5BA',
       },
     ],
   };

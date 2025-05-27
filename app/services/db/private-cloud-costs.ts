@@ -2,7 +2,7 @@ import _cloneDeep from 'lodash-es/cloneDeep';
 import _find from 'lodash-es/find';
 import _findIndex from 'lodash-es/findIndex';
 import _orderBy from 'lodash-es/orderBy';
-import { monthNames, namespaceKeys } from '@/constants';
+import { namespaceKeys } from '@/constants';
 import prisma from '@/core/prisma';
 import { Cluster, DecisionStatus, Prisma, RequestType } from '@/prisma/client';
 import { CostItem } from '@/types/private-cloud';
@@ -12,10 +12,11 @@ import {
   getDateFromYyyyMmDd,
   getMonthStartEndDate,
   getQuarterStartEndDate,
-  getQuarterMonths,
   getQuarterTitleWithMonths,
   compareDatesByDay,
   compareDatesByMonth,
+  getYearlyStartEndDate,
+  getMonthsArrayFromDates,
 } from '@/utils/js/date';
 
 const roundToTwoDecimals = (value: number) => Number(value.toFixed(2));
@@ -278,30 +279,30 @@ export async function getMonthlyCosts(licencePlate: string, year: number, oneInd
   };
 }
 
-export async function getQuarterlyCosts(licencePlate: string, year: number, quarter: number) {
-  const { startDate, endDate } = getQuarterStartEndDate(year, quarter);
+async function getCostsBasedOnMonths(licencePlate: string, startDate: Date, endDate: Date) {
   const today = new Date();
+  const year = startDate.getFullYear();
+  const months = getMonthsArrayFromDates(startDate, endDate);
+  const numberOfMonths = months.length;
+  const isTodayInInterval = today >= startDate && today <= endDate;
 
-  const isTodayInQuarter = today >= startDate && today <= endDate;
   const { items, total } = await getCostDetailsForRange(licencePlate, startDate, endDate);
 
   let currentTotal = -1;
   let estimatedGrandTotal = -1;
   let grandTotal = -1;
 
-  if (isTodayInQuarter) {
+  if (isTodayInInterval) {
     currentTotal = total.costToDate;
     estimatedGrandTotal = total.costToTotal;
   } else {
     grandTotal = total.costToTotal;
   }
 
-  const months = getQuarterMonths(quarter);
-
-  const cpuToDate = new Array(3).fill(0);
-  const cpuToProjected = new Array(3).fill(0);
-  const storageToDate = new Array(3).fill(0);
-  const storageToProjected = new Array(3).fill(0);
+  const cpuToDate = new Array(numberOfMonths).fill(0);
+  const cpuToProjected = new Array(numberOfMonths).fill(0);
+  const storageToDate = new Array(numberOfMonths).fill(0);
+  const storageToProjected = new Array(numberOfMonths).fill(0);
 
   const sortedItems = _orderBy(items, ['startDate'], ['desc']);
 
@@ -349,7 +350,6 @@ export async function getQuarterlyCosts(licencePlate: string, year: number, quar
 
   return {
     accountCoding: '123ABC', // placeholder
-    billingPeriod: getQuarterTitleWithMonths(year, quarter),
     currentTotal,
     estimatedGrandTotal,
     grandTotal,
@@ -364,26 +364,24 @@ export async function getQuarterlyCosts(licencePlate: string, year: number, quar
   };
 }
 
+export async function getQuarterlyCosts(licencePlate: string, year: number, quarter: number) {
+  const { startDate, endDate } = getQuarterStartEndDate(year, quarter);
+
+  const result = {
+    ...(await getCostsBasedOnMonths(licencePlate, startDate, endDate)),
+    billingPeriod: getQuarterTitleWithMonths(year, quarter),
+  };
+  return result;
+}
+
 export async function getYearlyCosts(licencePlate: string, yearString: string) {
   const year = parseInt(yearString, 10);
-
-  const items = await Promise.all(
-    Array.from({ length: 12 }, async (_, zeroIndexedMonth) => {
-      const { startDate, endDate } = getMonthStartEndDate(year, zeroIndexedMonth + 1);
-      const { cpu, storage, total } = await getCostDetailsForRange(licencePlate, startDate, endDate);
-
-      return {
-        year,
-        month: zeroIndexedMonth,
-        monthName: monthNames[zeroIndexedMonth],
-        cpuCost: cpu.costToDate,
-        storageCost: storage.costToDate,
-        totalCost: total.costToDate,
-      };
-    }),
-  );
-
-  return { items };
+  const { startDate, endDate } = getYearlyStartEndDate(year);
+  const result = {
+    ...(await getCostsBasedOnMonths(licencePlate, startDate, endDate)),
+    billingPeriod: `${year} (Jan–Dec)`,
+  };
+  return result;
 }
 
 export async function getAdminMonthlyCosts(year: number, oneIndexedMonth: number) {

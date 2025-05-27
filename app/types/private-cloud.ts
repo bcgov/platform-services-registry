@@ -230,3 +230,19 @@ export interface QuarterlyCost {
     storageToProjected: number[];
   };
 }
+
+export interface YearlyCost {
+  accountCoding: string;
+  billingPeriod: string;
+  currentTotal: number;
+  estimatedGrandTotal: number;
+  grandTotal: number;
+  items: CostItem[];
+  months: number[];
+  monthDetails: {
+    cpuToDate: number[];
+    cpuToProjected: number[];
+    storageToDate: number[];
+    storageToProjected: number[];
+  };
+}

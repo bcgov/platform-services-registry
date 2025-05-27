@@ -9,13 +9,13 @@ import {
   Legend,
 } from 'chart.js';
 import { Bar } from 'react-chartjs-2';
-import { YearlyCostData } from '@/types/private-cloud';
+import { YearlyCost } from '@/types/private-cloud';
 import { getYearlyCostChartConfig } from './yearly-cost-chart-data';
 
 ChartJS.register(CategoryScale, LinearScale, BarElement, ChartTitle, Tooltip, Legend);
 
-export default function YearlyCostChart({ yearlyCostData }: { yearlyCostData: YearlyCostData[] }) {
-  const { options, data: chartData } = getYearlyCostChartConfig(yearlyCostData);
+export default function YearlyCostChart({ data }: { data: Pick<YearlyCost, 'months' | 'monthDetails'> }) {
+  const { options, data: chartData } = getYearlyCostChartConfig({ data });
 
   return (
     <Card>

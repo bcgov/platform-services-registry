@@ -122,6 +122,15 @@ export function getQuarterStartEndDate(year: number, quarter: number) {
   };
 }
 
+export function getYearlyStartEndDate(year: number) {
+  const startDate = new Date(year, 0, 1);
+  const endDate = new Date(year, 12, 1, 0, 0, 0, -1);
+  return {
+    startDate,
+    endDate,
+  };
+}
+
 export function getQuarterMonths(quarter: number) {
   const startMonth = (quarter - 1) * 3 + 1; // Convert to 1-indexed
   return [startMonth, startMonth + 1, startMonth + 2];
@@ -206,4 +215,11 @@ export function formatAsYearQuarter(date: Date) {
 export function getMonthNameFromNumber(month: number): string {
   const date = new Date(2000, month - 1); // month is 0-indexed
   return format(date, 'LLLL');
+}
+
+export function getMonthsArrayFromDates(startDate: Date, endDate: Date): number[] {
+  const startMonth = startDate.getMonth() + 1;
+  const endMonth = endDate.getMonth() + 1;
+
+  return Array.from({ length: endMonth - startMonth + 1 }, (_, i) => startMonth + i);
 }
