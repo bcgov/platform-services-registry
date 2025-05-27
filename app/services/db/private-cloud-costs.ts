@@ -283,7 +283,7 @@ async function getProjectedCostsBasedOnMonths(
   startDate: Date,
   endDate: Date,
   licencePlate: string,
-  billinPeriodDescription: string,
+  billingPeriodDescription: string,
   year: number,
   numberOfMonths: number,
   months: number[],
@@ -356,7 +356,7 @@ async function getProjectedCostsBasedOnMonths(
 
   return {
     accountCoding: '123ABC', // placeholder
-    billingPeriod: billinPeriodDescription,
+    billingPeriod: billingPeriodDescription,
     currentTotal,
     estimatedGrandTotal,
     grandTotal,
