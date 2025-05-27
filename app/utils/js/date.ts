@@ -123,9 +123,8 @@ export function getQuarterStartEndDate(year: number, quarter: number) {
 }
 
 export function getYearlyStartEndDate(year: number) {
-  const startDate = new Date(Date.UTC(year, 0, 1, 0, 0, 0, 0));
-  const endDate = new Date(Date.UTC(year, 11, 31, 23, 59, 59, 999));
-
+  const startDate = new Date(year, 0, 1);
+  const endDate = new Date(year, 12, 1, 0, 0, 0, -1);
   return {
     startDate,
     endDate,
