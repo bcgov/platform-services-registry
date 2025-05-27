@@ -16,6 +16,7 @@ import {
   getQuarterTitleWithMonths,
   compareDatesByDay,
   compareDatesByMonth,
+  getYearlyStartEndDate,
 } from '@/utils/js/date';
 
 const roundToTwoDecimals = (value: number) => Number(value.toFixed(2));
@@ -278,38 +279,44 @@ export async function getMonthlyCosts(licencePlate: string, year: number, oneInd
   };
 }
 
-export async function getQuarterlyCosts(licencePlate: string, year: number, quarter: number) {
-  const { startDate, endDate } = getQuarterStartEndDate(year, quarter);
+async function getProjectedCostsBasedOnMonths(
+  startDate: Date,
+  endDate: Date,
+  licencePlate: string,
+  billinPeriodDescription: string,
+  year: number,
+  numberOfMonths: number,
+  months: number[],
+) {
   const today = new Date();
 
-  const isTodayInQuarter = today >= startDate && today <= endDate;
+  const isTodayInInterval = today >= startDate && today <= endDate;
+
   const { items, total } = await getCostDetailsForRange(licencePlate, startDate, endDate);
 
   let currentTotal = -1;
   let estimatedGrandTotal = -1;
   let grandTotal = -1;
 
-  if (isTodayInQuarter) {
+  if (isTodayInInterval) {
     currentTotal = total.costToDate;
     estimatedGrandTotal = total.costToTotal;
   } else {
     grandTotal = total.costToTotal;
   }
 
-  const months = getQuarterMonths(quarter);
-
-  const cpuToDate = new Array(3).fill(0);
-  const cpuToProjected = new Array(3).fill(0);
-  const storageToDate = new Array(3).fill(0);
-  const storageToProjected = new Array(3).fill(0);
+  const cpuToDate = new Array(numberOfMonths).fill(0);
+  const cpuToProjected = new Array(numberOfMonths).fill(0);
+  const storageToDate = new Array(numberOfMonths).fill(0);
+  const storageToProjected = new Array(numberOfMonths).fill(0);
 
   const sortedItems = _orderBy(items, ['startDate'], ['desc']);
 
   for (let i = 0; i < months.length; i++) {
     const month = months[i];
-    const jsMonth = month - 1; // convert to 0-indexed
+    const jsMonth = month - 1;
     const monthStart = new Date(year, jsMonth, 1);
-    const monthEnd = new Date(year, jsMonth + 1, 1, 0, 0, 0, -1);
+    const monthEnd = new Date(year, jsMonth + 1, 0, 0, 0, -1);
 
     const changePoints = new Set<Date>();
 
@@ -349,7 +356,7 @@ export async function getQuarterlyCosts(licencePlate: string, year: number, quar
 
   return {
     accountCoding: '123ABC', // placeholder
-    billingPeriod: getQuarterTitleWithMonths(year, quarter),
+    billingPeriod: billinPeriodDescription,
     currentTotal,
     estimatedGrandTotal,
     grandTotal,
@@ -364,26 +371,19 @@ export async function getQuarterlyCosts(licencePlate: string, year: number, quar
   };
 }
 
+export async function getQuarterlyCosts(licencePlate: string, year: number, quarter: number) {
+  const { startDate, endDate } = getQuarterStartEndDate(year, quarter);
+  const months = getQuarterMonths(quarter);
+  const result = getProjectedCostsBasedOnMonths(startDate, endDate, licencePlate, year.toString(), year, 3, months);
+  return result;
+}
+
 export async function getYearlyCosts(licencePlate: string, yearString: string) {
   const year = parseInt(yearString, 10);
-
-  const items = await Promise.all(
-    Array.from({ length: 12 }, async (_, zeroIndexedMonth) => {
-      const { startDate, endDate } = getMonthStartEndDate(year, zeroIndexedMonth + 1);
-      const { cpu, storage, total } = await getCostDetailsForRange(licencePlate, startDate, endDate);
-
-      return {
-        year,
-        month: zeroIndexedMonth,
-        monthName: monthNames[zeroIndexedMonth],
-        cpuCost: cpu.costToDate,
-        storageCost: storage.costToDate,
-        totalCost: total.costToDate,
-      };
-    }),
-  );
-
-  return { items };
+  const { startDate, endDate } = getYearlyStartEndDate(year);
+  const months = Array.from({ length: 12 }, (_, i) => i + 1);
+  const result = getProjectedCostsBasedOnMonths(startDate, endDate, licencePlate, year.toString(), year, 12, months);
+  return result;
 }
 
 export async function getAdminMonthlyCosts(year: number, oneIndexedMonth: number) {

@@ -122,6 +122,16 @@ export function getQuarterStartEndDate(year: number, quarter: number) {
   };
 }
 
+export function getYearlyStartEndDate(year: number) {
+  const startDate = new Date(Date.UTC(year, 0, 1, 0, 0, 0, 0));
+  const endDate = new Date(Date.UTC(year, 11, 31, 23, 59, 59, 999));
+
+  return {
+    startDate,
+    endDate,
+  };
+}
+
 export function getQuarterMonths(quarter: number) {
   const startMonth = (quarter - 1) * 3 + 1; // Convert to 1-indexed
   return [startMonth, startMonth + 1, startMonth + 2];

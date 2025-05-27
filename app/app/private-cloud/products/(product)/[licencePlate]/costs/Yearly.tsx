@@ -1,11 +1,13 @@
 'use client';
+
 import { Button, Tooltip } from '@mantine/core';
 import { YearPickerInput } from '@mantine/dates';
 import { useQuery } from '@tanstack/react-query';
 import { Session } from 'next-auth';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import LoadingBox from '@/components/generic/LoadingBox';
 import YearlyCostChart from '@/components/private-cloud/yearly-cost/YearlyCostChart';
+import YearlyCostSummary from '@/components/private-cloud/yearly-cost/YearlyCostSummary';
 import YearlyCostTable from '@/components/private-cloud/yearly-cost/YearlyCostTable';
 import { downloadPrivateCloudYearlyCosts, getYearlyCosts } from '@/services/backend/private-cloud/products';
 
@@ -14,7 +16,7 @@ export default function Yearly({ licencePlate, session }: { licencePlate: string
   const [downloading, setDownloading] = useState(false);
 
   const year = selectedYear.getFullYear().toString();
-  const { data, isLoading } = useQuery({
+  const { data, isLoading, isError } = useQuery({
     queryKey: ['costItems', licencePlate, year],
     queryFn: () => getYearlyCosts(licencePlate, year),
     enabled: !!licencePlate && !!selectedYear,
@@ -27,8 +29,6 @@ export default function Yearly({ licencePlate, session }: { licencePlate: string
   const handleChange = (year: Date | null) => {
     setSelectedYear(year ?? new Date());
   };
-
-  const yearlyCostData = data?.items;
 
   return (
     <div>
@@ -44,14 +44,14 @@ export default function Yearly({ licencePlate, session }: { licencePlate: string
             />
           </Tooltip>
         </div>
-        {yearlyCostData.length > 0 && (
+        {data.items.length > 0 && (
           <Button
             loading={downloading}
             onClick={async () => {
-              if (!data) return;
-              setDownloading(true);
-              await downloadPrivateCloudYearlyCosts(licencePlate, year);
-              setDownloading(false);
+              // if (!data) return;
+              // setDownloading(true);
+              // await downloadPrivateCloudYearlyCosts(licencePlate, year);
+              // setDownloading(false);
             }}
           >
             Download PDF
@@ -59,14 +59,16 @@ export default function Yearly({ licencePlate, session }: { licencePlate: string
         )}
       </div>
 
+      <YearlyCostSummary data={data} />
+
       {data.items.length > 0 && (
         <div className="my-8">
-          <YearlyCostChart yearlyCostData={yearlyCostData} />
+          <YearlyCostChart data={{ months: data.months, monthDetails: data.monthDetails }} />
         </div>
       )}
 
       <LoadingBox isLoading={isLoading}>
-        <YearlyCostTable yearlyCostData={yearlyCostData} currentYear={year} />
+        <YearlyCostTable data={{ items: data.items, months: data.months, monthDetails: data.monthDetails }} />
       </LoadingBox>
     </div>
   );
