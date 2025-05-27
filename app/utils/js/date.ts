@@ -216,3 +216,25 @@ export function getMonthNameFromNumber(month: number): string {
   const date = new Date(2000, month - 1); // month is 0-indexed
   return format(date, 'LLLL');
 }
+
+export function getMonthsArrayFromDates(startDate: Date, endDate: Date) {
+  const monthsArray: number[] = [];
+
+  let currentMonth = startDate.getMonth() + 1;
+  let currentYear = startDate.getFullYear();
+
+  const endMonth = endDate.getMonth() + 1;
+  const endYear = endDate.getFullYear();
+
+  while (currentYear < endYear || (currentYear === endYear && currentMonth <= endMonth)) {
+    monthsArray.push(currentMonth);
+
+    currentMonth++;
+    if (currentMonth > 12) {
+      currentMonth = 1;
+      currentYear++;
+    }
+  }
+
+  return monthsArray;
+}

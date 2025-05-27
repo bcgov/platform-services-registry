@@ -83,7 +83,7 @@ export async function generateYearlyCostPdf({
       <YearlyCostSummary data={data} />
       <div className="border border-gray-200 border-solid rounded p-4 bg-white my-6">
         <div className="relative w-full">
-          <img src={chartImageDataURL} className="w-full h-auto" alt="Quarterly Cost Chart" />
+          <img src={chartImageDataURL} className="w-full h-auto" alt="Yearly Cost Chart" />
         </div>
       </div>
       <YearlyCostTable data={{ items: data.items, months: data.months, monthDetails: data.monthDetails }} />

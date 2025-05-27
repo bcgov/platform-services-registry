@@ -2,7 +2,7 @@ import _cloneDeep from 'lodash-es/cloneDeep';
 import _find from 'lodash-es/find';
 import _findIndex from 'lodash-es/findIndex';
 import _orderBy from 'lodash-es/orderBy';
-import { monthNames, namespaceKeys } from '@/constants';
+import { namespaceKeys } from '@/constants';
 import prisma from '@/core/prisma';
 import { Cluster, DecisionStatus, Prisma, RequestType } from '@/prisma/client';
 import { CostItem } from '@/types/private-cloud';
@@ -12,11 +12,11 @@ import {
   getDateFromYyyyMmDd,
   getMonthStartEndDate,
   getQuarterStartEndDate,
-  getQuarterMonths,
   getQuarterTitleWithMonths,
   compareDatesByDay,
   compareDatesByMonth,
   getYearlyStartEndDate,
+  getMonthsArrayFromDates,
 } from '@/utils/js/date';
 
 const roundToTwoDecimals = (value: number) => Number(value.toFixed(2));
@@ -279,17 +279,19 @@ export async function getMonthlyCosts(licencePlate: string, year: number, oneInd
   };
 }
 
-async function getCostsBasedOnMonths(
-  startDate: Date,
-  endDate: Date,
-  licencePlate: string,
-  billingPeriodDescription: string,
-  year: number,
-  numberOfMonths: number,
-  months: number[],
-) {
+async function getCostsBasedOnMonths({
+  licencePlate,
+  startDate,
+  endDate,
+}: {
+  licencePlate: string;
+  startDate: Date;
+  endDate: Date;
+}) {
   const today = new Date();
-
+  const year = startDate.getFullYear();
+  const months = getMonthsArrayFromDates(startDate, endDate);
+  const numberOfMonths = months.length;
   const isTodayInInterval = today >= startDate && today <= endDate;
 
   const { items, total } = await getCostDetailsForRange(licencePlate, startDate, endDate);
@@ -356,7 +358,6 @@ async function getCostsBasedOnMonths(
 
   return {
     accountCoding: '123ABC', // placeholder
-    billingPeriod: billingPeriodDescription,
     currentTotal,
     estimatedGrandTotal,
     grandTotal,
@@ -373,24 +374,21 @@ async function getCostsBasedOnMonths(
 
 export async function getQuarterlyCosts(licencePlate: string, year: number, quarter: number) {
   const { startDate, endDate } = getQuarterStartEndDate(year, quarter);
-  const months = getQuarterMonths(quarter);
-  const result = await getCostsBasedOnMonths(
-    startDate,
-    endDate,
-    licencePlate,
-    getQuarterTitleWithMonths(year, quarter),
-    year,
-    3,
-    months,
-  );
+
+  const result = {
+    ...(await getCostsBasedOnMonths({ licencePlate, startDate, endDate })),
+    billingPeriod: getQuarterTitleWithMonths(year, quarter),
+  };
   return result;
 }
 
 export async function getYearlyCosts(licencePlate: string, yearString: string) {
   const year = parseInt(yearString, 10);
   const { startDate, endDate } = getYearlyStartEndDate(year);
-  const months = Array.from({ length: 12 }, (_, i) => i + 1);
-  const result = await getCostsBasedOnMonths(startDate, endDate, licencePlate, `${year} (Jan–Dec)`, year, 12, months);
+  const result = {
+    ...(await getCostsBasedOnMonths({ licencePlate, startDate, endDate })),
+    billingPeriod: `${year} (Jan–Dec)`,
+  };
   return result;
 }
 
