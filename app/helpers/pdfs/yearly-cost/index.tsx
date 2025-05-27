@@ -1,7 +1,7 @@
 import { createCanvas } from 'canvas';
 import Chart from 'chart.js/auto';
 import { tailwindToCSS } from 'tw-to-css';
-import { getQuarterlyCostChartConfig } from '@/components/private-cloud/quarterly-cost/quarterly-cost-chart-data';
+import { getYearlyCostChartConfig } from '@/components/private-cloud/yearly-cost/yearly-cost-chart-data';
 import YearlyCostSummary from '@/components/private-cloud/yearly-cost/YearlyCostSummary';
 import YearlyCostTable from '@/components/private-cloud/yearly-cost/YearlyCostTable';
 import { WeasyPrint } from '@/services/weasyprint/client';
@@ -47,7 +47,7 @@ const css = `
 
 // See https://www.chartjs.org/docs/latest/getting-started/using-from-node-js.html
 async function getChartDataURL(data) {
-  const { options, data: chartData } = getQuarterlyCostChartConfig({ data });
+  const { options, data: chartData } = getYearlyCostChartConfig({ data });
 
   options.plugins.legend.labels.font.size = 30;
   options.scales.x.ticks.font.size = 30;
