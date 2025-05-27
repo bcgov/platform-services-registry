@@ -374,7 +374,15 @@ async function getProjectedCostsBasedOnMonths(
 export async function getQuarterlyCosts(licencePlate: string, year: number, quarter: number) {
   const { startDate, endDate } = getQuarterStartEndDate(year, quarter);
   const months = getQuarterMonths(quarter);
-  const result = getProjectedCostsBasedOnMonths(startDate, endDate, licencePlate, year.toString(), year, 3, months);
+  const result = await getProjectedCostsBasedOnMonths(
+    startDate,
+    endDate,
+    licencePlate,
+    year.toString(),
+    year,
+    3,
+    months,
+  );
   return result;
 }
 
@@ -382,7 +390,15 @@ export async function getYearlyCosts(licencePlate: string, yearString: string) {
   const year = parseInt(yearString, 10);
   const { startDate, endDate } = getYearlyStartEndDate(year);
   const months = Array.from({ length: 12 }, (_, i) => i + 1);
-  const result = getProjectedCostsBasedOnMonths(startDate, endDate, licencePlate, year.toString(), year, 12, months);
+  const result = await getProjectedCostsBasedOnMonths(
+    startDate,
+    endDate,
+    licencePlate,
+    year.toString(),
+    year,
+    12,
+    months,
+  );
   return result;
 }
 
