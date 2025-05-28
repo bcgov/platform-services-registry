@@ -2,7 +2,7 @@ version: '3.6'
 
 services:
   mongo:
-    image: mongo:4.4
+    image: mongo:8.0
     environment:
       MONGO_INITDB_ROOT_USERNAME: admin
       MONGO_INITDB_ROOT_PASSWORD: pass # pragma: allowlist secret
