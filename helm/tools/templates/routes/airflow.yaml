@@ -16,5 +16,5 @@ spec:
     termination: edge
   to:
     kind: Service
-    name: airflow-webserver
+    name: airflow-api-server
 {{- end }}

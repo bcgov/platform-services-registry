@@ -5,6 +5,8 @@ type: application
 version: 0.1.0
 appVersion: "0.1.0"
 dependencies:
+  # helm repo add airflow https://airflow.apache.org
+  # helm search repo airflow/airflow --versions
   - name: airflow
     version: "1.16.0"
     repository: "https://airflow.apache.org/"

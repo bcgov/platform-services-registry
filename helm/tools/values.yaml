@@ -48,15 +48,15 @@ airflow:
 
   defaultAirflowRepository: ghcr.io/bcgov/pltsvc-tools-airflow
   # See https://github.com/bcgov/platform-services-registry/pkgs/container/pltsvc-tools-airflow
-  defaultAirflowTag: "067d959273223783effe79da6d829995b0522f56" # pragma: allowlist secret
+  defaultAirflowTag: "2b73bf2443ecc9af5a6700070b255870c78d6adb" # pragma: allowlist secret
 
   # See https://github.com/apache/airflow/blob/4a4913c6f729756b528a0f0095c0273e853bc197/chart/values.yaml#L77
-  airflowVersion: "2.9.3"
+  airflowVersion: "3.0.1"
 
   # See https://github.com/apache/airflow/blob/4a4913c6f729756b528a0f0095c0273e853bc197/chart/values.yaml#L80
   images:
-    useDefaultImageForMigration: true
-    migrationsWaitTimeout: 60
+    useDefaultImageForMigration: false
+    migrationsWaitTimeout: 120
 
   # See https://github.com/apache/airflow/blob/4a4913c6f729756b528a0f0095c0273e853bc197/chart/values.yaml#L257
   rbac:
@@ -126,6 +126,7 @@ airflow:
 
   # See https://github.com/apache/airflow/blob/4a4913c6f729756b528a0f0095c0273e853bc197/chart/values.yaml#L1130
   webserver:
+    enabled: true
     replicas: 1
     resources:
       limits:
@@ -134,6 +135,8 @@ airflow:
       requests:
         cpu: 500m
         memory: 1Gi
+    waitForMigrations:
+      enabled: false
 
   # See https://github.com/apache/airflow/blob/4a4913c6f729756b528a0f0095c0273e853bc197/chart/values.yaml#L1342
   triggerer:
