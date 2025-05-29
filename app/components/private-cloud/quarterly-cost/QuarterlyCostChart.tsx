@@ -20,7 +20,7 @@ export default function QuarterlyCostChart({ data }: { data: Pick<QuarterlyCost,
   return (
     <Card>
       <Title>Quarterly Cost Breakdown for the selected quarter</Title>
-      <div className="relative">
+      <div className="relative min-h-[45rem]">
         <Bar options={options} data={chartData} />
       </div>
     </Card>

@@ -25,6 +25,7 @@ export function getYearlyCostChartConfig({ data }: { data: Pick<YearlyCost, 'mon
       },
     },
     responsive: true,
+    maintainAspectRatio: false,
     scales: {
       x: {
         stacked: true,

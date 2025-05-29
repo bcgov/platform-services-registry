@@ -25,6 +25,7 @@ export function getQuarterlyCostChartConfig({ data }: { data: Pick<QuarterlyCost
       },
     },
     responsive: true,
+    maintainAspectRatio: false,
     scales: {
       x: {
         stacked: true,
