@@ -20,7 +20,7 @@ export default function YearlyCostChart({ data }: { data: Pick<YearlyCost, 'mont
   return (
     <Card>
       <Title>Monthly Cost Breakdown for the selected year</Title>
-      <div className="relative">
+      <div className="relative min-h-[45rem]">
         <Bar options={options} data={chartData} />
       </div>
     </Card>
