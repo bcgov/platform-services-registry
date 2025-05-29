@@ -25,6 +25,7 @@ export function getMonthlyCostChartConfig({ data }: { data: Pick<MonthlyCost, 'd
       },
     },
     responsive: true,
+    maintainAspectRatio: false,
     scales: {
       x: {
         stacked: true,
