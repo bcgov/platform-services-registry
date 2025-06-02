@@ -11,6 +11,7 @@ import FormCheckbox from '@/components/generic/checkbox/FormCheckbox';
 import FormError from '@/components/generic/FormError';
 import { publicCloudTeamEmail } from '@/constants';
 import { createModal } from '@/core/modal';
+import { Provider } from '@/prisma/client';
 import { createPublicCloudProduct } from '@/services/backend/public-cloud/products';
 import { success } from '../notification';
 import { openNotificationModal } from './notification';
@@ -29,17 +30,27 @@ export const openPublicCloudProductCreateSubmitModal = createModal<ModalProps, M
     title: 'All Set?',
   },
   Component: function ({ productData, state, closeModal }) {
+    const isAws = [Provider.AWS, Provider.AWS_LZA].includes(productData.provider);
+
+    const validationSchema = z.object({
+      consent1: z.boolean().refine((val) => val === true, {
+        message: 'Please confirm the agreement.',
+      }),
+      consent2: isAws
+        ? z.boolean().refine((val) => val === true, {
+            message: 'Please confirm the agreement.',
+          })
+        : z.boolean().optional(),
+    });
+
+    const defaultValues = {
+      consent1: false,
+      consent2: false,
+    };
+
     const methods = useForm({
-      resolver: zodResolver(
-        z.object({
-          consent1: z.boolean().refine((bool) => bool == true, { message: 'Please confirm the agreement.' }),
-          consent2: z.boolean().refine((bool) => bool == true, { message: 'Please confirm the agreement.' }),
-        }),
-      ),
-      defaultValues: {
-        consent1: false,
-        consent2: false,
-      },
+      resolver: zodResolver(validationSchema),
+      defaultValues,
     });
 
     const {
@@ -123,13 +134,18 @@ export const openPublicCloudProductCreateSubmitModal = createModal<ModalProps, M
             </FormCheckbox>
             <FormError field="consent1" />
 
-            <FormCheckbox id="consent2" inputProps={register('consent2')}>
-              <p className="text-sm text-gray-900">
-                By checking this box, I confirm that the ministry product team is liable to pay the base charge of USD
-                200 to 300 per month for each project set created.
-              </p>
-            </FormCheckbox>
-            <FormError field="consent2" />
+            {[Provider.AWS, Provider.AWS_LZA].includes(productData.provider) && (
+              <>
+                <FormCheckbox id="consent2" inputProps={register('consent2')}>
+                  <p className="text-sm text-gray-900">
+                    By checking this box, I confirm that the ministry product team is liable to pay the base charge of
+                    USD 50 to USD 75 per account, up to around USD $200 to $300 when 4 accounts are created for this
+                    project set.
+                  </p>
+                </FormCheckbox>
+                <FormError field="consent2" />
+              </>
+            )}
 
             <Grid className="mt-2">
               <Grid.Col span={4}></Grid.Col>

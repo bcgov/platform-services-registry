@@ -51,7 +51,8 @@ export default function Budget({ disabled, mode }: { disabled?: boolean; mode?: 
       calculatorLink = <ExternalLink href="https://calculator.aws/#/">AWS Cost Calculator</ExternalLink>;
       alert = (
         <Alert variant="light" color="blue" title="" icon={<IconInfoCircle />} className="mt-1">
-          There will be a base charge of USD 200 to 300 per month for each project set created
+          There will be a base charge of USD 50 to USD 75 per account, up to around USD $200 to $300 when 4 accounts are
+          created for this project set
         </Alert>
       );
       currency = 'USD';
