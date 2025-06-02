@@ -21,8 +21,6 @@ app:
     "AWS_ROLES_BASE_URL": "https://dev.loginproxy.gov.bc.ca/auth"
     "AWS_ROLES_IDENTITY_PROVIDER": "azureidir"
     "AWS_ROLES_REALM_NAME": "public-cloud"
-    "YEARLY_UNIT_PRICE_CPU": "10"
-    "YEARLY_UNIT_PRICE_STORAGE": "5"
 
   route:
     enabled: true

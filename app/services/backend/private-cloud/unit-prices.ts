@@ -28,3 +28,8 @@ export async function deletePrivateCloudUnitPrice(date: YyyyMmDd) {
   const result = await instance.delete<PrivateCloudUnitPriceBody>(`/${date}`).then((res) => res.data);
   return result;
 }
+
+export async function getCurrentPrivateCloudUnitPrice() {
+  const result = await instance.get<PrivateCloudUnitPrice>('/current').then((res) => res.data);
+  return result;
+}

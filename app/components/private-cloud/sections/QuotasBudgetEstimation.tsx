@@ -1,12 +1,14 @@
 import { Badge, Table } from '@mantine/core';
 import { IconArrowNarrowDownDashed } from '@tabler/icons-react';
+import { useQuery } from '@tanstack/react-query';
 import _get from 'lodash-es/get';
 import _startCase from 'lodash-es/startCase';
 import { useSession } from 'next-auth/react';
-import { Fragment } from 'react';
+import { Fragment, useState } from 'react';
+import FormSingleSelect from '@/components/generic/select/FormSingleSelect';
 import { namespaceKeys, resourceKeys } from '@/constants';
 import { ResourceRequestsEnv } from '@/prisma/client';
-import { useAppState } from '@/states/global';
+import { getCurrentPrivateCloudUnitPrice } from '@/services/backend/private-cloud/unit-prices';
 import { cn, formatCurrency, isLeapYear } from '@/utils/js';
 
 function Estimation({ value, price, unit, diff = 0 }: { value: number; price: number; unit: string; diff?: number }) {
@@ -154,22 +156,43 @@ function EnvDetails({
   );
 }
 
+const periodOptions = [
+  { label: 'Daily', value: 'daily' },
+  { label: 'Monthly', value: 'monthly' },
+  { label: 'Quarterly', value: 'quarterly' },
+  { label: 'Yearly', value: 'yearly' },
+];
+
+type Period = 'daily' | 'monthly' | 'quarterly' | 'yearly';
+
 export default function QuotasBudgetEstimation({
   originalData,
   formData,
+  isGoldDR,
   className,
 }: {
   originalData?: ResourceRequestsEnv;
   formData: ResourceRequestsEnv;
+  isGoldDR: boolean;
   className?: string;
 }) {
   const { data: session } = useSession();
-  const [, appSnapshot] = useAppState();
+  const [period, setPeriod] = useState<Period>('monthly');
 
-  if (!session?.previews.costRecovery || !appSnapshot) return null;
+  const { data: currentUnitPrice, isLoading: isCurrentUnitPriceLoading } = useQuery({
+    queryKey: ['currentUnitPrice'],
+    queryFn: () => getCurrentPrivateCloudUnitPrice(),
+  });
 
-  const unitPriceCpu = appSnapshot.info.YEARLY_UNIT_PRICE_CPU;
-  const unitPriceStorage = appSnapshot.info.YEARLY_UNIT_PRICE_STORAGE;
+  if (!session?.previews.costRecovery || isCurrentUnitPriceLoading) return null;
+
+  let unitPriceCpu = currentUnitPrice?.cpu ?? 0;
+  let unitPriceStorage = currentUnitPrice?.storage ?? 0;
+
+  if (isGoldDR) {
+    unitPriceCpu *= 2;
+    unitPriceStorage *= 2;
+  }
 
   const metadata: Metadata = {
     development: {
@@ -309,12 +332,65 @@ export default function QuotasBudgetEstimation({
   const scenarios = [
     { label: 'Daily', division: leapYear ? 366 : 365, leapYear },
     { label: 'Monthly', division: 12 },
+    { label: 'Quarterly', division: 4 },
     { label: 'Yearly', division: 1 },
   ];
 
+  const currentScenario = scenarios.find((s) => s.label.toLowerCase() === period.toLowerCase());
+  if (!currentScenario) {
+    return null;
+  }
+
+  const scenarioDetail = (
+    <Fragment>
+      <Table.Tr className="border-t-2 border-t-gray-800">
+        <Table.Td colSpan={5}>
+          <span className="font-bold mr-1">{currentScenario.label}</span>
+          {currentScenario.leapYear && (
+            <Badge size="sm" className="mr-3">
+              Leap year
+            </Badge>
+          )}
+          <span className="text-sm italic text-gray-600">
+            {formatCurrency(unitPriceCpu / currentScenario.division)} per CPU Core /{' '}
+            {formatCurrency(unitPriceStorage / currentScenario.division)} per Storage GiB
+          </span>
+        </Table.Td>
+      </Table.Tr>
+      <Table.Tr>
+        {namespaceKeys.map((namespace) => {
+          return (
+            <Table.Td key={namespace} className="align-top px-1">
+              <EnvDetails envData={metadata[namespace]} division={currentScenario.division} />
+            </Table.Td>
+          );
+        })}
+        <Table.Td className="align-top px-1">
+          <EnvDetails envData={metadata.total} division={currentScenario.division} isTotal />
+        </Table.Td>
+      </Table.Tr>
+    </Fragment>
+  );
+
   return (
     <>
-      <div className="font-bold text-lg">Cost Estimation</div>
+      <div className="font-bold text-lg flex justify-between mb-1">
+        <span>Cost Estimation</span>
+        <div>
+          <span className="mr-1 text-sm">Period:</span>
+          <FormSingleSelect
+            name="period"
+            value={period}
+            data={periodOptions}
+            onChange={(value) => {
+              if (value) {
+                setPeriod(value as Period);
+              }
+            }}
+            classNames={{ wrapper: 'inline-block' }}
+          />
+        </div>
+      </div>
       <Table.ScrollContainer minWidth={500}>
         <Table highlightOnHover withTableBorder withColumnBorders>
           <Table.Thead>
@@ -327,40 +403,7 @@ export default function QuotasBudgetEstimation({
               <Table.Th className="text-center">Total</Table.Th>
             </Table.Tr>
           </Table.Thead>
-          <Table.Tbody className="border-b-2 border-b-gray-800">
-            {scenarios.map((scenario) => {
-              return (
-                <Fragment key={scenario.label}>
-                  <Table.Tr className="border-t-2 border-t-gray-800">
-                    <Table.Td colSpan={5}>
-                      <span className="font-bold mr-1">{scenario.label}</span>
-                      {scenario.leapYear && (
-                        <Badge size="sm" className="mr-3">
-                          Leap year
-                        </Badge>
-                      )}
-                      <span className="text-sm italic text-gray-600">
-                        {formatCurrency(unitPriceCpu / scenario.division)} per CPU Core /{' '}
-                        {formatCurrency(unitPriceStorage / scenario.division)} per Storage GiB
-                      </span>
-                    </Table.Td>
-                  </Table.Tr>
-                  <Table.Tr>
-                    {namespaceKeys.map((namespace) => {
-                      return (
-                        <Table.Td key={namespace} className="align-top px-1">
-                          <EnvDetails envData={metadata[namespace]} division={scenario.division} />
-                        </Table.Td>
-                      );
-                    })}
-                    <Table.Td className="align-top px-1">
-                      <EnvDetails envData={metadata.total} division={scenario.division} isTotal />
-                    </Table.Td>
-                  </Table.Tr>
-                </Fragment>
-              );
-            })}
-          </Table.Tbody>
+          <Table.Tbody className="border-b-2 border-b-gray-800">{scenarioDetail}</Table.Tbody>
         </Table>
       </Table.ScrollContainer>
     </>

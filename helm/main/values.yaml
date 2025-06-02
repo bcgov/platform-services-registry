@@ -66,8 +66,6 @@ app:
     "AWS_ROLES_REALM_NAME": ""
     "M365_URL": "https://graph.microsoft.com"
     "WEASYPRINT_URL": "http://weasyprint:8080"
-    "YEARLY_UNIT_PRICE_CPU": "0"
-    "YEARLY_UNIT_PRICE_STORAGE": "0"
 
   envSecretName: pltsvc # pragma: allowlist secret
 
