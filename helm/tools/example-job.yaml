@@ -5,11 +5,19 @@ metadata:
 spec:
   template:
     spec:
+      automountServiceAccountToken: false
       containers:
-      - name: airflow-init-db
-        image: apache/airflow
-        args: ["db", "init"]
-        env:
-          - name: AIRFLOW__DATABASE__SQL_ALCHEMY_CONN
-            value: postgresql://<username>:<password>@secdash-postgresql:5432/airflow # pragma: allowlist secret
+        - name: airflow-init-db
+          image: apache/airflow
+          args: ["db", "init"]
+          env:
+            - name: AIRFLOW__DATABASE__SQL_ALCHEMY_CONN
+              value: postgresql://<username>:<password>@secdash-postgresql:5432/airflow # pragma: allowlist secret
+          resources:
+            limits:
+              memory: 512Mi
+              cpu: 500m
+            requests:
+              memory: 256Mi
+              cpu: 250m
       restartPolicy: Never
