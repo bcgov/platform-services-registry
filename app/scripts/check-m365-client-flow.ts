@@ -25,7 +25,7 @@ async function listUsers() {
   });
 
   console.log('--- User List ---');
-  response.data.value.forEach((user: any, index: number) => {
+  response.data.value.forEach((user: { displayName: string; userPrincipalName: string }, index: number) => {
     console.log(`${index + 1}. ${user.displayName} <${user.userPrincipalName}>`);
   });
 }
