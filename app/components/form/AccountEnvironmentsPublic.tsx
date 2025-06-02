@@ -53,7 +53,7 @@ export default function AccountEnvironmentsPublic({
               size="compact-sm"
               onClick={() => {
                 ['production', 'development', 'test', 'tools'].forEach((key) => {
-                  if (!selected || !selected[key as keyof EnvironmentsEnabled]) {
+                  if (!selected?.[key as keyof EnvironmentsEnabled]) {
                     setValue(`environmentsEnabled.${key}`, false, { shouldDirty: true });
                   }
                 });

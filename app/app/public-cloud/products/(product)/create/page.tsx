@@ -26,7 +26,7 @@ import { publicCloudCreateRequestBodySchema } from '@/validation-schemas/public-
 const publicCloudProductNew = createClientPage({
   roles: [GlobalRole.User],
 });
-export default publicCloudProductNew(({}) => {
+export default publicCloudProductNew(() => {
   const form = useForm({
     resolver: zodResolver(publicCloudCreateRequestBodySchema),
     defaultValues: {

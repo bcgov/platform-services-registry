@@ -32,7 +32,7 @@ const privateCloudRequestRequest = createClientPage({
   roles: [GlobalRole.User],
   validations: { pathParams: pathParamSchema },
 });
-export default privateCloudRequestRequest(({}) => {
+export default privateCloudRequestRequest(() => {
   const [, snap] = usePrivateProductState();
 
   useEffect(() => {

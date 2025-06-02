@@ -89,14 +89,14 @@ function EnvDetails({
     summary = (
       <div className={cn('text-right text-red-600 italic')}>
         <span className="mr-1">{formatCurrency(Math.abs(totalDiff / division))}</span>
-        increased
+        <span>increased</span>
       </div>
     );
   } else if (decreased) {
     summary = (
       <div className={cn('text-right text-blue-600 italic')}>
         <span className="mr-1">{formatCurrency(Math.abs(totalDiff / division))}</span>
-        decreased
+        <span>decreased</span>
       </div>
     );
   }

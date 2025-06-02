@@ -84,7 +84,7 @@ export default function ProductAWSRoles() {
   }
 
   if (users) {
-    rows = [...users?.users];
+    rows = [...(users.users || [])];
   }
 
   useEffect(() => {

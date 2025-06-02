@@ -1,4 +1,4 @@
-import { HoverCard, Group } from '@mantine/core';
+import { HoverCard, UnstyledButton } from '@mantine/core';
 import { useDisclosure } from '@mantine/hooks';
 import { useSession } from 'next-auth/react';
 import ExternalLink from '@/components/generic/button/ExternalLink';
@@ -28,9 +28,9 @@ export default function ProductsCard({
   return (
     <HoverCard shadow="md" position="top">
       <HoverCard.Target>
-        <div className={cn('cursor-help inline-block', className)} onMouseEnter={open} onMouseLeave={close}>
+        <UnstyledButton className={cn('cursor-help inline-block', className)} onMouseEnter={open} onMouseLeave={close}>
           {children}
-        </div>
+        </UnstyledButton>
       </HoverCard.Target>
       <HoverCard.Dropdown>
         <div className="overflow-y-auto max-h-80">

@@ -33,7 +33,7 @@ export async function generateUserImage(email: string): Promise<string> {
     const text = initials;
 
     if (!context) {
-      reject('Canvas not supported');
+      reject(new Error('Canvas not supported'));
       return;
     }
 
@@ -52,7 +52,7 @@ export async function generateUserImage(email: string): Promise<string> {
         const imageUrl = URL.createObjectURL(blob);
         resolve(imageUrl);
       } else {
-        reject('User image generation failed');
+        reject(new Error('User image generation failed'));
       }
     }, 'image/jpeg');
   });

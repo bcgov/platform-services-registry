@@ -56,13 +56,15 @@ async function getChartDataURL(data) {
   const canvas = createCanvas(1600 * SCALE, 800 * SCALE);
   const ctx = canvas.getContext('2d');
 
-  new Chart(ctx as any, {
+  const chart = new Chart(ctx as any, {
     type: 'bar',
     data: chartData,
     options,
   });
 
   const dataURL = canvas.toDataURL();
+
+  chart.destroy();
   return dataURL;
 }
 

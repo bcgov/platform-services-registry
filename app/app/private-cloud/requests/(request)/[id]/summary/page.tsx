@@ -32,7 +32,7 @@ const Layout = createClientPage({
   roles: [GlobalRole.User],
   validations: { pathParams: pathParamSchema },
 });
-export default Layout(({}) => {
+export default Layout(() => {
   const [, snap] = usePrivateProductState();
 
   let dataSet = [
