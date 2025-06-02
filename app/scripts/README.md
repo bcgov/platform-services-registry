@@ -13,3 +13,23 @@ This script identifies legacy private cloud products created before the developm
     ```
 
 4. Check the output file `dangling-namespaces.json` in the same directory as the script.
+
+## `check-m365-client-flow.ts`
+
+This script authenticates with Microsoft 365 using the **client credentials flow** and verifies access to the Microsoft Graph API by listing the first 10 users in the tenant.
+
+### Prerequisites
+
+1. Create a `.env.local` file in the root of your project and set the following environment variables:
+
+    ```env
+    AZURE_TENANT_ID=<your-tenant-id>
+    AZURE_CLIENT_ID=<your-client-id>
+    AZURE_CLIENT_SECRET=<your-client-secret>
+    ```
+
+2. Run the script from the `/app` directory using:
+
+    ```sh
+    npx ts-node -r dotenv/config -r tsconfig-paths/register scripts/check-m365-client-flow.ts dotenv_config_path=.env.local
+    ```
