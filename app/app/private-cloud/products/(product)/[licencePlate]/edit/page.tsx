@@ -139,6 +139,7 @@ export default privateCloudProductEdit(({ session }) => {
         disabled: isDisabled,
         licencePlate: snap.currentProduct?.licencePlate,
         cluster: snap.currentProduct?.cluster,
+        isGoldDR: snap.currentProduct?.golddrEnabled ?? false,
         originalResourceRequests: snap.currentProduct?.resourceRequests,
         quotaContactRequired: true,
       },

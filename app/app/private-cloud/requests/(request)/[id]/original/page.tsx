@@ -86,6 +86,7 @@ export default privateCloudRequestOriginal(({ getPathParams, session, router }) 
         disabled: isDisabled,
         licencePlate: snap.currentRequest?.licencePlate,
         cluster: snap.currentRequest?.originalData?.cluster,
+        isGoldDR: snap.currentRequest?.originalData?.golddrEnabled ?? false,
         originalResourceRequests: snap.currentRequest?.originalData?.resourceRequests,
         quotaContactRequired: false,
       },

@@ -29,12 +29,14 @@ const resourceUnit = {
 export default function Quotas({
   disabled,
   cluster,
+  isGoldDR,
   licencePlate,
   originalResourceRequests,
   quotaContactRequired = false,
 }: {
   disabled: boolean;
   cluster?: Cluster;
+  isGoldDR?: boolean;
   licencePlate?: string;
   originalResourceRequests?: ResourceRequestsEnv;
   quotaContactRequired?: boolean;
@@ -147,7 +149,12 @@ export default function Quotas({
         })}
       </div>
 
-      <QuotasBudgetEstimation className="mt-10" originalData={originalResourceRequests} formData={resourceRequests} />
+      <QuotasBudgetEstimation
+        className="mt-10"
+        originalData={originalResourceRequests}
+        formData={resourceRequests}
+        isGoldDR={isGoldDR ?? false}
+      />
       {quotaContactRequired && <QuotasChangeInfo disabled={disabled} />}
     </>
   );

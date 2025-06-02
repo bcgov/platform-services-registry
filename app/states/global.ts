@@ -19,8 +19,6 @@ export const { state: appState, useValtioState: useAppState } = createGlobalValt
     BASE_URL: string;
     LOGOUT_URL: string;
     TOKEN_URL: string;
-    YEARLY_UNIT_PRICE_CPU: number;
-    YEARLY_UNIT_PRICE_STORAGE: number;
   };
 }>({
   cloud: null,
@@ -35,8 +33,6 @@ export const { state: appState, useValtioState: useAppState } = createGlobalValt
     BASE_URL: '',
     LOGOUT_URL: '',
     TOKEN_URL: '',
-    YEARLY_UNIT_PRICE_CPU: 0,
-    YEARLY_UNIT_PRICE_STORAGE: 0,
   },
 });
 
