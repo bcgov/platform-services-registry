@@ -3,7 +3,7 @@ from datetime import timedelta, datetime
 
 from airflow import DAG
 from airflow.operators.python import PythonOperator
-from airflow.providers.cncf.kubernetes.operators.kubernetes_pod import (
+from airflow.providers.cncf.kubernetes.operators.pod import (
     KubernetesPodOperator,
 )
 from airflow.utils.trigger_rule import TriggerRule
@@ -17,9 +17,9 @@ MONGO_CONN_ID = "pltsvc-test"
 
 with DAG(
     dag_id="sonarscan_test",
-    schedule_interval="0 6 * * *",
+    schedule="0 6 * * *",
     start_date=YESTERDAY,
-    concurrency=CONCURRENCY,
+    max_active_tasks=CONCURRENCY,
 ) as dag:
 
     # Step 1. Identify and gather information for all currently active projects, including their host details.
@@ -27,9 +27,7 @@ with DAG(
         task_id="fetch-sonarscan-projects-test",
         python_callable=fetch_sonarscan_projects,
         op_kwargs={"mongo_conn_id": MONGO_CONN_ID, "concurrency": CONCURRENCY, "gh_token": os.environ["GH_TOKEN"]},
-        provide_context=True,
         on_failure_callback=lambda context: send_alert(context, "sonarscan_test"),
-        dag=dag,
     )
 
     shared_volume = V1Volume(

@@ -1,6 +1,6 @@
 import os
 from airflow import DAG
-from airflow.operators.python_operator import PythonOperator
+from airflow.operators.python import PythonOperator
 from datetime import datetime, timedelta
 from _temporary_products_notification import send_temporary_products_notification
 from _task_failure_callback import send_alert
@@ -17,7 +17,7 @@ APP_URL = "https://pltsvc.apps.silver.devops.gov.bc.ca"
 with DAG(
     dag_id="temporary_products_notification_prod",
     description="A DAG to send notifications to temporary products",
-    schedule_interval="0 2 * * *",
+    schedule="0 2 * * *",
     start_date=datetime.now() - timedelta(weeks=1),
     is_paused_upon_creation=False,
     catchup=False,
@@ -34,7 +34,5 @@ with DAG(
             "ches_api_url": CHES_API_URL,
             "app_url": APP_URL,
         },
-        provide_context=True,
         on_failure_callback=lambda context: send_alert(context, "temporary_products_notification_prod"),
-        dag=dag,
     )
