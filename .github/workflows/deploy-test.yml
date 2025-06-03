@@ -39,7 +39,7 @@ jobs:
       uses: ./.github/actions/setup-tools
 
     - name: Build and Push
-      uses: egose/actions/docker-build-push@7fce47b8f4b9658e35ac414d94ecc3317e25acab
+      uses: egose/actions/docker-build-push@db60c101272c7b346aafe2fc438c9acdd3005294
       with:
         registry-url: ${{ env.GITHUB_REGISTRY }}
         registry-username: ${{ github.actor }}
@@ -66,7 +66,7 @@ jobs:
       uses: ./.github/actions/setup-tools
 
     - name: Build and Push
-      uses: egose/actions/docker-build-push@7fce47b8f4b9658e35ac414d94ecc3317e25acab
+      uses: egose/actions/docker-build-push@db60c101272c7b346aafe2fc438c9acdd3005294
       with:
         registry-url: ${{ env.GITHUB_REGISTRY }}
         registry-username: ${{ github.actor }}
@@ -90,7 +90,7 @@ jobs:
       uses: ./.github/actions/setup-tools
 
     - name: Build and Push
-      uses: egose/actions/docker-build-push@7fce47b8f4b9658e35ac414d94ecc3317e25acab
+      uses: egose/actions/docker-build-push@db60c101272c7b346aafe2fc438c9acdd3005294
       with:
         registry-url: ${{ env.GITHUB_REGISTRY }}
         registry-username: ${{ github.actor }}
@@ -115,7 +115,7 @@ jobs:
       uses: ./.github/actions/setup-tools
 
     - name: Build and Push
-      uses: egose/actions/docker-build-push@7fce47b8f4b9658e35ac414d94ecc3317e25acab
+      uses: egose/actions/docker-build-push@db60c101272c7b346aafe2fc438c9acdd3005294
       with:
         registry-url: ${{ env.GITHUB_REGISTRY }}
         registry-username: ${{ github.actor }}
