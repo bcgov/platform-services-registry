@@ -4,7 +4,7 @@ pnpm 10.11.0
 oc 4.13.3
 kubectl 1.33.1
 terraform 1.12.1
-helm 3.18.0
+helm 3.18.2
 shfmt 3.11.0
 act 0.2.77
 jq 1.7.1
