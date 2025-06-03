@@ -1,6 +1,6 @@
 import os
 from airflow import DAG
-from airflow.operators.python_operator import PythonOperator
+from airflow.operators.python import PythonOperator
 from datetime import datetime, timedelta
 from _temporary_products_deletion import send_temp_products_deletion_request
 from _task_failure_callback import send_alert
@@ -16,7 +16,7 @@ REGISTRY_DELETE_URL_TEMPLATE = "https://dev-pltsvc.apps.silver.devops.gov.bc.ca/
 with DAG(
     dag_id="temporary_products_deletion_dev",
     description="A DAG to create delete request for old temporary products",
-    schedule_interval="0 0 * * *",
+    schedule="0 0 * * *",
     start_date=datetime.now() - timedelta(weeks=1),
     is_paused_upon_creation=False,
     catchup=False,
@@ -32,7 +32,5 @@ with DAG(
             "mongo_conn_id": MONGO_CONN_ID,
             "product_deletion_url_template": REGISTRY_DELETE_URL_TEMPLATE,
         },
-        provide_context=True,
         on_failure_callback=lambda context: send_alert(context, "temporary_products_deletion_dev"),
-        dag=dag,
     )

@@ -1,6 +1,6 @@
 import os
 from airflow import DAG
-from airflow.operators.python_operator import PythonOperator
+from airflow.operators.python import PythonOperator
 from datetime import datetime, timedelta
 from _task_failure_callback import send_alert
 from _sync_azure_ad_with_db import sync_db_users_with_azure_ad
@@ -12,7 +12,7 @@ MS_GRAPH_API_CLIENT_SECRET = os.getenv("MS_GRAPH_API_CLIENT_SECRET")
 
 with DAG(
     dag_id="sync_user_dbs_prod",
-    schedule_interval="30 0 * * *",
+    schedule="30 0 * * *",
     start_date=datetime.now() - timedelta(days=1),
     catchup=False,
     is_paused_upon_creation=True,
@@ -26,7 +26,5 @@ with DAG(
             "ms_graph_api_client_id": MS_GRAPH_API_CLIENT_ID,
             "ms_graph_api_client_secret": MS_GRAPH_API_CLIENT_SECRET,
         },
-        provide_context=True,
         on_failure_callback=lambda context: send_alert(context, "sync_user_dbs_prod"),
-        dag=dag,
     )

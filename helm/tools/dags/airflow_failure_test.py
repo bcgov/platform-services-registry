@@ -20,7 +20,7 @@ with DAG(
     dag_id="airflow_failure_test",
     default_args=default_args,
     description="A simple example DAG",
-    schedule_interval=timedelta(minutes=5),
+    schedule=timedelta(minutes=5),
     start_date=datetime(2024, 10, 16),
     catchup=False,
 ) as dag:

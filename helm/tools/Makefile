@@ -30,7 +30,13 @@ INDEX := 0
 define arguments
 	"${NAME}" . -n "${NAMESPACE}" -f values.yaml -f "values-${NAMESPACE}.yaml" \
 	--set airflow.uid="${UID}" \
-	--set airflow.gid="${UID}" \
+	--set airflow.gid="0" \
+	--set airflow.securityContexts.pod.runAsUser="${UID}" \
+	--set airflow.securityContexts.pod.runAsGroup="0" \
+	--set airflow.securityContexts.pod.runAsNonRoot=true \
+	--set airflow.securityContexts.containers.runAsUser="${UID}" \
+	--set airflow.securityContexts.containers.runAsGroup="0" \
+	--set airflow.securityContexts.containers.runAsNonRoot=true \
 	--set sonarqube.securityContext.fsGroup="${UID}" \
 	--set sonarqube.containerSecurityContext.runAsUser="${UID}" \
 	--set sonarqube.containerSecurityContext.runAsGroup="0" \
