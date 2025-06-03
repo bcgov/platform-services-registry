@@ -26,7 +26,7 @@ type PrometheusQueryResponse = {
   data: PrometheusQueryData;
 };
 
-const { getK8sClusterToken, getK8sClusterClients } = createK8sClusterConfigs({
+const { getK8sClusterToken, getK8sClusterClients: getK8sClients } = createK8sClusterConfigs({
   [Cluster.KLAB]: KLAB_METRICS_READER_TOKEN,
   [Cluster.CLAB]: CLAB_METRICS_READER_TOKEN,
   [Cluster.KLAB2]: KLAB2_METRICS_READER_TOKEN,
@@ -36,7 +36,7 @@ const { getK8sClusterToken, getK8sClusterClients } = createK8sClusterConfigs({
   [Cluster.EMERALD]: EMERALD_METRICS_READER_TOKEN,
 });
 
-export const getK8sClients = getK8sClusterClients;
+export { getK8sClusterToken, getK8sClients };
 
 export async function queryPrometheus(query: string, cluster: Cluster) {
   const METRICS_URL = `https://prometheus-k8s-openshift-monitoring.apps.${cluster}.devops.gov.bc.ca`;
@@ -47,4 +47,35 @@ export async function queryPrometheus(query: string, cluster: Cluster) {
   });
 
   return response.data.data.result;
+}
+
+const allClusters = Object.values(Cluster) as Cluster[];
+
+export async function validateAllMetricsReaderTokens() {
+  const results: Record<Cluster, boolean> = {} as Record<Cluster, boolean>;
+
+  await Promise.all(
+    allClusters.map(async (cluster) => {
+      const token = getK8sClusterToken(cluster);
+      const url = `https://prometheus-k8s-openshift-monitoring.apps.${cluster}.devops.gov.bc.ca/api/v1/query`;
+
+      try {
+        const res = await axios.get(url, {
+          headers: { Authorization: `Bearer ${token}` },
+          params: { query: '1' },
+          timeout: 5000,
+        });
+
+        results[cluster] = res.status === 200 && res.data?.status === 'success';
+      } catch (error: unknown) {
+        if (error instanceof Error) {
+          console.error(error.message);
+        } else {
+          console.error('Unexpected error', error);
+        }
+      }
+    }),
+  );
+
+  return results;
 }
