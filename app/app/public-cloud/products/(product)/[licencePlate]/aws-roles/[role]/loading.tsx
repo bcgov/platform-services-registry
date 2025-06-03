@@ -5,7 +5,7 @@ export default async function ProductsTableSkeleton() {
   return (
     <TableAWSRoles
       tableBody={[...new Array(14)].map((_, i) => (
-        <TableRowSkeleton key={i} />
+        <TableRowSkeleton key={`skeleton-${i}`} />
       ))}
       total={10}
       tableTop={<></>}

@@ -90,6 +90,7 @@ export const GET = apiHandler(async ({ session }) => {
             task.description = product.name;
           }
         }
+        break;
       case TaskType.REVIEW_PRIVATE_CLOUD_REQUEST:
         data = task.data as { requestId: string };
         request = privateCloudRequests.find((req) => req.id === data.requestId);

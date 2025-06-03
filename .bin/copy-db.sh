@@ -27,5 +27,6 @@ fi
 echo "Most recent file: $recent_file"
 
 # Copy the most recent back file to unarchive into the sandbox database
+# NOSONAR
 oc cp "$pod_name:backup/$recent_file" "$tmp_dir/$recent_file"
-mongo-unarchive --uri="mongodb://mongodb:mongodb@localhost:27017/?authSource=admin" --db=pltsvc --local-path="$tmp_dir" # pragma: allowlist secret # NOSONAR
+mongo-unarchive --uri="mongodb://mongodb:mongodb@localhost:27017/?authSource=admin" --db=pltsvc --local-path="$tmp_dir" # pragma: allowlist secret

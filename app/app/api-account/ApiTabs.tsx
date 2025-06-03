@@ -274,7 +274,7 @@ function PublicCloudEndpoint() {
 }
 
 export default function ApiTabs({ apiAccount }: { apiAccount: ApiAccount }) {
-  const [appState, appSnap] = useAppState();
+  const [, appSnap] = useAppState();
 
   const privateProductsEndpoint = `${appSnap.info.BASE_URL}/api/v1/private-cloud/products`;
 

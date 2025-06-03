@@ -31,5 +31,5 @@ def send_alert(context, dag):
 
     try:
         requests.post(ROCKETCHAT_WEBHOOK_URL, data=json.dumps(payload), headers={"Content-Type": "application/json"})
-    except:
+    except requests.exceptions.RequestException as e:
         pass

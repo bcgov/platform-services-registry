@@ -29,7 +29,7 @@ const publicCloudProductEdit = createClientPage({
   roles: [GlobalRole.User],
   validations: { pathParams: pathParamSchema },
 });
-export default publicCloudProductEdit(({}) => {
+export default publicCloudProductEdit(() => {
   const [, snap] = usePublicProductState();
   const [isDisabled, setDisabled] = useState(false);
 

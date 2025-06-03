@@ -1,4 +1,4 @@
-import { HoverCard, Group } from '@mantine/core';
+import { HoverCard, Group, UnstyledButton } from '@mantine/core';
 import { useDisclosure } from '@mantine/hooks';
 import MailLink from '@/components/generic/button/MailLink';
 import { openUserDetailModal } from '@/components/modal/userDetail';
@@ -29,7 +29,7 @@ export default function UserCard({
     <Group justify="left">
       <HoverCard shadow="md" position="top">
         <HoverCard.Target>
-          <div
+          <UnstyledButton
             className={cn('cursor-help', classNames?.wrapper)}
             onMouseEnter={open}
             onMouseLeave={close}
@@ -44,7 +44,7 @@ export default function UserCard({
               {name}
             </div>
             {title && <div className="text-sm text-gray-400 group-hover:text-gray-700">{title}</div>}
-          </div>
+          </UnstyledButton>
         </HoverCard.Target>
         <HoverCard.Dropdown>
           <ProfileImage
