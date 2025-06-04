@@ -1,3 +1,22 @@
+## [0.67.0](https://github.com/bcgov/platform-services-registry/compare/v0.66.0...v0.67.0) (2025-06-04)
+
+### Features
+
+* **5573:** upgrade Airflow version ([9491c93](https://github.com/bcgov/platform-services-registry/commit/9491c933da6b45e02e51bb5761562b1d8377ee44))
+* **5620:** update language about Azure project set ([bcd0254](https://github.com/bcgov/platform-services-registry/commit/bcd02541ac7a1ebdd77393862578ab673671f4b3))
+* **5659:** add a script to check m365 client flow ([8d56234](https://github.com/bcgov/platform-services-registry/commit/8d562340e1213dae190eda44aabd51e85cb309cf))
+* **5687:** improve the cost estimation section ([839bd3d](https://github.com/bcgov/platform-services-registry/commit/839bd3ddfdc5096023975d1cfee070ffa407f801))
+
+### Bug Fixes
+
+* **5714:** make cost charts responsive ([c403670](https://github.com/bcgov/platform-services-registry/commit/c403670b6fa10654d4b9ecec09c0444f9ab31b88))
+* **5746:** install missing airflow deps in v3 ([33d1732](https://github.com/bcgov/platform-services-registry/commit/33d1732e777cf5f6564e362ec2e69bd4b5999d70))
+
+### Refactors
+
+* **2938:** address SonarQube security warnings ([c93de84](https://github.com/bcgov/platform-services-registry/commit/c93de84ebcf8ea8c6016e1cafdf1c5ca15971221))
+* **2938:** address SonarQube warnings cont' ([e66f7f9](https://github.com/bcgov/platform-services-registry/commit/e66f7f983cec5ffb10ebb765d89e9c90e886aeed))
+* **5746:** update Airflow codebase for compatibility with v3 ([522b136](https://github.com/bcgov/platform-services-registry/commit/522b13647acbab3559013439890c6fcf149bd9b0))
 ## [0.66.0](https://github.com/bcgov/platform-services-registry/compare/v0.65.1...v0.66.0) (2025-05-27)
 
 ### Features
