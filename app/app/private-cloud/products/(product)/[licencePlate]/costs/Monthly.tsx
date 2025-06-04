@@ -26,8 +26,6 @@ export default function Monthly({ licencePlate, session }: { licencePlate: strin
     return null;
   }
 
-  console.log('Monthly Cost Date: ', data);
-
   const handleChange = (date: Date | null) => {
     setSelectedDate(date || new Date());
   };
