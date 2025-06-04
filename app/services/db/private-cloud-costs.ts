@@ -257,15 +257,15 @@ export async function getMonthlyCosts(licencePlate: string, year: number, oneInd
       (item) => item.startDate < dayEnd && (item.endDate > dayStart || item.endDate.getTime() === dayStart.getTime()),
     );
 
-    for (const item of dayItems) {
-      const overlapStart = new Date(Math.max(item.startDate.getTime(), dayStart.getTime()));
-      const overlapEnd = new Date(Math.min(item.endDate.getTime(), dayEnd.getTime()));
+    for (const meta of dayItems) {
+      const intervalStart = new Date(Math.max(meta.startDate.getTime(), dayStart.getTime()));
+      const intervalEnd = new Date(Math.min(meta.endDate.getTime(), dayEnd.getTime()));
 
-      const durationMinutes = (overlapEnd.getTime() - overlapStart.getTime()) / (1000 * 60);
-      const cpuPrice = item.cpuPricePerMinute * durationMinutes;
-      const storagePrice = item.storagePricePerMinute * durationMinutes;
+      const durationMinutes = (intervalEnd.getTime() - intervalStart.getTime()) / (1000 * 60);
+      const cpuPrice = meta.cpuPricePerMinute * durationMinutes;
+      const storagePrice = meta.storagePricePerMinute * durationMinutes;
 
-      if (item.isPast) {
+      if (meta.isPast) {
         cpuToDate[day - 1] += cpuPrice;
         storageToDate[day - 1] += storagePrice;
       } else {
@@ -331,10 +331,10 @@ async function getCostsBasedOnMonths(licencePlate: string, startDate: Date, endD
     );
 
     for (const item of monthItems) {
-      const overlapStart = new Date(Math.max(item.startDate.getTime(), monthStart.getTime()));
-      const overlapEnd = new Date(Math.min(item.endDate.getTime(), monthEnd.getTime()));
+      const intervalStart = new Date(Math.max(item.startDate.getTime(), monthStart.getTime()));
+      const intervalEnd = new Date(Math.min(item.endDate.getTime(), monthEnd.getTime()));
 
-      const durationMinutes = (overlapEnd.getTime() - overlapStart.getTime()) / (1000 * 60);
+      const durationMinutes = (intervalEnd.getTime() - intervalStart.getTime()) / (1000 * 60);
       const cpuPrice = item.cpuPricePerMinute * durationMinutes;
       const storagePrice = item.storagePricePerMinute * durationMinutes;
 
