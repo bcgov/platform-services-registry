@@ -48,34 +48,3 @@ export async function queryPrometheus(query: string, cluster: Cluster) {
 
   return response.data.data.result;
 }
-
-const allClusters = Object.values(Cluster) as Cluster[];
-
-export async function validateAllMetricsReaderTokens() {
-  const results: Record<Cluster, boolean> = {} as Record<Cluster, boolean>;
-
-  await Promise.all(
-    allClusters.map(async (cluster) => {
-      const token = getK8sClusterToken(cluster);
-      const url = `https://prometheus-k8s-openshift-monitoring.apps.${cluster}.devops.gov.bc.ca/api/v1/query`;
-
-      try {
-        const res = await axios.get(url, {
-          headers: { Authorization: `Bearer ${token}` },
-          params: { query: '1' },
-          timeout: 5000,
-        });
-
-        results[cluster] = res.status === 200 && res.data?.status === 'success';
-      } catch (error: unknown) {
-        if (error instanceof Error) {
-          console.error(error.message);
-        } else {
-          console.error('Unexpected error', error);
-        }
-      }
-    }),
-  );
-
-  return results;
-}
