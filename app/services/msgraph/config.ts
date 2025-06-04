@@ -10,7 +10,7 @@ import {
 } from '@/config';
 
 let msalConfig!: Configuration;
-if (!IS_LOCAL) {
+if (IS_LOCAL) {
   msalConfig = {
     auth: {
       protocolMode: ProtocolMode.OIDC,
