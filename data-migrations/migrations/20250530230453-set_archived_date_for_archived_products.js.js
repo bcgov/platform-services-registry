@@ -17,8 +17,8 @@ export const up = async (db, client) => {
       db.collection('PublicCloudProduct').updateMany(filteringRules, updatePipeline, option),
     ]);
 
-    console.log(`Updated ${privateCloudProduct.modifiedCount} documents in PublicCloudProduct`);
-    console.log(`Updated ${publicCloudProduct.modifiedCount} documents in PublicCloudRequestData`);
+    console.log(`Updated ${privateCloudProduct.modifiedCount} documents in PrivateCloudProduct`);
+    console.log(`Updated ${publicCloudProduct.modifiedCount} documents in PublicCloudProduct`);
   });
 
   session.endSession();
