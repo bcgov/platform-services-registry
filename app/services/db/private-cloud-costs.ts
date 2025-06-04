@@ -330,15 +330,15 @@ async function getCostsBasedOnMonths(licencePlate: string, startDate: Date, endD
         item.startDate < monthEnd && (item.endDate > monthStart || item.endDate.getTime() === monthStart.getTime()),
     );
 
-    for (const item of monthItems) {
-      const intervalStart = new Date(Math.max(item.startDate.getTime(), monthStart.getTime()));
-      const intervalEnd = new Date(Math.min(item.endDate.getTime(), monthEnd.getTime()));
+    for (const meta of monthItems) {
+      const intervalStart = new Date(Math.max(meta.startDate.getTime(), monthStart.getTime()));
+      const intervalEnd = new Date(Math.min(meta.endDate.getTime(), monthEnd.getTime()));
 
       const durationMinutes = (intervalEnd.getTime() - intervalStart.getTime()) / (1000 * 60);
-      const cpuPrice = item.cpuPricePerMinute * durationMinutes;
-      const storagePrice = item.storagePricePerMinute * durationMinutes;
+      const cpuPrice = meta.cpuPricePerMinute * durationMinutes;
+      const storagePrice = meta.storagePricePerMinute * durationMinutes;
 
-      if (item.isPast) {
+      if (meta.isPast) {
         cpuToDate[i] += cpuPrice;
         storageToDate[i] += storagePrice;
       } else {
