@@ -149,6 +149,7 @@ model PrivateCloudProduct {
   temporaryProductNotificationDate DateTime?
   createdAt                        DateTime                    @default(now())
   updatedAt                        DateTime                    @updatedAt
+  archivedAt                       DateTime?
   projectOwnerId                   String                      @db.ObjectId
   projectOwner                     User                        @relation("projectOwner", fields: [projectOwnerId], references: [id])
   primaryTechnicalLeadId           String                      @db.ObjectId
@@ -314,6 +315,7 @@ model PublicCloudProduct {
   status                       ProjectStatus
   createdAt                    DateTime                   @default(now())
   updatedAt                    DateTime                   @updatedAt
+  archivedAt                   DateTime?
   budget                       Budget
   projectOwnerId               String                     @db.ObjectId
   projectOwner                 User                       @relation("projectOwner", fields: [projectOwnerId], references: [id])

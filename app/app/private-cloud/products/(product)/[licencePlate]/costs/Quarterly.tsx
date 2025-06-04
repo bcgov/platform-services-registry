@@ -26,6 +26,8 @@ export default function Quarterly({ licencePlate, session }: { licencePlate: str
     return null;
   }
 
+  console.log('Quarterly Cost Date: ', data);
+
   const handleChange = (date: Date | null) => {
     setSelectedDate(date || new Date());
   };

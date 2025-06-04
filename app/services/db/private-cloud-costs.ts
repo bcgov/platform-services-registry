@@ -4,7 +4,7 @@ import _findIndex from 'lodash-es/findIndex';
 import _orderBy from 'lodash-es/orderBy';
 import { namespaceKeys } from '@/constants';
 import prisma from '@/core/prisma';
-import { Cluster, DecisionStatus, Prisma, RequestType } from '@/prisma/client';
+import { Cluster, DecisionStatus, Prisma, ProjectStatus, RequestType } from '@/prisma/client';
 import { CostItem } from '@/types/private-cloud';
 import {
   dateToShortDateString,
@@ -46,7 +46,7 @@ function getDetaultRangeCost() {
   });
 }
 
-function getDetaultEnvironmentDetails() {
+function getDefaultEnvironmentDetails() {
   return _cloneDeep({
     cpu: {
       value: 0,
@@ -63,7 +63,7 @@ function getDetaultEnvironmentDetails() {
 }
 
 async function getCostDetailsForRange(licencePlate: string, startDate: Date, endDate: Date) {
-  const [unitPrices, allRequests] = await Promise.all([
+  const [unitPrices, allRequests, product] = await Promise.all([
     prisma.privateCloudUnitPrice.findMany({
       where: {},
       orderBy: { date: Prisma.SortOrder.desc },
@@ -78,16 +78,27 @@ async function getCostDetailsForRange(licencePlate: string, startDate: Date, end
       include: { decisionData: true },
       orderBy: { provisionedDate: Prisma.SortOrder.desc },
     }),
+    prisma.privateCloudProduct.findUnique({
+      where: { licencePlate },
+      select: { archivedAt: true },
+    }),
   ]);
 
   const today = new Date();
   const isTodayWithinRange = startDate <= today && today <= endDate;
+  const { archivedAt } = product ?? { archivedAt: null };
 
   const changePoints = new Set<Date>();
 
   changePoints.add(startDate);
   changePoints.add(endDate);
-  if (isTodayWithinRange) changePoints.add(today);
+
+  if (isTodayWithinRange) changePoints.add(new Date(today));
+  if (archivedAt) {
+    if (archivedAt >= startDate && archivedAt <= endDate) {
+      changePoints.add(archivedAt);
+    }
+  }
 
   for (const price of unitPrices) {
     changePoints.add(getDateFromYyyyMmDd(price.date));
@@ -120,18 +131,34 @@ async function getCostDetailsForRange(licencePlate: string, startDate: Date, end
       date: intervalStart,
     };
 
-    const durationMinutes = (intervalEnd.getTime() - intervalStart.getTime()) / (1000 * 60);
-    const minutesInYear = getMinutesInYear(startDate.getFullYear()); // TODO: handle multiple years
+    let actualEnd = intervalEnd;
+    let includeCosts = true;
+    let status: 'past' | 'projected' | 'archived' = intervalEnd <= today ? 'past' : 'projected';
+
+    if (archivedAt) {
+      if (intervalStart >= archivedAt) {
+        includeCosts = false;
+        status = 'archived';
+      } else if (intervalEnd > archivedAt) {
+        actualEnd = archivedAt;
+        status = 'archived';
+      }
+    }
+
+    if (!includeCosts) continue;
+
+    const durationMinutes = (actualEnd.getTime() - intervalStart.getTime()) / (1000 * 60);
+    const minutesInYear = getMinutesInYear(startDate.getFullYear());
     const cpuPricePerMinute = price.cpu / minutesInYear;
     const storagePricePerMinute = price.storage / minutesInYear;
     const isPast = intervalEnd <= today;
 
     const environments = {
-      development: getDetaultEnvironmentDetails(),
-      test: getDetaultEnvironmentDetails(),
-      production: getDetaultEnvironmentDetails(),
-      tools: getDetaultEnvironmentDetails(),
-      total: getDetaultEnvironmentDetails(),
+      development: getDefaultEnvironmentDetails(),
+      test: getDefaultEnvironmentDetails(),
+      production: getDefaultEnvironmentDetails(),
+      tools: getDefaultEnvironmentDetails(),
+      total: getDefaultEnvironmentDetails(),
     };
 
     const envs = quota.decisionData.resourceRequests;
@@ -174,11 +201,12 @@ async function getCostDetailsForRange(licencePlate: string, startDate: Date, end
 
     costItems.push({
       startDate: intervalStart,
-      endDate: intervalEnd,
+      endDate: actualEnd,
       minutes: durationMinutes,
       cpuPricePerMinute,
       storagePricePerMinute,
       isPast,
+      status,
       unitPriceId: price.id,
       ...environments,
     });
@@ -191,7 +219,6 @@ async function getCostDetailsForRange(licencePlate: string, startDate: Date, end
     total,
   };
 }
-
 export async function getMonthlyCosts(licencePlate: string, year: number, oneIndexedMonth: number) {
   const { startDate, endDate } = getMonthStartEndDate(year, oneIndexedMonth);
   const month = oneIndexedMonth - 1;
@@ -200,6 +227,9 @@ export async function getMonthlyCosts(licencePlate: string, year: number, oneInd
 
   const isCurrentMonth = today.getFullYear() === year && today.getMonth() === month;
   const { items, total } = await getCostDetailsForRange(licencePlate, startDate, endDate);
+
+  console.log('Monthly Items: ', items);
+  console.log('Monthly Total: ', total);
 
   let currentTotal = -1;
   let estimatedGrandTotal = -1;
@@ -226,38 +256,26 @@ export async function getMonthlyCosts(licencePlate: string, year: number, oneInd
     const dayStart = new Date(year, month, day);
     const dayEnd = new Date(year, month, day + 1, 0, 0, 0, -1);
 
-    const changePoints = new Set<Date>();
+    // Find all cost items that overlap with this day
+    const dayItems = sortedItems.filter(
+      (item) => item.startDate < dayEnd && (item.endDate > dayStart || item.endDate.getTime() === dayStart.getTime()),
+    );
 
-    changePoints.add(dayStart);
-    changePoints.add(dayEnd);
+    for (const item of dayItems) {
+      // Calculate the actual overlap between the item and the day
+      const overlapStart = new Date(Math.max(item.startDate.getTime(), dayStart.getTime()));
+      const overlapEnd = new Date(Math.min(item.endDate.getTime(), dayEnd.getTime()));
 
-    if (isCurrentMonth && day === todayDay) {
-      changePoints.add(today);
-    }
+      const durationMinutes = (overlapEnd.getTime() - overlapStart.getTime()) / (1000 * 60);
+      const cpuPrice = item.cpuPricePerMinute * durationMinutes;
+      const storagePrice = item.storagePricePerMinute * durationMinutes;
 
-    const sortedChangePoints = _orderBy(Array.from(changePoints), [], 'asc');
-
-    for (let j = 0; j < sortedChangePoints.length - 1; j++) {
-      let intervalStart = sortedChangePoints[j];
-      const intervalEnd = sortedChangePoints[j + 1];
-
-      const metaIndex = _findIndex(sortedItems, (item) => compareDatesByDay(item.startDate, intervalStart, '<='));
-      if (metaIndex === -1) continue;
-
-      const meta = sortedItems[metaIndex];
-      // Ensure minutes are calculated correctly for the day the product created
-      if (metaIndex === sortedItems.length - 1 && meta.startDate > intervalStart) intervalStart = meta.startDate;
-
-      const durationMinutes = (intervalEnd.getTime() - intervalStart.getTime()) / (1000 * 60);
-      const cpuPrice = meta.cpuPricePerMinute * durationMinutes;
-      const storagePrice = meta.storagePricePerMinute * durationMinutes;
-
-      if (intervalEnd <= today) {
-        cpuToDate[day - 1] = cpuPrice;
-        storageToDate[day - 1] = storagePrice;
+      if (item.isPast) {
+        cpuToDate[day - 1] += cpuPrice;
+        storageToDate[day - 1] += storagePrice;
       } else {
-        cpuToProjected[day - 1] = cpuPrice;
-        storageToProjected[day - 1] = storagePrice;
+        cpuToProjected[day - 1] += cpuPrice;
+        storageToProjected[day - 1] += storagePrice;
       }
     }
   }
@@ -288,6 +306,9 @@ async function getCostsBasedOnMonths(licencePlate: string, startDate: Date, endD
 
   const { items, total } = await getCostDetailsForRange(licencePlate, startDate, endDate);
 
+  console.log('Monthly Items: ', items);
+  console.log('Monthly Total: ', total);
+
   let currentTotal = -1;
   let estimatedGrandTotal = -1;
   let grandTotal = -1;
@@ -312,33 +333,22 @@ async function getCostsBasedOnMonths(licencePlate: string, startDate: Date, endD
     const monthStart = new Date(year, jsMonth, 1);
     const monthEnd = new Date(year, jsMonth + 1, 1, 0, 0, 0, -1);
 
-    const changePoints = new Set<Date>();
+    // Find all cost items that overlap with this month
+    const monthItems = sortedItems.filter(
+      (item) =>
+        item.startDate < monthEnd && (item.endDate > monthStart || item.endDate.getTime() === monthStart.getTime()),
+    );
 
-    changePoints.add(monthStart);
-    changePoints.add(monthEnd);
+    for (const item of monthItems) {
+      // Calculate the actual overlap between the item and the month
+      const overlapStart = new Date(Math.max(item.startDate.getTime(), monthStart.getTime()));
+      const overlapEnd = new Date(Math.min(item.endDate.getTime(), monthEnd.getTime()));
 
-    if (today.getFullYear() === year && today.getMonth() === jsMonth) {
-      changePoints.add(today);
-    }
+      const durationMinutes = (overlapEnd.getTime() - overlapStart.getTime()) / (1000 * 60);
+      const cpuPrice = item.cpuPricePerMinute * durationMinutes;
+      const storagePrice = item.storagePricePerMinute * durationMinutes;
 
-    const sortedChangePoints = _orderBy(Array.from(changePoints), [], 'asc');
-
-    for (let j = 0; j < sortedChangePoints.length - 1; j++) {
-      let intervalStart = sortedChangePoints[j];
-      const intervalEnd = sortedChangePoints[j + 1];
-
-      const metaIndex = _findIndex(sortedItems, (item) => compareDatesByMonth(item.startDate, intervalStart, '<='));
-      if (metaIndex === -1) continue;
-
-      const meta = sortedItems[metaIndex];
-      // Ensure minutes are calculated correctly for the day the product created
-      if (metaIndex === sortedItems.length - 1 && meta.startDate > intervalStart) intervalStart = meta.startDate;
-
-      const durationMinutes = (intervalEnd.getTime() - intervalStart.getTime()) / (1000 * 60);
-      const cpuPrice = meta.cpuPricePerMinute * durationMinutes;
-      const storagePrice = meta.storagePricePerMinute * durationMinutes;
-
-      if (intervalEnd <= today) {
+      if (item.isPast) {
         cpuToDate[i] += cpuPrice;
         storageToDate[i] += storagePrice;
       } else {
@@ -363,6 +373,178 @@ async function getCostsBasedOnMonths(licencePlate: string, startDate: Date, endD
     },
   };
 }
+
+// export async function getMonthlyCosts(licencePlate: string, year: number, oneIndexedMonth: number) {
+//   const { startDate, endDate } = getMonthStartEndDate(year, oneIndexedMonth);
+//   const month = oneIndexedMonth - 1;
+//   const today = new Date();
+//   const todayDay = today.getDate();
+
+//   const isCurrentMonth = today.getFullYear() === year && today.getMonth() === month;
+//   const { items, total } = await getCostDetailsForRange(licencePlate, startDate, endDate);
+
+//   let currentTotal = -1;
+//   let estimatedGrandTotal = -1;
+//   let grandTotal = -1;
+
+//   if (isCurrentMonth) {
+//     currentTotal = total.costToDate;
+//     estimatedGrandTotal = total.costToTotal;
+//   } else {
+//     grandTotal = total.costToTotal;
+//   }
+
+//   const numDays = new Date(year, month + 1, 0).getDate();
+//   const days: number[] = Array.from({ length: numDays }, (_, i) => i + 1);
+
+//   const cpuToDate = new Array(numDays).fill(0);
+//   const cpuToProjected = new Array(numDays).fill(0);
+//   const storageToDate = new Array(numDays).fill(0);
+//   const storageToProjected = new Array(numDays).fill(0);
+
+//   const sortedItems = _orderBy(items, ['startDate'], ['desc']);
+
+//   for (let day = 1; day <= numDays; day++) {
+//     const dayStart = new Date(year, month, day);
+//     const dayEnd = new Date(year, month, day + 1, 0, 0, 0, -1);
+
+//     const changePoints = new Set<Date>();
+
+//     changePoints.add(dayStart);
+//     changePoints.add(dayEnd);
+
+//     if (isCurrentMonth && day === todayDay) {
+//       changePoints.add(today);
+//     }
+
+//     const sortedChangePoints = _orderBy(Array.from(changePoints), [], 'asc');
+
+//     for (let j = 0; j < sortedChangePoints.length - 1; j++) {
+//       let intervalStart = sortedChangePoints[j];
+//       const intervalEnd = sortedChangePoints[j + 1];
+
+//       const metaIndex = _findIndex(sortedItems, (item) => compareDatesByDay(item.startDate, intervalStart, '<='));
+//       if (metaIndex === -1) continue;
+
+//       const meta = sortedItems[metaIndex];
+//       // Ensure minutes are calculated correctly for the day the product created
+//       if (metaIndex === sortedItems.length - 1 && meta.startDate > intervalStart) intervalStart = meta.startDate;
+
+//       const durationMinutes = (intervalEnd.getTime() - intervalStart.getTime()) / (1000 * 60);
+//       const cpuPrice = meta.cpuPricePerMinute * durationMinutes;
+//       const storagePrice = meta.storagePricePerMinute * durationMinutes;
+
+//       if (intervalEnd <= today) {
+//         cpuToDate[day - 1] = cpuPrice;
+//         storageToDate[day - 1] = storagePrice;
+//       } else {
+//         cpuToProjected[day - 1] = cpuPrice;
+//         storageToProjected[day - 1] = storagePrice;
+//       }
+//     }
+//   }
+
+//   return {
+//     accountCoding: '123ABC', // placeholder
+//     billingPeriod: dateToShortDateString(startDate),
+//     currentTotal,
+//     estimatedGrandTotal,
+//     grandTotal,
+//     items,
+//     days,
+//     dayDetails: {
+//       cpuToDate,
+//       cpuToProjected,
+//       storageToDate,
+//       storageToProjected,
+//     },
+//   };
+// }
+
+// async function getCostsBasedOnMonths(licencePlate: string, startDate: Date, endDate: Date) {
+//   const today = new Date();
+//   const year = startDate.getFullYear();
+//   const months = getMonthsArrayFromDates(startDate, endDate);
+//   const numberOfMonths = months.length;
+//   const isTodayInInterval = today >= startDate && today <= endDate;
+
+//   const { items, total } = await getCostDetailsForRange(licencePlate, startDate, endDate);
+
+//   let currentTotal = -1;
+//   let estimatedGrandTotal = -1;
+//   let grandTotal = -1;
+
+//   if (isTodayInInterval) {
+//     currentTotal = total.costToDate;
+//     estimatedGrandTotal = total.costToTotal;
+//   } else {
+//     grandTotal = total.costToTotal;
+//   }
+
+//   const cpuToDate = new Array(numberOfMonths).fill(0);
+//   const cpuToProjected = new Array(numberOfMonths).fill(0);
+//   const storageToDate = new Array(numberOfMonths).fill(0);
+//   const storageToProjected = new Array(numberOfMonths).fill(0);
+
+//   const sortedItems = _orderBy(items, ['startDate'], ['desc']);
+
+//   for (let i = 0; i < months.length; i++) {
+//     const month = months[i];
+//     const jsMonth = month - 1; // convert to 0-indexed
+//     const monthStart = new Date(year, jsMonth, 1);
+//     const monthEnd = new Date(year, jsMonth + 1, 1, 0, 0, 0, -1);
+
+//     const changePoints = new Set<Date>();
+
+//     changePoints.add(monthStart);
+//     changePoints.add(monthEnd);
+
+//     if (today.getFullYear() === year && today.getMonth() === jsMonth) {
+//       changePoints.add(today);
+//     }
+
+//     const sortedChangePoints = _orderBy(Array.from(changePoints), [], 'asc');
+
+//     for (let j = 0; j < sortedChangePoints.length - 1; j++) {
+//       let intervalStart = sortedChangePoints[j];
+//       const intervalEnd = sortedChangePoints[j + 1];
+
+//       const metaIndex = _findIndex(sortedItems, (item) => compareDatesByMonth(item.startDate, intervalStart, '<='));
+//       if (metaIndex === -1) continue;
+
+//       const meta = sortedItems[metaIndex];
+//       // Ensure minutes are calculated correctly for the day the product created
+//       if (metaIndex === sortedItems.length - 1 && meta.startDate > intervalStart) intervalStart = meta.startDate;
+
+//       const durationMinutes = (intervalEnd.getTime() - intervalStart.getTime()) / (1000 * 60);
+//       const cpuPrice = meta.cpuPricePerMinute * durationMinutes;
+//       const storagePrice = meta.storagePricePerMinute * durationMinutes;
+
+//       if (intervalEnd <= today) {
+//         cpuToDate[i] += cpuPrice;
+//         storageToDate[i] += storagePrice;
+//       } else {
+//         cpuToProjected[i] += cpuPrice;
+//         storageToProjected[i] += storagePrice;
+//       }
+//     }
+//   }
+
+//   return {
+//     accountCoding: '123ABC', // placeholder
+//     currentTotal,
+//     estimatedGrandTotal,
+//     grandTotal,
+//     items,
+//     months,
+//     monthDetails: {
+//       cpuToDate,
+//       cpuToProjected,
+//       storageToDate,
+//       storageToProjected,
+//     },
+//   };
+// }
 
 export async function getQuarterlyCosts(licencePlate: string, year: number, quarter: number) {
   const { startDate, endDate } = getQuarterStartEndDate(year, quarter);
