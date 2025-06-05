@@ -390,20 +390,24 @@ async function getCostsBasedOnMonths(licencePlate: string, startDate: Date, endD
 
 export async function getQuarterlyCosts(licencePlate: string, year: number, quarter: number) {
   const { startDate, endDate } = getQuarterStartEndDate(year, quarter);
+
   const result = {
     ...(await getCostsBasedOnMonths(licencePlate, startDate, endDate)),
     billingPeriod: getQuarterTitleWithMonths(year, quarter),
   };
+
   return result;
 }
 
 export async function getYearlyCosts(licencePlate: string, yearString: string) {
   const year = parseInt(yearString, 10);
   const { startDate, endDate } = getYearlyStartEndDate(year);
+
   const result = {
     ...(await getCostsBasedOnMonths(licencePlate, startDate, endDate)),
-    billingPeriod: `${year} (Jan–Dec)`,
+    billingPeriod: `${year} (Jan-Dec)`,
   };
+
   return result;
 }
 
