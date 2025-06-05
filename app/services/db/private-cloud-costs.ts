@@ -108,10 +108,7 @@ async function getCostDetailsForRange(licencePlate: string, startDate: Date, end
     const intervalStart = sortedChangePoints[changePoint];
     const intervalEnd = sortedChangePoints[changePoint + 1];
 
-    if (intervalEnd <= startDate || intervalStart >= endDate) continue;
-
-    const quota = _find(allRequests, (req) => !!req.provisionedDate && req.provisionedDate <= intervalStart);
-    if (!quota) continue;
+    if (intervalEnd <= startDate || intervalStart > endDate) continue;
 
     const price = _find(unitPrices, (unitPrice) => getDateFromYyyyMmDd(unitPrice.date) <= intervalStart) ?? {
       id: 'fallback-zero',
@@ -134,41 +131,44 @@ async function getCostDetailsForRange(licencePlate: string, startDate: Date, end
       total: getDetaultEnvironmentDetails(),
     };
 
-    const envs = quota.decisionData.resourceRequests;
+    const quota = _find(allRequests, (req) => !!req.provisionedDate && req.provisionedDate <= intervalStart);
+    if (quota) {
+      const envs = quota.decisionData.resourceRequests;
 
-    for (const env of namespaceKeys) {
-      const usage = envs[env];
-      if (usage) {
-        const isGoldDrEnabled = quota.decisionData.cluster === Cluster.GOLD && quota.decisionData.golddrEnabled;
-        const resourceMultiplier = isGoldDrEnabled ? 2 : 1;
+      for (const env of namespaceKeys) {
+        const usage = envs[env];
+        if (usage) {
+          const isGoldDrEnabled = quota.decisionData.cluster === Cluster.GOLD && quota.decisionData.golddrEnabled;
+          const resourceMultiplier = isGoldDrEnabled ? 2 : 1;
 
-        environments[env].cpu.value = usage.cpu * resourceMultiplier || 0;
-        environments[env].storage.value = usage.storage * resourceMultiplier || 0;
+          environments[env].cpu.value = usage.cpu * resourceMultiplier || 0;
+          environments[env].storage.value = usage.storage * resourceMultiplier || 0;
 
-        environments[env].cpu.cost = environments[env].cpu.value * cpuPricePerMinute * durationMinutes;
-        environments[env].storage.cost = environments[env].storage.value * storagePricePerMinute * durationMinutes;
-        environments[env].subtotal.cost = environments[env].cpu.cost + environments[env].storage.cost;
+          environments[env].cpu.cost = environments[env].cpu.value * cpuPricePerMinute * durationMinutes;
+          environments[env].storage.cost = environments[env].storage.value * storagePricePerMinute * durationMinutes;
+          environments[env].subtotal.cost = environments[env].cpu.cost + environments[env].storage.cost;
 
-        environments.total.cpu.value += environments[env].cpu.value;
-        environments.total.storage.value += environments[env].storage.value;
-        environments.total.cpu.cost += environments[env].cpu.cost;
-        environments.total.storage.cost += environments[env].storage.cost;
-        environments.total.subtotal.cost += environments[env].subtotal.cost;
+          environments.total.cpu.value += environments[env].cpu.value;
+          environments.total.storage.value += environments[env].storage.value;
+          environments.total.cpu.cost += environments[env].cpu.cost;
+          environments.total.storage.cost += environments[env].storage.cost;
+          environments.total.subtotal.cost += environments[env].subtotal.cost;
 
-        // Root level summary
-        if (isPast) {
-          cpu.costToDate += environments[env].cpu.cost;
-          storage.costToDate += environments[env].storage.cost;
-          total.costToDate += environments[env].subtotal.cost;
-        } else {
-          cpu.costToProjected += environments[env].cpu.cost;
-          storage.costToProjected += environments[env].storage.cost;
-          total.costToProjected += environments[env].subtotal.cost;
+          // Root level summary
+          if (isPast) {
+            cpu.costToDate += environments[env].cpu.cost;
+            storage.costToDate += environments[env].storage.cost;
+            total.costToDate += environments[env].subtotal.cost;
+          } else {
+            cpu.costToProjected += environments[env].cpu.cost;
+            storage.costToProjected += environments[env].storage.cost;
+            total.costToProjected += environments[env].subtotal.cost;
+          }
+
+          cpu.costToTotal += environments[env].cpu.cost;
+          storage.costToTotal += environments[env].storage.cost;
+          total.costToTotal += environments[env].subtotal.cost;
         }
-
-        cpu.costToTotal += environments[env].cpu.cost;
-        storage.costToTotal += environments[env].storage.cost;
-        total.costToTotal += environments[env].subtotal.cost;
       }
     }
 
@@ -212,7 +212,7 @@ export async function getMonthlyCosts(licencePlate: string, year: number, oneInd
     grandTotal = total.costToTotal;
   }
 
-  const numDays = new Date(year, month, 0).getDate();
+  const numDays = new Date(year, month + 1, 0).getDate();
   const days: number[] = Array.from({ length: numDays }, (_, i) => i + 1);
 
   const cpuToDate = new Array(numDays).fill(0);
@@ -235,13 +235,19 @@ export async function getMonthlyCosts(licencePlate: string, year: number, oneInd
       changePoints.add(today);
     }
 
+    sortedItems.forEach((item) => {
+      if (dayStart < item.startDate && item.startDate < dayEnd) {
+        changePoints.add(item.startDate);
+      }
+    });
+
     const sortedChangePoints = _orderBy(Array.from(changePoints), [], 'asc');
 
     for (let j = 0; j < sortedChangePoints.length - 1; j++) {
       let intervalStart = sortedChangePoints[j];
       const intervalEnd = sortedChangePoints[j + 1];
 
-      const metaIndex = _findIndex(sortedItems, (item) => compareDatesByDay(item.startDate, intervalStart, '<='));
+      const metaIndex = _findIndex(sortedItems, (item) => item.startDate <= intervalStart);
       if (metaIndex === -1) continue;
 
       const meta = sortedItems[metaIndex];
@@ -321,13 +327,19 @@ async function getCostsBasedOnMonths(licencePlate: string, startDate: Date, endD
       changePoints.add(today);
     }
 
+    sortedItems.forEach((item) => {
+      if (monthStart < item.startDate && item.startDate < monthEnd) {
+        changePoints.add(item.startDate);
+      }
+    });
+
     const sortedChangePoints = _orderBy(Array.from(changePoints), [], 'asc');
 
     for (let j = 0; j < sortedChangePoints.length - 1; j++) {
       let intervalStart = sortedChangePoints[j];
       const intervalEnd = sortedChangePoints[j + 1];
 
-      const metaIndex = _findIndex(sortedItems, (item) => compareDatesByMonth(item.startDate, intervalStart, '<='));
+      const metaIndex = _findIndex(sortedItems, (item) => item.startDate <= intervalStart);
       if (metaIndex === -1) continue;
 
       const meta = sortedItems[metaIndex];
@@ -371,16 +383,19 @@ export async function getQuarterlyCosts(licencePlate: string, year: number, quar
     ...(await getCostsBasedOnMonths(licencePlate, startDate, endDate)),
     billingPeriod: getQuarterTitleWithMonths(year, quarter),
   };
+
   return result;
 }
 
 export async function getYearlyCosts(licencePlate: string, yearString: string) {
   const year = parseInt(yearString, 10);
   const { startDate, endDate } = getYearlyStartEndDate(year);
+
   const result = {
     ...(await getCostsBasedOnMonths(licencePlate, startDate, endDate)),
-    billingPeriod: `${year} (Jan–Dec)`,
+    billingPeriod: `${year} (Jan-Dec)`,
   };
+
   return result;
 }
 
