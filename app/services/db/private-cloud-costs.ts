@@ -335,8 +335,8 @@ async function getCostsBasedOnMonths(licencePlate: string, startDate: Date, endD
       if (metaIndex === sortedItems.length - 1 && meta.startDate > intervalStart) intervalStart = meta.startDate;
 
       const durationMinutes = (intervalEnd.getTime() - intervalStart.getTime()) / (1000 * 60);
-      const cpuPrice = meta.cpuPricePerMinute * durationMinutes;
-      const storagePrice = meta.storagePricePerMinute * durationMinutes;
+      const cpuPrice = meta.total.cpu.value * meta.cpuPricePerMinute * durationMinutes;
+      const storagePrice = meta.total.storage.value * meta.storagePricePerMinute * durationMinutes;
 
       if (intervalEnd <= today) {
         cpuToDate[i] += cpuPrice;
