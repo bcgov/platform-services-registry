@@ -47,6 +47,6 @@ export const GET = apiHandler(async ({ pathParams, queryParams, session }) => {
     return BadRequestResponse('invalid billing');
   }
 
-  const buff = await generateEmouPdf(request.decisionData, billingDecorated);
+  const buff = await generateEmouPdf({ ...request.decisionData, archivedAt: null }, billingDecorated);
   return PdfResponse(buff);
 });

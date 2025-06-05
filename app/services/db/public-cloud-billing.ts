@@ -216,12 +216,13 @@ export async function getPublicCloudBillingResources({
     prisma.publicCloudRequest.findFirst({
       where: { licencePlate: billing.licencePlate, type: RequestType.CREATE, decisionStatus: DecisionStatus.PENDING },
       include: publicCloudRequestDetailInclude,
+
       orderBy: { createdAt: Prisma.SortOrder.desc },
     }),
   ]);
 
   result.product = product;
-
+  result.request = request;
   if (product) result.productDecorated = await models.publicCloudProduct.decorate(product, session, true);
   if (request) result.requestDecorated = await models.publicCloudRequest.decorate(request, session, true);
 

@@ -92,7 +92,7 @@ export async function searchPrivateCloudProducts({
 export function excludePrivateProductPopulatedFields(product: PrivateCloudProductDetailDecorated | null) {
   if (!product) return null;
 
-  const { projectOwner, primaryTechnicalLead, secondaryTechnicalLead, members, archivedAt, ...rest } = product;
+  const { projectOwner, primaryTechnicalLead, secondaryTechnicalLead, members, ...rest } = product;
 
   return rest;
 }

@@ -214,7 +214,7 @@ export async function sendEmouServiceAgreement(
   billing: PublicCloudBillingDetailDecorated,
 ) {
   const content = await getContent(EmouServiceAgreementTemplate({ request, billing }));
-  const emouPdfBuff = await generateEmouPdf(request.decisionData, billing);
+  const emouPdfBuff = await generateEmouPdf({ ...request.decisionData, archivedAt: null }, billing);
   const billingReviewerEmails = await findUserEmailsByAuthRole(GlobalRole.BillingReviewer);
 
   return sendEmail({

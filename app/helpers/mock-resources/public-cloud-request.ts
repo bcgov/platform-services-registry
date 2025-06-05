@@ -132,5 +132,5 @@ export function createSamplePublicCloudRequest(args?: {
     ...data,
   };
 
-  return request as PublicCloudRequestDetail;
+  return request;
 }

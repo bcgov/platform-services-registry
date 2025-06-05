@@ -81,7 +81,6 @@ export type PublicCloudRequestDetail = Prisma.PublicCloudRequestGetPayload<{
     };
     decisionData: {
       include: {
-        archivedAt: true;
         projectOwner: true;
         primaryTechnicalLead: true;
         secondaryTechnicalLead: true;
