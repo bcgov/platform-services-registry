@@ -44,6 +44,6 @@ def send_temp_products_deletion_request(
                 print(f"An error occurred: {err}")
                 failure += 1
         else:
-            print(f"Has an active request; skipping...")
+            print("Has an active request; skipping...")
 
     return {"success": success, "failure": failure}

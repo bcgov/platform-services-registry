@@ -75,18 +75,16 @@ export default function Quotas({
           if (cluster === Cluster.EMERALD) {
             if (subnetInformation[index].isLoading) {
               subnetInfo = <Loader color="blue" type="dots" />;
+            } else if (subnetInformation[index].data) {
+              subnetInfo = (
+                <Tooltip arrowSize={10} label="IP address range for this namespace" withArrow position="top-start">
+                  <p className="text-base font-semibold mb-3">{subnetInformation[index].data}</p>
+                </Tooltip>
+              );
             } else {
-              if (subnetInformation[index].data) {
-                subnetInfo = (
-                  <Tooltip arrowSize={10} label="IP address range for this namespace" withArrow position="top-start">
-                    <p className="text-base font-semibold mb-3">{subnetInformation[index].data}</p>
-                  </Tooltip>
-                );
-              } else {
-                subnetInfo = (
-                  <p className="text-base font-semibold mb-3 text-gray-500">No subnet information available</p>
-                );
-              }
+              subnetInfo = (
+                <p className="text-base font-semibold mb-3 text-gray-500">No subnet information available</p>
+              );
             }
           }
 

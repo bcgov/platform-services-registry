@@ -37,6 +37,8 @@ export default function FormDatePicker({
 
   if (!id) id = randomId();
 
+  const buttonColor = loading ? 'info' : date ? 'success' : 'secondary';
+
   return (
     <div className={cn(classNames?.wrapper)}>
       {label && (
@@ -49,7 +51,7 @@ export default function FormDatePicker({
         <Button
           disabled={disabled}
           loading={loading}
-          color={loading ? 'info' : date ? 'success' : 'secondary'}
+          color={buttonColor}
           onClick={async () => {
             const { state } = await openDatePickerModal({ initialValue: date }, { initialState: { date } });
             if (!isEqualDate(date, state.date)) {

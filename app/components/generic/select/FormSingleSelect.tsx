@@ -13,7 +13,7 @@ export interface FormSingleSelectProps {
   label?: string;
   data: ComboboxData;
   onChange: (value: string, option: ComboboxItem) => void;
-  onBlur?: FocusEventHandler<HTMLInputElement> | undefined;
+  onBlur?: FocusEventHandler<HTMLInputElement>;
   value: string;
   disabled?: boolean;
   classNames?: {

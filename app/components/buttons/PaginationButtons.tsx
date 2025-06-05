@@ -8,8 +8,6 @@ interface PaginationButtonProps extends DetailedHTMLProps<HTMLAttributes<HTMLDiv
   pageCount: number;
   page: number;
   pageSize?: number;
-  // isPending: boolean;
-  // startTransition: React.TransitionStartFunction;
 }
 
 export default function PaginationButton({ pageCount, page, pageSize, className, ...props }: PaginationButtonProps) {

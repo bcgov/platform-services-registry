@@ -50,4 +50,4 @@ class MsGraph:
             return {**users[0], "idirGuid": users[0].get(self.extension_attribute)} if users else None
 
         except requests.exceptions.RequestException as e:
-            raise Exception(f"Failed to fetch user: {str(e)}")
+            raise RuntimeError(f"Failed to fetch user: {str(e)}")

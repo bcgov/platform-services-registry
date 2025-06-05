@@ -80,7 +80,7 @@ def fetch_zap_projects(mongo_conn_id, concurrency, **context):
 
             try:
                 response = requests.get(url, headers=headers, timeout=2)
-            except:
+            except requests.RequestException:
                 continue
 
             if response.status_code == 200:
@@ -410,7 +410,7 @@ def fetch_load_acs_projects(mongo_conn_id):
             alerts_url = f"{api_url}/alerts?{api_search_param}"
             try:
                 alerts_response = requests.get(alerts_url, headers=headers, timeout=2)
-            except:
+            except requests.RequestException:
                 continue
 
             if alerts_response.status_code != 200:
@@ -425,7 +425,7 @@ def fetch_load_acs_projects(mongo_conn_id):
             images_url = f"{api_url}/images?{api_search_param}"
             try:
                 images_response = requests.get(images_url, headers=headers, timeout=2)
-            except:
+            except requests.RequestException:
                 continue
 
             if images_response.status_code != 200:

@@ -24,7 +24,7 @@ export async function getContactChangeRequests({
   });
 
   const grouped = _groupBy(requests, (req: any) => {
-    const createdAtValue = req.createdAt && req.createdAt.$date ? req.createdAt.$date : req.createdAt;
+    const createdAtValue = req.createdAt?.$date ? req.createdAt.$date : req.createdAt;
     return dateToShortDateString(new Date(createdAtValue));
   });
 

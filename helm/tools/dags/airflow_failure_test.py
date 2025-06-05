@@ -27,7 +27,7 @@ with DAG(
 
     def test_dag_task():
         print("Hello, testing airflow task!")
-        raise Exception("The task has been failed intentionally")
+        raise RuntimeError("The task has been failed intentionally")
 
     t1 = PythonOperator(
         task_id="test_dag_task",

@@ -38,6 +38,7 @@ export default function FormDateRangePicker({
   if (!id) id = randomId();
 
   const hasValue = dates && dates.filter(Boolean).length > 0;
+  const buttonColor = loading ? 'info' : hasValue ? 'success' : 'secondary';
 
   return (
     <div className={cn(classNames?.wrapper)}>
@@ -51,7 +52,7 @@ export default function FormDateRangePicker({
         <Button
           disabled={disabled}
           loading={loading}
-          color={loading ? 'info' : hasValue ? 'success' : 'secondary'}
+          color={buttonColor}
           onClick={async () => {
             const { state } = await openDateRangePickerModal(
               { initialValue: dates, allowSingleDate },

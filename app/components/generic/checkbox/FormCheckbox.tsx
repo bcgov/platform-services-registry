@@ -72,9 +72,8 @@ export default function FormCheckbox({
         // Ensure the value
         if (_ref.current) _ref.current.checked = value;
         handleChecked(e);
-      } else {
-        // Undo the value
-        if (_ref.current) _ref.current.checked = !value;
+      } else if (_ref.current) {
+        _ref.current.checked = !value;
       }
     } else {
       handleChecked(e);

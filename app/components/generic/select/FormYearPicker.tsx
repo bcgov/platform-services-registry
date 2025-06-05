@@ -36,6 +36,7 @@ export default function FormYearPicker({
   const [year, setYear] = useState<Date | null>(value ?? null);
 
   if (!id) id = randomId();
+  const buttonColor = loading ? 'info' : year ? 'success' : 'secondary';
 
   return (
     <div className={cn(classNames?.wrapper)}>
@@ -50,7 +51,7 @@ export default function FormYearPicker({
           className="pl-10 pr-10 mb-5"
           disabled={disabled}
           loading={loading}
-          color={loading ? 'info' : year ? 'success' : 'secondary'}
+          color={buttonColor}
           onClick={async () => {
             const { state } = await openYearPickerModal({ initialValue: year }, { initialState: { date: year } });
             onChange(state.date);

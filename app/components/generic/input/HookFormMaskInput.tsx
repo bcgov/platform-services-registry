@@ -19,7 +19,7 @@ export default function HookFormMaskInput<T extends FieldValues>({
   ...others
 }: Omit<FormMaskInputProps, 'name'> & {
   name: Path<T>;
-  options?: RegisterOptions<T, Path<T>> | undefined;
+  options?: RegisterOptions<T, Path<T>>;
   error?: string;
   rules?: HookFormRules<T>;
 }) {

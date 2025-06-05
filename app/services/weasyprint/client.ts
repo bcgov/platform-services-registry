@@ -2,7 +2,7 @@ import axios, { Axios } from 'axios';
 import { WEASYPRINT_URL } from '@/config';
 
 export class WeasyPrint {
-  private _instance: Axios;
+  private readonly _instance: Axios;
 
   constructor() {
     this._instance = axios.create({

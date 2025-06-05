@@ -39,8 +39,8 @@ export default function AdminCostTableBody({
     </div>
   );
 
-  const rows = data.map((item, idx: number) => (
-    <tr key={idx} className="even:bg-gray-50">
+  const rows = data.map((item) => (
+    <tr key={item.product.licencePlate} className="even:bg-gray-50">
       <td className="p-2 border-b text-left align-top">{item.product.name}</td>
       <td className="p-2 border-b text-left align-top">{formatCurrency(item.cost)}</td>
     </tr>

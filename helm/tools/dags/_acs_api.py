@@ -35,7 +35,7 @@ def extract_image_label_urls(cluster, licencePlate):
     images_url = f"{api_url}/images?{api_search_param}"
     try:
         images_response = requests.get(images_url, headers=headers, timeout=2)
-    except:
+    except requests.RequestException:
         return result
 
     if images_response.status_code != 200:

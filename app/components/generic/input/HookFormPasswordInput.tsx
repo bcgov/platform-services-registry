@@ -17,7 +17,7 @@ export default function HookFormPasswordInput<T extends FieldValues>({
   ...others
 }: Omit<FormPasswordInputProps, 'name' | 'inputProps'> & {
   name: Path<T>;
-  options?: RegisterOptions<T, Path<T>> | undefined;
+  options?: RegisterOptions<T, Path<T>>;
   error?: string;
 }) {
   const {

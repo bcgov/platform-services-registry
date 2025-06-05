@@ -11,8 +11,8 @@ export default function LightButton({
   children,
 }: {
   disabled?: boolean;
-  type?: 'button' | 'submit' | 'reset' | undefined;
-  onClick?: MouseEventHandler<HTMLButtonElement> | undefined;
+  type?: 'button' | 'submit' | 'reset';
+  onClick?: MouseEventHandler<HTMLButtonElement>;
   className?: string;
   children: React.ReactNode;
 }) {
