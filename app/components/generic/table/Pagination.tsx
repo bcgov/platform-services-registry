@@ -19,27 +19,21 @@ export default function Pagination({ page, pageSize, totalCount, onPagination, i
     onPagination(newPage, newPageSize ?? pageSize);
   };
 
+  const from = pageSize * (page - 1) + 1;
+  const to = totalCount < pageSize * page ? totalCount : pageSize * page;
+
+  const paginationText =
+    totalCount === 0 ? (
+      <p className="text-sm text-gray-700">Showing 0 to 0 of 0 results</p>
+    ) : (
+      <p className="text-sm text-gray-700">
+        Showing <span>{from}</span> to <span>{to}</span> of <span>{totalCount}</span> results
+      </p>
+    );
+
   return (
     <div className="block md:flex md:items-center md:justify-between">
-      {isLoading ? (
-        <div></div>
-      ) : (
-        <div className="">
-          {totalCount == 0 ? (
-            <p className="text-sm text-gray-700">Showing 0 to 0 of 0 results</p>
-          ) : totalCount < pageSize * page ? (
-            <p className="text-sm text-gray-700">
-              Showing <span>{pageSize * (page - 1) + 1}</span> to <span>{totalCount}</span> of <span>{totalCount}</span>{' '}
-              results
-            </p>
-          ) : (
-            <p className="text-sm text-gray-700">
-              Showing <span>{pageSize * (page - 1) + 1}</span> to <span>{pageSize * page}</span> of{' '}
-              <span>{totalCount}</span> results
-            </p>
-          )}
-        </div>
-      )}
+      {isLoading ? <div></div> : <div>{paginationText}</div>}
       <div className="flex flex-1 mt-1 md:mt-0 md:justify-end">
         <span className="mr-1">Rows per page: </span>
         <select

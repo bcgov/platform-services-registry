@@ -76,9 +76,6 @@ export default function BillingStatusProgress({
       provider: data.provider,
       editable,
     });
-
-    if (res.state.confirmed) {
-    }
   };
 
   const getSignedContent = () => (
@@ -147,9 +144,6 @@ export default function BillingStatusProgress({
               billingId: billing.id,
               licencePlate: billing.licencePlate,
             });
-
-            if (res.state.confirmed) {
-            }
           }}
         >
           Review eMOU

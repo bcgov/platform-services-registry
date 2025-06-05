@@ -12,7 +12,7 @@ export interface FormMultiSelectProps extends MultiSelectProps {
   label?: string;
   data: ComboboxData;
   onChange: (value: string[]) => void;
-  onBlur?: FocusEventHandler<HTMLInputElement> | undefined;
+  onBlur?: FocusEventHandler<HTMLInputElement>;
   value: string[];
   disabled?: boolean;
   classNames?: {

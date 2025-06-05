@@ -34,15 +34,15 @@ interface KcUser {
 
 // Keycloak Admin class to manage Keycloak administration tasks
 export class KcAdmin {
-  private _username?: string;
+  private readonly _username?: string;
 
-  private _password?: string;
+  private readonly _password?: string;
 
-  private _clientId?: string;
+  private readonly _clientId?: string;
 
-  private _clientSecret?: string;
+  private readonly _clientSecret?: string;
 
-  private _cli: KcAdminClient;
+  private readonly _cli: KcAdminClient;
 
   // Constructor to initialize the Keycloak Admin client
   constructor({
@@ -327,7 +327,7 @@ export class KcAdmin {
 
   async listChildGroups(realm: string, parentId: string) {
     const parentGroup = await this._cli.groups.findOne({ realm, id: parentId });
-    if (!parentGroup || !parentGroup.subGroups) return [];
+    if (!parentGroup?.subGroups) return [];
 
     return parentGroup.subGroups;
   }

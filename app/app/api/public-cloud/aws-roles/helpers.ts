@@ -191,7 +191,7 @@ async function listSubGroups({ parentId, search }: { parentId: string; search?: 
 
 async function getProductRoleGroups(licencePlate: string) {
   const projectTeamGroup = await findParentGroup();
-  if (!projectTeamGroup || !projectTeamGroup.id) return [];
+  if (!projectTeamGroup?.id) return [];
   if (projectTeamGroup.subGroupCount === 0) return [];
 
   const projectTeamSubGroups = await listSubGroups({
@@ -200,7 +200,7 @@ async function getProductRoleGroups(licencePlate: string) {
   });
 
   const productGroup = projectTeamSubGroups.find((group) => group.name?.startsWith(licencePlate));
-  if (!productGroup || !productGroup.id) return [];
+  if (!productGroup?.id) return [];
   if (productGroup.subGroupCount === 0) return [];
 
   const productSubGroups = await listSubGroups({ parentId: productGroup.id });

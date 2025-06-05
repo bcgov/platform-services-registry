@@ -128,7 +128,7 @@ export async function listPrivateCloudProductRequests(licencePlate: string, acti
 // Private Cloud Comments
 export async function createPrivateCloudComment(
   licencePlate: string,
-  data: { text: string; projectId?: string | undefined; requestId?: string | undefined },
+  data: { text: string; projectId?: string; requestId?: string },
 ) {
   const result = await productCollectionRoute.post<
     Prisma.PrivateCloudCommentGetPayload<{}> & { success: boolean; message: string; error: any }

@@ -16,7 +16,7 @@ export default function HookFormDollarInput<T extends FieldValues>({
   ...others
 }: Omit<FormDollarInputProps, 'name' | 'inputProps'> & {
   name: Path<T>;
-  options?: RegisterOptions<T, Path<T>> | undefined;
+  options?: RegisterOptions<T, Path<T>>;
 }) {
   const {
     register,

@@ -26,7 +26,7 @@ function Assignees({ task }: { task: SearchTask }) {
         </Text>
         <ul className="mb-3">
           {task.roles.map((role, index) => (
-            <li key={index}>
+            <li key={role}>
               <Badge autoContrast={true} size="sm" color="gray">
                 {startCase(role)}
               </Badge>
@@ -44,8 +44,8 @@ function Assignees({ task }: { task: SearchTask }) {
           Permissions
         </Text>
         <ul className="mb-3">
-          {task.permissions.map((permission, index) => (
-            <li key={index}>
+          {task.permissions.map((permission) => (
+            <li key={permission}>
               <Badge autoContrast={true} size="sm" color="gray">
                 {startCase(permission)}
               </Badge>

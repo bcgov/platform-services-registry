@@ -18,7 +18,7 @@ export default function HookFormTextarea<T extends FieldValues>({
   ...others
 }: Omit<FormTextareaProps, 'name' | 'inputProps'> & {
   name: Path<T>;
-  options?: RegisterOptions<T, Path<T>> | undefined;
+  options?: RegisterOptions<T, Path<T>>;
   error?: string;
 }) {
   const {
