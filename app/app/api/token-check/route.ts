@@ -9,12 +9,12 @@ import { validateAllServiceAccountTokens } from './validations/service-account-t
 
 export const POST = createApiHandler({})(async () => {
   const [
-    metricsTokensValid,
-    keycloakServiceAccountCredentialsValid,
-    keycloakUserLoginCredentialsValid,
-    serviceAccountTokensValid,
-    chesCredentialsValid,
-    msGraphCredentialsValid,
+    metricsTokens,
+    keycloakServiceAccountCredentials,
+    keycloakUserLoginCredentials,
+    serviceAccountTokens,
+    chesCredentials,
+    msGraphCredentials,
   ] = await Promise.all([
     validateAllMetricsReaderTokens(),
     validateKeycloakServiceAccount(),
@@ -25,11 +25,11 @@ export const POST = createApiHandler({})(async () => {
   ]);
 
   return NextResponse.json({
-    metricsTokensValid,
-    keycloakServiceAccountCredentialsValid,
-    keycloakUserLoginCredentialsValid,
-    serviceAccountTokensValid,
-    chesCredentialsValid,
-    msGraphCredentialsValid,
+    metricsTokens,
+    keycloakServiceAccountCredentials,
+    keycloakUserLoginCredentials,
+    serviceAccountTokens,
+    chesCredentials,
+    msGraphCredentials,
   });
 });

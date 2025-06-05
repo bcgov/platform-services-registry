@@ -39,7 +39,7 @@ interface TokenData {
 
 const safeEmails = (emails: Array<NullOrString>): string[] => _uniq(_compact(_castArray(emails)).map(_toLower));
 
-export const getToken = async ({ tokenUrl, clientId, clientSecret }: TokenData): Promise<string | null> => {
+const getToken = async ({ tokenUrl, clientId, clientSecret }: TokenData): Promise<string | null> => {
   const response = await fetchWithTimeout(tokenUrl, {
     method: 'POST',
     headers: {

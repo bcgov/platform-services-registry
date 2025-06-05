@@ -1,17 +1,14 @@
-import { logger } from '@/core/logging';
-import { getKcAdminClient } from '@/services/keycloak/app-realm';
+import { AUTH_SERVER_URL, AUTH_RELM, KEYCLOAK_ADMIN_CLIENT_ID, KEYCLOAK_ADMIN_CLIENT_SECRET } from '@/config';
+import { validateClientCredentials } from './helpers';
 
-export async function validateKeycloakServiceAccount() {
-  try {
-    await getKcAdminClient();
-    logger.info('Keycloak admin credentials are valid');
-    return true;
-  } catch (error: unknown) {
-    if (error instanceof Error) {
-      logger.error('Invalid Keycloak admin credentials:', error.message);
-    } else {
-      logger.error('Unexpected error', error);
-    }
-    return false;
-  }
+export async function validateKeycloakServiceAccount(): Promise<boolean> {
+  if (!(AUTH_SERVER_URL && AUTH_RELM && KEYCLOAK_ADMIN_CLIENT_ID && KEYCLOAK_ADMIN_CLIENT_SECRET)) return false;
+
+  return Boolean(
+    await validateClientCredentials({
+      tokenUrl: `${AUTH_SERVER_URL}/realms/${AUTH_RELM}/protocol/openid-connect/token`,
+      clientId: KEYCLOAK_ADMIN_CLIENT_ID,
+      clientSecret: KEYCLOAK_ADMIN_CLIENT_SECRET,
+    }),
+  );
 }

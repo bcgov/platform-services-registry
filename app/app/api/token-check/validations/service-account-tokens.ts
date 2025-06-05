@@ -8,7 +8,7 @@ import {
   EMERALD_SERVICE_ACCOUNT_TOKEN,
 } from '@/config';
 import { Cluster } from '@/prisma/client';
-import { validateOCTokens } from './helpers';
+import { validateK8sToken } from './helpers';
 
 const tokenMap = {
   [Cluster.KLAB]: KLAB_SERVICE_ACCOUNT_TOKEN,
@@ -21,5 +21,12 @@ const tokenMap = {
 };
 
 export async function validateAllServiceAccountTokens() {
-  return validateOCTokens(tokenMap);
+  const results = {};
+
+  for (const cluster of Object.values(Cluster)) {
+    const token = tokenMap[cluster];
+    results[cluster] = await validateK8sToken(cluster, token);
+  }
+
+  return results;
 }

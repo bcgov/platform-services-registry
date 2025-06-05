@@ -1,23 +1,13 @@
-import { ConfidentialClientApplication } from '@azure/msal-node';
-import { logger } from '@/core/logging';
-import msalConfig from '@/services/msgraph/config';
+import { MS_GRAPH_API_CLIENT_ID, MS_GRAPH_API_CLIENT_SECRET, MS_GRAPH_API_AUTHORITY } from '@/config';
+import { validateClientCredentials } from './helpers';
 
 export async function validateMsGraphCredentials(): Promise<boolean> {
-  try {
-    const msalInstance = new ConfidentialClientApplication(msalConfig);
+  const token = await validateClientCredentials({
+    tokenUrl: `${MS_GRAPH_API_AUTHORITY}/oauth2/v2.0/token`,
+    clientId: MS_GRAPH_API_CLIENT_ID!,
+    clientSecret: MS_GRAPH_API_CLIENT_SECRET!,
+    scope: 'https://graph.microsoft.com/.default',
+  });
 
-    const result = await msalInstance.acquireTokenByClientCredential({
-      scopes: ['https://graph.microsoft.com/.default'],
-    });
-
-    const isValid = Boolean(result?.accessToken);
-    logger[isValid ? 'info' : 'error'](
-      `MS Graph credentials are ${isValid ? 'valid' : 'invalid or token fetch failed'}`,
-    );
-
-    return isValid;
-  } catch (error) {
-    logger.error('Error validating MS Graph credentials:', error instanceof Error ? error.message : error);
-    return false;
-  }
+  return Boolean(token);
 }
