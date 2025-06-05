@@ -212,7 +212,7 @@ export async function getMonthlyCosts(licencePlate: string, year: number, oneInd
     grandTotal = total.costToTotal;
   }
 
-  const numDays = new Date(year, month + 1, 0).getDate();
+  const numDays = new Date(year, month, 0).getDate();
   const days: number[] = Array.from({ length: numDays }, (_, i) => i + 1);
 
   const cpuToDate = new Array(numDays).fill(0);
@@ -249,15 +249,15 @@ export async function getMonthlyCosts(licencePlate: string, year: number, oneInd
       if (metaIndex === sortedItems.length - 1 && meta.startDate > intervalStart) intervalStart = meta.startDate;
 
       const durationMinutes = (intervalEnd.getTime() - intervalStart.getTime()) / (1000 * 60);
-      const cpuPrice = meta.cpuPricePerMinute * durationMinutes;
-      const storagePrice = meta.storagePricePerMinute * durationMinutes;
+      const cpuPrice = meta.total.cpu.value * meta.cpuPricePerMinute * durationMinutes;
+      const storagePrice = meta.total.storage.value * meta.storagePricePerMinute * durationMinutes;
 
       if (intervalEnd <= today) {
-        cpuToDate[day - 1] = cpuPrice;
-        storageToDate[day - 1] = storagePrice;
+        cpuToDate[day - 1] += cpuPrice;
+        storageToDate[day - 1] += storagePrice;
       } else {
-        cpuToProjected[day - 1] = cpuPrice;
-        storageToProjected[day - 1] = storagePrice;
+        cpuToProjected[day - 1] += cpuPrice;
+        storageToProjected[day - 1] += storagePrice;
       }
     }
   }
