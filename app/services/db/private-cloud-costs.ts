@@ -132,55 +132,43 @@ async function getCostDetailsForRange(licencePlate: string, startDate: Date, end
     };
 
     const quota = _find(allRequests, (req) => !!req.provisionedDate && req.provisionedDate <= intervalStart);
-    if (!quota) {
-      costItems.push({
-        startDate: intervalStart,
-        endDate: intervalEnd,
-        minutes: durationMinutes,
-        cpuPricePerMinute,
-        storagePricePerMinute,
-        isPast,
-        unitPriceId: price.id,
-        ...environments,
-      });
-      continue;
-    }
+    if (quota) {
+      const envs = quota.decisionData.resourceRequests;
 
-    const envs = quota.decisionData.resourceRequests;
+      for (const env of namespaceKeys) {
+        const usage = envs[env];
+        if (usage) {
+          const isGoldDrEnabled = quota.decisionData.cluster === Cluster.GOLD && quota.decisionData.golddrEnabled;
+          const resourceMultiplier = isGoldDrEnabled ? 2 : 1;
 
-    for (const env of namespaceKeys) {
-      const usage = envs[env];
-      if (usage) {
-        const isGoldDrEnabled = quota.decisionData.cluster === Cluster.GOLD && quota.decisionData.golddrEnabled;
-        const resourceMultiplier = isGoldDrEnabled ? 2 : 1;
+          environments[env].cpu.value = usage.cpu * resourceMultiplier || 0;
+          environments[env].storage.value = usage.storage * resourceMultiplier || 0;
 
-        environments[env].cpu.value = usage.cpu * resourceMultiplier || 0;
-        environments[env].storage.value = usage.storage * resourceMultiplier || 0;
+          environments[env].cpu.cost = environments[env].cpu.value * cpuPricePerMinute * durationMinutes;
+          environments[env].storage.cost = environments[env].storage.value * storagePricePerMinute * durationMinutes;
+          environments[env].subtotal.cost = environments[env].cpu.cost + environments[env].storage.cost;
 
-        environments[env].cpu.cost = environments[env].cpu.value * cpuPricePerMinute * durationMinutes;
-        environments[env].storage.cost = environments[env].storage.value * storagePricePerMinute * durationMinutes;
-        environments[env].subtotal.cost = environments[env].cpu.cost + environments[env].storage.cost;
+          environments.total.cpu.value += environments[env].cpu.value;
+          environments.total.storage.value += environments[env].storage.value;
+          environments.total.cpu.cost += environments[env].cpu.cost;
+          environments.total.storage.cost += environments[env].storage.cost;
+          environments.total.subtotal.cost += environments[env].subtotal.cost;
 
-        environments.total.cpu.value += environments[env].cpu.value;
-        environments.total.storage.value += environments[env].storage.value;
-        environments.total.cpu.cost += environments[env].cpu.cost;
-        environments.total.storage.cost += environments[env].storage.cost;
-        environments.total.subtotal.cost += environments[env].subtotal.cost;
+          // Root level summary
+          if (isPast) {
+            cpu.costToDate += environments[env].cpu.cost;
+            storage.costToDate += environments[env].storage.cost;
+            total.costToDate += environments[env].subtotal.cost;
+          } else {
+            cpu.costToProjected += environments[env].cpu.cost;
+            storage.costToProjected += environments[env].storage.cost;
+            total.costToProjected += environments[env].subtotal.cost;
+          }
 
-        // Root level summary
-        if (isPast) {
-          cpu.costToDate += environments[env].cpu.cost;
-          storage.costToDate += environments[env].storage.cost;
-          total.costToDate += environments[env].subtotal.cost;
-        } else {
-          cpu.costToProjected += environments[env].cpu.cost;
-          storage.costToProjected += environments[env].storage.cost;
-          total.costToProjected += environments[env].subtotal.cost;
+          cpu.costToTotal += environments[env].cpu.cost;
+          storage.costToTotal += environments[env].storage.cost;
+          total.costToTotal += environments[env].subtotal.cost;
         }
-
-        cpu.costToTotal += environments[env].cpu.cost;
-        storage.costToTotal += environments[env].storage.cost;
-        total.costToTotal += environments[env].subtotal.cost;
       }
     }
 
