@@ -1,7 +1,7 @@
 import { KubeConfig, CoreV1Api, CustomObjectsApi, Metrics } from '@kubernetes/client-node';
 import { Cluster } from '@/prisma/client';
 
-export function configureKubeConfig(cluster: string, token: string) {
+function configureKubeConfig(cluster: string, token: string) {
   const kc = new KubeConfig();
   kc.loadFromOptions({
     clusters: [
@@ -14,14 +14,14 @@ export function configureKubeConfig(cluster: string, token: string) {
     users: [
       {
         name: 'my-user',
-        token,
+        token: token,
       },
     ],
     contexts: [
       {
         name: `${cluster}-context`,
         user: 'my-user',
-        cluster,
+        cluster: cluster,
       },
     ],
     currentContext: `${cluster}-context`,
@@ -30,7 +30,15 @@ export function configureKubeConfig(cluster: string, token: string) {
   return kc;
 }
 
-export function createK8sClusterConfigs(tokens: Record<Cluster, string>) {
+export function createK8sClusterConfigs(tokens: {
+  [Cluster.KLAB]: string;
+  [Cluster.CLAB]: string;
+  [Cluster.KLAB2]: string;
+  [Cluster.GOLDDR]: string;
+  [Cluster.GOLD]: string;
+  [Cluster.SILVER]: string;
+  [Cluster.EMERALD]: string;
+}) {
   const k8sConfigs = {
     [Cluster.KLAB]: configureKubeConfig(Cluster.KLAB, tokens[Cluster.KLAB]),
     [Cluster.CLAB]: configureKubeConfig(Cluster.CLAB, tokens[Cluster.CLAB]),
@@ -42,12 +50,7 @@ export function createK8sClusterConfigs(tokens: Record<Cluster, string>) {
   };
 
   function getK8sClusterToken(cluster: Cluster) {
-    const kc = k8sConfigs[cluster];
-    const user = kc.getCurrentUser();
-    if (!user?.token) {
-      throw new Error(`Missing token in KubeConfig for cluster ${cluster}`);
-    }
-    return user.token;
+    return k8sConfigs[cluster];
   }
 
   function getK8sClusterClients(cluster: Cluster) {
