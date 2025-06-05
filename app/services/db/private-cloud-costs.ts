@@ -108,10 +108,7 @@ async function getCostDetailsForRange(licencePlate: string, startDate: Date, end
     const intervalStart = sortedChangePoints[changePoint];
     const intervalEnd = sortedChangePoints[changePoint + 1];
 
-    if (intervalEnd <= startDate || intervalStart >= endDate) continue;
-
-    const quota = _find(allRequests, (req) => !!req.provisionedDate && req.provisionedDate <= intervalStart);
-    if (!quota) continue;
+    if (intervalEnd <= startDate || intervalStart > endDate) continue;
 
     const price = _find(unitPrices, (unitPrice) => getDateFromYyyyMmDd(unitPrice.date) <= intervalStart) ?? {
       id: 'fallback-zero',
@@ -133,6 +130,21 @@ async function getCostDetailsForRange(licencePlate: string, startDate: Date, end
       tools: getDetaultEnvironmentDetails(),
       total: getDetaultEnvironmentDetails(),
     };
+
+    const quota = _find(allRequests, (req) => !!req.provisionedDate && req.provisionedDate <= intervalStart);
+    if (!quota) {
+      costItems.push({
+        startDate: intervalStart,
+        endDate: intervalEnd,
+        minutes: durationMinutes,
+        cpuPricePerMinute,
+        storagePricePerMinute,
+        isPast,
+        unitPriceId: price.id,
+        ...environments,
+      });
+      continue;
+    }
 
     const envs = quota.decisionData.resourceRequests;
 
@@ -235,13 +247,19 @@ export async function getMonthlyCosts(licencePlate: string, year: number, oneInd
       changePoints.add(today);
     }
 
+    sortedItems.forEach((item) => {
+      if (dayStart < item.startDate && item.startDate < dayEnd) {
+        changePoints.add(item.startDate);
+      }
+    });
+
     const sortedChangePoints = _orderBy(Array.from(changePoints), [], 'asc');
 
     for (let j = 0; j < sortedChangePoints.length - 1; j++) {
       let intervalStart = sortedChangePoints[j];
       const intervalEnd = sortedChangePoints[j + 1];
 
-      const metaIndex = _findIndex(sortedItems, (item) => compareDatesByDay(item.startDate, intervalStart, '<='));
+      const metaIndex = _findIndex(sortedItems, (item) => item.startDate <= intervalStart);
       if (metaIndex === -1) continue;
 
       const meta = sortedItems[metaIndex];
@@ -321,13 +339,19 @@ async function getCostsBasedOnMonths(licencePlate: string, startDate: Date, endD
       changePoints.add(today);
     }
 
+    sortedItems.forEach((item) => {
+      if (monthStart < item.startDate && item.startDate < monthEnd) {
+        changePoints.add(item.startDate);
+      }
+    });
+
     const sortedChangePoints = _orderBy(Array.from(changePoints), [], 'asc');
 
     for (let j = 0; j < sortedChangePoints.length - 1; j++) {
       let intervalStart = sortedChangePoints[j];
       const intervalEnd = sortedChangePoints[j + 1];
 
-      const metaIndex = _findIndex(sortedItems, (item) => compareDatesByMonth(item.startDate, intervalStart, '<='));
+      const metaIndex = _findIndex(sortedItems, (item) => item.startDate <= intervalStart);
       if (metaIndex === -1) continue;
 
       const meta = sortedItems[metaIndex];
@@ -366,7 +390,6 @@ async function getCostsBasedOnMonths(licencePlate: string, startDate: Date, endD
 
 export async function getQuarterlyCosts(licencePlate: string, year: number, quarter: number) {
   const { startDate, endDate } = getQuarterStartEndDate(year, quarter);
-
   const result = {
     ...(await getCostsBasedOnMonths(licencePlate, startDate, endDate)),
     billingPeriod: getQuarterTitleWithMonths(year, quarter),
