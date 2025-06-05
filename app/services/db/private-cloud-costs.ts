@@ -212,7 +212,7 @@ export async function getMonthlyCosts(licencePlate: string, year: number, oneInd
     grandTotal = total.costToTotal;
   }
 
-  const numDays = new Date(year, month, 0).getDate();
+  const numDays = new Date(year, month + 1, 0).getDate();
   const days: number[] = Array.from({ length: numDays }, (_, i) => i + 1);
 
   const cpuToDate = new Array(numDays).fill(0);
