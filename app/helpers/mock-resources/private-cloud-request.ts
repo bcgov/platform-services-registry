@@ -34,6 +34,7 @@ export function createSamplePrivateCloudRequest(args?: {
     supportPhoneNumber: '',
     createdAt: new Date(),
     updatedAt: new Date(),
+    archivedAt: new Date(),
   };
 
   const product = {

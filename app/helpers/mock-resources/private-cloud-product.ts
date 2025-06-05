@@ -80,6 +80,7 @@ export function createSamplePrivateCloudProduct(args?: {
     supportPhoneNumber: '',
     createdAt: new Date(),
     updatedAt: new Date(),
+    archivedAt: new Date(),
     temporaryProductNotificationDate: new Date(),
     requests: [],
     activeRequest: null,

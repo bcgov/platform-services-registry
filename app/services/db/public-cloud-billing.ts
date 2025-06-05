@@ -221,7 +221,7 @@ export async function getPublicCloudBillingResources({
   ]);
 
   result.product = product;
-  result.request = request;
+
   if (product) result.productDecorated = await models.publicCloudProduct.decorate(product, session, true);
   if (request) result.requestDecorated = await models.publicCloudRequest.decorate(request, session, true);
 

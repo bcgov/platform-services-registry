@@ -59,6 +59,7 @@ export function createSamplePublicCloudProduct(args?: {
     },
     createdAt: new Date(),
     updatedAt: new Date(),
+    archivedAt: new Date(),
     requests: [],
     activeRequest: null,
     ...data,

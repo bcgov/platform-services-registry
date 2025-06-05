@@ -81,6 +81,7 @@ export function createSamplePublicCloudRequest(args?: {
     },
     createdAt: new Date(),
     updatedAt: new Date(),
+    archivedAt: new Date(),
   };
 
   const product = {
@@ -131,5 +132,5 @@ export function createSamplePublicCloudRequest(args?: {
     ...data,
   };
 
-  return request;
+  return request as PublicCloudRequestDetail;
 }

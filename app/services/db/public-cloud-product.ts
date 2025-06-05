@@ -132,7 +132,8 @@ export async function searchPublicCloudProducts({
 export function excludePublicProductPopulatedFields(product: PublicCloudProductDetailDecorated | null) {
   if (!product) return null;
 
-  const { projectOwner, primaryTechnicalLead, secondaryTechnicalLead, expenseAuthority, members, ...rest } = product;
+  const { projectOwner, primaryTechnicalLead, secondaryTechnicalLead, expenseAuthority, members, archivedAt, ...rest } =
+    product;
 
   return {
     ...rest,
