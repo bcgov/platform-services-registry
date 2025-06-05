@@ -22,7 +22,7 @@ def get_mongo_db(mongo_conn_id):
     The MongoDB database named 'pltsvc'.
     """
 
-    hook = MongoHook(conn_id=mongo_conn_id)
+    hook = MongoHook(mongo_conn_id=mongo_conn_id)
     client = hook.get_conn()
     print(f"Connected to MongoDB - {client.server_info()}")
     return client.pltsvc
