@@ -98,6 +98,21 @@ export const POST = apiHandler(async ({ pathParams, body, session }) => {
     return UnprocessableEntityResponse('failed to update the request');
   }
 
+  if (request.type === RequestType.DELETE) {
+    const updatedProduct = await prisma.privateCloudProduct.update({
+      where: {
+        licencePlate: request.licencePlate,
+      },
+      data: {
+        archivedAt: new Date(),
+      },
+    });
+
+    if (!updatedProduct) {
+      return UnprocessableEntityResponse('failed to update the product');
+    }
+  }
+
   const updatedRequestDecorated = await models.privateCloudRequest.decorate(updatedRequest, session, true);
 
   await Promise.all([
