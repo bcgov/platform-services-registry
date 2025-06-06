@@ -63,7 +63,7 @@ function getDetaultEnvironmentDetails() {
 }
 
 async function getCostDetailsForRange(licencePlate: string, startDate: Date, endDate: Date) {
-  const [unitPrices, allRequests] = await Promise.all([
+  const [unitPrices, allRequests, product] = await Promise.all([
     prisma.privateCloudUnitPrice.findMany({
       where: {},
       orderBy: { date: Prisma.SortOrder.desc },
@@ -78,16 +78,26 @@ async function getCostDetailsForRange(licencePlate: string, startDate: Date, end
       include: { decisionData: true },
       orderBy: { provisionedDate: Prisma.SortOrder.desc },
     }),
+    prisma.privateCloudProduct
+      .findUnique({
+        where: { licencePlate },
+        select: { archivedAt: true },
+      })
+      .then((product) => product || { archivedAt: null }),
   ]);
 
   const today = new Date();
   const isTodayWithinRange = startDate <= today && today <= endDate;
+  const { archivedAt } = product;
 
   const changePoints = new Set<Date>();
 
   changePoints.add(startDate);
   changePoints.add(endDate);
   if (isTodayWithinRange) changePoints.add(today);
+  if (archivedAt && archivedAt >= startDate && archivedAt <= endDate) {
+    changePoints.add(archivedAt);
+  }
 
   for (const price of unitPrices) {
     changePoints.add(getDateFromYyyyMmDd(price.date));
@@ -110,14 +120,20 @@ async function getCostDetailsForRange(licencePlate: string, startDate: Date, end
 
     if (intervalEnd <= startDate || intervalStart > endDate) continue;
 
-    const price = _find(unitPrices, (unitPrice) => getDateFromYyyyMmDd(unitPrice.date) <= intervalStart) ?? {
-      id: 'fallback-zero',
-      cpu: 0,
-      storage: 0,
-      date: intervalStart,
-    };
+    const price =
+      !archivedAt || intervalStart < archivedAt
+        ? _find(unitPrices, (up) => getDateFromYyyyMmDd(up.date) <= intervalStart) ?? {
+            id: 'fallback-zero',
+            cpu: 0,
+            storage: 0,
+            date: intervalStart,
+          }
+        : { id: 'archived-zero', cpu: 0, storage: 0, date: intervalStart };
 
-    const durationMinutes = (intervalEnd.getTime() - intervalStart.getTime()) / (1000 * 60);
+    const status = archivedAt ? 'archived' : intervalEnd <= today ? 'past' : 'projected';
+    const actualEnd = archivedAt && intervalEnd > archivedAt ? archivedAt : intervalEnd;
+
+    const durationMinutes = (actualEnd.getTime() - intervalStart.getTime()) / (1000 * 60);
     const minutesInYear = getMinutesInYear(startDate.getFullYear()); // TODO: handle multiple years
     const cpuPricePerMinute = price.cpu / minutesInYear;
     const storagePricePerMinute = price.storage / minutesInYear;
@@ -174,12 +190,13 @@ async function getCostDetailsForRange(licencePlate: string, startDate: Date, end
 
     costItems.push({
       startDate: intervalStart,
-      endDate: intervalEnd,
+      endDate: actualEnd,
       minutes: durationMinutes,
       cpuPricePerMinute,
       storagePricePerMinute,
       isPast,
       unitPriceId: price.id,
+      status,
       ...environments,
     });
   }
