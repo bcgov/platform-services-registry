@@ -120,24 +120,21 @@ async function getCostDetailsForRange(licencePlate: string, startDate: Date, end
 
     if (intervalEnd <= startDate || intervalStart > endDate) continue;
 
-    const price =
-      !archivedAt || intervalStart < archivedAt
-        ? _find(unitPrices, (up) => getDateFromYyyyMmDd(up.date) <= intervalStart) ?? {
-            id: 'fallback-zero',
-            cpu: 0,
-            storage: 0,
-            date: intervalStart,
-          }
-        : { id: 'archived-zero', cpu: 0, storage: 0, date: intervalStart };
+    const price = _find(unitPrices, (unitPrice) => getDateFromYyyyMmDd(unitPrice.date) <= intervalStart) ?? {
+      id: 'fallback-zero',
+      cpu: 0,
+      storage: 0,
+      date: intervalStart,
+    };
 
-    const status = archivedAt ? 'archived' : intervalEnd <= today ? 'past' : 'projected';
-    const actualEnd = archivedAt && intervalEnd > archivedAt ? archivedAt : intervalEnd;
-
-    const durationMinutes = (actualEnd.getTime() - intervalStart.getTime()) / (1000 * 60);
-    const minutesInYear = getMinutesInYear(startDate.getFullYear()); // TODO: handle multiple years
-    const cpuPricePerMinute = price.cpu / minutesInYear;
-    const storagePricePerMinute = price.storage / minutesInYear;
+    const isArchived = !!(archivedAt && intervalStart >= archivedAt);
     const isPast = intervalEnd <= today;
+    const isProjected = !isPast && !isArchived;
+
+    const durationMinutes = (intervalEnd.getTime() - intervalStart.getTime()) / (1000 * 60);
+    const minutesInYear = getMinutesInYear(startDate.getFullYear());
+    const cpuPricePerMinute = isArchived ? 0 : price.cpu / minutesInYear;
+    const storagePricePerMinute = isArchived ? 0 : price.storage / minutesInYear;
 
     const environments = {
       development: getDetaultEnvironmentDetails(),
@@ -148,7 +145,8 @@ async function getCostDetailsForRange(licencePlate: string, startDate: Date, end
     };
 
     const quota = _find(allRequests, (req) => !!req.provisionedDate && req.provisionedDate <= intervalStart);
-    if (quota) {
+
+    if (quota && !isArchived) {
       const envs = quota.decisionData.resourceRequests;
 
       for (const env of namespaceKeys) {
@@ -170,12 +168,11 @@ async function getCostDetailsForRange(licencePlate: string, startDate: Date, end
           environments.total.storage.cost += environments[env].storage.cost;
           environments.total.subtotal.cost += environments[env].subtotal.cost;
 
-          // Root level summary
           if (isPast) {
             cpu.costToDate += environments[env].cpu.cost;
             storage.costToDate += environments[env].storage.cost;
             total.costToDate += environments[env].subtotal.cost;
-          } else {
+          } else if (isProjected) {
             cpu.costToProjected += environments[env].cpu.cost;
             storage.costToProjected += environments[env].storage.cost;
             total.costToProjected += environments[env].subtotal.cost;
@@ -186,17 +183,31 @@ async function getCostDetailsForRange(licencePlate: string, startDate: Date, end
           total.costToTotal += environments[env].subtotal.cost;
         }
       }
+    } else if (isArchived) {
+      for (const env of namespaceKeys) {
+        environments[env].cpu.value = 0;
+        environments[env].storage.value = 0;
+        environments[env].cpu.cost = 0;
+        environments[env].storage.cost = 0;
+        environments[env].subtotal.cost = 0;
+      }
+      environments.total.cpu.value = 0;
+      environments.total.storage.value = 0;
+      environments.total.cpu.cost = 0;
+      environments.total.storage.cost = 0;
+      environments.total.subtotal.cost = 0;
     }
 
     costItems.push({
       startDate: intervalStart,
-      endDate: actualEnd,
+      endDate: intervalEnd,
       minutes: durationMinutes,
       cpuPricePerMinute,
       storagePricePerMinute,
       isPast,
+      isArchived,
       unitPriceId: price.id,
-      status,
+      status: isArchived ? 'archived' : isPast ? 'past' : 'projected',
       ...environments,
     });
   }
