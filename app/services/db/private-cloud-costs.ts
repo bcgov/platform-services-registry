@@ -168,11 +168,12 @@ async function getCostDetailsForRange(licencePlate: string, startDate: Date, end
           environments.total.storage.cost += environments[env].storage.cost;
           environments.total.subtotal.cost += environments[env].subtotal.cost;
 
+          // Root level summary
           if (isPast) {
             cpu.costToDate += environments[env].cpu.cost;
             storage.costToDate += environments[env].storage.cost;
             total.costToDate += environments[env].subtotal.cost;
-          } else if (isProjected) {
+          } else {
             cpu.costToProjected += environments[env].cpu.cost;
             storage.costToProjected += environments[env].storage.cost;
             total.costToProjected += environments[env].subtotal.cost;
