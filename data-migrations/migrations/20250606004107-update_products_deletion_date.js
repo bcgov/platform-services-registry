@@ -1,6 +1,9 @@
 export const up = async (db, client) => {
   const session = client.startSession();
-  const filteringRules = { status: 'INACTIVE' };
+  const filteringRules = {
+    status: 'INACTIVE',
+    $or: [{ archivedAt: { $exists: false } }, { archivedAt: null }],
+  };
 
   const updatePipeline = [
     {
