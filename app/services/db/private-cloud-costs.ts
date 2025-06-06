@@ -207,6 +207,7 @@ async function getCostDetailsForRange(licencePlate: string, startDate: Date, end
       storagePricePerMinute,
       isPast,
       isArchived,
+      isProjected,
       unitPriceId: price.id,
       status: isArchived ? 'archived' : isPast ? 'past' : 'projected',
       ...environments,
