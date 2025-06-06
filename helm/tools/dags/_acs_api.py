@@ -53,7 +53,7 @@ def extract_image_label_urls(cluster, licencePlate):
 
         try:
             image_response = requests.get(image_url, headers=headers, timeout=2)
-        except:
+        except requests.RequestException:
             continue
 
         if image_response.status_code != 200:
