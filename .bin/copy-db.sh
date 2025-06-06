@@ -1,5 +1,15 @@
 #!/bin/bash
 
+set -o allexport
+eval "$(sed -E '/^\s*($|#)/d; s/^/export /' app/.env.local 2>/dev/null)" >/dev/null 2>&1
+set +o allexport
+
+echo "DATABASE_URL is $DATABASE_URL"
+
+base_url_with_db="${DATABASE_URL%%\?*}"
+url="${base_url_with_db%/*}"
+database="${base_url_with_db##*/}"
+
 asdf plugin add database-tools https://github.com/egose/asdf-database-tools.git
 asdf install database-tools
 
@@ -28,5 +38,4 @@ echo "Most recent file: $recent_file"
 
 # Copy the most recent back file to unarchive into the sandbox database
 oc cp "$pod_name:backup/$recent_file" "$tmp_dir/$recent_file"
-# NOSONAR
-mongo-unarchive --uri="mongodb://mongodb:mongodb@localhost:27017/?authSource=admin" --db=pltsvc --local-path="$tmp_dir" # pragma: allowlist secret
+mongo-unarchive --uri="$url/?authSource=admin" --db="$database" --local-path="$tmp_dir"
