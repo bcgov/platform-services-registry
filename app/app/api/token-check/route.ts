@@ -9,25 +9,25 @@ import { validateAllServiceAccountTokens } from './validations/service-account-t
 
 export const POST = createApiHandler({})(async () => {
   const [
-    metricsTokens,
     keycloakServiceAccountCredentials,
     keycloakUserLoginCredentials,
+    metricsTokens,
     serviceAccountTokens,
     chesCredentials,
     msGraphCredentials,
   ] = await Promise.all([
-    validateAllMetricsReaderTokens(),
     validateKeycloakServiceAccount(),
     validateKeycloakUserLogin(),
+    validateAllMetricsReaderTokens(),
     validateAllServiceAccountTokens(),
     validateChesCredentials(),
     validateMsGraphCredentials(),
   ]);
 
   return NextResponse.json({
-    metricsTokens,
     keycloakServiceAccountCredentials,
     keycloakUserLoginCredentials,
+    metricsTokens,
     serviceAccountTokens,
     chesCredentials,
     msGraphCredentials,

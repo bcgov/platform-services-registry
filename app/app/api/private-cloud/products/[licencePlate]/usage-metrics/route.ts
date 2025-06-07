@@ -5,7 +5,7 @@ import createApiHandler from '@/core/api-handler';
 import { OkResponse, UnauthorizedResponse } from '@/core/responses';
 import { Cluster, ResourceRequestsEnv } from '@/prisma/client';
 import { models } from '@/services/db';
-import { getPodMetrics } from '@/services/k8s/metrics';
+import { getUsageMetrics } from '@/services/k8s/metrics';
 import { getPathParamSchema } from '../schema';
 
 const queryParamSchema = z.object({
@@ -33,7 +33,7 @@ export const GET = apiHandler(async ({ queryParams, pathParams, session }) => {
     cluster = 'KLAB';
   }
 
-  const metrics = await getPodMetrics(
+  const metrics = await getUsageMetrics(
     licencePlate,
     environmentLongNames[environment] as keyof ResourceRequestsEnv,
     cluster,

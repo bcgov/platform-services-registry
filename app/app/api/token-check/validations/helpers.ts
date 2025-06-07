@@ -1,4 +1,6 @@
+import KcAdminClient from '@keycloak/keycloak-admin-client';
 import { AuthorizationV1Api } from '@kubernetes/client-node';
+import { KEYCLOAK_ADMIN_CLIENT_ID, KEYCLOAK_ADMIN_CLIENT_SECRET } from '@/config';
 import { Cluster } from '@/prisma/client';
 import { configureKubeConfig } from '@/services/k8s/helpers';
 
@@ -44,4 +46,28 @@ export async function validateClientCredentials({ tokenUrl, clientId, clientSecr
 
   const token = await getClientCredentialsToken(tokenUrl, params);
   return Boolean(token);
+}
+
+export async function validateKeycloakUserClientId(clientId: string) {
+  try {
+    const authUrl = `${process.env.AUTH_SERVER_URL}/realms/${process.env.AUTH_RELM}/protocol/openid-connect/auth`;
+
+    const params = new URLSearchParams({
+      client_id: clientId,
+      response_type: 'code',
+      scope: 'openid profile email',
+      redirect_uri: 'https://registry.developer.gov.bc.ca/',
+      state: 'test',
+      nonce: 'test',
+    });
+
+    const res = await fetch(`${authUrl}?${params.toString()}`, {
+      method: 'GET',
+      redirect: 'manual',
+    });
+
+    return res.status === 200 || res.status === 302;
+  } catch {
+    return false;
+  }
 }

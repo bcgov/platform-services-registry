@@ -21,7 +21,7 @@ async function getLastTwoWeeksAvgUsage(cluster: Cluster, namespace: string, podN
 
     // Match memory usage for the same container
     const memoryUsageItem = usageMemory.find((memItem) => memItem.metric.container === containerName);
-    const memoryUsage = memoryUsageItem && memoryUsageItem.value ? parseFloat(memoryUsageItem.value[1]) : 0;
+    const memoryUsage = memoryUsageItem?.value ? parseFloat(memoryUsageItem.value[1]) : 0;
 
     return {
       containerName,
