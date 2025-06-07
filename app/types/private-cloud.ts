@@ -199,7 +199,6 @@ export interface CostItem {
   production: EnvironmentDetails;
   tools: EnvironmentDetails;
   total: EnvironmentDetails;
-  status: 'past' | 'projected' | 'archived';
 }
 
 export interface MonthlyCost {

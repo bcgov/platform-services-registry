@@ -5,7 +5,7 @@ import _orderBy from 'lodash-es/orderBy';
 import { namespaceKeys } from '@/constants';
 import prisma from '@/core/prisma';
 import { Cluster, DecisionStatus, Prisma, RequestType } from '@/prisma/client';
-import { CostItem } from '@/types/private-cloud';
+import { CostItem, EnvironmentDetails } from '@/types/private-cloud';
 import {
   dateToShortDateString,
   getMinutesInYear,
@@ -38,7 +38,7 @@ function formatDecimals<T>(obj: T): T {
   return obj;
 }
 
-function getDetaultRangeCost() {
+function getDefaultRangeCost() {
   return _cloneDeep({
     costToDate: 0,
     costToProjected: 0,
@@ -46,7 +46,7 @@ function getDetaultRangeCost() {
   });
 }
 
-function getDetaultEnvironmentDetails() {
+function getDefaultEnvironmentDetails() {
   return _cloneDeep({
     cpu: {
       value: 0,
@@ -78,13 +78,20 @@ async function getCostDetailsForRange(licencePlate: string, startDate: Date, end
       include: { decisionData: true },
       orderBy: { provisionedDate: Prisma.SortOrder.desc },
     }),
-    prisma.privateCloudProduct
-      .findUnique({
-        where: { licencePlate },
-        select: { archivedAt: true },
-      })
-      .then((product) => product || { archivedAt: null }),
+    prisma.privateCloudProduct.findUnique({
+      where: { licencePlate },
+      select: { archivedAt: true },
+    }),
   ]);
+
+  if (!product) {
+    return {
+      items: [],
+      cpu: getDefaultRangeCost(),
+      storage: getDefaultRangeCost(),
+      total: getDefaultRangeCost(),
+    };
+  }
 
   const today = new Date();
   const isTodayWithinRange = startDate <= today && today <= endDate;
@@ -110,9 +117,9 @@ async function getCostDetailsForRange(licencePlate: string, startDate: Date, end
   const sortedChangePoints = _orderBy(Array.from(changePoints), [], 'asc');
   const costItems: CostItem[] = [];
 
-  const cpu = getDetaultRangeCost();
-  const storage = getDetaultRangeCost();
-  const total = getDetaultRangeCost();
+  const cpu = getDefaultRangeCost();
+  const storage = getDefaultRangeCost();
+  const total = getDefaultRangeCost();
 
   for (let changePoint = 0; changePoint < sortedChangePoints.length - 1; changePoint++) {
     const intervalStart = sortedChangePoints[changePoint];
@@ -132,16 +139,16 @@ async function getCostDetailsForRange(licencePlate: string, startDate: Date, end
     const isProjected = !isPast && !isArchived;
 
     const durationMinutes = (intervalEnd.getTime() - intervalStart.getTime()) / (1000 * 60);
-    const minutesInYear = getMinutesInYear(startDate.getFullYear());
+    const minutesInYear = getMinutesInYear(startDate.getFullYear()); // TODO: handle multiple years
     const cpuPricePerMinute = isArchived ? 0 : price.cpu / minutesInYear;
     const storagePricePerMinute = isArchived ? 0 : price.storage / minutesInYear;
 
     const environments = {
-      development: getDetaultEnvironmentDetails(),
-      test: getDetaultEnvironmentDetails(),
-      production: getDetaultEnvironmentDetails(),
-      tools: getDetaultEnvironmentDetails(),
-      total: getDetaultEnvironmentDetails(),
+      development: getDefaultEnvironmentDetails(),
+      test: getDefaultEnvironmentDetails(),
+      production: getDefaultEnvironmentDetails(),
+      tools: getDefaultEnvironmentDetails(),
+      total: getDefaultEnvironmentDetails(),
     };
 
     const quota = _find(allRequests, (req) => !!req.provisionedDate && req.provisionedDate <= intervalStart);
@@ -185,18 +192,16 @@ async function getCostDetailsForRange(licencePlate: string, startDate: Date, end
         }
       }
     } else if (isArchived) {
-      for (const env of namespaceKeys) {
-        environments[env].cpu.value = 0;
-        environments[env].storage.value = 0;
-        environments[env].cpu.cost = 0;
-        environments[env].storage.cost = 0;
-        environments[env].subtotal.cost = 0;
-      }
-      environments.total.cpu.value = 0;
-      environments.total.storage.value = 0;
-      environments.total.cpu.cost = 0;
-      environments.total.storage.cost = 0;
-      environments.total.subtotal.cost = 0;
+      const zeroOutResources = (env: EnvironmentDetails) => {
+        Object.assign(env, {
+          cpu: { value: 0, cost: 0 },
+          storage: { value: 0, cost: 0 },
+          subtotal: { cost: 0 },
+        });
+      };
+
+      namespaceKeys.forEach((env) => zeroOutResources(environments[env]));
+      zeroOutResources(environments.total);
     }
 
     costItems.push({
@@ -209,7 +214,6 @@ async function getCostDetailsForRange(licencePlate: string, startDate: Date, end
       isArchived,
       isProjected,
       unitPriceId: price.id,
-      status: isArchived ? 'archived' : isPast ? 'past' : 'projected',
       ...environments,
     });
   }
