@@ -62,6 +62,10 @@ function getDefaultEnvironmentDetails() {
   });
 }
 
+function zeroOutResources(env: EnvironmentDetails) {
+  return Object.assign(env, getDefaultEnvironmentDetails());
+}
+
 async function getCostDetailsForRange(licencePlate: string, startDate: Date, endDate: Date) {
   const [unitPrices, allRequests, product] = await Promise.all([
     prisma.privateCloudUnitPrice.findMany({
@@ -192,14 +196,6 @@ async function getCostDetailsForRange(licencePlate: string, startDate: Date, end
         }
       }
     } else if (isArchived) {
-      const zeroOutResources = (env: EnvironmentDetails) => {
-        Object.assign(env, {
-          cpu: { value: 0, cost: 0 },
-          storage: { value: 0, cost: 0 },
-          subtotal: { cost: 0 },
-        });
-      };
-
       namespaceKeys.forEach((env) => zeroOutResources(environments[env]));
       zeroOutResources(environments.total);
     }
