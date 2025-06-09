@@ -62,10 +62,6 @@ function getDefaultEnvironmentDetails() {
   });
 }
 
-function getZeroedOutResources(env: EnvironmentDetails) {
-  return Object.assign(env, getDefaultEnvironmentDetails());
-}
-
 async function getCostDetailsForRange(licencePlate: string, startDate: Date, endDate: Date) {
   const [unitPrices, allRequests, product] = await Promise.all([
     prisma.privateCloudUnitPrice.findMany({
@@ -88,12 +84,17 @@ async function getCostDetailsForRange(licencePlate: string, startDate: Date, end
     }),
   ]);
 
+  const costItems: CostItem[] = [];
+  const cpu = getDefaultRangeCost();
+  const storage = getDefaultRangeCost();
+  const total = getDefaultRangeCost();
+
   if (!product) {
     return {
-      items: [],
-      cpu: getDefaultRangeCost(),
-      storage: getDefaultRangeCost(),
-      total: getDefaultRangeCost(),
+      items: costItems,
+      cpu,
+      storage,
+      total,
     };
   }
 
@@ -105,8 +106,9 @@ async function getCostDetailsForRange(licencePlate: string, startDate: Date, end
 
   changePoints.add(startDate);
   changePoints.add(endDate);
+
   if (isTodayWithinRange) changePoints.add(today);
-  if (archivedAt && archivedAt >= startDate && archivedAt <= endDate) {
+  if (archivedAt && startDate <= archivedAt && archivedAt <= endDate) {
     changePoints.add(archivedAt);
   }
 
@@ -119,11 +121,6 @@ async function getCostDetailsForRange(licencePlate: string, startDate: Date, end
   }
 
   const sortedChangePoints = _orderBy(Array.from(changePoints), [], 'asc');
-  const costItems: CostItem[] = [];
-
-  const cpu = getDefaultRangeCost();
-  const storage = getDefaultRangeCost();
-  const total = getDefaultRangeCost();
 
   for (let changePoint = 0; changePoint < sortedChangePoints.length - 1; changePoint++) {
     const intervalStart = sortedChangePoints[changePoint];
@@ -138,7 +135,7 @@ async function getCostDetailsForRange(licencePlate: string, startDate: Date, end
       date: intervalStart,
     };
 
-    const isArchived = !!(archivedAt && intervalStart >= archivedAt);
+    const isArchived = !!(archivedAt && archivedAt <= intervalStart);
     const isPast = intervalEnd <= today;
     const isProjected = !isPast && !isArchived;
 
@@ -195,9 +192,6 @@ async function getCostDetailsForRange(licencePlate: string, startDate: Date, end
           total.costToTotal += environments[env].subtotal.cost;
         }
       }
-    } else if (isArchived) {
-      namespaceKeys.forEach((env) => getZeroedOutResources(environments[env]));
-      getZeroedOutResources(environments.total);
     }
 
     costItems.push({
