@@ -41,6 +41,7 @@ export { getK8sClusterToken, getK8sClients };
 export async function queryPrometheus(query: string, cluster: Cluster) {
   const METRICS_URL = `https://prometheus-k8s-openshift-monitoring.apps.${cluster}.devops.gov.bc.ca`;
   const METRICS_TOKEN = getK8sClusterToken(cluster);
+
   const response = await axios.get<PrometheusQueryResponse>(`${METRICS_URL}/api/v1/query`, {
     headers: { Authorization: `Bearer ${METRICS_TOKEN}` },
     params: { query },

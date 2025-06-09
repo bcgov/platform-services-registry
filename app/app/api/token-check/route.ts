@@ -1,5 +1,5 @@
-import { NextResponse } from 'next/server';
 import createApiHandler from '@/core/api-handler';
+import { OkResponse } from '@/core/responses';
 import { validateChesServiceAccountCredentials } from './validations/ches-service-account-credentials';
 import { validateKeycloakServiceAccount } from './validations/keycloak-service-account-credentials';
 import { validateKeycloakUserLogin } from './validations/keycloak-user-login-credentials';
@@ -7,7 +7,7 @@ import { validateKubernetisDeletionCheckTokens } from './validations/kubernetis-
 import { validateKubernetisMetricsReaderTokens } from './validations/kubernetis-metrics-reader-tokens';
 import { validateMsGraphServiceAccountCredentials } from './validations/ms-graph-service-account-credentials';
 
-export const POST = createApiHandler({})(async () => {
+export const GET = createApiHandler({})(async () => {
   const [
     keycloakServiceAccountCredentials,
     keycloakUserLoginCredentials,
@@ -24,7 +24,7 @@ export const POST = createApiHandler({})(async () => {
     validateMsGraphServiceAccountCredentials(),
   ]);
 
-  return NextResponse.json({
+  return OkResponse({
     keycloakServiceAccountCredentials,
     keycloakUserLoginCredentials,
     kubernetisMetricsReaderTokens,
