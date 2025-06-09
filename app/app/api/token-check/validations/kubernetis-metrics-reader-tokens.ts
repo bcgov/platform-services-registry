@@ -8,9 +8,10 @@ import {
   EMERALD_METRICS_READER_TOKEN,
 } from '@/config';
 import { Cluster } from '@/prisma/client';
-import { validateK8sToken } from './helpers';
+import { createK8sClusterConfigs } from '@/services/k8s/helpers';
+import { isClusterTokenPresent } from './helpers';
 
-const tokenMap = {
+const { getK8sClusterToken, getK8sClusterClients } = createK8sClusterConfigs({
   [Cluster.KLAB]: KLAB_METRICS_READER_TOKEN,
   [Cluster.CLAB]: CLAB_METRICS_READER_TOKEN,
   [Cluster.KLAB2]: KLAB2_METRICS_READER_TOKEN,
@@ -18,14 +19,21 @@ const tokenMap = {
   [Cluster.GOLD]: GOLD_METRICS_READER_TOKEN,
   [Cluster.SILVER]: SILVER_METRICS_READER_TOKEN,
   [Cluster.EMERALD]: EMERALD_METRICS_READER_TOKEN,
-};
+});
 
-export async function validateAllMetricsReaderTokens() {
+export async function validateKubernetisMetricsReaderTokens() {
   const results = {};
 
   for (const cluster of Object.values(Cluster)) {
-    const token = tokenMap[cluster];
-    results[cluster] = await validateK8sToken(cluster, token);
+    if (!isClusterTokenPresent(getK8sClusterToken, cluster)) {
+      results[cluster] = false;
+      continue;
+    }
+
+    const { authClient } = getK8sClusterClients(cluster);
+    const res = await authClient.getAPIResources();
+
+    results[cluster] = !!res && Array.isArray(res.resources) && res.resources.length > 0;
   }
 
   return results;

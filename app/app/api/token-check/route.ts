@@ -1,35 +1,35 @@
 import { NextResponse } from 'next/server';
 import createApiHandler from '@/core/api-handler';
-import { validateChesCredentials } from './validations/ches-client-credentials';
+import { validateChesServiceAccountCredentials } from './validations/ches-service-account-credentials';
 import { validateKeycloakServiceAccount } from './validations/keycloak-service-account-credentials';
 import { validateKeycloakUserLogin } from './validations/keycloak-user-login-credentials';
-import { validateAllMetricsReaderTokens } from './validations/metrics-reader-tokens';
-import { validateMsGraphCredentials } from './validations/ms-graph-client-credentials';
-import { validateAllServiceAccountTokens } from './validations/service-account-tokens';
+import { validateKubernetisDeletionCheckTokens } from './validations/kubernetis-deletion-check-tokens';
+import { validateKubernetisMetricsReaderTokens } from './validations/kubernetis-metrics-reader-tokens';
+import { validateMsGraphServiceAccountCredentials } from './validations/ms-graph-service-account-credentials';
 
 export const POST = createApiHandler({})(async () => {
   const [
     keycloakServiceAccountCredentials,
     keycloakUserLoginCredentials,
-    metricsTokens,
-    serviceAccountTokens,
-    chesCredentials,
-    msGraphCredentials,
+    kubernetisMetricsReaderTokens,
+    kubernetisDeletionCheckTokens,
+    chesServiceAccountCredentials,
+    msGraphServiceAccountCredentials,
   ] = await Promise.all([
     validateKeycloakServiceAccount(),
     validateKeycloakUserLogin(),
-    validateAllMetricsReaderTokens(),
-    validateAllServiceAccountTokens(),
-    validateChesCredentials(),
-    validateMsGraphCredentials(),
+    validateKubernetisMetricsReaderTokens(),
+    validateKubernetisDeletionCheckTokens(),
+    validateChesServiceAccountCredentials(),
+    validateMsGraphServiceAccountCredentials(),
   ]);
 
   return NextResponse.json({
     keycloakServiceAccountCredentials,
     keycloakUserLoginCredentials,
-    metricsTokens,
-    serviceAccountTokens,
-    chesCredentials,
-    msGraphCredentials,
+    kubernetisMetricsReaderTokens,
+    kubernetisDeletionCheckTokens,
+    chesServiceAccountCredentials,
+    msGraphServiceAccountCredentials,
   });
 });

@@ -1,6 +1,7 @@
 import { AUTH_RESOURCE } from '@/config';
-import { validateKeycloakUserClientId } from './helpers';
+import { validateOAuthClientId } from './helpers';
 
 export async function validateKeycloakUserLogin() {
-  return await validateKeycloakUserClientId(AUTH_RESOURCE);
+  const isKeycloakUserLoginTokenValid = await validateOAuthClientId(AUTH_RESOURCE);
+  return isKeycloakUserLoginTokenValid;
 }
