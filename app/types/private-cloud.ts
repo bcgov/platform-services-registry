@@ -191,6 +191,8 @@ export interface CostItem {
   cpuPricePerMinute: number;
   storagePricePerMinute: number;
   isPast: boolean;
+  isArchived: boolean;
+  isProjected: boolean;
   unitPriceId?: string;
   development: EnvironmentDetails;
   test: EnvironmentDetails;

@@ -5,7 +5,7 @@ import _orderBy from 'lodash-es/orderBy';
 import { namespaceKeys } from '@/constants';
 import prisma from '@/core/prisma';
 import { Cluster, DecisionStatus, Prisma, RequestType } from '@/prisma/client';
-import { CostItem } from '@/types/private-cloud';
+import { CostItem, EnvironmentDetails } from '@/types/private-cloud';
 import {
   dateToShortDateString,
   getMinutesInYear,
@@ -38,7 +38,7 @@ function formatDecimals<T>(obj: T): T {
   return obj;
 }
 
-function getDetaultRangeCost() {
+function getDefaultRangeCost() {
   return _cloneDeep({
     costToDate: 0,
     costToProjected: 0,
@@ -46,7 +46,7 @@ function getDetaultRangeCost() {
   });
 }
 
-function getDetaultEnvironmentDetails() {
+function getDefaultEnvironmentDetails() {
   return _cloneDeep({
     cpu: {
       value: 0,
@@ -63,7 +63,7 @@ function getDetaultEnvironmentDetails() {
 }
 
 async function getCostDetailsForRange(licencePlate: string, startDate: Date, endDate: Date) {
-  const [unitPrices, allRequests] = await Promise.all([
+  const [unitPrices, allRequests, product] = await Promise.all([
     prisma.privateCloudUnitPrice.findMany({
       where: {},
       orderBy: { date: Prisma.SortOrder.desc },
@@ -78,16 +78,39 @@ async function getCostDetailsForRange(licencePlate: string, startDate: Date, end
       include: { decisionData: true },
       orderBy: { provisionedDate: Prisma.SortOrder.desc },
     }),
+    prisma.privateCloudProduct.findUnique({
+      where: { licencePlate },
+      select: { archivedAt: true },
+    }),
   ]);
+
+  const costItems: CostItem[] = [];
+  const cpu = getDefaultRangeCost();
+  const storage = getDefaultRangeCost();
+  const total = getDefaultRangeCost();
+
+  if (!product) {
+    return {
+      items: costItems,
+      cpu,
+      storage,
+      total,
+    };
+  }
 
   const today = new Date();
   const isTodayWithinRange = startDate <= today && today <= endDate;
+  const { archivedAt } = product;
 
   const changePoints = new Set<Date>();
 
   changePoints.add(startDate);
   changePoints.add(endDate);
+
   if (isTodayWithinRange) changePoints.add(today);
+  if (archivedAt && startDate <= archivedAt && archivedAt <= endDate) {
+    changePoints.add(archivedAt);
+  }
 
   for (const price of unitPrices) {
     changePoints.add(getDateFromYyyyMmDd(price.date));
@@ -98,11 +121,6 @@ async function getCostDetailsForRange(licencePlate: string, startDate: Date, end
   }
 
   const sortedChangePoints = _orderBy(Array.from(changePoints), [], 'asc');
-  const costItems: CostItem[] = [];
-
-  const cpu = getDetaultRangeCost();
-  const storage = getDetaultRangeCost();
-  const total = getDetaultRangeCost();
 
   for (let changePoint = 0; changePoint < sortedChangePoints.length - 1; changePoint++) {
     const intervalStart = sortedChangePoints[changePoint];
@@ -117,22 +135,26 @@ async function getCostDetailsForRange(licencePlate: string, startDate: Date, end
       date: intervalStart,
     };
 
+    const isArchived = !!(archivedAt && archivedAt <= intervalStart);
+    const isPast = intervalEnd <= today;
+    const isProjected = !isPast;
+
     const durationMinutes = (intervalEnd.getTime() - intervalStart.getTime()) / (1000 * 60);
     const minutesInYear = getMinutesInYear(startDate.getFullYear()); // TODO: handle multiple years
-    const cpuPricePerMinute = price.cpu / minutesInYear;
-    const storagePricePerMinute = price.storage / minutesInYear;
-    const isPast = intervalEnd <= today;
+    const cpuPricePerMinute = isArchived ? 0 : price.cpu / minutesInYear;
+    const storagePricePerMinute = isArchived ? 0 : price.storage / minutesInYear;
 
     const environments = {
-      development: getDetaultEnvironmentDetails(),
-      test: getDetaultEnvironmentDetails(),
-      production: getDetaultEnvironmentDetails(),
-      tools: getDetaultEnvironmentDetails(),
-      total: getDetaultEnvironmentDetails(),
+      development: getDefaultEnvironmentDetails(),
+      test: getDefaultEnvironmentDetails(),
+      production: getDefaultEnvironmentDetails(),
+      tools: getDefaultEnvironmentDetails(),
+      total: getDefaultEnvironmentDetails(),
     };
 
     const quota = _find(allRequests, (req) => !!req.provisionedDate && req.provisionedDate <= intervalStart);
-    if (quota) {
+
+    if (quota && !isArchived) {
       const envs = quota.decisionData.resourceRequests;
 
       for (const env of namespaceKeys) {
@@ -179,6 +201,8 @@ async function getCostDetailsForRange(licencePlate: string, startDate: Date, end
       cpuPricePerMinute,
       storagePricePerMinute,
       isPast,
+      isArchived,
+      isProjected,
       unitPriceId: price.id,
       ...environments,
     });
