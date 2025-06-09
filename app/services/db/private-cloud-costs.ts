@@ -62,7 +62,7 @@ function getDefaultEnvironmentDetails() {
   });
 }
 
-function zeroOutResources(env: EnvironmentDetails) {
+function getZeroedOutResources(env: EnvironmentDetails) {
   return Object.assign(env, getDefaultEnvironmentDetails());
 }
 
@@ -196,8 +196,8 @@ async function getCostDetailsForRange(licencePlate: string, startDate: Date, end
         }
       }
     } else if (isArchived) {
-      namespaceKeys.forEach((env) => zeroOutResources(environments[env]));
-      zeroOutResources(environments.total);
+      namespaceKeys.forEach((env) => getZeroedOutResources(environments[env]));
+      getZeroedOutResources(environments.total);
     }
 
     costItems.push({
