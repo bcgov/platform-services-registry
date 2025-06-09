@@ -23,14 +23,14 @@ export default function YearlyCostTable({ data }: { data: Pick<YearlyCost, 'item
                 <td className="p-2 border-b align-top">
                   {formatDate(item.startDate, 'yyyy-MM-dd HH:mm')} &ndash;{' '}
                   {formatDate(item.endDate, 'yyyy-MM-dd HH:mm')}{' '}
-                  {item.isProjected && (
-                    <span className="ml-2 inline-block rounded bg-blue-500 px-2 py-0.5 text-xs font-semibold text-white">
-                      Projected
-                    </span>
-                  )}
                   {item.isArchived && (
                     <span className="ml-2 inline-block rounded bg-red-500 px-2 py-0.5 text-xs font-semibold text-white">
                       Archived
+                    </span>
+                  )}
+                  {item.isProjected && (
+                    <span className="ml-2 inline-block rounded bg-blue-500 px-2 py-0.5 text-xs font-semibold text-white">
+                      Projected
                     </span>
                   )}
                 </td>

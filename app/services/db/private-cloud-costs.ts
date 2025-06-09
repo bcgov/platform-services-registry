@@ -137,7 +137,7 @@ async function getCostDetailsForRange(licencePlate: string, startDate: Date, end
 
     const isArchived = !!(archivedAt && archivedAt <= intervalStart);
     const isPast = intervalEnd <= today;
-    const isProjected = !isPast && !isArchived;
+    const isProjected = !isPast;
 
     const durationMinutes = (intervalEnd.getTime() - intervalStart.getTime()) / (1000 * 60);
     const minutesInYear = getMinutesInYear(startDate.getFullYear()); // TODO: handle multiple years
