@@ -1,8 +1,6 @@
 import requests
 from typing import Any
 
-from typing import Any
-
 
 def is_all_booleans_true(data: Any, path: str = "") -> bool:
     if isinstance(data, dict):
