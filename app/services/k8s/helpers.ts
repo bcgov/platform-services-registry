@@ -1,7 +1,8 @@
-import { KubeConfig, CoreV1Api, CustomObjectsApi, Metrics } from '@kubernetes/client-node';
+import { KubeConfig, CoreV1Api, CustomObjectsApi, Metrics, AuthorizationV1Api } from '@kubernetes/client-node';
+import { logger } from '@/core/logging';
 import { Cluster } from '@/prisma/client';
 
-function configureKubeConfig(cluster: string, token: string) {
+export function configureKubeConfig(cluster: string, token: string) {
   const kc = new KubeConfig();
   kc.loadFromOptions({
     clusters: [
@@ -14,14 +15,14 @@ function configureKubeConfig(cluster: string, token: string) {
     users: [
       {
         name: 'my-user',
-        token: token,
+        token,
       },
     ],
     contexts: [
       {
         name: `${cluster}-context`,
         user: 'my-user',
-        cluster: cluster,
+        cluster,
       },
     ],
     currentContext: `${cluster}-context`,
@@ -45,21 +46,21 @@ export function createK8sClusterConfigs(tokens: Record<Cluster, string>) {
     const kc = k8sConfigs[cluster];
     const user = kc.getCurrentUser();
     if (!user?.token) {
-      throw new Error(`Missing token in KubeConfig for cluster ${cluster}`);
+      logger.error(`Missing token in KubeConfig for cluster ${cluster}`);
+      return null;
     }
+
     return user.token;
   }
 
   function getK8sClusterClients(cluster: Cluster) {
     const kc = k8sConfigs[cluster];
-    const apiClient = kc.makeApiClient(CoreV1Api);
-    const metricsClient = new Metrics(kc);
-    const customClient = kc.makeApiClient(CustomObjectsApi);
 
     return {
-      apiClient,
-      metricsClient,
-      customClient,
+      apiClient: kc.makeApiClient(CoreV1Api),
+      authClient: kc.makeApiClient(AuthorizationV1Api),
+      metricsClient: new Metrics(kc),
+      customClient: kc.makeApiClient(CustomObjectsApi),
     };
   }
 
