@@ -1,16 +1,20 @@
 import requests
+from typing import Any
+
+from typing import Any
 
 
-def _validate_all_true(data, path=""):
+def is_all_booleans_true(data: Any, path: str = "") -> bool:
     if isinstance(data, dict):
         for key, value in data.items():
             full_path = f"{path}.{key}" if path else key
-            _validate_all_true(value, full_path)
+            if not is_all_booleans_true(value, full_path):
+                return False
+        return True
     elif isinstance(data, bool):
-        if not data:
-            raise ValueError(f"Validation failed: {path} is False")
+        return data
     else:
-        raise TypeError(f"Unexpected value type at {path}: {type(data).__name__}")
+        return False
 
 
 def call_token_check_api(base_url: str):
@@ -25,5 +29,7 @@ def call_token_check_api(base_url: str):
     except ValueError:
         raise ValueError("Failed to parse JSON response")
 
-    _validate_all_true(data)
+    if not is_all_booleans_true(data):
+        raise ValueError("One or more credentials or token checks failed")
+
     print("All credential and token checks passed successfully.")

@@ -11,7 +11,7 @@ BASE_URL = "https://dev-pltsvc.apps.silver.devops.gov.bc.ca"
 with DAG(
     dag_id="token_validity_check_dev",
     description="Daily credentials and tokens check for development environment",
-    schedule="@daily",
+    schedule="0 1 * * *",
     start_date=datetime.now() - timedelta(days=1),
     catchup=False,
 ) as dag:
@@ -20,5 +20,5 @@ with DAG(
         task_id="call-token-check-api-dev",
         python_callable=call_token_check_api,
         op_kwargs={"base_url": BASE_URL},
-        on_failure_callback=lambda context: send_alert(context, "token_check_dev"),
+        on_failure_callback=lambda context: send_alert(context, context["dag"].dag_id),
     )
