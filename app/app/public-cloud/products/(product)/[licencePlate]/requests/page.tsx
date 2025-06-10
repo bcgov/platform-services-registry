@@ -1,77 +1,61 @@
 'use client';
 
-import { useQuery } from '@tanstack/react-query';
-import { useEffect, useState } from 'react';
-import { proxy, useSnapshot } from 'valtio';
+import { Switch, Tooltip } from '@mantine/core';
+import { IconListDetails, IconHistoryToggle } from '@tabler/icons-react';
+import { ReactNode, useEffect, useState } from 'react';
 import { z } from 'zod';
-import Table from '@/components/generic/table/Table';
-import TableBodyPublicRequests from '@/components/table/TableBodyPublicRequests';
-import { requestSortsInProduct, GlobalRole } from '@/constants';
+import { GlobalRole } from '@/constants';
 import createClientPage from '@/core/client-page';
-import { processPublicCloudRequestData } from '@/helpers/row-mapper';
-import { searchPublicCloudRequests } from '@/services/backend/public-cloud/requests';
-import { PublicCloudRequestSimpleDecorated } from '@/types/public-cloud';
-import FilterPanel from './FilterPanel';
-import { pageState } from './state';
+import { usePrivateProductState } from '@/states/global';
+import HistoryView from './HistoryView';
+import ListView from './ListView';
 
 const pathParamSchema = z.object({
   licencePlate: z.string(),
 });
 
-const publicCloudRequests = createClientPage({
+const publicCloudProductRequests = createClientPage({
   roles: [GlobalRole.User],
   validations: { pathParams: pathParamSchema },
   fallbackUrl: '/login?callbackUrl=/home',
 });
-export default publicCloudRequests(({ getPathParams }) => {
+export default publicCloudProductRequests(({ getPathParams, session }) => {
+  const [, snap] = usePrivateProductState();
+  const [checked, setChecked] = useState(false);
   const [pathParams, setPathParams] = useState<z.infer<typeof pathParamSchema>>();
 
   useEffect(() => {
     getPathParams().then((v) => setPathParams(v));
   }, []);
 
-  const snap = useSnapshot(pageState);
   const { licencePlate = '' } = pathParams ?? {};
 
-  const { data, isLoading } = useQuery({
-    queryKey: ['requests', snap],
-    queryFn: () => searchPublicCloudRequests({ ...snap, licencePlate }),
-    refetchInterval: 5000,
-    enabled: !!licencePlate,
-  });
-
-  let requests: PublicCloudRequestSimpleDecorated[] = [];
-  let totalCount = 0;
-
-  if (!isLoading && data) {
-    requests = data.docs.map(processPublicCloudRequestData);
-    totalCount = data.totalCount;
-  }
+  const toggle = (
+    <div className="flex justify-end mb-2">
+      <Switch
+        checked={checked}
+        onChange={(event) => setChecked(event.currentTarget.checked)}
+        size="md"
+        color="dark.4"
+        onLabel={
+          <Tooltip label="List view">
+            <IconListDetails size={16} stroke={2.5} color="var(--mantine-color-blue-6)" />
+          </Tooltip>
+        }
+        offLabel={
+          <Tooltip label="History view">
+            <IconHistoryToggle size={16} stroke={2.5} color="var(--mantine-color-green-6)" />
+          </Tooltip>
+        }
+      />
+      <span className="ml-2 text-gray-500 text-sm">Switch mode</span>
+    </div>
+  );
 
   return (
-    <Table
-      totalCount={totalCount}
-      page={snap.page ?? 1}
-      pageSize={snap.pageSize ?? 10}
-      search={snap.search}
-      sortKey={snap.sortValue}
-      onPagination={(page: number, pageSize: number) => {
-        pageState.page = page;
-        pageState.pageSize = pageSize;
-      }}
-      onSearch={(searchTerm: string) => {
-        pageState.page = 1;
-        pageState.search = searchTerm;
-      }}
-      onSort={(sortValue) => {
-        pageState.page = 1;
-        pageState.sortValue = sortValue;
-      }}
-      sortOptions={requestSortsInProduct.map((v) => v.label)}
-      filters={<FilterPanel />}
-      isLoading={isLoading}
-    >
-      <TableBodyPublicRequests rows={requests} isLoading={isLoading} />
-    </Table>
+    <>
+      {toggle}
+      {checked ? <HistoryView licencePlate={licencePlate} /> : <ListView licencePlate={licencePlate} />}
+    </>
   );
 });
