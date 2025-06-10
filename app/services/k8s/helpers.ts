@@ -1,4 +1,5 @@
 import { KubeConfig, CoreV1Api, CustomObjectsApi, Metrics, AuthorizationV1Api } from '@kubernetes/client-node';
+import { logger } from '@/core/logging';
 import { Cluster } from '@/prisma/client';
 
 export function configureKubeConfig(cluster: string, token: string) {
@@ -45,8 +46,10 @@ export function createK8sClusterConfigs(tokens: Record<Cluster, string>) {
     const kc = k8sConfigs[cluster];
     const user = kc.getCurrentUser();
     if (!user?.token) {
-      throw new Error(`Missing token in KubeConfig for cluster ${cluster}`);
+      logger.error(`Missing token in KubeConfig for cluster ${cluster}`);
+      return null;
     }
+
     return user.token;
   }
 

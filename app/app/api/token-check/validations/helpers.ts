@@ -1,28 +1,24 @@
 import axios from 'axios';
-import { BASE_URL } from '@/config';
-import { Cluster } from '@/prisma/client';
-
-export function isClusterTokenPresent(getToken: (cluster: Cluster) => string, cluster: Cluster) {
-  try {
-    getToken(cluster);
-    return true;
-  } catch {
-    return false;
-  }
-}
 
 async function getClientCredentialsToken(tokenUrl: string, clientId: string, clientSecret: string, scope?: string) {
-  const params = new URLSearchParams();
-  params.append('grant_type', 'client_credentials');
-  params.append('client_id', clientId);
-  params.append('client_secret', clientSecret);
-  if (scope) params.append('scope', scope);
-
-  const res = await axios.post(tokenUrl, params, {
-    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+  const params = new URLSearchParams({
+    grant_type: 'client_credentials',
+    client_id: clientId,
+    client_secret: clientSecret,
   });
 
-  return res.data.access_token;
+  if (scope) {
+    params.append('scope', scope);
+  }
+
+  const response = await axios.post<{ access_token?: string }>(tokenUrl, params.toString(), {
+    headers: {
+      'Content-Type': 'application/x-www-form-urlencoded',
+    },
+    timeout: 5000,
+  });
+
+  return response.data.access_token;
 }
 
 export async function validateClientCredentials(
@@ -32,26 +28,26 @@ export async function validateClientCredentials(
   scope?: string,
 ) {
   if (!(tokenUrl && clientId && clientSecret)) return false;
+
   const token = await getClientCredentialsToken(tokenUrl, clientId, clientSecret, scope);
   return Boolean(token);
 }
 
-export async function validateOAuthClientId(clientId: string) {
-  const authUrl = `${process.env.AUTH_SERVER_URL}/realms/${process.env.AUTH_RELM}/protocol/openid-connect/auth`;
-
+export async function validateOAuthClientId(authUrl: string, clientId: string, redirectUri: string) {
   const params = new URLSearchParams({
     client_id: clientId,
     response_type: 'code',
     scope: 'openid',
-    redirect_uri: BASE_URL,
-    state: 'test',
-    nonce: 'test',
+    redirect_uri: redirectUri,
+    state: 'test_state',
+    nonce: 'test_nonce',
   });
 
-  const response = await axios.get(`${authUrl}?${params.toString()}`, {
+  const response = await axios.get<string>(`${authUrl}?${params.toString()}`, {
+    timeout: 5000,
     maxRedirects: 0,
     validateStatus: () => true,
   });
 
-  return !response.status.toString().startsWith('4');
+  return response.status < 400;
 }
