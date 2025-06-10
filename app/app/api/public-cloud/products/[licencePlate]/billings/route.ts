@@ -10,6 +10,16 @@ const pathParamSchema = z.object({
   licencePlate: z.string(),
 });
 
+export const GET = createApiHandler({
+  roles: [GlobalRole.User],
+  validations: { pathParams: pathParamSchema },
+})(async ({ pathParams, session }) => {
+  const { licencePlate } = pathParams;
+
+  const { data: billings } = await models.publicCloudBilling.list({ where: { licencePlate } }, session);
+  return OkResponse(billings);
+});
+
 export const PUT = createApiHandler({
   roles: [GlobalRole.User],
   validations: { pathParams: pathParamSchema, body: publicCloudBillingBodySchema },
