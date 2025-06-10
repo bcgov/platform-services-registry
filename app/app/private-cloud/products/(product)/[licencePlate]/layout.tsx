@@ -10,13 +10,11 @@ import PrivateCloudProductOptions from '@/components/dropdowns/PrivateCloudProdu
 import TemporaryProductAlert from '@/components/form/TemporaryProductAlert';
 import Tabs, { ITab } from '@/components/generic/tabs/BasicTabs';
 import ProductBadge from '@/components/private-cloud/ProductBadge';
-import { IS_PROD } from '@/config';
 import { GlobalRole } from '@/constants';
 import createClientPage from '@/core/client-page';
-import { Cluster } from '@/prisma/client';
 import { getPrivateCloudProduct, getSubnetForEmerald } from '@/services/backend/private-cloud/products';
 import { usePrivateProductState } from '@/states/global';
-import { resetState as resetRequestsState } from './requests/state';
+import { resetState as resetRequestsState } from './requests/ListView/state';
 
 const pathParamSchema = z.object({
   licencePlate: z.string(),
