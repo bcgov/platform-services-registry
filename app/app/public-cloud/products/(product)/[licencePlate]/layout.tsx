@@ -14,7 +14,7 @@ import createClientPage from '@/core/client-page';
 import { Provider } from '@/prisma/client';
 import { getPublicCloudProduct } from '@/services/backend/public-cloud/products';
 import { usePublicProductState } from '@/states/global';
-import { resetState as resetRequestsState } from './requests/state';
+import { resetState as resetRequestsState } from './requests/ListView/state';
 
 const pathParamSchema = z.object({
   licencePlate: z.string(),
@@ -74,14 +74,6 @@ export default publicCloudProductSecurityACS(({ getPathParams, children }) => {
       name: 'aws-roles',
       href: `/public-cloud/products/${licencePlate}/aws-roles/admins`,
       ignoreSegments: 1,
-    });
-  }
-
-  if (currentProduct?._permissions.viewHistory) {
-    tabs.push({
-      label: 'HISTORY',
-      name: 'history',
-      href: `/public-cloud/products/${licencePlate}/history`,
     });
   }
 

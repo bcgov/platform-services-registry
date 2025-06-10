@@ -25,7 +25,6 @@ export interface PrivateCloudRequestDecorate {
 export interface PublicCloudProductDecorate {
   _permissions: {
     view: boolean;
-    viewHistory: boolean;
     edit: boolean;
     delete: boolean;
     reprovision: boolean;

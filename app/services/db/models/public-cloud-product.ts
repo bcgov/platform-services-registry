@@ -138,7 +138,6 @@ async function decorate<T extends PublicCloudProductSimple & Partial<PublicCloud
 
   decoratedDoc._permissions = {
     view: canView || canSignMou || canApproveMou,
-    viewHistory: canViewHistroy,
     edit: canEdit,
     delete: canEdit,
     reprovision: canReprovision,
