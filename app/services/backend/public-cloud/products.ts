@@ -7,6 +7,7 @@ import {
   PublicCloudRequestDetail,
   PublicCloudBillingSimpleDecorated,
   PublicCloudProductDetailDecorated,
+  PublicCloudBillingDetailDecorated,
 } from '@/types/public-cloud';
 import { downloadFile } from '@/utils/browser';
 import {
@@ -96,9 +97,16 @@ export async function getPublicCloudProductRequests(licencePlate: string, active
   return result;
 }
 
+export async function getPublicCloudProductBillings(licencePlate: string) {
+  const result = await instance
+    .get<PublicCloudBillingSimpleDecorated[]>(`/${licencePlate}/billings`)
+    .then((res) => res.data);
+  return result;
+}
+
 export async function getPublicCloudProductBilling(licencePlate: string, billingId: string) {
   const result = await instance
-    .get<PublicCloudBillingSimpleDecorated>(`/${licencePlate}/billings/${billingId}`)
+    .get<PublicCloudBillingDetailDecorated>(`/${licencePlate}/billings/${billingId}`)
     .then((res) => res.data);
   return result;
 }
