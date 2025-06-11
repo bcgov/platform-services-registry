@@ -9,6 +9,17 @@ import { MantineProvider } from '@mantine/core';
 import { ModalsProvider } from '@mantine/modals';
 import { Notifications } from '@mantine/notifications';
 import { useQuery } from '@tanstack/react-query';
+import {
+  Chart,
+  CategoryScale,
+  LinearScale,
+  BarElement,
+  Title,
+  PointElement,
+  LineElement,
+  Tooltip,
+  Legend,
+} from 'chart.js';
 import localFont from 'next/font/local';
 import { useEffect } from 'react';
 import Footer from '@/components/layouts/Footer';
@@ -18,6 +29,8 @@ import { getInfo } from '@/services/backend';
 import { useAppState } from '@/states/global';
 import { cn } from '@/utils/js';
 import { theme } from './mantine-theme';
+
+Chart.register(CategoryScale, LinearScale, BarElement, Title, PointElement, LineElement, Tooltip, Legend);
 
 const bcsans = localFont({
   src: [
