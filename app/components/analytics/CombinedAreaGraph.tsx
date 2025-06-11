@@ -45,7 +45,7 @@ export default function CombinedAreaGraph({
   exportApiEndpoint?: string /* temporary */;
 }) {
   const { data, options } = useMemo(() => {
-    if (!chartData) return { data: {}, options: {} };
+    if (!chartData) return { data: { labels: [], datasets: [] }, options: {} };
 
     const labels: string[] = [];
     const datasetMap: Record<string, number[]> = {};
