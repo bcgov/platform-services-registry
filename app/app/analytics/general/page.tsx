@@ -45,6 +45,7 @@ export default analyticsDashboard(() => {
       </div>
       <div className="flex flex-col gap-y-12 mt-14">
         <CombinedAreaGraph
+          index="date"
           isLoading={isLoading}
           title="Daily User Login Events"
           subtitle={`This chart displays the number of login events per day from ${formatDate(
@@ -52,7 +53,6 @@ export default analyticsDashboard(() => {
           )} to ${formatDate(endDate)}.`}
           chartData={data}
           categories={['Logins']}
-          colors={['indigo']}
           onExport={() => downloadAnalyticsGeneral({ dates: snap.dates, userId: snap.userId })}
         />
       </div>

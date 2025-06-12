@@ -1,5 +1,5 @@
 import { useSnapshot } from 'valtio';
-import LineGraph from '@/components/analytics/LineGraph';
+import CombinedAreaGraph from '@/components/analytics/CombinedAreaGraph';
 import { clusters } from '@/constants';
 import { downloadPrivateCloudActiveProducts } from '@/services/backend/analytics/private-cloud';
 import { ActiveProduct } from '@/types/analytics-private';
@@ -11,7 +11,7 @@ export default function ActiveProducts({ data }: { data: ActiveProduct[] }) {
   const startDate = pageSnapshot.dates?.[0] ?? data?.[0]?.date;
   const endDate = pageSnapshot.dates?.[1] ?? new Date();
   return (
-    <LineGraph
+    <CombinedAreaGraph
       index="date"
       title="Active Products"
       subtitle={`This chart displays the cumulative number of products created from ${formatDate(
