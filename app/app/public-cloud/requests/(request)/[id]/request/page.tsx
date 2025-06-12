@@ -1,18 +1,10 @@
 'use client';
 
 import { zodResolver } from '@hookform/resolvers/zod';
-import { Alert, Button } from '@mantine/core';
-import {
-  IconInfoCircle,
-  IconUsersGroup,
-  IconUserDollar,
-  IconMessage,
-  IconLayoutGridAdd,
-  IconMoneybag,
-  IconReceipt2,
-} from '@tabler/icons-react';
+import { Alert, Button, Tooltip } from '@mantine/core';
+import { IconInfoCircle, IconUsersGroup, IconMessage, IconLayoutGridAdd, IconMoneybag } from '@tabler/icons-react';
 import { useQuery } from '@tanstack/react-query';
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import { useForm, FormProvider } from 'react-hook-form';
 import { z } from 'zod';
 import CancelRequest from '@/components/buttons/CancelButton';
@@ -30,9 +22,10 @@ import AdditionalTeamMembers from '@/components/public-cloud/sections/Additional
 import TeamContacts from '@/components/public-cloud/sections/TeamContacts';
 import { GlobalRole } from '@/constants';
 import createClientPage from '@/core/client-page';
-import { DecisionStatus, ProjectContext, RequestType, TaskStatus, TaskType } from '@/prisma/client';
+import { DecisionStatus, ProjectContext, RequestType } from '@/prisma/client';
 import { searchPublicCloudBillings } from '@/services/backend/public-cloud/billings';
 import { usePublicProductState } from '@/states/global';
+import { formatDate, timeAgo } from '@/utils/js';
 import {
   publicCloudRequestDecisionBodySchema,
   PublicCloudRequestDecisionBody,
@@ -210,7 +203,11 @@ export default publicCloudProductRequest(({ router }) => {
           })}
         >
           <PageAccordion items={accordionItems} />
-
+          <Tooltip label={timeAgo(publicProductSnap.currentRequest.createdAt)}>
+            <div className="mt-1 text-sm text-gray-600 w-fit mt-4">
+              Created on <span>{formatDate(publicProductSnap.currentRequest.createdAt)}</span>
+            </div>
+          </Tooltip>
           <div className="mt-5 flex items-center justify-start gap-x-2">
             <PreviousButton />
             {publicProductSnap.currentRequest.decisionStatus === DecisionStatus.PENDING &&

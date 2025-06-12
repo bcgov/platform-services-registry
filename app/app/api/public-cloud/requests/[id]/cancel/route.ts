@@ -6,18 +6,20 @@ import { OkResponse, UnauthorizedResponse, NoContent } from '@/core/responses';
 import { DecisionStatus, EventType, RequestType, TaskStatus, TaskType } from '@/prisma/client';
 import { sendRequestCancellationEmails } from '@/services/ches/public-cloud';
 import { createEvent, models, publicCloudRequestDetailInclude } from '@/services/db';
+import { optionalCommentSchema } from '@/validation-schemas';
 
 const pathParamSchema = z.object({
   id: z.string(),
 });
 
+const bodySchema = z.object({
+  decisionComment: optionalCommentSchema,
+});
 const apiHandler = createApiHandler({
   roles: [GlobalRole.User],
   validations: {
     pathParams: pathParamSchema,
-    body: z.object({
-      decisionComment: z.string().trim().max(1000).optional(),
-    }),
+    body: bodySchema,
   },
 });
 

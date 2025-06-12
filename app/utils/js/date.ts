@@ -263,3 +263,10 @@ export function timeAgo(date: string | Date): string {
 
   return `${years} year${years === 1 ? '' : 's'} ago`;
 }
+
+export function getDaysSince(date: string | number | Date) {
+  const tdate = new Date(date);
+  const now = new Date();
+  const diffInMs = now.getTime() - tdate.getTime();
+  return Math.floor(diffInMs / (1000 * 60 * 60 * 24));
+}
