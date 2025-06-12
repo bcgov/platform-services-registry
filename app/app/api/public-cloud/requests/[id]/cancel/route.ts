@@ -2,7 +2,7 @@ import { z } from 'zod';
 import { GlobalRole } from '@/constants';
 import createApiHandler from '@/core/api-handler';
 import prisma from '@/core/prisma';
-import { OkResponse, UnauthorizedResponse, NoContent } from '@/core/responses';
+import { OkResponse, UnauthorizedResponse, BadRequestResponse } from '@/core/responses';
 import { DecisionStatus, EventType, RequestType, TaskStatus, TaskType } from '@/prisma/client';
 import { sendRequestCancellationEmails } from '@/services/ches/public-cloud';
 import { createEvent, models, publicCloudRequestDetailInclude } from '@/services/db';
@@ -28,7 +28,7 @@ export const PUT = apiHandler(async ({ pathParams, body, session }) => {
   const { id } = pathParams;
   const { decisionComment } = body;
   if (session.isPublicAdmin && !decisionComment?.trim()) {
-    return NoContent();
+    return BadRequestResponse('Cancellation reason is required.');
   }
   const { data: request } = await models.publicCloudRequest.get({ where: { id } }, session);
 
