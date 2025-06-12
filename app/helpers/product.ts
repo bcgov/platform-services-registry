@@ -3,6 +3,7 @@ import _pick from 'lodash-es/pick';
 import { Session } from 'next-auth';
 import { ministryOptions } from '@/constants';
 import { PrivateCloudProductMemberRole, PrivateCloudProduct } from '@/prisma/client';
+import { MonthlyCost } from '@/types/private-cloud';
 import { extractNumbers, formatCurrency } from '@/utils/js';
 import { TableDataBody } from '@/validation-schemas/private-cloud';
 
@@ -141,7 +142,7 @@ export function getPrivateCloudProductContext(
   };
 }
 
-export function getTableData(data: any) {
+export function getTableData(data: MonthlyCost) {
   const tableData: TableDataBody[] = data.dayDetails.cpuToDate.map((_, index) => ({
     Day: data.days[index].toString(),
     'CPU Cost': formatCurrency(data.dayDetails.cpuToDate[index]),

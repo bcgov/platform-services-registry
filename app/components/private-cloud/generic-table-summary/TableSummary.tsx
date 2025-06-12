@@ -1,8 +1,9 @@
 import { formatDate } from 'date-fns';
+import { MonthlyCost } from '@/types/private-cloud';
 import { formatCurrency } from '@/utils/js';
 import { TableDataSummaryBody } from '@/validation-schemas';
 
-export default function TableSummary(data: any) {
+export default function TableSummary(data: MonthlyCost) {
   const tableDataSummary: TableDataSummaryBody[] = data.items.map((item, _) => ({
     'Date Range': (
       <>
