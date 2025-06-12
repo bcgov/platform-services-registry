@@ -11,13 +11,13 @@ export default function AllRequests({ data }: { data: AllRequests[] }) {
   const endDate = pageSnapshot.dates?.[1] ?? new Date();
   return (
     <CombinedAreaGraph
+      index="date"
       title="Requests over time"
       subtitle={`This chart displays the number of requests created over time for each request type from ${formatDate(
         startDate,
       )} to ${formatDate(endDate)}.`}
       chartData={data}
       categories={['All requests', 'Edit requests', 'Create requests', 'Delete requests']}
-      colors={['indigo', 'yellow', 'green', 'red']}
       onExport={() => downloadPrivateCloudAllRequests({ data: { ...pageSnapshot } })}
     />
   );

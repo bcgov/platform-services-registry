@@ -11,21 +11,21 @@ export type ChartDate = {
 };
 
 export default function CombinedAreaGraph({
+  index,
   title,
   subtitle,
   onExport,
   chartData,
   categories,
-  colors,
   isLoading = false,
   exportApiEndpoint /* temporary */,
 }: {
+  index: string;
   title: string;
   subtitle: string;
   onExport?: () => Promise<boolean>;
   chartData: any;
   categories: string[];
-  colors: string[];
   isLoading?: boolean;
   exportApiEndpoint?: string /* temporary */;
 }) {
@@ -37,7 +37,7 @@ export default function CombinedAreaGraph({
 
     for (const row of chartData) {
       for (const [key, value] of Object.entries(row)) {
-        if (key === 'date') {
+        if (key === index) {
           labels.push(String(value));
           continue;
         }
@@ -84,6 +84,21 @@ export default function CombinedAreaGraph({
               return `${label}: ${value}`;
             },
           },
+        },
+      },
+      scales: {
+        x: {
+          ticks: {
+            autoSkip: true,
+            maxRotation: 0,
+            minRotation: 0,
+          },
+        },
+        y: {
+          ticks: {
+            callback: (value: string | number) => value,
+          },
+          beginAtZero: true,
         },
       },
     };

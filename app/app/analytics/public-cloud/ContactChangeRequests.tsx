@@ -11,13 +11,13 @@ export default function ContactChangeRequests({ data }: { data: ContactsChange[]
   const endDate = pageSnapshot.dates?.[1] ?? new Date();
   return (
     <CombinedAreaGraph
+      index="date"
       title="Contact change requests over time"
       subtitle={`This chart displays edit requests where contact changes were requested and the request decision from ${formatDate(
         startDate,
       )} to ${formatDate(endDate)}.`}
       chartData={data}
       categories={['Contact changes']}
-      colors={['indigo']}
       onExport={async () => downloadPublicCloudContactChangeRequests({ data: { ...pageSnapshot } })}
     />
   );
