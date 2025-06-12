@@ -34,6 +34,10 @@ const pages = [
     href: 'ui/table',
     label: 'Table',
   },
+  {
+    href: 'ui/generic-table',
+    label: 'Generic Table',
+  },
 ];
 
 function PageItem({ href, label }: PageProp) {

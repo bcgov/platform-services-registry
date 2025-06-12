@@ -219,24 +219,6 @@ export const privateCloudUnitPriceBodySchema = z.object({
     .max(maxStorage, { message: `Storage per 1GiB must be at most $${maxStorage.toLocaleString()}` }),
 });
 
-export const tableDataSummaryBodySchema = z.object({
-  'Date Range': z.any(),
-  'CPU (cores)': z.string(),
-  'Storage (GIB)': z.string(),
-  'CPU Cost': z.string(),
-  'Storage Cost': z.string(),
-  'Total Cost': z.string(),
-});
-
-export const tableDataBodySchema = z.object({
-  Day: z.string(),
-  'CPU Cost': z.string(),
-  'Storage Cost': z.string(),
-  'CPU Cost (Projected)': z.string(),
-  'Storage Cost (Projected)': z.string(),
-  'Total Cost': z.string(),
-});
-
 export type PrivateCloudCreateRequestBody = z.infer<typeof privateCloudCreateRequestBodySchema>;
 export type PrivateCloudEditRequestBody = z.infer<typeof privateCloudEditRequestBodySchema>;
 export type PrivateCloudRequestDecisionBody = z.infer<typeof privateCloudRequestDecisionBodySchema>;
@@ -246,5 +228,3 @@ export type PrivateCloudRequestSearchBody = z.infer<typeof privateCloudRequestSe
 export type PrivateCloudAdminUpdateBody = z.infer<typeof privateCloudAdminUpdateBodySchema>;
 export type PrivateCloudProductWebhookBody = z.infer<typeof privateCloudProductWebhookBodySchema>;
 export type PrivateCloudUnitPriceBody = z.infer<typeof privateCloudUnitPriceBodySchema>;
-export type TableDataSummaryBody = z.infer<typeof tableDataSummaryBodySchema>;
-export type TableDataBody = z.infer<typeof tableDataBodySchema>;
