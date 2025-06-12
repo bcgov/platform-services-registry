@@ -158,6 +158,24 @@ export default publicCloudProductRequest(({ router }) => {
     });
   }
 
+  if (publicProductSnap.currentRequest.decisionComment) {
+    const comment = publicProductSnap.currentRequest.decisionComment;
+
+    accordionItems.push({
+      LeftIcon: IconMessage,
+      label: 'Admin comments',
+      description: '',
+      Component: () => {
+        return (
+          <div className="">
+            <p className="">{comment}</p>
+          </div>
+        );
+      },
+      componentArgs: {} as any,
+    });
+  }
+
   return (
     <div>
       {billingData && billingData.data.length > 0 && (

@@ -1,3 +1,4 @@
+import { differenceInDays } from 'date-fns/differenceInDays';
 import { Session } from 'next-auth';
 import prisma from '@/core/prisma';
 import { Prisma, TaskType, TaskStatus, RequestType, DecisionStatus } from '@/prisma/client';
@@ -117,8 +118,11 @@ async function decorate<T extends PublicCloudRequestSimple | PublicCloudRequestD
           .includes(doc.id);
     }
   }
+  const isMoreThan30Days = differenceInDays(new Date(), new Date(doc.createdAt)) > 30;
 
-  const canCancel = doc.decisionStatus === DecisionStatus.PENDING && session.user.email === doc.createdBy?.email;
+  const canCancel =
+    doc.decisionStatus === DecisionStatus.PENDING &&
+    (session.user.email === doc.createdBy?.email || (isMoreThan30Days && session.isPublicAdmin));
   const canEdit = canReview && doc.type !== RequestType.DELETE;
 
   const canResend =

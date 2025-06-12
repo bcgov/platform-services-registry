@@ -68,7 +68,7 @@ export async function resendPublicCloudRequest(id: string) {
   return result;
 }
 
-export async function cancelPublicCloudRequest(id: string) {
-  const result = await instance.put(`/${id}`).then((res) => res.data);
+export async function cancelPublicCloudRequest(id: string, decisionComment: string) {
+  const result = await instance.put(`/${id}/cancel`, { decisionComment }).then((res) => res.data);
   return result as PublicCloudRequestDetail;
 }
