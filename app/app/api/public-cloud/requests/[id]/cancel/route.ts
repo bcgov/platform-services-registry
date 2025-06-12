@@ -25,10 +25,9 @@ export const PUT = apiHandler(async ({ pathParams, body, session }) => {
   const { id } = pathParams;
   const { decisionComment } = body;
   if (session.isPublicAdmin && !decisionComment?.trim()) {
-    return NoContent('Public cloud admins must provide a cancellation reason.');
+    return NoContent();
   }
   const { data: request } = await models.publicCloudRequest.get({ where: { id } }, session);
-  console.log('apiHandler decisionComment', body);
 
   if (!request?._permissions.cancel) {
     return UnauthorizedResponse();
