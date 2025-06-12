@@ -15,6 +15,7 @@ const pathParamSchema = z.object({
 const bodySchema = z.object({
   decisionComment: optionalCommentSchema,
 });
+
 const apiHandler = createApiHandler({
   roles: [GlobalRole.User],
   validations: {

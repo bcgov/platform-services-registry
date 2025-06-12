@@ -7,6 +7,7 @@ import {
   PublicCloudRequestSearch,
 } from '@/types/public-cloud';
 import { PublicCloudRequestSearchBody } from '@/validation-schemas/public-cloud';
+import { Comment } from '@/validation-schemas/shared';
 import { instance as parentInstance } from './instance';
 
 function prepareSearchPayload(data: PublicCloudRequestSearchBody) {
@@ -68,7 +69,7 @@ export async function resendPublicCloudRequest(id: string) {
   return result;
 }
 
-export async function cancelPublicCloudRequest(id: string, decisionComment: string) {
+export async function cancelPublicCloudRequest(id: string, decisionComment: Comment) {
   const result = await instance.put(`/${id}/cancel`, { decisionComment }).then((res) => res.data);
   return result as PublicCloudRequestDetail;
 }
