@@ -1,25 +1,10 @@
 import { LoadingOverlay } from '@mantine/core';
 import { Card, Title, Subtitle } from '@tremor/react';
+import { ChartTypeRegistry, TooltipItem } from 'chart.js';
 import { useMemo } from 'react';
 import { Line } from 'react-chartjs-2';
+import { valueFormatter, getColor } from '@/components/analytics/helpers';
 import ExportButton from '@/components/buttons/ExportButton';
-
-const valueFormatter = function (number: number) {
-  return new Intl.NumberFormat('us').format(number).toString();
-};
-
-function getColor(index: number, alpha = 1) {
-  const colors = [
-    [75, 192, 192],
-    [255, 99, 132],
-    [54, 162, 235],
-    [255, 206, 86],
-    [153, 102, 255],
-    [255, 159, 64],
-  ];
-  const [r, g, b] = colors[index % colors.length];
-  return `rgba(${r},${g},${b},${alpha})`;
-}
 
 export type ChartDate = {
   date: string;
@@ -93,9 +78,9 @@ export default function CombinedAreaGraph({
         },
         tooltip: {
           callbacks: {
-            label: function (context) {
-              const label = context.dataset.label || '';
-              const value = valueFormatter(context.raw);
+            label: function (context: TooltipItem<keyof ChartTypeRegistry>) {
+              const label = context.dataset.label || 'Unknown';
+              const value = valueFormatter(context.raw as number);
               return `${label}: ${value}`;
             },
           },
