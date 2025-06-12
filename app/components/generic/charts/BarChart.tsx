@@ -1,28 +1,20 @@
-import { Card, Subtitle, Title } from '@tremor/react';
 import { ChartTypeRegistry, TooltipItem } from 'chart.js';
 import { useMemo } from 'react';
 import { Bar } from 'react-chartjs-2';
 import { valueFormatter, getColor } from '@/components/analytics/helpers';
-import ExportButton from '@/components/buttons/ExportButton';
+import { cn } from '@/utils/js';
 
-export default function Histogram({
-  index,
-  onExport,
-  exportApiEndpoint,
-  chartData,
-  title,
-  subtitle,
-  categories,
-  colors,
+export interface BarChartDataItem {
+  [key: string]: number | string;
+}
+export default function BarChart({
+  indexKey,
+  data: chartData,
+  className,
 }: {
-  index: string;
-  onExport?: () => Promise<boolean>;
-  exportApiEndpoint?: string;
-  chartData: any;
-  title: string;
-  subtitle?: string;
-  categories: string[];
-  colors: string[];
+  indexKey: string;
+  data: BarChartDataItem[];
+  className?: string;
 }) {
   const { data, options } = useMemo(() => {
     if (!chartData) return { data: { labels: [], datasets: [] }, options: {} };
@@ -32,7 +24,7 @@ export default function Histogram({
 
     for (const row of chartData) {
       for (const [key, value] of Object.entries(row)) {
-        if (key === 'time') {
+        if (key === indexKey) {
           labels.push(String(value));
           continue;
         }
@@ -101,16 +93,5 @@ export default function Histogram({
     return { data: _data, options: _options };
   }, [chartData]);
 
-  return (
-    <div className="flex flex-col items-end">
-      <ExportButton className="mb-4" onExport={onExport} downloadUrl={exportApiEndpoint} />
-      <Card>
-        <Title>{title}</Title>
-        <Subtitle>{subtitle}</Subtitle>
-        <div className="relative">
-          <Bar className="max-h-[28rem] mt-4" data={data} options={options} />
-        </div>
-      </Card>
-    </div>
-  );
+  return <Bar className={cn(className)} data={data} options={options} />;
 }
