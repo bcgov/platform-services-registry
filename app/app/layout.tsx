@@ -11,6 +11,7 @@ import { Notifications } from '@mantine/notifications';
 import { useQuery } from '@tanstack/react-query';
 import {
   Chart,
+  ArcElement,
   CategoryScale,
   LinearScale,
   BarElement,
@@ -30,7 +31,7 @@ import { useAppState } from '@/states/global';
 import { cn } from '@/utils/js';
 import { theme } from './mantine-theme';
 
-Chart.register(CategoryScale, LinearScale, BarElement, Title, PointElement, LineElement, Tooltip, Legend);
+Chart.register(ArcElement, CategoryScale, LinearScale, BarElement, Title, PointElement, LineElement, Tooltip, Legend);
 
 const bcsans = localFont({
   src: [
