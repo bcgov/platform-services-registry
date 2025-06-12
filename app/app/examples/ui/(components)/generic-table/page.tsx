@@ -4,7 +4,7 @@ import GenericTable from '@/components/generic/table/GenericTable';
 import { GlobalRole } from '@/constants/user';
 import createClientPage from '@/core/client-page';
 
-const dataPresent = [
+const sampleData = [
   { firstName: 'Adebayo', lastName: 'Ogunlesi', age: 42, occupation: 'Software Engineer' },
   { firstName: 'Chioma', lastName: 'Eze', age: 28, occupation: 'Medical Doctor' },
   { firstName: 'Olumide', lastName: 'Adeleke', age: 35, occupation: 'Bank Manager' },
@@ -19,5 +19,5 @@ const Page = createClientPage({
 });
 
 export default Page(() => {
-  return <GenericTable data={dataPresent} />;
+  return <GenericTable data={sampleData} />;
 });
