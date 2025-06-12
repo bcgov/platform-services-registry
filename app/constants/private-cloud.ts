@@ -80,6 +80,24 @@ export const environmentLongNames = {
   tools: 'tools',
 } as const;
 
+export const tableColumns = [
+  'Day',
+  'CPU Cost',
+  'Storage Cost',
+  'CPU Cost (Projected)',
+  'Storage Cost (Projected)',
+  'Total Cost',
+];
+
+export const tableColumnsSummary = [
+  'Date Range',
+  'CPU (cores)',
+  'Storage (GIB)',
+  'CPU Cost',
+  'Storage Cost',
+  'Total Cost',
+];
+
 export const environmentShortKeys = Object.keys(environmentLongNames) as Array<keyof typeof environmentLongNames>;
 
 export type ResourceRequestsEnvKeys = Array<keyof ResourceRequestsEnv>;

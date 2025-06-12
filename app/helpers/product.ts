@@ -3,7 +3,8 @@ import _pick from 'lodash-es/pick';
 import { Session } from 'next-auth';
 import { ministryOptions } from '@/constants';
 import { PrivateCloudProductMemberRole, PrivateCloudProduct } from '@/prisma/client';
-import { extractNumbers } from '@/utils/js';
+import { extractNumbers, formatCurrency } from '@/utils/js';
+import { TableDataBody } from '@/validation-schemas/private-cloud';
 
 export function ministryKeyToName(key: string) {
   return ministryOptions.find((item) => item.value === key)?.label ?? '';
@@ -138,4 +139,21 @@ export function getPrivateCloudProductContext(
     isMinistryReader,
     isMinistryEditor,
   };
+}
+
+export function getTableData(data: any) {
+  const tableData: TableDataBody[] = data.dayDetails.cpuToDate.map((_, index) => ({
+    Day: data.days[index].toString(),
+    'CPU Cost': formatCurrency(data.dayDetails.cpuToDate[index]),
+    'Storage Cost': formatCurrency(data.dayDetails.storageToDate[index]),
+    'CPU Cost (Projected)': formatCurrency(data.dayDetails.cpuToProjected[index]),
+    'Storage Cost (Projected)': formatCurrency(data.dayDetails.storageToProjected[index]),
+    'Total Cost': formatCurrency(
+      data.dayDetails.cpuToDate[index] +
+        data.dayDetails.storageToDate[index] +
+        data.dayDetails.cpuToProjected[index] +
+        data.dayDetails.storageToProjected[index],
+    ),
+  }));
+  return tableData;
 }
