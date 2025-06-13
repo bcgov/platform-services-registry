@@ -30,5 +30,5 @@ with DAG(
             "tag_id": MAILCHIMP_REGISTRY_PRIVATE_TAG_ID,
             "mongo_conn_id": MONGO_CONN_ID,
         },
-        on_failure_callback=lambda context: send_alert(context, "mailchimp_test"),
+        on_failure_callback=lambda context: send_alert(context, context["dag"].dag_id),
     )

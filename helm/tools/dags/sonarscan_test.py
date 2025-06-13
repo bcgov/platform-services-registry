@@ -27,7 +27,7 @@ with DAG(
         task_id="fetch-sonarscan-projects-test",
         python_callable=fetch_sonarscan_projects,
         op_kwargs={"mongo_conn_id": MONGO_CONN_ID, "concurrency": CONCURRENCY, "gh_token": os.environ["GH_TOKEN"]},
-        on_failure_callback=lambda context: send_alert(context, "sonarscan_test"),
+        on_failure_callback=lambda context: send_alert(context, context["dag"].dag_id),
     )
 
     shared_volume = V1Volume(
@@ -80,7 +80,7 @@ with DAG(
         python_callable=load_sonarscan_results,
         op_kwargs={"mongo_conn_id": MONGO_CONN_ID},
         trigger_rule=TriggerRule.ALL_DONE,
-        on_failure_callback=lambda context: send_alert(context, "sonarscan_test"),
+        on_failure_callback=lambda context: send_alert(context, context["dag"].dag_id),
         dag=dag,
     )
 

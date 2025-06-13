@@ -26,5 +26,5 @@ with DAG(dag_id="provisioner_test", schedule="*/7 * * * *", start_date=datetime.
             "kc_client_id": REGISTRY_PROVISION_SA_ID,
             "kc_client_secret": REGISTRY_PROVISION_SA_SECRET,
         },
-        on_failure_callback=lambda context: send_alert(context, "provisioner_test"),
+        on_failure_callback=lambda context: send_alert(context, context["dag"].dag_id),
     )

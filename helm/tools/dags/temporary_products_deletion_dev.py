@@ -32,5 +32,5 @@ with DAG(
             "mongo_conn_id": MONGO_CONN_ID,
             "product_deletion_url_template": REGISTRY_DELETE_URL_TEMPLATE,
         },
-        on_failure_callback=lambda context: send_alert(context, "temporary_products_deletion_dev"),
+        on_failure_callback=lambda context: send_alert(context, context["dag"].dag_id),
     )

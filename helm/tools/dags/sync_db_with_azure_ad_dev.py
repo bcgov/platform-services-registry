@@ -25,5 +25,5 @@ with DAG(
             "ms_graph_api_client_id": MS_GRAPH_API_CLIENT_ID,
             "ms_graph_api_client_secret": MS_GRAPH_API_CLIENT_SECRET,
         },
-        on_failure_callback=lambda context: send_alert(context, "sync_user_dbs_dev"),
+        on_failure_callback=lambda context: send_alert(context, context["dag"].dag_id),
     )

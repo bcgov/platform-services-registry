@@ -32,5 +32,5 @@ with DAG(
     t1 = PythonOperator(
         task_id="test_dag_task",
         python_callable=test_dag_task,
-        on_failure_callback=lambda context: send_alert(context, "airflow_failure_test"),
+        on_failure_callback=lambda context: send_alert(context, context["dag"].dag_id),
     )
