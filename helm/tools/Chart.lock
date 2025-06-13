@@ -8,5 +8,8 @@ dependencies:
 - name: sonarqube
   repository: https://SonarSource.github.io/helm-chart-sonarqube
   version: 2025.3.0
-digest: sha256:bee796bc58d3447039acc27aa12bf5e757ecba2bfa014b794e603372864e0297
-generated: "2025-06-04T22:09:30.885090752-07:00"
+- name: minio
+  repository: https://charts.min.io/
+  version: 5.4.0
+digest: sha256:aebe07df10034034dfbbfef9ecd797422afe8130597449798a0f7318674185d1
+generated: "2025-06-13T11:27:22.788198573-07:00"
