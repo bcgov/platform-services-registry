@@ -30,3 +30,20 @@ export function parsePaginationParams(
     take,
   };
 }
+
+export function generatePageSizes(defaultSize: number): number[] {
+  const COMMON_SIZES = [10, 25, 50, 100];
+  const MAX_SIZE = 100;
+
+  const geometricProgression: number[] = [];
+  let currentSize = defaultSize;
+
+  while (currentSize <= MAX_SIZE) {
+    geometricProgression.push(currentSize);
+    currentSize *= 2;
+  }
+
+  return Array.from(
+    new Set([defaultSize, ...geometricProgression, ...COMMON_SIZES.filter((size) => size >= defaultSize)]),
+  ).sort((a, b) => a - b);
+}

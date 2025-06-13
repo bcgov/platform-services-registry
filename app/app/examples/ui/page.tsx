@@ -35,8 +35,8 @@ const pages = [
     label: 'Table',
   },
   {
-    href: 'ui/generic-table',
-    label: 'Generic Table',
+    href: 'ui/data-table',
+    label: 'Data Table',
   },
 ];
 
