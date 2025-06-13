@@ -19,5 +19,5 @@ with DAG(
         task_id="fetch-load-acs-projects-dev",
         python_callable=fetch_load_acs_projects,
         op_kwargs={"mongo_conn_id": MONGO_CONN_ID},
-        on_failure_callback=lambda context: send_alert(context, "acs_dev"),
+        on_failure_callback=lambda context: send_alert(context, context["dag"].dag_id),
     )

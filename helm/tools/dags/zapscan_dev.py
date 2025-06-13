@@ -26,7 +26,7 @@ with DAG(
         task_id="fetch-zapscan-projects-dev",
         python_callable=fetch_zap_projects,
         op_kwargs={"mongo_conn_id": MONGO_CONN_ID, "concurrency": CONCURRENCY},
-        on_failure_callback=lambda context: send_alert(context, "zapscan_dev"),
+        on_failure_callback=lambda context: send_alert(context, context["dag"].dag_id),
     )
 
     shared_volume = V1Volume(
@@ -72,7 +72,7 @@ with DAG(
         python_callable=load_zap_results,
         op_kwargs={"mongo_conn_id": MONGO_CONN_ID},
         trigger_rule=TriggerRule.ALL_DONE,
-        on_failure_callback=lambda context: send_alert(context, "zapscan_dev"),
+        on_failure_callback=lambda context: send_alert(context, context["dag"].dag_id),
         dag=dag,
     )
 

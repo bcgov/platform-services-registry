@@ -32,6 +32,8 @@ asdf-install:
 	asdf plugin update --all
 	asdf install || true
 	asdf reshim
+	pip install -r requirements.txt
+	asdf reshim
 
 # To copy data from the live environment, please follow these steps:
 # 1. Log into the OCP API using the API token provided by the OCP console.

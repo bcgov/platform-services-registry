@@ -34,5 +34,5 @@ with DAG(
             "ches_api_url": CHES_API_URL,
             "app_url": APP_URL,
         },
-        on_failure_callback=lambda context: send_alert(context, "temporary_products_notification_prod"),
+        on_failure_callback=lambda context: send_alert(context, context["dag"].dag_id),
     )
