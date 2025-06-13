@@ -1,6 +1,11 @@
 import axios from 'axios';
 
-async function getClientCredentialsToken(tokenUrl: string, clientId: string, clientSecret: string, scope?: string) {
+export async function getClientCredentialsToken(
+  tokenUrl: string,
+  clientId: string,
+  clientSecret: string,
+  scope?: string,
+) {
   const params = new URLSearchParams({
     grant_type: 'client_credentials',
     client_id: clientId,

@@ -1,18 +1,25 @@
-import { ClientSecretCredential } from '@azure/identity';
 import axios from 'axios';
+import { getClientCredentialsToken } from '@/utils/node';
 
 const tenantId = process.env.AZURE_TENANT_ID!;
 const clientId = process.env.AZURE_CLIENT_ID!;
 const clientSecret = process.env.AZURE_CLIENT_SECRET!;
 
-const credential = new ClientSecretCredential(tenantId, clientId, clientSecret);
+const tokenUrl = `https://login.microsoftonline.com/${tenantId}/oauth2/v2.0/token`;
 
-async function getAccessToken(): Promise<string> {
-  const token = await credential.getToken('https://graph.microsoft.com/.default');
-  if (!token?.token) {
+async function getAccessToken() {
+  const token = await getClientCredentialsToken(
+    tokenUrl,
+    clientId,
+    clientSecret,
+    'https://graph.microsoft.com/.default',
+  );
+
+  if (!token) {
     throw new Error('Failed to get access token');
   }
-  return token.token;
+
+  return token;
 }
 
 async function listUsers() {
