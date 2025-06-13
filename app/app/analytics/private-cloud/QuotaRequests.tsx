@@ -1,5 +1,5 @@
 import { useSnapshot } from 'valtio';
-import CombinedAreaGraph from '@/components/analytics/CombinedAreaGraph';
+import LineChartCard from '@/components/analytics/LineChartCard';
 import { downloadPrivateCloudQuotaChangeRequests } from '@/services/backend/analytics/private-cloud';
 import { QuotaChange } from '@/types/analytics-private';
 import { formatDate } from '@/utils/js/date';
@@ -10,7 +10,7 @@ export default function QuotaRequests({ data }: { data: QuotaChange[] }) {
   const startDate = pageSnapshot.dates?.[0] ?? data?.[0]?.date;
   const endDate = pageSnapshot.dates?.[1] ?? new Date();
   return (
-    <CombinedAreaGraph
+    <LineChartCard
       index="date"
       title="Quota requests over time"
       subtitle={`This chart displays edit requests where a quota change was requested and the request decision from ${formatDate(

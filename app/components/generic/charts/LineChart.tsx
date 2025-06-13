@@ -1,33 +1,20 @@
-import { LoadingOverlay } from '@mantine/core';
-import { Card, Title, Subtitle } from '@tremor/react';
 import { ChartTypeRegistry, TooltipItem } from 'chart.js';
 import { useMemo } from 'react';
 import { Line } from 'react-chartjs-2';
 import { valueFormatter, getColor } from '@/components/analytics/helpers';
-import ExportButton from '@/components/buttons/ExportButton';
+import { cn } from '@/utils/js';
 
-export type ChartDate = {
-  date: string;
-};
-
-export default function CombinedAreaGraph({
-  index,
-  title,
-  subtitle,
-  onExport,
-  chartData,
-  categories,
-  isLoading = false,
-  exportApiEndpoint /* temporary */,
+export interface LineChartDataItem {
+  [key: string]: number | string;
+}
+export default function LineChart({
+  indexKey,
+  data: chartData,
+  className,
 }: {
-  index: string;
-  title: string;
-  subtitle: string;
-  onExport?: () => Promise<boolean>;
-  chartData: any;
-  categories: string[];
-  isLoading?: boolean;
-  exportApiEndpoint?: string /* temporary */;
+  indexKey: string;
+  data: LineChartDataItem[];
+  className?: string;
 }) {
   const { data, options } = useMemo(() => {
     if (!chartData) return { data: { labels: [], datasets: [] }, options: {} };
@@ -37,7 +24,7 @@ export default function CombinedAreaGraph({
 
     for (const row of chartData) {
       for (const [key, value] of Object.entries(row)) {
-        if (key === index) {
+        if (key === indexKey) {
           labels.push(String(value));
           continue;
         }
@@ -106,22 +93,5 @@ export default function CombinedAreaGraph({
     return { data: _data, options: _options };
   }, [chartData]);
 
-  return (
-    <div className="flex flex-col items-end">
-      <ExportButton onExport={onExport} downloadUrl={exportApiEndpoint} /* temporary */ className="m-2" />
-      <Card className="relative">
-        <Title>{title}</Title>
-        <Subtitle>{subtitle}</Subtitle>
-        <div className="relative">
-          <LoadingOverlay
-            visible={isLoading}
-            zIndex={50}
-            overlayProps={{ radius: 'sm', blur: 2 }}
-            loaderProps={{ color: 'pink', type: 'bars' }}
-          />
-          <Line className="max-h-[28rem] mt-4" data={data} options={options} />
-        </div>
-      </Card>
-    </div>
-  );
+  return <Line className={cn(className)} data={data} options={options} />;
 }

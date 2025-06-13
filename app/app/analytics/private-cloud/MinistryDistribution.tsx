@@ -1,5 +1,5 @@
 import { useSnapshot } from 'valtio';
-import PieGraph from '@/components/analytics/PieGraph';
+import MultipleDoughnutChartCard from '@/components/analytics/MultipleDoughnutChartCard';
 import { clusters } from '@/constants';
 import { mapClusterData, transformMinistryData } from '@/helpers/ministry-data';
 import { downloadPrivateCloudMinistryDistribution } from '@/services/backend/analytics/private-cloud';
@@ -21,7 +21,7 @@ export default function MinistryDistribution({ data }: { data: MinistryDistribut
   };
 
   return (
-    <PieGraph
+    <MultipleDoughnutChartCard
       onExport={() => downloadPrivateCloudMinistryDistribution({ data: { ...pageSnapshot } })}
       title="Ministry per Cluster"
       subtitle={`This chart displays the cluster distributions by ministries for products created from ${formatDate(

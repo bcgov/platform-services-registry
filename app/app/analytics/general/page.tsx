@@ -2,7 +2,8 @@
 
 import { useQuery } from '@tanstack/react-query';
 import { useSnapshot } from 'valtio';
-import CombinedAreaGraph from '@/components/analytics/CombinedAreaGraph';
+import LineChartCard from '@/components/analytics/LineChartCard';
+import { LineChartDataItem } from '@/components/generic/charts/LineChart';
 import FormDateRangePicker from '@/components/generic/select/FormDateRangePicker';
 import FormUserPicker from '@/components/generic/select/FormUserPicker';
 import { GlobalPermissions } from '@/constants';
@@ -19,7 +20,7 @@ const analyticsDashboard = createClientPage({
 export default analyticsDashboard(() => {
   const snap = useSnapshot(pageState);
 
-  const { data, isLoading } = useQuery({
+  const { data, isLoading } = useQuery<LineChartDataItem[]>({
     queryKey: ['logins', snap.dates, snap.userId],
     queryFn: () => getAnalyticsGeneralData({ dates: snap.dates, userId: snap.userId }),
   });
@@ -44,7 +45,7 @@ export default analyticsDashboard(() => {
         />
       </div>
       <div className="flex flex-col gap-y-12 mt-14">
-        <CombinedAreaGraph
+        <LineChartCard
           index="date"
           isLoading={isLoading}
           title="Daily User Login Events"
