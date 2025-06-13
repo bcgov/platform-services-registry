@@ -1,30 +1,38 @@
-import { ConfidentialClientApplication } from '@azure/msal-node';
 import { HttpsProxyAgent } from 'https-proxy-agent';
 import { M365_PROXY_URL, USE_M365_PROXY } from '@/config';
-import { logger } from '@/core/logging';
-import msalConfig from './config';
+import {
+  IS_LOCAL,
+  AUTH_RESOURCE,
+  AUTH_SECRET,
+  OIDC_AUTHORITY,
+  MS_GRAPH_API_AUTHORITY,
+  MS_GRAPH_API_CLIENT_ID,
+  MS_GRAPH_API_CLIENT_SECRET,
+} from '@/config';
+import { getClientCredentialsToken } from '@/utils/node/oauth2';
 
-let msalInstance!: ConfidentialClientApplication;
+const tokenUrl = IS_LOCAL
+  ? `${OIDC_AUTHORITY}/protocol/openid-connect/token`
+  : `${MS_GRAPH_API_AUTHORITY}/oauth2/v2.0/token`;
+const clientId = IS_LOCAL ? AUTH_RESOURCE : MS_GRAPH_API_CLIENT_ID;
+const clientSecret = IS_LOCAL ? AUTH_SECRET : MS_GRAPH_API_CLIENT_SECRET;
 
 // See https://learn.microsoft.com/en-us/microsoft-cloud/dev/dev-proxy/how-to/use-dev-proxy-with-nodejs
 const graphAPIProxy = USE_M365_PROXY ? new HttpsProxyAgent(M365_PROXY_URL) : null;
 
 export async function getAccessToken() {
-  const request = {
-    scopes: ['https://graph.microsoft.com/.default'],
-  };
+  const token = await getClientCredentialsToken(
+    tokenUrl,
+    clientId,
+    clientSecret,
+    'https://graph.microsoft.com/.default',
+  );
 
-  try {
-    if (!msalInstance) {
-      msalInstance = new ConfidentialClientApplication(msalConfig);
-    }
-
-    const response = await msalInstance.acquireTokenByClientCredential(request);
-    return response?.accessToken;
-  } catch (error) {
-    logger.error('getAccessToken:', error);
-    throw new Error('Error acquiring access token');
+  if (!token) {
+    throw new Error('Failed to get access token');
   }
+
+  return token;
 }
 
 export async function callMsGraph(endpoint: string, accessToken: string, options = {}) {

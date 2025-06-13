@@ -1,5 +1,5 @@
 import { MS_GRAPH_API_CLIENT_ID, MS_GRAPH_API_CLIENT_SECRET, MS_GRAPH_API_AUTHORITY } from '@/config';
-import { validateClientCredentials } from './helpers';
+import { validateClientCredentials } from '@/utils/node/oauth2';
 
 export async function validateMsGraphServiceAccountCredentials() {
   const isValid = await validateClientCredentials(

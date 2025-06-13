@@ -26,8 +26,6 @@
     "seed": "ts-node prisma/seed.ts"
   },
   "dependencies": {
-    "@azure/identity": "^4.10.0",
-    "@azure/msal-node": "^3.0.0",
     "@faker-js/faker": "^9.0.0",
     "@headlessui/react": "2.2.4",
     "@hookform/resolvers": "^5.0.1",
