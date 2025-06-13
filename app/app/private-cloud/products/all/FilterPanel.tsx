@@ -24,7 +24,9 @@ export default function FilterPanel() {
         name="cluster"
         label="Cluster"
         value={pageSnapshot.clusters ?? []}
-        data={[...clusters.map((v) => ({ label: v, value: v }))]}
+        data={[
+          ...clusters.map((v) => (v === Cluster.GOLDDR ? { label: 'GOLD (DR)', value: v } : { label: v, value: v })),
+        ]}
         onChange={(value) => {
           pageState.clusters = value as Cluster[];
           pageState.page = 1;

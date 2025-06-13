@@ -51,17 +51,20 @@ export const POST = createApiHandler({
       project.resourceRequests.tools.storage,
     ]);
 
+    let clusterName: string = project.cluster;
     if (project.cluster === Cluster.GOLD && project.golddrEnabled) {
       cpuRequestTotal *= 2;
       memoryRequestTotal *= 2;
       storageTotal *= 2;
+
+      clusterName = 'GOLD (DR)';
     }
 
     return {
       Name: project.name,
       Description: project.description,
       Ministry: ministryKeyToName(project.ministry),
-      Cluster: project.cluster,
+      Cluster: clusterName,
       'Project Owner email': project.projectOwner.email,
       'Project Owner name': formatFullName(project.projectOwner),
       'Primary Technical Lead email': project.primaryTechnicalLead.email,
