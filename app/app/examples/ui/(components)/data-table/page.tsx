@@ -32,7 +32,6 @@ const Page = createClientPage({
 export default Page(() => {
   return (
     <>
-      <DataTable data={sampleData} columns={columns} defaultPageSize={10} />;
       <DataTable data={sampleData} columns={columns} defaultPageSize={5} />;
     </>
   );
