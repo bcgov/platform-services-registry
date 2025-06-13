@@ -6,30 +6,28 @@ import { OkResponse, UnauthorizedResponse, BadRequestResponse } from '@/core/res
 import { DecisionStatus, EventType, RequestType, TaskStatus, TaskType } from '@/prisma/client';
 import { sendRequestCancellationEmails } from '@/services/ches/public-cloud';
 import { createEvent, models, publicCloudRequestDetailInclude } from '@/services/db';
-import { optionalCommentSchema } from '@/validation-schemas';
+import { commentSchema } from '@/validation-schemas';
 
 const pathParamSchema = z.object({
   id: z.string(),
 });
 
 const bodySchema = z.object({
-  decisionComment: optionalCommentSchema,
+  decisionComment: commentSchema,
 });
 
 const apiHandler = createApiHandler({
-  roles: [GlobalRole.User],
+  roles: [GlobalRole.User, GlobalRole.PublicAdmin],
   validations: {
     pathParams: pathParamSchema,
     body: bodySchema,
   },
 });
 
-export const PUT = apiHandler(async ({ pathParams, body, session }) => {
+export const POST = apiHandler(async ({ pathParams, body, session }) => {
   const { id } = pathParams;
   const { decisionComment } = body;
-  if (session.isPublicAdmin && !decisionComment?.trim()) {
-    return BadRequestResponse('Cancellation reason is required.');
-  }
+
   const { data: request } = await models.publicCloudRequest.get({ where: { id } }, session);
 
   if (!request?._permissions.cancel) {
@@ -47,7 +45,7 @@ export const PUT = apiHandler(async ({ pathParams, body, session }) => {
       decisionStatus: DecisionStatus.CANCELLED,
       cancelledAt: new Date(),
       cancelledById: session.user.id,
-      decisionComment: decisionComment,
+      decisionComment,
     },
     include: publicCloudRequestDetailInclude,
   });

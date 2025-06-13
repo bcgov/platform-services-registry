@@ -28,11 +28,7 @@ export const openRequestCancelModal = createModal<ModalProps, ModalState>({
     title: 'Cancel Request?',
   },
   Component: function ({ requestId, context, state, closeModal }) {
-    const { data: session } = useSession({
-      required: true,
-    });
     const [decisionComment, setDecisionComment] = useState('');
-    const isPublicAdmin = session?.isPublicAdmin;
     const { mutateAsync: cancelRequest, isPending: isCancelingRequest } = useMutation({
       mutationFn: async () =>
         context === ProjectContext.PRIVATE
@@ -58,18 +54,16 @@ export const openRequestCancelModal = createModal<ModalProps, ModalState>({
         <p className="text-sm text-gray-900 mb-4">
           Are you sure you want to cancel this request? This action cannot be undone!
         </p>
-        {isPublicAdmin && (
-          <FormTextarea
-            name="decisionComment"
-            label="Reason for cancellation"
-            value={decisionComment}
-            onChange={(e) => setDecisionComment(e.target.value)}
-            required
-            classNames={{
-              wrapper: 'mb-4',
-            }}
-          />
-        )}
+        <FormTextarea
+          name="decisionComment"
+          label="Reason for cancellation"
+          value={decisionComment}
+          onChange={(e) => setDecisionComment(e.target.value)}
+          required
+          classNames={{
+            wrapper: 'mb-4',
+          }}
+        />
 
         <div className="flex justify-end gap-x-2">
           <Button color="gray" onClick={() => closeModal()}>
@@ -78,9 +72,9 @@ export const openRequestCancelModal = createModal<ModalProps, ModalState>({
           <Button
             variant="outline"
             color="red"
-            disabled={isPublicAdmin && !decisionComment.trim()}
+            disabled={!decisionComment.trim()}
             onClick={() => {
-              if (isPublicAdmin && !decisionComment.trim()) return;
+              if (!decisionComment.trim()) return;
               cancelRequest();
             }}
           >

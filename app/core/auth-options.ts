@@ -318,7 +318,7 @@ export async function generateSession({
     editUserOnboardingDate: session.isPrivateReviewer,
 
     cancelPrivateCloudRequest: session.isUser,
-    cancelPublicCloudRequest: session.isUser,
+    cancelPublicCloudRequest: session.isUser || session.isPublicAdmin,
   };
 
   session.permissionList = Object.keys(session.permissions).filter(
