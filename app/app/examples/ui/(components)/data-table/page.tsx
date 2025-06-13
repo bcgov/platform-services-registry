@@ -18,6 +18,8 @@ const sampleData = [
   { firstName: 'Chioma', lastName: 'Eze', age: 28, occupation: 'Medical Doctor' },
 ];
 
+const sampleData2 = [];
+
 const columns = [
   { label: 'First Name', value: 'firstName', cellProcessor: (item) => _startCase(item.firstName) },
   { label: 'Last Name', value: 'lastName', cellProcessor: (item) => _startCase(item.lastName) },

@@ -128,82 +128,88 @@ export default function DataTable<TData extends object>({ columns, data, default
           ))}
         </thead>
         <tbody>
-          {table.getRowModel().rows.map((row) => (
-            <tr key={row.id} className="bg-white dark:bg-gray-900 even:bg-gray-50 odd:dark:bg-gray-800">
-              {row.getVisibleCells().map((cell) => (
-                <td key={cell.id} className="p-2 border-b align-top">
-                  {flexRender(cell.column.columnDef.cell, cell.getContext())}
-                </td>
-              ))}
+          {data.length > 0 ? (
+            table.getRowModel().rows.map((row) => (
+              <tr key={row.id} className="bg-white dark:bg-gray-900 even:bg-gray-50 odd:dark:bg-gray-800">
+                {row.getVisibleCells().map((cell) => (
+                  <td key={cell.id} className="p-2 border-b align-top">
+                    {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                  </td>
+                ))}
+              </tr>
+            ))
+          ) : (
+            <tr>
+              <td colSpan={6} className="p-2 border-b italic text-center">
+                No data available.
+              </td>
             </tr>
-          ))}
+          )}
         </tbody>
       </table>
       <div className="flex items-center justify-between mt-4">
-        <div className="flex items-center gap-2">
-          <Button
-            variant="outline"
-            size="sm"
-            color="gray"
-            onClick={() => table.setPageIndex(0)}
-            disabled={!table.getCanPreviousPage()}
-            p="xs"
-          >
-            <IconChevronsLeft size={20} />
-          </Button>
-          <Button
-            variant="outline"
-            size="sm"
-            color="gray"
-            onClick={() => table.previousPage()}
-            disabled={!table.getCanPreviousPage()}
-            p="xs"
-          >
-            <IconChevronLeft size={20} />
-          </Button>
-          <Button
-            variant="outline"
-            size="sm"
-            color="gray"
-            onClick={() => table.nextPage()}
-            disabled={!table.getCanNextPage()}
-            p="xs"
-          >
-            <IconChevronRight size={20} />
-          </Button>
-          <Button
-            variant="outline"
-            size="sm"
-            color="gray"
-            onClick={() => table.setPageIndex(table.getPageCount() - 1)}
-            disabled={!table.getCanNextPage()}
-            p="xs"
-          >
-            <IconChevronsRight size={20} />
-          </Button>
-        </div>
-        <span className="flex items-center gap-1">
-          <div>Page</div>
-          <strong>
-            {table.getState().pagination.pageIndex + 1} of {table.getPageCount()}
-          </strong>
-        </span>
+        {data.length > 0 && (
+          <>
+            <div className="flex items-center gap-2">
+              {[
+                {
+                  icon: <IconChevronsLeft size={20} />,
+                  action: () => table.setPageIndex(0),
+                  disabled: !table.getCanPreviousPage(),
+                },
+                {
+                  icon: <IconChevronLeft size={20} />,
+                  action: () => table.previousPage(),
+                  disabled: !table.getCanPreviousPage(),
+                },
+                {
+                  icon: <IconChevronRight size={20} />,
+                  action: () => table.nextPage(),
+                  disabled: !table.getCanNextPage(),
+                },
+                {
+                  icon: <IconChevronsRight size={20} />,
+                  action: () => table.setPageIndex(table.getPageCount() - 1),
+                  disabled: !table.getCanNextPage(),
+                },
+              ].map((button, index) => (
+                <Button
+                  key={index}
+                  variant="outline"
+                  size="sm"
+                  color="gray"
+                  onClick={button.action}
+                  disabled={button.disabled}
+                  p="xs"
+                >
+                  {button.icon}
+                </Button>
+              ))}
+            </div>
+            <span className="flex items-center gap-1">
+              <div>Page</div>
+              <strong>
+                {table.getState().pagination.pageIndex + 1} of {table.getPageCount()}
+              </strong>
+            </span>
 
-        <div className="flex items-center gap-2">
-          <select
-            value={table.getState().pagination.pageSize}
-            onChange={(e) => {
-              table.setPageSize(Number(e.target.value));
-            }}
-            className="px-2 py-1 border rounded min-w-20"
-          >
-            {generatePageSizes(defaultPageSize).map((pageSize) => (
-              <option key={pageSize} value={pageSize} className="min-w-[100px]">
-                {pageSize}
-              </option>
-            ))}
-          </select>
-        </div>
+            <div className="flex items-center gap-2">
+              <select
+                value={table.getState().pagination.pageSize}
+                onChange={(e) => {
+                  table.setPageSize(Number(e.target.value));
+                }}
+                className="px-2 py-1 border rounded min-w-20"
+              >
+                {generatePageSizes(defaultPageSize).map((pageSize) => (
+                  <option key={pageSize} value={pageSize} className="min-w-[100px]">
+                    {pageSize}
+                  </option>
+                ))}
+              </select>
+            </div>
+          </>
+        )}
       </div>
     </>
   );
