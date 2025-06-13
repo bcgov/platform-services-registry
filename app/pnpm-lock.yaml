@@ -229,7 +229,7 @@ importers:
         version: 3.17.0
       zod:
         specifier: ^3.24.3
-        version: 3.25.57
+        version: 3.25.64
     devDependencies:
       '@eslint/eslintrc':
         specifier: ^3.2.0
@@ -5870,8 +5870,8 @@ packages:
     peerDependencies:
       zod: ^3.25.0
 
-  zod@3.25.57:
-    resolution: {integrity: sha512-6tgzLuwVST5oLUxXTmBqoinKMd3JeesgbgseXeFasKKj8Q1FCZrHnbqJOyiEvr4cVAlbug+CgIsmJ8cl/pU5FA==}
+  zod@3.25.64:
+    resolution: {integrity: sha512-hbP9FpSZf7pkS7hRVUrOjhwKJNyampPgtXKc3AN6DsWtoHsg2Sb4SQaS4Tcay380zSwd2VPo9G9180emBACp5g==}
 
 snapshots:
 
@@ -10261,8 +10261,8 @@ snapshots:
       smol-toml: 1.3.4
       strip-json-comments: 5.0.2
       typescript: 5.8.3
-      zod: 3.25.57
-      zod-validation-error: 3.5.0(zod@3.25.57)
+      zod: 3.25.64
+      zod-validation-error: 3.5.0(zod@3.25.64)
 
   kuler@2.0.0: {}
 
@@ -12329,8 +12329,8 @@ snapshots:
 
   yoctocolors@2.1.1: {}
 
-  zod-validation-error@3.5.0(zod@3.25.57):
+  zod-validation-error@3.5.0(zod@3.25.64):
     dependencies:
-      zod: 3.25.57
+      zod: 3.25.64
 
-  zod@3.25.57: {}
+  zod@3.25.64: {}
