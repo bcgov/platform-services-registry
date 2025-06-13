@@ -1,7 +1,7 @@
 import _isNumber from 'lodash-es/isNumber';
 import { Session } from 'next-auth';
 import { parsePaginationParams } from '@/helpers/pagination';
-import { Prisma } from '@/prisma/client';
+import { Cluster, Prisma } from '@/prisma/client';
 import { models } from '@/services/db';
 import { PrivateCloudProductDetailDecorated } from '@/types/private-cloud';
 import { PrivateCloudProductSearchBody } from '@/validation-schemas/private-cloud';
@@ -63,7 +63,17 @@ export async function searchPrivateCloudProducts({
     where.ministry = { in: ministries };
   }
 
-  if (clusters && clusters.length > 0) {
+  if (clusters?.length) {
+    const hasGold = clusters.includes(Cluster.GOLD);
+    const hasGoldDR = clusters.includes(Cluster.GOLDDR);
+
+    if (!hasGold && hasGoldDR) {
+      clusters.push(Cluster.GOLD);
+      where.golddrEnabled = true;
+    } else if (hasGold && !hasGoldDR) {
+      where.golddrEnabled = false;
+    }
+
     where.cluster = { in: clusters };
   }
 

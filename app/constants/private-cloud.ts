@@ -2,7 +2,7 @@ import { Cluster, Prisma, ResourceRequestsEnv, ResourceRequests, PrivateCloudPro
 import { productSorts } from './common';
 
 export const privateCloudProductMemberRoles = Object.values(PrivateCloudProductMemberRole);
-export const clusters = Object.values(Cluster).filter((cluster) => cluster !== 'GOLDDR');
+export const clusters = Object.values(Cluster);
 
 export const clusterNames = [
   {

@@ -265,3 +265,86 @@ sonarqube:
 
   postgresql:
     enabled: false
+
+minio:
+  enabled: false
+  replicas: 2
+
+  route:
+    host:
+
+  nameOverride: "minio"
+  nameOverride: "minio"
+
+  persistence:
+    enabled: true
+    size: 5Gi
+
+  securityContext:
+    enabled: false
+
+  resources:
+    limits:
+      cpu: 300m
+      memory: 512Mi
+    requests:
+      cpu: 150m
+      memory: 256Mi
+
+  users:
+    ## Username, password and policy to be assigned to the user
+    ## Default policies are [readonly|readwrite|writeonly|consoleAdmin|diagnostics]
+    ## Add new policies as explained here https://min.io/docs/minio/kubernetes/upstream/administration/identity-access-management.html#access-management
+    ## NOTE: this will fail if LDAP is enabled in your MinIO deployment
+    ## make sure to disable this if you are using LDAP.
+    - accessKey: console
+      secretKey: console123 # pragma: allowlist secret
+      policy: consoleAdmin
+    # Or you can refer to specific secret
+    # - accessKey: minioadmin
+    #  existingSecret: my-secret
+    #  existingSecretKey: password
+    #  policy: consoleAdmin
+
+  buckets:
+    []
+    #   # Name of the bucket
+    # - name: bucket1
+    #   # Policy to be set on the
+    #   # bucket [none|download|upload|public]
+    #   policy: none
+    #   # Purge if bucket exists already
+    #   purge: false
+    #   # set versioning for
+    #   # bucket [true|false]
+    #   versioning: false # remove this key if you do not want versioning feature
+    #   # set objectlocking for
+    #   # bucket [true|false] NOTE: versioning is enabled by default if you use locking
+    #   objectlocking: false
+    # - name: bucket2
+    #   policy: none
+    #   purge: false
+    #   versioning: true
+    #   # set objectlocking for
+    #   # bucket [true|false] NOTE: versioning is enabled by default if you use locking
+    #   objectlocking: false
+
+  ## OpenID Identity Management
+  ## The following section documents environment variables for enabling external identity management using an OpenID Connect (OIDC)-compatible provider.
+  ## See https://min.io/docs/minio/linux/operations/external-iam/configure-openid-external-identity-management.html for a tutorial on using these variables.
+  oidc:
+    enabled: false
+    configUrl: "https://identity-provider-url/.well-known/openid-configuration"
+    clientId: "minio"
+    clientSecret: ""
+    # Provide existing client secret from the Kubernetes Secret resource, existing secret will have priority over `clientId` and/or `clientSecret``
+    existingClientSecretName: ""
+    existingClientIdKey: ""
+    existingClientSecretKey: ""
+    claimName: "policy"
+    scopes: "openid,profile,email"
+    redirectUri: "https://console-endpoint-url/oauth_callback"
+    # Can leave empty
+    claimPrefix: ""
+    comment: ""
+    displayName: ""

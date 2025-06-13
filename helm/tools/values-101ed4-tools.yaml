@@ -14,3 +14,8 @@ sonarqube:
 
 postgresql:
   enabled: true
+
+minio:
+  enabled: true
+  route:
+    host: tools-minio.apps.silver.devops.gov.bc.ca

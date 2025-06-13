@@ -1,6 +1,7 @@
 'use client';
 
 import { Tooltip, Badge } from '@mantine/core';
+import { IconPoint } from '@tabler/icons-react';
 import _truncate from 'lodash-es/truncate';
 import { usePathname, useRouter } from 'next/navigation';
 import React from 'react';
@@ -9,7 +10,7 @@ import TemporaryProductBadge from '@/components/form/TemporaryProductBadge';
 import CopyableButton from '@/components/generic/button/CopyableButton';
 import UserCard from '@/components/UserCard';
 import { ministryKeyToName } from '@/helpers/product';
-import { ProjectStatus } from '@/prisma/client';
+import { Cluster, ProjectStatus } from '@/prisma/client';
 import { PrivateCloudProductSimpleDecorated } from '@/types/private-cloud';
 import { formatDate } from '@/utils/js';
 import EmptySearch from './EmptySearch';
@@ -65,16 +66,19 @@ export default function TableBodyPrivateProducts({ rows, isLoading = false }: Ta
                 </h2>
               </div>
 
-              <div className="mt-1 flex items-center gap-x-2.5 text-sm leading-5 text-gray-700">
+              <div className="mt-1 flex items-center text-sm gap-x-1 leading-5 text-gray-700">
                 <div className="whitespace-nowrap">
                   <Tooltip label={ministryKeyToName(row.ministry)} offset={10}>
                     <span>Ministry {row.ministry}</span>
                   </Tooltip>
                 </div>
-                <svg viewBox="0 0 2 2" className="h-0.5 w-0.5 flex-none fill-gray-400">
-                  <circle cx={1} cy={1} r={1} />
-                </svg>
+                <IconPoint size={10} />
                 <div className="whitespace-nowrap">{row.cluster}</div>
+                {row.cluster === Cluster.GOLD && row.golddrEnabled && (
+                  <Badge size="sm" color="info" radius="sm">
+                    DR
+                  </Badge>
+                )}
               </div>
               <div className="mt-1 text-sm text-gray-400">
                 <div>
