@@ -8,7 +8,7 @@ import {
   PublicCloudRequestSimple,
   PublicCloudRequestSimpleDecorated,
 } from '@/types/public-cloud';
-import { getUniqueNonFalsyItems } from '@/utils/js';
+import { getDaysSince, getUniqueNonFalsyItems } from '@/utils/js';
 import { publicCloudRequestDetailInclude, publicCloudRequestSimpleInclude } from '../includes';
 import { createSessionModel } from './core';
 import { publicCloudProductModel } from './public-cloud-product';
@@ -118,7 +118,9 @@ async function decorate<T extends PublicCloudRequestSimple | PublicCloudRequestD
     }
   }
 
-  const canCancel = doc.decisionStatus === DecisionStatus.PENDING && session.user.email === doc.createdBy?.email;
+  const canCancel =
+    doc.decisionStatus === DecisionStatus.PENDING &&
+    (session.user.email === doc.createdBy?.email || getDaysSince(doc.createdAt) > 30);
   const canEdit = canReview && doc.type !== RequestType.DELETE;
 
   const canResend =
