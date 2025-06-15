@@ -30,3 +30,9 @@ export function parsePaginationParams(
     take,
   };
 }
+
+export function generatePageSizes(defaultSize: number) {
+  return Array.from({ length: 6 }, (_, i) => defaultSize * 2 ** i)
+    .filter((size) => size <= 100)
+    .sort((a, b) => a - b);
+}

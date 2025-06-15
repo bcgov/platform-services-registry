@@ -1,0 +1,137 @@
+import { IconArrowDown, IconArrowUp } from '@tabler/icons-react';
+import {
+  CellContext,
+  createColumnHelper,
+  flexRender,
+  getCoreRowModel,
+  getPaginationRowModel,
+  getSortedRowModel,
+  useReactTable,
+} from '@tanstack/react-table';
+import _startCase from 'lodash-es/startCase';
+import { useMemo, useState } from 'react';
+import PageNavigator from './PageNavigator';
+
+interface ColumnDefinition<TData> {
+  label: string;
+  value: string;
+  cellProcessor?: (item: TData) => React.ReactNode;
+}
+
+interface TableProps<TData> {
+  columns?: ColumnDefinition<TData>[];
+  data: TData[];
+  defaultPageSize?: number;
+}
+
+export default function DataTable<TData extends object>({ columns, data, defaultPageSize = 10 }: TableProps<TData>) {
+  const columnHelper = createColumnHelper<TData>();
+  const [pagination, setPagination] = useState({
+    pageIndex: 0,
+    pageSize: defaultPageSize,
+  });
+
+  const updatedColumns = useMemo(() => {
+    if (columns) {
+      return columns;
+    }
+
+    return data.length > 0
+      ? Object.keys(data[0]).map((key) => ({
+          label: _startCase(key),
+          value: key,
+        }))
+      : [];
+  }, [columns, data]);
+
+  const getAutPageGeneratedColumns = <TData,>(cols: ColumnDefinition<TData>[]) => {
+    return cols.map((col) => {
+      return {
+        id: col.value,
+        accessor: col.value,
+        header: col.label,
+        cell: (info: CellContext<TData, TData>) => {
+          const item = info.row.original;
+
+          return <>{col.cellProcessor ? col.cellProcessor(item) : String(info.renderValue())}</>;
+        },
+      };
+    });
+  };
+
+  const renderedColumns = useMemo(() => {
+    return getAutPageGeneratedColumns<TData>(updatedColumns).map((col) =>
+      columnHelper.accessor((row) => row[col.id], {
+        id: col.id,
+        header: ({ column }) => (
+          <div className="flex items-center cursor-pointer rounded" onClick={() => column.toggleSorting()}>
+            {col.header}
+            <div className="ml-2 flex items-center h-5">
+              {column.getIsSorted() === 'asc' ? (
+                <IconArrowUp className="h-5 w-5 stroke-2 text-black dark:text-black" />
+              ) : column.getIsSorted() === 'desc' ? (
+                <IconArrowDown className="h-5 w-5 stroke-2 text-black dark:text-black" />
+              ) : (
+                <>
+                  <IconArrowUp className="h-5 w-5 stroke-2 text-gray-300 dark:text-gray-300" />
+                  <IconArrowDown className="h-5 w-5 stroke-2 text-gray-300 dark:text-gray-300" />
+                </>
+              )}
+            </div>
+          </div>
+        ),
+        cell: col.cell,
+      }),
+    );
+  }, [columnHelper, updatedColumns]);
+
+  const table = useReactTable({
+    data,
+    columns: renderedColumns,
+    state: {
+      pagination,
+    },
+    getCoreRowModel: getCoreRowModel(),
+    getPaginationRowModel: getPaginationRowModel(),
+    getSortedRowModel: getSortedRowModel(),
+    onPaginationChange: setPagination,
+  });
+
+  return (
+    <>
+      <table className="w-full text-sm border-collapse">
+        <thead>
+          {table.getHeaderGroups().map((headerGroup) => (
+            <tr key={headerGroup.id}>
+              {headerGroup.headers.map((header) => (
+                <th className="text-left p-2 border-b" key={header.id}>
+                  {header.isPlaceholder ? null : flexRender(header.column.columnDef.header, header.getContext())}
+                </th>
+              ))}
+            </tr>
+          ))}
+        </thead>
+        <tbody>
+          {data.length > 0 ? (
+            table.getRowModel().rows.map((row) => (
+              <tr key={row.id} className="bg-white even:bg-gray-50">
+                {row.getVisibleCells().map((cell) => (
+                  <td key={cell.id} className="p-2 border-b align-top">
+                    {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                  </td>
+                ))}
+              </tr>
+            ))
+          ) : (
+            <tr>
+              <td colSpan={6} className="p-2 border-b italic text-center">
+                No data available.
+              </td>
+            </tr>
+          )}
+        </tbody>
+      </table>
+      <PageNavigator data={data} table={table} defaultPageSize={defaultPageSize} />
+    </>
+  );
+}
