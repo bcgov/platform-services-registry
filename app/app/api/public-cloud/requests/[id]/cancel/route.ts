@@ -17,7 +17,7 @@ const bodySchema = z.object({
 });
 
 const apiHandler = createApiHandler({
-  roles: [GlobalRole.User, GlobalRole.PublicAdmin],
+  roles: [GlobalRole.User],
   validations: {
     pathParams: pathParamSchema,
     body: bodySchema,

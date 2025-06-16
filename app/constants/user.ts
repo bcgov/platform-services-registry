@@ -49,8 +49,6 @@ export enum GlobalPermissions {
   EditUsers = 'editUsers',
   EditUserRoles = 'editUserRoles',
   EditUserOnboardingDate = 'editUserOnboardingDate',
-
-  CancelPublicCloudRequest = 'cancelPublicCloudRequest',
 }
 
 export enum GlobalRole {
