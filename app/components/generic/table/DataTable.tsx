@@ -99,12 +99,12 @@ export default function DataTable<TData extends object>({ columns, data, default
 
   return (
     <>
-      <table className="w-full text-sm border-collapse">
+      <table className="w-full text-sm border-collapse border">
         <thead>
           {table.getHeaderGroups().map((headerGroup) => (
             <tr key={headerGroup.id}>
               {headerGroup.headers.map((header) => (
-                <th className="text-left p-2 border-b" key={header.id}>
+                <th className="text-left p-2 border" key={header.id}>
                   {header.isPlaceholder ? null : flexRender(header.column.columnDef.header, header.getContext())}
                 </th>
               ))}
@@ -114,9 +114,9 @@ export default function DataTable<TData extends object>({ columns, data, default
         <tbody>
           {data.length > 0 ? (
             table.getRowModel().rows.map((row) => (
-              <tr key={row.id} className="bg-white even:bg-gray-50">
+              <tr key={row.id} className="bg-white odd:bg-gray-50">
                 {row.getVisibleCells().map((cell) => (
-                  <td key={cell.id} className="p-2 border-b align-top">
+                  <td key={cell.id} className="p-2 border align-top">
                     {flexRender(cell.column.columnDef.cell, cell.getContext())}
                   </td>
                 ))}
@@ -124,7 +124,7 @@ export default function DataTable<TData extends object>({ columns, data, default
             ))
           ) : (
             <tr>
-              <td colSpan={6} className="p-2 border-b italic text-center">
+              <td colSpan={6} className="p-2 border italic text-center">
                 No data available.
               </td>
             </tr>
