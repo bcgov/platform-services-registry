@@ -1,4 +1,4 @@
-import { IconArrowDown, IconArrowUp } from '@tabler/icons-react';
+import { IconArrowDown, IconArrowsSort, IconArrowUp } from '@tabler/icons-react';
 import {
   CellContext,
   createColumnHelper,
@@ -10,12 +10,12 @@ import {
 } from '@tanstack/react-table';
 import _startCase from 'lodash-es/startCase';
 import { useMemo, useState } from 'react';
-import PageNavigator from './PageNavigator';
+import Pagination from './Pagination';
 
 interface ColumnDefinition<TData> {
-  label: string;
+  label?: string;
   value: string;
-  cellProcessor?: (item: TData) => React.ReactNode;
+  cellProcessor?: (item: TData, attribute: string) => React.ReactNode;
 }
 
 interface TableProps<TData> {
@@ -24,7 +24,11 @@ interface TableProps<TData> {
   defaultPageSize?: number;
 }
 
-export default function DataTable<TData extends object>({ columns, data, defaultPageSize = 10 }: TableProps<TData>) {
+export default function DataTable<TData extends object>({
+  columns: _columns,
+  data,
+  defaultPageSize = 10,
+}: TableProps<TData>) {
   const columnHelper = createColumnHelper<TData>();
   const [pagination, setPagination] = useState({
     pageIndex: 0,
@@ -32,8 +36,8 @@ export default function DataTable<TData extends object>({ columns, data, default
   });
 
   const updatedColumns = useMemo(() => {
-    if (columns) {
-      return columns;
+    if (_columns) {
+      return _columns;
     }
 
     return data.length > 0
@@ -42,52 +46,38 @@ export default function DataTable<TData extends object>({ columns, data, default
           value: key,
         }))
       : [];
-  }, [columns, data]);
+  }, [_columns, data]);
 
-  const getAutPageGeneratedColumns = <TData,>(cols: ColumnDefinition<TData>[]) => {
-    return cols.map((col) => {
-      return {
-        id: col.value,
-        accessor: col.value,
-        header: col.label,
-        cell: (info: CellContext<TData, TData>) => {
-          const item = info.row.original;
-
-          return <>{col.cellProcessor ? col.cellProcessor(item) : String(info.renderValue())}</>;
-        },
-      };
-    });
-  };
-
-  const renderedColumns = useMemo(() => {
-    return getAutPageGeneratedColumns<TData>(updatedColumns).map((col) =>
-      columnHelper.accessor((row) => row[col.id], {
-        id: col.id,
-        header: ({ column }) => (
-          <div className="flex items-center cursor-pointer rounded" onClick={() => column.toggleSorting()}>
-            {col.header}
-            <div className="ml-2 flex items-center h-5">
-              {column.getIsSorted() === 'asc' ? (
-                <IconArrowUp className="h-5 w-5 stroke-2 text-black dark:text-black" />
-              ) : column.getIsSorted() === 'desc' ? (
-                <IconArrowDown className="h-5 w-5 stroke-2 text-black dark:text-black" />
-              ) : (
-                <>
-                  <IconArrowUp className="h-5 w-5 stroke-2 text-gray-300 dark:text-gray-300" />
-                  <IconArrowDown className="h-5 w-5 stroke-2 text-gray-300 dark:text-gray-300" />
-                </>
-              )}
+  const columnDefs = useMemo(
+    () =>
+      updatedColumns.map((col: ColumnDefinition<TData>) =>
+        columnHelper.accessor((row) => row[col.value], {
+          id: col.value,
+          header: ({ column }) => (
+            <div className="flex items-center cursor-pointer rounded" onClick={() => column.toggleSorting()}>
+              {col.label}
+              <div className="ml-2 flex items-center h-5">
+                {column.getIsSorted() === 'asc' ? (
+                  <IconArrowUp className="h-5 w-5 stroke-2 text-black dark:text-black" />
+                ) : column.getIsSorted() === 'desc' ? (
+                  <IconArrowDown className="h-5 w-5 stroke-2 text-black dark:text-black" />
+                ) : (
+                  <IconArrowsSort className="h-5 w-5 stroke-2 text-gray-300 dark:text-gray-300" />
+                )}
+              </div>
             </div>
-          </div>
-        ),
-        cell: col.cell,
-      }),
-    );
-  }, [columnHelper, updatedColumns]);
+          ),
+          cell: (info: CellContext<TData, TData>) => (
+            <>{col.cellProcessor ? col.cellProcessor(info.row.original, col.value) : info.getValue()}</>
+          ),
+        }),
+      ),
+    [columnHelper, updatedColumns],
+  );
 
   const table = useReactTable({
     data,
-    columns: renderedColumns,
+    columns: columnDefs,
     state: {
       pagination,
     },
@@ -112,7 +102,7 @@ export default function DataTable<TData extends object>({ columns, data, default
           ))}
         </thead>
         <tbody>
-          {data.length > 0 ? (
+          {table.getRowModel().rows.length > 0 ? (
             table.getRowModel().rows.map((row) => (
               <tr key={row.id} className="bg-white odd:bg-gray-50">
                 {row.getVisibleCells().map((cell) => (
@@ -131,7 +121,7 @@ export default function DataTable<TData extends object>({ columns, data, default
           )}
         </tbody>
       </table>
-      <PageNavigator data={data} table={table} defaultPageSize={defaultPageSize} />
+      {data.length > 0 && <Pagination table={table} />}
     </>
   );
 }
