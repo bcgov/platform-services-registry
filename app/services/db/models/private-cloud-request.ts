@@ -32,7 +32,22 @@ async function baseFilter(session: Session) {
     OR: [
       { licencePlate: { in: licencePlates } },
       { id: { in: getUniqueNonFalsyItems([...requestIdsFromTasks]) } },
-      { type: RequestType.CREATE, createdByEmail: { equals: session.user.email, mode: 'insensitive' } },
+      {
+        type: RequestType.CREATE,
+        createdByEmail: { equals: session.user.email, mode: 'insensitive' },
+      },
+      {
+        type: RequestType.CREATE,
+        decisionData: { projectOwnerId: session.user.id },
+      },
+      {
+        type: RequestType.CREATE,
+        decisionData: { primaryTechnicalLeadId: session.user.id },
+      },
+      {
+        type: RequestType.CREATE,
+        decisionData: { secondaryTechnicalLeadId: session.user.id },
+      },
     ],
   };
 
