@@ -1,3 +1,24 @@
+## [0.68.0](https://github.com/bcgov/platform-services-registry/compare/v0.67.0...v0.68.0) (2025-06-16)
+
+### Features
+
+* **5601:** enhance cost computation to account for archival date ([5e8d214](https://github.com/bcgov/platform-services-registry/commit/5e8d214e1ab00438557ea8da1327300c769408de))
+* **5720:** add endpoint to retrieve public cloud billings ([aff60a0](https://github.com/bcgov/platform-services-registry/commit/aff60a03e27dc85be4b3653e1ddda7783f646cad))
+* **5720:** add new history view on public cloud requests ([7775666](https://github.com/bcgov/platform-services-registry/commit/7775666f74692340c3daa8dc535c61ea9a34c7f7))
+* **5720:** update history view on private cloud requests ([4ea435f](https://github.com/bcgov/platform-services-registry/commit/4ea435fce16938e137e93eec3c22f55a0d9d8327))
+* **5736:** encapsulate shared chart logic into common components ([77f9ab5](https://github.com/bcgov/platform-services-registry/commit/77f9ab52008e365e9ccde95b873f4d56cc3d5f68))
+* **5736:** replace area graph implementation with Chart.js ([862a6ad](https://github.com/bcgov/platform-services-registry/commit/862a6adf2d01c42a216d740b8a59ac607e9e37f5))
+* **5736:** replace barchart implementation with Chart.js ([e53fda0](https://github.com/bcgov/platform-services-registry/commit/e53fda0bbd0be2c7c724e2a1dfe30abaa24f0336))
+* **5736:** replace dounut chart implementation with Chart.js ([e604fcf](https://github.com/bcgov/platform-services-registry/commit/e604fcf5a6e656154c8325da04413772a55f5055))
+* **5782:** add minio chart ([edd301c](https://github.com/bcgov/platform-services-registry/commit/edd301c3e4da61afbef499c52bdf898d4745e0e7))
+* **5797:** enhance visibility of GoldDR clusters ([2b8ec88](https://github.com/bcgov/platform-services-registry/commit/2b8ec882c92cac61f1b801a69fdc22ba4dfc174a))
+* **5811:** update Airflow DAGs failure callback ([f6b6519](https://github.com/bcgov/platform-services-registry/commit/f6b651958eaa13adbec972128693028e472533f5))
+
+### Refactors
+
+* **2938:** address SonarQube medium warnings ([6662061](https://github.com/bcgov/platform-services-registry/commit/6662061ab78c2afdbd69ac808648a635bfc67da3))
+* **2938:** address SonarQube medium warnings cont' ([42303ee](https://github.com/bcgov/platform-services-registry/commit/42303ee10cc174f4953038c789b937bd66f0130b))
+* **5798:** deprecate @azure/msal-node, @azure/identity ([8168feb](https://github.com/bcgov/platform-services-registry/commit/8168febb891ba8b56246e3148f08d06cb401abf5))
 ## [0.67.0](https://github.com/bcgov/platform-services-registry/compare/v0.66.0...v0.67.0) (2025-06-04)
 
 ### Features
