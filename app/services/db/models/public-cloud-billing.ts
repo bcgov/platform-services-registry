@@ -1,6 +1,6 @@
 import { Session } from 'next-auth';
 import prisma from '@/core/prisma';
-import { Prisma, PublicCloudProductMemberRole, TaskType } from '@/prisma/client';
+import { Prisma, PublicCloudProductMemberRole, RequestType, TaskType } from '@/prisma/client';
 import { PublicCloudBillingDecorate } from '@/types/doc-decorate';
 import {
   PublicCloudBillingDetail,
@@ -22,7 +22,7 @@ async function baseFilter(session: Session) {
     )
     .map((task) => (task.data as { licencePlate: string }).licencePlate);
 
-  const OR: Prisma.PublicCloudProductWhereInput[] = [
+  const productFilters: Prisma.PublicCloudProductWhereInput[] = [
     { projectOwnerId: session.user.id },
     { primaryTechnicalLeadId: session.user.id },
     { secondaryTechnicalLeadId: session.user.id },
@@ -39,14 +39,48 @@ async function baseFilter(session: Session) {
     },
   ];
 
-  const products = await prisma.publicCloudProduct.findMany({ where: { OR }, select: { licencePlate: true } });
+  const requestFilters: Prisma.PublicCloudRequestWhereInput[] = [
+    {
+      type: RequestType.CREATE,
+      createdByEmail: { equals: session.user.email, mode: 'insensitive' },
+    },
+    {
+      type: RequestType.CREATE,
+      decisionData: { projectOwnerId: session.user.id },
+    },
+    {
+      type: RequestType.CREATE,
+      decisionData: { primaryTechnicalLeadId: session.user.id },
+    },
+    {
+      type: RequestType.CREATE,
+      decisionData: { secondaryTechnicalLeadId: session.user.id },
+    },
+    {
+      type: RequestType.CREATE,
+      decisionData: { expenseAuthorityId: session.user.id },
+    },
+  ];
+
+  const [products, requests] = await Promise.all([
+    prisma.publicCloudProduct.findMany({
+      where: { OR: productFilters },
+      select: { licencePlate: true },
+    }),
+    prisma.publicCloudRequest.findMany({
+      where: { OR: requestFilters },
+      select: { licencePlate: true },
+    }),
+  ]);
+
   const productLicencePlates = products.map(({ licencePlate }) => licencePlate);
+  const requestLicencePlates = requests.map(({ licencePlate }) => licencePlate);
 
   const filter: Prisma.PublicCloudBillingWhereInput = {
     OR: [
       {
         licencePlate: {
-          in: getUniqueNonFalsyItems([...productLicencePlates, ...licencePlatesFromTasks]),
+          in: getUniqueNonFalsyItems([...productLicencePlates, ...requestLicencePlates, ...licencePlatesFromTasks]),
         },
       },
       {
