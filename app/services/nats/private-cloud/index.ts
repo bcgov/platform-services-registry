@@ -1,6 +1,6 @@
 import { environmentShortNames } from '@/constants';
 import prisma from '@/core/prisma';
-import { Ministry, PublicCloudProductMemberRole, ResourceRequestsEnv } from '@/prisma/client';
+import { Cluster, Ministry, PublicCloudProductMemberRole, ResourceRequestsEnv } from '@/prisma/client';
 import { PrivateCloudRequestDetail } from '@/types/private-cloud';
 
 type ResourceRequestsEnvKeys = Array<keyof ResourceRequestsEnv>;
@@ -17,6 +17,7 @@ export default async function createPrivateCloudNatsMessage(
     description,
     ministry,
     cluster,
+    golddrEnabled,
     resourceRequests,
     projectOwner,
     primaryTechnicalLead,
@@ -50,6 +51,7 @@ export default async function createPrivateCloudNatsMessage(
     isContactChanged: contactChanged,
     workflow: `${cluster.toLocaleLowerCase()}-${licencePlate}-${request.id}`,
     cluster_name: cluster.toLocaleLowerCase(),
+    golddr_enabled: cluster === Cluster.GOLD && golddrEnabled,
     display_name: name,
     description: description,
     ministry_id: ministry,
