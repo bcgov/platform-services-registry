@@ -35,7 +35,7 @@ export default function DataTable<TData extends object>({
     pageSize: defaultPageSize,
   });
 
-  const updatedColumns = useMemo(() => {
+  const columns = useMemo(() => {
     if (_columns) {
       return _columns;
     }
@@ -50,7 +50,7 @@ export default function DataTable<TData extends object>({
 
   const columnDefs = useMemo(
     () =>
-      updatedColumns.map((col: ColumnDefinition<TData>) =>
+      columns.map((col: ColumnDefinition<TData>) =>
         columnHelper.accessor((row) => row[col.value], {
           id: col.value,
           header: ({ column }) => (
@@ -72,7 +72,7 @@ export default function DataTable<TData extends object>({
           ),
         }),
       ),
-    [columnHelper, updatedColumns],
+    [columnHelper, columns],
   );
 
   const table = useReactTable({
