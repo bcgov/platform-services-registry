@@ -58,7 +58,8 @@ declare module 'next-auth' {
     sendTaskEmails: boolean;
 
     cancelPrivateCloudRequest: boolean;
-    cancelPublicCloudRequest: boolean;
+    cancelPublicCloudRequestAsOwner: boolean;
+    cancelPublicCloudRequestAsAdmin: boolean;
 
     editPrivateProductWebhook: boolean;
     viewPrivateProductWebhook: boolean;

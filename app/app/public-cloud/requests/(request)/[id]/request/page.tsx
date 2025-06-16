@@ -156,7 +156,7 @@ export default publicCloudProductRequest(({ router }) => {
 
     accordionItems.push({
       LeftIcon: IconMessage,
-      label: 'Admin comments',
+      label: 'Request comments',
       description: '',
       Component: () => {
         return (
