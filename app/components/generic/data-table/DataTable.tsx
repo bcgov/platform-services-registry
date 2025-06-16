@@ -8,12 +8,13 @@ import {
   getSortedRowModel,
   useReactTable,
 } from '@tanstack/react-table';
+import _isString from 'lodash-es/isString';
 import _startCase from 'lodash-es/startCase';
 import { useMemo, useState } from 'react';
 import Pagination from './Pagination';
 
 interface ColumnDefinition<TData> {
-  label?: string;
+  label?: string | null;
   value: string;
   cellProcessor?: (item: TData, attribute: string) => React.ReactNode;
 }
@@ -36,21 +37,21 @@ export default function DataTable<TData extends object>({
   });
 
   const columnDefs = useMemo(() => {
-    const cols = _columns
-      ? _columns
-      : data.length > 0
+    const cols =
+      _columns ||
+      (data.length > 0
         ? Object.keys(data[0]).map((key) => ({
             label: _startCase(key),
             value: key,
           }))
-        : [];
+        : []);
 
     return cols.map((col: ColumnDefinition<TData>) =>
       columnHelper.accessor((row) => row[col.value], {
         id: col.value,
         header: ({ column }) => (
           <div className="flex items-center cursor-pointer rounded" onClick={() => column.toggleSorting()}>
-            {col.label === null || col.label === undefined ? col.value : col.label === '' ? '' : col.label}
+            {_isString(col.label) ? col.label : _startCase(col.value)}
 
             <div className="ml-2 flex items-center h-5">
               {column.getIsSorted() === 'asc' ? (
