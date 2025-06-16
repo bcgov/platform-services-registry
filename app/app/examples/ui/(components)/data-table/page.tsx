@@ -18,24 +18,26 @@ interface Person {
   lastName: string;
   age: number;
 }
-
-const columns: {
-  label: string;
+interface columnDef {
+  label?: string;
   value: string;
   cellProcessor: (item: Person, attr: string) => React.ReactNode;
-}[] = [
+}
+const columns: columnDef[] = [
   { label: 'First Name', value: 'firstName', cellProcessor: (item, attr) => _startCase(item.firstName) },
   { label: 'Last Name', value: 'lastName', cellProcessor: (item, attr) => _startCase(item.lastName) },
   { label: 'Age', value: 'age', cellProcessor: (item, attr) => <i>{item.age}</i> },
 ];
 
-const columnsWithoutLabel: {
-  label?: string;
-  value: string;
-  cellProcessor: (item: Person, attr: string) => React.ReactNode;
-}[] = [
+const columnsWithoutLabel: columnDef[] = [
   { value: 'firstName', cellProcessor: (item, attr) => _startCase(item.firstName) },
   { value: 'lastName', cellProcessor: (item, attr) => _startCase(item.lastName) },
+  { label: 'Age', value: 'age', cellProcessor: (item, attr) => <i>{item.age}</i> },
+];
+
+const columnsWithoutEmptyLabel: columnDef[] = [
+  { value: 'firstName', cellProcessor: (item, attr) => _startCase(item.firstName) },
+  { label: '', value: 'lastName', cellProcessor: (item, attr) => _startCase(item.lastName) },
   { label: 'Age', value: 'age', cellProcessor: (item, attr) => <i>{item.age}</i> },
 ];
 
@@ -51,6 +53,8 @@ export default Page(() => {
       <DataTable<Person> data={generateSampleData(100)} columns={columnsWithoutLabel} />
       <br />
       <DataTable<Person> data={generateSampleData(100)} />
+      <br />
+      <DataTable<Person> data={generateSampleData(100)} columns={columnsWithoutEmptyLabel} />
     </>
   );
   return;

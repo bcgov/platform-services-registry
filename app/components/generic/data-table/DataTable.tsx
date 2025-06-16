@@ -35,45 +35,40 @@ export default function DataTable<TData extends object>({
     pageSize: defaultPageSize,
   });
 
-  const columns = useMemo(() => {
-    if (_columns) {
-      return _columns;
-    }
+  const columnDefs = useMemo(() => {
+    const cols = _columns
+      ? _columns
+      : data.length > 0
+        ? Object.keys(data[0]).map((key) => ({
+            label: _startCase(key),
+            value: key,
+          }))
+        : [];
 
-    return data.length > 0
-      ? Object.keys(data[0]).map((key) => ({
-          label: _startCase(key),
-          value: key,
-        }))
-      : [];
-  }, [_columns, data]);
+    return cols.map((col: ColumnDefinition<TData>) =>
+      columnHelper.accessor((row) => row[col.value], {
+        id: col.value,
+        header: ({ column }) => (
+          <div className="flex items-center cursor-pointer rounded" onClick={() => column.toggleSorting()}>
+            {col.label === null || col.label === undefined ? col.value : col.label === '' ? '' : col.label}
 
-  const columnDefs = useMemo(
-    () =>
-      columns.map((col: ColumnDefinition<TData>) =>
-        columnHelper.accessor((row) => row[col.value], {
-          id: col.value,
-          header: ({ column }) => (
-            <div className="flex items-center cursor-pointer rounded" onClick={() => column.toggleSorting()}>
-              {col.label}
-              <div className="ml-2 flex items-center h-5">
-                {column.getIsSorted() === 'asc' ? (
-                  <IconArrowUp className="h-5 w-5 stroke-2 text-black dark:text-black" />
-                ) : column.getIsSorted() === 'desc' ? (
-                  <IconArrowDown className="h-5 w-5 stroke-2 text-black dark:text-black" />
-                ) : (
-                  <IconArrowsSort className="h-5 w-5 stroke-2 text-gray-300 dark:text-gray-300" />
-                )}
-              </div>
+            <div className="ml-2 flex items-center h-5">
+              {column.getIsSorted() === 'asc' ? (
+                <IconArrowUp className="h-5 w-5 stroke-2 text-black dark:text-black" />
+              ) : column.getIsSorted() === 'desc' ? (
+                <IconArrowDown className="h-5 w-5 stroke-2 text-black dark:text-black" />
+              ) : (
+                <IconArrowsSort className="h-5 w-5 stroke-2 text-gray-300 dark:text-gray-300" />
+              )}
             </div>
-          ),
-          cell: (info: CellContext<TData, TData>) => (
-            <>{col.cellProcessor ? col.cellProcessor(info.row.original, col.value) : info.getValue()}</>
-          ),
-        }),
-      ),
-    [columnHelper, columns],
-  );
+          </div>
+        ),
+        cell: (info: CellContext<TData, TData>) => (
+          <>{col.cellProcessor ? col.cellProcessor(info.row.original, col.value) : info.getValue()}</>
+        ),
+      }),
+    );
+  }, [_columns, data, columnHelper]);
 
   const table = useReactTable({
     data,
