@@ -35,7 +35,7 @@ const columnsWithoutLabel: columnDef[] = [
   { label: 'Age', value: 'age', cellProcessor: (item, attr) => <i>{item.age}</i> },
 ];
 
-const columnsWithoutEmptyLabel: columnDef[] = [
+const columnsWithEmptyLabel: columnDef[] = [
   { value: 'firstName', cellProcessor: (item, attr) => _startCase(item.firstName) },
   { label: '', value: 'lastName', cellProcessor: (item, attr) => _startCase(item.lastName) },
   { label: 'Age', value: 'age', cellProcessor: (item, attr) => <i>{item.age}</i> },
@@ -54,7 +54,7 @@ export default Page(() => {
       <br />
       <DataTable<Person> data={generateSampleData(100)} />
       <br />
-      <DataTable<Person> data={generateSampleData(100)} columns={columnsWithoutEmptyLabel} />
+      <DataTable<Person> data={generateSampleData(100)} columns={columnsWithEmptyLabel} />
     </>
   );
   return;
