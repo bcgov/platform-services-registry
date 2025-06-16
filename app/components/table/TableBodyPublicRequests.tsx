@@ -4,11 +4,11 @@ import { Tooltip, Badge } from '@mantine/core';
 import _truncate from 'lodash-es/truncate';
 import { usePathname, useRouter } from 'next/navigation';
 import React from 'react';
+import PublicCloudActiveRequestBox from '@/components/form/PublicCloudActiveRequestBox';
 import CopyableButton from '@/components/generic/button/CopyableButton';
 import { ministryKeyToName } from '@/helpers/product';
 import { PublicCloudRequestSimpleDecorated } from '@/types/public-cloud';
 import { formatDate } from '@/utils/js';
-import ActiveRequestBox from '../form/ActiveRequestBox';
 import RequestStatusProgress from '../RequestStatusProgress';
 import EmptySearch from './EmptySearch';
 import TruncatedTooltip from './TruncatedTooltip';
@@ -97,7 +97,7 @@ export default function TableBodyPublicProducts({ rows, isLoading = false }: Tab
               </div>
 
               <div className="md:col-span-2 lg:col-span-3">
-                <ActiveRequestBox data={{ ...row, cloud: 'public-cloud' }} />
+                <PublicCloudActiveRequestBox request={row} />
               </div>
 
               <div className="md:col-span-1 lg:col-span-6">

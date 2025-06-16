@@ -140,7 +140,7 @@ export async function deletePrivateCloudComment(licencePlate: string, commentId:
 
 export async function getPrivateCloudCommentCount(licencePlate: string, requestId?: string) {
   const url = `/${licencePlate}/count${requestId ? `?requestId=${requestId}` : ''}`;
-  const response = await instance.get(url);
+  const response = await instance.get<{ count: number }>(url);
   return response.data;
 }
 

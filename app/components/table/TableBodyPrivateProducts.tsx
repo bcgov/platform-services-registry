@@ -5,7 +5,7 @@ import { IconPoint } from '@tabler/icons-react';
 import _truncate from 'lodash-es/truncate';
 import { usePathname, useRouter } from 'next/navigation';
 import React from 'react';
-import ActiveRequestBox from '@/components/form/ActiveRequestBox';
+import PrivateCloudActiveRequestBox from '@/components/form/PrivateCloudActiveRequestBox';
 import TemporaryProductBadge from '@/components/form/TemporaryProductBadge';
 import CopyableButton from '@/components/generic/button/CopyableButton';
 import UserCard from '@/components/UserCard';
@@ -91,8 +91,8 @@ export default function TableBodyPrivateProducts({ rows, isLoading = false }: Ta
             </div>
             <div className="md:col-span-2 lg:col-span-3">
               {row.activeRequest && (
-                <ActiveRequestBox
-                  data={{ ...row.activeRequest, cloud: 'private-cloud', licencePlate: row.licencePlate }}
+                <PrivateCloudActiveRequestBox
+                  request={{ ...row.activeRequest, licencePlate: row.licencePlate }}
                   showCount
                 />
               )}

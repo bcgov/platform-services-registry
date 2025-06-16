@@ -4,7 +4,7 @@ import { Tooltip, Badge } from '@mantine/core';
 import _truncate from 'lodash-es/truncate';
 import { usePathname, useRouter } from 'next/navigation';
 import React, { useState } from 'react';
-import ActiveRequestBox from '@/components/form/ActiveRequestBox';
+import PublicCloudActiveRequestBox from '@/components/form/PublicCloudActiveRequestBox';
 import CopyableButton from '@/components/generic/button/CopyableButton';
 import UserCard from '@/components/UserCard';
 import { ministryKeyToName } from '@/helpers/product';
@@ -84,7 +84,9 @@ export default function TableBodyPublicProducts({ rows, isLoading = false }: Tab
             </div>
 
             <div className="md:col-span-2 lg:col-span-3">
-              {row.activeRequest && <ActiveRequestBox data={{ ...row.activeRequest, cloud: 'public-cloud' }} />}
+              {row.activeRequest && (
+                <PublicCloudActiveRequestBox request={{ ...row.activeRequest, licencePlate: row.licencePlate }} />
+              )}
             </div>
 
             <div className="lg:col-span-1 hidden lg:block"></div>
