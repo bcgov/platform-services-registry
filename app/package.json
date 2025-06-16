@@ -45,6 +45,7 @@
     "@tabler/icons-react": "^3.3.0",
     "@tailwindcss/forms": "^0.5.3",
     "@tanstack/react-query": "^5.4.3",
+    "@tanstack/react-table": "^8.21.3",
     "@tiptap/extension-blockquote": "^2.4.0",
     "@tiptap/extension-bold": "^2.4.0",
     "@tiptap/extension-bullet-list": "^2.4.0",
