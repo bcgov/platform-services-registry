@@ -1,9 +1,13 @@
 import { Stepper, Popover, rem, HoverCard } from '@mantine/core';
 import { IconCircleX, IconConfetti, IconCancel } from '@tabler/icons-react';
-import { DecisionStatus } from '@/prisma/client';
+import { useQuery } from '@tanstack/react-query';
+import { DecisionStatus, RequestType } from '@/prisma/client';
+import { searchPublicCloudBillings } from '@/services/backend/public-cloud/billings';
 import { PrivateCloudRequestDetail } from '@/types/private-cloud';
+import { PublicCloudBillingSimpleDecorated } from '@/types/public-cloud';
 import { formatDate } from '@/utils/js';
 import AutoResizeTextArea from './generic/input/AutoResizeTextArea';
+import LoadingBox from './generic/LoadingBox';
 import UserCard from './UserCard';
 
 function DetailHoverCard({ children, content }: { children: React.ReactNode; content: React.ReactNode }) {
@@ -29,6 +33,8 @@ export default function RequestStatusProgress({
 }: {
   request: Pick<
     PrivateCloudRequestDetail,
+    | 'type'
+    | 'licencePlate'
     | 'decisionMakerEmail'
     | 'decisionMaker'
     | 'decisionStatus'
@@ -45,7 +51,25 @@ export default function RequestStatusProgress({
   >;
   className?: string;
 }) {
-  if (!request) return null;
+  const inEmouProcess = request.type === RequestType.CREATE && request.decisionStatus === DecisionStatus.PENDING;
+  const { data: initialBillingSearch, isLoading: isBillingLoading } = useQuery({
+    queryKey: ['request-billing', request.licencePlate],
+    queryFn: () =>
+      searchPublicCloudBillings({ licencePlate: request.licencePlate, page: 1, pageSize: 1, includeMetadata: false }),
+    enabled: inEmouProcess,
+  });
+
+  if (inEmouProcess && isBillingLoading) {
+    return (
+      <LoadingBox isLoading>
+        <Stepper active={2} iconSize={35}>
+          <Stepper.Step />
+          <Stepper.Step />
+          <Stepper.Step />
+        </Stepper>
+      </LoadingBox>
+    );
+  }
 
   const getSubmissionContent = () => (
     <DetailHoverCard
@@ -94,12 +118,30 @@ export default function RequestStatusProgress({
     </DetailHoverCard>
   );
 
+  let label = '';
+  let description = '';
+
   switch (request.decisionStatus) {
     case DecisionStatus.PENDING:
+      if (inEmouProcess && initialBillingSearch?.data.length) {
+        const initialBilling = initialBillingSearch.data[0];
+
+        if (!initialBilling.signed) {
+          label = 'Billing Sign';
+          description = 'Waiting on eMOU sign';
+        } else if (!initialBilling.approved) {
+          label = 'Billing Review';
+          description = 'Waiting on eMOU review';
+        } else {
+          label = 'Review';
+          description = 'Waiting on review';
+        }
+      }
+
       return (
         <Stepper active={2} iconSize={35}>
           <Stepper.Step label="Submission" description={getSubmissionContent()} />
-          <Stepper.Step label="Review" description="Request on review" loading />
+          <Stepper.Step label={label} description={description} loading />
           <Stepper.Step label="Complete" description="Request provisioned" />
         </Stepper>
       );

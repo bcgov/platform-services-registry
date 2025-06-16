@@ -15,22 +15,18 @@ import { useRouter } from 'next/navigation';
 import { useSession } from 'next-auth/react';
 import { RequestType, DecisionStatus } from '@/prisma/client';
 import { getPrivateCloudCommentCount } from '@/services/backend/private-cloud/products';
+import { PrivateCloudRequestDetail } from '@/types/private-cloud';
 import { cn } from '@/utils/js';
 
-export default function ActiveRequestBox({
-  data,
+export default function PrivateCloudActiveRequestBox({
+  request,
   className,
   showCount = false,
 }: {
-  data?: {
-    cloud: 'private-cloud' | 'public-cloud';
-    id: string;
-    licencePlate: string;
-    type: RequestType;
-    active: boolean;
-    decisionStatus: DecisionStatus;
-    createdByEmail?: string | null;
-  };
+  request: Pick<
+    PrivateCloudRequestDetail,
+    'id' | 'licencePlate' | 'active' | 'type' | 'licencePlate' | 'decisionStatus' | 'createdByEmail'
+  >;
   className?: string;
   showCount?: boolean;
 }) {
@@ -38,42 +34,30 @@ export default function ActiveRequestBox({
   const { data: session } = useSession();
 
   const canViewComments = session?.permissions?.viewAllPrivateProductComments;
-  const shouldFetchCommentCount = showCount && canViewComments && !!data?.id && !!data?.licencePlate;
+  const displayCommentCount = showCount && canViewComments;
 
   const { data: commentData, isLoading } = useQuery({
-    queryKey: ['commentCount', data?.id],
-    queryFn: () => getPrivateCloudCommentCount(data?.licencePlate as string, data?.id as string),
-    enabled: shouldFetchCommentCount,
+    queryKey: ['commentCount', request.id],
+    queryFn: () => getPrivateCloudCommentCount(request.licencePlate, request.id),
+    enabled: displayCommentCount,
   });
 
-  const commentCount = commentData?.count;
-
-  if (!data) return null;
+  const commentCount = commentData?.count ?? 0;
 
   let path = 'summary';
 
-  if (data.cloud === 'private-cloud') {
-    switch (data.type) {
-      case RequestType.CREATE:
-      case RequestType.EDIT:
-      case RequestType.DELETE:
-        path = 'decision';
-        break;
-    }
-  } else {
-    switch (data.type) {
-      case RequestType.CREATE:
-      case RequestType.EDIT:
-      case RequestType.DELETE:
-        path = 'request';
-        break;
-    }
+  switch (request.type) {
+    case RequestType.CREATE:
+    case RequestType.EDIT:
+    case RequestType.DELETE:
+      path = 'decision';
+      break;
   }
 
   let typeColor = 'gray';
   let TypeIcon = IconPoint;
 
-  switch (data.type) {
+  switch (request.type) {
     case RequestType.CREATE:
       typeColor = 'green';
       TypeIcon = IconFilePlus;
@@ -92,7 +76,7 @@ export default function ActiveRequestBox({
   let decisionText = '';
   let DecisionIcon = IconPoint;
 
-  switch (data.decisionStatus) {
+  switch (request.decisionStatus) {
     case DecisionStatus.PENDING:
       decisionColor = 'blue';
       decisionText = 'Reviewing';
@@ -156,11 +140,11 @@ export default function ActiveRequestBox({
         onClick={(e) => {
           e.preventDefault();
           e.stopPropagation();
-          router.push(`/${data.cloud}/requests/${data.id}/${path}`);
+          router.push(`/private-cloud/requests/${request.id}/${path}`);
         }}
       >
         <div className="relative">
-          {shouldFetchCommentCount && !isLoading && typeof commentCount === 'number' && commentCount > 0 && (
+          {displayCommentCount && commentCount > 0 && (
             <Badge
               color="blue"
               size="md"
@@ -170,7 +154,7 @@ export default function ActiveRequestBox({
               {commentCount}
             </Badge>
           )}
-          <Indicator color={data.active ? 'lime' : 'red'} zIndex={10}>
+          <Indicator color={request.active ? 'lime' : 'red'} zIndex={10}>
             <Badge
               autoContrast
               leftSection={<TypeIcon />}
@@ -179,14 +163,14 @@ export default function ActiveRequestBox({
               color="rgba(200, 200, 200, 1)"
               className="mb-1 min-w-40 m-auto flex"
             >
-              {data.type}
+              {request.type}
             </Badge>
           </Indicator>
         </div>
         <div>{badges}</div>
-        {data.createdByEmail && (
+        {request.createdByEmail && (
           <div className="text-center text-sm text-gray-400">
-            Submitted by <span className="font-bold block">{data.createdByEmail}</span>
+            Submitted by <span className="font-bold block">{request.createdByEmail}</span>
           </div>
         )}
       </button>

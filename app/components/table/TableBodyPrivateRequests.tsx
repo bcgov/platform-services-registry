@@ -5,7 +5,7 @@ import _truncate from 'lodash-es/truncate';
 import { usePathname, useRouter } from 'next/navigation';
 import { useSession } from 'next-auth/react';
 import React from 'react';
-import ActiveRequestBox from '@/components/form/ActiveRequestBox';
+import PrivateCloudActiveRequestBox from '@/components/form/PrivateCloudActiveRequestBox';
 import TemporaryProductBadge from '@/components/form/TemporaryProductBadge';
 import CopyableButton from '@/components/generic/button/CopyableButton';
 import { ministryKeyToName } from '@/helpers/product';
@@ -105,7 +105,7 @@ export default function TableBodyPrivateRequests({ rows, isLoading = false }: Ta
             </div>
 
             <div className="md:col-span-2 lg:col-span-3">
-              <ActiveRequestBox data={{ ...row, cloud: 'private-cloud' }} showCount />
+              <PrivateCloudActiveRequestBox request={row} showCount />
             </div>
 
             <div className="md:col-span-1 lg:col-span-6">
