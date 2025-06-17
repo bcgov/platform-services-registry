@@ -28,7 +28,12 @@ export const openYearPickerModal = createModal<ModalProps, ModalState>({
     return (
       <>
         <div>
-          <YearPicker value={value} onChange={setValue} classNames={{ levelsGroup: 'mx-auto w-fit' }} allowDeselect />
+          <YearPicker
+            value={value}
+            onChange={(datestr) => setValue(datestr ? new Date(Number(datestr)) : new Date())}
+            classNames={{ levelsGroup: 'mx-auto w-fit' }}
+            allowDeselect
+          />
         </div>
 
         <div className="flex justify-center">

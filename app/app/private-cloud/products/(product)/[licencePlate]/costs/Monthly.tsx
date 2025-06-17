@@ -11,6 +11,7 @@ import MonthlyCostSummary from '@/components/private-cloud/monthly-cost/MonthlyC
 import MonthlyCostTable from '@/components/private-cloud/monthly-cost/MonthlyCostTable';
 import MonthlyCostChart from '@/components/private-cloud/monthly-cost/MonthyCostChart';
 import { downloadPrivateCloudMonthlyCosts, getMonthlyCosts } from '@/services/backend/private-cloud/products';
+import { getDateFromYyyyMmDd } from '@/utils/js';
 
 export default function Monthly({ licencePlate, session }: { licencePlate: string; session: Session }) {
   const [selectedDate, setSelectedDate] = useState<Date>(new Date());
@@ -26,8 +27,8 @@ export default function Monthly({ licencePlate, session }: { licencePlate: strin
     return null;
   }
 
-  const handleChange = (date: Date | null) => {
-    setSelectedDate(date || new Date());
+  const handleChange = (date: string | null) => {
+    setSelectedDate(date ? getDateFromYyyyMmDd(date) : new Date());
   };
 
   return (

@@ -26,8 +26,8 @@ export default function Yearly({ licencePlate, session }: { licencePlate: string
     return null;
   }
 
-  const handleChange = (year: Date | null) => {
-    setSelectedYear(year ?? new Date());
+  const handleChange = (year: string | null) => {
+    setSelectedYear(year ? new Date(Number(year)) : new Date());
   };
 
   return (

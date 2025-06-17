@@ -5,6 +5,7 @@ import { DatePicker } from '@mantine/dates';
 import { useState } from 'react';
 import { createModal } from '@/core/modal';
 import { formatDate } from '@/utils/js';
+import { getDateFromYyyyMmDd } from '@/utils/js';
 
 interface ModalProps {
   allowSingleDate?: boolean;
@@ -30,7 +31,20 @@ export const openDateRangePickerModal = createModal<ModalProps, ModalState>({
     return (
       <>
         <div>
-          <DatePicker type="range" value={value} onChange={setValue} classNames={{ levelsGroup: 'mx-auto w-fit' }} />
+          <DatePicker
+            type="range"
+            value={value}
+            onChange={(datestr) => {
+              if (datestr[0] && datestr[1]) {
+                setValue([getDateFromYyyyMmDd(datestr[0]), getDateFromYyyyMmDd(datestr[1])]);
+              } else if (datestr[0]) {
+                setValue([getDateFromYyyyMmDd(datestr[0]), null]);
+              } else {
+                setValue([null, null]);
+              }
+            }}
+            classNames={{ levelsGroup: 'mx-auto w-fit' }}
+          />
         </div>
 
         <div className="flex justify-center">
