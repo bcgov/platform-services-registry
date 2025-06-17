@@ -16,7 +16,7 @@ export const providerOptions = providers.map((value) => ({
   value,
 }));
 
-export function getAllowedOptions(isCreate?: boolean) {
+export function getAllowedOptions(isCreate = false) {
   return providerOptions.filter((opt) => {
     if (opt.value === Provider.AWS) return !isCreate;
     return true;
