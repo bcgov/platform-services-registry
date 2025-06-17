@@ -318,7 +318,6 @@ export async function generateSession({
     editUserOnboardingDate: session.isPrivateReviewer,
 
     cancelPrivateCloudRequest: session.isUser,
-    cancelPublicCloudRequestAsOwner: session.isUser,
     cancelPublicCloudRequestAsAdmin: session.isPublicAdmin,
   };
 

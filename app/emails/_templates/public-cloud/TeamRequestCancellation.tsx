@@ -3,6 +3,7 @@ import * as React from 'react';
 import Comment from '@/emails/_components/Comment';
 import PublicCloudLayout from '@/emails/_components/layout/PublicCloudLayout';
 import LinkButton from '@/emails/_components/LinkButton';
+import { DecisionStatus } from '@/prisma/client';
 import { PublicCloudRequestDetailDecorated } from '@/types/public-cloud';
 
 interface EmailProp {
@@ -23,7 +24,7 @@ export default function TeamRequestCancellation({ request, requester }: EmailPro
       </Text>
 
       <LinkButton href={`/public-cloud/requests/${request.id}/request`}>View Request</LinkButton>
-      <Comment decisionComment={request.decisionComment} />
+      <Comment decisionComment={request.decisionComment} isCancellation={true} />
       <p className="mt-8 text-[14px] italic">This request was cancelled by {requester}.</p>
     </PublicCloudLayout>
   );

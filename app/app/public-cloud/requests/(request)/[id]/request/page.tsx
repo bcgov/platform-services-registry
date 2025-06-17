@@ -152,16 +152,16 @@ export default publicCloudProductRequest(({ router }) => {
   }
 
   if (publicProductSnap.currentRequest.decisionComment) {
-    const comment = publicProductSnap.currentRequest.decisionComment;
+    const { decisionComment, decisionStatus } = publicProductSnap.currentRequest;
 
     accordionItems.push({
       LeftIcon: IconMessage,
-      label: 'Request comments',
+      label: `${decisionStatus === DecisionStatus.CANCELLED ? 'Cancellation' : 'Decision'} comment`,
       description: '',
       Component: () => {
         return (
           <div className="">
-            <p className="">{comment}</p>
+            <p className="">{decisionComment}</p>
           </div>
         );
       },

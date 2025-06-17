@@ -3,9 +3,10 @@ import { Text, Heading, Hr } from '@react-email/components';
 interface CommentProps {
   requestComment?: string | null;
   decisionComment?: string | null;
+  isCancellation?: boolean;
 }
 
-export default function Comment({ requestComment, decisionComment }: CommentProps) {
+export default function Comment({ requestComment, decisionComment, isCancellation }: CommentProps) {
   if (!requestComment && !decisionComment) return null;
 
   return (
@@ -21,7 +22,7 @@ export default function Comment({ requestComment, decisionComment }: CommentProp
       )}
       {decisionComment && (
         <div>
-          <Text className="font-semibold">Admin Comment:</Text>
+          <Text className="font-semibold">{isCancellation ? 'Cancellation' : 'Admin'} Comment:</Text>
           <Text>{decisionComment}</Text>
         </div>
       )}
