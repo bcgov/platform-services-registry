@@ -206,7 +206,6 @@ export async function generateSession({
   session.previews = {
     security: !IS_PROD,
     apiAccount: !IS_PROD,
-    awsLza: session.isAdmin || session.isPublicAdmin,
     costRecovery: !IS_PROD,
   };
 

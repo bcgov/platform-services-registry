@@ -97,7 +97,7 @@ export default function ProjectDescriptionPublic({
             disabled={disabled || providerDisabled}
             options={[
               { label: 'Select Provider', value: '' },
-              ...(disabled ? providerOptions : getAllowedOptions(session)),
+              ...(disabled ? providerOptions : getAllowedOptions(mode === 'create')),
             ]}
             selectProps={register('provider')}
           />

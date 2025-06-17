@@ -16,9 +16,9 @@ export const providerOptions = providers.map((value) => ({
   value,
 }));
 
-export function getAllowedOptions(session: Session) {
+export function getAllowedOptions(isCreate?: boolean) {
   return providerOptions.filter((opt) => {
-    if (opt.value === Provider.AWS_LZA) return session?.previews.awsLza;
+    if (opt.value === Provider.AWS) return !isCreate;
     return true;
   });
 }
