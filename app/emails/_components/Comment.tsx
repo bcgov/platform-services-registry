@@ -1,9 +1,9 @@
 import { Text, Heading, Hr } from '@react-email/components';
 
 interface CommentProps {
-  requestComment?: string | null;
-  decisionComment?: string | null;
-  isCancellation?: boolean;
+  readonly requestComment?: string | null;
+  readonly decisionComment?: string | null;
+  readonly isCancellation?: boolean;
 }
 
 export default function Comment({ requestComment, decisionComment, isCancellation }: CommentProps) {
