@@ -1,3 +1,13 @@
+## [0.69.0](https://github.com/bcgov/platform-services-registry/compare/v0.68.0...v0.69.0) (2025-06-17)
+
+### Features
+
+* **5574:** add table common component ([78e241f](https://github.com/bcgov/platform-services-registry/commit/78e241fc3102275e92021b5c3f957f2dc3178818))
+* **5621:** add public plat admin authority to cancel requests ([4e595b6](https://github.com/bcgov/platform-services-registry/commit/4e595b635cedccd7d0e3dd8de0992b2569f78f74))
+* **5765:** add view permission for public request page ([a043461](https://github.com/bcgov/platform-services-registry/commit/a0434615e3b4f063833aad50c174f7cbb6e9f5f3))
+* **5765:** show eMou status in cloud request details ([4d7490c](https://github.com/bcgov/platform-services-registry/commit/4d7490cef699c8125364977804be5c7d39cec86e))
+* **5857:** add NATs message attribute for Golddr flag ([e130b93](https://github.com/bcgov/platform-services-registry/commit/e130b93819a4d714800e7719acdc731ef4cfc704))
+* **5861:** make AWS LZA avaliable for regular users on create page ([8941776](https://github.com/bcgov/platform-services-registry/commit/8941776bceac2583b2727d9fc1d95deb06a136f0))
 ## [0.68.0](https://github.com/bcgov/platform-services-registry/compare/v0.67.0...v0.68.0) (2025-06-16)
 
 ### Features
