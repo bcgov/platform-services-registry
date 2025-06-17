@@ -10,7 +10,7 @@ import QuarterlyCostChart from '@/components/private-cloud/quarterly-cost/Quarte
 import QuarterlyCostSummary from '@/components/private-cloud/quarterly-cost/QuarterlyCostSummary';
 import QuarterlyCostTable from '@/components/private-cloud/quarterly-cost/QuarterlyCostTable';
 import { downloadPrivateCloudQuarterlyCosts, getQuarterlyCosts } from '@/services/backend/private-cloud/products';
-import { formatAsYearQuarter } from '@/utils/js';
+import { formatAsYearQuarter, getDateFromYyyyMmDd } from '@/utils/js';
 
 export default function Quarterly({ licencePlate, session }: { licencePlate: string; session: Session }) {
   const [selectedDate, setSelectedDate] = useState<Date>(new Date());
@@ -26,8 +26,8 @@ export default function Quarterly({ licencePlate, session }: { licencePlate: str
     return null;
   }
 
-  const handleChange = (date: Date | null) => {
-    setSelectedDate(date || new Date());
+  const handleChange = (date: string | null) => {
+    setSelectedDate(date ? getDateFromYyyyMmDd(date) : new Date());
   };
 
   return (

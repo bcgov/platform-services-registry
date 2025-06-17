@@ -162,7 +162,13 @@ export default PrivateCloudUnitPricesPage(({ session }) => {
         <div className="hidden col-span-1 lg:block"></div>
 
         <div className="bg-gray-100 p-4 rounded col-span-2">
-          <DatePicker value={date} onChange={setDate} classNames={{ levelsGroup: 'mx-auto w-fit' }} />
+          <DatePicker
+            value={date}
+            onChange={(datestr) => {
+              setDate(datestr ? getDateFromYyyyMmDd(datestr) : new Date());
+            }}
+            classNames={{ levelsGroup: 'mx-auto w-fit' }}
+          />
         </div>
 
         <LoadingBox isLoading={isUnitPriceLoading} className="bg-gray-100 p-4 rounded col-span-2">

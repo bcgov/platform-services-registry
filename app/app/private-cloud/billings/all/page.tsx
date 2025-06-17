@@ -10,6 +10,7 @@ import Table from '@/components/generic/table/Table';
 import { GlobalPermissions } from '@/constants';
 import createClientPage from '@/core/client-page';
 import { downloadPrivateCloudAdminMonthlyCosts, getPrivateCloudAdminMonthlyCosts } from '@/services/backend/admin';
+import { getDateFromYyyyMmDd } from '@/utils/js';
 import AdminCostTableBody from './AdminCostTableBody';
 import { pageState } from './state';
 
@@ -41,8 +42,8 @@ export default billingPage(({ session }) => {
   const totalCost = data?.totalCost || 0;
   const allBillings = data?.items || [];
 
-  const handleChange = (date: Date | null) => {
-    setSelectedDate(date || new Date());
+  const handleChange = (date: string | null) => {
+    setSelectedDate(date ? getDateFromYyyyMmDd(date) : new Date());
     pageState.page = 1;
     pageState.pageSize = 10;
   };

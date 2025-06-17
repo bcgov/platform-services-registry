@@ -4,7 +4,7 @@ import { Button, Divider, Grid } from '@mantine/core';
 import { DatePicker } from '@mantine/dates';
 import { useState } from 'react';
 import { createModal } from '@/core/modal';
-import { formatDate } from '@/utils/js';
+import { formatDate, getDateFromYyyyMmDd } from '@/utils/js';
 
 interface ModalProps {
   initialValue?: Date | null;
@@ -28,7 +28,11 @@ export const openDatePickerModal = createModal<ModalProps, ModalState>({
     return (
       <>
         <div>
-          <DatePicker value={value} onChange={setValue} classNames={{ levelsGroup: 'mx-auto w-fit' }} />
+          <DatePicker
+            value={value}
+            onChange={(datestr) => setValue(datestr ? getDateFromYyyyMmDd(datestr) : new Date())}
+            classNames={{ levelsGroup: 'mx-auto w-fit' }}
+          />
         </div>
 
         <div className="flex justify-center">
