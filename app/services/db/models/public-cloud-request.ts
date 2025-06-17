@@ -121,7 +121,7 @@ async function decorate<T extends PublicCloudRequestSimple | PublicCloudRequestD
   const canCancel =
     doc.decisionStatus === DecisionStatus.PENDING &&
     (session.user.email === doc.createdBy?.email ||
-      (session.permissions.cancelPublicCloudRequestAsAdmin && getDaysSince(doc.createdAt) > 30));
+      (session.permissions.cancelPublicCloudRequest && getDaysSince(doc.createdAt) > 30));
 
   const canEdit = canReview && doc.type !== RequestType.DELETE;
 
