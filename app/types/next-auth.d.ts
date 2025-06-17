@@ -111,7 +111,6 @@ declare module 'next-auth' {
     previews: {
       security: boolean;
       apiAccount: boolean;
-      awsLza: boolean;
       costRecovery: boolean;
     };
     permissionList: string[];

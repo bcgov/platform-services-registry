@@ -27,7 +27,7 @@ export default function FilterPanel() {
         name="provider"
         label="Provider"
         value={pageSnapshot.providers ?? []}
-        data={getAllowedOptions(session)}
+        data={getAllowedOptions()}
         onChange={(value) => {
           pageState.providers = value as Provider[];
           pageState.page = 1;
