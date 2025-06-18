@@ -1,5 +1,5 @@
 import _uniq from 'lodash-es/uniq';
-import { clusters } from '@/constants';
+import { clustersWithoutDR } from '@/constants';
 import prisma from '@/core/prisma';
 import { Cluster, RequestType, DecisionStatus } from '@/prisma/client';
 import { dateToShortDateString, shortDateStringToDate } from '@/utils/js';
@@ -80,7 +80,7 @@ async function productsCreatedPerMonth(
 export async function getActiveProducts({
   licencePlatesList,
   dateFilter = {},
-  clustersOptions = clusters,
+  clustersOptions = clustersWithoutDR,
 }: {
   licencePlatesList: string[];
   dateFilter?: Record<string, any>;

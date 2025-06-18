@@ -1,6 +1,6 @@
 import { useSnapshot } from 'valtio';
 import LineChartCard from '@/components/analytics/LineChartCard';
-import { clusters } from '@/constants';
+import { clustersWithoutDR } from '@/constants';
 import { downloadPrivateCloudActiveProducts } from '@/services/backend/analytics/private-cloud';
 import { ActiveProduct } from '@/types/analytics-private';
 import { formatDate } from '@/utils/js/date';
@@ -19,7 +19,7 @@ export default function ActiveProducts({ data }: { data: ActiveProduct[] }) {
         startDate,
       )} to ${formatDate(endDate)}.`}
       chartData={data}
-      categories={['All Clusters'].concat(pageSnapshot.clusters?.length ? pageSnapshot.clusters : clusters)}
+      categories={['All Clusters'].concat(pageSnapshot.clusters?.length ? pageSnapshot.clusters : clustersWithoutDR)}
       onExport={() => downloadPrivateCloudActiveProducts({ data: { ...pageSnapshot } })}
     />
   );

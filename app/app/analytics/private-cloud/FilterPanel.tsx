@@ -2,7 +2,7 @@ import { useSnapshot } from 'valtio';
 import FormDateRangePicker from '@/components/generic/select/FormDateRangePicker';
 import FormMultiSelect from '@/components/generic/select/FormMultiSelect';
 import FormUserPicker from '@/components/generic/select/FormUserPicker';
-import { clusters, ministryOptions } from '@/constants';
+import { clustersWithoutDR, ministryOptions } from '@/constants';
 import { Cluster, Ministry } from '@/prisma/client';
 import { pageState } from './state';
 
@@ -36,7 +36,7 @@ export default function FilterPanel() {
           name="cluster"
           label="Cluster"
           value={pageSnapshot.clusters ?? []}
-          data={clusters.map((v) => ({ label: v, value: v }))}
+          data={clustersWithoutDR.map((v) => ({ label: v, value: v }))}
           onChange={(value) => (pageState.clusters = value as Cluster[])}
         />
       </div>

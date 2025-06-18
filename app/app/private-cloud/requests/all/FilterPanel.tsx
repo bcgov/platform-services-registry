@@ -1,6 +1,6 @@
 import { useSnapshot } from 'valtio';
 import FormMultiSelect from '@/components/generic/select/FormMultiSelect';
-import { ministryOptions, clusters } from '@/constants';
+import { ministryOptions, clustersWithoutDR } from '@/constants';
 import { Cluster, DecisionStatus, Ministry, Prisma, RequestType } from '@/prisma/client';
 import { pageState } from './state';
 
@@ -24,7 +24,7 @@ export default function FilterPanel() {
         name="cluster"
         label="Cluster"
         value={pageSnapshot.clusters ?? []}
-        data={[...clusters.map((v) => ({ label: v, value: v }))]}
+        data={[...clustersWithoutDR.map((v) => ({ label: v, value: v }))]}
         onChange={(value) => {
           pageState.clusters = value as Cluster[];
           pageState.page = 1;

@@ -65,7 +65,7 @@ const privateCloudProductMembers = z
 export const _privateCloudCreateRequestBodySchema = z.object({
   name: z.string().min(1, { message: 'Name is required.' }),
   description: z.string().min(1, { message: 'Description is required.' }),
-  cluster: z.nativeEnum(Cluster),
+  cluster: z.enum([Cluster.SILVER, Cluster.GOLD, Cluster.EMERALD, Cluster.CLAB, Cluster.KLAB, Cluster.KLAB2]),
   ministry: z.nativeEnum(Ministry),
   projectOwnerId: z.string().length(24),
   primaryTechnicalLeadId: z.string().length(24),

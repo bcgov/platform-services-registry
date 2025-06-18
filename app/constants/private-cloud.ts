@@ -3,6 +3,7 @@ import { productSorts } from './common';
 
 export const privateCloudProductMemberRoles = Object.values(PrivateCloudProductMemberRole);
 export const clusters = Object.values(Cluster);
+export const clustersWithoutDR = Object.values(Cluster).filter((cluster) => cluster !== 'GOLDDR');
 
 export const clusterNames = [
   {
