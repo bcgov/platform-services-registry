@@ -308,7 +308,7 @@ importers:
         version: 30.0.0
       knip:
         specifier: ^5.52.0
-        version: 5.61.0(@types/node@22.15.31)(typescript@5.8.3)
+        version: 5.61.2(@types/node@22.15.31)(typescript@5.8.3)
       lodash:
         specifier: ^4.17.21
         version: 4.17.21
@@ -4165,8 +4165,8 @@ packages:
   keyv@4.5.4:
     resolution: {integrity: sha512-oxVHkHR/EJf2CNXnWxRLW6mg7JyCCUcG0DtEGmL2ctUo1PNTin1PUil+r/+4r5MpVgC/fn1kjsx7mjSujKqIpw==}
 
-  knip@5.61.0:
-    resolution: {integrity: sha512-g4zwSPUoSCWXWTHshNgtsiuM90jnLpZyBZ6J7BQaydfoOjclgh4NfrD7BL+TjChgDbeYg5bEQcERKK/vdJlpmA==}
+  knip@5.61.2:
+    resolution: {integrity: sha512-ZBv37zDvZj0/Xwk0e93xSjM3+5bjxgqJ0PH2GlB5tnWV0ktXtmatWLm+dLRUCT/vpO3SdGz2nNAfvVhuItUNcQ==}
     engines: {node: '>=18.18.0'}
     hasBin: true
     peerDependencies:
@@ -5963,8 +5963,8 @@ packages:
     resolution: {integrity: sha512-GQHQqAopRhwU8Kt1DDM8NjibDXHC8eoh1erhGAJPEyveY9qqVeXvVikNKrDz69sHowPMorbPUrH/mx8c50eiBQ==}
     engines: {node: '>=18'}
 
-  zod-validation-error@3.5.0:
-    resolution: {integrity: sha512-IWK6O51sRkq0YsnYD2oLDuK2BNsIjYUlR0+1YSd4JyBzm6/892IWroUnLc7oW4FU+b0f6948BHi6H8MDcqpOGw==}
+  zod-validation-error@3.5.2:
+    resolution: {integrity: sha512-mdi7YOLtram5dzJ5aDtm1AG9+mxRma1iaMrZdYIpFO7epdKBUwLHIxTF8CPDeCQ828zAXYtizrKlEJAtzgfgrw==}
     engines: {node: '>=18.0.0'}
     peerDependencies:
       zod: ^3.25.0
@@ -10407,7 +10407,7 @@ snapshots:
     dependencies:
       json-buffer: 3.0.1
 
-  knip@5.61.0(@types/node@22.15.31)(typescript@5.8.3):
+  knip@5.61.2(@types/node@22.15.31)(typescript@5.8.3):
     dependencies:
       '@nodelib/fs.walk': 1.2.8
       '@types/node': 22.15.31
@@ -10423,7 +10423,7 @@ snapshots:
       strip-json-comments: 5.0.2
       typescript: 5.8.3
       zod: 3.25.64
-      zod-validation-error: 3.5.0(zod@3.25.64)
+      zod-validation-error: 3.5.2(zod@3.25.64)
 
   kuler@2.0.0: {}
 
@@ -12502,7 +12502,7 @@ snapshots:
 
   yoctocolors@2.1.1: {}
 
-  zod-validation-error@3.5.0(zod@3.25.64):
+  zod-validation-error@3.5.2(zod@3.25.64):
     dependencies:
       zod: 3.25.64
 
