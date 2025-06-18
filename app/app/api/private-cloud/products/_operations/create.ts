@@ -3,7 +3,7 @@ import prisma from '@/core/prisma';
 import { OkResponse, UnauthorizedResponse } from '@/core/responses';
 import generateLicencePlate from '@/helpers/licence-plate';
 import { sendRequestNatsMessage } from '@/helpers/nats-message';
-import { DecisionStatus, ProjectStatus, RequestType, EventType, TaskType } from '@/prisma/client';
+import { DecisionStatus, ProjectStatus, RequestType, EventType, TaskType, Cluster } from '@/prisma/client';
 import { sendCreateRequestEmails, sendRequestApprovalEmails } from '@/services/ches/private-cloud';
 import { createEvent, models, privateCloudRequestDetailInclude, tasks } from '@/services/db';
 import { PrivateCloudCreateRequestBody } from '@/validation-schemas/private-cloud';
@@ -40,6 +40,8 @@ export default async function createOp({ session, body }: { session: Session; bo
     password,
     ...rest
   } = body;
+
+  if (rest.cluster === Cluster.GOLDDR) rest.cluster = Cluster.GOLD;
 
   const productData = {
     ...rest,

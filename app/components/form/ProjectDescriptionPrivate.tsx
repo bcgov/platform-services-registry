@@ -10,7 +10,7 @@ import MailLink from '@/components/generic/button/MailLink';
 import HookFormTextarea from '@/components/generic/input/HookFormTextarea';
 import FormSelect from '@/components/generic/select/FormSelect';
 import HookFormSingleSelect from '@/components/generic/select/HookFormSingleSelect';
-import { clusters, ministryOptions, privateCloudTeamEmail } from '@/constants';
+import { clustersWithoutDR, ministryOptions, privateCloudTeamEmail } from '@/constants';
 import { cn } from '@/utils/js';
 import HookFormTextInput from '../generic/input/HookFormTextInput';
 
@@ -30,7 +30,7 @@ export default function ProjectDescriptionPrivate({
     formState: { errors },
   } = useFormContext();
 
-  const [clustersList, setClustersList] = useState(clusters);
+  const [clustersList, setClustersList] = useState(clustersWithoutDR);
 
   const { data: session } = useSession({
     required: true,
@@ -38,7 +38,7 @@ export default function ProjectDescriptionPrivate({
 
   useEffect(() => {
     if (session && !session?.permissions.viewAllPrivateCloudProducts) {
-      setClustersList(clusters.filter((cluster) => cluster.indexOf('LAB') === -1));
+      setClustersList(clustersWithoutDR.filter((cluster) => cluster.indexOf('LAB') === -1));
     }
   }, [session, setClustersList]);
 

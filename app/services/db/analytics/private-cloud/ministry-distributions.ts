@@ -1,4 +1,4 @@
-import { clusters } from '@/constants';
+import { clustersWithoutDR } from '@/constants';
 import prisma from '@/core/prisma';
 import { Prisma } from '@/prisma/client';
 
@@ -48,7 +48,7 @@ export async function getMinistryDistributions({
 
   const result = await Promise.all([
     getAggByCluster(licencePlatesList, undefined, dateFilter),
-    ...clusters.map((cluster) => getAggByCluster(licencePlatesList, cluster, dateFilter)),
+    ...clustersWithoutDR.map((cluster) => getAggByCluster(licencePlatesList, cluster, dateFilter)),
   ]);
 
   return result;
