@@ -2,7 +2,23 @@ import { TooltipItem } from 'chart.js';
 import { YearlyCost } from '@/types/private-cloud';
 import { formatCurrency, getMonthNameFromNumber } from '@/utils/js';
 
-export function getYearlyCostChartConfig({ data }: { data: Pick<YearlyCost, 'months' | 'monthDetails'> }) {
+export function getYearlyCostChartConfig({
+  data,
+  zoomLevel,
+}: {
+  data: Pick<YearlyCost, 'months' | 'monthDetails'>;
+  zoomLevel: number;
+}) {
+  const maxYValue =
+    (Math.max(
+      ...data.monthDetails.cpuToDate,
+      ...data.monthDetails.storageToDate,
+      ...data.monthDetails.cpuToProjected,
+      ...data.monthDetails.storageToProjected,
+    ) /
+      zoomLevel) *
+    1.8;
+
   const options = {
     plugins: {
       title: {
@@ -37,6 +53,7 @@ export function getYearlyCostChartConfig({ data }: { data: Pick<YearlyCost, 'mon
       },
       y: {
         stacked: true,
+        max: maxYValue,
         ticks: {
           font: {
             size: 12,

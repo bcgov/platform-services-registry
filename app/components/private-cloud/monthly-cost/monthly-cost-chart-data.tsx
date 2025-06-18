@@ -2,7 +2,23 @@ import { TooltipItem } from 'chart.js';
 import { MonthlyCost } from '@/types/private-cloud';
 import { formatCurrency } from '@/utils/js';
 
-export function getMonthlyCostChartConfig({ data }: { data: Pick<MonthlyCost, 'days' | 'dayDetails'> }) {
+export function getMonthlyCostChartConfig({
+  data,
+  zoomLevel,
+}: {
+  data: Pick<MonthlyCost, 'days' | 'dayDetails'>;
+  zoomLevel: number;
+}) {
+  const maxYValue =
+    (Math.max(
+      ...data.dayDetails.cpuToDate,
+      ...data.dayDetails.storageToDate,
+      ...data.dayDetails.cpuToProjected,
+      ...data.dayDetails.storageToProjected,
+    ) /
+      zoomLevel) *
+    1.8;
+
   const options = {
     plugins: {
       title: {
@@ -37,6 +53,7 @@ export function getMonthlyCostChartConfig({ data }: { data: Pick<MonthlyCost, 'd
       },
       y: {
         stacked: true,
+        max: maxYValue,
         ticks: {
           font: {
             size: 12,

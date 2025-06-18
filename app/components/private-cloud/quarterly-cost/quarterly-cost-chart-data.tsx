@@ -2,7 +2,22 @@ import { TooltipItem } from 'chart.js';
 import { QuarterlyCost } from '@/types/private-cloud';
 import { formatCurrency, getMonthNameFromNumber } from '@/utils/js';
 
-export function getQuarterlyCostChartConfig({ data }: { data: Pick<QuarterlyCost, 'months' | 'monthDetails'> }) {
+export function getQuarterlyCostChartConfig({
+  data,
+  zoomLevel,
+}: {
+  data: Pick<QuarterlyCost, 'months' | 'monthDetails'>;
+  zoomLevel: number;
+}) {
+  const maxYValue =
+    (Math.max(
+      ...data.monthDetails.cpuToDate,
+      ...data.monthDetails.storageToDate,
+      ...data.monthDetails.cpuToProjected,
+      ...data.monthDetails.storageToProjected,
+    ) /
+      zoomLevel) *
+    1.8;
   const options = {
     plugins: {
       title: {
@@ -37,6 +52,7 @@ export function getQuarterlyCostChartConfig({ data }: { data: Pick<QuarterlyCost
       },
       y: {
         stacked: true,
+        max: maxYValue,
         ticks: {
           font: {
             size: 12,
