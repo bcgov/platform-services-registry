@@ -1,3 +1,12 @@
+## [0.70.0](https://github.com/bcgov/platform-services-registry/compare/v0.69.0...v0.70.0) (2025-06-18)
+
+### Features
+
+* **5782:** add minio deployment via helm ([acea0e9](https://github.com/bcgov/platform-services-registry/commit/acea0e91c8d5f63934b183ae54addffc4fa56b1d))
+
+### Bug Fixes
+
+* **5881:** remove Gold DR cluster from creation UI ([faec6fd](https://github.com/bcgov/platform-services-registry/commit/faec6fd770686c17b3bc155d11060c184b4d3e53))
 ## [0.69.0](https://github.com/bcgov/platform-services-registry/compare/v0.68.0...v0.69.0) (2025-06-17)
 
 ### Features
