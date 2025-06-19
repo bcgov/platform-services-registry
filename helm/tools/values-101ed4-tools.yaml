@@ -8,7 +8,7 @@ airflow:
     host: secdash-airflow.apps.silver.devops.gov.bc.ca
 
 sonarqube:
-  enabled: true
+  enabled: false
   route:
     host: secdash-sonarqube.apps.silver.devops.gov.bc.ca
 

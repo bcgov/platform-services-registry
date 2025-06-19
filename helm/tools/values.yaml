@@ -168,6 +168,20 @@ airflow:
       min_serialized_dag_update_interval: 10
       min_serialized_dag_fetch_interval: 5
       dags_are_paused_at_creation: False
+    logging:
+      logging_level: "INFO"
+      # See https://airflow.apache.org/docs/apache-airflow-providers-amazon/stable/logging/s3-task-handler.html#writing-logs-to-amazon-s3
+      remote_logging: "True"
+      # When using the KubernetesExecutor, Airflow runs tasks in isolated pods that don’t have access to the metadata database.
+      # Instead, they rely on environment variables for secrets. Since only `EnvironmentVariablesBackend` is available in task pods,
+      # connections like `minio` must be set via env vars (e.g., `AIRFLOW_CONN_MINIO`). Without this, the task falls back to anonymous access,
+      # causing errors like `NoCredentialsError`. To fix it, add `AIRFLOW_CONN_MINIO` with the value
+      # `aws://<access_key>:<secret_key>@/?endpoint_url=http%3A%2F%2Fminio%3A9000&region_name=us-east-1` to the `airflow-variables` secret
+      # instead of creating it through the Console UI.
+      remote_log_conn_id: "minio"
+      remote_base_log_folder: "s3://airflow-logs/dag-logs"
+      encrypt_s3_logs: "False"
+      colored_console_log: "False"
     webserver:
       web_server_worker_timeout: 300
       workers: 2
@@ -218,7 +232,7 @@ postgresql:
 
 # See https://github.com/SonarSource/helm-chart-sonarqube/blob/87cf0af9db9e573476803b811f95edc7088169f6/charts/sonarqube/values.yaml
 sonarqube:
-  enabled: true
+  enabled: false
   route:
     host:
 
