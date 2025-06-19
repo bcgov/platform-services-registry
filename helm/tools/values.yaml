@@ -232,7 +232,7 @@ postgresql:
 
 # See https://github.com/SonarSource/helm-chart-sonarqube/blob/87cf0af9db9e573476803b811f95edc7088169f6/charts/sonarqube/values.yaml
 sonarqube:
-  enabled: true
+  enabled: false
   route:
     host:
 
