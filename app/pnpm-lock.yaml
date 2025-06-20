@@ -126,8 +126,8 @@ importers:
         specifier: ^1.5.1
         version: 1.10.0
       canvas:
-        specifier: 3.1.0
-        version: 3.1.0
+        specifier: 3.1.1
+        version: 3.1.1
       chart.js:
         specifier: ^4.4.9
         version: 4.5.0
@@ -2635,8 +2635,8 @@ packages:
   caniuse-lite@1.0.30001724:
     resolution: {integrity: sha512-WqJo7p0TbHDOythNTqYujmaJTvtYRZrjpP8TCvH6Vb9CYJerJNKamKzIWOM4BkQatWj9H2lYulpdAQNBe7QhNA==}
 
-  canvas@3.1.0:
-    resolution: {integrity: sha512-tTj3CqqukVJ9NgSahykNwtGda7V33VLObwrHfzT0vqJXu7J4d4C/7kQQW3fOEGDfZZoILPut5H00gOjyttPGyg==}
+  canvas@3.1.1:
+    resolution: {integrity: sha512-o8JptL14zrYFYSh5r7ClVzuwG77tvjRBgSJECyIF6AAHpL4MgORhlI+rru3/ZPKtdC7uopl+biESZWz1l/NpFA==}
     engines: {node: ^18.12.0 || >= 20.9.0}
 
   chalk@3.0.0:
@@ -8448,7 +8448,7 @@ snapshots:
 
   caniuse-lite@1.0.30001724: {}
 
-  canvas@3.1.0:
+  canvas@3.1.1:
     dependencies:
       node-addon-api: 7.1.1
       prebuild-install: 7.1.3
