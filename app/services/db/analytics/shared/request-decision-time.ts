@@ -35,9 +35,12 @@ export async function getChartDataForDecisionTime(
     over: 0,
   };
 
-  for (let x = 0; x < daysList.length; x++) {
-    if (daysList[x] > 7) meta.over++;
-    else meta[daysList[x]]++;
+  for (const day of daysList) {
+    if (day > 7) {
+      meta.over++;
+    } else {
+      meta[day]++;
+    }
   }
 
   const data = _map(meta, (val, key) => {

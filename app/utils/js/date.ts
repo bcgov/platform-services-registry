@@ -11,7 +11,6 @@ import { startOfDay } from 'date-fns/startOfDay';
 import _isDate from 'lodash-es/isDate';
 import _isNil from 'lodash-es/isNil';
 import _isString from 'lodash-es/isString';
-import _map from 'lodash-es/map';
 import { monthNames } from '@/constants/common';
 
 export function formatDate(date: string | number | Date | null | undefined, formatStr = 'yyyy-MM-dd hh:mm:ss aa') {
