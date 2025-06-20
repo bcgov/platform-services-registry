@@ -43,6 +43,6 @@ brew install pkg-config cairo pango libpng jpeg giflib librsvg
 -   **Rebuild `canvas`** if you encounter runtime errors, especially after dependency or environment changes.
 
 ```bash
-cd node_modules/.pnpm/canvas@3.1.0/node_modules/canvas
+cd node_modules/.pnpm/canvas@3.1.1/node_modules/canvas
 pnpm exec node-gyp rebuild
 ```
