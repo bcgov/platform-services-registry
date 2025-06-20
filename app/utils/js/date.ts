@@ -1,8 +1,16 @@
+import { differenceInMilliseconds } from 'date-fns/differenceInMilliseconds';
+import { eachDayOfInterval } from 'date-fns/eachDayOfInterval';
+import { endOfDay } from 'date-fns/endOfDay';
 import { format } from 'date-fns/format';
 import { getQuarter } from 'date-fns/getQuarter';
 import { isEqual } from 'date-fns/isEqual';
+import { isSameDay } from 'date-fns/isSameDay';
+import { isWeekend } from 'date-fns/isWeekend';
+import { parseISO } from 'date-fns/parseISO';
+import { startOfDay } from 'date-fns/startOfDay';
 import _isDate from 'lodash-es/isDate';
 import _isNil from 'lodash-es/isNil';
+import _isString from 'lodash-es/isString';
 import { monthNames } from '@/constants/common';
 
 export function formatDate(date: string | number | Date | null | undefined, formatStr = 'yyyy-MM-dd hh:mm:ss aa') {
@@ -269,4 +277,42 @@ export function getDaysSince(date: string | number | Date) {
   const now = new Date();
   const diffInMs = now.getTime() - tdate.getTime();
   return Math.floor(diffInMs / (1000 * 60 * 60 * 24));
+}
+
+const MS_PER_DAY = 24 * 60 * 60 * 1000; // 86,400,000 ms
+
+export function getWorkdayDurationInMilliseconds(
+  start: string | Date,
+  end: string | Date,
+  holidayDates: string[],
+): number {
+  const startDate = _isString(start) ? parseISO(start) : start;
+  const endDate = _isString(end) ? parseISO(end) : end;
+
+  if (startDate > endDate) return 0;
+
+  const holidays = new Set(holidayDates.map((date) => parseISO(date).toDateString()));
+  const allDates = eachDayOfInterval({ start: startOfDay(startDate), end: endOfDay(endDate) });
+
+  let totalMilliseconds = 0;
+
+  for (const date of allDates) {
+    const isHoliday = holidays.has(date.toDateString());
+
+    if (!isWeekend(date) && !isHoliday) {
+      if (isSameDay(date, startDate)) {
+        totalMilliseconds += differenceInMilliseconds(endOfDay(date), startDate);
+      } else if (isSameDay(date, endDate)) {
+        totalMilliseconds += differenceInMilliseconds(endDate, startOfDay(date));
+      } else {
+        totalMilliseconds += MS_PER_DAY;
+      }
+    }
+  }
+
+  return totalMilliseconds;
+}
+
+export function geDaysRoundedUp(durationMs: number): number {
+  return Math.ceil(durationMs / MS_PER_DAY);
 }

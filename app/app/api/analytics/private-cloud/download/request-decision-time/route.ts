@@ -18,7 +18,7 @@ export const POST = createApiHandler({
 
   const formattedData = data.map((item) => ({
     'Time Interval': item.time,
-    Percentage: item.Percentage,
+    Percentage: `${item.percentage.toFixed(2)}%`,
   }));
 
   return CsvResponse(formattedData, `analytics-private-cloud-request-decision-time.csv`);

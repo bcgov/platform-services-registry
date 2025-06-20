@@ -140,9 +140,6 @@ importers:
       csv-stringify:
         specifier: ^6.4.4
         version: 6.5.2
-      d3-array:
-        specifier: ^3.2.4
-        version: 3.2.4
       date-fns:
         specifier: ^4.1.0
         version: 4.1.0
@@ -243,9 +240,6 @@ importers:
       '@testing-library/user-event':
         specifier: ^14.5.1
         version: 14.6.1(@testing-library/dom@10.4.0)
-      '@types/d3-array':
-        specifier: ^3.2.1
-        version: 3.2.1
       '@types/eslint-config-prettier':
         specifier: ^6.11.3
         version: 6.11.3

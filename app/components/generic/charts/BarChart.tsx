@@ -1,7 +1,7 @@
 import { ChartTypeRegistry, TooltipItem } from 'chart.js';
 import { useMemo } from 'react';
 import { Bar } from 'react-chartjs-2';
-import { valueFormatter, getColor } from '@/components/analytics/helpers';
+import { valueFormatter as defaultValueFormatter, getColor } from '@/components/analytics/helpers';
 import { cn } from '@/utils/js';
 
 export interface BarChartDataItem {
@@ -10,10 +10,12 @@ export interface BarChartDataItem {
 export default function BarChart({
   indexKey,
   data: chartData,
+  valueFormatter,
   className,
 }: {
   indexKey: string;
   data: BarChartDataItem[];
+  valueFormatter?: (value: number) => string;
   className?: string;
 }) {
   const { data, options } = useMemo(() => {
@@ -67,7 +69,7 @@ export default function BarChart({
           callbacks: {
             label: function (context: TooltipItem<keyof ChartTypeRegistry>) {
               const label = context.dataset.label || 'Unknown';
-              const value = valueFormatter(Number(context.raw as number));
+              const value = (valueFormatter ?? defaultValueFormatter)(Number(context.raw as number));
               return `${label}: ${value}`;
             },
           },
@@ -91,7 +93,7 @@ export default function BarChart({
     };
 
     return { data: _data, options: _options };
-  }, [chartData]);
+  }, [chartData, indexKey, valueFormatter]);
 
   return <Bar className={cn(className)} data={data} options={options} />;
 }
