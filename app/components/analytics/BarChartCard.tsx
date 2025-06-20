@@ -7,6 +7,7 @@ export default function BarChartCard({
   onExport,
   exportApiEndpoint,
   chartData,
+  valueFormatter,
   title,
   subtitle,
   categories,
@@ -15,6 +16,7 @@ export default function BarChartCard({
   onExport?: () => Promise<boolean>;
   exportApiEndpoint?: string;
   chartData: BarChartDataItem[];
+  valueFormatter?: (value: number) => string;
   title: string;
   subtitle?: string;
   categories: string[];
@@ -26,7 +28,7 @@ export default function BarChartCard({
         <Title>{title}</Title>
         <Subtitle>{subtitle}</Subtitle>
         <div className="relative">
-          <BarChart className="max-h-[28rem] mt-4" data={chartData} indexKey={index} />
+          <BarChart className="max-h-[28rem] mt-4" data={chartData} indexKey={index} valueFormatter={valueFormatter} />
         </div>
       </Card>
     </div>

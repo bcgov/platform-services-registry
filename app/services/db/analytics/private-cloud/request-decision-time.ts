@@ -1,9 +1,6 @@
-import { bin } from 'd3-array';
 import prisma from '@/core/prisma';
-
-function convertMillisecondsToHours(milliseconds: number): number {
-  return milliseconds / 3600000; // Convert ms to hours
-}
+import { Prisma } from '@/prisma/client';
+import { getChartDataForDecisionTime } from '../shared/request-decision-time';
 
 export async function getRequestDecisionTime({
   licencePlatesList,
@@ -15,6 +12,19 @@ export async function getRequestDecisionTime({
   const requests = await prisma.privateCloudRequest.findMany({
     where: {
       licencePlate: { in: licencePlatesList },
+      // Exclude auto approved requests
+      OR: [
+        {
+          decisionMakerEmail: {
+            not: null,
+          },
+        },
+        {
+          decisionMakerEmail: {
+            not: '',
+          },
+        },
+      ],
       ...dateFilter,
     },
     select: {
@@ -22,29 +32,10 @@ export async function getRequestDecisionTime({
       decisionDate: true,
     },
     orderBy: {
-      createdAt: 'asc',
+      createdAt: Prisma.SortOrder.asc,
     },
   });
 
-  const durations = requests
-    .filter((req) => req.decisionDate)
-    .map((req) => convertMillisecondsToHours(req.decisionDate!.getTime() - req.createdAt.getTime()));
-
-  if (durations.length === 0) {
-    return [];
-  }
-
-  const bins = bin().domain([0, 200]).thresholds(50)(durations);
-
-  const data = bins.map((b) => {
-    const lowerBound = b.x0 ?? 0;
-    const upperBound = b.x1 ?? 0;
-
-    return {
-      time: `${lowerBound} hours - ${upperBound} hours`,
-      Percentage: (b.length / durations.length) * 100,
-    };
-  });
-
-  return data;
+  const result = await getChartDataForDecisionTime(requests);
+  return result;
 }

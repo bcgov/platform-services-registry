@@ -18,6 +18,7 @@ export default function RequestsDecisionTime({ data }: { data: RequestDecisionTi
       )} to ${formatDate(endDate)}.`}
       chartData={data}
       categories={['Percentage']}
+      valueFormatter={(val) => `${val.toFixed(2)}%`}
       onExport={() => downloadPrivateCloudRequestsDecisionTime({ data: { ...pageSnapshot } })}
     />
   );
