@@ -43,14 +43,18 @@ const userAttributes = [
   },
 ];
 
-export default function TeamContacts({ isTeamContactsDisabled, isAdditionalMembersDisabled = undefined }: Props) {
+export default function TeamContacts({
+  isTeamContactsDisabled,
+  isAdditionalMembersDisabled,
+  showAdditionalTeamMembers = true,
+}: Props) {
   return (
     <div className="m-5">
-      <h6 className="text-base 2xl:text-xl font-semibold leading-7">Primary Contacts</h6>
+      <h6 className="text-base 2xl:text-xl font-semibold leading-7 mt-7">Primary Contacts</h6>
       <TeamContactsBase disabled={isTeamContactsDisabled} userAttributes={userAttributes} />
-      {isAdditionalMembersDisabled && (
+      {showAdditionalTeamMembers && (
         <>
-          <h6 className="text-base 2xl:text-xl font-semibold leading-7">Additional team members (optional)</h6>
+          <h6 className="text-base 2xl:text-xl font-semibold leading-7 mt-7">Additional team members (optional)</h6>
           <AdditionalTeamMembers disabled={isAdditionalMembersDisabled} />
         </>
       )}
