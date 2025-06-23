@@ -5,7 +5,7 @@ from _utils import safe_strings
 
 class Ches:
     def __init__(self, ches_api_url, kc_auth_url, kc_realm, kc_client_id, kc_client_secret):
-        self.ches_email_url = f"{ches_api_url}/api/v1/email"
+        self.ches_email_url = f"{ches_api_url}/email"
         self.kc = Keycloak(kc_auth_url, kc_realm, kc_client_id, kc_client_secret)
 
     def send_email(self, email: dict):

@@ -11,7 +11,7 @@ KEYCLOAK_AUTH_URL = "https://dev.loginproxy.gov.bc.ca/auth"
 KEYCLOAK_REALM = "comsvcauth"
 CHES_SA_ID = os.getenv("DEV_CHES_SA_ID")
 CHES_SA_SECRET = os.getenv("DEV_CHES_SA_SECRET")
-CHES_API_URL = "https://ches-dev.api.gov.bc.ca"
+CHES_API_URL = "http://pltsvc-ches-mock.101ed4-dev.svc.cluster.local:3025"
 APP_URL = "https://dev-pltsvc.apps.silver.devops.gov.bc.ca"
 
 with DAG(
