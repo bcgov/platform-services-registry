@@ -4,7 +4,7 @@ import { OkResponse, UnauthorizedResponse } from '@/core/responses';
 import { comparePublicProductData } from '@/helpers/product-change';
 import { DecisionStatus, RequestType, EventType } from '@/prisma/client';
 import { sendEditRequestEmails } from '@/services/ches/public-cloud';
-import { createEvent, getLastClosedPublicCloudRequest, models } from '@/services/db';
+import { createEvent, getLastClosedPublicCloudRequest, getUserById, models } from '@/services/db';
 import { sendPublicCloudNatsMessage } from '@/services/nats';
 import { PublicCloudEditRequestBody } from '@/validation-schemas/public-cloud';
 import { putPathParamSchema } from '../[licencePlate]/schema';
@@ -52,10 +52,18 @@ export default async function updateOp({
     expenseAuthority: { connect: { id: expenseAuthorityId } },
   };
 
+  const comparisonData = {
+    ...rest,
+    projectOwner: await getUserById(projectOwnerId),
+    primaryTechnicalLead: await getUserById(primaryTechnicalLeadId),
+    secondaryTechnicalLead: secondaryTechnicalLeadId ? await getUserById(secondaryTechnicalLeadId) : undefined,
+    expenseAuthority: await getUserById(expenseAuthorityId),
+  };
+
   // Retrieve the latest request data to acquire the decision data ID that can be assigned to the incoming request's original data.
   const previousRequest = await getLastClosedPublicCloudRequest(product.licencePlate);
 
-  const { changes, ...otherChangeMeta } = comparePublicProductData(rest, previousRequest?.decisionData);
+  const { changes, ...otherChangeMeta } = comparePublicProductData(comparisonData, previousRequest?.decisionData);
 
   const newRequest = (
     await models.publicCloudRequest.create(

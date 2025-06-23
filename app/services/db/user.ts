@@ -262,3 +262,12 @@ export async function searchUsersWithRoles({
     totalCount: number;
   };
 }
+
+export async function getUserById(id: string) {
+  const user = await prisma.user.findFirst({
+    where: {
+      id,
+    },
+  });
+  return user;
+}
