@@ -4,7 +4,7 @@ import { OkResponse, UnauthorizedResponse } from '@/core/responses';
 import { comparePublicProductData } from '@/helpers/product-change';
 import { DecisionStatus, RequestType, EventType } from '@/prisma/client';
 import { sendEditRequestEmails } from '@/services/ches/public-cloud';
-import { createEvent, getLastClosedPublicCloudRequest, getUsersEmailsByIds, getUserById, models } from '@/services/db';
+import { createEvent, getLastClosedPublicCloudRequest, getUsersEmailsByIds, models } from '@/services/db';
 import { sendPublicCloudNatsMessage } from '@/services/nats';
 import { PublicCloudEditRequestBody } from '@/validation-schemas/public-cloud';
 import { putPathParamSchema } from '../[licencePlate]/schema';
