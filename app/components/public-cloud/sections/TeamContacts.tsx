@@ -50,11 +50,11 @@ export default function TeamContacts({
 }: Props) {
   return (
     <div className="m-5">
-      <h6 className="text-base 2xl:text-xl font-semibold leading-7 mt-7">Primary Contacts</h6>
+      <h3 className="text-base 2xl:text-sm font-semibold leading-7 mt-7">Primary Contacts</h3>
       <TeamContactsBase disabled={isTeamContactsDisabled} userAttributes={userAttributes} />
       {showAdditionalTeamMembers && (
         <>
-          <h6 className="text-base 2xl:text-xl font-semibold leading-7 mt-7">Additional team members (optional)</h6>
+          <h6 className="text-base 2xl:text-sm font-semibold leading-7 mt-7">Additional team members (optional)</h6>
           <AdditionalTeamMembers disabled={isAdditionalMembersDisabled} />
         </>
       )}
