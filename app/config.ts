@@ -1,4 +1,4 @@
-import { normalizeUrl } from '@/utils/js';
+import { normalizeUrl } from '@/utils/js/string';
 
 export const SECURE_HEADERS = process.env.SECURE_HEADERS || '';
 export const LOG_LEVEL = process.env.LOG_LEVEL || 'debug';

@@ -28,7 +28,7 @@ RUN npm install -g turbo pnpm && \
     pnpm install --frozen-lockfile
 
 # Rebuild canvas
-RUN cd node_modules/.pnpm/canvas@3.1.0/node_modules/canvas && \
+RUN cd node_modules/.pnpm/canvas@3.1.1/node_modules/canvas && \
     pnpm add -D node-gyp && \
     pnpm exec node-gyp rebuild
 
