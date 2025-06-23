@@ -21,6 +21,7 @@ import {
   Tooltip,
   Legend,
 } from 'chart.js';
+import zoomPlugin from 'chartjs-plugin-zoom';
 import localFont from 'next/font/local';
 import { useEffect } from 'react';
 import Footer from '@/components/layouts/Footer';
@@ -31,7 +32,18 @@ import { useAppState } from '@/states/global';
 import { cn } from '@/utils/js';
 import { theme } from './mantine-theme';
 
-Chart.register(ArcElement, CategoryScale, LinearScale, BarElement, Title, PointElement, LineElement, Tooltip, Legend);
+Chart.register(
+  ArcElement,
+  CategoryScale,
+  LinearScale,
+  BarElement,
+  Title,
+  PointElement,
+  LineElement,
+  Tooltip,
+  Legend,
+  zoomPlugin,
+);
 
 const bcsans = localFont({
   src: [

@@ -1,9 +1,9 @@
-import { TooltipItem } from 'chart.js';
+import { ChartOptions, TooltipItem } from 'chart.js';
 import { MonthlyCost } from '@/types/private-cloud';
 import { formatCurrency } from '@/utils/js';
 
 export function getMonthlyCostChartConfig({ data }: { data: Pick<MonthlyCost, 'days' | 'dayDetails'> }) {
-  const options = {
+  const options: ChartOptions<'bar'> = {
     plugins: {
       title: {
         display: false,
@@ -21,6 +21,27 @@ export function getMonthlyCostChartConfig({ data }: { data: Pick<MonthlyCost, 'd
             const value = context.parsed.y;
             return formatCurrency(value);
           },
+        },
+      },
+      zoom: {
+        pan: {
+          enabled: true,
+          mode: 'y',
+        },
+        zoom: {
+          wheel: {
+            enabled: true,
+          },
+          pinch: {
+            enabled: true,
+          },
+          mode: 'y',
+          drag: {
+            enabled: false,
+          },
+        },
+        limits: {
+          y: { min: 0, max: Infinity },
         },
       },
     },
