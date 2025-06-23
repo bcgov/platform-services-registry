@@ -263,11 +263,24 @@ export async function searchUsersWithRoles({
   };
 }
 
-export async function getUserById(id: string) {
-  const user = await prisma.user.findFirst({
+export async function getUsersEmailsByIds(ids: (string | null | undefined)[]) {
+  if (!ids || ids.length < 1) return [];
+
+  const filteredIds = ids.filter((id): id is string => typeof id === 'string');
+
+  const users = await prisma.user.findMany({
     where: {
-      id,
+      id: {
+        in: filteredIds,
+      },
+    },
+    select: {
+      id: true,
+      email: true,
     },
   });
-  return user;
+
+  const userMap = new Map(users.map((user) => [user.id, user]));
+
+  return filteredIds.map((id) => userMap.get(id) || null);
 }

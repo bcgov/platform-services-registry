@@ -12,7 +12,7 @@ import {
   getLastClosedPrivateCloudRequest,
   models,
   tasks,
-  getUserById,
+  getUsersEmailsByIds,
 } from '@/services/db';
 import { PrivateCloudEditRequestBody } from '@/validation-schemas/private-cloud';
 import { putPathParamSchema } from '../[licencePlate]/schema';
@@ -79,11 +79,17 @@ export default async function updateOp({
     decisionStatus = DecisionStatus.PENDING;
   }
 
+  const [projectOwner, primaryTechnicalLead, secondaryTechnicalLead] = await getUsersEmailsByIds([
+    projectOwnerId,
+    primaryTechnicalLeadId,
+    secondaryTechnicalLeadId,
+  ]);
+
   const comparisonData = {
     ...rest,
-    projectOwner: await getUserById(projectOwnerId),
-    primaryTechnicalLead: await getUserById(primaryTechnicalLeadId),
-    secondaryTechnicalLead: secondaryTechnicalLeadId ? await getUserById(secondaryTechnicalLeadId) : undefined,
+    projectOwner,
+    primaryTechnicalLead,
+    secondaryTechnicalLead,
   };
 
   // Retrieve the latest request data to acquire the decision data ID that can be assigned to the incoming request's original data.
