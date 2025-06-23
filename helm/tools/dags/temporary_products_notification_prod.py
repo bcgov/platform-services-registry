@@ -12,7 +12,7 @@ KEYCLOAK_REALM = "comsvcauth"
 CHES_SA_ID = os.getenv("PROD_CHES_SA_ID")
 CHES_SA_SECRET = os.getenv("PROD_CHES_SA_SECRET")
 CHES_API_URL = "https://ches.api.gov.bc.ca"
-APP_URL = "https://pltsvc.apps.silver.devops.gov.bc.ca"
+APP_URL = "https://registry.developer.gov.bc.ca"
 
 with DAG(
     dag_id="temporary_products_notification_prod",
