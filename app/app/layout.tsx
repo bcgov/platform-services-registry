@@ -9,18 +9,6 @@ import { MantineProvider } from '@mantine/core';
 import { ModalsProvider } from '@mantine/modals';
 import { Notifications } from '@mantine/notifications';
 import { useQuery } from '@tanstack/react-query';
-import {
-  Chart,
-  ArcElement,
-  CategoryScale,
-  LinearScale,
-  BarElement,
-  Title,
-  PointElement,
-  LineElement,
-  Tooltip,
-  Legend,
-} from 'chart.js';
 import localFont from 'next/font/local';
 import { useEffect } from 'react';
 import Footer from '@/components/layouts/Footer';
@@ -30,8 +18,6 @@ import { getInfo } from '@/services/backend';
 import { useAppState } from '@/states/global';
 import { cn } from '@/utils/js';
 import { theme } from './mantine-theme';
-
-Chart.register(ArcElement, CategoryScale, LinearScale, BarElement, Title, PointElement, LineElement, Tooltip, Legend);
 
 const bcsans = localFont({
   src: [
@@ -82,6 +68,30 @@ function MainBody({ children }: { children: React.ReactNode }) {
 }
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
+  useEffect(() => {
+    const initializeChart = async () => {
+      const { Chart } = await import('chart.js');
+      const { ArcElement, CategoryScale, LinearScale, BarElement, Title, PointElement, LineElement, Tooltip, Legend } =
+        await import('chart.js');
+
+      const zoomPlugin = (await import('chartjs-plugin-zoom')).default;
+
+      Chart.register(
+        ArcElement,
+        CategoryScale,
+        LinearScale,
+        BarElement,
+        Title,
+        PointElement,
+        LineElement,
+        Tooltip,
+        Legend,
+        zoomPlugin,
+      );
+    };
+
+    initializeChart();
+  }, []);
   return (
     <html lang="en">
       <body>
