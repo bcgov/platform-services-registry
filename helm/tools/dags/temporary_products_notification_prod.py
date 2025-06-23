@@ -11,7 +11,7 @@ KEYCLOAK_AUTH_URL = "https://loginproxy.gov.bc.ca/auth"
 KEYCLOAK_REALM = "comsvcauth"
 CHES_SA_ID = os.getenv("PROD_CHES_SA_ID")
 CHES_SA_SECRET = os.getenv("PROD_CHES_SA_SECRET")
-CHES_API_URL = "https://ches.api.gov.bc.ca"
+CHES_API_URL = "https://ches.api.gov.bc.ca/api/v1"
 APP_URL = "https://registry.developer.gov.bc.ca"
 
 with DAG(

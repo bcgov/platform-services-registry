@@ -22,7 +22,7 @@ async function getAccessToken() {
   return token;
 }
 
-async function listUsers() {
+async function main() {
   const accessToken = await getAccessToken();
 
   const response = await axios.get('https://graph.microsoft.com/v1.0/users?$top=5', {
@@ -37,6 +37,6 @@ async function listUsers() {
   });
 }
 
-listUsers().catch((err) => {
-  console.error('Error listing users:', err.response?.data || err.message);
+main().catch((err) => {
+  console.error('Error:', err.response?.data || err.message);
 });

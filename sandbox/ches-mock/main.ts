@@ -1,4 +1,5 @@
 import nodemailer from 'nodemailer';
+import { v4 as uuidv4 } from 'uuid';
 import { z } from 'zod';
 import express, { Request, Response, NextFunction } from 'express';
 import { SMTP_HOST, SMTP_PORT, PORT, SMTP_USERNAME, SMTP_PASSWORD } from './config.js';
@@ -41,7 +42,7 @@ const transportOptions: SMTPTransport.Options = {
 
 const transporter = nodemailer.createTransport(transportOptions);
 
-export const sendViaMailPit = async (email: z.infer<typeof EmailSchema>): Promise<nodemailer.SentMessageInfo> => {
+export const sendSmtpEmail = async (email: z.infer<typeof EmailSchema>): Promise<nodemailer.SentMessageInfo> => {
   await transporter.verify();
 
   const info = await transporter.sendMail({
@@ -60,9 +61,18 @@ export const sendViaMailPit = async (email: z.infer<typeof EmailSchema>): Promis
 
 app.post('/email', async (req: Request, res: Response): Promise<void> => {
   const email = EmailSchema.parse(req.body);
-  const info = await sendViaMailPit(email);
+  const info = await sendSmtpEmail(email);
   console.log('Success:', info);
-  res.json({ success: true, info });
+
+  res.json({
+    messages: [
+      {
+        msgId: uuidv4(),
+        to: info.accepted,
+      },
+    ],
+    txId: uuidv4(),
+  });
 });
 
 app.get('/health', async (req: Request, res: Response): Promise<void> => {

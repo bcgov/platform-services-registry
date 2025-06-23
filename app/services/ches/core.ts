@@ -7,6 +7,7 @@ import { EMAIL_PREFIX, CHES_TOKEN_URL, CHES_API_URL, CHES_CLIENT_ID, CHES_CLIENT
 import { privateCloudTeamEmail } from '@/constants';
 import { logger } from '@/core/logging';
 import { fetchWithTimeout } from '@/utils/js';
+import { getClientCredentialsToken } from '@/utils/node';
 
 type NullOrString = string | null | undefined;
 type EmailAddress = string | undefined;
@@ -40,25 +41,14 @@ interface TokenData {
 const safeEmails = (emails: Array<NullOrString>): string[] => _uniq(_compact(_castArray(emails)).map(_toLower));
 
 const getToken = async ({ tokenUrl, clientId, clientSecret }: TokenData): Promise<string | null> => {
-  const response = await fetchWithTimeout(tokenUrl, {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/x-www-form-urlencoded',
-    },
-    body: new URLSearchParams({
-      grant_type: 'client_credentials',
-      client_id: clientId,
-      client_secret: clientSecret,
-    }),
-  });
+  const token = await getClientCredentialsToken(tokenUrl, clientId, clientSecret);
 
-  if (!response.ok) {
-    logger.error('Error retrieving token:', response.statusText);
+  if (!token) {
+    logger.error('Error retrieving CHES API token');
     return null;
   }
 
-  const data = (await response.json()) as { access_token: string };
-  return data.access_token;
+  return token;
 };
 
 export async function sendEmail(email: Email) {
@@ -80,7 +70,6 @@ export async function sendEmail(email: Email) {
     return;
   }
 
-  const apiUrl = CHES_API_URL || '';
   const subject = `${EMAIL_PREFIX}${email.subject}`;
 
   const body = sanitizeHtml(
@@ -99,7 +88,7 @@ export async function sendEmail(email: Email) {
 
   logger.info(`sending email: ${subject}`);
 
-  const response = await fetchWithTimeout(`${apiUrl}/email`, {
+  const response = await fetchWithTimeout(`${CHES_API_URL}/email`, {
     method: 'POST',
     headers: {
       Authorization: `Bearer ${token}`,
@@ -128,6 +117,7 @@ export async function sendEmail(email: Email) {
   }
 
   const data = await response.json();
+  logger.info('email sent', { result: data });
   return data;
 }
 
