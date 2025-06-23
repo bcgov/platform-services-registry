@@ -1,9 +1,11 @@
 import React from 'react';
 import SupportContact from '@/components/shared/SupportContact';
 import TeamContactsBase from '@/components/shared/TeamContacts';
+import AdditionalTeamMembers from './AdditionalTeamMembers';
 
 interface Props {
-  disabled?: boolean;
+  isTeamContactsDisabled?: boolean;
+  isAdditionalMembersDisabled?: boolean;
 }
 
 const userAttributes = [
@@ -34,11 +36,19 @@ const userAttributes = [
   },
 ];
 
-export default function TeamContacts({ disabled }: Props) {
+export default function TeamContacts({ isTeamContactsDisabled, isAdditionalMembersDisabled }: Props) {
   return (
-    <>
-      <TeamContactsBase disabled={disabled} userAttributes={userAttributes} />
-      <SupportContact disabled={disabled} />
-    </>
+    <div className="m-5">
+      <p className="mt-5 mb-3 font-bold text-lg">Primary Contacts</p>
+      <TeamContactsBase disabled={isTeamContactsDisabled} userAttributes={userAttributes} />
+
+      {isAdditionalMembersDisabled !== undefined && (
+        <>
+          <p className="mt-5 mb-3 font-bold text-lg">Additional team members (optional)</p>
+          <AdditionalTeamMembers disabled={isAdditionalMembersDisabled} />
+        </>
+      )}
+      <SupportContact disabled={isTeamContactsDisabled} />
+    </div>
   );
 }
