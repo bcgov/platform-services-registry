@@ -6,6 +6,7 @@ import AdditionalTeamMembers from './AdditionalTeamMembers';
 interface Props {
   isTeamContactsDisabled?: boolean;
   isAdditionalMembersDisabled?: boolean;
+  showAdditionalTeamMembers?: boolean;
 }
 
 const userAttributes = [
@@ -36,15 +37,19 @@ const userAttributes = [
   },
 ];
 
-export default function TeamContacts({ isTeamContactsDisabled, isAdditionalMembersDisabled }: Props) {
+export default function TeamContacts({
+  isTeamContactsDisabled,
+  isAdditionalMembersDisabled,
+  showAdditionalTeamMembers = true,
+}: Props) {
   return (
     <div className="m-5">
-      <p className="mt-5 mb-3 font-bold text-lg">Primary Contacts</p>
+      <h3 className="text-base 2xl:text-sm font-semibold leading-7">Primary Contacts</h3>
       <TeamContactsBase disabled={isTeamContactsDisabled} userAttributes={userAttributes} />
 
-      {isAdditionalMembersDisabled !== undefined && (
+      {showAdditionalTeamMembers && (
         <>
-          <p className="mt-5 mb-3 font-bold text-lg">Additional team members (optional)</p>
+          <h3 className="text-base 2xl:text-sm font-semibold leading-7">Additional team members (optional)</h3>
           <AdditionalTeamMembers disabled={isAdditionalMembersDisabled} />
         </>
       )}
