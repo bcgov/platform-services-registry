@@ -122,6 +122,7 @@ nav:
     - Email Scenario: business-logic/public-cloud/email-scenario.md
 - Research:
   - research/gold-migration-and-dr.md
+  - research/source-of-truth-of-idir.md
   - research/image-scanner.md
 - Tests:
   - tests/api-testing.md
