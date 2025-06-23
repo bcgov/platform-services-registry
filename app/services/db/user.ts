@@ -282,5 +282,5 @@ export async function getUsersEmailsByIds(ids: (string | null | undefined)[]) {
 
   const userMap = new Map(users.map((user) => [user.id, user]));
 
-  return filteredIds.map((id) => userMap.get(id) || null);
+  return filteredIds.map((id) => userMap.get(id) ?? null);
 }
