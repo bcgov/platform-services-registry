@@ -32,7 +32,7 @@ const TeamApiAccountsPage = createClientPage({
 });
 export default TeamApiAccountsPage(({ session }) => {
   const teamApiAccountData: TeamApiAccount[] = [];
-  const columns: columnDef[] = [
+  const tableColumns: columnDef[] = [
     {
       label: 'Name',
       value: 'name',
@@ -142,7 +142,7 @@ export default TeamApiAccountsPage(({ session }) => {
       <h1 className="text-xl lg:text-2xl 2xl:text-4xl font-semibold leading-7 text-gray-900 pb-2">Team API Accounts</h1>
 
       {session?.isAdmin && (
-        <div className="text-right">
+        <div className="text-right mb-11">
           <Button
             color="blue"
             onClick={async () => {
@@ -154,7 +154,7 @@ export default TeamApiAccountsPage(({ session }) => {
           </Button>
         </div>
       )}
-      <DataTable<TeamApiAccount> data={teamApiAccountData} columns={columns} />
+      <DataTable<TeamApiAccount> data={teamApiAccountData} columns={tableColumns} />
     </div>
   );
 });
