@@ -4,27 +4,27 @@ export const up = async (db, client) => {
   let skip = 0;
   let totalReplaced = 0;
 
-  const userExists = async (id) => {
+  const findUserById = async (id) => {
     if (!id) return false;
-    return await db.collection('User').findOne({ _id: id });
+    return await db.collection('User').findOne({ _id: id }, { projection: { _id: 1 } });
   };
 
-  const handleRequest = async (requestData) => {
-    const { _id, expenseAuthorityId, projectOwnerId } = requestData;
+  const handleRequest = async (request) => {
+    const { _id, expenseAuthorityId, projectOwnerId } = request;
 
     if (!expenseAuthorityId) {
-      console.warn(`Request ${_id} has no expenseAuthorityId`);
+      console.log(`Request ${_id} has no expenseAuthorityId`);
       return 0;
     }
 
-    const expenseUser = await userExists(expenseAuthorityId);
-    if (expenseUser) return 0;
+    const eaUser = await findUserById(expenseAuthorityId);
+    if (eaUser) return 0;
 
-    console.warn(`User ${expenseAuthorityId} not found for request ${_id}`);
+    console.log(`User ${expenseAuthorityId} not found for request ${_id}`);
 
-    const projectUser = await userExists(projectOwnerId);
-    if (!projectUser) {
-      console.warn(`Project owner ${projectOwnerId} also not found for request ${_id}`);
+    const poUser = await findUserById(projectOwnerId);
+    if (!poUser) {
+      console.log(`Project owner ${projectOwnerId} also not found for request ${_id}`);
       return 0;
     }
 
@@ -34,19 +34,19 @@ export const up = async (db, client) => {
   };
 
   while (true) {
-    const batch = await collection
+    const requests = await collection
       .find({}, { projection: { _id: 1, expenseAuthorityId: 1, projectOwnerId: 1 } })
       .skip(skip)
       .limit(batchSize)
       .toArray();
 
-    if (batch.length === 0) break;
+    if (requests.length === 0) break;
 
-    for (const requestData of batch) {
-      totalReplaced += await handleRequest(requestData);
+    for (const request of requests) {
+      totalReplaced += await handleRequest(request);
     }
 
-    skip += batch.length;
+    skip += requests.length;
   }
 
   console.log(`Updated ${totalReplaced} publicCloudRequestData - expenseAuthorityId replaced with projectOwnerId.`);
