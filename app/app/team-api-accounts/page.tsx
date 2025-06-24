@@ -21,7 +21,7 @@ interface TeamApiAccount {
   secret: string;
 }
 
-interface columnDef {
+interface ColumnDef {
   label?: string;
   value: string;
   cellProcessor: (account: TeamApiAccount, attr: string) => React.ReactNode;
@@ -32,7 +32,7 @@ const TeamApiAccountsPage = createClientPage({
 });
 export default TeamApiAccountsPage(({ session }) => {
   const teamApiAccountData: TeamApiAccount[] = [];
-  const tableColumns: columnDef[] = [
+  const tableColumns: ColumnDef[] = [
     {
       label: 'Name',
       value: 'name',
