@@ -17,7 +17,8 @@ export default function ActiveProducts({ data }: { data: ActiveProduct[] }) {
       title="Active Products"
       subtitle={`This chart displays the cumulative number of products created from ${formatDate(
         startDate,
-      )} to ${formatDate(endDate)}.`}
+        'MMMM d, yyyy',
+      )} to ${formatDate(endDate, 'MMMM d, yyyy')}.`}
       chartData={data}
       categories={['All Clusters'].concat(pageSnapshot.clusters?.length ? pageSnapshot.clusters : clustersWithoutDR)}
       onExport={() => downloadPrivateCloudActiveProducts({ data: { ...pageSnapshot } })}
