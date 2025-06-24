@@ -102,7 +102,7 @@ export default function DataTable<TData extends object>({
             table.getRowModel().rows.map((row) => (
               <tr key={row.id} className="bg-white odd:bg-gray-50">
                 {row.getVisibleCells().map((cell) => (
-                  <td key={cell.id} className="p-2 border align-top">
+                  <td key={cell.id} className="p-2 border align-center">
                     {flexRender(cell.column.columnDef.cell, cell.getContext())}
                   </td>
                 ))}
