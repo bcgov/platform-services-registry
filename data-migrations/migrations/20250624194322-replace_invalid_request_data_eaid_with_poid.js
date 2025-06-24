@@ -1,12 +1,13 @@
 export const up = async (db, client) => {
-  const collection = db.collection('PublicCloudRequestData');
+  const requestDataCollection = db.collection('PublicCloudRequestData');
+  const userCollection = db.collection('User');
   const batchSize = 100;
   let skip = 0;
   let totalReplaced = 0;
 
   const findUserById = async (id) => {
-    if (!id) return false;
-    return await db.collection('User').findOne({ _id: id }, { projection: { _id: 1 } });
+    if (!id) return null;
+    return await userCollection.findOne({ _id: id }, { projection: { _id: 1 } });
   };
 
   const handleRequest = async (request) => {
@@ -28,13 +29,13 @@ export const up = async (db, client) => {
       return 0;
     }
 
-    await collection.updateOne({ _id }, { $set: { expenseAuthorityId: projectOwnerId } });
+    await requestDataCollection.updateOne({ _id }, { $set: { expenseAuthorityId: projectOwnerId } });
     console.log(`Replaced expenseAuthorityId with projectOwnerId for request ${_id}`);
     return 1;
   };
 
   while (true) {
-    const requests = await collection
+    const requests = await requestDataCollection
       .find({}, { projection: { _id: 1, expenseAuthorityId: 1, projectOwnerId: 1 } })
       .skip(skip)
       .limit(batchSize)
