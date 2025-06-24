@@ -51,5 +51,10 @@ export async function callMsGraph(endpoint: string, accessToken: string, options
     ...(graphAPIProxy && { httpAgent: graphAPIProxy, httpsAgent: graphAPIProxy }),
   };
 
-  return axios(axiosOptions);
+  try {
+    const res = await axios(axiosOptions);
+    return res.data;
+  } catch {
+    return null;
+  }
 }

@@ -31,8 +31,8 @@ export async function sendRequest(url: string, options: AxiosRequestConfig = {})
     throw Error('invalid access token');
   }
 
-  const response = await callMsGraph(url, accessToken, options);
-  return response;
+  const data = await callMsGraph(url, accessToken, options);
+  return data;
 }
 
 const userAttributes = [
@@ -55,13 +55,9 @@ const userSelect = `$select=${userAttributes.join(',')}`;
 // See https://learn.microsoft.com/en-us/graph/api/user-get?view=graph-rest-1.0&tabs=http
 export async function getUser(idOrUserPrincipalName: string) {
   const url = `${M365_URL}/v1.0/users/${idOrUserPrincipalName}?${userSelect}`;
-  const res = await sendRequest(url);
+  const data = await sendRequest(url);
 
-  if (res.status !== 200) {
-    return null;
-  }
-
-  return processMsUser(res.data as MsUser);
+  return data ? processMsUser(data as MsUser) : null;
 }
 
 // See https://learn.microsoft.com/en-us/graph/api/user-list?view=graph-rest-1.0&tabs=http
@@ -73,13 +69,11 @@ export async function listUsersByEmail(email: string) {
   const query = [filter, userSelect, orderby, count, top].join('&');
 
   const url = `${M365_URL}/v1.0/users?${query}`;
-  const res = await sendRequest(url);
+  const data = await sendRequest(url);
 
-  if (res.status !== 200) {
-    return [];
-  }
+  if (!data) return [];
 
-  return (res.data as { value: MsUser[] }).value.map(processMsUser).filter((user) => !!user);
+  return (data as { value: MsUser[] }).value.map(processMsUser).filter((user) => !!user);
 }
 
 export async function getUserByEmail(email: string) {
@@ -92,13 +86,7 @@ export async function getUserByEmail(email: string) {
 
 export async function getUserPhoto(email: string) {
   const url = `${M365_URL}/v1.0/users/${email}/photo/$value`;
-  const res = await sendRequest(url, {
-    responseType: 'arraybuffer',
-  });
+  const data = await sendRequest(url, { responseType: 'arraybuffer' });
 
-  if (res.status !== 200) {
-    return null;
-  }
-
-  return res.data;
+  return data;
 }
