@@ -123,7 +123,7 @@ export default TeamApiAccountsPage(({ session }) => {
       </Table.Tr>
     );
   } else {
-    (apiAccounts || []).map((account) => {
+    (apiAccounts || []).forEach((account) => {
       const rolesMapper = account.protocolMappers?.find((mapper) => mapper.name === 'roles');
       const rolesStr = _get(rolesMapper, ['config', 'claim.value'], '');
 
