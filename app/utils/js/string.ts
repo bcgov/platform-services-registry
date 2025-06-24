@@ -73,3 +73,12 @@ export function replaceClassToStyleString(input: string, styleCallback: (classNa
     return `style="${styleObjectToString(styleObject)}"`;
   });
 }
+
+// remove trailing slashes from a URL
+export function normalizeUrl(url: string): string {
+  let end = url.length;
+  while (end > 0 && url[end - 1] === '/') {
+    end--;
+  }
+  return url.slice(0, end);
+}
