@@ -1,3 +1,4 @@
+import axios, { AxiosRequestConfig } from 'axios';
 import { HttpsProxyAgent } from 'https-proxy-agent';
 import { M365_PROXY_URL, USE_M365_PROXY } from '@/config';
 import {
@@ -35,21 +36,20 @@ export async function getAccessToken() {
   return token;
 }
 
-export async function callMsGraph(endpoint: string, accessToken: string, options = {}) {
-  const headers = new Headers();
-  const bearer = `Bearer ${accessToken}`;
-
-  headers.append('Authorization', bearer);
-  headers.append('ConsistencyLevel', 'eventual');
-
-  const defaultOptions: any = {
-    method: 'GET',
-    headers,
+export async function callMsGraph(endpoint: string, accessToken: string, options: AxiosRequestConfig = {}) {
+  const headers = {
+    ...(options.headers || {}),
+    Authorization: `Bearer ${accessToken}`,
+    ConsistencyLevel: 'eventual',
   };
 
-  if (graphAPIProxy) {
-    defaultOptions.agent = graphAPIProxy;
-  }
+  const axiosOptions: AxiosRequestConfig = {
+    method: 'GET',
+    url: endpoint,
+    headers,
+    ...options,
+    ...(graphAPIProxy && { httpAgent: graphAPIProxy, httpsAgent: graphAPIProxy }),
+  };
 
-  return fetch(endpoint, { ...defaultOptions, ...options });
+  return axios(axiosOptions);
 }
