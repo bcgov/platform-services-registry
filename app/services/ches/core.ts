@@ -1,3 +1,4 @@
+import axios from 'axios';
 import _castArray from 'lodash-es/castArray';
 import _compact from 'lodash-es/compact';
 import _toLower from 'lodash-es/toLower';
@@ -6,7 +7,6 @@ import sanitizeHtml from 'sanitize-html';
 import { EMAIL_PREFIX, CHES_TOKEN_URL, CHES_API_URL, CHES_CLIENT_ID, CHES_CLIENT_SECRET } from '@/config';
 import { privateCloudTeamEmail } from '@/constants';
 import { logger } from '@/core/logging';
-import { fetchWithTimeout } from '@/utils/js';
 import { getClientCredentialsToken } from '@/utils/node';
 
 type NullOrString = string | null | undefined;
@@ -86,39 +86,47 @@ export async function sendEmail(email: Email) {
     },
   );
 
-  logger.info(`sending email: ${subject}`);
+  logger.info(`Sending email: ${subject}`);
 
-  const response = await fetchWithTimeout(`${CHES_API_URL}/email`, {
-    method: 'POST',
-    headers: {
-      Authorization: `Bearer ${token}`,
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify({
-      bodyType: email.bodyType || 'html',
-      from: email.from || `Registry <${privateCloudTeamEmail}>`,
-      subject,
-      body,
-      to: safeEmails(email.to),
-      // Provide an empty array as a fallback if bcc or cc is undefined
-      bcc: safeEmails(email.bcc || []),
-      cc: safeEmails(email.cc || []),
-      delayTS: email.delayTS,
-      encoding: email.encoding || 'utf-8',
-      priority: email.priority || 'normal',
-      tag: email.tag,
-      attachments: email.attachments,
-    }),
-  });
+  try {
+    const response = await axios.post<{
+      messages: {
+        msgId: string;
+        to: string[];
+      }[];
+      txId: string;
+    }>(
+      `${CHES_API_URL}/email`,
+      {
+        bodyType: email.bodyType || 'html',
+        from: email.from || `Registry <${privateCloudTeamEmail}>`,
+        subject,
+        body,
+        to: safeEmails(email.to),
+        // Provide an empty array as a fallback if bcc or cc is undefined
+        bcc: safeEmails(email.bcc || []),
+        cc: safeEmails(email.cc || []),
+        delayTS: email.delayTS,
+        encoding: email.encoding || 'utf-8',
+        priority: email.priority || 'normal',
+        tag: email.tag,
+        attachments: email.attachments,
+      },
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          'Content-Type': 'application/json',
+        },
+        timeout: 5000,
+      },
+    );
 
-  if (!response.ok) {
-    logger.error('Error sending email:', await response.json());
+    logger.info('Email sent', { result: response.data });
+    return response.data;
+  } catch (error) {
+    logger.error('Error sending email:', error);
     return;
   }
-
-  const data = await response.json();
-  logger.info('email sent', { result: data });
-  return data;
 }
 
 export async function safeSendEmail(email: Email) {

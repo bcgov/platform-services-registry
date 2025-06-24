@@ -1,3 +1,4 @@
+import { AxiosRequestConfig } from 'axios';
 import { M365_URL } from '@/config';
 import { parseMinistryFromDisplayName } from '@/helpers/user';
 import { MsUser, AppUser } from '@/types/user';
@@ -23,14 +24,14 @@ export function processMsUser(user: MsUser): AppUser | null {
   };
 }
 
-export async function sendRequest(url: string) {
+export async function sendRequest(url: string, options: AxiosRequestConfig = {}) {
   const accessToken = await getAccessToken();
 
   if (!accessToken) {
     throw Error('invalid access token');
   }
 
-  const response = await callMsGraph(url, accessToken);
+  const response = await callMsGraph(url, accessToken, options);
   return response;
 }
 
@@ -60,8 +61,7 @@ export async function getUser(idOrUserPrincipalName: string) {
     return null;
   }
 
-  const data = await res.json();
-  return processMsUser(data as MsUser);
+  return processMsUser(res.data as MsUser);
 }
 
 // See https://learn.microsoft.com/en-us/graph/api/user-list?view=graph-rest-1.0&tabs=http
@@ -79,8 +79,7 @@ export async function listUsersByEmail(email: string) {
     return [];
   }
 
-  const data = await res.json();
-  return (data as { value: MsUser[] }).value.map(processMsUser).filter((user) => !!user);
+  return (res.data as { value: MsUser[] }).value.map(processMsUser).filter((user) => !!user);
 }
 
 export async function getUserByEmail(email: string) {
@@ -93,12 +92,13 @@ export async function getUserByEmail(email: string) {
 
 export async function getUserPhoto(email: string) {
   const url = `${M365_URL}/v1.0/users/${email}/photo/$value`;
-  const res = await sendRequest(url);
+  const res = await sendRequest(url, {
+    responseType: 'arraybuffer',
+  });
 
   if (res.status !== 200) {
     return null;
   }
 
-  const data = await res.arrayBuffer();
-  return data;
+  return res.data;
 }
