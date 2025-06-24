@@ -7,7 +7,7 @@ dependencies:
   version: 0.1.0
 - name: mongodb
   repository: https://charts.bitnami.com/bitnami
-  version: 16.5.23
+  version: 16.5.24
 - name: nats
   repository: file://../_nats
   version: 0.1.0
@@ -23,5 +23,5 @@ dependencies:
 - name: mailpit
   repository: file://../_mailpit
   version: 0.1.0
-digest: sha256:20d9467e200bf82beb7bf4498dbe4a2f2926a96a374380e945b59ae403fef498
-generated: "2025-06-18T21:32:17.015693453Z"
+digest: sha256:ed3ba365502c153aeb542b8c99932573e06f036f77259578b9a606441adc9c6c
+generated: "2025-06-24T19:03:09.628986537Z"
