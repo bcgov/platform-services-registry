@@ -14,7 +14,7 @@ dependencies:
     repository: 'file://../_email'
     condition: email.enabled
   - name: mongodb
-    version: '16.5.23' #8.0.4
+    version: '16.5.24' #8.0.4
     repository: https://charts.bitnami.com/bitnami
     condition: mongodb.enabled
   - name: nats
