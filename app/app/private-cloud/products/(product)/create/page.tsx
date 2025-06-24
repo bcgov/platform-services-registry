@@ -46,7 +46,9 @@ export default privateCloudProductNew(({ session }) => {
       label: 'Team members',
       description: '',
       Component: TeamContacts,
-      componentArgs: {},
+      componentArgs: {
+        showAdditionalTeamMembers: false,
+      },
     },
     {
       LeftIcon: IconSettings,

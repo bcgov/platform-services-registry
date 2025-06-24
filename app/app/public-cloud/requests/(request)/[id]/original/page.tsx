@@ -75,14 +75,10 @@ export default publicCloudRequestOriginal(({ router }) => {
       label: 'Team members',
       description: '',
       Component: TeamContacts,
-      componentArgs: { disabled: isDisabled },
-    },
-    {
-      LeftIcon: IconUsersGroup,
-      label: 'Additional team members',
-      description: '',
-      Component: AdditionalTeamMembers,
-      componentArgs: { disabled: true },
+      componentArgs: {
+        isTeamContactsDisabled: isDisabled,
+        isAdditionalMembersDisabled: true,
+      },
     },
     {
       LeftIcon: IconMoneybag,

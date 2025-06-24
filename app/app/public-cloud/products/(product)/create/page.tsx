@@ -64,7 +64,9 @@ export default publicCloudProductNew(() => {
       label: 'Team members',
       description: '',
       Component: TeamContacts,
-      componentArgs: {},
+      componentArgs: {
+        showAdditionalTeamMembers: false,
+      },
     },
     {
       LeftIcon: IconMoneybag,

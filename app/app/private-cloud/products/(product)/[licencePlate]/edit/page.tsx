@@ -121,14 +121,10 @@ export default privateCloudProductEdit(({ session }) => {
       label: 'Team members',
       description: '',
       Component: TeamContacts,
-      componentArgs: { disabled: isDisabled },
-    },
-    {
-      LeftIcon: IconUsersGroup,
-      label: 'Additional team members',
-      description: '',
-      Component: AdditionalTeamMembers,
-      componentArgs: { disabled: isDisabled || !snap.currentProduct._permissions.manageMembers },
+      componentArgs: {
+        isTeamContactsDisabled: isDisabled,
+        isAdditionalMembersDisabled: isDisabled || !snap.currentProduct._permissions.manageMembers,
+      },
     },
     {
       LeftIcon: IconSettings,
