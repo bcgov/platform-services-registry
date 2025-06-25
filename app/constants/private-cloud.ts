@@ -139,13 +139,7 @@ const createCostColumns = <T extends CostDetails<K>, K extends string>(detailsKe
   {
     label: 'Total Cost',
     value: `${detailsKey}.totalCost`,
-    cellProcessor: (item) =>
-      formatCurrency(
-        item[detailsKey].cpuToDate +
-          item[detailsKey].storageToDate +
-          item[detailsKey].cpuToProjected +
-          item[detailsKey].storageToProjected,
-      ),
+    cellProcessor: (item) => formatCurrency(item[detailsKey].totalCost),
   },
 ];
 
