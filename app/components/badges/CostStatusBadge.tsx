@@ -1,5 +1,5 @@
-import { formatDate } from 'date-fns';
 import { PeriodicCostMetric } from '@/types/private-cloud';
+import { formatDate } from '@/utils/js/date';
 
 export default function CostStatusBadge(item: PeriodicCostMetric) {
   return (
