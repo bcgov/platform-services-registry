@@ -98,15 +98,19 @@ export const namespaceKeys: ResourceRequestsEnvKeys = ['development', 'test', 'p
 export const resourceKeys: ResourceRequestsKeys = ['cpu', 'memory', 'storage'];
 
 export const periodicCostCommonColumns = <T extends PeriodicCostMetric>(): CostTableColumnDef<T>[] => [
-  { label: 'CPU (Cores)', value: 'cpuCore', cellProcessor: (item, attr) => item.total.cpu.value },
-  { label: 'Storage (GiB)', value: 'storageGib', cellProcessor: (item, attr) => item.total.storage.value },
-  { label: 'CPU Cost', value: 'cpuCost', cellProcessor: (item) => formatCurrency(item.total.cpu.cost) },
+  { label: 'CPU (Cores)', value: 'total.cpu.value', cellProcessor: (item, attr) => item.total.cpu.value },
+  { label: 'Storage (GiB)', value: 'total.storage.value', cellProcessor: (item, attr) => item.total.storage.value },
+  { label: 'CPU Cost', value: 'total.cpu.cost', cellProcessor: (item) => formatCurrency(item.total.cpu.cost) },
   {
     label: 'Storage Cost',
-    value: 'storageCost',
+    value: 'total.storage.cost',
     cellProcessor: (item, attr) => formatCurrency(item.total.storage.cost),
   },
-  { label: 'Total Cost', value: 'totalCost', cellProcessor: (item, attr) => formatCurrency(item.total.subtotal.cost) },
+  {
+    label: 'Total Cost',
+    value: 'total.subtotal.cost',
+    cellProcessor: (item, attr) => formatCurrency(item.total.subtotal.cost),
+  },
 ];
 
 type CostDetails<T extends string> = Record<T, CostMetric>;
@@ -114,27 +118,27 @@ type CostDetails<T extends string> = Record<T, CostMetric>;
 const createCostColumns = <T extends CostDetails<K>, K extends string>(detailsKey: K): CostTableColumnDef<T>[] => [
   {
     label: 'CPU Cost',
-    value: 'cpuCost',
+    value: `${detailsKey}.cpuToDate`,
     cellProcessor: (item) => formatCurrency(item[detailsKey].cpuToDate),
   },
   {
     label: 'Storage Cost',
-    value: 'storageCost',
+    value: `${detailsKey}.storageToDate`,
     cellProcessor: (item) => formatCurrency(item[detailsKey].storageToDate),
   },
   {
     label: 'CPU Cost (Projected)',
-    value: 'cpuCostProjected',
+    value: `${detailsKey}.cpuToProjected`,
     cellProcessor: (item) => formatCurrency(item[detailsKey].cpuToProjected),
   },
   {
     label: 'Storage Cost (Projected)',
-    value: 'storageCostProjected',
+    value: `${detailsKey}.storageToProjected`,
     cellProcessor: (item) => formatCurrency(item[detailsKey].storageToProjected),
   },
   {
     label: 'Total Cost',
-    value: 'totalCost',
+    value: `${detailsKey}.totalCost`,
     cellProcessor: (item) =>
       formatCurrency(
         item[detailsKey].cpuToDate +
