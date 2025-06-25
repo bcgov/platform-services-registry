@@ -26,7 +26,8 @@ export default function MinistryDistribution({ data }: { data: MinistryDistribut
       title="Ministry per Provider"
       subtitle={`This chart displays the cluster distributions by ministries for products created from ${formatDate(
         startDate,
-      )} to ${formatDate(endDate)}.`}
+        'MMMM d, yyyy',
+      )} to ${formatDate(endDate, 'MMMM d, yyyy')}.`}
       data={pieChartData}
     />
   );

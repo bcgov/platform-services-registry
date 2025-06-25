@@ -15,7 +15,8 @@ export default function AllRequests({ data }: { data: AllRequests[] }) {
       title="Requests over time"
       subtitle={`This chart displays the number of requests created over time for each request type from ${formatDate(
         startDate,
-      )} to ${formatDate(endDate)}.`}
+        'MMMM d, yyyy',
+      )} to ${formatDate(endDate, 'MMMM d, yyyy')}.`}
       chartData={data}
       categories={['All requests', 'Edit requests', 'Create requests', 'Delete requests']}
       onExport={() => downloadPrivateCloudAllRequests({ data: { ...pageSnapshot } })}

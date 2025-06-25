@@ -15,7 +15,8 @@ export default function ContactChangeRequests({ data }: { data: ContactsChange[]
       title="Contact change requests over time"
       subtitle={`This chart displays edit requests where contact changes were requested and the request decision from ${formatDate(
         startDate,
-      )} to ${formatDate(endDate)}.`}
+        'MMMM d, yyyy',
+      )} to ${formatDate(endDate, 'MMMM d, yyyy')}.`}
       chartData={data}
       categories={['Contact changes']}
       onExport={async () => downloadPublicCloudContactChangeRequests({ data: { ...pageSnapshot } })}

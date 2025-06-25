@@ -15,7 +15,8 @@ export default function QuotaRequests({ data }: { data: QuotaChange[] }) {
       title="Quota requests over time"
       subtitle={`This chart displays edit requests where a quota change was requested and the request decision from ${formatDate(
         startDate,
-      )} to ${formatDate(endDate)}.`}
+        'MMMM d, yyyy',
+      )} to ${formatDate(endDate, 'MMMM d, yyyy')}.`}
       chartData={data}
       categories={['All quota requests', 'Approved quota requests', 'Rejected quota requests']}
       onExport={() => downloadPrivateCloudQuotaChangeRequests({ data: { ...pageSnapshot } })}

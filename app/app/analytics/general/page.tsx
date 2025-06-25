@@ -51,7 +51,8 @@ export default analyticsDashboard(() => {
           title="Daily User Login Events"
           subtitle={`This chart displays the number of login events per day from ${formatDate(
             startDate,
-          )} to ${formatDate(endDate)}.`}
+            'MMMM d, yyyy',
+          )} to ${formatDate(endDate, 'MMMM d, yyyy')}.`}
           chartData={data}
           categories={['Logins']}
           onExport={() => downloadAnalyticsGeneral({ dates: snap.dates, userId: snap.userId })}

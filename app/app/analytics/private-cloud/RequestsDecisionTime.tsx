@@ -15,7 +15,8 @@ export default function RequestsDecisionTime({ data }: { data: RequestDecisionTi
       title="Request decision time frequency (%)"
       subtitle={`This chart displays the frequency of request decision times (%) for  products created from ${formatDate(
         startDate,
-      )} to ${formatDate(endDate)}.`}
+        'MMMM d, yyyy',
+      )} to ${formatDate(endDate, 'MMMM d, yyyy')}.`}
       chartData={data}
       categories={['Percentage']}
       valueFormatter={(val) => `${val.toFixed(2)}%`}
