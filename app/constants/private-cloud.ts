@@ -1,4 +1,12 @@
 import { Cluster, Prisma, ResourceRequestsEnv, ResourceRequests, PrivateCloudProductMemberRole } from '@/prisma/client';
+import {
+  CostTableColumnDef,
+  CostMetric,
+  DailyCostMetric,
+  MonthlyCostMetric,
+  PeriodicCostMetric,
+} from '@/types/private-cloud';
+import { formatCurrency } from '@/utils/js';
 import { productSorts } from './common';
 
 export const privateCloudProductMemberRoles = Object.values(PrivateCloudProductMemberRole);
@@ -88,3 +96,57 @@ export type ResourceRequestsKeys = Array<keyof ResourceRequests>;
 
 export const namespaceKeys: ResourceRequestsEnvKeys = ['development', 'test', 'production', 'tools'];
 export const resourceKeys: ResourceRequestsKeys = ['cpu', 'memory', 'storage'];
+
+export const periodicCostCommonColumns = <T extends PeriodicCostMetric>(): CostTableColumnDef<T>[] => [
+  { label: 'CPU (Cores)', value: 'cpuCore', cellProcessor: (item, attr) => item.total.cpu.value },
+  { label: 'Storage (GiB)', value: 'storageGib', cellProcessor: (item, attr) => item.total.storage.value },
+  { label: 'CPU Cost', value: 'cpuCost', cellProcessor: (item) => formatCurrency(item.total.cpu.cost) },
+  {
+    label: 'Storage Cost',
+    value: 'storageCost',
+    cellProcessor: (item, attr) => formatCurrency(item.total.storage.cost),
+  },
+  { label: 'Total Cost', value: 'totalCost', cellProcessor: (item, attr) => formatCurrency(item.total.subtotal.cost) },
+];
+
+type CostDetails<T extends string> = Record<T, CostMetric>;
+
+const createCostColumns = <T extends CostDetails<K>, K extends string>(detailsKey: K): CostTableColumnDef<T>[] => [
+  {
+    label: 'CPU Cost',
+    value: 'cpuCost',
+    cellProcessor: (item) => formatCurrency(item[detailsKey].cpuToDate),
+  },
+  {
+    label: 'Storage Cost',
+    value: 'storageCost',
+    cellProcessor: (item) => formatCurrency(item[detailsKey].storageToDate),
+  },
+  {
+    label: 'CPU Cost (Projected)',
+    value: 'cpuCostProjected',
+    cellProcessor: (item) => formatCurrency(item[detailsKey].cpuToProjected),
+  },
+  {
+    label: 'Storage Cost (Projected)',
+    value: 'storageCostProjected',
+    cellProcessor: (item) => formatCurrency(item[detailsKey].storageToProjected),
+  },
+  {
+    label: 'Total Cost',
+    value: 'totalCost',
+    cellProcessor: (item) =>
+      formatCurrency(
+        item[detailsKey].cpuToDate +
+          item[detailsKey].storageToDate +
+          item[detailsKey].cpuToProjected +
+          item[detailsKey].storageToProjected,
+      ),
+  },
+];
+
+export const monthlyCostCommonColumns = <T extends MonthlyCostMetric>(): CostTableColumnDef<T>[] =>
+  createCostColumns<T, 'monthDetails'>('monthDetails');
+
+export const dailyCostCommonColumns = <T extends DailyCostMetric>(): CostTableColumnDef<T>[] =>
+  createCostColumns<T, 'dayDetails'>('dayDetails');

@@ -248,3 +248,30 @@ export interface YearlyCost {
     storageToProjected: number[];
   };
 }
+
+export interface PeriodicCostMetric
+  extends Pick<CostItem, 'isArchived' | 'isProjected' | 'startDate' | 'endDate' | 'total'> {}
+
+export interface CostMetric {
+  cpuToDate: number;
+  storageToDate: number;
+  cpuToProjected: number;
+  storageToProjected: number;
+  totalCost: number;
+}
+
+export interface DailyCostMetric {
+  day: number;
+  dayDetails: CostMetric;
+}
+
+export interface MonthlyCostMetric {
+  month: number;
+  monthDetails: CostMetric;
+}
+
+export interface ColumnDef<T> {
+  label?: string;
+  value: string;
+  cellProcessor: (item: T, attr: string) => React.ReactNode;
+}
