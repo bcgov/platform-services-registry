@@ -270,7 +270,7 @@ export interface MonthlyCostMetric {
   monthDetails: CostMetric;
 }
 
-export interface ColumnDef<T> {
+export interface CostTableColumnDef<T> {
   label?: string;
   value: string;
   cellProcessor: (item: T, attr: string) => React.ReactNode;
