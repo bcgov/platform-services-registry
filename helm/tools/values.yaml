@@ -47,9 +47,9 @@ airflow:
 
   defaultAirflowRepository: ghcr.io/bcgov/pltsvc-tools-airflow
   # See https://github.com/bcgov/platform-services-registry/pkgs/container/pltsvc-tools-airflow
-  defaultAirflowTag: "7c50ee38729c0acff0fdd20371d7617f5f827815" # pragma: allowlist secret
+  defaultAirflowTag: "9bed7f499e4ff864ff0ee1fec5c018e51c115157" # pragma: allowlist secret
 
-  airflowVersion: "3.0.1"
+  airflowVersion: "3.0.2"
 
   images:
     useDefaultImageForMigration: false
@@ -128,18 +128,6 @@ airflow:
       - name: secdash-airflow-shared
         mountPath: /opt/airflow/shared
 
-  webserver:
-    replicas: 1
-    resources:
-      limits:
-        cpu: 1000m
-        memory: 2Gi
-      requests:
-        cpu: 500m
-        memory: 1Gi
-    waitForMigrations:
-      enabled: false
-
   apiserver:
     replicas: 1
     resources:
@@ -151,6 +139,18 @@ airflow:
         memory: 1Gi
     waitForMigrations:
       enabled: true
+
+  webserver:
+    replicas: 1
+    resources:
+      limits:
+        cpu: 1000m
+        memory: 2Gi
+      requests:
+        cpu: 500m
+        memory: 1Gi
+    waitForMigrations:
+      enabled: false
 
   triggerer:
     enabled: false
