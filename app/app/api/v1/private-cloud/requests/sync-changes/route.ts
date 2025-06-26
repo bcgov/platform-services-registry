@@ -7,8 +7,8 @@ import { RequestType } from '@/prisma/client';
 import { enrichMembersWithEmail } from '@/services/db';
 
 const apiHandler = createApiHandler({
-  // roles: [GlobalRole.Admin],
-  // useServiceAccount: true,
+  roles: [GlobalRole.Admin],
+  useServiceAccount: true,
 });
 export const POST = apiHandler(async () => {
   const requests = await prisma.privateCloudRequest.findMany({
