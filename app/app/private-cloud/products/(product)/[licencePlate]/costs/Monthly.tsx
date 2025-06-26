@@ -6,14 +6,13 @@ import { useQuery } from '@tanstack/react-query';
 import { format } from 'date-fns';
 import { Session } from 'next-auth';
 import { useState } from 'react';
-import CostStatusBadge from '@/components/badges/CostStatusBadge';
 import DataTable from '@/components/generic/data-table/DataTable';
 import LoadingBox from '@/components/generic/LoadingBox';
 import MonthlyCostSummary from '@/components/private-cloud/monthly-cost/MonthlyCostSummary';
 import MonthlyCostChart from '@/components/private-cloud/monthly-cost/MonthyCostChart';
-import { dailyCostCommonColumns, periodicCostCommonColumns } from '@/constants/private-cloud';
+import { dailyCostColumns, periodicCostColumns } from '@/constants/private-cloud';
 import { downloadPrivateCloudMonthlyCosts, getMonthlyCosts } from '@/services/backend/private-cloud/products';
-import { CostTableColumnDef, DailyCostMetric, PeriodicCostMetric } from '@/types/private-cloud';
+import { DailyCostMetric, PeriodicCostMetric } from '@/types/private-cloud';
 import { getDateFromYyyyMmDd } from '@/utils/js';
 
 export default function Monthly({ licencePlate, session }: { licencePlate: string; session: Session }) {
@@ -49,16 +48,6 @@ export default function Monthly({ licencePlate, session }: { licencePlate: strin
       },
     };
   });
-
-  const periodicCostColumns: CostTableColumnDef<PeriodicCostMetric>[] = [
-    { label: 'Data Range', value: 'startDate', cellProcessor: (item, attr) => CostStatusBadge(item) },
-    ...periodicCostCommonColumns<PeriodicCostMetric>(),
-  ];
-
-  const dailyCostColumns: CostTableColumnDef<DailyCostMetric>[] = [
-    { label: 'Day', value: 'day', cellProcessor: (item) => item.day },
-    ...dailyCostCommonColumns<DailyCostMetric>(),
-  ];
 
   return (
     <div>
