@@ -4,10 +4,11 @@ import prisma from '@/core/prisma';
 import { OkResponse } from '@/core/responses';
 import { comparePrivateProductData } from '@/helpers/product-change';
 import { RequestType } from '@/prisma/client';
+import { enrichMembersWithEmail } from '@/services/db';
 
 const apiHandler = createApiHandler({
-  roles: [GlobalRole.Admin],
-  useServiceAccount: true,
+  // roles: [GlobalRole.Admin],
+  // useServiceAccount: true,
 });
 export const POST = apiHandler(async () => {
   const requests = await prisma.privateCloudRequest.findMany({
@@ -31,8 +32,10 @@ export const POST = apiHandler(async () => {
   });
 
   const results = await Promise.all(
-    requests.map((req) => {
-      const { changes, ...otherChangeMeta } = comparePrivateProductData(req.originalData, req.decisionData);
+    requests.map(async (req) => {
+      const enrichedOriginal = await enrichMembersWithEmail(req.originalData);
+      const enrichedDecision = await enrichMembersWithEmail(req.decisionData);
+      const { changes, ...otherChangeMeta } = comparePrivateProductData(enrichedOriginal, enrichedDecision);
       return prisma.privateCloudRequest.update({ where: { id: req.id }, data: { changes: otherChangeMeta } });
     }),
   );
