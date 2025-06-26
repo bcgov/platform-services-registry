@@ -51,11 +51,7 @@ export default function Monthly({ licencePlate, session }: { licencePlate: strin
   });
 
   const periodicCostColumns: CostTableColumnDef<PeriodicCostMetric>[] = [
-    {
-      label: 'Data Range',
-      value: 'startDate',
-      cellProcessor: (item, attr) => CostStatusBadge(item),
-    },
+    { label: 'Data Range', value: 'startDate', cellProcessor: (item, attr) => CostStatusBadge(item) },
     ...periodicCostCommonColumns<PeriodicCostMetric>(),
   ];
 
