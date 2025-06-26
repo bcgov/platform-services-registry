@@ -8,6 +8,7 @@ import {
   getSortedRowModel,
   useReactTable,
 } from '@tanstack/react-table';
+import _get from 'lodash-es/get';
 import _isString from 'lodash-es/isString';
 import _startCase from 'lodash-es/startCase';
 import { useMemo, useState } from 'react';
@@ -46,8 +47,11 @@ export default function DataTable<TData extends object>({
           }))
         : []);
 
-    return cols.map((col: ColumnDefinition<TData>) =>
-      columnHelper.accessor((row) => row[col.value], {
+    return cols.map((col: ColumnDefinition<TData>) => {
+      // Resolve nested paths (e.g., "dayDetails.cpuToDate")
+      const getNestedValue = (obj: TData, path: string) => _get(obj, path);
+
+      return columnHelper.accessor((row) => getNestedValue(row, col.value), {
         id: col.value,
         header: ({ column }) => (
           <div className="flex items-center cursor-pointer rounded" onClick={() => column.toggleSorting()}>
@@ -67,8 +71,8 @@ export default function DataTable<TData extends object>({
         cell: (info: CellContext<TData, TData>) => (
           <>{col.cellProcessor ? col.cellProcessor(info.row.original, col.value) : info.getValue()}</>
         ),
-      }),
-    );
+      });
+    });
   }, [_columns, data, columnHelper]);
 
   const table = useReactTable({
