@@ -5,12 +5,15 @@ import { MonthPickerInput } from '@mantine/dates';
 import { useQuery } from '@tanstack/react-query';
 import { format } from 'date-fns';
 import { Session } from 'next-auth';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
+import CostStatusBadge from '@/components/badges/CostStatusBadge';
+import DataTable from '@/components/generic/data-table/DataTable';
 import LoadingBox from '@/components/generic/LoadingBox';
 import MonthlyCostSummary from '@/components/private-cloud/monthly-cost/MonthlyCostSummary';
-import MonthlyCostTable from '@/components/private-cloud/monthly-cost/MonthlyCostTable';
 import MonthlyCostChart from '@/components/private-cloud/monthly-cost/MonthyCostChart';
+import { dailyCostCommonColumns, periodicCostCommonColumns } from '@/constants/private-cloud';
 import { downloadPrivateCloudMonthlyCosts, getMonthlyCosts } from '@/services/backend/private-cloud/products';
+import { CostTableColumnDef, DailyCostMetric, PeriodicCostMetric } from '@/types/private-cloud';
 import { getDateFromYyyyMmDd } from '@/utils/js';
 
 export default function Monthly({ licencePlate, session }: { licencePlate: string; session: Session }) {
@@ -30,6 +33,36 @@ export default function Monthly({ licencePlate, session }: { licencePlate: strin
   const handleChange = (date: string | null) => {
     setSelectedDate(date ? getDateFromYyyyMmDd(date) : new Date());
   };
+
+  const dailyCostData = data.days.map((day, idx) => {
+    const { cpuToDate, storageToDate, cpuToProjected, storageToProjected } = data.dayDetails;
+    const totalCost = cpuToDate[idx] + storageToDate[idx] + cpuToProjected[idx] + storageToProjected[idx];
+
+    return {
+      day,
+      dayDetails: {
+        cpuToDate: cpuToDate[idx],
+        storageToDate: storageToDate[idx],
+        cpuToProjected: cpuToProjected[idx],
+        storageToProjected: storageToProjected[idx],
+        totalCost,
+      },
+    };
+  });
+
+  const periodicCostColumns: CostTableColumnDef<PeriodicCostMetric>[] = [
+    {
+      label: 'Data Range',
+      value: 'startDate',
+      cellProcessor: (item, attr) => CostStatusBadge(item),
+    },
+    ...periodicCostCommonColumns<PeriodicCostMetric>(),
+  ];
+
+  const dailyCostColumns: CostTableColumnDef<DailyCostMetric>[] = [
+    { label: 'Day', value: 'day', cellProcessor: (item) => item.day },
+    ...dailyCostCommonColumns<DailyCostMetric>(),
+  ];
 
   return (
     <div>
@@ -70,7 +103,9 @@ export default function Monthly({ licencePlate, session }: { licencePlate: strin
       )}
 
       <LoadingBox isLoading={isLoading}>
-        <MonthlyCostTable data={{ items: data.items, days: data.days, dayDetails: data.dayDetails }} />
+        <DataTable<PeriodicCostMetric> data={data.items} columns={periodicCostColumns} defaultPageSize={5} />
+        <br />
+        <DataTable<DailyCostMetric> data={dailyCostData} columns={dailyCostColumns} defaultPageSize={5} />
       </LoadingBox>
     </div>
   );
