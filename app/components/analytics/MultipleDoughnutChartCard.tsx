@@ -1,4 +1,4 @@
-import { Card, Title, Subtitle } from '@tremor/react';
+import { Card } from '@mantine/core';
 import _map from 'lodash-es/map';
 import _orderBy from 'lodash-es/orderBy';
 import _sum from 'lodash-es/sum';
@@ -19,11 +19,13 @@ export default function DoughnutChartCard({
   onExport?: () => Promise<boolean>;
 }) {
   return (
-    <div className="flex flex-col items-end">
-      <ExportButton onExport={onExport} className="m-2" />
-      <Card>
-        <Title>{title}</Title>
-        <Subtitle>{subtitle}</Subtitle>
+    <div>
+      <div className="text-right">
+        <ExportButton onExport={onExport} className="m-2" />
+      </div>
+      <Card shadow="sm" padding="lg" radius="md" withBorder>
+        <h2>{title}</h2>
+        <h5 className="text-gray-600">{subtitle}</h5>
         <div className={`grid grid-cols-1 lg:grid-cols-${Object.values(data).length} lg:gap-4`}>
           {_map(data, (items: DoughnutChartDataItem[], key: string) => {
             const total = _sumBy(items, (item) => item.value);
