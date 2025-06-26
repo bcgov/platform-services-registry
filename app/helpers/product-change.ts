@@ -107,6 +107,8 @@ const publicDataFields = [
   'name',
   'description',
   'ministry',
+  'providerSelectionReasons',
+  'providerSelectionReasonsNote',
   'accountCoding',
   'budget',
   'projectOwner.email',
@@ -123,7 +125,9 @@ function preparePublicCloudProductCloudData(data: any) {
       roles: (member.roles || []).join(', '),
     }));
   }
-
+  if (data.providerSelectionReasons) {
+    data.providerSelectionReasons = data.providerSelectionReasons.join(', ');
+  }
   return data;
 }
 
@@ -147,6 +151,8 @@ export function comparePublicProductData(data1: any, data2: any) {
       case 'name':
       case 'description':
       case 'ministry':
+      case 'providerSelectionReasons':
+      case 'providerSelectionReasonsNote':
         profileChanged = true;
         break;
 
