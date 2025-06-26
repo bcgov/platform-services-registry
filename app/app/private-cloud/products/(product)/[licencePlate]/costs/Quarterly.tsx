@@ -87,7 +87,6 @@ export default function Quarterly({ licencePlate, session }: { licencePlate: str
 
       <LoadingBox isLoading={isLoading}>
         <DataTable<PeriodicCostMetric> data={data.items} columns={periodicCostColumns} defaultPageSize={5} />
-        <br />
         <DataTable<MonthlyCostMetric> data={monthlyCostData} columns={monthlyCostColumns} defaultPageSize={5} />
       </LoadingBox>
     </div>

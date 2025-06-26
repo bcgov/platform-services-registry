@@ -89,7 +89,7 @@ export default function DataTable<TData extends object>({
 
   return (
     <>
-      <table className="w-full text-sm border-collapse border">
+      <table className="w-full text-sm border-collapse border mt-5">
         <thead>
           {table.getHeaderGroups().map((headerGroup) => (
             <tr key={headerGroup.id}>

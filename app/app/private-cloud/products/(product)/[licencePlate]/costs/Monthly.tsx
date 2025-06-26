@@ -89,7 +89,6 @@ export default function Monthly({ licencePlate, session }: { licencePlate: strin
 
       <LoadingBox isLoading={isLoading}>
         <DataTable<PeriodicCostMetric> data={data.items} columns={periodicCostColumns} defaultPageSize={5} />
-        <br />
         <DataTable<DailyCostMetric> data={dailyCostData} columns={dailyCostColumns} defaultPageSize={5} />
       </LoadingBox>
     </div>
