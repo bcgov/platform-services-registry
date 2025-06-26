@@ -1,3 +1,29 @@
+## [0.71.0](https://github.com/bcgov/platform-services-registry/compare/v0.70.0...v0.71.0) (2025-06-26)
+
+### Features
+
+* **4877:** exclude non-business days in decision charts ([4db3378](https://github.com/bcgov/platform-services-registry/commit/4db337849f10ce87cf9e49ffd00c29a90b7f5061))
+* **5737:** support email delivery in Airflow dev setup ([9bbd05b](https://github.com/bcgov/platform-services-registry/commit/9bbd05b562d054e53b7af2597715a6024035ac22))
+* **5758:** add remote logging support for Airflow tasks ([56326b2](https://github.com/bcgov/platform-services-registry/commit/56326b238373f4dae2db33e258b0372b0b9c90c7))
+* **5856:** design table attributes ([65bdeba](https://github.com/bcgov/platform-services-registry/commit/65bdeba006663e1a4ed238fd59de7090a0708f74))
+* **5856:** replace team api account table with cc table ([5bb3f5f](https://github.com/bcgov/platform-services-registry/commit/5bb3f5f01bbde0f71eb65a31176e5df5dfe6b056))
+* **5877:** consolidate team and additional team members sections ([30b42f8](https://github.com/bcgov/platform-services-registry/commit/30b42f8e4faae47bf756c27576f95c8d9bad9c9a))
+* **5901:** verify successful email delivery via CHES ([50a041c](https://github.com/bcgov/platform-services-registry/commit/50a041c611ad6ab642c454e84940d4ab81f07811))
+* **5912:** add team members emails for edit request public and private ([fa03a73](https://github.com/bcgov/platform-services-registry/commit/fa03a735ca8905a489a35cc2b4aeb5b38f739c24))
+* **5930:** add migration script to replace broken EA ids with Po ids ([ea62e30](https://github.com/bcgov/platform-services-registry/commit/ea62e30761d1cbfcfbd54fa52f7416ce0a709d55))
+* **5940:** display human-readable dates on analytics pages ([fb36b89](https://github.com/bcgov/platform-services-registry/commit/fb36b891ec7ad47ac39b8de1eb5328ed6f1fd8a1))
+
+### Bug Fixes
+
+* **5950:** resolve new Airflow Helm config issue ([6f38b1b](https://github.com/bcgov/platform-services-registry/commit/6f38b1bd7b0f5ea804183d0e9cad9eeeb8e2bdd4))
+
+### Docs
+
+* **5393:** add documentation on research into IDIR's source of truth ([a850bac](https://github.com/bcgov/platform-services-registry/commit/a850bacfb55bc4a59c20d6fb9e15b21d55e0d01b))
+
+### Refactors
+
+* **5900:** switch from fetch to axios for HTTP requests ([3f1cbe4](https://github.com/bcgov/platform-services-registry/commit/3f1cbe421e34dd0f902af96710c1036219ca4d18))
 ## [0.70.0](https://github.com/bcgov/platform-services-registry/compare/v0.69.0...v0.70.0) (2025-06-18)
 
 ### Features
