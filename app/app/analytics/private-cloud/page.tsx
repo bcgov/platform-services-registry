@@ -2,7 +2,6 @@
 
 import { Loader } from '@mantine/core';
 import { useQuery } from '@tanstack/react-query';
-import { Title } from '@tremor/react';
 import { useSnapshot } from 'valtio';
 import ExportButton from '@/components/buttons/ExportButton';
 import { GlobalPermissions } from '@/constants';
@@ -66,7 +65,7 @@ export default analyticsPrivateCloudDashboard(() => {
         <MinistryDistribution data={data.ministryDistributionData} />
       </div>
       <div className="flex flex-col items-start border rounded-lg w-fit p-4 mt-8">
-        <Title>{'Users with quota edit requests'}</Title>
+        <h3>Users with quota edit requests</h3>
         <ExportButton
           onExport={async () => downloadPrivateCloudUsersWithQuotaEditRequests({ data: { ...snap } })}
           className="m-2"
