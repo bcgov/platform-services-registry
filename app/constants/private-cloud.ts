@@ -1,3 +1,4 @@
+import CostStatusBadge from '@/components/badges/CostStatusBadge';
 import { Cluster, Prisma, ResourceRequestsEnv, ResourceRequests, PrivateCloudProductMemberRole } from '@/prisma/client';
 import {
   CostTableColumnDef,
@@ -5,8 +6,9 @@ import {
   DailyCostMetric,
   MonthlyCostMetric,
   PeriodicCostMetric,
+  MonthlyCost,
 } from '@/types/private-cloud';
-import { formatCurrency } from '@/utils/js';
+import { formatCurrency, getMonthNameFromNumber } from '@/utils/js';
 import { productSorts } from './common';
 
 export const privateCloudProductMemberRoles = Object.values(PrivateCloudProductMemberRole);
@@ -148,3 +150,18 @@ export const monthlyCostCommonColumns = <T extends MonthlyCostMetric>(): CostTab
 
 export const dailyCostCommonColumns = <T extends DailyCostMetric>(): CostTableColumnDef<T>[] =>
   createCostColumns<T, 'dayDetails'>('dayDetails');
+
+export const periodicCostColumns: CostTableColumnDef<PeriodicCostMetric>[] = [
+  { label: 'Data Range', value: 'startDate', cellProcessor: (item, attr) => CostStatusBadge(item) },
+  ...periodicCostCommonColumns<PeriodicCostMetric>(),
+];
+
+export const dailyCostColumns: CostTableColumnDef<DailyCostMetric>[] = [
+  { label: 'Day', value: 'day', cellProcessor: (item) => item.day },
+  ...dailyCostCommonColumns<DailyCostMetric>(),
+];
+
+export const monthlyCostColumns: CostTableColumnDef<MonthlyCostMetric>[] = [
+  { label: 'Month', value: 'month', cellProcessor: (item) => getMonthNameFromNumber(item.month) },
+  ...monthlyCostCommonColumns<MonthlyCostMetric>(),
+];
