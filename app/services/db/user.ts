@@ -6,7 +6,7 @@ import _uniq from 'lodash-es/uniq';
 import { logger } from '@/core/logging';
 import prisma from '@/core/prisma';
 import { parsePaginationParams } from '@/helpers/pagination';
-import { Prisma } from '@/prisma/client';
+import { Prisma, PrivateCloudRequestData, PublicCloudRequestData } from '@/prisma/client';
 import { listUsersByRoles, findUserByEmail, getKcAdminClient } from '@/services/keycloak/app-realm';
 import { getUserByEmail, getUserPhoto } from '@/services/msgraph';
 import { AppUser } from '@/types/user';
@@ -283,4 +283,25 @@ export async function getUsersEmailsByIds(ids: (string | null | undefined)[]) {
   const userMap = new Map(users.map((user) => [user.id, user]));
 
   return filteredIds.map((id) => userMap.get(id) ?? null);
+}
+
+export async function enrichMembersWithEmail(data: PublicCloudRequestData | PrivateCloudRequestData | null) {
+  if (!data?.members?.length) return data;
+
+  const userIds = Array.from(new Set(data.members.map((m) => m.userId).filter((id): id is string => !!id)));
+
+  const users = await getUsersEmailsByIds(userIds);
+  const userMap = new Map(users.map((u) => [u?.id, u]));
+
+  data.members = data.members.map((member: any) => {
+    if (member.email) return member;
+
+    const user = userMap.get(member.userId);
+    return {
+      ...member,
+      email: user?.email ?? '',
+    };
+  });
+
+  return data;
 }

@@ -3,7 +3,8 @@ import createApiHandler from '@/core/api-handler';
 import prisma from '@/core/prisma';
 import { OkResponse } from '@/core/responses';
 import { comparePrivateProductData } from '@/helpers/product-change';
-import { RequestType } from '@/prisma/client';
+import { PrivateCloudRequest, RequestType } from '@/prisma/client';
+import { enrichMembersWithEmail } from '@/services/db';
 
 const apiHandler = createApiHandler({
   roles: [GlobalRole.Admin],
@@ -30,12 +31,22 @@ export const POST = apiHandler(async () => {
     },
   });
 
-  const results = await Promise.all(
-    requests.map((req) => {
-      const { changes, ...otherChangeMeta } = comparePrivateProductData(req.originalData, req.decisionData);
-      return prisma.privateCloudRequest.update({ where: { id: req.id }, data: { changes: otherChangeMeta } });
-    }),
-  );
+  const results: PrivateCloudRequest[] = [];
+
+  for (const req of requests) {
+    const [enrichedOriginal, enrichedDecision] = await Promise.all([
+      enrichMembersWithEmail(req.originalData),
+      enrichMembersWithEmail(req.decisionData),
+    ]);
+    const { changes, ...otherChangeMeta } = comparePrivateProductData(enrichedOriginal, enrichedDecision);
+
+    const updated = await prisma.privateCloudRequest.update({
+      where: { id: req.id },
+      data: { changes: otherChangeMeta },
+    });
+
+    results.push(updated);
+  }
 
   await prisma.privateCloudRequest.updateMany({
     where: { type: { not: RequestType.EDIT } },

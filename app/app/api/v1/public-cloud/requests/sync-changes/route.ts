@@ -3,7 +3,8 @@ import createApiHandler from '@/core/api-handler';
 import prisma from '@/core/prisma';
 import { OkResponse } from '@/core/responses';
 import { comparePublicProductData } from '@/helpers/product-change';
-import { RequestType } from '@/prisma/client';
+import { PublicCloudRequest, RequestType } from '@/prisma/client';
+import { enrichMembersWithEmail } from '@/services/db';
 
 const apiHandler = createApiHandler({
   roles: [GlobalRole.Admin],
@@ -18,6 +19,7 @@ export const POST = apiHandler(async () => {
           projectOwner: true,
           primaryTechnicalLead: true,
           secondaryTechnicalLead: true,
+          expenseAuthority: true,
         },
       },
       decisionData: {
@@ -25,22 +27,31 @@ export const POST = apiHandler(async () => {
           projectOwner: true,
           primaryTechnicalLead: true,
           secondaryTechnicalLead: true,
+          expenseAuthority: true,
         },
       },
     },
   });
 
-  const results = await Promise.all(
-    requests.map((req) => {
-      const { changes, ...otherChangeMeta } = comparePublicProductData(req.originalData, req.decisionData);
-      return prisma.publicCloudRequest.update({ where: { id: req.id }, data: { changes: otherChangeMeta } });
-    }),
-  );
+  const results: PublicCloudRequest[] = [];
 
-  await prisma.publicCloudRequest.updateMany({
-    where: { type: { not: RequestType.EDIT } },
-    data: { changes: null },
-  });
+  for (const req of requests) {
+    const [enrichedOriginal, enrichedDecision] = await Promise.all([
+      enrichMembersWithEmail(req.originalData),
+      enrichMembersWithEmail(req.decisionData),
+    ]);
+    const { changes, ...otherChangeMeta } = comparePublicProductData(enrichedOriginal, enrichedDecision);
 
-  return OkResponse(results.map((ret) => ret.id));
+    const updated = await prisma.publicCloudRequest.update({
+      where: { id: req.id },
+      data: { changes: otherChangeMeta },
+    });
+
+    results.push(updated);
+  }
+
+  if (!results.length) {
+    return OkResponse({ message: 'No updates were made.' });
+  }
+  return OkResponse(results.map((res) => res.id));
 });
