@@ -1,7 +1,7 @@
-import { LoadingOverlay } from '@mantine/core';
 import { Card } from '@mantine/core';
 import ExportButton from '@/components/buttons/ExportButton';
 import LineChart, { LineChartDataItem } from '@/components/generic/charts/LineChart';
+import LoadingBox from '@/components/generic/LoadingBox';
 
 export default function LineChartCard({
   index,
@@ -32,15 +32,9 @@ export default function LineChartCard({
       <Card shadow="sm" padding="lg" radius="md" withBorder>
         <h2>{title}</h2>
         <h5 className="text-gray-600">{subtitle}</h5>
-        <div className="relative">
-          <LoadingOverlay
-            visible={isLoading}
-            zIndex={50}
-            overlayProps={{ radius: 'sm', blur: 2 }}
-            loaderProps={{ color: 'pink', type: 'bars' }}
-          />
+        <LoadingBox isLoading={isLoading}>
           <LineChart className="max-h-[28rem] mt-4" data={chartData} indexKey={index} />
-        </div>
+        </LoadingBox>
       </Card>
     </div>
   );

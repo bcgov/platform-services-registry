@@ -18,7 +18,6 @@ export default function DoughnutChartCard({
   data: Record<string, DoughnutChartDataItem[]>;
   onExport?: () => Promise<boolean>;
 }) {
-  console.log('data', Object.keys(data).length);
   return (
     <div>
       <div className="text-right">
