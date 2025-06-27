@@ -66,12 +66,20 @@ repos:
     files: \.sh$
     verbose: true
     pass_filenames: true
+  - id: shellcheck
+    name: shellcheck
+    entry: .bin/shellcheck.sh
+    language: script
+    files: \.sh$
+    verbose: true
+    pass_filenames: true
   - id: knip
     name: knip
     entry: .bin/knip.sh
     language: script
     files: app/.*
     verbose: true
+    pass_filenames: false
   - id: kube-linter
     name: kube-linter
     entry: .bin/kube-linter.sh
@@ -86,10 +94,6 @@ repos:
     verbose: true
     pass_filenames: false
     stages: [commit-msg]
-- repo: https://github.com/koalaman/shellcheck-precommit
-  rev: v0.10.0
-  hooks:
-  - id: shellcheck
 - repo: https://github.com/codespell-project/codespell
   rev: v2.3.0
   hooks:

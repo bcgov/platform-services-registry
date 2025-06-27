@@ -3,6 +3,8 @@ checks:
   exclude:
   - access-to-create-pods
   - access-to-secrets
+  - dangling-networkpolicy
+  - dangling-networkpolicypeer-podselector
   - default-service-account
   - dnsconfig-options
   - exposed-services
@@ -29,3 +31,6 @@ checks:
   - unset-cpu-requirements
   - unset-memory-requirements
   - use-namespace
+  ignorePaths:
+  - helm/main/charts/**
+  - helm/tools/charts/**

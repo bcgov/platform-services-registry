@@ -1,3 +1,4 @@
 #!/bin/bash
 
-kube-linter lint helm --config .kube-linter.yaml
+# See https://docs.kubelinter.io/#/configuring-kubelinter
+kube-linter lint helm --config .kube-linter.yaml -v
