@@ -1,0 +1,31 @@
+checks:
+  addAllBuiltIn: true
+  exclude:
+  - access-to-create-pods
+  - access-to-secrets
+  - default-service-account
+  - dnsconfig-options
+  - exposed-services
+  - job-ttl-seconds-after-finished
+  - latest-tag
+  - liveness-port
+  - minimum-three-replicas
+  - no-anti-affinity
+  - no-liveness-probe
+  - no-node-affinity
+  - no-read-only-root-fs
+  - no-readiness-probe
+  - no-rolling-update-strategy
+  - non-existent-service-account
+  - non-isolated-pod
+  - pdb-unhealthy-pod-eviction-policy
+  - privileged-ports
+  - read-secret-from-env-var
+  - readiness-port
+  - required-annotation-email
+  - required-label-owner
+  - restart-policy
+  - run-as-non-root
+  - unset-cpu-requirements
+  - unset-memory-requirements
+  - use-namespace

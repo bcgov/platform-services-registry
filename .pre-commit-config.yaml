@@ -72,6 +72,12 @@ repos:
     language: script
     files: app/.*
     verbose: true
+  - id: kube-linter
+    name: kube-linter
+    entry: .bin/kube-linter.sh
+    language: script
+    files: helm/.*
+    verbose: true
     pass_filenames: false
   - id: commitlint
     name: commitlint
