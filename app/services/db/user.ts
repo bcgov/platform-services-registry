@@ -6,7 +6,13 @@ import _uniq from 'lodash-es/uniq';
 import { logger } from '@/core/logging';
 import prisma from '@/core/prisma';
 import { parsePaginationParams } from '@/helpers/pagination';
-import { Prisma, PrivateCloudRequestData, PublicCloudRequestData } from '@/prisma/client';
+import {
+  Prisma,
+  PrivateCloudProductMember,
+  PrivateCloudRequestData,
+  PublicCloudProductMember,
+  PublicCloudRequestData,
+} from '@/prisma/client';
 import { listUsersByRoles, findUserByEmail, getKcAdminClient } from '@/services/keycloak/app-realm';
 import { getUserByEmail, getUserPhoto } from '@/services/msgraph';
 import { AppUser } from '@/types/user';
@@ -288,10 +294,16 @@ export async function getUsersEmailsByIds(ids: (string | null | undefined)[]) {
 export async function enrichMembersWithEmail(data: PublicCloudRequestData | PrivateCloudRequestData | null) {
   if (!data?.members?.length) return data;
 
-  const userIds = Array.from(new Set(data.members.map((m) => m.userId).filter((id): id is string => !!id)));
+  const userIds = Array.from(
+    new Set(
+      data.members
+        .map((member: PublicCloudProductMember | PrivateCloudProductMember) => member.userId)
+        .filter((id): id is string => !!id),
+    ),
+  );
 
   const users = await getUsersEmailsByIds(userIds);
-  const userMap = new Map(users.map((u) => [u?.id, u]));
+  const userMap = new Map(users.map((user) => [user?.id, user]));
 
   data.members = data.members.map((member: any) => {
     if (member.email) return member;
@@ -304,4 +316,46 @@ export async function enrichMembersWithEmail(data: PublicCloudRequestData | Priv
   });
 
   return data;
+}
+
+function extractUserIdsFromData(data) {
+  if (!data) return [];
+  return [
+    data.projectOwnerId,
+    data.primaryTechnicalLeadId,
+    data.secondaryTechnicalLeadId,
+    data.expenseAuthorityId,
+    ...(data.members || []).map((member: PublicCloudProductMember) => member.userId),
+  ].filter(Boolean);
+}
+
+export async function enrichSingleUserFields(data) {
+  if (!data) return {};
+
+  const allUserIds = extractUserIdsFromData(data);
+  const allUsers = await getUsersEmailsByIds(allUserIds);
+  const userMap = new Map(allUsers.filter(Boolean).map((user) => [user?.id, user]));
+
+  const enrichMembers = (members: PublicCloudProductMember[] | PrivateCloudProductMember[]) =>
+    (members || []).map((member) => ({
+      ...member,
+      user: userMap.get(member.userId) || null,
+    }));
+
+  return {
+    ...data,
+    ...(data.members && { members: enrichMembers(data.members) }),
+    ...(data.projectOwnerId && {
+      projectOwner: userMap.get(data.projectOwnerId),
+    }),
+    ...(data.primaryTechnicalLeadId && {
+      primaryTechnicalLead: userMap.get(data.primaryTechnicalLeadId),
+    }),
+    ...(data.secondaryTechnicalLeadId && {
+      secondaryTechnicalLead: userMap.get(data.secondaryTechnicalLeadId),
+    }),
+    ...(data.expenseAuthorityId && {
+      expenseAuthority: userMap.get(data.expenseAuthorityId),
+    }),
+  };
 }
