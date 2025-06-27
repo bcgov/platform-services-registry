@@ -23,6 +23,27 @@ export function getMonthlyCostChartConfig({ data }: { data: Pick<MonthlyCost, 'd
           },
         },
       },
+      zoom: {
+        pan: {
+          enabled: true,
+          mode: 'y' as const,
+        },
+        zoom: {
+          wheel: {
+            enabled: true,
+          },
+          pinch: {
+            enabled: true,
+          },
+          mode: 'y' as const,
+          drag: {
+            enabled: false,
+          },
+        },
+        limits: {
+          y: { min: 0 },
+        },
+      },
     },
     responsive: true,
     maintainAspectRatio: false,
