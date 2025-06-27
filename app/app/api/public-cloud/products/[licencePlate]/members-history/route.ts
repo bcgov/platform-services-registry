@@ -47,13 +47,13 @@ export const GET = apiHandler(async ({ pathParams }) => {
       const [reqOrigin, reqDesign] = await Promise.all([
         prisma.publicCloudRequestData.findFirst({
           where: {
-            id: req.originalDataId || '',
+            id: req.originalDataId ?? '',
           },
           select,
         }),
         prisma.publicCloudRequestData.findFirst({
           where: {
-            id: req.decisionDataId || '',
+            id: req.decisionDataId ?? '',
           },
           select,
         }),
