@@ -44,8 +44,68 @@ export async function queryPrometheus(query: string, cluster: Cluster) {
 
   const response = await axios.get<PrometheusQueryResponse>(`${METRICS_URL}/api/v1/query`, {
     headers: { Authorization: `Bearer ${METRICS_TOKEN}` },
-    params: { query },
+    params: { query: query.trim() },
   });
 
   return response.data.data.result;
+}
+
+export function queryCapacity(cluster: Cluster) {
+  return queryPrometheus(
+    `
+  sum
+  (
+    kube_node_status_capacity{resource="cpu", unit="core"}
+    and on(node) kube_node_role{role="worker"}
+  )
+`,
+    cluster,
+  );
+}
+
+export function queryAllocatable(cluster: Cluster) {
+  return queryPrometheus(
+    `
+  sum
+  (
+    kube_node_status_allocatable{resource="cpu", unit="core"}
+    and on(node) kube_node_role{role="worker"}
+  )
+`,
+    cluster,
+  );
+}
+
+export function queryCpuRequests(cluster: Cluster) {
+  return queryPrometheus(
+    `
+  sum
+  (
+    (
+      kube_pod_container_resource_requests{resource="cpu", unit="core"}
+      * on(namespace, pod) group_left()
+      max(kube_pod_status_phase{phase=~"Running|Pending"} == 1) by (namespace, pod)
+    )
+    and on(node) kube_node_role{role="worker"}
+  )
+`,
+    cluster,
+  );
+}
+
+export function queryCpuUsage(cluster: Cluster) {
+  return queryPrometheus(
+    `
+  sum
+  (
+    (
+      rate(container_cpu_usage_seconds_total{container!="", image!=""}[5m])
+      * on(namespace, pod) group_left()
+      max(kube_pod_status_phase{phase=~"Running|Pending"} == 1) by (namespace, pod)
+    )
+    and on(node) kube_node_role{role="worker"}
+  )
+`,
+    cluster,
+  );
 }
