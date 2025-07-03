@@ -353,3 +353,39 @@ minio:
     claimPrefix: ""
     comment: ""
     displayName: ""
+
+mongodb:
+  enabled: false
+
+  nameOverride: tools-mongodb
+  fullnameOverride: tools-mongodb
+
+  architecture: standalone
+  useStatefulSet: false
+  replicaCount: 1
+
+  auth:
+    enabled: true
+    existingSecret: tools-mongodb # pragma: allowlist secret
+
+  persistence:
+    enabled: true
+    storageClass: netapp-block-standard
+    size: 3Gi
+
+  resources:
+    requests:
+      cpu: 0.5
+      memory: 500Mi
+
+  podSecurityContext:
+    enabled: false
+  containerSecurityContext:
+    enabled: false
+
+  arbiter:
+    enabled: false
+    podSecurityContext:
+      enabled: false
+    containerSecurityContext:
+      enabled: false
