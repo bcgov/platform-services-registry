@@ -3,7 +3,7 @@ import createApiHandler from '@/core/api-handler';
 import prisma from '@/core/prisma';
 import { OkResponse } from '@/core/responses';
 import { RequestType } from '@/prisma/client';
-import { enrichSingleUserFields } from '@/services/db/user';
+import { enrichMembersWithEmail, getUsersEmailsByIds } from '@/services/db/user';
 
 const pathParamSchema = z.object({
   licencePlate: z.string(),
@@ -19,62 +19,49 @@ export const GET = apiHandler(async ({ pathParams }) => {
   const requests = await prisma.privateCloudRequest.findMany({
     where: {
       licencePlate,
-      type: RequestType.EDIT,
+      OR: [
+        {
+          type: RequestType.CREATE,
+        },
+        {
+          type: RequestType.EDIT,
+          changes: {
+            is: {
+              OR: [{ contactsChanged: true }, { membersChanged: true }],
+            },
+          },
+        },
+      ],
     },
     select: {
       id: true,
       changes: true,
-      decisionDataId: true,
-      originalDataId: true,
+      type: true,
+      decisionData: {
+        select: {
+          id: true,
+          projectOwner: { select: { id: true, email: true } },
+          primaryTechnicalLead: { select: { id: true, email: true } },
+          secondaryTechnicalLead: { select: { id: true, email: true } },
+          members: true,
+        },
+      },
     },
-    orderBy: { createdAt: 'desc' },
+    orderBy: {
+      createdAt: 'desc',
+    },
   });
 
-  const filteredRequests = requests.filter(
-    (req) => req.changes?.contactsChanged === true || req.changes?.membersChanged === true,
-  );
+  await Promise.all(
+    requests.map(async (request) => {
+      const { id, members } = request.decisionData;
+      const enriched = await enrichMembersWithEmail({ id, members });
 
-  const enrichedRequests = await Promise.all(
-    filteredRequests.map(async (req) => {
-      const select = {
-        members: req.changes?.parentPaths.includes('members'),
-        projectOwnerId: req.changes?.parentPaths.includes('projectOwner'),
-        primaryTechnicalLeadId: req.changes?.parentPaths.includes('primaryTechnicalLead'),
-        secondaryTechnicalLeadId: req.changes?.parentPaths.includes('secondaryTechnicalLead'),
-      };
-
-      const [reqOrigin, reqDesign] = await Promise.all([
-        prisma.privateCloudRequestData.findFirst({
-          where: {
-            id: req.originalDataId ?? '',
-          },
-          select,
-        }),
-        prisma.privateCloudRequestData.findFirst({
-          where: {
-            id: req.decisionDataId ?? '',
-          },
-          select,
-        }),
-      ]);
-
-      return {
-        ...req,
-        originalData: reqOrigin,
-        decisionData: reqDesign,
-      };
+      if (enriched) {
+        request.decisionData.members = enriched.members;
+      }
     }),
   );
 
-  const enrichedWithUserData = await Promise.all(
-    enrichedRequests.map(async (req) => {
-      return {
-        ...req,
-        originalData: await enrichSingleUserFields(req.originalData),
-        decisionData: await enrichSingleUserFields(req.decisionData),
-      };
-    }),
-  );
-
-  return OkResponse(enrichedWithUserData);
+  return OkResponse(requests);
 });

@@ -291,14 +291,16 @@ export async function getUsersEmailsByIds(ids: (string | null | undefined)[]) {
   return filteredIds.map((id) => userMap.get(id) ?? null);
 }
 
-export async function enrichMembersWithEmail(data: PublicCloudRequestData | PrivateCloudRequestData | null) {
+export async function enrichMembersWithEmail<
+  T extends Pick<PublicCloudRequestData | PrivateCloudRequestData, 'id' | 'members'>,
+>(data: T | null) {
   if (!data?.members?.length) return data;
 
   const userIds = Array.from(
     new Set(
       data.members
         .map((member: PublicCloudProductMember | PrivateCloudProductMember) => member.userId)
-        .filter((id): id is string => !!id),
+        .filter((id): id is string => typeof id === 'string'),
     ),
   );
 
@@ -316,46 +318,4 @@ export async function enrichMembersWithEmail(data: PublicCloudRequestData | Priv
   });
 
   return data;
-}
-
-function extractUserIdsFromData(data) {
-  if (!data) return [];
-  return [
-    data.projectOwnerId,
-    data.primaryTechnicalLeadId,
-    data.secondaryTechnicalLeadId,
-    data.expenseAuthorityId,
-    ...(data.members || []).map((member: PublicCloudProductMember) => member.userId),
-  ].filter(Boolean);
-}
-
-export async function enrichSingleUserFields(data) {
-  if (!data) return {};
-
-  const allUserIds = extractUserIdsFromData(data);
-  const allUsers = await getUsersEmailsByIds(allUserIds);
-  const userMap = new Map(allUsers.filter(Boolean).map((user) => [user?.id, user]));
-
-  const enrichMembers = (members: PublicCloudProductMember[] | PrivateCloudProductMember[]) =>
-    (members || []).map((member) => ({
-      ...member,
-      user: userMap.get(member.userId) || null,
-    }));
-
-  return {
-    ...data,
-    ...(data.members && { members: enrichMembers(data.members) }),
-    ...(data.projectOwnerId && {
-      projectOwner: userMap.get(data.projectOwnerId),
-    }),
-    ...(data.primaryTechnicalLeadId && {
-      primaryTechnicalLead: userMap.get(data.primaryTechnicalLeadId),
-    }),
-    ...(data.secondaryTechnicalLeadId && {
-      secondaryTechnicalLead: userMap.get(data.secondaryTechnicalLeadId),
-    }),
-    ...(data.expenseAuthorityId && {
-      expenseAuthority: userMap.get(data.expenseAuthorityId),
-    }),
-  };
 }

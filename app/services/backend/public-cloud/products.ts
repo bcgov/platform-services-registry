@@ -97,6 +97,12 @@ export async function getPublicCloudProductRequests(licencePlate: string, active
   return result;
 }
 
+export async function getPublicCloudProductMembersHistory(licencePlate: string) {
+  const result = await instance.get(`/${licencePlate}/members-history}`).then((res) => res.data);
+
+  return result;
+}
+
 export async function getPublicCloudProductBillings(licencePlate: string) {
   const result = await instance
     .get<PublicCloudBillingSimpleDecorated[]>(`/${licencePlate}/billings`)
