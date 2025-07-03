@@ -1,7 +1,12 @@
 import axios, { AxiosRequestConfig } from 'axios';
 import { HttpsProxyAgent } from 'https-proxy-agent';
-import { MS_GRAPH_API_PROXY_URL, USE_MS_GRAPH_API_PROXY } from '@/config';
-import { MS_GRAPH_API_TOKEN_ENDPOINT, MS_GRAPH_API_CLIENT_ID, MS_GRAPH_API_CLIENT_SECRET } from '@/config';
+import {
+  USE_MS_GRAPH_API_PROXY,
+  MS_GRAPH_API_PROXY_URL,
+  MS_GRAPH_API_TOKEN_ENDPOINT,
+  MS_GRAPH_API_CLIENT_ID,
+  MS_GRAPH_API_CLIENT_SECRET,
+} from '@/config';
 import { getClientCredentialsToken } from '@/utils/node/oauth2';
 
 const tokenUrl = MS_GRAPH_API_TOKEN_ENDPOINT;
