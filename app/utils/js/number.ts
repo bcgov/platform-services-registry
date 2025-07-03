@@ -63,11 +63,6 @@ export function formatCurrency(value: number) {
   }).format(value);
 }
 
-// export function roundToHalfIncrement(value: number) {
-//   const rounded = Math.round(value * 2) / 2;
-//   return parseFloat(rounded.toFixed(1));
-// }
-
 export function roundToHalfIncrement(value: number): number {
   return _round(_round(value * 2) / 2, 1);
 }
