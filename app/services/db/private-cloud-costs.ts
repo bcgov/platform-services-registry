@@ -392,10 +392,8 @@ async function getCostsBasedOnMonths(timeView: TimeView, licencePlate: string, s
 
   let discreteResourceValues: QuarterlyDiscreteValue | YearlyDiscreteValue = [];
 
-  if (timeView === TimeView.Quarterly) {
-    discreteResourceValues = getDiscreteResourceValues(items, TimeView.Quarterly);
-  } else if (timeView === TimeView.Yearly) {
-    discreteResourceValues = getDiscreteResourceValues(items, TimeView.Yearly);
+  if (timeView === TimeView.Quarterly || timeView === TimeView.Yearly) {
+    discreteResourceValues = getDiscreteResourceValues(items, timeView);
   }
 
   return {
