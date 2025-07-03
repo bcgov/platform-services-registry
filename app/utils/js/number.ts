@@ -1,4 +1,5 @@
 import * as crypto from 'crypto';
+import _round from 'lodash-es/round';
 
 export const roundNumber = (number: number, options?: { decimals?: number }) => {
   const { decimals = 2 } = options ?? {};
@@ -62,7 +63,11 @@ export function formatCurrency(value: number) {
   }).format(value);
 }
 
-export function roundToHalfIncrement(value: number) {
-  const rounded = Math.round(value * 2) / 2;
-  return parseFloat(rounded.toFixed(1));
+// export function roundToHalfIncrement(value: number) {
+//   const rounded = Math.round(value * 2) / 2;
+//   return parseFloat(rounded.toFixed(1));
+// }
+
+export function roundToHalfIncrement(value: number): number {
+  return _round(_round(value * 2) / 2, 1);
 }

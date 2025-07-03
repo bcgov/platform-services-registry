@@ -390,11 +390,10 @@ async function getCostsBasedOnMonths(timeView: TimeView, licencePlate: string, s
     }
   }
 
-  let discreteResourceValues: QuarterlyDiscreteValue | YearlyDiscreteValue = [];
-
-  if (timeView === TimeView.Quarterly || timeView === TimeView.Yearly) {
-    discreteResourceValues = getDiscreteResourceValues(items, timeView);
-  }
+  const discreteResourceValues: QuarterlyDiscreteValue | YearlyDiscreteValue = getDiscreteResourceValues(
+    items,
+    timeView,
+  );
 
   return {
     accountCoding: '123ABC', // placeholder
@@ -468,9 +467,9 @@ export async function getAdminMonthlyCosts(year: number, oneIndexedMonth: number
 }
 
 function getResourceValuesFromDate(items: CostItem[], date: Date) {
-  const entry = items.find((e) => {
-    const start = new Date(e.startDate);
-    const end = new Date(e.endDate);
+  const entry = items.find((item) => {
+    const start = new Date(item.startDate);
+    const end = new Date(item.endDate);
     return date >= start && date < end;
   });
 
