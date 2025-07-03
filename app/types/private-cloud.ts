@@ -190,7 +190,13 @@ export interface DailyDiscreteValue {
   storage: number;
 }
 
-export type QuarterlyOrYearlyDiscreteValue = Record<number, DailyDiscreteValue>;
+export interface QuarterlyDiscreteValue {
+  [quarter: number]: DailyDiscreteValue;
+}
+
+export interface YearlyDiscreteValue {
+  [year: number]: DailyDiscreteValue;
+}
 
 export enum TimeView {
   Monthly = 'monthly',
@@ -239,7 +245,7 @@ export interface QuarterlyCost {
   estimatedGrandTotal: number;
   grandTotal: number;
   items: CostItem[];
-  discreteResourceValues: QuarterlyOrYearlyDiscreteValue;
+  discreteResourceValues: QuarterlyDiscreteValue;
   months: number[];
   monthDetails: {
     cpuToDate: number[];
@@ -256,7 +262,7 @@ export interface YearlyCost {
   estimatedGrandTotal: number;
   grandTotal: number;
   items: CostItem[];
-  discreteResourceValues: QuarterlyOrYearlyDiscreteValue;
+  discreteResourceValues: YearlyDiscreteValue;
   months: number[];
   monthDetails: {
     cpuToDate: number[];

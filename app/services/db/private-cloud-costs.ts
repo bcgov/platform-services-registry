@@ -5,7 +5,13 @@ import _orderBy from 'lodash-es/orderBy';
 import { namespaceKeys } from '@/constants';
 import prisma from '@/core/prisma';
 import { Cluster, DecisionStatus, Prisma, RequestType } from '@/prisma/client';
-import { CostItem, DailyDiscreteValue, TimeView, QuarterlyOrYearlyDiscreteValue } from '@/types/private-cloud';
+import {
+  CostItem,
+  DailyDiscreteValue,
+  QuarterlyDiscreteValue,
+  TimeView,
+  YearlyDiscreteValue,
+} from '@/types/private-cloud';
 import {
   dateToShortDateString,
   getMinutesInYear,
@@ -298,7 +304,7 @@ export async function getMonthlyCosts(licencePlate: string, year: number, oneInd
     estimatedGrandTotal,
     grandTotal,
     items,
-    discreteResourceValues: getDiscreteResourceValues(items, TimeView.Monthly),
+    discreteResourceValues: getDiscreteResourceValues(items, TimeView.Monthly) as DailyDiscreteValue[],
     days,
     dayDetails: {
       cpuToDate,
@@ -384,7 +390,7 @@ async function getCostsBasedOnMonths(timeView: TimeView, licencePlate: string, s
     }
   }
 
-  let discreteResourceValues: DailyDiscreteValue[] | QuarterlyOrYearlyDiscreteValue = [];
+  let discreteResourceValues: QuarterlyDiscreteValue | YearlyDiscreteValue = [];
 
   if (timeView === TimeView.Quarterly) {
     discreteResourceValues = getDiscreteResourceValues(items, TimeView.Quarterly);
@@ -476,7 +482,7 @@ function getResourceValuesFromDate(items: CostItem[], date: Date) {
   };
 }
 
-function getSummaryData(items: CostItem[], year: number, month: number) {
+function getSummaryData(items: CostItem[], year: number, month: number): DailyDiscreteValue {
   const daysInMonth = new Date(year, month + 1, 0).getDate();
   let cpuSum = 0;
   let storageSum = 0;
@@ -505,7 +511,7 @@ function getSummaryData(items: CostItem[], year: number, month: number) {
 function getDiscreteResourceValues(
   items: CostItem[],
   timeView?: TimeView,
-): DailyDiscreteValue[] | QuarterlyOrYearlyDiscreteValue {
+): DailyDiscreteValue[] | QuarterlyDiscreteValue | YearlyDiscreteValue {
   if (!items?.length) return timeView === TimeView.Monthly ? [] : {};
 
   const year = new Date(items[0].startDate).getFullYear();
@@ -527,7 +533,7 @@ function getDiscreteResourceValues(
   }
 
   if (timeView === TimeView.Quarterly) {
-    const quarterlyDiscreteValues: QuarterlyOrYearlyDiscreteValue = {};
+    const quarterlyDiscreteValues = {};
     for (let m = 0; m < 3; m++) {
       const currentMonth = (month + m) % 12;
       const currentYear = year + Math.floor((month + m) / 12);
@@ -536,7 +542,7 @@ function getDiscreteResourceValues(
     return quarterlyDiscreteValues;
   }
 
-  const yearlyDiscreteValues: QuarterlyOrYearlyDiscreteValue = {};
+  const yearlyDiscreteValues = {};
   for (let m = 0; m < 12; m++) {
     yearlyDiscreteValues[m + 1] = getSummaryData(items, year, m);
   }
