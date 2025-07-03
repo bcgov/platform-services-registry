@@ -19,3 +19,6 @@ minio:
   enabled: true
   route:
     host: tools-minio.apps.silver.devops.gov.bc.ca
+
+mongodb:
+  enabled: true
