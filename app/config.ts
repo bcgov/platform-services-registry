@@ -57,13 +57,17 @@ export const PUBLIC_NATS_PORT = process.env.PUBLIC_NATS_PORT || '4222';
 export const PRIVATE_NATS_URL = `${PRIVATE_NATS_HOST}:${PRIVATE_NATS_PORT}`;
 export const PUBLIC_NATS_URL = `${PUBLIC_NATS_HOST}:${PUBLIC_NATS_PORT}`;
 
-export const MS_GRAPH_API_AUTHORITY = process.env.MS_GRAPH_API_AUTHORITY || '';
-export const MS_GRAPH_API_CLIENT_ID = process.env.MS_GRAPH_API_CLIENT_ID || '';
-export const MS_GRAPH_API_CLIENT_SECRET = process.env.MS_GRAPH_API_CLIENT_SECRET || '';
-export const M365_PROXY_URL = process.env.M365_PROXY_URL || 'http://localhost:8000';
-export const M365_URL = process.env.M365_URL || 'https://graph.microsoft.com';
-export const USE_M365_PROXY = process.env.USE_M365_PROXY === 'true';
-export const OIDC_AUTHORITY = process.env.OIDC_AUTHORITY || 'https://localhost:8443/realms/platform-services';
+export const MS_GRAPH_API_URL = process.env.MS_GRAPH_API_URL || 'https://graph.microsoft.com';
+export const MS_GRAPH_API_TENANT_ID = process.env.MS_GRAPH_API_TENANT_ID || '';
+export const MS_GRAPH_API_TOKEN_ENDPOINT =
+  process.env.MS_GRAPH_API_TOKEN_ENDPOINT || MS_GRAPH_API_TENANT_ID
+    ? `https://login.microsoftonline.com/${MS_GRAPH_API_TENANT_ID}/oauth2/v2.0/token`
+    : 'https://localhost:8443/realms/platform-services/protocol/openid-connect/token';
+
+export const MS_GRAPH_API_CLIENT_ID = process.env.MS_GRAPH_API_CLIENT_ID || AUTH_RESOURCE;
+export const MS_GRAPH_API_CLIENT_SECRET = process.env.MS_GRAPH_API_CLIENT_SECRET || AUTH_SECRET;
+export const MS_GRAPH_API_PROXY_URL = process.env.MS_GRAPH_API_PROXY_URL || 'http://localhost:8000';
+export const USE_MS_GRAPH_API_PROXY = process.env.USE_MS_GRAPH_API_PROXY === 'true';
 
 export const PUBLIC_AZURE_ACCESS_EMAILS = process.env.PUBLIC_AZURE_ACCESS_EMAILS || '';
 export const WEASYPRINT_URL = process.env.WEASYPRINT_URL || 'http://localhost:8090';

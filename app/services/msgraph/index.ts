@@ -1,5 +1,5 @@
 import { AxiosRequestConfig } from 'axios';
-import { M365_URL } from '@/config';
+import { MS_GRAPH_API_URL } from '@/config';
 import { parseMinistryFromDisplayName } from '@/helpers/user';
 import { MsUser, AppUser } from '@/types/user';
 import { callMsGraph, getAccessToken } from './core';
@@ -54,7 +54,7 @@ const userSelect = `$select=${userAttributes.join(',')}`;
 
 // See https://learn.microsoft.com/en-us/graph/api/user-get?view=graph-rest-1.0&tabs=http
 export async function getUser(idOrUserPrincipalName: string) {
-  const url = `${M365_URL}/v1.0/users/${idOrUserPrincipalName}?${userSelect}`;
+  const url = `${MS_GRAPH_API_URL}/v1.0/users/${idOrUserPrincipalName}?${userSelect}`;
   const data = await sendRequest(url);
 
   return data ? processMsUser(data as MsUser) : null;
@@ -68,7 +68,7 @@ export async function listUsersByEmail(email: string) {
   const top = '$top=25';
   const query = [filter, userSelect, orderby, count, top].join('&');
 
-  const url = `${M365_URL}/v1.0/users?${query}`;
+  const url = `${MS_GRAPH_API_URL}/v1.0/users?${query}`;
   const data = await sendRequest(url);
 
   if (!data) return [];
@@ -85,7 +85,7 @@ export async function getUserByEmail(email: string) {
 }
 
 export async function getUserPhoto(email: string) {
-  const url = `${M365_URL}/v1.0/users/${email}/photo/$value`;
+  const url = `${MS_GRAPH_API_URL}/v1.0/users/${email}/photo/$value`;
   const data = await sendRequest(url, { responseType: 'arraybuffer' });
 
   return data;

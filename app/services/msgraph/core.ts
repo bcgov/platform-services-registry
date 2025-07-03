@@ -1,25 +1,15 @@
 import axios, { AxiosRequestConfig } from 'axios';
 import { HttpsProxyAgent } from 'https-proxy-agent';
-import { M365_PROXY_URL, USE_M365_PROXY } from '@/config';
-import {
-  IS_LOCAL,
-  AUTH_RESOURCE,
-  AUTH_SECRET,
-  OIDC_AUTHORITY,
-  MS_GRAPH_API_AUTHORITY,
-  MS_GRAPH_API_CLIENT_ID,
-  MS_GRAPH_API_CLIENT_SECRET,
-} from '@/config';
+import { MS_GRAPH_API_PROXY_URL, USE_MS_GRAPH_API_PROXY } from '@/config';
+import { MS_GRAPH_API_TOKEN_ENDPOINT, MS_GRAPH_API_CLIENT_ID, MS_GRAPH_API_CLIENT_SECRET } from '@/config';
 import { getClientCredentialsToken } from '@/utils/node/oauth2';
 
-const tokenUrl = IS_LOCAL
-  ? `${OIDC_AUTHORITY}/protocol/openid-connect/token`
-  : `${MS_GRAPH_API_AUTHORITY}/oauth2/v2.0/token`;
-const clientId = IS_LOCAL ? AUTH_RESOURCE : MS_GRAPH_API_CLIENT_ID;
-const clientSecret = IS_LOCAL ? AUTH_SECRET : MS_GRAPH_API_CLIENT_SECRET;
+const tokenUrl = MS_GRAPH_API_TOKEN_ENDPOINT;
+const clientId = MS_GRAPH_API_CLIENT_ID;
+const clientSecret = MS_GRAPH_API_CLIENT_SECRET;
 
 // See https://learn.microsoft.com/en-us/microsoft-cloud/dev/dev-proxy/how-to/use-dev-proxy-with-nodejs
-const graphAPIProxy = USE_M365_PROXY ? new HttpsProxyAgent(M365_PROXY_URL) : null;
+const graphAPIProxy = USE_MS_GRAPH_API_PROXY ? new HttpsProxyAgent(MS_GRAPH_API_PROXY_URL) : null;
 
 export async function getAccessToken() {
   const token = await getClientCredentialsToken(
