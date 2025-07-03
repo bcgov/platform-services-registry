@@ -5,13 +5,7 @@ import _orderBy from 'lodash-es/orderBy';
 import { namespaceKeys } from '@/constants';
 import prisma from '@/core/prisma';
 import { Cluster, DecisionStatus, Prisma, RequestType } from '@/prisma/client';
-import {
-  CostItem,
-  DailyDiscreteValue,
-  EnvironmentDetails,
-  TimeView,
-  QuarterlyOrYearlyDiscreteValue,
-} from '@/types/private-cloud';
+import { CostItem, DailyDiscreteValue, TimeView, QuarterlyOrYearlyDiscreteValue } from '@/types/private-cloud';
 import {
   dateToShortDateString,
   getMinutesInYear,
@@ -19,8 +13,6 @@ import {
   getMonthStartEndDate,
   getQuarterStartEndDate,
   getQuarterTitleWithMonths,
-  compareDatesByDay,
-  compareDatesByMonth,
   getYearlyStartEndDate,
   getMonthsArrayFromDates,
 } from '@/utils/js/date';
