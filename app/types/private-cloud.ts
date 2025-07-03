@@ -184,6 +184,20 @@ export interface EnvironmentDetails {
     cost: number;
   };
 }
+
+export interface DailyDiscreteValue {
+  cpu: number;
+  storage: number;
+}
+
+export type QuarterlyOrYearlyDiscreteValue = Record<number, DailyDiscreteValue>;
+
+export enum TimeView {
+  Monthly = 'monthly',
+  Quarterly = 'quarterly',
+  Yearly = 'yearly',
+}
+
 export interface CostItem {
   startDate: Date;
   endDate: Date;
@@ -208,6 +222,7 @@ export interface MonthlyCost {
   estimatedGrandTotal: number;
   grandTotal: number;
   items: CostItem[];
+  discreteResourceValues: DailyDiscreteValue[];
   days: number[];
   dayDetails: {
     cpuToDate: number[];
@@ -224,6 +239,7 @@ export interface QuarterlyCost {
   estimatedGrandTotal: number;
   grandTotal: number;
   items: CostItem[];
+  discreteResourceValues: QuarterlyOrYearlyDiscreteValue;
   months: number[];
   monthDetails: {
     cpuToDate: number[];
@@ -240,6 +256,7 @@ export interface YearlyCost {
   estimatedGrandTotal: number;
   grandTotal: number;
   items: CostItem[];
+  discreteResourceValues: QuarterlyOrYearlyDiscreteValue;
   months: number[];
   monthDetails: {
     cpuToDate: number[];

@@ -61,3 +61,8 @@ export function formatCurrency(value: number) {
     minimumFractionDigits: 2,
   }).format(value);
 }
+
+export function roundToHalfIncrement(value: number) {
+  const rounded = Math.round(value * 2) / 2;
+  return parseFloat(rounded.toFixed(1));
+}
