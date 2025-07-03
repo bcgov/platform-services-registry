@@ -1,8 +1,7 @@
-import { AxiosRequestConfig } from 'axios';
-import { MS_GRAPH_API_URL } from '@/config';
+import { logger } from '@/core/logging';
 import { parseMinistryFromDisplayName } from '@/helpers/user';
 import { MsUser, AppUser } from '@/types/user';
-import { callMsGraph, getAccessToken } from './core';
+import { instance } from './axios';
 
 export function processMsUser(user: MsUser): AppUser | null {
   const idir = user.onPremisesSamAccountName;
@@ -24,17 +23,6 @@ export function processMsUser(user: MsUser): AppUser | null {
   };
 }
 
-export async function sendRequest(url: string, options: AxiosRequestConfig = {}) {
-  const accessToken = await getAccessToken();
-
-  if (!accessToken) {
-    throw Error('invalid access token');
-  }
-
-  const data = await callMsGraph(url, accessToken, options);
-  return data;
-}
-
 const userAttributes = [
   'id',
   'onPremisesSamAccountName',
@@ -50,30 +38,48 @@ const userAttributes = [
   // 'businessPhones',
 ];
 
-const userSelect = `$select=${userAttributes.join(',')}`;
+const userAttributeString = userAttributes.join(',');
 
 // See https://learn.microsoft.com/en-us/graph/api/user-get?view=graph-rest-1.0&tabs=http
 export async function getUser(idOrUserPrincipalName: string) {
-  const url = `${MS_GRAPH_API_URL}/v1.0/users/${idOrUserPrincipalName}?${userSelect}`;
-  const data = await sendRequest(url);
+  const result = await instance
+    .get<MsUser>(`/users/${idOrUserPrincipalName}`, {
+      params: {
+        $select: userAttributeString,
+      },
+    })
+    .then((res) => res.data)
+    .catch((err) => {
+      if (err.status === 404) {
+        return null; // User not found
+      }
 
-  return data ? processMsUser(data as MsUser) : null;
+      logger.error('Error fetching user by UPN:', err.message ?? String(err));
+      return null;
+    });
+
+  return result ? processMsUser(result) : null;
 }
 
 // See https://learn.microsoft.com/en-us/graph/api/user-list?view=graph-rest-1.0&tabs=http
 export async function listUsersByEmail(email: string) {
-  const filter = `$filter=startswith(mail,'${email}')`;
-  const orderby = '$orderby=userPrincipalName';
-  const count = '$count=true';
-  const top = '$top=25';
-  const query = [filter, userSelect, orderby, count, top].join('&');
+  const result = await instance
+    .get<{ value: MsUser[] }>('/users', {
+      params: {
+        $filter: `startswith(mail,'${email}')`,
+        $orderby: 'userPrincipalName',
+        $count: 'true',
+        $top: '25',
+        $select: userAttributeString,
+      },
+    })
+    .then((res) => res.data)
+    .catch((err) => {
+      logger.error('Error fetching users by email:', err.message ?? String(err));
+      return { value: [] };
+    });
 
-  const url = `${MS_GRAPH_API_URL}/v1.0/users?${query}`;
-  const data = await sendRequest(url);
-
-  if (!data) return [];
-
-  return (data as { value: MsUser[] }).value.map(processMsUser).filter((user) => !!user);
+  return result.value.map(processMsUser).filter((user) => !!user);
 }
 
 export async function getUserByEmail(email: string) {
@@ -84,9 +90,19 @@ export async function getUserByEmail(email: string) {
   return matchingUsers[0];
 }
 
-export async function getUserPhoto(email: string) {
-  const url = `${MS_GRAPH_API_URL}/v1.0/users/${email}/photo/$value`;
-  const data = await sendRequest(url, { responseType: 'arraybuffer' });
+// See https://learn.microsoft.com/en-us/graph/api/profilephoto-get
+export async function getUserPhoto(upn: string) {
+  const result = await instance
+    .get<ArrayBuffer>(`/users/${upn.toLowerCase()}/photo/$value`, { responseType: 'arraybuffer' })
+    .then((res) => res.data)
+    .catch((err) => {
+      if (err.status === 404) {
+        return null; // User photo not found
+      }
 
-  return data;
+      logger.error('Error fetching user photo:', err.message ?? String(err));
+      return null;
+    });
+
+  return result;
 }
