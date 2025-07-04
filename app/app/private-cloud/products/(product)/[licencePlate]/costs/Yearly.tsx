@@ -29,7 +29,7 @@ export default function Yearly({ licencePlate, session }: { licencePlate: string
   }
 
   const handleChange = (year: string | null) => {
-    setSelectedYear(year ? new Date(Number(year)) : new Date());
+    setSelectedYear(year ? new Date(parseInt(year, 10), 0, 1) : new Date());
   };
 
   const monthlyCostData = data.months.map((month, idx) => {

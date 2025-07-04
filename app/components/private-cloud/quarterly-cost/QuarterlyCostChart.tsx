@@ -3,8 +3,14 @@ import { Bar } from 'react-chartjs-2';
 import { QuarterlyCost } from '@/types/private-cloud';
 import { getQuarterlyCostChartConfig } from './quarterly-cost-chart-data';
 
-export default function QuarterlyCostChart({ data }: { data: Pick<QuarterlyCost, 'months' | 'monthDetails'> }) {
-  const { options, data: chartData } = getQuarterlyCostChartConfig({ data });
+export default function QuarterlyCostChart({
+  data,
+  isForecastEnabled = true,
+}: {
+  data: Pick<QuarterlyCost, 'months' | 'monthDetails'>;
+  isForecastEnabled?: boolean;
+}) {
+  const { options, data: chartData } = getQuarterlyCostChartConfig({ data, isForecastEnabled });
 
   return (
     <Card shadow="sm" padding="lg" radius="md" withBorder>
