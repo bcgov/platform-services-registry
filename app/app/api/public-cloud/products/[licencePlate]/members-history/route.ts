@@ -1,28 +1,22 @@
-import { z } from 'zod';
+import { GlobalRole } from '@/constants';
 import createApiHandler from '@/core/api-handler';
 import prisma from '@/core/prisma';
 import { OkResponse } from '@/core/responses';
 import { RequestType } from '@/prisma/client';
-import { enrichMembersWithEmail, getUsersEmailsByIds } from '@/services/db/user';
+import { buildRequestDiff, collectChangedUserIds, UserWithRoleChanges } from '@/services/db/members-history';
+import { getPathParamSchema } from '../schema';
 
-const pathParamSchema = z.object({
-  licencePlate: z.string(),
-});
-
-const apiHandler = createApiHandler({
-  validations: { pathParams: pathParamSchema },
-});
-
-export const GET = apiHandler(async ({ pathParams }) => {
+export const GET = createApiHandler({
+  roles: [GlobalRole.User],
+  validations: { pathParams: getPathParamSchema },
+})(async ({ pathParams, session }) => {
   const { licencePlate } = pathParams;
 
   const requests = await prisma.publicCloudRequest.findMany({
     where: {
       licencePlate,
       OR: [
-        {
-          type: RequestType.CREATE,
-        },
+        { type: RequestType.CREATE },
         {
           type: RequestType.EDIT,
           changes: {
@@ -37,32 +31,40 @@ export const GET = apiHandler(async ({ pathParams }) => {
       id: true,
       changes: true,
       type: true,
+      createdAt: true,
+      originalData: {
+        select: {
+          projectOwnerId: true,
+          primaryTechnicalLeadId: true,
+          secondaryTechnicalLeadId: true,
+          expenseAuthorityId: true,
+          members: true,
+        },
+      },
       decisionData: {
         select: {
-          id: true,
-          projectOwner: { select: { id: true, email: true } },
-          primaryTechnicalLead: { select: { id: true, email: true } },
-          secondaryTechnicalLead: { select: { id: true, email: true } },
-          expenseAuthority: { select: { id: true, email: true } },
+          projectOwnerId: true,
+          primaryTechnicalLeadId: true,
+          secondaryTechnicalLeadId: true,
+          expenseAuthorityId: true,
           members: true,
         },
       },
     },
-    orderBy: {
-      createdAt: 'desc',
-    },
+    orderBy: { createdAt: 'desc' },
   });
 
-  await Promise.all(
-    requests.map(async (request) => {
-      const { id, members } = request.decisionData;
-      const enriched = await enrichMembersWithEmail({ id, members });
+  const userIds = collectChangedUserIds(requests);
 
-      if (enriched) {
-        request.decisionData.members = enriched.members;
-      }
-    }),
+  const users = await prisma.user.findMany({
+    where: { id: { in: Array.from(userIds) } },
+  });
+
+  const userMap = new Map<string, UserWithRoleChanges>(
+    users.map((user) => [user.id, { ...user, prevRoles: [], newRoles: [] }]),
   );
 
-  return OkResponse(requests);
+  const result = requests.map((request) => buildRequestDiff(request, userMap));
+
+  return OkResponse(result);
 });
