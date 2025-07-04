@@ -3,8 +3,14 @@ import { Bar } from 'react-chartjs-2';
 import { MonthlyCost } from '@/types/private-cloud';
 import { getMonthlyCostChartConfig } from './monthly-cost-chart-data';
 
-export default function MonthlyCostChart({ data }: { data: Pick<MonthlyCost, 'days' | 'dayDetails'> }) {
-  const { options, data: chartData } = getMonthlyCostChartConfig({ data });
+export default function MonthlyCostChart({
+  data,
+  isForecastEnabled = true,
+}: {
+  data: Pick<MonthlyCost, 'days' | 'dayDetails'>;
+  isForecastEnabled?: boolean;
+}) {
+  const { options, data: chartData } = getMonthlyCostChartConfig({ data, isForecastEnabled });
 
   return (
     <Card shadow="sm" padding="lg" radius="md" withBorder>

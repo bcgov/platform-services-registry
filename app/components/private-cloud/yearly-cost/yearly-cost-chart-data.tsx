@@ -2,7 +2,13 @@ import { TooltipItem } from 'chart.js';
 import { YearlyCost } from '@/types/private-cloud';
 import { formatCurrency, getMonthNameFromNumber } from '@/utils/js';
 
-export function getYearlyCostChartConfig({ data }: { data: Pick<YearlyCost, 'months' | 'monthDetails'> }) {
+export function getYearlyCostChartConfig({
+  data,
+  isForecastEnabled,
+}: {
+  data: Pick<YearlyCost, 'months' | 'monthDetails'>;
+  isForecastEnabled: boolean;
+}) {
   const options = {
     plugins: {
       title: {
@@ -49,30 +55,37 @@ export function getYearlyCostChartConfig({ data }: { data: Pick<YearlyCost, 'mon
     },
   };
 
+  const updatedChartData = [
+    {
+      label: 'CPU Cost (CA$)',
+      data: data.monthDetails.cpuToDate,
+      backgroundColor: '#4CAF50',
+    },
+    {
+      label: 'Storage Cost (CA$)',
+      data: data.monthDetails.storageToDate,
+      backgroundColor: '#00CAFF',
+    },
+    {
+      label: 'CPU Cost - Projected (CA$)',
+      data: data.monthDetails.cpuToProjected,
+      backgroundColor: '#E0F7E1',
+    },
+    {
+      label: 'Storage Cost - Projected (CA$)',
+      data: data.monthDetails.storageToProjected,
+      backgroundColor: '#CCF2FF',
+    },
+  ];
+
+  if (!isForecastEnabled) {
+    updatedChartData.pop();
+    updatedChartData.pop();
+  }
+
   const chartData = {
     labels: data.months.map(getMonthNameFromNumber),
-    datasets: [
-      {
-        label: 'CPU Cost (CA$)',
-        data: data.monthDetails.cpuToDate,
-        backgroundColor: '#1E3A8A',
-      },
-      {
-        label: 'Storage Cost (CA$)',
-        data: data.monthDetails.storageToDate,
-        backgroundColor: '#047857',
-      },
-      {
-        label: 'CPU Cost - Projected (CA$)',
-        data: data.monthDetails.cpuToProjected,
-        backgroundColor: '#A7C7E7',
-      },
-      {
-        label: 'Storage Cost - Projected (CA$)',
-        data: data.monthDetails.storageToProjected,
-        backgroundColor: '#A8D5BA',
-      },
-    ],
+    datasets: updatedChartData,
   };
 
   return { options, data: chartData };

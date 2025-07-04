@@ -11,7 +11,7 @@ import {
 import _get from 'lodash-es/get';
 import _isString from 'lodash-es/isString';
 import _startCase from 'lodash-es/startCase';
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import Pagination from './Pagination';
 
 interface ColumnDefinition<TData> {
@@ -24,18 +24,29 @@ interface TableProps<TData> {
   columns?: ColumnDefinition<TData>[];
   data: TData[];
   defaultPageSize?: number;
+  disablePagination?: boolean;
+  footer?: React.ReactNode;
 }
 
 export default function DataTable<TData extends object>({
   columns: _columns,
   data,
   defaultPageSize = 10,
+  disablePagination = false,
+  footer,
 }: TableProps<TData>) {
   const columnHelper = createColumnHelper<TData>();
   const [pagination, setPagination] = useState({
     pageIndex: 0,
-    pageSize: defaultPageSize,
+    pageSize: disablePagination ? data.length : defaultPageSize,
   });
+
+  useEffect(() => {
+    setPagination(() => ({
+      pageIndex: 0,
+      pageSize: disablePagination ? data.length : defaultPageSize,
+    }));
+  }, [disablePagination, data.length, defaultPageSize]);
 
   const columnDefs = useMemo(() => {
     const cols =
@@ -89,39 +100,44 @@ export default function DataTable<TData extends object>({
 
   return (
     <>
-      <table className="w-full text-sm border-collapse border mt-5">
-        <thead>
-          {table.getHeaderGroups().map((headerGroup) => (
-            <tr key={headerGroup.id}>
-              {headerGroup.headers.map((header) => (
-                <th className="text-left p-2 border" key={header.id}>
-                  {header.isPlaceholder ? null : flexRender(header.column.columnDef.header, header.getContext())}
-                </th>
+      <div className="border border-gray-200 overflow-hidden mt-5">
+        <div className="overflow-x-auto">
+          <table className="w-full text-sm border-collapse">
+            <thead>
+              {table.getHeaderGroups().map((headerGroup) => (
+                <tr key={headerGroup.id}>
+                  {headerGroup.headers.map((header) => (
+                    <th className="text-left p-2 border-b border-gray-200 bg-gray-100" key={header.id}>
+                      {header.isPlaceholder ? null : flexRender(header.column.columnDef.header, header.getContext())}
+                    </th>
+                  ))}
+                </tr>
               ))}
-            </tr>
-          ))}
-        </thead>
-        <tbody>
-          {table.getRowModel().rows.length > 0 ? (
-            table.getRowModel().rows.map((row) => (
-              <tr key={row.id} className="bg-white odd:bg-gray-50">
-                {row.getVisibleCells().map((cell) => (
-                  <td key={cell.id} className="p-2 border align-center">
-                    {flexRender(cell.column.columnDef.cell, cell.getContext())}
+            </thead>
+            <tbody>
+              {table.getRowModel().rows.length > 0 ? (
+                table.getRowModel().rows.map((row) => (
+                  <tr key={row.id} className="bg-white even:bg-gray-50">
+                    {row.getVisibleCells().map((cell) => (
+                      <td key={cell.id} className="p-2 border-b border-gray-200 align-center">
+                        {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                      </td>
+                    ))}
+                  </tr>
+                ))
+              ) : (
+                <tr>
+                  <td colSpan={6} className="p-2 border-b border-gray-200 italic text-center">
+                    No data available.
                   </td>
-                ))}
-              </tr>
-            ))
-          ) : (
-            <tr>
-              <td colSpan={6} className="p-2 border italic text-center">
-                No data available.
-              </td>
-            </tr>
-          )}
-        </tbody>
-      </table>
-      {data.length > 0 && <Pagination table={table} />}
+                </tr>
+              )}
+            </tbody>
+            {footer && <tfoot>{footer}</tfoot>}
+          </table>
+        </div>
+      </div>
+      {data.length > 0 && !disablePagination && <Pagination table={table} />}
     </>
   );
 }
