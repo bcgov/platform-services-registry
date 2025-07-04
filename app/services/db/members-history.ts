@@ -206,7 +206,7 @@ function mapMembersByUserId(members: { userId: string; roles?: string[] }[]) {
 
 function areRolesEqual(originalRoles: string[], decisionRoles: string[]) {
   if (originalRoles.length !== decisionRoles.length) return false;
-  const sortedOriginalRoles = [...originalRoles].sort();
-  const sortedDecisionRoles = [...decisionRoles].sort();
+  const sortedOriginalRoles = [...originalRoles].sort((a, b) => a.localeCompare(b));
+  const sortedDecisionRoles = [...decisionRoles].sort((a, b) => a.localeCompare(b));
   return sortedOriginalRoles.every((val, i) => val === sortedDecisionRoles[i]);
 }
