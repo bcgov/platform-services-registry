@@ -7,7 +7,7 @@ export function getYearlyCostChartConfig({
   isForecastEnabled,
 }: {
   data: Pick<YearlyCost, 'months' | 'monthDetails'>;
-  isForecastEnabled: boolean;
+  isForecastEnabled?: boolean;
 }) {
   const options = {
     plugins: {

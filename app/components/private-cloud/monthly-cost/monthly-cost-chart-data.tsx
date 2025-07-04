@@ -7,7 +7,7 @@ export function getMonthlyCostChartConfig({
   isForecastEnabled,
 }: {
   data: Pick<MonthlyCost, 'days' | 'dayDetails'>;
-  isForecastEnabled: boolean;
+  isForecastEnabled?: boolean;
 }) {
   const options = {
     plugins: {

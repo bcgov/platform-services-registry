@@ -7,7 +7,7 @@ export function getQuarterlyCostChartConfig({
   isForecastEnabled,
 }: {
   data: Pick<QuarterlyCost, 'months' | 'monthDetails'>;
-  isForecastEnabled: boolean;
+  isForecastEnabled?: boolean;
 }) {
   const options = {
     plugins: {
