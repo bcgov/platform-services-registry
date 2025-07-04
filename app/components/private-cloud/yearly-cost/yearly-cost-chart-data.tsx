@@ -55,7 +55,7 @@ export function getYearlyCostChartConfig({
     },
   };
 
-  const updatedChartData = [
+  const dynamicChartData = [
     {
       label: 'CPU Cost (CA$)',
       data: data.monthDetails.cpuToDate,
@@ -79,13 +79,13 @@ export function getYearlyCostChartConfig({
   ];
 
   if (!isForecastEnabled) {
-    updatedChartData.pop();
-    updatedChartData.pop();
+    dynamicChartData.pop();
+    dynamicChartData.pop();
   }
 
   const chartData = {
     labels: data.months.map(getMonthNameFromNumber),
-    datasets: updatedChartData,
+    datasets: dynamicChartData,
   };
 
   return { options, data: chartData };
