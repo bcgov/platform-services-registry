@@ -1,4 +1,4 @@
-import { normalizeUrl } from '@/utils/js/string';
+import { normalizeUrl, decodeEscapedNewlines } from '@/utils/js/string';
 
 export const SECURE_HEADERS = process.env.SECURE_HEADERS || '';
 export const LOG_LEVEL = process.env.LOG_LEVEL || 'debug';
@@ -66,8 +66,8 @@ export const MS_GRAPH_API_TOKEN_ENDPOINT =
 
 export const MS_GRAPH_API_CLIENT_ID = process.env.MS_GRAPH_API_CLIENT_ID || AUTH_RESOURCE;
 export const MS_GRAPH_API_CLIENT_SECRET = process.env.MS_GRAPH_API_CLIENT_SECRET || AUTH_SECRET;
-export const MS_GRAPH_API_CLIENT_PRIVATE_KEY = process.env.MS_GRAPH_API_CLIENT_PRIVATE_KEY;
-export const MS_GRAPH_API_CLIENT_CERTIFICATE = process.env.MS_GRAPH_API_CLIENT_CERTIFICATE;
+export const MS_GRAPH_API_CLIENT_PRIVATE_KEY = decodeEscapedNewlines(process.env.MS_GRAPH_API_CLIENT_PRIVATE_KEY ?? '');
+export const MS_GRAPH_API_CLIENT_CERTIFICATE = decodeEscapedNewlines(process.env.MS_GRAPH_API_CLIENT_CERTIFICATE ?? '');
 export const MS_GRAPH_API_PROXY_URL = process.env.MS_GRAPH_API_PROXY_URL || 'http://localhost:8000';
 export const USE_MS_GRAPH_API_PROXY = process.env.USE_MS_GRAPH_API_PROXY === 'true';
 
