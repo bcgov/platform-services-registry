@@ -388,8 +388,4 @@ mongodb:
     podSecurityContext:
       enabled: false
     containerSecurityContext:
-<<<<<<< HEAD
       enabled: false
-=======
-      enabled: false
->>>>>>> f66d61c66f01ba889534164624537495afd9a066
