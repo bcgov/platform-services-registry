@@ -4,9 +4,7 @@ import { getDaysBetweenDates, extractDateRanges, formatCurrency, getQuarterValue
 
 const ProgressArrow = () => {
   const baseArrowClass =
-    'absolute w-0 h-0 border-x-[12px] \
-     border-x-transparent border-t-[16px] \
-     left-1/2 -translate-x-1/2';
+    'absolute w-0 h-0 border-x-[12px] border-x-transparent border-t-[16px] left-1/2 -translate-x-1/2';
   return (
     <div className="absolute -bottom-4 left-1/2 -translate-x-1/2 w-6 h-4 ">
       <div className="relative w-full h-full">

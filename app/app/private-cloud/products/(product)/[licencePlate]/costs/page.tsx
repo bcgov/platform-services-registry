@@ -16,7 +16,7 @@ import {
   TimeView,
   YearlyCost,
 } from '@/types/private-cloud';
-import { formatAsYearQuarter, formatCurrency, getDateFromYyyyMmDd, getMonthNameFromNumber } from '@/utils/js';
+import { formatCurrency, getDateFromYyyyMmDd, getMonthNameFromNumber } from '@/utils/js';
 import Monthly from './Monthly';
 import Quarterly from './Quarterly';
 import Yearly from './Yearly';
@@ -46,7 +46,7 @@ const calculateTotalCost = <T extends { dayDetails?: { totalCost: number }; mont
   }, 0);
 };
 
-function TableFooter({ label, totalCost }: { label: string; totalCost: number }) {
+function TableFooter({ label, totalCost }: { label?: string; totalCost: number }) {
   return (
     <tr>
       <td colSpan={4} />
@@ -134,9 +134,9 @@ export default privateCloudProductCosts(({ getPathParams, session }) => {
   const tableProps = {
     disablePagination: true,
     footer: totalDailyCost ? (
-      <TableFooter label={selectedPeriod!} totalCost={totalDailyCost} />
+      <TableFooter label={selectedPeriod} totalCost={totalDailyCost} />
     ) : (
-      <TableFooter label={selectedPeriod!} totalCost={totalMonthlyCost} />
+      <TableFooter label={selectedPeriod} totalCost={totalMonthlyCost} />
     ),
   };
 
