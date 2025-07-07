@@ -77,7 +77,6 @@ export async function generateMonthlyCostPdf({
   data: MonthlyCost;
 }) {
   const ReactDOMServer = (await import('react-dom/server')).default;
-  // <CostSummary data={costData!} selectedDate={selectedDate} mode={viewMode} />
   const chartImageDataURL = await getChartDataURL(data);
   const html = ReactDOMServer.renderToStaticMarkup(
     <>
