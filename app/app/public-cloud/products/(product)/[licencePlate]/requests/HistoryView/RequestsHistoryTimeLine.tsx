@@ -75,9 +75,10 @@ export default function RequestsHistory({
   requests,
   billings,
 }: {
-  requests: PublicCloudRequestSimpleDecorated[];
-  billings: PublicCloudBillingSimpleDecorated[];
+  requests: PublicCloudRequestSimpleDecorated[] | undefined;
+  billings: PublicCloudBillingSimpleDecorated[] | undefined;
 }) {
+  if (!requests || !billings) return null;
   const orderedRequests = _orderBy(requests, 'createdAt', 'asc');
   const orderedBillings = _orderBy(billings, 'createdAt', 'asc');
 

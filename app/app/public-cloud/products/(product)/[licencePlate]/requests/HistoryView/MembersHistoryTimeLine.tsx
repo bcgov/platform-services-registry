@@ -49,7 +49,7 @@ export default function MembersHistory({ membersRoles }: { membersRoles: Members
                 </div>
               }
             >
-              {request.items.map((item, index) => {
+              {request.items.map((item) => {
                 const newRoles = item.newRoles.map(formatRole);
                 const prevRoles = item.prevRoles.map(formatRole);
 
@@ -77,7 +77,7 @@ export default function MembersHistory({ membersRoles }: { membersRoles: Members
                 }
 
                 return (
-                  <div key={index} className="mb-2">
+                  <div key={request.request.id} className="mb-2">
                     <Text c="dimmed" size="sm" className="flex flex-col gap-1">
                       <UserCard user={item} classNames={{ name: 'text-sm' }} />
                       <span>{message} </span>

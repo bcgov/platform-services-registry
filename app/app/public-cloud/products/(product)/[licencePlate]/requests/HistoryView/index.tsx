@@ -40,7 +40,7 @@ export default function HistoryView({ licencePlate }: { licencePlate: string }) 
       },
     ],
   });
-  if (!requests || !billings) return null;
+
   return (
     <>
       <Tabs variant="unstyled" defaultValue="requests">
