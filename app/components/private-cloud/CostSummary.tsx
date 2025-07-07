@@ -2,19 +2,6 @@ import { monthNames } from '@/constants/common';
 import { MonthlyCost, QuarterlyCost, TimeView, YearlyCost } from '@/types/private-cloud';
 import { getDaysBetweenDates, extractDateRanges, formatCurrency, getQuarterValue, cn } from '@/utils/js';
 
-const ProgressArrow = () => {
-  const baseArrowClass =
-    'absolute w-0 h-0 border-x-[12px] border-x-transparent border-t-[16px] left-1/2 -translate-x-1/2';
-  return (
-    <div className="absolute -bottom-4 left-1/2 -translate-x-1/2 w-6 h-4 ">
-      <div className="relative w-full h-full">
-        <div className={cn(baseArrowClass, 'top-[2px] border-t-gray-300 opacity-40')} />
-        <div className={cn(baseArrowClass, 'top-0 border-t-white')} />
-      </div>
-    </div>
-  );
-};
-
 export default function CostSummary({
   data,
   selectedDate,
@@ -112,16 +99,7 @@ export default function CostSummary({
                 }}
               >
                 {hasCurrentTotal && (
-                  <div
-                    className={cn(
-                      'relative bg-white border border-gray-200 rounded-lg shadow-sm p-3 w-64 max-w-xs text-center',
-                      {
-                        'opacity-100': percentageProgress > 0,
-                        'opacity-0': percentageProgress <= 0,
-                      },
-                      'transition-opacity duration-500',
-                    )}
-                  >
+                  <div className="relative p-3 w-64 max-w-xs text-center bg-transparent">
                     <p className="text-2xl font-bold mb-1">{formatCurrency(data.currentTotal)}</p>
                     <p className="text-xs text-gray-600 whitespace-nowrap overflow-hidden text-ellipsis">
                       Cost to date at{' '}
@@ -130,7 +108,6 @@ export default function CostSummary({
                         {currentMonth} {currentMonthDay}
                       </strong>
                     </p>
-                    {ProgressArrow()}
                   </div>
                 )}
               </div>
