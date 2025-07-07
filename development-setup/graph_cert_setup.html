@@ -10,13 +10,9 @@
         <meta name="author" content="Platform Services Team">
       
       
-        <link rel="canonical" href="https://bcgov.github.io/platform-services-registry/research/gold-migration-and-dr.html">
+        <link rel="canonical" href="https://bcgov.github.io/platform-services-registry/development-setup/graph_cert_setup.html">
       
       
-        <link rel="prev" href="../business-logic/public-cloud/email-scenario.html">
-      
-      
-        <link rel="next" href="source-of-truth-of-idir.html">
       
       
       <link rel="icon" href="../_assets/logo.png">
@@ -24,7 +20,7 @@
     
     
       
-        <title>Gold Cluster Migration and Disaster Recovery - Platform Services Registry</title>
+        <title>Certificate Setup for Microsoft Graph API Authentication - Platform Services Registry</title>
       
     
     
@@ -76,7 +72,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#gold-cluster-migration-and-disaster-recovery" class="md-skip">
+        <a href="#certificate-setup-for-microsoft-graph-api-authentication" class="md-skip">
           Skip to content
         </a>
       
@@ -111,7 +107,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              Gold Cluster Migration and Disaster Recovery
+              Certificate Setup for Microsoft Graph API Authentication
             
           </span>
         </div>
@@ -200,7 +196,7 @@
     
     
       <li class="md-tabs__item">
-        <a href="../development-setup/local-development-environment.html" class="md-tabs__link">
+        <a href="local-development-environment.html" class="md-tabs__link">
           
   
   
@@ -326,13 +322,11 @@
   
   
   
-    
-  
   
     
     
-      <li class="md-tabs__item md-tabs__item--active">
-        <a href="gold-migration-and-dr.html" class="md-tabs__link">
+      <li class="md-tabs__item">
+        <a href="../research/gold-migration-and-dr.html" class="md-tabs__link">
           
   
   
@@ -708,7 +702,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../development-setup/local-development-environment.html" class="md-nav__link">
+      <a href="local-development-environment.html" class="md-nav__link">
         
   
   
@@ -731,7 +725,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../development-setup/chartjs-canvas.html" class="md-nav__link">
+      <a href="chartjs-canvas.html" class="md-nav__link">
         
   
   
@@ -754,7 +748,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../development-setup/sandbox.html" class="md-nav__link">
+      <a href="sandbox.html" class="md-nav__link">
         
   
   
@@ -777,7 +771,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../development-setup/onboarding-offboarding.html" class="md-nav__link">
+      <a href="onboarding-offboarding.html" class="md-nav__link">
         
   
   
@@ -800,7 +794,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../development-setup/react-email.html" class="md-nav__link">
+      <a href="react-email.html" class="md-nav__link">
         
   
   
@@ -823,7 +817,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../development-setup/resource-metrics.html" class="md-nav__link">
+      <a href="resource-metrics.html" class="md-nav__link">
         
   
   
@@ -2168,10 +2162,8 @@
       
   
   
-    
   
   
-  
     
     
       
@@ -2185,20 +2177,17 @@
     
     
       
-        
-        
-      
       
     
     
-    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+    <li class="md-nav__item md-nav__item--nested">
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_7" checked>
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_7" >
         
           
-          <label class="md-nav__link" for="__nav_7" id="__nav_7_label" tabindex="">
+          <label class="md-nav__link" for="__nav_7" id="__nav_7_label" tabindex="0">
             
   
   
@@ -2211,7 +2200,7 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_7_label" aria-expanded="true">
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_7_label" aria-expanded="false">
           <label class="md-nav__title" for="__nav_7">
             <span class="md-nav__icon md-icon"></span>
             Research
@@ -2222,32 +2211,10 @@
                 
   
   
-    
   
   
-  
-    <li class="md-nav__item md-nav__item--active">
-      
-      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
-      
-      
-        
-      
-      
-        <label class="md-nav__link md-nav__link--active" for="__toc">
-          
-  
-  
-  <span class="md-ellipsis">
-    Gold Cluster Migration and Disaster Recovery
-    
-  </span>
-  
-
-          <span class="md-nav__icon md-icon"></span>
-        </label>
-      
-      <a href="gold-migration-and-dr.html" class="md-nav__link md-nav__link--active">
+    <li class="md-nav__item">
+      <a href="../research/gold-migration-and-dr.html" class="md-nav__link">
         
   
   
@@ -2258,68 +2225,6 @@
   
 
       </a>
-      
-        
-
-<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
-  
-  
-  
-    
-  
-  
-    <label class="md-nav__title" for="__toc">
-      <span class="md-nav__icon md-icon"></span>
-      Table of contents
-    </label>
-    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
-      
-        <li class="md-nav__item">
-  <a href="#comparison-silver-vs-gold-without-dr" class="md-nav__link">
-    <span class="md-ellipsis">
-      Comparison: Silver vs. Gold (without DR)
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#enabling-the-disaster-recovery-dr-cluster" class="md-nav__link">
-    <span class="md-ellipsis">
-      Enabling the Disaster Recovery (DR) Cluster
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="Enabling the Disaster Recovery (DR) Cluster">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#additional-considerations" class="md-nav__link">
-    <span class="md-ellipsis">
-      Additional Considerations
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#alternative-uses-for-the-dr-cluster" class="md-nav__link">
-    <span class="md-ellipsis">
-      Alternative Uses for the DR Cluster
-    </span>
-  </a>
-  
-</li>
-      
-    </ul>
-  
-</nav>
-      
     </li>
   
 
@@ -2332,7 +2237,7 @@
   
   
     <li class="md-nav__item">
-      <a href="source-of-truth-of-idir.html" class="md-nav__link">
+      <a href="../research/source-of-truth-of-idir.html" class="md-nav__link">
         
   
   
@@ -2355,7 +2260,7 @@
   
   
     <li class="md-nav__item">
-      <a href="image-scanner.html" class="md-nav__link">
+      <a href="../research/image-scanner.html" class="md-nav__link">
         
   
   
@@ -2505,28 +2410,37 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#comparison-silver-vs-gold-without-dr" class="md-nav__link">
+  <a href="#1-generate-the-certificate-and-private-key" class="md-nav__link">
     <span class="md-ellipsis">
-      Comparison: Silver vs. Gold (without DR)
+      1. Generate the Certificate and Private Key
     </span>
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#enabling-the-disaster-recovery-dr-cluster" class="md-nav__link">
+  <a href="#2-upload-certificate-to-azure" class="md-nav__link">
     <span class="md-ellipsis">
-      Enabling the Disaster Recovery (DR) Cluster
+      2. Upload Certificate to Azure
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="Enabling the Disaster Recovery (DR) Cluster">
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#3-configure-envlocal" class="md-nav__link">
+    <span class="md-ellipsis">
+      3. Configure .env.local
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="3. Configure .env.local">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#additional-considerations" class="md-nav__link">
+  <a href="#helper-convert-pem-to-n-escaped-string" class="md-nav__link">
     <span class="md-ellipsis">
-      Additional Considerations
+      Helper: Convert PEM to \n-escaped string
     </span>
   </a>
   
@@ -2538,9 +2452,18 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#alternative-uses-for-the-dr-cluster" class="md-nav__link">
+  <a href="#example-envlocal" class="md-nav__link">
     <span class="md-ellipsis">
-      Alternative Uses for the DR Cluster
+      Example .env.local
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#tip-validate-certificate-expiration" class="md-nav__link">
+    <span class="md-ellipsis">
+      Tip: Validate Certificate Expiration
     </span>
   </a>
   
@@ -2565,83 +2488,65 @@
   
 
 
-<h1 id="gold-cluster-migration-and-disaster-recovery">Gold Cluster Migration and Disaster Recovery<a class="headerlink" href="#gold-cluster-migration-and-disaster-recovery" title="Permanent link">&para;</a></h1>
-<p>This research explores the feasibility of migrating the Registry application from the Silver cluster to the Gold cluster, along with the potential use of the GoldDR cluster for disaster recovery (DR).</p>
-<h2 id="comparison-silver-vs-gold-without-dr">Comparison: Silver vs. Gold (without DR)<a class="headerlink" href="#comparison-silver-vs-gold-without-dr" title="Permanent link">&para;</a></h2>
-<p>Both clusters offer the same SLA of 99.5%. However, when DR is properly configured, the SLA can increase to 99.95%. The main difference between the two clusters lies in their patch and upgrade cycles: Gold receives patches and upgrades <strong>after</strong> the Silver cluster.</p>
-<p>This staggered update schedule can be seen as a benefit of the Gold cluster — offering greater stability, since any issues with updates are likely to be caught on Silver first. On the other hand, it introduces a trade-off between <strong>stability and security</strong>. If a patch contains critical security updates, Gold remains vulnerable until it receives the patch.</p>
-<h2 id="enabling-the-disaster-recovery-dr-cluster">Enabling the Disaster Recovery (DR) Cluster<a class="headerlink" href="#enabling-the-disaster-recovery-dr-cluster" title="Permanent link">&para;</a></h2>
-<p>To enable the DR cluster, the following steps are required:</p>
+<h1 id="certificate-setup-for-microsoft-graph-api-authentication">Certificate Setup for Microsoft Graph API Authentication<a class="headerlink" href="#certificate-setup-for-microsoft-graph-api-authentication" title="Permanent link">&para;</a></h1>
+<p>This guide shows how to generate a <strong>private key</strong> and <strong>self-signed certificate</strong>, and how to configure them in a <code>.env.local</code> file to be used for authenticating with Microsoft Graph API via client credentials.</p>
+<hr />
+<h2 id="1-generate-the-certificate-and-private-key">1. Generate the Certificate and Private Key<a class="headerlink" href="#1-generate-the-certificate-and-private-key" title="Permanent link">&para;</a></h2>
+<p>Use <code>openssl</code> to generate a 2048-bit RSA private key and a self-signed certificate.</p>
+<div class="language-bash highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-0-1">1</a></span>
+<span class="normal"><a href="#__codelineno-0-2">2</a></span>
+<span class="normal"><a href="#__codelineno-0-3">3</a></span>
+<span class="normal"><a href="#__codelineno-0-4">4</a></span>
+<span class="normal"><a href="#__codelineno-0-5">5</a></span></pre></div></td><td class="code"><div><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1"></a><span class="c1"># Generate private key</span>
+</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2"></a>openssl<span class="w"> </span>genrsa<span class="w"> </span>-out<span class="w"> </span>private-key.pem<span class="w"> </span><span class="m">2048</span>
+</span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3"></a>
+</span><span id="__span-0-4"><a id="__codelineno-0-4" name="__codelineno-0-4"></a><span class="c1"># Generate self-signed certificate (valid for &lt;days&gt; days)</span>
+</span><span id="__span-0-5"><a id="__codelineno-0-5" name="__codelineno-0-5"></a>openssl<span class="w"> </span>req<span class="w"> </span>-new<span class="w"> </span>-x509<span class="w"> </span>-key<span class="w"> </span>private-key.pem<span class="w"> </span>-out<span class="w"> </span>certificate.pem<span class="w"> </span>-days<span class="w"> </span>&lt;days&gt;<span class="w"> </span>-subj<span class="w"> </span><span class="s2">&quot;/CN=pltsvc&quot;</span>
+</span></code></pre></div></td></tr></table></div>
+<blockquote>
+<p>💡 Replace <code>&lt;days&gt;</code> with the number of days the certificate should be valid (e.g., <code>365</code> for one year).</p>
+</blockquote>
+<hr />
+<h2 id="2-upload-certificate-to-azure">2. Upload Certificate to Azure<a class="headerlink" href="#2-upload-certificate-to-azure" title="Permanent link">&para;</a></h2>
 <ol>
-<li>
-<p><strong>Request a GSLB (Global Service Load Balancer) domain via iStore</strong></p>
-<ul>
-<li>This requires the health check endpoints of the Registry application.</li>
-</ul>
-</li>
-<li>
-<p><strong>Update DNS Configuration via NNR (Remedy App)</strong></p>
-<ul>
-<li>Configure the <code>CNAME</code> of the Registry vanity URL to point to the GSLB domain.</li>
-</ul>
-</li>
-<li>
-<p><strong>Build &amp; Deploy a Switchover Agent</strong></p>
-<ul>
-<li>This server monitors the IP address of the GSLB domain and triggers custom logic during a failover event.</li>
-<li>The agent should ideally run in both clusters, or at least in the DR cluster.</li>
-</ul>
-</li>
-<li>
-<p><strong>Update CI/CD Pipelines (e.g., GitHub Actions)</strong></p>
-<ul>
-<li>Ensure necessary deployments and StatefulSets are included for the GoldDR cluster.</li>
-</ul>
-</li>
-<li>
-<p><strong>MongoDB Data Sync Strategy</strong></p>
-<ul>
-<li>Syncing data between MongoDB instances in the Gold and GoldDR clusters requires further investigation.</li>
-<li>Unlike PostgreSQL (e.g., using <code>Patroni</code> with <code>TransportServerClaim</code>), MongoDB does not provide a built-in, cross-cluster active-standby replication mechanism.</li>
-<li>A possible fallback is to perform frequent backups from the Gold cluster and restore them in the GoldDR cluster.<ul>
-<li>However, this approach introduces <strong>data integrity risks</strong>, particularly in failover scenarios where recent data changes could be lost.</li>
-<li>Restoring data back to Gold once it becomes available again also presents significant operational challenges.</li>
-<li>This method would require storing backup files in object storage (e.g., an AWS S3 bucket or equivalent), rather than using PVCs.</li>
-</ul>
-</li>
-</ul>
-</li>
-<li>
-<p><strong>Stateless Provisioner Services (13–15 services)</strong></p>
-<ul>
-<li>There are no data persistence concerns, but the services must run continuously in both clusters.</li>
-<li>Otherwise, they must be recreated in the DR cluster during failover by the switchover agent.</li>
-</ul>
-</li>
+<li>Go to <strong>Azure Portal &gt; Azure Active Directory &gt; App registrations &gt; [your app]</strong></li>
+<li>Navigate to <strong>Certificates &amp; secrets &gt; Certificates</strong></li>
+<li>Click <strong>Upload certificate</strong></li>
+<li>Upload the generated <code>certificate.pem</code> (⚠️ <strong>do not upload the private key!</strong>)</li>
 </ol>
-<h3 id="additional-considerations">Additional Considerations<a class="headerlink" href="#additional-considerations" title="Permanent link">&para;</a></h3>
-<ul>
-<li>What should project teams do if their products are deployed on the Gold cluster and it goes down?</li>
-</ul>
-<h2 id="alternative-uses-for-the-dr-cluster">Alternative Uses for the DR Cluster<a class="headerlink" href="#alternative-uses-for-the-dr-cluster" title="Permanent link">&para;</a></h2>
-<p>If enabling the DR cluster to run the full application proves too complex, we can still explore other ways to leverage the DR environment for added value:</p>
-<ol>
-<li>
-<p><strong>Display a Maintenance Page</strong></p>
-<ul>
-<li>Use the DR cluster to serve a maintenance page during outages or failover events.</li>
-<li>This provides users with a clear and professional message, rather than an empty or broken page.</li>
-</ul>
-</li>
-<li>
-<p><strong>Run the Registry in Read-Only Mode</strong></p>
-<ul>
-<li>Serve a limited, read-only version of the Registry application from the DR cluster.</li>
-<li>While this still requires a data synchronization strategy, it eliminates the need to failover provisioner services, since they aren’t necessary in read-only mode.</li>
-<li>This option provides partial availability while minimizing operational complexity.</li>
-</ul>
-</li>
-</ol>
+<hr />
+<h2 id="3-configure-envlocal">3. Configure <code>.env.local</code><a class="headerlink" href="#3-configure-envlocal" title="Permanent link">&para;</a></h2>
+<p>Store the <strong>raw PEM content</strong> of both the private key and certificate in your <code>.env.local</code> file:</p>
+<div class="language-text highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-1-1">1</a></span>
+<span class="normal"><a href="#__codelineno-1-2">2</a></span></pre></div></td><td class="code"><div><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1"></a>MS_GRAPH_API_CLIENT_PRIVATE_KEY=&quot;-----BEGIN PRIVATE KEY-----\n...actual key contents...\n-----END PRIVATE KEY-----&quot; # pragma: allowlist secret
+</span><span id="__span-1-2"><a id="__codelineno-1-2" name="__codelineno-1-2"></a>MS_GRAPH_API_CLIENT_CERTIFICATE=&quot;-----BEGIN CERTIFICATE-----\n...actual cert contents...\n-----END CERTIFICATE-----&quot; # pragma: allowlist secret
+</span></code></pre></div></td></tr></table></div>
+<blockquote>
+<p>To convert the multi-line PEM files into single-line strings for <code>.env.local</code>, replace actual line breaks with <code>\n</code>.</p>
+</blockquote>
+<p>You can do this manually or run a small helper command:</p>
+<h3 id="helper-convert-pem-to-n-escaped-string">Helper: Convert PEM to <code>\n</code>-escaped string<a class="headerlink" href="#helper-convert-pem-to-n-escaped-string" title="Permanent link">&para;</a></h3>
+<div class="language-bash highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-2-1">1</a></span></pre></div></td><td class="code"><div><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1"></a>awk<span class="w"> </span><span class="s1">&#39;BEGIN {printf &quot;\&quot;&quot;} {gsub(/\r/, &quot;&quot;); gsub(/&quot;/, &quot;\\\&quot;&quot;); printf &quot;%s\\n&quot;, $0} END {printf &quot;\&quot;\n&quot;}&#39;</span><span class="w"> </span>private-key.pem
+</span></code></pre></div></td></tr></table></div>
+<p>Then paste the output in:</p>
+<div class="language-text highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-3-1">1</a></span></pre></div></td><td class="code"><div><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1"></a>MS_GRAPH_API_CLIENT_PRIVATE_KEY=&lt;output&gt;
+</span></code></pre></div></td></tr></table></div>
+<p>Repeat the same for <code>certificate.pem</code>.</p>
+<hr />
+<h2 id="example-envlocal">Example <code>.env.local</code><a class="headerlink" href="#example-envlocal" title="Permanent link">&para;</a></h2>
+<div class="language-text highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-4-1">1</a></span>
+<span class="normal"><a href="#__codelineno-4-2">2</a></span>
+<span class="normal"><a href="#__codelineno-4-3">3</a></span>
+<span class="normal"><a href="#__codelineno-4-4">4</a></span></pre></div></td><td class="code"><div><pre><span></span><code><span id="__span-4-1"><a id="__codelineno-4-1" name="__codelineno-4-1"></a>MS_GRAPH_API_CLIENT_ID=your-app-client-id
+</span><span id="__span-4-2"><a id="__codelineno-4-2" name="__codelineno-4-2"></a>MS_GRAPH_API_TENANT_ID=your-tenant-id
+</span><span id="__span-4-3"><a id="__codelineno-4-3" name="__codelineno-4-3"></a>MS_GRAPH_API_CLIENT_PRIVATE_KEY=&quot;-----BEGIN PRIVATE KEY-----\nMIIEvgIBADANB...\n-----END PRIVATE KEY-----&quot; # pragma: allowlist secret
+</span><span id="__span-4-4"><a id="__codelineno-4-4" name="__codelineno-4-4"></a>MS_GRAPH_API_CLIENT_CERTIFICATE=&quot;-----BEGIN CERTIFICATE-----\nMIIDZTCCAk2gAwIBAgI...\n-----END CERTIFICATE-----&quot; # pragma: allowlist secret
+</span></code></pre></div></td></tr></table></div>
+<hr />
+<h2 id="tip-validate-certificate-expiration">Tip: Validate Certificate Expiration<a class="headerlink" href="#tip-validate-certificate-expiration" title="Permanent link">&para;</a></h2>
+<p>To check when your certificate expires:</p>
+<div class="language-bash highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-5-1">1</a></span></pre></div></td><td class="code"><div><pre><span></span><code><span id="__span-5-1"><a id="__codelineno-5-1" name="__codelineno-5-1"></a>openssl<span class="w"> </span>x509<span class="w"> </span>-in<span class="w"> </span>certificate.pem<span class="w"> </span>-noout<span class="w"> </span>-dates
+</span></code></pre></div></td></tr></table></div>
 
 
 
