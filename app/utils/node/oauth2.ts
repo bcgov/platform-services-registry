@@ -1,3 +1,4 @@
+import { ClientCertificateCredential } from '@azure/identity';
 import axios from 'axios';
 
 export async function getClientCredentialsToken(
@@ -24,6 +25,23 @@ export async function getClientCredentialsToken(
   });
 
   return response.data.access_token;
+}
+
+export async function getMsGraphAccessTokenWithCertificate(
+  tenantId: string,
+  clientId: string,
+  privateKey: string,
+  certificate: string,
+) {
+  if (!certificate.includes('BEGIN CERTIFICATE') || !privateKey.includes('BEGIN PRIVATE KEY')) {
+    throw new Error('Missing certificate or private key format');
+  }
+
+  const certificateWithKeyPem = `${certificate.trim()}\n${privateKey.trim()}`;
+  const credential = new ClientCertificateCredential(tenantId, clientId, { certificate: certificateWithKeyPem });
+
+  const accessToken = await credential.getToken('https://graph.microsoft.com/.default');
+  return accessToken.token;
 }
 
 export async function validateClientCredentials(

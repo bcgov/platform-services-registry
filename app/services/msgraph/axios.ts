@@ -5,21 +5,32 @@ import {
   MS_GRAPH_API_PROXY_URL,
   USE_MS_GRAPH_API_PROXY,
   MS_GRAPH_API_TOKEN_ENDPOINT,
+  MS_GRAPH_API_TENANT_ID,
   MS_GRAPH_API_CLIENT_ID,
   MS_GRAPH_API_CLIENT_SECRET,
+  MS_GRAPH_API_CLIENT_PRIVATE_KEY,
+  MS_GRAPH_API_CLIENT_CERTIFICATE,
 } from '@/config';
-import { getClientCredentialsToken } from '@/utils/node/oauth2';
+import { getClientCredentialsToken, getMsGraphAccessTokenWithCertificate } from '@/utils/node/oauth2';
 
 // See https://learn.microsoft.com/en-us/microsoft-cloud/dev/dev-proxy/how-to/use-dev-proxy-with-nodejs
 const graphAPIProxy = USE_MS_GRAPH_API_PROXY ? new HttpsProxyAgent(MS_GRAPH_API_PROXY_URL) : null;
 
 async function getAccessToken() {
-  const token = await getClientCredentialsToken(
-    MS_GRAPH_API_TOKEN_ENDPOINT,
-    MS_GRAPH_API_CLIENT_ID,
-    MS_GRAPH_API_CLIENT_SECRET,
-    'https://graph.microsoft.com/.default',
-  );
+  const token =
+    MS_GRAPH_API_CLIENT_PRIVATE_KEY && MS_GRAPH_API_CLIENT_CERTIFICATE
+      ? await getMsGraphAccessTokenWithCertificate(
+          MS_GRAPH_API_TENANT_ID,
+          MS_GRAPH_API_CLIENT_ID,
+          MS_GRAPH_API_CLIENT_PRIVATE_KEY,
+          MS_GRAPH_API_CLIENT_CERTIFICATE,
+        )
+      : await getClientCredentialsToken(
+          MS_GRAPH_API_TOKEN_ENDPOINT,
+          MS_GRAPH_API_CLIENT_ID,
+          MS_GRAPH_API_CLIENT_SECRET,
+          'https://graph.microsoft.com/.default',
+        );
 
   if (!token) {
     throw new Error('Failed to get access token');

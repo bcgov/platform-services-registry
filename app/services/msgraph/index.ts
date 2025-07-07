@@ -54,7 +54,7 @@ export async function getUser(idOrUserPrincipalName: string) {
         return null; // User not found
       }
 
-      logger.error('Error fetching user by UPN:', err.message ?? String(err));
+      logger.error(`Error fetching user by UPN: ${err.message ?? String(err)}`);
       return null;
     });
 
@@ -75,7 +75,7 @@ export async function listUsersByEmail(email: string) {
     })
     .then((res) => res.data)
     .catch((err) => {
-      logger.error('Error fetching users by email:', err.message ?? String(err));
+      logger.error(`Error fetching users by email: ${err.message ?? String(err)}`);
       return { value: [] };
     });
 
@@ -100,7 +100,7 @@ export async function getUserPhoto(upn: string) {
         return null; // User photo not found
       }
 
-      logger.error('Error fetching user photo:', err.message ?? String(err));
+      logger.error(`Error fetching user photo: ${err.message ?? String(err)}`);
       return null;
     });
 
