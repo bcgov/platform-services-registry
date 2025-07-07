@@ -22,3 +22,16 @@ minio:
 
 mongodb:
   enabled: true
+
+sorrycypress:
+  enabled: true
+  routes:
+    api:
+      host: tools-sorry-cypress-api.apps.silver.devops.gov.bc.ca
+    dashboard:
+      host: tools-sorry-cypress.apps.silver.devops.gov.bc.ca
+    director:
+      host: tools-sorry-cypress-director.apps.silver.devops.gov.bc.ca
+  dashboard:
+    environmentVariables:
+      graphQlSchemaUrl: https://tools-sorry-cypress-api.apps.silver.devops.gov.bc.ca
