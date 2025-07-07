@@ -82,3 +82,7 @@ export function normalizeUrl(url: string): string {
   }
   return url.slice(0, end);
 }
+
+export function decodeEscapedNewlines(input: string): string {
+  return input.replace(/\\n/g, '\n');
+}
