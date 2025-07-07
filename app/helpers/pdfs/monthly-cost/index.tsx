@@ -1,12 +1,11 @@
 import { createCanvas } from 'canvas';
 import Chart from 'chart.js/auto';
 import { tailwindToCSS } from 'tw-to-css';
-import CostSummary from '@/components/private-cloud/CostSummary';
 import { getMonthlyCostChartConfig } from '@/components/private-cloud/monthly-cost/monthly-cost-chart-data';
 import MonthlyCostSummary from '@/components/private-cloud/monthly-cost/MonthlyCostSummary';
 import MonthlyCostTable from '@/components/private-cloud/monthly-cost/MonthlyCostTable';
 import { WeasyPrint } from '@/services/weasyprint/client';
-import { MonthlyCost, PrivateCloudProductDetailDecorated, TimeView } from '@/types/private-cloud';
+import { MonthlyCost, PrivateCloudProductDetailDecorated } from '@/types/private-cloud';
 import { replaceClassToStyleString } from '@/utils/js';
 
 const weasyClient = new WeasyPrint();
@@ -77,6 +76,7 @@ export async function generateMonthlyCostPdf({
   data: MonthlyCost;
 }) {
   const ReactDOMServer = (await import('react-dom/server')).default;
+
   const chartImageDataURL = await getChartDataURL(data);
   const html = ReactDOMServer.renderToStaticMarkup(
     <>
