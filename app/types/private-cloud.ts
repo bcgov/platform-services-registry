@@ -199,9 +199,9 @@ export interface YearlyDiscreteValue {
 }
 
 export enum TimeView {
-  Monthly = 'monthly',
-  Quarterly = 'quarterly',
-  Yearly = 'yearly',
+  Monthly = 'Monthly',
+  Quarterly = 'Quarterly',
+  Yearly = 'Yearly',
 }
 
 export interface CostItem {
@@ -229,6 +229,8 @@ export interface MonthlyCost {
   grandTotal: number;
   items: CostItem[];
   discreteResourceValues: DailyDiscreteValue[];
+  startDate: Date;
+  numberOfDaysBetweenDates: number;
   days: number[];
   dayDetails: {
     cpuToDate: number[];
@@ -246,6 +248,8 @@ export interface QuarterlyCost {
   grandTotal: number;
   items: CostItem[];
   discreteResourceValues: QuarterlyDiscreteValue;
+  startDate: Date;
+  numberOfDaysBetweenDates: number;
   months: number[];
   monthDetails: {
     cpuToDate: number[];
@@ -263,6 +267,8 @@ export interface YearlyCost {
   grandTotal: number;
   items: CostItem[];
   discreteResourceValues: YearlyDiscreteValue;
+  startDate: Date;
+  numberOfDaysBetweenDates: number;
   months: number[];
   monthDetails: {
     cpuToDate: number[];
@@ -278,9 +284,9 @@ export interface PeriodicCostMetric
 export interface CostMetric {
   cpuToDate: number;
   storageToDate: number;
-  cpuToProjected: number;
-  storageToProjected: number;
   totalCost: number;
+  cpuCore: number;
+  storageGib: number;
 }
 
 export interface DailyCostMetric {
