@@ -24,6 +24,10 @@ dependencies:
     repository: https://charts.min.io/
     condition: minio.enabled
   - name: mongodb
+<<<<<<< HEAD
+    version: '16.5.21' #8.0.4
+=======
     version: '16.5.27' #8.0.4
+>>>>>>> f66d61c66f01ba889534164624537495afd9a066
     repository: https://charts.bitnami.com/bitnami
     condition: mongodb.enabled
