@@ -1,0 +1,245 @@
+# Default values for sorry-cypress-helm.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+# If you don't want to use the default release name, change it here.
+nameOverride: "sorry-cypress"
+fullnameOverride: "sorry-cypress"
+
+api:
+  image:
+    repository: agoldis/sorry-cypress-api
+    pullPolicy: IfNotPresent
+    tag: "2.6.0"
+
+  replicas: 1
+
+  enabled: true
+
+  resources:
+    {}
+
+  securityContext:
+    enabled: false
+
+  tolerations: []
+
+  service:
+    port: 4000
+
+  env:
+    - name: MONGODB_URI
+      value: "mongodb://mongo:27017"
+    - name: MONGODB_DATABASE
+      value: "sorry-cypress"
+
+  # readinessProbe:
+  #   periodSeconds: 5
+  #   timeoutSeconds: 3
+  #   successThreshold: 2
+  #   failureThreshold: 5
+
+dashboard:
+  image:
+    repository: agoldis/sorry-cypress-dashboard
+    pullPolicy: IfNotPresent
+    tag: "2.6.0"
+
+  replicas: 1
+
+  enabled: true
+
+  resources:
+    {}
+
+  securityContext:
+    enabled: false
+
+  # https://docs.sorry-cypress.dev/configuration/dashboard-configuration/configuration
+  environmentVariables:
+    # graphQlClientCredentials: ""
+    # graphQlSchemaUrl: ""
+    # ciUrl: ""
+    basePath: "/"
+
+  service:
+    port: 8080
+
+  ingress:
+    enabled: true
+    ingressClassName: nginx
+    labels: {}
+    annotations:
+      {}
+      # kubernetes.io/tls-acme: "true"
+    hosts:
+      - host: dashboard.chart-example.local
+        path: /
+    tls: []
+    #  - secretName: chart-example-tls
+    #    hosts:
+    #      - chart-example.local
+  extraEnv: []
+    # - name: ENV_NAME
+    #   value: ENV_VALUE
+
+director:
+  serviceAccount:
+    name: ~
+    create: false
+
+  image:
+    repository: agoldis/sorry-cypress-director
+    pullPolicy: IfNotPresent
+    tag: "2.6.0"
+
+  replicas: 1
+
+  resources:
+    {}
+
+  securityContext:
+    enabled: false
+
+  # readinessProbe:
+  #   periodSeconds: 5
+  #   timeoutSeconds: 3
+  #   successThreshold: 2
+  #   failureThreshold: 5
+
+  #   dashboardUrl: "localhost:8080"
+
+  #   # In memory, or Mongo.
+  #   # Valid options are:
+  #   # "../execution/in-memory"
+  #   # "../execution/mongo/driver"
+  executionDriver: "../execution/mongo/driver"
+  env:
+    - name: MONGODB_URI
+      value: "mongodb://mongo:27017"
+    - name: MONGODB_DATABASE
+      value: "sorry-cypress"
+
+  #   # Dummy or S3
+  #   # Valid options are:
+  #   # "../screenshots/dummy.driver"
+  #   # "../screenshots/s3.driver"
+  #   screenshotsDriver: "../screenshots/dummy.driver"
+
+  #   # BASE_PATH serving path, usefull when using reverse proxy ex: /cypress/dashboard
+  #   basePath: "/cypress/dashboard"
+
+  service:
+    port: 1234
+
+  ingress:
+    enabled: true
+    ingressClassName: nginx
+    labels: {}
+    annotations:
+      {}
+      # kubernetes.io/tls-acme: "true"
+    hosts:
+      - host: director.chart-example.local
+        path: /
+    tls: []
+    #  - secretName: chart-example-tls
+    #    hosts:
+    #      - chart-example.local
+
+  extraEnv: []
+    # - name: ENV_NAME
+    #   value: ENV_VALUE
+
+# mongodb:
+#   auth:
+#     enabled: true
+#     existingSecret: tools-mongodb # pragma: allowlist secret
+
+#   # mongoHost: "tools-mongodb"
+#   # mongoUser: "root"
+#   # mongoPassword:
+#   #   existingSecret:
+#   #     name: "tools-mongodb" # The name of your OpenShift secret
+#   #     key: "mongodb-root-password"
+
+#   # One of the following two options must be enabled in order to securely use connection strings
+#   # that may contain sensitive information. Use either enableSecret or enableCustomSecret, not both.
+#   # mongoSecretConnectionString:
+#   #   enableSecret: false
+#   #   enableCustomSecret: false
+
+#   # One of the following two options must be enabled in order for the Sorry Cypress API to work.
+#   # Set this to "true" if you wish to use your own external mongodb.
+#   internal_db.enabled:
+#     enabled: false
+
+#   external_db:
+#     enabled: true
+#     mongoServer: "localhost:27017"
+
+#   # mongoDatabase: "sorry-cypress"
+
+#   # certificate:
+#   #   enabled: false
+#   #   name: "db-cert"
+#   #   configMapName: "sorry-cypress-db-cert"
+
+#   # If enabled, you can use any values from the mongodb helm chart: https://github.com/bitnami/charts/blob/master/bitnami/mongodb/values.yaml
+#   # Below are the bare minimim to get you started.
+
+
+runCleaner:
+  # Optionally integrate the Sorry Cypress Run Cleaner to remove old runs from the database.
+  # You will need to set up your S3/Minio lifecycle management to delete objects from your bucket.
+  # https://github.com/sendible-labs/sorry-cypress-run-cleaner
+  enabled: false
+  image:
+    repository: "ghcr.io/sendible-labs/sorry-cypress-run-cleaner"
+    tag: "stable"
+  # Keep the last 200 days worth of runs.
+  daysToKeep: 200
+  # Run every morning at 1am by default.
+  schedule: "0 1 * * *"
+  # Cluster domain to resolve api host correctly
+  clusterDomain: "cluster.local"
+
+  resources:
+    {}
+
+  podAnnotations: {}
+
+  podLabels: {}
+
+  securityContext: {}
+
+imagePullSecrets: []
+# An optional array of imagePullSecrets that are used to download images from a private registry
+# https://kubernetes.io/docs/tasks/configure-pod-container/pull-image-private-registry/
+# - name: <secret-name>
+
+# s3:
+#   bucketName: example-bucket
+#   region: us-east-1
+#   accessKeyId: ""
+#   secretAccessKey: ""
+#   acl: "public-read"
+#   readUrlPrefix: ""
+#   videoKeyPrefix: ""
+#   imageKeyPrefix: ""
+
+#   ingress:
+#     # When enabling ingress, an ExternalName service will be also created to expose the bucket.
+#     enabled: false
+#     ingressClassName: nginx
+#     labels: {}
+#     annotations:
+#       {}
+#       # kubernetes.io/tls-acme: "true"
+#       # nginx.ingress.kubernetes.io/upstream-vhost: <bucket>.s3-website-<region>.amazonaws.com
+#       # nginx.ingress.kubernetes.io/enable-cors: "true"
+#       # nginx.ingress.kubernetes.io/cors-allow-origin: "*"
+#       # nginx.ingress.kubernetes.io/cors-allow-methods: "POST, GET, PUT, DELETE, HEAD"
+#     hosts:
+#       - host: static.chart-example.local
+#         path: /
