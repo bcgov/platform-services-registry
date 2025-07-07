@@ -63,7 +63,7 @@ export function extractDateRanges(datestr: string) {
   const parts = datestr.split(/[—–-]/);
   const startDate = parts[0].trim();
   const endDateWithYear = parts[1].trim();
-  const endDate = endDateWithYear.replace(/,?\s*\d{4}$/, '').trim();
+  const endDate = endDateWithYear.replace(/(?:,\s*)?\d{4}$/, '').trim();
   return { startDate, endDate };
 }
 
