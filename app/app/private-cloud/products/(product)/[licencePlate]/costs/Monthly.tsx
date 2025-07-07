@@ -30,11 +30,14 @@ export default function Monthly({
   });
 
   useEffect(() => {
+    onLoadingDone(isLoading);
+  }, [isLoading, onLoadingDone]);
+
+  useEffect(() => {
     if (data) {
       onDataLoaded(data);
-      onLoadingDone(isLoading);
     }
-  }, [data, onDataLoaded, isLoading, onLoadingDone]);
+  }, [data, onDataLoaded]);
 
   if (!data || !session.previews.costRecovery) {
     return null;

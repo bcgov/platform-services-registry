@@ -172,10 +172,14 @@ export default privateCloudProductCosts(({ getPathParams, session }) => {
           loaderProps={{ color: 'pink', type: 'bars' }}
         />
         <div className="relative">
-          <CostSummary data={costData!} selectedDate={selectedDate} viewMode={viewMode} />
-          <Button onClick={async () => {}} className="absolute right-0 top-[10px]">
-            Download PDF
-          </Button>
+          {costData && (
+            <>
+              <CostSummary data={costData} selectedDate={selectedDate} viewMode={viewMode} />
+              <Button onClick={async () => {}} className="absolute right-0 top-[10px]">
+                Download PDF
+              </Button>
+            </>
+          )}
         </div>
 
         <h1 className="text-3xl font-bold mb-8">Consumption data</h1>
