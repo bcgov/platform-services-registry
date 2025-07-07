@@ -7,6 +7,8 @@ import {
   MonthlyCostMetric,
   PeriodicCostMetric,
   MonthlyCost,
+  QuarterlyCost,
+  YearlyCost,
 } from '@/types/private-cloud';
 import { formatCurrency, getMonthNameFromNumber } from '@/utils/js';
 import { productSorts } from './common';
@@ -119,29 +121,34 @@ type CostDetails<T extends string> = Record<T, CostMetric>;
 
 const createCostColumns = <T extends CostDetails<K>, K extends string>(detailsKey: K): CostTableColumnDef<T>[] => [
   {
+    label: 'CPU (cores)',
+    value: `${detailsKey}.cpuCore`,
+    cellProcessor: (item) =>
+      item[detailsKey].totalCost === 0 || item[detailsKey].cpuToDate === 0 ? 'N/A' : item[detailsKey].cpuCore,
+  },
+  {
     label: 'CPU Cost',
     value: `${detailsKey}.cpuToDate`,
-    cellProcessor: (item) => formatCurrency(item[detailsKey].cpuToDate),
+    cellProcessor: (item) => (item[detailsKey].totalCost === 0 ? 'N/A' : formatCurrency(item[detailsKey].cpuToDate)),
+  },
+  {
+    label: 'Storage (GiB)',
+    value: `${detailsKey}.storageGib`,
+    cellProcessor: (item) => (item[detailsKey].totalCost === 0 ? 'N/A' : item[detailsKey].storageGib),
   },
   {
     label: 'Storage Cost',
     value: `${detailsKey}.storageToDate`,
-    cellProcessor: (item) => formatCurrency(item[detailsKey].storageToDate),
-  },
-  {
-    label: 'CPU Cost (Projected)',
-    value: `${detailsKey}.cpuToProjected`,
-    cellProcessor: (item) => formatCurrency(item[detailsKey].cpuToProjected),
-  },
-  {
-    label: 'Storage Cost (Projected)',
-    value: `${detailsKey}.storageToProjected`,
-    cellProcessor: (item) => formatCurrency(item[detailsKey].storageToProjected),
+    cellProcessor: (item) =>
+      item[detailsKey].totalCost === 0 ? 'N/A' : formatCurrency(item[detailsKey].storageToDate),
   },
   {
     label: 'Total Cost',
     value: `${detailsKey}.totalCost`,
-    cellProcessor: (item) => formatCurrency(item[detailsKey].totalCost),
+    cellProcessor: (item) => {
+      const value = item[detailsKey].totalCost;
+      return value === 0 ? 'N/A' : formatCurrency(value);
+    },
   },
 ];
 
@@ -165,3 +172,39 @@ export const monthlyCostColumns: CostTableColumnDef<MonthlyCostMetric>[] = [
   { label: 'Month', value: 'month', cellProcessor: (item) => getMonthNameFromNumber(item.month) },
   ...monthlyCostCommonColumns<MonthlyCostMetric>(),
 ];
+
+export function getDailyCostData(costData: MonthlyCost): DailyCostMetric[] {
+  return costData.days.map((day, idx) => {
+    const { cpuToDate, storageToDate } = costData.dayDetails;
+    const totalCost = cpuToDate[idx] + storageToDate[idx];
+
+    return {
+      day,
+      dayDetails: {
+        cpuToDate: cpuToDate[idx],
+        storageToDate: storageToDate[idx],
+        cpuCore: costData.discreteResourceValues[idx].cpu,
+        storageGib: costData.discreteResourceValues[idx].storage,
+        totalCost,
+      },
+    };
+  });
+}
+
+export function getMonthlyCostData(costData: QuarterlyCost | YearlyCost): MonthlyCostMetric[] {
+  return costData.months.map((month, idx) => {
+    const { cpuToDate, storageToDate } = costData.monthDetails;
+    const totalCost = cpuToDate[idx] + storageToDate[idx];
+
+    return {
+      month,
+      monthDetails: {
+        cpuToDate: cpuToDate[idx],
+        storageToDate: storageToDate[idx],
+        cpuCore: costData.discreteResourceValues[month].cpu,
+        storageGib: costData.discreteResourceValues[month].storage,
+        totalCost,
+      },
+    };
+  });
+}

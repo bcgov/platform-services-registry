@@ -100,7 +100,7 @@ export default function DataTable<TData extends object>({
 
   return (
     <>
-      <div className="border border-gray-200 overflow-hidden mt-5">
+      <div className="border border-gray-200 overflow-hidden mt-5 rounded-md">
         <div className="overflow-x-auto">
           <table className="w-full text-sm border-collapse">
             <thead>

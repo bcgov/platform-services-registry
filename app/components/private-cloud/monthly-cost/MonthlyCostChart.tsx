@@ -7,14 +7,14 @@ export default function MonthlyCostChart({
   data,
   isForecastEnabled = true,
 }: {
-  data: Pick<MonthlyCost, 'days' | 'dayDetails'>;
+  data: Pick<MonthlyCost, 'days' | 'dayDetails' | 'billingPeriod'>;
   isForecastEnabled?: boolean;
 }) {
   const { options, data: chartData } = getMonthlyCostChartConfig({ data, isForecastEnabled });
 
   return (
-    <Card shadow="sm" padding="lg" radius="md" withBorder>
-      <h2>Daily Cost Breakdown for the selected month</h2>
+    <Card className="border mx-16 mb-16 mt-3">
+      <h1 className="m-4 text-xl mt-0 text-center">Daily cost breakdown from {data.billingPeriod}</h1>
       <div className="relative min-h-[45rem]">
         <Bar options={options} data={chartData} />
       </div>

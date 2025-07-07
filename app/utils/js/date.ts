@@ -30,6 +30,8 @@ export function formatDateSimple(date: string | Date) {
   return `${d.getDate()} ${monthNames[d.getMonth()]} ${d.getFullYear()}`;
 }
 
+export const dateRangeFormatter = new Intl.DateTimeFormat('en-US', { month: 'long', day: 'numeric' });
+
 const shortDateFormat = new Intl.DateTimeFormat('en', { month: 'short', year: 'numeric' });
 
 export function dateToShortDateString(date: Date) {
@@ -55,6 +57,18 @@ export function compareYearMonth(date1: Date, date2: Date) {
   }
 
   return 1; // date1 is after date2
+}
+
+export function extractDateRanges(datestr: string) {
+  const parts = datestr.split(/[—–-]/);
+  const startDate = parts[0].trim();
+  const endDateWithYear = parts[1].trim();
+  const endDate = endDateWithYear.replace(/(?:,\s*)?\d{4}$/, '').trim();
+  return { startDate, endDate };
+}
+
+export function getQuarterValue(monthNumber: number) {
+  return Math.ceil(monthNumber / 3);
 }
 
 export function isValidISODateString(value: string) {
@@ -315,4 +329,19 @@ export function getWorkdayDurationInMilliseconds(
 
 export function geDaysRoundedUp(durationMs: number): number {
   return Math.ceil(durationMs / MS_PER_DAY);
+}
+
+export function billingDateRange(startDate: Date, endDate: Date) {
+  return `${format(startDate, 'MMMM d')} - ${format(endDate, 'MMMM d')}`;
+}
+
+export function getDaysBetweenDates(startDate: Date | string, endDate: Date | string) {
+  const start = typeof startDate === 'string' ? new Date(startDate) : startDate;
+  const end = typeof endDate === 'string' ? new Date(endDate) : endDate;
+
+  const time1 = start.getTime();
+  const time2 = end.getTime();
+  const difference = Math.abs(time2 - time1);
+
+  return Math.floor(difference / (1000 * 60 * 60 * 24)) + 1;
 }

@@ -13,14 +13,14 @@ import {
   YearlyDiscreteValue,
 } from '@/types/private-cloud';
 import {
-  dateToShortDateString,
   getMinutesInYear,
   getDateFromYyyyMmDd,
   getMonthStartEndDate,
   getQuarterStartEndDate,
-  getQuarterTitleWithMonths,
   getYearlyStartEndDate,
   getMonthsArrayFromDates,
+  getDaysBetweenDates,
+  dateRangeFormatter,
 } from '@/utils/js/date';
 import { roundToHalfIncrement } from '@/utils/js/number';
 
@@ -299,12 +299,14 @@ export async function getMonthlyCosts(licencePlate: string, year: number, oneInd
 
   return {
     accountCoding: '123ABC', // placeholder
-    billingPeriod: dateToShortDateString(startDate),
+    billingPeriod: `${dateRangeFormatter.format(startDate)}—${dateRangeFormatter.format(endDate)}, ${year}`,
     currentTotal,
     estimatedGrandTotal,
     grandTotal,
     items,
     discreteResourceValues: getDiscreteResourceValues(items, TimeView.Monthly) as DailyDiscreteValue[],
+    startDate,
+    numberOfDaysBetweenDates: getDaysBetweenDates(startDate, endDate),
     days,
     dayDetails: {
       cpuToDate,
@@ -402,6 +404,8 @@ async function getCostsBasedOnMonths(timeView: TimeView, licencePlate: string, s
     grandTotal,
     items,
     discreteResourceValues,
+    startDate,
+    numberOfDaysBetweenDates: getDaysBetweenDates(startDate, endDate),
     months,
     monthDetails: {
       cpuToDate,
@@ -417,7 +421,7 @@ export async function getQuarterlyCosts(licencePlate: string, year: number, quar
 
   const result = {
     ...(await getCostsBasedOnMonths(TimeView.Quarterly, licencePlate, startDate, endDate)),
-    billingPeriod: getQuarterTitleWithMonths(year, quarter),
+    billingPeriod: `${dateRangeFormatter.format(startDate)}—${dateRangeFormatter.format(endDate)}, ${year}`,
   };
 
   return result;
@@ -429,7 +433,7 @@ export async function getYearlyCosts(licencePlate: string, yearString: string) {
 
   const result = {
     ...(await getCostsBasedOnMonths(TimeView.Yearly, licencePlate, startDate, endDate)),
-    billingPeriod: `${year} (Jan-Dec)`,
+    billingPeriod: `${dateRangeFormatter.format(startDate)}—${dateRangeFormatter.format(endDate)}, ${year}`,
   };
 
   return result;
