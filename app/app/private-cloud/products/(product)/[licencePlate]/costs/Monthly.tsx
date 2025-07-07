@@ -4,7 +4,7 @@ import { useQuery } from '@tanstack/react-query';
 import { format } from 'date-fns';
 import { Session } from 'next-auth';
 import { useEffect } from 'react';
-import MonthlyCostChart from '@/components/private-cloud/monthly-cost/MonthyCostChart';
+import MonthlyCostChart from '@/components/private-cloud/monthly-cost/MonthlyCostChart';
 import { getMonthlyCosts } from '@/services/backend/private-cloud/products';
 import { MonthlyCost } from '@/types/private-cloud';
 

@@ -1,6 +1,6 @@
 import { monthNames } from '@/constants/common';
 import { MonthlyCost, QuarterlyCost, TimeView, YearlyCost } from '@/types/private-cloud';
-import { getDaysBetweenDates, extractDateRanges, formatCurrency, getQuarterValue, cn } from '@/utils/js';
+import { getDaysBetweenDates, extractDateRanges, formatCurrency, getQuarterValue } from '@/utils/js';
 
 export default function CostSummary({
   data,
@@ -104,7 +104,6 @@ export default function CostSummary({
                     <p className="text-xs text-gray-600 whitespace-nowrap overflow-hidden text-ellipsis">
                       Cost to date at{' '}
                       <strong className="text-gray-800">
-                        {}
                         {currentMonth} {currentMonthDay}
                       </strong>
                     </p>
