@@ -8,6 +8,7 @@ import {
   PublicCloudBillingSimpleDecorated,
   PublicCloudProductDetailDecorated,
   PublicCloudBillingDetailDecorated,
+  MembersHistoryItem,
 } from '@/types/public-cloud';
 import { downloadFile } from '@/utils/browser';
 import {
@@ -98,8 +99,8 @@ export async function getPublicCloudProductRequests(licencePlate: string, active
 }
 
 export async function getPublicCloudProductMembersHistory(licencePlate: string) {
-  const result = await instance.get(`/${licencePlate}/members-history}`).then((res) => res.data);
-
+  console.log('licencePlate', licencePlate);
+  const result = await instance.get<MembersHistoryItem[]>(`/${licencePlate}/members-history`).then((res) => res.data);
   return result;
 }
 

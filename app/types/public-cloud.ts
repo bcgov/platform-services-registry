@@ -1,4 +1,5 @@
-import { Prisma, User, PublicCloudProductMember, Provider } from '@/prisma/client';
+import { Prisma, User, PublicCloudProductMember, Provider, RequestType } from '@/prisma/client';
+import { UserWithRoleChanges } from '@/services/db/members-history';
 import { PublicCloudProductDecorate, PublicCloudRequestDecorate, PublicCloudBillingDecorate } from './doc-decorate';
 
 export type ExtendedPublicCloudProductMember = PublicCloudProductMember & User;
@@ -201,4 +202,13 @@ export type PublicCloudProjectSummary = {
   'Update date': string;
   'Licence plate': string;
   Status: string;
+};
+
+export type MembersHistoryItem = {
+  request: {
+    id: string;
+    type: RequestType;
+    date: string;
+  };
+  items: UserWithRoleChanges[];
 };

@@ -51,7 +51,7 @@ export const GET = createApiHandler({
         },
       },
     },
-    orderBy: { createdAt: 'desc' },
+    orderBy: { createdAt: 'asc' },
   });
 
   const userIds = collectChangedUserIds(requests);

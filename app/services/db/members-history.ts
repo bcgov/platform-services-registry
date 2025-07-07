@@ -201,7 +201,12 @@ function getContactFields(paths: string[]) {
 }
 
 function mapMembersByUserId(members: { userId: string; roles?: string[] }[]) {
-  return new Map(members.map(({ userId, roles }) => [userId, roles ?? []]));
+  return new Map(
+    members.map(({ userId, roles }) => [
+      userId,
+      roles && roles.length > 0 ? roles : ['additional member without roles'],
+    ]),
+  );
 }
 
 function areRolesEqual(originalRoles: string[], decisionRoles: string[]) {
