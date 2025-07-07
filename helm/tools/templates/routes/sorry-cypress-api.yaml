@@ -1,0 +1,20 @@
+{{- if .Values.sorrycypress.enabled }}
+apiVersion: route.openshift.io/v1
+kind: Route
+metadata:
+  name: {{ include "main.fullname" . }}-sorry-cypress-api
+  annotations:
+    haproxy.router.openshift.io/balance: roundrobin
+    haproxy.router.openshift.io/disable_cookies: 'true'
+    haproxy.router.openshift.io/timeout: 600s
+spec:
+  {{- if .Values.sorrycypress.routes.api.host }}
+  host: {{ .Values.sorrycypress.routes.api.host }}
+  {{- end }}
+  tls:
+    insecureEdgeTerminationPolicy: Redirect
+    termination: edge
+  to:
+    kind: Service
+    name: sorry-cypress-api
+{{- end }}

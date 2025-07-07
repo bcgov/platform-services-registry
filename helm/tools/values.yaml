@@ -389,3 +389,47 @@ mongodb:
       enabled: false
     containerSecurityContext:
       enabled: false
+
+sorrycypress:
+  enabled: false
+
+  fullnameOverride: sorry-cypress
+
+  routes:
+    api:
+      host:
+    dashboard:
+      host:
+    director:
+      host:
+
+  mongodb:
+    mongoSecretConnectionString:
+      enableSecret: false
+      enableCustomSecret: true
+      secretName: tools-mongodb # pragma: allowlist secret
+      secretKey: sorry-cypress-connection-string # pragma: allowlist secret
+
+    internal_db:
+      enabled: false
+
+    external_db:
+      enabled: true
+
+  api:
+    ingress:
+      enabled: false
+  dashboard:
+    ingress:
+      enabled: false
+    environmentVariables:
+      graphQlClientCredentials: ""
+      graphQlSchemaUrl: http://sorry-cypress-api:4000
+      ciUrl: ""
+      basePath: "/"
+  director:
+    ingress:
+      enabled: false
+    extraEnv:
+      - name: PM2_HOME
+        value: /tmp/.pm2
