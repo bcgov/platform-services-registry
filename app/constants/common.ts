@@ -121,7 +121,7 @@ export const ministryOptions = [
   },
 ];
 
-export const AGMinistries = ['AG', 'PSSG', 'EMBC', 'HOUS'];
+export const AGMinistries = ['AG', 'PSSG', 'EMCR', 'HOUS'];
 
 export const TEAM_SA_PREFIX = 'z_pltsvc-tsa-';
 

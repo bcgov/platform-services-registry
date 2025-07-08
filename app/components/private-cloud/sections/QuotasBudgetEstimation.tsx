@@ -1,4 +1,4 @@
-import { IconArrowNarrowRight } from '@tabler/icons-react';
+import { IconArrowNarrowRight, IconCurrencyDollarCanadian } from '@tabler/icons-react';
 import { useQuery } from '@tanstack/react-query';
 import _get from 'lodash-es/get';
 import _startCase from 'lodash-es/startCase';
@@ -35,6 +35,14 @@ interface CellData {
   changed: boolean;
 }
 
+function HeaderCell({ children, className }: { children: React.ReactNode; className?: string }) {
+  return <div className={cn('flex-1 p-2 bg-gray-100 border-gray-400 border-1', className)}>{children}</div>;
+}
+
+function LabelCell({ children, className }: { children: React.ReactNode; className?: string }) {
+  return <div className={cn('w-32 p-2 font-semibold bg-gray-100 border-gray-400 border-1', className)}>{children}</div>;
+}
+
 function ValueChange({ data, division }: { data: CellData; division: number }) {
   return (
     <div className="text-gray-600">
@@ -52,8 +60,8 @@ function ValueChange({ data, division }: { data: CellData; division: number }) {
 function ValueCell({ data, division, className }: { data: CellData; division: number; className?: string }) {
   return (
     <div
-      className={cn('flex-1 p-2 flex items-center justify-center', className, {
-        'border-blue-700 border-t border-r border-b border-l border-2': data.changed,
+      className={cn('flex-1 p-2 flex items-center justify-center border-gray-400 border-1', className, {
+        'border-blue-700 outline-dashed outline-offset-0 outline-3 outline-blue-700': data.changed,
       })}
     >
       <ValueChange data={data} division={division} />
@@ -75,24 +83,23 @@ function SmallScreenEnv({
   return (
     <div className={cn(className)}>
       <div className="flex flex-row font-bold text-center">
-        <div className="flex-1 p-2 bg-gray-100 border-gray-400 border-t border-l border-r">{name}</div>
+        <HeaderCell>{name}</HeaderCell>
       </div>
 
       <div className="flex flex-row text-center">
-        <div className="w-32 p-2 font-semibold bg-gray-100 border-gray-400 border-t border-l">CPU</div>
-        <ValueCell className="border-gray-400 border-t border-l border-r" data={data.cpu} division={division} />
+        <LabelCell>CPU</LabelCell>
+        <ValueCell data={data.cpu} division={division} />
       </div>
 
       <div className="flex flex-row text-center">
-        <div className="w-32 p-2 font-semibold bg-gray-100 border-gray-400 border-t border-l">Storage</div>
-        <ValueCell className="border-gray-400 border-t border-l border-r" data={data.storage} division={division} />
+        <LabelCell>Storage</LabelCell>
+        <ValueCell data={data.storage} division={division} />
       </div>
 
       <div className="flex flex-row text-center">
-        <div className="w-32 p-2 font-semibold bg-blue-200 border-gray-400 border-t border-l border-b">Subtotal</div>
-
+        <LabelCell className="bg-blue-200">Subtotal</LabelCell>
         <ValueCell
-          className="bg-gray-100 border-gray-400 border-t border-l border-r border-b"
+          className={cn(name === 'Total' ? 'bg-orange-100' : 'bg-blue-50')}
           data={data.subtotal}
           division={division}
         />
@@ -307,7 +314,10 @@ export default function QuotasBudgetEstimation({
         </div>
       </div>
       <div>
-        <div>All costs are in Canadian dollars.</div>
+        <div>
+          All costs are in Canadian dollars.
+          <img className="inline-block ml-1" src="/canada-flag.svg" alt="Canadian Flag" width={30} />
+        </div>
         <div>
           Current projected total cost per {currentScenario.per}:
           <span className="font-normal ml-2">
@@ -323,107 +333,46 @@ export default function QuotasBudgetEstimation({
       </div>
       <div className="mb-2">
         {/* --- Large Screen Layout --- */}
-        <div className="container mx-auto bg-white shadow-lg overflow-hidden hidden sm:block">
+        <div className="container mx-auto bg-white shadow-lg hidden sm:block">
           <div className="flex flex-row font-bold text-center">
             <div className="block w-32 p-2 bg-transparent"></div>
 
-            <div className="flex-1 p-2 bg-gray-100 border-gray-400 border-t border-l">Development</div>
-            <div className="flex-1 p-2 bg-gray-100 border-gray-400 border-t border-l">Test</div>
-            <div className="flex-1 p-2 bg-gray-100 border-gray-400 border-t border-l">Production</div>
-            <div className="flex-1 p-2 bg-gray-100 border-gray-400 border-t border-l">Tools</div>
-            <div className="flex-1 p-2 bg-blue-200 border-gray-400 border-t border-l border-r">Subtotal</div>
+            <HeaderCell>Development</HeaderCell>
+            <HeaderCell>Test</HeaderCell>
+            <HeaderCell>Production</HeaderCell>
+            <HeaderCell>Tools</HeaderCell>
+            <HeaderCell className="bg-blue-200">Total</HeaderCell>
           </div>
 
           <div className="flex flex-row text-center">
-            <div className="w-32 p-2 font-semibold bg-gray-100 border-gray-400 border-t border-l">CPU</div>
-
-            <ValueCell
-              className="border-gray-400 border-t border-l"
-              data={metadata.development.cpu}
-              division={currentScenario.division}
-            />
-            <ValueCell
-              className="border-gray-400 border-t border-l"
-              data={metadata.test.cpu}
-              division={currentScenario.division}
-            />
-            <ValueCell
-              className="border-gray-400 border-t border-l"
-              data={metadata.production.cpu}
-              division={currentScenario.division}
-            />
-            <ValueCell
-              className="border-gray-400 border-t border-l"
-              data={metadata.tools.cpu}
-              division={currentScenario.division}
-            />
-            <ValueCell
-              className="bg-blue-50 border-gray-400 border-t border-l border-r"
-              data={metadata.total.cpu}
-              division={currentScenario.division}
-            />
+            <LabelCell>CPU</LabelCell>
+            <ValueCell data={metadata.development.cpu} division={currentScenario.division} />
+            <ValueCell data={metadata.test.cpu} division={currentScenario.division} />
+            <ValueCell data={metadata.production.cpu} division={currentScenario.division} />
+            <ValueCell data={metadata.tools.cpu} division={currentScenario.division} />
+            <ValueCell className="bg-blue-50" data={metadata.total.cpu} division={currentScenario.division} />
           </div>
 
           <div className="flex flex-row text-center">
-            <div className="w-32 p-2 font-semibold bg-gray-100 border-gray-400 border-t border-l">Storage</div>
-
-            <ValueCell
-              className="border-gray-400 border-t border-l"
-              data={metadata.development.storage}
-              division={currentScenario.division}
-            />
-            <ValueCell
-              className="border-gray-400 border-t border-l"
-              data={metadata.test.storage}
-              division={currentScenario.division}
-            />
-            <ValueCell
-              className="border-gray-400 border-t border-l"
-              data={metadata.production.storage}
-              division={currentScenario.division}
-            />
-            <ValueCell
-              className="border-gray-400 border-t border-l"
-              data={metadata.tools.storage}
-              division={currentScenario.division}
-            />
-            <ValueCell
-              className="bg-blue-50 border-gray-400 border-t border-l border-r"
-              data={metadata.total.storage}
-              division={currentScenario.division}
-            />
+            <LabelCell>Storage</LabelCell>
+            <ValueCell data={metadata.development.storage} division={currentScenario.division} />
+            <ValueCell data={metadata.test.storage} division={currentScenario.division} />
+            <ValueCell data={metadata.production.storage} division={currentScenario.division} />
+            <ValueCell data={metadata.tools.storage} division={currentScenario.division} />
+            <ValueCell className="bg-blue-50" data={metadata.total.storage} division={currentScenario.division} />
           </div>
 
           <div className="flex flex-row text-center">
-            <div className="w-32 p-2 font-semibold bg-blue-200 border-gray-400 border-t border-l border-b">
-              Subtotal
-            </div>
-
+            <LabelCell className="bg-blue-200">Subtotal</LabelCell>
             <ValueCell
-              className="bg-gray-100 border-gray-400 border-t border-l border-b"
+              className="bg-blue-50"
               data={metadata.development.subtotal}
               division={currentScenario.division}
             />
-            <ValueCell
-              className="bg-gray-100 border-gray-400 border-t border-l border-b"
-              data={metadata.test.subtotal}
-              division={currentScenario.division}
-            />
-            <ValueCell
-              className="bg-gray-100 border-gray-400 border-t border-l border-b"
-              data={metadata.production.subtotal}
-              division={currentScenario.division}
-            />
-            <ValueCell
-              className="bg-gray-100 border-gray-400 border-t border-l border-b"
-              data={metadata.tools.subtotal}
-              division={currentScenario.division}
-            />
-            <ValueCell
-              className="bg-orange-100 border-gray-400 border-t border-l border-b border-r"
-              data={metadata.total.subtotal}
-              division={currentScenario.division}
-            />
+            <ValueCell className="bg-blue-50" data={metadata.test.subtotal} division={currentScenario.division} />
+            <ValueCell className="bg-blue-50" data={metadata.production.subtotal} division={currentScenario.division} />
+            <ValueCell className="bg-blue-50" data={metadata.tools.subtotal} division={currentScenario.division} />
+            <ValueCell className="bg-orange-100" data={metadata.total.subtotal} division={currentScenario.division} />
           </div>
         </div>
 
@@ -438,7 +387,7 @@ export default function QuotasBudgetEstimation({
             division={currentScenario.division}
           />
           <SmallScreenEnv name="Tools" data={metadata.tools} className="mt-2" division={currentScenario.division} />
-          <SmallScreenEnv name="Subtotal" data={metadata.total} className="mt-2" division={currentScenario.division} />
+          <SmallScreenEnv name="Total" data={metadata.total} className="mt-2" division={currentScenario.division} />
         </div>
       </div>
     </>
