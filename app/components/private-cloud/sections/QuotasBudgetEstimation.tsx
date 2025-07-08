@@ -1,51 +1,14 @@
-import { Badge, Table } from '@mantine/core';
-import { IconArrowNarrowDownDashed } from '@tabler/icons-react';
+import { IconArrowNarrowRight, IconCurrencyDollarCanadian } from '@tabler/icons-react';
 import { useQuery } from '@tanstack/react-query';
 import _get from 'lodash-es/get';
 import _startCase from 'lodash-es/startCase';
 import { useSession } from 'next-auth/react';
-import { Fragment, useState } from 'react';
+import { useState } from 'react';
 import FormSingleSelect from '@/components/generic/select/FormSingleSelect';
-import { namespaceKeys, resourceKeys } from '@/constants';
+import { namespaceKeys } from '@/constants';
 import { ResourceRequestsEnv } from '@/prisma/client';
 import { getCurrentPrivateCloudUnitPrice } from '@/services/backend/private-cloud/unit-prices';
 import { cn, formatCurrency, isLeapYear } from '@/utils/js';
-
-function Estimation({ value, price, unit, diff = 0 }: { value: number; price: number; unit: string; diff?: number }) {
-  const increased = diff > 0;
-  const decreased = diff < 0;
-
-  return (
-    <div>
-      <span className={cn('mr-2 text-gray-900', { 'text-red-600': increased }, { 'text-blue-600': decreased })}>
-        {formatCurrency(price)}
-      </span>
-      <span className={cn('text-xs text-gray-600', { 'text-red-400': increased }, { 'text-blue-500': decreased })}>
-        ({value}
-        {unit})
-      </span>
-    </div>
-  );
-}
-
-function CpuEstimation(props: { value: number; price: number; diff?: number }) {
-  return <Estimation {...props} unit="Core" />;
-}
-
-function StorageEstimation(props: { value: number; price: number; diff?: number }) {
-  return <Estimation {...props} unit="GiB" />;
-}
-
-function EstimationTotal({ price, diff = 0 }: { price: number; diff?: number }) {
-  const increased = diff > 0;
-  const decreased = diff < 0;
-
-  return (
-    <div className={cn('mr-2 text-gray-900', { 'text-red-600': increased }, { 'text-blue-600': decreased })}>
-      {formatCurrency(price)}
-    </div>
-  );
-}
 
 interface PriceData {
   value: number;
@@ -66,93 +29,82 @@ interface Metadata {
   total: EnvironmentMetadata;
 }
 
-function EnvDetails({
-  envData,
-  division = 1,
-  isTotal = false,
-}: {
-  envData: EnvironmentMetadata;
-  division?: number;
-  isTotal?: boolean;
-}) {
-  const totalDiff = envData.subtotal.changed ? envData.subtotal.new.price - envData.subtotal.old.price : 0;
-  const increased = totalDiff > 0;
-  const decreased = totalDiff < 0;
+interface CellData {
+  old: { price: number };
+  new: { price: number };
+  changed: boolean;
+}
 
-  let summary = envData.subtotal.changed ? (
-    <div className={cn('text-right text-gray-700 italic')}>No changes</div>
-  ) : (
-    <></>
-  );
+function HeaderCell({ children, className }: { children: React.ReactNode; className?: string }) {
+  return <div className={cn('flex-1 p-2 bg-gray-100 border-gray-400 border-1', className)}>{children}</div>;
+}
 
-  if (increased) {
-    summary = (
-      <div className={cn('text-right text-red-600 italic')}>
-        <span className="mr-1">{formatCurrency(Math.abs(totalDiff / division))}</span>
-        <span>increased</span>
-      </div>
-    );
-  } else if (decreased) {
-    summary = (
-      <div className={cn('text-right text-blue-600 italic')}>
-        <span className="mr-1">{formatCurrency(Math.abs(totalDiff / division))}</span>
-        <span>decreased</span>
-      </div>
-    );
-  }
+function LabelCell({ children, className }: { children: React.ReactNode; className?: string }) {
+  return <div className={cn('w-32 p-2 font-semibold bg-gray-100 border-gray-400 border-1', className)}>{children}</div>;
+}
 
+function ValueChange({ data, division }: { data: CellData; division: number }) {
   return (
-    <>
-      <Table highlightOnHover withTableBorder withColumnBorders>
-        <Table.Thead>
-          <Table.Tr>
-            <Table.Th className="text-center text-sm px-1">CPU</Table.Th>
-            <Table.Th className="text-center text-sm px-1">Storage</Table.Th>
-            <Table.Th className="text-center text-sm px-1">{isTotal ? 'Grand Total' : 'Subtotal'}</Table.Th>
-          </Table.Tr>
-        </Table.Thead>
-        <Table.Tbody>
-          <Table.Tr>
-            <Table.Td className="text-center px-1 align-top">
-              {envData.cpu.changed && (
-                <>
-                  <CpuEstimation value={envData.cpu.old.value} price={envData.cpu.old.price / division} />
-                  <IconArrowNarrowDownDashed className="block mx-auto" />
-                </>
-              )}
-              <CpuEstimation
-                value={envData.cpu.new.value}
-                price={envData.cpu.new.price / division}
-                diff={envData.cpu.changed ? envData.cpu.new.price - envData.cpu.old.price : 0}
-              />
-            </Table.Td>
-            <Table.Td className="text-center px-1 align-top">
-              {envData.storage.changed && (
-                <>
-                  <StorageEstimation value={envData.storage.old.value} price={envData.storage.old.price / division} />
-                  <IconArrowNarrowDownDashed className="block mx-auto" />
-                </>
-              )}
-              <StorageEstimation
-                value={envData.storage.new.value}
-                price={envData.storage.new.price / division}
-                diff={envData.storage.changed ? envData.storage.new.price - envData.storage.old.price : 0}
-              />
-            </Table.Td>
-            <Table.Td className="text-center px-1 align-top">
-              {envData.subtotal.changed && (
-                <>
-                  <EstimationTotal price={envData.subtotal.old.price / division} />
-                  <IconArrowNarrowDownDashed className="block mx-auto" />
-                </>
-              )}
-              <EstimationTotal price={envData.subtotal.new.price / division} diff={totalDiff} />
-            </Table.Td>
-          </Table.Tr>
-        </Table.Tbody>
-      </Table>
-      {summary}
-    </>
+    <div className="text-gray-600">
+      <span>{formatCurrency(data.old.price / division)}</span>
+      {data.changed && (
+        <>
+          <IconArrowNarrowRight className="mx-1 inline-block" />
+          <span className="font-bold text-black">{formatCurrency(data.new.price / division)}</span>
+        </>
+      )}
+    </div>
+  );
+}
+
+function ValueCell({ data, division, className }: { data: CellData; division: number; className?: string }) {
+  return (
+    <div
+      className={cn('flex-1 p-2 flex items-center justify-center border-gray-400 border-1', className, {
+        'border-blue-700 outline-dashed outline-offset-0 outline-3 outline-blue-700': data.changed,
+      })}
+    >
+      <ValueChange data={data} division={division} />
+    </div>
+  );
+}
+
+function SmallScreenEnv({
+  name,
+  data,
+  division,
+  className = '',
+}: {
+  name: string;
+  division: number;
+  data: { cpu: CellData; storage: CellData; subtotal: CellData };
+  className?: string;
+}) {
+  return (
+    <div className={cn(className)}>
+      <div className="flex flex-row font-bold text-center">
+        <HeaderCell>{name}</HeaderCell>
+      </div>
+
+      <div className="flex flex-row text-center">
+        <LabelCell>CPU</LabelCell>
+        <ValueCell data={data.cpu} division={division} />
+      </div>
+
+      <div className="flex flex-row text-center">
+        <LabelCell>Storage</LabelCell>
+        <ValueCell data={data.storage} division={division} />
+      </div>
+
+      <div className="flex flex-row text-center">
+        <LabelCell className="bg-blue-200">Subtotal</LabelCell>
+        <ValueCell
+          className={cn(name === 'Total' ? 'bg-orange-100' : 'bg-blue-50')}
+          data={data.subtotal}
+          division={division}
+        />
+      </div>
+    </div>
   );
 }
 
@@ -330,10 +282,10 @@ export default function QuotasBudgetEstimation({
 
   const leapYear = isLeapYear();
   const scenarios = [
-    { label: 'Daily', division: leapYear ? 366 : 365, leapYear },
-    { label: 'Monthly', division: 12 },
-    { label: 'Quarterly', division: 4 },
-    { label: 'Yearly', division: 1 },
+    { label: 'Daily', per: 'day', division: leapYear ? 366 : 365, leapYear },
+    { label: 'Monthly', per: 'month', division: 12 },
+    { label: 'Quarterly', per: 'quarter', division: 4 },
+    { label: 'Yearly', per: 'year', division: 1 },
   ];
 
   const currentScenario = scenarios.find((s) => s.label.toLowerCase() === period.toLowerCase());
@@ -341,41 +293,10 @@ export default function QuotasBudgetEstimation({
     return null;
   }
 
-  const scenarioDetail = (
-    <Fragment>
-      <Table.Tr className="border-t-2 border-t-gray-800">
-        <Table.Td colSpan={5}>
-          <span className="font-bold mr-1">{currentScenario.label}</span>
-          {currentScenario.leapYear && (
-            <Badge size="sm" className="mr-3">
-              Leap year
-            </Badge>
-          )}
-          <span className="text-sm italic text-gray-600">
-            {formatCurrency(unitPriceCpu / currentScenario.division)} per CPU Core /{' '}
-            {formatCurrency(unitPriceStorage / currentScenario.division)} per Storage GiB
-          </span>
-        </Table.Td>
-      </Table.Tr>
-      <Table.Tr>
-        {namespaceKeys.map((namespace) => {
-          return (
-            <Table.Td key={namespace} className="align-top px-1">
-              <EnvDetails envData={metadata[namespace]} division={currentScenario.division} />
-            </Table.Td>
-          );
-        })}
-        <Table.Td className="align-top px-1">
-          <EnvDetails envData={metadata.total} division={currentScenario.division} isTotal />
-        </Table.Td>
-      </Table.Tr>
-    </Fragment>
-  );
-
   return (
     <>
       <div className="font-bold text-lg flex justify-between mb-1">
-        <span>Cost Estimation</span>
+        <span>Cost estimation</span>
         <div>
           <span className="mr-1 text-sm">Period:</span>
           <FormSingleSelect
@@ -388,24 +309,87 @@ export default function QuotasBudgetEstimation({
               }
             }}
             classNames={{ wrapper: 'inline-block' }}
+            searchable={false}
           />
         </div>
       </div>
-      <Table.ScrollContainer minWidth={500}>
-        <Table highlightOnHover withTableBorder withColumnBorders>
-          <Table.Thead>
-            <Table.Tr>
-              {namespaceKeys.map((namespace) => (
-                <Table.Th key={namespace} className="text-center">
-                  {_startCase(namespace)}
-                </Table.Th>
-              ))}
-              <Table.Th className="text-center">Total</Table.Th>
-            </Table.Tr>
-          </Table.Thead>
-          <Table.Tbody className="border-b-2 border-b-gray-800">{scenarioDetail}</Table.Tbody>
-        </Table>
-      </Table.ScrollContainer>
+      <div>
+        <div>
+          All costs are in Canadian dollars.
+          <img className="inline-block ml-1" src="/canada-flag.svg" alt="Canadian Flag" width={30} />
+        </div>
+        <div>
+          Current projected total cost per {currentScenario.per}:
+          <span className="font-normal ml-2">
+            {formatCurrency(metadata.total.subtotal.old.price / currentScenario.division)}
+          </span>
+        </div>
+        <div>
+          New projected total cost per {currentScenario.per}:
+          <span className="font-semibold ml-2">
+            {formatCurrency(metadata.total.subtotal.new.price / currentScenario.division)}
+          </span>
+        </div>
+      </div>
+      <div className="mb-2">
+        {/* --- Large Screen Layout --- */}
+        <div className="container mx-auto bg-white shadow-lg hidden sm:block">
+          <div className="flex flex-row font-bold text-center">
+            <div className="block w-32 p-2 bg-transparent"></div>
+
+            <HeaderCell>Development</HeaderCell>
+            <HeaderCell>Test</HeaderCell>
+            <HeaderCell>Production</HeaderCell>
+            <HeaderCell>Tools</HeaderCell>
+            <HeaderCell className="bg-blue-200">Total</HeaderCell>
+          </div>
+
+          <div className="flex flex-row text-center">
+            <LabelCell>CPU</LabelCell>
+            <ValueCell data={metadata.development.cpu} division={currentScenario.division} />
+            <ValueCell data={metadata.test.cpu} division={currentScenario.division} />
+            <ValueCell data={metadata.production.cpu} division={currentScenario.division} />
+            <ValueCell data={metadata.tools.cpu} division={currentScenario.division} />
+            <ValueCell className="bg-blue-50" data={metadata.total.cpu} division={currentScenario.division} />
+          </div>
+
+          <div className="flex flex-row text-center">
+            <LabelCell>Storage</LabelCell>
+            <ValueCell data={metadata.development.storage} division={currentScenario.division} />
+            <ValueCell data={metadata.test.storage} division={currentScenario.division} />
+            <ValueCell data={metadata.production.storage} division={currentScenario.division} />
+            <ValueCell data={metadata.tools.storage} division={currentScenario.division} />
+            <ValueCell className="bg-blue-50" data={metadata.total.storage} division={currentScenario.division} />
+          </div>
+
+          <div className="flex flex-row text-center">
+            <LabelCell className="bg-blue-200">Subtotal</LabelCell>
+            <ValueCell
+              className="bg-blue-50"
+              data={metadata.development.subtotal}
+              division={currentScenario.division}
+            />
+            <ValueCell className="bg-blue-50" data={metadata.test.subtotal} division={currentScenario.division} />
+            <ValueCell className="bg-blue-50" data={metadata.production.subtotal} division={currentScenario.division} />
+            <ValueCell className="bg-blue-50" data={metadata.tools.subtotal} division={currentScenario.division} />
+            <ValueCell className="bg-orange-100" data={metadata.total.subtotal} division={currentScenario.division} />
+          </div>
+        </div>
+
+        {/* --- Small Screen Layout --- */}
+        <div className="container mx-auto block sm:hidden">
+          <SmallScreenEnv name="Development" data={metadata.development} division={currentScenario.division} />
+          <SmallScreenEnv name="Test" data={metadata.test} className="mt-2" division={currentScenario.division} />
+          <SmallScreenEnv
+            name="Production"
+            data={metadata.production}
+            className="mt-2"
+            division={currentScenario.division}
+          />
+          <SmallScreenEnv name="Tools" data={metadata.tools} className="mt-2" division={currentScenario.division} />
+          <SmallScreenEnv name="Total" data={metadata.total} className="mt-2" division={currentScenario.division} />
+        </div>
+      </div>
     </>
   );
 }

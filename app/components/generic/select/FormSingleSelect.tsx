@@ -21,6 +21,7 @@ export interface FormSingleSelectProps {
     label?: string;
     input?: string;
   };
+  searchable?: boolean;
 }
 
 export default function FormSingleSelect({
@@ -33,6 +34,7 @@ export default function FormSingleSelect({
   onBlur,
   value,
   disabled = false,
+  searchable = true,
 }: FormSingleSelectProps) {
   if (!id) id = _kebabCase(name);
 
@@ -52,7 +54,7 @@ export default function FormSingleSelect({
         }}
         onBlur={onBlur}
         value={value}
-        searchable
+        searchable={searchable}
         disabled={disabled}
         classNames={{ input: cn('text-md', classNames?.input) }}
       />
