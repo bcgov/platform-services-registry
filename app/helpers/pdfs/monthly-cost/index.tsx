@@ -1,5 +1,5 @@
 import { createCanvas } from 'canvas';
-import Chart from 'chart.js/auto';
+import Chart, { ChartOptions } from 'chart.js/auto';
 import { tailwindToCSS } from 'tw-to-css';
 import { getMonthlyCostChartConfig } from '@/components/private-cloud/monthly-cost/monthly-cost-chart-data';
 import MonthlyCostSummary from '@/components/private-cloud/monthly-cost/MonthlyCostSummary';
@@ -59,7 +59,7 @@ async function getChartDataURL(data) {
   const chart = new Chart(ctx as any, {
     type: 'bar',
     data: chartData,
-    options,
+    options: options as ChartOptions<'bar'>,
   });
 
   const dataURL = canvas.toDataURL();
