@@ -1,11 +1,11 @@
 import { createCanvas } from 'canvas';
 import Chart from 'chart.js/auto';
 import { tailwindToCSS } from 'tw-to-css';
+import CostSummary from '@/components/private-cloud/CostSummary';
 import { getYearlyCostChartConfig } from '@/components/private-cloud/yearly-cost/yearly-cost-chart-data';
-import YearlyCostSummary from '@/components/private-cloud/yearly-cost/YearlyCostSummary';
 import YearlyCostTable from '@/components/private-cloud/yearly-cost/YearlyCostTable';
 import { WeasyPrint } from '@/services/weasyprint/client';
-import { PrivateCloudProductDetailDecorated, YearlyCost } from '@/types/private-cloud';
+import { PrivateCloudProductDetailDecorated, TimeView, YearlyCost } from '@/types/private-cloud';
 import { replaceClassToStyleString } from '@/utils/js';
 
 const weasyClient = new WeasyPrint();
@@ -21,10 +21,10 @@ const SCALE = 1.5;
 const css = `
 @page {
   size: ${LETTER_WIDTH * SCALE}mm ${LETTER_HEIGHT * SCALE}mm;
-  margin-top: 10mm;
-  margin-bottom: 10mm;
-  margin-right: 5mm;
-  margin-left: 5mm;
+  margin-top: 15mm;
+  margin-bottom: 15mm;
+  margin-right: 20mm;
+  margin-left: 20mm;
 }
 
 @top-left {
@@ -71,9 +71,11 @@ async function getChartDataURL(data) {
 export async function generateYearlyCostPdf({
   product,
   data,
+  selectedDate,
 }: {
   product: PrivateCloudProductDetailDecorated;
   data: YearlyCost;
+  selectedDate: Date;
 }) {
   const ReactDOMServer = (await import('react-dom/server')).default;
 
@@ -82,13 +84,15 @@ export async function generateYearlyCostPdf({
     <>
       <h1 className="font-semibold text-3xl mb-1">{product.name}</h1>
       <i className="italic text-lg">{product.description}</i>
-      <YearlyCostSummary data={data} />
+      <hr className="mb-12 h-px bg-gray-200 border-0" />
+      <CostSummary data={data} selectedDate={selectedDate} viewMode={TimeView.Yearly} isFromPDFDownloader={true} />
+      <div className="text-3xl font-bold mt-6">Consumption data</div>
       <div className="border border-gray-200 border-solid rounded p-4 bg-white my-6">
         <div className="relative w-full">
           <img src={chartImageDataURL} className="w-full h-auto" alt="Yearly Cost Chart" />
         </div>
       </div>
-      <YearlyCostTable data={{ items: data.items, months: data.months, monthDetails: data.monthDetails }} />
+      <YearlyCostTable data={data} />
     </>,
   );
 

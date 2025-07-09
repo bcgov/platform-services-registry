@@ -1,26 +1,29 @@
+import { calculateTotalCost, getMonthlyCostData } from '@/constants';
 import { YearlyCost } from '@/types/private-cloud';
 import { formatDate, getMonthNameFromNumber } from '@/utils/js/date';
 import { formatCurrency } from '@/utils/js/number';
 
-export default function YearlyCostTable({ data }: { data: Pick<YearlyCost, 'items' | 'months' | 'monthDetails'> }) {
+export default function YearlyCostTable({ data }: { data: YearlyCost }) {
+  const monthlyCost = getMonthlyCostData(data);
+  const currenTotalCost = calculateTotalCost(monthlyCost);
   return (
     <>
       <table className="w-full text-sm border-collapse">
         <thead>
           <tr className="bg-gray-100 dark:bg-gray-800">
             <th className="text-left p-2 border-b">Date Range</th>
-            <th className="text-right p-2 border-b">CPU (cores)</th>
-            <th className="text-right p-2 border-b">Storage (GiB)</th>
-            <th className="text-right p-2 border-b">CPU Cost</th>
-            <th className="text-right p-2 border-b">Storage Cost</th>
-            <th className="text-right p-2 border-b">Total Cost</th>
+            <th className="text-center p-2 border-b">CPU (cores)</th>
+            <th className="text-center p-2 border-b">Storage (GiB)</th>
+            <th className="text-center p-2 border-b">CPU Cost</th>
+            <th className="text-center p-2 border-b">Storage Cost</th>
+            <th className="text-center p-2 border-b">Total Cost</th>
           </tr>
         </thead>
         <tbody>
           {data.items.length > 0 ? (
             data.items.map((item, idx: number) => (
               <tr key={idx} className={idx % 2 === 0 ? 'bg-white dark:bg-gray-900' : 'bg-gray-50 dark:bg-gray-800'}>
-                <td className="p-2 border-b align-top">
+                <td className="p-2 border-b text-left">
                   {formatDate(item.startDate, 'yyyy-MM-dd HH:mm')} &ndash;{' '}
                   {formatDate(item.endDate, 'yyyy-MM-dd HH:mm')}{' '}
                   {item.isArchived && (
@@ -34,59 +37,67 @@ export default function YearlyCostTable({ data }: { data: Pick<YearlyCost, 'item
                     </span>
                   )}
                 </td>
-                <td className="p-2 border-b text-right align-top">{item.total.cpu.value}</td>
-                <td className="p-2 border-b text-right align-top">{item.total.storage.value}</td>
-                <td className="p-2 border-b text-right align-top">{formatCurrency(item.total.cpu.cost)}</td>
-                <td className="p-2 border-b text-right align-top">{formatCurrency(item.total.storage.cost)}</td>
-                <td className="p-2 border-b text-right align-top">{formatCurrency(item.total.subtotal.cost)}</td>
+                <td className="p-2 border-b text-center">{item.total.cpu.value}</td>
+                <td className="p-2 border-b text-center">{item.total.storage.value}</td>
+                <td className="p-2 border-b text-center">{formatCurrency(item.total.cpu.cost)}</td>
+                <td className="p-2 border-b text-center">{formatCurrency(item.total.storage.cost)}</td>
+                <td className="p-2 border-b text-center">{formatCurrency(item.total.subtotal.cost)}</td>
               </tr>
             ))
           ) : (
             <tr>
               <td colSpan={6} className="p-2 border-b italic text-center">
-                No data available for the year.
+                No data available for the selected month.
               </td>
             </tr>
           )}
         </tbody>
       </table>
-
       <table className="w-full text-sm border-collapse mt-6">
         <thead>
           <tr className="bg-gray-100 dark:bg-gray-800">
-            <th className="text-left p-2 border-b">Months</th>
-            <th className="text-right p-2 border-b">CPU Cost</th>
-            <th className="text-right p-2 border-b">Storage Cost</th>
-            <th className="text-right p-2 border-b">CPU Cost (Projected)</th>
-            <th className="text-right p-2 border-b">Storage Cost (Projected)</th>
-            <th className="text-right p-2 border-b">Total Cost</th>
+            <th className="text-center p-2 border-b">Month</th>
+            <th className="text-center p-2 border-b">CPU (Cores)</th>
+            <th className="text-center p-2 border-b">CPU Cost</th>
+            <th className="text-center p-2 border-b">Storage (GiB)</th>
+            <th className="text-center p-2 border-b">Storage Cost</th>
+            <th className="text-center p-2 border-b">Total Cost</th>
           </tr>
         </thead>
         <tbody>
-          {data.months.map((month, idx: number) => (
-            <tr key={idx} className={idx % 2 === 0 ? 'bg-white dark:bg-gray-900' : 'bg-gray-50 dark:bg-gray-800'}>
-              <td className="p-2 border-b align-top">{getMonthNameFromNumber(month)}</td>
-              <td className="p-2 border-b text-right align-top">{formatCurrency(data.monthDetails.cpuToDate[idx])}</td>
-              <td className="p-2 border-b text-right align-top">
-                {formatCurrency(data.monthDetails.storageToDate[idx])}
-              </td>
-              <td className="p-2 border-b text-right align-top">
-                {formatCurrency(data.monthDetails.cpuToProjected[idx])}
-              </td>
-              <td className="p-2 border-b text-right align-top">
-                {formatCurrency(data.monthDetails.storageToProjected[idx])}
-              </td>
-              <td className="p-2 border-b text-right align-top">
-                {formatCurrency(
-                  data.monthDetails.cpuToDate[idx] +
-                    data.monthDetails.storageToDate[idx] +
-                    data.monthDetails.cpuToProjected[idx] +
-                    data.monthDetails.storageToProjected[idx],
-                )}
-              </td>
-            </tr>
-          ))}
+          {data.months.map((month, idx: number) => {
+            const totalCost = data.monthDetails.cpuToDate[idx] + data.monthDetails.storageToDate[idx];
+            return (
+              <tr key={idx} className={idx % 2 === 0 ? 'bg-white dark:bg-gray-900' : 'bg-gray-50 dark:bg-gray-800'}>
+                <td className="p-2 border-b text-center">{getMonthNameFromNumber(month)}</td>
+                <td className="p-2 border-b text-center">
+                  {totalCost === 0 ? 'N/A' : data.discreteResourceValues[month].cpu}
+                </td>
+                <td className="p-2 border-b text-center">
+                  {totalCost === 0 ? 'N/A' : formatCurrency(data.monthDetails.cpuToDate[idx])}
+                </td>
+                <td className="p-2 border-b text-center">
+                  {totalCost === 0 ? 'N/A' : data.discreteResourceValues[month].storage}
+                </td>
+                <td className="p-2 border-b text-center">
+                  {totalCost === 0 ? 'N/A' : formatCurrency(data.monthDetails.storageToDate[idx])}
+                </td>
+                <td className="p-2 border-b text-center">{totalCost === 0 ? 'N/A' : formatCurrency(totalCost)}</td>
+              </tr>
+            );
+          })}
         </tbody>
+        <tfoot>
+          <tr>
+            <td colSpan={4} />
+            <td colSpan={1} className="p-2 border-b text-center">
+              <strong>Current total cost for {data.billingPeriod}</strong>
+            </td>
+            <td colSpan={1} className="p-2 border-b text-center">
+              <strong>{formatCurrency(currenTotalCost)}</strong>
+            </td>
+          </tr>
+        </tfoot>
       </table>
     </>
   );
