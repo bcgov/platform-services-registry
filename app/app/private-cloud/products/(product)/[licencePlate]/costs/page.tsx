@@ -167,6 +167,18 @@ export default privateCloudProductCosts(({ getPathParams, session }) => {
     }
   };
 
+  async function handleDownloadCostPdf() {
+    if (!costData) return;
+    setDownloading(true);
+    const downloadPDF =
+      {
+        [TimeView.Monthly]: () => downloadPrivateCloudMonthlyCosts(licencePlate, format(selectedDate, 'yyyy-MM')),
+        [TimeView.Quarterly]: () => downloadPrivateCloudQuarterlyCosts(licencePlate, formatAsYearQuarter(selectedDate)),
+      }[viewMode] || (() => downloadPrivateCloudYearlyCosts(licencePlate, selectedDate.getFullYear().toString()));
+    await downloadPDF();
+    setDownloading(false);
+  }
+
   return (
     <div className="space-y-5">
       <Box pos="relative">
@@ -183,18 +195,7 @@ export default privateCloudProductCosts(({ getPathParams, session }) => {
               <Button
                 loading={downloading}
                 onClick={async () => {
-                  if (!costData) return;
-                  setDownloading(true);
-                  const downloadPDF =
-                    {
-                      [TimeView.Monthly]: () =>
-                        downloadPrivateCloudMonthlyCosts(licencePlate, format(selectedDate, 'yyyy-MM')),
-                      [TimeView.Quarterly]: () =>
-                        downloadPrivateCloudQuarterlyCosts(licencePlate, formatAsYearQuarter(selectedDate)),
-                    }[viewMode] ||
-                    (() => downloadPrivateCloudYearlyCosts(licencePlate, selectedDate.getFullYear().toString()));
-                  await downloadPDF();
-                  setDownloading(false);
+                  handleDownloadCostPdf();
                 }}
                 className="absolute right-0 top-[10px]"
               >

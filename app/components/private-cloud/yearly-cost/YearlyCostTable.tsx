@@ -4,6 +4,8 @@ import { formatDate, getMonthNameFromNumber } from '@/utils/js/date';
 import { formatCurrency } from '@/utils/js/number';
 
 export default function YearlyCostTable({ data }: { data: YearlyCost }) {
+  const monthlyCost = getMonthlyCostData(data);
+  const currenTotalCost = calculateTotalCost(monthlyCost);
   return (
     <>
       <table className="w-full text-sm border-collapse">
@@ -92,7 +94,7 @@ export default function YearlyCostTable({ data }: { data: YearlyCost }) {
               <strong>Current total cost for {data.billingPeriod}</strong>
             </td>
             <td colSpan={1} className="p-2 border-b text-center">
-              <strong>{formatCurrency(calculateTotalCost(getMonthlyCostData(data)))}</strong>
+              <strong>{formatCurrency(currenTotalCost)}</strong>
             </td>
           </tr>
         </tfoot>
