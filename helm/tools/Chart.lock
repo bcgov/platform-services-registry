@@ -13,9 +13,9 @@ dependencies:
   version: 5.4.0
 - name: mongodb
   repository: https://charts.bitnami.com/bitnami
-  version: 16.5.27
+  version: 16.5.29
 - name: sorry-cypress
   repository: https://sorry-cypress.github.io/charts
   version: 1.20.0
-digest: sha256:cd234cada223ec3ee52f231e0b2c1c28e005d128f1664baf78b0e2fe92f1f962
-generated: "2025-07-07T11:19:52.815033938-07:00"
+digest: sha256:b5db114bf84aa99d5c2ebc0c80b0e6cb0391e0038fb10683eb8ea146296e04fa
+generated: "2025-07-09T11:35:31.028504582Z"
