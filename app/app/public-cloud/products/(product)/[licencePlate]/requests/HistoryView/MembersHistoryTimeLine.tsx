@@ -5,10 +5,10 @@ import { IconEdit, IconPlus } from '@tabler/icons-react';
 import _startCase from 'lodash-es/startCase';
 import _toLower from 'lodash-es/toLower';
 import ExternalLink from '@/components/generic/button/ExternalLink';
-import TimeAgo from '@/components/generic/TimeAgo';
 import UserCard from '@/components/UserCard';
 import { RequestType } from '@/prisma/client';
-import { MembersHistoryItem } from '@/types/public-cloud';
+import { MembersHistoryResponse } from '@/services/db/members-history';
+import { formatDateSimple } from '@/utils/js/date';
 
 const knownRoles: Record<string, string> = {
   projectOwner: 'Project Owner',
@@ -27,13 +27,32 @@ const formatRole = (role: string) => {
   return matched ? matched[1] : _startCase(_toLower(role));
 };
 
-export default function MembersHistory({ membersRoles }: { membersRoles: MembersHistoryItem[] | undefined }) {
-  if (!membersRoles || membersRoles.length === 0) return null;
+const getRoleChangeMessage = (prevRoles: string[], newRoles: string[]) => {
+  const hasNew = newRoles.length > 0;
+  const hasPrev = prevRoles.length > 0;
+
+  if (!hasNew && !hasPrev) {
+    return 'has been updated as a member with roles [] from previous roles []';
+  }
+
+  if (hasNew && !hasPrev) {
+    return `has been assigned to ${newRoles.join(', ')}`;
+  }
+
+  if (!hasNew && hasPrev) {
+    return `has been unassigned from ${prevRoles.join(', ')}`;
+  }
+
+  return `has been added as a member with roles: ${newRoles.join(', ')} from previous roles: ${prevRoles.join(', ')}`;
+};
+
+export default function MembersHistory({ membersRoles }: { membersRoles: MembersHistoryResponse | undefined }) {
+  if (!membersRoles || membersRoles.requests.length === 0) return null;
 
   return (
     <div className="flex justify-center items-center">
-      <Timeline active={membersRoles.length} color="green" bulletSize={28} lineWidth={3} className="max-w-3xl">
-        {membersRoles.map((request) => {
+      <Timeline active={membersRoles.requests.length} color="green" bulletSize={28} lineWidth={3} className="max-w-3xl">
+        {membersRoles.requests.map((request) => {
           const bullet = request.request.type === RequestType.CREATE ? <IconPlus size={18} /> : <IconEdit size={18} />;
 
           return (
@@ -52,41 +71,22 @@ export default function MembersHistory({ membersRoles }: { membersRoles: Members
               {request.items.map((item) => {
                 const newRoles = item.newRoles.map(formatRole);
                 const prevRoles = item.prevRoles.map(formatRole);
-
-                const hasNewRoles = newRoles.length > 0;
-                const hasPrevRoles = prevRoles.length > 0;
-
-                let message = '';
-
-                if (!hasNewRoles && !hasPrevRoles) {
-                  message = 'has been updated as a member with roles [] from previous roles []';
-                } else if (hasNewRoles && !hasPrevRoles) {
-                  message =
-                    newRoles.length > 0
-                      ? `has been assigned to ${newRoles.join(', ')}`
-                      : 'has been assigned as a member with roles []';
-                } else if (!hasNewRoles && hasPrevRoles) {
-                  message =
-                    prevRoles.length > 0
-                      ? `has been unassigned from ${prevRoles.join(', ')}`
-                      : 'has been unassigned from roles []';
-                } else {
-                  message = `has been updated as a member with roles ${newRoles.join(
-                    ', ',
-                  )} from previous roles ${prevRoles.join(', ')}`;
-                }
+                const user = membersRoles.users.find((u) => u.id === item.userId);
+                const message = getRoleChangeMessage(prevRoles, newRoles);
 
                 return (
-                  <div key={request.request.id} className="mb-2">
-                    <Text c="dimmed" size="sm" className="flex flex-col gap-1">
-                      <UserCard user={item} classNames={{ name: 'text-sm' }} />
-                      <span>{message} </span>
+                  <div key={`${request.request.id}-${item.userId}`} className="mb-2">
+                    <Text size="sm" className="flex flex-col gap-1">
+                      <UserCard user={user} classNames={{ name: 'text-sm' }} />
+                      <span>{message}</span>
                     </Text>
                     <Divider my="xs" />
                   </div>
                 );
               })}
-              <TimeAgo date={request.request.date} />
+              <Text c="dimmed" size="sm">
+                {formatDateSimple(request.request.date)}
+              </Text>
             </Timeline.Item>
           );
         })}

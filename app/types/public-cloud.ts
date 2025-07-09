@@ -204,7 +204,7 @@ export type PublicCloudProjectSummary = {
   Status: string;
 };
 
-export type MembersHistoryItem = {
+export type MemberChangeItem = {
   request: {
     id: string;
     type: RequestType;

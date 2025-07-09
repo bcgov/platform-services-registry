@@ -1,6 +1,7 @@
 import axios from 'axios';
 import { publicCloudProductSorts } from '@/constants';
 import { AccountCoding, Prisma } from '@/prisma/client';
+import { MembersHistoryResponse } from '@/services/db/members-history';
 import {
   PublicCloudRequestSimpleDecorated,
   PublicCloudProductSearch,
@@ -8,7 +9,6 @@ import {
   PublicCloudBillingSimpleDecorated,
   PublicCloudProductDetailDecorated,
   PublicCloudBillingDetailDecorated,
-  MembersHistoryItem,
 } from '@/types/public-cloud';
 import { downloadFile } from '@/utils/browser';
 import {
@@ -99,8 +99,7 @@ export async function getPublicCloudProductRequests(licencePlate: string, active
 }
 
 export async function getPublicCloudProductMembersHistory(licencePlate: string) {
-  console.log('licencePlate', licencePlate);
-  const result = await instance.get<MembersHistoryItem[]>(`/${licencePlate}/members-history`).then((res) => res.data);
+  const result = await instance.get<MembersHistoryResponse>(`/${licencePlate}/members-history`).then((res) => res.data);
   return result;
 }
 

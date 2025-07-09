@@ -319,3 +319,21 @@ export async function enrichMembersWithEmail<
 
   return data;
 }
+
+export async function getUsersInfoByIds(ids: (string | null | undefined)[]) {
+  if (!ids || ids.length < 1) return [];
+
+  const filteredIds = ids.filter((id): id is string => typeof id === 'string');
+
+  const users = await prisma.user.findMany({
+    where: {
+      id: {
+        in: filteredIds,
+      },
+    },
+  });
+
+  const userMap = new Map(users.map((user) => [user.id, user]));
+
+  return filteredIds.map((id) => userMap.get(id) ?? null);
+}
