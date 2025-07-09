@@ -21,10 +21,10 @@ const SCALE = 1.5;
 const css = `
 @page {
   size: ${LETTER_WIDTH * SCALE}mm ${LETTER_HEIGHT * SCALE}mm;
-  margin-top: 10mm;
-  margin-bottom: 10mm;
-  margin-right: 5mm;
-  margin-left: 5mm;
+  margin-top: 15mm;
+  margin-bottom: 15mm;
+  margin-right: 20mm;
+  margin-left: 20mm;
 }
 
 @top-left {
@@ -86,6 +86,7 @@ export async function generateYearlyCostPdf({
       <i className="italic text-lg">{product.description}</i>
       <hr className="mb-12 h-px bg-gray-200 border-0" />
       <CostSummary data={data} selectedDate={selectedDate} viewMode={TimeView.Yearly} isFromPDFDownloader={true} />
+      <div className="text-3xl font-bold mt-6">Consumption data</div>
       <div className="border border-gray-200 border-solid rounded p-4 bg-white my-6">
         <div className="relative w-full">
           <img src={chartImageDataURL} className="w-full h-auto" alt="Yearly Cost Chart" />

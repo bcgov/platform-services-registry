@@ -11,7 +11,7 @@ export default function CostSummary({
   data: MonthlyCost | YearlyCost | QuarterlyCost;
   selectedDate: Date;
   viewMode: TimeView;
-  isFromPDFDownloader: boolean;
+  isFromPDFDownloader?: boolean;
 }) {
   if (!data) return null;
 
