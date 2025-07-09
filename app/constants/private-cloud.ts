@@ -208,3 +208,14 @@ export function getMonthlyCostData(costData: QuarterlyCost | YearlyCost): Monthl
     };
   });
 }
+
+export const calculateTotalCost = <
+  T extends { dayDetails?: { totalCost: number }; monthDetails?: { totalCost: number } },
+>(
+  data: T[],
+): number => {
+  return data.reduce((sum, item) => {
+    const cost = item.dayDetails?.totalCost ?? item.monthDetails?.totalCost ?? 0;
+    return sum + cost;
+  }, 0);
+};

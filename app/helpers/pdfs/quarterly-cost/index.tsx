@@ -1,11 +1,11 @@
 import { createCanvas } from 'canvas';
 import Chart from 'chart.js/auto';
 import { tailwindToCSS } from 'tw-to-css';
+import CostSummary from '@/components/private-cloud/CostSummary';
 import { getQuarterlyCostChartConfig } from '@/components/private-cloud/quarterly-cost/quarterly-cost-chart-data';
-import QuarterlyCostSummary from '@/components/private-cloud/quarterly-cost/QuarterlyCostSummary';
 import QuarterlyCostTable from '@/components/private-cloud/quarterly-cost/QuarterlyCostTable';
 import { WeasyPrint } from '@/services/weasyprint/client';
-import { QuarterlyCost, PrivateCloudProductDetailDecorated } from '@/types/private-cloud';
+import { QuarterlyCost, PrivateCloudProductDetailDecorated, TimeView } from '@/types/private-cloud';
 import { replaceClassToStyleString } from '@/utils/js';
 
 const weasyClient = new WeasyPrint();
@@ -71,9 +71,11 @@ async function getChartDataURL(data) {
 export async function generateQuarterlyCostPdf({
   product,
   data,
+  selectedDate,
 }: {
   product: PrivateCloudProductDetailDecorated;
   data: QuarterlyCost;
+  selectedDate: Date;
 }) {
   const ReactDOMServer = (await import('react-dom/server')).default;
 
@@ -82,13 +84,14 @@ export async function generateQuarterlyCostPdf({
     <>
       <h1 className="font-semibold text-3xl mb-1">{product.name}</h1>
       <i className="italic text-lg">{product.description}</i>
-      <QuarterlyCostSummary data={data} />
+      <hr className="mb-12 h-px bg-gray-200 border-0" />
+      <CostSummary data={data} selectedDate={selectedDate} viewMode={TimeView.Quarterly} isFromPDFDownloader={true} />
       <div className="border border-gray-200 border-solid rounded p-4 bg-white my-6">
         <div className="relative w-full">
           <img src={chartImageDataURL} className="w-full h-auto" alt="Quarterly Cost Chart" />
         </div>
       </div>
-      <QuarterlyCostTable data={{ items: data.items, months: data.months, monthDetails: data.monthDetails }} />
+      <QuarterlyCostTable data={data} />
     </>,
   );
 

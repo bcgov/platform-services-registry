@@ -1,11 +1,11 @@
 import { createCanvas } from 'canvas';
 import Chart from 'chart.js/auto';
 import { tailwindToCSS } from 'tw-to-css';
+import CostSummary from '@/components/private-cloud/CostSummary';
 import { getMonthlyCostChartConfig } from '@/components/private-cloud/monthly-cost/monthly-cost-chart-data';
-import MonthlyCostSummary from '@/components/private-cloud/monthly-cost/MonthlyCostSummary';
 import MonthlyCostTable from '@/components/private-cloud/monthly-cost/MonthlyCostTable';
 import { WeasyPrint } from '@/services/weasyprint/client';
-import { MonthlyCost, PrivateCloudProductDetailDecorated } from '@/types/private-cloud';
+import { MonthlyCost, PrivateCloudProductDetailDecorated, TimeView } from '@/types/private-cloud';
 import { replaceClassToStyleString } from '@/utils/js';
 
 const weasyClient = new WeasyPrint();
@@ -71,9 +71,11 @@ async function getChartDataURL(data) {
 export async function generateMonthlyCostPdf({
   product,
   data,
+  selectedDate,
 }: {
   product: PrivateCloudProductDetailDecorated;
   data: MonthlyCost;
+  selectedDate: Date;
 }) {
   const ReactDOMServer = (await import('react-dom/server')).default;
 
@@ -82,13 +84,14 @@ export async function generateMonthlyCostPdf({
     <>
       <h1 className="font-semibold text-3xl mb-1">{product.name}</h1>
       <i className="italic text-lg">{product.description}</i>
-      <MonthlyCostSummary data={data} />
+      <hr className="mb-12 h-px bg-gray-200 border-0" />
+      <CostSummary data={data} selectedDate={selectedDate} viewMode={TimeView.Monthly} isFromPDFDownloader={true} />
       <div className="border border-gray-200 border-solid rounded p-4 bg-white my-6">
         <div className="relative w-full">
           <img src={chartImageDataURL} className="w-full h-auto" alt="Monthly Cost Chart" />
         </div>
       </div>
-      <MonthlyCostTable data={{ items: data.items, days: data.days, dayDetails: data.dayDetails }} />
+      <MonthlyCostTable data={data} />
     </>,
   );
 

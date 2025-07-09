@@ -1,8 +1,9 @@
+import { calculateTotalCost, getDailyCostData } from '@/constants';
 import { MonthlyCost } from '@/types/private-cloud';
 import { formatDate } from '@/utils/js/date';
 import { formatCurrency } from '@/utils/js/number';
 
-export default function MonthlyCostTable({ data }: { data: Pick<MonthlyCost, 'items' | 'days' | 'dayDetails'> }) {
+export default function MonthlyCostTable({ data }: { data: MonthlyCost }) {
   return (
     <>
       <table className="w-full text-sm border-collapse">
@@ -50,43 +51,53 @@ export default function MonthlyCostTable({ data }: { data: Pick<MonthlyCost, 'it
           )}
         </tbody>
       </table>
-
       <table className="w-full text-sm border-collapse mt-6">
         <thead>
           <tr className="bg-gray-100 dark:bg-gray-800">
-            <th className="text-left p-2 border-b">Days</th>
+            <th className="text-left p-2 border-b">Day</th>
+            <th className="text-right p-2 border-b">CPU (Cores)</th>
             <th className="text-right p-2 border-b">CPU Cost</th>
+            <th className="text-right p-2 border-b">Storage (GiB)</th>
             <th className="text-right p-2 border-b">Storage Cost</th>
-            <th className="text-right p-2 border-b">CPU Cost (Projected)</th>
-            <th className="text-right p-2 border-b">Storage Cost (Projected)</th>
             <th className="text-right p-2 border-b">Total Cost</th>
           </tr>
         </thead>
         <tbody>
-          {data.days.map((day, idx: number) => (
-            <tr key={idx} className={idx % 2 === 0 ? 'bg-white dark:bg-gray-900' : 'bg-gray-50 dark:bg-gray-800'}>
-              <td className="p-2 border-b align-top">{day}</td>
-              <td className="p-2 border-b text-right align-top">{formatCurrency(data.dayDetails.cpuToDate[idx])}</td>
-              <td className="p-2 border-b text-right align-top">
-                {formatCurrency(data.dayDetails.storageToDate[idx])}
-              </td>
-              <td className="p-2 border-b text-right align-top">
-                {formatCurrency(data.dayDetails.cpuToProjected[idx])}
-              </td>
-              <td className="p-2 border-b text-right align-top">
-                {formatCurrency(data.dayDetails.storageToProjected[idx])}
-              </td>
-              <td className="p-2 border-b text-right align-top">
-                {formatCurrency(
-                  data.dayDetails.cpuToDate[idx] +
-                    data.dayDetails.storageToDate[idx] +
-                    data.dayDetails.cpuToProjected[idx] +
-                    data.dayDetails.storageToProjected[idx],
-                )}
-              </td>
-            </tr>
-          ))}
+          {data.days.map((day, idx: number) => {
+            const totalCost = data.dayDetails.cpuToDate[idx] + data.dayDetails.storageToDate[idx];
+            return (
+              <tr key={idx} className={idx % 2 === 0 ? 'bg-white dark:bg-gray-900' : 'bg-gray-50 dark:bg-gray-800'}>
+                <td className="p-2 border-b text-right align-top">{day}</td>
+                <td className="p-2 border-b text-right align-top">
+                  {totalCost === 0 ? 'N/A' : data.discreteResourceValues[idx].cpu}
+                </td>
+                <td className="p-2 border-b text-right align-top">
+                  {totalCost === 0 ? 'N/A' : formatCurrency(data.dayDetails.cpuToDate[idx])}
+                </td>
+                <td className="p-2 border-b text-right align-top">
+                  {totalCost === 0 ? 'N/A' : data.discreteResourceValues[idx].storage}
+                </td>
+                <td className="p-2 border-b text-right align-top">
+                  {totalCost === 0 ? 'N/A' : formatCurrency(data.dayDetails.storageToDate[idx])}
+                </td>
+                <td className="p-2 border-b text-right align-top">
+                  {totalCost === 0 ? 'N/A' : formatCurrency(totalCost)}
+                </td>
+              </tr>
+            );
+          })}
         </tbody>
+        <tfoot>
+          <tr>
+            <td colSpan={4} />
+            <td colSpan={1} className="p-2 text-left">
+              <strong>Current total cost for {data.billingPeriod}</strong>
+            </td>
+            <td colSpan={1} className="p-2 text-left">
+              <strong>{formatCurrency(calculateTotalCost(getDailyCostData(data)))}</strong>
+            </td>
+          </tr>
+        </tfoot>
       </table>
     </>
   );

@@ -1,13 +1,26 @@
 'use client';
 
 import { Box, Button, LoadingOverlay, Tabs } from '@mantine/core';
+import { format } from 'date-fns';
 import { useEffect, useState } from 'react';
 import { z } from 'zod';
 import DataTable from '@/components/generic/data-table/DataTable';
 import CostSummary from '@/components/private-cloud/CostSummary';
 import DateSelector from '@/components/private-cloud/DateSelector';
-import { dailyCostColumns, getDailyCostData, getMonthlyCostData, GlobalRole, monthlyCostColumns } from '@/constants';
+import {
+  calculateTotalCost,
+  dailyCostColumns,
+  getDailyCostData,
+  getMonthlyCostData,
+  GlobalRole,
+  monthlyCostColumns,
+} from '@/constants';
 import createClientPage from '@/core/client-page';
+import {
+  downloadPrivateCloudMonthlyCosts,
+  downloadPrivateCloudQuarterlyCosts,
+  downloadPrivateCloudYearlyCosts,
+} from '@/services/backend/private-cloud/products';
 import {
   DailyCostMetric,
   MonthlyCost,
@@ -16,7 +29,7 @@ import {
   TimeView,
   YearlyCost,
 } from '@/types/private-cloud';
-import { formatCurrency, getDateFromYyyyMmDd, getMonthNameFromNumber } from '@/utils/js';
+import { formatAsYearQuarter, formatCurrency, getDateFromYyyyMmDd, getMonthNameFromNumber } from '@/utils/js';
 import Monthly from './Monthly';
 import Quarterly from './Quarterly';
 import Yearly from './Yearly';
@@ -37,15 +50,6 @@ const privateCloudProductCosts = createClientPage({
   validations: { pathParams: pathParamSchema },
 });
 
-const calculateTotalCost = <T extends { dayDetails?: { totalCost: number }; monthDetails?: { totalCost: number } }>(
-  data: T[],
-): number => {
-  return data.reduce((sum, item) => {
-    const cost = item.dayDetails?.totalCost ?? item.monthDetails?.totalCost ?? 0;
-    return sum + cost;
-  }, 0);
-};
-
 function TableFooter({ label, totalCost }: { label?: string; totalCost: number }) {
   return (
     <tr>
@@ -65,6 +69,7 @@ export default privateCloudProductCosts(({ getPathParams, session }) => {
   const [costData, setCostData] = useState<MonthlyCost | QuarterlyCost | YearlyCost>();
   const [forecastEnabled, setForecastEnabled] = useState(false);
   const [selectedDate, setSelectedDate] = useState(new Date());
+  const [downloading, setDownloading] = useState(false);
   const [viewMode, setViewMode] = useState<TimeView>(TimeView.Monthly);
   const [isLoading, setIsLoading] = useState(true);
 
@@ -175,7 +180,24 @@ export default privateCloudProductCosts(({ getPathParams, session }) => {
           {costData && (
             <>
               <CostSummary data={costData} selectedDate={selectedDate} viewMode={viewMode} />
-              <Button onClick={async () => {}} className="absolute right-0 top-[10px]">
+              <Button
+                loading={downloading}
+                onClick={async () => {
+                  if (!costData) return;
+                  setDownloading(true);
+                  const downloadPDF =
+                    {
+                      [TimeView.Monthly]: () =>
+                        downloadPrivateCloudMonthlyCosts(licencePlate, format(selectedDate, 'yyyy-MM')),
+                      [TimeView.Quarterly]: () =>
+                        downloadPrivateCloudQuarterlyCosts(licencePlate, formatAsYearQuarter(selectedDate)),
+                    }[viewMode] ||
+                    (() => downloadPrivateCloudYearlyCosts(licencePlate, selectedDate.getFullYear().toString()));
+                  await downloadPDF();
+                  setDownloading(false);
+                }}
+                className="absolute right-0 top-[10px]"
+              >
                 Download PDF
               </Button>
             </>

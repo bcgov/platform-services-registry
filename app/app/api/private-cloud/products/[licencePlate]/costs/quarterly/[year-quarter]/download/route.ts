@@ -33,7 +33,8 @@ export const POST = createApiHandler({
 
   const [year, quarter] = yearQuarter.split('-').map(Number);
   const result = await getQuarterlyCosts(licencePlate, year, quarter);
+  const selectedDate = result.startDate;
 
-  const pdfBuffer = await generateQuarterlyCostPdf({ product, data: result });
+  const pdfBuffer = await generateQuarterlyCostPdf({ product, data: result, selectedDate });
   return PdfResponse(pdfBuffer, `quarterly-costs-${year}-Q${quarter}.pdf`);
 });
