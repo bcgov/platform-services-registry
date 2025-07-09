@@ -1,3 +1,25 @@
+## [0.72.0](https://github.com/bcgov/platform-services-registry/compare/v0.71.0...v0.72.0) (2025-07-09)
+
+### Features
+
+* **4778:** add sorry cypress deployment ([90db860](https://github.com/bcgov/platform-services-registry/commit/90db8606b11e678786565cc459994618fd8d851a))
+* **4778:** deployment of mongodb in tools namespace ([e649b31](https://github.com/bcgov/platform-services-registry/commit/e649b318ff884611be1cc7f9bbff5f319753abe8))
+* **5856:** replace cost tables with table cc ([7c4683b](https://github.com/bcgov/platform-services-registry/commit/7c4683b38f719ee005a1d939a1f830b5c7e4d70e))
+* **5878:** enhance cost estimation table UI ([0054077](https://github.com/bcgov/platform-services-registry/commit/0054077bca28e8e3e9098103bbc5d20c752c7211))
+* **5879:** investigate retrieval of cluster-level resource status on OpenShift ([65ffeb6](https://github.com/bcgov/platform-services-registry/commit/65ffeb66bea11bb22454c245d5781eee5c6085bf))
+* **5934:** add shellcheck local script ([f774012](https://github.com/bcgov/platform-services-registry/commit/f774012c43cd335516136b08fb5c85e1175efeee))
+* **5934:** integration kube-linter in CI checks ([7223f90](https://github.com/bcgov/platform-services-registry/commit/7223f90f01e7b7d6f506c2c55c690904d6225463))
+* **5948:** revisit sync-changes API for public and private clouds ([1abdae5](https://github.com/bcgov/platform-services-registry/commit/1abdae5099bcdcdd52a8689417ebfc40d082cfa9))
+* **5957:** discretize resource values for new design ([fae58b2](https://github.com/bcgov/platform-services-registry/commit/fae58b21ab27a27cab44d23dfdb1fa4cfaecea3e))
+* **5957:** redesign cost pages ([d82d622](https://github.com/bcgov/platform-services-registry/commit/d82d6225ae9d97d34269f192302f003ea7cf89ef))
+* **5957:** update cc table and cost charts for new design ([a70d8c2](https://github.com/bcgov/platform-services-registry/commit/a70d8c27ffc4ebde0a58cf3b71ebd45bb75a9aa1))
+* **5970:** replace client secret with certificate for Microsoft graph API ([7b3c9eb](https://github.com/bcgov/platform-services-registry/commit/7b3c9eb9fc05045c09c37e55d05ea421057056c7))
+
+### Refactors
+
+* **5820:** deprecate @tremor/react ([16fd1fc](https://github.com/bcgov/platform-services-registry/commit/16fd1fc0b0c08b7020daef4ae4c127e1d5ae61f7))
+* **5845:** clean up environment variables about MS graph ([25508d1](https://github.com/bcgov/platform-services-registry/commit/25508d159d8e1646be59090f5ed0c8728fa477c0))
+* **5845:** update MS graph API services using Axios configs ([8de3e1b](https://github.com/bcgov/platform-services-registry/commit/8de3e1b793cbe0856e3cc955954fffdc1939416b))
 ## [0.71.0](https://github.com/bcgov/platform-services-registry/compare/v0.70.0...v0.71.0) (2025-06-26)
 
 ### Features
