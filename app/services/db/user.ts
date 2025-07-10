@@ -6,7 +6,13 @@ import _uniq from 'lodash-es/uniq';
 import { logger } from '@/core/logging';
 import prisma from '@/core/prisma';
 import { parsePaginationParams } from '@/helpers/pagination';
-import { Prisma, PrivateCloudRequestData, PublicCloudRequestData } from '@/prisma/client';
+import {
+  Prisma,
+  PrivateCloudProductMember,
+  PrivateCloudRequestData,
+  PublicCloudProductMember,
+  PublicCloudRequestData,
+} from '@/prisma/client';
 import { listUsersByRoles, findUserByEmail, getKcAdminClient } from '@/services/keycloak/app-realm';
 import { getUserByEmail, getUserPhoto } from '@/services/msgraph';
 import { AppUser } from '@/types/user';
@@ -285,13 +291,21 @@ export async function getUsersEmailsByIds(ids: (string | null | undefined)[]) {
   return filteredIds.map((id) => userMap.get(id) ?? null);
 }
 
-export async function enrichMembersWithEmail(data: PublicCloudRequestData | PrivateCloudRequestData | null) {
+export async function enrichMembersWithEmail<
+  T extends Pick<PublicCloudRequestData | PrivateCloudRequestData, 'id' | 'members'>,
+>(data: T | null) {
   if (!data?.members?.length) return data;
 
-  const userIds = Array.from(new Set(data.members.map((m) => m.userId).filter((id): id is string => !!id)));
+  const userIds = Array.from(
+    new Set(
+      data.members
+        .map((member: PublicCloudProductMember | PrivateCloudProductMember) => member.userId)
+        .filter((id): id is string => typeof id === 'string'),
+    ),
+  );
 
   const users = await getUsersEmailsByIds(userIds);
-  const userMap = new Map(users.map((u) => [u?.id, u]));
+  const userMap = new Map(users.map((user) => [user?.id, user]));
 
   data.members = data.members.map((member: any) => {
     if (member.email) return member;
@@ -304,4 +318,22 @@ export async function enrichMembersWithEmail(data: PublicCloudRequestData | Priv
   });
 
   return data;
+}
+
+export async function getUsersInfoByIds(ids: (string | null | undefined)[]) {
+  if (!ids || ids.length < 1) return [];
+
+  const filteredIds = ids.filter((id): id is string => typeof id === 'string');
+
+  const users = await prisma.user.findMany({
+    where: {
+      id: {
+        in: filteredIds,
+      },
+    },
+  });
+
+  const userMap = new Map(users.map((user) => [user.id, user]));
+
+  return filteredIds.map((id) => userMap.get(id) ?? null);
 }

@@ -1,6 +1,7 @@
 import axios from 'axios';
 import { publicCloudProductSorts } from '@/constants';
 import { AccountCoding, Prisma } from '@/prisma/client';
+import { MembersHistoryResponse } from '@/services/db/members-history';
 import {
   PublicCloudRequestSimpleDecorated,
   PublicCloudProductSearch,
@@ -94,6 +95,11 @@ export async function getPublicCloudProductRequests(licencePlate: string, active
     .get<PublicCloudRequestSimpleDecorated[]>(`/${licencePlate}/requests?active=${active}`)
     .then((res) => res.data);
 
+  return result;
+}
+
+export async function getPublicCloudProductMembersHistory(licencePlate: string) {
+  const result = await instance.get<MembersHistoryResponse>(`/${licencePlate}/members-history`).then((res) => res.data);
   return result;
 }
 
