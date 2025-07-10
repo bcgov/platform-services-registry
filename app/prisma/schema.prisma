@@ -601,12 +601,11 @@ enum Ministry {
   FIN
   FLNR
   HLTH
-  HOUS
   IRR
   JEDC
   LBR
   LDB
-  MAH
+  HMA
   MCF
   MMHA
   PSA
