@@ -5,7 +5,7 @@ import { validateKeycloakServiceAccount } from './validations/keycloak-service-a
 import { validateKeycloakUserLogin } from './validations/keycloak-user-login-credentials';
 import { validateKubernetisDeletionCheckTokens } from './validations/kubernetis-deletion-check-tokens';
 import { validateKubernetisMetricsReaderTokens } from './validations/kubernetis-metrics-reader-tokens';
-import { validateMsGraphServiceAccountCredentials } from './validations/ms-graph-service-account-credentials';
+import { validateMsGraphServiceAccountCertificateOrSecret } from './validations/ms-graph-service-account-certificate-or-secret';
 
 export const GET = createApiHandler({})(async () => {
   const [
@@ -14,14 +14,14 @@ export const GET = createApiHandler({})(async () => {
     kubernetisMetricsReaderTokens,
     kubernetisDeletionCheckTokens,
     chesServiceAccountCredentials,
-    msGraphServiceAccountCredentials,
+    msGraphServiceAccountCertificateOrSecret,
   ] = await Promise.all([
     validateKeycloakServiceAccount(),
     validateKeycloakUserLogin(),
     validateKubernetisMetricsReaderTokens(),
     validateKubernetisDeletionCheckTokens(),
     validateChesServiceAccountCredentials(),
-    validateMsGraphServiceAccountCredentials(),
+    validateMsGraphServiceAccountCertificateOrSecret(),
   ]);
 
   return OkResponse({
@@ -30,6 +30,6 @@ export const GET = createApiHandler({})(async () => {
     kubernetisMetricsReaderTokens,
     kubernetisDeletionCheckTokens,
     chesServiceAccountCredentials,
-    msGraphServiceAccountCredentials,
+    msGraphServiceAccountCertificateOrSecret,
   });
 });

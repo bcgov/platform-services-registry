@@ -60,9 +60,10 @@ export const PUBLIC_NATS_URL = `${PUBLIC_NATS_HOST}:${PUBLIC_NATS_PORT}`;
 export const MS_GRAPH_API_URL = process.env.MS_GRAPH_API_URL || 'https://graph.microsoft.com';
 export const MS_GRAPH_API_TENANT_ID = process.env.MS_GRAPH_API_TENANT_ID || '';
 export const MS_GRAPH_API_TOKEN_ENDPOINT =
-  process.env.MS_GRAPH_API_TOKEN_ENDPOINT || MS_GRAPH_API_TENANT_ID
+  process.env.MS_GRAPH_API_TOKEN_ENDPOINT ||
+  (MS_GRAPH_API_TENANT_ID
     ? `https://login.microsoftonline.com/${MS_GRAPH_API_TENANT_ID}/oauth2/v2.0/token`
-    : 'https://localhost:8443/realms/platform-services/protocol/openid-connect/token';
+    : 'https://localhost:8443/realms/platform-services/protocol/openid-connect/token');
 
 export const MS_GRAPH_API_CLIENT_ID = process.env.MS_GRAPH_API_CLIENT_ID || AUTH_RESOURCE;
 export const MS_GRAPH_API_CLIENT_SECRET = process.env.MS_GRAPH_API_CLIENT_SECRET || AUTH_SECRET;
