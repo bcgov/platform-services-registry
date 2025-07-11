@@ -3,12 +3,12 @@
 import { Tabs } from '@mantine/core';
 import { useQueries } from '@tanstack/react-query';
 import _orderBy from 'lodash-es/orderBy';
+import MembersHistory from '@/components/shared/MembersHistoryTimeLine';
 import {
   getPublicCloudProductRequests,
   getPublicCloudProductBillings,
   getPublicCloudProductMembersHistory,
 } from '@/services/backend/public-cloud/products';
-import MembersHistory from './MembersHistoryTimeLine';
 import RequestsHistory from './RequestsHistoryTimeLine';
 const tabClassname = `
  relative bg-white hover:bg-gray-50 border border-solid border-gray-500

@@ -1,6 +1,7 @@
 import axios from 'axios';
 import { privateCloudProductSorts } from '@/constants';
 import { Prisma, PrivateCloudComment, QuotaUpgradeResourceDetail, ResourceRequestsEnv } from '@/prisma/client';
+import { MembersHistoryResponse } from '@/services/db/members-history';
 import { DeletionCheck } from '@/services/k8s/reads';
 import {
   PrivateCloudRequestSimpleDecorated,
@@ -98,6 +99,11 @@ export async function getPrivateCloudProductRequests(licencePlate: string, activ
   const result = await instance
     .get<PrivateCloudRequestSimpleDecorated[]>(`/${licencePlate}/requests?active=${active}`)
     .then((res) => res.data);
+  return result;
+}
+
+export async function getPrivateCloudProductMembersHistory(licencePlate: string) {
+  const result = await instance.get<MembersHistoryResponse>(`/${licencePlate}/members-history`).then((res) => res.data);
   return result;
 }
 

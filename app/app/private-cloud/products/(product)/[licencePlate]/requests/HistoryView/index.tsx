@@ -1,60 +1,55 @@
 'use client';
 
-import { Timeline } from '@mantine/core';
-import { IconEdit, IconPlus, IconTrashX } from '@tabler/icons-react';
-import { useQuery } from '@tanstack/react-query';
-import _orderBy from 'lodash-es/orderBy';
-import { ReactNode } from 'react';
-import ExternalLink from '@/components/generic/button/ExternalLink';
-import { RequestType } from '@/prisma/client';
-import { getPrivateCloudProductRequests } from '@/services/backend/private-cloud/products';
-import RequestTimeLine from './RequestTimeLine';
+import { Tabs } from '@mantine/core';
+import { useQueries } from '@tanstack/react-query';
+import MembersHistory from '@/components/shared/MembersHistoryTimeLine';
+import {
+  getPrivateCloudProductMembersHistory,
+  getPrivateCloudProductRequests,
+} from '@/services/backend/private-cloud/products';
+import RequestsHistory from './RequestHistoryTimeLine';
+
+const tabClassname = `
+ relative bg-white hover:bg-gray-50 border border-solid border-gray-500
+ first:rounded-l-md rtl:first:rounded-r-md last:rounded-r-md rtl:last:rounded-l-md -ml-px first:ml-0 rtl:-mr-px rtl:first:mr-0
+ data-[active=true]:z-10 data-[active=true]:bg-bcblue data-[active=true]:border-bcblue data-[active=true]:text-white data-[active=true]:hover:bg-bcblue
+`;
 
 export default function HistoryView({ licencePlate }: { licencePlate: string }) {
-  const {
-    data: requests,
-    isLoading: requestsLoading,
-    isError: requestsIsError,
-    error: requestsError,
-  } = useQuery({
-    queryKey: ['requests', licencePlate],
-    queryFn: () => getPrivateCloudProductRequests(licencePlate),
-    enabled: !!licencePlate,
-  });
-
-  if (!requests) return null;
-
-  const orderedRequests = _orderBy(requests, 'createdAt', 'asc');
+  const [{ data: requests, isLoading: requestsLoading }, { data: membersRoles, isLoading: membersRolesLoading }] =
+    useQueries({
+      queries: [
+        {
+          queryKey: ['requests', licencePlate],
+          queryFn: () => getPrivateCloudProductRequests(licencePlate),
+          enabled: !!licencePlate,
+        },
+        {
+          queryKey: ['members-history', licencePlate],
+          queryFn: () => getPrivateCloudProductMembersHistory(licencePlate),
+          enabled: !!licencePlate,
+        },
+      ],
+    });
 
   return (
     <>
-      <div className="flex justify-center items-center">
-        <Timeline active={orderedRequests.length} color="green" bulletSize={28} lineWidth={3} className="max-w-3xl">
-          {orderedRequests.map((request) => {
-            let bullet!: ReactNode;
-            if (request.type === RequestType.CREATE) bullet = <IconPlus size={18} />;
-            else if (request.type === RequestType.EDIT) bullet = <IconEdit size={18} />;
-            else if (request.type === RequestType.DELETE) bullet = <IconTrashX size={18} />;
-
-            return (
-              <Timeline.Item
-                key={request.id}
-                bullet={bullet}
-                title={
-                  <div>
-                    {request.type}
-                    <ExternalLink href={`/private-cloud/requests/${request.id}/summary`} className="ml-2">
-                      {request.id}
-                    </ExternalLink>
-                  </div>
-                }
-              >
-                <RequestTimeLine request={request} />
-              </Timeline.Item>
-            );
-          })}
-        </Timeline>
-      </div>
+      <Tabs variant="unstyled" defaultValue="requests">
+        <Tabs.List grow className="w-fit">
+          <Tabs.Tab value="requests" className={tabClassname}>
+            Requests
+          </Tabs.Tab>
+          <Tabs.Tab value="members" className={tabClassname}>
+            Members
+          </Tabs.Tab>
+        </Tabs.List>
+        <Tabs.Panel value="members" pt="xs">
+          <MembersHistory membersRoles={membersRoles} />
+        </Tabs.Panel>
+        <Tabs.Panel value="requests" pt="xs">
+          <RequestsHistory requests={requests} />
+        </Tabs.Panel>
+      </Tabs>
     </>
   );
 }
