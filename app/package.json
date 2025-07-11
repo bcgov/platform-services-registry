@@ -15,7 +15,7 @@
     "prisma-push": "dotenv -e .env.local -- prisma db push",
     "migrate-data": "cat .env.local | grep DATABASE_URL > ../data-migrations/.env && cd ../data-migrations && npm install && npx migrate-mongo up",
     "email": "dotenv -e .env.local -- email dev --dir emails --port 3001",
-    "email-build": "email build",
+    "email-build": "email build --packageManager=pnpm",
     "email-start": "dotenv -e .env.local -- email start --port 3001",
     "email-export": "email export --pretty --outDir emails-export --dir emails"
   },
