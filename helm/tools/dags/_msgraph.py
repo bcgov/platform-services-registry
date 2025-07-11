@@ -2,6 +2,10 @@ import requests
 from azure.identity import CertificateCredential
 
 
+def decode_escaped_newlines(input_str: str) -> str:
+    return input_str.replace("\\n", "\n")
+
+
 class MsGraph:
     def __init__(self, tenant_id: str, client_id: str, client_secret=None, private_key=None, certificate=None):
         self.tenant_id = tenant_id
@@ -21,7 +25,9 @@ class MsGraph:
         ):
             raise ValueError("Missing certificate or private key format")
 
-        pem_combined = f"{self.certificate.strip()}\n{self.private_key.strip()}"
+        pem_combined = (
+            f"{decode_escaped_newlines(self.certificate).strip()}\n{decode_escaped_newlines(self.private_key).strip()}"
+        )
         credential = CertificateCredential(
             tenant_id=self.tenant_id, client_id=self.client_id, certificate_data=pem_combined.encode("utf-8")
         )

@@ -6,3 +6,5 @@
 !.prettierignore
 !.prettierrc
 **/node_modules
+app/.next
+app/.react-email
