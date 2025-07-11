@@ -12,7 +12,11 @@ def parse_ministry_from_display_name(display_name: str):
 
 
 def sync_db_users_with_azure_ad(
-    mongo_conn_id, ms_graph_api_tenant_id, ms_graph_api_client_id, ms_graph_api_client_secret
+    mongo_conn_id,
+    ms_graph_api_tenant_id,
+    ms_graph_api_client_id,
+    ms_graph_api_client_private_key,
+    ms_graph_api_client_certificate,
 ):
     try:
         db = get_mongo_db(mongo_conn_id)
@@ -20,7 +24,12 @@ def sync_db_users_with_azure_ad(
         users_collection = db["User"]
         db_users = users_collection.find({"archived": {"$eq": False}}, projection)
 
-        ms_graph = MsGraph(ms_graph_api_tenant_id, ms_graph_api_client_id, ms_graph_api_client_secret)
+        ms_graph = MsGraph(
+            ms_graph_api_tenant_id,
+            ms_graph_api_client_id,
+            private_key=ms_graph_api_client_private_key,
+            certificate=ms_graph_api_client_certificate,
+        )
 
         for db_user in db_users:
             db_user_email = db_user["email"].lower()
