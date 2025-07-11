@@ -67,7 +67,7 @@
     "canvas": "3.1.1",
     "chart.js": "^4.4.9",
     "clsx": "^2.1.1",
-    "csv-parse": "^5.5.3",
+    "csv-parse": "^6.0.0",
     "csv-stringify": "^6.4.4",
     "date-fns": "^4.1.0",
     "date-fns-tz": "^3.2.0",
