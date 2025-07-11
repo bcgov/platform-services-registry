@@ -16,12 +16,12 @@ export const GET = createApiHandler({})(async () => {
     chesServiceAccountCredentials,
     msGraphServiceAccountCertificateOrSecret,
   ] = await Promise.all([
-    validateKeycloakServiceAccount(),
-    validateKeycloakUserLogin(),
-    validateKubernetisMetricsReaderTokens(),
-    validateKubernetisDeletionCheckTokens(),
-    validateChesServiceAccountCredentials(),
-    validateMsGraphServiceAccountCertificateOrSecret(),
+    validateKeycloakServiceAccount().catch(() => false),
+    validateKeycloakUserLogin().catch(() => false),
+    validateKubernetisMetricsReaderTokens().catch(() => false),
+    validateKubernetisDeletionCheckTokens().catch(() => false),
+    validateChesServiceAccountCredentials().catch(() => false),
+    validateMsGraphServiceAccountCertificateOrSecret().catch(() => false),
   ]);
 
   return OkResponse({
