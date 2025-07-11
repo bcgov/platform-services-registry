@@ -12,40 +12,45 @@ def parse_ministry_from_display_name(display_name: str):
 
 
 def sync_db_users_with_azure_ad(
-    mongo_conn_id, ms_graph_api_tenant_id, ms_graph_api_client_id, ms_graph_api_client_secret
+    mongo_conn_id,
+    ms_graph_api_tenant_id,
+    ms_graph_api_client_id,
+    ms_graph_api_client_private_key,
+    ms_graph_api_client_certificate,
 ):
-    try:
-        db = get_mongo_db(mongo_conn_id)
-        projection = {"image": 0, "lastseen": 0, "updatedAt": 0, "createdAt": 0}
-        users_collection = db["User"]
-        db_users = users_collection.find({"archived": {"$eq": False}}, projection)
+    db = get_mongo_db(mongo_conn_id)
+    projection = {"image": 0, "lastseen": 0, "updatedAt": 0, "createdAt": 0}
+    users_collection = db["User"]
+    db_users = users_collection.find({"archived": {"$eq": False}}, projection)
 
-        ms_graph = MsGraph(ms_graph_api_tenant_id, ms_graph_api_client_id, ms_graph_api_client_secret)
+    ms_graph = MsGraph(
+        ms_graph_api_tenant_id,
+        ms_graph_api_client_id,
+        private_key=ms_graph_api_client_private_key,
+        certificate=ms_graph_api_client_certificate,
+    )
 
-        for db_user in db_users:
-            db_user_email = db_user["email"].lower()
-            azure_user = ms_graph.fetch_azure_user(db_user_email)
-            if azure_user is not None:
-                update_data = {
-                    "officeLocation": azure_user.get("officeLocation", ""),
-                    "jobTitle": azure_user.get("jobTitle", ""),
-                    "upn": azure_user.get("userPrincipalName", ""),
-                    "providerUserId": azure_user.get("id", ""),
-                    "ministry": parse_ministry_from_display_name(
-                        azure_user.get("displayName", ""),
-                    ),
-                    "firstName": azure_user.get("givenName", ""),
-                    "lastName": azure_user.get("surname", ""),
-                    "email": azure_user.get("mail", "").lower(),
-                    "idirGuid": azure_user.get("idirGuid", ""),
-                    "idir": azure_user.get("onPremisesSamAccountName", ""),
-                }
+    for db_user in db_users:
+        db_user_email = db_user["email"].lower()
+        azure_user = ms_graph.fetch_azure_user(db_user_email)
+        if azure_user is not None:
+            update_data = {
+                "officeLocation": azure_user.get("officeLocation", ""),
+                "jobTitle": azure_user.get("jobTitle", ""),
+                "upn": azure_user.get("userPrincipalName", ""),
+                "providerUserId": azure_user.get("id", ""),
+                "ministry": parse_ministry_from_display_name(
+                    azure_user.get("displayName", ""),
+                ),
+                "firstName": azure_user.get("givenName", ""),
+                "lastName": azure_user.get("surname", ""),
+                "email": azure_user.get("mail", "").lower(),
+                "idirGuid": azure_user.get("idirGuid", ""),
+                "idir": azure_user.get("onPremisesSamAccountName", ""),
+            }
 
-                update_data = {k: v for k, v in update_data.items() if v is not None}
+            update_data = {k: v for k, v in update_data.items() if v is not None}
 
-                users_collection.update_one({"_id": db_user["_id"]}, {"$set": update_data})
-            else:
-                users_collection.update_one({"_id": db_user["_id"]}, {"$set": {"archived": True}})
-
-    except Exception as e:
-        print(f"[sync_users_in_db_and_azure_ad] Error: {e}")
+            users_collection.update_one({"_id": db_user["_id"]}, {"$set": update_data})
+        else:
+            users_collection.update_one({"_id": db_user["_id"]}, {"$set": {"archived": True}})

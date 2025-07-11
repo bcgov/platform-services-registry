@@ -47,7 +47,7 @@ airflow:
 
   defaultAirflowRepository: ghcr.io/bcgov/pltsvc-tools-airflow
   # See https://github.com/bcgov/platform-services-registry/pkgs/container/pltsvc-tools-airflow
-  defaultAirflowTag: "9bed7f499e4ff864ff0ee1fec5c018e51c115157" # pragma: allowlist secret
+  defaultAirflowTag: "481e049394a63cbd2b4157c00e9ea3530e192f89" # pragma: allowlist secret
 
   airflowVersion: "3.0.2"
 
@@ -359,6 +359,9 @@ mongodb:
 
   nameOverride: tools-mongodb
   fullnameOverride: tools-mongodb
+
+  updateStrategy:
+    type: Recreate
 
   architecture: standalone
   useStatefulSet: false
