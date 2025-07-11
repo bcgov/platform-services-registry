@@ -13,6 +13,7 @@ ENV BASE_URL=https://dev-pltsvc.apps.silver.devops.gov.bc.ca
 
 RUN npm install -g turbo pnpm
 RUN pnpm install --frozen-lockfile
+RUN rm -rf .react-email
 RUN pnpm email-build
 RUN mkdir -p .react-email/public
 
