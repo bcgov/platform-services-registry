@@ -113,7 +113,6 @@ async function main() {
     'jedc',
     'lbr',
     'ldb',
-    'mah',
     'mcf',
     'mmha',
     'psa',
@@ -121,7 +120,7 @@ async function main() {
     'sdpr',
     'tca',
     'tran',
-    'hous',
+    'hma',
     'wlrs',
   ].forEach(async (ministry) => {
     await kc.createClientRole(AUTH_REALM_NAME, authClient?.id as string, `ministry-${ministry}-reader`);

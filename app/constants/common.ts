@@ -80,10 +80,6 @@ export const ministryOptions = [
     label: 'Liquor Distribution Branch',
   },
   {
-    value: 'MAH',
-    label: 'Municipal Affairs and Housing',
-  },
-  {
     value: 'MCF',
     label: 'Children and Family Development',
   },
@@ -112,8 +108,8 @@ export const ministryOptions = [
     label: 'Transportation and Infrastructure',
   },
   {
-    value: 'HOUS',
-    label: 'Ministry of Housing',
+    value: 'HMA',
+    label: 'Housing and Municipal Affairs',
   },
   {
     value: 'WLRS',
@@ -121,7 +117,7 @@ export const ministryOptions = [
   },
 ];
 
-export const AGMinistries = ['AG', 'PSSG', 'EMCR', 'HOUS'];
+export const AGMinistries = ['AG', 'PSSG', 'EMCR', 'HMA'];
 
 export const TEAM_SA_PREFIX = 'z_pltsvc-tsa-';
 

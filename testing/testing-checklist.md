@@ -13,7 +13,7 @@
 2. For the User in Private Cloud Clusters dropdown is showing SILVER, GOLD, EMERALD
 3. For the User in Private Cloud Clusters dropdown is showing SILVER, GOLD, EMERALD, CLAB, KLAB, KLAB2
 4. Ministries dropdown is showing 28 ministries with no duplicates.
-5. If one of AG, EMCR, HOUS or PSSG ministries is chosen, the disclaimer with checkbox is shown.
+5. If one of AG, EMCR, HMA or PSSG ministries is chosen, the disclaimer with checkbox is shown.
 6. For Public Cloud the Providers dropdown has Amazon Web Services option only.
 7. Typing letters in the Email field of the Contacts section shows live search results for every of PO and TLs.
 8. Clicking one of the contact search results populates all of the fields for every of PO and TLs with corresponding data from IDIR.

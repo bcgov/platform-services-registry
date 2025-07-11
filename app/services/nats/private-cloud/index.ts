@@ -34,8 +34,7 @@ export default async function createPrivateCloudNatsMessage(
   switch (ministry) {
     case Ministry.AG:
     case Ministry.EMCR:
-    case Ministry.HOUS:
-    case Ministry.MAH:
+    case Ministry.HMA:
     case Ministry.PSSG:
       allianceLabel = 'JAG';
       break;
