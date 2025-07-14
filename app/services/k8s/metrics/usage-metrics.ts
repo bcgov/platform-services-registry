@@ -1,9 +1,12 @@
+import { IS_PROD, IS_TEST } from '@/config';
 import { environmentShortNames } from '@/constants';
 import { logger } from '@/core/logging';
 import { normalizeMemory, normalizeCpu } from '@/helpers/resource-metrics';
 import { Cluster, ResourceRequestsEnv } from '@/prisma/client';
 import type { UsageMetrics } from '@/types/usage';
 import { getK8sClients, queryPrometheus } from './core';
+
+const isLocal = !(IS_PROD || IS_TEST);
 
 async function getLastTwoWeeksAvgUsage(cluster: Cluster, namespace: string, podName: string) {
   const queryFilter = `namespace="${namespace}", pod="${podName}"`;
@@ -156,11 +159,12 @@ export async function getUsageMetrics(
   environment: keyof ResourceRequestsEnv,
   cluster: Cluster,
 ): Promise<UsageMetrics> {
-  const namespace = `${licencePlate}-${environmentShortNames[environment]}`;
+  const namespace = `${isLocal ? 'e3913e' : licencePlate}-${environmentShortNames[environment]}`;
+  const resolvedCluster = isLocal ? 'KLAB' : cluster;
 
   const [pvcMetrics, podMetrics] = await Promise.all([
-    getPvcMetrics(cluster, namespace),
-    getPodMetrics(cluster, namespace),
+    getPvcMetrics(resolvedCluster, namespace),
+    getPodMetrics(resolvedCluster, namespace),
   ]);
 
   return {

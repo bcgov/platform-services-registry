@@ -1,5 +1,4 @@
 import { z } from 'zod';
-import { IS_PROD, IS_TEST } from '@/config';
 import { GlobalRole } from '@/constants';
 import createApiHandler from '@/core/api-handler';
 import { OkResponse, UnauthorizedResponse } from '@/core/responses';
@@ -23,7 +22,6 @@ const apiHandler = createApiHandler({
 export const POST = apiHandler(async ({ session, pathParams, body }) => {
   const { licencePlate } = pathParams;
   const { resourceRequests } = body;
-  const isLocal = !(IS_PROD || IS_TEST);
 
   const { data: currentProduct } = await models.privateCloudProduct.get(
     {
@@ -41,8 +39,8 @@ export const POST = apiHandler(async ({ session, pathParams, body }) => {
   }
 
   const quotaChangeStatus = await getQuotaChangeStatus({
-    licencePlate: isLocal ? 'e3913e' : licencePlate,
-    cluster: isLocal ? 'KLAB' : currentProduct.cluster,
+    licencePlate,
+    cluster: currentProduct.cluster,
     currentResourceRequests: currentProduct.resourceRequests,
     requestedResourceRequests: resourceRequests,
   });
