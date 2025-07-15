@@ -101,8 +101,13 @@ export async function buildMembersHistory(requests: RequestWithData[]) {
       const isNewUser = !userRoles.has(userId);
       const hasChanges = prevSorted.length > 0 || filteredNewRoles.length > 0;
 
-      const newRoles =
-        filteredNewRoles.length > 0 ? filteredNewRoles : isNewUser ? ['additional team member without roles'] : [];
+      let newRoles: string[] = [];
+
+      if (filteredNewRoles.length > 0) {
+        newRoles = filteredNewRoles;
+      } else if (isNewUser || filteredNewRoles.length === 0) {
+        newRoles = ['additional team member without roles'];
+      }
 
       const shouldInclude = hasChanges || isNewUser || diff.items.some((item) => item.userId === userId);
 
