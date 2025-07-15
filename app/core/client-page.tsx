@@ -100,7 +100,7 @@ function createClientPage<TPathParams extends ZodType<any, any>, TQueryParams ex
           return parsed.data;
         }
 
-        return {} as TypeOf<typeof pathParamVal>;
+        return pathParamVal.parse({}) as TypeOf<TPathParams>;
       };
 
       const getQueryParams = async () => {
@@ -116,7 +116,7 @@ function createClientPage<TPathParams extends ZodType<any, any>, TQueryParams ex
           return parsed.data;
         }
 
-        return {} as TypeOf<typeof queryParamVal>;
+        return queryParamVal.parse({}) as TypeOf<TQueryParams>;
       };
 
       return (
