@@ -2,7 +2,8 @@ import { GlobalRole } from '@/constants';
 import createApiHandler from '@/core/api-handler';
 import prisma from '@/core/prisma';
 import { OkResponse } from '@/core/responses';
-import { TaskType } from '@/prisma/client';
+import { TaskStatus, TaskType } from '@/prisma/client';
+import { getUsersEmailsByIds } from '@/services/db/user';
 import { getUniqueNonFalsyItems } from '@/utils/js';
 
 const apiHandler = createApiHandler({
@@ -15,13 +16,26 @@ export const GET = apiHandler(async ({ session }) => {
   const privateCloudRequestIds: string[] = [];
   const publicCloudRequestIds: string[] = [];
 
-  let processedTasks = session.tasks.map(
-    ({ id, type, status, createdAt, completedAt, completedBy, data, closedMetadata }) => {
-      return { id, type, status, createdAt, completedAt, completedBy, data, closedMetadata, link: '', description: '' };
+  let assignedTasks = session.tasks.map(
+    ({ id, type, status, createdAt, completedAt, completedBy, startedAt, startedBy, data, closedMetadata }) => {
+      return {
+        id,
+        type,
+        status,
+        createdAt,
+        completedAt,
+        completedBy,
+        startedAt,
+        startedBy,
+        data,
+        closedMetadata,
+        link: '',
+        description: '',
+      };
     },
   );
 
-  for (const task of processedTasks) {
+  for (const task of assignedTasks) {
     switch (task.type) {
       case TaskType.SIGN_PUBLIC_CLOUD_MOU:
       case TaskType.REVIEW_PUBLIC_CLOUD_MOU:
@@ -70,7 +84,7 @@ export const GET = apiHandler(async ({ session }) => {
     }),
   ]);
 
-  processedTasks = processedTasks.map((task) => {
+  assignedTasks = assignedTasks.map((task) => {
     let data!: any;
     let product!: any;
     let request!: any;
@@ -112,5 +126,8 @@ export const GET = apiHandler(async ({ session }) => {
     return task;
   });
 
-  return OkResponse(processedTasks);
+  const userIds = assignedTasks.map((task) => (task.status === TaskStatus.STARTED ? task.startedBy : null));
+  const users = await getUsersEmailsByIds(userIds);
+
+  return OkResponse({ assignedTasks, users });
 });

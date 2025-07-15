@@ -57,7 +57,6 @@ function Assignees({ task }: { task: SearchTask }) {
   }
 
   if (task.users?.length > 0) {
-    console.log('task.users', task.userIds, task.users);
     result.push(
       <Fragment key="users">
         <Text c="dimmed" size="sm" className="font-semibold">
