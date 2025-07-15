@@ -390,6 +390,8 @@ model Task {
   roles           String[]
   permissions     String[]
   createdAt       DateTime   @default(now())
+  startedAt       DateTime?
+  startedBy       String?    @db.ObjectId
   completedAt     DateTime?
   completedBy     String?    @db.ObjectId
   completedByUser User?      @relation("UserToTasks", fields: [completedBy], references: [id])
@@ -705,6 +707,7 @@ enum TaskStatus {
   ASSIGNED
   COMPLETED
   CANCELED
+  STARTED
 }
 
 enum Env {

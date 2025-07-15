@@ -1,13 +1,13 @@
 'use client';
 
-import { Drawer, ActionIcon, Badge, Box, LoadingOverlay, Indicator, Tooltip } from '@mantine/core';
+import { Drawer, ActionIcon, Badge, Box, LoadingOverlay, Indicator, Tooltip, Button } from '@mantine/core';
 import { useDisclosure } from '@mantine/hooks';
 import { IconChecklist } from '@tabler/icons-react';
-import { useQuery } from '@tanstack/react-query';
+import { useMutation, useQuery } from '@tanstack/react-query';
 import Link from 'next/link';
 import { useEffect } from 'react';
 import { TaskStatus, TaskType } from '@/prisma/client';
-import { getAssignedTasks } from '@/services/backend/tasks';
+import { getAssignedTasks, startTask } from '@/services/backend/tasks';
 import { formatDate, cn } from '@/utils/js';
 
 const taskTypeLabels = {
@@ -20,11 +20,11 @@ const taskTypeLabels = {
 const taskStatusColors = {
   [TaskStatus.ASSIGNED]: 'primary',
   [TaskStatus.COMPLETED]: 'success',
+  [TaskStatus.STARTED]: 'info',
 };
 
 export default function SideTasks({ className }: { className?: string }) {
   const [opened, { open, close }] = useDisclosure(false);
-
   const {
     data: tasks,
     isLoading,
@@ -35,11 +35,16 @@ export default function SideTasks({ className }: { className?: string }) {
     refetchInterval: 3000,
   });
 
+  const { mutateAsync: _startTask, isPending: isStartingTask } = useMutation({
+    mutationFn: startTask,
+  });
+
   useEffect(() => {
     if (opened) refetchTasks();
   }, [opened, refetchTasks]);
 
-  const _tasks = tasks || [];
+  const _tasks = tasks?.assignedTasks || [];
+  const _users = tasks?.users || [];
 
   return (
     <>
@@ -53,7 +58,7 @@ export default function SideTasks({ className }: { className?: string }) {
             _tasks.map((task) => {
               const type = taskTypeLabels[task.type];
               const color = taskStatusColors[task.status];
-
+              const isStarted = task.status === TaskStatus.STARTED;
               return (
                 <div
                   key={task.id}
@@ -65,9 +70,31 @@ export default function SideTasks({ className }: { className?: string }) {
                       <Badge color={color} size="sm" radius="sm" className="ml-1">
                         {task.status}
                       </Badge>
+                      {!isStarted && (
+                        <Button
+                          color="info"
+                          className="ml-2"
+                          size="xs"
+                          loading={false}
+                          onClick={async () => {
+                            if (isStartingTask) return;
+                            await _startTask(task.id);
+                          }}
+                        >
+                          Mark as Started
+                        </Button>
+                      )}
                     </div>
                     <div className="text-sm italic text-gray-700">{task.description}</div>
-                    <div className="text-sm text-gray-400">{formatDate(task.createdAt)}</div>
+                    <div className="text-sm text-gray-400">Created at {formatDate(task.createdAt)}</div>
+                    {isStarted && (
+                      <>
+                        <div className="text-sm text-gray-400">Started at {formatDate(task.startedAt)}</div>
+                        <div className="text-sm text-gray-400">
+                          Started by {_users.find((user) => user.id === task.startedBy)?.email}
+                        </div>{' '}
+                      </>
+                    )}
                   </div>
                   <div className="col-span-1 text-right">
                     {task.link && (

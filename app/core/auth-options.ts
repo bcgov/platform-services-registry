@@ -332,11 +332,12 @@ export async function generateSession({
           { roles: { hasSome: session.roles } },
           { permissions: { hasSome: session.permissionList } },
         ],
-        status: TaskStatus.ASSIGNED,
+        status: {
+          in: [TaskStatus.ASSIGNED, TaskStatus.STARTED],
+        },
       },
     });
   }
-
   return session;
 }
 
