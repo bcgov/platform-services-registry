@@ -40,8 +40,6 @@ function createClientPage<TPathParams extends ZodType<any, any>, TQueryParams ex
   validations,
 }: HandlerProps<TPathParams, TQueryParams>) {
   const { pathParams: pathParamVal = z.object({}), queryParams: queryParamVal = z.object({}) } = validations ?? {};
-  const pathParams: TypeOf<typeof pathParamVal> | null = null;
-  const queryParams: TypeOf<typeof queryParamVal> | null = null;
 
   return function clientPage(Component: React.FC<ComponentProps<TypeOf<TPathParams>, TypeOf<TQueryParams>>>) {
     return function Wrapper({ params: paramsProm, searchParams: searchParamsProm, children }: any) {
@@ -93,15 +91,16 @@ function createClientPage<TPathParams extends ZodType<any, any>, TQueryParams ex
         // Parse & validate path params
         if (validations?.pathParams) {
           const params = await paramsProm;
-          const parsed = validations?.pathParams.safeParse(params);
+          const parsed = validations.pathParams.safeParse(params);
           if (!parsed.success) {
-            return router.push(fallbackUrl);
+            router.push(fallbackUrl);
+            throw new Error('Redirecting due to invalid path/query params');
           }
 
           return parsed.data;
         }
 
-        return null;
+        return {} as TypeOf<typeof pathParamVal>;
       };
 
       const getQueryParams = async () => {
@@ -109,7 +108,7 @@ function createClientPage<TPathParams extends ZodType<any, any>, TQueryParams ex
         if (validations?.queryParams) {
           const searchParams = await searchParamsProm;
           const query = parseQueryString(searchParams);
-          const parsed = validations?.queryParams.safeParse(query);
+          const parsed = validations.queryParams.safeParse(query);
           if (!parsed.success) {
             return router.push(fallbackUrl);
           }
@@ -117,7 +116,7 @@ function createClientPage<TPathParams extends ZodType<any, any>, TQueryParams ex
           return parsed.data;
         }
 
-        return null;
+        return {} as TypeOf<typeof queryParamVal>;
       };
 
       return (
