@@ -110,7 +110,8 @@ function createClientPage<TPathParams extends ZodType<any, any>, TQueryParams ex
           const query = parseQueryString(searchParams);
           const parsed = validations.queryParams.safeParse(query);
           if (!parsed.success) {
-            return router.push(fallbackUrl);
+            router.push(fallbackUrl);
+            throw new Error('Invalid query params');
           }
 
           return parsed.data;
