@@ -37,11 +37,9 @@ function createClientPage<TPathParams extends ZodType<any, any>, TQueryParams ex
   const queryParamVal = (validations?.queryParams ?? z.object({})) as TQueryParams;
 
   return function clientPage(Component: React.FC<ComponentProps<TypeOf<TPathParams>, TypeOf<TQueryParams>>>) {
-    return function Wrapper() {
+    return function Wrapper({ params, searchParams }: any) {
       const router = useRouter();
       const pathname = usePathname();
-      const params = useParams();
-      const searchParams = useSearchParams();
       const { data: session, update: updateSession, status } = useSession();
 
       useEffect(() => {
