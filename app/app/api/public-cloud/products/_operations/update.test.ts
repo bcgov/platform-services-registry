@@ -190,7 +190,8 @@ describe('Update Public Cloud Product - Validations', () => {
     const resData = await response.json();
     expect(resData.success).toBe(false);
     expect(resData.message).toBe('Bad Request');
-    expect(resData.error.issues.find((iss: { path: string[] }) => iss.path[0] === 'name')).not.toBeUndefined();
+    const issues = JSON.parse(resData.error.message);
+    expect(issues.find((iss: { path: string[] }) => iss.path[0] === 'name')).not.toBeUndefined();
   });
 
   it('should fail to submit a update request due to an invalid description property', async () => {
@@ -203,7 +204,8 @@ describe('Update Public Cloud Product - Validations', () => {
     const resData = await response.json();
     expect(resData.success).toBe(false);
     expect(resData.message).toBe('Bad Request');
-    expect(resData.error.issues.find((iss: { path: string[] }) => iss.path[0] === 'description')).not.toBeUndefined();
+    const issues = JSON.parse(resData.error.message);
+    expect(issues.find((iss: { path: string[] }) => iss.path[0] === 'description')).not.toBeUndefined();
   });
 
   it('should fail to submit a update request due to an invalid provider property', async () => {
@@ -216,7 +218,8 @@ describe('Update Public Cloud Product - Validations', () => {
     const resData = await response.json();
     expect(resData.success).toBe(false);
     expect(resData.message).toBe('Bad Request');
-    expect(resData.error.issues.find((iss: { path: string[] }) => iss.path[0] === 'provider')).not.toBeUndefined();
+    const issues = JSON.parse(resData.error.message);
+    expect(issues.find((iss: { path: string[] }) => iss.path[0] === 'provider')).not.toBeUndefined();
   });
 
   it('should ignore the provider change on a new update request', async () => {
@@ -243,7 +246,8 @@ describe('Update Public Cloud Product - Validations', () => {
     const resData = await response.json();
     expect(resData.success).toBe(false);
     expect(resData.message).toBe('Bad Request');
-    expect(resData.error.issues.find((iss: { path: string[] }) => iss.path[0] === 'ministry')).not.toBeUndefined();
+    const issues = JSON.parse(resData.error.message);
+    expect(issues.find((iss: { path: string[] }) => iss.path[0] === 'ministry')).not.toBeUndefined();
   });
 
   it('should fail to submit a update request due to an invalid projectOwner property', async () => {
@@ -255,9 +259,8 @@ describe('Update Public Cloud Product - Validations', () => {
     const resData = await response.json();
     expect(resData.success).toBe(false);
     expect(resData.message).toBe('Bad Request');
-    expect(
-      resData.error.issues.find((iss: { path: string[] }) => iss.path[0] === 'projectOwnerId'),
-    ).not.toBeUndefined();
+    const issues = JSON.parse(resData.error.message);
+    expect(issues.find((iss: { path: string[] }) => iss.path[0] === 'projectOwnerId')).not.toBeUndefined();
   });
 
   it('should fail to submit a update request due to an invalid primaryTechnicalLead property', async () => {
@@ -269,9 +272,8 @@ describe('Update Public Cloud Product - Validations', () => {
     const resData = await response.json();
     expect(resData.success).toBe(false);
     expect(resData.message).toBe('Bad Request');
-    expect(
-      resData.error.issues.find((iss: { path: string[] }) => iss.path[0] === 'primaryTechnicalLeadId'),
-    ).not.toBeUndefined();
+    const issues = JSON.parse(resData.error.message);
+    expect(issues.find((iss: { path: string[] }) => iss.path[0] === 'primaryTechnicalLeadId')).not.toBeUndefined();
   });
 
   it('should successfully provision the request', async () => {

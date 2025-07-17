@@ -84,7 +84,8 @@ describe('Create Private Cloud Comment - Validations', () => {
     expect(response.status).toBe(400);
     expect(responseBody.success).toBe(false);
     expect(responseBody.message).toBe('Bad Request');
-    expect(responseBody.error.issues.find((iss: { path: string[] }) => iss.path[0] === 'text')).not.toBeUndefined();
+    const issues = JSON.parse(responseBody.error.message);
+    expect(issues.find((iss: { path: string[] }) => iss.path[0] === 'text')).not.toBeUndefined();
   });
 
   it('should fail to submit a create comment request due to missing projectId and requestId', async () => {
@@ -102,8 +103,9 @@ describe('Create Private Cloud Comment - Validations', () => {
     expect(response.status).toBe(400);
     expect(responseBody.success).toBe(false);
     expect(responseBody.message).toBe('Bad Request');
+    const issues = JSON.parse(responseBody.error.message);
     expect(
-      responseBody.error.issues.find((iss: { path: string[] }) => ['projectId', 'requestId'].includes(iss.path[0])),
+      issues.find((iss: { path: string[] }) => ['projectId', 'requestId'].includes(iss.path[0])),
     ).not.toBeUndefined();
   });
 

@@ -111,7 +111,7 @@ export const publicCloudCreateRequestBodySchema = _publicCloudCreateRequestBodyS
     const budgetParseResult = budgetSchema.safeParse(data.budget);
 
     if (!budgetParseResult.success) {
-      budgetParseResult.error.errors.forEach((error) =>
+      budgetParseResult.error.issues.forEach((error) =>
         ctx.addIssue({ ...error, path: ['budget', ...(error.path || [])] }),
       );
     }

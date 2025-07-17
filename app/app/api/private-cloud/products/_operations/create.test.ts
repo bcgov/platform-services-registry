@@ -129,7 +129,8 @@ describe('Create Private Cloud Request - Validations', () => {
     const resData = await response.json();
     expect(resData.success).toBe(false);
     expect(resData.message).toBe('Bad Request');
-    expect(resData.error.issues.find((iss: { path: string[] }) => iss.path[0] === 'name')).not.toBeUndefined();
+    const issues = JSON.parse(resData.error.message);
+    expect(issues.find((iss: { path: string[] }) => iss.path[0] === 'name')).not.toBeUndefined();
   });
 
   it('should fail to submit a create request due to an invalid description property', async () => {
@@ -144,7 +145,8 @@ describe('Create Private Cloud Request - Validations', () => {
     const resData = await response.json();
     expect(resData.success).toBe(false);
     expect(resData.message).toBe('Bad Request');
-    expect(resData.error.issues.find((iss: { path: string[] }) => iss.path[0] === 'description')).not.toBeUndefined();
+    const issues = JSON.parse(resData.error.message);
+    expect(issues.find((iss: { path: string[] }) => iss.path[0] === 'description')).not.toBeUndefined();
   });
 
   it('should fail to submit a create request due to an invalid cluster property', async () => {
@@ -159,7 +161,8 @@ describe('Create Private Cloud Request - Validations', () => {
     const resData = await response.json();
     expect(resData.success).toBe(false);
     expect(resData.message).toBe('Bad Request');
-    expect(resData.error.issues.find((iss: { path: string[] }) => iss.path[0] === 'cluster')).not.toBeUndefined();
+    const issues = JSON.parse(resData.error.message);
+    expect(issues.find((iss: { path: string[] }) => iss.path[0] === 'cluster')).not.toBeUndefined();
   });
 
   it('should fail to submit a create request due to an invalid ministry property', async () => {
@@ -174,7 +177,8 @@ describe('Create Private Cloud Request - Validations', () => {
     const resData = await response.json();
     expect(resData.success).toBe(false);
     expect(resData.message).toBe('Bad Request');
-    expect(resData.error.issues.find((iss: { path: string[] }) => iss.path[0] === 'ministry')).not.toBeUndefined();
+    const issues = JSON.parse(resData.error.message);
+    expect(issues.find((iss: { path: string[] }) => iss.path[0] === 'ministry')).not.toBeUndefined();
   });
 
   it('should fail to submit a create request due to an invalid projectOwner property', async () => {
@@ -189,9 +193,8 @@ describe('Create Private Cloud Request - Validations', () => {
     const resData = await response.json();
     expect(resData.success).toBe(false);
     expect(resData.message).toBe('Bad Request');
-    expect(
-      resData.error.issues.find((iss: { path: string[] }) => iss.path[0] === 'projectOwnerId'),
-    ).not.toBeUndefined();
+    const issues = JSON.parse(resData.error.message);
+    expect(issues.find((iss: { path: string[] }) => iss.path[0] === 'projectOwnerId')).not.toBeUndefined();
   });
 
   it('should fail to submit a create request due to an invalid primaryTechnicalLead property', async () => {
@@ -206,9 +209,8 @@ describe('Create Private Cloud Request - Validations', () => {
     const resData = await response.json();
     expect(resData.success).toBe(false);
     expect(resData.message).toBe('Bad Request');
-    expect(
-      resData.error.issues.find((iss: { path: string[] }) => iss.path[0] === 'primaryTechnicalLeadId'),
-    ).not.toBeUndefined();
+    const issues = JSON.parse(resData.error.message);
+    expect(issues.find((iss: { path: string[] }) => iss.path[0] === 'primaryTechnicalLeadId')).not.toBeUndefined();
   });
 
   it('should successfully create a request without an secondaryTechnicalLead property', async () => {

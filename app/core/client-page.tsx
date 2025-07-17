@@ -24,13 +24,7 @@ interface ComponentProps<TPathParams, TQueryParams> {
   getPathParams: () => Promise<TPathParams>;
   getQueryParams: () => Promise<TQueryParams>;
   router: AppRouterInstance;
-  children: React.ReactNode;
-}
-
-interface PageProp {
-  params: Record<string, any>;
-  searchParams: URLSearchParams;
-  children: React.ReactNode;
+  children?: React.ReactNode;
 }
 
 function createClientPage<TPathParams extends ZodType<any, any>, TQueryParams extends ZodType<any, any>>({
@@ -39,12 +33,11 @@ function createClientPage<TPathParams extends ZodType<any, any>, TQueryParams ex
   fallbackUrl = '/',
   validations,
 }: HandlerProps<TPathParams, TQueryParams>) {
-  const { pathParams: pathParamVal = z.object({}), queryParams: queryParamVal = z.object({}) } = validations ?? {};
-  const pathParams: TypeOf<typeof pathParamVal> | null = null;
-  const queryParams: TypeOf<typeof queryParamVal> | null = null;
+  const pathParamVal = (validations?.pathParams ?? z.object({})) as TPathParams;
+  const queryParamVal = (validations?.queryParams ?? z.object({})) as TQueryParams;
 
   return function clientPage(Component: React.FC<ComponentProps<TypeOf<TPathParams>, TypeOf<TQueryParams>>>) {
-    return function Wrapper({ params: paramsProm, searchParams: searchParamsProm, children }: any) {
+    return function Wrapper({ params, searchParams }: any) {
       const router = useRouter();
       const pathname = usePathname();
       const { data: session, update: updateSession, status } = useSession();
@@ -72,58 +65,40 @@ function createClientPage<TPathParams extends ZodType<any, any>, TQueryParams ex
       const _permissions = session?.permissions ?? [];
 
       // Validate user roles
-      if (roles && roles.length > 0) {
-        const allowed = arrayIntersection(roles, _roles).length > 0;
-        if (!allowed) {
-          handleAccessRedirect();
-          return;
-        }
+      if (roles?.length && arrayIntersection(roles, _roles).length === 0) {
+        handleAccessRedirect();
+        return null;
       }
 
       // Validate user permissions
-      if (permissions && permissions.length > 0) {
-        const allowed = permissions.some((permKey) => _permissions[permKey as keyof typeof _permissions]);
-        if (!allowed) {
-          handleAccessRedirect();
-          return;
-        }
+      if (permissions?.length && !permissions.some((permKey) => _permissions[permKey as keyof typeof _permissions])) {
+        handleAccessRedirect();
+        return null;
       }
 
       const getPathParams = async () => {
         // Parse & validate path params
-        if (validations?.pathParams) {
-          const params = await paramsProm;
-          const parsed = validations?.pathParams.safeParse(params);
-          if (!parsed.success) {
-            return router.push(fallbackUrl);
-          }
-
-          return parsed.data;
+        const parsed = validations?.pathParams?.safeParse(params);
+        if (parsed && !parsed.success) {
+          router.push(fallbackUrl);
+          throw new Error('Invalid path params');
         }
-
-        return null;
+        return parsed?.data ?? pathParamVal.parse({});
       };
 
       const getQueryParams = async () => {
         // Parse & validate query params
-        if (validations?.queryParams) {
-          const searchParams = await searchParamsProm;
-          const query = parseQueryString(searchParams);
-          const parsed = validations?.queryParams.safeParse(query);
-          if (!parsed.success) {
-            return router.push(fallbackUrl);
-          }
-
-          return parsed.data;
+        const rawQuery = parseQueryString(searchParams);
+        const parsed = validations?.queryParams?.safeParse(rawQuery);
+        if (parsed && !parsed.success) {
+          router.push(fallbackUrl);
+          throw new Error('Invalid query params');
         }
-
-        return null;
+        return parsed?.data ?? queryParamVal.parse({});
       };
 
       return (
-        <Component session={session} getPathParams={getPathParams} getQueryParams={getQueryParams} router={router}>
-          {children}
-        </Component>
+        <Component session={session} getPathParams={getPathParams} getQueryParams={getQueryParams} router={router} />
       );
     };
   };
