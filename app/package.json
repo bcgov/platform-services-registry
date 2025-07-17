@@ -97,7 +97,7 @@
     "tw-to-css": "^0.0.12",
     "valtio": "^2.0.0",
     "winston": "^3.13.0",
-    "zod": "^3.24.3"
+    "zod": "^4.0.0"
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3.2.0",
