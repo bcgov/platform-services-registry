@@ -23,7 +23,7 @@ export default function MailLink({
         event.stopPropagation();
       }}
     >
-      {displayIcon && <IconMail className="mr-[1px] h-4 w-4 inline-block" aria-hidden="true" />}
+      {displayIcon && <IconMail className="mr-px h-4 w-4 inline-block" aria-hidden="true" />}
       {children ?? to}
     </a>
   );

@@ -20,7 +20,7 @@ export default function PvcTable({ data, resourceRequest }: { data: PVC[]; resou
 
   return (
     <>
-      <div className="border border-gray-200 border-solid rounded p-4 bg-gray-50 my-6">
+      <div className="border border-gray-200 border-solid rounded-sm p-4 bg-gray-50 my-6">
         <div>
           <strong>Memory usage:</strong>
           <span className="ml-2">{formatBinaryMetric(totalUsage)}</span>
@@ -63,7 +63,7 @@ export default function PvcTable({ data, resourceRequest }: { data: PVC[]; resou
               return (
                 <tr
                   key={`${pvc.pvName}-${pvc.name}`}
-                  className="even:bg-white even:dark:bg-gray-900 odd:bg-gray-50 odd:dark:bg-gray-800"
+                  className="even:bg-white dark:even:bg-gray-900 odd:bg-gray-50 dark:odd:bg-gray-800"
                 >
                   <td className="p-2 border-b align-top text-left">
                     <TruncatedTooltip label={pvc.pvName}>

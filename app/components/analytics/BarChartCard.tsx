@@ -30,7 +30,7 @@ export default function BarChartCard({
         <h2>{title}</h2>
         <h5 className="text-gray-600">{subtitle}</h5>
         <div className="relative">
-          <BarChart className="max-h-[28rem] mt-4" data={chartData} indexKey={index} valueFormatter={valueFormatter} />
+          <BarChart className="max-h-112 mt-4" data={chartData} indexKey={index} valueFormatter={valueFormatter} />
         </div>
       </Card>
     </div>

@@ -3,7 +3,7 @@ import { BASE_URL } from '@/config';
 
 export default function Header() {
   return (
-    <div className="flex flex-row border-solid border-0 border-b-3 border-bcorange bg-bcblue shadow">
+    <div className="flex flex-row border-solid border-0 border-b-3 border-bcorange bg-bcblue shadow-sm">
       <Img
         src={`${BASE_URL}/logo.png`}
         alt="BC Platform Services Product Registry"

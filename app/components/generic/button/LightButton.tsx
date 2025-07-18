@@ -22,7 +22,7 @@ export default function LightButton({
       onClick={onClick}
       disabled={disabled}
       className={cn(
-        'h-9 inline-flex items-center rounded-md bg-white gap-x-2 px-4 py-1.5 text-sm font-semibold text-darkergrey shadow-sm ring-1 ring-inset ring-gray-300',
+        'h-9 inline-flex items-center rounded-md bg-white gap-x-2 px-4 py-1.5 text-sm font-semibold text-darkergrey shadow-xs ring-1 ring-inset ring-gray-300',
         disabled ? 'text-gray-400 border-gray-400 cursor-not-allowed' : 'text-black border-black hover:bg-gray-50',
         className,
       )}

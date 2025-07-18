@@ -158,7 +158,7 @@ export const openPublicCloudProductDeleteModal = createModal<ModalProps, ModalSt
             <div className="flex items-center justify-between">
               <span className="flex items-center text-sm text-yellow-600">
                 <div className="flex">
-                  <IconExclamationCircle className="h-5 w-5 mr-2 flex-shrink-0" aria-hidden="true" />
+                  <IconExclamationCircle className="h-5 w-5 mr-2 shrink-0" aria-hidden="true" />
                   Attention:
                 </div>
               </span>

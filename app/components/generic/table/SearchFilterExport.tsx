@@ -72,7 +72,7 @@ export default function SearchFilterExport({
           <div className="col-span-6 flex">
             <div className="ml-auto" />
             {onSearch && (
-              <div className="flex-grow flex-shrink max-w-sm">
+              <div className="grow shrink max-w-sm">
                 <label htmlFor="simple-search" className="sr-only">
                   Search
                 </label>

@@ -41,7 +41,7 @@ const processCell = (value: any, field: string, headerName: string, row: SonarSc
       <div>
         <ExternalLink href={value}>{value}</ExternalLink>
         {row.source === 'ACS' && (
-          <span className="bg-purple-100 text-purple-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded no-underline ml-1">
+          <span className="bg-purple-100 text-purple-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded-sm no-underline ml-1">
             ACS
           </span>
         )}

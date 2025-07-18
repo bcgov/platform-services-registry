@@ -33,7 +33,7 @@ export default function LineChartCard({
         <h2>{title}</h2>
         <h5 className="text-gray-600">{subtitle}</h5>
         <LoadingBox isLoading={isLoading}>
-          <LineChart className="max-h-[28rem] mt-4" data={chartData} indexKey={index} />
+          <LineChart className="max-h-112 mt-4" data={chartData} indexKey={index} />
         </LoadingBox>
       </Card>
     </div>
