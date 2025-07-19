@@ -73,7 +73,7 @@ function MainBody({ children }: { children: React.ReactNode }) {
   return (
     <div className={cn('flex flex-col min-h-screen', bcsans.className)}>
       <Header />
-      <main className="flex-grow h-100">
+      <main className="grow">
         <div className="mt-2 mb-8 h-full mx-4 lg:mx-20">{children}</div>
       </main>
       <Footer />
@@ -84,7 +84,7 @@ function MainBody({ children }: { children: React.ReactNode }) {
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en">
-      <body>
+      <body className="box-border overflow-x-hidden">
         <Provider>
           <MantineProvider withGlobalClasses withCssVariables theme={theme}>
             <Notifications position="top-right" limit={5} autoClose={2500} />

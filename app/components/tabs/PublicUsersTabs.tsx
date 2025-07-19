@@ -14,7 +14,7 @@ export default function PublicUsersTabs({ roles }: { roles: tabName[] }) {
 
   return (
     <div>
-      <span className="isolate inline-flex rounded-md shadow-sm py-2 px-4">
+      <span className="isolate inline-flex rounded-md shadow-xs py-2 px-4">
         {roles.map((role: tabName, index: number) => (
           <Link
             key={index}

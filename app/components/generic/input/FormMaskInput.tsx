@@ -21,7 +21,7 @@ const inputClasslist = [
   'ring-gray-300',
   'ring-inset',
   'rounded-md',
-  'shadow-sm',
+  'shadow-xs',
   'sm:leading-6',
   'sm:text-sm',
   'text-gray-900',

@@ -22,7 +22,7 @@ export default function CpuTable({ data, resourceRequest }: { data: Pod[]; resou
 
   return (
     <>
-      <div className="border border-gray-200 border-solid rounded p-4 bg-gray-50 my-6">
+      <div className="border border-gray-200 border-solid rounded-sm p-4 bg-gray-50 my-6">
         <div>
           <strong>CPU usage:</strong>
           <span className="ml-2">{formatCpu(totalUsage)}</span>
@@ -65,7 +65,7 @@ export default function CpuTable({ data, resourceRequest }: { data: Pod[]; resou
                 return (
                   <tr
                     key={`${pod.name}-${container.name}`}
-                    className="even:bg-white even:dark:bg-gray-900 odd:bg-gray-50 odd:dark:bg-gray-800"
+                    className="even:bg-white dark:even:bg-gray-900 odd:bg-gray-50 dark:odd:bg-gray-800"
                   >
                     <td className="p-2 border-b align-top text-left">
                       <TruncatedTooltip label={pod.name}>

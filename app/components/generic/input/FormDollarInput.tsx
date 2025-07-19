@@ -23,7 +23,7 @@ const inputClasslist = [
   'ring-gray-300',
   'ring-inset',
   'rounded-md',
-  'shadow-sm',
+  'shadow-xs',
   'sm:leading-6',
   'sm:text-sm',
   'text-gray-900',
@@ -83,7 +83,7 @@ export default function FormDollarInput({
           {label}
         </Label>
       )}
-      <div className="relative mt-2 rounded-md shadow-sm">
+      <div className="relative mt-2 rounded-md shadow-xs">
         <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
           <span className="text-gray-500 sm:text-sm">$</span>
         </div>

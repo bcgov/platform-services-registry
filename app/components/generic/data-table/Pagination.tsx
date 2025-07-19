@@ -18,7 +18,7 @@ export default function Pagination<TData>({ table }: { table: Table<TData> }) {
           onChange={(e) => {
             table.setPageSize(Number(e.target.value));
           }}
-          className="px-2 py-1 border rounded min-w-20"
+          className="px-2 py-1 border rounded-sm min-w-20"
         >
           {[5, 10, 20, 30, 50, 100, 200].map((pageSize) => (
             <option key={pageSize} value={pageSize} className="min-w-[100px]">

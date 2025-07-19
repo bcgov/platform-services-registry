@@ -109,7 +109,7 @@ export default function AddUserModal({ open, setOpen, setUserPrincipalName, setU
                 </div>
                 <Combobox value={selected} onChange={autocompleteOnChangeHandler} disabled={false}>
                   <div className="relative mt-1">
-                    <div className="relative w-full cursor-default rounded-lg bg-white text-left text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
+                    <div className="relative w-full cursor-default rounded-lg bg-white text-left text-gray-900 shadow-xs ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
                       <Combobox.Input
                         autoComplete="xyz"
                         displayValue={(user: AppUser) => user?.email}
@@ -125,7 +125,7 @@ export default function AddUserModal({ open, setOpen, setUserPrincipalName, setU
                       leaveFrom="opacity-100"
                       leaveTo="opacity-0"
                     >
-                      <Combobox.Options className="absolute mt-1 max-h-60 w-full overflow-auto rounded-md bg-white py-1 text-base shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm">
+                      <Combobox.Options className="absolute mt-1 max-h-60 w-full overflow-auto rounded-md bg-white py-1 text-base shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-hidden sm:text-sm">
                         {isLoading ? (
                           <div className="relative cursor-default select-none py-2 px-4 text-gray-700">Loading...</div>
                         ) : error ? (
@@ -183,7 +183,7 @@ export default function AddUserModal({ open, setOpen, setUserPrincipalName, setU
                 <div className="mt-5 sm:mt-6 sm:grid sm:grid-flow-row-dense sm:grid-cols-2 sm:gap-3">
                   <button
                     type="button"
-                    className="px-12 rounded-md bg-white tracking-[.2em] py-2.5 text-sm text-bcblue shadow-sm ring-1 ring-inset ring-bcblue hover:bg-gray-50 mr-4"
+                    className="px-12 rounded-md bg-white tracking-[.2em] py-2.5 text-sm text-bcblue shadow-xs ring-1 ring-inset ring-bcblue hover:bg-gray-50 mr-4"
                     onClick={() => {
                       setOpen(false);
                       setConfirm(false);
@@ -195,7 +195,7 @@ export default function AddUserModal({ open, setOpen, setUserPrincipalName, setU
                     disabled={!confirm}
                     type="button"
                     onClick={handleAddUserBtn}
-                    className={`inline-flex justify-center rounded-md px-4 py-2.5 text-bcblue text-sm tracking-[.2em] shadow-sm focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 col-start-2
+                    className={`inline-flex justify-center rounded-md px-4 py-2.5 text-bcblue text-sm tracking-[.2em] shadow-xs focus-visible:outline-solid focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 col-start-2
                                             ${
                                               confirm
                                                 ? 'bg-bcorange hover:brightness-110'

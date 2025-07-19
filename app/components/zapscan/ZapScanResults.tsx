@@ -55,7 +55,7 @@ const processCell = (value: any, field: string, headerName: string, row: ZapResu
 
     return (
       <div className="relative min-w-[80px]">
-        <div className="overflow-hidden h-full flex rounded-sm">
+        <div className="overflow-hidden h-full flex rounded-xs">
           <div
             style={{ width: `${(meta.info / meta.total) * 100}%` }}
             className="shadow-none flex flex-col text-center whitespace-nowrap text-white justify-center bg-blue-500"

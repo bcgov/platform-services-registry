@@ -93,14 +93,14 @@ export default function UserAutocomplete({
   if (searched) {
     if (!searching && value) {
       selectedUser = (
-        <div className="mt-2 p-3 border-1 border-slate-200 rounded-sm">
+        <div className="mt-2 p-3 border-1 border-slate-200 rounded-xs">
           <UserOptionDetail data={value} />
         </div>
       );
     }
   } else if (initialValue) {
     selectedUser = (
-      <div className="mt-2 p-3 border-1 border-slate-200 rounded-sm">
+      <div className="mt-2 p-3 border-1 border-slate-200 rounded-xs">
         <UserOptionDetail data={initialValue} />
       </div>
     );

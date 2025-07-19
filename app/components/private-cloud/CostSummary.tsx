@@ -77,7 +77,7 @@ export default function CostSummary({
       </div>
       <div>
         <div className="flex items-center gap-4 gap-x-20">
-          <div className="text-md flex-shrink-0">
+          <div className="text-md shrink-0">
             Current billing period
             <br />
             starts at <strong>{startDate}</strong>

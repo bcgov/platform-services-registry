@@ -95,7 +95,7 @@ function CommentForm({
           <div className="flex justify-end mb-2 transition-opacity duration-500 ease-in-out">
             <Button
               onClick={() => setShowCommentBox(true)}
-              className="flex items-center px-5 py-2.5 bg-yellow-400 border-none rounded cursor-pointer transition-transform duration-500 ease-in-out transform hover:scale-105 hover:bg-yellow-500 text-black hover:text-black font-normal"
+              className="flex items-center px-5 py-2.5 bg-yellow-400 border-none rounded-sm cursor-pointer transition-transform duration-500 ease-in-out transform hover:scale-105 hover:bg-yellow-500 text-black hover:text-black font-normal"
               leftSection={<IconMessageCirclePlus className="mr-2 text-black" />}
             >
               {addButtonText}
@@ -146,7 +146,7 @@ function CommentForm({
             <div className="flex justify-end">
               <Button
                 type="submit"
-                className="flex items-center px-5 py-2.5 bg-yellow-400 border-none rounded cursor-pointer transition-transform duration-500 ease-in-out transform hover:scale-105 hover:bg-yellow-500 text-black hover:text-black font-normal"
+                className="flex items-center px-5 py-2.5 bg-yellow-400 border-none rounded-sm cursor-pointer transition-transform duration-500 ease-in-out transform hover:scale-105 hover:bg-yellow-500 text-black hover:text-black font-normal"
                 disabled={isLoading}
                 leftSection={<IconSend className="mr-2 text-black" />}
               >

@@ -17,7 +17,7 @@ export default function TemporaryProductAlert({
     const diffInDays = 30 - differenceInDays(new Date(), new Date(data.createdAt));
     label = (
       <>
-        <span className="text-red-600/100 font-black text-lg">{Math.abs(diffInDays)}</span>
+        <span className="text-red-600 font-black text-lg">{Math.abs(diffInDays)}</span>
         {diffInDays > 0 ? ' days until product deletion' : ' days overdue for automatic deletion'}
       </>
     );

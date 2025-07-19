@@ -87,7 +87,7 @@ export async function generateMonthlyCostPdf({
       <hr className="mb-12 h-px bg-gray-200 border-0" />
       <CostSummary data={data} selectedDate={selectedDate} viewMode={TimeView.Monthly} isFromPDFDownloader={true} />
       <div className="text-3xl font-bold mt-6">Consumption data</div>
-      <div className="border border-gray-200 border-solid rounded p-4 bg-white my-6">
+      <div className="border border-gray-200 border-solid rounded-sm p-4 bg-white my-6">
         <div className="relative w-full">
           <img src={chartImageDataURL} className="w-full h-auto" alt="Monthly Cost Chart" />
         </div>

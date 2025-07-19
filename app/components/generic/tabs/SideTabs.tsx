@@ -13,7 +13,7 @@ export default function SideTabs({ tabs, children }: { tabs: ITab[]; children?: 
 
   return (
     <div
-      className="text-base list-none bg-white divide-y divide-gray-100 rounded shadow dark:bg-gray-700 dark:divide-gray-600"
+      className="text-base list-none bg-white divide-y divide-gray-100 rounded-sm shadow-sm dark:bg-gray-700 dark:divide-gray-600"
       id="dropdown"
     >
       <ul className="py-1" role="none">

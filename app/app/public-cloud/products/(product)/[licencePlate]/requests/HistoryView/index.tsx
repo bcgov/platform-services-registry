@@ -12,7 +12,7 @@ import {
 import RequestsHistory from './RequestsHistoryTimeLine';
 const tabClassname = `
  relative bg-white hover:bg-gray-50 border border-solid border-gray-500
- first:rounded-l-md rtl:first:rounded-r-md last:rounded-r-md rtl:last:rounded-l-md -ml-px first:ml-0 rtl:-mr-px rtl:first:mr-0
+ first:rounded-l-md first:rtl:rounded-r-md last:rounded-r-md last:rtl:rounded-l-md -ml-px first:ml-0 rtl:-mr-px first:rtl:mr-0
  data-[active=true]:z-10 data-[active=true]:bg-bcblue data-[active=true]:border-bcblue data-[active=true]:text-white data-[active=true]:hover:bg-bcblue
 `;
 

@@ -65,7 +65,7 @@ export default function DataTable<TData extends object>({
       return columnHelper.accessor((row) => getNestedValue(row, col.value), {
         id: col.value,
         header: ({ column }) => (
-          <div className="flex items-center cursor-pointer rounded" onClick={() => column.toggleSorting()}>
+          <div className="flex items-center cursor-pointer rounded-sm" onClick={() => column.toggleSorting()}>
             {_isString(col.label) ? col.label : _startCase(col.value)}
 
             <div className="ml-2 flex items-center h-5">
