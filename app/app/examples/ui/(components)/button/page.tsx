@@ -7,7 +7,7 @@ import createClientPage from '@/core/client-page';
 import { cn } from '@/utils/js';
 
 const colors = ['primary', 'secondary', 'success', 'danger', 'warning', 'info', 'dark'];
-const variants = ['filled', 'light', 'outline'];
+const variants = ['filled', 'light', 'outline-solid'];
 const sizes = ['xl', 'compact-xl', 'lg', 'compact-lg', 'md', 'compact-md', 'sm', 'compact-sm', 'xs', 'compact-xs'];
 
 const buttonPage = createClientPage({

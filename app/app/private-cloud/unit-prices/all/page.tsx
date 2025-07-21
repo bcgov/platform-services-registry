@@ -161,7 +161,7 @@ export default PrivateCloudUnitPricesPage(({ session }) => {
       <div className="grid grid-cols-4 lg:grid-cols-6 gap-4">
         <div className="hidden col-span-1 lg:block"></div>
 
-        <div className="bg-gray-100 p-4 rounded col-span-2">
+        <div className="bg-gray-100 p-4 rounded-sm col-span-2">
           <DatePicker
             value={date}
             onChange={(datestr) => {
@@ -171,7 +171,7 @@ export default PrivateCloudUnitPricesPage(({ session }) => {
           />
         </div>
 
-        <LoadingBox isLoading={isUnitPriceLoading} className="bg-gray-100 p-4 rounded col-span-2">
+        <LoadingBox isLoading={isUnitPriceLoading} className="bg-gray-100 p-4 rounded-sm col-span-2">
           {date && (
             <>
               <h4 className="mb-5 font-semibold">{getYyyyMmDd(date)}</h4>

@@ -74,12 +74,12 @@ export const openPrivateCloudProductDeleteModal = createModal<ModalProps, ModalS
           <span className={cn('flex items-center text-sm', canDelete ? 'text-green-600' : 'text-red-600')}>
             {canDelete ? (
               <>
-                <IconCircleCheck className="h-5 w-5 mr-2 flex-shrink-0" aria-hidden="true" />
+                <IconCircleCheck className="h-5 w-5 mr-2 shrink-0" aria-hidden="true" />
                 Ready to Delete
               </>
             ) : (
               <>
-                <IconExclamationCircle className="h-5 w-5 mr-2 flex-shrink-0" aria-hidden="true" />
+                <IconExclamationCircle className="h-5 w-5 mr-2 shrink-0" aria-hidden="true" />
                 {deletionCheck && !deletionCheck.artifactory ? (
                   <div className="text-left">
                     Your project set cannot be deleted, because you have an Artifactory project object in your

@@ -26,7 +26,7 @@ export default function AutoResizeTextArea({ id, value, className = '' }: AutoRe
       ref={textAreaRef}
       id={id}
       className={cn(
-        'border-none bg-transparent resize-none outline-none w-full font-inherit text-inherit p-0 overflow-hidden',
+        'border-none bg-transparent resize-none outline-hidden w-full font-inherit text-inherit p-0 overflow-hidden',
         className,
       )}
       value={value}

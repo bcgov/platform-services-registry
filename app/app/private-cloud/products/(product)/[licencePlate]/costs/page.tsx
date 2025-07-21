@@ -210,7 +210,7 @@ export default privateCloudProductCosts(({ getPathParams, session }) => {
         <Tabs variant="unstyled" defaultValue="graph">
           <Tabs.List
             grow
-            className="max-w-60 border-t border-2-r border-l border-b-0 rounded-t-md shadow-sm overflow-hidden"
+            className="max-w-60 border-t border-2-r border-l border-b-0 rounded-t-md shadow-xs overflow-hidden"
           >
             <Tabs.Tab value="graph" className={`${tabClassname} border-r-2 border-gray-200`}>
               Graph
