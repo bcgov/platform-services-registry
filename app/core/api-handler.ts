@@ -43,9 +43,9 @@ interface RouteProps<TPathParams, TQueryParams, TBody> {
 }
 
 function createApiHandler<
-  TPathParams extends ZodType<any, any>,
-  TQueryParams extends ZodType<any, any>,
-  TBody extends ZodType<any, any>,
+  TPathParams extends ZodType<any, any> = ZodType<z.ZodTypeAny>,
+  TQueryParams extends ZodType<any, any> = ZodType<z.ZodTypeAny>,
+  TBody extends ZodType<any, any> = ZodType<z.ZodTypeAny>,
 >({
   roles,
   permissions,
@@ -53,15 +53,6 @@ function createApiHandler<
   keycloakOauth2,
   useServiceAccount,
 }: HandlerProps<TPathParams, TQueryParams, TBody>) {
-  const {
-    pathParams: pathParamVal = z.object({}),
-    queryParams: queryParamVal = z.object({}),
-    body: bodyVal = z.object({}),
-  } = validations ?? {};
-  let pathParams: TypeOf<typeof pathParamVal> | null = null;
-  let queryParams: TypeOf<typeof queryParamVal> | null = null;
-  let body: TypeOf<typeof bodyVal> | null = null;
-
   return function apiHandler(
     fn: (
       props: RouteProps<TypeOf<TPathParams>, TypeOf<TQueryParams>, TypeOf<TBody>>,
@@ -69,8 +60,10 @@ function createApiHandler<
   ) {
     return async function (req: NextRequest, context: any) {
       const { params: paramsProm } = context ?? {};
-      const params = paramsProm && (await paramsProm);
-
+      const params = (paramsProm && (await paramsProm)) ?? {};
+      let pathParams: TypeOf<TPathParams> = {} as TypeOf<TPathParams>;
+      let queryParams: TypeOf<TQueryParams> = {} as TypeOf<TQueryParams>;
+      let body: TypeOf<TBody> = {} as TypeOf<TBody>;
       try {
         let session = await getServerSession(authOptions);
         let jwtData!: any;
@@ -183,7 +176,7 @@ function createApiHandler<
 
         // Parse & validate path params
         if (validations?.pathParams) {
-          const parsed = validations?.pathParams.safeParse(params);
+          const parsed = validations.pathParams.safeParse(params);
           if (!parsed.success) {
             return BadRequestResponse(parsed.error);
           }
@@ -194,7 +187,7 @@ function createApiHandler<
         // Parse & validate query params
         if (validations?.queryParams) {
           const query = parseQueryString(req.nextUrl.search);
-          const parsed = validations?.queryParams.safeParse(query);
+          const parsed = validations.queryParams.safeParse(query);
           if (!parsed.success) {
             return BadRequestResponse(parsed.error);
           }
@@ -216,7 +209,7 @@ function createApiHandler<
             return BadRequestResponse('invalid request data');
           }
 
-          const parsed = validations?.body.safeParse(json);
+          const parsed = validations.body.safeParse(json);
           if (!parsed.success) {
             return BadRequestResponse(parsed.error);
           }
