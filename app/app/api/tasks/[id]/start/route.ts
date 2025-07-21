@@ -11,7 +11,6 @@ const pathParamSchema = z.object({
 });
 
 const apiHandler = createApiHandler({
-  permissions: [GlobalPermissions.ReviewAllPrivateCloudRequests, GlobalPermissions.ReviewAllPublicCloudRequests],
   validations: { pathParams: pathParamSchema },
 });
 
