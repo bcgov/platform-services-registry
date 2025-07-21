@@ -732,3 +732,9 @@ enum PublicCloudProductMemberRole {
   SUBSCRIBER
   BILLING_VIEWER
 }
+
+model Organization {
+  id   String @id @default(auto()) @map("_id") @db.ObjectId
+  code String @unique
+  name String
+}
