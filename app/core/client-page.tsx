@@ -2,7 +2,7 @@
 
 import _isUndefined from 'lodash-es/isUndefined';
 import { AppRouterInstance } from 'next/dist/shared/lib/app-router-context.shared-runtime';
-import { usePathname, useRouter } from 'next/navigation';
+import { useRouter } from 'next/navigation';
 import { Session, PermissionsKey } from 'next-auth';
 import { useSession, signOut as appSignOut } from 'next-auth/react';
 import React, { useEffect } from 'react';
@@ -24,7 +24,13 @@ interface ComponentProps<TPathParams, TQueryParams> {
   getPathParams: () => Promise<TPathParams>;
   getQueryParams: () => Promise<TQueryParams>;
   router: AppRouterInstance;
-  children?: React.ReactNode;
+  children: React.ReactNode;
+}
+
+interface PageProp {
+  params: Record<string, any>;
+  searchParams: URLSearchParams;
+  children: React.ReactNode;
 }
 
 function createClientPage<TPathParams extends ZodType<any, any>, TQueryParams extends ZodType<any, any>>({
@@ -33,28 +39,19 @@ function createClientPage<TPathParams extends ZodType<any, any>, TQueryParams ex
   fallbackUrl = '/',
   validations,
 }: HandlerProps<TPathParams, TQueryParams>) {
-  const pathParamVal = (validations?.pathParams ?? z.object({})) as TPathParams;
-  const queryParamVal = (validations?.queryParams ?? z.object({})) as TQueryParams;
-
+  const {
+    pathParams: pathParamVal = (validations?.pathParams ?? z.object({})) as TPathParams,
+    queryParams: queryParamVal = (validations?.queryParams ?? z.object({})) as TQueryParams,
+  } = validations ?? {};
   return function clientPage(Component: React.FC<ComponentProps<TypeOf<TPathParams>, TypeOf<TQueryParams>>>) {
-    return function Wrapper({ params, searchParams }: any) {
+    return function Wrapper({ params: paramsProm, searchParams: searchParamsProm, children }: any) {
       const router = useRouter();
-      const pathname = usePathname();
-      const { data: session, update: updateSession, status } = useSession();
+
+      const { data: session, update: updateSession } = useSession();
 
       useEffect(() => {
         updateSession();
-        if (status === 'authenticated' && localStorage.getItem('postLoginRedirect')) {
-          localStorage.removeItem('postLoginRedirect');
-        }
       }, []);
-
-      function handleAccessRedirect() {
-        if (status === 'unauthenticated' && !['/home', '/', '/login'].includes(pathname)) {
-          localStorage.setItem('postLoginRedirect', pathname);
-        }
-        router.push(fallbackUrl);
-      }
 
       if (session?.requiresRelogin) appSignOut();
 
@@ -65,40 +62,58 @@ function createClientPage<TPathParams extends ZodType<any, any>, TQueryParams ex
       const _permissions = session?.permissions ?? [];
 
       // Validate user roles
-      if (roles?.length && arrayIntersection(roles, _roles).length === 0) {
-        handleAccessRedirect();
-        return null;
+      if (roles && roles.length > 0) {
+        const allowed = arrayIntersection(roles, _roles).length > 0;
+        if (!allowed) {
+          return router.push(fallbackUrl);
+        }
       }
 
       // Validate user permissions
-      if (permissions?.length && !permissions.some((permKey) => _permissions[permKey as keyof typeof _permissions])) {
-        handleAccessRedirect();
-        return null;
+      if (permissions && permissions.length > 0) {
+        const allowed = permissions.some((permKey) => _permissions[permKey as keyof typeof _permissions]);
+        if (!allowed) {
+          return router.push(fallbackUrl);
+        }
       }
 
       const getPathParams = async () => {
         // Parse & validate path params
-        const parsed = validations?.pathParams?.safeParse(params);
-        if (parsed && !parsed.success) {
-          router.push(fallbackUrl);
-          throw new Error('Invalid path params');
+        if (validations?.pathParams) {
+          const params = await paramsProm;
+          const parsed = validations?.pathParams.safeParse(params);
+          if (!parsed.success) {
+            router.push(fallbackUrl);
+            return pathParamVal.parse({});
+          }
+
+          return parsed.data;
         }
-        return parsed?.data ?? pathParamVal.parse({});
+
+        return pathParamVal.parse({});
       };
 
       const getQueryParams = async () => {
         // Parse & validate query params
-        const rawQuery = parseQueryString(searchParams);
-        const parsed = validations?.queryParams?.safeParse(rawQuery);
-        if (parsed && !parsed.success) {
-          router.push(fallbackUrl);
-          throw new Error('Invalid query params');
+        if (validations?.queryParams) {
+          const searchParams = await searchParamsProm;
+          const query = parseQueryString(searchParams);
+          const parsed = validations?.queryParams.safeParse(query);
+          if (!parsed.success) {
+            router.push(fallbackUrl);
+            return queryParamVal.parse({});
+          }
+
+          return parsed.data;
         }
-        return parsed?.data ?? queryParamVal.parse({});
+
+        return queryParamVal.parse({});
       };
 
       return (
-        <Component session={session} getPathParams={getPathParams} getQueryParams={getQueryParams} router={router} />
+        <Component session={session} getPathParams={getPathParams} getQueryParams={getQueryParams} router={router}>
+          {children}
+        </Component>
       );
     };
   };
