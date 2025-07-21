@@ -23,6 +23,9 @@ export const eventTypeNames: Record<EventType, string> = {
   [EventType.REVIEW_PUBLIC_CLOUD_REQUEST]: 'Review Public Cloud Request',
   [EventType.RESEND_PUBLIC_CLOUD_REQUEST]: 'Resend Public Cloud Request',
   [EventType.CANCEL_PUBLIC_CLOUD_REQUEST]: 'Cancel Public Cloud Request',
+  [EventType.CREATE_ORGANIZATION]: 'Create Organization',
+  [EventType.UPDATE_ORGANIZATION]: 'Update Organization',
+  [EventType.DELETE_ORGANIZATION]: 'Delete Organization',
 };
 
 export const eventSorts = [

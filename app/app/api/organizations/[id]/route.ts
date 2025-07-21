@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { GlobalRole } from '@/constants';
+import { GlobalPermissions } from '@/constants';
 import createApiHandler from '@/core/api-handler';
 import { objectId } from '@/validation-schemas';
 import { organizationBodySchema } from '@/validation-schemas/organization';
@@ -8,7 +8,7 @@ import readOp from '../_operations/read';
 import updateOp from '../_operations/update';
 
 export const GET = createApiHandler({
-  roles: [GlobalRole.User],
+  permissions: [GlobalPermissions.ViewOrganizations],
   validations: { pathParams: z.object({ id: objectId }) },
 })(async ({ pathParams, session }) => {
   const { id } = pathParams;
@@ -17,7 +17,7 @@ export const GET = createApiHandler({
 });
 
 export const PUT = createApiHandler({
-  roles: [GlobalRole.Admin, GlobalRole.PrivateAdmin],
+  permissions: [GlobalPermissions.ManageOrganizations],
   validations: { pathParams: z.object({ id: objectId }), body: organizationBodySchema },
 })(async ({ pathParams, body, session }) => {
   const { id } = pathParams;
@@ -26,7 +26,7 @@ export const PUT = createApiHandler({
 });
 
 export const DELETE = createApiHandler({
-  roles: [GlobalRole.Admin, GlobalRole.PrivateAdmin],
+  permissions: [GlobalPermissions.ManageOrganizations],
   validations: { pathParams: z.object({ id: objectId }) },
 })(async ({ pathParams, session }) => {
   const { id } = pathParams;

@@ -5,7 +5,9 @@ import { logger } from '@/core/logging';
 import prisma from '@/core/prisma';
 import { parsePaginationParams } from '@/helpers/pagination';
 import { EventType, Prisma } from '@/prisma/client';
+import { objectId } from '@/validation-schemas';
 import { EventSearchBody } from '@/validation-schemas/event';
+import { organizationBodySchema } from '@/validation-schemas/organization';
 
 const validationSchemas = {
   [EventType.CREATE_PRIVATE_CLOUD_PRODUCT]: z.object({
@@ -40,6 +42,19 @@ const validationSchemas = {
   }),
   [EventType.RESEND_PUBLIC_CLOUD_REQUEST]: z.object({
     requestId: z.string().length(24),
+  }),
+  [EventType.CREATE_ORGANIZATION]: z.object({
+    id: objectId,
+    data: organizationBodySchema,
+  }),
+  [EventType.UPDATE_ORGANIZATION]: z.object({
+    id: objectId,
+    old: organizationBodySchema,
+    new: organizationBodySchema,
+  }),
+  [EventType.DELETE_ORGANIZATION]: z.object({
+    id: objectId,
+    data: organizationBodySchema,
   }),
 };
 

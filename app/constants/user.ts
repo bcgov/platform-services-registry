@@ -49,6 +49,9 @@ export enum GlobalPermissions {
   EditUsers = 'editUsers',
   EditUserRoles = 'editUserRoles',
   EditUserOnboardingDate = 'editUserOnboardingDate',
+
+  ViewOrganizations = 'viewOrganizations',
+  ManageOrganizations = 'manageOrganizations',
 }
 
 export enum GlobalRole {
