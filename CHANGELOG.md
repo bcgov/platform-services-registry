@@ -1,3 +1,26 @@
+## [0.73.0](https://github.com/bcgov/platform-services-registry/compare/v0.72.0...v0.73.0) (2025-07-21)
+
+### Features
+
+* **2598:** add api endpoint with contacts/members changes ([ce54287](https://github.com/bcgov/platform-services-registry/commit/ce54287c8e9b5e5c11bcc0ce5dd0f6a6c4717937))
+* **5795:** add pdf dowloader to new cost pages ([3d9dc8e](https://github.com/bcgov/platform-services-registry/commit/3d9dc8ebbf7795c310843f01ff426fbfa61af1d9))
+* **5974:** upgrade tailwind to v4 ([e8e6574](https://github.com/bcgov/platform-services-registry/commit/e8e6574507bfe06c04181245cf31ee09694de831))
+* **6003:** access Graph API via certificates ([64b85de](https://github.com/bcgov/platform-services-registry/commit/64b85de4bd65e9e5db0c0e230315b3329d04ffa3))
+* **6003:** set default arguments in Airflow DAGs ([bca734b](https://github.com/bcgov/platform-services-registry/commit/bca734b3125477d897c52694185867b57c9c002c))
+* **6003:** verify certificate for token checks ([5076120](https://github.com/bcgov/platform-services-registry/commit/50761208190e969580d574b855e3bca4b60ef72e))
+* **6005:** migrate HMA ministry records ([cc61a1d](https://github.com/bcgov/platform-services-registry/commit/cc61a1da20557f961a36f686a9a92a779d9c1554))
+* **6006:** add organization schema with APIs ([eda2bb8](https://github.com/bcgov/platform-services-registry/commit/eda2bb842b494782f40c05881d15180655134655))
+
+### Bug Fixes
+
+* **0000:** initialize pathParams, queryParams, and body with schema.parse defaults ([3da0afc](https://github.com/bcgov/platform-services-registry/commit/3da0afc7cedc32e11968248355809b52da0b0bb5))
+* **6042:** assert schema.parse output types to satisfy Zod v4 typings ([d619ce5](https://github.com/bcgov/platform-services-registry/commit/d619ce59a068c6cef621c9fd9f5b12fc2cf150f2))
+* **6042:** ensure default param return matches output<T> to fix Record<string, never> error ([458a1cf](https://github.com/bcgov/platform-services-registry/commit/458a1cf1ee8e35fb131a92e072591d093cee69d2))
+* **6042:** ensure getPathParams and getQueryParams return valid types or throw on failure ([e6ab320](https://github.com/bcgov/platform-services-registry/commit/e6ab320964730e8040a2d4c0a89cf54866d85bb6))
+* **6042:** ensure getQueryParams returns valid type or throws to satisfy strict output<T> typing ([540697f](https://github.com/bcgov/platform-services-registry/commit/540697f676a0762cdf13b039d36c0dad77a35825))
+* **6042:** ensure type-safe validation for path, query, and body using Zod v4 ([36e8b0c](https://github.com/bcgov/platform-services-registry/commit/36e8b0c70735186fc582854011850c03fc120f4b))
+* **6058:** add hardcoded LP and cluster for local at getUsageMetrics ([57564f2](https://github.com/bcgov/platform-services-registry/commit/57564f26bc783762d15d5efc1f8e62f668e5a541))
+* **6058:** add hardcoded LP and cluster for local getQuotaChangeStatus ([894e3a4](https://github.com/bcgov/platform-services-registry/commit/894e3a47438176bd344028730b2586169ec646af))
 ## [0.72.0](https://github.com/bcgov/platform-services-registry/compare/v0.71.0...v0.72.0) (2025-07-09)
 
 ### Features
