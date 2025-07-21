@@ -1,3 +1,8 @@
+## [0.73.1](https://github.com/bcgov/platform-services-registry/compare/v0.73.0...v0.73.1) (2025-07-21)
+
+### Bug Fixes
+
+* **6006:** resolve rendering issues in client page generator ([5520b78](https://github.com/bcgov/platform-services-registry/commit/5520b78029ed7daeb74b9e0e6c97f3ce06573241))
 ## [0.73.0](https://github.com/bcgov/platform-services-registry/compare/v0.72.0...v0.73.0) (2025-07-21)
 
 ### Features
