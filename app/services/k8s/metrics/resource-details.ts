@@ -1,3 +1,4 @@
+import { logger } from '@/core/logging';
 import { getTotalMetrics, memoryUnitMultipliers, cpuCoreToMillicoreMultiplier } from '@/helpers/resource-metrics';
 import {
   Cluster,
@@ -35,19 +36,24 @@ export async function getResourceDetails({
     },
   };
 
-  const isStorage = resourceName === ResourceType.storage;
-  const metrics = await getUsageMetrics(licencePlate, env, cluster);
-  const metricsData = isStorage ? metrics.pvcMetrics : metrics.podMetrics;
-  if (metricsData.length === 0) return result;
+  try {
+    const isStorage = resourceName === ResourceType.storage;
+    const metrics = await getUsageMetrics(licencePlate, env, cluster);
+    const metricsData = isStorage ? metrics.pvcMetrics : metrics.podMetrics;
+    if (metricsData.length === 0) return result;
 
-  const { totalRequest, totalUsage } = getTotalMetrics(metricsData, resourceName);
-  result.deployment.request = totalRequest;
-  result.deployment.usage = totalUsage;
+    const { totalRequest, totalUsage } = getTotalMetrics(metricsData, resourceName);
+    result.deployment.request = totalRequest;
+    result.deployment.usage = totalUsage;
 
-  const unitMultiplier = resourceName === 'cpu' ? cpuCoreToMillicoreMultiplier : memoryUnitMultipliers.Gi;
-  const resourceValue = currentResourceRequests[env][resourceName];
-  const deploymentRequest = resourceValue * unitMultiplier;
+    const unitMultiplier = resourceName === 'cpu' ? cpuCoreToMillicoreMultiplier : memoryUnitMultipliers.Gi;
+    const resourceValue = currentResourceRequests[env][resourceName];
+    const deploymentRequest = resourceValue * unitMultiplier;
 
-  result.allocation.request = deploymentRequest;
+    result.allocation.request = deploymentRequest;
+  } catch (error) {
+    logger.error(`Error fetching resource details for ${licencePlate} in ${env} for ${resourceName}:`, error);
+  }
+
   return result;
 }
