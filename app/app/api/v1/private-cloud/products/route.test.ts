@@ -252,6 +252,7 @@ describe('API: List Private Cloud Products - Validations', () => {
     const resData = await response.json();
     expect(resData.success).toBe(false);
     expect(resData.message).toBe('Bad Request');
-    expect(resData.error.issues.find((iss: { path: string[] }) => iss.path[0] === 'ministry')).not.toBeUndefined();
+    const issues = JSON.parse(resData.error.message);
+    expect(issues.find((iss: { path: string[] }) => iss.path[0] === 'ministry')).not.toBeUndefined();
   });
 });
