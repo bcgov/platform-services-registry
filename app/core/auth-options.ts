@@ -336,6 +336,14 @@ export async function generateSession({
           in: [TaskStatus.ASSIGNED, TaskStatus.STARTED],
         },
       },
+      include: {
+        startedByUser: {
+          select: {
+            id: true,
+            email: true,
+          },
+        },
+      },
     });
   }
   return session;

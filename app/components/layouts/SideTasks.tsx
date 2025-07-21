@@ -43,8 +43,7 @@ export default function SideTasks({ className }: { className?: string }) {
     if (opened) refetchTasks();
   }, [opened, refetchTasks]);
 
-  const _tasks = tasks?.assignedTasks || [];
-  const _users = tasks?.users || [];
+  const _tasks = tasks || [];
 
   return (
     <>
@@ -90,9 +89,7 @@ export default function SideTasks({ className }: { className?: string }) {
                     {isStarted && (
                       <>
                         <div className="text-sm text-gray-400">Started at {formatDate(task.startedAt)}</div>
-                        <div className="text-sm text-gray-400">
-                          Started by {_users.find((user) => user.id === task.startedBy)?.email}
-                        </div>{' '}
+                        <div className="text-sm text-gray-400">Started by {task.startedByUser.email}</div>{' '}
                       </>
                     )}
                   </div>

@@ -26,6 +26,19 @@ export type SearchTask = Prisma.TaskGetPayload<{
         idir: true;
       };
     };
+    startedByUser: {
+      select: {
+        id: true;
+        firstName: true;
+        lastName: true;
+        email: true;
+        ministry: true;
+        jobTitle: true;
+        image: true;
+        upn: true;
+        idir: true;
+      };
+    };
   };
 }> & {
   users: {
@@ -50,6 +63,7 @@ export type AssignedTask = Pick<
   | 'completedBy'
   | 'startedAt'
   | 'startedBy'
+  | 'startedByUser'
   | 'data'
   | 'closedMetadata'
 > & { link: string; description: string };

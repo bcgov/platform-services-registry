@@ -13,10 +13,8 @@ export const instance = axios.create({
 });
 
 export async function getAssignedTasks() {
-  const result = await instance
-    .get<{ assignedTasks: AssignedTask[]; users: { email: string; id: string }[] }>('/assigned')
-    .then((res) => res.data);
-  userState.assignedTasks = result.assignedTasks;
+  const result = await instance.get<AssignedTask[]>('/assigned').then((res) => res.data);
+  userState.assignedTasks = result;
 
   return result;
 }
@@ -59,7 +57,7 @@ export async function sendTaskEmail(taskId: string) {
 }
 
 export async function startTask(taskId: string) {
-  const result = await instance.put<true>(`/${taskId}/start`);
+  const result = await instance.post<true>(`/${taskId}/start`);
 
   return result.data;
 }

@@ -2,8 +2,7 @@ import { GlobalRole } from '@/constants';
 import createApiHandler from '@/core/api-handler';
 import prisma from '@/core/prisma';
 import { OkResponse } from '@/core/responses';
-import { TaskStatus, TaskType } from '@/prisma/client';
-import { getUsersEmailsByIds } from '@/services/db/user';
+import { TaskType } from '@/prisma/client';
 import { getUniqueNonFalsyItems } from '@/utils/js';
 
 const apiHandler = createApiHandler({
@@ -16,8 +15,20 @@ export const GET = apiHandler(async ({ session }) => {
   const privateCloudRequestIds: string[] = [];
   const publicCloudRequestIds: string[] = [];
 
-  let assignedTasks = session.tasks.map(
-    ({ id, type, status, createdAt, completedAt, completedBy, startedAt, startedBy, data, closedMetadata }) => {
+  let processedTasks = session.tasks.map(
+    ({
+      id,
+      type,
+      status,
+      createdAt,
+      completedAt,
+      completedBy,
+      startedAt,
+      startedBy,
+      startedByUser,
+      data,
+      closedMetadata,
+    }) => {
       return {
         id,
         type,
@@ -27,6 +38,7 @@ export const GET = apiHandler(async ({ session }) => {
         completedBy,
         startedAt,
         startedBy,
+        startedByUser,
         data,
         closedMetadata,
         link: '',
@@ -35,7 +47,7 @@ export const GET = apiHandler(async ({ session }) => {
     },
   );
 
-  for (const task of assignedTasks) {
+  for (const task of processedTasks) {
     switch (task.type) {
       case TaskType.SIGN_PUBLIC_CLOUD_MOU:
       case TaskType.REVIEW_PUBLIC_CLOUD_MOU:
@@ -84,7 +96,7 @@ export const GET = apiHandler(async ({ session }) => {
     }),
   ]);
 
-  assignedTasks = assignedTasks.map((task) => {
+  processedTasks = processedTasks.map((task) => {
     let data!: any;
     let product!: any;
     let request!: any;
@@ -126,8 +138,5 @@ export const GET = apiHandler(async ({ session }) => {
     return task;
   });
 
-  const userIds = assignedTasks.map((task) => (task.status === TaskStatus.STARTED ? task.startedBy : null));
-  const users = await getUsersEmailsByIds(userIds);
-
-  return OkResponse({ assignedTasks, users });
+  return OkResponse(processedTasks);
 });

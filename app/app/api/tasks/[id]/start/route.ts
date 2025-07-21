@@ -15,7 +15,7 @@ const apiHandler = createApiHandler({
   validations: { pathParams: pathParamSchema },
 });
 
-export const PUT = apiHandler(async ({ pathParams, session }) => {
+export const POST = apiHandler(async ({ pathParams, session }) => {
   const { id } = pathParams;
   const result = await prisma.task.update({
     where: { id },

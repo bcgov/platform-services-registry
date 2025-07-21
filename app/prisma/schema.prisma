@@ -55,6 +55,7 @@ model User {
   publicCloudRequestsAsDecisionMaker                    PublicCloudRequest[]      @relation("decisionMaker")
   events                                                Event[]                   @relation("UserToEvents")
   Tasks                                                 Task[]                    @relation("UserToTasks")
+  tasksStarted                                          Task[]                    @relation("AssigneeToTasks")
   privateCloudRequestsAsCanceler                        PrivateCloudRequest[]     @relation("cancelledBy")
   publicCloudRequestsAsCanceler                         PublicCloudRequest[]      @relation("cancelledBy")
 }
@@ -392,6 +393,7 @@ model Task {
   createdAt       DateTime   @default(now())
   startedAt       DateTime?
   startedBy       String?    @db.ObjectId
+  startedByUser   User?      @relation("AssigneeToTasks", fields: [startedBy], references: [id])
   completedAt     DateTime?
   completedBy     String?    @db.ObjectId
   completedByUser User?      @relation("UserToTasks", fields: [completedBy], references: [id])
