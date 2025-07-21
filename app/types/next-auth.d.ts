@@ -62,6 +62,9 @@ declare module 'next-auth' {
 
     editPrivateProductWebhook: boolean;
     viewPrivateProductWebhook: boolean;
+
+    viewOrganizations: boolean;
+    manageOrganizations: boolean;
   }
 
   interface Session extends DefaultSession {
