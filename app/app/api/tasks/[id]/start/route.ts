@@ -1,5 +1,4 @@
 import { z } from 'zod';
-import { GlobalPermissions } from '@/constants';
 import createApiHandler from '@/core/api-handler';
 import prisma from '@/core/prisma';
 import { BadRequestResponse, OkResponse } from '@/core/responses';

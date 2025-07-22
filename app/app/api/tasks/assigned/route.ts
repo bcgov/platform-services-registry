@@ -38,7 +38,7 @@ export const GET = apiHandler(async ({ session }) => {
       completedBy,
       startedAt,
       startedBy,
-      startedByUser, // Now recognized correctly
+      startedByUser,
       data,
       closedMetadata,
       link: '',
