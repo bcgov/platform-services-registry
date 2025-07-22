@@ -1,4 +1,4 @@
-import { Prisma } from '@/prisma/client';
+import { Task, Prisma } from '@/prisma/client';
 
 export type SearchTask = Prisma.TaskGetPayload<{
   select: {
@@ -40,13 +40,23 @@ export type SearchTask = Prisma.TaskGetPayload<{
   }[];
 };
 
-export type AssignedTask = Prisma.TaskGetPayload<{
-  include: {
-    startedByUser: {
-      select: { id: true; email: true };
-    };
-  };
-}> & {
+export type AssignedTask = Pick<
+  Task,
+  | 'id'
+  | 'type'
+  | 'status'
+  | 'createdAt'
+  | 'completedAt'
+  | 'completedBy'
+  | 'startedAt'
+  | 'startedBy'
+  | 'data'
+  | 'closedMetadata'
+> & {
   link: string;
   description: string;
+  startedByUser: {
+    id: string;
+    email: string;
+  };
 };

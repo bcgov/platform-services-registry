@@ -107,7 +107,13 @@ declare module 'next-auth' {
       [key: string]: string[];
     };
     permissions: Permissions;
-    tasks: Task[];
+    tasks: Prisma.TaskGetPayload<{
+      include: {
+        startedByUser: {
+          select: { id: true; email: true };
+        };
+      };
+    }>[];
     previews: {
       security: boolean;
       apiAccount: boolean;
