@@ -3,6 +3,7 @@ import createApiHandler from '@/core/api-handler';
 import prisma from '@/core/prisma';
 import { OkResponse } from '@/core/responses';
 import { TaskType } from '@/prisma/client';
+import { AssignedTask } from '@/types/task';
 import { getUniqueNonFalsyItems } from '@/utils/js';
 
 const apiHandler = createApiHandler({
@@ -15,7 +16,7 @@ export const GET = apiHandler(async ({ session }) => {
   const privateCloudRequestIds: string[] = [];
   const publicCloudRequestIds: string[] = [];
 
-  let processedTasks = session.tasks.map(
+  let processedTasks = (session.tasks as AssignedTask[]).map(
     ({
       id,
       type,
@@ -28,23 +29,21 @@ export const GET = apiHandler(async ({ session }) => {
       startedByUser,
       data,
       closedMetadata,
-    }) => {
-      return {
-        id,
-        type,
-        status,
-        createdAt,
-        completedAt,
-        completedBy,
-        startedAt,
-        startedBy,
-        startedByUser,
-        data,
-        closedMetadata,
-        link: '',
-        description: '',
-      };
-    },
+    }) => ({
+      id,
+      type,
+      status,
+      createdAt,
+      completedAt,
+      completedBy,
+      startedAt,
+      startedBy,
+      startedByUser, // Now recognized correctly
+      data,
+      closedMetadata,
+      link: '',
+      description: '',
+    }),
   );
 
   for (const task of processedTasks) {
