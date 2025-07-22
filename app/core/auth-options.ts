@@ -13,6 +13,7 @@ import prisma from '@/core/prisma';
 import { EventType, TaskStatus, UserSession } from '@/prisma/client';
 import { createEvent } from '@/services/db';
 import { upsertUser } from '@/services/db/user';
+import { AssignedTask } from '@/types/task';
 
 interface DecodedToken {
   resource_access?: Record<string, { roles: string[] }>;
@@ -325,7 +326,7 @@ export async function generateSession({
   );
 
   if (session.user.id) {
-    session.tasks = await prisma.task.findMany({
+    session.tasks = (await prisma.task.findMany({
       where: {
         OR: [
           { userIds: { has: session.user.id } },
@@ -344,7 +345,7 @@ export async function generateSession({
           },
         },
       },
-    });
+    })) as AssignedTask[];
   }
   return session;
 }
