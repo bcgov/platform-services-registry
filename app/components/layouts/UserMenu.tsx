@@ -4,6 +4,7 @@ import { Menu, UnstyledButton } from '@mantine/core';
 import {
   IconUserCircle,
   IconApi,
+  IconBuilding,
   IconVirusSearch,
   IconScan,
   IconUsersGroup,
@@ -82,6 +83,12 @@ export default function UserMenu() {
       text: 'Team API Accounts',
       Icon: IconApi,
       href: '/team-api-accounts',
+    },
+    {
+      text: 'Organizations',
+      Icon: IconBuilding,
+      href: '/organizations',
+      permission: 'viewOrganizations',
     },
     {
       text: 'Users',

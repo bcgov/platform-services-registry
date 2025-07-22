@@ -64,21 +64,25 @@ export default function DataTable<TData extends object>({
 
       return columnHelper.accessor((row) => getNestedValue(row, col.value), {
         id: col.value,
-        header: ({ column }) => (
-          <div className="flex items-center cursor-pointer rounded-sm" onClick={() => column.toggleSorting()}>
-            {_isString(col.label) ? col.label : _startCase(col.value)}
-
-            <div className="ml-2 flex items-center h-5">
-              {column.getIsSorted() === 'asc' ? (
-                <IconArrowUp className="h-5 w-5 stroke-2 text-black dark:text-black" />
-              ) : column.getIsSorted() === 'desc' ? (
-                <IconArrowDown className="h-5 w-5 stroke-2 text-black dark:text-black" />
-              ) : (
-                <IconArrowsSort className="h-5 w-5 stroke-2 text-gray-300 dark:text-gray-300" />
+        header: ({ column }) => {
+          const label = _isString(col.label) ? col.label : _startCase(col.value);
+          return (
+            <div className="flex items-center cursor-pointer rounded-sm" onClick={() => column.toggleSorting()}>
+              {label}
+              {label && (
+                <div className="ml-2 flex items-center h-5">
+                  {column.getIsSorted() === 'asc' ? (
+                    <IconArrowUp className="h-5 w-5 stroke-2 text-black dark:text-black" />
+                  ) : column.getIsSorted() === 'desc' ? (
+                    <IconArrowDown className="h-5 w-5 stroke-2 text-black dark:text-black" />
+                  ) : (
+                    <IconArrowsSort className="h-5 w-5 stroke-2 text-gray-300 dark:text-gray-300" />
+                  )}
+                </div>
               )}
             </div>
-          </div>
-        ),
+          );
+        },
         cell: (info: CellContext<TData, TData>) => (
           <>{col.cellProcessor ? col.cellProcessor(info.row.original, col.value) : info.getValue()}</>
         ),
