@@ -22,7 +22,9 @@ export const up = async (db, client) => {
     };
   });
 
-  await db.collection('Task').insertMany(taskData, {});
+  if (taskData.length) {
+    await db.collection('Task').insertMany(taskData, {});
+  }
 };
 
 export const down = async (db, client) => {};
