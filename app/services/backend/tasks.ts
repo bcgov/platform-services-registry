@@ -55,3 +55,9 @@ export async function sendTaskEmail(taskId: string) {
 
   return result.data;
 }
+
+export async function startTask(taskId: string) {
+  const result = await instance.post<true>(`/${taskId}/start`);
+
+  return result.data;
+}

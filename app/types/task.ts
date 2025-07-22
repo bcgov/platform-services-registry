@@ -42,5 +42,21 @@ export type SearchTask = Prisma.TaskGetPayload<{
 
 export type AssignedTask = Pick<
   Task,
-  'id' | 'type' | 'status' | 'createdAt' | 'completedAt' | 'completedBy' | 'data' | 'closedMetadata'
-> & { link: string; description: string };
+  | 'id'
+  | 'type'
+  | 'status'
+  | 'createdAt'
+  | 'completedAt'
+  | 'completedBy'
+  | 'startedAt'
+  | 'startedBy'
+  | 'data'
+  | 'closedMetadata'
+> & {
+  link: string;
+  description: string;
+  startedByUser: {
+    id: string;
+    email: string;
+  };
+};

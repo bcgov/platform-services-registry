@@ -335,11 +335,20 @@ export async function generateSession({
           { roles: { hasSome: session.roles } },
           { permissions: { hasSome: session.permissionList } },
         ],
-        status: TaskStatus.ASSIGNED,
+        status: {
+          in: [TaskStatus.ASSIGNED, TaskStatus.STARTED],
+        },
+      },
+      include: {
+        startedByUser: {
+          select: {
+            id: true,
+            email: true,
+          },
+        },
       },
     });
   }
-
   return session;
 }
 

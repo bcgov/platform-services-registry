@@ -16,8 +16,34 @@ export const GET = apiHandler(async ({ session }) => {
   const publicCloudRequestIds: string[] = [];
 
   let processedTasks = session.tasks.map(
-    ({ id, type, status, createdAt, completedAt, completedBy, data, closedMetadata }) => {
-      return { id, type, status, createdAt, completedAt, completedBy, data, closedMetadata, link: '', description: '' };
+    ({
+      id,
+      type,
+      status,
+      createdAt,
+      completedAt,
+      completedBy,
+      startedAt,
+      startedBy,
+      startedByUser,
+      data,
+      closedMetadata,
+    }) => {
+      return {
+        id,
+        type,
+        status,
+        createdAt,
+        completedAt,
+        completedBy,
+        startedAt,
+        startedBy,
+        startedByUser,
+        data,
+        closedMetadata,
+        link: '',
+        description: '',
+      };
     },
   );
 
