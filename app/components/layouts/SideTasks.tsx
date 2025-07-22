@@ -89,7 +89,7 @@ export default function SideTasks({ className }: { className?: string }) {
                     {isStarted && (
                       <>
                         <div className="text-sm text-gray-400">Started at {formatDate(task.startedAt)}</div>
-                        <div className="text-sm text-gray-400">Started by {task.startedByUser?.email}</div>{' '}
+                        <div className="text-sm text-gray-400">Started by {task.startedByUser?.email}</div>
                       </>
                     )}
                   </div>
