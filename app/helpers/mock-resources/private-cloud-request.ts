@@ -90,6 +90,7 @@ export function createSamplePrivateCloudRequest(args?: {
     decisionComment: faker.lorem.sentence(),
     quotaUpgradeResourceDetailList: [],
     active: true,
+    actioned: true,
     createdAt: new Date(),
     updatedAt: new Date(),
     cancelledAt: null,
