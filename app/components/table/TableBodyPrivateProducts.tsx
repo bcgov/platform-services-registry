@@ -92,7 +92,7 @@ export default function TableBodyPrivateProducts({ rows, isLoading = false }: Ta
             <div className="md:col-span-2 lg:col-span-3">
               {row.activeRequest && (
                 <PrivateCloudActiveRequestBox
-                  request={{ ...row.activeRequest, licencePlate: row.licencePlate }}
+                  request={{ ...row.activeRequest, licencePlate: row.licencePlate, createdBy: row.createdBy }}
                   showCount
                 />
               )}

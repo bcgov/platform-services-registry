@@ -35,12 +35,12 @@ export default function RequestStatusProgress({
     PrivateCloudRequestDetail,
     | 'type'
     | 'licencePlate'
-    | 'decisionMakerEmail'
+    | 'decisionMakerId'
     | 'decisionMaker'
     | 'decisionStatus'
     | 'decisionDate'
     | 'decisionComment'
-    | 'createdByEmail'
+    | 'createdById'
     | 'createdBy'
     | 'createdAt'
     | 'cancelledAt'
@@ -206,7 +206,7 @@ export default function RequestStatusProgress({
       return (
         <Stepper active={3} iconSize={35}>
           <Stepper.Step label="Submission" description={getSubmissionContent()} />
-          {request.decisionMakerEmail ? (
+          {request.decisionMakerId ? (
             <Stepper.Step label="Approve" description={getDecisionContent('Request approved')} />
           ) : (
             <Stepper.Step label="Auto-approve" description={getDecisionContent('Request auto-approved')} />

@@ -85,7 +85,9 @@ export default function TableBodyPublicProducts({ rows, isLoading = false }: Tab
 
             <div className="md:col-span-2 lg:col-span-3">
               {row.activeRequest && (
-                <PublicCloudActiveRequestBox request={{ ...row.activeRequest, licencePlate: row.licencePlate }} />
+                <PublicCloudActiveRequestBox
+                  request={{ ...row.activeRequest, licencePlate: row.licencePlate, createdBy: row.createdBy }}
+                />
               )}
             </div>
 

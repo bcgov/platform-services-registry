@@ -25,7 +25,7 @@ export default function PrivateCloudActiveRequestBox({
 }: {
   request: Pick<
     PrivateCloudRequestDetail,
-    'id' | 'licencePlate' | 'active' | 'type' | 'licencePlate' | 'decisionStatus' | 'createdByEmail'
+    'id' | 'licencePlate' | 'active' | 'type' | 'licencePlate' | 'decisionStatus' | 'createdBy'
   >;
   className?: string;
   showCount?: boolean;
@@ -168,9 +168,9 @@ export default function PrivateCloudActiveRequestBox({
           </Indicator>
         </div>
         <div>{badges}</div>
-        {request.createdByEmail && (
+        {request.createdBy?.email && (
           <div className="text-center text-sm text-gray-400">
-            Submitted by <span className="font-bold block">{request.createdByEmail}</span>
+            Submitted by <span className="font-bold block">{request.createdBy.email}</span>
           </div>
         )}
       </button>

@@ -10,6 +10,7 @@ interface ExtendedPublicCloudProductMembersData {
 
 export type PublicCloudProductSimple = Prisma.PublicCloudProductGetPayload<{
   include: {
+    createdBy: true;
     projectOwner: true;
     primaryTechnicalLead: true;
     secondaryTechnicalLead: true;

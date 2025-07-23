@@ -61,7 +61,7 @@ async function baseFilter(session: Session) {
       { id: { in: getUniqueNonFalsyItems([...requestIdsFromTasks]) } },
       {
         type: RequestType.CREATE,
-        createdByEmail: { equals: session.user.email, mode: 'insensitive' },
+        createdById: { equals: session.user.id, mode: 'insensitive' },
       },
       {
         type: RequestType.CREATE,

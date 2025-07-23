@@ -23,7 +23,7 @@ export default function PublicCloudActiveRequestBox({
 }: {
   request: Pick<
     PublicCloudRequestDetail,
-    'id' | 'licencePlate' | 'active' | 'type' | 'licencePlate' | 'decisionStatus' | 'createdByEmail'
+    'id' | 'licencePlate' | 'active' | 'type' | 'licencePlate' | 'decisionStatus' | 'createdBy'
   >;
   className?: string;
 }) {
@@ -162,9 +162,9 @@ export default function PublicCloudActiveRequestBox({
           </Indicator>
         </div>
         <div>{badges}</div>
-        {request.createdByEmail && (
+        {request.createdBy.email && (
           <div className="text-center text-sm text-gray-400">
-            Submitted by <span className="font-bold block">{request.createdByEmail}</span>
+            Submitted by <span className="font-bold block">{request.createdBy.email}</span>
           </div>
         )}
       </button>

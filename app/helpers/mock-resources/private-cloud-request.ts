@@ -76,9 +76,9 @@ export function createSamplePrivateCloudRequest(args?: {
   const request = {
     id: generateShortId(),
     licencePlate: baseData.licencePlate,
-    createdByEmail: createdBy?.email,
+    createdById: createdBy?.id,
     createdBy,
-    decisionMakerEmail: decisionMaker?.email,
+    decisionMakerId: decisionMaker?.id,
     decisionMaker: decisionMaker,
     quotaContactName: quotaContact?.displayName,
     quotaContactEmail: quotaContact?.email,

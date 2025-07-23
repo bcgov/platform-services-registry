@@ -48,7 +48,7 @@ export const up = async (db, client) => {
             updatedAt: product.createdAt,
             decisionDataId: decisionData.insertedId,
             requestDataId: requestData.insertedId,
-            decisionMakerEmail: '',
+            decisionMakerId: '',
             decisionComment: '',
             decisionDate: product.createdAt,
             createdAt: product.createdAt,
