@@ -25,7 +25,7 @@ export default function PrivateCloudActiveRequestBox({
 }: {
   request: Pick<
     PrivateCloudRequestDetail,
-    'id' | 'licencePlate' | 'active' | 'type' | 'licencePlate' | 'decisionStatus' | 'createdByEmail'
+    'id' | 'licencePlate' | 'active' | 'actioned' | 'type' | 'licencePlate' | 'decisionStatus' | 'createdByEmail'
   >;
   className?: string;
   showCount?: boolean;
@@ -78,8 +78,13 @@ export default function PrivateCloudActiveRequestBox({
 
   switch (request.decisionStatus) {
     case DecisionStatus.PENDING:
-      decisionColor = 'blue';
-      decisionText = 'Reviewing';
+      if (request.actioned) {
+        decisionColor = 'blue';
+        decisionText = 'Reviewing';
+      } else {
+        decisionColor = 'gray';
+        decisionText = 'Submitted';
+      }
       DecisionIcon = IconHourglass;
       break;
     case DecisionStatus.APPROVED:

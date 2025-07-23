@@ -113,6 +113,7 @@ export function createSamplePublicCloudRequest(args?: {
     requestComment: faker.lorem.sentence(),
     decisionComment: faker.lorem.sentence(),
     active: true,
+    actioned: true,
     createdAt: new Date(),
     updatedAt: new Date(),
     decisionDate: new Date(),

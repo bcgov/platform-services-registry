@@ -89,6 +89,7 @@ model PrivateCloudRequest {
   quotaJustification             String?
   type                           RequestType
   decisionStatus                 DecisionStatus
+  actioned                       Boolean?                        @default(false)
   isQuotaChanged                 Boolean?                        @default(false)
   requestComment                 String?
   decisionComment                String?
@@ -252,6 +253,7 @@ model PublicCloudRequest {
   decisionMaker      User?                   @relation("decisionMaker", fields: [decisionMakerEmail], references: [email])
   type               PublicCloudRequestType
   decisionStatus     DecisionStatus
+  actioned           Boolean?                @default(false)
   requestComment     String?
   decisionComment    String?
   active             Boolean                 @default(true)
