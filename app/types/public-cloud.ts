@@ -18,6 +18,9 @@ export type PublicCloudProductSimple = Prisma.PublicCloudProductGetPayload<{
       where: {
         active: true;
       };
+      include: {
+        createdBy: true;
+      };
     };
   };
 }> & {
