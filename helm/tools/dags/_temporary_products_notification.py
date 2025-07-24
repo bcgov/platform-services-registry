@@ -1,12 +1,18 @@
 from datetime import datetime, timedelta, timezone
-from jinja2 import Environment, FileSystemLoader
+from jinja2 import Environment, FileSystemLoader, select_autoescape
 from bson.objectid import ObjectId
 from _projects import get_mongo_db
 from _ches import Ches
 
 
 def generate_email_html(app_url: str, licence_plate: str):
-    env = Environment(loader=FileSystemLoader("/opt/airflow/dags"))
+    env = Environment(
+        loader=FileSystemLoader("/opt/airflow/dags"),
+        autoescape=select_autoescape(
+            enabled_extensions=("html", "xml"),
+            default_for_string=True,
+        ),
+    )
 
     template = env.get_template("_temporary_products_notification.html")
     html_content = template.render(
