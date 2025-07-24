@@ -1,7 +1,7 @@
 import requests
 from requests.exceptions import RequestException
 from datetime import date, datetime, timedelta, timezone
-from jinja2 import Environment, FileSystemLoader
+from jinja2 import Environment, FileSystemLoader, select_autoescape
 from typing import Optional, Set
 from _projects import get_mongo_db
 from _keycloak import Keycloak
@@ -39,7 +39,13 @@ def get_n_business_days_ago(n: int, province: str, base_date: Optional[date] = N
 
 
 def generate_email_html(app_url: str, licence_plate: str, request_id: str):
-    env = Environment(loader=FileSystemLoader("/opt/airflow/dags"))
+    env = Environment(
+        loader=FileSystemLoader("/opt/airflow/dags"),
+        autoescape=select_autoescape(
+            enabled_extensions=("html", "xml"),
+            default_for_string=True,
+        ),
+    )
 
     template = env.get_template("_request_review_reminder.html")
     html_content = template.render(
