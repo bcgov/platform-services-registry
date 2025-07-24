@@ -10,7 +10,7 @@ def send_alert(context, dag):
     task_id = task_instance.task_id
     execution_date = context.get("execution_date")
 
-    airflow_dag_logs = f"https://secdash-airflow.apps.silver.devops.gov.bc.ca/dags/{dag}/grid"
+    airflow_dag_logs = f"https://secdash-airflow.apps.silver.devops.gov.bc.ca/dags/{dag}/runs"
 
     payload = {
         "text": f":warning: Airflow: **{dag}**",
