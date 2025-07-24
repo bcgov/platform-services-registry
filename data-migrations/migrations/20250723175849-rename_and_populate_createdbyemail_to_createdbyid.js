@@ -1,40 +1,38 @@
 export const up = async (db, client) => {
   const usersCollection = db.collection('User');
 
-  await Promise.all(
-    ['PrivateCloudRequest', 'PublicCloudRequest'].map(async (collectionName) => {
-      const collection = db.collection(collectionName);
-      const renameMap = {
-        createdByEmail: 'createdById',
-        decisionMakerEmail: 'decisionMakerId',
-      };
-      const updateQuery = { $rename: renameMap };
+  const users = await usersCollection.find({}).toArray();
+  const emailToIdMap = users.reduce((map, user) => {
+    if (user.email) {
+      map[user.email] = user._id;
+    }
+    return map;
+  }, {});
 
-      await collection.updateMany({}, updateQuery);
+  const collections = ['PrivateCloudRequest', 'PublicCloudRequest'];
 
-      const documents = await collection.find({}).toArray();
+  for (const collectionName of collections) {
+    const collection = db.collection(collectionName);
+    const documents = await collection.find({}).toArray();
 
-      for (const doc of documents) {
-        const updateFields = {};
+    for (const doc of documents) {
+      const updateFields = {};
 
-        if (doc.createdById) {
-          const user = await usersCollection.findOne({ email: doc.createdById });
-          if (user) updateFields.createdById = user._id;
-        }
-
-        if (doc.decisionMakerId) {
-          const user = await usersCollection.findOne({ email: doc.decisionMakerId });
-          if (user) updateFields.decisionMakerId = user._id;
-        }
-
-        if (Object.keys(updateFields).length > 0) {
-          await collection.updateOne({ _id: doc._id }, { $set: updateFields });
-        }
+      if (!doc.createdById && doc.createdByEmail && emailToIdMap[doc.createdByEmail]) {
+        updateFields.createdById = emailToIdMap[doc.createdByEmail];
       }
 
-      console.log(`Processed ${documents.length} documents in ${collectionName}`);
-    }),
-  );
+      if (!doc.decisionMakerId && doc.decisionMakerEmail && emailToIdMap[doc.decisionMakerEmail]) {
+        updateFields.decisionMakerId = emailToIdMap[doc.decisionMakerEmail];
+      }
+
+      if (Object.keys(updateFields).length > 0) {
+        await collection.updateOne({ _id: doc._id }, { $set: updateFields });
+      }
+    }
+
+    console.log(`Updated ${collectionName}: ${documents.length} documents scanned.`);
+  }
 };
 
 export const down = async (db, client) => {};

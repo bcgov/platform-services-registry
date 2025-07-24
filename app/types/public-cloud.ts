@@ -10,7 +10,6 @@ interface ExtendedPublicCloudProductMembersData {
 
 export type PublicCloudProductSimple = Prisma.PublicCloudProductGetPayload<{
   include: {
-    createdBy: true;
     projectOwner: true;
     primaryTechnicalLead: true;
     secondaryTechnicalLead: true;
@@ -22,9 +21,12 @@ export type PublicCloudProductSimple = Prisma.PublicCloudProductGetPayload<{
     };
   };
 }> & {
-  activeRequest?: Prisma.PublicCloudRequestGetPayload<null> | null;
+  activeRequest?: Prisma.PublicCloudRequestGetPayload<{
+    include: {
+      createdBy: true;
+    };
+  }> | null;
 };
-
 export type PublicCloudProductSimpleDecorated = PublicCloudProductSimple & PublicCloudProductDecorate;
 
 export type PublicCloudProductDetail = Prisma.PublicCloudProductGetPayload<{

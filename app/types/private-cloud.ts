@@ -13,7 +13,6 @@ interface ExtendedPrivateCloudProductMembersData {
 
 export type PrivateCloudProductSimple = Prisma.PrivateCloudProductGetPayload<{
   include: {
-    createdBy: true;
     projectOwner: true;
     primaryTechnicalLead: true;
     secondaryTechnicalLead: true;
@@ -24,7 +23,11 @@ export type PrivateCloudProductSimple = Prisma.PrivateCloudProductGetPayload<{
     };
   };
 }> & {
-  activeRequest?: Prisma.PrivateCloudRequestGetPayload<null> | null;
+  activeRequest?: Prisma.PrivateCloudRequestGetPayload<{
+    include: {
+      createdBy: true;
+    };
+  }> | null;
 };
 
 export type PrivateCloudProductSimpleDecorated = PrivateCloudProductSimple & PrivateCloudProductDecorate;
