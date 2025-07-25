@@ -16,6 +16,7 @@ export const up = async (db, client) => {
         uniqueEmails.add(doc.decisionMakerEmail);
       }
     }
+
     const emails = [...uniqueEmails];
 
     const users = await usersCollection.find({ email: { $in: emails } }).toArray();
