@@ -4,10 +4,10 @@ Feature: Requests Review Public Cloud
     And User waits for "2" seconds
     When User clicks tab "PUBLIC CLOUD LANDING ZONES"
     And User clicks button "Request a new product"
-    And User types "Automated Test Product Name" in "Product name"
+    And User types "Automated Approval Test Product Name" in "Product name"
     And User types "Automated Test Description" in "Description"
     And User selects "Citizens Services" in "Ministry"
-    And User selects "AWS" in "Cloud Service Provider"
+    And User selects "AWS LZA" in "Cloud Service Provider"
     And User clicks and selects "Cost efficiency" in "Select reason for choosing cloud provider"
     And User types "Test reason for choosing Cl. Prov." in "Description of reason(s) for selecting cloud provider"
     And User clicks tab "Accounts to create"
@@ -31,7 +31,7 @@ Feature: Requests Review Public Cloud
     And User waits for "3" seconds
     And User clicks modal window button "Close"
     Then User should be redirected to Requests tab
-    And User should see "Automated Test Product Name"
+    And User should see "Automated Approval Test Product Name"
     And User logs out
     And User logs in with username "michael.brown@gov.bc.ca" and password "michael.brown@gov.bc.ca"
     And User waits for "2" seconds
@@ -39,7 +39,7 @@ Feature: Requests Review Public Cloud
     And User waits for "2" seconds
     And User clicks tab "Requests"
     And User waits for "2" seconds
-    And User clicks link "Automated Test Product Name"
+    And User clicks link "Automated Approval Test Product Name"
     And User waits for "2" seconds
     And User clicks button "Sign eMOU"
     And User types "123" in "Client Code"
@@ -49,6 +49,7 @@ Feature: Requests Review Public Cloud
     And User types "67890cd" in "Project Code"
     And User checks checkbox "By checking this box, I confirm..."
     And User clicks modal window button "Confirm"
+    And User clicks button "Back to Requests"
     And User logs out
     And User logs in with username "billing.reviewer.system@gov.bc.ca" and password "billing.reviewer.system@gov.bc.ca"
     And User waits for "2" seconds
@@ -56,13 +57,14 @@ Feature: Requests Review Public Cloud
     And User waits for "2" seconds
     And User clicks tab "Requests"
     And User waits for "2" seconds
-    And User clicks link "Automated Test Product Name"
+    And User clicks link "Automated Approval Test Product Name"
     And User waits for "2" seconds
     And User clicks button "Review eMOU"
     And User waits for "1" seconds
     And User checks checkbox "By checking this box, I confirm..."
     And User clicks modal window button "Confirm"
-    And User waits for "3" seconds
+    And User clicks button "Back to Requests"
+    And User waits for "2" seconds
     And User logs out
     And User logs in with username "public.reviewer.system@gov.bc.ca" and password "public.reviewer.system@gov.bc.ca"
     And User waits for "2" seconds
@@ -70,7 +72,7 @@ Feature: Requests Review Public Cloud
     And User waits for "2" seconds
     And User clicks tab "Requests"
     And User waits for "2" seconds
-    And User clicks link "Automated Test Product Name"
+    And User clicks link "Automated Approval Test Product Name"
     And User clicks button "Approve"
     And User clicks modal window button "Submit"
     And User clicks modal window button "Return to Dashboard"
@@ -78,7 +80,7 @@ Feature: Requests Review Public Cloud
     And User waits for "2" seconds
     And User reloads the page
     And User waits for "2" seconds
-    Then User should see "Automated Test Product Name"
+    Then User should see "Automated Approval Test Product Name"
     And User logs out
 
 Scenario: Approval Admin reviews Edit Request
@@ -86,9 +88,9 @@ Scenario: Approval Admin reviews Edit Request
     And User waits for "3" seconds
     When User clicks tab "PUBLIC CLOUD LANDING ZONES"
     And User waits for "3" seconds
-    And User clicks link "Automated Test Product Name"
+    And User clicks link "Automated Approval Test Product Name"
     And User waits for "3" seconds
-    And User types "Automated Test Edit Request" in "Product name"
+    And User types "Automated Approval Test Edit Request" in "Product name"
     And User types "Automated Test Description Edit" in "Description"
     And User selects "Finance" in "Ministry"
     And User clicks tab "Accounts to create"
@@ -115,10 +117,10 @@ Scenario: Approval Admin reviews Edit Request
     And User waits for "1" seconds
     When User clicks tab "PUBLIC CLOUD LANDING ZONES"
     And User waits for "1" seconds
-    Then User should see "Automated Test Edit Request"
-    And User clicks link "Automated Test Edit Request"
+    Then User should see "Automated Approval Test Edit Request"
+    And User clicks link "Automated Approval Test Edit Request"
     And User waits for "1" seconds
-    Then User sees "Automated Test Edit Request" in "Product name"
+    Then User sees "Automated Approval Test Edit Request" in "Product name"
     And User sees "Automated Test Description Edit" in "Description"
     And User logs out
 
@@ -126,17 +128,18 @@ Scenario: Approval Admin reviews Delete Request
     When User logs in with username "david.johnson@gov.bc.ca" and password "david.johnson@gov.bc.ca"
     And User waits for "3" seconds
     When User clicks tab "PUBLIC CLOUD LANDING ZONES"
-    And User clicks link "Automated Test Edit Request"
+    And User clicks link "Automated Approval Test Edit Request"
     And User waits for "3" seconds
     And User clicks button "Delete"
     And User copies value of "Licence plate"
     And User pastes from clipboard to "Licence plate number"
     And User copies value of "Product Owner"
     And User pastes from clipboard to "Product owner email"
+    And User types "Test reason for Automated Deletion Test" in "Please specify the reason"
     And User clicks modal window button "Submit"
     And User clicks button "Close"
     And User clicks tab "Requests"
-    Then User should see "Automated Test Edit Request"
+    Then User should see "Automated Approval Test Edit Request"
     And User should see badge "DELETE"
     And User logs out
     When User logs in with username "public.reviewer.system@gov.bc.ca" and password "public.reviewer.system@gov.bc.ca"
@@ -144,10 +147,10 @@ Scenario: Approval Admin reviews Delete Request
     And User waits for "3" seconds
     And User clicks tab "Requests"
     And User waits for "3" seconds
-    And User clicks link "Automated Test Edit Request"
+    And User clicks link "Automated Approval Test Edit Request"
     And User waits for "5" seconds
     And User clicks button "Approve"
     And User clicks modal window button "Submit"
     And User clicks modal window button "Return to Dashboard"
     And User clicks tab "Products"
-    Then User should not see "Automated Test Edit Request"
+    Then User should not see "Automated Approval Test Edit Request"

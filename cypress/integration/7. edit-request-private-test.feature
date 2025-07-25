@@ -4,7 +4,7 @@ Feature: Edit Request
     Given User logs in with username "james.smith@gov.bc.ca" and password "james.smith@gov.bc.ca"
     When User clicks tab "PRIVATE CLOUD OPENSHIFT"
     And User clicks button "Request a new product"
-    And User types "Automated Test Product Name" in "Product name"
+    And User types "Automated Edit Request Test Name" in "Product name"
     And User types "Automated Test Description" in "Description"
     And User selects "Citizens Services" in "Ministry"
     And User clicks and selects "SILVER" in "Hosting tier"
@@ -18,23 +18,23 @@ Feature: Edit Request
     And User clicks modal window button "Submit"
     And User clicks modal window button "Close"
     Then User should be redirected to Requests tab
-    And User should see "Automated Test Product Name"
+    And User should see "Automated Edit Request Test Name"
     And User logs out
     And User logs in with username "private.reviewer.system@gov.bc.ca" and password "private.reviewer.system@gov.bc.ca"
     And User clicks tab "PRIVATE CLOUD OPENSHIFT"
     And User waits for "3" seconds
     And User clicks tab "Requests"
     And User waits for "3" seconds
-    And User clicks link "Automated Test Product Name"
+    And User clicks link "Automated Edit Request Test Name"
     And User clicks button "Approve"
     And User clicks modal window button "Submit"
     And User clicks modal window button "Return to Dashboard"
     And User logs out
     And User logs in with username "james.smith@gov.bc.ca" and password "james.smith@gov.bc.ca"
     And User clicks tab "PRIVATE CLOUD OPENSHIFT"
-    When User clicks link "Automated Test Product Name"
+    When User clicks link "Automated Edit Request Test Name"
     And User waits for "3" seconds
-    And User types "Automated Test Edit Request" in "Product name"
+    And User types "Automated Test Edit Request Edited" in "Product name"
     And User types "Automated Test Description Edit" in "Description"
     And User selects "Finance" in "Ministry"
     And User clicks tab "Team members"
@@ -65,4 +65,4 @@ Feature: Edit Request
     And User clicks modal window button "Close"
     And User waits for "5" seconds
     Then User should be redirected to Requests tab
-    And User should see "Automated Test Edit Request"
+    And User should see "Automated Test Edit Request Edited"
