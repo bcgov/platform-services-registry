@@ -23,7 +23,10 @@ export default function PrivateCloudActiveRequestBox({
   className,
   showCount = false,
 }: {
-  request: Pick<PrivateCloudRequestDetail, 'id' | 'licencePlate' | 'active' | 'actioned' | 'type' | 'decisionStatus' | 'createdBy'>;
+  request: Pick<
+    PrivateCloudRequestDetail,
+    'id' | 'licencePlate' | 'active' | 'actioned' | 'type' | 'decisionStatus' | 'createdBy'
+  >;
   className?: string;
   showCount?: boolean;
 }) {

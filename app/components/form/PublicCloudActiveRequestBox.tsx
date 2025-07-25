@@ -21,7 +21,10 @@ export default function PublicCloudActiveRequestBox({
   request,
   className,
 }: {
-  request: Pick<PublicCloudRequestDetail, 'id' | 'licencePlate' | 'active'  | 'actioned'| 'type' | 'decisionStatus' | 'createdBy'>;
+  request: Pick<
+    PublicCloudRequestDetail,
+    'id' | 'licencePlate' | 'active' | 'actioned' | 'type' | 'decisionStatus' | 'createdBy'
+  >;
   className?: string;
 }) {
   const router = useRouter();
