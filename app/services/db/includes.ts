@@ -6,6 +6,9 @@ export const privateCloudProductSimpleInclude = {
     where: {
       active: true,
     },
+    include: {
+      createdBy: true,
+    },
   },
 };
 
@@ -16,6 +19,9 @@ export const privateCloudProductDetailInclude = {
   requests: {
     where: {
       active: true,
+    },
+    include: {
+      createdBy: true,
     },
   },
 };
@@ -83,6 +89,9 @@ export const publicCloudProductSimpleInclude = {
     where: {
       active: true,
     },
+    include: {
+      createdBy: true,
+    },
   },
 };
 
@@ -94,6 +103,9 @@ export const publicCloudProductDetailInclude = {
   requests: {
     where: {
       active: true,
+    },
+    include: {
+      createdBy: true,
     },
   },
 };

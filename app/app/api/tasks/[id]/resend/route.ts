@@ -39,7 +39,7 @@ export const GET = apiHandler(async ({ pathParams, session }) => {
     const requestDecorated = await models.privateCloudRequest.decorate(request, session, true);
     await tasks.sendEmail(task.type, {
       request: requestDecorated,
-      requester: request.createdByEmail ?? '',
+      requester: request.createdBy?.email ?? '',
     });
 
     return OkResponse(true);
@@ -55,7 +55,7 @@ export const GET = apiHandler(async ({ pathParams, session }) => {
     }
 
     const requestDecorated = await models.publicCloudRequest.decorate(request, session, true);
-    await tasks.sendEmail(task.type, { request: requestDecorated, requester: request.createdByEmail });
+    await tasks.sendEmail(task.type, { request: requestDecorated, requester: request.createdBy.email });
 
     return OkResponse(true);
   } else if (task.type === TaskType.SIGN_PUBLIC_CLOUD_MOU) {

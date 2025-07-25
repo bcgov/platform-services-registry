@@ -18,12 +18,18 @@ export type PublicCloudProductSimple = Prisma.PublicCloudProductGetPayload<{
       where: {
         active: true;
       };
+      include: {
+        createdBy: true;
+      };
     };
   };
 }> & {
-  activeRequest?: Prisma.PublicCloudRequestGetPayload<null> | null;
+  activeRequest?: Prisma.PublicCloudRequestGetPayload<{
+    include: {
+      createdBy: true;
+    };
+  }> | null;
 };
-
 export type PublicCloudProductSimpleDecorated = PublicCloudProductSimple & PublicCloudProductDecorate;
 
 export type PublicCloudProductDetail = Prisma.PublicCloudProductGetPayload<{

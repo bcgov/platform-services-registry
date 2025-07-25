@@ -20,10 +20,17 @@ export type PrivateCloudProductSimple = Prisma.PrivateCloudProductGetPayload<{
       where: {
         active: true;
       };
+      include: {
+        createdBy: true;
+      };
     };
   };
 }> & {
-  activeRequest?: Prisma.PrivateCloudRequestGetPayload<null> | null;
+  activeRequest?: Prisma.PrivateCloudRequestGetPayload<{
+    include: {
+      createdBy: true;
+    };
+  }> | null;
 };
 
 export type PrivateCloudProductSimpleDecorated = PrivateCloudProductSimple & PrivateCloudProductDecorate;

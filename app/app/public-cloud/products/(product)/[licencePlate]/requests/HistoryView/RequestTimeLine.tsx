@@ -21,12 +21,12 @@ export default function RequestTimeLine({
 }: {
   request: Pick<
     PublicCloudRequestDetail,
-    | 'decisionMakerEmail'
+    | 'decisionMakerId'
     | 'decisionMaker'
     | 'decisionStatus'
     | 'decisionDate'
     | 'decisionComment'
-    | 'createdByEmail'
+    | 'createdById'
     | 'createdBy'
     | 'createdAt'
     | 'cancelledAt'
@@ -202,7 +202,7 @@ export default function RequestTimeLine({
           </Timeline.Item>
           {preReviewSteps}
           <Timeline.Item title="Review" bullet={<IconChecklist size={12} />}>
-            {getDecisionContent(request.decisionMakerEmail ? DecisionStatus.APPROVED : DecisionStatus.AUTO_APPROVED)}
+            {getDecisionContent(request.decisionMakerId ? DecisionStatus.APPROVED : DecisionStatus.AUTO_APPROVED)}
           </Timeline.Item>
           <Timeline.Item title="Completion" bullet={<IconConfetti size={12} />}>
             {getProvisionContent()}

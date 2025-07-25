@@ -100,9 +100,9 @@ export function createSamplePublicCloudRequest(args?: {
   const request = {
     id: generateShortId(),
     licencePlate,
-    createdByEmail: createdBy?.email,
+    createdById: createdBy?.id,
     createdBy,
-    decisionMakerEmail: decisionMaker?.email,
+    decisionMakerId: decisionMaker?.id,
     decisionMaker,
     quotaContactName: quotaContact?.displayName,
     quotaContactEmail: quotaContact?.email,

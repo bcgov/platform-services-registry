@@ -15,12 +15,12 @@ export async function getRequestDecisionTime({
       // Exclude auto approved requests
       OR: [
         {
-          decisionMakerEmail: {
+          decisionMakerId: {
             not: null,
           },
         },
         {
-          decisionMakerEmail: {
+          decisionMakerId: {
             not: '',
           },
         },
