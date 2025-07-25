@@ -21,7 +21,7 @@ export default function PublicCloudActiveRequestBox({
   request,
   className,
 }: {
-  request: Pick<PublicCloudRequestDetail, 'id' | 'licencePlate' | 'active' | 'type' | 'decisionStatus' | 'createdBy'>;
+  request: Pick<PublicCloudRequestDetail, 'id' | 'licencePlate' | 'active'  | 'actioned'| 'type' | 'decisionStatus' | 'createdBy'>;
   className?: string;
 }) {
   const router = useRouter();
@@ -68,8 +68,13 @@ export default function PublicCloudActiveRequestBox({
 
   switch (request.decisionStatus) {
     case DecisionStatus.PENDING:
-      decisionColor = 'blue';
-      decisionText = 'Reviewing';
+      if (request.actioned) {
+        decisionColor = 'blue';
+        decisionText = 'Reviewing';
+      } else {
+        decisionColor = 'gray';
+        decisionText = 'Submitted';
+      }
 
       if (inEmouProcess && initialBillingSearch?.data.length) {
         const initialBilling = initialBillingSearch.data[0];

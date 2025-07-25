@@ -8,7 +8,10 @@ export default function RequestBadge({
   data,
   className,
 }: {
-  data: Pick<PublicCloudRequestDetailDecorated, 'licencePlate' | 'type' | 'decisionStatus' | 'decisionData' | 'active'>;
+  data: Pick<
+    PublicCloudRequestDetailDecorated,
+    'licencePlate' | 'type' | 'decisionStatus' | 'decisionData' | 'active' | 'actioned'
+  >;
   className?: string;
 }) {
   let typeColor = 'gray';
@@ -26,9 +29,11 @@ export default function RequestBadge({
       break;
   }
 
+  let status: string = data.decisionStatus;
   switch (data.decisionStatus) {
     case DecisionStatus.PENDING:
       decisionColor = 'gray';
+      status = data.actioned ? 'Reviewing' : 'Submitted';
       break;
     case DecisionStatus.APPROVED:
     case DecisionStatus.AUTO_APPROVED:
@@ -52,7 +57,7 @@ export default function RequestBadge({
         {data.active ? 'ACTIVE' : 'CLOSED'}
       </Badge>
       <Badge color={decisionColor} radius="sm" className="ml-1">
-        {data.decisionStatus}
+        {status}
       </Badge>
     </div>
   );
