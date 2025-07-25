@@ -333,7 +333,7 @@ export default function QuotasBudgetEstimation({
       </div>
       <div className="mb-2">
         {/* --- Large Screen Layout --- */}
-        <div className="container mx-auto bg-white shadow-lg hidden sm:block">
+        <div className="mx-auto bg-white shadow-lg hidden sm:block">
           <div className="flex flex-row font-bold text-center">
             <div className="block w-32 p-2 bg-transparent"></div>
 

@@ -35,9 +35,9 @@ import Quarterly from './Quarterly';
 import Yearly from './Yearly';
 
 const tabClassname = `
-  relative px-4 py-2 text-sm font-medium border-x border-t border-gray-200
+  relative text-sm font-medium border-x border-t border-gray-200
   first:rounded-t-md last:rounded-t-md
-  data-[active=true]:bg-zinc-100 data-[active=true]:font-bold data-[active=true]:text-gray-900 data-[active=true]:border-b-transparent border-10
+  data-[active=true]:bg-zinc-100 data-[active=true]:font-bold data-[active=true]:text-gray-900 data-[active=true]:border-b-transparent
   data-[active=false]:bg-white data-[active=false]:text-gray-500 data-[active=false]:border-b border-b-gray-200 hover:data-[active=false]:bg-gray-100
 `;
 
@@ -205,14 +205,11 @@ export default privateCloudProductCosts(({ getPathParams, session }) => {
           )}
         </div>
 
-        <h1 className="text-3xl font-bold mb-8">Consumption data</h1>
+        <h1 className="text-3xl font-bold mb-4">Consumption data</h1>
 
         <Tabs variant="unstyled" defaultValue="graph">
-          <Tabs.List
-            grow
-            className="max-w-60 border-t border-2-r border-l border-b-0 rounded-t-md shadow-xs overflow-hidden"
-          >
-            <Tabs.Tab value="graph" className={`${tabClassname} border-r-2 border-gray-200`}>
+          <Tabs.List grow className="max-w-60 overflow-hidden">
+            <Tabs.Tab value="graph" className={tabClassname}>
               Graph
             </Tabs.Tab>
             <Tabs.Tab value="table" className={tabClassname}>
