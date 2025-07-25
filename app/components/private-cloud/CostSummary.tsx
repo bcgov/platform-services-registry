@@ -63,20 +63,20 @@ export default function CostSummary({
   const projectedCost = formatCurrency(getAppropriateCost());
 
   return (
-    <div className="space-y-8 mb-10">
+    <div className="mb-5">
       <div className="flex items-center">
         <div>
           <div className="text-3xl font-bold mb-4">Summary</div>
           <div className="mb-1">
             <strong>Current billing period:</strong> {data.billingPeriod}
           </div>
-          <div className="mb-16">
+          <div className="mb-5">
             <strong>Account coding:</strong> {data.accountCoding}
           </div>
         </div>
       </div>
       <div>
-        <div className="flex items-center gap-4 gap-x-20">
+        <div className="flex items-center gap-x-20">
           <div className="text-md shrink-0">
             Current billing period
             <br />
