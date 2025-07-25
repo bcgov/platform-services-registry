@@ -139,31 +139,39 @@ export async function listUsersByRole(roleName: string, kcAdminClient?: KcAdminC
 }
 
 export async function listUsersByRoles(roleNames: string[], kcAdminClient?: KcAdminClient) {
-  if (!kcAdminClient) kcAdminClient = await getKcAdminClient();
+  const adminClient = kcAdminClient || (await getKcAdminClient());
+  const client = await findClient(AUTH_RESOURCE, adminClient);
 
-  const client = await findClient(AUTH_RESOURCE, kcAdminClient);
-  if (!client?.id) return { usersByRole: {}, users: [] };
+  if (!client?.id) {
+    return { usersByRole: {}, users: [] };
+  }
 
-  roleNames = _uniq(roleNames);
+  const uniqueRoleNames = _uniq(roleNames);
 
-  const userGroups = await Promise.all(
-    roleNames.map((roleName) =>
-      kcAdminClient.clients.findUsersWithRole({
-        realm: AUTH_RELM,
-        id: client.id as string,
-        roleName,
-        briefRepresentation: false,
-      }),
-    ),
+  const userGroupsPromises = uniqueRoleNames.map((roleName) =>
+    adminClient.clients.findUsersWithRole({
+      realm: AUTH_RELM,
+      id: client.id!,
+      roleName,
+      briefRepresentation: false,
+    }),
   );
 
-  const allusers: UserRepresentation[] = [];
-  const usersByRole = _mapKeys(userGroups, (users, index) => {
-    allusers.push(...users);
-    return roleNames[index];
+  const userGroups = await Promise.all(userGroupsPromises);
+
+  const usersByRole: Record<string, UserRepresentation[]> = {};
+  const collectedUsers: UserRepresentation[] = [];
+
+  userGroups.forEach((userGroup, index) => {
+    const roleName = uniqueRoleNames[index];
+    usersByRole[roleName] = userGroup.filter((user) => {
+      const isValidEmail = user.email && user.email.toLowerCase() === user.username?.toLowerCase();
+      if (isValidEmail) collectedUsers.push(user);
+      return isValidEmail;
+    });
   });
 
-  return { usersByRole, users: _uniqBy(allusers, (usr) => usr.id) };
+  return { usersByRole, users: _uniqBy(collectedUsers, (user) => user.id) };
 }
 
 export async function findUserByEmail(email: string, kcAdminClient?: KcAdminClient) {
