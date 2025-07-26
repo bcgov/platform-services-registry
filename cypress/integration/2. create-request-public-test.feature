@@ -5,10 +5,10 @@ Feature: New Request
     And User waits for "3" seconds
     When User clicks tab "PUBLIC CLOUD LANDING ZONES"
     And User clicks button "Request a new product"
-    And User types "Automated Test Product Name" in "Product name"
+    And User types "Automated Create Request Test Name" in "Product name"
     And User types "Automated Test Description" in "Description"
     And User selects "Citizens Services" in "Ministry"
-    And User selects "AWS" in "Cloud Service Provider"
+    And User selects "AWS LZA" in "Cloud Service Provider"
     And User clicks and selects "Cost efficiency" in "Select reason for choosing cloud provider"
     And User types "Test reason for choosing Cl. Prov." in "Description of reason(s) for selecting cloud provider"
     And User clicks tab "Accounts to create"
@@ -32,5 +32,5 @@ Feature: New Request
     And User waits for "4" seconds
     And User clicks modal window button "Close"
     Then User should be redirected to Requests tab
-    And User should see "Automated Test Product Name"
+    And User should see "Automated Create Request Test Name"
     And User logs out
