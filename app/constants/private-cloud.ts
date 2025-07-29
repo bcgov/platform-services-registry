@@ -1,7 +1,7 @@
 import CostStatusBadge from '@/components/badges/CostStatusBadge';
+import { ColumnDefinition } from '@/components/generic/data-table/DataTable';
 import { Cluster, Prisma, ResourceRequestsEnv, ResourceRequests, PrivateCloudProductMemberRole } from '@/prisma/client';
 import {
-  CostTableColumnDef,
   CostMetric,
   DailyCostMetric,
   MonthlyCostMetric,
@@ -101,7 +101,7 @@ export type ResourceRequestsKeys = Array<keyof ResourceRequests>;
 export const namespaceKeys: ResourceRequestsEnvKeys = ['development', 'test', 'production', 'tools'];
 export const resourceKeys: ResourceRequestsKeys = ['cpu', 'memory', 'storage'];
 
-export const periodicCostCommonColumns = <T extends PeriodicCostMetric>(): CostTableColumnDef<T>[] => [
+export const periodicCostCommonColumns = <T extends PeriodicCostMetric>(): ColumnDefinition<T>[] => [
   { label: 'CPU (Cores)', value: 'total.cpu.value', cellProcessor: (item, attr) => item.total.cpu.value },
   { label: 'Storage (GiB)', value: 'total.storage.value', cellProcessor: (item, attr) => item.total.storage.value },
   { label: 'CPU Cost', value: 'total.cpu.cost', cellProcessor: (item) => formatCurrency(item.total.cpu.cost) },
@@ -119,7 +119,7 @@ export const periodicCostCommonColumns = <T extends PeriodicCostMetric>(): CostT
 
 type CostDetails<T extends string> = Record<T, CostMetric>;
 
-const createCostColumns = <T extends CostDetails<K>, K extends string>(detailsKey: K): CostTableColumnDef<T>[] => [
+const createCostColumns = <T extends CostDetails<K>, K extends string>(detailsKey: K): ColumnDefinition<T>[] => [
   {
     label: 'CPU (cores)',
     value: `${detailsKey}.cpuCore`,
@@ -152,23 +152,23 @@ const createCostColumns = <T extends CostDetails<K>, K extends string>(detailsKe
   },
 ];
 
-export const monthlyCostCommonColumns = <T extends MonthlyCostMetric>(): CostTableColumnDef<T>[] =>
+export const monthlyCostCommonColumns = <T extends MonthlyCostMetric>(): ColumnDefinition<T>[] =>
   createCostColumns<T, 'monthDetails'>('monthDetails');
 
-export const dailyCostCommonColumns = <T extends DailyCostMetric>(): CostTableColumnDef<T>[] =>
+export const dailyCostCommonColumns = <T extends DailyCostMetric>(): ColumnDefinition<T>[] =>
   createCostColumns<T, 'dayDetails'>('dayDetails');
 
-export const periodicCostColumns: CostTableColumnDef<PeriodicCostMetric>[] = [
+export const periodicCostColumns: ColumnDefinition<PeriodicCostMetric>[] = [
   { label: 'Data Range', value: 'startDate', cellProcessor: (item, attr) => CostStatusBadge(item) },
   ...periodicCostCommonColumns<PeriodicCostMetric>(),
 ];
 
-export const dailyCostColumns: CostTableColumnDef<DailyCostMetric>[] = [
+export const dailyCostColumns: ColumnDefinition<DailyCostMetric>[] = [
   { label: 'Day', value: 'day', cellProcessor: (item) => item.day },
   ...dailyCostCommonColumns<DailyCostMetric>(),
 ];
 
-export const monthlyCostColumns: CostTableColumnDef<MonthlyCostMetric>[] = [
+export const monthlyCostColumns: ColumnDefinition<MonthlyCostMetric>[] = [
   { label: 'Month', value: 'month', cellProcessor: (item) => getMonthNameFromNumber(item.month) },
   ...monthlyCostCommonColumns<MonthlyCostMetric>(),
 ];

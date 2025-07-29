@@ -191,7 +191,7 @@ export default privateCloudProductCosts(({ getPathParams, session }) => {
         <div className="relative">
           {costData && (
             <>
-              <CostSummary data={costData} selectedDate={selectedDate} viewMode={viewMode} />
+              <CostSummary data={costData} viewMode={viewMode} />
               <Button
                 loading={downloading}
                 onClick={async () => {

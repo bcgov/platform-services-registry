@@ -237,7 +237,7 @@ export interface MonthlyCost {
   items: CostItem[];
   discreteResourceValues: DailyDiscreteValue[];
   startDate: Date;
-  numberOfDaysBetweenDates: number;
+  progress: number;
   days: number[];
   dayDetails: {
     cpuToDate: number[];
@@ -256,7 +256,7 @@ export interface QuarterlyCost {
   items: CostItem[];
   discreteResourceValues: QuarterlyDiscreteValue;
   startDate: Date;
-  numberOfDaysBetweenDates: number;
+  progress: number;
   months: number[];
   monthDetails: {
     cpuToDate: number[];
@@ -275,7 +275,7 @@ export interface YearlyCost {
   items: CostItem[];
   discreteResourceValues: YearlyDiscreteValue;
   startDate: Date;
-  numberOfDaysBetweenDates: number;
+  progress: number;
   months: number[];
   monthDetails: {
     cpuToDate: number[];
@@ -304,10 +304,4 @@ export interface DailyCostMetric {
 export interface MonthlyCostMetric {
   month: number;
   monthDetails: CostMetric;
-}
-
-export interface CostTableColumnDef<T> {
-  label?: string;
-  value: string;
-  cellProcessor: (item: T, attr: string) => React.ReactNode;
 }

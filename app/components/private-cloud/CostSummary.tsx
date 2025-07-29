@@ -1,15 +1,13 @@
 import { monthNames } from '@/constants/common';
 import { MonthlyCost, QuarterlyCost, TimeView, YearlyCost } from '@/types/private-cloud';
-import { getDaysBetweenDates, extractDateRanges, formatCurrency, getQuarterValue } from '@/utils/js';
+import { extractDateRanges, formatCurrency, getQuarterValue } from '@/utils/js';
 
 export default function CostSummary({
   data,
-  selectedDate,
   viewMode,
   isFromPDFDownloader = false,
 }: {
   data: MonthlyCost | YearlyCost | QuarterlyCost;
-  selectedDate: Date;
   viewMode: TimeView;
   isFromPDFDownloader?: boolean;
 }) {
@@ -18,37 +16,17 @@ export default function CostSummary({
   const currentDate = new Date();
   const currentMonth = monthNames[currentDate.getMonth()];
   const currentMonthDay = currentDate.getDate();
-  const currentDay = getDaysBetweenDates(data.startDate, currentDate);
 
   const hasCurrentTotal = data.currentTotal !== -1;
   const hasEstimatedTotal = data.estimatedGrandTotal !== -1;
   const hasGrandTotal = data.grandTotal !== -1;
 
   const { startDate, endDate } = extractDateRanges(data.billingPeriod);
-  const isDifferentMonth = currentMonth !== startDate.split(' ')[0];
 
   const currentMonthQuater = getQuarterValue(currentDate.getMonth() + 1);
   const selectedMonthQuarter = getQuarterValue(new Date(data.startDate).getMonth() + 1);
 
-  const calculateProgress = {
-    [TimeView.Monthly]: () => {
-      if (selectedDate.getMonth() === currentDate.getMonth()) return (currentDay * 100) / data.numberOfDaysBetweenDates;
-      if (selectedDate.getMonth() > currentDate.getMonth()) return 0;
-      return isDifferentMonth ? 100 : (currentDay * 100) / data.numberOfDaysBetweenDates;
-    },
-    [TimeView.Quarterly]: () => {
-      if (selectedMonthQuarter > currentMonthQuater) return 0;
-      return currentMonthQuater > selectedMonthQuarter ? 100 : (currentDay * 100) / data.numberOfDaysBetweenDates;
-    },
-    [TimeView.Yearly]: () => {
-      if (selectedDate.getFullYear() < currentDate.getFullYear()) return 100;
-      return selectedDate.getFullYear() > currentDate.getFullYear()
-        ? 0
-        : (currentDay * 100) / data.numberOfDaysBetweenDates;
-    },
-  };
-
-  const percentageProgress = Math.min(100, calculateProgress[viewMode]());
+  const percentageProgress = data.progress * 100;
   const getAppropriateCost = () => {
     const isBoundary = percentageProgress === 0 || percentageProgress === 100;
     const useGrandTotal =

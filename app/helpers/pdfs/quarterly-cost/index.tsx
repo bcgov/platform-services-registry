@@ -85,7 +85,7 @@ export async function generateQuarterlyCostPdf({
       <h1 className="font-semibold text-3xl mb-1">{product.name}</h1>
       <i className="italic text-lg">{product.description}</i>
       <hr className="mb-12 h-px bg-gray-200 border-0" />
-      <CostSummary data={data} selectedDate={selectedDate} viewMode={TimeView.Quarterly} isFromPDFDownloader={true} />
+      <CostSummary data={data} viewMode={TimeView.Quarterly} isFromPDFDownloader={true} />
       <div className="text-3xl font-bold mt-6">Consumption data</div>
       <div className="border border-gray-200 border-solid rounded-sm p-4 bg-white my-6">
         <div className="relative w-full">

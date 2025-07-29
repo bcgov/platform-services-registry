@@ -71,11 +71,9 @@ async function getChartDataURL(data) {
 export async function generateYearlyCostPdf({
   product,
   data,
-  selectedDate,
 }: {
   product: PrivateCloudProductDetailDecorated;
   data: YearlyCost;
-  selectedDate: Date;
 }) {
   const ReactDOMServer = (await import('react-dom/server')).default;
 
@@ -85,7 +83,7 @@ export async function generateYearlyCostPdf({
       <h1 className="font-semibold text-3xl mb-1">{product.name}</h1>
       <i className="italic text-lg">{product.description}</i>
       <hr className="mb-12 h-px bg-gray-200 border-0" />
-      <CostSummary data={data} selectedDate={selectedDate} viewMode={TimeView.Yearly} isFromPDFDownloader={true} />
+      <CostSummary data={data} viewMode={TimeView.Yearly} isFromPDFDownloader={true} />
       <div className="text-3xl font-bold mt-6">Consumption data</div>
       <div className="border border-gray-200 border-solid rounded-sm p-4 bg-white my-6">
         <div className="relative w-full">
