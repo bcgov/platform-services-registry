@@ -1,11 +1,12 @@
 'use client';
 
-import { Table, Badge, Button } from '@mantine/core';
+import { Badge, Button } from '@mantine/core';
 import { useQuery } from '@tanstack/react-query';
 import _compact from 'lodash-es/compact';
 import _get from 'lodash-es/get';
-import { JSX, ReactNode } from 'react';
+import { useMemo } from 'react';
 import DataTable from '@/components/generic/data-table/DataTable';
+import type { ColumnDefinition } from '@/components/generic/data-table/DataTable';
 import { GlobalRole } from '@/constants';
 import createClientPage from '@/core/client-page';
 import { listKeycloakTeamApiAccounts } from '@/services/backend/keycloak';
@@ -21,83 +22,10 @@ interface TeamApiAccount {
   secret: string;
 }
 
-interface ColumnDef {
-  label?: string;
-  value: string;
-  cellProcessor: (account: TeamApiAccount, attr: string) => React.ReactNode;
-}
-
 const TeamApiAccountsPage = createClientPage({
   roles: [GlobalRole.User],
 });
 export default TeamApiAccountsPage(({ session }) => {
-  const teamApiAccountData: TeamApiAccount[] = [];
-  const tableColumns: ColumnDef[] = [
-    {
-      label: 'Name',
-      value: 'name',
-      cellProcessor: (account, attr) => (
-        <span className="whitespace-nowrap">
-          {account.name}{' '}
-          <Badge color="green" radius="sm" className="ml-1">
-            Active
-          </Badge>
-        </span>
-      ),
-    },
-    {
-      label: 'Roles',
-      value: 'roles',
-      cellProcessor: (account, attr) => (
-        <>
-          {account.roles.map((role) => (
-            <Badge key={role} color="gray" radius="sm" className="mr-1">
-              {role}
-            </Badge>
-          ))}
-        </>
-      ),
-    },
-    {
-      label: '',
-      value: 'actionButtons',
-      cellProcessor: (account, attr) => (
-        <>
-          <Button
-            className="mr-1"
-            variant="outline"
-            onClick={async () => {
-              await openViewAccountModal({
-                clientUid: account.id,
-                clientId: account.clientId,
-                clientSecret: account.secret,
-                name: account.name,
-                roles: account.roles,
-              });
-            }}
-          >
-            View
-          </Button>
-          {session?.isAdmin && (
-            <Button
-              variant="outline"
-              onClick={async () => {
-                await openManageAccountModal({
-                  clientUid: account.id,
-                  roles: account.roles,
-                  name: account.name ?? '',
-                });
-                await refetchApiAccounts();
-              }}
-            >
-              Manage
-            </Button>
-          )}
-        </>
-      ),
-    },
-  ];
-
   const {
     data: apiAccounts,
     isLoading: isApiAccountsLoading,
@@ -109,40 +37,101 @@ export default TeamApiAccountsPage(({ session }) => {
     queryFn: () => listKeycloakTeamApiAccounts(),
   });
 
+  const { data: tableData, columns: tableColumns } = useMemo(() => {
+    if (!apiAccounts) return { data: [], columns: [] };
+
+    const _columns: ColumnDefinition<TeamApiAccount>[] = [
+      {
+        label: 'Name',
+        value: 'name',
+        cellProcessor: (account, attr) => (
+          <span className="whitespace-nowrap">
+            {account.name}{' '}
+            <Badge color="green" radius="sm" className="ml-1">
+              Active
+            </Badge>
+          </span>
+        ),
+      },
+      {
+        label: 'Roles',
+        value: 'roles',
+        cellProcessor: (account, attr) => (
+          <>
+            {account.roles.map((role) => (
+              <Badge key={role} color="gray" radius="sm" className="mr-1">
+                {role}
+              </Badge>
+            ))}
+          </>
+        ),
+      },
+      {
+        label: '',
+        value: 'actionButtons',
+        cellProcessor: (account, attr) => (
+          <>
+            <Button
+              className="mr-1"
+              variant="outline"
+              onClick={async () => {
+                await openViewAccountModal({
+                  clientUid: account.id,
+                  clientId: account.clientId,
+                  clientSecret: account.secret,
+                  name: account.name,
+                  roles: account.roles,
+                });
+              }}
+            >
+              View
+            </Button>
+            {session?.isAdmin && (
+              <Button
+                variant="outline"
+                onClick={async () => {
+                  await openManageAccountModal({
+                    clientUid: account.id,
+                    roles: account.roles,
+                    name: account.name ?? '',
+                  });
+                  await refetchApiAccounts();
+                }}
+              >
+                Manage
+              </Button>
+            )}
+          </>
+        ),
+      },
+    ];
+
+    const _data: TeamApiAccount[] = (apiAccounts ?? []).map((account) => {
+      const rolesMapper = account.protocolMappers?.find((mapper) => mapper.name === 'roles');
+      const rolesStr = _get(rolesMapper, ['config', 'claim.value'], '');
+
+      return {
+        name: account.name ?? '',
+        roles: _compact(rolesStr.split(',')),
+        id: account.id ?? '',
+        clientId: account.clientId ?? '',
+        secret: account.secret ?? '',
+      };
+    });
+
+    return { data: _data, columns: _columns };
+  }, [session, apiAccounts]);
+
   if (isApiAccountsLoading) {
     return null;
   }
 
-  let rows: ReactNode = null;
-  if (!apiAccounts || apiAccounts.length === 0) {
-    const message = session?.isAdmin ? 'No team API accounts found.' : 'You are not assigned to any team API accounts.';
-
-    rows = (
-      <Table.Tr>
-        <Table.Td colSpan={3}>{message}</Table.Td>
-      </Table.Tr>
-    );
-  } else {
-    (apiAccounts ?? []).forEach((account) => {
-      const rolesMapper = account.protocolMappers?.find((mapper) => mapper.name === 'roles');
-      const rolesStr = _get(rolesMapper, ['config', 'claim.value'], '');
-
-      teamApiAccountData.push({
-        name: account.name!,
-        roles: _compact(rolesStr.split(',')),
-        id: account.id!,
-        clientId: account.clientId!,
-        secret: account.secret!,
-      });
-    });
-  }
-
   return (
     <div className="pt-5">
-      <h1 className="text-xl lg:text-2xl 2xl:text-4xl font-semibold leading-7 text-gray-900 pb-2">Team API Accounts</h1>
+      <h1 className="text-xl lg:text-2xl 2xl:text-4xl font-semibold leading-7 text-gray-900">Team API Accounts</h1>
 
       {session?.isAdmin && (
-        <div className="text-right mb-11">
+        <div className="text-right mb-2">
           <Button
             color="blue"
             onClick={async () => {
@@ -154,7 +143,7 @@ export default TeamApiAccountsPage(({ session }) => {
           </Button>
         </div>
       )}
-      <DataTable<TeamApiAccount> data={teamApiAccountData} columns={tableColumns} />
+      <DataTable<TeamApiAccount> data={tableData} columns={tableColumns} />
     </div>
   );
 });

@@ -14,7 +14,7 @@ import _startCase from 'lodash-es/startCase';
 import { useEffect, useMemo, useState } from 'react';
 import Pagination from './Pagination';
 
-interface ColumnDefinition<TData> {
+export interface ColumnDefinition<TData> {
   label?: string | null;
   value: string;
   cellProcessor?: (item: TData, attribute: string) => React.ReactNode;
@@ -104,7 +104,7 @@ export default function DataTable<TData extends object>({
 
   return (
     <>
-      <div className="border border-gray-200 overflow-hidden mt-5 rounded-md">
+      <div className="border border-gray-200 overflow-hidden rounded-md">
         <div className="overflow-x-auto">
           <table className="w-full text-sm border-collapse">
             <thead>
