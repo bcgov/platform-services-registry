@@ -67,3 +67,37 @@ resource "keycloak_openid_client_service_account_role" "pltsvc_admin_cli_realm_a
   client_id               = data.keycloak_openid_client.realm_management.id
   role                    = data.keycloak_role.realm_admin.name
 }
+
+resource "keycloak_openid_client_scope" "pltsvc" {
+  realm_id   = data.keycloak_realm.pltsvc.id
+  name       = "pltsvc"
+  description = "Custom scope for pltsvc"
+}
+
+
+resource "keycloak_openid_user_attribute_protocol_mapper" "idir_user_guid_mapper" {
+  realm_id        = data.keycloak_realm.pltsvc.id
+  client_id       = keycloak_openid_client.pltsvc.id
+
+  name                 = "idir_user_guid"
+  user_attribute       = "idir_user_guid"
+  claim_name           = "idir_user_guid"
+  claim_value_type     = "String"
+
+  add_to_id_token      = true
+  add_to_access_token  = true
+  add_to_userinfo      = true
+}
+
+resource "keycloak_openid_client_default_scopes" "pltsvc_scope_link" {
+  realm_id  = data.keycloak_realm.pltsvc.id
+  client_id = keycloak_openid_client.pltsvc.id
+
+  default_scopes = [
+    "email",
+    "profile",
+    "roles",
+    "web-origins",
+    keycloak_openid_client_scope.pltsvc.name,
+  ]
+}
