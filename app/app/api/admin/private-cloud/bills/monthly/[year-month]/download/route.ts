@@ -3,8 +3,6 @@ import { GlobalRole } from '@/constants';
 import createApiHandler from '@/core/api-handler';
 import { UnauthorizedResponse, PdfResponse, OkResponse } from '@/core/responses';
 import { generateAdminMonthylCostPdf } from '@/helpers/pdfs/admin-monthly-cost';
-import { generateYearlyCostPdf } from '@/helpers/pdfs/yearly-cost';
-import { models } from '@/services/db';
 import { getAdminMonthlyCosts, getYearlyCosts } from '@/services/db/private-cloud-costs';
 
 const pathParamSchema = z.object({

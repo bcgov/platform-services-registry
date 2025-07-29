@@ -43,6 +43,17 @@ function formatDecimals<T>(obj: T): T {
   return obj;
 }
 
+function getProgress(startDate: Date, endDate: Date, today = new Date()): number {
+  const total = endDate.getTime() - startDate.getTime();
+  const completed = today.getTime() - startDate.getTime();
+
+  if (total <= 0) return 0; // Invalid range
+  if (today <= startDate) return 0;
+  if (today >= endDate) return 1;
+
+  return Math.max(0, Math.min(1, completed / total));
+}
+
 function getDefaultRangeCost() {
   return _cloneDeep({
     costToDate: 0,
@@ -306,7 +317,7 @@ export async function getMonthlyCosts(licencePlate: string, year: number, oneInd
     items,
     discreteResourceValues: getDiscreteResourceValues(items, TimeView.Monthly) as DailyDiscreteValue[],
     startDate,
-    numberOfDaysBetweenDates: getDaysBetweenDates(startDate, endDate),
+    progress: getProgress(startDate, endDate),
     days,
     dayDetails: {
       cpuToDate,
@@ -317,7 +328,7 @@ export async function getMonthlyCosts(licencePlate: string, year: number, oneInd
   };
 }
 
-async function getCostsBasedOnMonths(timeView: TimeView, licencePlate: string, startDate: Date, endDate: Date) {
+async function getCostsBasedOnMonths(licencePlate: string, startDate: Date, endDate: Date) {
   const today = new Date();
   const year = startDate.getFullYear();
   const months = getMonthsArrayFromDates(startDate, endDate);
@@ -392,20 +403,14 @@ async function getCostsBasedOnMonths(timeView: TimeView, licencePlate: string, s
     }
   }
 
-  const discreteResourceValues: QuarterlyDiscreteValue | YearlyDiscreteValue = getDiscreteResourceValues(
-    items,
-    timeView,
-  );
-
   return {
     accountCoding: '123ABC', // placeholder
     currentTotal,
     estimatedGrandTotal,
     grandTotal,
     items,
-    discreteResourceValues,
     startDate,
-    numberOfDaysBetweenDates: getDaysBetweenDates(startDate, endDate),
+    progress: getProgress(startDate, endDate),
     months,
     monthDetails: {
       cpuToDate,
@@ -418,9 +423,11 @@ async function getCostsBasedOnMonths(timeView: TimeView, licencePlate: string, s
 
 export async function getQuarterlyCosts(licencePlate: string, year: number, quarter: number) {
   const { startDate, endDate } = getQuarterStartEndDate(year, quarter);
+  const baseData = await getCostsBasedOnMonths(licencePlate, startDate, endDate);
 
   const result = {
-    ...(await getCostsBasedOnMonths(TimeView.Quarterly, licencePlate, startDate, endDate)),
+    ...baseData,
+    discreteResourceValues: getDiscreteResourceValues(baseData.items, TimeView.Quarterly),
     billingPeriod: `${dateRangeFormatter.format(startDate)}—${dateRangeFormatter.format(endDate)}, ${year}`,
   };
 
@@ -430,9 +437,11 @@ export async function getQuarterlyCosts(licencePlate: string, year: number, quar
 export async function getYearlyCosts(licencePlate: string, yearString: string) {
   const year = parseInt(yearString, 10);
   const { startDate, endDate } = getYearlyStartEndDate(year);
+  const baseData = await getCostsBasedOnMonths(licencePlate, startDate, endDate);
 
   const result = {
-    ...(await getCostsBasedOnMonths(TimeView.Yearly, licencePlate, startDate, endDate)),
+    ...baseData,
+    discreteResourceValues: getDiscreteResourceValues(baseData.items, TimeView.Yearly),
     billingPeriod: `${dateRangeFormatter.format(startDate)}—${dateRangeFormatter.format(endDate)}, ${year}`,
   };
 
