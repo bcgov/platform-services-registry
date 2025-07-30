@@ -1,3 +1,23 @@
+## [0.74.0](https://github.com/bcgov/platform-services-registry/compare/v0.73.1...v0.74.0) (2025-07-30)
+
+### Features
+
+* **5812:** implement reminders for private cloud reviews ([c37b91d](https://github.com/bcgov/platform-services-registry/commit/c37b91d44c17f6434c86453d0137539e75e28603))
+* **5915:** rename createdByEmail and decisionMakerEmail to createdById and decisionMakerId ([39830a8](https://github.com/bcgov/platform-services-registry/commit/39830a820debc26eeae60e502c5b65e8911dde8b))
+* **6006:** implement migration script for ministries ([2578079](https://github.com/bcgov/platform-services-registry/commit/25780795aca6cb36bf91fe5191adbba329781127))
+* **6006:** implement UI pages for organization ([9dd1e14](https://github.com/bcgov/platform-services-registry/commit/9dd1e14cc1117da93ef5f1c6a3c3a77f88b55260))
+* **6027:** add start button, statrted status and user info to tasks sidebar ([83d185d](https://github.com/bcgov/platform-services-registry/commit/83d185d10abef8cbce9e83419bb6f71147001134))
+* **6028:** display distinct labels for actioned requests ([0b08f8a](https://github.com/bcgov/platform-services-registry/commit/0b08f8a0a7dfc0cd5742feab4b9a5481307dbc5e))
+
+### Bug Fixes
+
+* **0000:** remove deprecated ministries ([3c429e5](https://github.com/bcgov/platform-services-registry/commit/3c429e523828e35730a0a0653cdbecdf2f61615e))
+
+### Refactors
+
+* **6168:** improve team API accounts page ([2d03fa0](https://github.com/bcgov/platform-services-registry/commit/2d03fa00cd7bc535dbccb4b9c54a628a1f2a8cb6))
+* **6168:** limit IDIR provider searched users by roles ([87ef3f9](https://github.com/bcgov/platform-services-registry/commit/87ef3f98786aa645018e9673cdb6ebf32f291f82))
+* **6168:** simplify cost page calculation logic ([a0a05da](https://github.com/bcgov/platform-services-registry/commit/a0a05dae2f93d1be897d0c324713718a215f9434))
 ## [0.73.1](https://github.com/bcgov/platform-services-registry/compare/v0.73.0...v0.73.1) (2025-07-21)
 
 ### Bug Fixes
