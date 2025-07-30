@@ -193,7 +193,7 @@ importers:
         version: 19.1.0(react@19.1.0)
       react-email:
         specifier: ^4.0.0
-        version: 4.2.4
+        version: 4.2.5
       react-hook-form:
         specifier: ^7.55.0
         version: 7.61.1(react@19.1.0)
@@ -578,6 +578,10 @@ packages:
 
   '@babel/types@7.28.1':
     resolution: {integrity: sha512-x0LvFTekgSX+83TI28Y9wYPUfzrnl2aT5+5QLnO6v7mSJYtEEevuDRN0F0uSHRk1G1IWZC43o00Y0xDDrpBGPQ==}
+    engines: {node: '>=6.9.0'}
+
+  '@babel/types@7.28.2':
+    resolution: {integrity: sha512-ruv7Ae4J5dUYULmeXw1gmb7rYRz57OWCPM57pHojnLq/3Z1CK2lNSLTCVjxVk1F/TZHwOZZrOWi0ur95BbLxNQ==}
     engines: {node: '>=6.9.0'}
 
   '@bcoe/v8-coverage@0.2.3':
@@ -5968,8 +5972,8 @@ packages:
     peerDependencies:
       react: ^19.1.0
 
-  react-email@4.2.4:
-    resolution: {integrity: sha512-r5x1nlWUXKZWoIU7l9jx5jkq43RuDUlroH0FRA5MMrCOaLqAfg3vOsAxAadNkG47L0iTeDkkqTKzaV6dTaYf/A==}
+  react-email@4.2.5:
+    resolution: {integrity: sha512-LESJxw/Lt3pD+IlziIDfSUGBhwq+4XrwEyxjLKP4piBpqqfUzOQT9VpFDby1kyWSgFrOhABNymVgLQF5HRpmQg==}
     engines: {node: '>=18.0.0'}
     hasBin: true
 
@@ -7191,7 +7195,7 @@ snapshots:
       '@babel/parser': 7.28.0
       '@babel/template': 7.27.2
       '@babel/traverse': 7.28.0
-      '@babel/types': 7.28.1
+      '@babel/types': 7.28.2
       convert-source-map: 2.0.0
       debug: 4.4.1
       gensync: 1.0.0-beta.2
@@ -7262,7 +7266,7 @@ snapshots:
 
   '@babel/parser@7.28.0':
     dependencies:
-      '@babel/types': 7.28.1
+      '@babel/types': 7.28.2
 
   '@babel/plugin-syntax-async-generators@7.8.4(@babel/core@7.26.10)':
     dependencies:
@@ -7481,12 +7485,17 @@ snapshots:
       '@babel/helper-globals': 7.28.0
       '@babel/parser': 7.28.0
       '@babel/template': 7.27.2
-      '@babel/types': 7.28.1
+      '@babel/types': 7.28.2
       debug: 4.4.1
     transitivePeerDependencies:
       - supports-color
 
   '@babel/types@7.28.1':
+    dependencies:
+      '@babel/helper-string-parser': 7.27.1
+      '@babel/helper-validator-identifier': 7.27.1
+
+  '@babel/types@7.28.2':
     dependencies:
       '@babel/helper-string-parser': 7.27.1
       '@babel/helper-validator-identifier': 7.27.1
@@ -9514,23 +9523,23 @@ snapshots:
   '@types/babel__core@7.20.5':
     dependencies:
       '@babel/parser': 7.28.0
-      '@babel/types': 7.28.1
+      '@babel/types': 7.28.2
       '@types/babel__generator': 7.27.0
       '@types/babel__template': 7.4.4
       '@types/babel__traverse': 7.20.7
 
   '@types/babel__generator@7.27.0':
     dependencies:
-      '@babel/types': 7.28.1
+      '@babel/types': 7.28.2
 
   '@types/babel__template@7.4.4':
     dependencies:
       '@babel/parser': 7.28.0
-      '@babel/types': 7.28.1
+      '@babel/types': 7.28.2
 
   '@types/babel__traverse@7.20.7':
     dependencies:
-      '@babel/types': 7.28.1
+      '@babel/types': 7.28.2
 
   '@types/cors@2.8.19':
     dependencies:
@@ -10190,7 +10199,7 @@ snapshots:
   babel-plugin-jest-hoist@30.0.1:
     dependencies:
       '@babel/template': 7.27.2
-      '@babel/types': 7.28.1
+      '@babel/types': 7.28.2
       '@types/babel__core': 7.20.5
 
   babel-plugin-macros@3.1.0:
@@ -13505,7 +13514,7 @@ snapshots:
       react: 19.1.0
       scheduler: 0.26.0
 
-  react-email@4.2.4:
+  react-email@4.2.5:
     dependencies:
       '@babel/parser': 7.28.0
       '@babel/traverse': 7.28.0
