@@ -192,19 +192,6 @@ export interface EnvironmentDetails {
   };
 }
 
-export interface DailyDiscreteValue {
-  cpu: number;
-  storage: number;
-}
-
-export interface QuarterlyDiscreteValue {
-  [quarter: number]: DailyDiscreteValue;
-}
-
-export interface YearlyDiscreteValue {
-  [year: number]: DailyDiscreteValue;
-}
-
 export enum TimeView {
   Monthly = 'Monthly',
   Quarterly = 'Quarterly',
@@ -228,56 +215,17 @@ export interface CostItem {
   total: EnvironmentDetails;
 }
 
-export interface MonthlyCost {
+export interface PeriodCosts {
   accountCoding: string;
   billingPeriod: string;
   currentTotal: number;
   estimatedGrandTotal: number;
   grandTotal: number;
   items: CostItem[];
-  discreteResourceValues: DailyDiscreteValue[];
   startDate: Date;
   progress: number;
-  days: number[];
-  dayDetails: {
-    cpuToDate: number[];
-    cpuToProjected: number[];
-    storageToDate: number[];
-    storageToProjected: number[];
-  };
-}
-
-export interface QuarterlyCost {
-  accountCoding: string;
-  billingPeriod: string;
-  currentTotal: number;
-  estimatedGrandTotal: number;
-  grandTotal: number;
-  items: CostItem[];
-  discreteResourceValues: QuarterlyDiscreteValue;
-  startDate: Date;
-  progress: number;
-  months: number[];
-  monthDetails: {
-    cpuToDate: number[];
-    cpuToProjected: number[];
-    storageToDate: number[];
-    storageToProjected: number[];
-  };
-}
-
-export interface YearlyCost {
-  accountCoding: string;
-  billingPeriod: string;
-  currentTotal: number;
-  estimatedGrandTotal: number;
-  grandTotal: number;
-  items: CostItem[];
-  discreteResourceValues: YearlyDiscreteValue;
-  startDate: Date;
-  progress: number;
-  months: number[];
-  monthDetails: {
+  timeUnits: number[];
+  timeDetails: {
     cpuToDate: number[];
     cpuToProjected: number[];
     storageToDate: number[];
@@ -298,10 +246,10 @@ export interface CostMetric {
 
 export interface DailyCostMetric {
   day: number;
-  dayDetails: CostMetric;
+  timeDetails: CostMetric;
 }
 
 export interface MonthlyCostMetric {
   month: number;
-  monthDetails: CostMetric;
+  timeDetails: CostMetric;
 }

@@ -6,7 +6,7 @@ import { Session } from 'next-auth';
 import { useEffect } from 'react';
 import MonthlyCostChart from '@/components/private-cloud/monthly-cost/MonthlyCostChart';
 import { getMonthlyCosts } from '@/services/backend/private-cloud/products';
-import { MonthlyCost } from '@/types/private-cloud';
+import { PeriodCosts } from '@/types/private-cloud';
 
 export default function Monthly({
   selectedDate,
@@ -19,7 +19,7 @@ export default function Monthly({
   selectedDate: Date;
   licencePlate: string;
   session: Session;
-  onDataLoaded: (data: MonthlyCost) => void;
+  onDataLoaded: (data: PeriodCosts) => void;
   forecastEnabled: boolean;
   onLoadingDone: (isLoading: boolean) => void;
 }) {
@@ -47,7 +47,7 @@ export default function Monthly({
     <>
       {data.items.length > 0 && (
         <MonthlyCostChart
-          data={{ days: data.days, dayDetails: data.dayDetails, billingPeriod: data.billingPeriod }}
+          data={{ timeUnits: data.timeUnits, timeDetails: data.timeDetails, billingPeriod: data.billingPeriod }}
           isForecastEnabled={forecastEnabled}
         />
       )}

@@ -1,9 +1,9 @@
 import { calculateTotalCost, getDailyCostData } from '@/constants';
-import { MonthlyCost } from '@/types/private-cloud';
+import { PeriodCosts } from '@/types/private-cloud';
 import { formatDate } from '@/utils/js/date';
 import { formatCurrency } from '@/utils/js/number';
 
-export default function MonthlyCostTable({ data }: { data: MonthlyCost }) {
+export default function MonthlyCostTable({ data }: { data: PeriodCosts }) {
   const dailyCost = getDailyCostData(data);
   const currenTotalCost = calculateTotalCost(dailyCost);
   return (
@@ -65,22 +65,22 @@ export default function MonthlyCostTable({ data }: { data: MonthlyCost }) {
           </tr>
         </thead>
         <tbody>
-          {data.days.map((day, idx: number) => {
-            const totalCost = data.dayDetails.cpuToDate[idx] + data.dayDetails.storageToDate[idx];
+          {data.timeUnits.map((day, idx: number) => {
+            const totalCost = data.timeDetails.cpuToDate[idx] + data.timeDetails.storageToDate[idx];
             return (
               <tr key={idx} className={idx % 2 === 0 ? 'bg-white dark:bg-gray-900' : 'bg-gray-50 dark:bg-gray-800'}>
                 <td className="p-2 border-b text-center">{day}</td>
                 <td className="p-2 border-b text-center">
-                  {totalCost === 0 ? 'N/A' : data.discreteResourceValues[idx].cpu}
+                  {/* {totalCost === 0 ? 'N/A' : data.discreteResourceValues[idx].cpu} */}
                 </td>
                 <td className="p-2 border-b text-center">
-                  {totalCost === 0 ? 'N/A' : formatCurrency(data.dayDetails.cpuToDate[idx])}
+                  {totalCost === 0 ? 'N/A' : formatCurrency(data.timeDetails.cpuToDate[idx])}
                 </td>
                 <td className="p-2 border-b text-center">
-                  {totalCost === 0 ? 'N/A' : data.discreteResourceValues[idx].storage}
+                  {/* {totalCost === 0 ? 'N/A' : data.discreteResourceValues[idx].storage} */}
                 </td>
                 <td className="p-2 border-b text-center">
-                  {totalCost === 0 ? 'N/A' : formatCurrency(data.dayDetails.storageToDate[idx])}
+                  {totalCost === 0 ? 'N/A' : formatCurrency(data.timeDetails.storageToDate[idx])}
                 </td>
                 <td className="p-2 border-b text-center">{totalCost === 0 ? 'N/A' : formatCurrency(totalCost)}</td>
               </tr>

@@ -1,5 +1,5 @@
 import { monthNames } from '@/constants/common';
-import { MonthlyCost, QuarterlyCost, TimeView, YearlyCost } from '@/types/private-cloud';
+import { PeriodCosts, TimeView } from '@/types/private-cloud';
 import { extractDateRanges, formatCurrency, getQuarterValue } from '@/utils/js';
 
 export default function CostSummary({
@@ -7,7 +7,7 @@ export default function CostSummary({
   viewMode,
   isFromPDFDownloader = false,
 }: {
-  data: MonthlyCost | YearlyCost | QuarterlyCost;
+  data: PeriodCosts;
   viewMode: TimeView;
   isFromPDFDownloader?: boolean;
 }) {

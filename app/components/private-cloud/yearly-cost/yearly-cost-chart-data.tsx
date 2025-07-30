@@ -1,12 +1,12 @@
 import { TooltipItem } from 'chart.js';
-import { YearlyCost } from '@/types/private-cloud';
+import { PeriodCosts } from '@/types/private-cloud';
 import { formatCurrency, getMonthNameFromNumber } from '@/utils/js';
 
 export function getYearlyCostChartConfig({
   data,
   isForecastEnabled,
 }: {
-  data: Pick<YearlyCost, 'months' | 'monthDetails'>;
+  data: Pick<PeriodCosts, 'timeUnits' | 'timeDetails'>;
   isForecastEnabled?: boolean;
 }) {
   const options = {
@@ -58,22 +58,22 @@ export function getYearlyCostChartConfig({
   const dynamicChartData = [
     {
       label: 'CPU Cost (CA$)',
-      data: data.monthDetails.cpuToDate,
+      data: data.timeDetails.cpuToDate,
       backgroundColor: '#4CAF50',
     },
     {
       label: 'Storage Cost (CA$)',
-      data: data.monthDetails.storageToDate,
+      data: data.timeDetails.storageToDate,
       backgroundColor: '#00CAFF',
     },
     {
       label: 'CPU Cost - Projected (CA$)',
-      data: data.monthDetails.cpuToProjected,
+      data: data.timeDetails.cpuToProjected,
       backgroundColor: '#E0F7E1',
     },
     {
       label: 'Storage Cost - Projected (CA$)',
-      data: data.monthDetails.storageToProjected,
+      data: data.timeDetails.storageToProjected,
       backgroundColor: '#CCF2FF',
     },
   ];
@@ -84,7 +84,7 @@ export function getYearlyCostChartConfig({
   }
 
   const chartData = {
-    labels: data.months.map(getMonthNameFromNumber),
+    labels: data.timeUnits.map(getMonthNameFromNumber),
     datasets: dynamicChartData,
   };
 

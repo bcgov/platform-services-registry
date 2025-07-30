@@ -5,7 +5,7 @@ import { Session } from 'next-auth';
 import { useEffect } from 'react';
 import QuarterlyCostChart from '@/components/private-cloud/quarterly-cost/QuarterlyCostChart';
 import { getQuarterlyCosts } from '@/services/backend/private-cloud/products';
-import { QuarterlyCost } from '@/types/private-cloud';
+import { PeriodCosts } from '@/types/private-cloud';
 import { formatAsYearQuarter } from '@/utils/js';
 
 export default function Quarterly({
@@ -19,7 +19,7 @@ export default function Quarterly({
   selectedDate: Date;
   licencePlate: string;
   session: Session;
-  onDataLoaded: (data: QuarterlyCost) => void;
+  onDataLoaded: (data: PeriodCosts) => void;
   forecastEnabled: boolean;
   onLoadingDone: (isLoading: boolean) => void;
 }) {
@@ -47,7 +47,7 @@ export default function Quarterly({
     <>
       {data.items.length > 0 && (
         <QuarterlyCostChart
-          data={{ months: data.months, monthDetails: data.monthDetails, billingPeriod: data.billingPeriod }}
+          data={{ timeUnits: data.timeUnits, timeDetails: data.timeDetails, billingPeriod: data.billingPeriod }}
           isForecastEnabled={forecastEnabled}
         />
       )}

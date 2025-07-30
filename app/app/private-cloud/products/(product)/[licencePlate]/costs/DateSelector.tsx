@@ -1,7 +1,7 @@
 import { Select, Switch, Tooltip } from '@mantine/core';
 import { MonthPickerInput, YearPickerInput } from '@mantine/dates';
 import { format } from 'date-fns';
-import { MonthlyCost, QuarterlyCost, TimeView, YearlyCost } from '@/types/private-cloud';
+import { PeriodCosts, TimeView } from '@/types/private-cloud';
 import { formatCurrency } from '@/utils/js';
 
 const inputClasses = 'border-gray-600 focus:border-gray-800 dark:border-gray-500 dark:focus:border-gray-300';
@@ -32,7 +32,7 @@ export default function DateSelector({
   forecastEnabled: boolean;
   showForecastSwitch?: boolean;
   showTable?: boolean;
-  data: MonthlyCost | YearlyCost | QuarterlyCost;
+  data: PeriodCosts;
 }) {
   const handleModeChange = (value: string | null) => {
     if (value && Object.values(TimeView).includes(value as TimeView)) {
