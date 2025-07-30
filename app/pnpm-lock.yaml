@@ -193,7 +193,7 @@ importers:
         version: 19.1.1(react@19.1.1)
       react-email:
         specifier: ^4.0.0
-        version: 4.2.4
+        version: 4.2.5
       react-hook-form:
         specifier: ^7.55.0
         version: 7.61.1(react@19.1.1)
@@ -5987,8 +5987,8 @@ packages:
     peerDependencies:
       react: ^19.1.1
 
-  react-email@4.2.4:
-    resolution: {integrity: sha512-r5x1nlWUXKZWoIU7l9jx5jkq43RuDUlroH0FRA5MMrCOaLqAfg3vOsAxAadNkG47L0iTeDkkqTKzaV6dTaYf/A==}
+  react-email@4.2.5:
+    resolution: {integrity: sha512-LESJxw/Lt3pD+IlziIDfSUGBhwq+4XrwEyxjLKP4piBpqqfUzOQT9VpFDby1kyWSgFrOhABNymVgLQF5HRpmQg==}
     engines: {node: '>=18.0.0'}
     hasBin: true
 
@@ -7281,7 +7281,7 @@ snapshots:
 
   '@babel/parser@7.28.0':
     dependencies:
-      '@babel/types': 7.28.1
+      '@babel/types': 7.28.2
 
   '@babel/plugin-syntax-async-generators@7.8.4(@babel/core@7.28.0)':
     dependencies:
@@ -7410,7 +7410,7 @@ snapshots:
       '@babel/helper-globals': 7.28.0
       '@babel/parser': 7.28.0
       '@babel/template': 7.27.2
-      '@babel/types': 7.28.1
+      '@babel/types': 7.28.2
       debug: 4.4.1
     transitivePeerDependencies:
       - supports-color
@@ -13409,7 +13409,7 @@ snapshots:
       react: 19.1.1
       scheduler: 0.26.0
 
-  react-email@4.2.4:
+  react-email@4.2.5:
     dependencies:
       '@babel/parser': 7.28.0
       '@babel/traverse': 7.28.0
