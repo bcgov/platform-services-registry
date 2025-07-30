@@ -1,12 +1,12 @@
 import { TooltipItem } from 'chart.js';
-import { MonthlyCost } from '@/types/private-cloud';
+import { PeriodCosts } from '@/types/private-cloud';
 import { formatCurrency } from '@/utils/js';
 
 export function getMonthlyCostChartConfig({
   data,
   isForecastEnabled,
 }: {
-  data: Pick<MonthlyCost, 'days' | 'dayDetails'>;
+  data: Pick<PeriodCosts, 'timeUnits' | 'timeDetails'>;
   isForecastEnabled?: boolean;
 }) {
   const options = {
@@ -58,22 +58,22 @@ export function getMonthlyCostChartConfig({
   const dynamicChartData = [
     {
       label: 'CPU Cost (CA$)',
-      data: data.dayDetails.cpuToDate,
+      data: data.timeDetails.cpuToDate,
       backgroundColor: '#4CAF50',
     },
     {
       label: 'Storage Cost (CA$)',
-      data: data.dayDetails.storageToDate,
+      data: data.timeDetails.storageToDate,
       backgroundColor: '#00CAFF',
     },
     {
       label: 'CPU Cost - Projected (CA$)',
-      data: data.dayDetails.cpuToProjected,
+      data: data.timeDetails.cpuToProjected,
       backgroundColor: '#E0F7E1',
     },
     {
       label: 'Storage Cost - Projected (CA$)',
-      data: data.dayDetails.storageToProjected,
+      data: data.timeDetails.storageToProjected,
       backgroundColor: '#CCF2FF',
     },
   ];
@@ -84,7 +84,7 @@ export function getMonthlyCostChartConfig({
   }
 
   const chartData = {
-    labels: data.days,
+    labels: data.timeUnits,
     datasets: dynamicChartData,
   };
 

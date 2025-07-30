@@ -5,7 +5,7 @@ import { Session } from 'next-auth';
 import { useEffect } from 'react';
 import YearlyCostChart from '@/components/private-cloud/yearly-cost/YearlyCostChart';
 import { getYearlyCosts } from '@/services/backend/private-cloud/products';
-import { YearlyCost } from '@/types/private-cloud';
+import { PeriodCosts } from '@/types/private-cloud';
 
 export default function Yearly({
   selectedDate,
@@ -18,7 +18,7 @@ export default function Yearly({
   selectedDate: Date;
   licencePlate: string;
   session: Session;
-  onDataLoaded: (data: YearlyCost) => void;
+  onDataLoaded: (data: PeriodCosts) => void;
   forecastEnabled: boolean;
   onLoadingDone: (isLoading: boolean) => void;
 }) {
@@ -47,7 +47,7 @@ export default function Yearly({
     <>
       {data.items.length > 0 && (
         <YearlyCostChart
-          data={{ months: data.months, monthDetails: data.monthDetails, billingPeriod: data.billingPeriod }}
+          data={{ timeUnits: data.timeUnits, timeDetails: data.timeDetails, billingPeriod: data.billingPeriod }}
           isForecastEnabled={forecastEnabled}
         />
       )}

@@ -7,10 +7,10 @@ import prisma from '@/core/prisma';
 import { Cluster, DecisionStatus, Prisma, RequestType } from '@/prisma/client';
 import {
   CostItem,
-  DailyDiscreteValue,
-  QuarterlyDiscreteValue,
+  // DailyDiscreteValue,
+  // QuarterlyDiscreteValue,
   TimeView,
-  YearlyDiscreteValue,
+  // YearlyDiscreteValue,
 } from '@/types/private-cloud';
 import {
   getMinutesInYear,
@@ -315,11 +315,11 @@ export async function getMonthlyCosts(licencePlate: string, year: number, oneInd
     estimatedGrandTotal,
     grandTotal,
     items,
-    discreteResourceValues: getDiscreteResourceValues(items, TimeView.Monthly) as DailyDiscreteValue[],
+    // discreteResourceValues: getDiscreteResourceValues(items, TimeView.Monthly) as DailyDiscreteValue[],
     startDate,
     progress: getProgress(startDate, endDate),
-    days,
-    dayDetails: {
+    timeUnits: days,
+    timeDetails: {
       cpuToDate,
       cpuToProjected,
       storageToDate,
@@ -411,8 +411,8 @@ async function getCostsBasedOnMonths(licencePlate: string, startDate: Date, endD
     items,
     startDate,
     progress: getProgress(startDate, endDate),
-    months,
-    monthDetails: {
+    timeUnits: months,
+    timeDetails: {
       cpuToDate,
       cpuToProjected,
       storageToDate,
@@ -427,7 +427,7 @@ export async function getQuarterlyCosts(licencePlate: string, year: number, quar
 
   const result = {
     ...baseData,
-    discreteResourceValues: getDiscreteResourceValues(baseData.items, TimeView.Quarterly),
+    // discreteResourceValues: getDiscreteResourceValues(baseData.items, TimeView.Quarterly),
     billingPeriod: `${dateRangeFormatter.format(startDate)}—${dateRangeFormatter.format(endDate)}, ${year}`,
   };
 
@@ -441,7 +441,7 @@ export async function getYearlyCosts(licencePlate: string, yearString: string) {
 
   const result = {
     ...baseData,
-    discreteResourceValues: getDiscreteResourceValues(baseData.items, TimeView.Yearly),
+    // discreteResourceValues: getDiscreteResourceValues(baseData.items, TimeView.Yearly),
     billingPeriod: `${dateRangeFormatter.format(startDate)}—${dateRangeFormatter.format(endDate)}, ${year}`,
   };
 
@@ -479,82 +479,82 @@ export async function getAdminMonthlyCosts(year: number, oneIndexedMonth: number
   };
 }
 
-function getResourceValuesFromDate(items: CostItem[], date: Date) {
-  const entry = items.find((item) => {
-    const start = new Date(item.startDate);
-    const end = new Date(item.endDate);
-    return date >= start && date < end;
-  });
+// function getResourceValuesFromDate(items: CostItem[], date: Date) {
+//   const entry = items.find((item) => {
+//     const start = new Date(item.startDate);
+//     const end = new Date(item.endDate);
+//     return date >= start && date < end;
+//   });
 
-  return {
-    cpu: entry?.total.cpu.value,
-    storage: entry?.total.storage.value,
-  };
-}
+//   return {
+//     cpu: entry?.total.cpu.value,
+//     storage: entry?.total.storage.value,
+//   };
+// }
 
-function getSummaryData(items: CostItem[], year: number, month: number): DailyDiscreteValue {
-  const daysInMonth = new Date(year, month + 1, 0).getDate();
-  let cpuSum = 0;
-  let storageSum = 0;
-  let daysWithData = 0;
+// function getSummaryData(items: CostItem[], year: number, month: number): DailyDiscreteValue {
+//   const daysInMonth = new Date(year, month + 1, 0).getDate();
+//   let cpuSum = 0;
+//   let storageSum = 0;
+//   let daysWithData = 0;
 
-  for (let day = 1; day <= daysInMonth; day++) {
-    const date = new Date(year, month, day);
-    const values = getResourceValuesFromDate(items, date);
+//   for (let day = 1; day <= daysInMonth; day++) {
+//     const date = new Date(year, month, day);
+//     const values = getResourceValuesFromDate(items, date);
 
-    if (values.cpu! > 0 || values.storage! > 0) {
-      cpuSum += values.cpu!;
-      storageSum += values.storage!;
-      daysWithData++;
-    }
-  }
+//     if (values.cpu! > 0 || values.storage! > 0) {
+//       cpuSum += values.cpu!;
+//       storageSum += values.storage!;
+//       daysWithData++;
+//     }
+//   }
 
-  const avgCpu = daysWithData ? cpuSum / daysWithData : 0;
-  const avgStorage = daysWithData ? storageSum / daysWithData : 0;
+//   const avgCpu = daysWithData ? cpuSum / daysWithData : 0;
+//   const avgStorage = daysWithData ? storageSum / daysWithData : 0;
 
-  return {
-    cpu: roundToHalfIncrement(avgCpu),
-    storage: roundToHalfIncrement(avgStorage),
-  };
-}
+//   return {
+//     cpu: roundToHalfIncrement(avgCpu),
+//     storage: roundToHalfIncrement(avgStorage),
+//   };
+// }
 
-function getDiscreteResourceValues(
-  items: CostItem[],
-  timeView?: TimeView,
-): DailyDiscreteValue[] | QuarterlyDiscreteValue | YearlyDiscreteValue {
-  if (!items?.length) return timeView === TimeView.Monthly ? [] : {};
+// function getDiscreteResourceValues(
+//   items: CostItem[],
+//   timeView?: TimeView,
+// ): DailyDiscreteValue[] | QuarterlyDiscreteValue | YearlyDiscreteValue {
+//   if (!items?.length) return timeView === TimeView.Monthly ? [] : {};
 
-  const year = new Date(items[0].startDate).getFullYear();
-  const month = new Date(items[0].startDate).getMonth();
+//   const year = new Date(items[0].startDate).getFullYear();
+//   const month = new Date(items[0].startDate).getMonth();
 
-  if (timeView === TimeView.Monthly) {
-    const lastDayOfMonth = new Date(year, month + 1, 0);
-    const daysInMonth = lastDayOfMonth.getDate();
+//   if (timeView === TimeView.Monthly) {
+//     const lastDayOfMonth = new Date(year, month + 1, 0);
+//     const daysInMonth = lastDayOfMonth.getDate();
 
-    return Array.from({ length: daysInMonth }, (_, idx) => {
-      const currentDate = new Date(year, month, idx + 1);
-      const { cpu = 0, storage = 0 } = getResourceValuesFromDate(items, currentDate) ?? {};
+//     return Array.from({ length: daysInMonth }, (_, idx) => {
+//       const currentDate = new Date(year, month, idx + 1);
+//       const { cpu = 0, storage = 0 } = getResourceValuesFromDate(items, currentDate) ?? {};
 
-      return {
-        cpu: roundToHalfIncrement(cpu),
-        storage: roundToHalfIncrement(storage),
-      };
-    });
-  }
+//       return {
+//         cpu: roundToHalfIncrement(cpu),
+//         storage: roundToHalfIncrement(storage),
+//       };
+//     });
+//   }
 
-  if (timeView === TimeView.Quarterly) {
-    const quarterlyDiscreteValues = {};
-    for (let m = 0; m < 3; m++) {
-      const currentMonth = (month + m) % 12;
-      const currentYear = year + Math.floor((month + m) / 12);
-      quarterlyDiscreteValues[currentMonth + 1] = getSummaryData(items, currentYear, currentMonth);
-    }
-    return quarterlyDiscreteValues;
-  }
+//   if (timeView === TimeView.Quarterly) {
+//     const quarterlyDiscreteValues = {};
+//     for (let m = 0; m < 3; m++) {
+//       const currentMonth = (month + m) % 12;
+//       const currentYear = year + Math.floor((month + m) / 12);
+//       quarterlyDiscreteValues[currentMonth + 1] = getSummaryData(items, currentYear, currentMonth);
+//     }
+//     return quarterlyDiscreteValues;
+//   }
 
-  const yearlyDiscreteValues = {};
-  for (let m = 0; m < 12; m++) {
-    yearlyDiscreteValues[m + 1] = getSummaryData(items, year, m);
-  }
-  return yearlyDiscreteValues;
-}
+//   const yearlyDiscreteValues = {};
+//   for (let m = 0; m < 12; m++) {
+//     yearlyDiscreteValues[m + 1] = getSummaryData(items, year, m);
+//   }
+//   return yearlyDiscreteValues;
+// }

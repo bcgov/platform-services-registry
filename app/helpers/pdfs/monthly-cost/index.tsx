@@ -5,7 +5,7 @@ import CostSummary from '@/components/private-cloud/CostSummary';
 import { getMonthlyCostChartConfig } from '@/components/private-cloud/monthly-cost/monthly-cost-chart-data';
 import MonthlyCostTable from '@/components/private-cloud/monthly-cost/MonthlyCostTable';
 import { WeasyPrint } from '@/services/weasyprint/client';
-import { MonthlyCost, PrivateCloudProductDetailDecorated, TimeView } from '@/types/private-cloud';
+import { PeriodCosts, PrivateCloudProductDetailDecorated, TimeView } from '@/types/private-cloud';
 import { replaceClassToStyleString } from '@/utils/js';
 
 const weasyClient = new WeasyPrint();
@@ -73,7 +73,7 @@ export async function generateMonthlyCostPdf({
   data,
 }: {
   product: PrivateCloudProductDetailDecorated;
-  data: MonthlyCost;
+  data: PeriodCosts;
 }) {
   const ReactDOMServer = (await import('react-dom/server')).default;
 

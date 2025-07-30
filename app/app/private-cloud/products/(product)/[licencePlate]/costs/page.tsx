@@ -1,12 +1,12 @@
 'use client';
 
-import { Box, Button, LoadingOverlay, Tabs } from '@mantine/core';
+import { Button, Tabs } from '@mantine/core';
 import { format } from 'date-fns';
 import { useEffect, useState } from 'react';
 import { z } from 'zod';
 import DataTable from '@/components/generic/data-table/DataTable';
+import LoadingBox from '@/components/generic/LoadingBox';
 import CostSummary from '@/components/private-cloud/CostSummary';
-import DateSelector from '@/components/private-cloud/DateSelector';
 import {
   calculateTotalCost,
   dailyCostColumns,
@@ -21,15 +21,9 @@ import {
   downloadPrivateCloudQuarterlyCosts,
   downloadPrivateCloudYearlyCosts,
 } from '@/services/backend/private-cloud/products';
-import {
-  DailyCostMetric,
-  MonthlyCost,
-  MonthlyCostMetric,
-  QuarterlyCost,
-  TimeView,
-  YearlyCost,
-} from '@/types/private-cloud';
+import { DailyCostMetric, PeriodCosts, MonthlyCostMetric, TimeView } from '@/types/private-cloud';
 import { formatAsYearQuarter, formatCurrency, getDateFromYyyyMmDd, getMonthNameFromNumber } from '@/utils/js';
+import DateSelector from './DateSelector';
 import Monthly from './Monthly';
 import Quarterly from './Quarterly';
 import Yearly from './Yearly';
@@ -66,7 +60,7 @@ function TableFooter({ label, totalCost }: { label?: string; totalCost: number }
 
 export default privateCloudProductCosts(({ getPathParams, session }) => {
   const [pathParams, setPathParams] = useState<z.infer<typeof pathParamSchema>>();
-  const [costData, setCostData] = useState<MonthlyCost | QuarterlyCost | YearlyCost>();
+  const [costData, setCostData] = useState<PeriodCosts>();
   const [forecastEnabled, setForecastEnabled] = useState(false);
   const [selectedDate, setSelectedDate] = useState(new Date());
   const [downloading, setDownloading] = useState(false);
@@ -90,7 +84,7 @@ export default privateCloudProductCosts(({ getPathParams, session }) => {
     }
   };
 
-  const handleDataLoaded = (data: MonthlyCost | QuarterlyCost | YearlyCost) => {
+  const handleDataLoaded = (data: PeriodCosts) => {
     setCostData(data);
     setIsLoading(false);
   };
@@ -113,9 +107,9 @@ export default privateCloudProductCosts(({ getPathParams, session }) => {
     return null;
   }
 
-  const isMonthlyCost = costData && viewMode === TimeView.Monthly && 'days' in costData;
+  const isMonthlyCost = costData && viewMode === TimeView.Monthly && 'timeUnits' in costData;
   const isQuarterlyOrYearlyCost =
-    costData && (viewMode === TimeView.Quarterly || viewMode === TimeView.Yearly) && 'months' in costData;
+    costData && (viewMode === TimeView.Quarterly || viewMode === TimeView.Yearly) && 'timeDetails' in costData;
 
   const dailyCostData = isMonthlyCost ? getDailyCostData(costData) : [];
   const monthlyCostData = isQuarterlyOrYearlyCost ? getMonthlyCostData(costData) : [];
@@ -180,63 +174,55 @@ export default privateCloudProductCosts(({ getPathParams, session }) => {
   }
 
   return (
-    <div className="space-y-5">
-      <Box pos="relative">
-        <LoadingOverlay
-          visible={isLoading}
-          zIndex={1000}
-          overlayProps={{ radius: 'sm', blur: 2 }}
-          loaderProps={{ color: 'pink', type: 'bars' }}
-        />
-        <div className="relative">
-          {costData && (
-            <>
-              <CostSummary data={costData} viewMode={viewMode} />
-              <Button
-                loading={downloading}
-                onClick={async () => {
-                  handleDownloadCostPdf();
-                }}
-                className="absolute right-0 top-[10px]"
-              >
-                Download PDF
-              </Button>
-            </>
+    <LoadingBox isLoading={isLoading} className="my-2">
+      <div className="relative">
+        {costData && (
+          <>
+            <CostSummary data={costData} viewMode={viewMode} />
+            <Button
+              loading={downloading}
+              onClick={async () => {
+                handleDownloadCostPdf();
+              }}
+              className="absolute right-0 top-[10px]"
+            >
+              Download PDF
+            </Button>
+          </>
+        )}
+      </div>
+
+      <h1 className="text-3xl font-bold mb-4">Consumption data</h1>
+
+      <Tabs variant="unstyled" defaultValue="graph">
+        <Tabs.List grow className="max-w-60 overflow-hidden">
+          <Tabs.Tab value="graph" className={tabClassname}>
+            Graph
+          </Tabs.Tab>
+          <Tabs.Tab value="table" className={tabClassname}>
+            Table
+          </Tabs.Tab>
+        </Tabs.List>
+
+        <Tabs.Panel className="border" value="graph">
+          <DateSelector {...dateSelectorProps} />
+          {renderChart()}
+        </Tabs.Panel>
+
+        <Tabs.Panel className="border" value="table">
+          <DateSelector {...dateSelectorProps} showForecastSwitch={false} showTable />
+          {viewMode === TimeView.Monthly && dailyCostData.length > 0 && (
+            <div className="mx-16 mt-8 mb-14">
+              <DataTable<DailyCostMetric> data={dailyCostData} columns={dailyCostColumns} {...tableProps} />
+            </div>
           )}
-        </div>
-
-        <h1 className="text-3xl font-bold mb-4">Consumption data</h1>
-
-        <Tabs variant="unstyled" defaultValue="graph">
-          <Tabs.List grow className="max-w-60 overflow-hidden">
-            <Tabs.Tab value="graph" className={tabClassname}>
-              Graph
-            </Tabs.Tab>
-            <Tabs.Tab value="table" className={tabClassname}>
-              Table
-            </Tabs.Tab>
-          </Tabs.List>
-
-          <Tabs.Panel className="border" value="graph">
-            <DateSelector {...dateSelectorProps} />
-            {renderChart()}
-          </Tabs.Panel>
-
-          <Tabs.Panel className="border" value="table">
-            <DateSelector {...dateSelectorProps} showForecastSwitch={false} showTable />
-            {viewMode === TimeView.Monthly && dailyCostData.length > 0 && (
-              <div className="mx-16 mt-8 mb-14">
-                <DataTable<DailyCostMetric> data={dailyCostData} columns={dailyCostColumns} {...tableProps} />
-              </div>
-            )}
-            {(viewMode === TimeView.Quarterly || viewMode === TimeView.Yearly) && monthlyCostData.length > 0 && (
-              <div className="mx-16 mt-8 mb-14">
-                <DataTable<MonthlyCostMetric> data={monthlyCostData} columns={monthlyCostColumns} {...tableProps} />
-              </div>
-            )}
-          </Tabs.Panel>
-        </Tabs>
-      </Box>
-    </div>
+          {(viewMode === TimeView.Quarterly || viewMode === TimeView.Yearly) && monthlyCostData.length > 0 && (
+            <div className="mx-16 mt-8 mb-14">
+              <DataTable<MonthlyCostMetric> data={monthlyCostData} columns={monthlyCostColumns} {...tableProps} />
+            </div>
+          )}
+        </Tabs.Panel>
+      </Tabs>
+    </LoadingBox>
   );
 });

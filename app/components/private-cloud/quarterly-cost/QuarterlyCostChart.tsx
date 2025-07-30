@@ -1,13 +1,13 @@
 import { Card } from '@mantine/core';
 import { Bar } from 'react-chartjs-2';
-import { QuarterlyCost } from '@/types/private-cloud';
+import { PeriodCosts } from '@/types/private-cloud';
 import { getQuarterlyCostChartConfig } from './quarterly-cost-chart-data';
 
 export default function QuarterlyCostChart({
   data,
   isForecastEnabled = true,
 }: {
-  data: Pick<QuarterlyCost, 'months' | 'monthDetails' | 'billingPeriod'>;
+  data: Pick<PeriodCosts, 'timeUnits' | 'timeDetails' | 'billingPeriod'>;
   isForecastEnabled?: boolean;
 }) {
   const { options, data: chartData } = getQuarterlyCostChartConfig({ data, isForecastEnabled });

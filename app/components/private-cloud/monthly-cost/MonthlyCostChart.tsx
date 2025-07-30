@@ -1,13 +1,13 @@
 import { Card } from '@mantine/core';
 import { Bar } from 'react-chartjs-2';
-import { MonthlyCost } from '@/types/private-cloud';
+import { PeriodCosts } from '@/types/private-cloud';
 import { getMonthlyCostChartConfig } from './monthly-cost-chart-data';
 
 export default function MonthlyCostChart({
   data,
   isForecastEnabled = true,
 }: {
-  data: Pick<MonthlyCost, 'days' | 'dayDetails' | 'billingPeriod'>;
+  data: Pick<PeriodCosts, 'timeUnits' | 'timeDetails' | 'billingPeriod'>;
   isForecastEnabled?: boolean;
 }) {
   const { options, data: chartData } = getMonthlyCostChartConfig({ data, isForecastEnabled });

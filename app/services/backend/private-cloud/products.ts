@@ -8,11 +8,9 @@ import {
   PrivateCloudProductDetailDecorated,
   PrivateCloudProductSearch,
   PrivateCloudRequestDetail,
-  QuarterlyCost,
+  PeriodCosts,
   PrivateCloudRequestDetailDecorated,
-  YearlyCost,
 } from '@/types/private-cloud';
-import { MonthlyCost } from '@/types/private-cloud';
 import { UsageMetrics } from '@/types/usage';
 import { downloadFile } from '@/utils/browser';
 import {
@@ -178,7 +176,7 @@ export async function getQuotaChangeStatus(licencePlate: string, resourceRequest
 }
 
 export async function getYearlyCosts(licencePlate: string, year: string) {
-  const response = await instance.get<YearlyCost>(`/${licencePlate}/costs/yearly/${year}`).then((res) => res.data);
+  const response = await instance.get<PeriodCosts>(`/${licencePlate}/costs/yearly/${year}`).then((res) => res.data);
   return response;
 }
 
@@ -196,7 +194,7 @@ export async function downloadPrivateCloudYearlyCosts(licencePlate: string, year
 
 export async function getMonthlyCosts(licencePlate: string, yearMonth: string) {
   const response = await instance
-    .get<MonthlyCost>(`/${licencePlate}/costs/monthly/${yearMonth}`)
+    .get<PeriodCosts>(`/${licencePlate}/costs/monthly/${yearMonth}`)
     .then((res) => res.data);
   return response;
 }
@@ -215,7 +213,7 @@ export async function downloadPrivateCloudMonthlyCosts(licencePlate: string, yea
 
 export async function getQuarterlyCosts(licencePlate: string, yearMonth: string) {
   const response = await instance
-    .get<QuarterlyCost>(`/${licencePlate}/costs/quarterly/${yearMonth}`)
+    .get<PeriodCosts>(`/${licencePlate}/costs/quarterly/${yearMonth}`)
     .then((res) => res.data);
   return response;
 }
