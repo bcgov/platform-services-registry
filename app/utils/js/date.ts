@@ -345,3 +345,12 @@ export function getDaysBetweenDates(startDate: Date | string, endDate: Date | st
 
   return Math.floor(difference / (1000 * 60 * 60 * 24)) + 1;
 }
+
+export function getMinutesInMonth(year: number, month: number): number {
+  // `month` is 1-based for user input, but Date uses 0-based months
+  const start = new Date(year, month - 1, 1);
+  const end = new Date(year, month, 1); // first day of next month
+  const diffMs = end.getTime() - start.getTime();
+  const diffMinutes = diffMs / (1000 * 60);
+  return diffMinutes;
+}

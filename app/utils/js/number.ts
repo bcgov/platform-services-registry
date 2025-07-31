@@ -2,12 +2,25 @@ import * as crypto from 'crypto';
 
 export const roundNumber = (number: number, options?: { decimals?: number }) => {
   const { decimals = 2 } = options ?? {};
-  return Number((Math.round(number * 100) / 100).toFixed(decimals));
+  const factor = Math.pow(10, decimals);
+  const rounded = Math.round(number * factor) / factor;
+
+  return rounded;
 };
 
-export const formatNumber = (number: number, options?: { prefix?: string; suffix?: string; decimals?: number }) => {
-  const { prefix = '', suffix = '', decimals = 2 } = options ?? {};
-  const value = new Intl.NumberFormat('us').format(roundNumber(number, { decimals })).toString();
+export const formatNumber = (
+  number: number,
+  options?: { prefix?: string; suffix?: string; decimals?: number; keepDecimals?: boolean },
+) => {
+  const { prefix = '', suffix = '', decimals = 2, keepDecimals = false } = options ?? {};
+  const rounded = roundNumber(number, { decimals });
+  const value = keepDecimals
+    ? rounded.toFixed(decimals)
+    : new Intl.NumberFormat('en-US', {
+        minimumFractionDigits: 0,
+        maximumFractionDigits: decimals,
+      }).format(rounded);
+
   return `${prefix}${value}${suffix}`;
 };
 

@@ -203,7 +203,9 @@ export interface CostItem {
   endDate: Date;
   minutes: number;
   cpuPricePerMinute: number;
+  cpuPricePerYear: number;
   storagePricePerMinute: number;
+  storagePricePerYear: number;
   isPast: boolean;
   isArchived: boolean;
   isProjected: boolean;
@@ -230,6 +232,10 @@ export interface PeriodCosts {
     cpuToProjected: number[];
     storageToDate: number[];
     storageToProjected: number[];
+    cpuQuotaToDate: number[];
+    cpuQuotaToProjected: number[];
+    storageQuotaToDate: number[];
+    storageQuotaToProjected: number[];
   };
 }
 

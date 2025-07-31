@@ -1,22 +1,25 @@
 import { calculateTotalCost, getDailyCostData } from '@/constants';
 import { PeriodCosts } from '@/types/private-cloud';
 import { formatDate } from '@/utils/js/date';
-import { formatCurrency } from '@/utils/js/number';
+import { formatCurrency, formatNumber } from '@/utils/js/number';
 
 export default function MonthlyCostTable({ data }: { data: PeriodCosts }) {
   const dailyCost = getDailyCostData(data);
   const currenTotalCost = calculateTotalCost(dailyCost);
+
   return (
     <>
       <table className="w-full text-sm border-collapse">
         <thead>
           <tr className="bg-gray-100 dark:bg-gray-800">
             <th className="text-left p-2 border-b">Date Range</th>
-            <th className="text-center p-2 border-b">CPU (cores)</th>
-            <th className="text-center p-2 border-b">Storage (GiB)</th>
-            <th className="text-center p-2 border-b">CPU Cost</th>
-            <th className="text-center p-2 border-b">Storage Cost</th>
-            <th className="text-center p-2 border-b">Total Cost</th>
+            <th className="text-right p-2 border-b">CPU (cores)</th>
+            <th className="text-right p-2 border-b">Storage (GiB)</th>
+            <th className="text-right p-2 border-b">CPU Unit Price (year)</th>
+            <th className="text-right p-2 border-b">Storage Unit Price (year)</th>
+            <th className="text-right p-2 border-b">CPU Cost</th>
+            <th className="text-right p-2 border-b">Storage Cost</th>
+            <th className="text-right p-2 border-b">Total Cost</th>
           </tr>
         </thead>
         <tbody>
@@ -37,11 +40,13 @@ export default function MonthlyCostTable({ data }: { data: PeriodCosts }) {
                     </span>
                   )}
                 </td>
-                <td className="p-2 border-b text-center">{item.total.cpu.value}</td>
-                <td className="p-2 border-b text-center">{item.total.storage.value}</td>
-                <td className="p-2 border-b text-center">{formatCurrency(item.total.cpu.cost)}</td>
-                <td className="p-2 border-b text-center">{formatCurrency(item.total.storage.cost)}</td>
-                <td className="p-2 border-b text-center">{formatCurrency(item.total.subtotal.cost)}</td>
+                <td className="p-2 border-b text-right">{item.total.cpu.value}</td>
+                <td className="p-2 border-b text-right">{item.total.storage.value}</td>
+                <td className="p-2 border-b text-right">{formatCurrency(item.cpuPricePerYear)}</td>
+                <td className="p-2 border-b text-right">{formatCurrency(item.storagePricePerYear)}</td>
+                <td className="p-2 border-b text-right">{formatCurrency(item.total.cpu.cost)}</td>
+                <td className="p-2 border-b text-right">{formatCurrency(item.total.storage.cost)}</td>
+                <td className="p-2 border-b text-right">{formatCurrency(item.total.subtotal.cost)}</td>
               </tr>
             ))
           ) : (
@@ -56,12 +61,12 @@ export default function MonthlyCostTable({ data }: { data: PeriodCosts }) {
       <table className="w-full text-sm border-collapse mt-6">
         <thead>
           <tr className="bg-gray-100 dark:bg-gray-800">
-            <th className="text-center p-2 border-b">Day</th>
-            <th className="text-center p-2 border-b">CPU (Cores)</th>
-            <th className="text-center p-2 border-b">CPU Cost</th>
-            <th className="text-center p-2 border-b">Storage (GiB)</th>
-            <th className="text-center p-2 border-b">Storage Cost</th>
-            <th className="text-center p-2 border-b">Total Cost</th>
+            <th className="text-right p-2 border-b">Day</th>
+            <th className="text-right p-2 border-b">CPU (Cores)</th>
+            <th className="text-right p-2 border-b">CPU Cost</th>
+            <th className="text-right p-2 border-b">Storage (GiB)</th>
+            <th className="text-right p-2 border-b">Storage Cost</th>
+            <th className="text-right p-2 border-b">Total Cost</th>
           </tr>
         </thead>
         <tbody>
@@ -69,20 +74,24 @@ export default function MonthlyCostTable({ data }: { data: PeriodCosts }) {
             const totalCost = data.timeDetails.cpuToDate[idx] + data.timeDetails.storageToDate[idx];
             return (
               <tr key={idx} className={idx % 2 === 0 ? 'bg-white dark:bg-gray-900' : 'bg-gray-50 dark:bg-gray-800'}>
-                <td className="p-2 border-b text-center">{day}</td>
-                <td className="p-2 border-b text-center">
-                  {/* {totalCost === 0 ? 'N/A' : data.discreteResourceValues[idx].cpu} */}
+                <td className="p-2 border-b text-right">{day}</td>
+                <td className="p-2 border-b text-right">
+                  {totalCost === 0
+                    ? '-'
+                    : formatNumber(data.timeDetails.cpuQuotaToDate[idx], { decimals: 2, keepDecimals: true })}
                 </td>
-                <td className="p-2 border-b text-center">
-                  {totalCost === 0 ? 'N/A' : formatCurrency(data.timeDetails.cpuToDate[idx])}
+                <td className="p-2 border-b text-right">
+                  {totalCost === 0 ? '-' : formatCurrency(data.timeDetails.cpuToDate[idx])}
                 </td>
-                <td className="p-2 border-b text-center">
-                  {/* {totalCost === 0 ? 'N/A' : data.discreteResourceValues[idx].storage} */}
+                <td className="p-2 border-b text-right">
+                  {totalCost === 0
+                    ? '-'
+                    : formatNumber(data.timeDetails.storageQuotaToDate[idx], { decimals: 2, keepDecimals: true })}
                 </td>
-                <td className="p-2 border-b text-center">
-                  {totalCost === 0 ? 'N/A' : formatCurrency(data.timeDetails.storageToDate[idx])}
+                <td className="p-2 border-b text-right">
+                  {totalCost === 0 ? '-' : formatCurrency(data.timeDetails.storageToDate[idx])}
                 </td>
-                <td className="p-2 border-b text-center">{totalCost === 0 ? 'N/A' : formatCurrency(totalCost)}</td>
+                <td className="p-2 border-b text-right">{totalCost === 0 ? '-' : formatCurrency(totalCost)}</td>
               </tr>
             );
           })}
