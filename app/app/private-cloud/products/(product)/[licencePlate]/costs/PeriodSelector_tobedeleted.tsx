@@ -1,7 +1,7 @@
 import { Select, Switch, Tooltip } from '@mantine/core';
 import { MonthPickerInput, YearPickerInput } from '@mantine/dates';
 import { format } from 'date-fns';
-import { PeriodCosts, TimeView } from '@/types/private-cloud';
+import { PeriodCosts, CostPeriod } from '@/types/private-cloud';
 import { formatCurrency } from '@/utils/js';
 
 const inputClasses = 'border-gray-600 focus:border-gray-800 dark:border-gray-500 dark:focus:border-gray-300';
@@ -13,7 +13,7 @@ const switchStyles = (enabled: boolean) => ({
   },
 });
 
-export default function DateSelector({
+export default function PeriodSelector({
   selectedDate,
   handleDateChange,
   viewMode,
@@ -26,8 +26,8 @@ export default function DateSelector({
 }: {
   selectedDate: Date;
   handleDateChange: (date: string | null) => void;
-  viewMode: TimeView;
-  onModeChange: (mode: TimeView) => void;
+  viewMode: CostPeriod;
+  onModeChange: (mode: CostPeriod) => void;
   onForecastChange: (enabled: boolean) => void;
   forecastEnabled: boolean;
   showForecastSwitch?: boolean;
@@ -35,12 +35,12 @@ export default function DateSelector({
   data: PeriodCosts;
 }) {
   const handleModeChange = (value: string | null) => {
-    if (value && Object.values(TimeView).includes(value as TimeView)) {
-      onModeChange(value as TimeView);
+    if (value && Object.values(CostPeriod).includes(value as CostPeriod)) {
+      onModeChange(value as CostPeriod);
     }
   };
 
-  const isMonthPicker = viewMode === TimeView.Monthly || viewMode === TimeView.Quarterly;
+  const isMonthPicker = viewMode === CostPeriod.Monthly || viewMode === CostPeriod.Quarterly;
   const currentMonth = format(selectedDate, 'MMMM');
 
   return (
@@ -51,7 +51,7 @@ export default function DateSelector({
             <Select
               placeholder="Select Mode"
               value={viewMode}
-              data={Object.values(TimeView)}
+              data={Object.values(CostPeriod)}
               onChange={handleModeChange}
               classNames={{ input: inputClasses }}
             />
@@ -100,7 +100,7 @@ export default function DateSelector({
               condition: data.currentTotal !== -1,
               value: data.currentTotal,
               label:
-                viewMode === TimeView.Monthly
+                viewMode === CostPeriod.Monthly
                   ? `Current total cost for ${currentMonth}`
                   : `Current total cost for ${data.billingPeriod}`,
             },
@@ -108,7 +108,7 @@ export default function DateSelector({
               condition: data.grandTotal !== -1,
               value: data.grandTotal,
               label:
-                viewMode === TimeView.Monthly
+                viewMode === CostPeriod.Monthly
                   ? `Grand total cost for ${currentMonth}`
                   : `Grand total cost for ${data.billingPeriod}`,
             },
@@ -116,7 +116,7 @@ export default function DateSelector({
               condition: data.estimatedGrandTotal !== -1 && forecastEnabled,
               value: data.estimatedGrandTotal,
               label:
-                viewMode === TimeView.Monthly
+                viewMode === CostPeriod.Monthly
                   ? `Estimated grand total cost for ${currentMonth}`
                   : `Estimated grand total cost for ${data.billingPeriod}`,
             },

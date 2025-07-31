@@ -1,11 +1,11 @@
-import { calculateTotalCost, getDailyCostData } from '@/constants';
+import { getCostDetailTableData } from '@/constants';
 import { PeriodCosts } from '@/types/private-cloud';
 import { formatDate } from '@/utils/js/date';
 import { formatCurrency, formatNumber } from '@/utils/js/number';
 
 export default function MonthlyCostTable({ data }: { data: PeriodCosts }) {
-  const dailyCost = getDailyCostData(data);
-  const currenTotalCost = calculateTotalCost(dailyCost);
+  const dailyCost = getCostDetailTableData(data);
+  const currenTotalCost = data.currentTotal ?? 0;
 
   return (
     <>

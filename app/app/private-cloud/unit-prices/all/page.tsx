@@ -155,12 +155,16 @@ export default PrivateCloudUnitPricesPage(({ session }) => {
 
   return (
     <div className="pt-5">
-      <h1 className="text-xl lg:text-2xl 2xl:text-4xl font-semibold leading-7 text-gray-900 pb-2">
-        Private Cloud Unit Prices
+      <h1 className="text-xl lg:text-2xl 2xl:text-4xl font-semibold leading-7 text-gray-900 pb-3">
+        Private Cloud Unit Prices (Yearly)
       </h1>
       <div className="grid grid-cols-4 lg:grid-cols-6 gap-4">
         <div className="hidden col-span-1 lg:block"></div>
+        <h3 className="text-xl font-semibold">Effective dates</h3>
+      </div>
 
+      <div className="grid grid-cols-4 lg:grid-cols-6 gap-4">
+        <div className="hidden col-span-1 lg:block"></div>
         <div className="bg-gray-100 p-4 rounded-sm col-span-2">
           <DatePicker
             value={date}

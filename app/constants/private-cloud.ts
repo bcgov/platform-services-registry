@@ -1,7 +1,7 @@
 import CostStatusBadge from '@/components/badges/CostStatusBadge';
 import { ColumnDefinition } from '@/components/generic/data-table/DataTable';
 import { Cluster, Prisma, ResourceRequestsEnv, ResourceRequests, PrivateCloudProductMemberRole } from '@/prisma/client';
-import { CostMetric, DailyCostMetric, MonthlyCostMetric, PeriodicCostMetric, PeriodCosts } from '@/types/private-cloud';
+import { CostMetric, CostDetailTableData, PeriodicCostMetric, PeriodCosts } from '@/types/private-cloud';
 import { formatCurrency, getMonthNameFromNumber } from '@/utils/js';
 import { productSorts } from './common';
 
@@ -143,10 +143,10 @@ const createCostColumns = <T extends CostDetails<K>, K extends string>(detailsKe
   },
 ];
 
-export const monthlyCostCommonColumns = <T extends MonthlyCostMetric>(): ColumnDefinition<T>[] =>
+export const monthlyCostCommonColumns = <T extends CostDetailTableData>(): ColumnDefinition<T>[] =>
   createCostColumns<T, 'timeDetails'>('timeDetails');
 
-export const dailyCostCommonColumns = <T extends DailyCostMetric>(): ColumnDefinition<T>[] =>
+export const dailyCostCommonColumns = <T extends CostDetailTableData>(): ColumnDefinition<T>[] =>
   createCostColumns<T, 'timeDetails'>('timeDetails');
 
 export const periodicCostColumns: ColumnDefinition<PeriodicCostMetric>[] = [
@@ -154,55 +154,30 @@ export const periodicCostColumns: ColumnDefinition<PeriodicCostMetric>[] = [
   ...periodicCostCommonColumns<PeriodicCostMetric>(),
 ];
 
-export const dailyCostColumns: ColumnDefinition<DailyCostMetric>[] = [
-  { label: 'Day', value: 'day', cellProcessor: (item) => item.day },
-  ...dailyCostCommonColumns<DailyCostMetric>(),
+export const dailyCostColumns: ColumnDefinition<CostDetailTableData>[] = [
+  { label: 'Day', value: 'day', cellProcessor: (item) => item.timeUnit },
+  ...dailyCostCommonColumns<CostDetailTableData>(),
 ];
 
-export const monthlyCostColumns: ColumnDefinition<MonthlyCostMetric>[] = [
-  { label: 'Month', value: 'month', cellProcessor: (item) => getMonthNameFromNumber(item.month) },
-  ...monthlyCostCommonColumns<MonthlyCostMetric>(),
+export const monthlyCostColumns: ColumnDefinition<CostDetailTableData>[] = [
+  { label: 'Month', value: 'month', cellProcessor: (item) => getMonthNameFromNumber(item.timeUnit) },
+  ...monthlyCostCommonColumns<CostDetailTableData>(),
 ];
 
-export function getDailyCostData(costData: PeriodCosts): DailyCostMetric[] {
-  return costData.timeUnits.map((day, idx) => {
-    const { cpuToDate, storageToDate, cpuQuotaToDate, storageQuotaToDate } = costData.timeDetails;
+export function getCostDetailTableData(costData: PeriodCosts): CostDetailTableData[] {
+  return costData.timeUnits.map((timeUnit, idx) => {
+    const { cpuToDate, storageToDate, cpuQuotaToDate, storageQuotaToDate, costToDate } = costData.timeDetails;
     const totalCost = cpuToDate[idx] + storageToDate[idx];
 
     return {
-      day,
+      timeUnit,
       timeDetails: {
         cpuToDate: cpuToDate[idx],
         storageToDate: storageToDate[idx],
         cpuCore: cpuQuotaToDate[idx],
         storageGib: storageQuotaToDate[idx],
-        totalCost,
+        totalCost: costToDate[idx],
       },
     };
   });
 }
-
-export function getMonthlyCostData(costData: PeriodCosts): MonthlyCostMetric[] {
-  return costData.timeUnits.map((month, idx) => {
-    const { cpuToDate, storageToDate, cpuQuotaToDate, storageQuotaToDate } = costData.timeDetails;
-    const totalCost = cpuToDate[idx] + storageToDate[idx];
-
-    return {
-      month,
-      timeDetails: {
-        cpuToDate: cpuToDate[idx],
-        storageToDate: storageToDate[idx],
-        cpuCore: cpuQuotaToDate[idx],
-        storageGib: storageQuotaToDate[idx],
-        totalCost,
-      },
-    };
-  });
-}
-
-export const calculateTotalCost = <T extends { timeDetails?: { totalCost: number } }>(data: T[]): number => {
-  return data.reduce((sum, item) => {
-    const cost = item.timeDetails?.totalCost ?? item.timeDetails?.totalCost ?? 0;
-    return sum + cost;
-  }, 0);
-};

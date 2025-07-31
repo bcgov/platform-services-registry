@@ -192,7 +192,7 @@ export interface EnvironmentDetails {
   };
 }
 
-export enum TimeView {
+export enum CostPeriod {
   Monthly = 'Monthly',
   Quarterly = 'Quarterly',
   Yearly = 'Yearly',
@@ -236,6 +236,8 @@ export interface PeriodCosts {
     cpuQuotaToProjected: number[];
     storageQuotaToDate: number[];
     storageQuotaToProjected: number[];
+    costToDate: number[];
+    costToProjected: number[];
   };
 }
 
@@ -250,12 +252,7 @@ export interface CostMetric {
   storageGib: number;
 }
 
-export interface DailyCostMetric {
-  day: number;
-  timeDetails: CostMetric;
-}
-
-export interface MonthlyCostMetric {
-  month: number;
+export interface CostDetailTableData {
+  timeUnit: number;
   timeDetails: CostMetric;
 }

@@ -1,32 +1,26 @@
 'use client';
 
-import { Button, Tabs } from '@mantine/core';
+import { Tabs, Button } from '@mantine/core';
 import { format } from 'date-fns';
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { z } from 'zod';
 import DataTable from '@/components/generic/data-table/DataTable';
 import LoadingBox from '@/components/generic/LoadingBox';
 import CostSummary from '@/components/private-cloud/CostSummary';
-import {
-  calculateTotalCost,
-  dailyCostColumns,
-  getDailyCostData,
-  getMonthlyCostData,
-  GlobalRole,
-  monthlyCostColumns,
-} from '@/constants';
+import MonthlyCostChart from '@/components/private-cloud/monthly-cost/MonthlyCostChart';
+import QuarterlyCostChart from '@/components/private-cloud/quarterly-cost/QuarterlyCostChart';
+import YearlyCostChart from '@/components/private-cloud/yearly-cost/YearlyCostChart';
+import { dailyCostColumns, GlobalRole, monthlyCostColumns } from '@/constants';
 import createClientPage from '@/core/client-page';
 import {
   downloadPrivateCloudMonthlyCosts,
   downloadPrivateCloudQuarterlyCosts,
   downloadPrivateCloudYearlyCosts,
 } from '@/services/backend/private-cloud/products';
-import { DailyCostMetric, PeriodCosts, MonthlyCostMetric, TimeView } from '@/types/private-cloud';
+import { CostDetailTableData, PeriodCosts, CostPeriod } from '@/types/private-cloud';
 import { formatAsYearQuarter, formatCurrency, getDateFromYyyyMmDd, getMonthNameFromNumber } from '@/utils/js';
-import DateSelector from './DateSelector';
-import Monthly from './Monthly';
-import Quarterly from './Quarterly';
-import Yearly from './Yearly';
+import PeriodSelector from './PeriodSelector';
+import { useCostState } from './state';
 
 const tabClassname = `
   relative text-sm font-medium border-x border-t border-gray-200
@@ -58,41 +52,32 @@ function TableFooter({ label, totalCost }: { label?: string; totalCost: number }
   );
 }
 
+function GraphView({
+  period,
+  data,
+  isForecastEnabled,
+}: {
+  period: CostPeriod;
+  data: PeriodCosts;
+  isForecastEnabled: boolean;
+}) {
+  switch (period) {
+    case CostPeriod.Monthly:
+      return <MonthlyCostChart data={data} isForecastEnabled={isForecastEnabled} />;
+    case CostPeriod.Quarterly:
+      return <QuarterlyCostChart data={data} isForecastEnabled={isForecastEnabled} />;
+    case CostPeriod.Yearly:
+      return <YearlyCostChart data={data} isForecastEnabled={isForecastEnabled} />;
+    default:
+      return null;
+  }
+}
+
 export default privateCloudProductCosts(({ getPathParams, session }) => {
+  const [state, snap] = useCostState();
   const [pathParams, setPathParams] = useState<z.infer<typeof pathParamSchema>>();
-  const [costData, setCostData] = useState<PeriodCosts>();
-  const [forecastEnabled, setForecastEnabled] = useState(false);
-  const [selectedDate, setSelectedDate] = useState(new Date());
   const [downloading, setDownloading] = useState(false);
-  const [viewMode, setViewMode] = useState<TimeView>(TimeView.Monthly);
-  const [isLoading, setIsLoading] = useState(true);
-
   const { licencePlate = '' } = pathParams ?? {};
-
-  const handleDateChange = (date: string | null) => {
-    setIsLoading(true);
-    if (!date) {
-      setSelectedDate(new Date());
-      return;
-    }
-
-    if (viewMode === TimeView.Monthly || viewMode === TimeView.Quarterly) {
-      setSelectedDate(getDateFromYyyyMmDd(date));
-    } else {
-      const year = parseInt(date.split('-')[0], 10);
-      setSelectedDate(new Date(year, 0, 1));
-    }
-  };
-
-  const handleDataLoaded = (data: PeriodCosts) => {
-    setCostData(data);
-    setIsLoading(false);
-  };
-
-  const handleModeChange = (viewMode: TimeView) => {
-    setIsLoading(true);
-    setViewMode(viewMode);
-  };
 
   useEffect(() => {
     const loadInitialData = async () => {
@@ -103,82 +88,61 @@ export default privateCloudProductCosts(({ getPathParams, session }) => {
     loadInitialData();
   }, [getPathParams]);
 
+  const pageData = useMemo(() => {
+    if (!snap.data) return { tableData: [], currentTotal: 0 };
+
+    const { cpuToDate, storageToDate, cpuQuotaToDate, storageQuotaToDate, costToDate } = snap.data.timeDetails;
+    const tableData = snap.data.timeUnits.map((timeUnit, idx) => {
+      return {
+        timeUnit,
+        timeDetails: {
+          cpuToDate: cpuToDate[idx],
+          storageToDate: storageToDate[idx],
+          cpuCore: cpuQuotaToDate[idx],
+          storageGib: storageQuotaToDate[idx],
+          totalCost: costToDate[idx],
+        },
+      };
+    });
+
+    return { tableData, currentTotal: snap.data.currentTotal };
+  }, [snap.data]);
+
   if (!session) {
     return null;
   }
 
-  const isMonthlyCost = costData && viewMode === TimeView.Monthly && 'timeUnits' in costData;
-  const isQuarterlyOrYearlyCost =
-    costData && (viewMode === TimeView.Quarterly || viewMode === TimeView.Yearly) && 'timeDetails' in costData;
-
-  const dailyCostData = isMonthlyCost ? getDailyCostData(costData) : [];
-  const monthlyCostData = isQuarterlyOrYearlyCost ? getMonthlyCostData(costData) : [];
-
-  const totalDailyCost = calculateTotalCost(dailyCostData);
-  const totalMonthlyCost = calculateTotalCost(monthlyCostData);
-
   const selectedPeriod =
-    viewMode === TimeView.Monthly ? getMonthNameFromNumber(selectedDate.getMonth() + 1) : costData?.billingPeriod;
-
-  const dateSelectorProps = {
-    selectedDate,
-    handleDateChange,
-    viewMode,
-    onModeChange: handleModeChange,
-    onForecastChange: setForecastEnabled,
-    forecastEnabled,
-    data: costData!,
-  };
+    snap.period === CostPeriod.Monthly
+      ? getMonthNameFromNumber(snap.selectedDate.getMonth() + 1)
+      : snap.data?.billingPeriod;
 
   const tableProps = {
     disablePagination: true,
-    footer: totalDailyCost ? (
-      <TableFooter label={selectedPeriod} totalCost={totalDailyCost} />
-    ) : (
-      <TableFooter label={selectedPeriod} totalCost={totalMonthlyCost} />
-    ),
-  };
-
-  const renderChart = () => {
-    const commonProps = {
-      selectedDate,
-      licencePlate,
-      session,
-      onDataLoaded: handleDataLoaded,
-      forecastEnabled,
-      onLoadingDone: setIsLoading,
-    };
-
-    switch (viewMode) {
-      case TimeView.Monthly:
-        return <Monthly {...commonProps} />;
-      case TimeView.Quarterly:
-        return <Quarterly {...commonProps} />;
-      case TimeView.Yearly:
-        return <Yearly {...commonProps} />;
-      default:
-        return null;
-    }
+    footer: <TableFooter label={selectedPeriod} totalCost={pageData.currentTotal} />,
   };
 
   async function handleDownloadCostPdf() {
-    if (!costData) return;
+    if (!snap.data) return;
     setDownloading(true);
     const downloadPDF =
       {
-        [TimeView.Monthly]: () => downloadPrivateCloudMonthlyCosts(licencePlate, format(selectedDate, 'yyyy-MM')),
-        [TimeView.Quarterly]: () => downloadPrivateCloudQuarterlyCosts(licencePlate, formatAsYearQuarter(selectedDate)),
-      }[viewMode] || (() => downloadPrivateCloudYearlyCosts(licencePlate, selectedDate.getFullYear().toString()));
+        [CostPeriod.Monthly]: () =>
+          downloadPrivateCloudMonthlyCosts(licencePlate, format(snap.selectedDate, 'yyyy-MM')),
+        [CostPeriod.Quarterly]: () =>
+          downloadPrivateCloudQuarterlyCosts(licencePlate, formatAsYearQuarter(snap.selectedDate)),
+      }[snap.period] ||
+      (() => downloadPrivateCloudYearlyCosts(licencePlate, snap.selectedDate.getFullYear().toString()));
     await downloadPDF();
     setDownloading(false);
   }
 
   return (
-    <LoadingBox isLoading={isLoading} className="my-2">
+    <LoadingBox isLoading={false} className="my-2">
       <div className="relative">
-        {costData && (
+        {snap.data && (
           <>
-            <CostSummary data={costData} viewMode={viewMode} />
+            <CostSummary data={snap.data} period={snap.period} />
             <Button
               loading={downloading}
               onClick={async () => {
@@ -192,7 +156,7 @@ export default privateCloudProductCosts(({ getPathParams, session }) => {
         )}
       </div>
 
-      <h1 className="text-3xl font-bold mb-4">Consumption data</h1>
+      <h1 className="text-3xl font-bold mb-4">Details</h1>
 
       <Tabs variant="unstyled" defaultValue="graph">
         <Tabs.List grow className="max-w-60 overflow-hidden">
@@ -205,22 +169,27 @@ export default privateCloudProductCosts(({ getPathParams, session }) => {
         </Tabs.List>
 
         <Tabs.Panel className="border" value="graph">
-          <DateSelector {...dateSelectorProps} />
-          {renderChart()}
+          <PeriodSelector licencePlate={licencePlate} />
+          {snap.data && <GraphView period={snap.period} data={snap.data} isForecastEnabled={snap.forecastEnabled} />}
         </Tabs.Panel>
 
         <Tabs.Panel className="border" value="table">
-          <DateSelector {...dateSelectorProps} showForecastSwitch={false} showTable />
-          {viewMode === TimeView.Monthly && dailyCostData.length > 0 && (
+          <PeriodSelector licencePlate={licencePlate} />
+          {snap.period === CostPeriod.Monthly && pageData.tableData.length > 0 && (
             <div className="mx-16 mt-8 mb-14">
-              <DataTable<DailyCostMetric> data={dailyCostData} columns={dailyCostColumns} {...tableProps} />
+              <DataTable<CostDetailTableData> data={pageData.tableData} columns={dailyCostColumns} {...tableProps} />
             </div>
           )}
-          {(viewMode === TimeView.Quarterly || viewMode === TimeView.Yearly) && monthlyCostData.length > 0 && (
-            <div className="mx-16 mt-8 mb-14">
-              <DataTable<MonthlyCostMetric> data={monthlyCostData} columns={monthlyCostColumns} {...tableProps} />
-            </div>
-          )}
+          {(snap.period === CostPeriod.Quarterly || snap.period === CostPeriod.Yearly) &&
+            pageData.tableData.length > 0 && (
+              <div className="mx-16 mt-8 mb-14">
+                <DataTable<CostDetailTableData>
+                  data={pageData.tableData}
+                  columns={monthlyCostColumns}
+                  {...tableProps}
+                />
+              </div>
+            )}
         </Tabs.Panel>
       </Tabs>
     </LoadingBox>
