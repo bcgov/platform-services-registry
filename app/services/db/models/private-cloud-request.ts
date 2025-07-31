@@ -17,24 +17,11 @@ async function baseFilter(session: Session) {
   if (!session?.userId) return false;
   if (session.permissions.viewAllPrivateCloudProducts) return true;
 
-  const { data: products } = await privateCloudProductModel.list({ select: { licencePlate: true } }, session);
-  const licencePlates = products.map(({ licencePlate }) => licencePlate);
-
-  const requestIdsFromTasks = session.tasks
-    .filter(
-      (task) =>
-        ([TaskType.REVIEW_PRIVATE_CLOUD_REQUEST] as TaskType[]).includes(task.type) &&
-        task.status === TaskStatus.ASSIGNED,
-    )
-    .map((task) => (task.data as { requestId: string }).requestId);
-
   const filter: Prisma.PrivateCloudRequestWhereInput = {
     OR: [
-      { licencePlate: { in: licencePlates } },
-      { id: { in: getUniqueNonFalsyItems([...requestIdsFromTasks]) } },
       {
         type: RequestType.CREATE,
-        createdById: { equals: session.user.id, mode: 'insensitive' },
+        createdById: session.user.id,
       },
       {
         type: RequestType.CREATE,
@@ -50,6 +37,25 @@ async function baseFilter(session: Session) {
       },
     ],
   };
+
+  const { data: products } = await privateCloudProductModel.list({ select: { licencePlate: true } }, session);
+  const requestIdsFromTasks = session.tasks
+    .filter(
+      (task) =>
+        ([TaskType.REVIEW_PRIVATE_CLOUD_REQUEST] as TaskType[]).includes(task.type) &&
+        task.status === TaskStatus.ASSIGNED,
+    )
+    .map((task) => (task.data as { requestId: string }).requestId);
+
+  const allowedLicencePlates = products.map(({ licencePlate }) => licencePlate);
+  if (allowedLicencePlates.length > 0) {
+    filter.OR?.push({ licencePlate: { in: allowedLicencePlates } });
+  }
+
+  const allowedIds = getUniqueNonFalsyItems([...requestIdsFromTasks]);
+  if (allowedIds.length > 0) {
+    filter.OR?.push({ id: { in: allowedIds } });
+  }
 
   return filter;
 }

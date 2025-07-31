@@ -17,6 +17,31 @@ async function baseFilter(session: Session) {
   if (!session?.userId) return false;
   if (session.permissions.viewAllPublicCloudProducts) return true;
 
+  const filter: Prisma.PublicCloudRequestWhereInput = {
+    OR: [
+      {
+        type: RequestType.CREATE,
+        createdById: session.user.id,
+      },
+      {
+        type: RequestType.CREATE,
+        decisionData: { projectOwnerId: session.user.id },
+      },
+      {
+        type: RequestType.CREATE,
+        decisionData: { primaryTechnicalLeadId: session.user.id },
+      },
+      {
+        type: RequestType.CREATE,
+        decisionData: { secondaryTechnicalLeadId: session.user.id },
+      },
+      {
+        type: RequestType.CREATE,
+        decisionData: { expenseAuthorityId: session.user.id },
+      },
+    ],
+  };
+
   const { data: products } = await publicCloudProductModel.list({ select: { licencePlate: true } }, session);
   const licencePlates = products.map(({ licencePlate }) => licencePlate);
 
@@ -51,36 +76,20 @@ async function baseFilter(session: Session) {
 
   const licencePlatesAsEa = billingRecords.map((b) => b.licencePlate);
 
-  const filter: Prisma.PublicCloudRequestWhereInput = {
-    OR: [
-      {
-        licencePlate: {
-          in: getUniqueNonFalsyItems([...licencePlates, ...licencePlatesFromTasks, ...licencePlatesAsEa]),
-        },
-      },
-      { id: { in: getUniqueNonFalsyItems([...requestIdsFromTasks]) } },
-      {
-        type: RequestType.CREATE,
-        createdById: { equals: session.user.id, mode: 'insensitive' },
-      },
-      {
-        type: RequestType.CREATE,
-        decisionData: { projectOwnerId: session.user.id },
-      },
-      {
-        type: RequestType.CREATE,
-        decisionData: { primaryTechnicalLeadId: session.user.id },
-      },
-      {
-        type: RequestType.CREATE,
-        decisionData: { secondaryTechnicalLeadId: session.user.id },
-      },
-      {
-        type: RequestType.CREATE,
-        decisionData: { expenseAuthorityId: session.user.id },
-      },
-    ],
-  };
+  const allowedLicencePlates = getUniqueNonFalsyItems([
+    ...licencePlates,
+    ...licencePlatesFromTasks,
+    ...licencePlatesAsEa,
+  ]);
+
+  if (allowedLicencePlates.length > 0) {
+    filter.OR?.push({ licencePlate: { in: allowedLicencePlates } });
+  }
+
+  const allowedIds = getUniqueNonFalsyItems([...requestIdsFromTasks]);
+  if (allowedIds.length > 0) {
+    filter.OR?.push({ id: { in: allowedIds } });
+  }
 
   return filter;
 }
