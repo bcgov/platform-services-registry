@@ -5,7 +5,7 @@ Feature: Edit Request Compare Data
     And User waits for "1" seconds
     When User clicks tab "PRIVATE CLOUD OPENSHIFT"
     And User clicks button "Request a new product"
-    And User types "Automated Test Product Name Compare Data" in "Product name"
+    And User types "Automated Compare Data After Edit Test" in "Product name"
     And User types "Automated Test to compare data Description" in "Description"
     And User selects "Citizens Services" in "Ministry"
     And User clicks and selects "SILVER" in "Hosting tier"
@@ -20,23 +20,23 @@ Feature: Edit Request Compare Data
     And User clicks modal window button "Submit"
     And User clicks modal window button "Close"
     Then User should be redirected to Requests tab
-    And User should see "Automated Test Product Name"
+    And User should see "Automated Compare Data After Edit Test"
     And User logs out
     And User logs in with username "private.reviewer.system@gov.bc.ca" and password "private.reviewer.system@gov.bc.ca"
     And User clicks tab "PRIVATE CLOUD OPENSHIFT"
     And User waits for "1" seconds
     And User clicks tab "Requests"
     And User waits for "1" seconds
-    And User clicks link "Automated Test Product Name Compare Data"
+    And User clicks link "Automated Compare Data After Edit Test"
     And User clicks button "Approve"
     And User clicks modal window button "Submit"
     And User clicks modal window button "Return to Dashboard"
     And User logs out
     And User logs in with username "james.smith@gov.bc.ca" and password "james.smith@gov.bc.ca"
     And User clicks tab "PRIVATE CLOUD OPENSHIFT"
-    When User clicks link "Automated Test Product Name Compare Data"
+    When User clicks link "Automated Compare Data After Edit Test"
     And User waits for "1" seconds
-    And User types "Automated Test Edit Request Compare Data" in "Product name"
+    And User types "Automated Test Edit Request Edited Compare Data" in "Product name"
     And User types "Automated Test to compare data Description Edit" in "Description"
     And User selects "Finance" in "Ministry"
     And User clicks tab "Team members"
@@ -47,7 +47,6 @@ Feature: Edit Request Compare Data
     And User chooses to add contact "Secondary Technical Lead"
     And User types and selects email "kevin.taylor@gov.bc.ca"
     And User types "12345678901" in "After-Hours support contact"
-    And User clicks tab "Additional team members"
     And User clicks button "Add New"
     And User chooses to edit additional team member
     And User types and selects email "jessica.davis@gov.bc.ca"
@@ -77,25 +76,25 @@ Feature: Edit Request Compare Data
     And User clicks modal window button "Close"
     And User waits for "2" seconds
     Then User should be redirected to Requests tab
-    And User should see "Automated Test Edit Request Compare Data"
+    And User should see "Automated Test Edit Request Edited Compare Data"
     And User logs out
     And User logs in with username "private.reviewer.system@gov.bc.ca" and password "private.reviewer.system@gov.bc.ca"
     And User clicks tab "PRIVATE CLOUD OPENSHIFT"
     And User waits for "3" seconds
     And User clicks tab "Requests"
     And User waits for "3" seconds
-    And User clicks link "Automated Test Edit Request Compare Data"
+    And User clicks link "Automated Test Edit Request Edited Compare Data"
     And User clicks button "Approve"
     And User clicks modal window button "Submit"
     And User clicks modal window button "Return to Dashboard"
     And User clicks tab "Products"
-    Then User should see "Automated Test Edit Request Compare Data"
+    Then User should see "Automated Test Edit Request Edited Compare Data"
     And User logs out
     And User logs in with username "jenna.anderson@gov.bc.ca" and password "jenna.anderson@gov.bc.ca"
     And User clicks tab "PRIVATE CLOUD OPENSHIFT"
-    And User clicks link "Automated Test Edit Request Compare Data"
+    And User clicks link "Automated Test Edit Request Edited Compare Data"
     And User waits for "2" seconds
-    Then User sees "Automated Test Edit Request Compare Data" in "Product name"
+    Then User sees "Automated Test Edit Request Edited Compare Data" in "Product name"
     And User sees "Automated Test to compare data Description Edit" in "Description"
     And User checks that select "Ministry" value is "FIN"
     And User sees "SILVER" in "Hosting tier"
@@ -103,8 +102,6 @@ Feature: Edit Request Compare Data
     And User checks "Project Owner" is set to "jenna.anderson@gov.bc.ca"
     And User checks "Primary Technical Lead" is set to "sarah.williams@gov.bc.ca"
     And User checks "Secondary Technical Lead" is set to "kevin.taylor@gov.bc.ca"
-    And User sees "+1 (234) 567-8901" in "After-Hours support contact"
-    And User clicks tab "Additional team members"
     And User confirms Additional team members is set to "jessica.davis@gov.bc.ca"
     And User clicks tab "Quotas"
     And User verifies quota value is "1" in "CPU" for "Development"

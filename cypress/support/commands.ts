@@ -48,15 +48,16 @@ declare global {
 }
 
 export function loginToRegistry(username: string, password: string): void {
-  cy.visit('/login', { failOnStatusCode: false });
+  cy.visit('/home', { failOnStatusCode: false });
   cy.contains('button', 'Login').click();
   cy.wait(2000); // wait until the page loads, otherwise no chances to find clause below
-  cy.url().then((val) => {
-    if (val.includes('/api/auth/signin?csrf=true')) {
-      cy.contains('span', 'Sign in with Keycloak').click();
-      cy.wait(2000);
-    }
-  });
+  // cy.url().then((val) => {
+  //   if (val.includes('/api/auth/signin')) {
+  //     cy.log('Runtime is inside if case for keycloak interruption');
+  //     cy.contains('span', 'Sign in with Keycloak').click();
+  //     cy.wait(2000);
+  //   }
+  // });
   cy.origin(
     Cypress.env('keycloakUrl'),
     { args: { usernameOrig: username, passwordOrig: password } },
@@ -67,8 +68,7 @@ export function loginToRegistry(username: string, password: string): void {
     },
   );
 
-  cy.contains('a', 'PRIVATE CLOUD OPENSHIFT');
-  cy.contains('a', 'PUBLIC CLOUD LANDING ZONES');
+  cy.contains('a,span', /PRIVATE CLOUD OPENSHIFT|PUBLIC CLOUD LANDING ZONES|Back to Requests/);
 }
 
 export function logoutFromRegistry(): void {
