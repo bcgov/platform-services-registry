@@ -21,7 +21,7 @@ async function baseFilter(session: Session) {
     OR: [
       {
         type: RequestType.CREATE,
-        createdById: { equals: session.user.id },
+        createdById: session.user.id,
       },
       {
         type: RequestType.CREATE,
