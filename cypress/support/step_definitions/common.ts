@@ -55,7 +55,7 @@ When('User chooses to edit additional team member', () => {
 
 When(/^User types and selects email "(.*)"$/, (contactEmail: string) => {
   cy.get('.email-input').find('input').click().clear().type(contactEmail);
-  cy.wait(1000);
+  cy.wait(2000);
   cy.contains('p', contactEmail).scrollIntoView().click();
   cy.get('div[aria-modal="true"], section[role="dialog"]').find('button').contains('Select').click();
 });
@@ -69,7 +69,9 @@ When(/^User types justification "(.*)" in "(.*)"$/, (fieldText: string, fieldHea
 });
 
 When(/^User clicks button "(.*)"$/, (buttonText: string) => {
-  cy.contains('a, span, button', buttonText).scrollIntoView().click();
+  cy.contains('a, span, button', new RegExp(`\\b${buttonText}\\b`))
+    .scrollIntoView()
+    .click();
 });
 
 When(/^User clicks modal window button "(.*)"$/, (buttonText: string) => {
@@ -208,6 +210,10 @@ Then('User should be redirected to Requests tab', () => {
 
 Then(/^User should see "(.*)"$/, (requestName: string) => {
   cy.contains('span', requestName).should('be.visible');
+});
+
+Then(/^User searches for "(.*)"$/, (productName: string) => {
+  cy.get('input[id ="simple-search"]').type(productName);
 });
 
 Then(/^User should not see "(.*)"$/, (productName: string) => {

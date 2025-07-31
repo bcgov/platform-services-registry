@@ -5,10 +5,10 @@ Feature: Edit Request
     And User waits for "1" seconds
     When User clicks tab "PUBLIC CLOUD LANDING ZONES"
     And User clicks button "Request a new product"
-    And User types "Automated Test Product Name" in "Product name"
+    And User types "Automated Edit Request Test Name" in "Product name"
     And User types "Automated Test Description" in "Description"
     And User selects "Citizens Services" in "Ministry"
-    And User selects "AWS" in "Cloud Service Provider"
+    And User selects "AWS LZA" in "Cloud Service Provider"
     And User clicks and selects "Cost efficiency" in "Select reason for choosing cloud provider"
     And User types "Test reason for choosing Cl. Prov." in "Description of reason(s) for selecting cloud provider"
     And User clicks tab "Accounts to create"
@@ -32,7 +32,7 @@ Feature: Edit Request
     And User waits for "2" seconds
     And User clicks modal window button "Close"
     Then User should be redirected to Requests tab
-    And User should see "Automated Test Product Name"
+    And User should see "Automated Edit Request Test Name"
     And User logs out
     And User logs in with username "michael.brown@gov.bc.ca" and password "michael.brown@gov.bc.ca"
     And User waits for "2" seconds
@@ -40,7 +40,7 @@ Feature: Edit Request
     And User waits for "2" seconds
     And User clicks tab "Requests"
     And User waits for "2" seconds
-    And User clicks link "Automated Test Product Name"
+    And User clicks link "Automated Edit Request Test Name"
     And User waits for "2" seconds
     And User clicks button "Sign eMOU"
     And User types "132" in "Client Code"
@@ -52,41 +52,44 @@ Feature: Edit Request
     And User clicks modal window button "Confirm"
     And User logs out
     And User logs in with username "billing.reviewer.system@gov.bc.ca" and password "billing.reviewer.system@gov.bc.ca"
-    And User waits for "1" seconds
-    When User clicks tab "PUBLIC CLOUD LANDING ZONES"
-    And User waits for "1" seconds
+    And User waits for "2" seconds
+    And User clicks tab "PUBLIC CLOUD LANDING ZONES"
     And User clicks tab "Requests"
-    And User waits for "1" seconds
-    And User clicks link "Automated Test Product Name"
-    And User waits for "1" seconds
+    And User waits for "2" seconds
+    And User clicks link "Automated Edit Request Test Name"
+    And User waits for "2" seconds
     And User clicks button "Review eMOU"
     And User waits for "1" seconds
     And User checks checkbox "By checking this box, I confirm..."
+    And User makes a screenshot
     And User clicks modal window button "Confirm"
+    And User makes a screenshot
     And User waits for "5" seconds
     And User logs out
     And User logs in with username "public.reviewer.system@gov.bc.ca" and password "public.reviewer.system@gov.bc.ca"
-    And User waits for "3" seconds
-    When User clicks tab "PUBLIC CLOUD LANDING ZONES"
-    And User waits for "3" seconds
+    And User waits for "2" seconds
+    And User clicks tab "PUBLIC CLOUD LANDING ZONES"
+    And User makes a screenshot
     And User clicks tab "Requests"
-    And User waits for "3" seconds
-    And User clicks link "Automated Test Product Name"
+    And User searches for "Automated Edit Request Test Name"
+    And User waits for "10" seconds
+    And User clicks link "Automated Edit Request Test Name"
+    And User waits for "2" seconds
     And User clicks button "Approve"
     And User clicks modal window button "Submit"
     And User clicks modal window button "Return to Dashboard"
     And User clicks tab "Products"
     And User reloads the page
     And User waits for "3" seconds
-    Then User should see "Automated Test Product Name"
+    Then User should see "Automated Edit Request Test Name"
     And User logs out
     And User logs in with username "james.smith@gov.bc.ca" and password "james.smith@gov.bc.ca"
     And User waits for "1" seconds
     When User clicks tab "PUBLIC CLOUD LANDING ZONES"
     And User waits for "1" seconds
-    And User clicks link "Automated Test Product Name"
+    And User clicks link "Automated Edit Request Test Name"
     And User waits for "1" seconds
-    And User types "Automated Test Edit Request" in "Product name"
+    And User types "Automated Test Edit Request Edited" in "Product name"
     And User types "Automated Test Description Edit" in "Description"
     And User selects "Finance" in "Ministry"
     And User clicks tab "Accounts to create"
@@ -113,5 +116,5 @@ Feature: Edit Request
     And User waits for "1" seconds
     When User clicks tab "PUBLIC CLOUD LANDING ZONES"
     And User waits for "1" seconds
-    Then User should see "Automated Test Edit Request"
+    Then User should see "Automated Test Edit Request Edited"
     And User logs out
