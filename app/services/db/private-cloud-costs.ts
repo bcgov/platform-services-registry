@@ -21,6 +21,7 @@ import {
   getMonthsArrayFromDates,
   getDaysBetweenDates,
   dateRangeFormatter,
+  getMinutesInMonth,
 } from '@/utils/js/date';
 import { roundToHalfIncrement } from '@/utils/js/number';
 
@@ -215,7 +216,9 @@ async function getCostDetailsForRange(licencePlate: string, startDate: Date, end
       endDate: intervalEnd,
       minutes: durationMinutes,
       cpuPricePerMinute,
+      cpuPricePerYear: price.cpu,
       storagePricePerMinute,
+      storagePricePerYear: price.storage,
       isPast,
       isArchived,
       isProjected,
@@ -237,6 +240,7 @@ export async function getMonthlyCosts(licencePlate: string, year: number, oneInd
   const month = oneIndexedMonth - 1;
   const today = new Date();
   const todayDay = today.getDate();
+  const minutesInDay = 24 * 60;
 
   const isCurrentMonth = today.getFullYear() === year && today.getMonth() === month;
   const { items, total } = await getCostDetailsForRange(licencePlate, startDate, endDate);
@@ -259,6 +263,10 @@ export async function getMonthlyCosts(licencePlate: string, year: number, oneInd
   const cpuToProjected = new Array(numDays).fill(0);
   const storageToDate = new Array(numDays).fill(0);
   const storageToProjected = new Array(numDays).fill(0);
+  const cpuQuotaToDate = new Array(numDays).fill(0);
+  const cpuQuotaToProjected = new Array(numDays).fill(0);
+  const storageQuotaToDate = new Array(numDays).fill(0);
+  const storageQuotaToProjected = new Array(numDays).fill(0);
 
   const sortedItems = _orderBy(items, ['startDate'], ['desc']);
 
@@ -295,15 +303,20 @@ export async function getMonthlyCosts(licencePlate: string, year: number, oneInd
       if (metaIndex === sortedItems.length - 1 && meta.startDate > intervalStart) intervalStart = meta.startDate;
 
       const durationMinutes = (intervalEnd.getTime() - intervalStart.getTime()) / (1000 * 60);
+      const durationRatio = durationMinutes / minutesInDay;
       const cpuPrice = meta.total.cpu.value * meta.cpuPricePerMinute * durationMinutes;
       const storagePrice = meta.total.storage.value * meta.storagePricePerMinute * durationMinutes;
 
       if (intervalEnd <= today) {
         cpuToDate[day - 1] += cpuPrice;
         storageToDate[day - 1] += storagePrice;
+        cpuQuotaToDate[day - 1] += meta.total.cpu.value * durationRatio;
+        storageQuotaToDate[day - 1] += meta.total.storage.value * durationRatio;
       } else {
         cpuToProjected[day - 1] += cpuPrice;
         storageToProjected[day - 1] += storagePrice;
+        cpuQuotaToProjected[day - 1] += meta.total.cpu.value * durationRatio;
+        storageQuotaToProjected[day - 1] += meta.total.storage.value * durationRatio;
       }
     }
   }
@@ -324,6 +337,10 @@ export async function getMonthlyCosts(licencePlate: string, year: number, oneInd
       cpuToProjected,
       storageToDate,
       storageToProjected,
+      cpuQuotaToDate,
+      cpuQuotaToProjected,
+      storageQuotaToDate,
+      storageQuotaToProjected,
     },
   };
 }
@@ -352,12 +369,18 @@ async function getCostsBasedOnMonths(licencePlate: string, startDate: Date, endD
   const cpuToProjected = new Array(numberOfMonths).fill(0);
   const storageToDate = new Array(numberOfMonths).fill(0);
   const storageToProjected = new Array(numberOfMonths).fill(0);
+  const cpuQuotaToDate = new Array(numberOfMonths).fill(0);
+  const cpuQuotaToProjected = new Array(numberOfMonths).fill(0);
+  const storageQuotaToDate = new Array(numberOfMonths).fill(0);
+  const storageQuotaToProjected = new Array(numberOfMonths).fill(0);
 
   const sortedItems = _orderBy(items, ['startDate'], ['desc']);
 
   for (let i = 0; i < months.length; i++) {
     const month = months[i];
     const jsMonth = month - 1; // convert to 0-indexed
+    const minutesInMonth = getMinutesInMonth(year, month);
+
     const monthStart = new Date(year, jsMonth, 1);
     const monthEnd = new Date(year, jsMonth + 1, 1, 0, 0, 0, -1);
 
@@ -390,15 +413,20 @@ async function getCostsBasedOnMonths(licencePlate: string, startDate: Date, endD
       if (metaIndex === sortedItems.length - 1 && meta.startDate > intervalStart) intervalStart = meta.startDate;
 
       const durationMinutes = (intervalEnd.getTime() - intervalStart.getTime()) / (1000 * 60);
+      const durationRatio = durationMinutes / minutesInMonth;
       const cpuPrice = meta.total.cpu.value * meta.cpuPricePerMinute * durationMinutes;
       const storagePrice = meta.total.storage.value * meta.storagePricePerMinute * durationMinutes;
 
       if (intervalEnd <= today) {
         cpuToDate[i] += cpuPrice;
         storageToDate[i] += storagePrice;
+        cpuQuotaToDate[i] += meta.total.cpu.value * durationRatio;
+        storageQuotaToDate[i] += meta.total.storage.value * durationRatio;
       } else {
         cpuToProjected[i] += cpuPrice;
         storageToProjected[i] += storagePrice;
+        cpuQuotaToProjected[i] += meta.total.cpu.value * durationRatio;
+        storageQuotaToProjected[i] += meta.total.storage.value * durationRatio;
       }
     }
   }
@@ -417,6 +445,10 @@ async function getCostsBasedOnMonths(licencePlate: string, startDate: Date, endD
       cpuToProjected,
       storageToDate,
       storageToProjected,
+      cpuQuotaToDate,
+      cpuQuotaToProjected,
+      storageQuotaToDate,
+      storageQuotaToProjected,
     },
   };
 }

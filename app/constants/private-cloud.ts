@@ -116,30 +116,29 @@ const createCostColumns = <T extends CostDetails<K>, K extends string>(detailsKe
     label: 'CPU (cores)',
     value: `${detailsKey}.cpuCore`,
     cellProcessor: (item) =>
-      item[detailsKey].totalCost === 0 || item[detailsKey].cpuToDate === 0 ? 'N/A' : item[detailsKey].cpuCore,
+      item[detailsKey].totalCost === 0 || item[detailsKey].cpuToDate === 0 ? '-' : item[detailsKey].cpuCore,
   },
   {
     label: 'CPU Cost',
     value: `${detailsKey}.cpuToDate`,
-    cellProcessor: (item) => (item[detailsKey].totalCost === 0 ? 'N/A' : formatCurrency(item[detailsKey].cpuToDate)),
+    cellProcessor: (item) => (item[detailsKey].totalCost === 0 ? '-' : formatCurrency(item[detailsKey].cpuToDate)),
   },
   {
     label: 'Storage (GiB)',
     value: `${detailsKey}.storageGib`,
-    cellProcessor: (item) => (item[detailsKey].totalCost === 0 ? 'N/A' : item[detailsKey].storageGib),
+    cellProcessor: (item) => (item[detailsKey].totalCost === 0 ? '-' : item[detailsKey].storageGib),
   },
   {
     label: 'Storage Cost',
     value: `${detailsKey}.storageToDate`,
-    cellProcessor: (item) =>
-      item[detailsKey].totalCost === 0 ? 'N/A' : formatCurrency(item[detailsKey].storageToDate),
+    cellProcessor: (item) => (item[detailsKey].totalCost === 0 ? '-' : formatCurrency(item[detailsKey].storageToDate)),
   },
   {
     label: 'Total Cost',
     value: `${detailsKey}.totalCost`,
     cellProcessor: (item) => {
       const value = item[detailsKey].totalCost;
-      return value === 0 ? 'N/A' : formatCurrency(value);
+      return value === 0 ? '-' : formatCurrency(value);
     },
   },
 ];
@@ -167,7 +166,7 @@ export const monthlyCostColumns: ColumnDefinition<MonthlyCostMetric>[] = [
 
 export function getDailyCostData(costData: PeriodCosts): DailyCostMetric[] {
   return costData.timeUnits.map((day, idx) => {
-    const { cpuToDate, storageToDate } = costData.timeDetails;
+    const { cpuToDate, storageToDate, cpuQuotaToDate, storageQuotaToDate } = costData.timeDetails;
     const totalCost = cpuToDate[idx] + storageToDate[idx];
 
     return {
@@ -175,10 +174,8 @@ export function getDailyCostData(costData: PeriodCosts): DailyCostMetric[] {
       timeDetails: {
         cpuToDate: cpuToDate[idx],
         storageToDate: storageToDate[idx],
-        // cpuCore: costData.discreteResourceValues[idx].cpu,
-        // storageGib: costData.discreteResourceValues[idx].storage,
-        cpuCore: 0,
-        storageGib: 0,
+        cpuCore: cpuQuotaToDate[idx],
+        storageGib: storageQuotaToDate[idx],
         totalCost,
       },
     };
@@ -187,7 +184,7 @@ export function getDailyCostData(costData: PeriodCosts): DailyCostMetric[] {
 
 export function getMonthlyCostData(costData: PeriodCosts): MonthlyCostMetric[] {
   return costData.timeUnits.map((month, idx) => {
-    const { cpuToDate, storageToDate } = costData.timeDetails;
+    const { cpuToDate, storageToDate, cpuQuotaToDate, storageQuotaToDate } = costData.timeDetails;
     const totalCost = cpuToDate[idx] + storageToDate[idx];
 
     return {
@@ -195,10 +192,8 @@ export function getMonthlyCostData(costData: PeriodCosts): MonthlyCostMetric[] {
       timeDetails: {
         cpuToDate: cpuToDate[idx],
         storageToDate: storageToDate[idx],
-        // cpuCore: costData.discreteResourceValues[month].cpu,
-        // storageGib: costData.discreteResourceValues[month].storage,
-        cpuCore: 0,
-        storageGib: 0,
+        cpuCore: cpuQuotaToDate[idx],
+        storageGib: storageQuotaToDate[idx],
         totalCost,
       },
     };
