@@ -1,3 +1,8 @@
+## [0.74.1](https://github.com/bcgov/platform-services-registry/compare/v0.74.0...v0.74.1) (2025-07-31)
+
+### Bug Fixes
+
+* **6202:** handle querying requests by requester IDs ([647b751](https://github.com/bcgov/platform-services-registry/commit/647b7512ec58abbeec244933d995cd06c227f8ae))
 ## [0.74.0](https://github.com/bcgov/platform-services-registry/compare/v0.73.1...v0.74.0) (2025-07-30)
 
 ### Features
