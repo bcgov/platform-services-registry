@@ -4,10 +4,10 @@ import { formatCurrency, getMonthNameFromNumber } from '@/utils/js';
 
 export function getYearlyCostChartConfig({
   data,
-  isForecastEnabled,
+  forecast,
 }: {
   data: Pick<PeriodCosts, 'timeUnits' | 'timeDetails'>;
-  isForecastEnabled?: boolean;
+  forecast?: boolean;
 }) {
   const options = {
     plugins: {
@@ -58,27 +58,27 @@ export function getYearlyCostChartConfig({
   const dynamicChartData = [
     {
       label: 'CPU Cost (CA$)',
-      data: data.timeDetails.cpuToDate,
+      data: data.timeDetails.cpuCostsToDate,
       backgroundColor: '#4CAF50',
     },
     {
       label: 'Storage Cost (CA$)',
-      data: data.timeDetails.storageToDate,
+      data: data.timeDetails.storageCostsToDate,
       backgroundColor: '#00CAFF',
     },
     {
       label: 'CPU Cost - Projected (CA$)',
-      data: data.timeDetails.cpuToProjected,
+      data: data.timeDetails.cpuCostsToProjected,
       backgroundColor: '#E0F7E1',
     },
     {
       label: 'Storage Cost - Projected (CA$)',
-      data: data.timeDetails.storageToProjected,
+      data: data.timeDetails.storageCostsToProjected,
       backgroundColor: '#CCF2FF',
     },
   ];
 
-  if (!isForecastEnabled) {
+  if (!forecast) {
     dynamicChartData.pop();
     dynamicChartData.pop();
   }

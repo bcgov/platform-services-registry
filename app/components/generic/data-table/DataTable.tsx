@@ -41,6 +41,9 @@ export default function DataTable<TData extends object>({
     pageSize: disablePagination ? data.length : defaultPageSize,
   });
 
+  // Resolve nested paths (e.g., "dayDetails.cpuCostsToDate")
+  const getNestedValue = (obj: TData, path: string) => _get(obj, path);
+
   useEffect(() => {
     setPagination(() => ({
       pageIndex: 0,
@@ -59,9 +62,6 @@ export default function DataTable<TData extends object>({
         : []);
 
     return cols.map((col: ColumnDefinition<TData>) => {
-      // Resolve nested paths (e.g., "dayDetails.cpuToDate")
-      const getNestedValue = (obj: TData, path: string) => _get(obj, path);
-
       return columnHelper.accessor((row) => getNestedValue(row, col.value), {
         id: col.value,
         header: ({ column }) => {

@@ -5,12 +5,12 @@ import { getMonthlyCostChartConfig } from './monthly-cost-chart-data';
 
 export default function MonthlyCostChart({
   data,
-  isForecastEnabled = true,
+  forecast = true,
 }: {
   data: Pick<PeriodCosts, 'timeUnits' | 'timeDetails' | 'billingPeriod'>;
-  isForecastEnabled?: boolean;
+  forecast?: boolean;
 }) {
-  const { options, data: chartData } = getMonthlyCostChartConfig({ data, isForecastEnabled });
+  const { options, data: chartData } = getMonthlyCostChartConfig({ data, forecast });
 
   return (
     <Card className="border mx-16 mb-16 mt-3">

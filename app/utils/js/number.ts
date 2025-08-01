@@ -10,10 +10,14 @@ export const roundNumber = (number: number, options?: { decimals?: number }) => 
 
 export const formatNumber = (
   number: number,
-  options?: { prefix?: string; suffix?: string; decimals?: number; keepDecimals?: boolean },
+  options?: { prefix?: string; suffix?: string; decimals?: number; keepDecimals?: boolean; zeroAsEmpty?: boolean },
 ) => {
-  const { prefix = '', suffix = '', decimals = 2, keepDecimals = false } = options ?? {};
+  const { prefix = '', suffix = '', decimals = 2, keepDecimals = false, zeroAsEmpty = false } = options ?? {};
   const rounded = roundNumber(number, { decimals });
+  if (zeroAsEmpty && rounded === 0) {
+    return '-';
+  }
+
   const value = keepDecimals
     ? rounded.toFixed(decimals)
     : new Intl.NumberFormat('en-US', {
@@ -67,7 +71,12 @@ export function toOrdinal(n: number): string {
   return n + suffix;
 }
 
-export function formatCurrency(value: number) {
+export function formatCurrency(value: number, options?: { zeroAsEmpty?: boolean }) {
+  const { zeroAsEmpty = false } = options ?? {};
+  if (zeroAsEmpty && value === 0) {
+    return '-';
+  }
+
   return new Intl.NumberFormat('en-US', {
     style: 'currency',
     currency: 'CAD',

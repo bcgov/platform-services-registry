@@ -4,8 +4,7 @@ import { useQuery } from '@tanstack/react-query';
 import { format } from 'date-fns';
 import { useEffect } from 'react';
 import { getMonthlyCosts, getQuarterlyCosts, getYearlyCosts } from '@/services/backend/private-cloud/products';
-import { PeriodCosts, CostPeriod } from '@/types/private-cloud';
-import { formatCurrency } from '@/utils/js';
+import { CostPeriod } from '@/types/private-cloud';
 import { formatAsYearQuarter, getDateFromYyyyMmDd } from '@/utils/js';
 import { useCostState } from './state';
 
@@ -18,13 +17,18 @@ const switchStyles = (enabled: boolean) => ({
   },
 });
 
-export default function PeriodSelector({ licencePlate }: { licencePlate: string }) {
+export default function PeriodSelector({
+  licencePlate,
+  children,
+}: {
+  licencePlate: string;
+  children?: React.ReactNode;
+}) {
   const [state, snap] = useCostState();
 
   const { data, isLoading } = useQuery({
     queryKey: ['costItems', licencePlate, snap.period, snap.selectedDate],
     queryFn: () => {
-      console.log('here');
       if (snap.period === CostPeriod.Monthly) {
         return getMonthlyCosts(licencePlate, format(snap.selectedDate, 'yyyy-MM'));
       }
@@ -40,7 +44,8 @@ export default function PeriodSelector({ licencePlate }: { licencePlate: string 
 
   useEffect(() => {
     if (data) state.data = data;
-  }, [data]);
+    state.isDataLoading = isLoading;
+  }, [data, isLoading]);
 
   const isMonthPicker = snap.period === CostPeriod.Monthly || snap.period === CostPeriod.Quarterly;
 
@@ -82,18 +87,18 @@ export default function PeriodSelector({ licencePlate }: { licencePlate: string 
             )}
           </Tooltip>
         </div>
-        {/*
         <Switch
           label="Forecast"
-          checked={forecastEnabled}
-          onChange={(event) => onForecastChange(event.currentTarget.checked)}
+          checked={snap.forecast}
+          onChange={(event) => (state.forecast = event.currentTarget.checked)}
           classNames={{
             label: 'cursor-pointer',
             thumb: 'cursor-pointer',
           }}
-          styles={switchStyles(forecastEnabled)}
-        /> */}
+          styles={switchStyles(snap.forecast)}
+        />
       </div>
+      {children}
     </div>
   );
 }

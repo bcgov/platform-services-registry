@@ -1,7 +1,7 @@
-import { PeriodicCostMetric } from '@/types/private-cloud';
+import { PeriodCostItem } from '@/types/private-cloud';
 import { formatDate } from '@/utils/js/date';
 
-export default function CostStatusBadge(item: PeriodicCostMetric) {
+export default function CostStatusBadge(item: PeriodCostItem) {
   return (
     <>
       {formatDate(item.startDate, 'yyyy-MM-dd HH:mm')} &ndash; {formatDate(item.endDate, 'yyyy-MM-dd HH:mm')}{' '}

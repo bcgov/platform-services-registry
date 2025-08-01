@@ -1,10 +1,10 @@
-import { getCostDetailTableData } from '@/constants';
+import { getPeriodCostDetailTableDataRow } from '@/helpers/private-cloud';
 import { PeriodCosts } from '@/types/private-cloud';
 import { formatDate, getMonthNameFromNumber } from '@/utils/js/date';
 import { formatCurrency, formatNumber } from '@/utils/js/number';
 
 export default function QuarterlyCostTable({ data }: { data: PeriodCosts }) {
-  const monthlyCost = getCostDetailTableData(data);
+  const monthlyCost = getPeriodCostDetailTableDataRow(data);
   const currenTotalCost = data.currentTotal ?? 0;
 
   return (
@@ -40,13 +40,27 @@ export default function QuarterlyCostTable({ data }: { data: PeriodCosts }) {
                     </span>
                   )}
                 </td>
-                <td className="p-2 border-b text-right">{item.total.cpu.value}</td>
-                <td className="p-2 border-b text-right">{item.total.storage.value}</td>
-                <td className="p-2 border-b text-right">{formatCurrency(item.cpuPricePerYear)}</td>
-                <td className="p-2 border-b text-right">{formatCurrency(item.storagePricePerYear)}</td>
-                <td className="p-2 border-b text-right">{formatCurrency(item.total.cpu.cost)}</td>
-                <td className="p-2 border-b text-right">{formatCurrency(item.total.storage.cost)}</td>
-                <td className="p-2 border-b text-right">{formatCurrency(item.total.subtotal.cost)}</td>
+                <td className="p-2 border-b text-right">
+                  {formatNumber(item.total.cpu.value, { decimals: 2, keepDecimals: true, zeroAsEmpty: true })}
+                </td>
+                <td className="p-2 border-b text-right">
+                  {formatNumber(item.total.storage.value, { decimals: 2, keepDecimals: true, zeroAsEmpty: true })}
+                </td>
+                <td className="p-2 border-b text-right">
+                  {formatCurrency(item.cpuPricePerYear, { zeroAsEmpty: true })}
+                </td>
+                <td className="p-2 border-b text-right">
+                  {formatCurrency(item.storagePricePerYear, { zeroAsEmpty: true })}
+                </td>
+                <td className="p-2 border-b text-right">
+                  {formatCurrency(item.total.cpu.cost, { zeroAsEmpty: true })}
+                </td>
+                <td className="p-2 border-b text-right">
+                  {formatCurrency(item.total.storage.cost, { zeroAsEmpty: true })}
+                </td>
+                <td className="p-2 border-b text-right">
+                  {formatCurrency(item.total.subtotal.cost, { zeroAsEmpty: true })}
+                </td>
               </tr>
             ))
           ) : (
@@ -71,25 +85,25 @@ export default function QuarterlyCostTable({ data }: { data: PeriodCosts }) {
         </thead>
         <tbody>
           {data.timeUnits.map((month, idx: number) => {
-            const totalCost = data.timeDetails.cpuToDate[idx] + data.timeDetails.storageToDate[idx];
+            const totalCost = data.timeDetails.cpuCostsToDate[idx] + data.timeDetails.storageCostsToDate[idx];
             return (
               <tr key={idx} className={idx % 2 === 0 ? 'bg-white dark:bg-gray-900' : 'bg-gray-50 dark:bg-gray-800'}>
                 <td className="p-2 border-b text-center">{getMonthNameFromNumber(month)}</td>
                 <td className="p-2 border-b text-right">
                   {totalCost === 0
                     ? '-'
-                    : formatNumber(data.timeDetails.cpuQuotaToDate[idx], { decimals: 2, keepDecimals: true })}
+                    : formatNumber(data.timeDetails.cpuQuotasToDate[idx], { decimals: 2, keepDecimals: true })}
                 </td>
                 <td className="p-2 border-b text-right">
-                  {totalCost === 0 ? '-' : formatCurrency(data.timeDetails.cpuToDate[idx])}
+                  {totalCost === 0 ? '-' : formatCurrency(data.timeDetails.cpuCostsToDate[idx])}
                 </td>
                 <td className="p-2 border-b text-right">
                   {totalCost === 0
                     ? '-'
-                    : formatNumber(data.timeDetails.cpuQuotaToDate[idx], { decimals: 2, keepDecimals: true })}
+                    : formatNumber(data.timeDetails.cpuQuotasToDate[idx], { decimals: 2, keepDecimals: true })}
                 </td>
                 <td className="p-2 border-b text-right">
-                  {totalCost === 0 ? '-' : formatCurrency(data.timeDetails.storageToDate[idx])}
+                  {totalCost === 0 ? '-' : formatCurrency(data.timeDetails.storageCostsToDate[idx])}
                 </td>
                 <td className="p-2 border-b text-right">{totalCost === 0 ? '-' : formatCurrency(totalCost)}</td>
               </tr>
