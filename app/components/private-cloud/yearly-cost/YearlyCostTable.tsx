@@ -1,11 +1,12 @@
-import { calculateTotalCost, getMonthlyCostData } from '@/constants';
+import { getCostDetailTableData } from '@/constants';
 import { PeriodCosts } from '@/types/private-cloud';
 import { formatDate, getMonthNameFromNumber } from '@/utils/js/date';
 import { formatCurrency, formatNumber } from '@/utils/js/number';
 
 export default function YearlyCostTable({ data }: { data: PeriodCosts }) {
-  const monthlyCost = getMonthlyCostData(data);
-  const currenTotalCost = calculateTotalCost(monthlyCost);
+  const monthlyCost = getCostDetailTableData(data);
+  const currenTotalCost = data.currentTotal ?? 0;
+
   return (
     <>
       <table className="w-full text-sm border-collapse">

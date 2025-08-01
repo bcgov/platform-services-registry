@@ -1,14 +1,14 @@
 import { monthNames } from '@/constants/common';
-import { PeriodCosts, TimeView } from '@/types/private-cloud';
+import { PeriodCosts, CostPeriod } from '@/types/private-cloud';
 import { extractDateRanges, formatCurrency, getQuarterValue } from '@/utils/js';
 
 export default function CostSummary({
   data,
-  viewMode,
+  period,
   isFromPDFDownloader = false,
 }: {
   data: PeriodCosts;
-  viewMode: TimeView;
+  period: CostPeriod;
   isFromPDFDownloader?: boolean;
 }) {
   if (!data) return null;
@@ -30,8 +30,8 @@ export default function CostSummary({
   const getAppropriateCost = () => {
     const isBoundary = percentageProgress === 0 || percentageProgress === 100;
     const useGrandTotal =
-      (viewMode === TimeView.Quarterly && currentMonthQuater !== selectedMonthQuarter) ||
-      (viewMode !== TimeView.Quarterly && isBoundary);
+      (period === CostPeriod.Quarterly && currentMonthQuater !== selectedMonthQuarter) ||
+      (period !== CostPeriod.Quarterly && isBoundary);
 
     if (useGrandTotal && data.grandTotal !== -1) return data.grandTotal;
     if (data.estimatedGrandTotal !== -1) return data.estimatedGrandTotal;
@@ -46,7 +46,7 @@ export default function CostSummary({
         <div>
           <div className="text-3xl font-bold mb-4">Summary</div>
           <div className="mb-1">
-            <strong>Current billing period:</strong> {data.billingPeriod}
+            <strong>Current period:</strong> {data.billingPeriod}
           </div>
           <div className="mb-5">
             <strong>Account coding:</strong> {data.accountCoding}
@@ -56,7 +56,7 @@ export default function CostSummary({
       <div>
         <div className="flex items-center gap-x-20">
           <div className="text-md shrink-0">
-            Current billing period
+            Current period
             <br />
             starts at <strong>{startDate}</strong>
           </div>

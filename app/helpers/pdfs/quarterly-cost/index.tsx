@@ -5,7 +5,7 @@ import CostSummary from '@/components/private-cloud/CostSummary';
 import { getQuarterlyCostChartConfig } from '@/components/private-cloud/quarterly-cost/quarterly-cost-chart-data';
 import QuarterlyCostTable from '@/components/private-cloud/quarterly-cost/QuarterlyCostTable';
 import { WeasyPrint } from '@/services/weasyprint/client';
-import { PeriodCosts, PrivateCloudProductDetailDecorated, TimeView } from '@/types/private-cloud';
+import { PeriodCosts, PrivateCloudProductDetailDecorated, CostPeriod } from '@/types/private-cloud';
 import { replaceClassToStyleString } from '@/utils/js';
 
 const weasyClient = new WeasyPrint();
@@ -85,8 +85,8 @@ export async function generateQuarterlyCostPdf({
       <h1 className="font-semibold text-3xl mb-1">{product.name}</h1>
       <i className="italic text-lg">{product.description}</i>
       <hr className="mb-12 h-px bg-gray-200 border-0" />
-      <CostSummary data={data} viewMode={TimeView.Quarterly} isFromPDFDownloader={true} />
-      <div className="text-3xl font-bold mt-6">Consumption data</div>
+      <CostSummary data={data} period={CostPeriod.Quarterly} isFromPDFDownloader={true} />
+      <div className="text-3xl font-bold mt-6">Details</div>
       <div className="border border-gray-200 border-solid rounded-sm p-4 bg-white my-6">
         <div className="relative w-full">
           <img src={chartImageDataURL} className="w-full h-auto" alt="Quarterly Cost Chart" />

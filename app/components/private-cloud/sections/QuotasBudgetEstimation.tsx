@@ -318,6 +318,17 @@ export default function QuotasBudgetEstimation({
           All costs are in Canadian dollars.
           <img className="inline-block ml-1" src="/canada-flag.svg" alt="Canadian Flag" width={30} />
         </div>
+
+        <div>
+          Current CPU unit price per {currentScenario.per}:
+          <span className="font-normal ml-2">{formatCurrency(unitPriceCpu / currentScenario.division)}</span>
+        </div>
+
+        <div>
+          Current Storage unit price per {currentScenario.per}:
+          <span className="font-normal ml-2">{formatCurrency(unitPriceStorage / currentScenario.division)}</span>
+        </div>
+
         <div>
           Current projected total cost per {currentScenario.per}:
           <span className="font-normal ml-2">

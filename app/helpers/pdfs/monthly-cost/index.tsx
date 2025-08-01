@@ -5,7 +5,7 @@ import CostSummary from '@/components/private-cloud/CostSummary';
 import { getMonthlyCostChartConfig } from '@/components/private-cloud/monthly-cost/monthly-cost-chart-data';
 import MonthlyCostTable from '@/components/private-cloud/monthly-cost/MonthlyCostTable';
 import { WeasyPrint } from '@/services/weasyprint/client';
-import { PeriodCosts, PrivateCloudProductDetailDecorated, TimeView } from '@/types/private-cloud';
+import { PeriodCosts, PrivateCloudProductDetailDecorated, CostPeriod } from '@/types/private-cloud';
 import { replaceClassToStyleString } from '@/utils/js';
 
 const weasyClient = new WeasyPrint();
@@ -83,8 +83,8 @@ export async function generateMonthlyCostPdf({
       <h1 className="font-semibold text-3xl mb-1">{product.name}</h1>
       <i className="italic text-lg">{product.description}</i>
       <hr className="mb-12 h-px bg-gray-200 border-0" />
-      <CostSummary data={data} viewMode={TimeView.Monthly} isFromPDFDownloader={true} />
-      <div className="text-3xl font-bold mt-6">Consumption data</div>
+      <CostSummary data={data} period={CostPeriod.Monthly} isFromPDFDownloader={true} />
+      <div className="text-3xl font-bold mt-6">Details</div>
       <div className="border border-gray-200 border-solid rounded-sm p-4 bg-white my-6">
         <div className="relative w-full">
           <img src={chartImageDataURL} className="w-full h-auto" alt="Monthly Cost Chart" />
