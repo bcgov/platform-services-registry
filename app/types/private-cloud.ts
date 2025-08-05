@@ -243,6 +243,7 @@ export interface PeriodCosts {
     costsToDate: number[];
     costsToProjected: number[];
     costs: number[];
+    pasts: boolean[];
   };
 }
 
@@ -263,4 +264,5 @@ export interface CostDetailTableDataRow {
   costToDate: number;
   costToProjected: number;
   cost: number;
+  past: boolean;
 }

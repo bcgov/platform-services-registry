@@ -267,6 +267,7 @@ export async function getMonthlyCosts(licencePlate: string, year: number, oneInd
   const costsToDate = createNewBucket();
   const costsToProjected = createNewBucket();
   const costs = createNewBucket();
+  const pasts = new Array(numDays).fill(true);
 
   const sortedItems = _orderBy(items, ['startDate'], ['desc']);
 
@@ -319,6 +320,7 @@ export async function getMonthlyCosts(licencePlate: string, year: number, oneInd
         cpuQuotasToProjected[day - 1] += meta.total.cpu.value * durationRatio;
         storageQuotasToProjected[day - 1] += meta.total.storage.value * durationRatio;
         costsToProjected[day - 1] += cpuCost + storageCost;
+        pasts[day - 1] = false;
       }
 
       cpuCosts[day - 1] += cpuCost;
@@ -355,6 +357,7 @@ export async function getMonthlyCosts(licencePlate: string, year: number, oneInd
       costsToDate,
       costsToProjected,
       costs,
+      pasts,
     },
   };
 }
@@ -395,6 +398,7 @@ async function getCostsBasedOnMonths(licencePlate: string, startDate: Date, endD
   const costsToDate = createNewBucket();
   const costsToProjected = createNewBucket();
   const costs = createNewBucket();
+  const pasts = new Array(numberOfMonths).fill(true);
 
   const sortedItems = _orderBy(items, ['startDate'], ['desc']);
 
@@ -451,6 +455,7 @@ async function getCostsBasedOnMonths(licencePlate: string, startDate: Date, endD
         cpuQuotasToProjected[i] += meta.total.cpu.value * durationRatio;
         storageQuotasToProjected[i] += meta.total.storage.value * durationRatio;
         costsToProjected[i] += cpuCost + storageCost;
+        pasts[i] = false;
       }
 
       cpuCosts[i] += cpuCost;
@@ -486,6 +491,7 @@ async function getCostsBasedOnMonths(licencePlate: string, startDate: Date, endD
       costsToDate,
       costsToProjected,
       costs,
+      pasts,
     },
   };
 }

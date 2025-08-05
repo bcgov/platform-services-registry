@@ -43,7 +43,15 @@ function LabelCell({ children, className }: { children: React.ReactNode; classNa
   return <div className={cn('w-32 p-2 font-semibold bg-gray-100 border-gray-400 border-1', className)}>{children}</div>;
 }
 
-function ValueChange({ data, division }: { data: CellData; division: number }) {
+function ValueChange({ data, division, isNewRequest }: { data: CellData; division: number; isNewRequest: boolean }) {
+  if (isNewRequest) {
+    return (
+      <div className="text-gray-600">
+        <span>{formatCurrency(data.new.price / division)}</span>
+      </div>
+    );
+  }
+
   return (
     <div className="text-gray-600">
       <span>{formatCurrency(data.old.price / division)}</span>
@@ -57,14 +65,24 @@ function ValueChange({ data, division }: { data: CellData; division: number }) {
   );
 }
 
-function ValueCell({ data, division, className }: { data: CellData; division: number; className?: string }) {
+function ValueCell({
+  data,
+  division,
+  isNewRequest,
+  className,
+}: {
+  data: CellData;
+  division: number;
+  isNewRequest: boolean;
+  className?: string;
+}) {
   return (
     <div
       className={cn('flex-1 p-2 flex items-center justify-center border-gray-400 border-1', className, {
         'border-blue-700 outline-dashed outline-offset-0 outline-3 outline-blue-700': data.changed,
       })}
     >
-      <ValueChange data={data} division={division} />
+      <ValueChange data={data} division={division} isNewRequest={isNewRequest} />
     </div>
   );
 }
@@ -73,10 +91,12 @@ function SmallScreenEnv({
   name,
   data,
   division,
+  isNewRequest,
   className = '',
 }: {
   name: string;
   division: number;
+  isNewRequest: boolean;
   data: { cpu: CellData; storage: CellData; subtotal: CellData };
   className?: string;
 }) {
@@ -88,12 +108,12 @@ function SmallScreenEnv({
 
       <div className="flex flex-row text-center">
         <LabelCell>CPU</LabelCell>
-        <ValueCell data={data.cpu} division={division} />
+        <ValueCell data={data.cpu} division={division} isNewRequest={isNewRequest} />
       </div>
 
       <div className="flex flex-row text-center">
         <LabelCell>Storage</LabelCell>
-        <ValueCell data={data.storage} division={division} />
+        <ValueCell data={data.storage} division={division} isNewRequest={isNewRequest} />
       </div>
 
       <div className="flex flex-row text-center">
@@ -102,6 +122,7 @@ function SmallScreenEnv({
           className={cn(name === 'Total' ? 'bg-orange-100' : 'bg-blue-50')}
           data={data.subtotal}
           division={division}
+          isNewRequest={isNewRequest}
         />
       </div>
     </div>
@@ -249,7 +270,9 @@ export default function QuotasBudgetEstimation({
   metadata.total.storage.new.price = metadata.total.storage.new.value * unitPriceStorage;
   metadata.total.subtotal.new.price = metadata.total.cpu.new.price + metadata.total.storage.new.price;
 
-  if (originalData) {
+  const isNewRequest = !originalData;
+
+  if (!isNewRequest) {
     namespaceKeys.forEach((env) => {
       metadata[env].cpu.old.value = originalData[env].cpu;
       metadata[env].cpu.old.price = originalData[env].cpu * unitPriceCpu;
@@ -293,6 +316,8 @@ export default function QuotasBudgetEstimation({
     return null;
   }
 
+  const commonCellProps = { division: currentScenario.division, isNewRequest: isNewRequest };
+
   return (
     <>
       <div className="font-bold text-lg flex justify-between mb-1">
@@ -329,12 +354,15 @@ export default function QuotasBudgetEstimation({
           <span className="font-normal ml-2">{formatCurrency(unitPriceStorage / currentScenario.division)}</span>
         </div>
 
-        <div>
-          Current projected total cost per {currentScenario.per}:
-          <span className="font-normal ml-2">
-            {formatCurrency(metadata.total.subtotal.old.price / currentScenario.division)}
-          </span>
-        </div>
+        {!isNewRequest && (
+          <div>
+            Current projected total cost per {currentScenario.per}:
+            <span className="font-normal ml-2">
+              {formatCurrency(metadata.total.subtotal.old.price / currentScenario.division)}
+            </span>
+          </div>
+        )}
+
         <div>
           New projected total cost per {currentScenario.per}:
           <span className="font-semibold ml-2">
@@ -357,48 +385,39 @@ export default function QuotasBudgetEstimation({
 
           <div className="flex flex-row text-center">
             <LabelCell>CPU</LabelCell>
-            <ValueCell data={metadata.development.cpu} division={currentScenario.division} />
-            <ValueCell data={metadata.test.cpu} division={currentScenario.division} />
-            <ValueCell data={metadata.production.cpu} division={currentScenario.division} />
-            <ValueCell data={metadata.tools.cpu} division={currentScenario.division} />
-            <ValueCell className="bg-blue-50" data={metadata.total.cpu} division={currentScenario.division} />
+            <ValueCell data={metadata.development.cpu} {...commonCellProps} />
+            <ValueCell data={metadata.test.cpu} {...commonCellProps} />
+            <ValueCell data={metadata.production.cpu} {...commonCellProps} />
+            <ValueCell data={metadata.tools.cpu} {...commonCellProps} />
+            <ValueCell className="bg-blue-50" data={metadata.total.cpu} {...commonCellProps} />
           </div>
 
           <div className="flex flex-row text-center">
             <LabelCell>Storage</LabelCell>
-            <ValueCell data={metadata.development.storage} division={currentScenario.division} />
-            <ValueCell data={metadata.test.storage} division={currentScenario.division} />
-            <ValueCell data={metadata.production.storage} division={currentScenario.division} />
-            <ValueCell data={metadata.tools.storage} division={currentScenario.division} />
-            <ValueCell className="bg-blue-50" data={metadata.total.storage} division={currentScenario.division} />
+            <ValueCell data={metadata.development.storage} {...commonCellProps} />
+            <ValueCell data={metadata.test.storage} {...commonCellProps} />
+            <ValueCell data={metadata.production.storage} {...commonCellProps} />
+            <ValueCell data={metadata.tools.storage} {...commonCellProps} />
+            <ValueCell className="bg-blue-50" data={metadata.total.storage} {...commonCellProps} />
           </div>
 
           <div className="flex flex-row text-center">
             <LabelCell className="bg-blue-200">Subtotal</LabelCell>
-            <ValueCell
-              className="bg-blue-50"
-              data={metadata.development.subtotal}
-              division={currentScenario.division}
-            />
-            <ValueCell className="bg-blue-50" data={metadata.test.subtotal} division={currentScenario.division} />
-            <ValueCell className="bg-blue-50" data={metadata.production.subtotal} division={currentScenario.division} />
-            <ValueCell className="bg-blue-50" data={metadata.tools.subtotal} division={currentScenario.division} />
-            <ValueCell className="bg-orange-100" data={metadata.total.subtotal} division={currentScenario.division} />
+            <ValueCell className="bg-blue-50" data={metadata.development.subtotal} {...commonCellProps} />
+            <ValueCell className="bg-blue-50" data={metadata.test.subtotal} {...commonCellProps} />
+            <ValueCell className="bg-blue-50" data={metadata.production.subtotal} {...commonCellProps} />
+            <ValueCell className="bg-blue-50" data={metadata.tools.subtotal} {...commonCellProps} />
+            <ValueCell className="bg-orange-100" data={metadata.total.subtotal} {...commonCellProps} />
           </div>
         </div>
 
         {/* --- Small Screen Layout --- */}
         <div className="container mx-auto block sm:hidden">
-          <SmallScreenEnv name="Development" data={metadata.development} division={currentScenario.division} />
-          <SmallScreenEnv name="Test" data={metadata.test} className="mt-2" division={currentScenario.division} />
-          <SmallScreenEnv
-            name="Production"
-            data={metadata.production}
-            className="mt-2"
-            division={currentScenario.division}
-          />
-          <SmallScreenEnv name="Tools" data={metadata.tools} className="mt-2" division={currentScenario.division} />
-          <SmallScreenEnv name="Total" data={metadata.total} className="mt-2" division={currentScenario.division} />
+          <SmallScreenEnv name="Development" data={metadata.development} {...commonCellProps} />
+          <SmallScreenEnv name="Test" data={metadata.test} className="mt-2" {...commonCellProps} />
+          <SmallScreenEnv name="Production" data={metadata.production} className="mt-2" {...commonCellProps} />
+          <SmallScreenEnv name="Tools" data={metadata.tools} className="mt-2" {...commonCellProps} />
+          <SmallScreenEnv name="Total" data={metadata.total} className="mt-2" {...commonCellProps} />
         </div>
       </div>
     </>
