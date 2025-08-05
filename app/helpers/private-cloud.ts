@@ -18,6 +18,7 @@ export function getPeriodCostDetailTableDataRow(costData: PeriodCosts): CostDeta
       costsToDate,
       costsToProjected,
       costs,
+      pasts,
     } = costData.timeDetails;
 
     return {
@@ -37,6 +38,7 @@ export function getPeriodCostDetailTableDataRow(costData: PeriodCosts): CostDeta
       costToDate: costsToDate[idx],
       costToProjected: costsToProjected[idx],
       cost: costs[idx],
+      past: pasts[idx],
     };
   });
 }

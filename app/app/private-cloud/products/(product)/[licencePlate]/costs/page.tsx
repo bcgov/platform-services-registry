@@ -6,16 +6,16 @@ import { useEffect, useMemo, useState } from 'react';
 import { z } from 'zod';
 import DataTable from '@/components/generic/data-table/DataTable';
 import LoadingBox from '@/components/generic/LoadingBox';
-import CostSummary from '@/components/private-cloud/CostSummary';
-import MonthlyCostChart from '@/components/private-cloud/monthly-cost/MonthlyCostChart';
-import QuarterlyCostChart from '@/components/private-cloud/quarterly-cost/QuarterlyCostChart';
-import YearlyCostChart from '@/components/private-cloud/yearly-cost/YearlyCostChart';
 import {
   periodCostItemTableColumns,
   generateDailyCostDetailTableColumns,
   generateMonthlyCostDetailTableColumns,
-  GlobalRole,
-} from '@/constants';
+} from '@/components/private-cloud/costs';
+import CostSummary from '@/components/private-cloud/CostSummary';
+import MonthlyCostChart from '@/components/private-cloud/monthly-cost/MonthlyCostChart';
+import QuarterlyCostChart from '@/components/private-cloud/quarterly-cost/QuarterlyCostChart';
+import YearlyCostChart from '@/components/private-cloud/yearly-cost/YearlyCostChart';
+import { GlobalRole } from '@/constants';
 import createClientPage from '@/core/client-page';
 import { getPeriodCostDetailTableDataRow } from '@/helpers/private-cloud';
 import {
