@@ -259,7 +259,7 @@ export async function upsertPublicCloudBillings({
     prisma.task.deleteMany({
       where: {
         type: { in: [TaskType.SIGN_PUBLIC_CLOUD_MOU, TaskType.REVIEW_PUBLIC_CLOUD_MOU] },
-        status: TaskStatus.ASSIGNED,
+        status: { in: [TaskStatus.ASSIGNED, TaskStatus.STARTED] },
         data: {
           equals: {
             licencePlate,

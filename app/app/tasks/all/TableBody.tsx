@@ -114,7 +114,7 @@ export default function TableBody({ data }: TableProps) {
             <KeyValueTable data={task.closedMetadata || {}} />
           </Table.Td>
           <Table.Td>
-            {task.status === TaskStatus.ASSIGNED && (
+            {([TaskStatus.ASSIGNED, TaskStatus.STARTED] as TaskStatus[]).includes(task.status) && (
               <Button
                 size="xs"
                 loading={isSendingTaskEmail}

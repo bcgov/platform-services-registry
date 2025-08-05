@@ -45,7 +45,7 @@ export default function BillingStatusProgress({
     !!userSnap.assignedTasks.find(
       (task) =>
         task.type === TaskType.SIGN_PUBLIC_CLOUD_MOU &&
-        task.status === TaskStatus.ASSIGNED &&
+        ([TaskStatus.ASSIGNED, TaskStatus.STARTED] as TaskStatus[]).includes(task.status) &&
         (task.data as { licencePlate: string }).licencePlate === billing.licencePlate,
     );
 
@@ -56,7 +56,7 @@ export default function BillingStatusProgress({
     !!userSnap.assignedTasks.find(
       (task) =>
         task.type === TaskType.REVIEW_PUBLIC_CLOUD_MOU &&
-        task.status === TaskStatus.ASSIGNED &&
+        ([TaskStatus.ASSIGNED, TaskStatus.STARTED] as TaskStatus[]).includes(task.status) &&
         (task.data as { licencePlate: string }).licencePlate === billing.licencePlate,
     );
 

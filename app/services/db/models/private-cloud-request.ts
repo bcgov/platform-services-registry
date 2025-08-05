@@ -40,11 +40,7 @@ async function baseFilter(session: Session) {
 
   const { data: products } = await privateCloudProductModel.list({ select: { licencePlate: true } }, session);
   const requestIdsFromTasks = session.tasks
-    .filter(
-      (task) =>
-        ([TaskType.REVIEW_PRIVATE_CLOUD_REQUEST] as TaskType[]).includes(task.type) &&
-        task.status === TaskStatus.ASSIGNED,
-    )
+    .filter((task) => ([TaskType.REVIEW_PRIVATE_CLOUD_REQUEST] as TaskType[]).includes(task.type))
     .map((task) => (task.data as { requestId: string }).requestId);
 
   const allowedLicencePlates = products.map(({ licencePlate }) => licencePlate);
@@ -68,7 +64,7 @@ async function decorate<T extends PrivateCloudRequestSimple | PrivateCloudReques
   const canReview =
     doc.decisionStatus === DecisionStatus.PENDING &&
     session.tasks
-      .filter((task) => task.type === TaskType.REVIEW_PRIVATE_CLOUD_REQUEST && task.status === TaskStatus.ASSIGNED)
+      .filter((task) => task.type === TaskType.REVIEW_PRIVATE_CLOUD_REQUEST)
       .map((task) => (task.data as { requestId: string }).requestId)
       .includes(doc.id);
 

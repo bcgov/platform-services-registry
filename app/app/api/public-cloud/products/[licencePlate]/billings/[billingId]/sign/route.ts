@@ -32,7 +32,7 @@ export const POST = apiHandler(async ({ pathParams, body, session }) => {
     prisma.task.findFirst({
       where: {
         type: TaskType.SIGN_PUBLIC_CLOUD_MOU,
-        status: TaskStatus.ASSIGNED,
+        status: { in: [TaskStatus.ASSIGNED, TaskStatus.STARTED] },
         data: { equals: { licencePlate } },
       },
     }),
@@ -76,7 +76,7 @@ export const POST = apiHandler(async ({ pathParams, body, session }) => {
     await prisma.task.updateMany({
       where: {
         type: TaskType.REVIEW_PUBLIC_CLOUD_MOU,
-        status: TaskStatus.ASSIGNED,
+        status: { in: [TaskStatus.ASSIGNED, TaskStatus.STARTED] },
         data: {
           equals: { licencePlate },
         },

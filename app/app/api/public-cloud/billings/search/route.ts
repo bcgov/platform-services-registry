@@ -38,7 +38,7 @@ export const POST = createApiHandler({
       prisma.task.findMany({
         where: {
           type: { in: [TaskType.SIGN_PUBLIC_CLOUD_MOU, TaskType.REVIEW_PUBLIC_CLOUD_MOU] },
-          status: TaskStatus.ASSIGNED,
+          status: { in: [TaskStatus.ASSIGNED, TaskStatus.STARTED] },
           OR: licencePlates.map((licencePlate) => ({ data: { equals: { licencePlate } } })),
         },
         select: {

@@ -46,19 +46,13 @@ async function baseFilter(session: Session) {
   const licencePlates = products.map(({ licencePlate }) => licencePlate);
 
   const licencePlatesFromTasks = session.tasks
-    .filter(
-      (task) =>
-        ([TaskType.SIGN_PUBLIC_CLOUD_MOU, TaskType.REVIEW_PUBLIC_CLOUD_MOU] as TaskType[]).includes(task.type) &&
-        task.status === TaskStatus.ASSIGNED,
+    .filter((task) =>
+      ([TaskType.SIGN_PUBLIC_CLOUD_MOU, TaskType.REVIEW_PUBLIC_CLOUD_MOU] as TaskType[]).includes(task.type),
     )
     .map((task) => (task.data as { licencePlate: string }).licencePlate);
 
   const requestIdsFromTasks = session.tasks
-    .filter(
-      (task) =>
-        ([TaskType.REVIEW_PUBLIC_CLOUD_REQUEST] as TaskType[]).includes(task.type) &&
-        task.status === TaskStatus.ASSIGNED,
-    )
+    .filter((task) => ([TaskType.REVIEW_PUBLIC_CLOUD_REQUEST] as TaskType[]).includes(task.type))
     .map((task) => (task.data as { requestId: string }).requestId);
 
   const billingRecords = await prisma.publicCloudBilling.findMany({
@@ -115,7 +109,7 @@ async function decorate<T extends PublicCloudRequestSimple | PublicCloudRequestD
         canSignMou =
           !billing.signed &&
           session.tasks
-            .filter((task) => task.type === TaskType.SIGN_PUBLIC_CLOUD_MOU && task.status === TaskStatus.ASSIGNED)
+            .filter((task) => task.type === TaskType.SIGN_PUBLIC_CLOUD_MOU)
             .map((task) => (task.data as { licencePlate: string }).licencePlate)
             .includes(doc.licencePlate);
 
@@ -123,7 +117,7 @@ async function decorate<T extends PublicCloudRequestSimple | PublicCloudRequestD
           billing.signed &&
           !billing.approved &&
           session.tasks
-            .filter((task) => task.type === TaskType.REVIEW_PUBLIC_CLOUD_MOU && task.status === TaskStatus.ASSIGNED)
+            .filter((task) => task.type === TaskType.REVIEW_PUBLIC_CLOUD_MOU)
             .map((task) => (task.data as { licencePlate: string }).licencePlate)
             .includes(doc.licencePlate);
 
@@ -132,7 +126,7 @@ async function decorate<T extends PublicCloudRequestSimple | PublicCloudRequestD
           billing.signed &&
           billing.approved &&
           session.tasks
-            .filter((task) => task.type === TaskType.REVIEW_PUBLIC_CLOUD_REQUEST && task.status === TaskStatus.ASSIGNED)
+            .filter((task) => task.type === TaskType.REVIEW_PUBLIC_CLOUD_REQUEST)
             .map((task) => (task.data as { requestId: string }).requestId)
             .includes(doc.id);
       }
@@ -140,7 +134,7 @@ async function decorate<T extends PublicCloudRequestSimple | PublicCloudRequestD
       canReview =
         doc.decisionStatus === DecisionStatus.PENDING &&
         session.tasks
-          .filter((task) => task.type === TaskType.REVIEW_PUBLIC_CLOUD_REQUEST && task.status === TaskStatus.ASSIGNED)
+          .filter((task) => task.type === TaskType.REVIEW_PUBLIC_CLOUD_REQUEST)
           .map((task) => (task.data as { requestId: string }).requestId)
           .includes(doc.id);
     }

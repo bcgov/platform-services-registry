@@ -58,7 +58,7 @@ export const PUT = apiHandler(async ({ pathParams, session }) => {
     prisma.task.deleteMany({
       where: {
         type: { in: [TaskType.REVIEW_PRIVATE_CLOUD_REQUEST] },
-        status: TaskStatus.ASSIGNED,
+        status: { in: [TaskStatus.ASSIGNED, TaskStatus.STARTED] },
         data: {
           equals: {
             requestId: updated.id,

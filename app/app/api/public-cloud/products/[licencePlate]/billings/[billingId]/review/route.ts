@@ -31,7 +31,7 @@ export const POST = apiHandler(async ({ pathParams, body, session }) => {
   const assignedTask = await prisma.task.findFirst({
     where: {
       type: TaskType.REVIEW_PUBLIC_CLOUD_MOU,
-      status: TaskStatus.ASSIGNED,
+      status: { in: [TaskStatus.ASSIGNED, TaskStatus.STARTED] },
       data: { equals: { licencePlate } },
     },
   });
