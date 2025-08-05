@@ -4,11 +4,13 @@ import { PeriodCosts, CostPeriod } from '@/types/private-cloud';
 export const { state: costState, useValtioState: useCostState } = createGlobalValtio<{
   selectedDate: Date;
   period: CostPeriod;
-  forecastEnabled: boolean;
+  forecast: boolean;
   data: PeriodCosts | null;
+  isDataLoading: boolean;
 }>({
   selectedDate: new Date(),
   period: CostPeriod.Monthly,
-  forecastEnabled: false,
+  forecast: false,
   data: null,
+  isDataLoading: false,
 });

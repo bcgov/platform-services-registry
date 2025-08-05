@@ -5,13 +5,7 @@ import _orderBy from 'lodash-es/orderBy';
 import { namespaceKeys } from '@/constants';
 import prisma from '@/core/prisma';
 import { Cluster, DecisionStatus, Prisma, RequestType } from '@/prisma/client';
-import {
-  CostItem,
-  // DailyDiscreteValue,
-  // QuarterlyDiscreteValue,
-  CostPeriod,
-  // YearlyDiscreteValue,
-} from '@/types/private-cloud';
+import { PeriodCostItem } from '@/types/private-cloud';
 import {
   getMinutesInYear,
   getDateFromYyyyMmDd,
@@ -19,11 +13,9 @@ import {
   getQuarterStartEndDate,
   getYearlyStartEndDate,
   getMonthsArrayFromDates,
-  getDaysBetweenDates,
   dateRangeFormatter,
   getMinutesInMonth,
 } from '@/utils/js/date';
-import { roundToHalfIncrement } from '@/utils/js/number';
 
 const roundToTwoDecimals = (value: number) => Number(value.toFixed(2));
 
@@ -57,8 +49,8 @@ function getProgress(startDate: Date, endDate: Date, today = new Date()): number
 
 function getDefaultRangeCost() {
   return _cloneDeep({
-    costToDate: 0,
-    costToProjected: 0,
+    costsToDate: 0,
+    costsToProjected: 0,
     costToTotal: 0,
   });
 }
@@ -101,7 +93,7 @@ async function getCostDetailsForRange(licencePlate: string, startDate: Date, end
     }),
   ]);
 
-  const costItems: CostItem[] = [];
+  const costItems: PeriodCostItem[] = [];
   const cpu = getDefaultRangeCost();
   const storage = getDefaultRangeCost();
   const total = getDefaultRangeCost();
@@ -195,13 +187,13 @@ async function getCostDetailsForRange(licencePlate: string, startDate: Date, end
 
           // Root level summary
           if (isPast) {
-            cpu.costToDate += environments[env].cpu.cost;
-            storage.costToDate += environments[env].storage.cost;
-            total.costToDate += environments[env].subtotal.cost;
+            cpu.costsToDate += environments[env].cpu.cost;
+            storage.costsToDate += environments[env].storage.cost;
+            total.costsToDate += environments[env].subtotal.cost;
           } else {
-            cpu.costToProjected += environments[env].cpu.cost;
-            storage.costToProjected += environments[env].storage.cost;
-            total.costToProjected += environments[env].subtotal.cost;
+            cpu.costsToProjected += environments[env].cpu.cost;
+            storage.costsToProjected += environments[env].storage.cost;
+            total.costsToProjected += environments[env].subtotal.cost;
           }
 
           cpu.costToTotal += environments[env].cpu.cost;
@@ -250,7 +242,7 @@ export async function getMonthlyCosts(licencePlate: string, year: number, oneInd
   let grandTotal = -1;
 
   if (isCurrentMonth) {
-    currentTotal = total.costToDate;
+    currentTotal = total.costsToDate;
     estimatedGrandTotal = total.costToTotal;
   } else {
     grandTotal = total.costToTotal;
@@ -259,16 +251,22 @@ export async function getMonthlyCosts(licencePlate: string, year: number, oneInd
   const numDays = new Date(year, month + 1, 0).getDate();
   const days: number[] = Array.from({ length: numDays }, (_, i) => i + 1);
 
-  const cpuToDate = new Array(numDays).fill(0);
-  const cpuToProjected = new Array(numDays).fill(0);
-  const storageToDate = new Array(numDays).fill(0);
-  const storageToProjected = new Array(numDays).fill(0);
-  const cpuQuotaToDate = new Array(numDays).fill(0);
-  const cpuQuotaToProjected = new Array(numDays).fill(0);
-  const storageQuotaToDate = new Array(numDays).fill(0);
-  const storageQuotaToProjected = new Array(numDays).fill(0);
-  const costToDate = new Array(numDays).fill(0);
-  const costToProjected = new Array(numDays).fill(0);
+  const createNewBucket = () => new Array(numDays).fill(0);
+  const cpuCostsToDate = createNewBucket();
+  const cpuCostsToProjected = createNewBucket();
+  const cpuCosts = createNewBucket();
+  const storageCostsToDate = createNewBucket();
+  const storageCostsToProjected = createNewBucket();
+  const storageCosts = createNewBucket();
+  const cpuQuotasToDate = createNewBucket();
+  const cpuQuotasToProjected = createNewBucket();
+  const cpuQuotas = createNewBucket();
+  const storageQuotasToDate = createNewBucket();
+  const storageQuotasToProjected = createNewBucket();
+  const storageQuotas = createNewBucket();
+  const costsToDate = createNewBucket();
+  const costsToProjected = createNewBucket();
+  const costs = createNewBucket();
 
   const sortedItems = _orderBy(items, ['startDate'], ['desc']);
 
@@ -310,18 +308,24 @@ export async function getMonthlyCosts(licencePlate: string, year: number, oneInd
       const storageCost = meta.total.storage.value * meta.storagePricePerMinute * durationMinutes;
 
       if (intervalEnd <= today) {
-        cpuToDate[day - 1] += cpuCost;
-        storageToDate[day - 1] += storageCost;
-        cpuQuotaToDate[day - 1] += meta.total.cpu.value * durationRatio;
-        storageQuotaToDate[day - 1] += meta.total.storage.value * durationRatio;
-        costToDate[day - 1] += cpuCost + storageCost;
+        cpuCostsToDate[day - 1] += cpuCost;
+        storageCostsToDate[day - 1] += storageCost;
+        cpuQuotasToDate[day - 1] += meta.total.cpu.value * durationRatio;
+        storageQuotasToDate[day - 1] += meta.total.storage.value * durationRatio;
+        costsToDate[day - 1] += cpuCost + storageCost;
       } else {
-        cpuToProjected[day - 1] += cpuCost;
-        storageToProjected[day - 1] += storageCost;
-        cpuQuotaToProjected[day - 1] += meta.total.cpu.value * durationRatio;
-        storageQuotaToProjected[day - 1] += meta.total.storage.value * durationRatio;
-        costToProjected[day - 1] += cpuCost + storageCost;
+        cpuCostsToProjected[day - 1] += cpuCost;
+        storageCostsToProjected[day - 1] += storageCost;
+        cpuQuotasToProjected[day - 1] += meta.total.cpu.value * durationRatio;
+        storageQuotasToProjected[day - 1] += meta.total.storage.value * durationRatio;
+        costsToProjected[day - 1] += cpuCost + storageCost;
       }
+
+      cpuCosts[day - 1] += cpuCost;
+      storageCosts[day - 1] += storageCost;
+      cpuQuotas[day - 1] += meta.total.cpu.value * durationRatio;
+      storageQuotas[day - 1] += meta.total.storage.value * durationRatio;
+      costs[day - 1] += cpuCost + storageCost;
     }
   }
 
@@ -332,21 +336,25 @@ export async function getMonthlyCosts(licencePlate: string, year: number, oneInd
     estimatedGrandTotal,
     grandTotal,
     items,
-    // discreteResourceValues: getDiscreteResourceValues(items, CostPeriod.Monthly) as DailyDiscreteValue[],
     startDate,
     progress: getProgress(startDate, endDate),
     timeUnits: days,
     timeDetails: {
-      cpuToDate,
-      cpuToProjected,
-      storageToDate,
-      storageToProjected,
-      cpuQuotaToDate,
-      cpuQuotaToProjected,
-      storageQuotaToDate,
-      storageQuotaToProjected,
-      costToDate,
-      costToProjected,
+      cpuCostsToDate,
+      cpuCostsToProjected,
+      cpuCosts,
+      storageCostsToDate,
+      storageCostsToProjected,
+      storageCosts,
+      cpuQuotasToDate,
+      cpuQuotasToProjected,
+      cpuQuotas,
+      storageQuotasToDate,
+      storageQuotasToProjected,
+      storageQuotas,
+      costsToDate,
+      costsToProjected,
+      costs,
     },
   };
 }
@@ -365,22 +373,28 @@ async function getCostsBasedOnMonths(licencePlate: string, startDate: Date, endD
   let grandTotal = -1;
 
   if (isTodayInInterval) {
-    currentTotal = total.costToDate;
+    currentTotal = total.costsToDate;
     estimatedGrandTotal = total.costToTotal;
   } else {
     grandTotal = total.costToTotal;
   }
 
-  const cpuToDate = new Array(numberOfMonths).fill(0);
-  const cpuToProjected = new Array(numberOfMonths).fill(0);
-  const storageToDate = new Array(numberOfMonths).fill(0);
-  const storageToProjected = new Array(numberOfMonths).fill(0);
-  const cpuQuotaToDate = new Array(numberOfMonths).fill(0);
-  const cpuQuotaToProjected = new Array(numberOfMonths).fill(0);
-  const storageQuotaToDate = new Array(numberOfMonths).fill(0);
-  const storageQuotaToProjected = new Array(numberOfMonths).fill(0);
-  const costToDate = new Array(numberOfMonths).fill(0);
-  const costToProjected = new Array(numberOfMonths).fill(0);
+  const createNewBucket = () => new Array(numberOfMonths).fill(0);
+  const cpuCostsToDate = createNewBucket();
+  const cpuCostsToProjected = createNewBucket();
+  const cpuCosts = createNewBucket();
+  const storageCostsToDate = createNewBucket();
+  const storageCostsToProjected = createNewBucket();
+  const storageCosts = createNewBucket();
+  const cpuQuotasToDate = createNewBucket();
+  const cpuQuotasToProjected = createNewBucket();
+  const cpuQuotas = createNewBucket();
+  const storageQuotasToDate = createNewBucket();
+  const storageQuotasToProjected = createNewBucket();
+  const storageQuotas = createNewBucket();
+  const costsToDate = createNewBucket();
+  const costsToProjected = createNewBucket();
+  const costs = createNewBucket();
 
   const sortedItems = _orderBy(items, ['startDate'], ['desc']);
 
@@ -426,18 +440,24 @@ async function getCostsBasedOnMonths(licencePlate: string, startDate: Date, endD
       const storageCost = meta.total.storage.value * meta.storagePricePerMinute * durationMinutes;
 
       if (intervalEnd <= today) {
-        cpuToDate[i] += cpuCost;
-        storageToDate[i] += storageCost;
-        cpuQuotaToDate[i] += meta.total.cpu.value * durationRatio;
-        storageQuotaToDate[i] += meta.total.storage.value * durationRatio;
-        costToDate[i] += cpuCost + storageCost;
+        cpuCostsToDate[i] += cpuCost;
+        storageCostsToDate[i] += storageCost;
+        cpuQuotasToDate[i] += meta.total.cpu.value * durationRatio;
+        storageQuotasToDate[i] += meta.total.storage.value * durationRatio;
+        costsToDate[i] += cpuCost + storageCost;
       } else {
-        cpuToProjected[i] += cpuCost;
-        storageToProjected[i] += storageCost;
-        cpuQuotaToProjected[i] += meta.total.cpu.value * durationRatio;
-        storageQuotaToProjected[i] += meta.total.storage.value * durationRatio;
-        costToProjected[i] += cpuCost + storageCost;
+        cpuCostsToProjected[i] += cpuCost;
+        storageCostsToProjected[i] += storageCost;
+        cpuQuotasToProjected[i] += meta.total.cpu.value * durationRatio;
+        storageQuotasToProjected[i] += meta.total.storage.value * durationRatio;
+        costsToProjected[i] += cpuCost + storageCost;
       }
+
+      cpuCosts[i] += cpuCost;
+      storageCosts[i] += storageCost;
+      cpuQuotas[i] += meta.total.cpu.value * durationRatio;
+      storageQuotas[i] += meta.total.storage.value * durationRatio;
+      costs[i] += cpuCost + storageCost;
     }
   }
 
@@ -451,16 +471,21 @@ async function getCostsBasedOnMonths(licencePlate: string, startDate: Date, endD
     progress: getProgress(startDate, endDate),
     timeUnits: months,
     timeDetails: {
-      cpuToDate,
-      cpuToProjected,
-      storageToDate,
-      storageToProjected,
-      cpuQuotaToDate,
-      cpuQuotaToProjected,
-      storageQuotaToDate,
-      storageQuotaToProjected,
-      costToDate,
-      costToProjected,
+      cpuCostsToDate,
+      cpuCostsToProjected,
+      cpuCosts,
+      storageCostsToDate,
+      storageCostsToProjected,
+      storageCosts,
+      cpuQuotasToDate,
+      cpuQuotasToProjected,
+      cpuQuotas,
+      storageQuotasToDate,
+      storageQuotasToProjected,
+      storageQuotas,
+      costsToDate,
+      costsToProjected,
+      costs,
     },
   };
 }
@@ -471,7 +496,6 @@ export async function getQuarterlyCosts(licencePlate: string, year: number, quar
 
   const result = {
     ...baseData,
-    // discreteResourceValues: getDiscreteResourceValues(baseData.items, CostPeriod.Quarterly),
     billingPeriod: `${dateRangeFormatter.format(startDate)}—${dateRangeFormatter.format(endDate)}, ${year}`,
   };
 
@@ -485,7 +509,6 @@ export async function getYearlyCosts(licencePlate: string, yearString: string) {
 
   const result = {
     ...baseData,
-    // discreteResourceValues: getDiscreteResourceValues(baseData.items, CostPeriod.Yearly),
     billingPeriod: `${dateRangeFormatter.format(startDate)}—${dateRangeFormatter.format(endDate)}, ${year}`,
   };
 
@@ -522,83 +545,3 @@ export async function getAdminMonthlyCosts(year: number, oneIndexedMonth: number
     items,
   };
 }
-
-// function getResourceValuesFromDate(items: CostItem[], date: Date) {
-//   const entry = items.find((item) => {
-//     const start = new Date(item.startDate);
-//     const end = new Date(item.endDate);
-//     return date >= start && date < end;
-//   });
-
-//   return {
-//     cpu: entry?.total.cpu.value,
-//     storage: entry?.total.storage.value,
-//   };
-// }
-
-// function getSummaryData(items: CostItem[], year: number, month: number): DailyDiscreteValue {
-//   const daysInMonth = new Date(year, month + 1, 0).getDate();
-//   let cpuSum = 0;
-//   let storageSum = 0;
-//   let daysWithData = 0;
-
-//   for (let day = 1; day <= daysInMonth; day++) {
-//     const date = new Date(year, month, day);
-//     const values = getResourceValuesFromDate(items, date);
-
-//     if (values.cpu! > 0 || values.storage! > 0) {
-//       cpuSum += values.cpu!;
-//       storageSum += values.storage!;
-//       daysWithData++;
-//     }
-//   }
-
-//   const avgCpu = daysWithData ? cpuSum / daysWithData : 0;
-//   const avgStorage = daysWithData ? storageSum / daysWithData : 0;
-
-//   return {
-//     cpu: roundToHalfIncrement(avgCpu),
-//     storage: roundToHalfIncrement(avgStorage),
-//   };
-// }
-
-// function getDiscreteResourceValues(
-//   items: CostItem[],
-//   timeView?: CostPeriod,
-// ): DailyDiscreteValue[] | QuarterlyDiscreteValue | YearlyDiscreteValue {
-//   if (!items?.length) return timeView === CostPeriod.Monthly ? [] : {};
-
-//   const year = new Date(items[0].startDate).getFullYear();
-//   const month = new Date(items[0].startDate).getMonth();
-
-//   if (timeView === CostPeriod.Monthly) {
-//     const lastDayOfMonth = new Date(year, month + 1, 0);
-//     const daysInMonth = lastDayOfMonth.getDate();
-
-//     return Array.from({ length: daysInMonth }, (_, idx) => {
-//       const currentDate = new Date(year, month, idx + 1);
-//       const { cpu = 0, storage = 0 } = getResourceValuesFromDate(items, currentDate) ?? {};
-
-//       return {
-//         cpu: roundToHalfIncrement(cpu),
-//         storage: roundToHalfIncrement(storage),
-//       };
-//     });
-//   }
-
-//   if (timeView === CostPeriod.Quarterly) {
-//     const quarterlyDiscreteValues = {};
-//     for (let m = 0; m < 3; m++) {
-//       const currentMonth = (month + m) % 12;
-//       const currentYear = year + Math.floor((month + m) / 12);
-//       quarterlyDiscreteValues[currentMonth + 1] = getSummaryData(items, currentYear, currentMonth);
-//     }
-//     return quarterlyDiscreteValues;
-//   }
-
-//   const yearlyDiscreteValues = {};
-//   for (let m = 0; m < 12; m++) {
-//     yearlyDiscreteValues[m + 1] = getSummaryData(items, year, m);
-//   }
-//   return yearlyDiscreteValues;
-// }

@@ -1,8 +1,8 @@
 import CostStatusBadge from '@/components/badges/CostStatusBadge';
 import { ColumnDefinition } from '@/components/generic/data-table/DataTable';
 import { Cluster, Prisma, ResourceRequestsEnv, ResourceRequests, PrivateCloudProductMemberRole } from '@/prisma/client';
-import { CostMetric, CostDetailTableData, PeriodicCostMetric, PeriodCosts } from '@/types/private-cloud';
-import { formatCurrency, getMonthNameFromNumber } from '@/utils/js';
+import { PeriodCostItem, CostDetailTableDataRow } from '@/types/private-cloud';
+import { formatCurrency, formatNumber, getMonthNameFromNumber } from '@/utils/js';
 import { productSorts } from './common';
 
 export const privateCloudProductMemberRoles = Object.values(PrivateCloudProductMemberRole);
@@ -93,91 +93,122 @@ export type ResourceRequestsKeys = Array<keyof ResourceRequests>;
 export const namespaceKeys: ResourceRequestsEnvKeys = ['development', 'test', 'production', 'tools'];
 export const resourceKeys: ResourceRequestsKeys = ['cpu', 'memory', 'storage'];
 
-export const periodicCostCommonColumns = <T extends PeriodicCostMetric>(): ColumnDefinition<T>[] => [
-  { label: 'CPU (Cores)', value: 'total.cpu.value', cellProcessor: (item, attr) => item.total.cpu.value },
-  { label: 'Storage (GiB)', value: 'total.storage.value', cellProcessor: (item, attr) => item.total.storage.value },
-  { label: 'CPU Cost', value: 'total.cpu.cost', cellProcessor: (item) => formatCurrency(item.total.cpu.cost) },
+export const periodCostItemTableColumns: ColumnDefinition<PeriodCostItem>[] = [
+  { label: 'Data Range', value: 'startDate', cellProcessor: (item, attr) => CostStatusBadge(item) },
+  {
+    label: 'CPU (Cores)',
+    value: 'total.cpu.value',
+    cellProcessor: (item, attr) =>
+      formatNumber(item.total.cpu.value, { decimals: 2, keepDecimals: true, zeroAsEmpty: true }),
+  },
+  {
+    label: 'Storage (GiB)',
+    value: 'total.storage.value',
+    cellProcessor: (item, attr) =>
+      formatNumber(item.total.storage.value, { decimals: 2, keepDecimals: true, zeroAsEmpty: true }),
+  },
+  {
+    label: 'CPU Unit Price (year)',
+    value: 'cpuPricePerYear',
+    cellProcessor: (item, attr) => formatCurrency(item.cpuPricePerYear, { zeroAsEmpty: true }),
+  },
+  {
+    label: 'Storage Unit Price (year)',
+    value: 'storagePricePerYear',
+    cellProcessor: (item, attr) => formatCurrency(item.storagePricePerYear, { zeroAsEmpty: true }),
+  },
+  {
+    label: 'CPU Cost',
+    value: 'total.cpu.cost',
+    cellProcessor: (item) => formatCurrency(item.total.cpu.cost, { zeroAsEmpty: true }),
+  },
   {
     label: 'Storage Cost',
     value: 'total.storage.cost',
-    cellProcessor: (item, attr) => formatCurrency(item.total.storage.cost),
+    cellProcessor: (item, attr) => formatCurrency(item.total.storage.cost, { zeroAsEmpty: true }),
   },
   {
     label: 'Total Cost',
     value: 'total.subtotal.cost',
-    cellProcessor: (item, attr) => formatCurrency(item.total.subtotal.cost),
+    cellProcessor: (item, attr) => formatCurrency(item.total.subtotal.cost, { zeroAsEmpty: true }),
   },
 ];
 
-type CostDetails<T extends string> = Record<T, CostMetric>;
-
-const createCostColumns = <T extends CostDetails<K>, K extends string>(detailsKey: K): ColumnDefinition<T>[] => [
-  {
-    label: 'CPU (cores)',
-    value: `${detailsKey}.cpuCore`,
-    cellProcessor: (item) =>
-      item[detailsKey].totalCost === 0 || item[detailsKey].cpuToDate === 0 ? '-' : item[detailsKey].cpuCore,
-  },
-  {
-    label: 'CPU Cost',
-    value: `${detailsKey}.cpuToDate`,
-    cellProcessor: (item) => (item[detailsKey].totalCost === 0 ? '-' : formatCurrency(item[detailsKey].cpuToDate)),
-  },
-  {
-    label: 'Storage (GiB)',
-    value: `${detailsKey}.storageGib`,
-    cellProcessor: (item) => (item[detailsKey].totalCost === 0 ? '-' : item[detailsKey].storageGib),
-  },
-  {
-    label: 'Storage Cost',
-    value: `${detailsKey}.storageToDate`,
-    cellProcessor: (item) => (item[detailsKey].totalCost === 0 ? '-' : formatCurrency(item[detailsKey].storageToDate)),
-  },
-  {
-    label: 'Total Cost',
-    value: `${detailsKey}.totalCost`,
-    cellProcessor: (item) => {
-      const value = item[detailsKey].totalCost;
-      return value === 0 ? '-' : formatCurrency(value);
-    },
-  },
-];
-
-export const monthlyCostCommonColumns = <T extends CostDetailTableData>(): ColumnDefinition<T>[] =>
-  createCostColumns<T, 'timeDetails'>('timeDetails');
-
-export const dailyCostCommonColumns = <T extends CostDetailTableData>(): ColumnDefinition<T>[] =>
-  createCostColumns<T, 'timeDetails'>('timeDetails');
-
-export const periodicCostColumns: ColumnDefinition<PeriodicCostMetric>[] = [
-  { label: 'Data Range', value: 'startDate', cellProcessor: (item, attr) => CostStatusBadge(item) },
-  ...periodicCostCommonColumns<PeriodicCostMetric>(),
-];
-
-export const dailyCostColumns: ColumnDefinition<CostDetailTableData>[] = [
-  { label: 'Day', value: 'day', cellProcessor: (item) => item.timeUnit },
-  ...dailyCostCommonColumns<CostDetailTableData>(),
-];
-
-export const monthlyCostColumns: ColumnDefinition<CostDetailTableData>[] = [
-  { label: 'Month', value: 'month', cellProcessor: (item) => getMonthNameFromNumber(item.timeUnit) },
-  ...monthlyCostCommonColumns<CostDetailTableData>(),
-];
-
-export function getCostDetailTableData(costData: PeriodCosts): CostDetailTableData[] {
-  return costData.timeUnits.map((timeUnit, idx) => {
-    const { cpuToDate, storageToDate, cpuQuotaToDate, storageQuotaToDate, costToDate } = costData.timeDetails;
-    const totalCost = cpuToDate[idx] + storageToDate[idx];
-
-    return {
-      timeUnit,
-      timeDetails: {
-        cpuToDate: cpuToDate[idx],
-        storageToDate: storageToDate[idx],
-        cpuCore: cpuQuotaToDate[idx],
-        storageGib: storageQuotaToDate[idx],
-        totalCost: costToDate[idx],
+const generatePeriodCostDetailTableColumns = (forecast: boolean): ColumnDefinition<CostDetailTableDataRow>[] => {
+  if (forecast) {
+    return [
+      {
+        label: 'CPU (cores)',
+        value: 'cpuQuota',
+        cellProcessor: (item) => formatNumber(item.cpuQuota, { decimals: 2, keepDecimals: true, zeroAsEmpty: true }),
       },
-    };
-  });
-}
+      {
+        label: 'CPU Cost',
+        value: 'cpuCost',
+        cellProcessor: (item) => formatCurrency(item.cpuCost, { zeroAsEmpty: true }),
+      },
+      {
+        label: 'Storage (GiB)',
+        value: 'storageQuota',
+        cellProcessor: (item) =>
+          formatNumber(item.storageQuota, { decimals: 2, keepDecimals: true, zeroAsEmpty: true }),
+      },
+      {
+        label: 'Storage Cost',
+        value: 'storageCost',
+        cellProcessor: (item) => formatCurrency(item.storageCost, { zeroAsEmpty: true }),
+      },
+      {
+        label: 'Total Cost',
+        value: 'cost',
+        cellProcessor: (item) => formatCurrency(item.cost, { zeroAsEmpty: true }),
+      },
+    ];
+  }
+
+  return [
+    {
+      label: 'CPU (cores)',
+      value: 'cpuQuotaToDate',
+      cellProcessor: (item) =>
+        formatNumber(item.cpuQuotaToDate, { decimals: 2, keepDecimals: true, zeroAsEmpty: true }),
+    },
+    {
+      label: 'CPU Cost',
+      value: 'cpuCostToDate',
+      cellProcessor: (item) => formatCurrency(item.cpuCostToDate, { zeroAsEmpty: true }),
+    },
+    {
+      label: 'Storage (GiB)',
+      value: 'storageQuotaToDate',
+      cellProcessor: (item) =>
+        formatNumber(item.storageQuotaToDate, { decimals: 2, keepDecimals: true, zeroAsEmpty: true }),
+    },
+    {
+      label: 'Storage Cost',
+      value: 'storageCostToDate',
+      cellProcessor: (item) => formatCurrency(item.storageCostToDate, { zeroAsEmpty: true }),
+    },
+    {
+      label: 'Total Cost',
+      value: 'costToDate',
+      cellProcessor: (item) => formatCurrency(item.costToDate, { zeroAsEmpty: true }),
+    },
+  ];
+};
+
+export const generateDailyCostDetailTableColumns = (forecast: boolean): ColumnDefinition<CostDetailTableDataRow>[] => {
+  return [
+    { label: 'Day', value: 'timeUnit', cellProcessor: (item) => item.timeUnit },
+    ...generatePeriodCostDetailTableColumns(forecast),
+  ];
+};
+
+export const generateMonthlyCostDetailTableColumns = (
+  forecast: boolean,
+): ColumnDefinition<CostDetailTableDataRow>[] => {
+  return [
+    { label: 'Month', value: 'timeUnit', cellProcessor: (item) => item.timeUnit },
+    ...generatePeriodCostDetailTableColumns(forecast),
+  ];
+};

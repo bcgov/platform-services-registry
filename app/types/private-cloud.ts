@@ -198,7 +198,7 @@ export enum CostPeriod {
   Yearly = 'Yearly',
 }
 
-export interface CostItem {
+export interface PeriodCostItem {
   startDate: Date;
   endDate: Date;
   minutes: number;
@@ -223,36 +223,44 @@ export interface PeriodCosts {
   currentTotal: number;
   estimatedGrandTotal: number;
   grandTotal: number;
-  items: CostItem[];
+  items: PeriodCostItem[];
   startDate: Date;
   progress: number;
   timeUnits: number[];
   timeDetails: {
-    cpuToDate: number[];
-    cpuToProjected: number[];
-    storageToDate: number[];
-    storageToProjected: number[];
-    cpuQuotaToDate: number[];
-    cpuQuotaToProjected: number[];
-    storageQuotaToDate: number[];
-    storageQuotaToProjected: number[];
-    costToDate: number[];
-    costToProjected: number[];
+    cpuCostsToDate: number[];
+    cpuCostsToProjected: number[];
+    cpuCosts: number[];
+    storageCostsToDate: number[];
+    storageCostsToProjected: number[];
+    storageCosts: number[];
+    cpuQuotasToDate: number[];
+    cpuQuotasToProjected: number[];
+    cpuQuotas: number[];
+    storageQuotasToDate: number[];
+    storageQuotasToProjected: number[];
+    storageQuotas: number[];
+    costsToDate: number[];
+    costsToProjected: number[];
+    costs: number[];
   };
 }
 
-export interface PeriodicCostMetric
-  extends Pick<CostItem, 'isArchived' | 'isProjected' | 'startDate' | 'endDate' | 'total'> {}
-
-export interface CostMetric {
-  cpuToDate: number;
-  storageToDate: number;
-  totalCost: number;
-  cpuCore: number;
-  storageGib: number;
-}
-
-export interface CostDetailTableData {
+export interface CostDetailTableDataRow {
   timeUnit: number;
-  timeDetails: CostMetric;
+  cpuCostToDate: number;
+  cpuCostToProjected: number;
+  cpuCost: number;
+  storageCostToDate: number;
+  storageCostToProjected: number;
+  storageCost: number;
+  cpuQuotaToDate: number;
+  cpuQuotaToProjected: number;
+  cpuQuota: number;
+  storageQuotaToDate: number;
+  storageQuotaToProjected: number;
+  storageQuota: number;
+  costToDate: number;
+  costToProjected: number;
+  cost: number;
 }

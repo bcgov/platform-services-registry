@@ -10,15 +10,21 @@ import CostSummary from '@/components/private-cloud/CostSummary';
 import MonthlyCostChart from '@/components/private-cloud/monthly-cost/MonthlyCostChart';
 import QuarterlyCostChart from '@/components/private-cloud/quarterly-cost/QuarterlyCostChart';
 import YearlyCostChart from '@/components/private-cloud/yearly-cost/YearlyCostChart';
-import { dailyCostColumns, GlobalRole, monthlyCostColumns } from '@/constants';
+import {
+  periodCostItemTableColumns,
+  generateDailyCostDetailTableColumns,
+  generateMonthlyCostDetailTableColumns,
+  GlobalRole,
+} from '@/constants';
 import createClientPage from '@/core/client-page';
+import { getPeriodCostDetailTableDataRow } from '@/helpers/private-cloud';
 import {
   downloadPrivateCloudMonthlyCosts,
   downloadPrivateCloudQuarterlyCosts,
   downloadPrivateCloudYearlyCosts,
 } from '@/services/backend/private-cloud/products';
-import { CostDetailTableData, PeriodCosts, CostPeriod } from '@/types/private-cloud';
-import { formatAsYearQuarter, formatCurrency, getDateFromYyyyMmDd, getMonthNameFromNumber } from '@/utils/js';
+import { CostDetailTableDataRow, PeriodCosts, CostPeriod, PeriodCostItem } from '@/types/private-cloud';
+import { formatAsYearQuarter, formatCurrency, getMonthNameFromNumber } from '@/utils/js';
 import PeriodSelector from './PeriodSelector';
 import { useCostState } from './state';
 
@@ -52,29 +58,75 @@ function TableFooter({ label, totalCost }: { label?: string; totalCost: number }
   );
 }
 
-function GraphView({
-  period,
-  data,
-  isForecastEnabled,
-}: {
-  period: CostPeriod;
-  data: PeriodCosts;
-  isForecastEnabled: boolean;
-}) {
+function GraphView({ period, data, forecast }: { period: CostPeriod; data: PeriodCosts; forecast: boolean }) {
   switch (period) {
     case CostPeriod.Monthly:
-      return <MonthlyCostChart data={data} isForecastEnabled={isForecastEnabled} />;
+      return <MonthlyCostChart data={data} forecast={forecast} />;
     case CostPeriod.Quarterly:
-      return <QuarterlyCostChart data={data} isForecastEnabled={isForecastEnabled} />;
+      return <QuarterlyCostChart data={data} forecast={forecast} />;
     case CostPeriod.Yearly:
-      return <YearlyCostChart data={data} isForecastEnabled={isForecastEnabled} />;
+      return <YearlyCostChart data={data} forecast={forecast} />;
     default:
       return null;
   }
 }
 
+function PeriodLabels({
+  period,
+  data,
+  forecast,
+  currentMonth,
+}: {
+  period: CostPeriod;
+  data: PeriodCosts;
+  forecast: boolean;
+  currentMonth: string;
+}) {
+  return (
+    <div className="flex justify-between">
+      {[
+        {
+          condition: data.currentTotal !== -1,
+          value: data.currentTotal,
+          label:
+            period === CostPeriod.Monthly
+              ? `Current total cost for ${currentMonth}`
+              : `Current total cost for ${data.billingPeriod}`,
+        },
+        {
+          condition: data.grandTotal !== -1,
+          value: data.grandTotal,
+          label:
+            period === CostPeriod.Monthly
+              ? `Grand total cost for ${currentMonth}`
+              : `Grand total cost for ${data.billingPeriod}`,
+        },
+        {
+          condition: data.estimatedGrandTotal !== -1 && forecast,
+          value: data.estimatedGrandTotal,
+          label:
+            period === CostPeriod.Monthly
+              ? `Estimated grand total cost for ${currentMonth}`
+              : `Estimated grand total cost for ${data.billingPeriod}`,
+        },
+      ].map(
+        ({ condition, value, label }) =>
+          condition && (
+            <div
+              key={label}
+              className="inline-flex mt-4 py-2 px-5 mx-16 bg-zinc-100 items-center justify-between border border-gray-300 rounded-md"
+            >
+              <strong>{label}:&nbsp;</strong>
+              {formatCurrency(value)}
+            </div>
+          ),
+      )}
+    </div>
+  );
+}
+
 export default privateCloudProductCosts(({ getPathParams, session }) => {
-  const [state, snap] = useCostState();
+  const [, snap] = useCostState();
   const [pathParams, setPathParams] = useState<z.infer<typeof pathParamSchema>>();
   const [downloading, setDownloading] = useState(false);
   const { licencePlate = '' } = pathParams ?? {};
@@ -89,23 +141,14 @@ export default privateCloudProductCosts(({ getPathParams, session }) => {
   }, [getPathParams]);
 
   const pageData = useMemo(() => {
-    if (!snap.data) return { tableData: [], currentTotal: 0 };
+    if (!snap.data) return { itemTable: [], detailTable: [], currentTotal: 0 };
 
-    const { cpuToDate, storageToDate, cpuQuotaToDate, storageQuotaToDate, costToDate } = snap.data.timeDetails;
-    const tableData = snap.data.timeUnits.map((timeUnit, idx) => {
-      return {
-        timeUnit,
-        timeDetails: {
-          cpuToDate: cpuToDate[idx],
-          storageToDate: storageToDate[idx],
-          cpuCore: cpuQuotaToDate[idx],
-          storageGib: storageQuotaToDate[idx],
-          totalCost: costToDate[idx],
-        },
-      };
-    });
-
-    return { tableData, currentTotal: snap.data.currentTotal };
+    const detailTable = getPeriodCostDetailTableDataRow(snap.data);
+    return {
+      itemTable: snap.data.items,
+      detailTable,
+      currentTotal: snap.data.currentTotal > -1 ? snap.data.currentTotal : snap.data.grandTotal,
+    };
   }, [snap.data]);
 
   if (!session) {
@@ -117,28 +160,36 @@ export default privateCloudProductCosts(({ getPathParams, session }) => {
       ? getMonthNameFromNumber(snap.selectedDate.getMonth() + 1)
       : snap.data?.billingPeriod;
 
-  const tableProps = {
+  const detailTableProp = {
+    data: pageData.detailTable,
     disablePagination: true,
     footer: <TableFooter label={selectedPeriod} totalCost={pageData.currentTotal} />,
   };
 
   async function handleDownloadCostPdf() {
     if (!snap.data) return;
+
     setDownloading(true);
-    const downloadPDF =
-      {
-        [CostPeriod.Monthly]: () =>
-          downloadPrivateCloudMonthlyCosts(licencePlate, format(snap.selectedDate, 'yyyy-MM')),
-        [CostPeriod.Quarterly]: () =>
-          downloadPrivateCloudQuarterlyCosts(licencePlate, formatAsYearQuarter(snap.selectedDate)),
-      }[snap.period] ||
-      (() => downloadPrivateCloudYearlyCosts(licencePlate, snap.selectedDate.getFullYear().toString()));
-    await downloadPDF();
+
+    const pdfDownloadStrategies = {
+      [CostPeriod.Monthly]: () => downloadPrivateCloudMonthlyCosts(licencePlate, format(snap.selectedDate, 'yyyy-MM')),
+      [CostPeriod.Quarterly]: () =>
+        downloadPrivateCloudQuarterlyCosts(licencePlate, formatAsYearQuarter(snap.selectedDate)),
+      [CostPeriod.Yearly]: () =>
+        downloadPrivateCloudYearlyCosts(licencePlate, snap.selectedDate.getFullYear().toString()),
+    };
+
+    const downloadPDF = pdfDownloadStrategies[snap.period];
+
+    if (downloadPDF) {
+      await downloadPDF();
+    }
+
     setDownloading(false);
   }
 
   return (
-    <LoadingBox isLoading={false} className="my-2">
+    <LoadingBox isLoading={snap.isDataLoading} className="my-2">
       <div className="relative">
         {snap.data && (
           <>
@@ -170,26 +221,42 @@ export default privateCloudProductCosts(({ getPathParams, session }) => {
 
         <Tabs.Panel className="border" value="graph">
           <PeriodSelector licencePlate={licencePlate} />
-          {snap.data && <GraphView period={snap.period} data={snap.data} isForecastEnabled={snap.forecastEnabled} />}
+          {snap.data && <GraphView period={snap.period} data={snap.data} forecast={snap.forecast} />}
         </Tabs.Panel>
 
         <Tabs.Panel className="border" value="table">
           <PeriodSelector licencePlate={licencePlate} />
-          {snap.period === CostPeriod.Monthly && pageData.tableData.length > 0 && (
-            <div className="mx-16 mt-8 mb-14">
-              <DataTable<CostDetailTableData> data={pageData.tableData} columns={dailyCostColumns} {...tableProps} />
-            </div>
+
+          {snap.data && (
+            <PeriodLabels
+              period={snap.period}
+              data={snap.data}
+              forecast={snap.forecast}
+              currentMonth={format(snap.selectedDate, 'MMMM')}
+            />
           )}
-          {(snap.period === CostPeriod.Quarterly || snap.period === CostPeriod.Yearly) &&
-            pageData.tableData.length > 0 && (
-              <div className="mx-16 mt-8 mb-14">
-                <DataTable<CostDetailTableData>
-                  data={pageData.tableData}
-                  columns={monthlyCostColumns}
-                  {...tableProps}
-                />
-              </div>
+
+          <div className="mx-16 mt-8">
+            <DataTable<PeriodCostItem>
+              columns={periodCostItemTableColumns}
+              data={snap.forecast ? pageData.itemTable : pageData.itemTable.filter((item) => item.isPast)}
+              disablePagination
+            />
+          </div>
+
+          <div className="mx-16 mt-8 mb-2">
+            {snap.period === CostPeriod.Monthly ? (
+              <DataTable<CostDetailTableDataRow>
+                columns={generateDailyCostDetailTableColumns(snap.forecast)}
+                {...detailTableProp}
+              />
+            ) : (
+              <DataTable<CostDetailTableDataRow>
+                columns={generateMonthlyCostDetailTableColumns(snap.forecast)}
+                {...detailTableProp}
+              />
             )}
+          </div>
         </Tabs.Panel>
       </Tabs>
     </LoadingBox>
