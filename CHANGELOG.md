@@ -1,3 +1,8 @@
+## [0.75.0](https://github.com/bcgov/platform-services-registry/compare/v0.74.2...v0.75.0) (2025-08-05)
+
+### Features
+
+* **6155:** display tooltip for forecast calculation ([0379118](https://github.com/bcgov/platform-services-registry/commit/037911899e250c7c50714fc9f26429f6a95a69af))
 ## [0.74.2](https://github.com/bcgov/platform-services-registry/compare/v0.74.1...v0.74.2) (2025-08-05)
 
 ### Bug Fixes
