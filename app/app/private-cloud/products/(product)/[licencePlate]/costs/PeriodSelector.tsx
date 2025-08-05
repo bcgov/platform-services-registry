@@ -6,6 +6,7 @@ import { useEffect } from 'react';
 import { getMonthlyCosts, getQuarterlyCosts, getYearlyCosts } from '@/services/backend/private-cloud/products';
 import { CostPeriod } from '@/types/private-cloud';
 import { formatAsYearQuarter, getDateFromYyyyMmDd } from '@/utils/js';
+import ForecastTooltip from './ForecastTooltip';
 import { useCostState } from './state';
 
 const inputClasses = 'border-gray-600 focus:border-gray-800 dark:border-gray-500 dark:focus:border-gray-300';
@@ -87,16 +88,18 @@ export default function PeriodSelector({
             )}
           </Tooltip>
         </div>
-        <Switch
-          label="Forecast"
-          checked={snap.forecast}
-          onChange={(event) => (state.forecast = event.currentTarget.checked)}
-          classNames={{
-            label: 'cursor-pointer',
-            thumb: 'cursor-pointer',
-          }}
-          styles={switchStyles(snap.forecast)}
-        />
+        <ForecastTooltip>
+          <Switch
+            label="Forecast"
+            checked={snap.forecast}
+            onChange={(event) => (state.forecast = event.currentTarget.checked)}
+            classNames={{
+              label: 'cursor-pointer',
+              thumb: 'cursor-pointer',
+            }}
+            styles={switchStyles(snap.forecast)}
+          />
+        </ForecastTooltip>
       </div>
       {children}
     </div>
