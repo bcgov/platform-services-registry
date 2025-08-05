@@ -58,7 +58,7 @@ export const POST = apiHandler(async ({ pathParams, body, session }) => {
     prisma.task.deleteMany({
       where: {
         type: { in: [TaskType.REVIEW_PUBLIC_CLOUD_REQUEST] },
-        status: TaskStatus.ASSIGNED,
+        status: { in: [TaskStatus.ASSIGNED, TaskStatus.STARTED] },
         data: {
           equals: {
             requestId: updated.id,
@@ -79,7 +79,7 @@ export const POST = apiHandler(async ({ pathParams, body, session }) => {
       prisma.task.deleteMany({
         where: {
           type: { in: [TaskType.SIGN_PUBLIC_CLOUD_MOU, TaskType.REVIEW_PUBLIC_CLOUD_MOU] },
-          status: TaskStatus.ASSIGNED,
+          status: { in: [TaskStatus.ASSIGNED, TaskStatus.STARTED] },
           data: {
             equals: {
               licencePlate,

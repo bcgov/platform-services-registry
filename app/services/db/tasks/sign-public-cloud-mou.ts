@@ -80,7 +80,7 @@ export async function closeSignPublicCloudMouTask(data: CloseSignPublicCloudMouT
   const taskProm = prisma.task.updateMany({
     where: {
       type,
-      status: TaskStatus.ASSIGNED,
+      status: { in: [TaskStatus.ASSIGNED, TaskStatus.STARTED] },
       OR: [{ userIds: { has: session.user.id } }, { roles: { hasSome: session.roles } }],
       data: {
         equals: {
