@@ -1,3 +1,13 @@
+## [0.74.2](https://github.com/bcgov/platform-services-registry/compare/v0.74.1...v0.74.2) (2025-08-05)
+
+### Bug Fixes
+
+* **000:** resolve issue with ID queries ([718e600](https://github.com/bcgov/platform-services-registry/commit/718e600258f7d2155accd0dff7b89e861359c536))
+
+### Refactors
+
+* **6153:** reorganize cost component structure ([3154957](https://github.com/bcgov/platform-services-registry/commit/3154957b0743dbef133717a16522fa2441972192))
+* **6168:** calculate quota proportionally in time ([001ea70](https://github.com/bcgov/platform-services-registry/commit/001ea70d7ecbc229bc5addd4f149e0936d9dd2a5))
 ## [0.74.1](https://github.com/bcgov/platform-services-registry/compare/v0.74.0...v0.74.1) (2025-07-31)
 
 ### Bug Fixes
