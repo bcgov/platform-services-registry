@@ -42,7 +42,7 @@ async function baseFilter(session: Session) {
   const requestFilters: Prisma.PublicCloudRequestWhereInput[] = [
     {
       type: RequestType.CREATE,
-      createdById: { equals: session.user.id, mode: 'insensitive' },
+      createdById: session.user.id,
     },
     {
       type: RequestType.CREATE,
