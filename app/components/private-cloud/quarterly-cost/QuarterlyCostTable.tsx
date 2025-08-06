@@ -6,7 +6,7 @@ import { periodCostItemTableColumns, generateMonthlyCostDetailTableColumns } fro
 
 export default function QuarterlyCostTable({ data }: { data: PeriodCosts }) {
   const monthlyCost = getPeriodCostDetailTableDataRow(data);
-  
+
   return (
     <>
       <SimpleTable<PeriodCostItem>
