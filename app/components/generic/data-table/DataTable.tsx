@@ -1,3 +1,4 @@
+import { UnstyledButton } from '@mantine/core';
 import { IconArrowDown, IconArrowsSort, IconArrowUp } from '@tabler/icons-react';
 import {
   CellContext,
@@ -12,12 +13,14 @@ import _get from 'lodash-es/get';
 import _isString from 'lodash-es/isString';
 import _startCase from 'lodash-es/startCase';
 import { useEffect, useMemo, useState } from 'react';
+import { cn } from '@/utils/js';
 import Pagination from './Pagination';
 
 export interface ColumnDefinition<TData> {
   label?: string | null;
   value: string;
   cellProcessor?: (item: TData, attribute: string) => React.ReactNode;
+  align?: 'left' | 'center' | 'right';
 }
 
 interface TableProps<TData> {
@@ -66,11 +69,19 @@ export default function DataTable<TData extends object>({
         id: col.value,
         header: ({ column }) => {
           const label = _isString(col.label) ? col.label : _startCase(col.value);
+
           return (
-            <div className="flex items-center cursor-pointer rounded-sm" onClick={() => column.toggleSorting()}>
+            <UnstyledButton
+              className={cn('w-full cursor-pointer', {
+                'text-left': col.align === 'left',
+                'text-right': col.align === 'right',
+                'text-center': col.align === 'center',
+              })}
+              onClick={() => column.toggleSorting()}
+            >
               {label}
               {label && (
-                <div className="ml-2 flex items-center h-5">
+                <div className="ml-2 inline-block h-4">
                   {column.getIsSorted() === 'asc' ? (
                     <IconArrowUp className="h-5 w-5 stroke-2 text-black dark:text-black" />
                   ) : column.getIsSorted() === 'desc' ? (
@@ -80,11 +91,19 @@ export default function DataTable<TData extends object>({
                   )}
                 </div>
               )}
-            </div>
+            </UnstyledButton>
           );
         },
         cell: (info: CellContext<TData, TData>) => (
-          <>{col.cellProcessor ? col.cellProcessor(info.row.original, col.value) : info.getValue()}</>
+          <div
+            className={cn({
+              'text-left': col.align === 'left',
+              'text-right': col.align === 'right',
+              'text-center': col.align === 'center',
+            })}
+          >
+            {col.cellProcessor ? col.cellProcessor(info.row.original, col.value) : String(info.getValue())}
+          </div>
         ),
       });
     });
@@ -104,7 +123,7 @@ export default function DataTable<TData extends object>({
 
   return (
     <>
-      <div className="border border-gray-200 overflow-hidden rounded-md">
+      <div className="border border-gray-200 overflow-hidden rounded-sm">
         <div className="overflow-x-auto">
           <table className="w-full text-sm border-collapse">
             <thead>
