@@ -60,6 +60,9 @@ Scenario: Approval Admin reviews Edit Request
     And User types quota "1" in "CPU" for "Tools"
     And User types quota "3" in "MEMORY" for "Tools"
     And User types quota "2" in "STORAGE" for "Tools"
+    And User types justification "John Cypress" in "Contact name"
+    And User types justification "testemail@artemtest.com" in "Contact email"
+    And User types justification "Test Justification text, test-test, 123" in "Justification of quota increase"
     And User clicks button "Submit"
     And User makes a screenshot
     And User clicks modal window button "Submit"
