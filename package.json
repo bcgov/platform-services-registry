@@ -6,7 +6,7 @@
   "scripts": {
     "lint": "eslint --no-eslintrc --config .eslintrc.root.json .",
     "lint-fix": "eslint --no-eslintrc --config .eslintrc.root.json --fix .",
-    "cypress-headless": "cypress run --headless",
+    "cypress-headless": "cypress run --headless --browser firefox",
     "release": "release-it",
     "changelog": "conventional-changelog -p conventionalcommits -i CHANGELOG.md -n .conventional-changelog.mjs -s -r 0 --skip-unstable"
   },
@@ -23,8 +23,7 @@
     "@release-it/bumper": "^7.0.0",
     "@types/eslint-config-prettier": "^6.11.3",
     "conventional-changelog-cli": "^5.0.0",
-    "cypress": "^13.13.2",
-    "cypress-cloud": "^1.13.0",
+    "cypress": "^14.5.3",
     "cypress-keycloak": "^2.0.1",
     "eslint": "^9.19.0",
     "eslint-config-prettier": "^10.0.1",
