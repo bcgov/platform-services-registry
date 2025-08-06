@@ -1,3 +1,4 @@
+import { UnstyledButton } from '@mantine/core';
 import { IconArrowDown, IconArrowsSort, IconArrowUp } from '@tabler/icons-react';
 import {
   CellContext,
@@ -14,7 +15,6 @@ import _startCase from 'lodash-es/startCase';
 import { useEffect, useMemo, useState } from 'react';
 import { cn } from '@/utils/js';
 import Pagination from './Pagination';
-import { UnstyledButton } from '@mantine/core';
 
 export interface ColumnDefinition<TData> {
   label?: string | null;
