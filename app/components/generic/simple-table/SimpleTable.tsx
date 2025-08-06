@@ -6,7 +6,7 @@ import { cn } from '@/utils/js';
 export interface ColumnDefinition<TData> {
   label?: string | null;
   value: string;
-  cellProcessor?: (item: TData, attribute: string) => React.ReactNode;
+  cellFormatter?: (item: TData, attribute: string) => React.ReactNode;
   align?: 'left' | 'center' | 'right';
 }
 
@@ -67,7 +67,7 @@ export default function SimpleTable<TData extends object>({
                         'text-center': col.align === 'center',
                       })}
                     >
-                      {col.cellProcessor ? col.cellProcessor(row, col.value) : getNestedValue(row, col.value)}
+                      {col.cellFormatter ? col.cellFormatter(row, col.value) : getNestedValue(row, col.value)}
                     </td>
                   ))}
                 </tr>

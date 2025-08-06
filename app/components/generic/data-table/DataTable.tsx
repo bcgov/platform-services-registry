@@ -19,7 +19,7 @@ import Pagination from './Pagination';
 export interface ColumnDefinition<TData> {
   label?: string | null;
   value: string;
-  cellProcessor?: (item: TData, attribute: string) => React.ReactNode;
+  cellFormatter?: (item: TData, attribute: string) => React.ReactNode;
   align?: 'left' | 'center' | 'right';
 }
 
@@ -102,7 +102,7 @@ export default function DataTable<TData extends object>({
               'text-center': col.align === 'center',
             })}
           >
-            {col.cellProcessor ? col.cellProcessor(info.row.original, col.value) : String(info.getValue())}
+            {col.cellFormatter ? col.cellFormatter(info.row.original, col.value) : String(info.getValue())}
           </div>
         ),
       });

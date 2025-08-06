@@ -44,7 +44,7 @@ export default TeamApiAccountsPage(({ session }) => {
       {
         label: 'Name',
         value: 'name',
-        cellProcessor: (account, attr) => (
+        cellFormatter: (account, attr) => (
           <span className="whitespace-nowrap">
             {account.name}{' '}
             <Badge color="green" radius="sm" className="ml-1">
@@ -56,7 +56,7 @@ export default TeamApiAccountsPage(({ session }) => {
       {
         label: 'Roles',
         value: 'roles',
-        cellProcessor: (account, attr) => (
+        cellFormatter: (account, attr) => (
           <>
             {account.roles.map((role) => (
               <Badge key={role} color="gray" radius="sm" className="mr-1">
@@ -69,7 +69,7 @@ export default TeamApiAccountsPage(({ session }) => {
       {
         label: '',
         value: 'actionButtons',
-        cellProcessor: (account, attr) => (
+        cellFormatter: (account, attr) => (
           <>
             <Button
               className="mr-1"

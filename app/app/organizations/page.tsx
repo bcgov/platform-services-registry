@@ -16,7 +16,7 @@ import { openUpdateModal } from './updateModal';
 interface ColumnDef {
   label?: string;
   value: string;
-  cellProcessor: (org: Organization, attr: string) => React.ReactNode;
+  cellFormatter: (org: Organization, attr: string) => React.ReactNode;
 }
 
 const Page = createClientPage({
@@ -43,12 +43,12 @@ export default Page(({ session }) => {
     {
       label: 'Code',
       value: 'code',
-      cellProcessor: (org, attr) => <span className="whitespace-nowrap">{org.code}</span>,
+      cellFormatter: (org, attr) => <span className="whitespace-nowrap">{org.code}</span>,
     },
     {
       label: 'Name',
       value: 'name',
-      cellProcessor: (org, attr) => <span className="whitespace-nowrap">{org.name}</span>,
+      cellFormatter: (org, attr) => <span className="whitespace-nowrap">{org.name}</span>,
     },
   ];
 
@@ -56,7 +56,7 @@ export default Page(({ session }) => {
     tableColumns.push({
       label: '',
       value: 'actionButtons',
-      cellProcessor: (org, attr) => {
+      cellFormatter: (org, attr) => {
         if (!session?.permissions.manageOrganizations) {
           return null;
         }
