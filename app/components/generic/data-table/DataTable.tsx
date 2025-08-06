@@ -14,6 +14,7 @@ import _startCase from 'lodash-es/startCase';
 import { useEffect, useMemo, useState } from 'react';
 import { cn } from '@/utils/js';
 import Pagination from './Pagination';
+import { UnstyledButton } from '@mantine/core';
 
 export interface ColumnDefinition<TData> {
   label?: string | null;
@@ -70,8 +71,8 @@ export default function DataTable<TData extends object>({
           const label = _isString(col.label) ? col.label : _startCase(col.value);
 
           return (
-            <div
-              className={cn('cursor-pointer', {
+            <UnstyledButton
+              className={cn('w-full cursor-pointer', {
                 'text-left': col.align === 'left',
                 'text-right': col.align === 'right',
                 'text-center': col.align === 'center',
@@ -90,7 +91,7 @@ export default function DataTable<TData extends object>({
                   )}
                 </div>
               )}
-            </div>
+            </UnstyledButton>
           );
         },
         cell: (info: CellContext<TData, TData>) => (
