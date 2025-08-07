@@ -44,5 +44,6 @@ brew install pkg-config cairo pango libpng jpeg giflib librsvg
 
 ```bash
 cd node_modules/.pnpm/canvas@3.1.1/node_modules/canvas
+npm install -g node-gyp
 pnpm exec node-gyp rebuild
 ```
