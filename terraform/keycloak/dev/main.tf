@@ -72,7 +72,7 @@ resource "keycloak_openid_user_attribute_protocol_mapper" "idir_user_guid_mapper
   realm_id        = data.keycloak_realm.pltsvc.id
   client_id       = keycloak_openid_client.pltsvc.id
 
-  name                 = "idir_user_guid"
+  name                 = "idirGuid"
   user_attribute       = "idir_user_guid"
   claim_name           = "idirGuid"
   claim_value_type     = "String"
