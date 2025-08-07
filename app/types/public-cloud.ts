@@ -14,6 +14,7 @@ export type PublicCloudProductSimple = Prisma.PublicCloudProductGetPayload<{
     primaryTechnicalLead: true;
     secondaryTechnicalLead: true;
     expenseAuthority: true;
+    organization: true;
     requests: {
       where: {
         active: true;
@@ -38,6 +39,7 @@ export type PublicCloudProductDetail = Prisma.PublicCloudProductGetPayload<{
     primaryTechnicalLead: true;
     secondaryTechnicalLead: true;
     expenseAuthority: true;
+    organization: true;
     requests: {
       where: {
         active: true;
@@ -68,6 +70,7 @@ export type PublicCloudRequestDetail = Prisma.PublicCloudRequestGetPayload<{
         primaryTechnicalLead: true;
         secondaryTechnicalLead: true;
         expenseAuthority: true;
+        organization: true;
       };
     };
     originalData: {
@@ -76,6 +79,7 @@ export type PublicCloudRequestDetail = Prisma.PublicCloudRequestGetPayload<{
         primaryTechnicalLead: true;
         secondaryTechnicalLead: true;
         expenseAuthority: true;
+        organization: true;
       };
     };
     requestData: {
@@ -84,6 +88,7 @@ export type PublicCloudRequestDetail = Prisma.PublicCloudRequestGetPayload<{
         primaryTechnicalLead: true;
         secondaryTechnicalLead: true;
         expenseAuthority: true;
+        organization: true;
       };
     };
     decisionData: {
@@ -92,6 +97,7 @@ export type PublicCloudRequestDetail = Prisma.PublicCloudRequestGetPayload<{
         primaryTechnicalLead: true;
         secondaryTechnicalLead: true;
         expenseAuthority: true;
+        organization: true;
       };
     };
   };
@@ -126,6 +132,7 @@ export type PublicCloudRequestSimple = Prisma.PublicCloudRequestGetPayload<{
         primaryTechnicalLead: true;
         secondaryTechnicalLead: true;
         expenseAuthority: true;
+        organization: true;
       };
     };
     decisionData: {
@@ -134,6 +141,7 @@ export type PublicCloudRequestSimple = Prisma.PublicCloudRequestGetPayload<{
         primaryTechnicalLead: true;
         secondaryTechnicalLead: true;
         expenseAuthority: true;
+        organization: true;
       };
     };
   };

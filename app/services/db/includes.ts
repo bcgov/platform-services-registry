@@ -2,6 +2,7 @@ export const privateCloudProductSimpleInclude = {
   projectOwner: true,
   primaryTechnicalLead: true,
   secondaryTechnicalLead: true,
+  organization: true,
   requests: {
     where: {
       active: true,
@@ -16,6 +17,7 @@ export const privateCloudProductDetailInclude = {
   projectOwner: true,
   primaryTechnicalLead: true,
   secondaryTechnicalLead: true,
+  organization: true,
   requests: {
     where: {
       active: true,
@@ -35,6 +37,7 @@ export const privateCloudRequestSimpleInclude = {
       projectOwner: true,
       primaryTechnicalLead: true,
       secondaryTechnicalLead: true,
+      organization: true,
     },
   },
   decisionData: {
@@ -42,6 +45,7 @@ export const privateCloudRequestSimpleInclude = {
       projectOwner: true,
       primaryTechnicalLead: true,
       secondaryTechnicalLead: true,
+      organization: true,
     },
   },
 };
@@ -55,6 +59,7 @@ export const privateCloudRequestDetailInclude = {
       projectOwner: true,
       primaryTechnicalLead: true,
       secondaryTechnicalLead: true,
+      organization: true,
     },
   },
   originalData: {
@@ -62,6 +67,7 @@ export const privateCloudRequestDetailInclude = {
       projectOwner: true,
       primaryTechnicalLead: true,
       secondaryTechnicalLead: true,
+      organization: true,
     },
   },
   requestData: {
@@ -69,6 +75,7 @@ export const privateCloudRequestDetailInclude = {
       projectOwner: true,
       primaryTechnicalLead: true,
       secondaryTechnicalLead: true,
+      organization: true,
     },
   },
   decisionData: {
@@ -76,6 +83,7 @@ export const privateCloudRequestDetailInclude = {
       projectOwner: true,
       primaryTechnicalLead: true,
       secondaryTechnicalLead: true,
+      organization: true,
     },
   },
 };
@@ -85,6 +93,7 @@ export const publicCloudProductSimpleInclude = {
   primaryTechnicalLead: true,
   secondaryTechnicalLead: true,
   expenseAuthority: true,
+  organization: true,
   requests: {
     where: {
       active: true,
@@ -100,6 +109,7 @@ export const publicCloudProductDetailInclude = {
   primaryTechnicalLead: true,
   secondaryTechnicalLead: true,
   expenseAuthority: true,
+  organization: true,
   requests: {
     where: {
       active: true,
@@ -120,6 +130,7 @@ export const publicCloudRequestSimpleInclude = {
       primaryTechnicalLead: true,
       secondaryTechnicalLead: true,
       expenseAuthority: true,
+      organization: true,
     },
   },
   decisionData: {
@@ -128,6 +139,7 @@ export const publicCloudRequestSimpleInclude = {
       primaryTechnicalLead: true,
       secondaryTechnicalLead: true,
       expenseAuthority: true,
+      organization: true,
     },
   },
 };
@@ -142,6 +154,7 @@ export const publicCloudRequestDetailInclude = {
       primaryTechnicalLead: true,
       secondaryTechnicalLead: true,
       expenseAuthority: true,
+      organization: true,
     },
   },
   originalData: {
@@ -150,6 +163,7 @@ export const publicCloudRequestDetailInclude = {
       primaryTechnicalLead: true,
       secondaryTechnicalLead: true,
       expenseAuthority: true,
+      organization: true,
     },
   },
   requestData: {
@@ -158,6 +172,7 @@ export const publicCloudRequestDetailInclude = {
       primaryTechnicalLead: true,
       secondaryTechnicalLead: true,
       expenseAuthority: true,
+      organization: true,
     },
   },
   decisionData: {
@@ -166,6 +181,7 @@ export const publicCloudRequestDetailInclude = {
       primaryTechnicalLead: true,
       secondaryTechnicalLead: true,
       expenseAuthority: true,
+      organization: true,
     },
   },
 };

@@ -54,7 +54,7 @@ model User {
   privateCloudRequestsAsDecisionMaker                   PrivateCloudRequest[]     @relation("decisionMaker")
   publicCloudRequestsAsDecisionMaker                    PublicCloudRequest[]      @relation("decisionMaker")
   events                                                Event[]                   @relation("UserToEvents")
-  Tasks                                                 Task[]                    @relation("UserToTasks")
+  tasks                                                 Task[]                    @relation("UserToTasks")
   tasksStarted                                          Task[]                    @relation("AssigneeToTasks")
   privateCloudRequestsAsCanceler                        PrivateCloudRequest[]     @relation("cancelledBy")
   publicCloudRequestsAsCanceler                         PublicCloudRequest[]      @relation("cancelledBy")
@@ -159,6 +159,8 @@ model PrivateCloudProduct {
   secondaryTechnicalLeadId         String?                     @db.ObjectId
   secondaryTechnicalLead           User?                       @relation("secondaryTechnicalLead", fields: [secondaryTechnicalLeadId], references: [id])
   ministry                         Ministry
+  organizationId                   String                      @db.ObjectId
+  organization                     Organization                @relation("organization", fields: [organizationId], references: [id])
   cluster                          Cluster
   golddrEnabled                    Boolean                     @default(false)
   resourceRequests                 ResourceRequestsEnv
@@ -183,6 +185,8 @@ model PrivateCloudRequestData {
   secondaryTechnicalLeadId String?                     @db.ObjectId
   secondaryTechnicalLead   User?                       @relation("secondaryTechnicalLead", fields: [secondaryTechnicalLeadId], references: [id])
   ministry                 Ministry
+  organizationId           String                      @db.ObjectId
+  organization             Organization                @relation("organization", fields: [organizationId], references: [id])
   cluster                  Cluster
   golddrEnabled            Boolean                     @default(false)
   resourceRequests         ResourceRequestsEnv
@@ -329,6 +333,8 @@ model PublicCloudProduct {
   expenseAuthorityId           String                     @db.ObjectId
   expenseAuthority             User                       @relation("expenseAuthority", fields: [expenseAuthorityId], references: [id])
   ministry                     Ministry
+  organizationId               String                     @db.ObjectId
+  organization                 Organization               @relation("organization", fields: [organizationId], references: [id])
   provider                     Provider
   providerSelectionReasons     String[]
   providerSelectionReasonsNote String
@@ -359,6 +365,8 @@ model PublicCloudRequestData {
   expenseAuthorityId           String                     @db.ObjectId
   expenseAuthority             User                       @relation("expenseAuthority", fields: [expenseAuthorityId], references: [id])
   ministry                     Ministry
+  organizationId               String                     @db.ObjectId
+  organization                 Organization               @relation("organization", fields: [organizationId], references: [id])
   provider                     Provider
   providerSelectionReasons     String[]
   providerSelectionReasonsNote String
@@ -744,7 +752,11 @@ enum PublicCloudProductMemberRole {
 }
 
 model Organization {
-  id   String @id @default(auto()) @map("_id") @db.ObjectId
-  code String @unique
-  name String
+  id                          String                    @id @default(auto()) @map("_id") @db.ObjectId
+  code                        String                    @unique
+  name                        String
+  privateCloudProducts        PrivateCloudProduct[]     @relation("organization")
+  privateCloudRequestDataList PrivateCloudRequestData[] @relation("organization")
+  publicCloudProducts         PublicCloudProduct[]      @relation("organization")
+  publicCloudRequestDataList  PublicCloudRequestData[]  @relation("organization")
 }

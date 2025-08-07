@@ -1,6 +1,7 @@
 import { Session } from 'next-auth';
 import { TypeOf } from 'zod';
-import { OkResponse, UnauthorizedResponse } from '@/core/responses';
+import prisma from '@/core/prisma';
+import { BadRequestResponse, OkResponse, UnauthorizedResponse } from '@/core/responses';
 import { getQuotaChangeStatus } from '@/helpers/auto-approval-check';
 import { sendRequestNatsMessage } from '@/helpers/nats-message';
 import { comparePrivateProductData } from '@/helpers/product-change';
@@ -50,8 +51,15 @@ export default async function updateOp({
     rest.members = product.members.map(({ userId, roles }) => ({ userId, roles }));
   }
 
+  // Temporary fix for the ministry code
+  const organization = await prisma.organization.findUnique({ where: { code: rest.ministry } });
+  if (!organization) {
+    return BadRequestResponse('Invalid ministry code provided.');
+  }
+
   const productData = {
     ...rest,
+    organization: { connect: { id: organization?.id } },
     licencePlate: product.licencePlate,
     status: product.status,
     cluster: product.cluster,

@@ -35,6 +35,12 @@ export function createSamplePrivateCloudRequest(args?: {
     createdAt: new Date(),
     updatedAt: new Date(),
     archivedAt: new Date(),
+    organizationId: generateShortId(),
+    organization: {
+      id: generateShortId(),
+      code: faker.company.name(),
+      name: faker.company.name(),
+    },
   };
 
   const product = {
