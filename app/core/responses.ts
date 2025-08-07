@@ -18,8 +18,8 @@ export function CsvResponse<T extends Record<string, any>>(data: T[], filename =
   return response;
 }
 
-export function PdfResponse(buffer: Buffer | string, filename = 'download.pdf') {
-  const response = new NextResponse(buffer, {
+export function PdfResponse(buffer: Buffer, filename = 'download.pdf') {
+  const response = new NextResponse(new Uint8Array(buffer), {
     status: 200,
     headers: {
       'Content-Type': 'application/pdf',
