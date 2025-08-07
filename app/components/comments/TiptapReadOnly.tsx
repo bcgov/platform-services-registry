@@ -55,7 +55,7 @@ const TiptapReadOnly: React.FC<TiptapReadOnlyProps> = ({ content }) => {
 
   useEffect(() => {
     if (editor) {
-      editor.commands.setContent(content, false); // Set the editor content without emitting an update event
+      editor.commands.setContent(content, { emitUpdate: false }); // Set the editor content without emitting an update event
     }
   }, [content, editor]);
 

@@ -11,9 +11,7 @@ import Underline from '@tiptap/extension-underline';
 import StarterKit from '@tiptap/starter-kit';
 
 export const commonExtensions = [
-  StarterKit.configure({
-    history: {},
-  }),
+  StarterKit.configure({}),
   CodeBlock,
   Code,
   Link,

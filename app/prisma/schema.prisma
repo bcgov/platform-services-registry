@@ -80,9 +80,9 @@ type Team {
 model PrivateCloudRequest {
   id                             String                          @id @default(auto()) @map("_id") @db.ObjectId
   licencePlate                   String
-  createdById                    String?
+  createdById                    String?                         @db.ObjectId
   createdBy                      User?                           @relation("createdBy", fields: [createdById], references: [id])
-  decisionMakerId                String?
+  decisionMakerId                String?                         @db.ObjectId
   decisionMaker                  User?                           @relation("decisionMaker", fields: [decisionMakerId], references: [id])
   quotaContactName               String?
   quotaContactEmail              String?
@@ -247,9 +247,9 @@ model PrivateCloudUnitPrice {
 model PublicCloudRequest {
   id              String                  @id @default(auto()) @map("_id") @db.ObjectId
   licencePlate    String
-  createdById     String
+  createdById     String                  @db.ObjectId
   createdBy       User                    @relation("createdBy", fields: [createdById], references: [id])
-  decisionMakerId String?
+  decisionMakerId String?                 @db.ObjectId
   decisionMaker   User?                   @relation("decisionMaker", fields: [decisionMakerId], references: [id])
   type            PublicCloudRequestType
   decisionStatus  DecisionStatus
