@@ -22,9 +22,6 @@
   "engines": {
     "node": ">=22.1.0"
   },
-  "prisma": {
-    "seed": "ts-node prisma/seed.ts"
-  },
   "dependencies": {
     "@azure/identity": "^4.11.1",
     "@faker-js/faker": "^9.9.0",
