@@ -3,6 +3,7 @@ import '@testing-library/jest-dom';
 import _ from 'lodash';
 import { logger } from '@/core/logging';
 import prisma from '@/core/prisma';
+import { ministryOptions } from './constants';
 import { SERVICE_ACCOUNT_DATA } from './jest.mock';
 
 jest.setTimeout(75000);
@@ -137,6 +138,13 @@ export async function cleanUp() {
 beforeAll(async () => {
   const { mutateMockUsersWithDbUsers } = await import('@/helpers/mock-users');
   await cleanUp();
+  await prisma.organization.deleteMany();
+  await prisma.organization.createMany({
+    data: ministryOptions.map((m) => ({
+      code: m.value,
+      name: m.label,
+    })),
+  });
   return mutateMockUsersWithDbUsers();
 });
 

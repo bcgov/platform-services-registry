@@ -26,6 +26,7 @@ export const GET = apiHandler(async ({ pathParams, session }) => {
       projectOwner: true,
       primaryTechnicalLead: true,
       secondaryTechnicalLead: true,
+      organization: true,
     },
   });
 

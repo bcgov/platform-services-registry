@@ -62,6 +62,12 @@ export function createSamplePublicCloudProduct(args?: {
     archivedAt: new Date(),
     requests: [],
     activeRequest: null,
+    organizationId: generateShortId(),
+    organization: {
+      id: generateShortId(),
+      code: faker.company.name(),
+      name: faker.company.name(),
+    },
     ...data,
   };
 

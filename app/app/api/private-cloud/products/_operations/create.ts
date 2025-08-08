@@ -1,6 +1,6 @@
 import { Session } from 'next-auth';
 import prisma from '@/core/prisma';
-import { OkResponse, UnauthorizedResponse } from '@/core/responses';
+import { BadRequestResponse, OkResponse, UnauthorizedResponse } from '@/core/responses';
 import generateLicencePlate from '@/helpers/licence-plate';
 import { sendRequestNatsMessage } from '@/helpers/nats-message';
 import { DecisionStatus, ProjectStatus, RequestType, EventType, TaskType, Cluster } from '@/prisma/client';
@@ -43,8 +43,15 @@ export default async function createOp({ session, body }: { session: Session; bo
 
   if (rest.cluster === Cluster.GOLDDR) rest.cluster = Cluster.GOLD;
 
+  // Temporary fix for the ministry code
+  const organization = await prisma.organization.findUnique({ where: { code: rest.ministry } });
+  if (!organization) {
+    return BadRequestResponse('Invalid ministry code provided.');
+  }
+
   const productData = {
     ...rest,
+    organization: { connect: { id: organization?.id } },
     licencePlate,
     status: ProjectStatus.ACTIVE,
     projectOwner: { connect: { id: projectOwnerId } },

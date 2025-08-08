@@ -1,5 +1,6 @@
 import { Session } from 'next-auth';
 import { TypeOf } from 'zod';
+import prisma from '@/core/prisma';
 import { BadRequestResponse, OkResponse, UnauthorizedResponse } from '@/core/responses';
 import { DecisionStatus, EventType, Prisma, ProjectStatus, RequestType, TaskType } from '@/prisma/client';
 import { sendDeleteRequestEmails } from '@/services/ches/private-cloud';
@@ -45,6 +46,11 @@ export default async function deleteOp({
 
   // Retrieve the latest request data to acquire the decision data ID that can be assigned to the incoming request's original data.
   const previousRequest = await getLastClosedPrivateCloudRequest(rest.licencePlate);
+
+  const organization = await prisma.organization.findUnique({ where: { code: rest.ministry } });
+  if (!organization) {
+    return BadRequestResponse('Invalid ministry code provided.');
+  }
 
   const productData = { ...rest, status: ProjectStatus.INACTIVE };
   const requestCreateData: Prisma.PrivateCloudRequestCreateInput = {

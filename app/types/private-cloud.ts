@@ -16,6 +16,7 @@ export type PrivateCloudProductSimple = Prisma.PrivateCloudProductGetPayload<{
     projectOwner: true;
     primaryTechnicalLead: true;
     secondaryTechnicalLead: true;
+    organization: true;
     requests: {
       where: {
         active: true;
@@ -40,6 +41,7 @@ export type PrivateCloudProductDetail = Prisma.PrivateCloudProductGetPayload<{
     projectOwner: true;
     primaryTechnicalLead: true;
     secondaryTechnicalLead: true;
+    organization: true;
     requests: {
       where: {
         active: true;
@@ -69,6 +71,7 @@ export type PrivateCloudRequestDetail = Prisma.PrivateCloudRequestGetPayload<{
         projectOwner: true;
         primaryTechnicalLead: true;
         secondaryTechnicalLead: true;
+        organization: true;
       };
     };
     originalData: {
@@ -76,6 +79,7 @@ export type PrivateCloudRequestDetail = Prisma.PrivateCloudRequestGetPayload<{
         projectOwner: true;
         primaryTechnicalLead: true;
         secondaryTechnicalLead: true;
+        organization: true;
       };
     };
     requestData: {
@@ -83,6 +87,7 @@ export type PrivateCloudRequestDetail = Prisma.PrivateCloudRequestGetPayload<{
         projectOwner: true;
         primaryTechnicalLead: true;
         secondaryTechnicalLead: true;
+        organization: true;
       };
     };
     decisionData: {
@@ -90,6 +95,7 @@ export type PrivateCloudRequestDetail = Prisma.PrivateCloudRequestGetPayload<{
         projectOwner: true;
         primaryTechnicalLead: true;
         secondaryTechnicalLead: true;
+        organization: true;
       };
     };
   };
@@ -123,6 +129,7 @@ export type PrivateCloudRequestSimple = Prisma.PrivateCloudRequestGetPayload<{
         projectOwner: true;
         primaryTechnicalLead: true;
         secondaryTechnicalLead: true;
+        organization: true;
       };
     };
     decisionData: {
@@ -130,6 +137,7 @@ export type PrivateCloudRequestSimple = Prisma.PrivateCloudRequestGetPayload<{
         projectOwner: true;
         primaryTechnicalLead: true;
         secondaryTechnicalLead: true;
+        organization: true;
       };
     };
   };

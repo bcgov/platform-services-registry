@@ -1,4 +1,5 @@
 import { Session } from 'next-auth';
+import prisma from '@/core/prisma';
 import { BadRequestResponse, OkResponse, UnauthorizedResponse } from '@/core/responses';
 import generateLicencePlate from '@/helpers/licence-plate';
 import { DecisionStatus, ProjectStatus, RequestType, TaskType, EventType } from '@/prisma/client';
@@ -37,8 +38,15 @@ export default async function createOp({ session, body }: { session: Session; bo
     return BadRequestResponse('invalid expensive authority');
   }
 
+  // Temporary fix for the ministry code
+  const organization = await prisma.organization.findUnique({ where: { code: rest.ministry } });
+  if (!organization) {
+    return BadRequestResponse('Invalid ministry code provided.');
+  }
+
   const productData = {
     ...rest,
+    organization: { connect: { id: organization?.id } },
     licencePlate,
     status: ProjectStatus.ACTIVE,
     projectOwner: { connect: { id: projectOwnerId } },
