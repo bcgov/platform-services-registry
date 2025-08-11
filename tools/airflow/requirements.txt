@@ -1,5 +1,5 @@
 apache-airflow-providers-mongo==5.2.2
-apache-airflow-providers-cncf-kubernetes==10.6.2
+apache-airflow-providers-cncf-kubernetes==10.7.0
 openshift==0.13.2
 mailchimp-marketing==3.0.80
 azure-identity==1.24.0
