@@ -127,7 +127,7 @@
     "lodash": "^4.17.21",
     "node-gyp": "^11.3.0",
     "prettier": "^3.6.2",
-    "prisma": "~6.13.0",
+    "prisma": "~6.14.0",
     "ts-jest": "^29.4.1",
     "ts-node": "^10.9.2",
     "typescript": "^5.9.2"
