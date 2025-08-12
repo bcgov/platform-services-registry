@@ -105,7 +105,7 @@ export async function buildMembersHistory(requests: RequestWithData[]) {
 
       if (filteredNewRoles.length > 0) {
         newRoles = filteredNewRoles;
-      } else if (isNewUser || filteredNewRoles.length === 0) {
+      } else if ((isNewUser || filteredNewRoles.length === 0) && request.changes?.parentPaths.includes('members')) {
         newRoles = ['additional team member without roles'];
       }
 
