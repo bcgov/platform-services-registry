@@ -178,7 +178,7 @@ export async function generateSession({
       session.user.id = user.id;
       session.user.email = user.email;
       session.user.image = user.image;
-      user?.idirGuid ?? token?.idirGuid ?? session.user.idirGuid;
+      session.user.idirGuid = user?.idirGuid ?? token?.idirGuid ?? session.user.idirGuid;
       session.userId = user.id;
       session.userEmail = user.email;
       session.roles.push(GlobalRole.User);
