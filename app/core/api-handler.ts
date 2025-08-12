@@ -122,6 +122,7 @@ function createApiHandler<
                 userSession: {
                   email: kcUser.email ?? '',
                   roles: kcUser.authRoleNames.concat(GlobalRole.ServiceAccount),
+                  idirGuid: '',
                   teams: [],
                   sub: '',
                   accessToken: '',
@@ -141,6 +142,7 @@ function createApiHandler<
                 userSession: {
                   email: '',
                   roles: rolesArr.concat(GlobalRole.ServiceAccount),
+                  idirGuid: '',
                   teams: [],
                   sub: '',
                   accessToken: '',

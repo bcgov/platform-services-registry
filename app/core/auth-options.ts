@@ -16,15 +16,16 @@ import { upsertUser } from '@/services/db/user';
 
 interface DecodedToken {
   resource_access?: Record<string, { roles: string[] }>;
+  idirGuid?: string;
   email: string;
   sub: string;
 }
 
 async function updateUserSession(tokens?: { access_token?: string; refresh_token?: string; id_token?: string }) {
   const { access_token = '', refresh_token = '', id_token = '' } = tokens ?? {};
-  const decodedToken = jwt.decode(access_token) as DecodedToken;
-  const { resource_access = {}, sub = '', email = '' } = decodedToken || {};
 
+  const decodedToken = jwt.decode(access_token) as DecodedToken;
+  const { resource_access = {}, sub = '', email = '', idirGuid = '' } = decodedToken || {};
   const roles = _get(resource_access, `${AUTH_RESOURCE}.roles`, []) as string[];
   const teams: SessionTokenTeams[] = [];
 
@@ -40,6 +41,7 @@ async function updateUserSession(tokens?: { access_token?: string; refresh_token
   const userSessionData = {
     email: loweremail,
     nextTokenRefreshTime,
+    idirGuid,
     roles,
     sub,
     teams,
@@ -144,6 +146,7 @@ export async function generateSession({
     name: '',
     email: '',
     image: '',
+    idirGuid: '',
   };
 
   session.tasks = [];
@@ -152,15 +155,15 @@ export async function generateSession({
     const [user, userSession] = await Promise.all([
       prisma.user.findFirst({
         where: { email: token.email },
-        select: { id: true, email: true, image: true },
+        select: { id: true, email: true, image: true, idirGuid: true },
       }),
       userSessionOverride ??
         prisma.userSession.findFirst({
           where: { email: token.email },
         }),
     ]);
-
     if (userSession) {
+      session.user.idirGuid = userSession.idirGuid;
       session.idToken = userSession.idToken;
       session.kcUserId = userSession.sub;
       session.roles = userSession.roles;
@@ -175,7 +178,7 @@ export async function generateSession({
       session.user.id = user.id;
       session.user.email = user.email;
       session.user.image = user.image;
-
+      user?.idirGuid ?? token?.idirGuid ?? session.user.idirGuid;
       session.userId = user.id;
       session.userEmail = user.email;
       session.roles.push(GlobalRole.User);
@@ -378,8 +381,14 @@ export const authOptions: AuthOptions = {
   secret: AUTH_SECRET,
   callbacks: {
     async signIn({ user, account, profile }) {
-      const { given_name, family_name, email } = profile as KeycloakProfile;
+      const { given_name, family_name, email, idirGuid } = profile as KeycloakProfile;
+
+      if (!idirGuid) {
+        console.warn(`Login blocked: Missing idirGuid for user ${user?.email}`);
+        return false;
+      }
       const loweremail = email.toLowerCase();
+
       const lastSeen = new Date();
 
       const upsertedUser = await upsertUser(loweremail, { lastSeen });
@@ -391,14 +400,13 @@ export const authOptions: AuthOptions = {
           email: loweremail,
           ministry: '',
           idir: '',
-          idirGuid: '',
+          idirGuid: idirGuid || '',
           upn: '',
           image: '',
           officeLocation: '',
           jobTitle: '',
           lastSeen,
         };
-
         await prisma.user.upsert({
           where: { email: loweremail },
           update: data,
@@ -410,7 +418,8 @@ export const authOptions: AuthOptions = {
     },
     async jwt({ token, account }: { token: JWT; account: Account | null }) {
       if (account) {
-        await updateUserSession(account);
+        const updatedSession = await updateUserSession(account);
+        token.idirGuid = updatedSession.idirGuid ?? undefined;
         return token;
       }
 
@@ -422,7 +431,8 @@ export const authOptions: AuthOptions = {
       if (userSessToRefresh) {
         const newTokens = await getNewTokens(userSessToRefresh.refreshToken);
         if (newTokens) {
-          await updateUserSession(newTokens);
+          const refreshedSession = await updateUserSession(newTokens);
+          token.idirGuid = refreshedSession.idirGuid ?? token.idirGuid;
         } else {
           await endUserSession(token.email);
         }
@@ -435,7 +445,6 @@ export const authOptions: AuthOptions = {
   events: {
     async signIn({ user, account }: { user: User; account: Account | null }) {
       if (!user?.email) return;
-
       const loweremail = user.email.toLowerCase();
       const loggedInUser = await prisma.user.findUnique({
         where: { email: loweremail },
