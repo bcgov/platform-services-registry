@@ -9,11 +9,11 @@ import { JWT } from 'next-auth/jwt';
 import KeycloakProvider, { KeycloakProfile } from 'next-auth/providers/keycloak';
 import { IS_PROD, AUTH_SERVER_URL, AUTH_RELM, AUTH_RESOURCE, AUTH_SECRET, USER_TOKEN_REFRESH_INTERVAL } from '@/config';
 import { TEAM_SA_PREFIX, GlobalRole, RoleToSessionProp, sessionRolePropKeys } from '@/constants';
+import { logger } from '@/core/logging';
 import prisma from '@/core/prisma';
 import { EventType, TaskStatus, UserSession } from '@/prisma/client';
 import { createEvent } from '@/services/db';
 import { upsertUser } from '@/services/db/user';
-
 interface DecodedToken {
   resource_access?: Record<string, { roles: string[] }>;
   idirGuid?: string;
@@ -384,7 +384,7 @@ export const authOptions: AuthOptions = {
       const { given_name, family_name, email, idirGuid } = profile as KeycloakProfile;
 
       if (!idirGuid) {
-        console.warn(`Login blocked: Missing idirGuid for user ${user?.email}`);
+        logger.warn(`Login blocked: Missing idirGuid for user ${user?.email}`);
         return false;
       }
       const loweremail = email.toLowerCase();

@@ -51,6 +51,7 @@ export async function upsertUser(email: string, extra = {}) {
     if (!adUser) return null;
 
     const data = await prepareUserData(adUser, extra);
+
     return await prisma.user.upsert({
       where: { email },
       update: data,
