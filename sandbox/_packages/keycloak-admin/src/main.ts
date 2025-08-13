@@ -312,7 +312,7 @@ export class KcAdmin {
 
         let currUser = await this.findUserByEmail(realm, email);
 
-        if (currUser && currUser.id) {
+        if (currUser?.id) {
           const updatedAttributes = {
             ...currUser.attributes,
             ...user.attributes,
