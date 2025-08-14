@@ -140,14 +140,19 @@ async function main() {
   // Upsert Admin client
   await kc.createRealmAdminServiceAccount(AUTH_REALM_NAME, ADMIN_CLIENT_ID, ADMIN_CLIENT_SECRET);
 
-  const authUsers = msUsers.map(({ surname, givenName, mail, jobTitle }) => ({
-    username: mail,
-    email: mail,
-    firstName: givenName,
-    lastName: surname,
-    password: mail,
-    roles: jobTitle ? jobTitle.split(',').map((role) => role.trim()) : [],
-  }));
+  const authUsers = msUsers.map(
+    ({ surname, givenName, mail, jobTitle, extension_85cc52e9286540fcb1f97ed86114a0e5_bcgovGUID }) => ({
+      username: mail,
+      email: mail,
+      firstName: givenName,
+      lastName: surname,
+      password: mail,
+      roles: jobTitle ? jobTitle.split(',').map((role) => role.trim()) : [],
+      attributes: {
+        idir_user_guid: [extension_85cc52e9286540fcb1f97ed86114a0e5_bcgovGUID],
+      },
+    }),
+  );
 
   // Create Auth Users with auth roles assigned
   await kc.upsertUsersWithClientRoles(AUTH_REALM_NAME, authClient?.id as string, authUsers);
