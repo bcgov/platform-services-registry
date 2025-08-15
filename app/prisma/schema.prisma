@@ -618,7 +618,6 @@ enum Ministry {
   IRR
   JEDC
   LBR
-  LDB
   HMA
   MCF
   MMHA

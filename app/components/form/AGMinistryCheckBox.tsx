@@ -19,9 +19,9 @@ export default function AGMinistryCheckBox({ disabled }: { disabled?: boolean })
       className={{ label: 'text-sm ' }}
     >
       <span className={`${formState.errors.isAgMinistryChecked && 'text-red-400'}`}>
-        * All product teams from the Ministries of Attorney General, Public Safety and Solicitor General and Emergency
-        Management BC and BC Housing must engage with <MailLink to="JAGMISO@gov.bc.ca">AG Security</MailLink> to prior
-        to submitting a request for a product.
+        * All product teams from the Ministries of Attorney General, Public Safety and Solicitor General and Ministry of
+        Emergency Management and Climate Readiness (EMCR) must engage with{' '}
+        <MailLink to="JAGMISO@gov.bc.ca">AG Security</MailLink> to prior to submitting a request for a product.
       </span>
     </FormCheckbox>
   );
