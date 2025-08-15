@@ -18,7 +18,12 @@ export default function AdditionalTeamMembers<
     roles: string[];
   },
 >({ disabled, memberRoles, children }: { disabled?: boolean; memberRoles: string[]; children?: React.ReactNode }) {
-  const { control, setValue, watch } = useFormContext();
+  const {
+    control,
+    setValue,
+    watch,
+    formState: { errors },
+  } = useFormContext();
   const { fields, append, remove } = useFieldArray({
     control,
     name: 'members',
@@ -78,6 +83,7 @@ export default function AdditionalTeamMembers<
               name="roles"
               data={memberRoles}
               value={member.roles}
+              error={errors.members?.[index]?.roles?.message}
               onChange={(roles) => {
                 setValue(`members.${index}`, { ...member, roles }, { shouldDirty: true });
               }}
