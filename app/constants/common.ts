@@ -76,10 +76,6 @@ export const ministryOptions = [
     label: 'Labour',
   },
   {
-    value: 'LDB',
-    label: 'Liquor Distribution Branch',
-  },
-  {
     value: 'MCF',
     label: 'Children and Family Development',
   },
