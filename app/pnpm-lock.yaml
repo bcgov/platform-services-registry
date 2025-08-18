@@ -220,7 +220,7 @@ importers:
         version: 0.0.12(ts-node@10.9.2(@types/node@22.17.2)(typescript@5.9.2))
       valtio:
         specifier: ^2.1.5
-        version: 2.1.5(@types/react@19.1.10)(react@19.1.1)
+        version: 2.1.7(@types/react@19.1.10)(react@19.1.1)
       winston:
         specifier: ^3.17.0
         version: 3.17.0
@@ -6652,8 +6652,8 @@ packages:
     resolution: {integrity: sha512-kiGUalWN+rgBJ/1OHZsBtU4rXZOfj/7rKQxULKlIzwzQSvMJUUNgPwJEEh7gU6xEVxC0ahoOBvN2YI8GH6FNgA==}
     engines: {node: '>=10.12.0'}
 
-  valtio@2.1.5:
-    resolution: {integrity: sha512-vsh1Ixu5mT0pJFZm+Jspvhga5GzHUTYv0/+Th203pLfh3/wbHwxhu/Z2OkZDXIgHfjnjBns7SN9HNcbDvPmaGw==}
+  valtio@2.1.7:
+    resolution: {integrity: sha512-DwJhCDpujuQuKdJ2H84VbTjEJJteaSmqsuUltsfbfdbotVfNeTE4K/qc/Wi57I9x8/2ed4JNdjEna7O6PfavRg==}
     engines: {node: '>=12.20.0'}
     peerDependencies:
       '@types/react': '>=18.0.0'
@@ -14105,7 +14105,7 @@ snapshots:
       '@types/istanbul-lib-coverage': 2.0.6
       convert-source-map: 2.0.0
 
-  valtio@2.1.5(@types/react@19.1.10)(react@19.1.1):
+  valtio@2.1.7(@types/react@19.1.10)(react@19.1.1):
     dependencies:
       proxy-compare: 3.0.1
     optionalDependencies:
