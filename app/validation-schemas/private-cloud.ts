@@ -57,7 +57,9 @@ const privateCloudProductMembers = z
   .array(
     z.object({
       userId: z.string().length(24, { message: 'Please select a member' }),
-      roles: z.array(z.nativeEnum(PrivateCloudProductMemberRole)),
+      roles: z
+        .array(z.nativeEnum(PrivateCloudProductMemberRole))
+        .min(1, { message: 'Please assign at least one role to a member' }),
     }),
   )
   .max(10);

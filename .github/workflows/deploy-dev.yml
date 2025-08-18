@@ -29,7 +29,7 @@ jobs:
     timeout-minutes: 10
     steps:
     - uses: hmarr/debug-action@f7318c783045ac39ed9bb497e22ce835fdafbfe6
-    - uses: actions/checkout@8edcb1bdb4e267140fa742c62e395cd74f332709
+    - uses: actions/checkout@ff7abcd0c3c05ccf6adc123a8cd1fd4fb30fb493
 
     - name: Setup Tools
       uses: ./.github/actions/setup-tools
@@ -54,7 +54,7 @@ jobs:
     timeout-minutes: 10
     steps:
     - uses: hmarr/debug-action@f7318c783045ac39ed9bb497e22ce835fdafbfe6
-    - uses: actions/checkout@8edcb1bdb4e267140fa742c62e395cd74f332709
+    - uses: actions/checkout@ff7abcd0c3c05ccf6adc123a8cd1fd4fb30fb493
 
     - name: Setup Tools
       uses: ./.github/actions/setup-tools
@@ -77,7 +77,7 @@ jobs:
     timeout-minutes: 10
     steps:
     - uses: hmarr/debug-action@f7318c783045ac39ed9bb497e22ce835fdafbfe6
-    - uses: actions/checkout@8edcb1bdb4e267140fa742c62e395cd74f332709
+    - uses: actions/checkout@ff7abcd0c3c05ccf6adc123a8cd1fd4fb30fb493
 
     - name: Setup Tools
       uses: ./.github/actions/setup-tools
@@ -100,7 +100,7 @@ jobs:
     timeout-minutes: 10
     steps:
     - uses: hmarr/debug-action@f7318c783045ac39ed9bb497e22ce835fdafbfe6
-    - uses: actions/checkout@8edcb1bdb4e267140fa742c62e395cd74f332709
+    - uses: actions/checkout@ff7abcd0c3c05ccf6adc123a8cd1fd4fb30fb493
 
     - name: Setup Tools
       uses: ./.github/actions/setup-tools
@@ -123,7 +123,7 @@ jobs:
     timeout-minutes: 10
     steps:
     - uses: hmarr/debug-action@f7318c783045ac39ed9bb497e22ce835fdafbfe6
-    - uses: actions/checkout@8edcb1bdb4e267140fa742c62e395cd74f332709
+    - uses: actions/checkout@ff7abcd0c3c05ccf6adc123a8cd1fd4fb30fb493
 
     - name: Setup Tools
       uses: ./.github/actions/setup-tools
@@ -153,7 +153,7 @@ jobs:
 
     steps:
     - uses: hmarr/debug-action@f7318c783045ac39ed9bb497e22ce835fdafbfe6
-    - uses: actions/checkout@8edcb1bdb4e267140fa742c62e395cd74f332709
+    - uses: actions/checkout@ff7abcd0c3c05ccf6adc123a8cd1fd4fb30fb493
 
     - name: Authenticate and set context
       uses: redhat-actions/oc-login@dfbd9912672664f9df2023c1c16e07bcf306043c
@@ -185,7 +185,7 @@ jobs:
     timeout-minutes: 10
     steps:
     - uses: hmarr/debug-action@f7318c783045ac39ed9bb497e22ce835fdafbfe6
-    - uses: actions/checkout@8edcb1bdb4e267140fa742c62e395cd74f332709
+    - uses: actions/checkout@ff7abcd0c3c05ccf6adc123a8cd1fd4fb30fb493
     - name: Scan image
       uses: ./.github/actions/scan-docker-image
       with:
@@ -197,7 +197,7 @@ jobs:
     timeout-minutes: 10
     steps:
     - uses: hmarr/debug-action@f7318c783045ac39ed9bb497e22ce835fdafbfe6
-    - uses: actions/checkout@8edcb1bdb4e267140fa742c62e395cd74f332709
+    - uses: actions/checkout@ff7abcd0c3c05ccf6adc123a8cd1fd4fb30fb493
     - name: Scan image
       uses: ./.github/actions/scan-docker-image
       with:
@@ -209,7 +209,7 @@ jobs:
     timeout-minutes: 10
     steps:
     - uses: hmarr/debug-action@f7318c783045ac39ed9bb497e22ce835fdafbfe6
-    - uses: actions/checkout@8edcb1bdb4e267140fa742c62e395cd74f332709
+    - uses: actions/checkout@ff7abcd0c3c05ccf6adc123a8cd1fd4fb30fb493
     - name: Scan image
       uses: ./.github/actions/scan-docker-image
       with:
@@ -221,7 +221,7 @@ jobs:
     timeout-minutes: 10
     steps:
     - uses: hmarr/debug-action@f7318c783045ac39ed9bb497e22ce835fdafbfe6
-    - uses: actions/checkout@8edcb1bdb4e267140fa742c62e395cd74f332709
+    - uses: actions/checkout@ff7abcd0c3c05ccf6adc123a8cd1fd4fb30fb493
     - name: Scan image
       uses: ./.github/actions/scan-docker-image
       with:
@@ -233,7 +233,7 @@ jobs:
     timeout-minutes: 10
     steps:
     - uses: hmarr/debug-action@f7318c783045ac39ed9bb497e22ce835fdafbfe6
-    - uses: actions/checkout@8edcb1bdb4e267140fa742c62e395cd74f332709
+    - uses: actions/checkout@ff7abcd0c3c05ccf6adc123a8cd1fd4fb30fb493
     - name: Scan image
       uses: ./.github/actions/scan-docker-image
       with:
@@ -245,7 +245,7 @@ jobs:
     timeout-minutes: 10
     steps:
     - uses: hmarr/debug-action@f7318c783045ac39ed9bb497e22ce835fdafbfe6
-    - uses: actions/checkout@8edcb1bdb4e267140fa742c62e395cd74f332709
+    - uses: actions/checkout@ff7abcd0c3c05ccf6adc123a8cd1fd4fb30fb493
     - name: Scan image
       uses: ./.github/actions/scan-docker-image
       with:
