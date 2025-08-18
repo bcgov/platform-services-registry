@@ -47,9 +47,9 @@ airflow:
 
   defaultAirflowRepository: ghcr.io/bcgov/pltsvc-tools-airflow
   # See https://github.com/bcgov/platform-services-registry/pkgs/container/pltsvc-tools-airflow
-  defaultAirflowTag: "481e049394a63cbd2b4157c00e9ea3530e192f89" # pragma: allowlist secret
+  defaultAirflowTag: "d401385d6f17815db1b28f754ba76ab79dbe9f9f" # pragma: allowlist secret
 
-  airflowVersion: "3.0.2"
+  airflowVersion: "3.0.4"
 
   images:
     useDefaultImageForMigration: false
