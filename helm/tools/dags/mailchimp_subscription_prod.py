@@ -17,7 +17,7 @@ with DAG(
     description="A DAG to update Mailchimp segment",
     schedule="0 3 * * *",
     start_date=datetime.now() - timedelta(weeks=1),
-    is_paused_upon_creation=False,
+    is_paused_upon_creation=True,
     catchup=False,
 ) as dag:
     t1 = PythonOperator(

@@ -13,6 +13,7 @@ with DAG(
     description="Daily token check for test environment",
     schedule="0 2 * * *",
     start_date=datetime.now() - timedelta(days=1),
+    is_paused_upon_creation=True,
     catchup=False,
 ) as dag:
 
