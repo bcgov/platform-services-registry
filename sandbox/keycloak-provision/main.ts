@@ -112,6 +112,7 @@ async function main() {
     'irr',
     'jedc',
     'lbr',
+    'ldb',
     'mcf',
     'mmha',
     'psa',
