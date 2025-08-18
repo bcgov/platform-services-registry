@@ -17,5 +17,5 @@ dependencies:
 - name: sorry-cypress
   repository: https://sorry-cypress.github.io/charts
   version: 1.20.0
-digest: sha256:ae449569b2d3e0f09ecd8a68c242b2b7e21854a70f59d4ed9080488af58c50fe
-generated: "2025-08-18T12:32:09.384857059-07:00"
+digest: sha256:cb46129f6c0f305fd8e66be03de5212128a8f2d54b6b9c6b795b6b732e809ad3
+generated: "2025-08-18T13:21:29.538770364-07:00"
