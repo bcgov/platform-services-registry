@@ -90,6 +90,8 @@ airflow:
         mountPath: /opt/airflow/dags
       - name: secdash-airflow-shared
         mountPath: /opt/airflow/shared
+    waitForMigrations:
+      enabled: false
 
   scheduler:
     replicas: 1
@@ -113,6 +115,8 @@ airflow:
         mountPath: /opt/airflow/dags
       - name: secdash-airflow-shared
         mountPath: /opt/airflow/shared
+    waitForMigrations:
+      enabled: false
 
   dagProcessor:
     extraVolumes:
@@ -127,8 +131,10 @@ airflow:
         mountPath: /opt/airflow/dags
       - name: secdash-airflow-shared
         mountPath: /opt/airflow/shared
+    waitForMigrations:
+      enabled: false
 
-  apiserver:
+  apiServer:
     replicas: 1
     resources:
       limits:
@@ -138,7 +144,7 @@ airflow:
         cpu: 500m
         memory: 1Gi
     waitForMigrations:
-      enabled: true
+      enabled: false
 
   webserver:
     replicas: 1
@@ -154,6 +160,8 @@ airflow:
 
   triggerer:
     enabled: false
+    waitForMigrations:
+      enabled: false
 
   statsd:
     enabled: false

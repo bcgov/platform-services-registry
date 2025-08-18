@@ -18,7 +18,7 @@ with DAG(
     description="A DAG to create delete request for old temporary products",
     schedule="0 1 * * *",
     start_date=datetime.now() - timedelta(weeks=1),
-    is_paused_upon_creation=False,
+    is_paused_upon_creation=True,
     catchup=False,
 ) as dag:
     t1 = PythonOperator(

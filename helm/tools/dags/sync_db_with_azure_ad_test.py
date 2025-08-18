@@ -15,6 +15,7 @@ with DAG(
     dag_id="sync_user_dbs_test",
     schedule="0 1 * * *",
     start_date=datetime.now() - timedelta(days=1),
+    is_paused_upon_creation=True,
     catchup=False,
 ) as dag:
     t1 = PythonOperator(

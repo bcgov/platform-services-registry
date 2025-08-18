@@ -19,7 +19,7 @@ with DAG(
     description="A DAG to send notifications to temporary products",
     schedule="0 0 * * *",
     start_date=datetime.now() - timedelta(weeks=1),
-    is_paused_upon_creation=False,
+    is_paused_upon_creation=True,
     catchup=False,
 ) as dag:
     t1 = PythonOperator(

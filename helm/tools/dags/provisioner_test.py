@@ -13,7 +13,12 @@ KEYCLOAK_REALM = "platform-services"
 REGISTRY_PROVISION_SA_ID = os.getenv("TEST_PROVISION_SA_ID")
 REGISTRY_PROVISION_SA_SECRET = os.getenv("TEST_PROVISION_SA_SECRET")
 
-with DAG(dag_id="provisioner_test", schedule="*/7 * * * *", start_date=datetime.now() - timedelta(minutes=8)) as dag:
+with DAG(
+    dag_id="provisioner_test",
+    schedule="*/7 * * * *",
+    start_date=datetime.now() - timedelta(minutes=8),
+    is_paused_upon_creation=True,
+) as dag:
     t1 = PythonOperator(
         task_id="fetch-products-mark-completed-test",
         python_callable=fetch_products_mark_completed,

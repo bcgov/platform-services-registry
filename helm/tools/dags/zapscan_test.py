@@ -19,6 +19,7 @@ with DAG(
     schedule="0 17 * * *",
     start_date=YESTERDAY,
     max_active_tasks=CONCURRENCY,
+    is_paused_upon_creation=True,
 ) as dag:
 
     # Step 1. Identify and gather information for all currently active projects, including their host details.
