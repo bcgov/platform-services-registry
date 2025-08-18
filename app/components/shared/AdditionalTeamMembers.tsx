@@ -41,7 +41,14 @@ export default function AdditionalTeamMembers<
             onClick={async () => {
               if (disabled) return;
 
-              const { state } = await openUserPickerModal({ initialValue: member }, { initialState: { user: member } });
+              const { state } = await openUserPickerModal(
+                {
+                  initialValue: member,
+                  blacklistIds: members.map((member) => member.id),
+                  blacklistMessage: 'This user is already on the list.',
+                },
+                { initialState: { user: member } },
+              );
               if (state.user) {
                 setValue(
                   `members.${index}`,
