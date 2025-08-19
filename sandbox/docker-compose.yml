@@ -145,8 +145,8 @@ services:
   weasyprint:
     platform: linux/amd64
     container_name: weasyprint
-    # See https://github.com/bcgov/weasyprint/pkgs/container/weasyprint
-    image: ghcr.io/bcgov/weasyprint:2b3185f05c76d16a7efc32be6124c744be5ee33f
+    # See https://github.com/bcgov/weasyprint/pkgs/container/weasyapi
+    image: ghcr.io/bcgov/weasyapi:d56c57fca3197c0b4f41d850158cb66605e01279
     ports:
     - 8090:8080
 
