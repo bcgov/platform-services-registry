@@ -40,6 +40,7 @@ async function updateUserSession(tokens?: { access_token?: string; refresh_token
 
   const userSessionData = {
     email: loweremail,
+    idirGuid: idir_guid,
     nextTokenRefreshTime,
     roles,
     sub,
@@ -47,7 +48,6 @@ async function updateUserSession(tokens?: { access_token?: string; refresh_token
     accessToken: access_token,
     refreshToken: refresh_token,
     idToken: id_token,
-    ...(idir_guid ? { idirGuid: idir_guid } : {}),
   };
 
   const userSession = await prisma.userSession.upsert({
@@ -400,7 +400,7 @@ export const authOptions: AuthOptions = {
           email: loweremail,
           ministry: '',
           idir: '',
-          idirGuid: idir_guid || undefined,
+          idirGuid: idir_guid,
           upn: '',
           image: '',
           officeLocation: '',
@@ -419,7 +419,7 @@ export const authOptions: AuthOptions = {
     async jwt({ token, account }: { token: JWT; account: Account | null }) {
       if (account) {
         const updatedSession = await updateUserSession(account);
-        token.idirGuid = updatedSession.idirGuid || token.idirGuid;
+        if (updatedSession.idirGuid) token.idirGuid = updatedSession.idirGuid;
         return token;
       }
 
@@ -432,7 +432,7 @@ export const authOptions: AuthOptions = {
         const newTokens = await getNewTokens(userSessToRefresh.refreshToken);
         if (newTokens) {
           const refreshedSession = await updateUserSession(newTokens);
-          token.idirGuid = refreshedSession.idirGuid || token.idirGuid;
+          if (refreshedSession.idirGuid) token.idirGuid = refreshedSession.idirGuid;
         } else {
           await endUserSession(token.email);
         }
