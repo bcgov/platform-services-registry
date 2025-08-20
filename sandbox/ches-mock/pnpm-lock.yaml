@@ -16,7 +16,7 @@ importers:
         version: 22.17.2
       '@types/nodemailer':
         specifier: ^7.0.0
-        version: 7.0.0
+        version: 7.0.1
       '@types/sanitize-html':
         specifier: ^2.13.0
         version: 2.16.0
@@ -518,8 +518,8 @@ packages:
   '@types/node@22.17.2':
     resolution: {integrity: sha512-gL6z5N9Jm9mhY+U2KXZpteb+09zyffliRkZyZOHODGATyC5B1Jt/7TzuuiLkFsSUMLbS1OLmlj/E+/3KF4Q/4w==}
 
-  '@types/nodemailer@7.0.0':
-    resolution: {integrity: sha512-APKHivjoJ1OyLrlhdJ/QJpnj78OaGSHQ18J12CeOVbffvBgUjqBiIzCW2lnRuwQiLxCpahgMf+T7G2dZBvgeYw==}
+  '@types/nodemailer@7.0.1':
+    resolution: {integrity: sha512-UfHAghPmGZVzaL8x9y+mKZMWyHC399+iq0MOmya5tIyenWX3lcdSb60vOmp0DocR6gCDTYTozv/ULQnREyyjkg==}
 
   '@types/qs@6.14.0':
     resolution: {integrity: sha512-eOunJqu0K1923aExK6y8p6fsihYEn/BYuQ4g0CxAAgFc4b/ZLN4CrsRZ55srTdqoiLzU2B2evC+apEIxprEzkQ==}
@@ -1812,7 +1812,7 @@ snapshots:
     dependencies:
       undici-types: 6.21.0
 
-  '@types/nodemailer@7.0.0':
+  '@types/nodemailer@7.0.1':
     dependencies:
       '@aws-sdk/client-sesv2': 3.864.0
       '@types/node': 22.17.2
