@@ -75,6 +75,7 @@ declare module 'next-auth' {
       name: string;
       email: string;
       image: string | null;
+      idirGuid: string | null;
     };
     userId: string | null;
     userEmail: string | null;
@@ -139,12 +140,17 @@ declare module 'next-auth' {
     clientId: string;
     roles: string[];
   }
+
+  interface User {
+    idirGuid?: string | null;
+  }
 }
 
 declare module 'next-auth/jwt' {
   /** Returned by the `jwt` callback and `getToken`, when using JWT sessions */
   interface JWT {
     email?: string;
+    idirGuid?: string;
   }
 }
 

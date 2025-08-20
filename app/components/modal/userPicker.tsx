@@ -48,6 +48,7 @@ export const openUserPickerModal = createModal<ModalProps, ModalState>({
           !user.ministry && 'Your home ministry name is missing',
           !user.idir && 'Your IDIR is missing',
           !user.upn && 'Your UPN is missing',
+          !user.idirGuid && 'Your IDIR GUID is missing',
         ].filter((msg): msg is string => Boolean(msg))
       : [];
 

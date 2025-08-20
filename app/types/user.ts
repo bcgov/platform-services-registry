@@ -121,6 +121,7 @@ export type SearchedUser = Prisma.UserGetPayload<{
     email: true;
     upn: true;
     idir: true;
+    idirGuid: true;
     officeLocation: true;
     jobTitle: true;
     image: true;
