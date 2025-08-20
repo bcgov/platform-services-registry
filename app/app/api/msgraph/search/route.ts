@@ -43,6 +43,7 @@ export const POST = createApiHandler({
             email: true,
             upn: true,
             idir: true,
+            idirGuid: true,
             officeLocation: true,
             jobTitle: true,
             image: true,

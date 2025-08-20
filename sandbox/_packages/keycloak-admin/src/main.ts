@@ -30,6 +30,7 @@ interface KcUser {
   lastName: string;
   password: string;
   roles: string[];
+  attributes: Record<string, string[]>;
 }
 
 // Keycloak Admin class to manage Keycloak administration tasks
@@ -213,6 +214,20 @@ export class KcAdmin {
     return scope;
   }
 
+  async updateUser(realm: string, userId: string, kcuser: KcUser) {
+    const { password, roles, ...rest } = kcuser;
+
+    await this._cli.users.update({ realm, id: userId }, rest);
+
+    if (password) {
+      await this._cli.users.resetPassword({
+        realm,
+        id: userId,
+        credential: { temporary: false, type: 'password', value: password },
+      });
+    }
+  }
+
   // Find a user by email in a realm
   async findUserByEmail(realm: string, email: string) {
     const emailUsers = await this._cli.users.find({ realm, email, exact: true });
@@ -222,7 +237,7 @@ export class KcAdmin {
 
   // Create a new user in a realm
   async createUser(realm: string, kcuser: KcUser) {
-    const { password, roles, ...rest } = kcuser;
+    const { password, roles, attributes, ...rest } = kcuser;
 
     // Catch an error if the user already exists
     try {
@@ -231,6 +246,7 @@ export class KcAdmin {
         enabled: true,
         realm,
         emailVerified: true,
+        attributes,
       });
 
       await this._cli.users.resetPassword({
@@ -284,11 +300,19 @@ export class KcAdmin {
     });
 
     await Promise.all(
-      users.map(async ({ email: _email, username, firstName, lastName, password, roles: _roles }) => {
+      users.map(async ({ email: _email, username, firstName, lastName, password, roles: _roles, attributes }) => {
         const email = _email.toLowerCase();
         const roles = uniq(castArray(_roles || [])).filter(Boolean);
 
-        const currUser = await this.createUser(realm, { email, username, firstName, lastName, password, roles });
+        const currUser = await this.createUser(realm, {
+          email,
+          username,
+          firstName,
+          lastName,
+          password,
+          roles,
+          attributes,
+        });
 
         // Revoke all client roles from the user
         await this._cli.users.delClientRoleMappings({

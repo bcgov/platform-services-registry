@@ -112,6 +112,7 @@ function createApiHandler<
               if (!kcUserId) return UnauthorizedResponse("token missing required 'kc-userid' claim");
 
               const kcUser = await findUser(kcUserId);
+
               if (!kcUser) return BadRequestResponse('keycloak user not found');
 
               session = await generateSession({
@@ -122,6 +123,7 @@ function createApiHandler<
                 userSession: {
                   email: kcUser.email ?? '',
                   roles: kcUser.authRoleNames.concat(GlobalRole.ServiceAccount),
+                  idirGuid: kcUser.attributes?.idir_guid,
                   teams: [],
                   sub: '',
                   accessToken: '',
@@ -141,6 +143,7 @@ function createApiHandler<
                 userSession: {
                   email: '',
                   roles: rolesArr.concat(GlobalRole.ServiceAccount),
+                  idirGuid: '',
                   teams: [],
                   sub: '',
                   accessToken: '',
