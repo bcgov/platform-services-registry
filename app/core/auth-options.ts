@@ -16,7 +16,7 @@ import { createEvent } from '@/services/db';
 import { upsertUser } from '@/services/db/user';
 interface DecodedToken {
   resource_access?: Record<string, { roles: string[] }>;
-  idir_guid?: string;
+  idir_guid?: string | null;
   email: string;
   sub: string;
 }
@@ -25,7 +25,7 @@ async function updateUserSession(tokens?: { access_token?: string; refresh_token
   const { access_token = '', refresh_token = '', id_token = '' } = tokens ?? {};
 
   const decodedToken = jwt.decode(access_token) as DecodedToken;
-  const { resource_access = {}, sub = '', email = '', idir_guid = '' } = decodedToken || {};
+  const { resource_access = {}, sub = '', email = '', idir_guid } = decodedToken || {};
   const roles = _get(resource_access, `${AUTH_RESOURCE}.roles`, []) as string[];
   const teams: SessionTokenTeams[] = [];
 
@@ -41,18 +41,18 @@ async function updateUserSession(tokens?: { access_token?: string; refresh_token
   const userSessionData = {
     email: loweremail,
     nextTokenRefreshTime,
-    idirGuid: idir_guid,
     roles,
     sub,
     teams,
     accessToken: access_token,
     refreshToken: refresh_token,
     idToken: id_token,
+    ...(idir_guid ? { idirGuid: idir_guid } : {}),
   };
 
   const userSession = await prisma.userSession.upsert({
     where: { email: loweremail },
-    create: userSessionData,
+    create: { ...userSessionData, idirGuid: idir_guid! },
     update: userSessionData,
   });
 
@@ -381,8 +381,7 @@ export const authOptions: AuthOptions = {
   secret: AUTH_SECRET,
   callbacks: {
     async signIn({ user, account, profile }) {
-      const { given_name, family_name, email } = profile as KeycloakProfile;
-      const { idir_guid } = profile as KeycloakProfileWithIdir;
+      const { given_name, family_name, email, idir_guid } = profile as KeycloakProfileWithIdir;
 
       if (!idir_guid) {
         logger.warn(`Login blocked: Missing idirGuid for user ${user?.email}`);
@@ -401,7 +400,7 @@ export const authOptions: AuthOptions = {
           email: loweremail,
           ministry: '',
           idir: '',
-          idirGuid: idir_guid || '',
+          idirGuid: idir_guid || undefined,
           upn: '',
           image: '',
           officeLocation: '',
@@ -420,7 +419,7 @@ export const authOptions: AuthOptions = {
     async jwt({ token, account }: { token: JWT; account: Account | null }) {
       if (account) {
         const updatedSession = await updateUserSession(account);
-        token.idirGuid = updatedSession.idirGuid ?? undefined;
+        token.idirGuid = updatedSession.idirGuid || token.idirGuid;
         return token;
       }
 
@@ -433,7 +432,7 @@ export const authOptions: AuthOptions = {
         const newTokens = await getNewTokens(userSessToRefresh.refreshToken);
         if (newTokens) {
           const refreshedSession = await updateUserSession(newTokens);
-          token.idirGuid = refreshedSession.idirGuid ?? token.idirGuid;
+          token.idirGuid = refreshedSession.idirGuid || token.idirGuid;
         } else {
           await endUserSession(token.email);
         }
