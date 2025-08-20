@@ -6,6 +6,7 @@ import { useMutation } from '@tanstack/react-query';
 import _forEach from 'lodash-es/forEach';
 import _get from 'lodash-es/get';
 import { FormProvider, useForm } from 'react-hook-form';
+import FormCheckbox from '@/components/generic/checkbox/FormCheckbox';
 import HookFormTextInput from '@/components/generic/input/HookFormTextInput';
 import { createModal } from '@/core/modal';
 import { Organization } from '@/prisma/client';
@@ -28,14 +29,16 @@ export const openCreateModal = createModal<ModalProps, ModalState>({
       defaultValues: {
         code: '',
         name: '',
+        isAgMinistry: false,
       },
     });
 
     const { mutateAsync: createOrganization, isPending: isCreatingOrganization } = useMutation({
-      mutationFn: ({ code, name }: Omit<Organization, 'id'>) => _createOrganization({ code: code.toUpperCase(), name }),
+      mutationFn: ({ code, name, isAgMinistry }: Omit<Organization, 'id'>) =>
+        _createOrganization({ code: code.toUpperCase(), name, isAgMinistry }),
     });
 
-    const { handleSubmit, setError } = methods;
+    const { handleSubmit, register } = methods;
 
     return (
       <Box pos="relative">
@@ -56,6 +59,11 @@ export const openCreateModal = createModal<ModalProps, ModalState>({
               required
               classNames={{ wrapper: 'mt-1' }}
             />
+            <div className="mt-1">
+              <FormCheckbox id="isAgMinistry" inputProps={register('isAgMinistry')} className={{ label: 'text-sm ' }}>
+                AG Ministry
+              </FormCheckbox>
+            </div>
 
             <Divider my="md" />
 

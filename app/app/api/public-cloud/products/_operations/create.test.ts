@@ -21,8 +21,6 @@ const fieldsToCompare = [
   'expenseAuthority',
 ];
 
-// TODO: add tests for ministry roles
-// TODO: test the emails templates if possible
 describe('Create Public Cloud Product - Permissions', () => {
   it('should return 401 for unauthenticated user', async () => {
     await mockSessionByEmail();

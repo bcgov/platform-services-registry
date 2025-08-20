@@ -58,8 +58,6 @@ async function makeBasicProductChange(extra = {}) {
   return response;
 }
 
-// TODO: add tests for ministry roles
-// TODO: test the emails templates if possible
 describe('Update Public Cloud Product - Permissions', () => {
   it('should successfully submit a create request for PO', async () => {
     await mockSessionByEmail(productData.main.projectOwner.email);

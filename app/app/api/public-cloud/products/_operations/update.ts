@@ -33,6 +33,7 @@ export default async function updateOp({
     secondaryTechnicalLeadId,
     expenseAuthorityId,
     requestComment,
+    isAgMinistry,
     isAgMinistryChecked,
     organizationId,
     ...rest

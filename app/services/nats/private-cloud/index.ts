@@ -30,18 +30,7 @@ export default async function createPrivateCloudNatsMessage(
   );
   const users = await prisma.user.findMany({ where: { id: { in: subscribers.map((user) => user.userId) } } });
 
-  let allianceLabel = '';
-  switch (organization.code) {
-    case 'AG':
-    case 'EMCR':
-    case 'HMA':
-    case 'PSSG':
-      allianceLabel = 'JAG';
-      break;
-    default:
-      allianceLabel = 'none';
-      break;
-  }
+  const allianceLabel = organization.isAgMinistry ? 'JAG' : 'none';
 
   const messageBody = {
     action: request.type.toLocaleLowerCase(),

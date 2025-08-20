@@ -17,8 +17,6 @@ const fieldsToCompare = [
   'secondaryTechnicalLead',
 ];
 
-// TODO: add tests for ministry roles
-// TODO: test the emails templates if possible
 describe('Create Private Cloud Product - Permissions', () => {
   it('should return 401 for unauthenticated user', async () => {
     await mockSessionByEmail();

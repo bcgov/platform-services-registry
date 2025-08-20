@@ -33,6 +33,7 @@ export default async function createOp({ session, body }: { session: Session; bo
     quotaContactName,
     quotaContactEmail,
     quotaJustification,
+    isAgMinistry,
     isAgMinistryChecked,
     url,
     secret,

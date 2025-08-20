@@ -720,6 +720,7 @@ model Organization {
   id                          String                    @id @default(auto()) @map("_id") @db.ObjectId
   code                        String                    @unique
   name                        String
+  isAgMinistry                Boolean                   @default(false)
   privateCloudProducts        PrivateCloudProduct[]     @relation("organization")
   privateCloudRequestDataList PrivateCloudRequestData[] @relation("organization")
   publicCloudProducts         PublicCloudProduct[]      @relation("organization")

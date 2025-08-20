@@ -6,6 +6,7 @@ import { useMutation } from '@tanstack/react-query';
 import _forEach from 'lodash-es/forEach';
 import _get from 'lodash-es/get';
 import { FormProvider, useForm } from 'react-hook-form';
+import FormCheckbox from '@/components/generic/checkbox/FormCheckbox';
 import HookFormTextInput from '@/components/generic/input/HookFormTextInput';
 import { createModal } from '@/core/modal';
 import { Organization } from '@/prisma/client';
@@ -16,6 +17,7 @@ interface ModalProps {
   id: string;
   code: string;
   name: string;
+  isAgMinistry: boolean;
 }
 interface ModalState {}
 
@@ -26,21 +28,22 @@ export const openUpdateModal = createModal<ModalProps, ModalState>({
     closeOnEscape: false,
     closeOnClickOutside: false,
   },
-  Component: function ({ id, code, name, closeModal }) {
+  Component: function ({ id, code, name, isAgMinistry, closeModal }) {
     const methods = useForm({
       resolver: zodResolver(organizationBodySchema),
       defaultValues: {
         code,
         name,
+        isAgMinistry,
       },
     });
 
     const { mutateAsync: updateOrganization, isPending: isUpdatingOrganization } = useMutation({
-      mutationFn: ({ code, name }: Omit<Organization, 'id'>) =>
-        _updateOrganization(id, { code: code.toUpperCase(), name }),
+      mutationFn: ({ code, name, isAgMinistry }: Omit<Organization, 'id'>) =>
+        _updateOrganization(id, { code: code.toUpperCase(), name, isAgMinistry }),
     });
 
-    const { handleSubmit, setError } = methods;
+    const { handleSubmit, register } = methods;
 
     return (
       <Box pos="relative">
@@ -61,6 +64,11 @@ export const openUpdateModal = createModal<ModalProps, ModalState>({
               required
               classNames={{ wrapper: 'mt-1' }}
             />
+            <div className="mt-1">
+              <FormCheckbox id="isAgMinistry" inputProps={register('isAgMinistry')} className={{ label: 'text-sm ' }}>
+                AG Ministry
+              </FormCheckbox>
+            </div>
 
             <Divider my="md" />
 
