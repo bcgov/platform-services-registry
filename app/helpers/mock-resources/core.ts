@@ -1,8 +1,7 @@
 import { faker } from '@faker-js/faker';
-import { clusters, providers, reasonForSelectingCloudProviderOptions } from '@/constants';
+import { clusters, providers, reasonForSelectingCloudProviderOptions, sampleMinistries } from '@/constants';
 import { mockNoRoleUsers } from '@/helpers/mock-users';
 import { DB_DATA } from '@/jest.mock';
-import { sampleMinistries } from '@/jest.setup';
 import { generateShortId, getRandomItem, getRandomNumberOptimally } from '@/utils/js';
 
 export const getRandomBool = () => faker.helpers.arrayElement([true, false]);
