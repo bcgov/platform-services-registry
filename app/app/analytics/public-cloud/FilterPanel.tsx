@@ -2,11 +2,13 @@ import { useSnapshot } from 'valtio';
 import FormDateRangePicker from '@/components/generic/select/FormDateRangePicker';
 import FormMultiSelect from '@/components/generic/select/FormMultiSelect';
 import FormUserPicker from '@/components/generic/select/FormUserPicker';
-import { providers, ministryOptions } from '@/constants';
-import { Ministry, Provider } from '@/prisma/client';
+import { providers } from '@/constants';
+import { Provider } from '@/prisma/client';
+import { appState } from '@/states/global';
 import { pageState } from './state';
 
 export default function FilterPanel() {
+  const appSnapshot = useSnapshot(appState);
   const pageSnapshot = useSnapshot(pageState);
 
   return (
@@ -16,8 +18,8 @@ export default function FilterPanel() {
           name="ministry"
           label="Ministry"
           value={pageSnapshot.ministries ?? []}
-          data={ministryOptions}
-          onChange={(value) => (pageState.ministries = value as Ministry[])}
+          data={appSnapshot.info.ORGANIZATION_SEARCH_OPTIONS}
+          onChange={(value) => (pageState.ministries = value as string[])}
         />
       </div>
 

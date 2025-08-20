@@ -59,6 +59,7 @@ export const POST = apiHandler(async ({ pathParams, body, session }) => {
     quotaContactName,
     quotaContactEmail,
     quotaJustification,
+    organizationId,
     ...validFormData
   } = body as PrivateCloudRequestDecisionBody;
 
@@ -78,6 +79,7 @@ export const POST = apiHandler(async ({ pathParams, body, session }) => {
         status: ProjectStatus.ACTIVE,
         licencePlate: request.licencePlate,
         cluster: request.project?.cluster ?? request.decisionData.cluster,
+        organization: { connect: { id: organizationId } },
         projectOwner: { connect: { id: projectOwnerId } },
         primaryTechnicalLead: { connect: { id: primaryTechnicalLeadId } },
         secondaryTechnicalLead: secondaryTechnicalLeadId ? { connect: { id: secondaryTechnicalLeadId } } : undefined,

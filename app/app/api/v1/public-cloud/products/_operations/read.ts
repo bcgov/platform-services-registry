@@ -1,8 +1,8 @@
 import { Session } from 'next-auth';
 import { BadRequestResponse, OkResponse } from '@/core/responses';
-import { ministryKeyToName } from '@/helpers/product';
 import { ProjectStatus } from '@/prisma/client';
 import { models } from '@/services/db';
+import { getOrganizationMap } from '@/services/db/organization';
 
 export default async function readOp({ session, idOrLicencePlate }: { session: Session; idOrLicencePlate: string }) {
   const where = idOrLicencePlate.length > 7 ? { id: idOrLicencePlate } : { licencePlate: idOrLicencePlate };
@@ -23,14 +23,17 @@ export default async function readOp({ session, idOrLicencePlate }: { session: S
     return BadRequestResponse(`there is no product associated with key '${idOrLicencePlate}'`);
   }
 
+  const orgMap = await getOrganizationMap();
+  const org = orgMap[data.organizationId];
+
   const result = {
     id: data.id,
     active: data.status === ProjectStatus.ACTIVE,
     licencePlate: data.licencePlate,
     name: data.name,
     description: data.description,
-    ministry: data.ministry,
-    ministryName: ministryKeyToName(data.ministry),
+    ministry: org.code,
+    ministryName: org.name,
     provider: data.provider,
     projectOwner: {
       id: data.projectOwner.id,

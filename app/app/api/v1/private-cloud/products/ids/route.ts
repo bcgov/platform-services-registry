@@ -6,7 +6,7 @@ import { OkResponse } from '@/core/responses';
 import { Cluster, Prisma } from '@/prisma/client';
 
 const queryParamSchema = z.object({
-  cluster: z.preprocess((v) => (_isString(v) ? v.toUpperCase() : ''), z.nativeEnum(Cluster)),
+  cluster: z.preprocess((v) => (_isString(v) ? v.toUpperCase() : ''), z.enum(Cluster)),
 });
 
 const apiHandler = createApiHandler({

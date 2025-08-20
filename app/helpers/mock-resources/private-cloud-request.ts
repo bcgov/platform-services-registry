@@ -2,7 +2,7 @@ import { faker } from '@faker-js/faker';
 import { ProjectStatus, RequestType, DecisionStatus } from '@/prisma/client';
 import { PrivateCloudRequestDetail } from '@/types/private-cloud';
 import { generateShortId } from '@/utils/js';
-import { getRandomMinistry, getRandomCluster, getRandomUser } from './core';
+import { getRandomCluster, getRandomUser, getRandomOrganization } from './core';
 import { resourceRequests1, resourceRequests2 } from './private-cloud-product';
 
 export function createSamplePrivateCloudRequest(args?: {
@@ -14,6 +14,8 @@ export function createSamplePrivateCloudRequest(args?: {
   const primaryTechnicalLead = getRandomUser();
   const secondaryTechnicalLead = getRandomUser();
 
+  const organization = getRandomOrganization();
+
   const baseData = {
     licencePlate: faker.string.uuid().substring(0, 6),
     name: faker.company.name(),
@@ -21,7 +23,6 @@ export function createSamplePrivateCloudRequest(args?: {
     status: ProjectStatus.ACTIVE,
     isTest: false,
     cluster: getRandomCluster(),
-    ministry: getRandomMinistry(),
     projectOwnerId: projectOwner.id,
     projectOwner,
     primaryTechnicalLeadId: primaryTechnicalLead.id,
@@ -35,12 +36,8 @@ export function createSamplePrivateCloudRequest(args?: {
     createdAt: new Date(),
     updatedAt: new Date(),
     archivedAt: new Date(),
-    organizationId: generateShortId(),
-    organization: {
-      id: generateShortId(),
-      code: faker.company.name(),
-      name: faker.company.name(),
-    },
+    organizationId: organization.id,
+    organization: organization,
   };
 
   const product = {

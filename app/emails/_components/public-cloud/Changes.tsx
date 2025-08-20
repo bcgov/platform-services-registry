@@ -24,10 +24,10 @@ export default function Changes({ request }: { request: PublicCloudRequestDetail
         <DescriptionChanges
           nameCurrent={request.originalData.name}
           descCurrent={request.originalData.description}
-          ministryCurrent={request.originalData.ministry}
+          ministryCurrent={request.originalData.organization}
           nameRequested={request.decisionData.name}
           descRequested={request.decisionData.description}
-          ministryRequested={request.decisionData.ministry}
+          ministryRequested={request.decisionData.organization}
         />
       </>
     );

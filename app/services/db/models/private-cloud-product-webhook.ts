@@ -1,7 +1,7 @@
 import { Session } from 'next-auth';
 import prisma from '@/core/prisma';
 import { getPrivateCloudProductContext } from '@/helpers/product';
-import { Ministry, Prisma, PrivateCloudProductMemberRole } from '@/prisma/client';
+import { Prisma, PrivateCloudProductMemberRole } from '@/prisma/client';
 import { PrivateCloudProductWebhookDecorate } from '@/types/doc-decorate';
 import {
   PrivateCloudProductWebhookDetail,
@@ -15,7 +15,7 @@ async function baseFilter(session: Session) {
   if (!session.isUser && !session.isServiceAccount) return false;
   if (session.permissions.viewPrivateProductWebhook) return true;
 
-  const { user, ministries } = session;
+  const { user, organizationIds } = session;
 
   const productFilters: Prisma.PrivateCloudProductWhereInput[] = [
     { projectOwnerId: user.id },
@@ -31,8 +31,8 @@ async function baseFilter(session: Session) {
         },
       },
     },
-    { ministry: { in: ministries.editor as Ministry[] } },
-    { ministry: { in: ministries.reader as Ministry[] } },
+    { organizationId: { in: organizationIds.editor } },
+    { organizationId: { in: organizationIds.reader } },
   ];
 
   const products = await prisma.privateCloudProduct.findMany({
@@ -58,8 +58,8 @@ async function decorate<T extends PrivateCloudProductWebhookSimple | PrivateClou
       projectOwnerId: true,
       primaryTechnicalLeadId: true,
       secondaryTechnicalLeadId: true,
-      ministry: true,
       members: true,
+      organizationId: true,
     },
   });
 

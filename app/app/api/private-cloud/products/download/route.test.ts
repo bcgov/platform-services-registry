@@ -4,9 +4,9 @@ import { GlobalRole } from '@/constants';
 import prisma from '@/core/prisma';
 import { createSamplePrivateCloudProductData } from '@/helpers/mock-resources';
 import { mockNoRoleUsers } from '@/helpers/mock-users';
-import { ministryKeyToName } from '@/helpers/product';
 import { formatFullName } from '@/helpers/user';
-import { DecisionStatus, Ministry, Cluster, ProjectStatus, RequestType } from '@/prisma/client';
+import { DB_DATA } from '@/jest.mock';
+import { DecisionStatus, Cluster, ProjectStatus, RequestType } from '@/prisma/client';
 import { mockSessionByEmail, mockSessionByRole } from '@/services/api-test/core';
 import { mockTeamServiceAccount } from '@/services/api-test/core';
 import { createPrivateCloudProduct, downloadPrivateCloudProducts } from '@/services/api-test/private-cloud/products';
@@ -35,15 +35,6 @@ const randomMemberData = {
   secondaryTechnicalLead: RANDOM3,
 };
 
-const productData = {
-  one: createSamplePrivateCloudProductData({
-    data: { ...memberData },
-  }),
-  two: createSamplePrivateCloudProductData({
-    data: { ...randomMemberData },
-  }),
-};
-
 const requests = {
   one: {} as unknown as PrivateCloudRequestSimple,
   two: {} as unknown as PrivateCloudRequestSimple,
@@ -58,7 +49,8 @@ describe('Download Private Cloud Products - Permissions', () => {
   it('should successfully create a product by PO and approved by admin', async () => {
     await mockSessionByEmail(PO.email);
 
-    const res1 = await createPrivateCloudProduct(productData.one);
+    const productData = createSamplePrivateCloudProductData({ data: { ...memberData } });
+    const res1 = await createPrivateCloudProduct(productData);
     const dat1 = await res1.json();
     expect(res1.status).toBe(200);
 
@@ -96,7 +88,6 @@ describe('Download Private Cloud Products - Permissions', () => {
 
     expect(record1.Name).toBe(project?.name);
     expect(record1.Description).toBe(project?.description);
-    expect(record1.Ministry).toBe(ministryKeyToName(project?.ministry ?? ''));
     expect(record1.Cluster).toBe(project?.cluster);
     expect(record1['Project Owner email']).toBe(project?.projectOwner.email);
     expect(record1['Project Owner name']).toBe(formatFullName(project?.projectOwner));
@@ -137,7 +128,8 @@ describe('Download Private Cloud Products - Permissions', () => {
   it('should successfully create a product by a random user and approved by admin', async () => {
     await mockSessionByEmail(RANDOM1.email);
 
-    const res1 = await createPrivateCloudProduct(productData.two);
+    const productData = createSamplePrivateCloudProductData({ data: { ...randomMemberData } });
+    const res1 = await createPrivateCloudProduct(productData);
     const dat1 = await res1.json();
     expect(res1.status).toBe(200);
 
@@ -225,19 +217,22 @@ describe('Download Private Cloud Products - Validations', () => {
   it('should successfully create products by admin', async () => {
     await mockSessionByRole(GlobalRole.Admin);
 
+    const aestOrg = DB_DATA.organizations.find((org) => org.code === 'AEST');
+    const citzOrg = DB_DATA.organizations.find((org) => org.code === 'CITZ');
+
     const datasets: any[] = [];
     datasets.push(
-      createSamplePrivateCloudProductData({ data: { ministry: Ministry.AEST, cluster: Cluster.CLAB } }),
-      createSamplePrivateCloudProductData({ data: { ministry: Ministry.AEST, cluster: Cluster.KLAB } }),
-      createSamplePrivateCloudProductData({ data: { ministry: Ministry.AEST, cluster: Cluster.CLAB } }),
-      createSamplePrivateCloudProductData({ data: { ministry: Ministry.AEST, cluster: Cluster.KLAB } }),
-      createSamplePrivateCloudProductData({ data: { ministry: Ministry.AEST, cluster: Cluster.CLAB } }),
-      createSamplePrivateCloudProductData({ data: { ministry: Ministry.CITZ, cluster: Cluster.KLAB } }),
-      createSamplePrivateCloudProductData({ data: { ministry: Ministry.CITZ, cluster: Cluster.CLAB } }),
-      createSamplePrivateCloudProductData({ data: { ministry: Ministry.CITZ, cluster: Cluster.KLAB } }),
-      createSamplePrivateCloudProductData({ data: { ministry: Ministry.CITZ, cluster: Cluster.CLAB } }),
+      createSamplePrivateCloudProductData({ data: { organizationId: aestOrg?.id, cluster: Cluster.CLAB } }),
+      createSamplePrivateCloudProductData({ data: { organizationId: aestOrg?.id, cluster: Cluster.KLAB } }),
+      createSamplePrivateCloudProductData({ data: { organizationId: aestOrg?.id, cluster: Cluster.CLAB } }),
+      createSamplePrivateCloudProductData({ data: { organizationId: aestOrg?.id, cluster: Cluster.KLAB } }),
+      createSamplePrivateCloudProductData({ data: { organizationId: aestOrg?.id, cluster: Cluster.CLAB } }),
+      createSamplePrivateCloudProductData({ data: { organizationId: citzOrg?.id, cluster: Cluster.KLAB } }),
+      createSamplePrivateCloudProductData({ data: { organizationId: citzOrg?.id, cluster: Cluster.CLAB } }),
+      createSamplePrivateCloudProductData({ data: { organizationId: citzOrg?.id, cluster: Cluster.KLAB } }),
+      createSamplePrivateCloudProductData({ data: { organizationId: citzOrg?.id, cluster: Cluster.CLAB } }),
       createSamplePrivateCloudProductData({
-        data: { ministry: Ministry.CITZ, cluster: Cluster.KLAB, name: '______name______' },
+        data: { organizationId: citzOrg?.id, cluster: Cluster.KLAB, name: '______name______' },
       }),
     );
 
@@ -275,7 +270,7 @@ describe('Download Private Cloud Products - Validations', () => {
     await mockSessionByRole(GlobalRole.Admin);
 
     const res1 = await downloadPrivateCloudProducts({
-      ministries: [Ministry.AEST],
+      ministries: ['AEST'],
       clusters: [Cluster.CLAB],
       status: [ProjectStatus.ACTIVE],
     });
@@ -318,16 +313,6 @@ describe('Download Private Cloud Products - Validations', () => {
 
     const res1 = await downloadPrivateCloudProducts({
       clusters: ['INVALID' as Cluster],
-    });
-
-    expect(res1.status).toBe(400);
-  });
-
-  it('should fail to download projects by admin due to an invalid ministry', async () => {
-    await mockSessionByRole(GlobalRole.Admin);
-
-    const res1 = await downloadPrivateCloudProducts({
-      ministries: ['INVALID' as Ministry],
     });
 
     expect(res1.status).toBe(400);

@@ -4,7 +4,7 @@ import { PublicCloudProductDetail } from '@/types/public-cloud';
 import { generateShortId } from '@/utils/js';
 import {
   getRandomCloudProviderSelectionReasons,
-  getRandomMinistry,
+  getRandomOrganization,
   getRandomProvider,
   getRandomProviderReasonsNote,
   getRandomUser,
@@ -24,7 +24,7 @@ export function createSamplePublicCloudProduct(args?: {
   const provider = getRandomProvider();
   const providerSelectionReasonsNote = getRandomProviderReasonsNote();
   const providerSelectionReasons = getRandomCloudProviderSelectionReasons();
-  const ministry = getRandomMinistry();
+  const organization = getRandomOrganization();
 
   const product = {
     id: generateShortId(),
@@ -35,7 +35,6 @@ export function createSamplePublicCloudProduct(args?: {
     provider,
     providerSelectionReasons,
     providerSelectionReasonsNote,
-    ministry,
     projectOwnerId: projectOwner.id,
     projectOwner,
     primaryTechnicalLeadId: primaryTechnicalLead.id,
@@ -62,12 +61,8 @@ export function createSamplePublicCloudProduct(args?: {
     archivedAt: new Date(),
     requests: [],
     activeRequest: null,
-    organizationId: generateShortId(),
-    organization: {
-      id: generateShortId(),
-      code: faker.company.name(),
-      name: faker.company.name(),
-    },
+    organizationId: organization.id,
+    organization: organization,
     ...data,
   };
 

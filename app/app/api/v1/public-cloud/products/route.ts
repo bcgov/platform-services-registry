@@ -2,7 +2,7 @@ import { z } from 'zod';
 import createApiHandler from '@/core/api-handler';
 import { BadRequestResponse } from '@/core/responses';
 import { parsePaginationParams } from '@/helpers/pagination';
-import { ProjectStatus, Ministry, Provider } from '@/prisma/client';
+import { ProjectStatus, Provider } from '@/prisma/client';
 import { processNumber, processUpperEnumString } from '@/utils/js';
 import listOp from './_operations/list';
 
@@ -15,9 +15,9 @@ const queryParamSchema = z.object({
     (v) => processNumber(v, { defaultValue: defaultPageSize }),
     z.number().min(1).max(1000).optional(),
   ),
-  ministry: z.preprocess(processUpperEnumString, z.nativeEnum(Ministry).optional()),
-  provider: z.preprocess(processUpperEnumString, z.nativeEnum(Provider).optional()),
-  status: z.preprocess(processUpperEnumString, z.nativeEnum(ProjectStatus).optional()),
+  ministry: z.preprocess(processUpperEnumString, z.string().optional()),
+  provider: z.preprocess(processUpperEnumString, z.enum(Provider).optional()),
+  status: z.preprocess(processUpperEnumString, z.enum(ProjectStatus).optional()),
 });
 
 export const GET = createApiHandler({

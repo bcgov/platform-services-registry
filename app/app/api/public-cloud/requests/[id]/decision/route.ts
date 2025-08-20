@@ -58,6 +58,7 @@ export const POST = apiHandler(async ({ pathParams, body, session }) => {
     decision,
     decisionComment,
     requestComment,
+    organizationId,
     ...rest
   } = body as PublicCloudRequestDecisionBody;
 
@@ -77,6 +78,7 @@ export const POST = apiHandler(async ({ pathParams, body, session }) => {
         status: ProjectStatus.ACTIVE,
         licencePlate: request.licencePlate,
         provider: request.project?.provider ?? request.decisionData.provider,
+        organization: { connect: { id: organizationId } },
         projectOwner: { connect: { id: projectOwnerId } },
         primaryTechnicalLead: { connect: { id: primaryTechnicalLeadId } },
         secondaryTechnicalLead: secondaryTechnicalLeadId ? { connect: { id: secondaryTechnicalLeadId } } : undefined,

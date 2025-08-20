@@ -3,7 +3,8 @@ import { GlobalRole } from '@/constants';
 import prisma from '@/core/prisma';
 import { createSamplePrivateCloudProductData } from '@/helpers/mock-resources';
 import { mockNoRoleUsers } from '@/helpers/mock-users';
-import { DecisionStatus, Ministry, Cluster, ProjectStatus, RequestType } from '@/prisma/client';
+import { DB_DATA } from '@/jest.mock';
+import { DecisionStatus, Cluster, ProjectStatus, RequestType } from '@/prisma/client';
 import { mockSessionByEmail, mockSessionByRole } from '@/services/api-test/core';
 import { mockTeamServiceAccount } from '@/services/api-test/core';
 import { createPrivateCloudProduct, searchPrivateCloudProducts } from '@/services/api-test/private-cloud/products';
@@ -172,19 +173,22 @@ describe('Search Private Cloud Products - Validations', () => {
   it('should successfully create products by admin', async () => {
     await mockSessionByRole(GlobalRole.Admin);
 
+    const aestOrg = DB_DATA.organizations.find((org) => org.code === 'AEST');
+    const citzOrg = DB_DATA.organizations.find((org) => org.code === 'CITZ');
+
     const datasets: any[] = [];
     datasets.push(
-      createSamplePrivateCloudProductData({ data: { ministry: Ministry.AEST, cluster: Cluster.CLAB } }),
-      createSamplePrivateCloudProductData({ data: { ministry: Ministry.AEST, cluster: Cluster.KLAB } }),
-      createSamplePrivateCloudProductData({ data: { ministry: Ministry.AEST, cluster: Cluster.CLAB } }),
-      createSamplePrivateCloudProductData({ data: { ministry: Ministry.AEST, cluster: Cluster.KLAB } }),
-      createSamplePrivateCloudProductData({ data: { ministry: Ministry.AEST, cluster: Cluster.CLAB } }),
-      createSamplePrivateCloudProductData({ data: { ministry: Ministry.CITZ, cluster: Cluster.KLAB } }),
-      createSamplePrivateCloudProductData({ data: { ministry: Ministry.CITZ, cluster: Cluster.CLAB } }),
-      createSamplePrivateCloudProductData({ data: { ministry: Ministry.CITZ, cluster: Cluster.KLAB } }),
-      createSamplePrivateCloudProductData({ data: { ministry: Ministry.CITZ, cluster: Cluster.CLAB } }),
+      createSamplePrivateCloudProductData({ data: { organizationId: aestOrg?.id, cluster: Cluster.CLAB } }),
+      createSamplePrivateCloudProductData({ data: { organizationId: aestOrg?.id, cluster: Cluster.KLAB } }),
+      createSamplePrivateCloudProductData({ data: { organizationId: aestOrg?.id, cluster: Cluster.CLAB } }),
+      createSamplePrivateCloudProductData({ data: { organizationId: aestOrg?.id, cluster: Cluster.KLAB } }),
+      createSamplePrivateCloudProductData({ data: { organizationId: aestOrg?.id, cluster: Cluster.CLAB } }),
+      createSamplePrivateCloudProductData({ data: { organizationId: citzOrg?.id, cluster: Cluster.KLAB } }),
+      createSamplePrivateCloudProductData({ data: { organizationId: citzOrg?.id, cluster: Cluster.CLAB } }),
+      createSamplePrivateCloudProductData({ data: { organizationId: citzOrg?.id, cluster: Cluster.KLAB } }),
+      createSamplePrivateCloudProductData({ data: { organizationId: citzOrg?.id, cluster: Cluster.CLAB } }),
       createSamplePrivateCloudProductData({
-        data: { ministry: Ministry.CITZ, cluster: Cluster.KLAB, name: '______name______' },
+        data: { organizationId: citzOrg?.id, cluster: Cluster.KLAB, name: '______name______' },
       }),
     );
 
@@ -220,7 +224,7 @@ describe('Search Private Cloud Products - Validations', () => {
     await mockSessionByRole(GlobalRole.Admin);
 
     const res1 = await searchPrivateCloudProducts({
-      ministries: [Ministry.AEST],
+      ministries: ['AEST'],
       clusters: [Cluster.CLAB],
       status: [ProjectStatus.ACTIVE],
     });

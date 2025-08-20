@@ -1,33 +1,27 @@
 import prisma from '@/core/prisma';
-import { Provider, Ministry } from '@/prisma/client';
+import { Provider, Prisma } from '@/prisma/client';
 
 export async function getPublicLicencePlates({
   userId,
   providers,
   ministries,
-  temporary,
 }: {
   userId?: string;
   providers?: Provider[];
-  ministries?: Ministry[];
-  temporary?: string[];
+  ministries?: string[];
 }) {
-  const where: any = {};
+  const where: Prisma.PublicCloudRequestDataWhereInput = {};
 
   if (providers && providers.length > 0) {
     where.provider = { in: providers };
   }
 
   if (ministries && ministries.length > 0) {
-    where.ministry = { in: ministries };
-  }
-
-  if (temporary?.length) {
-    if (temporary.includes('YES') && !temporary.includes('NO')) {
-      where.isTest = true;
-    } else if (temporary.includes('NO') && !temporary.includes('YES')) {
-      where.isTest = false;
-    }
+    const organizations = await prisma.organization.findMany({
+      where: { code: { in: ministries } },
+      select: { id: true },
+    });
+    where.organizationId = { in: organizations.map((org) => org.id) };
   }
 
   if (userId) {

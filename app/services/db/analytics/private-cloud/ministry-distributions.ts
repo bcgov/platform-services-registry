@@ -20,7 +20,7 @@ function getAggByCluster(licencePlatesList: string[], cluster?: string, dateFilt
     { $match: matchStage },
     {
       $group: {
-        _id: '$ministry',
+        _id: '$organizationId',
         value: { $count: {} },
       },
     },

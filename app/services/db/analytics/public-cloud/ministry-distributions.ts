@@ -20,7 +20,7 @@ function getAggByProvider(licencePlatesList: string[], provider?: string, dateFi
     { $match: matchStage },
     {
       $group: {
-        _id: '$ministry',
+        _id: '$organizationId',
         value: { $count: {} },
       },
     },

@@ -17,7 +17,7 @@ import _compact from 'lodash-es/compact';
 import _sortBy from 'lodash-es/sortBy';
 import _startCase from 'lodash-es/startCase';
 import _uniqBy from 'lodash-es/uniqBy';
-import { ministryMap } from '@/components/badges/MinistryBadge';
+import { useSnapshot } from 'valtio';
 import CopyableButton from '@/components/generic/button/CopyableButton';
 import MailLink from '@/components/generic/button/MailLink';
 import LoadingBox from '@/components/generic/LoadingBox';
@@ -26,6 +26,7 @@ import { createModal } from '@/core/modal';
 import { formatFullName } from '@/helpers/user';
 import { getUserImageData } from '@/helpers/user-image';
 import { getUser } from '@/services/backend/user';
+import { appState } from '@/states/global';
 import { UserDetailWithColeagues } from '@/types/user';
 import { formatDate } from '@/utils/js';
 
@@ -49,6 +50,8 @@ function timeAgo(lastSeen: string | Date): string {
 }
 
 function UserDetails({ data }: { data?: UserDetailWithColeagues }) {
+  const appSnapshot = useSnapshot(appState);
+
   if (!data) {
     data = {
       id: '',
@@ -188,7 +191,7 @@ function UserDetails({ data }: { data?: UserDetailWithColeagues }) {
                 <div className="text-xs">
                   {data.ministry ? (
                     <CopyableButton className="break-words">
-                      {ministryMap[data.ministry] ?? data.ministry}
+                      {appSnapshot.info.ORGANIZATION_NAME_BY_CODE[data.ministry] ?? data.ministry}
                     </CopyableButton>
                   ) : (
                     <span>&nbsp;</span>

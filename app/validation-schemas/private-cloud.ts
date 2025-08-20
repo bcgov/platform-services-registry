@@ -4,7 +4,6 @@ import { validateDistinctPOandTl } from '@/helpers/user';
 import {
   Cluster,
   DecisionStatus,
-  Ministry,
   Prisma,
   ProjectStatus,
   RequestType,
@@ -58,7 +57,7 @@ const privateCloudProductMembers = z
     z.object({
       userId: z.string().length(24, { message: 'Please select a member' }),
       roles: z
-        .array(z.nativeEnum(PrivateCloudProductMemberRole))
+        .array(z.enum(PrivateCloudProductMemberRole))
         .min(1, { message: 'Please assign at least one role to a member' }),
     }),
   )
@@ -67,8 +66,8 @@ const privateCloudProductMembers = z
 export const _privateCloudCreateRequestBodySchema = z.object({
   name: z.string().min(1, { message: 'Name is required.' }),
   description: z.string().min(1, { message: 'Description is required.' }),
-  cluster: z.nativeEnum(Cluster),
-  ministry: z.nativeEnum(Ministry),
+  cluster: z.enum(Cluster),
+  organizationId: z.string().length(24),
   projectOwnerId: z.string().length(24),
   primaryTechnicalLeadId: z.string().length(24),
   secondaryTechnicalLeadId: z.string().length(24).or(z.literal('')).nullable().optional(),
@@ -118,15 +117,16 @@ export const privateCloudCreateRequestBodySchema = _privateCloudCreateRequestBod
     }),
   )
   .merge(privateCloudProductWebhookBodySchema)
-  .refine(
-    (formData) => {
-      return AGMinistries.includes(formData.ministry) ? formData.isAgMinistryChecked : true;
-    },
-    {
-      message: 'AG Ministry Checkbox should be checked.',
-      path: ['isAgMinistryChecked'],
-    },
-  )
+  // TODO: enable after AG checkbox is implemented
+  // .refine(
+  //   (formData) => {
+  //     return AGMinistries.includes(formData.ministry) ? formData.isAgMinistryChecked : true;
+  //   },
+  //   {
+  //     message: 'AG Ministry Checkbox should be checked.',
+  //     path: ['isAgMinistryChecked'],
+  //   },
+  // )
   .refine(validateDistinctPOandTl, {
     message: 'The Project Owner and Primary Technical Lead must be different.',
     path: ['primaryTechnicalLeadId'],
@@ -145,15 +145,16 @@ export const privateCloudEditRequestBodySchema = _privateCloudEditRequestBodySch
       isAgMinistryChecked: z.boolean().optional(),
     }),
   )
-  .refine(
-    (formData) => {
-      return AGMinistries.includes(formData.ministry) ? formData.isAgMinistryChecked : true;
-    },
-    {
-      message: 'AG Ministry Checkbox should be checked.',
-      path: ['isAgMinistryChecked'],
-    },
-  )
+  // TODO: enable after AG checkbox is implemented
+  // .refine(
+  //   (formData) => {
+  //     return AGMinistries.includes(formData.ministry) ? formData.isAgMinistryChecked : true;
+  //   },
+  //   {
+  //     message: 'AG Ministry Checkbox should be checked.',
+  //     path: ['isAgMinistryChecked'],
+  //   },
+  // )
   .refine(validateDistinctPOandTl, {
     message: 'The Project Owner and Primary Technical Lead must be different.',
     path: ['primaryTechnicalLeadId'],
@@ -161,21 +162,21 @@ export const privateCloudEditRequestBodySchema = _privateCloudEditRequestBodySch
 
 export const privateCloudRequestDecisionBodySchema = _privateCloudEditRequestBodySchema.merge(
   z.object({
-    type: z.nativeEnum(RequestType),
-    decision: z.nativeEnum(RequestDecision),
+    type: z.enum(RequestType),
+    decision: z.enum(RequestDecision),
     decisionComment: optionalCommentSchema,
   }),
 );
 
 export const privateCloudProductSearchNoPaginationBodySchema = z.object({
   search: z.string().optional(),
-  ministries: z.array(z.nativeEnum(Ministry)).optional(),
-  clusters: z.array(z.nativeEnum(Cluster)).optional(),
-  status: z.array(z.nativeEnum(ProjectStatus)).optional(),
+  ministries: z.array(z.string()).optional(),
+  clusters: z.array(z.enum(Cluster)).optional(),
+  status: z.array(z.enum(ProjectStatus)).optional(),
   temporary: z.array(z.enum(['YES', 'NO'])).optional(),
   sortValue: z.string().optional(),
   sortKey: z.string().optional(),
-  sortOrder: z.preprocess(processEnumString, z.nativeEnum(Prisma.SortOrder).optional()),
+  sortOrder: z.preprocess(processEnumString, z.enum(Prisma.SortOrder).optional()),
 });
 
 export const privateCloudProductSearchBodySchema = privateCloudProductSearchNoPaginationBodySchema.merge(
@@ -190,14 +191,14 @@ export const privateCloudRequestSearchBodySchema = z.object({
   search: z.string().optional(),
   page: z.number().optional(),
   pageSize: z.number().optional(),
-  ministries: z.array(z.nativeEnum(Ministry)).optional(),
-  clusters: z.array(z.nativeEnum(Cluster)).optional(),
-  types: z.array(z.nativeEnum(RequestType)).optional(),
-  status: z.array(z.nativeEnum(DecisionStatus)).optional(),
+  ministries: z.array(z.string()).optional(),
+  clusters: z.array(z.enum(Cluster)).optional(),
+  types: z.array(z.enum(RequestType)).optional(),
+  status: z.array(z.enum(DecisionStatus)).optional(),
   temporary: z.array(z.enum(['YES', 'NO'])).optional(),
   sortValue: z.string().optional(),
   sortKey: z.string().optional(),
-  sortOrder: z.preprocess(processEnumString, z.nativeEnum(Prisma.SortOrder).optional()),
+  sortOrder: z.preprocess(processEnumString, z.enum(Prisma.SortOrder).optional()),
 });
 
 export const privateCloudAdminUpdateBodySchema = z.object({

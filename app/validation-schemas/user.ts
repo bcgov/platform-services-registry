@@ -9,7 +9,7 @@ export const userSearchBodySchema = z.object({
   roles: z.array(z.string()),
   sortValue: z.string().optional(),
   sortKey: z.string().optional(),
-  sortOrder: z.preprocess(processEnumString, z.nativeEnum(Prisma.SortOrder).optional()),
+  sortOrder: z.preprocess(processEnumString, z.enum(Prisma.SortOrder).optional()),
 });
 
 export const userUpdateBodySchema = z.object({

@@ -4,11 +4,11 @@ import { ProjectStatus, RequestType, DecisionStatus } from '@/prisma/client';
 import { PublicCloudRequestDetail } from '@/types/public-cloud';
 import { generateShortId } from '@/utils/js';
 import {
-  getRandomMinistry,
   getRandomProvider,
   getRandomUser,
   getRandomProviderReasonsNote,
   getRandomCloudProviderSelectionReasons,
+  getRandomOrganization,
 } from './core';
 
 export function createSamplePublicCloudRequest(args?: {
@@ -25,7 +25,7 @@ export function createSamplePublicCloudRequest(args?: {
   const provider = getRandomProvider();
   const providerSelectionReasonsNote = getRandomProviderReasonsNote();
   const providerSelectionReasons = getRandomCloudProviderSelectionReasons();
-  const ministry = getRandomMinistry();
+  const organization = getRandomOrganization();
 
   const accountCoding = '123456789876543212345678';
   const billing = {
@@ -55,7 +55,6 @@ export function createSamplePublicCloudRequest(args?: {
     provider,
     providerSelectionReasons,
     providerSelectionReasonsNote,
-    ministry,
     projectOwnerId: projectOwner.id,
     projectOwner,
     primaryTechnicalLeadId: primaryTechnicalLead.id,
@@ -82,12 +81,8 @@ export function createSamplePublicCloudRequest(args?: {
     createdAt: new Date(),
     updatedAt: new Date(),
     archivedAt: new Date(),
-    organizationId: generateShortId(),
-    organization: {
-      id: generateShortId(),
-      code: faker.company.name(),
-      name: faker.company.name(),
-    },
+    organizationId: organization.id,
+    organization: organization,
   };
 
   const product = {

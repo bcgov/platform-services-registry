@@ -9,7 +9,7 @@ import { getPathParamSchema } from '../schema';
 
 const queryParamSchema = z.object({
   environment: z.enum(['dev', 'test', 'prod', 'tools']),
-  cluster: z.nativeEnum(Cluster),
+  cluster: z.enum(Cluster),
 });
 
 const apiHandler = createApiHandler({

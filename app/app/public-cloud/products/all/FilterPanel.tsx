@@ -1,12 +1,14 @@
 import { useSession } from 'next-auth/react';
-import { useSnapshot, subscribe } from 'valtio';
+import { useSnapshot } from 'valtio';
 import FormMultiSelect from '@/components/generic/select/FormMultiSelect';
-import { ministryOptions, getAllowedOptions, productBillingStatusOptions } from '@/constants';
-import { Provider, Prisma, Ministry, ProjectStatus } from '@/prisma/client';
+import { getAllowedOptions, productBillingStatusOptions } from '@/constants';
+import { Provider, ProjectStatus } from '@/prisma/client';
+import { appState } from '@/states/global';
 import { ProductBiliingStatus } from '@/types';
 import { pageState } from './state';
 
 export default function FilterPanel() {
+  const appSnapshot = useSnapshot(appState);
   const pageSnapshot = useSnapshot(pageState);
   const { data: session } = useSession();
   if (!session) return null;
@@ -17,9 +19,9 @@ export default function FilterPanel() {
         name="ministry"
         label="Ministry"
         value={pageSnapshot.ministries ?? []}
-        data={ministryOptions}
+        data={appSnapshot.info.ORGANIZATION_SEARCH_OPTIONS}
         onChange={(value) => {
-          pageState.ministries = value as Ministry[];
+          pageState.ministries = value as string[];
           pageState.page = 1;
         }}
         classNames={{ wrapper: 'col-span-5' }}

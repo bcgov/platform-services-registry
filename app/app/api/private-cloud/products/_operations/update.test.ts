@@ -221,20 +221,6 @@ describe('Update Private Cloud Product - Validations', () => {
     expect(response.status).toBe(200);
   });
 
-  it('should fail to submit a update request due to an invalid ministry property', async () => {
-    await mockSessionByRole(GlobalRole.Admin);
-
-    const response = await makeBasicProductChange({ ministry: 'INVALID' });
-
-    expect(response.status).toBe(400);
-
-    const resData = await response.json();
-    expect(resData.success).toBe(false);
-    expect(resData.message).toBe('Bad Request');
-    const issues = JSON.parse(resData.error.message);
-    expect(issues.find((iss: { path: string[] }) => iss.path[0] === 'ministry')).not.toBeUndefined();
-  });
-
   it('should fail to submit a update request due to an invalid projectOwner property', async () => {
     await mockSessionByRole(GlobalRole.Admin);
 

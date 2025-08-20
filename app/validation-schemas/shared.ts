@@ -27,7 +27,7 @@ export const userSchema = z.object({
   ministry: z.string().min(1, 'Ministry is required').max(50, 'Ministry must be 50 characters or less'),
   idir: z.string(),
   upn: z.string(),
-  // ministry: z.nativeEnum(Ministry), // Not using ministry enum as a new ministry may not be in our system yet
+  // ministry: z.enum(Ministry), // Not using ministry enum as a new ministry may not be in our system yet
 });
 
 export const deleteRequestApproveBodySchema = z.object({

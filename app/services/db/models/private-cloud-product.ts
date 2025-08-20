@@ -1,6 +1,6 @@
 import { Session } from 'next-auth';
 import prisma from '@/core/prisma';
-import { Prisma, Ministry, ProjectStatus, PrivateCloudProductMemberRole } from '@/prisma/client';
+import { Prisma, ProjectStatus, PrivateCloudProductMemberRole } from '@/prisma/client';
 import { PrivateCloudProductDecorate } from '@/types/doc-decorate';
 import {
   PrivateCloudProductDetail,
@@ -17,8 +17,8 @@ async function baseFilter(session: Session) {
   if (session.permissions.viewAllPrivateCloudProducts) return true;
 
   const OR: Prisma.PrivateCloudProductWhereInput[] = [
-    { ministry: { in: session.ministries.editor as Ministry[] } },
-    { ministry: { in: session.ministries.reader as Ministry[] } },
+    { organizationId: { in: session.organizationIds.editor } },
+    { organizationId: { in: session.organizationIds.reader } },
   ];
 
   if (session.user.id) {
@@ -66,8 +66,8 @@ async function decorate<T extends PrivateCloudProductSimple | PrivateCloudProduc
   const canView =
     session.permissions.viewAllPrivateCloudProducts ||
     isMyProduct ||
-    session.ministries.reader.includes(doc.ministry) ||
-    session.ministries.editor.includes(doc.ministry) ||
+    session.organizationIds.reader.includes(doc.organizationId) ||
+    session.organizationIds.editor.includes(doc.organizationId) ||
     members.some(
       (member) =>
         member.userId === session.user.id &&
@@ -79,14 +79,15 @@ async function decorate<T extends PrivateCloudProductSimple | PrivateCloudProduc
       !hasActiveRequest &&
       (session.permissions.editAllPrivateCloudProducts ||
         isMyProduct ||
-        session.ministries.editor.includes(doc.ministry))) ||
+        session.organizationIds.editor.includes(doc.organizationId))) ||
     members.some(
       (member) =>
         member.userId === session.user.id && arraysIntersect(member.roles, [PrivateCloudProductMemberRole.EDITOR]),
     );
 
   const canViewHistroy =
-    session.permissions.viewAllPrivateCloudProductsHistory || session.ministries.editor.includes(doc.ministry);
+    session.permissions.viewAllPrivateCloudProductsHistory ||
+    session.organizationIds.editor.includes(doc.organizationId);
 
   const canReprovision = isActive && (session.isAdmin || session.isPrivateAdmin);
   const canToggleTemporary = isActive && (session.isAdmin || session.isPrivateAdmin);

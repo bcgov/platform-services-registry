@@ -2,10 +2,10 @@ import _sum from 'lodash-es/sum';
 import { GlobalRole } from '@/constants';
 import createApiHandler from '@/core/api-handler';
 import { NoContent, CsvResponse } from '@/core/responses';
-import { ministryKeyToName } from '@/helpers/product';
 import { formatFullName } from '@/helpers/user';
 import { Cluster, EventType } from '@/prisma/client';
 import { createEvent, searchPrivateCloudProducts } from '@/services/db';
+import { getOrganizationMap } from '@/services/db/organization';
 import { PrivateProductCsvRecord } from '@/types/csv';
 import { formatDateSimple } from '@/utils/js';
 import { privateCloudProductSearchNoPaginationBodySchema } from '@/validation-schemas/private-cloud';
@@ -29,7 +29,11 @@ export const POST = createApiHandler({
     return NoContent();
   }
 
+  const orgMap = await getOrganizationMap();
+
   const formattedData: PrivateProductCsvRecord[] = docs.map((project) => {
+    const org = orgMap[project.organizationId];
+
     let cpuRequestTotal = _sum([
       project.resourceRequests.development.cpu,
       project.resourceRequests.test.cpu,
@@ -63,7 +67,7 @@ export const POST = createApiHandler({
     return {
       Name: project.name,
       Description: project.description,
-      Ministry: ministryKeyToName(project.ministry),
+      Ministry: org.name,
       Cluster: clusterName,
       'Project Owner email': project.projectOwner.email,
       'Project Owner name': formatFullName(project.projectOwner),

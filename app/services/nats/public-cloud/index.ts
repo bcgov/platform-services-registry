@@ -34,7 +34,7 @@ export default async function createPublicCloudNatsMessage(
   return {
     project_set_info: {
       licence_plate: decisionData.licencePlate,
-      ministry_name: decisionData.ministry,
+      ministry_name: decisionData.organization.code,
       request_type: request.type,
       project_name: decisionData.name,
       account_coding: billing?.accountCoding ? getAccountCodingString(billing.accountCoding, '') : '',

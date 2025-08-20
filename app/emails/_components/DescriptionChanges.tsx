@@ -1,4 +1,5 @@
 import { Heading, Text } from '@react-email/components';
+import { Organization } from '@/prisma/client';
 
 export default function DescriptionChanges({
   nameCurrent,
@@ -11,10 +12,10 @@ export default function DescriptionChanges({
 }: {
   nameCurrent: string;
   descCurrent: string;
-  ministryCurrent: string;
+  ministryCurrent: Organization;
   nameRequested: string;
   descRequested: string;
-  ministryRequested: string;
+  ministryRequested: Organization;
   requestedLabel?: string;
 }) {
   return (
@@ -39,9 +40,9 @@ export default function DescriptionChanges({
       {ministryCurrent !== ministryRequested && (
         <div className="mb-4">
           <Text className="font-semibold mb-0">Current Ministry</Text>
-          <Text className="mt-0 mb-0">{ministryCurrent}</Text>
+          <Text className="mt-0 mb-0">{ministryCurrent.name}</Text>
           <Text className="font-semibold mt-2 mb-0">{requestedLabel} Ministry</Text>
-          <Text className="mt-0">{ministryRequested}</Text>
+          <Text className="mt-0">{ministryRequested.name}</Text>
         </div>
       )}
     </div>

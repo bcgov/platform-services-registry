@@ -6,7 +6,7 @@ import { Cluster } from '@/prisma/client';
 import { queryCapacity, queryAllocatable, queryCpuRequests, queryCpuUsage } from '@/services/k8s/metrics/core';
 
 const queryParamSchema = z.object({
-  cluster: z.nativeEnum(Cluster),
+  cluster: z.enum(Cluster),
 });
 
 export const GET = createApiHandler({

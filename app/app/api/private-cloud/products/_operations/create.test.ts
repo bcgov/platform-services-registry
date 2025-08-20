@@ -3,7 +3,7 @@ import { GlobalRole } from '@/constants';
 import { createSamplePrivateCloudProductData } from '@/helpers/mock-resources';
 import { findOtherMockUsers } from '@/helpers/mock-users';
 import { pickProductData } from '@/helpers/product';
-import { Cluster, Ministry } from '@/prisma/client';
+import { Cluster } from '@/prisma/client';
 import { mockSessionByEmail, mockSessionByRole } from '@/services/api-test/core';
 import { createPrivateCloudProduct } from '@/services/api-test/private-cloud/products';
 
@@ -163,22 +163,6 @@ describe('Create Private Cloud Request - Validations', () => {
     expect(resData.message).toBe('Bad Request');
     const issues = JSON.parse(resData.error.message);
     expect(issues.find((iss: { path: string[] }) => iss.path[0] === 'cluster')).not.toBeUndefined();
-  });
-
-  it('should fail to submit a create request due to an invalid ministry property', async () => {
-    const requestData = createSamplePrivateCloudProductData();
-    await mockSessionByRole(GlobalRole.Admin);
-
-    requestData.ministry = 'INVALID' as Ministry;
-
-    const response = await createPrivateCloudProduct(requestData);
-    expect(response.status).toBe(400);
-
-    const resData = await response.json();
-    expect(resData.success).toBe(false);
-    expect(resData.message).toBe('Bad Request');
-    const issues = JSON.parse(resData.error.message);
-    expect(issues.find((iss: { path: string[] }) => iss.path[0] === 'ministry')).not.toBeUndefined();
   });
 
   it('should fail to submit a create request due to an invalid projectOwner property', async () => {

@@ -4,7 +4,7 @@ import { defaultAccountCoding } from '@/constants';
 import prisma from '@/core/prisma';
 import { createSamplePublicCloudProductData } from '@/helpers/mock-resources';
 import { mockNoRoleUsers } from '@/helpers/mock-users';
-import { Ministry, Provider, DecisionStatus, RequestType } from '@/prisma/client';
+import { Provider, DecisionStatus, RequestType } from '@/prisma/client';
 import { mockSessionByEmail, mockSessionByRole } from '@/services/api-test/core';
 import { mockTeamServiceAccount } from '@/services/api-test/core';
 import {
@@ -37,7 +37,7 @@ describe('List Public Cloud Product Requests - Permissions', () => {
     await mockSessionByEmail(PO.email);
 
     const requestData = createSamplePublicCloudProductData({
-      data: { ...memberData, ministry: Ministry.PSA, provider: Provider.AWS },
+      data: { ...memberData, provider: Provider.AWS },
     });
     const res1 = await createPublicCloudProduct(requestData);
     const dat1 = await res1.json();

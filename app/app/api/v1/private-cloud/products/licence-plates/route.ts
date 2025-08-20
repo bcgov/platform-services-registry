@@ -7,7 +7,7 @@ import { Prisma, Cluster } from '@/prisma/client';
 import { processBooleanPositive } from '@/utils/js';
 
 const queryParamSchema = z.object({
-  cluster: z.preprocess((v) => (_isString(v) ? v.toUpperCase() : ''), z.nativeEnum(Cluster)),
+  cluster: z.preprocess((v) => (_isString(v) ? v.toUpperCase() : ''), z.enum(Cluster)),
   active: z.preprocess(processBooleanPositive, z.boolean()),
 });
 

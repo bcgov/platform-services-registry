@@ -58,6 +58,25 @@ const bcsans = localFont({
   ],
 });
 
+const additionalMinistryOptions = [
+  {
+    value: 'PSFS',
+    label: 'Post Secondary Education and Future Skills',
+  },
+  {
+    value: 'MOTI',
+    label: 'Transportation and Infrastructure',
+  },
+  {
+    value: 'EHS',
+    label: 'Emergency Health Services',
+  },
+  {
+    value: 'ISMC',
+    label: 'International Student Ministries Canada',
+  },
+];
+
 function MainBody({ children }: { children: React.ReactNode }) {
   const [appState, appSnapshot] = useAppState();
 
@@ -67,7 +86,26 @@ function MainBody({ children }: { children: React.ReactNode }) {
   });
 
   useEffect(() => {
-    if (info) appState.info = info;
+    if (info) {
+      info.ORGANIZATION_OPTIONS = info.ORGANIZATIONS.map(({ id, name }) => ({ label: name, value: id }));
+      info.ORGANIZATION_SEARCH_OPTIONS = info.ORGANIZATIONS.map(({ code, name }) => ({ label: name, value: code }));
+      info.ORGANIZATION_BY_ID = info.ORGANIZATIONS.reduce(
+        (map, org) => {
+          map[org.id] = org;
+          return map;
+        },
+        {} as Record<string, string>,
+      );
+      info.ORGANIZATION_NAME_BY_CODE = info.ORGANIZATIONS.concat(additionalMinistryOptions).reduce(
+        (map, org) => {
+          map[org.code] = org.name;
+          return map;
+        },
+        {} as Record<string, string>,
+      );
+
+      appState.info = info;
+    }
   }, [appState, info]);
 
   return (

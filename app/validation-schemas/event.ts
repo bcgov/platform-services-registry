@@ -5,7 +5,7 @@ import { isValidISODateString } from '@/utils/js';
 
 export const eventsSearchBodySchema = z.object({
   search: z.string().optional(),
-  types: z.array(z.nativeEnum(EventType)).optional(),
+  types: z.array(z.enum(EventType)).optional(),
   dates: z
     .array(z.string().refine(isValidISODateString, { message: 'Invalid ISO 8601 date format.' }))
     .refine((arr) => arr.length === 0 || arr.length === 2, {
@@ -17,7 +17,7 @@ export const eventsSearchBodySchema = z.object({
   pageSize: z.number().optional(),
   sortValue: z.string().optional(),
   sortKey: z.string().optional(),
-  sortOrder: z.preprocess(processEnumString, z.nativeEnum(Prisma.SortOrder).optional()),
+  sortOrder: z.preprocess(processEnumString, z.enum(Prisma.SortOrder).optional()),
 });
 
 export type EventSearchBody = z.infer<typeof eventsSearchBodySchema>;

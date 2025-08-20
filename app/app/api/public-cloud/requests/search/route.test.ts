@@ -4,7 +4,8 @@ import { defaultAccountCoding } from '@/constants';
 import prisma from '@/core/prisma';
 import { createSamplePublicCloudProductData } from '@/helpers/mock-resources';
 import { mockNoRoleUsers } from '@/helpers/mock-users';
-import { Ministry, Provider, DecisionStatus, RequestType } from '@/prisma/client';
+import { DB_DATA } from '@/jest.mock';
+import { Provider, DecisionStatus, RequestType } from '@/prisma/client';
 import { mockSessionByEmail, mockSessionByRole } from '@/services/api-test/core';
 import { mockTeamServiceAccount } from '@/services/api-test/core';
 import {
@@ -50,7 +51,7 @@ describe('Search Public Cloud Requests - Permissions', () => {
     await mockSessionByEmail(PO.email);
 
     const requestData = createSamplePublicCloudProductData({
-      data: { ...memberData, ministry: Ministry.PSA, provider: Provider.AWS },
+      data: { ...memberData, provider: Provider.AWS },
     });
     const res1 = await createPublicCloudProduct(requestData);
     const dat1 = await res1.json();
@@ -129,9 +130,7 @@ describe('Search Public Cloud Requests - Permissions', () => {
   it('should successfully create a product by a random user and approved by admin', async () => {
     await mockSessionByEmail(RANDOM1.email);
 
-    const requestData = createSamplePublicCloudProductData({
-      data: { ...randomMemberData, ministry: Ministry.PSA, provider: Provider.AWS },
-    });
+    const requestData = createSamplePublicCloudProductData({ data: { ...randomMemberData, provider: Provider.AWS } });
     const res1 = await createPublicCloudProduct(requestData);
     const dat1 = await res1.json();
     expect(res1.status).toBe(200);
@@ -209,19 +208,22 @@ describe('Search Public Cloud Requests - Validations', () => {
   it('should successfully create products by admin', async () => {
     await mockSessionByRole(GlobalRole.Admin);
 
+    const aestOrg = DB_DATA.organizations.find((org) => org.code === 'AEST');
+    const citzOrg = DB_DATA.organizations.find((org) => org.code === 'CITZ');
+
     const datasets: any[] = [];
     datasets.push(
-      createSamplePublicCloudProductData({ data: { ministry: Ministry.AEST, provider: Provider.AWS } }),
-      createSamplePublicCloudProductData({ data: { ministry: Ministry.AEST, provider: Provider.AZURE } }),
-      createSamplePublicCloudProductData({ data: { ministry: Ministry.AEST, provider: Provider.AWS } }),
-      createSamplePublicCloudProductData({ data: { ministry: Ministry.AEST, provider: Provider.AZURE } }),
-      createSamplePublicCloudProductData({ data: { ministry: Ministry.AEST, provider: Provider.AWS } }),
-      createSamplePublicCloudProductData({ data: { ministry: Ministry.CITZ, provider: Provider.AZURE } }),
-      createSamplePublicCloudProductData({ data: { ministry: Ministry.CITZ, provider: Provider.AWS } }),
-      createSamplePublicCloudProductData({ data: { ministry: Ministry.CITZ, provider: Provider.AZURE } }),
-      createSamplePublicCloudProductData({ data: { ministry: Ministry.CITZ, provider: Provider.AWS } }),
+      createSamplePublicCloudProductData({ data: { organizationId: aestOrg?.id, provider: Provider.AWS } }),
+      createSamplePublicCloudProductData({ data: { organizationId: aestOrg?.id, provider: Provider.AZURE } }),
+      createSamplePublicCloudProductData({ data: { organizationId: aestOrg?.id, provider: Provider.AWS } }),
+      createSamplePublicCloudProductData({ data: { organizationId: aestOrg?.id, provider: Provider.AZURE } }),
+      createSamplePublicCloudProductData({ data: { organizationId: aestOrg?.id, provider: Provider.AWS } }),
+      createSamplePublicCloudProductData({ data: { organizationId: citzOrg?.id, provider: Provider.AZURE } }),
+      createSamplePublicCloudProductData({ data: { organizationId: citzOrg?.id, provider: Provider.AWS } }),
+      createSamplePublicCloudProductData({ data: { organizationId: citzOrg?.id, provider: Provider.AZURE } }),
+      createSamplePublicCloudProductData({ data: { organizationId: citzOrg?.id, provider: Provider.AWS } }),
       createSamplePublicCloudProductData({
-        data: { ministry: Ministry.CITZ, provider: Provider.AZURE, name: '______name______' },
+        data: { organizationId: citzOrg?.id, provider: Provider.AZURE, name: '______name______' },
       }),
     );
 
@@ -308,7 +310,7 @@ describe('Search Public Cloud Requests - Validations', () => {
     await mockSessionByRole(GlobalRole.Admin);
 
     const res1 = await searchPublicCloudRequests({
-      ministries: [Ministry.AEST],
+      ministries: ['AEST'],
       providers: [Provider.AWS],
     });
 

@@ -1,10 +1,12 @@
 import { useSnapshot } from 'valtio';
 import FormMultiSelect from '@/components/generic/select/FormMultiSelect';
-import { ministryOptions, clustersWithoutDR } from '@/constants';
-import { Cluster, DecisionStatus, Ministry, Prisma, RequestType } from '@/prisma/client';
+import { clustersWithoutDR } from '@/constants';
+import { Cluster, DecisionStatus, RequestType } from '@/prisma/client';
+import { appState } from '@/states/global';
 import { pageState } from './state';
 
 export default function FilterPanel() {
+  const appSnapshot = useSnapshot(appState);
   const pageSnapshot = useSnapshot(pageState);
 
   return (
@@ -13,9 +15,9 @@ export default function FilterPanel() {
         name="ministry"
         label="Ministry"
         value={pageSnapshot.ministries ?? []}
-        data={ministryOptions}
+        data={appSnapshot.info.ORGANIZATION_SEARCH_OPTIONS}
         onChange={(value) => {
-          pageState.ministries = value as Ministry[];
+          pageState.ministries = value as string[];
           pageState.page = 1;
         }}
         classNames={{ wrapper: 'col-span-4' }}

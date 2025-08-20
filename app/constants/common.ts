@@ -1,121 +1,4 @@
-import { Ministry, Prisma } from '@/prisma/client';
-
-export const ministries = Object.values(Ministry);
-
-export const ministryOptions = [
-  {
-    value: 'AEST',
-    label: 'Post-Secondary Education and Future Skills Contacts',
-  },
-  {
-    value: 'AG',
-    label: 'Attorney General',
-  },
-  {
-    value: 'AGRI',
-    label: 'Agriculture and Food',
-  },
-  {
-    value: 'ALC',
-    label: 'Advisory Committee Revitalization',
-  },
-  {
-    value: 'BCPC',
-    label: 'British Columbia Provincial Committee',
-  },
-  {
-    value: 'CITZ',
-    label: 'Citizens Services',
-  },
-  {
-    value: 'DBC',
-    label: 'Drug Benefit Council',
-  },
-  {
-    value: 'EAO',
-    label: 'Environmental Assessment Office',
-  },
-  {
-    value: 'EDUC',
-    label: 'Education and Child Care',
-  },
-  {
-    value: 'EMCR',
-    label: 'Emergency Management and Climate Readiness',
-  },
-  {
-    value: 'EMPR',
-    label: 'Energy, Mines and Low Carbon Innovation',
-  },
-  {
-    value: 'ENV',
-    label: 'Environment and Climate Change Strategy',
-  },
-  {
-    value: 'FIN',
-    label: 'Finance',
-  },
-  {
-    value: 'FLNR',
-    label: 'Forests, Lands, Natural Resource',
-  },
-  {
-    value: 'HLTH',
-    label: 'Health',
-  },
-  {
-    value: 'IRR',
-    label: 'Indigenous Relations & Reconciliation',
-  },
-  {
-    value: 'JEDC',
-    label: 'Jobs, Economic Development and Innovation',
-  },
-  {
-    value: 'LBR',
-    label: 'Labour',
-  },
-  {
-    value: 'LDB',
-    label: 'Liquor Distribution Branch',
-  },
-  {
-    value: 'MCF',
-    label: 'Children and Family Development',
-  },
-  {
-    value: 'MMHA',
-    label: 'Mental Health and Addictions',
-  },
-  {
-    value: 'PSA',
-    label: 'Public Service Agency',
-  },
-  {
-    value: 'PSSG',
-    label: 'Public Safety and Solicitor General',
-  },
-  {
-    value: 'SDPR',
-    label: 'Social Development and Poverty Reduction',
-  },
-  {
-    value: 'TCA',
-    label: 'Tangible Capital Assets',
-  },
-  {
-    value: 'TRAN',
-    label: 'Transportation and Infrastructure',
-  },
-  {
-    value: 'HMA',
-    label: 'Housing and Municipal Affairs',
-  },
-  {
-    value: 'WLRS',
-    label: 'Water, Land and Resource Stewardship',
-  },
-];
+import { Prisma } from '@/prisma/client';
 
 export const AGMinistries = ['AG', 'PSSG', 'EMCR', 'HMA'];
 
@@ -264,3 +147,118 @@ export const requestSorts = [
 export const requestSortsInProduct = requestSorts.filter((v) => v.sortKey !== 'licencePlate');
 
 export const monthNames = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+
+export const sampleMinistries = [
+  {
+    code: 'AEST',
+    name: 'Post-Secondary Education and Future Skills Contacts',
+  },
+  {
+    code: 'AG',
+    name: 'Attorney General',
+  },
+  {
+    code: 'AGRI',
+    name: 'Agriculture and Food',
+  },
+  {
+    code: 'ALC',
+    name: 'Advisory Committee Revitalization',
+  },
+  {
+    code: 'BCPC',
+    name: 'British Columbia Provincial Committee',
+  },
+  {
+    code: 'CITZ',
+    name: 'Citizens Services',
+  },
+  {
+    code: 'DBC',
+    name: 'Drug Benefit Council',
+  },
+  {
+    code: 'EAO',
+    name: 'Environmental Assessment Office',
+  },
+  {
+    code: 'EDUC',
+    name: 'Education and Child Care',
+  },
+  {
+    code: 'EMCR',
+    name: 'Emergency Management and Climate Readiness',
+  },
+  {
+    code: 'EMPR',
+    name: 'Energy, Mines and Low Carbon Innovation',
+  },
+  {
+    code: 'ENV',
+    name: 'Environment and Climate Change Strategy',
+  },
+  {
+    code: 'FIN',
+    name: 'Finance',
+  },
+  {
+    code: 'FLNR',
+    name: 'Forests, Lands, Natural Resource',
+  },
+  {
+    code: 'HLTH',
+    name: 'Health',
+  },
+  {
+    code: 'IRR',
+    name: 'Indigenous Relations & Reconciliation',
+  },
+  {
+    code: 'JEDC',
+    name: 'Jobs, Economic Development and Innovation',
+  },
+  {
+    code: 'LBR',
+    name: 'Labour',
+  },
+  {
+    code: 'LDB',
+    name: 'Liquor Distribution Branch',
+  },
+  {
+    code: 'MCF',
+    name: 'Children and Family Development',
+  },
+  {
+    code: 'MMHA',
+    name: 'Mental Health and Addictions',
+  },
+  {
+    code: 'PSA',
+    name: 'Public Service Agency',
+  },
+  {
+    code: 'PSSG',
+    name: 'Public Safety and Solicitor General',
+  },
+  {
+    code: 'SDPR',
+    name: 'Social Development and Poverty Reduction',
+  },
+  {
+    code: 'TCA',
+    name: 'Tangible Capital Assets',
+  },
+  {
+    code: 'TRAN',
+    name: 'Transportation and Infrastructure',
+  },
+  {
+    code: 'HMA',
+    name: 'Housing and Municipal Affairs',
+  },
+  {
+    code: 'WLRS',
+    name: 'Water, Land and Resource Stewardship',
+  },
+];

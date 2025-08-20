@@ -4,7 +4,8 @@ import { defaultAccountCoding } from '@/constants';
 import prisma from '@/core/prisma';
 import { createSamplePublicCloudProductData } from '@/helpers/mock-resources';
 import { mockNoRoleUsers } from '@/helpers/mock-users';
-import { DecisionStatus, ProjectStatus, Ministry, Provider, RequestType } from '@/prisma/client';
+import { DB_DATA } from '@/jest.mock';
+import { DecisionStatus, ProjectStatus, Provider, RequestType } from '@/prisma/client';
 import {
   mockSessionByEmail,
   mockSessionByRole,
@@ -207,18 +208,21 @@ describe('API: List Public Cloud Products - Validations', () => {
   it('should successfully create products by admin', async () => {
     await mockSessionByRole(GlobalRole.Admin);
 
+    const aestOrg = DB_DATA.organizations.find((org) => org.code === 'AEST');
+    const citzOrg = DB_DATA.organizations.find((org) => org.code === 'CITZ');
+
     const datasets: any[] = [];
     datasets.push(
-      createSamplePublicCloudProductData({ data: { ministry: Ministry.AEST, provider: Provider.AWS } }),
-      createSamplePublicCloudProductData({ data: { ministry: Ministry.AEST, provider: Provider.AZURE } }),
-      createSamplePublicCloudProductData({ data: { ministry: Ministry.AEST, provider: Provider.AWS } }),
-      createSamplePublicCloudProductData({ data: { ministry: Ministry.AEST, provider: Provider.AZURE } }),
-      createSamplePublicCloudProductData({ data: { ministry: Ministry.AEST, provider: Provider.AWS } }),
-      createSamplePublicCloudProductData({ data: { ministry: Ministry.CITZ, provider: Provider.AZURE } }),
-      createSamplePublicCloudProductData({ data: { ministry: Ministry.CITZ, provider: Provider.AWS } }),
-      createSamplePublicCloudProductData({ data: { ministry: Ministry.CITZ, provider: Provider.AZURE } }),
-      createSamplePublicCloudProductData({ data: { ministry: Ministry.CITZ, provider: Provider.AWS } }),
-      createSamplePublicCloudProductData({ data: { ministry: Ministry.CITZ, provider: Provider.AZURE } }),
+      createSamplePublicCloudProductData({ data: { organizationId: aestOrg?.id, provider: Provider.AWS } }),
+      createSamplePublicCloudProductData({ data: { organizationId: aestOrg?.id, provider: Provider.AZURE } }),
+      createSamplePublicCloudProductData({ data: { organizationId: aestOrg?.id, provider: Provider.AWS } }),
+      createSamplePublicCloudProductData({ data: { organizationId: aestOrg?.id, provider: Provider.AZURE } }),
+      createSamplePublicCloudProductData({ data: { organizationId: aestOrg?.id, provider: Provider.AWS } }),
+      createSamplePublicCloudProductData({ data: { organizationId: citzOrg?.id, provider: Provider.AZURE } }),
+      createSamplePublicCloudProductData({ data: { organizationId: citzOrg?.id, provider: Provider.AWS } }),
+      createSamplePublicCloudProductData({ data: { organizationId: citzOrg?.id, provider: Provider.AZURE } }),
+      createSamplePublicCloudProductData({ data: { organizationId: citzOrg?.id, provider: Provider.AWS } }),
+      createSamplePublicCloudProductData({ data: { organizationId: citzOrg?.id, provider: Provider.AZURE } }),
     );
 
     await Promise.all(
@@ -253,7 +257,7 @@ describe('API: List Public Cloud Products - Validations', () => {
     await mockUserServiceAccountByRole(GlobalRole.Admin);
 
     const res1 = await listPublicCloudProductApi({
-      ministry: Ministry.AEST,
+      ministry: 'AEST',
       provider: Provider.AWS,
     });
 
@@ -274,19 +278,5 @@ describe('API: List Public Cloud Products - Validations', () => {
     const dat1 = await res1.json();
 
     expect(dat1.totalCount).toBe(0);
-  });
-
-  it('should fail to list products due to an invalid ministry property', async () => {
-    await mockUserServiceAccountByRole(GlobalRole.Admin);
-
-    const response = await listPublicCloudProductApi({ ministry: 'INVALID' as Ministry });
-
-    expect(response.status).toBe(400);
-
-    const resData = await response.json();
-    expect(resData.success).toBe(false);
-    expect(resData.message).toBe('Bad Request');
-    const issues = JSON.parse(resData.error.message);
-    expect(issues.find((iss: { path: string[] }) => iss.path[0] === 'ministry')).not.toBeUndefined();
   });
 });

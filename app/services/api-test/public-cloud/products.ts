@@ -12,6 +12,7 @@ import {
   POST as _createPublicCloudProduct,
 } from '@/app/api/public-cloud/products/route';
 import { POST as _searchPublicCloudProducts } from '@/app/api/public-cloud/products/search/route';
+import { getRandomOrganization } from '@/helpers/mock-resources/core';
 import { AccountCoding } from '@/prisma/client';
 import {
   PublicCloudProductDetailDecorated,
@@ -45,6 +46,11 @@ export async function createPublicCloudProduct(
   data.primaryTechnicalLeadId = data.primaryTechnicalLead?.id ?? undefined;
   data.secondaryTechnicalLeadId = data.secondaryTechnicalLead?.id ?? undefined;
   data.expenseAuthorityId = data.expenseAuthority?.id ?? undefined;
+
+  if (!data.organizationId) {
+    const organization = getRandomOrganization();
+    data.organizationId = organization.id;
+  }
 
   const result = await productCollectionRoute.post<
     PublicCloudRequestDetailDecorated & { success: boolean; message: string; error: any }

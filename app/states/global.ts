@@ -1,5 +1,6 @@
 import { PrivateProductChange, PublicProductChange } from '@/helpers/product-change';
 import { createGlobalValtio } from '@/helpers/valtio';
+import { Organization } from '@/prisma/client';
 import { QuotaChangeStatus } from '@/services/backend/private-cloud/products';
 import { PrivateCloudProductDetailDecorated, PrivateCloudRequestDetailDecorated } from '@/types/private-cloud';
 import { PublicCloudProductDetailDecorated, PublicCloudRequestDetailDecorated } from '@/types/public-cloud';
@@ -19,6 +20,11 @@ export const { state: appState, useValtioState: useAppState } = createGlobalValt
     BASE_URL: string;
     LOGOUT_URL: string;
     TOKEN_URL: string;
+    ORGANIZATIONS: Organization[];
+    ORGANIZATION_OPTIONS: { value: string; label: string }[];
+    ORGANIZATION_SEARCH_OPTIONS: { value: string; label: string }[];
+    ORGANIZATION_BY_ID: Record<string, Organization>;
+    ORGANIZATION_NAME_BY_CODE: Record<string, string>;
   };
 }>({
   cloud: null,
@@ -33,6 +39,11 @@ export const { state: appState, useValtioState: useAppState } = createGlobalValt
     BASE_URL: '',
     LOGOUT_URL: '',
     TOKEN_URL: '',
+    ORGANIZATIONS: [],
+    ORGANIZATION_OPTIONS: [],
+    ORGANIZATION_SEARCH_OPTIONS: [],
+    ORGANIZATION_BY_ID: {},
+    ORGANIZATION_NAME_BY_CODE: {},
   },
 });
 
