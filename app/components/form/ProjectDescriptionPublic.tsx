@@ -1,17 +1,18 @@
 import { useSession } from 'next-auth/react';
-import { Controller, useFormContext } from 'react-hook-form';
+import { useFormContext } from 'react-hook-form';
+import { useSnapshot } from 'valtio';
 import AGMinistryCheckBox from '@/components/form/AGMinistryCheckBox';
 import MailLink from '@/components/generic/button/MailLink';
 import HookFormTextarea from '@/components/generic/input/HookFormTextarea';
 import FormSelect from '@/components/generic/select/FormSelect';
 import HookFormMultiSelect from '@/components/generic/select/HookFormMultiSelect';
 import {
-  ministryOptions,
   providerOptions,
   getAllowedOptions,
   reasonForSelectingCloudProviderOptions,
   publicCloudTeamEmail,
 } from '@/constants';
+import { appState } from '@/states/global';
 import { cn } from '@/utils/js';
 import HookFormTextInput from '../generic/input/HookFormTextInput';
 
@@ -29,6 +30,7 @@ export default function ProjectDescriptionPublic({
   disabled?: boolean;
   providerDisabled?: boolean;
 }) {
+  const appSnapshot = useSnapshot(appState);
   const { data: session } = useSession();
 
   const {
@@ -80,7 +82,7 @@ export default function ProjectDescriptionPublic({
             id="ministry"
             label="Ministry"
             disabled={disabled}
-            options={[{ label: 'Select Ministry', value: '' }, ...ministryOptions]}
+            options={[{ label: 'Select Ministry', value: '' }, ...appSnapshot.info.ORGANIZATION_OPTIONS]}
             selectProps={register('ministry')}
           />
 

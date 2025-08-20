@@ -1,10 +1,10 @@
 import { z } from 'zod';
-import { Provider, Ministry } from '@/prisma/client';
+import { Provider } from '@/prisma/client';
 import { isValidISODateString } from '@/utils/js';
 
 export const analyticsPublicCloudFilterSchema = z.object({
-  ministries: z.array(z.nativeEnum(Ministry)).optional(),
-  providers: z.array(z.nativeEnum(Provider)).optional(),
+  ministries: z.array(z.string()).optional(),
+  providers: z.array(z.enum(Provider)).optional(),
   dates: z
     .array(z.string().refine(isValidISODateString, { message: 'Invalid ISO 8601 date format.' }))
     .refine((arr) => arr.length <= 2, {

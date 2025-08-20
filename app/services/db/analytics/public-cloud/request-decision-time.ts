@@ -19,11 +19,6 @@ export async function getRequestDecisionTime({
             not: null,
           },
         },
-        {
-          decisionMakerId: {
-            not: '',
-          },
-        },
       ],
       ...dateFilter,
     },

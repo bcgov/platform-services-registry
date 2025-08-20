@@ -216,7 +216,7 @@ export default publicCloudProductRequest(({ router }) => {
                   type="submit"
                   color="danger"
                   onClick={() => {
-                    form.setValue('decision', RequestDecision.REJECTED);
+                    form.setValue('decision', RequestDecision.REJECTED as never);
                   }}
                 >
                   Reject
@@ -226,7 +226,7 @@ export default publicCloudProductRequest(({ router }) => {
                   type="submit"
                   color="primary"
                   onClick={() => {
-                    form.setValue('decision', RequestDecision.APPROVED);
+                    form.setValue('decision', RequestDecision.APPROVED as never);
                   }}
                 >
                   Approve

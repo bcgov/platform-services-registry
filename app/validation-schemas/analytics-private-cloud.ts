@@ -1,10 +1,10 @@
 import { z } from 'zod';
-import { Cluster, Ministry } from '@/prisma/client';
+import { Cluster } from '@/prisma/client';
 import { isValidISODateString } from '@/utils/js';
 
 export const analyticsPrivateCloudFilterSchema = z.object({
-  ministries: z.array(z.nativeEnum(Ministry)).optional(),
-  clusters: z.array(z.nativeEnum(Cluster)).optional(),
+  ministries: z.array(z.string()).optional(),
+  clusters: z.array(z.enum(Cluster)).optional(),
   temporary: z.array(z.enum(['YES', 'NO'])).optional(),
   dates: z
     .array(z.string().refine(isValidISODateString, { message: 'Invalid ISO 8601 date format.' }))

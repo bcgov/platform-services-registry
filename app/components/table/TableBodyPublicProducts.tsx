@@ -4,11 +4,12 @@ import { Tooltip, Badge } from '@mantine/core';
 import _truncate from 'lodash-es/truncate';
 import { usePathname, useRouter } from 'next/navigation';
 import React, { useState } from 'react';
+import { useSnapshot } from 'valtio';
 import PublicCloudActiveRequestBox from '@/components/form/PublicCloudActiveRequestBox';
 import CopyableButton from '@/components/generic/button/CopyableButton';
 import UserCard from '@/components/UserCard';
-import { ministryKeyToName } from '@/helpers/product';
 import { ProjectStatus } from '@/prisma/client';
+import { appState } from '@/states/global';
 import { PublicCloudProductSimpleDecorated } from '@/types/public-cloud';
 import { formatDate } from '@/utils/js';
 import EmptySearch from './EmptySearch';
@@ -20,6 +21,7 @@ interface TableProps {
 }
 
 export default function TableBodyPublicProducts({ rows, isLoading = false }: TableProps) {
+  const appSnapshot = useSnapshot(appState);
   const router = useRouter();
   const pathname = usePathname();
   const cloud = pathname.split('/')[1];
@@ -64,8 +66,8 @@ export default function TableBodyPublicProducts({ rows, isLoading = false }: Tab
               </div>
               <div className="mt-1 flex items-center gap-x-2.5 text-sm leading-5 text-gray-700">
                 <div className="whitespace-nowrap">
-                  <Tooltip label={ministryKeyToName(row.ministry)} offset={10}>
-                    <span>Ministry {row.ministry}</span>
+                  <Tooltip label={appSnapshot.info.ORGANIZATION_BY_ID[row.organizationId].name} offset={10}>
+                    <span>Ministry {appSnapshot.info.ORGANIZATION_BY_ID[row.organizationId].code}</span>
                   </Tooltip>
                 </div>
                 <svg viewBox="0 0 2 2" className="h-0.5 w-0.5 flex-none fill-gray-400">

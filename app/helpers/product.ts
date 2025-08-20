@@ -1,13 +1,8 @@
 import _forEach from 'lodash-es/forEach';
 import _pick from 'lodash-es/pick';
 import { Session } from 'next-auth';
-import { ministryOptions } from '@/constants';
 import { PrivateCloudProductMemberRole, PrivateCloudProduct } from '@/prisma/client';
 import { extractNumbers } from '@/utils/js';
-
-export function ministryKeyToName(key: string) {
-  return ministryOptions.find((item) => item.value === key)?.label ?? '';
-}
 
 interface Member {
   email: string;
@@ -95,11 +90,11 @@ export const getTotalQuotaStr = (...values: string[]) => String(getTotalQuota(..
 export function getPrivateCloudProductContext(
   product: Pick<
     PrivateCloudProduct,
-    'projectOwnerId' | 'primaryTechnicalLeadId' | 'secondaryTechnicalLeadId' | 'members' | 'ministry'
+    'projectOwnerId' | 'primaryTechnicalLeadId' | 'secondaryTechnicalLeadId' | 'members' | 'organizationId'
   >,
   session: Session,
 ) {
-  const { user, ministries } = session;
+  const { user, organizationIds } = session;
 
   const isMaintainer = [
     product.projectOwnerId,
@@ -128,8 +123,8 @@ export function getPrivateCloudProductContext(
     }
   });
 
-  const isMinistryReader = ministries.reader.includes(product.ministry);
-  const isMinistryEditor = ministries.editor.includes(product.ministry);
+  const isMinistryReader = organizationIds.reader.includes(product.organizationId);
+  const isMinistryEditor = organizationIds.editor.includes(product.organizationId);
 
   return {
     isMaintainer,

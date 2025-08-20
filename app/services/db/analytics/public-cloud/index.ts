@@ -1,4 +1,4 @@
-import { Provider, Ministry } from '@/prisma/client';
+import { Provider } from '@/prisma/client';
 import { getActiveProducts } from './active-products';
 import { getAllRequests } from './all-requests';
 import { getContactChangeRequests } from './contact-changes';
@@ -14,7 +14,7 @@ export async function getPublicCloudAnalytics({
 }: {
   userId?: string;
   providers?: Provider[];
-  ministries?: Ministry[];
+  ministries?: string[];
   dates?: string[];
 }) {
   const licencePlatesList = await getPublicLicencePlates({ userId, ministries, providers });

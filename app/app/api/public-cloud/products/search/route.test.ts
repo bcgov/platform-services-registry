@@ -4,7 +4,8 @@ import { defaultAccountCoding } from '@/constants';
 import prisma from '@/core/prisma';
 import { createSamplePublicCloudProductData } from '@/helpers/mock-resources';
 import { mockNoRoleUsers } from '@/helpers/mock-users';
-import { DecisionStatus, Ministry, Provider, ProjectStatus, RequestType } from '@/prisma/client';
+import { DB_DATA } from '@/jest.mock';
+import { DecisionStatus, Provider, ProjectStatus, RequestType } from '@/prisma/client';
 import { mockSessionByEmail, mockSessionByRole } from '@/services/api-test/core';
 import { mockTeamServiceAccount } from '@/services/api-test/core';
 import {
@@ -206,19 +207,22 @@ describe('Search Public Cloud Products - Validations', () => {
   it('should successfully create products by admin', async () => {
     await mockSessionByRole(GlobalRole.Admin);
 
+    const aestOrg = DB_DATA.organizations.find((org) => org.code === 'AEST');
+    const citzOrg = DB_DATA.organizations.find((org) => org.code === 'CITZ');
+
     const datasets: any[] = [];
     datasets.push(
-      createSamplePublicCloudProductData({ data: { ministry: Ministry.AEST, provider: Provider.AWS } }),
-      createSamplePublicCloudProductData({ data: { ministry: Ministry.AEST, provider: Provider.AZURE } }),
-      createSamplePublicCloudProductData({ data: { ministry: Ministry.AEST, provider: Provider.AWS } }),
-      createSamplePublicCloudProductData({ data: { ministry: Ministry.AEST, provider: Provider.AZURE } }),
-      createSamplePublicCloudProductData({ data: { ministry: Ministry.AEST, provider: Provider.AWS } }),
-      createSamplePublicCloudProductData({ data: { ministry: Ministry.CITZ, provider: Provider.AZURE } }),
-      createSamplePublicCloudProductData({ data: { ministry: Ministry.CITZ, provider: Provider.AWS } }),
-      createSamplePublicCloudProductData({ data: { ministry: Ministry.CITZ, provider: Provider.AZURE } }),
-      createSamplePublicCloudProductData({ data: { ministry: Ministry.CITZ, provider: Provider.AWS } }),
+      createSamplePublicCloudProductData({ data: { organizationId: aestOrg?.id, provider: Provider.AWS } }),
+      createSamplePublicCloudProductData({ data: { organizationId: aestOrg?.id, provider: Provider.AZURE } }),
+      createSamplePublicCloudProductData({ data: { organizationId: aestOrg?.id, provider: Provider.AWS } }),
+      createSamplePublicCloudProductData({ data: { organizationId: aestOrg?.id, provider: Provider.AZURE } }),
+      createSamplePublicCloudProductData({ data: { organizationId: aestOrg?.id, provider: Provider.AWS } }),
+      createSamplePublicCloudProductData({ data: { organizationId: citzOrg?.id, provider: Provider.AZURE } }),
+      createSamplePublicCloudProductData({ data: { organizationId: citzOrg?.id, provider: Provider.AWS } }),
+      createSamplePublicCloudProductData({ data: { organizationId: citzOrg?.id, provider: Provider.AZURE } }),
+      createSamplePublicCloudProductData({ data: { organizationId: citzOrg?.id, provider: Provider.AWS } }),
       createSamplePublicCloudProductData({
-        data: { ministry: Ministry.CITZ, provider: Provider.AZURE, name: '______name______' },
+        data: { organizationId: citzOrg?.id, provider: Provider.AZURE, name: '______name______' },
       }),
     );
 
@@ -254,7 +258,7 @@ describe('Search Public Cloud Products - Validations', () => {
     await mockSessionByRole(GlobalRole.Admin);
 
     const res1 = await searchPublicCloudProducts({
-      ministries: [Ministry.AEST],
+      ministries: ['AEST'],
       providers: [Provider.AWS],
       status: [ProjectStatus.ACTIVE],
     });

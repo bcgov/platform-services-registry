@@ -1,18 +1,19 @@
 import { faker } from '@faker-js/faker';
 import jws from 'jws';
-import { ministries, clusters, providers } from '@/constants';
 import { mockNoRoleUsers } from '@/helpers/mock-users';
 import { SERVICE_ACCOUNT_DATA } from '@/jest.mock';
 import { Prisma, Cluster } from '@/prisma/client';
 import { AppUserWithRoles } from '@/types/user';
 import { generateShortId } from '@/utils/js';
-import { getRandomCloudProviderSelectionReasons, getRandomProviderReasonsNote } from './mock-resources/core';
+import {
+  getRandomBool,
+  getRandomOrganization,
+  getRandomProvider,
+  getRandomCloudProviderSelectionReasons,
+  getRandomProviderReasonsNote,
+} from './mock-resources/core';
 import { resourceRequests1 } from './mock-resources/private-cloud-product';
 
-const getRandomBool = () => faker.helpers.arrayElement([true, false]);
-const getRandomMinistry = () => faker.helpers.arrayElement(ministries);
-const getRandomCluster = () => faker.helpers.arrayElement(clusters);
-const getRandomProvider = () => faker.helpers.arrayElement(providers);
 const secret = 'testsecret'; // pragma: allowlist secret
 
 export function createSamplePrivateCloudProductData(args?: {
@@ -27,6 +28,7 @@ export function createSamplePrivateCloudProductData(args?: {
   const { data } = args ?? {};
 
   const cluster = Cluster.SILVER;
+  const organization = getRandomOrganization();
 
   const PO = mockNoRoleUsers[0];
   const TL1 = mockNoRoleUsers[1];
@@ -37,13 +39,14 @@ export function createSamplePrivateCloudProductData(args?: {
     name: faker.company.name(),
     description: faker.lorem.sentence(),
     cluster,
-    ministry: getRandomMinistry(),
     projectOwner: PO,
     primaryTechnicalLead: TL1,
     secondaryTechnicalLead: TL2,
     resourceRequests: resourceRequests1,
     isTest: false,
     isAgMinistryChecked: true,
+    organizationId: organization.id,
+    organization,
     ...data,
   };
 
@@ -67,6 +70,7 @@ export function createSamplePublicCloudProductData(args?: {
   const provider = getRandomProvider();
   const providerSelectionReasonsNote = getRandomProviderReasonsNote();
   const providerSelectionReasons = getRandomCloudProviderSelectionReasons();
+  const organization = getRandomOrganization();
 
   const PO = mockNoRoleUsers[0];
   const TL1 = mockNoRoleUsers[1];
@@ -80,7 +84,6 @@ export function createSamplePublicCloudProductData(args?: {
     provider,
     providerSelectionReasons,
     providerSelectionReasonsNote,
-    ministry: getRandomMinistry(),
     projectOwner: PO,
     primaryTechnicalLead: TL1,
     secondaryTechnicalLead: TL2,
@@ -99,6 +102,8 @@ export function createSamplePublicCloudProductData(args?: {
       tools: true,
     },
     isAgMinistryChecked: true,
+    organizationId: organization.id,
+    organization: organization,
     ...data,
   };
 

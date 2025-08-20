@@ -1,10 +1,13 @@
 import { faker } from '@faker-js/faker';
-import { ministries, clusters, providers, reasonForSelectingCloudProviderOptions } from '@/constants';
+import { clusters, providers, reasonForSelectingCloudProviderOptions } from '@/constants';
 import { mockNoRoleUsers } from '@/helpers/mock-users';
+import { DB_DATA } from '@/jest.mock';
+import { sampleMinistries } from '@/jest.setup';
 import { generateShortId, getRandomItem, getRandomNumberOptimally } from '@/utils/js';
 
 export const getRandomBool = () => faker.helpers.arrayElement([true, false]);
-export const getRandomMinistry = () => faker.helpers.arrayElement(ministries);
+export const getRandomMinistry = () => faker.helpers.arrayElement(sampleMinistries.map((m) => m.code));
+export const getRandomOrganization = () => faker.helpers.arrayElement(DB_DATA.organizations);
 export const getRandomCluster = () => faker.helpers.arrayElement(clusters);
 export const getRandomProvider = () => faker.helpers.arrayElement(providers);
 export const getRandomUser = () => {

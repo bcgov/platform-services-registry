@@ -2,14 +2,7 @@
 
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Button } from '@mantine/core';
-import {
-  IconInfoCircle,
-  IconUsersGroup,
-  IconSettings,
-  IconComponents,
-  IconMessage,
-  IconWebhook,
-} from '@tabler/icons-react';
+import { IconInfoCircle, IconUsersGroup, IconSettings, IconMessage } from '@tabler/icons-react';
 import { useEffect, useState } from 'react';
 import { FormProvider, useForm } from 'react-hook-form';
 import { z } from 'zod';
@@ -19,18 +12,17 @@ import ProjectDescription from '@/components/form/ProjectDescriptionPrivate';
 import PageAccordion from '@/components/generic/accordion/PageAccordion';
 import FormErrorNotification from '@/components/generic/FormErrorNotification';
 import { openPrivateCloudRequestReviewModal } from '@/components/modal/privateCloudRequestReview';
-import AdditionalTeamMembers from '@/components/private-cloud/sections/AdditionalTeamMembers';
 import Quotas from '@/components/private-cloud/sections/Quotas';
 import TeamContacts from '@/components/private-cloud/sections/TeamContacts';
 import { GlobalRole } from '@/constants';
 import createClientPage from '@/core/client-page';
 import { DecisionStatus, ProjectContext, RequestType } from '@/prisma/client';
 import { usePrivateProductState } from '@/states/global';
+import { RequestDecision } from '@/validation-schemas';
 import {
   privateCloudRequestDecisionBodySchema,
   PrivateCloudRequestDecisionBody,
 } from '@/validation-schemas/private-cloud';
-import { RequestDecision } from '@/validation-schemas/shared';
 
 const pathParamSchema = z.object({
   id: z.string(),
@@ -175,7 +167,7 @@ export default privateCloudRequestDecision(({ getPathParams, session, router }) 
                   type="submit"
                   color="danger"
                   onClick={() => {
-                    methods.setValue('decision', RequestDecision.REJECTED);
+                    methods.setValue('decision', RequestDecision.REJECTED as never);
                   }}
                 >
                   Reject
@@ -185,7 +177,7 @@ export default privateCloudRequestDecision(({ getPathParams, session, router }) 
                   type="submit"
                   color="primary"
                   onClick={() => {
-                    methods.setValue('decision', RequestDecision.APPROVED);
+                    methods.setValue('decision', RequestDecision.APPROVED as never);
                   }}
                 >
                   Approve

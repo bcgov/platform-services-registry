@@ -1,6 +1,6 @@
 import { environmentShortNames } from '@/constants';
 import prisma from '@/core/prisma';
-import { Cluster, Ministry, PublicCloudProductMemberRole, ResourceRequestsEnv } from '@/prisma/client';
+import { Cluster, PublicCloudProductMemberRole, ResourceRequestsEnv } from '@/prisma/client';
 import { PrivateCloudRequestDetail } from '@/types/private-cloud';
 
 type ResourceRequestsEnvKeys = Array<keyof ResourceRequestsEnv>;
@@ -15,7 +15,7 @@ export default async function createPrivateCloudNatsMessage(
     licencePlate,
     name,
     description,
-    ministry,
+    organization,
     cluster,
     golddrEnabled,
     resourceRequests,
@@ -31,11 +31,11 @@ export default async function createPrivateCloudNatsMessage(
   const users = await prisma.user.findMany({ where: { id: { in: subscribers.map((user) => user.userId) } } });
 
   let allianceLabel = '';
-  switch (ministry) {
-    case Ministry.AG:
-    case Ministry.EMCR:
-    case Ministry.HMA:
-    case Ministry.PSSG:
+  switch (organization.code) {
+    case 'AG':
+    case 'EMCR':
+    case 'HMA':
+    case 'PSSG':
       allianceLabel = 'JAG';
       break;
     default:
@@ -53,7 +53,7 @@ export default async function createPrivateCloudNatsMessage(
     golddr_enabled: cluster === Cluster.GOLD && golddrEnabled,
     display_name: name,
     description: description,
-    ministry_id: ministry,
+    ministry_id: organization.code,
     merge_type: 'auto',
     alliance: allianceLabel,
     namespaces: namespaceKeys.map((namespace) => {

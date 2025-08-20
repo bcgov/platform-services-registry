@@ -9,7 +9,7 @@ interface Props {
     | 'licencePlate'
     | 'name'
     | 'description'
-    | 'ministry'
+    | 'organization'
     | 'projectOwner'
     | 'primaryTechnicalLead'
     | 'secondaryTechnicalLead'
@@ -22,7 +22,7 @@ export default function ProductDetails({ product }: Props) {
     licencePlate,
     name,
     description,
-    ministry,
+    organization,
     projectOwner,
     primaryTechnicalLead,
     secondaryTechnicalLead,
@@ -41,7 +41,7 @@ export default function ProductDetails({ product }: Props) {
         <Text className="mb-2 font-semibold h-4">Licence plate: </Text>
         <Text className="mt-0 mb-2 h-4">{licencePlate}</Text>
         <Text className="mb-2 font-semibold h-4">Ministry: </Text>
-        <Text className="mt-1 h-4">{ministry}</Text>
+        <Text className="mt-1 h-4">{organization.name}</Text>
         <Text className="mb-2 font-semibold h-4">Product owner: </Text>
         <Text className="mt-1 mb-2 h-4">{formatFullName(projectOwner)}</Text>
         <Link className="mt-0 h-4" href={`mailto:${projectOwner.email}`}>

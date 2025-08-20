@@ -1,7 +1,7 @@
 import { OkResponse } from '@/core/responses';
-import { ministryKeyToName } from '@/helpers/product';
 import { ProjectStatus } from '@/prisma/client';
 import { searchPublicCloudProducts, SearchPublicCloudProductsProps } from '@/services/db';
+import { getOrganizationMap } from '@/services/db/organization';
 
 export default async function listOp({
   session,
@@ -22,15 +22,18 @@ export default async function listOp({
     status,
   });
 
+  const orgMap = await getOrganizationMap();
+
   const data = docs.map((doc) => {
+    const org = orgMap[doc.organizationId];
     return {
       id: doc.id,
       active: doc.status === ProjectStatus.ACTIVE,
       licencePlate: doc.licencePlate,
       name: doc.name,
       description: doc.description,
-      ministry: doc.ministry,
-      ministryName: ministryKeyToName(doc.ministry),
+      ministry: org.code,
+      ministryName: org.name,
       provider: doc.provider,
       projectOwner: {
         id: doc.projectOwner.id,

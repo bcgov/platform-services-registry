@@ -1,9 +1,9 @@
 import { clusters, providers } from '@/constants';
-import { ministryKeyToName } from '@/helpers/product';
 import { Cluster, Provider } from '@/prisma/client';
 
+// TODO: replace organizationId into organization.name
 export const transformMinistryData = (items: { _id: string; value: number }[]) =>
-  items.map(({ _id, value }) => ({ label: ministryKeyToName(_id), value }));
+  items.map(({ _id, value }) => ({ label: _id, value }));
 
 export const validClusters = (clusters as string[]).filter((cluster): cluster is Cluster =>
   Object.values(Cluster).includes(cluster as Cluster),

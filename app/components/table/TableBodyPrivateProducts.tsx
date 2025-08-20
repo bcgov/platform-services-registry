@@ -5,12 +5,13 @@ import { IconPoint } from '@tabler/icons-react';
 import _truncate from 'lodash-es/truncate';
 import { usePathname, useRouter } from 'next/navigation';
 import React from 'react';
+import { useSnapshot } from 'valtio';
 import PrivateCloudActiveRequestBox from '@/components/form/PrivateCloudActiveRequestBox';
 import TemporaryProductBadge from '@/components/form/TemporaryProductBadge';
 import CopyableButton from '@/components/generic/button/CopyableButton';
 import UserCard from '@/components/UserCard';
-import { ministryKeyToName } from '@/helpers/product';
 import { Cluster, ProjectStatus } from '@/prisma/client';
+import { appState } from '@/states/global';
 import { PrivateCloudProductSimpleDecorated } from '@/types/private-cloud';
 import { formatDate } from '@/utils/js';
 import EmptySearch from './EmptySearch';
@@ -22,6 +23,7 @@ interface TableProps {
 }
 
 export default function TableBodyPrivateProducts({ rows, isLoading = false }: TableProps) {
+  const appSnapshot = useSnapshot(appState);
   const router = useRouter();
   const pathname = usePathname();
   const cloud = pathname.split('/')[1];
@@ -68,8 +70,8 @@ export default function TableBodyPrivateProducts({ rows, isLoading = false }: Ta
 
               <div className="mt-1 flex items-center text-sm gap-x-1 leading-5 text-gray-700">
                 <div className="whitespace-nowrap">
-                  <Tooltip label={ministryKeyToName(row.ministry)} offset={10}>
-                    <span>Ministry {row.ministry}</span>
+                  <Tooltip label={appSnapshot.info.ORGANIZATION_BY_ID[row.organizationId].name} offset={10}>
+                    <span>Ministry {appSnapshot.info.ORGANIZATION_BY_ID[row.organizationId].code}</span>
                   </Tooltip>
                 </div>
                 <IconPoint size={10} />

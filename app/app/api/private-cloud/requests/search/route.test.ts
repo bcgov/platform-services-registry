@@ -3,7 +3,8 @@ import { GlobalRole } from '@/constants';
 import prisma from '@/core/prisma';
 import { createSamplePrivateCloudProductData } from '@/helpers/mock-resources';
 import { mockNoRoleUsers } from '@/helpers/mock-users';
-import { Ministry, Cluster, DecisionStatus, RequestType } from '@/prisma/client';
+import { DB_DATA } from '@/jest.mock';
+import { Cluster, DecisionStatus, RequestType } from '@/prisma/client';
 import { mockSessionByEmail, mockSessionByRole } from '@/services/api-test/core';
 import { mockTeamServiceAccount } from '@/services/api-test/core';
 import { createPrivateCloudProduct, editPrivateCloudProduct } from '@/services/api-test/private-cloud/products';
@@ -42,7 +43,7 @@ describe('Search Private Cloud Requests - Permissions', () => {
     await mockSessionByEmail(PO.email);
 
     const requestData = createSamplePrivateCloudProductData({
-      data: { ...memberData, ministry: Ministry.PSA, cluster: Cluster.SILVER },
+      data: { ...memberData, cluster: Cluster.SILVER },
     });
     const res1 = await createPrivateCloudProduct(requestData);
     const dat1 = await res1.json();
@@ -96,7 +97,7 @@ describe('Search Private Cloud Requests - Permissions', () => {
     await mockSessionByEmail(RANDOM1.email);
 
     const requestData = createSamplePrivateCloudProductData({
-      data: { ...randomMemberData, ministry: Ministry.PSA, cluster: Cluster.SILVER },
+      data: { ...randomMemberData, cluster: Cluster.SILVER },
     });
     const res1 = await createPrivateCloudProduct(requestData);
     const dat1 = await res1.json();
@@ -175,19 +176,22 @@ describe('Search Private Cloud Requests - Validations', () => {
   it('should successfully create products by admin', async () => {
     await mockSessionByRole(GlobalRole.PrivateAdmin);
 
+    const aestOrg = DB_DATA.organizations.find((org) => org.code === 'AEST');
+    const citzOrg = DB_DATA.organizations.find((org) => org.code === 'CITZ');
+
     const datasets: any[] = [];
     datasets.push(
-      createSamplePrivateCloudProductData({ data: { ministry: Ministry.AEST, cluster: Cluster.CLAB } }),
-      createSamplePrivateCloudProductData({ data: { ministry: Ministry.AEST, cluster: Cluster.KLAB } }),
-      createSamplePrivateCloudProductData({ data: { ministry: Ministry.AEST, cluster: Cluster.CLAB } }),
-      createSamplePrivateCloudProductData({ data: { ministry: Ministry.AEST, cluster: Cluster.KLAB } }),
-      createSamplePrivateCloudProductData({ data: { ministry: Ministry.AEST, cluster: Cluster.CLAB } }),
-      createSamplePrivateCloudProductData({ data: { ministry: Ministry.CITZ, cluster: Cluster.KLAB } }),
-      createSamplePrivateCloudProductData({ data: { ministry: Ministry.CITZ, cluster: Cluster.CLAB } }),
-      createSamplePrivateCloudProductData({ data: { ministry: Ministry.CITZ, cluster: Cluster.KLAB } }),
-      createSamplePrivateCloudProductData({ data: { ministry: Ministry.CITZ, cluster: Cluster.CLAB } }),
+      createSamplePrivateCloudProductData({ data: { organizationId: aestOrg?.id, cluster: Cluster.CLAB } }),
+      createSamplePrivateCloudProductData({ data: { organizationId: aestOrg?.id, cluster: Cluster.KLAB } }),
+      createSamplePrivateCloudProductData({ data: { organizationId: aestOrg?.id, cluster: Cluster.CLAB } }),
+      createSamplePrivateCloudProductData({ data: { organizationId: aestOrg?.id, cluster: Cluster.KLAB } }),
+      createSamplePrivateCloudProductData({ data: { organizationId: aestOrg?.id, cluster: Cluster.CLAB } }),
+      createSamplePrivateCloudProductData({ data: { organizationId: citzOrg?.id, cluster: Cluster.KLAB } }),
+      createSamplePrivateCloudProductData({ data: { organizationId: citzOrg?.id, cluster: Cluster.CLAB } }),
+      createSamplePrivateCloudProductData({ data: { organizationId: citzOrg?.id, cluster: Cluster.KLAB } }),
+      createSamplePrivateCloudProductData({ data: { organizationId: citzOrg?.id, cluster: Cluster.CLAB } }),
       createSamplePrivateCloudProductData({
-        data: { ministry: Ministry.CITZ, cluster: Cluster.KLAB, name: '______name______' },
+        data: { organizationId: citzOrg?.id, cluster: Cluster.KLAB, name: '______name______' },
       }),
     );
 
@@ -244,7 +248,7 @@ describe('Search Private Cloud Requests - Validations', () => {
     await mockSessionByRole(GlobalRole.Admin);
 
     const res1 = await searchPrivateCloudRequests({
-      ministries: [Ministry.AEST],
+      ministries: ['AEST'],
       clusters: [Cluster.CLAB],
     });
 

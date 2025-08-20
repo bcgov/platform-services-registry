@@ -2,7 +2,7 @@ import { expect } from '@jest/globals';
 import { GlobalRole } from '@/constants';
 import { createSamplePrivateCloudProductData } from '@/helpers/mock-resources';
 import { mockNoRoleUsers } from '@/helpers/mock-users';
-import { Ministry, Cluster, DecisionStatus, RequestType } from '@/prisma/client';
+import { Cluster, DecisionStatus, RequestType } from '@/prisma/client';
 import { mockSessionByEmail, mockSessionByRole } from '@/services/api-test/core';
 import { mockTeamServiceAccount } from '@/services/api-test/core';
 import { createPrivateCloudProduct, listPrivateCloudProductRequests } from '@/services/api-test/private-cloud/products';
@@ -30,7 +30,7 @@ describe('List Private Cloud Product Requests - Permissions', () => {
     await mockSessionByEmail(PO.email);
 
     const requestData = createSamplePrivateCloudProductData({
-      data: { ...memberData, ministry: Ministry.PSA, cluster: Cluster.SILVER },
+      data: { ...memberData, cluster: Cluster.SILVER },
     });
     const res1 = await createPrivateCloudProduct(requestData);
     const dat1 = await res1.json();

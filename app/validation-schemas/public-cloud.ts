@@ -1,8 +1,7 @@
-import { string, z } from 'zod';
+import { z } from 'zod';
 import { AGMinistries } from '@/constants';
 import { validateDistinctPOandTl } from '@/helpers/user';
 import {
-  Ministry,
   Provider,
   Prisma,
   RequestType,
@@ -47,7 +46,7 @@ const publicCloudProductMembers = z
     z.object({
       userId: z.string().length(24, { message: 'Please select a member' }),
       roles: z
-        .array(z.nativeEnum(PublicCloudProductMemberRole))
+        .array(z.enum(PublicCloudProductMemberRole))
         .min(1, { message: 'Please assign at least one role to a member' }),
     }),
   )
@@ -59,14 +58,14 @@ const _publicCloudCreateRequestBodySchema = z.object({
     .min(1, { message: 'Name is required.' })
     .refine((value) => !/[^A-Za-z0-9///.:+=@_ ]/g.test(value), 'Only /. : + = @ _ special symbols are allowed'),
   description: z.string().min(1, { message: 'Description is required.' }),
-  provider: z.nativeEnum(Provider),
+  provider: z.enum(Provider),
   providerSelectionReasons: z.array(z.string()).min(1, { message: 'Reason for choosing provider is required' }),
   providerSelectionReasonsNote: z
     .string()
     .min(1, { message: 'An explanation of the reasons for choosing provider is required' })
     .max(1000, { message: 'Provider Selection not should contain a maximum of 1000 characters.' }),
   budget: budgetSchema,
-  ministry: z.nativeEnum(Ministry),
+  organizationId: z.string().length(24),
   projectOwnerId: z.string().length(24),
   primaryTechnicalLeadId: z.string().length(24),
   secondaryTechnicalLeadId: z.string().length(24).or(z.literal('')).nullable().optional(),
@@ -95,15 +94,16 @@ export const publicCloudCreateRequestBodySchema = _publicCloudCreateRequestBodyS
       isAgMinistryChecked: z.boolean().optional(),
     }),
   )
-  .refine(
-    (formData) => {
-      return AGMinistries.includes(formData.ministry) ? formData.isAgMinistryChecked : true;
-    },
-    {
-      message: 'AG Ministry Checkbox should be checked.',
-      path: ['isAgMinistryChecked'],
-    },
-  )
+  // TODO: enable after AG checkbox is implemented
+  // .refine(
+  //   (formData) => {
+  //     return AGMinistries.includes(formData.organizationId) ? formData.isAgMinistryChecked : true;
+  //   },
+  //   {
+  //     message: 'AG Ministry Checkbox should be checked.',
+  //     path: ['isAgMinistryChecked'],
+  //   },
+  // )
   .refine(validateDistinctPOandTl, {
     message: 'The Project Owner and Primary Technical Lead must be different.',
     path: ['primaryTechnicalLeadId'],
@@ -131,15 +131,16 @@ export const publicCloudEditRequestBodySchema = _publicCloudEditRequestBodySchem
       isAgMinistryChecked: z.boolean().optional(),
     }),
   )
-  .refine(
-    (formData) => {
-      return AGMinistries.includes(formData.ministry) ? formData.isAgMinistryChecked : true;
-    },
-    {
-      message: 'AG Ministry Checkbox should be checked.',
-      path: ['isAgMinistryChecked'],
-    },
-  )
+  // TODO: enable after AG checkbox is implemented
+  // .refine(
+  //   (formData) => {
+  //     return AGMinistries.includes(formData.ministry) ? formData.isAgMinistryChecked : true;
+  //   },
+  //   {
+  //     message: 'AG Ministry Checkbox should be checked.',
+  //     path: ['isAgMinistryChecked'],
+  //   },
+  // )
   .refine(validateDistinctPOandTl, {
     message: 'The Project Owner and Primary Technical Lead must be different.',
     path: ['primaryTechnicalLeadId'],
@@ -147,21 +148,21 @@ export const publicCloudEditRequestBodySchema = _publicCloudEditRequestBodySchem
 
 export const publicCloudRequestDecisionBodySchema = _publicCloudEditRequestBodySchema.merge(
   z.object({
-    type: z.nativeEnum(RequestType),
-    decision: z.nativeEnum(RequestDecision),
+    type: z.enum(RequestType),
+    decision: z.enum(RequestDecision),
     decisionComment: optionalCommentSchema,
   }),
 );
 
 export const publicCloudProductSearchNoPaginationBodySchema = z.object({
   search: z.string().optional(),
-  ministries: z.array(z.nativeEnum(Ministry)).optional(),
-  providers: z.array(z.nativeEnum(Provider)).optional(),
-  billingStatus: z.array(z.nativeEnum(ProductBiliingStatus)).optional(),
-  status: z.array(z.nativeEnum(ProjectStatus)).optional(),
+  ministries: z.array(z.string()).optional(),
+  providers: z.array(z.enum(Provider)).optional(),
+  billingStatus: z.array(z.enum(ProductBiliingStatus)).optional(),
+  status: z.array(z.enum(ProjectStatus)).optional(),
   sortValue: z.string().optional(),
   sortKey: z.string().optional(),
-  sortOrder: z.preprocess(processEnumString, z.nativeEnum(Prisma.SortOrder).optional()),
+  sortOrder: z.preprocess(processEnumString, z.enum(Prisma.SortOrder).optional()),
 });
 
 export const publicCloudProductSearchBodySchema = publicCloudProductSearchNoPaginationBodySchema.merge(
@@ -176,13 +177,13 @@ export const publicCloudRequestSearchBodySchema = z.object({
   search: z.string().optional(),
   page: z.number().optional(),
   pageSize: z.number().optional(),
-  ministries: z.array(z.nativeEnum(Ministry)).optional(),
-  providers: z.array(z.nativeEnum(Provider)).optional(),
-  types: z.array(z.nativeEnum(RequestType)).optional(),
-  status: z.array(z.nativeEnum(DecisionStatus)).optional(),
+  ministries: z.array(z.string()).optional(),
+  providers: z.array(z.enum(Provider)).optional(),
+  types: z.array(z.enum(RequestType)).optional(),
+  status: z.array(z.enum(DecisionStatus)).optional(),
   sortValue: z.string().optional(),
   sortKey: z.string().optional(),
-  sortOrder: z.preprocess(processEnumString, z.nativeEnum(Prisma.SortOrder).optional()),
+  sortOrder: z.preprocess(processEnumString, z.enum(Prisma.SortOrder).optional()),
 });
 
 export type PublicCloudCreateRequestBody = z.infer<typeof publicCloudCreateRequestBodySchema>;
@@ -201,7 +202,7 @@ export const publicCloudBillingSearchBodySchema = z.object({
   pageSize: z.number().optional(),
   sortValue: z.string().optional(),
   sortKey: z.string().optional(),
-  sortOrder: z.preprocess(processEnumString, z.nativeEnum(Prisma.SortOrder).optional()),
+  sortOrder: z.preprocess(processEnumString, z.enum(Prisma.SortOrder).optional()),
   includeMetadata: z.boolean().optional().default(false),
 });
 

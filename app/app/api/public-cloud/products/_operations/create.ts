@@ -8,7 +8,7 @@ import { createEvent, models, publicCloudRequestDetailInclude, tasks } from '@/s
 import { PublicCloudCreateRequestBody } from '@/validation-schemas/public-cloud';
 
 export default async function createOp({ session, body }: { session: Session; body: PublicCloudCreateRequestBody }) {
-  const { user, permissions, ministries } = session;
+  const { user, permissions, organizationIds } = session;
 
   const canCreate =
     // 1. can create one globally
@@ -16,7 +16,7 @@ export default async function createOp({ session, body }: { session: Session; bo
     // 2. can create one as an product member
     [body.projectOwnerId, body.primaryTechnicalLeadId, body.secondaryTechnicalLeadId].includes(user.id) ||
     // 3. can create one as a ministry editor
-    ministries.editor.includes(body.ministry);
+    organizationIds.editor.includes(body.organizationId);
 
   if (!canCreate) {
     return UnauthorizedResponse();
@@ -31,6 +31,7 @@ export default async function createOp({ session, body }: { session: Session; bo
     expenseAuthorityId,
     requestComment,
     isAgMinistryChecked,
+    organizationId,
     ...rest
   } = body;
 
@@ -38,17 +39,11 @@ export default async function createOp({ session, body }: { session: Session; bo
     return BadRequestResponse('invalid expensive authority');
   }
 
-  // Temporary fix for the ministry code
-  const organization = await prisma.organization.findUnique({ where: { code: rest.ministry } });
-  if (!organization) {
-    return BadRequestResponse('Invalid ministry code provided.');
-  }
-
   const productData = {
     ...rest,
-    organization: { connect: { id: organization?.id } },
     licencePlate,
     status: ProjectStatus.ACTIVE,
+    organization: { connect: { id: organizationId } },
     projectOwner: { connect: { id: projectOwnerId } },
     primaryTechnicalLead: { connect: { id: primaryTechnicalLeadId } },
     secondaryTechnicalLead: secondaryTechnicalLeadId ? { connect: { id: secondaryTechnicalLeadId } } : undefined,

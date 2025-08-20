@@ -1,6 +1,7 @@
 import { useSession } from 'next-auth/react';
 import { useState, useEffect, ReactNode } from 'react';
 import { useFormContext } from 'react-hook-form';
+import { useSnapshot } from 'valtio';
 import AGMinistryCheckBox from '@/components/form/AGMinistryCheckBox';
 import GolddrCheckbox from '@/components/form/GolddrCheckbox';
 import TemporaryProductCheckbox from '@/components/form/TemporaryProductCheckbox';
@@ -10,7 +11,8 @@ import MailLink from '@/components/generic/button/MailLink';
 import HookFormTextarea from '@/components/generic/input/HookFormTextarea';
 import FormSelect from '@/components/generic/select/FormSelect';
 import HookFormSingleSelect from '@/components/generic/select/HookFormSingleSelect';
-import { clustersWithoutDR, ministryOptions, privateCloudTeamEmail } from '@/constants';
+import { clustersWithoutDR, privateCloudTeamEmail } from '@/constants';
+import { appState } from '@/states/global';
 import { cn } from '@/utils/js';
 import HookFormTextInput from '../generic/input/HookFormTextInput';
 
@@ -25,6 +27,7 @@ export default function ProjectDescriptionPrivate({
   clusterDisabled?: boolean;
   canToggleTemporary?: boolean;
 }) {
+  const appSnapshot = useSnapshot(appState);
   const {
     register,
     formState: { errors },
@@ -89,7 +92,7 @@ export default function ProjectDescriptionPrivate({
             id="ministry"
             label="Ministry"
             disabled={disabled}
-            options={[{ label: 'Select Ministry', value: '' }, ...ministryOptions]}
+            options={[{ label: 'Select Ministry', value: '' }, ...appSnapshot.info.ORGANIZATION_OPTIONS]}
             selectProps={register('ministry')}
           />
 

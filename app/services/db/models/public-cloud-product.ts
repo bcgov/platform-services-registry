@@ -1,6 +1,6 @@
 import { Session } from 'next-auth';
 import prisma from '@/core/prisma';
-import { Prisma, Ministry, ProjectStatus, TaskType, PublicCloudProductMemberRole } from '@/prisma/client';
+import { Prisma, ProjectStatus, TaskType, PublicCloudProductMemberRole } from '@/prisma/client';
 import { PublicCloudProductDecorate } from '@/types/doc-decorate';
 import {
   PublicCloudProductDetail,
@@ -17,8 +17,8 @@ async function baseFilter(session: Session) {
   if (session.permissions.viewAllPublicCloudProducts) return true;
 
   const OR: Prisma.PublicCloudProductWhereInput[] = [
-    { ministry: { in: session.ministries.editor as Ministry[] } },
-    { ministry: { in: session.ministries.reader as Ministry[] } },
+    { organizationId: { in: session.organizationIds.editor } },
+    { organizationId: { in: session.organizationIds.reader } },
   ];
 
   const licencePlatesFromTasks = session.tasks
@@ -81,8 +81,8 @@ async function decorate<T extends PublicCloudProductSimple & Partial<PublicCloud
     session.permissions.viewAllPublicCloudProducts ||
     isMaintainer ||
     isExpenseAuthority ||
-    session.ministries.reader.includes(doc.ministry) ||
-    session.ministries.editor.includes(doc.ministry) ||
+    session.organizationIds.reader.includes(doc.organizationId) ||
+    session.organizationIds.editor.includes(doc.organizationId) ||
     members.some(
       (member) =>
         member.userId === session.user.id &&
@@ -98,14 +98,15 @@ async function decorate<T extends PublicCloudProductSimple & Partial<PublicCloud
       !hasActiveRequest &&
       (session.permissions.editAllPublicCloudProducts ||
         isMaintainer ||
-        session.ministries.editor.includes(doc.ministry))) ||
+        session.organizationIds.editor.includes(doc.organizationId))) ||
     members.some(
       (member) =>
         member.userId === session.user.id && arraysIntersect(member.roles, [PublicCloudProductMemberRole.EDITOR]),
     );
 
   const canViewHistroy =
-    session.permissions.viewAllPublicCloudProductsHistory || session.ministries.editor.includes(doc.ministry);
+    session.permissions.viewAllPublicCloudProductsHistory ||
+    session.organizationIds.editor.includes(doc.organizationId);
 
   const canReprovision = isActive && (session.isAdmin || session.isPublicAdmin);
 

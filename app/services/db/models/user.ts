@@ -1,6 +1,6 @@
 import { Session } from 'next-auth';
 import prisma from '@/core/prisma';
-import { Prisma, Ministry, User } from '@/prisma/client';
+import { Prisma, User } from '@/prisma/client';
 import { UserDecorate } from '@/types/doc-decorate';
 import { createSessionModel } from './core';
 
@@ -10,8 +10,8 @@ async function baseFilter(session: Session) {
     filter = {
       OR: [
         { email: session.user.email as string },
-        { ministry: { in: session.ministries.editor as Ministry[] } },
-        { ministry: { in: session.ministries.reader as Ministry[] } },
+        { ministry: { in: session.ministries.editor } },
+        { ministry: { in: session.ministries.reader } },
       ],
     };
   }

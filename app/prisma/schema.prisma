@@ -158,7 +158,6 @@ model PrivateCloudProduct {
   primaryTechnicalLead             User                        @relation("primaryTechnicalLead", fields: [primaryTechnicalLeadId], references: [id])
   secondaryTechnicalLeadId         String?                     @db.ObjectId
   secondaryTechnicalLead           User?                       @relation("secondaryTechnicalLead", fields: [secondaryTechnicalLeadId], references: [id])
-  ministry                         Ministry
   organizationId                   String                      @db.ObjectId
   organization                     Organization                @relation("organization", fields: [organizationId], references: [id])
   cluster                          Cluster
@@ -184,7 +183,6 @@ model PrivateCloudRequestData {
   primaryTechnicalLead     User                        @relation("primaryTechnicalLead", fields: [primaryTechnicalLeadId], references: [id])
   secondaryTechnicalLeadId String?                     @db.ObjectId
   secondaryTechnicalLead   User?                       @relation("secondaryTechnicalLead", fields: [secondaryTechnicalLeadId], references: [id])
-  ministry                 Ministry
   organizationId           String                      @db.ObjectId
   organization             Organization                @relation("organization", fields: [organizationId], references: [id])
   cluster                  Cluster
@@ -332,7 +330,6 @@ model PublicCloudProduct {
   secondaryTechnicalLead       User?                      @relation("secondaryTechnicalLead", fields: [secondaryTechnicalLeadId], references: [id])
   expenseAuthorityId           String                     @db.ObjectId
   expenseAuthority             User                       @relation("expenseAuthority", fields: [expenseAuthorityId], references: [id])
-  ministry                     Ministry
   organizationId               String                     @db.ObjectId
   organization                 Organization               @relation("organization", fields: [organizationId], references: [id])
   provider                     Provider
@@ -364,7 +361,6 @@ model PublicCloudRequestData {
   secondaryTechnicalLead       User?                      @relation("secondaryTechnicalLead", fields: [secondaryTechnicalLeadId], references: [id])
   expenseAuthorityId           String                     @db.ObjectId
   expenseAuthority             User                       @relation("expenseAuthority", fields: [expenseAuthorityId], references: [id])
-  ministry                     Ministry
   organizationId               String                     @db.ObjectId
   organization                 Organization               @relation("organization", fields: [organizationId], references: [id])
   provider                     Provider
@@ -597,37 +593,6 @@ enum PublicCloudRequestType {
   CREATE
   EDIT
   DELETE
-}
-
-enum Ministry {
-  AEST
-  AG
-  AGRI
-  ALC
-  BCPC
-  CITZ
-  DBC
-  EAO
-  EDUC
-  EMCR
-  EMPR
-  ENV
-  FIN
-  FLNR
-  HLTH
-  IRR
-  JEDC
-  LBR
-  LDB
-  HMA
-  MCF
-  MMHA
-  PSA
-  PSSG
-  SDPR
-  TCA
-  TRAN
-  WLRS
 }
 
 // enum CPU {

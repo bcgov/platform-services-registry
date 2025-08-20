@@ -5,9 +5,9 @@ import { defaultAccountCoding } from '@/constants';
 import prisma from '@/core/prisma';
 import { createSamplePublicCloudProductData } from '@/helpers/mock-resources';
 import { mockNoRoleUsers } from '@/helpers/mock-users';
-import { ministryKeyToName } from '@/helpers/product';
 import { formatFullName } from '@/helpers/user';
-import { DecisionStatus, Ministry, Provider, ProjectStatus, RequestType } from '@/prisma/client';
+import { DB_DATA } from '@/jest.mock';
+import { DecisionStatus, Provider, ProjectStatus, RequestType } from '@/prisma/client';
 import { mockSessionByEmail, mockSessionByRole } from '@/services/api-test/core';
 import { mockTeamServiceAccount } from '@/services/api-test/core';
 import {
@@ -45,15 +45,6 @@ const randomMemberData = {
   expenseAuthority: RANDOM4,
 };
 
-const productData = {
-  one: createSamplePublicCloudProductData({
-    data: { ...memberData },
-  }),
-  two: createSamplePublicCloudProductData({
-    data: { ...randomMemberData },
-  }),
-};
-
 const requests = {
   one: {} as unknown as PublicCloudRequestSimple,
   two: {} as unknown as PublicCloudRequestSimple,
@@ -67,7 +58,8 @@ describe('Download Public Cloud Products - Permissions', () => {
 
   it('should successfully create a product by PO and approved by admin', async () => {
     await mockSessionByEmail(PO.email);
-    const res1 = await createPublicCloudProduct(productData.one);
+    const productData = createSamplePublicCloudProductData({ data: { ...memberData } });
+    const res1 = await createPublicCloudProduct(productData);
     const dat1 = await res1.json();
     expect(res1.status).toBe(200);
 
@@ -131,7 +123,6 @@ describe('Download Public Cloud Products - Permissions', () => {
 
     expect(record1.Name).toBe(project?.name);
     expect(record1.Description).toBe(project?.description);
-    expect(record1.Ministry).toBe(ministryKeyToName(project?.ministry ?? ''));
     expect(record1.Provider).toBe(project?.provider);
     expect(record1['Reasons for selecting cloud provider']).toBe(project?.providerSelectionReasons?.join(', '));
     expect(record1['Description of selected reasons']).toBe(project?.providerSelectionReasonsNote);
@@ -173,8 +164,8 @@ describe('Download Public Cloud Products - Permissions', () => {
 
   it('should successfully create a product by a random user and approved by admin', async () => {
     await mockSessionByEmail(RANDOM1.email);
-
-    const res1 = await createPublicCloudProduct(productData.two);
+    const productData = createSamplePublicCloudProductData({ data: { ...randomMemberData } });
+    const res1 = await createPublicCloudProduct(productData);
     const dat1 = await res1.json();
     expect(res1.status).toBe(200);
 
@@ -261,20 +252,22 @@ describe('Download Public Cloud Products - Validations', () => {
 
   it('should successfully create products by admin', async () => {
     await mockSessionByRole(GlobalRole.Admin);
+    const aestOrg = DB_DATA.organizations.find((org) => org.code === 'AEST');
+    const citzOrg = DB_DATA.organizations.find((org) => org.code === 'CITZ');
 
     const datasets: any[] = [];
     datasets.push(
-      createSamplePublicCloudProductData({ data: { ministry: Ministry.AEST, provider: Provider.AWS } }),
-      createSamplePublicCloudProductData({ data: { ministry: Ministry.AEST, provider: Provider.AZURE } }),
-      createSamplePublicCloudProductData({ data: { ministry: Ministry.AEST, provider: Provider.AWS } }),
-      createSamplePublicCloudProductData({ data: { ministry: Ministry.AEST, provider: Provider.AZURE } }),
-      createSamplePublicCloudProductData({ data: { ministry: Ministry.AEST, provider: Provider.AWS } }),
-      createSamplePublicCloudProductData({ data: { ministry: Ministry.CITZ, provider: Provider.AZURE } }),
-      createSamplePublicCloudProductData({ data: { ministry: Ministry.CITZ, provider: Provider.AWS } }),
-      createSamplePublicCloudProductData({ data: { ministry: Ministry.CITZ, provider: Provider.AZURE } }),
-      createSamplePublicCloudProductData({ data: { ministry: Ministry.CITZ, provider: Provider.AWS } }),
+      createSamplePublicCloudProductData({ data: { organizationId: aestOrg?.id, provider: Provider.AWS } }),
+      createSamplePublicCloudProductData({ data: { organizationId: aestOrg?.id, provider: Provider.AZURE } }),
+      createSamplePublicCloudProductData({ data: { organizationId: aestOrg?.id, provider: Provider.AWS } }),
+      createSamplePublicCloudProductData({ data: { organizationId: aestOrg?.id, provider: Provider.AZURE } }),
+      createSamplePublicCloudProductData({ data: { organizationId: aestOrg?.id, provider: Provider.AWS } }),
+      createSamplePublicCloudProductData({ data: { organizationId: citzOrg?.id, provider: Provider.AZURE } }),
+      createSamplePublicCloudProductData({ data: { organizationId: citzOrg?.id, provider: Provider.AWS } }),
+      createSamplePublicCloudProductData({ data: { organizationId: citzOrg?.id, provider: Provider.AZURE } }),
+      createSamplePublicCloudProductData({ data: { organizationId: citzOrg?.id, provider: Provider.AWS } }),
       createSamplePublicCloudProductData({
-        data: { ministry: Ministry.CITZ, provider: Provider.AZURE, name: '______name______' },
+        data: { organizationId: citzOrg?.id, provider: Provider.AZURE, name: '______name______' },
       }),
     );
 
@@ -312,7 +305,7 @@ describe('Download Public Cloud Products - Validations', () => {
     await mockSessionByRole(GlobalRole.Admin);
 
     const res1 = await downloadPublicCloudProducts({
-      ministries: [Ministry.AEST],
+      ministries: ['AEST'],
       providers: [Provider.AWS],
       status: [ProjectStatus.ACTIVE],
     });
@@ -355,16 +348,6 @@ describe('Download Public Cloud Products - Validations', () => {
 
     const res1 = await downloadPublicCloudProducts({
       providers: ['INVALID' as Provider],
-    });
-
-    expect(res1.status).toBe(400);
-  });
-
-  it('should fail to download projects by admin due to an invalid ministry', async () => {
-    await mockSessionByRole(GlobalRole.Admin);
-
-    const res1 = await downloadPublicCloudProducts({
-      ministries: ['INVALID' as Ministry],
     });
 
     expect(res1.status).toBe(400);

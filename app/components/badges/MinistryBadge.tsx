@@ -1,32 +1,7 @@
 import { Badge, Tooltip } from '@mantine/core';
-import { ministryOptions } from '@/constants';
+import { useSnapshot } from 'valtio';
+import { appState } from '@/states/global';
 import { cn } from '@/utils/js';
-
-const additionalMinistryOptions = [
-  {
-    value: 'PSFS',
-    label: 'Post Secondary Education and Future Skills',
-  },
-  {
-    value: 'MOTI',
-    label: 'Transportation and Infrastructure',
-  },
-  {
-    value: 'EHS',
-    label: 'Emergency Health Services',
-  },
-  {
-    value: 'ISMC',
-    label: 'International Student Ministries Canada',
-  },
-];
-
-export const ministryMap = ministryOptions
-  .concat(additionalMinistryOptions)
-  .reduce<{ [key: string]: string }>((ret, mini) => {
-    ret[mini.value] = mini.label;
-    return ret;
-  }, {});
 
 export default function MinistryBadge({
   ministry,
@@ -39,6 +14,7 @@ export default function MinistryBadge({
   variant?: string;
   className?: string;
 }) {
+  const appSnapshot = useSnapshot(appState);
   if (!ministry) return null;
 
   const badge = (
@@ -47,9 +23,9 @@ export default function MinistryBadge({
     </Badge>
   );
 
-  const ministryLabel = ministryMap[ministry];
+  const ministryLabel = appSnapshot.info.ORGANIZATION_NAME_BY_CODE[ministry];
   if (ministryLabel) {
-    return <Tooltip label={ministryMap[ministry]}>{badge}</Tooltip>;
+    return <Tooltip label={appSnapshot.info.ORGANIZATION_NAME_BY_CODE[ministry]}>{badge}</Tooltip>;
   }
 
   return badge;

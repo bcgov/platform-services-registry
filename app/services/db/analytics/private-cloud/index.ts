@@ -1,6 +1,6 @@
 import { startOfDay, endOfDay } from 'date-fns';
 import { fromZonedTime } from 'date-fns-tz';
-import { Cluster, Ministry } from '@/prisma/client';
+import { Cluster } from '@/prisma/client';
 import { getActiveProducts } from './active-products';
 import { getAllRequests } from './all-requests';
 import { getContactChangeRequests } from './contact-changes';
@@ -18,7 +18,7 @@ export async function getPrivateCloudAnalytics({
 }: {
   userId?: string;
   clusters?: Cluster[];
-  ministries?: Ministry[];
+  ministries?: string[];
   dates?: string[];
   temporary?: string[];
 }) {

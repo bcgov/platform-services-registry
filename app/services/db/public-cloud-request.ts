@@ -69,7 +69,11 @@ export async function searchPublicCloudRequests({
   }
 
   if (ministries && ministries.length > 0) {
-    decisionDatawhere.ministry = { in: ministries };
+    const organizations = await prisma.organization.findMany({
+      where: { code: { in: ministries } },
+      select: { id: true },
+    });
+    decisionDatawhere.organizationId = { in: organizations.map((org) => org.id) };
   }
 
   if (providers && providers.length > 0) {

@@ -10,7 +10,7 @@ import KeycloakProvider, { KeycloakProfile } from 'next-auth/providers/keycloak'
 import { IS_PROD, AUTH_SERVER_URL, AUTH_RELM, AUTH_RESOURCE, AUTH_SECRET, USER_TOKEN_REFRESH_INTERVAL } from '@/config';
 import { TEAM_SA_PREFIX, GlobalRole, RoleToSessionProp, sessionRolePropKeys } from '@/constants';
 import prisma from '@/core/prisma';
-import { EventType, TaskStatus, UserSession } from '@/prisma/client';
+import { EventType, Organization, TaskStatus, UserSession } from '@/prisma/client';
 import { createEvent } from '@/services/db';
 import { upsertUser } from '@/services/db/user';
 
@@ -138,6 +138,10 @@ export async function generateSession({
     editor: [],
     reader: [],
   };
+  session.organizationIds = {
+    editor: [],
+    reader: [],
+  };
 
   session.user = {
     id: '',
@@ -185,6 +189,12 @@ export async function generateSession({
   }
 
   session.roles = [..._uniq(session.roles)];
+
+  let organizations: Organization[] = [];
+  if (session.roles.some((role) => role.startsWith('ministry-'))) {
+    organizations = await prisma.organization.findMany();
+  }
+
   session.roles.forEach((role) => {
     const roleKey = RoleToSessionProp[role as GlobalRole];
     if (roleKey && roleKey in session) {
@@ -196,10 +206,19 @@ export async function generateSession({
     const regexPattern = /^ministry-(\w+)-(.+)$/;
     const match = regexPattern.exec(role);
     if (match) {
-      const ministryCode = match[1];
+      const ministryCode = match[1].toUpperCase();
       const ministryRole = match[2];
-      if (!Array.isArray(session.ministries[ministryRole])) session.ministries[ministryCode] = [];
-      session.ministries[ministryRole].push(ministryCode.toUpperCase());
+      if (!Array.isArray(session.ministries[ministryRole])) {
+        session.ministries[ministryRole] = [];
+        session.organizationIds[ministryRole] = [];
+      }
+
+      session.ministries[ministryRole].push(ministryCode);
+
+      const organization = organizations.find((org) => org.code === ministryCode);
+      if (organization) {
+        session.organizationIds[ministryRole].push(organization.id);
+      }
     }
   });
 

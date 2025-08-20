@@ -109,6 +109,11 @@ declare module 'next-auth' {
       reader: string[];
       [key: string]: string[];
     };
+    organizationIds: {
+      editor: string[];
+      reader: string[];
+      [key: string]: string[];
+    };
     permissions: Permissions;
     tasks: Prisma.TaskGetPayload<{
       include: {

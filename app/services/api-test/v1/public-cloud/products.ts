@@ -1,6 +1,6 @@
 import { GET as _listPublicCloudProduct } from '@/app/api/v1/public-cloud/products/route';
 import { getServiceAccountAuthHeader } from '@/helpers/mock-resources';
-import { Ministry, Provider, ProjectStatus } from '@/prisma/client';
+import { Provider, ProjectStatus } from '@/prisma/client';
 import { PublicCloudProductSimpleDecorated } from '@/types/public-cloud';
 import { createRoute } from '../../core';
 
@@ -9,7 +9,7 @@ const productCollectionRoute = createRoute('/api/v1/public-cloud/products');
 interface ListPublicCloudProductApiProps {
   page?: number;
   pageSize?: number;
-  ministry?: Ministry;
+  ministry?: string;
   provider?: Provider;
   status?: ProjectStatus;
 }

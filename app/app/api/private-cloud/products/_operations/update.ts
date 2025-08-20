@@ -44,6 +44,7 @@ export default async function updateOp({
     quotaContactEmail,
     quotaJustification,
     isAgMinistryChecked,
+    organizationId,
     ...rest
   } = body;
 
@@ -51,19 +52,13 @@ export default async function updateOp({
     rest.members = product.members.map(({ userId, roles }) => ({ userId, roles }));
   }
 
-  // Temporary fix for the ministry code
-  const organization = await prisma.organization.findUnique({ where: { code: rest.ministry } });
-  if (!organization) {
-    return BadRequestResponse('Invalid ministry code provided.');
-  }
-
   const productData = {
     ...rest,
-    organization: { connect: { id: organization?.id } },
     licencePlate: product.licencePlate,
     status: product.status,
     cluster: product.cluster,
     createdAt: product.createdAt,
+    organization: { connect: { id: organizationId } },
     projectOwner: { connect: { id: projectOwnerId } },
     primaryTechnicalLead: { connect: { id: primaryTechnicalLeadId } },
     secondaryTechnicalLead: secondaryTechnicalLeadId ? { connect: { id: secondaryTechnicalLeadId } } : undefined,

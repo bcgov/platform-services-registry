@@ -1,5 +1,6 @@
 import _isNumber from 'lodash-es/isNumber';
 import { Session } from 'next-auth';
+import prisma from '@/core/prisma';
 import { parsePaginationParams } from '@/helpers/pagination';
 import { Cluster, Prisma } from '@/prisma/client';
 import { models } from '@/services/db';
@@ -60,7 +61,11 @@ export async function searchPrivateCloudProducts({
   }
 
   if (ministries && ministries.length > 0) {
-    where.ministry = { in: ministries };
+    const organizations = await prisma.organization.findMany({
+      where: { code: { in: ministries } },
+      select: { id: true },
+    });
+    where.organizationId = { in: organizations.map((org) => org.id) };
   }
 
   if (clusters?.length) {

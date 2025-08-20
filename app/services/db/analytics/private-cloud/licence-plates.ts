@@ -1,5 +1,5 @@
 import prisma from '@/core/prisma';
-import { Cluster, Ministry } from '@/prisma/client';
+import { Cluster, Prisma } from '@/prisma/client';
 
 export async function getPrivateLicencePlates({
   userId,
@@ -9,17 +9,21 @@ export async function getPrivateLicencePlates({
 }: {
   userId?: string;
   clusters?: Cluster[];
-  ministries?: Ministry[];
+  ministries?: string[];
   temporary?: string[];
 }) {
-  const where: any = {};
+  const where: Prisma.PrivateCloudRequestDataWhereInput = {};
 
   if (clusters && clusters.length > 0) {
     where.cluster = { in: clusters };
   }
 
   if (ministries && ministries.length > 0) {
-    where.ministry = { in: ministries };
+    const organizations = await prisma.organization.findMany({
+      where: { code: { in: ministries } },
+      select: { id: true },
+    });
+    where.organizationId = { in: organizations.map((org) => org.id) };
   }
 
   if (temporary?.length) {
