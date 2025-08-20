@@ -52,7 +52,7 @@ async function updateUserSession(tokens?: { access_token?: string; refresh_token
 
   const userSession = await prisma.userSession.upsert({
     where: { email: loweremail },
-    create: { ...userSessionData, idirGuid: idir_guid! },
+    create: userSessionData,
     update: userSessionData,
   });
 
