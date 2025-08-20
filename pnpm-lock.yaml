@@ -13,7 +13,7 @@ importers:
     devDependencies:
       '@badeball/cypress-cucumber-preprocessor':
         specifier: ^22.2.0
-        version: 22.2.0(@babel/core@7.26.7)(cypress@14.5.4)(typescript@5.9.2)
+        version: 22.2.0(@babel/core@7.26.7)(cypress@15.0.0)(typescript@5.9.2)
       '@bahmutov/cypress-esbuild-preprocessor':
         specifier: ^2.2.5
         version: 2.2.5(esbuild@0.25.8)
@@ -39,11 +39,11 @@ importers:
         specifier: ^5.0.0
         version: 5.0.0(conventional-commits-filter@5.0.0)
       cypress:
-        specifier: ^14.5.3
-        version: 14.5.4
+        specifier: ^15.0.0
+        version: 15.0.0
       cypress-keycloak:
         specifier: ^2.0.2
-        version: 2.0.2(cypress@14.5.4)
+        version: 2.0.2(cypress@15.0.0)
       eslint:
         specifier: ^9.32.0
         version: 9.33.0(jiti@2.5.1)
@@ -1450,9 +1450,9 @@ packages:
     peerDependencies:
       cypress: ^6.5.0 || ^7.0.0 || ^8.0.0 || ^9.0.0 || ^10.0.0 || ^11.0.0 || ^12.0.0 || ^13.0.0
 
-  cypress@14.5.4:
-    resolution: {integrity: sha512-0Dhm4qc9VatOcI1GiFGVt8osgpPdqJLHzRwcAB5MSD/CAAts3oybvPUPawHyvJZUd8osADqZe/xzMsZ8sDTjXw==}
-    engines: {node: ^18.0.0 || ^20.0.0 || >=22.0.0}
+  cypress@15.0.0:
+    resolution: {integrity: sha512-OH5Srk10qTzHYYt3BsP9V1DPYIAzms55s3xQn4mGmYO4k6pi25MCajDyPbiULfNDhNcthNQ2xmYvu1JdeEw1Hw==}
+    engines: {node: ^20.0.0 || ^22.0.0 || >=24.0.0}
     hasBin: true
 
   dargs@8.1.0:
@@ -3867,7 +3867,7 @@ snapshots:
       '@babel/helper-string-parser': 7.27.1
       '@babel/helper-validator-identifier': 7.27.1
 
-  '@badeball/cypress-cucumber-preprocessor@22.2.0(@babel/core@7.26.7)(cypress@14.5.4)(typescript@5.9.2)':
+  '@badeball/cypress-cucumber-preprocessor@22.2.0(@babel/core@7.26.7)(cypress@15.0.0)(typescript@5.9.2)':
     dependencies:
       '@cucumber/ci-environment': 10.0.1
       '@cucumber/cucumber': 11.3.0
@@ -3883,7 +3883,7 @@ snapshots:
       cli-table: 0.3.11
       common-ancestor-path: 1.0.1
       cosmiconfig: 9.0.0(typescript@5.9.2)
-      cypress: 14.5.4
+      cypress: 15.0.0
       debug: 4.4.1(supports-color@8.1.1)
       error-stack-parser: 2.1.4
       find-cypress-specs: 1.54.5(@babel/core@7.26.7)
@@ -5245,13 +5245,13 @@ snapshots:
 
   css-what@6.2.2: {}
 
-  cypress-keycloak@2.0.2(cypress@14.5.4):
+  cypress-keycloak@2.0.2(cypress@15.0.0):
     dependencies:
       base64-js: 1.5.1
-      cypress: 14.5.4
+      cypress: 15.0.0
       js-sha256: 0.9.0
 
-  cypress@14.5.4:
+  cypress@15.0.0:
     dependencies:
       '@cypress/request': 3.0.9
       '@cypress/xvfb': 1.2.4(supports-color@8.1.1)
