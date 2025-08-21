@@ -12,4 +12,10 @@ export const organizationBodySchema = z.object({
   isAgMinistry: z.boolean(),
 });
 
+export const organizationDeleteBodySchema = z.object({
+  fromOrganizationId: z.string().length(24),
+  toOrganizationId: z.string().length(24),
+});
+
 export type OrganizationBody = z.infer<typeof organizationBodySchema>;
+export type OrganizationDeleteBody = z.infer<typeof organizationDeleteBodySchema>;
