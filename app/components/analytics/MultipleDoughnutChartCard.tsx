@@ -26,7 +26,7 @@ export default function DoughnutChartCard({
       <Card shadow="sm" padding="lg" radius="md" withBorder>
         <h2>{title}</h2>
         <h5 className="text-gray-600">{subtitle}</h5>
-        <div className={`grid grid-cols-1 lg:grid-cols-${Object.keys(data).length} lg:gap-4`}>
+        <div className={`grid grid-cols-1 lg:grid-cols-4 lg:gap-4`}>
           {_map(data, (items: DoughnutChartDataItem[], key: string) => {
             const total = _sumBy(items, (item) => item.value);
             const orderedItems = _orderBy(items, ['value'], 'desc');

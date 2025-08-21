@@ -30,6 +30,7 @@ export default async function createOp({ session, body }: { session: Session; bo
     secondaryTechnicalLeadId,
     expenseAuthorityId,
     requestComment,
+    isAgMinistry,
     isAgMinistryChecked,
     organizationId,
     ...rest

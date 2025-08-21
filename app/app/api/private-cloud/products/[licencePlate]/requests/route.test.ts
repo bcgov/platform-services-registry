@@ -24,7 +24,6 @@ const memberData = {
 
 let licencePlate = '';
 
-// TODO: add tests for ministry roles
 describe('List Private Cloud Product Requests - Permissions', () => {
   it('should successfully create a product by PO and approved by admin', async () => {
     await mockSessionByEmail(PO.email);

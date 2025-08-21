@@ -19,7 +19,6 @@ const requests = {
   delete: {} as unknown as PrivateCloudRequestDetailDecorated,
 };
 
-// TODO: add tests for ministry roles
 describe('Delete Private Cloud Product - Permissions', () => {
   it('should successfully submit a create request for PO', async () => {
     await mockSessionByEmail(productData.main.projectOwner.email);

@@ -89,14 +89,14 @@ export default function ProjectDescriptionPrivate({
 
         <div className="sm:col-span-3 sm:mr-10">
           <FormSelect
-            id="ministry"
+            id="organizationId"
             label="Ministry"
             disabled={disabled}
             options={[{ label: 'Select Ministry', value: '' }, ...appSnapshot.info.ORGANIZATION_OPTIONS]}
-            selectProps={register('ministry')}
+            selectProps={register('organizationId')}
           />
 
-          <p className={cn(errors.ministry ? 'text-red-400' : 'text-gray-600', 'mt-3 text-sm leading-6')}>
+          <p className={cn(errors.organizationId ? 'text-red-400' : 'text-gray-600', 'mt-3 text-sm leading-6')}>
             Select the government ministry that this product belongs to
           </p>
           {['create', 'edit'].includes(mode) && <AGMinistryCheckBox disabled={disabled} />}

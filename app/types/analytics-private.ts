@@ -29,7 +29,7 @@ export type RequestDecisionTime = {
 };
 
 export type MinistryDistribution = {
-  _id: string;
+  label: string;
   value: number;
 };
 

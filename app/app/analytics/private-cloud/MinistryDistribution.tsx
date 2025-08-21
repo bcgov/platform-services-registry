@@ -1,7 +1,7 @@
 import { useSnapshot } from 'valtio';
 import MultipleDoughnutChartCard from '@/components/analytics/MultipleDoughnutChartCard';
 import { clustersWithoutDR } from '@/constants';
-import { mapClusterData, transformMinistryData } from '@/helpers/ministry-data';
+import { mapClusterData } from '@/helpers/ministry-data';
 import { downloadPrivateCloudMinistryDistribution } from '@/services/backend/analytics/private-cloud';
 import type { MinistryDistribution } from '@/types/analytics-private';
 import { formatDate } from '@/utils/js/date';
@@ -10,7 +10,7 @@ import { pageState } from './state';
 export default function MinistryDistribution({ data }: { data: MinistryDistribution[][] }) {
   const pageSnapshot = useSnapshot(pageState);
   const selectedClusters = pageSnapshot.clusters?.length ? pageSnapshot.clusters : clustersWithoutDR;
-  const allClusterData = transformMinistryData(data[0]);
+  const allClusterData = data[0];
   const startDate = pageSnapshot.dates?.[0] ?? new Date('2023-04-01T00:00:00.000Z');
   const endDate = pageSnapshot.dates?.[1] ?? new Date();
   const mappedClusterData = mapClusterData(selectedClusters, data);

@@ -21,7 +21,23 @@ function getAggByProvider(licencePlatesList: string[], provider?: string, dateFi
     {
       $group: {
         _id: '$organizationId',
-        value: { $count: {} },
+        value: { $sum: 1 },
+      },
+    },
+    {
+      $lookup: {
+        from: 'Organization',
+        localField: '_id',
+        foreignField: '_id',
+        as: 'org',
+      },
+    },
+    { $unwind: '$org' },
+    {
+      $project: {
+        _id: 0,
+        label: '$org.name',
+        value: 1,
       },
     },
   ];

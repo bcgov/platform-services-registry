@@ -4,5 +4,10 @@ export const SERVICE_ACCOUNT_DATA = {
 };
 
 export const DB_DATA = {
-  organizations: [{ id: '', code: '', name: '' }] as { id: string; code: string; name: string }[],
+  organizations: [{ id: '', code: '', name: '', isAgMinistry: false }] as {
+    id: string;
+    code: string;
+    name: string;
+    isAgMinistry: boolean;
+  }[],
 };

@@ -1,6 +1,6 @@
 import { Prisma } from '@/prisma/client';
 
-export const AGMinistries = ['AG', 'PSSG', 'EMCR', 'HMA'];
+// export const AGMinistries = ['AG', 'PSSG', 'EMCR', 'HMA'];
 
 export const TEAM_SA_PREFIX = 'z_pltsvc-tsa-';
 

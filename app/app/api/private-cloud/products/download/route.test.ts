@@ -40,7 +40,6 @@ const requests = {
   two: {} as unknown as PrivateCloudRequestSimple,
 };
 
-// TODO: add tests for ministry roles
 describe('Download Private Cloud Products - Permissions', () => {
   it('should successfully delete all private cloud products', async () => {
     await prisma.privateCloudProduct.deleteMany();

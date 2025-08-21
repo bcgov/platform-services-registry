@@ -1,7 +1,7 @@
 import { useSnapshot } from 'valtio';
 import MultipleDoughnutChartCard from '@/components/analytics/MultipleDoughnutChartCard';
 import { providers } from '@/constants';
-import { mapProviderData, transformMinistryData } from '@/helpers/ministry-data';
+import { mapProviderData } from '@/helpers/ministry-data';
 import { downloadPublicCloudMinistryDistribution } from '@/services/backend/analytics/public-cloud';
 import type { MinistryDistribution } from '@/types/analytics-public';
 import { formatDate } from '@/utils/js/date';
@@ -10,7 +10,7 @@ import { pageState } from './state';
 export default function MinistryDistribution({ data }: { data: MinistryDistribution[][] }) {
   const pageSnapshot = useSnapshot(pageState);
   const selectedProviders = pageSnapshot.providers?.length ? pageSnapshot.providers : providers;
-  const allProviderData = transformMinistryData(data[0]);
+  const allProviderData = data[0];
   const startDate = pageSnapshot.dates?.[0] ?? new Date('2024-01-01T00:00:00.000Z');
   const endDate = pageSnapshot.dates?.[1] ?? new Date();
   const mappedProviderData = mapProviderData(selectedProviders, data);

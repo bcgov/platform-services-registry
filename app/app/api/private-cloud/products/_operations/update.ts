@@ -43,6 +43,7 @@ export default async function updateOp({
     quotaContactName,
     quotaContactEmail,
     quotaJustification,
+    isAgMinistry,
     isAgMinistryChecked,
     organizationId,
     ...rest

@@ -50,6 +50,11 @@ export default Page(({ session }) => {
       value: 'name',
       cellFormatter: (org, attr) => <span className="whitespace-nowrap">{org.name}</span>,
     },
+    {
+      label: 'AG Ministry',
+      value: 'isAgMinistry',
+      cellFormatter: (org, attr) => <span className="whitespace-nowrap">{org.isAgMinistry ? 'Yes' : 'No'}</span>,
+    },
   ];
 
   if (session?.permissions.manageOrganizations) {
@@ -102,7 +107,7 @@ export default Page(({ session }) => {
       <h1 className="text-xl lg:text-2xl 2xl:text-4xl font-semibold leading-7 text-gray-900">Organizations</h1>
 
       {session?.permissions.manageOrganizations && (
-        <div className="text-right">
+        <div className="text-right mb-1">
           <Button
             color="blue"
             onClick={async () => {

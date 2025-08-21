@@ -33,7 +33,6 @@ const randomMemberData = {
   secondaryTechnicalLead: RANDOM3,
 };
 
-// TODO: add tests for ministry roles
 describe('Search Private Cloud Requests - Permissions', () => {
   it('should successfully delete all private cloud products', async () => {
     await Promise.all([prisma.privateCloudProduct.deleteMany(), prisma.privateCloudRequest.deleteMany()]);

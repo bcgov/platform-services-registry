@@ -99,8 +99,6 @@ async function makeBasicProductReview(decision: DecisionStatus, extra = {}) {
   return response;
 }
 
-// TODO: add tests for ministry roles
-// TODO: test the emails templates if possible
 describe('Review Public Cloud Create Request - Permissions', () => {
   it('should successfully submit a create request for PO', async () => {
     await mockSessionByEmail(productData.main.projectOwner.email);

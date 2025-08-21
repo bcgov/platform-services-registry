@@ -1,5 +1,4 @@
 import { z } from 'zod';
-import { AGMinistries } from '@/constants';
 import { validateDistinctPOandTl } from '@/helpers/user';
 import {
   Provider,
@@ -66,6 +65,7 @@ const _publicCloudCreateRequestBodySchema = z.object({
     .max(1000, { message: 'Provider Selection not should contain a maximum of 1000 characters.' }),
   budget: budgetSchema,
   organizationId: z.string().length(24),
+  isAgMinistry: z.boolean(),
   projectOwnerId: z.string().length(24),
   primaryTechnicalLeadId: z.string().length(24),
   secondaryTechnicalLeadId: z.string().length(24).or(z.literal('')).nullable().optional(),
@@ -94,16 +94,15 @@ export const publicCloudCreateRequestBodySchema = _publicCloudCreateRequestBodyS
       isAgMinistryChecked: z.boolean().optional(),
     }),
   )
-  // TODO: enable after AG checkbox is implemented
-  // .refine(
-  //   (formData) => {
-  //     return AGMinistries.includes(formData.organizationId) ? formData.isAgMinistryChecked : true;
-  //   },
-  //   {
-  //     message: 'AG Ministry Checkbox should be checked.',
-  //     path: ['isAgMinistryChecked'],
-  //   },
-  // )
+  .refine(
+    (formData) => {
+      return formData.isAgMinistry ? formData.isAgMinistryChecked : true;
+    },
+    {
+      message: 'AG Ministry Checkbox should be checked.',
+      path: ['isAgMinistryChecked'],
+    },
+  )
   .refine(validateDistinctPOandTl, {
     message: 'The Project Owner and Primary Technical Lead must be different.',
     path: ['primaryTechnicalLeadId'],
@@ -131,16 +130,15 @@ export const publicCloudEditRequestBodySchema = _publicCloudEditRequestBodySchem
       isAgMinistryChecked: z.boolean().optional(),
     }),
   )
-  // TODO: enable after AG checkbox is implemented
-  // .refine(
-  //   (formData) => {
-  //     return AGMinistries.includes(formData.ministry) ? formData.isAgMinistryChecked : true;
-  //   },
-  //   {
-  //     message: 'AG Ministry Checkbox should be checked.',
-  //     path: ['isAgMinistryChecked'],
-  //   },
-  // )
+  .refine(
+    (formData) => {
+      return formData.isAgMinistry ? formData.isAgMinistryChecked : true;
+    },
+    {
+      message: 'AG Ministry Checkbox should be checked.',
+      path: ['isAgMinistryChecked'],
+    },
+  )
   .refine(validateDistinctPOandTl, {
     message: 'The Project Owner and Primary Technical Lead must be different.',
     path: ['primaryTechnicalLeadId'],

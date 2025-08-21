@@ -9,6 +9,7 @@ export const organizationBodySchema = z.object({
       message: 'Code must be uppercase',
     }),
   name: z.string().min(2, 'Name must be at least 2 characters long').max(50, 'Name must be at most 50 characters long'),
+  isAgMinistry: z.boolean(),
 });
 
 export type OrganizationBody = z.infer<typeof organizationBodySchema>;

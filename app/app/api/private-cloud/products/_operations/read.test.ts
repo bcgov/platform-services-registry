@@ -29,7 +29,6 @@ const requests = {
   create: {} as unknown as PrivateCloudRequestDetailDecorated,
 };
 
-// TODO: add tests for ministry roles
 describe('Read Private Cloud Product - Permissions', () => {
   it('should successfully submit a create request for PO', async () => {
     await mockSessionByEmail(productData.main.projectOwner.email);

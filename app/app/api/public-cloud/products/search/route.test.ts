@@ -40,7 +40,6 @@ const randomMemberData = {
   expenseAuthority: RANDOM4,
 };
 
-// TODO: add tests for ministry roles
 describe('Search Public Cloud Products - Permissions', () => {
   it('should successfully delete all public cloud products', async () => {
     await prisma.publicCloudProduct.deleteMany();

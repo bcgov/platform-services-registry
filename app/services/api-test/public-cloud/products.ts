@@ -119,6 +119,7 @@ export async function editPublicCloudProduct(
     isAgMinistryChecked?: boolean;
   },
 ) {
+  data.isAgMinistry = true;
   data.isAgMinistryChecked = true;
   data.projectOwnerId = data.projectOwner?.id ?? undefined;
   data.primaryTechnicalLeadId = data.primaryTechnicalLead?.id ?? undefined;

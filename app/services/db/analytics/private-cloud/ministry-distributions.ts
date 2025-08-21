@@ -1,6 +1,7 @@
 import { clustersWithoutDR } from '@/constants';
 import prisma from '@/core/prisma';
 import { Prisma } from '@/prisma/client';
+import { getOrganizationMap } from '../../organization';
 
 function getAggByCluster(licencePlatesList: string[], cluster?: string, dateFilter?: Record<string, any>) {
   const matchStage: Record<string, any> = {
@@ -21,7 +22,23 @@ function getAggByCluster(licencePlatesList: string[], cluster?: string, dateFilt
     {
       $group: {
         _id: '$organizationId',
-        value: { $count: {} },
+        value: { $sum: 1 },
+      },
+    },
+    {
+      $lookup: {
+        from: 'Organization',
+        localField: '_id',
+        foreignField: '_id',
+        as: 'org',
+      },
+    },
+    { $unwind: '$org' },
+    {
+      $project: {
+        _id: 0,
+        label: '$org.name',
+        value: 1,
       },
     },
   ];
