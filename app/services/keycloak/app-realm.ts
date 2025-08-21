@@ -253,3 +253,99 @@ export async function updateUserRoles(email: string, roleNames: string[], kcAdmi
 
   return { roles: newRoles.map((v) => v.name) };
 }
+export async function findClientRole(
+  clientId: string,
+  roleName: string,
+  kcAdminClient?: KcAdminClient,
+): Promise<RoleRepresentation | null> {
+  const adminClient = kcAdminClient || (await getKcAdminClient());
+  return adminClient.clients.findRole({
+    realm: AUTH_RELM,
+    id: clientId,
+    roleName,
+  });
+}
+
+export async function ensureClientRole(
+  clientId: string,
+  roleName: string,
+  details: RoleRepresentation,
+  kcAdminClient?: KcAdminClient,
+): Promise<RoleRepresentation | null> {
+  const adminClient = kcAdminClient || (await getKcAdminClient());
+
+  const authClient = await findClient(AUTH_RESOURCE, adminClient);
+  if (!authClient?.id) return null;
+
+  const existingRole = await findClientRole(authClient.id, roleName, adminClient);
+  if (existingRole) {
+    await adminClient.clients.updateRole(
+      {
+        realm: AUTH_RELM,
+        id: authClient.id,
+        roleName,
+      },
+      details,
+    );
+  } else {
+    await adminClient.clients.createRole({
+      realm: AUTH_RELM,
+      ...details,
+      id: authClient.id,
+      name: roleName,
+    });
+  }
+
+  return findClientRole(authClient.id, roleName, adminClient);
+}
+
+export async function removeClientRole(
+  clientId: string,
+  roleName: string,
+  kcAdminClient?: KcAdminClient,
+): Promise<boolean> {
+  const adminClient = kcAdminClient || (await getKcAdminClient());
+
+  const authClient = await findClient(clientId, adminClient);
+  if (!authClient?.id) return false;
+
+  const existingRole = await findClientRole(authClient.id, roleName, adminClient);
+  if (!existingRole) return true;
+
+  await adminClient.clients.delRole({
+    realm: AUTH_RELM,
+    id: authClient.id,
+    roleName,
+  });
+
+  return true;
+}
+
+export async function reassignUsersToRole(
+  clientId: string,
+  fromRoleName: string,
+  toRoleName: string,
+  kcAdminClient?: KcAdminClient,
+): Promise<boolean> {
+  const adminClient = kcAdminClient || (await getKcAdminClient());
+
+  const authClient = await findClient(clientId, adminClient);
+  if (!authClient?.id) return false;
+
+  const toRole = await findClientRole(authClient.id, toRoleName, adminClient);
+  if (!toRole) return false;
+
+  const users = await findUsersByClientRole(clientId, fromRoleName, adminClient);
+  const aa = await Promise.all(
+    users.map((user) => {
+      return adminClient.users.addClientRoleMappings({
+        realm: AUTH_RELM,
+        id: user.id!,
+        clientUniqueId: authClient.id!,
+        roles: [{ id: toRole.id, name: toRole.name }] as RoleMappingPayload[],
+      });
+    }),
+  );
+
+  return true;
+}

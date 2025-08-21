@@ -8,7 +8,10 @@ export const organizationBodySchema = z.object({
     .refine((val) => val === val.toUpperCase(), {
       message: 'Code must be uppercase',
     }),
-  name: z.string().min(2, 'Name must be at least 2 characters long').max(50, 'Name must be at most 50 characters long'),
+  name: z
+    .string()
+    .min(2, 'Name must be at least 2 characters long')
+    .max(100, 'Name must be at most 100 characters long'),
   isAgMinistry: z.boolean(),
 });
 

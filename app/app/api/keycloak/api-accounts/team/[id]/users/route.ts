@@ -28,13 +28,13 @@ export const GET = createApiHandler({
   const { id: clientUid } = pathParams;
 
   const kcAdminClient = await getKcAdminClient();
-  const exisitingUsers = await kcAdminClient.clients.findUsersWithRole({
+  const existingUsers = await kcAdminClient.clients.findUsersWithRole({
     realm: AUTH_RELM,
     id: clientUid,
     roleName: 'member',
   });
 
-  return OkResponse(exisitingUsers);
+  return OkResponse(existingUsers);
 });
 
 export const POST = createApiHandler({
