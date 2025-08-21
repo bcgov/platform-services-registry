@@ -36,7 +36,7 @@ export default function FormSelect({
       {label && (
         <label
           htmlFor={id}
-          className={cn('block text-sm font-medium leading-6 text-gray-900 mb-2', className?.label ?? '')}
+          className={cn('block text-sm font-medium leading-6 text-gray-900 mb-1', className?.label ?? '')}
         >
           {label}
           {required && <span className="text-red-500">*</span>}

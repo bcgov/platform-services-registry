@@ -32,8 +32,8 @@ export async function updateOrganization(id: string, data: OrganizationBody) {
   return result;
 }
 
-export async function deleteOrganization(id: string) {
-  const result = await instance.delete<Organization>(`/${id}`).then((res) => res.data);
+export async function deleteOrganization(id: string, to: string) {
+  const result = await instance.delete<Organization>(`/${id}?to=${to}`).then((res) => res.data);
 
   return result;
 }

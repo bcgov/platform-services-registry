@@ -60,6 +60,7 @@ export const POST = apiHandler(async ({ pathParams, body, session }) => {
     quotaContactEmail,
     quotaJustification,
     organizationId,
+    isAgMinistry,
     ...validFormData
   } = body as PrivateCloudRequestDecisionBody;
 
