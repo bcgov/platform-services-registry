@@ -7,6 +7,8 @@ import { createRoute } from '../core';
 const requestCollectionRoute = createRoute('/private-cloud/requests');
 
 export async function makePrivateCloudRequestDecision(id: string, data: Partial<PrivateCloudRequestDecisionBody>) {
+  data.isAgMinistry = false;
+
   const result = await requestCollectionRoute.post<
     PrivateCloudRequestSimple & { success: boolean; message: string; error: any }
   >(_makePrivateCloudRequestDecision, '/{{id}}/decision', data, {

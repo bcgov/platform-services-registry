@@ -11,7 +11,9 @@ export async function searchPublicCloudRequests(data: Partial<PublicCloudRequest
   return result;
 }
 
-export async function makePublicCloudRequestDecision(id: string, data: PublicCloudRequestDecisionBody) {
+export async function makePublicCloudRequestDecision(id: string, data: Partial<PublicCloudRequestDecisionBody>) {
+  data.isAgMinistry = false;
+
   const result = await requestCollectionRoute.post<
     PublicCloudRequestSimple & { success: boolean; message: string; error: any }
   >(_makePublicCloudRequestDecision, '/{{id}}/decision', data, {
