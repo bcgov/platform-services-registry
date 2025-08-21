@@ -9,8 +9,9 @@ import { openConfirmModal } from '@/components/modal/confirm';
 import { GlobalRole } from '@/constants';
 import createClientPage from '@/core/client-page';
 import { Organization } from '@/prisma/client';
-import { listOrganizations, deleteOrganization as _deleteOrganization } from '@/services/backend/organizations';
+import { listOrganizations } from '@/services/backend/organizations';
 import { openCreateModal } from './createModal';
+import { openDeleteModal } from './deleteModal';
 import { openUpdateModal } from './updateModal';
 
 interface ColumnDef {
@@ -33,10 +34,6 @@ export default Page(({ session }) => {
     queryKey: ['organizations'],
     queryFn: () => listOrganizations(),
     refetchInterval: 60000,
-  });
-
-  const { mutateAsync: deleteOrganization, isPending: isDeletingOrganization } = useMutation({
-    mutationFn: (id: string) => _deleteOrganization(id),
   });
 
   const tableColumns: ColumnDef[] = [
@@ -83,11 +80,8 @@ export default Page(({ session }) => {
               color="danger"
               variant="outline"
               onClick={async () => {
-                const res = await openConfirmModal({});
-                if (res.state.confirmed) {
-                  await deleteOrganization(org.id);
-                  await refetchOrganizations();
-                }
+                await openDeleteModal(org);
+                await refetchOrganizations();
               }}
             >
               Delete

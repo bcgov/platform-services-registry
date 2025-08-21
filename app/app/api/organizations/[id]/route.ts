@@ -27,9 +27,10 @@ export const PUT = createApiHandler({
 
 export const DELETE = createApiHandler({
   permissions: [GlobalPermissions.ManageOrganizations],
-  validations: { pathParams: z.object({ id: objectId }) },
-})(async ({ pathParams, session }) => {
+  validations: { pathParams: z.object({ id: objectId }), queryParams: z.object({ to: objectId }) },
+})(async ({ pathParams, queryParams, session }) => {
   const { id } = pathParams;
-  const res = await deleteOp({ session, id });
+  const { to } = queryParams;
+  const res = await deleteOp({ session, id, to });
   return res;
 });
