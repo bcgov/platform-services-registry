@@ -15,7 +15,6 @@ const fieldsToCompare = [
   'name',
   'description',
   'cluster',
-  'ministry',
   'projectOwner',
   'primaryTechnicalLead',
   'secondaryTechnicalLead',

@@ -23,7 +23,6 @@ const fieldsToCompare = [
   'name',
   'description',
   'provider',
-  'ministry',
   'accountCoding',
   'budget',
   'environmentsEnabled',

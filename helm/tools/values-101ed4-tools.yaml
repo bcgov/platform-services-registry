@@ -24,7 +24,7 @@ mongodb:
   enabled: true
 
 sorrycypress:
-  enabled: true
+  enabled: false
   routes:
     api:
       host: tools-sorry-cypress-api.apps.silver.devops.gov.bc.ca
