@@ -1,7 +1,6 @@
 import { Session } from 'next-auth';
 import { TypeOf } from 'zod';
-import prisma from '@/core/prisma';
-import { BadRequestResponse, OkResponse, UnauthorizedResponse } from '@/core/responses';
+import { OkResponse, UnauthorizedResponse } from '@/core/responses';
 import { getQuotaChangeStatus } from '@/helpers/auto-approval-check';
 import { sendRequestNatsMessage } from '@/helpers/nats-message';
 import { comparePrivateProductData } from '@/helpers/product-change';

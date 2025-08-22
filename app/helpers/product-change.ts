@@ -15,7 +15,7 @@ export interface PrivateProductChange {
 const privateDataFields = [
   'name',
   'description',
-  'ministry',
+  'organization.name',
   'golddrEnabled',
   'isTest',
   'projectOwner.email',
@@ -56,7 +56,7 @@ export function comparePrivateProductData(data1: any, data2: any) {
     switch (change.path[0]) {
       case 'name':
       case 'description':
-      case 'ministry':
+      case 'organization':
       case 'golddrEnabled':
       case 'isTest':
         profileChanged = true;
@@ -106,7 +106,7 @@ export interface PublicProductChange {
 const publicDataFields = [
   'name',
   'description',
-  'ministry',
+  'organization.name',
   'providerSelectionReasons',
   'providerSelectionReasonsNote',
   'accountCoding',
@@ -150,7 +150,7 @@ export function comparePublicProductData(data1: any, data2: any) {
     switch (change.path[0]) {
       case 'name':
       case 'description':
-      case 'ministry':
+      case 'organization':
       case 'providerSelectionReasons':
       case 'providerSelectionReasonsNote':
         profileChanged = true;

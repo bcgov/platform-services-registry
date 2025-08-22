@@ -47,12 +47,12 @@ export const productSorts = [
   },
   {
     label: 'Ministry (A-Z)',
-    sortKey: 'ministry',
+    sortKey: 'organizationId',
     sortOrder: Prisma.SortOrder.asc,
   },
   {
     label: 'Ministry (Z-A)',
-    sortKey: 'ministry',
+    sortKey: 'organizationId',
     sortOrder: Prisma.SortOrder.desc,
   },
 ];
