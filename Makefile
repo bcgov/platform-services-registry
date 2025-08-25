@@ -25,7 +25,7 @@ install:
 	pnpm --dir sandbox/keycloak-provision install
 	pnpm --dir sandbox/m365mock install
 	pnpm --dir sandbox/nats-provision install
-install: canvas-install	
+install: canvas-install
 
 .PHONY: canvas-install
 canvas-install:
@@ -35,7 +35,7 @@ canvas-install:
 
 .PHONY: asdf-install
 asdf-install:
-	cat .tool-versions | cut -f 1 -d ' ' | xargs -n 1 asdf plugin-add || true
+	cat .tool-versions | cut -f 1 -d ' ' | xargs -n 1 asdf plugin add || true
 	asdf plugin update --all
 	asdf install || true
 	asdf reshim
