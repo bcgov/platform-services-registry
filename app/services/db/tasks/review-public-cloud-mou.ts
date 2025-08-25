@@ -9,20 +9,20 @@ import {
   PublicCloudRequestDetailDecorated,
 } from '@/types/public-cloud';
 
-const type = TaskType.REVIEW_PUBLIC_CLOUD_MOU;
+export const type = TaskType.REVIEW_PUBLIC_CLOUD_MOU;
 
-export interface CreateReviewPublicCloudMouTaskData {
+export interface CreateTaskData {
   request?: PublicCloudRequestDetailDecorated | null;
   product?: PublicCloudProductDetailDecorated | null;
   billing: PublicCloudBillingDetailDecorated;
 }
 
-function isValidData(data: CreateReviewPublicCloudMouTaskData) {
+function isValidData(data: CreateTaskData) {
   const { request, product } = data;
   return product || request;
 }
 
-export async function sendReviewPublicCloudMouTaskEmail(data: CreateReviewPublicCloudMouTaskData) {
+export async function sendTaskEmail(data: CreateTaskData) {
   if (!isValidData(data)) return null;
 
   if (data.request) {
@@ -34,7 +34,7 @@ export async function sendReviewPublicCloudMouTaskEmail(data: CreateReviewPublic
   }
 }
 
-export async function createReviewPublicCloudMouTask(data: CreateReviewPublicCloudMouTaskData) {
+export async function createTask(data: CreateTaskData) {
   if (!isValidData(data)) return null;
 
   const taskProm = prisma.task.create({
@@ -48,19 +48,19 @@ export async function createReviewPublicCloudMouTask(data: CreateReviewPublicClo
     },
   });
 
-  const emailProm = sendReviewPublicCloudMouTaskEmail(data);
+  const emailProm = sendTaskEmail(data);
 
   const [task] = await Promise.all([taskProm, emailProm]);
   return task;
 }
 
-export interface CloseReviewPublicCloudMouTaskData {
+export interface CloseTaskData {
   licencePlate: string;
   session: Session;
   decision: 'APPROVE' | 'REJECT';
 }
 
-export async function closeReviewPublicCloudMouTask(data: CloseReviewPublicCloudMouTaskData) {
+export async function closeTask(data: CloseTaskData) {
   const { licencePlate, session, decision } = data;
 
   const taskProm = prisma.task.updateMany({
