@@ -68,7 +68,7 @@ export default async function getOp({
 
   if (client) {
     await createEvent(EventType.CREATE_TEAM_API_TOKEN, session.user.id, {
-      clientUid: client.id,
+      clientUid: client.id!,
     });
   }
 
