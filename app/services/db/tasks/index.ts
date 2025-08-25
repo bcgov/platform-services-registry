@@ -1,128 +1,70 @@
 import { Task, TaskType } from '@/prisma/client';
-import {
-  sendReviewPrivateCloudRequestTaskEmail,
-  createReviewPrivateCloudRequestTask,
-  CreateReviewPrivateCloudRequestTaskData,
-  closeReviewPrivateCloudRequestTask,
-  CloseReviewPrivateCloudRequestTaskData,
-} from './review-private-cloud-request';
-import {
-  sendReviewPublicCloudMouTaskEmail,
-  createReviewPublicCloudMouTask,
-  CreateReviewPublicCloudMouTaskData,
-  closeReviewPublicCloudMouTask,
-  CloseReviewPublicCloudMouTaskData,
-} from './review-public-cloud-mou';
-import {
-  sendReviewPublicCloudRequestTaskEmail,
-  createReviewPublicCloudRequestTask,
-  CreateReviewPublicCloudRequestTaskData,
-  closeReviewPublicCloudRequestTask,
-  CloseReviewPublicCloudRequestTaskData,
-} from './review-public-cloud-request';
-import {
-  sendSignPublicCloudMouTaskEmail,
-  createSignPublicCloudMouTask,
-  CreateSignPublicCloudMouTaskData,
-  closeSignPublicCloudMouTask,
-  CloseSignPublicCloudMouTaskData,
-} from './sign-public-cloud-mou';
+import * as ReviewPrivateCloudRequest from './review-private-cloud-request';
+import * as ReviewPublicCloudMou from './review-public-cloud-mou';
+import * as ReviewPublicCloudRequest from './review-public-cloud-request';
+import * as SignPublicCloudMou from './sign-public-cloud-mou';
 
-async function sendTaskEmail(
-  type: typeof TaskType.REVIEW_PRIVATE_CLOUD_REQUEST,
-  data: CreateReviewPrivateCloudRequestTaskData,
-): Promise<any>;
-async function sendTaskEmail(
-  type: typeof TaskType.REVIEW_PUBLIC_CLOUD_REQUEST,
-  data: CreateReviewPublicCloudRequestTaskData,
-): Promise<any>;
-async function sendTaskEmail(
-  type: typeof TaskType.SIGN_PUBLIC_CLOUD_MOU,
-  data: CreateSignPublicCloudMouTaskData,
-): Promise<any>;
-async function sendTaskEmail(
-  type: typeof TaskType.REVIEW_PUBLIC_CLOUD_MOU,
-  data: CreateReviewPublicCloudMouTaskData,
-): Promise<any>;
-async function sendTaskEmail(type: TaskType, data: any) {
-  switch (type) {
-    case TaskType.REVIEW_PRIVATE_CLOUD_REQUEST:
-      return sendReviewPrivateCloudRequestTaskEmail(data);
-    case TaskType.REVIEW_PUBLIC_CLOUD_REQUEST:
-      return sendReviewPublicCloudRequestTaskEmail(data);
-    case TaskType.SIGN_PUBLIC_CLOUD_MOU:
-      return sendSignPublicCloudMouTaskEmail(data);
-    case TaskType.REVIEW_PUBLIC_CLOUD_MOU:
-      return sendReviewPublicCloudMouTaskEmail(data);
-    default:
-      throw new Error(`Unknown task type: ${type}`);
-  }
+// This map centrally defines the data types for each task operation.
+interface TaskDataMap {
+  [TaskType.REVIEW_PRIVATE_CLOUD_REQUEST]: {
+    create: ReviewPrivateCloudRequest.CreateTaskData;
+    close: ReviewPrivateCloudRequest.CloseTaskData;
+    sendEmail: ReviewPrivateCloudRequest.CreateTaskData;
+  };
+  [TaskType.REVIEW_PUBLIC_CLOUD_MOU]: {
+    create: ReviewPublicCloudMou.CreateTaskData;
+    close: ReviewPublicCloudMou.CloseTaskData;
+    sendEmail: ReviewPublicCloudMou.CreateTaskData;
+  };
+  [TaskType.REVIEW_PUBLIC_CLOUD_REQUEST]: {
+    create: ReviewPublicCloudRequest.CreateTaskData;
+    close: ReviewPublicCloudRequest.CloseTaskData;
+    sendEmail: ReviewPublicCloudRequest.CreateTaskData;
+  };
+  [TaskType.SIGN_PUBLIC_CLOUD_MOU]: {
+    create: SignPublicCloudMou.CreateTaskData;
+    close: SignPublicCloudMou.CloseTaskData;
+    sendEmail: SignPublicCloudMou.CreateTaskData;
+  };
 }
 
-async function createTask(
-  type: typeof TaskType.REVIEW_PRIVATE_CLOUD_REQUEST,
-  data: CreateReviewPrivateCloudRequestTaskData,
-): Promise<Task>;
-async function createTask(
-  type: typeof TaskType.REVIEW_PUBLIC_CLOUD_REQUEST,
-  data: CreateReviewPublicCloudRequestTaskData,
-): Promise<Task>;
-async function createTask(
-  type: typeof TaskType.SIGN_PUBLIC_CLOUD_MOU,
-  data: CreateSignPublicCloudMouTaskData,
-): Promise<Task>;
-async function createTask(
-  type: typeof TaskType.REVIEW_PUBLIC_CLOUD_MOU,
-  data: CreateReviewPublicCloudMouTaskData,
-): Promise<Task>;
-async function createTask(type: TaskType, data: any) {
-  switch (type) {
-    case TaskType.REVIEW_PRIVATE_CLOUD_REQUEST:
-      return createReviewPrivateCloudRequestTask(data);
-    case TaskType.REVIEW_PUBLIC_CLOUD_REQUEST:
-      return createReviewPublicCloudRequestTask(data);
-    case TaskType.SIGN_PUBLIC_CLOUD_MOU:
-      return createSignPublicCloudMouTask(data);
-    case TaskType.REVIEW_PUBLIC_CLOUD_MOU:
-      return createReviewPublicCloudMouTask(data);
-    default:
-      throw new Error(`Unknown task type: ${type}`);
+// This map connects each TaskType to its imported functions.
+const taskHandlers = {
+  [TaskType.REVIEW_PRIVATE_CLOUD_REQUEST]: ReviewPrivateCloudRequest,
+  [TaskType.REVIEW_PUBLIC_CLOUD_MOU]: ReviewPublicCloudMou,
+  [TaskType.REVIEW_PUBLIC_CLOUD_REQUEST]: ReviewPublicCloudRequest,
+  [TaskType.SIGN_PUBLIC_CLOUD_MOU]: SignPublicCloudMou,
+};
+
+// A type utility to infer the correct data type based on the TaskType.
+type TaskDataType<T extends TaskType, K extends keyof TaskDataMap[T]> = TaskDataMap[T][K];
+
+// These functions are now generic and rely on the `taskHandlers` map.
+function getTaskHandler(type: TaskType) {
+  const handler = taskHandlers[type as keyof typeof taskHandlers];
+  if (!handler) {
+    throw new Error(`Unknown task type: ${type}`);
   }
+  return handler;
 }
 
-async function closeTask(
-  type: typeof TaskType.REVIEW_PRIVATE_CLOUD_REQUEST,
-  data: CloseReviewPrivateCloudRequestTaskData,
-): Promise<number>;
-async function closeTask(
-  type: typeof TaskType.REVIEW_PUBLIC_CLOUD_REQUEST,
-  data: CloseReviewPublicCloudRequestTaskData,
-): Promise<number>;
-async function closeTask(
-  type: typeof TaskType.SIGN_PUBLIC_CLOUD_MOU,
-  data: CloseSignPublicCloudMouTaskData,
-): Promise<number>;
-async function closeTask(
-  type: typeof TaskType.REVIEW_PUBLIC_CLOUD_MOU,
-  data: CloseReviewPublicCloudMouTaskData,
-): Promise<number>;
-async function closeTask(type: TaskType, data: any) {
-  switch (type) {
-    case TaskType.REVIEW_PRIVATE_CLOUD_REQUEST:
-      return closeReviewPrivateCloudRequestTask(data);
-    case TaskType.REVIEW_PUBLIC_CLOUD_REQUEST:
-      return closeReviewPublicCloudRequestTask(data);
-    case TaskType.SIGN_PUBLIC_CLOUD_MOU:
-      return closeSignPublicCloudMouTask(data);
-    case TaskType.REVIEW_PUBLIC_CLOUD_MOU:
-      return closeReviewPublicCloudMouTask(data);
-    default:
-      throw new Error(`Unknown task type: ${type}`);
-  }
+export function createTask<T extends TaskType>(type: T, data: TaskDataType<T, 'create'>): Promise<Task | null> {
+  const handler = getTaskHandler(type);
+  return handler.createTask(data as any);
+}
+
+export function closeTask<T extends TaskType>(type: T, data: TaskDataType<T, 'close'>): Promise<number> {
+  const handler = getTaskHandler(type);
+  return handler.closeTask(data as any);
+}
+
+export function sendTaskEmail<T extends TaskType>(type: T, data: TaskDataType<T, 'sendEmail'>): Promise<any> {
+  const handler = getTaskHandler(type);
+  return handler.sendTaskEmail(data as any);
 }
 
 export const tasks = {
-  sendEmail: sendTaskEmail,
   create: createTask,
   close: closeTask,
+  sendEmail: sendTaskEmail,
 };

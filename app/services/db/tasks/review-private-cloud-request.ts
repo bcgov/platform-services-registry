@@ -10,14 +10,14 @@ import {
 import { PrivateCloudRequestDetailDecorated } from '@/types/private-cloud';
 import { RequestDecision } from '@/validation-schemas';
 
-const type = TaskType.REVIEW_PRIVATE_CLOUD_REQUEST;
+export const type = TaskType.REVIEW_PRIVATE_CLOUD_REQUEST;
 
-export interface CreateReviewPrivateCloudRequestTaskData {
+export interface CreateTaskData {
   request: PrivateCloudRequestDetailDecorated;
   requester: string;
 }
 
-function isValidData(data: CreateReviewPrivateCloudRequestTaskData) {
+function isValidData(data: CreateTaskData) {
   if (data.request.decisionStatus !== DecisionStatus.PENDING) {
     return false;
   }
@@ -25,7 +25,7 @@ function isValidData(data: CreateReviewPrivateCloudRequestTaskData) {
   return true;
 }
 
-export async function sendReviewPrivateCloudRequestTaskEmail(data: CreateReviewPrivateCloudRequestTaskData) {
+export async function sendTaskEmail(data: CreateTaskData) {
   if (!isValidData(data)) return null;
 
   switch (data.request.type) {
@@ -38,7 +38,7 @@ export async function sendReviewPrivateCloudRequestTaskEmail(data: CreateReviewP
   }
 }
 
-export async function createReviewPrivateCloudRequestTask(data: CreateReviewPrivateCloudRequestTaskData) {
+export async function createTask(data: CreateTaskData) {
   if (!isValidData(data)) return null;
 
   const taskProm = prisma.task.create({
@@ -53,20 +53,20 @@ export async function createReviewPrivateCloudRequestTask(data: CreateReviewPriv
     },
   });
 
-  const emailProm = sendReviewPrivateCloudRequestTaskEmail(data);
+  const emailProm = sendTaskEmail(data);
 
   const [task] = await Promise.all([taskProm, emailProm]);
   return task;
 }
 
-export interface CloseReviewPrivateCloudRequestTaskData {
+export interface CloseTaskData {
   requestId: string;
   licencePlate: string;
   session: Session;
   decision: RequestDecision;
 }
 
-export async function closeReviewPrivateCloudRequestTask(data: CloseReviewPrivateCloudRequestTaskData) {
+export async function closeTask(data: CloseTaskData) {
   const { requestId, licencePlate, session, decision } = data;
 
   const taskProm = prisma.task.updateMany({

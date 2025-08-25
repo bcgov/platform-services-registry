@@ -8,20 +8,20 @@ import {
   PublicCloudBillingDetailDecorated,
 } from '@/types/public-cloud';
 
-const type = TaskType.SIGN_PUBLIC_CLOUD_MOU;
+export const type = TaskType.SIGN_PUBLIC_CLOUD_MOU;
 
-export interface CreateSignPublicCloudMouTaskData {
+export interface CreateTaskData {
   request?: PublicCloudRequestDetailDecorated | null;
   product?: PublicCloudProductDetailDecorated | null;
   billing: PublicCloudBillingDetailDecorated;
 }
 
-function isValidData(data: CreateSignPublicCloudMouTaskData) {
+function isValidData(data: CreateTaskData) {
   const { request, product } = data;
   return product || request;
 }
 
-export async function sendSignPublicCloudMouTaskEmail(data: CreateSignPublicCloudMouTaskData) {
+export async function sendTaskEmail(data: CreateTaskData) {
   if (!isValidData(data)) return null;
 
   if (data.request) {
@@ -33,7 +33,7 @@ export async function sendSignPublicCloudMouTaskEmail(data: CreateSignPublicClou
   }
 }
 
-export async function createSignPublicCloudMouTask(data: CreateSignPublicCloudMouTaskData) {
+export async function createTask(data: CreateTaskData) {
   if (!isValidData(data)) return null;
 
   let licencePlate = '';
@@ -63,18 +63,18 @@ export async function createSignPublicCloudMouTask(data: CreateSignPublicCloudMo
     },
   });
 
-  const emailProm = sendSignPublicCloudMouTaskEmail(data);
+  const emailProm = sendTaskEmail(data);
 
   const [task] = await Promise.all([taskProm, emailProm]);
   return task;
 }
 
-export interface CloseSignPublicCloudMouTaskData {
+export interface CloseTaskData {
   licencePlate: string;
   session: Session;
 }
 
-export async function closeSignPublicCloudMouTask(data: CloseSignPublicCloudMouTaskData) {
+export async function closeTask(data: CloseTaskData) {
   const { licencePlate, session } = data;
 
   const taskProm = prisma.task.updateMany({

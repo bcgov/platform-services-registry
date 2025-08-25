@@ -6,14 +6,14 @@ import { sendAdminCreateRequestEmail, sendAdminDeleteRequestEmail } from '@/serv
 import { PublicCloudRequestDetailDecorated } from '@/types/public-cloud';
 import { RequestDecision } from '@/validation-schemas';
 
-const type = TaskType.REVIEW_PUBLIC_CLOUD_REQUEST;
+export const type = TaskType.REVIEW_PUBLIC_CLOUD_REQUEST;
 
-export interface CreateReviewPublicCloudRequestTaskData {
+export interface CreateTaskData {
   request: PublicCloudRequestDetailDecorated;
   requester: string;
 }
 
-function isValidData(data: CreateReviewPublicCloudRequestTaskData) {
+function isValidData(data: CreateTaskData) {
   if (data.request.decisionStatus !== DecisionStatus.PENDING) {
     return false;
   }
@@ -21,7 +21,7 @@ function isValidData(data: CreateReviewPublicCloudRequestTaskData) {
   return true;
 }
 
-export async function sendReviewPublicCloudRequestTaskEmail(data: CreateReviewPublicCloudRequestTaskData) {
+export async function sendTaskEmail(data: CreateTaskData) {
   if (!isValidData(data)) return null;
 
   switch (data.request.type) {
@@ -34,7 +34,7 @@ export async function sendReviewPublicCloudRequestTaskEmail(data: CreateReviewPu
   }
 }
 
-export async function createReviewPublicCloudRequestTask(data: CreateReviewPublicCloudRequestTaskData) {
+export async function createTask(data: CreateTaskData) {
   if (!isValidData(data)) return null;
 
   const taskProm = prisma.task.create({
@@ -49,20 +49,20 @@ export async function createReviewPublicCloudRequestTask(data: CreateReviewPubli
     },
   });
 
-  const emailProm = sendReviewPublicCloudRequestTaskEmail(data);
+  const emailProm = sendTaskEmail(data);
 
   const [task] = await Promise.all([taskProm, emailProm]);
   return task;
 }
 
-export interface CloseReviewPublicCloudRequestTaskData {
+export interface CloseTaskData {
   requestId: string;
   licencePlate: string;
   session: Session;
   decision: RequestDecision;
 }
 
-export async function closeReviewPublicCloudRequestTask(data: CloseReviewPublicCloudRequestTaskData) {
+export async function closeTask(data: CloseTaskData) {
   const { requestId, licencePlate, session, decision } = data;
 
   const taskProm = prisma.task.updateMany({
@@ -91,6 +91,6 @@ export async function closeReviewPublicCloudRequestTask(data: CloseReviewPublicC
     },
   });
 
-  const [task] = await Promise.all([taskProm]);
-  return task;
+  const [tasks] = await Promise.all([taskProm]);
+  return tasks.count;
 }
