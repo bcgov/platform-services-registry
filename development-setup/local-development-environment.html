@@ -20,7 +20,7 @@
       
       
       <link rel="icon" href="../_assets/logo.png">
-      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.6.17">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.6.18">
     
     
       
@@ -2712,29 +2712,40 @@ For step-by-step guidance, please consult the GitHub documentation:</p>
 <ol>
 <li>Install <code>asdf</code> according to the <code>asdf</code> installation guide.<ul>
 <li>https://asdf-vm.com/guide/getting-started.html#getting-started</li>
-</ul>
-</li>
-<li>Install <code>asdf</code> packages defined in <code>.tool-versions</code>.
+<li>example
     <div class="language-sh highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-2-1">1</a></span>
 <span class="normal"><a href="#__codelineno-2-2">2</a></span>
 <span class="normal"><a href="#__codelineno-2-3">3</a></span>
 <span class="normal"><a href="#__codelineno-2-4">4</a></span>
-<span class="normal"><a href="#__codelineno-2-5">5</a></span></pre></div></td><td class="code"><div><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1"></a>cat<span class="w"> </span>.tool-versions<span class="w"> </span><span class="p">|</span><span class="w"> </span>cut<span class="w"> </span>-f<span class="w"> </span><span class="m">1</span><span class="w"> </span>-d<span class="w"> </span><span class="s1">&#39; &#39;</span><span class="w"> </span><span class="p">|</span><span class="w"> </span>xargs<span class="w"> </span>-n<span class="w"> </span><span class="m">1</span><span class="w"> </span>asdf<span class="w"> </span>plugin-add<span class="w"> </span><span class="o">||</span><span class="w"> </span><span class="nb">true</span>
-</span><span id="__span-2-2"><a id="__codelineno-2-2" name="__codelineno-2-2"></a>asdf<span class="w"> </span>plugin-add<span class="w"> </span>docker-compose<span class="w"> </span>https://github.com/virtualstaticvoid/asdf-docker-compose.git<span class="w"> </span><span class="o">||</span><span class="w"> </span><span class="nb">true</span>
-</span><span id="__span-2-3"><a id="__codelineno-2-3" name="__codelineno-2-3"></a>asdf<span class="w"> </span>plugin-update<span class="w"> </span>--all
-</span><span id="__span-2-4"><a id="__codelineno-2-4" name="__codelineno-2-4"></a>asdf<span class="w"> </span>install
-</span><span id="__span-2-5"><a id="__codelineno-2-5" name="__codelineno-2-5"></a>asdf<span class="w"> </span>reshim
+<span class="normal"><a href="#__codelineno-2-5">5</a></span></pre></div></td><td class="code"><div><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1"></a>curl<span class="w"> </span>-fsSL<span class="w"> </span>-o<span class="w"> </span>asdf.tar.gz<span class="w"> </span><span class="s2">&quot;https://github.com/asdf-vm/asdf/releases/download/v0.19.0/asdf-v0.19.0-linux-amd64.tar.gz&quot;</span><span class="w"> </span><span class="o">||</span><span class="w"> </span><span class="o">{</span><span class="w"> </span><span class="nb">echo</span><span class="w"> </span><span class="s2">&quot;❌ Failed to download ASDF&quot;</span><span class="w"> </span><span class="o">}</span>
+</span><span id="__span-2-2"><a id="__codelineno-2-2" name="__codelineno-2-2"></a>tar<span class="w"> </span>-xzf<span class="w"> </span>asdf.tar.gz
+</span><span id="__span-2-3"><a id="__codelineno-2-3" name="__codelineno-2-3"></a>rm<span class="w"> </span>-f<span class="w"> </span>asdf.tar.gz
+</span><span id="__span-2-4"><a id="__codelineno-2-4" name="__codelineno-2-4"></a>mv<span class="w"> </span>asdf<span class="w"> </span>/usr/local/bin/
+</span><span id="__span-2-5"><a id="__codelineno-2-5" name="__codelineno-2-5"></a><span class="nb">echo</span><span class="w"> </span><span class="s1">&#39;export PATH=&quot;/usr/local/bin/:${ASDF_DATA_DIR:-$HOME/.asdf}/shims:$PATH&quot;&#39;</span><span class="w"> </span>&gt;&gt;<span class="w"> </span>~/.bashrc<span class="w"> </span><span class="c1"># or ~/.zshrc, ~/.bash_profile, etc..</span>
+</span></code></pre></div></td></tr></table></div></li>
+</ul>
+</li>
+<li>Install <code>asdf</code> packages defined in <code>.tool-versions</code>.
+    <div class="language-sh highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-3-1">1</a></span>
+<span class="normal"><a href="#__codelineno-3-2">2</a></span>
+<span class="normal"><a href="#__codelineno-3-3">3</a></span>
+<span class="normal"><a href="#__codelineno-3-4">4</a></span>
+<span class="normal"><a href="#__codelineno-3-5">5</a></span></pre></div></td><td class="code"><div><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1"></a>cat<span class="w"> </span>.tool-versions<span class="w"> </span><span class="p">|</span><span class="w"> </span>cut<span class="w"> </span>-f<span class="w"> </span><span class="m">1</span><span class="w"> </span>-d<span class="w"> </span><span class="s1">&#39; &#39;</span><span class="w"> </span><span class="p">|</span><span class="w"> </span>xargs<span class="w"> </span>-n<span class="w"> </span><span class="m">1</span><span class="w"> </span>asdf<span class="w"> </span>plugin-add<span class="w"> </span><span class="o">||</span><span class="w"> </span><span class="nb">true</span>
+</span><span id="__span-3-2"><a id="__codelineno-3-2" name="__codelineno-3-2"></a>asdf<span class="w"> </span>plugin-add<span class="w"> </span>docker-compose<span class="w"> </span>https://github.com/virtualstaticvoid/asdf-docker-compose.git<span class="w"> </span><span class="o">||</span><span class="w"> </span><span class="nb">true</span>
+</span><span id="__span-3-3"><a id="__codelineno-3-3" name="__codelineno-3-3"></a>asdf<span class="w"> </span>plugin-update<span class="w"> </span>--all
+</span><span id="__span-3-4"><a id="__codelineno-3-4" name="__codelineno-3-4"></a>asdf<span class="w"> </span>install
+</span><span id="__span-3-5"><a id="__codelineno-3-5" name="__codelineno-3-5"></a>asdf<span class="w"> </span>reshim
 </span></code></pre></div></td></tr></table></div></li>
 <li>Confirm the packages installed.
-    <div class="language-sh highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-3-1">1</a></span></pre></div></td><td class="code"><div><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1"></a>asdf<span class="w"> </span>current
+    <div class="language-sh highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-4-1">1</a></span></pre></div></td><td class="code"><div><pre><span></span><code><span id="__span-4-1"><a id="__codelineno-4-1" name="__codelineno-4-1"></a>asdf<span class="w"> </span>current
 </span></code></pre></div></td></tr></table></div></li>
 <li>Install python packages.
-    <div class="language-sh highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-4-1">1</a></span></pre></div></td><td class="code"><div><pre><span></span><code><span id="__span-4-1"><a id="__codelineno-4-1" name="__codelineno-4-1"></a>pip<span class="w"> </span>install<span class="w"> </span>-r<span class="w"> </span>requirements.txt
+    <div class="language-sh highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-5-1">1</a></span></pre></div></td><td class="code"><div><pre><span></span><code><span id="__span-5-1"><a id="__codelineno-5-1" name="__codelineno-5-1"></a>pip<span class="w"> </span>install<span class="w"> </span>-r<span class="w"> </span>requirements.txt
 </span></code></pre></div></td></tr></table></div></li>
 <li>Install the pre-commit script.
-    <div class="language-sh highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-5-1">1</a></span>
-<span class="normal"><a href="#__codelineno-5-2">2</a></span></pre></div></td><td class="code"><div><pre><span></span><code><span id="__span-5-1"><a id="__codelineno-5-1" name="__codelineno-5-1"></a>pre-commit<span class="w"> </span>install
-</span><span id="__span-5-2"><a id="__codelineno-5-2" name="__codelineno-5-2"></a>pre-commit<span class="w"> </span>install<span class="w"> </span>--hook-type<span class="w"> </span>commit-msg
+    <div class="language-sh highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-6-1">1</a></span>
+<span class="normal"><a href="#__codelineno-6-2">2</a></span></pre></div></td><td class="code"><div><pre><span></span><code><span id="__span-6-1"><a id="__codelineno-6-1" name="__codelineno-6-1"></a>pre-commit<span class="w"> </span>install
+</span><span id="__span-6-2"><a id="__codelineno-6-2" name="__codelineno-6-2"></a>pre-commit<span class="w"> </span>install<span class="w"> </span>--hook-type<span class="w"> </span>commit-msg
 </span></code></pre></div></td></tr></table></div></li>
 </ol>
 <h2 id="environment-variables">Environment variables<a class="headerlink" href="#environment-variables" title="Permanent link">&para;</a></h2>
