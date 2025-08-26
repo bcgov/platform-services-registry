@@ -19,6 +19,7 @@ export const POST = apiHandler(async () => {
           projectOwner: true,
           primaryTechnicalLead: true,
           secondaryTechnicalLead: true,
+          organization: true,
         },
       },
       decisionData: {
@@ -26,6 +27,7 @@ export const POST = apiHandler(async () => {
           projectOwner: true,
           primaryTechnicalLead: true,
           secondaryTechnicalLead: true,
+          organization: true,
         },
       },
     },

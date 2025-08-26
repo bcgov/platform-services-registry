@@ -74,7 +74,11 @@ export default async function updateOp({
   // Retrieve the latest request data to acquire the decision data ID that can be assigned to the incoming request's original data.
   const previousRequest = await getLastClosedPublicCloudRequest(product.licencePlate);
 
-  const { changes, ...otherChangeMeta } = comparePublicProductData(comparisonData, previousRequest?.decisionData);
+  const newOrganization = await prisma.organization.findUnique({ where: { id: organizationId } });
+  const { changes, ...otherChangeMeta } = comparePublicProductData(
+    { ...comparisonData, organization: newOrganization },
+    previousRequest?.decisionData,
+  );
 
   const newRequest = (
     await models.publicCloudRequest.create(
