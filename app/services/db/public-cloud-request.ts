@@ -123,6 +123,7 @@ export async function getLastClosedPublicCloudRequest(licencePlate: string) {
           primaryTechnicalLead: true,
           secondaryTechnicalLead: true,
           expenseAuthority: true,
+          organization: true,
         },
       },
     },

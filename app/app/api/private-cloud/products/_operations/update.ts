@@ -1,5 +1,6 @@
 import { Session } from 'next-auth';
 import { TypeOf } from 'zod';
+import prisma from '@/core/prisma';
 import { OkResponse, UnauthorizedResponse } from '@/core/responses';
 import { getQuotaChangeStatus } from '@/helpers/auto-approval-check';
 import { sendRequestNatsMessage } from '@/helpers/nats-message';
@@ -98,7 +99,11 @@ export default async function updateOp({
   // Retrieve the latest request data to acquire the decision data ID that can be assigned to the incoming request's original data.
   const previousRequest = await getLastClosedPrivateCloudRequest(product.licencePlate);
 
-  const { changes, ...otherChangeMeta } = comparePrivateProductData(comparisonData, previousRequest?.decisionData);
+  const newOrganization = await prisma.organization.findUnique({ where: { id: organizationId } });
+  const { changes, ...otherChangeMeta } = comparePrivateProductData(
+    { ...comparisonData, organization: newOrganization },
+    previousRequest?.decisionData,
+  );
 
   const quotaChangeInfo = quotaChangeStatus.isEligibleForAutoApproval
     ? {}

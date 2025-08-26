@@ -14,7 +14,7 @@ import ProductComparison from '@/components/ProductComparison';
 import { createModal } from '@/core/modal';
 import { comparePrivateProductData, PrivateProductChange } from '@/helpers/product-change';
 import { editPrivateCloudProduct } from '@/services/backend/private-cloud/products';
-import { usePrivateProductState } from '@/states/global';
+import { useAppState, usePrivateProductState } from '@/states/global';
 import { optionalCommentSchema } from '@/validation-schemas';
 import { openNotificationModal } from './notification';
 
@@ -33,6 +33,7 @@ export const openPrivateCloudProductEditSubmitModal = createModal<ModalProps, Mo
     title: 'All Set?',
   },
   Component: function ({ productData, originalProductData, state, closeModal }) {
+    const [, appSnap] = useAppState();
     const [, snap] = usePrivateProductState();
     const [change, setChange] = useState<PrivateProductChange>();
 
@@ -63,7 +64,11 @@ export const openPrivateCloudProductEditSubmitModal = createModal<ModalProps, Mo
     const { handleSubmit, register } = methods;
 
     useEffect(() => {
-      const _changes = comparePrivateProductData(snap.currentProduct, originalProductData);
+      const newOrganization = appSnap.info.ORGANIZATION_BY_ID[originalProductData.organizationId];
+      const _changes = comparePrivateProductData(snap.currentProduct, {
+        ...originalProductData,
+        organization: newOrganization,
+      });
       setChange(_changes);
     }, [originalProductData]);
 

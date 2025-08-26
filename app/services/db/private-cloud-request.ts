@@ -128,6 +128,7 @@ export async function getLastClosedPrivateCloudRequest(licencePlate: string) {
           projectOwner: true,
           primaryTechnicalLead: true,
           secondaryTechnicalLead: true,
+          organization: true,
         },
       },
     },
