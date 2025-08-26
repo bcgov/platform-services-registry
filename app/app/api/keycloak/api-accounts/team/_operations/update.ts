@@ -78,7 +78,7 @@ export default async function getOp({
   });
 
   if (client) {
-    await createEvent(EventType.UPDATE_TEAM_API_TOKEN, session.user.id, { clientUid: client.id, roles });
+    await createEvent(EventType.UPDATE_TEAM_API_TOKEN, session.user.id, { clientUid: client.id!, roles });
   }
 
   return OkResponse({ client, user });

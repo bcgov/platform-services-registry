@@ -115,41 +115,6 @@ async function main() {
     clientScopeId: scope?.id as string,
   });
 
-  // Create ministry level roles
-  [
-    'aest',
-    'ag',
-    'agri',
-    'alc',
-    'bcpc',
-    'citz',
-    'dbc',
-    'eao',
-    'educ',
-    'emcr',
-    'empr',
-    'env',
-    'fin',
-    'flnr',
-    'hlth',
-    'irr',
-    'jedc',
-    'lbr',
-    'ldb',
-    'mcf',
-    'mmha',
-    'psa',
-    'pssg',
-    'sdpr',
-    'tca',
-    'tran',
-    'hma',
-    'wlrs',
-  ].forEach(async (ministry) => {
-    await kc.createClientRole(AUTH_REALM_NAME, authClient?.id as string, `ministry-${ministry}-reader`);
-    await kc.createClientRole(AUTH_REALM_NAME, authClient?.id as string, `ministry-${ministry}-editor`);
-  });
-
   await kc.createClientRole(AUTH_REALM_NAME, authClient?.id as string, `billing-reviewer`);
   await kc.createClientRole(AUTH_REALM_NAME, authClient?.id as string, `billing-reader`);
   await kc.createClientRole(AUTH_REALM_NAME, authClient?.id as string, `finance-manager`);

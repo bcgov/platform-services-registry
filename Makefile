@@ -25,10 +25,17 @@ install:
 	pnpm --dir sandbox/keycloak-provision install
 	pnpm --dir sandbox/m365mock install
 	pnpm --dir sandbox/nats-provision install
+install: canvas-install
+
+.PHONY: canvas-install
+canvas-install:
+	cd app/node_modules/.pnpm/canvas@3.2.0/node_modules/canvas &&\
+	pnpm add -D node-gyp &&\
+	pnpm exec node-gyp rebuild
 
 .PHONY: asdf-install
 asdf-install:
-	cat .tool-versions | cut -f 1 -d ' ' | xargs -n 1 asdf plugin-add || true
+	cat .tool-versions | cut -f 1 -d ' ' | xargs -n 1 asdf plugin add || true
 	asdf plugin update --all
 	asdf install || true
 	asdf reshim

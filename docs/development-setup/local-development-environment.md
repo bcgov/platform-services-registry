@@ -61,6 +61,14 @@ git config gpg.program gpg
 
 1. Install `asdf` according to the `asdf` installation guide.
     - https://asdf-vm.com/guide/getting-started.html#getting-started
+    - example
+        ```sh
+        curl -fsSL -o asdf.tar.gz "https://github.com/asdf-vm/asdf/releases/download/v0.19.0/asdf-v0.19.0-linux-amd64.tar.gz" || { echo "❌ Failed to download ASDF" }
+        tar -xzf asdf.tar.gz
+        rm -f asdf.tar.gz
+        mv asdf /usr/local/bin/
+        echo 'export PATH="/usr/local/bin/:${ASDF_DATA_DIR:-$HOME/.asdf}/shims:$PATH"' >> ~/.bashrc # or ~/.zshrc, ~/.bash_profile, etc..
+        ```
 1. Install `asdf` packages defined in `.tool-versions`.
     ```sh
     cat .tool-versions | cut -f 1 -d ' ' | xargs -n 1 asdf plugin-add || true
