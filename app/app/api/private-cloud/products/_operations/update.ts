@@ -1,5 +1,6 @@
 import { Session } from 'next-auth';
 import { TypeOf } from 'zod';
+import prisma from '@/core/prisma';
 import { OkResponse, UnauthorizedResponse } from '@/core/responses';
 import { getQuotaChangeStatus } from '@/helpers/auto-approval-check';
 import { sendRequestNatsMessage } from '@/helpers/nats-message';
@@ -16,7 +17,6 @@ import {
 } from '@/services/db';
 import { PrivateCloudEditRequestBody } from '@/validation-schemas/private-cloud';
 import { putPathParamSchema } from '../[licencePlate]/schema';
-import prisma from '@/core/prisma';
 
 export default async function updateOp({
   session,
