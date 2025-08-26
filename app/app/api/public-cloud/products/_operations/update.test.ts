@@ -51,6 +51,7 @@ async function makeBasicProductChange(extra = {}) {
     await getTransformedLeadFields({
       ...requests.create.decisionData,
       environmentsEnabled: newEnvironmentsEnabled,
+      isAgMinistry: false,
       isAgMinistryChecked: true,
       ...extra,
     }),

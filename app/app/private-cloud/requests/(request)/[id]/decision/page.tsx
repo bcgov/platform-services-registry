@@ -68,6 +68,7 @@ export default privateCloudRequestDecision(({ getPathParams, session, router }) 
       decisionComment: '',
       decision: RequestDecision.APPROVED as RequestDecision,
       type: snap.currentRequest?.type,
+      isAgMinistry: false,
       ...snap.currentRequest?.decisionData,
     },
   });

@@ -175,6 +175,7 @@ describe('Review Public Cloud Update Request - Permissions', () => {
       await getTransformedLeadFields({
         ...requests.main.decisionData,
         environmentsEnabled: newEnvironmentsEnabled,
+        isAgMinistry: false,
         isAgMinistryChecked: true,
       }),
     );

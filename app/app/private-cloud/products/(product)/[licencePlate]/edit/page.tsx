@@ -85,6 +85,7 @@ export default privateCloudProductEdit(({ session }) => {
     },
     defaultValues: {
       ...snap.currentProduct,
+      isAgMinistry: false,
       isAgMinistryChecked: true,
     },
   });

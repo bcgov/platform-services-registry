@@ -37,6 +37,7 @@ export default publicCloudProductEdit(() => {
     resolver: zodResolver(publicCloudEditRequestBodySchema),
     defaultValues: {
       ...snap.currentProduct,
+      isAgMinistry: false,
       isAgMinistryChecked: true,
     },
   });

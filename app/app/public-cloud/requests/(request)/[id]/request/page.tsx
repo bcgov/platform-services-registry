@@ -80,6 +80,7 @@ export default publicCloudProductRequest(({ router }) => {
       decisionComment: '',
       decision: RequestDecision.APPROVED,
       type: publicProductSnap.currentRequest?.type,
+      isAgMinistry: false,
       ...publicProductSnap.currentRequest?.decisionData,
       expenseAuthorityId: publicProductSnap.currentRequest?.decisionData?.expenseAuthorityId,
     },

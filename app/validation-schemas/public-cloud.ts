@@ -65,11 +65,11 @@ const _publicCloudCreateRequestBodySchema = z.object({
     .max(1000, { message: 'Provider Selection not should contain a maximum of 1000 characters.' }),
   budget: budgetSchema,
   organizationId: z.string().length(24),
-  isAgMinistry: z.boolean().default(false),
+  isAgMinistry: z.boolean(),
   projectOwnerId: z.string({ message: 'Please select a project owner' }).length(24),
   primaryTechnicalLeadId: z.string({ message: 'Please select a primary technical lead' }).length(24),
   secondaryTechnicalLeadId: z.string().length(24).or(z.literal('')).nullable().optional(),
-  expenseAuthorityId: z.string().length(24),
+  expenseAuthorityId: z.string({ message: 'Please select an expense authority' }).length(24),
   requestComment: optionalCommentSchema,
   environmentsEnabled: z
     .object({
