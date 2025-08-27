@@ -2,11 +2,8 @@
 
 import { Divider, LoadingOverlay, Box, Text } from '@mantine/core';
 import { useQuery } from '@tanstack/react-query';
-import _forEach from 'lodash-es/forEach';
-import _get from 'lodash-es/get';
 import Table from '@/components/generic/table/Table';
 import { createModal } from '@/core/modal';
-import { deleteOrganization as _deleteOrganization } from '@/services/backend/organizations';
 import { deleteIncompleteUsers } from '@/services/backend/user';
 import TableBodyModal from './TableBodyModal';
 
