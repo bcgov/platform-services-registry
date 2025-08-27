@@ -122,6 +122,7 @@ export type SearchedUser = Prisma.UserGetPayload<{
     upn: true;
     idir: true;
     idirGuid: true;
+    isGuidValid: true;
     officeLocation: true;
     jobTitle: true;
     image: true;
@@ -132,3 +133,17 @@ export type SearchedUser = Prisma.UserGetPayload<{
     lastSeen: true;
   };
 }>;
+
+export type Outcome = 'deleted' | 'archived_due_to_error';
+
+export type DeleteIncompleteUserResult = {
+  count: number;
+  deleted: number;
+  archived_due_to_error: number;
+  results: {
+    id: string;
+    email: string;
+    outcome: Outcome;
+    error?: string;
+  }[];
+};

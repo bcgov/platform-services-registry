@@ -12,10 +12,11 @@ import {
   PrivateCloudRequestData,
   PublicCloudProductMember,
   PublicCloudRequestData,
+  ProjectStatus,
 } from '@/prisma/client';
 import { listUsersByRoles, findUserByEmail, getKcAdminClient } from '@/services/keycloak/app-realm';
 import { getUserByEmail, getUserPhoto } from '@/services/msgraph';
-import { AppUser } from '@/types/user';
+import { AppUser, Outcome, SearchIncompleteUserResult } from '@/types/user';
 import { arrayBufferToBase64 } from '@/utils/js';
 import { UserSearchBody } from '@/validation-schemas';
 
@@ -119,7 +120,7 @@ export async function searchUsers({
   skip?: number;
   take?: number;
   extraFilter?: Prisma.UserWhereInput;
-}): Promise<{ data: SearchUser[]; totalCount: number }> {
+}): Promise<{ data: SearchUser[]; totalCount: number; allUsersHaveIdirGuid: boolean }> {
   if (!_isNumber(skip) && !_isNumber(take) && page && pageSize) {
     ({ skip, take } = parsePaginationParams(page, pageSize, 10));
   }
@@ -142,7 +143,7 @@ export async function searchUsers({
     ];
   }
 
-  const [data, totalCount] = await Promise.all([
+  const [data, totalCount, missingIdirGuidUser] = await Promise.all([
     prisma.user.findMany({
       where,
       skip,
@@ -155,6 +156,7 @@ export async function searchUsers({
         email: true,
         upn: true,
         idir: true,
+        idirGuid: true,
         officeLocation: true,
         jobTitle: true,
         image: true,
@@ -169,9 +171,14 @@ export async function searchUsers({
     prisma.user.count({
       where,
     }),
+    prisma.user.findFirst({
+      where: {
+        OR: [{ idirGuid: null }, { idirGuid: { isSet: false } }, { idirGuid: '' }],
+      },
+    }),
   ]);
-
-  return { data, totalCount };
+  const allUsersHaveIdirGuid = !missingIdirGuidUser;
+  return { data, totalCount, allUsersHaveIdirGuid };
 }
 
 export async function searchUsersWithRoles({
@@ -266,6 +273,7 @@ export async function searchUsersWithRoles({
       roles: string[];
     })[];
     totalCount: number;
+    allUsersHaveIdirGuid: boolean;
   };
 }
 
@@ -336,4 +344,61 @@ export async function getUsersInfoByIds(ids: (string | null | undefined)[]) {
   const userMap = new Map(users.map((user) => [user.id, user]));
 
   return filteredIds.map((id) => userMap.get(id) ?? null);
+}
+
+export async function fixUsersMissingIdirGuid() {
+  const users = await prisma.user.findMany({
+    where: {
+      OR: [{ idirGuid: null }, { idirGuid: { isSet: false } }, { idirGuid: '' }],
+    },
+    select: {
+      id: true,
+      firstName: true,
+      lastName: true,
+      email: true,
+      upn: true,
+      idir: true,
+      idirGuid: true,
+      archived: true,
+      createdAt: true,
+      updatedAt: true,
+      lastSeen: true,
+    },
+  });
+
+  const results: Array<{ id: string; email?: string; outcome: Outcome; error?: string }> = [];
+
+  for (const u of users) {
+    try {
+      await prisma.user.delete({ where: { id: u.id } });
+      results.push({ id: u.id, email: u.email, outcome: 'deleted' });
+    } catch (err: any) {
+      await prisma.user.update({
+        where: { id: u.id },
+        data: {
+          idirGuid: u.id,
+          isGuidValid: false,
+          archived: true,
+        },
+        select: { id: true },
+      });
+
+      const outcome: Outcome = 'archived_due_to_error';
+
+      results.push({
+        id: u.id,
+        email: u.email,
+        outcome,
+        error: String(err?.message ?? err),
+      });
+    }
+  }
+
+  const summary = {
+    count: results.length,
+    deleted: results.filter((r) => r.outcome === 'deleted').length,
+    archived_due_to_error: results.filter((r) => r.outcome === 'archived_due_to_error').length,
+    results,
+  };
+  return summary;
 }

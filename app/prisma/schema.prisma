@@ -26,6 +26,7 @@ model User {
   image                                                 String?
   ministry                                              String?
   archived                                              Boolean                   @default(false)
+  isGuidValid                                           Boolean                   @default(true)
   createdAt                                             DateTime                  @default(now())
   updatedAt                                             DateTime                  @updatedAt
   lastSeen                                              DateTime?
