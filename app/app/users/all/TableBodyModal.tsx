@@ -1,13 +1,6 @@
 'use client';
 
 import { Table } from '@mantine/core';
-import { IconChecks, IconX } from '@tabler/icons-react';
-import _get from 'lodash-es/get';
-import _isEqual from 'lodash-es/isEqual';
-import _truncate from 'lodash-es/truncate';
-import React from 'react';
-import UserProfile from '@/components/users/UserProfile';
-import { formatDateSimple } from '@/utils/js';
 
 interface TableProps {
   users: any[];
