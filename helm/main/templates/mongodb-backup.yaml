@@ -37,7 +37,7 @@ spec:
       serviceAccountName: {{ default .Values.global.serviceAccountName .Values.serviceAccountName }}
       containers:
       - name: backup-job
-        image: ghcr.io/egose/database-tools:0.11.0
+        image: ghcr.io/egose/database-tools:0.11.1
         imagePullPolicy: IfNotPresent
         command: [/bin/sh, -c]
         args:
