@@ -20,6 +20,7 @@ export interface AppUser {
   email: string;
   idir: string;
   idirGuid: string;
+  isGuidValid: boolean;
   displayName: string;
   firstName: string;
   lastName: string;

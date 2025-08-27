@@ -12,11 +12,10 @@ import {
   PrivateCloudRequestData,
   PublicCloudProductMember,
   PublicCloudRequestData,
-  ProjectStatus,
 } from '@/prisma/client';
 import { listUsersByRoles, findUserByEmail, getKcAdminClient } from '@/services/keycloak/app-realm';
 import { getUserByEmail, getUserPhoto } from '@/services/msgraph';
-import { AppUser, Outcome, SearchIncompleteUserResult } from '@/types/user';
+import { AppUser, Outcome } from '@/types/user';
 import { arrayBufferToBase64 } from '@/utils/js';
 import { UserSearchBody } from '@/validation-schemas';
 
@@ -32,6 +31,7 @@ export async function prepareUserData(user: AppUser, extra = {}) {
     ministry: user.ministry,
     idir: user.idir,
     idirGuid: user.idirGuid,
+    isGuidValid: user.isGuidValid,
     officeLocation: user.officeLocation,
     jobTitle: user.jobTitle,
     upn: user.upn,
