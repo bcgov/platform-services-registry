@@ -1,0 +1,76 @@
+{{- $secretName := printf "%s-%s" (include "main.fullname" .) "mongodb" }}
+{{- $secret := (lookup "v1" "Secret" .Release.Namespace $secretName ) }}
+
+{{- if and (gt .Release.Revision 1) .Values.mongodb.enabled .Values.backup.enabled }}
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: {{ include "app.fullname" . }}-pre-db-backup
+  labels:
+    {{- include "app.labels" . | nindent 4 }}
+  annotations:
+    "helm.sh/hook": "pre-install,pre-upgrade,pre-rollback"
+    "helm.sh/hook-delete-policy": "before-hook-creation"
+    "helm.sh/hook-weight": "-6"
+spec:
+  backoffLimit: 0
+  activeDeadlineSeconds: 1800
+  template:
+    metadata:
+      name: {{ include "app.fullname" . }}-pre-db-backup
+      annotations:
+      {{- $podAnnotations := merge (.Values.podAnnotations | default dict) (.Values.global.vault.podAnnotations | default dict) -}}
+      {{- with $podAnnotations }}
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+        vault.hashicorp.com/role: {{ .Values.global.vault.role }}
+        vault.hashicorp.com/agent-inject-secret-secrets.env: {{ .Values.global.vault.role }}/{{ .Values.global.vault.subPath }}
+        vault.hashicorp.com/agent-inject-template-secrets.env: |
+          {{`{{ with secret "`}}{{ .Values.global.vault.role }}/{{ .Values.global.vault.subPath }}{{`" -}}
+            export MONGOARCHIVE__AWS_ENDPOINT='{{ .Data.data.S3_ENDPOINT_URL }}'
+            export MONGOARCHIVE__AWS_ACCESS_KEY_ID='{{ .Data.data.S3_ACCESS_KEY_ID }}'
+            export MONGOARCHIVE__AWS_SECRET_ACCESS_KEY='{{ .Data.data.S3_SECRET_ACCESS_KEY }}'
+            export MONGOARCHIVE__AWS_BUCKET='{{ .Data.data.S3_DB_BACKUP_BUCKET_NAME }}'
+          {{- end }}`}}
+    spec:
+      activeDeadlineSeconds: 1800
+      restartPolicy: Never
+      serviceAccountName: {{ default .Values.global.serviceAccountName .Values.serviceAccountName }}
+      containers:
+        - name: {{ include "app.fullname" . }}-pre-db-backup
+          image: ghcr.io/egose/database-tools:0.11.1
+          imagePullPolicy: IfNotPresent
+          command: [/bin/sh, -c]
+          args:
+          - |
+            set -euo pipefail
+            . "/vault/secrets/secrets.env"
+            exec mongo-archive --db=pltsvc --read-preference=secondaryPreferred --force-table-scan --aws-s3-force-path-style=true
+          env:
+          - name: MONGOARCHIVE__URI
+            value: "mongodb://pltsvc-mongodb-headless/?authSource=admin"
+          - name: MONGO__USERNAME
+            value: root
+          - name: MONGO__PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: {{ $secretName }}
+                key: mongodb-root-password
+          - name: MONGOARCHIVE__CRON
+            value: "false"
+          - name: MONGOARCHIVE__EXPIRY_DAYS
+            value: "30"
+          - name: MONGOARCHIVE__ROCKETCHAT_WEBHOOK_URL
+            value: {{ if and $secret.data (index $secret.data "rocketchat-webhook-url") }}{{ b64dec (index $secret.data "rocketchat-webhook-url") }}{{ else }}{{ "" }}{{ end }}
+          - name: MONGOARCHIVE__ROCKETCHAT_WEBHOOK_PREFIX
+            value: {{ .Values.backup.rocketchatPrefix | quote }}
+          - name: ROCKETCHAT_NOTIFY_ON_FAILURE_ONLY
+            value: "true"
+          resources:
+            limits:
+              cpu: 200m
+              memory: 256Mi
+            requests:
+              cpu: 50m
+              memory: 128Mi
+{{- end }}
