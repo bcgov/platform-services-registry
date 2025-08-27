@@ -23,6 +23,7 @@ export default function AddUserModal({ open, setOpen, setUserPrincipalName, setU
     email: '',
     idir: '',
     idirGuid: '',
+    isGuidValid: true,
     displayName: '',
     firstName: '',
     lastName: '',

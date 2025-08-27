@@ -14,6 +14,7 @@ export function processMsUser(user: MsUser): AppUser | null {
     email: user.mail.toLowerCase(),
     idir,
     idirGuid: user.extension_85cc52e9286540fcb1f97ed86114a0e5_bcgovGUID,
+    isGuidValid: true,
     displayName: user.displayName,
     firstName: user.givenName,
     lastName: user.surname,
