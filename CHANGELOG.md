@@ -1,3 +1,41 @@
+## [0.76.0](https://github.com/bcgov/platform-services-registry/compare/v0.75.0...v0.76.0) (2025-08-28)
+
+### Features
+
+* **6023:** implement server-compatible table component ([fa60d6f](https://github.com/bcgov/platform-services-registry/commit/fa60d6f9ba4c2ba46d77584abd649dda2051c5ef))
+* **6026:** delete Terraform files for ministry roles ([1b9ba78](https://github.com/bcgov/platform-services-registry/commit/1b9ba78db409f637108f1c900b67f951a52f280e))
+* **6026:** integrate dynamic organizations with app ([711ac63](https://github.com/bcgov/platform-services-registry/commit/711ac63bae7f3828177e97403d13a9788b2a5b86))
+* **6026:** migrate data on organization deletion ([e9bb201](https://github.com/bcgov/platform-services-registry/commit/e9bb2012981ba6016a9d197754da2e741b8a74e9))
+* **6026:** migrate data on organization deletion ([0bc45d8](https://github.com/bcgov/platform-services-registry/commit/0bc45d8a2c5526ae85872e754a1435a944a50cd9))
+* **6026:** reflectively update organization in Keycloak ([4ac5935](https://github.com/bcgov/platform-services-registry/commit/4ac5935a2e8782f536dc8baaa192409e105cef4e))
+* **6026:** set AG ministry flags dynamically in orgs ([97d1974](https://github.com/bcgov/platform-services-registry/commit/97d197446e2846654b298efeacd5c09f8fe7653d))
+* **6026:** update DB schema and backend logic related to organizations ([7135e36](https://github.com/bcgov/platform-services-registry/commit/7135e3662d5ff92b804f42a9a9f6d989464be720))
+* **6087:** restrict submitting Additional Team Members without roles ([f19a473](https://github.com/bcgov/platform-services-registry/commit/f19a47353bd5809823c7f55eb652873bd926f6ff))
+* **6115:** improve event service design pattern ([b9c1875](https://github.com/bcgov/platform-services-registry/commit/b9c18759f8b677d9ef34e6bc8aaa4c652a48949f))
+* **6143:** restrict adding same users within Additional Team Members ([5264870](https://github.com/bcgov/platform-services-registry/commit/5264870c3c7e10deaa03a07080626040f6ff64c2))
+* **6152:** show 'projected' badges in cost table ([f849be8](https://github.com/bcgov/platform-services-registry/commit/f849be8e647e73b2ab692c709ace96503f10187c))
+* **6314:** update ministries ([77f308e](https://github.com/bcgov/platform-services-registry/commit/77f308e39590870dda8e83432af12159fcb6f854))
+* **6331:** add deleted no idirGuid users functionality ([4ab4e62](https://github.com/bcgov/platform-services-registry/commit/4ab4e62be0d64682849a0160f864fd8553205532))
+* **6353:** add DB backup during each deployment ([abaf2f0](https://github.com/bcgov/platform-services-registry/commit/abaf2f0e459020f6740ff5606311b98068ac4e80))
+
+### Bug Fixes
+
+* **6152:** correct cost rendering on initial request page ([85f4c24](https://github.com/bcgov/platform-services-registry/commit/85f4c241deeefa68f867dd9d6ba950dfba3cb6e9))
+
+### Docs
+
+* **6199:** add documentation on e2e tests ([4c3994b](https://github.com/bcgov/platform-services-registry/commit/4c3994be9a111d18603fba09f936272de1b8aad3))
+
+### Refactors
+
+* **6023:** update PDF tables to use generic table ([0fffa6a](https://github.com/bcgov/platform-services-registry/commit/0fffa6a74e402573e402327ee174ccb405f6dd05))
+* **6114:** enhance task service design pattern ([e460eab](https://github.com/bcgov/platform-services-registry/commit/e460eab198ebda6c2b37623ad819b799d1e83caf))
+* **6248:** migrate dependency to keycloak/keycloak ([6943622](https://github.com/bcgov/platform-services-registry/commit/6943622884551071c2df2888952f25a878079548))
+
+### End-to-end Testing
+
+* **5594:** fix e2e tests, uniqualize names for parallel run ([b734714](https://github.com/bcgov/platform-services-registry/commit/b7347149e3fec53e4ec3c3be7d8878e7c19319ac))
+* **6209:** fix e2e tests ([9e768b2](https://github.com/bcgov/platform-services-registry/commit/9e768b2d1f839fe8ddb0ec112c1268f57649123c))
 ## [0.75.0](https://github.com/bcgov/platform-services-registry/compare/v0.74.2...v0.75.0) (2025-08-05)
 
 ### Features
