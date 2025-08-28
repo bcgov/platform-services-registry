@@ -400,12 +400,14 @@ export const authOptions: AuthOptions = {
   secret: AUTH_SECRET,
   callbacks: {
     async signIn({ user, account, profile }) {
-      const { given_name, family_name, email, idir_guid } = profile as KeycloakProfileWithIdir;
+      const { name, given_name, family_name, email, idir_guid } = profile as KeycloakProfileWithIdir;
 
-      if (!idir_guid) {
-        logger.warn(`Login blocked: Missing idirGuid for user ${user?.email}`);
+      if (!email || !idir_guid) {
+        const missingField = !email ? 'email' : 'idirGuid';
+        logger.info(`Login blocked: Missing ${missingField} for user ${name}`);
         return false;
       }
+
       const loweremail = email.toLowerCase();
 
       const lastSeen = new Date();
@@ -464,6 +466,7 @@ export const authOptions: AuthOptions = {
   events: {
     async signIn({ user, account }: { user: User; account: Account | null }) {
       if (!user?.email) return;
+
       const loweremail = user.email.toLowerCase();
       const loggedInUser = await prisma.user.findUnique({
         where: { email: loweremail },
