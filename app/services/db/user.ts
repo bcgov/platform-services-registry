@@ -180,6 +180,7 @@ export async function searchUsers({
       },
     }),
   ]);
+
   const allUsersHaveIdirGuid = !missingIdirGuidUser;
   return { data, totalCount, allUsersHaveIdirGuid };
 }
