@@ -357,16 +357,9 @@ export async function fixUsersMissingIdirGuid() {
     },
     select: {
       id: true,
-      firstName: true,
-      lastName: true,
       email: true,
-      upn: true,
-      idir: true,
       idirGuid: true,
       archived: true,
-      createdAt: true,
-      updatedAt: true,
-      lastSeen: true,
     },
   });
 
