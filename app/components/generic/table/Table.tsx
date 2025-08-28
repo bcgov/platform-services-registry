@@ -26,9 +26,9 @@ export default function Table({
 }: {
   title?: string;
   description?: string;
-  page?: number;
-  pageSize?: number;
-  totalCount?: number;
+  page: number;
+  pageSize: number;
+  totalCount: number;
   search?: string;
   onPagination?: (page: number, pageSize: number) => void;
   onSearch?: (search: string) => void;
@@ -41,14 +41,6 @@ export default function Table({
   isLoading?: boolean;
   children: React.ReactNode;
 }) {
-  const showPagination =
-    typeof onPagination === 'function' &&
-    typeof page === 'number' &&
-    typeof pageSize === 'number' &&
-    typeof totalCount === 'number' &&
-    totalCount > 0 &&
-    pageSize > 0;
-
   return (
     <div className="border-2 rounded-xl overflow-hidden">
       <TableHeader title={title} description={description}>
@@ -74,17 +66,15 @@ export default function Table({
         {!isLoading && children}
       </Box>
 
-      {showPagination && (
-        <TableFooter>
-          <Pagination
-            page={page}
-            pageSize={pageSize}
-            totalCount={totalCount}
-            onPagination={onPagination}
-            isLoading={isLoading}
-          />
-        </TableFooter>
-      )}
+      <TableFooter>
+        <Pagination
+          page={page}
+          pageSize={pageSize}
+          totalCount={totalCount}
+          onPagination={onPagination}
+          isLoading={isLoading}
+        />
+      </TableFooter>
     </div>
   );
 }

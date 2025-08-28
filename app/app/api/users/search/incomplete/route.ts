@@ -4,7 +4,7 @@ import { OkResponse } from '@/core/responses';
 import { fixUsersMissingIdirGuid } from '@/services/db';
 
 export const GET = createApiHandler({
-  permissions: [GlobalPermissions.ViewUsers],
+  permissions: [GlobalPermissions.EditUsers],
 })(async () => {
   const result = await fixUsersMissingIdirGuid();
   return OkResponse(result);

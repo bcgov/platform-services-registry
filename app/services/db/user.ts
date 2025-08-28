@@ -175,6 +175,9 @@ export async function searchUsers({
       where: {
         OR: [{ idirGuid: null }, { idirGuid: { isSet: false } }, { idirGuid: '' }],
       },
+      select: {
+        idirGuid: true,
+      },
     }),
   ]);
   const allUsersHaveIdirGuid = !missingIdirGuidUser;
@@ -366,7 +369,7 @@ export async function fixUsersMissingIdirGuid() {
     },
   });
 
-  const results: Array<{ id: string; email?: string; outcome: Outcome; error?: string }> = [];
+  const results: Array<{ id: string; email: string; outcome: Outcome; error?: string }> = [];
 
   for (const u of users) {
     try {
@@ -383,7 +386,7 @@ export async function fixUsersMissingIdirGuid() {
         select: { id: true },
       });
 
-      const outcome: Outcome = 'archived_due_to_error';
+      const outcome: Outcome = 'archivedDueToError';
 
       results.push({
         id: u.id,
@@ -397,7 +400,7 @@ export async function fixUsersMissingIdirGuid() {
   const summary = {
     count: results.length,
     deleted: results.filter((r) => r.outcome === 'deleted').length,
-    archived_due_to_error: results.filter((r) => r.outcome === 'archived_due_to_error').length,
+    archivedDueToError: results.filter((r) => r.outcome === 'archivedDueToError').length,
     results,
   };
   return summary;

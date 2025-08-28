@@ -48,7 +48,7 @@ export default usersPage(({ session }) => {
 
   return (
     <>
-      {!allUsersHaveIdirGuid && (
+      {!allUsersHaveIdirGuid && session.permissions.editUsers && (
         <Group justify="flex-end" mb="md">
           <Button
             className="ml-auto"

@@ -135,12 +135,12 @@ export type SearchedUser = Prisma.UserGetPayload<{
   };
 }>;
 
-export type Outcome = 'deleted' | 'archived_due_to_error';
+export type Outcome = 'deleted' | 'archivedDueToError';
 
 export type DeleteIncompleteUserResult = {
   count: number;
   deleted: number;
-  archived_due_to_error: number;
+  archivedDueToError: number;
   results: {
     id: string;
     email: string;

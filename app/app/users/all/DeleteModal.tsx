@@ -2,10 +2,9 @@
 
 import { Divider, LoadingOverlay, Box, Text } from '@mantine/core';
 import { useQuery } from '@tanstack/react-query';
-import Table from '@/components/generic/table/Table';
+import SimpleTable from '@/components/generic/simple-table/SimpleTable';
 import { createModal } from '@/core/modal';
 import { deleteIncompleteUsers } from '@/services/backend/user';
-import TableBodyModal from './TableBodyModal';
 
 export const openDeleteModal = createModal<{}, {}>({
   settings: {
@@ -16,30 +15,43 @@ export const openDeleteModal = createModal<{}, {}>({
   },
   Component: function ({ closeModal }) {
     const { data, isLoading } = useQuery({
-      queryKey: ['users'],
+      queryKey: ['users-missing-idirGuid:delete'],
       queryFn: () => deleteIncompleteUsers(),
     });
+
+    const columns = [
+      { label: 'Email', value: 'email' },
+      {
+        label: 'Outcome',
+        value: 'outcome',
+      },
+      {
+        label: 'Error',
+        value: 'error',
+      },
+    ];
+
+    const results = data?.results ?? [];
 
     return (
       <Box pos="relative">
         <LoadingOverlay
           loaderProps={{ size: 'lg' }}
-          visible={false}
+          visible={isLoading}
           zIndex={1000}
           overlayProps={{ radius: 'sm', blur: 2 }}
         />
         <Text size="lg" fw={600}>
-          Users without IDIR GUID: {data?.count}
+          Users without IDIR GUID (processed): {data?.count ?? 0}
         </Text>
         <Text size="lg" fw={600}>
-          Deleted users without IDIR GUID: {data?.deleted}
+          Deleted: {data?.deleted ?? 0}
         </Text>
         <Text size="lg" fw={600}>
-          Archived users without IDIR GUID: {data?.archived_due_to_error}
+          Archived (error): {data?.archivedDueToError ?? 0}
         </Text>
-        <Table title="Updated users without IDIR GUID" isLoading={isLoading}>
-          <TableBodyModal users={data?.results || []} />
-        </Table>
+        <Divider my="md" />
+        <SimpleTable className="mt-2" columns={columns} data={results} />
         <Divider my="md" />
       </Box>
     );
