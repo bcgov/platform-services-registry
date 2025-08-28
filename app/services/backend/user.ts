@@ -1,7 +1,7 @@
 import axios from 'axios';
 import { userSorts } from '@/constants';
 import { Prisma } from '@/prisma/client';
-import { AdminViewUser, UserDetailWithColeagues } from '@/types/user';
+import { AdminViewUser, DeleteIncompleteUserResult, UserDetailWithColeagues } from '@/types/user';
 import { downloadFile } from '@/utils/browser';
 import { UserSearchBody, UserUpdateBody } from '@/validation-schemas';
 import { instance as baseInstance } from './axios';
@@ -29,8 +29,13 @@ function prepareSearchPayload(data: UserSearchBody) {
 export async function searchUsers(data: UserSearchBody) {
   const reqData = prepareSearchPayload(data);
   const result = await instance
-    .post<{ data: AdminViewUser[]; totalCount: number }>('/search', reqData)
+    .post<{ data: AdminViewUser[]; totalCount: number; allUsersHaveIdirGuid: boolean }>('/search', reqData)
     .then((res) => res.data);
+  return result;
+}
+
+export async function deleteIncompleteUsers() {
+  const result = await instance.get<DeleteIncompleteUserResult>('/search/incomplete').then((res) => res.data);
   return result;
 }
 

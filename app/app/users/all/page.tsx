@@ -1,5 +1,6 @@
 'use client';
 
+import { Button, Group } from '@mantine/core';
 import { useQuery } from '@tanstack/react-query';
 import { useSnapshot } from 'valtio';
 import Table from '@/components/generic/table/Table';
@@ -8,6 +9,7 @@ import createClientPage from '@/core/client-page';
 import { listKeycloakAuthRoles } from '@/services/backend/keycloak';
 import { downloadUsers, searchUsers } from '@/services/backend/user';
 import { AdminViewUser } from '@/types/user';
+import { openDeleteModal } from './DeleteModal';
 import FilterPanel from './FilterPanel';
 import { pageState } from './state';
 import TableBody from './TableBody';
@@ -18,7 +20,6 @@ const usersPage = createClientPage({
 });
 export default usersPage(({ session }) => {
   const snap = useSnapshot(pageState);
-
   const { data, isLoading } = useQuery({
     queryKey: ['users', snap],
     queryFn: () => searchUsers(snap),
@@ -33,10 +34,12 @@ export default usersPage(({ session }) => {
 
   let users: AdminViewUser[] = [];
   let totalCount = 0;
+  let allUsersHaveIdirGuid = true;
 
   if (!isLoading && data) {
     users = data.data;
     totalCount = data.totalCount;
+    allUsersHaveIdirGuid = data.allUsersHaveIdirGuid;
   }
 
   if (!session) {
@@ -45,6 +48,20 @@ export default usersPage(({ session }) => {
 
   return (
     <>
+      {!allUsersHaveIdirGuid && session.permissions.editUsers && (
+        <Group justify="flex-end" mb="md">
+          <Button
+            className="ml-auto"
+            color="danger"
+            variant="filled"
+            onClick={async () => {
+              await openDeleteModal({});
+            }}
+          >
+            Delete users without IDIR GUID
+          </Button>
+        </Group>
+      )}
       <Table
         title="Users"
         totalCount={totalCount}

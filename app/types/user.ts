@@ -20,6 +20,7 @@ export interface AppUser {
   email: string;
   idir: string;
   idirGuid: string;
+  isGuidValid: boolean;
   displayName: string;
   firstName: string;
   lastName: string;
@@ -122,6 +123,7 @@ export type SearchedUser = Prisma.UserGetPayload<{
     upn: true;
     idir: true;
     idirGuid: true;
+    isGuidValid: true;
     officeLocation: true;
     jobTitle: true;
     image: true;
@@ -132,3 +134,17 @@ export type SearchedUser = Prisma.UserGetPayload<{
     lastSeen: true;
   };
 }>;
+
+export type Outcome = 'deleted' | 'archivedDueToError';
+
+export type DeleteIncompleteUserResult = {
+  count: number;
+  deleted: number;
+  archivedDueToError: number;
+  results: {
+    id: string;
+    email: string;
+    outcome: Outcome;
+    error?: string;
+  }[];
+};
