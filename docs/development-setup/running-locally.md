@@ -29,7 +29,7 @@ make: *** [canvas-install] Error 1
 
 **Solution**
 
-1. Comment out the `install: canvas-install` section in the [Makefile](https://github.com/bcgov/platform-services-registry/blob/f2edf53d94ca4ab79fd1bed193def57c8411e434/Makefile)
+1. Comment out the `install: canvas-install` section in the [Makefile](https://github.com/bcgov/platform-services-registry/blob/main/Makefile)
 1. `make install`
 1. Uncomment the `install: canvas-install` section
 1. `make install`
