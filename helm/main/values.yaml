@@ -95,6 +95,15 @@ mongodb:
   nameOverride: pltsvc-mongodb
   fullnameOverride: pltsvc-mongodb
 
+  global:
+    security:
+      allowInsecureImages: true
+
+  image:
+    registry: ghcr.io
+    repository: bcgov/bitnami-mongodb
+    tag: latest
+
   architecture: replicaset
   useStatefulSet: true
   replicaCount: 3

@@ -25,7 +25,7 @@ install:
 	pnpm --dir sandbox/keycloak-provision install
 	pnpm --dir sandbox/m365mock install
 	pnpm --dir sandbox/nats-provision install
-install: canvas-install
+	$(MAKE) canvas-install
 
 .PHONY: canvas-install
 canvas-install:
