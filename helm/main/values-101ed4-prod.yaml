@@ -41,6 +41,9 @@ email:
 mongodb:
   enabled: true
 
+  image:
+    tag: 8.0.13
+
 backup:
   cronExpression: 0 1 * * *
   storageSize: 10Gi
