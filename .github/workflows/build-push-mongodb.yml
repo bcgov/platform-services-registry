@@ -41,7 +41,7 @@ jobs:
         registry-url: ${{ env.GITHUB_REGISTRY }}
         registry-username: ${{ github.actor }}
         registry-password: ${{ secrets.GITHUB_TOKEN }}
-        image-name: bcgov/mongodb
+        image-name: bcgov/bitnami-mongodb
         docker-context: .
         docker-file: Dockerfile
         metadata-tags: |
