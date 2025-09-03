@@ -58,12 +58,13 @@ export async function upsertMockUser(user: AppUserWithRoles) {
     email: user.email,
     ministry: user.ministry,
     idir: user.idir,
+    idirGuid: user.idirGuid,
     upn: user.upn,
     image: '',
   };
 
   const res = await prisma.user.upsert({
-    where: { email: user.email },
+    where: { idirGuid: user.idirGuid },
     update: data,
     create: data,
   });
