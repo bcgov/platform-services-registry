@@ -2,6 +2,8 @@ name: Build MongoDB image
 
 on:
   workflow_dispatch:
+  schedule:
+  - cron: 0 3 * * *
 
 env:
   GITHUB_REGISTRY: ghcr.io
