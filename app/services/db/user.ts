@@ -14,7 +14,7 @@ import {
   PublicCloudRequestData,
 } from '@/prisma/client';
 import { listUsersByRoles, findUserByEmail, getKcAdminClient } from '@/services/keycloak/app-realm';
-import { getUserByEmail, getUserByIdirGuid, getUserPhoto } from '@/services/msgraph';
+import { getUserByIdirGuid, getUserPhoto } from '@/services/msgraph';
 import { AppUser, Outcome } from '@/types/user';
 import { arrayBufferToBase64 } from '@/utils/js';
 import { UserSearchBody } from '@/validation-schemas';

@@ -14,10 +14,11 @@ export const mockUsers = msUsers
     const appUser = processMsUser(usr);
     if (!appUser) return null;
 
-    const { firstName, lastName, email, ministry, idir, upn } = appUser;
+    const { firstName, lastName, email, ministry, idir, upn, idirGuid } = appUser;
     return {
       firstName,
       lastName,
+      idirGuid,
       displayName: formatFullName({ firstName, lastName }),
       email,
       ministry,
@@ -39,8 +40,12 @@ export function findMockUserByIdr(useridir: string) {
   return mockUsers.find(({ idir }) => idir === useridir);
 }
 
-export function findMockUserByEmail(_email: string) {
+export function findMockUserByEmai(_email: string) {
   return mockUsers.find(({ email }) => email === _email);
+}
+
+export function findMockUserByIdirGuid(_idirGuid: string) {
+  return mockUsers.find(({ idirGuid }) => idirGuid === _idirGuid);
 }
 
 export function findMockUserbyRole(role: string) {
@@ -72,8 +77,8 @@ export async function upsertMockUser(user: AppUserWithRoles) {
   return res;
 }
 
-export async function generateTestSession(testEmail: string) {
-  const mockUser = findMockUserByEmail(testEmail);
+export async function generateTestSession(idirGuid: string) {
+  const mockUser = findMockUserByIdirGuid(idirGuid);
   if (!mockUser) return null;
 
   await upsertMockUser(mockUser);
