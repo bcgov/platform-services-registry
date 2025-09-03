@@ -85,7 +85,6 @@ export async function generateTestSession(testEmail: string) {
       email: mockUser.email,
     },
     userSession: {
-      email: mockUser.email,
       roles: mockUser.roles,
       idirGuid: mockUser.idirGuid,
       teams: [],

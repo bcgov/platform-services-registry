@@ -68,7 +68,7 @@ export const POST = apiHandler(async ({ pathParams, body, session }) => {
     decisionStatus: decision,
     decisionComment,
     decisionDate: new Date(),
-    decisionMaker: { connect: { email: session.user.email } },
+    decisionMaker: { connect: { idirGuid: session.user.idirGuid } },
   };
 
   // No need to modify decision data when reviewing deletion requests.
