@@ -1,0 +1,49 @@
+name: Build MongoDB image
+
+on:
+  workflow_dispatch:
+
+env:
+  GITHUB_REGISTRY: ghcr.io
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build-push-mongodb:
+    runs-on: ubuntu-22.04
+    timeout-minutes: 10
+    permissions:
+      contents: read
+      packages: write
+
+    steps:
+    - uses: hmarr/debug-action@f7318c783045ac39ed9bb497e22ce835fdafbfe6
+    - uses: actions/checkout@ff7abcd0c3c05ccf6adc123a8cd1fd4fb30fb493
+
+    - name: Get MongoDB version
+      run: |
+        VERSION=$(docker run --rm --entrypoint mongod docker.io/bitnamisecure/mongodb:latest --version \
+          | grep "db version" | awk '{print substr($3,2)}')
+        echo "MongoDB version: $VERSION"
+        echo "VERSION=$VERSION" >> $GITHUB_ENV
+
+    - name: Create Dockerfile
+      run: |
+        cat > Dockerfile <<'EOF'
+        FROM docker.io/bitnamisecure/mongodb:latest
+        EOF
+
+    - name: Build and Push Docker image
+      uses: egose/actions/docker-build-push@97fa9812f9221e21d14f7b5e11cd149c4c2b93da
+      with:
+        registry-url: ${{ env.GITHUB_REGISTRY }}
+        registry-username: ${{ github.actor }}
+        registry-password: ${{ secrets.GITHUB_TOKEN }}
+        image-name: bcgov/bitnami-mongodb
+        docker-context: .
+        docker-file: Dockerfile
+        metadata-tags: |
+          latest
+          ${{ env.VERSION }}
