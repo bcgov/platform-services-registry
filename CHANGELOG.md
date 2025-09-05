@@ -1,3 +1,13 @@
+## [0.77.0](https://github.com/bcgov/platform-services-registry/compare/v0.76.0...v0.77.0) (2025-09-05)
+
+### Features
+
+* **6415:** implement Github action for MongoDB image build ([2dd75a3](https://github.com/bcgov/platform-services-registry/commit/2dd75a3ccd40bedf68e03d619e8974103d65faef))
+* **6415:** use custom Bitnami images for MongoDB ([27345e3](https://github.com/bcgov/platform-services-registry/commit/27345e3321a74095928d47f10bc1d0151ab4fd0c))
+
+### Docs
+
+* **6415:** include research on Bitnami image deprecation ([a95ccc7](https://github.com/bcgov/platform-services-registry/commit/a95ccc71646eae1d406f701ec94fd704cd948581))
 ## [0.76.0](https://github.com/bcgov/platform-services-registry/compare/v0.75.0...v0.76.0) (2025-08-28)
 
 ### Features
