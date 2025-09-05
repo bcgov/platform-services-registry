@@ -6,9 +6,8 @@ import { mockNoRoleUsers } from '@/helpers/mock-users';
 import { DB_DATA } from '@/jest.mock';
 import { DecisionStatus, ProjectStatus, Cluster, RequestType } from '@/prisma/client';
 import {
-  mockSessionByEmail,
   mockSessionByRole,
-  mockUserServiceAccountByEmail,
+  mockUserServiceAccountByIdirGuid,
   mockUserServiceAccountByRole,
 } from '@/services/api-test/core';
 import { mockTeamServiceAccount } from '@/services/api-test/core';
@@ -38,7 +37,7 @@ const randomMemberData = {
 
 describe('API: List Private Cloud Products - Permissions', () => {
   it('should successfully create a product by PO and approved by admin', async () => {
-    await mockSessionByEmail(PO.email);
+    await mockUserServiceAccountByIdirGuid(PO.idirGuid);
 
     const requestData = createSamplePrivateCloudProductData({
       data: { ...memberData },
@@ -62,7 +61,7 @@ describe('API: List Private Cloud Products - Permissions', () => {
   });
 
   it('should successfully list 1 project by PO', async () => {
-    await mockUserServiceAccountByEmail(PO.email);
+    await mockUserServiceAccountByIdirGuid(PO.idirGuid);
 
     const res1 = await listPrivateCloudProductApi();
     expect(res1.status).toBe(200);
@@ -72,7 +71,7 @@ describe('API: List Private Cloud Products - Permissions', () => {
   });
 
   it('should successfully list 1 project by TL1', async () => {
-    await mockUserServiceAccountByEmail(TL1.email);
+    await mockUserServiceAccountByIdirGuid(TL1.idirGuid);
 
     const res1 = await listPrivateCloudProductApi();
     expect(res1.status).toBe(200);
@@ -82,7 +81,7 @@ describe('API: List Private Cloud Products - Permissions', () => {
   });
 
   it('should successfully list 1 project by TL2', async () => {
-    await mockUserServiceAccountByEmail(TL2.email);
+    await mockUserServiceAccountByIdirGuid(TL2.idirGuid);
 
     const res1 = await listPrivateCloudProductApi();
     expect(res1.status).toBe(200);
@@ -92,7 +91,7 @@ describe('API: List Private Cloud Products - Permissions', () => {
   });
 
   it('should successfully create a product by a random user and approved by admin', async () => {
-    await mockSessionByEmail(RANDOM1.email);
+    await mockUserServiceAccountByIdirGuid(RANDOM1.idirGuid);
 
     const requestData = createSamplePrivateCloudProductData({
       data: { ...randomMemberData },
@@ -116,7 +115,7 @@ describe('API: List Private Cloud Products - Permissions', () => {
   });
 
   it('should successfully list 1 project by the random user', async () => {
-    await mockUserServiceAccountByEmail(RANDOM1.email);
+    await mockUserServiceAccountByIdirGuid(RANDOM1.idirGuid);
 
     const res1 = await listPrivateCloudProductApi();
     expect(res1.status).toBe(200);
@@ -126,7 +125,7 @@ describe('API: List Private Cloud Products - Permissions', () => {
   });
 
   it('should successfully list 1 project by PO', async () => {
-    await mockUserServiceAccountByEmail(PO.email);
+    await mockUserServiceAccountByIdirGuid(PO.idirGuid);
 
     const res1 = await listPrivateCloudProductApi();
     expect(res1.status).toBe(200);
@@ -136,7 +135,7 @@ describe('API: List Private Cloud Products - Permissions', () => {
   });
 
   it('should successfully list 1 project by TL1', async () => {
-    await mockUserServiceAccountByEmail(TL1.email);
+    await mockUserServiceAccountByIdirGuid(TL1.idirGuid);
 
     const res1 = await listPrivateCloudProductApi();
     expect(res1.status).toBe(200);
@@ -146,7 +145,7 @@ describe('API: List Private Cloud Products - Permissions', () => {
   });
 
   it('should successfully list 1 project by TL2', async () => {
-    await mockUserServiceAccountByEmail(TL2.email);
+    await mockUserServiceAccountByIdirGuid(TL2.idirGuid);
 
     const res1 = await listPrivateCloudProductApi();
     expect(res1.status).toBe(200);
