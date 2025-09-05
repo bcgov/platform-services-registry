@@ -1,13 +1,15 @@
 'use client';
 
-import { Drawer, ActionIcon, Badge, Box, LoadingOverlay, Indicator, Tooltip, Button } from '@mantine/core';
+import { Drawer, ActionIcon, Badge, Tabs, LoadingOverlay, Indicator, Tooltip, Button } from '@mantine/core';
 import { useDisclosure } from '@mantine/hooks';
-import { IconChecklist } from '@tabler/icons-react';
+import { IconChecklist, IconList, IconCircleDashedCheck } from '@tabler/icons-react';
 import { useMutation, useQuery } from '@tanstack/react-query';
-import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import { useEffect } from 'react';
+import LoadingBox from '@/components/generic/LoadingBox';
 import { TaskStatus, TaskType } from '@/prisma/client';
 import { getAssignedTasks, startTask } from '@/services/backend/tasks';
+import { AssignedTask } from '@/types/task';
 import { formatDate, cn } from '@/utils/js';
 
 const taskTypeLabels = {
@@ -17,11 +19,61 @@ const taskTypeLabels = {
   [TaskType.REVIEW_PUBLIC_CLOUD_REQUEST]: 'Review Public Cloud Request',
 };
 
-const taskStatusColors = {
-  [TaskStatus.ASSIGNED]: 'primary',
-  [TaskStatus.COMPLETED]: 'success',
-  [TaskStatus.STARTED]: 'info',
-};
+function Task({ task, onAction }: { task: AssignedTask; onAction: () => void }) {
+  const router = useRouter();
+  const { mutateAsync: _startTask, isPending: isStartingTask } = useMutation({
+    mutationFn: startTask,
+  });
+
+  const type = taskTypeLabels[task.type];
+  const isStarted = task.status === TaskStatus.STARTED;
+  return (
+    <div key={task.id} className="hover:bg-gray-100 transition-colors duration-200 flex flex-gap-2 px-4 py-3">
+      <div className="flex-[2]">
+        <div>
+          <span className="font-semibold">{type}</span>
+        </div>
+        <div className="text-sm italic text-gray-700">{task.description}</div>
+        <div className="text-sm text-gray-400">Created at {formatDate(task.createdAt)}</div>
+        {isStarted && (
+          <>
+            <div className="text-sm text-gray-400">Started at {formatDate(task.startedAt)}</div>
+            <div className="text-sm text-gray-400">Started by {task.startedByUser?.email}</div>
+          </>
+        )}
+      </div>
+      <div className="flex-[1] text-right">
+        {task.link && (
+          <Button
+            color={isStarted ? 'success' : 'primary'}
+            size="compact-xs"
+            onClick={async () => {
+              if (!isStarted) {
+                if (isStartingTask) return;
+                await _startTask(task.id);
+              }
+
+              onAction();
+              router.push(task.link);
+            }}
+          >
+            {isStarted ? 'View' : 'Start'}
+          </Button>
+        )}
+      </div>
+    </div>
+  );
+}
+
+function Tasks({ tasks, onAction }: { tasks: AssignedTask[]; onAction: () => void }) {
+  if (tasks.length === 0) {
+    return <div className="italic">No tasks found.</div>;
+  }
+
+  return tasks.map((task) => {
+    return <Task key={task.id} task={task} onAction={onAction} />;
+  });
+}
 
 export default function SideTasks({ className }: { className?: string }) {
   const [opened, { open, close }] = useDisclosure(false);
@@ -35,82 +87,37 @@ export default function SideTasks({ className }: { className?: string }) {
     refetchInterval: 3000,
   });
 
-  const { mutateAsync: _startTask, isPending: isStartingTask } = useMutation({
-    mutationFn: startTask,
-  });
-
   useEffect(() => {
     if (opened) refetchTasks();
   }, [opened, refetchTasks]);
 
-  const _tasks = tasks || [];
+  const pendingTasks = (tasks || []).filter((task) => task.status === TaskStatus.ASSIGNED);
+  const startedTasks = (tasks || []).filter((task) => task.status === TaskStatus.STARTED);
 
   return (
     <>
       <Drawer opened={opened} onClose={close} title="Tasks">
-        <Box pos="relative" className="min-h-96">
-          <LoadingOverlay visible={isLoading} zIndex={1000} overlayProps={{ radius: 'sm', blur: 2 }} />
+        <LoadingBox className="min-h-96" isLoading={isLoading}>
+          <Tabs defaultValue="pending">
+            <Tabs.List>
+              <Tabs.Tab value="pending" leftSection={<IconList size={12} />}>
+                Pending
+              </Tabs.Tab>
+              <Tabs.Tab value="started" leftSection={<IconCircleDashedCheck size={12} />}>
+                Started
+              </Tabs.Tab>
+            </Tabs.List>
 
-          {_tasks.length === 0 ? (
-            <div className="italic">No tasks assigned.</div>
-          ) : (
-            _tasks.map((task) => {
-              const type = taskTypeLabels[task.type];
-              const color = taskStatusColors[task.status];
-              const isStarted = task.status === TaskStatus.STARTED;
-              return (
-                <div
-                  key={task.id}
-                  className="hover:bg-gray-100 transition-colors duration-200 grid grid-cols-5 gap-4 px-4 py-3"
-                >
-                  <div className="col-span-4">
-                    <div>
-                      <span className="font-semibold">{type}</span>
-                      <Badge color={color} size="sm" radius="sm" className="ml-1">
-                        {task.status}
-                      </Badge>
-                      {!isStarted && (
-                        <Button
-                          color="info"
-                          className="ml-2"
-                          size="xs"
-                          loading={false}
-                          onClick={async () => {
-                            if (isStartingTask) return;
-                            await _startTask(task.id);
-                          }}
-                        >
-                          Mark as Started
-                        </Button>
-                      )}
-                    </div>
-                    <div className="text-sm italic text-gray-700">{task.description}</div>
-                    <div className="text-sm text-gray-400">Created at {formatDate(task.createdAt)}</div>
-                    {isStarted && (
-                      <>
-                        <div className="text-sm text-gray-400">Started at {formatDate(task.startedAt)}</div>
-                        <div className="text-sm text-gray-400">Started by {task.startedByUser?.email}</div>
-                      </>
-                    )}
-                  </div>
-                  <div className="col-span-1 text-right">
-                    {task.link && (
-                      <Link
-                        href={task.link}
-                        onClick={close}
-                        className="text-blue-600 hover:underline font-bold text-base"
-                      >
-                        link
-                      </Link>
-                    )}
-                  </div>
-                </div>
-              );
-            })
-          )}
-        </Box>
+            <Tabs.Panel value="pending">
+              <Tasks tasks={pendingTasks} onAction={close} />
+            </Tabs.Panel>
+            <Tabs.Panel value="started">
+              <Tasks tasks={startedTasks} onAction={close} />
+            </Tabs.Panel>
+          </Tabs>
+        </LoadingBox>
       </Drawer>
-      <Indicator inline processing={_tasks.length > 0} position="top-start" label={_tasks.length} size={16}>
+      <Indicator inline processing={pendingTasks.length > 0} position="top-start" label={pendingTasks.length} size={16}>
         <Tooltip label="Tasks">
           <ActionIcon
             size={40}
