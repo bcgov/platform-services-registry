@@ -12,10 +12,6 @@ concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
 
-permissions:
-  packages: read
-  contents: read
-
 jobs:
   build-app:
     runs-on: ubuntu-22.04
@@ -63,13 +59,6 @@ jobs:
 
     - name: Setup NPM Packages
       uses: ./.github/actions/setup-npm
-
-    - name: Login to GitHub Container Registry
-      uses: docker/login-action@9780b0c442fbb1117ed29e0efdff1e18412f7567
-      with:
-        registry: ghcr.io
-        username: ${{ github.actor }}
-        password: ${{ secrets.GITHUB_TOKEN }}
 
     - name: Setup Sandbox
       uses: ./.github/actions/setup-sandbox
