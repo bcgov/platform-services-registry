@@ -60,6 +60,12 @@ jobs:
     - name: Setup NPM Packages
       uses: ./.github/actions/setup-npm
 
+    - name: Get MongoDB version
+      run: |
+        VER_RAW=$(docker run --rm --entrypoint mongod ghcr.io/bcgov/bitnami-mongodb:latest --version)
+         VERSION=$(awk '/db version/{gsub(/^v/,"",$3); print $3}' <<<"$VER_RAW")
+         echo "IMAGE_MONGODB=ghcr.io/bcgov/bitnami-mongodb:${VERSION}" >> "$GITHUB_ENV"
+
     - name: Setup Sandbox
       uses: ./.github/actions/setup-sandbox
       with:
