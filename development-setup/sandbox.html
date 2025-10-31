@@ -16,7 +16,7 @@
         <link rel="prev" href="chartjs-canvas.html">
       
       
-        <link rel="next" href="onboarding-offboarding.html">
+        <link rel="next" href="running-locally.html">
       
       
       <link rel="icon" href="../_assets/logo.png">
@@ -669,6 +669,8 @@
       
         
       
+        
+      
     
     
     
@@ -815,6 +817,21 @@
     </span>
   </a>
   
+    <nav class="md-nav" aria-label="Pre-requisites">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#docker-setup" class="md-nav__link">
+    <span class="md-ellipsis">
+      Docker Setup
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
 </li>
       
         <li class="md-nav__item">
@@ -854,6 +871,29 @@
   
 </nav>
       
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="running-locally.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Running Locally
+    
+  </span>
+  
+
+      </a>
     </li>
   
 
@@ -2511,6 +2551,21 @@
     </span>
   </a>
   
+    <nav class="md-nav" aria-label="Pre-requisites">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#docker-setup" class="md-nav__link">
+    <span class="md-ellipsis">
+      Docker Setup
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
 </li>
       
         <li class="md-nav__item">
@@ -2568,13 +2623,46 @@
 <h1 id="sandbox-environment">Sandbox Environment<a class="headerlink" href="#sandbox-environment" title="Permanent link">&para;</a></h1>
 <p>The development sandbox serves as an isolated environment for local development and testing, separate from the live system. This setup grants full control over local data and mock interfaces.</p>
 <h2 id="pre-requisites">Pre-requisites<a class="headerlink" href="#pre-requisites" title="Permanent link">&para;</a></h2>
+<p>Due to BC Government procurement restrictions, Docker Desktop is not permitted. However, the following alternatives are approved:</p>
 <ul>
-<li><strong><a href="https://www.docker.com/products/docker-desktop/">Docker Desktop</a></strong> must be installed and running on your machine.<ul>
-<li>For Windows, WSL2 is required.</li>
-<li>For macOS (Intel or Apple Silicon), ensure Docker Desktop is configured to use the appropriate architecture.</li>
+<li>Docker Engine (with Docker CLI)</li>
+<li>Podman</li>
+<li>Rancher Desktop</li>
 </ul>
+<h3 id="docker-setup">Docker Setup<a class="headerlink" href="#docker-setup" title="Permanent link">&para;</a></h3>
+<div class="tabbed-set tabbed-alternate" data-tabs="1:2"><input checked="checked" id="__tabbed_1_1" name="__tabbed_1" type="radio" /><input id="__tabbed_1_2" name="__tabbed_1" type="radio" /><div class="tabbed-labels"><label for="__tabbed_1_1">Mac</label><label for="__tabbed_1_2">Windows</label></div>
+<div class="tabbed-content">
+<div class="tabbed-block">
+<ol>
+<li><code>brew install docker</code></li>
+<li><code>brew install docker-compose</code></li>
+<li><code>brew install docker-buildx</code></li>
+<li>Add symlinks in <code>~/.docker/cli-plugins</code><ol>
+<li><code>ln -s $HOMEBREW_PREFIX/lib/docker/cli-plugins/docker-buildx docker-buildx</code></li>
+<li><code>ln -s $HOMEBREW_PREFIX/lib/docker/cli-plugins/docker-compose docker-compose</code></li>
+</ol>
 </li>
+<li>Login to docker<ol>
+<li><code>docker login</code></li>
+</ol>
+</li>
+<li>Start VM. Example (using podman):<ol>
+<li><code>podman machine init</code></li>
+<li><code>podman machine start</code></li>
+</ol>
+</li>
+</ol>
+</div>
+<div class="tabbed-block">
+<p>Refer to these blog posts on how to install Docker without Docker Desktop:</p>
+<ul>
+<li><a href="https://gist.github.com/martinsam16/4492957e3bbea34046f2c8b49c3e5ac0">How to install wsl2 ubuntu + docker + docker-compose</a></li>
+<li><a href="https://medium.com/h7w/mastering-docker-on-wsl2-a-complete-guide-without-docker-desktop-19c4e945590b">Mastering Docker on WSL2: A Complete Guide Without Docker Desktop</a></li>
+<li><a href="https://codingwithcalvin.net/installing-docker-and-docker-compose-in-wsl2ubuntu-on-windows/">Installing Docker, and Docker-Compose, in WSL2/Ubuntu on Windows</a></li>
 </ul>
+</div>
+</div>
+</div>
 <h2 id="getting-started">Getting Started<a class="headerlink" href="#getting-started" title="Permanent link">&para;</a></h2>
 <ol>
 <li>Switch to sandbox folder</li>

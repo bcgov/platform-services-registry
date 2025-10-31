@@ -10,11 +10,13 @@
         <meta name="author" content="Platform Services Team">
       
       
-        <link rel="canonical" href="https://bcgov.github.io/platform-services-registry/tests/e2e.html">
+        <link rel="canonical" href="https://bcgov.github.io/platform-services-registry/development-setup/running-locally.html">
       
       
-        <link rel="prev" href="api-testing.html">
+        <link rel="prev" href="sandbox.html">
       
+      
+        <link rel="next" href="onboarding-offboarding.html">
       
       
       <link rel="icon" href="../_assets/logo.png">
@@ -22,7 +24,7 @@
     
     
       
-        <title>E2E Cypress - Platform Services Registry</title>
+        <title>Running Locally - Platform Services Registry</title>
       
     
     
@@ -74,7 +76,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#e2e-cypress" class="md-skip">
+        <a href="#running-locally" class="md-skip">
           Skip to content
         </a>
       
@@ -109,7 +111,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              E2E Cypress
+              Running Locally
             
           </span>
         </div>
@@ -194,11 +196,13 @@
   
   
   
+    
+  
   
     
     
-      <li class="md-tabs__item">
-        <a href="../development-setup/local-development-environment.html" class="md-tabs__link">
+      <li class="md-tabs__item md-tabs__item--active">
+        <a href="local-development-environment.html" class="md-tabs__link">
           
   
   
@@ -346,13 +350,11 @@
   
   
   
-    
-  
   
     
     
-      <li class="md-tabs__item md-tabs__item--active">
-        <a href="api-testing.html" class="md-tabs__link">
+      <li class="md-tabs__item">
+        <a href="../tests/api-testing.html" class="md-tabs__link">
           
   
   
@@ -648,8 +650,10 @@
       
   
   
+    
   
   
+  
     
     
       
@@ -671,17 +675,20 @@
     
     
       
+        
+        
+      
       
     
     
-    <li class="md-nav__item md-nav__item--nested">
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" >
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" checked>
         
           
-          <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="0">
+          <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="">
             
   
   
@@ -694,7 +701,7 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="false">
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="true">
           <label class="md-nav__title" for="__nav_2">
             <span class="md-nav__icon md-icon"></span>
             Development setup
@@ -708,7 +715,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../development-setup/local-development-environment.html" class="md-nav__link">
+      <a href="local-development-environment.html" class="md-nav__link">
         
   
   
@@ -731,7 +738,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../development-setup/chartjs-canvas.html" class="md-nav__link">
+      <a href="chartjs-canvas.html" class="md-nav__link">
         
   
   
@@ -754,7 +761,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../development-setup/sandbox.html" class="md-nav__link">
+      <a href="sandbox.html" class="md-nav__link">
         
   
   
@@ -774,10 +781,32 @@
                 
   
   
+    
   
   
-    <li class="md-nav__item">
-      <a href="../development-setup/running-locally.html" class="md-nav__link">
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    Running Locally
+    
+  </span>
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="running-locally.html" class="md-nav__link md-nav__link--active">
         
   
   
@@ -788,6 +817,50 @@
   
 
       </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#troubleshooting" class="md-nav__link">
+    <span class="md-ellipsis">
+      Troubleshooting
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Troubleshooting">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#canvas-error" class="md-nav__link">
+    <span class="md-ellipsis">
+      Canvas error
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
     </li>
   
 
@@ -800,7 +873,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../development-setup/onboarding-offboarding.html" class="md-nav__link">
+      <a href="onboarding-offboarding.html" class="md-nav__link">
         
   
   
@@ -823,7 +896,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../development-setup/react-email.html" class="md-nav__link">
+      <a href="react-email.html" class="md-nav__link">
         
   
   
@@ -846,7 +919,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../development-setup/resource-metrics.html" class="md-nav__link">
+      <a href="resource-metrics.html" class="md-nav__link">
         
   
   
@@ -2316,10 +2389,8 @@
       
   
   
-    
   
   
-  
     
     
       
@@ -2331,20 +2402,17 @@
     
     
       
-        
-        
-      
       
     
     
-    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+    <li class="md-nav__item md-nav__item--nested">
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_8" checked>
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_8" >
         
           
-          <label class="md-nav__link" for="__nav_8" id="__nav_8_label" tabindex="">
+          <label class="md-nav__link" for="__nav_8" id="__nav_8_label" tabindex="0">
             
   
   
@@ -2357,7 +2425,7 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_8_label" aria-expanded="true">
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_8_label" aria-expanded="false">
           <label class="md-nav__title" for="__nav_8">
             <span class="md-nav__icon md-icon"></span>
             Tests
@@ -2371,7 +2439,7 @@
   
   
     <li class="md-nav__item">
-      <a href="api-testing.html" class="md-nav__link">
+      <a href="../tests/api-testing.html" class="md-nav__link">
         
   
   
@@ -2391,32 +2459,10 @@
                 
   
   
-    
   
   
-  
-    <li class="md-nav__item md-nav__item--active">
-      
-      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
-      
-      
-        
-      
-      
-        <label class="md-nav__link md-nav__link--active" for="__toc">
-          
-  
-  
-  <span class="md-ellipsis">
-    E2E Cypress
-    
-  </span>
-  
-
-          <span class="md-nav__icon md-icon"></span>
-        </label>
-      
-      <a href="e2e.html" class="md-nav__link md-nav__link--active">
+    <li class="md-nav__item">
+      <a href="../tests/e2e.html" class="md-nav__link">
         
   
   
@@ -2427,230 +2473,6 @@
   
 
       </a>
-      
-        
-
-<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
-  
-  
-  
-    
-  
-  
-    <label class="md-nav__title" for="__toc">
-      <span class="md-nav__icon md-icon"></span>
-      Table of contents
-    </label>
-    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
-      
-        <li class="md-nav__item">
-  <a href="#tech-stack" class="md-nav__link">
-    <span class="md-ellipsis">
-      Tech Stack
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#how-it-works" class="md-nav__link">
-    <span class="md-ellipsis">
-      How it works
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#folder-structure" class="md-nav__link">
-    <span class="md-ellipsis">
-      Folder Structure
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="Folder Structure">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#feature-file-example" class="md-nav__link">
-    <span class="md-ellipsis">
-      Feature File Example
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#step-definitions" class="md-nav__link">
-    <span class="md-ellipsis">
-      Step Definitions
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="Step Definitions">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#examples-of-step-definitions" class="md-nav__link">
-    <span class="md-ellipsis">
-      Examples of Step Definitions
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="Examples of Step Definitions">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#authentication" class="md-nav__link">
-    <span class="md-ellipsis">
-      Authentication
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#navigation" class="md-nav__link">
-    <span class="md-ellipsis">
-      Navigation
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#form-interactions" class="md-nav__link">
-    <span class="md-ellipsis">
-      Form Interactions
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#assertion" class="md-nav__link">
-    <span class="md-ellipsis">
-      Assertion
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#debugging-steps" class="md-nav__link">
-    <span class="md-ellipsis">
-      Debugging Steps
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#useful-commands" class="md-nav__link">
-    <span class="md-ellipsis">
-      Useful Commands
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#test-coverage-feature-files" class="md-nav__link">
-    <span class="md-ellipsis">
-      Test Coverage (Feature Files)
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#best-practices" class="md-nav__link">
-    <span class="md-ellipsis">
-      Best Practices
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#running-tests" class="md-nav__link">
-    <span class="md-ellipsis">
-      Running Tests
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="Running Tests">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#run-all-tests-headless" class="md-nav__link">
-    <span class="md-ellipsis">
-      Run all tests (headless):
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#run-a-specific-feature-file" class="md-nav__link">
-    <span class="md-ellipsis">
-      Run a specific feature file:
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#open-cypress-ui" class="md-nav__link">
-    <span class="md-ellipsis">
-      Open Cypress UI:
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#adding-a-new-test" class="md-nav__link">
-    <span class="md-ellipsis">
-      Adding a New Test
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#troubleshooting" class="md-nav__link">
-    <span class="md-ellipsis">
-      Troubleshooting
-    </span>
-  </a>
-  
-</li>
-      
-    </ul>
-  
-</nav>
-      
     </li>
   
 
@@ -2690,206 +2512,26 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#tech-stack" class="md-nav__link">
-    <span class="md-ellipsis">
-      Tech Stack
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#how-it-works" class="md-nav__link">
-    <span class="md-ellipsis">
-      How it works
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#folder-structure" class="md-nav__link">
-    <span class="md-ellipsis">
-      Folder Structure
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="Folder Structure">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#feature-file-example" class="md-nav__link">
-    <span class="md-ellipsis">
-      Feature File Example
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#step-definitions" class="md-nav__link">
-    <span class="md-ellipsis">
-      Step Definitions
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="Step Definitions">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#examples-of-step-definitions" class="md-nav__link">
-    <span class="md-ellipsis">
-      Examples of Step Definitions
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="Examples of Step Definitions">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#authentication" class="md-nav__link">
-    <span class="md-ellipsis">
-      Authentication
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#navigation" class="md-nav__link">
-    <span class="md-ellipsis">
-      Navigation
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#form-interactions" class="md-nav__link">
-    <span class="md-ellipsis">
-      Form Interactions
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#assertion" class="md-nav__link">
-    <span class="md-ellipsis">
-      Assertion
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#debugging-steps" class="md-nav__link">
-    <span class="md-ellipsis">
-      Debugging Steps
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#useful-commands" class="md-nav__link">
-    <span class="md-ellipsis">
-      Useful Commands
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#test-coverage-feature-files" class="md-nav__link">
-    <span class="md-ellipsis">
-      Test Coverage (Feature Files)
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#best-practices" class="md-nav__link">
-    <span class="md-ellipsis">
-      Best Practices
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#running-tests" class="md-nav__link">
-    <span class="md-ellipsis">
-      Running Tests
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="Running Tests">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#run-all-tests-headless" class="md-nav__link">
-    <span class="md-ellipsis">
-      Run all tests (headless):
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#run-a-specific-feature-file" class="md-nav__link">
-    <span class="md-ellipsis">
-      Run a specific feature file:
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#open-cypress-ui" class="md-nav__link">
-    <span class="md-ellipsis">
-      Open Cypress UI:
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#adding-a-new-test" class="md-nav__link">
-    <span class="md-ellipsis">
-      Adding a New Test
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
   <a href="#troubleshooting" class="md-nav__link">
     <span class="md-ellipsis">
       Troubleshooting
     </span>
   </a>
+  
+    <nav class="md-nav" aria-label="Troubleshooting">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#canvas-error" class="md-nav__link">
+    <span class="md-ellipsis">
+      Canvas error
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
   
 </li>
       
@@ -2912,284 +2554,41 @@
   
 
 
-<h1 id="e2e-cypress">E2E Cypress<a class="headerlink" href="#e2e-cypress" title="Permanent link">&para;</a></h1>
-<p>This document outlines the structure, conventions, and usage of End-to-End (E2E) tests for Platform Services Registry Application, using <strong>Cypress</strong>, and the <strong>Cucumber preprocessor</strong> (<code>@badeball/cypress-cucumber-preprocessor</code>).</p>
-<hr />
-<h2 id="tech-stack">Tech Stack<a class="headerlink" href="#tech-stack" title="Permanent link">&para;</a></h2>
-<ul>
-<li><strong>Framework</strong>: <a href="https://www.cypress.io/">Cypress</a></li>
-<li><strong>Language</strong>: TypeScript</li>
-<li><strong>BDD Layer</strong>: Cucumber with Gherkin syntax (<code>.feature</code> files)</li>
-<li><strong>Plugin</strong>: <a href="https://github.com/badeball/cypress-cucumber-preprocessor"><code>cypress-cucumber-preprocessor</code></a></li>
-</ul>
-<hr />
-<h2 id="how-it-works">How it works<a class="headerlink" href="#how-it-works" title="Permanent link">&para;</a></h2>
-<ul>
-<li>The BDD layer consists of <code>.feature</code> files that have scenarios with human readable steps</li>
-<li>Cypress cucumber preprocessor is looking for the code corresponding to human readable steps in <code>cypress/support/step_difnitions/common.ts</code> file</li>
-<li>The cypress.config.ts file has <code>specPattern: 'cypress/**/*.feature'</code> set, for Cypress to look for <code>.feature</code> files instead of default <code>cy.js</code> ones</li>
-<li>The code for step definitions can receive different variable data and use it in the code, e.g. button text. This allowed creating universal steps for clicking different buttons, typing in different textfields etc.</li>
-</ul>
-<hr />
-<h2 id="folder-structure">Folder Structure<a class="headerlink" href="#folder-structure" title="Permanent link">&para;</a></h2>
-<p>/cypress</p>
-<p>├── integration/</p>
-<p>│ &nbsp;&nbsp;&nbsp;├── 1. create-request-private-test.feature</p>
-<p>│ &nbsp;&nbsp;&nbsp;├── 2. create-request-public-test.feature</p>
-<p>│ &nbsp;&nbsp;&nbsp;├── 3. delete-product-private-test.feature</p>
-<p>│ &nbsp;&nbsp;&nbsp;├── 4. approve-requests-private.feature</p>
-<p>│ &nbsp;&nbsp;&nbsp;├── 5. approve-requests-public.feature</p>
-<p>│ &nbsp;&nbsp;&nbsp;├── 6. delete-product-public-test.feature</p>
-<p>│ &nbsp;&nbsp;&nbsp;├── 7. edit-request-private-test.feature</p>
-<p>│ &nbsp;&nbsp;&nbsp;├── 8. edit-request-public-test.feature</p>
-<p>│ &nbsp;&nbsp;&nbsp;├── 9. edit-request-private-compare-data.feature</p>
-<p>│ &nbsp;&nbsp;&nbsp;└── 10. edit-request-public-compare-data.feature</p>
-<p>├── support/</p>
-<p>│ ├── step_definitions/</p>
-<p>│&nbsp;&nbsp;│ └── common.ts</p>
-<h3 id="feature-file-example">Feature File Example<a class="headerlink" href="#feature-file-example" title="Permanent link">&para;</a></h3>
-<p><strong><code>1. create-request-private-test.feature</code></strong></p>
-<div class="language-gherkin highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-0-1"> 1</a></span>
-<span class="normal"><a href="#__codelineno-0-2"> 2</a></span>
-<span class="normal"><a href="#__codelineno-0-3"> 3</a></span>
-<span class="normal"><a href="#__codelineno-0-4"> 4</a></span>
-<span class="normal"><a href="#__codelineno-0-5"> 5</a></span>
-<span class="normal"><a href="#__codelineno-0-6"> 6</a></span>
-<span class="normal"><a href="#__codelineno-0-7"> 7</a></span>
-<span class="normal"><a href="#__codelineno-0-8"> 8</a></span>
-<span class="normal"><a href="#__codelineno-0-9"> 9</a></span>
-<span class="normal"><a href="#__codelineno-0-10">10</a></span>
-<span class="normal"><a href="#__codelineno-0-11">11</a></span>
-<span class="normal"><a href="#__codelineno-0-12">12</a></span>
-<span class="normal"><a href="#__codelineno-0-13">13</a></span>
-<span class="normal"><a href="#__codelineno-0-14">14</a></span>
-<span class="normal"><a href="#__codelineno-0-15">15</a></span>
-<span class="normal"><a href="#__codelineno-0-16">16</a></span>
-<span class="normal"><a href="#__codelineno-0-17">17</a></span>
-<span class="normal"><a href="#__codelineno-0-18">18</a></span></pre></div></td><td class="code"><div><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1"></a><span class="k">Feature:</span><span class="nf"> New Request</span>
-</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2"></a>
-</span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3"></a><span class="nf">  </span><span class="k">Scenario:</span><span class="nf"> Create Private Cloud Request and check visibility</span>
-</span><span id="__span-0-4"><a id="__codelineno-0-4" name="__codelineno-0-4"></a><span class="k">    Given </span><span class="nf">User logs in with username &quot;</span><span class="s">james.smith@gov.bc.ca</span><span class="nf">&quot; and password &quot;</span><span class="s">james.smith@gov.bc.ca</span><span class="nf">&quot;</span>
-</span><span id="__span-0-5"><a id="__codelineno-0-5" name="__codelineno-0-5"></a><span class="nf">    </span><span class="k">When </span><span class="nf">User clicks tab &quot;</span><span class="s">PRIVATE CLOUD OPENSHIFT</span><span class="nf">&quot;</span>
-</span><span id="__span-0-6"><a id="__codelineno-0-6" name="__codelineno-0-6"></a><span class="nf">    </span><span class="k">And </span><span class="nf">User clicks button &quot;</span><span class="s">Request a new product</span><span class="nf">&quot;</span>
-</span><span id="__span-0-7"><a id="__codelineno-0-7" name="__codelineno-0-7"></a><span class="nf">    </span><span class="k">And </span><span class="nf">User types &quot;</span><span class="s">Automated Test Create Request Name</span><span class="nf">&quot; in &quot;</span><span class="s">Product name</span><span class="nf">&quot;</span>
-</span><span id="__span-0-8"><a id="__codelineno-0-8" name="__codelineno-0-8"></a><span class="nf">    </span><span class="k">And </span><span class="nf">User types &quot;</span><span class="s">Automated Test Description</span><span class="nf">&quot; in &quot;</span><span class="s">Description</span><span class="nf">&quot;</span>
-</span><span id="__span-0-9"><a id="__codelineno-0-9" name="__codelineno-0-9"></a><span class="nf">    </span><span class="k">And </span><span class="nf">User selects &quot;</span><span class="s">Citizens Services</span><span class="nf">&quot; in &quot;</span><span class="s">Ministry</span><span class="nf">&quot;</span>
-</span><span id="__span-0-10"><a id="__codelineno-0-10" name="__codelineno-0-10"></a><span class="nf">    </span><span class="k">And </span><span class="nf">User clicks and selects &quot;</span><span class="s">SILVER</span><span class="nf">&quot; in &quot;</span><span class="s">Hosting tier</span><span class="nf">&quot;</span>
-</span><span id="__span-0-11"><a id="__codelineno-0-11" name="__codelineno-0-11"></a><span class="nf">    </span><span class="k">And </span><span class="nf">User clicks tab &quot;</span><span class="s">Team members</span><span class="nf">&quot;</span>
-</span><span id="__span-0-12"><a id="__codelineno-0-12" name="__codelineno-0-12"></a><span class="nf">    </span><span class="k">And </span><span class="nf">User chooses to add contact &quot;</span><span class="s">Project Owner</span><span class="nf">&quot;</span>
-</span><span id="__span-0-13"><a id="__codelineno-0-13" name="__codelineno-0-13"></a><span class="nf">    </span><span class="k">And </span><span class="nf">User types and selects email &quot;</span><span class="s">james.smith@gov.bc.ca</span><span class="nf">&quot;</span>
-</span><span id="__span-0-14"><a id="__codelineno-0-14" name="__codelineno-0-14"></a><span class="nf">    </span><span class="k">And </span><span class="nf">User chooses to add contact &quot;</span><span class="s">Primary Technical Lead</span><span class="nf">&quot;</span>
-</span><span id="__span-0-15"><a id="__codelineno-0-15" name="__codelineno-0-15"></a><span class="nf">    </span><span class="k">And </span><span class="nf">User types and selects email &quot;</span><span class="s">john.doe@gov.bc.ca</span><span class="nf">&quot;</span>
-</span><span id="__span-0-16"><a id="__codelineno-0-16" name="__codelineno-0-16"></a><span class="nf">    </span><span class="k">And </span><span class="nf">User clicks button &quot;</span><span class="s">Submit</span><span class="nf">&quot;</span>
-</span><span id="__span-0-17"><a id="__codelineno-0-17" name="__codelineno-0-17"></a><span class="nf">    </span><span class="k">And </span><span class="nf">User checks checkbox &quot;</span><span class="s">By checking this box...</span><span class="nf">&quot;</span>
-</span><span id="__span-0-18"><a id="__codelineno-0-18" name="__codelineno-0-18"></a><span class="nf">    </span><span class="k">And </span><span class="nf">User clicks modal window button &quot;</span><span class="s">Submit</span><span class="nf">&quot;</span>
-</span></code></pre></div></td></tr></table></div>
-<h2 id="step-definitions">Step Definitions<a class="headerlink" href="#step-definitions" title="Permanent link">&para;</a></h2>
-<hr />
-<p>Common reusable steps are defined in <code>/cypress/support/step_definitions/common.ts</code>.</p>
-<h3 id="examples-of-step-definitions">Examples of Step Definitions<a class="headerlink" href="#examples-of-step-definitions" title="Permanent link">&para;</a></h3>
-<h4 id="authentication">Authentication<a class="headerlink" href="#authentication" title="Permanent link">&para;</a></h4>
-<div class="language-ts highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-1-1">1</a></span>
-<span class="normal"><a href="#__codelineno-1-2">2</a></span>
-<span class="normal"><a href="#__codelineno-1-3">3</a></span></pre></div></td><td class="code"><div><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1"></a><span class="nx">Given</span><span class="p">(</span><span class="sr">/^User logs in with username &quot;(.*)&quot; and password &quot;(.*)&quot;$/</span><span class="p">,</span><span class="w"> </span><span class="p">(</span><span class="nx">username</span><span class="p">,</span><span class="w"> </span><span class="nx">password</span><span class="p">)</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="p">{</span>
-</span><span id="__span-1-2"><a id="__codelineno-1-2" name="__codelineno-1-2"></a><span class="w">    </span><span class="nx">cy</span><span class="p">.</span><span class="nx">loginToRegistry</span><span class="p">(</span><span class="nx">username</span><span class="p">,</span><span class="w"> </span><span class="nx">password</span><span class="p">);</span>
-</span><span id="__span-1-3"><a id="__codelineno-1-3" name="__codelineno-1-3"></a><span class="p">});</span>
-</span></code></pre></div></td></tr></table></div>
-<h4 id="navigation">Navigation<a class="headerlink" href="#navigation" title="Permanent link">&para;</a></h4>
-<div class="language-ts highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-2-1">1</a></span>
-<span class="normal"><a href="#__codelineno-2-2">2</a></span>
-<span class="normal"><a href="#__codelineno-2-3">3</a></span></pre></div></td><td class="code"><div><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1"></a><span class="nx">Given</span><span class="p">(</span><span class="s1">&#39;User visits main page&#39;</span><span class="p">,</span><span class="w"> </span><span class="p">()</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="p">{</span>
-</span><span id="__span-2-2"><a id="__codelineno-2-2" name="__codelineno-2-2"></a><span class="w">    </span><span class="nx">cy</span><span class="p">.</span><span class="nx">visit</span><span class="p">(</span><span class="s1">&#39;/login&#39;</span><span class="p">,</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">failOnStatusCode</span><span class="o">:</span><span class="w"> </span><span class="kt">false</span><span class="w"> </span><span class="p">});</span>
-</span><span id="__span-2-3"><a id="__codelineno-2-3" name="__codelineno-2-3"></a><span class="p">});</span>
-</span></code></pre></div></td></tr></table></div>
-<h4 id="form-interactions">Form Interactions<a class="headerlink" href="#form-interactions" title="Permanent link">&para;</a></h4>
-<div class="language-ts highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-3-1">1</a></span>
-<span class="normal"><a href="#__codelineno-3-2">2</a></span>
-<span class="normal"><a href="#__codelineno-3-3">3</a></span></pre></div></td><td class="code"><div><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1"></a><span class="nx">When</span><span class="p">(</span><span class="sr">/^User types &quot;(.*)&quot; in &quot;(.*)&quot;$/</span><span class="p">,</span><span class="w"> </span><span class="p">(</span><span class="nx">text</span><span class="p">,</span><span class="w"> </span><span class="nx">label</span><span class="p">)</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="p">{</span>
-</span><span id="__span-3-2"><a id="__codelineno-3-2" name="__codelineno-3-2"></a><span class="w">    </span><span class="nx">cy</span><span class="p">.</span><span class="nx">contains</span><span class="p">(</span><span class="s1">&#39;label&#39;</span><span class="p">,</span><span class="w"> </span><span class="nx">label</span><span class="p">).</span><span class="nx">siblings</span><span class="p">(</span><span class="s1">&#39;input, textarea&#39;</span><span class="p">).</span><span class="kr">type</span><span class="p">(</span><span class="nx">text</span><span class="p">);</span>
-</span><span id="__span-3-3"><a id="__codelineno-3-3" name="__codelineno-3-3"></a><span class="p">});</span>
-</span></code></pre></div></td></tr></table></div>
-<h4 id="assertion">Assertion<a class="headerlink" href="#assertion" title="Permanent link">&para;</a></h4>
-<div class="language-ts highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-4-1">1</a></span>
-<span class="normal"><a href="#__codelineno-4-2">2</a></span>
-<span class="normal"><a href="#__codelineno-4-3">3</a></span></pre></div></td><td class="code"><div><pre><span></span><code><span id="__span-4-1"><a id="__codelineno-4-1" name="__codelineno-4-1"></a><span class="nx">Then</span><span class="p">(</span><span class="sr">/^User should see &quot;(.*)&quot;$/</span><span class="p">,</span><span class="w"> </span><span class="p">(</span><span class="nx">text</span><span class="p">)</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="p">{</span>
-</span><span id="__span-4-2"><a id="__codelineno-4-2" name="__codelineno-4-2"></a><span class="w">    </span><span class="nx">cy</span><span class="p">.</span><span class="nx">contains</span><span class="p">(</span><span class="nx">text</span><span class="p">).</span><span class="nx">should</span><span class="p">(</span><span class="s1">&#39;be.visible&#39;</span><span class="p">);</span>
-</span><span id="__span-4-3"><a id="__codelineno-4-3" name="__codelineno-4-3"></a><span class="p">});</span>
-</span></code></pre></div></td></tr></table></div>
-<h3 id="debugging-steps">Debugging Steps<a class="headerlink" href="#debugging-steps" title="Permanent link">&para;</a></h3>
-<p>There's a commented-out step in <code>common.ts</code> that allows to see if a local Keycloak instance was populated with test data during Sandbox rollup:</p>
-<div class="language-ts highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-5-1">1</a></span></pre></div></td><td class="code"><div><pre><span></span><code><span id="__span-5-1"><a id="__codelineno-5-1" name="__codelineno-5-1"></a><span class="nx">Given</span><span class="p">(</span><span class="s1">&#39;User visits local keycloak and finds james.smith&#39;</span><span class="p">,</span><span class="w"> </span><span class="p">()</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="p">...</span><span class="w"> </span><span class="p">});</span>
-</span></code></pre></div></td></tr></table></div>
-<hr />
-<h2 id="useful-commands">Useful Commands<a class="headerlink" href="#useful-commands" title="Permanent link">&para;</a></h2>
-<hr />
-<table>
-<thead>
-<tr>
-<th>Step</th>
-<th>Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><code>User logs in with username</code></td>
-<td>Logs in using a custom Cypress command</td>
-</tr>
-<tr>
-<td><code>User clicks button "..."</code></td>
-<td>Finds and clicks a button or link</td>
-</tr>
-<tr>
-<td><code>User types "..." in "..."</code></td>
-<td>Fills out a form field by label</td>
-</tr>
-<tr>
-<td><code>User selects "..." in "..."</code></td>
-<td>Selects a dropdown value</td>
-</tr>
-<tr>
-<td><code>User waits for "..." seconds</code></td>
-<td>Adds an explicit wait (if needed)</td>
-</tr>
-<tr>
-<td><code>User should see "..."</code></td>
-<td>Checks for visible text</td>
-</tr>
-<tr>
-<td><code>User makes a screenshot</code></td>
-<td>Captures a visual snapshot</td>
-</tr>
-<tr>
-<td><code>User reloads the page</code></td>
-<td>Reloads current page</td>
-</tr>
-</tbody>
-</table>
-<hr />
-<h2 id="test-coverage-feature-files">Test Coverage (Feature Files)<a class="headerlink" href="#test-coverage-feature-files" title="Permanent link">&para;</a></h2>
-<hr />
-<table>
-<thead>
-<tr>
-<th>#</th>
-<th>File Name</th>
-<th>Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>1</td>
-<td><code>create-request-private-test.feature</code></td>
-<td>Create Private Cloud request</td>
-</tr>
-<tr>
-<td>2</td>
-<td><code>create-request-public-test.feature</code></td>
-<td>Create Public Cloud request</td>
-</tr>
-<tr>
-<td>3</td>
-<td><code>delete-product-private-test.feature</code></td>
-<td>Delete a private cloud product</td>
-</tr>
-<tr>
-<td>4</td>
-<td><code>approve-requests-private.feature</code></td>
-<td>Approve private cloud requests (Create, Edit, Delete)</td>
-</tr>
-<tr>
-<td>5</td>
-<td><code>approve-requests-public.feature</code></td>
-<td>Approve public cloud requests (Create, Edit, Delete)</td>
-</tr>
-<tr>
-<td>6</td>
-<td><code>delete-product-public-test.feature</code></td>
-<td>Delete a public cloud product</td>
-</tr>
-<tr>
-<td>7</td>
-<td><code>edit-request-private-test.feature</code></td>
-<td>Edit private cloud request</td>
-</tr>
-<tr>
-<td>8</td>
-<td><code>edit-request-public-test.feature</code></td>
-<td>Edit public cloud request</td>
-</tr>
-<tr>
-<td>9</td>
-<td><code>edit-request-private-compare-data.feature</code></td>
-<td>Validate data after edit request approved (private)</td>
-</tr>
-<tr>
-<td>10</td>
-<td><code>edit-request-public-compare-data.feature</code></td>
-<td>Validate data after edit request approved (public)</td>
-</tr>
-</tbody>
-</table>
-<hr />
-<h2 id="best-practices">Best Practices<a class="headerlink" href="#best-practices" title="Permanent link">&para;</a></h2>
-<hr />
-<ul>
-<li>
-<p>Reuse <strong>step definitions</strong> to avoid duplication.</p>
-</li>
-<li>
-<p>Keep <strong>scenarios short and atomic</strong> (1 behavior = 1 scenario).</p>
-</li>
-<li>
-<p>Use <strong>clear and descriptive step text</strong>.</p>
-</li>
-<li>
-<p>Make tests <strong>independent</strong> (no shared state or reliance on order).</p>
-</li>
-</ul>
-<hr />
-<h2 id="running-tests">Running Tests<a class="headerlink" href="#running-tests" title="Permanent link">&para;</a></h2>
-<hr />
-<p>You can run tests via the Cypress Test Runner (GUI) or headlessly via CLI.</p>
-<h3 id="run-all-tests-headless">Run all tests (headless):<a class="headerlink" href="#run-all-tests-headless" title="Permanent link">&para;</a></h3>
-<div class="language-bash highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-6-1">1</a></span></pre></div></td><td class="code"><div><pre><span></span><code><span id="__span-6-1"><a id="__codelineno-6-1" name="__codelineno-6-1"></a>npx<span class="w"> </span>cypress<span class="w"> </span>run
-</span></code></pre></div></td></tr></table></div>
-<h3 id="run-a-specific-feature-file">Run a specific feature file:<a class="headerlink" href="#run-a-specific-feature-file" title="Permanent link">&para;</a></h3>
-<div class="language-bash highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-7-1">1</a></span></pre></div></td><td class="code"><div><pre><span></span><code><span id="__span-7-1"><a id="__codelineno-7-1" name="__codelineno-7-1"></a>npx<span class="w"> </span>cypress<span class="w"> </span>run<span class="w"> </span>--spec<span class="w"> </span><span class="s2">&quot;cypress/integration/1. create-request-private-test.feature&quot;</span>
-</span></code></pre></div></td></tr></table></div>
-<h3 id="open-cypress-ui">Open Cypress UI:<a class="headerlink" href="#open-cypress-ui" title="Permanent link">&para;</a></h3>
-<div class="language-bash highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-8-1">1</a></span></pre></div></td><td class="code"><div><pre><span></span><code><span id="__span-8-1"><a id="__codelineno-8-1" name="__codelineno-8-1"></a>npx<span class="w"> </span>cypress<span class="w"> </span>open
-</span></code></pre></div></td></tr></table></div>
-<hr />
-<h2 id="adding-a-new-test">Adding a New Test<a class="headerlink" href="#adding-a-new-test" title="Permanent link">&para;</a></h2>
+<h1 id="running-locally">Running Locally<a class="headerlink" href="#running-locally" title="Permanent link">&para;</a></h1>
+<p>How to run the app locally:</p>
 <ol>
-<li>
-<p>Create a <code>.feature</code> file in <code>cypress/integration/</code></p>
-</li>
-<li>
-<p>Use existing steps from <code>common.ts</code> or write new ones</p>
-</li>
-<li>
-<p>If new, add the step definition in <code>/support/step_definitions/common.ts</code></p>
-</li>
-<li>
-<p>Validate the test by running it locally</p>
-</li>
+<li>Complete the steps in:<ol>
+<li><a href="local-development-environment.html">Local Development Environment</a></li>
+<li><a href="sandbox.html">Sandbox Environment</a></li>
 </ol>
-<hr />
+</li>
+<li>Ensure the sandbox environment is running</li>
+<li><code>make install</code></li>
+<li>Login to the Openshift project <code>101ed4-prod</code> on the CLI</li>
+<li><code>make copy-db</code></li>
+<li><code>make dev</code></li>
+</ol>
 <h2 id="troubleshooting">Troubleshooting<a class="headerlink" href="#troubleshooting" title="Permanent link">&para;</a></h2>
-<hr />
-<ul>
-<li>
-<p><strong>Step not matching?</strong> Ensure the step text in <code>.feature</code> exactly matches the regex in <code>common.ts</code>.</p>
-</li>
-<li>
-<p><strong>DOM issues?</strong> Use <code>.scrollIntoView()</code> or proper wait/assert patterns.</p>
-</li>
-<li>
-<p><strong>Test not running?</strong> Check if the file is included in your Cypress config and matches spec patterns.</p>
-</li>
-</ul>
+<h3 id="canvas-error">Canvas error<a class="headerlink" href="#canvas-error" title="Permanent link">&para;</a></h3>
+<p><strong>Problem</strong></p>
+<p>The <code>make install</code> command gives the error:</p>
+<div class="language-text highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-0-1">1</a></span>
+<span class="normal"><a href="#__codelineno-0-2">2</a></span>
+<span class="normal"><a href="#__codelineno-0-3">3</a></span>
+<span class="normal"><a href="#__codelineno-0-4">4</a></span>
+<span class="normal"><a href="#__codelineno-0-5">5</a></span></pre></div></td><td class="code"><div><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1"></a>cd app/node_modules/.pnpm/canvas@3.2.0/node_modules/canvas &amp;&amp;\
+</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2"></a> pnpm add -D node-gyp &amp;&amp;\
+</span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3"></a> pnpm exec node-gyp rebuild
+</span><span id="__span-0-4"><a id="__codelineno-0-4" name="__codelineno-0-4"></a>bash: line 0: cd: app/node_modules/.pnpm/canvas@3.2.0/node_modules/canvas: No such file or directory
+</span><span id="__span-0-5"><a id="__codelineno-0-5" name="__codelineno-0-5"></a>make: *** [canvas-install] Error 1
+</span></code></pre></div></td></tr></table></div>
+<p><strong>Solution</strong></p>
+<ol>
+<li>Comment out the <code>install: canvas-install</code> section in the <a href="https://github.com/bcgov/platform-services-registry/blob/main/Makefile">Makefile</a></li>
+<li><code>make install</code></li>
+<li>Uncomment the <code>install: canvas-install</code> section</li>
+<li><code>make install</code></li>
+</ol>
 
 
 
