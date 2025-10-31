@@ -4,15 +4,27 @@ services:
     # See https://github.com/zcube/bitnami-compat/pkgs/container/bitnami-compat%2Fmongodb
     image: ghcr.io/zcube/bitnami-compat/mongodb:6.0-debian-11-r64@sha256:42b6d774c37dab8cb2a55a8a476281e56bb0eedd707c75956c7061c5904a1859
 
-  # keycloak:
-  #   platform: linux/arm64
+  keycloak:
+    platform: linux/arm64
 
-  # m365proxy:
-  #   platform: linux/arm64
-  #   container_name: m365proxy
-  #   build:
-  #     context: ./m365proxy
-  #     dockerfile: Dockerfile.arm64
-  #   stdin_open: true
-  #   ports:
-  #   - 8000:8000
+  keycloak-provision:
+    platform: linux/arm64
+
+  m365proxy:
+    platform: linux/arm64
+    container_name: m365proxy
+    build:
+      context: ./m365proxy
+      dockerfile: Dockerfile.arm64
+    stdin_open: true
+    ports:
+    - 8000:8000
+
+  m365mock:
+    platform: linux/arm64
+
+  ches-mock:
+    platform: linux/arm64
+
+  nats-provision:
+    platform: linux/arm64
