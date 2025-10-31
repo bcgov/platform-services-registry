@@ -60,8 +60,8 @@ importers:
         specifier: ^4.2.8
         version: 4.2.8(babel-plugin-macros@3.1.0)(postcss@8.5.6)(ts-node@10.9.2(@types/node@22.18.1)(typescript@5.9.2))
       '@react-email/render':
-        specifier: 1.2.1
-        version: 1.2.1(react-dom@19.1.1(react@19.1.1))(react@19.1.1)
+        specifier: 1.4.0
+        version: 1.4.0(react-dom@19.1.1(react@19.1.1))(react@19.1.1)
       '@react-email/tailwind':
         specifier: ^1.2.2
         version: 1.2.2(react@19.1.1)
@@ -2284,6 +2284,13 @@ packages:
 
   '@react-email/render@1.2.1':
     resolution: {integrity: sha512-7M4Xi8ITESZKS7pOPE0HWhKJWtS/JrAqPIyFPqIPJXZJHkjFMYXn2b/tAsHOufYW5/LTk4U1IkBMaVwE06kykw==}
+    engines: {node: '>=18.0.0'}
+    peerDependencies:
+      react: ^18.0 || ^19.0 || ^19.0.0-rc
+      react-dom: ^18.0 || ^19.0 || ^19.0.0-rc
+
+  '@react-email/render@1.4.0':
+    resolution: {integrity: sha512-ZtJ3noggIvW1ZAryoui95KJENKdCzLmN5F7hyZY1F/17B1vwzuxHB7YkuCg0QqHjDivc5axqYEYdIOw4JIQdUw==}
     engines: {node: '>=18.0.0'}
     peerDependencies:
       react: ^18.0 || ^19.0 || ^19.0.0-rc
@@ -8898,6 +8905,14 @@ snapshots:
       react: 19.1.1
 
   '@react-email/render@1.2.1(react-dom@19.1.1(react@19.1.1))(react@19.1.1)':
+    dependencies:
+      html-to-text: 9.0.5
+      prettier: 3.6.2
+      react: 19.1.1
+      react-dom: 19.1.1(react@19.1.1)
+      react-promise-suspense: 0.3.4
+
+  '@react-email/render@1.4.0(react-dom@19.1.1(react@19.1.1))(react@19.1.1)':
     dependencies:
       html-to-text: 9.0.5
       prettier: 3.6.2
