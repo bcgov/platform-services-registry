@@ -4,9 +4,35 @@ The development sandbox serves as an isolated environment for local development 
 
 ## Pre-requisites
 
--   **[Docker Desktop](https://www.docker.com/products/docker-desktop/)** must be installed and running on your machine.
-    -   For Windows, WSL2 is required.
-    -   For macOS (Intel or Apple Silicon), ensure Docker Desktop is configured to use the appropriate architecture.
+Due to BC Government procurement restrictions, Docker Desktop is not permitted. However, the following alternatives are approved:
+
+-   Docker Engine (with Docker CLI)
+-   Podman
+-   Rancher Desktop
+
+### Docker Setup
+
+=== "Mac"
+
+      1. `brew install docker`
+      1. `brew install docker-compose`
+      1. `brew install docker-buildx`
+      1. Add symlinks in `~/.docker/cli-plugins`
+         1. `ln -s $HOMEBREW_PREFIX/lib/docker/cli-plugins/docker-buildx docker-buildx`
+         1. `ln -s $HOMEBREW_PREFIX/lib/docker/cli-plugins/docker-compose docker-compose`
+      1. Login to docker
+         1. `docker login`
+      1. Start VM. Example (using podman):
+         1. `podman machine init`
+         1. `podman machine start`
+
+=== "Windows"
+
+      Refer to these blog posts on how to install Docker without Docker Desktop:
+
+      * [How to install wsl2 ubuntu + docker + docker-compose](https://gist.github.com/martinsam16/4492957e3bbea34046f2c8b49c3e5ac0)
+      * [Mastering Docker on WSL2: A Complete Guide Without Docker Desktop](https://medium.com/h7w/mastering-docker-on-wsl2-a-complete-guide-without-docker-desktop-19c4e945590b)
+      * [Installing Docker, and Docker-Compose, in WSL2/Ubuntu on Windows](https://codingwithcalvin.net/installing-docker-and-docker-compose-in-wsl2ubuntu-on-windows/)
 
 ## Getting Started
 
