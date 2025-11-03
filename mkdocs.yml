@@ -75,6 +75,7 @@ nav:
   - development-setup/local-development-environment.md
   - development-setup/chartjs-canvas.md
   - development-setup/sandbox.md
+  - development-setup/running-locally.md
   - development-setup/onboarding-offboarding.md
   - development-setup/react-email.md
   - development-setup/resource-metrics.md
