@@ -260,7 +260,7 @@ importers:
         version: 2.0.3
       '@types/jws':
         specifier: ^3.2.10
-        version: 3.2.10
+        version: 3.2.11
       '@types/lodash-es':
         specifier: ^4.17.12
         version: 4.17.12
@@ -2755,8 +2755,8 @@ packages:
   '@types/jwk-to-pem@2.0.3':
     resolution: {integrity: sha512-I/WFyFgk5GrNbkpmt14auGO3yFK1Wt4jXzkLuI+fDBNtO5ZI2rbymyGd6bKzfSBEuyRdM64ZUwxU1+eDcPSOEQ==}
 
-  '@types/jws@3.2.10':
-    resolution: {integrity: sha512-cOevhttJmssERB88/+XvZXvsq5m9JLKZNUiGfgjUb5lcPRdV2ZQciU6dU76D/qXXFYpSqkP3PrSg4hMTiafTZw==}
+  '@types/jws@3.2.11':
+    resolution: {integrity: sha512-OOaTrLV6XdF1XvBgMeH1MjNuOaGCrRZWNSIds1AQaRgLdOWlAk2yMsfrJn+ekLgUow3xksWIM231lyFab7mHHw==}
 
   '@types/linkify-it@5.0.0':
     resolution: {integrity: sha512-sVDA58zAw4eWAffKOaQH5/5j3XeayukzDk+ewSsnv3p4yJEZHCCzMDiZM8e0OUrRvmpGZ85jf4yDHkHsgBNr9Q==}
@@ -9394,7 +9394,7 @@ snapshots:
 
   '@types/jwk-to-pem@2.0.3': {}
 
-  '@types/jws@3.2.10':
+  '@types/jws@3.2.11':
     dependencies:
       '@types/node': 22.18.1
 
