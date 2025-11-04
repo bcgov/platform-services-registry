@@ -1,5 +1,12 @@
-import type { Chart } from 'chart.js';
-import { ChartTypeRegistry, TooltipItem, ChartOptions } from 'chart.js';
+import {
+  Chart as ChartJS,
+  ArcElement,
+  Tooltip,
+  Legend,
+  type ChartOptions,
+  type TooltipItem,
+  type Plugin,
+} from 'chart.js';
 import _orderBy from 'lodash-es/orderBy';
 import _sum from 'lodash-es/sum';
 import { useMemo } from 'react';
@@ -7,17 +14,19 @@ import { Doughnut } from 'react-chartjs-2';
 import { valueFormatter, getColor } from '@/components/analytics/helpers';
 import { cn } from '@/utils/js';
 
-const centerTextPlugin = {
+ChartJS.register(ArcElement, Tooltip, Legend);
+
+const centerTextPlugin: Plugin<'doughnut'> = {
   id: 'centerText',
-  beforeDraw: (chart: Chart) => {
+  beforeDraw: (chart) => {
     const { width, height, ctx } = chart;
+    const values = (chart.data?.datasets?.[0]?.data ?? []) as number[];
+    const total = _sum(values);
     ctx.restore();
 
     const fontSize = (height / 150).toFixed(2);
     ctx.font = `${fontSize}em sans-serif`;
     ctx.textBaseline = 'middle';
-
-    const total = _sum(chart.data.datasets[0].data);
 
     const text = total.toString();
     const textX = Math.round((width - ctx.measureText(text).width) / 2);
@@ -63,8 +72,8 @@ export default function DoughnutChart({
         },
         tooltip: {
           callbacks: {
-            label: function (context: TooltipItem<keyof ChartTypeRegistry>) {
-              const value = valueFormatter(Number(context.raw as number));
+            label(context: TooltipItem<'doughnut'>) {
+              const value = valueFormatter(context.parsed);
               return value;
             },
           },

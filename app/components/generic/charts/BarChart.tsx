@@ -1,8 +1,20 @@
-import { ChartTypeRegistry, TooltipItem } from 'chart.js';
+import {
+  Chart as ChartJS,
+  CategoryScale,
+  LinearScale,
+  BarElement,
+  Tooltip,
+  Legend,
+  type ChartOptions,
+  type ChartData,
+  type TooltipItem,
+} from 'chart.js';
 import { useMemo } from 'react';
 import { Bar } from 'react-chartjs-2';
 import { valueFormatter as defaultValueFormatter, getColor } from '@/components/analytics/helpers';
 import { cn } from '@/utils/js';
+
+ChartJS.register(CategoryScale, LinearScale, BarElement, Tooltip, Legend);
 
 export interface BarChartDataItem {
   [key: string]: number | string;
@@ -19,7 +31,7 @@ export default function BarChart({
   className?: string;
 }) {
   const { data, options } = useMemo(() => {
-    if (!chartData) return { data: { labels: [], datasets: [] }, options: {} };
+    if (!chartData) return { data: { labels: [], datasets: [] } as ChartData<'bar'>, options: {} };
 
     const labels: string[] = [];
     const datasetMap: Record<string, number[]> = {};
@@ -49,28 +61,23 @@ export default function BarChart({
         barThickness: 'flex' as const,
       })),
     };
-
-    const _options = {
+    const vf = valueFormatter ?? defaultValueFormatter;
+    const _options: ChartOptions<'bar'> = {
       responsive: true,
       maintainAspectRatio: true,
       interaction: {
-        mode: 'index' as const,
+        mode: 'index',
         intersect: false,
       },
       plugins: {
-        legend: {
-          position: 'top' as const,
-        },
-        title: {
-          display: false,
-          text: '',
-        },
+        legend: { position: 'top' },
+        title: { display: false, text: '' },
         tooltip: {
           callbacks: {
-            label: function (context: TooltipItem<keyof ChartTypeRegistry>) {
-              const label = context.dataset.label || 'Unknown';
-              const value = (valueFormatter ?? defaultValueFormatter)(Number(context.raw as number));
-              return `${label}: ${value}`;
+            label: (ctx: TooltipItem<'bar'>) => {
+              const label = ctx.dataset.label ?? 'Unknown';
+              const val = typeof ctx.parsed === 'object' ? (ctx.parsed as { y?: number }).y ?? 0 : 0;
+              return `${label}: ${vf(val)}`;
             },
           },
         },

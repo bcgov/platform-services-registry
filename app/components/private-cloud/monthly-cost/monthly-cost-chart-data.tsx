@@ -24,7 +24,7 @@ export function getMonthlyCostChartConfig({
       tooltip: {
         callbacks: {
           label: function (context: TooltipItem<'bar'>) {
-            const value = context.parsed.y;
+            const value = typeof context.parsed.y === 'number' ? context.parsed.y : Number(context.raw as number);
             return formatCurrency(value);
           },
         },
