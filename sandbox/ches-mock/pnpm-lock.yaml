@@ -34,7 +34,7 @@ importers:
         version: 11.1.0
       zod:
         specifier: ^4.0.0
-        version: 4.1.5
+        version: 4.1.12
     devDependencies:
       express:
         specifier: ^5.0.1
@@ -1040,8 +1040,8 @@ packages:
   wrappy@1.0.2:
     resolution: {integrity: sha512-l4Sp/DRseor9wL6EvV2+TuQn63dMkPjZ/sp9XkghTEbV9KlPS1xUsZ3u7/IQO4wxtcFB4bgpQPRcR3QCvezPcQ==}
 
-  zod@4.1.5:
-    resolution: {integrity: sha512-rcUUZqlLJgBC33IT3PNMgsCq6TzLQEG/Ei/KTCU0PedSWRMAXoOUN+4t/0H+Q8bdnLPdqUYnvboJT0bn/229qg==}
+  zod@4.1.12:
+    resolution: {integrity: sha512-JInaHOamG8pt5+Ey8kGmdcAcg3OL9reK8ltczgHTAwNhMys/6ThXHityHxVV2p3fkw/c+MAvBHFVYHFZDmjMCQ==}
 
 snapshots:
 
@@ -2386,4 +2386,4 @@ snapshots:
 
   wrappy@1.0.2: {}
 
-  zod@4.1.5: {}
+  zod@4.1.12: {}
