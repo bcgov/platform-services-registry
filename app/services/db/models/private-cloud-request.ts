@@ -68,7 +68,7 @@ async function decorate<T extends PrivateCloudRequestSimple | PrivateCloudReques
       .map((task) => (task.data as { requestId: string }).requestId)
       .includes(doc.id);
 
-  const canCancel = doc.decisionStatus === DecisionStatus.PENDING && session.user.email === doc.createdBy?.email;
+  const canCancel = doc.decisionStatus === DecisionStatus.PENDING && session.user.idirGuid === doc.createdBy?.idirGuid;
   const canEdit = canReview && doc.type !== RequestType.DELETE;
 
   const canResend =

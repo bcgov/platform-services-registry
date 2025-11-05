@@ -2,7 +2,7 @@ import { MockedFunction } from 'jest-mock';
 import { NextRequest } from 'next/server';
 import { getServerSession } from 'next-auth/next';
 import { BASE_URL } from '@/config';
-import { generateTestSession, findMockUserbyRole, findMockUserByEmail, upsertMockUser } from '@/helpers/mock-users';
+import { generateTestSession, findMockUserbyRole, findMockUserByIdirGuid, upsertMockUser } from '@/helpers/mock-users';
 import { SERVICE_ACCOUNT_DATA } from '@/jest.mock';
 import { stringifyQuery } from '@/utils/js';
 
@@ -118,11 +118,11 @@ export function createRoute(baseUrl: string) {
 
 export const mockedGetServerSession = getServerSession as unknown as MockedFunction<typeof getServerSession>;
 
-export async function mockSessionByEmail(email?: string) {
-  if (!email) {
+export async function mockSessionByIdirGuid(idirGuid?: string) {
+  if (!idirGuid) {
     mockedGetServerSession.mockResolvedValue(null);
   } else {
-    const mockSession = await generateTestSession(email);
+    const mockSession = await generateTestSession(idirGuid);
     mockedGetServerSession.mockResolvedValue(mockSession);
   }
 }
@@ -134,20 +134,20 @@ export async function mockSessionByRole(role?: string) {
     const user = findMockUserbyRole(role);
     if (!user) mockedGetServerSession.mockResolvedValue(null);
     else {
-      const mockSession = await generateTestSession(user.email);
+      const mockSession = await generateTestSession(user.idirGuid);
       mockedGetServerSession.mockResolvedValue(mockSession);
     }
   }
 }
 
-export async function mockUserServiceAccountByEmail(email?: string) {
+export async function mockUserServiceAccountByIdirGuid(idirGuid?: string) {
   mockedGetServerSession.mockResolvedValue(null);
 
-  let mockedValue: { email: string; authRoleNames: string[] } | null = null;
-  if (email) {
-    const mockUser = findMockUserByEmail(email);
+  let mockedValue: { idirGuid: string; authRoleNames: string[] } | null = null;
+  if (idirGuid) {
+    const mockUser = findMockUserByIdirGuid(idirGuid);
     if (mockUser) {
-      mockedValue = { email: mockUser.email, authRoleNames: mockUser.roles.concat() };
+      mockedValue = { idirGuid: mockUser.idirGuid, authRoleNames: mockUser.roles.concat() };
       await upsertMockUser(mockUser);
     }
   }
@@ -159,11 +159,11 @@ export async function mockUserServiceAccountByEmail(email?: string) {
 export async function mockUserServiceAccountByRole(role?: string) {
   mockedGetServerSession.mockResolvedValue(null);
 
-  let mockedValue: { email: string; authRoleNames: string[] } | null = null;
+  let mockedValue: { idirGuid: string; authRoleNames: string[] } | null = null;
   if (role) {
     const mockUser = findMockUserbyRole(role);
     if (mockUser) {
-      mockedValue = { email: mockUser.email, authRoleNames: mockUser.roles.concat() };
+      mockedValue = { idirGuid: mockUser.idirGuid, authRoleNames: mockUser.roles.concat() };
       await upsertMockUser(mockUser);
     }
   }
