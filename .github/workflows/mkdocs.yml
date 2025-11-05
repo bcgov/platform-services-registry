@@ -35,7 +35,7 @@ jobs:
 
     - name: Deploy 🚀
       # Due to an issue with the latest tag, we’ll hard-code the tag version for now.
-      uses: JamesIves/github-pages-deploy-action@v4.7.3
+      uses: JamesIves/github-pages-deploy-action@v4.7.4
       with:
         folder: site
 
