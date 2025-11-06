@@ -1,7 +1,7 @@
 pre-commit==4.3.0
 detect-secrets==1.5.0
 autopep8==2.3.2
-black==25.1.0
+black==25.9.0
 mkdocs-material==9.6.23
 pymdown-extensions==10.16.1
 pygments==2.19.2
