@@ -16,21 +16,7 @@ interface Props {
 
 export default function AddUserModal({ open, setOpen, setUserPrincipalName, setUserEmail }: Props) {
   const [query, setQuery] = useState<string>('');
-  const [selected, setSelected] = useState<AppUser | undefined>({
-    id: '',
-    providerUserId: '0',
-    upn: '',
-    email: '',
-    idir: '',
-    idirGuid: '',
-    isGuidValid: true,
-    displayName: '',
-    firstName: '',
-    lastName: '',
-    ministry: '',
-    officeLocation: '',
-    jobTitle: '',
-  });
+  const [selected, setSelected] = useState<AppUser | null>(null);
 
   const [confirm, setConfirm] = useState(false);
 
@@ -44,10 +30,15 @@ export default function AddUserModal({ open, setOpen, setUserPrincipalName, setU
     enabled: !!query,
   });
 
-  const autocompleteOnChangeHandler = (value: AppUser) => {
-    setSelected(value);
-    setQuery(value.email);
-    setConfirm(true);
+  const autocompleteOnChangeHandler = (value: AppUser | null) => {
+    if (value) {
+      setSelected(value);
+      setQuery(value.email);
+      setConfirm(true);
+    } else {
+      setSelected(null);
+      setConfirm(false);
+    }
   };
 
   const parseMinistry = (displayName: string): string => {
@@ -60,7 +51,7 @@ export default function AddUserModal({ open, setOpen, setUserPrincipalName, setU
       setUserPrincipalName(selected.upn);
       setUserEmail(selected.email);
     }
-    setSelected(undefined);
+    setSelected(null);
     setOpen(false);
   };
 
@@ -113,7 +104,7 @@ export default function AddUserModal({ open, setOpen, setUserPrincipalName, setU
                     <div className="relative w-full cursor-default rounded-lg bg-white text-left text-gray-900 shadow-xs ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
                       <Combobox.Input
                         autoComplete="xyz"
-                        displayValue={(user: AppUser) => user?.email}
+                        displayValue={(user: AppUser | null) => user?.email ?? ''}
                         onChange={(event) => setQuery(event.target.value)}
                         placeholder={'Enter email'}
                         value={query}
