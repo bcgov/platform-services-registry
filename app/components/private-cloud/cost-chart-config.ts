@@ -86,7 +86,8 @@ export function getCostChartConfig({
 }) {
   const options = buildOptions();
 
-  const labels = granularity === 'monthly' ? data.timeUnits : data.timeUnits.map(getMonthNameFromNumber);
+  const labels: string[] =
+    granularity === 'monthly' ? data.timeUnits.map((u) => String(u)) : data.timeUnits.map(getMonthNameFromNumber);
 
   const chartData = {
     labels,
