@@ -1,25 +1,18 @@
 import { TooltipItem } from 'chart.js';
 import { PeriodCosts } from '@/types/private-cloud';
-import { formatCurrency } from '@/utils/js';
+import { formatCurrency, getMonthNameFromNumber } from '@/utils/js';
 
-export function getMonthlyCostChartConfig({
-  data,
-  forecast,
-}: {
+type BaseArgs = {
   data: Pick<PeriodCosts, 'timeUnits' | 'timeDetails'>;
   forecast?: boolean;
-}) {
-  const options = {
+};
+
+function buildOptions() {
+  return {
     plugins: {
-      title: {
-        display: false,
-      },
+      title: { display: false },
       legend: {
-        labels: {
-          font: {
-            size: 12,
-          },
-        },
+        labels: { font: { size: 12 } },
       },
       tooltip: {
         callbacks: {
@@ -35,27 +28,23 @@ export function getMonthlyCostChartConfig({
     scales: {
       x: {
         stacked: true,
-        ticks: {
-          font: {
-            size: 12,
-          },
-        },
+        ticks: { font: { size: 12 } },
       },
       y: {
         stacked: true,
         ticks: {
-          font: {
-            size: 12,
-          },
-          callback: function (value: string | number, index: number, ticks: any) {
+          font: { size: 12 },
+          callback: function (value: string | number) {
             return formatCurrency(Number(value));
           },
         },
       },
     },
   };
+}
 
-  const dynamicChartData = [
+function buildDatasets(data: BaseArgs['data'], forecast?: boolean) {
+  const datasets = [
     {
       label: 'CPU Cost (CA$)',
       data: data.timeDetails.cpuCostsToDate,
@@ -79,14 +68,42 @@ export function getMonthlyCostChartConfig({
   ];
 
   if (!forecast) {
-    dynamicChartData.pop();
-    dynamicChartData.pop();
+    datasets.pop();
+    datasets.pop();
   }
 
+  return datasets;
+}
+
+export function getCostChartConfig({
+  data,
+  forecast,
+  granularity,
+}: {
+  data: Pick<PeriodCosts, 'timeUnits' | 'timeDetails'>;
+  forecast?: boolean;
+  granularity: 'monthly' | 'quarterly' | 'yearly';
+}) {
+  const options = buildOptions();
+
+  const labels = granularity === 'monthly' ? data.timeUnits : data.timeUnits.map(getMonthNameFromNumber);
+
   const chartData = {
-    labels: data.timeUnits,
-    datasets: dynamicChartData,
+    labels,
+    datasets: buildDatasets(data, forecast),
   };
 
   return { options, data: chartData };
+}
+
+export function getMonthlyCostChartConfig(args: BaseArgs) {
+  return getCostChartConfig({ ...args, granularity: 'monthly' });
+}
+
+export function getQuarterlyCostChartConfig(args: BaseArgs) {
+  return getCostChartConfig({ ...args, granularity: 'quarterly' });
+}
+
+export function getYearlyCostChartConfig(args: BaseArgs) {
+  return getCostChartConfig({ ...args, granularity: 'yearly' });
 }

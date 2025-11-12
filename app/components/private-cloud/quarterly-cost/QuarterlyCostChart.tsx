@@ -1,7 +1,7 @@
 import { Card } from '@mantine/core';
 import { Bar } from 'react-chartjs-2';
 import { PeriodCosts } from '@/types/private-cloud';
-import { getQuarterlyCostChartConfig } from './quarterly-cost-chart-data';
+import { getQuarterlyCostChartConfig } from '../cost-chart-config';
 
 export default function QuarterlyCostChart({
   data,

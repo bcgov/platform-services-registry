@@ -73,8 +73,7 @@ export default function DoughnutChart({
         tooltip: {
           callbacks: {
             label(context: TooltipItem<'doughnut'>) {
-              const value = valueFormatter(context.parsed);
-              return value;
+              return valueFormatter(context.parsed);
             },
           },
         },
