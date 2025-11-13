@@ -3,6 +3,6 @@ detect-secrets==1.5.0
 autopep8==2.3.2
 black==25.11.0
 mkdocs-material==9.7.0
-pymdown-extensions==10.16.1
+pymdown-extensions==10.17.1
 pygments==2.19.2
 mkdocs-mermaid2-plugin==1.2.3
