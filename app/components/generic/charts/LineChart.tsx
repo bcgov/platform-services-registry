@@ -1,12 +1,27 @@
-import { ChartTypeRegistry, TooltipItem } from 'chart.js';
+import {
+  Chart as ChartJS,
+  LineElement,
+  PointElement,
+  LinearScale,
+  CategoryScale,
+  Tooltip,
+  Legend,
+  Title,
+  Filler,
+  type ChartOptions,
+  type TooltipItem,
+} from 'chart.js';
 import { useMemo } from 'react';
 import { Line } from 'react-chartjs-2';
 import { valueFormatter, getColor } from '@/components/analytics/helpers';
 import { cn } from '@/utils/js';
 
+ChartJS.register(LineElement, PointElement, LinearScale, CategoryScale, Tooltip, Legend, Title, Filler);
+
 export interface LineChartDataItem {
   [key: string]: number | string;
 }
+
 export default function LineChart({
   indexKey,
   data: chartData,
@@ -17,7 +32,7 @@ export default function LineChart({
   className?: string;
 }) {
   const { data, options } = useMemo(() => {
-    if (!chartData) return { data: { labels: [], datasets: [] }, options: {} };
+    if (!chartData) return { data: { labels: [], datasets: [] }, options: {} as ChartOptions<'line'> };
 
     const labels: string[] = [];
     const datasetMap: Record<string, number[]> = {};
@@ -48,16 +63,16 @@ export default function LineChart({
       })),
     };
 
-    const _options = {
+    const _options: ChartOptions<'line'> = {
       responsive: true,
       maintainAspectRatio: true,
       interaction: {
-        mode: 'index' as const,
+        mode: 'index',
         intersect: false,
       },
       plugins: {
         legend: {
-          position: 'top' as const,
+          position: 'top',
         },
         title: {
           display: false,
@@ -65,7 +80,7 @@ export default function LineChart({
         },
         tooltip: {
           callbacks: {
-            label: function (context: TooltipItem<keyof ChartTypeRegistry>) {
+            label(context: TooltipItem<'line'>) {
               const label = context.dataset.label || 'Unknown';
               const value = valueFormatter(context.raw as number);
               return `${label}: ${value}`;

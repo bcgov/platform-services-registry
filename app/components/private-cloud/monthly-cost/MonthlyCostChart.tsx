@@ -1,7 +1,7 @@
 import { Card } from '@mantine/core';
 import { Bar } from 'react-chartjs-2';
 import { PeriodCosts } from '@/types/private-cloud';
-import { getMonthlyCostChartConfig } from './monthly-cost-chart-data';
+import { getMonthlyCostChartConfig } from '../cost-chart-config';
 
 export default function MonthlyCostChart({
   data,

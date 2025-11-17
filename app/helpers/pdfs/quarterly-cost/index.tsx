@@ -1,8 +1,8 @@
 import { createCanvas } from 'canvas';
 import Chart from 'chart.js/auto';
 import { tailwindToCSS } from 'tw-to-css';
+import { getQuarterlyCostChartConfig } from '@/components/private-cloud/cost-chart-config';
 import CostSummary from '@/components/private-cloud/CostSummary';
-import { getQuarterlyCostChartConfig } from '@/components/private-cloud/quarterly-cost/quarterly-cost-chart-data';
 import QuarterlyCostTable from '@/components/private-cloud/quarterly-cost/QuarterlyCostTable';
 import { WeasyPrint } from '@/services/weasyprint/client';
 import { PeriodCosts, PrivateCloudProductDetailDecorated, CostPeriod } from '@/types/private-cloud';
