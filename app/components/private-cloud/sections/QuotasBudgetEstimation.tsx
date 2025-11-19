@@ -1,4 +1,5 @@
-import { IconArrowNarrowRight, IconCurrencyDollarCanadian } from '@tabler/icons-react';
+import { Alert } from '@mantine/core';
+import { IconArrowNarrowRight, IconCurrencyDollarCanadian, IconExclamationCircle } from '@tabler/icons-react';
 import { useQuery } from '@tanstack/react-query';
 import _get from 'lodash-es/get';
 import _startCase from 'lodash-es/startCase';
@@ -320,9 +321,16 @@ export default function QuotasBudgetEstimation({
 
   return (
     <>
-      <div className="font-bold text-lg flex justify-between mb-1">
+      <div className="font-bold text-lg flex justify-between mb-1 flex-col">
         <span>Cost estimation</span>
-        <div>
+        <Alert
+          variant="outline"
+          color="red"
+          title="The following prices are not final. This is just an estimate to help you understand potential costs for testing pruposes. OpenShift remains free for 2025 and you will not be billed this amount."
+          icon={<IconExclamationCircle className="" />}
+          className="mt-1"
+        ></Alert>
+        <div className="flex justify-end items-end pt-4">
           <span className="mr-1 text-sm">Period:</span>
           <FormSingleSelect
             name="period"
