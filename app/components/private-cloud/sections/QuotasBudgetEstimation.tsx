@@ -1,5 +1,5 @@
 import { Alert } from '@mantine/core';
-import { IconArrowNarrowRight, IconCurrencyDollarCanadian, IconExclamationCircle } from '@tabler/icons-react';
+import { IconArrowNarrowRight, IconExclamationCircle } from '@tabler/icons-react';
 import { useQuery } from '@tanstack/react-query';
 import _get from 'lodash-es/get';
 import _startCase from 'lodash-es/startCase';
