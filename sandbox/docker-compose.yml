@@ -117,7 +117,7 @@ services:
   nats:
     platform: linux/amd64
     container_name: nats
-    image: nats:2.11.8
+    image: nats:2.12.2
     ports:
     - 4222:4222
 
