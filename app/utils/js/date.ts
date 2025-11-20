@@ -13,10 +13,54 @@ import _isNil from 'lodash-es/isNil';
 import _isString from 'lodash-es/isString';
 import { monthNames } from '@/constants/common';
 
+export function toSafeDate(input: unknown): Date {
+  if (input == null || input === '') return new Date();
+
+  if (input instanceof Date && !isNaN(input.getTime())) {
+    return new Date(input.getTime());
+  }
+
+  if (typeof input === 'number') {
+    const d = new Date(input);
+    if (!isNaN(d.getTime())) return d;
+  }
+
+  if (typeof input === 'string') {
+    const trimmed = input.trim();
+
+    if (/^\d{4}-\d{2}-\d{2}$/.test(trimmed)) {
+      const d = new Date(`${trimmed}T00:00:00`);
+      if (!isNaN(d.getTime())) return d;
+    }
+
+    if (/^[A-Za-z]{3,9} \d{4}$/.test(trimmed)) {
+      const [monthName, yearStr] = trimmed.split(' ');
+      const monthMap = ['jan', 'feb', 'mar', 'apr', 'may', 'jun', 'jul', 'aug', 'sep', 'oct', 'nov', 'dec'];
+
+      const month = monthMap.indexOf(monthName.slice(0, 3).toLowerCase());
+      const year = Number(yearStr);
+
+      if (month !== -1 && !isNaN(year)) {
+        const d = new Date(year, month, 1);
+        if (!isNaN(d.getTime())) return d;
+      }
+    }
+
+    const iso = trimmed.includes('T') ? trimmed : `${trimmed}T00:00:00`;
+    const parsed = new Date(iso);
+    if (!isNaN(parsed.getTime())) return parsed;
+  }
+
+  const fallback = new Date(input as any);
+  if (!isNaN(fallback.getTime())) return fallback;
+
+  return new Date();
+}
+
 export function formatDate(date: string | number | Date | null | undefined, formatStr = 'yyyy-MM-dd hh:mm:ss aa') {
   if (!date) return '';
-
-  const d = new Date(date);
+  const safeDate = toSafeDate(date);
+  const d = new Date(safeDate);
   if (!_isDate(d)) return '';
 
   return format(d, formatStr);
