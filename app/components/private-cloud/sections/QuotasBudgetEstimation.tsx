@@ -326,7 +326,7 @@ export default function QuotasBudgetEstimation({
         <Alert
           variant="outline"
           color="red"
-          title="The following prices are not final. This is just an estimate to help you understand potential costs for testing pruposes. OpenShift remains free for 2025 and you will not be billed this amount."
+          title="The following prices are not final. This is just an estimate to help you understand potential costs for testing pruposes. You will not be billed this amount without prior notice."
           icon={<IconExclamationCircle className="" />}
           className="mt-1"
         ></Alert>
