@@ -16,9 +16,9 @@
   "devDependencies": {
     "@badeball/cypress-cucumber-preprocessor": "^22.2.0",
     "@bahmutov/cypress-esbuild-preprocessor": "^2.2.5",
-    "@commitlint/cli": "^19.8.1",
-    "@commitlint/config-conventional": "^19.8.1",
-    "@commitlint/format": "^19.8.1",
+    "@commitlint/cli": "^20.0.0",
+    "@commitlint/config-conventional": "^20.0.0",
+    "@commitlint/format": "^20.0.0",
     "@eslint/js": "^9.32.0",
     "@release-it/bumper": "^7.0.5",
     "@types/eslint-config-prettier": "^6.11.3",
