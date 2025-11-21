@@ -37,7 +37,7 @@
     "@mantine/notifications": "^8.2.4",
     "@mantine/tiptap": "^8.2.4",
     "@prisma/client": "6.19.0",
-    "@react-email/components": "^0.5.0",
+    "@react-email/components": "^1.0.0",
     "@react-email/preview-server": "^4.2.8",
     "@react-email/render": "1.4.0",
     "@react-email/tailwind": "^1.2.2",
