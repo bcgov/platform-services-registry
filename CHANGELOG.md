@@ -1,3 +1,18 @@
+## [0.78.0](https://github.com/bcgov/platform-services-registry/compare/v0.77.0...v0.78.0) (2025-11-24)
+
+### Features
+
+* **5212:** add banner for cost test ([e17c07c](https://github.com/bcgov/platform-services-registry/commit/e17c07cbe8c2ebdb3bf6ebed4c11dd517d152804))
+* **6201:** add tabs in task sidebar ([dbd0455](https://github.com/bcgov/platform-services-registry/commit/dbd0455fe7f531295a505acc84f0b63a7260513f))
+
+### Bug Fixes
+
+* **0000:** allow null value in Combobox to resolve type error ([3e3c99c](https://github.com/bcgov/platform-services-registry/commit/3e3c99c0ce53857bbdc840dac2f5e38b325bedfd))
+* **0000:** make MongoDB image configurable via IMAGE_MONGODB env var ([2bac638](https://github.com/bcgov/platform-services-registry/commit/2bac63811d8b4837b04bef09baa81b2a4f4a5505))
+* **0000:** pin docker/login-action to full commit SHA for security ([137a1ff](https://github.com/bcgov/platform-services-registry/commit/137a1ff4bb044c5cd147c34bf76237903f2614fb))
+* **0000:** reverse .github/workflows/test.yml ([3e18451](https://github.com/bcgov/platform-services-registry/commit/3e18451eda7d67aa4c93f163803cc7073829fdec))
+* **0000:** upgrade to Chart.js v4.5.1 and fix typings, plugin registration, and null handling ([ff80ba6](https://github.com/bcgov/platform-services-registry/commit/ff80ba6612d41ff483e435e36419deefe53ebc40))
+* **0000:** use GHCR MongoDB image and add registry login for test workflow ([971abf4](https://github.com/bcgov/platform-services-registry/commit/971abf41123645ac869ba25b05fc387a8e0adbcf))
 ## [0.77.0](https://github.com/bcgov/platform-services-registry/compare/v0.76.0...v0.77.0) (2025-09-05)
 
 ### Features
