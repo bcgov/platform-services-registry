@@ -25,7 +25,7 @@ jobs:
 
     steps:
     - uses: hmarr/debug-action@f7318c783045ac39ed9bb497e22ce835fdafbfe6
-    - uses: actions/checkout@71cf2267d89c5cb81562390fa70a37fa40b1305e
+    - uses: actions/checkout@c2d88d3ecc89a9ef08eebf45d9637801dcee7eb5
 
     - name: Build and Push
       uses: egose/actions/docker-build-push@2d58a4812db6cab0a183efacffaadb25230a738f
@@ -48,7 +48,7 @@ jobs:
 
     steps:
     - uses: hmarr/debug-action@f7318c783045ac39ed9bb497e22ce835fdafbfe6
-    - uses: actions/checkout@71cf2267d89c5cb81562390fa70a37fa40b1305e
+    - uses: actions/checkout@c2d88d3ecc89a9ef08eebf45d9637801dcee7eb5
 
     - name: Build and Push
       uses: egose/actions/docker-build-push@2d58a4812db6cab0a183efacffaadb25230a738f
@@ -71,7 +71,7 @@ jobs:
 
     steps:
     - uses: hmarr/debug-action@f7318c783045ac39ed9bb497e22ce835fdafbfe6
-    - uses: actions/checkout@71cf2267d89c5cb81562390fa70a37fa40b1305e
+    - uses: actions/checkout@c2d88d3ecc89a9ef08eebf45d9637801dcee7eb5
 
     - name: Build and Push
       uses: egose/actions/docker-build-push@2d58a4812db6cab0a183efacffaadb25230a738f
@@ -94,7 +94,7 @@ jobs:
 
     steps:
     - uses: hmarr/debug-action@f7318c783045ac39ed9bb497e22ce835fdafbfe6
-    - uses: actions/checkout@71cf2267d89c5cb81562390fa70a37fa40b1305e
+    - uses: actions/checkout@c2d88d3ecc89a9ef08eebf45d9637801dcee7eb5
 
     - name: Build and Push
       uses: egose/actions/docker-build-push@2d58a4812db6cab0a183efacffaadb25230a738f
@@ -117,7 +117,7 @@ jobs:
 
     steps:
     - uses: hmarr/debug-action@f7318c783045ac39ed9bb497e22ce835fdafbfe6
-    - uses: actions/checkout@71cf2267d89c5cb81562390fa70a37fa40b1305e
+    - uses: actions/checkout@c2d88d3ecc89a9ef08eebf45d9637801dcee7eb5
 
     - name: Build and Push
       uses: egose/actions/docker-build-push@2d58a4812db6cab0a183efacffaadb25230a738f
@@ -140,7 +140,7 @@ jobs:
 
     steps:
     - uses: hmarr/debug-action@f7318c783045ac39ed9bb497e22ce835fdafbfe6
-    - uses: actions/checkout@71cf2267d89c5cb81562390fa70a37fa40b1305e
+    - uses: actions/checkout@c2d88d3ecc89a9ef08eebf45d9637801dcee7eb5
 
     - name: Build and Push
       uses: egose/actions/docker-build-push@2d58a4812db6cab0a183efacffaadb25230a738f
