@@ -1,11 +1,12 @@
-import { createContext, useContext, useRef } from 'react';
+import { createContext, useContext, useState } from 'react';
 import { proxy, useSnapshot } from 'valtio';
 
 export function createValtioContext<T extends object>(initialState: T) {
-  const StateContext = createContext<T>(initialState);
+  const state = proxy(initialState);
+
+  const StateContext = createContext<typeof state>(state);
 
   const StateProvider = function Provider({ children }: { children: React.ReactNode }) {
-    const state = useRef(proxy(initialState)).current;
     return <StateContext.Provider value={state}>{children}</StateContext.Provider>;
   };
 
@@ -30,7 +31,7 @@ export function createGlobalValtio<T extends object>(initialState: T) {
 }
 
 export function useValtio<T extends object>(data: T) {
-  const state = useRef(proxy<T>(data)).current;
+  const state = useState(() => proxy<T>(data));
   const snapshot = useSnapshot(state);
   return [state, snapshot];
 }
