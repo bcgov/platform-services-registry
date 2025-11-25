@@ -27,7 +27,7 @@ import Footer from '@/components/layouts/Footer';
 import Header from '@/components/layouts/Header';
 import Provider from '@/components/layouts/Provider';
 import { getInfo } from '@/services/backend';
-import { useAppState } from '@/states/global';
+import { appState as appGlobalState, useAppState } from '@/states/global';
 import { cn } from '@/utils/js';
 import { theme } from './mantine-theme';
 
@@ -78,7 +78,7 @@ const additionalMinistryOptions = [
 ];
 
 function MainBody({ children }: { children: React.ReactNode }) {
-  const [appState, appSnapshot] = useAppState();
+  const [, appSnapshot] = useAppState();
 
   const { data: info } = useQuery({
     queryKey: ['info'],
@@ -86,27 +86,37 @@ function MainBody({ children }: { children: React.ReactNode }) {
   });
 
   useEffect(() => {
-    if (info) {
-      info.ORGANIZATION_OPTIONS = info.ORGANIZATIONS.map(({ id, name }) => ({ label: name, value: id }));
-      info.ORGANIZATION_SEARCH_OPTIONS = info.ORGANIZATIONS.map(({ code, name }) => ({ label: name, value: code }));
-      info.ORGANIZATION_BY_ID = info.ORGANIZATIONS.reduce(
-        (map, org) => {
-          map[org.id] = org;
-          return map;
-        },
-        {} as Record<string, string>,
-      );
-      info.ORGANIZATION_NAME_BY_CODE = info.ORGANIZATIONS.concat(additionalMinistryOptions).reduce(
-        (map, org) => {
-          map[org.code] = org.name;
-          return map;
-        },
-        {} as Record<string, string>,
-      );
+    if (!info) return;
 
-      appState.info = info;
+    const orgOptions = info.ORGANIZATIONS.map(({ id, name }) => ({
+      label: name,
+      value: id,
+    }));
+
+    const orgSearchOptions = info.ORGANIZATIONS.map(({ code, name }) => ({
+      label: name,
+      value: code,
+    }));
+
+    const orgById: Record<string, any> = {};
+    for (const org of info.ORGANIZATIONS) {
+      orgById[org.id] = org;
     }
-  }, [appState, info]);
+
+    const nameByCode: Record<string, string> = {};
+    for (const org of [...info.ORGANIZATIONS, ...additionalMinistryOptions]) {
+      nameByCode[org.code] = org.name;
+    }
+
+    const derivedInfo = {
+      ...info,
+      ORGANIZATION_OPTIONS: orgOptions,
+      ORGANIZATION_SEARCH_OPTIONS: orgSearchOptions,
+      ORGANIZATION_BY_ID: orgById,
+      ORGANIZATION_NAME_BY_CODE: nameByCode,
+    };
+    appGlobalState.info = derivedInfo;
+  }, [info]);
 
   return (
     <div className={cn('flex flex-col min-h-screen', bcsans.className)}>
