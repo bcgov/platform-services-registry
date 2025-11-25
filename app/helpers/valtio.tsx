@@ -31,7 +31,7 @@ export function createGlobalValtio<T extends object>(initialState: T) {
 }
 
 export function useValtio<T extends object>(data: T) {
-  const state = useState(() => proxy<T>(data));
+  const [state] = useState(() => proxy<T>(data));
   const snapshot = useSnapshot(state);
   return [state, snapshot];
 }
