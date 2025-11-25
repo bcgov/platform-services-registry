@@ -20,7 +20,7 @@ function isValidDate(d: Date): boolean {
 }
 
 function cloneIfValid(date: Date): Date | null {
-  return isValidDate(date) ? new Date(date.getTime()) : null;
+  return isValidDate(date) ? new Date(date) : null;
 }
 
 function parseFromNumber(input: number): Date | null {
@@ -39,9 +39,10 @@ function parseMonthYear(trimmed: string): Date | null {
   if (!/^[A-Za-z]{3,9} \d{4}$/.test(trimmed)) return null;
 
   const [monthName, yearStr] = trimmed.split(' ');
-  const monthIndex = MONTH_ABBREVIATIONS.indexOf(
-    monthName.slice(0, 3).toLowerCase() as (typeof MONTH_ABBREVIATIONS)[number],
-  );
+
+  const normalized = monthName.slice(0, 3).toLowerCase();
+  const monthIndex = MONTH_ABBREVIATIONS.indexOf(normalized);
+
   const year = Number(yearStr);
 
   if (monthIndex === -1 || Number.isNaN(year)) return null;
