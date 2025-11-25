@@ -13,48 +13,82 @@ import _isNil from 'lodash-es/isNil';
 import _isString from 'lodash-es/isString';
 import { monthNames } from '@/constants/common';
 
+const MONTH_ABBREVIATIONS = ['jan', 'feb', 'mar', 'apr', 'may', 'jun', 'jul', 'aug', 'sep', 'oct', 'nov', 'dec'];
+
+function isValidDate(d: Date): boolean {
+  return !Number.isNaN(d.getTime());
+}
+
+function cloneIfValid(date: Date): Date | null {
+  return isValidDate(date) ? new Date(date.getTime()) : null;
+}
+
+function parseFromNumber(input: number): Date | null {
+  const d = new Date(input);
+  return isValidDate(d) ? d : null;
+}
+
+function parseYyyyMmDd(trimmed: string): Date | null {
+  if (!/^\d{4}-\d{2}-\d{2}$/.test(trimmed)) return null;
+
+  const d = new Date(`${trimmed}T00:00:00`);
+  return isValidDate(d) ? d : null;
+}
+
+function parseMonthYear(trimmed: string): Date | null {
+  if (!/^[A-Za-z]{3,9} \d{4}$/.test(trimmed)) return null;
+
+  const [monthName, yearStr] = trimmed.split(' ');
+  const monthIndex = MONTH_ABBREVIATIONS.indexOf(
+    monthName.slice(0, 3).toLowerCase() as (typeof MONTH_ABBREVIATIONS)[number],
+  );
+  const year = Number(yearStr);
+
+  if (monthIndex === -1 || Number.isNaN(year)) return null;
+
+  const d = new Date(year, monthIndex, 1);
+  return isValidDate(d) ? d : null;
+}
+
+function parseIsoLike(trimmed: string): Date | null {
+  const iso = trimmed.includes('T') ? trimmed : `${trimmed}T00:00:00`;
+  const d = new Date(iso);
+  return isValidDate(d) ? d : null;
+}
+
 export function toSafeDate(input: unknown): Date {
-  if (input == null || input === '') return new Date();
+  const now = () => new Date();
 
-  if (input instanceof Date && !isNaN(input.getTime())) {
-    return new Date(input.getTime());
+  if (input == null || input === '') return now();
+
+  // Date
+  if (input instanceof Date) {
+    const cloned = cloneIfValid(input);
+    return cloned ?? now();
   }
 
+  // Number timestamp
   if (typeof input === 'number') {
-    const d = new Date(input);
-    if (!isNaN(d.getTime())) return d;
+    const parsed = parseFromNumber(input);
+    return parsed ?? now();
   }
 
+  // String
   if (typeof input === 'string') {
     const trimmed = input.trim();
 
-    if (/^\d{4}-\d{2}-\d{2}$/.test(trimmed)) {
-      const d = new Date(`${trimmed}T00:00:00`);
-      if (!isNaN(d.getTime())) return d;
-    }
+    const fromYyyyMmDd = parseYyyyMmDd(trimmed);
+    if (fromYyyyMmDd) return fromYyyyMmDd;
 
-    if (/^[A-Za-z]{3,9} \d{4}$/.test(trimmed)) {
-      const [monthName, yearStr] = trimmed.split(' ');
-      const monthMap = ['jan', 'feb', 'mar', 'apr', 'may', 'jun', 'jul', 'aug', 'sep', 'oct', 'nov', 'dec'];
+    const fromMonthYear = parseMonthYear(trimmed);
+    if (fromMonthYear) return fromMonthYear;
 
-      const month = monthMap.indexOf(monthName.slice(0, 3).toLowerCase());
-      const year = Number(yearStr);
-
-      if (month !== -1 && !isNaN(year)) {
-        const d = new Date(year, month, 1);
-        if (!isNaN(d.getTime())) return d;
-      }
-    }
-
-    const iso = trimmed.includes('T') ? trimmed : `${trimmed}T00:00:00`;
-    const parsed = new Date(iso);
-    if (!isNaN(parsed.getTime())) return parsed;
+    const fromIsoLike = parseIsoLike(trimmed);
+    if (fromIsoLike) return fromIsoLike;
   }
 
   const fallback = new Date(input as any);
-  if (!isNaN(fallback.getTime())) return fallback;
-
-  return new Date();
+  return isValidDate(fallback) ? fallback : now();
 }
 
 export function formatDate(date: string | number | Date | null | undefined, formatStr = 'yyyy-MM-dd hh:mm:ss aa') {
