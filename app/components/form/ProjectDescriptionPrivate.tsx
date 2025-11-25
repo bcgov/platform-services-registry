@@ -43,8 +43,6 @@ export default function ProjectDescriptionPrivate({
     if (!session.permissions.viewAllPrivateCloudProducts) {
       return clustersWithoutDR.filter((cluster) => !cluster.includes('LAB'));
     }
-
-    // иначе — полный список
     return clustersWithoutDR;
   }, [session]);
 
