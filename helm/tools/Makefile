@@ -65,10 +65,15 @@ install: helm-dep
 install:
 	@helm install $(call arguments)
 
+HELM_TIMEOUT ?= 20m
+
 .PHONY: upgrade
 upgrade: helm-dep
 upgrade:
-	@helm upgrade --install $(call arguments)  --timeout 15m --wait
+	@helm upgrade --install $(call arguments) \
+	  --timeout $(HELM_TIMEOUT) --wait \
+	  --set airflow.migrateDatabaseJob.enabled="false" \
+	  --set airflow.webserver.defaultUser.enabled="false"
 
 .PHONY: lint
 lint: helm-dep
