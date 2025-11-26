@@ -68,7 +68,7 @@ install:
 .PHONY: upgrade
 upgrade: helm-dep
 upgrade:
-	@helm upgrade --install $(call arguments)
+	@helm upgrade --install $(call arguments)  --timeout 15m --wait
 
 .PHONY: lint
 lint: helm-dep
