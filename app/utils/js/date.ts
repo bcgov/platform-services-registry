@@ -13,10 +13,89 @@ import _isNil from 'lodash-es/isNil';
 import _isString from 'lodash-es/isString';
 import { monthNames } from '@/constants/common';
 
+const MONTH_ABBREVIATIONS = ['jan', 'feb', 'mar', 'apr', 'may', 'jun', 'jul', 'aug', 'sep', 'oct', 'nov', 'dec'];
+
+function isValidDate(d: Date): boolean {
+  return !Number.isNaN(d.getTime());
+}
+
+function cloneIfValid(date: Date): Date | null {
+  return isValidDate(date) ? new Date(date) : null;
+}
+
+function parseFromNumber(input: number): Date | null {
+  const d = new Date(input);
+  return isValidDate(d) ? d : null;
+}
+
+function parseYyyyMmDd(trimmed: string): Date | null {
+  if (!/^\d{4}-\d{2}-\d{2}$/.test(trimmed)) return null;
+
+  const d = new Date(`${trimmed}T00:00:00`);
+  return isValidDate(d) ? d : null;
+}
+
+function parseMonthYear(trimmed: string): Date | null {
+  if (!/^[A-Za-z]{3,9} \d{4}$/.test(trimmed)) return null;
+
+  const [monthName, yearStr] = trimmed.split(' ');
+
+  const normalized = monthName.slice(0, 3).toLowerCase();
+  const monthIndex = MONTH_ABBREVIATIONS.indexOf(normalized);
+
+  const year = Number(yearStr);
+
+  if (monthIndex === -1 || Number.isNaN(year)) return null;
+
+  const d = new Date(year, monthIndex, 1);
+  return isValidDate(d) ? d : null;
+}
+
+function parseIsoLike(trimmed: string): Date | null {
+  const iso = trimmed.includes('T') ? trimmed : `${trimmed}T00:00:00`;
+  const d = new Date(iso);
+  return isValidDate(d) ? d : null;
+}
+
+export function toSafeDate(input: unknown): Date {
+  const now = () => new Date();
+
+  if (input == null || input === '') return now();
+
+  // Date
+  if (input instanceof Date) {
+    const cloned = cloneIfValid(input);
+    return cloned ?? now();
+  }
+
+  // Number timestamp
+  if (typeof input === 'number') {
+    const parsed = parseFromNumber(input);
+    return parsed ?? now();
+  }
+
+  // String
+  if (typeof input === 'string') {
+    const trimmed = input.trim();
+
+    const fromYyyyMmDd = parseYyyyMmDd(trimmed);
+    if (fromYyyyMmDd) return fromYyyyMmDd;
+
+    const fromMonthYear = parseMonthYear(trimmed);
+    if (fromMonthYear) return fromMonthYear;
+
+    const fromIsoLike = parseIsoLike(trimmed);
+    if (fromIsoLike) return fromIsoLike;
+  }
+
+  const fallback = new Date(input as any);
+  return isValidDate(fallback) ? fallback : now();
+}
+
 export function formatDate(date: string | number | Date | null | undefined, formatStr = 'yyyy-MM-dd hh:mm:ss aa') {
   if (!date) return '';
-
-  const d = new Date(date);
+  const safeDate = toSafeDate(date);
+  const d = new Date(safeDate);
   if (!_isDate(d)) return '';
 
   return format(d, formatStr);
