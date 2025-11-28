@@ -65,6 +65,10 @@ export const { state: privateProductState, useValtioState: usePrivateProductStat
   editQuotaChangeStatus: undefined,
 });
 
+export function setEditQuotaChangeStatus(status: QuotaChangeStatus | undefined) {
+  privateProductState.editQuotaChangeStatus = status;
+}
+
 export const { state: publicProductState, useValtioState: usePublicProductState } = createGlobalValtio<{
   licencePlate: string;
   currentProduct: PublicCloudProductDetailDecorated | undefined;

@@ -8,11 +8,11 @@ import ExternalLink from '@/components/generic/button/ExternalLink';
 import HookFormTextarea from '@/components/generic/input/HookFormTextarea';
 import HookFormTextInput from '@/components/generic/input/HookFormTextInput';
 import { getQuotaChangeStatus } from '@/services/backend/private-cloud/products';
-import { usePrivateProductState } from '@/states/global';
+import { usePrivateProductState, setEditQuotaChangeStatus } from '@/states/global';
 import { cn } from '@/utils/js';
 
 export default function QuotasChangeInfo({ disabled, className }: { disabled: boolean; className?: string }) {
-  const [privateProductState, privateSnap] = usePrivateProductState();
+  const [, privateSnap] = usePrivateProductState();
   const { watch, setValue, getValues } = useFormContext();
 
   const [resourceRequestsWatch] = watch(['resourceRequests']);
@@ -34,7 +34,7 @@ export default function QuotasChangeInfo({ disabled, className }: { disabled: bo
       setValue('quotaJustification', '');
     }
 
-    privateProductState.editQuotaChangeStatus = quotaChangeStatus;
+    setEditQuotaChangeStatus(quotaChangeStatus);
   }, [quotaChangeStatus]);
 
   if (isLoading || !quotaChangeStatus) return null;

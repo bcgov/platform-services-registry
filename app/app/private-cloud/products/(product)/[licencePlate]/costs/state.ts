@@ -14,3 +14,21 @@ export const { state: costState, useValtioState: useCostState } = createGlobalVa
   data: null,
   isDataLoading: false,
 });
+
+export const costActions = {
+  setData(data: PeriodCosts | null) {
+    costState.data = data;
+  },
+  setIsDataLoading(value: boolean) {
+    costState.isDataLoading = value;
+  },
+  setPeriod(period: CostPeriod) {
+    costState.period = period;
+  },
+  setSelectedDate(date: Date) {
+    costState.selectedDate = date;
+  },
+  setForecast(value: boolean) {
+    costState.forecast = value;
+  },
+};

@@ -1,5 +1,5 @@
 import { useSession } from 'next-auth/react';
-import { useState, useEffect, ReactNode } from 'react';
+import { ReactNode, useMemo } from 'react';
 import { useFormContext } from 'react-hook-form';
 import { useSnapshot } from 'valtio';
 import AGMinistryCheckBox from '@/components/form/AGMinistryCheckBox';
@@ -33,17 +33,18 @@ export default function ProjectDescriptionPrivate({
     formState: { errors },
   } = useFormContext();
 
-  const [clustersList, setClustersList] = useState(clustersWithoutDR);
-
   const { data: session } = useSession({
     required: true,
   });
 
-  useEffect(() => {
-    if (session && !session?.permissions.viewAllPrivateCloudProducts) {
-      setClustersList(clustersWithoutDR.filter((cluster) => cluster.indexOf('LAB') === -1));
+  const clustersList = useMemo(() => {
+    if (!session) return clustersWithoutDR;
+
+    if (!session.permissions.viewAllPrivateCloudProducts) {
+      return clustersWithoutDR.filter((cluster) => !cluster.includes('LAB'));
     }
-  }, [session, setClustersList]);
+    return clustersWithoutDR;
+  }, [session]);
 
   let temporaryProduct: ReactNode = null;
   if (mode === 'create') {
