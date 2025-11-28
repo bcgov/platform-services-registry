@@ -2,16 +2,18 @@ import { createContext, useContext, useState } from 'react';
 import { proxy, useSnapshot } from 'valtio';
 
 export function createValtioContext<T extends object>(initialState: T) {
-  const state = proxy(initialState);
-
-  const StateContext = createContext<typeof state>(state);
+  const StateContext = createContext<T | null>(null);
 
   const StateProvider = function Provider({ children }: { children: React.ReactNode }) {
+    const [state] = useState(() => proxy(initialState));
     return <StateContext.Provider value={state}>{children}</StateContext.Provider>;
   };
 
   const useProviderState = function useProviderState() {
     const state = useContext(StateContext);
+    if (!state) {
+      throw new Error('useProviderState must be used within StateProvider');
+    }
     const snapshot = useSnapshot(state);
     return { state, snapshot };
   };
