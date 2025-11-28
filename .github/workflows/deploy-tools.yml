@@ -15,7 +15,7 @@ concurrency:
 jobs:
   deploy:
     runs-on: ubuntu-22.04
-    timeout-minutes: 40
+    timeout-minutes: 20
     permissions:
       contents: read
     environment:
@@ -33,6 +33,20 @@ jobs:
         openshift_token: ${{ secrets.OPENSHIFT_TOKEN }}
         namespace: ${{ vars.OPENSHIFT_NAMESPACE }}
         insecure_skip_tls_verify: true
+
+    - name: Resolve PostgreSQL image from Bitnami
+      id: postgres-image
+      run: ./scripts/resolve-postgres-image.sh
+
+    - name: Ensure PostgreSQL image digest is set
+      run: |
+        set -euo pipefail
+        if [[ -z "${POSTGRES_IMAGE_DIGEST:-}" ]]; then
+        echo "::error::POSTGRES_IMAGE_DIGEST is not set. Previous step failed to resolve a PostgreSQL image digest."
+        echo "Refusing to run 'make upgrade' with an unknown PostgreSQL image."
+        exit 1
+        fi
+        echo "Using PostgreSQL image digest: $POSTGRES_IMAGE_DIGEST"
 
     - name: Deploy apps with Helm chart
       run: |
