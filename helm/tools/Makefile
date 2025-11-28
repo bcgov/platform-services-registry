@@ -3,6 +3,10 @@ NAME := secdash
 
 NAMESPACE=
 
+POSTGRES_IMAGE_REGISTRY ?= docker.io
+POSTGRES_IMAGE_REPOSITORY ?= bitnami/postgresql
+POSTGRES_IMAGE_DIGEST ?=
+
 ifndef NAMESPACE
 $(error NAMESPACE is not set)
 endif
@@ -43,6 +47,11 @@ define arguments
 	--set sonarqube.initContainers.securityContext.runAsUser="${UID}" \
 	--set sonarqube.initContainers.securityContext.runAsGroup="0" \
 	--set dags.sha="${SHA}" \
+	$(if $(POSTGRES_IMAGE_DIGEST),\
+	  --set postgresql.image.registry="$(POSTGRES_IMAGE_REGISTRY)" \
+	  --set postgresql.image.repository="$(POSTGRES_IMAGE_REPOSITORY)" \
+	  --set postgresql.image.tag="" \
+	  --set postgresql.image.digest="$(POSTGRES_IMAGE_DIGEST)",) \
 	$(foreach filename,$(FILENAMES),\
 		--set "dags.volumeMounts[$(INDEX)].name=secdash-airflow-dags-copy" \
 		--set "dags.volumeMounts[$(INDEX)].mountPath=/newdags/$(filename)" \
@@ -70,10 +79,7 @@ HELM_TIMEOUT ?= 20m
 .PHONY: upgrade
 upgrade: helm-dep
 upgrade:
-	@helm upgrade --install $(call arguments) \
-	  --timeout $(HELM_TIMEOUT) --wait \
-	  --set airflow.migrateDatabaseJob.enabled="false" \
-	  --set airflow.webserver.defaultUser.enabled="false"
+	@helm upgrade --install $(call arguments)
 
 .PHONY: lint
 lint: helm-dep
