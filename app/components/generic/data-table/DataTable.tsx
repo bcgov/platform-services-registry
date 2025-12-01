@@ -1,3 +1,4 @@
+/* react-compiler-disable incompatible-library */
 import { UnstyledButton } from '@mantine/core';
 import { IconArrowDown, IconArrowsSort, IconArrowUp } from '@tabler/icons-react';
 import {

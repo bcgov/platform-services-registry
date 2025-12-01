@@ -17,6 +17,7 @@ import _compact from 'lodash-es/compact';
 import _sortBy from 'lodash-es/sortBy';
 import _startCase from 'lodash-es/startCase';
 import _uniqBy from 'lodash-es/uniqBy';
+import { useMemo } from 'react';
 import { useSnapshot } from 'valtio';
 import CopyableButton from '@/components/generic/button/CopyableButton';
 import MailLink from '@/components/generic/button/MailLink';
@@ -80,15 +81,15 @@ function UserDetails({ data }: { data?: UserDetailWithColeagues }) {
     };
   }
 
-  let indicatorColor = '#D3D3D3';
-  let indicatorProcessing = false;
-
   // Active for the last 1 minute
   const ONE_MINUTE = 60 * 1000;
-  if (data.lastSeen && Date.now() - new Date(data.lastSeen).getTime() < ONE_MINUTE) {
-    indicatorColor = 'green';
-    indicatorProcessing = true;
-  }
+  const isActive = useMemo(() => {
+    if (!data.lastSeen) return false;
+    return Date.now() - new Date(data.lastSeen).getTime() < ONE_MINUTE;
+  }, [data.lastSeen]);
+
+  const indicatorColor = isActive ? 'green' : '#D3D3D3';
+  const indicatorProcessing = isActive;
 
   const privateCloudProducts = _uniqBy(
     [

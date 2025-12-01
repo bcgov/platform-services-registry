@@ -6,7 +6,7 @@ import _isEqual from 'lodash-es/isEqual';
 import _truncate from 'lodash-es/truncate';
 import { Session } from 'next-auth';
 import React, { useState } from 'react';
-import { FormProvider, useForm } from 'react-hook-form';
+import { FormProvider, useForm, useWatch } from 'react-hook-form';
 import FormDatePicker from '@/components/generic/select/FormDatePicker';
 import HookFormMultiSelect from '@/components/generic/select/HookFormMultiSelect';
 import { failure, success } from '@/components/notification';
@@ -32,7 +32,10 @@ export default function TableBody({ data, availableRoles = [], session }: TableP
     },
   });
 
-  const [users] = methods.watch(['users']);
+  const users = useWatch({
+    control: methods.control,
+    name: 'users',
+  });
 
   const rows = users.length ? (
     users.map((item, index) => (
