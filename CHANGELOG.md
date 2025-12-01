@@ -1,3 +1,8 @@
+## [0.78.1](https://github.com/bcgov/platform-services-registry/compare/v0.78.0...v0.78.1) (2025-12-01)
+
+### Bug Fixes
+
+* **0000:** increase job-pre-db-backup memory ([6e4f93e](https://github.com/bcgov/platform-services-registry/commit/6e4f93ec1465b2d6efe36ee2a888959c930741f7))
 ## [0.78.0](https://github.com/bcgov/platform-services-registry/compare/v0.77.0...v0.78.0) (2025-11-24)
 
 ### Features
