@@ -151,7 +151,7 @@ export default function BillingStatusProgress({
       ) : (
         <>
           <div>
-            The OCIO Citizen Service’s
+            The CSBC Citizen Service’s
             <br />
             Expense Authority
           </div>
@@ -205,7 +205,7 @@ export default function BillingStatusProgress({
         label="Review"
         description={
           <span>
-            The OCIO Citizen Service’s
+            The CSBC Citizen Service’s
             <br />
             Expense Authority
           </span>
