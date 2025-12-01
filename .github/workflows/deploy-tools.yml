@@ -35,8 +35,42 @@ jobs:
         insecure_skip_tls_verify: true
 
     - name: Resolve PostgreSQL image from Bitnami
-      id: postgres-image
-      run: ./scripts/resolve-postgres-image.sh
+      run: |
+        set -euo pipefail
+
+        REG="docker.io"
+        REPO="bitnami/postgresql"
+        TAG="latest"
+
+        SRC_IMAGE="${REG}/${REPO}:${TAG}"
+        echo "Pulling $SRC_IMAGE"
+
+        if ! docker pull "$SRC_IMAGE"; then
+          echo "::error::Failed to pull $SRC_IMAGE. Bitnami may have removed or restricted this image."
+          exit 1
+        fi
+
+        FULL_REF="$(docker inspect --format='{{index .RepoDigests 0}}' "$SRC_IMAGE" || true)"
+
+        if [[ -z "${FULL_REF}" ]]; then
+          echo "::error::Unable to read RepoDigests for $SRC_IMAGE. Cannot resolve a fixed digest."
+          exit 1
+        fi
+
+        REF_HASH="${FULL_REF#*@}"
+
+        if [[ -z "${REF_HASH}" ]]; then
+          echo "::error::Resolved hash is empty for $SRC_IMAGE. RepoDigests: ${FULL_REF}"
+          exit 1
+        fi
+
+        {
+          echo "POSTGRES_IMAGE_REGISTRY=${REG}"
+          echo "POSTGRES_IMAGE_REPOSITORY=${REPO}"
+          echo "POSTGRES_IMAGE_DIGEST=${REF_HASH}"
+        } >> "$GITHUB_ENV"
+
+        echo "Resolved PostgreSQL image reference: $FULL_REF"
 
     - name: Ensure PostgreSQL image digest is set
       run: |
