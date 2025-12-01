@@ -7,7 +7,7 @@ import { getMonthlyCosts, getQuarterlyCosts, getYearlyCosts } from '@/services/b
 import { CostPeriod } from '@/types/private-cloud';
 import { formatAsYearQuarter, getDateFromYyyyMmDd } from '@/utils/js';
 import ForecastTooltip from './ForecastTooltip';
-import { costActions, useCostState } from './state';
+import { useCostState } from './state';
 
 const inputClasses = 'border-gray-600 focus:border-gray-800 dark:border-gray-500 dark:focus:border-gray-300';
 
@@ -25,7 +25,7 @@ export default function PeriodSelector({
   licencePlate: string;
   children?: React.ReactNode;
 }) {
-  const [, snap] = useCostState();
+  const [state, snap] = useCostState();
 
   const { data, isLoading } = useQuery({
     queryKey: ['costItems', licencePlate, snap.period, snap.selectedDate],
@@ -44,19 +44,15 @@ export default function PeriodSelector({
   });
 
   useEffect(() => {
-    costActions.setIsDataLoading(isLoading);
-    if (data) costActions.setData(data);
+    if (data) state.data = data;
+    state.isDataLoading = isLoading;
   }, [data, isLoading]);
 
   const isMonthPicker = snap.period === CostPeriod.Monthly || snap.period === CostPeriod.Quarterly;
 
-  const handlePeriodChange = (value: string | null) => {
-    if (!value) return;
-    costActions.setPeriod(value as CostPeriod);
-  };
-  const handleDateChange = (value: string | null) => {
-    costActions.setSelectedDate(value ? getDateFromYyyyMmDd(value) : new Date());
-  };
+  const handlePeriodChange = (value: string | null) => (state.period = value as CostPeriod);
+  const handleDateChange = (value: string | null) =>
+    (state.selectedDate = value ? getDateFromYyyyMmDd(value) : new Date());
 
   return (
     <div className="space-y-4">
@@ -96,7 +92,7 @@ export default function PeriodSelector({
           <Switch
             label="Forecast"
             checked={snap.forecast}
-            onChange={(event) => costActions.setForecast(event.currentTarget.checked)}
+            onChange={(event) => (state.forecast = event.currentTarget.checked)}
             classNames={{
               label: 'cursor-pointer',
               thumb: 'cursor-pointer',

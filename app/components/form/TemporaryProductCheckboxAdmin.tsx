@@ -1,5 +1,5 @@
 import { Alert } from '@mantine/core';
-import { useMutation } from '@tanstack/react-query';
+import { useQuery, useMutation } from '@tanstack/react-query';
 import { useEffect } from 'react';
 import { useFormContext } from 'react-hook-form';
 import FormCheckbox from '@/components/generic/checkbox/FormCheckbox';
@@ -15,8 +15,8 @@ export default function TemporaryProductCheckboxAdmin({
   disabled?: boolean;
   className?: string;
 }) {
-  const [, privateSnap] = usePrivateProductState();
-  const { register, watch, formState, resetField } = useFormContext();
+  const [privateState, privateSnap] = usePrivateProductState();
+  const { register, watch, formState, resetField, setValue } = useFormContext();
   const isTest = watch('isTest');
 
   const {
@@ -28,6 +28,7 @@ export default function TemporaryProductCheckboxAdmin({
     mutationFn: (isTemporary: boolean) =>
       updatePrivateCloudProductAdmin(privateSnap.licencePlate, { isTest: isTemporary }),
     onSuccess: async (prod) => {
+      privateState.currentProduct = prod;
       resetField('isTest', { defaultValue: prod.isTest });
       success();
     },

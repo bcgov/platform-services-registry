@@ -27,6 +27,7 @@ export default function SearchFilterExport({
   onExport,
   children,
 }: Props) {
+  const [searchKey, setSearchKey] = useState(initialSearch);
   const pathname = usePathname();
   const { replace } = useRouter();
   const searchParams = useSearchParams()!;
@@ -36,10 +37,11 @@ export default function SearchFilterExport({
   const debouncedValue = useDebounce<string>(searchTerm, 450);
 
   useEffect(() => {
-    if (onSearch) {
-      onSearch(debouncedValue);
+    if (searchKey !== debouncedValue) {
+      setSearchKey(debouncedValue);
+      if (onSearch) onSearch(debouncedValue);
     }
-  }, [onSearch, debouncedValue]);
+  }, [onSearch, searchKey, setSearchKey, debouncedValue]);
 
   const handleDiscloserToggle = () => {
     let opened = false;
