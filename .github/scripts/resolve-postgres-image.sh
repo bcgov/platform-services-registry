@@ -6,21 +6,21 @@ SRC_IMAGE="docker.io/bitnami/postgresql:latest"
 echo "Pulling $SRC_IMAGE"
 
 if ! docker pull "$SRC_IMAGE"; then
-    echo "::error::Failed to pull $SRC_IMAGE. Bitnami may have removed or restricted this image."
+    echo "::error::Failed to pull $SRC_IMAGE. Bitnami may have removed or restricted this image." >&2
     exit 1
 fi
 
 FULL_REF="$(docker inspect --format='{{index .RepoDigests 0}}' "$SRC_IMAGE" || true)"
 
 if [[ -z ${FULL_REF} ]]; then
-    echo "::error::Unable to read RepoDigests for $SRC_IMAGE. Cannot resolve a fixed digest."
+    echo "::error::Unable to read RepoDigests for $SRC_IMAGE. Cannot resolve a fixed digest." >&2
     exit 1
 fi
 
 REF_HASH="${FULL_REF#*@}"
 
 if [[ -z ${REF_HASH} ]]; then
-    echo "::error::Resolved hash is empty for $SRC_IMAGE. RepoDigests: ${FULL_REF}"
+    echo "::error::Resolved hash is empty for $SRC_IMAGE. RepoDigests: ${FULL_REF}" >&2
     exit 1
 fi
 
