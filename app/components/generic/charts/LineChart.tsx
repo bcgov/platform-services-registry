@@ -106,7 +106,7 @@ export default function LineChart({
     };
 
     return { data: _data, options: _options };
-  }, [chartData, indexKey]);
+  }, [chartData]);
 
   return <Line className={cn(className)} data={data} options={options} />;
 }

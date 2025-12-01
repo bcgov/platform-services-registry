@@ -32,6 +32,7 @@ function CommentForm({
 }: CommentFormProps) {
   const [isLoading, setLoading] = useState(false);
   const [showCommentBox, setShowCommentBox] = useState(false);
+  const [isEditorEmpty, setIsEditorEmpty] = useState(true);
 
   const editorInstance = useEditor({
     extensions: [
@@ -41,9 +42,18 @@ function CommentForm({
       }),
     ],
     content: '',
+    onUpdate: ({ editor }) => {
+      const hasText = editor.getText().trim().length > 0;
+      setIsEditorEmpty(!hasText);
+    },
   });
 
-  const isEditorEmpty = !editorInstance || editorInstance.getText().trim().length === 0;
+  useEffect(() => {
+    if (editorInstance) {
+      const hasText = editorInstance.getText().trim().length > 0;
+      setIsEditorEmpty(!hasText);
+    }
+  }, [editorInstance?.state.doc.content.size, editorInstance]);
 
   const mutation = useMutation({
     mutationFn: () =>
