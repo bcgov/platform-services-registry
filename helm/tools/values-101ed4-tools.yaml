@@ -7,6 +7,11 @@ airflow:
   route:
     host: secdash-airflow.apps.silver.devops.gov.bc.ca
 
+scheduler:
+  env:
+    - name: PYTHONPATH
+      value: "/opt/airflow/dags:/opt/airflow"
+
 sonarqube:
   enabled: false
   route:
