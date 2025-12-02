@@ -34,3 +34,4 @@ checks:
   ignorePaths:
   - helm/main/charts/**
   - helm/tools/charts/**
+  - helm/secdash/charts/**
