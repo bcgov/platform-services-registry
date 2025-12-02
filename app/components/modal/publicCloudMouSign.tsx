@@ -107,7 +107,7 @@ export const openPublicCloudMouSignModal = createModal<ModalProps, ModalState>({
               <p className="text-center font-semibold">
                 The Office of the Chief Information Officer
                 <br />
-                Hereby referred to as “the OCIO”
+                Hereby referred to as “the CSBC”
               </p>
               <p>And</p>
               <p className="text-center font-semibold">
@@ -126,19 +126,19 @@ export const openPublicCloudMouSignModal = createModal<ModalProps, ModalState>({
 
               {isAWS ? (
                 <p className="mb-2">
-                  &emsp;&emsp;AWS and the Government of Canada will invoice the OCIO, monthly, for the services consumed
+                  &emsp;&emsp;AWS and the Government of Canada will invoice the CSBC, monthly, for the services consumed
                   including the Provincial Sales Tax (PST). Additional charges include the 6% brokerage fee that covers
                   the Government of Canada’s commission.
                 </p>
               ) : (
                 <p className="mb-2">
-                  &emsp;&emsp;Microsoft will invoice the OCIO, monthly, for the services consumed including the
-                  Provincial Sales Tax (PST). Additional charges include the 6% OCIO administrative fee.
+                  &emsp;&emsp;Microsoft will invoice the CSBC, monthly, for the services consumed including the
+                  Provincial Sales Tax (PST). Additional charges include the 6% CSBC administrative fee.
                 </p>
               )}
 
               <p className="mb-2">
-                &emsp;&emsp;The OCIO will pass these costs through to the Ministry by Journal Voucher on a quarterly
+                &emsp;&emsp;The CSBC will pass these costs through to the Ministry by Journal Voucher on a quarterly
                 basis.
               </p>
               <p className="mb-2">
@@ -152,7 +152,7 @@ export const openPublicCloudMouSignModal = createModal<ModalProps, ModalState>({
               </p>
               <p>
                 This agreement will be in effect from the date of signing, until a written notification is provided to
-                the OCIO, and/or the project is successfully offboarded, as described on the Public Cloud Accelerator
+                the CSBC, and/or the project is successfully offboarded, as described on the Public Cloud Accelerator
                 <ExternalLink href="https://digital.gov.bc.ca/cloud/services/public/" className="ml-1">
                   service website
                 </ExternalLink>

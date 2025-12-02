@@ -33,7 +33,7 @@ export const reasonForSelectingCloudProviderOptions = [
   },
   { value: 'Vendor Preference', label: 'Vendor preference' },
   { value: 'My Team Expertise', label: 'My team expertise' },
-  { value: 'Internal Support Level Within OCIO', label: 'Internal support level within OCIO' },
+  { value: 'Internal Support Level Within CSBC', label: 'Internal support level within CSBC' },
   { value: 'Project-Specific Requirements', label: 'Project-specific requirements' },
   { value: 'Other', label: 'Other' },
 ];
