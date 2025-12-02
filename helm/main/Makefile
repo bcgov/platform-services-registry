@@ -4,6 +4,7 @@ NAME := pltsvc
 
 NAMESPACE=
 IMAGE_TAG=
+HELM_TIMEOUT ?= 10m
 
 ifndef NAMESPACE
 $(error NAMESPACE is not set)
@@ -36,28 +37,28 @@ helm-dep:
 install: helm-dep
 install: check-image-tag
 install:
-	@helm install $(call arguments)
+	@helm install $(call arguments) --timeout $(HELM_TIMEOUT)
 
 .PHONY: upgrade
 upgrade: helm-dep
 upgrade: check-image-tag
 upgrade:
-	@helm upgrade --install $(call arguments)
+	@helm upgrade --install $(call arguments) --timeout $(HELM_TIMEOUT)
 
 .PHONY: upgrade-db
 upgrade-db: helm-dep
 upgrade-db:
-	@helm upgrade --reuse-values "${NAME}" . -n "${NAMESPACE}" --set app.migration.enabled=false
+	@helm upgrade --reuse-values "${NAME}" . -n "${NAMESPACE}" --set app.migration.enabled=false --timeout $(HELM_TIMEOUT)
 
 .PHONY: lint
 lint: helm-dep
 lint:
-	@helm upgrade --dry-run --install $(call arguments)
+	@helm upgrade --dry-run --install $(call arguments) --timeout $(HELM_TIMEOUT)
 
 .PHONY: uninstall
 uninstall: helm-dep
 uninstall:
-	@helm uninstall ${NAME} -n ${NAMESPACE}
+	@helm uninstall ${NAME} -n ${NAMESPACE} --timeout $(HELM_TIMEOUT)
 
 .PHONY: template
 template: helm-dep
