@@ -2,214 +2,214 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
     <url>
          <loc>https://bcgov.github.io/platform-services-registry/business-logic/roles-permissions.html</loc>
-         <lastmod>2025-11-24</lastmod>
+         <lastmod>2025-12-02</lastmod>
     </url>
     <url>
          <loc>https://bcgov.github.io/platform-services-registry/business-logic/service-accounts.html</loc>
-         <lastmod>2025-11-24</lastmod>
+         <lastmod>2025-12-02</lastmod>
     </url>
     <url>
          <loc>https://bcgov.github.io/platform-services-registry/business-logic/private-cloud/email-scenario.html</loc>
-         <lastmod>2025-11-24</lastmod>
+         <lastmod>2025-12-02</lastmod>
     </url>
     <url>
          <loc>https://bcgov.github.io/platform-services-registry/business-logic/private-cloud/request-workflow.html</loc>
-         <lastmod>2025-11-24</lastmod>
+         <lastmod>2025-12-02</lastmod>
     </url>
     <url>
          <loc>https://bcgov.github.io/platform-services-registry/business-logic/public-cloud/email-scenario.html</loc>
-         <lastmod>2025-11-24</lastmod>
+         <lastmod>2025-12-02</lastmod>
     </url>
     <url>
          <loc>https://bcgov.github.io/platform-services-registry/business-logic/public-cloud/emou-workflow.html</loc>
-         <lastmod>2025-11-24</lastmod>
+         <lastmod>2025-12-02</lastmod>
     </url>
     <url>
          <loc>https://bcgov.github.io/platform-services-registry/business-logic/public-cloud/request-workflow.html</loc>
-         <lastmod>2025-11-24</lastmod>
+         <lastmod>2025-12-02</lastmod>
     </url>
     <url>
          <loc>https://bcgov.github.io/platform-services-registry/ci-cd/cd/database.html</loc>
-         <lastmod>2025-11-24</lastmod>
+         <lastmod>2025-12-02</lastmod>
     </url>
     <url>
          <loc>https://bcgov.github.io/platform-services-registry/ci-cd/cd/debug-failed-deployments.html</loc>
-         <lastmod>2025-11-24</lastmod>
+         <lastmod>2025-12-02</lastmod>
     </url>
     <url>
          <loc>https://bcgov.github.io/platform-services-registry/ci-cd/cd/deployment-release.html</loc>
-         <lastmod>2025-11-24</lastmod>
+         <lastmod>2025-12-02</lastmod>
     </url>
     <url>
          <loc>https://bcgov.github.io/platform-services-registry/ci-cd/cd/release-tag-dispatch.html</loc>
-         <lastmod>2025-11-24</lastmod>
+         <lastmod>2025-12-02</lastmod>
     </url>
     <url>
          <loc>https://bcgov.github.io/platform-services-registry/ci-cd/ci/checks.html</loc>
-         <lastmod>2025-11-24</lastmod>
+         <lastmod>2025-12-02</lastmod>
     </url>
     <url>
          <loc>https://bcgov.github.io/platform-services-registry/ci-cd/ci/dependency-update.html</loc>
-         <lastmod>2025-11-24</lastmod>
+         <lastmod>2025-12-02</lastmod>
     </url>
     <url>
          <loc>https://bcgov.github.io/platform-services-registry/ci-cd/ci/peer-review.html</loc>
-         <lastmod>2025-11-24</lastmod>
+         <lastmod>2025-12-02</lastmod>
     </url>
     <url>
          <loc>https://bcgov.github.io/platform-services-registry/ci-cd/ci/secret-scanning.html</loc>
-         <lastmod>2025-11-24</lastmod>
+         <lastmod>2025-12-02</lastmod>
     </url>
     <url>
          <loc>https://bcgov.github.io/platform-services-registry/clean-code/descriptive-function-names.html</loc>
-         <lastmod>2025-11-24</lastmod>
+         <lastmod>2025-12-02</lastmod>
     </url>
     <url>
          <loc>https://bcgov.github.io/platform-services-registry/clean-code/falsy-check-early.html</loc>
-         <lastmod>2025-11-24</lastmod>
+         <lastmod>2025-12-02</lastmod>
     </url>
     <url>
          <loc>https://bcgov.github.io/platform-services-registry/clean-code/react-handler-naming.html</loc>
-         <lastmod>2025-11-24</lastmod>
+         <lastmod>2025-12-02</lastmod>
     </url>
     <url>
          <loc>https://bcgov.github.io/platform-services-registry/clean-code/return-early.html</loc>
-         <lastmod>2025-11-24</lastmod>
+         <lastmod>2025-12-02</lastmod>
     </url>
     <url>
          <loc>https://bcgov.github.io/platform-services-registry/clean-code/small-components-functions.html</loc>
-         <lastmod>2025-11-24</lastmod>
+         <lastmod>2025-12-02</lastmod>
     </url>
     <url>
          <loc>https://bcgov.github.io/platform-services-registry/clean-code/utils-helpers-shared-components.html</loc>
-         <lastmod>2025-11-24</lastmod>
+         <lastmod>2025-12-02</lastmod>
     </url>
     <url>
          <loc>https://bcgov.github.io/platform-services-registry/code-conventions/naming-conventions.html</loc>
-         <lastmod>2025-11-24</lastmod>
+         <lastmod>2025-12-02</lastmod>
     </url>
     <url>
          <loc>https://bcgov.github.io/platform-services-registry/code-conventions/data-communication/backend-api.html</loc>
-         <lastmod>2025-11-24</lastmod>
+         <lastmod>2025-12-02</lastmod>
     </url>
     <url>
          <loc>https://bcgov.github.io/platform-services-registry/code-conventions/data-communication/backend-json-response.html</loc>
-         <lastmod>2025-11-24</lastmod>
+         <lastmod>2025-12-02</lastmod>
     </url>
     <url>
          <loc>https://bcgov.github.io/platform-services-registry/code-conventions/data-communication/data-communication.html</loc>
-         <lastmod>2025-11-24</lastmod>
+         <lastmod>2025-12-02</lastmod>
     </url>
     <url>
          <loc>https://bcgov.github.io/platform-services-registry/code-conventions/data-communication/data-fetching.html</loc>
-         <lastmod>2025-11-24</lastmod>
+         <lastmod>2025-12-02</lastmod>
     </url>
     <url>
          <loc>https://bcgov.github.io/platform-services-registry/code-conventions/data-communication/react-view-layer.html</loc>
-         <lastmod>2025-11-24</lastmod>
+         <lastmod>2025-12-02</lastmod>
     </url>
     <url>
          <loc>https://bcgov.github.io/platform-services-registry/code-conventions/data-communication/service-layer.html</loc>
-         <lastmod>2025-11-24</lastmod>
+         <lastmod>2025-12-02</lastmod>
     </url>
     <url>
          <loc>https://bcgov.github.io/platform-services-registry/development-setup/chartjs-canvas.html</loc>
-         <lastmod>2025-11-24</lastmod>
+         <lastmod>2025-12-02</lastmod>
     </url>
     <url>
          <loc>https://bcgov.github.io/platform-services-registry/development-setup/graph_cert_setup.html</loc>
-         <lastmod>2025-11-24</lastmod>
+         <lastmod>2025-12-02</lastmod>
     </url>
     <url>
          <loc>https://bcgov.github.io/platform-services-registry/development-setup/local-development-environment.html</loc>
-         <lastmod>2025-11-24</lastmod>
+         <lastmod>2025-12-02</lastmod>
     </url>
     <url>
          <loc>https://bcgov.github.io/platform-services-registry/development-setup/onboarding-offboarding.html</loc>
-         <lastmod>2025-11-24</lastmod>
+         <lastmod>2025-12-02</lastmod>
     </url>
     <url>
          <loc>https://bcgov.github.io/platform-services-registry/development-setup/react-email.html</loc>
-         <lastmod>2025-11-24</lastmod>
+         <lastmod>2025-12-02</lastmod>
     </url>
     <url>
          <loc>https://bcgov.github.io/platform-services-registry/development-setup/resource-metrics.html</loc>
-         <lastmod>2025-11-24</lastmod>
+         <lastmod>2025-12-02</lastmod>
     </url>
     <url>
          <loc>https://bcgov.github.io/platform-services-registry/development-setup/running-locally.html</loc>
-         <lastmod>2025-11-24</lastmod>
+         <lastmod>2025-12-02</lastmod>
     </url>
     <url>
          <loc>https://bcgov.github.io/platform-services-registry/development-setup/sandbox.html</loc>
-         <lastmod>2025-11-24</lastmod>
+         <lastmod>2025-12-02</lastmod>
     </url>
     <url>
          <loc>https://bcgov.github.io/platform-services-registry/git-github/bot-pr-review.html</loc>
-         <lastmod>2025-11-24</lastmod>
+         <lastmod>2025-12-02</lastmod>
     </url>
     <url>
          <loc>https://bcgov.github.io/platform-services-registry/git-github/branching-model.html</loc>
-         <lastmod>2025-11-24</lastmod>
+         <lastmod>2025-12-02</lastmod>
     </url>
     <url>
          <loc>https://bcgov.github.io/platform-services-registry/git-github/clean-pr.html</loc>
-         <lastmod>2025-11-24</lastmod>
+         <lastmod>2025-12-02</lastmod>
     </url>
     <url>
          <loc>https://bcgov.github.io/platform-services-registry/git-github/new-task.html</loc>
-         <lastmod>2025-11-24</lastmod>
+         <lastmod>2025-12-02</lastmod>
     </url>
     <url>
          <loc>https://bcgov.github.io/platform-services-registry/git-github/rocketchat-notification.html</loc>
-         <lastmod>2025-11-24</lastmod>
+         <lastmod>2025-12-02</lastmod>
     </url>
     <url>
          <loc>https://bcgov.github.io/platform-services-registry/home/main.html</loc>
-         <lastmod>2025-11-24</lastmod>
+         <lastmod>2025-12-02</lastmod>
     </url>
     <url>
          <loc>https://bcgov.github.io/platform-services-registry/poc/security-dashboard.html</loc>
-         <lastmod>2025-11-24</lastmod>
+         <lastmod>2025-12-02</lastmod>
     </url>
     <url>
          <loc>https://bcgov.github.io/platform-services-registry/research/bitnami-images-deprecation.html</loc>
-         <lastmod>2025-11-24</lastmod>
+         <lastmod>2025-12-02</lastmod>
     </url>
     <url>
          <loc>https://bcgov.github.io/platform-services-registry/research/gold-migration-and-dr.html</loc>
-         <lastmod>2025-11-24</lastmod>
+         <lastmod>2025-12-02</lastmod>
     </url>
     <url>
          <loc>https://bcgov.github.io/platform-services-registry/research/image-scanner.html</loc>
-         <lastmod>2025-11-24</lastmod>
+         <lastmod>2025-12-02</lastmod>
     </url>
     <url>
          <loc>https://bcgov.github.io/platform-services-registry/research/source-of-truth-of-idir.html</loc>
-         <lastmod>2025-11-24</lastmod>
+         <lastmod>2025-12-02</lastmod>
     </url>
     <url>
          <loc>https://bcgov.github.io/platform-services-registry/technologies/airflow.html</loc>
-         <lastmod>2025-11-24</lastmod>
+         <lastmod>2025-12-02</lastmod>
     </url>
     <url>
          <loc>https://bcgov.github.io/platform-services-registry/technologies/database-tools.html</loc>
-         <lastmod>2025-11-24</lastmod>
+         <lastmod>2025-12-02</lastmod>
     </url>
     <url>
          <loc>https://bcgov.github.io/platform-services-registry/technologies/terraform.html</loc>
-         <lastmod>2025-11-24</lastmod>
+         <lastmod>2025-12-02</lastmod>
     </url>
     <url>
          <loc>https://bcgov.github.io/platform-services-registry/technologies/weasyprint.html</loc>
-         <lastmod>2025-11-24</lastmod>
+         <lastmod>2025-12-02</lastmod>
     </url>
     <url>
          <loc>https://bcgov.github.io/platform-services-registry/tests/api-testing.html</loc>
-         <lastmod>2025-11-24</lastmod>
+         <lastmod>2025-12-02</lastmod>
     </url>
     <url>
          <loc>https://bcgov.github.io/platform-services-registry/tests/e2e.html</loc>
-         <lastmod>2025-11-24</lastmod>
+         <lastmod>2025-12-02</lastmod>
     </url>
 </urlset>
