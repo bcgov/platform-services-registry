@@ -21,7 +21,7 @@ export default function BillingReviewerMou({ product, billing }: Props) {
   return (
     <PublicCloudLayout showFooter>
       <Heading className="text-lg">eMOU review request</Heading>
-      <Text>Hi OCIO Cloud Director,</Text>
+      <Text>Hi CSBC Cloud Director,</Text>
       <Text>
         You have an <span className="font-bold">Electronic Memorandum of Understanding (eMOU)</span> review request for
         the product <span className="font-bold">{name}</span> on the Public Cloud.
