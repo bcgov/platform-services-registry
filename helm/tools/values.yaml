@@ -42,6 +42,8 @@ airflow:
   nameOverride: airflow
   useStandardNaming: true
 
+  jwtSecretName: airflow-jwt-secret # pragma: allowlist secret
+
   uid:
   gid:
 
