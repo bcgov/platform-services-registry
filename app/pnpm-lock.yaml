@@ -22,7 +22,7 @@ importers:
         version: 2.2.9(react-dom@19.2.0(react@19.2.0))(react@19.2.0)
       '@hookform/resolvers':
         specifier: ^5.2.1
-        version: 5.2.2(react-hook-form@7.66.1(react@19.2.0))
+        version: 5.2.2(react-hook-form@7.68.0(react@19.2.0))
       '@keycloak/keycloak-admin-client':
         specifier: ^26.3.2
         version: 26.4.7
@@ -196,7 +196,7 @@ importers:
         version: 4.2.8
       react-hook-form:
         specifier: ^7.62.0
-        version: 7.66.1(react@19.2.0)
+        version: 7.68.0(react@19.2.0)
       react-imask:
         specifier: ^7.6.1
         version: 7.6.1(react@19.2.0)
@@ -5444,6 +5444,7 @@ packages:
   next@15.4.1:
     resolution: {integrity: sha512-eNKB1q8C7o9zXF8+jgJs2CzSLIU3T6bQtX6DcTnCq1sIR1CJ0GlSyRs1BubQi3/JgCnr9Vr+rS5mOMI38FFyQw==}
     engines: {node: ^18.18.0 || ^19.8.0 || >= 20.0.0}
+    deprecated: This version has a security vulnerability. Please upgrade to a patched version. See https://nextjs.org/blog/CVE-2025-66478 for more details.
     hasBin: true
     peerDependencies:
       '@opentelemetry/api': ^1.1.0
@@ -5465,6 +5466,7 @@ packages:
   next@15.5.6:
     resolution: {integrity: sha512-zTxsnI3LQo3c9HSdSf91O1jMNsEzIXDShXd4wVdg9y5shwLqBXi4ZtUUJyB86KGVSJLZx0PFONvO54aheGX8QQ==}
     engines: {node: ^18.18.0 || ^19.8.0 || >= 20.0.0}
+    deprecated: This version has a security vulnerability. Please upgrade to a patched version. See https://nextjs.org/blog/CVE-2025-66478 for more details.
     hasBin: true
     peerDependencies:
       '@opentelemetry/api': ^1.1.0
@@ -5996,8 +5998,8 @@ packages:
     engines: {node: '>=18.0.0'}
     hasBin: true
 
-  react-hook-form@7.66.1:
-    resolution: {integrity: sha512-2KnjpgG2Rhbi+CIiIBQQ9Df6sMGH5ExNyFl4Hw9qO7pIqMBR8Bvu9RQyjl3JM4vehzCh9soiNUM/xYMswb2EiA==}
+  react-hook-form@7.68.0:
+    resolution: {integrity: sha512-oNN3fjrZ/Xo40SWlHf1yCjlMK417JxoSJVUXQjGdvdRCU07NTFei1i1f8ApUAts+IVh14e4EdakeLEA+BEAs/Q==}
     engines: {node: '>=18.0.0'}
     peerDependencies:
       react: ^16.8.0 || ^17 || ^18 || ^19
@@ -7770,10 +7772,10 @@ snapshots:
       react-dom: 19.2.0(react@19.2.0)
       use-sync-external-store: 1.5.0(react@19.2.0)
 
-  '@hookform/resolvers@5.2.2(react-hook-form@7.66.1(react@19.2.0))':
+  '@hookform/resolvers@5.2.2(react-hook-form@7.68.0(react@19.2.0))':
     dependencies:
       '@standard-schema/utils': 0.3.0
-      react-hook-form: 7.66.1(react@19.2.0)
+      react-hook-form: 7.68.0(react@19.2.0)
 
   '@humanfs/core@0.19.1': {}
 
@@ -13277,7 +13279,7 @@ snapshots:
       - supports-color
       - utf-8-validate
 
-  react-hook-form@7.66.1(react@19.2.0):
+  react-hook-form@7.68.0(react@19.2.0):
     dependencies:
       react: 19.2.0
 
