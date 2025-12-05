@@ -14,7 +14,7 @@
   },
   "dependencies": {
     "@types/express": "^5.0.0",
-    "@types/node": "^22.0.0",
+    "@types/node": "^24.0.0",
     "@types/nodemailer": "^7.0.0",
     "@types/sanitize-html": "^2.13.0",
     "rimraf": "^6.0.0",
