@@ -10,7 +10,7 @@
   "dependencies": {
     "@keycloak/keycloak-admin-client": "^26.0.0",
     "nats": "^2.19.0",
-    "wait-on": "^8.0.0"
+    "wait-on": "^9.0.0"
   },
   "devDependencies": {
     "@types/node": "^22.0.0",

@@ -12,8 +12,8 @@ importers:
         specifier: ^26.0.0
         version: 26.4.7
       wait-on:
-        specifier: ^8.0.0
-        version: 8.0.5
+        specifier: ^9.0.0
+        version: 9.0.3
     devDependencies:
       '@types/node':
         specifier: ^22.0.0
@@ -404,9 +404,9 @@ packages:
     resolution: {integrity: sha512-4oszoaEKE/mQOtAmdMWqIRHmkxWkUZMnXFnjQ5i01CuRSK3uluxcH1MRVVVWmhlnzT1SCDfKxxficm2G37qzCA==}
     engines: {node: ^12.20.0 || ^14.13.1 || >=16.0.0}
 
-  wait-on@8.0.5:
-    resolution: {integrity: sha512-J3WlS0txVHkhLRb2FsmRg3dkMTCV1+M6Xra3Ho7HzZDHpE7DCOnoSoCJsZotrmW3uRMhvIJGSKUKrh/MeF4iag==}
-    engines: {node: '>=12.0.0'}
+  wait-on@9.0.3:
+    resolution: {integrity: sha512-13zBnyYvFDW1rBvWiJ6Av3ymAaq8EDQuvxZnPIw3g04UqGi4TyoIJABmfJ6zrvKo9yeFQExNkOk7idQbDJcuKA==}
+    engines: {node: '>=20.0.0'}
     hasBin: true
 
 snapshots:
@@ -719,7 +719,7 @@ snapshots:
 
   url-template@3.1.1: {}
 
-  wait-on@8.0.5:
+  wait-on@9.0.3:
     dependencies:
       axios: 1.13.2
       joi: 18.0.1
