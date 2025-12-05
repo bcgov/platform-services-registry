@@ -58,7 +58,7 @@ services:
   postgres:
     platform: linux/amd64
     container_name: postgres
-    image: postgres:17.7
+    image: postgres:18.1
     healthcheck:
       test: [CMD, pg_isready, -q, -d, keycloak, -U, postgres]
       timeout: 45s
@@ -74,7 +74,7 @@ services:
     volumes:
     - type: bind
       source: ./mnt/postgres
-      target: /var/lib/postgresql/data
+      target: /var/lib/postgresql
 
   m365mock:
     platform: linux/amd64
