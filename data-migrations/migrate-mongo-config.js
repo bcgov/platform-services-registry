@@ -5,8 +5,10 @@ const config = {
     url: process.env.DATABASE_URL,
     databaseName: 'pltsvc',
     options: {
-      useNewUrlParser: true, // removes a deprecation warning when connecting
-      useUnifiedTopology: true, // removes a deprecating warning when connecting
+      // mongodb@7 no longer supports useNewUrlParser/useUnifiedTopology
+      // https://www.mongodb.com/docs/drivers/node/current/reference/upgrade/?utm_source=chatgpt.com#version-7.0-breaking-changes
+      // useNewUrlParser: true, // removes a deprecation warning when connecting
+      // useUnifiedTopology: true, // removes a deprecating warning when connecting
       //   connectTimeoutMS: 3600000, // increase connection timeout to 1 hour
       //   socketTimeoutMS: 3600000, // increase socket timeout to 1 hour
     },
