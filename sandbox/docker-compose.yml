@@ -74,7 +74,7 @@ services:
     volumes:
     - type: bind
       source: ./mnt/postgres
-      target: /var/lib/postgresql/data
+      target: /var/lib/postgresql
 
   m365mock:
     platform: linux/amd64
