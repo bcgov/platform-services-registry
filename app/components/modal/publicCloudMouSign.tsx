@@ -105,7 +105,7 @@ export const openPublicCloudMouSignModal = createModal<ModalProps, ModalState>({
             <div className="">
               <p>This agreement is between;</p>
               <p className="text-center font-semibold">
-                Connected Services BC
+                The Office of the Chief Information Officer
                 <br />
                 Hereby referred to as “the CSBC”
               </p>
