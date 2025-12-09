@@ -174,7 +174,7 @@ importers:
         specifier: ^2.29.3
         version: 2.29.3
       next:
-        specifier: ^15.4.6
+        specifier: ^15.4.8
         version: 15.5.7(@babel/core@7.28.5)(babel-plugin-macros@3.1.0)(react-dom@19.2.1(react@19.2.1))(react@19.2.1)
       next-auth:
         specifier: ^4.24.12
@@ -183,13 +183,13 @@ importers:
         specifier: 8.5.6
         version: 8.5.6
       react:
-        specifier: ^19.1.1
+        specifier: ^19.2.1
         version: 19.2.1
       react-chartjs-2:
         specifier: ^5.3.0
         version: 5.3.1(chart.js@4.5.1)(react@19.2.1)
       react-dom:
-        specifier: ^19.1.1
+        specifier: ^19.2.1
         version: 19.2.1(react@19.2.1)
       react-email:
         specifier: ^4.2.8
@@ -5454,7 +5454,6 @@ packages:
   next@15.5.7:
     resolution: {integrity: sha512-+t2/0jIJ48kUpGKkdlhgkv+zPTEOoXyr60qXe68eB/pl3CMJaLeIGjzp5D6Oqt25hCBiBTt8wEeeAzfJvUKnPQ==}
     engines: {node: ^18.18.0 || ^19.8.0 || >= 20.0.0}
-    deprecated: This version has a security vulnerability. Please upgrade to a patched version. See https://nextjs.org/blog/CVE-2025-66478 for more details.
     hasBin: true
     peerDependencies:
       '@opentelemetry/api': ^1.1.0
