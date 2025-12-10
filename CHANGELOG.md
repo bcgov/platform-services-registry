@@ -1,3 +1,12 @@
+## [0.78.2](https://github.com/bcgov/platform-services-registry/compare/v0.78.0...v0.78.2) (2025-12-09)
+
+### Bug Fixes
+
+* **1000:** increase pre-db memory ([3e495d7](https://github.com/bcgov/platform-services-registry/commit/3e495d7a5f3c5e2764df877ca44577dad35636c6))
+* **2574:** adjust postgres 18 data volume path ([1d90f0b](https://github.com/bcgov/platform-services-registry/commit/1d90f0b7bb1dd88ffdf679082e5211da73e986db))
+* **2580:** drop deprecated MongoDB driver options ([abf1107](https://github.com/bcgov/platform-services-registry/commit/abf110798e77d8652487b6b1a3d6a5e7a9992c11))
+* **2581:** replace alpine base image with node:22.12.0-slim to resolve Corepack/pnpm failures ([9cacb78](https://github.com/bcgov/platform-services-registry/commit/9cacb78ea0405f3a2b8b2e0798cd6bb225cb8e1f))
+* **2585:** patch React via React 19.2.1 & Next 15.4.8 ([18a6d77](https://github.com/bcgov/platform-services-registry/commit/18a6d77a423e7a636eed59fd9712d2f764af769a))
 ## [0.78.0](https://github.com/bcgov/platform-services-registry/compare/v0.77.0...v0.78.0) (2025-11-24)
 
 ### Features
