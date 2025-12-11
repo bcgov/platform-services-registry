@@ -1,28 +1,19 @@
-import { dirname } from 'path';
-import { fileURLToPath } from 'url';
-import { FlatCompat } from '@eslint/eslintrc';
 import eslint from '@eslint/js';
 import eslintConfigPrettier from 'eslint-config-prettier';
 import eslintPluginNode from 'eslint-plugin-n';
 import eslintPluginImport from 'eslint-plugin-import';
-import eslintPluginJsxA11y from 'eslint-plugin-jsx-a11y';
-
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = dirname(__filename);
-
-const compat = new FlatCompat({
-  baseDirectory: __dirname,
-});
+import nextCoreWebVitals from 'eslint-config-next/core-web-vitals';
+import nextTypescript from 'eslint-config-next/typescript';
 
 export default [
   eslint.configs.recommended,
-  ...compat.extends('next/core-web-vitals', 'next/typescript'),
+  ...nextCoreWebVitals,
+  ...nextTypescript,
   eslintConfigPrettier,
   {
     plugins: {
       n: eslintPluginNode,
       import: eslintPluginImport,
-      'jsx-a11y': eslintPluginJsxA11y,
     },
   },
   {
