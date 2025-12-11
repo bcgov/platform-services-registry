@@ -97,7 +97,6 @@
     "zod": "^4.0.15"
   },
   "devDependencies": {
-    "@eslint/eslintrc": "^3.3.1",
     "@eslint/js": "^9.32.0",
     "@faker-js/faker": "^9.0.0",
     "@testing-library/jest-dom": "^6.6.4",
@@ -117,7 +116,6 @@
     "eslint-config-next": "^16.0.0",
     "eslint-config-prettier": "^10.1.8",
     "eslint-plugin-import": "^2.32.0",
-    "eslint-plugin-jsx-a11y": "^6.10.2",
     "eslint-plugin-n": "^17.21.3",
     "html-to-text": "^9.0.5",
     "isomorphic-fetch": "^3.0.0",

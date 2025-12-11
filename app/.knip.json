@@ -12,8 +12,6 @@
     "@react-email/preview-server",
     "ts-jest",
     "ts-node",
-    "eslint-config-next",
-    "@next/swc-*",
     "@prisma/client"
   ],
   "rules": {
