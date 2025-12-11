@@ -228,9 +228,6 @@ importers:
         specifier: ^4.0.15
         version: 4.1.13
     devDependencies:
-      '@eslint/eslintrc':
-        specifier: ^3.3.1
-        version: 3.3.3
       '@eslint/js':
         specifier: ^9.32.0
         version: 9.39.1
@@ -285,9 +282,6 @@ importers:
       eslint-plugin-import:
         specifier: ^2.32.0
         version: 2.32.0(@typescript-eslint/parser@8.49.0(eslint@9.39.1(jiti@2.6.1))(typescript@5.9.3))(eslint-import-resolver-typescript@3.10.1)(eslint@9.39.1(jiti@2.6.1))
-      eslint-plugin-jsx-a11y:
-        specifier: ^6.10.2
-        version: 6.10.2(eslint@9.39.1(jiti@2.6.1))
       eslint-plugin-n:
         specifier: ^17.21.3
         version: 17.23.1(eslint@9.39.1(jiti@2.6.1))(typescript@5.9.3)
