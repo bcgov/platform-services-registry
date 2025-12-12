@@ -1,5 +1,5 @@
 terraform {
-  required_version = "1.14.1"
+  required_version = "1.14.2"
 
   required_providers {
     # See https://registry.terraform.io/providers/sysdiglabs/sysdig/latest/docs
