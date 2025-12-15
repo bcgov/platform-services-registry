@@ -1,10 +1,11 @@
 import { clusters, providers, reasonForSelectingCloudProviderOptions, sampleMinistries } from '@/constants';
 import { mockNoRoleUsers } from '@/helpers/mock-users';
+import { DB_DATA } from '@/jest.mock';
 import { generateShortId, getRandomItem, getRandomNumberOptimally } from '@/utils/js';
 import { getFaker } from './safe-faker';
 
 const faker = getFaker();
-
+// NOSONAR
 export const getRandomBool = () => (faker ? faker.helpers.arrayElement([true, false]) : Math.random() < 0.5);
 
 export const getRandomMinistry = () =>
@@ -13,7 +14,7 @@ export const getRandomMinistry = () =>
     : getRandomItem(sampleMinistries.map((m) => m.code));
 
 export const getRandomOrganization = () =>
-  faker ? faker.helpers.arrayElement(sampleMinistries.map((m) => m)) : getRandomItem(sampleMinistries.map((m) => m));
+  faker ? faker.helpers.arrayElement(DB_DATA.organizations) : getRandomItem(sampleMinistries.map((m) => m.code));
 
 export const getRandomCluster = () => (faker ? faker.helpers.arrayElement(clusters) : getRandomItem(clusters));
 
