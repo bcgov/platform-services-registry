@@ -5,8 +5,9 @@ import { generateShortId, getRandomItem, getRandomNumberOptimally } from '@/util
 import { getFaker } from './safe-faker';
 
 const faker = getFaker();
-// NOSONAR
-export const getRandomBool = () => (faker ? faker.helpers.arrayElement([true, false]) : Math.random() < 0.5);
+
+export const getRandomBool = () =>
+  faker ? faker.helpers.arrayElement([true, false]) : crypto.randomUUID().charCodeAt(0) % 2 === 0;
 
 export const getRandomMinistry = () =>
   faker
@@ -14,7 +15,7 @@ export const getRandomMinistry = () =>
     : getRandomItem(sampleMinistries.map((m) => m.code));
 
 export const getRandomOrganization = () =>
-  faker ? faker.helpers.arrayElement(DB_DATA.organizations) : getRandomItem(sampleMinistries.map((m) => m.code));
+  faker ? faker.helpers.arrayElement(DB_DATA.organizations) : getRandomItem(sampleMinistries.map((m) => m));
 
 export const getRandomCluster = () => (faker ? faker.helpers.arrayElement(clusters) : getRandomItem(clusters));
 
