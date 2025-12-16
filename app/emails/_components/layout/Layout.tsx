@@ -8,7 +8,6 @@ import Header from './Header';
 export default function Layout({ children }: { children: React.ReactNode }) {
   return (
     <Html>
-      {/* <Tailwind config={tailwindConfig}> */}
       <Head>
         <Font
           fontFamily="BCSans"
