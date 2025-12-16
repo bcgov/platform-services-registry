@@ -7,7 +7,7 @@ import { getFaker } from './safe-faker';
 const faker = getFaker();
 
 export const getRandomBool = () =>
-  faker ? faker.helpers.arrayElement([true, false]) : crypto.randomUUID().charCodeAt(0) % 2 === 0;
+  faker ? faker.helpers.arrayElement([true, false]) : crypto.randomUUID().codePointAt(0)! % 2 === 0;
 
 export const getRandomMinistry = () =>
   faker
