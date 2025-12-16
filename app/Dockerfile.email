@@ -23,7 +23,6 @@ FROM node:24.11.1-slim
 WORKDIR /app
 
 COPY --from=build /app/.react-email/.next ./.next
-COPY --from=build /app/.react-email/next.config.js ./
 COPY --from=build /app/.react-email/public ./public
 COPY --from=build /app/.react-email/package.json ./
 COPY --from=build /app/.react-email/node_modules ./node_modules
