@@ -1,3 +1,4 @@
+import { faker } from '@faker-js/faker';
 import { ProjectStatus } from '@/prisma/client';
 import { PublicCloudProductDetail } from '@/types/public-cloud';
 import { generateShortId } from '@/utils/js';
@@ -8,9 +9,6 @@ import {
   getRandomProviderReasonsNote,
   getRandomUser,
 } from './core';
-import { getFaker } from './safe-faker';
-
-const faker = getFaker();
 
 export function createSamplePublicCloudProduct(args?: {
   data?: Partial<PublicCloudProductDetail>;
@@ -22,7 +20,7 @@ export function createSamplePublicCloudProduct(args?: {
   const secondaryTechnicalLead = getRandomUser();
   const expenseAuthority = getRandomUser();
 
-  const licencePlate = faker ? faker.string.uuid().substring(0, 6) : 'pcprod1';
+  const licencePlate = faker.string.uuid().substring(0, 6);
   const provider = getRandomProvider();
   const providerSelectionReasonsNote = getRandomProviderReasonsNote();
   const providerSelectionReasons = getRandomCloudProviderSelectionReasons();
@@ -31,8 +29,8 @@ export function createSamplePublicCloudProduct(args?: {
   const product = {
     id: generateShortId(),
     licencePlate,
-    name: faker ? faker.company.name() : 'Sample Public Cloud Product',
-    description: faker ? faker.lorem.sentence() : 'Sample public cloud product description',
+    name: faker.company.name(),
+    description: faker.lorem.sentence(),
     status: ProjectStatus.ACTIVE,
     provider,
     providerSelectionReasons,

@@ -1,11 +1,9 @@
+import { faker } from '@faker-js/faker';
 import { ProjectStatus, RequestType, DecisionStatus } from '@/prisma/client';
 import { PrivateCloudRequestDetail } from '@/types/private-cloud';
 import { generateShortId } from '@/utils/js';
 import { getRandomCluster, getRandomUser, getRandomOrganization } from './core';
 import { resourceRequests1, resourceRequests2 } from './private-cloud-product';
-import { getFaker } from './safe-faker';
-
-const faker = getFaker();
 
 export function createSamplePrivateCloudRequest(args?: {
   data?: Partial<PrivateCloudRequestDetail>;
@@ -15,12 +13,13 @@ export function createSamplePrivateCloudRequest(args?: {
   const projectOwner = getRandomUser();
   const primaryTechnicalLead = getRandomUser();
   const secondaryTechnicalLead = getRandomUser();
+
   const organization = getRandomOrganization();
 
   const baseData = {
-    licencePlate: faker ? faker.string.uuid().substring(0, 6) : 'abc123',
-    name: faker ? faker.company.name() : 'Sample Private Cloud Project',
-    description: faker ? faker.lorem.sentence() : 'Sample private cloud project description',
+    licencePlate: faker.string.uuid().substring(0, 6),
+    name: faker.company.name(),
+    description: faker.lorem.sentence(),
     status: ProjectStatus.ACTIVE,
     isTest: false,
     cluster: getRandomCluster(),
@@ -38,7 +37,7 @@ export function createSamplePrivateCloudRequest(args?: {
     updatedAt: new Date(),
     archivedAt: new Date(),
     organizationId: organization.id,
-    organization,
+    organization: organization,
   };
 
   const product = {
@@ -60,8 +59,8 @@ export function createSamplePrivateCloudRequest(args?: {
     return {
       ...productData,
       id: generateShortId(),
-      name: faker ? faker.company.name() : 'Sample Private Cloud Project',
-      description: faker ? faker.lorem.sentence() : 'Sample private cloud project description',
+      name: faker.company.name(),
+      description: faker.lorem.sentence(),
       projectOwnerId: po.id,
       projectOwner: po,
       primaryTechnicalLeadId: tl1.id,
@@ -77,22 +76,21 @@ export function createSamplePrivateCloudRequest(args?: {
   const createdBy = getRandomUser();
   const decisionMaker = getRandomUser();
   const quotaContact = getRandomUser();
-
-  const request: PrivateCloudRequestDetail = {
+  const request = {
     id: generateShortId(),
     licencePlate: baseData.licencePlate,
     createdById: createdBy?.id,
     createdBy,
     decisionMakerId: decisionMaker?.id,
-    decisionMaker,
+    decisionMaker: decisionMaker,
     quotaContactName: quotaContact?.displayName,
     quotaContactEmail: quotaContact?.email,
-    quotaJustification: faker ? faker.lorem.sentence() : 'Sample quota justification',
+    quotaJustification: faker.lorem.sentence(),
     type: RequestType.CREATE,
     decisionStatus: DecisionStatus.PENDING,
     isQuotaChanged: false,
-    requestComment: faker ? faker.lorem.sentence() : 'Sample request comment',
-    decisionComment: faker ? faker.lorem.sentence() : 'Sample decision comment',
+    requestComment: faker.lorem.sentence(),
+    decisionComment: faker.lorem.sentence(),
     quotaUpgradeResourceDetailList: [],
     active: true,
     actioned: true,
