@@ -11,7 +11,6 @@ import {
   IconPresentationAnalytics,
   IconLogout,
   IconProps,
-  Icon,
   IconCalendarEvent,
   IconSignLeft,
   IconCheckupList,
@@ -20,14 +19,13 @@ import {
 import Link from 'next/link';
 import { Permissions } from 'next-auth';
 import { useSession } from 'next-auth/react';
-import { ForwardRefExoticComponent, RefAttributes } from 'react';
 import { openUserProfileModal } from '@/components/modal/userProfile';
 import { GlobalPermissions } from '@/constants';
 import { signOut } from '@/helpers/auth';
 import { useAppState } from '@/states/global';
 import ProfileImage from '../ProfileImage';
 
-type IconType = ForwardRefExoticComponent<IconProps & RefAttributes<Icon>>;
+type IconType = React.ComponentType<IconProps>;
 
 interface DividerMenu {
   divider: boolean;
