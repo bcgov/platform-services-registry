@@ -1,3 +1,4 @@
+import { faker } from '@faker-js/faker';
 import { deepClone } from 'valtio/utils';
 import { ProjectStatus, RequestType, DecisionStatus } from '@/prisma/client';
 import { PublicCloudRequestDetail } from '@/types/public-cloud';
@@ -9,9 +10,6 @@ import {
   getRandomCloudProviderSelectionReasons,
   getRandomOrganization,
 } from './core';
-import { getFaker } from './safe-faker';
-
-const faker = getFaker();
 
 export function createSamplePublicCloudRequest(args?: {
   data?: Partial<PublicCloudRequestDetail>;
@@ -23,7 +21,7 @@ export function createSamplePublicCloudRequest(args?: {
   const secondaryTechnicalLead = getRandomUser();
   const expenseAuthority = getRandomUser();
 
-  const licencePlate = faker ? faker.string.uuid().substring(0, 6) : 'pub123';
+  const licencePlate = faker.string.uuid().substring(0, 6);
   const provider = getRandomProvider();
   const providerSelectionReasonsNote = getRandomProviderReasonsNote();
   const providerSelectionReasons = getRandomCloudProviderSelectionReasons();
@@ -51,8 +49,8 @@ export function createSamplePublicCloudRequest(args?: {
 
   const baseData = {
     licencePlate,
-    name: faker ? faker.company.name() : 'Sample Public Cloud Project',
-    description: faker ? faker.lorem.sentence() : 'Sample public cloud project description',
+    name: faker.company.name(),
+    description: faker.lorem.sentence(),
     status: ProjectStatus.ACTIVE,
     provider,
     providerSelectionReasons,
@@ -109,12 +107,12 @@ export function createSamplePublicCloudRequest(args?: {
     decisionMaker,
     quotaContactName: quotaContact?.displayName,
     quotaContactEmail: quotaContact?.email,
-    quotaJustification: faker ? faker.lorem.sentence() : 'Sample quota justification',
+    quotaJustification: faker.lorem.sentence(),
     type: RequestType.CREATE,
     decisionStatus: DecisionStatus.PENDING,
     isQuotaChanged: false,
-    requestComment: faker ? faker.lorem.sentence() : 'Sample request comment',
-    decisionComment: faker ? faker.lorem.sentence() : 'Sample decision comment',
+    requestComment: faker.lorem.sentence(),
+    decisionComment: faker.lorem.sentence(),
     active: true,
     actioned: true,
     createdAt: new Date(),
