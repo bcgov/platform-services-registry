@@ -226,7 +226,7 @@ importers:
         version: 3.19.0
       zod:
         specifier: ^4.0.15
-        version: 4.1.13
+        version: 4.2.1
     devDependencies:
       '@eslint/js':
         specifier: ^9.32.0
@@ -7034,8 +7034,8 @@ packages:
   zod@3.24.3:
     resolution: {integrity: sha512-HhY1oqzWCQWuUqvBFnsyrtZRhyPeR7SUGv+C4+MsisMuVfSPx8HpwWqH8tRahSlt6M3PiFAcoeFhZAqIXTxoSg==}
 
-  zod@4.1.13:
-    resolution: {integrity: sha512-AvvthqfqrAhNH9dnfmrfKzX5upOdjUVJYFqNSlkmGf64gRaTzlPwz99IHYnVs28qYAybvAlBV+H7pn0saFY4Ig==}
+  zod@4.2.1:
+    resolution: {integrity: sha512-0wZ1IRqGGhMP76gLqz8EyfBXKk0J2qo2+H3fi4mcUP/KtTocoX08nmIAHl1Z2kJIZbZee8KOpBCSNPRgauucjw==}
 
 snapshots:
 
@@ -12247,7 +12247,7 @@ snapshots:
       smol-toml: 1.5.2
       strip-json-comments: 5.0.3
       typescript: 5.9.3
-      zod: 4.1.13
+      zod: 4.2.1
 
   kuler@2.0.0: {}
 
@@ -14568,4 +14568,4 @@ snapshots:
 
   zod@3.24.3: {}
 
-  zod@4.1.13: {}
+  zod@4.2.1: {}
