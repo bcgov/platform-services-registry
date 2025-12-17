@@ -1,10 +1,9 @@
-import { Alert, Group, Avatar, Text, Accordion, Table, Badge, Button } from '@mantine/core';
-import { IconProps, Icon } from '@tabler/icons-react';
-import { ForwardRefExoticComponent, RefAttributes } from 'react';
+import { Group, Text } from '@mantine/core';
+import { IconProps } from '@tabler/icons-react';
 
 export interface AccordionLabelProps {
   label: string;
-  LeftIcon: ForwardRefExoticComponent<Omit<IconProps, 'ref'> & RefAttributes<Icon>>;
+  LeftIcon: React.ComponentType<IconProps>;
   description: string;
 }
 
