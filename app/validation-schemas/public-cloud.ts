@@ -210,7 +210,7 @@ export const accountCodingSchema = z.object({
   cc: z
     .string()
     .length(3, 'Must be exactly 3 characters long')
-    .regex(/^[0-9]+$/, 'Must contain only numbers'),
+    .regex(/^[A-Z0-9]+$/, 'Must contain only letters and numbers'),
   rc: z
     .string()
     .length(5, 'Must be exactly 5 characters long')
@@ -218,11 +218,11 @@ export const accountCodingSchema = z.object({
   sl: z
     .string()
     .length(5, 'Must be exactly 5 characters long')
-    .regex(/^[0-9]+$/, 'Must contain only numbers'),
+    .regex(/^[A-Z0-9]+$/, 'Must contain only letters and numbers'),
   stob: z
     .string()
     .length(4, 'Must be exactly 4 characters long')
-    .regex(/^[0-9]+$/, 'Must contain only numbers')
+    .regex(/^[A-Z0-9]+$/, 'Must contain only letters and numbers')
     .nullable(),
   pc: z
     .string()
