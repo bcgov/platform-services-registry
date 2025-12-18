@@ -17,10 +17,10 @@ model User {
   providerUserId                                        String?
   firstName                                             String?
   lastName                                              String?
-  email                                                 String                    @unique
+  email                                                 String
   upn                                                   String?
   idir                                                  String?
-  idirGuid                                              String?
+  idirGuid                                              String                    @unique
   officeLocation                                        String?
   jobTitle                                              String?
   image                                                 String?
@@ -63,9 +63,8 @@ model User {
 
 model UserSession {
   id                   String   @id @default(auto()) @map("_id") @db.ObjectId
-  email                String   @unique
+  idirGuid             String   @unique
   nextTokenRefreshTime DateTime
-  idirGuid             String?
   accessToken          String
   refreshToken         String
   idToken              String

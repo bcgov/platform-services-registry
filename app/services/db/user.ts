@@ -14,7 +14,7 @@ import {
   PublicCloudRequestData,
 } from '@/prisma/client';
 import { listUsersByRoles, findUserByEmail, getKcAdminClient } from '@/services/keycloak/app-realm';
-import { getUserByEmail, getUserPhoto } from '@/services/msgraph';
+import { getUserByIdirGuid, getUserPhoto } from '@/services/msgraph';
 import { AppUser, Outcome } from '@/types/user';
 import { arrayBufferToBase64 } from '@/utils/js';
 import { UserSearchBody } from '@/validation-schemas';
@@ -42,19 +42,17 @@ export async function prepareUserData(user: AppUser, extra = {}) {
   return data;
 }
 
-export async function upsertUser(email: string, extra = {}) {
-  if (!email) return null;
+export async function upsertUser(idirGuid: string, extra = {}) {
+  if (!idirGuid) return null;
 
   try {
-    email = email.toLowerCase();
-
-    const adUser = await getUserByEmail(email);
+    const adUser = await getUserByIdirGuid(idirGuid);
     if (!adUser) return null;
 
     const data = await prepareUserData(adUser, extra);
 
     return await prisma.user.upsert({
-      where: { email },
+      where: { idirGuid },
       update: data,
       create: data,
     });
@@ -64,9 +62,9 @@ export async function upsertUser(email: string, extra = {}) {
   }
 }
 
-export async function upsertUsers(email: string | undefined | (string | undefined)[]) {
-  const emails = _uniq(_compact(_castArray(email)));
-  const result = await Promise.all(emails.map(upsertUser));
+export async function upsertUsers(idirGuid: string | undefined | (string | undefined)[]) {
+  const idirGuids = _uniq(_compact(_castArray(idirGuid)));
+  const result = await Promise.all(idirGuids.map(upsertUser));
   return result;
 }
 
@@ -173,7 +171,7 @@ export async function searchUsers({
     }),
     prisma.user.findFirst({
       where: {
-        OR: [{ idirGuid: null }, { idirGuid: { isSet: false } }, { idirGuid: '' }],
+        OR: [{ idirGuid: undefined }, { idirGuid: '' }],
       },
       select: {
         idirGuid: true,
@@ -353,7 +351,7 @@ export async function getUsersInfoByIds(ids: (string | null | undefined)[]) {
 export async function fixUsersMissingIdirGuid() {
   const users = await prisma.user.findMany({
     where: {
-      OR: [{ idirGuid: null }, { idirGuid: { isSet: false } }, { idirGuid: '' }],
+      OR: [{ idirGuid: undefined }, { idirGuid: '' }],
     },
     select: {
       id: true,

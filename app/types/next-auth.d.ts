@@ -75,10 +75,11 @@ declare module 'next-auth' {
       name: string;
       email: string;
       image: string | null;
-      idirGuid: string | null;
+      idirGuid: string;
     };
     userId: string | null;
     userEmail: string | null;
+    userIdirGuid: string | null;
     isServiceAccount: boolean;
     isUser: boolean;
     isAdmin: boolean;

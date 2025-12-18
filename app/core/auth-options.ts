@@ -16,7 +16,7 @@ import { createEvent } from '@/services/db';
 import { upsertUser } from '@/services/db/user';
 interface DecodedToken {
   resource_access?: Record<string, { roles: string[] }>;
-  idir_guid?: string | null;
+  idir_guid?: string;
   email: string;
   sub: string;
 }
@@ -25,7 +25,7 @@ async function updateUserSession(tokens?: { access_token?: string; refresh_token
   const { access_token = '', refresh_token = '', id_token = '' } = tokens ?? {};
 
   const decodedToken = jwt.decode(access_token) as DecodedToken;
-  const { resource_access = {}, sub = '', email = '', idir_guid } = decodedToken || {};
+  const { resource_access = {}, sub = '', email = '', idir_guid = '' } = decodedToken || {};
   const roles = _get(resource_access, `${AUTH_RESOURCE}.roles`, []) as string[];
   const teams: SessionTokenTeams[] = [];
 
@@ -35,11 +35,9 @@ async function updateUserSession(tokens?: { access_token?: string; refresh_token
     }
   });
 
-  const loweremail = email.toLowerCase();
   const nextTokenRefreshTime = addMinutes(new Date(), USER_TOKEN_REFRESH_INTERVAL);
 
   const userSessionData = {
-    email: loweremail,
     idirGuid: idir_guid,
     nextTokenRefreshTime,
     roles,
@@ -51,7 +49,7 @@ async function updateUserSession(tokens?: { access_token?: string; refresh_token
   };
 
   const userSession = await prisma.userSession.upsert({
-    where: { email: loweremail },
+    where: { idirGuid: userSessionData.idirGuid },
     create: userSessionData,
     update: userSessionData,
   });
@@ -59,12 +57,11 @@ async function updateUserSession(tokens?: { access_token?: string; refresh_token
   return userSession;
 }
 
-async function endUserSession(email: string) {
-  const loweremail = email.toLowerCase();
+async function endUserSession(idirGuid: string) {
   const nextTokenRefreshTime = new Date();
 
   const userSessionData = {
-    email: loweremail,
+    idirGuid: idirGuid,
     nextTokenRefreshTime,
     roles: [],
     teams: [],
@@ -73,7 +70,7 @@ async function endUserSession(email: string) {
   };
 
   const userSession = await prisma.userSession.upsert({
-    where: { email: loweremail },
+    where: { idirGuid: idirGuid },
     create: { ...userSessionData, sub: '', idToken: '' },
     update: userSessionData,
   });
@@ -103,12 +100,12 @@ async function getNewTokens(refreshToken: string) {
   }
 }
 
-async function getUserSessionToRefresh(email: string) {
+async function getUserSessionToRefresh(idirGuid: string) {
   try {
     const now = new Date();
     const userSession = await prisma.userSession.update({
       where: {
-        email: email.toLowerCase(),
+        idirGuid: idirGuid,
         nextTokenRefreshTime: { lt: now },
       },
       data: {
@@ -155,15 +152,15 @@ export async function generateSession({
 
   session.tasks = [];
 
-  if (token?.email) {
+  if (token?.idirGuid) {
     const [user, userSession] = await Promise.all([
       prisma.user.findFirst({
-        where: { email: token.email },
+        where: { idirGuid: token.idirGuid },
         select: { id: true, email: true, image: true, idirGuid: true },
       }),
       userSessionOverride ??
         prisma.userSession.findFirst({
-          where: { email: token.email },
+          where: { idirGuid: token.idirGuid },
         }),
     ]);
     if (userSession) {
@@ -182,7 +179,7 @@ export async function generateSession({
       session.user.id = user.id;
       session.user.email = user.email;
       session.user.image = user.image;
-      session.user.idirGuid = user?.idirGuid ?? token?.idirGuid ?? session.user.idirGuid;
+      session.user.idirGuid = user.idirGuid;
       session.userId = user.id;
       session.userEmail = user.email;
       session.roles.push(GlobalRole.User);
@@ -412,7 +409,7 @@ export const authOptions: AuthOptions = {
 
       const lastSeen = new Date();
 
-      const upsertedUser = await upsertUser(loweremail, { lastSeen });
+      const upsertedUser = await upsertUser(idir_guid, { lastSeen });
       if (!upsertedUser) {
         const data = {
           providerUserId: '',
@@ -429,7 +426,7 @@ export const authOptions: AuthOptions = {
           lastSeen,
         };
         await prisma.user.upsert({
-          where: { email: loweremail },
+          where: { idirGuid: idir_guid },
           update: data,
           create: data,
         });
@@ -465,11 +462,10 @@ export const authOptions: AuthOptions = {
   },
   events: {
     async signIn({ user, account }: { user: User; account: Account | null }) {
-      if (!user?.email) return;
+      if (!user?.idirGuid) return;
 
-      const loweremail = user.email.toLowerCase();
       const loggedInUser = await prisma.user.findUnique({
-        where: { email: loweremail },
+        where: { idirGuid: user.idirGuid },
         select: { id: true },
       });
 
@@ -478,11 +474,10 @@ export const authOptions: AuthOptions = {
       await createEvent(EventType.LOGIN, loggedInUser.id);
     },
     async signOut({ session, token }: { session: Session; token: JWT }) {
-      if (!token?.email) return;
+      if (!token?.idirGuid) return;
 
-      const loweremail = token.email.toLowerCase();
       const loggedInUser = await prisma.user.findUnique({
-        where: { email: loweremail },
+        where: { idirGuid: token.idirGuid },
         select: { id: true },
       });
 
