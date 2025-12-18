@@ -33,7 +33,7 @@ export default function AccountCoding({
         <HookFormTextInput
           label="Client Code"
           name="accountCoding.cc"
-          placeholder="00000"
+          placeholder="000"
           disabled={disabled}
           required
           options={{
