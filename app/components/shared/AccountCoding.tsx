@@ -36,9 +36,14 @@ export default function AccountCoding({
           placeholder="000"
           disabled={disabled}
           required
-          options={{ maxLength: 3 }}
+          options={{
+            maxLength: 3,
+            onChange: (e) => {
+              setValue('accountCoding.cc', _toUpper(e.target.value));
+            },
+          }}
           maxLength={3}
-          info="3 Characters, Can contain only numbers. No special characters (e.g. !@#$%^&)"
+          info="3 Characters, Can contain only numbers and letters. No special characters (e.g. !@#$%^&)"
           classNames={{ wrapper: 'sm:col-span-3' }}
         />
         <HookFormTextInput
@@ -63,9 +68,14 @@ export default function AccountCoding({
           placeholder="00000"
           disabled={disabled}
           required
-          options={{ maxLength: 5 }}
+          options={{
+            maxLength: 5,
+            onChange: (e) => {
+              setValue('accountCoding.sl', _toUpper(e.target.value));
+            },
+          }}
           maxLength={5}
-          info="5 Characters, Can contain only numbers. No special characters (e.g. !@#$%^&)"
+          info="5 Characters, Can contain only numbers and letters. No special characters (e.g. !@#$%^&*)"
           classNames={{ wrapper: 'sm:col-span-3' }}
         />
         <HookFormTextInput
@@ -74,9 +84,14 @@ export default function AccountCoding({
           placeholder="0000"
           disabled={disabled}
           required
-          options={{ maxLength: 4 }}
+          options={{
+            maxLength: 4,
+            onChange: (e) => {
+              setValue('accountCoding.stob', _toUpper(e.target.value));
+            },
+          }}
           maxLength={4}
-          info="4 Characters, Can contain only numbers. No special characters (e.g. !@#$%^&)"
+          info="4 Characters, Can contain only numbers and letters. No special characters (e.g. !@#$%^&*)"
           classNames={{ wrapper: 'sm:col-span-3' }}
         />
         <HookFormTextInput
