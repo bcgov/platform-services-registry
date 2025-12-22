@@ -46,7 +46,7 @@ export default async function deleteOp({
           type: PublicCloudRequestType.DELETE,
           decisionStatus: DecisionStatus.PENDING,
           active: true,
-          createdBy: { connect: { email: session.user.email } },
+          createdBy: { connect: { idirGuid: session.user.idirGuid } },
           licencePlate: product.licencePlate,
           requestComment,
           originalData: { connect: { id: previousRequest?.decisionDataId } },
