@@ -87,7 +87,7 @@ export default async function updateOp({
           type: RequestType.EDIT,
           decisionStatus: DecisionStatus.AUTO_APPROVED, // automatically approve edit requests for public cloud
           active: true,
-          createdBy: { connect: { email: session.user.email } },
+          createdBy: { connect: { idirGuid: session.user.idirGuid } },
           licencePlate: product.licencePlate,
           requestComment,
           changes: otherChangeMeta,

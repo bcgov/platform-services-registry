@@ -101,6 +101,7 @@ export async function searchTasks({
       firstName: true,
       lastName: true,
       idir: true,
+      idirGuid: true,
       upn: true,
     },
   });
