@@ -6,6 +6,7 @@ import { instance } from './axios';
 export function processMsUser(user: MsUser): AppUser | null {
   const idir = user.onPremisesSamAccountName;
   const upn = user.userPrincipalName;
+  const idirGuid = user.extension_85cc52e9286540fcb1f97ed86114a0e5_bcgovGUID;
 
   return {
     id: '',
@@ -13,7 +14,7 @@ export function processMsUser(user: MsUser): AppUser | null {
     upn,
     email: user.mail.toLowerCase(),
     idir,
-    idirGuid: user.extension_85cc52e9286540fcb1f97ed86114a0e5_bcgovGUID,
+    idirGuid,
     isGuidValid: true,
     displayName: user.displayName,
     firstName: user.givenName,
@@ -83,9 +84,37 @@ export async function listUsersByEmail(email: string) {
   return result.value.map(processMsUser).filter((user) => !!user);
 }
 
+export async function listUsersByIdirGuid(idirGuid: string) {
+  const result = await instance
+    .get<{ value: MsUser[] }>('/users', {
+      params: {
+        $filter: `startswith(extension_85cc52e9286540fcb1f97ed86114a0e5_bcgovGUID,'${idirGuid}')`,
+        $orderby: 'userPrincipalName',
+        $count: 'true',
+        $top: '25',
+        $select: userAttributeString,
+      },
+    })
+    .then((res) => res.data)
+    .catch((err) => {
+      logger.error(`Error fetching users by email: ${err.message ?? String(err)}`);
+      return { value: [] };
+    });
+
+  return result.value.map(processMsUser).filter((user) => !!user);
+}
+
 export async function getUserByEmail(email: string) {
   const users = await listUsersByEmail(email);
   const matchingUsers = users.filter((user) => user.email.toLowerCase() === email.toLowerCase());
+  if (matchingUsers.length === 0) return null;
+
+  return matchingUsers[0];
+}
+
+export async function getUserByIdirGuid(idirGuid: string) {
+  const users = await listUsersByIdirGuid(idirGuid);
+  const matchingUsers = users.filter((user) => user.idirGuid === idirGuid);
   if (matchingUsers.length === 0) return null;
 
   return matchingUsers[0];

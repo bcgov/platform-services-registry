@@ -8,7 +8,7 @@ import { mockNoRoleUsers } from '@/helpers/mock-users';
 import { formatFullName } from '@/helpers/user';
 import { DB_DATA } from '@/jest.mock';
 import { DecisionStatus, Provider, ProjectStatus, RequestType } from '@/prisma/client';
-import { mockSessionByEmail, mockSessionByRole } from '@/services/api-test/core';
+import { mockSessionByIdirGuid, mockSessionByRole } from '@/services/api-test/core';
 import { mockTeamServiceAccount } from '@/services/api-test/core';
 import {
   createPublicCloudProduct,
@@ -56,7 +56,7 @@ describe('Download Public Cloud Products - Permissions', () => {
   });
 
   it('should successfully create a product by PO and approved by admin', async () => {
-    await mockSessionByEmail(PO.email);
+    await mockSessionByIdirGuid(PO.idirGuid);
     const productData = createSamplePublicCloudProductData({ data: { ...memberData } });
     const res1 = await createPublicCloudProduct(productData);
     const dat1 = await res1.json();
@@ -69,7 +69,7 @@ describe('Download Public Cloud Products - Permissions', () => {
     expect(billing).toBeTruthy();
     if (!billing) return;
 
-    await mockSessionByEmail(dat1.decisionData.expenseAuthority.email);
+    await mockSessionByIdirGuid(dat1.decisionData.expenseAuthority.idirGuid);
     await signPublicCloudBilling(dat1.licencePlate, billing.id, {
       accountCoding: defaultAccountCoding,
       confirmed: true,
@@ -104,7 +104,7 @@ describe('Download Public Cloud Products - Permissions', () => {
   });
 
   it('should successfully download 1 project by PO', async () => {
-    await mockSessionByEmail(PO.email);
+    await mockSessionByIdirGuid(PO.idirGuid);
 
     const res1 = await downloadPublicCloudProducts({});
     expect(res1.status).toBe(200);
@@ -138,7 +138,7 @@ describe('Download Public Cloud Products - Permissions', () => {
   });
 
   it('should successfully download 1 project by TL1', async () => {
-    await mockSessionByEmail(TL1.email);
+    await mockSessionByIdirGuid(TL1.idirGuid);
 
     const res1 = await downloadPublicCloudProducts({});
     expect(res1.status).toBe(200);
@@ -150,7 +150,7 @@ describe('Download Public Cloud Products - Permissions', () => {
   });
 
   it('should successfully download 1 project by TL2', async () => {
-    await mockSessionByEmail(TL2.email);
+    await mockSessionByIdirGuid(TL2.idirGuid);
 
     const res1 = await downloadPublicCloudProducts({});
     expect(res1.status).toBe(200);
@@ -162,7 +162,7 @@ describe('Download Public Cloud Products - Permissions', () => {
   });
 
   it('should successfully create a product by a random user and approved by admin', async () => {
-    await mockSessionByEmail(RANDOM1.email);
+    await mockSessionByIdirGuid(RANDOM1.idirGuid);
     const productData = createSamplePublicCloudProductData({ data: { ...randomMemberData } });
     const res1 = await createPublicCloudProduct(productData);
     const dat1 = await res1.json();
@@ -184,7 +184,7 @@ describe('Download Public Cloud Products - Permissions', () => {
   });
 
   it('should successfully download 1 project by the random user', async () => {
-    await mockSessionByEmail(RANDOM1.email);
+    await mockSessionByIdirGuid(RANDOM1.idirGuid);
 
     const res1 = await downloadPublicCloudProducts({});
     expect(res1.status).toBe(200);
@@ -196,7 +196,7 @@ describe('Download Public Cloud Products - Permissions', () => {
   });
 
   it('should successfully download 1 project by PO', async () => {
-    await mockSessionByEmail(PO.email);
+    await mockSessionByIdirGuid(PO.idirGuid);
 
     const res1 = await downloadPublicCloudProducts({});
     expect(res1.status).toBe(200);
@@ -208,7 +208,7 @@ describe('Download Public Cloud Products - Permissions', () => {
   });
 
   it('should successfully download 1 project by TL1', async () => {
-    await mockSessionByEmail(TL1.email);
+    await mockSessionByIdirGuid(TL1.idirGuid);
 
     const res1 = await downloadPublicCloudProducts({});
     expect(res1.status).toBe(200);
@@ -220,7 +220,7 @@ describe('Download Public Cloud Products - Permissions', () => {
   });
 
   it('should successfully download 1 project by TL2', async () => {
-    await mockSessionByEmail(TL2.email);
+    await mockSessionByIdirGuid(TL2.idirGuid);
 
     const res1 = await downloadPublicCloudProducts({});
     expect(res1.status).toBe(200);
