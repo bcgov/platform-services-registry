@@ -88,15 +88,16 @@ export async function generateTestSession(idirGuid: string) {
     token: {
       name: mockUser.displayName,
       email: mockUser.email,
-    },
+      idirGuid: mockUser.idirGuid,
+    } as any,
     userSession: {
       roles: mockUser.roles,
       idirGuid: mockUser.idirGuid,
       teams: [],
-      sub: '',
-      accessToken: '',
-      refreshToken: '',
-      idToken: '',
+      sub: 'test-sub',
+      accessToken: 'test-access',
+      refreshToken: 'test-refresh',
+      idToken: 'test-id',
     },
   });
 

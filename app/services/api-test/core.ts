@@ -2,6 +2,7 @@ import { MockedFunction } from 'jest-mock';
 import { NextRequest } from 'next/server';
 import { getServerSession } from 'next-auth/next';
 import { BASE_URL } from '@/config';
+import prisma from '@/core/prisma';
 import { generateTestSession, findMockUserbyRole, findMockUserByIdirGuid, upsertMockUser } from '@/helpers/mock-users';
 import { SERVICE_ACCOUNT_DATA } from '@/jest.mock';
 import { stringifyQuery } from '@/utils/js';
@@ -121,10 +122,39 @@ export const mockedGetServerSession = getServerSession as unknown as MockedFunct
 export async function mockSessionByIdirGuid(idirGuid?: string) {
   if (!idirGuid) {
     mockedGetServerSession.mockResolvedValue(null);
-  } else {
-    const mockSession = await generateTestSession(idirGuid);
-    mockedGetServerSession.mockResolvedValue(mockSession);
+    return;
   }
+
+  const user = await prisma.user.findUnique({ where: { idirGuid } });
+  if (!user) {
+    throw new Error(`Test setup: User not found for idirGuid=${idirGuid}`);
+  }
+
+  await prisma.userSession.upsert({
+    where: { idirGuid },
+    update: {
+      nextTokenRefreshTime: new Date(Date.now() + 60 * 60 * 1000),
+      accessToken: 'test-access-token',
+      refreshToken: 'test-refresh-token',
+      idToken: 'test-id-token',
+      sub: user.providerUserId ?? `test-sub-${user.id}`,
+      roles: [],
+      teams: [],
+    },
+    create: {
+      idirGuid,
+      nextTokenRefreshTime: new Date(Date.now() + 60 * 60 * 1000),
+      accessToken: 'test-access-token',
+      refreshToken: 'test-refresh-token',
+      idToken: 'test-id-token',
+      sub: user.providerUserId ?? `test-sub-${user.id}`,
+      roles: [],
+      teams: [],
+    },
+  });
+
+  const mockSession = await generateTestSession(idirGuid);
+  mockedGetServerSession.mockResolvedValue(mockSession);
 }
 
 export async function mockSessionByRole(role?: string) {
@@ -143,37 +173,62 @@ export async function mockSessionByRole(role?: string) {
 export async function mockUserServiceAccountByIdirGuid(idirGuid?: string) {
   mockedGetServerSession.mockResolvedValue(null);
 
-  let mockedValue: { idirGuid: string; authRoleNames: string[] } | null = null;
-  if (idirGuid) {
-    const mockUser = findMockUserByIdirGuid(idirGuid);
-    if (mockUser) {
-      mockedValue = { idirGuid: mockUser.idirGuid, authRoleNames: mockUser.roles.concat() };
-      await upsertMockUser(mockUser);
-    }
-  }
-
-  SERVICE_ACCOUNT_DATA.user = mockedValue;
+  SERVICE_ACCOUNT_DATA.jwtData = null;
+  SERVICE_ACCOUNT_DATA.user = null;
   SERVICE_ACCOUNT_DATA.team = null;
+
+  if (!idirGuid) return;
+
+  const mockUser = findMockUserByIdirGuid(idirGuid);
+  if (!mockUser) return;
+
+  await upsertMockUser(mockUser);
+
+  const kcUserId = `kc-${mockUser.idirGuid}`;
+
+  SERVICE_ACCOUNT_DATA.jwtData = {
+    service_account_type: 'user',
+    'kc-userid': kcUserId,
+  };
+
+  SERVICE_ACCOUNT_DATA.user = {
+    email: mockUser.email,
+    authRoleNames: mockUser.roles.concat(),
+    attributes: { idir_guid: mockUser.idirGuid },
+  };
 }
 
 export async function mockUserServiceAccountByRole(role?: string) {
   mockedGetServerSession.mockResolvedValue(null);
-
-  let mockedValue: { idirGuid: string; authRoleNames: string[] } | null = null;
-  if (role) {
-    const mockUser = findMockUserbyRole(role);
-    if (mockUser) {
-      mockedValue = { idirGuid: mockUser.idirGuid, authRoleNames: mockUser.roles.concat() };
-      await upsertMockUser(mockUser);
-    }
-  }
-
-  SERVICE_ACCOUNT_DATA.user = mockedValue;
+  SERVICE_ACCOUNT_DATA.jwtData = null;
+  SERVICE_ACCOUNT_DATA.user = null;
   SERVICE_ACCOUNT_DATA.team = null;
+  if (!role) return;
+
+  const mockUser = findMockUserbyRole(role);
+  if (!mockUser) return;
+  await upsertMockUser(mockUser);
+
+  const kcUserId = `kc-${mockUser.idirGuid}`;
+
+  SERVICE_ACCOUNT_DATA.jwtData = {
+    service_account_type: 'user',
+    'kc-userid': kcUserId,
+  };
+
+  SERVICE_ACCOUNT_DATA.user = {
+    email: mockUser.email,
+    authRoleNames: mockUser.roles.concat(),
+    attributes: { idir_guid: mockUser.idirGuid },
+  };
 }
 
 export async function mockTeamServiceAccount(roles: string[]) {
   mockedGetServerSession.mockResolvedValue(null);
+
+  SERVICE_ACCOUNT_DATA.jwtData = {
+    service_account_type: 'team',
+  };
 
   SERVICE_ACCOUNT_DATA.user = null;
   SERVICE_ACCOUNT_DATA.team = { roles };

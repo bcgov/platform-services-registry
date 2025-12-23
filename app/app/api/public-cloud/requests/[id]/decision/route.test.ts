@@ -5,7 +5,7 @@ import prisma from '@/core/prisma';
 import { createSamplePublicCloudProductData } from '@/helpers/mock-resources';
 import { pickProductData } from '@/helpers/product';
 import { DecisionStatus, Cluster, RequestType, Prisma } from '@/prisma/client';
-import { mockSessionByEmail, mockSessionByRole } from '@/services/api-test/core';
+import { mockSessionByIdirGuid, mockSessionByRole } from '@/services/api-test/core';
 import { mockTeamServiceAccount } from '@/services/api-test/core';
 import {
   createPublicCloudProduct,
@@ -68,7 +68,7 @@ async function makeBasicProductMouReview() {
 
   if (!billing) return;
 
-  await mockSessionByEmail(decisionData.expenseAuthority.email);
+  await mockSessionByIdirGuid(decisionData.expenseAuthority.idirGuid);
   await signPublicCloudBilling(requests.main.licencePlate, billing.id, {
     accountCoding: defaultAccountCoding,
     confirmed: true,
@@ -100,7 +100,7 @@ async function makeBasicProductReview(decision: DecisionStatus, extra = {}) {
 
 describe('Review Public Cloud Create Request - Permissions', () => {
   it('should successfully submit a create request for PO', async () => {
-    await mockSessionByEmail(productData.main.projectOwner.email);
+    await mockSessionByIdirGuid(productData.main.projectOwner.idirGuid);
 
     const response = await createPublicCloudProduct(productData.main);
     expect(response.status).toBe(200);
@@ -111,7 +111,7 @@ describe('Review Public Cloud Create Request - Permissions', () => {
   it('should fail to review the create request for PO', async () => {
     await makeBasicProductMouReview();
 
-    await mockSessionByEmail(productData.main.projectOwner.email);
+    await mockSessionByIdirGuid(productData.main.projectOwner.idirGuid);
     const response = await makeBasicProductReview(DecisionStatus.APPROVED);
 
     expect(response.status).toBe(401);
@@ -123,7 +123,7 @@ describe('Review Public Cloud Create Request - Permissions', () => {
   it('should fail to review the create request for TL1', async () => {
     await makeBasicProductMouReview();
 
-    await mockSessionByEmail(productData.main.primaryTechnicalLead.email);
+    await mockSessionByIdirGuid(productData.main.primaryTechnicalLead.idirGuid);
     const response = await makeBasicProductReview(DecisionStatus.APPROVED);
 
     expect(response.status).toBe(401);
@@ -168,7 +168,7 @@ describe('Review Public Cloud Create Request - Permissions', () => {
 
 describe('Review Public Cloud Update Request - Permissions', () => {
   it('should successfully submit a update request for TL1', async () => {
-    await mockSessionByEmail(productData.main.primaryTechnicalLead.email);
+    await mockSessionByIdirGuid(productData.main.primaryTechnicalLead.idirGuid);
 
     const response = await editPublicCloudProduct(
       requests.main.licencePlate,
@@ -188,7 +188,7 @@ describe('Review Public Cloud Update Request - Permissions', () => {
   it('should fail to review the update request for PO', async () => {
     await makeBasicProductMouReview();
 
-    await mockSessionByEmail(productData.main.projectOwner.email);
+    await mockSessionByIdirGuid(productData.main.projectOwner.idirGuid);
     const response = await makeBasicProductReview(DecisionStatus.APPROVED);
 
     expect(response.status).toBe(401);
@@ -200,7 +200,7 @@ describe('Review Public Cloud Update Request - Permissions', () => {
   it('should fail to review the update request for TL1', async () => {
     await makeBasicProductMouReview();
 
-    await mockSessionByEmail(productData.main.primaryTechnicalLead.email);
+    await mockSessionByIdirGuid(productData.main.primaryTechnicalLead.idirGuid);
     const response = await makeBasicProductReview(DecisionStatus.APPROVED);
 
     expect(response.status).toBe(401);
@@ -231,7 +231,7 @@ describe('Review Public Cloud Update Request - Permissions', () => {
 
 describe('Review Public Cloud Delete Request - Permissions', () => {
   it('should successfully submit a delete request for TL1', async () => {
-    await mockSessionByEmail(productData.main.primaryTechnicalLead.email);
+    await mockSessionByIdirGuid(productData.main.primaryTechnicalLead.idirGuid);
 
     const response = await deletePublicCloudProduct(requests.main.licencePlate, 'Test delete comment');
     expect(response.status).toBe(200);
@@ -242,7 +242,7 @@ describe('Review Public Cloud Delete Request - Permissions', () => {
   it('should fail to review the delete request for PO', async () => {
     await makeBasicProductMouReview();
 
-    await mockSessionByEmail(productData.main.projectOwner.email);
+    await mockSessionByIdirGuid(productData.main.projectOwner.idirGuid);
     const response = await makeBasicProductReview(DecisionStatus.APPROVED);
 
     expect(response.status).toBe(401);
@@ -254,7 +254,7 @@ describe('Review Public Cloud Delete Request - Permissions', () => {
   it('should fail to review the delete request for TL1', async () => {
     await makeBasicProductMouReview();
 
-    await mockSessionByEmail(productData.main.primaryTechnicalLead.email);
+    await mockSessionByIdirGuid(productData.main.primaryTechnicalLead.idirGuid);
     const response = await makeBasicProductReview(DecisionStatus.APPROVED);
 
     expect(response.status).toBe(401);
@@ -294,7 +294,7 @@ describe('Review Public Cloud Delete Request - Permissions', () => {
 
 describe('Review Public Cloud Request - Validations', () => {
   it('should successfully submit a create request for TL1', async () => {
-    await mockSessionByEmail(productData.main.primaryTechnicalLead.email);
+    await mockSessionByIdirGuid(productData.main.primaryTechnicalLead.idirGuid);
 
     const response = await createPublicCloudProduct(productData.main);
     expect(response.status).toBe(200);

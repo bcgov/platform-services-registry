@@ -1,7 +1,7 @@
 import { expect } from '@jest/globals';
 import { GlobalRole } from '@/constants';
 import { createSamplePrivateCloudCommentData } from '@/helpers/mock-resources';
-import { mockSessionByEmail, mockSessionByRole } from '@/services/api-test/core';
+import { mockSessionByIdirGuid, mockSessionByRole } from '@/services/api-test/core';
 import {
   createPrivateCloudComment,
   deletePrivateCloudComment,
@@ -34,7 +34,7 @@ describe('Delete Private Cloud Comment - Permissions', () => {
   });
 
   it('should return 401 for unauthenticated user', async () => {
-    await mockSessionByEmail();
+    await mockSessionByIdirGuid();
 
     const response = await deletePrivateCloudComment(licencePlate, commentId);
 

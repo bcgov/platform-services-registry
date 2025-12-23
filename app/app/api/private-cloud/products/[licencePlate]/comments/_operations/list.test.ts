@@ -2,7 +2,7 @@ import { expect } from '@jest/globals';
 import { GlobalRole } from '@/constants';
 import { createSamplePrivateCloudProductData } from '@/helpers/mock-resources';
 import { DecisionStatus, RequestType } from '@/prisma/client';
-import { mockSessionByEmail, mockSessionByRole } from '@/services/api-test/core';
+import { mockSessionByIdirGuid, mockSessionByRole } from '@/services/api-test/core';
 import { mockTeamServiceAccount } from '@/services/api-test/core';
 import {
   createPrivateCloudProduct,
@@ -23,7 +23,7 @@ const requests = {
 
 describe('Private Cloud Comments - Permissions', () => {
   it('should successfully submit a create request for PO', async () => {
-    await mockSessionByEmail(globalProductData.projectOwner.email);
+    await mockSessionByIdirGuid(globalProductData.projectOwner.idirGuid);
 
     const response = await createPrivateCloudProduct(globalProductData);
     expect(response.status).toBe(200);
@@ -79,7 +79,7 @@ describe('Private Cloud Comments - Permissions', () => {
   });
 
   it('should return 401 for unauthenticated user', async () => {
-    await mockSessionByEmail();
+    await mockSessionByIdirGuid();
 
     const response = await getAllPrivateCloudComments(globalLicencePlate);
     expect(response.status).toBe(401);

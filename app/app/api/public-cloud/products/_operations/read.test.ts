@@ -6,7 +6,7 @@ import { createSamplePublicCloudProductData } from '@/helpers/mock-resources';
 import { findOtherMockUsers } from '@/helpers/mock-users';
 import { pickProductData } from '@/helpers/product';
 import { DecisionStatus, RequestType } from '@/prisma/client';
-import { mockSessionByEmail, mockSessionByRole } from '@/services/api-test/core';
+import { mockSessionByIdirGuid, mockSessionByRole } from '@/services/api-test/core';
 import { mockTeamServiceAccount } from '@/services/api-test/core';
 import {
   createPublicCloudProduct,
@@ -41,7 +41,7 @@ const requests = {
 
 describe('Read Public Cloud Product - Permissions', () => {
   it('should successfully submit a create request for PO', async () => {
-    await mockSessionByEmail(productData.main.projectOwner.email);
+    await mockSessionByIdirGuid(productData.main.projectOwner.idirGuid);
 
     const response = await createPublicCloudProduct(productData.main);
     expect(response.status).toBe(200);
@@ -50,7 +50,7 @@ describe('Read Public Cloud Product - Permissions', () => {
   });
 
   it('should successfully sign the billing by EA', async () => {
-    await mockSessionByEmail(requests.create.decisionData.expenseAuthority.email);
+    await mockSessionByIdirGuid(requests.create.decisionData.expenseAuthority.idirGuid);
     const billing = await prisma.publicCloudBilling.findFirst({
       where: { licencePlate: requests.create.licencePlate, signed: false, approved: false },
     });
@@ -101,7 +101,7 @@ describe('Read Public Cloud Product - Permissions', () => {
   });
 
   it('should return 401 for unauthenticated user', async () => {
-    await mockSessionByEmail();
+    await mockSessionByIdirGuid();
 
     const response = await getPublicCloudProduct(requests.create.decisionData.licencePlate);
 
@@ -122,7 +122,7 @@ describe('Read Public Cloud Product - Permissions', () => {
   });
 
   it('should successfully read the product for PO', async () => {
-    await mockSessionByEmail(productData.main.projectOwner.email);
+    await mockSessionByIdirGuid(productData.main.projectOwner.idirGuid);
 
     const response = await getPublicCloudProduct(requests.create.decisionData.licencePlate);
 
@@ -135,7 +135,7 @@ describe('Read Public Cloud Product - Permissions', () => {
   });
 
   it('should successfully read the product for TL1', async () => {
-    await mockSessionByEmail(productData.main.primaryTechnicalLead.email);
+    await mockSessionByIdirGuid(productData.main.primaryTechnicalLead.idirGuid);
 
     const response = await getPublicCloudProduct(requests.create.decisionData.licencePlate);
 
@@ -148,7 +148,7 @@ describe('Read Public Cloud Product - Permissions', () => {
   });
 
   it('should successfully read the product for TL2', async () => {
-    await mockSessionByEmail(productData.main.secondaryTechnicalLead.email);
+    await mockSessionByIdirGuid(productData.main.secondaryTechnicalLead.idirGuid);
 
     const response = await getPublicCloudProduct(requests.create.decisionData.licencePlate);
 
@@ -162,13 +162,13 @@ describe('Read Public Cloud Product - Permissions', () => {
 
   it('should fail to read the product for a non-assigned user', async () => {
     const otherUsers = findOtherMockUsers([
-      productData.main.projectOwner.email,
-      productData.main.primaryTechnicalLead.email,
-      productData.main.secondaryTechnicalLead.email,
-      productData.main.expenseAuthority.email,
+      productData.main.projectOwner.idirGuid,
+      productData.main.primaryTechnicalLead.idirGuid,
+      productData.main.secondaryTechnicalLead.idirGuid,
+      productData.main.expenseAuthority.idirGuid,
     ]);
 
-    await mockSessionByEmail(otherUsers[0].email);
+    await mockSessionByIdirGuid(otherUsers[0].idirGuid);
 
     const response = await getPublicCloudProduct(requests.create.decisionData.licencePlate);
 
