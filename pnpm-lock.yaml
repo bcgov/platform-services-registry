@@ -31,7 +31,7 @@ importers:
         version: 9.39.2
       '@release-it/bumper':
         specifier: ^7.0.5
-        version: 7.0.5(release-it@19.2.0(@types/node@24.10.1))
+        version: 7.0.5(release-it@19.2.2(@types/node@24.10.1))
       '@types/eslint-config-prettier':
         specifier: ^6.11.3
         version: 6.11.3
@@ -61,7 +61,7 @@ importers:
         version: 4.3.0(@typescript-eslint/eslint-plugin@8.50.1(@typescript-eslint/parser@8.50.1(eslint@9.39.2(jiti@2.6.1))(typescript@5.9.3))(eslint@9.39.2(jiti@2.6.1))(typescript@5.9.3))(eslint@9.39.2(jiti@2.6.1))
       release-it:
         specifier: ^19.0.4
-        version: 19.2.0(@types/node@24.10.1)
+        version: 19.2.2(@types/node@24.10.1)
       typescript:
         specifier: ^5.9.2
         version: 5.9.3
@@ -3144,8 +3144,8 @@ packages:
     resolution: {integrity: sha512-dYqgNSZbDwkaJ2ceRd9ojCGjBq+mOm9LmtXnAnEGyHhN/5R7iDW2TRw3h+o/jCFxus3P2LfWIIiwowAjANm7IA==}
     engines: {node: '>= 0.4'}
 
-  release-it@19.2.0:
-    resolution: {integrity: sha512-dMIVyNGckKu2UWDvPfwIw+VMhJbs9qB4b3M5p8szYdKd25h0+P/LSBFYq3+uHQ9n99w/yX+ZnoMHSnjnC/wq7w==}
+  release-it@19.2.2:
+    resolution: {integrity: sha512-57TBUTBbBXLJsPufYS+Hsb1dSZKZ0ktiYgPkNc3Pmlq/QQtH9X0oD0SG2ib5CsXHTI11m19pyK60NXmvtE6cLg==}
     engines: {node: ^20.12.0 || >=22.0.0}
     hasBin: true
 
@@ -4639,7 +4639,7 @@ snapshots:
 
   '@pkgr/core@0.2.9': {}
 
-  '@release-it/bumper@7.0.5(release-it@19.2.0(@types/node@24.10.1))':
+  '@release-it/bumper@7.0.5(release-it@19.2.2(@types/node@24.10.1))':
     dependencies:
       '@iarna/toml': 3.0.0
       cheerio: 1.1.2
@@ -4648,7 +4648,7 @@ snapshots:
       ini: 5.0.0
       js-yaml: 4.1.0
       lodash-es: 4.17.21
-      release-it: 19.2.0(@types/node@24.10.1)
+      release-it: 19.2.2(@types/node@24.10.1)
       semver: 7.7.2
 
   '@standard-schema/spec@1.0.0': {}
@@ -7153,7 +7153,7 @@ snapshots:
       gopd: 1.2.0
       set-function-name: 2.0.2
 
-  release-it@19.2.0(@types/node@24.10.1):
+  release-it@19.2.2(@types/node@24.10.1):
     dependencies:
       '@nodeutils/defaults-deep': 1.1.0
       '@octokit/rest': 22.0.1
