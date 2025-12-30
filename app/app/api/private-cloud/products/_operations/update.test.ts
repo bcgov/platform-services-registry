@@ -4,7 +4,7 @@ import { createSamplePrivateCloudProductData } from '@/helpers/mock-resources';
 import { resourceRequests1, resourceRequests2 } from '@/helpers/mock-resources/private-cloud-product';
 import { findOtherMockUsers } from '@/helpers/mock-users';
 import { DecisionStatus, Cluster, RequestType } from '@/prisma/client';
-import { mockSessionByEmail, mockSessionByRole } from '@/services/api-test/core';
+import { mockSessionByIdirGuid, mockSessionByRole } from '@/services/api-test/core';
 import { mockTeamServiceAccount } from '@/services/api-test/core';
 import { createPrivateCloudProduct, editPrivateCloudProduct } from '@/services/api-test/private-cloud/products';
 import { makePrivateCloudRequestDecision } from '@/services/api-test/private-cloud/requests';
@@ -36,7 +36,7 @@ async function makeBasicProductChange(extra = {}) {
 
 describe('Update Private Cloud Product - Permissions', () => {
   it('should successfully submit a create request for PO', async () => {
-    await mockSessionByEmail(productData.main.projectOwner.email);
+    await mockSessionByIdirGuid(productData.main.projectOwner.idirGuid);
 
     const response = await createPrivateCloudProduct(productData.main);
     expect(response.status).toBe(200);
@@ -64,7 +64,7 @@ describe('Update Private Cloud Product - Permissions', () => {
   });
 
   it('should successfully submit a update request for PO', async () => {
-    await mockSessionByEmail(productData.main.projectOwner.email);
+    await mockSessionByIdirGuid(productData.main.projectOwner.idirGuid);
 
     const response = await makeBasicProductChange();
 
@@ -76,7 +76,7 @@ describe('Update Private Cloud Product - Permissions', () => {
   });
 
   it('should fail to submit the same request for PO', async () => {
-    await mockSessionByEmail(productData.main.projectOwner.email);
+    await mockSessionByIdirGuid(productData.main.projectOwner.idirGuid);
 
     const response = await makeBasicProductChange();
 
@@ -134,7 +134,7 @@ describe('Update Private Cloud Product - Permissions', () => {
       productData.main.secondaryTechnicalLead.email,
     ]);
 
-    await mockSessionByEmail(otherUsers[0].email);
+    await mockSessionByIdirGuid(otherUsers[0].idirGuid);
 
     const response = await makeBasicProductChange();
 
@@ -142,7 +142,7 @@ describe('Update Private Cloud Product - Permissions', () => {
   });
 
   it('should fail to submit a update request for unauthenticated user', async () => {
-    await mockSessionByEmail();
+    await mockSessionByIdirGuid();
 
     const response = await makeBasicProductChange();
 

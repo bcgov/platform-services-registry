@@ -3,7 +3,7 @@ import { GlobalRole } from '@/constants';
 import { createSamplePrivateCloudProductData } from '@/helpers/mock-resources';
 import { findOtherMockUsers } from '@/helpers/mock-users';
 import { DecisionStatus, RequestType } from '@/prisma/client';
-import { mockSessionByEmail, mockSessionByRole } from '@/services/api-test/core';
+import { mockSessionByIdirGuid, mockSessionByRole } from '@/services/api-test/core';
 import { mockTeamServiceAccount } from '@/services/api-test/core';
 import { createPrivateCloudProduct, deletePrivateCloudProduct } from '@/services/api-test/private-cloud/products';
 import { makePrivateCloudRequestDecision } from '@/services/api-test/private-cloud/requests';
@@ -21,7 +21,7 @@ const requests = {
 
 describe('Delete Private Cloud Product - Permissions', () => {
   it('should successfully submit a create request for PO', async () => {
-    await mockSessionByEmail(productData.main.projectOwner.email);
+    await mockSessionByIdirGuid(productData.main.projectOwner.idirGuid);
 
     const response = await createPrivateCloudProduct(productData.main);
     expect(response.status).toBe(200);
@@ -48,7 +48,7 @@ describe('Delete Private Cloud Product - Permissions', () => {
   });
 
   it('should successfully submit a delete request for PO', async () => {
-    await mockSessionByEmail(productData.main.projectOwner.email);
+    await mockSessionByIdirGuid(productData.main.projectOwner.idirGuid);
 
     const response = await deletePrivateCloudProduct(requests.create.licencePlate, 'Test delete comment');
     expect(response.status).toBe(200);
@@ -58,7 +58,7 @@ describe('Delete Private Cloud Product - Permissions', () => {
   });
 
   it('should fail to submit the same request for PO', async () => {
-    await mockSessionByEmail(productData.main.projectOwner.email);
+    await mockSessionByIdirGuid(productData.main.projectOwner.idirGuid);
 
     const response = await deletePrivateCloudProduct(requests.delete.licencePlate, 'Test delete comment');
     expect(response.status).toBe(401);
@@ -112,14 +112,14 @@ describe('Delete Private Cloud Product - Permissions', () => {
       productData.main.secondaryTechnicalLead.email,
     ]);
 
-    await mockSessionByEmail(otherUsers[0].email);
+    await mockSessionByIdirGuid(otherUsers[0].idirGuid);
 
     const response = await deletePrivateCloudProduct(requests.delete.licencePlate, 'Test delete comment');
     expect(response.status).toBe(401);
   });
 
   it('should fail to submit a delete request for unauthenticated user', async () => {
-    await mockSessionByEmail();
+    await mockSessionByIdirGuid();
 
     const requestData = createSamplePrivateCloudProductData();
     const response = await createPrivateCloudProduct(requestData);

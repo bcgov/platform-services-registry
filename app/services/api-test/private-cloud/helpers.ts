@@ -2,7 +2,7 @@ import { GlobalRole } from '@/constants';
 import { createSamplePrivateCloudProductData } from '@/helpers/mock-resources';
 import { resourceRequests1, resourceRequests2 } from '@/helpers/mock-resources/private-cloud-product';
 import { Cluster, DecisionStatus, RequestType } from '@/prisma/client';
-import { mockSessionByEmail, mockSessionByRole } from '@/services/api-test/core';
+import { mockSessionByIdirGuid, mockSessionByRole } from '@/services/api-test/core';
 import { mockTeamServiceAccount } from '@/services/api-test/core';
 import {
   createPrivateCloudProduct as createPrivateCloudProductTest,
@@ -15,7 +15,7 @@ import { PrivateCloudRequestDetail } from '@/types/private-cloud';
 
 export async function createPrivateCloudProduct() {
   const requestData = await createSamplePrivateCloudProductData({ data: { cluster: Cluster.SILVER } });
-  await mockSessionByEmail(requestData.projectOwner.email);
+  await mockSessionByIdirGuid(requestData.projectOwner.idirGuid);
 
   let response: any;
 
@@ -53,7 +53,7 @@ export async function updatePrivateCloudProduct() {
     },
   });
 
-  await mockSessionByEmail(productData.projectOwner.email);
+  await mockSessionByIdirGuid(productData.projectOwner.idirGuid);
 
   let response: any;
   response = await createPrivateCloudProductTest(productData);
@@ -113,7 +113,7 @@ export async function updatePrivateCloudProduct() {
 export async function deletePrivateCloudProduct() {
   const productData = await createSamplePrivateCloudProductData({ data: { cluster: Cluster.SILVER } });
 
-  await mockSessionByEmail(productData.projectOwner.email);
+  await mockSessionByIdirGuid(productData.projectOwner.idirGuid);
 
   let response: any;
   response = await createPrivateCloudProductTest(productData);

@@ -3,9 +3,9 @@ import { GlobalRole } from '@/constants';
 import { defaultAccountCoding } from '@/constants';
 import prisma from '@/core/prisma';
 import { createSamplePublicCloudProductData } from '@/helpers/mock-resources';
-import { findOtherMockUsers } from '@/helpers/mock-users';
+import { mockNoRoleUsers } from '@/helpers/mock-users';
 import { DecisionStatus, RequestType } from '@/prisma/client';
-import { mockSessionByEmail, mockSessionByRole } from '@/services/api-test/core';
+import { mockSessionByIdirGuid, mockSessionByRole } from '@/services/api-test/core';
 import { mockTeamServiceAccount } from '@/services/api-test/core';
 import {
   createPublicCloudProduct,
@@ -28,7 +28,7 @@ const requests = {
 
 describe('Delete Public Cloud Product - Permissions', () => {
   it('should successfully submit a create request for PO', async () => {
-    await mockSessionByEmail(productData.main.projectOwner.email);
+    await mockSessionByIdirGuid(productData.main.projectOwner.idirGuid);
 
     const response = await createPublicCloudProduct(productData.main);
     expect(response.status).toBe(200);
@@ -43,7 +43,7 @@ describe('Delete Public Cloud Product - Permissions', () => {
     expect(billing).toBeTruthy();
     if (!billing) return;
 
-    await mockSessionByEmail(requests.create.decisionData.expenseAuthority.email);
+    await mockSessionByIdirGuid(requests.create.decisionData.expenseAuthority.idirGuid);
     const response = await signPublicCloudBilling(requests.create.licencePlate, billing.id, {
       accountCoding: defaultAccountCoding,
       confirmed: true,
@@ -87,7 +87,7 @@ describe('Delete Public Cloud Product - Permissions', () => {
   });
 
   it('should successfully submit a delete request for PO', async () => {
-    await mockSessionByEmail(productData.main.projectOwner.email);
+    await mockSessionByIdirGuid(productData.main.projectOwner.idirGuid);
 
     const response = await deletePublicCloudProduct(requests.create.licencePlate, 'Test delete comment');
     expect(response.status).toBe(200);
@@ -97,7 +97,7 @@ describe('Delete Public Cloud Product - Permissions', () => {
   });
 
   it('should fail to submit the same request for PO', async () => {
-    await mockSessionByEmail(productData.main.projectOwner.email);
+    await mockSessionByIdirGuid(productData.main.projectOwner.idirGuid);
 
     const response = await deletePublicCloudProduct(requests.delete.licencePlate, 'Test delete comment');
     expect(response.status).toBe(401);
@@ -145,20 +145,24 @@ describe('Delete Public Cloud Product - Permissions', () => {
   });
 
   it('should fail to submit a delete request for a non-assigned user', async () => {
-    const otherUsers = findOtherMockUsers([
-      productData.main.projectOwner.email,
-      productData.main.primaryTechnicalLead.email,
-      productData.main.secondaryTechnicalLead.email,
-    ]);
+    const nonAssignedUser = mockNoRoleUsers.find(
+      (u) =>
+        u.idirGuid !== productData.main.projectOwner.idirGuid &&
+        u.idirGuid !== productData.main.primaryTechnicalLead.idirGuid &&
+        u.idirGuid !== productData.main.secondaryTechnicalLead.idirGuid &&
+        u.idirGuid !== productData.main.expenseAuthority.idirGuid,
+    );
 
-    await mockSessionByEmail(otherUsers[0].email);
+    expect(nonAssignedUser).toBeDefined();
+
+    await mockSessionByIdirGuid(nonAssignedUser!.idirGuid);
 
     const response = await deletePublicCloudProduct(requests.delete.licencePlate, 'Test delete comment');
     expect(response.status).toBe(401);
   });
 
   it('should fail to submit a delete request for unauthenticated user', async () => {
-    await mockSessionByEmail();
+    await mockSessionByIdirGuid();
 
     const requestData = createSamplePublicCloudProductData();
     const response = await createPublicCloudProduct(requestData);
