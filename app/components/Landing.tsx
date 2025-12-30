@@ -105,12 +105,12 @@ export default function Landing() {
         </h2>
         <ul className="list-disc pl-8 mb-4">
           <li className="mb-2">
-            <ExternalLink href="https://digital.gov.bc.ca/cloud/services/private/intro/">
+            <ExternalLink href="https://digital.gov.bc.ca/technology/cloud/private/intro/">
               Private cloud hosting
             </ExternalLink>
           </li>
           <li className="mb-2">
-            <ExternalLink href="https://digital.gov.bc.ca/cloud/services/public/intro/">
+            <ExternalLink href="https://digital.gov.bc.ca/technology/cloud/public/intro/">
               Public cloud hosting
             </ExternalLink>
           </li>
