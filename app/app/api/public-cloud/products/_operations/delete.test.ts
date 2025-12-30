@@ -3,7 +3,7 @@ import { GlobalRole } from '@/constants';
 import { defaultAccountCoding } from '@/constants';
 import prisma from '@/core/prisma';
 import { createSamplePublicCloudProductData } from '@/helpers/mock-resources';
-import { findOtherMockUsers } from '@/helpers/mock-users';
+import { mockNoRoleUsers } from '@/helpers/mock-users';
 import { DecisionStatus, RequestType } from '@/prisma/client';
 import { mockSessionByIdirGuid, mockSessionByRole } from '@/services/api-test/core';
 import { mockTeamServiceAccount } from '@/services/api-test/core';
@@ -145,13 +145,17 @@ describe('Delete Public Cloud Product - Permissions', () => {
   });
 
   it('should fail to submit a delete request for a non-assigned user', async () => {
-    const otherUsers = findOtherMockUsers([
-      productData.main.projectOwner.idirGuid,
-      productData.main.primaryTechnicalLead.idirGuid,
-      productData.main.secondaryTechnicalLead.idirGuid,
-    ]);
+    const nonAssignedUser = mockNoRoleUsers.find(
+      (u) =>
+        u.idirGuid !== productData.main.projectOwner.idirGuid &&
+        u.idirGuid !== productData.main.primaryTechnicalLead.idirGuid &&
+        u.idirGuid !== productData.main.secondaryTechnicalLead.idirGuid &&
+        u.idirGuid !== productData.main.expenseAuthority.idirGuid,
+    );
 
-    await mockSessionByIdirGuid(otherUsers[0].idirGuid);
+    expect(nonAssignedUser).toBeDefined();
+
+    await mockSessionByIdirGuid(nonAssignedUser!.idirGuid);
 
     const response = await deletePublicCloudProduct(requests.delete.licencePlate, 'Test delete comment');
     expect(response.status).toBe(401);

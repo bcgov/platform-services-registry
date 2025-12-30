@@ -120,38 +120,12 @@ export function createRoute(baseUrl: string) {
 export const mockedGetServerSession = getServerSession as unknown as MockedFunction<typeof getServerSession>;
 
 export async function mockSessionByIdirGuid(idirGuid?: string) {
+  SERVICE_ACCOUNT_DATA.team = null;
+
   if (!idirGuid) {
     mockedGetServerSession.mockResolvedValue(null);
     return;
   }
-
-  const user = await prisma.user.findUnique({ where: { idirGuid } });
-  if (!user) {
-    throw new Error(`Test setup: User not found for idirGuid=${idirGuid}`);
-  }
-
-  await prisma.userSession.upsert({
-    where: { idirGuid },
-    update: {
-      nextTokenRefreshTime: new Date(Date.now() + 60 * 60 * 1000),
-      accessToken: 'test-access-token',
-      refreshToken: 'test-refresh-token',
-      idToken: 'test-id-token',
-      sub: user.providerUserId ?? `test-sub-${user.id}`,
-      roles: [],
-      teams: [],
-    },
-    create: {
-      idirGuid,
-      nextTokenRefreshTime: new Date(Date.now() + 60 * 60 * 1000),
-      accessToken: 'test-access-token',
-      refreshToken: 'test-refresh-token',
-      idToken: 'test-id-token',
-      sub: user.providerUserId ?? `test-sub-${user.id}`,
-      roles: [],
-      teams: [],
-    },
-  });
 
   const mockSession = await generateTestSession(idirGuid);
   mockedGetServerSession.mockResolvedValue(mockSession);
@@ -228,6 +202,7 @@ export async function mockTeamServiceAccount(roles: string[]) {
 
   SERVICE_ACCOUNT_DATA.jwtData = {
     service_account_type: 'team',
+    roles: roles.join(','),
   };
 
   SERVICE_ACCOUNT_DATA.user = null;

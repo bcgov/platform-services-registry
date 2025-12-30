@@ -1,7 +1,7 @@
 import { expect } from '@jest/globals';
 import { GlobalRole } from '@/constants';
 import { createSamplePublicCloudProductData } from '@/helpers/mock-resources';
-import { findOtherMockUsers } from '@/helpers/mock-users';
+import { mockNoRoleUsers } from '@/helpers/mock-users';
 import { pickProductData } from '@/helpers/product';
 import { Provider } from '@/prisma/client';
 import { mockSessionByIdirGuid, mockSessionByRole } from '@/services/api-test/core';
@@ -70,14 +70,18 @@ describe('Create Public Cloud Product - Permissions', () => {
 
   it('should fail to submit a create request for a non-assigned user', async () => {
     const requestData = createSamplePublicCloudProductData();
-    const otherUsers = findOtherMockUsers([
-      requestData.projectOwner.idirGuid,
-      requestData.primaryTechnicalLead.idirGuid,
-      requestData.secondaryTechnicalLead.idirGuid,
-    ]);
 
-    await mockSessionByIdirGuid(otherUsers[0].idirGuid);
+    const nonAssignedUser = mockNoRoleUsers.find(
+      (u) =>
+        u.idirGuid !== requestData.projectOwner.idirGuid &&
+        u.idirGuid !== requestData.primaryTechnicalLead.idirGuid &&
+        u.idirGuid !== requestData.secondaryTechnicalLead.idirGuid &&
+        u.idirGuid !== requestData.expenseAuthority.idirGuid,
+    );
 
+    expect(nonAssignedUser).toBeDefined();
+
+    await mockSessionByIdirGuid(nonAssignedUser!.idirGuid);
     const response = await createPublicCloudProduct(requestData);
     expect(response.status).toBe(401);
   });

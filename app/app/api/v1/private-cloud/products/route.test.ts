@@ -7,8 +7,9 @@ import { DB_DATA } from '@/jest.mock';
 import { DecisionStatus, ProjectStatus, Cluster, RequestType } from '@/prisma/client';
 import {
   mockSessionByRole,
-  mockUserServiceAccountByIdirGuid,
+  mockSessionByIdirGuid,
   mockUserServiceAccountByRole,
+  mockUserServiceAccountByIdirGuid,
 } from '@/services/api-test/core';
 import { mockTeamServiceAccount } from '@/services/api-test/core';
 import { createPrivateCloudProduct } from '@/services/api-test/private-cloud/products';
@@ -37,7 +38,7 @@ const randomMemberData = {
 
 describe('API: List Private Cloud Products - Permissions', () => {
   it('should successfully create a product by PO and approved by admin', async () => {
-    await mockUserServiceAccountByIdirGuid(PO.idirGuid);
+    await mockSessionByIdirGuid(PO.idirGuid);
 
     const requestData = createSamplePrivateCloudProductData({
       data: { ...memberData },
@@ -91,7 +92,7 @@ describe('API: List Private Cloud Products - Permissions', () => {
   });
 
   it('should successfully create a product by a random user and approved by admin', async () => {
-    await mockUserServiceAccountByIdirGuid(RANDOM1.idirGuid);
+    await mockSessionByIdirGuid(RANDOM1.idirGuid);
 
     const requestData = createSamplePrivateCloudProductData({
       data: { ...randomMemberData },

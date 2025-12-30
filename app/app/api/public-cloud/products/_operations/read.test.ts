@@ -3,7 +3,7 @@ import { GlobalRole } from '@/constants';
 import { defaultAccountCoding } from '@/constants';
 import prisma from '@/core/prisma';
 import { createSamplePublicCloudProductData } from '@/helpers/mock-resources';
-import { findOtherMockUsers } from '@/helpers/mock-users';
+import { mockNoRoleUsers } from '@/helpers/mock-users';
 import { pickProductData } from '@/helpers/product';
 import { DecisionStatus, RequestType } from '@/prisma/client';
 import { mockSessionByIdirGuid, mockSessionByRole } from '@/services/api-test/core';
@@ -161,15 +161,17 @@ describe('Read Public Cloud Product - Permissions', () => {
   });
 
   it('should fail to read the product for a non-assigned user', async () => {
-    const otherUsers = findOtherMockUsers([
-      productData.main.projectOwner.idirGuid,
-      productData.main.primaryTechnicalLead.idirGuid,
-      productData.main.secondaryTechnicalLead.idirGuid,
-      productData.main.expenseAuthority.idirGuid,
-    ]);
+    const nonAssignedUser = mockNoRoleUsers.find(
+      (u) =>
+        u.idirGuid !== productData.main.projectOwner.idirGuid &&
+        u.idirGuid !== productData.main.primaryTechnicalLead.idirGuid &&
+        u.idirGuid !== productData.main.secondaryTechnicalLead.idirGuid &&
+        u.idirGuid !== productData.main.expenseAuthority.idirGuid,
+    );
 
-    await mockSessionByIdirGuid(otherUsers[0].idirGuid);
+    expect(nonAssignedUser).toBeDefined();
 
+    await mockSessionByIdirGuid(nonAssignedUser!.idirGuid);
     const response = await getPublicCloudProduct(requests.create.decisionData.licencePlate);
 
     expect(response.status).toBe(401);
