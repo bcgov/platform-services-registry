@@ -152,7 +152,7 @@ services:
 
   mailpit:
     # See https://hub.docker.com/r/axllent/mailpit/tags
-    image: axllent/mailpit:v1.28.0
+    image: axllent/mailpit:v1.28.1
     container_name: mailpit
     restart: unless-stopped
     volumes:
