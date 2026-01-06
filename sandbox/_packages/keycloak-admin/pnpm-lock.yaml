@@ -10,7 +10,7 @@ importers:
     dependencies:
       '@keycloak/keycloak-admin-client':
         specifier: ^26.0.0
-        version: 26.4.7
+        version: 26.5.0
     devDependencies:
       '@types/node':
         specifier: ^24.0.0
@@ -52,8 +52,8 @@ packages:
   '@jridgewell/trace-mapping@0.3.9':
     resolution: {integrity: sha512-3Belt6tdc8bPgAtbcmdtNJlirVoTmEb5e2gC94PnkwEW9jI6CAHUeoG85tjWP5WquqfavoMtMwiG4P926ZKKuQ==}
 
-  '@keycloak/keycloak-admin-client@26.4.7':
-    resolution: {integrity: sha512-6AqwZjWuWBzM0nPVggWDV4Oep+CO8ATfNEvVhXgC1dH7PkBCl/4hCRj9ZFHnX1OtQJ+zozD6LQ1giwArcAU6qQ==}
+  '@keycloak/keycloak-admin-client@26.5.0':
+    resolution: {integrity: sha512-sT7ASGHhgogkpjRYNoN2hECJ60JQ9En6kbe0Tz3im3HUcr/CO+mJYxlcG8DdgfBApg82ECEnnRxrWe5YM0oKXQ==}
     engines: {node: '>=18'}
 
   '@tsconfig/node10@1.0.11':
@@ -195,7 +195,7 @@ snapshots:
       '@jridgewell/resolve-uri': 3.1.2
       '@jridgewell/sourcemap-codec': 1.5.0
 
-  '@keycloak/keycloak-admin-client@26.4.7':
+  '@keycloak/keycloak-admin-client@26.5.0':
     dependencies:
       camelize-ts: 3.0.0
       url-template: 3.1.1
