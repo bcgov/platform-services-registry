@@ -129,6 +129,11 @@ mongodb:
 
   arbiter:
     enabled: true
+    image:
+      registry: ghcr.io
+      repository: bcgov/bitnami-mongodb
+      digest: sha256:27037f7ea4f21fa5af8904332b74e6a4c03878852dd26dcbd6bfb39d4125c5c1
+
     podSecurityContext:
       enabled: false
     containerSecurityContext:
