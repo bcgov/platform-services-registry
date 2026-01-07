@@ -83,4 +83,3 @@ mailpit:
   route:
     enabled: true
     host: dev-pltsvc-mailpit.apps.silver.devops.gov.bc.ca
-mongosh 127.0.0.1:27017 -u root -p 8z1DnvuKwltPeQRdGSeMBW9p9xH0EnqN --authenticationDatabase admin
