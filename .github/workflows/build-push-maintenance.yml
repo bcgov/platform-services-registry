@@ -25,7 +25,7 @@ jobs:
     timeout-minutes: 10
     steps:
     - uses: hmarr/debug-action@f7318c783045ac39ed9bb497e22ce835fdafbfe6
-    - uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8
+    - uses: actions/checkout@064fe7f3312418007dea2b49a19844a9ee378f49
 
     - name: Build and Push Docker Image
       uses: egose/actions/docker-build-push@1e834e0c52bba053b6929a7b27938290923a9ff8
