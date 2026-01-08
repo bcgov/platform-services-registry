@@ -14,9 +14,14 @@
     "prisma-generate": "prisma generate",
     "prisma-push": "dotenv -e .env.local -- prisma db push",
     "migrate-data": "cat .env.local | grep DATABASE_URL > ../data-migrations/.env && cd ../data-migrations && npm install && npx migrate-mongo up",
+    "sync-sandbox": "node scripts/sync-sandbox.cjs",
+    "preemail": "pnpm sync-sandbox",
     "email": "dotenv -e .env.local -- email dev --dir emails --port 3001",
+    "preemail-build": "pnpm sync-sandbox",
     "email-build": "email build --packageManager=pnpm",
+    "preemail-start": "pnpm sync-sandbox",
     "email-start": "dotenv -e .env.local -- email start --port 3001",
+    "preemail-export": "pnpm sync-sandbox",
     "email-export": "email export --pretty --outDir emails-export --dir emails"
   },
   "engines": {

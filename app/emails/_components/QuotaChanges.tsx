@@ -1,5 +1,5 @@
 import { Heading, Link, Text } from '@react-email/components';
-import { ResourceRequests } from '@/prisma/client';
+import type { ResourceRequests } from '@/prisma/client';
 
 interface QuotaChangesProps {
   licencePlate: string;
