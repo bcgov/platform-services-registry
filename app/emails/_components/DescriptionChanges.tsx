@@ -1,5 +1,5 @@
 import { Heading, Text } from '@react-email/components';
-import { Organization } from '@/prisma/client';
+import type { Organization } from '@/prisma/client';
 
 export default function DescriptionChanges({
   nameCurrent,

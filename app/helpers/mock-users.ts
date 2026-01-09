@@ -1,13 +1,44 @@
+import fs from 'node:fs';
+import path from 'node:path';
 import _compact from 'lodash-es/compact';
 import { Session } from 'next-auth';
 import { generateSession } from '@/core/auth-options';
 import prisma from '@/core/prisma';
 import { processMsUser } from '@/services/msgraph';
 import type { AppUserWithRoles } from '@/types/user';
-import type { MsUser } from '../../sandbox/types';
+import type { MsUser } from '../../shared/ms-users/types';
 import { formatFullName } from './user';
 
-export const msUsers: MsUser[] = require('../../sandbox/mock-users.json');
+let _msUsers: MsUser[] | null = null;
+
+function findRepoSandboxFile(fileName: string) {
+  let dir = process.cwd();
+
+  for (let i = 0; i < 10; i++) {
+    const candidate = path.join(dir, 'sandbox', fileName);
+    if (fs.existsSync(candidate)) return candidate;
+
+    const parent = path.dirname(dir);
+    if (parent === dir) break;
+    dir = parent;
+  }
+
+  throw new Error(
+    `[mock-users] Could not find sandbox/${fileName} starting from cwd=${process.cwd()} (walked up 10 levels)`,
+  );
+}
+
+function loadMsUsers(): MsUser[] {
+  if (_msUsers) return _msUsers;
+
+  const filePath = findRepoSandboxFile('mock-users.json');
+  const raw = fs.readFileSync(filePath, 'utf8');
+
+  _msUsers = JSON.parse(raw) as MsUser[];
+  return _msUsers;
+}
+
+export const msUsers: MsUser[] = loadMsUsers();
 
 export const mockUsers = msUsers
   .map((usr) => {
