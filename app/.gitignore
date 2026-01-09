@@ -39,7 +39,3 @@ next-env.d.ts
 .react-email
 emails-export
 .scannerwork
-
-# sandbox sync (generated for react-email dev)
-sandbox/mock-users.json
-sandbox/types.ts

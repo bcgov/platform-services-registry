@@ -33,13 +33,13 @@ jobs:
     timeout-minutes: 10
     steps:
     - uses: hmarr/debug-action@f7318c783045ac39ed9bb497e22ce835fdafbfe6
-    - uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8
+    - uses: actions/checkout@064fe7f3312418007dea2b49a19844a9ee378f49
 
     - name: Setup Tools
       uses: ./.github/actions/setup-tools
 
     - name: Build and Push
-      uses: egose/actions/docker-build-push@8d98a117aae87eacb2cf94bb6541341480d51f03
+      uses: egose/actions/docker-build-push@b3ab7cd7a5282c03badcbcf3ac33c92b74b744aa
       with:
         registry-url: ${{ env.GITHUB_REGISTRY }}
         registry-username: ${{ github.actor }}
@@ -60,13 +60,13 @@ jobs:
 
     steps:
     - uses: hmarr/debug-action@f7318c783045ac39ed9bb497e22ce835fdafbfe6
-    - uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8
+    - uses: actions/checkout@064fe7f3312418007dea2b49a19844a9ee378f49
 
     - name: Setup Tools
       uses: ./.github/actions/setup-tools
 
     - name: Build and Push
-      uses: egose/actions/docker-build-push@8d98a117aae87eacb2cf94bb6541341480d51f03
+      uses: egose/actions/docker-build-push@b3ab7cd7a5282c03badcbcf3ac33c92b74b744aa
       with:
         registry-url: ${{ env.GITHUB_REGISTRY }}
         registry-username: ${{ github.actor }}
@@ -84,13 +84,13 @@ jobs:
     timeout-minutes: 10
     steps:
     - uses: hmarr/debug-action@f7318c783045ac39ed9bb497e22ce835fdafbfe6
-    - uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8
+    - uses: actions/checkout@064fe7f3312418007dea2b49a19844a9ee378f49
 
     - name: Setup Tools
       uses: ./.github/actions/setup-tools
 
     - name: Build and Push
-      uses: egose/actions/docker-build-push@8d98a117aae87eacb2cf94bb6541341480d51f03
+      uses: egose/actions/docker-build-push@b3ab7cd7a5282c03badcbcf3ac33c92b74b744aa
       with:
         registry-url: ${{ env.GITHUB_REGISTRY }}
         registry-username: ${{ github.actor }}
@@ -109,13 +109,13 @@ jobs:
 
     steps:
     - uses: hmarr/debug-action@f7318c783045ac39ed9bb497e22ce835fdafbfe6
-    - uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8
+    - uses: actions/checkout@064fe7f3312418007dea2b49a19844a9ee378f49
 
     - name: Setup Tools
       uses: ./.github/actions/setup-tools
 
     - name: Build and Push
-      uses: egose/actions/docker-build-push@8d98a117aae87eacb2cf94bb6541341480d51f03
+      uses: egose/actions/docker-build-push@b3ab7cd7a5282c03badcbcf3ac33c92b74b744aa
       with:
         registry-url: ${{ env.GITHUB_REGISTRY }}
         registry-username: ${{ github.actor }}
@@ -140,7 +140,7 @@ jobs:
 
     steps:
     - uses: hmarr/debug-action@f7318c783045ac39ed9bb497e22ce835fdafbfe6
-    - uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8
+    - uses: actions/checkout@064fe7f3312418007dea2b49a19844a9ee378f49
 
     - name: Authenticate and set context
       uses: redhat-actions/oc-login@dfbd9912672664f9df2023c1c16e07bcf306043c
@@ -183,7 +183,7 @@ jobs:
     timeout-minutes: 10
     steps:
     - uses: hmarr/debug-action@f7318c783045ac39ed9bb497e22ce835fdafbfe6
-    - uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8
+    - uses: actions/checkout@064fe7f3312418007dea2b49a19844a9ee378f49
     - name: Scan image
       uses: ./.github/actions/scan-docker-image
       with:
@@ -195,7 +195,7 @@ jobs:
     timeout-minutes: 10
     steps:
     - uses: hmarr/debug-action@f7318c783045ac39ed9bb497e22ce835fdafbfe6
-    - uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8
+    - uses: actions/checkout@064fe7f3312418007dea2b49a19844a9ee378f49
     - name: Scan image
       uses: ./.github/actions/scan-docker-image
       with:
@@ -207,7 +207,7 @@ jobs:
     timeout-minutes: 10
     steps:
     - uses: hmarr/debug-action@f7318c783045ac39ed9bb497e22ce835fdafbfe6
-    - uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8
+    - uses: actions/checkout@064fe7f3312418007dea2b49a19844a9ee378f49
     - name: Scan image
       uses: ./.github/actions/scan-docker-image
       with:
@@ -219,7 +219,7 @@ jobs:
     timeout-minutes: 10
     steps:
     - uses: hmarr/debug-action@f7318c783045ac39ed9bb497e22ce835fdafbfe6
-    - uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8
+    - uses: actions/checkout@064fe7f3312418007dea2b49a19844a9ee378f49
     - name: Scan image
       uses: ./.github/actions/scan-docker-image
       with:
