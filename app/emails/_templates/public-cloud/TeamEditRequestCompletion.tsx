@@ -20,7 +20,7 @@ export default function TeamEditRequestCompletion({ request }: EmailProp) {
     <PublicCloudLayout showFooter>
       <Heading className="text-lg text-black">Success! Your request was approved and completed!</Heading>
       <Text>Hi Product Team, </Text>
-      <Text>Your request for your product {name} on the Public Cloud platform is complete.</Text>
+      <Text>Your edit request for your product {name} on the Public Cloud platform is complete.</Text>
       <Support />
       <Text>
         The Product Owner and the Technical Lead(s) are granted access to the registry and can login to the registry now
