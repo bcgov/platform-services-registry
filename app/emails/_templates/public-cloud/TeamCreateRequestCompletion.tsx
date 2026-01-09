@@ -20,7 +20,7 @@ export default function TeamCreateRequestCompletion({ request }: EmailProp) {
     <PublicCloudLayout showFooter>
       <Heading className="text-lg text-black">Success! Your provisioning request is complete!</Heading>
       <Text>Hi Product Team,</Text>
-      <Text>Your create request for your product {name} on the Public Cloud platform is complete.</Text>
+      <Text>Your request for your product {name} on the Public Cloud platform is complete.</Text>
       <Support />
       <Text>
         The Product Owner and the Technical Lead(s) are granted access to the registry and can login to the registry now
