@@ -6,7 +6,7 @@ import { generateSession } from '@/core/auth-options';
 import prisma from '@/core/prisma';
 import { processMsUser } from '@/services/msgraph';
 import type { AppUserWithRoles } from '@/types/user';
-import type { MsUser } from '../../shared/ms-users/types';
+import type { MsUser } from '../sandbox/types';
 import { formatFullName } from './user';
 
 let _msUsers: MsUser[] | null = null;
