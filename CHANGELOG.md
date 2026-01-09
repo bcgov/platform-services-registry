@@ -1,3 +1,20 @@
+## [0.78.3](https://github.com/bcgov/platform-services-registry/compare/v0.78.2...v0.78.3) (2026-01-09)
+
+### Bug Fixes
+
+* **0000:** cleanup unused devDependencies and fix knip config after ESLint migration ([16fc6ed](https://github.com/bcgov/platform-services-registry/commit/16fc6ed1037f9b7facd251bc4194ab6531430f6c))
+* **0000:** remove FlatCompat and duplicate plugins to restore ESLint 9 compatibility ([182b53a](https://github.com/bcgov/platform-services-registry/commit/182b53abdae6ffe1eee5b6b067c7ab909b4abc5f))
+* **0000:** update pnpm-lock after ESLint devDependency cleanup ([43c1473](https://github.com/bcgov/platform-services-registry/commit/43c14737b0cbc886661baa0c437297e1d01ea0d2))
+* **2590:** make safe-faker helper resilient to faker typings ([16b1894](https://github.com/bcgov/platform-services-registry/commit/16b1894a7262abe46c3802e566d62fc3d0b593f5))
+* **2590:** marked hotspot as safe ([94c7be1](https://github.com/bcgov/platform-services-registry/commit/94c7be17d5bae6135d18fa954df5c223de823e04))
+* **2590:** remove redunadnat commented out line ([33a054d](https://github.com/bcgov/platform-services-registry/commit/33a054dcad830470def79cb8759090cd19b75dca))
+* **2590:** replace Math.random with crypto-based RNG to satisfy Sonar security hotspot ([0f9c759](https://github.com/bcgov/platform-services-registry/commit/0f9c7597fc3662103b76b01e9251f1eea04476ad))
+* **2590:** revert app/tsconfig.json ([31391f5](https://github.com/bcgov/platform-services-registry/commit/31391f586528465cff30e03bfd7145ff240b3c50))
+* **2590:** stabilize initial render by restructuring Html/Head/Body usage ([62320ae](https://github.com/bcgov/platform-services-registry/commit/62320aec2ade9b58e9eb9329b237cf2a58624299))
+* **2590:** stabilize react-email previews with safe faker mocks ([c3b3d48](https://github.com/bcgov/platform-services-registry/commit/c3b3d4857c3b58855eb36bae5aa85e93c3eae94f))
+* **2590:** update Dockerfile.email to copy new React Email v5 output structure ([3022300](https://github.com/bcgov/platform-services-registry/commit/30223006e56f52fbdef1e73ebb484842a5355bf1))
+* **2590:** upgrade react-email preview server to v5 ([5d18e44](https://github.com/bcgov/platform-services-registry/commit/5d18e44dfa4946024a1ac1b70304014915746466))
+* **2593:** review icon typings for Tabler v3 compatibility ([4bed257](https://github.com/bcgov/platform-services-registry/commit/4bed2570e495ef9754adc5afcb6759bbd4f9985f))
 ## [0.78.2](https://github.com/bcgov/platform-services-registry/compare/v0.78.0...v0.78.2) (2025-12-09)
 
 ### Bug Fixes
