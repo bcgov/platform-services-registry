@@ -10,7 +10,7 @@ importers:
     dependencies:
       '@keycloak/keycloak-admin-client':
         specifier: ^26.0.0
-        version: 26.5.0
+        version: 26.5.1
       nats:
         specifier: ^2.19.0
         version: 2.29.3
@@ -220,8 +220,8 @@ packages:
     resolution: {integrity: sha512-ZT55BDLV0yv0RBm2czMiZ+SqCGO7AvmOM3G/w2xhVPH+te0aKgFjmBvGlL1dH+ql2tgGO3MVrbb3jCKyvpgnxA==}
     engines: {node: 20 || >=22}
 
-  '@keycloak/keycloak-admin-client@26.5.0':
-    resolution: {integrity: sha512-sT7ASGHhgogkpjRYNoN2hECJ60JQ9En6kbe0Tz3im3HUcr/CO+mJYxlcG8DdgfBApg82ECEnnRxrWe5YM0oKXQ==}
+  '@keycloak/keycloak-admin-client@26.5.1':
+    resolution: {integrity: sha512-9c1N/5UZK0zIz5CIFnjrlR2Qbb/CJervmPEMi04hF87VWmAKivMcsI68DxWSTrkht8Zd9z9lgWxwieDL5QP73g==}
     engines: {node: '>=18'}
 
   '@standard-schema/spec@1.0.0':
@@ -525,7 +525,7 @@ snapshots:
     dependencies:
       '@isaacs/balanced-match': 4.0.1
 
-  '@keycloak/keycloak-admin-client@26.5.0':
+  '@keycloak/keycloak-admin-client@26.5.1':
     dependencies:
       camelize-ts: 3.0.0
       url-template: 3.1.1
