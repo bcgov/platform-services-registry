@@ -225,6 +225,14 @@ postgresql:
       enabled: false
     persistence:
       size: 1Gi
+    resources:
+      requests:
+        cpu: 250m
+        memory: 512Mi
+      limits:
+        cpu: 500m
+        memory: 1Gi
+    resourcesPreset: ""
   readReplicas:
     persistence:
       size: 1Gi
