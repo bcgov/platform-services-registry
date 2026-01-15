@@ -29,7 +29,9 @@ install:
 
 .PHONY: canvas-install
 canvas-install:
-	cd app && pnpm rebuild canvas
+	cd app/node_modules/.pnpm/canvas@3.2.0/node_modules/canvas &&\
+	pnpm add -D node-gyp &&\
+	pnpm exec node-gyp rebuild
 
 .PHONY: asdf-install
 asdf-install:
