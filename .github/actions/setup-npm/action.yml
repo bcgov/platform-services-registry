@@ -38,9 +38,7 @@ runs:
           libgif-dev \
           libpng-dev \
           librsvg2-dev
-        pnpm rebuild canvas || (cd node_modules/canvas && pnpm exec node-gyp rebuild)
-      else
-        echo "Build directory already exists. Skipping rebuild."
+        pnpm rebuild canvas
       fi
     shell: bash
     working-directory: app
