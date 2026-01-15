@@ -224,7 +224,7 @@ postgresql:
     containerSecurityContext:
       enabled: false
     persistence:
-      size: 10Gi
+      size: 1Gi
     resources:
       requests:
         cpu: 250m
