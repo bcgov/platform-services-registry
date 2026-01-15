@@ -13,7 +13,7 @@ importers:
         version: 5.0.6
       '@types/node':
         specifier: ^24.0.0
-        version: 24.10.8
+        version: 24.10.9
       '@types/nodemailer':
         specifier: ^7.0.0
         version: 7.0.5
@@ -528,8 +528,8 @@ packages:
   '@types/http-errors@2.0.5':
     resolution: {integrity: sha512-r8Tayk8HJnX0FztbZN7oVqGccWgw98T/0neJphO91KkmOzug1KkofZURD4UaD5uH8AqcFLfdPErnBod0u71/qg==}
 
-  '@types/node@24.10.8':
-    resolution: {integrity: sha512-r0bBaXu5Swb05doFYO2kTWHMovJnNVbCsII0fhesM8bNRlLhXIuckley4a2DaD+vOdmm5G+zGkQZAPZsF80+YQ==}
+  '@types/node@24.10.9':
+    resolution: {integrity: sha512-ne4A0IpG3+2ETuREInjPNhUGis1SFjv1d5asp8MzEAGtOZeTeHVDOYqOgqfhvseqg/iXty2hjBf1zAOb7RNiNw==}
 
   '@types/nodemailer@7.0.5':
     resolution: {integrity: sha512-7WtR4MFJUNN2UFy0NIowBRJswj5KXjXDhlZY43Hmots5eGu5q/dTeFd/I6GgJA/qj3RqO6dDy4SvfcV3fOVeIA==}
@@ -1699,15 +1699,15 @@ snapshots:
   '@types/body-parser@1.19.6':
     dependencies:
       '@types/connect': 3.4.38
-      '@types/node': 24.10.8
+      '@types/node': 24.10.9
 
   '@types/connect@3.4.38':
     dependencies:
-      '@types/node': 24.10.8
+      '@types/node': 24.10.9
 
   '@types/express-serve-static-core@5.1.0':
     dependencies:
-      '@types/node': 24.10.8
+      '@types/node': 24.10.9
       '@types/qs': 6.14.0
       '@types/range-parser': 1.2.7
       '@types/send': 1.2.1
@@ -1720,14 +1720,14 @@ snapshots:
 
   '@types/http-errors@2.0.5': {}
 
-  '@types/node@24.10.8':
+  '@types/node@24.10.9':
     dependencies:
       undici-types: 7.16.0
 
   '@types/nodemailer@7.0.5':
     dependencies:
       '@aws-sdk/client-sesv2': 3.966.0
-      '@types/node': 24.10.8
+      '@types/node': 24.10.9
     transitivePeerDependencies:
       - aws-crt
 
@@ -1741,12 +1741,12 @@ snapshots:
 
   '@types/send@1.2.1':
     dependencies:
-      '@types/node': 24.10.8
+      '@types/node': 24.10.9
 
   '@types/serve-static@2.2.0':
     dependencies:
       '@types/http-errors': 2.0.5
-      '@types/node': 24.10.8
+      '@types/node': 24.10.9
 
   accepts@2.0.0:
     dependencies:
