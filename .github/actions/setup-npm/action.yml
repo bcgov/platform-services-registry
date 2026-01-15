@@ -27,9 +27,8 @@ runs:
       pnpm install --no-frozen-lockfile
 
       # Ensure the canvas package version is updated whenever the version in package.json changes
-      if [ ! -d "node_modules/.pnpm/canvas@3.2.0/node_modules/canvas/build" ]; then
+      if [ ! -d "node_modules/.pnpm/canvas/build" ]; then
         echo "Directory does not exist. Installing dependencies and rebuilding canvas..."
-        cd node_modules/.pnpm/canvas@3.2.0/node_modules/canvas
         sudo apt-get update
         sudo apt-get install -y \
           build-essential \
@@ -40,7 +39,7 @@ runs:
           libpng-dev \
           librsvg2-dev
         pnpm add -D node-gyp
-        pnpm exec node-gyp rebuild
+        pnpm rebuild canvas || pnpm exec node-gyp rebuild
       else
         echo "Build directory already exists. Skipping rebuild."
       fi
