@@ -3,13 +3,12 @@ import { Session } from 'next-auth';
 import { requestSorts } from '@/constants';
 import prisma from '@/core/prisma';
 import { parsePaginationParams } from '@/helpers/pagination';
-import { Prisma } from '@/prisma/client';
+import { DecisionStatus, Prisma } from '@/prisma/client';
 import { models } from '@/services/db';
 import { PublicCloudRequestSearchBody } from '@/validation-schemas/public-cloud';
 import { getMatchingUserIds } from './user';
 
 const defaultSortKey = 'updatedAt';
-const defaultOrderBy = { [defaultSortKey]: Prisma.SortOrder.desc };
 
 export async function searchPublicCloudRequests({
   session,
@@ -110,11 +109,14 @@ export async function searchPublicCloudRequests({
   return { docs, totalCount };
 }
 
-export async function getLastClosedPublicCloudRequest(licencePlate: string) {
+export async function getLastEffectivePublicCloudRequest(licencePlate: string) {
   const previousRequest = await prisma.publicCloudRequest.findFirst({
     where: {
       licencePlate,
       active: false,
+      decisionStatus: {
+        notIn: [DecisionStatus.CANCELLED, DecisionStatus.REJECTED],
+      },
     },
     include: {
       decisionData: {

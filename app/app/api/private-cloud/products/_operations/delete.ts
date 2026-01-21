@@ -1,6 +1,5 @@
 import { Session } from 'next-auth';
 import { TypeOf } from 'zod';
-import prisma from '@/core/prisma';
 import { BadRequestResponse, OkResponse, UnauthorizedResponse } from '@/core/responses';
 import { DecisionStatus, EventType, Prisma, ProjectStatus, RequestType, TaskType } from '@/prisma/client';
 import { sendDeleteRequestEmails } from '@/services/ches/private-cloud';
@@ -9,7 +8,7 @@ import {
   privateCloudRequestDetailInclude,
   models,
   excludePrivateProductPopulatedFields,
-  getLastClosedPrivateCloudRequest,
+  getLastEffectivePrivateCloudRequest,
   tasks,
 } from '@/services/db';
 import { isEligibleForDeletion } from '@/services/k8s/reads';
@@ -45,7 +44,7 @@ export default async function deleteOp({
   const { id, requests, updatedAt, _permissions, temporaryProductNotificationDate, archivedAt, ...rest } = product;
 
   // Retrieve the latest request data to acquire the decision data ID that can be assigned to the incoming request's original data.
-  const previousRequest = await getLastClosedPrivateCloudRequest(rest.licencePlate);
+  const previousRequest = await getLastEffectivePrivateCloudRequest(rest.licencePlate);
 
   const productData = { ...rest, status: ProjectStatus.INACTIVE };
   const requestCreateData: Prisma.PrivateCloudRequestCreateInput = {

@@ -54,6 +54,6 @@ export async function resendPrivateCloudRequest(id: string) {
 }
 
 export async function cancelPrivateCloudRequest(id: string) {
-  const result = await instance.put(`/${id}`).then((res) => res.data);
+  const result = await instance.put(`/${id}/cancel`).then((res) => res.data);
   return result as PrivateCloudRequestDetail;
 }

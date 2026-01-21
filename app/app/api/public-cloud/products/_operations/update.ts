@@ -1,11 +1,11 @@
 import { Session } from 'next-auth';
 import { TypeOf } from 'zod';
 import prisma from '@/core/prisma';
-import { BadRequestResponse, OkResponse, UnauthorizedResponse } from '@/core/responses';
+import { OkResponse, UnauthorizedResponse } from '@/core/responses';
 import { comparePublicProductData } from '@/helpers/product-change';
 import { DecisionStatus, RequestType, EventType } from '@/prisma/client';
 import { sendEditRequestEmails } from '@/services/ches/public-cloud';
-import { createEvent, getLastClosedPublicCloudRequest, getUsersEmailsByIds, models } from '@/services/db';
+import { createEvent, getLastEffectivePublicCloudRequest, getUsersEmailsByIds, models } from '@/services/db';
 import { sendPublicCloudNatsMessage } from '@/services/nats';
 import { PublicCloudEditRequestBody } from '@/validation-schemas/public-cloud';
 import { putPathParamSchema } from '../[licencePlate]/schema';
@@ -72,7 +72,7 @@ export default async function updateOp({
   };
 
   // Retrieve the latest request data to acquire the decision data ID that can be assigned to the incoming request's original data.
-  const previousRequest = await getLastClosedPublicCloudRequest(product.licencePlate);
+  const previousRequest = await getLastEffectivePublicCloudRequest(product.licencePlate);
 
   const newOrganization = await prisma.organization.findUnique({ where: { id: organizationId } });
   const { changes, ...otherChangeMeta } = comparePublicProductData(
