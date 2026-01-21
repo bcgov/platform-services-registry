@@ -10,7 +10,7 @@ import { sendEditRequestEmails, sendRequestApprovalEmails } from '@/services/che
 import {
   createEvent,
   privateCloudRequestDetailInclude,
-  getLastClosedPrivateCloudRequest,
+  getLastEffectivePrivateCloudRequest,
   models,
   tasks,
   getUsersEmailsByIds,
@@ -97,7 +97,7 @@ export default async function updateOp({
   };
 
   // Retrieve the latest request data to acquire the decision data ID that can be assigned to the incoming request's original data.
-  const previousRequest = await getLastClosedPrivateCloudRequest(product.licencePlate);
+  const previousRequest = await getLastEffectivePrivateCloudRequest(product.licencePlate);
 
   const newOrganization = await prisma.organization.findUnique({ where: { id: organizationId } });
   const { changes, ...otherChangeMeta } = comparePrivateProductData(

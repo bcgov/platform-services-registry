@@ -3,7 +3,7 @@ import { Session } from 'next-auth';
 import { requestSorts } from '@/constants';
 import prisma from '@/core/prisma';
 import { parsePaginationParams } from '@/helpers/pagination';
-import { Prisma, RequestType } from '@/prisma/client';
+import { DecisionStatus, Prisma, RequestType } from '@/prisma/client';
 import { models, publicCloudRequestDetailInclude } from '@/services/db';
 import { PrivateCloudRequestSearch } from '@/types/private-cloud';
 import { PrivateCloudRequestSearchBody } from '@/validation-schemas/private-cloud';
@@ -116,11 +116,14 @@ export async function searchPrivateCloudRequests({
   return { docs, totalCount } as PrivateCloudRequestSearch;
 }
 
-export async function getLastClosedPrivateCloudRequest(licencePlate: string) {
+export async function getLastEffectivePrivateCloudRequest(licencePlate: string) {
   const previousRequest = await prisma.privateCloudRequest.findFirst({
     where: {
       licencePlate,
       active: false,
+      decisionStatus: {
+        notIn: [DecisionStatus.CANCELLED, DecisionStatus.REJECTED],
+      },
     },
     include: {
       decisionData: {

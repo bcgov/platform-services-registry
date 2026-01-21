@@ -8,7 +8,7 @@ import {
   models,
   publicCloudRequestDetailInclude,
   excludePublicProductPopulatedFields,
-  getLastClosedPublicCloudRequest,
+  getLastEffectivePublicCloudRequest,
   tasks,
 } from '@/services/db';
 import { Comment } from '@/validation-schemas/shared';
@@ -36,7 +36,7 @@ export default async function deleteOp({
   const { id, requests, updatedAt, _permissions, archivedAt, ...rest } = product;
 
   // Retrieve the latest request data to acquire the decision data ID that can be assigned to the incoming request's original data.
-  const previousRequest = await getLastClosedPublicCloudRequest(rest.licencePlate);
+  const previousRequest = await getLastEffectivePublicCloudRequest(rest.licencePlate);
 
   const productData = { ...rest, status: ProjectStatus.INACTIVE };
   const newRequest = (
