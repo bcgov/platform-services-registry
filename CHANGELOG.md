@@ -1,3 +1,15 @@
+## [0.78.5](https://github.com/bcgov/platform-services-registry/compare/v0.78.4...v0.78.5) (2026-01-21)
+
+### Bug Fixes
+
+* **0000:** allow pnpm to build native deps via onlyBuiltDependencies ([55a8eaf](https://github.com/bcgov/platform-services-registry/commit/55a8eaff765fca9d18caba39debffa0c5c2c81b9))
+* **0000:** approve native build scripts for pnpm ([87e53b6](https://github.com/bcgov/platform-services-registry/commit/87e53b6c8206dd82b7727aed56d2cc3938bf833c))
+* **0000:** correctly detect and rebuild canvas native binary ([fe51d08](https://github.com/bcgov/platform-services-registry/commit/fe51d08f25f4c74a47619171d1fb313325b956ce))
+* **0000:** rebuild canvas when canvas.node is missing ([1fd77b7](https://github.com/bcgov/platform-services-registry/commit/1fd77b778afb8f9d81fd9da90c6cf3c180ca14d2))
+* **0000:** stop hardcoding canvas pnpm path ([38be713](https://github.com/bcgov/platform-services-registry/commit/38be7137274ad6b7798be230a1167d1654478835))
+* **2622:** add replicaSet=replicaset to MongoDB connection string ([14059ea](https://github.com/bcgov/platform-services-registry/commit/14059eae50e053c43ebd6a723e6d2aee826f2589))
+* **2624:** increase PostgreSQL resources and disable nano preset ([2984c08](https://github.com/bcgov/platform-services-registry/commit/2984c08fe296df3fb874439cbc741ed09770e54e))
+* **2626:** o not use cancelled/rejected requests as baseline for new edits ([985bc93](https://github.com/bcgov/platform-services-registry/commit/985bc93eafbe3dbc0af83be9ac86bca7ed8b2705))
 ## [0.78.4](https://github.com/bcgov/platform-services-registry/compare/v0.78.3...v0.78.4) (2026-01-09)
 ## [0.78.3](https://github.com/bcgov/platform-services-registry/compare/v0.78.2...v0.78.3) (2026-01-09)
 
