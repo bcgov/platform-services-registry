@@ -5,7 +5,6 @@ from datetime import datetime, timedelta
 from _temporary_products_deletion import send_temp_products_deletion_request
 from _task_failure_callback import send_alert
 
-
 MONGO_CONN_ID = "pltsvc-test"
 KEYCLOAK_AUTH_URL = "https://test.loginproxy.gov.bc.ca/auth"
 KEYCLOAK_REALM = "platform-services"

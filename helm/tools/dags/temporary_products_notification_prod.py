@@ -5,7 +5,6 @@ from datetime import datetime, timedelta
 from _temporary_products_notification import send_temporary_products_notification
 from _task_failure_callback import send_alert
 
-
 MONGO_CONN_ID = "pltsvc-prod"
 KEYCLOAK_AUTH_URL = "https://loginproxy.gov.bc.ca/auth"
 KEYCLOAK_REALM = "comsvcauth"
