@@ -5,7 +5,6 @@ from datetime import datetime, timedelta
 from _update_mailchimp_list import update_mailchimp_segment
 from _task_failure_callback import send_alert
 
-
 MONGO_CONN_ID = "pltsvc-test"
 MAILCHIMP_LIST_ID = os.getenv("MAILCHIMP_LIST_ID")
 MAILCHIMP_API_KEY = os.getenv("MAILCHIMP_API_KEY")
