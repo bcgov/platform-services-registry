@@ -38,11 +38,6 @@
   "pnpm": {
     "overrides": {
       "conventional-changelog-conventionalcommits": "^9.0.0"
-    },
-    "onlyBuiltDependencies": [
-      "canvas",
-      "sharp",
-      "@prisma/engines"
-    ]
+    }
   }
 }
