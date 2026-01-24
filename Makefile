@@ -29,7 +29,7 @@ install:
 
 .PHONY: canvas-install
 canvas-install:
-	test -f app/node_modules/canvas/build/Release/canvas.node || (cd app && pnpm rebuild canvas)
+	cd app && pnpm approve-builds --yes && pnpm rebuild canvas
 
 .PHONY: asdf-install
 asdf-install:

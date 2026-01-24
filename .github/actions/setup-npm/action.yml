@@ -25,7 +25,7 @@ runs:
   - name: Install App NPM packages
     run: |
       pnpm install --no-frozen-lockfile
-
+      pnpm approve-builds --yes
       # Ensure the canvas package version is updated whenever the version in package.json changes
       if [ ! -f "node_modules/canvas/build/Release/canvas.node" ]; then
         echo "Directory does not exist. Installing dependencies and rebuilding canvas..."
