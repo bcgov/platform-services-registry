@@ -62,7 +62,7 @@
     "@types/react": "19.2.9",
     "@types/react-dom": "19.2.3",
     "axios": "^1.11.0",
-    "canvas": "3.2.0",
+    "canvas": "3.2.1",
     "chart.js": "^4.5.0",
     "clsx": "^2.1.1",
     "csv-parse": "^6.1.0",
