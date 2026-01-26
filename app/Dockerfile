@@ -27,10 +27,9 @@ RUN apk add --no-cache \
 RUN npm install -g turbo pnpm && \
     pnpm install --frozen-lockfile
 
-# Rebuild canvas
-RUN cd node_modules/.pnpm/canvas@3.2.0/node_modules/canvas && \
-    pnpm add -D node-gyp && \
-    pnpm exec node-gyp rebuild
+# Rebuild canvas (avoid hardcoded pnpm virtual store paths)
+# If canvas native binary is missing, rebuild it.
+RUN test -f node_modules/canvas/build/Release/canvas.node || pnpm rebuild canvas
 
 # Run project build steps
 RUN npx ts-node scripts/render-react-email-tailwind-style.ts && \
