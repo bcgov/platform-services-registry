@@ -133,6 +133,9 @@
   "pnpm": {
     "overrides": {
       "eslint-plugin-react-hooks": "^5.0.0"
-    }
+    },
+    "onlyBuiltDependencies": [
+      "canvas"
+    ]
   }
 }
