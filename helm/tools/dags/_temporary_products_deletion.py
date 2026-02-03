@@ -5,7 +5,7 @@ from _projects import get_mongo_db
 from _keycloak import Keycloak
 
 
-# product_deletion_url_template example: "http://localhost:3000/api/private-cloud/products/{}"
+# product_deletion_url_template example: "http://localhost:3000/api/private-cloud/products/{}archive"
 def send_temp_products_deletion_request(
     kc_auth_url, kc_realm, kc_client_id, kc_client_secret, mongo_conn_id, product_deletion_url_template
 ):
@@ -32,14 +32,15 @@ def send_temp_products_deletion_request(
         activeReq = db.PrivateCloudRequest.find_one(reqQuery, projection=reqProjection)
 
         if activeReq is None:
-            success += 1
             url = product_deletion_url_template.format(licence_plate)
+            payload = {"requestComment": "auto-archive: older than 30 days, no active request"}
             print(f"Sending a request to {url}")
 
             try:
-                response = requests.delete(url, headers=headers)
+                response = requests.post(url, headers=headers, json=payload, timeout=10)
                 response.raise_for_status()
-                print("Request successful.")
+                print("Archive request successful.")
+                success += 1
             except RequestException as err:
                 print(f"An error occurred: {err}")
                 failure += 1
