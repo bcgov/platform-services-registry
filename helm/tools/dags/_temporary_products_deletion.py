@@ -9,7 +9,6 @@ from _keycloak import Keycloak
 def send_temp_products_deletion_request(
     kc_auth_url, kc_realm, kc_client_id, kc_client_secret, mongo_conn_id, product_deletion_url_template
 ):
-
     kc = Keycloak(kc_auth_url, kc_realm, kc_client_id, kc_client_secret)
     db = get_mongo_db(mongo_conn_id)
 
@@ -21,10 +20,7 @@ def send_temp_products_deletion_request(
 
     access_token = kc.get_access_token()
     headers = {"Authorization": f"Bearer {access_token}", "Content-Type": "application/json"}
-    print("kc_client_id present:", bool(kc_client_id))
-    print("kc_client_secret present:", bool(kc_client_secret))
-    print("access_token present:", bool(access_token), "length:", len(access_token or ""))
-    print("token prefix:", (access_token or "")[:20])
+
     success = 0
     failure = 0
     for project in projects:
