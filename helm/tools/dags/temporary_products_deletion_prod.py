@@ -10,7 +10,7 @@ KEYCLOAK_AUTH_URL = "https://loginproxy.gov.bc.ca/auth"
 KEYCLOAK_REALM = "platform-services"
 REGISTRY_SA_ID = os.getenv("PROD_REGISTRY_SA_ID")
 REGISTRY_SA_SECRET = os.getenv("PROD_REGISTRY_SA_SECRET")
-REGISTRY_DELETE_URL_TEMPLATE = "https://pltsvc.apps.silver.devops.gov.bc.ca/api/private-cloud/products/{}/archive"
+REGISTRY_DELETE_URL_TEMPLATE = "https://pltsvc.apps.silver.devops.gov.bc.ca/api/v1/private-cloud/products/{}/archive"
 
 with DAG(
     dag_id="temporary_products_deletion_prod",
