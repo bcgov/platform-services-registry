@@ -40,8 +40,8 @@ importers:
         specifier: ^5.2.0
         version: 5.2.1
       nodemailer:
-        specifier: ^7.0.0
-        version: 7.0.13
+        specifier: ^8.0.0
+        version: 8.0.0
       sanitize-html:
         specifier: ^2.13.1
         version: 2.17.0
@@ -477,8 +477,8 @@ packages:
     resolution: {integrity: sha512-8Ofs/AUQh8MaEcrlq5xOX0CQ9ypTF5dl78mjlMNfOK08fzpgTHQRQPBxcPlEtIw0yRpws+Zo/3r+5WRby7u3Gg==}
     engines: {node: '>= 0.6'}
 
-  nodemailer@7.0.13:
-    resolution: {integrity: sha512-PNDFSJdP+KFgdsG3ZzMXCgquO7I6McjY2vlqILjtJd0hy8wEvtugS9xKRF2NWlPNGxvLCXlTNIae4serI7dinw==}
+  nodemailer@8.0.0:
+    resolution: {integrity: sha512-xvVJf/f0bzmNpnRIbhCp/IKxaHgJ6QynvUbLXzzMRPG3LDQr5oXkYuw4uDFyFYs8cge8agwwrJAXZsd4hhMquw==}
     engines: {node: '>=6.0.0'}
 
   object-inspect@1.13.4:
@@ -1021,7 +1021,7 @@ snapshots:
 
   negotiator@1.0.0: {}
 
-  nodemailer@7.0.13: {}
+  nodemailer@8.0.0: {}
 
   object-inspect@1.13.4: {}
 
