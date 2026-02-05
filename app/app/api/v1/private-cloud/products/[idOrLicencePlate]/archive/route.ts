@@ -4,7 +4,7 @@ import createApiHandler from '@/core/api-handler';
 import { commentSchema } from '@/validation-schemas/shared';
 
 const apiHandler = createApiHandler({
-  roles: ['service-account'],
+  roles: ['service-account admin'],
   useServiceAccount: true,
   validations: {
     pathParams: z.object({ idOrLicencePlate: z.string().max(7) }),
