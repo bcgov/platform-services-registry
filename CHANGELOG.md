@@ -1,3 +1,17 @@
+## [0.78.6](https://github.com/bcgov/platform-services-registry/compare/v0.78.5...v0.78.6) (2026-02-09)
+
+### Bug Fixes
+
+* **0000:** approve pnpm build scripts and rebuild canvas in pipeline ([fbb0e11](https://github.com/bcgov/platform-services-registry/commit/fbb0e11fea20502ad5e1955eeb44f8709f531476))
+* **0000:** rebuild canvas via pnpm instead of hardcoded pnpm store path ([0f1ae18](https://github.com/bcgov/platform-services-registry/commit/0f1ae186dafb7baf3941fa7506d41aa2c6b31bee))
+* **0000:** reformat code with black 26.1.0 ([7fe9cba](https://github.com/bcgov/platform-services-registry/commit/7fe9cba45118b7eb21bff77f7f913bbec2ab98a4))
+* **0000:** remove hardcoded canvas version and rebuild if binary is missing ([a7b9be3](https://github.com/bcgov/platform-services-registry/commit/a7b9be39e6c227ba3bcd54accff24a028ee8e22d))
+* **0000:** remove incompatible parser preset ([28eb7ba](https://github.com/bcgov/platform-services-registry/commit/28eb7ba440f328c91cdd3cb19846e03ad3182582))
+* **0000:** stop using pnpm approve-builds and rebuild canvas when missing ([9aac2ed](https://github.com/bcgov/platform-services-registry/commit/9aac2ede3e653bf11efcc1268555fb225242f60c))
+* **0000:** update onlyBuiltDependencies for app/package,json file ([0103dcf](https://github.com/bcgov/platform-services-registry/commit/0103dcf3ab8eca5fcd21609fb2dd6e8d30fd7dfc))
+* **2649:** check if vars are availiable ([d964ea1](https://github.com/bcgov/platform-services-registry/commit/d964ea1dcb8e04ee743077229c0df61f465bb588))
+* **2649:** use POST /archive endpoint for prod and test ([eb96e46](https://github.com/bcgov/platform-services-registry/commit/eb96e46b04d30e7163a7316c5cbac9ed3da7faeb))
+* **2649:** use POST /archive endpoint for temporary product cleanup ([79e3c47](https://github.com/bcgov/platform-services-registry/commit/79e3c478718e9e5c1888864d00e8d3641284c0af))
 ## [0.78.5](https://github.com/bcgov/platform-services-registry/compare/v0.78.4...v0.78.5) (2026-01-21)
 
 ### Bug Fixes
