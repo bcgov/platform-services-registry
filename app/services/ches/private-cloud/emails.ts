@@ -17,7 +17,7 @@ import TeamEditRequestApprovalTemplate from '@/emails/_templates/private-cloud/T
 import TeamEditRequestCompletionTemplate from '@/emails/_templates/private-cloud/TeamEditRequestCompletion';
 import TeamEditRequestRejectionTemplate from '@/emails/_templates/private-cloud/TeamEditRequestRejection';
 import TeamRequestCancellationTemplate from '@/emails/_templates/private-cloud/TeamRequestCancellation';
-import { PrivateCloudProductMemberRole } from '@/prisma/client';
+import { DecisionStatus, PrivateCloudProductMemberRole } from '@/prisma/client';
 import { sendEmail } from '@/services/ches/core';
 import { getContent } from '@/services/ches/helpers';
 import { findUserEmailsByAuthRole } from '@/services/keycloak/app-realm';
@@ -142,9 +142,11 @@ export async function sendTeamDeleteRequest(request: PrivateCloudRequestDetailDe
 
 export async function sendTeamDeleteRequestApproval(request: PrivateCloudRequestDetailDecorated) {
   const content = await getContent(TeamDeleteRequestApprovalTemplate({ request }));
-
   return sendEmail({
-    subject: 'Your delete request has been approved',
+    subject:
+      request.decisionStatus === DecisionStatus.AUTO_APPROVED
+        ? 'A delete request was automatically created for your temporary product'
+        : 'Your delete request has been approved',
     to: await getTeamEmails(request),
     body: content,
   });
@@ -154,7 +156,9 @@ export async function sendTeamDeleteRequestCompletion(request: PrivateCloudReque
   const content = await getContent(TeamDeleteRequestCompletionTemplate({ request }));
 
   return sendEmail({
-    subject: 'Your delete request has been completed',
+    subject: request.decisionData.isTest
+      ? 'The auto-created delete request has been completed'
+      : 'Your delete request has been completed',
     to: await getTeamEmails(request),
     body: content,
   });
