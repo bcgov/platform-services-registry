@@ -35,6 +35,7 @@ function CommentForm({
   const [isEditorEmpty, setIsEditorEmpty] = useState(true);
 
   const editorInstance = useEditor({
+    immediatelyRender: false,
     extensions: [
       ...commonExtensions,
       Placeholder.configure({

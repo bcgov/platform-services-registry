@@ -1,8 +1,9 @@
 import { Session } from 'next-auth';
 import { TypeOf } from 'zod';
 import { BadRequestResponse, OkResponse, UnauthorizedResponse } from '@/core/responses';
+import { sendRequestNatsMessage } from '@/helpers/nats-message';
 import { DecisionStatus, EventType, Prisma, ProjectStatus, RequestType, TaskType } from '@/prisma/client';
-import { sendDeleteRequestEmails } from '@/services/ches/private-cloud';
+import { sendDeleteRequestEmails, sendRequestApprovalEmails } from '@/services/ches/private-cloud';
 import {
   createEvent,
   privateCloudRequestDetailInclude,
@@ -47,9 +48,13 @@ export default async function deleteOp({
   const previousRequest = await getLastEffectivePrivateCloudRequest(rest.licencePlate);
 
   const productData = { ...rest, status: ProjectStatus.INACTIVE };
+  const decisionStatus = productData.isTest ? DecisionStatus.AUTO_APPROVED : DecisionStatus.PENDING;
+  const decisionDate = decisionStatus === DecisionStatus.AUTO_APPROVED ? new Date() : null;
+
   const requestCreateData: Prisma.PrivateCloudRequestCreateInput = {
     type: RequestType.DELETE,
-    decisionStatus: DecisionStatus.PENDING,
+    decisionStatus,
+    decisionDate,
     active: true,
     requestComment,
     licencePlate: product.licencePlate,
@@ -77,11 +82,39 @@ export default async function deleteOp({
     )
   ).data;
 
-  await Promise.all([
-    createEvent(EventType.DELETE_PRIVATE_CLOUD_PRODUCT, session.user.id, { requestId: newRequest.id }),
-    tasks.create(TaskType.REVIEW_PRIVATE_CLOUD_REQUEST, { request: newRequest, requester: session.user.name }),
-    sendDeleteRequestEmails(newRequest, session.user.name),
-  ]);
+  const proms: Promise<unknown>[] = [];
+
+  const push = (p?: Promise<unknown> | void | null) => {
+    if (p) proms.push(p);
+  };
+
+  if (!session.isServiceAccount && session.user?.id) {
+    push(createEvent(EventType.DELETE_PRIVATE_CLOUD_PRODUCT, session.user.id, { requestId: newRequest.id }));
+  }
+
+  const actorName = session.isServiceAccount ? 'Automation' : session.user?.name ?? 'Unknown';
+
+  if (decisionStatus === DecisionStatus.AUTO_APPROVED) {
+    push(
+      sendRequestNatsMessage(newRequest, {
+        projectOwner: { email: newRequest.originalData?.projectOwner.email },
+        primaryTechnicalLead: { email: newRequest.originalData?.primaryTechnicalLead.email },
+        secondaryTechnicalLead: { email: newRequest.originalData?.secondaryTechnicalLead?.email },
+      }),
+    );
+    push(sendRequestApprovalEmails(newRequest, actorName));
+  } else {
+    push(
+      tasks.create(TaskType.REVIEW_PRIVATE_CLOUD_REQUEST, {
+        request: newRequest,
+        requester: actorName,
+      }),
+    );
+
+    push(sendDeleteRequestEmails(newRequest, actorName));
+  }
+
+  await Promise.all(proms);
 
   return OkResponse(newRequest);
 }
