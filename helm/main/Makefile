@@ -4,7 +4,7 @@ NAME := pltsvc
 
 NAMESPACE=
 IMAGE_TAG=
-HELM_TIMEOUT ?= 10m
+HELM_TIMEOUT ?= 20m
 
 ifndef NAMESPACE
 $(error NAMESPACE is not set)
@@ -37,13 +37,13 @@ helm-dep:
 install: helm-dep
 install: check-image-tag
 install:
-	@helm install $(call arguments) --timeout $(HELM_TIMEOUT)
+	@helm install $(call arguments) --timeout $(HELM_TIMEOUT) --wait
 
 .PHONY: upgrade
 upgrade: helm-dep
 upgrade: check-image-tag
 upgrade:
-	@helm upgrade --install $(call arguments) --timeout $(HELM_TIMEOUT)
+	@helm upgrade --install $(call arguments) --timeout $(HELM_TIMEOUT) --wait
 
 .PHONY: upgrade-db
 upgrade-db: helm-dep
