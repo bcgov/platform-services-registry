@@ -3,6 +3,8 @@ NAME := secdash
 
 NAMESPACE=
 
+HELM_TIMEOUT ?= 20m
+
 POSTGRES_IMAGE_REGISTRY ?= docker.io
 POSTGRES_IMAGE_REPOSITORY ?= bitnami/postgresql
 POSTGRES_IMAGE_DIGEST ?=
@@ -72,14 +74,12 @@ helm-dep:
 .PHONY: install
 install: helm-dep
 install:
-	@helm install $(call arguments)
-
-HELM_TIMEOUT ?= 20m
+	@helm install $(call arguments) --timeout $(HELM_TIMEOUT) --wait
 
 .PHONY: upgrade
 upgrade: helm-dep
 upgrade:
-	@helm upgrade --install $(call arguments)
+	@helm upgrade --install $(call arguments) --timeout $(HELM_TIMEOUT) --wait
 
 .PHONY: lint
 lint: helm-dep
