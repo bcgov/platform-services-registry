@@ -24,7 +24,7 @@ dependencies:
     repository: https://charts.min.io/
     condition: minio.enabled
   - name: mongodb
-    version: '18.4.8' #8.0.4
+    version: '18.5.0' #8.0.4
     repository: https://charts.bitnami.com/bitnami
     condition: mongodb.enabled
   - name: sorry-cypress
