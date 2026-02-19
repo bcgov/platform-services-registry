@@ -32,19 +32,29 @@ def send_temp_products_deletion_request(
         activeReq = db.PrivateCloudRequest.find_one(reqQuery, projection=reqProjection)
 
         if activeReq is None:
-            url = product_deletion_url_template.format(licence_plate)
-            payload = {"requestComment": "auto-archive: older than 30 days, no active request"}
-            print(f"Sending a request to {url}")
-
-            try:
-                response = requests.post(url, headers=headers, json=payload, timeout=10)
-                response.raise_for_status()
-                print("Archive request successful.")
-                success += 1
-            except RequestException as err:
-                print(f"An error occurred: {err}")
-                failure += 1
-        else:
             print("Has an active request; skipping...")
+            continue
+        url = product_deletion_url_template.format(licence_plate)
+        payload = {"requestComment": "auto-archive: older than 30 days, no active request"}
+        print(f"Sending a request to {url}")
+
+        try:
+            response = requests.post(url, headers=headers, json=payload, timeout=10)
+
+            if response.status_code >= 400:
+                print(f"Archive failed for {licence_plate}: " f"status={response.status_code} body={response.text}")
+                try:
+                    print(f"Archive failed JSON for {licence_plate}: {response.json()}")
+                except Exception:
+                    pass
+                failure += 1
+                continue
+
+            print("Archive request successful.")
+            success += 1
+
+        except RequestException as err:
+            print(f"Request exception for {licence_plate}: {err}")
+            failure += 1
 
     return {"success": success, "failure": failure}
