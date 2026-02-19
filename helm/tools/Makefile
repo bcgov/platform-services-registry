@@ -3,7 +3,7 @@ NAME := secdash
 
 NAMESPACE=
 
-HELM_TIMEOUT ?= 45m
+HELM_TIMEOUT ?= 20m
 
 POSTGRES_IMAGE_REGISTRY ?= docker.io
 POSTGRES_IMAGE_REPOSITORY ?= bitnami/postgresql
