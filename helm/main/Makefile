@@ -4,7 +4,7 @@ NAME := pltsvc
 
 NAMESPACE=
 IMAGE_TAG=
-HELM_TIMEOUT ?= 45m
+HELM_TIMEOUT ?= 20m
 
 ifndef NAMESPACE
 $(error NAMESPACE is not set)
