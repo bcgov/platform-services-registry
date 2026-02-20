@@ -15,7 +15,12 @@ def send_temp_products_deletion_request(
     thirty_days_ago = datetime.now(timezone.utc) - timedelta(days=30)
     query = {"isTest": True, "status": "ACTIVE", "createdAt": {"$lt": thirty_days_ago}}
     print(f"Querying {query}...")
-    projection = {"_id": False, "licencePlate": True}
+    projection = {
+        "_id": False,
+        "licencePlate": True,
+        "createdAt": True,
+        "temporaryProductNotificationDate": True,
+    }
     projects = db.PrivateCloudProduct.find(query, projection=projection)
 
     access_token = kc.get_access_token()
@@ -23,16 +28,38 @@ def send_temp_products_deletion_request(
 
     success = 0
     failure = 0
+    skipped = 0
+
     for project in projects:
         licence_plate = project.get("licencePlate")
-        print(f"Processing {licence_plate}...")
+        created_at = project.get("createdAt")
+        notif_date = project.get("temporaryProductNotificationDate")
+
+        print(f"Processing {licence_plate}... createdAt={created_at} temporaryProductNotificationDate={notif_date}")
 
         reqQuery = {"licencePlate": licence_plate, "active": True}
-        reqProjection = {"_id": True}
-        activeReq = db.PrivateCloudRequest.find_one(reqQuery, projection=reqProjection)
+        activeCount = db.PrivateCloudRequest.count_documents(reqQuery)
+        print(f"Active request count for {licence_plate}: {activeCount}")
+
+        activeReq = db.PrivateCloudRequest.find_one(
+            reqQuery,
+            projection={
+                "_id": True,
+                "licencePlate": True,
+                "active": True,
+                "type": True,
+                "decisionStatus": True,
+                "actioned": True,
+                "createdAt": True,
+                "updatedAt": True,
+                "cancelledAt": True,
+                "projectId": True,
+            },
+        )
 
         if activeReq is None:
-            print("Has an active request; skipping...")
+            print(f"Has an active request; skipping... activeReq={activeReq}")
+            skipped += 1
             continue
         url = product_deletion_url_template.format(licence_plate)
         payload = {"requestComment": "auto-archive: older than 30 days, no active request"}
@@ -57,4 +84,4 @@ def send_temp_products_deletion_request(
             print(f"Request exception for {licence_plate}: {err}")
             failure += 1
 
-    return {"success": success, "failure": failure}
+    return {"success": success, "failure": failure, "skipped": skipped}
