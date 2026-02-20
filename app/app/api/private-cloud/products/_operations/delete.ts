@@ -35,7 +35,11 @@ export default async function deleteOp({
     return UnauthorizedResponse();
   }
 
-  const canDelete = await isEligibleForDeletion(product.licencePlate, product.cluster);
+  const THIRTY_DAYS_MS = 30 * 24 * 60 * 60 * 1000;
+  const isOldTestProduct = product.isTest && Date.now() - product.createdAt.getTime() > THIRTY_DAYS_MS;
+
+  const canDelete = isOldTestProduct || (await isEligibleForDeletion(product.licencePlate, product.cluster));
+
   if (!canDelete) {
     return BadRequestResponse(
       'this project is not deletable as it is not empty. Please delete all resources before deleting the project.',
@@ -48,7 +52,7 @@ export default async function deleteOp({
   const previousRequest = await getLastEffectivePrivateCloudRequest(rest.licencePlate);
 
   const productData = { ...rest, status: ProjectStatus.INACTIVE };
-  const decisionStatus = productData.isTest ? DecisionStatus.AUTO_APPROVED : DecisionStatus.PENDING;
+  const decisionStatus = product.isTest ? DecisionStatus.AUTO_APPROVED : DecisionStatus.PENDING;
   const decisionDate = decisionStatus === DecisionStatus.AUTO_APPROVED ? new Date() : null;
 
   const requestCreateData: Prisma.PrivateCloudRequestCreateInput = {
