@@ -40,27 +40,14 @@ def send_temp_products_deletion_request(
         reqQuery = {"licencePlate": licence_plate, "active": True}
         activeCount = db.PrivateCloudRequest.count_documents(reqQuery)
         print(f"Active request count for {licence_plate}: {activeCount}")
+        reqProjection = {"_id": True}
+        activeReq = db.PrivateCloudRequest.find_one(reqQuery, projection=reqProjection)
 
-        activeReq = db.PrivateCloudRequest.find_one(
-            reqQuery,
-            projection={
-                "_id": True,
-                "licencePlate": True,
-                "active": True,
-                "type": True,
-                "decisionStatus": True,
-                "actioned": True,
-                "createdAt": True,
-                "updatedAt": True,
-                "cancelledAt": True,
-                "projectId": True,
-            },
-        )
-
-        if activeReq is None:
+        if activeReq is not None:
             print(f"Has an active request; skipping... activeReq={activeReq}")
             skipped += 1
             continue
+
         url = product_deletion_url_template.format(licence_plate)
         payload = {"requestComment": "auto-archive: older than 30 days, no active request"}
         print(f"Sending a request to {url}")
