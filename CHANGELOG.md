@@ -1,3 +1,13 @@
+## [0.78.8](https://github.com/bcgov/platform-services-registry/compare/v0.78.7...v0.78.8) (2026-02-20)
+
+### Bug Fixes
+
+* **2670:** add --timeout and --wait to install and upgrade ([46e2245](https://github.com/bcgov/platform-services-registry/commit/46e224508476a21a91b3f4ea30a33a4d2a88e3fd))
+* **2670:** extend DAG hook deadline and Helm timeout to prevent upgrade timeouts ([a5581a9](https://github.com/bcgov/platform-services-registry/commit/a5581a9197d894574bf6ef30e8224654d75c60ed))
+* **2670:** increase HELM_TIMEOUT from 20m to 45m for helm/main ([60ba869](https://github.com/bcgov/platform-services-registry/commit/60ba869848cedd6afa58079c4f3a57e4b5f263c7))
+* **2670:** increase HELM_TIMEOUT from 20m to 45m to prevent CI job timeout ([f36a40b](https://github.com/bcgov/platform-services-registry/commit/f36a40b9d3f5b3bd33baa1dcaefd920ea40c7c08))
+* **2670:** increase job timeout to 60 minutes ([f91048a](https://github.com/bcgov/platform-services-registry/commit/f91048aad1e15cb3ac3e97bb550198334a3c386c))
+* **2670:** increase job timeout to 60 minutes ([dbd68ac](https://github.com/bcgov/platform-services-registry/commit/dbd68ac8110e456ffdee0e181f3d5c219265a77b))
 ## [0.78.7](https://github.com/bcgov/platform-services-registry/compare/v0.78.6...v0.78.7) (2026-02-11)
 ## [0.78.6](https://github.com/bcgov/platform-services-registry/compare/v0.78.5...v0.78.6) (2026-02-09)
 
