@@ -1,3 +1,4 @@
+## [0.78.9](https://github.com/bcgov/platform-services-registry/compare/v0.78.8...v0.78.9) (2026-02-23)
 ## [0.78.8](https://github.com/bcgov/platform-services-registry/compare/v0.78.7...v0.78.8) (2026-02-20)
 
 ### Bug Fixes
