@@ -15,7 +15,7 @@ export async function sendPrivateCloudNatsMessage(
   const natsSubject = `registry_project_provisioning_${decisionData.cluster}`.toLocaleLowerCase();
 
   // Perform deletion check if request is a delete request
-  if (request.type === RequestType.DELETE || request.type.toLowerCase() === 'delete') {
+  if (!decisionData.isTest && (request.type === RequestType.DELETE || request.type.toLowerCase() === 'delete')) {
     const canDelete = await isEligibleForDeletion(decisionData.licencePlate, decisionData.cluster);
 
     if (!canDelete) {
