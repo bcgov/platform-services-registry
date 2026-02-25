@@ -39,7 +39,7 @@ jobs:
 
     - name: Upload Cypress Screenshots and Videos
       if: ${{ failure() }}
-      uses: actions/upload-artifact@47309c993abb98030a35d55ef7ff34b7fa1074b5
+      uses: actions/upload-artifact@589182c5a4cec8920b8c1bce3e2fab1c97a02296
       with:
         name: cypress-artifacts
         path: |-
