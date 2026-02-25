@@ -1,10 +1,10 @@
 import { expect } from '@jest/globals';
 import { GlobalRole } from '@/constants';
 import { createSamplePublicCloudProductData } from '@/helpers/mock-resources';
-import { findOtherMockUsers } from '@/helpers/mock-users';
+import { mockNoRoleUsers } from '@/helpers/mock-users';
 import { pickProductData } from '@/helpers/product';
 import { Provider } from '@/prisma/client';
-import { mockSessionByEmail, mockSessionByRole } from '@/services/api-test/core';
+import { mockSessionByIdirGuid, mockSessionByRole } from '@/services/api-test/core';
 import { createPublicCloudProduct } from '@/services/api-test/public-cloud/products';
 
 const fieldsToCompare = [
@@ -22,7 +22,7 @@ const fieldsToCompare = [
 
 describe('Create Public Cloud Product - Permissions', () => {
   it('should return 401 for unauthenticated user', async () => {
-    await mockSessionByEmail();
+    await mockSessionByIdirGuid();
 
     const requestData = createSamplePublicCloudProductData();
     const response = await createPublicCloudProduct(requestData);
@@ -31,7 +31,7 @@ describe('Create Public Cloud Product - Permissions', () => {
 
   it('should successfully submit a create request for PO', async () => {
     const requestData = createSamplePublicCloudProductData();
-    await mockSessionByEmail(requestData.projectOwner.email);
+    await mockSessionByIdirGuid(requestData.projectOwner.idirGuid);
 
     const response = await createPublicCloudProduct(requestData);
     expect(response.status).toBe(200);
@@ -44,7 +44,7 @@ describe('Create Public Cloud Product - Permissions', () => {
 
   it('should successfully submit a create request for TL1', async () => {
     const requestData = createSamplePublicCloudProductData();
-    await mockSessionByEmail(requestData.primaryTechnicalLead.email);
+    await mockSessionByIdirGuid(requestData.primaryTechnicalLead.idirGuid);
 
     const response = await createPublicCloudProduct(requestData);
     expect(response.status).toBe(200);
@@ -57,7 +57,7 @@ describe('Create Public Cloud Product - Permissions', () => {
 
   it('should successfully submit a create request for TL2', async () => {
     const requestData = createSamplePublicCloudProductData();
-    await mockSessionByEmail(requestData.secondaryTechnicalLead.email);
+    await mockSessionByIdirGuid(requestData.secondaryTechnicalLead.idirGuid);
 
     const response = await createPublicCloudProduct(requestData);
     expect(response.status).toBe(200);
@@ -70,14 +70,18 @@ describe('Create Public Cloud Product - Permissions', () => {
 
   it('should fail to submit a create request for a non-assigned user', async () => {
     const requestData = createSamplePublicCloudProductData();
-    const otherUsers = findOtherMockUsers([
-      requestData.projectOwner.email,
-      requestData.primaryTechnicalLead.email,
-      requestData.secondaryTechnicalLead.email,
-    ]);
 
-    await mockSessionByEmail(otherUsers[0].email);
+    const nonAssignedUser = mockNoRoleUsers.find(
+      (u) =>
+        u.idirGuid !== requestData.projectOwner.idirGuid &&
+        u.idirGuid !== requestData.primaryTechnicalLead.idirGuid &&
+        u.idirGuid !== requestData.secondaryTechnicalLead.idirGuid &&
+        u.idirGuid !== requestData.expenseAuthority.idirGuid,
+    );
 
+    expect(nonAssignedUser).toBeDefined();
+
+    await mockSessionByIdirGuid(nonAssignedUser!.idirGuid);
     const response = await createPublicCloudProduct(requestData);
     expect(response.status).toBe(401);
   });

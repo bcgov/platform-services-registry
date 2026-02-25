@@ -2,7 +2,7 @@ import { defaultAccountCoding, GlobalRole } from '@/constants';
 import prisma from '@/core/prisma';
 import { createSamplePublicCloudProductData } from '@/helpers/mock-resources';
 import { DecisionStatus, RequestType } from '@/prisma/client';
-import { mockSessionByEmail, mockSessionByRole } from '@/services/api-test/core';
+import { mockSessionByIdirGuid, mockSessionByRole } from '@/services/api-test/core';
 import { mockTeamServiceAccount } from '@/services/api-test/core';
 import {
   createPublicCloudProduct as createPublicCloudProductTest,
@@ -22,7 +22,7 @@ async function runPublicCloudMouWorkflows(reqData: any) {
 
   if (!billing) return;
 
-  await mockSessionByEmail(decisionData.expenseAuthority.email);
+  await mockSessionByIdirGuid(decisionData.expenseAuthority.idirGuid);
   let response = await signPublicCloudBilling(reqData.licencePlate, billing.id, {
     accountCoding: billing.accountCoding.cc ? billing.accountCoding : defaultAccountCoding,
     confirmed: true,
@@ -67,7 +67,7 @@ async function approveAndProvisionRequest(reqData: any) {
 
 export async function createPublicCloudProduct() {
   const requestData = createSamplePublicCloudProductData();
-  await mockSessionByEmail(requestData.projectOwner.email);
+  await mockSessionByIdirGuid(requestData.projectOwner.idirGuid);
 
   const response = await createPublicCloudProductTest(requestData);
   if (response.status !== 200) return null;
@@ -101,7 +101,7 @@ export async function updatePublicCloudProduct() {
     },
   });
 
-  await mockSessionByEmail(productData.projectOwner.email);
+  await mockSessionByIdirGuid(productData.projectOwner.idirGuid);
 
   let response = await createPublicCloudProductTest(productData);
   if (response.status !== 200) return null;
@@ -124,7 +124,7 @@ export async function updatePublicCloudProduct() {
 export async function deletePublicCloudProduct() {
   const productData = createSamplePublicCloudProductData({});
 
-  await mockSessionByEmail(productData.projectOwner.email);
+  await mockSessionByIdirGuid(productData.projectOwner.idirGuid);
 
   let response = await createPublicCloudProductTest(productData);
   if (response.status !== 200) return null;
