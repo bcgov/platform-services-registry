@@ -1,9 +1,10 @@
+
 SHELL := /usr/bin/env bash
 NAME := secdash
 
 NAMESPACE=
 
-HELM_TIMEOUT ?= 20m
+HELM_TIMEOUT ?= 40m
 
 POSTGRES_IMAGE_REGISTRY ?= docker.io
 POSTGRES_IMAGE_REPOSITORY ?= bitnami/postgresql
