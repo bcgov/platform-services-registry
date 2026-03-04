@@ -9,7 +9,7 @@ runs:
   using: composite
   steps:
   - name: Run Trivy vulnerability scanner
-    uses: aquasecurity/trivy-action@97e0b3872f55f89b95b2f65b3dbab56962816478
+    uses: aquasecurity/trivy-action@57a97c7e7821a5776cebc9bb87c984fa69cba8f1
     continue-on-error: true
     with:
       image-ref: ${{ inputs.image }}
