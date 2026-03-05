@@ -4,7 +4,7 @@
   "version": "0.78.9",
   "private": true,
   "scripts": {
-    "dev": "npx prisma generate && next dev --turbopack",
+    "dev": "npx prisma generate && next dev --webpack",
     "build": "next build",
     "start": "dotenv -e .env.test next start",
     "postinstall": "pnpm prisma-generate",

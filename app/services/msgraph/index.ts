@@ -1,3 +1,4 @@
+import { BCGOV_GUID_EXTENSION } from '@/constants';
 import { logger } from '@/core/logging';
 import { parseMinistryFromDisplayName } from '@/helpers/user';
 import { MsUser, AppUser } from '@/types/user';
@@ -6,7 +7,7 @@ import { instance } from './axios';
 export function processMsUser(user: MsUser): AppUser | null {
   const idir = user.onPremisesSamAccountName;
   const upn = user.userPrincipalName;
-  const idirGuid = user.extension_85cc52e9286540fcb1f97ed86114a0e5_bcgovGUID;
+  const idirGuid = user[BCGOV_GUID_EXTENSION];
 
   return {
     id: '',
@@ -29,7 +30,7 @@ const userAttributes = [
   'id',
   'onPremisesSamAccountName',
   'userPrincipalName',
-  'extension_85cc52e9286540fcb1f97ed86114a0e5_bcgovGUID', // pragma: allowlist secret
+  BCGOV_GUID_EXTENSION, // pragma: allowlist secret
   'mail',
   'displayName',
   'givenName',
@@ -88,7 +89,7 @@ export async function listUsersByIdirGuid(idirGuid: string) {
   const result = await instance
     .get<{ value: MsUser[] }>('/users', {
       params: {
-        $filter: `startswith(extension_85cc52e9286540fcb1f97ed86114a0e5_bcgovGUID,'${idirGuid}')`,
+        $filter: `startswith(${BCGOV_GUID_EXTENSION},'${idirGuid}')`,
         $orderby: 'userPrincipalName',
         $count: 'true',
         $top: '25',
