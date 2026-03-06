@@ -1,22 +1,19 @@
 export const up = async (db, client) => {
   const users = db.collection('User');
 
-  const privateProducts = db.collection('PrivateCloudProduct');
-  const publicProducts = db.collection('PublicCloudProduct');
-
-  const privateRequests = db.collection('PrivateCloudRequest');
-  const publicRequests = db.collection('PublicCloudRequest');
-
-  const privateRequestData = db.collection('PrivateCloudRequestData');
-  const publicRequestData = db.collection('PublicCloudRequestData');
-
-  const publicBilling = db.collection('PublicCloudBilling');
-
-  const privateComments = db.collection('PrivateCloudComment');
-  const reactions = db.collection('Reaction');
-
-  const events = db.collection('Event');
-  const tasks = db.collection('Task');
+  const collections = {
+    privateProducts: db.collection('PrivateCloudProduct'),
+    publicProducts: db.collection('PublicCloudProduct'),
+    privateRequests: db.collection('PrivateCloudRequest'),
+    publicRequests: db.collection('PublicCloudRequest'),
+    privateRequestData: db.collection('PrivateCloudRequestData'),
+    publicRequestData: db.collection('PublicCloudRequestData'),
+    publicBilling: db.collection('PublicCloudBilling'),
+    privateComments: db.collection('PrivateCloudComment'),
+    reactions: db.collection('Reaction'),
+    events: db.collection('Event'),
+    tasks: db.collection('Task'),
+  };
 
   const sortByRecencyDesc = (a, b) => {
     const ad = a.updatedAt ?? a.createdAt ?? 0;
@@ -24,7 +21,191 @@ export const up = async (db, client) => {
     return (bd?.getTime?.() ?? 0) - (ad?.getTime?.() ?? 0);
   };
 
-  // 1) find duplicated idirGuids
+  // Helpers
+  const pipelineUpdateMany = async (col, filter, pipeline, session) => {
+    const res = await col.updateMany(filter, pipeline, session ? { session } : undefined);
+    return res?.modifiedCount ?? 0;
+  };
+
+  const replaceScalarField = async (col, field, oldId, newId, { extraFilter = {}, session } = {}) => {
+    const res = await col.updateMany(
+      { ...extraFilter, [field]: oldId },
+      { $set: { [field]: newId } },
+      session ? { session } : undefined,
+    );
+    return res?.modifiedCount ?? 0;
+  };
+
+  const replaceFields = async (col, fields, oldId, newId, opts) => {
+    let modifiedDocs = 0;
+    for (const field of fields) {
+      modifiedDocs += await replaceScalarField(col, field, oldId, newId, opts);
+    }
+    return modifiedDocs;
+  };
+
+  const replaceMemberUserId = async (col, arrayField, oldId, newId, { extraFilter = {}, session } = {}) => {
+    return pipelineUpdateMany(
+      col,
+      { ...extraFilter, [`${arrayField}.userId`]: oldId },
+      [
+        {
+          $set: {
+            [arrayField]: {
+              $map: {
+                input: { $ifNull: [`$${arrayField}`, []] },
+                as: 'm',
+                in: {
+                  $cond: [{ $eq: ['$$m.userId', oldId] }, { $mergeObjects: ['$$m', { userId: newId }] }, '$$m'],
+                },
+              },
+            },
+          },
+        },
+      ],
+      session,
+    );
+  };
+
+  const replaceInArray = async (col, arrayField, oldId, newId, { extraFilter = {}, session } = {}) => {
+    return pipelineUpdateMany(
+      col,
+      { ...extraFilter, [arrayField]: oldId },
+      [
+        {
+          $set: {
+            [arrayField]: {
+              $map: {
+                input: { $ifNull: [`$${arrayField}`, []] },
+                as: 'x',
+                in: { $cond: [{ $eq: ['$$x', oldId] }, newId, '$$x'] },
+              },
+            },
+          },
+        },
+      ],
+      session,
+    );
+  };
+
+  const rewireInactiveProducts = async (c, oldId, newId, session) => {
+    const INACTIVE = { extraFilter: { status: 'INACTIVE' }, session };
+
+    let modifiedDocs = 0;
+    const roleFields = ['projectOwnerId', 'primaryTechnicalLeadId', 'secondaryTechnicalLeadId'];
+
+    modifiedDocs += await replaceFields(c.privateProducts, roleFields, oldId, newId, INACTIVE);
+    modifiedDocs += await replaceFields(c.publicProducts, roleFields, oldId, newId, INACTIVE);
+
+    modifiedDocs += await replaceScalarField(c.publicProducts, 'expenseAuthorityId', oldId, newId, INACTIVE);
+
+    modifiedDocs += await replaceMemberUserId(c.privateProducts, 'members', oldId, newId, INACTIVE);
+    modifiedDocs += await replaceMemberUserId(c.publicProducts, 'members', oldId, newId, INACTIVE);
+
+    return modifiedDocs;
+  };
+
+  const rewireRequests = async (c, oldId, newId, session) => {
+    let modifiedDocs = 0;
+    const requestFields = ['createdById', 'decisionMakerId', 'cancelledById'];
+
+    modifiedDocs += await replaceFields(c.privateRequests, requestFields, oldId, newId, { session });
+    modifiedDocs += await replaceFields(c.publicRequests, requestFields, oldId, newId, { session });
+
+    return modifiedDocs;
+  };
+
+  const rewirePrivateRequestData = async (c, oldId, newId, session) => {
+    let modifiedDocs = 0;
+    const fields = ['projectOwnerId', 'primaryTechnicalLeadId', 'secondaryTechnicalLeadId'];
+
+    modifiedDocs += await replaceFields(c.privateRequestData, fields, oldId, newId, { session });
+    modifiedDocs += await replaceMemberUserId(c.privateRequestData, 'members', oldId, newId, { session });
+
+    return modifiedDocs;
+  };
+
+  const rewirePublicRequestData = async (c, oldId, newId, session) => {
+    let modifiedDocs = 0;
+    const fields = ['projectOwnerId', 'primaryTechnicalLeadId', 'secondaryTechnicalLeadId', 'expenseAuthorityId'];
+
+    modifiedDocs += await replaceFields(c.publicRequestData, fields, oldId, newId, { session });
+    modifiedDocs += await replaceMemberUserId(c.publicRequestData, 'members', oldId, newId, { session });
+
+    return modifiedDocs;
+  };
+
+  const rewireBilling = async (c, oldId, newId, session) => {
+    const fields = ['expenseAuthorityId', 'signedById', 'approvedById'];
+    return replaceFields(c.publicBilling, fields, oldId, newId, { session });
+  };
+
+  const rewireCommentsAndReactions = async (c, oldId, newId, session) => {
+    let modifiedDocs = 0;
+    modifiedDocs += await replaceScalarField(c.privateComments, 'userId', oldId, newId, { session });
+    modifiedDocs += await replaceScalarField(c.reactions, 'userId', oldId, newId, { session });
+    return modifiedDocs;
+  };
+
+  const rewireEventsAndTasks = async (c, oldId, newId, session) => {
+    let modifiedDocs = 0;
+
+    modifiedDocs += await replaceScalarField(c.events, 'userId', oldId, newId, { session });
+
+    const taskFields = ['startedBy', 'completedBy'];
+    modifiedDocs += await replaceFields(c.tasks, taskFields, oldId, newId, { session });
+
+    modifiedDocs += await replaceInArray(c.tasks, 'userIds', oldId, newId, { session });
+
+    return modifiedDocs;
+  };
+
+  const rewireUserReferences = async (c, oldId, newId, session) => {
+    let modifiedDocs = 0;
+
+    modifiedDocs += await rewireInactiveProducts(c, oldId, newId, session);
+    modifiedDocs += await rewireRequests(c, oldId, newId, session);
+    modifiedDocs += await rewirePrivateRequestData(c, oldId, newId, session);
+    modifiedDocs += await rewirePublicRequestData(c, oldId, newId, session);
+    modifiedDocs += await rewireBilling(c, oldId, newId, session);
+    modifiedDocs += await rewireCommentsAndReactions(c, oldId, newId, session);
+    modifiedDocs += await rewireEventsAndTasks(c, oldId, newId, session);
+
+    return modifiedDocs;
+  };
+
+  const hasActiveProductLink = async (c, oldId, session) => {
+    const activePrivateLink = await c.privateProducts.findOne(
+      {
+        status: 'ACTIVE',
+        $or: [
+          { projectOwnerId: oldId },
+          { primaryTechnicalLeadId: oldId },
+          { secondaryTechnicalLeadId: oldId },
+          { 'members.userId': oldId },
+        ],
+      },
+      { projection: { _id: 1 }, session },
+    );
+
+    if (activePrivateLink) return true;
+
+    const activePublicLink = await c.publicProducts.findOne(
+      {
+        status: 'ACTIVE',
+        $or: [
+          { projectOwnerId: oldId },
+          { primaryTechnicalLeadId: oldId },
+          { secondaryTechnicalLeadId: oldId },
+          { expenseAuthorityId: oldId },
+          { 'members.userId': oldId },
+        ],
+      },
+      { projection: { _id: 1 }, session },
+    );
+
+    return !!activePublicLink;
+  };
   const dup = await users
     .aggregate([
       { $match: { idirGuid: { $exists: true, $ne: '' } } },
@@ -42,147 +223,6 @@ export const up = async (db, client) => {
     return;
   }
 
-  // helpers
-  const pipelineUpdateMany = async (col, filter, pipeline, { session } = {}) => {
-    const res = await col.updateMany(filter, pipeline, session ? { session } : undefined);
-    return res?.modifiedCount ?? 0;
-  };
-
-  const replaceScalarField = async (col, field, oldId, newId, { extraFilter = {}, session } = {}) => {
-    const res = await col.updateMany(
-      { ...extraFilter, [field]: oldId },
-      { $set: { [field]: newId } },
-      session ? { session } : undefined,
-    );
-    return res?.modifiedCount ?? 0;
-  };
-
-  const replaceMemberUserId = async (col, arrayField, oldId, newId, { extraFilter = {}, session } = {}) => {
-    return pipelineUpdateMany(
-      col,
-      { ...extraFilter, [`${arrayField}.userId`]: oldId },
-      [
-        {
-          $set: {
-            [arrayField]: {
-              $map: {
-                input: `$${arrayField}`,
-                as: 'm',
-                in: {
-                  $cond: [{ $eq: ['$$m.userId', oldId] }, { $mergeObjects: ['$$m', { userId: newId }] }, '$$m'],
-                },
-              },
-            },
-          },
-        },
-      ],
-      { session },
-    );
-  };
-
-  const replaceInArray = async (col, arrayField, oldId, newId, { extraFilter = {}, session } = {}) => {
-    return pipelineUpdateMany(
-      col,
-      { ...extraFilter, [arrayField]: oldId },
-      [
-        {
-          $set: {
-            [arrayField]: {
-              $map: {
-                input: `$${arrayField}`,
-                as: 'x',
-                in: { $cond: [{ $eq: ['$$x', oldId] }, newId, '$$x'] },
-              },
-            },
-          },
-        },
-      ],
-      { session },
-    );
-  };
-
-  const rewireUserReferences = async (collections, oldId, newId, session) => {
-    const {
-      privateProducts,
-      publicProducts,
-      privateRequests,
-      publicRequests,
-      privateRequestData,
-      publicRequestData,
-      publicBilling,
-      privateComments,
-      reactions,
-      events,
-      tasks,
-    } = collections;
-
-    let rewired = 0;
-    const INACTIVE = { extraFilter: { status: 'INACTIVE' }, session };
-
-    // A) INACTIVE products
-    for (const field of ['projectOwnerId', 'primaryTechnicalLeadId', 'secondaryTechnicalLeadId']) {
-      rewired += await replaceScalarField(privateProducts, field, oldId, newId, INACTIVE);
-      rewired += await replaceScalarField(publicProducts, field, oldId, newId, INACTIVE);
-    }
-    rewired += await replaceScalarField(publicProducts, 'expenseAuthorityId', oldId, newId, INACTIVE);
-    rewired += await replaceMemberUserId(privateProducts, 'members', oldId, newId, INACTIVE);
-    rewired += await replaceMemberUserId(publicProducts, 'members', oldId, newId, INACTIVE);
-
-    // B) Requests
-    for (const field of ['createdById', 'decisionMakerId', 'cancelledById']) {
-      rewired += await replaceScalarField(privateRequests, field, oldId, newId, { session });
-      rewired += await replaceScalarField(publicRequests, field, oldId, newId, { session });
-    }
-
-    // C) RequestData
-    for (const field of ['projectOwnerId', 'primaryTechnicalLeadId', 'secondaryTechnicalLeadId']) {
-      rewired += await replaceScalarField(privateRequestData, field, oldId, newId, { session });
-    }
-    rewired += await replaceMemberUserId(privateRequestData, 'members', oldId, newId, { session });
-
-    for (const field of [
-      'projectOwnerId',
-      'primaryTechnicalLeadId',
-      'secondaryTechnicalLeadId',
-      'expenseAuthorityId',
-    ]) {
-      rewired += await replaceScalarField(publicRequestData, field, oldId, newId, { session });
-    }
-    rewired += await replaceMemberUserId(publicRequestData, 'members', oldId, newId, { session });
-
-    // D) Billing
-    for (const field of ['expenseAuthorityId', 'signedById', 'approvedById']) {
-      rewired += await replaceScalarField(publicBilling, field, oldId, newId, { session });
-    }
-
-    // E) Comments + Reactions
-    rewired += await replaceScalarField(privateComments, 'userId', oldId, newId, { session });
-    rewired += await replaceScalarField(reactions, 'userId', oldId, newId, { session });
-
-    // F) Events + Tasks
-    rewired += await replaceScalarField(events, 'userId', oldId, newId, { session });
-    for (const field of ['startedBy', 'completedBy']) {
-      rewired += await replaceScalarField(tasks, field, oldId, newId, { session });
-    }
-    rewired += await replaceInArray(tasks, 'userIds', oldId, newId, { session });
-
-    return rewired;
-  };
-
-  const collections = {
-    privateProducts,
-    publicProducts,
-    privateRequests,
-    publicRequests,
-    privateRequestData,
-    publicRequestData,
-    publicBilling,
-    privateComments,
-    reactions,
-    events,
-    tasks,
-  };
-
   const allDupUsers = await users
     .find({ idirGuid: { $in: duplicatedGuids } })
     .project({ _id: 1, idirGuid: 1, archived: 1, updatedAt: 1, createdAt: 1 })
@@ -190,41 +230,44 @@ export const up = async (db, client) => {
 
   const byGuid = new Map();
   for (const u of allDupUsers) {
-    const key = u.idirGuid;
-    if (!byGuid.has(key)) byGuid.set(key, []);
-    byGuid.get(key).push(u);
+    if (!byGuid.has(u.idirGuid)) byGuid.set(u.idirGuid, []);
+    byGuid.get(u.idirGuid).push(u);
   }
 
   let groupsProcessed = 0;
-  let rewiredTotal = 0;
+  let totalRewiredModifiedDocs = 0;
   let deletedUsers = 0;
   let keptDueToActiveProduct = 0;
-  let skippedNoActiveUser = 0;
+  let mergedArchivedWhenNoActiveUser = 0;
 
+  // each duplicated idirGuid group process
   for (const [idirGuid, group] of byGuid.entries()) {
     groupsProcessed++;
 
     const archivedUsers = group.filter((u) => u.archived === true);
     const nonArchivedUsers = group.filter((u) => u.archived !== true);
 
-    let canonical;
-    let sourcesToMerge;
+    const { canonical, sourcesToMerge, hadNonArchived } = (() => {
+      if (nonArchivedUsers.length > 0) {
+        nonArchivedUsers.sort(sortByRecencyDesc);
+        return { canonical: nonArchivedUsers[0], sourcesToMerge: archivedUsers, hadNonArchived: true };
+      }
 
-    if (nonArchivedUsers.length > 0) {
-      nonArchivedUsers.sort(sortByRecencyDesc);
-      canonical = nonArchivedUsers[0];
-      sourcesToMerge = archivedUsers;
-    } else {
       if (archivedUsers.length < 2) {
-        console.log(`[${idirGuid}] Only one archived user found; nothing to merge.`);
-        continue;
+        return { canonical: null, sourcesToMerge: [], hadNonArchived: false };
       }
 
       archivedUsers.sort(sortByRecencyDesc);
-      canonical = archivedUsers[0];
-      sourcesToMerge = archivedUsers.slice(1);
-      skippedNoActiveUser += sourcesToMerge.length;
+      return { canonical: archivedUsers[0], sourcesToMerge: archivedUsers.slice(1), hadNonArchived: false };
+    })();
 
+    if (!canonical || sourcesToMerge.length === 0) {
+      if (!canonical) console.log(`[${idirGuid}] Only one archived user found; nothing to merge.`);
+      continue;
+    }
+
+    if (!hadNonArchived) {
+      mergedArchivedWhenNoActiveUser += sourcesToMerge.length;
       console.log(
         `[${idirGuid}] No non-archived user exists; keeping most-recent archived ${String(canonical._id)}; merging ${
           sourcesToMerge.length
@@ -235,67 +278,47 @@ export const up = async (db, client) => {
     for (const archivedUser of sourcesToMerge) {
       const oldId = archivedUser._id;
       const newId = canonical._id;
-
       if (String(oldId) === String(newId)) continue;
 
       const session = client.startSession();
       try {
-        const { rewired, didDelete, keptActive } = await session.withTransaction(async () => {
-          const rewired = await rewireUserReferences(collections, oldId, newId, session);
+        const result = await session.withTransaction(async () => {
+          const rewiredModifiedDocs = await rewireUserReferences(collections, oldId, newId, session);
 
-          const activePrivateLink = await privateProducts.findOne(
-            {
-              status: 'ACTIVE',
-              $or: [
-                { projectOwnerId: oldId },
-                { primaryTechnicalLeadId: oldId },
-                { secondaryTechnicalLeadId: oldId },
-                { 'members.userId': oldId },
-              ],
-            },
-            { projection: { _id: 1 }, session },
-          );
-
-          const activePublicLink = await publicProducts.findOne(
-            {
-              status: 'ACTIVE',
-              $or: [
-                { projectOwnerId: oldId },
-                { primaryTechnicalLeadId: oldId },
-                { secondaryTechnicalLeadId: oldId },
-                { expenseAuthorityId: oldId },
-                { 'members.userId': oldId },
-              ],
-            },
-            { projection: { _id: 1 }, session },
-          );
-
-          if (activePrivateLink || activePublicLink) {
-            return { rewired, didDelete: false, keptActive: true };
+          const keepBecauseActive = await hasActiveProductLink(collections, oldId, session);
+          if (keepBecauseActive) {
+            return { rewiredModifiedDocs, didDelete: false, keptActive: true };
           }
 
           const del = await users.deleteOne({ _id: oldId, archived: true }, { session });
-          return { rewired, didDelete: (del?.deletedCount ?? 0) > 0, keptActive: false };
+          return { rewiredModifiedDocs, didDelete: (del?.deletedCount ?? 0) > 0, keptActive: false };
         });
 
-        // counters + logs
-        rewiredTotal += rewired;
+        totalRewiredModifiedDocs += result.rewiredModifiedDocs;
 
-        if (keptActive) {
+        if (result.keptActive) {
           keptDueToActiveProduct++;
           console.log(
-            `[${idirGuid}] Kept archived user ${String(
-              oldId,
-            )} (still linked to ACTIVE product). Rewired ops: ${rewired}`,
+            `[${idirGuid}] Kept archived user ${String(oldId)} (still linked to ACTIVE product). Modified docs: ${
+              result.rewiredModifiedDocs
+            }`,
           );
-        } else if (didDelete) {
-          deletedUsers++;
-          console.log(`[${idirGuid}] Deleted archived user ${String(oldId)}. Rewired ops: ${rewired}`);
-        } else {
-          console.log(
-            `[${idirGuid}] Tried to delete archived user ${String(oldId)} but nothing deleted. Rewired ops: ${rewired}`,
-          );
+          continue;
         }
+
+        if (result.didDelete) {
+          deletedUsers++;
+          console.log(
+            `[${idirGuid}] Deleted archived user ${String(oldId)}. Modified docs: ${result.rewiredModifiedDocs}`,
+          );
+          continue;
+        }
+
+        console.log(
+          `[${idirGuid}] Tried to delete archived user ${String(oldId)} but nothing deleted. Modified docs: ${
+            result.rewiredModifiedDocs
+          }`,
+        );
       } catch (err) {
         console.error(
           `[${idirGuid}] Transaction failed for archived user ${String(oldId)} -> canonical ${String(newId)}`,
@@ -310,10 +333,10 @@ export const up = async (db, client) => {
 
   console.log('Migration finished.');
   console.log(`Duplicated idirGuid groups processed: ${groupsProcessed}`);
-  console.log(`Total rewired modifications (sum of modifiedCount across updates): ${rewiredTotal}`);
+  console.log(`Total rewired modified documents (sum of modifiedCount across updates): ${totalRewiredModifiedDocs}`);
   console.log(`Deleted archived users: ${deletedUsers}`);
   console.log(`Kept archived users due to ACTIVE product links: ${keptDueToActiveProduct}`);
-  console.log(`Skipped archived users (no non-archived user in group): ${skippedNoActiveUser}`);
+  console.log(`Merged archived users where no non-archived user existed: ${mergedArchivedWhenNoActiveUser}`);
 };
 
 export const down = async () => {};
