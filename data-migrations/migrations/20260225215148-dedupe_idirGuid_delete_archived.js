@@ -17,6 +17,7 @@ export const up = async (db, client) => {
 
   const events = db.collection('Event');
   const tasks = db.collection('Task');
+
   const sortByRecencyDesc = (a, b) => {
     const ad = a.updatedAt ?? a.createdAt ?? 0;
     const bd = b.updatedAt ?? b.createdAt ?? 0;
@@ -41,14 +42,13 @@ export const up = async (db, client) => {
     return;
   }
 
-  // Helper: run an updateMany with a pipeline
-  const pipelineUpdateMany = async (col, filter, pipeline, session) => {
+  // helpers
+  const pipelineUpdateMany = async (col, filter, pipeline, { session } = {}) => {
     const res = await col.updateMany(filter, pipeline, session ? { session } : undefined);
     return res?.modifiedCount ?? 0;
   };
 
-  // Helper: replace a scalar ObjectId field from oldId -> newId
-  const replaceScalarField = async (col, field, oldId, newId, extraFilter = {}, session) => {
+  const replaceScalarField = async (col, field, oldId, newId, { extraFilter = {}, session } = {}) => {
     const res = await col.updateMany(
       { ...extraFilter, [field]: oldId },
       { $set: { [field]: newId } },
@@ -57,8 +57,7 @@ export const up = async (db, client) => {
     return res?.modifiedCount ?? 0;
   };
 
-  // Helper: replace a member.userId inside array of { userId, roles }
-  const replaceMemberUserId = async (col, arrayField, oldId, newId, extraFilter = {}, session) => {
+  const replaceMemberUserId = async (col, arrayField, oldId, newId, { extraFilter = {}, session } = {}) => {
     return pipelineUpdateMany(
       col,
       { ...extraFilter, [`${arrayField}.userId`]: oldId },
@@ -77,11 +76,11 @@ export const up = async (db, client) => {
           },
         },
       ],
-      session,
+      { session },
     );
   };
 
-  const replaceInArray = async (col, arrayField, oldId, newId, extraFilter = {}, session) => {
+  const replaceInArray = async (col, arrayField, oldId, newId, { extraFilter = {}, session } = {}) => {
     return pipelineUpdateMany(
       col,
       { ...extraFilter, [arrayField]: oldId },
@@ -89,16 +88,101 @@ export const up = async (db, client) => {
         {
           $set: {
             [arrayField]: {
-              $map: { input: `$${arrayField}`, as: 'x', in: { $cond: [{ $eq: ['$$x', oldId] }, newId, '$$x'] } },
+              $map: {
+                input: `$${arrayField}`,
+                as: 'x',
+                in: { $cond: [{ $eq: ['$$x', oldId] }, newId, '$$x'] },
+              },
             },
           },
         },
       ],
-      session,
+      { session },
     );
   };
 
-  // Load all duplicated groups in one go
+  const rewireUserReferences = async (collections, oldId, newId, session) => {
+    const {
+      privateProducts,
+      publicProducts,
+      privateRequests,
+      publicRequests,
+      privateRequestData,
+      publicRequestData,
+      publicBilling,
+      privateComments,
+      reactions,
+      events,
+      tasks,
+    } = collections;
+
+    let rewired = 0;
+    const INACTIVE = { extraFilter: { status: 'INACTIVE' }, session };
+
+    // A) INACTIVE products
+    for (const field of ['projectOwnerId', 'primaryTechnicalLeadId', 'secondaryTechnicalLeadId']) {
+      rewired += await replaceScalarField(privateProducts, field, oldId, newId, INACTIVE);
+      rewired += await replaceScalarField(publicProducts, field, oldId, newId, INACTIVE);
+    }
+    rewired += await replaceScalarField(publicProducts, 'expenseAuthorityId', oldId, newId, INACTIVE);
+    rewired += await replaceMemberUserId(privateProducts, 'members', oldId, newId, INACTIVE);
+    rewired += await replaceMemberUserId(publicProducts, 'members', oldId, newId, INACTIVE);
+
+    // B) Requests
+    for (const field of ['createdById', 'decisionMakerId', 'cancelledById']) {
+      rewired += await replaceScalarField(privateRequests, field, oldId, newId, { session });
+      rewired += await replaceScalarField(publicRequests, field, oldId, newId, { session });
+    }
+
+    // C) RequestData
+    for (const field of ['projectOwnerId', 'primaryTechnicalLeadId', 'secondaryTechnicalLeadId']) {
+      rewired += await replaceScalarField(privateRequestData, field, oldId, newId, { session });
+    }
+    rewired += await replaceMemberUserId(privateRequestData, 'members', oldId, newId, { session });
+
+    for (const field of [
+      'projectOwnerId',
+      'primaryTechnicalLeadId',
+      'secondaryTechnicalLeadId',
+      'expenseAuthorityId',
+    ]) {
+      rewired += await replaceScalarField(publicRequestData, field, oldId, newId, { session });
+    }
+    rewired += await replaceMemberUserId(publicRequestData, 'members', oldId, newId, { session });
+
+    // D) Billing
+    for (const field of ['expenseAuthorityId', 'signedById', 'approvedById']) {
+      rewired += await replaceScalarField(publicBilling, field, oldId, newId, { session });
+    }
+
+    // E) Comments + Reactions
+    rewired += await replaceScalarField(privateComments, 'userId', oldId, newId, { session });
+    rewired += await replaceScalarField(reactions, 'userId', oldId, newId, { session });
+
+    // F) Events + Tasks
+    rewired += await replaceScalarField(events, 'userId', oldId, newId, { session });
+    for (const field of ['startedBy', 'completedBy']) {
+      rewired += await replaceScalarField(tasks, field, oldId, newId, { session });
+    }
+    rewired += await replaceInArray(tasks, 'userIds', oldId, newId, { session });
+
+    return rewired;
+  };
+
+  const collections = {
+    privateProducts,
+    publicProducts,
+    privateRequests,
+    publicRequests,
+    privateRequestData,
+    publicRequestData,
+    publicBilling,
+    privateComments,
+    reactions,
+    events,
+    tasks,
+  };
+
   const allDupUsers = await users
     .find({ idirGuid: { $in: duplicatedGuids } })
     .project({ _id: 1, idirGuid: 1, archived: 1, updatedAt: 1, createdAt: 1 })
@@ -119,6 +203,7 @@ export const up = async (db, client) => {
 
   for (const [idirGuid, group] of byGuid.entries()) {
     groupsProcessed++;
+
     const archivedUsers = group.filter((u) => u.archived === true);
     const nonArchivedUsers = group.filter((u) => u.archived !== true);
 
@@ -126,14 +211,10 @@ export const up = async (db, client) => {
     let sourcesToMerge;
 
     if (nonArchivedUsers.length > 0) {
-      // canonical = newest non-archived
       nonArchivedUsers.sort(sortByRecencyDesc);
       canonical = nonArchivedUsers[0];
-
-      // merge all archived into canonical
       sourcesToMerge = archivedUsers;
     } else {
-      // no non-archived => keep newest archived, merge the rest
       if (archivedUsers.length < 2) {
         console.log(`[${idirGuid}] Only one archived user found; nothing to merge.`);
         continue;
@@ -142,7 +223,6 @@ export const up = async (db, client) => {
       archivedUsers.sort(sortByRecencyDesc);
       canonical = archivedUsers[0];
       sourcesToMerge = archivedUsers.slice(1);
-
       skippedNoActiveUser += sourcesToMerge.length;
 
       console.log(
@@ -159,127 +239,10 @@ export const up = async (db, client) => {
       if (String(oldId) === String(newId)) continue;
 
       const session = client.startSession();
-
       try {
         const { rewired, didDelete, keptActive } = await session.withTransaction(async () => {
-          let rewired = 0;
+          const rewired = await rewireUserReferences(collections, oldId, newId, session);
 
-          // A) INACTIVE products
-          rewired += await replaceScalarField(
-            privateProducts,
-            'projectOwnerId',
-            oldId,
-            newId,
-            { status: 'INACTIVE' },
-            session,
-          );
-          rewired += await replaceScalarField(
-            privateProducts,
-            'primaryTechnicalLeadId',
-            oldId,
-            newId,
-            { status: 'INACTIVE' },
-            session,
-          );
-          rewired += await replaceScalarField(
-            privateProducts,
-            'secondaryTechnicalLeadId',
-            oldId,
-            newId,
-            { status: 'INACTIVE' },
-            session,
-          );
-          rewired += await replaceMemberUserId(
-            privateProducts,
-            'members',
-            oldId,
-            newId,
-            { status: 'INACTIVE' },
-            session,
-          );
-
-          rewired += await replaceScalarField(
-            publicProducts,
-            'projectOwnerId',
-            oldId,
-            newId,
-            { status: 'INACTIVE' },
-            session,
-          );
-          rewired += await replaceScalarField(
-            publicProducts,
-            'primaryTechnicalLeadId',
-            oldId,
-            newId,
-            { status: 'INACTIVE' },
-            session,
-          );
-          rewired += await replaceScalarField(
-            publicProducts,
-            'secondaryTechnicalLeadId',
-            oldId,
-            newId,
-            { status: 'INACTIVE' },
-            session,
-          );
-          rewired += await replaceScalarField(
-            publicProducts,
-            'expenseAuthorityId',
-            oldId,
-            newId,
-            { status: 'INACTIVE' },
-            session,
-          );
-          rewired += await replaceMemberUserId(
-            publicProducts,
-            'members',
-            oldId,
-            newId,
-            { status: 'INACTIVE' },
-            session,
-          );
-
-          // B) Requests
-          for (const field of ['createdById', 'decisionMakerId', 'cancelledById']) {
-            rewired += await replaceScalarField(privateRequests, field, oldId, newId, {}, session);
-            rewired += await replaceScalarField(publicRequests, field, oldId, newId, {}, session);
-          }
-
-          // C) RequestData
-          rewired += await replaceScalarField(privateRequestData, 'projectOwnerId', oldId, newId, {}, session);
-          rewired += await replaceScalarField(privateRequestData, 'primaryTechnicalLeadId', oldId, newId, {}, session);
-          rewired += await replaceScalarField(
-            privateRequestData,
-            'secondaryTechnicalLeadId',
-            oldId,
-            newId,
-            {},
-            session,
-          );
-          rewired += await replaceMemberUserId(privateRequestData, 'members', oldId, newId, {}, session);
-
-          rewired += await replaceScalarField(publicRequestData, 'projectOwnerId', oldId, newId, {}, session);
-          rewired += await replaceScalarField(publicRequestData, 'primaryTechnicalLeadId', oldId, newId, {}, session);
-          rewired += await replaceScalarField(publicRequestData, 'secondaryTechnicalLeadId', oldId, newId, {}, session);
-          rewired += await replaceScalarField(publicRequestData, 'expenseAuthorityId', oldId, newId, {}, session);
-          rewired += await replaceMemberUserId(publicRequestData, 'members', oldId, newId, {}, session);
-
-          // D) Billing
-          rewired += await replaceScalarField(publicBilling, 'expenseAuthorityId', oldId, newId, {}, session);
-          rewired += await replaceScalarField(publicBilling, 'signedById', oldId, newId, {}, session);
-          rewired += await replaceScalarField(publicBilling, 'approvedById', oldId, newId, {}, session);
-
-          // E) Comments + Reactions
-          rewired += await replaceScalarField(privateComments, 'userId', oldId, newId, {}, session);
-          rewired += await replaceScalarField(reactions, 'userId', oldId, newId, {}, session);
-
-          // F) Events + Tasks
-          rewired += await replaceScalarField(events, 'userId', oldId, newId, {}, session);
-          rewired += await replaceScalarField(tasks, 'startedBy', oldId, newId, {}, session);
-          rewired += await replaceScalarField(tasks, 'completedBy', oldId, newId, {}, session);
-          rewired += await replaceInArray(tasks, 'userIds', oldId, newId, {}, session);
-
-          // Active-link checks
           const activePrivateLink = await privateProducts.findOne(
             {
               status: 'ACTIVE',
@@ -315,6 +278,7 @@ export const up = async (db, client) => {
           return { rewired, didDelete: (del?.deletedCount ?? 0) > 0, keptActive: false };
         });
 
+        // counters + logs
         rewiredTotal += rewired;
 
         if (keptActive) {
@@ -337,7 +301,7 @@ export const up = async (db, client) => {
           `[${idirGuid}] Transaction failed for archived user ${String(oldId)} -> canonical ${String(newId)}`,
           err,
         );
-        throw err; // fail migration (preferred)
+        throw err;
       } finally {
         await session.endSession();
       }

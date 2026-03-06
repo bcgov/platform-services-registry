@@ -2,7 +2,6 @@ import { MockedFunction } from 'jest-mock';
 import { NextRequest } from 'next/server';
 import { getServerSession } from 'next-auth/next';
 import { BASE_URL } from '@/config';
-import prisma from '@/core/prisma';
 import { generateTestSession, findMockUserbyRole, findMockUserByIdirGuid, upsertMockUser } from '@/helpers/mock-users';
 import { SERVICE_ACCOUNT_DATA } from '@/jest.mock';
 import { stringifyQuery } from '@/utils/js';
