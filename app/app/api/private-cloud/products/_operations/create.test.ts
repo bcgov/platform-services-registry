@@ -4,7 +4,7 @@ import { createSamplePrivateCloudProductData } from '@/helpers/mock-resources';
 import { findOtherMockUsers } from '@/helpers/mock-users';
 import { pickProductData } from '@/helpers/product';
 import { Cluster } from '@/prisma/client';
-import { mockSessionByEmail, mockSessionByRole } from '@/services/api-test/core';
+import { mockSessionByIdirGuid, mockSessionByRole } from '@/services/api-test/core';
 import { createPrivateCloudProduct } from '@/services/api-test/private-cloud/products';
 
 const fieldsToCompare = [
@@ -18,7 +18,7 @@ const fieldsToCompare = [
 
 describe('Create Private Cloud Product - Permissions', () => {
   it('should return 401 for unauthenticated user', async () => {
-    await mockSessionByEmail();
+    await mockSessionByIdirGuid();
 
     const requestData = createSamplePrivateCloudProductData();
     const response = await createPrivateCloudProduct(requestData);
@@ -27,7 +27,7 @@ describe('Create Private Cloud Product - Permissions', () => {
 
   it('should successfully submit a create request for PO', async () => {
     const requestData = createSamplePrivateCloudProductData();
-    await mockSessionByEmail(requestData.projectOwner.email);
+    await mockSessionByIdirGuid(requestData.projectOwner.idirGuid);
 
     const response = await createPrivateCloudProduct(requestData);
     expect(response.status).toBe(200);
@@ -40,7 +40,7 @@ describe('Create Private Cloud Product - Permissions', () => {
 
   it('should successfully submit a create request for TL1', async () => {
     const requestData = createSamplePrivateCloudProductData();
-    await mockSessionByEmail(requestData.primaryTechnicalLead.email);
+    await mockSessionByIdirGuid(requestData.primaryTechnicalLead.idirGuid);
 
     const response = await createPrivateCloudProduct(requestData);
     expect(response.status).toBe(200);
@@ -53,7 +53,7 @@ describe('Create Private Cloud Product - Permissions', () => {
 
   it('should successfully submit a create request for TL2', async () => {
     const requestData = createSamplePrivateCloudProductData();
-    await mockSessionByEmail(requestData.secondaryTechnicalLead.email);
+    await mockSessionByIdirGuid(requestData.secondaryTechnicalLead.idirGuid);
 
     const response = await createPrivateCloudProduct(requestData);
     expect(response.status).toBe(200);
@@ -72,7 +72,7 @@ describe('Create Private Cloud Product - Permissions', () => {
       requestData.secondaryTechnicalLead.email,
     ]);
 
-    await mockSessionByEmail(otherUsers[0].email);
+    await mockSessionByIdirGuid(otherUsers[0].idirGuid);
 
     const response = await createPrivateCloudProduct(requestData);
     expect(response.status).toBe(401);

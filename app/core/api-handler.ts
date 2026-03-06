@@ -118,14 +118,14 @@ function createApiHandler<
               session = await generateSession({
                 session: {} as Session,
                 token: {
+                  idirGuid: kcUser.attributes?.idir_guid,
                   email: kcUser.email,
                 },
                 userSession: {
-                  email: kcUser.email ?? '',
                   roles: kcUser.authRoleNames.concat(GlobalRole.ServiceAccount),
                   idirGuid: kcUser.attributes?.idir_guid,
                   teams: [],
-                  sub: '',
+                  sub: kcUserId,
                   accessToken: '',
                   refreshToken: '',
                   idToken: '',
@@ -141,7 +141,6 @@ function createApiHandler<
                   email: '',
                 },
                 userSession: {
-                  email: '',
                   roles: rolesArr.concat(GlobalRole.ServiceAccount),
                   idirGuid: '',
                   teams: [],

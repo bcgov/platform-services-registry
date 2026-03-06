@@ -2,12 +2,12 @@ import { expect } from '@jest/globals';
 import { GlobalRole } from '@/constants';
 import { createSamplePrivateCloudCommentData } from '@/helpers/mock-resources';
 import { findOtherMockUsers } from '@/helpers/mock-users';
-import { mockSessionByEmail, mockSessionByRole } from '@/services/api-test/core';
+import { mockSessionByIdirGuid, mockSessionByRole } from '@/services/api-test/core';
 import { createPrivateCloudComment } from '@/services/api-test/private-cloud/products';
 
 describe('Create Private Cloud Comment - Permissions', () => {
   it('should return 401 for unauthenticated user', async () => {
-    await mockSessionByEmail();
+    await mockSessionByIdirGuid();
 
     const licencePlate = 'test-licence-plate';
     const requestData = createSamplePrivateCloudCommentData();
@@ -61,7 +61,7 @@ describe('Create Private Cloud Comment - Permissions', () => {
     const licencePlate = 'test-licence-plate';
     const requestData = createSamplePrivateCloudCommentData();
     const otherUsers = findOtherMockUsers([requestData.userId]);
-    await mockSessionByEmail(otherUsers[0].email);
+    await mockSessionByIdirGuid(otherUsers[0].idirGuid);
 
     const response = await createPrivateCloudComment(licencePlate, requestData);
 
