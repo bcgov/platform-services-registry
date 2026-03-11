@@ -79,7 +79,7 @@ export const POST = apiHandler(async ({ pathParams, body, session }) => {
         ...validFormData,
         status: ProjectStatus.ACTIVE,
         licencePlate: request.licencePlate,
-        cluster: request.project?.cluster ?? request.decisionData.cluster,
+        cluster: request.project?.cluster ?? validFormData.cluster ?? request.decisionData.cluster,
         organization: { connect: { id: organizationId } },
         projectOwner: { connect: { id: projectOwnerId } },
         primaryTechnicalLead: { connect: { id: primaryTechnicalLeadId } },
