@@ -253,7 +253,7 @@ describe('Review Private Cloud Request - Validations', () => {
     requests.main = await response.json();
   });
 
-  it('should ignore the cluster change', async () => {
+  it('should allow the cluster change on create requests', async () => {
     await mockSessionByRole(GlobalRole.PrivateReviewer);
     const requestData = requests.main;
 
@@ -271,6 +271,6 @@ describe('Review Private Cloud Request - Validations', () => {
     const decisionData = resData.decisionData;
 
     expect(decisionData.name).toBe(newName);
-    expect(decisionData.cluster).toBe(requestData.decisionData.cluster);
+    expect(decisionData.cluster).toBe(newCluster);
   });
 });
