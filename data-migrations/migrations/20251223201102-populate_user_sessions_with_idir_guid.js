@@ -15,6 +15,9 @@ export const up = async (db, client) => {
 
   const decodeJwtPayload = (jwt) => {
     const parts = String(jwt || '').split('.');
+    if (parts.length !== 3) {
+      throw new Error('Invalid JWT structure');
+    }
     const payloadB64 = parts[1];
     if (!payloadB64) throw new Error('JWT payload missing');
 
@@ -29,14 +32,21 @@ export const up = async (db, client) => {
   };
 
   const getEmailFromIdToken = (idToken) => {
-    if (!idToken) return null;
+    if (!idToken) {
+      console.warn(`UserSession ${sessionId}: missing idToken`);
+      return null;
+    }
 
     try {
       const p = decodeJwtPayload(idToken);
       const raw = p?.email || p?.preferred_username;
-      if (typeof raw !== 'string') return null;
+      if (typeof raw !== 'string' || !raw.trim()) {
+        console.warn(`UserSession ${sessionId}: no email/preferred_username in token payload`);
+        return null;
+      }
       return raw.toLowerCase();
-    } catch {
+    } catch (error) {
+      console.warn(`UserSession ${sessionId}: failed to decode idToken (${error.message})`);
       return null;
     }
   };
@@ -66,11 +76,13 @@ export const up = async (db, client) => {
 
     if (!idirGuid) {
       unresolved++;
-      throw new Error(`Unable to resolve idirGuid for UserSession ${s._id} (email=${email ?? 'null'})`);
+      console.warn(`UserSession ${s._id}: unable to resolve idirGuid (email=${email ?? 'null'})`);
+      continue;
     }
 
     await sessions.updateOne({ _id: s._id }, { $set: { idirGuid } });
     updatedFromUser++;
+    console.log(`UserSession ${s._id}: idirGuid populated from User record (email=${email})`);
   }
 
   console.log(`UserSession updated from User by email: ${updatedFromUser}`);
