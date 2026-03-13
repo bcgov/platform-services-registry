@@ -5,7 +5,7 @@ import prisma from '@/core/prisma';
 import { createSamplePublicCloudProductData } from '@/helpers/mock-resources';
 import { mockNoRoleUsers } from '@/helpers/mock-users';
 import { Provider, DecisionStatus, RequestType } from '@/prisma/client';
-import { mockSessionByEmail, mockSessionByRole } from '@/services/api-test/core';
+import { mockSessionByIdirGuid, mockSessionByRole } from '@/services/api-test/core';
 import { mockTeamServiceAccount } from '@/services/api-test/core';
 import {
   createPublicCloudProduct,
@@ -33,7 +33,7 @@ let licencePlate = '';
 
 describe('List Public Cloud Product Requests - Permissions', () => {
   it('should successfully create a product by PO and approved by admin', async () => {
-    await mockSessionByEmail(PO.email);
+    await mockSessionByIdirGuid(PO.idirGuid);
 
     const requestData = createSamplePublicCloudProductData({
       data: { ...memberData, provider: Provider.AWS },
@@ -51,7 +51,7 @@ describe('List Public Cloud Product Requests - Permissions', () => {
     expect(billing).toBeTruthy();
     if (!billing) return;
 
-    await mockSessionByEmail(dat1.decisionData.expenseAuthority.email);
+    await mockSessionByIdirGuid(dat1.decisionData.expenseAuthority.idirGuid);
     await signPublicCloudBilling(dat1.licencePlate, billing.id, {
       accountCoding: defaultAccountCoding,
       confirmed: true,
@@ -84,7 +84,7 @@ describe('List Public Cloud Product Requests - Permissions', () => {
   });
 
   it('should successfully list 1 request by PO', async () => {
-    await mockSessionByEmail(PO.email);
+    await mockSessionByIdirGuid(PO.idirGuid);
 
     const res1 = await listPublicCloudProductRequests(licencePlate, false);
     expect(res1.status).toBe(200);
@@ -94,7 +94,7 @@ describe('List Public Cloud Product Requests - Permissions', () => {
   });
 
   it('should successfully list 1 request by TL1', async () => {
-    await mockSessionByEmail(TL1.email);
+    await mockSessionByIdirGuid(TL1.idirGuid);
 
     const res1 = await listPublicCloudProductRequests(licencePlate, false);
     expect(res1.status).toBe(200);
@@ -104,7 +104,7 @@ describe('List Public Cloud Product Requests - Permissions', () => {
   });
 
   it('should successfully list 1 request by TL2', async () => {
-    await mockSessionByEmail(TL2.email);
+    await mockSessionByIdirGuid(TL2.idirGuid);
 
     const res1 = await listPublicCloudProductRequests(licencePlate, false);
     expect(res1.status).toBe(200);
@@ -114,7 +114,7 @@ describe('List Public Cloud Product Requests - Permissions', () => {
   });
 
   it('should successfully list 0 request by a random user', async () => {
-    await mockSessionByEmail(RANDOM1.email);
+    await mockSessionByIdirGuid(RANDOM1.idirGuid);
 
     const res1 = await listPublicCloudProductRequests(licencePlate, false);
     expect(res1.status).toBe(200);

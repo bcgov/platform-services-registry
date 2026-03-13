@@ -1,6 +1,7 @@
+import { BcgovGuidExtensionKey } from '@/constants';
 import { Prisma, User } from '@/prisma/client';
 
-export interface MsUser {
+export interface MsUserBase {
   id: string;
   userPrincipalName: string;
   mail: string;
@@ -12,7 +13,9 @@ export interface MsUser {
   jobTitle: string;
   officeLocation: string;
 }
-
+export type MsUser = MsUserBase & {
+  [K in BcgovGuidExtensionKey]: string; // pragma: allowlist secret
+};
 export interface AppUser {
   id: string;
   providerUserId: string;

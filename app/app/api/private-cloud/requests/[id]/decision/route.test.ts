@@ -4,7 +4,7 @@ import { createSamplePrivateCloudProductData } from '@/helpers/mock-resources';
 import { resourceRequests1, resourceRequests2 } from '@/helpers/mock-resources/private-cloud-product';
 import { pickProductData } from '@/helpers/product';
 import { DecisionStatus, Cluster, RequestType } from '@/prisma/client';
-import { mockSessionByEmail, mockSessionByRole } from '@/services/api-test/core';
+import { mockSessionByIdirGuid, mockSessionByRole } from '@/services/api-test/core';
 import { mockTeamServiceAccount } from '@/services/api-test/core';
 import {
   createPrivateCloudProduct,
@@ -51,7 +51,7 @@ async function makeBasicProductReview(decision: DecisionStatus, extra = {}) {
 
 describe('Review Private Cloud Create Request - Permissions', () => {
   it('should successfully submit a create request for PO', async () => {
-    await mockSessionByEmail(productData.main.projectOwner.email);
+    await mockSessionByIdirGuid(productData.main.projectOwner.idirGuid);
 
     const response = await createPrivateCloudProduct(productData.main);
     expect(response.status).toBe(200);
@@ -60,7 +60,7 @@ describe('Review Private Cloud Create Request - Permissions', () => {
   });
 
   it('should fail to review the create request for PO', async () => {
-    await mockSessionByEmail(productData.main.projectOwner.email);
+    await mockSessionByIdirGuid(productData.main.projectOwner.idirGuid);
 
     const response = await makeBasicProductReview(DecisionStatus.APPROVED);
 
@@ -71,7 +71,7 @@ describe('Review Private Cloud Create Request - Permissions', () => {
   });
 
   it('should fail to review the create request for TL1', async () => {
-    await mockSessionByEmail(productData.main.primaryTechnicalLead.email);
+    await mockSessionByIdirGuid(productData.main.primaryTechnicalLead.idirGuid);
 
     const response = await makeBasicProductReview(DecisionStatus.APPROVED);
 
@@ -117,7 +117,7 @@ describe('Review Private Cloud Create Request - Permissions', () => {
 
 describe('Review Private Cloud Update Request - Permissions', () => {
   it('should successfully submit a update request for TL1', async () => {
-    await mockSessionByEmail(productData.main.primaryTechnicalLead.email);
+    await mockSessionByIdirGuid(productData.main.primaryTechnicalLead.idirGuid);
 
     const response = await editPrivateCloudProduct(requests.main.licencePlate, {
       ...requests.main.decisionData,
@@ -130,7 +130,7 @@ describe('Review Private Cloud Update Request - Permissions', () => {
   });
 
   it('should fail to review the update request for PO', async () => {
-    await mockSessionByEmail(productData.main.projectOwner.email);
+    await mockSessionByIdirGuid(productData.main.projectOwner.idirGuid);
 
     const response = await makeBasicProductReview(DecisionStatus.APPROVED);
 
@@ -141,7 +141,7 @@ describe('Review Private Cloud Update Request - Permissions', () => {
   });
 
   it('should fail to review the update request for TL1', async () => {
-    await mockSessionByEmail(productData.main.primaryTechnicalLead.email);
+    await mockSessionByIdirGuid(productData.main.primaryTechnicalLead.idirGuid);
 
     const response = await makeBasicProductReview(DecisionStatus.APPROVED);
 
@@ -185,7 +185,7 @@ describe('Review Private Cloud Update Request - Permissions', () => {
 
 describe('Review Private Cloud Delete Request - Permissions', () => {
   it('should successfully submit a delete request for TL1', async () => {
-    await mockSessionByEmail(productData.main.primaryTechnicalLead.email);
+    await mockSessionByIdirGuid(productData.main.primaryTechnicalLead.idirGuid);
 
     const response = await deletePrivateCloudProduct(requests.main.licencePlate, 'Test delete comment');
     const responseData = await response.json();
@@ -195,7 +195,7 @@ describe('Review Private Cloud Delete Request - Permissions', () => {
   });
 
   it('should fail to review the delete request for PO', async () => {
-    await mockSessionByEmail(productData.main.projectOwner.email);
+    await mockSessionByIdirGuid(productData.main.projectOwner.idirGuid);
 
     const response = await makeBasicProductReview(DecisionStatus.APPROVED);
 
@@ -206,7 +206,7 @@ describe('Review Private Cloud Delete Request - Permissions', () => {
   });
 
   it('should fail to review the delete request for TL1', async () => {
-    await mockSessionByEmail(productData.main.primaryTechnicalLead.email);
+    await mockSessionByIdirGuid(productData.main.primaryTechnicalLead.idirGuid);
 
     const response = await makeBasicProductReview(DecisionStatus.APPROVED);
 
@@ -245,7 +245,7 @@ describe('Review Private Cloud Delete Request - Permissions', () => {
 
 describe('Review Private Cloud Request - Validations', () => {
   it('should successfully submit a create request for TL1', async () => {
-    await mockSessionByEmail(productData.main.primaryTechnicalLead.email);
+    await mockSessionByIdirGuid(productData.main.primaryTechnicalLead.idirGuid);
 
     const response = await createPrivateCloudProduct(productData.main);
     expect(response.status).toBe(200);

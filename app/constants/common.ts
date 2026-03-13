@@ -2,6 +2,9 @@ import { Prisma } from '@/prisma/client';
 
 // export const AGMinistries = ['AG', 'PSSG', 'EMCR', 'HMA'];
 
+export const BCGOV_GUID_EXTENSION = 'extension_85cc52e9286540fcb1f97ed86114a0e5_bcgovGUID' as const; // pragma: allowlist secret
+export type BcgovGuidExtensionKey = typeof BCGOV_GUID_EXTENSION;
+
 export const TEAM_SA_PREFIX = 'z_pltsvc-tsa-';
 
 export const productSorts = [

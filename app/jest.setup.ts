@@ -31,6 +31,11 @@ jest.mock('@/services/ches/core', () => ({
   safeSendEmail: jest.fn(),
 }));
 
+jest.mock('@/utils/node', () => ({
+  ...jest.requireActual('@/utils/node'),
+  parseKeycloakJwtTokenSafe: jest.fn(async () => SERVICE_ACCOUNT_DATA.jwtData),
+}));
+
 jest.mock('@/services/ches/private-cloud', () => ({
   ...jest.requireActual('@/services/ches/private-cloud'),
   sendCreateRequestEmails: jest.fn(async () => [200]),
