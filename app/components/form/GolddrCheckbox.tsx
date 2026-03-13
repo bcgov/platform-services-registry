@@ -4,7 +4,7 @@ import FormCheckbox from '@/components/generic/checkbox/FormCheckbox';
 import { Cluster } from '@/prisma/client';
 
 export default function GolddrCheckbox({ disabled }: { disabled?: boolean }) {
-  const { watch, register, setValue, formState } = useFormContext();
+  const { watch, register, setValue } = useFormContext();
   const watchCluster = watch('cluster');
 
   useEffect(() => {
