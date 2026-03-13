@@ -274,3 +274,50 @@ describe('Review Private Cloud Request - Validations', () => {
     expect(decisionData.cluster).toBe(newCluster);
   });
 });
+
+const goldProductData = {
+  main: createSamplePrivateCloudProductData({
+    data: {
+      cluster: Cluster.GOLD,
+      resourceRequests: resourceRequests1,
+    },
+  }),
+};
+
+const goldRequests = {
+  main: {} as unknown as PrivateCloudRequestDetailDecorated,
+};
+
+describe('Review Private Cloud Request - Gold DR Validations', () => {
+  it('should successfully submit a create request with GOLD cluster and golddrEnabled', async () => {
+    await mockSessionByEmail(goldProductData.main.projectOwner.email);
+
+    const response = await createPrivateCloudProduct({ ...goldProductData.main, golddrEnabled: true });
+    expect(response.status).toBe(200);
+
+    goldRequests.main = await response.json();
+    expect(goldRequests.main.decisionData.cluster).toBe(Cluster.GOLD);
+    expect(goldRequests.main.decisionData.golddrEnabled).toBe(true);
+  });
+
+  it('should reset golddrEnabled to false when admin changes cluster from GOLD to SILVER on create request', async () => {
+    await mockSessionByRole(GlobalRole.PrivateReviewer);
+    const requestData = goldRequests.main;
+
+    const response = await makePrivateCloudRequestDecision(requestData.id, {
+      type: RequestType.CREATE,
+      ...requestData.decisionData,
+      cluster: Cluster.SILVER,
+      golddrEnabled: true,
+      decision: DecisionStatus.APPROVED as 'APPROVED' | 'REJECTED',
+    });
+
+    expect(response.status).toBe(200);
+
+    const resData = await response.json();
+    const decisionData = resData.decisionData;
+
+    expect(decisionData.cluster).toBe(Cluster.SILVER);
+    expect(decisionData.golddrEnabled).toBe(false);
+  });
+});
