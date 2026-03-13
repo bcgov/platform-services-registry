@@ -1,5 +1,4 @@
 import axios from 'axios';
-import { HttpsProxyAgent } from 'https-proxy-agent';
 import {
   MS_GRAPH_API_URL,
   MS_GRAPH_API_PROXY_URL,
@@ -12,9 +11,6 @@ import {
   MS_GRAPH_API_CLIENT_CERTIFICATE,
 } from '@/config';
 import { getClientCredentialsToken, getMsGraphAccessTokenWithCertificate } from '@/utils/node/oauth2';
-
-// See https://learn.microsoft.com/en-us/microsoft-cloud/dev/dev-proxy/how-to/use-dev-proxy-with-nodejs
-const graphAPIProxy = USE_MS_GRAPH_API_PROXY ? new HttpsProxyAgent(MS_GRAPH_API_PROXY_URL) : null;
 
 async function getAccessToken() {
   const token =
@@ -49,15 +45,13 @@ instance.interceptors.request.use(
   async (config) => {
     const token = await getAccessToken();
 
-    if (token) {
-      // Ensure config.headers exists, then add the Authorization header
-      config.headers = config.headers || {};
-      config.headers.Authorization = `Bearer ${token}`;
-      config.headers.ConsistencyLevel = 'eventual';
-    }
+    config.headers = config.headers || {};
+    config.headers.Authorization = `Bearer ${token}`;
+    config.headers.ConsistencyLevel = 'eventual';
 
-    if (graphAPIProxy) {
-      // If using a proxy, ensure the axios instance uses the proxy agent
+    if (USE_MS_GRAPH_API_PROXY) {
+      const { HttpsProxyAgent } = await import('https-proxy-agent');
+      const graphAPIProxy = new HttpsProxyAgent(MS_GRAPH_API_PROXY_URL);
       config.httpAgent = graphAPIProxy;
       config.httpsAgent = graphAPIProxy;
     }
