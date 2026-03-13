@@ -1,10 +1,17 @@
+import { useEffect } from 'react';
 import { useFormContext } from 'react-hook-form';
 import FormCheckbox from '@/components/generic/checkbox/FormCheckbox';
 import { Cluster } from '@/prisma/client';
 
 export default function GolddrCheckbox({ disabled }: { disabled?: boolean }) {
-  const { watch, register, formState } = useFormContext();
+  const { watch, register, setValue, formState } = useFormContext();
   const watchCluster = watch('cluster');
+
+  useEffect(() => {
+    if (watchCluster !== Cluster.GOLD) {
+      setValue('golddrEnabled', false);
+    }
+  }, [watchCluster, setValue]);
 
   if (watchCluster !== Cluster.GOLD) {
     return null;

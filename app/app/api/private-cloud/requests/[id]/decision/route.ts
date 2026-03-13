@@ -4,7 +4,7 @@ import createApiHandler from '@/core/api-handler';
 import prisma from '@/core/prisma';
 import { BadRequestResponse, OkResponse, UnprocessableEntityResponse } from '@/core/responses';
 import { sendRequestNatsMessage } from '@/helpers/nats-message';
-import { DecisionStatus, Prisma, ProjectStatus, RequestType, EventType, TaskType } from '@/prisma/client';
+import { Cluster, DecisionStatus, Prisma, ProjectStatus, RequestType, EventType, TaskType } from '@/prisma/client';
 import { sendRequestRejectionEmails, sendRequestApprovalEmails } from '@/services/ches/private-cloud';
 import { createEvent, models, privateCloudRequestDetailInclude, tasks } from '@/services/db';
 import {
@@ -74,12 +74,15 @@ export const POST = apiHandler(async ({ pathParams, body, session }) => {
 
   // No need to modify decision data when reviewing deletion requests.
   if (request.type !== RequestType.DELETE) {
+    const resolvedCluster = request.project?.cluster ?? validFormData.cluster ?? request.decisionData.cluster;
+
     dataToUpdate.decisionData = {
       update: {
         ...validFormData,
         status: ProjectStatus.ACTIVE,
         licencePlate: request.licencePlate,
-        cluster: request.project?.cluster ?? validFormData.cluster ?? request.decisionData.cluster,
+        cluster: resolvedCluster,
+        golddrEnabled: resolvedCluster === Cluster.GOLD ? validFormData.golddrEnabled : false,
         organization: { connect: { id: organizationId } },
         projectOwner: { connect: { id: projectOwnerId } },
         primaryTechnicalLead: { connect: { id: primaryTechnicalLeadId } },
