@@ -1,3 +1,13 @@
+## [0.78.10](https://github.com/bcgov/platform-services-registry/compare/v0.78.9...v0.78.10) (2026-03-16)
+
+### Bug Fixes
+
+* **0000:** increase HELM_TIMEOUT from 20m to 45m to prevent CI job timeout ([46d9916](https://github.com/bcgov/platform-services-registry/commit/46d99164df79e0860503e80499964bcecc4dd912))
+* **2712:** allow admin to change cluster during create request approval ([c733e1d](https://github.com/bcgov/platform-services-registry/commit/c733e1d3f6b8cd2497403e253f6d0e574912adb7))
+* **2712:** remove unused formState destructuring from GolddrCheckbox ([3e9f02a](https://github.com/bcgov/platform-services-registry/commit/3e9f02a179ee0b227c6fe64e7d9f67d0f102f1c4))
+* **2712:** reset golddrEnabled when cluster is not GOLD during request approval ([f3c5d9b](https://github.com/bcgov/platform-services-registry/commit/f3c5d9bae764c194f0c828f56d1b08d7e34397d3))
+* **2717:** handle non-JSON provisioner responses and prevent URL mutation ([cce253f](https://github.com/bcgov/platform-services-registry/commit/cce253fb61b46b2afd36586003d8c6aa6367a4c0))
+* **2727:** setup lazy-load https-proxy-agent to avoid Jest resolving it during test ([ae00958](https://github.com/bcgov/platform-services-registry/commit/ae00958ad1330bc1e036eeb5fa7079216ae09387))
 ## [0.78.9](https://github.com/bcgov/platform-services-registry/compare/v0.78.8...v0.78.9) (2026-02-23)
 ## [0.78.8](https://github.com/bcgov/platform-services-registry/compare/v0.78.7...v0.78.8) (2026-02-20)
 
