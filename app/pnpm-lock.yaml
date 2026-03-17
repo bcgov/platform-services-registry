@@ -139,7 +139,7 @@ importers:
         version: 2.1.1
       csv-parse:
         specifier: ^6.1.0
-        version: 6.1.0
+        version: 6.2.0
       csv-stringify:
         specifier: ^6.6.0
         version: 6.6.0
@@ -3101,8 +3101,8 @@ packages:
   csstype@3.2.3:
     resolution: {integrity: sha512-z1HGKcYy2xA8AGQfwrn0PAy+PB7X/GSj3UVJW9qKyn43xWa+gl5nXmU4qqLMRzWVLFC8KusUX8T/0kCiOYpAIQ==}
 
-  csv-parse@6.1.0:
-    resolution: {integrity: sha512-CEE+jwpgLn+MmtCpVcPtiCZpVtB6Z2OKPTr34pycYYoL7sxdOkXDdQ4lRiw6ioC0q6BLqhc6cKweCVvral8yhw==}
+  csv-parse@6.2.0:
+    resolution: {integrity: sha512-Zv8KRHccD1q3BJlK4VcQiEn/+suOOp++89g/fpqOxB2U2tU66uC3yM+ZwU6nQQEJp8AqBIiNqB+pUTKNz4QzKg==}
 
   csv-stringify@6.6.0:
     resolution: {integrity: sha512-YW32lKOmIBgbxtu3g5SaiqWNwa/9ISQt2EcgOq0+RAIFufFp9is6tqNnKahqE5kuKvrnYAzs28r+s6pXJR8Vcw==}
@@ -9029,7 +9029,7 @@ snapshots:
 
   csstype@3.2.3: {}
 
-  csv-parse@6.1.0: {}
+  csv-parse@6.2.0: {}
 
   csv-stringify@6.6.0: {}
 
