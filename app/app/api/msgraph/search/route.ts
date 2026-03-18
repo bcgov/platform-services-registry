@@ -27,15 +27,15 @@ export const POST = createApiHandler({
       const data = await prepareUserData(user);
       // The upsert method returns { count: x } when updating data instead of the document.
       // Related issue: https://github.com/prisma/prisma/issues/10935
-      if (data.idir && data.upn) {
+      if (data.idir && data.upn && data.idirGuid) {
         await prisma.user.upsert({
-          where: { email: data.email },
+          where: { idirGuid: data.idirGuid },
           update: data,
           create: data,
         });
 
         return prisma.user.findUnique({
-          where: { email: data.email },
+          where: { idirGuid: data.idirGuid },
           select: {
             id: true,
             firstName: true,

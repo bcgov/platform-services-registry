@@ -73,7 +73,7 @@ export default async function deleteOp({
   };
 
   if (!session.isServiceAccount) {
-    requestCreateData.createdBy = { connect: { email: session.user.email } };
+    requestCreateData.createdBy = { connect: { idirGuid: session.user.idirGuid } };
   }
 
   const newRequest = (

@@ -1,5 +1,12 @@
 export const SERVICE_ACCOUNT_DATA = {
-  user: null as { email: string; authRoleNames: string[] } | null,
+  jwtData: null as Record<string, any> | null,
+
+  user: null as {
+    email: string;
+    authRoleNames: string[];
+    attributes: { idir_guid: string };
+  } | null,
+
   team: null as { roles: string[] } | null,
 };
 

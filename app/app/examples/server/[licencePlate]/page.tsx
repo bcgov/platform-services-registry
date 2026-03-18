@@ -17,7 +17,7 @@ const examplePage = createServerPage({
   validations: { pathParams: pathParamSchema, queryParams: queryParamSchema },
 });
 export default examplePage(async ({ pathParams, queryParams, session }) => {
-  const sessionUser = await prisma.user.findFirst({ where: { email: session?.userEmail ?? '' } });
+  const sessionUser = await prisma.user.findFirst({ where: { idirGuid: session?.userIdirGuid ?? '' } });
 
   return (
     <ul>

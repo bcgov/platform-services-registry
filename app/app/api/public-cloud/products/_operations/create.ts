@@ -59,7 +59,7 @@ export default async function createOp({ session, body }: { session: Session; bo
           licencePlate,
           type: RequestType.CREATE,
           decisionStatus: DecisionStatus.PENDING,
-          createdBy: { connect: { email: session.user.email } },
+          createdBy: { connect: { idirGuid: session.user.idirGuid } },
           decisionData: { create: productData },
           requestData: { create: productData },
         },
