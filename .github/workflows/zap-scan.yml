@@ -27,7 +27,7 @@ jobs:
         ref: main
 
     - name: ZAP Scan
-      uses: zaproxy/action-baseline@3d0f2aaec0768e51b9378edc67ef99038b6aef5f
+      uses: zaproxy/action-baseline@2cf7df4c2c446f5d5fc86c60e946acd379ed3b92
       with:
         token: ${{ secrets.GITHUB_TOKEN }}
         target: ${{ github.event.inputs.url }}
