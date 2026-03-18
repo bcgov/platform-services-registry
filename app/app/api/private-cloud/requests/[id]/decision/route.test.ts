@@ -13,7 +13,7 @@ import {
 } from '@/services/api-test/private-cloud/products';
 import { makePrivateCloudRequestDecision } from '@/services/api-test/private-cloud/requests';
 import { provisionPrivateCloudProduct } from '@/services/api-test/v1/private-cloud';
-import { PrivateCloudRequestDetailDecorated, PrivateCloudRequestSimple } from '@/types/private-cloud';
+import { PrivateCloudRequestDetailDecorated } from '@/types/private-cloud';
 
 const fieldsToCompare = [
   'name',
@@ -290,7 +290,7 @@ const goldRequests = {
 
 describe('Review Private Cloud Request - Gold DR Validations', () => {
   it('should successfully submit a create request with GOLD cluster and golddrEnabled', async () => {
-    await mockSessionByEmail(goldProductData.main.projectOwner.email);
+    await mockSessionByIdirGuid(goldProductData.main.projectOwner.idirGuid);
 
     const response = await createPrivateCloudProduct({ ...goldProductData.main, golddrEnabled: true });
     expect(response.status).toBe(200);
