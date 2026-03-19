@@ -1,7 +1,6 @@
 {
   "$schema": "https://unpkg.com/knip@5/schema.json",
   "entry": ["**/*.js", "**/*.ts", "**/*.tsx"],
-  "ignore": [".next/**/*"],
   "ignoreDependencies": [
     "sharp",
     "node-gyp",
