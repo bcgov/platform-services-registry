@@ -12,6 +12,7 @@
     "ts-jest",
     "ts-node",
     "@prisma/client",
+    "prettier",
     "@faker-js/faker"
   ],
   "rules": {
