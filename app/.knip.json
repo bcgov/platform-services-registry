@@ -1,10 +1,8 @@
 {
   "$schema": "https://unpkg.com/knip@5/schema.json",
   "entry": ["**/*.js", "**/*.ts", "**/*.tsx"],
-  "ignore": ["**/types/**/*.d.ts", ".next/**/*"],
   "ignoreDependencies": [
     "sharp",
-    "prettier",
     "node-gyp",
     "@testing-library/react",
     "@testing-library/user-event",
@@ -12,7 +10,9 @@
     "@react-email/preview-server",
     "ts-jest",
     "ts-node",
-    "@prisma/client"
+    "@prisma/client",
+    "prettier",
+    "@faker-js/faker"
   ],
   "rules": {
     "binaries": "off",
