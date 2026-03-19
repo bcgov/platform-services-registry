@@ -1,3 +1,8 @@
+## [0.78.11](https://github.com/bcgov/platform-services-registry/compare/v0.78.10...v0.78.11) (2026-03-18)
+
+### Bug Fixes
+
+* **0000:** update tests to idirGuid validation ([2938dcc](https://github.com/bcgov/platform-services-registry/commit/2938dcc142223b8f592d29086f68137c99931da2))
 ## [0.78.10](https://github.com/bcgov/platform-services-registry/compare/v0.78.9...v0.78.10) (2026-03-16)
 
 ### Bug Fixes
