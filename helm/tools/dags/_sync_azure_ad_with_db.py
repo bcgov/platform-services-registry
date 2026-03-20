@@ -31,26 +31,53 @@ def sync_db_users_with_azure_ad(
     )
 
     for db_user in db_users:
+        db_user_id = db_user["_id"]
         db_user_email = db_user["email"].lower()
-        azure_user = ms_graph.fetch_azure_user(db_user_email)
-        if azure_user is not None:
-            update_data = {
-                "officeLocation": azure_user.get("officeLocation", ""),
-                "jobTitle": azure_user.get("jobTitle", ""),
-                "upn": azure_user.get("userPrincipalName", ""),
-                "providerUserId": azure_user.get("id", ""),
-                "ministry": parse_ministry_from_display_name(
-                    azure_user.get("displayName", ""),
-                ),
-                "firstName": azure_user.get("givenName", ""),
-                "lastName": azure_user.get("surname", ""),
-                "email": azure_user.get("mail", "").lower(),
-                "idirGuid": azure_user.get("idirGuid", ""),
-                "idir": azure_user.get("onPremisesSamAccountName", ""),
-            }
+        db_user_guid = db_user.get("idirGuid")
+        azure_user = None
 
-            update_data = {k: v for k, v in update_data.items() if v is not None}
+        if db_user_guid:
+            azure_user = ms_graph.fetch_azure_user_by_guid(db_user_guid)
 
-            users_collection.update_one({"_id": db_user["_id"]}, {"$set": update_data})
+            if azure_user is None:
+                users_collection.update_one(
+                    {"_id": db_user_id},
+                    {"$set": {"archived": True}},
+                )
+                continue
+
+        elif db_user_email:
+            azure_user = ms_graph.fetch_azure_user(db_user_email)
+
+            if azure_user is None:
+                users_collection.update_one(
+                    {"_id": db_user_id},
+                    {"$set": {"archived": True}},
+                )
+                continue
+
         else:
-            users_collection.update_one({"_id": db_user["_id"]}, {"$set": {"archived": True}})
+            users_collection.update_one(
+                {"_id": db_user_id},
+                {"$set": {"archived": True}},
+            )
+            continue
+
+        update_data = {
+            "officeLocation": azure_user.get("officeLocation", ""),
+            "jobTitle": azure_user.get("jobTitle", ""),
+            "upn": azure_user.get("userPrincipalName", ""),
+            "providerUserId": azure_user.get("id", ""),
+            "ministry": parse_ministry_from_display_name(
+                azure_user.get("displayName", ""),
+            ),
+            "firstName": azure_user.get("givenName", ""),
+            "lastName": azure_user.get("surname", ""),
+            "email": azure_user.get("mail", "").lower(),
+            "idirGuid": azure_user.get("idirGuid", ""),
+            "idir": azure_user.get("onPremisesSamAccountName", ""),
+        }
+
+        update_data = {k: v for k, v in update_data.items() if v is not None}
+
+        users_collection.update_one({"_id": db_user["_id"]}, {"$set": update_data})
