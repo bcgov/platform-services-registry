@@ -54,32 +54,65 @@ class MsGraph:
         else:
             raise ValueError("Either certificate/private_key or client_secret must be provided.")
 
-    def fetch_azure_user(self, matching_email, retry=True):
-        headers = {
+    def _get_headers(self):
+        return {
             "Authorization": f"Bearer {self.access_token}",
             "ConsistencyLevel": "eventual",
         }
 
-        escaped_email = matching_email.replace("'", "''")
-        filter_value = f"mail eq '{escaped_email}'"
+    def _get_select_fields(self):
+        return (
+            "officeLocation,jobTitle,userPrincipalName,id,displayName,"
+            f"givenName,surname,mail,onPremisesSamAccountName,{self.extension_attribute}"
+        )
+
+    def _normalize_user(self, user):
+        if not user:
+            return None
+        return {
+            **user,
+            "idirGuid": user.get(self.extension_attribute),
+        }
+
+    def _list_users(self, filter_value, retry=True):
         params = {
             "$filter": filter_value,
-            "$select": f"officeLocation,jobTitle,userPrincipalName,id,displayName,givenName,surname,mail,onPremisesSamAccountName,{self.extension_attribute}",
-            "$top": "1",
+            "$select": self._get_select_fields(),
+            "$top": "25",
         }
 
         try:
-            response = requests.get("https://graph.microsoft.com/v1.0/users", params=params, headers=headers)
+            response = requests.get(
+                "https://graph.microsoft.com/v1.0/users",
+                params=params,
+                headers=self._get_headers(),
+            )
 
             if response.status_code == 401 and retry:
                 self.access_token = self._get_access_token()
-                return self.fetch_azure_user(matching_email, retry=False)
+                return self._list_users(filter_value, retry=False)
 
-            if response.status_code == 200:
-                users = response.json().get("value", [])
-            else:
-                response.raise_for_status()
-            return {**users[0], "idirGuid": users[0].get(self.extension_attribute)} if users else None
+            response.raise_for_status()
+            return response.json().get("value", [])
 
         except requests.exceptions.RequestException as e:
-            raise RuntimeError(f"Failed to fetch user: {str(e)}")
+            raise RuntimeError(f"Failed to fetch users: {str(e)}")
+
+    def fetch_azure_user(self, matching_email, retry=True):
+        escaped_email = matching_email.replace("'", "''")
+        filter_value = f"mail eq '{escaped_email}'"
+
+        users = self._list_users(filter_value, retry=retry)
+        return self._normalize_user(users[0]) if users else None
+
+    def list_azure_users_by_guid(self, idir_guid, retry=True):
+        escaped_guid = idir_guid.replace("'", "''")
+        filter_value = f"startswith({self.extension_attribute},'{escaped_guid}')"
+
+        users = self._list_users(filter_value, retry=retry)
+        return [self._normalize_user(user) for user in users]
+
+    def fetch_azure_user_by_guid(self, idir_guid, retry=True):
+        users = self.list_azure_users_by_guid(idir_guid, retry=retry)
+        matching_users = [user for user in users if user.get("idirGuid") == idir_guid]
+        return matching_users[0] if matching_users else None
