@@ -121,7 +121,7 @@
     "isomorphic-fetch": "^3.0.0",
     "jest": "^30.0.5",
     "jest-mock": "^30.0.5",
-    "knip": "^5.62.0",
+    "knip": "^6.0.0",
     "lodash": "^4.17.21",
     "node-gyp": "^12.0.0",
     "prettier": "^3.6.2",
