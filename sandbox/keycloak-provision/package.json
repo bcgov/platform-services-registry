@@ -16,6 +16,6 @@
     "@types/wait-on": "^5.3.4",
     "rimraf": "^6.0.0",
     "tsx": "^4.11.2",
-    "typescript": "^5.4.5"
+    "typescript": "^6.0.0"
   }
 }
