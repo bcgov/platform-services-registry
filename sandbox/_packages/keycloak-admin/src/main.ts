@@ -1,7 +1,7 @@
 import KcAdminClient from '@keycloak/keycloak-admin-client';
-import RealmRepresentation from '@keycloak/keycloak-admin-client/lib/defs/realmRepresentation';
-import ClientRepresentation from '@keycloak/keycloak-admin-client/lib/defs/clientRepresentation';
-import { RoleMappingPayload } from '@keycloak/keycloak-admin-client/lib/defs/roleRepresentation';
+import type RealmRepresentation from '@keycloak/keycloak-admin-client/lib/defs/realmRepresentation.js';
+import type ClientRepresentation from '@keycloak/keycloak-admin-client/lib/defs/clientRepresentation.js';
+import type { RoleMappingPayload } from '@keycloak/keycloak-admin-client/lib/defs/roleRepresentation.js';
 
 // Utility function to cast a value to an array
 function castArray(value: string | string[]) {
