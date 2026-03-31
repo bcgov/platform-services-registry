@@ -299,7 +299,7 @@ importers:
         version: 30.3.0
       knip:
         specifier: ^6.0.0
-        version: 6.1.0
+        version: 6.1.1(@emnapi/core@1.9.1)(@emnapi/runtime@1.9.1)
       lodash:
         specifier: ^4.17.21
         version: 4.17.23
@@ -1279,8 +1279,11 @@ packages:
   '@napi-rs/wasm-runtime@0.2.12':
     resolution: {integrity: sha512-ZVWUcfwY4E/yPitQJl481FjFo3K22D6qF0DuFH6Y/nbnE11GY5uguDxZMGXPQ8WQ0128MXQD7TnfHyK4oWoIJQ==}
 
-  '@napi-rs/wasm-runtime@1.1.1':
-    resolution: {integrity: sha512-p64ah1M1ld8xjWv3qbvFwHiFVWrq1yFvV4f7w+mzaqiR4IlSgkqhcRdHwsGgomwzBH51sRY4NEowLxnaBjcW/A==}
+  '@napi-rs/wasm-runtime@1.1.2':
+    resolution: {integrity: sha512-sNXv5oLJ7ob93xkZ1XnxisYhGYXfaG9f65/ZgYuAu3qt7b3NadcOEhLvx28hv31PgX8SZJRYrAIPQilQmFpLVw==}
+    peerDependencies:
+      '@emnapi/core': ^1.7.1
+      '@emnapi/runtime': ^1.7.1
 
   '@next/env@16.1.7':
     resolution: {integrity: sha512-rJJbIdJB/RQr2F1nylZr/PJzamvNNhfr3brdKP6s/GW850jbtR70QlSfFselvIBbcPUOlQwBakexjFzqLzF6pg==}
@@ -4402,8 +4405,8 @@ packages:
     resolution: {integrity: sha512-eTIzlVOSUR+JxdDFepEYcBMtZ9Qqdef+rnzWdRZuMbOywu5tO2w2N7rqjoANZ5k9vywhL6Br1VRjUIgTQx4E8w==}
     engines: {node: '>=6'}
 
-  knip@6.1.0:
-    resolution: {integrity: sha512-n5eVbJP7HXmwTsiJcELWJe2O1ESxyCTNxJzRTIECDYDTM465qnqk7fL2dv6ae3NUFvFWorZvGlh9mcwxwJ5Xgw==}
+  knip@6.1.1:
+    resolution: {integrity: sha512-BC/kbdxwCgv+p/3YkGbtlLxbOXhQDuR+CeKKFEpJyKb3BFwG1gZa+CMWSqAnPi+kUexz74m327d3zWxyn2fMew==}
     engines: {node: ^20.19.0 || >=22.12.0}
     hasBin: true
 
@@ -7353,7 +7356,7 @@ snapshots:
       '@tybys/wasm-util': 0.10.1
     optional: true
 
-  '@napi-rs/wasm-runtime@1.1.1':
+  '@napi-rs/wasm-runtime@1.1.2(@emnapi/core@1.9.1)(@emnapi/runtime@1.9.1)':
     dependencies:
       '@emnapi/core': 1.9.1
       '@emnapi/runtime': 1.9.1
@@ -7492,9 +7495,12 @@ snapshots:
   '@oxc-parser/binding-openharmony-arm64@0.121.0':
     optional: true
 
-  '@oxc-parser/binding-wasm32-wasi@0.121.0':
+  '@oxc-parser/binding-wasm32-wasi@0.121.0(@emnapi/core@1.9.1)(@emnapi/runtime@1.9.1)':
     dependencies:
-      '@napi-rs/wasm-runtime': 1.1.1
+      '@napi-rs/wasm-runtime': 1.1.2(@emnapi/core@1.9.1)(@emnapi/runtime@1.9.1)
+    transitivePeerDependencies:
+      - '@emnapi/core'
+      - '@emnapi/runtime'
     optional: true
 
   '@oxc-parser/binding-win32-arm64-msvc@0.121.0':
@@ -7556,9 +7562,12 @@ snapshots:
   '@oxc-resolver/binding-openharmony-arm64@11.19.1':
     optional: true
 
-  '@oxc-resolver/binding-wasm32-wasi@11.19.1':
+  '@oxc-resolver/binding-wasm32-wasi@11.19.1(@emnapi/core@1.9.1)(@emnapi/runtime@1.9.1)':
     dependencies:
-      '@napi-rs/wasm-runtime': 1.1.1
+      '@napi-rs/wasm-runtime': 1.1.2(@emnapi/core@1.9.1)(@emnapi/runtime@1.9.1)
+    transitivePeerDependencies:
+      - '@emnapi/core'
+      - '@emnapi/runtime'
     optional: true
 
   '@oxc-resolver/binding-win32-arm64-msvc@11.19.1':
@@ -10776,7 +10785,7 @@ snapshots:
 
   kleur@3.0.3: {}
 
-  knip@6.1.0:
+  knip@6.1.1(@emnapi/core@1.9.1)(@emnapi/runtime@1.9.1):
     dependencies:
       '@nodelib/fs.walk': 1.2.8
       fast-glob: 3.3.3
@@ -10784,8 +10793,8 @@ snapshots:
       get-tsconfig: 4.13.7
       jiti: 2.6.1
       minimist: 1.2.8
-      oxc-parser: 0.121.0
-      oxc-resolver: 11.19.1
+      oxc-parser: 0.121.0(@emnapi/core@1.9.1)(@emnapi/runtime@1.9.1)
+      oxc-resolver: 11.19.1(@emnapi/core@1.9.1)(@emnapi/runtime@1.9.1)
       picocolors: 1.1.1
       picomatch: 4.0.4
       smol-toml: 1.6.1
@@ -10793,6 +10802,9 @@ snapshots:
       unbash: 2.2.0
       yaml: 2.8.3
       zod: 4.3.6
+    transitivePeerDependencies:
+      - '@emnapi/core'
+      - '@emnapi/runtime'
 
   kuler@2.0.0: {}
 
@@ -11354,7 +11366,7 @@ snapshots:
       object-keys: 1.1.1
       safe-push-apply: 1.0.0
 
-  oxc-parser@0.121.0:
+  oxc-parser@0.121.0(@emnapi/core@1.9.1)(@emnapi/runtime@1.9.1):
     dependencies:
       '@oxc-project/types': 0.121.0
     optionalDependencies:
@@ -11374,12 +11386,15 @@ snapshots:
       '@oxc-parser/binding-linux-x64-gnu': 0.121.0
       '@oxc-parser/binding-linux-x64-musl': 0.121.0
       '@oxc-parser/binding-openharmony-arm64': 0.121.0
-      '@oxc-parser/binding-wasm32-wasi': 0.121.0
+      '@oxc-parser/binding-wasm32-wasi': 0.121.0(@emnapi/core@1.9.1)(@emnapi/runtime@1.9.1)
       '@oxc-parser/binding-win32-arm64-msvc': 0.121.0
       '@oxc-parser/binding-win32-ia32-msvc': 0.121.0
       '@oxc-parser/binding-win32-x64-msvc': 0.121.0
+    transitivePeerDependencies:
+      - '@emnapi/core'
+      - '@emnapi/runtime'
 
-  oxc-resolver@11.19.1:
+  oxc-resolver@11.19.1(@emnapi/core@1.9.1)(@emnapi/runtime@1.9.1):
     optionalDependencies:
       '@oxc-resolver/binding-android-arm-eabi': 11.19.1
       '@oxc-resolver/binding-android-arm64': 11.19.1
@@ -11397,10 +11412,13 @@ snapshots:
       '@oxc-resolver/binding-linux-x64-gnu': 11.19.1
       '@oxc-resolver/binding-linux-x64-musl': 11.19.1
       '@oxc-resolver/binding-openharmony-arm64': 11.19.1
-      '@oxc-resolver/binding-wasm32-wasi': 11.19.1
+      '@oxc-resolver/binding-wasm32-wasi': 11.19.1(@emnapi/core@1.9.1)(@emnapi/runtime@1.9.1)
       '@oxc-resolver/binding-win32-arm64-msvc': 11.19.1
       '@oxc-resolver/binding-win32-ia32-msvc': 11.19.1
       '@oxc-resolver/binding-win32-x64-msvc': 11.19.1
+    transitivePeerDependencies:
+      - '@emnapi/core'
+      - '@emnapi/runtime'
 
   p-limit@2.3.0:
     dependencies:
