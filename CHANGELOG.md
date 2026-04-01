@@ -1,3 +1,13 @@
+## [0.78.12](https://github.com/bcgov/platform-services-registry/compare/v0.78.11...v0.78.12) (2026-04-01)
+
+### Bug Fixes
+
+* **0000:** ignore prettier and remove stale next ignore ([734f9a4](https://github.com/bcgov/platform-services-registry/commit/734f9a4e7608eb1a45dc38164bc3da63f470c8b6))
+* **0000:** ignore prettier and remove stale next ignore ([6f1dacd](https://github.com/bcgov/platform-services-registry/commit/6f1dacd53a3f871393564a6e56c1e911e77a0885))
+* **0000:** resolve unused dependency and config warnings ([831ac40](https://github.com/bcgov/platform-services-registry/commit/831ac40dbb41c92904cc5dfb8eb33c5e9b2fa1e0))
+* **0000:** update sonarqube to 2026.2.0 ([173c26e](https://github.com/bcgov/platform-services-registry/commit/173c26e8cf7f164519ce305738d7732df27a4060))
+* **2752:** add node types to support ts-node scripts in CI ([31b8c6f](https://github.com/bcgov/platform-services-registry/commit/31b8c6fa96d2421e4008ab49d71a1d80c79d04c8))
+* **2752:** migrate to TypeScript 6 and remove deprecated compiler options ([34bf893](https://github.com/bcgov/platform-services-registry/commit/34bf8933bf769d04d077da9f17da5b418eae1541))
 ## [0.78.11](https://github.com/bcgov/platform-services-registry/compare/v0.78.10...v0.78.11) (2026-03-18)
 
 ### Bug Fixes
