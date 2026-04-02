@@ -48,13 +48,6 @@ jobs:
 
       working-directory: ./terraform/keycloak
 
-    - name: Debug Keycloak endpoint
-      run: |
-        echo "Testing Keycloak..."
-        curl -v https://dev.loginproxy.gov.bc.ca/auth || true
-        echo "----"
-        curl -v https://dev.loginproxy.gov.bc.ca || true
-
     - name: Terraform Init
       id: init
       run: terraform init -upgrade
