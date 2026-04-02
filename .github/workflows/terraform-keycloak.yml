@@ -48,27 +48,20 @@ jobs:
 
       working-directory: ./terraform/keycloak
 
-    - name: Debug Keycloak endpoint
-      run: |
-        terraform version
-        curl -i -L https://dev.loginproxy.gov.bc.ca/auth/realms/platform-services || true
-        echo "Testing Keycloak..."
-        curl -v https://dev.loginproxy.gov.bc.ca/auth || true
-        echo "----"
-        curl -v https://dev.loginproxy.gov.bc.ca || true
-
     - name: Terraform Init
       id: init
-      run: terraform init
+      run: terraform init -upgrade
       working-directory: ./terraform/keycloak
 
     - name: Terraform Plan
       id: plan
       if: github.event_name == 'pull_request'
-      env:
-        TF_LOG: TRACE
-        TF_LOG_PROVIDER: TRACE
-      run: terraform plan -no-color
+      run: |
+        PLAN_OUTPUT=$(terraform plan -no-color)
+        echo "${PLAN_OUTPUT}"
+        echo "PLAN<<EOF" >> $GITHUB_ENV
+        echo "${PLAN_OUTPUT}" >> $GITHUB_ENV
+        echo "EOF" >> $GITHUB_ENV
       working-directory: ./terraform/keycloak
       continue-on-error: true
 
