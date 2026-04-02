@@ -50,7 +50,7 @@ jobs:
 
     - name: Terraform Init
       id: init
-      run: terraform init -upgrade
+      run: terraform init -lockfile=readonly
       working-directory: ./terraform/keycloak
 
     - name: Terraform Plan
