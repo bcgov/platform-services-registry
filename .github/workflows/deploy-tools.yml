@@ -27,7 +27,7 @@ jobs:
     - uses: actions/checkout@0c366fd6a839edf440554fa01a7085ccba70ac98
 
     - name: Authenticate and set context
-      uses: redhat-actions/oc-login@dfbd9912672664f9df2023c1c16e07bcf306043c
+      uses: redhat-actions/oc-login@a04f887e9e56f1f3566ebb8c6388483c6724185e
       with:
         openshift_server_url: ${{ secrets.OPENSHIFT_SERVER }}
         openshift_token: ${{ secrets.OPENSHIFT_TOKEN }}
