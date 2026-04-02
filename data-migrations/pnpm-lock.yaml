@@ -10,7 +10,7 @@ importers:
     devDependencies:
       dotenv:
         specifier: ^17.0.0
-        version: 17.3.1
+        version: 17.4.0
       migrate-mongo:
         specifier: ^14.0.0
         version: 14.0.7(mongodb@7.1.1)
@@ -49,8 +49,8 @@ packages:
     resolution: {integrity: sha512-TywoWNNRbhoD0BXs1P3ZEScW8W5iKrnbithIl0YH+uCmBd0QpPOA8yc82DS3BIE5Ma6FnBVUsJ7wVUDz4dvOWQ==}
     engines: {node: '>=20'}
 
-  dotenv@17.3.1:
-    resolution: {integrity: sha512-IO8C/dzEb6O3F9/twg6ZLXz164a2fhTnEWb95H23Dm4OuN+92NmEAlTrupP9VW6Jm3sO26tQlqyvyi4CsnY9GA==}
+  dotenv@17.4.0:
+    resolution: {integrity: sha512-kCKF62fwtzwYm0IGBNjRUjtJgMfGapII+FslMHIjMR5KTnwEmBmWLDRSnc3XSNP8bNy34tekgQyDT0hr7pERRQ==}
     engines: {node: '>=12'}
 
   emoji-regex@8.0.0:
@@ -155,7 +155,7 @@ snapshots:
 
   commander@14.0.2: {}
 
-  dotenv@17.3.1: {}
+  dotenv@17.4.0: {}
 
   emoji-regex@8.0.0: {}
 
