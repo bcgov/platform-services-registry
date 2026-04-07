@@ -38,7 +38,7 @@ jobs:
         EOF
 
     - name: Build and Push Docker image
-      uses: egose/actions/docker-build-push@9a09f2377dc8c8b8f8cfacc5f695448999670434
+      uses: egose/actions/docker-build-push@639268d04f9ab3bd2fcc0065dd2db5f4237a5c2b
       with:
         registry-url: ${{ env.GITHUB_REGISTRY }}
         registry-username: ${{ github.actor }}
