@@ -79,7 +79,7 @@
     "nats": "^2.29.3",
     "next": "^16.0.0",
     "next-auth": "^4.24.12",
-    "postcss": "8.5.8",
+    "postcss": "8.5.10",
     "react": "^19.2.1",
     "react-chartjs-2": "^5.3.0",
     "react-dom": "^19.2.1",
