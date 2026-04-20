@@ -106,7 +106,9 @@ export default function ProjectDescriptionPublic({
           <p className={cn(errors.provider ? 'text-red-400' : 'text-gray-600', 'mt-3 text-sm leading-6')}>
             Select the Cloud Service Provider. Read more about Public Cloud Service Providers{' '}
             <a
-              href="https://digital.gov.bc.ca/cloud/services/public/providers/"
+              target="_blank"
+              rel="noopener noreferrer"
+              href="https://digital.gov.bc.ca/technology/cloud/public/intro/#providers"
               className="text-blue-500 hover:text-blue-700"
             >
               here
