@@ -1,3 +1,10 @@
+## [0.78.13](https://github.com/bcgov/platform-services-registry/compare/v0.78.12...v0.78.13) (2026-04-20)
+
+### Bug Fixes
+
+* **2782:** increase Airflow JWT TTL to 1200s to prevent delayed pod failures ([4df67e2](https://github.com/bcgov/platform-services-registry/commit/4df67e2996e7463a9100883ba21e3ad4b97e0696))
+* **2782:** increase Airflow JWT TTL to 1200s to prevent delayed pod failures ([1216130](https://github.com/bcgov/platform-services-registry/commit/1216130a07975afa0826b25d7b999090b6f1bc64))
+* **2783:** update broken “Public Providers” link on Public Cloud Product page ([8a2cc2b](https://github.com/bcgov/platform-services-registry/commit/8a2cc2bc70f7a94b98faeb5af07aa7501f6da7ad))
 ## [0.78.12](https://github.com/bcgov/platform-services-registry/compare/v0.78.11...v0.78.12) (2026-04-01)
 
 ### Bug Fixes
