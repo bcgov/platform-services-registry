@@ -40,9 +40,11 @@
       "conventional-changelog-conventionalcommits": "^9.0.0"
     },
     "onlyBuiltDependencies": [
+      "@prisma/engines",
       "canvas",
-      "sharp",
-      "@prisma/engines"
+      "cypress",
+      "esbuild",
+      "sharp"
     ]
   }
 }
