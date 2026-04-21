@@ -38,8 +38,7 @@
     "@mantine/tiptap": "^9.0.0",
     "@prisma/client": "6.19.3",
     "@react-email/components": "^1.0.0",
-    "@react-email/preview-server": "^5.0.0",
-    "@react-email/render": "2.0.5",
+    "@react-email/render": "2.0.7",
     "@react-email/tailwind": "^2.0.0",
     "@tabler/icons-react": "^3.34.1",
     "@tailwindcss/forms": "^0.5.10",
@@ -99,6 +98,7 @@
   "devDependencies": {
     "@eslint/js": "^9.32.0",
     "@faker-js/faker": "^9.0.0",
+    "@react-email/preview-server": "^5.2.11",
     "@testing-library/jest-dom": "^6.6.4",
     "@testing-library/react": "^16.3.0",
     "@testing-library/user-event": "^14.6.1",
