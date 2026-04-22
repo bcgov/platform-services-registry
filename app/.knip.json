@@ -13,7 +13,8 @@
     "ts-node",
     "@prisma/client",
     "prettier",
-    "@faker-js/faker"
+    "@faker-js/faker",
+    "@react-email/ui"
   ],
   "rules": {
     "binaries": "off",
