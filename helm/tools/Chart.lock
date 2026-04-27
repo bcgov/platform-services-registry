@@ -1,7 +1,7 @@
 dependencies:
 - name: airflow
   repository: https://airflow.apache.org/
-  version: 1.20.0
+  version: 1.21.0
 - name: postgresql
   repository: https://charts.bitnami.com/bitnami
   version: 18.6.2
@@ -17,5 +17,5 @@ dependencies:
 - name: sorry-cypress
   repository: https://sorry-cypress.github.io/charts
   version: 1.20.0
-digest: sha256:047345e51b83a3fb4c9129188a8f825f8239637166c6c8128b6bbdabf924bfc7
-generated: "2026-04-24T19:41:05.686423422Z"
+digest: sha256:beaca7e8315a8748ec437771bd303c959d7f7f227b2c173dadbbe0c6c4f98b10
+generated: "2026-04-27T16:59:52.204421795Z"
