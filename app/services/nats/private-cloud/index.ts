@@ -23,6 +23,7 @@ export default async function createPrivateCloudNatsMessage(
     primaryTechnicalLead,
     secondaryTechnicalLead,
     members,
+    isTest,
   } = request.decisionData;
 
   const subscribers = members.filter(
@@ -44,6 +45,7 @@ export default async function createPrivateCloudNatsMessage(
     description: description,
     ministry_id: organization.code,
     merge_type: 'auto',
+    project_type: isTest ? 'temporary' : 'normal',
     alliance: allianceLabel,
     namespaces: namespaceKeys.map((namespace) => {
       const requests = resourceRequests[namespace];
