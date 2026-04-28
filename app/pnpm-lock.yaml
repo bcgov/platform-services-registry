@@ -190,7 +190,7 @@ importers:
         version: 19.2.5(react@19.2.5)
       react-email:
         specifier: ^6.0.0
-        version: 6.0.1(react-dom@19.2.5(react@19.2.5))(react@19.2.5)
+        version: 6.0.3(react-dom@19.2.5(react@19.2.5))(react@19.2.5)
       react-hook-form:
         specifier: ^7.62.0
         version: 7.74.0(react@19.2.5)
@@ -232,8 +232,8 @@ importers:
         specifier: ^5.2.11
         version: 5.2.11(@babel/core@7.29.0)(@opentelemetry/api@1.9.1)(babel-plugin-macros@3.1.0)(react-dom@19.2.5(react@19.2.5))(react@19.2.5)
       '@react-email/ui':
-        specifier: 6.0.1
-        version: 6.0.1(@babel/core@7.29.0)(@opentelemetry/api@1.9.1)(babel-plugin-macros@3.1.0)(react-dom@19.2.5(react@19.2.5))(react@19.2.5)
+        specifier: 6.0.3
+        version: 6.0.3(@babel/core@7.29.0)(@opentelemetry/api@1.9.1)(babel-plugin-macros@3.1.0)(react-dom@19.2.5(react@19.2.5))(react@19.2.5)
       '@testing-library/jest-dom':
         specifier: ^6.6.4
         version: 6.9.1
@@ -2084,8 +2084,8 @@ packages:
     peerDependencies:
       react: ^18.0 || ^19.0 || ^19.0.0-rc
 
-  '@react-email/ui@6.0.1':
-    resolution: {integrity: sha512-EVkXnnh4lSmpgqzr/2Cw6iIIho4fRgdY8vMTwpWT9RH3t0Ek8akN98stAE0s5hWVZx4K4N8vdm5Ymxqn4L3FJw==}
+  '@react-email/ui@6.0.3':
+    resolution: {integrity: sha512-+eWD7v7itnigyK8bfSq4918TuVIMGF4t4K0TIbvy2md2BD6BPwqBeUN5PDaahSBWhTKAMpb/FiE6ns4lokzv6g==}
 
   '@react-stately/flags@3.1.2':
     resolution: {integrity: sha512-2HjFcZx1MyQXoPqcBGALwWWmgFVUk2TuKVIQxCbRq7fPyWXIl6VHcakCLurdtYC2Iks7zizvz0Idv48MQ38DWg==}
@@ -5034,11 +5034,6 @@ packages:
     resolution: {integrity: sha512-S48WzZW777zhNIrn7gxOlISNAqi9ZC/uQFnRdbeIHhZhCA6UqpkOT8T1G7BvfdgP4Er8gF4sUbaS0i7QvIfCWw==}
     engines: {node: '>=8'}
 
-  nypm@0.6.5:
-    resolution: {integrity: sha512-K6AJy1GMVyfyMXRVB88700BJqNUkByijGJM8kEHpLdcAt+vSQAVfkWWHYzuRXHSY6xA2sNc5RjTj0p9rE2izVQ==}
-    engines: {node: '>=18'}
-    hasBin: true
-
   nypm@0.6.6:
     resolution: {integrity: sha512-vRyr0r4cbBapw07Xw8xrj9Teq3o7MUD35rSaTcanDbW+aK2XHDgJFiU6ZTj2GBw7Q12ysdsyFss+Vdz4hQ0Y6Q==}
     engines: {node: '>=18'}
@@ -5436,10 +5431,13 @@ packages:
     peerDependencies:
       react: ^19.2.5
 
-  react-email@6.0.1:
-    resolution: {integrity: sha512-lDzTaqQcogOJ6aDCZVzo/oYVZOf/BjiP9xSvODPSyCI64BkPcGg4nd4pFwy9TSPnxWT/o5MjMlo2FsmHfn83pg==}
+  react-email@6.0.3:
+    resolution: {integrity: sha512-QbRYqY90XH1WHGYEaKbR6dT2sUF0jvH8sFCeZqs3aaCWqobnywRimJkigJkD9skU2juySAAg/IdEX0Qm8wlghg==}
     engines: {node: '>=20.0.0'}
     hasBin: true
+    peerDependencies:
+      react: ^18.0 || ^19.0 || ^19.0.0-rc
+      react-dom: ^18.0 || ^19.0 || ^19.0.0-rc
 
   react-hook-form@7.74.0:
     resolution: {integrity: sha512-yR6wHr99p9wFv686jhRWVSFhUvDvNbdUf2dKlbno8/VKOCuoNobDGC6S+M2dua9A9Yo8vpcrp8assIYbsZCQ9g==}
@@ -7982,7 +7980,7 @@ snapshots:
     dependencies:
       react: 19.2.5
 
-  '@react-email/ui@6.0.1(@babel/core@7.29.0)(@opentelemetry/api@1.9.1)(babel-plugin-macros@3.1.0)(react-dom@19.2.5(react@19.2.5))(react@19.2.5)':
+  '@react-email/ui@6.0.3(@babel/core@7.29.0)(@opentelemetry/api@1.9.1)(babel-plugin-macros@3.1.0)(react-dom@19.2.5(react@19.2.5))(react@19.2.5)':
     dependencies:
       esbuild: 0.28.0
       next: 16.2.3(@babel/core@7.29.0)(@opentelemetry/api@1.9.1)(babel-plugin-macros@3.1.0)(react-dom@19.2.5(react@19.2.5))(react@19.2.5)
@@ -11382,12 +11380,6 @@ snapshots:
     dependencies:
       path-key: 3.1.1
 
-  nypm@0.6.5:
-    dependencies:
-      citty: 0.2.2
-      pathe: 2.0.3
-      tinyexec: 1.1.1
-
   nypm@0.6.6:
     dependencies:
       citty: 0.2.2
@@ -11878,7 +11870,7 @@ snapshots:
       react: 19.2.5
       scheduler: 0.27.0
 
-  react-email@6.0.1(react-dom@19.2.5(react@19.2.5))(react@19.2.5):
+  react-email@6.0.3(react-dom@19.2.5(react@19.2.5))(react@19.2.5):
     dependencies:
       '@babel/parser': 7.27.0
       '@babel/traverse': 7.27.0
@@ -11895,17 +11887,17 @@ snapshots:
       marked: 15.0.12
       mime-types: 3.0.2
       normalize-path: 3.0.0
-      nypm: 0.6.5
+      nypm: 0.6.6
       ora: 8.2.0
       prismjs: 1.30.0
       prompts: 2.4.2
+      react: 19.2.5
+      react-dom: 19.2.5(react@19.2.5)
       socket.io: 4.8.3
       tailwindcss: 4.2.4
       tsconfig-paths: 4.2.0
     transitivePeerDependencies:
       - bufferutil
-      - react
-      - react-dom
       - supports-color
       - utf-8-validate
 

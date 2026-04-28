@@ -99,7 +99,7 @@
     "@eslint/js": "^9.32.0",
     "@faker-js/faker": "^9.0.0",
     "@react-email/preview-server": "^5.2.11",
-    "@react-email/ui": "6.0.1",
+    "@react-email/ui": "6.0.3",
     "@testing-library/jest-dom": "^6.6.4",
     "@testing-library/react": "^16.3.0",
     "@testing-library/user-event": "^14.6.1",
