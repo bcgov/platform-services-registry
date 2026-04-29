@@ -17,6 +17,11 @@ export type PrivateCloudProductSimple = Prisma.PrivateCloudProductGetPayload<{
     primaryTechnicalLead: true;
     secondaryTechnicalLead: true;
     organization: true;
+    members: {
+      include: {
+        user: true;
+      };
+    };
     requests: {
       where: {
         active: true;
