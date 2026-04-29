@@ -1,6 +1,7 @@
 import _sum from 'lodash-es/sum';
 import { GlobalRole } from '@/constants';
 import createApiHandler from '@/core/api-handler';
+import prisma from '@/core/prisma';
 import { NoContent, CsvResponse } from '@/core/responses';
 import { formatFullName } from '@/helpers/user';
 import { Cluster, EventType } from '@/prisma/client';
@@ -30,6 +31,20 @@ export const POST = createApiHandler({
   }
 
   const orgMap = await getOrganizationMap();
+
+  const memberUserIds = [...new Set(docs.flatMap((project) => project.members.map((member) => member.userId)))];
+
+  const memberUsers = await prisma.user.findMany({
+    where: {
+      id: { in: memberUserIds },
+    },
+    select: {
+      id: true,
+      email: true,
+    },
+  });
+
+  const memberUserMap = new Map(memberUsers.map((user) => [user.id, user]));
 
   const formattedData: PrivateProductCsvRecord[] = docs.map((project) => {
     const org = orgMap[project.organizationId];
@@ -82,6 +97,14 @@ export const POST = createApiHandler({
       'Total memory quota (GiB)': String(memoryRequestTotal),
       'Total storage quota (GiB)': String(storageTotal),
       Status: project.status,
+      'Additional Team Members': project.members
+        .map((member) => {
+          const user = memberUserMap.get(member.userId);
+          if (!user) return member.userId;
+          const roles = member.roles.join('/');
+          return `${user.email} (${roles})`;
+        })
+        .join('; '),
     };
   });
 
