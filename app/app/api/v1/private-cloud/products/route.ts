@@ -10,14 +10,17 @@ const defaultPage = 1;
 const defaultPageSize = 100;
 
 const queryParamSchema = z.object({
-  page: z.preprocess((v) => processNumber(v, { defaultValue: defaultPage }), z.number().min(1).max(1000).optional()),
-  pageSize: z.preprocess(
-    (v) => processNumber(v, { defaultValue: defaultPageSize }),
-    z.number().min(1).max(1000).optional(),
-  ),
-  ministry: z.preprocess(processUpperEnumString, z.string().optional()),
-  cluster: z.preprocess(processUpperEnumString, z.enum(Cluster).optional()),
-  status: z.preprocess(processUpperEnumString, z.enum(ProjectStatus).optional()),
+  page: z
+    .preprocess((v) => processNumber(v, { defaultValue: defaultPage }), z.number().min(1).max(1000))
+    .default(defaultPage),
+
+  pageSize: z
+    .preprocess((v) => processNumber(v, { defaultValue: defaultPageSize }), z.number().min(1).max(1000))
+    .default(defaultPageSize),
+
+  ministry: z.preprocess(processUpperEnumString, z.string()).optional(),
+  cluster: z.preprocess(processUpperEnumString, z.enum(Cluster)).optional(),
+  status: z.preprocess(processUpperEnumString, z.enum(ProjectStatus)).optional(),
 });
 
 export const GET = createApiHandler({

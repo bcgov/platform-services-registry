@@ -72,11 +72,11 @@ export const _privateCloudCreateRequestBodySchema = z.object({
   projectOwnerId: z.string({ message: 'Please select a project owner' }).length(24),
   primaryTechnicalLeadId: z.string({ message: 'Please select a primary technical lead' }).length(24),
   secondaryTechnicalLeadId: z.string().length(24).or(z.literal('')).nullable().optional(),
-  golddrEnabled: z.preprocess(processBoolean, z.boolean()) as unknown as z.ZodBoolean,
-  isTest: z.preprocess(processBoolean, z.boolean()) as unknown as z.ZodBoolean,
+  golddrEnabled: z.preprocess((value) => (value === undefined ? false : processBoolean(value)), z.boolean()),
+  isTest: z.preprocess((value) => (value === undefined ? false : processBoolean(value)), z.boolean()),
   resourceRequests: resourceRequestsEnvSchema,
   quotaContactName: z.string().max(50).optional(),
-  quotaContactEmail: z.union([z.undefined(), z.literal(''), z.string().email()]),
+  quotaContactEmail: z.string().email().or(z.literal('')).nullable().optional(),
   quotaJustification: z.string().max(1000).optional(),
   supportPhoneNumber: z
     .string()
@@ -175,7 +175,7 @@ export const privateCloudProductSearchNoPaginationBodySchema = z.object({
   temporary: z.array(z.enum(['YES', 'NO'])).optional(),
   sortValue: z.string().optional(),
   sortKey: z.string().optional(),
-  sortOrder: z.preprocess(processEnumString, z.enum(Prisma.SortOrder).optional()),
+  sortOrder: z.preprocess(processEnumString, z.enum(Prisma.SortOrder)).optional(),
 });
 
 export const privateCloudProductSearchBodySchema = privateCloudProductSearchNoPaginationBodySchema.merge(
@@ -197,7 +197,7 @@ export const privateCloudRequestSearchBodySchema = z.object({
   temporary: z.array(z.enum(['YES', 'NO'])).optional(),
   sortValue: z.string().optional(),
   sortKey: z.string().optional(),
-  sortOrder: z.preprocess(processEnumString, z.enum(Prisma.SortOrder).optional()),
+  sortOrder: z.preprocess(processEnumString, z.enum(Prisma.SortOrder)).optional(),
 });
 
 export const privateCloudAdminUpdateBodySchema = z.object({
