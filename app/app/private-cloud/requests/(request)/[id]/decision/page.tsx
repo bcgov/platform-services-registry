@@ -50,19 +50,23 @@ export default privateCloudRequestDecision(({ getPathParams, session, router }) 
       return;
     }
   }, [snap.currentRequest, router]);
-  const methods = useForm<PrivateCloudRequestDecisionBody>({
-    resolver: (values, context, options) => {
+
+  type PrivateCloudRequestDecisionInput = z.input<typeof privateCloudRequestDecisionBodySchema>;
+  type PrivateCloudRequestDecisionOutput = z.output<typeof privateCloudRequestDecisionBodySchema>;
+
+  const baseResolver = zodResolver(privateCloudRequestDecisionBodySchema);
+
+  const methods = useForm<PrivateCloudRequestDecisionInput, unknown, PrivateCloudRequestDecisionOutput>({
+    resolver: async (values, context, options) => {
       const isDeleteRequest = values.type === RequestType.DELETE;
 
-      // Ignore form validation if a DELETE request
       if (isDeleteRequest) {
         return {
-          values,
+          values: values as PrivateCloudRequestDecisionOutput,
           errors: {},
         };
       }
-
-      return zodResolver(privateCloudRequestDecisionBodySchema)(values, context, options);
+      return baseResolver(values, context, options);
     },
     defaultValues: {
       decisionComment: '',

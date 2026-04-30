@@ -11,7 +11,6 @@ import ProjectDescription from '@/components/form/ProjectDescriptionPrivate';
 import PageAccordion from '@/components/generic/accordion/PageAccordion';
 import FormErrorNotification from '@/components/generic/FormErrorNotification';
 import { openPrivateCloudProductEditSubmitModal } from '@/components/modal/privateCloudProductEditSubmit';
-import AdditionalTeamMembers from '@/components/private-cloud/sections/AdditionalTeamMembers';
 import Quotas from '@/components/private-cloud/sections/Quotas';
 import TeamContacts from '@/components/private-cloud/sections/TeamContacts';
 import SiloAccordion from '@/components/private-cloud/SiloAccordion';
@@ -20,7 +19,7 @@ import createClientPage from '@/core/client-page';
 import { ResourceRequestsEnv } from '@/prisma/client';
 import { getQuotaChangeStatus } from '@/services/backend/private-cloud/products';
 import { usePrivateProductState } from '@/states/global';
-import { PrivateCloudEditRequestBody, privateCloudEditRequestBodySchema } from '@/validation-schemas/private-cloud';
+import { privateCloudEditRequestBodySchema } from '@/validation-schemas/private-cloud';
 
 const pathParamSchema = z.object({
   licencePlate: z.string(),
@@ -34,7 +33,10 @@ export default privateCloudProductEdit(({ session }) => {
   const [, snap] = usePrivateProductState();
   const [isDisabled, setDisabled] = useState(false);
 
-  const methods = useForm<PrivateCloudEditRequestBody>({
+  type PrivateCloudEditRequestInput = z.input<typeof privateCloudEditRequestBodySchema>;
+  type PrivateCloudEditRequestOutput = z.output<typeof privateCloudEditRequestBodySchema>;
+
+  const methods = useForm<PrivateCloudEditRequestInput, unknown, PrivateCloudEditRequestOutput>({
     resolver: async (values, context, options) => {
       const { resourceRequests } = values;
 
