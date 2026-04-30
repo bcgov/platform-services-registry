@@ -160,7 +160,7 @@ export const publicCloudProductSearchNoPaginationBodySchema = z.object({
   status: z.array(z.enum(ProjectStatus)).optional(),
   sortValue: z.string().optional(),
   sortKey: z.string().optional(),
-  sortOrder: z.preprocess(processEnumString, z.enum(Prisma.SortOrder).optional()),
+  sortOrder: z.preprocess(processEnumString, z.enum(Prisma.SortOrder)).optional(),
 });
 
 export const publicCloudProductSearchBodySchema = publicCloudProductSearchNoPaginationBodySchema.merge(
@@ -181,7 +181,7 @@ export const publicCloudRequestSearchBodySchema = z.object({
   status: z.array(z.enum(DecisionStatus)).optional(),
   sortValue: z.string().optional(),
   sortKey: z.string().optional(),
-  sortOrder: z.preprocess(processEnumString, z.enum(Prisma.SortOrder).optional()),
+  sortOrder: z.preprocess(processEnumString, z.enum(Prisma.SortOrder)).optional(),
 });
 
 export type PublicCloudCreateRequestBody = z.infer<typeof publicCloudCreateRequestBodySchema>;
@@ -200,7 +200,7 @@ export const publicCloudBillingSearchBodySchema = z.object({
   pageSize: z.number().optional(),
   sortValue: z.string().optional(),
   sortKey: z.string().optional(),
-  sortOrder: z.preprocess(processEnumString, z.enum(Prisma.SortOrder).optional()),
+  sortOrder: z.preprocess(processEnumString, z.enum(Prisma.SortOrder)).optional(),
   includeMetadata: z.boolean().optional().default(false),
 });
 
