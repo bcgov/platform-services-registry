@@ -27,7 +27,7 @@
     "cypress-keycloak": "^2.0.2",
     "eslint": "^9.32.0",
     "eslint-config-prettier": "^10.1.8",
-    "eslint-plugin-n": "^17.21.3",
+    "eslint-plugin-n": "^18.0.0",
     "eslint-plugin-prettier": "^5.5.4",
     "eslint-plugin-unused-imports": "^4.1.4",
     "release-it": "^20.0.0",
