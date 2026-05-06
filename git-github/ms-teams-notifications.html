@@ -10,13 +10,9 @@
         <meta name="author" content="Platform Services Team">
       
       
-        <link rel="canonical" href="https://bcgov.github.io/platform-services-registry/technologies/terraform.html">
+        <link rel="canonical" href="https://bcgov.github.io/platform-services-registry/git-github/ms-teams-notifications.html">
       
       
-        <link rel="prev" href="../home/main.html">
-      
-      
-        <link rel="next" href="airflow.html">
       
       
         
@@ -27,7 +23,7 @@
     
     
       
-        <title>Terraform - Platform Services Registry</title>
+        <title>MS Teams Deployment Notifications (via n8n + Relay) - Platform Services Registry</title>
       
     
     
@@ -78,7 +74,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#infrastructure-provisioning" class="md-skip">
+        <a href="#ms-teams-deployment-notifications-via-n8n-relay" class="md-skip">
           Skip to content
         </a>
       
@@ -113,7 +109,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              Terraform
+              MS Teams Deployment Notifications (via n8n + Relay)
             
           </span>
         </div>
@@ -176,12 +172,10 @@
   
   
   
-    
-  
   
     
     
-      <li class="md-tabs__item md-tabs__item--active">
+      <li class="md-tabs__item">
         <a href="../home/main.html" class="md-tabs__link">
           
   
@@ -226,7 +220,7 @@
     
     
       <li class="md-tabs__item">
-        <a href="../git-github/branching-model.html" class="md-tabs__link">
+        <a href="branching-model.html" class="md-tabs__link">
           
   
   
@@ -424,10 +418,8 @@
       
   
   
-    
   
   
-  
     
     
       
@@ -439,20 +431,17 @@
     
     
       
-        
-        
-      
       
     
     
-    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+    <li class="md-nav__item md-nav__item--nested">
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_1" checked>
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_1" >
         
           
-          <label class="md-nav__link" for="__nav_1" id="__nav_1_label" tabindex="">
+          <label class="md-nav__link" for="__nav_1" id="__nav_1_label" tabindex="0">
             
   
   
@@ -470,7 +459,7 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_1_label" aria-expanded="true">
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_1_label" aria-expanded="false">
           <label class="md-nav__title" for="__nav_1">
             <span class="md-nav__icon md-icon"></span>
             
@@ -513,10 +502,8 @@
                 
   
   
-    
   
   
-  
     
     
       
@@ -535,11 +522,11 @@
       
     
     
-    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+    <li class="md-nav__item md-nav__item--nested">
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_1_2" checked>
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_1_2" >
         
           
           <label class="md-nav__link" for="__nav_1_2" id="__nav_1_2_label" tabindex="0">
@@ -560,7 +547,7 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_1_2_label" aria-expanded="true">
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_1_2_label" aria-expanded="false">
           <label class="md-nav__title" for="__nav_1_2">
             <span class="md-nav__icon md-icon"></span>
             
@@ -575,37 +562,10 @@
                 
   
   
-    
   
   
-  
-    <li class="md-nav__item md-nav__item--active">
-      
-      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
-      
-      
-        
-      
-      
-        <label class="md-nav__link md-nav__link--active" for="__toc">
-          
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Terraform
-  
-
-    
-  </span>
-  
-  
-
-          <span class="md-nav__icon md-icon"></span>
-        </label>
-      
-      <a href="terraform.html" class="md-nav__link md-nav__link--active">
+    <li class="md-nav__item">
+      <a href="../technologies/terraform.html" class="md-nav__link">
         
   
   
@@ -621,65 +581,6 @@
   
 
       </a>
-      
-        
-
-<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
-  
-  
-  
-    
-  
-  
-    <label class="md-nav__title" for="__toc">
-      <span class="md-nav__icon md-icon"></span>
-      Table of contents
-    </label>
-    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
-      
-        <li class="md-nav__item">
-  <a href="#sysdig" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Sysdig
-      
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="Sysdig">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#local-machine-modifications" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Local Machine Modifications
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#cd-pipeline-driven-modifications" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        CD Pipeline-driven Modifications
-      
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-    </ul>
-  
-</nav>
-      
     </li>
   
 
@@ -692,7 +593,7 @@
   
   
     <li class="md-nav__item">
-      <a href="airflow.html" class="md-nav__link">
+      <a href="../technologies/airflow.html" class="md-nav__link">
         
   
   
@@ -720,7 +621,7 @@
   
   
     <li class="md-nav__item">
-      <a href="database-tools.html" class="md-nav__link">
+      <a href="../technologies/database-tools.html" class="md-nav__link">
         
   
   
@@ -748,7 +649,7 @@
   
   
     <li class="md-nav__item">
-      <a href="weasyprint.html" class="md-nav__link">
+      <a href="../technologies/weasyprint.html" class="md-nav__link">
         
   
   
@@ -1122,7 +1023,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../git-github/branching-model.html" class="md-nav__link">
+      <a href="branching-model.html" class="md-nav__link">
         
   
   
@@ -1150,7 +1051,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../git-github/new-task.html" class="md-nav__link">
+      <a href="new-task.html" class="md-nav__link">
         
   
   
@@ -1178,7 +1079,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../git-github/clean-pr.html" class="md-nav__link">
+      <a href="clean-pr.html" class="md-nav__link">
         
   
   
@@ -1206,7 +1107,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../git-github/bot-pr-review.html" class="md-nav__link">
+      <a href="bot-pr-review.html" class="md-nav__link">
         
   
   
@@ -1234,7 +1135,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../git-github/rocketchat-notification.html" class="md-nav__link">
+      <a href="rocketchat-notification.html" class="md-nav__link">
         
   
   
@@ -2916,33 +2817,56 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#sysdig" class="md-nav__link">
+  <a href="#prerequisites" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Sysdig
-      
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="Sysdig">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#local-machine-modifications" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Local Machine Modifications
+        Prerequisites
       
     </span>
   </a>
   
 </li>
-        
-          <li class="md-nav__item">
-  <a href="#cd-pipeline-driven-modifications" class="md-nav__link">
+      
+        <li class="md-nav__item">
+  <a href="#1-add-the-relay-app-to-the-ms-teams-channel" class="md-nav__link">
     <span class="md-ellipsis">
       
-        CD Pipeline-driven Modifications
+        1. Add the Relay App to the MS Teams Channel
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#2-configure-the-n8n-workflow" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2. Configure the n8n Workflow
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="2. Configure the n8n Workflow">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#payload-configuration-important" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Payload Configuration (Important)
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Payload Configuration (Important)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#this-supports" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        This supports:
       
     </span>
   </a>
@@ -2951,6 +2875,66 @@
         
       </ul>
     </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#3-test-the-webhook" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3. Test the Webhook
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#4-publish-the-workflow" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4. Publish the Workflow
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#5-configure-github-secret" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5. Configure GitHub Secret
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#6-update-github-actions" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6. Update GitHub Actions
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#7-other-systems-airflow-jobs-etc" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        7. Other Systems (Airflow, Jobs, etc.)
+      
+    </span>
+  </a>
   
 </li>
       
@@ -2974,25 +2958,143 @@
   
 
 
-<h1 id="infrastructure-provisioning">Infrastructure Provisioning<a class="headerlink" href="#infrastructure-provisioning" title="Permanent link">&para;</a></h1>
-<p>We employ <code>Terraform</code> as the <code>configuration code</code> to <code>provision resources</code> within our infrastructure, encompassing <code>OCP Deployer Service Accounts</code>, <code>Keycloak</code>, and <code>Sysdig</code>.</p>
-<h2 id="sysdig">Sysdig<a class="headerlink" href="#sysdig" title="Permanent link">&para;</a></h2>
-<p>The main point for the <code>Sysdig Terraform</code> is situated at <a href="../terraform/sysdig">terraform/sysdig</a>, featuring individual sub-modules for each Openshift project.</p>
-<h3 id="local-machine-modifications">Local Machine Modifications<a class="headerlink" href="#local-machine-modifications" title="Permanent link">&para;</a></h3>
-<p>For making changes on a local machine, please consult the <a href="../terraform/sysdig/README.md">Sysdig Terraform Readme</a> for comprehensive instructions.</p>
-<h3 id="cd-pipeline-driven-modifications">CD Pipeline-driven Modifications<a class="headerlink" href="#cd-pipeline-driven-modifications" title="Permanent link">&para;</a></h3>
-<p>The Sysdig Terraform scripts are integrated into the <code>Continuous Deployment (CD) pipeline</code>, specifically the <a href="../.github/workflows/terraform-sysdig.yml">Sysdig Terraform Action</a>.
-The process involves two distinct phases:</p>
+<h1 id="ms-teams-deployment-notifications-via-n8n-relay">MS Teams Deployment Notifications (via n8n + Relay)<a class="headerlink" href="#ms-teams-deployment-notifications-via-n8n-relay" title="Permanent link">&para;</a></h1>
+<p>To facilitate efficient communication of deployment actions, we use <strong>MS Teams notifications via n8n and the Relay app</strong> to notify developers and stakeholders about deployment status and provide links to relevant changes.</p>
+<hr />
+<h2 id="prerequisites">Prerequisites<a class="headerlink" href="#prerequisites" title="Permanent link">&para;</a></h2>
+<ul>
+<li>You must be an admin of this repository.</li>
+<li>You must have access to the target MS Teams channel.</li>
+<li>You must have access to n8n: https://n8n.developer.gov.bc.ca</li>
+<li>You must have permission to install or access the <strong>Relay</strong> app in MS Teams.</li>
+</ul>
+<hr />
+<h2 id="1-add-the-relay-app-to-the-ms-teams-channel">1. Add the Relay App to the MS Teams Channel<a class="headerlink" href="#1-add-the-relay-app-to-the-ms-teams-channel" title="Permanent link">&para;</a></h2>
+<p>To install the Relay app:</p>
 <ol>
-<li>
-<p>PR creation
-   Upon the <code>creation of a pull request</code> that includes changes to the Sysdig Terraform script, the pipeline executes a <code>Terraform Plan</code> and comments on the PR regarding the proposed alterations.</p>
-</li>
-<li>
-<p>PR merging
-   Upon approval and <code>merging of the pull request</code>, the pipeline executes a <code>Terraform Apply</code>, implementing the approved changes into the infrastructure.</p>
-</li>
+<li>Open <strong>Microsoft Teams</strong></li>
+<li>Click <strong>Apps</strong> in the sidebar</li>
+<li>Search for <strong>Relay</strong></li>
+<li>Click <strong>Add</strong></li>
+<li>Select the channel(s) that should receive webhook notifications</li>
 </ol>
+<blockquote>
+<p>If you do not see the Relay app, contact the Developer Experience / Workflows teams.
+It may take up to 24 hours for the app to appear.</p>
+</blockquote>
+<hr />
+<h2 id="2-configure-the-n8n-workflow">2. Configure the n8n Workflow<a class="headerlink" href="#2-configure-the-n8n-workflow" title="Permanent link">&para;</a></h2>
+<ol>
+<li>Log in to https://n8n.developer.gov.bc.ca using your IDIR account</li>
+<li>Open your webhook workflow</li>
+<li>Double-click the <strong>DevX Message Connector</strong> node</li>
+<li>Click the ✏️ icon next to <strong>Credential</strong></li>
+<li>Paste your MS Teams channel link<ul>
+<li>In Teams: click channel → <strong>Copy link</strong></li>
+</ul>
+</li>
+<li>Save and exit</li>
+</ol>
+<h3 id="payload-configuration-important">Payload Configuration (Important)<a class="headerlink" href="#payload-configuration-important" title="Permanent link">&para;</a></h3>
+<p>Set the <strong>Payload</strong> to Expression mode and use:</p>
+<div class="language-js highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-0-1">1</a></span>
+<span class="normal"><a href="#__codelineno-0-2">2</a></span>
+<span class="normal"><a href="#__codelineno-0-3">3</a></span>
+<span class="normal"><a href="#__codelineno-0-4">4</a></span>
+<span class="normal"><a href="#__codelineno-0-5">5</a></span>
+<span class="normal"><a href="#__codelineno-0-6">6</a></span>
+<span class="normal"><a href="#__codelineno-0-7">7</a></span>
+<span class="normal"><a href="#__codelineno-0-8">8</a></span></pre></div></td><td class="code"><div><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1"></a><span class="p">{</span>
+</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2"></a><span class="w">    </span><span class="p">{</span>
+</span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3"></a><span class="w">        </span><span class="p">({</span>
+</span><span id="__span-0-4"><a id="__codelineno-0-4" name="__codelineno-0-4"></a><span class="w">            </span><span class="nx">title</span><span class="o">:</span><span class="w"> </span><span class="nx">$json</span><span class="p">.</span><span class="nx">body</span><span class="p">.</span><span class="nx">title</span><span class="w"> </span><span class="o">||</span><span class="w"> </span><span class="s1">&#39;Deployment notification&#39;</span><span class="p">,</span>
+</span><span id="__span-0-5"><a id="__codelineno-0-5" name="__codelineno-0-5"></a><span class="w">            </span><span class="nx">body</span><span class="o">:</span><span class="w"> </span><span class="nx">$json</span><span class="p">.</span><span class="nx">body</span><span class="p">.</span><span class="nx">body</span><span class="w"> </span><span class="o">||</span><span class="w"> </span><span class="nx">$json</span><span class="p">.</span><span class="nx">body</span><span class="p">.</span><span class="nx">text</span><span class="p">,</span>
+</span><span id="__span-0-6"><a id="__codelineno-0-6" name="__codelineno-0-6"></a><span class="w">        </span><span class="p">});</span>
+</span><span id="__span-0-7"><a id="__codelineno-0-7" name="__codelineno-0-7"></a><span class="w">    </span><span class="p">}</span>
+</span><span id="__span-0-8"><a id="__codelineno-0-8" name="__codelineno-0-8"></a><span class="p">}</span>
+</span></code></pre></div></td></tr></table></div>
+<h4 id="this-supports">This supports:<a class="headerlink" href="#this-supports" title="Permanent link">&para;</a></h4>
+<div class="language-text highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-1-1">1</a></span>
+<span class="normal"><a href="#__codelineno-1-2">2</a></span></pre></div></td><td class="code"><div><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1"></a>title/body (new format)
+</span><span id="__span-1-2"><a id="__codelineno-1-2" name="__codelineno-1-2"></a>text (legacy format)
+</span></code></pre></div></td></tr></table></div>
+<hr />
+<h2 id="3-test-the-webhook">3. Test the Webhook<a class="headerlink" href="#3-test-the-webhook" title="Permanent link">&para;</a></h2>
+<ol>
+<li>Open the <strong>Webhook</strong> node in n8n</li>
+<li>Click <strong><em>Listen for test event</em></strong></li>
+<li>Send a test request:</li>
+</ol>
+<div class="language-text highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-2-1">1</a></span>
+<span class="normal"><a href="#__codelineno-2-2">2</a></span>
+<span class="normal"><a href="#__codelineno-2-3">3</a></span>
+<span class="normal"><a href="#__codelineno-2-4">4</a></span>
+<span class="normal"><a href="#__codelineno-2-5">5</a></span>
+<span class="normal"><a href="#__codelineno-2-6">6</a></span></pre></div></td><td class="code"><div><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1"></a>curl -X POST &quot;https://n8n.developer.gov.bc.ca/webhook-test/&lt;workflow-id&gt;&quot; \
+</span><span id="__span-2-2"><a id="__codelineno-2-2" name="__codelineno-2-2"></a>  -H &quot;Content-Type: application/json&quot; \
+</span><span id="__span-2-3"><a id="__codelineno-2-3" name="__codelineno-2-3"></a>  -d &#39;{
+</span><span id="__span-2-4"><a id="__codelineno-2-4" name="__codelineno-2-4"></a>    &quot;title&quot;: &quot;🚀 Test deployment notification&quot;,
+</span><span id="__span-2-5"><a id="__codelineno-2-5" name="__codelineno-2-5"></a>    &quot;body&quot;: &quot;This is a test message from n8n to MS Teams.&quot;
+</span><span id="__span-2-6"><a id="__codelineno-2-6" name="__codelineno-2-6"></a>  }&#39;
+</span></code></pre></div></td></tr></table></div>
+<ol>
+<li>Confirm the message appears in the Teams channel</li>
+</ol>
+<hr />
+<h2 id="4-publish-the-workflow">4. Publish the Workflow<a class="headerlink" href="#4-publish-the-workflow" title="Permanent link">&para;</a></h2>
+<p>Once testing is complete:</p>
+<ol>
+<li>Click Publish in n8n</li>
+<li>Use the Production URL</li>
+</ol>
+<p><strong>Important:</strong></p>
+<blockquote>
+<p>Use <code>/webhook/&lt;workflow-id&gt;</code></p>
+<p>Do NOT use <code>/webhook-test/&lt;workflow-id&gt;</code></p>
+</blockquote>
+<hr />
+<h2 id="5-configure-github-secret">5. Configure GitHub Secret<a class="headerlink" href="#5-configure-github-secret" title="Permanent link">&para;</a></h2>
+<ol>
+<li>Go to <code>GitHub → Settings → Secrets and variables → Actions</code></li>
+<li>Add or update the following secret: <code>N8N_MSTEAMS_WEBHOOK_URL</code> <!-- pragma: allowlist secret --></li>
+</ol>
+<blockquote>
+<p>Value:
+<code>https://n8n.developer.gov.bc.ca/webhook/&lt;workflow-id&gt;</code></p>
+</blockquote>
+<hr />
+<h2 id="6-update-github-actions">6. Update GitHub Actions<a class="headerlink" href="#6-update-github-actions" title="Permanent link">&para;</a></h2>
+<div class="language-text highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-3-1"> 1</a></span>
+<span class="normal"><a href="#__codelineno-3-2"> 2</a></span>
+<span class="normal"><a href="#__codelineno-3-3"> 3</a></span>
+<span class="normal"><a href="#__codelineno-3-4"> 4</a></span>
+<span class="normal"><a href="#__codelineno-3-5"> 5</a></span>
+<span class="normal"><a href="#__codelineno-3-6"> 6</a></span>
+<span class="normal"><a href="#__codelineno-3-7"> 7</a></span>
+<span class="normal"><a href="#__codelineno-3-8"> 8</a></span>
+<span class="normal"><a href="#__codelineno-3-9"> 9</a></span>
+<span class="normal"><a href="#__codelineno-3-10">10</a></span></pre></div></td><td class="code"><div><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1"></a>- name: Notify MS Teams on Failure
+</span><span id="__span-3-2"><a id="__codelineno-3-2" name="__codelineno-3-2"></a>  if: failure()
+</span><span id="__span-3-3"><a id="__codelineno-3-3" name="__codelineno-3-3"></a>  uses: ./.github/actions/rocketchat-notification
+</span><span id="__span-3-4"><a id="__codelineno-3-4" name="__codelineno-3-4"></a>  with:
+</span><span id="__span-3-5"><a id="__codelineno-3-5" name="__codelineno-3-5"></a>    webhook-url: ${{ secrets.N8N_MSTEAMS_WEBHOOK_URL }}
+</span><span id="__span-3-6"><a id="__codelineno-3-6" name="__codelineno-3-6"></a>    data: |
+</span><span id="__span-3-7"><a id="__codelineno-3-7" name="__codelineno-3-7"></a>      {
+</span><span id="__span-3-8"><a id="__codelineno-3-8" name="__codelineno-3-8"></a>        &quot;title&quot;: &quot;⚠️ Deployment failed&quot;,
+</span><span id="__span-3-9"><a id="__codelineno-3-9" name="__codelineno-3-9"></a>        &quot;body&quot;: &quot;Investigate: https://github.com/bcgov/platform-services-registry/&quot;
+</span><span id="__span-3-10"><a id="__codelineno-3-10" name="__codelineno-3-10"></a>      }
+</span></code></pre></div></td></tr></table></div>
+<hr />
+<h2 id="7-other-systems-airflow-jobs-etc">7. Other Systems (Airflow, Jobs, etc.)<a class="headerlink" href="#7-other-systems-airflow-jobs-etc" title="Permanent link">&para;</a></h2>
+<p>Send payloads in this format:</p>
+<div class="language-text highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-4-1">1</a></span>
+<span class="normal"><a href="#__codelineno-4-2">2</a></span>
+<span class="normal"><a href="#__codelineno-4-3">3</a></span>
+<span class="normal"><a href="#__codelineno-4-4">4</a></span></pre></div></td><td class="code"><div><pre><span></span><code><span id="__span-4-1"><a id="__codelineno-4-1" name="__codelineno-4-1"></a>{
+</span><span id="__span-4-2"><a id="__codelineno-4-2" name="__codelineno-4-2"></a>  &quot;title&quot;: &quot;⚠️ Alert&quot;,
+</span><span id="__span-4-3"><a id="__codelineno-4-3" name="__codelineno-4-3"></a>  &quot;body&quot;: &quot;Something happened&quot;
+</span><span id="__span-4-4"><a id="__codelineno-4-4" name="__codelineno-4-4"></a>}
+</span></code></pre></div></td></tr></table></div>
 
 
 
