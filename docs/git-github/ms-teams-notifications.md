@@ -111,7 +111,7 @@ Once testing is complete:
 ```
 - name: Notify MS Teams on Failure
   if: failure()
-  uses: ./.github/actions/rocketchat-notification
+  uses: ./.github/actions/ms-teams-notification
   with:
     webhook-url: ${{ secrets.N8N_MSTEAMS_WEBHOOK_URL }}
     data: |

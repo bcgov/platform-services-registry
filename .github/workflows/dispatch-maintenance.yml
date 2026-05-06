@@ -55,7 +55,7 @@ jobs:
 
     - name: Notify Notify MS Teams on Success
       if: success()
-      uses: ./.github/actions/rocketchat-notification
+      uses: ./.github/actions/ms-teams-notification
       with:
         webhook-url: ${{ secrets.N8N_MSTEAMS_WEBHOOK_URL }}
         data: |
@@ -66,7 +66,7 @@ jobs:
 
     - name: Notify Notify MS Teams on Failure
       if: failure()
-      uses: ./.github/actions/rocketchat-notification
+      uses: ./.github/actions/ms-teams-notification
       with:
         webhook-url: ${{ secrets.N8N_MSTEAMS_WEBHOOK_URL }}
         data: |
