@@ -1,12 +1,12 @@
-name: RocketChat Notification
-description: Send a notification to RocketChat using a webhook URL and a custom message.
+name: MS Teams Notification
+description: Send a notification to MS Teams using a webhook URL and a custom message.
 
 inputs:
   webhook-url:
-    description: The RocketChat webhook URL
+    description: The MS Teams webhook URL
     required: true
   data:
-    description: The JSON payload to send to RocketChat
+    description: The JSON payload to send to MS Teams
     required: true
 
 runs:
