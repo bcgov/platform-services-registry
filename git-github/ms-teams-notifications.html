@@ -973,6 +973,8 @@
       
         
       
+        
+      
     
     
     
@@ -1115,6 +1117,34 @@
     
   
     Renovate Bot PR Review
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="ms-teams-notification.md" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    None
   
 
     
@@ -3075,7 +3105,7 @@ It may take up to 24 hours for the app to appear.</p>
 <span class="normal"><a href="#__codelineno-3-9"> 9</a></span>
 <span class="normal"><a href="#__codelineno-3-10">10</a></span></pre></div></td><td class="code"><div><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1"></a>- name: Notify MS Teams on Failure
 </span><span id="__span-3-2"><a id="__codelineno-3-2" name="__codelineno-3-2"></a>  if: failure()
-</span><span id="__span-3-3"><a id="__codelineno-3-3" name="__codelineno-3-3"></a>  uses: ./.github/actions/rocketchat-notification
+</span><span id="__span-3-3"><a id="__codelineno-3-3" name="__codelineno-3-3"></a>  uses: ./.github/actions/ms-teams-notification
 </span><span id="__span-3-4"><a id="__codelineno-3-4" name="__codelineno-3-4"></a>  with:
 </span><span id="__span-3-5"><a id="__codelineno-3-5" name="__codelineno-3-5"></a>    webhook-url: ${{ secrets.N8N_MSTEAMS_WEBHOOK_URL }}
 </span><span id="__span-3-6"><a id="__codelineno-3-6" name="__codelineno-3-6"></a>    data: |
