@@ -164,8 +164,10 @@ jobs:
         webhook-url: ${{ secrets.N8N_MSTEAMS_WEBHOOK_URL }}
         data: |
           {
-            "text": ":rocket: Deployment to Test was successful! Read the changes here [${{ github.ref_name }}](https://github.com/bcgov/platform-services-registry/blob/main/CHANGELOG.md#${{ github.ref_name}})"
+          "title": "🚀 Deployment to Test was successful",
+          "body": "Read the changes here [${{ github.ref_name }}](https://github.com/bcgov/platform-services-registry/blob/main/CHANGELOG.md#${{ github.ref_name}}"
           }
+
 
     - name: Notify MS Teams on Failure
       if: failure()
