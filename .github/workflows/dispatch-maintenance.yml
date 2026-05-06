@@ -53,22 +53,24 @@ jobs:
         -f values-${{ vars.OPENSHIFT_NAMESPACE }}.yaml
       working-directory: ./helm/main
 
-    - name: Notify RocketChat on Success
+    - name: Notify Notify MS Teams on Success
       if: success()
       uses: ./.github/actions/rocketchat-notification
       with:
-        webhook-url: ${{ secrets.ROCKETCHAT_WEBHOOK_URL }}
+        webhook-url: ${{ secrets.N8N_MSTEAMS_WEBHOOK_URL }}
         data: |
           {
-            "text": ":rocket: Maintenance Mode ${{ inputs.status }} deployed successfully in ${{ inputs.environment }}!"
-          }
+             "title": "🚀 Maintenance Mode update",
+             "body": "Maintenance Mode ${{ inputs.status }} deployed successfully in ${{ inputs.environment }}!"
+           }
 
-    - name: Notify RocketChat on Failure
+    - name: Notify Notify MS Teams on Failure
       if: failure()
       uses: ./.github/actions/rocketchat-notification
       with:
-        webhook-url: ${{ secrets.ROCKETCHAT_WEBHOOK_URL }}
+        webhook-url: ${{ secrets.N8N_MSTEAMS_WEBHOOK_URL }}
         data: |
           {
-            "text": ":warning: Maintenance Mode deployment failed in ${{ inputs.environment }}!"
-          }
+             "title": "⚠️ Maintenance Mode deployment failed",
+             "body": "Environment: ${{ inputs.environment }}\nStatus requested: ${{ inputs.status }}"
+           }

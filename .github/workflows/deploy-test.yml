@@ -157,24 +157,27 @@ jobs:
         kubectl rollout status deployment/pltsvc-app
       working-directory: ./helm/main
 
-    - name: Notify RocketChat on Success
+    - name: Notify MS Teams on Success
       if: success()
       uses: ./.github/actions/rocketchat-notification
       with:
-        webhook-url: ${{ secrets.ROCKETCHAT_WEBHOOK_URL }}
+        webhook-url: ${{ secrets.N8N_MSTEAMS_WEBHOOK_URL }}
         data: |
           {
-            "text": ":rocket: Deployment to Test was successful! Read the changes here [${{ github.ref_name }}](https://github.com/bcgov/platform-services-registry/blob/main/CHANGELOG.md#${{ github.ref_name}})"
+          "title": "🚀 Deployment to Test was successful",
+          "body": "Read the changes here [${{ github.ref_name }}](https://github.com/bcgov/platform-services-registry/blob/main/CHANGELOG.md#${{ github.ref_name}}"
           }
 
-    - name: Notify RocketChat on Failure
+
+    - name: Notify MS Teams on Failure
       if: failure()
       uses: ./.github/actions/rocketchat-notification
       with:
-        webhook-url: ${{ secrets.ROCKETCHAT_WEBHOOK_URL }}
+        webhook-url: ${{ secrets.N8N_MSTEAMS_WEBHOOK_URL }}
         data: |
           {
-            "text": ":warning: Deployment to Test failed! [Investigate here](https://github.com/bcgov/platform-services-registry/)"
+            "title": "⚠️ Deployment to Test failed",
+            "body": "Investigate: https://github.com/bcgov/platform-services-registry/"
           }
 
   scan-app:

@@ -39,12 +39,13 @@ jobs:
       with:
         folder: site
 
-    - name: Notify RocketChat on Failure
+    - name: Notify MS Teams on Failure
       if: failure()
       uses: ./.github/actions/rocketchat-notification
       with:
-        webhook-url: ${{ secrets.ROCKETCHAT_WEBHOOK_URL }}
+        webhook-url: ${{ secrets.N8N_MSTEAMS_WEBHOOK_URL }}
         data: |
           {
-            "text": ":warning: Deployment to GitHub Pages failed! [Investigate here](https://github.com/bcgov/platform-services-registry/actions/workflows/mkdocs.yml)"
+            "title": "⚠️ Deployment to GitHub Pages failed!",
+            "body": "Investigate: https://github.com/bcgov/platform-services-registry/actions/workflows/mkdocs.yml"
           }
