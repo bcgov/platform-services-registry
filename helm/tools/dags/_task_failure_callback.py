@@ -14,11 +14,7 @@ def send_alert(context, dag):
 
     payload = {
         "title": f"⚠️ Airflow DAG failed: {dag}",
-        "body": f"""
-        Task `{task_id}` failed
-        Execution: {execution_date}
-        Logs: {airflow_dag_logs}
-        """.strip(),
+        "body": (f"Task `{task_id}` failed\n" f"Execution: {execution_date}\n" f"Logs: {airflow_dag_logs}"),
     }
 
     try:
