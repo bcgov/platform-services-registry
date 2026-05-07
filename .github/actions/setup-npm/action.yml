@@ -45,3 +45,5 @@ runs:
       fi
     shell: bash
     working-directory: app
+    env:
+      PNPM_CONFIG_DANGEROUSLY_ALLOW_ALL_BUILDS: 'true'

@@ -47,7 +47,8 @@ jobs:
       run: npm run email-build
       working-directory: app
       env:
-        NPM_CONFIG_DANGEROUSLY_ALLOW_ALL_BUILDS: 'true'
+        PNPM_BUILD_POLICY: allow
+        PNPM_CONFIG_DANGEROUSLY_ALLOW_ALL_BUILDS: 'true'
 
   test-app:
     runs-on: ubuntu-22.04
