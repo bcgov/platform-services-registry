@@ -43,6 +43,14 @@ jobs:
     - name: Setup NPM Packages
       uses: ./.github/actions/setup-npm
 
+    - name: Allow pnpm build scripts for React Email
+      run: |
+        echo "only-built-dependencies[]=esbuild" >> .npmrc
+        echo "only-built-dependencies[]=sharp" >> .npmrc
+        mkdir -p .react-email
+        cp .npmrc .react-email/.npmrc
+      working-directory: app
+
     - name: Run Email build
       run: npm run email-build
       working-directory: app
