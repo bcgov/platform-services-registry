@@ -24,9 +24,7 @@ RUN apk add --no-cache \
     librsvg-dev
 
 # Install Node tools and dependencies
-RUN npm install -g turbo && \
-    corepack enable && \
-    corepack install && \
+RUN npm install -g turbo pnpm@10.33.4 && \
     pnpm install --frozen-lockfile
 
 # Rebuild canvas (avoid hardcoded pnpm virtual store paths)
