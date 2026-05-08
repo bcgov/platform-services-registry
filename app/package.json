@@ -3,7 +3,6 @@
   "description": "B.C. Government's Platform Product Registry - App",
   "version": "0.78.13",
   "private": true,
-  "packageManager": "pnpm@11.0.8",
   "scripts": {
     "dev": "npx prisma generate && next dev --webpack",
     "build": "next build",
@@ -139,7 +138,8 @@
     "onlyBuiltDependencies": [
       "canvas",
       "esbuild",
-      "sharp"
+      "sharp",
+      "cypress"
     ]
   }
 }
