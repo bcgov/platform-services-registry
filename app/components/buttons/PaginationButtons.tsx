@@ -15,9 +15,9 @@ export default function PaginationButton({ pageCount, page, pageSize, className,
   const router = useRouter();
   const searchParams = useSearchParams();
   const pathname = usePathname();
-  const currentPage = Number(page);
-  const isPrevDisabled = currentPage === 1 || isPending;
-  const isNextDisabled = currentPage >= pageCount || isPending;
+  page = Number(page);
+  const isPrevDisabled = page === 1 || isPending;
+  const isNextDisabled = page >= pageCount || isPending;
 
   const handlePaginationUpdate = (newPage: number, newPageSize?: number) => {
     startTransition(() => {
@@ -49,7 +49,7 @@ export default function PaginationButton({ pageCount, page, pageSize, className,
       <button
         className={`relative ml-3 inline-flex items-center rounded-md px-3 py-2 text-sm font-semibold ring-1 ring-inset ring-gray-300
         ${isPrevDisabled ? 'text-gray-500 border-gray-500' : 'text-black border-black'}`}
-        onClick={() => handlePaginationUpdate(currentPage - 1)}
+        onClick={() => handlePaginationUpdate(page - 1)}
         disabled={isPrevDisabled}
       >
         Previous
@@ -57,7 +57,7 @@ export default function PaginationButton({ pageCount, page, pageSize, className,
       <button
         className={`relative ml-3 inline-flex items-center rounded-md px-3 py-2 text-sm font-semibold ring-1 ring-inset ring-gray-300
         ${isNextDisabled ? 'text-gray-500 border-gray-500' : 'text-black border-black'}`}
-        onClick={() => handlePaginationUpdate(currentPage + 1)}
+        onClick={() => handlePaginationUpdate(page + 1)}
         disabled={isNextDisabled}
       >
         Next

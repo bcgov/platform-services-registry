@@ -40,15 +40,11 @@
       "conventional-changelog-conventionalcommits": "^9.0.0"
     },
     "onlyBuiltDependencies": [
-      "@prisma/client",
       "@prisma/engines",
       "canvas",
-      "core-js-pure",
       "cypress",
       "esbuild",
-      "prisma",
-      "sharp",
-      "unrs-resolver"
+      "sharp"
     ]
   }
 }
