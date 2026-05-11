@@ -7,7 +7,6 @@ WORKDIR /app
 
 COPY app/package.json ./
 COPY app/pnpm-lock.yaml ./
-COPY app/pnpm-workspace.yaml ./
 
 ENV SECURE_HEADERS=true \
   DEPLOYMENT_TAG=${deployment_tag}

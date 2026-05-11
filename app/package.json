@@ -140,7 +140,12 @@
       "canvas",
       "esbuild",
       "sharp",
-      "cypress"
+      "cypress",
+      "@prisma/client",
+      "@prisma/engines",
+      "core-js-pure",
+      "prisma",
+      "unrs-resolver"
     ]
   }
 }
