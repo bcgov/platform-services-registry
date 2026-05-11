@@ -5,11 +5,9 @@ FROM node:22.12.0-alpine3.19 AS build
 
 WORKDIR /app
 
-COPY app .
+COPY app/package.json ./
+COPY app/pnpm-lock.yaml ./
 COPY pnpm-workspace.yaml ./
-COPY sandbox/types.ts /sandbox/types.ts
-COPY sandbox/mock-users.json /sandbox/mock-users.json
-COPY .prettierignore .prettierrc ./
 
 ENV SECURE_HEADERS=true \
   DEPLOYMENT_TAG=${deployment_tag}
@@ -27,6 +25,11 @@ RUN apk add --no-cache \
 # Install Node tools and dependencies
 RUN npm install -g turbo pnpm@10.33.4 && \
     pnpm install --frozen-lockfile
+
+COPY app .
+COPY sandbox/types.ts /sandbox/types.ts
+COPY sandbox/mock-users.json /sandbox/mock-users.json
+COPY .prettierignore .prettierrc ./
 
 # Rebuild canvas (avoid hardcoded pnpm virtual store paths)
 # If canvas native binary is missing, rebuild it.
