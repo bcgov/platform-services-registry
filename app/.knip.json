@@ -14,7 +14,8 @@
     "@prisma/client",
     "prettier",
     "@faker-js/faker",
-    "@react-email/ui"
+    "@react-email/ui",
+    "cross-env"
   ],
   "rules": {
     "binaries": "off",
