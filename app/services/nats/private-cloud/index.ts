@@ -45,7 +45,7 @@ export default async function createPrivateCloudNatsMessage(
     description: description,
     ministry_id: organization.code,
     merge_type: 'auto',
-    project_type: isTest ? 'temporary' : 'normal',
+    project_type: isTest ? 'temporary' : 'user',
     alliance: allianceLabel,
     namespaces: namespaceKeys.map((namespace) => {
       const requests = resourceRequests[namespace];
