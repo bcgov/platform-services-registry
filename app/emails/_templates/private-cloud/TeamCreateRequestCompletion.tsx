@@ -25,9 +25,9 @@ export default function TeamCreateRequestCompletion({ request }: EmailProp) {
           Log in to the cluster console
         </Link>{' '}
         or use the button below and you&apos;ll see all four namespaces included in a project set. If you have any more
-        questions reach out to the Platform Services team in the Rocket.Chat channel{' '}
-        <Link className="mt-0 h-4" href={`https://chat.developer.gov.bc.ca/channel/devops-operations`}>
-          #devops-operations
+        questions reach out to the Platform Services team in the OpenShift-operations channel in the Microsoft Teams team: Developer Community.{' '}
+        <Link className="mt-0 h-4" href={`https://teams.microsoft.com/l/channel/19%3A5d490d83b64448cfa4088bd951c1d0bc%40thread.tacv2/OpenShift-operations?groupId=a80418da-c27b-406e-89ab-7695b61924d8&tenantId=6fdb5200-3d0d-4a8a-b036-d3685e359adc`}>
+          OpenShift-operations
         </Link>
         .
       </Text>
