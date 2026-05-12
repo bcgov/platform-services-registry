@@ -5,10 +5,8 @@ FROM node:22.12.0-alpine3.19 AS build
 
 WORKDIR /app
 
-COPY app .
-COPY sandbox/types.ts /sandbox/types.ts
-COPY sandbox/mock-users.json /sandbox/mock-users.json
-COPY .prettierignore .prettierrc ./
+COPY app/package.json ./
+COPY pnpm-lock.yaml ./
 
 ENV SECURE_HEADERS=true \
   DEPLOYMENT_TAG=${deployment_tag}
