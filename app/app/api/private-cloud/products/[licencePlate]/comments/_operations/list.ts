@@ -1,5 +1,4 @@
 import prisma from '@/core/prisma';
-import { PrivateCloudComment } from '@/types/private-cloud';
 
 export async function listOp(licencePlate: string, requestId?: string) {
   let comments;

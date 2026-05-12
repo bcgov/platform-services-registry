@@ -1,7 +1,7 @@
 import { Session } from 'next-auth';
-import { z, TypeOf, ZodType } from 'zod';
+import { TypeOf } from 'zod';
 import prisma from '@/core/prisma';
-import { BadRequestResponse, OkResponse, UnauthorizedResponse } from '@/core/responses';
+import { OkResponse } from '@/core/responses';
 import { getPathParamSchema } from '../[date]/schema';
 
 export default async function readOp({

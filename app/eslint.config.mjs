@@ -1,7 +1,6 @@
 import eslint from '@eslint/js';
 import eslintConfigPrettier from 'eslint-config-prettier';
 import eslintPluginNode from 'eslint-plugin-n';
-import eslintPluginImport from 'eslint-plugin-import';
 import nextCoreWebVitals from 'eslint-config-next/core-web-vitals';
 import nextTypescript from 'eslint-config-next/typescript';
 
@@ -13,7 +12,14 @@ export default [
   {
     plugins: {
       n: eslintPluginNode,
-      import: eslintPluginImport,
+    },
+    settings: {
+      'import/resolver': {
+        typescript: {
+          project: './tsconfig.json',
+        },
+        node: true,
+      },
     },
   },
   {

@@ -1,4 +1,3 @@
-import _isString from 'lodash-es/isString';
 import _map from 'lodash-es/map';
 import { getProvinceHolidays } from '@/services/canada-holidays';
 import { getWorkdayDurationInMilliseconds, geDaysRoundedUp } from '@/utils/js';

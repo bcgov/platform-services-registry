@@ -1,9 +1,9 @@
 import { z } from 'zod';
 import { GlobalRole } from '@/constants';
 import createApiHandler from '@/core/api-handler';
-import { UnauthorizedResponse, PdfResponse, OkResponse } from '@/core/responses';
+import { PdfResponse } from '@/core/responses';
 import { generateAdminMonthylCostPdf } from '@/helpers/pdfs/admin-monthly-cost';
-import { getAdminMonthlyCosts, getYearlyCosts } from '@/services/db/private-cloud-costs';
+import { getAdminMonthlyCosts } from '@/services/db/private-cloud-costs';
 
 const pathParamSchema = z.object({
   'year-month': z.string(),

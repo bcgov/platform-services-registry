@@ -1,6 +1,6 @@
 import { Session } from 'next-auth';
 import prisma from '@/core/prisma';
-import { BadRequestResponse, OkResponse, UnauthorizedResponse } from '@/core/responses';
+import { OkResponse, UnauthorizedResponse } from '@/core/responses';
 import generateLicencePlate from '@/helpers/licence-plate';
 import { sendRequestNatsMessage } from '@/helpers/nats-message';
 import { DecisionStatus, ProjectStatus, RequestType, EventType, TaskType, Cluster } from '@/prisma/client';

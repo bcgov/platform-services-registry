@@ -1,5 +1,4 @@
 import { Session } from 'next-auth';
-import prisma from '@/core/prisma';
 import { BadRequestResponse, OkResponse, UnauthorizedResponse } from '@/core/responses';
 import generateLicencePlate from '@/helpers/licence-plate';
 import { DecisionStatus, ProjectStatus, RequestType, TaskType, EventType } from '@/prisma/client';

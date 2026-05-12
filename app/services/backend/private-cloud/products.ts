@@ -7,7 +7,6 @@ import {
   PrivateCloudRequestSimpleDecorated,
   PrivateCloudProductDetailDecorated,
   PrivateCloudProductSearch,
-  PrivateCloudRequestDetail,
   PeriodCosts,
   PrivateCloudRequestDetailDecorated,
 } from '@/types/private-cloud';
