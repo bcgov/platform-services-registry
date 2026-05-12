@@ -1,7 +1,7 @@
 {
   "name": "pltsvc-app",
   "description": "B.C. Government's Platform Product Registry - App",
-  "version": "0.78.13",
+  "version": "0.78.14",
   "private": true,
   "packageManager": "pnpm@10.33.4",
   "scripts": {

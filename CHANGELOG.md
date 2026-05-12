@@ -1,3 +1,24 @@
+## [0.78.14](https://github.com/bcgov/platform-services-registry/compare/v0.78.13...v0.78.14) (2026-05-12)
+
+### Bug Fixes
+
+* **0000:** add missing cross-env dependency ([49e7542](https://github.com/bcgov/platform-services-registry/commit/49e7542607cba394f8cf564279bd68074b68f7df))
+* **0000:** ajust react-email/ui and react-email versions ([0aed1a0](https://github.com/bcgov/platform-services-registry/commit/0aed1a084bc2d2f7f748a8f72b1008a11208a187))
+* **0000:** align pnpm version for frozen lockfile installs ([e42554b](https://github.com/bcgov/platform-services-registry/commit/e42554b75c9110ff69c36bd194fd4b2406dd9222))
+* **0000:** align react-email preview server version ([115cef6](https://github.com/bcgov/platform-services-registry/commit/115cef698b496765415bd82431e3f2c1bcbf5956))
+* **0000:** allow pnpm build scripts for react-email build ([7cd9722](https://github.com/bcgov/platform-services-registry/commit/7cd9722e2dd778a59ce688215f578d62cab1e777))
+* **0000:** allow pnpm build scripts for react-email dependencies ([e7fc2d7](https://github.com/bcgov/platform-services-registry/commit/e7fc2d72e8f8eb4384884f799179cc35d9520798))
+* **0000:** allow pnpm dependency builds for react-email workflow ([824a199](https://github.com/bcgov/platform-services-registry/commit/824a199e7d3e8d58b60cb0c7cf15f6ef57b20a62))
+* **0000:** allow react-email dependency build scripts ([5a888cd](https://github.com/bcgov/platform-services-registry/commit/5a888cde23df2acf175737040db28c400b2f281d))
+* **0000:** approve pnpm builds for esbuild and sharp ([3e03083](https://github.com/bcgov/platform-services-registry/commit/3e030832b866c72a41e9f32588c0f7615e138913))
+* **0000:** avoid app workspace file for react-email build ([efefa20](https://github.com/bcgov/platform-services-registry/commit/efefa202c30989ef0376946ce3a9be7e095ff2e9))
+* **0000:** configure pnpm workspace and approve build dependencies ([64609ce](https://github.com/bcgov/platform-services-registry/commit/64609ce377e37e796a5a100f613cc2320d1f3af1))
+* **0000:** copy pnpm workspace config before app install ([ba8078e](https://github.com/bcgov/platform-services-registry/commit/ba8078ec77215534c4fe81b3aafafbfe47edd76a))
+* **0000:** copy pnpm workspace config into app image ([f11cd6e](https://github.com/bcgov/platform-services-registry/commit/f11cd6e0226ede91c8e7ad4d8910f5e711b0884f))
+* **0000:** include pnpm workspace config in app build context ([c066845](https://github.com/bcgov/platform-services-registry/commit/c066845d277b7f0d117c2f895d05460e6b910bbf))
+* **0000:** pin pnpm without corepack ([fc02894](https://github.com/bcgov/platform-services-registry/commit/fc0289447b0024cf82d8d4fb2b4203d7897f2cbb))
+* **0000:** relax react compiler hook rules for valtio state ([943b2f5](https://github.com/bcgov/platform-services-registry/commit/943b2f507721d1078d33ee4c3f3b5014fbb6a867))
+* **2796:** update Zod v4 query param schemas for pagination and filters ([ce71b4e](https://github.com/bcgov/platform-services-registry/commit/ce71b4e2364706ccf59a80b2feeada5b9abb8e12))
 ## [0.78.13](https://github.com/bcgov/platform-services-registry/compare/v0.78.12...v0.78.13) (2026-04-20)
 
 ### Bug Fixes
