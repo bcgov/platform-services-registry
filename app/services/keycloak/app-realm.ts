@@ -1,7 +1,6 @@
 import KcAdminClient from '@keycloak/keycloak-admin-client';
 import RoleRepresentation, { RoleMappingPayload } from '@keycloak/keycloak-admin-client/lib/defs/roleRepresentation';
 import UserRepresentation from '@keycloak/keycloak-admin-client/lib/defs/userRepresentation';
-import _mapKeys from 'lodash-es/mapKeys';
 import _uniq from 'lodash-es/uniq';
 import _uniqBy from 'lodash-es/uniqBy';
 import {

@@ -4,7 +4,7 @@ import { defaultAccountCoding } from '@/constants';
 import prisma from '@/core/prisma';
 import { createSamplePublicCloudProductData } from '@/helpers/mock-resources';
 import { pickProductData } from '@/helpers/product';
-import { DecisionStatus, Cluster, RequestType, Prisma } from '@/prisma/client';
+import { DecisionStatus, RequestType } from '@/prisma/client';
 import { mockSessionByIdirGuid, mockSessionByRole } from '@/services/api-test/core';
 import { mockTeamServiceAccount } from '@/services/api-test/core';
 import {
@@ -17,7 +17,7 @@ import {
 } from '@/services/api-test/public-cloud/products';
 import { makePublicCloudRequestDecision } from '@/services/api-test/public-cloud/requests';
 import { provisionPublicCloudProduct } from '@/services/api-test/v1/public-cloud';
-import { PublicCloudRequestDetailDecorated, PublicCloudRequestSimple } from '@/types/public-cloud';
+import { PublicCloudRequestDetailDecorated } from '@/types/public-cloud';
 
 const fieldsToCompare = [
   'name',

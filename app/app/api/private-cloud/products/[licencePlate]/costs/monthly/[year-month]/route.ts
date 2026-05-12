@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { GlobalRole, GlobalPermissions } from '@/constants';
+import { GlobalRole } from '@/constants';
 import createApiHandler from '@/core/api-handler';
 import { OkResponse, UnauthorizedResponse } from '@/core/responses';
 import { models } from '@/services/db';

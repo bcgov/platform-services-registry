@@ -1,6 +1,5 @@
 import { promises as fs } from 'fs';
 import * as path from 'path';
-import _compact from 'lodash/compact';
 import _uniq from 'lodash/uniq';
 import { Cluster } from '@/prisma/client';
 import { getK8sClients } from '@/services/k8s/reads/core';
