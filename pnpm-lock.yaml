@@ -4,9 +4,6 @@ settings:
   autoInstallPeers: true
   excludeLinksFromLockfile: false
 
-overrides:
-  conventional-changelog-conventionalcommits: ^9.0.0
-
 importers:
 
   .:
@@ -19,13 +16,13 @@ importers:
         version: 2.2.8(esbuild@0.27.3)
       '@commitlint/cli':
         specifier: ^21.0.0
-        version: 21.0.1(@types/node@25.0.3)(conventional-commits-filter@5.0.0)(conventional-commits-parser@6.4.0)(typescript@6.0.3)
+        version: 21.0.0(@types/node@25.0.3)(conventional-commits-filter@5.0.0)(conventional-commits-parser@6.4.0)(typescript@6.0.3)
       '@commitlint/config-conventional':
         specifier: ^21.0.0
-        version: 21.0.1
+        version: 21.0.0
       '@commitlint/format':
         specifier: ^21.0.0
-        version: 21.0.1
+        version: 21.0.0
       '@eslint/js':
         specifier: ^9.32.0
         version: 9.39.4
@@ -188,13 +185,13 @@ packages:
     resolution: {integrity: sha512-ooWCrlZP11i8GImSjTHYHLkvFDP48nS4+204nGb1RiX/WXYHmJA2III9/e2DWVabCESdW7hBAEzHRqUn9OUVvQ==}
     engines: {node: '>=0.1.90'}
 
-  '@commitlint/cli@21.0.1':
-    resolution: {integrity: sha512-8vq10krmbJwBkvzXKhbs4o4JQEVscd3pqOlWuDUaDBwbeL694/P33UC29tZQFTAgPU9fVJ2+f2m3zw16yKWxHg==}
+  '@commitlint/cli@21.0.0':
+    resolution: {integrity: sha512-p3y2oC0G2R45zaadMwBxCiSesS8digi5RDplP3Zrfpzm7xIgrgAj0W4fGzONjpHyg8obDVJDU45g5txzeMcblg==}
     engines: {node: '>=22.12.0'}
     hasBin: true
 
-  '@commitlint/config-conventional@21.0.1':
-    resolution: {integrity: sha512-gRorrkfWOh/+V5X8GYWWbQvrzPczopGMS4CCNrQdHkK4xWElv82BDvIsDhJZWTlI7TazOlYea6VATufCsFs+sw==}
+  '@commitlint/config-conventional@21.0.0':
+    resolution: {integrity: sha512-QJX/rPK4Yu3f5J4OCIBy5aXq2e0EEdwSDFZ3NQvFAXTm3gs12ipyZ+yjhZxm3hHn6DB8wuv3zhFTL1I2tYzUBA==}
     engines: {node: '>=22.12.0'}
 
   '@commitlint/config-validator@21.0.1':
@@ -209,8 +206,8 @@ packages:
     resolution: {integrity: sha512-RifH+FmImozKBE6mozhF4K3r2RRKP7SMi/Q/zLCmExtp5e05lhHOUYqGBlFBAGNHaZxU/WYw1XuugYK9jQzqnA==}
     engines: {node: '>=22.12.0'}
 
-  '@commitlint/format@21.0.1':
-    resolution: {integrity: sha512-ksmG2+cHGtuDPQQbhBbC4unwm444+6TiPw0d1bKf67hntgZqZ8E0g1MuYKUuyT5IH4IMmXZhKq22/Z3jBvtQIw==}
+  '@commitlint/format@21.0.0':
+    resolution: {integrity: sha512-RTfGSrueEgofs1piqwi42U05d85wfxiMH2ncMCZnltx1XqPR3N2S48oACBtTy4xRAhWlf5XlHkK2RaDzEQu3dA==}
     engines: {node: '>=22.12.0'}
 
   '@commitlint/is-ignored@21.0.1':
@@ -1406,6 +1403,10 @@ packages:
 
   conventional-changelog-codemirror@5.0.0:
     resolution: {integrity: sha512-8gsBDI5Y3vrKUCxN6Ue8xr6occZ5nsDEc4C7jO/EovFGozx8uttCAyfhRrvoUAWi2WMm3OmYs+0mPJU7kQdYWQ==}
+    engines: {node: '>=18'}
+
+  conventional-changelog-conventionalcommits@8.0.0:
+    resolution: {integrity: sha512-eOvlTO6OcySPyyyk8pKz2dP4jjElYunj9hn9/s0OB+gapTO8zwS9UQWrZ1pmF2hFs3vw1xhonOLGcGjy/zgsuA==}
     engines: {node: '>=18'}
 
   conventional-changelog-conventionalcommits@9.3.1:
@@ -3968,9 +3969,9 @@ snapshots:
   '@colors/colors@1.5.0':
     optional: true
 
-  '@commitlint/cli@21.0.1(@types/node@25.0.3)(conventional-commits-filter@5.0.0)(conventional-commits-parser@6.4.0)(typescript@6.0.3)':
+  '@commitlint/cli@21.0.0(@types/node@25.0.3)(conventional-commits-filter@5.0.0)(conventional-commits-parser@6.4.0)(typescript@6.0.3)':
     dependencies:
-      '@commitlint/format': 21.0.1
+      '@commitlint/format': 21.0.0
       '@commitlint/lint': 21.0.1
       '@commitlint/load': 21.0.1(@types/node@25.0.3)(typescript@6.0.3)
       '@commitlint/read': 21.0.1(conventional-commits-filter@5.0.0)(conventional-commits-parser@6.4.0)
@@ -3983,7 +3984,7 @@ snapshots:
       - conventional-commits-parser
       - typescript
 
-  '@commitlint/config-conventional@21.0.1':
+  '@commitlint/config-conventional@21.0.0':
     dependencies:
       '@commitlint/types': 21.0.1
       conventional-changelog-conventionalcommits: 9.3.1
@@ -4000,7 +4001,7 @@ snapshots:
 
   '@commitlint/execute-rule@21.0.1': {}
 
-  '@commitlint/format@21.0.1':
+  '@commitlint/format@21.0.0':
     dependencies:
       '@commitlint/types': 21.0.1
       picocolors: 1.1.1
@@ -5267,6 +5268,10 @@ snapshots:
 
   conventional-changelog-codemirror@5.0.0: {}
 
+  conventional-changelog-conventionalcommits@8.0.0:
+    dependencies:
+      compare-func: 2.0.0
+
   conventional-changelog-conventionalcommits@9.3.1:
     dependencies:
       compare-func: 2.0.0
@@ -5312,7 +5317,7 @@ snapshots:
       conventional-changelog-angular: 8.0.0
       conventional-changelog-atom: 5.0.0
       conventional-changelog-codemirror: 5.0.0
-      conventional-changelog-conventionalcommits: 9.3.1
+      conventional-changelog-conventionalcommits: 8.0.0
       conventional-changelog-core: 8.0.0(conventional-commits-filter@5.0.0)
       conventional-changelog-ember: 5.0.0
       conventional-changelog-eslint: 6.0.0
