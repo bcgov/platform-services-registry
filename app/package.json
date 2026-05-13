@@ -37,7 +37,7 @@
     "@mantine/modals": "^9.0.0",
     "@mantine/notifications": "^9.0.0",
     "@mantine/tiptap": "^9.0.0",
-    "@prisma/client": "6.19.3",
+    "@prisma/client": "7.8.0",
     "@react-email/components": "^1.0.0",
     "@react-email/render": "2.0.8",
     "@react-email/tailwind": "^2.0.0",
@@ -128,7 +128,7 @@
     "lodash": "^4.17.21",
     "node-gyp": "^12.0.0",
     "prettier": "^3.6.2",
-    "prisma": "~6.19.0",
+    "prisma": "~7.8.0",
     "ts-jest": "^29.4.1",
     "ts-node": "^10.9.2",
     "typescript": "^6.0.0"
