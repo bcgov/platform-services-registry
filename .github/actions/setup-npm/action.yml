@@ -21,6 +21,8 @@ runs:
       pnpm install --no-frozen-lockfile
       pnpm cypress install
     shell: bash
+    env:
+      PNPM_CONFIG_DANGEROUSLY_ALLOW_ALL_BUILDS: 'true'
 
   - name: Verify App NPM packages
     run: |

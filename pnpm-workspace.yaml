@@ -7,5 +7,12 @@ packages:
 - sandbox/nats-provision
 
 allowBuilds:
+  '@prisma/client': true
+  '@prisma/engines': true
+  canvas: true
+  core-js-pure: true
+  prisma: true
+  sharp: true
+  unrs-resolver: true
   cypress: true
   esbuild: true
