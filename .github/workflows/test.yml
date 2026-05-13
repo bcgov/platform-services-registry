@@ -74,4 +74,5 @@ jobs:
       with:
         script: |
           cp app/.env.example app/.env.test
-          pnpm --dir app test
+          cd app
+          pnpm test
