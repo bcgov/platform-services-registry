@@ -37,14 +37,19 @@
   },
   "pnpm": {
     "overrides": {
-      "conventional-changelog-conventionalcommits": "^9.0.0"
+      "conventional-changelog-conventionalcommits": "^9.0.0",
+      "eslint-plugin-react-hooks": "^5.0.0"
     },
     "onlyBuiltDependencies": [
+      "@prisma/client",
       "@prisma/engines",
       "canvas",
+      "core-js-pure",
       "cypress",
       "esbuild",
-      "sharp"
+      "prisma",
+      "sharp",
+      "unrs-resolver"
     ]
   }
 }

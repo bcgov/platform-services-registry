@@ -21,15 +21,17 @@ runs:
       pnpm install --no-frozen-lockfile
       pnpm cypress install
     shell: bash
+    env:
+      PNPM_CONFIG_DANGEROUSLY_ALLOW_ALL_BUILDS: 'true'
 
-  - name: Install App NPM packages
+  - name: Verify App NPM packages
     run: |
-      pnpm install --no-frozen-lockfile
+      ls -la app/node_modules/.bin/next
+      ls -la app/node_modules/.bin/email
 
       # Ensure the canvas package version is updated whenever the version in package.json changes
-      if [ ! -f "node_modules/canvas/build/Release/canvas.node" ]; then
+      if [ ! -f "app/node_modules/canvas/build/Release/canvas.node" ]; then
         echo "Directory does not exist. Installing dependencies and rebuilding canvas..."
-        cd node_modules/.pnpm/canvas@3.2.0/node_modules/canvas
         sudo apt-get update
         sudo apt-get install -y \
           build-essential \
@@ -39,11 +41,10 @@ runs:
           libgif-dev \
           libpng-dev \
           librsvg2-dev
-        pnpm rebuild canvas
+        pnpm --dir app rebuild canvas
       else
         echo "Build directory already exists. Skipping rebuild."
       fi
     shell: bash
-    working-directory: app
     env:
       PNPM_CONFIG_DANGEROUSLY_ALLOW_ALL_BUILDS: 'true'
