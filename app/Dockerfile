@@ -1,7 +1,7 @@
 ARG deployment_tag
 
 # 1st stage to build the image
-FROM node:22.15.0-alpine3.19 AS build
+FROM node:22.15.0-alpine AS build
 
 WORKDIR /app
 
@@ -24,7 +24,7 @@ RUN apk add --no-cache \
     librsvg-dev
 
 # Install Node tools and dependencies
-RUN npm install -g turbo pnpm && \
+RUN npm install -g turbo pnpm@11.0.8 && \
     pnpm install --frozen-lockfile
 
 # Rebuild canvas (avoid hardcoded pnpm virtual store paths)
@@ -37,7 +37,7 @@ RUN npx ts-node scripts/render-react-email-tailwind-style.ts && \
 
 # 2nd stage to copy image and create a smaller final image
 # FROM gcr.io/distroless/nodejs18-debian12
-FROM node:22.15.0-alpine3.19
+FROM node:22.15.0-alpine
 
 WORKDIR /app
 
