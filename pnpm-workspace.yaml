@@ -1,3 +1,11 @@
+packages:
+- app
+- data-migrations
+- sandbox/_packages/keycloak-admin
+- sandbox/keycloak-provision
+- sandbox/m365mock
+- sandbox/nats-provision
+
 allowBuilds:
   cypress: true
   esbuild: true

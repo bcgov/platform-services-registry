@@ -22,15 +22,13 @@ runs:
       pnpm cypress install
     shell: bash
 
-  - name: Install App NPM packages
+  - name: Verify App NPM packages
     run: |
-      pnpm --dir app install --force --no-frozen-lockfile
-
       ls -la app/node_modules/.bin/next
       ls -la app/node_modules/.bin/email
 
       # Ensure the canvas package version is updated whenever the version in package.json changes
-      if [ ! -f "node_modules/canvas/build/Release/canvas.node" ]; then
+      if [ ! -f "app/node_modules/canvas/build/Release/canvas.node" ]; then
         echo "Directory does not exist. Installing dependencies and rebuilding canvas..."
         sudo apt-get update
         sudo apt-get install -y \
