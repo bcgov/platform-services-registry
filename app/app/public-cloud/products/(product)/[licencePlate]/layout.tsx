@@ -9,6 +9,7 @@ import { z } from 'zod';
 import PublicCloudProductOptions from '@/components/dropdowns/PublicCloudProductOptions';
 import Tabs, { ITab } from '@/components/generic/tabs/BasicTabs';
 import ProductBadge from '@/components/public-cloud/ProductBadge';
+import ProductAttachmentsPanel from '@/components/system/ProductAttachmentsPanel';
 import { GlobalRole } from '@/constants';
 import createClientPage from '@/core/client-page';
 import { Provider } from '@/prisma/client';
@@ -103,6 +104,7 @@ export default publicCloudProductSecurityACS(({ getPathParams, children }) => {
       <Tabs tabs={tabs}>
         <PublicCloudProductOptions disabled={!currentProduct?._permissions?.delete} />
       </Tabs>
+      <ProductAttachmentsPanel context="public" licencePlate={licencePlate} />
       <div className="mt-10"> {children}</div>
     </div>
   );

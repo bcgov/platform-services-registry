@@ -62,18 +62,18 @@ model User {
 }
 
 model UserSession {
-  id                   String   @id @default(auto()) @map("_id") @db.ObjectId
-  idirGuid             String   @unique
+  id                   String        @id @default(auto()) @map("_id") @db.ObjectId
+  idirGuid             String        @unique
   nextTokenRefreshTime DateTime
   accessToken          String
   refreshToken         String
   idToken              String
   sub                  String
   roles                String[]
-  teams                Team[]
+  teams                SessionTeam[]
 }
 
-type Team {
+type SessionTeam {
   clientId String
   roles    String[]
 }
@@ -143,31 +143,33 @@ type PrivateCloudRequestDataChanges {
 }
 
 model PrivateCloudProduct {
-  id                               String                      @id @default(auto()) @map("_id") @db.ObjectId
-  licencePlate                     String                      @unique
+  id                               String                          @id @default(auto()) @map("_id") @db.ObjectId
+  licencePlate                     String                          @unique
   name                             String
   description                      String
   status                           ProjectStatus
-  isTest                           Boolean                     @default(false)
+  isTest                           Boolean                         @default(false)
   temporaryProductNotificationDate DateTime?
-  createdAt                        DateTime                    @default(now())
-  updatedAt                        DateTime                    @updatedAt
+  createdAt                        DateTime                        @default(now())
+  updatedAt                        DateTime                        @updatedAt
   archivedAt                       DateTime?
-  projectOwnerId                   String                      @db.ObjectId
-  projectOwner                     User                        @relation("projectOwner", fields: [projectOwnerId], references: [id])
-  primaryTechnicalLeadId           String                      @db.ObjectId
-  primaryTechnicalLead             User                        @relation("primaryTechnicalLead", fields: [primaryTechnicalLeadId], references: [id])
-  secondaryTechnicalLeadId         String?                     @db.ObjectId
-  secondaryTechnicalLead           User?                       @relation("secondaryTechnicalLead", fields: [secondaryTechnicalLeadId], references: [id])
-  organizationId                   String                      @db.ObjectId
-  organization                     Organization                @relation("organization", fields: [organizationId], references: [id])
+  projectOwnerId                   String                          @db.ObjectId
+  projectOwner                     User                            @relation("projectOwner", fields: [projectOwnerId], references: [id])
+  primaryTechnicalLeadId           String                          @db.ObjectId
+  primaryTechnicalLead             User                            @relation("primaryTechnicalLead", fields: [primaryTechnicalLeadId], references: [id])
+  secondaryTechnicalLeadId         String?                         @db.ObjectId
+  secondaryTechnicalLead           User?                           @relation("secondaryTechnicalLead", fields: [secondaryTechnicalLeadId], references: [id])
+  organizationId                   String                          @db.ObjectId
+  organization                     Organization                    @relation("organization", fields: [organizationId], references: [id])
   cluster                          Cluster
-  golddrEnabled                    Boolean                     @default(false)
+  golddrEnabled                    Boolean                         @default(false)
   resourceRequests                 ResourceRequestsEnv
   supportPhoneNumber               String?
   members                          PrivateCloudProductMember[]
-  requests                         PrivateCloudRequest[]       @relation("project")
-  comments                         PrivateCloudComment[]       @relation("project")
+  requests                         PrivateCloudRequest[]           @relation("project")
+  comments                         PrivateCloudComment[]           @relation("project")
+  systemLinks                      SystemPrivateCloudProductLink[]
+  teamLinks                        TeamPrivateCloudProductLink[]
 }
 
 model PrivateCloudRequestData {
@@ -314,31 +316,33 @@ type PublicCloudDataChanges {
 }
 
 model PublicCloudProduct {
-  id                           String                     @id @default(auto()) @map("_id") @db.ObjectId
-  licencePlate                 String                     @unique
+  id                           String                         @id @default(auto()) @map("_id") @db.ObjectId
+  licencePlate                 String                         @unique
   name                         String
   description                  String
   status                       ProjectStatus
-  createdAt                    DateTime                   @default(now())
-  updatedAt                    DateTime                   @updatedAt
+  createdAt                    DateTime                       @default(now())
+  updatedAt                    DateTime                       @updatedAt
   archivedAt                   DateTime?
   budget                       Budget
-  projectOwnerId               String                     @db.ObjectId
-  projectOwner                 User                       @relation("projectOwner", fields: [projectOwnerId], references: [id])
-  primaryTechnicalLeadId       String                     @db.ObjectId
-  primaryTechnicalLead         User                       @relation("primaryTechnicalLead", fields: [primaryTechnicalLeadId], references: [id])
-  secondaryTechnicalLeadId     String?                    @db.ObjectId
-  secondaryTechnicalLead       User?                      @relation("secondaryTechnicalLead", fields: [secondaryTechnicalLeadId], references: [id])
-  expenseAuthorityId           String                     @db.ObjectId
-  expenseAuthority             User                       @relation("expenseAuthority", fields: [expenseAuthorityId], references: [id])
-  organizationId               String                     @db.ObjectId
-  organization                 Organization               @relation("organization", fields: [organizationId], references: [id])
+  projectOwnerId               String                         @db.ObjectId
+  projectOwner                 User                           @relation("projectOwner", fields: [projectOwnerId], references: [id])
+  primaryTechnicalLeadId       String                         @db.ObjectId
+  primaryTechnicalLead         User                           @relation("primaryTechnicalLead", fields: [primaryTechnicalLeadId], references: [id])
+  secondaryTechnicalLeadId     String?                        @db.ObjectId
+  secondaryTechnicalLead       User?                          @relation("secondaryTechnicalLead", fields: [secondaryTechnicalLeadId], references: [id])
+  expenseAuthorityId           String                         @db.ObjectId
+  expenseAuthority             User                           @relation("expenseAuthority", fields: [expenseAuthorityId], references: [id])
+  organizationId               String                         @db.ObjectId
+  organization                 Organization                   @relation("organization", fields: [organizationId], references: [id])
   provider                     Provider
   providerSelectionReasons     String[]
   providerSelectionReasonsNote String
   environmentsEnabled          EnvironmentsEnabled
   members                      PublicCloudProductMember[]
-  requests                     PublicCloudRequest[]       @relation("project")
+  requests                     PublicCloudRequest[]           @relation("project")
+  systemLinks                  SystemPublicCloudProductLink[]
+  teamLinks                    TeamPublicCloudProductLink[]
 }
 
 type PublicCloudProductMember {
@@ -675,6 +679,12 @@ enum EventType {
   CREATE_ORGANIZATION
   UPDATE_ORGANIZATION
   DELETE_ORGANIZATION
+  CREATE_SYSTEM
+  UPDATE_SYSTEM
+  DELETE_SYSTEM
+  CREATE_TEAM
+  UPDATE_TEAM
+  DELETE_TEAM
 }
 
 enum TaskType {
@@ -726,4 +736,109 @@ model Organization {
   privateCloudRequestDataList PrivateCloudRequestData[] @relation("organization")
   publicCloudProducts         PublicCloudProduct[]      @relation("organization")
   publicCloudRequestDataList  PublicCloudRequestData[]  @relation("organization")
+  systems                     System[]                  @relation("organization")
+}
+
+model System {
+  id                       String                          @id @default(auto()) @map("_id") @db.ObjectId
+  name                     String
+  code                     String                          @unique
+  description              String?
+  status                   SystemStatus                    @default(ACTIVE)
+  organizationId           String?                         @db.ObjectId
+  organization             Organization?                   @relation("organization", fields: [organizationId], references: [id])
+  metadata                 Json?
+  rules                    Json?
+  policies                 Json?
+  mappings                 Json?
+  createdAt                DateTime                        @default(now())
+  updatedAt                DateTime                        @updatedAt
+  archivedAt               DateTime?
+  teamLinks                SystemTeamLink[]
+  privateCloudProductLinks SystemPrivateCloudProductLink[]
+  publicCloudProductLinks  SystemPublicCloudProductLink[]
+}
+
+model Team {
+  id                       String                        @id @default(auto()) @map("_id") @db.ObjectId
+  name                     String
+  code                     String                        @unique
+  description              String?
+  metadata                 Json?
+  rules                    Json?
+  policies                 Json?
+  mappings                 Json?
+  createdAt                DateTime                      @default(now())
+  updatedAt                DateTime                      @updatedAt
+  archivedAt               DateTime?
+  members                  TeamMember[]
+  systemLinks              SystemTeamLink[]
+  privateCloudProductLinks TeamPrivateCloudProductLink[]
+  publicCloudProductLinks  TeamPublicCloudProductLink[]
+}
+
+type TeamMember {
+  userId String
+  roles  String[]
+}
+
+model SystemTeamLink {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  systemId  String   @db.ObjectId
+  teamId    String   @db.ObjectId
+  createdAt DateTime @default(now())
+  system    System   @relation(fields: [systemId], references: [id], onDelete: Cascade)
+  team      Team     @relation(fields: [teamId], references: [id], onDelete: Cascade)
+
+  @@unique([systemId, teamId])
+}
+
+model SystemPrivateCloudProductLink {
+  id                    String              @id @default(auto()) @map("_id") @db.ObjectId
+  systemId              String              @db.ObjectId
+  privateCloudProductId String              @db.ObjectId
+  createdAt             DateTime            @default(now())
+  system                System              @relation(fields: [systemId], references: [id], onDelete: Cascade)
+  privateCloudProduct   PrivateCloudProduct @relation(fields: [privateCloudProductId], references: [id], onDelete: Cascade)
+
+  @@unique([systemId, privateCloudProductId])
+}
+
+model SystemPublicCloudProductLink {
+  id                   String             @id @default(auto()) @map("_id") @db.ObjectId
+  systemId             String             @db.ObjectId
+  publicCloudProductId String             @db.ObjectId
+  createdAt            DateTime           @default(now())
+  system               System             @relation(fields: [systemId], references: [id], onDelete: Cascade)
+  publicCloudProduct   PublicCloudProduct @relation(fields: [publicCloudProductId], references: [id], onDelete: Cascade)
+
+  @@unique([systemId, publicCloudProductId])
+}
+
+model TeamPrivateCloudProductLink {
+  id                    String              @id @default(auto()) @map("_id") @db.ObjectId
+  teamId                String              @db.ObjectId
+  privateCloudProductId String              @db.ObjectId
+  createdAt             DateTime            @default(now())
+  team                  Team                @relation(fields: [teamId], references: [id], onDelete: Cascade)
+  privateCloudProduct   PrivateCloudProduct @relation(fields: [privateCloudProductId], references: [id], onDelete: Cascade)
+
+  @@unique([teamId, privateCloudProductId])
+}
+
+model TeamPublicCloudProductLink {
+  id                   String             @id @default(auto()) @map("_id") @db.ObjectId
+  teamId               String             @db.ObjectId
+  publicCloudProductId String             @db.ObjectId
+  createdAt            DateTime           @default(now())
+  team                 Team               @relation(fields: [teamId], references: [id], onDelete: Cascade)
+  publicCloudProduct   PublicCloudProduct @relation(fields: [publicCloudProductId], references: [id], onDelete: Cascade)
+
+  @@unique([teamId, publicCloudProductId])
+}
+
+enum SystemStatus {
+  ACTIVE
+  DRAFT
+  ARCHIVED
 }

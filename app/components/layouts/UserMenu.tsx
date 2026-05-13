@@ -15,6 +15,8 @@ import {
   IconSignLeft,
   IconCheckupList,
   IconClockDollar,
+  IconTopologyStar3,
+  IconUsers,
 } from '@tabler/icons-react';
 import Link from 'next/link';
 import { Permissions } from 'next-auth';
@@ -87,6 +89,18 @@ export default function UserMenu() {
       Icon: IconBuilding,
       href: '/organizations',
       permission: 'viewOrganizations',
+    },
+    {
+      text: 'Systems',
+      Icon: IconTopologyStar3,
+      href: '/systems',
+      permission: 'viewSystems',
+    },
+    {
+      text: 'Teams',
+      Icon: IconUsers,
+      href: '/teams',
+      permission: 'viewTeams',
     },
     {
       text: 'Users',

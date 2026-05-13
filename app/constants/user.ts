@@ -52,6 +52,10 @@ export enum GlobalPermissions {
 
   ViewOrganizations = 'viewOrganizations',
   ManageOrganizations = 'manageOrganizations',
+  ViewSystems = 'viewSystems',
+  ManageSystems = 'manageSystems',
+  ViewTeams = 'viewTeams',
+  ManageTeams = 'manageTeams',
 }
 
 export enum GlobalRole {

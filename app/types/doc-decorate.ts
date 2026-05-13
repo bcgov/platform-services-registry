@@ -95,3 +95,19 @@ export interface PublicCloudBillingDecorate {
     delete: boolean;
   };
 }
+
+export interface SystemDecorate {
+  _permissions: {
+    view: boolean;
+    edit: boolean;
+    delete: boolean;
+  };
+}
+
+export interface TeamDecorate {
+  _permissions: {
+    view: boolean;
+    edit: boolean;
+    delete: boolean;
+  };
+}

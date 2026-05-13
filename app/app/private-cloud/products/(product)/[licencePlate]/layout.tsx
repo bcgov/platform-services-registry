@@ -10,6 +10,7 @@ import PrivateCloudProductOptions from '@/components/dropdowns/PrivateCloudProdu
 import TemporaryProductAlert from '@/components/form/TemporaryProductAlert';
 import Tabs, { ITab } from '@/components/generic/tabs/BasicTabs';
 import ProductBadge from '@/components/private-cloud/ProductBadge';
+import ProductAttachmentsPanel from '@/components/system/ProductAttachmentsPanel';
 import { GlobalRole } from '@/constants';
 import createClientPage from '@/core/client-page';
 import { getPrivateCloudProduct, getSubnetForEmerald } from '@/services/backend/private-cloud/products';
@@ -124,6 +125,7 @@ export default privateCloudProductLayout(({ getPathParams, session, children }) 
           canDelete={snap.currentProduct?._permissions?.delete}
         />
       </Tabs>
+      <ProductAttachmentsPanel context="private" licencePlate={licencePlate} />
       <div className="mt-6">{children}</div>
     </div>
   );

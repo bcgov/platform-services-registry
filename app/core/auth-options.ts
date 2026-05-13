@@ -340,6 +340,10 @@ export async function generateSession({
 
     viewOrganizations: session.isUser,
     manageOrganizations: session.isAdmin || session.isPrivateAdmin,
+    viewSystems: session.isUser,
+    manageSystems: session.isAdmin || session.isPrivateAdmin || session.isPublicAdmin,
+    viewTeams: session.isUser,
+    manageTeams: session.isAdmin || session.isPrivateAdmin || session.isPublicAdmin,
   };
 
   session.permissionList = Object.keys(session.permissions).filter(

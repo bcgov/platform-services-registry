@@ -11,11 +11,27 @@ const globalForPrisma = global as unknown as { prisma: PrismaClient };
 
 const log: ('info' | 'query' | 'warn' | 'error')[] = LOG_DATABASE ? ['query', 'info', 'warn', 'error'] : [];
 
-const prisma =
-  globalForPrisma.prisma ||
-  new PrismaClient({ log }).$extends({
+function createPrismaClient() {
+  return new PrismaClient({ log }).$extends({
     query: {},
   });
+}
+
+function hasExpectedModels(client: PrismaClient | undefined) {
+  if (!client) return false;
+
+  return (
+    'system' in client &&
+    'team' in client &&
+    'systemTeamLink' in client &&
+    'systemPrivateCloudProductLink' in client &&
+    'systemPublicCloudProductLink' in client &&
+    'teamPrivateCloudProductLink' in client &&
+    'teamPublicCloudProductLink' in client
+  );
+}
+
+const prisma = hasExpectedModels(globalForPrisma.prisma) ? globalForPrisma.prisma : createPrismaClient();
 
 if (NODE_ENV !== 'production') globalForPrisma.prisma = prisma;
 

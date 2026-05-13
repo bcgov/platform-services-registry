@@ -65,6 +65,10 @@ declare module 'next-auth' {
 
     viewOrganizations: boolean;
     manageOrganizations: boolean;
+    viewSystems: boolean;
+    manageSystems: boolean;
+    viewTeams: boolean;
+    manageTeams: boolean;
   }
 
   interface Session extends DefaultSession {
