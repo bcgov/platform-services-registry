@@ -27,8 +27,7 @@ jobs:
       uses: ./.github/actions/setup-npm
 
     - name: Run App build
-      run: npm run build
-      working-directory: app
+      run: pnpm --filter pltsvc-app build
 
   build-email:
     runs-on: ubuntu-22.04
@@ -44,8 +43,7 @@ jobs:
       uses: ./.github/actions/setup-npm
 
     - name: Run Email build
-      run: npm run email-build
-      working-directory: app
+      run: pnpm --filter pltsvc-app email-build
       env:
         PNPM_BUILD_POLICY: allow
         PNPM_CONFIG_DANGEROUSLY_ALLOW_ALL_BUILDS: 'true'
@@ -74,4 +72,4 @@ jobs:
       with:
         script: |
           cp app/.env.example app/.env.test
-          npm run test --prefix app
+          pnpm --filter pltsvc-app test
