@@ -24,7 +24,7 @@ runs:
 
   - name: Install App NPM packages
     run: |
-      pnpm install --no-frozen-lockfile
+      pnpm install --dir . --no-frozen-lockfile
 
       # Ensure the canvas package version is updated whenever the version in package.json changes
       if [ ! -f "node_modules/canvas/build/Release/canvas.node" ]; then
