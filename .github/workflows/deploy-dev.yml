@@ -9,6 +9,9 @@ on:
     - helm/**
     - sandbox/nats-provision/**
     - data-migrations/**
+    - pnpm-workspace.yaml
+    - pnpm-lock.yaml
+    - package.json
     - .github/workflows/deploy-dev.yml
 
 env:
