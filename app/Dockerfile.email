@@ -5,6 +5,7 @@ WORKDIR /workspace
 
 COPY package.json pnpm-lock.yaml pnpm-workspace.yaml ./
 COPY app/package.json ./app/package.json
+COPY app/prisma ./app/prisma
 
 RUN npm install -g turbo pnpm@11.0.8 && \
     pnpm install --frozen-lockfile
