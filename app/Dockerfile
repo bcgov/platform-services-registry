@@ -54,8 +54,8 @@ COPY --from=build /workspace/app/.next .next
 COPY --from=build /workspace/app/next.config.js ./
 COPY --from=build /workspace/app/public public
 COPY --from=build /workspace/app/package.json package.json
-COPY --from=build /workspace/app/node_modules node_modules
 COPY --from=build /workspace/app/prisma/client prisma/client
+COPY --from=build /workspace/node_modules node_modules
 
 # Install system dependencies (for running canvas)
 RUN apk add --no-cache \
