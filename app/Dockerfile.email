@@ -19,24 +19,12 @@ WORKDIR /workspace/app
 
 ENV BASE_URL=https://dev-pltsvc.apps.silver.devops.gov.bc.ca
 
-RUN rm -rf .react-email
+RUN rm -rf .react-email emails-export
 RUN pnpm email-build
-RUN mkdir -p .react-email/public
 
 # 2nd stage to copy image and create a smaller final image
-FROM node:24.15.0-slim
+FROM nginx:1.27-alpine
 
-WORKDIR /app
+COPY --from=build /workspace/app/emails-export /usr/share/nginx/html
 
-COPY --from=build /workspace/app/.react-email/.next ./.next
-COPY --from=build /workspace/app/.react-email/public ./public
-COPY --from=build /workspace/app/.react-email/package.json ./
-COPY --from=build /workspace/app/.react-email/node_modules ./node_modules
-
-RUN mkdir -p .next/cache/images &&\
-    chmod -R 777 .next/cache/images
-
-ENV NEXTAUTH_SECRET=change_me
-
-EXPOSE 3000
-CMD ["node_modules/.bin/next", "start"]
+EXPOSE 80
