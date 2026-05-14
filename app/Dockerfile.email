@@ -28,6 +28,9 @@ FROM nginxinc/nginx-unprivileged:1.27-alpine
 WORKDIR /usr/share/nginx/html
 
 COPY app/nginx.email.conf /etc/nginx/conf.d/default.conf
+
+RUN rm -rf /usr/share/nginx/html/*
+
 COPY --from=build /workspace/app/emails-export ./
 
 EXPOSE 3000
