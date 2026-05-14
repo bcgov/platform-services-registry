@@ -5,6 +5,9 @@
 !sandbox/mock-users.json
 !.prettierignore
 !.prettierrc
+!package.json
+!pnpm-lock.yaml
+!pnpm-workspace.yaml
 **/node_modules
 app/.next
 app/.react-email
