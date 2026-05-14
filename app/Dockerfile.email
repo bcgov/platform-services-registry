@@ -1,18 +1,23 @@
 # 1st stage to build the image
 FROM node:24.15.0-slim AS build
 
-WORKDIR /app
+WORKDIR /workspace
 
-COPY app .
+COPY package.json pnpm-lock.yaml pnpm-workspace.yaml ./
+COPY app/package.json ./app/package.json
+
+RUN npm install -g turbo pnpm@11.0.8 && \
+    pnpm install --frozen-lockfile
+
+COPY app ./app
 COPY sandbox/types.ts /sandbox/types.ts
 COPY sandbox/mock-users.json /sandbox/mock-users.json
-COPY .prettierignore .
-COPY .prettierrc .
+COPY .prettierignore .prettierrc ./app/
+
+WORKDIR /workspace/app
 
 ENV BASE_URL=https://dev-pltsvc.apps.silver.devops.gov.bc.ca
 
-RUN npm install -g turbo pnpm
-RUN pnpm install --frozen-lockfile
 RUN rm -rf .react-email
 RUN pnpm email-build
 RUN mkdir -p .react-email/public

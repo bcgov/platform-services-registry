@@ -3,12 +3,10 @@ ARG deployment_tag
 # 1st stage to build the image
 FROM node:22.15.0-alpine AS build
 
-WORKDIR /app
+WORKDIR /workspace
 
-COPY app .
-COPY sandbox/types.ts /sandbox/types.ts
-COPY sandbox/mock-users.json /sandbox/mock-users.json
-COPY .prettierignore .prettierrc ./
+COPY package.json pnpm-lock.yaml pnpm-workspace.yaml ./
+COPY app/package.json ./app/package.json
 
 ENV SECURE_HEADERS=true \
   DEPLOYMENT_TAG=${deployment_tag}
@@ -26,6 +24,13 @@ RUN apk add --no-cache \
 # Install Node tools and dependencies
 RUN npm install -g turbo pnpm@11.0.8 && \
     pnpm install --frozen-lockfile
+
+COPY app ./app
+COPY sandbox/types.ts /sandbox/types.ts
+COPY sandbox/mock-users.json /sandbox/mock-users.json
+COPY .prettierignore .prettierrc ./app/
+
+WORKDIR /workspace/app
 
 # Rebuild canvas (avoid hardcoded pnpm virtual store paths)
 # If canvas native binary is missing, rebuild it.
