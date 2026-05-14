@@ -80,7 +80,7 @@ spec:
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           command: ["/bin/sh", "-c"]
           args:
-            ['. /vault/secrets/secrets.env && /app/node_modules/.bin/next start']
+            ['. /vault/secrets/secrets.env && /workspace/app/node_modules/.bin/next start']
           env:
             - name: DEPLOYMENT_TAG
               value: {{ $deploymentTag | quote }}

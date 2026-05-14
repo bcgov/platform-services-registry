@@ -47,11 +47,10 @@ RUN npx ts-node scripts/render-react-email-tailwind-style.ts && \
 # FROM gcr.io/distroless/nodejs18-debian12
 FROM node:22.15.0-alpine
 
-WORKDIR /app
+WORKDIR /workspace/app
 
 # Copy built artifacts from build stage
-COPY --from=build /workspace/app /app
-COPY --from=build /workspace/node_modules /app/node_modules
+COPY --from=build /workspace /workspace
 
 # Install system dependencies (for running canvas)
 RUN apk add --no-cache \
