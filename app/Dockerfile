@@ -7,6 +7,7 @@ WORKDIR /workspace
 
 COPY package.json pnpm-lock.yaml pnpm-workspace.yaml ./
 COPY app/package.json ./app/package.json
+COPY app/prisma ./app/prisma
 
 ENV SECURE_HEADERS=true \
   DEPLOYMENT_TAG=${deployment_tag}
