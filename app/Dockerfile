@@ -50,12 +50,8 @@ FROM node:22.15.0-alpine
 WORKDIR /app
 
 # Copy built artifacts from build stage
-COPY --from=build /workspace/app/.next .next
-COPY --from=build /workspace/app/next.config.js ./
-COPY --from=build /workspace/app/public public
-COPY --from=build /workspace/app/package.json package.json
-COPY --from=build /workspace/app/prisma/client prisma/client
-COPY --from=build /workspace/node_modules node_modules
+COPY --from=build /workspace/app /app
+COPY --from=build /workspace/node_modules /app/node_modules
 
 # Install system dependencies (for running canvas)
 RUN apk add --no-cache \
