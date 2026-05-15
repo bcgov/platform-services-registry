@@ -22,9 +22,26 @@ ENV BASE_URL=https://dev-pltsvc.apps.silver.devops.gov.bc.ca
 RUN rm -rf .react-email emails-export
 RUN pnpm email-build
 
+RUN \
+  echo '<!doctype html><html><body><h1>Email templates</h1>' > emails-export/index.html && \
+  echo '<h2>Private Cloud</h2><ul>' >> emails-export/index.html && \
+  find emails-export/private-cloud -name '*.html' -exec basename {} \; | sort | \
+  awk '{print "<li><a target=\"_blank\" rel=\"noopener noreferrer\" href=\"/private-cloud/"$0"\">"$0"</a></li>"}' >> emails-export/index.html && \
+  echo '</ul><h2>Public Cloud</h2><ul>' >> emails-export/index.html && \
+  find emails-export/public-cloud -name '*.html' -exec basename {} \; | sort | \
+  awk '{print "<li><a target=\"_blank\" rel=\"noopener noreferrer\" href=\"/public-cloud/"$0"\">"$0"</a></li>"}' >> emails-export/index.html && \
+  echo '</ul></body></html>' >> emails-export/index.html
+
 # 2nd stage to copy image and create a smaller final image
-FROM nginx:1.27-alpine
+FROM nginxinc/nginx-unprivileged:1.27-alpine
 
-COPY --from=build /workspace/app/emails-export /usr/share/nginx/html
+USER root
+RUN rm -rf /usr/share/nginx/html/*
 
-EXPOSE 80
+WORKDIR /usr/share/nginx/html
+
+COPY app/nginx.email.conf /etc/nginx/conf.d/default.conf
+COPY --from=build /workspace/app/emails-export ./
+
+USER 101
+EXPOSE 3000

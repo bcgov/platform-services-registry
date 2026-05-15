@@ -1,7 +1,7 @@
 ARG deployment_tag
 
 # 1st stage to build the image
-FROM node:22.22.3-alpine AS build
+FROM node:24.15.0-alpine AS build
 
 WORKDIR /workspace
 
@@ -45,17 +45,12 @@ RUN npx ts-node scripts/render-react-email-tailwind-style.ts && \
 
 # 2nd stage to copy image and create a smaller final image
 # FROM gcr.io/distroless/nodejs18-debian12
-FROM node:22.22.3-alpine
+FROM node:24.15.0-alpine
 
-WORKDIR /app
+WORKDIR /workspace/app
 
 # Copy built artifacts from build stage
-COPY --from=build /workspace/app/.next .next
-COPY --from=build /workspace/app/next.config.js ./
-COPY --from=build /workspace/app/public public
-COPY --from=build /workspace/app/package.json package.json
-COPY --from=build /workspace/app/node_modules node_modules
-COPY --from=build /workspace/app/prisma/client prisma/client
+COPY --from=build /workspace /workspace
 
 # Install system dependencies (for running canvas)
 RUN apk add --no-cache \
