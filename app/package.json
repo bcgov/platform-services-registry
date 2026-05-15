@@ -17,7 +17,6 @@
     "migrate-data": "cat .env.local | grep DATABASE_URL > ../data-migrations/.env && cd ../data-migrations && npm install && npx migrate-mongo up",
     "email": "dotenv -e .env.local -- email dev --dir emails --port 3001",
     "email-build": "email export --pretty --outDir emails-export --dir emails",
-    "email-start": "dotenv -e .env.local -- email start --port 3001",
     "email-export": "email export --pretty --outDir emails-export --dir emails"
   },
   "engines": {
