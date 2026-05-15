@@ -1,12 +1,13 @@
 ARG deployment_tag
 
 # 1st stage to build the image
-FROM node:22.15.0-alpine AS build
+FROM node:24.15.0-alpine AS build
 
 WORKDIR /workspace
 
 COPY package.json pnpm-lock.yaml pnpm-workspace.yaml ./
 COPY app/package.json ./app/package.json
+COPY app/prisma ./app/prisma
 
 ENV SECURE_HEADERS=true \
   DEPLOYMENT_TAG=${deployment_tag}
@@ -21,13 +22,15 @@ RUN apk add --no-cache \
     libpng-dev \
     librsvg-dev
 
+ENV CYPRESS_INSTALL_BINARY=0
+
 # Install Node tools and dependencies
 RUN npm install -g turbo pnpm@11.0.8 && \
     pnpm install --frozen-lockfile
 
 COPY app ./app
-COPY sandbox/types.ts /sandbox/types.ts
-COPY sandbox/mock-users.json /sandbox/mock-users.json
+COPY sandbox/types.ts ./sandbox/types.ts
+COPY sandbox/mock-users.json ./sandbox/mock-users.json
 COPY .prettierignore .prettierrc ./app/
 
 WORKDIR /workspace/app
@@ -42,17 +45,12 @@ RUN npx ts-node scripts/render-react-email-tailwind-style.ts && \
 
 # 2nd stage to copy image and create a smaller final image
 # FROM gcr.io/distroless/nodejs18-debian12
-FROM node:22.15.0-alpine
+FROM node:24.15.0-alpine
 
-WORKDIR /app
+WORKDIR /workspace/app
 
 # Copy built artifacts from build stage
-COPY --from=build /workspace/app/.next .next
-COPY --from=build /workspace/app/next.config.js ./
-COPY --from=build /workspace/app/public public
-COPY --from=build /workspace/app/package.json package.json
-COPY --from=build /workspace/app/node_modules node_modules
-COPY --from=build /workspace/app/prisma/client prisma/client
+COPY --from=build /workspace /workspace
 
 # Install system dependencies (for running canvas)
 RUN apk add --no-cache \

@@ -11,6 +11,7 @@ on:
     - data-migrations/**
     - pnpm-workspace.yaml
     - pnpm-lock.yaml
+    - .dockerignore
     - package.json
     - .github/workflows/deploy-dev.yml
 
