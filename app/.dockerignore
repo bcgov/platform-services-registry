@@ -8,3 +8,4 @@ next-env.d.ts
 sandbox/mnt
 .react-email
 emails-export
+!app/nginx.email.conf
