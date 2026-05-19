@@ -4,6 +4,7 @@ import { Button } from '@mantine/core';
 import { useQuery } from '@tanstack/react-query';
 import Link from 'next/link';
 import DataTable from '@/components/generic/data-table/DataTable';
+import EntityPageHeader from '@/components/system/EntityPageHeader';
 import { GlobalPermissions } from '@/constants';
 import createClientPage from '@/core/client-page';
 import { listSystems } from '@/services/backend/systems';
@@ -22,15 +23,19 @@ export default Page(({ session }) => {
   if (isLoading) return null;
 
   return (
-    <div className="pt-5">
-      <div className="flex items-center justify-between mb-4">
-        <h1 className="text-xl lg:text-2xl 2xl:text-4xl font-semibold leading-7 text-gray-900">Systems</h1>
-        {session?.permissions.manageSystems && (
-          <Button component={Link} href="/systems/create">
-            Create
-          </Button>
-        )}
-      </div>
+    <div className="pt-5 space-y-4">
+      <EntityPageHeader
+        breadcrumbs={[{ label: 'Dashboard', href: '/home' }, { label: 'Systems' }]}
+        title="Systems"
+        description="Browse and manage system containers that group related teams and cloud products."
+        actions={
+          session?.permissions.manageSystems ? (
+            <Button component={Link} href="/systems/create">
+              Create System
+            </Button>
+          ) : null
+        }
+      />
       <DataTable
         data={data ?? []}
         columns={[
@@ -45,6 +50,17 @@ export default Page(({ session }) => {
             label: 'Organization',
             value: 'organization.name',
             cellFormatter: (item) => item.organization?.name ?? '',
+          },
+          {
+            label: 'Teams',
+            value: 'teamLinks.length',
+            cellFormatter: (item) => String(item.teamLinks?.length ?? 0),
+          },
+          {
+            label: 'Resources',
+            value: 'resourceCount',
+            cellFormatter: (item) =>
+              String((item.privateCloudProductLinks?.length ?? 0) + (item.publicCloudProductLinks?.length ?? 0)),
           },
         ]}
       />

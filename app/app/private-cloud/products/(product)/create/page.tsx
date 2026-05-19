@@ -12,6 +12,7 @@ import { openPrivateCloudProductCreateSubmitModal } from '@/components/modal/pri
 import Quotas from '@/components/private-cloud/sections/Quotas';
 import TeamContacts from '@/components/private-cloud/sections/TeamContacts';
 import Webhooks from '@/components/private-cloud/sections/Webhooks';
+import EntityPageHeader from '@/components/system/EntityPageHeader';
 import { GlobalRole, defaultResourceRequests } from '@/constants';
 import createClientPage from '@/core/client-page';
 import { privateCloudCreateRequestBodySchema } from '@/validation-schemas/private-cloud';
@@ -70,10 +71,16 @@ export default privateCloudProductNew(({ session }) => {
 
   return (
     <div>
-      <h1 className="flex justify-between text-xl lg:text-2xl xl:text-4xl font-semibold leading-7 text-gray-900 mt-2 mb-0 lg:mt-4">
-        New Private Cloud Product
-      </h1>
-      <h3 className="mt-0 mb-3 italic">Private Cloud OpenShift platform</h3>
+      <EntityPageHeader
+        breadcrumbs={[
+          { label: 'Dashboard', href: '/home' },
+          { label: 'Resources', href: '/resources' },
+          { label: 'Private Cloud OpenShift', href: '/resources/private-cloud-openshift' },
+          { label: 'New Product' },
+        ]}
+        title="New Private Cloud Product"
+        description="Create a new product request for the Private Cloud OpenShift platform."
+      />
 
       <FormProvider {...methods}>
         <FormErrorNotification />

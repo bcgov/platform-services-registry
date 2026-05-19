@@ -19,6 +19,7 @@ import PageAccordion from '@/components/generic/accordion/PageAccordion';
 import FormErrorNotification from '@/components/generic/FormErrorNotification';
 import { openPublicCloudProductCreateSubmitModal } from '@/components/modal/publicCloudProductCreateSubmit';
 import TeamContacts from '@/components/public-cloud/sections/TeamContacts';
+import EntityPageHeader from '@/components/system/EntityPageHeader';
 import { GlobalRole } from '@/constants';
 import createClientPage from '@/core/client-page';
 import { publicCloudCreateRequestBodySchema } from '@/validation-schemas/public-cloud';
@@ -81,10 +82,16 @@ export default publicCloudProductNew(() => {
 
   return (
     <div>
-      <h1 className="flex justify-between text-xl lg:text-2xl xl:text-4xl font-semibold leading-7 text-gray-900 mt-2 mb-0 lg:mt-4">
-        New Public Cloud Product
-      </h1>
-      <h3 className="mt-0 mb-3 italic">Public Cloud Landing Zone</h3>
+      <EntityPageHeader
+        breadcrumbs={[
+          { label: 'Dashboard', href: '/home' },
+          { label: 'Resources', href: '/resources' },
+          { label: 'Public Cloud Landing Zone', href: '/resources/public-cloud-landing-zone' },
+          { label: 'New Product' },
+        ]}
+        title="New Public Cloud Product"
+        description="Create a new product request for the Public Cloud Landing Zone."
+      />
 
       <FormProvider {...form}>
         <FormErrorNotification />

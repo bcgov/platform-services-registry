@@ -24,7 +24,6 @@ export default function TableBodyPublicProducts({ rows, isLoading = false }: Tab
   const appSnapshot = useSnapshot(appState);
   const router = useRouter();
   const pathname = usePathname();
-  const cloud = pathname.split('/')[1];
 
   if (isLoading) {
     return null;
@@ -35,7 +34,12 @@ export default function TableBodyPublicProducts({ rows, isLoading = false }: Tab
   }
 
   const onRowClickHandler = (row: any) => {
-    router.push(`/${cloud}/products/${row.licencePlate}/edit`);
+    if (pathname.startsWith('/resources/public-cloud-landing-zone')) {
+      router.push(`/resources/public-cloud-landing-zone/products/${row.licencePlate}/edit`);
+      return;
+    }
+
+    router.push(`/public-cloud/products/${row.licencePlate}/edit`);
   };
 
   return (

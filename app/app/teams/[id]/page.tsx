@@ -4,6 +4,7 @@ import { Button, Select, TextInput } from '@mantine/core';
 import { useQuery } from '@tanstack/react-query';
 import { useEffect, useMemo, useState } from 'react';
 import { z } from 'zod';
+import EntityPageHeader from '@/components/system/EntityPageHeader';
 import TeamForm from '@/components/system/TeamForm';
 import { GlobalPermissions } from '@/constants';
 import createClientPage from '@/core/client-page';
@@ -85,21 +86,25 @@ export default Page(({ getPathParams, session }) => {
 
   return (
     <div className="pt-5 space-y-8">
-      <div className="flex items-center justify-between">
-        <h1 className="text-xl lg:text-2xl 2xl:text-4xl font-semibold">{data.name}</h1>
-        {session?.permissions.manageTeams && (
-          <Button
-            color="red"
-            variant="outline"
-            onClick={async () => {
-              await deleteTeam(data.id);
-              window.location.href = '/teams';
-            }}
-          >
-            Archive
-          </Button>
-        )}
-      </div>
+      <EntityPageHeader
+        breadcrumbs={[{ label: 'Dashboard', href: '/home' }, { label: 'Teams', href: '/teams' }, { label: data.name }]}
+        title={data.name}
+        description={`Team detail for ${data.code}. Manage membership, linked systems, and linked cloud products here.`}
+        actions={
+          session?.permissions.manageTeams ? (
+            <Button
+              color="red"
+              variant="outline"
+              onClick={async () => {
+                await deleteTeam(data.id);
+                window.location.href = '/teams';
+              }}
+            >
+              Archive
+            </Button>
+          ) : null
+        }
+      />
 
       <TeamForm
         initialValue={data}

@@ -26,7 +26,6 @@ export default function TableBodyPrivateProducts({ rows, isLoading = false }: Ta
   const appSnapshot = useSnapshot(appState);
   const router = useRouter();
   const pathname = usePathname();
-  const cloud = pathname.split('/')[1];
 
   if (isLoading) {
     return null;
@@ -37,7 +36,12 @@ export default function TableBodyPrivateProducts({ rows, isLoading = false }: Ta
   }
 
   const onRowClickHandler = (row: any) => {
-    router.push(`/${cloud}/products/${row.licencePlate}/edit`);
+    if (pathname.startsWith('/resources/private-cloud-openshift')) {
+      router.push(`/resources/private-cloud-openshift/products/${row.licencePlate}/edit`);
+      return;
+    }
+
+    router.push(`/private-cloud/products/${row.licencePlate}/edit`);
   };
 
   return (

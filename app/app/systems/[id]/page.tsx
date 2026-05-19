@@ -4,6 +4,7 @@ import { Button, Select } from '@mantine/core';
 import { useQuery } from '@tanstack/react-query';
 import { useEffect, useMemo, useState } from 'react';
 import { z } from 'zod';
+import EntityPageHeader from '@/components/system/EntityPageHeader';
 import SystemForm from '@/components/system/SystemForm';
 import { GlobalPermissions } from '@/constants';
 import createClientPage from '@/core/client-page';
@@ -76,21 +77,31 @@ export default Page(({ getPathParams, session }) => {
 
   return (
     <div className="pt-5 space-y-8">
-      <div className="flex items-center justify-between">
-        <h1 className="text-xl lg:text-2xl 2xl:text-4xl font-semibold">{data.name}</h1>
-        {session?.permissions.manageSystems && (
-          <Button
-            color="red"
-            variant="outline"
-            onClick={async () => {
-              await deleteSystem(data.id);
-              window.location.href = '/systems';
-            }}
-          >
-            Archive
-          </Button>
-        )}
-      </div>
+      <EntityPageHeader
+        breadcrumbs={[
+          { label: 'Dashboard', href: '/home' },
+          { label: 'Systems', href: '/systems' },
+          { label: data.name },
+        ]}
+        title={data.name}
+        description={`System detail for ${data.code}${
+          data.organization?.name ? ` in ${data.organization.name}` : ''
+        }. Manage metadata, linked teams, and linked cloud products here.`}
+        actions={
+          session?.permissions.manageSystems ? (
+            <Button
+              color="red"
+              variant="outline"
+              onClick={async () => {
+                await deleteSystem(data.id);
+                window.location.href = '/systems';
+              }}
+            >
+              Archive
+            </Button>
+          ) : null
+        }
+      />
 
       <SystemForm
         initialValue={data}

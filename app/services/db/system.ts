@@ -34,6 +34,9 @@ const systemDetailInclude = {
 
 const systemSimpleInclude = {
   organization: true,
+  teamLinks: true,
+  privateCloudProductLinks: true,
+  publicCloudProductLinks: true,
 } satisfies Prisma.SystemInclude;
 
 function systemPermissions(session: Session) {

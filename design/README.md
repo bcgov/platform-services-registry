@@ -4,6 +4,8 @@ This directory documents the phase-1 introduction of `System` and `Team` into th
 
 Files:
 
+-   [BACKLOG.md](/Users/sheaphillips/Development/platform-services-registry/design/BACKLOG.md)
+    Working backlog of follow-up ideas, open questions, and future modeling/provisioning work.
 -   [PHASE1_SYSTEMS_TEAMS_SPEC.md](/Users/sheaphillips/Development/platform-services-registry/design/PHASE1_SYSTEMS_TEAMS_SPEC.md)
     Design intent, requirements, scope, constraints, and expected behavior.
 -   [PHASE1_SYSTEMS_TEAMS_AS_BUILT.md](/Users/sheaphillips/Development/platform-services-registry/design/PHASE1_SYSTEMS_TEAMS_AS_BUILT.md)

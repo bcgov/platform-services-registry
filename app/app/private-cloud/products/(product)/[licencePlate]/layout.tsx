@@ -4,12 +4,14 @@ import { Alert, Loader } from '@mantine/core';
 import { IconInfoCircle, IconLicense } from '@tabler/icons-react';
 import { useQuery } from '@tanstack/react-query';
 import Link from 'next/link';
+import { usePathname } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import { z } from 'zod';
 import PrivateCloudProductOptions from '@/components/dropdowns/PrivateCloudProductOptions';
 import TemporaryProductAlert from '@/components/form/TemporaryProductAlert';
 import Tabs, { ITab } from '@/components/generic/tabs/BasicTabs';
 import ProductBadge from '@/components/private-cloud/ProductBadge';
+import EntityPageHeader from '@/components/system/EntityPageHeader';
 import ProductAttachmentsPanel from '@/components/system/ProductAttachmentsPanel';
 import { GlobalRole } from '@/constants';
 import createClientPage from '@/core/client-page';
@@ -28,6 +30,7 @@ const privateCloudProductLayout = createClientPage({
 
 export default privateCloudProductLayout(({ getPathParams, session, children }) => {
   const [pathParams, setPathParams] = useState<z.infer<typeof pathParamSchema>>();
+  const pathname = usePathname();
 
   useEffect(() => {
     getPathParams().then((v) => setPathParams(v));
@@ -50,21 +53,27 @@ export default privateCloudProductLayout(({ getPathParams, session, children }) 
     state.licencePlate = licencePlate;
   }, [licencePlate]);
 
+  const isResourceArea = pathname.startsWith('/resources/private-cloud-openshift');
+  const productBasePath = isResourceArea
+    ? `/resources/private-cloud-openshift/products/${licencePlate}`
+    : `/private-cloud/products/${licencePlate}`;
+  const resourceParentHref = isResourceArea ? '/resources/private-cloud-openshift' : '/private-cloud/products/all';
+
   const tabs: ITab[] = [
     {
       label: 'PRODUCT',
       name: 'product',
-      href: `/private-cloud/products/${licencePlate}/edit`,
+      href: `${productBasePath}/edit`,
     },
     {
       label: 'REQUESTS',
       name: 'requests',
-      href: `/private-cloud/products/${licencePlate}/requests`,
+      href: `${productBasePath}/requests`,
     },
     {
       label: 'RESOURCE USAGE',
       name: 'usage',
-      href: `/private-cloud/products/${licencePlate}/usage`,
+      href: `${productBasePath}/usage`,
     },
   ];
 
@@ -72,7 +81,7 @@ export default privateCloudProductLayout(({ getPathParams, session, children }) 
     tabs.push({
       label: 'ADMIN NOTES',
       name: 'comments',
-      href: `/private-cloud/products/${licencePlate}/comments`,
+      href: `${productBasePath}/comments`,
       tooltip: 'Admin only',
     });
   }
@@ -81,7 +90,7 @@ export default privateCloudProductLayout(({ getPathParams, session, children }) 
     tabs.push({
       label: 'COSTS',
       name: 'costs',
-      href: `/private-cloud/products/${licencePlate}/costs`,
+      href: `${productBasePath}/costs`,
     });
   }
 
@@ -89,7 +98,7 @@ export default privateCloudProductLayout(({ getPathParams, session, children }) 
     tabs.push({
       label: 'SECURITY',
       name: 'security',
-      href: `/private-cloud/products/${licencePlate}/security/repository`,
+      href: `${productBasePath}/security/repository`,
       ignoreSegments: 1,
     });
   }
@@ -100,11 +109,17 @@ export default privateCloudProductLayout(({ getPathParams, session, children }) 
 
   return (
     <div>
-      <h1 className="flex justify-between text-xl lg:text-2xl xl:text-4xl font-semibold leading-7 text-gray-900 mt-2 mb-0 lg:mt-4">
-        {snap.currentProduct.name}
-        <ProductBadge data={snap.currentProduct} />
-      </h1>
-      <h3 className="mt-0 italic">Private Cloud OpenShift platform</h3>
+      <EntityPageHeader
+        breadcrumbs={[
+          { label: 'Dashboard', href: '/home' },
+          { label: 'Resources', href: '/resources' },
+          { label: 'Private Cloud OpenShift', href: resourceParentHref },
+          { label: snap.currentProduct.name },
+        ]}
+        title={snap.currentProduct.name}
+        description="Private Cloud OpenShift product detail."
+        actions={<ProductBadge data={snap.currentProduct} />}
+      />
       {snap.currentProduct.requests.length > 0 && (
         <Alert variant="light" color="blue" title="" icon={<IconInfoCircle />}>
           There is already an{' '}

@@ -4,6 +4,9 @@ import { SystemDecorate, TeamDecorate } from './doc-decorate';
 export type SystemSimple = Prisma.SystemGetPayload<{
   include: {
     organization: true;
+    teamLinks: true;
+    privateCloudProductLinks: true;
+    publicCloudProductLinks: true;
   };
 }>;
 
@@ -45,7 +48,13 @@ export type SystemDetail = Prisma.SystemGetPayload<{
 export type SystemSimpleDecorated = SystemSimple & SystemDecorate;
 export type SystemDetailDecorated = SystemDetail & SystemDecorate;
 
-export type TeamSimple = Prisma.TeamGetPayload<object>;
+export type TeamSimple = Prisma.TeamGetPayload<{
+  include: {
+    systemLinks: true;
+    privateCloudProductLinks: true;
+    publicCloudProductLinks: true;
+  };
+}>;
 
 export type TeamDetail = Prisma.TeamGetPayload<{
   include: {

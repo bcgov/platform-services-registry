@@ -2,6 +2,7 @@
 
 import { useMutation } from '@tanstack/react-query';
 import { useRouter } from 'next/navigation';
+import EntityPageHeader from '@/components/system/EntityPageHeader';
 import SystemForm from '@/components/system/SystemForm';
 import { GlobalPermissions } from '@/constants';
 import createClientPage from '@/core/client-page';
@@ -20,8 +21,16 @@ export default Page(() => {
   });
 
   return (
-    <div className="pt-5 max-w-3xl">
-      <h1 className="text-xl lg:text-2xl 2xl:text-4xl font-semibold leading-7 text-gray-900 mb-4">Create System</h1>
+    <div className="pt-5 max-w-3xl space-y-4">
+      <EntityPageHeader
+        breadcrumbs={[
+          { label: 'Dashboard', href: '/home' },
+          { label: 'Systems', href: '/systems' },
+          { label: 'Create System' },
+        ]}
+        title="Create System"
+        description="Define a new system container and add the metadata that helps group related resources."
+      />
       <SystemForm
         onSubmit={async (value) => {
           const created = await mutateAsync(value);

@@ -35,6 +35,12 @@ const teamDetailInclude = {
   },
 } satisfies Prisma.TeamInclude;
 
+const teamSimpleInclude = {
+  systemLinks: true,
+  privateCloudProductLinks: true,
+  publicCloudProductLinks: true,
+} satisfies Prisma.TeamInclude;
+
 function teamPermissions(session: Session) {
   return {
     view: session.permissions.viewTeams,
@@ -48,6 +54,7 @@ export async function listTeams(session: Session) {
     where: {
       OR: [{ archivedAt: null }, { archivedAt: { isSet: false } }],
     },
+    include: teamSimpleInclude,
     orderBy: { name: 'asc' },
   });
 

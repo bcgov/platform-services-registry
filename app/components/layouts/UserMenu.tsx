@@ -17,6 +17,8 @@ import {
   IconClockDollar,
   IconTopologyStar3,
   IconUsers,
+  IconLayoutGrid,
+  IconHome2,
 } from '@tabler/icons-react';
 import Link from 'next/link';
 import { Permissions } from 'next-auth';
@@ -67,6 +69,16 @@ export default function UserMenu() {
   const { permissions } = session;
 
   const menus: MenuType[] = [
+    {
+      text: 'Dashboard',
+      Icon: IconLayoutGrid,
+      href: '/home',
+    },
+    {
+      text: 'Legacy Home',
+      Icon: IconHome2,
+      href: '/legacy-home',
+    },
     {
       text: 'Profile',
       Icon: IconUserCircle,

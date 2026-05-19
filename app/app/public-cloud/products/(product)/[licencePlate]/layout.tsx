@@ -4,11 +4,13 @@ import { Alert } from '@mantine/core';
 import { IconInfoCircle } from '@tabler/icons-react';
 import { useQuery } from '@tanstack/react-query';
 import Link from 'next/link';
+import { usePathname } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import { z } from 'zod';
 import PublicCloudProductOptions from '@/components/dropdowns/PublicCloudProductOptions';
 import Tabs, { ITab } from '@/components/generic/tabs/BasicTabs';
 import ProductBadge from '@/components/public-cloud/ProductBadge';
+import EntityPageHeader from '@/components/system/EntityPageHeader';
 import ProductAttachmentsPanel from '@/components/system/ProductAttachmentsPanel';
 import { GlobalRole } from '@/constants';
 import createClientPage from '@/core/client-page';
@@ -28,6 +30,7 @@ const publicCloudProductSecurityACS = createClientPage({
 
 export default publicCloudProductSecurityACS(({ getPathParams, children }) => {
   const [pathParams, setPathParams] = useState<z.infer<typeof pathParamSchema>>();
+  const pathname = usePathname();
 
   useEffect(() => {
     getPathParams().then((v) => setPathParams(v));
@@ -51,21 +54,27 @@ export default publicCloudProductSecurityACS(({ getPathParams, children }) => {
     state.licencePlate = licencePlate;
   }, [licencePlate]);
 
+  const isResourceArea = pathname.startsWith('/resources/public-cloud-landing-zone');
+  const productBasePath = isResourceArea
+    ? `/resources/public-cloud-landing-zone/products/${licencePlate}`
+    : `/public-cloud/products/${licencePlate}`;
+  const resourceParentHref = isResourceArea ? '/resources/public-cloud-landing-zone' : '/public-cloud/products/all';
+
   const tabs: ITab[] = [
     {
       label: 'PRODUCT',
       name: 'product',
-      href: `/public-cloud/products/${licencePlate}/edit`,
+      href: `${productBasePath}/edit`,
     },
     {
       label: 'BILLING',
       name: 'billing',
-      href: `/public-cloud/products/${licencePlate}/billing`,
+      href: `${productBasePath}/billing`,
     },
     {
       label: 'REQUESTS',
       name: 'requests',
-      href: `/public-cloud/products/${licencePlate}/requests`,
+      href: `${productBasePath}/requests`,
     },
   ];
 
@@ -73,7 +82,7 @@ export default publicCloudProductSecurityACS(({ getPathParams, children }) => {
     tabs.push({
       label: 'ROLES',
       name: 'aws-roles',
-      href: `/public-cloud/products/${licencePlate}/aws-roles/admins`,
+      href: `${productBasePath}/aws-roles/admins`,
       ignoreSegments: 1,
     });
   }
@@ -84,11 +93,17 @@ export default publicCloudProductSecurityACS(({ getPathParams, children }) => {
 
   return (
     <div>
-      <h1 className="flex justify-between text-xl lg:text-2xl xl:text-4xl font-semibold leading-7 text-gray-900 mt-2 mb-0 lg:mt-4">
-        {snap.currentProduct.name}
-        <ProductBadge data={snap.currentProduct} />
-      </h1>
-      <h3 className="mt-0 italic"> Public Cloud Landing Zone</h3>
+      <EntityPageHeader
+        breadcrumbs={[
+          { label: 'Dashboard', href: '/home' },
+          { label: 'Resources', href: '/resources' },
+          { label: 'Public Cloud Landing Zone', href: resourceParentHref },
+          { label: snap.currentProduct.name },
+        ]}
+        title={snap.currentProduct.name}
+        description="Public Cloud Landing Zone product detail."
+        actions={<ProductBadge data={snap.currentProduct} />}
+      />
       {snap.currentProduct.requests.length > 0 && (
         <Alert variant="light" color="blue" title="" icon={<IconInfoCircle />}>
           There is already an{' '}
