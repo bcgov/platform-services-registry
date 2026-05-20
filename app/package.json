@@ -14,6 +14,10 @@
     "test": "dotenv -e .env.test -- prisma db push && NODE_OPTIONS='--experimental-vm-modules' jest --runInBand",
     "prisma-generate": "prisma generate",
     "prisma-push": "dotenv -e .env.local -- prisma db push",
+    "admin-tool:create-system-from-public-cloud-product": "APP_ENV=script ts-node -r dotenv/config -r tsconfig-paths/register app/admin-tools/create-system-from-public-cloud-product.ts dotenv_config_path=.env.local",
+    "admin-tool:create-system-from-private-cloud-product": "APP_ENV=script ts-node -r dotenv/config -r tsconfig-paths/register app/admin-tools/create-system-from-private-cloud-product.ts dotenv_config_path=.env.local",
+    "admin-tool:create-team-from-public-cloud-product": "APP_ENV=script ts-node -r dotenv/config -r tsconfig-paths/register app/admin-tools/create-team-from-public-cloud-product.ts dotenv_config_path=.env.local",
+    "admin-tool:create-team-from-private-cloud-product": "APP_ENV=script ts-node -r dotenv/config -r tsconfig-paths/register app/admin-tools/create-team-from-private-cloud-product.ts dotenv_config_path=.env.local",
     "migrate-data": "cat .env.local | grep DATABASE_URL > ../data-migrations/.env && cd ../data-migrations && npm install && npx migrate-mongo up",
     "email": "dotenv -e .env.local -- email dev --dir emails --port 3001",
     "email-build": "email build --packageManager=pnpm",
@@ -113,6 +117,7 @@
     "@types/lodash-es": "^4.17.12",
     "@types/node": "^24.0.0",
     "@types/sanitize-html": "^2.16.0",
+    "dotenv": "^17.2.3",
     "dotenv-cli": "^11.0.0",
     "eslint": "^9.32.0",
     "eslint-config-next": "^16.0.0",
@@ -130,6 +135,7 @@
     "prisma": "~6.19.0",
     "ts-jest": "^29.4.1",
     "ts-node": "^10.9.2",
+    "tsconfig-paths": "^4.2.0",
     "typescript": "^6.0.0"
   },
   "pnpm": {

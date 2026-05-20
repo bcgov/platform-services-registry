@@ -29,6 +29,7 @@ interface TableProps<TData> {
   defaultPageSize?: number;
   disablePagination?: boolean;
   footer?: React.ReactNode;
+  paginationDisplay?: 'page' | 'results';
 }
 
 export default function DataTable<TData extends object>({
@@ -37,6 +38,7 @@ export default function DataTable<TData extends object>({
   defaultPageSize = 10,
   disablePagination = false,
   footer,
+  paginationDisplay = 'page',
 }: TableProps<TData>) {
   const columnHelper = createColumnHelper<TData>();
   const [pagination, setPagination] = useState({
@@ -160,7 +162,7 @@ export default function DataTable<TData extends object>({
           </table>
         </div>
       </div>
-      {data.length > 0 && !disablePagination && <Pagination table={table} />}
+      {data.length > 0 && !disablePagination && <Pagination table={table} display={paginationDisplay} />}
     </>
   );
 }

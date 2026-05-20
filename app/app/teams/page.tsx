@@ -38,6 +38,7 @@ export default Page(({ session }) => {
       />
       <DataTable
         data={data ?? []}
+        paginationDisplay="results"
         columns={[
           {
             label: 'Name',
