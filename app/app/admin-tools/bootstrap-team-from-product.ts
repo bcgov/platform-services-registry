@@ -1,6 +1,7 @@
 import { logger } from '@/core/logging';
 import {
   EventType,
+  EntityOriginKind,
   Prisma,
   type PrivateCloudProduct,
   type PrivateCloudProductMemberRole,
@@ -292,6 +293,10 @@ async function createTeamAndLinks({
       name: desiredName,
       code: desiredCode,
       description: `Team bootstrapped from ${sourceType} ${product.licencePlate}.`,
+      originKind:
+        sourceType === 'public-cloud-product'
+          ? EntityOriginKind.BOOTSTRAPPED_FROM_PUBLIC_CLOUD_PRODUCT
+          : EntityOriginKind.BOOTSTRAPPED_FROM_PRIVATE_CLOUD_PRODUCT,
       metadata,
       mappings,
       rules: {

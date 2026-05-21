@@ -3,7 +3,7 @@ import { readFile } from 'node:fs/promises';
 import path from 'node:path';
 import { z } from 'zod';
 import { logger } from '@/core/logging';
-import { EventType, Prisma, type PrismaClient, type Team } from '@/prisma/client';
+import { EntityOriginKind, EventType, Prisma, type PrismaClient, type Team } from '@/prisma/client';
 import prisma from './prisma';
 
 const clusterIdSchema = z.string().regex(/^cluster-\d{3}$/);
@@ -391,6 +391,7 @@ async function processCluster(cluster: CandidateCluster, inputPath: string, dryR
         data: {
           name: cluster.suggestedCanonicalName,
           code,
+          originKind: EntityOriginKind.CONSOLIDATED_FROM_TEAM_CLUSTER,
           metadata,
           rules: {
             generatedBy: 'admin-tool:merge-teams-from-candidates',

@@ -1,10 +1,11 @@
 'use client';
 
-import { Button, Select, TextInput } from '@mantine/core';
+import { Badge, Button, Select, TextInput } from '@mantine/core';
 import { useQuery } from '@tanstack/react-query';
 import { useEffect, useMemo, useState } from 'react';
 import { z } from 'zod';
 import EntityPageHeader from '@/components/system/EntityPageHeader';
+import OriginBadge from '@/components/system/OriginBadge';
 import TeamForm from '@/components/system/TeamForm';
 import { GlobalPermissions } from '@/constants';
 import createClientPage from '@/core/client-page';
@@ -105,6 +106,15 @@ export default Page(({ getPathParams, session }) => {
           ) : null
         }
       />
+
+      <section className="space-y-2 rounded-sm border border-gray-200 bg-white p-4">
+        <h2 className="text-lg font-semibold">Origin</h2>
+        <div className="flex items-center gap-2">
+          <OriginBadge originKind={data.originKind} label={data.originLabel} />
+          <Badge variant="outline">{data.originKind}</Badge>
+        </div>
+        <p className="text-sm text-gray-600">{data.originSummary}</p>
+      </section>
 
       <TeamForm
         initialValue={data}

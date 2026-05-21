@@ -3,7 +3,15 @@ import { readFile } from 'node:fs/promises';
 import path from 'node:path';
 import { z } from 'zod';
 import { logger } from '@/core/logging';
-import { EventType, Prisma, SystemStatus, type PrismaClient, type Organization, type System } from '@/prisma/client';
+import {
+  EntityOriginKind,
+  EventType,
+  Prisma,
+  SystemStatus,
+  type PrismaClient,
+  type Organization,
+  type System,
+} from '@/prisma/client';
 import prisma from './prisma';
 
 const clusterIdSchema = z.string().regex(/^cluster-\d{3}$/);
@@ -416,6 +424,7 @@ async function processCluster(cluster: CandidateCluster, inputPath: string, dryR
           name: cluster.suggestedCanonicalName,
           code,
           description,
+          originKind: EntityOriginKind.CONSOLIDATED_FROM_SYSTEM_CLUSTER,
           status: SystemStatus.ACTIVE,
           organizationId: sourceSystems[0].organizationId,
           metadata,

@@ -1,10 +1,12 @@
 'use client';
 
-import { Button } from '@mantine/core';
+import { Button, Select } from '@mantine/core';
 import { useQuery } from '@tanstack/react-query';
 import Link from 'next/link';
+import { useMemo, useState } from 'react';
 import DataTable from '@/components/generic/data-table/DataTable';
 import EntityPageHeader from '@/components/system/EntityPageHeader';
+import OriginBadge from '@/components/system/OriginBadge';
 import { GlobalPermissions } from '@/constants';
 import createClientPage from '@/core/client-page';
 import { listSystems } from '@/services/backend/systems';
@@ -15,10 +17,27 @@ const Page = createClientPage({
 });
 
 export default Page(({ session }) => {
+  const [originFilter, setOriginFilter] = useState<string | null>(null);
   const { data, isLoading } = useQuery({
     queryKey: ['systems'],
     queryFn: () => listSystems(),
   });
+
+  const originOptions = useMemo(
+    () =>
+      Array.from(new Map((data ?? []).map((item) => [item.originKind, item.originLabel])).entries()).map(
+        ([value, label]) => ({
+          value,
+          label,
+        }),
+      ),
+    [data],
+  );
+
+  const filteredData = useMemo(
+    () => (originFilter ? (data ?? []).filter((item) => item.originKind === originFilter) : data ?? []),
+    [data, originFilter],
+  );
 
   if (isLoading) return null;
 
@@ -36,8 +55,17 @@ export default Page(({ session }) => {
           ) : null
         }
       />
+      <div className="max-w-sm">
+        <Select
+          clearable
+          label="Filter by Origin"
+          data={originOptions}
+          value={originFilter}
+          onChange={setOriginFilter}
+        />
+      </div>
       <DataTable
-        data={data ?? []}
+        data={filteredData}
         paginationDisplay="results"
         columns={[
           {
@@ -46,6 +74,11 @@ export default Page(({ session }) => {
             cellFormatter: (item) => <Link href={`/systems/${item.id}`}>{item.name}</Link>,
           },
           { label: 'Code', value: 'code' },
+          {
+            label: 'Origin',
+            value: 'originLabel',
+            cellFormatter: (item) => <OriginBadge originKind={item.originKind} label={item.originLabel} />,
+          },
           { label: 'Status', value: 'status' },
           {
             label: 'Organization',

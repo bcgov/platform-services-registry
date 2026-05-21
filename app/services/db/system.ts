@@ -1,7 +1,8 @@
 import { Session } from 'next-auth';
 import prisma from '@/core/prisma';
-import { Prisma, SystemStatus, EventType } from '@/prisma/client';
+import { EntityOriginKind, Prisma, SystemStatus, EventType } from '@/prisma/client';
 import { createEvent } from '@/services/db/event';
+import { getSystemOriginDisplay } from '@/services/db/origin';
 import { ObjectId } from '@/validation-schemas';
 import { SystemBody } from '@/validation-schemas/system';
 
@@ -56,7 +57,7 @@ export async function listSystems(session: Session) {
     orderBy: { name: 'asc' },
   });
 
-  return rows.map((row) => ({ ...row, _permissions: systemPermissions(session) }));
+  return rows.map((row) => ({ ...row, ...getSystemOriginDisplay(row), _permissions: systemPermissions(session) }));
 }
 
 export async function getSystem(id: ObjectId, session: Session) {
@@ -69,7 +70,7 @@ export async function getSystem(id: ObjectId, session: Session) {
     return null;
   }
 
-  return { ...row, _permissions: systemPermissions(session) };
+  return { ...row, ...getSystemOriginDisplay(row), _permissions: systemPermissions(session) };
 }
 
 export async function createSystem(session: Session, body: SystemBody) {
@@ -77,6 +78,7 @@ export async function createSystem(session: Session, body: SystemBody) {
     data: {
       ...body,
       code: body.code.toUpperCase(),
+      originKind: body.originKind ?? EntityOriginKind.MANUAL,
       organizationId: body.organizationId || null,
       metadata: body.metadata as Prisma.InputJsonValue | undefined,
       rules: body.rules as Prisma.InputJsonValue | undefined,
@@ -92,7 +94,7 @@ export async function createSystem(session: Session, body: SystemBody) {
     data: { name: row.name, code: row.code },
   } as any);
 
-  return { ...row, _permissions: systemPermissions(session) };
+  return { ...row, ...getSystemOriginDisplay(row), _permissions: systemPermissions(session) };
 }
 
 export async function updateSystem(id: ObjectId, session: Session, body: SystemBody) {
@@ -101,6 +103,7 @@ export async function updateSystem(id: ObjectId, session: Session, body: SystemB
     data: {
       ...body,
       code: body.code.toUpperCase(),
+      ...(body.originKind ? { originKind: body.originKind } : {}),
       organizationId: body.organizationId || null,
       status: body.status ?? SystemStatus.ACTIVE,
       metadata: body.metadata as Prisma.InputJsonValue | undefined,
@@ -117,7 +120,7 @@ export async function updateSystem(id: ObjectId, session: Session, body: SystemB
     data: { name: row.name, code: row.code },
   } as any);
 
-  return { ...row, _permissions: systemPermissions(session) };
+  return { ...row, ...getSystemOriginDisplay(row), _permissions: systemPermissions(session) };
 }
 
 export async function archiveSystem(id: ObjectId, session: Session) {
@@ -135,7 +138,7 @@ export async function archiveSystem(id: ObjectId, session: Session) {
     data: { name: row.name, code: row.code },
   } as any);
 
-  return { ...row, _permissions: systemPermissions(session) };
+  return { ...row, ...getSystemOriginDisplay(row), _permissions: systemPermissions(session) };
 }
 
 export async function attachTeamToSystem(systemId: ObjectId, teamId: ObjectId) {
@@ -221,7 +224,11 @@ export async function getProductAttachmentSummary({
         ]);
 
   return {
-    systems: systems.map((row) => ({ ...row, _permissions: systemPermissions(session) })),
+    systems: systems.map((row) => ({
+      ...row,
+      ...getSystemOriginDisplay(row),
+      _permissions: systemPermissions(session),
+    })),
     teams: teams.map((row) => ({
       ...row,
       _permissions: {

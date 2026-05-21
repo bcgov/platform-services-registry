@@ -1,4 +1,5 @@
 import { z } from 'zod';
+import { EntityOriginKind } from '@/prisma/client';
 import { objectId } from './common';
 
 const jsonValueSchema = z.any().optional();
@@ -15,6 +16,7 @@ export const teamBodySchema = z.object({
     .min(1, { message: 'Code is required.' })
     .regex(/^[a-z0-9-]+$/i, 'Code may only contain letters, numbers, and hyphens'),
   description: z.string().optional().nullable(),
+  originKind: z.enum(EntityOriginKind).optional(),
   metadata: jsonValueSchema,
   rules: jsonValueSchema,
   policies: jsonValueSchema,

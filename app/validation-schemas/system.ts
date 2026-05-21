@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { SystemStatus } from '@/prisma/client';
+import { EntityOriginKind, SystemStatus } from '@/prisma/client';
 import { objectId } from './common';
 
 const jsonValueSchema = z.any().optional();
@@ -11,6 +11,7 @@ export const systemBodySchema = z.object({
     .min(1, { message: 'Code is required.' })
     .regex(/^[a-z0-9-]+$/i, 'Code may only contain letters, numbers, and hyphens'),
   description: z.string().optional().nullable(),
+  originKind: z.enum(EntityOriginKind).optional(),
   status: z.enum(SystemStatus).default(SystemStatus.ACTIVE),
   organizationId: objectId.optional().nullable(),
   metadata: jsonValueSchema,

@@ -744,6 +744,7 @@ model System {
   name                     String
   code                     String                          @unique
   description              String?
+  originKind               EntityOriginKind                @default(MANUAL)
   status                   SystemStatus                    @default(ACTIVE)
   organizationId           String?                         @db.ObjectId
   organization             Organization?                   @relation("organization", fields: [organizationId], references: [id])
@@ -764,6 +765,7 @@ model Team {
   name                     String
   code                     String                        @unique
   description              String?
+  originKind               EntityOriginKind              @default(MANUAL)
   metadata                 Json?
   rules                    Json?
   policies                 Json?
@@ -841,4 +843,13 @@ enum SystemStatus {
   ACTIVE
   DRAFT
   ARCHIVED
+}
+
+enum EntityOriginKind {
+  MANUAL
+  BOOTSTRAPPED_FROM_PUBLIC_CLOUD_PRODUCT
+  BOOTSTRAPPED_FROM_PRIVATE_CLOUD_PRODUCT
+  CONSOLIDATED_FROM_SYSTEM_CLUSTER
+  CONSOLIDATED_FROM_TEAM_CLUSTER
+  IMPORTED_OTHER
 }

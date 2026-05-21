@@ -1,5 +1,11 @@
-import { Prisma, User } from '@/prisma/client';
+import { EntityOriginKind, Prisma, User } from '@/prisma/client';
 import { SystemDecorate, TeamDecorate } from './doc-decorate';
+
+type OriginDecorate = {
+  originKind: EntityOriginKind;
+  originLabel: string;
+  originSummary: string;
+};
 
 export type SystemSimple = Prisma.SystemGetPayload<{
   include: {
@@ -45,8 +51,8 @@ export type SystemDetail = Prisma.SystemGetPayload<{
   };
 }>;
 
-export type SystemSimpleDecorated = SystemSimple & SystemDecorate;
-export type SystemDetailDecorated = SystemDetail & SystemDecorate;
+export type SystemSimpleDecorated = SystemSimple & SystemDecorate & OriginDecorate;
+export type SystemDetailDecorated = SystemDetail & SystemDecorate & OriginDecorate;
 
 export type TeamSimple = Prisma.TeamGetPayload<{
   include: {
@@ -92,10 +98,11 @@ export type TeamDetailMember = TeamDetail['members'][number] & {
   user: User | null;
 };
 
-export type TeamSimpleDecorated = TeamSimple & TeamDecorate;
+export type TeamSimpleDecorated = TeamSimple & TeamDecorate & OriginDecorate;
 export type TeamDetailDecorated = Omit<TeamDetail, 'members'> & {
   members: TeamDetailMember[];
-} & TeamDecorate;
+} & TeamDecorate &
+  OriginDecorate;
 
 export interface ProductAttachmentSummary {
   systems: SystemSimpleDecorated[];

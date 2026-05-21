@@ -1,6 +1,7 @@
 import { logger } from '@/core/logging';
 import {
   EventType,
+  EntityOriginKind,
   Prisma,
   ProjectStatus,
   SystemStatus,
@@ -154,6 +155,10 @@ async function createSystemAndLink({
       name: product.name,
       code: desiredCode,
       description: product.description,
+      originKind:
+        sourceType === 'public-cloud-product'
+          ? EntityOriginKind.BOOTSTRAPPED_FROM_PUBLIC_CLOUD_PRODUCT
+          : EntityOriginKind.BOOTSTRAPPED_FROM_PRIVATE_CLOUD_PRODUCT,
       status: mapProductStatusToSystemStatus(product.status),
       organizationId: product.organizationId,
       metadata,

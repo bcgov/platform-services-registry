@@ -1,7 +1,8 @@
 import { Session } from 'next-auth';
 import prisma from '@/core/prisma';
-import { Prisma, EventType } from '@/prisma/client';
+import { EntityOriginKind, Prisma, EventType } from '@/prisma/client';
 import { createEvent } from '@/services/db/event';
+import { getTeamOriginDisplay } from '@/services/db/origin';
 import { ObjectId } from '@/validation-schemas';
 import { TeamBody } from '@/validation-schemas/team';
 
@@ -58,7 +59,7 @@ export async function listTeams(session: Session) {
     orderBy: { name: 'asc' },
   });
 
-  return rows.map((row) => ({ ...row, _permissions: teamPermissions(session) }));
+  return rows.map((row) => ({ ...row, ...getTeamOriginDisplay(row), _permissions: teamPermissions(session) }));
 }
 
 export async function getTeam(id: ObjectId, session: Session) {
@@ -81,6 +82,7 @@ export async function getTeam(id: ObjectId, session: Session) {
 
   return {
     ...row,
+    ...getTeamOriginDisplay(row),
     members: row.members.map((member) => ({
       ...member,
       user: users.find((user) => user.id === member.userId) || null,
@@ -94,6 +96,7 @@ export async function createTeam(session: Session, body: TeamBody) {
     data: {
       ...body,
       code: body.code.toUpperCase(),
+      originKind: body.originKind ?? EntityOriginKind.MANUAL,
       metadata: body.metadata as Prisma.InputJsonValue | undefined,
       rules: body.rules as Prisma.InputJsonValue | undefined,
       policies: body.policies as Prisma.InputJsonValue | undefined,
@@ -117,6 +120,7 @@ export async function updateTeam(id: ObjectId, session: Session, body: TeamBody)
     data: {
       ...body,
       code: body.code.toUpperCase(),
+      ...(body.originKind ? { originKind: body.originKind } : {}),
       metadata: body.metadata as Prisma.InputJsonValue | undefined,
       rules: body.rules as Prisma.InputJsonValue | undefined,
       policies: body.policies as Prisma.InputJsonValue | undefined,
