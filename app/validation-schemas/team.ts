@@ -40,4 +40,8 @@ export const updateMembersBodySchema = z.object({
   members: z.array(teamMemberSchema),
 });
 
+export const bulkArchiveTeamsBodySchema = z.object({
+  ids: z.array(objectId).min(1),
+});
+
 export type TeamBody = z.infer<typeof teamBodySchema>;

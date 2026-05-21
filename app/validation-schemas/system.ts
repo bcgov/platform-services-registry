@@ -32,4 +32,8 @@ export const linkPublicCloudProductBodySchema = z.object({
   publicCloudProductId: objectId,
 });
 
+export const bulkArchiveSystemsBodySchema = z.object({
+  ids: z.array(objectId).min(1),
+});
+
 export type SystemBody = z.infer<typeof systemBodySchema>;

@@ -50,11 +50,13 @@ function teamPermissions(session: Session) {
   };
 }
 
-export async function listTeams(session: Session) {
+export async function listTeams(session: Session, { includeArchived = false }: { includeArchived?: boolean } = {}) {
   const rows = await prisma.team.findMany({
-    where: {
-      OR: [{ archivedAt: null }, { archivedAt: { isSet: false } }],
-    },
+    where: includeArchived
+      ? undefined
+      : {
+          OR: [{ archivedAt: null }, { archivedAt: { isSet: false } }],
+        },
     include: teamSimpleInclude,
     orderBy: { name: 'asc' },
   });
@@ -150,6 +152,11 @@ export async function archiveTeam(id: ObjectId, session: Session) {
   } as any);
 
   return getTeam(id, session);
+}
+
+export async function archiveTeams(ids: ObjectId[], session: Session) {
+  const rows = await Promise.all(ids.map((id) => archiveTeam(id, session)));
+  return rows;
 }
 
 export async function updateTeamMembers(id: ObjectId, members: TeamBody['members'], session: Session) {

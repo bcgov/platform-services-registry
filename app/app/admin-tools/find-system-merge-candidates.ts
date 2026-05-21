@@ -2,13 +2,15 @@ import { mkdir, writeFile } from 'node:fs/promises';
 import path from 'node:path';
 import { z } from 'zod';
 import { logger } from '@/core/logging';
+import { EntityOriginKind } from '@/prisma/client';
 import prisma from './prisma';
 
 const cliArgsSchema = z.object({
-  minScore: z.coerce.number().min(0).max(1).default(0.62),
+  minScore: z.coerce.number().min(0).max(1).optional(),
   limit: z.coerce.number().int().positive().optional(),
   jsonOut: z.string().min(1).optional(),
   mdOut: z.string().min(1).optional(),
+  mode: z.enum(['generic', 'division-import']).default('generic'),
 });
 
 const envTokens = new Set([
@@ -73,6 +75,9 @@ type ScoredPair = {
 };
 
 type ClusterReviewStatus = 'unreviewed' | 'approved' | 'rejected' | 'needs-manual-work';
+type MatchingMode = 'generic' | 'division-import';
+
+const focusedOriginKinds = new Set<EntityOriginKind>([EntityOriginKind.IMPORTED_OTHER]);
 
 function parseArgs(argv: string[]) {
   const rawArgs = argv.slice(2);
@@ -105,10 +110,21 @@ function parseArgs(argv: string[]) {
     if (token === '--md-out') {
       args.mdOut = value;
       i += 1;
+      continue;
+    }
+
+    if (token === '--mode') {
+      args.mode = value;
+      i += 1;
     }
   }
 
   return cliArgsSchema.parse(args);
+}
+
+function getEffectiveMinScore(mode: MatchingMode, minScore?: number) {
+  if (typeof minScore === 'number') return minScore;
+  return mode === 'division-import' ? 0.52 : 0.62;
 }
 
 function isObjectRecord(value: unknown): value is Record<string, unknown> {
@@ -400,6 +416,7 @@ async function loadSystems() {
       teamCount: system.teamLinks.length,
       memberCount: memberIds.size,
       resourceCount: resourceRecords.length,
+      isFocusedOrigin: focusedOriginKinds.has(system.originKind),
     };
   });
 }
@@ -414,7 +431,7 @@ function getBestResourceNameSimilarity(left: LoadedSystem, right: LoadedSystem) 
   return best;
 }
 
-function scorePair(left: LoadedSystem, right: LoadedSystem): ScoredPair | null {
+function scorePair(left: LoadedSystem, right: LoadedSystem, mode: MatchingMode): ScoredPair | null {
   const rootNameExactMatch =
     !!left.normalizedRootName && !!right.normalizedRootName && left.normalizedRootName === right.normalizedRootName;
   const nameDice = diceCoefficient(
@@ -434,8 +451,11 @@ function scorePair(left: LoadedSystem, right: LoadedSystem): ScoredPair | null {
 
   let score = 0;
   const reasons: string[] = [];
+  const focusPair = left.isFocusedOrigin || right.isFocusedOrigin;
+  const suppressOperationalSignals = mode === 'division-import' && focusPair;
+  const allowOrganizationGap = mode === 'division-import' && focusPair;
 
-  if (organizationMismatch) {
+  if (organizationMismatch && !allowOrganizationGap) {
     return null;
   }
 
@@ -469,33 +489,44 @@ function scorePair(left: LoadedSystem, right: LoadedSystem): ScoredPair | null {
   if (sharedOrganization) {
     score += 0.08;
     reasons.push('Same organization');
+  } else if (organizationMismatch && allowOrganizationGap) {
+    reasons.push('Organization mismatch ignored in division-import mode');
   }
 
-  if (sharedTeams.length > 0) {
+  if (!suppressOperationalSignals && sharedTeams.length > 0) {
     const teamOverlap = overlapCoefficient(left.teamIds, right.teamIds);
     score += teamOverlap * 0.16;
     reasons.push(`Shared linked teams (${sharedTeams.length})`);
   }
 
-  if (sharedMembers.length > 0) {
+  if (!suppressOperationalSignals && sharedMembers.length > 0) {
     const memberOverlap = overlapCoefficient(left.memberIds, right.memberIds);
     score += memberOverlap * 0.18;
     reasons.push(`Shared team members (${sharedMembers.length})`);
   }
 
-  if (resourceNameSimilarity >= 0.8) {
+  if (!suppressOperationalSignals && resourceNameSimilarity >= 0.8) {
     score += 0.08;
     reasons.push(`Linked resource names are very similar (${resourceNameSimilarity.toFixed(2)})`);
-  } else if (resourceNameSimilarity >= 0.65) {
+  } else if (!suppressOperationalSignals && resourceNameSimilarity >= 0.65) {
     score += 0.04;
     reasons.push(`Linked resource names are similar (${resourceNameSimilarity.toFixed(2)})`);
+  }
+
+  if (mode === 'division-import' && focusPair) {
+    if (rootNameExactMatch) {
+      score += 0.08;
+      reasons.push('Division-import mode boosts exact root-name match');
+    } else if (nameDice >= 0.72) {
+      score += 0.06;
+      reasons.push(`Division-import mode boosts name similarity (${nameDice.toFixed(2)})`);
+    }
   }
 
   if (
     left.rootTokens.length < 2 &&
     right.rootTokens.length < 2 &&
-    sharedMembers.length === 0 &&
-    sharedTeams.length === 0
+    (suppressOperationalSignals || (sharedMembers.length === 0 && sharedTeams.length === 0))
   ) {
     score -= 0.08;
     reasons.push('Short/generic names reduce confidence');
@@ -593,6 +624,9 @@ function buildClusters(systems: LoadedSystem[], scoredPairs: ScoredPair[], minSc
     const warnings: string[] = [];
     if (density < 0.5) warnings.push('Cluster is connected by sparse pairwise links');
 
+    const memberSystems = componentIds.map((id) => systemMap.get(id)!);
+    if (!memberSystems.some((system) => system.isFocusedOrigin)) continue;
+
     clusters.push({
       memberIds: componentIds,
       edges: componentEdges.sort((left, right) => right.score - left.score),
@@ -638,6 +672,7 @@ function buildClusters(systems: LoadedSystem[], scoredPairs: ScoredPair[], minSc
           id: system.id,
           name: system.name,
           code: system.code,
+          originKind: system.originKind,
           organization: system.organization
             ? {
                 id: system.organization.id,
@@ -679,8 +714,11 @@ function buildClusters(systems: LoadedSystem[], scoredPairs: ScoredPair[], minSc
 function renderMarkdownReport(report: {
   generatedAt: string;
   minScore: number;
+  mode: MatchingMode;
   totalSystems: number;
+  focusedSystems: number;
   totalClusters: number;
+  totalSystemsIncludedInClusters: number;
   clusters: ReturnType<typeof buildClusters>;
 }) {
   const lines: string[] = [];
@@ -688,9 +726,12 @@ function renderMarkdownReport(report: {
   lines.push('# System Merge Candidates');
   lines.push('');
   lines.push(`Generated: ${report.generatedAt}`);
+  lines.push(`Mode: ${report.mode}`);
   lines.push(`Threshold: ${report.minScore}`);
   lines.push(`Systems scanned: ${report.totalSystems}`);
+  lines.push(`Focused imported systems: ${report.focusedSystems}`);
   lines.push(`Clusters found: ${report.totalClusters}`);
+  lines.push(`Systems included in clusters: ${report.totalSystemsIncludedInClusters}`);
   lines.push('');
 
   if (report.clusters.length === 0) {
@@ -716,7 +757,7 @@ function renderMarkdownReport(report: {
       const organization = system.organization?.name ?? 'No organization';
       const resources = system.linkedResources.map((resource) => resource.licencePlate).join(', ') || 'None';
       lines.push(
-        `- ${system.name} (${system.code}) | org: ${organization} | teams: ${system.linkedTeams.length} | members: ${system.memberCount} | resources: ${resources}`,
+        `- ${system.name} (${system.code}) | origin: ${system.originKind} | org: ${organization} | teams: ${system.linkedTeams.length} | members: ${system.memberCount} | resources: ${resources}`,
       );
     }
     lines.push('');
@@ -735,18 +776,19 @@ async function ensureParentDir(filePath: string) {
 }
 
 async function main() {
-  const { minScore, limit, jsonOut, mdOut } = parseArgs(process.argv);
+  const { minScore, limit, jsonOut, mdOut, mode } = parseArgs(process.argv);
+  const effectiveMinScore = getEffectiveMinScore(mode, minScore);
   const systems = await loadSystems();
   const scoredPairs: ScoredPair[] = [];
 
   for (let i = 0; i < systems.length; i += 1) {
     for (let j = i + 1; j < systems.length; j += 1) {
-      const pair = scorePair(systems[i], systems[j]);
+      const pair = scorePair(systems[i], systems[j], mode);
       if (pair) scoredPairs.push(pair);
     }
   }
 
-  const allClusters = buildClusters(systems, scoredPairs, minScore);
+  const allClusters = buildClusters(systems, scoredPairs, effectiveMinScore);
   const clusters = typeof limit === 'number' ? allClusters.slice(0, limit) : allClusters;
   const timestamp = new Date().toISOString().replace(/[:]/g, '-');
   const defaultBasePath = path.resolve(
@@ -761,10 +803,14 @@ async function main() {
 
   const report = {
     generatedAt: new Date().toISOString(),
-    minScore,
+    minScore: effectiveMinScore,
+    mode,
     totalSystems: systems.length,
+    focusedSystems: systems.filter((system) => system.isFocusedOrigin).length,
     totalPairsScored: scoredPairs.length,
     totalClusters: clusters.length,
+    totalSystemsIncludedInClusters: new Set(clusters.flatMap((cluster) => cluster.systems.map((system) => system.id)))
+      .size,
     totalHighConfidenceClusters: clusters.filter((cluster) => cluster.confidence === 'high').length,
     totalPossibleClusters: clusters.filter((cluster) => cluster.confidence === 'possible').length,
     clusters,

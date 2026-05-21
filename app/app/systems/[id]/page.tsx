@@ -4,6 +4,7 @@ import { Badge, Button, Select } from '@mantine/core';
 import { useQuery } from '@tanstack/react-query';
 import { useEffect, useMemo, useState } from 'react';
 import { z } from 'zod';
+import ConsolidationPanel from '@/components/system/ConsolidationPanel';
 import EntityPageHeader from '@/components/system/EntityPageHeader';
 import OriginBadge from '@/components/system/OriginBadge';
 import SystemForm from '@/components/system/SystemForm';
@@ -112,6 +113,8 @@ export default Page(({ getPathParams, session }) => {
         </div>
         <p className="text-sm text-gray-600">{data.originSummary}</p>
       </section>
+
+      <ConsolidationPanel entityType="system" metadata={data.metadata} />
 
       <SystemForm
         initialValue={data}

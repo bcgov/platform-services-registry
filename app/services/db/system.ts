@@ -48,11 +48,13 @@ function systemPermissions(session: Session) {
   };
 }
 
-export async function listSystems(session: Session) {
+export async function listSystems(session: Session, { includeArchived = false }: { includeArchived?: boolean } = {}) {
   const rows = await prisma.system.findMany({
-    where: {
-      OR: [{ archivedAt: null }, { archivedAt: { isSet: false } }],
-    },
+    where: includeArchived
+      ? undefined
+      : {
+          OR: [{ archivedAt: null }, { archivedAt: { isSet: false } }],
+        },
     include: systemSimpleInclude,
     orderBy: { name: 'asc' },
   });
@@ -139,6 +141,11 @@ export async function archiveSystem(id: ObjectId, session: Session) {
   } as any);
 
   return { ...row, ...getSystemOriginDisplay(row), _permissions: systemPermissions(session) };
+}
+
+export async function archiveSystems(ids: ObjectId[], session: Session) {
+  const rows = await Promise.all(ids.map((id) => archiveSystem(id, session)));
+  return rows;
 }
 
 export async function attachTeamToSystem(systemId: ObjectId, teamId: ObjectId) {

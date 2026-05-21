@@ -8,8 +8,12 @@ export const instance = axios.create({
   baseURL: `${baseInstance.defaults.baseURL}/systems`,
 });
 
-export async function listSystems() {
-  return instance.get<SystemSimpleDecorated[]>('/').then((res) => res.data);
+export async function listSystems({ includeArchived = false }: { includeArchived?: boolean } = {}) {
+  return instance
+    .get<SystemSimpleDecorated[]>('/', {
+      params: { includeArchived },
+    })
+    .then((res) => res.data);
 }
 
 export async function createSystem(data: SystemBody) {
@@ -26,6 +30,10 @@ export async function updateSystem(id: string, data: SystemBody) {
 
 export async function deleteSystem(id: string) {
   return instance.delete<SystemDetailDecorated>(`/${id}`).then((res) => res.data);
+}
+
+export async function archiveSystems(ids: string[]) {
+  return instance.post<SystemDetailDecorated[]>('/archive', { ids }).then((res) => res.data);
 }
 
 export async function attachTeam(systemId: string, teamId: string) {

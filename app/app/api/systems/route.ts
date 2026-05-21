@@ -1,12 +1,21 @@
+import { z } from 'zod';
 import { GlobalPermissions } from '@/constants';
 import createApiHandler from '@/core/api-handler';
 import { createSystem, listSystems } from '@/services/db/system';
 import { systemBodySchema } from '@/validation-schemas/system';
 
+const queryParamsSchema = z.object({
+  includeArchived: z
+    .preprocess((value) => value === 'true' || value === '1' || value === true, z.boolean())
+    .optional()
+    .default(false),
+});
+
 export const GET = createApiHandler({
   permissions: [GlobalPermissions.ViewSystems],
-})(async ({ session }) => {
-  const res = await listSystems(session);
+  validations: { queryParams: queryParamsSchema },
+})(async ({ session, queryParams }) => {
+  const res = await listSystems(session, { includeArchived: queryParams.includeArchived });
   return Response.json(res);
 });
 

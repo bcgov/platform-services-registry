@@ -8,8 +8,12 @@ export const instance = axios.create({
   baseURL: `${baseInstance.defaults.baseURL}/teams`,
 });
 
-export async function listTeams() {
-  return instance.get<TeamSimpleDecorated[]>('/').then((res) => res.data);
+export async function listTeams({ includeArchived = false }: { includeArchived?: boolean } = {}) {
+  return instance
+    .get<TeamSimpleDecorated[]>('/', {
+      params: { includeArchived },
+    })
+    .then((res) => res.data);
 }
 
 export async function createTeam(data: TeamBody) {
@@ -26,6 +30,10 @@ export async function updateTeam(id: string, data: TeamBody) {
 
 export async function deleteTeam(id: string) {
   return instance.delete<TeamDetailDecorated>(`/${id}`).then((res) => res.data);
+}
+
+export async function archiveTeams(ids: string[]) {
+  return instance.post<TeamDetailDecorated[]>('/archive', { ids }).then((res) => res.data);
 }
 
 export async function updateTeamMembers(id: string, members: TeamBody['members']) {
