@@ -5,7 +5,6 @@ import { SERVICE_ACCOUNT_DATA } from '@/jest.mock';
 import { Prisma, Cluster } from '@/prisma/client';
 import { AppUserWithRoles } from '@/types/user';
 import { generateShortId } from '@/utils/js';
-import { PublicCloudCreateRequestBody } from '@/validation-schemas/public-cloud';
 import {
   getRandomBool,
   getRandomOrganization,
@@ -59,14 +58,11 @@ export function createSamplePrivateCloudProductData(args?: {
 
 export function createSamplePublicCloudProductData(args?: {
   data?: Partial<
-    PublicCloudCreateRequestBody & {
-      licencePlate: string;
+    Prisma.PublicCloudProductGetPayload<null> & {
       projectOwner: AppUserWithRoles;
       primaryTechnicalLead: AppUserWithRoles;
       secondaryTechnicalLead: AppUserWithRoles;
       expenseAuthority: AppUserWithRoles;
-      accountCoding: string;
-      organization: ReturnType<typeof getRandomOrganization>;
     }
   >;
 }) {

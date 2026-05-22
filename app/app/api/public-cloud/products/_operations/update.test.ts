@@ -41,14 +41,11 @@ const newEnvironmentsEnabled = {
 };
 
 const productData = {
-  main: {
-    ...createSamplePublicCloudProductData({
-      data: {
-        environmentsEnabled: oldEnvironmentsEnabled,
-      },
-    }),
-    environmentsEnabled: oldEnvironmentsEnabled,
-  },
+  main: createSamplePublicCloudProductData({
+    data: {
+      environmentsEnabled: oldEnvironmentsEnabled,
+    },
+  }),
 };
 
 const requests = {
