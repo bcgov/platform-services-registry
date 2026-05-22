@@ -1,4 +1,5 @@
 import { useSession } from 'next-auth/react';
+import { useEffect } from 'react';
 import { useFormContext } from 'react-hook-form';
 import { useSnapshot } from 'valtio';
 import AGMinistryCheckBox from '@/components/form/AGMinistryCheckBox';
@@ -12,9 +13,11 @@ import {
   reasonForSelectingCloudProviderOptions,
   publicCloudTeamEmail,
 } from '@/constants';
+import { Provider } from '@/prisma/client';
 import { appState } from '@/states/global';
 import { cn } from '@/utils/js';
 import HookFormTextInput from '../generic/input/HookFormTextInput';
+import FormRadioGroup from '../generic/select/FormRadioGroup';
 
 function stripSpecialCharacters(text: string) {
   const pattern = /[^A-Za-z0-9///.:+=@_ ]/g;
@@ -32,14 +35,41 @@ export default function ProjectDescriptionPublic({
 }) {
   const appSnapshot = useSnapshot(appState);
   const { data: session } = useSession();
-
+  const networkingDisabled = !session?.permissions.editPublicCloudNetworking;
   const {
     register,
     formState: { errors },
     getValues,
     setValue,
-    control,
+    watch,
   } = useFormContext();
+  const provider = watch('provider');
+
+  useEffect(() => {
+    if (provider !== Provider.AZURE) {
+      setValue('requiresNetworking', false, {
+        shouldDirty: true,
+        shouldValidate: true,
+      });
+
+      setValue('networkingReason', '', {
+        shouldDirty: true,
+        shouldValidate: true,
+      });
+
+      [
+        'environmentsEnabled.productionRequiresNetworking',
+        'environmentsEnabled.developmentRequiresNetworking',
+        'environmentsEnabled.testRequiresNetworking',
+        'environmentsEnabled.toolsRequiresNetworking',
+      ].forEach((key) => {
+        setValue(key, false, {
+          shouldDirty: true,
+          shouldValidate: true,
+        });
+      });
+    }
+  }, [provider, setValue]);
 
   if (!session) return null;
 
@@ -136,6 +166,45 @@ export default function ProjectDescriptionPublic({
           classNames={{ wrapper: 'sm:col-span-3 sm:ml-10' }}
           disabled={disabled}
         />
+
+        {provider === Provider.AZURE && (
+          <div className="sm:col-span-3 sm:mr-10">
+            <FormRadioGroup
+              id="requiresNetworking"
+              label="Does your project require networking?"
+              options={[
+                { label: 'No', value: 'false' },
+                { label: 'Yes', value: 'true' },
+              ]}
+              value={String(watch('requiresNetworking') ?? '')}
+              onChange={(value) => {
+                setValue('requiresNetworking', value === 'true', {
+                  shouldDirty: true,
+                  shouldValidate: true,
+                });
+              }}
+              disabled={disabled || networkingDisabled}
+            />
+
+            <p className="mt-3 text-sm leading-6 text-gray-600">
+              You can enable this later if needed. Not sure?{' '}
+              <a href="#" className="text-blue-500 hover:text-blue-700">
+                Book a quick consult
+              </a>
+              .
+            </p>
+
+            {watch('requiresNetworking') && (
+              <HookFormTextarea
+                label="Please describe why your project requires networking"
+                name="networkingReason"
+                placeholder="Enter networking requirements..."
+                classNames={{ wrapper: 'sm:col-span-3 sm:mr-10' }}
+                disabled={disabled}
+              />
+            )}
+          </div>
+        )}
       </div>
     </div>
   );

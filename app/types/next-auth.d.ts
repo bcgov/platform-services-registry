@@ -23,6 +23,7 @@ declare module 'next-auth' {
     viewAssignedPublicCloudProducts: boolean;
     editAssignedPublicCloudProducts: boolean;
     deleteAssignedPublicCloudProducts: boolean;
+    editPublicCloudNetworking: boolean;
 
     createPrivateProductComments: boolean;
     viewAllPrivateProductComments: boolean;

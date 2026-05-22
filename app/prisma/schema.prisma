@@ -334,6 +334,8 @@ model PublicCloudProduct {
   organizationId               String                     @db.ObjectId
   organization                 Organization               @relation("organization", fields: [organizationId], references: [id])
   provider                     Provider
+  requiresNetworking           Boolean                    @default(false)
+  networkingReason             String                     @default("")
   providerSelectionReasons     String[]
   providerSelectionReasonsNote String
   environmentsEnabled          EnvironmentsEnabled
@@ -365,6 +367,8 @@ model PublicCloudRequestData {
   organizationId               String                     @db.ObjectId
   organization                 Organization               @relation("organization", fields: [organizationId], references: [id])
   provider                     Provider
+  requiresNetworking           Boolean                    @default(false)
+  networkingReason             String                     @default("")
   providerSelectionReasons     String[]
   providerSelectionReasonsNote String
   environmentsEnabled          EnvironmentsEnabled
@@ -375,10 +379,14 @@ model PublicCloudRequestData {
 }
 
 type EnvironmentsEnabled {
-  production  Boolean
-  test        Boolean
-  development Boolean
-  tools       Boolean
+  production                    Boolean
+  productionRequiresNetworking  Boolean @default(false)
+  test                          Boolean
+  testRequiresNetworking        Boolean @default(false)
+  development                   Boolean
+  developmentRequiresNetworking Boolean @default(false)
+  tools                         Boolean
+  toolsRequiresNetworking       Boolean @default(false)
 }
 
 model Event {

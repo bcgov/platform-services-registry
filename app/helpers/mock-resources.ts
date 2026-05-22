@@ -5,6 +5,7 @@ import { SERVICE_ACCOUNT_DATA } from '@/jest.mock';
 import { Prisma, Cluster } from '@/prisma/client';
 import { AppUserWithRoles } from '@/types/user';
 import { generateShortId } from '@/utils/js';
+import { PublicCloudCreateRequestBody } from '@/validation-schemas/public-cloud';
 import {
   getRandomBool,
   getRandomOrganization,
@@ -58,11 +59,14 @@ export function createSamplePrivateCloudProductData(args?: {
 
 export function createSamplePublicCloudProductData(args?: {
   data?: Partial<
-    Prisma.PublicCloudProductGetPayload<null> & {
+    PublicCloudCreateRequestBody & {
+      licencePlate: string;
       projectOwner: AppUserWithRoles;
       primaryTechnicalLead: AppUserWithRoles;
       secondaryTechnicalLead: AppUserWithRoles;
       expenseAuthority: AppUserWithRoles;
+      accountCoding: string;
+      organization: ReturnType<typeof getRandomOrganization>;
     }
   >;
 }) {
@@ -90,6 +94,8 @@ export function createSamplePublicCloudProductData(args?: {
     secondaryTechnicalLead: TL2,
     expenseAuthority: EA,
     accountCoding: faker.string.numeric(24),
+    requiresNetworking: false,
+    networkingReason: '',
     budget: {
       dev: 50,
       test: 50,
@@ -98,9 +104,13 @@ export function createSamplePublicCloudProductData(args?: {
     },
     environmentsEnabled: {
       production: true,
+      productionRequiresNetworking: false,
       test: true,
+      testRequiresNetworking: false,
       development: true,
+      developmentRequiresNetworking: false,
       tools: true,
+      toolsRequiresNetworking: false,
     },
     isAgMinistry: false,
     isAgMinistryChecked: true,

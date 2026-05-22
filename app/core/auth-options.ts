@@ -282,6 +282,7 @@ export async function generateSession({
     deleteAllPublicCloudProducts:
       session.isAdmin || session.isEditor || session.isPublicAdmin || session.isPublicEditor,
     reviewAllPublicCloudRequests: session.isAdmin || session.isPublicAdmin || session.isPublicReviewer,
+    editPublicCloudNetworking: session.isAdmin || session.isEditor || session.isPublicAdmin || session.isPublicEditor,
 
     createPrivateProductComments: session.isAdmin || session.isPrivateAdmin,
     viewAllPrivateProductComments: session.isAdmin || session.isPrivateAdmin,
@@ -303,7 +304,6 @@ export async function generateSession({
     viewGeneralAnalytics: session.isAdmin || session.isAnalyzer,
     viewPublicAnalytics: session.isAdmin || session.isAnalyzer || session.isPublicAnalyzer,
     viewPrivateAnalytics: session.isAdmin || session.isAnalyzer || session.isPrivateAnalyzer,
-
     reviewPublicCloudBilling: session.isAdmin || session.isBillingReviewer,
 
     viewPublicCloudBilling:

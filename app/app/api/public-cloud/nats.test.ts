@@ -32,9 +32,17 @@ describe('Public Cloud NATs', () => {
             budgets: decisionData.budget,
             requested_environments: {
               dev: decisionData.environmentsEnabled.development,
+              dev_requires_networking: decisionData.environmentsEnabled.developmentRequiresNetworking,
               prod: decisionData.environmentsEnabled.production,
+              prod_requires_networking: decisionData.environmentsEnabled.productionRequiresNetworking,
               test: decisionData.environmentsEnabled.test,
+              test_requires_networking: decisionData.environmentsEnabled.testRequiresNetworking,
               tools: decisionData.environmentsEnabled.tools,
+              tools_requires_networking: decisionData.environmentsEnabled.toolsRequiresNetworking,
+            },
+            networking: {
+              required: decisionData.requiresNetworking,
+              reason: decisionData.networkingReason,
             },
             requested_product_owner: expect.objectContaining({ email: decisionData.projectOwner.email }),
             requested_tech_leads: [
@@ -68,9 +76,17 @@ describe('Public Cloud NATs', () => {
             budgets: decisionData.budget,
             requested_environments: {
               dev: decisionData.environmentsEnabled.development,
+              dev_requires_networking: decisionData.environmentsEnabled.developmentRequiresNetworking,
               prod: decisionData.environmentsEnabled.production,
+              prod_requires_networking: decisionData.environmentsEnabled.productionRequiresNetworking,
               test: decisionData.environmentsEnabled.test,
+              test_requires_networking: decisionData.environmentsEnabled.testRequiresNetworking,
               tools: decisionData.environmentsEnabled.tools,
+              tools_requires_networking: decisionData.environmentsEnabled.toolsRequiresNetworking,
+            },
+            networking: {
+              required: decisionData.requiresNetworking,
+              reason: decisionData.networkingReason,
             },
             requested_product_owner: expect.objectContaining({ email: decisionData.projectOwner.email }),
             requested_tech_leads: [
@@ -103,9 +119,17 @@ describe('Public Cloud NATs', () => {
             budgets: decisionData.budget,
             requested_environments: {
               dev: decisionData.environmentsEnabled.development,
+              dev_requires_networking: decisionData.environmentsEnabled.developmentRequiresNetworking,
               prod: decisionData.environmentsEnabled.production,
+              prod_requires_networking: decisionData.environmentsEnabled.productionRequiresNetworking,
               test: decisionData.environmentsEnabled.test,
+              test_requires_networking: decisionData.environmentsEnabled.testRequiresNetworking,
               tools: decisionData.environmentsEnabled.tools,
+              tools_requires_networking: decisionData.environmentsEnabled.toolsRequiresNetworking,
+            },
+            networking: {
+              required: decisionData.requiresNetworking,
+              reason: decisionData.networkingReason,
             },
             requested_product_owner: expect.objectContaining({ email: decisionData.projectOwner.email }),
             requested_tech_leads: [

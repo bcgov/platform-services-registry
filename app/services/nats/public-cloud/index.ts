@@ -39,6 +39,10 @@ export default async function createPublicCloudNatsMessage(
       project_name: decisionData.name,
       account_coding: billing?.accountCoding ? getAccountCodingString(billing.accountCoding, '') : '',
       budgets: decisionData.budget,
+      networking: {
+        required: decisionData.requiresNetworking,
+        reason: decisionData.networkingReason,
+      },
       enterprise_support: {
         prod: true,
         test: false,
@@ -48,16 +52,24 @@ export default async function createPublicCloudNatsMessage(
       current_environments: currentProject?.environmentsEnabled
         ? {
             dev: currentProject.environmentsEnabled.development,
+            dev_requires_networking: currentProject.environmentsEnabled.developmentRequiresNetworking,
             test: currentProject.environmentsEnabled.test,
+            test_requires_networking: currentProject.environmentsEnabled.testRequiresNetworking,
             prod: currentProject.environmentsEnabled.production,
+            prod_requires_networking: currentProject.environmentsEnabled.productionRequiresNetworking,
             tools: currentProject.environmentsEnabled.tools,
+            tools_requires_networking: currentProject.environmentsEnabled.toolsRequiresNetworking,
           }
         : null,
       requested_environments: {
         dev: decisionData.environmentsEnabled.development,
+        dev_requires_networking: decisionData.environmentsEnabled.developmentRequiresNetworking,
         test: decisionData.environmentsEnabled.test,
+        test_requires_networking: decisionData.environmentsEnabled.testRequiresNetworking,
         prod: decisionData.environmentsEnabled.production,
+        prod_requires_networking: decisionData.environmentsEnabled.productionRequiresNetworking,
         tools: decisionData.environmentsEnabled.tools,
+        tools_requires_networking: decisionData.environmentsEnabled.toolsRequiresNetworking,
       },
       requested_product_owner: prepareUser(decisionData.projectOwner),
       current_product_owner: !currentProject ? null : prepareUser(currentProject.projectOwner),

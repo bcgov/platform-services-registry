@@ -13,12 +13,10 @@ import ProjectDescriptionPublic from '@/components/form/ProjectDescriptionPublic
 import PageAccordion from '@/components/generic/accordion/PageAccordion';
 import FormErrorNotification from '@/components/generic/FormErrorNotification';
 import { openPublicCloudProductEditSubmitModal } from '@/components/modal/publicCloudProductEditSubmit';
-import AdditionalTeamMembers from '@/components/public-cloud/sections/AdditionalTeamMembers';
 import TeamContacts from '@/components/public-cloud/sections/TeamContacts';
 import { GlobalRole } from '@/constants';
 import createClientPage from '@/core/client-page';
 import { usePublicProductState } from '@/states/global';
-import { PublicCloudProductDetailDecorated } from '@/types/public-cloud';
 import { publicCloudEditRequestBodySchema } from '@/validation-schemas/public-cloud';
 
 const pathParamSchema = z.object({
@@ -33,26 +31,37 @@ export default publicCloudProductEdit(() => {
   const [, snap] = usePublicProductState();
   const [isDisabled, setDisabled] = useState(false);
 
+  const currentProduct = snap.currentProduct;
+
   const methods = useForm({
     resolver: zodResolver(publicCloudEditRequestBodySchema),
     defaultValues: {
-      ...snap.currentProduct,
+      ...currentProduct,
       isAgMinistry: false,
       isAgMinistryChecked: true,
+      requiresNetworking: currentProduct?.requiresNetworking,
+      networkingReason: currentProduct?.networkingReason,
+      environmentsEnabled: {
+        ...currentProduct?.environmentsEnabled,
+        productionRequiresNetworking: currentProduct?.environmentsEnabled?.productionRequiresNetworking,
+        developmentRequiresNetworking: currentProduct?.environmentsEnabled?.developmentRequiresNetworking,
+        testRequiresNetworking: currentProduct?.environmentsEnabled?.testRequiresNetworking,
+        toolsRequiresNetworking: currentProduct?.environmentsEnabled?.toolsRequiresNetworking,
+      },
     },
   });
 
   const { formState } = methods;
 
   useEffect(() => {
-    if (!snap.currentProduct) return;
+    if (!currentProduct) return;
 
-    setDisabled(!snap.currentProduct?._permissions.edit);
-  }, [snap.currentProduct]);
+    setDisabled(!currentProduct?._permissions.edit);
+  }, [currentProduct]);
 
   const isSubmitEnabled = Object.keys(formState.dirtyFields).length > 0;
 
-  if (!snap.currentProduct) {
+  if (!currentProduct) {
     return null;
   }
 
@@ -66,6 +75,7 @@ export default publicCloudProductEdit(() => {
         mode: 'edit',
         disabled: isDisabled,
         providerDisabled: true,
+        networkingDisabled: true,
       },
     },
     {
@@ -73,7 +83,7 @@ export default publicCloudProductEdit(() => {
       label: 'Accounts to create',
       description: '',
       Component: AccountEnvironmentsPublic,
-      componentArgs: { selected: snap.currentProduct.environmentsEnabled, mode: 'edit', disabled: isDisabled },
+      componentArgs: { selected: currentProduct.environmentsEnabled, mode: 'edit', disabled: isDisabled },
     },
     {
       LeftIcon: IconUsersGroup,
@@ -82,7 +92,7 @@ export default publicCloudProductEdit(() => {
       Component: TeamContacts,
       componentArgs: {
         isTeamContactsDisabled: isDisabled,
-        isAdditionalMembersDisabled: isDisabled || !snap.currentProduct._permissions.manageMembers,
+        isAdditionalMembersDisabled: isDisabled || !currentProduct._permissions.manageMembers,
       },
     },
     {
