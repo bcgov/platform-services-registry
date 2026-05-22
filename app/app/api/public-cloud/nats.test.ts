@@ -7,6 +7,51 @@ import {
 } from '@/services/api-test/public-cloud/helpers';
 import { sendNatsMessage } from '@/services/nats/core';
 
+function getExpectedNatsMessage(decisionData: any, requestType: 'CREATE' | 'EDIT' | 'DELETE') {
+  return {
+    project_set_info: expect.objectContaining({
+      request_type: requestType,
+      project_name: decisionData.name,
+      licence_plate: decisionData.licencePlate,
+      ministry_name: decisionData.organization.code,
+      budgets: decisionData.budget,
+
+      requested_environments: {
+        dev: decisionData.environmentsEnabled.development,
+        dev_requires_networking: decisionData.environmentsEnabled.developmentRequiresNetworking,
+        prod: decisionData.environmentsEnabled.production,
+        prod_requires_networking: decisionData.environmentsEnabled.productionRequiresNetworking,
+        test: decisionData.environmentsEnabled.test,
+        test_requires_networking: decisionData.environmentsEnabled.testRequiresNetworking,
+        tools: decisionData.environmentsEnabled.tools,
+        tools_requires_networking: decisionData.environmentsEnabled.toolsRequiresNetworking,
+      },
+
+      networking: {
+        required: decisionData.requiresNetworking,
+        reason: decisionData.networkingReason,
+      },
+
+      requested_product_owner: expect.objectContaining({
+        email: decisionData.projectOwner.email,
+      }),
+
+      requested_tech_leads: [
+        expect.objectContaining({
+          email: decisionData.primaryTechnicalLead.email,
+        }),
+        expect.objectContaining({
+          email: decisionData.secondaryTechnicalLead?.email,
+        }),
+      ],
+
+      requested_expense_authority: expect.objectContaining({
+        email: decisionData.expenseAuthority.email,
+      }),
+    }),
+  };
+}
+
 describe('Public Cloud NATs', () => {
   beforeEach(() => {
     // @ts-ignore
@@ -23,35 +68,7 @@ describe('Public Cloud NATs', () => {
       expect(sendNatsMessage).toHaveBeenCalledWith(
         PUBLIC_NATS_URL,
         `registry_project_provisioning_${decisionData.provider.toLowerCase()}`,
-        {
-          project_set_info: expect.objectContaining({
-            request_type: 'CREATE',
-            project_name: decisionData.name,
-            licence_plate: decisionData.licencePlate,
-            ministry_name: decisionData.organization.code,
-            budgets: decisionData.budget,
-            requested_environments: {
-              dev: decisionData.environmentsEnabled.development,
-              dev_requires_networking: decisionData.environmentsEnabled.developmentRequiresNetworking,
-              prod: decisionData.environmentsEnabled.production,
-              prod_requires_networking: decisionData.environmentsEnabled.productionRequiresNetworking,
-              test: decisionData.environmentsEnabled.test,
-              test_requires_networking: decisionData.environmentsEnabled.testRequiresNetworking,
-              tools: decisionData.environmentsEnabled.tools,
-              tools_requires_networking: decisionData.environmentsEnabled.toolsRequiresNetworking,
-            },
-            networking: {
-              required: decisionData.requiresNetworking,
-              reason: decisionData.networkingReason,
-            },
-            requested_product_owner: expect.objectContaining({ email: decisionData.projectOwner.email }),
-            requested_tech_leads: [
-              expect.objectContaining({ email: decisionData.primaryTechnicalLead.email }),
-              expect.objectContaining({ email: decisionData.secondaryTechnicalLead.email }),
-            ],
-            requested_expense_authority: expect.objectContaining({ email: decisionData.expenseAuthority.email }),
-          }),
-        },
+        getExpectedNatsMessage(decisionData, 'CREATE'),
       );
     }
   });
@@ -67,35 +84,7 @@ describe('Public Cloud NATs', () => {
         2,
         PUBLIC_NATS_URL,
         `registry_project_provisioning_${decisionData.provider.toLowerCase()}`,
-        {
-          project_set_info: expect.objectContaining({
-            request_type: 'EDIT',
-            project_name: decisionData.name,
-            licence_plate: decisionData.licencePlate,
-            ministry_name: decisionData.organization.code,
-            budgets: decisionData.budget,
-            requested_environments: {
-              dev: decisionData.environmentsEnabled.development,
-              dev_requires_networking: decisionData.environmentsEnabled.developmentRequiresNetworking,
-              prod: decisionData.environmentsEnabled.production,
-              prod_requires_networking: decisionData.environmentsEnabled.productionRequiresNetworking,
-              test: decisionData.environmentsEnabled.test,
-              test_requires_networking: decisionData.environmentsEnabled.testRequiresNetworking,
-              tools: decisionData.environmentsEnabled.tools,
-              tools_requires_networking: decisionData.environmentsEnabled.toolsRequiresNetworking,
-            },
-            networking: {
-              required: decisionData.requiresNetworking,
-              reason: decisionData.networkingReason,
-            },
-            requested_product_owner: expect.objectContaining({ email: decisionData.projectOwner.email }),
-            requested_tech_leads: [
-              expect.objectContaining({ email: decisionData.primaryTechnicalLead.email }),
-              expect.objectContaining({ email: decisionData.secondaryTechnicalLead?.email }),
-            ],
-            requested_expense_authority: expect.objectContaining({ email: decisionData.expenseAuthority.email }),
-          }),
-        },
+        getExpectedNatsMessage(decisionData, 'EDIT'),
       );
     }
   });
@@ -110,35 +99,7 @@ describe('Public Cloud NATs', () => {
         2,
         PUBLIC_NATS_URL,
         `registry_project_provisioning_${decisionData.provider.toLowerCase()}`,
-        {
-          project_set_info: expect.objectContaining({
-            request_type: 'DELETE',
-            project_name: decisionData.name,
-            licence_plate: decisionData.licencePlate,
-            ministry_name: decisionData.organization.code,
-            budgets: decisionData.budget,
-            requested_environments: {
-              dev: decisionData.environmentsEnabled.development,
-              dev_requires_networking: decisionData.environmentsEnabled.developmentRequiresNetworking,
-              prod: decisionData.environmentsEnabled.production,
-              prod_requires_networking: decisionData.environmentsEnabled.productionRequiresNetworking,
-              test: decisionData.environmentsEnabled.test,
-              test_requires_networking: decisionData.environmentsEnabled.testRequiresNetworking,
-              tools: decisionData.environmentsEnabled.tools,
-              tools_requires_networking: decisionData.environmentsEnabled.toolsRequiresNetworking,
-            },
-            networking: {
-              required: decisionData.requiresNetworking,
-              reason: decisionData.networkingReason,
-            },
-            requested_product_owner: expect.objectContaining({ email: decisionData.projectOwner.email }),
-            requested_tech_leads: [
-              expect.objectContaining({ email: decisionData.primaryTechnicalLead.email }),
-              expect.objectContaining({ email: decisionData.secondaryTechnicalLead.email }),
-            ],
-            requested_expense_authority: expect.objectContaining({ email: decisionData.expenseAuthority.email }),
-          }),
-        },
+        getExpectedNatsMessage(decisionData, 'DELETE'),
       );
     }
   });
