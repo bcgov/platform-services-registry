@@ -188,7 +188,12 @@ export default function ProjectDescriptionPublic({
 
             <p className="mt-3 text-sm leading-6 text-gray-600">
               You can enable this later if needed. Not sure?{' '}
-              <a href="#" className="text-blue-500 hover:text-blue-700">
+              <a
+                target="_blank"
+                rel="noopener noreferrer"
+                href="https://citz-do.atlassian.net/servicedesk/customer/portal/3/group/11/create/228"
+                className="text-blue-500 hover:text-blue-700"
+              >
                 Book a quick consult
               </a>
               .

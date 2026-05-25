@@ -16,7 +16,7 @@ export default function FormRadioGroup({
   defaultValue,
   onChange = (value: string) => {},
   classNames,
-}: {
+}: Readonly<{
   id: string;
   label?: string;
   options: { label: string; value: string; disabled?: boolean }[];
@@ -33,7 +33,7 @@ export default function FormRadioGroup({
     radio?: string;
     radioLabel?: string;
   };
-}) {
+}>) {
   return (
     <div className={cn('space-y-2', classNames?.wrapper ?? '')}>
       {label && (
@@ -45,8 +45,7 @@ export default function FormRadioGroup({
 
       <div className="flex gap-2">
         {options.map((option, index) => {
-          const checked = value !== undefined ? value === option.value : defaultValue === option.value;
-
+          const checked = value === undefined ? defaultValue === option.value : value === option.value;
           return (
             <label
               key={`${option.value}-${index}`}
