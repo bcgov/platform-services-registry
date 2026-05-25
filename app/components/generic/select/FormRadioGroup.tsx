@@ -37,10 +37,10 @@ export default function FormRadioGroup({
   return (
     <div className={cn('space-y-2', classNames?.wrapper ?? '')}>
       {label && (
-        <label className={cn('block text-sm font-medium leading-6 text-gray-900', classNames?.label ?? '')}>
+        <legend className={cn('block text-sm font-medium leading-6 text-gray-900', classNames?.label ?? '')}>
           {label}
           {required && <span className="text-red-500">*</span>}
-        </label>
+        </legend>
       )}
 
       <div className="flex gap-2">
@@ -57,7 +57,7 @@ export default function FormRadioGroup({
                 name={id}
                 value={option.value}
                 disabled={disabled || option.disabled}
-                checked={value !== undefined ? checked : undefined}
+                checked={value === undefined ? undefined : checked}
                 defaultChecked={value === undefined ? checked : undefined}
                 onChange={() => onChange(option.value)}
                 className={cn(

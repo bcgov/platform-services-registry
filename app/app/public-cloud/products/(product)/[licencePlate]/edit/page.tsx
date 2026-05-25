@@ -39,14 +39,14 @@ export default publicCloudProductEdit(() => {
       ...currentProduct,
       isAgMinistry: false,
       isAgMinistryChecked: true,
-      requiresNetworking: currentProduct?.requiresNetworking,
+      requiresNetworking: currentProduct?.requiresNetworking ?? false,
       networkingReason: currentProduct?.networkingReason,
       environmentsEnabled: {
         ...currentProduct?.environmentsEnabled,
-        productionRequiresNetworking: currentProduct?.environmentsEnabled?.productionRequiresNetworking,
-        developmentRequiresNetworking: currentProduct?.environmentsEnabled?.developmentRequiresNetworking,
-        testRequiresNetworking: currentProduct?.environmentsEnabled?.testRequiresNetworking,
-        toolsRequiresNetworking: currentProduct?.environmentsEnabled?.toolsRequiresNetworking,
+        productionRequiresNetworking: currentProduct?.environmentsEnabled?.productionRequiresNetworking ?? false,
+        developmentRequiresNetworking: currentProduct?.environmentsEnabled?.developmentRequiresNetworking ?? false,
+        testRequiresNetworking: currentProduct?.environmentsEnabled?.testRequiresNetworking ?? false,
+        toolsRequiresNetworking: currentProduct?.environmentsEnabled?.toolsRequiresNetworking ?? false,
       },
     },
   });
@@ -75,7 +75,6 @@ export default publicCloudProductEdit(() => {
         mode: 'edit',
         disabled: isDisabled,
         providerDisabled: true,
-        networkingDisabled: true,
       },
     },
     {

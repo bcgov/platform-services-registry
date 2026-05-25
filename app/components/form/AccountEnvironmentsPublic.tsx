@@ -1,15 +1,20 @@
 import { Alert, Button } from '@mantine/core';
 import { IconInfoCircle } from '@tabler/icons-react';
 import _get from 'lodash-es/get';
+import { useSession } from 'next-auth/react';
 import { useFormContext } from 'react-hook-form';
 import FormCheckbox from '@/components/generic/checkbox/FormCheckbox';
 import { Provider } from '@/prisma/client';
 
 interface EnvironmentsEnabled {
   production: boolean;
+  productionRequiresNetworking?: boolean;
   development: boolean;
+  developmentRequiresNetworking?: boolean;
   test: boolean;
+  testRequiresNetworking?: boolean;
   tools: boolean;
+  toolsRequiresNetworking?: boolean;
 }
 
 type EnvironmentKey = keyof EnvironmentsEnabled;
@@ -37,22 +42,25 @@ export default function AccountEnvironmentsPublic({
     getValues,
     setValue,
   } = useFormContext();
+  const { data: session } = useSession();
 
   const isAzure = watch('provider') === Provider.AZURE;
   const requiresNetworking = watch('requiresNetworking');
 
   const renderNetworkingCheckbox = (key: EnvironmentKey) => {
     if (!isAzure) return null;
-
     const environmentEnabled = watch(`environmentsEnabled.${key}`);
     const networkingField = `environmentsEnabled.${key}RequiresNetworking`;
-
+    const networkingAlreadyEnabled = selected?.[`${key}RequiresNetworking` as keyof EnvironmentsEnabled] === true;
+    const networkingDisabled = !session?.permissions.editPublicCloudNetworking;
     return (
       <div className="ml-4 mt-1 border-l border-gray-300 pl-3">
         <FormCheckbox
           id={`${key}-requires-networking`}
           inputProps={register(networkingField)}
-          disabled={disabled || !requiresNetworking || !environmentEnabled}
+          disabled={
+            disabled || !requiresNetworking || !environmentEnabled || (networkingDisabled && networkingAlreadyEnabled)
+          }
         >
           Requires networking
         </FormCheckbox>

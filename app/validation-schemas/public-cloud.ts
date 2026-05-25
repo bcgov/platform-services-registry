@@ -64,11 +64,13 @@ const _publicCloudCreateRequestBodySchema = z
       .string()
       .min(1, { message: 'An explanation of the reasons for choosing provider is required' })
       .max(1000, { message: 'Provider Selection not should contain a maximum of 1000 characters.' }),
-    requiresNetworking: z.boolean().optional(),
+    requiresNetworking: z.boolean().default(false),
     networkingReason: z
       .string()
-      .max(1000, { message: 'Networking reason should contain a maximum of 1000 characters.' })
-      .optional(),
+      .max(1000, {
+        message: 'Networking reason should contain a maximum of 1000 characters',
+      })
+      .default(''),
     budget: budgetSchema,
     organizationId: z.string().length(24),
     isAgMinistry: z.boolean(),
@@ -131,19 +133,20 @@ const _publicCloudCreateRequestBodySchema = z
         ['production', 'productionRequiresNetworking'],
         ['tools', 'toolsRequiresNetworking'],
       ] as const
-    ).forEach(([environmentKey, networkingKey]) => {
-      if (!envs[environmentKey] && envs[networkingKey]) {
+    ).forEach(([networkingKey]) => {
+      const networkingEnabled = obj.requiresNetworking === true;
+      if (!networkingEnabled && envs[networkingKey]) {
         ctx.addIssue({
           code: 'custom',
           path: ['environmentsEnabled', networkingKey],
-          message: 'Networking can only be enabled for selected environments.',
+          message: 'Environment networking can only be enabled when networking is required.',
         });
       }
     });
   });
 
 export const publicCloudCreateRequestBodySchema = _publicCloudCreateRequestBodySchema
-  .safeExtend({
+  .extend({
     isAgMinistryChecked: z.boolean().optional(),
   })
   .refine(

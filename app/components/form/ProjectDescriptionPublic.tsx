@@ -205,7 +205,7 @@ export default function ProjectDescriptionPublic({
                 name="networkingReason"
                 placeholder="Enter networking requirements..."
                 classNames={{ wrapper: 'sm:col-span-3 sm:mr-10' }}
-                disabled={disabled}
+                disabled={disabled || networkingDisabled}
               />
             )}
           </div>

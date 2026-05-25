@@ -40,8 +40,8 @@ export default async function createPublicCloudNatsMessage(
       account_coding: billing?.accountCoding ? getAccountCodingString(billing.accountCoding, '') : '',
       budgets: decisionData.budget,
       networking: {
-        required: decisionData.requiresNetworking,
-        reason: decisionData.networkingReason,
+        required: decisionData.requiresNetworking ?? false,
+        reason: decisionData.networkingReason ?? '',
       },
       enterprise_support: {
         prod: true,
@@ -52,24 +52,24 @@ export default async function createPublicCloudNatsMessage(
       current_environments: currentProject?.environmentsEnabled
         ? {
             dev: currentProject.environmentsEnabled.development,
-            dev_requires_networking: currentProject.environmentsEnabled.developmentRequiresNetworking,
+            dev_requires_networking: currentProject.environmentsEnabled.developmentRequiresNetworking ?? false,
             test: currentProject.environmentsEnabled.test,
-            test_requires_networking: currentProject.environmentsEnabled.testRequiresNetworking,
+            test_requires_networking: currentProject.environmentsEnabled.testRequiresNetworking ?? false,
             prod: currentProject.environmentsEnabled.production,
-            prod_requires_networking: currentProject.environmentsEnabled.productionRequiresNetworking,
+            prod_requires_networking: currentProject.environmentsEnabled.productionRequiresNetworking ?? false,
             tools: currentProject.environmentsEnabled.tools,
-            tools_requires_networking: currentProject.environmentsEnabled.toolsRequiresNetworking,
+            tools_requires_networking: currentProject.environmentsEnabled.toolsRequiresNetworking ?? false,
           }
         : null,
       requested_environments: {
         dev: decisionData.environmentsEnabled.development,
-        dev_requires_networking: decisionData.environmentsEnabled.developmentRequiresNetworking,
+        dev_requires_networking: decisionData.environmentsEnabled.developmentRequiresNetworking ?? false,
         test: decisionData.environmentsEnabled.test,
-        test_requires_networking: decisionData.environmentsEnabled.testRequiresNetworking,
+        test_requires_networking: decisionData.environmentsEnabled.testRequiresNetworking ?? false,
         prod: decisionData.environmentsEnabled.production,
-        prod_requires_networking: decisionData.environmentsEnabled.productionRequiresNetworking,
+        prod_requires_networking: decisionData.environmentsEnabled.productionRequiresNetworking ?? false,
         tools: decisionData.environmentsEnabled.tools,
-        tools_requires_networking: decisionData.environmentsEnabled.toolsRequiresNetworking,
+        tools_requires_networking: decisionData.environmentsEnabled.toolsRequiresNetworking ?? false,
       },
       requested_product_owner: prepareUser(decisionData.projectOwner),
       current_product_owner: !currentProject ? null : prepareUser(currentProject.projectOwner),
