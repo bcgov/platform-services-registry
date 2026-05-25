@@ -133,7 +133,7 @@ const _publicCloudCreateRequestBodySchema = z
         ['production', 'productionRequiresNetworking'],
         ['tools', 'toolsRequiresNetworking'],
       ] as const
-    ).forEach(([networkingKey]) => {
+    ).forEach(([, networkingKey]) => {
       const networkingEnabled = obj.requiresNetworking === true;
       if (!networkingEnabled && envs[networkingKey]) {
         ctx.addIssue({
