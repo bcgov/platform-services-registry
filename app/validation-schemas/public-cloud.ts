@@ -178,7 +178,7 @@ const _publicCloudEditRequestBodySchema = _publicCloudCreateRequestBodySchema.sa
 });
 
 export const publicCloudEditRequestBodySchema = _publicCloudEditRequestBodySchema
-  .safeExtend({
+  .extend({
     isAgMinistryChecked: z.boolean().optional(),
   })
   .refine(

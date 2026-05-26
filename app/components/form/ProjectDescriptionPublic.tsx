@@ -196,7 +196,7 @@ export default function ProjectDescriptionPublic({
               >
                 Book a quick consult
               </a>
-              .
+              {'.'}
             </p>
 
             {watch('requiresNetworking') && (
