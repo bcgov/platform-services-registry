@@ -114,6 +114,7 @@ nav:
     - code-conventions/data-communication/react-view-layer.md
 - Business logic:
   - business-logic/roles-permissions.md
+  - business-logic/registry-roles-guide.md
   - business-logic/service-accounts.md
   - Private Cloud:
     - Request Workflow: business-logic/private-cloud/request-workflow.md
