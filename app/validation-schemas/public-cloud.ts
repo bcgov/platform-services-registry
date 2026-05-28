@@ -40,6 +40,22 @@ const budgetSchema = z.object({
   tools: z.number().min(0),
 });
 
+const environmentsEnabledSchema = z.object({
+  development: z.boolean(),
+  developmentRequiresNetworking: z.boolean().default(false),
+  test: z.boolean(),
+  testRequiresNetworking: z.boolean().default(false),
+  production: z.boolean(),
+  productionRequiresNetworking: z.boolean().default(false),
+  tools: z.boolean(),
+  toolsRequiresNetworking: z.boolean().default(false),
+});
+
+function validateEnvironmentsEnabled(data: { environmentsEnabled: z.infer<typeof environmentsEnabledSchema> }) {
+  const envs = data.environmentsEnabled;
+  return envs.development || envs.test || envs.production || envs.tools;
+}
+
 const publicCloudProductMembers = z
   .array(
     z.object({
@@ -51,103 +67,89 @@ const publicCloudProductMembers = z
   )
   .max(10);
 
-const _publicCloudCreateRequestBodySchema = z
-  .object({
-    name: z
-      .string()
-      .min(1, { message: 'Name is required.' })
-      .refine((value) => !/[^A-Za-z0-9///.:+=@_ ]/g.test(value), 'Only /. : + = @ _ special symbols are allowed'),
-    description: z.string().min(1, { message: 'Description is required.' }),
-    provider: z.enum(Provider),
-    providerSelectionReasons: z.array(z.string()).min(1, { message: 'Reason for choosing provider is required' }),
-    providerSelectionReasonsNote: z
-      .string()
-      .min(1, { message: 'An explanation of the reasons for choosing provider is required' })
-      .max(1000, { message: 'Provider Selection not should contain a maximum of 1000 characters.' }),
-    requiresNetworking: z.boolean().default(false),
-    networkingReason: z
-      .string()
-      .max(1000, {
-        message: 'Networking reason should contain a maximum of 1000 characters',
-      })
-      .default(''),
-    budget: budgetSchema,
-    organizationId: z.string().length(24),
-    isAgMinistry: z.boolean(),
-    projectOwnerId: z.string({ message: 'Please select a project owner' }).length(24),
-    primaryTechnicalLeadId: z.string({ message: 'Please select a primary technical lead' }).length(24),
-    secondaryTechnicalLeadId: z.string().length(24).or(z.literal('')).nullable().optional(),
-    expenseAuthorityId: z.string({ message: 'Please select an expense authority' }).length(24),
-    requestComment: optionalCommentSchema,
-    environmentsEnabled: z
-      .object({
-        development: z.boolean(),
-        developmentRequiresNetworking: z.boolean().optional(),
-        test: z.boolean(),
-        testRequiresNetworking: z.boolean().optional(),
-        production: z.boolean(),
-        productionRequiresNetworking: z.boolean().optional(),
-        tools: z.boolean(),
-        toolsRequiresNetworking: z.boolean().optional(),
-      })
-      .refine(
-        (obj) => {
-          return obj.development || obj.test || obj.production || obj.tools;
-        },
-        {
-          message: 'At least one environment must be selected.',
-        },
-      ),
-  })
-  .superRefine((obj, ctx) => {
-    if (obj.provider === Provider.AZURE && obj.requiresNetworking === undefined) {
-      ctx.addIssue({
-        code: 'custom',
-        path: ['requiresNetworking'],
-        message: 'Please specify whether networking is required.',
-      });
-    }
+const publicCloudBaseRequestBodySchema = z.object({
+  name: z
+    .string()
+    .min(1, { message: 'Name is required.' })
+    .refine((value) => !/[^A-Za-z0-9///.:+=@_ ]/g.test(value), 'Only /. : + = @ _ special symbols are allowed'),
+  description: z.string().min(1, { message: 'Description is required.' }),
+  provider: z.enum(Provider),
+  providerSelectionReasons: z.array(z.string()).min(1, { message: 'Reason for choosing provider is required' }),
+  providerSelectionReasonsNote: z
+    .string()
+    .min(1, { message: 'An explanation of the reasons for choosing provider is required' })
+    .max(1000, { message: 'Provider Selection message should contain a maximum of 1000 characters.' }),
+  requiresNetworking: z.boolean().default(false),
+  networkingReason: z
+    .string()
+    .max(1000, {
+      message: 'Networking reason should contain a maximum of 1000 characters',
+    })
+    .default(''),
+  budget: budgetSchema,
+  organizationId: z.string().length(24),
+  isAgMinistry: z.boolean(),
+  projectOwnerId: z.string({ message: 'Please select a project owner' }).length(24),
+  primaryTechnicalLeadId: z.string({ message: 'Please select a primary technical lead' }).length(24),
+  secondaryTechnicalLeadId: z.string().length(24).or(z.literal('')).nullable().optional(),
+  expenseAuthorityId: z.string({ message: 'Please select an expense authority' }).length(24),
+  requestComment: optionalCommentSchema,
+  environmentsEnabled: environmentsEnabledSchema,
+});
 
-    if (obj.provider === Provider.AZURE && obj.requiresNetworking === true && !obj.networkingReason?.trim()) {
-      ctx.addIssue({
-        code: 'custom',
-        path: ['networkingReason'],
-        message: 'Networking reason is required.',
-      });
-    }
-    if (obj.provider !== Provider.AZURE) {
-      if (obj.requiresNetworking !== false) {
-        ctx.addIssue({
-          code: 'custom',
-          path: ['requiresNetworking'],
-          message: 'Networking is only supported for Azure.',
-        });
-      }
-    }
-    const envs = obj.environmentsEnabled;
-
-    (
-      [
-        ['development', 'developmentRequiresNetworking'],
-        ['test', 'testRequiresNetworking'],
-        ['production', 'productionRequiresNetworking'],
-        ['tools', 'toolsRequiresNetworking'],
-      ] as const
-    ).forEach(([, networkingKey]) => {
-      const networkingEnabled = obj.requiresNetworking === true;
-      if (!networkingEnabled && envs[networkingKey]) {
-        ctx.addIssue({
-          code: 'custom',
-          path: ['environmentsEnabled', networkingKey],
-          message: 'Environment networking can only be enabled when networking is required.',
-        });
-      }
+function validateNetworking(data: z.infer<typeof publicCloudBaseRequestBodySchema>, ctx: z.RefinementCtx) {
+  if (data.provider === Provider.AZURE && data.requiresNetworking && !data.networkingReason?.trim()) {
+    ctx.addIssue({
+      code: 'custom',
+      path: ['networkingReason'],
+      message: 'Networking reason is required.',
     });
-  });
+  }
 
-export const publicCloudCreateRequestBodySchema = _publicCloudCreateRequestBodySchema
+  if (data.provider !== Provider.AZURE && data.requiresNetworking) {
+    ctx.addIssue({
+      code: 'custom',
+      path: ['requiresNetworking'],
+      message: 'Networking is only supported for Azure.',
+    });
+  }
+
+  (
+    [
+      ['development', 'developmentRequiresNetworking'],
+      ['test', 'testRequiresNetworking'],
+      ['production', 'productionRequiresNetworking'],
+      ['tools', 'toolsRequiresNetworking'],
+    ] as const
+  ).forEach(([, networkingKey]) => {
+    if (!data.requiresNetworking && data.environmentsEnabled[networkingKey]) {
+      ctx.addIssue({
+        code: 'custom',
+        path: ['environmentsEnabled', networkingKey],
+        message: 'Environment networking can only be enabled when networking is required.',
+      });
+    }
+  });
+}
+
+function validateBudget(data: z.infer<typeof publicCloudBaseRequestBodySchema>, ctx: z.RefinementCtx) {
+  const schema = getBudgetSchema(data.provider);
+  const result = schema.safeParse(data.budget);
+
+  if (!result.success) {
+    result.error.issues.forEach((error) => {
+      ctx.addIssue({ ...error, path: ['budget', ...(error.path || [])] });
+    });
+  }
+}
+
+export const publicCloudCreateRequestBodySchema = publicCloudBaseRequestBodySchema
   .extend({
     isAgMinistryChecked: z.boolean().optional(),
+  })
+  .refine(validateEnvironmentsEnabled, {
+    message: 'At least one environment must be selected.',
+    path: ['environmentsEnabled'],
   })
   .refine(
     (formData) => {
@@ -162,24 +164,20 @@ export const publicCloudCreateRequestBodySchema = _publicCloudCreateRequestBodyS
     message: 'The Project Owner and Primary Technical Lead must be different.',
     path: ['primaryTechnicalLeadId'],
   })
-  .superRefine((data, ctx) => {
-    const budgetSchema = getBudgetSchema(data.provider);
-    const budgetParseResult = budgetSchema.safeParse(data.budget);
+  .superRefine(validateNetworking)
+  .superRefine(validateBudget);
 
-    if (!budgetParseResult.success) {
-      budgetParseResult.error.issues.forEach((error) =>
-        ctx.addIssue({ ...error, path: ['budget', ...(error.path || [])] }),
-      );
-    }
-  });
-
-const _publicCloudEditRequestBodySchema = _publicCloudCreateRequestBodySchema.safeExtend({
+const publicCloudEditBaseRequestBodySchema = publicCloudBaseRequestBodySchema.extend({
   members: publicCloudProductMembers,
 });
 
-export const publicCloudEditRequestBodySchema = _publicCloudEditRequestBodySchema
+export const publicCloudEditRequestBodySchema = publicCloudEditBaseRequestBodySchema
   .extend({
     isAgMinistryChecked: z.boolean().optional(),
+  })
+  .refine(validateEnvironmentsEnabled, {
+    message: 'At least one environment must be selected.',
+    path: ['environmentsEnabled'],
   })
   .refine(
     (formData) => {
@@ -193,13 +191,17 @@ export const publicCloudEditRequestBodySchema = _publicCloudEditRequestBodySchem
   .refine(validateDistinctPOandTl, {
     message: 'The Project Owner and Primary Technical Lead must be different.',
     path: ['primaryTechnicalLeadId'],
-  });
+  })
+  .superRefine(validateNetworking)
+  .superRefine(validateBudget);
 
-export const publicCloudRequestDecisionBodySchema = _publicCloudEditRequestBodySchema.safeExtend({
-  type: z.enum(RequestType),
-  decision: z.enum(RequestDecision),
-  decisionComment: optionalCommentSchema,
-});
+export const publicCloudRequestDecisionBodySchema = publicCloudEditBaseRequestBodySchema
+  .extend({
+    type: z.enum(RequestType),
+    decision: z.enum(RequestDecision),
+    decisionComment: optionalCommentSchema,
+  })
+  .superRefine(validateNetworking);
 
 export const publicCloudProductSearchNoPaginationBodySchema = z.object({
   search: z.string().optional(),
@@ -212,7 +214,7 @@ export const publicCloudProductSearchNoPaginationBodySchema = z.object({
   sortOrder: z.preprocess(processEnumString, z.enum(Prisma.SortOrder)).optional(),
 });
 
-export const publicCloudProductSearchBodySchema = publicCloudProductSearchNoPaginationBodySchema.safeExtend({
+export const publicCloudProductSearchBodySchema = publicCloudProductSearchNoPaginationBodySchema.extend({
   page: z.number().optional(),
   pageSize: z.number().optional(),
 });

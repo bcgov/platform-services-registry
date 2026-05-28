@@ -35,7 +35,7 @@ export default function FormRadioGroup({
   };
 }>) {
   return (
-    <div className={cn('space-y-2', classNames?.wrapper ?? '')}>
+    <fieldset className={cn('space-y-2', classNames?.wrapper ?? '')}>
       {label && (
         <legend className={cn('block text-sm font-medium leading-6 text-gray-900', classNames?.label ?? '')}>
           {label}
@@ -60,6 +60,7 @@ export default function FormRadioGroup({
                 checked={value === undefined ? undefined : checked}
                 defaultChecked={value === undefined ? checked : undefined}
                 onChange={() => onChange(option.value)}
+                required={required}
                 className={cn(
                   'm-0 h-4 w-4 border-gray-300 text-indigo-600 focus:ring-indigo-600 disabled:cursor-not-allowed disabled:opacity-50',
                   classNames?.radio ?? '',
@@ -72,6 +73,6 @@ export default function FormRadioGroup({
           );
         })}
       </div>
-    </div>
+    </fieldset>
   );
 }

@@ -38,10 +38,12 @@ export default function ProjectDescriptionPublic({
   const networkingDisabled = !session?.permissions.editPublicCloudNetworking;
   const {
     register,
-    formState: { errors },
+    formState: { errors, submitCount },
     getValues,
     setValue,
     watch,
+    setError,
+    clearErrors,
   } = useFormContext();
   const provider = watch('provider');
 
@@ -70,6 +72,22 @@ export default function ProjectDescriptionPublic({
       });
     }
   }, [provider, setValue]);
+
+  const requiresNetworking = watch('requiresNetworking');
+  const networkingReason = watch('networkingReason');
+
+  useEffect(() => {
+    if (submitCount === 0) return;
+
+    if (requiresNetworking && !networkingReason?.trim()) {
+      setError('networkingReason', {
+        type: 'manual',
+        message: 'Networking reason is required.',
+      });
+    } else {
+      clearErrors('networkingReason');
+    }
+  }, [submitCount, requiresNetworking, networkingReason, setError, clearErrors]);
 
   if (!session) return null;
 
@@ -178,10 +196,19 @@ export default function ProjectDescriptionPublic({
               ]}
               value={String(watch('requiresNetworking') ?? '')}
               onChange={(value) => {
-                setValue('requiresNetworking', value === 'true', {
+                const requiresNetworking = value === 'true';
+
+                setValue('requiresNetworking', requiresNetworking, {
                   shouldDirty: true,
-                  shouldValidate: true,
+                  shouldValidate: false,
                 });
+
+                if (!requiresNetworking) {
+                  setValue('networkingReason', '', {
+                    shouldDirty: true,
+                    shouldValidate: false,
+                  });
+                }
               }}
               disabled={disabled || networkingDisabled}
             />
@@ -204,6 +231,7 @@ export default function ProjectDescriptionPublic({
                 label="Please describe why your project requires networking"
                 name="networkingReason"
                 placeholder="Enter networking requirements..."
+                required
                 classNames={{ wrapper: 'sm:col-span-3 sm:mr-10' }}
                 disabled={disabled || networkingDisabled}
               />
