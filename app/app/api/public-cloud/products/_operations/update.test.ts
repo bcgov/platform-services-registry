@@ -20,16 +20,24 @@ import { PublicCloudRequestDetailDecorated } from '@/types/public-cloud';
 
 const oldEnvironmentsEnabled = {
   production: true,
+  productionRequiresNetworking: false,
   test: false,
+  testRequiresNetworking: false,
   development: false,
+  developmentRequiresNetworking: false,
   tools: false,
+  toolsRequiresNetworking: false,
 };
 
 const newEnvironmentsEnabled = {
   production: true,
+  productionRequiresNetworking: false,
   test: true,
+  testRequiresNetworking: false,
   development: false,
+  developmentRequiresNetworking: false,
   tools: true,
+  toolsRequiresNetworking: false,
 };
 
 const productData = {

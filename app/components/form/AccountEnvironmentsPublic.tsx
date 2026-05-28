@@ -1,15 +1,30 @@
 import { Alert, Button } from '@mantine/core';
 import { IconInfoCircle } from '@tabler/icons-react';
 import _get from 'lodash-es/get';
+import { useSession } from 'next-auth/react';
 import { useFormContext } from 'react-hook-form';
 import FormCheckbox from '@/components/generic/checkbox/FormCheckbox';
+import { Provider } from '@/prisma/client';
 
 interface EnvironmentsEnabled {
   production: boolean;
+  productionRequiresNetworking?: boolean;
   development: boolean;
+  developmentRequiresNetworking?: boolean;
   test: boolean;
+  testRequiresNetworking?: boolean;
   tools: boolean;
+  toolsRequiresNetworking?: boolean;
 }
+
+type EnvironmentKey = keyof EnvironmentsEnabled;
+
+const environments: { key: EnvironmentKey; label: string }[] = [
+  { key: 'production', label: 'Production account' },
+  { key: 'development', label: 'Development account' },
+  { key: 'test', label: 'Test account' },
+  { key: 'tools', label: 'Tools account' },
+];
 
 export default function AccountEnvironmentsPublic({
   mode,
@@ -23,9 +38,35 @@ export default function AccountEnvironmentsPublic({
   const {
     register,
     formState: { errors },
+    watch,
     getValues,
     setValue,
   } = useFormContext();
+  const { data: session } = useSession();
+
+  const isAzure = watch('provider') === Provider.AZURE;
+  const requiresNetworking = watch('requiresNetworking');
+
+  const renderNetworkingCheckbox = (key: EnvironmentKey) => {
+    if (!isAzure) return null;
+    const environmentEnabled = watch(`environmentsEnabled.${key}`);
+    const networkingField = `environmentsEnabled.${key}RequiresNetworking`;
+    const networkingAlreadyEnabled = selected?.[`${key}RequiresNetworking` as keyof EnvironmentsEnabled] === true;
+    const networkingDisabled = !session?.permissions.editPublicCloudNetworking;
+    return (
+      <div className="ml-4 mt-1 border-l border-gray-300 pl-3">
+        <FormCheckbox
+          id={`${key}-requires-networking`}
+          inputProps={register(networkingField)}
+          disabled={
+            disabled || !requiresNetworking || !environmentEnabled || (networkingDisabled && networkingAlreadyEnabled)
+          }
+        >
+          Requires networking
+        </FormCheckbox>
+      </div>
+    );
+  };
 
   return (
     <div className="">
@@ -36,13 +77,8 @@ export default function AccountEnvironmentsPublic({
               color="primary"
               size="compact-sm"
               onClick={() => {
-                [
-                  'environmentsEnabled.production',
-                  'environmentsEnabled.development',
-                  'environmentsEnabled.test',
-                  'environmentsEnabled.tools',
-                ].forEach((key) => {
-                  setValue(key, true, { shouldDirty: true });
+                environments.forEach(({ key }) => {
+                  setValue(`environmentsEnabled.${key}`, true, { shouldDirty: true });
                 });
               }}
             >
@@ -52,9 +88,10 @@ export default function AccountEnvironmentsPublic({
               color="primary"
               size="compact-sm"
               onClick={() => {
-                ['production', 'development', 'test', 'tools'].forEach((key) => {
-                  if (!selected?.[key as keyof EnvironmentsEnabled]) {
+                environments.forEach(({ key }) => {
+                  if (!selected?.[key]) {
                     setValue(`environmentsEnabled.${key}`, false, { shouldDirty: true });
+                    setValue(`environmentsEnabled.${key}RequiresNetworking`, false, { shouldDirty: true });
                   }
                 });
               }}
@@ -65,43 +102,32 @@ export default function AccountEnvironmentsPublic({
           </div>
         )}
 
-        <div className="mt-1">
-          <FormCheckbox
-            id="production"
-            inputProps={register('environmentsEnabled.production')}
-            disabled={disabled || selected?.production}
-          >
-            Production account
-          </FormCheckbox>
-        </div>
-        <div className="mt-1">
-          <FormCheckbox
-            id="development"
-            inputProps={register('environmentsEnabled.development')}
-            disabled={disabled || selected?.development}
-          >
-            Development account
-          </FormCheckbox>
-        </div>
-        <div className="mt-1">
-          <FormCheckbox
-            id="test"
-            inputProps={register('environmentsEnabled.test')}
-            disabled={disabled || selected?.test}
-          >
-            Test account
-          </FormCheckbox>
-        </div>
-        <div className="mt-1">
-          <FormCheckbox
-            id="tools"
-            inputProps={register('environmentsEnabled.tools')}
-            disabled={disabled || selected?.tools}
-          >
-            Tools account
-          </FormCheckbox>
-        </div>
+        {environments.map(({ key, label }) => {
+          return (
+            <div className="mt-1" key={key}>
+              <FormCheckbox
+                id={key}
+                inputProps={{
+                  ...register(`environmentsEnabled.${key}`, {
+                    onChange: (e) => {
+                      if (!e.target.checked) {
+                        setValue(`environmentsEnabled.${key}RequiresNetworking`, false, {
+                          shouldDirty: true,
+                          shouldValidate: true,
+                        });
+                      }
+                    },
+                  }),
+                }}
+                disabled={disabled || selected?.[key]}
+              >
+                {label}
+              </FormCheckbox>
 
+              {renderNetworkingCheckbox(key)}
+            </div>
+          );
+        })}
         <p className="mt-2 text-sm leading-6 text-gray-600">Select how many accounts you want for your project set.</p>
         <Alert variant="light" color="blue" title="Important note" icon={<IconInfoCircle />}>
           It is not possible to remove accounts once created in your project set. You are free to add account later,
