@@ -46,15 +46,13 @@ export default function AccountEnvironmentsPublic({
     const environmentEnabled = watch(`environmentsEnabled.${key}`);
     const networkingField = `environmentsEnabled.${key}RequiresNetworking`;
     const networkingAlreadyEnabled = selected?.[`${key}RequiresNetworking` as keyof EnvironmentsEnabled] === true;
-    const networkingDisabled = !session?.permissions.editPublicCloudNetworking;
+
     return (
       <div className="ml-4 mt-1 border-l border-gray-300 pl-3">
         <FormCheckbox
           id={`${key}-requires-networking`}
           inputProps={register(networkingField)}
-          disabled={
-            disabled || !requiresNetworking || !environmentEnabled || (networkingDisabled && networkingAlreadyEnabled)
-          }
+          disabled={disabled || !requiresNetworking || !environmentEnabled}
         >
           Requires networking
         </FormCheckbox>

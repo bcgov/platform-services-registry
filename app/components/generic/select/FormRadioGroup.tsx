@@ -1,5 +1,6 @@
 'use client';
 
+import { Tooltip } from '@mantine/core';
 import { InputHTMLAttributes } from 'react';
 import { cn } from '@/utils/js';
 
@@ -51,23 +52,24 @@ export default function FormRadioGroup({
               key={`${option.value}-${index}`}
               className={cn('flex items-center gap-2 text-sm text-gray-900', classNames?.radioWrapper ?? '')}
             >
-              <input
-                type="radio"
-                id={`${id}-${option.value}`}
-                name={id}
-                value={option.value}
-                disabled={disabled || option.disabled}
-                checked={value === undefined ? undefined : checked}
-                defaultChecked={value === undefined ? checked : undefined}
-                onChange={() => onChange(option.value)}
-                required={required}
-                className={cn(
-                  'm-0 h-4 w-4 border-gray-300 text-indigo-600 focus:ring-indigo-600 disabled:cursor-not-allowed disabled:opacity-50',
-                  classNames?.radio ?? '',
-                )}
-                {...radioProps}
-              />
-
+              <Tooltip label="Select Yes if your landing zone requires a Virtual Network (vNet) for private connectivity between Azure resources. Select No if no network is needed.">
+                <input
+                  type="radio"
+                  id={`${id}-${option.value}`}
+                  name={id}
+                  value={option.value}
+                  disabled={disabled || option.disabled}
+                  checked={value === undefined ? undefined : checked}
+                  defaultChecked={value === undefined ? checked : undefined}
+                  onChange={() => onChange(option.value)}
+                  required={required}
+                  className={cn(
+                    'm-0 h-4 w-4 border-gray-300 text-indigo-600 focus:ring-indigo-600 disabled:cursor-not-allowed disabled:opacity-50',
+                    classNames?.radio ?? '',
+                  )}
+                  {...radioProps}
+                />
+              </Tooltip>
               <span className={cn(classNames?.radioLabel ?? '')}>{option.label}</span>
             </label>
           );

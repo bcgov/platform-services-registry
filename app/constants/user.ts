@@ -14,7 +14,6 @@ export enum GlobalPermissions {
   EditAllPublicCloudProducts = 'editAllPublicCloudProducts',
   DeleteAllPublicCloudProducts = 'deleteAllPublicCloudProducts',
   ReviewAllPublicCloudRequests = 'reviewAllPublicCloudRequests',
-  EditPublicCloudNetworking = 'editPublicCloudNetworking',
 
   CreatePrivateProductComments = 'createPrivateProductComments',
   ViewAllPrivateProductComments = 'viewAllPrivateProductComments',

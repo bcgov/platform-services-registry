@@ -282,7 +282,6 @@ export async function generateSession({
     deleteAllPublicCloudProducts:
       session.isAdmin || session.isEditor || session.isPublicAdmin || session.isPublicEditor,
     reviewAllPublicCloudRequests: session.isAdmin || session.isPublicAdmin || session.isPublicReviewer,
-    editPublicCloudNetworking: session.isAdmin || session.isEditor || session.isPublicAdmin || session.isPublicEditor,
 
     createPrivateProductComments: session.isAdmin || session.isPrivateAdmin,
     viewAllPrivateProductComments: session.isAdmin || session.isPrivateAdmin,

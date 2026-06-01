@@ -36,7 +36,6 @@ export default function ProjectDescriptionPublic({
 }) {
   const appSnapshot = useSnapshot(appState);
   const { data: session } = useSession();
-  const networkingDisabled = !session?.permissions.editPublicCloudNetworking;
   const {
     register,
     formState: { errors, submitCount },
@@ -237,7 +236,7 @@ export default function ProjectDescriptionPublic({
                   });
                 }
               }}
-              disabled={disabled || networkingDisabled}
+              disabled={disabled}
             />
 
             <p className="mt-3 text-sm leading-6 text-gray-600">
@@ -260,7 +259,7 @@ export default function ProjectDescriptionPublic({
                 placeholder="Enter networking requirements..."
                 required
                 classNames={{ wrapper: 'sm:col-span-3 sm:mr-10' }}
-                disabled={disabled || networkingDisabled}
+                disabled={disabled}
               />
             )}
           </div>
