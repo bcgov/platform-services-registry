@@ -58,3 +58,14 @@ export const defaultAccountCoding = {
   stob: '0000',
   pc: '0000000',
 };
+
+export const publicCloudEnvironmentKeys = ['production', 'development', 'test', 'tools'] as const;
+
+export type PublicCloudEnvironmentKey = (typeof publicCloudEnvironmentKeys)[number];
+
+export const publicCloudEnvironments: { key: PublicCloudEnvironmentKey; label: string }[] = [
+  { key: 'production', label: 'Production account' },
+  { key: 'development', label: 'Development account' },
+  { key: 'test', label: 'Test account' },
+  { key: 'tools', label: 'Tools account' },
+];

@@ -97,7 +97,9 @@ const publicCloudBaseRequestBodySchema = z.object({
   environmentsEnabled: environmentsEnabledSchema,
 });
 
-function validateNetworking(data: z.infer<typeof publicCloudBaseRequestBodySchema>, ctx: z.RefinementCtx) {
+type PublicCloudBaseRequestBody = z.infer<typeof publicCloudBaseRequestBodySchema>;
+
+function validateNetworking(data: PublicCloudBaseRequestBody, ctx: z.RefinementCtx) {
   if (data.provider === Provider.AZURE && data.requiresNetworking && !data.networkingReason?.trim()) {
     ctx.addIssue({
       code: 'custom',
@@ -132,7 +134,7 @@ function validateNetworking(data: z.infer<typeof publicCloudBaseRequestBodySchem
   });
 }
 
-function validateBudget(data: z.infer<typeof publicCloudBaseRequestBodySchema>, ctx: z.RefinementCtx) {
+function validateBudget(data: PublicCloudBaseRequestBody, ctx: z.RefinementCtx) {
   const schema = getBudgetSchema(data.provider);
   const result = schema.safeParse(data.budget);
 
@@ -143,65 +145,62 @@ function validateBudget(data: z.infer<typeof publicCloudBaseRequestBodySchema>, 
   }
 }
 
-export const publicCloudCreateRequestBodySchema = publicCloudBaseRequestBodySchema
-  .extend({
-    isAgMinistryChecked: z.boolean().optional(),
-  })
-  .refine(validateEnvironmentsEnabled, {
-    message: 'At least one environment must be selected.',
-    path: ['environmentsEnabled'],
-  })
-  .refine(
-    (formData) => {
-      return formData.isAgMinistry ? formData.isAgMinistryChecked : true;
-    },
-    {
-      message: 'AG Ministry Checkbox should be checked.',
-      path: ['isAgMinistryChecked'],
-    },
-  )
-  .refine(validateDistinctPOandTl, {
-    message: 'The Project Owner and Primary Technical Lead must be different.',
-    path: ['primaryTechnicalLeadId'],
-  })
-  .superRefine(validateNetworking)
-  .superRefine(validateBudget);
+const validateAgMinistryChecked = (formData: PublicCloudBaseRequestBody & { isAgMinistryChecked?: boolean }) => {
+  return formData.isAgMinistry ? formData.isAgMinistryChecked : true;
+};
+
+const applyCommonPublicCloudValidations = <T extends z.ZodTypeAny>(schema: T) =>
+  schema
+    .refine(
+      (data) => validateEnvironmentsEnabled(data as { environmentsEnabled: z.infer<typeof environmentsEnabledSchema> }),
+      {
+        message: 'At least one environment must be selected.',
+        path: ['environmentsEnabled'],
+      },
+    )
+    .superRefine((data, ctx) => validateNetworking(data as PublicCloudBaseRequestBody, ctx));
 
 const publicCloudEditBaseRequestBodySchema = publicCloudBaseRequestBodySchema.extend({
   members: publicCloudProductMembers,
 });
 
-export const publicCloudEditRequestBodySchema = publicCloudEditBaseRequestBodySchema
-  .extend({
+export const publicCloudCreateRequestBodySchema = applyCommonPublicCloudValidations(
+  publicCloudBaseRequestBodySchema.extend({
     isAgMinistryChecked: z.boolean().optional(),
+  }),
+)
+  .refine(validateAgMinistryChecked, {
+    message: 'AG Ministry Checkbox should be checked.',
+    path: ['isAgMinistryChecked'],
   })
-  .refine(validateEnvironmentsEnabled, {
-    message: 'At least one environment must be selected.',
-    path: ['environmentsEnabled'],
-  })
-  .refine(
-    (formData) => {
-      return formData.isAgMinistry ? formData.isAgMinistryChecked : true;
-    },
-    {
-      message: 'AG Ministry Checkbox should be checked.',
-      path: ['isAgMinistryChecked'],
-    },
-  )
   .refine(validateDistinctPOandTl, {
     message: 'The Project Owner and Primary Technical Lead must be different.',
     path: ['primaryTechnicalLeadId'],
   })
-  .superRefine(validateNetworking)
   .superRefine(validateBudget);
 
-export const publicCloudRequestDecisionBodySchema = publicCloudEditBaseRequestBodySchema
-  .extend({
+export const publicCloudEditRequestBodySchema = applyCommonPublicCloudValidations(
+  publicCloudEditBaseRequestBodySchema.extend({
+    isAgMinistryChecked: z.boolean().optional(),
+  }),
+)
+  .refine(validateAgMinistryChecked, {
+    message: 'AG Ministry Checkbox should be checked.',
+    path: ['isAgMinistryChecked'],
+  })
+  .refine(validateDistinctPOandTl, {
+    message: 'The Project Owner and Primary Technical Lead must be different.',
+    path: ['primaryTechnicalLeadId'],
+  })
+  .superRefine(validateBudget);
+
+export const publicCloudRequestDecisionBodySchema = applyCommonPublicCloudValidations(
+  publicCloudEditBaseRequestBodySchema.extend({
     type: z.enum(RequestType),
     decision: z.enum(RequestDecision),
     decisionComment: optionalCommentSchema,
-  })
-  .superRefine(validateNetworking);
+  }),
+);
 
 export const publicCloudProductSearchNoPaginationBodySchema = z.object({
   search: z.string().optional(),

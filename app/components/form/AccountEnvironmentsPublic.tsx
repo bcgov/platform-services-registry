@@ -4,8 +4,8 @@ import _get from 'lodash-es/get';
 import { useSession } from 'next-auth/react';
 import { useFormContext } from 'react-hook-form';
 import FormCheckbox from '@/components/generic/checkbox/FormCheckbox';
+import { publicCloudEnvironments, PublicCloudEnvironmentKey } from '@/constants/public-cloud';
 import { Provider } from '@/prisma/client';
-
 interface EnvironmentsEnabled {
   production: boolean;
   productionRequiresNetworking?: boolean;
@@ -17,14 +17,8 @@ interface EnvironmentsEnabled {
   toolsRequiresNetworking?: boolean;
 }
 
-type EnvironmentKey = keyof EnvironmentsEnabled;
-
-const environments: { key: EnvironmentKey; label: string }[] = [
-  { key: 'production', label: 'Production account' },
-  { key: 'development', label: 'Development account' },
-  { key: 'test', label: 'Test account' },
-  { key: 'tools', label: 'Tools account' },
-];
+type EnvironmentKey = PublicCloudEnvironmentKey;
+const environments = publicCloudEnvironments;
 
 export default function AccountEnvironmentsPublic({
   mode,

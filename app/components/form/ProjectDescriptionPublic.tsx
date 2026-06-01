@@ -13,6 +13,7 @@ import {
   reasonForSelectingCloudProviderOptions,
   publicCloudTeamEmail,
 } from '@/constants';
+import { publicCloudEnvironmentKeys } from '@/constants/public-cloud';
 import { Provider } from '@/prisma/client';
 import { appState } from '@/states/global';
 import { cn } from '@/utils/js';
@@ -48,30 +49,49 @@ export default function ProjectDescriptionPublic({
   const provider = watch('provider');
 
   useEffect(() => {
-    if (provider !== Provider.AZURE) {
-      setValue('requiresNetworking', false, {
-        shouldDirty: true,
-        shouldValidate: true,
-      });
+    if (provider === Provider.AZURE) return;
 
-      setValue('networkingReason', '', {
-        shouldDirty: true,
-        shouldValidate: true,
-      });
+    const resetFields = [
+      'requiresNetworking',
+      'networkingReason',
+      'environmentsEnabled.productionRequiresNetworking',
+      'environmentsEnabled.developmentRequiresNetworking',
+      'environmentsEnabled.testRequiresNetworking',
+      'environmentsEnabled.toolsRequiresNetworking',
+    ];
 
-      [
-        'environmentsEnabled.productionRequiresNetworking',
-        'environmentsEnabled.developmentRequiresNetworking',
-        'environmentsEnabled.testRequiresNetworking',
-        'environmentsEnabled.toolsRequiresNetworking',
-      ].forEach((key) => {
-        setValue(key, false, {
-          shouldDirty: true,
-          shouldValidate: true,
-        });
+    const shouldReset = resetFields.some((field) => {
+      const value = getValues(field);
+
+      if (field === 'networkingReason') return value !== '';
+
+      return value !== false;
+    });
+
+    if (!shouldReset) return;
+
+    setValue('requiresNetworking', false, {
+      shouldDirty: false,
+      shouldValidate: false,
+    });
+
+    setValue('networkingReason', '', {
+      shouldDirty: false,
+      shouldValidate: false,
+    });
+
+    [
+      'environmentsEnabled.productionRequiresNetworking',
+      'environmentsEnabled.developmentRequiresNetworking',
+      'environmentsEnabled.testRequiresNetworking',
+      'environmentsEnabled.toolsRequiresNetworking',
+    ].forEach((key) => {
+      setValue(key, false, {
+        shouldDirty: false,
+        shouldValidate: false,
       });
-    }
-  }, [provider, setValue]);
+    });
+  }, [provider, getValues, setValue]);
 
   const requiresNetworking = watch('requiresNetworking');
   const networkingReason = watch('networkingReason');
@@ -207,6 +227,13 @@ export default function ProjectDescriptionPublic({
                   setValue('networkingReason', '', {
                     shouldDirty: true,
                     shouldValidate: false,
+                  });
+
+                  publicCloudEnvironmentKeys.forEach((key) => {
+                    setValue(`environmentsEnabled.${key}RequiresNetworking`, false, {
+                      shouldDirty: true,
+                      shouldValidate: true,
+                    });
                   });
                 }
               }}
