@@ -1,7 +1,5 @@
 import { Alert, Button } from '@mantine/core';
 import { IconInfoCircle } from '@tabler/icons-react';
-import _get from 'lodash-es/get';
-import { useSession } from 'next-auth/react';
 import { useFormContext } from 'react-hook-form';
 import FormCheckbox from '@/components/generic/checkbox/FormCheckbox';
 import { publicCloudEnvironments, PublicCloudEnvironmentKey } from '@/constants/public-cloud';
@@ -33,10 +31,8 @@ export default function AccountEnvironmentsPublic({
     register,
     formState: { errors },
     watch,
-    getValues,
     setValue,
   } = useFormContext();
-  const { data: session } = useSession();
 
   const isAzure = watch('provider') === Provider.AZURE;
   const requiresNetworking = watch('requiresNetworking');
@@ -45,7 +41,6 @@ export default function AccountEnvironmentsPublic({
     if (!isAzure) return null;
     const environmentEnabled = watch(`environmentsEnabled.${key}`);
     const networkingField = `environmentsEnabled.${key}RequiresNetworking`;
-    const networkingAlreadyEnabled = selected?.[`${key}RequiresNetworking` as keyof EnvironmentsEnabled] === true;
 
     return (
       <div className="ml-4 mt-1 border-l border-gray-300 pl-3">
