@@ -39,6 +39,21 @@ const publicCloudProductRequest = createClientPage({
   validations: { pathParams: pathParamSchema },
 });
 
+const zodDecisionResolver = zodResolver(
+  publicCloudRequestDecisionBodySchema,
+) as Resolver<PublicCloudRequestDecisionBody>;
+
+const decisionResolver: Resolver<PublicCloudRequestDecisionBody> = async (values, context, options) => {
+  if (values.type === RequestType.DELETE) {
+    return {
+      values,
+      errors: {},
+    };
+  }
+
+  return zodDecisionResolver(values, context, options);
+};
+
 export default publicCloudProductRequest(({ router }) => {
   const [, publicProductSnap] = usePublicProductState();
 
@@ -59,22 +74,9 @@ export default publicCloudProductRequest(({ router }) => {
     enabled: publicProductSnap?.currentRequest?.type === RequestType.CREATE,
   });
   const decisionData = publicProductSnap.currentRequest?.decisionData;
-  const resolver: Resolver<PublicCloudRequestDecisionBody> = async (values, context, options) => {
-    if (values.type === RequestType.DELETE) {
-      return {
-        values,
-        errors: {},
-      };
-    }
 
-    const zodDecisionResolver = zodResolver(
-      publicCloudRequestDecisionBodySchema,
-    ) as Resolver<PublicCloudRequestDecisionBody>;
-
-    return zodDecisionResolver(values, context, options);
-  };
   const form = useForm<PublicCloudRequestDecisionBody>({
-    resolver,
+    resolver: decisionResolver,
     defaultValues: {
       requestComment: '',
       decisionComment: '',

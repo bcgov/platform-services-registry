@@ -209,6 +209,7 @@ export default function ProjectDescriptionPublic({
             <FormRadioGroup
               id="requiresNetworking"
               label="Does your project require networking?"
+              tooltip="Select Yes if your landing zone requires a Virtual Network (vNet) for private connectivity between Azure resources. Select No if no network is needed."
               options={[
                 { label: 'No', value: 'false' },
                 { label: 'Yes', value: 'true' },

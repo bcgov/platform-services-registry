@@ -40,7 +40,7 @@ export default publicCloudProductEdit(() => {
       isAgMinistry: false,
       isAgMinistryChecked: true,
       requiresNetworking: currentProduct?.requiresNetworking ?? false,
-      networkingReason: currentProduct?.networkingReason,
+      networkingReason: currentProduct?.networkingReason ?? '',
       environmentsEnabled: {
         ...currentProduct?.environmentsEnabled,
         productionRequiresNetworking: currentProduct?.environmentsEnabled?.productionRequiresNetworking ?? false,

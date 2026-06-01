@@ -78,12 +78,14 @@ const publicCloudBaseRequestBodySchema = z.object({
   providerSelectionReasonsNote: z
     .string()
     .min(1, { message: 'An explanation of the reasons for choosing provider is required' })
-    .max(1000, { message: 'Provider Selection message should contain a maximum of 1000 characters.' }),
+    .max(1000, {
+      message: 'Provider selection note must be at most 1000 characters.',
+    }),
   requiresNetworking: z.boolean().default(false),
   networkingReason: z
     .string()
     .max(1000, {
-      message: 'Networking reason should contain a maximum of 1000 characters',
+      message: 'Networking reason must be at most 1000 characters.',
     })
     .default(''),
   budget: budgetSchema,
@@ -123,7 +125,14 @@ function validateNetworking(data: PublicCloudBaseRequestBody, ctx: z.RefinementC
       ['production', 'productionRequiresNetworking'],
       ['tools', 'toolsRequiresNetworking'],
     ] as const
-  ).forEach(([, networkingKey]) => {
+  ).forEach(([environmentKey, networkingKey]) => {
+    if (!data.environmentsEnabled[environmentKey] && data.environmentsEnabled[networkingKey]) {
+      ctx.addIssue({
+        code: 'custom',
+        path: ['environmentsEnabled', networkingKey],
+        message: 'Environment networking can only be enabled when networking is required.',
+      });
+    }
     if (!data.requiresNetworking && data.environmentsEnabled[networkingKey]) {
       ctx.addIssue({
         code: 'custom',
