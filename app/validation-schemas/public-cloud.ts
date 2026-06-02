@@ -210,7 +210,7 @@ export const publicCloudRequestDecisionBodySchema = applyCommonPublicCloudValida
     decision: z.enum(RequestDecision),
     decisionComment: optionalCommentSchema,
   }),
-);
+).superRefine(validateBudget);
 
 export const publicCloudProductSearchNoPaginationBodySchema = z.object({
   search: z.string().optional(),
