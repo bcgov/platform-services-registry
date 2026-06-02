@@ -5,7 +5,7 @@ import { Alert, Button, Tooltip } from '@mantine/core';
 import { IconInfoCircle, IconUsersGroup, IconMessage, IconLayoutGridAdd, IconMoneybag } from '@tabler/icons-react';
 import { useQuery } from '@tanstack/react-query';
 import { useEffect } from 'react';
-import { useForm, FormProvider } from 'react-hook-form';
+import { Resolver, useForm, FormProvider } from 'react-hook-form';
 import { z } from 'zod';
 import CancelRequest from '@/components/buttons/CancelButton';
 import PreviousButton from '@/components/buttons/Previous';
@@ -18,7 +18,6 @@ import { openPublicCloudMouReviewModal } from '@/components/modal/publicCloudMou
 import { openPublicCloudMouSignModal } from '@/components/modal/publicCloudMouSign';
 import { openPublicCloudRequestReviewModal } from '@/components/modal/publicCloudRequestReview';
 import BillingStatusProgress from '@/components/public-cloud/BillingStatusProgress';
-import AdditionalTeamMembers from '@/components/public-cloud/sections/AdditionalTeamMembers';
 import TeamContacts from '@/components/public-cloud/sections/TeamContacts';
 import { GlobalRole } from '@/constants';
 import createClientPage from '@/core/client-page';
@@ -31,7 +30,6 @@ import {
   PublicCloudRequestDecisionBody,
 } from '@/validation-schemas/public-cloud';
 import { RequestDecision } from '@/validation-schemas/shared';
-
 const pathParamSchema = z.object({
   id: z.string(),
 });
@@ -40,6 +38,21 @@ const publicCloudProductRequest = createClientPage({
   roles: [GlobalRole.User],
   validations: { pathParams: pathParamSchema },
 });
+
+const zodDecisionResolver = zodResolver(
+  publicCloudRequestDecisionBodySchema,
+) as Resolver<PublicCloudRequestDecisionBody>;
+
+const decisionResolver: Resolver<PublicCloudRequestDecisionBody> = async (values, context, options) => {
+  if (values.type === RequestType.DELETE) {
+    return {
+      values,
+      errors: {},
+    };
+  }
+
+  return zodDecisionResolver(values, context, options);
+};
 
 export default publicCloudProductRequest(({ router }) => {
   const [, publicProductSnap] = usePublicProductState();
@@ -60,28 +73,26 @@ export default publicCloudProductRequest(({ router }) => {
     refetchInterval: 1000,
     enabled: publicProductSnap?.currentRequest?.type === RequestType.CREATE,
   });
+  const decisionData = publicProductSnap.currentRequest?.decisionData;
 
   const form = useForm<PublicCloudRequestDecisionBody>({
-    resolver: (values, context, options) => {
-      const isDeleteRequest = values.type === RequestType.DELETE;
-
-      // Ignore form validation if a DELETE request
-      if (isDeleteRequest) {
-        return {
-          values,
-          errors: {},
-        };
-      }
-
-      return zodResolver(publicCloudRequestDecisionBodySchema)(values, context, options);
-    },
+    resolver: decisionResolver,
     defaultValues: {
       requestComment: '',
       decisionComment: '',
       decision: RequestDecision.APPROVED,
       type: publicProductSnap.currentRequest?.type,
       isAgMinistry: false,
-      ...publicProductSnap.currentRequest?.decisionData,
+      ...decisionData,
+      requiresNetworking: decisionData?.requiresNetworking ?? false,
+      networkingReason: decisionData?.networkingReason ?? '',
+      environmentsEnabled: {
+        ...decisionData?.environmentsEnabled,
+        productionRequiresNetworking: decisionData?.environmentsEnabled?.productionRequiresNetworking ?? false,
+        developmentRequiresNetworking: decisionData?.environmentsEnabled?.developmentRequiresNetworking ?? false,
+        testRequiresNetworking: decisionData?.environmentsEnabled?.testRequiresNetworking ?? false,
+        toolsRequiresNetworking: decisionData?.environmentsEnabled?.toolsRequiresNetworking ?? false,
+      },
       expenseAuthorityId: publicProductSnap.currentRequest?.decisionData?.expenseAuthorityId,
     },
   });

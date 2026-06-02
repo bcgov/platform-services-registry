@@ -43,6 +43,8 @@ export function createSamplePublicCloudProduct(args?: {
     secondaryTechnicalLead,
     expenseAuthorityId: expenseAuthority.id,
     expenseAuthority,
+    requiresNetworking: false,
+    networkingReason: '',
     members: [],
     budget: {
       dev: 0,
@@ -52,9 +54,13 @@ export function createSamplePublicCloudProduct(args?: {
     },
     environmentsEnabled: {
       development: true,
+      developmentRequiresNetworking: false,
       test: true,
+      testRequiresNetworking: false,
       production: true,
+      productionRequiresNetworking: false,
       tools: true,
+      toolsRequiresNetworking: false,
     },
     createdAt: new Date(),
     updatedAt: new Date(),

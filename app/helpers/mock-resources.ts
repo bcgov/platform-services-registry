@@ -90,6 +90,8 @@ export function createSamplePublicCloudProductData(args?: {
     secondaryTechnicalLead: TL2,
     expenseAuthority: EA,
     accountCoding: faker.string.numeric(24),
+    requiresNetworking: false,
+    networkingReason: '',
     budget: {
       dev: 50,
       test: 50,
@@ -98,9 +100,13 @@ export function createSamplePublicCloudProductData(args?: {
     },
     environmentsEnabled: {
       production: true,
+      productionRequiresNetworking: false,
       test: true,
+      testRequiresNetworking: false,
       development: true,
+      developmentRequiresNetworking: false,
       tools: true,
+      toolsRequiresNetworking: false,
     },
     isAgMinistry: false,
     isAgMinistryChecked: true,

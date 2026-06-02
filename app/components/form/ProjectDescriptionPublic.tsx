@@ -1,4 +1,5 @@
 import { useSession } from 'next-auth/react';
+import { useEffect } from 'react';
 import { useFormContext } from 'react-hook-form';
 import { useSnapshot } from 'valtio';
 import AGMinistryCheckBox from '@/components/form/AGMinistryCheckBox';
@@ -12,9 +13,12 @@ import {
   reasonForSelectingCloudProviderOptions,
   publicCloudTeamEmail,
 } from '@/constants';
+import { publicCloudEnvironmentKeys } from '@/constants/public-cloud';
+import { Provider } from '@/prisma/client';
 import { appState } from '@/states/global';
 import { cn } from '@/utils/js';
 import HookFormTextInput from '../generic/input/HookFormTextInput';
+import FormRadioGroup from '../generic/select/FormRadioGroup';
 
 function stripSpecialCharacters(text: string) {
   const pattern = /[^A-Za-z0-9///.:+=@_ ]/g;
@@ -32,14 +36,77 @@ export default function ProjectDescriptionPublic({
 }) {
   const appSnapshot = useSnapshot(appState);
   const { data: session } = useSession();
-
   const {
     register,
-    formState: { errors },
+    formState: { errors, submitCount },
     getValues,
     setValue,
-    control,
+    watch,
+    setError,
+    clearErrors,
   } = useFormContext();
+  const provider = watch('provider');
+
+  useEffect(() => {
+    if (provider === Provider.AZURE) return;
+
+    const resetFields = [
+      'requiresNetworking',
+      'networkingReason',
+      'environmentsEnabled.productionRequiresNetworking',
+      'environmentsEnabled.developmentRequiresNetworking',
+      'environmentsEnabled.testRequiresNetworking',
+      'environmentsEnabled.toolsRequiresNetworking',
+    ];
+
+    const shouldReset = resetFields.some((field) => {
+      const value = getValues(field);
+
+      if (field === 'networkingReason') return value !== '';
+
+      return value !== false;
+    });
+
+    if (!shouldReset) return;
+
+    setValue('requiresNetworking', false, {
+      shouldDirty: false,
+      shouldValidate: false,
+    });
+
+    setValue('networkingReason', '', {
+      shouldDirty: false,
+      shouldValidate: false,
+    });
+
+    [
+      'environmentsEnabled.productionRequiresNetworking',
+      'environmentsEnabled.developmentRequiresNetworking',
+      'environmentsEnabled.testRequiresNetworking',
+      'environmentsEnabled.toolsRequiresNetworking',
+    ].forEach((key) => {
+      setValue(key, false, {
+        shouldDirty: false,
+        shouldValidate: false,
+      });
+    });
+  }, [provider, getValues, setValue]);
+
+  const requiresNetworking = watch('requiresNetworking');
+  const networkingReason = watch('networkingReason');
+
+  useEffect(() => {
+    if (submitCount === 0) return;
+
+    if (requiresNetworking && !networkingReason?.trim()) {
+      setError('networkingReason', {
+        type: 'manual',
+        message: 'Networking reason is required.',
+      });
+    } else {
+      clearErrors('networkingReason');
+    }
+  }, [submitCount, requiresNetworking, networkingReason, setError, clearErrors]);
 
   if (!session) return null;
 
@@ -136,6 +203,68 @@ export default function ProjectDescriptionPublic({
           classNames={{ wrapper: 'sm:col-span-3 sm:ml-10' }}
           disabled={disabled}
         />
+
+        {provider === Provider.AZURE && (
+          <div className="sm:col-span-3 sm:mr-10">
+            <FormRadioGroup
+              id="requiresNetworking"
+              label="Does your project require networking?"
+              tooltip="Select Yes if your landing zone requires a Virtual Network (vNet) for private connectivity between Azure resources. Select No if no network is needed."
+              options={[
+                { label: 'No', value: 'false' },
+                { label: 'Yes', value: 'true' },
+              ]}
+              value={String(watch('requiresNetworking') ?? false)}
+              onChange={(value) => {
+                const requiresNetworking = value === 'true';
+
+                setValue('requiresNetworking', requiresNetworking, {
+                  shouldDirty: true,
+                  shouldValidate: false,
+                });
+
+                if (!requiresNetworking) {
+                  setValue('networkingReason', '', {
+                    shouldDirty: true,
+                    shouldValidate: false,
+                  });
+
+                  publicCloudEnvironmentKeys.forEach((key) => {
+                    setValue(`environmentsEnabled.${key}RequiresNetworking`, false, {
+                      shouldDirty: true,
+                      shouldValidate: true,
+                    });
+                  });
+                }
+              }}
+              disabled={disabled}
+            />
+
+            <p className="mt-3 text-sm leading-6 text-gray-600">
+              You can enable this later if needed. Not sure?{' '}
+              <a
+                target="_blank"
+                rel="noopener noreferrer"
+                href="https://citz-do.atlassian.net/servicedesk/customer/portal/3/group/11/create/228"
+                className="text-blue-500 hover:text-blue-700"
+              >
+                Book a quick consult
+              </a>
+              {'.'}
+            </p>
+
+            {watch('requiresNetworking') && (
+              <HookFormTextarea
+                label="Please describe why your project requires networking"
+                name="networkingReason"
+                placeholder="Enter networking requirements..."
+                required
+                classNames={{ wrapper: 'sm:col-span-3 sm:mr-10' }}
+                disabled={disabled}
+              />
+            )}
+          </div>
+        )}
       </div>
     </div>
   );
