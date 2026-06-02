@@ -214,7 +214,7 @@ export default function ProjectDescriptionPublic({
                 { label: 'No', value: 'false' },
                 { label: 'Yes', value: 'true' },
               ]}
-              value={String(watch('requiresNetworking') ?? '')}
+              value={String(watch('requiresNetworking') ?? false)}
               onChange={(value) => {
                 const requiresNetworking = value === 'true';
 

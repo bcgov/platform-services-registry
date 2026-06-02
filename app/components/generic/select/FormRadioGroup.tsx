@@ -5,20 +5,7 @@ import { InputHTMLAttributes } from 'react';
 import { cn } from '@/utils/js';
 
 interface RadioProps extends InputHTMLAttributes<HTMLInputElement> {}
-
-export default function FormRadioGroup({
-  id,
-  label,
-  options,
-  required,
-  disabled,
-  radioProps = {},
-  value,
-  defaultValue,
-  onChange = (value: string) => {},
-  classNames,
-  tooltip,
-}: Readonly<{
+type FormRadioGroupProps = Readonly<{
   id: string;
   label?: string;
   options: { label: string; value: string; disabled?: boolean }[];
@@ -36,7 +23,21 @@ export default function FormRadioGroup({
     radio?: string;
     radioLabel?: string;
   };
-}>) {
+}>;
+
+export default function FormRadioGroup({
+  id,
+  label,
+  options,
+  required,
+  disabled,
+  radioProps = {},
+  value,
+  defaultValue,
+  onChange = (value: string) => {},
+  classNames,
+  tooltip,
+}: FormRadioGroupProps) {
   return (
     <fieldset className={cn('space-y-2', classNames?.wrapper ?? '')}>
       {label && (
@@ -49,31 +50,40 @@ export default function FormRadioGroup({
       <div className="flex gap-2">
         {options.map((option, index) => {
           const checked = value === undefined ? defaultValue === option.value : value === option.value;
+          const radioInput = (
+            <input
+              {...radioProps}
+              type="radio"
+              id={`${id}-${option.value}`}
+              name={id}
+              value={option.value}
+              disabled={disabled || option.disabled}
+              checked={value === undefined ? undefined : checked}
+              defaultChecked={value === undefined ? checked : undefined}
+              onChange={(e) => {
+                radioProps.onChange?.(e);
+                onChange(option.value);
+              }}
+              required={required}
+              className={cn(
+                'm-0 h-4 w-4 border-gray-300 text-indigo-600 focus:ring-indigo-600 disabled:cursor-not-allowed disabled:opacity-50',
+                classNames?.radio ?? '',
+              )}
+            />
+          );
+
           return (
             <label
               key={`${option.value}-${index}`}
               className={cn('flex items-center gap-2 text-sm text-gray-900', classNames?.radioWrapper ?? '')}
             >
-              <Tooltip label={tooltip}>
-                <span>
-                  <input
-                    type="radio"
-                    id={`${id}-${option.value}`}
-                    name={id}
-                    value={option.value}
-                    disabled={disabled || option.disabled}
-                    checked={value === undefined ? undefined : checked}
-                    defaultChecked={value === undefined ? checked : undefined}
-                    onChange={() => onChange(option.value)}
-                    required={required}
-                    className={cn(
-                      'm-0 h-4 w-4 border-gray-300 text-indigo-600 focus:ring-indigo-600 disabled:cursor-not-allowed disabled:opacity-50',
-                      classNames?.radio ?? '',
-                    )}
-                    {...radioProps}
-                  />
-                </span>
-              </Tooltip>
+              {tooltip ? (
+                <Tooltip label={tooltip}>
+                  <span>{radioInput}</span>
+                </Tooltip>
+              ) : (
+                radioInput
+              )}
               <span className={cn(classNames?.radioLabel ?? '')}>{option.label}</span>
             </label>
           );

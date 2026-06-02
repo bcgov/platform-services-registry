@@ -126,18 +126,19 @@ function validateNetworking(data: PublicCloudBaseRequestBody, ctx: z.RefinementC
       ['tools', 'toolsRequiresNetworking'],
     ] as const
   ).forEach(([environmentKey, networkingKey]) => {
-    if (!data.environmentsEnabled[environmentKey] && data.environmentsEnabled[networkingKey]) {
+    const networkingEnabled = data.environmentsEnabled[networkingKey];
+
+    if (networkingEnabled && !data.environmentsEnabled[environmentKey]) {
       ctx.addIssue({
         code: 'custom',
         path: ['environmentsEnabled', networkingKey],
-        message: 'Environment networking can only be enabled when networking is required.',
+        message: 'Environment networking can only be enabled when the environment is selected.',
       });
-    }
-    if (!data.requiresNetworking && data.environmentsEnabled[networkingKey]) {
+    } else if (networkingEnabled && !data.requiresNetworking) {
       ctx.addIssue({
         code: 'custom',
         path: ['environmentsEnabled', networkingKey],
-        message: 'Environment networking can only be enabled when networking is required.',
+        message: 'Environment networking can only be enabled when "Requires networking" is enabled.',
       });
     }
   });
