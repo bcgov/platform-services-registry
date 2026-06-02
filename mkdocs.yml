@@ -85,7 +85,6 @@ nav:
   - git-github/clean-pr.md
   - git-github/bot-pr-review.md
   - git-github/ms-teams-notifications.md
-  - git-github/rocketchat-notification.md
 - CI / CD:
   - CI (Continuous Integration):
     - ci-cd/ci/peer-review.md

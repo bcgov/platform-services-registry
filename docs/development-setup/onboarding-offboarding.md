@@ -12,7 +12,7 @@ Ensure the following resources are provisioned (or revoked) during onboarding (o
 -   **Application Environments**: Development, Testing, and Production
 -   **Keycloak Realms**: Development, Testing, and Production
 -   **GitHub Repositories**
--   **Zenhub Board**
+-   **Jira Board**
 -   **Uptime Monitoring Access**
 -   **Platform Services Google Drive**
 
@@ -20,31 +20,13 @@ Ensure the following resources are provisioned (or revoked) during onboarding (o
 
 ## 2. Communication Channels
 
-### 🔹 Internal Rocket.Chat Channels
+### 🔹 Internal MS Teams Channels
 
--   `#app-dev-team`
--   `#app-dev-internal`
--   `#internal-platform-services`
--   `#internal-devops-registry`
--   `#internal-provisioner`
+-   [Dev Work](https://teams.microsoft.com/l/channel/19%3A06079a3172c449f98434b26e2a29bf97%40thread.tacv2/Dev%20Work?groupId=7c9a8bf2-dc9b-496d-a22c-ffb81a7b06d2&tenantId=6fdb5200-3d0d-4a8a-b036-d3685e359adc&ngc=true)
+-   [DevX Team Chat](https://teams.microsoft.com/l/chat/19:56ed7dc4fa7d468fbd05f15a7ddebf46@thread.v2/conversations?context=%7B%22contextType%22%3A%22chat%22%7D)
+-   [Registry Notifications](https://teams.microsoft.com/l/channel/19%3A1c0db9355b814816a5d01963e2c3a978%40thread.tacv2/Registry%20Notifications?groupId=7c9a8bf2-dc9b-496d-a22c-ffb81a7b06d2&tenantId=6fdb5200-3d0d-4a8a-b036-d3685e359adc)
 
-### 🔹 External Rocket.Chat Channels
-
--   `#devops-operations`
--   `#devops-how-to`
--   `#devops-alerts`
--   `#devops-sos`
--   `#devops-registry`
--   `#labops-alerts`
--   `#labops-requests`
--   `#rocky-chat`
--   `#random`
--   `#general`
--   `#rocketchat-help`
--   `#kudos`
--   `#github-news-and-support`
-
-### 🔹 Microsoft Teams Channels
+### 🔹 MS Teams Channels
 
 -   **External – DOCS Branch**
 -   **External – Digital Office**

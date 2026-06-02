@@ -25,7 +25,7 @@ Please use this epic to create various tickets for onboarding a new team member 
 -   [ ] Send the meeting invitations for all the scrum and team meeting series
 -   [ ] Add a new team member to the GitHub orgs and repos
 -   [ ] Add a new team member to the ZenHub board
--   [ ] Add to Rocket Chat team channels
+-   [ ] Add to MS Teams channels
 
 3. Onboarding with the subject matter expert/supervisor:
 

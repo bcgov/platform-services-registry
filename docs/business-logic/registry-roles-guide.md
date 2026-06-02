@@ -63,7 +63,6 @@ Global editing access across Registry products.
 -   Delete all Private Cloud products
 -   Delete all Public Cloud products
 -   Edit Private Cloud webhooks
--   Edit Public Cloud networking
 
 ### Cannot
 
@@ -295,8 +294,7 @@ Editing access for Public Cloud products.
 
 -   View all Public Cloud products
 -   Edit all Public Cloud products
--   Delete all Public Cloud products
--   Edit Public Cloud networking
+-   Delete all Public Cloud product
 
 ### Cannot
 
@@ -622,14 +620,13 @@ Can edit products belonging to organizations mapped to the `CITZ` ministry only.
 
 # Private vs Public Cloud Differences
 
-| Capability            | Private Cloud      | Public Cloud      |
-| --------------------- | ------------------ | ----------------- |
-| Reviewer role         | `private-reviewer` | `public-reviewer` |
-| Analyzer role         | `private-analyzer` | `public-analyzer` |
-| Billing visibility    | Limited            | Extensive         |
-| Networking management | No                 | Yes               |
-| Unit pricing          | Yes                | No                |
-| Finance management    | Yes                | No                |
+| Capability         | Private Cloud      | Public Cloud      |
+| ------------------ | ------------------ | ----------------- |
+| Reviewer role      | `private-reviewer` | `public-reviewer` |
+| Analyzer role      | `private-analyzer` | `public-analyzer` |
+| Billing visibility | Limited            | Extensive         |
+| Unit pricing       | Yes                | No                |
+| Finance management | Yes                | No                |
 
 ---
 
