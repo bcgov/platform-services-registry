@@ -714,8 +714,6 @@
       
         
       
-        
-      
     
     
     
@@ -878,34 +876,6 @@
   
   
     <li class="md-nav__item">
-      <a href="../../development-setup/onboarding-offboarding.html" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Onboarding and Offboarding Guide
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
       <a href="../../development-setup/react-email.html" class="md-nav__link">
         
   
@@ -970,8 +940,6 @@
   
     
     
-      
-        
       
         
       
@@ -1153,34 +1121,6 @@
     
   
     MS Teams Deployment Notifications (via n8n + Relay)
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../git-github/rocketchat-notification.html" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    RocketChat Deployment Notifications
   
 
     
@@ -3064,7 +3004,7 @@
 <h3 id="backup-configuration">Backup Configuration<a class="headerlink" href="#backup-configuration" title="Permanent link">&para;</a></h3>
 <ul>
 <li>The Kubernetes deployment template for the backup process can be found at <a href="https://github.com/bcgov/platform-services-registry/blob/main/helm/main/templates/mongodb-backup.yaml" rel="noopener noreferrer" target="_blank">mongodb-backup.yaml</a>. This template orchestrates the deployment of the MongoDB tools container.</li>
-<li>A notification mechanism has been set up to inform the designated RocketChat channel about the status of the backup operation.</li>
+<li>A notification mechanism has been set up to inform the designated MS Teams channel about the status of the backup operation.</li>
 </ul>
 <h3 id="backup-steps">Backup Steps<a class="headerlink" href="#backup-steps" title="Permanent link">&para;</a></h3>
 <p>The backup procedure is initiated at regular intervals according to the cron schedule set by the backup container. However, there are occasions when manual backup is required, such as before deploying to the production environment. To back up the database, follow these steps:</p>
