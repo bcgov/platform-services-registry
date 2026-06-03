@@ -6,7 +6,7 @@ kubectl 1.36.1
 terraform 1.14.6
 helm 4.1.4
 shfmt 3.13.1
-act 0.2.88
+act 0.2.89
 jq 1.7.1
 mongodb-database-tools 0.11.1
 kube-linter 0.7.4
