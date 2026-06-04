@@ -2,7 +2,10 @@ import { Text, Hr } from '@react-email/components';
 import { PublicCloudProductDetail } from '@/types/public-cloud';
 
 interface Props {
-  product: Pick<PublicCloudProductDetail, 'provider' | 'budget' | 'environmentsEnabled'>;
+  product: Pick<
+    PublicCloudProductDetail,
+    'provider' | 'budget' | 'environmentsEnabled' | 'requiresNetworking' | 'networkingReason'
+  >;
 }
 
 export default function ProviderDetails({ product }: Props) {
@@ -23,6 +26,49 @@ export default function ProviderDetails({ product }: Props) {
           <Text className="mb-0 font-semibold">Provider </Text>
           <Text className="mt-0">{provider}</Text>
         </div>
+
+        {product.requiresNetworking && (
+          <div>
+            <Text className="font-semibold mt-2">Networking</Text>
+            <Text className="mt-0 mb-1">
+              <b>Landing Zone Networking:</b> {product.requiresNetworking ? 'Yes' : 'No'}
+            </Text>
+
+            {product.requiresNetworking && product.networkingReason && (
+              <Text className="mt-0 mb-1">
+                <b>Reason:</b> {product.networkingReason}
+              </Text>
+            )}
+
+            {product.requiresNetworking && (
+              <>
+                {environmentsEnabled.development && (
+                  <Text className="mt-0 mb-1">
+                    <b>Dev Networking:</b> {environmentsEnabled.developmentRequiresNetworking ? 'Yes' : 'No'}
+                  </Text>
+                )}
+
+                {environmentsEnabled.test && (
+                  <Text className="mt-0 mb-1">
+                    <b>Test Networking:</b> {environmentsEnabled.testRequiresNetworking ? 'Yes' : 'No'}
+                  </Text>
+                )}
+
+                {environmentsEnabled.production && (
+                  <Text className="mt-0 mb-1">
+                    <b>Prod Networking:</b> {environmentsEnabled.productionRequiresNetworking ? 'Yes' : 'No'}
+                  </Text>
+                )}
+
+                {environmentsEnabled.tools && (
+                  <Text className="mt-0 mb-1">
+                    <b>Tools Networking:</b> {environmentsEnabled.toolsRequiresNetworking ? 'Yes' : 'No'}
+                  </Text>
+                )}
+              </>
+            )}
+          </div>
+        )}
 
         <Text className="font-semibold mt-2">Budget</Text>
         <div>
