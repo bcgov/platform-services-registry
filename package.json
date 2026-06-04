@@ -3,6 +3,7 @@
   "description": "B.C. Government's Platform Product Registry",
   "version": "0.78.15",
   "private": true,
+  "packageManager": "pnpm@11.0.8",
   "scripts": {
     "lint": "eslint --no-eslintrc --config .eslintrc.root.json .",
     "lint-fix": "eslint --no-eslintrc --config .eslintrc.root.json --fix .",
@@ -28,7 +29,7 @@
     "eslint": "^9.32.0",
     "eslint-config-prettier": "^10.1.8",
     "eslint-plugin-n": "^18.0.0",
-    "eslint-plugin-prettier": "^5.5.4",
+    "eslint-plugin-prettier": "^5.5.6",
     "eslint-plugin-unused-imports": "^4.1.4",
     "release-it": "^20.0.0",
     "typescript": "^6.0.0",
