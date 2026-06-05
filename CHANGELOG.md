@@ -1,3 +1,19 @@
+## [0.79.0](https://github.com/bcgov/platform-services-registry/compare/v0.78.15...v0.79.0) (2026-06-05)
+
+### Features
+
+* **2663:** add netoring options to public cloud product ([c3dec49](https://github.com/bcgov/platform-services-registry/commit/c3dec49a22646f2e85a59c74b155af7ab6239bde))
+
+### Bug Fixes
+
+* **0000:** update eslint-plugin-prettier to 5.5.6 ([e3c4416](https://github.com/bcgov/platform-services-registry/commit/e3c44160d2e540c75fb07de93754313064051f7b))
+* **2856:** increase mongodb backup memory limit ([ce697e6](https://github.com/bcgov/platform-services-registry/commit/ce697e6cd15ad2cdd68af459735bab87092f7fc1))
+
+### Docs
+
+* **2804:** add pre-commit ([b254f82](https://github.com/bcgov/platform-services-registry/commit/b254f82af605f09906139d4bdb24d38a97d3d852))
+* **2830:** replace RC with MS Teams in docs ([d5d8b37](https://github.com/bcgov/platform-services-registry/commit/d5d8b37ec2159507260b2ec2d0d193a80da02ff7))
+
 ## [0.78.15](https://github.com/bcgov/platform-services-registry/compare/v0.78.14...v0.78.15) (2026-05-19)
 
 ### Bug Fixes
