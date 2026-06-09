@@ -4,6 +4,6 @@
   "ignoreDeps": [],
   "ignorePaths": ["**/node_modules/**"],
   "toolSettings": {
-    "nodeMaxMemory": 4096
+    "nodeMaxMemory": 1024
   }
 }
