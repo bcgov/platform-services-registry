@@ -2,5 +2,8 @@
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
   "extends": ["config:recommended", ":semanticCommitType(chore)"],
   "ignoreDeps": [],
-  "ignorePaths": ["**/node_modules/**"]
+  "ignorePaths": ["**/node_modules/**"],
+  "toolSettings": {
+    "nodeMaxMemory": 4096
+  }
 }
