@@ -48,6 +48,9 @@ export const POST = createApiHandler({
       'Update date': formatDateSimple(project.updatedAt),
       'Licence plate': project.licencePlate,
       Status: project.status,
+      Budget: `Dev: ${project.budget?.dev ?? 0}, Test: ${project.budget?.test ?? 0}, Prod: ${
+        project.budget?.prod ?? 0
+      }, Tools: ${project.budget?.tools ?? 0}`,
     };
   });
 
