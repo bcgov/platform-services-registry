@@ -36,7 +36,7 @@ Due to BC Government procurement restrictions, Docker Desktop is not permitted. 
 
 ## Getting Started
 
-1. Create three directories to mount volumns for `mongodb`,`postgres` and `mailpit`.
+1. Create three directories to mount volumes for `mongodb`, `postgres` and `mailpit`.
 
 In the root of the project directory:
 
