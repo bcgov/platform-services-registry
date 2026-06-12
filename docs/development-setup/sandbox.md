@@ -61,7 +61,7 @@ make sandbox
 To run in detached mode:
 
 ```bash
-make sandbox SDB=true
+make sandbox SBD=true
 ```
 
 For Mac M1/M2
