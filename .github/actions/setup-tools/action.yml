@@ -5,10 +5,11 @@ runs:
   using: composite
   steps:
   - name: Setup Tools
-    uses: egose/actions/asdf-tools@9a09f2377dc8c8b8f8cfacc5f695448999670434
+    uses: egose/actions/asdf-tools@68448c0027aeafe0a824f6c9b33fd875e77b844c # v0.9.0
     with:
       plugins: |
         sonarscanner=https://github.com/virtualstaticvoid/asdf-sonarscanner.git
+        database-tools=https://github.com/egose/asdf-database-tools.git
 
   - name: Install python tools
     run: |
