@@ -16,8 +16,8 @@ mkdir -p "$tmp_dir"
 
 pod_name=$(oc get pods | grep pltsvc-db-backup- | awk '{print $1}')
 
-if [ -z "$pod_name" ]; then
-    echo "No pod found matching 'pltsvc-db-backup-'"
+if [[ -z $pod_name ]]; then
+    echo "No pod found matching 'pltsvc-db-backup-'" >&2
     exit 1
 fi
 
@@ -26,8 +26,8 @@ echo "Pod name: $pod_name"
 # Get the most recent file from the backup directory in the pod
 recent_file=$(oc exec "$pod_name" -- sh -c 'ls -t backup | head -n 1')
 
-if [ -z "$recent_file" ]; then
-    echo "No files found in /backup directory of the pod"
+if [[ -z $recent_file ]]; then
+    echo "No files found in /backup directory of the pod" >&2
     exit 1
 fi
 
@@ -41,17 +41,17 @@ echo "Source file size: $pod_file_size bytes"
 oc cp "$pod_name:backup/$recent_file" "$tmp_dir/$recent_file"
 
 # Verify the copy was successful
-if [ ! -f "$tmp_dir/$recent_file" ]; then
-    echo "Error: Failed to copy file from pod"
+if [[ ! -f "$tmp_dir/$recent_file" ]]; then
+    echo "Error: Failed to copy file from pod" >&2
     exit 1
 fi
 
 local_file_size=$(stat -f%z "$tmp_dir/$recent_file" 2>/dev/null || stat -c %s "$tmp_dir/$recent_file" 2>/dev/null)
 echo "Local file size: $local_file_size bytes"
 
-if [ "$pod_file_size" != "$local_file_size" ]; then
-    echo "Error: File sizes don't match. Copy may be incomplete."
-    echo "Expected: $pod_file_size bytes, Got: $local_file_size bytes"
+if [[ $pod_file_size != "$local_file_size" ]]; then
+    echo "Error: File sizes don't match. Copy may be incomplete." >&2
+    echo "Expected: $pod_file_size bytes, Got: $local_file_size bytes" >&2
     rm -f "$tmp_dir/$recent_file"
     exit 1
 fi
