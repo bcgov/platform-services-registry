@@ -35,7 +35,11 @@ echo "Most recent file: $recent_file"
 
 # Copy the most recent back file to unarchive into the sandbox database
 # Verify file size before and after copy to detect incomplete transfers
-pod_file_size=$(oc exec "$pod_name" -- sh -c "stat -c %s backup/$recent_file 2>/dev/null")
+pod_file_size=$(oc exec "$pod_name" -- sh -c "stat -c %s 'backup/$recent_file' 2>/dev/null || stat -f%z 'backup/$recent_file' 2>/dev/null" || true)
+if [[ ! $pod_file_size =~ ^[0-9]+$ ]]; then
+    echo "Error: Unable to determine source file size for backup/$recent_file" >&2
+    exit 1
+fi
 echo "Source file size: $pod_file_size bytes"
 
 oc cp "$pod_name:backup/$recent_file" "$tmp_dir/$recent_file"
@@ -46,10 +50,15 @@ if [[ ! -f "$tmp_dir/$recent_file" ]]; then
     exit 1
 fi
 
-local_file_size=$(stat -f%z "$tmp_dir/$recent_file" 2>/dev/null || stat -c %s "$tmp_dir/$recent_file" 2>/dev/null)
+local_file_size=$(stat -f%z "$tmp_dir/$recent_file" 2>/dev/null || stat -c %s "$tmp_dir/$recent_file" 2>/dev/null || true)
+if [[ ! $local_file_size =~ ^[0-9]+$ ]]; then
+    echo "Error: Unable to determine local file size for $tmp_dir/$recent_file" >&2
+    rm -f "$tmp_dir/$recent_file"
+    exit 1
+fi
 echo "Local file size: $local_file_size bytes"
 
-if [[ $pod_file_size != "$local_file_size" ]]; then
+if [[ $pod_file_size -ne $local_file_size ]]; then
     echo "Error: File sizes don't match. Copy may be incomplete." >&2
     echo "Expected: $pod_file_size bytes, Got: $local_file_size bytes" >&2
     rm -f "$tmp_dir/$recent_file"
