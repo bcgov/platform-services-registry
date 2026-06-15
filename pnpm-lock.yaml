@@ -53,7 +53,7 @@ importers:
         version: 10.1.8(eslint@9.39.4(jiti@2.7.0))
       eslint-plugin-n:
         specifier: ^18.0.0
-        version: 18.0.1(eslint@9.39.4(jiti@2.7.0))(typescript@6.0.3)
+        version: 18.1.0(eslint@9.39.4(jiti@2.7.0))(typescript@6.0.3)
       eslint-plugin-prettier:
         specifier: ^5.5.6
         version: 5.5.6(eslint-config-prettier@10.1.8(eslint@9.39.4(jiti@2.7.0)))(eslint@9.39.4(jiti@2.7.0))(prettier@3.8.3)
@@ -241,8 +241,8 @@ importers:
         specifier: ^4.24.12
         version: 4.24.14(next@16.2.9(@babel/core@7.29.0)(@opentelemetry/api@1.9.1)(babel-plugin-macros@3.1.0)(react-dom@19.2.6(react@19.2.6))(react@19.2.6))(react-dom@19.2.6(react@19.2.6))(react@19.2.6)
       postcss:
-        specifier: 8.5.14
-        version: 8.5.14
+        specifier: 8.5.15
+        version: 8.5.15
       react:
         specifier: ^19.2.1
         version: 19.2.6
@@ -354,7 +354,7 @@ importers:
         version: 2.32.0(@typescript-eslint/parser@8.59.3(eslint@9.39.4(jiti@2.7.0))(typescript@6.0.3))(eslint-import-resolver-typescript@4.4.4)(eslint@9.39.4(jiti@2.7.0))
       eslint-plugin-n:
         specifier: ^18.0.0
-        version: 18.0.1(eslint@9.39.4(jiti@2.7.0))(typescript@6.0.3)
+        version: 18.1.0(eslint@9.39.4(jiti@2.7.0))(typescript@6.0.3)
       html-to-text:
         specifier: ^10.0.0
         version: 10.0.0
@@ -4931,8 +4931,8 @@ packages:
     resolution: {integrity: sha512-DgOngfDKM2EviOH3Mr9m7ks1q8roetLy/IMmYthAYzbpInMbYc/GS+fWFA3rl1gvwKVsQrVV61fo5emD1y3OJQ==}
     engines: {node: '>=10.2.0'}
 
-  enhanced-resolve@5.21.3:
-    resolution: {integrity: sha512-QyL119InA+XXEkNLNTPCXPugSvOfhwv0JOlGNzvxs0hZaiHLNvXSpudUWsOlsXGWJh8G6ckCScEkVHfX3kw/2Q==}
+  enhanced-resolve@5.24.0:
+    resolution: {integrity: sha512-SkE2t82KlkkxQRVMVLAGKxLfORGQfrkx5dkj+vlgXRVNEdPc4eZcR+J/Fvj8C+yKSFH5L0q3NFlyufOVQnCcYQ==}
     engines: {node: '>=10.13.0'}
 
   enquirer@2.4.1:
@@ -5144,8 +5144,8 @@ packages:
     peerDependencies:
       eslint: ^3 || ^4 || ^5 || ^6 || ^7 || ^8 || ^9
 
-  eslint-plugin-n@18.0.1:
-    resolution: {integrity: sha512-q3ARhk+eZRc7myR0KHx+R3/GJeOHF+Ir6PK95Pu2tEX8Sl/4BIpmmVLva2kPrjC2gCmn6WHlHm+3yeo6Rxhycw==}
+  eslint-plugin-n@18.1.0:
+    resolution: {integrity: sha512-hkUm9EtnFV2h2fE16jNVUfCVUqvPzI7fGLsFdun5lFt/pbmf2kCgDx6ymi9rx+NCUSggBmurJCZOfG20JBs/kg==}
     engines: {node: ^20.19.0 || ^22.13.0 || >=24}
     peerDependencies:
       eslint: '>=8.57.1'
@@ -7382,10 +7382,6 @@ packages:
     resolution: {integrity: sha512-PS08Iboia9mts/2ygV3eLpY5ghnUcfLV/EXTOW1E2qYxJKGGBUtNjN76FYHnMs36RmARn41bC0AZmn+rR0OVpQ==}
     engines: {node: ^10 || ^12 || >=14}
 
-  postcss@8.5.14:
-    resolution: {integrity: sha512-SoSL4+OSEtR99LHFZQiJLkT59C5B1amGO1NzTwj7TT1qCUgUO6hxOvzkOYxD+vMrXBM3XJIKzokoERdqQq/Zmg==}
-    engines: {node: ^10 || ^12 || >=14}
-
   postcss@8.5.15:
     resolution: {integrity: sha512-FfR8sjd4em2T6fb3I2MwAJU7HWVMr9zba+enmQeeWFfCbm+UOC/0X4DS8XtpUTMwWMGbjKYP7xjfNekzyGmB3A==}
     engines: {node: ^10 || ^12 || >=14}
@@ -7926,6 +7922,11 @@ packages:
 
   semver@7.8.1:
     resolution: {integrity: sha512-rkVq3IXh+4FDGch+KwzX3aV9W3kO54GyEgpvBzSyctDA6Xtd7RJQV1xmXbeQp5v7+VzLOfVqiutSE6GICgPFvg==}
+    engines: {node: '>=10'}
+    hasBin: true
+
+  semver@7.8.4:
+    resolution: {integrity: sha512-rUCObTnP32Q08R2uuIrt7r9PlEonuTmtuXYcW6s5kjdlj3xbnwe+21yXptAUYcMAABLkYYTtnmzb3w3EDZfueA==}
     engines: {node: '>=10'}
     hasBin: true
 
@@ -9460,7 +9461,7 @@ snapshots:
     dependencies:
       '@simple-libs/child-process-utils': 1.0.2
       '@simple-libs/stream-utils': 1.2.0
-      semver: 7.8.1
+      semver: 7.8.4
     optionalDependencies:
       conventional-commits-filter: 5.0.0
       conventional-commits-parser: 6.4.0
@@ -11313,7 +11314,7 @@ snapshots:
   '@tailwindcss/node@4.3.0':
     dependencies:
       '@jridgewell/remapping': 2.3.5
-      enhanced-resolve: 5.21.3
+      enhanced-resolve: 5.24.0
       jiti: 2.7.0
       lightningcss: 1.32.0
       magic-string: 0.30.21
@@ -11376,7 +11377,7 @@ snapshots:
       '@alloc/quick-lru': 5.2.0
       '@tailwindcss/node': 4.3.0
       '@tailwindcss/oxide': 4.3.0
-      postcss: 8.5.14
+      postcss: 8.5.15
       tailwindcss: 4.3.0
 
   '@tanstack/query-core@5.100.10': {}
@@ -12842,7 +12843,7 @@ snapshots:
       conventional-commits-filter: 5.0.0
       handlebars: 4.7.9
       meow: 13.2.0
-      semver: 7.8.1
+      semver: 7.8.4
 
   conventional-changelog@6.0.0(conventional-commits-filter@5.0.0):
     dependencies:
@@ -13368,7 +13369,7 @@ snapshots:
       - supports-color
       - utf-8-validate
 
-  enhanced-resolve@5.21.3:
+  enhanced-resolve@5.24.0:
     dependencies:
       graceful-fs: 4.2.11
       tapable: 2.3.3
@@ -13619,7 +13620,7 @@ snapshots:
   eslint-compat-utils@0.5.1(eslint@9.39.4(jiti@2.7.0)):
     dependencies:
       eslint: 9.39.4(jiti@2.7.0)
-      semver: 7.8.0
+      semver: 7.8.4
 
   eslint-config-next@16.2.6(@typescript-eslint/parser@8.59.3(eslint@9.39.4(jiti@2.7.0))(typescript@6.0.3))(eslint@9.39.4(jiti@2.7.0))(typescript@6.0.3):
     dependencies:
@@ -13796,17 +13797,17 @@ snapshots:
       safe-regex-test: 1.1.0
       string.prototype.includes: 2.0.1
 
-  eslint-plugin-n@18.0.1(eslint@9.39.4(jiti@2.7.0))(typescript@6.0.3):
+  eslint-plugin-n@18.1.0(eslint@9.39.4(jiti@2.7.0))(typescript@6.0.3):
     dependencies:
       '@eslint-community/eslint-utils': 4.9.1(eslint@9.39.4(jiti@2.7.0))
-      enhanced-resolve: 5.21.3
+      enhanced-resolve: 5.24.0
       eslint: 9.39.4(jiti@2.7.0)
       eslint-plugin-es-x: 7.8.0(eslint@9.39.4(jiti@2.7.0))
       get-tsconfig: 4.14.0
       globals: 15.15.0
       globrex: 0.1.2
       ignore: 5.3.2
-      semver: 7.8.0
+      semver: 7.8.4
     optionalDependencies:
       typescript: 6.0.3
 
@@ -14111,7 +14112,7 @@ snapshots:
     dependencies:
       app-module-path: 2.2.0
       commander: 12.1.0
-      enhanced-resolve: 5.21.3
+      enhanced-resolve: 5.24.0
       module-definition: 6.0.2
       module-lookup-amd: 9.1.3
       resolve: 1.22.12
@@ -14853,7 +14854,7 @@ snapshots:
       '@babel/parser': 7.29.3
       '@istanbuljs/schema': 0.1.6
       istanbul-lib-coverage: 3.2.2
-      semver: 7.8.1
+      semver: 7.8.4
     transitivePeerDependencies:
       - supports-color
 
@@ -15598,7 +15599,7 @@ snapshots:
 
   make-dir@4.0.0:
     dependencies:
-      semver: 7.8.1
+      semver: 7.8.4
 
   make-error@1.3.6: {}
 
@@ -15878,7 +15879,7 @@ snapshots:
 
   node-abi@3.92.0:
     dependencies:
-      semver: 7.8.1
+      semver: 7.8.4
 
   node-addon-api@7.1.1: {}
 
@@ -15923,7 +15924,7 @@ snapshots:
   normalize-package-data@6.0.2:
     dependencies:
       hosted-git-info: 7.0.2
-      semver: 7.8.1
+      semver: 7.8.4
       validate-npm-package-license: 3.0.4
 
   normalize-package-data@8.0.0:
@@ -16312,29 +16313,29 @@ snapshots:
       extend: 3.0.2
       postcss: 8.4.31
 
-  postcss-import@15.1.0(postcss@8.5.14):
+  postcss-import@15.1.0(postcss@8.5.15):
     dependencies:
-      postcss: 8.5.14
+      postcss: 8.5.15
       postcss-value-parser: 4.2.0
       read-cache: 1.0.0
       resolve: 1.22.12
 
-  postcss-js@4.1.0(postcss@8.5.14):
+  postcss-js@4.1.0(postcss@8.5.15):
     dependencies:
       camelcase-css: 2.0.1
-      postcss: 8.5.14
+      postcss: 8.5.15
 
-  postcss-load-config@4.0.2(postcss@8.5.14)(ts-node@10.9.2(@types/node@24.12.4)(typescript@6.0.3)):
+  postcss-load-config@4.0.2(postcss@8.5.15)(ts-node@10.9.2(@types/node@24.12.4)(typescript@6.0.3)):
     dependencies:
       lilconfig: 3.1.3
       yaml: 2.9.0
     optionalDependencies:
-      postcss: 8.5.14
+      postcss: 8.5.15
       ts-node: 10.9.2(@types/node@24.12.4)(typescript@6.0.3)
 
-  postcss-nested@6.2.0(postcss@8.5.14):
+  postcss-nested@6.2.0(postcss@8.5.15):
     dependencies:
-      postcss: 8.5.14
+      postcss: 8.5.15
       postcss-selector-parser: 6.1.2
 
   postcss-selector-parser@6.1.2:
@@ -16352,12 +16353,6 @@ snapshots:
       quote-unquote: 1.0.0
 
   postcss@8.4.31:
-    dependencies:
-      nanoid: 3.3.12
-      picocolors: 1.1.1
-      source-map-js: 1.2.1
-
-  postcss@8.5.14:
     dependencies:
       nanoid: 3.3.12
       picocolors: 1.1.1
@@ -17000,12 +16995,12 @@ snapshots:
       is-plain-object: 5.0.0
       launder: 1.7.1
       parse-srcset: 1.0.2
-      postcss: 8.5.14
+      postcss: 8.5.15
 
   sass-lookup@6.1.2:
     dependencies:
       commander: 12.1.0
-      enhanced-resolve: 5.21.3
+      enhanced-resolve: 5.24.0
 
   saxes@6.0.0:
     dependencies:
@@ -17032,6 +17027,8 @@ snapshots:
   semver@7.8.0: {}
 
   semver@7.8.1: {}
+
+  semver@7.8.4: {}
 
   send@1.2.1:
     dependencies:
@@ -17544,11 +17541,11 @@ snapshots:
       normalize-path: 3.0.0
       object-hash: 3.0.0
       picocolors: 1.1.1
-      postcss: 8.5.14
-      postcss-import: 15.1.0(postcss@8.5.14)
-      postcss-js: 4.1.0(postcss@8.5.14)
-      postcss-load-config: 4.0.2(postcss@8.5.14)(ts-node@10.9.2(@types/node@24.12.4)(typescript@6.0.3))
-      postcss-nested: 6.2.0(postcss@8.5.14)
+      postcss: 8.5.15
+      postcss-import: 15.1.0(postcss@8.5.15)
+      postcss-js: 4.1.0(postcss@8.5.15)
+      postcss-load-config: 4.0.2(postcss@8.5.15)(ts-node@10.9.2(@types/node@24.12.4)(typescript@6.0.3))
+      postcss-nested: 6.2.0(postcss@8.5.15)
       postcss-selector-parser: 6.1.2
       postcss-value-parser: 4.2.0
       resolve: 1.22.12
