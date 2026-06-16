@@ -59,6 +59,8 @@ export const openRequestCancelModal = createModal<ModalProps, ModalState>({
             value={decisionComment}
             onChange={(e) => setDecisionComment(e.target.value)}
             required
+            maxLength={1000}
+            showCharCount
             classNames={{
               wrapper: 'mb-4',
             }}
