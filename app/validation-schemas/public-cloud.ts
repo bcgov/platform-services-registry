@@ -1,4 +1,8 @@
 import { z } from 'zod';
+import {
+  publicCloudNetworkingReasonMaxLength,
+  publicCloudProviderSelectionReasonsNoteMaxLength,
+} from '@/constants/public-cloud';
 import { validateDistinctPOandTl } from '@/helpers/user';
 import {
   Provider,
@@ -78,14 +82,14 @@ const publicCloudBaseRequestBodySchema = z.object({
   providerSelectionReasonsNote: z
     .string()
     .min(1, { message: 'An explanation of the reasons for choosing provider is required' })
-    .max(1000, {
-      message: 'Provider selection note must be at most 1000 characters.',
+    .max(publicCloudProviderSelectionReasonsNoteMaxLength, {
+      message: `Provider selection note must be at most ${publicCloudProviderSelectionReasonsNoteMaxLength} characters.`,
     }),
   requiresNetworking: z.boolean().default(false),
   networkingReason: z
     .string()
-    .max(1000, {
-      message: 'Networking reason must be at most 1000 characters.',
+    .max(publicCloudNetworkingReasonMaxLength, {
+      message: `Networking reason must be at most ${publicCloudNetworkingReasonMaxLength} characters.`,
     })
     .default(''),
   budget: budgetSchema,

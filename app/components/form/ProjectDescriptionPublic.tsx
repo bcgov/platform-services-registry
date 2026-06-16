@@ -8,6 +8,8 @@ import HookFormTextarea from '@/components/generic/input/HookFormTextarea';
 import FormSelect from '@/components/generic/select/FormSelect';
 import HookFormMultiSelect from '@/components/generic/select/HookFormMultiSelect';
 import {
+  publicCloudNetworkingReasonMaxLength,
+  publicCloudProviderSelectionReasonsNoteMaxLength,
   providerOptions,
   getAllowedOptions,
   reasonForSelectingCloudProviderOptions,
@@ -199,7 +201,8 @@ export default function ProjectDescriptionPublic({
           name="providerSelectionReasonsNote"
           placeholder="Enter reason(s)..."
           required
-          error="Please provide a short description of the selected reason (maximum of 1000 characters)"
+          maxLength={publicCloudProviderSelectionReasonsNoteMaxLength}
+          error={`Please provide a short description of the selected reason (maximum of ${publicCloudProviderSelectionReasonsNoteMaxLength} characters)`}
           classNames={{ wrapper: 'sm:col-span-3 sm:ml-10' }}
           disabled={disabled}
         />
@@ -259,6 +262,7 @@ export default function ProjectDescriptionPublic({
                 name="networkingReason"
                 placeholder="Enter networking requirements..."
                 required
+                maxLength={publicCloudNetworkingReasonMaxLength}
                 classNames={{ wrapper: 'sm:col-span-3 sm:mr-10' }}
                 disabled={disabled}
               />
