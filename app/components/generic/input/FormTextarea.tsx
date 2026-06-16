@@ -2,7 +2,7 @@
 
 import _isFunction from 'lodash-es/isFunction';
 import _kebabCase from 'lodash-es/kebabCase';
-import { ChangeEvent, TextareaHTMLAttributes, useEffect, useRef, useState } from 'react';
+import { TextareaHTMLAttributes, useRef, useState } from 'react';
 import { cn } from '@/utils/js';
 import Label from '../Label';
 
@@ -54,56 +54,14 @@ export default function FormTextarea({
   classNames,
   required,
   disabled,
+  maxLength,
   copyable = false,
   inputProps = {},
   ...others
 }: FormTextareaProps) {
   if (!id) id = _kebabCase(name);
   const _ref = useRef<HTMLTextAreaElement>(null);
-  const {
-    onChange: inputOnChange,
-    value: inputValue,
-    defaultValue: inputDefaultValue,
-    maxLength: inputMaxLength,
-    ref: inputRef,
-    ...restInputProps
-  } = inputProps;
-  const {
-    onChange: otherOnChange,
-    value: otherValue,
-    defaultValue: otherDefaultValue,
-    maxLength: otherMaxLength,
-    ...restOthers
-  } = others;
-
-  // Both RHF register props and direct value/defaultValue props are supported.
-  // Direct props take precedence when both are provided to avoid surprising parent-controlled behavior.
-  const controlledValue = otherValue ?? inputValue;
-  const isControlled = typeof controlledValue !== 'undefined';
-  const maxLength = otherMaxLength ?? inputMaxLength;
-  const defaultValue = otherDefaultValue ?? inputDefaultValue;
-  const [characterCount, setCharacterCount] = useState(() => {
-    const initialValue = isControlled ? controlledValue : defaultValue;
-    return String(initialValue ?? '').length;
-  });
-
-  useEffect(() => {
-    if (isControlled) {
-      setCharacterCount(String(controlledValue ?? '').length);
-    }
-  }, [controlledValue, isControlled]);
-
-  useEffect(() => {
-    if (!isControlled && _ref.current) {
-      setCharacterCount(_ref.current.value.length);
-    }
-  }, [isControlled]);
-
-  const handleChange = (event: ChangeEvent<HTMLTextAreaElement>) => {
-    setCharacterCount(event.target.value.length);
-    inputOnChange?.(event);
-    otherOnChange?.(event);
-  };
+  const [characterCount, setCharacterCount] = useState(0);
 
   return (
     <div className={cn('textarea', classNames?.wrapper)}>
@@ -126,19 +84,30 @@ export default function FormTextarea({
         name={name}
         rows={rows}
         disabled={disabled}
-        autoComplete="off"
-        {...restInputProps}
-        {...restOthers}
-        {...(isControlled ? { value: controlledValue } : { defaultValue })}
         maxLength={maxLength}
-        onChange={handleChange}
+        autoComplete="off"
+        {...inputProps}
+        {...others}
+        // Track the length locally and forward the event to both possible
+        // consumers: react-hook-form's `register` handler (via inputProps) and
+        // a controlled caller's handler (via others). Declared after the
+        // spreads so this wrapper wins and neither handler is dropped.
+        onChange={(e) => {
+          setCharacterCount(e.currentTarget.value.length);
+          inputProps.onChange?.(e);
+          others.onChange?.(e);
+        }}
         // Required to bind three potential refs:
         // 1. From the inputProps ex) react-hook-form.
         // 2. From the this component instance itself.
         ref={(el) => {
           if (!el) return;
 
-          [_ref, inputRef].forEach((rf) => {
+          // Sync the counter with the initial/current value (uncontrolled
+          // react-hook-form fields populate the DOM without firing onChange).
+          setCharacterCount(el.value.length);
+
+          [_ref, inputProps.ref].forEach((rf) => {
             if (!rf) return;
 
             if (_isFunction(rf)) {
