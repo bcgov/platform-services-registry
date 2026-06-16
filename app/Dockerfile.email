@@ -1,5 +1,5 @@
 # 1st stage to build the image
-FROM node:24.15.0-slim AS build
+FROM node:24.16.0-slim AS build
 
 WORKDIR /workspace
 
@@ -33,7 +33,7 @@ RUN \
   echo '</ul></body></html>' >> emails-export/index.html
 
 # 2nd stage to copy image and create a smaller final image
-FROM nginxinc/nginx-unprivileged:1.27-alpine
+FROM nginxinc/nginx-unprivileged:1.31-alpine
 
 USER root
 RUN rm -rf /usr/share/nginx/html/*
