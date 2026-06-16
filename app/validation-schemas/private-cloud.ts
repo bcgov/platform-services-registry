@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { phoneNumberRegex } from '@/constants';
+import { phoneNumberRegex, privateCloudQuotaJustificationMaxLength } from '@/constants';
 import { validateDistinctPOandTl } from '@/helpers/user';
 import {
   Cluster,
@@ -41,7 +41,7 @@ export const resourceRequestsSchema = z.object({
     .min(0)
     .max(512)
     .refine((val) => val % 1 === 0, {
-      message: 'Memory must be an integer',
+      message: 'Storage must be an integer',
     }),
 });
 
@@ -77,7 +77,7 @@ export const _privateCloudCreateRequestBodySchema = z.object({
   resourceRequests: resourceRequestsEnvSchema,
   quotaContactName: z.string().max(50).optional(),
   quotaContactEmail: z.string().email().or(z.literal('')).nullable().optional(),
-  quotaJustification: z.string().max(1000).optional(),
+  quotaJustification: z.string().max(privateCloudQuotaJustificationMaxLength).optional(),
   supportPhoneNumber: z
     .string()
     .nullable()

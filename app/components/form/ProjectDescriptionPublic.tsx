@@ -265,6 +265,7 @@ export default function ProjectDescriptionPublic({
                 maxLength={publicCloudNetworkingReasonMaxLength}
                 classNames={{ wrapper: 'sm:col-span-3 sm:mr-10' }}
                 disabled={disabled}
+                error={`Please provide a short description of the network requirements (maximum of ${publicCloudNetworkingReasonMaxLength} characters)`}
               />
             )}
           </div>

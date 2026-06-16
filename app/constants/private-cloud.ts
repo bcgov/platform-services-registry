@@ -88,3 +88,5 @@ export type ResourceRequestsKeys = Array<keyof ResourceRequests>;
 
 export const namespaceKeys: ResourceRequestsEnvKeys = ['development', 'test', 'production', 'tools'];
 export const resourceKeys: ResourceRequestsKeys = ['cpu', 'memory', 'storage'];
+
+export const privateCloudQuotaJustificationMaxLength = 1000;
