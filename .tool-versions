@@ -9,5 +9,6 @@ shfmt 3.13.1
 act 0.2.89
 jq 1.7.1
 mongodb-database-tools 0.11.1
+database-tools 0.12.3
 kube-linter 0.7.4
 shellcheck 0.11.0

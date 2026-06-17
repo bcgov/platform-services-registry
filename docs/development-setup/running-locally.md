@@ -11,6 +11,10 @@ How to run the app locally:
 1. `make copy-db`
 1. `make dev`
 
+## Login
+
+Login using one of the users found in the [mock-users.json](https://github.com/bcgov/platform-services-registry/blob/main/sandbox/mock-users.json) file. The password is the email address.
+
 ## Troubleshooting
 
 ### Canvas error

@@ -36,53 +36,45 @@ Due to BC Government procurement restrictions, Docker Desktop is not permitted. 
 
 ## Getting Started
 
-1. Switch to sandbox folder
+1. Create three directories to mount volumes for `mongodb`, `postgres` and `mailpit`.
+
+In the root of the project directory:
 
 ```bash
-cd sandbox
-```
-
-2. Create three directories to mount volumns for `mongodb`,`postgres` and `mailpit`.
-
-```bash
-mkdir -p ./mnt/mongodb
-mkdir -p ./mnt/postgres
-mkdir -p ./mnt/mailpit
+mkdir -p sandbox/mnt/mongodb
+mkdir -p sandbox/mnt/postgres
+mkdir -p sandbox/mnt/mailpit
 ```
 
 If you have data version conflict errors due to existing mount volumes, please delete the directories and recreate them.
 
-3. Set environment variable MACHINE_HOST_IP to your ip address using the command
+2. Run the sandbox environment
+
+The Makefile uses docker-compose.
 
 For WSL/Linux:
 
 ```bash
-export MACHINE_HOST_IP=$(hostname -I | awk '{print $1}')
+make sandbox
 ```
 
-or
-For Mac M1/M2:
+To run in detached mode:
 
 ```bash
-export MACHINE_HOST_IP=$(ipconfig getifaddr en0)
+make sandbox SBD=true
 ```
 
-4. To create the sandbox environment, utilize local Docker container instances with `docker-compose`:
-
-For WSL/Linux:
+For Mac M1/M2
 
 ```bash
-docker-compose up --build [-d]
+make localmac
 ```
 
-or
-For Mac M1/M2:
+To run in detached mode:
 
 ```bash
-docker-compose -f docker-compose.yml -f docker-compose-arm64.yml up --build [-d]
+make localmac SBD=true
 ```
-
-You can add the `-d` flag to run the containers in daemon mode.
 
 Ensure that neither `MongoDB` nor `Mongosh` is installed on your local machine, as they may interfere with the database schema managed by Prisma, which connects to the `MongoDB Docker container`. If you have either installed, you can remove them by following the instruction provided in this link: [uninstall mongodb and mongosh](https://www.mongodb.com/resources/products/fundamentals/uninstall-mongodb#:~:text=How%20to%20uninstall%20MongoDB%20from%20Mac%201%20If,the%20below%20command%3A%20brew%20uninstall%20mongodb-community%20%20){target="\_blank" rel="noopener noreferrer"}
 
