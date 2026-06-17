@@ -96,6 +96,7 @@ jest.mock('@/services/k8s/reads/deletion-check', () => ({
   'isBoolean',
   'isDate',
   'isEqual',
+  'isFunction',
   'join',
   'isNil',
   'isNumber',
