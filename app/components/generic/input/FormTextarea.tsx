@@ -93,7 +93,7 @@ export default function FormTextarea({
         // a controlled caller's handler (via others). Declared after the
         // spreads so this wrapper wins and neither handler is dropped.
         onChange={(e) => {
-          setCharacterCount(e.currentTarget.value.length);
+          if (typeof maxLength === 'number') setCharacterCount(e.currentTarget.value.length);
           inputProps.onChange?.(e);
           others.onChange?.(e);
         }}
@@ -105,8 +105,7 @@ export default function FormTextarea({
 
           // Sync the counter with the initial/current value (uncontrolled
           // react-hook-form fields populate the DOM without firing onChange).
-          setCharacterCount(el.value.length);
-
+          if (typeof maxLength === 'number') setCharacterCount(el.value.length);
           [_ref, inputProps.ref].forEach((rf) => {
             if (!rf) return;
 
