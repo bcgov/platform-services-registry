@@ -11,6 +11,42 @@ import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import FormTextarea from './FormTextarea';
 
 describe('FormTextarea', () => {
+  async function assertOnChangeFlow({
+    expectedInitialCount,
+    defaultValue,
+  }: {
+    expectedInitialCount: number;
+    defaultValue?: string;
+  }) {
+    const inputPropsOnChange = jest.fn();
+    const outerOnChange = jest.fn();
+
+    render(
+      <FormTextarea
+        name="quotaJustification"
+        label="Reason"
+        maxLength={20}
+        defaultValue={defaultValue}
+        inputProps={{ onChange: inputPropsOnChange }}
+        onChange={outerOnChange}
+      />,
+    );
+
+    await waitFor(() => {
+      expect(screen.getByText(`${expectedInitialCount} / 20`)).toBeInTheDocument();
+    });
+
+    expect(inputPropsOnChange).toHaveBeenCalledTimes(0);
+    expect(outerOnChange).toHaveBeenCalledTimes(0);
+
+    const textarea = screen.getByRole('textbox');
+    fireEvent.change(textarea, { target: { value: 'hello' } });
+
+    expect(screen.getByText('5 / 20')).toBeInTheDocument();
+    expect(inputPropsOnChange).toHaveBeenCalledTimes(1);
+    expect(outerOnChange).toHaveBeenCalledTimes(1);
+  }
+
   it('does not render a character counter when maxLength is not set', () => {
     render(<FormTextarea name="description" label="Description" />);
 
@@ -41,63 +77,10 @@ describe('FormTextarea', () => {
   });
 
   it('updates character count and forwards onChange to both handlers', async () => {
-    const inputPropsOnChange = jest.fn();
-    const outerOnChange = jest.fn();
-
-    render(
-      <FormTextarea
-        name="quotaJustification"
-        label="Reason"
-        maxLength={20}
-        inputProps={{ onChange: inputPropsOnChange }}
-        onChange={outerOnChange}
-      />,
-    );
-
-    // count should be 0 before any input
-    await waitFor(() => {
-      expect(screen.getByText('0 / 20')).toBeInTheDocument();
-    });
-
-    expect(inputPropsOnChange).toHaveBeenCalledTimes(0);
-    expect(outerOnChange).toHaveBeenCalledTimes(0);
-
-    const textarea = screen.getByRole('textbox');
-    fireEvent.change(textarea, { target: { value: 'hello' } });
-
-    expect(screen.getByText('5 / 20')).toBeInTheDocument();
-    expect(inputPropsOnChange).toHaveBeenCalledTimes(1);
-    expect(outerOnChange).toHaveBeenCalledTimes(1);
+    await assertOnChangeFlow({ expectedInitialCount: 0 });
   });
 
   it('updates character count and forwards onChange to both handlers when defaultValue is set', async () => {
-    const inputPropsOnChange = jest.fn();
-    const outerOnChange = jest.fn();
-
-    render(
-      <FormTextarea
-        name="quotaJustification"
-        label="Reason"
-        maxLength={20}
-        defaultValue="initial"
-        inputProps={{ onChange: inputPropsOnChange }}
-        onChange={outerOnChange}
-      />,
-    );
-
-    // count should be 7 (length of "initial") before changing the input
-    await waitFor(() => {
-      expect(screen.getByText('7 / 20')).toBeInTheDocument();
-    });
-
-    expect(inputPropsOnChange).toHaveBeenCalledTimes(0);
-    expect(outerOnChange).toHaveBeenCalledTimes(0);
-
-    const textarea = screen.getByRole('textbox');
-    fireEvent.change(textarea, { target: { value: 'hello' } });
-
-    expect(screen.getByText('5 / 20')).toBeInTheDocument();
-    expect(inputPropsOnChange).toHaveBeenCalledTimes(1);
-    expect(outerOnChange).toHaveBeenCalledTimes(1);
+    await assertOnChangeFlow({ expectedInitialCount: 7, defaultValue: 'initial' });
   });
 });
