@@ -71,9 +71,9 @@ git config gpg.program gpg
         ```
 1. Install `asdf` packages defined in `.tool-versions`.
     ```sh
-    cat .tool-versions | cut -f 1 -d ' ' | xargs -n 1 asdf plugin-add || true
-    asdf plugin-add docker-compose https://github.com/virtualstaticvoid/asdf-docker-compose.git || true
-    asdf plugin-update --all
+    cat .tool-versions | cut -f 1 -d ' ' | xargs -n 1 asdf plugin add || true
+    asdf plugin add docker-compose https://github.com/virtualstaticvoid/asdf-docker-compose.git || true
+    asdf plugin update --all
     asdf install
     asdf reshim
     ```

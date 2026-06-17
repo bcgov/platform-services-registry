@@ -1,14 +1,18 @@
 SHELL := /usr/bin/env bash
 
+# Sandbox detach flag, set to true to run docker-compose in detached mode
+SBD ?= false
+DETACH_FLAG := $(if $(filter true 1 yes,$(SBD)),-d,)
+
 .PHONY: sandbox
 sandbox:
 	export MACHINE_HOST_IP=$$(hostname -I | awk '{print $$1}'); \
-	docker-compose -f ./sandbox/docker-compose.yml up --build --remove-orphans
+	docker-compose -f ./sandbox/docker-compose.yml up $(DETACH_FLAG) --build --remove-orphans
 
 .PHONY: localmac
 localmac:
 	export MACHINE_HOST_IP=$$(ipconfig getifaddr en0); \
-	docker-compose -f ./sandbox/docker-compose.yml -f ./sandbox/docker-compose-arm64.yml up --build --remove-orphans
+	docker-compose -f ./sandbox/docker-compose.yml -f ./sandbox/docker-compose-arm64.yml up $(DETACH_FLAG) --build --remove-orphans
 
 .PHONY: dev
 dev:
