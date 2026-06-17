@@ -84,10 +84,10 @@ export default function FormTextarea({
         name={name}
         rows={rows}
         disabled={disabled}
-        maxLength={maxLength}
         autoComplete="off"
         {...inputProps}
         {...others}
+        maxLength={maxLength}
         // Track the length locally and forward the event to both possible
         // consumers: react-hook-form's `register` handler (via inputProps) and
         // a controlled caller's handler (via others). Declared after the
@@ -119,9 +119,9 @@ export default function FormTextarea({
         }}
         className={cn(inputClass, classNames?.input)}
       />
-      <div className="mt-1 text-right text-xs text-gray-500">
-        {typeof maxLength === 'number' ? `${characterCount} / ${maxLength}` : ''}
-      </div>
+      {typeof maxLength === 'number' && (
+        <div className="mt-1 text-right text-xs text-gray-500">{`${characterCount} / ${maxLength}`}</div>
+      )}
     </div>
   );
 }
