@@ -97,7 +97,7 @@ export default function FormTextarea({
           inputProps.onChange?.(e);
           others.onChange?.(e);
         }}
-        // Required to bind three potential refs:
+        // Required to bind 2 potential refs:
         // 1. From the inputProps ex) react-hook-form.
         // 2. From the this component instance itself.
         ref={(el) => {

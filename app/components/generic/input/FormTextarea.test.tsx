@@ -1,10 +1,4 @@
 /** @jest-environment jsdom */
-/**
- * The above comment is required to use the jsdom environment for this test file.
- * It allows us to test UI components.
- * The api unit tests are run in a node environment so we don't want to set jsdom
- * as the default environment for all tests in jest.config.mjs
- */
 
 import { describe, it, expect, jest } from '@jest/globals';
 import { fireEvent, render, screen, waitFor } from '@testing-library/react';

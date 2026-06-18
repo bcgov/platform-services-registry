@@ -103,7 +103,7 @@ export default function ProjectDescriptionPublic({
     if (requiresNetworking && !networkingReason?.trim()) {
       setError('networkingReason', {
         type: 'manual',
-        message: 'Networking reason is required.',
+        message: `Please provide a short description of the network requirements (maximum of ${publicCloudNetworkingReasonMaxLength} characters)`,
       });
     } else {
       clearErrors('networkingReason');
@@ -265,7 +265,6 @@ export default function ProjectDescriptionPublic({
                 maxLength={publicCloudNetworkingReasonMaxLength}
                 classNames={{ wrapper: 'sm:col-span-3 sm:mr-10' }}
                 disabled={disabled}
-                error={`Please provide a short description of the network requirements (maximum of ${publicCloudNetworkingReasonMaxLength} characters)`}
               />
             )}
           </div>
