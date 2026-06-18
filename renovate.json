@@ -3,12 +3,5 @@
   "extends": ["config:recommended", ":semanticCommitType(chore)"],
   "ignoreDeps": [],
   "ignorePaths": ["**/node_modules/**"],
-  "toolSettings": {
-    "nodeMaxMemory": 4096
-  },
-  "postUpgradeTasks": {
-    "commands": ["pnpm install --lockfile-only"],
-    "fileFilters": ["pnpm-lock.yaml"],
-    "executionMode": "branch"
-  }
+  "constraints": { "pnpm": "11.0.8" }
 }
