@@ -3073,41 +3073,32 @@
 </div>
 <h2 id="getting-started">Getting Started<a class="headerlink" href="#getting-started" title="Permanent link">&para;</a></h2>
 <ol>
-<li>Switch to sandbox folder</li>
+<li>Create three directories to mount volumes for <code>mongodb</code>, <code>postgres</code> and <code>mailpit</code>.</li>
 </ol>
-<div class="language-bash highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-0-1">1</a></span></pre></div></td><td class="code"><div><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1"></a><span class="nb">cd</span><span class="w"> </span>sandbox
-</span></code></pre></div></td></tr></table></div>
-<ol>
-<li>Create three directories to mount volumns for <code>mongodb</code>,<code>postgres</code> and <code>mailpit</code>.</li>
-</ol>
-<div class="language-bash highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-1-1">1</a></span>
-<span class="normal"><a href="#__codelineno-1-2">2</a></span>
-<span class="normal"><a href="#__codelineno-1-3">3</a></span></pre></div></td><td class="code"><div><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1"></a>mkdir<span class="w"> </span>-p<span class="w"> </span>./mnt/mongodb
-</span><span id="__span-1-2"><a id="__codelineno-1-2" name="__codelineno-1-2"></a>mkdir<span class="w"> </span>-p<span class="w"> </span>./mnt/postgres
-</span><span id="__span-1-3"><a id="__codelineno-1-3" name="__codelineno-1-3"></a>mkdir<span class="w"> </span>-p<span class="w"> </span>./mnt/mailpit
+<p>In the root of the project directory:</p>
+<div class="language-bash highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-0-1">1</a></span>
+<span class="normal"><a href="#__codelineno-0-2">2</a></span>
+<span class="normal"><a href="#__codelineno-0-3">3</a></span></pre></div></td><td class="code"><div><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1"></a>mkdir<span class="w"> </span>-p<span class="w"> </span>sandbox/mnt/mongodb
+</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2"></a>mkdir<span class="w"> </span>-p<span class="w"> </span>sandbox/mnt/postgres
+</span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3"></a>mkdir<span class="w"> </span>-p<span class="w"> </span>sandbox/mnt/mailpit
 </span></code></pre></div></td></tr></table></div>
 <p>If you have data version conflict errors due to existing mount volumes, please delete the directories and recreate them.</p>
 <ol>
-<li>Set environment variable MACHINE_HOST_IP to your ip address using the command</li>
+<li>Run the sandbox environment</li>
 </ol>
+<p>The Makefile uses docker-compose.</p>
 <p>For WSL/Linux:</p>
-<div class="language-bash highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-2-1">1</a></span></pre></div></td><td class="code"><div><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1"></a><span class="nb">export</span><span class="w"> </span><span class="nv">MACHINE_HOST_IP</span><span class="o">=</span><span class="k">$(</span>hostname<span class="w"> </span>-I<span class="w"> </span><span class="p">|</span><span class="w"> </span>awk<span class="w"> </span><span class="s1">&#39;{print $1}&#39;</span><span class="k">)</span>
+<div class="language-bash highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-1-1">1</a></span></pre></div></td><td class="code"><div><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1"></a>make<span class="w"> </span>sandbox
 </span></code></pre></div></td></tr></table></div>
-<p>or
-For Mac M1/M2:</p>
-<div class="language-bash highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-3-1">1</a></span></pre></div></td><td class="code"><div><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1"></a><span class="nb">export</span><span class="w"> </span><span class="nv">MACHINE_HOST_IP</span><span class="o">=</span><span class="k">$(</span>ipconfig<span class="w"> </span>getifaddr<span class="w"> </span>en0<span class="k">)</span>
+<p>To run in detached mode:</p>
+<div class="language-bash highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-2-1">1</a></span></pre></div></td><td class="code"><div><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1"></a>make<span class="w"> </span>sandbox<span class="w"> </span><span class="nv">SBD</span><span class="o">=</span><span class="nb">true</span>
 </span></code></pre></div></td></tr></table></div>
-<ol>
-<li>To create the sandbox environment, utilize local Docker container instances with <code>docker-compose</code>:</li>
-</ol>
-<p>For WSL/Linux:</p>
-<div class="language-bash highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-4-1">1</a></span></pre></div></td><td class="code"><div><pre><span></span><code><span id="__span-4-1"><a id="__codelineno-4-1" name="__codelineno-4-1"></a>docker-compose<span class="w"> </span>up<span class="w"> </span>--build<span class="w"> </span><span class="o">[</span>-d<span class="o">]</span>
+<p>For Mac M1/M2</p>
+<div class="language-bash highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-3-1">1</a></span></pre></div></td><td class="code"><div><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1"></a>make<span class="w"> </span>localmac
 </span></code></pre></div></td></tr></table></div>
-<p>or
-For Mac M1/M2:</p>
-<div class="language-bash highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-5-1">1</a></span></pre></div></td><td class="code"><div><pre><span></span><code><span id="__span-5-1"><a id="__codelineno-5-1" name="__codelineno-5-1"></a>docker-compose<span class="w"> </span>-f<span class="w"> </span>docker-compose.yml<span class="w"> </span>-f<span class="w"> </span>docker-compose-arm64.yml<span class="w"> </span>up<span class="w"> </span>--build<span class="w"> </span><span class="o">[</span>-d<span class="o">]</span>
+<p>To run in detached mode:</p>
+<div class="language-bash highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-4-1">1</a></span></pre></div></td><td class="code"><div><pre><span></span><code><span id="__span-4-1"><a id="__codelineno-4-1" name="__codelineno-4-1"></a>make<span class="w"> </span>localmac<span class="w"> </span><span class="nv">SBD</span><span class="o">=</span><span class="nb">true</span>
 </span></code></pre></div></td></tr></table></div>
-<p>You can add the <code>-d</code> flag to run the containers in daemon mode.</p>
 <p>Ensure that neither <code>MongoDB</code> nor <code>Mongosh</code> is installed on your local machine, as they may interfere with the database schema managed by Prisma, which connects to the <code>MongoDB Docker container</code>. If you have either installed, you can remove them by following the instruction provided in this link: <a href="https://www.mongodb.com/resources/products/fundamentals/uninstall-mongodb#:~:text=How%20to%20uninstall%20MongoDB%20from%20Mac%201%20If,the%20below%20command%3A%20brew%20uninstall%20mongodb-community%20%20" rel="noopener noreferrer" target="_blank">uninstall mongodb and mongosh</a></p>
 <h2 id="services">Services<a class="headerlink" href="#services" title="Permanent link">&para;</a></h2>
 <p>Within the local Docker container environment, <strong>10 services</strong> are available:</p>

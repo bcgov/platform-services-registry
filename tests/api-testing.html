@@ -2927,6 +2927,18 @@
 <li>Add the test script, such as <code>route.test.ts</code>, in the same directory as the API route file.</li>
 <li>The test script should focus on the permission checks and parameter validations of the route itself. When using other endpoint methods from <code>/app/services/api-test</code>, only check the status codes to prevent the test script from becoming overly bloated with excessive validations; concentrate on the route tests for each test script.</li>
 </ol>
+<h1 id="ui-unit-tests">UI Unit Tests<a class="headerlink" href="#ui-unit-tests" title="Permanent link">&para;</a></h1>
+<p>For UI tests add the following as the first line of the test file:</p>
+<div class="language-text highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-0-1">1</a></span></pre></div></td><td class="code"><div><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1"></a>/** @jest-environment jsdom */
+</span></code></pre></div></td></tr></table></div>
+<p>The above comment is required to use jsdom environment for UI tests. The api unit tests are run in a node environment. Jsdom can't be set as the default environment in <code>jest.config.mjs</code> as that would break the api tests. So, declare the jsdom environment in the UI test files.</p>
+<h1 id="running-tests-locally">Running Tests Locally<a class="headerlink" href="#running-tests-locally" title="Permanent link">&para;</a></h1>
+<p>Run all tests:</p>
+<div class="language-shell highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-1-1">1</a></span></pre></div></td><td class="code"><div><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1"></a>pnpm<span class="w"> </span>--dir<span class="w"> </span>app<span class="w"> </span><span class="nb">test</span>
+</span></code></pre></div></td></tr></table></div>
+<p>Run specific test:</p>
+<div class="language-shell highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-2-1">1</a></span></pre></div></td><td class="code"><div><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1"></a><span class="w"> </span>pnpm<span class="w"> </span>--dir<span class="w"> </span>app<span class="w"> </span><span class="nb">test</span><span class="w"> </span>path/to/MyTest.test.tsx
+</span></code></pre></div></td></tr></table></div>
 
 
 
