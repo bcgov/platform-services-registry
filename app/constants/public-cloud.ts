@@ -38,6 +38,9 @@ export const reasonForSelectingCloudProviderOptions = [
   { value: 'Other', label: 'Other' },
 ];
 
+export const publicCloudProviderSelectionReasonsNoteMaxLength = 1000;
+export const publicCloudNetworkingReasonMaxLength = 1000;
+
 export const publicCloudProductSorts = productSorts.concat([
   {
     label: 'Provider (A-Z)',

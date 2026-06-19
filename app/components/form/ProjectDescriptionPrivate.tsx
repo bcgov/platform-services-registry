@@ -11,7 +11,7 @@ import MailLink from '@/components/generic/button/MailLink';
 import HookFormTextarea from '@/components/generic/input/HookFormTextarea';
 import FormSelect from '@/components/generic/select/FormSelect';
 import HookFormSingleSelect from '@/components/generic/select/HookFormSingleSelect';
-import { clustersWithoutDR, privateCloudTeamEmail } from '@/constants';
+import { clustersWithoutDR, privateCloudProductDescriptionMaxLength, privateCloudTeamEmail } from '@/constants';
 import { appState } from '@/states/global';
 import { cn } from '@/utils/js';
 import HookFormTextInput from '../generic/input/HookFormTextInput';
@@ -82,7 +82,8 @@ export default function ProjectDescriptionPrivate({
           name="description"
           placeholder="Enter description..."
           required
-          error="Tell us more about your product"
+          maxLength={privateCloudProductDescriptionMaxLength}
+          error={`Tell us more about your product (max ${privateCloudProductDescriptionMaxLength} characters)`}
           classNames={{ wrapper: 'col-span-full' }}
           disabled={disabled}
         />
