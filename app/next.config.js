@@ -40,7 +40,7 @@ const nextConfig = {
           // See https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/X-Frame-Options
           {
             key: 'x-frame-options',
-            value: 'SAMEORIGIN',
+            value: 'DENY',
           },
           // See https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/X-XSS-Protection
           {

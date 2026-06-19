@@ -29,8 +29,8 @@ export function middleware(request: NextRequest) {
     // Let's take another look at CSP since it necessitates the regeneration of static HTML files.
     // `script-src 'self' 'nonce-${nonce}' 'strict-dynamic'`,
     // `style-src 'self' 'nonce-${nonce}'`,
-    `script-src 'self' 'nonce-${nonce}'`,
-    `style-src 'self' 'nonce-${nonce}'`,
+    `script-src 'self' 'unsafe-inline'`,
+    `style-src 'self' 'unsafe-inline'`,
     `img-src 'self' blob: data: ${gravatar_com}`,
     `connect-src 'self' ${gravatar_com} ${loginproxy_gov}`,
     `frame-src ${loginproxy_gov}`,
@@ -53,8 +53,6 @@ export function middleware(request: NextRequest) {
   });
 
   response.headers.set('content-security-policy', cspHeaderValue);
-  response.headers.set('strict-transport-security', 'max-age=31536000; includeSubDomains');
-  response.headers.set('x-content-type-options', 'nosniff');
 
   return response;
 }
