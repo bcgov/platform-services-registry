@@ -1,5 +1,9 @@
 import { z } from 'zod';
-import { phoneNumberRegex, privateCloudQuotaJustificationMaxLength } from '@/constants';
+import {
+  phoneNumberRegex,
+  privateCloudQuotaJustificationMaxLength,
+  privateCloudProductDescriptionMaxLength,
+} from '@/constants';
 import { validateDistinctPOandTl } from '@/helpers/user';
 import {
   Cluster,
@@ -65,7 +69,12 @@ const privateCloudProductMembers = z
 
 export const _privateCloudCreateRequestBodySchema = z.object({
   name: z.string().min(1, { message: 'Name is required.' }),
-  description: z.string().min(1, { message: 'Description is required.' }),
+  description: z
+    .string()
+    .min(1, { message: 'Description is required.' })
+    .max(privateCloudProductDescriptionMaxLength, {
+      message: `Description must be at most ${privateCloudProductDescriptionMaxLength} characters.`,
+    }),
   cluster: z.enum(Cluster),
   organizationId: z.string().length(24),
   isAgMinistry: z.boolean(),

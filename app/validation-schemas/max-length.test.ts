@@ -1,5 +1,8 @@
 import { describe, it, expect } from '@jest/globals';
-import { privateCloudQuotaJustificationMaxLength } from '@/constants/private-cloud';
+import {
+  privateCloudQuotaJustificationMaxLength,
+  privateCloudProductDescriptionMaxLength,
+} from '@/constants/private-cloud';
 import {
   publicCloudNetworkingReasonMaxLength,
   publicCloudProviderSelectionReasonsNoteMaxLength,
@@ -62,7 +65,7 @@ function createPublicCloudPayload() {
   };
 }
 
-describe('Private Cloud quotaJustification max length', () => {
+describe('Private Cloud text field max lengths', () => {
   it('accepts quotaJustification at max length', () => {
     const result = _privateCloudCreateRequestBodySchema.safeParse({
       ...createPrivateCloudPayload(),
@@ -81,6 +84,27 @@ describe('Private Cloud quotaJustification max length', () => {
     expect(result.success).toBe(false);
     if (!result.success) {
       expect(result.error.issues.some((issue) => issue.path[0] === 'quotaJustification')).toBe(true);
+    }
+  });
+
+  it('accepts description at max length', () => {
+    const result = _privateCloudCreateRequestBodySchema.safeParse({
+      ...createPrivateCloudPayload(),
+      description: 'x'.repeat(privateCloudProductDescriptionMaxLength),
+    });
+
+    expect(result.success).toBe(true);
+  });
+
+  it('rejects description above max length', () => {
+    const result = _privateCloudCreateRequestBodySchema.safeParse({
+      ...createPrivateCloudPayload(),
+      description: 'x'.repeat(privateCloudProductDescriptionMaxLength + 1),
+    });
+
+    expect(result.success).toBe(false);
+    if (!result.success) {
+      expect(result.error.issues.some((issue) => issue.path[0] === 'description')).toBe(true);
     }
   });
 });

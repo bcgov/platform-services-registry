@@ -90,3 +90,4 @@ export const namespaceKeys: ResourceRequestsEnvKeys = ['development', 'test', 'p
 export const resourceKeys: ResourceRequestsKeys = ['cpu', 'memory', 'storage'];
 
 export const privateCloudQuotaJustificationMaxLength = 1000;
+export const privateCloudProductDescriptionMaxLength = 1500;
