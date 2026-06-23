@@ -34,7 +34,7 @@ export function middleware(request: NextRequest) {
     `img-src 'self' blob: data: ${gravatar_com}`,
     `connect-src 'self' ${gravatar_com} ${loginproxy_gov}`,
     `frame-src ${loginproxy_gov}`,
-    `frame-ancestors ${loginproxy_gov}`,
+    `frame-ancestors 'none'`,
     "object-src 'none'",
     "form-action 'self'",
     'upgrade-insecure-requests',
@@ -53,6 +53,7 @@ export function middleware(request: NextRequest) {
   });
 
   response.headers.set('content-security-policy', cspHeaderValue);
+
   return response;
 }
 
