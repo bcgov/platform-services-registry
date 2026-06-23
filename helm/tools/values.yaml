@@ -121,6 +121,16 @@ airflow:
       enabled: false
 
   dagProcessor:
+    livenessProbe:
+      initialDelaySeconds: 60
+      timeoutSeconds: 20
+      failureThreshold: 10
+      periodSeconds: 60
+      command:
+        - sh
+        - -c
+        - |
+          grep -az "airflow dag-processor" /proc/1/cmdline
     extraVolumes:
       - name: secdash-airflow-dags
         persistentVolumeClaim:
@@ -196,9 +206,11 @@ airflow:
       remote_base_log_folder: "s3://airflow-logs/dag-logs"
       encrypt_s3_logs: "False"
       colored_console_log: "False"
+    api:
+      workers: 2
+
     webserver:
       web_server_worker_timeout: 300
-      workers: 2
 
     smtp:
       smtp_host: apps.smtp.gov.bc.ca
