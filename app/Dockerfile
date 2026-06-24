@@ -1,7 +1,7 @@
 ARG deployment_tag
 
 # 1st stage to build the image
-FROM node:24.18.0-alpine AS build
+FROM node:24.17.0-alpine AS build
 
 WORKDIR /workspace
 
@@ -45,7 +45,7 @@ RUN npx ts-node scripts/render-react-email-tailwind-style.ts && \
 
 # 2nd stage to copy image and create a smaller final image
 # FROM gcr.io/distroless/nodejs18-debian12
-FROM node:24.18.0-alpine
+FROM node:24.17.0-alpine
 
 WORKDIR /workspace/app
 
