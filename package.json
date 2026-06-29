@@ -15,7 +15,7 @@
     "node": ">=22.1.0"
   },
   "devDependencies": {
-    "@badeball/cypress-cucumber-preprocessor": "^24.0.0",
+    "@badeball/cypress-cucumber-preprocessor": "^25.0.0",
     "@bahmutov/cypress-esbuild-preprocessor": "^2.2.5",
     "@commitlint/cli": "^21.0.0",
     "@commitlint/config-conventional": "^21.0.0",
