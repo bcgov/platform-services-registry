@@ -34,8 +34,8 @@ services:
     platform: linux/amd64
     container_name: keycloak-provision
     build:
-      context: ..
-      dockerfile: sandbox/keycloak-provision/Dockerfile
+      context: ./
+      dockerfile: ./keycloak-provision/Dockerfile
     environment:
       PROVISION_SERVICE_ACCOUNT_ID: provision-service-account-id
       PROVISION_SERVICE_ACCOUNT_SECRET: testsecret # pragma: allowlist secret
@@ -80,8 +80,8 @@ services:
     platform: linux/amd64
     container_name: m365mock
     build:
-      context: ..
-      dockerfile: sandbox/m365mock/Dockerfile
+      context: .
+      dockerfile: ./m365mock/Dockerfile
     stdin_open: true
     ports:
     - 4040:4040
@@ -117,7 +117,7 @@ services:
   nats:
     platform: linux/amd64
     container_name: nats
-    image: nats:2.14.2
+    image: nats:2.14.3
     ports:
     - 4222:4222
 
@@ -125,8 +125,8 @@ services:
     platform: linux/amd64
     container_name: nats-provision
     build:
-      context: ..
-      dockerfile: sandbox/nats-provision/Dockerfile
+      context: ./
+      dockerfile: ./nats-provision/Dockerfile
     environment:
       PROVISION_SERVICE_ACCOUNT_ID: provision-service-account-id
       PROVISION_SERVICE_ACCOUNT_SECRET: testsecret # pragma: allowlist secret
@@ -152,7 +152,7 @@ services:
 
   mailpit:
     # See https://hub.docker.com/r/axllent/mailpit/tags
-    image: axllent/mailpit:v1.30.2
+    image: axllent/mailpit:v1.30.3
     container_name: mailpit
     restart: unless-stopped
     volumes:

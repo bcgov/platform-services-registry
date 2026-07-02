@@ -1,3 +1,33 @@
+## [0.79.1](https://github.com/bcgov/platform-services-registry/compare/v0.79.0...v0.79.1) (2026-06-23)
+
+### Bug Fixes
+
+* **0000:** align react types version ([772407d](https://github.com/bcgov/platform-services-registry/commit/772407d7848d185362ad54522d096071756ee691))
+* **0000:** regenerate pnpm lockfile ([e5806cc](https://github.com/bcgov/platform-services-registry/commit/e5806ccc0cc6e5916687cfeb65890a17b8629355))
+* **0000:** sync ches mock lockfile ([739df86](https://github.com/bcgov/platform-services-registry/commit/739df86d6ae70f23d88fbf929053791434921a04))
+* **0000:** sync react-email lockfile ([528440a](https://github.com/bcgov/platform-services-registry/commit/528440a0adebf163b4448fe724722721af42c1ba))
+* **0000:** update ches mock lockfile ([0be893e](https://github.com/bcgov/platform-services-registry/commit/0be893e862a2129c5dfdc992c6d610918593dbbe))
+* **0000:** update lockfile for nodemailer 8.0.9 ([fc863eb](https://github.com/bcgov/platform-services-registry/commit/fc863eb24ca274d498fbe15bc9596c6b447948e4))
+* **0000:** update node-gyp lockfile ([21366b8](https://github.com/bcgov/platform-services-registry/commit/21366b80a9196785ac40bba07a25fff0c2e94b4e))
+* **0000:** update pnpm lockfile ([4c6136a](https://github.com/bcgov/platform-services-registry/commit/4c6136a5d744391ecb3be8adcfabed0335895d02))
+* **0000:** update pnpm lockfile ([da74757](https://github.com/bcgov/platform-services-registry/commit/da74757f663f03800ea267ebf0b23ab1f2c3b0f3))
+* **0000:** update pnpm lockfile for react email dependencies ([52ba843](https://github.com/bcgov/platform-services-registry/commit/52ba8437bc13fc9fe95a7e67c39fbbfed911f2ec))
+* **0000:** update sharp lockfile ([718a4fb](https://github.com/bcgov/platform-services-registry/commit/718a4fb0ed98f449840cbd6976cd1d3300438559))
+* **2889:** increase node memory for pnpm updates ([e2389ba](https://github.com/bcgov/platform-services-registry/commit/e2389bad6f41d2c0a3a79ec3273fbfe5d3dfc005))
+* **2889:** restore pnpm 11.0.8 ([de5d3c1](https://github.com/bcgov/platform-services-registry/commit/de5d3c167ede6d5552a48adc20a0abc18843e903))
+* **2907:** temporarily downgrade pnpm from 11.0.8 to 10.33.4 ([05c8a56](https://github.com/bcgov/platform-services-registry/commit/05c8a56e659bc2fe86171435126a48b27346c062))
+* **2917:** align renovate with pnpm 11 ([294f817](https://github.com/bcgov/platform-services-registry/commit/294f817cd1847e8c0e4018bb8d04d51ba9653ddc))
+* **2917:** regenerate pnpm lockfile in renovate updates ([a2df5eb](https://github.com/bcgov/platform-services-registry/commit/a2df5eb4996bab3027f1d4acab54658903c17cef))
+* **2926:** stabilize dag processor liveness probe ([73d03bb](https://github.com/bcgov/platform-services-registry/commit/73d03bbff61de177db9668a86bd0d19b0ff57b1f))
+
+### Docs
+
+* **devxt-2909:** updated developer docs and associated dev scripts ([#7508](https://github.com/bcgov/platform-services-registry/issues/7508)) ([36ff2da](https://github.com/bcgov/platform-services-registry/commit/36ff2da443493868efaa426ffb0f930abc930143))
+
+### End-to-end Testing
+
+* **2924:** disable e2e test from running on push ([#7561](https://github.com/bcgov/platform-services-registry/issues/7561)) ([9529468](https://github.com/bcgov/platform-services-registry/commit/95294686e4defba9b4c50c14d018e705c272314f))
+
 ## [0.79.0](https://github.com/bcgov/platform-services-registry/compare/v0.78.15...v0.79.0) (2026-06-05)
 
 ### Features

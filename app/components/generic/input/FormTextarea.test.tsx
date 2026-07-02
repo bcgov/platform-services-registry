@@ -1,0 +1,80 @@
+/** @jest-environment jsdom */
+
+import { describe, it, expect, jest } from '@jest/globals';
+import { fireEvent, render, screen, waitFor } from '@testing-library/react';
+import FormTextarea from './FormTextarea';
+
+describe('FormTextarea', () => {
+  async function assertOnChangeFlow({
+    expectedInitialCount,
+    defaultValue,
+  }: {
+    expectedInitialCount: number;
+    defaultValue?: string;
+  }) {
+    const inputPropsOnChange = jest.fn();
+    const outerOnChange = jest.fn();
+
+    render(
+      <FormTextarea
+        name="quotaJustification"
+        label="Reason"
+        maxLength={20}
+        defaultValue={defaultValue}
+        inputProps={{ onChange: inputPropsOnChange }}
+        onChange={outerOnChange}
+      />,
+    );
+
+    await waitFor(() => {
+      expect(screen.getByText(`${expectedInitialCount} / 20`)).toBeInTheDocument();
+    });
+
+    expect(inputPropsOnChange).toHaveBeenCalledTimes(0);
+    expect(outerOnChange).toHaveBeenCalledTimes(0);
+
+    const textarea = screen.getByRole('textbox');
+    fireEvent.change(textarea, { target: { value: 'hello' } });
+
+    expect(screen.getByText('5 / 20')).toBeInTheDocument();
+    expect(inputPropsOnChange).toHaveBeenCalledTimes(1);
+    expect(outerOnChange).toHaveBeenCalledTimes(1);
+  }
+
+  it('does not render a character counter when maxLength is not set', () => {
+    render(<FormTextarea name="description" label="Description" />);
+
+    expect(screen.queryByText(/\d+\s*\/\s*\d+/)).toBeNull();
+  });
+
+  it('renders initial character count from defaultValue when maxLength is set', async () => {
+    render(
+      <FormTextarea
+        name="quotaJustification"
+        label="Reason for quota increase request"
+        maxLength={10}
+        defaultValue="abcd"
+      />,
+    );
+
+    await waitFor(() => {
+      expect(screen.getByText('4 / 10')).toBeInTheDocument();
+    });
+  });
+
+  it('renders initial character count as 0 when defaultValue is not sent when maxLength is set', async () => {
+    render(<FormTextarea name="quotaJustification" label="Reason for quota increase request" maxLength={10} />);
+
+    await waitFor(() => {
+      expect(screen.getByText('0 / 10')).toBeInTheDocument();
+    });
+  });
+
+  it('updates character count and forwards onChange to both handlers', async () => {
+    await assertOnChangeFlow({ expectedInitialCount: 0 });
+  });
+
+  it('updates character count and forwards onChange to both handlers when defaultValue is set', async () => {
+    await assertOnChangeFlow({ expectedInitialCount: 7, defaultValue: 'initial' });
+  });
+});

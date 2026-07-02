@@ -7,6 +7,7 @@ import { useFormContext } from 'react-hook-form';
 import ExternalLink from '@/components/generic/button/ExternalLink';
 import HookFormTextarea from '@/components/generic/input/HookFormTextarea';
 import HookFormTextInput from '@/components/generic/input/HookFormTextInput';
+import { privateCloudQuotaJustificationMaxLength } from '@/constants/private-cloud';
 import { getQuotaChangeStatus } from '@/services/backend/private-cloud/products';
 import { usePrivateProductState } from '@/states/global';
 import { cn } from '@/utils/js';
@@ -108,11 +109,13 @@ export default function QuotasChangeInfo({ disabled, className }: { disabled: bo
       </p>
 
       <HookFormTextarea
-        label="Description of reason(s) for selecting cloud provider"
+        label="Reason for quota increase request"
         name="quotaJustification"
         placeholder="Enter a justification..."
         required
         classNames={{ wrapper: 'mt-2' }}
+        maxLength={privateCloudQuotaJustificationMaxLength}
+        error={`Please provide a reason for the quota increase request (maximum of ${privateCloudQuotaJustificationMaxLength} characters)`}
         disabled={disabled}
       />
     </div>

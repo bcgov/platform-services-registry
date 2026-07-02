@@ -1,5 +1,9 @@
 import { z } from 'zod';
-import { phoneNumberRegex } from '@/constants';
+import {
+  phoneNumberRegex,
+  privateCloudQuotaJustificationMaxLength,
+  privateCloudProductDescriptionMaxLength,
+} from '@/constants';
 import { validateDistinctPOandTl } from '@/helpers/user';
 import {
   Cluster,
@@ -41,7 +45,7 @@ export const resourceRequestsSchema = z.object({
     .min(0)
     .max(512)
     .refine((val) => val % 1 === 0, {
-      message: 'Memory must be an integer',
+      message: 'Storage must be an integer',
     }),
 });
 
@@ -65,7 +69,12 @@ const privateCloudProductMembers = z
 
 export const _privateCloudCreateRequestBodySchema = z.object({
   name: z.string().min(1, { message: 'Name is required.' }),
-  description: z.string().min(1, { message: 'Description is required.' }),
+  description: z
+    .string()
+    .min(1, { message: 'Description is required.' })
+    .max(privateCloudProductDescriptionMaxLength, {
+      message: `Description must be at most ${privateCloudProductDescriptionMaxLength} characters.`,
+    }),
   cluster: z.enum(Cluster),
   organizationId: z.string().length(24),
   isAgMinistry: z.boolean(),
@@ -77,7 +86,7 @@ export const _privateCloudCreateRequestBodySchema = z.object({
   resourceRequests: resourceRequestsEnvSchema,
   quotaContactName: z.string().max(50).optional(),
   quotaContactEmail: z.string().email().or(z.literal('')).nullable().optional(),
-  quotaJustification: z.string().max(1000).optional(),
+  quotaJustification: z.string().max(privateCloudQuotaJustificationMaxLength).optional(),
   supportPhoneNumber: z
     .string()
     .nullable()

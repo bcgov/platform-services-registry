@@ -2,9 +2,8 @@
 
 import _isFunction from 'lodash-es/isFunction';
 import _kebabCase from 'lodash-es/kebabCase';
-import { TextareaHTMLAttributes, useRef } from 'react';
+import { TextareaHTMLAttributes, useRef, useState } from 'react';
 import { cn } from '@/utils/js';
-import CopyableButton from '../button/CopyableButton';
 import Label from '../Label';
 
 interface InputProps extends TextareaHTMLAttributes<HTMLTextAreaElement> {}
@@ -55,12 +54,14 @@ export default function FormTextarea({
   classNames,
   required,
   disabled,
+  maxLength,
   copyable = false,
   inputProps = {},
   ...others
 }: FormTextareaProps) {
   if (!id) id = _kebabCase(name);
   const _ref = useRef<HTMLTextAreaElement>(null);
+  const [characterCount, setCharacterCount] = useState(0);
 
   return (
     <div className={cn('textarea', classNames?.wrapper)}>
@@ -86,12 +87,25 @@ export default function FormTextarea({
         autoComplete="off"
         {...inputProps}
         {...others}
-        // Required to bind three potential refs:
+        maxLength={maxLength}
+        // Track the length locally and forward the event to both possible
+        // consumers: react-hook-form's `register` handler (via inputProps) and
+        // a controlled caller's handler (via others). Declared after the
+        // spreads so this wrapper wins and neither handler is dropped.
+        onChange={(e) => {
+          if (typeof maxLength === 'number') setCharacterCount(e.currentTarget.value.length);
+          inputProps.onChange?.(e);
+          others.onChange?.(e);
+        }}
+        // Required to bind 2 potential refs:
         // 1. From the inputProps ex) react-hook-form.
         // 2. From the this component instance itself.
         ref={(el) => {
           if (!el) return;
 
+          // Sync the counter with the initial/current value (uncontrolled
+          // react-hook-form fields populate the DOM without firing onChange).
+          if (typeof maxLength === 'number') setCharacterCount(el.value.length);
           [_ref, inputProps.ref].forEach((rf) => {
             if (!rf) return;
 
@@ -104,6 +118,9 @@ export default function FormTextarea({
         }}
         className={cn(inputClass, classNames?.input)}
       />
+      {typeof maxLength === 'number' && (
+        <div className="mt-1 text-right text-xs text-gray-500">{`${characterCount} / ${maxLength}`}</div>
+      )}
     </div>
   );
 }
