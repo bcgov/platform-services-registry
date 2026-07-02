@@ -1,24 +1,21 @@
-FROM node:24.18.0-alpine AS build
+FROM node:22.12.0-alpine3.19 AS build
 WORKDIR /opt
 
-COPY package.json pnpm-lock.yaml pnpm-workspace.yaml ./
-COPY sandbox/mock-users.json ./
-COPY sandbox/types.ts ./sandbox/types.ts
-COPY sandbox/keycloak-provision ./sandbox/keycloak-provision
-COPY sandbox/_packages ./sandbox/_packages
+COPY ["mock-users.json", "types.ts", "./"]
+COPY keycloak-provision ./context
+COPY _packages ./_packages
 
 RUN npm install -g turbo pnpm
-RUN pnpm install --frozen-lockfile --ignore-scripts
-RUN pnpm --dir sandbox/_packages/keycloak-admin build
-RUN pnpm --dir sandbox/keycloak-provision build
+RUN cd context && pnpm install --frozen-lockfile --ignore-scripts
+RUN cd _packages/keycloak-admin && pnpm install --frozen-lockfile --ignore-scripts && pnpm build
+RUN cd context && pnpm build
 
-FROM node:24.18.0-alpine
+FROM node:22.12.0-alpine3.19
 WORKDIR /opt
 
-COPY --from=build /opt/sandbox/keycloak-provision/build ./
+COPY --from=build /opt/context/build ./
 COPY --from=build /opt/mock-users.json ./mock-users.json
-COPY --from=build /opt/sandbox/keycloak-provision/node_modules ./node_modules
-
+COPY --from=build /opt/context/node_modules ./node_modules
 
 USER node
 

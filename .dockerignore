@@ -3,10 +3,6 @@
 !app
 !sandbox/types.ts
 !sandbox/mock-users.json
-!sandbox/keycloak-provision/**
-!sandbox/_packages/**
-!sandbox/nats-provision/**
-!sandbox/m365mock/**
 !.prettierignore
 !.prettierrc
 !package.json
