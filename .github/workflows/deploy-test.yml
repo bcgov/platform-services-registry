@@ -96,7 +96,7 @@ jobs:
         registry-username: ${{ github.actor }}
         registry-password: ${{ secrets.GITHUB_TOKEN }}
         image-name: bcgov/pltsvc-pre-data-migrations
-        docker-context: data-migrations
+        docker-context: .
         docker-file: data-migrations/Dockerfile
         metadata-tags: |
           type=semver,pattern={{version}}
