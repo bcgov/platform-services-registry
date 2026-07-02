@@ -7,6 +7,10 @@
 !sandbox/_packages/**
 !sandbox/nats-provision/**
 !sandbox/m365mock/**
+!data-migrations/
+!data-migrations/package.json
+!data-migrations/migrate-mongo-config.js
+!data-migrations/migrations/**
 !.prettierignore
 !.prettierrc
 !package.json
