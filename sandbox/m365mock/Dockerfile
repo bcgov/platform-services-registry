@@ -1,20 +1,25 @@
-FROM node:22.12.0-alpine3.19 AS build
+FROM node:24.18.0-alpine AS build
 WORKDIR /opt
 
-COPY ["mock-users.json", "types.ts", "./"]
-COPY m365mock ./context
+COPY package.json pnpm-lock.yaml pnpm-workspace.yaml ./
+COPY sandbox/mock-users.json ./
+COPY sandbox/types.ts ./sandbox/types.ts
+COPY sandbox/m365mock ./sandbox/m365mock
+
 
 RUN npm install -g turbo pnpm
-RUN cd context && pnpm install --frozen-lockfile --ignore-scripts && pnpm build
+RUN pnpm install --frozen-lockfile --ignore-scripts
+RUN pnpm --dir sandbox/m365mock build
 
-FROM node:22.12.0-alpine3.19
+FROM node:24.18.0-alpine
 WORKDIR /opt
 
-COPY --from=build /opt/context/build ./
-COPY --from=build /opt/mock-users.json ./mock-users.json
-COPY --from=build /opt/context/node_modules ./node_modules
+COPY --from=build /opt/sandbox/m365mock/build ./sandbox/m365mock/build
+COPY --from=build /opt/sandbox/m365mock/node_modules ./sandbox/m365mock/node_modules
+COPY --from=build /opt/node_modules ./node_modules
+COPY --from=build /opt/mock-users.json ./sandbox/m365mock/build/mock-users.json
 
 USER node
 EXPOSE 4040
 
-CMD ["node", "context/main.js"]
+CMD ["node", "sandbox/m365mock/build/m365mock/main.js"]
