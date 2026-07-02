@@ -21,14 +21,7 @@ dev:
 
 .PHONY: install
 install: asdf-install
-install:
 	pnpm install
-	pnpm --dir app install
-	pnpm --dir data-migrations install
-	pnpm --dir sandbox/_packages/keycloak-admin install
-	pnpm --dir sandbox/keycloak-provision install
-	pnpm --dir sandbox/m365mock install
-	pnpm --dir sandbox/nats-provision install
 	$(MAKE) canvas-install
 
 .PHONY: canvas-install
