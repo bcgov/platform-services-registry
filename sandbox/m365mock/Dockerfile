@@ -14,11 +14,12 @@ RUN pnpm --dir sandbox/m365mock build
 FROM node:24.18.0-alpine
 WORKDIR /opt
 
-COPY --from=build /opt/sandbox/m365mock/build ./
-COPY --from=build /opt/mock-users.json ./mock-users.json
-COPY --from=build /opt/sandbox/m365mock/node_modules ./node_modules
+COPY --from=build /opt/sandbox/m365mock/build ./sandbox/m365mock/build
+COPY --from=build /opt/sandbox/m365mock/node_modules ./sandbox/m365mock/node_modules
+COPY --from=build /opt/node_modules ./node_modules
+COPY --from=build /opt/mock-users.json ./sandbox/m365mock/build/mock-users.json
 
 USER node
 EXPOSE 4040
 
-CMD ["node", "context/main.js"]
+CMD ["node", "sandbox/m365mock/build/m365mock/main.js"]
