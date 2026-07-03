@@ -17,9 +17,14 @@ WORKDIR /opt
 
 COPY --from=build /opt/sandbox/keycloak-provision/build ./
 COPY --from=build /opt/mock-users.json ./mock-users.json
-COPY --from=build /opt/sandbox/keycloak-provision/node_modules ./node_modules
+COPY --from=build /opt/node_modules ./node_modules
 
+USER root
+
+RUN mkdir -p /opt/node_modules/@keycloak && \
+    ln -s /opt/node_modules/.pnpm/@keycloak+keycloak-admin-client@*/node_modules/@keycloak/keycloak-admin-client \
+      /opt/node_modules/@keycloak/keycloak-admin-client
 
 USER node
 
-CMD ["node", "context/main.js"]
+CMD ["node", "keycloak-provision/main.js"]
