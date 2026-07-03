@@ -199,7 +199,7 @@ importers:
         version: 7.0.1
       csv-stringify:
         specifier: ^6.6.0
-        version: 6.7.0
+        version: 6.8.1
       date-fns:
         specifier: ^4.1.0
         version: 4.1.0
@@ -371,7 +371,7 @@ importers:
         version: 4.18.1
       node-gyp:
         specifier: ^13.0.0
-        version: 13.0.1
+        version: 13.0.0
       prettier:
         specifier: ^3.6.2
         version: 3.8.3
@@ -5031,8 +5031,8 @@ packages:
   csv-parse@7.0.1:
     resolution: {integrity: sha512-+2z7Ar0APQ7Uu6fX4cn+pitRmxjZ1WPBcGmZFKmA74FCyi7Et/XZx8cjNQ5CjbZ4HCOxXCOpRBYvYH08Qa003A==}
 
-  csv-stringify@6.7.0:
-    resolution: {integrity: sha512-UdtziYp5HuTz7e5j8Nvq+a/3HQo+2/aJZ9xntNTpmRRIg/3YYqDVgiS9fvAhtNbnyfbv2ZBe0bqCHqzhE7FqWQ==}
+  csv-stringify@6.8.1:
+    resolution: {integrity: sha512-tZ6X6TKQyQgCo5OptXcyAbfN1pwmoxEqELPQ7KFazNErx7kiVsDK8o+VYRXhfMl4N9vvOOLXuioquR2MeP847A==}
 
   cypress-keycloak@2.0.2:
     resolution: {integrity: sha512-pHCjn68pai6y3MPuaM7c6UEidIfaXfl2+4WKhQ/8wgprQb7YlPcuBI1txBC477O2OFLx9ii1XlSXXq7fUP8ZAg==}
@@ -7519,8 +7519,8 @@ packages:
       encoding:
         optional: true
 
-  node-gyp@13.0.1:
-    resolution: {integrity: sha512-piOr0S10qy5THB+q5BdqkoOx65XL/tjTMUAit3vciPNp+snTOBnGunWH1Rz7XZUxf2T9uFrfT/Ty4+aC3yPeyg==}
+  node-gyp@13.0.0:
+    resolution: {integrity: sha512-FYYyBDWdc+kzoyPd5PqHUgM9DGs1C/Z4jxBZAOnA2GRUVXPivKRREq5q+VVPXVr9aGVqGMaMqyFHbviy/yb7Hg==}
     engines: {node: ^22.22.2 || ^24.15.0 || >=26.0.0}
     hasBin: true
 
@@ -9172,10 +9172,6 @@ packages:
   undici@7.28.0:
     resolution: {integrity: sha512-cRZYrTDwWznlnRiPjggAGxZXanty6M8RV1ff8Wm4LWXBp7/IG8v5DnOm74DtUBp9OONpK75YlPnIjQqX0dBDtA==}
     engines: {node: '>=20.18.1'}
-
-  undici@8.6.0:
-    resolution: {integrity: sha512-l2FlC6I510GawyEd1qgcE/okihKrzy+BRTEBlu6T0fdbM9m5yxtIH5Oa3ysRsH0zC4EhmWUEaSDsy2QngBeRlw==}
-    engines: {node: '>=22.19.0'}
 
   unicorn-magic@0.1.0:
     resolution: {integrity: sha512-lRfVq8fE8gz6QMBuDM6a+LO3IAzTi05H6gCVaUpir2E1Rwpo4ZUog45KpNXKC/Mn3Yb9UDuHumeFTo9iV/D9FQ==}
@@ -13970,7 +13966,7 @@ snapshots:
 
   csv-parse@7.0.1: {}
 
-  csv-stringify@6.7.0: {}
+  csv-stringify@6.8.1: {}
 
   cypress-keycloak@2.0.2(cypress@14.5.4):
     dependencies:
@@ -17002,7 +16998,7 @@ snapshots:
     dependencies:
       whatwg-url: 5.0.0
 
-  node-gyp@13.0.1:
+  node-gyp@13.0.0:
     dependencies:
       env-paths: 2.2.1
       exponential-backoff: 3.1.3
@@ -17012,7 +17008,7 @@ snapshots:
       semver: 7.8.5
       tar: 7.5.19
       tinyglobby: 0.2.17
-      undici: 8.6.0
+      undici: 6.27.0
       which: 7.0.0
 
   node-int64@0.4.0: {}
@@ -19050,8 +19046,6 @@ snapshots:
   undici@7.27.0: {}
 
   undici@7.28.0: {}
-
-  undici@8.6.0: {}
 
   unicorn-magic@0.1.0: {}
 
