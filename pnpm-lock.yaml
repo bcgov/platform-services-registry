@@ -250,7 +250,7 @@ importers:
         version: 19.2.7(react@19.2.7)
       react-email:
         specifier: ^6.0.0
-        version: 6.6.5(react-dom@19.2.7(react@19.2.7))(react@19.2.7)
+        version: 6.6.6(react-dom@19.2.7(react@19.2.7))(react@19.2.7)
       react-hook-form:
         specifier: ^7.62.0
         version: 7.75.0(react@19.2.7)
@@ -8140,8 +8140,8 @@ packages:
     peerDependencies:
       react: ^19.2.7
 
-  react-email@6.6.5:
-    resolution: {integrity: sha512-IO2NXS17K5xEn9v8QVt28g8Nl6D4gmaKZZc61tOGiZla4X2F+veWjuSKCJC7HDIuEtZXF27chHo9sE6Mtey6tQ==}
+  react-email@6.6.6:
+    resolution: {integrity: sha512-4eYmISIQbmEzibkl8pW+ZQHIFMwUVqZQRpTDYj6Ow7kk/gpUjtA95ggxoXji8pRq/y76tOhe7D3vNUJkZWO58g==}
     engines: {node: '>=20.0.0'}
     hasBin: true
     peerDependencies:
@@ -17755,7 +17755,7 @@ snapshots:
       react: 19.2.7
       scheduler: 0.27.0
 
-  react-email@6.6.5(react-dom@19.2.7(react@19.2.7))(react@19.2.7):
+  react-email@6.6.6(react-dom@19.2.7(react@19.2.7))(react@19.2.7):
     dependencies:
       '@babel/parser': 7.27.0
       '@babel/traverse': 7.27.0
