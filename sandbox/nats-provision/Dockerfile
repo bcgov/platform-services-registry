@@ -15,10 +15,11 @@ RUN pnpm --dir sandbox/nats-provision build
 FROM node:24.18.0-alpine
 WORKDIR /opt
 
-COPY --from=build /opt/sandbox/nats-provision/build ./
-COPY --from=build /opt/mock-users.json ./mock-users.json
-COPY --from=build /opt/sandbox/nats-provision/node_modules ./node_modules
+COPY --from=build /opt/sandbox/nats-provision/build ./sandbox/nats-provision/build
+COPY --from=build /opt/sandbox/nats-provision/node_modules ./sandbox/nats-provision/node_modules
+COPY --from=build /opt/node_modules ./node_modules
+COPY --from=build /opt/mock-users.json ./sandbox/nats-provision/build/mock-users.json
 
 USER node
 
-CMD ["node", "context/main.js"]
+CMD ["node", "sandbox/nats-provision/build/nats-provision/main.js"]
