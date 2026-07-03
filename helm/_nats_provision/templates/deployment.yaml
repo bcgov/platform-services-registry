@@ -51,7 +51,7 @@ spec:
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           command: ["/bin/sh", "-c"]
           args:
-            ['. /vault/secrets/secrets.env && node context/main.js']
+            - '. /vault/secrets/secrets.env && node sandbox/nats-provision/build/nats-provision/main.js'
           env:
             - name: DEPLOYMENT_TAG
               value: {{ $deploymentTag | quote }}
