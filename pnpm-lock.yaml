@@ -211,7 +211,7 @@ importers:
         version: 1.11.21
       https-proxy-agent:
         specifier: ^9.0.0
-        version: 9.0.0
+        version: 9.1.0
       jsonwebtoken:
         specifier: ^9.0.2
         version: 9.0.3
@@ -6285,8 +6285,8 @@ packages:
     resolution: {integrity: sha512-YYeW+iCnAS3xhvj2dvVoWgsbca3RfQy/IlaNHHOtDmU0jMqPI9euIq3Y9BJETdxk16h9NHHCKqp/KB9nIMStCQ==}
     engines: {node: '>= 14'}
 
-  https-proxy-agent@9.0.0:
-    resolution: {integrity: sha512-/MVmHp58WkOypgFhCLk4fzpPcFQvTJ/e6LBI7irpIO2HfxUbpmYoHF+KzipzJpxxzJu7aJNWQ0xojJ/dzV2G5g==}
+  https-proxy-agent@9.1.0:
+    resolution: {integrity: sha512-ag87y7cJJ9/3+GxFr8Oy4O5faDsGRGnBGsJj/YjOSsSx/5eadKLYTMPlzuR6obgoCDDm0abAAZitXXQkMOPSpA==}
     engines: {node: '>= 20'}
 
   human-signals@1.1.1:
@@ -8068,6 +8068,15 @@ packages:
   proxy-addr@2.0.7:
     resolution: {integrity: sha512-llQsMLSUDUPT44jdrU/O37qlnifitDP+ZwrmmZcoSKyLKvtZxpyV0n2/bD/N4tBAAZ/gJEdZU7KMraoK1+XYAg==}
     engines: {node: '>= 0.10'}
+
+  proxy-agent-negotiate@1.1.0:
+    resolution: {integrity: sha512-N8IBcM3UgCVzz2L2Lqv8DVntDnnC8/hiV4nEDUPkqq72TPUgYWjQc+bdZlBPZK9LzPAvOY//gAt0S0DApoOXWQ==}
+    engines: {node: '>= 20'}
+    peerDependencies:
+      kerberos: ^2.0.0
+    peerDependenciesMeta:
+      kerberos:
+        optional: true
 
   proxy-agent@7.0.0:
     resolution: {integrity: sha512-okTgt79rHTvMHkr/Ney5rZpgCHh3g1g3tI5uhkgN5b7OeI3n0Q/ui1uv9OdrnZNJM9WIZJqZPh/UJs+YtO/TMQ==}
@@ -15713,11 +15722,13 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  https-proxy-agent@9.0.0:
+  https-proxy-agent@9.1.0:
     dependencies:
       agent-base: 9.0.0
       debug: 4.4.3(supports-color@10.2.2)
+      proxy-agent-negotiate: 1.1.0
     transitivePeerDependencies:
+      - kerberos
       - supports-color
 
   human-signals@1.1.1: {}
@@ -17700,6 +17711,8 @@ snapshots:
     dependencies:
       forwarded: 0.2.0
       ipaddr.js: 1.9.1
+
+  proxy-agent-negotiate@1.1.0: {}
 
   proxy-agent@7.0.0:
     dependencies:
