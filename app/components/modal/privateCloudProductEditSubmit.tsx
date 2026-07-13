@@ -6,7 +6,7 @@ import { IconStatusChange } from '@tabler/icons-react';
 import { useMutation } from '@tanstack/react-query';
 import { useEffect, useState } from 'react';
 import { FormProvider, useForm, FieldValues } from 'react-hook-form';
-import { string, z } from 'zod';
+import { z } from 'zod';
 import PageAccordion from '@/components/generic/accordion/PageAccordion';
 import HookFormTextarea from '@/components/generic/input/HookFormTextarea';
 import { success } from '@/components/notification';
@@ -48,12 +48,7 @@ export const openPrivateCloudProductEditSubmitModal = createModal<ModalProps, Mo
       },
     });
 
-    const {
-      mutateAsync: editProject,
-      isPending: isEditingProject,
-      isError: isEditError,
-      error: editError,
-    } = useMutation({
+    const { mutateAsync: editProject, isPending: isEditingProject } = useMutation({
       mutationFn: (data: any) => editPrivateCloudProduct(snap.licencePlate, data),
       onSuccess: () => {
         state.success = true;
@@ -61,7 +56,7 @@ export const openPrivateCloudProductEditSubmitModal = createModal<ModalProps, Mo
       },
     });
 
-    const { handleSubmit, register } = methods;
+    const { handleSubmit } = methods;
 
     useEffect(() => {
       const newOrganization = appSnap.info.ORGANIZATION_BY_ID[originalProductData.organizationId];
@@ -71,8 +66,9 @@ export const openPrivateCloudProductEditSubmitModal = createModal<ModalProps, Mo
       });
       setChange(_changes);
     }, [originalProductData]);
-
-    if (!change || !snap.editQuotaChangeStatus) return <></>;
+    if (!change) return null;
+    const requiresApproval =
+      snap.editQuotaChangeStatus?.isEligibleForAutoApproval === false || change.parentPaths.includes('golddrEnabled');
 
     const openConfirmation = async () => {
       await openNotificationModal(
@@ -126,10 +122,9 @@ export const openPrivateCloudProductEditSubmitModal = createModal<ModalProps, Mo
               showToggles={false}
             />
 
-            <p className="text-sm text-gray-900 mt-2">
+            <p className="mt-2 text-sm text-gray-900">
               After hitting submit, our smart robots will start working hard behind the scenes.
-              {(!snap.editQuotaChangeStatus.isEligibleForAutoApproval ||
-                change.parentPaths.includes('golddrEnabled')) && (
+              {requiresApproval && (
                 <span>
                   &nbsp;There is one step, the approval process, where a human is involved. They will take the
                   opportunity, if needed, to reach out to you if they have any questions.
@@ -153,7 +148,7 @@ export const openPrivateCloudProductEditSubmitModal = createModal<ModalProps, Mo
             <Grid className="mt-2">
               <Grid.Col span={4}></Grid.Col>
               <Grid.Col span={8} className="text-right">
-                <Button color="gray" onClick={() => closeModal()} className="mr-1">
+                <Button color="gray" onClick={closeModal} className="mr-1">
                   Cancel
                 </Button>
                 <Button type="submit">Submit</Button>
