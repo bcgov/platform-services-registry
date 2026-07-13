@@ -67,11 +67,33 @@ export default function PublicCloudForecastSection({ licencePlate }: Readonly<{ 
     createForecast.mutate();
   }, [data, forecast, canEditForecast, createForecast]);
 
+  const showCreatingLoader =
+    isLoading || (!forecast && canEditForecast && (createForecast.isPending || !createForecast.isError));
+
+  let emptyForecastContent = <p>No forecast yet for this product.</p>;
+  if (canEditForecast && createForecast.isError) {
+    emptyForecastContent = (
+      <>
+        <p>Could not create a forecast from the product budget. You can retry.</p>
+        <Button
+          type="button"
+          variant="default"
+          loading={createForecast.isPending}
+          onClick={() => createForecast.mutate()}
+        >
+          Create forecast from product budget
+        </Button>
+      </>
+    );
+  } else if (canEditForecast) {
+    emptyForecastContent = <p>Creating forecast from product budget estimates…</p>;
+  }
+
   return (
     <div className="space-y-8">
       {canViewForecast && (
         <>
-          {(isLoading || (!forecast && canEditForecast && (createForecast.isPending || !createForecast.isError))) && (
+          {showCreatingLoader && (
             <LoadingBox isLoading>
               <div className="min-h-24" />
             </LoadingBox>
@@ -93,27 +115,7 @@ export default function PublicCloudForecastSection({ licencePlate }: Readonly<{ 
           {data && (
             <section className="space-y-4">
               {!forecast ? (
-                <div className="text-sm text-gray-600 space-y-3">
-                  {canEditForecast ? (
-                    createForecast.isError ? (
-                      <>
-                        <p>Could not create a forecast from the product budget. You can retry.</p>
-                        <Button
-                          type="button"
-                          variant="default"
-                          loading={createForecast.isPending}
-                          onClick={() => createForecast.mutate()}
-                        >
-                          Create forecast from product budget
-                        </Button>
-                      </>
-                    ) : (
-                      <p>Creating forecast from product budget estimates…</p>
-                    )
-                  ) : (
-                    <p>No forecast yet for this product.</p>
-                  )}
-                </div>
+                <div className="text-sm text-gray-600 space-y-3">{emptyForecastContent}</div>
               ) : (
                 <ProjectBudgetForecastPanel
                   licencePlate={licencePlate}
