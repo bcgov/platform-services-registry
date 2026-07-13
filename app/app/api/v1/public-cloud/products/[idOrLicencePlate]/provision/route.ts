@@ -1,9 +1,11 @@
 import { z } from 'zod';
+import { getAwsLzaAccountName, publicCloudEnvironmentKeys } from '@/constants/public-cloud';
 import createApiHandler from '@/core/api-handler';
 import { logger } from '@/core/logging';
 import prisma from '@/core/prisma';
 import { NotFoundResponse, OkResponse } from '@/core/responses';
-import { DecisionStatus, Prisma, ProjectStatus, RequestType } from '@/prisma/client';
+import { DecisionStatus, Prisma, ProjectStatus, Provider, RequestType } from '@/prisma/client';
+import { mergeAwsLzaAccounts } from '@/services/aws-lza/accounts';
 import { sendRequestCompletionEmails } from '@/services/ches/public-cloud';
 import { models, publicCloudRequestDetailInclude } from '@/services/db';
 import { upsertPublicCloudBillings } from '@/services/db/public-cloud-billing';
@@ -12,12 +14,35 @@ const pathParamSchema = z.object({
   idOrLicencePlate: z.string().max(7),
 });
 
+const bodySchema = z.object({
+  awsAccounts: z
+    .array(
+      z.object({
+        environment: z.enum(publicCloudEnvironmentKeys),
+        name: z.string().min(1).optional(),
+        accountId: z.string().min(1),
+      }),
+    )
+    .optional()
+    .default([]),
+});
+
 const apiHandler = createApiHandler({
   roles: ['service-account public-admin'],
   useServiceAccount: true,
-  validations: { pathParams: pathParamSchema },
+  validations: { pathParams: pathParamSchema, body: bodySchema },
 });
-export const POST = apiHandler(async ({ pathParams, session }) => {
+
+async function getExistingAwsAccounts(licencePlate: string) {
+  const product = await prisma.publicCloudProduct.findUnique({
+    where: { licencePlate },
+    select: { awsAccounts: true },
+  });
+
+  return product?.awsAccounts;
+}
+
+export const POST = apiHandler(async ({ pathParams, session, body }) => {
   const { idOrLicencePlate: licencePlate } = pathParams;
 
   const request = await prisma.publicCloudRequest.findFirst({
@@ -49,8 +74,26 @@ export const POST = apiHandler(async ({ pathParams, session }) => {
 
   const { id, ...decisionData } = request.decisionData;
 
-  // Upsert the project with the requested project data. If admin requested project data exists, use that instead.
   const filter = { licencePlate };
+  let awsAccountData = {};
+
+  if (request.type !== RequestType.DELETE && decisionData.provider === Provider.AWS_LZA) {
+    const callbackAwsAccounts = body.awsAccounts.map((account) => ({
+      ...account,
+      name: account.name ?? getAwsLzaAccountName(licencePlate, account.environment),
+    }));
+
+    awsAccountData = {
+      awsAccounts: mergeAwsLzaAccounts(
+        await getExistingAwsAccounts(licencePlate),
+        callbackAwsAccounts,
+      ) as unknown as Prisma.InputJsonValue,
+    };
+  }
+
+  const productData = { ...decisionData, ...awsAccountData };
+
+  // Upsert the project with the requested project data. If admin requested project data exists, use that instead.
   const upsertProject =
     request.type === RequestType.DELETE
       ? prisma.publicCloudProduct.update({
@@ -59,8 +102,8 @@ export const POST = apiHandler(async ({ pathParams, session }) => {
         })
       : prisma.publicCloudProduct.upsert({
           where: filter,
-          update: decisionData,
-          create: decisionData,
+          update: productData,
+          create: productData,
         });
 
   const [updatedRequest] = await Promise.all([updateRequest, upsertProject]);

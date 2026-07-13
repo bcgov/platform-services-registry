@@ -93,6 +93,7 @@ export function createSamplePublicCloudRequest(args?: {
 
   const product = {
     ...baseData,
+    awsAccounts: [],
     id: generateShortId(),
   };
 
