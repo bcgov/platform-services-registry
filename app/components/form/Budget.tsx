@@ -51,12 +51,11 @@ export default function Budget({ disabled, mode }: { disabled?: boolean; mode?: 
       calculatorLink = <ExternalLink href="https://calculator.aws/#/">AWS Cost Calculator</ExternalLink>;
       alert = (
         <Alert variant="light" color="blue" title="" icon={<IconInfoCircle />} className="mt-1">
-          Enter estimates in CAD. AWS invoices in USD; Registry converts actuals using the monthly USD/CAD rate so
-          forecasts align with BC Gov budgets. There is also a base charge of about USD 50–75 per account (roughly CAD
-          70–100), up to around USD 200–300 when 4 accounts are created.
+          There will be a base charge of USD 50 to USD 75 per account, up to around USD $200 to $300 when 4 accounts are
+          created for this project set
         </Alert>
       );
-      currency = 'CAD';
+      currency = 'USD';
       break;
     case Provider.AZURE:
       calculatorLink = (

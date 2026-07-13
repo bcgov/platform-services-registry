@@ -1,14 +1,10 @@
 /**
- * USD → CAD FX for public-cloud forecast.
+ * USD → CAD helpers for public-cloud forecasts.
  *
- * BC Gov budgets and forecasts are in CAD. AWS invoices in USD, so Registry
- * converts AWS actuals to CAD using a monthly rate:
- * - Past / closed months: "actual" rate once known (AWS typically settles a few
- *   days after month end).
- * - Current / future months: "tentative" working rate for forecasting context.
+ * BC Gov forecasts are stored and displayed in CAD. Legacy AWS forecast rows may
+ * still arrive in USD and are converted with a monthly rate for rollups.
  *
  * Rates below are local/dev defaults approximating recent USD/CAD levels.
- * Replace with CSP- or finance-supplied rates when available.
  */
 
 export type FxRateStatus = 'actual' | 'tentative';

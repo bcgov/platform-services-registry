@@ -5,7 +5,6 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import LoadingBox from '@/components/generic/LoadingBox';
 import { FISCAL_FORECAST_HORIZON_MONTHS } from '@/components/public-cloud/forecast/forecast-grid-utils';
 import ProjectBudgetForecastPanel from '@/components/public-cloud/forecast/ProjectBudgetForecastPanel';
-import { convertUsdToCad, providerReportsActualsInUsd } from '@/helpers/usd-cad-fx';
 import { createPublicCloudForecast, getPublicCloudProductForecast } from '@/services/backend/public-cloud/forecast';
 import { usePublicProductState } from '@/states/global';
 
@@ -29,19 +28,6 @@ export default function PublicCloudForecastSection({ licencePlate }: { licencePl
     mutationFn: () => createPublicCloudForecast(licencePlate),
     onSuccess: refresh,
   });
-
-  const monthlyActuals =
-    data?.spendHistory?.months?.map((m: { year: number; month: number; actualTotal: number; currency?: string }) => {
-      const amount =
-        m.currency === 'USD' || providerReportsActualsInUsd(product?.provider ?? '')
-          ? convertUsdToCad(m.actualTotal, m.year, m.month)
-          : m.actualTotal;
-      return {
-        year: m.year,
-        month: m.month,
-        amount,
-      };
-    }) ?? [];
 
   const forecast = data?.activeForecast;
 
@@ -70,8 +56,6 @@ export default function PublicCloudForecastSection({ licencePlate }: { licencePl
 
           {data && (
             <section className="space-y-4">
-              <h3 className="font-bold text-lg">Spend forecast</h3>
-
               {!forecast ? (
                 <div className="text-sm text-gray-600 space-y-3">
                   <p>No forecast yet. Create one from the product budget estimates to enter monthly amounts.</p>
@@ -98,9 +82,6 @@ export default function PublicCloudForecastSection({ licencePlate }: { licencePl
                     updatedAt: forecast.updatedAt,
                   }}
                   monthlyValues={forecast.monthlyValues ?? []}
-                  monthlyActuals={monthlyActuals}
-                  activeBaseline={null}
-                  quarterlyReview={null}
                   editable={canEditForecast}
                   onSaved={refresh}
                 />

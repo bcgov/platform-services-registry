@@ -29,7 +29,7 @@ import { PlatformForecastProduct, PlatformForecastSummary } from '@/services/db/
 const DEFAULT_PRODUCT_LIMIT = 10;
 const PRODUCT_LIMIT_INCREMENT = 10;
 
-type ProductSort = 'forecast-desc' | 'variance-desc' | 'name-asc';
+type ProductSort = 'forecast-desc' | 'name-asc';
 type ProviderFilter = 'ALL' | 'AWS_LZA' | 'AZURE' | 'AWS';
 
 const PROVIDER_FILTER_OPTIONS: { value: Exclude<ProviderFilter, 'ALL'>; label: string }[] = [
@@ -48,34 +48,23 @@ function providerFilterLabel(provider: string) {
 function buildFilteredGroupTotals(
   products: PlatformForecastProduct[],
   currency: string,
-): { monthlyTotals: MonthlyValue[]; monthlyActuals: (number | null)[] } {
+): { monthlyTotals: MonthlyValue[] } {
   const totalsByMonth = new Map<string, MonthlyValue>();
-  const actualsByMonth = new Map<string, number>();
 
   for (const product of products) {
-    if (product.hasForecast) {
-      for (const value of product.monthlyTotals) {
-        const key = monthKey(value.year, value.month);
-        const existing = totalsByMonth.get(key);
-        if (existing) {
-          existing.amount += value.amount;
-        } else {
-          totalsByMonth.set(key, { ...value, currency });
-        }
+    if (!product.hasForecast) continue;
+    for (const value of product.monthlyTotals) {
+      const key = monthKey(value.year, value.month);
+      const existing = totalsByMonth.get(key);
+      if (existing) {
+        existing.amount += value.amount;
+      } else {
+        totalsByMonth.set(key, { ...value, currency });
       }
     }
-
-    product.monthlyTotals.forEach((slot, index) => {
-      const actual = product.monthlyActuals[index];
-      if (actual == null) return;
-      const key = monthKey(slot.year, slot.month);
-      actualsByMonth.set(key, (actualsByMonth.get(key) ?? 0) + actual);
-    });
   }
 
-  const monthlyTotals = mergeMonthlyValuesOntoFiscalHorizon([...totalsByMonth.values()], currency);
-  const monthlyActuals = monthlyTotals.map((slot) => actualsByMonth.get(monthKey(slot.year, slot.month)) ?? null);
-  return { monthlyTotals, monthlyActuals };
+  return { monthlyTotals: mergeMonthlyValuesOntoFiscalHorizon([...totalsByMonth.values()], currency) };
 }
 
 function SummaryCard({ label, value, hint }: { label: string; value: string; hint?: string }) {
@@ -88,31 +77,10 @@ function SummaryCard({ label, value, hint }: { label: string; value: string; hin
   );
 }
 
-function formatVariance(variance: number, currency: string) {
-  return new Intl.NumberFormat('en-US', {
-    style: 'currency',
-    currency,
-    minimumFractionDigits: 0,
-    maximumFractionDigits: 0,
-    signDisplay: 'exceptZero',
-  }).format(variance);
-}
-
-function varianceClass(variance: number) {
-  if (variance > 0) return 'text-red-600';
-  if (variance < 0) return 'text-green-600';
-  return 'text-gray-600';
-}
-
-function productChunkValues(product: PlatformForecastProduct, fyChunk: FiscalYearChunk) {
-  const forecasts = fyChunk.months.map((_, i) =>
+function productChunkForecasts(product: PlatformForecastProduct, fyChunk: FiscalYearChunk) {
+  return fyChunk.months.map((_, i) =>
     product.hasForecast ? product.monthlyTotals[fyChunk.startIndex + i]?.amount ?? 0 : null,
   );
-  const actuals = fyChunk.months.map((_, i) => product.monthlyActuals[fyChunk.startIndex + i] ?? null);
-  const variances = fyChunk.months.map((_, i) =>
-    actuals[i] != null && forecasts[i] != null ? actuals[i]! - forecasts[i]! : null,
-  );
-  return { forecasts, actuals, variances };
 }
 
 function matchesProductSearch(product: PlatformForecastProduct, search: string) {
@@ -127,24 +95,12 @@ function sortProducts(products: PlatformForecastProduct[], sort: ProductSort) {
       return a.name.localeCompare(b.name) || a.licencePlate.localeCompare(b.licencePlate);
     }
 
-    if (sort === 'variance-desc') {
-      return Math.abs(b.varianceToDate ?? 0) - Math.abs(a.varianceToDate ?? 0) || a.name.localeCompare(b.name);
-    }
-
     return b.forecastTotal - a.forecastTotal || a.name.localeCompare(b.name);
   });
 }
 
-function sumNullable(values: (number | null)[]) {
-  return values.reduce<number>((sum, value) => sum + (value ?? 0), 0);
-}
-
 function formatResidualAmount(amount: number, currency: string) {
   return Math.abs(amount) < 0.005 ? '—' : formatForecastAmount(amount, currency);
-}
-
-function formatResidualVariance(amount: number, currency: string) {
-  return Math.abs(amount) < 0.005 ? '—' : formatVariance(amount, currency);
 }
 
 function PlatformForecastGrid({ group }: { group: PlatformForecastSummary['groups'][number] }) {
@@ -169,21 +125,17 @@ function PlatformForecastGrid({ group }: { group: PlatformForecastSummary['group
   );
   const filteredTotals =
     providerFilter === 'ALL' || activeProviders.length === availableProviders.length
-      ? { monthlyTotals: group.monthlyTotals as MonthlyValue[], monthlyActuals: group.monthlyActuals }
+      ? { monthlyTotals: group.monthlyTotals as MonthlyValue[] }
       : buildFilteredGroupTotals(providerFilteredProducts, group.currency);
 
   const values = filteredTotals.monthlyTotals;
-  const actuals = filteredTotals.monthlyActuals;
   const fiscalYearChunks = getFiscalYearChunks(values);
   const grandTotal = sumMonthlyValues(values);
-  const actualToDate = actuals.reduce<number>((sum, v) => sum + (v ?? 0), 0);
-  const forecastForActualMonths = values.reduce((sum, v, i) => (actuals[i] != null ? sum + v.amount : sum), 0);
-  const hasActuals = actuals.some((v) => v != null);
   const spendLabel = activeProviders.length === 1 ? getProviderSpendLabel(activeProviders[0]) : 'Cloud Spend';
   const filteredProductCount = providerFilteredProducts.length;
   const filteredForecastCount = providerFilteredProducts.filter((product) => product.hasForecast).length;
   const lineItemProducts = providerFilteredProducts.filter((product) =>
-    missingOnly ? !product.hasForecast : product.hasForecast || product.monthlyActuals.some((v) => v != null),
+    missingOnly ? !product.hasForecast : product.hasForecast,
   );
   const searchedProducts = sortProducts(
     lineItemProducts.filter((product) => matchesProductSearch(product, productSearch)),
@@ -194,7 +146,6 @@ function PlatformForecastGrid({ group }: { group: PlatformForecastSummary['group
   const hiddenMatchingProductCount = Math.max(searchedProducts.length - visibleProducts.length, 0);
   const canShowMoreProducts = hiddenMatchingProductCount > 0;
   const showOtherRow = showProducts && otherProductCount > 0;
-  const includesAws = activeProviders.some((provider) => provider === Provider.AWS || provider === Provider.AWS_LZA);
   const providerControlData = [
     { value: 'ALL', label: 'All providers' },
     ...PROVIDER_FILTER_OPTIONS.filter((option) => availableProviders.includes(option.value)),
@@ -220,9 +171,7 @@ function PlatformForecastGrid({ group }: { group: PlatformForecastSummary['group
             </h2>
             <p className="text-sm text-gray-600">
               {filteredForecastCount} of {filteredProductCount} {activeProviders.map(providerFilterLabel).join(' / ')}{' '}
-              products have an approved forecast included in these totals. Actuals are closed-month spend reported by
-              the cloud service provider.
-              {includesAws ? ' AWS USD actuals are converted to CAD using the monthly FX rate.' : ''}
+              products have an approved forecast included in these totals.
             </p>
           </div>
           {availableProviders.length > 1 && (
@@ -259,7 +208,6 @@ function PlatformForecastGrid({ group }: { group: PlatformForecastSummary['group
               onChange={(value) => setProductSort((value as ProductSort) ?? 'forecast-desc')}
               data={[
                 { value: 'forecast-desc', label: 'Largest forecast total' },
-                { value: 'variance-desc', label: 'Largest variance' },
                 { value: 'name-asc', label: 'Name A-Z' },
               ]}
               allowDeselect={false}
@@ -320,13 +268,6 @@ function PlatformForecastGrid({ group }: { group: PlatformForecastSummary['group
       <div className="space-y-6">
         {fiscalYearChunks.map((fyChunk) => {
           const yearTotal = sumMonthlyValues(fyChunk.months);
-          const chunkActuals = fyChunk.months.map((_, i) => actuals[fyChunk.startIndex + i] ?? null);
-          const chunkHasActuals = chunkActuals.some((v) => v != null);
-          const chunkActualTotal = chunkActuals.reduce<number>((sum, v) => sum + (v ?? 0), 0);
-          const chunkVarianceTotal = fyChunk.months.reduce(
-            (sum, v, i) => (chunkActuals[i] != null ? sum + (chunkActuals[i]! - v.amount) : sum),
-            0,
-          );
 
           return (
             <div key={fyChunk.label} className="border border-gray-200 rounded-lg overflow-hidden bg-white">
@@ -361,7 +302,7 @@ function PlatformForecastGrid({ group }: { group: PlatformForecastSummary['group
                     )}
                     {showProducts &&
                       visibleProducts.map((product) => {
-                        const { forecasts } = productChunkValues(product, fyChunk);
+                        const forecasts = productChunkForecasts(product, fyChunk);
                         const productYearTotal = forecasts.reduce<number>((sum, v) => sum + (v ?? 0), 0);
                         const hasAnyForecast = forecasts.some((v) => v != null && v !== 0) || product.hasForecast;
                         return (
@@ -429,7 +370,7 @@ function PlatformForecastGrid({ group }: { group: PlatformForecastSummary['group
                         </td>
                       </tr>
                     )}
-                    <tr className={`border-b border-gray-100 ${showProducts ? 'bg-amber-50/40 font-semibold' : ''}`}>
+                    <tr className={showProducts ? 'bg-amber-50/40 font-semibold' : ''}>
                       <td className="px-3 py-2 text-gray-700 sticky left-0 bg-inherit border-r border-gray-100">
                         {showProducts ? 'Forecast total' : 'Forecast'}
                       </td>
@@ -445,215 +386,6 @@ function PlatformForecastGrid({ group }: { group: PlatformForecastSummary['group
                       ))}
                       <td className="px-3 py-2 text-center font-bold bg-amber-50 text-gray-900">
                         {formatForecastAmount(yearTotal, group.currency)}
-                      </td>
-                    </tr>
-
-                    {showProducts && (
-                      <tr className="border-b border-gray-100 bg-gray-50/80">
-                        <td
-                          colSpan={fyChunk.months.length + 2}
-                          className="px-3 py-1.5 text-xs font-semibold uppercase tracking-wide text-gray-500 sticky left-0"
-                        >
-                          Actual by product
-                        </td>
-                      </tr>
-                    )}
-                    {showProducts &&
-                      visibleProducts.map((product) => {
-                        const { actuals: productActuals } = productChunkValues(product, fyChunk);
-                        const productHasActuals = productActuals.some((v) => v != null);
-                        const productActualTotal = productActuals.reduce<number>((sum, v) => sum + (v ?? 0), 0);
-                        return (
-                          <tr key={`actual-${product.licencePlate}`} className="border-b border-gray-100">
-                            <td className="px-3 py-2 sticky left-0 bg-white border-r border-gray-100">
-                              <div className="pl-3 text-gray-800">{product.name}</div>
-                              <div className="pl-3 text-xs text-gray-400">{product.licencePlate}</div>
-                            </td>
-                            {fyChunk.months.map((v, i) => (
-                              <td
-                                key={monthKey(v.year, v.month)}
-                                className={`px-2 py-2 text-center ${
-                                  productActuals[i] != null ? 'text-gray-700' : 'text-gray-400'
-                                }`}
-                              >
-                                {productActuals[i] != null
-                                  ? formatForecastAmount(productActuals[i]!, group.currency)
-                                  : '—'}
-                              </td>
-                            ))}
-                            <td className="px-3 py-2 text-center text-gray-800">
-                              {productHasActuals ? formatForecastAmount(productActualTotal, group.currency) : '—'}
-                            </td>
-                          </tr>
-                        );
-                      })}
-                    {showOtherRow && (
-                      <tr className="border-b border-gray-100 bg-gray-50">
-                        <td className="px-3 py-2 sticky left-0 bg-gray-50 border-r border-gray-100">
-                          <div className="pl-3 text-gray-700 font-medium">Other ({otherProductCount} products)</div>
-                        </td>
-                        {fyChunk.months.map((month, i) => {
-                          const actual = chunkActuals[i];
-                          const visibleTotal = visibleProducts.reduce(
-                            (sum, product) => sum + (product.monthlyActuals[fyChunk.startIndex + i] ?? 0),
-                            0,
-                          );
-                          const residual = actual != null ? actual - visibleTotal : null;
-                          return (
-                            <td key={monthKey(month.year, month.month)} className="px-2 py-2 text-center text-gray-700">
-                              {residual != null ? formatResidualAmount(residual, group.currency) : '—'}
-                            </td>
-                          );
-                        })}
-                        <td className="px-3 py-2 text-center text-gray-800">
-                          {chunkHasActuals
-                            ? formatResidualAmount(
-                                chunkActualTotal -
-                                  visibleProducts.reduce(
-                                    (sum, product) =>
-                                      sum +
-                                      fyChunk.months.reduce(
-                                        (monthSum, _, i) =>
-                                          monthSum + (product.monthlyActuals[fyChunk.startIndex + i] ?? 0),
-                                        0,
-                                      ),
-                                    0,
-                                  ),
-                                group.currency,
-                              )
-                            : '—'}
-                        </td>
-                      </tr>
-                    )}
-                    <tr className={`border-b border-gray-100 ${showProducts ? 'bg-amber-50/40 font-semibold' : ''}`}>
-                      <td className="px-3 py-2 text-gray-700 sticky left-0 bg-inherit border-r border-gray-100">
-                        {showProducts ? 'Actual total' : 'Actual'}
-                      </td>
-                      {fyChunk.months.map((v, i) => (
-                        <td
-                          key={monthKey(v.year, v.month)}
-                          className={`px-2 py-2 text-center ${
-                            chunkActuals[i] != null ? 'text-gray-900' : 'text-gray-400'
-                          }`}
-                        >
-                          {chunkActuals[i] != null ? formatForecastAmount(chunkActuals[i]!, group.currency) : '—'}
-                        </td>
-                      ))}
-                      <td className="px-3 py-2 text-center font-semibold text-gray-900">
-                        {chunkHasActuals ? formatForecastAmount(chunkActualTotal, group.currency) : '—'}
-                      </td>
-                    </tr>
-
-                    {showProducts && (
-                      <tr className="border-b border-gray-100 bg-gray-50/80">
-                        <td
-                          colSpan={fyChunk.months.length + 2}
-                          className="px-3 py-1.5 text-xs font-semibold uppercase tracking-wide text-gray-500 sticky left-0"
-                        >
-                          Variance by product
-                        </td>
-                      </tr>
-                    )}
-                    {showProducts &&
-                      visibleProducts.map((product) => {
-                        const { variances } = productChunkValues(product, fyChunk);
-                        const productHasVariance = variances.some((v) => v != null);
-                        const productVarianceTotal = variances.reduce<number>((sum, v) => sum + (v ?? 0), 0);
-                        return (
-                          <tr key={`variance-${product.licencePlate}`} className="border-b border-gray-100">
-                            <td className="px-3 py-2 sticky left-0 bg-white border-r border-gray-100">
-                              <div className="pl-3 text-gray-800">{product.name}</div>
-                              <div className="pl-3 text-xs text-gray-400">{product.licencePlate}</div>
-                            </td>
-                            {fyChunk.months.map((v, i) => (
-                              <td
-                                key={monthKey(v.year, v.month)}
-                                className={`px-2 py-2 text-center whitespace-nowrap ${
-                                  variances[i] != null ? varianceClass(variances[i]!) : 'text-gray-400'
-                                }`}
-                              >
-                                {variances[i] != null ? formatVariance(variances[i]!, group.currency) : '—'}
-                              </td>
-                            ))}
-                            <td
-                              className={`px-3 py-2 text-center whitespace-nowrap ${
-                                productHasVariance ? varianceClass(productVarianceTotal) : 'text-gray-400'
-                              }`}
-                            >
-                              {productHasVariance ? formatVariance(productVarianceTotal, group.currency) : '—'}
-                            </td>
-                          </tr>
-                        );
-                      })}
-                    {showOtherRow && (
-                      <tr className="border-b border-gray-100 bg-gray-50">
-                        <td className="px-3 py-2 sticky left-0 bg-gray-50 border-r border-gray-100">
-                          <div className="pl-3 text-gray-700 font-medium">Other ({otherProductCount} products)</div>
-                        </td>
-                        {fyChunk.months.map((month, i) => {
-                          const actual = chunkActuals[i];
-                          const totalVariance = actual != null ? actual - month.amount : null;
-                          const visibleTotal = visibleProducts.reduce((sum, product) => {
-                            const forecast = product.hasForecast
-                              ? product.monthlyTotals[fyChunk.startIndex + i]?.amount ?? 0
-                              : null;
-                            const productActual = product.monthlyActuals[fyChunk.startIndex + i];
-                            return productActual != null && forecast != null ? sum + productActual - forecast : sum;
-                          }, 0);
-                          const residual = totalVariance != null ? totalVariance - visibleTotal : null;
-                          return (
-                            <td
-                              key={monthKey(month.year, month.month)}
-                              className={`px-2 py-2 text-center whitespace-nowrap ${
-                                residual != null ? varianceClass(residual) : 'text-gray-400'
-                              }`}
-                            >
-                              {residual != null ? formatResidualVariance(residual, group.currency) : '—'}
-                            </td>
-                          );
-                        })}
-                        <td
-                          className={`px-3 py-2 text-center whitespace-nowrap ${
-                            chunkHasActuals ? varianceClass(chunkVarianceTotal) : 'text-gray-400'
-                          }`}
-                        >
-                          {chunkHasActuals
-                            ? formatResidualVariance(
-                                chunkVarianceTotal -
-                                  visibleProducts.reduce((sum, product) => {
-                                    const { variances } = productChunkValues(product, fyChunk);
-                                    return sum + sumNullable(variances);
-                                  }, 0),
-                                group.currency,
-                              )
-                            : '—'}
-                        </td>
-                      </tr>
-                    )}
-                    <tr className={showProducts ? 'bg-amber-50/40 font-semibold' : ''}>
-                      <td className="px-3 py-2 text-gray-700 sticky left-0 bg-inherit border-r border-gray-100">
-                        {showProducts ? 'Variance total' : 'Variance'}
-                      </td>
-                      {fyChunk.months.map((v, i) => {
-                        const actual = chunkActuals[i];
-                        const variance = actual != null ? actual - v.amount : null;
-                        return (
-                          <td
-                            key={monthKey(v.year, v.month)}
-                            className={`px-2 py-2 text-center whitespace-nowrap ${
-                              variance != null ? varianceClass(variance) : 'text-gray-400'
-                            }`}
-                          >
-                            {variance != null ? formatVariance(variance, group.currency) : '—'}
-                          </td>
-                        );
-                      })}
-                      <td
-                        className={`px-3 py-2 text-center font-semibold whitespace-nowrap ${
-                          chunkHasActuals ? varianceClass(chunkVarianceTotal) : 'text-gray-400'
-                        }`}
-                      >
-                        {chunkHasActuals ? formatVariance(chunkVarianceTotal, group.currency) : '—'}
                       </td>
                     </tr>
                   </tbody>
@@ -673,21 +405,6 @@ function PlatformForecastGrid({ group }: { group: PlatformForecastSummary['group
             {formatForecastAmount(grandTotal, group.currency)}
           </div>
           <div className="text-xs text-gray-600 mt-1">{yearRangeLabel(values)}</div>
-        </div>
-        <div className="rounded-lg border border-gray-200 bg-white p-4">
-          <div className="text-xs font-semibold text-gray-600 uppercase tracking-wide">
-            Actuals to date ({group.currency})
-          </div>
-          <div className="text-2xl font-bold text-gray-900 mt-1">
-            {hasActuals ? formatForecastAmount(actualToDate, group.currency) : '—'}
-          </div>
-          {hasActuals ? (
-            <div className={`text-sm mt-1 ${varianceClass(actualToDate - forecastForActualMonths)}`}>
-              {formatVariance(actualToDate - forecastForActualMonths, group.currency)} vs forecast for closed months
-            </div>
-          ) : (
-            <div className="text-xs text-gray-600 mt-1">No closed-month spend reported yet</div>
-          )}
         </div>
       </div>
     </div>
@@ -715,9 +432,8 @@ export default publicCloudForecastPage(() => {
           <div className="min-w-0 flex-1">
             <h1 className="text-2xl font-bold">Public Cloud Forecast</h1>
             <p className="text-sm text-gray-600 mt-1">
-              Read-only rollup of the latest approved forecast for every active public cloud product, with closed-month
-              actuals and variance. All forecasts are in CAD. AWS invoice actuals arriving in USD are converted with the
-              monthly USD/CAD rate so platform totals stay in one currency.
+              Read-only rollup of the latest approved forecast for every active public cloud product. All forecasts are
+              in CAD.
             </p>
           </div>
           <ExportButton className="ml-auto shrink-0" onExport={() => downloadPlatformForecastExport()} />

@@ -3,7 +3,6 @@
 import { Button, NumberInput } from '@mantine/core';
 import { useMutation } from '@tanstack/react-query';
 import { ReactNode, useEffect, useMemo, useState } from 'react';
-import { convertUsdToCad, formatUsdCadRate, getUsdToCadRate, providerReportsActualsInUsd } from '@/helpers/usd-cad-fx';
 import { updatePublicCloudForecast } from '@/services/backend/public-cloud/forecast';
 import {
   applyAmountToFutureMonths,
@@ -33,12 +32,6 @@ type ForecastMeta = {
   status: string;
   horizonMonths: number;
   updatedAt?: string;
-};
-
-type MonthlyActual = {
-  year: number;
-  month: number;
-  amount: number;
 };
 
 function CellEditor({
@@ -119,7 +112,6 @@ export default function ProjectBudgetForecastPanel({
   licencePlate,
   forecast,
   monthlyValues,
-  monthlyActuals = [],
   editable,
   provider,
   workflowActions,
@@ -128,29 +120,19 @@ export default function ProjectBudgetForecastPanel({
   licencePlate: string;
   forecast: ForecastMeta;
   monthlyValues: MonthlyValue[];
-  monthlyActuals?: MonthlyActual[];
-  activeBaseline?: MonthlyValue[] | null;
-  quarterlyReview?: unknown;
   editable: boolean;
   provider?: string;
   workflowActions?: ReactNode;
   onSaved: () => void;
 }) {
   const currency = 'CAD';
-  const showAwsFx = providerReportsActualsInUsd(provider ?? '');
   const spendLabel = getProviderSpendLabel(provider);
-  const actualsByKey = useMemo(
-    () => new Map(monthlyActuals.map((v) => [monthKey(v.year, v.month), v.amount])),
-    [monthlyActuals],
-  );
-  const hasActuals = monthlyActuals.length > 0;
 
   const cadMonthlyValues = useMemo(
     () =>
       monthlyValues.map((value) => ({
         ...value,
-        amount:
-          value.currency === 'USD' ? convertUsdToCad(value.amount, value.year, value.month) : Math.round(value.amount),
+        amount: Math.round(value.amount),
         currency: 'CAD' as const,
       })),
     [monthlyValues],
@@ -237,12 +219,6 @@ export default function ProjectBudgetForecastPanel({
           Rolling {FISCAL_FORECAST_HORIZON_MONTHS}-month forecast ({yearRangeLabel(values)}). Past months are locked and
           shown for reference.
         </p>
-        {showAwsFx && (
-          <p>
-            AWS invoices in USD. Closed-month actuals are converted to CAD using the monthly USD/CAD rate shown under
-            each month.
-          </p>
-        )}
       </div>
 
       <div className="sticky top-0 z-20 -mx-1 px-1 py-2 bg-gray-50/95 backdrop-blur border-b border-gray-200 space-y-2">
@@ -305,21 +281,7 @@ export default function ProjectBudgetForecastPanel({
                       <th className="px-3 py-2 text-left text-gray-500 w-28 sticky left-0 bg-white">{spendLabel}</th>
                       {fyChunk.months.map((v) => (
                         <th key={monthKey(v.year, v.month)} className="px-2 py-2 text-center text-gray-500 font-medium">
-                          <div>{shortMonthLabel(v.year, v.month)}</div>
-                          {showAwsFx &&
-                            (() => {
-                              const fx = getUsdToCadRate(v.year, v.month);
-                              return (
-                                <div
-                                  className={`text-[10px] font-normal mt-0.5 ${
-                                    fx.status === 'actual' ? 'text-gray-500' : 'text-amber-700'
-                                  }`}
-                                >
-                                  FX {formatUsdCadRate(fx.rate)}
-                                  {fx.status === 'tentative' ? ' tent.' : ''}
-                                </div>
-                              );
-                            })()}
+                          {shortMonthLabel(v.year, v.month)}
                         </th>
                       ))}
                       <th className="px-3 py-2 text-center font-semibold bg-amber-50 text-gray-800">TOTAL</th>
@@ -352,33 +314,6 @@ export default function ProjectBudgetForecastPanel({
                         {formatForecastAmount(yearTotal, currency)}
                       </td>
                     </tr>
-                    {hasActuals && (
-                      <tr>
-                        <td className="px-3 py-2 text-gray-600 sticky left-0 bg-white border-r border-gray-100">
-                          Actual
-                        </td>
-                        {fyChunk.months.map((v) => {
-                          const actual = actualsByKey.get(monthKey(v.year, v.month));
-                          return (
-                            <td
-                              key={`actual-${monthKey(v.year, v.month)}`}
-                              className="px-2 py-2 text-center text-sm text-gray-700 bg-gray-100"
-                            >
-                              {actual != null ? formatForecastAmount(actual, currency) : '—'}
-                            </td>
-                          );
-                        })}
-                        <td className="px-3 py-2 text-center font-semibold bg-amber-50 text-gray-800">
-                          {formatForecastAmount(
-                            fyChunk.months.reduce(
-                              (sum, v) => sum + (actualsByKey.get(monthKey(v.year, v.month)) ?? 0),
-                              0,
-                            ),
-                            currency,
-                          )}
-                        </td>
-                      </tr>
-                    )}
                   </tbody>
                 </table>
               </div>

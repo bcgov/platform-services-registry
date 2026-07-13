@@ -751,16 +751,6 @@ type ForecastMonthlyValue {
   currency String
 }
 
-type ClosedMonthSpend {
-  year            Int
-  month           Int
-  currency        String
-  actualTotal     Float
-  forecastTotal   Float?
-  varianceAmount  Float?
-  variancePercent Float?
-}
-
 model CloudCostForecast {
   id                   String                  @id @default(auto()) @map("_id") @db.ObjectId
   licencePlate         String
@@ -783,14 +773,4 @@ model CloudCostForecast {
 
   @@unique([licencePlate, version])
   @@index([licencePlate, status])
-}
-
-model CloudSpendHistory {
-  id           String             @id @default(auto()) @map("_id") @db.ObjectId
-  licencePlate String
-  provider     Provider
-  months       ClosedMonthSpend[]
-  updatedAt    DateTime           @updatedAt
-
-  @@unique([licencePlate, provider])
 }

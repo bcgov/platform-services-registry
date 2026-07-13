@@ -1,5 +1,5 @@
 /**
- * Seed approved forecasts + closed-month spend history for local forecast testing.
+ * Seed product forecasts for local forecast testing.
  * Run: pnpm run seed-forecast-local [licencePlate] [--reset] [--skip-forecast]
  *
  * Default licence plate: e71b0e (Cost Model Test 1)
@@ -9,13 +9,11 @@ import {
   FISCAL_FORECAST_HORIZON_MONTHS,
 } from '../components/public-cloud/forecast/forecast-grid-utils';
 import prisma from '../core/prisma';
-import { getUsdToCadRate } from '../helpers/usd-cad-fx';
 import { Provider } from '../prisma/client';
 import {
   createForecastDraft,
   getActiveApprovedForecast,
   seedForecastFromProductBudget,
-  upsertConsumptionHistory,
 } from '../services/db/public-cloud-forecast';
 
 const DEFAULT_PLATE = 'e71b0e';
@@ -34,24 +32,12 @@ function parseArgs() {
   };
 }
 
-function billingPeriodMonthsBack(count: number) {
-  const now = new Date();
-  const periods: { year: number; month: number }[] = [];
-  for (let i = count; i >= 1; i--) {
-    const d = new Date(now.getFullYear(), now.getMonth() - i, 1);
-    periods.push({ year: d.getFullYear(), month: d.getMonth() + 1 });
-  }
-  return periods;
-}
-
 async function clearForecastData(licencePlate: string) {
-  await prisma.cloudSpendHistory.deleteMany({ where: { licencePlate } });
   await prisma.cloudCostForecast.deleteMany({ where: { licencePlate } });
 }
 
-async function ensureApprovedForecast(
+async function ensureForecast(
   licencePlate: string,
-  userId: string,
   product: {
     provider: Provider;
     budget: { dev: number; test: number; prod: number; tools: number };
@@ -65,14 +51,14 @@ async function ensureApprovedForecast(
 ) {
   const existing = await getActiveApprovedForecast(licencePlate);
   if (existing) {
-    console.log(`  approved forecast v${existing.version} already exists — skipped`);
+    console.log(`  forecast v${existing.version} already exists — skipped`);
     return existing;
   }
 
   const monthlyValues =
     monthlyForecastTotal(product) > 0
       ? seedForecastFromProductBudget(product.provider, product.budget, product.environmentsEnabled)
-      : buildMonthlyValues(product, resolveMonthlyForecastAmount(product));
+      : buildMonthlyValues(resolveMonthlyForecastAmount(product));
   const forecast = await createForecastDraft(licencePlate, monthlyValues, FISCAL_FORECAST_HORIZON_MONTHS);
   console.log(`  created forecast v${forecast.version}`);
   return forecast;
@@ -111,25 +97,18 @@ function resolveMonthlyForecastAmount(product: {
   return product.provider === Provider.AZURE ? DEFAULT_MONTHLY_FORECAST_AZURE : DEFAULT_MONTHLY_FORECAST_AWS;
 }
 
-function buildMonthlyValues(
-  product: { provider: Provider },
-  monthlyAmount: number,
-  horizonMonths = FISCAL_FORECAST_HORIZON_MONTHS,
-) {
+function buildMonthlyValues(monthlyAmount: number, horizonMonths = FISCAL_FORECAST_HORIZON_MONTHS) {
   return buildRollingFiscalForecastMonths(monthlyAmount, 'CAD', new Date(), horizonMonths);
 }
 
 function printWalkthrough(licencePlate: string) {
-  console.log('\n--- Forecast walkthrough checklist ---\n');
+  console.log('\n--- Forecast walkthrough ---\n');
   console.log('Prerequisites: sandbox running, pnpm run dev, logged in as admin.system@gov.bc.ca\n');
   console.log('1. Product spend forecast');
   console.log(`   http://localhost:3000/public-cloud/products/${licencePlate}/edit`);
-  console.log('   - Active approved forecast grid (read-only)');
-  console.log('   - Create / edit / submit / approve forecast workflow\n');
   console.log('2. Admin platform forecast');
   console.log('   http://localhost:3000/public-cloud/forecast\n');
-  console.log('Re-seed: pnpm run seed-forecast-local -- --reset');
-  console.log('Forecast UI only (no auto-approve): pnpm run seed-forecast-local -- --skip-forecast --reset\n');
+  console.log('Re-seed: pnpm run seed-forecast-local -- --reset\n');
 }
 
 export async function seedForecastForProduct(
@@ -157,50 +136,18 @@ export async function seedForecastForProduct(
     await clearForecastData(licencePlate);
   }
 
-  const forecastAmount = resolveMonthlyForecastAmount(product);
-  // Forecasts are always CAD. AWS CSP payloads stay in USD (invoice currency).
-  const cspCurrency: 'USD' | 'CAD' = product.provider === Provider.AZURE ? 'CAD' : 'USD';
-  const now = new Date();
-  const year = now.getFullYear();
-  const month = now.getMonth() + 1;
-  const usdCadRate = getUsdToCadRate(year, month).rate;
-  const cspAmountScale = cspCurrency === 'USD' ? 1 / usdCadRate : 1;
-  const cspForecastAmount = Math.round(forecastAmount * cspAmountScale);
-
   if (!skipForecast) {
     console.log('Forecast:');
-    await ensureApprovedForecast(licencePlate, adminUser.id, product);
+    await ensureForecast(licencePlate, product);
   } else {
     console.log('Forecast: skipped (--skip-forecast)');
   }
-
-  console.log('CSP spend history (3 closed months):');
-  const historyMonths = billingPeriodMonthsBack(3).map((period, index) => {
-    const actual = Math.round(cspForecastAmount * (0.88 + index * 0.04));
-    const variance = actual - cspForecastAmount;
-    const variancePct = cspForecastAmount > 0 ? (variance / cspForecastAmount) * 100 : 0;
-    return {
-      billingPeriod: period,
-      currency: cspCurrency,
-      actualTotal: actual,
-      forecastTotal: cspForecastAmount,
-      varianceAmount: variance,
-      variancePercent: variancePct,
-    };
-  });
-  await upsertConsumptionHistory({
-    licencePlate,
-    provider: product.provider,
-    months: historyMonths,
-  });
-  console.log(`  ${historyMonths.length} months (CSP ${cspCurrency}, forecast CAD ${forecastAmount})`);
 
   if (showWalkthrough) {
     printWalkthrough(licencePlate);
   }
 }
 
-// CLI entry (below export)
 async function runCli() {
   const { licencePlate, reset, skipForecast } = parseArgs();
   await seedForecastForProduct(licencePlate, { reset, skipForecast, showWalkthrough: true });
