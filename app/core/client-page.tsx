@@ -33,6 +33,21 @@ interface PageProp {
   children: React.ReactNode;
 }
 
+function sessionHasRequiredAccess(session: Session | null, roles?: string[], permissions?: PermissionsKey[]) {
+  const sessionRoles = session?.roles ?? [];
+  const sessionPermissions = session?.permissions ?? {};
+
+  if (roles && roles.length > 0 && arrayIntersection(roles, sessionRoles).length === 0) {
+    return false;
+  }
+
+  if (permissions && permissions.length > 0) {
+    return permissions.some((permKey) => sessionPermissions[permKey as keyof typeof sessionPermissions]);
+  }
+
+  return true;
+}
+
 function createClientPage<TPathParams extends ZodType<any, any>, TQueryParams extends ZodType<any, any>>({
   roles,
   permissions,
@@ -56,26 +71,17 @@ function createClientPage<TPathParams extends ZodType<any, any>, TQueryParams ex
       if (session?.requiresRelogin) appSignOut();
 
       // Wait until the session is fetched by the backend
-      if (_isUndefined(session)) return null;
+      const sessionReady = !_isUndefined(session);
+      const allowed = sessionReady ? sessionHasRequiredAccess(session, roles, permissions) : false;
 
-      const _roles = session?.roles ?? [];
-      const _permissions = session?.permissions ?? [];
-
-      // Validate user roles
-      if (roles && roles.length > 0) {
-        const allowed = arrayIntersection(roles, _roles).length > 0;
-        if (!allowed) {
-          return router.push(fallbackUrl);
+      // Redirect outside render — router.push during render triggers React's setState warning
+      useEffect(() => {
+        if (sessionReady && !allowed) {
+          router.replace(fallbackUrl);
         }
-      }
+      }, [sessionReady, allowed, router]);
 
-      // Validate user permissions
-      if (permissions && permissions.length > 0) {
-        const allowed = permissions.some((permKey) => _permissions[permKey as keyof typeof _permissions]);
-        if (!allowed) {
-          return router.push(fallbackUrl);
-        }
-      }
+      if (!sessionReady || !allowed) return null;
 
       const getPathParams = async () => {
         // Parse & validate path params
