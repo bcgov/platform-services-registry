@@ -16,6 +16,7 @@ import { openPublicCloudProductEditSubmitModal } from '@/components/modal/public
 import TeamContacts from '@/components/public-cloud/sections/TeamContacts';
 import { GlobalRole } from '@/constants';
 import createClientPage from '@/core/client-page';
+import { normalizeStoredAwsLzaAccounts } from '@/services/aws-lza/accounts';
 import { usePublicProductState } from '@/states/global';
 import { publicCloudEditRequestBodySchema } from '@/validation-schemas/public-cloud';
 
@@ -82,7 +83,12 @@ export default publicCloudProductEdit(() => {
       label: 'Accounts to create',
       description: '',
       Component: AccountEnvironmentsPublic,
-      componentArgs: { selected: currentProduct.environmentsEnabled, mode: 'edit', disabled: isDisabled },
+      componentArgs: {
+        selected: currentProduct.environmentsEnabled,
+        mode: 'edit',
+        disabled: isDisabled,
+        awsAccounts: normalizeStoredAwsLzaAccounts(currentProduct.awsAccounts),
+      },
     },
     {
       LeftIcon: IconUsersGroup,

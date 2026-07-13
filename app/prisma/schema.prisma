@@ -339,6 +339,8 @@ model PublicCloudProduct {
   providerSelectionReasons     String[]
   providerSelectionReasonsNote String
   environmentsEnabled          EnvironmentsEnabled
+  /// Optional so existing MongoDB products load without a data migration.
+  awsAccounts                  Json?
   members                      PublicCloudProductMember[]
   requests                     PublicCloudRequest[]       @relation("project")
 }

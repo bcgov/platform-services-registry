@@ -33,7 +33,9 @@ export default async function deleteOp({
     return UnauthorizedResponse();
   }
 
-  const { id, requests, updatedAt, _permissions, archivedAt, ...rest } = product;
+  // awsAccounts is callback metadata stored only on the product. It is not
+  // part of PublicCloudRequestData, so do not copy it into a delete request.
+  const { id, requests, updatedAt, _permissions, archivedAt, awsAccounts, ...rest } = product;
 
   // Retrieve the latest request data to acquire the decision data ID that can be assigned to the incoming request's original data.
   const previousRequest = await getLastEffectivePublicCloudRequest(rest.licencePlate);

@@ -1,8 +1,9 @@
 import { Alert, Button } from '@mantine/core';
-import { IconInfoCircle } from '@tabler/icons-react';
+import { IconExternalLink, IconInfoCircle } from '@tabler/icons-react';
 import { useFormContext } from 'react-hook-form';
+import ExternalLink from '@/components/generic/button/ExternalLink';
 import FormCheckbox from '@/components/generic/checkbox/FormCheckbox';
-import { publicCloudEnvironments, PublicCloudEnvironmentKey } from '@/constants/public-cloud';
+import { getAwsLzaConsoleUrl, publicCloudEnvironments, PublicCloudEnvironmentKey } from '@/constants/public-cloud';
 import { Provider } from '@/prisma/client';
 interface EnvironmentsEnabled {
   production: boolean;
@@ -18,14 +19,21 @@ interface EnvironmentsEnabled {
 type EnvironmentKey = PublicCloudEnvironmentKey;
 const environments = publicCloudEnvironments;
 
+interface AwsAccount {
+  environment: PublicCloudEnvironmentKey;
+  accountId: string;
+}
+
 export default function AccountEnvironmentsPublic({
   mode,
   disabled,
   selected,
+  awsAccounts,
 }: {
   mode: string;
   disabled?: boolean;
   selected?: EnvironmentsEnabled;
+  awsAccounts?: AwsAccount[];
 }) {
   const {
     register,
@@ -35,6 +43,7 @@ export default function AccountEnvironmentsPublic({
   } = useFormContext();
 
   const isAzure = watch('provider') === Provider.AZURE;
+  const showAwsConsoleLinks = watch('provider') === Provider.AWS_LZA && Array.isArray(awsAccounts);
   const requiresNetworking = watch('requiresNetworking');
 
   const renderNetworkingCheckbox = (key: EnvironmentKey) => {
@@ -54,6 +63,53 @@ export default function AccountEnvironmentsPublic({
       </div>
     );
   };
+
+  const renderAwsConsoleLink = (key: EnvironmentKey) => {
+    if (!showAwsConsoleLinks) return null;
+
+    const environmentEnabled = watch(`environmentsEnabled.${key}`);
+    const account = awsAccounts?.find((awsAccount) => awsAccount.environment === key);
+
+    return (
+      <div className="ml-7 mt-1 min-w-40 text-sm sm:ml-4">
+        {environmentEnabled && account?.accountId ? (
+          <ExternalLink href={getAwsLzaConsoleUrl(account.accountId)} className="font-medium">
+            Sign in to console
+          </ExternalLink>
+        ) : (
+          <span className="inline-flex items-center gap-1 text-gray-400" aria-disabled="true">
+            Sign in to console
+            <IconExternalLink size={14} />
+          </span>
+        )}
+      </div>
+    );
+  };
+
+  const renderEnvironmentControls = (key: EnvironmentKey, label: string) => (
+    <>
+      <FormCheckbox
+        id={key}
+        inputProps={{
+          ...register(`environmentsEnabled.${key}`, {
+            onChange: (e) => {
+              if (!e.target.checked) {
+                setValue(`environmentsEnabled.${key}RequiresNetworking`, false, {
+                  shouldDirty: true,
+                  shouldValidate: true,
+                });
+              }
+            },
+          }),
+        }}
+        disabled={disabled || selected?.[key]}
+      >
+        {label}
+      </FormCheckbox>
+
+      {renderNetworkingCheckbox(key)}
+    </>
+  );
 
   return (
     <div className="">
@@ -90,28 +146,19 @@ export default function AccountEnvironmentsPublic({
         )}
 
         {environments.map(({ key, label }) => {
-          return (
-            <div className="mt-1" key={key}>
-              <FormCheckbox
-                id={key}
-                inputProps={{
-                  ...register(`environmentsEnabled.${key}`, {
-                    onChange: (e) => {
-                      if (!e.target.checked) {
-                        setValue(`environmentsEnabled.${key}RequiresNetworking`, false, {
-                          shouldDirty: true,
-                          shouldValidate: true,
-                        });
-                      }
-                    },
-                  }),
-                }}
-                disabled={disabled || selected?.[key]}
-              >
-                {label}
-              </FormCheckbox>
+          if (!showAwsConsoleLinks) {
+            return (
+              <div className="mt-1" key={key}>
+                {renderEnvironmentControls(key, label)}
+              </div>
+            );
+          }
 
-              {renderNetworkingCheckbox(key)}
+          return (
+            <div className="mt-1 flex flex-col sm:flex-row sm:items-start sm:justify-between sm:gap-4" key={key}>
+              <div>{renderEnvironmentControls(key, label)}</div>
+
+              {renderAwsConsoleLink(key)}
             </div>
           );
         })}

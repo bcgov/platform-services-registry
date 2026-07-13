@@ -15,6 +15,31 @@ import {
 import { KcAdmin } from '../_packages/keycloak-admin/src/main.js';
 
 const natsServer = `${NATS_HOST}:${NATS_PORT}`;
+const mockAwsAccountId = '123456789012';
+
+const awsLzaEnvironmentMap = {
+  dev: { environment: 'development', suffix: 'dev' },
+  test: { environment: 'test', suffix: 'test' },
+  prod: { environment: 'production', suffix: 'prod' },
+  tools: { environment: 'tools', suffix: 'tools' },
+} as const;
+
+function getPublicCloudProvisionPayload(provider: string, data: any) {
+  if (provider !== 'aws_lza') return {};
+
+  const licencePlate = data.project_set_info.licence_plate;
+  const requestedEnvironments = data.project_set_info.requested_environments ?? {};
+
+  return {
+    awsAccounts: Object.entries(awsLzaEnvironmentMap)
+      .filter(([environmentKey]) => requestedEnvironments[environmentKey])
+      .map(([, account]) => ({
+        environment: account.environment,
+        name: `${licencePlate}-${account.suffix}`,
+        accountId: mockAwsAccountId,
+      })),
+  };
+}
 
 async function getkeyCloakAccessToken() {
   const tokenResponse = await fetch(`${KEYCLOAK_URL}/realms/${AUTH_REALM_NAME}/protocol/openid-connect/token`, {
@@ -118,13 +143,16 @@ async function main() {
         const accessToken = await getkeyCloakAccessToken();
 
         try {
+          const body = getPublicCloudProvisionPayload(provider, data);
+          console.log(`Callback payload for ${provider}: ${JSON.stringify(body)}`);
+
           const res = await fetch(`${APP_URL}/api/v1/public-cloud/products/${licencePlate}/provision`, {
             method: 'POST',
             headers: {
               Authorization: 'Bearer ' + accessToken,
               'Content-Type': 'application/json',
             },
-            body: JSON.stringify({}),
+            body: JSON.stringify(body),
           });
           console.log('Response status', res.status);
         } catch (error) {

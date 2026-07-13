@@ -66,9 +66,24 @@ export const publicCloudEnvironmentKeys = ['production', 'development', 'test', 
 
 export type PublicCloudEnvironmentKey = (typeof publicCloudEnvironmentKeys)[number];
 
+export const publicCloudEnvironmentAccountSuffixes: Record<PublicCloudEnvironmentKey, string> = {
+  production: 'prod',
+  development: 'dev',
+  test: 'test',
+  tools: 'tools',
+};
+
 export const publicCloudEnvironments: { key: PublicCloudEnvironmentKey; label: string }[] = [
   { key: 'production', label: 'Production account' },
   { key: 'development', label: 'Development account' },
   { key: 'test', label: 'Test account' },
   { key: 'tools', label: 'Tools account' },
 ];
+
+export function getAwsLzaAccountName(licencePlate: string, environment: PublicCloudEnvironmentKey) {
+  return `${licencePlate}-${publicCloudEnvironmentAccountSuffixes[environment]}`;
+}
+
+export function getAwsLzaConsoleUrl(accountId: string) {
+  return `https://bcgov.awsapps.com/start/#/console?account_id=${accountId}`;
+}
