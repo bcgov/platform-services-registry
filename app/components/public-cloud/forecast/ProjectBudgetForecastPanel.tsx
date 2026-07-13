@@ -32,21 +32,16 @@ type ForecastMeta = {
   updatedAt?: string;
 };
 
-function CellEditor({
-  value,
-  currency,
-  status,
-  editable,
-  onChange,
-  onApplyToFuture,
-}: {
+type CellEditorProps = Readonly<{
   value: number;
   currency: string;
   status: ForecastCellStatus;
   editable: boolean;
   onChange: (amount: number) => void;
   onApplyToFuture?: () => void;
-}) {
+}>;
+
+function CellEditor({ value, currency, status, editable, onChange, onApplyToFuture }: CellEditorProps) {
   const [draftValue, setDraftValue] = useState(value);
   const [showApplyFuture, setShowApplyFuture] = useState(false);
 
@@ -106,23 +101,28 @@ function CellEditor({
   );
 }
 
-export default function ProjectBudgetForecastPanel({
-  licencePlate,
-  forecast,
-  monthlyValues,
-  editable,
-  provider,
-  workflowActions,
-  onSaved,
-}: {
+type ProjectBudgetForecastPanelProps = Readonly<{
   licencePlate: string;
   forecast: ForecastMeta;
   monthlyValues: MonthlyValue[];
+  /** Sum of enabled environment budgets (dev/test/prod/tools). Used to fill months. */
+  budgetMonthlyTotal?: number;
   editable: boolean;
   provider?: string;
   workflowActions?: ReactNode;
   onSaved: () => void;
-}) {
+}>;
+
+export default function ProjectBudgetForecastPanel({
+  licencePlate,
+  forecast,
+  monthlyValues,
+  budgetMonthlyTotal,
+  editable,
+  provider,
+  workflowActions,
+  onSaved,
+}: ProjectBudgetForecastPanelProps) {
   const currency = 'CAD';
   const spendLabel = getProviderSpendLabel(provider);
 
@@ -206,6 +206,14 @@ export default function ProjectBudgetForecastPanel({
     });
   };
 
+  const fillFromBudget = () => {
+    if (budgetMonthlyTotal == null) return;
+    const amount = Math.round(budgetMonthlyTotal);
+    setValues((prev) =>
+      prev.map((value) => (isPastMonth(value.year, value.month) ? value : { ...value, amount, currency })),
+    );
+  };
+
   return (
     <div className="space-y-4">
       <div className="text-sm text-gray-600 space-y-1">
@@ -217,6 +225,13 @@ export default function ProjectBudgetForecastPanel({
           Rolling {FISCAL_FORECAST_HORIZON_MONTHS}-month forecast ({yearRangeLabel(values)}). Past months are locked and
           shown for reference.
         </p>
+        {budgetMonthlyTotal != null && (
+          <p>
+            Product budget total (enabled environments):{' '}
+            <span className="font-medium text-gray-800">{formatForecastAmount(budgetMonthlyTotal, currency)}</span> per
+            month.
+          </p>
+        )}
       </div>
 
       <div className="sticky top-0 z-20 -mx-1 px-1 py-2 bg-gray-50/95 backdrop-blur border-b border-gray-200 space-y-2">
@@ -225,6 +240,15 @@ export default function ProjectBudgetForecastPanel({
           <div className="flex flex-wrap items-center gap-2 text-sm">
             {editable ? (
               <>
+                <Button
+                  type="button"
+                  size="compact-sm"
+                  variant="default"
+                  disabled={budgetMonthlyTotal == null}
+                  onClick={fillFromBudget}
+                >
+                  Fill months from budget
+                </Button>
                 <Button type="button" size="compact-sm" variant="default" onClick={copyAcrossSuggested}>
                   Copy value across range
                 </Button>
@@ -325,20 +349,20 @@ export default function ProjectBudgetForecastPanel({
           const yearTotal = sumMonthlyValues(fyChunk.months);
           const isPartial = isPartialFiscalYearChunk(fyChunk);
           const inProgress = isInProgressFiscalYear(fyChunk);
+          let yearHint = 'First fiscal year in forecast';
+          if (isPartial) {
+            yearHint = `First ${fyChunk.months.length} month${
+              fyChunk.months.length === 1 ? '' : 's'
+            } of the fiscal year`;
+          } else if (inProgress) {
+            yearHint = 'Full-year forecast total (year still in progress)';
+          }
 
           return (
             <div key={fyChunk.label} className="rounded-lg border border-gray-200 p-4 bg-white">
               <div className="text-xs font-semibold text-gray-500 uppercase tracking-wide">{fyChunk.label} total</div>
               <div className="text-2xl font-bold text-gray-900 mt-1">{formatForecastAmount(yearTotal, currency)}</div>
-              {isPartial ? (
-                <div className="text-sm text-gray-500 mt-1">
-                  First {fyChunk.months.length} month{fyChunk.months.length === 1 ? '' : 's'} of the fiscal year
-                </div>
-              ) : inProgress ? (
-                <div className="text-sm text-gray-500 mt-1">Full-year forecast total (year still in progress)</div>
-              ) : (
-                <div className="text-sm text-gray-500 mt-1">First fiscal year in forecast</div>
-              )}
+              <div className="text-sm text-gray-500 mt-1">{yearHint}</div>
             </div>
           );
         })}

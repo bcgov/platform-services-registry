@@ -67,7 +67,7 @@ function buildFilteredGroupTotals(
   return { monthlyTotals: mergeMonthlyValuesOntoFiscalHorizon([...totalsByMonth.values()], currency) };
 }
 
-function SummaryCard({ label, value, hint }: { label: string; value: string; hint?: string }) {
+function SummaryCard({ label, value, hint }: Readonly<{ label: string; value: string; hint?: string }>) {
   return (
     <div className="rounded-lg border border-gray-200 p-4 bg-white">
       <div className="text-sm text-gray-500">{label}</div>
@@ -103,7 +103,7 @@ function formatResidualAmount(amount: number, currency: string) {
   return Math.abs(amount) < 0.005 ? '—' : formatForecastAmount(amount, currency);
 }
 
-function PlatformForecastGrid({ group }: { group: PlatformForecastSummary['groups'][number] }) {
+function PlatformForecastGrid({ group }: Readonly<{ group: PlatformForecastSummary['groups'][number] }>) {
   const availableProviders = PROVIDER_FILTER_OPTIONS.filter((option) => group.providers.includes(option.value)).map(
     (option) => option.value,
   );
@@ -114,12 +114,10 @@ function PlatformForecastGrid({ group }: { group: PlatformForecastSummary['group
   const [productLimit, setProductLimit] = useState(DEFAULT_PRODUCT_LIMIT);
   const [providerFilter, setProviderFilter] = useState<ProviderFilter>('ALL');
 
-  const activeProviders =
-    providerFilter === 'ALL'
-      ? availableProviders
-      : availableProviders.includes(providerFilter)
-        ? [providerFilter]
-        : availableProviders;
+  let activeProviders = availableProviders;
+  if (providerFilter !== 'ALL') {
+    activeProviders = availableProviders.includes(providerFilter) ? [providerFilter] : availableProviders;
+  }
   const providerFilteredProducts = group.products.filter((product) =>
     activeProviders.includes(product.provider as Exclude<ProviderFilter, 'ALL'>),
   );

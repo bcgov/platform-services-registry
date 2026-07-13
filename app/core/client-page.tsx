@@ -33,6 +33,27 @@ interface PageProp {
   children: React.ReactNode;
 }
 
+function sessionHasRequiredAccess(
+  session: Session | null | undefined,
+  roles?: string[],
+  permissions?: PermissionsKey[],
+) {
+  if (_isUndefined(session)) return false;
+
+  const sessionRoles = session.roles ?? [];
+  const sessionPermissions = session.permissions ?? {};
+
+  if (roles && roles.length > 0 && arrayIntersection(roles, sessionRoles).length === 0) {
+    return false;
+  }
+
+  if (permissions && permissions.length > 0) {
+    return permissions.some((permKey) => sessionPermissions[permKey as keyof typeof sessionPermissions]);
+  }
+
+  return true;
+}
+
 function createClientPage<TPathParams extends ZodType<any, any>, TQueryParams extends ZodType<any, any>>({
   roles,
   permissions,
@@ -57,23 +78,10 @@ function createClientPage<TPathParams extends ZodType<any, any>, TQueryParams ex
 
       const sessionReady = !_isUndefined(session);
 
-      const allowed = useMemo(() => {
-        if (!sessionReady) return false;
-
-        const _roles = session?.roles ?? [];
-        const _permissions = session?.permissions ?? [];
-
-        if (roles && roles.length > 0) {
-          if (arrayIntersection(roles, _roles).length === 0) return false;
-        }
-
-        if (permissions && permissions.length > 0) {
-          const permAllowed = permissions.some((permKey) => _permissions[permKey as keyof typeof _permissions]);
-          if (!permAllowed) return false;
-        }
-
-        return true;
-      }, [sessionReady, session, roles, permissions]);
+      const allowed = useMemo(
+        () => sessionHasRequiredAccess(session, roles, permissions),
+        [session, roles, permissions],
+      );
 
       useEffect(() => {
         if (sessionReady && !allowed) {

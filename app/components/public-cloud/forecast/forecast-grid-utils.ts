@@ -38,7 +38,8 @@ export function shortMonthLabel(year: number, month: number) {
 export function yearRangeLabel(values: MonthlyValue[]) {
   if (!values.length) return '';
   const first = values[0];
-  const last = values[values.length - 1];
+  const last = values.at(-1);
+  if (!last) return '';
   const fmt = (y: number, m: number) =>
     new Date(y, m - 1, 1).toLocaleDateString(undefined, { month: 'short', year: 'numeric' });
   return `${fmt(first.year, first.month)} – ${fmt(last.year, last.month)}`;
@@ -336,7 +337,8 @@ export function isInProgressFiscalYear(fyChunk: FiscalYearChunk, now = new Date(
   const nowYear = now.getFullYear();
   const nowMonth = now.getMonth() + 1;
   const first = fyChunk.months[0];
-  const last = fyChunk.months[fyChunk.months.length - 1];
+  const last = fyChunk.months.at(-1);
+  if (!first || !last) return false;
   const nowIndex = nowYear * 12 + nowMonth;
   const startIndex = first.year * 12 + first.month;
   const endIndex = last.year * 12 + last.month;

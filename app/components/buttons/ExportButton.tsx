@@ -13,7 +13,7 @@ import { cn } from '@/utils/js';
 function parseContentDispositionFilename(disposition?: string): string | undefined {
   if (!disposition) return undefined;
 
-  const extended = disposition.match(/filename\*=(?:UTF-8'')?([^;]+)/i);
+  const extended = /filename\*=(?:UTF-8'')?([^;]+)/i.exec(disposition);
   if (extended?.[1]) {
     try {
       return decodeURIComponent(extended[1].trim());
@@ -22,7 +22,7 @@ function parseContentDispositionFilename(disposition?: string): string | undefin
     }
   }
 
-  const basic = disposition.match(/filename="?([^";]+)"?/i);
+  const basic = /filename="?([^";]+)"?/i.exec(disposition);
   return basic?.[1]?.trim();
 }
 

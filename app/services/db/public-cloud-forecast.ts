@@ -188,7 +188,7 @@ export async function getProductForecastSummary(licencePlate: string) {
 
 async function getForecastForProduct(licencePlate: string, forecastId: string) {
   const forecast = await prisma.cloudCostForecast.findUnique({ where: { id: forecastId } });
-  if (!forecast || forecast.licencePlate !== licencePlate) {
+  if (forecast?.licencePlate !== licencePlate) {
     throw new Error('Forecast not found for this product');
   }
   return forecast;

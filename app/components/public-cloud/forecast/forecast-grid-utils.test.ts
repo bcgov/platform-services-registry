@@ -37,7 +37,7 @@ describe('fiscal year helpers', () => {
 
   it('builds 2 fiscal years from April', () => {
     const months = buildFiscalForecastMonths(2, 1000, 'CAD', june2026);
-    expect(months.length).toBe(24);
+    expect(months).toHaveLength(24);
     expect(months[0]).toMatchObject({ year: 2026, month: 4, amount: 1000 });
     expect(months[11]).toMatchObject({ year: 2027, month: 3 });
     expect(months[12]).toMatchObject({ year: 2027, month: 4 });
@@ -46,27 +46,27 @@ describe('fiscal year helpers', () => {
   it('builds a rolling grid covering 24 months from the current month', () => {
     // June 2026: Apr '26 – May '28 (2 past months + 24 rolling months = 26 slots).
     const months = buildRollingFiscalForecastMonths(1000, 'CAD', june2026);
-    expect(months.length).toBe(26);
+    expect(months).toHaveLength(26);
     expect(months[0]).toMatchObject({ year: 2026, month: 4 });
-    expect(months[months.length - 1]).toMatchObject({ year: 2028, month: 5 });
+    expect(months.at(-1)).toMatchObject({ year: 2028, month: 5 });
   });
 
   it('rolling grid spans exactly 2 fiscal years when at the start of a fiscal year', () => {
     const april2026 = new Date(2026, 3, 1);
     const months = buildRollingFiscalForecastMonths(1000, 'CAD', april2026);
-    expect(months.length).toBe(24);
+    expect(months).toHaveLength(24);
     expect(months[0]).toMatchObject({ year: 2026, month: 4 });
-    expect(months[months.length - 1]).toMatchObject({ year: 2028, month: 3 });
+    expect(months.at(-1)).toMatchObject({ year: 2028, month: 3 });
   });
 
   it('chunks the rolling grid into fiscal years with a partial third year', () => {
     const months = buildRollingFiscalForecastMonths(1000, 'CAD', june2026);
     const chunks = getFiscalYearChunks(months);
-    expect(chunks.length).toBe(3);
+    expect(chunks).toHaveLength(3);
     expect(chunks.map((c) => c.label)).toEqual(['FY26/27', 'FY27/28', 'FY28/29']);
-    expect(chunks[0].months.length).toBe(12);
-    expect(chunks[1].months.length).toBe(12);
-    expect(chunks[2].months.length).toBe(2);
+    expect(chunks[0].months).toHaveLength(12);
+    expect(chunks[1].months).toHaveLength(12);
+    expect(chunks[2].months).toHaveLength(2);
     expect(isPartialFiscalYearChunk(chunks[0])).toBe(false);
     expect(isPartialFiscalYearChunk(chunks[2])).toBe(true);
   });
@@ -77,10 +77,10 @@ describe('fiscal year helpers', () => {
       { year: 2026, month: 7, amount: 5500, currency: 'CAD' },
     ];
     const merged = mergeMonthlyValuesOntoFiscalHorizon(existing, 'CAD', june2026);
-    expect(merged.length).toBe(26);
+    expect(merged).toHaveLength(26);
     expect(merged.find((m) => m.year === 2026 && m.month === 6)?.amount).toBe(5000);
     expect(merged.find((m) => m.year === 2026 && m.month === 5)?.amount).toBe(0);
-    expect(merged[merged.length - 1]).toMatchObject({ year: 2028, month: 5, amount: 0 });
+    expect(merged.at(-1)).toMatchObject({ year: 2028, month: 5, amount: 0 });
   });
 });
 
