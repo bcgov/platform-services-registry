@@ -315,7 +315,7 @@ export async function generateSession({
       session.isBillingManager ||
       session.isBillingReader,
 
-    viewPublicCloudAccountability:
+    viewPublicCloudForecast:
       session.isAdmin ||
       session.isPublicAdmin ||
       session.isPublicReviewer ||

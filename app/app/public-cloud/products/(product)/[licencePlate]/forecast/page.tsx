@@ -5,11 +5,11 @@ import { useEffect } from 'react';
 import { GlobalRole } from '@/constants';
 import createClientPage from '@/core/client-page';
 
-const publicCloudAccountabilityRedirect = createClientPage({
+const publicCloudForecastRedirect = createClientPage({
   roles: [GlobalRole.User],
 });
 
-export default publicCloudAccountabilityRedirect(() => {
+export default publicCloudForecastRedirect(() => {
   const params = useParams();
   const router = useRouter();
   const licencePlate = (params?.licencePlate as string) ?? '';

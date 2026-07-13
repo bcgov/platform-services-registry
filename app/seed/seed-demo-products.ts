@@ -53,7 +53,7 @@ const BASE_AZURE_PRODUCTS: DemoProductConfig[] = [
     licencePlate: 'e71b0e',
     name: 'Cost Model Test 1',
     provider: Provider.AZURE,
-    description: 'Local seed Azure product for accountability and cost testing.',
+    description: 'Local seed Azure product for forecast and cost testing.',
     budget: { dev: 12000, test: 10000, prod: 20000, tools: 5000 },
   },
   {
@@ -70,7 +70,7 @@ const BASE_AWS_PRODUCTS: DemoProductConfig[] = [
     licencePlate: 'f82c1a',
     name: 'Cost Model Test 2 (AWS LZA)',
     provider: Provider.AWS_LZA,
-    description: 'Local seed AWS LZA product for accountability and cost testing (forecasted in CAD).',
+    description: 'Local seed AWS LZA product for forecast and cost testing (forecasted in CAD).',
     budget: { dev: 8000, test: 6000, prod: 15000, tools: 3000 },
   },
   {

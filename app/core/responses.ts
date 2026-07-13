@@ -31,7 +31,7 @@ export function CsvResponse<T extends Record<string, any>>(data: T[], filename =
 export function ExcelResponse<T extends Record<string, unknown>>(data: T[], filename = 'download.xlsx') {
   const worksheet = XLSX.utils.json_to_sheet(data);
   const workbook = XLSX.utils.book_new();
-  XLSX.utils.book_append_sheet(workbook, worksheet, 'Accountability');
+  XLSX.utils.book_append_sheet(workbook, worksheet, 'Forecast');
   const buffer = XLSX.write(workbook, { type: 'buffer', bookType: 'xlsx' });
 
   return new NextResponse(buffer, {
@@ -43,7 +43,7 @@ export function ExcelResponse<T extends Record<string, unknown>>(data: T[], file
   });
 }
 
-export function accountabilityExportResponse<T extends Record<string, unknown>>(
+export function forecastExportResponse<T extends Record<string, unknown>>(
   data: T[],
   basename: string,
   format: 'csv' | 'xlsx' = 'xlsx',

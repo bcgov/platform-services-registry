@@ -41,8 +41,8 @@ export const cloudCostForecastBodySchema = z.object({
 
 export type CloudCostForecastBody = z.infer<typeof cloudCostForecastBodySchema>;
 
-export const accountabilityExportQuerySchema = z.object({
+export const forecastExportQuerySchema = z.object({
   format: z.enum(['csv', 'xlsx']).optional().default('xlsx'),
 });
 
-export type AccountabilityExportQuery = z.infer<typeof accountabilityExportQuerySchema>;
+export type ForecastExportQuery = z.infer<typeof forecastExportQuerySchema>;

@@ -1,13 +1,13 @@
 /**
  * Seed approved forecasts + closed-month spend history for local forecast testing.
- * Run: pnpm run seed-accountability-local [licencePlate] [--reset] [--skip-forecast]
+ * Run: pnpm run seed-forecast-local [licencePlate] [--reset] [--skip-forecast]
  *
  * Default licence plate: e71b0e (Cost Model Test 1)
  */
 import {
   buildRollingFiscalForecastMonths,
   FISCAL_FORECAST_HORIZON_MONTHS,
-} from '../components/public-cloud/accountability/forecast-grid-utils';
+} from '../components/public-cloud/forecast/forecast-grid-utils';
 import prisma from '../core/prisma';
 import { getUsdToCadRate } from '../helpers/usd-cad-fx';
 import { Provider } from '../prisma/client';
@@ -16,7 +16,7 @@ import {
   getActiveApprovedForecast,
   seedForecastFromProductBudget,
   upsertConsumptionHistory,
-} from '../services/db/public-cloud-accountability';
+} from '../services/db/public-cloud-forecast';
 
 const DEFAULT_PLATE = 'e71b0e';
 const ADMIN_EMAIL = 'admin.system@gov.bc.ca';
@@ -44,7 +44,7 @@ function billingPeriodMonthsBack(count: number) {
   return periods;
 }
 
-async function clearAccountabilityData(licencePlate: string) {
+async function clearForecastData(licencePlate: string) {
   await prisma.cloudSpendHistory.deleteMany({ where: { licencePlate } });
   await prisma.cloudCostForecast.deleteMany({ where: { licencePlate } });
 }
@@ -127,12 +127,12 @@ function printWalkthrough(licencePlate: string) {
   console.log('   - Active approved forecast grid (read-only)');
   console.log('   - Create / edit / submit / approve forecast workflow\n');
   console.log('2. Admin platform forecast');
-  console.log('   http://localhost:3000/public-cloud/accountability/forecast\n');
-  console.log('Re-seed: pnpm run seed-accountability-local -- --reset');
-  console.log('Forecast UI only (no auto-approve): pnpm run seed-accountability-local -- --skip-forecast --reset\n');
+  console.log('   http://localhost:3000/public-cloud/forecast\n');
+  console.log('Re-seed: pnpm run seed-forecast-local -- --reset');
+  console.log('Forecast UI only (no auto-approve): pnpm run seed-forecast-local -- --skip-forecast --reset\n');
 }
 
-export async function seedAccountabilityForProduct(
+export async function seedForecastForProduct(
   licencePlate: string,
   options: { reset?: boolean; skipForecast?: boolean; showWalkthrough?: boolean } = {},
 ) {
@@ -154,7 +154,7 @@ export async function seedAccountabilityForProduct(
 
   if (reset) {
     console.log('  clearing existing forecast data...');
-    await clearAccountabilityData(licencePlate);
+    await clearForecastData(licencePlate);
   }
 
   const forecastAmount = resolveMonthlyForecastAmount(product);
@@ -203,7 +203,7 @@ export async function seedAccountabilityForProduct(
 // CLI entry (below export)
 async function runCli() {
   const { licencePlate, reset, skipForecast } = parseArgs();
-  await seedAccountabilityForProduct(licencePlate, { reset, skipForecast, showWalkthrough: true });
+  await seedForecastForProduct(licencePlate, { reset, skipForecast, showWalkthrough: true });
 }
 
 if (require.main === module) {

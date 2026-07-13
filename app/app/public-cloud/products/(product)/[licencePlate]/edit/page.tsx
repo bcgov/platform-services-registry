@@ -12,7 +12,7 @@ import ProjectDescriptionPublic from '@/components/form/ProjectDescriptionPublic
 import PageAccordion from '@/components/generic/accordion/PageAccordion';
 import FormErrorNotification from '@/components/generic/FormErrorNotification';
 import { openPublicCloudProductEditSubmitModal } from '@/components/modal/publicCloudProductEditSubmit';
-import PublicCloudProjectBudgetSection from '@/components/public-cloud/sections/PublicCloudProjectBudgetSection';
+import PublicCloudForecastSection from '@/components/public-cloud/sections/PublicCloudForecastSection';
 import TeamContacts from '@/components/public-cloud/sections/TeamContacts';
 import { GlobalRole } from '@/constants';
 import createClientPage from '@/core/client-page';
@@ -99,7 +99,7 @@ export default publicCloudProductEdit(({ session }) => {
       label: 'Project budget and spend forecast',
       description: 'Fiscal year cloud spend forecast',
       initialOpen: true,
-      Component: PublicCloudProjectBudgetSection,
+      Component: PublicCloudForecastSection,
       componentArgs: {
         licencePlate: currentProduct.licencePlate,
       },

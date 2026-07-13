@@ -4,7 +4,7 @@ import { Button, NumberInput } from '@mantine/core';
 import { useMutation } from '@tanstack/react-query';
 import { ReactNode, useEffect, useMemo, useState } from 'react';
 import { convertUsdToCad, formatUsdCadRate, getUsdToCadRate, providerReportsActualsInUsd } from '@/helpers/usd-cad-fx';
-import { updatePublicCloudForecast } from '@/services/backend/public-cloud/accountability';
+import { updatePublicCloudForecast } from '@/services/backend/public-cloud/forecast';
 import {
   applyAmountToFutureMonths,
   copyAmountAcrossEditableMonths,

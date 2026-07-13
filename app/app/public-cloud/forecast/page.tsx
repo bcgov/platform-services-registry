@@ -19,12 +19,12 @@ import {
   yearRangeLabel,
   type FiscalYearChunk,
   type MonthlyValue,
-} from '@/components/public-cloud/accountability/forecast-grid-utils';
+} from '@/components/public-cloud/forecast/forecast-grid-utils';
 import { GlobalPermissions } from '@/constants';
 import createClientPage from '@/core/client-page';
 import { Provider } from '@/prisma/client';
-import { downloadPlatformForecastExport, getPlatformForecast } from '@/services/backend/public-cloud/accountability';
-import { PlatformForecastProduct, PlatformForecastSummary } from '@/services/db/public-cloud-accountability';
+import { downloadPlatformForecastExport, getPlatformForecast } from '@/services/backend/public-cloud/forecast';
+import { PlatformForecastProduct, PlatformForecastSummary } from '@/services/db/public-cloud-forecast';
 
 const DEFAULT_PRODUCT_LIMIT = 10;
 const PRODUCT_LIMIT_INCREMENT = 10;
@@ -695,13 +695,13 @@ function PlatformForecastGrid({ group }: { group: PlatformForecastSummary['group
 }
 
 const publicCloudForecastPage = createClientPage({
-  permissions: [GlobalPermissions.ViewPublicCloudAccountability],
+  permissions: [GlobalPermissions.ViewPublicCloudForecast],
   fallbackUrl: '/login?callbackUrl=/home',
 });
 
 export default publicCloudForecastPage(() => {
   const { data, isLoading } = useQuery<PlatformForecastSummary>({
-    queryKey: ['accountability-platform-forecast'],
+    queryKey: ['forecast-platform-forecast'],
     queryFn: () => getPlatformForecast(),
   });
 

@@ -127,8 +127,8 @@ export default function UserMenu() {
     {
       text: 'Public Cloud Forecast',
       Icon: IconClockDollar,
-      href: '/public-cloud/accountability/forecast',
-      permission: 'viewPublicCloudAccountability',
+      href: '/public-cloud/forecast',
+      permission: 'viewPublicCloudForecast',
     },
     {
       text: 'General Analytics',

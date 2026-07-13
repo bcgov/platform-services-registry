@@ -7,7 +7,7 @@ import {
   shortMonthLabel,
   sumMonthlyValues,
   type MonthlyValue,
-} from '@/components/public-cloud/accountability/forecast-grid-utils';
+} from '@/components/public-cloud/forecast/forecast-grid-utils';
 import prisma from '@/core/prisma';
 import { convertUsdToCad, providerReportsActualsInUsd } from '@/helpers/usd-cad-fx';
 import { CloudCostForecastStatus, Provider, ProjectStatus } from '@/prisma/client';
@@ -36,7 +36,7 @@ function toCadActual(amount: number, currency: string, year: number, month: numb
 }
 
 /**
- * Platform-wide forecast rollup for the governance dashboard: sums the latest
+ * Platform-wide forecast rollup for the admin dashboard: sums the latest
  * approved forecast of every active public cloud product per month, alongside
  * actual spend from closed-month CSP history. All forecasts and rollups are in
  * CAD. AWS CSP actuals arriving in USD are converted with the monthly FX rate.
@@ -331,7 +331,7 @@ export async function upsertConsumptionHistory(data: CspConsumptionHistory) {
   });
 }
 
-export async function getAccountabilitySummary(licencePlate: string) {
+export async function getProductForecastSummary(licencePlate: string) {
   const [activeForecast, spendHistory, forecasts] = await Promise.all([
     getActiveApprovedForecast(licencePlate),
     prisma.cloudSpendHistory.findFirst({ where: { licencePlate } }),

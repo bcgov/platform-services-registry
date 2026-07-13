@@ -7,8 +7,8 @@ export const instance = axios.create({
   baseURL: `${parentInstance.defaults.baseURL}/products`,
 });
 
-export async function getPublicCloudAccountability(licencePlate: string) {
-  return instance.get(`/${licencePlate}/accountability`).then((res) => res.data);
+export async function getPublicCloudProductForecast(licencePlate: string) {
+  return instance.get(`/${licencePlate}/forecast`).then((res) => res.data);
 }
 
 export async function createPublicCloudForecast(
@@ -31,23 +31,21 @@ export async function updatePublicCloudForecast(
 
 export const adminInstance = axios.create({
   ...parentInstance.defaults,
-  baseURL: `${parentInstance.defaults.baseURL}/accountability`,
+  baseURL: `${parentInstance.defaults.baseURL}/forecast`,
 });
 
 export async function getPlatformForecast() {
-  return adminInstance.get('/forecast').then((res) => res.data);
+  return adminInstance.get('/').then((res) => res.data);
 }
 
 export async function downloadPlatformForecastExport(format: 'csv' | 'xlsx' = 'xlsx') {
-  const result = await adminInstance
-    .get('/forecast/export', { params: { format }, responseType: 'blob' })
-    .then((res) => {
-      if (res.status === 204) return false;
+  const result = await adminInstance.get('/export', { params: { format }, responseType: 'blob' }).then((res) => {
+    if (res.status === 204) return false;
 
-      const ext = format === 'csv' ? 'csv' : 'xlsx';
-      downloadFile(res.data, `public-cloud-forecast.${ext}`, res.headers);
-      return true;
-    });
+    const ext = format === 'csv' ? 'csv' : 'xlsx';
+    downloadFile(res.data, `public-cloud-forecast.${ext}`, res.headers);
+    return true;
+  });
 
   return result;
 }

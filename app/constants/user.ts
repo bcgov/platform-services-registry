@@ -38,7 +38,7 @@ export enum GlobalPermissions {
 
   ReviewPublicCloudBilling = 'reviewPublicCloudBilling',
   ViewPublicCloudBilling = 'viewPublicCloudBilling',
-  ViewPublicCloudAccountability = 'viewPublicCloudAccountability',
+  ViewPublicCloudForecast = 'viewPublicCloudForecast',
   DownloadPublicCloudBillingMou = 'downloadPublicCloudBillingMou',
 
   ViewEvents = 'viewEvents',

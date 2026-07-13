@@ -8,7 +8,7 @@ import {
   createForecastDraft,
   getActiveApprovedForecast,
   seedForecastDraftValues,
-} from '@/services/db/public-cloud-accountability';
+} from '@/services/db/public-cloud-forecast';
 import { cloudCostForecastBodySchema } from '@/validation-schemas/cloud-cost';
 
 const pathParamSchema = z.object({
@@ -21,7 +21,7 @@ export const GET = createApiHandler({
 })(async ({ pathParams, session }) => {
   const { licencePlate } = pathParams;
   const { data: product } = await models.publicCloudProduct.get({ where: { licencePlate } }, session);
-  if (!product?._permissions.viewAccountability) {
+  if (!product?._permissions.viewForecast) {
     return UnauthorizedResponse();
   }
 

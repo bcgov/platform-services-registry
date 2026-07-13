@@ -3,7 +3,7 @@ import { GlobalRole } from '@/constants';
 import createApiHandler from '@/core/api-handler';
 import { BadRequestResponse, OkResponse, UnauthorizedResponse } from '@/core/responses';
 import { models } from '@/services/db';
-import { updateForecastDraft } from '@/services/db/public-cloud-accountability';
+import { updateForecastDraft } from '@/services/db/public-cloud-forecast';
 import { objectId } from '@/validation-schemas';
 import { cloudCostForecastBodySchema } from '@/validation-schemas/cloud-cost';
 

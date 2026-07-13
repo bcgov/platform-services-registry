@@ -3,30 +3,27 @@
 import { Alert, Button } from '@mantine/core';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import LoadingBox from '@/components/generic/LoadingBox';
-import { FISCAL_FORECAST_HORIZON_MONTHS } from '@/components/public-cloud/accountability/forecast-grid-utils';
-import ProjectBudgetForecastPanel from '@/components/public-cloud/accountability/ProjectBudgetForecastPanel';
+import { FISCAL_FORECAST_HORIZON_MONTHS } from '@/components/public-cloud/forecast/forecast-grid-utils';
+import ProjectBudgetForecastPanel from '@/components/public-cloud/forecast/ProjectBudgetForecastPanel';
 import { convertUsdToCad, providerReportsActualsInUsd } from '@/helpers/usd-cad-fx';
-import {
-  createPublicCloudForecast,
-  getPublicCloudAccountability,
-} from '@/services/backend/public-cloud/accountability';
+import { createPublicCloudForecast, getPublicCloudProductForecast } from '@/services/backend/public-cloud/forecast';
 import { usePublicProductState } from '@/states/global';
 
-export default function PublicCloudProjectBudgetSection({ licencePlate }: { licencePlate: string }) {
+export default function PublicCloudForecastSection({ licencePlate }: { licencePlate: string }) {
   const [, productSnap] = usePublicProductState();
   const product = productSnap.currentProduct;
-  const canViewAccountability = product?._permissions?.viewAccountability;
+  const canViewForecast = product?._permissions?.viewForecast;
   const canEditForecast = Boolean(product?._permissions?.editForecast);
   const queryClient = useQueryClient();
 
   const { data, isLoading, isError, error, refetch } = useQuery({
-    queryKey: ['accountability', licencePlate],
-    queryFn: () => getPublicCloudAccountability(licencePlate),
-    enabled: !!licencePlate && canViewAccountability,
+    queryKey: ['forecast', licencePlate],
+    queryFn: () => getPublicCloudProductForecast(licencePlate),
+    enabled: !!licencePlate && canViewForecast,
     retry: 1,
   });
 
-  const refresh = () => queryClient.invalidateQueries({ queryKey: ['accountability', licencePlate] });
+  const refresh = () => queryClient.invalidateQueries({ queryKey: ['forecast', licencePlate] });
 
   const createForecast = useMutation({
     mutationFn: () => createPublicCloudForecast(licencePlate),
@@ -50,7 +47,7 @@ export default function PublicCloudProjectBudgetSection({ licencePlate }: { lice
 
   return (
     <div className="space-y-8">
-      {canViewAccountability && (
+      {canViewForecast && (
         <>
           {isLoading && (
             <LoadingBox isLoading>

@@ -1,6 +1,6 @@
 import createApiHandler from '@/core/api-handler';
 import { OkResponse } from '@/core/responses';
-import { upsertConsumptionHistory } from '@/services/db/public-cloud-accountability';
+import { upsertConsumptionHistory } from '@/services/db/public-cloud-forecast';
 import { cspConsumptionHistorySchema } from '@/validation-schemas/cloud-cost';
 
 export const PUT = createApiHandler({

@@ -1,5 +1,5 @@
 /**
- * USD → CAD FX for public-cloud accountability.
+ * USD → CAD FX for public-cloud forecast.
  *
  * BC Gov budgets and forecasts are in CAD. AWS invoices in USD, so Registry
  * converts AWS actuals to CAD using a monthly rate:

@@ -44,7 +44,7 @@ declare module 'next-auth' {
 
     reviewPublicCloudBilling: boolean;
     viewPublicCloudBilling: boolean;
-    viewPublicCloudAccountability: boolean;
+    viewPublicCloudForecast: boolean;
     downloadPublicCloudBillingMou: boolean;
 
     viewEvents: boolean;

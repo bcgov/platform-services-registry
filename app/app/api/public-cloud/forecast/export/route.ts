@@ -1,12 +1,9 @@
 import { GlobalPermissions } from '@/constants';
 import createApiHandler from '@/core/api-handler';
-import { accountabilityExportResponse, NoContent } from '@/core/responses';
+import { forecastExportResponse, NoContent } from '@/core/responses';
 import { buildPlatformForecastWorkbookBuffer } from '@/helpers/platform-forecast-export';
-import {
-  buildPlatformForecastExportCsvRows,
-  getPlatformForecastSummary,
-} from '@/services/db/public-cloud-accountability';
-import { accountabilityExportQuerySchema } from '@/validation-schemas/cloud-cost';
+import { buildPlatformForecastExportCsvRows, getPlatformForecastSummary } from '@/services/db/public-cloud-forecast';
+import { forecastExportQuerySchema } from '@/validation-schemas/cloud-cost';
 
 function contentDispositionAttachment(filename: string) {
   const sanitized = filename.replace(/[\r\n"\\]/g, '').trim() || 'download';
@@ -15,8 +12,8 @@ function contentDispositionAttachment(filename: string) {
 }
 
 export const GET = createApiHandler({
-  permissions: [GlobalPermissions.ViewPublicCloudAccountability],
-  validations: { queryParams: accountabilityExportQuerySchema },
+  permissions: [GlobalPermissions.ViewPublicCloudForecast],
+  validations: { queryParams: forecastExportQuerySchema },
 })(async ({ queryParams }) => {
   const format = queryParams.format ?? 'xlsx';
 
@@ -25,7 +22,7 @@ export const GET = createApiHandler({
     if (!rows.length) {
       return NoContent();
     }
-    return accountabilityExportResponse(rows, 'public-cloud-forecast', 'csv');
+    return forecastExportResponse(rows, 'public-cloud-forecast', 'csv');
   }
 
   const summary = await getPlatformForecastSummary();

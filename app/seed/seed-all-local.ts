@@ -4,13 +4,13 @@
  */
 import prisma from '../core/prisma';
 import { Provider } from '../prisma/client';
-import { seedAccountabilityForProduct } from './seed-accountability-local';
 import {
   AWS_DEMO_PLATES,
   AZURE_DEMO_PLATES,
   expectedMonthlyForecastRollup,
   seedDemoPublicCloudProducts,
 } from './seed-demo-products';
+import { seedForecastForProduct } from './seed-forecast-local';
 import { seedFoundation } from './seed-foundation';
 
 async function main() {
@@ -28,14 +28,14 @@ async function main() {
 
   console.log('\n3. Forecast demo data (forecasts + spend history)...');
   for (const licencePlate of AZURE_DEMO_PLATES) {
-    await seedAccountabilityForProduct(licencePlate, {
+    await seedForecastForProduct(licencePlate, {
       reset,
       showWalkthrough: licencePlate === AZURE_DEMO_PLATES[0],
     });
   }
 
   for (const licencePlate of AWS_DEMO_PLATES) {
-    await seedAccountabilityForProduct(licencePlate, { reset });
+    await seedForecastForProduct(licencePlate, { reset });
   }
 
   console.log('\n=== Seed complete ===');
@@ -48,7 +48,7 @@ async function main() {
   for (const plate of AWS_DEMO_PLATES) {
     console.log(`  http://localhost:3000/public-cloud/products/${plate}/edit`);
   }
-  console.log(`Public Cloud Forecast: http://localhost:3000/public-cloud/accountability/forecast`);
+  console.log(`Public Cloud Forecast: http://localhost:3000/public-cloud/forecast`);
   console.log(
     `Expected rollups: Azure CA$${expectedMonthlyForecastRollup(
       Provider.AZURE,

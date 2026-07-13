@@ -8,9 +8,9 @@ import {
   sumMonthlyValues,
   yearRangeLabel,
   type MonthlyValue,
-} from '@/components/public-cloud/accountability/forecast-grid-utils';
+} from '@/components/public-cloud/forecast/forecast-grid-utils';
 import { Provider } from '@/prisma/client';
-import type { PlatformForecastProduct, PlatformForecastSummary } from '@/services/db/public-cloud-accountability';
+import type { PlatformForecastProduct, PlatformForecastSummary } from '@/services/db/public-cloud-forecast';
 
 const COLORS = {
   titleBg: '003366',
