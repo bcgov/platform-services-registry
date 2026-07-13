@@ -7,6 +7,16 @@ export type BcgovGuidExtensionKey = typeof BCGOV_GUID_EXTENSION;
 
 export const TEAM_SA_PREFIX = 'z_pltsvc-tsa-';
 
+export const environmentShortNames = {
+  development: 'dev',
+  test: 'test',
+  production: 'prod',
+  tools: 'tools',
+} as const;
+
+export type EnvironmentShortName = keyof typeof environmentShortNames;
+export const environmentLongKeys = Object.keys(environmentShortNames) as Array<EnvironmentShortName>;
+
 export const productSorts = [
   {
     label: 'Product update date (new to old)',

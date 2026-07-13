@@ -1,5 +1,5 @@
 import { Provider, PublicCloudProductMemberRole, Prisma } from '@/prisma/client';
-import { productSorts } from './common';
+import { environmentShortNames, productSorts } from './common';
 
 export const providers = Object.values(Provider);
 export const publicCloudProductMemberRoles = Object.values(PublicCloudProductMemberRole);
@@ -66,13 +66,6 @@ export const publicCloudEnvironmentKeys = ['production', 'development', 'test', 
 
 export type PublicCloudEnvironmentKey = (typeof publicCloudEnvironmentKeys)[number];
 
-export const publicCloudEnvironmentAccountSuffixes: Record<PublicCloudEnvironmentKey, string> = {
-  production: 'prod',
-  development: 'dev',
-  test: 'test',
-  tools: 'tools',
-};
-
 export const publicCloudEnvironments: { key: PublicCloudEnvironmentKey; label: string }[] = [
   { key: 'production', label: 'Production account' },
   { key: 'development', label: 'Development account' },
@@ -81,7 +74,7 @@ export const publicCloudEnvironments: { key: PublicCloudEnvironmentKey; label: s
 ];
 
 export function getAwsLzaAccountName(licencePlate: string, environment: PublicCloudEnvironmentKey) {
-  return `${licencePlate}-${publicCloudEnvironmentAccountSuffixes[environment]}`;
+  return `${licencePlate}-${environmentShortNames[environment]}`;
 }
 
 export function getAwsLzaConsoleUrl(accountId: string) {
