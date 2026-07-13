@@ -112,7 +112,7 @@ export async function getPlatformForecastSummary() {
     productsWithForecast: forecastByPlate.size,
     groups: [...groups.values()].map((group) => ({
       currency: group.currency,
-      providers: [...group.providers].sort(),
+      providers: [...group.providers].sort((a, b) => a.localeCompare(b)),
       productCount: group.productCount,
       forecastCount: group.forecastCount,
       monthlyTotals: mergeMonthlyValuesOntoFiscalHorizon([...group.totalsByMonth.values()], group.currency),
