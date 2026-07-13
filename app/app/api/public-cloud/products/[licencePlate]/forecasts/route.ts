@@ -16,7 +16,10 @@ export const GET = createApiHandler({
 })(async ({ pathParams, session }) => {
   const { licencePlate } = pathParams;
   const { data: product } = await models.publicCloudProduct.get({ where: { licencePlate } }, session);
-  if (!product?._permissions.viewForecast) {
+  if (!product) {
+    return UnauthorizedResponse();
+  }
+  if (!product._permissions.viewForecast) {
     return UnauthorizedResponse();
   }
 
@@ -30,7 +33,10 @@ export const POST = createApiHandler({
 })(async ({ pathParams, body, session }) => {
   const { licencePlate } = pathParams;
   const { data: product } = await models.publicCloudProduct.get({ where: { licencePlate } }, session);
-  if (!product?._permissions.editForecast) {
+  if (!product) {
+    return UnauthorizedResponse();
+  }
+  if (!product._permissions.editForecast) {
     return UnauthorizedResponse();
   }
 

@@ -377,6 +377,24 @@ export function getForecastIncreases(proposed: MonthlyValue[], baseline: Monthly
   return increases;
 }
 
+/** Sum enabled environment monthly budgets (dev/test/prod/tools). */
+export function sumEnabledEnvironmentBudgets(
+  budget: { dev: number; test: number; prod: number; tools: number },
+  environmentsEnabled: {
+    development: boolean;
+    test: boolean;
+    production: boolean;
+    tools: boolean;
+  },
+) {
+  let total = 0;
+  if (environmentsEnabled.development) total += budget.dev;
+  if (environmentsEnabled.test) total += budget.test;
+  if (environmentsEnabled.production) total += budget.prod;
+  if (environmentsEnabled.tools) total += budget.tools;
+  return Math.round(total);
+}
+
 export function getProviderSpendLabel(provider?: string) {
   switch (provider) {
     case 'AZURE':
@@ -387,4 +405,41 @@ export function getProviderSpendLabel(provider?: string) {
     default:
       return 'Cloud Spend';
   }
+}
+
+/** Short provider name for filters, tables, and export sheets. */
+export function formatForecastProviderLabel(provider: string) {
+  if (provider === 'AWS_LZA') return 'AWS LZA';
+  if (provider === 'AWS') return 'AWS';
+  if (provider === 'AZURE') return 'Azure';
+  return provider;
+}
+
+export function formatForecastProviderList(providers: string[]) {
+  return providers.map(formatForecastProviderLabel).join(' / ');
+}
+
+/** Roll up product monthly totals onto the fiscal horizon (optionally only products with a forecast). */
+export function aggregateMonthlyTotalsFromProducts(
+  products: { monthlyTotals: MonthlyValue[]; hasForecast?: boolean }[],
+  currency: string,
+  onlyWithForecast = false,
+): MonthlyValue[] {
+  const totalsByMonth = new Map<string, MonthlyValue>();
+
+  for (const product of products) {
+    if (onlyWithForecast && !product.hasForecast) continue;
+
+    for (const value of product.monthlyTotals) {
+      const key = monthKey(value.year, value.month);
+      const existing = totalsByMonth.get(key);
+      if (existing) {
+        existing.amount += value.amount;
+      } else {
+        totalsByMonth.set(key, { ...value, currency });
+      }
+    }
+  }
+
+  return mergeMonthlyValuesOntoFiscalHorizon([...totalsByMonth.values()], currency);
 }

@@ -8,11 +8,12 @@ import { useEffect, useState } from 'react';
 import ExportButton from '@/components/buttons/ExportButton';
 import LoadingBox from '@/components/generic/LoadingBox';
 import {
+  aggregateMonthlyTotalsFromProducts,
   formatForecastAmount,
+  formatForecastProviderLabel,
   getFiscalYearChunks,
   getProviderSpendLabel,
   isPastMonth,
-  mergeMonthlyValuesOntoFiscalHorizon,
   monthKey,
   shortMonthLabel,
   sumMonthlyValues,
@@ -39,32 +40,7 @@ const PROVIDER_FILTER_OPTIONS: { value: Exclude<ProviderFilter, 'ALL'>; label: s
 ];
 
 function providerFilterLabel(provider: string) {
-  if (provider === Provider.AWS_LZA) return 'AWS LZA';
-  if (provider === Provider.AZURE) return 'Azure';
-  if (provider === Provider.AWS) return 'AWS';
-  return provider;
-}
-
-function buildFilteredGroupTotals(
-  products: PlatformForecastProduct[],
-  currency: string,
-): { monthlyTotals: MonthlyValue[] } {
-  const totalsByMonth = new Map<string, MonthlyValue>();
-
-  for (const product of products) {
-    if (!product.hasForecast) continue;
-    for (const value of product.monthlyTotals) {
-      const key = monthKey(value.year, value.month);
-      const existing = totalsByMonth.get(key);
-      if (existing) {
-        existing.amount += value.amount;
-      } else {
-        totalsByMonth.set(key, { ...value, currency });
-      }
-    }
-  }
-
-  return { monthlyTotals: mergeMonthlyValuesOntoFiscalHorizon([...totalsByMonth.values()], currency) };
+  return formatForecastProviderLabel(provider);
 }
 
 function SummaryCard({ label, value, hint }: Readonly<{ label: string; value: string; hint?: string }>) {
@@ -124,7 +100,7 @@ function PlatformForecastGrid({ group }: Readonly<{ group: PlatformForecastSumma
   const filteredTotals =
     providerFilter === 'ALL' || activeProviders.length === availableProviders.length
       ? { monthlyTotals: group.monthlyTotals as MonthlyValue[] }
-      : buildFilteredGroupTotals(providerFilteredProducts, group.currency);
+      : { monthlyTotals: aggregateMonthlyTotalsFromProducts(providerFilteredProducts, group.currency, true) };
 
   const values = filteredTotals.monthlyTotals;
   const fiscalYearChunks = getFiscalYearChunks(values);
@@ -423,6 +399,8 @@ export default publicCloudForecastPage(() => {
   const coverage =
     data && data.totalProducts > 0 ? Math.round((data.productsWithForecast / data.totalProducts) * 100) : 0;
 
+  const handleExport = () => downloadPlatformForecastExport();
+
   return (
     <LoadingBox isLoading={isLoading}>
       <div className="space-y-6 p-4">
@@ -433,7 +411,7 @@ export default publicCloudForecastPage(() => {
               Read-only rollup of the forecast for every active public cloud product. All forecasts are in CAD.
             </p>
           </div>
-          <ExportButton className="ml-auto shrink-0" onExport={() => downloadPlatformForecastExport()} />
+          <ExportButton className="ml-auto shrink-0" onExport={handleExport} />
         </div>
 
         <div className="grid gap-4 sm:grid-cols-3">

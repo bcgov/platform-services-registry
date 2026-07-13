@@ -4,37 +4,28 @@ import { Alert, Button } from '@mantine/core';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { useEffect, useMemo, useRef } from 'react';
 import LoadingBox from '@/components/generic/LoadingBox';
-import { FISCAL_FORECAST_HORIZON_MONTHS } from '@/components/public-cloud/forecast/forecast-grid-utils';
+import {
+  FISCAL_FORECAST_HORIZON_MONTHS,
+  sumEnabledEnvironmentBudgets,
+} from '@/components/public-cloud/forecast/forecast-grid-utils';
 import ProjectBudgetForecastPanel from '@/components/public-cloud/forecast/ProjectBudgetForecastPanel';
 import { createPublicCloudForecast, getPublicCloudProductForecast } from '@/services/backend/public-cloud/forecast';
 import { usePublicProductState } from '@/states/global';
 
-function sumEnabledEnvironmentBudgets(product: {
-  budget?: { dev?: number; test?: number; prod?: number; tools?: number } | null;
-  environmentsEnabled?: {
-    development?: boolean;
-    test?: boolean;
-    production?: boolean;
-    tools?: boolean;
-  } | null;
-}) {
-  const budget = product.budget;
-  const enabled = product.environmentsEnabled;
-  if (!budget || !enabled) return 0;
+function getForecastLoadErrorMessage(error: unknown) {
+  const axiosMessage = (error as { response?: { data?: { message?: string } } })?.response?.data?.message;
+  if (axiosMessage) return axiosMessage;
 
-  let total = 0;
-  if (enabled.development) total += budget.dev ?? 0;
-  if (enabled.test) total += budget.test ?? 0;
-  if (enabled.production) total += budget.prod ?? 0;
-  if (enabled.tools) total += budget.tools ?? 0;
-  return Math.round(total);
+  if (error instanceof Error && error.message) return error.message;
+
+  return 'Failed to load forecast data';
 }
 
 export default function PublicCloudForecastSection({ licencePlate }: Readonly<{ licencePlate: string }>) {
   const [, productSnap] = usePublicProductState();
   const product = productSnap.currentProduct;
-  const canViewForecast = product?._permissions?.viewForecast;
-  const canEditForecast = Boolean(product?._permissions?.editForecast);
+  const canViewForecast = Boolean(product?._permissions.viewForecast);
+  const canEditForecast = Boolean(product?._permissions.editForecast);
   const queryClient = useQueryClient();
   const autoCreateStarted = useRef(false);
 
@@ -45,19 +36,22 @@ export default function PublicCloudForecastSection({ licencePlate }: Readonly<{ 
     retry: 1,
   });
 
-  const refresh = () => queryClient.invalidateQueries({ queryKey: ['forecast', licencePlate] });
+  const handleForecastSaved = () => queryClient.invalidateQueries({ queryKey: ['forecast', licencePlate] });
 
   const createForecast = useMutation({
     mutationFn: () => createPublicCloudForecast(licencePlate),
-    onSuccess: refresh,
+    onSuccess: handleForecastSaved,
     onError: () => {
       // Another tab/request may have created it; refresh either way.
-      refresh();
+      handleForecastSaved();
     },
   });
 
   const forecast = data?.forecast;
-  const budgetMonthlyTotal = useMemo(() => (product ? sumEnabledEnvironmentBudgets(product) : 0), [product]);
+  const budgetMonthlyTotal = useMemo(() => {
+    if (!product) return 0;
+    return sumEnabledEnvironmentBudgets(product.budget, product.environmentsEnabled);
+  }, [product]);
 
   // Auto-create a forecast seeded with the sum of enabled environment budgets for every month.
   useEffect(() => {
@@ -67,20 +61,21 @@ export default function PublicCloudForecastSection({ licencePlate }: Readonly<{ 
     createForecast.mutate();
   }, [data, forecast, canEditForecast, createForecast]);
 
+  if (!product) return null;
+  if (!canViewForecast) return null;
+
   const showCreatingLoader =
     isLoading || (!forecast && canEditForecast && (createForecast.isPending || !createForecast.isError));
+
+  const handleRetryCreateForecast = () => createForecast.mutate();
+  const handleRefetchForecast = () => refetch();
 
   let emptyForecastContent = <p>No forecast yet for this product.</p>;
   if (canEditForecast && createForecast.isError) {
     emptyForecastContent = (
       <>
         <p>Could not create a forecast from the product budget. You can retry.</p>
-        <Button
-          type="button"
-          variant="default"
-          loading={createForecast.isPending}
-          onClick={() => createForecast.mutate()}
-        >
+        <Button type="button" variant="default" loading={createForecast.isPending} onClick={handleRetryCreateForecast}>
           Create forecast from product budget
         </Button>
       </>
@@ -91,49 +86,37 @@ export default function PublicCloudForecastSection({ licencePlate }: Readonly<{ 
 
   return (
     <div className="space-y-8">
-      {canViewForecast && (
-        <>
-          {showCreatingLoader && (
-            <LoadingBox isLoading>
-              <div className="min-h-24" />
-            </LoadingBox>
-          )}
+      {showCreatingLoader && (
+        <LoadingBox isLoading>
+          <div className="min-h-24" />
+        </LoadingBox>
+      )}
 
-          {isError && (
-            <Alert color="red" title="Could not load spend forecast">
-              <p className="mb-3">
-                {(error as { response?: { data?: { message?: string } }; message?: string })?.response?.data?.message ??
-                  (error as Error)?.message ??
-                  'Failed to load forecast data'}
-              </p>
-              <Button type="button" size="xs" variant="light" onClick={() => refetch()}>
-                Retry
-              </Button>
-            </Alert>
-          )}
+      {isError && (
+        <Alert color="red" title="Could not load spend forecast">
+          <p className="mb-3">{getForecastLoadErrorMessage(error)}</p>
+          <Button type="button" size="xs" variant="light" onClick={handleRefetchForecast}>
+            Retry
+          </Button>
+        </Alert>
+      )}
 
-          {data && (
-            <section className="space-y-4">
-              {!forecast ? (
-                <div className="text-sm text-gray-600 space-y-3">{emptyForecastContent}</div>
-              ) : (
-                <ProjectBudgetForecastPanel
-                  licencePlate={licencePlate}
-                  provider={product?.provider}
-                  forecast={{
-                    id: forecast.id,
-                    horizonMonths: forecast.horizonMonths ?? FISCAL_FORECAST_HORIZON_MONTHS,
-                    updatedAt: forecast.updatedAt,
-                  }}
-                  monthlyValues={forecast.monthlyValues ?? []}
-                  budgetMonthlyTotal={budgetMonthlyTotal}
-                  editable={canEditForecast}
-                  onSaved={refresh}
-                />
-              )}
-            </section>
-          )}
-        </>
+      {data && !forecast && <div className="text-sm text-gray-600 space-y-3">{emptyForecastContent}</div>}
+
+      {data && forecast && (
+        <ProjectBudgetForecastPanel
+          licencePlate={licencePlate}
+          provider={product.provider}
+          forecast={{
+            id: forecast.id,
+            horizonMonths: forecast.horizonMonths ?? FISCAL_FORECAST_HORIZON_MONTHS,
+            updatedAt: forecast.updatedAt,
+          }}
+          monthlyValues={forecast.monthlyValues ?? []}
+          budgetMonthlyTotal={budgetMonthlyTotal}
+          editable={canEditForecast}
+          onSaved={handleForecastSaved}
+        />
       )}
     </div>
   );

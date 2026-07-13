@@ -162,7 +162,7 @@ export default function ProjectBudgetForecastPanel({
   const fiscalYearChunks = getFiscalYearChunks(values);
   const grandTotal = sumMonthlyValues(values);
 
-  const save = useMutation({
+  const saveForecast = useMutation({
     mutationFn: () => {
       const lockedValues = preserveLockedPastMonthlyValues(baselineValues, values);
       return updatePublicCloudForecast(licencePlate, forecast.id, {
@@ -178,7 +178,7 @@ export default function ProjectBudgetForecastPanel({
     onSuccess: () => onSaved(),
   });
 
-  const updateAmount = (index: number, amount: number) => {
+  const handleAmountChange = (index: number, amount: number) => {
     const cell = values[index];
     if (!cell || isPastMonth(cell.year, cell.month)) return;
     const rounded = Math.round(amount);
@@ -190,7 +190,7 @@ export default function ProjectBudgetForecastPanel({
     [editable],
   );
 
-  const copyAcrossSuggested = () => {
+  const handleCopyAcrossSuggested = () => {
     setValues((prev) => {
       const statuses = getCellStatuses(prev, cellStatusOptions);
       const windowStart = getReviewWindowStartIndex(prev);
@@ -199,20 +199,23 @@ export default function ProjectBudgetForecastPanel({
     });
   };
 
-  const applyToFutureMonths = (index: number, amount: number) => {
+  const handleApplyToFutureMonths = (index: number, amount: number) => {
     setValues((prev) => {
       const statuses = getCellStatuses(prev, cellStatusOptions);
       return applyAmountToFutureMonths(prev, statuses, index, amount);
     });
   };
 
-  const fillFromBudget = () => {
+  const handleFillFromBudget = () => {
     if (budgetMonthlyTotal == null) return;
     const amount = Math.round(budgetMonthlyTotal);
     setValues((prev) =>
       prev.map((value) => (isPastMonth(value.year, value.month) ? value : { ...value, amount, currency })),
     );
   };
+
+  const handleDiscardChanges = () => setValues(baselineValues);
+  const handleSaveForecast = () => saveForecast.mutate();
 
   return (
     <div className="space-y-4">
@@ -245,11 +248,11 @@ export default function ProjectBudgetForecastPanel({
                   size="compact-sm"
                   variant="default"
                   disabled={budgetMonthlyTotal == null}
-                  onClick={fillFromBudget}
+                  onClick={handleFillFromBudget}
                 >
                   Fill months from budget
                 </Button>
-                <Button type="button" size="compact-sm" variant="default" onClick={copyAcrossSuggested}>
+                <Button type="button" size="compact-sm" variant="default" onClick={handleCopyAcrossSuggested}>
                   Copy value across range
                 </Button>
                 <Button
@@ -257,7 +260,7 @@ export default function ProjectBudgetForecastPanel({
                   size="compact-sm"
                   variant="default"
                   disabled={!isDirty}
-                  onClick={() => setValues(baselineValues)}
+                  onClick={handleDiscardChanges}
                 >
                   Discard changes
                 </Button>
@@ -265,9 +268,9 @@ export default function ProjectBudgetForecastPanel({
                   type="button"
                   size="compact-sm"
                   color="primary"
-                  loading={save.isPending}
+                  loading={saveForecast.isPending}
                   disabled={!isDirty}
-                  onClick={() => save.mutate()}
+                  onClick={handleSaveForecast}
                 >
                   Save forecast
                 </Button>
@@ -326,8 +329,10 @@ export default function ProjectBudgetForecastPanel({
                               currency={currency}
                               status={status}
                               editable={editable}
-                              onChange={(amount) => updateAmount(globalIndex, amount)}
-                              onApplyToFuture={() => applyToFutureMonths(globalIndex, values[globalIndex]?.amount ?? 0)}
+                              onChange={(amount) => handleAmountChange(globalIndex, amount)}
+                              onApplyToFuture={() =>
+                                handleApplyToFutureMonths(globalIndex, values[globalIndex]?.amount ?? 0)
+                              }
                             />
                           </td>
                         );

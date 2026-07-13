@@ -18,7 +18,10 @@ export const PUT = createApiHandler({
 })(async ({ pathParams, body, session }) => {
   const { licencePlate, forecastId } = pathParams;
   const { data: product } = await models.publicCloudProduct.get({ where: { licencePlate } }, session);
-  if (!product?._permissions.editForecast) {
+  if (!product) {
+    return UnauthorizedResponse();
+  }
+  if (!product._permissions.editForecast) {
     return UnauthorizedResponse();
   }
 

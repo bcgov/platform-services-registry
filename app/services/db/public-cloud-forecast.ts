@@ -1,10 +1,12 @@
 import {
   buildRollingFiscalForecastMonths,
+  formatForecastProviderList,
   getFiscalYearChunks,
   mergeMonthlyValuesOntoFiscalHorizon,
   monthKey,
   preserveLockedPastMonthlyValues,
   shortMonthLabel,
+  sumEnabledEnvironmentBudgets,
   sumMonthlyValues,
   type MonthlyValue,
 } from '@/components/public-cloud/forecast/forecast-grid-utils';
@@ -123,24 +125,13 @@ export async function getPlatformForecastSummary() {
 
 export type PlatformForecastSummary = Awaited<ReturnType<typeof getPlatformForecastSummary>>;
 
-function providerSheetLabel(providers: string[]) {
-  return providers
-    .map((provider) => {
-      if (provider === Provider.AWS_LZA) return 'AWS LZA';
-      if (provider === Provider.AWS) return 'AWS';
-      if (provider === Provider.AZURE) return 'Azure';
-      return provider;
-    })
-    .join(' / ');
-}
-
 /** Tall CSV-friendly rows: product line items plus currency totals. */
 export async function buildPlatformForecastExportCsvRows() {
   const summary = await getPlatformForecastSummary();
   const rows: Record<string, string | number>[] = [];
 
   for (const group of summary.groups) {
-    const providers = providerSheetLabel(group.providers);
+    const providers = formatForecastProviderList(group.providers);
     const fiscalYearChunks = getFiscalYearChunks(group.monthlyTotals as MonthlyValue[]);
     const lineItemProducts = group.products.filter((product) => product.hasForecast);
 
@@ -153,7 +144,7 @@ export async function buildPlatformForecastExportCsvRows() {
             'Licence plate': product.licencePlate,
             'Product name': product.name,
             Currency: product.currency,
-            Providers: providerSheetLabel([product.provider]),
+            Providers: formatForecastProviderList([product.provider]),
             'Fiscal year': fyChunk.label,
             Month: shortMonthLabel(month.year, month.month),
             'Month key': `${month.year}-${String(month.month).padStart(2, '0')}`,
@@ -188,7 +179,10 @@ export async function getProductForecastSummary(licencePlate: string) {
 
 async function getForecastForProduct(licencePlate: string, forecastId: string) {
   const forecast = await prisma.cloudCostForecast.findUnique({ where: { id: forecastId } });
-  if (forecast?.licencePlate !== licencePlate) {
+  if (!forecast) {
+    throw new Error('Forecast not found for this product');
+  }
+  if (forecast.licencePlate !== licencePlate) {
     throw new Error('Forecast not found for this product');
   }
   return forecast;
@@ -249,12 +243,7 @@ export function seedForecastFromProductBudget(
   },
 ) {
   const currency = PROVIDER_FORECAST_CURRENCY[provider];
-  let total = 0;
-  if (environmentsEnabled.development) total += budget.dev;
-  if (environmentsEnabled.test) total += budget.test;
-  if (environmentsEnabled.production) total += budget.prod;
-  if (environmentsEnabled.tools) total += budget.tools;
-
+  const total = sumEnabledEnvironmentBudgets(budget, environmentsEnabled);
   return buildRollingFiscalForecastMonths(total, currency, new Date());
 }
 

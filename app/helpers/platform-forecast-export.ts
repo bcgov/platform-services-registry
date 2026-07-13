@@ -1,15 +1,14 @@
 import ExcelJS from 'exceljs';
 import {
+  aggregateMonthlyTotalsFromProducts,
+  formatForecastProviderList,
   getFiscalYearChunks,
   getProviderSpendLabel,
-  mergeMonthlyValuesOntoFiscalHorizon,
-  monthKey,
   shortMonthLabel,
   sumMonthlyValues,
   yearRangeLabel,
   type MonthlyValue,
 } from '@/components/public-cloud/forecast/forecast-grid-utils';
-import { Provider } from '@/prisma/client';
 import type { PlatformForecastProduct, PlatformForecastSummary } from '@/services/db/public-cloud-forecast';
 
 const COLORS = {
@@ -41,14 +40,7 @@ type ForecastExportSheet = {
 };
 
 function providerLabel(providers: string[]) {
-  return providers
-    .map((provider) => {
-      if (provider === Provider.AWS_LZA) return 'AWS LZA';
-      if (provider === Provider.AWS) return 'AWS';
-      if (provider === Provider.AZURE) return 'Azure';
-      return provider;
-    })
-    .join(' / ');
+  return formatForecastProviderList(providers);
 }
 
 function currencyFormat(currency: string) {
@@ -60,21 +52,7 @@ function sanitizeSheetName(name: string) {
 }
 
 function buildFilteredGroupTotals(products: PlatformForecastProduct[], currency: string): MonthlyValue[] {
-  const totalsByMonth = new Map<string, MonthlyValue>();
-
-  for (const product of products) {
-    for (const value of product.monthlyTotals) {
-      const key = monthKey(value.year, value.month);
-      const existing = totalsByMonth.get(key);
-      if (existing) {
-        existing.amount += value.amount;
-      } else {
-        totalsByMonth.set(key, { ...value, currency });
-      }
-    }
-  }
-
-  return mergeMonthlyValuesOntoFiscalHorizon([...totalsByMonth.values()], currency);
+  return aggregateMonthlyTotalsFromProducts(products, currency);
 }
 
 function buildExportSheets(summary: PlatformForecastSummary): ForecastExportSheet[] {

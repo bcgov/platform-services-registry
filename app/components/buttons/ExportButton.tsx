@@ -30,11 +30,11 @@ export default function ExportButton({
   onExport,
   className = '',
   downloadUrl,
-}: {
+}: Readonly<{
   onExport?: () => Promise<boolean>;
   className?: string;
   downloadUrl?: string;
-}) {
+}>) {
   const [isLoading, setIsLoading] = useState(false);
 
   const openNoContentModal = async () => {
@@ -51,6 +51,35 @@ export default function ExportButton({
     );
   };
 
+  const handleExportClick = async () => {
+    if (onExport) {
+      setIsLoading(true);
+      const success = await onExport();
+      if (!success) {
+        await openNoContentModal();
+      }
+      setIsLoading(false);
+      return;
+    }
+
+    if (!downloadUrl) return;
+
+    setIsLoading(true);
+    const defaultName = downloadUrl.includes('format=csv') ? 'data.csv' : 'data.xlsx';
+    const success = await instance.get(downloadUrl, { responseType: 'blob' }).then((res) => {
+      if (res.status === 204) return false;
+      const disposition = res.headers?.['content-disposition'] as string | undefined;
+      const filename = parseContentDispositionFilename(disposition) ?? defaultName;
+      downloadFile(res.data, filename, res.headers);
+      return true;
+    });
+
+    if (!success) {
+      await openNoContentModal();
+    }
+    setIsLoading(false);
+  };
+
   return (
     <>
       <Button
@@ -59,31 +88,7 @@ export default function ExportButton({
         leftSection={<IconCloudDownload />}
         className={cn('pr-6', className)}
         loading={isLoading}
-        onClick={async () => {
-          if (onExport) {
-            setIsLoading(true);
-            const success = await onExport();
-            if (!success) {
-              await openNoContentModal();
-            }
-            setIsLoading(false);
-          } else if (downloadUrl) {
-            setIsLoading(true);
-            const defaultName = downloadUrl.includes('format=csv') ? 'data.csv' : 'data.xlsx';
-            const success = await instance.get(downloadUrl, { responseType: 'blob' }).then((res) => {
-              if (res.status === 204) return false;
-              const disposition = res.headers?.['content-disposition'] as string | undefined;
-              const filename = parseContentDispositionFilename(disposition) ?? defaultName;
-              downloadFile(res.data, filename, res.headers);
-              return true;
-            });
-
-            if (!success) {
-              await openNoContentModal();
-            }
-            setIsLoading(false);
-          }
-        }}
+        onClick={handleExportClick}
       >
         Export
       </Button>

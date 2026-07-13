@@ -38,7 +38,8 @@ function sessionHasRequiredAccess(
   roles?: string[],
   permissions?: PermissionsKey[],
 ) {
-  if (_isUndefined(session)) return false;
+  // next-auth: undefined = still loading, null = unauthenticated
+  if (!session) return false;
 
   const sessionRoles = session.roles ?? [];
   const sessionPermissions = session.permissions ?? {};
