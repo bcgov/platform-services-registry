@@ -71,15 +71,15 @@ export function toOrdinal(n: number): string {
   return n + suffix;
 }
 
-export function formatCurrency(value: number, options?: { zeroAsEmpty?: boolean }) {
-  const { zeroAsEmpty = false } = options ?? {};
+export function formatCurrency(value: number, options?: { zeroAsEmpty?: boolean; currency?: string }) {
+  const { zeroAsEmpty = false, currency = 'CAD' } = options ?? {};
   if (zeroAsEmpty && value === 0) {
     return '-';
   }
 
   return new Intl.NumberFormat('en-US', {
     style: 'currency',
-    currency: 'CAD',
+    currency,
     minimumFractionDigits: 2,
   }).format(value);
 }

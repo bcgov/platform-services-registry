@@ -2,17 +2,17 @@
 
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Button } from '@mantine/core';
-import { IconInfoCircle, IconUsersGroup, IconLayoutGridAdd, IconMoneybag } from '@tabler/icons-react';
+import { IconInfoCircle, IconUsersGroup, IconLayoutGridAdd, IconChartBar } from '@tabler/icons-react';
 import { useEffect, useState } from 'react';
 import { FormProvider, useForm } from 'react-hook-form';
 import { z } from 'zod';
 import PreviousButton from '@/components/buttons/Previous';
 import AccountEnvironmentsPublic from '@/components/form/AccountEnvironmentsPublic';
-import Budget from '@/components/form/Budget';
 import ProjectDescriptionPublic from '@/components/form/ProjectDescriptionPublic';
 import PageAccordion from '@/components/generic/accordion/PageAccordion';
 import FormErrorNotification from '@/components/generic/FormErrorNotification';
 import { openPublicCloudProductEditSubmitModal } from '@/components/modal/publicCloudProductEditSubmit';
+import PublicCloudProjectBudgetSection from '@/components/public-cloud/sections/PublicCloudProjectBudgetSection';
 import TeamContacts from '@/components/public-cloud/sections/TeamContacts';
 import { GlobalRole } from '@/constants';
 import createClientPage from '@/core/client-page';
@@ -27,7 +27,7 @@ const publicCloudProductEdit = createClientPage({
   roles: [GlobalRole.User],
   validations: { pathParams: pathParamSchema },
 });
-export default publicCloudProductEdit(() => {
+export default publicCloudProductEdit(({ session }) => {
   const [, snap] = usePublicProductState();
   const [isDisabled, setDisabled] = useState(false);
 
@@ -95,11 +95,14 @@ export default publicCloudProductEdit(() => {
       },
     },
     {
-      LeftIcon: IconMoneybag,
-      label: 'Project budget',
-      description: '',
-      Component: Budget,
-      componentArgs: { disabled: isDisabled },
+      LeftIcon: IconChartBar,
+      label: 'Project budget and spend forecast',
+      description: 'Fiscal year cloud spend forecast',
+      initialOpen: true,
+      Component: PublicCloudProjectBudgetSection,
+      componentArgs: {
+        licencePlate: currentProduct.licencePlate,
+      },
     },
   ];
 

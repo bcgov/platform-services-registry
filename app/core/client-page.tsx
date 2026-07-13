@@ -5,7 +5,7 @@ import { AppRouterInstance } from 'next/dist/shared/lib/app-router-context.share
 import { useRouter } from 'next/navigation';
 import { Session, PermissionsKey } from 'next-auth';
 import { useSession, signOut as appSignOut } from 'next-auth/react';
-import React, { useEffect } from 'react';
+import React, { useEffect, useMemo } from 'react';
 import { z, TypeOf, ZodType } from 'zod';
 import { arrayIntersection, parseQueryString } from '@/utils/js';
 
@@ -55,27 +55,33 @@ function createClientPage<TPathParams extends ZodType<any, any>, TQueryParams ex
 
       if (session?.requiresRelogin) appSignOut();
 
-      // Wait until the session is fetched by the backend
-      if (_isUndefined(session)) return null;
+      const sessionReady = !_isUndefined(session);
 
-      const _roles = session?.roles ?? [];
-      const _permissions = session?.permissions ?? [];
+      const allowed = useMemo(() => {
+        if (!sessionReady) return false;
 
-      // Validate user roles
-      if (roles && roles.length > 0) {
-        const allowed = arrayIntersection(roles, _roles).length > 0;
-        if (!allowed) {
-          return router.push(fallbackUrl);
+        const _roles = session?.roles ?? [];
+        const _permissions = session?.permissions ?? [];
+
+        if (roles && roles.length > 0) {
+          if (arrayIntersection(roles, _roles).length === 0) return false;
         }
-      }
 
-      // Validate user permissions
-      if (permissions && permissions.length > 0) {
-        const allowed = permissions.some((permKey) => _permissions[permKey as keyof typeof _permissions]);
-        if (!allowed) {
-          return router.push(fallbackUrl);
+        if (permissions && permissions.length > 0) {
+          const permAllowed = permissions.some((permKey) => _permissions[permKey as keyof typeof _permissions]);
+          if (!permAllowed) return false;
         }
-      }
+
+        return true;
+      }, [sessionReady, session, roles, permissions]);
+
+      useEffect(() => {
+        if (sessionReady && !allowed) {
+          router.replace(fallbackUrl);
+        }
+      }, [sessionReady, allowed, fallbackUrl, router]);
+
+      if (!sessionReady || !allowed) return null;
 
       const getPathParams = async () => {
         // Parse & validate path params

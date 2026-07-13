@@ -735,3 +735,62 @@ model Organization {
   publicCloudProducts         PublicCloudProduct[]      @relation("organization")
   publicCloudRequestDataList  PublicCloudRequestData[]  @relation("organization")
 }
+
+enum CloudCostForecastStatus {
+  DRAFT
+  PENDING_APPROVAL
+  APPROVED
+  REJECTED
+  SUPERSEDED
+}
+
+type ForecastMonthlyValue {
+  year     Int
+  month    Int
+  amount   Float
+  currency String
+}
+
+type ClosedMonthSpend {
+  year            Int
+  month           Int
+  currency        String
+  actualTotal     Float
+  forecastTotal   Float?
+  varianceAmount  Float?
+  variancePercent Float?
+}
+
+model CloudCostForecast {
+  id                   String                  @id @default(auto()) @map("_id") @db.ObjectId
+  licencePlate         String
+  status               CloudCostForecastStatus
+  version              Int
+  horizonMonths        Int                     @default(24)
+  monthlyValues        ForecastMonthlyValue[]
+  submittedAt          DateTime?
+  submittedById        String?                 @db.ObjectId
+  approvedAt           DateTime?
+  approvedById         String?                 @db.ObjectId
+  rejectedAt           DateTime?
+  rejectedById         String?                 @db.ObjectId
+  rejectionReason      String?
+  changeJustification  String?
+  changeNature         String?
+  sourceBudgetSnapshot Json?
+  createdAt            DateTime                @default(now())
+  updatedAt            DateTime                @updatedAt
+
+  @@unique([licencePlate, version])
+  @@index([licencePlate, status])
+}
+
+model CloudSpendHistory {
+  id           String             @id @default(auto()) @map("_id") @db.ObjectId
+  licencePlate String
+  provider     Provider
+  months       ClosedMonthSpend[]
+  updatedAt    DateTime           @updatedAt
+
+  @@unique([licencePlate, provider])
+}

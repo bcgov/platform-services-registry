@@ -125,6 +125,12 @@ export default function UserMenu() {
       permission: 'viewPublicCloudBilling',
     },
     {
+      text: 'Public Cloud Forecast',
+      Icon: IconClockDollar,
+      href: '/public-cloud/accountability/forecast',
+      permission: 'viewPublicCloudAccountability',
+    },
+    {
       text: 'General Analytics',
       Icon: IconPresentationAnalytics,
       href: '/analytics/general',
