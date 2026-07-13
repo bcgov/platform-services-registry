@@ -105,7 +105,7 @@ export default publicCloudProductEdit(({ session }) => {
     {
       LeftIcon: IconChartBar,
       label: 'Spend forecast',
-      description: 'Fiscal year cloud spend forecast',
+      description: '',
       Component: PublicCloudForecastSection,
       componentArgs: {
         licencePlate: currentProduct.licencePlate,
