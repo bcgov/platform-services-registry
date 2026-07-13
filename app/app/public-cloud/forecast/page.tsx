@@ -171,7 +171,7 @@ function PlatformForecastGrid({ group }: { group: PlatformForecastSummary['group
             </h2>
             <p className="text-sm text-gray-600">
               {filteredForecastCount} of {filteredProductCount} {activeProviders.map(providerFilterLabel).join(' / ')}{' '}
-              products have an approved forecast included in these totals.
+              products have a forecast included in these totals.
             </p>
           </div>
           {availableProviders.length > 1 && (
@@ -432,8 +432,7 @@ export default publicCloudForecastPage(() => {
           <div className="min-w-0 flex-1">
             <h1 className="text-2xl font-bold">Public Cloud Forecast</h1>
             <p className="text-sm text-gray-600 mt-1">
-              Read-only rollup of the latest approved forecast for every active public cloud product. All forecasts are
-              in CAD.
+              Read-only rollup of the forecast for every active public cloud product. All forecasts are in CAD.
             </p>
           </div>
           <ExportButton className="ml-auto shrink-0" onExport={() => downloadPlatformForecastExport()} />
@@ -441,11 +440,11 @@ export default publicCloudForecastPage(() => {
 
         <div className="grid gap-4 sm:grid-cols-3">
           <SummaryCard label="Active projects" value={String(data?.totalProducts ?? 0)} />
-          <SummaryCard label="With approved forecast" value={String(data?.productsWithForecast ?? 0)} />
+          <SummaryCard label="With forecast" value={String(data?.productsWithForecast ?? 0)} />
           <SummaryCard
             label="Forecast coverage"
             value={`${coverage}%`}
-            hint="Products missing an approved forecast are not included in the totals below."
+            hint="Products missing a forecast are not included in the totals below."
           />
         </div>
 

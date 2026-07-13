@@ -29,7 +29,7 @@ export default function PublicCloudForecastSection({ licencePlate }: { licencePl
     onSuccess: refresh,
   });
 
-  const forecast = data?.activeForecast;
+  const forecast = data?.forecast;
 
   return (
     <div className="space-y-8">
@@ -76,8 +76,6 @@ export default function PublicCloudForecastSection({ licencePlate }: { licencePl
                   provider={product?.provider}
                   forecast={{
                     id: forecast.id,
-                    version: forecast.version,
-                    status: forecast.status,
                     horizonMonths: forecast.horizonMonths ?? FISCAL_FORECAST_HORIZON_MONTHS,
                     updatedAt: forecast.updatedAt,
                   }}

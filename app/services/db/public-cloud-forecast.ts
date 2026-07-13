@@ -9,14 +9,10 @@ import {
   type MonthlyValue,
 } from '@/components/public-cloud/forecast/forecast-grid-utils';
 import prisma from '@/core/prisma';
-import { convertUsdToCad } from '@/helpers/usd-cad-fx';
-import { CloudCostForecastStatus, Provider, ProjectStatus } from '@/prisma/client';
+import { Provider, ProjectStatus } from '@/prisma/client';
 
-export async function getActiveApprovedForecast(licencePlate: string) {
-  return prisma.cloudCostForecast.findFirst({
-    where: { licencePlate, status: CloudCostForecastStatus.APPROVED },
-    orderBy: { version: 'desc' },
-  });
+export async function getProductForecast(licencePlate: string) {
+  return prisma.cloudCostForecast.findUnique({ where: { licencePlate } });
 }
 
 /** All public-cloud forecasts and platform rollups are reported in CAD. */
@@ -26,11 +22,6 @@ export const PROVIDER_FORECAST_CURRENCY: Record<Provider, 'CAD'> = {
   [Provider.AZURE]: 'CAD',
 };
 
-/**
- * Platform-wide forecast rollup for the admin dashboard: sums the latest
- * approved forecast of every active public cloud product per month.
- * All forecasts and rollups are in CAD.
- */
 export type PlatformForecastProduct = {
   licencePlate: string;
   name: string;
@@ -49,22 +40,14 @@ export async function getPlatformForecastSummary() {
   });
   const licencePlates = products.map((p) => p.licencePlate);
 
-  const approvedForecasts = await prisma.cloudCostForecast.findMany({
-    where: {
-      licencePlate: { in: licencePlates },
-      status: CloudCostForecastStatus.APPROVED,
-    },
-    orderBy: { version: 'desc' },
+  const forecasts = await prisma.cloudCostForecast.findMany({
+    where: { licencePlate: { in: licencePlates } },
     select: { licencePlate: true, monthlyValues: true },
   });
 
-  // Ordered by version desc, so the first forecast seen per plate is the active one.
-  const activeForecastByPlate = new Map<string, MonthlyValue[]>();
-  for (const forecast of approvedForecasts) {
-    if (!activeForecastByPlate.has(forecast.licencePlate)) {
-      activeForecastByPlate.set(forecast.licencePlate, forecast.monthlyValues as MonthlyValue[]);
-    }
-  }
+  const forecastByPlate = new Map(
+    forecasts.map((forecast) => [forecast.licencePlate, forecast.monthlyValues as MonthlyValue[]]),
+  );
 
   type CurrencyGroup = {
     currency: 'CAD';
@@ -93,28 +76,25 @@ export async function getPlatformForecastSummary() {
     group.providers.add(product.provider);
     group.productCount += 1;
 
-    const rawForecast = activeForecastByPlate.get(product.licencePlate);
+    const rawForecast = forecastByPlate.get(product.licencePlate);
     const hasForecast = !!rawForecast;
     if (hasForecast) {
       group.forecastCount += 1;
       for (const value of rawForecast) {
         const key = monthKey(value.year, value.month);
-        const amount = value.currency === 'USD' ? convertUsdToCad(value.amount, value.year, value.month) : value.amount;
         const existing = group.totalsByMonth.get(key);
         if (existing) {
-          existing.amount += amount;
+          existing.amount += value.amount;
         } else {
-          group.totalsByMonth.set(key, { year: value.year, month: value.month, amount, currency });
+          group.totalsByMonth.set(key, { year: value.year, month: value.month, amount: value.amount, currency });
         }
       }
     }
 
-    const normalizedForecast = (rawForecast ?? []).map((value) => ({
-      ...value,
-      amount: value.currency === 'USD' ? convertUsdToCad(value.amount, value.year, value.month) : value.amount,
+    const monthlyTotals = mergeMonthlyValuesOntoFiscalHorizon(
+      (rawForecast ?? []).map((value) => ({ ...value, currency })),
       currency,
-    }));
-    const monthlyTotals = mergeMonthlyValuesOntoFiscalHorizon(normalizedForecast, currency);
+    );
 
     group.products.push({
       licencePlate: product.licencePlate,
@@ -129,18 +109,15 @@ export async function getPlatformForecastSummary() {
 
   return {
     totalProducts: products.length,
-    productsWithForecast: activeForecastByPlate.size,
-    groups: [...groups.values()].map((group) => {
-      const monthlyTotals = mergeMonthlyValuesOntoFiscalHorizon([...group.totalsByMonth.values()], group.currency);
-      return {
-        currency: group.currency,
-        providers: [...group.providers].sort(),
-        productCount: group.productCount,
-        forecastCount: group.forecastCount,
-        monthlyTotals,
-        products: group.products,
-      };
-    }),
+    productsWithForecast: forecastByPlate.size,
+    groups: [...groups.values()].map((group) => ({
+      currency: group.currency,
+      providers: [...group.providers].sort(),
+      productCount: group.productCount,
+      forecastCount: group.forecastCount,
+      monthlyTotals: mergeMonthlyValuesOntoFiscalHorizon([...group.totalsByMonth.values()], group.currency),
+      products: group.products,
+    })),
   };
 }
 
@@ -171,7 +148,6 @@ export async function buildPlatformForecastExportCsvRows() {
       for (const product of lineItemProducts) {
         for (let i = 0; i < fyChunk.months.length; i++) {
           const month = fyChunk.months[i];
-          const forecast = product.monthlyTotals[fyChunk.startIndex + i]?.amount ?? 0;
           rows.push({
             Level: 'Product',
             'Licence plate': product.licencePlate,
@@ -181,13 +157,12 @@ export async function buildPlatformForecastExportCsvRows() {
             'Fiscal year': fyChunk.label,
             Month: shortMonthLabel(month.year, month.month),
             'Month key': `${month.year}-${String(month.month).padStart(2, '0')}`,
-            Forecast: forecast,
+            Forecast: product.monthlyTotals[fyChunk.startIndex + i]?.amount ?? 0,
           });
         }
       }
 
-      for (let i = 0; i < fyChunk.months.length; i++) {
-        const month = fyChunk.months[i];
+      for (const month of fyChunk.months) {
         rows.push({
           Level: 'Currency total',
           'Licence plate': '',
@@ -207,22 +182,10 @@ export async function buildPlatformForecastExportCsvRows() {
 }
 
 export async function getProductForecastSummary(licencePlate: string) {
-  const [activeForecast, forecasts] = await Promise.all([
-    getActiveApprovedForecast(licencePlate),
-    prisma.cloudCostForecast.findMany({
-      where: { licencePlate },
-      orderBy: { version: 'desc' },
-      take: 10,
-    }),
-  ]);
-
-  return {
-    activeForecast,
-    forecasts,
-  };
+  const forecast = await getProductForecast(licencePlate);
+  return { forecast };
 }
 
-/** Load a forecast, ensuring it belongs to the product the caller was authorized for. */
 async function getForecastForProduct(licencePlate: string, forecastId: string) {
   const forecast = await prisma.cloudCostForecast.findUnique({ where: { id: forecastId } });
   if (!forecast || forecast.licencePlate !== licencePlate) {
@@ -231,48 +194,32 @@ async function getForecastForProduct(licencePlate: string, forecastId: string) {
   return forecast;
 }
 
-/** Create the product's active forecast (no approval workflow). */
-export async function createForecastDraft(
+export async function createProductForecast(
   licencePlate: string,
   monthlyValues: { year: number; month: number; amount: number; currency: string }[],
   horizonMonths: number,
 ) {
-  const existing = await getActiveApprovedForecast(licencePlate);
+  const existing = await getProductForecast(licencePlate);
   if (existing) {
     throw new Error('A forecast already exists for this product');
   }
 
-  const latest = await prisma.cloudCostForecast.findFirst({
-    where: { licencePlate },
-    orderBy: { version: 'desc' },
-  });
-
-  const version = latest ? latest.version + 1 : 1;
-  const product = await prisma.publicCloudProduct.findFirst({ where: { licencePlate } });
-
   return prisma.cloudCostForecast.create({
     data: {
       licencePlate,
-      status: CloudCostForecastStatus.APPROVED,
-      version,
       horizonMonths,
       monthlyValues,
-      sourceBudgetSnapshot: product?.budget ?? undefined,
     },
   });
 }
 
-/** Update the product's active forecast monthly values. */
-export async function updateForecastDraft(
+export async function updateProductForecast(
   licencePlate: string,
   forecastId: string,
   monthlyValues: { year: number; month: number; amount: number; currency: string }[],
   horizonMonths: number,
 ) {
   const forecast = await getForecastForProduct(licencePlate, forecastId);
-  if (forecast.status !== CloudCostForecastStatus.APPROVED) {
-    throw new Error('Only the active forecast can be updated');
-  }
 
   const existingValues =
     (forecast.monthlyValues as {
@@ -282,12 +229,10 @@ export async function updateForecastDraft(
       currency: string;
     }[]) ?? [];
 
-  const sanitizedValues = preserveLockedPastMonthlyValues(existingValues, monthlyValues);
-
   return prisma.cloudCostForecast.update({
     where: { id: forecastId },
     data: {
-      monthlyValues: sanitizedValues,
+      monthlyValues: preserveLockedPastMonthlyValues(existingValues, monthlyValues),
       horizonMonths,
     },
   });
@@ -310,16 +255,10 @@ export function seedForecastFromProductBudget(
   if (environmentsEnabled.production) total += budget.prod;
   if (environmentsEnabled.tools) total += budget.tools;
 
-  const now = new Date();
-  return buildRollingFiscalForecastMonths(total, currency, now);
+  return buildRollingFiscalForecastMonths(total, currency, new Date());
 }
 
-/**
- * Seed values for a new forecast draft: reuse the active approved forecast
- * (merged onto the current rolling horizon) when one exists, otherwise fall
- * back to the product budget estimates.
- */
-export async function seedForecastDraftValues(product: {
+export async function seedForecastValues(product: {
   licencePlate: string;
   provider: Provider;
   budget: { dev: number; test: number; prod: number; tools: number };
@@ -330,10 +269,10 @@ export async function seedForecastDraftValues(product: {
     tools: boolean;
   };
 }) {
-  const activeForecast = await getActiveApprovedForecast(product.licencePlate);
-  if (activeForecast) {
+  const existing = await getProductForecast(product.licencePlate);
+  if (existing) {
     const currency = PROVIDER_FORECAST_CURRENCY[product.provider];
-    return mergeMonthlyValuesOntoFiscalHorizon(activeForecast.monthlyValues as MonthlyValue[], currency);
+    return mergeMonthlyValuesOntoFiscalHorizon(existing.monthlyValues as MonthlyValue[], currency);
   }
   return seedForecastFromProductBudget(product.provider, product.budget, product.environmentsEnabled);
 }

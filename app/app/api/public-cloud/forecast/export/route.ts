@@ -1,6 +1,6 @@
 import { GlobalPermissions } from '@/constants';
 import createApiHandler from '@/core/api-handler';
-import { forecastExportResponse, NoContent } from '@/core/responses';
+import { CsvResponse, NoContent } from '@/core/responses';
 import { buildPlatformForecastWorkbookBuffer } from '@/helpers/platform-forecast-export';
 import { buildPlatformForecastExportCsvRows, getPlatformForecastSummary } from '@/services/db/public-cloud-forecast';
 import { forecastExportQuerySchema } from '@/validation-schemas/cloud-cost';
@@ -22,7 +22,7 @@ export const GET = createApiHandler({
     if (!rows.length) {
       return NoContent();
     }
-    return forecastExportResponse(rows, 'public-cloud-forecast', 'csv');
+    return CsvResponse(rows, 'public-cloud-forecast.csv');
   }
 
   const summary = await getPlatformForecastSummary();

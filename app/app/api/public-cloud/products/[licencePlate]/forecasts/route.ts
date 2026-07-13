@@ -1,14 +1,9 @@
 import { z } from 'zod';
 import { GlobalRole } from '@/constants';
 import createApiHandler from '@/core/api-handler';
-import prisma from '@/core/prisma';
 import { BadRequestResponse, OkResponse, UnauthorizedResponse } from '@/core/responses';
 import { models } from '@/services/db';
-import {
-  createForecastDraft,
-  getActiveApprovedForecast,
-  seedForecastDraftValues,
-} from '@/services/db/public-cloud-forecast';
+import { createProductForecast, getProductForecast, seedForecastValues } from '@/services/db/public-cloud-forecast';
 import { cloudCostForecastBodySchema } from '@/validation-schemas/cloud-cost';
 
 const pathParamSchema = z.object({
@@ -25,12 +20,8 @@ export const GET = createApiHandler({
     return UnauthorizedResponse();
   }
 
-  const forecasts = await prisma.cloudCostForecast.findMany({
-    where: { licencePlate },
-    orderBy: { version: 'desc' },
-  });
-  const activeForecast = await getActiveApprovedForecast(licencePlate);
-  return OkResponse({ forecasts, activeForecast });
+  const forecast = await getProductForecast(licencePlate);
+  return OkResponse({ forecast });
 });
 
 export const POST = createApiHandler({
@@ -48,11 +39,11 @@ export const POST = createApiHandler({
   const horizonMonths = body?.horizonMonths ?? 24;
 
   if (!monthlyValues?.length) {
-    monthlyValues = await seedForecastDraftValues(product);
+    monthlyValues = await seedForecastValues(product);
   }
 
   try {
-    const forecast = await createForecastDraft(licencePlate, monthlyValues, horizonMonths);
+    const forecast = await createProductForecast(licencePlate, monthlyValues, horizonMonths);
     return OkResponse(forecast);
   } catch (e) {
     return BadRequestResponse((e as Error).message);

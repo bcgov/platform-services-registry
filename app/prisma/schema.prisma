@@ -736,14 +736,6 @@ model Organization {
   publicCloudRequestDataList  PublicCloudRequestData[]  @relation("organization")
 }
 
-enum CloudCostForecastStatus {
-  DRAFT
-  PENDING_APPROVAL
-  APPROVED
-  REJECTED
-  SUPERSEDED
-}
-
 type ForecastMonthlyValue {
   year     Int
   month    Int
@@ -752,25 +744,10 @@ type ForecastMonthlyValue {
 }
 
 model CloudCostForecast {
-  id                   String                  @id @default(auto()) @map("_id") @db.ObjectId
-  licencePlate         String
-  status               CloudCostForecastStatus
-  version              Int
-  horizonMonths        Int                     @default(24)
-  monthlyValues        ForecastMonthlyValue[]
-  submittedAt          DateTime?
-  submittedById        String?                 @db.ObjectId
-  approvedAt           DateTime?
-  approvedById         String?                 @db.ObjectId
-  rejectedAt           DateTime?
-  rejectedById         String?                 @db.ObjectId
-  rejectionReason      String?
-  changeJustification  String?
-  changeNature         String?
-  sourceBudgetSnapshot Json?
-  createdAt            DateTime                @default(now())
-  updatedAt            DateTime                @updatedAt
-
-  @@unique([licencePlate, version])
-  @@index([licencePlate, status])
+  id            String                 @id @default(auto()) @map("_id") @db.ObjectId
+  licencePlate  String                 @unique
+  horizonMonths Int                    @default(24)
+  monthlyValues ForecastMonthlyValue[]
+  createdAt     DateTime               @default(now())
+  updatedAt     DateTime               @updatedAt
 }

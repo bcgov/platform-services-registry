@@ -3,7 +3,7 @@ import { GlobalRole } from '@/constants';
 import createApiHandler from '@/core/api-handler';
 import { BadRequestResponse, OkResponse, UnauthorizedResponse } from '@/core/responses';
 import { models } from '@/services/db';
-import { updateForecastDraft } from '@/services/db/public-cloud-forecast';
+import { updateProductForecast } from '@/services/db/public-cloud-forecast';
 import { objectId } from '@/validation-schemas';
 import { cloudCostForecastBodySchema } from '@/validation-schemas/cloud-cost';
 
@@ -23,7 +23,7 @@ export const PUT = createApiHandler({
   }
 
   try {
-    const forecast = await updateForecastDraft(licencePlate, forecastId, body.monthlyValues, body.horizonMonths);
+    const forecast = await updateProductForecast(licencePlate, forecastId, body.monthlyValues, body.horizonMonths);
     return OkResponse(forecast);
   } catch (e) {
     return BadRequestResponse((e as Error).message);

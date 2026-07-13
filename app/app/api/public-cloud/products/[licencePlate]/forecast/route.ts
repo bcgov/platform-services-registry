@@ -20,6 +20,5 @@ export const GET = createApiHandler({
     return UnauthorizedResponse();
   }
 
-  const summary = await getProductForecastSummary(licencePlate);
-  return OkResponse(summary);
+  return OkResponse(await getProductForecastSummary(licencePlate));
 });

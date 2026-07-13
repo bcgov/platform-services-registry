@@ -14,9 +14,6 @@
     "test": "dotenv -e .env.test -- prisma db push && NODE_OPTIONS='--experimental-vm-modules' jest --runInBand",
     "prisma-generate": "prisma generate",
     "prisma-push": "dotenv -e .env.local -- prisma db push",
-    "seed-local": "dotenv -e .env.local -- ts-node --project tsconfig.seed.json seed/seed-local-dev.ts",
-    "seed-all-local": "dotenv -e .env.local -- ts-node --project tsconfig.seed.json seed/seed-all-local.ts",
-    "seed-forecast-local": "dotenv -e .env.local -- ts-node --project tsconfig.seed.json seed/seed-forecast-local.ts",
     "migrate-data": "cat .env.local | grep DATABASE_URL > ../data-migrations/.env && cd ../data-migrations && npm install && npx migrate-mongo up",
     "email": "dotenv -e .env.local -- email dev --dir emails --port 3001",
     "email-build": "email export --pretty --outDir emails-export --dir emails",
@@ -97,7 +94,6 @@
     "tw-to-css": "^0.0.12",
     "valtio": "^2.1.5",
     "winston": "^3.17.0",
-    "xlsx": "^0.18.5",
     "zod": "^4.0.15"
   },
   "devDependencies": {
@@ -135,7 +131,6 @@
     "prisma": "~6.19.0",
     "ts-jest": "^29.4.1",
     "ts-node": "^10.9.2",
-    "tsconfig-paths": "^4.2.0",
     "typescript": "^6.0.0"
   }
 }

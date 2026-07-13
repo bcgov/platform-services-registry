@@ -28,8 +28,6 @@ import {
 
 type ForecastMeta = {
   id: string;
-  version: number;
-  status: string;
   horizonMonths: number;
   updatedAt?: string;
 };
