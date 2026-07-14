@@ -1,5 +1,5 @@
-import { readFileSync } from 'fs';
-import path from 'path';
+import { readFileSync } from 'node:fs';
+import path from 'node:path';
 import type { MsUser } from '../../sandbox/types';
 import { sampleMinistries } from '../constants/common';
 import prisma from '../core/prisma';
