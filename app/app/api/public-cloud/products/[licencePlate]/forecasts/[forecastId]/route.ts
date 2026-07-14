@@ -16,6 +16,10 @@ export const PUT = createApiHandler({
   roles: [GlobalRole.User],
   validations: { pathParams: pathParamSchema, body: cloudCostForecastBodySchema },
 })(async ({ pathParams, body, session }) => {
+  if (!session.previews.publicCloudForecast) {
+    return UnauthorizedResponse();
+  }
+
   const { licencePlate, forecastId } = pathParams;
   const { data: product } = await models.publicCloudProduct.get({ where: { licencePlate } }, session);
   if (!product) {

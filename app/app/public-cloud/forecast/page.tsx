@@ -390,11 +390,14 @@ const publicCloudForecastPage = createClientPage({
   fallbackUrl: '/login?callbackUrl=/home',
 });
 
-export default publicCloudForecastPage(() => {
+export default publicCloudForecastPage(({ session }) => {
   const { data, isLoading } = useQuery<PlatformForecastSummary>({
     queryKey: ['forecast-platform-forecast'],
     queryFn: () => getPlatformForecast(),
+    enabled: Boolean(session?.previews.publicCloudForecast),
   });
+
+  if (!session?.previews.publicCloudForecast) return null;
 
   const coverage =
     data && data.totalProducts > 0 ? Math.round((data.productsWithForecast / data.totalProducts) * 100) : 0;

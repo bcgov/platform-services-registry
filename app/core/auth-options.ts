@@ -228,6 +228,7 @@ export async function generateSession({
     security: !IS_PROD,
     apiAccount: !IS_PROD,
     costRecovery: !IS_PROD,
+    publicCloudForecast: !IS_PROD,
   };
 
   session.permissions = {
@@ -316,12 +317,13 @@ export async function generateSession({
       session.isBillingReader,
 
     viewPublicCloudForecast:
-      session.isAdmin ||
-      session.isPublicAdmin ||
-      session.isPublicReviewer ||
-      session.isBillingReviewer ||
-      session.isBillingManager ||
-      session.isBillingReader,
+      session.previews.publicCloudForecast &&
+      (session.isAdmin ||
+        session.isPublicAdmin ||
+        session.isPublicReviewer ||
+        session.isBillingReviewer ||
+        session.isBillingManager ||
+        session.isBillingReader),
 
     viewPrivateCloudBilling:
       session.isAdmin || session.isBillingManager || session.isBillingReader || session.isFinanceManager,

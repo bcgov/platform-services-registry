@@ -1,6 +1,6 @@
 import { GlobalPermissions } from '@/constants';
 import createApiHandler from '@/core/api-handler';
-import { CsvResponse, NoContent } from '@/core/responses';
+import { CsvResponse, NoContent, UnauthorizedResponse } from '@/core/responses';
 import { buildPlatformForecastWorkbookBuffer } from '@/helpers/platform-forecast-export';
 import { buildPlatformForecastExportCsvRows, getPlatformForecastSummary } from '@/services/db/public-cloud-forecast';
 import { forecastExportQuerySchema } from '@/validation-schemas/cloud-cost';
@@ -14,7 +14,11 @@ function contentDispositionAttachment(filename: string) {
 export const GET = createApiHandler({
   permissions: [GlobalPermissions.ViewPublicCloudForecast],
   validations: { queryParams: forecastExportQuerySchema },
-})(async ({ queryParams }) => {
+})(async ({ queryParams, session }) => {
+  if (!session.previews.publicCloudForecast) {
+    return UnauthorizedResponse();
+  }
+
   const format = queryParams.format ?? 'xlsx';
 
   if (format === 'csv') {

@@ -102,15 +102,19 @@ export default publicCloudProductEdit(({ session }) => {
       Component: Budget,
       componentArgs: { disabled: isDisabled },
     },
-    {
-      LeftIcon: IconChartBar,
-      label: 'Spend forecast',
-      description: '',
-      Component: PublicCloudForecastSection,
-      componentArgs: {
-        licencePlate: currentProduct.licencePlate,
-      },
-    },
+    ...(session?.previews.publicCloudForecast
+      ? [
+          {
+            LeftIcon: IconChartBar,
+            label: 'Spend forecast',
+            description: '',
+            Component: PublicCloudForecastSection,
+            componentArgs: {
+              licencePlate: currentProduct.licencePlate,
+            },
+          },
+        ]
+      : []),
   ];
 
   return (
