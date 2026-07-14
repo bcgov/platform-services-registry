@@ -190,7 +190,7 @@ async function getForecastForProduct(licencePlate: string, forecastId: string) {
 
 export async function createProductForecast(
   licencePlate: string,
-  monthlyValues: { year: number; month: number; amount: number; currency: string }[],
+  monthlyValues: { year: number; month: number; amount: number; currency: 'CAD' | string }[],
   horizonMonths: number,
 ) {
   const existing = await getProductForecast(licencePlate);
@@ -202,7 +202,7 @@ export async function createProductForecast(
     data: {
       licencePlate,
       horizonMonths,
-      monthlyValues: monthlyValues.map((value) => ({ ...value, currency: 'CAD' })),
+      monthlyValues: monthlyValues.map((value) => ({ ...value, currency: 'CAD' as const })),
     },
   });
 }
@@ -210,22 +210,30 @@ export async function createProductForecast(
 export async function updateProductForecast(
   licencePlate: string,
   forecastId: string,
-  monthlyValues: { year: number; month: number; amount: number; currency: string }[],
+  monthlyValues: { year: number; month: number; amount: number; currency: 'CAD' | string }[],
   horizonMonths: number,
 ) {
   const forecast = await getForecastForProduct(licencePlate, forecastId);
 
-  const existingValues =
-    (forecast.monthlyValues as {
-      year: number;
-      month: number;
-      amount: number;
-      currency: string;
-    }[]) ?? [];
+  const existingValues: MonthlyValue[] = (
+    (forecast.monthlyValues as { year: number; month: number; amount: number; currency?: string }[]) ?? []
+  ).map((value) => ({
+    year: value.year,
+    month: value.month,
+    amount: value.amount,
+    currency: 'CAD' as const,
+  }));
 
-  const lockedValues = preserveLockedPastMonthlyValues(existingValues, monthlyValues).map((value) => ({
+  const proposedValues: MonthlyValue[] = monthlyValues.map((value) => ({
+    year: value.year,
+    month: value.month,
+    amount: value.amount,
+    currency: 'CAD' as const,
+  }));
+
+  const lockedValues = preserveLockedPastMonthlyValues(existingValues, proposedValues).map((value) => ({
     ...value,
-    currency: 'CAD',
+    currency: 'CAD' as const,
   }));
 
   return prisma.cloudCostForecast.update({
@@ -266,7 +274,15 @@ export async function seedForecastValues(product: {
   const existing = await getProductForecast(product.licencePlate);
   if (existing) {
     const currency = PROVIDER_FORECAST_CURRENCY[product.provider];
-    return mergeMonthlyValuesOntoFiscalHorizon(existing.monthlyValues as MonthlyValue[], currency);
+    const existingValues = (
+      (existing.monthlyValues as { year: number; month: number; amount: number; currency?: string }[]) ?? []
+    ).map((value) => ({
+      year: value.year,
+      month: value.month,
+      amount: value.amount,
+      currency: 'CAD' as const,
+    }));
+    return mergeMonthlyValuesOntoFiscalHorizon(existingValues, currency);
   }
   return seedForecastFromProductBudget(product.provider, product.budget, product.environmentsEnabled);
 }

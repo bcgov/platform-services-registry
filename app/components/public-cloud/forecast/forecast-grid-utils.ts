@@ -2,7 +2,7 @@ export type MonthlyValue = {
   year: number;
   month: number;
   amount: number;
-  currency: string;
+  currency: 'CAD';
 };
 
 export type ForecastCellStatus = 'confirmed' | 'needsReview' | 'suggested' | 'past';
@@ -61,7 +61,7 @@ export function sumMonthlyValues(values: MonthlyValue[]) {
 export function buildFiscalForecastMonths(
   horizonFiscalYears: number,
   monthlyAmount: number,
-  currency: string,
+  currency: 'CAD' = 'CAD',
   now = new Date(),
 ): MonthlyValue[] {
   const fiscalStartYear = getFiscalYearStartYear(now);
@@ -91,7 +91,7 @@ export function buildFiscalForecastMonths(
  */
 export function buildRollingFiscalForecastMonths(
   monthlyAmount: number,
-  currency: string,
+  currency: 'CAD' = 'CAD',
   now = new Date(),
   horizonMonths = FISCAL_FORECAST_HORIZON_MONTHS,
 ): MonthlyValue[] {
@@ -117,7 +117,7 @@ export function buildRollingFiscalForecastMonths(
 
 export function mergeMonthlyValuesOntoFiscalHorizon(
   existing: MonthlyValue[],
-  currency = 'CAD',
+  currency: 'CAD' = 'CAD',
   now = new Date(),
 ): MonthlyValue[] {
   const template = buildRollingFiscalForecastMonths(0, currency, now);
@@ -126,7 +126,7 @@ export function mergeMonthlyValuesOntoFiscalHorizon(
   return template.map((slot) => {
     const found = byKey.get(monthKey(slot.year, slot.month));
     if (found) {
-      return { ...found, currency: found.currency || currency };
+      return { ...found, currency };
     }
     return slot;
   });
@@ -429,7 +429,7 @@ export function formatForecastProviderList(providers: string[]) {
 /** Roll up product monthly totals onto the fiscal horizon (optionally only products with a forecast). */
 export function aggregateMonthlyTotalsFromProducts(
   products: { monthlyTotals: MonthlyValue[]; hasForecast?: boolean }[],
-  currency: string,
+  currency: 'CAD' = 'CAD',
   onlyWithForecast = false,
 ): MonthlyValue[] {
   const totalsByMonth = new Map<string, MonthlyValue>();
