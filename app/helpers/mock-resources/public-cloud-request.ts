@@ -138,6 +138,7 @@ export function createSamplePublicCloudRequest(args?: {
     originalDataId: productData.id,
     originalData: deepClone(productData),
     changes: null,
+    pendingForecast: null,
     ...data,
   };
 

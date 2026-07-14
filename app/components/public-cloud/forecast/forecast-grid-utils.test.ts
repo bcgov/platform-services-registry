@@ -194,7 +194,7 @@ describe('preserveLockedPastMonthlyValues', () => {
 
   it('keeps baseline months that are omitted from a partial proposed update', () => {
     const baseline = buildFiscalForecastMonths(2, 1000, 'CAD', june2026);
-    const proposed = [{ year: 2026, month: 7, amount: 2500, currency: 'CAD' }];
+    const proposed: MonthlyValue[] = [{ year: 2026, month: 7, amount: 2500, currency: 'CAD' }];
 
     const result = preserveLockedPastMonthlyValues(baseline, proposed, june2026);
 

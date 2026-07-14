@@ -51,7 +51,7 @@ function sanitizeSheetName(name: string) {
   return name.replace(/[\\/*?[\]:]/g, '-').slice(0, 31) || 'Sheet';
 }
 
-function buildFilteredGroupTotals(products: PlatformForecastProduct[], currency: string): MonthlyValue[] {
+function buildFilteredGroupTotals(products: PlatformForecastProduct[], currency: 'CAD'): MonthlyValue[] {
   return aggregateMonthlyTotalsFromProducts(products, currency);
 }
 

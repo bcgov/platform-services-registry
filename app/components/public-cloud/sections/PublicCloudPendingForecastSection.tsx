@@ -16,7 +16,19 @@ type PendingForecastPayload = {
 
 function parsePendingForecast(value: unknown): PendingForecastPayload | null {
   if (!value || typeof value !== 'object') return null;
-  return value as PendingForecastPayload;
+  const payload = value as {
+    monthlyValues?: { year: number; month: number; amount: number; currency?: string }[];
+    horizonMonths?: number;
+  };
+  return {
+    horizonMonths: payload.horizonMonths,
+    monthlyValues: (payload.monthlyValues ?? []).map((month) => ({
+      year: month.year,
+      month: month.month,
+      amount: month.amount,
+      currency: 'CAD' as const,
+    })),
+  };
 }
 
 export default function PublicCloudPendingForecastSection() {

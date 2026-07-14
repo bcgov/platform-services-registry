@@ -126,7 +126,16 @@ export const POST = apiHandler(async ({ pathParams, session, body }) => {
   ) {
     const existingForecast = await prisma.cloudCostForecast.findUnique({ where: { licencePlate } });
     if (!existingForecast) {
-      await createProductForecast(licencePlate, pendingForecast.monthlyValues, pendingForecast.horizonMonths ?? 24);
+      await createProductForecast(
+        licencePlate,
+        pendingForecast.monthlyValues.map((value) => ({
+          year: value.year,
+          month: value.month,
+          amount: value.amount,
+          currency: 'CAD' as const,
+        })),
+        pendingForecast.horizonMonths ?? 24,
+      );
     }
   }
 

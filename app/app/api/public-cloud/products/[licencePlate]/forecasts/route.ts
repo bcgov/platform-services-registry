@@ -1,4 +1,5 @@
 import { z } from 'zod';
+import { type MonthlyValue } from '@/components/public-cloud/forecast/forecast-grid-utils';
 import { GlobalRole } from '@/constants';
 import createApiHandler from '@/core/api-handler';
 import { BadRequestResponse, OkResponse, UnauthorizedResponse } from '@/core/responses';
@@ -48,8 +49,7 @@ export const POST = createApiHandler({
     return UnauthorizedResponse();
   }
 
-  let monthlyValues: { year: number; month: number; amount: number; currency: string }[] | undefined =
-    body?.monthlyValues;
+  let monthlyValues: MonthlyValue[] | undefined = body?.monthlyValues;
   const horizonMonths = body?.horizonMonths ?? 24;
 
   if (!monthlyValues?.length) {
