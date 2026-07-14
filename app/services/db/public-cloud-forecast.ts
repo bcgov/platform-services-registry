@@ -190,7 +190,7 @@ async function getForecastForProduct(licencePlate: string, forecastId: string) {
 
 export async function createProductForecast(
   licencePlate: string,
-  monthlyValues: { year: number; month: number; amount: number; currency: 'CAD' | string }[],
+  monthlyValues: MonthlyValue[],
   horizonMonths: number,
 ) {
   const existing = await getProductForecast(licencePlate);
@@ -202,7 +202,12 @@ export async function createProductForecast(
     data: {
       licencePlate,
       horizonMonths,
-      monthlyValues: monthlyValues.map((value) => ({ ...value, currency: 'CAD' as const })),
+      monthlyValues: monthlyValues.map((value) => ({
+        year: value.year,
+        month: value.month,
+        amount: value.amount,
+        currency: 'CAD' as const,
+      })),
     },
   });
 }
@@ -210,7 +215,7 @@ export async function createProductForecast(
 export async function updateProductForecast(
   licencePlate: string,
   forecastId: string,
-  monthlyValues: { year: number; month: number; amount: number; currency: 'CAD' | string }[],
+  monthlyValues: MonthlyValue[],
   horizonMonths: number,
 ) {
   const forecast = await getForecastForProduct(licencePlate, forecastId);
