@@ -22,7 +22,7 @@ export async function updatePublicCloudForecast(
   licencePlate: string,
   forecastId: string,
   data: {
-    monthlyValues: { year: number; month: number; amount: number; currency: 'USD' | 'CAD' }[];
+    monthlyValues: { year: number; month: number; amount: number; currency: 'CAD' }[];
     horizonMonths: number;
   },
 ) {

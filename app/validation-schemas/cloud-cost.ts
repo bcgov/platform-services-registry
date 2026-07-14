@@ -4,7 +4,7 @@ export const forecastMonthlyValueSchema = z.object({
   year: z.number().int().min(2000).max(2100),
   month: z.number().int().min(1).max(12),
   amount: z.number().min(0),
-  currency: z.enum(['USD', 'CAD']),
+  currency: z.literal('CAD'),
 });
 
 export const cloudCostForecastBodySchema = z.object({

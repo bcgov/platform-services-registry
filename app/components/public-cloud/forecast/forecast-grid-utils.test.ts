@@ -191,6 +191,18 @@ describe('preserveLockedPastMonthlyValues', () => {
     expect(april?.amount).toBe(1000);
     expect(july?.amount).toBe(9999);
   });
+
+  it('keeps baseline months that are omitted from a partial proposed update', () => {
+    const baseline = buildFiscalForecastMonths(2, 1000, 'CAD', june2026);
+    const proposed = [{ year: 2026, month: 7, amount: 2500, currency: 'CAD' }];
+
+    const result = preserveLockedPastMonthlyValues(baseline, proposed, june2026);
+
+    expect(result).toHaveLength(baseline.length);
+    expect(result.find((v) => v.month === 7 && v.year === 2026)?.amount).toBe(2500);
+    expect(result.find((v) => v.month === 4 && v.year === 2026)?.amount).toBe(1000);
+    expect(result.find((v) => v.month === 8 && v.year === 2026)?.amount).toBe(1000);
+  });
 });
 
 describe('getForecastIncreases', () => {

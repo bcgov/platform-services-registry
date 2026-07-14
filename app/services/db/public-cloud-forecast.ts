@@ -202,7 +202,7 @@ export async function createProductForecast(
     data: {
       licencePlate,
       horizonMonths,
-      monthlyValues,
+      monthlyValues: monthlyValues.map((value) => ({ ...value, currency: 'CAD' })),
     },
   });
 }
@@ -223,10 +223,15 @@ export async function updateProductForecast(
       currency: string;
     }[]) ?? [];
 
+  const lockedValues = preserveLockedPastMonthlyValues(existingValues, monthlyValues).map((value) => ({
+    ...value,
+    currency: 'CAD',
+  }));
+
   return prisma.cloudCostForecast.update({
     where: { id: forecastId },
     data: {
-      monthlyValues: preserveLockedPastMonthlyValues(existingValues, monthlyValues),
+      monthlyValues: lockedValues,
       horizonMonths,
     },
   });

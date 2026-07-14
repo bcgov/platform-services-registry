@@ -742,7 +742,7 @@ type ForecastMonthlyValue {
   year     Int
   month    Int
   amount   Float
-  currency String
+  currency String // Always CAD for public-cloud forecasts
 }
 
 model CloudCostForecast {

@@ -267,20 +267,27 @@ export function getInitialConfirmedKeys(
   return keys;
 }
 
-/** Keep past-month amounts from baseline; only current/future months may change. */
+/** Merge proposed months onto baseline. Past months stay locked; omitted months are kept. */
 export function preserveLockedPastMonthlyValues(
   baseline: MonthlyValue[],
   proposed: MonthlyValue[],
   now = new Date(),
 ): MonthlyValue[] {
   const baselineByKey = new Map(baseline.map((v) => [monthKey(v.year, v.month), v]));
+  const proposedByKey = new Map(proposed.map((v) => [monthKey(v.year, v.month), v]));
+  const keys = new Set([...baselineByKey.keys(), ...proposedByKey.keys()]);
 
-  return proposed.map((v) => {
-    if (isPastMonth(v.year, v.month, now)) {
-      return baselineByKey.get(monthKey(v.year, v.month)) ?? v;
-    }
-    return v;
-  });
+  return [...keys]
+    .map((key) => {
+      const existing = baselineByKey.get(key);
+      const next = proposedByKey.get(key);
+      if (!next) return existing!;
+      if (isPastMonth(next.year, next.month, now)) {
+        return existing ?? next;
+      }
+      return next;
+    })
+    .sort((a, b) => a.year - b.year || a.month - b.month);
 }
 
 export function countCellsAwaitingForecast(statuses: ForecastCellStatus[]) {

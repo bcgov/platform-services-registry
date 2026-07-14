@@ -3,7 +3,7 @@
 import { Button, NumberInput } from '@mantine/core';
 import { useMutation } from '@tanstack/react-query';
 import { ReactNode, useEffect, useMemo, useState } from 'react';
-import { updatePublicCloudForecast } from '@/services/backend/public-cloud/forecast';
+import { createPublicCloudForecast, updatePublicCloudForecast } from '@/services/backend/public-cloud/forecast';
 import {
   applyAmountToFutureMonths,
   copyAmountAcrossEditableMonths,
@@ -103,7 +103,8 @@ function CellEditor({ value, currency, status, editable, onChange, onApplyToFutu
 
 type ProjectBudgetForecastPanelProps = Readonly<{
   licencePlate: string;
-  forecast: ForecastMeta;
+  /** Null when editing an unsaved draft seeded from product budget. */
+  forecast: ForecastMeta | null;
   monthlyValues: MonthlyValue[];
   /** Sum of enabled environment budgets (dev/test/prod/tools). Used to fill months. */
   budgetMonthlyTotal?: number;
@@ -125,6 +126,7 @@ export default function ProjectBudgetForecastPanel({
 }: ProjectBudgetForecastPanelProps) {
   const currency = 'CAD';
   const spendLabel = getProviderSpendLabel(provider);
+  const isUnsavedDraft = !forecast;
 
   const cadMonthlyValues = useMemo(
     () =>
@@ -159,21 +161,28 @@ export default function ProjectBudgetForecastPanel({
   );
 
   const isDirty = JSON.stringify(values) !== JSON.stringify(baselineValues);
+  const canSave = isUnsavedDraft || isDirty;
   const fiscalYearChunks = getFiscalYearChunks(values);
   const grandTotal = sumMonthlyValues(values);
 
   const saveForecast = useMutation({
     mutationFn: () => {
-      const lockedValues = preserveLockedPastMonthlyValues(baselineValues, values);
-      return updatePublicCloudForecast(licencePlate, forecast.id, {
-        monthlyValues: lockedValues.map((v) => ({
-          year: v.year,
-          month: v.month,
-          amount: Number(v.amount),
-          currency: 'CAD' as const,
-        })),
+      const lockedValues = preserveLockedPastMonthlyValues(baselineValues, values).map((v) => ({
+        year: v.year,
+        month: v.month,
+        amount: Number(v.amount),
+        currency: 'CAD' as const,
+      }));
+      const payload = {
+        monthlyValues: lockedValues,
         horizonMonths: FISCAL_FORECAST_HORIZON_MONTHS,
-      });
+      };
+
+      if (!forecast) {
+        return createPublicCloudForecast(licencePlate, payload);
+      }
+
+      return updatePublicCloudForecast(licencePlate, forecast.id, payload);
     },
     onSuccess: () => onSaved(),
   });
@@ -235,6 +244,12 @@ export default function ProjectBudgetForecastPanel({
             month.
           </p>
         )}
+        {isUnsavedDraft && editable && (
+          <p className="text-amber-800">
+            Draft from product budget — nothing is saved until you click{' '}
+            <span className="font-medium">Save forecast</span>.
+          </p>
+        )}
       </div>
 
       <div className="sticky top-0 z-20 -mx-1 px-1 py-2 bg-gray-50/95 backdrop-blur border-b border-gray-200 space-y-2">
@@ -269,7 +284,7 @@ export default function ProjectBudgetForecastPanel({
                   size="compact-sm"
                   color="primary"
                   loading={saveForecast.isPending}
-                  disabled={!isDirty}
+                  disabled={!canSave}
                   onClick={handleSaveForecast}
                 >
                   Save forecast
@@ -279,7 +294,7 @@ export default function ProjectBudgetForecastPanel({
               <span className="text-gray-500 font-medium">Forecast</span>
             )}
           </div>
-          {editable && forecast.updatedAt && (
+          {editable && forecast?.updatedAt && (
             <div className="text-xs text-gray-600">Last saved {new Date(forecast.updatedAt).toLocaleString()}</div>
           )}
         </div>

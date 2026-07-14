@@ -43,8 +43,8 @@ function providerLabel(providers: string[]) {
   return formatForecastProviderList(providers);
 }
 
-function currencyFormat(currency: string) {
-  return currency === 'USD' ? '"$"#,##0' : '"CA$"#,##0';
+function cadCurrencyFormat() {
+  return '"CA$"#,##0';
 }
 
 function sanitizeSheetName(name: string) {
@@ -64,7 +64,7 @@ function buildExportSheets(summary: PlatformForecastSummary): ForecastExportShee
     sheets.push({
       sheetName: sanitizeSheetName(`All - ${group.currency}`),
       title: `Cloud Spend — All providers (${group.currency})`,
-      subtitle: `${group.forecastCount} of ${group.productCount} products with an approved forecast · Currency: ${group.currency}`,
+      subtitle: `${group.forecastCount} of ${group.productCount} products with a forecast · Currency: ${group.currency}`,
       currency: group.currency,
       providers: group.providers,
       productCount: group.productCount,
@@ -83,7 +83,7 @@ function buildExportSheets(summary: PlatformForecastSummary): ForecastExportShee
       sheets.push({
         sheetName: sanitizeSheetName(providerLabel([provider])),
         title: `${getProviderSpendLabel(provider)} (${group.currency})`,
-        subtitle: `${forecastCount} of ${allProviderProducts.length} products with an approved forecast · Currency: ${group.currency}`,
+        subtitle: `${forecastCount} of ${allProviderProducts.length} products with a forecast · Currency: ${group.currency}`,
         currency: group.currency,
         providers: [provider],
         productCount: allProviderProducts.length,
@@ -130,7 +130,7 @@ function styleHeaderRow(row: ExcelJS.Row, colCount: number) {
   }
 }
 
-function styleTotalRow(row: ExcelJS.Row, colCount: number, currency: string) {
+function styleTotalRow(row: ExcelJS.Row, colCount: number) {
   row.height = 20;
   for (let col = 1; col <= colCount; col++) {
     const cell = row.getCell(col);
@@ -142,12 +142,12 @@ function styleTotalRow(row: ExcelJS.Row, colCount: number, currency: string) {
       bottom: { style: 'thin', color: { argb: `FF${COLORS.border}` } },
     };
     if (col > 1 && typeof cell.value === 'number') {
-      cell.numFmt = currencyFormat(currency);
+      cell.numFmt = cadCurrencyFormat();
     }
   }
 }
 
-function styleProductRow(row: ExcelJS.Row, colCount: number, currency: string, alt: boolean) {
+function styleProductRow(row: ExcelJS.Row, colCount: number, alt: boolean) {
   row.height = 18;
   for (let col = 1; col <= colCount; col++) {
     const cell = row.getCell(col);
@@ -160,7 +160,7 @@ function styleProductRow(row: ExcelJS.Row, colCount: number, currency: string, a
     cell.alignment = { vertical: 'middle', horizontal: col === 1 ? 'left' : 'right', indent: col === 1 ? 1 : 0 };
     if (col > 1) {
       if (typeof cell.value === 'number') {
-        cell.numFmt = currencyFormat(currency);
+        cell.numFmt = cadCurrencyFormat();
       } else if (cell.value === '' || cell.value == null) {
         cell.value = '—';
         cell.font = { size: 10, color: { argb: `FF${COLORS.muted}` } };
@@ -205,7 +205,7 @@ function addSummarySheet(workbook: ExcelJS.Workbook, summary: PlatformForecastSu
 
   const kpis = [
     ['Active projects', summary.totalProducts],
-    ['With approved forecast', summary.productsWithForecast],
+    ['With a forecast', summary.productsWithForecast],
     ['Forecast coverage %', coverage],
   ] as const;
   for (const [label, value] of kpis) {
@@ -240,7 +240,7 @@ function addSummarySheet(workbook: ExcelJS.Workbook, summary: PlatformForecastSu
       cell.alignment = { vertical: 'middle', horizontal: col <= 2 ? 'left' : 'right' };
     }
 
-    row.getCell(5).numFmt = currencyFormat(exportSheet.currency);
+    row.getCell(5).numFmt = cadCurrencyFormat();
   });
 
   sheet.getColumn(1).width = 18;
@@ -296,11 +296,11 @@ function addDetailSheet(workbook: ExcelJS.Workbook, exportSheet: ForecastExportS
       const forecasts = fyChunk.months.map((_, i) => product.monthlyTotals[fyChunk.startIndex + i]?.amount ?? 0);
       const productYearTotal = forecasts.reduce((sum, v) => sum + v, 0);
       const row = sheet.addRow([`${product.name} (${product.licencePlate})`, ...forecasts, productYearTotal]);
-      styleProductRow(row, fyColCount, exportSheet.currency, index % 2 === 1);
+      styleProductRow(row, fyColCount, index % 2 === 1);
     });
 
     const forecastTotal = sheet.addRow(['Forecast total', ...fyChunk.months.map((month) => month.amount), yearTotal]);
-    styleTotalRow(forecastTotal, fyColCount, exportSheet.currency);
+    styleTotalRow(forecastTotal, fyColCount);
 
     sheet.addRow([]);
   }
@@ -314,7 +314,7 @@ function addDetailSheet(workbook: ExcelJS.Workbook, exportSheet: ForecastExportS
   footerRow.getCell(1).font = { bold: true, size: 10 };
   footerRow.getCell(2).font = { bold: true, size: 11 };
   footerRow.getCell(2).alignment = { horizontal: 'right' };
-  footerRow.getCell(2).numFmt = currencyFormat(exportSheet.currency);
+  footerRow.getCell(2).numFmt = cadCurrencyFormat();
 
   setColumnWidths(sheet, 42, maxMonths + 1);
 }
