@@ -2,7 +2,7 @@
 
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Button } from '@mantine/core';
-import { IconInfoCircle, IconUsersGroup, IconLayoutGridAdd, IconMoneybag } from '@tabler/icons-react';
+import { IconInfoCircle, IconUsersGroup, IconLayoutGridAdd, IconMoneybag, IconChartBar } from '@tabler/icons-react';
 import { useEffect, useState } from 'react';
 import { FormProvider, useForm } from 'react-hook-form';
 import { z } from 'zod';
@@ -13,6 +13,7 @@ import ProjectDescriptionPublic from '@/components/form/ProjectDescriptionPublic
 import PageAccordion from '@/components/generic/accordion/PageAccordion';
 import FormErrorNotification from '@/components/generic/FormErrorNotification';
 import { openPublicCloudProductEditSubmitModal } from '@/components/modal/publicCloudProductEditSubmit';
+import PublicCloudForecastSection from '@/components/public-cloud/sections/PublicCloudForecastSection';
 import TeamContacts from '@/components/public-cloud/sections/TeamContacts';
 import { GlobalRole } from '@/constants';
 import createClientPage from '@/core/client-page';
@@ -28,7 +29,7 @@ const publicCloudProductEdit = createClientPage({
   roles: [GlobalRole.User],
   validations: { pathParams: pathParamSchema },
 });
-export default publicCloudProductEdit(() => {
+export default publicCloudProductEdit(({ session }) => {
   const [, snap] = usePublicProductState();
   const [isDisabled, setDisabled] = useState(false);
 
@@ -107,6 +108,19 @@ export default publicCloudProductEdit(() => {
       Component: Budget,
       componentArgs: { disabled: isDisabled },
     },
+    ...(session?.previews.publicCloudForecast
+      ? [
+          {
+            LeftIcon: IconChartBar,
+            label: 'Spend forecast',
+            description: '',
+            Component: PublicCloudForecastSection,
+            componentArgs: {
+              licencePlate: currentProduct.licencePlate,
+            },
+          },
+        ]
+      : []),
   ];
 
   return (

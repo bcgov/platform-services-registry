@@ -17,9 +17,16 @@ yarn-error.log*
 
 # local env files
 .env*.local
+.env.local.*
 .env
 .env.test
 .env.secret*
+
+# local tooling / agent state
+.pi/
+
+# sandbox tunnel runtime (logs, env backups; not source)
+sandbox/.tunnel/
 
 # typescript
 *.tsbuildinfo

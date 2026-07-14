@@ -132,7 +132,8 @@ export async function generateSession({
     // @ts-ignore: Ignore TypeScript error for dynamic property assignment
     session[key] = false;
   });
-  session.roles = userSessionOverride?.roles || [];
+  // Copy to avoid mutating the caller's array when roles are appended below.
+  session.roles = [...(userSessionOverride?.roles || [])];
   session.ministries = {
     editor: [],
     reader: [],
@@ -167,7 +168,8 @@ export async function generateSession({
       session.user.idirGuid = userSession.idirGuid;
       session.idToken = userSession.idToken;
       session.kcUserId = userSession.sub;
-      session.roles = userSession.roles;
+      // Copy to avoid mutating the caller's array when roles are appended below.
+      session.roles = [...userSession.roles];
       session.teams = userSession.teams;
       session.requiresRelogin = !userSession.accessToken;
       session.nextTokenRefreshTime = userSession.nextTokenRefreshTime;
@@ -226,6 +228,7 @@ export async function generateSession({
     security: !IS_PROD,
     apiAccount: !IS_PROD,
     costRecovery: !IS_PROD,
+    publicCloudForecast: !IS_PROD,
   };
 
   session.permissions = {
@@ -312,6 +315,8 @@ export async function generateSession({
       session.isBillingReviewer ||
       session.isBillingManager ||
       session.isBillingReader,
+
+    viewPublicCloudForecast: session.previews.publicCloudForecast && (session.isAdmin || session.isPublicAdmin),
 
     viewPrivateCloudBilling:
       session.isAdmin || session.isBillingManager || session.isBillingReader || session.isFinanceManager,

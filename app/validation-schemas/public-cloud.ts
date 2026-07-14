@@ -14,6 +14,7 @@ import {
 } from '@/prisma/client';
 import { ProductBiliingStatus } from '@/types';
 import { processEnumString } from '@/utils/js';
+import { forecastMonthlyValueSchema } from './cloud-cost';
 import { RequestDecision, optionalCommentSchema } from './shared';
 
 export const getBudgetSchema = (provider: Provider) => {
@@ -181,6 +182,8 @@ const publicCloudEditBaseRequestBodySchema = publicCloudBaseRequestBodySchema.ex
 export const publicCloudCreateRequestBodySchema = applyCommonPublicCloudValidations(
   publicCloudBaseRequestBodySchema.extend({
     isAgMinistryChecked: z.boolean().optional(),
+    /** Optional spend forecast submitted with the create request; persisted after licence plate assignment. */
+    forecastMonthlyValues: z.array(forecastMonthlyValueSchema).min(1).optional(),
   }),
 )
   .refine(validateAgMinistryChecked, {

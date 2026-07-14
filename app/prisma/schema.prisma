@@ -276,6 +276,8 @@ model PublicCloudRequest {
   originalDataId  String?                 @db.ObjectId
   originalData    PublicCloudRequestData? @relation("originalData", fields: [originalDataId], references: [id])
   changes         PublicCloudDataChanges?
+  /// Spend forecast captured on create; promoted to CloudCostForecast only after successful provision.
+  pendingForecast Json?
 }
 
 model PublicCloudBilling {
@@ -736,4 +738,20 @@ model Organization {
   privateCloudRequestDataList PrivateCloudRequestData[] @relation("organization")
   publicCloudProducts         PublicCloudProduct[]      @relation("organization")
   publicCloudRequestDataList  PublicCloudRequestData[]  @relation("organization")
+}
+
+type ForecastMonthlyValue {
+  year     Int
+  month    Int
+  amount   Float
+  currency String // Always CAD for public-cloud forecasts
+}
+
+model CloudCostForecast {
+  id            String                 @id @default(auto()) @map("_id") @db.ObjectId
+  licencePlate  String                 @unique
+  horizonMonths Int                    @default(24)
+  monthlyValues ForecastMonthlyValue[]
+  createdAt     DateTime               @default(now())
+  updatedAt     DateTime               @updatedAt
 }
