@@ -26,7 +26,7 @@ async function main() {
   );
   await seedDemoPublicCloudProducts();
 
-  console.log('\n3. Forecast demo data (forecasts + spend history)...');
+  console.log('\n3. Forecast demo data...');
   for (const licencePlate of AZURE_DEMO_PLATES) {
     await seedForecastForProduct(licencePlate, {
       reset,

@@ -11,6 +11,7 @@
     "@react-email/preview-server",
     "ts-jest",
     "ts-node",
+    "tsconfig-paths",
     "@prisma/client",
     "prettier",
     "@faker-js/faker",
