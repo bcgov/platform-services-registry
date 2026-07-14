@@ -5,6 +5,7 @@ import ExternalLink from '@/components/generic/button/ExternalLink';
 import FormCheckbox from '@/components/generic/checkbox/FormCheckbox';
 import { getAwsLzaConsoleUrl, publicCloudEnvironments, PublicCloudEnvironmentKey } from '@/constants/public-cloud';
 import { Provider } from '@/prisma/client';
+import { useAppState } from '@/states/global';
 interface EnvironmentsEnabled {
   production: boolean;
   productionRequiresNetworking?: boolean;
@@ -35,6 +36,7 @@ export default function AccountEnvironmentsPublic({
   selected?: EnvironmentsEnabled;
   awsAccounts?: AwsAccount[];
 }) {
+  const [, appSnapshot] = useAppState();
   const {
     register,
     formState: { errors },
@@ -72,8 +74,8 @@ export default function AccountEnvironmentsPublic({
 
     return (
       <div className="ml-7 mt-1 min-w-40 text-sm sm:ml-4">
-        {environmentEnabled && account?.accountId ? (
-          <ExternalLink href={getAwsLzaConsoleUrl(account.accountId)} className="font-medium">
+        {environmentEnabled && account?.accountId && appSnapshot.info.APP_ENV ? (
+          <ExternalLink href={getAwsLzaConsoleUrl(account.accountId, appSnapshot.info.IS_PROD)} className="font-medium">
             Sign in to console
           </ExternalLink>
         ) : (

@@ -77,6 +77,10 @@ export function getAwsLzaAccountName(licencePlate: string, environment: PublicCl
   return `${licencePlate}-${environmentShortNames[environment]}`;
 }
 
-export function getAwsLzaConsoleUrl(accountId: string) {
-  return `https://bcgov.awsapps.com/start/#/console?account_id=${accountId}`;
+export function getAwsLzaConsoleUrl(accountId: string, isProd: boolean) {
+  if (isProd) {
+    return `https://bcgov.awsapps.com/start/#/console?account_id=${accountId}`;
+  }
+
+  return `https://forge-bcgov.awsapps.com/start/#/console?account_id=${accountId}`;
 }
