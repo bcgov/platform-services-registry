@@ -64,16 +64,6 @@ export const privateCloudProductSorts = productSorts.concat([
   },
 ]);
 
-export const environmentShortNames = {
-  development: 'dev',
-  test: 'test',
-  production: 'prod',
-  tools: 'tools',
-} as const;
-
-export type EnvironmentShortName = keyof typeof environmentShortNames;
-export const environmentLongKeys = Object.keys(environmentShortNames) as Array<EnvironmentShortName>;
-
 export const environmentLongNames = {
   dev: 'development',
   test: 'test',

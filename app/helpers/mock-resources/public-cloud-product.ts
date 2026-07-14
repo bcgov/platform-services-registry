@@ -62,6 +62,7 @@ export function createSamplePublicCloudProduct(args?: {
       tools: true,
       toolsRequiresNetworking: false,
     },
+    awsAccounts: [],
     createdAt: new Date(),
     updatedAt: new Date(),
     archivedAt: new Date(),
