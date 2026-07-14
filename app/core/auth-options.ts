@@ -316,14 +316,7 @@ export async function generateSession({
       session.isBillingManager ||
       session.isBillingReader,
 
-    viewPublicCloudForecast:
-      session.previews.publicCloudForecast &&
-      (session.isAdmin ||
-        session.isPublicAdmin ||
-        session.isPublicReviewer ||
-        session.isBillingReviewer ||
-        session.isBillingManager ||
-        session.isBillingReader),
+    viewPublicCloudForecast: session.previews.publicCloudForecast && (session.isAdmin || session.isPublicAdmin),
 
     viewPrivateCloudBilling:
       session.isAdmin || session.isBillingManager || session.isBillingReader || session.isFinanceManager,
