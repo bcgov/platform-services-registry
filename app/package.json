@@ -130,6 +130,6 @@
     "prisma": "~6.19.0",
     "ts-jest": "^29.4.1",
     "ts-node": "^10.9.2",
-    "typescript": "^6.0.0"
+    "typescript": "^7.0.0"
   }
 }

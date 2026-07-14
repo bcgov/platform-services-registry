@@ -26,6 +26,6 @@
     "ts-jest": "^29.2.5",
     "ts-jest-mock-import-meta": "^1.2.1",
     "tsx": "^4.15.4",
-    "typescript": "^6.0.0"
+    "typescript": "^7.0.0"
   }
 }
