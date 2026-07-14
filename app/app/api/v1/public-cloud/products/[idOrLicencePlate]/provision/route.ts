@@ -77,7 +77,7 @@ export const POST = apiHandler(async ({ pathParams, session, body }) => {
       decisionStatus: DecisionStatus.PROVISIONED,
       provisionedDate: new Date(),
       active: false,
-      ...(pendingForecast ? { pendingForecast: Prisma.DbNull } : {}),
+      ...(pendingForecast ? { pendingForecast: null } : {}),
     },
     include: publicCloudRequestDetailInclude,
   });
