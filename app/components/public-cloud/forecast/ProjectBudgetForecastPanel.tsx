@@ -102,7 +102,8 @@ function CellEditor({ value, currency, status, editable, onChange, onApplyToFutu
 }
 
 type ProjectBudgetForecastPanelProps = Readonly<{
-  licencePlate: string;
+  /** Required when saving via API; omit for create-request form mode. */
+  licencePlate?: string;
   /** Null when editing an unsaved draft seeded from product budget. */
   forecast: ForecastMeta | null;
   monthlyValues: MonthlyValue[];
@@ -111,7 +112,9 @@ type ProjectBudgetForecastPanelProps = Readonly<{
   editable: boolean;
   provider?: string;
   workflowActions?: ReactNode;
-  onSaved: () => void;
+  /** When set, values sync into the parent form instead of calling the forecast APIs. */
+  onValuesChange?: (values: MonthlyValue[]) => void;
+  onSaved?: () => void;
 }>;
 
 export default function ProjectBudgetForecastPanel({
@@ -122,10 +125,12 @@ export default function ProjectBudgetForecastPanel({
   editable,
   provider,
   workflowActions,
+  onValuesChange,
   onSaved,
 }: ProjectBudgetForecastPanelProps) {
   const currency = 'CAD';
   const spendLabel = getProviderSpendLabel(provider);
+  const isFormBound = typeof onValuesChange === 'function';
   const isUnsavedDraft = !forecast;
 
   const cadMonthlyValues = useMemo(
@@ -149,6 +154,18 @@ export default function ProjectBudgetForecastPanel({
     setValues(baselineValues);
   }, [baselineValues]);
 
+  useEffect(() => {
+    if (!isFormBound) return;
+    onValuesChange?.(
+      values.map((value) => ({
+        year: value.year,
+        month: value.month,
+        amount: Number(value.amount),
+        currency: 'CAD' as const,
+      })),
+    );
+  }, [isFormBound, values, onValuesChange]);
+
   const cellStatuses = useMemo(
     () =>
       getCellStatuses(values, {
@@ -167,6 +184,10 @@ export default function ProjectBudgetForecastPanel({
 
   const saveForecast = useMutation({
     mutationFn: () => {
+      if (!licencePlate) {
+        throw new Error('licencePlate is required to save a forecast');
+      }
+
       const lockedValues = preserveLockedPastMonthlyValues(baselineValues, values).map((v) => ({
         year: v.year,
         month: v.month,
@@ -184,7 +205,7 @@ export default function ProjectBudgetForecastPanel({
 
       return updatePublicCloudForecast(licencePlate, forecast.id, payload);
     },
-    onSuccess: () => onSaved(),
+    onSuccess: () => onSaved?.(),
   });
 
   const handleAmountChange = (index: number, amount: number) => {
@@ -246,8 +267,14 @@ export default function ProjectBudgetForecastPanel({
         )}
         {isUnsavedDraft && editable && (
           <p className="text-amber-800">
-            Draft from product budget — nothing is saved until you click{' '}
-            <span className="font-medium">Save forecast</span>.
+            {isFormBound ? (
+              <>Draft from product budget — included when you submit this create request.</>
+            ) : (
+              <>
+                Draft from product budget — nothing is saved until you click{' '}
+                <span className="font-medium">Save forecast</span>.
+              </>
+            )}
           </p>
         )}
       </div>
@@ -279,16 +306,18 @@ export default function ProjectBudgetForecastPanel({
                 >
                   Discard changes
                 </Button>
-                <Button
-                  type="button"
-                  size="compact-sm"
-                  color="primary"
-                  loading={saveForecast.isPending}
-                  disabled={!canSave}
-                  onClick={handleSaveForecast}
-                >
-                  Save forecast
-                </Button>
+                {!isFormBound && (
+                  <Button
+                    type="button"
+                    size="compact-sm"
+                    color="primary"
+                    loading={saveForecast.isPending}
+                    disabled={!canSave}
+                    onClick={handleSaveForecast}
+                  >
+                    Save forecast
+                  </Button>
+                )}
               </>
             ) : (
               <span className="text-gray-500 font-medium">Forecast</span>

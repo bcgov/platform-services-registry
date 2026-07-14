@@ -276,6 +276,8 @@ model PublicCloudRequest {
   originalDataId  String?                 @db.ObjectId
   originalData    PublicCloudRequestData? @relation("originalData", fields: [originalDataId], references: [id])
   changes         PublicCloudDataChanges?
+  /// Spend forecast captured on create; promoted to CloudCostForecast only after successful provision.
+  pendingForecast Json?
 }
 
 model PublicCloudBilling {

@@ -9,6 +9,7 @@ import { mergeAwsLzaAccounts } from '@/services/aws-lza/accounts';
 import { sendRequestCompletionEmails } from '@/services/ches/public-cloud';
 import { models, publicCloudRequestDetailInclude } from '@/services/db';
 import { upsertPublicCloudBillings } from '@/services/db/public-cloud-billing';
+import { createProductForecast } from '@/services/db/public-cloud-forecast';
 
 const pathParamSchema = z.object({
   idOrLicencePlate: z.string().max(7),
@@ -60,6 +61,14 @@ export const POST = apiHandler(async ({ pathParams, session, body }) => {
     return NotFoundResponse('No request found for this licece plate.');
   }
 
+  const pendingForecast =
+    request.type === RequestType.CREATE && request.pendingForecast && typeof request.pendingForecast === 'object'
+      ? (request.pendingForecast as {
+          monthlyValues?: { year: number; month: number; amount: number; currency: string }[];
+          horizonMonths?: number;
+        })
+      : null;
+
   const updateRequest = prisma.publicCloudRequest.update({
     where: {
       id: request.id,
@@ -68,6 +77,7 @@ export const POST = apiHandler(async ({ pathParams, session, body }) => {
       decisionStatus: DecisionStatus.PROVISIONED,
       provisionedDate: new Date(),
       active: false,
+      ...(pendingForecast ? { pendingForecast: Prisma.DbNull } : {}),
     },
     include: publicCloudRequestDetailInclude,
   });
@@ -108,6 +118,17 @@ export const POST = apiHandler(async ({ pathParams, session, body }) => {
 
   const [updatedRequest] = await Promise.all([updateRequest, upsertProject]);
   const updatedRequestDecorated = await models.publicCloudRequest.decorate(updatedRequest, session, true);
+
+  if (
+    request.type === RequestType.CREATE &&
+    pendingForecast?.monthlyValues &&
+    pendingForecast.monthlyValues.length > 0
+  ) {
+    const existingForecast = await prisma.cloudCostForecast.findUnique({ where: { licencePlate } });
+    if (!existingForecast) {
+      await createProductForecast(licencePlate, pendingForecast.monthlyValues, pendingForecast.horizonMonths ?? 24);
+    }
+  }
 
   if (updatedRequestDecorated.type === RequestType.EDIT) {
     if (
