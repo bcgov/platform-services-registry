@@ -253,7 +253,7 @@ importers:
         version: 19.2.7(react@19.2.7)
       react-email:
         specifier: ^6.0.0
-        version: 6.8.1(react-dom@19.2.7(react@19.2.7))(react@19.2.7)
+        version: 6.9.0(react-dom@19.2.7(react@19.2.7))(react@19.2.7)
       react-hook-form:
         specifier: ^7.62.0
         version: 7.81.0(react@19.2.7)
@@ -295,8 +295,8 @@ importers:
         specifier: ^5.2.11
         version: 5.2.11(@babel/core@7.29.7)(@opentelemetry/api@1.9.1)(babel-plugin-macros@3.1.0)(react-dom@19.2.7(react@19.2.7))(react@19.2.7)
       '@react-email/ui':
-        specifier: 6.8.1
-        version: 6.8.1(@babel/core@7.29.7)(@opentelemetry/api@1.9.1)(babel-plugin-macros@3.1.0)(react-dom@19.2.7(react@19.2.7))(react@19.2.7)
+        specifier: 6.9.0
+        version: 6.9.0(@babel/core@7.29.7)(@opentelemetry/api@1.9.1)(babel-plugin-macros@3.1.0)(react-dom@19.2.7(react@19.2.7))(react@19.2.7)
       '@testing-library/jest-dom':
         specifier: ^6.6.4
         version: 6.9.1
@@ -368,7 +368,7 @@ importers:
         version: 30.4.1
       knip:
         specifier: ^6.0.0
-        version: 6.27.0
+        version: 6.26.0
       lodash:
         specifier: ^4.17.21
         version: 4.18.1
@@ -3029,8 +3029,8 @@ packages:
     peerDependencies:
       react: ^18.0 || ^19.0 || ^19.0.0-rc
 
-  '@react-email/ui@6.8.1':
-    resolution: {integrity: sha512-HnHsUBqhFoWAXZkhGqot88dBxoprUUqYF5XSei/OOI/PsMCOl6b39+HCGEQN2qzTZq335qs2s14pnpVgSCJ8nA==}
+  '@react-email/ui@6.9.0':
+    resolution: {integrity: sha512-VjIT3FpWHk4Q+t+z5IZcS5KtcXfjTpJxXZ5A1I0LZhgV1pn2IKXqc4Mvs4vWXujgCTS25NVy55QX8zztxitzhA==}
 
   '@react-types/shared@3.34.0':
     resolution: {integrity: sha512-gp6xo/s2lX54AlTjOiqwDnxA7UW79BNvI9dB9pr3LZTzRKCd1ZA+ZbgKw/ReIiWuvvVw/8QFJpnqeeFyLocMcQ==}
@@ -6790,8 +6790,8 @@ packages:
     resolution: {integrity: sha512-eTIzlVOSUR+JxdDFepEYcBMtZ9Qqdef+rnzWdRZuMbOywu5tO2w2N7rqjoANZ5k9vywhL6Br1VRjUIgTQx4E8w==}
     engines: {node: '>=6'}
 
-  knip@6.27.0:
-    resolution: {integrity: sha512-CngYEYrD0n20N06FXA8n3u/0Wnnugoa+B9k14OP+iKIgkCHuzvIdsP3nfwjhByoc1WfogpxfiriMboAXFETDUw==}
+  knip@6.26.0:
+    resolution: {integrity: sha512-e9eELEEpBpGTd4H4HB7818/DYj9dMzMyUqAddfYwUN/EbSkgIjOuWEF96W/xHsmV0SDrsdXjIM+oZ2xpPzPsBA==}
     engines: {node: ^20.19.0 || >=22.12.0}
     hasBin: true
 
@@ -8083,8 +8083,8 @@ packages:
     peerDependencies:
       react: ^19.2.7
 
-  react-email@6.8.1:
-    resolution: {integrity: sha512-qx1n/9h/5zRd7qsLpniQh7P3xgH+7pP+xyYspB1MZBRpHcrFJEbcsIYuPkA0vnRx+3jl9fSpSmXQ8xbXIRySwQ==}
+  react-email@6.9.0:
+    resolution: {integrity: sha512-72jV+VkeeXgNWDycNDn2tIlHFLg4Hevi3pC77g63FAY1+bDgTs4b56jbZfHF1t5d+GVGb02sGS8bOwoptgvI1w==}
     engines: {node: '>=20.0.0'}
     hasBin: true
     peerDependencies:
@@ -9421,8 +9421,8 @@ packages:
       utf-8-validate:
         optional: true
 
-  ws@8.21.0:
-    resolution: {integrity: sha512-Vsp28b7DRcimFQvrqu2Wek3z1iYxDCWqHYB8Qsnk/S4RfaCQzPGPyBNuVjJV3cd6UiKtUtp6sNM77gWvzcCH+g==}
+  ws@8.21.1:
+    resolution: {integrity: sha512-+0NTnW77fFN/DjQi6k/Sq/Yvk4Sgajw7urW8V+asjXnRgDs9gyGkdb7EzgfhA4goXsRIZKE28fzIXBHEzhuiWw==}
     engines: {node: '>=10.0.0'}
     peerDependencies:
       bufferutil: ^4.0.1
@@ -12044,7 +12044,7 @@ snapshots:
     dependencies:
       react: 19.2.7
 
-  '@react-email/ui@6.8.1(@babel/core@7.29.7)(@opentelemetry/api@1.9.1)(babel-plugin-macros@3.1.0)(react-dom@19.2.7(react@19.2.7))(react@19.2.7)':
+  '@react-email/ui@6.9.0(@babel/core@7.29.7)(@opentelemetry/api@1.9.1)(babel-plugin-macros@3.1.0)(react-dom@19.2.7(react@19.2.7))(react@19.2.7)':
     dependencies:
       esbuild: 0.28.1
       next: 16.2.6(@babel/core@7.29.7)(@opentelemetry/api@1.9.1)(babel-plugin-macros@3.1.0)(react-dom@19.2.7(react@19.2.7))(react@19.2.7)
@@ -14484,7 +14484,7 @@ snapshots:
       cors: 2.8.6
       debug: 4.4.3(supports-color@10.2.2)
       engine.io-parser: 5.2.3
-      ws: 8.21.0
+      ws: 8.21.1
     transitivePeerDependencies:
       - bufferutil
       - supports-color
@@ -16582,7 +16582,7 @@ snapshots:
 
   kleur@3.0.3: {}
 
-  knip@6.27.0:
+  knip@6.26.0:
     dependencies:
       fdir: 6.5.0(picomatch@4.0.5)
       formatly: 0.3.0
@@ -17893,7 +17893,7 @@ snapshots:
       react: 19.2.7
       scheduler: 0.27.0
 
-  react-email@6.8.1(react-dom@19.2.7(react@19.2.7))(react@19.2.7):
+  react-email@6.9.0(react-dom@19.2.7(react@19.2.7))(react@19.2.7):
     dependencies:
       '@babel/parser': 7.29.2
       '@babel/traverse': 7.29.0
@@ -18515,7 +18515,7 @@ snapshots:
   socket.io-adapter@2.5.8:
     dependencies:
       debug: 4.4.3(supports-color@10.2.2)
-      ws: 8.21.0
+      ws: 8.21.1
     transitivePeerDependencies:
       - bufferutil
       - supports-color
@@ -19534,7 +19534,7 @@ snapshots:
 
   ws@8.20.1: {}
 
-  ws@8.21.0: {}
+  ws@8.21.1: {}
 
   wsl-utils@0.1.0:
     dependencies:
