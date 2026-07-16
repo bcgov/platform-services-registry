@@ -59,15 +59,12 @@ async function ensureForecast(
   const budgetTotal = sumEnabledEnvironmentBudgets(product.budget, product.environmentsEnabled);
   const monthlyValues =
     budgetTotal > 0
-      ? seedForecastFromProductBudget(product.provider, product.budget, product.environmentsEnabled)
+      ? await seedForecastFromProductBudget(product.provider, product.budget, product.environmentsEnabled)
       : buildRollingFiscalForecastMonths(resolveDefaultMonthlyAmount(product.provider), 'CAD', new Date());
 
   const forecast = await createProductForecast(licencePlate, monthlyValues, FISCAL_FORECAST_HORIZON_MONTHS);
-  console.log(
-    `  created forecast (${monthlyValues.length} months @ CA$${
-      budgetTotal || resolveDefaultMonthlyAmount(product.provider)
-    }/mo)`,
-  );
+  const monthlyAmount = monthlyValues[0]?.amount ?? resolveDefaultMonthlyAmount(product.provider);
+  console.log(`  created forecast (${monthlyValues.length} months @ CA$${monthlyAmount}/mo)`);
   return forecast;
 }
 

@@ -1,5 +1,6 @@
 import {
   applyAmountToFutureMonths,
+  budgetAmountToForecastCad,
   buildFiscalForecastMonths,
   buildRollingFiscalForecastMonths,
   copyAmountAcrossEditableMonths,
@@ -9,6 +10,7 @@ import {
   getFiscalYearStartYear,
   getCellStatuses,
   getForecastIncreases,
+  getProviderBudgetCurrency,
   getProviderSpendLabel,
   isForecastHorizonComplete,
   isPartialFiscalYearChunk,
@@ -252,5 +254,16 @@ describe('display helpers', () => {
     expect(getProviderSpendLabel('AZURE')).toBe('Azure Spend');
     expect(getProviderSpendLabel('AWS')).toBe('AWS Spend');
     expect(getProviderSpendLabel(undefined)).toBe('Cloud Spend');
+  });
+
+  it('maps provider to budget currency', () => {
+    expect(getProviderBudgetCurrency('AZURE')).toBe('CAD');
+    expect(getProviderBudgetCurrency('AWS')).toBe('USD');
+    expect(getProviderBudgetCurrency('AWS_LZA')).toBe('USD');
+  });
+
+  it('converts USD budgets to CAD with an FX rate', () => {
+    expect(budgetAmountToForecastCad(9700.4, 'CAD')).toBe(9700);
+    expect(budgetAmountToForecastCad(9700, 'USD', 1.4)).toBe(13580);
   });
 });

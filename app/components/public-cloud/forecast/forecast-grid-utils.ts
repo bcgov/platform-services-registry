@@ -5,6 +5,24 @@ export type MonthlyValue = {
   currency: 'CAD';
 };
 
+/** Currency used for product budget estimates (provider billing currency). */
+export type BudgetCurrency = 'USD' | 'CAD';
+
+/** AWS budgets are USD; Azure budgets and all forecasts are CAD. */
+export function getProviderBudgetCurrency(provider?: string): BudgetCurrency {
+  return provider === 'AZURE' ? 'CAD' : 'USD';
+}
+
+/** Convert a provider budget amount into forecast CAD when the budget is USD. */
+export function budgetAmountToForecastCad(amount: number, budgetCurrency: BudgetCurrency, usdCadRate?: number): number {
+  const roundedBudget = Math.round(amount);
+  if (budgetCurrency === 'CAD') return roundedBudget;
+  if (usdCadRate == null || !Number.isFinite(usdCadRate) || usdCadRate <= 0) {
+    throw new Error('USD/CAD exchange rate is required to convert AWS budget amounts');
+  }
+  return Math.round(roundedBudget * usdCadRate);
+}
+
 export type ForecastCellStatus = 'confirmed' | 'needsReview' | 'suggested' | 'past';
 
 /** Rolling forecast horizon: the current month plus 23 future months. */

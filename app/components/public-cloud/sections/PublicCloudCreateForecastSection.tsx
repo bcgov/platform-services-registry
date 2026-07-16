@@ -4,10 +4,12 @@ import { useCallback, useMemo } from 'react';
 import { useFormContext } from 'react-hook-form';
 import {
   buildRollingFiscalForecastMonths,
+  getProviderBudgetCurrency,
   sumEnabledEnvironmentBudgets,
   type MonthlyValue,
 } from '@/components/public-cloud/forecast/forecast-grid-utils';
 import ProjectBudgetForecastPanel from '@/components/public-cloud/forecast/ProjectBudgetForecastPanel';
+import { useForecastBudgetCad } from '@/components/public-cloud/forecast/useForecastBudgetCad';
 
 export default function PublicCloudCreateForecastSection() {
   const { watch, setValue } = useFormContext();
@@ -42,14 +44,16 @@ export default function PublicCloudCreateForecastSection() {
     [envDev, envTest, envProd, envTools],
   );
 
+  const budgetCurrency = getProviderBudgetCurrency(provider);
   const budgetMonthlyTotal = useMemo(
     () => sumEnabledEnvironmentBudgets(budget, environmentsEnabled),
     [budget, environmentsEnabled],
   );
+  const { budgetMonthlyTotalCad } = useForecastBudgetCad(budgetMonthlyTotal, budgetCurrency);
 
   const draftMonthlyValues = useMemo(
-    () => buildRollingFiscalForecastMonths(budgetMonthlyTotal, 'CAD', new Date()),
-    [budgetMonthlyTotal],
+    () => buildRollingFiscalForecastMonths(budgetMonthlyTotalCad ?? 0, 'CAD', new Date()),
+    [budgetMonthlyTotalCad],
   );
 
   const handleValuesChange = useCallback(
@@ -64,6 +68,7 @@ export default function PublicCloudCreateForecastSection() {
       forecast={null}
       monthlyValues={draftMonthlyValues}
       budgetMonthlyTotal={budgetMonthlyTotal}
+      budgetCurrency={budgetCurrency}
       editable
       provider={provider}
       onValuesChange={handleValuesChange}

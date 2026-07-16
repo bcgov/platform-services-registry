@@ -1,0 +1,37 @@
+'use client';
+
+import { useQuery } from '@tanstack/react-query';
+import { getUsdCadExchangeRate } from '@/services/backend/public-cloud/forecast';
+import { budgetAmountToForecastCad, type BudgetCurrency } from './forecast-grid-utils';
+
+export function useForecastBudgetCad(budgetMonthlyTotal: number | undefined, budgetCurrency: BudgetCurrency) {
+  const needsRate = budgetCurrency === 'USD' && budgetMonthlyTotal != null;
+
+  const { data, isLoading, isError, error, refetch } = useQuery({
+    queryKey: ['usd-cad-exchange-rate'],
+    queryFn: getUsdCadExchangeRate,
+    enabled: needsRate,
+    staleTime: 60 * 60 * 1000,
+    retry: 1,
+  });
+
+  let budgetMonthlyTotalCad: number | undefined;
+  if (budgetMonthlyTotal == null) {
+    budgetMonthlyTotalCad = undefined;
+  } else if (budgetCurrency === 'CAD') {
+    budgetMonthlyTotalCad = Math.round(budgetMonthlyTotal);
+  } else if (data?.rate) {
+    budgetMonthlyTotalCad = budgetAmountToForecastCad(budgetMonthlyTotal, 'USD', data.rate);
+  } else {
+    budgetMonthlyTotalCad = undefined;
+  }
+
+  return {
+    budgetMonthlyTotalCad,
+    exchangeRate: data,
+    isRateLoading: needsRate && isLoading,
+    isRateError: needsRate && isError,
+    rateError: error,
+    refetchRate: refetch,
+  };
+}

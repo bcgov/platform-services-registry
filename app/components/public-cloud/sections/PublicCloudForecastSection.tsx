@@ -3,13 +3,16 @@
 import { Alert, Button } from '@mantine/core';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { useMemo } from 'react';
+import { useFormContext } from 'react-hook-form';
 import LoadingBox from '@/components/generic/LoadingBox';
 import {
   buildRollingFiscalForecastMonths,
   FISCAL_FORECAST_HORIZON_MONTHS,
+  getProviderBudgetCurrency,
   sumEnabledEnvironmentBudgets,
 } from '@/components/public-cloud/forecast/forecast-grid-utils';
 import ProjectBudgetForecastPanel from '@/components/public-cloud/forecast/ProjectBudgetForecastPanel';
+import { useForecastBudgetCad } from '@/components/public-cloud/forecast/useForecastBudgetCad';
 import { getPublicCloudProductForecast } from '@/services/backend/public-cloud/forecast';
 import { usePublicProductState } from '@/states/global';
 
@@ -28,6 +31,16 @@ export default function PublicCloudForecastSection({ licencePlate }: Readonly<{ 
   const canViewForecast = Boolean(product?._permissions.viewForecast);
   const canEditForecast = Boolean(product?._permissions.editForecast);
   const queryClient = useQueryClient();
+  const { watch } = useFormContext();
+
+  const budgetDev = watch('budget.dev');
+  const budgetTest = watch('budget.test');
+  const budgetProd = watch('budget.prod');
+  const budgetTools = watch('budget.tools');
+  const envDev = watch('environmentsEnabled.development');
+  const envTest = watch('environmentsEnabled.test');
+  const envProd = watch('environmentsEnabled.production');
+  const envTools = watch('environmentsEnabled.tools');
 
   const { data, isLoading, isError, error, refetch } = useQuery({
     queryKey: ['forecast', licencePlate],
@@ -39,15 +52,38 @@ export default function PublicCloudForecastSection({ licencePlate }: Readonly<{ 
   const handleForecastSaved = () => queryClient.invalidateQueries({ queryKey: ['forecast', licencePlate] });
 
   const forecast = data?.forecast;
-  const budgetMonthlyTotal = useMemo(() => {
-    if (!product) return 0;
-    return sumEnabledEnvironmentBudgets(product.budget, product.environmentsEnabled);
-  }, [product]);
 
-  const draftMonthlyValues = useMemo(() => {
-    if (!product) return [];
-    return buildRollingFiscalForecastMonths(budgetMonthlyTotal, 'CAD', new Date());
-  }, [product, budgetMonthlyTotal]);
+  const budget = useMemo(
+    () => ({
+      dev: Number(budgetDev) || 0,
+      test: Number(budgetTest) || 0,
+      prod: Number(budgetProd) || 0,
+      tools: Number(budgetTools) || 0,
+    }),
+    [budgetDev, budgetTest, budgetProd, budgetTools],
+  );
+
+  const environmentsEnabled = useMemo(
+    () => ({
+      development: Boolean(envDev),
+      test: Boolean(envTest),
+      production: Boolean(envProd),
+      tools: Boolean(envTools),
+    }),
+    [envDev, envTest, envProd, envTools],
+  );
+
+  const budgetCurrency = getProviderBudgetCurrency(product?.provider);
+  const budgetMonthlyTotal = useMemo(
+    () => sumEnabledEnvironmentBudgets(budget, environmentsEnabled),
+    [budget, environmentsEnabled],
+  );
+  const { budgetMonthlyTotalCad } = useForecastBudgetCad(budgetMonthlyTotal, budgetCurrency);
+
+  const draftMonthlyValues = useMemo(
+    () => buildRollingFiscalForecastMonths(budgetMonthlyTotalCad ?? 0, 'CAD', new Date()),
+    [budgetMonthlyTotalCad],
+  );
 
   if (!product) return null;
   if (!canViewForecast) return null;
@@ -89,6 +125,7 @@ export default function PublicCloudForecastSection({ licencePlate }: Readonly<{ 
           }
           monthlyValues={forecast?.monthlyValues ?? draftMonthlyValues}
           budgetMonthlyTotal={budgetMonthlyTotal}
+          budgetCurrency={budgetCurrency}
           editable={canEditForecast}
           onSaved={handleForecastSaved}
         />
