@@ -5,3 +5,4 @@ export * from './security-config';
 export * from './shared';
 export * from './user';
 export * from './common';
+export * from './cloud-cost';

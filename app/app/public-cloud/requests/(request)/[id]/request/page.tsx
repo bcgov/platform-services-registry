@@ -2,7 +2,14 @@
 
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Alert, Button, Tooltip } from '@mantine/core';
-import { IconInfoCircle, IconUsersGroup, IconMessage, IconLayoutGridAdd, IconMoneybag } from '@tabler/icons-react';
+import {
+  IconInfoCircle,
+  IconUsersGroup,
+  IconMessage,
+  IconLayoutGridAdd,
+  IconMoneybag,
+  IconChartBar,
+} from '@tabler/icons-react';
 import { useQuery } from '@tanstack/react-query';
 import { useEffect } from 'react';
 import { Resolver, useForm, FormProvider } from 'react-hook-form';
@@ -18,6 +25,7 @@ import { openPublicCloudMouReviewModal } from '@/components/modal/publicCloudMou
 import { openPublicCloudMouSignModal } from '@/components/modal/publicCloudMouSign';
 import { openPublicCloudRequestReviewModal } from '@/components/modal/publicCloudRequestReview';
 import BillingStatusProgress from '@/components/public-cloud/BillingStatusProgress';
+import PublicCloudPendingForecastSection from '@/components/public-cloud/sections/PublicCloudPendingForecastSection';
 import TeamContacts from '@/components/public-cloud/sections/TeamContacts';
 import { GlobalRole } from '@/constants';
 import createClientPage from '@/core/client-page';
@@ -54,7 +62,7 @@ const decisionResolver: Resolver<PublicCloudRequestDecisionBody> = async (values
   return zodDecisionResolver(values, context, options);
 };
 
-export default publicCloudProductRequest(({ router }) => {
+export default publicCloudProductRequest(({ session, router }) => {
   const [, publicProductSnap] = usePublicProductState();
 
   useEffect(() => {
@@ -139,6 +147,17 @@ export default publicCloudProductRequest(({ router }) => {
       componentArgs: { disabled: isDisabled },
       initialOpen: true,
     },
+    ...(session?.previews.publicCloudForecast && publicProductSnap.currentRequest.type === RequestType.CREATE
+      ? [
+          {
+            LeftIcon: IconChartBar,
+            label: 'Spend forecast',
+            description: '',
+            Component: PublicCloudPendingForecastSection,
+            componentArgs: {},
+          },
+        ]
+      : []),
   ];
 
   if (publicProductSnap.currentRequest.requestComment) {

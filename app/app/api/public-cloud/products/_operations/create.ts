@@ -1,4 +1,5 @@
 import { Session } from 'next-auth';
+import { FISCAL_FORECAST_HORIZON_MONTHS } from '@/components/public-cloud/forecast/forecast-grid-utils';
 import { BadRequestResponse, OkResponse, UnauthorizedResponse } from '@/core/responses';
 import generateLicencePlate from '@/helpers/licence-plate';
 import { DecisionStatus, ProjectStatus, RequestType, TaskType, EventType } from '@/prisma/client';
@@ -32,6 +33,7 @@ export default async function createOp({ session, body }: { session: Session; bo
     isAgMinistry,
     isAgMinistryChecked,
     organizationId,
+    forecastMonthlyValues,
     ...rest
   } = body;
 
@@ -50,6 +52,14 @@ export default async function createOp({ session, body }: { session: Session; bo
     expenseAuthority: { connect: { id: expenseAuthorityId } },
   };
 
+  const pendingForecast =
+    session.previews.publicCloudForecast && forecastMonthlyValues?.length
+      ? {
+          monthlyValues: forecastMonthlyValues,
+          horizonMonths: FISCAL_FORECAST_HORIZON_MONTHS,
+        }
+      : undefined;
+
   const newRequest = (
     await models.publicCloudRequest.create(
       {
@@ -61,6 +71,7 @@ export default async function createOp({ session, body }: { session: Session; bo
           createdBy: { connect: { idirGuid: session.user.idirGuid } },
           decisionData: { create: productData },
           requestData: { create: productData },
+          ...(pendingForecast ? { pendingForecast } : {}),
         },
         include: publicCloudRequestDetailInclude,
       },

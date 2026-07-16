@@ -1,7 +1,7 @@
 {
   "name": "pltsvc",
   "description": "B.C. Government's Platform Product Registry",
-  "version": "0.79.1",
+  "version": "0.81.0",
   "private": true,
   "packageManager": "pnpm@11.0.8",
   "scripts": {
@@ -15,7 +15,7 @@
     "node": ">=22.1.0"
   },
   "devDependencies": {
-    "@badeball/cypress-cucumber-preprocessor": "^24.0.0",
+    "@badeball/cypress-cucumber-preprocessor": "^26.0.0",
     "@bahmutov/cypress-esbuild-preprocessor": "^2.2.5",
     "@commitlint/cli": "^21.0.0",
     "@commitlint/config-conventional": "^21.0.0",
@@ -38,7 +38,7 @@
   },
   "pnpm": {
     "overrides": {
-      "conventional-changelog-conventionalcommits": "^9.0.0",
+      "conventional-changelog-conventionalcommits": "^10.0.0",
       "eslint-plugin-react-hooks": "^7.0.0"
     },
     "onlyBuiltDependencies": [

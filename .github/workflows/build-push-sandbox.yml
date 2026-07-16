@@ -57,7 +57,7 @@ jobs:
         registry-username: ${{ github.actor }}
         registry-password: ${{ secrets.GITHUB_TOKEN }}
         image-name: bcgov/pltsvc-sandbox-keycloak-provision
-        docker-context: sandbox
+        docker-context: .
         docker-file: sandbox/keycloak-provision/Dockerfile
         metadata-tags: |
           type=raw,value=latest
@@ -103,7 +103,7 @@ jobs:
         registry-username: ${{ github.actor }}
         registry-password: ${{ secrets.GITHUB_TOKEN }}
         image-name: bcgov/pltsvc-sandbox-m365mock
-        docker-context: sandbox
+        docker-context: .
         docker-file: sandbox/m365mock/Dockerfile
         metadata-tags: |
           type=raw,value=latest
@@ -126,7 +126,7 @@ jobs:
         registry-username: ${{ github.actor }}
         registry-password: ${{ secrets.GITHUB_TOKEN }}
         image-name: bcgov/pltsvc-sandbox-nats-provision
-        docker-context: sandbox
+        docker-context: .
         docker-file: sandbox/nats-provision/Dockerfile
         metadata-tags: |
           type=raw,value=latest

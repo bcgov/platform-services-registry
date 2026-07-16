@@ -12,7 +12,7 @@ dependencies:
     repository: "https://airflow.apache.org/"
     condition: airflow.enabled
   - name: postgresql
-    version: "18.7.8"
+    version: "18.8.0"
     repository: https://charts.bitnami.com/bitnami
     condition: postgresql.enabled
   - name: sonarqube
@@ -24,7 +24,7 @@ dependencies:
     repository: https://charts.min.io/
     condition: minio.enabled
   - name: mongodb
-    version: '19.1.15' #8.0.4
+    version: '19.1.17' #8.0.4
     repository: https://charts.bitnami.com/bitnami
     condition: mongodb.enabled
   - name: sorry-cypress

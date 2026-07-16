@@ -124,6 +124,16 @@ export default function UserMenu() {
       href: '/public-cloud/billings/all',
       permission: 'viewPublicCloudBilling',
     },
+    ...(session.previews.publicCloudForecast
+      ? [
+          {
+            text: 'Public Cloud Forecast',
+            Icon: IconClockDollar,
+            href: '/public-cloud/forecast',
+            permission: 'viewPublicCloudForecast' as keyof Permissions,
+          },
+        ]
+      : []),
     {
       text: 'General Analytics',
       Icon: IconPresentationAnalytics,

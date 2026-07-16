@@ -2,7 +2,7 @@
 
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Button } from '@mantine/core';
-import { IconInfoCircle, IconUsersGroup, IconLayoutGridAdd, IconMoneybag } from '@tabler/icons-react';
+import { IconInfoCircle, IconUsersGroup, IconLayoutGridAdd, IconMoneybag, IconChartBar } from '@tabler/icons-react';
 import { useEffect, useState } from 'react';
 import { FormProvider, useForm } from 'react-hook-form';
 import { z } from 'zod';
@@ -13,9 +13,11 @@ import ProjectDescriptionPublic from '@/components/form/ProjectDescriptionPublic
 import PageAccordion from '@/components/generic/accordion/PageAccordion';
 import FormErrorNotification from '@/components/generic/FormErrorNotification';
 import { openPublicCloudProductEditSubmitModal } from '@/components/modal/publicCloudProductEditSubmit';
+import PublicCloudForecastSection from '@/components/public-cloud/sections/PublicCloudForecastSection';
 import TeamContacts from '@/components/public-cloud/sections/TeamContacts';
 import { GlobalRole } from '@/constants';
 import createClientPage from '@/core/client-page';
+import { normalizeStoredAwsLzaAccounts } from '@/services/aws-lza/accounts';
 import { usePublicProductState } from '@/states/global';
 import { publicCloudEditRequestBodySchema } from '@/validation-schemas/public-cloud';
 
@@ -27,7 +29,7 @@ const publicCloudProductEdit = createClientPage({
   roles: [GlobalRole.User],
   validations: { pathParams: pathParamSchema },
 });
-export default publicCloudProductEdit(() => {
+export default publicCloudProductEdit(({ session }) => {
   const [, snap] = usePublicProductState();
   const [isDisabled, setDisabled] = useState(false);
 
@@ -82,7 +84,12 @@ export default publicCloudProductEdit(() => {
       label: 'Accounts to create',
       description: '',
       Component: AccountEnvironmentsPublic,
-      componentArgs: { selected: currentProduct.environmentsEnabled, mode: 'edit', disabled: isDisabled },
+      componentArgs: {
+        selected: currentProduct.environmentsEnabled,
+        mode: 'edit',
+        disabled: isDisabled,
+        awsAccounts: normalizeStoredAwsLzaAccounts(currentProduct.awsAccounts),
+      },
     },
     {
       LeftIcon: IconUsersGroup,
@@ -101,6 +108,19 @@ export default publicCloudProductEdit(() => {
       Component: Budget,
       componentArgs: { disabled: isDisabled },
     },
+    ...(session?.previews.publicCloudForecast
+      ? [
+          {
+            LeftIcon: IconChartBar,
+            label: 'Spend forecast',
+            description: '',
+            Component: PublicCloudForecastSection,
+            componentArgs: {
+              licencePlate: currentProduct.licencePlate,
+            },
+          },
+        ]
+      : []),
   ];
 
   return (

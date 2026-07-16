@@ -1,7 +1,7 @@
 {
   "name": "pltsvc-app",
   "description": "B.C. Government's Platform Product Registry - App",
-  "version": "0.79.1",
+  "version": "0.81.0",
   "private": true,
   "packageManager": "pnpm@11.0.8",
   "scripts": {
@@ -14,6 +14,9 @@
     "test": "dotenv -e .env.test -- prisma db push && NODE_OPTIONS='--experimental-vm-modules' jest --runInBand",
     "prisma-generate": "prisma generate",
     "prisma-push": "dotenv -e .env.local -- prisma db push",
+    "seed-local": "dotenv -e .env.local -- ts-node --project tsconfig.seed.json seed/seed-local-dev.ts",
+    "seed-all-local": "dotenv -e .env.local -- ts-node --project tsconfig.seed.json seed/seed-all-local.ts",
+    "seed-forecast-local": "dotenv -e .env.local -- ts-node --project tsconfig.seed.json seed/seed-forecast-local.ts",
     "migrate-data": "cat .env.local | grep DATABASE_URL > ../data-migrations/.env && cd ../data-migrations && npm install && npx migrate-mongo up",
     "email": "dotenv -e .env.local -- email dev --dir emails --port 3001",
     "email-build": "email export --pretty --outDir emails-export --dir emails",
@@ -38,7 +41,7 @@
     "@mantine/tiptap": "^9.0.0",
     "@prisma/client": "6.19.3",
     "@react-email/components": "^1.0.0",
-    "@react-email/render": "2.0.9",
+    "@react-email/render": "2.1.0",
     "@react-email/tailwind": "^2.0.0",
     "@tabler/icons-react": "^3.34.1",
     "@tailwindcss/forms": "^0.5.10",
@@ -69,6 +72,7 @@
     "date-fns": "^4.1.0",
     "date-fns-tz": "^3.2.0",
     "dayjs": "^1.11.13",
+    "exceljs": "^4.4.0",
     "https-proxy-agent": "^9.0.0",
     "jsonwebtoken": "^9.0.2",
     "just-diff": "^6.0.2",
@@ -78,7 +82,7 @@
     "nats": "^2.29.3",
     "next": "^16.0.0",
     "next-auth": "^4.24.12",
-    "postcss": "8.5.15",
+    "postcss": "8.5.19",
     "react": "^19.2.1",
     "react-chartjs-2": "^5.3.0",
     "react-dom": "^19.2.1",
@@ -99,7 +103,7 @@
     "@eslint/js": "^9.32.0",
     "@faker-js/faker": "^9.0.0",
     "@react-email/preview-server": "^5.2.11",
-    "@react-email/ui": "6.6.5",
+    "@react-email/ui": "6.9.0",
     "@testing-library/jest-dom": "^6.6.4",
     "@testing-library/react": "^16.3.0",
     "@testing-library/user-event": "^14.6.1",
@@ -130,6 +134,7 @@
     "prisma": "~6.19.0",
     "ts-jest": "^29.4.1",
     "ts-node": "^10.9.2",
+    "tsconfig-paths": "^4.2.0",
     "typescript": "^6.0.0"
   }
 }

@@ -2,14 +2,7 @@
 
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Button } from '@mantine/core';
-import {
-  IconInfoCircle,
-  IconUsersGroup,
-  IconUserDollar,
-  IconLayoutGridAdd,
-  IconMoneybag,
-  IconReceipt2,
-} from '@tabler/icons-react';
+import { IconInfoCircle, IconUsersGroup, IconLayoutGridAdd, IconMoneybag, IconChartBar } from '@tabler/icons-react';
 import { FormProvider, useForm } from 'react-hook-form';
 import PreviousButton from '@/components/buttons/Previous';
 import AccountEnvironmentsPublic from '@/components/form/AccountEnvironmentsPublic';
@@ -18,6 +11,11 @@ import ProjectDescriptionPublic from '@/components/form/ProjectDescriptionPublic
 import PageAccordion from '@/components/generic/accordion/PageAccordion';
 import FormErrorNotification from '@/components/generic/FormErrorNotification';
 import { openPublicCloudProductCreateSubmitModal } from '@/components/modal/publicCloudProductCreateSubmit';
+import {
+  buildRollingFiscalForecastMonths,
+  sumEnabledEnvironmentBudgets,
+} from '@/components/public-cloud/forecast/forecast-grid-utils';
+import PublicCloudCreateForecastSection from '@/components/public-cloud/sections/PublicCloudCreateForecastSection';
 import TeamContacts from '@/components/public-cloud/sections/TeamContacts';
 import { GlobalRole } from '@/constants';
 import createClientPage from '@/core/client-page';
@@ -26,7 +24,7 @@ import { publicCloudCreateRequestBodySchema } from '@/validation-schemas/public-
 const publicCloudProductNew = createClientPage({
   roles: [GlobalRole.User],
 });
-export default publicCloudProductNew(() => {
+export default publicCloudProductNew(({ session }) => {
   const form = useForm({
     resolver: zodResolver(publicCloudCreateRequestBodySchema),
     defaultValues: {
@@ -77,6 +75,17 @@ export default publicCloudProductNew(() => {
         mode: 'create',
       },
     },
+    ...(session?.previews.publicCloudForecast
+      ? [
+          {
+            LeftIcon: IconChartBar,
+            label: 'Spend forecast',
+            description: '',
+            Component: PublicCloudCreateForecastSection,
+            componentArgs: {},
+          },
+        ]
+      : []),
   ];
 
   return (
@@ -91,6 +100,15 @@ export default publicCloudProductNew(() => {
         <form
           autoComplete="off"
           onSubmit={form.handleSubmit(async (formData) => {
+            // If the spend forecast accordion was never opened, still seed from budget.
+            if (
+              session?.previews.publicCloudForecast &&
+              (!formData.forecastMonthlyValues || formData.forecastMonthlyValues.length === 0)
+            ) {
+              const budgetTotal = sumEnabledEnvironmentBudgets(formData.budget, formData.environmentsEnabled);
+              formData.forecastMonthlyValues = buildRollingFiscalForecastMonths(budgetTotal, 'CAD', new Date());
+            }
+
             await openPublicCloudProductCreateSubmitModal({ productData: formData });
           })}
         >
