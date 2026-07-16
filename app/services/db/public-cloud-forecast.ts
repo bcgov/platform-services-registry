@@ -1,5 +1,4 @@
 import {
-  budgetAmountToForecastCad,
   buildRollingFiscalForecastMonths,
   formatForecastProviderList,
   getFiscalYearChunks,
@@ -14,7 +13,7 @@ import {
 } from '@/components/public-cloud/forecast/forecast-grid-utils';
 import prisma from '@/core/prisma';
 import { Provider, ProjectStatus } from '@/prisma/client';
-import { fetchUsdCadExchangeRate } from '@/services/bank-of-canada/usd-cad-rate';
+import { convertCurrencyAmount, fetchUsdCadExchangeRate } from '@/services/exchange-rates';
 
 export async function getProductForecast(licencePlate: string) {
   return prisma.cloudCostForecast.findUnique({ where: { licencePlate } });
@@ -270,7 +269,7 @@ export async function seedForecastFromProductBudget(
 
   if (budgetCurrency === 'USD' && budgetTotal > 0) {
     const { rate } = await fetchUsdCadExchangeRate();
-    totalCad = budgetAmountToForecastCad(budgetTotal, 'USD', rate);
+    totalCad = convertCurrencyAmount(budgetTotal, 'USD', 'CAD', rate);
   }
 
   return buildRollingFiscalForecastMonths(totalCad, currency, new Date());

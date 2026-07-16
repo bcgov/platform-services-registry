@@ -12,7 +12,6 @@ import PageAccordion from '@/components/generic/accordion/PageAccordion';
 import FormErrorNotification from '@/components/generic/FormErrorNotification';
 import { openPublicCloudProductCreateSubmitModal } from '@/components/modal/publicCloudProductCreateSubmit';
 import {
-  budgetAmountToForecastCad,
   buildRollingFiscalForecastMonths,
   getProviderBudgetCurrency,
   sumEnabledEnvironmentBudgets,
@@ -21,7 +20,8 @@ import PublicCloudCreateForecastSection from '@/components/public-cloud/sections
 import TeamContacts from '@/components/public-cloud/sections/TeamContacts';
 import { GlobalRole } from '@/constants';
 import createClientPage from '@/core/client-page';
-import { getUsdCadExchangeRate } from '@/services/backend/public-cloud/forecast';
+import { getUsdCadExchangeRate } from '@/services/backend/exchange-rates';
+import { convertCurrencyAmount } from '@/services/exchange-rates';
 import { publicCloudCreateRequestBodySchema } from '@/validation-schemas/public-cloud';
 
 const publicCloudProductNew = createClientPage({
@@ -113,7 +113,7 @@ export default publicCloudProductNew(({ session }) => {
               let totalCad = Math.round(budgetTotal);
               if (budgetCurrency === 'USD' && budgetTotal > 0) {
                 const { rate } = await getUsdCadExchangeRate();
-                totalCad = budgetAmountToForecastCad(budgetTotal, 'USD', rate);
+                totalCad = convertCurrencyAmount(budgetTotal, 'USD', 'CAD', rate);
               }
               formData.forecastMonthlyValues = buildRollingFiscalForecastMonths(totalCad, 'CAD', new Date());
             }

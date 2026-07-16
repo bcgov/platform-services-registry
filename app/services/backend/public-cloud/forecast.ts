@@ -38,17 +38,6 @@ export async function getPlatformForecast() {
   return adminInstance.get('/').then((res) => res.data);
 }
 
-export type UsdCadExchangeRateResponse = {
-  rate: number;
-  date: string;
-  source: 'Bank of Canada';
-};
-
-/** Latest Bank of Canada daily average USD→CAD rate (cached server-side). */
-export async function getUsdCadExchangeRate(): Promise<UsdCadExchangeRateResponse> {
-  return adminInstance.get('/exchange-rate').then((res) => res.data);
-}
-
 export async function downloadPlatformForecastExport(format: 'csv' | 'xlsx' = 'xlsx') {
   const result = await adminInstance.get('/export', { params: { format }, responseType: 'blob' }).then((res) => {
     if (res.status === 204) return false;

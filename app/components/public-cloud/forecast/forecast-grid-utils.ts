@@ -1,3 +1,5 @@
+import type { CurrencyCode } from '@/services/exchange-rates';
+
 export type MonthlyValue = {
   year: number;
   month: number;
@@ -6,21 +8,11 @@ export type MonthlyValue = {
 };
 
 /** Currency used for product budget estimates (provider billing currency). */
-export type BudgetCurrency = 'USD' | 'CAD';
+export type BudgetCurrency = CurrencyCode;
 
 /** AWS budgets are USD; Azure budgets and all forecasts are CAD. */
 export function getProviderBudgetCurrency(provider?: string): BudgetCurrency {
   return provider === 'AZURE' ? 'CAD' : 'USD';
-}
-
-/** Convert a provider budget amount into forecast CAD when the budget is USD. */
-export function budgetAmountToForecastCad(amount: number, budgetCurrency: BudgetCurrency, usdCadRate?: number): number {
-  const roundedBudget = Math.round(amount);
-  if (budgetCurrency === 'CAD' || roundedBudget === 0) return roundedBudget;
-  if (usdCadRate == null || !Number.isFinite(usdCadRate) || usdCadRate <= 0) {
-    throw new Error('USD/CAD exchange rate is required to convert AWS budget amounts');
-  }
-  return Math.round(roundedBudget * usdCadRate);
 }
 
 export type ForecastCellStatus = 'confirmed' | 'needsReview' | 'suggested' | 'past';

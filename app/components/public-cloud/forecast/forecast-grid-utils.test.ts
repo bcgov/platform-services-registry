@@ -1,6 +1,5 @@
 import {
   applyAmountToFutureMonths,
-  budgetAmountToForecastCad,
   buildFiscalForecastMonths,
   buildRollingFiscalForecastMonths,
   copyAmountAcrossEditableMonths,
@@ -260,11 +259,5 @@ describe('display helpers', () => {
     expect(getProviderBudgetCurrency('AZURE')).toBe('CAD');
     expect(getProviderBudgetCurrency('AWS')).toBe('USD');
     expect(getProviderBudgetCurrency('AWS_LZA')).toBe('USD');
-  });
-
-  it('converts USD budgets to CAD with an FX rate', () => {
-    expect(budgetAmountToForecastCad(9700.4, 'CAD')).toBe(9700);
-    expect(budgetAmountToForecastCad(9700, 'USD', 1.4)).toBe(13580);
-    expect(budgetAmountToForecastCad(0, 'USD')).toBe(0);
   });
 });

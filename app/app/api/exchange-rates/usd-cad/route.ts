@@ -1,15 +1,12 @@
 import { GlobalRole } from '@/constants';
 import createApiHandler from '@/core/api-handler';
-import { InternalServerErrorResponse, OkResponse, UnauthorizedResponse } from '@/core/responses';
-import { fetchUsdCadExchangeRate } from '@/services/bank-of-canada/usd-cad-rate';
+import { InternalServerErrorResponse, OkResponse } from '@/core/responses';
+import { fetchUsdCadExchangeRate } from '@/services/exchange-rates';
 
+/** Shared USD→CAD rate for any registry product surface that needs FX. */
 export const GET = createApiHandler({
   roles: [GlobalRole.User],
-})(async ({ session }) => {
-  if (!session.previews.publicCloudForecast) {
-    return UnauthorizedResponse();
-  }
-
+})(async () => {
   try {
     const rate = await fetchUsdCadExchangeRate();
     return OkResponse(rate);
