@@ -455,19 +455,13 @@ export default function ProjectBudgetForecastPanel({
       {editable && (
         <div className="flex flex-col items-end gap-2">
           <div className="flex flex-wrap items-center justify-end gap-2">
-            <Button
-              type="button"
-              size="compact-sm"
-              variant="default"
-              disabled={!isDirty}
-              onClick={handleDiscardChanges}
-            >
+            <Button type="button" size="sm" variant="default" disabled={!isDirty} onClick={handleDiscardChanges}>
               Discard changes
             </Button>
             {!isFormBound && (
               <Button
                 type="button"
-                size="compact-sm"
+                size="sm"
                 color="primary"
                 loading={saveForecast.isPending}
                 disabled={!canSave}
