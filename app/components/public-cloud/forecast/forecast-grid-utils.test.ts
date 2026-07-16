@@ -9,6 +9,7 @@ import {
   getFiscalYearStartYear,
   getCellStatuses,
   getForecastIncreases,
+  getProviderBudgetCurrency,
   getProviderSpendLabel,
   isForecastHorizonComplete,
   isPartialFiscalYearChunk,
@@ -252,5 +253,11 @@ describe('display helpers', () => {
     expect(getProviderSpendLabel('AZURE')).toBe('Azure Spend');
     expect(getProviderSpendLabel('AWS')).toBe('AWS Spend');
     expect(getProviderSpendLabel(undefined)).toBe('Cloud Spend');
+  });
+
+  it('maps provider to budget currency', () => {
+    expect(getProviderBudgetCurrency('AZURE')).toBe('CAD');
+    expect(getProviderBudgetCurrency('AWS')).toBe('USD');
+    expect(getProviderBudgetCurrency('AWS_LZA')).toBe('USD');
   });
 });

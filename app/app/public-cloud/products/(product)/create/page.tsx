@@ -13,12 +13,15 @@ import FormErrorNotification from '@/components/generic/FormErrorNotification';
 import { openPublicCloudProductCreateSubmitModal } from '@/components/modal/publicCloudProductCreateSubmit';
 import {
   buildRollingFiscalForecastMonths,
+  getProviderBudgetCurrency,
   sumEnabledEnvironmentBudgets,
 } from '@/components/public-cloud/forecast/forecast-grid-utils';
 import PublicCloudCreateForecastSection from '@/components/public-cloud/sections/PublicCloudCreateForecastSection';
 import TeamContacts from '@/components/public-cloud/sections/TeamContacts';
 import { GlobalRole } from '@/constants';
 import createClientPage from '@/core/client-page';
+import { getUsdCadExchangeRate } from '@/services/backend/exchange-rates';
+import { convertCurrencyAmount } from '@/services/exchange-rates';
 import { publicCloudCreateRequestBodySchema } from '@/validation-schemas/public-cloud';
 
 const publicCloudProductNew = createClientPage({
@@ -100,13 +103,19 @@ export default publicCloudProductNew(({ session }) => {
         <form
           autoComplete="off"
           onSubmit={form.handleSubmit(async (formData) => {
-            // If the spend forecast accordion was never opened, still seed from budget.
+            // If the spend forecast accordion was never opened, still seed from budget (CAD).
             if (
               session?.previews.publicCloudForecast &&
               (!formData.forecastMonthlyValues || formData.forecastMonthlyValues.length === 0)
             ) {
               const budgetTotal = sumEnabledEnvironmentBudgets(formData.budget, formData.environmentsEnabled);
-              formData.forecastMonthlyValues = buildRollingFiscalForecastMonths(budgetTotal, 'CAD', new Date());
+              const budgetCurrency = getProviderBudgetCurrency(formData.provider);
+              let totalCad = Math.round(budgetTotal);
+              if (budgetCurrency === 'USD' && budgetTotal > 0) {
+                const { rate } = await getUsdCadExchangeRate();
+                totalCad = convertCurrencyAmount(budgetTotal, 'USD', 'CAD', rate);
+              }
+              formData.forecastMonthlyValues = buildRollingFiscalForecastMonths(totalCad, 'CAD', new Date());
             }
 
             await openPublicCloudProductCreateSubmitModal({ productData: formData });

@@ -2,14 +2,10 @@
 
 import { Alert, Button } from '@mantine/core';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
-import { useMemo } from 'react';
 import LoadingBox from '@/components/generic/LoadingBox';
-import {
-  buildRollingFiscalForecastMonths,
-  FISCAL_FORECAST_HORIZON_MONTHS,
-  sumEnabledEnvironmentBudgets,
-} from '@/components/public-cloud/forecast/forecast-grid-utils';
+import { FISCAL_FORECAST_HORIZON_MONTHS } from '@/components/public-cloud/forecast/forecast-grid-utils';
 import ProjectBudgetForecastPanel from '@/components/public-cloud/forecast/ProjectBudgetForecastPanel';
+import { useFormForecastBudget } from '@/components/public-cloud/forecast/useFormForecastBudget';
 import { getPublicCloudProductForecast } from '@/services/backend/public-cloud/forecast';
 import { usePublicProductState } from '@/states/global';
 
@@ -28,6 +24,7 @@ export default function PublicCloudForecastSection({ licencePlate }: Readonly<{ 
   const canViewForecast = Boolean(product?._permissions.viewForecast);
   const canEditForecast = Boolean(product?._permissions.editForecast);
   const queryClient = useQueryClient();
+  const { budgetMonthlyTotal, budgetCurrency, draftMonthlyValues } = useFormForecastBudget(product?.provider);
 
   const { data, isLoading, isError, error, refetch } = useQuery({
     queryKey: ['forecast', licencePlate],
@@ -39,15 +36,6 @@ export default function PublicCloudForecastSection({ licencePlate }: Readonly<{ 
   const handleForecastSaved = () => queryClient.invalidateQueries({ queryKey: ['forecast', licencePlate] });
 
   const forecast = data?.forecast;
-  const budgetMonthlyTotal = useMemo(() => {
-    if (!product) return 0;
-    return sumEnabledEnvironmentBudgets(product.budget, product.environmentsEnabled);
-  }, [product]);
-
-  const draftMonthlyValues = useMemo(() => {
-    if (!product) return [];
-    return buildRollingFiscalForecastMonths(budgetMonthlyTotal, 'CAD', new Date());
-  }, [product, budgetMonthlyTotal]);
 
   if (!product) return null;
   if (!canViewForecast) return null;
@@ -89,6 +77,7 @@ export default function PublicCloudForecastSection({ licencePlate }: Readonly<{ 
           }
           monthlyValues={forecast?.monthlyValues ?? draftMonthlyValues}
           budgetMonthlyTotal={budgetMonthlyTotal}
+          budgetCurrency={budgetCurrency}
           editable={canEditForecast}
           onSaved={handleForecastSaved}
         />

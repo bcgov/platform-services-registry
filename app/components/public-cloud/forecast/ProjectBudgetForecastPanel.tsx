@@ -6,13 +6,12 @@ import { ReactNode, useEffect, useMemo, useState } from 'react';
 import { createPublicCloudForecast, updatePublicCloudForecast } from '@/services/backend/public-cloud/forecast';
 import {
   applyAmountToFutureMonths,
-  copyAmountAcrossEditableMonths,
   FISCAL_FORECAST_HORIZON_MONTHS,
   formatForecastAmount,
   getCellStatuses,
   getFiscalYearChunks,
+  getProviderBudgetCurrency,
   getProviderSpendLabel,
-  getReviewWindowStartIndex,
   isInProgressFiscalYear,
   isPartialFiscalYearChunk,
   isPastMonth,
@@ -22,9 +21,11 @@ import {
   shortMonthLabel,
   sumMonthlyValues,
   yearRangeLabel,
+  type BudgetCurrency,
   type ForecastCellStatus,
   type MonthlyValue,
 } from './forecast-grid-utils';
+import { useForecastBudgetCad } from './useForecastBudgetCad';
 
 type ForecastMeta = {
   id: string;
@@ -38,10 +39,11 @@ type CellEditorProps = Readonly<{
   status: ForecastCellStatus;
   editable: boolean;
   onChange: (amount: number) => void;
+  onFocusCell?: () => void;
   onApplyToFuture?: () => void;
 }>;
 
-function CellEditor({ value, currency, status, editable, onChange, onApplyToFuture }: CellEditorProps) {
+function CellEditor({ value, currency, status, editable, onChange, onFocusCell, onApplyToFuture }: CellEditorProps) {
   const [draftValue, setDraftValue] = useState(value);
   const [showApplyFuture, setShowApplyFuture] = useState(false);
 
@@ -69,6 +71,7 @@ function CellEditor({ value, currency, status, editable, onChange, onApplyToFutu
           allowDecimal={false}
           thousandSeparator=","
           prefix="$"
+          onFocus={() => onFocusCell?.()}
           onChange={(val) => {
             const next = typeof val === 'number' ? Math.round(val) : 0;
             setDraftValue(next);
@@ -109,6 +112,8 @@ type ProjectBudgetForecastPanelProps = Readonly<{
   monthlyValues: MonthlyValue[];
   /** Sum of enabled environment budgets (dev/test/prod/tools). Used to fill months. */
   budgetMonthlyTotal?: number;
+  /** Currency of `budgetMonthlyTotal` (USD for AWS, CAD for Azure). Defaults from provider. */
+  budgetCurrency?: BudgetCurrency;
   editable: boolean;
   provider?: string;
   workflowActions?: ReactNode;
@@ -122,6 +127,7 @@ export default function ProjectBudgetForecastPanel({
   forecast,
   monthlyValues,
   budgetMonthlyTotal,
+  budgetCurrency: budgetCurrencyProp,
   editable,
   provider,
   workflowActions,
@@ -130,8 +136,14 @@ export default function ProjectBudgetForecastPanel({
 }: ProjectBudgetForecastPanelProps) {
   const currency = 'CAD';
   const spendLabel = getProviderSpendLabel(provider);
+  const budgetCurrency = budgetCurrencyProp ?? getProviderBudgetCurrency(provider);
+  const { budgetMonthlyTotalCad, exchangeRate, isRateLoading, isRateError, refetchRate } = useForecastBudgetCad(
+    budgetMonthlyTotal,
+    budgetCurrency,
+  );
   const isFormBound = typeof onValuesChange === 'function';
   const isUnsavedDraft = !forecast;
+  const canFillFromBudget = budgetMonthlyTotalCad != null && !isRateLoading && !isRateError;
 
   const cadMonthlyValues = useMemo(
     () =>
@@ -149,9 +161,12 @@ export default function ProjectBudgetForecastPanel({
   );
 
   const [values, setValues] = useState(baselineValues);
+  /** Index of the month last focused or edited — source for "Copy value across range". */
+  const [lastActiveIndex, setLastActiveIndex] = useState<number | null>(null);
 
   useEffect(() => {
     setValues(baselineValues);
+    setLastActiveIndex(null);
   }, [baselineValues]);
 
   useEffect(() => {
@@ -179,6 +194,7 @@ export default function ProjectBudgetForecastPanel({
 
   const isDirty = JSON.stringify(values) !== JSON.stringify(baselineValues);
   const canSave = isUnsavedDraft || isDirty;
+  const canCopyAcrossRange = lastActiveIndex != null;
   const fiscalYearChunks = getFiscalYearChunks(values);
   const grandTotal = sumMonthlyValues(values);
 
@@ -212,6 +228,7 @@ export default function ProjectBudgetForecastPanel({
     const cell = values[index];
     if (!cell || isPastMonth(cell.year, cell.month)) return;
     const rounded = Math.round(amount);
+    setLastActiveIndex(index);
     setValues((prev) => prev.map((v, i) => (i === index ? { ...v, amount: rounded } : v)));
   };
 
@@ -220,16 +237,17 @@ export default function ProjectBudgetForecastPanel({
     [editable],
   );
 
-  const handleCopyAcrossSuggested = () => {
+  const handleCopyAcrossRange = () => {
+    if (lastActiveIndex == null) return;
     setValues((prev) => {
       const statuses = getCellStatuses(prev, cellStatusOptions);
-      const windowStart = getReviewWindowStartIndex(prev);
-      const sourceIndex = windowStart > 0 ? windowStart - 1 : 0;
-      return copyAmountAcrossEditableMonths(prev, statuses, sourceIndex);
+      const amount = prev[lastActiveIndex]?.amount ?? 0;
+      return applyAmountToFutureMonths(prev, statuses, lastActiveIndex, amount);
     });
   };
 
   const handleApplyToFutureMonths = (index: number, amount: number) => {
+    setLastActiveIndex(index);
     setValues((prev) => {
       const statuses = getCellStatuses(prev, cellStatusOptions);
       return applyAmountToFutureMonths(prev, statuses, index, amount);
@@ -237,14 +255,17 @@ export default function ProjectBudgetForecastPanel({
   };
 
   const handleFillFromBudget = () => {
-    if (budgetMonthlyTotal == null) return;
-    const amount = Math.round(budgetMonthlyTotal);
+    if (budgetMonthlyTotalCad == null) return;
+    const amount = budgetMonthlyTotalCad;
     setValues((prev) =>
       prev.map((value) => (isPastMonth(value.year, value.month) ? value : { ...value, amount, currency })),
     );
   };
 
-  const handleDiscardChanges = () => setValues(baselineValues);
+  const handleDiscardChanges = () => {
+    setValues(baselineValues);
+    setLastActiveIndex(null);
+  };
   const handleSaveForecast = () => saveForecast.mutate();
 
   return (
@@ -261,8 +282,34 @@ export default function ProjectBudgetForecastPanel({
         {budgetMonthlyTotal != null && (
           <p>
             Product budget total (enabled environments):{' '}
-            <span className="font-medium text-gray-800">{formatForecastAmount(budgetMonthlyTotal, currency)}</span> per
-            month.
+            <span className="font-medium text-gray-800">
+              {formatForecastAmount(budgetMonthlyTotal, budgetCurrency)}
+            </span>{' '}
+            per month.
+            {budgetCurrency === 'USD' && (
+              <>
+                {isRateLoading && <span className="text-gray-500"> Loading USD→CAD rate…</span>}
+                {isRateError && (
+                  <span className="text-red-700">
+                    {' '}
+                    Could not load exchange rate.{' '}
+                    <button type="button" className="underline" onClick={() => refetchRate()}>
+                      Retry
+                    </button>
+                  </span>
+                )}
+                {budgetMonthlyTotalCad != null && exchangeRate && (
+                  <span className="text-gray-700">
+                    {' '}
+                    ≈{' '}
+                    <span className="font-medium text-gray-800">
+                      {formatForecastAmount(budgetMonthlyTotalCad, 'CAD')}
+                    </span>{' '}
+                    for forecast fill (BoC rate {exchangeRate.rate.toFixed(4)} as of {exchangeRate.date}).
+                  </span>
+                )}
+              </>
+            )}
           </p>
         )}
         {isUnsavedDraft && editable && (
@@ -281,50 +328,30 @@ export default function ProjectBudgetForecastPanel({
 
       <div className="sticky top-0 z-20 -mx-1 px-1 py-2 bg-gray-50/95 backdrop-blur border-b border-gray-200 space-y-2">
         {workflowActions}
-        <div className="flex flex-wrap items-center justify-between gap-3 border border-gray-200 rounded-md px-3 py-2 bg-white shadow-sm">
-          <div className="flex flex-wrap items-center gap-2 text-sm">
-            {editable ? (
-              <>
-                <Button
-                  type="button"
-                  size="compact-sm"
-                  variant="default"
-                  disabled={budgetMonthlyTotal == null}
-                  onClick={handleFillFromBudget}
-                >
-                  Fill months from budget
-                </Button>
-                <Button type="button" size="compact-sm" variant="default" onClick={handleCopyAcrossSuggested}>
-                  Copy value across range
-                </Button>
-                <Button
-                  type="button"
-                  size="compact-sm"
-                  variant="default"
-                  disabled={!isDirty}
-                  onClick={handleDiscardChanges}
-                >
-                  Discard changes
-                </Button>
-                {!isFormBound && (
-                  <Button
-                    type="button"
-                    size="compact-sm"
-                    color="primary"
-                    loading={saveForecast.isPending}
-                    disabled={!canSave}
-                    onClick={handleSaveForecast}
-                  >
-                    Save forecast
-                  </Button>
-                )}
-              </>
-            ) : (
-              <span className="text-gray-500 font-medium">Forecast</span>
-            )}
-          </div>
-          {editable && forecast?.updatedAt && (
-            <div className="text-xs text-gray-600">Last saved {new Date(forecast.updatedAt).toLocaleString()}</div>
+        <div className="flex flex-wrap items-center gap-2 border border-gray-200 rounded-md px-3 py-2 bg-white shadow-sm text-sm">
+          {editable ? (
+            <>
+              <Button
+                type="button"
+                size="compact-sm"
+                variant="default"
+                disabled={!canFillFromBudget}
+                onClick={handleFillFromBudget}
+              >
+                Fill months from budget
+              </Button>
+              <Button
+                type="button"
+                size="compact-sm"
+                variant="default"
+                disabled={!canCopyAcrossRange}
+                onClick={handleCopyAcrossRange}
+              >
+                Copy value across range
+              </Button>
+            </>
+          ) : (
+            <span className="text-gray-500 font-medium">Forecast</span>
           )}
         </div>
       </div>
@@ -374,6 +401,7 @@ export default function ProjectBudgetForecastPanel({
                               status={status}
                               editable={editable}
                               onChange={(amount) => handleAmountChange(globalIndex, amount)}
+                              onFocusCell={() => setLastActiveIndex(globalIndex)}
                               onApplyToFuture={() =>
                                 handleApplyToFutureMonths(globalIndex, values[globalIndex]?.amount ?? 0)
                               }
@@ -423,6 +451,31 @@ export default function ProjectBudgetForecastPanel({
           <div className="text-xs text-gray-600 mt-1">{yearRangeLabel(values)}</div>
         </div>
       </div>
+
+      {editable && (
+        <div className="flex flex-col items-end gap-2">
+          <div className="flex flex-wrap items-center justify-end gap-2">
+            <Button type="button" size="sm" variant="default" disabled={!isDirty} onClick={handleDiscardChanges}>
+              Discard changes
+            </Button>
+            {!isFormBound && (
+              <Button
+                type="button"
+                size="sm"
+                color="primary"
+                loading={saveForecast.isPending}
+                disabled={!canSave}
+                onClick={handleSaveForecast}
+              >
+                Save forecast
+              </Button>
+            )}
+          </div>
+          {forecast?.updatedAt && (
+            <div className="text-xs text-gray-600">Last saved {new Date(forecast.updatedAt).toLocaleString()}</div>
+          )}
+        </div>
+      )}
     </div>
   );
 }

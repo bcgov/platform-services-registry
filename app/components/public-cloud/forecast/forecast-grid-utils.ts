@@ -1,9 +1,19 @@
+import type { CurrencyCode } from '@/services/exchange-rates';
+
 export type MonthlyValue = {
   year: number;
   month: number;
   amount: number;
   currency: 'CAD';
 };
+
+/** Currency used for product budget estimates (provider billing currency). */
+export type BudgetCurrency = CurrencyCode;
+
+/** AWS budgets are USD; Azure budgets and all forecasts are CAD. */
+export function getProviderBudgetCurrency(provider?: string): BudgetCurrency {
+  return provider === 'AZURE' ? 'CAD' : 'USD';
+}
 
 export type ForecastCellStatus = 'confirmed' | 'needsReview' | 'suggested' | 'past';
 

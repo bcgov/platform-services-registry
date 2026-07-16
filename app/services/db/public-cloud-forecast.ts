@@ -2,6 +2,7 @@ import {
   buildRollingFiscalForecastMonths,
   formatForecastProviderList,
   getFiscalYearChunks,
+  getProviderBudgetCurrency,
   mergeMonthlyValuesOntoFiscalHorizon,
   monthKey,
   preserveLockedPastMonthlyValues,
@@ -12,6 +13,7 @@ import {
 } from '@/components/public-cloud/forecast/forecast-grid-utils';
 import prisma from '@/core/prisma';
 import { Provider, ProjectStatus } from '@/prisma/client';
+import { convertCurrencyAmount, fetchUsdCadExchangeRate } from '@/services/exchange-rates';
 
 export async function getProductForecast(licencePlate: string) {
   return prisma.cloudCostForecast.findUnique({ where: { licencePlate } });
@@ -250,7 +252,7 @@ export async function updateProductForecast(
   });
 }
 
-export function seedForecastFromProductBudget(
+export async function seedForecastFromProductBudget(
   provider: Provider,
   budget: { dev: number; test: number; prod: number; tools: number },
   environmentsEnabled: {
@@ -261,8 +263,16 @@ export function seedForecastFromProductBudget(
   },
 ) {
   const currency = PROVIDER_FORECAST_CURRENCY[provider];
-  const total = sumEnabledEnvironmentBudgets(budget, environmentsEnabled);
-  return buildRollingFiscalForecastMonths(total, currency, new Date());
+  const budgetCurrency = getProviderBudgetCurrency(provider);
+  const budgetTotal = sumEnabledEnvironmentBudgets(budget, environmentsEnabled);
+  let totalCad = budgetTotal;
+
+  if (budgetCurrency === 'USD' && budgetTotal > 0) {
+    const { rate } = await fetchUsdCadExchangeRate();
+    totalCad = convertCurrencyAmount(budgetTotal, 'USD', 'CAD', rate);
+  }
+
+  return buildRollingFiscalForecastMonths(totalCad, currency, new Date());
 }
 
 export async function seedForecastValues(product: {
@@ -289,5 +299,5 @@ export async function seedForecastValues(product: {
     }));
     return mergeMonthlyValuesOntoFiscalHorizon(existingValues, currency);
   }
-  return seedForecastFromProductBudget(product.provider, product.budget, product.environmentsEnabled);
+  return await seedForecastFromProductBudget(product.provider, product.budget, product.environmentsEnabled);
 }

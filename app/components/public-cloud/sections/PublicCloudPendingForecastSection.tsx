@@ -3,6 +3,7 @@
 import { useMemo } from 'react';
 import {
   FISCAL_FORECAST_HORIZON_MONTHS,
+  getProviderBudgetCurrency,
   sumEnabledEnvironmentBudgets,
   type MonthlyValue,
 } from '@/components/public-cloud/forecast/forecast-grid-utils';
@@ -57,6 +58,7 @@ export default function PublicCloudPendingForecastSection() {
       }}
       monthlyValues={monthlyValues}
       budgetMonthlyTotal={budgetMonthlyTotal}
+      budgetCurrency={getProviderBudgetCurrency(decisionData.provider)}
       editable={false}
       provider={decisionData.provider}
     />
