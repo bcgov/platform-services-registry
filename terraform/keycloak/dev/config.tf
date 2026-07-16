@@ -4,7 +4,7 @@ terraform {
   required_providers {
     keycloak = {
       source  = "keycloak/keycloak"
-      version = "5.7.0"
+      version = "5.8.0"
     }
   }
 }
@@ -15,4 +15,5 @@ provider "keycloak" {
   client_secret = var.client_secret
   url           = var.url
   base_path     = var.base_path
+  initial_login = false
 }
