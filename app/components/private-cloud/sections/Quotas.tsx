@@ -1,13 +1,14 @@
-import { Loader, Tooltip } from '@mantine/core';
+import { Alert, Loader, Tooltip } from '@mantine/core';
+import { IconExclamationCircle } from '@tabler/icons-react';
 import { useQueries } from '@tanstack/react-query';
 import _startCase from 'lodash-es/startCase';
 import { ReactNode } from 'react';
 import { useFormContext } from 'react-hook-form';
 import ExternalLink from '@/components/generic/button/ExternalLink';
 import HookFormTextInput from '@/components/generic/input/HookFormTextInput';
-import { namespaceKeys, resourceKeys } from '@/constants';
+import { environmentShortNames, namespaceKeys, resourceKeys } from '@/constants';
 import { Cluster, ResourceRequestsEnv, ResourceRequests } from '@/prisma/client';
-import { getSubnetForEmerald } from '@/services/backend/private-cloud/products';
+import { getPdbPolicyStatus, getSubnetForEmerald } from '@/services/backend/private-cloud/products';
 import { cn } from '@/utils/js';
 import QuotasBudgetEstimation from './QuotasBudgetEstimation';
 import QuotasChangeInfo from './QuotasChangeInfo';
@@ -55,6 +56,16 @@ export default function Quotas({
     }),
   });
 
+  const pdbPolicyReports = useQueries({
+    queries: namespaceKeys.map((namespace) => ({
+      queryKey: ['pdb-policy-report', licencePlate, cluster, environmentShortNames[namespace]],
+      queryFn: () => getPdbPolicyStatus(licencePlate!, cluster!, environmentShortNames[namespace]),
+      enabled: !!licencePlate && !!cluster,
+      staleTime: 60_000,
+      retry: false,
+    })),
+  });
+
   return (
     <>
       <QuotasDescription />
@@ -70,6 +81,9 @@ export default function Quotas({
             (originalVal?.cpu !== newVal?.cpu ||
               originalVal?.memory !== newVal?.memory ||
               originalVal?.storage !== newVal?.storage);
+
+          const pdbPolicyQuery = pdbPolicyReports[index];
+          const pdbPolicyStatus = pdbPolicyQuery.data;
 
           let subnetInfo: ReactNode = null;
           if (cluster === Cluster.EMERALD) {
@@ -115,6 +129,46 @@ export default function Quotas({
               {clusterLink}
               {subnetInfo}
 
+              {pdbPolicyQuery.isLoading && (
+                <div className="mt-3">
+                  <Loader size="sm" type="dots" />
+                </div>
+              )}
+
+              {pdbPolicyStatus?.hasPdbIssues && (
+                <Alert
+                  variant="outline"
+                  color="red"
+                  title="PodDisruptionBudget configuration issue"
+                  icon={<IconExclamationCircle />}
+                  className="mt-3"
+                >
+                  <p>This namespace does not meet the platform PodDisruptionBudget requirements.</p>
+
+                  {pdbPolicyStatus.issues.map((issue) => (
+                    <div key={`${issue.reportName}-${issue.rule}`} className="mt-2">
+                      {issue.resourceName && (
+                        <p>
+                          <strong>Resource:</strong> {issue.resourceName}
+                        </p>
+                      )}
+
+                      {issue.message && <p>{issue.message}</p>}
+                    </div>
+                  ))}
+                </Alert>
+              )}
+              {pdbPolicyQuery.isError && (
+                <Alert
+                  variant="outline"
+                  color="yellow"
+                  title="Unable to check PodDisruptionBudget status"
+                  icon={<IconExclamationCircle />}
+                  className="mt-3"
+                >
+                  Registry could not retrieve the PolicyReport for this namespace.
+                </Alert>
+              )}
               {resourceKeys.map((resourceKey) => {
                 const oldval = String(originalVal?.[resourceKey]);
                 const newval = String(newVal[resourceKey]);
