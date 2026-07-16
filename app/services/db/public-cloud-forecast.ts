@@ -268,7 +268,7 @@ export async function seedForecastFromProductBudget(
   const budgetTotal = sumEnabledEnvironmentBudgets(budget, environmentsEnabled);
   let totalCad = budgetTotal;
 
-  if (budgetCurrency === 'USD') {
+  if (budgetCurrency === 'USD' && budgetTotal > 0) {
     const { rate } = await fetchUsdCadExchangeRate();
     totalCad = budgetAmountToForecastCad(budgetTotal, 'USD', rate);
   }

@@ -5,7 +5,7 @@ import { getUsdCadExchangeRate } from '@/services/backend/public-cloud/forecast'
 import { budgetAmountToForecastCad, type BudgetCurrency } from './forecast-grid-utils';
 
 export function useForecastBudgetCad(budgetMonthlyTotal: number | undefined, budgetCurrency: BudgetCurrency) {
-  const needsRate = budgetCurrency === 'USD' && budgetMonthlyTotal != null;
+  const needsRate = budgetCurrency === 'USD' && budgetMonthlyTotal != null && budgetMonthlyTotal !== 0;
 
   const { data, isLoading, isError, error, refetch } = useQuery({
     queryKey: ['usd-cad-exchange-rate'],
@@ -18,7 +18,7 @@ export function useForecastBudgetCad(budgetMonthlyTotal: number | undefined, bud
   let budgetMonthlyTotalCad: number | undefined;
   if (budgetMonthlyTotal == null) {
     budgetMonthlyTotalCad = undefined;
-  } else if (budgetCurrency === 'CAD') {
+  } else if (budgetCurrency === 'CAD' || budgetMonthlyTotal === 0) {
     budgetMonthlyTotalCad = Math.round(budgetMonthlyTotal);
   } else if (data?.rate) {
     budgetMonthlyTotalCad = budgetAmountToForecastCad(budgetMonthlyTotal, 'USD', data.rate);

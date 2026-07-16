@@ -111,7 +111,7 @@ export default publicCloudProductNew(({ session }) => {
               const budgetTotal = sumEnabledEnvironmentBudgets(formData.budget, formData.environmentsEnabled);
               const budgetCurrency = getProviderBudgetCurrency(formData.provider);
               let totalCad = Math.round(budgetTotal);
-              if (budgetCurrency === 'USD') {
+              if (budgetCurrency === 'USD' && budgetTotal > 0) {
                 const { rate } = await getUsdCadExchangeRate();
                 totalCad = budgetAmountToForecastCad(budgetTotal, 'USD', rate);
               }

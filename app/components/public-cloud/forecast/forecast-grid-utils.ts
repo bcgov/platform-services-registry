@@ -16,7 +16,7 @@ export function getProviderBudgetCurrency(provider?: string): BudgetCurrency {
 /** Convert a provider budget amount into forecast CAD when the budget is USD. */
 export function budgetAmountToForecastCad(amount: number, budgetCurrency: BudgetCurrency, usdCadRate?: number): number {
   const roundedBudget = Math.round(amount);
-  if (budgetCurrency === 'CAD') return roundedBudget;
+  if (budgetCurrency === 'CAD' || roundedBudget === 0) return roundedBudget;
   if (usdCadRate == null || !Number.isFinite(usdCadRate) || usdCadRate <= 0) {
     throw new Error('USD/CAD exchange rate is required to convert AWS budget amounts');
   }
