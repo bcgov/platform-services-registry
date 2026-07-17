@@ -1,6 +1,6 @@
 'use client';
 
-import { Button, Checkbox, SegmentedControl, Select, TextInput } from '@mantine/core';
+import { Button, SegmentedControl, Select, TextInput } from '@mantine/core';
 import { IconChevronDown, IconChevronRight } from '@tabler/icons-react';
 import { useQuery } from '@tanstack/react-query';
 import Link from 'next/link';
@@ -9,14 +9,21 @@ import ExportButton from '@/components/buttons/ExportButton';
 import LoadingBox from '@/components/generic/LoadingBox';
 import {
   aggregateMonthlyTotalsFromProducts,
+  FISCAL_FORECAST_HORIZON_MONTHS,
+  fiscalYearChunkHasOptionalMonths,
   formatForecastAmount,
   formatForecastProviderLabel,
   getFiscalYearChunks,
+  getFiscalYearTotalSummary,
   getProviderSpendLabel,
+  getRequiredHorizonMonths,
+  isBeyondRequiredHorizon,
+  isForecastHorizonComplete,
   isPastMonth,
   monthKey,
   shortMonthLabel,
   sumMonthlyValues,
+  sumRequiredHorizonMonths,
   yearRangeLabel,
   type FiscalYearChunk,
   type MonthlyValue,
@@ -31,6 +38,7 @@ const DEFAULT_PRODUCT_LIMIT = 10;
 const PRODUCT_LIMIT_INCREMENT = 10;
 
 type ProductSort = 'forecast-desc' | 'name-asc';
+type ProductListFilter = 'all' | 'with-forecast' | 'missing-forecast' | 'incomplete-required';
 type ProviderFilter = 'ALL' | 'AWS_LZA' | 'AZURE' | 'AWS';
 
 const PROVIDER_FILTER_OPTIONS: { value: Exclude<ProviderFilter, 'ALL'>; label: string }[] = [
@@ -57,6 +65,31 @@ function productChunkForecasts(product: PlatformForecastProduct, fyChunk: Fiscal
   return fyChunk.months.map((_, i) =>
     product.hasForecast ? product.monthlyTotals[fyChunk.startIndex + i]?.amount ?? 0 : null,
   );
+}
+
+/** True when some, but not all, products with a forecast have a value for this month. */
+function isMonthCoveragePartial(products: PlatformForecastProduct[], monthIndex: number) {
+  const withForecast = products.filter((product) => product.hasForecast);
+  if (withForecast.length <= 1) return false;
+
+  let withValue = 0;
+  for (const product of withForecast) {
+    if ((product.monthlyTotals[monthIndex]?.amount ?? 0) > 0) withValue += 1;
+  }
+
+  return withValue > 0 && withValue < withForecast.length;
+}
+
+/** Has a forecast but is missing at least one required 24-month horizon value. */
+function productHasIncompleteRequiredMonths(product: PlatformForecastProduct) {
+  return product.hasForecast && !isForecastHorizonComplete(product.monthlyTotals);
+}
+
+function matchesProductListFilter(product: PlatformForecastProduct, filter: ProductListFilter) {
+  if (filter === 'all') return true;
+  if (filter === 'missing-forecast') return !product.hasForecast;
+  if (filter === 'incomplete-required') return productHasIncompleteRequiredMonths(product);
+  return product.hasForecast;
 }
 
 function matchesProductSearch(product: PlatformForecastProduct, search: string) {
@@ -86,7 +119,7 @@ function PlatformForecastGrid({ group }: Readonly<{ group: PlatformForecastSumma
   const [showProducts, setShowProducts] = useState(false);
   const [productSearch, setProductSearch] = useState('');
   const [productSort, setProductSort] = useState<ProductSort>('forecast-desc');
-  const [missingOnly, setMissingOnly] = useState(false);
+  const [productListFilter, setProductListFilter] = useState<ProductListFilter>('all');
   const [productLimit, setProductLimit] = useState(DEFAULT_PRODUCT_LIMIT);
   const [providerFilter, setProviderFilter] = useState<ProviderFilter>('ALL');
 
@@ -104,12 +137,14 @@ function PlatformForecastGrid({ group }: Readonly<{ group: PlatformForecastSumma
 
   const values = filteredTotals.monthlyTotals;
   const fiscalYearChunks = getFiscalYearChunks(values);
-  const grandTotal = sumMonthlyValues(values);
+  const requiredMonths = getRequiredHorizonMonths(values);
+  const grandTotal = sumRequiredHorizonMonths(values);
   const spendLabel = activeProviders.length === 1 ? getProviderSpendLabel(activeProviders[0]) : 'Cloud Spend';
   const filteredProductCount = providerFilteredProducts.length;
   const filteredForecastCount = providerFilteredProducts.filter((product) => product.hasForecast).length;
+  const incompleteRequiredCount = providerFilteredProducts.filter(productHasIncompleteRequiredMonths).length;
   const lineItemProducts = providerFilteredProducts.filter((product) =>
-    missingOnly ? !product.hasForecast : product.hasForecast,
+    matchesProductListFilter(product, productListFilter),
   );
   const searchedProducts = sortProducts(
     lineItemProducts.filter((product) => matchesProductSearch(product, productSearch)),
@@ -127,7 +162,7 @@ function PlatformForecastGrid({ group }: Readonly<{ group: PlatformForecastSumma
 
   useEffect(() => {
     setProductLimit(DEFAULT_PRODUCT_LIMIT);
-  }, [productSearch, productSort, missingOnly, providerFilter]);
+  }, [productSearch, productSort, productListFilter, providerFilter]);
 
   useEffect(() => {
     if (providerFilter !== 'ALL' && !availableProviders.includes(providerFilter)) {
@@ -169,7 +204,7 @@ function PlatformForecastGrid({ group }: Readonly<{ group: PlatformForecastSumma
 
       {showProducts && (
         <div className="rounded-lg border border-gray-200 bg-white p-3 space-y-3">
-          <div className="grid gap-3 lg:grid-cols-[minmax(220px,1fr)_220px_auto] lg:items-end">
+          <div className="grid gap-3 lg:grid-cols-[minmax(220px,1fr)_200px_minmax(220px,1fr)] lg:items-end">
             <TextInput
               label="Find product"
               placeholder="Search name or licence plate"
@@ -186,11 +221,23 @@ function PlatformForecastGrid({ group }: Readonly<{ group: PlatformForecastSumma
               ]}
               allowDeselect={false}
             />
-            <Checkbox
-              label="Missing forecast only"
-              checked={missingOnly}
-              onChange={(event) => setMissingOnly(event.currentTarget.checked)}
-              className="pb-2"
+            <Select
+              label="Show products"
+              value={productListFilter}
+              onChange={(value) => setProductListFilter((value as ProductListFilter) ?? 'all')}
+              data={[
+                { value: 'all', label: `All (${filteredProductCount})` },
+                { value: 'with-forecast', label: `With forecast (${filteredForecastCount})` },
+                {
+                  value: 'incomplete-required',
+                  label: `Incomplete required months (${incompleteRequiredCount})`,
+                },
+                {
+                  value: 'missing-forecast',
+                  label: `Missing forecast (${filteredProductCount - filteredForecastCount})`,
+                },
+              ]}
+              allowDeselect={false}
             />
           </div>
           <div className="flex flex-wrap items-center justify-between gap-3">
@@ -242,11 +289,18 @@ function PlatformForecastGrid({ group }: Readonly<{ group: PlatformForecastSumma
       <div className="space-y-6">
         {fiscalYearChunks.map((fyChunk) => {
           const yearTotal = sumMonthlyValues(fyChunk.months);
+          const fySummary = getFiscalYearTotalSummary(fyChunk);
+          const hasOptional = fiscalYearChunkHasOptionalMonths(fyChunk);
 
           return (
             <div key={fyChunk.label} className="border border-gray-200 rounded-lg overflow-hidden bg-white">
               <div className="px-4 py-2 bg-gray-50 border-b border-gray-200 text-sm font-semibold text-gray-700">
                 {fyChunk.label} <span className="font-normal text-gray-500">({yearRangeLabel(fyChunk.months)})</span>
+                {hasOptional && (
+                  <span className="ml-2 font-normal text-xs text-gray-500">
+                    months beyond the required {FISCAL_FORECAST_HORIZON_MONTHS}-month window are optional
+                  </span>
+                )}
               </div>
               <div className="overflow-x-auto">
                 <table className="w-full min-w-[720px] text-sm">
@@ -255,12 +309,31 @@ function PlatformForecastGrid({ group }: Readonly<{ group: PlatformForecastSumma
                       <th className="px-3 py-2 text-left text-gray-500 min-w-48 sticky left-0 bg-white">
                         {spendLabel}
                       </th>
-                      {fyChunk.months.map((v) => (
-                        <th key={monthKey(v.year, v.month)} className="px-2 py-2 text-center text-gray-500 font-medium">
-                          {shortMonthLabel(v.year, v.month)}
-                        </th>
-                      ))}
-                      <th className="px-3 py-2 text-center font-semibold bg-amber-50 text-gray-800">TOTAL</th>
+                      {fyChunk.months.map((v, i) => {
+                        const optional = isBeyondRequiredHorizon(v.year, v.month);
+                        const coveragePartial = isMonthCoveragePartial(
+                          providerFilteredProducts,
+                          fyChunk.startIndex + i,
+                        );
+                        return (
+                          <th
+                            key={monthKey(v.year, v.month)}
+                            className={`px-2 py-2 text-center font-medium ${
+                              optional || coveragePartial ? 'text-gray-400' : 'text-gray-500'
+                            }`}
+                          >
+                            {shortMonthLabel(v.year, v.month)}
+                            {optional && <div className="text-[10px] font-normal normal-case">optional</div>}
+                            {coveragePartial && <div className="text-[10px] font-normal normal-case">partial</div>}
+                          </th>
+                        );
+                      })}
+                      <th className="px-3 py-2 text-center font-semibold bg-amber-50 text-gray-800">
+                        TOTAL
+                        {fySummary.isPartial && (
+                          <div className="text-[10px] font-normal normal-case text-gray-500">partial</div>
+                        )}
+                      </th>
                     </tr>
                   </thead>
                   <tbody>
@@ -290,20 +363,34 @@ function PlatformForecastGrid({ group }: Readonly<{ group: PlatformForecastSumma
                                 <div className="pl-3 text-xs text-gray-400">{product.licencePlate}</div>
                               </Link>
                             </td>
-                            {fyChunk.months.map((v, i) => (
-                              <td
-                                key={monthKey(v.year, v.month)}
-                                className={`px-2 py-2 text-center ${
-                                  isPastMonth(v.year, v.month) ? 'bg-gray-50 text-gray-500' : 'text-gray-700'
-                                }`}
-                              >
-                                {forecasts[i] != null && hasAnyForecast
-                                  ? formatForecastAmount(forecasts[i]!, group.currency)
-                                  : '—'}
-                              </td>
-                            ))}
+                            {fyChunk.months.map((v, i) => {
+                              const past = isPastMonth(v.year, v.month);
+                              const cellClass = past ? 'bg-gray-50 text-gray-400' : 'text-gray-700';
+                              return (
+                                <td key={monthKey(v.year, v.month)} className={`px-2 py-2 text-center ${cellClass}`}>
+                                  {past
+                                    ? '—'
+                                    : forecasts[i] != null && hasAnyForecast && forecasts[i]! > 0
+                                      ? formatForecastAmount(forecasts[i]!, group.currency)
+                                      : '—'}
+                                </td>
+                              );
+                            })}
                             <td className="px-3 py-2 text-center bg-amber-50/60 text-gray-800">
-                              {hasAnyForecast ? formatForecastAmount(productYearTotal, group.currency) : '—'}
+                              {hasAnyForecast
+                                ? formatForecastAmount(
+                                    fySummary.requiredOnly
+                                      ? fyChunk.months.reduce(
+                                          (sum, month, i) =>
+                                            isBeyondRequiredHorizon(month.year, month.month)
+                                              ? sum
+                                              : sum + (forecasts[i] ?? 0),
+                                          0,
+                                        )
+                                      : productYearTotal,
+                                    group.currency,
+                                  )
+                                : '—'}
                             </td>
                           </tr>
                         );
@@ -348,18 +435,17 @@ function PlatformForecastGrid({ group }: Readonly<{ group: PlatformForecastSumma
                       <td className="px-3 py-2 text-gray-700 sticky left-0 bg-inherit border-r border-gray-100">
                         {showProducts ? 'Forecast total' : 'Forecast'}
                       </td>
-                      {fyChunk.months.map((v) => (
-                        <td
-                          key={monthKey(v.year, v.month)}
-                          className={`px-2 py-2 text-center ${
-                            isPastMonth(v.year, v.month) ? 'bg-gray-100 text-gray-500' : 'bg-inherit text-gray-900'
-                          }`}
-                        >
-                          {formatForecastAmount(v.amount, group.currency)}
-                        </td>
-                      ))}
+                      {fyChunk.months.map((v) => {
+                        const past = isPastMonth(v.year, v.month);
+                        const cellClass = past ? 'bg-gray-100 text-gray-400' : 'bg-inherit text-gray-900';
+                        return (
+                          <td key={monthKey(v.year, v.month)} className={`px-2 py-2 text-center ${cellClass}`}>
+                            {past || v.amount <= 0 ? '—' : formatForecastAmount(v.amount, group.currency)}
+                          </td>
+                        );
+                      })}
                       <td className="px-3 py-2 text-center font-bold bg-amber-50 text-gray-900">
-                        {formatForecastAmount(yearTotal, group.currency)}
+                        {formatForecastAmount(fySummary.total, group.currency)}
                       </td>
                     </tr>
                   </tbody>
@@ -373,12 +459,12 @@ function PlatformForecastGrid({ group }: Readonly<{ group: PlatformForecastSumma
       <div className="flex flex-wrap gap-4">
         <div className="rounded-lg border-2 border-amber-300 bg-amber-50 p-4">
           <div className="text-xs font-semibold text-gray-600 uppercase tracking-wide">
-            {values.length}-month forecast total ({group.currency})
+            {FISCAL_FORECAST_HORIZON_MONTHS}-month forecast total ({group.currency})
           </div>
           <div className="text-2xl font-bold text-gray-900 mt-1">
             {formatForecastAmount(grandTotal, group.currency)}
           </div>
-          <div className="text-xs text-gray-600 mt-1">{yearRangeLabel(values)}</div>
+          <div className="text-xs text-gray-600 mt-1">{yearRangeLabel(requiredMonths)}</div>
         </div>
       </div>
     </div>

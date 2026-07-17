@@ -10,7 +10,7 @@ import {
   expectedMonthlyForecastRollup,
   seedDemoPublicCloudProducts,
 } from './seed-demo-products';
-import { seedForecastForProduct } from './seed-forecast-local';
+import { FORECAST_SEED_PROFILES, seedForecastForProduct } from './seed-forecast-local';
 import { seedFoundation } from './seed-foundation';
 
 async function main() {
@@ -27,6 +27,11 @@ async function main() {
   await seedDemoPublicCloudProducts();
 
   console.log('\n3. Forecast demo data...');
+  console.log('   Non-complete profiles:');
+  for (const [plate, profile] of Object.entries(FORECAST_SEED_PROFILES)) {
+    console.log(`     ${plate} → ${profile}`);
+  }
+
   for (const licencePlate of AZURE_DEMO_PLATES) {
     await seedForecastForProduct(licencePlate, {
       reset,
@@ -49,8 +54,9 @@ async function main() {
     console.log(`  http://localhost:3000/public-cloud/products/${plate}/edit`);
   }
   console.log(`Public Cloud Forecast: http://localhost:3000/public-cloud/forecast`);
+  console.log('  → Show products: "Incomplete required months" / "Missing forecast" to verify filters');
   console.log(
-    `Expected rollups: Azure CA$${expectedMonthlyForecastRollup(
+    `Budget-based monthly totals (if every product were fully forecast): Azure CA$${expectedMonthlyForecastRollup(
       Provider.AZURE,
     ).toLocaleString()}/mo, AWS LZA $${expectedMonthlyForecastRollup(Provider.AWS_LZA).toLocaleString()}/mo`,
   );

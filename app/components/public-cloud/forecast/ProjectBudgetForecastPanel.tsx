@@ -7,19 +7,21 @@ import { createPublicCloudForecast, updatePublicCloudForecast } from '@/services
 import {
   applyAmountToFutureMonths,
   FISCAL_FORECAST_HORIZON_MONTHS,
+  fiscalYearChunkHasOptionalMonths,
   formatForecastAmount,
   getCellStatuses,
   getFiscalYearChunks,
+  getFiscalYearTotalSummary,
   getProviderBudgetCurrency,
   getProviderSpendLabel,
-  isInProgressFiscalYear,
-  isPartialFiscalYearChunk,
+  getRequiredHorizonMonths,
   isPastMonth,
+  isRequiredForecastMonth,
   mergeMonthlyValuesOntoFiscalHorizon,
   monthKey,
   preserveLockedPastMonthlyValues,
   shortMonthLabel,
-  sumMonthlyValues,
+  sumRequiredHorizonMonths,
   yearRangeLabel,
   type BudgetCurrency,
   type ForecastCellStatus,
@@ -44,18 +46,21 @@ type CellEditorProps = Readonly<{
 }>;
 
 function CellEditor({ value, currency, status, editable, onChange, onFocusCell, onApplyToFuture }: CellEditorProps) {
-  const [draftValue, setDraftValue] = useState(value);
+  // Empty string = not entered (stored as 0). Keeps the input blank instead of "$0".
+  const [draftValue, setDraftValue] = useState<number | ''>(value > 0 ? Math.round(value) : '');
+  const [focused, setFocused] = useState(false);
   const [showApplyFuture, setShowApplyFuture] = useState(false);
 
   useEffect(() => {
-    setDraftValue(Math.round(value));
+    if (focused) return;
+    setDraftValue(value > 0 ? Math.round(value) : '');
     setShowApplyFuture(false);
-  }, [value]);
+  }, [value, focused]);
 
   if (status === 'past') {
     return (
       <div className="flex flex-col items-center justify-center min-h-9">
-        <span className="font-medium text-sm text-gray-400">{formatForecastAmount(value, currency)}</span>
+        <span className="font-medium text-sm text-gray-400">—</span>
       </div>
     );
   }
@@ -64,15 +69,26 @@ function CellEditor({ value, currency, status, editable, onChange, onFocusCell, 
     return (
       <div className="space-y-1">
         <NumberInput
-          value={Math.round(draftValue)}
+          value={draftValue}
           min={0}
           hideControls
           decimalScale={0}
           allowDecimal={false}
           thousandSeparator=","
-          prefix="$"
-          onFocus={() => onFocusCell?.()}
+          prefix={draftValue === '' ? undefined : '$'}
+          allowNegative={false}
+          onFocus={() => {
+            setFocused(true);
+            onFocusCell?.();
+          }}
+          onBlur={() => setFocused(false)}
           onChange={(val) => {
+            if (val === '' || val === undefined || val === null) {
+              setDraftValue('');
+              onChange(0);
+              setShowApplyFuture(Math.round(value) !== 0);
+              return;
+            }
             const next = typeof val === 'number' ? Math.round(val) : 0;
             setDraftValue(next);
             onChange(next);
@@ -97,9 +113,19 @@ function CellEditor({ value, currency, status, editable, onChange, onFocusCell, 
     );
   }
 
+  if (value <= 0) {
+    return (
+      <div className="flex flex-col items-center justify-center min-h-9">
+        <span className="font-medium text-sm text-gray-400">—</span>
+      </div>
+    );
+  }
+
   return (
     <div className="flex flex-col items-center justify-center min-h-9">
-      <span className="font-medium text-sm text-gray-900">{formatForecastAmount(value, currency)}</span>
+      <span className={`font-medium text-sm ${status === 'optional' ? 'text-gray-500' : 'text-gray-900'}`}>
+        {formatForecastAmount(value, currency)}
+      </span>
     </div>
   );
 }
@@ -196,7 +222,9 @@ export default function ProjectBudgetForecastPanel({
   const canSave = isUnsavedDraft || isDirty;
   const canCopyAcrossRange = lastActiveIndex != null;
   const fiscalYearChunks = getFiscalYearChunks(values);
-  const grandTotal = sumMonthlyValues(values);
+  const requiredMonths = useMemo(() => getRequiredHorizonMonths(values), [values]);
+  const requiredTotal = useMemo(() => sumRequiredHorizonMonths(values), [values]);
+  const hasOptionalMonths = fiscalYearChunks.some((chunk) => fiscalYearChunkHasOptionalMonths(chunk));
 
   const saveForecast = useMutation({
     mutationFn: () => {
@@ -258,7 +286,7 @@ export default function ProjectBudgetForecastPanel({
     if (budgetMonthlyTotalCad == null) return;
     const amount = budgetMonthlyTotalCad;
     setValues((prev) =>
-      prev.map((value) => (isPastMonth(value.year, value.month) ? value : { ...value, amount, currency })),
+      prev.map((value) => (isRequiredForecastMonth(value.year, value.month) ? { ...value, amount, currency } : value)),
     );
   };
 
@@ -276,8 +304,9 @@ export default function ProjectBudgetForecastPanel({
           run April–March.
         </p>
         <p>
-          Rolling {FISCAL_FORECAST_HORIZON_MONTHS}-month forecast ({yearRangeLabel(values)}). Past months are locked and
-          shown for reference.
+          Required rolling {FISCAL_FORECAST_HORIZON_MONTHS}-month forecast ({yearRangeLabel(requiredMonths)}). Past
+          months are locked and left blank. Months beyond that window are optional and can be filled for a full fiscal
+          year view.
         </p>
         {budgetMonthlyTotal != null && (
           <p>
@@ -324,6 +353,12 @@ export default function ProjectBudgetForecastPanel({
             )}
           </p>
         )}
+        {hasOptionalMonths && editable && (
+          <p className="text-gray-600">
+            Months labeled optional are beyond the required window — only the {FISCAL_FORECAST_HORIZON_MONTHS}-month
+            forecast is required.
+          </p>
+        )}
       </div>
 
       <div className="sticky top-0 z-20 -mx-1 px-1 py-2 bg-gray-50/95 backdrop-blur border-b border-gray-200 space-y-2">
@@ -358,29 +393,44 @@ export default function ProjectBudgetForecastPanel({
 
       <div className="space-y-6">
         {fiscalYearChunks.map((fyChunk) => {
-          const yearTotal = sumMonthlyValues(fyChunk.months);
+          const fySummary = getFiscalYearTotalSummary(fyChunk);
+          const hasOptional = fiscalYearChunkHasOptionalMonths(fyChunk);
 
           return (
             <div key={fyChunk.label} className="border border-gray-200 rounded-lg overflow-hidden bg-white">
               <div className="px-4 py-2 bg-gray-50 border-b border-gray-200 text-sm font-semibold text-gray-700">
                 {fyChunk.label} <span className="font-normal text-gray-500">({yearRangeLabel(fyChunk.months)})</span>
-                {isPartialFiscalYearChunk(fyChunk) && (
+                {hasOptional && (
                   <span className="ml-2 font-normal text-xs text-gray-500">
-                    partial year — end of the rolling {FISCAL_FORECAST_HORIZON_MONTHS}-month window
+                    months beyond the required {FISCAL_FORECAST_HORIZON_MONTHS}-month window are optional
                   </span>
                 )}
               </div>
               <div className="overflow-x-auto">
-                <table className="w-full min-w-[720px] text-sm">
+                <table className="w-full min-w-[720px] text-sm table-fixed">
                   <thead>
                     <tr className="border-b border-gray-200">
                       <th className="px-3 py-2 text-left text-gray-500 w-28 sticky left-0 bg-white">{spendLabel}</th>
-                      {fyChunk.months.map((v) => (
-                        <th key={monthKey(v.year, v.month)} className="px-2 py-2 text-center text-gray-500 font-medium">
-                          {shortMonthLabel(v.year, v.month)}
-                        </th>
-                      ))}
-                      <th className="px-3 py-2 text-center font-semibold bg-amber-50 text-gray-800">TOTAL</th>
+                      {fyChunk.months.map((v, i) => {
+                        const optional = cellStatuses[fyChunk.startIndex + i] === 'optional';
+                        return (
+                          <th
+                            key={monthKey(v.year, v.month)}
+                            className={`px-2 py-2 text-center font-medium ${
+                              optional ? 'text-gray-400' : 'text-gray-500'
+                            }`}
+                          >
+                            {shortMonthLabel(v.year, v.month)}
+                            {optional && <div className="text-[10px] font-normal normal-case">optional</div>}
+                          </th>
+                        );
+                      })}
+                      <th className="px-3 py-2 text-center font-semibold bg-amber-50 text-gray-800 w-28">
+                        TOTAL
+                        {fySummary.isPartial && (
+                          <div className="text-[10px] font-normal normal-case text-gray-500">partial</div>
+                        )}
+                      </th>
                     </tr>
                   </thead>
                   <tbody>
@@ -410,7 +460,7 @@ export default function ProjectBudgetForecastPanel({
                         );
                       })}
                       <td className="px-3 py-2 text-center font-bold bg-amber-50 text-gray-900">
-                        {formatForecastAmount(yearTotal, currency)}
+                        {formatForecastAmount(fySummary.total, currency)}
                       </td>
                     </tr>
                   </tbody>
@@ -423,23 +473,20 @@ export default function ProjectBudgetForecastPanel({
 
       <div className="grid gap-3 sm:grid-cols-3">
         {fiscalYearChunks.map((fyChunk) => {
-          const yearTotal = sumMonthlyValues(fyChunk.months);
-          const isPartial = isPartialFiscalYearChunk(fyChunk);
-          const inProgress = isInProgressFiscalYear(fyChunk);
-          let yearHint = 'First fiscal year in forecast';
-          if (isPartial) {
-            yearHint = `First ${fyChunk.months.length} month${
-              fyChunk.months.length === 1 ? '' : 's'
-            } of the fiscal year`;
-          } else if (inProgress) {
-            yearHint = 'Full-year forecast total (year still in progress)';
-          }
+          const fySummary = getFiscalYearTotalSummary(fyChunk);
 
           return (
-            <div key={fyChunk.label} className="rounded-lg border border-gray-200 p-4 bg-white">
-              <div className="text-xs font-semibold text-gray-500 uppercase tracking-wide">{fyChunk.label} total</div>
-              <div className="text-2xl font-bold text-gray-900 mt-1">{formatForecastAmount(yearTotal, currency)}</div>
-              <div className="text-sm text-gray-500 mt-1">{yearHint}</div>
+            <div
+              key={fyChunk.label}
+              className={`rounded-lg border p-4 bg-white ${
+                fySummary.isPartial ? 'border-amber-200' : 'border-gray-200'
+              }`}
+            >
+              <div className="text-xs font-semibold text-gray-500 uppercase tracking-wide">{fySummary.title}</div>
+              <div className="text-2xl font-bold text-gray-900 mt-1">
+                {formatForecastAmount(fySummary.total, currency)}
+              </div>
+              <div className="text-sm text-gray-500 mt-1">{fySummary.hint}</div>
             </div>
           );
         })}
@@ -447,8 +494,8 @@ export default function ProjectBudgetForecastPanel({
           <div className="text-xs font-semibold text-gray-600 uppercase tracking-wide">
             {FISCAL_FORECAST_HORIZON_MONTHS}-month forecast total
           </div>
-          <div className="text-2xl font-bold text-gray-900 mt-1">{formatForecastAmount(grandTotal, currency)}</div>
-          <div className="text-xs text-gray-600 mt-1">{yearRangeLabel(values)}</div>
+          <div className="text-2xl font-bold text-gray-900 mt-1">{formatForecastAmount(requiredTotal, currency)}</div>
+          <div className="text-xs text-gray-600 mt-1">{yearRangeLabel(requiredMonths)}</div>
         </div>
       </div>
 
