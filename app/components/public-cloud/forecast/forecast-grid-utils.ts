@@ -15,12 +15,14 @@ export function getProviderBudgetCurrency(provider?: string): BudgetCurrency {
   return provider === 'AZURE' ? 'CAD' : 'USD';
 }
 
-export type ForecastCellStatus = 'confirmed' | 'needsReview' | 'suggested' | 'past';
+export type ForecastCellStatus = 'confirmed' | 'needsReview' | 'suggested' | 'past' | 'optional';
 
 /** Rolling forecast horizon: the current month plus 23 future months. */
 export const FISCAL_FORECAST_HORIZON_MONTHS = 24;
 
 const FISCAL_YEAR_START_MONTH = 4;
+/** Fiscal years end in March (month index 2). */
+const FISCAL_YEAR_END_MONTH = 3;
 
 export function monthKey(year: number, month: number) {
   return `${year}-${month}`;
@@ -92,12 +94,37 @@ export function buildFiscalForecastMonths(
   return monthlyValues;
 }
 
+/** Last calendar month included in the required rolling horizon. */
+export function getRequiredHorizonEndDate(now = new Date(), horizonMonths = FISCAL_FORECAST_HORIZON_MONTHS) {
+  return new Date(now.getFullYear(), now.getMonth() + horizonMonths - 1, 1);
+}
+
+/** True when the month is after the required rolling horizon (optional pad to FY end). */
+export function isBeyondRequiredHorizon(
+  year: number,
+  month: number,
+  now = new Date(),
+  horizonMonths = FISCAL_FORECAST_HORIZON_MONTHS,
+) {
+  const end = getRequiredHorizonEndDate(now, horizonMonths);
+  return year * 12 + month > end.getFullYear() * 12 + (end.getMonth() + 1);
+}
+
+/** Current/future month inside the required rolling horizon. */
+export function isRequiredForecastMonth(
+  year: number,
+  month: number,
+  now = new Date(),
+  horizonMonths = FISCAL_FORECAST_HORIZON_MONTHS,
+) {
+  return !isPastMonth(year, month, now) && !isBeyondRequiredHorizon(year, month, now, horizonMonths);
+}
+
 /**
  * Grid months for the rolling forecast: from the start of the current fiscal
- * year (April) through the current month + (horizonMonths - 1), so the grid
- * always contains exactly `horizonMonths` current/future months. Whenever the
- * window extends past the next fiscal year this produces a partial third
- * fiscal-year chunk.
+ * year (April) through the end of the fiscal year that contains the required
+ * horizon end (always full April–March rows). Past and beyond-horizon months
+ * are seeded as 0; only required-horizon months receive `monthlyAmount`.
  */
 export function buildRollingFiscalForecastMonths(
   monthlyAmount: number,
@@ -107,19 +134,20 @@ export function buildRollingFiscalForecastMonths(
 ): MonthlyValue[] {
   const fiscalStartYear = getFiscalYearStartYear(now);
   const startDate = new Date(fiscalStartYear, FISCAL_YEAR_START_MONTH - 1, 1);
-  const endDate = new Date(now.getFullYear(), now.getMonth() + horizonMonths - 1, 1);
+  const horizonEnd = getRequiredHorizonEndDate(now, horizonMonths);
+  const horizonEndFyStart = getFiscalYearStartForMonth(horizonEnd.getFullYear(), horizonEnd.getMonth() + 1);
+  // Pad through March of the fiscal year that contains the horizon end.
+  const endDate = new Date(horizonEndFyStart + 1, FISCAL_YEAR_END_MONTH - 1, 1);
   const monthCount =
     (endDate.getFullYear() - startDate.getFullYear()) * 12 + (endDate.getMonth() - startDate.getMonth()) + 1;
 
   const monthlyValues: MonthlyValue[] = [];
   for (let i = 0; i < monthCount; i++) {
     const d = new Date(startDate.getFullYear(), startDate.getMonth() + i, 1);
-    monthlyValues.push({
-      year: d.getFullYear(),
-      month: d.getMonth() + 1,
-      amount: monthlyAmount,
-      currency,
-    });
+    const year = d.getFullYear();
+    const month = d.getMonth() + 1;
+    const amount = isRequiredForecastMonth(year, month, now, horizonMonths) ? monthlyAmount : 0;
+    monthlyValues.push({ year, month, amount, currency });
   }
 
   return monthlyValues;
@@ -138,6 +166,7 @@ export function mergeMonthlyValuesOntoFiscalHorizon(
     if (found) {
       return { ...found, currency };
     }
+    // Missing past slots stay blank (new products). Existing forecasts keep stored past amounts above.
     return slot;
   });
 }
@@ -250,6 +279,10 @@ export function getCellStatuses(
       return 'past';
     }
 
+    if (isBeyondRequiredHorizon(v.year, v.month, now)) {
+      return 'optional';
+    }
+
     if (confirmedKeys.has(key)) return 'confirmed';
 
     if (reviewDue) return 'needsReview';
@@ -277,7 +310,7 @@ export function getInitialConfirmedKeys(
   return keys;
 }
 
-/** Merge proposed months onto baseline. Past months stay locked; omitted months are kept. */
+/** Merge proposed months onto baseline. Past months stay locked from baseline; omitted months are kept. */
 export function preserveLockedPastMonthlyValues(
   baseline: MonthlyValue[],
   proposed: MonthlyValue[],
@@ -321,21 +354,127 @@ export function isForecastHorizonComplete(
   return true;
 }
 
-function isEditableForecastCell(status: ForecastCellStatus) {
+/** Bulk fill/copy targets required-horizon cells only — not optional pad months. */
+function isBulkEditableForecastCell(status: ForecastCellStatus) {
   return status === 'suggested' || status === 'needsReview';
 }
 
-/** Copy a source month's amount to all editable cells. */
+/** Months inside the required rolling horizon (excludes past and optional pad). */
+export function getRequiredHorizonMonths(
+  values: MonthlyValue[],
+  now = new Date(),
+  horizonMonths = FISCAL_FORECAST_HORIZON_MONTHS,
+) {
+  return values.filter((v) => isRequiredForecastMonth(v.year, v.month, now, horizonMonths));
+}
+
+export function sumRequiredHorizonMonths(
+  values: MonthlyValue[],
+  now = new Date(),
+  horizonMonths = FISCAL_FORECAST_HORIZON_MONTHS,
+) {
+  return sumMonthlyValues(getRequiredHorizonMonths(values, now, horizonMonths));
+}
+
+/** True when this fiscal-year row includes months beyond the required horizon. */
+export function fiscalYearChunkHasOptionalMonths(fyChunk: FiscalYearChunk, now = new Date()) {
+  return fyChunk.months.some((m) => isBeyondRequiredHorizon(m.year, m.month, now));
+}
+
+/** Short range like "Apr–Jun" for partial-year total labels. */
+export function shortMonthRangeLabel(months: MonthlyValue[]) {
+  if (!months.length) return '';
+  const first = months[0];
+  const last = months.at(-1);
+  if (!last) return '';
+  const fmt = (year: number, month: number) =>
+    new Date(year, month - 1, 1).toLocaleDateString('en-US', { month: 'short' });
+  if (first.year === last.year && first.month === last.month) {
+    return fmt(first.year, first.month);
+  }
+  return `${fmt(first.year, first.month)}–${fmt(last.year, last.month)}`;
+}
+
+export type FiscalYearTotalSummary = {
+  isPartial: boolean;
+  total: number;
+  /** e.g. "FY28/29 partial" or "FY28/29 total" */
+  title: string;
+  hint: string;
+  /** Present when partial, e.g. "Apr–Jun" or "4 of 12". */
+  partialRangeLabel?: string;
+  /** True when the displayed total excludes empty optional pad months. */
+  requiredOnly: boolean;
+};
+
+/**
+ * How to present an FY total: partial until every optional pad month has a
+ * value; only then treat it as a full fiscal-year total.
+ */
+export function getFiscalYearTotalSummary(fyChunk: FiscalYearChunk, now = new Date()): FiscalYearTotalSummary {
+  const optionalMonths = fyChunk.months.filter((m) => isBeyondRequiredHorizon(m.year, m.month, now));
+  const requiredInFy = fyChunk.months.filter((m) => isRequiredForecastMonth(m.year, m.month, now));
+  const filledOptionalCount = optionalMonths.filter((m) => m.amount > 0).length;
+  const allOptionalFilled = optionalMonths.length > 0 && filledOptionalCount === optionalMonths.length;
+  const isPartial = optionalMonths.length > 0 && !allOptionalFilled;
+
+  if (isPartial) {
+    const requiredRange = shortMonthRangeLabel(requiredInFy);
+    // No optional amounts yet — show the required slice only.
+    if (filledOptionalCount === 0) {
+      return {
+        isPartial: true,
+        total: sumMonthlyValues(requiredInFy),
+        title: `${fyChunk.label} partial`,
+        hint: `${requiredRange} only`,
+        partialRangeLabel: 'partial',
+        requiredOnly: true,
+      };
+    }
+
+    // Some optional months entered — keep "partial" and include those amounts.
+    return {
+      isPartial: true,
+      total: sumMonthlyValues(fyChunk.months),
+      title: `${fyChunk.label} partial`,
+      hint: `${requiredRange} required · ${filledOptionalCount} of ${optionalMonths.length} optional months entered`,
+      partialRangeLabel: 'partial',
+      requiredOnly: false,
+    };
+  }
+
+  const inProgress = isInProgressFiscalYear(fyChunk, now);
+  let hint = 'Full fiscal-year forecast total';
+  if (optionalMonths.length > 0) {
+    hint = 'Full fiscal year';
+  } else if (inProgress) {
+    const remaining = fyChunk.months.filter((m) => !isPastMonth(m.year, m.month, now));
+    const remainingRange = shortMonthRangeLabel(remaining);
+    hint = remainingRange
+      ? `${remainingRange} forecast (year still in progress)`
+      : 'Forecast total (year still in progress)';
+  }
+
+  return {
+    isPartial: false,
+    total: sumMonthlyValues(fyChunk.months),
+    title: `${fyChunk.label} total`,
+    hint,
+    requiredOnly: false,
+  };
+}
+
+/** Copy a source month's amount to all required-horizon editable cells. */
 export function copyAmountAcrossEditableMonths(
   values: MonthlyValue[],
   statuses: ForecastCellStatus[],
   sourceIndex: number,
 ): MonthlyValue[] {
   const sourceAmount = values[sourceIndex]?.amount ?? 0;
-  return values.map((v, i) => (isEditableForecastCell(statuses[i]) ? { ...v, amount: sourceAmount } : v));
+  return values.map((v, i) => (isBulkEditableForecastCell(statuses[i]) ? { ...v, amount: sourceAmount } : v));
 }
 
-/** Copy a source month's amount to all later editable cells. */
+/** Copy a source month's amount to later required-horizon editable cells (skips optional). */
 export function applyAmountToFutureMonths(
   values: MonthlyValue[],
   statuses: ForecastCellStatus[],
@@ -343,7 +482,7 @@ export function applyAmountToFutureMonths(
   amount: number,
 ): MonthlyValue[] {
   return values.map((v, i) => {
-    if (i <= sourceIndex || !isEditableForecastCell(statuses[i])) {
+    if (i <= sourceIndex || !isBulkEditableForecastCell(statuses[i])) {
       return v;
     }
     return { ...v, amount };
@@ -362,7 +501,10 @@ export function isInProgressFiscalYear(fyChunk: FiscalYearChunk, now = new Date(
   return nowIndex >= startIndex && nowIndex <= endIndex;
 }
 
-/** A fiscal-year chunk that only covers part of the year (the tail of the rolling window). */
+/**
+ * A fiscal-year chunk that only covers part of the year.
+ * With FY-end padding this is normally false; kept for callers/tests.
+ */
 export function isPartialFiscalYearChunk(fyChunk: FiscalYearChunk) {
   return fyChunk.months.length < 12;
 }
