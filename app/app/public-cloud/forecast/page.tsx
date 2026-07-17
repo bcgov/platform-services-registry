@@ -67,6 +67,31 @@ function productChunkForecasts(product: PlatformForecastProduct, fyChunk: Fiscal
   );
 }
 
+function formatProductMonthAmount(amount: number | null, hasAnyForecast: boolean, past: boolean, currency: string) {
+  if (past || amount == null || !hasAnyForecast || amount <= 0) return '—';
+  return formatForecastAmount(amount, currency);
+}
+
+function sumProductRequiredMonthsInChunk(forecasts: (number | null)[], fyChunk: FiscalYearChunk) {
+  return fyChunk.months.reduce((sum, month, i) => {
+    if (isBeyondRequiredHorizon(month.year, month.month)) return sum;
+    return sum + (forecasts[i] ?? 0);
+  }, 0);
+}
+
+function formatProductYearTotal(
+  hasAnyForecast: boolean,
+  requiredOnly: boolean,
+  forecasts: (number | null)[],
+  fyChunk: FiscalYearChunk,
+  productYearTotal: number,
+  currency: string,
+) {
+  if (!hasAnyForecast) return '—';
+  const total = requiredOnly ? sumProductRequiredMonthsInChunk(forecasts, fyChunk) : productYearTotal;
+  return formatForecastAmount(total, currency);
+}
+
 /** True when some, but not all, products with a forecast have a value for this month. */
 function isMonthCoveragePartial(products: PlatformForecastProduct[], monthIndex: number) {
   const withForecast = products.filter((product) => product.hasForecast);
@@ -374,29 +399,19 @@ function PlatformForecastGrid({ group }: Readonly<{ group: PlatformForecastSumma
                               const cellClass = past ? 'bg-gray-50 text-gray-400' : 'text-gray-700';
                               return (
                                 <td key={monthKey(v.year, v.month)} className={`px-2 py-2 text-center ${cellClass}`}>
-                                  {past
-                                    ? '—'
-                                    : forecasts[i] != null && hasAnyForecast && forecasts[i]! > 0
-                                      ? formatForecastAmount(forecasts[i]!, group.currency)
-                                      : '—'}
+                                  {formatProductMonthAmount(forecasts[i], hasAnyForecast, past, group.currency)}
                                 </td>
                               );
                             })}
                             <td className="px-3 py-2 text-center bg-amber-50/60 text-gray-800">
-                              {hasAnyForecast
-                                ? formatForecastAmount(
-                                    fySummary.requiredOnly
-                                      ? fyChunk.months.reduce(
-                                          (sum, month, i) =>
-                                            isBeyondRequiredHorizon(month.year, month.month)
-                                              ? sum
-                                              : sum + (forecasts[i] ?? 0),
-                                          0,
-                                        )
-                                      : productYearTotal,
-                                    group.currency,
-                                  )
-                                : '—'}
+                              {formatProductYearTotal(
+                                hasAnyForecast,
+                                fySummary.requiredOnly,
+                                forecasts,
+                                fyChunk,
+                                productYearTotal,
+                                group.currency,
+                              )}
                             </td>
                           </tr>
                         );
