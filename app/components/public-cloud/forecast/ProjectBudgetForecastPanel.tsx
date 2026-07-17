@@ -106,7 +106,7 @@ function CellEditor({ value, currency, status, editable, onChange, onFocusCell, 
               setShowApplyFuture(false);
             }}
           >
-            Apply to all future months
+            Apply to required future months
           </button>
         )}
       </div>
@@ -187,7 +187,7 @@ export default function ProjectBudgetForecastPanel({
   );
 
   const [values, setValues] = useState(baselineValues);
-  /** Index of the month last focused or edited — source for "Copy value across range". */
+  /** Index of the month last focused or edited — source for "Copy across required months". */
   const [lastActiveIndex, setLastActiveIndex] = useState<number | null>(null);
 
   useEffect(() => {
@@ -382,7 +382,7 @@ export default function ProjectBudgetForecastPanel({
                 disabled={!canCopyAcrossRange}
                 onClick={handleCopyAcrossRange}
               >
-                Copy value across range
+                Copy across required months
               </Button>
             </>
           ) : (

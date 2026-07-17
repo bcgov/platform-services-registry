@@ -149,6 +149,16 @@ describe('fiscal year helpers', () => {
     expect(full.total).toBe(12_000);
     expect(full.hint).toBe('Full fiscal year');
   });
+
+  it('labels an in-progress fiscal year by the remaining month range', () => {
+    const months = buildRollingFiscalForecastMonths(1000, 'CAD', june2026);
+    const chunks = getFiscalYearChunks(months);
+    const currentFy = getFiscalYearTotalSummary(chunks[0], june2026);
+
+    expect(currentFy.isPartial).toBe(false);
+    expect(currentFy.title).toBe('FY26/27 total');
+    expect(currentFy.hint).toBe('Jun–Mar forecast (year still in progress)');
+  });
 });
 
 const baseValues: MonthlyValue[] = [
@@ -177,12 +187,12 @@ describe('applyAmountToFutureMonths', () => {
     expect(result.map((v) => v.amount)).toEqual([1000, 1000, 2500, 2500]);
   });
 
-  it('copies amount into optional months beyond the required horizon', () => {
+  it('does not copy amount into optional months beyond the required horizon', () => {
     const statuses: ForecastCellStatus[] = ['suggested', 'optional', 'optional', 'past'];
 
     const result = applyAmountToFutureMonths(baseValues, statuses, 0, 2500);
 
-    expect(result.map((v) => v.amount)).toEqual([1000, 2500, 2500, 1000]);
+    expect(result.map((v) => v.amount)).toEqual([1000, 1000, 1000, 1000]);
   });
 });
 

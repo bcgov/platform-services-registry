@@ -151,10 +151,16 @@ function PlatformForecastGrid({ group }: Readonly<{ group: PlatformForecastSumma
     productSort,
   );
   const visibleProducts = searchedProducts.slice(0, productLimit);
-  const otherProductCount = Math.max(providerFilteredProducts.length - visibleProducts.length, 0);
+  // Other-row residuals only make sense when the list is the forecast universe, not a chase filter.
+  const otherRowEnabled = productListFilter === 'all' || productListFilter === 'with-forecast';
+  const otherBasisProducts =
+    productListFilter === 'with-forecast'
+      ? providerFilteredProducts.filter((product) => product.hasForecast)
+      : providerFilteredProducts;
+  const otherProductCount = otherRowEnabled ? Math.max(otherBasisProducts.length - visibleProducts.length, 0) : 0;
   const hiddenMatchingProductCount = Math.max(searchedProducts.length - visibleProducts.length, 0);
   const canShowMoreProducts = hiddenMatchingProductCount > 0;
-  const showOtherRow = showProducts && otherProductCount > 0;
+  const showOtherRow = showProducts && otherRowEnabled && otherProductCount > 0;
   const providerControlData = [
     { value: 'ALL', label: 'All providers' },
     ...PROVIDER_FILTER_OPTIONS.filter((option) => availableProviders.includes(option.value)),

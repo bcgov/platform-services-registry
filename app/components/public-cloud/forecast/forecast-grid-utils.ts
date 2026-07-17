@@ -362,8 +362,9 @@ export function isForecastHorizonComplete(
   return true;
 }
 
-function isEditableForecastCell(status: ForecastCellStatus) {
-  return status === 'suggested' || status === 'needsReview' || status === 'optional';
+/** Bulk fill/copy targets required-horizon cells only — not optional pad months. */
+function isBulkEditableForecastCell(status: ForecastCellStatus) {
+  return status === 'suggested' || status === 'needsReview';
 }
 
 /** Months inside the required rolling horizon (excludes past and optional pad). */
@@ -455,7 +456,11 @@ export function getFiscalYearTotalSummary(fyChunk: FiscalYearChunk, now = new Da
   if (optionalMonths.length > 0) {
     hint = 'Full fiscal year';
   } else if (inProgress) {
-    hint = 'Full-year forecast total (year still in progress)';
+    const remaining = fyChunk.months.filter((m) => !isPastMonth(m.year, m.month, now));
+    const remainingRange = shortMonthRangeLabel(remaining);
+    hint = remainingRange
+      ? `${remainingRange} forecast (year still in progress)`
+      : 'Forecast total (year still in progress)';
   }
 
   return {
@@ -467,17 +472,17 @@ export function getFiscalYearTotalSummary(fyChunk: FiscalYearChunk, now = new Da
   };
 }
 
-/** Copy a source month's amount to all editable cells. */
+/** Copy a source month's amount to all required-horizon editable cells. */
 export function copyAmountAcrossEditableMonths(
   values: MonthlyValue[],
   statuses: ForecastCellStatus[],
   sourceIndex: number,
 ): MonthlyValue[] {
   const sourceAmount = values[sourceIndex]?.amount ?? 0;
-  return values.map((v, i) => (isEditableForecastCell(statuses[i]) ? { ...v, amount: sourceAmount } : v));
+  return values.map((v, i) => (isBulkEditableForecastCell(statuses[i]) ? { ...v, amount: sourceAmount } : v));
 }
 
-/** Copy a source month's amount to all later editable cells. */
+/** Copy a source month's amount to later required-horizon editable cells (skips optional). */
 export function applyAmountToFutureMonths(
   values: MonthlyValue[],
   statuses: ForecastCellStatus[],
@@ -485,7 +490,7 @@ export function applyAmountToFutureMonths(
   amount: number,
 ): MonthlyValue[] {
   return values.map((v, i) => {
-    if (i <= sourceIndex || !isEditableForecastCell(statuses[i])) {
+    if (i <= sourceIndex || !isBulkEditableForecastCell(statuses[i])) {
       return v;
     }
     return { ...v, amount };
