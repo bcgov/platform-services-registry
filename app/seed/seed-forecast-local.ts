@@ -11,6 +11,7 @@ import {
   buildRollingFiscalForecastMonths,
   FISCAL_FORECAST_HORIZON_MONTHS,
   isBeyondRequiredHorizon,
+  isPastMonth,
   isRequiredForecastMonth,
   monthKey,
   sumEnabledEnvironmentBudgets,
@@ -30,17 +31,26 @@ const DEFAULT_MONTHLY_FORECAST_AZURE = 5000;
 const DEFAULT_MONTHLY_FORECAST_AWS = 4000;
 
 /** How a demo product’s forecast should be seeded for local testing. */
-export type ForecastSeedProfile = 'complete' | 'incomplete-required' | 'sparse-optional' | 'missing';
+export type ForecastSeedProfile = 'complete' | 'with-past' | 'incomplete-required' | 'sparse-optional' | 'missing';
 
 /**
- * Explicit demo plates with non-complete forecasts.
+ * Explicit demo plates with non-default forecasts.
  * Re-seed with --reset to apply after changing these.
+ *
+ * - with-past: existing projects that already had Apr–(current-1) forecasted
+ * - complete (default): new-project style — past months blank
  */
 export const FORECAST_SEED_PROFILES: Record<string, ForecastSeedProfile> = {
-  // Named demo products
+  // Existing-style named demos (past FY months filled)
+  e71b0e: 'with-past', // Cost Model Test 1 (Azure)
+  f82c1a: 'with-past', // Cost Model Test 2 (AWS LZA)
+  aa0001: 'with-past',
+  bb0001: 'with-past',
+  aa0003: 'with-past',
+  bb0003: 'with-past',
+  // Incomplete required horizon
   a1c2d3: 'incomplete-required', // Cost Model Test 3 (Azure)
   b4e5f6: 'incomplete-required', // Cost Model Test 4 (AWS LZA)
-  // Scale tests — incomplete required horizon
   aa0005: 'incomplete-required',
   aa0010: 'incomplete-required',
   bb0005: 'incomplete-required',
@@ -75,6 +85,20 @@ export function applySparseOptionalMonth(values: MonthlyValue[], amount = 100, n
 
   return values.map((value) =>
     value.year === firstOptional.year && value.month === firstOptional.month ? { ...value, amount } : value,
+  );
+}
+
+/**
+ * Fill past months in the current fiscal year from the required-horizon amount.
+ * Simulates products that existed earlier and already forecasted Apr–(current-1).
+ */
+export function applyPastFiscalMonths(values: MonthlyValue[], now = new Date()): MonthlyValue[] {
+  const sampleAmount =
+    values.find((value) => isRequiredForecastMonth(value.year, value.month, now) && value.amount > 0)?.amount ?? 0;
+  if (sampleAmount <= 0) return values;
+
+  return values.map((value) =>
+    isPastMonth(value.year, value.month, now) ? { ...value, amount: sampleAmount } : value,
   );
 }
 
@@ -140,14 +164,17 @@ async function ensureForecast(
     monthlyValues = applyIncompleteRequiredMonths(monthlyValues);
   } else if (profile === 'sparse-optional') {
     monthlyValues = applySparseOptionalMonth(monthlyValues);
+  } else if (profile === 'with-past') {
+    monthlyValues = applyPastFiscalMonths(monthlyValues);
   }
 
   const forecast = await createProductForecast(licencePlate, monthlyValues, FISCAL_FORECAST_HORIZON_MONTHS);
   const filledRequired = monthlyValues.filter(
     (value) => isRequiredForecastMonth(value.year, value.month) && value.amount > 0,
   ).length;
+  const filledPast = monthlyValues.filter((value) => isPastMonth(value.year, value.month) && value.amount > 0).length;
   console.log(
-    `  created forecast (${monthlyValues.length} months, profile "${profile}", ${filledRequired} required months filled)`,
+    `  created forecast (${monthlyValues.length} months, profile "${profile}", ${filledRequired} required + ${filledPast} past months filled)`,
   );
   return forecast;
 }

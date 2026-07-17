@@ -162,14 +162,11 @@ export function mergeMonthlyValuesOntoFiscalHorizon(
   const byKey = new Map(existing.map((v) => [monthKey(v.year, v.month), v]));
 
   return template.map((slot) => {
-    // Past months stay blank — they are not actual spend and must not carry budget seed.
-    if (isPastMonth(slot.year, slot.month, now)) {
-      return { ...slot, amount: 0, currency };
-    }
     const found = byKey.get(monthKey(slot.year, slot.month));
     if (found) {
       return { ...found, currency };
     }
+    // Missing past slots stay blank (new products). Existing forecasts keep stored past amounts above.
     return slot;
   });
 }
@@ -313,7 +310,7 @@ export function getInitialConfirmedKeys(
   return keys;
 }
 
-/** Merge proposed months onto baseline. Past months stay locked at 0; omitted months are kept. */
+/** Merge proposed months onto baseline. Past months stay locked from baseline; omitted months are kept. */
 export function preserveLockedPastMonthlyValues(
   baseline: MonthlyValue[],
   proposed: MonthlyValue[],
@@ -327,14 +324,9 @@ export function preserveLockedPastMonthlyValues(
     .map((key) => {
       const existing = baselineByKey.get(key);
       const next = proposedByKey.get(key);
-      if (!next) {
-        if (existing && isPastMonth(existing.year, existing.month, now)) {
-          return { ...existing, amount: 0 };
-        }
-        return existing!;
-      }
+      if (!next) return existing!;
       if (isPastMonth(next.year, next.month, now)) {
-        return { ...(existing ?? next), amount: 0 };
+        return existing ?? next;
       }
       return next;
     })

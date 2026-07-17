@@ -60,7 +60,9 @@ function CellEditor({ value, currency, status, editable, onChange, onFocusCell, 
   if (status === 'past') {
     return (
       <div className="flex flex-col items-center justify-center min-h-9">
-        <span className="font-medium text-sm text-gray-400">—</span>
+        <span className="font-medium text-sm text-gray-400">
+          {value > 0 ? formatForecastAmount(value, currency) : '—'}
+        </span>
       </div>
     );
   }

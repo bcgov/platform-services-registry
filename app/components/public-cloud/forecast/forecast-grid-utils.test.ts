@@ -100,8 +100,8 @@ describe('fiscal year helpers', () => {
     ];
     const merged = mergeMonthlyValuesOntoFiscalHorizon(existing, 'CAD', june2026);
     expect(merged).toHaveLength(36);
-    // Past months stay blank even if stored with a budget seed.
-    expect(merged.find((m) => m.year === 2026 && m.month === 5)?.amount).toBe(0);
+    // Existing forecasts keep stored past amounts (projects that existed earlier in the year).
+    expect(merged.find((m) => m.year === 2026 && m.month === 5)?.amount).toBe(9999);
     expect(merged.find((m) => m.year === 2026 && m.month === 6)?.amount).toBe(5000);
     expect(merged.find((m) => m.year === 2026 && m.month === 7)?.amount).toBe(5500);
     expect(merged.at(-1)).toMatchObject({ year: 2029, month: 3, amount: 0 });
@@ -266,7 +266,7 @@ describe('getCellStatuses', () => {
 describe('preserveLockedPastMonthlyValues', () => {
   const june2026 = new Date(2026, 5, 15);
 
-  it('locks past months at zero even if proposed or baseline had amounts', () => {
+  it('keeps baseline past amounts when proposed tries to change them', () => {
     const baseline = buildFiscalForecastMonths(2, 1000, 'CAD', june2026);
     const proposed = baseline.map((v) => ({ ...v, amount: 9999 }));
 
@@ -275,7 +275,7 @@ describe('preserveLockedPastMonthlyValues', () => {
     const april = result.find((v) => v.month === 4 && v.year === 2026);
     const july = result.find((v) => v.month === 7 && v.year === 2026);
 
-    expect(april?.amount).toBe(0);
+    expect(april?.amount).toBe(1000);
     expect(july?.amount).toBe(9999);
   });
 
@@ -287,7 +287,7 @@ describe('preserveLockedPastMonthlyValues', () => {
 
     expect(result).toHaveLength(baseline.length);
     expect(result.find((v) => v.month === 7 && v.year === 2026)?.amount).toBe(2500);
-    expect(result.find((v) => v.month === 4 && v.year === 2026)?.amount).toBe(0);
+    expect(result.find((v) => v.month === 4 && v.year === 2026)?.amount).toBe(1000);
     expect(result.find((v) => v.month === 8 && v.year === 2026)?.amount).toBe(1000);
   });
 });

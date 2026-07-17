@@ -67,8 +67,9 @@ function productChunkForecasts(product: PlatformForecastProduct, fyChunk: Fiscal
   );
 }
 
-function formatProductMonthAmount(amount: number | null, hasAnyForecast: boolean, past: boolean, currency: string) {
-  if (past || amount == null || !hasAnyForecast || amount <= 0) return '—';
+function formatProductMonthAmount(amount: number | null, hasAnyForecast: boolean, currency: string) {
+  if (amount == null || !hasAnyForecast || amount <= 0) return '—';
+  // Past months can still show previously entered forecast values (read-only).
   return formatForecastAmount(amount, currency);
 }
 
@@ -92,8 +93,17 @@ function formatProductYearTotal(
   return formatForecastAmount(total, currency);
 }
 
-/** True when some, but not all, products with a forecast have a value for this month. */
-function isMonthCoveragePartial(products: PlatformForecastProduct[], monthIndex: number) {
+/**
+ * True when some, but not all, products with a forecast have a value for this month.
+ * Past months are never "partial" — blank past is expected for products created later.
+ */
+function isMonthCoveragePartial(
+  products: PlatformForecastProduct[],
+  month: { year: number; month: number },
+  monthIndex: number,
+) {
+  if (isPastMonth(month.year, month.month)) return false;
+
   const withForecast = products.filter((product) => product.hasForecast);
   if (withForecast.length <= 1) return false;
 
@@ -344,6 +354,7 @@ function PlatformForecastGrid({ group }: Readonly<{ group: PlatformForecastSumma
                         const optional = isBeyondRequiredHorizon(v.year, v.month);
                         const coveragePartial = isMonthCoveragePartial(
                           providerFilteredProducts,
+                          v,
                           fyChunk.startIndex + i,
                         );
                         return (
@@ -399,7 +410,7 @@ function PlatformForecastGrid({ group }: Readonly<{ group: PlatformForecastSumma
                               const cellClass = past ? 'bg-gray-50 text-gray-400' : 'text-gray-700';
                               return (
                                 <td key={monthKey(v.year, v.month)} className={`px-2 py-2 text-center ${cellClass}`}>
-                                  {formatProductMonthAmount(forecasts[i], hasAnyForecast, past, group.currency)}
+                                  {formatProductMonthAmount(forecasts[i], hasAnyForecast, group.currency)}
                                 </td>
                               );
                             })}
@@ -461,7 +472,7 @@ function PlatformForecastGrid({ group }: Readonly<{ group: PlatformForecastSumma
                         const cellClass = past ? 'bg-gray-100 text-gray-400' : 'bg-inherit text-gray-900';
                         return (
                           <td key={monthKey(v.year, v.month)} className={`px-2 py-2 text-center ${cellClass}`}>
-                            {past || v.amount <= 0 ? '—' : formatForecastAmount(v.amount, group.currency)}
+                            {v.amount <= 0 ? '—' : formatForecastAmount(v.amount, group.currency)}
                           </td>
                         );
                       })}
