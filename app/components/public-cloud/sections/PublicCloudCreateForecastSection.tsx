@@ -1,15 +1,17 @@
 'use client';
 
-import { useCallback } from 'react';
+import { useCallback, useMemo } from 'react';
 import { useFormContext } from 'react-hook-form';
-import type { MonthlyValue } from '@/components/public-cloud/forecast/forecast-grid-utils';
+import {
+  buildRollingFiscalForecastMonths,
+  type MonthlyValue,
+} from '@/components/public-cloud/forecast/forecast-grid-utils';
 import ProjectBudgetForecastPanel from '@/components/public-cloud/forecast/ProjectBudgetForecastPanel';
-import { useFormForecastBudget } from '@/components/public-cloud/forecast/useFormForecastBudget';
 
 export default function PublicCloudCreateForecastSection() {
   const { watch, setValue } = useFormContext();
   const provider = watch('provider');
-  const { budgetMonthlyTotal, budgetCurrency, draftMonthlyValues } = useFormForecastBudget(provider);
+  const draftMonthlyValues = useMemo(() => buildRollingFiscalForecastMonths(0, 'CAD', new Date()), []);
 
   const handleValuesChange = useCallback(
     (values: MonthlyValue[]) => {
@@ -22,8 +24,6 @@ export default function PublicCloudCreateForecastSection() {
     <ProjectBudgetForecastPanel
       forecast={null}
       monthlyValues={draftMonthlyValues}
-      budgetMonthlyTotal={budgetMonthlyTotal}
-      budgetCurrency={budgetCurrency}
       editable
       provider={provider}
       onValuesChange={handleValuesChange}

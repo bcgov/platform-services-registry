@@ -187,12 +187,20 @@ describe('applyAmountToFutureMonths', () => {
     expect(result.map((v) => v.amount)).toEqual([1000, 1000, 2500, 2500]);
   });
 
-  it('does not copy amount into optional months beyond the required horizon', () => {
+  it('does not copy amount into optional months when source is a required month', () => {
     const statuses: ForecastCellStatus[] = ['suggested', 'optional', 'optional', 'past'];
 
     const result = applyAmountToFutureMonths(baseValues, statuses, 0, 2500);
 
     expect(result.map((v) => v.amount)).toEqual([1000, 1000, 1000, 1000]);
+  });
+
+  it('copies amount to later optional months when source is optional', () => {
+    const statuses: ForecastCellStatus[] = ['suggested', 'optional', 'optional', 'optional'];
+
+    const result = applyAmountToFutureMonths(baseValues, statuses, 1, 2500);
+
+    expect(result.map((v) => v.amount)).toEqual([1000, 1000, 2500, 2500]);
   });
 });
 

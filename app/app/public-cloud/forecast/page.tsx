@@ -16,14 +16,12 @@ import {
   getFiscalYearChunks,
   getFiscalYearTotalSummary,
   getProviderSpendLabel,
-  getRequiredHorizonMonths,
   isBeyondRequiredHorizon,
   isForecastHorizonComplete,
   isPastMonth,
   monthKey,
   shortMonthLabel,
   sumMonthlyValues,
-  sumRequiredHorizonMonths,
   yearRangeLabel,
   type FiscalYearChunk,
   type MonthlyValue,
@@ -172,8 +170,6 @@ function PlatformForecastGrid({ group }: Readonly<{ group: PlatformForecastSumma
 
   const values = filteredTotals.monthlyTotals;
   const fiscalYearChunks = getFiscalYearChunks(values);
-  const requiredMonths = getRequiredHorizonMonths(values);
-  const grandTotal = sumRequiredHorizonMonths(values);
   const spendLabel = activeProviders.length === 1 ? getProviderSpendLabel(activeProviders[0]) : 'Cloud Spend';
   const filteredProductCount = providerFilteredProducts.length;
   const filteredForecastCount = providerFilteredProducts.filter((product) => product.hasForecast).length;
@@ -486,18 +482,6 @@ function PlatformForecastGrid({ group }: Readonly<{ group: PlatformForecastSumma
             </div>
           );
         })}
-      </div>
-
-      <div className="flex flex-wrap gap-4">
-        <div className="rounded-lg border-2 border-amber-300 bg-amber-50 p-4">
-          <div className="text-xs font-semibold text-gray-600 uppercase tracking-wide">
-            {FISCAL_FORECAST_HORIZON_MONTHS}-month forecast total ({group.currency})
-          </div>
-          <div className="text-2xl font-bold text-gray-900 mt-1">
-            {formatForecastAmount(grandTotal, group.currency)}
-          </div>
-          <div className="text-xs text-gray-600 mt-1">{yearRangeLabel(requiredMonths)}</div>
-        </div>
       </div>
     </div>
   );

@@ -2,18 +2,15 @@ import {
   buildRollingFiscalForecastMonths,
   formatForecastProviderList,
   getFiscalYearChunks,
-  getProviderBudgetCurrency,
   mergeMonthlyValuesOntoFiscalHorizon,
   monthKey,
   preserveLockedPastMonthlyValues,
   shortMonthLabel,
-  sumEnabledEnvironmentBudgets,
   sumMonthlyValues,
   type MonthlyValue,
 } from '@/components/public-cloud/forecast/forecast-grid-utils';
 import prisma from '@/core/prisma';
 import { Provider, ProjectStatus } from '@/prisma/client';
-import { convertCurrencyAmount, fetchUsdCadExchangeRate } from '@/services/exchange-rates';
 
 export async function getProductForecast(licencePlate: string) {
   return prisma.cloudCostForecast.findUnique({ where: { licencePlate } });
@@ -252,40 +249,13 @@ export async function updateProductForecast(
   });
 }
 
-export async function seedForecastFromProductBudget(
-  provider: Provider,
-  budget: { dev: number; test: number; prod: number; tools: number },
-  environmentsEnabled: {
-    development: boolean;
-    test: boolean;
-    production: boolean;
-    tools: boolean;
-  },
-) {
+/** Empty CAD rolling-horizon template (no budget copy). */
+export function seedEmptyForecastMonths(provider: Provider) {
   const currency = PROVIDER_FORECAST_CURRENCY[provider];
-  const budgetCurrency = getProviderBudgetCurrency(provider);
-  const budgetTotal = sumEnabledEnvironmentBudgets(budget, environmentsEnabled);
-  let totalCad = budgetTotal;
-
-  if (budgetCurrency === 'USD' && budgetTotal > 0) {
-    const { rate } = await fetchUsdCadExchangeRate();
-    totalCad = convertCurrencyAmount(budgetTotal, 'USD', 'CAD', rate);
-  }
-
-  return buildRollingFiscalForecastMonths(totalCad, currency, new Date());
+  return buildRollingFiscalForecastMonths(0, currency, new Date());
 }
 
-export async function seedForecastValues(product: {
-  licencePlate: string;
-  provider: Provider;
-  budget: { dev: number; test: number; prod: number; tools: number };
-  environmentsEnabled: {
-    development: boolean;
-    test: boolean;
-    production: boolean;
-    tools: boolean;
-  };
-}) {
+export async function seedForecastValues(product: { licencePlate: string; provider: Provider }) {
   const existing = await getProductForecast(product.licencePlate);
   if (existing) {
     const currency = PROVIDER_FORECAST_CURRENCY[product.provider];
@@ -299,5 +269,5 @@ export async function seedForecastValues(product: {
     }));
     return mergeMonthlyValuesOntoFiscalHorizon(existingValues, currency);
   }
-  return await seedForecastFromProductBudget(product.provider, product.budget, product.environmentsEnabled);
+  return seedEmptyForecastMonths(product.provider);
 }

@@ -2,10 +2,13 @@
 
 import { Alert, Button } from '@mantine/core';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
+import { useMemo } from 'react';
 import LoadingBox from '@/components/generic/LoadingBox';
-import { FISCAL_FORECAST_HORIZON_MONTHS } from '@/components/public-cloud/forecast/forecast-grid-utils';
+import {
+  buildRollingFiscalForecastMonths,
+  FISCAL_FORECAST_HORIZON_MONTHS,
+} from '@/components/public-cloud/forecast/forecast-grid-utils';
 import ProjectBudgetForecastPanel from '@/components/public-cloud/forecast/ProjectBudgetForecastPanel';
-import { useFormForecastBudget } from '@/components/public-cloud/forecast/useFormForecastBudget';
 import { getPublicCloudProductForecast } from '@/services/backend/public-cloud/forecast';
 import { usePublicProductState } from '@/states/global';
 
@@ -24,7 +27,7 @@ export default function PublicCloudForecastSection({ licencePlate }: Readonly<{ 
   const canViewForecast = Boolean(product?._permissions.viewForecast);
   const canEditForecast = Boolean(product?._permissions.editForecast);
   const queryClient = useQueryClient();
-  const { budgetMonthlyTotal, budgetCurrency, draftMonthlyValues } = useFormForecastBudget(product?.provider);
+  const draftMonthlyValues = useMemo(() => buildRollingFiscalForecastMonths(0, 'CAD', new Date()), []);
 
   const { data, isLoading, isError, error, refetch } = useQuery({
     queryKey: ['forecast', licencePlate],
@@ -76,8 +79,6 @@ export default function PublicCloudForecastSection({ licencePlate }: Readonly<{ 
               : null
           }
           monthlyValues={forecast?.monthlyValues ?? draftMonthlyValues}
-          budgetMonthlyTotal={budgetMonthlyTotal}
-          budgetCurrency={budgetCurrency}
           editable={canEditForecast}
           onSaved={handleForecastSaved}
         />
