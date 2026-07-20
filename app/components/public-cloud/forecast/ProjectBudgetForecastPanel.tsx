@@ -20,7 +20,6 @@ import {
   monthKey,
   preserveLockedPastMonthlyValues,
   shortMonthLabel,
-  sumRequiredHorizonMonths,
   yearRangeLabel,
   type ForecastCellStatus,
   type MonthlyValue,
@@ -212,7 +211,6 @@ export default function ProjectBudgetForecastPanel({
   const canSave = isUnsavedDraft || isDirty;
   const fiscalYearChunks = getFiscalYearChunks(values);
   const requiredMonths = useMemo(() => getRequiredHorizonMonths(values), [values]);
-  const requiredTotal = useMemo(() => sumRequiredHorizonMonths(values), [values]);
   const [isSaving, setIsSaving] = useState(false);
 
   const handleAmountChange = (index: number, amount: number) => {
@@ -381,34 +379,6 @@ export default function ProjectBudgetForecastPanel({
             </div>
           );
         })}
-      </div>
-
-      <div className="grid gap-3 sm:grid-cols-3">
-        {fiscalYearChunks.map((fyChunk) => {
-          const fySummary = getFiscalYearTotalSummary(fyChunk);
-
-          return (
-            <div
-              key={fyChunk.label}
-              className={`rounded-lg border p-4 bg-white ${
-                fySummary.isPartial ? 'border-amber-200' : 'border-gray-200'
-              }`}
-            >
-              <div className="text-xs font-semibold text-gray-500 uppercase tracking-wide">{fySummary.title}</div>
-              <div className="text-2xl font-bold text-gray-900 mt-1">
-                {formatForecastAmount(fySummary.total, currency)}
-              </div>
-              <div className="text-sm text-gray-500 mt-1">{fySummary.hint}</div>
-            </div>
-          );
-        })}
-        <div className="rounded-lg border-2 border-amber-300 bg-amber-50 p-4">
-          <div className="text-xs font-semibold text-gray-600 uppercase tracking-wide">
-            {FISCAL_FORECAST_HORIZON_MONTHS}-month forecast total
-          </div>
-          <div className="text-2xl font-bold text-gray-900 mt-1">{formatForecastAmount(requiredTotal, currency)}</div>
-          <div className="text-xs text-gray-600 mt-1">{yearRangeLabel(requiredMonths)}</div>
-        </div>
       </div>
 
       {editable && (
