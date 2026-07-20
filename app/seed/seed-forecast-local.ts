@@ -14,16 +14,11 @@ import {
   isPastMonth,
   isRequiredForecastMonth,
   monthKey,
-  sumEnabledEnvironmentBudgets,
   type MonthlyValue,
 } from '../components/public-cloud/forecast/forecast-grid-utils';
 import prisma from '../core/prisma';
 import { Provider } from '../prisma/client';
-import {
-  createProductForecast,
-  getProductForecast,
-  seedForecastFromProductBudget,
-} from '../services/db/public-cloud-forecast';
+import { createProductForecast, getProductForecast } from '../services/db/public-cloud-forecast';
 
 const DEFAULT_PLATE = 'e71b0e';
 const ADMIN_EMAIL = 'admin.system@gov.bc.ca';
@@ -117,20 +112,7 @@ async function clearForecastData(licencePlate: string) {
   await prisma.cloudCostForecast.deleteMany({ where: { licencePlate } });
 }
 
-async function buildSeedMonthlyValues(product: {
-  provider: Provider;
-  budget: { dev: number; test: number; prod: number; tools: number };
-  environmentsEnabled: {
-    development: boolean;
-    test: boolean;
-    production: boolean;
-    tools: boolean;
-  };
-}) {
-  const budgetTotal = sumEnabledEnvironmentBudgets(product.budget, product.environmentsEnabled);
-  if (budgetTotal > 0) {
-    return seedForecastFromProductBudget(product.provider, product.budget, product.environmentsEnabled);
-  }
+function buildSeedMonthlyValues(product: { provider: Provider }) {
   return buildRollingFiscalForecastMonths(resolveDefaultMonthlyAmount(product.provider), 'CAD', new Date());
 }
 
@@ -159,7 +141,7 @@ async function ensureForecast(
     return existing;
   }
 
-  let monthlyValues = await buildSeedMonthlyValues(product);
+  let monthlyValues = buildSeedMonthlyValues(product);
   if (profile === 'incomplete-required') {
     monthlyValues = applyIncompleteRequiredMonths(monthlyValues);
   } else if (profile === 'sparse-optional') {

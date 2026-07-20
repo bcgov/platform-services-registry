@@ -1,5 +1,3 @@
-import type { CurrencyCode } from '@/services/exchange-rates';
-
 export type MonthlyValue = {
   year: number;
   month: number;
@@ -8,7 +6,7 @@ export type MonthlyValue = {
 };
 
 /** Currency used for product budget estimates (provider billing currency). */
-export type BudgetCurrency = CurrencyCode;
+export type BudgetCurrency = 'USD' | 'CAD';
 
 /** AWS budgets are USD; Azure budgets and all forecasts are CAD. */
 export function getProviderBudgetCurrency(provider?: string): BudgetCurrency {
@@ -474,17 +472,24 @@ export function copyAmountAcrossEditableMonths(
   return values.map((v, i) => (isBulkEditableForecastCell(statuses[i]) ? { ...v, amount: sourceAmount } : v));
 }
 
-/** Copy a source month's amount to later required-horizon editable cells (skips optional). */
+/**
+ * Copy a source month's amount to later editable cells of the same kind:
+ * required-horizon cells stay within required; optional cells fill later optional months.
+ */
 export function applyAmountToFutureMonths(
   values: MonthlyValue[],
   statuses: ForecastCellStatus[],
   sourceIndex: number,
   amount: number,
 ): MonthlyValue[] {
+  const sourceStatus = statuses[sourceIndex];
+  const fillOptional = sourceStatus === 'optional';
+
   return values.map((v, i) => {
-    if (i <= sourceIndex || !isBulkEditableForecastCell(statuses[i])) {
-      return v;
-    }
+    if (i <= sourceIndex) return v;
+    const status = statuses[i];
+    const canApply = fillOptional ? status === 'optional' : isBulkEditableForecastCell(status);
+    if (!canApply) return v;
     return { ...v, amount };
   });
 }
