@@ -66,6 +66,7 @@ export function createSamplePublicCloudRequest(args?: {
     requiresNetworking: false,
     networkingReason: '',
     members: [],
+    repositories: [],
     billingId: billing.id,
     billing,
     budget: {
