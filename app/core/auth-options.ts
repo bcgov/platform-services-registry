@@ -228,7 +228,7 @@ export async function generateSession({
     security: !IS_PROD,
     apiAccount: !IS_PROD,
     costRecovery: !IS_PROD,
-    publicCloudForecast: !IS_PROD,
+    publicCloudForecast: true,
   };
 
   session.permissions = {
