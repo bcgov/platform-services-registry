@@ -3,14 +3,18 @@ import { IconPlus } from '@tabler/icons-react';
 import { useFieldArray, useFormContext } from 'react-hook-form';
 import HookFormTextInput from '@/components/generic/input/HookFormTextInput';
 
-export default function Repositories({ disabled }: { disabled?: boolean }) {
+export default function Repositories({
+  disabled,
+}: Readonly<{
+  disabled?: boolean;
+}>) {
   const { control } = useFormContext();
 
   const { fields, append, remove } = useFieldArray({
     control,
     name: 'repositories',
   });
-  console.log('fields', fields);
+
   return (
     <div>
       <Stack gap="sm" mb="lg">
