@@ -35,7 +35,7 @@ function preparePrivateCloudProductCloudData(data: any) {
       roles: (member.roles || []).join(', '),
     }));
   }
-
+  data.repositories = (data.repositories ?? []).map(({ url }: { url: string }) => url).sort();
   return data;
 }
 
@@ -51,6 +51,7 @@ export function comparePrivateProductData(data1: any, data2: any) {
   let membersChanged = false;
   let quotasChanged = false;
   let quotasIncrease = false;
+  let repositoriesChanged = false;
 
   for (const change of changes) {
     parentPaths.push(String(change.path[0]));
@@ -81,6 +82,10 @@ export function comparePrivateProductData(data1: any, data2: any) {
 
         quotasChanged = true;
         break;
+
+      case 'repositories':
+        repositoriesChanged = true;
+        break;
     }
   }
 
@@ -90,6 +95,7 @@ export function comparePrivateProductData(data1: any, data2: any) {
     membersChanged,
     quotasChanged,
     quotasIncrease,
+    repositoriesChanged,
     parentPaths: _uniq(parentPaths),
     changes,
   };
@@ -103,6 +109,7 @@ export interface PublicProductChange {
   billingChanged: boolean;
   changes: DiffChange[];
   parentPaths: string[];
+  repositoriesChanged: boolean;
 }
 
 const publicDataFields = [
@@ -149,6 +156,7 @@ export function comparePublicProductData(data1: any, data2: any) {
   let budgetChanged = false;
   let billingChanged = false;
   let membersChanged = false;
+  let repositoriesChanged = false;
 
   for (const change of changes) {
     parentPaths.push(String(change.path[0]));
@@ -180,6 +188,10 @@ export function comparePublicProductData(data1: any, data2: any) {
       case 'accountCoding':
         billingChanged = true;
         break;
+
+      case 'repositories':
+        repositoriesChanged = true;
+        break;
     }
   }
 
@@ -189,6 +201,7 @@ export function comparePublicProductData(data1: any, data2: any) {
     membersChanged,
     budgetChanged,
     billingChanged,
+    repositoriesChanged,
     parentPaths: _uniq(parentPaths),
     changes,
   };
