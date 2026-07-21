@@ -9,6 +9,7 @@ import {
   IconLayoutGridAdd,
   IconMoneybag,
   IconChartBar,
+  IconCode,
 } from '@tabler/icons-react';
 import { useQuery } from '@tanstack/react-query';
 import { useEffect } from 'react';
@@ -19,6 +20,7 @@ import PreviousButton from '@/components/buttons/Previous';
 import AccountEnvironmentsPublic from '@/components/form/AccountEnvironmentsPublic';
 import Budget from '@/components/form/Budget';
 import ProjectDescriptionPublic from '@/components/form/ProjectDescriptionPublic';
+import Repositories from '@/components/form/Repositories';
 import PageAccordion from '@/components/generic/accordion/PageAccordion';
 import FormErrorNotification from '@/components/generic/FormErrorNotification';
 import { openPublicCloudMouReviewModal } from '@/components/modal/publicCloudMouReview';
@@ -38,6 +40,7 @@ import {
   PublicCloudRequestDecisionBody,
 } from '@/validation-schemas/public-cloud';
 import { RequestDecision } from '@/validation-schemas/shared';
+
 const pathParamSchema = z.object({
   id: z.string(),
 });
@@ -92,6 +95,7 @@ export default publicCloudProductRequest(({ session, router }) => {
       type: publicProductSnap.currentRequest?.type,
       isAgMinistry: false,
       ...decisionData,
+      repositories: decisionData?.repositories ?? [],
       requiresNetworking: decisionData?.requiresNetworking ?? false,
       networkingReason: decisionData?.networkingReason ?? '',
       environmentsEnabled: {
@@ -137,6 +141,15 @@ export default publicCloudProductRequest(({ session, router }) => {
       componentArgs: {
         isTeamContactsDisabled: isDisabled,
         isAdditionalMembersDisabled: true,
+      },
+    },
+    {
+      LeftIcon: IconCode,
+      label: 'Repositories',
+      description: '',
+      Component: Repositories,
+      componentArgs: {
+        disabled: isDisabled,
       },
     },
     {

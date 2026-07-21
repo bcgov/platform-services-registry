@@ -97,6 +97,7 @@ export const POST = createApiHandler({
       'Total memory quota (GiB)': String(memoryRequestTotal),
       'Total storage quota (GiB)': String(storageTotal),
       Status: project.status,
+      Repositories: (project.repositories ?? []).map((repository) => repository.url).join('; '),
       'Additional Team Members': project.members
         .map((member) => {
           const user = memberUserMap.get(member.userId);

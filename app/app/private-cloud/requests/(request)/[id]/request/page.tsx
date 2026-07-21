@@ -1,27 +1,19 @@
 'use client';
 
-import {
-  IconInfoCircle,
-  IconUsersGroup,
-  IconSettings,
-  IconComponents,
-  IconMessage,
-  IconWebhook,
-} from '@tabler/icons-react';
-import { useSession } from 'next-auth/react';
-import { useEffect, useState } from 'react';
+import { IconInfoCircle, IconUsersGroup, IconSettings, IconCode, IconMessage } from '@tabler/icons-react';
+import { useEffect } from 'react';
 import { FormProvider, useForm } from 'react-hook-form';
 import { z } from 'zod';
 import CancelRequest from '@/components/buttons/CancelButton';
 import PreviousButton from '@/components/buttons/Previous';
 import ProjectDescription from '@/components/form/ProjectDescriptionPrivate';
+import Repositories from '@/components/form/Repositories';
 import PageAccordion from '@/components/generic/accordion/PageAccordion';
-import AdditionalTeamMembers from '@/components/private-cloud/sections/AdditionalTeamMembers';
 import Quotas from '@/components/private-cloud/sections/Quotas';
 import TeamContacts from '@/components/private-cloud/sections/TeamContacts';
 import { GlobalRole } from '@/constants';
 import createClientPage from '@/core/client-page';
-import { DecisionStatus, PrivateCloudProduct, ProjectContext } from '@/prisma/client';
+import { DecisionStatus, ProjectContext } from '@/prisma/client';
 import { usePrivateProductState } from '@/states/global';
 
 const pathParamSchema = z.object({
@@ -44,6 +36,7 @@ export default privateCloudRequestRequest(() => {
       decisionComment: '',
       decision: '',
       type: snap.currentRequest?.type,
+      repositories: snap.currentRequest?.requestData?.repositories ?? [],
       ...snap.currentRequest?.requestData,
     },
   });
@@ -74,6 +67,15 @@ export default privateCloudRequestRequest(() => {
       componentArgs: {
         isTeamContactsDisabled: isDisabled,
         isAdditionalMembersDisabled: true,
+      },
+    },
+    {
+      LeftIcon: IconCode,
+      label: 'Repositories',
+      description: '',
+      Component: Repositories,
+      componentArgs: {
+        disabled: isDisabled,
       },
     },
     {

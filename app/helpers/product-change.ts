@@ -10,6 +10,7 @@ export interface PrivateProductChange {
   quotasIncrease: boolean;
   changes: DiffChange[];
   parentPaths: string[];
+  repositoriesChanged: boolean;
 }
 
 const privateDataFields = [
@@ -24,6 +25,7 @@ const privateDataFields = [
   'members',
   'resourceRequests',
   'supportPhoneNumber',
+  'repositories',
 ];
 
 function preparePrivateCloudProductCloudData(data: any) {
@@ -116,6 +118,7 @@ const publicDataFields = [
   'secondaryTechnicalLead.email',
   'expenseAuthority.email',
   'members',
+  'repositories',
 ];
 
 function preparePublicCloudProductCloudData(data: any) {
@@ -128,6 +131,9 @@ function preparePublicCloudProductCloudData(data: any) {
   if (data.providerSelectionReasons) {
     data.providerSelectionReasons = data.providerSelectionReasons.join(', ');
   }
+
+  data.repositories = (data.repositories ?? []).map(({ url }: { url: string }) => url).sort();
+
   return data;
 }
 

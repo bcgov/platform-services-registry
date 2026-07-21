@@ -15,6 +15,7 @@ export interface PrivateProductCsvRecord {
   'Total compute quota (cores)': string;
   'Total memory quota (GiB)': string;
   'Total storage quota (GiB)': string;
+  Repositories: string;
   Status: string;
 }
 
@@ -34,5 +35,6 @@ export interface PublicProductCsvRecord {
   'Create date': string;
   'Update date': string;
   'Licence plate': string;
+  Repositories: string;
   Status: string;
 }

@@ -2,10 +2,11 @@
 
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Button } from '@mantine/core';
-import { IconInfoCircle, IconUsersGroup, IconSettings, IconWebhook } from '@tabler/icons-react';
+import { IconInfoCircle, IconUsersGroup, IconSettings, IconWebhook, IconCode } from '@tabler/icons-react';
 import { FormProvider, useForm } from 'react-hook-form';
 import PreviousButton from '@/components/buttons/Previous';
 import ProjectDescription from '@/components/form/ProjectDescriptionPrivate';
+import Repositories from '@/components/form/Repositories';
 import PageAccordion from '@/components/generic/accordion/PageAccordion';
 import FormErrorNotification from '@/components/generic/FormErrorNotification';
 import { openPrivateCloudProductCreateSubmitModal } from '@/components/modal/privateCloudProductCreateSubmit';
@@ -24,6 +25,7 @@ export default privateCloudProductNew(({ session }) => {
   const methods = useForm({
     resolver: zodResolver(privateCloudCreateRequestBodySchema),
     defaultValues: {
+      repositories: [],
       resourceRequests: {
         development: defaultResourceRequests,
         test: defaultResourceRequests,
@@ -49,6 +51,13 @@ export default privateCloudProductNew(({ session }) => {
       componentArgs: {
         showAdditionalTeamMembers: false,
       },
+    },
+    {
+      LeftIcon: IconCode,
+      label: 'Repositories',
+      description: '',
+      Component: Repositories,
+      componentArgs: { disabled: false },
     },
     {
       LeftIcon: IconSettings,

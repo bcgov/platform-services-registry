@@ -22,6 +22,14 @@ const TL2 = mockNoRoleUsers[2];
 const RANDOM1 = mockNoRoleUsers[3];
 const RANDOM2 = mockNoRoleUsers[4];
 const RANDOM3 = mockNoRoleUsers[5];
+const repositories = [
+  {
+    url: 'https://github.com/bcgov/platform-services-registry',
+  },
+  {
+    url: 'https://bitbucket.org/bc-gov/personalizedservice',
+  },
+];
 
 const memberData = {
   projectOwner: PO,
@@ -48,7 +56,7 @@ describe('Download Private Cloud Products - Permissions', () => {
   it('should successfully create a product by PO and approved by admin', async () => {
     await mockSessionByIdirGuid(PO.idirGuid);
 
-    const productData = createSamplePrivateCloudProductData({ data: { ...memberData } });
+    const productData = createSamplePrivateCloudProductData({ data: { ...memberData, repositories } });
     const res1 = await createPrivateCloudProduct(productData);
     const dat1 = await res1.json();
     expect(res1.status).toBe(200);
@@ -97,6 +105,7 @@ describe('Download Private Cloud Products - Permissions', () => {
     expect(record1['Create date']).toBe(formatDateSimple(project?.createdAt ?? ''));
     expect(record1['Update date']).toBe(formatDateSimple(project?.updatedAt ?? ''));
     expect(record1['Licence plate']).toBe(project?.licencePlate);
+    expect(record1.Repositories).toBe(project?.repositories.map(({ url }) => url).join('; '));
     expect(record1.Status).toBe(project?.status);
   });
 

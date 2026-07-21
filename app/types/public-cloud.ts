@@ -215,6 +215,7 @@ export type PublicCloudProjectSummary = {
   'Create date': string;
   'Update date': string;
   'Licence plate': string;
+  Repositories: string;
   Status: string;
 };
 
