@@ -468,7 +468,7 @@ model SecurityConfig {
   context           ProjectContext
   clusterOrProvider String?
   licencePlate      String         @unique
-  // repositories      Repository[]
+  repositories      Repository[]
 }
 
 enum ProjectContext {
