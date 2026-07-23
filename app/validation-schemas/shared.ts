@@ -42,5 +42,59 @@ export const deleteRequestRejectBodySchema = z.object({
   decisionComment: commentSchema,
 });
 
+const allowedRepositoryHosts = new Set(['github.com', 'bitbucket.org', 'gitlab.com']);
+
+const allowedRepositoryOrganizations = new Set(['bcgov', 'bcgov-c', 'bc-gov']);
+
+export const repositorySchema = z.object({
+  url: z
+    .string()
+    .trim()
+    .url('Enter a valid repository URL')
+    .refine(
+      (value) => {
+        try {
+          return new URL(value).protocol === 'https:';
+        } catch {
+          return false;
+        }
+      },
+      {
+        message: 'Repository URL must use HTTPS',
+      },
+    )
+    .refine(
+      (value) => {
+        try {
+          const hostname = new URL(value).hostname.toLowerCase();
+          return allowedRepositoryHosts.has(hostname);
+        } catch {
+          return false;
+        }
+      },
+      {
+        message: 'Repository must be hosted on GitHub, Bitbucket, or GitLab',
+      },
+    )
+    .refine(
+      (value) => {
+        try {
+          const pathSegments = new URL(value).pathname.toLowerCase().split('/').filter(Boolean);
+
+          const [organization, repository] = pathSegments;
+
+          return pathSegments.length >= 2 && allowedRepositoryOrganizations.has(organization) && Boolean(repository);
+        } catch {
+          return false;
+        }
+      },
+      {
+        message: 'Repository must belong to bcgov, bcgov-c, or bc-gov and include a repository name',
+      },
+    ),
+});
+
+export const repositoriesSchema = z.array(repositorySchema).default([]);
+
 export type User = z.infer<typeof userSchema>;
 export type Comment = z.infer<typeof commentSchema>;

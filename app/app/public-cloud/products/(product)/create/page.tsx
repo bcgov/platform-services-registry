@@ -2,12 +2,20 @@
 
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Button } from '@mantine/core';
-import { IconInfoCircle, IconUsersGroup, IconLayoutGridAdd, IconMoneybag, IconChartBar } from '@tabler/icons-react';
+import {
+  IconInfoCircle,
+  IconUsersGroup,
+  IconLayoutGridAdd,
+  IconMoneybag,
+  IconChartBar,
+  IconCode,
+} from '@tabler/icons-react';
 import { FormProvider, useForm } from 'react-hook-form';
 import PreviousButton from '@/components/buttons/Previous';
 import AccountEnvironmentsPublic from '@/components/form/AccountEnvironmentsPublic';
 import Budget from '@/components/form/Budget';
 import ProjectDescriptionPublic from '@/components/form/ProjectDescriptionPublic';
+import Repositories from '@/components/form/Repositories';
 import PageAccordion from '@/components/generic/accordion/PageAccordion';
 import FormErrorNotification from '@/components/generic/FormErrorNotification';
 import { openPublicCloudProductCreateSubmitModal } from '@/components/modal/publicCloudProductCreateSubmit';
@@ -25,6 +33,7 @@ export default publicCloudProductNew(({ session }) => {
   const form = useForm({
     resolver: zodResolver(publicCloudCreateRequestBodySchema),
     defaultValues: {
+      repositories: [],
       environmentsEnabled: {
         production: true,
       },
@@ -53,6 +62,13 @@ export default publicCloudProductNew(({ session }) => {
       description: '',
       Component: AccountEnvironmentsPublic,
       componentArgs: { mode: 'create' },
+    },
+    {
+      LeftIcon: IconCode,
+      label: 'Repositories',
+      description: '',
+      Component: Repositories,
+      componentArgs: { disabled: false },
     },
     {
       LeftIcon: IconUsersGroup,

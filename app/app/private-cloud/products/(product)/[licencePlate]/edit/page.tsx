@@ -2,12 +2,13 @@
 
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Button } from '@mantine/core';
-import { IconInfoCircle, IconUsersGroup, IconSettings } from '@tabler/icons-react';
+import { IconInfoCircle, IconUsersGroup, IconSettings, IconCode } from '@tabler/icons-react';
 import { useEffect, useState } from 'react';
 import { FormProvider, useForm } from 'react-hook-form';
 import { z } from 'zod';
 import PreviousButton from '@/components/buttons/Previous';
 import ProjectDescription from '@/components/form/ProjectDescriptionPrivate';
+import Repositories from '@/components/form/Repositories';
 import PageAccordion from '@/components/generic/accordion/PageAccordion';
 import FormErrorNotification from '@/components/generic/FormErrorNotification';
 import { openPrivateCloudProductEditSubmitModal } from '@/components/modal/privateCloudProductEditSubmit';
@@ -86,7 +87,7 @@ export default privateCloudProductEdit(({ session }) => {
       )(values, context, options);
     },
     defaultValues: {
-      ...snap.currentProduct,
+      repositories: [],
       isAgMinistry: false,
       isAgMinistryChecked: true,
     },
@@ -98,6 +99,18 @@ export default privateCloudProductEdit(({ session }) => {
     if (!snap.currentProduct) return;
 
     setDisabled(!snap.currentProduct?._permissions.edit);
+
+    methods.reset(
+      {
+        ...snap.currentProduct,
+        repositories: snap.currentProduct.repositories ?? [],
+        isAgMinistry: false,
+        isAgMinistryChecked: true,
+      },
+      {
+        keepDirtyValues: true,
+      },
+    );
   }, [snap.currentProduct]);
 
   const isSubmitEnabled = Object.keys(formState.dirtyFields).length > 0;
@@ -127,6 +140,15 @@ export default privateCloudProductEdit(({ session }) => {
       componentArgs: {
         isTeamContactsDisabled: isDisabled,
         isAdditionalMembersDisabled: isDisabled || !snap.currentProduct._permissions.manageMembers,
+      },
+    },
+    {
+      LeftIcon: IconCode,
+      label: 'Repositories',
+      description: '',
+      Component: Repositories,
+      componentArgs: {
+        disabled: isDisabled,
       },
     },
     {

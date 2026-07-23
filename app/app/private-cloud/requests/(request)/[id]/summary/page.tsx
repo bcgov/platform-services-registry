@@ -1,6 +1,6 @@
 'use client';
 
-import { Alert, Group, Avatar, Text, Accordion, Table, Badge, Button } from '@mantine/core';
+import { Alert, Table } from '@mantine/core';
 import {
   IconInfoCircle,
   IconCircleLetterO,

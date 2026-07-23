@@ -35,31 +35,22 @@ async function baseFilter(session: Session) {
 type SecurityConfigDecorated = SecurityConfig & SecurityConfigDecorate;
 
 async function decorate(doc: SecurityConfig, session: Session) {
-  const query = { where: { licencePlate: doc.licencePlate } };
-
-  const privateQuery = {
-    ...query,
-    select: { projectOwnerId: true, primaryTechnicalLeadId: true, secondaryTechnicalLeadId: true, cluster: true },
+  const query = {
+    where: {
+      licencePlate: doc.licencePlate,
+    },
   };
 
-  const publicQuery = {
-    ...query,
-    select: { projectOwnerId: true, primaryTechnicalLeadId: true, secondaryTechnicalLeadId: true, provider: true },
-  };
-
-  const project = await (doc.context === ProjectContext.PRIVATE
-    ? privateCloudProductModel.get(privateQuery)
-    : publicCloudProductModel.get(publicQuery));
-
-  const projectWithPermissions = project as typeof project & {
-    _permissions: { view: boolean; edit: boolean; delete: boolean };
-  };
+  const { data: project } =
+    doc.context === ProjectContext.PRIVATE
+      ? await privateCloudProductModel.get(query, session)
+      : await publicCloudProductModel.get(query, session);
 
   const decoratedDoc = doc as SecurityConfigDecorated;
 
   decoratedDoc._permissions = {
-    view: projectWithPermissions._permissions.view,
-    edit: projectWithPermissions._permissions.edit,
+    view: project?._permissions?.view ?? false,
+    edit: project?._permissions?.edit ?? false,
     delete: false,
   };
 

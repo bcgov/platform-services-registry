@@ -134,12 +134,13 @@ type QuotaUpgradeResourceDeployment {
 }
 
 type PrivateCloudRequestDataChanges {
-  profileChanged  Boolean?
-  contactsChanged Boolean?
-  membersChanged  Boolean?
-  quotasChanged   Boolean?
-  quotasIncrease  Boolean?
-  parentPaths     String[]
+  profileChanged      Boolean?
+  contactsChanged     Boolean?
+  membersChanged      Boolean?
+  quotasChanged       Boolean?
+  quotasIncrease      Boolean?
+  parentPaths         String[]
+  repositoriesChanged Boolean?
 }
 
 model PrivateCloudProduct {
@@ -168,6 +169,7 @@ model PrivateCloudProduct {
   members                          PrivateCloudProductMember[]
   requests                         PrivateCloudRequest[]       @relation("project")
   comments                         PrivateCloudComment[]       @relation("project")
+  repositories                     Repository[]
 }
 
 model PrivateCloudRequestData {
@@ -194,6 +196,7 @@ model PrivateCloudRequestData {
   decisionRequests         PrivateCloudRequest[]       @relation("decisionData")
   requestRequests          PrivateCloudRequest[]       @relation("requestData")
   originalRequests         PrivateCloudRequest[]       @relation("originalData")
+  repositories             Repository[]
 }
 
 model PrivateCloudProductWebhook {
@@ -307,12 +310,13 @@ type AccountCoding {
 }
 
 type PublicCloudDataChanges {
-  profileChanged  Boolean?
-  contactsChanged Boolean?
-  membersChanged  Boolean?
-  budgetChanged   Boolean?
-  billingChanged  Boolean?
-  parentPaths     String[]
+  profileChanged      Boolean?
+  contactsChanged     Boolean?
+  membersChanged      Boolean?
+  budgetChanged       Boolean?
+  billingChanged      Boolean?
+  parentPaths         String[]
+  repositoriesChanged Boolean?
 }
 
 model PublicCloudProduct {
@@ -345,6 +349,7 @@ model PublicCloudProduct {
   awsAccounts                  Json?
   members                      PublicCloudProductMember[]
   requests                     PublicCloudRequest[]       @relation("project")
+  repositories                 Repository[]
 }
 
 type PublicCloudProductMember {
@@ -380,6 +385,7 @@ model PublicCloudRequestData {
   decisionRequests             PublicCloudRequest[]       @relation("decisionData")
   requestRequests              PublicCloudRequest[]       @relation("requestData")
   originalRequests             PublicCloudRequest[]       @relation("originalData")
+  repositories                 Repository[]
 }
 
 type EnvironmentsEnabled {

@@ -1,13 +1,13 @@
 'use client';
 
-import { IconInfoCircle, IconUsersGroup, IconSettings } from '@tabler/icons-react';
+import { IconInfoCircle, IconUsersGroup, IconSettings, IconCode } from '@tabler/icons-react';
 import { useEffect, useState } from 'react';
 import { FormProvider, useForm } from 'react-hook-form';
 import { z } from 'zod';
 import PreviousButton from '@/components/buttons/Previous';
 import ProjectDescription from '@/components/form/ProjectDescriptionPrivate';
+import Repositories from '@/components/form/Repositories';
 import PageAccordion from '@/components/generic/accordion/PageAccordion';
-import AdditionalTeamMembers from '@/components/private-cloud/sections/AdditionalTeamMembers';
 import Quotas from '@/components/private-cloud/sections/Quotas';
 import TeamContacts from '@/components/private-cloud/sections/TeamContacts';
 import { GlobalRole } from '@/constants';
@@ -41,6 +41,7 @@ export default privateCloudRequestOriginal(({ getPathParams, session, router }) 
       decisionComment: '',
       decision: '',
       type: snap.currentRequest?.type,
+      repositories: snap.currentRequest?.requestData?.repositories ?? [],
       ...snap.currentRequest?.originalData,
     },
   });
@@ -71,6 +72,15 @@ export default privateCloudRequestOriginal(({ getPathParams, session, router }) 
       componentArgs: {
         isTeamContactsDisabled: isDisabled,
         isAdditionalMembersDisabled: true,
+      },
+    },
+    {
+      LeftIcon: IconCode,
+      label: 'Repositories',
+      description: '',
+      Component: Repositories,
+      componentArgs: {
+        disabled: isDisabled,
       },
     },
     {

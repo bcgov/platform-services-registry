@@ -37,9 +37,16 @@ describe('Search Private Cloud Products - Permissions', () => {
 
   it('should successfully create a product by PO and approved by admin', async () => {
     await mockSessionByIdirGuid(PO.idirGuid);
-
+    const repositories = [
+      {
+        url: 'https://github.com/bcgov/platform-services-registry',
+      },
+      {
+        url: 'https://bitbucket.org/bc-gov/personalizedservice',
+      },
+    ];
     const requestData = createSamplePrivateCloudProductData({
-      data: { ...memberData },
+      data: { ...memberData, repositories },
     });
     const res1 = await createPrivateCloudProduct(requestData);
     const dat1 = await res1.json();
@@ -57,6 +64,19 @@ describe('Search Private Cloud Products - Permissions', () => {
     await mockTeamServiceAccount(['private-admin']);
     const res3 = await provisionPrivateCloudProduct(dat1.licencePlate);
     expect(res3.status).toBe(200);
+  });
+  it('should allow a product without repositories', async () => {
+    await mockSessionByRole(GlobalRole.Admin);
+
+    const requestData = createSamplePrivateCloudProductData({
+      data: {
+        repositories: [],
+      },
+    });
+
+    const response = await createPrivateCloudProduct(requestData);
+
+    expect(response.status).toBe(200);
   });
 
   it('should successfully search 1 project by PO', async () => {

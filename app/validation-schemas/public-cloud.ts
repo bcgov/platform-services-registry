@@ -15,7 +15,7 @@ import {
 import { ProductBiliingStatus } from '@/types';
 import { processEnumString } from '@/utils/js';
 import { forecastMonthlyValueSchema } from './cloud-cost';
-import { RequestDecision, optionalCommentSchema } from './shared';
+import { RequestDecision, optionalCommentSchema, repositoriesSchema } from './shared';
 
 export const getBudgetSchema = (provider: Provider) => {
   if (provider === Provider.AZURE) {
@@ -28,7 +28,7 @@ export const getBudgetSchema = (provider: Provider) => {
   }
 
   const minValue = 50;
-  const message = 'Value should be no less than USD 100';
+  const message = 'Value should be no less than USD 50';
 
   return z.object({
     dev: z.number().min(minValue, message).default(minValue),
@@ -78,6 +78,7 @@ const publicCloudBaseRequestBodySchema = z.object({
     .min(1, { message: 'Name is required.' })
     .refine((value) => !/[^A-Za-z0-9///.:+=@_ ]/g.test(value), 'Only /. : + = @ _ special symbols are allowed'),
   description: z.string().min(1, { message: 'Description is required.' }),
+  repositories: repositoriesSchema,
   provider: z.enum(Provider),
   providerSelectionReasons: z.array(z.string()).min(1, { message: 'Reason for choosing provider is required' }),
   providerSelectionReasonsNote: z

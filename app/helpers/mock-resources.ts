@@ -48,6 +48,7 @@ export function createSamplePrivateCloudProductData(args?: {
     isAgMinistryChecked: true,
     organizationId: organization.id,
     organization,
+    repositories: [],
     ...data,
   };
 
@@ -112,6 +113,7 @@ export function createSamplePublicCloudProductData(args?: {
     isAgMinistryChecked: true,
     organizationId: organization.id,
     organization: organization,
+    repositories: [],
     ...data,
   };
 

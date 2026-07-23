@@ -2,13 +2,14 @@
 
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Button } from '@mantine/core';
-import { IconInfoCircle, IconUsersGroup, IconSettings, IconMessage } from '@tabler/icons-react';
+import { IconInfoCircle, IconUsersGroup, IconSettings, IconMessage, IconCode } from '@tabler/icons-react';
 import { useEffect, useState } from 'react';
 import { FormProvider, useForm } from 'react-hook-form';
 import { z } from 'zod';
 import CancelRequest from '@/components/buttons/CancelButton';
 import PreviousButton from '@/components/buttons/Previous';
 import ProjectDescription from '@/components/form/ProjectDescriptionPrivate';
+import Repositories from '@/components/form/Repositories';
 import PageAccordion from '@/components/generic/accordion/PageAccordion';
 import FormErrorNotification from '@/components/generic/FormErrorNotification';
 import { openPrivateCloudRequestReviewModal } from '@/components/modal/privateCloudRequestReview';
@@ -73,6 +74,7 @@ export default privateCloudRequestDecision(({ getPathParams, session, router }) 
       decision: RequestDecision.APPROVED as RequestDecision,
       type: snap.currentRequest?.type,
       isAgMinistry: false,
+      repositories: snap.currentRequest?.requestData?.repositories ?? [],
       ...snap.currentRequest?.decisionData,
     },
   });
@@ -103,6 +105,15 @@ export default privateCloudRequestDecision(({ getPathParams, session, router }) 
       componentArgs: {
         isTeamContactsDisabled: isDisabled,
         isAdditionalMembersDisabled: true,
+      },
+    },
+    {
+      LeftIcon: IconCode,
+      label: 'Repositories',
+      description: '',
+      Component: Repositories,
+      componentArgs: {
+        disabled: isDisabled,
       },
     },
     {

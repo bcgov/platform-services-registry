@@ -1,22 +1,15 @@
 'use client';
 
-import {
-  IconInfoCircle,
-  IconUsersGroup,
-  IconUserDollar,
-  IconLayoutGridAdd,
-  IconMoneybag,
-  IconReceipt2,
-} from '@tabler/icons-react';
-import { useEffect, useState } from 'react';
+import { IconInfoCircle, IconUsersGroup, IconLayoutGridAdd, IconMoneybag, IconCode } from '@tabler/icons-react';
+import { useEffect } from 'react';
 import { FormProvider, useForm } from 'react-hook-form';
 import { z } from 'zod';
 import PreviousButton from '@/components/buttons/Previous';
 import AccountEnvironmentsPublic from '@/components/form/AccountEnvironmentsPublic';
 import Budget from '@/components/form/Budget';
 import ProjectDescriptionPublic from '@/components/form/ProjectDescriptionPublic';
+import Repositories from '@/components/form/Repositories';
 import PageAccordion from '@/components/generic/accordion/PageAccordion';
-import AdditionalTeamMembers from '@/components/public-cloud/sections/AdditionalTeamMembers';
 import TeamContacts from '@/components/public-cloud/sections/TeamContacts';
 import { GlobalRole } from '@/constants';
 import createClientPage from '@/core/client-page';
@@ -42,6 +35,7 @@ export default publicCloudRequestOriginal(({ router }) => {
       decisionComment: '',
       decision: '',
       type: snap.currentRequest?.type,
+      repositories: snap.currentRequest?.requestData?.repositories ?? [],
       ...snap.currentRequest?.originalData,
     },
   });
@@ -78,6 +72,15 @@ export default publicCloudRequestOriginal(({ router }) => {
       componentArgs: {
         isTeamContactsDisabled: isDisabled,
         isAdditionalMembersDisabled: true,
+      },
+    },
+    {
+      LeftIcon: IconCode,
+      label: 'Repositories',
+      description: '',
+      Component: Repositories,
+      componentArgs: {
+        disabled: isDisabled,
       },
     },
     {
