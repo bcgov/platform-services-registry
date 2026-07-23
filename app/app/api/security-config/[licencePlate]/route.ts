@@ -18,31 +18,50 @@ const apiHandler = createApiHandler({
   validations: { pathParams: pathParamSchema, queryParams: queryParamSchema },
 });
 export const GET = apiHandler(async ({ pathParams, queryParams, session }) => {
+  const { licencePlate } = pathParams;
+  const { context } = queryParams;
+
   const configProm = models.securityConfig.get(
     {
       where: {
-        licencePlate: pathParams.licencePlate,
-        context: queryParams.context,
+        licencePlate: licencePlate,
+        context: context,
       },
     },
     session,
   );
 
-  const query = { where: { licencePlate: pathParams.licencePlate } };
-  const privateQuery = { ...query, select: { cluster: true } };
-  const publicQuery = { ...query, select: { provider: true } };
-
   const projectProm =
     queryParams.context === ProjectContext.PRIVATE
-      ? models.privateCloudProduct.get(privateQuery, session)
-      : models.publicCloudProduct.get(publicQuery, session);
+      ? models.privateCloudProduct.get(
+          {
+            where: {
+              licencePlate,
+            },
+            select: {
+              cluster: true,
+              repositories: true,
+            },
+          },
+          session,
+        )
+      : models.publicCloudProduct.get(
+          {
+            where: {
+              licencePlate,
+            },
+            select: {
+              provider: true,
+              repositories: true,
+            },
+          },
+          session,
+        );
 
-  const decisionDataProm =
-    queryParams.context === ProjectContext.PRIVATE
-      ? models.privateCloudProduct.get(privateQuery, session)
-      : models.publicCloudProduct.get(publicQuery, session);
+  const [config, project] = await Promise.all([configProm, projectProm]);
 
-  const [config, project, decisionData] = await Promise.all([configProm, projectProm, decisionDataProm]);
-
-  return OkResponse({ config, project: project || decisionData });
+  return OkResponse({
+    config,
+    project,
+  });
 });

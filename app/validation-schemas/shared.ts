@@ -81,13 +81,15 @@ export const repositorySchema = z.object({
         try {
           const pathSegments = new URL(value).pathname.toLowerCase().split('/').filter(Boolean);
 
-          return pathSegments.some((segment) => allowedRepositoryOrganizations.has(segment));
+          const [organization, repository] = pathSegments;
+
+          return pathSegments.length >= 2 && allowedRepositoryOrganizations.has(organization) && Boolean(repository);
         } catch {
           return false;
         }
       },
       {
-        message: 'Repository must belong to bcgov, bcgov-c, or bc-gov',
+        message: 'Repository must belong to bcgov, bcgov-c, or bc-gov and include a repository name',
       },
     ),
 });

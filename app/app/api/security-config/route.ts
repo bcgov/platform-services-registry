@@ -11,7 +11,9 @@ const apiHandler = createApiHandler({
   validations: { body: securityConfigSchema },
 });
 export const PUT = apiHandler(async ({ body, session }) => {
-  const existQuery = { where: { licencePlate: body.licencePlate } };
+  const { licencePlate, context, repositories = [] } = body;
+
+  const existQuery = { where: { licencePlate: licencePlate } };
   let { data: count } =
     body.context === ProjectContext.PRIVATE
       ? await models.privateCloudProduct.count(existQuery)
@@ -29,17 +31,35 @@ export const PUT = apiHandler(async ({ body, session }) => {
     throw Error('invalid project');
   }
 
-  const result = await models.securityConfig.upsert(
-    {
+  if (context === ProjectContext.PRIVATE) {
+    const product = await prisma.privateCloudProduct.update({
       where: {
-        licencePlate: body.licencePlate,
-        context: body.context,
+        licencePlate,
       },
-      update: body,
-      create: body,
-    },
-    session,
-  );
+      data: {
+        repositories,
+      },
+      select: {
+        licencePlate: true,
+        repositories: true,
+      },
+    });
 
-  return OkResponse(result);
+    return OkResponse(product);
+  }
+
+  const product = await prisma.publicCloudProduct.update({
+    where: {
+      licencePlate,
+    },
+    data: {
+      repositories,
+    },
+    select: {
+      licencePlate: true,
+      repositories: true,
+    },
+  });
+
+  return OkResponse(product);
 });
