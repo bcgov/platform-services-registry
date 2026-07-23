@@ -28,7 +28,7 @@ export const getBudgetSchema = (provider: Provider) => {
   }
 
   const minValue = 50;
-  const message = 'Value should be no less than USD 100';
+  const message = 'Value should be no less than USD 50';
 
   return z.object({
     dev: z.number().min(minValue, message).default(minValue),
