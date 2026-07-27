@@ -15,4 +15,5 @@ provider "keycloak" {
   client_secret = var.client_secret
   url           = var.url
   base_path     = var.base_path
+  initial_login = false
 }
