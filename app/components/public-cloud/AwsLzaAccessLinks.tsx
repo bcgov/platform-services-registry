@@ -6,12 +6,12 @@ import { ProjectStatus, Provider } from '@/prisma/client';
 
 export default function AwsLzaAccessLinks({
   product,
-}: {
+}: Readonly<{
   product: {
     provider: Provider;
     status: ProjectStatus;
   };
-}) {
+}>) {
   if (product.provider !== Provider.AWS_LZA || product.status !== ProjectStatus.ACTIVE) {
     return null;
   }
