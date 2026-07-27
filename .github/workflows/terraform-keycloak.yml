@@ -57,7 +57,7 @@ jobs:
       id: plan
       if: github.event_name == 'pull_request'
       run: |
-        PLAN_OUTPUT=$(terraform plan -no-color -target=module.keycloak_prod)
+        PLAN_OUTPUT=$(terraform plan -no-color -target=module.keycloak_dev)
         echo "${PLAN_OUTPUT}"
         echo "PLAN<<EOF" >> $GITHUB_ENV
         echo "${PLAN_OUTPUT}" >> $GITHUB_ENV
