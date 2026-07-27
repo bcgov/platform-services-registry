@@ -53,11 +53,34 @@ jobs:
       run: terraform init -upgrade
       working-directory: ./terraform/keycloak
 
+    - name: Verify prod Keycloak credentials
+      env:
+        PROD_CLIENT_SECRET: ${{ secrets.PROD_CLIENT_SECRET }}
+      run: |
+        HTTP_CODE=$(curl -sS \
+          -o /tmp/prod-token-response.json \
+          -w "%{http_code}" \
+          -X POST \
+          "https://loginproxy.gov.bc.ca/auth/realms/platform-services/protocol/openid-connect/token" \
+          -H "Content-Type: application/x-www-form-urlencoded" \
+          --data-urlencode "grant_type=client_credentials" \
+          --data-urlencode "client_id=realm-admin-cli" \
+          --data-urlencode "client_secret=${PROD_CLIENT_SECRET}")
+
+        echo "Prod token endpoint returned HTTP ${HTTP_CODE}"
+
+        if [ "${HTTP_CODE}" != "200" ]; then
+          jq '{error, error_description}' /tmp/prod-token-response.json
+          exit 1
+        fi
+
+        echo "Prod client credentials are valid."
+
     - name: Terraform Plan
       id: plan
       if: github.event_name == 'pull_request'
       run: |
-        PLAN_OUTPUT=$(terraform plan -no-color -target=module.keycloak_test)
+        PLAN_OUTPUT=$(terraform plan -no-color -target=module.keycloak_prod)
         echo "${PLAN_OUTPUT}"
         echo "PLAN<<EOF" >> $GITHUB_ENV
         echo "${PLAN_OUTPUT}" >> $GITHUB_ENV
