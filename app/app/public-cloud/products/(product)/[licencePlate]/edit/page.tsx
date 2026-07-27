@@ -109,6 +109,7 @@ export default publicCloudProductEdit(({ session }) => {
         mode: 'edit',
         disabled: isDisabled,
         awsAccounts: normalizeStoredAwsLzaAccounts(currentProduct.awsAccounts),
+        product: currentProduct,
       },
     },
     {

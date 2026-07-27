@@ -4,6 +4,10 @@ import { environmentShortNames, productSorts } from './common';
 export const providers = Object.values(Provider);
 export const publicCloudProductMemberRoles = Object.values(PublicCloudProductMemberRole);
 
+export const awsLzaGroupsUrl = 'https://myaccount.microsoft.com/groups/groups-i-own';
+export const publicCloudTechnicalDocsUrl =
+  'https://developer.gov.bc.ca/docs/default/component/public-cloud-techdocs/aws/LZA/design-build-deploy/user-management/';
+
 const providerLabels = {
   [Provider.AWS]: 'AWS',
   [Provider.AWS_LZA]: 'AWS LZA',
