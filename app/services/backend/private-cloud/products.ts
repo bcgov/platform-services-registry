@@ -1,6 +1,6 @@
 import axios from 'axios';
-import { privateCloudProductSorts } from '@/constants';
-import { Prisma, PrivateCloudComment, QuotaUpgradeResourceDetail, ResourceRequestsEnv } from '@/prisma/client';
+import { EnvironmentShortName, privateCloudProductSorts } from '@/constants';
+import { Cluster, Prisma, PrivateCloudComment, QuotaUpgradeResourceDetail, ResourceRequestsEnv } from '@/prisma/client';
 import { MembersHistoryResponse } from '@/services/db/members-history';
 import { DeletionCheck } from '@/services/k8s/reads';
 import {
@@ -9,6 +9,7 @@ import {
   PrivateCloudProductSearch,
   PeriodCosts,
   PrivateCloudRequestDetailDecorated,
+  PdbPolicyStatus,
 } from '@/types/private-cloud';
 import { UsageMetrics } from '@/types/usage';
 import { downloadFile } from '@/utils/browser';
@@ -229,4 +230,12 @@ export async function downloadPrivateCloudQuarterlyCosts(licencePlate: string, y
     });
 
   return result;
+}
+
+export async function getPdbPolicyStatus(licencePlate: string, cluster: Cluster, environment: EnvironmentShortName) {
+  const response = await instance.get<PdbPolicyStatus>(
+    `/${licencePlate}/policy-reports?environment=${environment}&cluster=${cluster}`,
+  );
+
+  return response.data;
 }

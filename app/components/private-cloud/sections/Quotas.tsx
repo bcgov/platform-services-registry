@@ -1,24 +1,18 @@
-import { Loader, Tooltip } from '@mantine/core';
+import { Alert, Loader, Tooltip } from '@mantine/core';
+import { IconExclamationCircle } from '@tabler/icons-react';
 import { useQueries } from '@tanstack/react-query';
 import _startCase from 'lodash-es/startCase';
 import { ReactNode } from 'react';
 import { useFormContext } from 'react-hook-form';
 import ExternalLink from '@/components/generic/button/ExternalLink';
 import HookFormTextInput from '@/components/generic/input/HookFormTextInput';
-import { namespaceKeys, resourceKeys } from '@/constants';
+import { environmentShortNames, namespaceKeys, resourceKeys } from '@/constants';
 import { Cluster, ResourceRequestsEnv, ResourceRequests } from '@/prisma/client';
-import { getSubnetForEmerald } from '@/services/backend/private-cloud/products';
+import { getPdbPolicyStatus, getSubnetForEmerald } from '@/services/backend/private-cloud/products';
 import { cn } from '@/utils/js';
 import QuotasBudgetEstimation from './QuotasBudgetEstimation';
 import QuotasChangeInfo from './QuotasChangeInfo';
 import QuotasDescription from './QuotasDescription';
-
-const namespaceSuffixes = {
-  development: '-dev',
-  test: '-test',
-  production: '-prod',
-  tools: '-tools',
-};
 
 const resourceUnit = {
   cpu: 'Core',
@@ -55,9 +49,80 @@ export default function Quotas({
     }),
   });
 
+  const pdbPolicyReports = useQueries({
+    queries: namespaceKeys.map((namespace) => ({
+      queryKey: ['pdb-policy-report', licencePlate, cluster, environmentShortNames[namespace]],
+      queryFn: () => getPdbPolicyStatus(licencePlate!, cluster!, environmentShortNames[namespace]),
+      enabled: !!licencePlate && !!cluster,
+      staleTime: 60_000,
+      retry: false,
+    })),
+  });
+
+  const pdbIssues = pdbPolicyReports.flatMap((query, index) => {
+    const namespace = namespaceKeys[index];
+
+    return (query.data?.issues ?? []).map((issue) => ({
+      ...issue,
+      namespace,
+    }));
+  });
+
+  const isPdbPolicyLoading = pdbPolicyReports.some((query) => query.isLoading);
+  const hasPdbPolicyError = pdbPolicyReports.some((query) => query.isError);
+
   return (
     <>
       <QuotasDescription />
+      {isPdbPolicyLoading && (
+        <div className="mt-6 flex items-center gap-2 text-sm text-gray-600">
+          <Loader size="sm" type="dots" />
+          Checking PodDisruptionBudget status…
+        </div>
+      )}
+
+      {pdbIssues.length > 0 && (
+        <Alert
+          variant="light"
+          color="red"
+          title="PodDisruptionBudget configuration issues"
+          icon={<IconExclamationCircle size={20} />}
+          className="mt-6"
+        >
+          <p className="mb-3">The following namespaces contain PodDisruptionBudgets that may block pod eviction:</p>
+
+          <div className="space-y-3">
+            {pdbIssues.map((issue) => (
+              <div
+                key={`${issue.namespace}-${issue.reportName}-${issue.rule}`}
+                className="rounded-md border border-red-200 bg-white/60 px-3 py-2"
+              >
+                <p className="font-semibold">{_startCase(issue.namespace)} Namespace</p>
+
+                {issue.resourceName && (
+                  <p className="text-sm">
+                    <strong>Resource:</strong> {issue.resourceName}
+                  </p>
+                )}
+
+                {issue.message && <p className="text-sm text-gray-700">{issue.message}</p>}
+              </div>
+            ))}
+          </div>
+        </Alert>
+      )}
+
+      {hasPdbPolicyError && (
+        <Alert
+          variant="light"
+          color="yellow"
+          title="Unable to check all PodDisruptionBudget statuses"
+          icon={<IconExclamationCircle size={20} />}
+          className="mt-6"
+        >
+          Registry could not retrieve the PolicyReport for one or more namespaces.
+        </Alert>
+      )}
 
       <div className="mt-10 mb-5 grid grid-cols-1 gap-x-4 xl:gap-x-4 gap-y-8 sm:grid-cols-8 ">
         {namespaceKeys.map((namespace, index) => {
@@ -92,10 +157,9 @@ export default function Quotas({
           if (licencePlate && cluster) {
             clusterLink = (
               <ExternalLink
-                href={`https://console.apps.${cluster}.devops.gov.bc.ca/k8s/cluster/projects/${licencePlate}${namespaceSuffixes[namespace]}`}
+                href={`https://console.apps.${cluster}.devops.gov.bc.ca/k8s/cluster/projects/${licencePlate}-${environmentShortNames[namespace]}`}
               >
-                {licencePlate}
-                {namespaceSuffixes[namespace] || ''}
+                {licencePlate}-{environmentShortNames[namespace] || ''}
               </ExternalLink>
             );
           }

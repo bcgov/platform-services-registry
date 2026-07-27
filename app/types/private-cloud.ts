@@ -279,3 +279,18 @@ export interface CostDetailTableDataRow {
   cost: number;
   past: boolean;
 }
+
+export interface PdbPolicyIssue {
+  reportName: string;
+  resourceKind: string;
+  resourceName: string;
+  policy: string;
+  rule: string;
+  message: string;
+}
+
+export interface PdbPolicyStatus {
+  namespace: string;
+  hasPdbIssues: boolean;
+  issues: PdbPolicyIssue[];
+}

@@ -14,8 +14,11 @@ export const environmentShortNames = {
   tools: 'tools',
 } as const;
 
-export type EnvironmentShortName = keyof typeof environmentShortNames;
-export const environmentLongKeys = Object.keys(environmentShortNames) as Array<EnvironmentShortName>;
+export type EnvironmentLongName = keyof typeof environmentShortNames;
+
+export type EnvironmentShortName = (typeof environmentShortNames)[EnvironmentLongName];
+
+export const environmentLongKeys = Object.keys(environmentShortNames) as EnvironmentLongName[];
 
 export const productSorts = [
   {
