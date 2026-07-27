@@ -136,9 +136,6 @@ export default function Quotas({
               originalVal?.memory !== newVal?.memory ||
               originalVal?.storage !== newVal?.storage);
 
-          const pdbPolicyQuery = pdbPolicyReports[index];
-          const pdbPolicyStatus = pdbPolicyQuery.data;
-
           let subnetInfo: ReactNode = null;
           if (cluster === Cluster.EMERALD) {
             if (subnetInformation[index].isLoading) {
@@ -182,46 +179,6 @@ export default function Quotas({
               {clusterLink}
               {subnetInfo}
 
-              {/* {pdbPolicyQuery.isLoading && (
-                <div className="mt-3">
-                  <Loader size="sm" type="dots" />
-                </div>
-              )}
-
-              {pdbPolicyStatus?.hasPdbIssues && (
-                <Alert
-                  variant="outline"
-                  color="red"
-                  title="PodDisruptionBudget configuration issue"
-                  icon={<IconExclamationCircle />}
-                  className="mt-3"
-                >
-                  <p>This namespace does not meet the platform PodDisruptionBudget requirements.</p>
-
-                  {pdbPolicyStatus.issues.map((issue) => (
-                    <div key={`${issue.reportName}-${issue.rule}`} className="mt-2">
-                      {issue.resourceName && (
-                        <p>
-                          <strong>Resource:</strong> {issue.resourceName}
-                        </p>
-                      )}
-
-                      {issue.message && <p>{issue.message}</p>}
-                    </div>
-                  ))}
-                </Alert>
-              )}
-              {pdbPolicyQuery.isError && (
-                <Alert
-                  variant="outline"
-                  color="yellow"
-                  title="Unable to check PodDisruptionBudget status"
-                  icon={<IconExclamationCircle />}
-                  className="mt-3"
-                >
-                  Registry could not retrieve the PolicyReport for this namespace.
-                </Alert>
-              )} */}
               {resourceKeys.map((resourceKey) => {
                 const oldval = String(originalVal?.[resourceKey]);
                 const newval = String(newVal[resourceKey]);

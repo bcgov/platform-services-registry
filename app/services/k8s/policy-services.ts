@@ -34,7 +34,7 @@ export async function getPdbPolicyStatus(
   environment: keyof ResourceRequestsEnv,
   cluster: Cluster,
 ): Promise<PdbPolicyStatus> {
-  const namespace = `${isLocal ? 'e2d84f' : licencePlate}-${environmentShortNames[environment]}`;
+  const namespace = `${isLocal ? '101ed4' : licencePlate}-${environmentShortNames[environment]}`;
   const resolvedCluster = isLocal ? Cluster.SILVER : cluster;
 
   const { customClient } = getK8sClients(resolvedCluster);
