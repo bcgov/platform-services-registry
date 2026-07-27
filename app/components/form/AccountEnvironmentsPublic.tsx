@@ -3,8 +3,9 @@ import { IconExternalLink, IconInfoCircle } from '@tabler/icons-react';
 import { useFormContext } from 'react-hook-form';
 import ExternalLink from '@/components/generic/button/ExternalLink';
 import FormCheckbox from '@/components/generic/checkbox/FormCheckbox';
+import AwsLzaAccessLinks from '@/components/public-cloud/AwsLzaAccessLinks';
 import { getAwsLzaConsoleUrl, publicCloudEnvironments, PublicCloudEnvironmentKey } from '@/constants/public-cloud';
-import { Provider } from '@/prisma/client';
+import { ProjectStatus, Provider } from '@/prisma/client';
 import { useAppState } from '@/states/global';
 interface EnvironmentsEnabled {
   production: boolean;
@@ -30,11 +31,16 @@ export default function AccountEnvironmentsPublic({
   disabled,
   selected,
   awsAccounts,
+  product,
 }: {
   mode: string;
   disabled?: boolean;
   selected?: EnvironmentsEnabled;
   awsAccounts?: AwsAccount[];
+  product?: {
+    provider: Provider;
+    status: ProjectStatus;
+  };
 }) {
   const [, appSnapshot] = useAppState();
   const {
@@ -164,6 +170,7 @@ export default function AccountEnvironmentsPublic({
             </div>
           );
         })}
+        {product && <AwsLzaAccessLinks product={product} />}
         <p className="mt-2 text-sm leading-6 text-gray-600">Select how many accounts you want for your project set.</p>
         <Alert variant="light" color="blue" title="Important note" icon={<IconInfoCircle />}>
           It is not possible to remove accounts once created in your project set. You are free to add account later,
