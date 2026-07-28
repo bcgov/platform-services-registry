@@ -53,43 +53,86 @@ jobs:
       run: terraform init -upgrade
       working-directory: ./terraform/keycloak
 
-    - name: Check prod Keycloak server info
+    - name: Compare Keycloak server info
       env:
+        DEV_CLIENT_SECRET: ${{ secrets.DEV_CLIENT_SECRET }}
+        TEST_CLIENT_SECRET: ${{ secrets.TEST_CLIENT_SECRET }}
         PROD_CLIENT_SECRET: ${{ secrets.PROD_CLIENT_SECRET }}
       run: |
-        TOKEN=$(curl -sS \
-          -X POST \
-          "https://loginproxy.gov.bc.ca/auth/realms/platform-services/protocol/openid-connect/token" \
-          -H "Content-Type: application/x-www-form-urlencoded" \
-          --data-urlencode "grant_type=client_credentials" \
-          --data-urlencode "client_id=realm-admin-cli" \
-          --data-urlencode "client_secret=${PROD_CLIENT_SECRET}" |
-          jq -r '.access_token')
+        check_env() {
+          NAME="$1"
+          URL="$2"
+          SECRET="$3"
 
-        HTTP_CODE=$(curl -sS \
-          -o /tmp/prod-serverinfo.json \
-          -w "%{http_code}" \
-          "https://loginproxy.gov.bc.ca/auth/admin/serverinfo" \
-          -H "Authorization: Bearer ${TOKEN}" \
-          -H "Accept: application/json")
+          echo "=============================="
+          echo "${NAME}"
+          echo "=============================="
 
-        echo "Prod /admin/serverinfo returned HTTP ${HTTP_CODE}"
+          TOKEN=$(curl -sS \
+            -X POST \
+            "${URL}/auth/realms/platform-services/protocol/openid-connect/token" \
+            -H "Content-Type: application/x-www-form-urlencoded" \
+            --data-urlencode "grant_type=client_credentials" \
+            --data-urlencode "client_id=realm-admin-cli" \
+            --data-urlencode "client_secret=${SECRET}" |
+            jq -r '.access_token')
 
-        echo "=== Version-related fields ==="
-        jq '{
-          systemInfo,
-          serverVersion,
-          profileInfo
-        }' /tmp/prod-serverinfo.json
+          if [ "$TOKEN" = "null" ] || [ -z "$TOKEN" ]; then
+            echo "Failed to obtain token for ${NAME}"
+            return 1
+          fi
 
-        echo
-        echo "=== Top-level keys ==="
-        jq 'keys' /tmp/prod-serverinfo.json
+          HTTP_CODE=$(curl -sS \
+            -o "/tmp/${NAME}-serverinfo.json" \
+            -w "%{http_code}" \
+            "${URL}/auth/admin/serverinfo" \
+            -H "Authorization: Bearer ${TOKEN}" \
+            -H "Accept: application/json")
+
+          echo "Server-info endpoint HTTP ${HTTP_CODE}"
+
+          if [ "$HTTP_CODE" != "200" ]; then
+            cat "/tmp/${NAME}-serverinfo.json"
+            return 1
+          fi
+
+          echo "--- Version fields ---"
+          jq '{
+            systemInfo,
+            serverVersion,
+            profileInfo
+          }' "/tmp/${NAME}-serverinfo.json"
+
+          echo "--- Top-level keys ---"
+          jq 'keys' "/tmp/${NAME}-serverinfo.json"
+
+          echo "--- Realm endpoint ---"
+          REALM_HTTP=$(curl -sS \
+            -o "/tmp/${NAME}-realm.json" \
+            -w "%{http_code}" \
+            -H "Authorization: Bearer ${TOKEN}" \
+            "${URL}/auth/admin/realms/platform-services")
+
+          echo "Realm endpoint HTTP ${REALM_HTTP}"
+
+          if [ "$REALM_HTTP" != "200" ]; then
+            cat "/tmp/${NAME}-realm.json"
+            return 1
+          fi
+
+          jq '{realm, displayName}' "/tmp/${NAME}-realm.json"
+        }
+
+        check_env dev  https://dev.loginproxy.gov.bc.ca  "$DEV_CLIENT_SECRET"
+        check_env test https://test.loginproxy.gov.bc.ca "$TEST_CLIENT_SECRET"
+        check_env prod https://loginproxy.gov.bc.ca      "$PROD_CLIENT_SECRET"
+
+
     - name: Terraform Plan
       id: plan
       if: github.event_name == 'pull_request'
       run: |
-        PLAN_OUTPUT=$(terraform plan -no-color -target=module.keycloak_prod)
+        PLAN_OUTPUT=$(terraform plan -no-color)
         echo "${PLAN_OUTPUT}"
         echo "PLAN<<EOF" >> $GITHUB_ENV
         echo "${PLAN_OUTPUT}" >> $GITHUB_ENV
