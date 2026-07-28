@@ -1,4 +1,4 @@
-import { Heading, Link, Text, Hr } from '@react-email/components';
+import { Heading, Link, Text, Hr, Section } from '@react-email/components';
 import { formatFullName } from '@/helpers/user';
 import { PrivateCloudProductDetail } from '@/types/private-cloud';
 import { PublicCloudProductDetail } from '@/types/public-cloud';
@@ -43,7 +43,16 @@ export default function ProductDetails({ product }: Props) {
         <Text className="mb-2 font-semibold h-4">Licence plate: </Text>
         <Text className="mt-0 mb-2 h-4">{licencePlate}</Text>
         <div className="my-4">
-          <Text className="mb-2 h-4 font-semibold">Repositories:</Text>
+          <Text
+            style={{
+              margin: '0 0 8px',
+              fontSize: '14px',
+              lineHeight: '24px',
+              fontWeight: 600,
+            }}
+          >
+            Repositories:
+          </Text>
 
           {repositories?.length ? (
             <div>
@@ -54,17 +63,41 @@ export default function ProductDetails({ product }: Props) {
               ))}
             </div>
           ) : (
-            <div className="rounded-md border border-solid border-amber-500 bg-amber-50 px-4 py-3">
-              <Text className="m-0 font-semibold text-amber-900">
+            <Section
+              style={{
+                boxSizing: 'border-box',
+                width: '100%',
+                padding: '12px 16px',
+                border: '1px solid #f59e0b',
+                borderRadius: '6px',
+                backgroundColor: '#fffbeb',
+              }}
+            >
+              <Text
+                style={{
+                  margin: '0',
+                  color: '#78350f',
+                  fontSize: '14px',
+                  lineHeight: '24px',
+                  fontWeight: 600,
+                }}
+              >
                 Action required: Repository information is missing
               </Text>
 
-              <Text className="mb-0 mt-2 text-amber-900">
+              <Text
+                style={{
+                  margin: '8px 0 0',
+                  color: '#78350f',
+                  fontSize: '14px',
+                  lineHeight: '24px',
+                }}
+              >
                 No repository URLs are currently associated with this product. Please update the product in the Product
                 Registry and add all applicable source-code, infrastructure, and GitOps repository URLs as soon as
                 possible.
               </Text>
-            </div>
+            </Section>
           )}
         </div>
         <Text className="mb-2 font-semibold h-4">Ministry: </Text>
