@@ -51,7 +51,7 @@ export default function Repositories({
               name={`repositories.${index}.url`}
               placeholder="https://git-host.example/bcgov/repository"
               disabled={disabled}
-              error="Enter a valid BC Government repository URL"
+              error="Enter a valid B.C. government repository URL"
             />
 
             {!disabled && (
