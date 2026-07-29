@@ -15,7 +15,10 @@ export default function Footer() {
     { name: 'Privacy', href: 'https://www2.gov.bc.ca/gov/content/home/privacy' },
     { name: 'Accessibility', href: 'https://www2.gov.bc.ca/gov/content/home/accessible-government' },
     { name: 'Copyright', href: 'https://www2.gov.bc.ca/gov/content/home/copyright' },
-    { name: 'Contact Us', href: 'https://chat.developer.gov.bc.ca/channel/devops-registry' },
+    {
+      name: 'Contact Us',
+      href: 'https://teams.microsoft.com/l/channel/19:349d9e0879564744bd6767fe3f6e8832%40thread.tacv2/PlatformProductRegistry-howto?groupId=a80418da-c27b-406e-89ab-7695b61924d8&tenantId=6fdb5200-3d0d-4a8a-b036-d3685e359adc',
+    },
     {
       name: 'Report a bug/Request a feature',
       href: 'https://citz-do.atlassian.net/servicedesk/customer/portal/2/group/9/create/693',
