@@ -1,0 +1,11 @@
+{
+  "version": 1,
+  "skills": {
+    "wireframe": {
+      "source": "teezeit/wiremd",
+      "sourceType": "github",
+      "skillPath": "extensions/skills/wireframe/SKILL.md",
+      "computedHash": "1c5ade2e70f2b613ecd14dd49e46212a385ebebdb0339f60e67040a26feea7d7"
+    }
+  }
+}

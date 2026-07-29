@@ -22,6 +22,7 @@
     "admin-tool:analyze-division-import-sources": "APP_ENV=script ts-node -r dotenv/config -r tsconfig-paths/register app/admin-tools/analyze-division-import-sources.ts dotenv_config_path=.env.local",
     "admin-tool:import-division-sources": "APP_ENV=script ts-node -r dotenv/config -r tsconfig-paths/register app/admin-tools/import-division-sources.ts dotenv_config_path=.env.local",
     "admin-tool:check-consolidation-metadata": "APP_ENV=script ts-node -r dotenv/config -r tsconfig-paths/register app/admin-tools/check-consolidation-metadata.ts dotenv_config_path=.env.local",
+    "admin-tool:find-cloud-products-with-security-data": "APP_ENV=script ts-node -r dotenv/config -r tsconfig-paths/register app/admin-tools/find-cloud-products-with-security-data.ts dotenv_config_path=.env.local",
     "admin-tool:suggest-organization-mappings-for-imported-systems": "APP_ENV=script ts-node -r dotenv/config -r tsconfig-paths/register app/admin-tools/suggest-organization-mappings-for-imported-systems.ts dotenv_config_path=.env.local",
     "admin-tool:apply-organization-mappings-to-imported-systems": "APP_ENV=script ts-node -r dotenv/config -r tsconfig-paths/register app/admin-tools/apply-organization-mappings-to-imported-systems.ts dotenv_config_path=.env.local",
     "admin-tool:find-system-merge-candidates": "APP_ENV=script ts-node -r dotenv/config -r tsconfig-paths/register app/admin-tools/find-system-merge-candidates.ts dotenv_config_path=.env.local",

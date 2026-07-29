@@ -28,7 +28,7 @@ repos:
   hooks:
   - id: detect-secrets
     args: [--baseline, .secrets.baseline]
-    exclude: ^(sandbox/mock-users\.json|sandbox/m365proxy/mocks\.json|pnpm-lock\.yaml|.*/pnpm-lock\.yaml)$
+    exclude: ^(sandbox/mock-users\.json|sandbox/m365proxy/mocks\.json|pnpm-lock\.yaml|.*/pnpm-lock\.yaml|skills-lock\.json)$
 - repo: local
   hooks:
   - id: eslint

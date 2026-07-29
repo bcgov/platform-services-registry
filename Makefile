@@ -12,7 +12,7 @@ localmac:
 
 .PHONY: dev
 dev:
-	pnpm --dir app run prisma-push
+# 	pnpm --dir app run prisma-push
 	pnpm --dir app run dev
 
 .PHONY: install

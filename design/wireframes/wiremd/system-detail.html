@@ -1,0 +1,1310 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>wiremd Mockup</title>
+    <style>
+      a.wmd-button {
+        text-decoration: none;
+        color: inherit;
+      }
+
+      .wmd-tab-headers {
+        display: flex;
+        gap: 0;
+        border-bottom: 2px solid #e0e0e0;
+        margin-bottom: 12px;
+      }
+      .wmd-tab-header {
+        display: inline-block;
+        padding: 8px 16px;
+        border: none;
+        border-bottom: 2px solid transparent;
+        margin-bottom: -2px;
+        font-size: 14px;
+        font-weight: 500;
+        color: #888;
+        background: transparent;
+        cursor: pointer;
+        font-family: inherit;
+        transition: color 0.15s;
+      }
+      .wmd-tab-header:hover {
+        color: #333;
+      }
+      .wmd-tab-header.wmd-active {
+        border-bottom-color: currentColor;
+        color: #333;
+        font-weight: 600;
+      }
+      .wmd-tab-panel[hidden] {
+        display: none;
+      }
+      .wmd-tab-panels {
+        padding: 12px 0;
+      }
+
+      .wmd-row {
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+        flex-wrap: wrap;
+      }
+      .wmd-row > .wmd-grid-item {
+        flex: 0 1 auto;
+        min-width: 0;
+      }
+      .wmd-row.wmd-right {
+        justify-content: flex-end;
+      }
+      .wmd-row.wmd-center {
+        justify-content: center;
+      }
+      .wmd-align-left {
+        margin-right: auto;
+      }
+      .wmd-align-right {
+        margin-left: auto;
+      }
+      .wmd-align-center {
+        margin: auto;
+      }
+      .wmd-align-top {
+        align-self: start;
+      }
+      .wmd-align-bottom {
+        align-self: end;
+      }
+      .wmd-row.wmd-align-top {
+        align-items: flex-start;
+      }
+      .wmd-row.wmd-align-bottom {
+        align-items: flex-end;
+      }
+      .wmd-container-hero .wmd-row {
+        justify-content: center;
+      }
+      .wmd-container-sidebar .wmd-row,
+      .wmd-layout-sidebar .wmd-row {
+        display: block;
+      }
+      .wmd-container-sidebar .wmd-row > .wmd-grid-item,
+      .wmd-layout-sidebar .wmd-row > .wmd-grid-item {
+        display: block;
+        width: 100%;
+      }
+      .wmd-row > .wmd-grid-item > .wmd-input,
+      .wmd-row > .wmd-grid-item > .wmd-select {
+        display: inline-block;
+        width: auto;
+      }
+      .wmd-button.wmd-small {
+        padding: 4px 10px;
+        font-size: 0.875em;
+      }
+      .wmd-button.wmd-large {
+        padding: 12px 24px;
+        font-size: 1.125em;
+      }
+
+      .wmd-demo {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        border: 1px solid #d0d0d0;
+        border-radius: 6px;
+        overflow: hidden;
+        margin: 1rem 0;
+      }
+      .wmd-demo-preview {
+        padding: 1.5rem;
+        border-right: 1px solid #d0d0d0;
+      }
+      .wmd-demo-code {
+        background: #f6f8fa;
+        overflow: auto;
+        display: flex;
+        flex-direction: column;
+      }
+      .wmd-demo-code-toolbar {
+        display: flex;
+        justify-content: flex-end;
+        padding: 0.5rem 0.75rem 0;
+      }
+      .wmd-demo-copy {
+        background: none;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+        padding: 2px 8px;
+        font-size: 0.75em;
+        color: #666;
+        cursor: pointer;
+        font-family: inherit;
+      }
+      .wmd-demo-copy:hover {
+        background: #e8e8e8;
+        color: #333;
+      }
+      .wmd-demo-code pre {
+        margin: 0;
+        padding: 0.75rem 1.5rem 1.25rem;
+        font-size: 0.8em;
+        font-family: 'Courier New', Courier, monospace;
+        line-height: 1.6;
+        white-space: pre;
+      }
+      .wmd-demo-code code {
+        display: block;
+        color: #444;
+      }
+
+      .wmd-comment {
+        display: block;
+        background: #fffde7;
+        border: 1px solid #f9a825;
+        border-left: 4px solid #f9a825;
+        border-radius: 3px;
+        padding: 6px 10px;
+        font-size: 0.82em;
+        color: #5d4037;
+        font-style: italic;
+        margin-bottom: 6px;
+        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+        line-height: 1.4;
+        white-space: pre-wrap;
+      }
+      .wmd-comment::before {
+        content: '💬 ';
+        font-style: normal;
+      }
+
+      .wmd-annotated {
+        position: relative;
+        outline: 2px solid #f9a825;
+        outline-offset: 3px;
+        border-radius: 3px;
+      }
+      .wmd-tab-header-annotated {
+        position: relative;
+      }
+      .wmd-tab-header-annotated::after {
+        content: '';
+        position: absolute;
+        top: 4px;
+        right: 4px;
+        width: 7px;
+        height: 7px;
+        background: #f9a825;
+        border-radius: 50%;
+        pointer-events: none;
+      }
+      .wmd-comment-badge {
+        position: absolute;
+        top: -10px;
+        right: -10px;
+        width: 20px;
+        height: 20px;
+        background: #f9a825;
+        color: #fff;
+        border-radius: 50%;
+        font-size: 11px;
+        font-weight: 700;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        z-index: 10;
+        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+        line-height: 1;
+        box-shadow: 0 1px 4px rgba(0, 0, 0, 0.25);
+        cursor: default;
+      }
+      /* body.wmd-root is (0,1,1); use two classes + element (0,2,1) to win regardless of order */
+      body.wmd-root.wmd-has-comments {
+        padding-right: 276px;
+      }
+      .wmd-comments-panel {
+        position: fixed;
+        top: 0;
+        right: 0;
+        width: 260px;
+        height: 100vh;
+        overflow-y: auto;
+        background: #fff;
+        border-left: 1px solid #e0e0e0;
+        box-shadow: -2px 0 12px rgba(0, 0, 0, 0.08);
+        padding: 16px 14px;
+        z-index: 200;
+        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+        box-sizing: border-box;
+      }
+      .wmd-comments-panel-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 14px;
+        font-weight: 600;
+        font-size: 0.82em;
+        color: #333;
+        border-bottom: 1px solid #f0f0f0;
+        padding-bottom: 10px;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+      }
+      .wmd-comments-panel-count {
+        background: #f9a825;
+        color: #fff;
+        border-radius: 10px;
+        padding: 1px 7px;
+        font-size: 11px;
+        font-weight: 700;
+        letter-spacing: 0;
+        text-transform: none;
+      }
+      .wmd-comment-card {
+        display: flex;
+        gap: 10px;
+        margin-bottom: 10px;
+        padding: 10px;
+        background: #fffde7;
+        border: 1px solid #f9a825;
+        border-radius: 6px;
+      }
+      .wmd-comment-card-badge {
+        flex-shrink: 0;
+        width: 20px;
+        height: 20px;
+        background: #f9a825;
+        color: #fff;
+        border-radius: 50%;
+        font-size: 11px;
+        font-weight: 700;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+        line-height: 1;
+        margin-top: 2px;
+      }
+      .wmd-comment-card-body {
+        display: flex;
+        flex-direction: column;
+        min-width: 0;
+      }
+      .wmd-comment-msg {
+        font-size: 0.82em;
+        color: #5d4037;
+        line-height: 1.45;
+        font-style: italic;
+      }
+      .wmd-comment-msg-divider {
+        height: 1px;
+        background: #f0c040;
+        margin: 6px 0;
+        opacity: 0.6;
+      }
+
+      .wmd-accordion {
+        display: flex;
+        flex-direction: column;
+        margin: 1rem 0;
+      }
+      .wmd-accordion-item {
+        margin-bottom: 4px;
+      }
+      .wmd-accordion-summary {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        padding: 12px 16px;
+        cursor: pointer;
+        font-weight: 500;
+        font-size: 14px;
+        user-select: none;
+        list-style: none;
+      }
+      .wmd-accordion-summary::-webkit-details-marker {
+        display: none;
+      }
+      .wmd-accordion-summary::before {
+        content: '▶';
+        font-size: 11px;
+        color: #888;
+        transition: transform 0.15s;
+        flex-shrink: 0;
+      }
+      .wmd-accordion-item[open] > .wmd-accordion-summary::before {
+        transform: rotate(90deg);
+      }
+      .wmd-accordion-body {
+        padding: 0 16px 12px;
+      }
+      .wmd-accordion.wmd-card {
+        border: 1px solid #e0e0e0;
+        border-radius: 6px;
+        overflow: hidden;
+        box-shadow: 0 1px 4px rgba(0, 0, 0, 0.06);
+      }
+      .wmd-accordion.wmd-card .wmd-accordion-item {
+        border-bottom: 1px solid #e0e0e0;
+        border-radius: 0;
+        margin-bottom: 0;
+      }
+      .wmd-accordion.wmd-card .wmd-accordion-item:last-child {
+        border-bottom: none;
+      }
+      .wmd-accordion.wmd-card .wmd-accordion-body {
+        border-top: 1px solid #e0e0e0;
+      }
+
+      /* wiremd Sketch Style - Balsamiq-inspired hand-drawn mockups */
+      @import url('https://fonts.googleapis.com/css2?family=Kalam:wght@400;700&display=swap');
+
+      * {
+        box-sizing: border-box;
+      }
+
+      body.wmd-root {
+        font-family: 'Kalam', 'Comic Sans MS', 'Marker Felt', 'Chalkboard', cursive, sans-serif;
+        background-color: #fafafa;
+        background-image: radial-gradient(circle, #c8c8c8 1px, transparent 1px);
+        background-size: 20px 20px;
+        color: #333;
+        padding: 20px;
+        margin: 0;
+        line-height: 1.6;
+      }
+
+      /* Headings */
+      .wmd-h1,
+      .wmd-h2,
+      .wmd-h3,
+      .wmd-h4,
+      .wmd-h5,
+      .wmd-h6 {
+        font-weight: bold;
+        margin: 1em 0 0.5em;
+        line-height: 1.3;
+      }
+
+      .wmd-h1 {
+        font-size: 2em;
+        text-decoration: underline;
+      }
+      .wmd-h2 {
+        font-size: 1.75em;
+      }
+      .wmd-h3 {
+        font-size: 1.5em;
+      }
+      .wmd-h4 {
+        font-size: 1.25em;
+      }
+      .wmd-h5 {
+        font-size: 1.1em;
+      }
+      .wmd-h6 {
+        font-size: 1em;
+      }
+
+      /* Paragraph */
+      .wmd-paragraph {
+        margin: 0.5em 0;
+      }
+
+      /* Buttons */
+      .wmd-button {
+        display: inline-block;
+        padding: 8px 16px;
+        margin: 4px;
+        background: #fff;
+        border: 2px solid #000;
+        border-radius: 8px;
+        font-family: inherit;
+        font-size: 14px;
+        font-weight: bold;
+        cursor: pointer;
+        box-shadow: 2px 2px 0 rgba(0, 0, 0, 0.2);
+        transform: rotate(-0.5deg);
+        transition: all 0.1s;
+      }
+
+      .wmd-button:hover {
+        transform: rotate(-0.5deg) translateY(-2px);
+        box-shadow: 3px 3px 0 rgba(0, 0, 0, 0.2);
+      }
+
+      .wmd-button-primary,
+      .wmd-button.wmd-primary {
+        background: #87ceeb;
+        border-color: #4682b4;
+      }
+
+      .wmd-button-secondary,
+      .wmd-button.wmd-secondary {
+        background: #ddd;
+        border-color: #999;
+      }
+
+      .wmd-button-danger,
+      .wmd-button.wmd-danger {
+        background: #ffb6c1;
+        border-color: #dc143c;
+      }
+
+      .wmd-button[disabled],
+      .wmd-button.wmd-state-disabled {
+        opacity: 0.5;
+        cursor: not-allowed;
+      }
+
+      .wmd-button.wmd-loading::after {
+        content: '...';
+        animation: loading 1s infinite;
+      }
+
+      /* Pills / Badges */
+      .wmd-badge {
+        display: inline-block;
+        padding: 2px 10px;
+        margin: 0 2px;
+        border: 2px solid #000;
+        border-radius: 12px;
+        font-family: inherit;
+        font-size: 12px;
+        font-weight: bold;
+        background: #f0f0f0;
+        transform: rotate(-0.3deg);
+      }
+      .wmd-badge-primary {
+        background: #87ceeb;
+        border-color: #4682b4;
+      }
+      .wmd-badge-success {
+        background: #90ee90;
+        border-color: #228b22;
+      }
+      .wmd-badge-warning {
+        background: #ffe4b5;
+        border-color: #daa520;
+      }
+      .wmd-badge-error {
+        background: #ffb6c1;
+        border-color: #dc143c;
+      }
+
+      /* Inputs */
+      .wmd-input,
+      .wmd-textarea,
+      .wmd-select {
+        display: block;
+        width: 100%;
+        max-width: 400px;
+        padding: 8px 12px;
+        margin: 4px 0;
+        font-family: inherit;
+        font-size: 14px;
+        background: #fff;
+        border: 2px solid #666;
+        border-radius: 4px;
+        transform: rotate(0.3deg);
+      }
+
+      .wmd-input:focus,
+      .wmd-textarea:focus,
+      .wmd-select:focus {
+        outline: 2px solid #4682b4;
+        outline-offset: 2px;
+      }
+
+      .wmd-input[disabled],
+      .wmd-input.wmd-state-disabled,
+      .wmd-textarea[disabled],
+      .wmd-textarea.wmd-state-disabled,
+      .wmd-select[disabled],
+      .wmd-select.wmd-state-disabled {
+        opacity: 0.5;
+        cursor: not-allowed;
+        background: #f5f5f5;
+      }
+
+      .wmd-textarea {
+        resize: vertical;
+        min-height: 80px;
+      }
+
+      /* Checkboxes and Radios */
+      .wmd-checkbox,
+      .wmd-radio {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        margin: 6px 0;
+        cursor: pointer;
+        user-select: none;
+      }
+
+      .wmd-checkbox input[type='checkbox'],
+      .wmd-radio input[type='radio'] {
+        width: 20px;
+        height: 20px;
+        cursor: pointer;
+      }
+
+      .wmd-switch {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 10px;
+        margin: 6px 0;
+        cursor: pointer;
+        user-select: none;
+      }
+
+      .wmd-switch input[type='checkbox'] {
+        position: absolute;
+        opacity: 0;
+        pointer-events: none;
+      }
+
+      .wmd-switch-track {
+        position: relative;
+        display: inline-flex;
+        width: 40px;
+        height: 21px;
+        flex: 0 0 40px;
+        align-items: center;
+        border: 2px solid #333;
+        border-radius: 11px 9px 12px 10px;
+        background: #fff;
+      }
+
+      .wmd-switch-thumb {
+        position: absolute;
+        left: 2px;
+        width: 15px;
+        height: 15px;
+        border: 2px solid #333;
+        border-radius: 50%;
+        background: #fff;
+      }
+
+      .wmd-switch input[type='checkbox']:checked + .wmd-switch-track .wmd-switch-thumb {
+        left: 19px;
+        background: #333;
+      }
+
+      .wmd-switch input[type='checkbox']:disabled + .wmd-switch-track,
+      .wmd-switch:has(input[type='checkbox']:disabled) {
+        opacity: 0.55;
+        cursor: not-allowed;
+      }
+
+      /* Icons */
+      .wmd-icon {
+        display: inline-block;
+        font-size: 1.2em;
+        line-height: 1;
+        vertical-align: middle;
+        margin: 0 0.2em;
+      }
+
+      /* Containers */
+      .wmd-container-hero,
+      .wmd-container-card,
+      .wmd-container-modal {
+        background: #fff;
+        border: 3px solid #000;
+        border-radius: 12px;
+        padding: 24px;
+        margin: 16px 0;
+        box-shadow: 4px 4px 0 rgba(0, 0, 0, 0.15);
+        transform: rotate(-0.3deg);
+      }
+
+      .wmd-container-hero {
+        background: linear-gradient(135deg, #fff9e6 0%, #ffe6cc 100%);
+        text-align: center;
+        padding: 48px 24px;
+      }
+
+      .wmd-container-modal {
+        position: relative;
+        max-width: 500px;
+        margin: 32px auto;
+        border-width: 4px;
+      }
+
+      /* Radio Groups */
+      .wmd-radio-group {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+        margin: 8px 0;
+      }
+
+      .wmd-radio-group-inline {
+        flex-direction: row;
+        flex-wrap: wrap;
+        gap: 12px;
+      }
+
+      .wmd-radio-group-inline .wmd-radio {
+        margin: 0;
+      }
+
+      /* Icons */
+      .wmd-icon {
+        display: inline-block;
+        font-size: 1.2em;
+        line-height: 1;
+        vertical-align: middle;
+        margin: 0 0.2em;
+      }
+
+      /* Navigation */
+      .wmd-nav {
+        background: #87ceeb;
+        border: 3px solid #4682b4;
+        border-radius: 8px;
+        padding: 12px 16px;
+        margin: 16px 0;
+        box-shadow: 3px 3px 0 rgba(0, 0, 0, 0.15);
+      }
+
+      .wmd-nav-content {
+        display: flex;
+        align-items: center;
+        gap: 16px;
+        flex-wrap: wrap;
+      }
+
+      .wmd-brand {
+        font-weight: bold;
+        font-size: 1.2em;
+        margin-right: auto;
+      }
+
+      .wmd-nav-item {
+        display: inline-block;
+        color: #000;
+        text-decoration: none;
+        font-weight: bold;
+        padding: 6px 14px;
+        background: #fff;
+        border: 2px solid #000;
+        border-radius: 6px;
+        box-shadow: 2px 2px 0 rgba(0, 0, 0, 0.15);
+        transform: rotate(0.3deg);
+        transition: all 0.1s;
+      }
+
+      .wmd-nav-item:hover {
+        transform: rotate(0.3deg) translateY(-1px);
+        box-shadow: 2px 3px 0 rgba(0, 0, 0, 0.15);
+        background: #f8f8f8;
+      }
+
+      .wmd-nav-item.wmd-active {
+        background: #000;
+        color: #fff;
+        border-color: #000;
+        transform: rotate(0.3deg);
+      }
+
+      .wmd-nav .wmd-button {
+        margin: 0;
+      }
+
+      .wmd-breadcrumbs {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        flex-wrap: wrap;
+        margin: 8px 0;
+        font-size: 0.9em;
+      }
+
+      .wmd-breadcrumb-item a {
+        color: #4682b4;
+        text-decoration: underline;
+        text-underline-offset: 2px;
+      }
+
+      .wmd-breadcrumb-current {
+        font-weight: bold;
+        color: #222;
+      }
+
+      .wmd-breadcrumb-sep {
+        color: #888;
+        font-size: 1.1em;
+      }
+
+      /* Sidebar */
+      .wmd-container-sidebar {
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+        width: 180px;
+        padding: 12px;
+        background: #f0f8ff;
+        border: 2px solid #4682b4;
+        border-radius: 8px;
+        box-shadow: 3px 3px 0 rgba(0, 0, 0, 0.15);
+      }
+      .wmd-container-sidebar .wmd-button {
+        display: block;
+        width: 100%;
+        text-align: left;
+        margin: 0;
+      }
+      .wmd-container-sidebar .wmd-h4 {
+        margin: 12px 0 4px;
+        font-size: 0.85em;
+        opacity: 0.6;
+        text-transform: uppercase;
+      }
+      .wmd-container-sidebar .wmd-separator {
+        margin: 8px 0;
+      }
+
+      /* Layout: sidebar-main */
+      .wmd-container-layout.wmd-sidebar-main {
+        display: grid;
+        grid-template-columns: 220px 1fr;
+        gap: 16px;
+        align-items: start;
+      }
+      .wmd-layout-sidebar {
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+      }
+      .wmd-layout-sidebar .wmd-container-sidebar {
+        width: 100%;
+      }
+      .wmd-layout-sidebar .wmd-button {
+        display: block;
+        width: 100%;
+        text-align: left;
+        margin: 2px 0;
+      }
+      .wmd-layout-sidebar .wmd-h4 {
+        margin: 12px 0 4px;
+        font-size: 0.85em;
+        opacity: 0.6;
+        text-transform: uppercase;
+      }
+      .wmd-layout-sidebar .wmd-separator {
+        margin: 8px 0;
+      }
+      .wmd-layout-main {
+        min-width: 0;
+      }
+      .wmd-layout-main > :first-child {
+        margin-top: 0;
+      }
+
+      /* Grid */
+      .wmd-grid {
+        display: grid;
+        grid-template-columns: repeat(var(--grid-columns, 3), 1fr);
+        gap: 24px;
+        margin: 24px 0;
+        align-items: center;
+      }
+
+      .wmd-grid-2 {
+        grid-template-columns: repeat(2, 1fr);
+      }
+      .wmd-grid-3 {
+        grid-template-columns: repeat(3, 1fr);
+      }
+      .wmd-grid-4 {
+        grid-template-columns: repeat(4, 1fr);
+      }
+
+      .wmd-grid-item {
+        min-width: 0;
+      }
+
+      .wmd-col-span-1 {
+        grid-column: span 1;
+      }
+      .wmd-col-span-2 {
+        grid-column: span 2;
+      }
+      .wmd-col-span-3 {
+        grid-column: span 3;
+      }
+      .wmd-col-span-4 {
+        grid-column: span 4;
+      }
+
+      .wmd-grid-item-card {
+        background: #fff;
+        border: 2px solid #666;
+        border-radius: 8px;
+        padding: 16px;
+        box-shadow: 2px 2px 0 rgba(0, 0, 0, 0.1);
+        transform: rotate(0.5deg);
+      }
+      .wmd-grid-item-card:nth-child(even) {
+        transform: rotate(-0.5deg);
+      }
+
+      /* Lists */
+      .wmd-list {
+        margin: 12px 0;
+        padding-left: 24px;
+      }
+
+      .wmd-list-item {
+        margin: 4px 0;
+      }
+
+      /* Blockquote */
+      .wmd-blockquote {
+        border-left: 4px solid #666;
+        padding-left: 16px;
+        margin: 16px 0;
+        font-style: italic;
+        color: #555;
+      }
+
+      /* Code */
+      .wmd-code-inline {
+        background: #fff3cd;
+        border: 1px solid #ffc107;
+        border-radius: 3px;
+        padding: 2px 6px;
+        font-family: 'Courier New', monospace;
+        font-size: 0.9em;
+      }
+
+      .wmd-code-block {
+        background: #fff3cd;
+        border: 2px solid #ffc107;
+        border-radius: 6px;
+        padding: 12px;
+        margin: 12px 0;
+        overflow-x: auto;
+      }
+
+      .wmd-code-block code {
+        font-family: 'Courier New', monospace;
+        font-size: 0.9em;
+      }
+
+      /* Separator */
+      .wmd-separator {
+        border: none;
+        height: 14px;
+        margin: 24px 0;
+        background-image: url("data:image/svg+xml,%3Csvg width='180' height='14' viewBox='0 0 180 14' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M2 7 C18 5 33 8 49 6 C65 4 79 9 96 7 C113 5 128 8 145 6 C159 5 169 7 178 6' fill='none' stroke='%23666' stroke-width='2.6' stroke-linecap='round' stroke-linejoin='round'/%3E%3Cpath d='M3 8 C20 7 34 6 50 8 C66 9 80 5 97 6 C114 8 130 6 146 7 C160 8 171 6 177 7' fill='none' stroke='%23666' stroke-width='1.4' stroke-linecap='round' stroke-linejoin='round' opacity='0.55'/%3E%3C/svg%3E");
+        background-position: center;
+        background-repeat: repeat-x;
+        background-size: 180px 14px;
+      }
+
+      /* Table */
+      .wmd-table {
+        width: 100%;
+        border-collapse: separate;
+        border-spacing: 0;
+        border: 3px solid #000;
+        border-radius: 8px;
+        margin: 16px 0;
+        overflow: hidden;
+      }
+
+      .wmd-table th,
+      .wmd-table td {
+        border: 2px solid #666;
+        padding: 8px 12px;
+        text-align: left;
+      }
+
+      .wmd-table th {
+        background: #ddd;
+        font-weight: bold;
+      }
+
+      /* Table cell alignment - more specific to override th/td defaults */
+      .wmd-table .wmd-align-left {
+        text-align: left !important;
+      }
+
+      .wmd-table .wmd-align-center {
+        text-align: center !important;
+      }
+
+      .wmd-table .wmd-align-right {
+        text-align: right !important;
+      }
+
+      /* State Containers */
+      .wmd-container-loading-state {
+        background: #fff;
+        border: 2px solid #87ceeb;
+        border-radius: 8px;
+        padding: 32px;
+        margin: 16px 0;
+        text-align: center;
+        position: relative;
+      }
+
+      .wmd-container-loading-state::before {
+        content: '⟳';
+        display: block;
+        font-size: 48px;
+        margin-bottom: 16px;
+        animation: spin 1.5s linear infinite;
+        transform-origin: center;
+      }
+
+      .wmd-container-empty-state {
+        background: #f5f5f5;
+        border: 2px dashed #999;
+        border-radius: 8px;
+        padding: 48px 32px;
+        margin: 16px 0;
+        text-align: center;
+        color: #666;
+      }
+
+      .wmd-container-empty-state::before {
+        content: '📭';
+        display: block;
+        font-size: 64px;
+        margin-bottom: 16px;
+        opacity: 0.5;
+      }
+
+      .wmd-container-error-state {
+        background: #ffe6e6;
+        border: 3px solid #dc143c;
+        border-radius: 8px;
+        padding: 32px;
+        margin: 16px 0;
+        text-align: center;
+      }
+
+      .wmd-container-error-state::before {
+        content: '⚠️';
+        display: block;
+        font-size: 48px;
+        margin-bottom: 16px;
+      }
+
+      /* Responsive */
+      @media (max-width: 768px) {
+        .wmd-grid {
+          grid-template-columns: 1fr !important;
+        }
+
+        .wmd-col-span-1,
+        .wmd-col-span-2,
+        .wmd-col-span-3,
+        .wmd-col-span-4 {
+          grid-column: span 1;
+        }
+
+        .wmd-nav-content {
+          flex-direction: column;
+          align-items: stretch;
+        }
+
+        .wmd-brand {
+          margin-right: 0;
+        }
+      }
+
+      @keyframes loading {
+        0%,
+        100% {
+          opacity: 1;
+        }
+        50% {
+          opacity: 0.5;
+        }
+      }
+
+      @keyframes spin {
+        from {
+          transform: rotate(0deg);
+        }
+        to {
+          transform: rotate(360deg);
+        }
+      }
+
+      /* Tabs */
+      .wmd-tabs {
+        margin: 12px 0;
+      }
+      .wmd-tab-headers {
+        border-bottom-color: #666;
+      }
+      .wmd-tab-header {
+        color: #666;
+      }
+      .wmd-tab-header:hover {
+        color: #000;
+      }
+      .wmd-tab-header.wmd-active {
+        border-bottom-color: #000;
+        color: #000;
+      }
+
+      /* Accordion */
+      .wmd-accordion-summary {
+        color: #333;
+        font-family: 'Comic Sans MS', 'Chalkboard SE', cursive;
+      }
+      .wmd-accordion-summary::before {
+        color: #555;
+      }
+      .wmd-accordion.wmd-card {
+        border: 2px solid #333;
+        border-radius: 0;
+        box-shadow: 3px 3px 0 #999;
+      }
+      .wmd-accordion.wmd-card .wmd-accordion-item {
+        border-bottom: 2px solid #333;
+      }
+      .wmd-accordion.wmd-card .wmd-accordion-body {
+        border-top: 2px solid #333;
+      }
+    </style>
+  </head>
+  <body class="wmd-root wmd-sketch">
+    <h2 class="wmd-h2" data-source-line="1" data-source-line-end="2">
+      [[
+      <svg
+        class="wmd-icon"
+        data-icon="logo"
+        aria-label="logo"
+        role="img"
+        xmlns="http://www.w3.org/2000/svg"
+        width="24"
+        height="24"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="2"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+      >
+        <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+        <path d="M6 5h12l3 5l-8.5 9.5a.7 .7 0 0 1 -1 0l-8.5 -9.5l3 -5" />
+        <path d="M10 12l-2 -2.2l.6 -1" />
+      </svg>
+      BC Platform Services DevHub Workspaces | Home | Teams | Systems | Resources | Requests | ((💬 5)) | [👤 User Name]
+      ]]
+    </h2>
+    <p class="wmd-paragraph" data-source-line="5" data-source-line-end="5">
+      <a href="./dashboard.md" class="wmd-link">Dashboard</a> &gt;
+      <a href="systems-list.md" class="wmd-link">Systems</a> &gt; Registry App
+    </p>
+    <div class="wmd-row wmd-right" data-source-line="7" data-source-line-end="9">
+      <div class="wmd-grid-item">
+        <button class="wmd-button">Archive System</button>
+      </div>
+    </div>
+    <h1 class="wmd-h1" data-source-line="11" data-source-line-end="11">Registry App</h1>
+    <p class="wmd-paragraph" data-source-line="12" data-source-line-end="12">
+      System detail for REG-APP. Manage metadata, linked teams, and linked cloud products here.
+    </p>
+    <div class="wmd-row" data-source-line="14" data-source-line-end="16">
+      <div class="wmd-grid-item">
+        <div class="wmd-container-form-group" data-source-line="15" data-source-line-end="15">
+          <strong>Origin:</strong>
+
+          <span class="wmd-badge wmd-badge-primary">GitHub</span>
+        </div>
+      </div>
+    </div>
+    <div class="wmd-tabs" data-source-line="18" data-source-line-end="80" data-wmd-tabs>
+      <div class="wmd-tab-headers" role="tablist">
+        <button type="button" role="tab" class="wmd-tab-header wmd-active" data-wmd-tab="0">Details</button
+        ><button type="button" role="tab" class="wmd-tab-header" data-wmd-tab="1">Teams</button
+        ><button type="button" role="tab" class="wmd-tab-header" data-wmd-tab="2">Resources</button>
+      </div>
+      <div class="wmd-tab-panels">
+        <div class="wmd-tab-panel" role="tabpanel" data-wmd-tab-panel="0">
+          <div class="wmd-container-card" data-source-line="21" data-source-line-end="37">
+            <h3 class="wmd-h3" data-source-line="22" data-source-line-end="22">System Information</h3>
+            <div class="wmd-row" data-source-line="23" data-source-line-end="29">
+              <div class="wmd-grid-item">
+                <div class="wmd-container-form-group" data-source-line="24" data-source-line-end="25">
+                  <strong>Name</strong>
+
+                  <button class="wmd-button">Registry App________________</button>
+                </div>
+              </div>
+              <div class="wmd-grid-item">
+                <div class="wmd-container-form-group" data-source-line="27" data-source-line-end="28">
+                  <strong>Code</strong>
+
+                  <button class="wmd-button">REG-APP_____________________</button>
+                </div>
+              </div>
+            </div>
+            <div class="wmd-row" data-source-line="31" data-source-line-end="34">
+              <div class="wmd-grid-item">
+                <div class="wmd-container-form-group" data-source-line="32" data-source-line-end="33">
+                  <strong>Description</strong>
+
+                  <button class="wmd-button">
+                    Central registry for platform services and products.________________
+                  </button>
+                </div>
+              </div>
+            </div>
+            <button class="wmd-button wmd-button-primary" data-source-line="36" data-source-line-end="36">
+              Save Changes
+            </button>
+          </div>
+        </div>
+        <div class="wmd-tab-panel" role="tabpanel" data-wmd-tab-panel="1" hidden>
+          <div class="wmd-container-card" data-source-line="41" data-source-line-end="53">
+            <h3 class="wmd-h3" data-source-line="42" data-source-line-end="42">Linked Teams</h3>
+            <table class="wmd-table" data-source-line="43" data-source-line-end="46">
+              <thead>
+                <tr>
+                  <th class="wmd-table-cell wmd-align-left">Team Name</th>
+                  <th class="wmd-table-cell wmd-align-left">Role</th>
+                  <th class="wmd-table-cell wmd-align-left">Actions</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td class="wmd-table-cell wmd-align-left">
+                    <a href="team-detail.md" class="wmd-link">Platform Services</a>
+                  </td>
+                  <td class="wmd-table-cell wmd-align-left">Owner</td>
+                  <td class="wmd-table-cell wmd-align-left"><button class="wmd-button">Detach</button></td>
+                </tr>
+                <tr>
+                  <td class="wmd-table-cell wmd-align-left">
+                    <a href="team-detail.md" class="wmd-link">Registry Devs</a>
+                  </td>
+                  <td class="wmd-table-cell wmd-align-left">Contributor</td>
+                  <td class="wmd-table-cell wmd-align-left"><button class="wmd-button">Detach</button></td>
+                </tr>
+              </tbody>
+            </table>
+            <hr class="wmd-separator" />
+            <p class="wmd-paragraph" data-source-line="49" data-source-line-end="49"><strong>Attach Team</strong></p>
+            <div class="wmd-row" data-source-line="50" data-source-line-end="52">
+              <div class="wmd-grid-item">
+                <select class="wmd-select">
+                  <option value="" disabled selected>Select a team to attach</option>
+                </select>
+              </div>
+              <div class="wmd-grid-item">
+                <button class="wmd-button wmd-button-primary">Attach Team</button>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="wmd-tab-panel" role="tabpanel" data-wmd-tab-panel="2" hidden>
+          <div class="wmd-container-card" data-source-line="57" data-source-line-end="77">
+            <h3 class="wmd-h3" data-source-line="58" data-source-line-end="58">Linked Private Cloud Products</h3>
+            <table class="wmd-table" data-source-line="59" data-source-line-end="62">
+              <thead>
+                <tr>
+                  <th class="wmd-table-cell wmd-align-left">Product Name</th>
+                  <th class="wmd-table-cell wmd-align-left">License Plate</th>
+                  <th class="wmd-table-cell wmd-align-left">Actions</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td class="wmd-table-cell wmd-align-left">
+                    <a href="resource-detail-private-cloud.md" class="wmd-link">Registry API</a>
+                  </td>
+                  <td class="wmd-table-cell wmd-align-left"><code class="wmd-code-inline">reg-api</code></td>
+                  <td class="wmd-table-cell wmd-align-left"><button class="wmd-button">Detach</button></td>
+                </tr>
+                <tr>
+                  <td class="wmd-table-cell wmd-align-left">
+                    <a href="resource-detail-private-cloud.md" class="wmd-link">Registry DB</a>
+                  </td>
+                  <td class="wmd-table-cell wmd-align-left"><code class="wmd-code-inline">reg-db</code></td>
+                  <td class="wmd-table-cell wmd-align-left"><button class="wmd-button">Detach</button></td>
+                </tr>
+              </tbody>
+            </table>
+            <hr class="wmd-separator" />
+            <h3 class="wmd-h3" data-source-line="66" data-source-line-end="66">Linked Public Cloud Products</h3>
+            <table class="wmd-table" data-source-line="67" data-source-line-end="69">
+              <thead>
+                <tr>
+                  <th class="wmd-table-cell wmd-align-left">Product Name</th>
+                  <th class="wmd-table-cell wmd-align-left">License Plate</th>
+                  <th class="wmd-table-cell wmd-align-left">Actions</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td class="wmd-table-cell wmd-align-left">
+                    <a href="resource-detail-public-cloud.md" class="wmd-link">Registry Landing</a>
+                  </td>
+                  <td class="wmd-table-cell wmd-align-left"><code class="wmd-code-inline">reg-land</code></td>
+                  <td class="wmd-table-cell wmd-align-left"><button class="wmd-button">Detach</button></td>
+                </tr>
+              </tbody>
+            </table>
+            <hr class="wmd-separator" />
+            <h3 class="wmd-h3" data-source-line="73" data-source-line-end="73">Linked GitHub Repositories</h3>
+            <table class="wmd-table" data-source-line="74" data-source-line-end="76">
+              <thead>
+                <tr>
+                  <th class="wmd-table-cell wmd-align-left">Repository Name</th>
+                  <th class="wmd-table-cell wmd-align-left">URL</th>
+                  <th class="wmd-table-cell wmd-align-left">Actions</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td class="wmd-table-cell wmd-align-left">
+                    <a href="resource-detail-github.md" class="wmd-link">platform-services-registry</a>
+                  </td>
+                  <td class="wmd-table-cell wmd-align-left">
+                    <code class="wmd-code-inline">github.com/bcgov/platform-services-registry</code>
+                  </td>
+                  <td class="wmd-table-cell wmd-align-left"><button class="wmd-button">Detach</button></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+    <script>
+      (function () {
+        if (window.__wmdTabsInit) return;
+        window.__wmdTabsInit = true;
+        document.addEventListener('click', function (e) {
+          var btn = e.target.closest('.wmd-tab-header');
+          if (!btn) return;
+          var root = btn.closest('[data-wmd-tabs]');
+          if (!root) return;
+          var idx = btn.getAttribute('data-wmd-tab');
+          root.querySelectorAll('.wmd-tab-header').forEach(function (b) {
+            b.classList.toggle('wmd-active', b.getAttribute('data-wmd-tab') === idx);
+          });
+          root.querySelectorAll('[data-wmd-tab-panel]').forEach(function (p) {
+            if (p.getAttribute('data-wmd-tab-panel') === idx) {
+              p.removeAttribute('hidden');
+            } else {
+              p.setAttribute('hidden', '');
+            }
+          });
+        });
+      })();
+    </script>
+  </body>
+</html>

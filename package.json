@@ -20,6 +20,8 @@
     "@commitlint/config-conventional": "^21.0.0",
     "@commitlint/format": "^21.0.0",
     "@eslint/js": "^9.32.0",
+    "@marp-team/marp-core": "^4.4.0",
+    "@mermaid-js/mermaid-cli": "^11.16.0",
     "@release-it/bumper": "^7.0.5",
     "@types/eslint-config-prettier": "^6.11.3",
     "conventional-changelog-cli": "^5.0.0",

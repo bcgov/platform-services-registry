@@ -50,6 +50,8 @@ Use these tools when:
     Use when you want to actually create imported `System` and `Team` records from the division CSV files, with provenance metadata, idempotent reruns, and Team-to-System links.
 -   `check-consolidation-metadata`
     Use when you want to verify whether Systems and Teams in the database actually have `metadata.consolidation` or `metadata.consolidatedInto` populated, and inspect a few sample records.
+-   `find-cloud-products-with-security-data`
+    Use when you want to identify private or public cloud products that have populated repository links, Sonar scan results, ACS results, or ZAP results backing the Security views.
 -   `suggest-organization-mappings-for-imported-systems`
     Use when you want to inspect imported division-backed Systems, extract unique source values from their original metadata, and produce a review table with best-guess Organization mappings from the existing organization table.
 -   `apply-organization-mappings-to-imported-systems`
@@ -251,6 +253,35 @@ Optional flags:
 
 ```sh
 pnpm --dir app run admin-tool:check-consolidation-metadata -- --limit 20
+```
+
+### Find cloud products with Security data
+
+Scans both private and public cloud products and identifies products that currently have backing data for any of:
+
+-   repositories (`SecurityConfig`)
+-   Sonar scan results (`SonarScanResult`)
+-   ACS results (`AcsResult`)
+-   ZAP results (`PrivateCloudProductZapResult`, private cloud only)
+
+This tool is read-only and writes CSV, JSON, and Markdown reports under `app/admin-tools/output/`.
+
+Important notes:
+
+-   ACS results are keyed by licence plate only in the current schema, so this report matches ACS rows to both private/public products by licence plate.
+-   ZAP results currently have a private-cloud-specific model only. Public cloud products will therefore report that no dedicated public-cloud ZAP model exists.
+
+Default run:
+
+```sh
+pnpm --dir app run admin-tool:find-cloud-products-with-security-data
+```
+
+Optional flags:
+
+```sh
+pnpm --dir app run admin-tool:find-cloud-products-with-security-data -- --csv-out app/admin-tools/output/cloud-security-data.csv
+pnpm --dir app run admin-tool:find-cloud-products-with-security-data -- --json-out app/admin-tools/output/cloud-security-data.json --md-out app/admin-tools/output/cloud-security-data.md
 ```
 
 ### Suggest Organization mappings for imported Systems

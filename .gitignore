@@ -28,3 +28,7 @@ mnt
 tmp
 site
 app/prisma/client
+/app/app/admin-tools/output/cloud-products-with-security-data-2026-05-21T23-42-14.117Z.csv
+/app/app/admin-tools/output/cloud-products-with-security-data-2026-05-21T23-42-14.117Z.json
+/app/app/admin-tools/output/cloud-products-with-security-data-2026-05-21T23-42-14.117Z.md
+/.agents/
