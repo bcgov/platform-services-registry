@@ -10,7 +10,7 @@
   "devDependencies": {
     "express": "^5.2.0",
     "nodemailer": "^9.0.1",
-    "sanitize-html": "^2.13.1"
+    "sanitize-html": "^2.17.5"
   },
   "dependencies": {
     "@types/express": "^5.0.0",
