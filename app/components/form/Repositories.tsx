@@ -15,6 +15,17 @@ export default function Repositories({
     name: 'repositories',
   });
   const hasRepositories = watch('hasRepositories');
+  function getHasRepositoriesRadioValue(value: boolean | null | undefined): 'yes' | 'no' | '' {
+    if (value === true) {
+      return 'yes';
+    }
+
+    if (value === false) {
+      return 'no';
+    }
+
+    return '';
+  }
   return (
     <div>
       <Stack gap="sm" mb="lg">
@@ -32,13 +43,11 @@ export default function Repositories({
           render={({ field, fieldState }) => (
             <Radio.Group
               label="Does this product have repositories?"
-              value={field.value === true ? 'yes' : field.value === false ? 'no' : ''}
+              value={getHasRepositoriesRadioValue(field.value)}
               error={fieldState.error?.message}
               onChange={(value) => {
                 const hasRepositoriesValue = value === 'yes';
-
                 field.onChange(hasRepositoriesValue);
-
                 if (!hasRepositoriesValue) {
                   replace([]);
                 }
@@ -46,7 +55,6 @@ export default function Repositories({
             >
               <Group mt="xs">
                 <Radio value="yes" label="Yes" disabled={disabled} />
-
                 <Radio value="no" label="No" disabled={disabled} />
               </Group>
             </Radio.Group>
