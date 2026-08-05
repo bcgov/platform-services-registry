@@ -3,6 +3,18 @@ import { IconPlus } from '@tabler/icons-react';
 import { Controller, useFieldArray, useFormContext } from 'react-hook-form';
 import HookFormTextInput from '@/components/generic/input/HookFormTextInput';
 
+function getHasRepositoriesRadioValue(value: boolean | null | undefined): 'yes' | 'no' | '' {
+  if (value === true) {
+    return 'yes';
+  }
+
+  if (value === false) {
+    return 'no';
+  }
+
+  return '';
+}
+
 export default function Repositories({
   disabled,
 }: Readonly<{
@@ -15,17 +27,7 @@ export default function Repositories({
     name: 'repositories',
   });
   const hasRepositories = watch('hasRepositories');
-  function getHasRepositoriesRadioValue(value: boolean | null | undefined): 'yes' | 'no' | '' {
-    if (value === true) {
-      return 'yes';
-    }
 
-    if (value === false) {
-      return 'no';
-    }
-
-    return '';
-  }
   return (
     <div>
       <Stack gap="sm" mb="lg">
