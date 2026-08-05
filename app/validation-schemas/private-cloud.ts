@@ -14,7 +14,13 @@ import {
   PrivateCloudProductMemberRole,
 } from '@/prisma/client';
 import { processEnumString, processBoolean } from '@/utils/js';
-import { optionalCommentSchema, repositoriesSchema, RequestDecision } from './shared';
+import {
+  hasRepositoriesSchema,
+  optionalCommentSchema,
+  repositoriesSchema,
+  RequestDecision,
+  validateRepositorySelection,
+} from './shared';
 
 export const privateCloudBillingSearchBodySchema = z.object({
   yearMonth: z.string().length(8, 'Date must be in YYYY-MMM'),
@@ -75,6 +81,7 @@ export const _privateCloudCreateRequestBodySchema = z.object({
       message: `Description must be at most ${privateCloudProductDescriptionMaxLength} characters.`,
     }),
   repositories: repositoriesSchema,
+  hasRepositories: hasRepositoriesSchema,
   cluster: z.enum(Cluster),
   organizationId: z.string().length(24),
   isAgMinistry: z.boolean(),
@@ -139,7 +146,8 @@ export const privateCloudCreateRequestBodySchema = _privateCloudCreateRequestBod
   .refine(validateDistinctPOandTl, {
     message: 'The Project Owner and Primary Technical Lead must be different.',
     path: ['primaryTechnicalLeadId'],
-  });
+  })
+  .superRefine(validateRepositorySelection);
 
 const _privateCloudEditRequestBodySchema = _privateCloudCreateRequestBodySchema.merge(
   z.object({
@@ -166,7 +174,8 @@ export const privateCloudEditRequestBodySchema = _privateCloudEditRequestBodySch
   .refine(validateDistinctPOandTl, {
     message: 'The Project Owner and Primary Technical Lead must be different.',
     path: ['primaryTechnicalLeadId'],
-  });
+  })
+  .superRefine(validateRepositorySelection);
 
 export const privateCloudRequestDecisionBodySchema = _privateCloudEditRequestBodySchema.merge(
   z.object({

@@ -14,6 +14,10 @@ export const commentSchema = z
   .min(1, { message: 'Invalid input, expected a non-empty comment' })
   .max(1000);
 
+export interface RepositoryFormData {
+  hasRepositories?: boolean | null;
+  repositories?: Array<{ url: string }>;
+}
 export const optionalCommentSchema = z.string().trim().nullable().default(null).optional();
 
 export const userSchema = z.object({
@@ -42,9 +46,7 @@ export const deleteRequestRejectBodySchema = z.object({
   decisionComment: commentSchema,
 });
 
-const allowedRepositoryHosts = new Set(['github.com', 'bitbucket.org', 'gitlab.com']);
-
-const allowedRepositoryOrganizations = new Set(['bcgov', 'bcgov-c', 'bc-gov']);
+export const hasRepositoriesSchema = z.boolean().nullable().optional().default(null);
 
 export const repositorySchema = z.object({
   url: z
@@ -66,33 +68,40 @@ export const repositorySchema = z.object({
     .refine(
       (value) => {
         try {
-          const hostname = new URL(value).hostname.toLowerCase();
-          return allowedRepositoryHosts.has(hostname);
-        } catch {
-          return false;
-        }
-      },
-      {
-        message: 'Repository must be hosted on GitHub, Bitbucket, or GitLab',
-      },
-    )
-    .refine(
-      (value) => {
-        try {
           const pathSegments = new URL(value).pathname.toLowerCase().split('/').filter(Boolean);
 
-          const [organization, repository] = pathSegments;
+          const [owner, repository] = pathSegments;
 
-          return pathSegments.length >= 2 && allowedRepositoryOrganizations.has(organization) && Boolean(repository);
+          return Boolean(owner && repository);
         } catch {
           return false;
         }
       },
       {
-        message: 'Repository must belong to bcgov, bcgov-c, or bc-gov and include a repository name',
+        message: 'Repository URL must include an owner and repository name',
       },
     ),
 });
+
+export function validateRepositorySelection(data: RepositoryFormData, ctx: z.RefinementCtx) {
+  const repositories = data.repositories ?? [];
+
+  if (data.hasRepositories === true && repositories.length === 0) {
+    ctx.addIssue({
+      code: 'custom',
+      path: ['repositories'],
+      message: 'Add at least one repository URL',
+    });
+  }
+
+  if (data.hasRepositories !== true && repositories.length > 0) {
+    ctx.addIssue({
+      code: 'custom',
+      path: ['hasRepositories'],
+      message: 'Select Yes when repository URLs are provided',
+    });
+  }
+}
 
 export const repositoriesSchema = z.array(repositorySchema).default([]);
 

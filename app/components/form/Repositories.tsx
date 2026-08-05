@@ -1,6 +1,6 @@
-import { Button, Stack, Text } from '@mantine/core';
+import { Button, Group, Radio, Stack, Text } from '@mantine/core';
 import { IconPlus } from '@tabler/icons-react';
-import { useFieldArray, useFormContext } from 'react-hook-form';
+import { Controller, useFieldArray, useFormContext } from 'react-hook-form';
 import HookFormTextInput from '@/components/generic/input/HookFormTextInput';
 
 export default function Repositories({
@@ -8,13 +8,13 @@ export default function Repositories({
 }: Readonly<{
   disabled?: boolean;
 }>) {
-  const { control } = useFormContext();
+  const { control, watch } = useFormContext();
 
-  const { fields, append, remove } = useFieldArray({
+  const { fields, append, remove, replace } = useFieldArray({
     control,
     name: 'repositories',
   });
-
+  const hasRepositories = watch('hasRepositories');
   return (
     <div>
       <Stack gap="sm" mb="lg">
@@ -26,44 +26,64 @@ export default function Repositories({
           </Text>
           .
         </Text>
+        <Controller
+          name="hasRepositories"
+          control={control}
+          render={({ field, fieldState }) => (
+            <Radio.Group
+              label="Does this product have repositories?"
+              value={field.value === true ? 'yes' : field.value === false ? 'no' : ''}
+              error={fieldState.error?.message}
+              onChange={(value) => {
+                const hasRepositoriesValue = value === 'yes';
 
-        <Text>
-          Repositories may be hosted on GitHub, Bitbucket or GitLab hosting service. Repository URLs must use HTTPS and
-          belong to the{' '}
-          <Text span fw={600}>
-            bcgov, bcgov-c, or bc-gov
-          </Text>{' '}
-          organization.
-        </Text>
+                field.onChange(hasRepositoriesValue);
+
+                if (!hasRepositoriesValue) {
+                  replace([]);
+                }
+              }}
+            >
+              <Group mt="xs">
+                <Radio value="yes" label="Yes" disabled={disabled} />
+
+                <Radio value="no" label="No" disabled={disabled} />
+              </Group>
+            </Radio.Group>
+          )}
+        />
+        <Text>Repositories may be hosted on any Git hosting service. Repository URLs must be valid and use HTTPS.</Text>
       </Stack>
 
-      {fields.length > 0 && (
+      {hasRepositories === true && fields.length > 0 && (
         <div className="mb-3 grid grid-cols-[1fr_auto] gap-4 border-b pb-2 font-semibold">
           <Text fw={600}>Repository URL</Text>
           {!disabled && <Text fw={600}>Action</Text>}
         </div>
       )}
 
-      <div className="space-y-3">
-        {fields.map((field, index) => (
-          <div key={field.id} className="grid grid-cols-[1fr_auto] items-start gap-4 border-b pb-3">
-            <HookFormTextInput
-              name={`repositories.${index}.url`}
-              placeholder="https://git-host.example/bcgov/repository"
-              disabled={disabled}
-              error="Enter a valid B.C. government repository URL"
-            />
+      {hasRepositories === true && (
+        <div className="space-y-3">
+          {fields.map((field, index) => (
+            <div key={field.id} className="grid grid-cols-[1fr_auto] items-start gap-4 border-b pb-3">
+              <HookFormTextInput
+                name={`repositories.${index}.url`}
+                placeholder="https://git-host.example/bcgov/repository"
+                disabled={disabled}
+                error="Enter a valid B.C. government repository URL"
+              />
 
-            {!disabled && (
-              <Button type="button" color="red" onClick={() => remove(index)}>
-                Delete
-              </Button>
-            )}
-          </div>
-        ))}
-      </div>
+              {!disabled && (
+                <Button type="button" color="red" onClick={() => remove(index)}>
+                  Delete
+                </Button>
+              )}
+            </div>
+          ))}
+        </div>
+      )}
 
-      {!disabled && (
+      {!disabled && hasRepositories === true && (
         <Button
           type="button"
           color="green"
@@ -75,7 +95,7 @@ export default function Repositories({
         </Button>
       )}
 
-      {disabled && fields.length === 0 && (
+      {disabled && fields.length === 0 && hasRepositories === true && (
         <Text c="dimmed" fs="italic">
           No repositories have been added.
         </Text>

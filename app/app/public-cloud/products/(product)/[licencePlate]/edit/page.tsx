@@ -48,6 +48,7 @@ export default publicCloudProductEdit(({ session }) => {
     defaultValues: {
       ...currentProduct,
       repositories: [],
+      hasRepositories: null,
       isAgMinistry: false,
       isAgMinistryChecked: true,
       requiresNetworking: currentProduct?.requiresNetworking ?? false,

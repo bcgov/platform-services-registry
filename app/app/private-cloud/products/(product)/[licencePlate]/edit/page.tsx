@@ -87,6 +87,7 @@ export default privateCloudProductEdit(({ session }) => {
       )(values, context, options);
     },
     defaultValues: {
+      hasRepositories: null,
       repositories: [],
       isAgMinistry: false,
       isAgMinistryChecked: true,

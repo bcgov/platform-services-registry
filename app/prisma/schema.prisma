@@ -170,6 +170,7 @@ model PrivateCloudProduct {
   requests                         PrivateCloudRequest[]       @relation("project")
   comments                         PrivateCloudComment[]       @relation("project")
   repositories                     Repository[]
+  hasRepositories                  Boolean?
 }
 
 model PrivateCloudRequestData {
@@ -197,6 +198,7 @@ model PrivateCloudRequestData {
   requestRequests          PrivateCloudRequest[]       @relation("requestData")
   originalRequests         PrivateCloudRequest[]       @relation("originalData")
   repositories             Repository[]
+  hasRepositories          Boolean?
 }
 
 model PrivateCloudProductWebhook {
@@ -350,6 +352,7 @@ model PublicCloudProduct {
   members                      PublicCloudProductMember[]
   requests                     PublicCloudRequest[]       @relation("project")
   repositories                 Repository[]
+  hasRepositories              Boolean?
 }
 
 type PublicCloudProductMember {
@@ -386,6 +389,7 @@ model PublicCloudRequestData {
   requestRequests              PublicCloudRequest[]       @relation("requestData")
   originalRequests             PublicCloudRequest[]       @relation("originalData")
   repositories                 Repository[]
+  hasRepositories              Boolean?
 }
 
 type EnvironmentsEnabled {

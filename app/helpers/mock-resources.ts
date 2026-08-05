@@ -49,8 +49,13 @@ export function createSamplePrivateCloudProductData(args?: {
     organizationId: organization.id,
     organization,
     repositories: [],
+    hasRepositories: null,
     ...data,
   };
+
+  if (_data.repositories.length > 0) {
+    _data.hasRepositories = true;
+  }
 
   _data.golddrEnabled = _data.cluster === Cluster.GOLD ? getRandomBool() : false;
 
@@ -114,8 +119,12 @@ export function createSamplePublicCloudProductData(args?: {
     organizationId: organization.id,
     organization: organization,
     repositories: [],
+    hasRepositories: null,
     ...data,
   };
+  if (_data.repositories.length > 0) {
+    _data.hasRepositories = true;
+  }
 
   return _data;
 }
