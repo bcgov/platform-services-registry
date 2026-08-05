@@ -30,6 +30,8 @@ export async function prepareUserData(user: AppUser, extra = {}) {
     lastName: user.lastName,
     ministry: user.ministry,
     idir: user.idir,
+    githubUsername: user.githubUsername,
+    githubAccountId: user.githubAccountId,
     idirGuid: user.idirGuid,
     isGuidValid: user.isGuidValid,
     officeLocation: user.officeLocation,
@@ -93,6 +95,8 @@ type SearchUser = Prisma.UserGetPayload<{
     email: true;
     upn: true;
     idir: true;
+    ghithubUsername: true;
+    githubAccountId: true;
     officeLocation: true;
     jobTitle: true;
     image: true;
@@ -155,6 +159,9 @@ export async function searchUsers({
         upn: true,
         idir: true,
         idirGuid: true,
+        githubUsername: true,
+        githubAccountId: true,
+        isGuidValid: true,
         officeLocation: true,
         jobTitle: true,
         image: true,

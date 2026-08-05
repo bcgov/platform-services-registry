@@ -9,7 +9,8 @@ import { ProjectStatus } from '@/prisma/client';
 import { UserDetail } from '@/types/user';
 import { userUpdateBodySchema } from '@/validation-schemas';
 import updateOp from '../_operations/update';
-import { putPathParamSchema } from './schema';
+import updateGitHubOp from '../_operations/update-github';
+import { githubUserUpdateBodySchema, putPathParamSchema } from './schema';
 
 export const GET = createApiHandler({
   roles: [GlobalRole.User],
@@ -37,6 +38,8 @@ export const GET = createApiHandler({
       upn: true,
       idir: true,
       idirGuid: true,
+      githubUsername: true,
+      githubAccountId: true,
       officeLocation: true,
       jobTitle: true,
       image: true,
@@ -81,6 +84,8 @@ export const GET = createApiHandler({
       upn: true,
       idir: true,
       idirGuid: true,
+      githubUsername: true,
+      githubAccountId: true,
       officeLocation: true,
       jobTitle: true,
       image: true,
@@ -98,5 +103,21 @@ export const PUT = createApiHandler({
   validations: { pathParams: putPathParamSchema, body: userUpdateBodySchema },
 })(async ({ pathParams, body, session }) => {
   const response = await updateOp({ session, body, pathParams });
+  return response;
+});
+
+export const PATCH = createApiHandler({
+  roles: [GlobalRole.User],
+  validations: {
+    pathParams: putPathParamSchema,
+    body: githubUserUpdateBodySchema,
+  },
+})(async ({ pathParams, body, session }) => {
+  const response = await updateGitHubOp({
+    session,
+    body,
+    pathParams,
+  });
+
   return response;
 });

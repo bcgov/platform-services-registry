@@ -44,6 +44,8 @@ export const POST = createApiHandler({
             upn: true,
             idir: true,
             idirGuid: true,
+            githubUsername: true,
+            githubAccountId: true,
             isGuidValid: true,
             officeLocation: true,
             jobTitle: true,

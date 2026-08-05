@@ -23,6 +23,8 @@ export interface AppUser {
   email: string;
   idir: string;
   idirGuid: string;
+  githubUsername: string | null;
+  githubAccountId: string | null;
   isGuidValid: boolean;
   displayName: string;
   firstName: string;
@@ -55,6 +57,8 @@ export type UserDetail = Prisma.UserGetPayload<{
     upn: true;
     idir: true;
     idirGuid: true;
+    githubUsername: true;
+    githubAccountId: true;
     officeLocation: true;
     jobTitle: true;
     image: true;
@@ -80,6 +84,8 @@ export type UserDetailColeagues = Prisma.UserGetPayload<{
     email: true;
     upn: true;
     idir: true;
+    githubUsername: true;
+    githubAccountId: true;
     idirGuid: true;
     officeLocation: true;
     jobTitle: true;
@@ -100,6 +106,8 @@ export type UserDetailWithColeagues = Prisma.UserGetPayload<{
     upn: true;
     idir: true;
     idirGuid: true;
+    githubUsername: true;
+    githubAccountId: true;
     officeLocation: true;
     jobTitle: true;
     image: true;
@@ -126,6 +134,8 @@ export type SearchedUser = Prisma.UserGetPayload<{
     upn: true;
     idir: true;
     idirGuid: true;
+    githubUsername: true;
+    githubAccountId: true;
     isGuidValid: true;
     officeLocation: true;
     jobTitle: true;
@@ -151,3 +161,36 @@ export type DeleteIncompleteUserResult = {
     error?: string;
   }[];
 };
+
+export interface GitHubApiUser {
+  id: number;
+  login: string;
+  name: string | null;
+  avatar_url: string;
+  html_url: string;
+  type: string;
+}
+
+export interface GitHubUser {
+  accountId: string;
+  username: string;
+  displayName: string | null;
+  avatarUrl: string;
+  profileUrl: string;
+}
+
+export type GitHubUserValidationResult =
+  | {
+      valid: true;
+      user: GitHubUser;
+    }
+  | {
+      valid: false;
+      message: string;
+    };
+
+export interface UpdatedGitHubUser {
+  id: string;
+  githubUsername: string | null;
+  githubAccountId: string | null;
+}

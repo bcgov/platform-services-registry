@@ -4,7 +4,7 @@ import { parseMinistryFromDisplayName } from '@/helpers/user';
 import { MsUser, AppUser } from '@/types/user';
 import { instance } from './axios';
 
-export function processMsUser(user: MsUser): AppUser | null {
+export function processMsUser(user: MsUser): Omit<AppUser, 'githubUsername' | 'githubAccountId'> | null {
   const idir = user.onPremisesSamAccountName;
   const upn = user.userPrincipalName;
   const idirGuid = user[BCGOV_GUID_EXTENSION];

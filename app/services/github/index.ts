@@ -1,0 +1,75 @@
+import axios from 'axios';
+import { logger } from '@/core/logging';
+import { GitHubApiUser, GitHubUser } from '@/types/user';
+import { instance } from './axios';
+
+export function processGitHubUser(user: GitHubApiUser): GitHubUser {
+  return {
+    accountId: String(user.id),
+    username: user.login,
+    displayName: user.name,
+    avatarUrl: user.avatar_url,
+    profileUrl: user.html_url,
+  };
+}
+
+/**
+ * Finds a GitHub account by username.
+ *
+ * Returns null only when GitHub confirms that the account
+ * does not exist.
+ *
+ * Other GitHub API errors are rethrown so they are not
+ * incorrectly reported as "user not found".
+ */
+export async function getGitHubUser(username: string): Promise<GitHubUser | null> {
+  const normalizedUsername = username.trim().replace(/^@/, '');
+
+  try {
+    const response = await instance.get<GitHubApiUser>(`/users/${encodeURIComponent(normalizedUsername)}`);
+
+    // Exclude organizations and bots if only human users are allowed.
+    if (response.data.type !== 'User') {
+      return null;
+    }
+
+    return processGitHubUser(response.data);
+  } catch (error) {
+    if (axios.isAxiosError(error) && error.response?.status === 404) {
+      return null;
+    }
+
+    const message = axios.isAxiosError(error) ? error.message : String(error);
+
+    logger.error(`Error fetching GitHub user "${normalizedUsername}": ${message}`);
+
+    throw error;
+  }
+}
+
+const githubUsernameRegex = /^[a-z\d](?:[a-z\d]|-(?=[a-z\d])){0,38}$/i;
+
+export async function validateGitHubUsername(username: string) {
+  const normalizedUsername = username.trim().replace(/^@/, '');
+
+  if (!githubUsernameRegex.test(normalizedUsername)) {
+    return {
+      valid: false as const,
+      message: 'Enter a valid GitHub username.',
+    };
+  }
+
+  const user = await getGitHubUser(normalizedUsername);
+
+  if (!user) {
+    return {
+      valid: false as const,
+      message: 'GitHub user was not found.',
+    };
+  }
+
+  return {
+    valid: true as const,
+    user,
+  };
+}

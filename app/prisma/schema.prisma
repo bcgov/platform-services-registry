@@ -21,6 +21,8 @@ model User {
   upn                                                   String?
   idir                                                  String?
   idirGuid                                              String                    @unique
+  githubUsername                                        String?
+  githubAccountId                                       String?
   officeLocation                                        String?
   jobTitle                                              String?
   image                                                 String?
