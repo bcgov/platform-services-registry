@@ -7,7 +7,11 @@ import {
 } from '@/services/api-test/private-cloud/helpers';
 import { sendEmail } from '@/services/ches/core';
 import { findUserEmailsByAuthRole } from '@/services/keycloak/app-realm';
-import { emailTextContaining } from '@/utils/js/jest';
+import { compareEmailText } from '@/utils/js/jest';
+
+expect.extend({
+  compareEmailText,
+});
 
 describe('Private Cloud Emails', () => {
   beforeEach(() => {
@@ -29,7 +33,7 @@ describe('Private Cloud Emails', () => {
       expect.objectContaining({
         subject: 'New provisioning request awaiting review',
         to: expect.arrayContaining(reviewerEmails),
-        body: emailTextContaining(
+        body: expect.compareEmailText(
           `There is a new request that requires your review. Log in to the Registry to review the details. If you have any questions about the request, the PO and TL contact details are included below and in the Registry.`,
         ),
       }),
@@ -43,7 +47,7 @@ describe('Private Cloud Emails', () => {
           decisionData.primaryTechnicalLead.email,
           decisionData.secondaryTechnicalLead?.email,
         ]),
-        body: emailTextContaining('success! your provisioning request is complete!'),
+        body: expect.compareEmailText('success! your provisioning request is complete!'),
       }),
     );
   });
@@ -63,7 +67,7 @@ describe('Private Cloud Emails', () => {
       expect.objectContaining({
         subject: 'New provisioning request awaiting review',
         to: expect.arrayContaining(reviewerEmails),
-        body: emailTextContaining(
+        body: expect.compareEmailText(
           `There is a new request that requires your review. Log in to the Registry to review the details. If you have any questions about the request, the PO and TL contact details are included below and in the Registry.`,
         ),
       }),
@@ -77,7 +81,7 @@ describe('Private Cloud Emails', () => {
           decisionData.primaryTechnicalLead.email,
           decisionData.secondaryTechnicalLead?.email,
         ]),
-        body: emailTextContaining('success! your provisioning request is complete!'),
+        body: expect.compareEmailText('success! your provisioning request is complete!'),
       }),
     );
     // EDIT
@@ -86,7 +90,7 @@ describe('Private Cloud Emails', () => {
       expect.objectContaining({
         subject: 'New edit request awaiting review',
         to: expect.arrayContaining(reviewerEmails),
-        body: emailTextContaining(
+        body: expect.compareEmailText(
           `There is a new request that requires your review. Log in to the Registry to review the details. If you have any questions about the request, the PO and TL contact details are included below and in the Registry.`,
         ),
       }),
@@ -100,7 +104,7 @@ describe('Private Cloud Emails', () => {
           decisionData.primaryTechnicalLead.email,
           decisionData.secondaryTechnicalLead?.email,
         ]),
-        body: emailTextContaining(
+        body: expect.compareEmailText(
           `The project set edit request for ${decisionData.name} has been successfully completed. You can now log in to OpenShift cluster console [https://console.apps.silver.devops.gov.bc.ca/] and you will see your new resource quota values.`,
         ),
       }),
@@ -122,7 +126,7 @@ describe('Private Cloud Emails', () => {
       expect.objectContaining({
         subject: 'New provisioning request awaiting review',
         to: expect.arrayContaining(reviewerEmails),
-        body: emailTextContaining(
+        body: expect.compareEmailText(
           `There is a new request that requires your review. Log in to the Registry to review the details. If you have any questions about the request, the PO and TL contact details are included below and in the Registry.`,
         ),
       }),
@@ -136,7 +140,7 @@ describe('Private Cloud Emails', () => {
           decisionData.primaryTechnicalLead.email,
           decisionData.secondaryTechnicalLead?.email,
         ]),
-        body: emailTextContaining('success! your provisioning request is complete!'),
+        body: expect.compareEmailText('success! your provisioning request is complete!'),
       }),
     );
     // DELETE
@@ -145,7 +149,7 @@ describe('Private Cloud Emails', () => {
       expect.objectContaining({
         subject: 'New delete request awaiting review',
         to: expect.arrayContaining(reviewerEmails),
-        body: emailTextContaining(
+        body: expect.compareEmailText(
           `There is a new delete request that requires your review. Log in to the Registry to review the details. If you have any questions about the request, the PO and TL(s) contact details are included below and in the Registry.`,
         ),
       }),
@@ -159,7 +163,9 @@ describe('Private Cloud Emails', () => {
           decisionData.primaryTechnicalLead.email,
           decisionData.secondaryTechnicalLead?.email,
         ]),
-        body: emailTextContaining(`The project set deletion for ${decisionData.name} has been successfully completed.`),
+        body: expect.compareEmailText(
+          `The project set deletion for ${decisionData.name} has been successfully completed.`,
+        ),
       }),
     );
   });
