@@ -20,8 +20,12 @@ export default function Repositories({
 }: Readonly<{
   disabled?: boolean;
 }>) {
-  const { control, watch } = useFormContext();
-
+  const {
+    control,
+    watch,
+    formState: { errors },
+  } = useFormContext();
+  const repositoriesError = typeof errors.repositories?.message === 'string' ? errors.repositories.message : undefined;
   const { fields, append, remove, replace } = useFieldArray({
     control,
     name: 'repositories',
@@ -62,6 +66,11 @@ export default function Repositories({
             </Radio.Group>
           )}
         />
+        {repositoriesError && (
+          <Text c="red" size="sm" role="alert">
+            {repositoriesError}
+          </Text>
+        )}
         <Text>Repositories may be hosted on any Git hosting service. Repository URLs must be valid and use HTTPS.</Text>
       </Stack>
 
@@ -78,9 +87,9 @@ export default function Repositories({
             <div key={field.id} className="grid grid-cols-[1fr_auto] items-start gap-4 border-b pb-3">
               <HookFormTextInput
                 name={`repositories.${index}.url`}
-                placeholder="https://git-host.example/bcgov/repository"
+                placeholder="https://git-host.example/owner/repository"
                 disabled={disabled}
-                error="Enter a valid B.C. government repository URL"
+                error="Enter a valid HTTPS repository URL"
               />
 
               {!disabled && (
