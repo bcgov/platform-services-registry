@@ -216,6 +216,7 @@ describe('Search Private Cloud Requests - Validations', () => {
     const firstReq = await results[0].json();
     const res = await editPrivateCloudProduct(firstReq.licencePlate, {
       ...firstReq.decisionData,
+      isAgMinistry: firstReq.project?.organization.isAgMinistry || false,
       name: `${firstReq.decisionData.name} - updated`,
     });
 
