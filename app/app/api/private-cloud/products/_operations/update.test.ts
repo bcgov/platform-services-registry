@@ -27,6 +27,7 @@ const requests = {
 async function makeBasicProductChange(extra = {}) {
   const response = await editPrivateCloudProduct(requests.create.licencePlate, {
     ...requests.create.decisionData,
+    isAgMinistry: requests.create.project?.organization.isAgMinistry || false,
     resourceRequests: resourceRequests2,
     ...extra,
   });

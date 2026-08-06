@@ -7,11 +7,7 @@ import {
 } from '@/services/api-test/public-cloud/helpers';
 import { sendEmail } from '@/services/ches/core';
 import { findUserEmailsByAuthRole } from '@/services/keycloak/app-realm';
-import { compareEmailText } from '@/utils/js/jest';
-
-expect.extend({
-  compareEmailText,
-});
+import { emailTextContaining } from '@/utils/js/jest';
 
 describe('Public Cloud Emails', () => {
   beforeEach(() => {
@@ -33,7 +29,7 @@ describe('Public Cloud Emails', () => {
       expect.objectContaining({
         subject: 'New provisioning request received',
         to: expect.arrayContaining(reviewerEmails),
-        body: expect.compareEmailText(
+        body: emailTextContaining(
           `You have requested a new project set for ${decisionData.name} on the Public Cloud Landing Zone - ${decisionData.provider}. Our administrators have been notified and will review your request.`,
         ),
       }),
@@ -43,7 +39,7 @@ describe('Public Cloud Emails', () => {
       expect.objectContaining({
         subject: `You have been added as the Expense Authority for ${decisionData.name}`,
         to: expect.arrayContaining([decisionData.expenseAuthority.email]),
-        body: expect.compareEmailText(
+        body: emailTextContaining(
           `You are now the Expense Authority for the the product ${decisionData.name} on the Public Cloud.`,
         ),
       }),
@@ -57,7 +53,7 @@ describe('Public Cloud Emails', () => {
           decisionData.primaryTechnicalLead.email,
           decisionData.secondaryTechnicalLead?.email,
         ]),
-        body: expect.compareEmailText(
+        body: emailTextContaining(
           `We are pleased to inform you that your request to create the product ${decisionData.name} has been approved on the Public Cloud Landing Zone ${decisionData.provider}.`,
         ),
       }),
@@ -71,7 +67,7 @@ describe('Public Cloud Emails', () => {
           decisionData.primaryTechnicalLead.email,
           decisionData.secondaryTechnicalLead?.email,
         ]),
-        body: expect.compareEmailText(
+        body: emailTextContaining(
           `Your request for your product ${decisionData.name} on the Public Cloud platform is complete.`,
         ),
       }),
@@ -93,7 +89,7 @@ describe('Public Cloud Emails', () => {
       expect.objectContaining({
         subject: 'New provisioning request received',
         to: expect.arrayContaining(reviewerEmails),
-        body: expect.compareEmailText(
+        body: emailTextContaining(
           `You have requested a new project set for ${decisionData.name} on the Public Cloud Landing Zone - ${decisionData.provider}. Our administrators have been notified and will review your request.`,
         ),
       }),
@@ -103,7 +99,7 @@ describe('Public Cloud Emails', () => {
       expect.objectContaining({
         subject: `You have been added as the Expense Authority for ${decisionData.name}`,
         to: expect.arrayContaining([decisionData.expenseAuthority.email]),
-        body: expect.compareEmailText(
+        body: emailTextContaining(
           `You are now the Expense Authority for the the product ${decisionData.name} on the Public Cloud.`,
         ),
       }),
@@ -117,7 +113,7 @@ describe('Public Cloud Emails', () => {
           decisionData.primaryTechnicalLead.email,
           decisionData.secondaryTechnicalLead?.email,
         ]),
-        body: expect.compareEmailText(
+        body: emailTextContaining(
           `We are pleased to inform you that your request to create the product ${decisionData.name} has been approved on the Public Cloud Landing Zone ${decisionData.provider}.`,
         ),
       }),
@@ -131,7 +127,7 @@ describe('Public Cloud Emails', () => {
           decisionData.primaryTechnicalLead.email,
           decisionData.secondaryTechnicalLead?.email,
         ]),
-        body: expect.compareEmailText(
+        body: emailTextContaining(
           `Your request for your product ${decisionData.name} on the Public Cloud platform is complete.`,
         ),
       }),
@@ -146,7 +142,7 @@ describe('Public Cloud Emails', () => {
           decisionData.primaryTechnicalLead.email,
           decisionData.secondaryTechnicalLead?.email,
         ]),
-        body: expect.compareEmailText(
+        body: emailTextContaining(
           `You have edited your product ${decisionData.name} in the Public Cloud Landing Zone with the licence plate ${decisionData.licencePlate}.  You can see a summary of the changes below in this email, or click the button to view them in the Product Registry.`,
         ),
       }),
@@ -169,7 +165,7 @@ describe('Public Cloud Emails', () => {
       expect.objectContaining({
         subject: 'New provisioning request received',
         to: expect.arrayContaining(reviewerEmails),
-        body: expect.compareEmailText(
+        body: emailTextContaining(
           `You have requested a new project set for ${decisionData.name} on the Public Cloud Landing Zone - ${decisionData.provider}. Our administrators have been notified and will review your request.`,
         ),
       }),
@@ -179,7 +175,7 @@ describe('Public Cloud Emails', () => {
       expect.objectContaining({
         subject: `You have been added as the Expense Authority for ${decisionData.name}`,
         to: expect.arrayContaining([decisionData.expenseAuthority.email]),
-        body: expect.compareEmailText(
+        body: emailTextContaining(
           `You are now the Expense Authority for the the product ${decisionData.name} on the Public Cloud.`,
         ),
       }),
@@ -193,7 +189,7 @@ describe('Public Cloud Emails', () => {
           decisionData.primaryTechnicalLead.email,
           decisionData.secondaryTechnicalLead?.email,
         ]),
-        body: expect.compareEmailText(
+        body: emailTextContaining(
           `We are pleased to inform you that your request to create the product ${decisionData.name} has been approved on the Public Cloud Landing Zone ${decisionData.provider}.`,
         ),
       }),
@@ -207,7 +203,7 @@ describe('Public Cloud Emails', () => {
           decisionData.primaryTechnicalLead.email,
           decisionData.secondaryTechnicalLead?.email,
         ]),
-        body: expect.compareEmailText(
+        body: emailTextContaining(
           `Your request for your product ${decisionData.name} on the Public Cloud platform is complete.`,
         ),
       }),
@@ -218,7 +214,7 @@ describe('Public Cloud Emails', () => {
       expect.objectContaining({
         subject: 'New delete request awaiting review',
         to: expect.arrayContaining(reviewerEmails),
-        body: expect.compareEmailText(
+        body: emailTextContaining(
           `There is a new delete request for ${decisionData.name} that requires your attention. Log in to the Registry to review the details. If you have any questions about the request, the PO and TL contact details are included below and in the Registry.`,
         ),
       }),
@@ -232,7 +228,7 @@ describe('Public Cloud Emails', () => {
           decisionData.primaryTechnicalLead.email,
           decisionData.secondaryTechnicalLead?.email,
         ]),
-        body: expect.compareEmailText(
+        body: emailTextContaining(
           `We have received your deletion request for ${decisionData.name}. You will receive an email once your request has been processed and completed.`,
         ),
       }),
@@ -246,7 +242,7 @@ describe('Public Cloud Emails', () => {
           decisionData.primaryTechnicalLead.email,
           decisionData.secondaryTechnicalLead?.email,
         ]),
-        body: expect.compareEmailText(`Your deletion request has been sent to our platform administrators!`),
+        body: emailTextContaining(`Your deletion request has been sent to our platform administrators!`),
       }),
     );
   });
