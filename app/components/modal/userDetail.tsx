@@ -10,6 +10,7 @@ import {
   IconMail,
   IconUser,
   IconIdBadge,
+  IconBrandGithub,
 } from '@tabler/icons-react';
 import { useQuery } from '@tanstack/react-query';
 import _castArray from 'lodash-es/castArray';
@@ -29,6 +30,7 @@ import { getUser } from '@/services/backend/user';
 import { appState } from '@/states/global';
 import { UserDetailWithColeagues } from '@/types/user';
 import { formatDate } from '@/utils/js';
+import ExternalLink from '../generic/button/ExternalLink';
 
 interface ModalProps {
   userId: string;
@@ -61,6 +63,8 @@ function UserDetails({ data }: { data?: UserDetailWithColeagues }) {
       email: '',
       upn: '',
       idir: '',
+      githubUsername: null,
+      githubAccountId: null,
       idirGuid: '',
       officeLocation: '',
       jobTitle: '',
@@ -229,6 +233,25 @@ function UserDetails({ data }: { data?: UserDetailWithColeagues }) {
                 </div>
               </div>
             </div>
+            {data.githubUsername && (
+              <div className="col-span-1 flex items-center">
+                <div className="mr-1">
+                  <IconBrandGithub size={24} stroke={2.5} className="text-gray-600" />
+                </div>
+                <div>
+                  <div className="text-gray-600 leading-6">GitHub</div>
+                  <div className="text-xs">
+                    {data.githubUsername ? (
+                      <ExternalLink href={`https://github.com/${encodeURIComponent(data.githubUsername)}`}>
+                        {data.githubUsername}
+                      </ExternalLink>
+                    ) : (
+                      <span>&nbsp;</span>
+                    )}
+                  </div>
+                </div>
+              </div>
+            )}
           </div>
           <div className="underline italic text-gray-500 mt-4">
             {data.onboardingDate

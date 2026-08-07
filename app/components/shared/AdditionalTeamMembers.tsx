@@ -44,10 +44,21 @@ export default function AdditionalTeamMembers<
               const { state } = await openUserPickerModal(
                 {
                   initialValue: member,
-                  blacklistIds: members.map((member) => member.id),
+
+                  /*
+                   * Exclude the current member. They should be
+                   * allowed to update their GitHub information.
+                   * All other members remain blacklisted.
+                   */
+                  blacklistIds: members.filter((_, memberIndex) => memberIndex !== index).map((member) => member.id),
+
                   blacklistMessage: 'This user is already on the list.',
                 },
-                { initialState: { user: member } },
+                {
+                  initialState: {
+                    user: member,
+                  },
+                },
               );
               if (state.user) {
                 setValue(

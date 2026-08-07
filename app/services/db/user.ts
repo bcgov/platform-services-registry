@@ -15,11 +15,11 @@ import {
 } from '@/prisma/client';
 import { listUsersByRoles, findUserByEmail, getKcAdminClient } from '@/services/keycloak/app-realm';
 import { getUserByIdirGuid, getUserPhoto } from '@/services/msgraph';
-import { AppUser, Outcome } from '@/types/user';
+import { MsGraphAppUser, Outcome } from '@/types/user';
 import { arrayBufferToBase64 } from '@/utils/js';
 import { UserSearchBody } from '@/validation-schemas';
 
-export async function prepareUserData(user: AppUser, extra = {}) {
+export async function prepareUserData(user: MsGraphAppUser, extra = {}) {
   const email = user.email.toLowerCase();
 
   const image = await getUserPhoto(user.upn || email);
@@ -93,6 +93,10 @@ type SearchUser = Prisma.UserGetPayload<{
     email: true;
     upn: true;
     idir: true;
+    idirGuid: true;
+    isGuidValid: true;
+    githubUsername: true;
+    githubAccountId: true;
     officeLocation: true;
     jobTitle: true;
     image: true;
@@ -155,6 +159,9 @@ export async function searchUsers({
         upn: true,
         idir: true,
         idirGuid: true,
+        githubUsername: true,
+        githubAccountId: true,
+        isGuidValid: true,
         officeLocation: true,
         jobTitle: true,
         image: true,
