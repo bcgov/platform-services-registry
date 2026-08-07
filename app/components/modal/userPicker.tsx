@@ -123,7 +123,14 @@ export const openUserPickerModal = createModal<ModalProps, ModalState>({
       setGithubError('');
       setGithubLookupUser(null);
 
-      const result = await validateGitHubUsername(normalizedUsername);
+      const result = await validateGitHubUsername(normalizedUsername)
+        .catch(() => ({
+          valid: false as const,
+          message: 'GitHub validation is temporarily unavailable.',
+        }))
+        .finally(() => {
+          setIsSearchingGitHub(false);
+        });
 
       setIsSearchingGitHub(false);
 
@@ -218,7 +225,7 @@ export const openUserPickerModal = createModal<ModalProps, ModalState>({
           initialValue={user}
         />
 
-        {user && !user.githubUsername && !user.githubAccountId && (
+        {user && (!user.githubUsername || !user.githubAccountId) && (
           <div className="mt-4">
             <Group align="flex-end">
               <TextInput

@@ -22,8 +22,8 @@ export const POST = createApiHandler({
 
   const processedUsers = await listUsersByEmail(email);
 
-  const dbUsers: (SearchedUser | null)[] = await Promise.all(
-    processedUsers.map(async (user) => {
+  const dbUsers = await Promise.all(
+    processedUsers.map(async (user): Promise<SearchedUser | null> => {
       const data = await prepareUserData(user);
       // The upsert method returns { count: x } when updating data instead of the document.
       // Related issue: https://github.com/prisma/prisma/issues/10935
@@ -63,6 +63,8 @@ export const POST = createApiHandler({
       return {
         ...data,
         id: data.providerUserId,
+        githubUsername: null,
+        githubAccountId: null,
         archived: false,
         createdAt: now,
         updatedAt: now,

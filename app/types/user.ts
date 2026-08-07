@@ -194,3 +194,5 @@ export interface UpdatedGitHubUser {
   githubUsername: string | null;
   githubAccountId: string | null;
 }
+
+export type MsGraphAppUser = Omit<AppUser, 'githubUsername' | 'githubAccountId'>;

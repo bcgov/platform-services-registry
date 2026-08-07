@@ -32,7 +32,7 @@ export async function GET(request: NextRequest) {
   } catch {
     return NextResponse.json(
       {
-        valid: null,
+        valid: false,
         message: 'GitHub validation is temporarily unavailable.',
       },
       {

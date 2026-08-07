@@ -13,6 +13,7 @@ export async function validateGitHubUsername(username: string) {
       params: {
         username,
       },
+      validateStatus: () => true,
     })
     .then((response) => response.data);
 }

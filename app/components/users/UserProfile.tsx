@@ -9,11 +9,9 @@ import { getUserImageData } from '@/helpers/user-image';
 import { User } from '@/prisma/client';
 import { cn } from '@/utils/js';
 
-export type UserPickerData = Pick<
-  User,
-  'email' | 'firstName' | 'lastName' | 'ministry' | 'image' | 'upn' | 'idir' | 'githubUsername'
-> & {
+export type UserPickerData = Pick<User, 'email' | 'firstName' | 'lastName' | 'ministry' | 'image' | 'upn' | 'idir'> & {
   id?: string;
+  githubUsername?: User['githubUsername'];
 };
 
 interface Props {
