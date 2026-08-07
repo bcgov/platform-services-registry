@@ -7,7 +7,7 @@ dependencies:
   version: 18.8.6
 - name: sonarqube
   repository: https://SonarSource.github.io/helm-chart-sonarqube
-  version: 2026.4.0
+  version: 2026.4.1
 - name: minio
   repository: https://charts.min.io/
   version: 5.4.0
@@ -17,5 +17,5 @@ dependencies:
 - name: sorry-cypress
   repository: https://sorry-cypress.github.io/charts
   version: 1.20.0
-digest: sha256:37dfba18b9f25695294ade4432ebc1acf06e35f69fe30edb371b5fa317a91eb3
-generated: "2026-08-04T15:44:19.584786698Z"
+digest: sha256:72a5e6b4ce02fc6c83efd615a0935a1db19ba09d4a800ceee4bd840704034e46
+generated: "2026-08-07T12:35:29.574786599Z"
