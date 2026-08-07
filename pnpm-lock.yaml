@@ -85,7 +85,7 @@ importers:
         version: 5.7.1(@sinclair/typebox@0.34.49)(@standard-schema/spec@1.1.0)(ajv@8.20.0)(class-transformer@0.5.1)(effect@3.21.0)(fp-ts@2.16.11)(io-ts@2.2.22(fp-ts@2.16.11))(react-hook-form@7.84.0(react@19.2.8))(yup@1.7.1)(zod@4.4.3)
       '@keycloak/keycloak-admin-client':
         specifier: ^26.3.2
-        version: 26.7.0
+        version: 26.7.1
       '@kubernetes/client-node':
         specifier: ^1.3.0
         version: 1.4.0
@@ -410,7 +410,7 @@ importers:
     dependencies:
       '@keycloak/keycloak-admin-client':
         specifier: ^26.0.0
-        version: 26.7.0
+        version: 26.7.1
     devDependencies:
       '@types/node':
         specifier: ^24.0.0
@@ -432,7 +432,7 @@ importers:
     dependencies:
       '@keycloak/keycloak-admin-client':
         specifier: ^26.0.0
-        version: 26.7.0
+        version: 26.7.1
       wait-on:
         specifier: ^9.0.0
         version: 9.1.0
@@ -509,7 +509,7 @@ importers:
     dependencies:
       '@keycloak/keycloak-admin-client':
         specifier: ^26.0.0
-        version: 26.7.0
+        version: 26.7.1
       nats:
         specifier: ^2.19.0
         version: 2.29.3
@@ -2249,8 +2249,8 @@ packages:
     peerDependencies:
       jsep: ^0.4.0||^1.0.0
 
-  '@keycloak/keycloak-admin-client@26.7.0':
-    resolution: {integrity: sha512-QEsX19sFCvknBzV2zelEkZ7waglCqzayY1zDtoRQinHuUiAe2f7q+xXT6R8XNukn+rShB41TOlG4QR2Bt6hxhw==}
+  '@keycloak/keycloak-admin-client@26.7.1':
+    resolution: {integrity: sha512-jKJ+xR6SxoIDY3LjThmLGkeJJGA4LaihqieJOd/qnVIUfNMsUjmwWNOomPAEH+TUfRz6CG9yiuxxvauuM1KmIQ==}
     engines: {node: '>=18'}
 
   '@kubernetes/client-node@1.4.0':
@@ -11214,7 +11214,7 @@ snapshots:
     dependencies:
       jsep: 1.4.0
 
-  '@keycloak/keycloak-admin-client@26.7.0':
+  '@keycloak/keycloak-admin-client@26.7.1':
     dependencies:
       '@microsoft/kiota-abstractions': 1.0.0-preview.103
       '@microsoft/kiota-http-fetchlibrary': 1.0.0-preview.103
