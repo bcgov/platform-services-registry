@@ -48,6 +48,7 @@ export default publicCloudProductEdit(({ session }) => {
     defaultValues: {
       ...currentProduct,
       repositories: [],
+      hasRepositories: null,
       isAgMinistry: false,
       isAgMinistryChecked: true,
       requiresNetworking: currentProduct?.requiresNetworking ?? false,
@@ -66,12 +67,14 @@ export default publicCloudProductEdit(({ session }) => {
 
   useEffect(() => {
     if (!currentProduct) return;
+    const repositories = currentProduct.repositories ?? [];
 
     setDisabled(!currentProduct?._permissions.edit);
     methods.reset(
       {
         ...snap.currentProduct,
-        repositories: currentProduct.repositories ?? [],
+        hasRepositories: currentProduct.hasRepositories ?? (repositories.length > 0 ? true : null),
+        repositories,
         isAgMinistry: false,
         isAgMinistryChecked: true,
       },
@@ -162,7 +165,7 @@ export default publicCloudProductEdit(({ session }) => {
           onSubmit={methods.handleSubmit(async (formData) => {
             await openPublicCloudProductEditSubmitModal({
               productData: formData,
-              originalProductData: methods.getValues(),
+              originalProductData: currentProduct,
             });
           })}
         >

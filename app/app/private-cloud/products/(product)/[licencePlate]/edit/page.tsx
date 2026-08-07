@@ -87,6 +87,7 @@ export default privateCloudProductEdit(({ session }) => {
       )(values, context, options);
     },
     defaultValues: {
+      hasRepositories: null,
       repositories: [],
       isAgMinistry: false,
       isAgMinistryChecked: true,
@@ -97,13 +98,14 @@ export default privateCloudProductEdit(({ session }) => {
 
   useEffect(() => {
     if (!snap.currentProduct) return;
-
+    const repositories = snap.currentProduct.repositories ?? [];
     setDisabled(!snap.currentProduct?._permissions.edit);
 
     methods.reset(
       {
         ...snap.currentProduct,
-        repositories: snap.currentProduct.repositories ?? [],
+        hasRepositories: snap.currentProduct.hasRepositories ?? (repositories.length > 0 ? true : null),
+        repositories,
         isAgMinistry: false,
         isAgMinistryChecked: true,
       },
@@ -115,7 +117,9 @@ export default privateCloudProductEdit(({ session }) => {
 
   const isSubmitEnabled = Object.keys(formState.dirtyFields).length > 0;
 
-  if (!snap.currentProduct) {
+  const currentProduct = snap.currentProduct;
+
+  if (!currentProduct) {
     return null;
   }
 
@@ -129,7 +133,7 @@ export default privateCloudProductEdit(({ session }) => {
         disabled: isDisabled,
         clusterDisabled: true,
         mode: 'edit',
-        canToggleTemporary: snap.currentProduct._permissions.toggleTemporary,
+        canToggleTemporary: currentProduct._permissions.toggleTemporary,
       },
     },
     {
@@ -139,7 +143,7 @@ export default privateCloudProductEdit(({ session }) => {
       Component: TeamContacts,
       componentArgs: {
         isTeamContactsDisabled: isDisabled,
-        isAdditionalMembersDisabled: isDisabled || !snap.currentProduct._permissions.manageMembers,
+        isAdditionalMembersDisabled: isDisabled || !currentProduct._permissions.manageMembers,
       },
     },
     {
@@ -175,7 +179,7 @@ export default privateCloudProductEdit(({ session }) => {
           onSubmit={methods.handleSubmit(async (formData) => {
             await openPrivateCloudProductEditSubmitModal({
               productData: formData,
-              originalProductData: methods.getValues(),
+              originalProductData: currentProduct,
             });
           })}
           autoComplete="off"
@@ -193,7 +197,7 @@ export default privateCloudProductEdit(({ session }) => {
         </form>
       </FormProvider>
 
-      <SiloAccordion className="my-4" product={snap.currentProduct} />
+      <SiloAccordion className="my-4" product={currentProduct} />
     </div>
   );
 });
