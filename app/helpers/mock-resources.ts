@@ -29,6 +29,7 @@ export function createSamplePrivateCloudProductData(args?: {
 
   const cluster = Cluster.SILVER;
   const organization = getRandomOrganization();
+  const hasRepositoriesProvided = Object.prototype.hasOwnProperty.call(data ?? {}, 'hasRepositories');
 
   const PO = mockNoRoleUsers[0];
   const TL1 = mockNoRoleUsers[1];
@@ -53,7 +54,7 @@ export function createSamplePrivateCloudProductData(args?: {
     ...data,
   };
 
-  if (_data.repositories.length > 0) {
+  if (!hasRepositoriesProvided && _data.repositories.length > 0) {
     _data.hasRepositories = true;
   }
 
@@ -78,6 +79,7 @@ export function createSamplePublicCloudProductData(args?: {
   const providerSelectionReasonsNote = getRandomProviderReasonsNote();
   const providerSelectionReasons = getRandomCloudProviderSelectionReasons();
   const organization = getRandomOrganization();
+  const hasRepositoriesProvided = Object.prototype.hasOwnProperty.call(data ?? {}, 'hasRepositories');
 
   const PO = mockNoRoleUsers[0];
   const TL1 = mockNoRoleUsers[1];
@@ -122,7 +124,7 @@ export function createSamplePublicCloudProductData(args?: {
     hasRepositories: null,
     ...data,
   };
-  if (_data.repositories.length > 0) {
+  if (!hasRepositoriesProvided && _data.repositories.length > 0) {
     _data.hasRepositories = true;
   }
 

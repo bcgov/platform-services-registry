@@ -89,9 +89,7 @@ export default function Repositories({
                 name={`repositories.${index}.url`}
                 placeholder="https://git-host.example/owner/repository"
                 disabled={disabled}
-                error="Enter a valid HTTPS repository URL"
               />
-
               {!disabled && (
                 <Button type="button" color="red" onClick={() => remove(index)}>
                   Delete
