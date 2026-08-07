@@ -121,6 +121,7 @@ describe('Review Private Cloud Update Request - Permissions', () => {
 
     const response = await editPrivateCloudProduct(requests.main.licencePlate, {
       ...requests.main.decisionData,
+      isAgMinistry: requests.main.project?.organization.isAgMinistry || false,
       resourceRequests: resourceRequests2,
     });
 
