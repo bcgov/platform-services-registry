@@ -28,3 +28,27 @@ export function compareEmailText(html: string, targets: string | string[]) {
     pass,
   };
 }
+
+export function emailTextContaining(targets: string | string[]) {
+  return {
+    asymmetricMatch(received: unknown): boolean {
+      if (typeof received !== 'string') {
+        return false;
+      }
+
+      return compareEmailText(received, targets).pass;
+    },
+
+    toString(): string {
+      return 'emailTextContaining';
+    },
+
+    getExpectedType(): string {
+      return 'string';
+    },
+
+    toAsymmetricMatcher(): string {
+      return `emailTextContaining(${JSON.stringify(targets)})`;
+    },
+  };
+}

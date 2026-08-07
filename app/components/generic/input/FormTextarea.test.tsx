@@ -27,7 +27,7 @@ describe('FormTextarea', () => {
     );
 
     await waitFor(() => {
-      expect(screen.getByText(`${expectedInitialCount} / 20`)).toBeInTheDocument();
+      expect(screen.getByText(`${expectedInitialCount} / 20`)).not.toBeNull();
     });
 
     expect(inputPropsOnChange).toHaveBeenCalledTimes(0);
@@ -36,7 +36,7 @@ describe('FormTextarea', () => {
     const textarea = screen.getByRole('textbox');
     fireEvent.change(textarea, { target: { value: 'hello' } });
 
-    expect(screen.getByText('5 / 20')).toBeInTheDocument();
+    expect(screen.getByText('5 / 20')).not.toBeNull();
     expect(inputPropsOnChange).toHaveBeenCalledTimes(1);
     expect(outerOnChange).toHaveBeenCalledTimes(1);
   }
@@ -58,7 +58,7 @@ describe('FormTextarea', () => {
     );
 
     await waitFor(() => {
-      expect(screen.getByText('4 / 10')).toBeInTheDocument();
+      expect(screen.getByText('4 / 10')).not.toBeNull();
     });
   });
 
@@ -66,7 +66,7 @@ describe('FormTextarea', () => {
     render(<FormTextarea name="quotaJustification" label="Reason for quota increase request" maxLength={10} />);
 
     await waitFor(() => {
-      expect(screen.getByText('0 / 10')).toBeInTheDocument();
+      expect(screen.getByText('0 / 10')).not.toBeNull();
     });
   });
 

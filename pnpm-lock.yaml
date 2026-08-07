@@ -291,6 +291,9 @@ importers:
       '@eslint/js':
         specifier: ^9.32.0
         version: 9.39.5
+      '@jest/globals':
+        specifier: ^30.4.1
+        version: 30.4.1
       '@react-email/preview-server':
         specifier: ^5.2.11
         version: 5.2.11(@babel/core@7.29.7)(@opentelemetry/api@1.9.1)(babel-plugin-macros@3.1.0)(react-dom@19.2.8(react@19.2.8))(react@19.2.8)
@@ -361,10 +364,10 @@ importers:
         specifier: ^3.0.0
         version: 3.0.0
       jest:
-        specifier: ^30.0.5
+        specifier: ^30.4.2
         version: 30.4.2(@types/node@24.13.3)(babel-plugin-macros@3.1.0)(ts-node@10.9.2(@types/node@24.13.3)(typescript@6.0.3))
       jest-mock:
-        specifier: ^30.0.5
+        specifier: ^30.4.1
         version: 30.4.1
       knip:
         specifier: ^6.0.0
@@ -382,7 +385,7 @@ importers:
         specifier: ~6.19.0
         version: 6.19.3(typescript@6.0.3)
       ts-jest:
-        specifier: ^29.4.1
+        specifier: ^29.4.12
         version: 29.4.12(@babel/core@7.29.7)(@jest/transform@30.4.1)(@jest/types@30.4.1)(babel-jest@30.4.1(@babel/core@7.29.7))(esbuild@0.28.1)(jest-util@30.4.1)(jest@30.4.2(@types/node@24.13.3)(babel-plugin-macros@3.1.0))(typescript@6.0.3)
       ts-node:
         specifier: ^10.9.2
@@ -10074,7 +10077,7 @@ snapshots:
       '@cucumber/ci-environment': 13.0.0
       '@cucumber/cucumber-expressions': 19.0.1
       '@cucumber/gherkin': 39.1.0
-      '@cucumber/gherkin-streams': 6.0.0(@cucumber/gherkin@39.1.0)(@cucumber/message-streams@4.1.1(@cucumber/messages@32.3.1))(@cucumber/messages@32.3.1)
+      '@cucumber/gherkin-streams': 6.0.0(@cucumber/gherkin@39.1.0)(@cucumber/message-streams@4.1.1(@cucumber/messages@33.0.4))(@cucumber/messages@32.3.1)
       '@cucumber/gherkin-utils': 11.0.0
       '@cucumber/html-formatter': 23.1.0(@cucumber/messages@32.3.1)
       '@cucumber/junit-xml-formatter': 0.13.3(@cucumber/messages@32.3.1)
@@ -10106,7 +10109,7 @@ snapshots:
       yaml: 2.9.0
       yup: 1.7.1
 
-  '@cucumber/gherkin-streams@6.0.0(@cucumber/gherkin@39.1.0)(@cucumber/message-streams@4.1.1(@cucumber/messages@32.3.1))(@cucumber/messages@32.3.1)':
+  '@cucumber/gherkin-streams@6.0.0(@cucumber/gherkin@39.1.0)(@cucumber/message-streams@4.1.1(@cucumber/messages@33.0.4))(@cucumber/messages@32.3.1)':
     dependencies:
       '@cucumber/gherkin': 39.1.0
       '@cucumber/message-streams': 4.1.1(@cucumber/messages@32.3.1)
@@ -16886,7 +16889,7 @@ snapshots:
   normalize-package-data@8.0.0:
     dependencies:
       hosted-git-info: 9.0.3
-      semver: 7.8.1
+      semver: 7.8.5
       validate-npm-package-license: 3.0.4
 
   normalize-path@3.0.0: {}
@@ -17767,7 +17770,7 @@ snapshots:
       '@types/normalize-package-data': 2.4.4
       normalize-package-data: 8.0.0
       parse-json: 8.3.0
-      type-fest: 5.7.0
+      type-fest: 5.8.0
       unicorn-magic: 0.4.0
 
   read-pkg@9.0.1:
