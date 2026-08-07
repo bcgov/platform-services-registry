@@ -93,6 +93,8 @@ type SearchUser = Prisma.UserGetPayload<{
     email: true;
     upn: true;
     idir: true;
+    idirGuid: true;
+    isGuidValid: true;
     githubUsername: true;
     githubAccountId: true;
     officeLocation: true;

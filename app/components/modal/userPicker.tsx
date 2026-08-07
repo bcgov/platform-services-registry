@@ -216,9 +216,7 @@ export const openUserPickerModal = createModal<ModalProps, ModalState>({
       <>
         <UserAutocomplete
           key={autocompId}
-          onSelect={(item) => {
-            const selectedUser = item ?? null;
-
+          onSelect={(selectedUser: SearchedUser | null = null) => {
             setUser(selectedUser);
             resetGitHubState(selectedUser);
           }}

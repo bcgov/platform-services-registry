@@ -35,15 +35,24 @@ export type UpdateUserGitHubResult =
     };
 
 export async function updateUserGitHub(userId: string, username: string): Promise<UpdateUserGitHubResult> {
-  const response = await baseInstance.patch<UpdatedGitHubUser | ApiErrorResponse>(
-    `/users/${userId}`,
-    {
-      username,
-    },
-    {
-      validateStatus: () => true,
-    },
-  );
+  const response = await baseInstance
+    .patch<UpdatedGitHubUser | ApiErrorResponse>(
+      `/users/${userId}`,
+      {
+        username,
+      },
+      {
+        validateStatus: () => true,
+      },
+    )
+    .catch(() => null);
+
+  if (!response) {
+    return {
+      success: false,
+      message: 'Unable to save the GitHub account.',
+    };
+  }
 
   if (response.status >= 400) {
     const error = response.data as ApiErrorResponse;

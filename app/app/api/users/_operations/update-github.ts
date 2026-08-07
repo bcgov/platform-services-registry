@@ -30,15 +30,6 @@ export default async function updateGitHubOp({
     return BadRequestResponse('Registry user was not found.');
   }
 
-  /*
-   * TODO: Verify that the current user is allowed
-   * to update this person's GitHub information.
-   *
-   * Use session when product-level authorization
-   * requirements are finalized.
-   */
-  void session;
-
   const validation = await validateGitHubUsername(username);
 
   if (!validation.valid) {
