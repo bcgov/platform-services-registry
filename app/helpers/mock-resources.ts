@@ -29,7 +29,7 @@ export function createSamplePrivateCloudProductData(args?: {
 
   const cluster = Cluster.SILVER;
   const organization = getRandomOrganization();
-  const hasRepositoriesProvided = Object.prototype.hasOwnProperty.call(data ?? {}, 'hasRepositories');
+  const hasRepositoriesProvided = Object.hasOwn(data ?? {}, 'hasRepositories');
 
   const PO = mockNoRoleUsers[0];
   const TL1 = mockNoRoleUsers[1];
@@ -79,7 +79,7 @@ export function createSamplePublicCloudProductData(args?: {
   const providerSelectionReasonsNote = getRandomProviderReasonsNote();
   const providerSelectionReasons = getRandomCloudProviderSelectionReasons();
   const organization = getRandomOrganization();
-  const hasRepositoriesProvided = Object.prototype.hasOwnProperty.call(data ?? {}, 'hasRepositories');
+  const hasRepositoriesProvided = Object.hasOwn(data ?? {}, 'hasRepositories');
 
   const PO = mockNoRoleUsers[0];
   const TL1 = mockNoRoleUsers[1];
