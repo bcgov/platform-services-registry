@@ -16,7 +16,7 @@ module "keycloak_test" {
 
 module "keycloak_prod" {
   source        = "./prod"
-  client_id     = var.test_client_id
+  client_id     = var.prod_client_id
   client_secret = var.prod_client_secret
   url           = "https://loginproxy.gov.bc.ca"
   base_path     = "/auth"
