@@ -25,7 +25,9 @@ import PublicCloudForecastSection from '@/components/public-cloud/sections/Publi
 import TeamContacts from '@/components/public-cloud/sections/TeamContacts';
 import { GlobalRole } from '@/constants';
 import createClientPage from '@/core/client-page';
+import { areOnlyRepositoryFieldsDirty, getRepositoryFormValues } from '@/helpers/repository';
 import { normalizeStoredAwsLzaAccounts } from '@/services/aws-lza/accounts';
+import { updatePublicCloudProductRepositories } from '@/services/backend/public-cloud/products';
 import { usePublicProductState } from '@/states/global';
 import { publicCloudEditRequestBodySchema } from '@/validation-schemas/public-cloud';
 
@@ -63,18 +65,17 @@ export default publicCloudProductEdit(({ session }) => {
     },
   });
 
-  const { formState } = methods;
+  const { formState, reset } = methods;
 
   useEffect(() => {
     if (!currentProduct) return;
-    const repositories = currentProduct.repositories ?? [];
 
-    setDisabled(!currentProduct?._permissions.edit);
-    methods.reset(
+    setDisabled(!currentProduct._permissions.edit);
+
+    reset(
       {
-        ...snap.currentProduct,
-        hasRepositories: currentProduct.hasRepositories ?? (repositories.length > 0 ? true : null),
-        repositories,
+        ...currentProduct,
+        ...getRepositoryFormValues(currentProduct),
         isAgMinistry: false,
         isAgMinistryChecked: true,
       },
@@ -82,7 +83,7 @@ export default publicCloudProductEdit(({ session }) => {
         keepDirtyValues: true,
       },
     );
-  }, [currentProduct]);
+  }, [currentProduct, reset]);
 
   const isSubmitEnabled = Object.keys(formState.dirtyFields).length > 0;
 
@@ -163,6 +164,22 @@ export default publicCloudProductEdit(({ session }) => {
         <form
           autoComplete="off"
           onSubmit={methods.handleSubmit(async (formData) => {
+            const onlyRepositoriesChanged = areOnlyRepositoryFieldsDirty(methods.formState.dirtyFields);
+
+            if (onlyRepositoriesChanged) {
+              await updatePublicCloudProductRepositories(currentProduct.licencePlate, {
+                hasRepositories: formData.hasRepositories,
+                repositories: formData.repositories,
+              });
+
+              reset({
+                ...methods.getValues(),
+                hasRepositories: formData.hasRepositories,
+                repositories: formData.repositories,
+              });
+
+              return;
+            }
             await openPublicCloudProductEditSubmitModal({
               productData: formData,
               originalProductData: currentProduct,

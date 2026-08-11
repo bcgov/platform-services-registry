@@ -43,6 +43,11 @@ export default function Repositories({
           </Text>
           .
         </Text>
+        <Text>
+          Add any repositories associated with your application, including source-code, infrastructure and GitOps
+          repositories. Repositories can be hosted on services such as GitHub, Bitbucket or GitLab.{' '}
+        </Text>
+
         <Controller
           name="hasRepositories"
           control={control}
@@ -71,7 +76,6 @@ export default function Repositories({
             {repositoriesError}
           </Text>
         )}
-        <Text>Repositories may be hosted on any Git hosting service. Repository URLs must be valid and use HTTPS.</Text>
       </Stack>
 
       {hasRepositories === true && fields.length > 0 && (

@@ -49,38 +49,7 @@ export const deleteRequestRejectBodySchema = z.object({
 export const hasRepositoriesSchema = z.boolean().nullable().optional().default(null);
 
 export const repositorySchema = z.object({
-  url: z
-    .string()
-    .trim()
-    .url('Enter a valid repository URL')
-    .refine(
-      (value) => {
-        try {
-          return new URL(value).protocol === 'https:';
-        } catch {
-          return false;
-        }
-      },
-      {
-        message: 'Repository URL must use HTTPS',
-      },
-    )
-    .refine(
-      (value) => {
-        try {
-          const pathSegments = new URL(value).pathname.toLowerCase().split('/').filter(Boolean);
-
-          const [owner, repository] = pathSegments;
-
-          return Boolean(owner && repository);
-        } catch {
-          return false;
-        }
-      },
-      {
-        message: 'Repository URL must include an owner and repository name',
-      },
-    ),
+  url: z.string().trim().min(1, 'Repository URL is required'),
 });
 
 export function validateRepositorySelection(data: RepositoryFormData, ctx: z.RefinementCtx) {

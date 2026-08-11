@@ -17,7 +17,7 @@ import {
   PrivateCloudProductSearchBody,
   PrivateCloudProductSearchNoPaginationBody,
 } from '@/validation-schemas/private-cloud';
-import { Comment } from '@/validation-schemas/shared';
+import { Comment, RepositoryFormData } from '@/validation-schemas/shared';
 import { instance as parentInstance } from './instance';
 
 export const instance = axios.create({
@@ -236,6 +236,12 @@ export async function getPdbPolicyStatus(licencePlate: string, cluster: Cluster,
   const response = await instance.get<PdbPolicyStatus>(
     `/${licencePlate}/policy-reports?environment=${environment}&cluster=${cluster}`,
   );
+
+  return response.data;
+}
+
+export async function updatePrivateCloudProductRepositories(licencePlate: string, data: RepositoryFormData) {
+  const response = await instance.patch(`/${licencePlate}/repositories`, data);
 
   return response.data;
 }
