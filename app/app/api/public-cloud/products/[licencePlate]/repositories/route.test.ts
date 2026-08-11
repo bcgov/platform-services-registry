@@ -30,6 +30,10 @@ let licencePlate = '';
 describe('PATCH Public Cloud Product Repositories', () => {
   it('should delete existing public cloud products', async () => {
     await prisma.publicCloudProduct.deleteMany();
+
+    const productCount = await prisma.publicCloudProduct.count();
+
+    expect(productCount).toBe(0);
   });
 
   it('should create and provision a public cloud product', async () => {
@@ -68,7 +72,7 @@ describe('PATCH Public Cloud Product Repositories', () => {
   });
 
   it('should add a viewer to the product', async () => {
-    await prisma.publicCloudProduct.update({
+    const product = await prisma.publicCloudProduct.update({
       where: {
         licencePlate,
       },
@@ -80,7 +84,17 @@ describe('PATCH Public Cloud Product Repositories', () => {
           },
         },
       },
+      select: {
+        members: true,
+      },
     });
+
+    expect(product.members).toContainEqual(
+      expect.objectContaining({
+        userId: VIEWER.id,
+        roles: [PublicCloudProductMemberRole.VIEWER],
+      }),
+    );
   });
 
   it('should allow the product owner to add repositories without creating a request', async () => {

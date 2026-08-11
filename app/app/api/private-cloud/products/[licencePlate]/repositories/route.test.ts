@@ -24,10 +24,13 @@ const memberData = {
 };
 
 let licencePlate = '';
-
 describe('PATCH Private Cloud Product Repositories', () => {
   it('should delete existing private cloud products', async () => {
     await prisma.privateCloudProduct.deleteMany();
+
+    const productCount = await prisma.privateCloudProduct.count();
+
+    expect(productCount).toBe(0);
   });
 
   it('should create and provision a private cloud product', async () => {
@@ -67,7 +70,7 @@ describe('PATCH Private Cloud Product Repositories', () => {
   });
 
   it('should add a viewer to the product', async () => {
-    await prisma.privateCloudProduct.update({
+    const product = await prisma.privateCloudProduct.update({
       where: {
         licencePlate,
       },
@@ -79,7 +82,17 @@ describe('PATCH Private Cloud Product Repositories', () => {
           },
         },
       },
+      select: {
+        members: true,
+      },
     });
+
+    expect(product.members).toContainEqual(
+      expect.objectContaining({
+        userId: VIEWER.id,
+        roles: [PrivateCloudProductMemberRole.VIEWER],
+      }),
+    );
   });
 
   it('should allow the product owner to add repositories without creating a request', async () => {

@@ -29,7 +29,7 @@ import {
   PrivateCloudProductSimpleDecorated,
   PrivateCloudRequestDetailDecorated,
 } from '@/types/private-cloud';
-import { RepositoryFormData } from '@/validation-schemas';
+import type { RepositoryFormData } from '@/validation-schemas';
 import {
   PrivateCloudCreateRequestBody,
   PrivateCloudEditRequestBody,
