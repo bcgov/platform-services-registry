@@ -21,6 +21,47 @@ import {
   RequestDecision,
   validateRepositorySelection,
 } from './shared';
+import type { RepositoryFormData } from './shared';
+
+type PrivateCloudCommonValidationData = {
+  isAgMinistry: boolean;
+  isAgMinistryChecked?: boolean;
+  projectOwnerId: string;
+  primaryTechnicalLeadId: string;
+};
+
+function applyCommonPrivateCloudValidations<T extends z.ZodTypeAny>(schema: T) {
+  return schema
+    .superRefine((formData, context) => {
+      validateRepositorySelection(formData as RepositoryFormData, context);
+    })
+    .refine(
+      (formData) => {
+        const data = formData as PrivateCloudCommonValidationData;
+
+        return !data.isAgMinistry || data.isAgMinistryChecked === true;
+      },
+      {
+        message: 'AG Ministry Checkbox should be checked.',
+        path: ['isAgMinistryChecked'],
+      },
+    )
+    .refine(
+      (formData) => {
+        const data = formData as PrivateCloudCommonValidationData;
+
+        return validateDistinctPOandTl(data);
+      },
+      {
+        message: 'The Project Owner and Primary Technical Lead must be different.',
+        path: ['primaryTechnicalLeadId'],
+      },
+    );
+}
+
+const privateCloudAgMinistrySchema = z.object({
+  isAgMinistryChecked: z.boolean().optional(),
+});
 
 export const privateCloudBillingSearchBodySchema = z.object({
   yearMonth: z.string().length(8, 'Date must be in YYYY-MMM'),
@@ -127,27 +168,9 @@ export const privateCloudProductWebhookBodySchema = z.object({
   password: z.string().min(2).max(40).or(z.literal('')).or(z.null()).optional(),
 });
 
-export const privateCloudCreateRequestBodySchema = _privateCloudCreateRequestBodySchema
-  .merge(
-    z.object({
-      isAgMinistryChecked: z.boolean().optional(),
-    }),
-  )
-  .merge(privateCloudProductWebhookBodySchema)
-  .refine(
-    (formData) => {
-      return formData.isAgMinistry ? formData.isAgMinistryChecked : true;
-    },
-    {
-      message: 'AG Ministry Checkbox should be checked.',
-      path: ['isAgMinistryChecked'],
-    },
-  )
-  .refine(validateDistinctPOandTl, {
-    message: 'The Project Owner and Primary Technical Lead must be different.',
-    path: ['primaryTechnicalLeadId'],
-  })
-  .superRefine(validateRepositorySelection);
+export const privateCloudCreateRequestBodySchema = applyCommonPrivateCloudValidations(
+  _privateCloudCreateRequestBodySchema.merge(privateCloudAgMinistrySchema).merge(privateCloudProductWebhookBodySchema),
+);
 
 const _privateCloudEditRequestBodySchema = _privateCloudCreateRequestBodySchema.merge(
   z.object({
@@ -156,34 +179,21 @@ const _privateCloudEditRequestBodySchema = _privateCloudCreateRequestBodySchema.
   }),
 );
 
-export const privateCloudEditRequestBodySchema = _privateCloudEditRequestBodySchema
+export const privateCloudEditRequestBodySchema = applyCommonPrivateCloudValidations(
+  _privateCloudEditRequestBodySchema.merge(privateCloudAgMinistrySchema),
+);
+
+export const privateCloudRequestDecisionBodySchema = _privateCloudEditRequestBodySchema
   .merge(
     z.object({
-      isAgMinistryChecked: z.boolean().optional(),
+      type: z.enum(RequestType),
+      decision: z.enum(RequestDecision),
+      decisionComment: optionalCommentSchema,
     }),
   )
-  .refine(
-    (formData) => {
-      return formData.isAgMinistry ? formData.isAgMinistryChecked : true;
-    },
-    {
-      message: 'AG Ministry Checkbox should be checked.',
-      path: ['isAgMinistryChecked'],
-    },
-  )
-  .refine(validateDistinctPOandTl, {
-    message: 'The Project Owner and Primary Technical Lead must be different.',
-    path: ['primaryTechnicalLeadId'],
-  })
-  .superRefine(validateRepositorySelection);
-
-export const privateCloudRequestDecisionBodySchema = _privateCloudEditRequestBodySchema.merge(
-  z.object({
-    type: z.enum(RequestType),
-    decision: z.enum(RequestDecision),
-    decisionComment: optionalCommentSchema,
-  }),
-);
+  .superRefine((formData, context) => {
+    validateRepositorySelection(formData, context);
+  });
 
 export const privateCloudProductSearchNoPaginationBodySchema = z.object({
   search: z.string().optional(),
