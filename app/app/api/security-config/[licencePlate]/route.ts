@@ -24,15 +24,15 @@ export const GET = apiHandler(async ({ pathParams, queryParams, session }) => {
   const configProm = models.securityConfig.get(
     {
       where: {
-        licencePlate: licencePlate,
-        context: context,
+        licencePlate,
+        context,
       },
     },
     session,
   );
 
   const projectProm =
-    queryParams.context === ProjectContext.PRIVATE
+    context === ProjectContext.PRIVATE
       ? models.privateCloudProduct.get(
           {
             where: {
@@ -41,6 +41,7 @@ export const GET = apiHandler(async ({ pathParams, queryParams, session }) => {
             select: {
               cluster: true,
               repositories: true,
+              hasRepositories: true,
             },
           },
           session,
@@ -53,6 +54,7 @@ export const GET = apiHandler(async ({ pathParams, queryParams, session }) => {
             select: {
               provider: true,
               repositories: true,
+              hasRepositories: true,
             },
           },
           session,

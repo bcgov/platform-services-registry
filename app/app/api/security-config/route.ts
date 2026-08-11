@@ -16,8 +16,8 @@ export const PUT = apiHandler(async ({ body, session }) => {
   const existQuery = { where: { licencePlate: licencePlate } };
   let { data: count } =
     body.context === ProjectContext.PRIVATE
-      ? await models.privateCloudProduct.count(existQuery)
-      : await models.publicCloudProduct.count(existQuery);
+      ? await models.privateCloudProduct.count(existQuery, session)
+      : await models.publicCloudProduct.count(existQuery, session);
 
   // Find the authority in the requested projects if not found in the existing projects.
   if (count === 0) {
@@ -31,6 +31,8 @@ export const PUT = apiHandler(async ({ body, session }) => {
     throw Error('invalid project');
   }
 
+  const hasRepositories = repositories.length > 0;
+
   if (context === ProjectContext.PRIVATE) {
     const product = await prisma.privateCloudProduct.update({
       where: {
@@ -38,10 +40,12 @@ export const PUT = apiHandler(async ({ body, session }) => {
       },
       data: {
         repositories,
+        hasRepositories,
       },
       select: {
         licencePlate: true,
         repositories: true,
+        hasRepositories: true,
       },
     });
 
@@ -53,11 +57,12 @@ export const PUT = apiHandler(async ({ body, session }) => {
       licencePlate,
     },
     data: {
-      repositories,
+      hasRepositories,
     },
     select: {
       licencePlate: true,
       repositories: true,
+      hasRepositories: true,
     },
   });
 

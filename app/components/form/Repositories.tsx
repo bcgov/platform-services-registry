@@ -36,14 +36,6 @@ export default function Repositories({
     <div>
       <Stack gap="sm" mb="lg">
         <Text>
-          Add the source-code, infrastructure, and GitOps repositories associated with this product. Repository
-          information is not required, but{' '}
-          <Text span fw={600}>
-            highly recommended
-          </Text>
-          .
-        </Text>
-        <Text>
           Add any repositories associated with your application, including source-code, infrastructure and GitOps
           repositories. Repositories can be hosted on services such as GitHub, Bitbucket or GitLab.{' '}
         </Text>

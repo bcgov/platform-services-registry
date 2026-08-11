@@ -116,10 +116,10 @@ export default function ProductDetails({ product }: Props) {
                   lineHeight: '24px',
                 }}
               >
-                <li style={{ marginBottom: '4px' }}>Add the URL for any repository associated with your product.</li>
+                <li style={{ marginBottom: '4px' }}>Add the URL for any repository associated with your product</li>
                 <li>
                   Select <strong>No</strong> for “Does this product have repositories?” if your product has no
-                  associated repositories.
+                  associated repositories
                 </li>
               </ul>
 
