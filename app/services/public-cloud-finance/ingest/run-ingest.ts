@@ -59,42 +59,48 @@ async function loadAccountMap(scope?: BillingFetchScope) {
 
 async function refreshRollupsForPeriod(provider: Provider, period: BillingPeriod, licencePlates: string[]) {
   const plates = [...new Set(licencePlates)];
-  for (const licencePlate of plates) {
-    const sum = await prisma.actualSpend.aggregate({
-      where: {
-        AND: [
-          activeActualSpendWhere,
-          {
+  if (plates.length === 0) return;
+
+  const groups = await prisma.actualSpend.groupBy({
+    by: ['licencePlate'],
+    where: {
+      AND: [
+        activeActualSpendWhere,
+        {
+          licencePlate: { in: plates },
+          provider,
+          year: period.year,
+          month: period.month,
+        },
+      ],
+    },
+    _sum: { amountCad: true },
+  });
+  const amountByPlate = new Map(groups.map((group) => [group.licencePlate, group._sum.amountCad ?? 0]));
+
+  await Promise.all(
+    plates.map((licencePlate) => {
+      const amountCad = amountByPlate.get(licencePlate) ?? 0;
+      return prisma.monthlyProductSpendRollup.upsert({
+        where: {
+          licencePlate_provider_year_month: {
             licencePlate,
             provider,
             year: period.year,
             month: period.month,
           },
-        ],
-      },
-      _sum: { amountCad: true },
-    });
-    const amountCad = sum._sum.amountCad ?? 0;
-    const existingRollup = await prisma.monthlyProductSpendRollup.findFirst({
-      where: { licencePlate, provider, year: period.year, month: period.month },
-    });
-    if (existingRollup) {
-      await prisma.monthlyProductSpendRollup.update({
-        where: { id: existingRollup.id },
-        data: { amountCad },
-      });
-    } else {
-      await prisma.monthlyProductSpendRollup.create({
-        data: {
+        },
+        create: {
           licencePlate,
           provider,
           year: period.year,
           month: period.month,
           amountCad,
         },
+        update: { amountCad },
       });
-    }
-  }
+    }),
+  );
 }
 
 function partitionMatchedUnmatched(lines: NormalizedBillingLine[], accountMap: Map<string, string>) {

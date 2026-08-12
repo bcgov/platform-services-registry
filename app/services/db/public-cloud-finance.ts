@@ -79,25 +79,33 @@ function buildMonthlyChart(options: {
 }) {
   const { fyMonths, products, forecastByPlate, actualByPlateMonth, rollups, complete } = options;
 
-  return fyMonths.map((m) => {
-    const forecastTotal = products.reduce((sum, product) => {
-      const values = forecastByPlate.get(product.licencePlate);
-      if (!values) return sum;
-      const hit = values.find((v) => v.year === m.year && v.month === m.month);
-      return sum + (hit?.amount ?? 0);
-    }, 0);
+  const forecastByPlateMonth = new Map<string, number>();
+  for (const product of products) {
+    const values = forecastByPlate.get(product.licencePlate);
+    if (!values) continue;
+    for (const value of values) {
+      forecastByPlateMonth.set(`${product.licencePlate}:${monthKey(value.year, value.month)}`, value.amount);
+    }
+  }
 
+  const monthsWithActuals = new Set(rollups.map((row) => monthKey(row.year, row.month)));
+
+  return fyMonths.map((m) => {
+    const keySuffix = monthKey(m.year, m.month);
+    const forecastTotal = products.reduce(
+      (sum, product) => sum + (forecastByPlateMonth.get(`${product.licencePlate}:${keySuffix}`) ?? 0),
+      0,
+    );
     const actualTotal = products.reduce(
-      (sum, product) => sum + (actualByPlateMonth.get(`${product.licencePlate}:${monthKey(m.year, m.month)}`) ?? 0),
+      (sum, product) => sum + (actualByPlateMonth.get(`${product.licencePlate}:${keySuffix}`) ?? 0),
       0,
     );
 
-    const hasActualRows = rollups.some((r) => r.year === m.year && r.month === m.month);
     return {
       year: m.year,
       month: m.month,
       label: new Date(m.year, m.month - 1, 1).toLocaleString('en-CA', { month: 'short' }),
-      actual: hasActualRows ? actualTotal : null,
+      actual: monthsWithActuals.has(keySuffix) ? actualTotal : null,
       forecast: forecastTotal,
       isElapsed: m.year < complete.year || (m.year === complete.year && m.month <= complete.month),
       isCurrentPartial: isCurrentCalendarMonth(m.year, m.month),

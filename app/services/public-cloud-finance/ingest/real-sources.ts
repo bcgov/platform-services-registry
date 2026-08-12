@@ -34,7 +34,8 @@ function toCad(
 ): { amountCad: number; fxRate?: number; fxRateDate?: Date } {
   const sourceCurrency = (currency ?? 'CAD').toUpperCase();
   if (sourceCurrency === 'CAD') {
-    return { amountCad: amount, fxRate: 1, fxRateDate: fx?.rateDate ?? new Date() };
+    // No conversion — omit FX fields so CAD rows stay deterministic.
+    return { amountCad: amount };
   }
   if (!fx) {
     throw new Error('USD→CAD conversion requires a month-end FX rate from Bank of Canada');

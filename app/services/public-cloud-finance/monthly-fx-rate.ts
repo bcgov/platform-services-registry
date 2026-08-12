@@ -18,6 +18,47 @@ function parseObservationDate(date: string): Date {
   return new Date(`${date}T00:00:00.000Z`);
 }
 
+function toStored(row: {
+  pair: string;
+  year: number;
+  month: number;
+  rate: number;
+  rateDate: Date;
+  source: string;
+}): StoredMonthlyFxRate {
+  return {
+    pair: row.pair,
+    year: row.year,
+    month: row.month,
+    rate: row.rate,
+    rateDate: row.rateDate,
+    source: row.source,
+  };
+}
+
+async function upsertMonthlyUsdCadRate(data: {
+  year: number;
+  month: number;
+  rate: number;
+  rateDate: Date;
+  source: string;
+}): Promise<StoredMonthlyFxRate> {
+  // upsert keeps the first writer under concurrent ingest (update is a no-op).
+  const row = await prisma.monthlyFxRate.upsert({
+    where: { pair_year_month: { pair: USD_CAD_PAIR, year: data.year, month: data.month } },
+    create: {
+      pair: USD_CAD_PAIR,
+      year: data.year,
+      month: data.month,
+      rate: data.rate,
+      rateDate: data.rateDate,
+      source: data.source,
+    },
+    update: {},
+  });
+  return toStored(row);
+}
+
 /**
  * Ensure a month-end USD/CAD rate is persisted for invoice conversion.
  * Reuses an existing MonthlyFxRate row; otherwise fetches Bank of Canada Valet
@@ -29,38 +70,18 @@ export async function ensureMonthlyUsdCadRate(year: number, month: number): Prom
   });
 
   if (existing) {
-    return {
-      pair: existing.pair,
-      year: existing.year,
-      month: existing.month,
-      rate: existing.rate,
-      rateDate: existing.rateDate,
-      source: existing.source,
-    };
+    return toStored(existing);
   }
 
   try {
     const boc = await fetchUsdCadExchangeRateForMonth(year, month);
-    const rateDate = parseObservationDate(boc.date);
-    const created = await prisma.monthlyFxRate.create({
-      data: {
-        pair: USD_CAD_PAIR,
-        year,
-        month,
-        rate: boc.rate,
-        rateDate,
-        source: boc.source,
-      },
+    return upsertMonthlyUsdCadRate({
+      year,
+      month,
+      rate: boc.rate,
+      rateDate: parseObservationDate(boc.date),
+      source: boc.source,
     });
-
-    return {
-      pair: created.pair,
-      year: created.year,
-      month: created.month,
-      rate: created.rate,
-      rateDate: created.rateDate,
-      source: created.source,
-    };
   } catch (error) {
     const fallback = Number(process.env.FINANCE_USD_CAD_RATE);
     if (Number.isFinite(fallback) && fallback > 0) {
@@ -69,25 +90,13 @@ export async function ensureMonthlyUsdCadRate(year: number, month: number): Prom
           error,
         )}`,
       );
-      const rateDate = new Date(Date.UTC(year, month, 0));
-      const created = await prisma.monthlyFxRate.create({
-        data: {
-          pair: USD_CAD_PAIR,
-          year,
-          month,
-          rate: fallback,
-          rateDate,
-          source: 'FINANCE_USD_CAD_RATE',
-        },
+      return upsertMonthlyUsdCadRate({
+        year,
+        month,
+        rate: fallback,
+        rateDate: new Date(Date.UTC(year, month, 0)),
+        source: 'FINANCE_USD_CAD_RATE',
       });
-      return {
-        pair: created.pair,
-        year: created.year,
-        month: created.month,
-        rate: created.rate,
-        rateDate: created.rateDate,
-        source: created.source,
-      };
     }
 
     throw error;
