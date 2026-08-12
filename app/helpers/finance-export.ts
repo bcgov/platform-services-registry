@@ -14,24 +14,31 @@ export { contentDispositionAttachment };
 type Snapshot = Awaited<ReturnType<typeof getFinanceSnapshot>>;
 type Rankings = Awaited<ReturnType<typeof getFinanceRankings>>;
 type ForecastSummary = Awaited<ReturnType<typeof getPlatformForecastSummary>>;
+type ForecastProduct = ForecastSummary['groups'][number]['products'][number];
+
+function formatExportProductName(product: Pick<ForecastProduct, 'name' | 'status'>) {
+  return product.status === 'INACTIVE' ? `${product.name} (archived)` : product.name;
+}
+
+function matchesProviderFilter(productProvider: ForecastProduct['provider'], provider: ProviderFilter) {
+  return provider === 'ALL' || productProvider === provider;
+}
+
+function addForecastProductRows(sheet: ExcelJS.Worksheet, product: ForecastProduct, provider: ProviderFilter) {
+  if (!product.hasForecast || !matchesProviderFilter(product.provider, provider)) return;
+
+  const displayName = formatExportProductName(product);
+  for (const month of product.monthlyTotals) {
+    sheet.addRow([product.licencePlate, displayName, product.provider, month.year, month.month, month.amount]);
+  }
+}
 
 function addForecastSheet(workbook: ExcelJS.Workbook, forecastSummary: ForecastSummary, provider: ProviderFilter) {
   const sheet = workbook.addWorksheet('Forecast by month');
   sheet.addRow(['Project identifier', 'Name', 'Provider', 'Year', 'Month', 'Forecast CAD']);
   for (const group of forecastSummary.groups) {
     for (const product of group.products) {
-      if (!product.hasForecast) continue;
-      if (provider !== 'ALL' && product.provider !== provider) continue;
-      for (const month of product.monthlyTotals) {
-        sheet.addRow([
-          product.licencePlate,
-          product.status === 'INACTIVE' ? `${product.name} (archived)` : product.name,
-          product.provider,
-          month.year,
-          month.month,
-          month.amount,
-        ]);
-      }
+      addForecastProductRows(sheet, product, provider);
     }
   }
 }
