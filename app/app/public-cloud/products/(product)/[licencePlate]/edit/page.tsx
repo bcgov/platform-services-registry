@@ -40,7 +40,7 @@ const publicCloudProductEdit = createClientPage({
   validations: { pathParams: pathParamSchema },
 });
 export default publicCloudProductEdit(({ session }) => {
-  const [, snap] = usePublicProductState();
+  const [state, snap] = usePublicProductState();
   const [isDisabled, setDisabled] = useState(false);
 
   const currentProduct = snap.currentProduct;
@@ -171,6 +171,12 @@ export default publicCloudProductEdit(({ session }) => {
                 hasRepositories: formData.hasRepositories,
                 repositories: formData.repositories,
               });
+
+              state.currentProduct = {
+                ...currentProduct,
+                hasRepositories: formData.hasRepositories,
+                repositories: formData.repositories,
+              };
 
               reset({
                 ...methods.getValues(),

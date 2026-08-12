@@ -37,7 +37,7 @@ export default function Repositories({
       <Stack gap="sm" mb="lg">
         <Text>
           Add any repositories associated with your application, including source-code, infrastructure and GitOps
-          repositories. Repositories can be hosted on services such as GitHub, Bitbucket or GitLab.{' '}
+          repositories. Repositories can be hosted on services such as GitHub, Bitbucket or GitLab.
         </Text>
 
         <Controller

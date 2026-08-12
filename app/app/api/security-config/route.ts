@@ -13,10 +13,7 @@ const apiHandler = createApiHandler({
 });
 
 export const PUT = apiHandler(async ({ body, session }) => {
-  const { licencePlate, context, repositories = [] } = body;
-
-  const hasRepositories =
-    body.hasRepositories === undefined ? (repositories.length > 0 ? true : null) : body.hasRepositories;
+  const { licencePlate, context, repositories = [], hasRepositories } = body;
 
   if (context === ProjectContext.PRIVATE) {
     const { data: privateProduct } = await models.privateCloudProduct.get(
