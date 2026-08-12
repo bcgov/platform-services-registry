@@ -20,8 +20,10 @@ export function convertCurrencyAmount(
   to: CurrencyCode,
   usdCadRate?: number,
 ): number {
+  if (from === to) return amount;
+  if (amount === 0) return 0;
+
   const rounded = Math.round(amount);
-  if (from === to || rounded === 0) return rounded;
 
   if (from === 'USD' && to === 'CAD') {
     if (usdCadRate == null || !Number.isFinite(usdCadRate) || usdCadRate <= 0) {
