@@ -66,7 +66,7 @@ Optional file-export fallback still works with `FINANCE_AWS_COST_EXPORT_PATH` / 
 
 ## Provider credentials & Vault (Test / Prod)
 
-Local live ingest uses interactive developer auth (AWS SSO profile / `az login`). That is **not** the Test/Prod model.
+Local live ingest keeps interactive developer auth (AWS SSO profile / `az login`). Test/Prod uses Vault-injected service principals. Both paths are wired in the real billing adapters.
 
 ### Architecture
 
@@ -81,45 +81,55 @@ Airflow (schedule)
 -   **Airflow** does not hold AWS/Azure billing credentials. It only triggers the registry API.
 -   **Registry app** (Test/Prod) holds provider credentials via the existing Vault injector pattern (`helm/main` vault annotations).
 -   **Dev** stays on simulated actuals; no provider secrets required.
+-   **Local live** still uses CLI creds (`FINANCE_AWS_PROFILE` / `az login`) for `pnpm test:finance-live`.
 -   Never commit secrets, account IDs, or service-principal passwords to git. GitHub Actions does not receive these credentials.
+
+### Credential resolution (implemented)
+
+| Provider | Local (CLI)                                                            | Test / Prod (Vault)                                                                                  |
+| -------- | ---------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------- |
+| AWS_LZA  | `FINANCE_AWS_PROFILE` / `AWS_PROFILE` → shared/SSO profile             | Default AWS credential chain (`AWS_ACCESS_KEY_ID` + `AWS_SECRET_ACCESS_KEY`, or IRSA/`AWS_ROLE_ARN`) |
+| Azure    | `DefaultAzureCredential` (picks up `az login`) with `az rest` fallback | `DefaultAzureCredential` via `AZURE_CLIENT_ID` / `AZURE_TENANT_ID` / `AZURE_CLIENT_SECRET`           |
+
+Subscription / account IDs for joins still come from product metadata (`azureSubscriptions`, `awsAccounts`, `billingAccountLinks`). Local allowlists may also use `FINANCE_LIVE_TEST_ACCOUNT_IDS`.
 
 ### AWS LZA (Cost Explorer)
 
-| Item        | Plan                                                                                    |
-| ----------- | --------------------------------------------------------------------------------------- |
-| Principal   | Dedicated IAM user or role with Cost Explorer / billing-read across LZA linked accounts |
-| Scope       | AWS_LZA estate only (classic AWS is out of scope for scheduled ingest)                  |
-| Local today | `FINANCE_AWS_PROFILE` / SSO                                                             |
-| Test/Prod   | Default credential chain from Vault-injected env (not an interactive SSO profile)       |
+| Item      | Plan                                                                                    |
+| --------- | --------------------------------------------------------------------------------------- |
+| Principal | Dedicated IAM user or role with Cost Explorer / billing-read across LZA linked accounts |
+| Scope     | AWS_LZA estate only (classic AWS is out of scope for scheduled ingest)                  |
+| Local     | `FINANCE_AWS_PROFILE` / SSO                                                             |
+| Test/Prod | Vault-injected keys (or role) on the app pod                                            |
 
 **Vault keys to add (Test, then Prod):**
 
-| Env var                              | Purpose                                      |
-| ------------------------------------ | -------------------------------------------- |
-| `AWS_ACCESS_KEY_ID`                  | LZA billing-read access key                  |
-| `AWS_SECRET_ACCESS_KEY`              | Matching secret                              |
-| `AWS_REGION` or `FINANCE_AWS_REGION` | Prefer `ca-central-1`                        |
-| `FINANCE_LIVE_BILLING`               | Set `api` so the app uses live Cost Explorer |
+| Env var                              | Purpose                                                                          |
+| ------------------------------------ | -------------------------------------------------------------------------------- |
+| `AWS_ACCESS_KEY_ID`                  | LZA billing-read access key                                                      |
+| `AWS_SECRET_ACCESS_KEY`              | Matching secret                                                                  |
+| `AWS_REGION` or `FINANCE_AWS_REGION` | Prefer `ca-central-1`                                                            |
+| `FINANCE_LIVE_BILLING`               | Optional; set `api` to force live adapters (also auto when AWS keys are present) |
 
 Optional later: replace static keys with IRSA / assume-role (`AWS_ROLE_ARN`) if platform standards prefer that.
 
 ### Azure (Cost Management)
 
-| Item        | Plan                                                                                      |
-| ----------- | ----------------------------------------------------------------------------------------- |
-| Principal   | Entra ID app registration (service principal)                                             |
-| Permissions | Cost Management Reader (or equivalent) on subscriptions we ingest                         |
-| Local today | `az login` + `az rest`                                                                    |
-| Test/Prod   | Service principal env vars from Vault; adapters will use SP tokens (not interactive `az`) |
+| Item        | Plan                                                              |
+| ----------- | ----------------------------------------------------------------- |
+| Principal   | Entra ID app registration (service principal)                     |
+| Permissions | Cost Management Reader (or equivalent) on subscriptions we ingest |
+| Local       | `az login` (DefaultAzureCredential / `az rest` fallback)          |
+| Test/Prod   | SP env vars from Vault                                            |
 
 **Vault keys to add (Test, then Prod):**
 
-| Env var                | Purpose                                        |
-| ---------------------- | ---------------------------------------------- |
-| `AZURE_TENANT_ID`      | Entra tenant                                   |
-| `AZURE_CLIENT_ID`      | App registration (application) ID              |
-| `AZURE_CLIENT_SECRET`  | Client secret                                  |
-| `FINANCE_LIVE_BILLING` | Set `api` so the app uses live Cost Management |
+| Env var                | Purpose                                                                       |
+| ---------------------- | ----------------------------------------------------------------------------- |
+| `AZURE_TENANT_ID`      | Entra tenant                                                                  |
+| `AZURE_CLIENT_ID`      | App registration (application) ID                                             |
+| `AZURE_CLIENT_SECRET`  | Client secret                                                                 |
+| `FINANCE_LIVE_BILLING` | Optional; set `api` to force live adapters (also auto when SP env is present) |
 
 Subscription IDs come from product metadata (`azureSubscriptions` / `billingAccountLinks`), not from Vault.
 
@@ -139,10 +149,9 @@ Store these in Airflow/Vault for the tools namespace. Prefer a dedicated service
 1. Create AWS LZA billing-read principal and Azure service principal (Test first).
 2. Grant Cost Explorer / Cost Management read on the required accounts and subscriptions.
 3. Add the env vars above to Vault for the Test app path; confirm the pod receives them.
-4. Confirm adapters use env/SP credentials in cluster (no SSO profile / no `az login`).
-5. Set Airflow ingest auth header; unpause `public_cloud_finance_ingest_test`.
-6. Repeat for Prod after Test looks healthy.
-7. Rotate SP secrets on the usual platform schedule; update Vault only.
+4. Unpause `public_cloud_finance_ingest_test` after setting Airflow ingest auth header.
+5. Repeat for Prod after Test looks healthy.
+6. Rotate SP secrets on the usual platform schedule; update Vault only.
 
 ### Explicit non-goals
 
