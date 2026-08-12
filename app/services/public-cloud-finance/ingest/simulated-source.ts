@@ -76,65 +76,84 @@ type ProductForSim = {
   name: string;
 };
 
-function buildProductLines(
-  products: ProductForSim[],
+function resolveProductLinks(product: ProductForSim) {
+  const links = normalizeBillingAccountLinks(product.billingAccountLinks);
+  if (links.length > 0) return links;
+  return inventDemoBillingLinks(product.licencePlate, product.provider);
+}
+
+function shouldSkipMissingJulyDemo(licencePlate: string, period: BillingPeriod) {
+  return licencePlate === 'aa0003' && period.month === 7;
+}
+
+function buildServiceLinesForLink(
+  product: ProductForSim,
+  accountIdentifier: string,
+  period: BillingPeriod,
+  partialFactor: number,
+): NormalizedBillingLine[] {
+  if (shouldSkipMissingJulyDemo(product.licencePlate, period)) return [];
+
+  const services = SERVICE_LINES_BY_PROVIDER[product.provider] ?? ['Other'];
+  const lines: NormalizedBillingLine[] = [];
+
+  for (const [index, serviceLine] of services.entries()) {
+    const baseAmount = amountFor(
+      `${product.licencePlate}:${serviceLine}:${period.year}:${period.month}`,
+      120 + index * 80,
+    );
+    const amount = adjustSimulatedAmount(product.licencePlate, serviceLine, period, baseAmount);
+    if (amount == null) continue;
+
+    lines.push({
+      provider: product.provider,
+      accountIdentifier,
+      serviceLine,
+      year: period.year,
+      month: period.month,
+      amountCad: Math.round(amount * partialFactor * 100) / 100,
+      sourceCurrency: 'CAD',
+    });
+  }
+
+  return lines;
+}
+
+function buildLinesForProduct(
+  product: ProductForSim,
   period: BillingPeriod,
   partialFactor: number,
   accountFilter: Set<string> | null,
 ): NormalizedBillingLine[] {
   const lines: NormalizedBillingLine[] = [];
 
-  for (const product of products) {
-    let links = normalizeBillingAccountLinks(product.billingAccountLinks);
-    if (links.length === 0) {
-      links = inventDemoBillingLinks(product.licencePlate, product.provider);
-    }
-
-    for (const link of links) {
-      if (accountFilter && !accountFilter.has(link.accountIdentifier)) continue;
-
-      const services = SERVICE_LINES_BY_PROVIDER[product.provider] ?? ['Other'];
-      for (const [index, serviceLine] of services.entries()) {
-        // One product intentionally missing July data for edge-case demos.
-        if (product.licencePlate === 'aa0003' && period.month === 7) continue;
-
-        const baseAmount = amountFor(
-          `${product.licencePlate}:${serviceLine}:${period.year}:${period.month}`,
-          120 + index * 80,
-        );
-        const amount = adjustSimulatedAmount(product.licencePlate, serviceLine, period, baseAmount);
-        if (amount == null) continue;
-
-        lines.push({
-          provider: product.provider,
-          accountIdentifier: link.accountIdentifier,
-          serviceLine,
-          year: period.year,
-          month: period.month,
-          amountCad: Math.round(amount * partialFactor * 100) / 100,
-          sourceCurrency: 'CAD',
-        });
-      }
-    }
+  for (const link of resolveProductLinks(product)) {
+    if (accountFilter && !accountFilter.has(link.accountIdentifier)) continue;
+    lines.push(...buildServiceLinesForLink(product, link.accountIdentifier, period, partialFactor));
   }
 
   return lines;
 }
 
+function buildProductLines(
+  products: ProductForSim[],
+  period: BillingPeriod,
+  partialFactor: number,
+  accountFilter: Set<string> | null,
+): NormalizedBillingLine[] {
+  return products.flatMap((product) => buildLinesForProduct(product, period, partialFactor, accountFilter));
+}
+
 function buildUnmatchedLines(period: BillingPeriod): NormalizedBillingLine[] {
-  const lines: NormalizedBillingLine[] = [];
-  for (const provider of [Provider.AZURE, Provider.AWS_LZA] as const) {
-    lines.push({
-      provider,
-      accountIdentifier: provider === Provider.AZURE ? 'unmatched-azure-sub-0001' : '999999999999',
-      serviceLine: provider === Provider.AZURE ? 'GitHub Copilot' : 'Amazon Simple Storage Service',
-      year: period.year,
-      month: period.month,
-      amountCad: 250.5,
-      sourceCurrency: 'CAD',
-    });
-  }
-  return lines;
+  return ([Provider.AZURE, Provider.AWS_LZA] as const).map((provider) => ({
+    provider,
+    accountIdentifier: provider === Provider.AZURE ? 'unmatched-azure-sub-0001' : '999999999999',
+    serviceLine: provider === Provider.AZURE ? 'GitHub Copilot' : 'Amazon Simple Storage Service',
+    year: period.year,
+    month: period.month,
+    amountCad: 250.5,
+    sourceCurrency: 'CAD',
+  }));
 }
 
 /**
