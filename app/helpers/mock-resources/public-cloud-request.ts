@@ -95,6 +95,8 @@ export function createSamplePublicCloudRequest(args?: {
   const product = {
     ...baseData,
     awsAccounts: [],
+    azureSubscriptions: [],
+    billingAccountLinks: [],
     id: generateShortId(),
   };
 

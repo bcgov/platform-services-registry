@@ -347,6 +347,13 @@ model PublicCloudProduct {
   environmentsEnabled          EnvironmentsEnabled
   /// Optional so existing MongoDB products load without a data migration.
   awsAccounts                  Json?
+  /// Azure subscription metadata (console + finance fallback), same shape idea as awsAccounts:
+  /// [{ environment, name, subscriptionId }]. Written on provision callback for AZURE.
+  azureSubscriptions           Json?
+  /// Optional billing join keys: [{ provider, accountIdentifier, environment? }].
+  /// Ingestion prefers billingAccountLinks; falls back to awsAccounts (AWS_LZA) or
+  /// azureSubscriptions (AZURE). Classic AWS has no native account field.
+  billingAccountLinks          Json?
   members                      PublicCloudProductMember[]
   requests                     PublicCloudRequest[]       @relation("project")
   repositories                 Repository[]
@@ -760,4 +767,139 @@ model CloudCostForecast {
   monthlyValues ForecastMonthlyValue[]
   createdAt     DateTime               @default(now())
   updatedAt     DateTime               @updatedAt
+}
+
+enum FinanceIngestionStatus {
+  RUNNING
+  SUCCESS
+  FAILED
+}
+
+enum SpendFlagRuleId {
+  MOM_INCREASE
+  OVER_FORECAST
+  NEW_SERVICE_LINE
+}
+
+/// Line-level actual spend (product × provider × service line × month).
+model ActualSpend {
+  id             String    @id @default(auto()) @map("_id") @db.ObjectId
+  licencePlate   String
+  provider       Provider
+  serviceLine    String
+  year           Int
+  month          Int
+  amountCad      Float
+  sourceCurrency String    @default("CAD")
+  fxRate         Float?
+  fxRateDate     DateTime?
+  ingestionRunId String    @db.ObjectId
+  loadedAt       DateTime  @default(now())
+  supersededBy   String?   @db.ObjectId
+
+  @@index([licencePlate, year, month])
+  @@index([provider, year, month])
+  @@index([ingestionRunId])
+  @@index([licencePlate, provider, serviceLine, year, month])
+}
+
+model UnmatchedBillingLine {
+  id                String    @id @default(auto()) @map("_id") @db.ObjectId
+  provider          Provider
+  accountIdentifier String
+  serviceLine       String
+  year              Int
+  month             Int
+  amountCad         Float
+  sourceCurrency    String    @default("CAD")
+  fxRate            Float?
+  fxRateDate        DateTime?
+  ingestionRunId    String    @db.ObjectId
+  resolvedTo        String?
+  resolvedAt        DateTime?
+  loadedAt          DateTime  @default(now())
+
+  @@index([provider, year, month])
+  @@index([ingestionRunId])
+  @@index([resolvedTo])
+}
+
+model IngestionRun {
+  id            String                 @id @default(auto()) @map("_id") @db.ObjectId
+  provider      Provider
+  periodStart   DateTime
+  periodEnd     DateTime
+  startedAt     DateTime               @default(now())
+  completedAt   DateTime?
+  status        FinanceIngestionStatus @default(RUNNING)
+  rowsLoaded    Int                    @default(0)
+  rowsUnmatched Int                    @default(0)
+  triggeredBy   String
+  errorMessage  String?
+}
+
+/// Month-end FX rate used when converting provider invoices (typically USD→CAD).
+/// Sourced from Bank of Canada Valet; one row per pair/year/month.
+model MonthlyFxRate {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  pair      String
+  year      Int
+  month     Int
+  rate      Float
+  rateDate  DateTime
+  source    String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([pair, year, month])
+  @@index([year, month])
+}
+
+/// Pre-computed monthly per-product rollup for snapshot/product views.
+model MonthlyProductSpendRollup {
+  id           String   @id @default(auto()) @map("_id") @db.ObjectId
+  licencePlate String
+  provider     Provider
+  year         Int
+  month        Int
+  amountCad    Float
+  updatedAt    DateTime @updatedAt
+
+  @@unique([licencePlate, provider, year, month])
+  @@index([year, month])
+  @@index([provider, year, month])
+}
+
+/// Append-only variance notes (FOIPPA). Never hard-delete; edits supersede.
+model VarianceNote {
+  id               String   @id @default(auto()) @map("_id") @db.ObjectId
+  licencePlate     String
+  year             Int
+  month            Int
+  body             String
+  authorIdir       String
+  createdAt        DateTime @default(now())
+  supersedesNoteId String?  @db.ObjectId
+
+  @@index([licencePlate, year, month])
+}
+
+model SpendFlag {
+  id               String          @id @default(auto()) @map("_id") @db.ObjectId
+  licencePlate     String
+  provider         Provider
+  serviceLine      String?
+  year             Int
+  month            Int
+  ruleId           SpendFlagRuleId
+  currentAmountCad Float
+  priorAmountCad   Float?
+  raisedAt         DateTime        @default(now())
+  reviewedBy       String?
+  reviewedAt       DateTime?
+  reviewNote       String?
+
+  @@index([reviewedAt])
+  @@index([licencePlate, year, month])
+  @@index([ruleId])
 }

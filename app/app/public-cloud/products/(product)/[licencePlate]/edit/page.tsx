@@ -26,6 +26,7 @@ import TeamContacts from '@/components/public-cloud/sections/TeamContacts';
 import { GlobalRole } from '@/constants';
 import createClientPage from '@/core/client-page';
 import { normalizeStoredAwsLzaAccounts } from '@/services/aws-lza/accounts';
+import { normalizeStoredAzureSubscriptions } from '@/services/azure/subscriptions';
 import { usePublicProductState } from '@/states/global';
 import { publicCloudEditRequestBodySchema } from '@/validation-schemas/public-cloud';
 
@@ -109,6 +110,7 @@ export default publicCloudProductEdit(({ session }) => {
         mode: 'edit',
         disabled: isDisabled,
         awsAccounts: normalizeStoredAwsLzaAccounts(currentProduct.awsAccounts),
+        azureSubscriptions: normalizeStoredAzureSubscriptions(currentProduct.azureSubscriptions),
         product: currentProduct,
       },
     },

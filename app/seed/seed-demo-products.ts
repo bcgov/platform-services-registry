@@ -1,11 +1,13 @@
 import { defaultAccountCoding } from '../constants/public-cloud';
 import prisma from '../core/prisma';
-import { ProjectStatus, Provider, PublicCloudProductMemberRole } from '../prisma/client';
+import { Prisma, ProjectStatus, Provider, PublicCloudProductMemberRole } from '../prisma/client';
+import { inventDemoAzureSubscriptions } from '../services/azure/subscriptions';
+import { inventDemoBillingLinks } from '../services/public-cloud-finance/billing-account-links';
 
 export type DemoProductConfig = {
   licencePlate: string;
   name: string;
-  provider: Provider;
+  provider: typeof Provider.AZURE | typeof Provider.AWS_LZA;
   description: string;
   budget: { dev: number; test: number; prod: number; tools: number };
 };
@@ -129,16 +131,22 @@ async function requireUser(email: string) {
 }
 
 async function seedDemoPublicCloudProduct(config: DemoProductConfig) {
+  const billingAccountLinks = inventDemoBillingLinks(config.licencePlate, config.provider);
+  const azureSubscriptions =
+    config.provider === Provider.AZURE ? inventDemoAzureSubscriptions(config.licencePlate) : undefined;
   const existing = await prisma.publicCloudProduct.findFirst({
     where: { licencePlate: config.licencePlate },
   });
 
   if (existing) {
-    if (
+    const needsUpdate =
       existing.provider !== config.provider ||
       existing.name !== config.name ||
-      existing.description !== config.description
-    ) {
+      existing.description !== config.description ||
+      !existing.billingAccountLinks ||
+      (config.provider === Provider.AZURE && !existing.azureSubscriptions);
+
+    if (needsUpdate) {
       const updated = await prisma.publicCloudProduct.update({
         where: { id: existing.id },
         data: {
@@ -146,10 +154,12 @@ async function seedDemoPublicCloudProduct(config: DemoProductConfig) {
           name: config.name,
           description: config.description,
           providerSelectionReasonsNote: `Local development seed product (${config.provider}).`,
+          billingAccountLinks: billingAccountLinks as unknown as Prisma.InputJsonValue,
+          ...(azureSubscriptions ? { azureSubscriptions: azureSubscriptions as unknown as Prisma.InputJsonValue } : {}),
         },
       });
       console.log(
-        `  updated ${config.provider} product ${config.licencePlate} (${updated.name}) — provider/name synced`,
+        `  updated ${config.provider} product ${config.licencePlate} (${updated.name}) — provider/name/billing links synced`,
       );
       return updated;
     }
@@ -199,6 +209,8 @@ async function seedDemoPublicCloudProduct(config: DemoProductConfig) {
       providerSelectionReasons: ['Cost Efficiency'],
       providerSelectionReasonsNote: `Local development seed product (${config.provider}).`,
       environmentsEnabled,
+      billingAccountLinks: billingAccountLinks as unknown as Prisma.InputJsonValue,
+      ...(azureSubscriptions ? { azureSubscriptions: azureSubscriptions as unknown as Prisma.InputJsonValue } : {}),
       members: [
         { userId: projectOwner.id, roles: [PublicCloudProductMemberRole.EDITOR] },
         { userId: primaryTechnicalLead.id, roles: [PublicCloudProductMemberRole.EDITOR] },
