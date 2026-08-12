@@ -9,6 +9,7 @@ import {
   lastCompleteMonth,
   monthKey,
   sumForecastForFiscalYear,
+  sumForecastForMonths,
   yearOverYearChange,
 } from '@/components/public-cloud/finance/finance-measure-utils';
 import { type MonthlyValue } from '@/components/public-cloud/forecast/forecast-grid-utils';
@@ -39,6 +40,7 @@ function accumulateProductForecastTotals(
   actualByPlateMonth: Map<string, number>,
 ) {
   let fullYearForecast = 0;
+  let fytdForecast = 0;
   let productsWithForecast = 0;
   let productsWithCompleteCoverage = 0;
   let excludedFromForecastTotals = 0;
@@ -51,6 +53,7 @@ function accumulateProductForecastTotals(
     } else {
       productsWithForecast += 1;
       fullYearForecast += sumForecastForFiscalYear(forecast, fyStartYear);
+      fytdForecast += sumForecastForMonths(forecast, ytdMonths);
       if (hasForecastValuesForRequiredHorizon(forecast)) productsWithCompleteCoverage += 1;
     }
 
@@ -63,6 +66,7 @@ function accumulateProductForecastTotals(
 
   return {
     fullYearForecast,
+    fytdForecast,
     productsWithForecast,
     productsWithCompleteCoverage,
     excludedFromForecastTotals,
@@ -196,6 +200,7 @@ export async function getFinanceSnapshot(provider: ProviderFilter = 'ALL') {
 
   const {
     fullYearForecast,
+    fytdForecast,
     productsWithForecast,
     productsWithCompleteCoverage,
     excludedFromForecastTotals,
@@ -205,7 +210,8 @@ export async function getFinanceSnapshot(provider: ProviderFilter = 'ALL') {
   const coveragePercent =
     products.length === 0 ? 0 : Math.round((productsWithCompleteCoverage / products.length) * 1000) / 10;
   const lowCoverage = isLowForecastCoverage(coveragePercent);
-  const variance = lowCoverage ? null : calculateVariance(fytdActual, fullYearForecast);
+  // Like-for-like: FYTD actual vs forecast for the same elapsed months (not full-year forecast).
+  const fytdVariance = lowCoverage ? null : calculateVariance(fytdActual, fytdForecast);
 
   const monthlyChart = buildMonthlyChart({
     fyMonths,
@@ -251,8 +257,12 @@ export async function getFinanceSnapshot(provider: ProviderFilter = 'ALL') {
   return {
     fiscalYearLabel: fy.label,
     fytdActual,
+    fytdForecast,
+    /** FYTD actual vs FYTD forecast (same elapsed months through lastCompleteMonth). */
+    fytdVariance,
+    /** Alias of fytdVariance for export consumers. */
+    variance: fytdVariance,
     fullYearForecast,
-    variance,
     lowCoverage,
     coverage: {
       percent: coveragePercent,

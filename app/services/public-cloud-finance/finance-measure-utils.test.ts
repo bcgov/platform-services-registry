@@ -3,6 +3,7 @@ import {
   formatCadAmount,
   hasForecastValuesForRequiredHorizon,
   isLowForecastCoverage,
+  sumForecastForMonths,
 } from '@/components/public-cloud/finance/finance-measure-utils';
 import { Provider } from '@/prisma/client';
 import {
@@ -18,6 +19,20 @@ describe('finance measure utils', () => {
 
   it('calculates variance amount and percent', () => {
     expect(calculateVariance(125, 100)).toEqual({ amount: 25, percent: 25 });
+  });
+
+  it('sums forecast only for the requested months', () => {
+    const values = [
+      { year: 2026, month: 4, amount: 100, currency: 'CAD' as const },
+      { year: 2026, month: 5, amount: 200, currency: 'CAD' as const },
+      { year: 2026, month: 6, amount: 400, currency: 'CAD' as const },
+    ];
+    expect(
+      sumForecastForMonths(values, [
+        { year: 2026, month: 4 },
+        { year: 2026, month: 5 },
+      ]),
+    ).toBe(300);
   });
 
   it('formats CAD amounts and distinguishes zero from missing', () => {

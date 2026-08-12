@@ -5,7 +5,11 @@ import { useQuery } from '@tanstack/react-query';
 import Link from 'next/link';
 import { useState } from 'react';
 import LoadingBox from '@/components/generic/LoadingBox';
-import { formatCadAmount, formatPercent } from '@/components/public-cloud/finance/finance-measure-utils';
+import {
+  formatCadAmount,
+  formatPercent,
+  calculateVariance,
+} from '@/components/public-cloud/finance/finance-measure-utils';
 import FinanceNav from '@/components/public-cloud/finance/FinanceNav';
 import { formatForecastProviderLabel } from '@/components/public-cloud/forecast/forecast-grid-utils';
 import { GlobalPermissions } from '@/constants';
@@ -29,6 +33,12 @@ function monthStatusLabel(row: { isCurrentPartial: boolean; isElapsed: boolean }
   if (row.isCurrentPartial) return 'Current month (partial)';
   if (row.isElapsed) return 'Elapsed';
   return 'Future';
+}
+
+function formatVarianceCell(actual: number | null, forecast: number) {
+  const variance = calculateVariance(actual, forecast);
+  if (variance == null) return '—';
+  return `${formatCadAmount(variance.amount)} (${formatPercent(variance.percent, 0)})`;
 }
 
 const publicCloudFinancePage = createClientPage({
@@ -83,7 +93,7 @@ export default publicCloudFinancePage(({ session }) => {
             </output>
           )}
 
-          <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-5 gap-4">
             <SummaryCard
               label={`FYTD actual (${data.fiscalYearLabel})`}
               value={formatCadAmount(data.fytdActual)}
@@ -92,22 +102,33 @@ export default publicCloudFinancePage(({ session }) => {
               ).padStart(2, '0')}`}
             />
             <SummaryCard
-              label="Full year forecast"
-              value={formatCadAmount(data.fullYearForecast)}
+              label="FYTD forecast"
+              value={formatCadAmount(data.fytdForecast)}
               hint={
                 data.coverage.excludedFromForecastTotals > 0
-                  ? `Excludes ${data.coverage.excludedFromForecastTotals} products with no forecast`
-                  : undefined
+                  ? `Same months as FYTD actual · excludes ${data.coverage.excludedFromForecastTotals} products with no forecast`
+                  : 'Same months as FYTD actual'
               }
             />
             <SummaryCard
-              label="Variance to forecast"
+              label="FYTD variance"
               value={
-                data.lowCoverage || !data.variance
+                data.lowCoverage || !data.fytdVariance
                   ? '—'
-                  : `${formatCadAmount(data.variance.amount)} (${formatPercent(data.variance.percent, 1)})`
+                  : `${formatCadAmount(data.fytdVariance.amount)} (${formatPercent(data.fytdVariance.percent, 1)})`
               }
-              hint={data.lowCoverage ? 'No data — coverage too low' : undefined}
+              hint={
+                data.lowCoverage
+                  ? 'No data — coverage too low'
+                  : `Actual − forecast through ${data.lastCompleteMonth.year}-${String(
+                      data.lastCompleteMonth.month,
+                    ).padStart(2, '0')}`
+              }
+            />
+            <SummaryCard
+              label="Full-year forecast"
+              value={formatCadAmount(data.fullYearForecast)}
+              hint="Planning total for the fiscal year (not used in FYTD variance)"
             />
             <SummaryCard
               label="Forecast coverage"
@@ -125,7 +146,7 @@ export default publicCloudFinancePage(({ session }) => {
             </p>
             <div className="overflow-x-auto rounded border border-gray-200 bg-white">
               <table className="min-w-full text-sm">
-                <caption className="sr-only">Monthly actual and forecast amounts for the fiscal year</caption>
+                <caption className="sr-only">Monthly actual, forecast, and variance for the fiscal year</caption>
                 <thead className="bg-gray-50">
                   <tr>
                     <th scope="col" className="px-3 py-2 text-left">
@@ -136,6 +157,9 @@ export default publicCloudFinancePage(({ session }) => {
                     </th>
                     <th scope="col" className="px-3 py-2 text-right">
                       Forecast
+                    </th>
+                    <th scope="col" className="px-3 py-2 text-right">
+                      Variance
                     </th>
                     <th scope="col" className="px-3 py-2 text-left">
                       Status
@@ -157,6 +181,9 @@ export default publicCloudFinancePage(({ session }) => {
                         <td className="px-3 py-2">{row.label}</td>
                         <td className="px-3 py-2 text-right font-medium">{formatCadAmount(row.actual)}</td>
                         <td className="px-3 py-2 text-right text-gray-600">{formatCadAmount(row.forecast)}</td>
+                        <td className="px-3 py-2 text-right text-gray-700">
+                          {formatVarianceCell(row.actual, row.forecast)}
+                        </td>
                         <td className="px-3 py-2 text-xs text-gray-600">{monthStatusLabel(row)}</td>
                       </tr>
                     ),

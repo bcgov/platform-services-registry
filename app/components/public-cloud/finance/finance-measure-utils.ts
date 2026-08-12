@@ -72,6 +72,12 @@ export function sumForecastForFiscalYear(values: MonthlyValue[], fyStartYear: nu
   return values.reduce((sum, v) => (keys.has(monthKey(v.year, v.month)) ? sum + v.amount : sum), 0);
 }
 
+/** Sum forecast amounts for an explicit month set (e.g. FYTD through last complete month). */
+export function sumForecastForMonths(values: MonthlyValue[], months: Array<{ year: number; month: number }>) {
+  const keys = new Set(months.map((m) => monthKey(m.year, m.month)));
+  return values.reduce((sum, v) => (keys.has(monthKey(v.year, v.month)) ? sum + v.amount : sum), 0);
+}
+
 export function isLowForecastCoverage(coveragePercent: number) {
   return coveragePercent < LOW_FORECAST_COVERAGE_PERCENT;
 }
