@@ -607,3 +607,21 @@ export function aggregateMonthlyTotalsFromProducts(
 
   return mergeMonthlyValuesOntoFiscalHorizon([...totalsByMonth.values()], currency);
 }
+
+/** Sum product monthlyActuals arrays that are already aligned to the fiscal horizon. */
+export function aggregateMonthlyActualsFromProducts(
+  products: Array<{ monthlyActuals: Array<number | null> }>,
+  horizonLength: number,
+): Array<number | null> {
+  return Array.from({ length: horizonLength }, (_, index) => {
+    let sum = 0;
+    let any = false;
+    for (const product of products) {
+      const amount = product.monthlyActuals[index];
+      if (amount == null) continue;
+      sum += amount;
+      any = true;
+    }
+    return any ? sum : null;
+  });
+}
