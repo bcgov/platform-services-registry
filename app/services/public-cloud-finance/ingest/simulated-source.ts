@@ -1,5 +1,5 @@
 import prisma from '@/core/prisma';
-import { Provider, ProjectStatus } from '@/prisma/client';
+import { Provider } from '@/prisma/client';
 import { inventDemoBillingLinks, normalizeBillingAccountLinks } from '../billing-account-links';
 import type { BillingFetchScope, BillingPeriod, BillingSource, NormalizedBillingLine } from './types';
 
@@ -166,7 +166,6 @@ export function createSimulatedBillingSource(): BillingSource {
     async fetchBillingLines(period: BillingPeriod, scope?: BillingFetchScope): Promise<NormalizedBillingLine[]> {
       const products = await prisma.publicCloudProduct.findMany({
         where: {
-          status: ProjectStatus.ACTIVE,
           ...(scope?.licencePlates?.length ? { licencePlate: { in: scope.licencePlates } } : {}),
         },
         select: {

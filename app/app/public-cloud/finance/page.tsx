@@ -187,11 +187,20 @@ export default publicCloudFinancePage(({ session }) => {
                 </thead>
                 <tbody>
                   {data.topProducts.map(
-                    (row: { licencePlate: string; name: string; amountCad: number; provider: string }) => (
+                    (row: {
+                      licencePlate: string;
+                      name: string;
+                      amountCad: number;
+                      provider: string;
+                      status?: string;
+                    }) => (
                       <tr key={row.licencePlate}>
                         <td className="px-3 py-2 font-mono text-xs">{row.licencePlate}</td>
                         <td className="px-3 py-2">
-                          {row.name}{' '}
+                          {row.name}
+                          {row.status === 'INACTIVE' ? (
+                            <span className="ml-1 text-xs text-gray-500">(archived)</span>
+                          ) : null}{' '}
                           <span className="text-xs text-gray-500">({formatForecastProviderLabel(row.provider)})</span>
                         </td>
                         <td className="px-3 py-2 text-right">{formatCadAmount(row.amountCad)}</td>

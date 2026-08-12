@@ -41,9 +41,9 @@ export function resolveBillingSource(provider: Provider, forced?: BillingSource)
 }
 
 async function loadAccountMap(scope?: BillingFetchScope) {
+  // Include INACTIVE so residual billing after archive still attaches to historical products.
   const products = await prisma.publicCloudProduct.findMany({
     where: {
-      status: ProjectStatus.ACTIVE,
       ...(scope?.licencePlates?.length ? { licencePlate: { in: scope.licencePlates } } : {}),
     },
     select: {

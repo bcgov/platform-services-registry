@@ -5,16 +5,30 @@ from __future__ import annotations
 from datetime import datetime, timezone
 
 import requests
+from _keycloak import Keycloak
 
 PROVIDERS = ("AWS_LZA", "AZURE")
 
 
-def trigger_finance_ingest(base_url: str, auth_header: str | None = None, use_simulated: bool = False):
+def trigger_finance_ingest(
+    base_url: str,
+    kc_auth_url: str,
+    kc_realm: str,
+    kc_client_id: str,
+    kc_client_secret: str,
+    use_simulated: bool = False,
+):
     """
     Ingest the previous complete calendar month for each provider.
-    Test/prod should call with use_simulated=False and real export/credentials configured on the app.
-    Dev DAGs may pass use_simulated=True.
+
+    Authenticates with Keycloak client_credentials (team service account),
+    same pattern as provisioner / temporary-products DAGs.
+    Test/prod should call with use_simulated=False and real billing credentials
+    configured on the app. Dev DAGs may pass use_simulated=True.
     """
+    if not kc_client_id or not kc_client_secret:
+        raise ValueError("Keycloak service account client id/secret are required for finance ingest")
+
     today = datetime.now(timezone.utc)
     year = today.year
     month = today.month - 1
@@ -22,11 +36,11 @@ def trigger_finance_ingest(base_url: str, auth_header: str | None = None, use_si
         month = 12
         year -= 1
 
-    session = requests.Session()
-    headers = {"Content-Type": "application/json"}
-    if auth_header:
-        headers["Authorization"] = auth_header
+    kc = Keycloak(kc_auth_url, kc_realm, kc_client_id, kc_client_secret)
+    access_token = kc.get_access_token()
+    headers = {"Authorization": f"Bearer {access_token}", "Content-Type": "application/json"}
 
+    session = requests.Session()
     results = []
     for provider in PROVIDERS:
         url = f"{base_url.rstrip('/')}/api/public-cloud/finance/ingest"

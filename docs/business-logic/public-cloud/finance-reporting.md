@@ -20,6 +20,20 @@ Ingestion falls back to LZA `awsAccounts` or Azure `azureSubscriptions` when `bi
 
 Billing lines that cannot be matched go to `UnmatchedBillingLine` and are excluded from per-product figures. Never silently dropped.
 
+## Deleted / archived products
+
+Archiving a product (`ProjectStatus.INACTIVE`) must **not** erase finance or forecast history.
+
+| Area                         | Behaviour                                                                                     |
+| ---------------------------- | --------------------------------------------------------------------------------------------- |
+| Stored actuals / rollups     | Kept forever by `licencePlate`; never cascaded away on archive                                |
+| Forecast rows                | Kept; remain in platform forecast rollups and exports                                         |
+| Finance snapshot / rankings  | Include ACTIVE **and** INACTIVE so FY totals stay complete                                    |
+| Ingest matching              | Still matches INACTIVE products so residual provider billing attaches to the historical plate |
+| Forecast coverage chase list | ACTIVE only — do not chase owners of archived products                                        |
+
+Product finance pages keyed by licence plate continue to show historical actuals and variance notes after archive.
+
 ## FX (USD → CAD)
 
 AWS Cost Explorer amounts are typically USD. At ingest time for a billing month (invoice / month-end), the registry:
@@ -72,13 +86,14 @@ Local live ingest keeps interactive developer auth (AWS SSO profile / `az login`
 
 ```
 Airflow (schedule)
-  └─ POST /api/public-cloud/finance/ingest  (+ registry service token)
-       └─ Registry app pod
-            ├─ AWS Cost Explorer (LZA)     ← credentials from Vault
-            └─ Azure Cost Management       ← credentials from Vault
+  └─ Keycloak client_credentials (finance SA)
+       └─ POST /api/public-cloud/finance/ingest
+            └─ Registry app pod
+                 ├─ AWS Cost Explorer (LZA)     ← credentials from Vault
+                 └─ Azure Cost Management       ← credentials from Vault
 ```
 
--   **Airflow** does not hold AWS/Azure billing credentials. It only triggers the registry API.
+-   **Airflow** holds only the Keycloak finance SA id/secret (tools Vault). It does not hold AWS/Azure billing credentials.
 -   **Registry app** (Test/Prod) holds provider credentials via the existing Vault injector pattern (`helm/main` vault annotations).
 -   **Dev** stays on simulated actuals; no provider secrets required.
 -   **Local live** still uses CLI creds (`FINANCE_AWS_PROFILE` / `az login`) for `pnpm test:finance-live`.
@@ -135,23 +150,35 @@ Subscription IDs come from product metadata (`azureSubscriptions` / `billingAcco
 
 ### Airflow → registry auth
 
-Separate from provider billing secrets. Airflow needs a token/header to call the ingest API:
+Separate from provider billing secrets. Airflow authenticates to the ingest API with a **Keycloak team service account** (`client_credentials`), same pattern as the provisioner DAGs (`_keycloak.Keycloak`).
 
-| Env (Airflow)                     | Purpose                                       |
-| --------------------------------- | --------------------------------------------- |
-| `TEST_FINANCE_INGEST_AUTH_HEADER` | Authorization header for Test registry ingest |
-| `PROD_FINANCE_INGEST_AUTH_HEADER` | Authorization header for Prod registry ingest |
+The Keycloak client must be configured as:
 
-Store these in Airflow/Vault for the tools namespace. Prefer a dedicated service account for ingest (not a personal admin session).
+-   `service_account_type` claim: `team`
+-   `roles` claim: `public-admin` (comma-separated if more roles are added later)
+
+The ingest route accepts `service-account` + `public-admin` (or a human `admin` / `public-admin` cookie session for manual runs).
+
+| Env (Airflow / tools Vault) | Purpose                                       |
+| --------------------------- | --------------------------------------------- |
+| `DEV_FINANCE_SA_ID`         | Keycloak client id for Dev finance ingest SA  |
+| `DEV_FINANCE_SA_SECRET`     | Keycloak client secret for Dev                |
+| `TEST_FINANCE_SA_ID`        | Keycloak client id for Test finance ingest SA |
+| `TEST_FINANCE_SA_SECRET`    | Keycloak client secret for Test               |
+| `PROD_FINANCE_SA_ID`        | Keycloak client id for Prod finance ingest SA |
+| `PROD_FINANCE_SA_SECRET`    | Keycloak client secret for Prod               |
+
+Create a dedicated SA client per environment (do not reuse a personal admin session or the provisioner SA unless ops deliberately shares one).
 
 ### Rollout checklist
 
 1. Create AWS LZA billing-read principal and Azure service principal (Test first).
 2. Grant Cost Explorer / Cost Management read on the required accounts and subscriptions.
-3. Add the env vars above to Vault for the Test app path; confirm the pod receives them.
-4. Unpause `public_cloud_finance_ingest_test` after setting Airflow ingest auth header.
-5. Repeat for Prod after Test looks healthy.
-6. Rotate SP secrets on the usual platform schedule; update Vault only.
+3. Add the **app** provider env vars above to Vault for the Test app path; confirm the pod receives them.
+4. Create the Keycloak finance SA (team + `public-admin` roles claim); store id/secret in tools Vault as `TEST_FINANCE_SA_*`.
+5. Unpause `public_cloud_finance_ingest_test` after Airflow can read those env vars.
+6. Repeat for Prod after Test looks healthy.
+7. Rotate SP and SA secrets on the usual platform schedule; update Vault only.
 
 ### Explicit non-goals
 

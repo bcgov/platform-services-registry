@@ -27,6 +27,7 @@ type SnapshotProduct = {
   licencePlate: string;
   name: string;
   provider: Provider;
+  status: ProjectStatus;
   organization: { code: string; name: string };
 };
 
@@ -134,12 +135,14 @@ export async function getDataFreshness() {
 export async function getFinanceSnapshot(provider: ProviderFilter = 'ALL') {
   const fy = currentFiscalYearBounds();
   const complete = lastCompleteMonth();
+  // Include ACTIVE and INACTIVE so archived products keep historical FY actuals/forecasts.
   const products = await prisma.publicCloudProduct.findMany({
-    where: { status: ProjectStatus.ACTIVE, ...providerWhere(provider) },
+    where: { ...providerWhere(provider) },
     select: {
       licencePlate: true,
       name: true,
       provider: true,
+      status: true,
       organization: { select: { code: true, name: true } },
     },
     orderBy: { name: 'asc' },
@@ -218,6 +221,7 @@ export async function getFinanceSnapshot(provider: ProviderFilter = 'ALL') {
       licencePlate: p.licencePlate,
       name: p.name,
       provider: p.provider,
+      status: p.status,
       organizationName: p.organization.name,
       amountCad: productActualYtd.get(p.licencePlate) ?? 0,
     }))
@@ -286,9 +290,9 @@ export async function getFinanceRankings(options: {
       ? fyMonths
       : fyMonths.filter((m) => m.year < complete.year || (m.year === complete.year && m.month <= complete.month));
 
+  // Include ACTIVE and INACTIVE so archived products remain in historical rankings/totals.
   const products = await prisma.publicCloudProduct.findMany({
     where: {
-      status: ProjectStatus.ACTIVE,
       ...providerWhere(provider),
       ...(options.organizationId ? { organizationId: options.organizationId } : {}),
     },
@@ -296,6 +300,7 @@ export async function getFinanceRankings(options: {
       licencePlate: true,
       name: true,
       provider: true,
+      status: true,
       organization: { select: { id: true, code: true, name: true } },
     },
   });
@@ -335,6 +340,7 @@ export async function getFinanceRankings(options: {
         licencePlate: p.licencePlate,
         name: p.name,
         provider: p.provider,
+        status: p.status,
         organizationName: p.organization.name,
         amountCad,
         shareOfTotal: productTotal > 0 ? amountCad / productTotal : 0,
@@ -396,6 +402,7 @@ export async function getFinanceRankings(options: {
 }
 
 export async function getForecastCoverageChaseList() {
+  // Chase list is ACTIVE-only: do not remind owners of archived products.
   const products = await prisma.publicCloudProduct.findMany({
     where: { status: ProjectStatus.ACTIVE },
     select: {

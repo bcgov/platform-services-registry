@@ -1,6 +1,6 @@
 import { spawn } from 'node:child_process';
 import prisma from '@/core/prisma';
-import { Provider, ProjectStatus } from '@/prisma/client';
+import { Provider } from '@/prisma/client';
 import { resolveBillingAccountIdentifiers } from '@/services/public-cloud-finance/billing-account-links';
 import { ensureMonthlyUsdCadRate } from '@/services/public-cloud-finance/monthly-fx-rate';
 import type { BillingFetchScope, BillingPeriod, BillingSource, NormalizedBillingLine } from './types';
@@ -231,7 +231,6 @@ async function resolveAzureSubscriptionIds(scope?: BillingFetchScope): Promise<s
 
   const products = await prisma.publicCloudProduct.findMany({
     where: {
-      status: ProjectStatus.ACTIVE,
       provider: Provider.AZURE,
       ...(scope?.licencePlates?.length ? { licencePlate: { in: scope.licencePlates } } : {}),
     },

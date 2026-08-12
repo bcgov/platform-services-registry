@@ -23,7 +23,14 @@ function addForecastSheet(workbook: ExcelJS.Workbook, forecastSummary: ForecastS
       if (!product.hasForecast) continue;
       if (provider !== 'ALL' && product.provider !== provider) continue;
       for (const month of product.monthlyTotals) {
-        sheet.addRow([product.licencePlate, product.name, product.provider, month.year, month.month, month.amount]);
+        sheet.addRow([
+          product.licencePlate,
+          product.status === 'INACTIVE' ? `${product.name} (archived)` : product.name,
+          product.provider,
+          month.year,
+          month.month,
+          month.amount,
+        ]);
       }
     }
   }
@@ -49,9 +56,17 @@ function addVarianceSheet(workbook: ExcelJS.Workbook, snapshot: Snapshot) {
 
 function addProductRankingsSheet(workbook: ExcelJS.Workbook, rankings: Rankings) {
   const sheet = workbook.addWorksheet('Product rankings');
-  sheet.addRow(['Rank', 'Project identifier', 'Name', 'Amount CAD', 'Share', 'YoY %']);
+  sheet.addRow(['Rank', 'Project identifier', 'Name', 'Status', 'Amount CAD', 'Share', 'YoY %']);
   for (const row of rankings.products) {
-    sheet.addRow([row.rank, row.licencePlate, row.name, row.amountCad, row.shareOfTotal, row.yoyChangePercent ?? '']);
+    sheet.addRow([
+      row.rank,
+      row.licencePlate,
+      row.name,
+      row.status,
+      row.amountCad,
+      row.shareOfTotal,
+      row.yoyChangePercent ?? '',
+    ]);
   }
 }
 

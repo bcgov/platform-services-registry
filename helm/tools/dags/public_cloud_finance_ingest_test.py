@@ -7,6 +7,10 @@ from _finance_ingest import trigger_finance_ingest
 from _task_failure_callback import send_alert
 
 BASE_URL = "https://test-pltsvc.apps.silver.devops.gov.bc.ca"
+KEYCLOAK_AUTH_URL = "https://test.loginproxy.gov.bc.ca/auth"
+KEYCLOAK_REALM = "platform-services"
+FINANCE_SA_ID = os.getenv("TEST_FINANCE_SA_ID")
+FINANCE_SA_SECRET = os.getenv("TEST_FINANCE_SA_SECRET")
 USE_SIMULATED = False
 
 with DAG(
@@ -22,7 +26,10 @@ with DAG(
         python_callable=trigger_finance_ingest,
         op_kwargs={
             "base_url": BASE_URL,
-            "auth_header": os.getenv("TEST_FINANCE_INGEST_AUTH_HEADER"),
+            "kc_auth_url": KEYCLOAK_AUTH_URL,
+            "kc_realm": KEYCLOAK_REALM,
+            "kc_client_id": FINANCE_SA_ID,
+            "kc_client_secret": FINANCE_SA_SECRET,
             "use_simulated": USE_SIMULATED,
         },
         on_failure_callback=lambda context: send_alert(context, context["dag"].dag_id),

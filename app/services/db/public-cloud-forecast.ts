@@ -27,6 +27,7 @@ export type PlatformForecastProduct = {
   licencePlate: string;
   name: string;
   provider: Provider;
+  status: ProjectStatus;
   currency: 'CAD';
   hasForecast: boolean;
   monthlyTotals: MonthlyValue[];
@@ -34,9 +35,9 @@ export type PlatformForecastProduct = {
 };
 
 export async function getPlatformForecastSummary() {
+  // Include ACTIVE and INACTIVE so archived products keep historical forecast rollups.
   const products = await prisma.publicCloudProduct.findMany({
-    where: { status: ProjectStatus.ACTIVE },
-    select: { licencePlate: true, name: true, provider: true },
+    select: { licencePlate: true, name: true, provider: true, status: true },
     orderBy: [{ provider: 'asc' }, { name: 'asc' }],
   });
   const licencePlates = products.map((p) => p.licencePlate);
@@ -101,6 +102,7 @@ export async function getPlatformForecastSummary() {
       licencePlate: product.licencePlate,
       name: product.name,
       provider: product.provider,
+      status: product.status,
       currency,
       hasForecast,
       monthlyTotals,

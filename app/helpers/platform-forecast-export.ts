@@ -295,7 +295,11 @@ function addDetailSheet(workbook: ExcelJS.Workbook, exportSheet: ForecastExportS
     exportSheet.products.forEach((product, index) => {
       const forecasts = fyChunk.months.map((_, i) => product.monthlyTotals[fyChunk.startIndex + i]?.amount ?? 0);
       const productYearTotal = forecasts.reduce((sum, v) => sum + v, 0);
-      const row = sheet.addRow([`${product.name} (${product.licencePlate})`, ...forecasts, productYearTotal]);
+      const row = sheet.addRow([
+        `${product.name} (${product.licencePlate})${product.status === 'INACTIVE' ? ' [archived]' : ''}`,
+        ...forecasts,
+        productYearTotal,
+      ]);
       styleProductRow(row, fyColCount, index % 2 === 1);
     });
 

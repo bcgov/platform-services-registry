@@ -397,7 +397,12 @@ function PlatformForecastGrid({ group }: Readonly<{ group: PlatformForecastSumma
                                 href={`/public-cloud/products/${product.licencePlate}/edit`}
                                 className="block hover:underline"
                               >
-                                <div className="pl-3 text-gray-800">{product.name}</div>
+                                <div className="pl-3 text-gray-800">
+                                  {product.name}
+                                  {product.status === 'INACTIVE' ? (
+                                    <span className="ml-2 text-xs font-normal text-gray-500">(archived)</span>
+                                  ) : null}
+                                </div>
                                 <div className="pl-3 text-xs text-gray-400">{product.licencePlate}</div>
                               </Link>
                             </td>
@@ -513,14 +518,15 @@ export default publicCloudForecastPage(({ session }) => {
           <div className="min-w-0 flex-1">
             <h1 className="text-2xl font-bold">Public Cloud Forecast</h1>
             <p className="text-sm text-gray-600 mt-1">
-              Read-only rollup of the forecast for every active public cloud product. All forecasts are in CAD.
+              Read-only rollup of forecasts for all public cloud products, including archived ones so historical totals
+              stay complete. All forecasts are in CAD.
             </p>
           </div>
           <ExportButton className="ml-auto shrink-0" onExport={handleExport} />
         </div>
 
         <div className="grid gap-4 sm:grid-cols-3">
-          <SummaryCard label="Active projects" value={String(data?.totalProducts ?? 0)} />
+          <SummaryCard label="Products" value={String(data?.totalProducts ?? 0)} />
           <SummaryCard label="With forecast" value={String(data?.productsWithForecast ?? 0)} />
           <SummaryCard
             label="Forecast coverage"
@@ -536,7 +542,7 @@ export default publicCloudForecastPage(({ session }) => {
             ))}
           </div>
         ) : (
-          !isLoading && <p className="text-sm text-gray-600">No active public cloud products found.</p>
+          !isLoading && <p className="text-sm text-gray-600">No public cloud products found.</p>
         )}
       </div>
     </LoadingBox>
