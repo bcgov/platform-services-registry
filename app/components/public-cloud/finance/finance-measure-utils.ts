@@ -1,6 +1,5 @@
 import {
   formatFiscalYearLabel,
-  isPastMonth,
   monthKey,
   type MonthlyValue,
 } from '@/components/public-cloud/forecast/forecast-grid-utils';
@@ -117,4 +116,5 @@ export function yearOverYearChange(current: number, priorYear: number | null | u
   return ((current - priorYear) / priorYear) * 100;
 }
 
-export { formatFiscalYearLabel, isPastMonth, monthKey };
+export { formatFiscalYearLabel, monthKey };
+export { isPastMonth } from '@/components/public-cloud/forecast/forecast-grid-utils';

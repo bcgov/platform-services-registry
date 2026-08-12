@@ -11,6 +11,58 @@ function contentDispositionAttachment(filename: string) {
 
 export { contentDispositionAttachment };
 
+type Snapshot = Awaited<ReturnType<typeof getFinanceSnapshot>>;
+type Rankings = Awaited<ReturnType<typeof getFinanceRankings>>;
+type ForecastSummary = Awaited<ReturnType<typeof getPlatformForecastSummary>>;
+
+function addForecastSheet(workbook: ExcelJS.Workbook, forecastSummary: ForecastSummary, provider: ProviderFilter) {
+  const sheet = workbook.addWorksheet('Forecast by month');
+  sheet.addRow(['Project identifier', 'Name', 'Provider', 'Year', 'Month', 'Forecast CAD']);
+  for (const group of forecastSummary.groups) {
+    for (const product of group.products) {
+      if (!product.hasForecast) continue;
+      if (provider !== 'ALL' && product.provider !== provider) continue;
+      for (const month of product.monthlyTotals) {
+        sheet.addRow([product.licencePlate, product.name, product.provider, month.year, month.month, month.amount]);
+      }
+    }
+  }
+}
+
+function addActualsSheet(workbook: ExcelJS.Workbook, snapshot: Snapshot) {
+  const sheet = workbook.addWorksheet('Actuals by month');
+  sheet.addRow(['Year', 'Month', 'Actual CAD', 'Forecast CAD', 'Partial current month']);
+  for (const row of snapshot.monthlyChart) {
+    sheet.addRow([row.year, row.month, row.actual ?? '', row.forecast, row.isCurrentPartial ? 'yes' : '']);
+  }
+}
+
+function addVarianceSheet(workbook: ExcelJS.Workbook, snapshot: Snapshot) {
+  const sheet = workbook.addWorksheet('Variance summary');
+  sheet.addRow(['FYTD actual', snapshot.fytdActual]);
+  sheet.addRow(['Full year forecast', snapshot.fullYearForecast]);
+  sheet.addRow(['Variance amount', snapshot.variance?.amount ?? 'no data']);
+  sheet.addRow(['Variance percent', snapshot.variance?.percent ?? 'no data']);
+  sheet.addRow(['Excluded products', snapshot.coverage.excludedFromForecastTotals]);
+  sheet.addRow(['Low coverage mode', snapshot.lowCoverage ? 'yes' : 'no']);
+}
+
+function addProductRankingsSheet(workbook: ExcelJS.Workbook, rankings: Rankings) {
+  const sheet = workbook.addWorksheet('Product rankings');
+  sheet.addRow(['Rank', 'Project identifier', 'Name', 'Amount CAD', 'Share', 'YoY %']);
+  for (const row of rankings.products) {
+    sheet.addRow([row.rank, row.licencePlate, row.name, row.amountCad, row.shareOfTotal, row.yoyChangePercent ?? '']);
+  }
+}
+
+function addServiceLineRankingsSheet(workbook: ExcelJS.Workbook, rankings: Rankings) {
+  const sheet = workbook.addWorksheet('Service line rankings');
+  sheet.addRow(['Rank', 'Service line', 'Amount CAD', 'Share', 'YoY %']);
+  for (const row of rankings.serviceLines) {
+    sheet.addRow([row.rank, row.serviceLine, row.amountCad, row.shareOfTotal, row.yoyChangePercent ?? '']);
+  }
+}
+
 export async function buildFinanceWorkbookBuffer(options: {
   provider: ProviderFilter;
   period: 'ytd' | 'full-fy';
@@ -49,51 +101,19 @@ export async function buildFinanceWorkbookBuffer(options: {
   ]);
 
   if (options.datasets.includes('forecast')) {
-    const sheet = workbook.addWorksheet('Forecast by month');
-    sheet.addRow(['Project identifier', 'Name', 'Provider', 'Year', 'Month', 'Forecast CAD']);
-    for (const group of forecastSummary.groups) {
-      for (const product of group.products) {
-        if (!product.hasForecast) continue;
-        if (options.provider !== 'ALL' && product.provider !== options.provider) continue;
-        for (const month of product.monthlyTotals) {
-          sheet.addRow([product.licencePlate, product.name, product.provider, month.year, month.month, month.amount]);
-        }
-      }
-    }
+    addForecastSheet(workbook, forecastSummary, options.provider);
   }
-
   if (options.datasets.includes('actuals')) {
-    const sheet = workbook.addWorksheet('Actuals by month');
-    sheet.addRow(['Year', 'Month', 'Actual CAD', 'Forecast CAD', 'Partial current month']);
-    for (const row of snapshot.monthlyChart) {
-      sheet.addRow([row.year, row.month, row.actual ?? '', row.forecast, row.isCurrentPartial ? 'yes' : '']);
-    }
+    addActualsSheet(workbook, snapshot);
   }
-
   if (options.datasets.includes('variance')) {
-    const sheet = workbook.addWorksheet('Variance summary');
-    sheet.addRow(['FYTD actual', snapshot.fytdActual]);
-    sheet.addRow(['Full year forecast', snapshot.fullYearForecast]);
-    sheet.addRow(['Variance amount', snapshot.variance?.amount ?? 'no data']);
-    sheet.addRow(['Variance percent', snapshot.variance?.percent ?? 'no data']);
-    sheet.addRow(['Excluded products', snapshot.coverage.excludedFromForecastTotals]);
-    sheet.addRow(['Low coverage mode', snapshot.lowCoverage ? 'yes' : 'no']);
+    addVarianceSheet(workbook, snapshot);
   }
-
   if (options.datasets.includes('product-rankings')) {
-    const sheet = workbook.addWorksheet('Product rankings');
-    sheet.addRow(['Rank', 'Project identifier', 'Name', 'Amount CAD', 'Share', 'YoY %']);
-    for (const row of rankings.products) {
-      sheet.addRow([row.rank, row.licencePlate, row.name, row.amountCad, row.shareOfTotal, row.yoyChangePercent ?? '']);
-    }
+    addProductRankingsSheet(workbook, rankings);
   }
-
   if (options.datasets.includes('service-line-rankings')) {
-    const sheet = workbook.addWorksheet('Service line rankings');
-    sheet.addRow(['Rank', 'Service line', 'Amount CAD', 'Share', 'YoY %']);
-    for (const row of rankings.serviceLines) {
-      sheet.addRow([row.rank, row.serviceLine, row.amountCad, row.shareOfTotal, row.yoyChangePercent ?? '']);
-    }
+    addServiceLineRankingsSheet(workbook, rankings);
   }
 
   const buffer = await workbook.xlsx.writeBuffer();
@@ -125,15 +145,17 @@ export function buildFinanceExportCsvRows(options: { provider: ProviderFilter; p
         row.yoyChangePercent == null ? '' : String(row.yoyChangePercent),
       ]);
     }
-    rows.push([
-      'metadata',
-      '',
-      `generated=${new Date().toISOString()} period=${options.period} provider=${options.provider}`,
-      '',
-      '',
-      '',
-    ]);
-    rows.push(['metadata', '', 'variance_notes_and_anomaly_flags_excluded', '', '', '']);
+    rows.push(
+      [
+        'metadata',
+        '',
+        `generated=${new Date().toISOString()} period=${options.period} provider=${options.provider}`,
+        '',
+        '',
+        '',
+      ],
+      ['metadata', '', 'variance_notes_and_anomaly_flags_excluded', '', '', ''],
+    );
     return rows;
   });
 }

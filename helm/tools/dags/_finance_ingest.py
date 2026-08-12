@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from datetime import datetime
+from datetime import datetime, timezone
 
 import requests
 
@@ -15,7 +15,7 @@ def trigger_finance_ingest(base_url: str, auth_header: str | None = None, use_si
     Test/prod should call with use_simulated=False and real export/credentials configured on the app.
     Dev DAGs may pass use_simulated=True.
     """
-    today = datetime.utcnow()
+    today = datetime.now(timezone.utc)
     year = today.year
     month = today.month - 1
     if month == 0:

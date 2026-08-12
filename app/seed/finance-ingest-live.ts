@@ -13,6 +13,7 @@ import { Provider } from '../prisma/client';
 import { resolveBillingAccountIdentifiers } from '../services/public-cloud-finance/billing-account-links';
 import { createAwsBillingSource, createAzureBillingSource } from '../services/public-cloud-finance/ingest/real-sources';
 import { ingestBillingPeriod } from '../services/public-cloud-finance/ingest/run-ingest';
+import type { BillingPeriod, BillingSource } from '../services/public-cloud-finance/ingest/types';
 
 function parsePlates() {
   const fromArg = process.argv.find((arg) => arg.startsWith('--plates='));
@@ -21,6 +22,52 @@ function parsePlates() {
     .split(',')
     .map((p) => p.trim())
     .filter(Boolean);
+}
+
+function resolveLiveSource(provider: Provider): BillingSource {
+  if (provider === Provider.AZURE) return createAzureBillingSource();
+  if (provider === Provider.AWS_LZA) return createAwsBillingSource(Provider.AWS_LZA);
+  return createAwsBillingSource(Provider.AWS);
+}
+
+type LiveProduct = {
+  licencePlate: string;
+  provider: Provider;
+  billingAccountLinks: unknown;
+  awsAccounts: unknown;
+  azureSubscriptions: unknown;
+};
+
+async function ingestProduct(product: LiveProduct, period: BillingPeriod) {
+  const links = resolveBillingAccountIdentifiers(product);
+  const accountIdentifiers = links.map((l) => l.accountIdentifier);
+  if (accountIdentifiers.length === 0) {
+    console.warn(`  ${product.licencePlate}: no billing account links — skip`);
+    return;
+  }
+
+  let source: BillingSource;
+  try {
+    source = resolveLiveSource(product.provider);
+  } catch (error) {
+    console.warn(`  ${product.licencePlate}: ${error instanceof Error ? error.message : error}`);
+    return;
+  }
+
+  try {
+    const result = await ingestBillingPeriod({
+      provider: product.provider,
+      period,
+      triggeredBy: 'finance-ingest-live',
+      source,
+      scope: { licencePlates: [product.licencePlate], accountIdentifiers },
+    });
+    console.log(
+      `  ${product.licencePlate} ${product.provider}: loaded=${result.rowsLoaded} unmatched=${result.rowsUnmatched}`,
+    );
+  } catch (error) {
+    console.warn(`  ${product.licencePlate}: ingest failed — ${error instanceof Error ? error.message : error}`);
+  }
 }
 
 async function main() {
@@ -49,37 +96,7 @@ async function main() {
   }
 
   for (const product of products) {
-    const links = resolveBillingAccountIdentifiers(product);
-    const accountIdentifiers = links.map((l) => l.accountIdentifier);
-    if (accountIdentifiers.length === 0) {
-      console.warn(`  ${product.licencePlate}: no billing account links — skip`);
-      continue;
-    }
-
-    let source;
-    try {
-      if (product.provider === Provider.AZURE) source = createAzureBillingSource();
-      else if (product.provider === Provider.AWS_LZA) source = createAwsBillingSource(Provider.AWS_LZA);
-      else source = createAwsBillingSource(Provider.AWS);
-    } catch (error) {
-      console.warn(`  ${product.licencePlate}: ${error instanceof Error ? error.message : error}`);
-      continue;
-    }
-
-    try {
-      const result = await ingestBillingPeriod({
-        provider: product.provider,
-        period,
-        triggeredBy: 'finance-ingest-live',
-        source,
-        scope: { licencePlates: [product.licencePlate], accountIdentifiers },
-      });
-      console.log(
-        `  ${product.licencePlate} ${product.provider}: loaded=${result.rowsLoaded} unmatched=${result.rowsUnmatched}`,
-      );
-    } catch (error) {
-      console.warn(`  ${product.licencePlate}: ingest failed — ${error instanceof Error ? error.message : error}`);
-    }
+    await ingestProduct(product, period);
   }
 }
 

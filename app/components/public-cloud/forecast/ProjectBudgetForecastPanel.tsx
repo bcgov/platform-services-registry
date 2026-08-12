@@ -46,6 +46,12 @@ type CellEditorProps = Readonly<{
   onApplyToFuture?: () => void;
 }>;
 
+function formatVarianceCell(variance: { amount: number; percent: number | null } | null) {
+  if (variance == null) return '—';
+  const percentSuffix = variance.percent == null ? '' : ` (${variance.percent.toFixed(0)}%)`;
+  return `${formatCadAmount(variance.amount)}${percentSuffix}`;
+}
+
 function CellEditor({ value, currency, status, editable, onChange, onApplyToFuture }: CellEditorProps) {
   // Empty string = not entered (stored as 0). Keeps the input blank instead of "$0".
   const [draftValue, setDraftValue] = useState<number | ''>(value > 0 ? Math.round(value) : '');
@@ -431,11 +437,7 @@ export default function ProjectBudgetForecastPanel({
                             const variance = calculateVariance(actual, v.amount);
                             return (
                               <td key={`var-${key}`} className="px-2 py-2 text-center text-sm">
-                                {variance == null
-                                  ? '—'
-                                  : `${formatCadAmount(variance.amount)}${
-                                      variance.percent == null ? '' : ` (${variance.percent.toFixed(0)}%)`
-                                    }`}
+                                {formatVarianceCell(variance)}
                               </td>
                             );
                           })}

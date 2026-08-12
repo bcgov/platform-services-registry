@@ -99,7 +99,7 @@ export function inventDemoBillingLinks(licencePlate: string, provider: Provider)
   if (provider === Provider.AWS || provider === Provider.AWS_LZA) {
     // Fake 12-digit AWS account id derived from plate (not a real account).
     const digits = Array.from(plate)
-      .map((ch) => (ch.charCodeAt(0) % 10).toString())
+      .map((ch) => ((ch.codePointAt(0) ?? 0) % 10).toString())
       .join('')
       .padEnd(12, '0')
       .slice(0, 12);

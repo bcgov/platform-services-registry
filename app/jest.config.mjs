@@ -14,7 +14,7 @@ const config = {
   setupFilesAfterEnv: ['./jest.setup.ts'],
   modulePathIgnorePatterns: ['<rootDir>/.react-email'],
   // Live provider billing tests need local AWS SSO / az login — never run in CI.
-  testPathIgnorePatterns: ['\\.live\\.test\\.[jt]sx?$'],
+  testPathIgnorePatterns: [String.raw`\.live\.test\.[jt]sx?$`],
   moduleNameMapper: {
     '^@/(.*)$': '<rootDir>/$1',
   },

@@ -97,6 +97,145 @@ async function refreshRollupsForPeriod(provider: Provider, period: BillingPeriod
   }
 }
 
+function partitionMatchedUnmatched(lines: NormalizedBillingLine[], accountMap: Map<string, string>) {
+  const matched: Array<NormalizedBillingLine & { licencePlate: string }> = [];
+  const unmatched: NormalizedBillingLine[] = [];
+
+  for (const line of lines) {
+    const licencePlate = accountMap.get(`${line.provider}:${line.accountIdentifier}`);
+    if (licencePlate) {
+      matched.push({ ...line, licencePlate });
+    } else {
+      unmatched.push(line);
+    }
+  }
+
+  return { matched, unmatched };
+}
+
+function resolveSupersedeLicencePlateFilter(
+  matchedPlates: string[],
+  scope?: BillingFetchScope,
+): { licencePlate: { in: string[] } } | Record<string, never> {
+  if (matchedPlates.length && scope?.licencePlates?.length) {
+    return { licencePlate: { in: matchedPlates } };
+  }
+  if (scope?.licencePlates?.length) {
+    return { licencePlate: { in: scope.licencePlates } };
+  }
+  return {};
+}
+
+async function resolveRollupPlates(
+  provider: Provider,
+  matchedPlates: string[],
+  scope?: BillingFetchScope,
+): Promise<string[]> {
+  if (matchedPlates.length > 0) return matchedPlates;
+  if (scope?.licencePlates?.length) return scope.licencePlates;
+
+  const products = await prisma.publicCloudProduct.findMany({
+    where: { status: ProjectStatus.ACTIVE, provider },
+    select: { licencePlate: true },
+  });
+  return products.map((p) => p.licencePlate);
+}
+
+async function writeMatchedAndSupersede(options: {
+  provider: Provider;
+  period: BillingPeriod;
+  runId: string;
+  matched: Array<NormalizedBillingLine & { licencePlate: string }>;
+  matchedPlates: string[];
+  scope?: BillingFetchScope;
+}) {
+  const { provider, period, runId, matched, matchedPlates, scope } = options;
+
+  const existing = await prisma.actualSpend.findMany({
+    where: {
+      AND: [
+        activeActualSpendWhere,
+        {
+          provider,
+          year: period.year,
+          month: period.month,
+          ...resolveSupersedeLicencePlateFilter(matchedPlates, scope),
+        },
+      ],
+    },
+    select: { id: true },
+  });
+
+  const createdIds: string[] = [];
+  for (const line of matched) {
+    const created = await prisma.actualSpend.create({
+      data: {
+        licencePlate: line.licencePlate,
+        provider: line.provider,
+        serviceLine: line.serviceLine,
+        year: line.year,
+        month: line.month,
+        amountCad: line.amountCad,
+        sourceCurrency: line.sourceCurrency,
+        fxRate: line.fxRate,
+        fxRateDate: line.fxRateDate,
+        ingestionRunId: runId,
+        supersededBy: null,
+      },
+      select: { id: true },
+    });
+    createdIds.push(created.id);
+  }
+
+  // Point superseded rows at the first new row id for the run (audit trail of replacement).
+  if (existing.length > 0 && createdIds[0]) {
+    await prisma.actualSpend.updateMany({
+      where: { id: { in: existing.map((e) => e.id) } },
+      data: { supersededBy: createdIds[0] },
+    });
+  } else if (existing.length > 0 && createdIds.length === 0) {
+    // Period cleared (no matched lines): mark prior as superseded by a sentinel run marker via soft clear.
+    await prisma.actualSpend.updateMany({
+      where: { id: { in: existing.map((e) => e.id) } },
+      data: { supersededBy: runId },
+    });
+  }
+}
+
+async function writeUnmatched(
+  provider: Provider,
+  period: BillingPeriod,
+  runId: string,
+  unmatched: NormalizedBillingLine[],
+) {
+  // Clear prior unmatched for provider/period that are still unresolved (re-ingest replace).
+  await prisma.unmatchedBillingLine.deleteMany({
+    where: {
+      provider,
+      year: period.year,
+      month: period.month,
+      resolvedTo: null,
+    },
+  });
+
+  if (unmatched.length > 0) {
+    await prisma.unmatchedBillingLine.createMany({
+      data: unmatched.map((line) => ({
+        provider: line.provider,
+        accountIdentifier: line.accountIdentifier,
+        serviceLine: line.serviceLine,
+        year: line.year,
+        month: line.month,
+        amountCad: line.amountCad,
+        sourceCurrency: line.sourceCurrency,
+        fxRate: line.fxRate,
+        fxRateDate: line.fxRateDate,
+        ingestionRunId: runId,
+      })),
+    });
+  }
+}
+
 /**
  * Idempotent month ingest: supersede prior active lines for the provider/period (scoped),
  * write new lines, refresh rollups, evaluate flags.
@@ -126,114 +265,20 @@ export async function ingestBillingPeriod(options: IngestOptions): Promise<Inges
       lines = lines.filter((line) => allowed.has(line.accountIdentifier));
     }
 
-    const matched: Array<NormalizedBillingLine & { licencePlate: string }> = [];
-    const unmatched: NormalizedBillingLine[] = [];
-
-    for (const line of lines) {
-      const licencePlate = accountMap.get(`${line.provider}:${line.accountIdentifier}`);
-      if (licencePlate) {
-        matched.push({ ...line, licencePlate });
-      } else {
-        unmatched.push(line);
-      }
-    }
-
+    const { matched, unmatched } = partitionMatchedUnmatched(lines, accountMap);
     const matchedPlates = [...new Set(matched.map((m) => m.licencePlate))];
 
-    // Supersede previously active lines for this provider/period (optionally scoped to plates).
-    const existing = await prisma.actualSpend.findMany({
-      where: {
-        AND: [
-          activeActualSpendWhere,
-          {
-            provider,
-            year: period.year,
-            month: period.month,
-            ...(matchedPlates.length && scope?.licencePlates?.length
-              ? { licencePlate: { in: matchedPlates } }
-              : scope?.licencePlates?.length
-                ? { licencePlate: { in: scope.licencePlates } }
-                : {}),
-          },
-        ],
-      },
-      select: { id: true },
+    await writeMatchedAndSupersede({
+      provider,
+      period,
+      runId: run.id,
+      matched,
+      matchedPlates,
+      scope,
     });
+    await writeUnmatched(provider, period, run.id, unmatched);
 
-    const createdIds: string[] = [];
-    for (const line of matched) {
-      const created = await prisma.actualSpend.create({
-        data: {
-          licencePlate: line.licencePlate,
-          provider: line.provider,
-          serviceLine: line.serviceLine,
-          year: line.year,
-          month: line.month,
-          amountCad: line.amountCad,
-          sourceCurrency: line.sourceCurrency,
-          fxRate: line.fxRate,
-          fxRateDate: line.fxRateDate,
-          ingestionRunId: run.id,
-          supersededBy: null,
-        },
-        select: { id: true },
-      });
-      createdIds.push(created.id);
-    }
-
-    // Point superseded rows at the first new row id for the run (audit trail of replacement).
-    if (existing.length > 0 && createdIds[0]) {
-      await prisma.actualSpend.updateMany({
-        where: { id: { in: existing.map((e) => e.id) } },
-        data: { supersededBy: createdIds[0] },
-      });
-    } else if (existing.length > 0 && createdIds.length === 0) {
-      // Period cleared (no matched lines): mark prior as superseded by a sentinel run marker via soft clear.
-      await prisma.actualSpend.updateMany({
-        where: { id: { in: existing.map((e) => e.id) } },
-        data: { supersededBy: run.id },
-      });
-    }
-
-    // Clear prior unmatched for provider/period that are still unresolved (re-ingest replace).
-    await prisma.unmatchedBillingLine.deleteMany({
-      where: {
-        provider,
-        year: period.year,
-        month: period.month,
-        resolvedTo: null,
-      },
-    });
-
-    if (unmatched.length > 0) {
-      await prisma.unmatchedBillingLine.createMany({
-        data: unmatched.map((line) => ({
-          provider: line.provider,
-          accountIdentifier: line.accountIdentifier,
-          serviceLine: line.serviceLine,
-          year: line.year,
-          month: line.month,
-          amountCad: line.amountCad,
-          sourceCurrency: line.sourceCurrency,
-          fxRate: line.fxRate,
-          fxRateDate: line.fxRateDate,
-          ingestionRunId: run.id,
-        })),
-      });
-    }
-
-    const rollupPlates =
-      matchedPlates.length > 0
-        ? matchedPlates
-        : scope?.licencePlates?.length
-          ? scope.licencePlates
-          : (
-              await prisma.publicCloudProduct.findMany({
-                where: { status: ProjectStatus.ACTIVE, provider },
-                select: { licencePlate: true },
-              })
-            ).map((p) => p.licencePlate);
-
+    const rollupPlates = await resolveRollupPlates(provider, matchedPlates, scope);
     await refreshRollupsForPeriod(provider, period, rollupPlates);
     const flagsRaised = await evaluateSpendFlagsForPeriod(period);
 

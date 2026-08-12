@@ -3,7 +3,6 @@ import {
   countMissingRequiredHorizonMonths,
   currentFiscalYearBounds,
   fiscalYearMonths,
-  formatCadAmount,
   hasForecastValuesForRequiredHorizon,
   isCurrentCalendarMonth,
   isLowForecastCoverage,
@@ -14,7 +13,7 @@ import {
 } from '@/components/public-cloud/finance/finance-measure-utils';
 import { type MonthlyValue } from '@/components/public-cloud/forecast/forecast-grid-utils';
 import prisma from '@/core/prisma';
-import { FinanceIngestionStatus, Provider, ProjectStatus, SpendFlagRuleId } from '@/prisma/client';
+import { FinanceIngestionStatus, Provider, ProjectStatus } from '@/prisma/client';
 import { activeActualSpendWhere } from '@/services/public-cloud-finance/active-spend';
 import { FINANCE_ANOMALY_THRESHOLDS, SPEND_FLAG_RULE_LABELS } from '@/services/public-cloud-finance/constants';
 
@@ -22,6 +21,88 @@ export type ProviderFilter = 'ALL' | Provider;
 
 function providerWhere(provider: ProviderFilter) {
   return provider === 'ALL' ? {} : { provider };
+}
+
+type SnapshotProduct = {
+  licencePlate: string;
+  name: string;
+  provider: Provider;
+  organization: { code: string; name: string };
+};
+
+function accumulateProductForecastTotals(
+  products: SnapshotProduct[],
+  forecastByPlate: Map<string, MonthlyValue[]>,
+  fyStartYear: number,
+  ytdMonths: Array<{ year: number; month: number }>,
+  actualByPlateMonth: Map<string, number>,
+) {
+  let fullYearForecast = 0;
+  let productsWithForecast = 0;
+  let productsWithCompleteCoverage = 0;
+  let excludedFromForecastTotals = 0;
+  const productActualYtd = new Map<string, number>();
+
+  for (const product of products) {
+    const forecast = forecastByPlate.get(product.licencePlate);
+    if (!forecast) {
+      excludedFromForecastTotals += 1;
+    } else {
+      productsWithForecast += 1;
+      fullYearForecast += sumForecastForFiscalYear(forecast, fyStartYear);
+      if (hasForecastValuesForRequiredHorizon(forecast)) productsWithCompleteCoverage += 1;
+    }
+
+    let ytd = 0;
+    for (const m of ytdMonths) {
+      ytd += actualByPlateMonth.get(`${product.licencePlate}:${monthKey(m.year, m.month)}`) ?? 0;
+    }
+    productActualYtd.set(product.licencePlate, ytd);
+  }
+
+  return {
+    fullYearForecast,
+    productsWithForecast,
+    productsWithCompleteCoverage,
+    excludedFromForecastTotals,
+    productActualYtd,
+  };
+}
+
+function buildMonthlyChart(options: {
+  fyMonths: Array<{ year: number; month: number }>;
+  products: SnapshotProduct[];
+  forecastByPlate: Map<string, MonthlyValue[]>;
+  actualByPlateMonth: Map<string, number>;
+  rollups: Array<{ year: number; month: number }>;
+  complete: { year: number; month: number };
+}) {
+  const { fyMonths, products, forecastByPlate, actualByPlateMonth, rollups, complete } = options;
+
+  return fyMonths.map((m) => {
+    const forecastTotal = products.reduce((sum, product) => {
+      const values = forecastByPlate.get(product.licencePlate);
+      if (!values) return sum;
+      const hit = values.find((v) => v.year === m.year && v.month === m.month);
+      return sum + (hit?.amount ?? 0);
+    }, 0);
+
+    const actualTotal = products.reduce(
+      (sum, product) => sum + (actualByPlateMonth.get(`${product.licencePlate}:${monthKey(m.year, m.month)}`) ?? 0),
+      0,
+    );
+
+    const hasActualRows = rollups.some((r) => r.year === m.year && r.month === m.month);
+    return {
+      year: m.year,
+      month: m.month,
+      label: new Date(m.year, m.month - 1, 1).toLocaleString('en-CA', { month: 'short' }),
+      actual: hasActualRows ? actualTotal : null,
+      forecast: forecastTotal,
+      isElapsed: m.year < complete.year || (m.year === complete.year && m.month <= complete.month),
+      isCurrentPartial: isCurrentCalendarMonth(m.year, m.month),
+    };
+  });
 }
 
 export async function getDataFreshness() {
@@ -77,7 +158,6 @@ export async function getFinanceSnapshot(provider: ProviderFilter = 'ALL') {
   });
 
   const actualByPlateMonth = new Map<string, number>();
-  const actualByService = new Map<string, number>();
   let fytdActual = 0;
 
   for (const row of rollups) {
@@ -103,58 +183,26 @@ export async function getFinanceSnapshot(provider: ProviderFilter = 'ALL') {
     take: 5,
   });
 
-  let fullYearForecast = 0;
-  let productsWithForecast = 0;
-  let productsWithCompleteCoverage = 0;
-  let excludedFromForecastTotals = 0;
-
-  const productActualYtd = new Map<string, number>();
-
-  for (const product of products) {
-    const forecast = forecastByPlate.get(product.licencePlate);
-    if (!forecast) {
-      excludedFromForecastTotals += 1;
-    } else {
-      productsWithForecast += 1;
-      fullYearForecast += sumForecastForFiscalYear(forecast, fy.startYear);
-      if (hasForecastValuesForRequiredHorizon(forecast)) productsWithCompleteCoverage += 1;
-    }
-
-    let ytd = 0;
-    for (const m of ytdMonths) {
-      ytd += actualByPlateMonth.get(`${product.licencePlate}:${monthKey(m.year, m.month)}`) ?? 0;
-    }
-    productActualYtd.set(product.licencePlate, ytd);
-  }
+  const {
+    fullYearForecast,
+    productsWithForecast,
+    productsWithCompleteCoverage,
+    excludedFromForecastTotals,
+    productActualYtd,
+  } = accumulateProductForecastTotals(products, forecastByPlate, fy.startYear, ytdMonths, actualByPlateMonth);
 
   const coveragePercent =
     products.length === 0 ? 0 : Math.round((productsWithCompleteCoverage / products.length) * 1000) / 10;
   const lowCoverage = isLowForecastCoverage(coveragePercent);
   const variance = lowCoverage ? null : calculateVariance(fytdActual, fullYearForecast);
 
-  const monthlyChart = fyMonths.map((m) => {
-    const forecastTotal = products.reduce((sum, product) => {
-      const values = forecastByPlate.get(product.licencePlate);
-      if (!values) return sum;
-      const hit = values.find((v) => v.year === m.year && v.month === m.month);
-      return sum + (hit?.amount ?? 0);
-    }, 0);
-
-    const actualTotal = products.reduce(
-      (sum, product) => sum + (actualByPlateMonth.get(`${product.licencePlate}:${monthKey(m.year, m.month)}`) ?? 0),
-      0,
-    );
-
-    const hasActualRows = rollups.some((r) => r.year === m.year && r.month === m.month);
-    return {
-      year: m.year,
-      month: m.month,
-      label: new Date(m.year, m.month - 1, 1).toLocaleString('en-CA', { month: 'short' }),
-      actual: hasActualRows ? actualTotal : null,
-      forecast: forecastTotal,
-      isElapsed: m.year < complete.year || (m.year === complete.year && m.month <= complete.month),
-      isCurrentPartial: isCurrentCalendarMonth(m.year, m.month),
-    };
+  const monthlyChart = buildMonthlyChart({
+    fyMonths,
+    products,
+    forecastByPlate,
+    actualByPlateMonth,
+    rollups,
+    complete,
   });
 
   const topProducts = [...products]
@@ -511,4 +559,5 @@ export async function createVarianceNote(input: {
   });
 }
 
-export { formatCadAmount, SpendFlagRuleId };
+export { formatCadAmount } from '@/components/public-cloud/finance/finance-measure-utils';
+export { SpendFlagRuleId } from '@/prisma/client';

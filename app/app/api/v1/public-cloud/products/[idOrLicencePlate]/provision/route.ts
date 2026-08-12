@@ -63,6 +63,47 @@ async function getExistingAzureSubscriptions(licencePlate: string) {
   return product?.azureSubscriptions;
 }
 
+type ProvisionBody = z.infer<typeof bodySchema>;
+
+async function buildProviderAccountData(
+  licencePlate: string,
+  requestType: RequestType,
+  provider: Provider,
+  body: ProvisionBody,
+): Promise<Record<string, Prisma.InputJsonValue>> {
+  if (requestType === RequestType.DELETE) return {};
+
+  if (provider === Provider.AWS_LZA) {
+    const callbackAwsAccounts = body.awsAccounts.map((account) => ({
+      ...account,
+      name: account.name ?? getAwsLzaAccountName(licencePlate, account.environment),
+    }));
+
+    return {
+      awsAccounts: mergeAwsLzaAccounts(
+        await getExistingAwsAccounts(licencePlate),
+        callbackAwsAccounts,
+      ) as unknown as Prisma.InputJsonValue,
+    };
+  }
+
+  if (provider === Provider.AZURE) {
+    const callbackAzureSubscriptions = body.azureSubscriptions.map((subscription) => ({
+      ...subscription,
+      name: subscription.name ?? getAzureSubscriptionName(licencePlate, subscription.environment),
+    }));
+
+    return {
+      azureSubscriptions: mergeAzureSubscriptions(
+        await getExistingAzureSubscriptions(licencePlate),
+        callbackAzureSubscriptions,
+      ) as unknown as Prisma.InputJsonValue,
+    };
+  }
+
+  return {};
+}
+
 export const POST = apiHandler(async ({ pathParams, session, body }) => {
   const { idOrLicencePlate: licencePlate } = pathParams;
 
@@ -105,35 +146,7 @@ export const POST = apiHandler(async ({ pathParams, session, body }) => {
   const { id, ...decisionData } = request.decisionData;
 
   const filter = { licencePlate };
-  let providerAccountData: Record<string, Prisma.InputJsonValue> = {};
-
-  if (request.type !== RequestType.DELETE && decisionData.provider === Provider.AWS_LZA) {
-    const callbackAwsAccounts = body.awsAccounts.map((account) => ({
-      ...account,
-      name: account.name ?? getAwsLzaAccountName(licencePlate, account.environment),
-    }));
-
-    providerAccountData = {
-      awsAccounts: mergeAwsLzaAccounts(
-        await getExistingAwsAccounts(licencePlate),
-        callbackAwsAccounts,
-      ) as unknown as Prisma.InputJsonValue,
-    };
-  }
-
-  if (request.type !== RequestType.DELETE && decisionData.provider === Provider.AZURE) {
-    const callbackAzureSubscriptions = body.azureSubscriptions.map((subscription) => ({
-      ...subscription,
-      name: subscription.name ?? getAzureSubscriptionName(licencePlate, subscription.environment),
-    }));
-
-    providerAccountData = {
-      azureSubscriptions: mergeAzureSubscriptions(
-        await getExistingAzureSubscriptions(licencePlate),
-        callbackAzureSubscriptions,
-      ) as unknown as Prisma.InputJsonValue,
-    };
-  }
+  const providerAccountData = await buildProviderAccountData(licencePlate, request.type, decisionData.provider, body);
 
   const productData = { ...decisionData, ...providerAccountData };
 

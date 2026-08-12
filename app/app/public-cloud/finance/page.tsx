@@ -25,6 +25,12 @@ function SummaryCard({ label, value, hint }: Readonly<{ label: string; value: st
   );
 }
 
+function monthStatusLabel(row: { isCurrentPartial: boolean; isElapsed: boolean }) {
+  if (row.isCurrentPartial) return 'Current month (partial)';
+  if (row.isElapsed) return 'Elapsed';
+  return 'Future';
+}
+
 const publicCloudFinancePage = createClientPage({
   permissions: [GlobalPermissions.ViewPublicCloudForecast],
 });
@@ -70,14 +76,11 @@ export default publicCloudFinancePage(({ session }) => {
       ) : (
         <div className="space-y-6">
           {data.lowCoverage && (
-            <div
-              role="status"
-              className="rounded-md border border-amber-300 bg-amber-50 px-4 py-3 text-sm text-amber-950"
-            >
+            <output className="block rounded-md border border-amber-300 bg-amber-50 px-4 py-3 text-sm text-amber-950">
               Forecast coverage is {formatPercent(data.coverage.percent, 1)} ({data.coverage.completeCount} of{' '}
               {data.coverage.productCount} products). Variance is not meaningful at this coverage — showing actuals-only
               reporting for the estate this page describes.
-            </div>
+            </output>
           )}
 
           <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-4">
@@ -154,9 +157,7 @@ export default publicCloudFinancePage(({ session }) => {
                         <td className="px-3 py-2">{row.label}</td>
                         <td className="px-3 py-2 text-right font-medium">{formatCadAmount(row.actual)}</td>
                         <td className="px-3 py-2 text-right text-gray-600">{formatCadAmount(row.forecast)}</td>
-                        <td className="px-3 py-2 text-xs text-gray-600">
-                          {row.isCurrentPartial ? 'Current month (partial)' : row.isElapsed ? 'Elapsed' : 'Future'}
-                        </td>
+                        <td className="px-3 py-2 text-xs text-gray-600">{monthStatusLabel(row)}</td>
                       </tr>
                     ),
                   )}
@@ -243,7 +244,7 @@ export default publicCloudFinancePage(({ session }) => {
             </Link>
           </section>
 
-          <p className="text-xs text-gray-500" role="status">
+          <output className="block text-xs text-gray-500">
             Data freshness:{' '}
             {data.freshness
               .map(
@@ -253,7 +254,7 @@ export default publicCloudFinancePage(({ session }) => {
                   }`,
               )
               .join(' · ')}
-          </p>
+          </output>
         </div>
       )}
     </div>

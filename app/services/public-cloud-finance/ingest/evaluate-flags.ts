@@ -11,25 +11,52 @@ type ServiceLineAmount = {
   amountCad: number;
 };
 
+type SpendFlagInput = {
+  licencePlate: string;
+  provider: Provider;
+  serviceLine?: string;
+  year: number;
+  month: number;
+  ruleId: SpendFlagRuleId;
+  currentAmountCad: number;
+  priorAmountCad?: number;
+};
+
 function priorPeriod(period: BillingPeriod): BillingPeriod {
   if (period.month === 1) return { year: period.year - 1, month: 12 };
   return { year: period.year, month: period.month - 1 };
 }
 
-export async function evaluateSpendFlagsForPeriod(period: BillingPeriod) {
-  const rollups = await prisma.monthlyProductSpendRollup.findMany({
-    where: { year: period.year, month: period.month },
-  });
-
+async function loadFlagEvaluationData(period: BillingPeriod) {
   const prior = priorPeriod(period);
-  const priorRollups = await prisma.monthlyProductSpendRollup.findMany({
-    where: { year: prior.year, month: prior.month },
-  });
-  const priorByKey = new Map(priorRollups.map((r) => [`${r.licencePlate}:${r.provider}`, r.amountCad]));
 
-  const forecasts = await prisma.cloudCostForecast.findMany({
-    select: { licencePlate: true, monthlyValues: true },
-  });
+  const [rollups, priorRollups, forecasts, currentLines, historicalServiceLines] = await Promise.all([
+    prisma.monthlyProductSpendRollup.findMany({
+      where: { year: period.year, month: period.month },
+    }),
+    prisma.monthlyProductSpendRollup.findMany({
+      where: { year: prior.year, month: prior.month },
+    }),
+    prisma.cloudCostForecast.findMany({
+      select: { licencePlate: true, monthlyValues: true },
+    }),
+    prisma.actualSpend.findMany({
+      where: { year: period.year, month: period.month, ...activeActualSpendWhere },
+      select: { licencePlate: true, provider: true, serviceLine: true, amountCad: true },
+    }),
+    prisma.actualSpend.findMany({
+      where: {
+        AND: [
+          activeActualSpendWhere,
+          { OR: [{ year: { lt: period.year } }, { year: period.year, month: { lt: period.month } }] },
+        ],
+      },
+      select: { licencePlate: true, provider: true, serviceLine: true },
+      distinct: ['licencePlate', 'provider', 'serviceLine'],
+    }),
+  ]);
+
+  const priorByKey = new Map(priorRollups.map((r) => [`${r.licencePlate}:${r.provider}`, r.amountCad]));
   const forecastByPlateMonth = new Map<string, number>();
   for (const forecast of forecasts) {
     for (const value of forecast.monthlyValues) {
@@ -38,34 +65,18 @@ export async function evaluateSpendFlagsForPeriod(period: BillingPeriod) {
       }
     }
   }
-
-  const currentLines = await prisma.actualSpend.findMany({
-    where: { year: period.year, month: period.month, ...activeActualSpendWhere },
-    select: { licencePlate: true, provider: true, serviceLine: true, amountCad: true },
-  });
-
-  const historicalServiceLines = await prisma.actualSpend.findMany({
-    where: {
-      AND: [
-        activeActualSpendWhere,
-        { OR: [{ year: { lt: period.year } }, { year: period.year, month: { lt: period.month } }] },
-      ],
-    },
-    select: { licencePlate: true, provider: true, serviceLine: true },
-    distinct: ['licencePlate', 'provider', 'serviceLine'],
-  });
   const seenService = new Set(historicalServiceLines.map((l) => `${l.licencePlate}:${l.provider}:${l.serviceLine}`));
 
-  const flags: Array<{
-    licencePlate: string;
-    provider: Provider;
-    serviceLine?: string;
-    year: number;
-    month: number;
-    ruleId: SpendFlagRuleId;
-    currentAmountCad: number;
-    priorAmountCad?: number;
-  }> = [];
+  return { rollups, priorByKey, forecastByPlateMonth, currentLines, seenService };
+}
+
+function collectMomAndOverForecastFlags(
+  period: BillingPeriod,
+  rollups: Awaited<ReturnType<typeof loadFlagEvaluationData>>['rollups'],
+  priorByKey: Map<string, number>,
+  forecastByPlateMonth: Map<string, number>,
+): SpendFlagInput[] {
+  const flags: SpendFlagInput[] = [];
 
   for (const rollup of rollups) {
     const key = `${rollup.licencePlate}:${rollup.provider}`;
@@ -102,6 +113,14 @@ export async function evaluateSpendFlagsForPeriod(period: BillingPeriod) {
     }
   }
 
+  return flags;
+}
+
+function collectNewServiceLineFlags(
+  period: BillingPeriod,
+  currentLines: ServiceLineAmount[],
+  seenService: Set<string>,
+): SpendFlagInput[] {
   const serviceTotals = new Map<string, ServiceLineAmount>();
   for (const line of currentLines) {
     const key = `${line.licencePlate}:${line.provider}:${line.serviceLine}`;
@@ -113,6 +132,7 @@ export async function evaluateSpendFlagsForPeriod(period: BillingPeriod) {
     }
   }
 
+  const flags: SpendFlagInput[] = [];
   for (const [key, line] of serviceTotals) {
     if (seenService.has(key)) continue;
     if (line.amountCad < FINANCE_ANOMALY_THRESHOLDS.newServiceLineMinCad) continue;
@@ -126,6 +146,16 @@ export async function evaluateSpendFlagsForPeriod(period: BillingPeriod) {
       currentAmountCad: line.amountCad,
     });
   }
+  return flags;
+}
+
+export async function evaluateSpendFlagsForPeriod(period: BillingPeriod) {
+  const { rollups, priorByKey, forecastByPlateMonth, currentLines, seenService } = await loadFlagEvaluationData(period);
+
+  const flags = [
+    ...collectMomAndOverForecastFlags(period, rollups, priorByKey, forecastByPlateMonth),
+    ...collectNewServiceLineFlags(period, currentLines, seenService),
+  ];
 
   // Replace unreviewed flags for this period so re-ingest is idempotent for open items.
   await prisma.spendFlag.deleteMany({

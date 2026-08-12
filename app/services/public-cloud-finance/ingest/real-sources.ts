@@ -82,7 +82,7 @@ async function readExportFile(path: string): Promise<ExportRow[]> {
   const raw = await fs.readFile(path, 'utf8');
   const parsed = JSON.parse(raw) as unknown;
   if (!Array.isArray(parsed)) {
-    throw new Error(`Billing export at ${path} must be a JSON array`);
+    throw new TypeError(`Billing export at ${path} must be a JSON array`);
   }
   return parsed as ExportRow[];
 }
