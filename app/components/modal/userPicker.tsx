@@ -1,8 +1,8 @@
 'use client';
 
-import { Alert, Button, Divider, Grid, Group, TextInput } from '@mantine/core';
+import { Alert, Button, Divider, Grid, Group, TextInput, Tooltip } from '@mantine/core';
 import { randomId } from '@mantine/hooks';
-import { IconBrandGithub, IconInfoSquareFilled } from '@tabler/icons-react';
+import { IconBrandGithub, IconEdit, IconInfoSquareFilled } from '@tabler/icons-react';
 import { useState } from 'react';
 import ExternalLink from '@/components/generic/button/ExternalLink';
 import UserAutocomplete from '@/components/users/UserAutocomplete';
@@ -10,11 +10,13 @@ import { createModal } from '@/core/modal';
 import { updateUserGitHub, validateGitHubUsername } from '@/services/backend/github';
 import { GitHubUser, SearchedUser } from '@/types/user';
 import { cn } from '@/utils/js';
+import UserProfile from '../users/UserProfile';
 
 interface ModalProps {
   initialValue?: SearchedUser | null;
   blacklistIds?: string[];
   blacklistMessage?: string;
+  userReadonly?: boolean;
 }
 
 interface ModalState {
@@ -38,13 +40,15 @@ export const openUserPickerModal = createModal<ModalProps, ModalState>({
       content: 'overflow-y-visible',
     },
   },
-  Component: function ({ initialValue, blacklistIds = [], blacklistMessage, state, closeModal }) {
+  Component: function ({ initialValue, blacklistIds = [], blacklistMessage, state, closeModal, userReadonly = false }) {
     const initialUser = initialValue?.id ? initialValue : null;
     const [user, setUser] = useState<SearchedUser | null>(initialUser);
     const [autocompId, setAutocompId] = useState(randomId());
     const [isSavingGitHub, setIsSavingGitHub] = useState(false);
     const [githubUsername, setGithubUsername] = useState(initialUser?.githubUsername ?? '');
-
+    const [isEditingGitHub, setIsEditingGitHub] = useState(
+      !initialUser?.githubUsername || !initialUser?.githubAccountId,
+    );
     const [githubLookupUser, setGithubLookupUser] = useState<GitHubUser | null>(
       initialUser?.githubUsername && initialUser.githubAccountId
         ? {
@@ -98,6 +102,8 @@ export const openUserPickerModal = createModal<ModalProps, ModalState>({
 
       setGithubError('');
 
+      const hasGitHubAccount = Boolean(selectedUser?.githubUsername && selectedUser.githubAccountId);
+      setIsEditingGitHub(!hasGitHubAccount);
       if (selectedUser?.githubUsername && selectedUser.githubAccountId) {
         setGithubLookupUser({
           username: selectedUser.githubUsername,
@@ -214,16 +220,20 @@ export const openUserPickerModal = createModal<ModalProps, ModalState>({
 
     return (
       <>
-        <UserAutocomplete
-          key={autocompId}
-          onSelect={(selectedUser: SearchedUser | null = null) => {
-            setUser(selectedUser);
-            resetGitHubState(selectedUser);
-          }}
-          initialValue={user}
-        />
+        {userReadonly && user ? (
+          <UserProfile data={user} />
+        ) : (
+          <UserAutocomplete
+            key={autocompId}
+            onSelect={(selectedUser: SearchedUser | null = null) => {
+              setUser(selectedUser);
+              resetGitHubState(selectedUser);
+            }}
+            initialValue={user}
+          />
+        )}
 
-        {user && (!user.githubUsername || !user.githubAccountId) && (
+        {user && (isEditingGitHub || !user.githubUsername || !user.githubAccountId) && (
           <div className="mt-4">
             <Group align="flex-end">
               <TextInput
@@ -250,17 +260,15 @@ export const openUserPickerModal = createModal<ModalProps, ModalState>({
                   setGithubUsername(value);
                   setGithubError('');
                   setGithubLookupUser(null);
-                  setUser((currentUser) => {
-                    if (!currentUser) {
-                      return currentUser;
-                    }
-
-                    return {
-                      ...currentUser,
-                      githubUsername: null,
-                      githubAccountId: null,
-                    };
-                  });
+                  setUser((currentUser) =>
+                    currentUser
+                      ? {
+                          ...currentUser,
+                          githubUsername: null,
+                          githubAccountId: null,
+                        }
+                      : currentUser,
+                  );
                 }}
                 onKeyDown={(event) => {
                   if (event.key === 'Enter') {
@@ -286,16 +294,32 @@ export const openUserPickerModal = createModal<ModalProps, ModalState>({
 
         {user?.githubUsername && user.githubAccountId && (
           <Alert color="green" icon={<IconBrandGithub size={20} />} className="mt-4" title="GitHub account verified">
-            <div>
-              Username:{' '}
-              <ExternalLink href={githubLookupUser?.profileUrl ?? `https://github.com/${user.githubUsername}`}>
-                {user.githubUsername}
-              </ExternalLink>
-            </div>
+            <Group justify="space-between">
+              <div>
+                <div>
+                  Username:{' '}
+                  <ExternalLink href={githubLookupUser?.profileUrl ?? `https://github.com/${user.githubUsername}`}>
+                    {user.githubUsername}
+                  </ExternalLink>
+                </div>
 
-            <div>GitHub account ID: {user.githubAccountId}</div>
+                <div>GitHub account ID: {user.githubAccountId}</div>
+              </div>
 
-            {githubLookupUser?.displayName && <div>Name: {githubLookupUser.displayName}</div>}
+              {!isEditingGitHub && (
+                <Tooltip label="Edit">
+                  <IconEdit
+                    className="ml-2 cursor-pointer edit-user-icon"
+                    onClick={() => {
+                      setGithubUsername(user.githubUsername ?? '');
+                      setGithubError('');
+                      setIsEditingGitHub(true);
+                    }}
+                  />
+                </Tooltip>
+              )}
+              {githubLookupUser?.displayName && <div>Name: {githubLookupUser.displayName}</div>}
+            </Group>
           </Alert>
         )}
         {githubError && user?.githubUsername && user.githubAccountId && <WarningMessage message={githubError} />}

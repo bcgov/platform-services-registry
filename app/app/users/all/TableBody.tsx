@@ -9,6 +9,7 @@ import React, { useState } from 'react';
 import { FormProvider, useForm } from 'react-hook-form';
 import FormDatePicker from '@/components/generic/select/FormDatePicker';
 import HookFormMultiSelect from '@/components/generic/select/HookFormMultiSelect';
+import { openUserPickerModal } from '@/components/modal/userPicker';
 import { failure, success } from '@/components/notification';
 import TooltipTableHeader from '@/components/shared/TooltipTableHeader';
 import UserProfile from '@/components/users/UserProfile';
@@ -38,7 +39,37 @@ export default function TableBody({ data, availableRoles = [], session }: TableP
     users.map((item, index) => (
       <Table.Tr key={item.id}>
         <Table.Td>
-          <UserProfile data={item} />
+          <UserProfile
+            data={item}
+            showEditIcon={false}
+            onClick={
+              session.permissions.editUsers
+                ? async () => {
+                    const { state } = await openUserPickerModal(
+                      {
+                        initialValue: item,
+                        userReadonly: true,
+                      },
+                      {
+                        initialState: {
+                          user: item,
+                        },
+                      },
+                    );
+
+                    if (!state.user) {
+                      return;
+                    }
+
+                    data[index].githubUsername = state.user.githubUsername;
+                    data[index].githubAccountId = state.user.githubAccountId;
+
+                    methods.setValue(`users.${index}.githubUsername`, state.user.githubUsername);
+                    methods.setValue(`users.${index}.githubAccountId`, state.user.githubAccountId);
+                  }
+                : undefined
+            }
+          />
         </Table.Td>
 
         <Table.Td>

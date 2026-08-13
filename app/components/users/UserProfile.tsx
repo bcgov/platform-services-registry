@@ -18,10 +18,17 @@ interface Props {
   data?: UserPickerData;
   onClick?: () => void;
   text?: string;
+  showEditIcon?: boolean;
   children?: React.ReactNode;
 }
 
-export default function UserProfile({ data, onClick, text = 'Click to select member', children }: Props) {
+export default function UserProfile({
+  data,
+  onClick,
+  text = 'Click to select member',
+  showEditIcon = true,
+  children,
+}: Props) {
   const user: UserPickerData = data ?? {
     image: '',
     email: '',
@@ -90,7 +97,7 @@ export default function UserProfile({ data, onClick, text = 'Click to select mem
             </div>
           </Group>
         </Tooltip>
-        {isSavedUser && onClick && (
+        {isSavedUser && onClick && showEditIcon && (
           <Tooltip label="Edit">
             <IconEdit className="ml-2 cursor-pointer edit-user-icon" onClick={onClick} />
           </Tooltip>
