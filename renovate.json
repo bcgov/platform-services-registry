@@ -3,5 +3,5 @@
   "extends": ["config:recommended", ":semanticCommitType(chore)"],
   "ignoreDeps": [],
   "ignorePaths": ["**/node_modules/**"],
-  "constraints": { "pnpm": "11.0.8" }
+  "constraints": { "pnpm": "11.22.0" }
 }
