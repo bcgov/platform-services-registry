@@ -32,7 +32,7 @@ export default async function createPrivateCloudNatsMessage(
   const users = await prisma.user.findMany({ where: { id: { in: subscribers.map((user) => user.userId) } } });
 
   const allianceLabel = organization.isAgMinistry ? 'JAG' : 'none';
-
+  const supportsGpu = cluster === Cluster.EMERALD || cluster === Cluster.KLAB2;
   const messageBody = {
     action: request.type.toLocaleLowerCase(),
     profile_id: id,
@@ -71,6 +71,7 @@ export default async function createPrivateCloudNatsMessage(
             pvc_count: isEmptyStorage ? 0 : 60,
           },
           snapshot: { count: isEmptyStorage ? 0 : 5 },
+          ...(supportsGpu && { gpu: { requests: requests.gpu ?? 0 } }),
         },
       };
     }),

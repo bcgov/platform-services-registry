@@ -18,6 +18,7 @@ const resourceUnit = {
   cpu: 'Core',
   memory: 'GiB',
   storage: 'GiB',
+  gpu: '',
 };
 
 export default function Quotas({
@@ -27,6 +28,7 @@ export default function Quotas({
   licencePlate,
   originalResourceRequests,
   quotaContactRequired = false,
+  isAdmin = false,
 }: {
   disabled: boolean;
   cluster?: Cluster;
@@ -34,10 +36,17 @@ export default function Quotas({
   licencePlate?: string;
   originalResourceRequests?: ResourceRequestsEnv;
   quotaContactRequired?: boolean;
+  isAdmin?: boolean;
 }) {
   const { watch } = useFormContext();
 
-  const [resourceRequests] = watch(['resourceRequests']);
+  const [resourceRequests, formCluster] = watch(['resourceRequests', 'cluster']);
+
+  const currentCluster = cluster ?? formCluster;
+
+  const canShowGpu = isAdmin && (currentCluster === Cluster.EMERALD || currentCluster === Cluster.KLAB2);
+
+  const visibleResourceKeys = resourceKeys.filter((resourceKey) => resourceKey !== 'gpu' || canShowGpu);
 
   const subnetInformation = useQueries({
     queries: ['dev', 'test', 'prod', 'tools'].map((environment) => {
@@ -132,9 +141,7 @@ export default function Quotas({
           const newVal = (resourceRequests[namespace] || {}) as ResourceRequests;
           const changed =
             hasOriginalVal &&
-            (originalVal?.cpu !== newVal?.cpu ||
-              originalVal?.memory !== newVal?.memory ||
-              originalVal?.storage !== newVal?.storage);
+            visibleResourceKeys.some((resourceKey) => originalVal?.[resourceKey] !== newVal?.[resourceKey]);
 
           let subnetInfo: ReactNode = null;
           if (cluster === Cluster.EMERALD) {
@@ -179,24 +186,30 @@ export default function Quotas({
               {clusterLink}
               {subnetInfo}
 
-              {resourceKeys.map((resourceKey) => {
+              {visibleResourceKeys.map((resourceKey) => {
                 const oldval = String(originalVal?.[resourceKey]);
                 const newval = String(newVal[resourceKey]);
 
                 return (
                   <div key={resourceKey}>
                     <HookFormTextInput
-                      label={`${resourceKey.toUpperCase()} (${resourceUnit[resourceKey]})`}
+                      label={
+                        resourceUnit[resourceKey]
+                          ? `${resourceKey.toUpperCase()} (${resourceUnit[resourceKey]})`
+                          : resourceKey.toUpperCase()
+                      }
                       name={`resourceRequests.${namespace}.${resourceKey}`}
                       type="number"
                       step={resourceKey === 'cpu' ? 0.5 : 1}
                       placeholder="0"
                       required
-                      disabled={disabled}
+                      disabled={resourceKey === 'gpu' ? false : disabled}
                       classNames={{ wrapper: 'mt-3' }}
                       options={{ valueAsNumber: true }}
                       min={0}
-                      max={resourceKey === 'cpu' ? 64 : resourceKey === 'memory' ? 128 : 512}
+                      max={
+                        resourceKey === 'cpu' ? 64 : resourceKey === 'memory' ? 128 : resourceKey === 'gpu' ? 8 : 512
+                      }
                     />
                     {hasOriginalVal && oldval !== newval && (
                       <div>

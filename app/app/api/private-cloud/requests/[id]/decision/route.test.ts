@@ -1,7 +1,11 @@
 import { expect } from '@jest/globals';
 import { GlobalRole } from '@/constants';
 import { createSamplePrivateCloudProductData } from '@/helpers/mock-resources';
-import { resourceRequests1, resourceRequests2 } from '@/helpers/mock-resources/private-cloud-product';
+import {
+  normalizeResourceRequests,
+  resourceRequests1,
+  resourceRequests2,
+} from '@/helpers/mock-resources/private-cloud-product';
 import { pickProductData } from '@/helpers/product';
 import { DecisionStatus, Cluster, RequestType } from '@/prisma/client';
 import { mockSessionByIdirGuid, mockSessionByRole } from '@/services/api-test/core';
@@ -42,6 +46,7 @@ async function makeBasicProductReview(decision: DecisionStatus, extra = {}) {
   const response = await makePrivateCloudRequestDecision(requests.main.id, {
     type: RequestType.CREATE,
     ...decisionData,
+    resourceRequests: normalizeResourceRequests(decisionData.resourceRequests),
     ...extra,
     decision: decision as 'APPROVED' | 'REJECTED',
   });
@@ -53,7 +58,10 @@ describe('Review Private Cloud Create Request - Permissions', () => {
   it('should successfully submit a create request for PO', async () => {
     await mockSessionByIdirGuid(productData.main.projectOwner.idirGuid);
 
-    const response = await createPrivateCloudProduct(productData.main);
+    const response = await createPrivateCloudProduct({
+      ...productData.main,
+      resourceRequests: normalizeResourceRequests(productData.main.resourceRequests),
+    });
     expect(response.status).toBe(200);
 
     requests.main = await response.json();
@@ -248,7 +256,10 @@ describe('Review Private Cloud Request - Validations', () => {
   it('should successfully submit a create request for TL1', async () => {
     await mockSessionByIdirGuid(productData.main.primaryTechnicalLead.idirGuid);
 
-    const response = await createPrivateCloudProduct(productData.main);
+    const response = await createPrivateCloudProduct({
+      ...productData.main,
+      resourceRequests: normalizeResourceRequests(productData.main.resourceRequests),
+    });
     expect(response.status).toBe(200);
 
     requests.main = await response.json();
@@ -293,7 +304,11 @@ describe('Review Private Cloud Request - Gold DR Validations', () => {
   it('should successfully submit a create request with GOLD cluster and golddrEnabled', async () => {
     await mockSessionByIdirGuid(goldProductData.main.projectOwner.idirGuid);
 
-    const response = await createPrivateCloudProduct({ ...goldProductData.main, golddrEnabled: true });
+    const response = await createPrivateCloudProduct({
+      ...goldProductData.main,
+      resourceRequests: normalizeResourceRequests(goldProductData.main.resourceRequests),
+      golddrEnabled: true,
+    });
     expect(response.status).toBe(200);
 
     goldRequests.main = await response.json();
@@ -308,6 +323,7 @@ describe('Review Private Cloud Request - Gold DR Validations', () => {
     const response = await makePrivateCloudRequestDecision(requestData.id, {
       type: RequestType.CREATE,
       ...requestData.decisionData,
+      resourceRequests: normalizeResourceRequests(requestData.decisionData.resourceRequests),
       cluster: Cluster.SILVER,
       golddrEnabled: true,
       decision: DecisionStatus.APPROVED as 'APPROVED' | 'REJECTED',
@@ -320,5 +336,68 @@ describe('Review Private Cloud Request - Gold DR Validations', () => {
 
     expect(decisionData.cluster).toBe(Cluster.SILVER);
     expect(decisionData.golddrEnabled).toBe(false);
+  });
+
+  it('should reset GPU quota to 0 for Silver', async () => {
+    const silverProductData = createSamplePrivateCloudProductData({
+      data: {
+        cluster: Cluster.SILVER,
+        resourceRequests: {
+          ...resourceRequests1,
+          development: {
+            ...resourceRequests1.development,
+            gpu: 2,
+          },
+          test: {
+            ...resourceRequests1.test,
+            gpu: 1,
+          },
+        },
+      },
+    });
+
+    await mockSessionByRole(GlobalRole.Admin);
+
+    const response = await createPrivateCloudProduct({
+      ...silverProductData,
+      resourceRequests: normalizeResourceRequests(silverProductData.resourceRequests),
+    });
+
+    expect(response.status).toBe(200);
+
+    const responseData = await response.json();
+
+    expect(responseData.decisionData.resourceRequests.development.gpu).toBe(0);
+    expect(responseData.decisionData.resourceRequests.test.gpu).toBe(0);
+    expect(responseData.decisionData.resourceRequests.production.gpu).toBe(0);
+    expect(responseData.decisionData.resourceRequests.tools.gpu).toBe(0);
+  });
+
+  it('should reset GPU quota to 0 for non-admin users', async () => {
+    const emeraldProductData = createSamplePrivateCloudProductData({
+      data: {
+        cluster: Cluster.EMERALD,
+        resourceRequests: {
+          ...resourceRequests1,
+          development: {
+            ...resourceRequests1.development,
+            gpu: 8,
+          },
+        },
+      },
+    });
+
+    await mockSessionByIdirGuid(emeraldProductData.projectOwner.idirGuid);
+
+    const response = await createPrivateCloudProduct({
+      ...emeraldProductData,
+      resourceRequests: normalizeResourceRequests(emeraldProductData.resourceRequests),
+    });
+
+    expect(response.status).toBe(200);
+
+    const responseData = await response.json();
+
+    expect(responseData.decisionData.resourceRequests.development.gpu).toBe(0);
   });
 });

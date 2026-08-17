@@ -1,5 +1,5 @@
 import { faker } from '@faker-js/faker';
-import { ProjectStatus } from '@/prisma/client';
+import { ProjectStatus, ResourceRequestsEnv } from '@/prisma/client';
 import { PrivateCloudProductDetail } from '@/types/private-cloud';
 import { generateShortId } from '@/utils/js';
 import { getRandomOrganization, getRandomCluster, getRandomUser } from './core';
@@ -9,21 +9,25 @@ export const resourceRequests1 = {
     cpu: 0.5,
     memory: 2,
     storage: 1,
+    gpu: 0,
   },
   test: {
     cpu: 0.5,
     memory: 2,
     storage: 1,
+    gpu: 0,
   },
   production: {
     cpu: 0.5,
     memory: 2,
     storage: 1,
+    gpu: 0,
   },
   tools: {
     cpu: 0.5,
     memory: 2,
     storage: 1,
+    gpu: 0,
   },
 };
 
@@ -32,27 +36,35 @@ export const resourceRequests2 = {
     cpu: 1,
     memory: 5,
     storage: 3,
+    gpu: 0,
   },
   test: {
     cpu: 0.5,
     memory: 2,
     storage: 2,
+    gpu: 0,
   },
   production: {
     cpu: 0.5,
     memory: 4,
     storage: 1,
+    gpu: 0,
   },
   tools: {
     cpu: 0.5,
     memory: 2,
     storage: 1,
+    gpu: 0,
   },
+};
+
+export type NormalizedPrivateCloudProductDetail = Omit<PrivateCloudProductDetail, 'resourceRequests'> & {
+  resourceRequests: NormalizedResourceRequestsEnv;
 };
 
 export function createSamplePrivateCloudProduct(args?: {
   data?: Partial<PrivateCloudProductDetail>;
-}): PrivateCloudProductDetail {
+}): NormalizedPrivateCloudProductDetail {
   const { data } = args ?? {};
 
   const projectOwner = getRandomUser();
@@ -60,6 +72,8 @@ export function createSamplePrivateCloudProduct(args?: {
   const secondaryTechnicalLead = getRandomUser();
 
   const organization = getRandomOrganization();
+
+  const resourceRequests = normalizeResourceRequests(data?.resourceRequests ?? resourceRequests1);
 
   const product = {
     id: generateShortId(),
@@ -76,7 +90,6 @@ export function createSamplePrivateCloudProduct(args?: {
     secondaryTechnicalLeadId: secondaryTechnicalLead.id,
     secondaryTechnicalLead,
     members: [],
-    resourceRequests: resourceRequests1,
     golddrEnabled: false,
     supportPhoneNumber: '',
     createdAt: new Date(),
@@ -89,7 +102,46 @@ export function createSamplePrivateCloudProduct(args?: {
     organizationId: organization.id,
     organization: organization,
     ...data,
+    resourceRequests,
   };
 
   return product;
+}
+
+export type NormalizedResourceRequestsEnv = {
+  [K in keyof ResourceRequestsEnv]: Omit<ResourceRequestsEnv[K], 'gpu'> & {
+    gpu: number;
+  };
+};
+
+export function normalizeResourceRequests(resourceRequests: ResourceRequestsEnv): NormalizedResourceRequestsEnv {
+  return {
+    development: {
+      ...resourceRequests.development,
+      gpu: resourceRequests.development.gpu ?? 0,
+    },
+    test: {
+      ...resourceRequests.test,
+      gpu: resourceRequests.test.gpu ?? 0,
+    },
+    production: {
+      ...resourceRequests.production,
+      gpu: resourceRequests.production.gpu ?? 0,
+    },
+    tools: {
+      ...resourceRequests.tools,
+      gpu: resourceRequests.tools.gpu ?? 0,
+    },
+  };
+}
+
+export function normalizePrivateCloudProduct<T extends { resourceRequests: ResourceRequestsEnv }>(
+  product: T,
+): Omit<T, 'resourceRequests'> & {
+  resourceRequests: NormalizedResourceRequestsEnv;
+} {
+  return {
+    ...product,
+    resourceRequests: normalizeResourceRequests(product.resourceRequests),
+  };
 }
