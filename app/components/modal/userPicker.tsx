@@ -46,6 +46,8 @@ export const openUserPickerModal = createModal<ModalProps, ModalState>({
     const [autocompId, setAutocompId] = useState(randomId());
     const [isSavingGitHub, setIsSavingGitHub] = useState(false);
     const [githubUsername, setGithubUsername] = useState(initialUser?.githubUsername ?? '');
+    const [githubError, setGithubError] = useState('');
+    const [isSearchingGitHub, setIsSearchingGitHub] = useState(false);
     const [isEditingGitHub, setIsEditingGitHub] = useState(
       !initialUser?.githubUsername || !initialUser?.githubAccountId,
     );
@@ -60,10 +62,6 @@ export const openUserPickerModal = createModal<ModalProps, ModalState>({
           }
         : null,
     );
-
-    const [githubError, setGithubError] = useState('');
-
-    const [isSearchingGitHub, setIsSearchingGitHub] = useState(false);
 
     const isBlacklisted = !!(user?.id && blacklistIds.includes(user.id));
 
@@ -83,10 +81,13 @@ export const openUserPickerModal = createModal<ModalProps, ModalState>({
     if (isBlacklisted && blacklistMessage) {
       warnings.push(blacklistMessage);
     }
+    const hadInitialGitHubAccount = Boolean(initialUser?.githubUsername && initialUser.githubAccountId);
 
     const hasEnteredGitHubUsername = githubUsername.trim().length > 0;
 
     const hasValidatedGitHubUsername = Boolean(user?.githubUsername && user.githubAccountId);
+
+    const isClearingExistingGitHubAccount = hadInitialGitHubAccount && isEditingGitHub && !hasEnteredGitHubUsername;
 
     const shouldDisableSelect = Boolean(
       !user?.idir ||
@@ -94,6 +95,7 @@ export const openUserPickerModal = createModal<ModalProps, ModalState>({
         isBlacklisted ||
         isSearchingGitHub ||
         isSavingGitHub ||
+        isClearingExistingGitHubAccount ||
         (hasEnteredGitHubUsername && !hasValidatedGitHubUsername),
     );
 
@@ -138,8 +140,6 @@ export const openUserPickerModal = createModal<ModalProps, ModalState>({
           setIsSearchingGitHub(false);
         });
 
-      setIsSearchingGitHub(false);
-
       if (!result.valid) {
         setGithubError(result.message);
         return;
@@ -171,7 +171,10 @@ export const openUserPickerModal = createModal<ModalProps, ModalState>({
       setGithubError('');
 
       let selectedUser = user;
-
+      if (hadInitialGitHubAccount && (!user.githubUsername || !user.githubAccountId)) {
+        setGithubError('Enter and validate a new GitHub username, or close the editor to keep the existing account.');
+        return;
+      }
       const githubWasChanged =
         Boolean(user.githubUsername && user.githubAccountId) &&
         (user.githubUsername !== initialUser?.githubUsername || user.githubAccountId !== initialUser?.githubAccountId);
@@ -258,8 +261,12 @@ export const openUserPickerModal = createModal<ModalProps, ModalState>({
                   const value = event.currentTarget.value;
 
                   setGithubUsername(value);
-                  setGithubError('');
                   setGithubLookupUser(null);
+                  if (hadInitialGitHubAccount && !value.trim()) {
+                    setGithubError('A GitHub account cannot be removed. Enter and validate a replacement username.');
+                  } else {
+                    setGithubError('');
+                  }
                   setUser((currentUser) =>
                     currentUser
                       ? {

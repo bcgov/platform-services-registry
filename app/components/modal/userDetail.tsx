@@ -241,13 +241,9 @@ function UserDetails({ data }: { data?: UserDetailWithColeagues }) {
                 <div>
                   <div className="text-gray-600 leading-6">GitHub</div>
                   <div className="text-xs">
-                    {data.githubUsername ? (
-                      <ExternalLink href={`https://github.com/${encodeURIComponent(data.githubUsername)}`}>
-                        {data.githubUsername}
-                      </ExternalLink>
-                    ) : (
-                      <span>&nbsp;</span>
-                    )}
+                    <ExternalLink href={`https://github.com/${encodeURIComponent(data.githubUsername)}`}>
+                      {data.githubUsername}
+                    </ExternalLink>
                   </div>
                 </div>
               </div>

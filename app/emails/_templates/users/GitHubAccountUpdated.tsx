@@ -15,9 +15,7 @@ export default function GitHubAccountUpdated({
   previousGithubUsername,
   updatedBy,
 }: EmailProps) {
-  const message = previousGithubUsername
-    ? 'updated your GitHub username in the Platform Services Product Registry.'
-    : 'added your GitHub username to the Platform Services Product Registry.';
+  const message = previousGithubUsername ? 'changed your GitHub username in' : 'added your GitHub username to';
 
   return (
     <Layout>
@@ -26,7 +24,7 @@ export default function GitHubAccountUpdated({
       <Text>Hi {firstName || 'there'},</Text>
 
       <Text>
-        {updatedBy} {message}
+        {updatedBy} {message} your Platform Services Product Registry profile.
       </Text>
 
       {previousGithubUsername && (

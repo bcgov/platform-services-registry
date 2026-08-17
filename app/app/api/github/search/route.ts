@@ -1,32 +1,26 @@
-import { NextRequest, NextResponse } from 'next/server';
+import { NextResponse } from 'next/server';
 import { z } from 'zod';
+import { GlobalRole } from '@/constants';
+import createApiHandler from '@/core/api-handler';
 import { validateGitHubUsername } from '@/services/github';
 
-const usernameSchema = z
-  .string()
-  .trim()
-  .min(1)
-  .max(39)
-  .regex(/^[a-z\d](?:[a-z\d]|-(?=[a-z\d])){0,38}$/i, 'Enter a valid GitHub username.');
+const githubUserSearchQuerySchema = z.object({
+  username: z
+    .string()
+    .trim()
+    .min(1)
+    .max(39)
+    .regex(/^[a-z\d](?:[a-z\d]|-(?=[a-z\d])){0,38}$/i, 'Enter a valid GitHub username.'),
+});
 
-export async function GET(request: NextRequest) {
-  const username = request.nextUrl.searchParams.get('username');
-  const parsed = usernameSchema.safeParse(username);
-
-  if (!parsed.success) {
-    return NextResponse.json(
-      {
-        valid: false,
-        message: 'Enter a valid GitHub username.',
-      },
-      {
-        status: 400,
-      },
-    );
-  }
-
+export const GET = createApiHandler({
+  roles: [GlobalRole.User],
+  validations: {
+    queryParams: githubUserSearchQuerySchema,
+  },
+})(async ({ queryParams }) => {
   try {
-    const result = await validateGitHubUsername(parsed.data);
+    const result = await validateGitHubUsername(queryParams.username);
 
     return NextResponse.json(result);
   } catch {
@@ -40,4 +34,4 @@ export async function GET(request: NextRequest) {
       },
     );
   }
-}
+});

@@ -1,8 +1,9 @@
 import { Session } from 'next-auth';
 import { TypeOf } from 'zod';
 import prisma from '@/core/prisma';
-import { BadRequestResponse, OkResponse } from '@/core/responses';
+import { BadRequestResponse, OkResponse, UnauthorizedResponse } from '@/core/responses';
 import { sendGitHubAccountUpdatedEmail } from '@/services/ches/users';
+import { usersShareActiveProduct } from '@/services/db';
 import { validateGitHubUsername } from '@/services/github';
 import { githubUserUpdateBodySchema, putPathParamSchema } from '../[id]/schema';
 
@@ -34,6 +35,14 @@ export default async function updateGitHubOp({
   if (!user) {
     return BadRequestResponse('Registry user was not found.');
   }
+  const isEditingSelf = session.user.id === id;
+  const canEditAnyUser = session.permissions.editUsers;
+  const canEditProductMember =
+    isEditingSelf || canEditAnyUser ? false : await usersShareActiveProduct(session.user.id, id);
+
+  if (!isEditingSelf && !canEditAnyUser && !canEditProductMember) {
+    return UnauthorizedResponse();
+  }
 
   const validation = await validateGitHubUsername(username);
 
@@ -60,11 +69,14 @@ export default async function updateGitHubOp({
     },
     select: {
       id: true,
+      email: true,
     },
   });
 
   if (duplicateUser) {
-    return BadRequestResponse('This GitHub account is already associated with another Registry user.');
+    return BadRequestResponse(
+      `This GitHub account is already associated with another Registry user ${duplicateUser.email}.`,
+    );
   }
 
   const updatedUser = await prisma.user.update({

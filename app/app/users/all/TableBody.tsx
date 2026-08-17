@@ -185,7 +185,7 @@ export default function TableBody({ data, availableRoles = [], session }: TableP
     ))
   ) : (
     <Table.Tr>
-      <Table.Td colSpan={6} className="italic">
+      <Table.Td colSpan={5} className="italic">
         No users found
       </Table.Td>
     </Table.Tr>
