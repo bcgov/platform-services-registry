@@ -5,12 +5,7 @@ import createApiHandler from '@/core/api-handler';
 import { validateGitHubUsername } from '@/services/github';
 
 const githubUserSearchQuerySchema = z.object({
-  username: z
-    .string()
-    .trim()
-    .min(1)
-    .max(39)
-    .regex(/^[a-z\d](?:[a-z\d]|-(?=[a-z\d])){0,38}$/i, 'Enter a valid GitHub username.'),
+  username: z.string().trim().default(''),
 });
 
 export const GET = createApiHandler({

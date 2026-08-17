@@ -34,6 +34,26 @@ export type UpdateUserGitHubResult =
       message: string;
     };
 
+function isRecord(value: unknown): value is Record<string, unknown> {
+  return typeof value === 'object' && value !== null;
+}
+
+function getApiErrorMessage(response: ApiErrorResponse): string {
+  if (typeof response.error === 'string') {
+    return response.error;
+  }
+
+  if (isRecord(response.error) && typeof response.error['message'] === 'string') {
+    return response.error['message'];
+  }
+
+  if (typeof response.message === 'string') {
+    return response.message;
+  }
+
+  return 'Unable to save the GitHub account.';
+}
+
 export async function updateUserGitHub(userId: string, username: string): Promise<UpdateUserGitHubResult> {
   const response = await baseInstance
     .patch<UpdatedGitHubUser | ApiErrorResponse>(
@@ -55,11 +75,9 @@ export async function updateUserGitHub(userId: string, username: string): Promis
   }
 
   if (response.status >= 400) {
-    const error = response.data as ApiErrorResponse;
-
     return {
       success: false,
-      message: error.error ?? error.message ?? 'Unable to save the GitHub account.',
+      message: getApiErrorMessage(response.data as ApiErrorResponse),
     };
   }
 

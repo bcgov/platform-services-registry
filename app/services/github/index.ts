@@ -13,22 +13,12 @@ export function processGitHubUser(user: GitHubApiUser): GitHubUser {
   };
 }
 
-/**
- * Finds a GitHub account by username.
- *
- * Returns null only when GitHub confirms that the account
- * does not exist.
- *
- * Other GitHub API errors are rethrown so they are not
- * incorrectly reported as "user not found".
- */
 export async function getGitHubUser(username: string): Promise<GitHubUser | null> {
   const normalizedUsername = username.trim().replace(/^@/, '');
 
   try {
     const response = await instance.get<GitHubApiUser>(`/users/${encodeURIComponent(normalizedUsername)}`);
 
-    // Exclude organizations and bots if only human users are allowed.
     if (response.data.type !== 'User') {
       return null;
     }
