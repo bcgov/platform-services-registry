@@ -66,6 +66,7 @@ export default privateCloudProductNew(({ session }) => {
       Component: Quotas,
       componentArgs: {
         disabled: true,
+        isAdmin: session?.isAdmin,
       },
     },
     {

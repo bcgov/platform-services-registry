@@ -45,6 +45,18 @@ export default async function createOp({ session, body }: { session: Session; bo
 
   if (rest.cluster === Cluster.GOLDDR) rest.cluster = Cluster.GOLD;
 
+  const gpuEnabledCluster = rest.cluster === Cluster.EMERALD || rest.cluster === Cluster.KLAB2;
+
+  rest.resourceRequests = Object.fromEntries(
+    Object.entries(rest.resourceRequests).map(([namespace, requests]) => [
+      namespace,
+      {
+        ...requests,
+        gpu: gpuEnabledCluster && session.isAdmin ? requests.gpu ?? 0 : 0,
+      },
+    ]),
+  ) as typeof rest.resourceRequests;
+
   const productData = {
     ...rest,
     licencePlate,

@@ -99,14 +99,25 @@ export default privateCloudProductEdit(({ session }) => {
   const { formState, reset } = methods;
 
   useEffect(() => {
-    if (!currentProduct) return;
+    if (!snap.currentProduct) return;
+
+    const resourceRequests = Object.fromEntries(
+      Object.entries(snap.currentProduct.resourceRequests ?? {}).map(([namespace, requests]) => [
+        namespace,
+        {
+          ...requests,
+          gpu: requests.gpu ?? 0,
+        },
+      ]),
+    ) as ResourceRequestsEnv;
 
     setDisabled(!currentProduct._permissions.edit);
 
     reset(
       {
-        ...currentProduct,
-        ...getRepositoryFormValues(currentProduct),
+        ...snap.currentProduct,
+        resourceRequests,
+        repositories: snap.currentProduct.repositories ?? [],
         isAgMinistry: false,
         isAgMinistryChecked: true,
       },
@@ -166,6 +177,7 @@ export default privateCloudProductEdit(({ session }) => {
         isGoldDR: currentProduct.golddrEnabled ?? false,
         originalResourceRequests: currentProduct.resourceRequests,
         quotaContactRequired: true,
+        isAdmin: session?.isAdmin,
       },
     },
   ];
