@@ -32,6 +32,142 @@ function WarningMessage({ message }) {
   );
 }
 
+function useGitHubUser(
+  initialUser: SearchedUser | null,
+  setUser: React.Dispatch<React.SetStateAction<SearchedUser | null>>,
+) {
+  const [isSaving, setIsSaving] = useState(false);
+  const [isSearching, setIsSearching] = useState(false);
+  const [username, setUsername] = useState(initialUser?.githubUsername ?? '');
+  const [error, setError] = useState('');
+  const [lookupUser, setLookupUser] = useState<GitHubUser | null>(null);
+  const [isEditing, setIsEditing] = useState(!initialUser?.githubUsername || !initialUser.githubAccountId);
+
+  const [originalUsername, setOriginalUsername] = useState<string | null>(initialUser?.githubUsername ?? null);
+
+  const [originalAccountId, setOriginalAccountId] = useState<string | null>(initialUser?.githubAccountId ?? null);
+
+  const hadInitialGitHubData = Boolean(originalUsername || originalAccountId);
+  const reset = (selectedUser: SearchedUser | null) => {
+    const selectedUsername = selectedUser?.githubUsername ?? null;
+    const selectedAccountId = selectedUser?.githubAccountId ?? null;
+    const hasAccount = Boolean(selectedUsername && selectedAccountId);
+
+    setOriginalUsername(selectedUsername);
+    setOriginalAccountId(selectedAccountId);
+    setUsername(selectedUsername ?? '');
+    setError('');
+    setIsEditing(!hasAccount);
+
+    if (selectedUsername && selectedAccountId) {
+      setLookupUser({
+        username: selectedUsername,
+        accountId: selectedAccountId,
+        displayName: null,
+        avatarUrl: '',
+        profileUrl: `https://github.com/${selectedUsername}`,
+      });
+    } else {
+      setLookupUser(null);
+    }
+  };
+
+  const changeUsername = (value: string) => {
+    setUsername(value);
+    setLookupUser(null);
+
+    setError(
+      hadInitialGitHubData && !value.trim()
+        ? 'A GitHub account cannot be removed. Enter and validate a replacement username.'
+        : '',
+    );
+
+    setUser((currentUser) =>
+      currentUser
+        ? {
+            ...currentUser,
+            githubUsername: null,
+            githubAccountId: null,
+          }
+        : currentUser,
+    );
+  };
+
+  const search = async () => {
+    const normalizedUsername = username.trim().replace(/^@/, '');
+
+    if (!normalizedUsername) {
+      setError('Enter a GitHub username.');
+      return;
+    }
+
+    setIsSearching(true);
+    setError('');
+    setLookupUser(null);
+
+    const result = await validateGitHubUsername(normalizedUsername)
+      .catch(() => ({
+        valid: false as const,
+        message: 'GitHub validation is temporarily unavailable.',
+      }))
+      .finally(() => setIsSearching(false));
+
+    if (!result.valid) {
+      setError(result.message);
+      return;
+    }
+
+    const verifiedUsername = result.user.username.toLowerCase();
+
+    setUsername(verifiedUsername);
+    setLookupUser(result.user);
+
+    setUser((currentUser) =>
+      currentUser
+        ? {
+            ...currentUser,
+            githubUsername: verifiedUsername,
+            githubAccountId: result.user.accountId,
+          }
+        : currentUser,
+    );
+  };
+
+  const clearCandidate = () => {
+    setUsername('');
+    setLookupUser(null);
+
+    setUser((currentUser) =>
+      currentUser
+        ? {
+            ...currentUser,
+            githubUsername: null,
+            githubAccountId: null,
+          }
+        : currentUser,
+    );
+  };
+
+  return {
+    username,
+    error,
+    lookupUser,
+    isEditing,
+    isSaving,
+    isSearching,
+    originalUsername,
+    originalAccountId,
+    setError,
+    setIsEditing,
+    setIsSaving,
+    reset,
+    search,
+    changeUsername,
+    clearCandidate,
+    hadInitialGitHubData,
+  };
+}
+
 export const openUserPickerModal = createModal<ModalProps, ModalState>({
   settings: {
     size: 'xl',
@@ -44,24 +180,7 @@ export const openUserPickerModal = createModal<ModalProps, ModalState>({
     const initialUser = initialValue?.id ? initialValue : null;
     const [user, setUser] = useState<SearchedUser | null>(initialUser);
     const [autocompId, setAutocompId] = useState(randomId());
-    const [isSavingGitHub, setIsSavingGitHub] = useState(false);
-    const [githubUsername, setGithubUsername] = useState(initialUser?.githubUsername ?? '');
-    const [githubError, setGithubError] = useState('');
-    const [isSearchingGitHub, setIsSearchingGitHub] = useState(false);
-    const [isEditingGitHub, setIsEditingGitHub] = useState(
-      !initialUser?.githubUsername || !initialUser?.githubAccountId,
-    );
-    const [githubLookupUser, setGithubLookupUser] = useState<GitHubUser | null>(
-      initialUser?.githubUsername && initialUser.githubAccountId
-        ? {
-            username: initialUser.githubUsername,
-            accountId: initialUser.githubAccountId,
-            displayName: null,
-            avatarUrl: '',
-            profileUrl: `https://github.com/${initialUser.githubUsername}`,
-          }
-        : null,
-    );
+    const github = useGitHubUser(initialUser, setUser);
 
     const isBlacklisted = !!(user?.id && blacklistIds.includes(user.id));
 
@@ -81,132 +200,53 @@ export const openUserPickerModal = createModal<ModalProps, ModalState>({
     if (isBlacklisted && blacklistMessage) {
       warnings.push(blacklistMessage);
     }
-    const hadInitialGitHubAccount = Boolean(initialUser?.githubUsername && initialUser.githubAccountId);
-
-    const hasEnteredGitHubUsername = githubUsername.trim().length > 0;
+    const hasEnteredGitHubUsername = github.username.trim().length > 0;
 
     const hasValidatedGitHubUsername = Boolean(user?.githubUsername && user.githubAccountId);
 
-    const isClearingExistingGitHubAccount = hadInitialGitHubAccount && isEditingGitHub && !hasEnteredGitHubUsername;
+    const isClearingExistingGitHubAccount =
+      github.hadInitialGitHubData && github.isEditing && !hasEnteredGitHubUsername;
 
     const shouldDisableSelect = Boolean(
       !user?.idir ||
         !user?.upn ||
         isBlacklisted ||
-        isSearchingGitHub ||
-        isSavingGitHub ||
+        github.isSearching ||
+        github.isSaving ||
         isClearingExistingGitHubAccount ||
         (hasEnteredGitHubUsername && !hasValidatedGitHubUsername),
     );
-
-    const resetGitHubState = (selectedUser: SearchedUser | null) => {
-      setGithubUsername(selectedUser?.githubUsername ?? '');
-
-      setGithubError('');
-
-      const hasGitHubAccount = Boolean(selectedUser?.githubUsername && selectedUser.githubAccountId);
-      setIsEditingGitHub(!hasGitHubAccount);
-      if (selectedUser?.githubUsername && selectedUser.githubAccountId) {
-        setGithubLookupUser({
-          username: selectedUser.githubUsername,
-          accountId: selectedUser.githubAccountId,
-          displayName: null,
-          avatarUrl: '',
-          profileUrl: `https://github.com/${selectedUser.githubUsername}`,
-        });
-      } else {
-        setGithubLookupUser(null);
-      }
-    };
-
-    const searchGitHub = async () => {
-      const normalizedUsername = githubUsername.trim().replace(/^@/, '');
-
-      if (!normalizedUsername) {
-        setGithubError('Enter a GitHub username.');
-        return;
-      }
-
-      setIsSearchingGitHub(true);
-      setGithubError('');
-      setGithubLookupUser(null);
-
-      const result = await validateGitHubUsername(normalizedUsername)
-        .catch(() => ({
-          valid: false as const,
-          message: 'GitHub validation is temporarily unavailable.',
-        }))
-        .finally(() => {
-          setIsSearchingGitHub(false);
-        });
-
-      if (!result.valid) {
-        setGithubError(result.message);
-        return;
-      }
-
-      const verifiedUsername = result.user.username.toLowerCase();
-
-      setGithubUsername(verifiedUsername);
-      setGithubLookupUser(result.user);
-
-      setUser((currentUser) => {
-        if (!currentUser) {
-          return currentUser;
-        }
-
-        return {
-          ...currentUser,
-          githubUsername: verifiedUsername,
-          githubAccountId: result.user.accountId,
-        };
-      });
-    };
 
     const selectUser = async () => {
       if (!user) {
         return;
       }
 
-      setGithubError('');
+      github.setError('');
 
       let selectedUser = user;
-      if (hadInitialGitHubAccount && (!user.githubUsername || !user.githubAccountId)) {
-        setGithubError('Enter and validate a new GitHub username, or close the editor to keep the existing account.');
+      if (github.hadInitialGitHubData && github.isEditing && (!user.githubUsername || !user.githubAccountId)) {
+        github.setError('Enter and validate a new GitHub username, or close the editor to keep the existing account.');
         return;
       }
       const githubWasChanged =
         Boolean(user.githubUsername && user.githubAccountId) &&
-        (user.githubUsername !== initialUser?.githubUsername || user.githubAccountId !== initialUser?.githubAccountId);
-
+        (user.githubUsername !== github.originalUsername || user.githubAccountId !== github.originalAccountId);
       if (githubWasChanged) {
         if (!user.id) {
-          setGithubError('The Registry user must be saved before adding a GitHub account.');
+          github.setError('The Registry user must be saved before adding a GitHub account.');
           return;
         }
 
-        setIsSavingGitHub(true);
+        github.setIsSaving(true);
 
-        const result = await updateUserGitHub(user.id, user.githubUsername!);
+        const result = await updateUserGitHub(user.id, user.githubUsername!).finally(() => {
+          github.setIsSaving(false);
+        });
 
-        setIsSavingGitHub(false);
         if (!result.success) {
-          setGithubError(result.message);
-          setGithubUsername('');
-          setGithubLookupUser(null);
-
-          setUser((currentUser) => {
-            if (!currentUser) {
-              return currentUser;
-            }
-
-            return {
-              ...currentUser,
-              githubUsername: null,
-              githubAccountId: null,
-            };
-          });
-
+          github.setError(result.message);
+          github.clearCandidate();
           return;
         }
 
@@ -230,13 +270,13 @@ export const openUserPickerModal = createModal<ModalProps, ModalState>({
             key={autocompId}
             onSelect={(selectedUser: SearchedUser | null = null) => {
               setUser(selectedUser);
-              resetGitHubState(selectedUser);
+              github.reset(selectedUser);
             }}
             initialValue={user}
           />
         )}
 
-        {user && (isEditingGitHub || !user.githubUsername || !user.githubAccountId) && (
+        {user && (github.isEditing || !user.githubUsername || !user.githubAccountId) && (
           <div className="mt-4">
             <Group align="flex-end">
               <TextInput
@@ -252,45 +292,28 @@ export const openUserPickerModal = createModal<ModalProps, ModalState>({
                   </span>
                 }
                 placeholder="For example: octocat"
-                value={githubUsername}
-                error={githubError || undefined}
-                disabled={isSearchingGitHub}
+                value={github.username}
+                error={github.error || undefined}
+                disabled={github.isSearching}
                 className="flex-1"
                 leftSection={<IconBrandGithub size={18} />}
                 onChange={(event) => {
-                  const value = event.currentTarget.value;
-
-                  setGithubUsername(value);
-                  setGithubLookupUser(null);
-                  if (hadInitialGitHubAccount && !value.trim()) {
-                    setGithubError('A GitHub account cannot be removed. Enter and validate a replacement username.');
-                  } else {
-                    setGithubError('');
-                  }
-                  setUser((currentUser) =>
-                    currentUser
-                      ? {
-                          ...currentUser,
-                          githubUsername: null,
-                          githubAccountId: null,
-                        }
-                      : currentUser,
-                  );
+                  github.changeUsername(event.currentTarget.value);
                 }}
                 onKeyDown={(event) => {
                   if (event.key === 'Enter') {
                     event.preventDefault();
-                    void searchGitHub();
+                    void github.search();
                   }
                 }}
               />
 
               <Button
                 variant="outline"
-                loading={isSearchingGitHub}
-                disabled={!githubUsername.trim()}
+                loading={github.isSearching}
+                disabled={!github.username.trim()}
                 onClick={() => {
-                  void searchGitHub();
+                  void github.search();
                 }}
               >
                 Look up
@@ -305,7 +328,7 @@ export const openUserPickerModal = createModal<ModalProps, ModalState>({
               <div>
                 <div>
                   Username:{' '}
-                  <ExternalLink href={githubLookupUser?.profileUrl ?? `https://github.com/${user.githubUsername}`}>
+                  <ExternalLink href={github.lookupUser?.profileUrl ?? `https://github.com/${user.githubUsername}`}>
                     {user.githubUsername}
                   </ExternalLink>
                 </div>
@@ -313,23 +336,22 @@ export const openUserPickerModal = createModal<ModalProps, ModalState>({
                 <div>GitHub account ID: {user.githubAccountId}</div>
               </div>
 
-              {!isEditingGitHub && (
+              {!github.isEditing && (
                 <Tooltip label="Edit">
                   <IconEdit
                     className="ml-2 cursor-pointer edit-user-icon"
                     onClick={() => {
-                      setGithubUsername(user.githubUsername ?? '');
-                      setGithubError('');
-                      setIsEditingGitHub(true);
+                      github.setError('');
+                      github.setIsEditing(true);
                     }}
                   />
                 </Tooltip>
               )}
-              {githubLookupUser?.displayName && <div>Name: {githubLookupUser.displayName}</div>}
+              {github.lookupUser?.displayName && <div>Name: {github.lookupUser.displayName}</div>}
             </Group>
           </Alert>
         )}
-        {githubError && user?.githubUsername && user.githubAccountId && <WarningMessage message={githubError} />}
+        {github.error && user?.githubUsername && user.githubAccountId && <WarningMessage message={github.error} />}
 
         {warnings.map((warning, index) => {
           return <WarningMessage key={index} message={warning} />;
@@ -350,12 +372,14 @@ export const openUserPickerModal = createModal<ModalProps, ModalState>({
             <Button
               color="warning"
               onClick={() => {
+                if (userReadonly) {
+                  setUser(initialUser);
+                  github.reset(initialUser);
+                  return;
+                }
                 setUser(null);
                 setAutocompId(randomId());
-                setGithubUsername('');
-                setGithubLookupUser(null);
-                setGithubError('');
-                setIsSearchingGitHub(false);
+                github.reset(null);
               }}
               className="mr-1"
             >
@@ -369,7 +393,7 @@ export const openUserPickerModal = createModal<ModalProps, ModalState>({
 
             <Button
               color="primary"
-              loading={isSavingGitHub}
+              loading={github.isSaving}
               disabled={shouldDisableSelect}
               className={cn({ 'opacity-50 cursor-not-allowed': shouldDisableSelect })}
               onClick={() => {

@@ -28,7 +28,7 @@ export default function UserProfile({
   text = 'Click to select member',
   showEditIcon = true,
   children,
-}: Props) {
+}: Readonly<Props>) {
   const user: UserPickerData = data ?? {
     image: '',
     email: '',

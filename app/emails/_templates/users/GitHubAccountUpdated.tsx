@@ -14,7 +14,7 @@ export default function GitHubAccountUpdated({
   githubUsername,
   previousGithubUsername,
   updatedBy,
-}: EmailProps) {
+}: Readonly<EmailProps>) {
   const message = previousGithubUsername ? 'changed your GitHub username in' : 'added your GitHub username to';
 
   return (
