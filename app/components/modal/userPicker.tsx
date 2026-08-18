@@ -168,6 +168,19 @@ function useGitHubUser(
   };
 }
 
+function getProfileWarnings(user: SearchedUser | null): string[] {
+  if (!user) {
+    return [];
+  }
+
+  return [
+    !user.ministry && 'Your home ministry name is missing',
+    !user.idir && 'Your IDIR is missing',
+    !user.upn && 'Your UPN is missing',
+    (!user.idirGuid || !user.isGuidValid) && 'Your IDIR GUID is missing',
+  ].filter((message): message is string => Boolean(message));
+}
+
 export const openUserPickerModal = createModal<ModalProps, ModalState>({
   settings: {
     size: 'xl',
@@ -184,14 +197,7 @@ export const openUserPickerModal = createModal<ModalProps, ModalState>({
 
     const isBlacklisted = !!(user?.id && blacklistIds.includes(user.id));
 
-    const profileWarnings: string[] = user
-      ? [
-          !user.ministry && 'Your home ministry name is missing',
-          !user.idir && 'Your IDIR is missing',
-          !user.upn && 'Your UPN is missing',
-          (!user.idirGuid || !user.isGuidValid) && 'Your IDIR GUID is missing',
-        ].filter((msg): msg is string => Boolean(msg))
-      : [];
+    const profileWarnings = getProfileWarnings(user);
 
     const showIdirHelp = profileWarnings.length > 0;
 
