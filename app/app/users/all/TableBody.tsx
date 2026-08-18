@@ -59,11 +59,11 @@ export default function TableBody({ data, availableRoles = [], session }: TableP
                       return;
                     }
 
-                    data[index].githubUsername = state.user.githubUsername;
-                    data[index].githubAccountId = state.user.githubAccountId;
-
-                    methods.setValue(`users.${index}.githubUsername`, state.user.githubUsername);
-                    methods.setValue(`users.${index}.githubAccountId`, state.user.githubAccountId);
+                    methods.setValue(`users.${index}`, {
+                      ...item,
+                      githubUsername: state.user.githubUsername,
+                      githubAccountId: state.user.githubAccountId,
+                    });
                   }
                 : undefined
             }
