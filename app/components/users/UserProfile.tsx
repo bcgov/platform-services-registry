@@ -8,7 +8,6 @@ import { formatFullName } from '@/helpers/user';
 import { getUserImageData } from '@/helpers/user-image';
 import { User } from '@/prisma/client';
 import { cn } from '@/utils/js';
-import ExternalLink from '../generic/button/ExternalLink';
 
 export type UserPickerData = Pick<User, 'email' | 'firstName' | 'lastName' | 'ministry' | 'image' | 'upn' | 'idir'> & {
   id?: string;
@@ -87,15 +86,17 @@ export default function UserProfile({
                             {githubUsername}
                           </UnstyledButton>
                         ) : (
-                          <span
+                          <a
+                            href={`https://github.com/${encodeURIComponent(githubUsername)}`}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="text-blue-600 hover:underline"
                             onClick={(event) => {
                               event.stopPropagation();
                             }}
                           >
-                            <ExternalLink href={`https://github.com/${encodeURIComponent(githubUsername)}`}>
-                              {githubUsername}
-                            </ExternalLink>
-                          </span>
+                            {githubUsername}
+                          </a>
                         )}
                       </>
                     ) : (

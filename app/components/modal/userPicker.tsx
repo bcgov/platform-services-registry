@@ -65,7 +65,7 @@ function useGitHubUser(
         accountId: selectedAccountId,
         displayName: null,
         avatarUrl: '',
-        profileUrl: `https://github.com/${selectedUsername}`,
+        profileUrl: `https://github.com/${encodeURIComponent(selectedUsername)}`,
       });
     } else {
       setLookupUser(null);
@@ -334,7 +334,11 @@ export const openUserPickerModal = createModal<ModalProps, ModalState>({
               <div>
                 <div>
                   Username:{' '}
-                  <ExternalLink href={github.lookupUser?.profileUrl ?? `https://github.com/${user.githubUsername}`}>
+                  <ExternalLink
+                    href={
+                      github.lookupUser?.profileUrl ?? `https://github.com/${encodeURIComponent(user.githubUsername)}`
+                    }
+                  >
                     {user.githubUsername}
                   </ExternalLink>
                 </div>

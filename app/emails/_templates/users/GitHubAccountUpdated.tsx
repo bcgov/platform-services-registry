@@ -24,7 +24,7 @@ export default function GitHubAccountUpdated({
       <Text>Hi {firstName || 'there'},</Text>
 
       <Text>
-        {updatedBy} {message} your Platform Services Product Registry profile.
+        {updatedBy} {message} your Platform Services Registry profile.
       </Text>
 
       {previousGithubUsername && (
