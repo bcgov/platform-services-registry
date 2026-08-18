@@ -13,15 +13,14 @@ export async function validateGitHubUsername(username: string) {
       params: {
         username,
       },
-      validateStatus: () => true,
     })
     .then((response) => response.data);
 }
 
 export interface ApiErrorResponse {
   success: false;
-  message: string;
-  error?: string;
+  message?: unknown;
+  error?: unknown;
 }
 
 export type UpdateUserGitHubResult =

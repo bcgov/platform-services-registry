@@ -8,6 +8,7 @@ import { formatFullName } from '@/helpers/user';
 import { getUserImageData } from '@/helpers/user-image';
 import { User } from '@/prisma/client';
 import { cn } from '@/utils/js';
+import ExternalLink from '../generic/button/ExternalLink';
 
 export type UserPickerData = Pick<User, 'email' | 'firstName' | 'lastName' | 'ministry' | 'image' | 'upn' | 'idir'> & {
   id?: string;
@@ -45,6 +46,7 @@ export default function UserProfile({
   const invalidTooltip = isInvalid ? `The user's ${missingProps.join(' and ')} attributes are missing` : '';
 
   const isSavedUser = !!user.id;
+  const githubUsername = user.githubUsername;
 
   return (
     <>
@@ -70,11 +72,31 @@ export default function UserProfile({
                   <div className="text-xs font-semibold opacity-50">{user.email}</div>
 
                   <div className="mt-1 flex items-center text-xs font-semibold">
-                    {user.githubUsername ? (
+                    {githubUsername ? (
                       <>
                         <IconBrandGithub size={20} stroke={2.5} className="mr-1 shrink-0" />
 
-                        <span className="opacity-60">{user.githubUsername}</span>
+                        {onClick ? (
+                          <UnstyledButton
+                            className="text-xs opacity-60 hover:underline"
+                            onClick={(event) => {
+                              event.stopPropagation();
+                              onClick();
+                            }}
+                          >
+                            {githubUsername}
+                          </UnstyledButton>
+                        ) : (
+                          <span
+                            onClick={(event) => {
+                              event.stopPropagation();
+                            }}
+                          >
+                            <ExternalLink href={`https://github.com/${encodeURIComponent(githubUsername)}`}>
+                              {githubUsername}
+                            </ExternalLink>
+                          </span>
+                        )}
                       </>
                     ) : (
                       onClick && (
