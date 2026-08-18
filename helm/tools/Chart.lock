@@ -4,7 +4,7 @@ dependencies:
   version: 1.22.0
 - name: postgresql
   repository: https://charts.bitnami.com/bitnami
-  version: 18.8.11
+  version: 18.8.12
 - name: sonarqube
   repository: https://SonarSource.github.io/helm-chart-sonarqube
   version: 2026.4.1
@@ -17,5 +17,5 @@ dependencies:
 - name: sorry-cypress
   repository: https://sorry-cypress.github.io/charts
   version: 1.20.0
-digest: sha256:700470e98739701d08e3e57b82aeb6204e9cd40e102df92ee6627ce994132426
-generated: "2026-08-18T17:28:17.722589082Z"
+digest: sha256:2e09c640d24301460aa178e95be5c1ac37c6d07b9c36627a007ab336a115415f
+generated: "2026-08-18T18:51:05.264471495Z"
