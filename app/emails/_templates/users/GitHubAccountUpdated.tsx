@@ -37,7 +37,10 @@ export default function GitHubAccountUpdated({
         Current GitHub username: <strong>{githubUsername}</strong>
       </Text>
 
-      <Button href={`https://github.com/${githubUsername}`} className="rounded-md bg-yellow-500 px-4 py-2 text-white">
+      <Button
+        href={`https://github.com/${encodeURIComponent(githubUsername)}`}
+        className="rounded-md bg-yellow-500 px-4 py-2 text-white"
+      >
         View GitHub profile
       </Button>
 

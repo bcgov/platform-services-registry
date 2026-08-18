@@ -40,7 +40,7 @@ export async function getGitHubUser(username: string): Promise<GitHubUser | null
 const githubUsernameRegex = /^[a-z\d](?:[a-z\d]|-(?=[a-z\d])){0,38}$/i;
 
 export async function validateGitHubUsername(username: string) {
-  const normalizedUsername = username.trim().replace(/^@/, '');
+  const normalizedUsername = username.trim().toLowerCase().replace(/^@/, '');
 
   if (!githubUsernameRegex.test(normalizedUsername)) {
     return {
@@ -49,7 +49,14 @@ export async function validateGitHubUsername(username: string) {
     };
   }
 
-  const user = await getGitHubUser(normalizedUsername);
+  const user = await getGitHubUser(normalizedUsername).catch(() => undefined);
+
+  if (user === undefined) {
+    return {
+      valid: false as const,
+      message: 'GitHub validation is temporarily unavailable. Please try again.',
+    };
+  }
 
   if (!user) {
     return {

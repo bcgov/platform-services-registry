@@ -69,14 +69,24 @@ export default async function updateGitHubOp({
     },
     select: {
       id: true,
+      firstName: true,
+      lastName: true,
       email: true,
     },
   });
 
   if (duplicateUser) {
-    return BadRequestResponse(
-      `This GitHub account is already associated with another Registry user ${duplicateUser.email}.`,
-    );
+    const canViewDuplicateUser = canEditAnyUser || (await usersShareActiveProduct(session.user.id, duplicateUser.id));
+
+    if (canViewDuplicateUser) {
+      const fullName = [duplicateUser.firstName, duplicateUser.lastName].filter(Boolean).join(' ');
+
+      const userLabel = fullName || duplicateUser.email;
+
+      return BadRequestResponse(`This GitHub account is already associated with ${userLabel}.`);
+    }
+
+    return BadRequestResponse('This GitHub account is already associated with another Registry user.');
   }
 
   const updatedUser = await prisma.user.update({
