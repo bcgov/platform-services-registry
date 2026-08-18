@@ -48,8 +48,22 @@ export const deleteRequestRejectBodySchema = z.object({
 
 export const hasRepositoriesSchema = z.boolean().nullable().optional().default(null);
 
+const unsafeRepositoryProtocols = new Set(['javascript:', 'data:', 'vbscript:']);
+
+// The validation has minimal restrictions:
+// The value must be a correctly formatted URL.
+// Unsafe protocols are rejected: javascript: data: vbscript:
+// The Git hosting provider is not restricted.
+// HTTP, HTTPS, Git, SSH, SVN, file and other valid URL protocols are allowed.
+// Self-hosted Git servers are allowed.
+// There are no restrictions on the organization, owner, domain, or repository name.
+
 export const repositorySchema = z.object({
-  url: z.string().trim().min(1, 'Repository URL is required'),
+  url: z
+    .url('Enter a valid repository URL')
+    .refine((value) => !unsafeRepositoryProtocols.has(new URL(value).protocol.toLowerCase()), {
+      message: 'Enter a safe repository URL',
+    }),
 });
 
 export function validateRepositorySelection(data: RepositoryFormData, ctx: z.RefinementCtx) {

@@ -36,8 +36,9 @@ export default function Repositories({
     <div>
       <Stack gap="sm" mb="lg">
         <Text>
-          Add any repositories associated with your application, including source-code, infrastructure and GitOps
-          repositories. Repositories can be hosted on services such as GitHub, Bitbucket or GitLab.
+          Add the URLs of any Git repositories associated with this product, including source-code, infrastructure, and
+          GitOps repositories. Repositories may be hosted on GitHub, GitLab, Bitbucket, Gitea, Codeberg, or any other
+          Git hosting service, including self-hosted servers.
         </Text>
 
         <Controller
@@ -45,7 +46,7 @@ export default function Repositories({
           control={control}
           render={({ field, fieldState }) => (
             <Radio.Group
-              label="Does this product have repositories?"
+              label="Does this product have any Git repositories?"
               value={getHasRepositoriesRadioValue(field.value)}
               error={fieldState.error?.message}
               onChange={(value) => {
@@ -72,7 +73,7 @@ export default function Repositories({
 
       {hasRepositories === true && fields.length > 0 && (
         <div className="mb-3 grid grid-cols-[1fr_auto] gap-4 border-b pb-2 font-semibold">
-          <Text fw={600}>Repository URL</Text>
+          <Text fw={600}>Git repository URL</Text>
           {!disabled && <Text fw={600}>Action</Text>}
         </div>
       )}
