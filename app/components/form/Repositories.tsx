@@ -108,7 +108,7 @@ export default function Repositories({
         </Button>
       )}
 
-      {disabled && fields.length === 0 && hasRepositories === true && (
+      {disabled && fields.length === 0 && (
         <Text c="dimmed" fs="italic">
           No repositories have been added.
         </Text>
