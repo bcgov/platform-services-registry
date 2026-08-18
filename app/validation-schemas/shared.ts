@@ -60,10 +60,21 @@ const unsafeRepositoryProtocols = new Set(['javascript:', 'data:', 'vbscript:'])
 
 export const repositorySchema = z.object({
   url: z
+    .string()
+    .trim()
     .url('Enter a valid repository URL')
-    .refine((value) => !unsafeRepositoryProtocols.has(new URL(value).protocol.toLowerCase()), {
-      message: 'Enter a safe repository URL',
-    }),
+    .refine(
+      (value) => {
+        try {
+          return !unsafeRepositoryProtocols.has(new URL(value).protocol.toLowerCase());
+        } catch {
+          return false;
+        }
+      },
+      {
+        message: 'Enter a safe repository URL',
+      },
+    ),
 });
 
 export function validateRepositorySelection(data: RepositoryFormData, ctx: z.RefinementCtx) {

@@ -10,6 +10,16 @@ export const securityConfigSchema = z
     context: z.union([z.literal(ProjectContext.PRIVATE), z.literal(ProjectContext.PUBLIC)]),
     clusterOrProvider: z.string().optional(),
   })
+  .transform((data) => {
+    if (data.hasRepositories === null && data.repositories.length > 0) {
+      return {
+        ...data,
+        hasRepositories: true,
+      };
+    }
+
+    return data;
+  })
   .superRefine(validateRepositorySelection);
 
 export type SecurityConfigInput = z.input<typeof securityConfigSchema>;
