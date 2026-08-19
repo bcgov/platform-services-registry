@@ -1,14 +1,13 @@
 'use client';
 
 import { Badge, Table, Button } from '@mantine/core';
-import _get from 'lodash-es/get';
 import _isEqual from 'lodash-es/isEqual';
-import _truncate from 'lodash-es/truncate';
 import { Session } from 'next-auth';
 import React, { useState } from 'react';
-import { FormProvider, useForm } from 'react-hook-form';
+import { FormProvider, useForm, useWatch } from 'react-hook-form';
 import FormDatePicker from '@/components/generic/select/FormDatePicker';
 import HookFormMultiSelect from '@/components/generic/select/HookFormMultiSelect';
+import { openUserPickerModal } from '@/components/modal/userPicker';
 import { failure, success } from '@/components/notification';
 import TooltipTableHeader from '@/components/shared/TooltipTableHeader';
 import UserProfile from '@/components/users/UserProfile';
@@ -32,13 +31,43 @@ export default function TableBody({ data, availableRoles = [], session }: TableP
     },
   });
 
-  const [users] = methods.watch(['users']);
+  const users = useWatch({ control: methods.control, name: 'users' }) ?? [];
 
   const rows = users.length ? (
     users.map((item, index) => (
       <Table.Tr key={item.id}>
         <Table.Td>
-          <UserProfile data={item} />
+          <UserProfile
+            data={item}
+            showEditIcon={false}
+            onClick={
+              session.permissions.editUsers
+                ? async () => {
+                    const { state } = await openUserPickerModal(
+                      {
+                        initialValue: item,
+                        userReadonly: true,
+                      },
+                      {
+                        initialState: {
+                          user: item,
+                        },
+                      },
+                    );
+
+                    if (!state.user) {
+                      return;
+                    }
+
+                    methods.setValue(`users.${index}`, {
+                      ...item,
+                      githubUsername: state.user.githubUsername,
+                      githubAccountId: state.user.githubAccountId,
+                    });
+                  }
+                : undefined
+            }
+          />
         </Table.Td>
 
         <Table.Td>

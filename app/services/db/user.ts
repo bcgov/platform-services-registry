@@ -10,16 +10,17 @@ import {
   Prisma,
   PrivateCloudProductMember,
   PrivateCloudRequestData,
+  ProjectStatus,
   PublicCloudProductMember,
   PublicCloudRequestData,
 } from '@/prisma/client';
 import { listUsersByRoles, findUserByEmail, getKcAdminClient } from '@/services/keycloak/app-realm';
 import { getUserByIdirGuid, getUserPhoto } from '@/services/msgraph';
-import { AppUser, Outcome } from '@/types/user';
+import { MsGraphAppUser, Outcome } from '@/types/user';
 import { arrayBufferToBase64 } from '@/utils/js';
 import { UserSearchBody } from '@/validation-schemas';
 
-export async function prepareUserData(user: AppUser, extra = {}) {
+export async function prepareUserData(user: MsGraphAppUser, extra = {}) {
   const email = user.email.toLowerCase();
 
   const image = await getUserPhoto(user.upn || email);
@@ -93,6 +94,10 @@ type SearchUser = Prisma.UserGetPayload<{
     email: true;
     upn: true;
     idir: true;
+    idirGuid: true;
+    isGuidValid: true;
+    githubUsername: true;
+    githubAccountId: true;
     officeLocation: true;
     jobTitle: true;
     image: true;
@@ -155,6 +160,9 @@ export async function searchUsers({
         upn: true,
         idir: true,
         idirGuid: true,
+        githubUsername: true,
+        githubAccountId: true,
+        isGuidValid: true,
         officeLocation: true,
         jobTitle: true,
         image: true,
@@ -396,4 +404,53 @@ export async function fixUsersMissingIdirGuid() {
     results,
   };
   return summary;
+}
+
+export async function usersShareActiveProduct(firstUserId: string, secondUserId: string) {
+  const privateMembership = (userId: string): Prisma.PrivateCloudProductWhereInput => ({
+    OR: [
+      { projectOwnerId: userId },
+      { primaryTechnicalLeadId: userId },
+      { secondaryTechnicalLeadId: userId },
+      {
+        members: {
+          some: { userId },
+        },
+      },
+    ],
+  });
+
+  const publicMembership = (userId: string): Prisma.PublicCloudProductWhereInput => ({
+    OR: [
+      { projectOwnerId: userId },
+      { primaryTechnicalLeadId: userId },
+      { secondaryTechnicalLeadId: userId },
+      { expenseAuthorityId: userId },
+      {
+        members: {
+          some: { userId },
+        },
+      },
+    ],
+  });
+
+  const [privateProduct, publicProduct] = await Promise.all([
+    prisma.privateCloudProduct.findFirst({
+      where: {
+        status: ProjectStatus.ACTIVE,
+        AND: [privateMembership(firstUserId), privateMembership(secondUserId)],
+      },
+      select: { id: true },
+    }),
+
+    prisma.publicCloudProduct.findFirst({
+      where: {
+        status: ProjectStatus.ACTIVE,
+        AND: [publicMembership(firstUserId), publicMembership(secondUserId)],
+      },
+      select: { id: true },
+    }),
+  ]);
+
+  return Boolean(privateProduct || publicProduct);
 }

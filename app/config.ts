@@ -74,3 +74,7 @@ export const USE_MS_GRAPH_API_PROXY = process.env.USE_MS_GRAPH_API_PROXY === 'tr
 
 export const PUBLIC_AZURE_ACCESS_EMAILS = process.env.PUBLIC_AZURE_ACCESS_EMAILS || '';
 export const WEASYPRINT_URL = process.env.WEASYPRINT_URL || 'http://localhost:8090';
+
+export const GITHUB_API_URL = process.env.GITHUB_API_URL || 'https://api.github.com';
+
+export const GITHUB_API_TOKEN = process.env.GITHUB_API_TOKEN || '';
