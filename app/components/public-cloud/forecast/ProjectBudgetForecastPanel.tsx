@@ -3,6 +3,12 @@
 import { Button, NumberInput } from '@mantine/core';
 import { ReactNode, useEffect, useMemo, useState } from 'react';
 import { failure, success } from '@/components/notification';
+import {
+  calculateVariance,
+  formatCadAmount,
+  isCurrentCalendarMonth,
+} from '@/components/public-cloud/finance/finance-measure-utils';
+import ProductVarianceNotes from '@/components/public-cloud/finance/ProductVarianceNotes';
 import { createPublicCloudForecast, updatePublicCloudForecast } from '@/services/backend/public-cloud/forecast';
 import {
   applyAmountToFutureMonths,
@@ -39,6 +45,12 @@ type CellEditorProps = Readonly<{
   onChange: (amount: number) => void;
   onApplyToFuture?: () => void;
 }>;
+
+function formatVarianceCell(variance: { amount: number; percent: number | null } | null) {
+  if (variance == null) return '—';
+  const percentSuffix = variance.percent == null ? '' : ` (${variance.percent.toFixed(0)}%)`;
+  return `${formatCadAmount(variance.amount)}${percentSuffix}`;
+}
 
 function CellEditor({ value, currency, status, editable, onChange, onApplyToFuture }: CellEditorProps) {
   // Empty string = not entered (stored as 0). Keeps the input blank instead of "$0".
@@ -145,6 +157,10 @@ type ProjectBudgetForecastPanelProps = Readonly<{
   /** When set, values sync into the parent form instead of calling the forecast APIs. */
   onValuesChange?: (values: MonthlyValue[]) => void;
   onSaved?: () => void;
+  /** Product × month actuals (CAD). When set with showActualVariance, adds Actual and Variance rows. */
+  actualsByMonth?: Array<{ year: number; month: number; amountCad: number }>;
+  showActualVariance?: boolean;
+  canEditVarianceNotes?: boolean;
 }>;
 
 export default function ProjectBudgetForecastPanel({
@@ -156,6 +172,9 @@ export default function ProjectBudgetForecastPanel({
   workflowActions,
   onValuesChange,
   onSaved,
+  actualsByMonth,
+  showActualVariance = false,
+  canEditVarianceNotes = false,
 }: ProjectBudgetForecastPanelProps) {
   const currency = 'CAD';
   const spendLabel = getProviderSpendLabel(provider);
@@ -212,6 +231,14 @@ export default function ProjectBudgetForecastPanel({
   const fiscalYearChunks = getFiscalYearChunks(values);
   const requiredMonths = useMemo(() => getRequiredHorizonMonths(values), [values]);
   const [isSaving, setIsSaving] = useState(false);
+
+  const actualByKey = useMemo(() => {
+    const map = new Map<string, number>();
+    for (const row of actualsByMonth ?? []) {
+      map.set(monthKey(row.year, row.month), row.amountCad);
+    }
+    return map;
+  }, [actualsByMonth]);
 
   const handleAmountChange = (index: number, amount: number) => {
     const cell = values[index];
@@ -373,6 +400,60 @@ export default function ProjectBudgetForecastPanel({
                         {formatForecastAmount(fySummary.total, currency)}
                       </td>
                     </tr>
+                    {showActualVariance && (
+                      <>
+                        <tr className="border-t border-gray-100">
+                          <td className="px-3 py-2 text-gray-600 sticky left-0 bg-white border-r border-gray-100">
+                            Actual
+                          </td>
+                          {fyChunk.months.map((v) => {
+                            const key = monthKey(v.year, v.month);
+                            const hasActual = actualByKey.has(key);
+                            const amount = actualByKey.get(key);
+                            const partial = isCurrentCalendarMonth(v.year, v.month);
+                            return (
+                              <td key={`actual-${key}`} className="px-2 py-2 text-center text-sm">
+                                {hasActual ? formatCadAmount(amount) : '—'}
+                                {partial && hasActual && <div className="text-[10px] text-gray-500">partial</div>}
+                              </td>
+                            );
+                          })}
+                          <td className="px-3 py-2 text-center font-semibold bg-amber-50">
+                            {formatCadAmount(
+                              fyChunk.months.reduce(
+                                (sum, v) => sum + (actualByKey.get(monthKey(v.year, v.month)) ?? 0),
+                                0,
+                              ),
+                            )}
+                          </td>
+                        </tr>
+                        <tr className="border-t border-gray-100">
+                          <td className="px-3 py-2 text-gray-600 sticky left-0 bg-white border-r border-gray-100">
+                            Variance
+                          </td>
+                          {fyChunk.months.map((v) => {
+                            const key = monthKey(v.year, v.month);
+                            const actual = actualByKey.has(key) ? actualByKey.get(key) : null;
+                            const variance = calculateVariance(actual, v.amount);
+                            return (
+                              <td key={`var-${key}`} className="px-2 py-2 text-center text-sm">
+                                {formatVarianceCell(variance)}
+                              </td>
+                            );
+                          })}
+                          <td className="px-3 py-2 text-center font-semibold bg-amber-50">
+                            {(() => {
+                              const actualTotal = fyChunk.months.reduce(
+                                (sum, v) => sum + (actualByKey.get(monthKey(v.year, v.month)) ?? 0),
+                                0,
+                              );
+                              const variance = calculateVariance(actualTotal, fySummary.total);
+                              return variance == null ? '—' : formatCadAmount(variance.amount);
+                            })()}
+                          </td>
+                        </tr>
+                      </>
+                    )}
                   </tbody>
                 </table>
               </div>
@@ -404,6 +485,10 @@ export default function ProjectBudgetForecastPanel({
             <div className="text-xs text-gray-600">Last saved {new Date(forecast.updatedAt).toLocaleString()}</div>
           )}
         </div>
+      )}
+
+      {showActualVariance && licencePlate && (
+        <ProductVarianceNotes licencePlate={licencePlate} canEdit={canEditVarianceNotes} />
       )}
     </div>
   );

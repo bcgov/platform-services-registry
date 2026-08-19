@@ -10,6 +10,7 @@ import {
   expectedMonthlyForecastRollup,
   seedDemoPublicCloudProducts,
 } from './seed-demo-products';
+import { seedFinanceActualsLocal } from './seed-finance-local';
 import { FORECAST_SEED_PROFILES, seedForecastForProduct } from './seed-forecast-local';
 import { seedFoundation } from './seed-foundation';
 
@@ -43,6 +44,9 @@ async function main() {
     await seedForecastForProduct(licencePlate, { reset });
   }
 
+  console.log('\n4. Finance actuals (simulated)...');
+  await seedFinanceActualsLocal({ reset });
+
   console.log('\n=== Seed complete ===');
   console.log(`Login: admin.system@gov.bc.ca`);
   console.log('Azure products:');
@@ -54,6 +58,7 @@ async function main() {
     console.log(`  http://localhost:3000/public-cloud/products/${plate}/edit`);
   }
   console.log(`Public Cloud Forecast: http://localhost:3000/public-cloud/forecast`);
+  console.log(`Public Cloud Finance: http://localhost:3000/public-cloud/finance`);
   console.log('  → Show products: "Incomplete required months" / "Missing forecast" to verify filters');
   console.log(
     `Budget-based monthly totals (if every product were fully forecast): Azure CA$${expectedMonthlyForecastRollup(

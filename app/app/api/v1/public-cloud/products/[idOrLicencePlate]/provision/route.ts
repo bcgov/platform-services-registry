@@ -1,11 +1,12 @@
 import { z } from 'zod';
-import { getAwsLzaAccountName, publicCloudEnvironmentKeys } from '@/constants/public-cloud';
+import { getAwsLzaAccountName, getAzureSubscriptionName, publicCloudEnvironmentKeys } from '@/constants/public-cloud';
 import createApiHandler from '@/core/api-handler';
 import { logger } from '@/core/logging';
 import prisma from '@/core/prisma';
 import { NotFoundResponse, OkResponse } from '@/core/responses';
 import { DecisionStatus, Prisma, ProjectStatus, Provider, RequestType } from '@/prisma/client';
 import { mergeAwsLzaAccounts } from '@/services/aws-lza/accounts';
+import { mergeAzureSubscriptions } from '@/services/azure/subscriptions';
 import { sendRequestCompletionEmails } from '@/services/ches/public-cloud';
 import { models, publicCloudRequestDetailInclude } from '@/services/db';
 import { upsertPublicCloudBillings } from '@/services/db/public-cloud-billing';
@@ -26,6 +27,16 @@ const bodySchema = z.object({
     )
     .optional()
     .default([]),
+  azureSubscriptions: z
+    .array(
+      z.object({
+        environment: z.enum(publicCloudEnvironmentKeys),
+        name: z.string().min(1).optional(),
+        subscriptionId: z.string().min(1),
+      }),
+    )
+    .optional()
+    .default([]),
 });
 
 const apiHandler = createApiHandler({
@@ -41,6 +52,56 @@ async function getExistingAwsAccounts(licencePlate: string) {
   });
 
   return product?.awsAccounts;
+}
+
+async function getExistingAzureSubscriptions(licencePlate: string) {
+  const product = await prisma.publicCloudProduct.findUnique({
+    where: { licencePlate },
+    select: { azureSubscriptions: true },
+  });
+
+  return product?.azureSubscriptions;
+}
+
+type ProvisionBody = z.infer<typeof bodySchema>;
+
+async function buildProviderAccountData(
+  licencePlate: string,
+  requestType: RequestType,
+  provider: Provider,
+  body: ProvisionBody,
+): Promise<Record<string, Prisma.InputJsonValue>> {
+  if (requestType === RequestType.DELETE) return {};
+
+  if (provider === Provider.AWS_LZA) {
+    const callbackAwsAccounts = body.awsAccounts.map((account) => ({
+      ...account,
+      name: account.name ?? getAwsLzaAccountName(licencePlate, account.environment),
+    }));
+
+    return {
+      awsAccounts: mergeAwsLzaAccounts(
+        await getExistingAwsAccounts(licencePlate),
+        callbackAwsAccounts,
+      ) as unknown as Prisma.InputJsonValue,
+    };
+  }
+
+  if (provider === Provider.AZURE) {
+    const callbackAzureSubscriptions = body.azureSubscriptions.map((subscription) => ({
+      ...subscription,
+      name: subscription.name ?? getAzureSubscriptionName(licencePlate, subscription.environment),
+    }));
+
+    return {
+      azureSubscriptions: mergeAzureSubscriptions(
+        await getExistingAzureSubscriptions(licencePlate),
+        callbackAzureSubscriptions,
+      ) as unknown as Prisma.InputJsonValue,
+    };
+  }
+
+  return {};
 }
 
 export const POST = apiHandler(async ({ pathParams, session, body }) => {
@@ -85,23 +146,9 @@ export const POST = apiHandler(async ({ pathParams, session, body }) => {
   const { id, ...decisionData } = request.decisionData;
 
   const filter = { licencePlate };
-  let awsAccountData = {};
+  const providerAccountData = await buildProviderAccountData(licencePlate, request.type, decisionData.provider, body);
 
-  if (request.type !== RequestType.DELETE && decisionData.provider === Provider.AWS_LZA) {
-    const callbackAwsAccounts = body.awsAccounts.map((account) => ({
-      ...account,
-      name: account.name ?? getAwsLzaAccountName(licencePlate, account.environment),
-    }));
-
-    awsAccountData = {
-      awsAccounts: mergeAwsLzaAccounts(
-        await getExistingAwsAccounts(licencePlate),
-        callbackAwsAccounts,
-      ) as unknown as Prisma.InputJsonValue,
-    };
-  }
-
-  const productData = { ...decisionData, ...awsAccountData };
+  const productData = { ...decisionData, ...providerAccountData };
 
   // Upsert the project with the requested project data. If admin requested project data exists, use that instead.
   const upsertProject =

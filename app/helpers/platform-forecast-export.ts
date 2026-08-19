@@ -1,5 +1,6 @@
 import ExcelJS from 'exceljs';
 import {
+  aggregateMonthlyActualsFromProducts,
   aggregateMonthlyTotalsFromProducts,
   formatForecastProviderList,
   getFiscalYearChunks,
@@ -36,6 +37,8 @@ type ForecastExportSheet = {
   productCount: number;
   forecastCount: number;
   monthlyTotals: MonthlyValue[];
+  monthlyActuals: Array<number | null>;
+  hasActuals: boolean;
   products: PlatformForecastProduct[];
 };
 
@@ -70,6 +73,8 @@ function buildExportSheets(summary: PlatformForecastSummary): ForecastExportShee
       productCount: group.productCount,
       forecastCount: group.forecastCount,
       monthlyTotals: group.monthlyTotals as MonthlyValue[],
+      monthlyActuals: group.monthlyActuals,
+      hasActuals: group.hasActuals,
       products: forecastProducts,
     });
 
@@ -78,6 +83,7 @@ function buildExportSheets(summary: PlatformForecastSummary): ForecastExportShee
       const products = group.products.filter((product) => product.provider === provider && product.hasForecast);
       const allProviderProducts = group.products.filter((product) => product.provider === provider);
       const monthlyTotals = buildFilteredGroupTotals(products, group.currency);
+      const monthlyActuals = aggregateMonthlyActualsFromProducts(allProviderProducts, monthlyTotals.length);
       const forecastCount = products.length;
 
       sheets.push({
@@ -89,6 +95,8 @@ function buildExportSheets(summary: PlatformForecastSummary): ForecastExportShee
         productCount: allProviderProducts.length,
         forecastCount,
         monthlyTotals,
+        monthlyActuals,
+        hasActuals: monthlyActuals.some((amount) => amount != null),
         products,
       });
     }
@@ -295,12 +303,37 @@ function addDetailSheet(workbook: ExcelJS.Workbook, exportSheet: ForecastExportS
     exportSheet.products.forEach((product, index) => {
       const forecasts = fyChunk.months.map((_, i) => product.monthlyTotals[fyChunk.startIndex + i]?.amount ?? 0);
       const productYearTotal = forecasts.reduce((sum, v) => sum + v, 0);
-      const row = sheet.addRow([`${product.name} (${product.licencePlate})`, ...forecasts, productYearTotal]);
+      const row = sheet.addRow([
+        `${product.name} (${product.licencePlate})${product.status === 'INACTIVE' ? ' [archived]' : ''}`,
+        ...forecasts,
+        productYearTotal,
+      ]);
       styleProductRow(row, fyColCount, index % 2 === 1);
     });
 
     const forecastTotal = sheet.addRow(['Forecast total', ...fyChunk.months.map((month) => month.amount), yearTotal]);
     styleTotalRow(forecastTotal, fyColCount);
+
+    if (exportSheet.hasActuals) {
+      const actualAmounts = fyChunk.months.map((_, i) => exportSheet.monthlyActuals[fyChunk.startIndex + i]);
+      const actualYearTotal = actualAmounts.reduce<number>((sum, amount) => sum + (amount ?? 0), 0);
+      const actualTotal = sheet.addRow([
+        'Actual total',
+        ...actualAmounts.map((amount) => amount ?? ''),
+        actualAmounts.some((amount) => amount != null) ? actualYearTotal : '',
+      ]);
+      styleTotalRow(actualTotal, fyColCount);
+
+      const varianceAmounts = fyChunk.months.map((month, i) => {
+        const actual = actualAmounts[i];
+        if (actual == null || month.amount === 0) return '';
+        return actual - month.amount;
+      });
+      const varianceYear =
+        actualAmounts.some((amount) => amount != null) && yearTotal !== 0 ? actualYearTotal - yearTotal : '';
+      const varianceTotal = sheet.addRow(['Variance total', ...varianceAmounts, varianceYear]);
+      styleTotalRow(varianceTotal, fyColCount);
+    }
 
     sheet.addRow([]);
   }

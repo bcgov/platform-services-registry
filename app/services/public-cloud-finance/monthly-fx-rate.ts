@@ -1,0 +1,104 @@
+import { logger } from '@/core/logging';
+import prisma from '@/core/prisma';
+import { fetchUsdCadExchangeRateForMonth } from '@/services/bank-of-canada/usd-cad-rate';
+
+export const USD_CAD_PAIR = 'USD_CAD';
+
+export type StoredMonthlyFxRate = {
+  pair: string;
+  year: number;
+  month: number;
+  rate: number;
+  rateDate: Date;
+  source: string;
+};
+
+function parseObservationDate(date: string): Date {
+  // BoC dates are YYYY-MM-DD (UTC calendar day).
+  return new Date(`${date}T00:00:00.000Z`);
+}
+
+function toStored(row: {
+  pair: string;
+  year: number;
+  month: number;
+  rate: number;
+  rateDate: Date;
+  source: string;
+}): StoredMonthlyFxRate {
+  return {
+    pair: row.pair,
+    year: row.year,
+    month: row.month,
+    rate: row.rate,
+    rateDate: row.rateDate,
+    source: row.source,
+  };
+}
+
+async function upsertMonthlyUsdCadRate(data: {
+  year: number;
+  month: number;
+  rate: number;
+  rateDate: Date;
+  source: string;
+}): Promise<StoredMonthlyFxRate> {
+  // upsert keeps the first writer under concurrent ingest (update is a no-op).
+  const row = await prisma.monthlyFxRate.upsert({
+    where: { pair_year_month: { pair: USD_CAD_PAIR, year: data.year, month: data.month } },
+    create: {
+      pair: USD_CAD_PAIR,
+      year: data.year,
+      month: data.month,
+      rate: data.rate,
+      rateDate: data.rateDate,
+      source: data.source,
+    },
+    update: {},
+  });
+  return toStored(row);
+}
+
+/**
+ * Ensure a month-end USD/CAD rate is persisted for invoice conversion.
+ * Reuses an existing MonthlyFxRate row; otherwise fetches Bank of Canada Valet
+ * for the calendar month and stores the last observation.
+ */
+export async function ensureMonthlyUsdCadRate(year: number, month: number): Promise<StoredMonthlyFxRate> {
+  const existing = await prisma.monthlyFxRate.findUnique({
+    where: { pair_year_month: { pair: USD_CAD_PAIR, year, month } },
+  });
+
+  if (existing) {
+    return toStored(existing);
+  }
+
+  try {
+    const boc = await fetchUsdCadExchangeRateForMonth(year, month);
+    return upsertMonthlyUsdCadRate({
+      year,
+      month,
+      rate: boc.rate,
+      rateDate: parseObservationDate(boc.date),
+      source: boc.source,
+    });
+  } catch (error) {
+    const fallback = Number(process.env.FINANCE_USD_CAD_RATE);
+    if (Number.isFinite(fallback) && fallback > 0) {
+      logger.warn(
+        `Bank of Canada FX unavailable for ${year}-${month}; using FINANCE_USD_CAD_RATE fallback for ingest: ${String(
+          error,
+        )}`,
+      );
+      return upsertMonthlyUsdCadRate({
+        year,
+        month,
+        rate: fallback,
+        rateDate: new Date(Date.UTC(year, month, 0)),
+        source: 'FINANCE_USD_CAD_RATE',
+      });
+    }
+
+    throw error;
+  }
+}

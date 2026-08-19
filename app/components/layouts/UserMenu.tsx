@@ -134,6 +134,16 @@ export default function UserMenu() {
           },
         ]
       : []),
+    ...(session.previews.publicCloudFinance
+      ? [
+          {
+            text: 'Public Cloud Finance',
+            Icon: IconClockDollar,
+            href: '/public-cloud/finance',
+            permission: 'viewPublicCloudForecast' as keyof Permissions,
+          },
+        ]
+      : []),
     {
       text: 'General Analytics',
       Icon: IconPresentationAnalytics,
