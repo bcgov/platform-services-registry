@@ -197,8 +197,8 @@ export default function Quotas({
               {subnetInfo}
 
               {visibleResourceKeys.map((resourceKey) => {
-                const oldval = String(originalVal?.[resourceKey]);
-                const newval = String(newVal[resourceKey]);
+                const oldval = String(getResourceValue(originalVal, resourceKey));
+                const newval = String(getResourceValue(newVal, resourceKey));
 
                 return (
                   <div key={resourceKey}>

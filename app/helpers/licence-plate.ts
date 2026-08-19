@@ -1,6 +1,5 @@
 import crypto from 'crypto';
 import prisma from '@/core/prisma';
-import { Cluster, ResourceRequestsEnv } from '@/prisma/client';
 
 function generateRandomString(len = 6) {
   const gen = (requiredLength: number) =>
@@ -30,22 +29,4 @@ export default async function generateLicencePlate() {
 
     if (cnt1 + cnt2 === 0) return licencePlate;
   }
-}
-
-export function sanitizeGpuResourceRequests(
-  resourceRequests: ResourceRequestsEnv,
-  cluster: Cluster,
-  isAdmin: boolean,
-): ResourceRequestsEnv {
-  const gpuEnabled = isAdmin && (cluster === Cluster.EMERALD || cluster === Cluster.KLAB2);
-
-  return Object.fromEntries(
-    Object.entries(resourceRequests).map(([namespace, requests]) => [
-      namespace,
-      {
-        ...requests,
-        gpu: gpuEnabled ? requests.gpu ?? 0 : 0,
-      },
-    ]),
-  ) as ResourceRequestsEnv;
 }

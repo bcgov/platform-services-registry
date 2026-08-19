@@ -1,4 +1,4 @@
-import { ResourceRequestsEnv } from '@/prisma/client';
+import { Cluster, ResourceRequestsEnv } from '@/prisma/client';
 import { extractNumbers } from '@/utils/js';
 
 export const isResourseDowngrade = (req: string, prod: string) => {
@@ -21,3 +21,21 @@ export const isQuotaUpgrade = (oldval: ResourceRequestsEnv, newval: ResourceRequ
     oldval.tools.storage < newval.tools.storage
   );
 };
+
+export function sanitizeGpuResourceRequests(
+  resourceRequests: ResourceRequestsEnv,
+  cluster: Cluster,
+  isAdmin: boolean,
+): ResourceRequestsEnv {
+  const gpuEnabled = isAdmin && (cluster === Cluster.EMERALD || cluster === Cluster.KLAB2);
+
+  return Object.fromEntries(
+    Object.entries(resourceRequests).map(([namespace, requests]) => [
+      namespace,
+      {
+        ...requests,
+        gpu: gpuEnabled ? requests.gpu ?? 0 : 0,
+      },
+    ]),
+  ) as ResourceRequestsEnv;
+}

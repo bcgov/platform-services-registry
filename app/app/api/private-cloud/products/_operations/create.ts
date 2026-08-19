@@ -1,8 +1,9 @@
 import { Session } from 'next-auth';
 import prisma from '@/core/prisma';
 import { OkResponse, UnauthorizedResponse } from '@/core/responses';
-import generateLicencePlate, { sanitizeGpuResourceRequests } from '@/helpers/licence-plate';
+import generateLicencePlate from '@/helpers/licence-plate';
 import { sendRequestNatsMessage } from '@/helpers/nats-message';
+import { sanitizeGpuResourceRequests } from '@/helpers/quota-change';
 import { DecisionStatus, ProjectStatus, RequestType, EventType, TaskType, Cluster } from '@/prisma/client';
 import { sendCreateRequestEmails, sendRequestApprovalEmails } from '@/services/ches/private-cloud';
 import { createEvent, models, privateCloudRequestDetailInclude, tasks } from '@/services/db';
