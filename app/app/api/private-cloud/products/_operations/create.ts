@@ -1,7 +1,7 @@
 import { Session } from 'next-auth';
 import prisma from '@/core/prisma';
 import { OkResponse, UnauthorizedResponse } from '@/core/responses';
-import generateLicencePlate from '@/helpers/licence-plate';
+import generateLicencePlate, { sanitizeGpuResourceRequests } from '@/helpers/licence-plate';
 import { sendRequestNatsMessage } from '@/helpers/nats-message';
 import { DecisionStatus, ProjectStatus, RequestType, EventType, TaskType, Cluster } from '@/prisma/client';
 import { sendCreateRequestEmails, sendRequestApprovalEmails } from '@/services/ches/private-cloud';
@@ -45,17 +45,7 @@ export default async function createOp({ session, body }: { session: Session; bo
 
   if (rest.cluster === Cluster.GOLDDR) rest.cluster = Cluster.GOLD;
 
-  const gpuEnabledCluster = rest.cluster === Cluster.EMERALD || rest.cluster === Cluster.KLAB2;
-
-  rest.resourceRequests = Object.fromEntries(
-    Object.entries(rest.resourceRequests).map(([namespace, requests]) => [
-      namespace,
-      {
-        ...requests,
-        gpu: gpuEnabledCluster && session.isAdmin ? requests.gpu ?? 0 : 0,
-      },
-    ]),
-  ) as typeof rest.resourceRequests;
+  rest.resourceRequests = sanitizeGpuResourceRequests(rest.resourceRequests, rest.cluster, session.isAdmin);
 
   const productData = {
     ...rest,

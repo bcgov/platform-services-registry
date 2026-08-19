@@ -128,6 +128,7 @@ export default privateCloudRequestDecision(({ getPathParams, session, router }) 
         isGoldDR: snap.currentRequest?.originalData?.golddrEnabled ?? false,
         originalResourceRequests: snap.currentRequest?.originalData?.resourceRequests,
         quotaContactRequired: true,
+        isAdmin: session?.isAdmin ?? false,
       },
     },
   ];

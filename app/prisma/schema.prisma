@@ -582,7 +582,7 @@ type ResourceRequests {
   cpu     Float
   memory  Float
   storage Float
-  gpu     Int?
+  gpu     Int
 }
 
 type Budget {

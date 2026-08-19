@@ -3,6 +3,7 @@ import { TypeOf } from 'zod';
 import prisma from '@/core/prisma';
 import { OkResponse, UnauthorizedResponse } from '@/core/responses';
 import { getQuotaChangeStatus } from '@/helpers/auto-approval-check';
+import { sanitizeGpuResourceRequests } from '@/helpers/licence-plate';
 import { sendRequestNatsMessage } from '@/helpers/nats-message';
 import { comparePrivateProductData } from '@/helpers/product-change';
 import { DecisionStatus, Cluster, RequestType, EventType, TaskType } from '@/prisma/client';
@@ -53,6 +54,8 @@ export default async function updateOp({
     rest.members = product.members.map(({ userId, roles }) => ({ userId, roles }));
   }
 
+  rest.resourceRequests = sanitizeGpuResourceRequests(rest.resourceRequests, product.cluster, session.isAdmin);
+
   const productData = {
     ...rest,
     licencePlate: product.licencePlate,
@@ -73,7 +76,7 @@ export default async function updateOp({
     licencePlate: product.licencePlate,
     cluster: product.cluster,
     currentResourceRequests: product.resourceRequests,
-    requestedResourceRequests: body.resourceRequests,
+    requestedResourceRequests: rest.resourceRequests,
   });
 
   // If there is no quota change or no quota upgrade and no golddr flag changes, the request is automatically approved
