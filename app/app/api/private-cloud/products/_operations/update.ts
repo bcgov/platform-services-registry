@@ -3,9 +3,9 @@ import { TypeOf } from 'zod';
 import prisma from '@/core/prisma';
 import { OkResponse, UnauthorizedResponse } from '@/core/responses';
 import { getQuotaChangeStatus } from '@/helpers/auto-approval-check';
-import { sanitizeGpuResourceRequests } from '@/helpers/licence-plate';
 import { sendRequestNatsMessage } from '@/helpers/nats-message';
 import { comparePrivateProductData } from '@/helpers/product-change';
+import { sanitizeGpuResourceRequests } from '@/helpers/quota-change';
 import { DecisionStatus, Cluster, RequestType, EventType, TaskType } from '@/prisma/client';
 import { sendEditRequestEmails, sendRequestApprovalEmails } from '@/services/ches/private-cloud';
 import {

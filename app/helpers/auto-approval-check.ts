@@ -52,21 +52,28 @@ export async function getQuotaChangeStatus({
   let hasChange = false;
   let hasIncrease = false;
   let hasSignificantIncrease = false;
+  const metricResourceTypes = [ResourceType.cpu, ResourceType.memory, ResourceType.storage] as const;
+
+  type MetricResourceType = (typeof metricResourceTypes)[number];
 
   const resourcesToCheck: {
     env: keyof ResourceRequestsEnv;
-    resourceName: keyof ResourceRequests;
+    resourceName: MetricResourceType;
   }[] = [];
 
   iterateObject(_currentResourceRequests, (resourceRequests: ResourceRequests, env: keyof ResourceRequestsEnv) => {
-    iterateObject(resourceRequests, (currentValue: number, resourceName: keyof ResourceRequests) => {
+    for (const resourceName of metricResourceTypes) {
+      const currentValue = resourceRequests[resourceName];
       const requestedValue = _requestedResourceRequests[env][resourceName];
 
       const diffValue = requestedValue - currentValue;
-      const diffPerc = (diffValue / currentValue) * 100;
+      const diffPerc = currentValue === 0 ? Infinity : (diffValue / currentValue) * 100;
       const allowedMin = allowedMinResource[resourceName];
 
-      if (!hasChange) hasChange = diffValue !== 0;
+      if (diffValue !== 0) {
+        hasChange = true;
+      }
+
       if (diffValue > 0) {
         hasIncrease = true;
         hasSignificantIncrease = requestedValue > allowedMin && diffPerc > allowedAutoApprovalPercentage;
@@ -79,9 +86,18 @@ export async function getQuotaChangeStatus({
           resourceName,
         });
       }
-    });
+    }
+    const currentGpu = resourceRequests.gpu ?? 0;
+    const requestedGpu = _requestedResourceRequests[env].gpu ?? 0;
+    const gpuDiff = requestedGpu - currentGpu;
 
-    if (hasSignificantIncrease) {
+    if (gpuDiff !== 0) {
+      hasChange = true;
+    }
+
+    if (gpuDiff > 0) {
+      hasIncrease = true;
+      hasSignificantIncrease = true;
       return false;
     }
   });
