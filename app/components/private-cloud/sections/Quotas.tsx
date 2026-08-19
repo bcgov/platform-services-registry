@@ -80,6 +80,14 @@ export default function Quotas({
   const isPdbPolicyLoading = pdbPolicyReports.some((query) => query.isLoading);
   const hasPdbPolicyError = pdbPolicyReports.some((query) => query.isError);
 
+  const getResourceValue = (resource: ResourceRequests | undefined, resourceKey: (typeof resourceKeys)[number]) => {
+    if (resourceKey === 'gpu') {
+      return resource?.gpu ?? 0;
+    }
+
+    return resource?.[resourceKey];
+  };
+
   return (
     <>
       <QuotasDescription />
@@ -141,7 +149,9 @@ export default function Quotas({
           const newVal = (resourceRequests[namespace] || {}) as ResourceRequests;
           const changed =
             hasOriginalVal &&
-            visibleResourceKeys.some((resourceKey) => originalVal?.[resourceKey] !== newVal?.[resourceKey]);
+            visibleResourceKeys.some(
+              (resourceKey) => getResourceValue(originalVal, resourceKey) !== getResourceValue(newVal, resourceKey),
+            );
 
           let subnetInfo: ReactNode = null;
           if (cluster === Cluster.EMERALD) {
@@ -203,7 +213,7 @@ export default function Quotas({
                       step={resourceKey === 'cpu' ? 0.5 : 1}
                       placeholder="0"
                       required
-                      disabled={resourceKey === 'gpu' ? false : disabled}
+                      disabled={disabled}
                       classNames={{ wrapper: 'mt-3' }}
                       options={{ valueAsNumber: true }}
                       min={0}

@@ -71,7 +71,7 @@ export default async function createPrivateCloudNatsMessage(
             pvc_count: isEmptyStorage ? 0 : 60,
           },
           snapshot: { count: isEmptyStorage ? 0 : 5 },
-          ...(supportsGpu && { gpu: { requests: requests.gpu ?? 0 } }),
+          ...(supportsGpu ? { gpu: { requests: requests.gpu ?? 0 } } : {}),
         },
       };
     }),
