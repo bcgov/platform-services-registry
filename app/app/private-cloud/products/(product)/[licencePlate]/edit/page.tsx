@@ -37,6 +37,7 @@ export default privateCloudProductEdit(({ session }) => {
   type PrivateCloudEditRequestInput = z.input<typeof privateCloudEditRequestBodySchema>;
   type PrivateCloudEditRequestOutput = z.output<typeof privateCloudEditRequestBodySchema>;
 
+  const canManageGpu = !!session?.isAdmin || !!session?.permissions.reviewAllPrivateCloudRequests;
   const methods = useForm<PrivateCloudEditRequestInput, unknown, PrivateCloudEditRequestOutput>({
     resolver: async (values, context, options) => {
       const { resourceRequests } = values;
@@ -174,7 +175,7 @@ export default privateCloudProductEdit(({ session }) => {
         isGoldDR: snap.currentProduct?.golddrEnabled ?? false,
         originalResourceRequests: snap.currentProduct?.resourceRequests,
         quotaContactRequired: true,
-        isAdmin: session?.isAdmin,
+        canManageGpu,
       },
     },
   ];

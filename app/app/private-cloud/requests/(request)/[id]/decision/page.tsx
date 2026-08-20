@@ -56,6 +56,7 @@ export default privateCloudRequestDecision(({ getPathParams, session, router }) 
   type PrivateCloudRequestDecisionOutput = z.output<typeof privateCloudRequestDecisionBodySchema>;
 
   const baseResolver = zodResolver(privateCloudRequestDecisionBodySchema);
+  const canManageGpu = !!session?.isAdmin || !!session?.permissions.reviewAllPrivateCloudRequests;
 
   const methods = useForm<PrivateCloudRequestDecisionInput, unknown, PrivateCloudRequestDecisionOutput>({
     resolver: async (values, context, options) => {
@@ -128,7 +129,7 @@ export default privateCloudRequestDecision(({ getPathParams, session, router }) 
         isGoldDR: snap.currentRequest?.originalData?.golddrEnabled ?? false,
         originalResourceRequests: snap.currentRequest?.originalData?.resourceRequests,
         quotaContactRequired: true,
-        isAdmin: session?.isAdmin ?? false,
+        canManageGpu: canManageGpu ?? false,
       },
     },
   ];

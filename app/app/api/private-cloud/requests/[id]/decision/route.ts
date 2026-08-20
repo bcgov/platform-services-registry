@@ -76,12 +76,8 @@ export const POST = apiHandler(async ({ pathParams, body, session }) => {
   // No need to modify decision data when reviewing deletion requests.
   if (request.type !== RequestType.DELETE) {
     const resolvedCluster = request.project?.cluster ?? validFormData.cluster ?? request.decisionData.cluster;
-
-    const resourceRequests = sanitizeGpuResourceRequests(
-      validFormData.resourceRequests,
-      resolvedCluster,
-      session.isAdmin,
-    );
+    const canManageGpu = !!session?.isAdmin || !!session?.permissions.reviewAllPrivateCloudRequests;
+    const resourceRequests = sanitizeGpuResourceRequests(validFormData.resourceRequests, resolvedCluster, canManageGpu);
 
     dataToUpdate.decisionData = {
       update: {
