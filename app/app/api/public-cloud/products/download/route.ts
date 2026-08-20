@@ -1,6 +1,7 @@
 import { GlobalRole } from '@/constants';
 import createApiHandler from '@/core/api-handler';
 import { NoContent, CsvResponse } from '@/core/responses';
+import { getAccountCodingString } from '@/helpers/billing';
 import { formatFullName } from '@/helpers/user';
 import { EventType } from '@/prisma/client';
 import { createEvent, getPublicCloudAccountCodingByLicencePlates, searchPublicCloudProducts } from '@/services/db';
@@ -27,13 +28,15 @@ export const POST = createApiHandler({
     return NoContent();
   }
 
-  const billings = await getPublicCloudAccountCodingByLicencePlates(docs.map((project) => project.licencePlate));
-
   const accountCodingMap = new Map();
 
-  for (const billing of billings) {
-    if (!accountCodingMap.has(billing.licencePlate)) {
-      accountCodingMap.set(billing.licencePlate, billing.accountCoding);
+  if (session.permissions.viewPublicCloudBilling) {
+    const billings = await getPublicCloudAccountCodingByLicencePlates(docs.map((project) => project.licencePlate));
+
+    for (const billing of billings) {
+      if (!accountCodingMap.has(billing.licencePlate)) {
+        accountCodingMap.set(billing.licencePlate, billing.accountCoding);
+      }
     }
   }
 
@@ -62,14 +65,11 @@ export const POST = createApiHandler({
       Budget: `Dev: ${project.budget?.dev ?? 0}, Test: ${project.budget?.test ?? 0}, Prod: ${
         project.budget?.prod ?? 0
       }, Tools: ${project.budget?.tools ?? 0}`,
-      'Account coding': accountCodingMap.has(project.licencePlate)
-        ? (() => {
-            const accountCoding = accountCodingMap.get(project.licencePlate);
-            return `${accountCoding.cc}${accountCoding.rc}${accountCoding.sl}${accountCoding.stob ?? ''}${
-              accountCoding.pc
-            }`;
-          })()
-        : '',
+      ...(session.permissions.viewPublicCloudBilling && {
+        'Account coding': accountCodingMap.has(project.licencePlate)
+          ? getAccountCodingString(accountCodingMap.get(project.licencePlate), '')
+          : '',
+      }),
     };
   });
 

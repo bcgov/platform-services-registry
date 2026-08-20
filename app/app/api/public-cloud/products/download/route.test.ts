@@ -3,6 +3,7 @@ import { parse } from 'csv-parse/sync';
 import { GlobalRole } from '@/constants';
 import { defaultAccountCoding } from '@/constants';
 import prisma from '@/core/prisma';
+import { getAccountCodingString } from '@/helpers/billing';
 import { createSamplePublicCloudProductData } from '@/helpers/mock-resources';
 import { mockNoRoleUsers } from '@/helpers/mock-users';
 import { formatFullName } from '@/helpers/user';
@@ -142,6 +143,7 @@ describe('Download Public Cloud Products - Permissions', () => {
     expect(record1['Update date']).toBe(formatDateSimple(project?.updatedAt ?? ''));
     expect(record1.Repositories).toBe(project?.repositories.map(({ url }) => url).join('; '));
     expect(record1.Status).toBe(project?.status);
+    expect(record1['Account coding']).toBe(getAccountCodingString(defaultAccountCoding, ''));
   });
 
   it('should successfully download 1 project by TL1', async () => {
@@ -248,6 +250,23 @@ describe('Download Public Cloud Products - Permissions', () => {
     const records = parse(csvContent, { columns: true, skip_empty_lines: true }) as PublicProductCsvRecord[];
 
     expect(records.length).toBe(2);
+  });
+
+  it('should exclude account coding when user does not have billing permission', async () => {
+    await mockSessionByIdirGuid(TL1.idirGuid);
+
+    const res = await downloadPublicCloudProducts({});
+
+    expect(res.status).toBe(200);
+
+    const csvContent = await res.text();
+    const records = parse(csvContent, {
+      columns: true,
+      skip_empty_lines: true,
+    }) as PublicProductCsvRecord[];
+
+    expect(records.length).toBe(1);
+    expect(records[0]).not.toHaveProperty('Account coding');
   });
 });
 
