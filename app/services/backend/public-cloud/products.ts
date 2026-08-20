@@ -16,7 +16,7 @@ import {
   PublicCloudProductSearchBody,
   PublicCloudProductSearchNoPaginationBody,
 } from '@/validation-schemas/public-cloud';
-import { Comment } from '@/validation-schemas/shared';
+import { Comment, RepositoryFormData } from '@/validation-schemas/shared';
 import { instance as parentInstance } from './instance';
 
 export const instance = axios.create({
@@ -140,4 +140,10 @@ export async function reviewPublicCloudProductBilling(
 export async function updateAccountCoding(licencePlate: string, data: PublicCloudBillingBody) {
   const result = await instance.put<true>(`/${licencePlate}/billings`, data).then((res) => res.data);
   return result;
+}
+
+export async function updatePublicCloudProductRepositories(licencePlate: string, data: RepositoryFormData) {
+  const response = await instance.patch(`/${licencePlate}/repositories`, data);
+
+  return response.data;
 }

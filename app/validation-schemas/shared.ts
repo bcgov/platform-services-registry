@@ -14,6 +14,10 @@ export const commentSchema = z
   .min(1, { message: 'Invalid input, expected a non-empty comment' })
   .max(1000);
 
+export interface RepositoryFormData {
+  hasRepositories?: boolean | null;
+  repositories?: Array<{ url: string }>;
+}
 export const optionalCommentSchema = z.string().trim().nullable().default(null).optional();
 
 export const userSchema = z.object({
@@ -42,9 +46,17 @@ export const deleteRequestRejectBodySchema = z.object({
   decisionComment: commentSchema,
 });
 
-const allowedRepositoryHosts = new Set(['github.com', 'bitbucket.org', 'gitlab.com']);
+export const hasRepositoriesSchema = z.boolean().nullable().optional().default(null);
 
-const allowedRepositoryOrganizations = new Set(['bcgov', 'bcgov-c', 'bc-gov']);
+const unsafeRepositoryProtocols = new Set(['javascript:', 'data:', 'vbscript:']);
+
+// The validation has minimal restrictions:
+// The value must be a correctly formatted URL.
+// Unsafe protocols are rejected: javascript: data: vbscript:
+// The Git hosting provider is not restricted.
+// HTTP, HTTPS, Git, SSH, SVN, file and other valid URL protocols are allowed.
+// Self-hosted Git servers are allowed.
+// There are no restrictions on the organization, owner, domain, or repository name.
 
 export const repositorySchema = z.object({
   url: z
@@ -54,45 +66,36 @@ export const repositorySchema = z.object({
     .refine(
       (value) => {
         try {
-          return new URL(value).protocol === 'https:';
+          return !unsafeRepositoryProtocols.has(new URL(value).protocol.toLowerCase());
         } catch {
           return false;
         }
       },
       {
-        message: 'Repository URL must use HTTPS',
-      },
-    )
-    .refine(
-      (value) => {
-        try {
-          const hostname = new URL(value).hostname.toLowerCase();
-          return allowedRepositoryHosts.has(hostname);
-        } catch {
-          return false;
-        }
-      },
-      {
-        message: 'Repository must be hosted on GitHub, Bitbucket, or GitLab',
-      },
-    )
-    .refine(
-      (value) => {
-        try {
-          const pathSegments = new URL(value).pathname.toLowerCase().split('/').filter(Boolean);
-
-          const [organization, repository] = pathSegments;
-
-          return pathSegments.length >= 2 && allowedRepositoryOrganizations.has(organization) && Boolean(repository);
-        } catch {
-          return false;
-        }
-      },
-      {
-        message: 'Repository must belong to bcgov, bcgov-c, or bc-gov and include a repository name',
+        message: 'Enter a safe repository URL',
       },
     ),
 });
+
+export function validateRepositorySelection(data: RepositoryFormData, ctx: z.RefinementCtx) {
+  const repositories = data.repositories ?? [];
+
+  if (data.hasRepositories === true && repositories.length === 0) {
+    ctx.addIssue({
+      code: 'custom',
+      path: ['repositories'],
+      message: 'Add at least one repository URL',
+    });
+  }
+
+  if (data.hasRepositories !== true && repositories.length > 0) {
+    ctx.addIssue({
+      code: 'custom',
+      path: ['hasRepositories'],
+      message: 'Select Yes when repository URLs are provided',
+    });
+  }
+}
 
 export const repositoriesSchema = z.array(repositorySchema).default([]);
 

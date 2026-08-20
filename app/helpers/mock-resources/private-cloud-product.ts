@@ -85,6 +85,7 @@ export function createSamplePrivateCloudProduct(args?: {
     temporaryProductNotificationDate: new Date(),
     requests: [],
     repositories: [],
+    hasRepositories: null,
     activeRequest: null,
     organizationId: organization.id,
     organization: organization,

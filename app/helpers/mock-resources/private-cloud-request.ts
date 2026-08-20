@@ -31,6 +31,7 @@ export function createSamplePrivateCloudRequest(args?: {
     secondaryTechnicalLead,
     members: [],
     repositories: [],
+    hasRepositories: null,
     resourceRequests: resourceRequests1,
     golddrEnabled: false,
     supportPhoneNumber: '',
