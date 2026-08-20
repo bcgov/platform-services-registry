@@ -154,3 +154,21 @@ export function excludePublicProductPopulatedFields(product: PublicCloudProductD
     })),
   };
 }
+
+export async function getPublicCloudAccountCodingByLicencePlates(licencePlates: string[]) {
+  return prisma.publicCloudBilling.findMany({
+    where: {
+      licencePlate: {
+        in: licencePlates,
+      },
+    },
+    select: {
+      licencePlate: true,
+      accountCoding: true,
+      updatedAt: true,
+    },
+    orderBy: {
+      updatedAt: 'desc',
+    },
+  });
+}

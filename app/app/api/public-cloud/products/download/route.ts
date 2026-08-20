@@ -3,7 +3,7 @@ import createApiHandler from '@/core/api-handler';
 import { NoContent, CsvResponse } from '@/core/responses';
 import { formatFullName } from '@/helpers/user';
 import { EventType } from '@/prisma/client';
-import { createEvent, searchPublicCloudProducts } from '@/services/db';
+import { createEvent, getPublicCloudAccountCodingByLicencePlates, searchPublicCloudProducts } from '@/services/db';
 import { getOrganizationMap } from '@/services/db/organization';
 import { formatDateSimple } from '@/utils/js';
 import { publicCloudProductSearchNoPaginationBodySchema } from '@/validation-schemas/public-cloud';
@@ -25,6 +25,16 @@ export const POST = createApiHandler({
 
   if (docs.length === 0) {
     return NoContent();
+  }
+
+  const billings = await getPublicCloudAccountCodingByLicencePlates(docs.map((project) => project.licencePlate));
+
+  const accountCodingMap = new Map();
+
+  for (const billing of billings) {
+    if (!accountCodingMap.has(billing.licencePlate)) {
+      accountCodingMap.set(billing.licencePlate, billing.accountCoding);
+    }
   }
 
   const orgMap = await getOrganizationMap();
@@ -52,6 +62,14 @@ export const POST = createApiHandler({
       Budget: `Dev: ${project.budget?.dev ?? 0}, Test: ${project.budget?.test ?? 0}, Prod: ${
         project.budget?.prod ?? 0
       }, Tools: ${project.budget?.tools ?? 0}`,
+      'Account coding': accountCodingMap.has(project.licencePlate)
+        ? (() => {
+            const accountCoding = accountCodingMap.get(project.licencePlate);
+            return `CC: ${accountCoding?.cc}, RC: ${accountCoding?.rc}, SL: ${accountCoding?.sl}, STOB: ${
+              accountCoding?.stob ?? ''
+            }, PC: ${accountCoding.pc}`;
+          })()
+        : '',
     };
   });
 
