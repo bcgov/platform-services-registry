@@ -3,6 +3,7 @@ import { parse } from 'csv-parse/sync';
 import { GlobalRole } from '@/constants';
 import { defaultAccountCoding } from '@/constants';
 import prisma from '@/core/prisma';
+import { getAccountCodingString } from '@/helpers/billing';
 import { createSamplePublicCloudProductData } from '@/helpers/mock-resources';
 import { mockNoRoleUsers } from '@/helpers/mock-users';
 import { formatFullName } from '@/helpers/user';
@@ -251,8 +252,8 @@ describe('Download Public Cloud Products - Permissions', () => {
     expect(records.length).toBe(2);
   });
 
-  it('should exclude account coding when user does not have billing permission', async () => {
-    await mockSessionByIdirGuid(TL1.idirGuid);
+  it('should include account coding when user has billing permission', async () => {
+    await mockSessionByRole(GlobalRole.Admin);
 
     const res = await downloadPublicCloudProducts({});
 
@@ -264,8 +265,11 @@ describe('Download Public Cloud Products - Permissions', () => {
       skip_empty_lines: true,
     }) as PublicProductCsvRecord[];
 
-    expect(records.length).toBe(1);
-    expect(records[0]).not.toHaveProperty('Account coding');
+    expect(records.length).toBe(2);
+
+    const expectedAccountCoding = getAccountCodingString(defaultAccountCoding, '');
+
+    expect(records.some((record) => record['Account coding'] === expectedAccountCoding)).toBe(true);
   });
 });
 
