@@ -4,6 +4,7 @@ import createApiHandler from '@/core/api-handler';
 import prisma from '@/core/prisma';
 import { BadRequestResponse, OkResponse, UnprocessableEntityResponse } from '@/core/responses';
 import { sendRequestNatsMessage } from '@/helpers/nats-message';
+import { sanitizeGpuResourceRequests } from '@/helpers/quota-change';
 import { Cluster, DecisionStatus, Prisma, ProjectStatus, RequestType, EventType, TaskType } from '@/prisma/client';
 import { sendRequestRejectionEmails, sendRequestApprovalEmails } from '@/services/ches/private-cloud';
 import { createEvent, models, privateCloudRequestDetailInclude, tasks } from '@/services/db';
@@ -76,9 +77,16 @@ export const POST = apiHandler(async ({ pathParams, body, session }) => {
   if (request.type !== RequestType.DELETE) {
     const resolvedCluster = request.project?.cluster ?? validFormData.cluster ?? request.decisionData.cluster;
 
+    const resourceRequests = sanitizeGpuResourceRequests(
+      validFormData.resourceRequests,
+      resolvedCluster,
+      session.isAdmin,
+    );
+
     dataToUpdate.decisionData = {
       update: {
         ...validFormData,
+        resourceRequests,
         status: ProjectStatus.ACTIVE,
         licencePlate: request.licencePlate,
         cluster: resolvedCluster,

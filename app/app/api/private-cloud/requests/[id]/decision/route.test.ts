@@ -321,7 +321,8 @@ describe('Review Private Cloud Request - Gold DR Validations', () => {
     expect(decisionData.cluster).toBe(Cluster.SILVER);
     expect(decisionData.golddrEnabled).toBe(false);
   });
-
+});
+describe('Review Private Cloud Request - GPU Validations', () => {
   it('should reset GPU quota to 0 for Silver', async () => {
     const silverProductData = createSamplePrivateCloudProductData({
       data: {
@@ -377,5 +378,79 @@ describe('Review Private Cloud Request - Gold DR Validations', () => {
     const responseData = await response.json();
 
     expect(responseData.decisionData.resourceRequests.development.gpu).toBe(0);
+  });
+
+  it('should reset GPU quota to 0 when non-admin reviewer approves an Emerald request', async () => {
+    const emeraldProductData = createSamplePrivateCloudProductData({
+      data: {
+        cluster: Cluster.EMERALD,
+        resourceRequests: resourceRequests1,
+      },
+    });
+
+    await mockSessionByIdirGuid(emeraldProductData.primaryTechnicalLead.idirGuid);
+
+    const createResponse = await createPrivateCloudProduct(emeraldProductData);
+    expect(createResponse.status).toBe(200);
+
+    const requestData = await createResponse.json();
+
+    await mockSessionByRole(GlobalRole.PrivateReviewer);
+
+    const response = await makePrivateCloudRequestDecision(requestData.id, {
+      type: RequestType.CREATE,
+      ...requestData.decisionData,
+      resourceRequests: {
+        ...requestData.decisionData.resourceRequests,
+        development: {
+          ...requestData.decisionData.resourceRequests.development,
+          gpu: 4,
+        },
+      },
+      decision: DecisionStatus.APPROVED as 'APPROVED' | 'REJECTED',
+    });
+
+    expect(response.status).toBe(200);
+
+    const responseData = await response.json();
+
+    expect(responseData.decisionData.resourceRequests.development.gpu).toBe(0);
+  });
+
+  it('should preserve GPU quota when admin approves an Emerald request', async () => {
+    const emeraldProductData = createSamplePrivateCloudProductData({
+      data: {
+        cluster: Cluster.EMERALD,
+        resourceRequests: resourceRequests1,
+      },
+    });
+
+    await mockSessionByIdirGuid(emeraldProductData.primaryTechnicalLead.idirGuid);
+
+    const createResponse = await createPrivateCloudProduct(emeraldProductData);
+    expect(createResponse.status).toBe(200);
+
+    const requestData = await createResponse.json();
+
+    await mockSessionByRole(GlobalRole.Admin);
+
+    const response = await makePrivateCloudRequestDecision(requestData.id, {
+      type: RequestType.CREATE,
+      ...requestData.decisionData,
+      resourceRequests: {
+        ...requestData.decisionData.resourceRequests,
+        development: {
+          ...requestData.decisionData.resourceRequests.development,
+          gpu: 4,
+        },
+      },
+      decision: DecisionStatus.APPROVED as 'APPROVED' | 'REJECTED',
+    });
+
+    expect(response.status).toBe(200);
+
+    const responseData = await response.json();
+
+    expect(responseData.decisionData.resourceRequests.development.gpu).toBe(4);
   });
 });
