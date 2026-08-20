@@ -21,6 +21,13 @@ const resourceUnit = {
   gpu: '',
 };
 
+const resourceMaxValue = {
+  cpu: 64,
+  memory: 128,
+  storage: 512,
+  gpu: 8,
+} as const;
+
 export default function Quotas({
   disabled,
   cluster,
@@ -217,9 +224,7 @@ export default function Quotas({
                       classNames={{ wrapper: 'mt-3' }}
                       options={{ valueAsNumber: true }}
                       min={0}
-                      max={
-                        resourceKey === 'cpu' ? 64 : resourceKey === 'memory' ? 128 : resourceKey === 'gpu' ? 8 : 512
-                      }
+                      max={resourceMaxValue[resourceKey]}
                     />
                     {hasOriginalVal && oldval !== newval && (
                       <div>
