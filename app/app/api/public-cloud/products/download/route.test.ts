@@ -3,7 +3,6 @@ import { parse } from 'csv-parse/sync';
 import { GlobalRole } from '@/constants';
 import { defaultAccountCoding } from '@/constants';
 import prisma from '@/core/prisma';
-import { getAccountCodingString } from '@/helpers/billing';
 import { createSamplePublicCloudProductData } from '@/helpers/mock-resources';
 import { mockNoRoleUsers } from '@/helpers/mock-users';
 import { formatFullName } from '@/helpers/user';
@@ -143,7 +142,7 @@ describe('Download Public Cloud Products - Permissions', () => {
     expect(record1['Update date']).toBe(formatDateSimple(project?.updatedAt ?? ''));
     expect(record1.Repositories).toBe(project?.repositories.map(({ url }) => url).join('; '));
     expect(record1.Status).toBe(project?.status);
-    expect(record1['Account coding']).toBe(getAccountCodingString(defaultAccountCoding, ''));
+    expect(record1).not.toHaveProperty('Account coding');
   });
 
   it('should successfully download 1 project by TL1', async () => {
