@@ -1,9 +1,10 @@
 import { GlobalRole } from '@/constants';
 import createApiHandler from '@/core/api-handler';
 import { NoContent, CsvResponse } from '@/core/responses';
+import { getAccountCodingString } from '@/helpers/billing';
 import { formatFullName } from '@/helpers/user';
-import { EventType } from '@/prisma/client';
-import { createEvent, searchPublicCloudProducts } from '@/services/db';
+import { EventType, PublicCloudBilling } from '@/prisma/client';
+import { createEvent, getPublicCloudAccountCodingByLicencePlates, searchPublicCloudProducts } from '@/services/db';
 import { getOrganizationMap } from '@/services/db/organization';
 import { formatDateSimple } from '@/utils/js';
 import { publicCloudProductSearchNoPaginationBodySchema } from '@/validation-schemas/public-cloud';
@@ -27,10 +28,23 @@ export const POST = createApiHandler({
     return NoContent();
   }
 
+  const accountCodingMap = new Map<string, PublicCloudBilling['accountCoding']>();
+
+  if (session.permissions.viewPublicCloudBilling) {
+    const billings = await getPublicCloudAccountCodingByLicencePlates(docs.map((project) => project.licencePlate));
+
+    for (const billing of billings) {
+      if (!accountCodingMap.has(billing.licencePlate)) {
+        accountCodingMap.set(billing.licencePlate, billing.accountCoding);
+      }
+    }
+  }
+
   const orgMap = await getOrganizationMap();
 
   const formattedData = docs.map((project) => {
     const org = orgMap[project.organizationId];
+    const accountCoding = accountCodingMap.get(project.licencePlate);
     return {
       Name: project.name,
       Description: project.description,
@@ -52,6 +66,11 @@ export const POST = createApiHandler({
       Budget: `Dev: ${project.budget?.dev ?? 0}, Test: ${project.budget?.test ?? 0}, Prod: ${
         project.budget?.prod ?? 0
       }, Tools: ${project.budget?.tools ?? 0}`,
+      ...(session.permissions.viewPublicCloudBilling
+        ? {
+            'Account coding': accountCoding ? getAccountCodingString(accountCoding, '') : '',
+          }
+        : {}),
     };
   });
 
