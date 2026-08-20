@@ -254,7 +254,7 @@ describe('Create Private Cloud Request - Validations', () => {
     expect(responseData.decisionData.resourceRequests.development.gpu).toBe(0);
   });
 
-  it('should preserve GPU quota for private reviewers on Emerald', async () => {
+  it('should preserve GPU quota for private admin on Emerald', async () => {
     const product = createSamplePrivateCloudProductData({
       data: {
         cluster: Cluster.EMERALD,
@@ -268,7 +268,7 @@ describe('Create Private Cloud Request - Validations', () => {
       },
     });
 
-    await mockSessionByRole(GlobalRole.PrivateReviewer);
+    await mockSessionByRole(GlobalRole.PrivateAdmin);
 
     const response = await createPrivateCloudProduct(product);
 
