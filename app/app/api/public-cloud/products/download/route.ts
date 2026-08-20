@@ -65,9 +65,9 @@ export const POST = createApiHandler({
       'Account coding': accountCodingMap.has(project.licencePlate)
         ? (() => {
             const accountCoding = accountCodingMap.get(project.licencePlate);
-            return `CC: ${accountCoding?.cc}, RC: ${accountCoding?.rc}, SL: ${accountCoding?.sl}, STOB: ${
-              accountCoding?.stob ?? ''
-            }, PC: ${accountCoding.pc}`;
+            return `${accountCoding.cc}${accountCoding.rc}${accountCoding.sl}${accountCoding.stob ?? ''}${
+              accountCoding.pc
+            }`;
           })()
         : '',
     };
