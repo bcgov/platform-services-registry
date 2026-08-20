@@ -58,18 +58,18 @@ export default function Quotas({
   const subnetInformation = useQueries({
     queries: ['dev', 'test', 'prod', 'tools'].map((environment) => {
       return {
-        queryKey: [licencePlate, environment],
+        queryKey: ['emerald-subnet', licencePlate, currentCluster, environment],
         queryFn: () => getSubnetForEmerald(licencePlate!, environment),
-        enabled: cluster === Cluster.EMERALD && !!licencePlate,
+        enabled: currentCluster === Cluster.EMERALD && !!licencePlate,
       };
     }),
   });
 
   const pdbPolicyReports = useQueries({
     queries: namespaceKeys.map((namespace) => ({
-      queryKey: ['pdb-policy-report', licencePlate, cluster, environmentShortNames[namespace]],
-      queryFn: () => getPdbPolicyStatus(licencePlate!, cluster!, environmentShortNames[namespace]),
-      enabled: !!licencePlate && !!cluster,
+      queryKey: ['pdb-policy-report', licencePlate, currentCluster, environmentShortNames[namespace]],
+      queryFn: () => getPdbPolicyStatus(licencePlate!, currentCluster!, environmentShortNames[namespace]),
+      enabled: !!licencePlate && !!currentCluster,
       staleTime: 60_000,
       retry: false,
     })),
@@ -161,7 +161,7 @@ export default function Quotas({
             );
 
           let subnetInfo: ReactNode = null;
-          if (cluster === Cluster.EMERALD) {
+          if (currentCluster === Cluster.EMERALD) {
             if (subnetInformation[index].isLoading) {
               subnetInfo = <Loader color="blue" type="dots" />;
             } else if (subnetInformation[index].data) {
@@ -178,10 +178,10 @@ export default function Quotas({
           }
 
           let clusterLink: ReactNode = null;
-          if (licencePlate && cluster) {
+          if (licencePlate && currentCluster) {
             clusterLink = (
               <ExternalLink
-                href={`https://console.apps.${cluster}.devops.gov.bc.ca/k8s/cluster/projects/${licencePlate}-${environmentShortNames[namespace]}`}
+                href={`https://console.apps.${currentCluster}.devops.gov.bc.ca/k8s/cluster/projects/${licencePlate}-${environmentShortNames[namespace]}`}
               >
                 {licencePlate}-{environmentShortNames[namespace] || ''}
               </ExternalLink>
