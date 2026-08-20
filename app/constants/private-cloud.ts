@@ -49,6 +49,7 @@ export const defaultResourceRequests = {
   cpu: 0.5,
   memory: 2,
   storage: 1,
+  gpu: 0,
 };
 
 export const privateCloudProductSorts = productSorts.concat([
@@ -77,7 +78,7 @@ export type ResourceRequestsEnvKeys = Array<keyof ResourceRequestsEnv>;
 export type ResourceRequestsKeys = Array<keyof ResourceRequests>;
 
 export const namespaceKeys: ResourceRequestsEnvKeys = ['development', 'test', 'production', 'tools'];
-export const resourceKeys: ResourceRequestsKeys = ['cpu', 'memory', 'storage'];
+export const resourceKeys: ResourceRequestsKeys = ['cpu', 'memory', 'storage', 'gpu'];
 
 export const privateCloudQuotaJustificationMaxLength = 1000;
 export const privateCloudProductDescriptionMaxLength = 1500;

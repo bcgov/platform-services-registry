@@ -35,6 +35,38 @@ async function makeBasicProductChange(extra = {}) {
   return response;
 }
 
+async function createAndProvisionProduct(cluster: Cluster) {
+  const product = createSamplePrivateCloudProductData({
+    data: {
+      cluster,
+      resourceRequests: resourceRequests1,
+    },
+  });
+
+  await mockSessionByIdirGuid(product.projectOwner.idirGuid);
+
+  const createResponse = await createPrivateCloudProduct(product);
+  expect(createResponse.status).toBe(200);
+
+  const request = await createResponse.json();
+
+  await mockSessionByRole(GlobalRole.PrivateReviewer);
+
+  const approvalResponse = await makePrivateCloudRequestDecision(request.id, {
+    ...request.decisionData,
+    type: RequestType.CREATE,
+    decision: DecisionStatus.APPROVED,
+  });
+  expect(approvalResponse.status).toBe(200);
+
+  await mockTeamServiceAccount(['private-admin']);
+
+  const provisionResponse = await provisionPrivateCloudProduct(request.licencePlate);
+  expect(provisionResponse.status).toBe(200);
+
+  return { product, request };
+}
+
 describe('Update Private Cloud Product - Permissions', () => {
   it('should successfully submit a create request for PO', async () => {
     await mockSessionByIdirGuid(productData.main.projectOwner.idirGuid);
@@ -253,5 +285,78 @@ describe('Update Private Cloud Product - Validations', () => {
 
     const response = await makeBasicProductChange({ secondaryTechnicalLeadId: null });
     expect(response.status).toBe(200);
+  });
+
+  it('should reset GPU quota to 0 for unsupported clusters on update', async () => {
+    const { request } = await createAndProvisionProduct(Cluster.SILVER);
+
+    await mockSessionByRole(GlobalRole.Admin);
+
+    const response = await editPrivateCloudProduct(request.licencePlate, {
+      ...request.decisionData,
+      isAgMinistry: request.project?.organization.isAgMinistry || false,
+      resourceRequests: {
+        ...request.decisionData.resourceRequests,
+        development: {
+          ...request.decisionData.resourceRequests.development,
+          gpu: 4,
+        },
+      },
+    });
+
+    expect(response.status).toBe(200);
+
+    const responseData = await response.json();
+
+    expect(responseData.decisionData.resourceRequests.development.gpu).toBe(0);
+  });
+
+  it('should reset GPU quota to 0 for regular users on Emerald', async () => {
+    const { product, request } = await createAndProvisionProduct(Cluster.EMERALD);
+
+    await mockSessionByIdirGuid(product.primaryTechnicalLead.idirGuid);
+
+    const response = await editPrivateCloudProduct(request.licencePlate, {
+      ...request.decisionData,
+      isAgMinistry: request.project?.organization.isAgMinistry || false,
+      resourceRequests: {
+        ...request.decisionData.resourceRequests,
+        development: {
+          ...request.decisionData.resourceRequests.development,
+          gpu: 4,
+        },
+      },
+    });
+
+    expect(response.status).toBe(200);
+
+    const responseData = await response.json();
+
+    expect(responseData.decisionData.resourceRequests.development.gpu).toBe(0);
+  });
+
+  it('should preserve GPU quota for admin on Emerald', async () => {
+    const product = createSamplePrivateCloudProductData({
+      data: {
+        cluster: Cluster.EMERALD,
+        resourceRequests: {
+          ...resourceRequests1,
+          development: {
+            ...resourceRequests1.development,
+            gpu: 4,
+          },
+        },
+      },
+    });
+
+    await mockSessionByRole(GlobalRole.Admin);
+
+    const response = await createPrivateCloudProduct(product);
+
+    expect(response.status).toBe(200);
+
+    const responseData = await response.json();
+
+    expect(responseData.decisionData.resourceRequests.development.gpu).toBe(4);
   });
 });

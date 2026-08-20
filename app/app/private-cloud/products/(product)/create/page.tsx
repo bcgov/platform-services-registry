@@ -34,7 +34,7 @@ export default privateCloudProductNew(({ session }) => {
       },
     },
   });
-
+  const canManageGpu = !!session?.isAdmin || !!session?.permissions.reviewAllPrivateCloudRequests;
   const accordionItems = [
     {
       LeftIcon: IconInfoCircle,
@@ -66,6 +66,7 @@ export default privateCloudProductNew(({ session }) => {
       Component: Quotas,
       componentArgs: {
         disabled: true,
+        canManageGpu,
       },
     },
     {
