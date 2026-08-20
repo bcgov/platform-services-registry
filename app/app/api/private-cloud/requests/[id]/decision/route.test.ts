@@ -380,7 +380,7 @@ describe('Review Private Cloud Request - GPU Validations', () => {
     expect(responseData.decisionData.resourceRequests.development.gpu).toBe(0);
   });
 
-  it('should reset GPU quota to 0 when non-admin reviewer approves an Emerald request', async () => {
+  it('should preserve GPU quota when private reviewer approves an Emerald request', async () => {
     const emeraldProductData = createSamplePrivateCloudProductData({
       data: {
         cluster: Cluster.EMERALD,
@@ -414,7 +414,7 @@ describe('Review Private Cloud Request - GPU Validations', () => {
 
     const responseData = await response.json();
 
-    expect(responseData.decisionData.resourceRequests.development.gpu).toBe(0);
+    expect(responseData.decisionData.resourceRequests.development.gpu).toBe(4);
   });
 
   it('should preserve GPU quota when admin approves an Emerald request', async () => {
