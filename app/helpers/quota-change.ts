@@ -29,9 +29,9 @@ export const isQuotaUpgrade = (oldval: ResourceRequestsEnv, newval: ResourceRequ
 export function sanitizeGpuResourceRequests(
   resourceRequests: ResourceRequestsEnv,
   cluster: Cluster,
-  isAdmin: boolean,
+  canManageGpu: boolean,
 ): ResourceRequestsEnv {
-  const gpuEnabled = isAdmin && (cluster === Cluster.EMERALD || cluster === Cluster.KLAB2);
+  const gpuEnabled = canManageGpu && (cluster === Cluster.EMERALD || cluster === Cluster.KLAB2);
 
   return Object.fromEntries(
     Object.entries(resourceRequests).map(([namespace, requests]) => [

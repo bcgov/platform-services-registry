@@ -35,7 +35,7 @@ export default function Quotas({
   licencePlate,
   originalResourceRequests,
   quotaContactRequired = false,
-  isAdmin = false,
+  canManageGpu = false,
 }: {
   disabled: boolean;
   cluster?: Cluster;
@@ -43,7 +43,7 @@ export default function Quotas({
   licencePlate?: string;
   originalResourceRequests?: ResourceRequestsEnv;
   quotaContactRequired?: boolean;
-  isAdmin?: boolean;
+  canManageGpu?: boolean;
 }) {
   const { watch } = useFormContext();
 
@@ -51,7 +51,7 @@ export default function Quotas({
 
   const currentCluster = cluster ?? formCluster;
 
-  const canShowGpu = isAdmin && (currentCluster === Cluster.EMERALD || currentCluster === Cluster.KLAB2);
+  const canShowGpu = canManageGpu && (currentCluster === Cluster.EMERALD || currentCluster === Cluster.KLAB2);
 
   const visibleResourceKeys = resourceKeys.filter((resourceKey) => resourceKey !== 'gpu' || canShowGpu);
 

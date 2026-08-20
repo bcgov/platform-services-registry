@@ -45,8 +45,8 @@ export default async function createOp({ session, body }: { session: Session; bo
   } = body;
 
   if (rest.cluster === Cluster.GOLDDR) rest.cluster = Cluster.GOLD;
-
-  rest.resourceRequests = sanitizeGpuResourceRequests(rest.resourceRequests, rest.cluster, session.isAdmin);
+  const canManageGpu = !!session?.isAdmin || !!session?.permissions.reviewAllPrivateCloudRequests;
+  rest.resourceRequests = sanitizeGpuResourceRequests(rest.resourceRequests, rest.cluster, canManageGpu);
 
   const productData = {
     ...rest,
