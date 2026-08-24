@@ -13,6 +13,8 @@
 !data-migrations/migrations/**
 !.prettierignore
 !.prettierrc
+!.npmrc
+!app/.npmrc
 !package.json
 !pnpm-lock.yaml
 !pnpm-workspace.yaml
