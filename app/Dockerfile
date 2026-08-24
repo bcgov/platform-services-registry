@@ -6,7 +6,14 @@ FROM node:24.19.0-alpine AS build
 WORKDIR /workspace
 
 COPY package.json pnpm-lock.yaml pnpm-workspace.yaml ./
+
 COPY app/package.json ./app/package.json
+COPY data-migrations/package.json ./data-migrations/package.json
+COPY sandbox/_packages/keycloak-admin/package.json ./sandbox/_packages/keycloak-admin/package.json
+COPY sandbox/keycloak-provision/package.json ./sandbox/keycloak-provision/package.json
+COPY sandbox/m365mock/package.json ./sandbox/m365mock/package.json
+COPY sandbox/nats-provision/package.json ./sandbox/nats-provision/package.json
+
 COPY app/prisma ./app/prisma
 
 ENV SECURE_HEADERS=true \
