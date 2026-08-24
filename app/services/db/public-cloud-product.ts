@@ -168,10 +168,9 @@ export async function getPublicCloudAccountCodingByLicencePlates(licencePlates: 
     select: {
       licencePlate: true,
       accountCoding: true,
-      updatedAt: true,
     },
     orderBy: {
-      updatedAt: 'desc',
+      createdAt: 'desc',
     },
   });
 }
