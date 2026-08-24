@@ -4,7 +4,7 @@ import _uniq from 'lodash-es/uniq';
 import { Session } from 'next-auth';
 import prisma from '@/core/prisma';
 import { parsePaginationParams } from '@/helpers/pagination';
-import { Prisma } from '@/prisma/client';
+import { Prisma, PublicCloudBilling } from '@/prisma/client';
 import { models } from '@/services/db';
 import { ProductBiliingStatus } from '@/types';
 import { PublicCloudProductSearch, PublicCloudProductDetailDecorated } from '@/types/public-cloud';
@@ -155,32 +155,63 @@ export function excludePublicProductPopulatedFields(product: PublicCloudProductD
   };
 }
 
-export async function getPublicCloudAccountCodingByLicencePlates(licencePlates: string[]) {
+type PublicCloudAccountCoding = {
+  licencePlate: string;
+  accountCoding: PublicCloudBilling['accountCoding'];
+};
+
+export async function getPublicCloudAccountCodingByLicencePlates(
+  licencePlates: string[],
+): Promise<PublicCloudAccountCoding[]> {
   const uniqueLicencePlates = [...new Set(licencePlates)];
 
   if (uniqueLicencePlates.length === 0) {
     return [];
   }
 
-  return prisma.publicCloudBilling.findMany({
-    where: {
-      licencePlate: {
-        in: uniqueLicencePlates,
-      },
-      signed: true,
-      approved: true,
-    },
-    select: {
-      licencePlate: true,
-      accountCoding: true,
-    },
-    orderBy: [
+  const results = await prisma.publicCloudBilling.aggregateRaw({
+    pipeline: [
       {
-        createdAt: 'desc',
+        $match: {
+          licencePlate: {
+            $in: uniqueLicencePlates,
+          },
+          signed: true,
+          approved: true,
+        },
       },
       {
-        id: 'desc',
+        $sort: {
+          createdAt: -1,
+          _id: -1,
+        },
+      },
+      {
+        $group: {
+          _id: '$licencePlate',
+          accountCoding: {
+            $first: '$accountCoding',
+          },
+        },
+      },
+      {
+        $project: {
+          _id: 0,
+          licencePlate: '$_id',
+          accountCoding: 1,
+        },
       },
     ],
+  });
+
+  const rows = results as unknown as Prisma.JsonArray;
+
+  return rows.map((result) => {
+    const row = result as Prisma.JsonObject;
+
+    return {
+      licencePlate: row.licencePlate as string,
+      accountCoding: row.accountCoding as PublicCloudBilling['accountCoding'],
+    };
   });
 }
