@@ -265,7 +265,7 @@ describe('Download Public Cloud Products - Permissions', () => {
       skip_empty_lines: true,
     }) as PublicProductCsvRecord[];
 
-    expect(records.length).toBe(2);
+    expect(records).toHaveLength(2);
 
     const expectedAccountCoding = getAccountCodingString(defaultAccountCoding, '');
 
