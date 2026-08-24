@@ -30,7 +30,7 @@
     "@faker-js/faker": "^9.9.0",
     "@headlessui/react": "2.2.10",
     "@hookform/resolvers": "^5.2.1",
-    "@keycloak/keycloak-admin-client": "^26.3.2",
+    "@keycloak/keycloak-admin-client": "^26.6.4",
     "@kubernetes/client-node": "^2.0.0",
     "@mantine/colors-generator": "^9.0.0",
     "@mantine/core": "^9.0.0",
