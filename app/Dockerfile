@@ -6,6 +6,8 @@ FROM node:24.19.0-alpine AS build
 WORKDIR /workspace
 
 COPY package.json pnpm-lock.yaml pnpm-workspace.yaml ./
+COPY .npmrc ./
+COPY app/.npmrc ./app/.npmrc
 
 COPY app/package.json ./app/package.json
 COPY data-migrations/package.json ./data-migrations/package.json
