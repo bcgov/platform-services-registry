@@ -413,7 +413,7 @@ importers:
     dependencies:
       '@keycloak/keycloak-admin-client':
         specifier: ^26.0.0
-        version: 26.7.2
+        version: 26.7.1
     devDependencies:
       '@types/node':
         specifier: ^24.0.0
@@ -435,7 +435,7 @@ importers:
     dependencies:
       '@keycloak/keycloak-admin-client':
         specifier: ^26.0.0
-        version: 26.7.2
+        version: 26.7.1
       wait-on:
         specifier: ^9.0.0
         version: 9.1.0(debug@4.4.3(supports-color@10.2.2))(supports-color@10.2.2)
@@ -512,7 +512,7 @@ importers:
     dependencies:
       '@keycloak/keycloak-admin-client':
         specifier: ^26.0.0
-        version: 26.7.2
+        version: 26.7.1
       nats:
         specifier: ^2.19.0
         version: 2.29.3
