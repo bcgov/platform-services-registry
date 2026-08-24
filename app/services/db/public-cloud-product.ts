@@ -164,8 +164,8 @@ export async function getPublicCloudAccountCodingByLicencePlates(
   licencePlates: string[],
   session: Session,
 ): Promise<PublicCloudAccountCoding[]> {
-  if (!session.permissions.viewPublicCloudBilling) {
-    throw new Error('Unauthorized to view public cloud billing');
+  if (!session.permissions.viewPublicCloudBilling || licencePlates.length === 0) {
+    return [];
   }
   const uniqueLicencePlates = [...new Set(licencePlates)];
 
