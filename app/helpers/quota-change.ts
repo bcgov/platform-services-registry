@@ -1,3 +1,4 @@
+import { namespaceKeys, resourceKeys } from '@/constants/private-cloud';
 import { Cluster, ResourceRequestsEnv } from '@/prisma/client';
 import { extractNumbers } from '@/utils/js';
 
@@ -5,26 +6,20 @@ export const isResourseDowngrade = (req: string, prod: string) => {
   return extractNumbers(req)[0] < extractNumbers(prod)[0];
 };
 
-export const isQuotaUpgrade = (oldval: ResourceRequestsEnv, newval: ResourceRequestsEnv) => {
-  return (
-    oldval.development.cpu < newval.development.cpu ||
-    oldval.development.memory < newval.development.memory ||
-    oldval.development.storage < newval.development.storage ||
-    (oldval.development.gpu ?? 0) < (newval.development.gpu ?? 0) ||
-    oldval.test.cpu < newval.test.cpu ||
-    oldval.test.memory < newval.test.memory ||
-    oldval.test.storage < newval.test.storage ||
-    (oldval.test.gpu ?? 0) < (newval.test.gpu ?? 0) ||
-    oldval.production.cpu < newval.production.cpu ||
-    oldval.production.memory < newval.production.memory ||
-    oldval.production.storage < newval.production.storage ||
-    (oldval.production.gpu ?? 0) < (newval.production.gpu ?? 0) ||
-    oldval.tools.cpu < newval.tools.cpu ||
-    oldval.tools.memory < newval.tools.memory ||
-    oldval.tools.storage < newval.tools.storage ||
-    (oldval.tools.gpu ?? 0) < (newval.tools.gpu ?? 0)
-  );
+type GpuPermissionSession = {
+  isAdmin?: boolean;
+  permissions?: {
+    reviewAllPrivateCloudRequests?: boolean;
+  };
 };
+
+export const canManageGpuQuota = (session?: GpuPermissionSession | null) =>
+  !!session?.isAdmin || !!session?.permissions?.reviewAllPrivateCloudRequests;
+
+export const isQuotaUpgrade = (oldval: ResourceRequestsEnv, newval: ResourceRequestsEnv) =>
+  namespaceKeys.some((namespace) =>
+    resourceKeys.some((resource) => oldval[namespace][resource] < newval[namespace][resource]),
+  );
 
 export function sanitizeGpuResourceRequests(
   resourceRequests: ResourceRequestsEnv,

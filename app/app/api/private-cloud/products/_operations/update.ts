@@ -5,7 +5,7 @@ import { OkResponse, UnauthorizedResponse } from '@/core/responses';
 import { getQuotaChangeStatus } from '@/helpers/auto-approval-check';
 import { sendRequestNatsMessage } from '@/helpers/nats-message';
 import { comparePrivateProductData } from '@/helpers/product-change';
-import { sanitizeGpuResourceRequests } from '@/helpers/quota-change';
+import { canManageGpuQuota, sanitizeGpuResourceRequests } from '@/helpers/quota-change';
 import { DecisionStatus, Cluster, RequestType, EventType, TaskType } from '@/prisma/client';
 import { sendEditRequestEmails, sendRequestApprovalEmails } from '@/services/ches/private-cloud';
 import {
@@ -53,7 +53,7 @@ export default async function updateOp({
   if (!product._permissions.manageMembers) {
     rest.members = product.members.map(({ userId, roles }) => ({ userId, roles }));
   }
-  const canManageGpu = !!session?.isAdmin || !!session?.permissions.reviewAllPrivateCloudRequests;
+  const canManageGpu = canManageGpuQuota(session);
   rest.resourceRequests = sanitizeGpuResourceRequests(rest.resourceRequests, product.cluster, canManageGpu);
 
   const productData = {

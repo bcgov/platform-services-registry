@@ -15,6 +15,7 @@ import TeamContacts from '@/components/private-cloud/sections/TeamContacts';
 import Webhooks from '@/components/private-cloud/sections/Webhooks';
 import { GlobalRole, defaultResourceRequests } from '@/constants';
 import createClientPage from '@/core/client-page';
+import { canManageGpuQuota } from '@/helpers/quota-change';
 import { privateCloudCreateRequestBodySchema } from '@/validation-schemas/private-cloud';
 
 const privateCloudProductNew = createClientPage({
@@ -34,7 +35,7 @@ export default privateCloudProductNew(({ session }) => {
       },
     },
   });
-  const canManageGpu = !!session?.isAdmin || !!session?.permissions.reviewAllPrivateCloudRequests;
+  const canManageGpu = canManageGpuQuota(session);
   const accordionItems = [
     {
       LeftIcon: IconInfoCircle,

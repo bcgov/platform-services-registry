@@ -17,6 +17,7 @@ import TeamContacts from '@/components/private-cloud/sections/TeamContacts';
 import SiloAccordion from '@/components/private-cloud/SiloAccordion';
 import { GlobalRole } from '@/constants';
 import createClientPage from '@/core/client-page';
+import { canManageGpuQuota } from '@/helpers/quota-change';
 import { areOnlyRepositoryFieldsDirty, getRepositoryFormValues } from '@/helpers/repository';
 import { ResourceRequestsEnv } from '@/prisma/client';
 import { getQuotaChangeStatus, updatePrivateCloudProductRepositories } from '@/services/backend/private-cloud/products';
@@ -39,7 +40,7 @@ export default privateCloudProductEdit(({ session }) => {
   type PrivateCloudEditRequestInput = z.input<typeof privateCloudEditRequestBodySchema>;
   type PrivateCloudEditRequestOutput = z.output<typeof privateCloudEditRequestBodySchema>;
 
-  const canManageGpu = !!session?.isAdmin || !!session?.permissions.reviewAllPrivateCloudRequests;
+  const canManageGpu = canManageGpuQuota(session);
   const methods = useForm<PrivateCloudEditRequestInput, unknown, PrivateCloudEditRequestOutput>({
     resolver: async (values, context, options) => {
       const { resourceRequests } = values;
