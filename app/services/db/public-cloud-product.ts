@@ -162,7 +162,11 @@ type PublicCloudAccountCoding = {
 
 export async function getPublicCloudAccountCodingByLicencePlates(
   licencePlates: string[],
+  session: Session,
 ): Promise<PublicCloudAccountCoding[]> {
+  if (!session.permissions.viewPublicCloudBilling) {
+    throw new Error('Unauthorized to view public cloud billing');
+  }
   const uniqueLicencePlates = [...new Set(licencePlates)];
 
   if (uniqueLicencePlates.length === 0) {

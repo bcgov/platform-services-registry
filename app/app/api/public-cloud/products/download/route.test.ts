@@ -267,9 +267,16 @@ describe('Download Public Cloud Products - Permissions', () => {
 
     expect(records).toHaveLength(2);
 
-    const expectedAccountCoding = getAccountCodingString(defaultAccountCoding, '');
+    const approvedBillingRecord = records.find((record) => record['Licence plate'] === requests.one.licencePlate);
 
-    expect(records.some((record) => record['Account coding'] === expectedAccountCoding)).toBe(true);
+    const noBillingRecord = records.find((record) => record['Licence plate'] === requests.two.licencePlate);
+
+    expect(approvedBillingRecord).toBeDefined();
+    expect(noBillingRecord).toBeDefined();
+
+    expect(approvedBillingRecord?.['Account coding']).toBe(getAccountCodingString(defaultAccountCoding, ''));
+
+    expect(noBillingRecord?.['Account coding']).toBe('');
   });
 });
 

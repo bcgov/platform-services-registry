@@ -31,12 +31,13 @@ export const POST = createApiHandler({
   const accountCodingMap = new Map<string, PublicCloudBilling['accountCoding']>();
 
   if (session.permissions.viewPublicCloudBilling) {
-    const billings = await getPublicCloudAccountCodingByLicencePlates(docs.map((project) => project.licencePlate));
+    const billings = await getPublicCloudAccountCodingByLicencePlates(
+      docs.map((project) => project.licencePlate),
+      session,
+    );
 
     for (const billing of billings) {
-      if (!accountCodingMap.has(billing.licencePlate)) {
-        accountCodingMap.set(billing.licencePlate, billing.accountCoding);
-      }
+      accountCodingMap.set(billing.licencePlate, billing.accountCoding);
     }
   }
 
