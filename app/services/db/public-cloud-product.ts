@@ -164,6 +164,8 @@ export async function getPublicCloudAccountCodingByLicencePlates(licencePlates: 
       licencePlate: {
         in: licencePlates,
       },
+      signed: true,
+      approved: true,
     },
     select: {
       licencePlate: true,
