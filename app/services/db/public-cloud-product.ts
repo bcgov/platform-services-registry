@@ -156,13 +156,16 @@ export function excludePublicProductPopulatedFields(product: PublicCloudProductD
 }
 
 export async function getPublicCloudAccountCodingByLicencePlates(licencePlates: string[]) {
-  if (licencePlates.length === 0) {
+  const uniqueLicencePlates = [...new Set(licencePlates)];
+
+  if (uniqueLicencePlates.length === 0) {
     return [];
   }
+
   return prisma.publicCloudBilling.findMany({
     where: {
       licencePlate: {
-        in: licencePlates,
+        in: uniqueLicencePlates,
       },
       signed: true,
       approved: true,
@@ -171,8 +174,13 @@ export async function getPublicCloudAccountCodingByLicencePlates(licencePlates: 
       licencePlate: true,
       accountCoding: true,
     },
-    orderBy: {
-      createdAt: 'desc',
-    },
+    orderBy: [
+      {
+        createdAt: 'desc',
+      },
+      {
+        id: 'desc',
+      },
+    ],
   });
 }
