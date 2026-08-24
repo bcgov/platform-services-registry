@@ -4,7 +4,7 @@ import _uniq from 'lodash-es/uniq';
 import { Session } from 'next-auth';
 import prisma from '@/core/prisma';
 import { parsePaginationParams } from '@/helpers/pagination';
-import { Prisma } from '@/prisma/client';
+import { Prisma, PublicCloudBilling } from '@/prisma/client';
 import { models } from '@/services/db';
 import { ProductBiliingStatus } from '@/types';
 import { PublicCloudProductSearch, PublicCloudProductDetailDecorated } from '@/types/public-cloud';
@@ -153,4 +153,69 @@ export function excludePublicProductPopulatedFields(product: PublicCloudProductD
       roles: member.roles,
     })),
   };
+}
+
+type PublicCloudAccountCoding = {
+  licencePlate: string;
+  accountCoding: PublicCloudBilling['accountCoding'];
+};
+
+export async function getPublicCloudAccountCodingByLicencePlates(
+  licencePlates: string[],
+  session: Session,
+): Promise<PublicCloudAccountCoding[]> {
+  if (!session.permissions.viewPublicCloudBilling || licencePlates.length === 0) {
+    return [];
+  }
+  const uniqueLicencePlates = [...new Set(licencePlates)];
+
+  if (uniqueLicencePlates.length === 0) {
+    return [];
+  }
+
+  const results = await prisma.publicCloudBilling.aggregateRaw({
+    pipeline: [
+      {
+        $match: {
+          licencePlate: {
+            $in: uniqueLicencePlates,
+          },
+          signed: true,
+          approved: true,
+        },
+      },
+      {
+        $sort: {
+          createdAt: -1,
+          _id: -1,
+        },
+      },
+      {
+        $group: {
+          _id: '$licencePlate',
+          accountCoding: {
+            $first: '$accountCoding',
+          },
+        },
+      },
+      {
+        $project: {
+          _id: 0,
+          licencePlate: '$_id',
+          accountCoding: 1,
+        },
+      },
+    ],
+  });
+
+  const rows = results as unknown as Prisma.JsonArray;
+
+  return rows.map((result) => {
+    const row = result as Prisma.JsonObject;
+
+    return {
+      licencePlate: row.licencePlate as string,
+      accountCoding: row.accountCoding as PublicCloudBilling['accountCoding'],
+    };
+  });
 }
