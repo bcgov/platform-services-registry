@@ -33,6 +33,8 @@ export const POST = createApiHandler({
     '# of public cloud products': user.publicProducts.length,
     Roles: user.roles.join(', '),
     'Last active': formatDate(user.lastSeen),
+    'GitHub Account ID': user.githubAccountId,
+    'GitHub Username': user.githubUsername,
   }));
 
   return CsvResponse(formattedData, 'users.csv');
