@@ -18,7 +18,7 @@ import SiloAccordion from '@/components/private-cloud/SiloAccordion';
 import { GlobalRole } from '@/constants';
 import createClientPage from '@/core/client-page';
 import { canManageGpuQuota } from '@/helpers/quota-change';
-import { areOnlyRepositoryFieldsDirty, getRepositoryFormValues } from '@/helpers/repository';
+import { areOnlyRepositoryFieldsDirty } from '@/helpers/repository';
 import { ResourceRequestsEnv } from '@/prisma/client';
 import { getQuotaChangeStatus, updatePrivateCloudProductRepositories } from '@/services/backend/private-cloud/products';
 import { usePrivateProductState } from '@/states/global';
@@ -101,10 +101,9 @@ export default privateCloudProductEdit(({ session }) => {
   const { formState, reset } = methods;
 
   useEffect(() => {
-    if (!snap.currentProduct) return;
-
+    if (!currentProduct) return;
     const resourceRequests = Object.fromEntries(
-      Object.entries(snap.currentProduct.resourceRequests ?? {}).map(([namespace, requests]) => [
+      Object.entries(currentProduct.resourceRequests ?? {}).map(([namespace, requests]) => [
         namespace,
         {
           ...requests,
@@ -117,9 +116,9 @@ export default privateCloudProductEdit(({ session }) => {
 
     reset(
       {
-        ...snap.currentProduct,
+        ...currentProduct,
         resourceRequests,
-        repositories: snap.currentProduct.repositories ?? [],
+        repositories: currentProduct.repositories ?? [],
         isAgMinistry: false,
         isAgMinistryChecked: true,
       },
