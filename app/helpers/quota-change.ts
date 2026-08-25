@@ -18,7 +18,7 @@ export const canManageGpuQuota = (session?: GpuPermissionSession | null) =>
 
 export const isQuotaUpgrade = (oldval: ResourceRequestsEnv, newval: ResourceRequestsEnv) =>
   namespaceKeys.some((namespace) =>
-    resourceKeys.some((resource) => oldval[namespace][resource] < newval[namespace][resource]),
+    resourceKeys.some((resource) => (oldval[namespace][resource] ?? 0) < (newval[namespace][resource] ?? 0)),
   );
 
 export function sanitizeGpuResourceRequests(

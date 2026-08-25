@@ -18,7 +18,7 @@ import SiloAccordion from '@/components/private-cloud/SiloAccordion';
 import { GlobalRole } from '@/constants';
 import createClientPage from '@/core/client-page';
 import { canManageGpuQuota } from '@/helpers/quota-change';
-import { areOnlyRepositoryFieldsDirty } from '@/helpers/repository';
+import { areOnlyRepositoryFieldsDirty, getRepositoryFormValues } from '@/helpers/repository';
 import { ResourceRequestsEnv } from '@/prisma/client';
 import { getQuotaChangeStatus, updatePrivateCloudProductRepositories } from '@/services/backend/private-cloud/products';
 import { usePrivateProductState } from '@/states/global';
@@ -117,8 +117,8 @@ export default privateCloudProductEdit(({ session }) => {
     reset(
       {
         ...currentProduct,
+        ...getRepositoryFormValues(currentProduct),
         resourceRequests,
-        repositories: currentProduct.repositories ?? [],
         isAgMinistry: false,
         isAgMinistryChecked: true,
       },
