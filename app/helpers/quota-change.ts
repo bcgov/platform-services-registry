@@ -33,11 +33,21 @@ export function sanitizeGpuResourceRequests(
     Object.entries(resourceRequests).map(([namespace, requests]) => {
       const key = namespace as keyof ResourceRequestsEnv;
 
+      let gpu = 0;
+
+      if (gpuEnabled) {
+        if (canManageGpu) {
+          gpu = requests.gpu ?? 0;
+        } else {
+          gpu = currentResourceRequests?.[key]?.gpu ?? 0;
+        }
+      }
+
       return [
         namespace,
         {
           ...requests,
-          gpu: !gpuEnabled ? 0 : canManageGpu ? requests.gpu ?? 0 : currentResourceRequests?.[key]?.gpu ?? 0,
+          gpu,
         },
       ];
     }),

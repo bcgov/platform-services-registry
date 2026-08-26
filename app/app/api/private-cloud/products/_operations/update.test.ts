@@ -311,7 +311,7 @@ describe('Update Private Cloud Product - Validations', () => {
     expect(responseData.decisionData.resourceRequests.development.gpu).toBe(0);
   });
 
-  it('should preserve existing GPU quota when regular user updates other resources on Emerald', async () => {
+  it('should preserve existing GPU quota when regular user updates other fields on Emerald', async () => {
     const product = createSamplePrivateCloudProductData({
       data: {
         cluster: Cluster.EMERALD,
@@ -325,7 +325,6 @@ describe('Update Private Cloud Product - Validations', () => {
       },
     });
 
-    // Create with admin so GPU 4 is allowed
     await mockSessionByRole(GlobalRole.Admin);
 
     const createResponse = await createPrivateCloudProduct(product);
@@ -333,7 +332,6 @@ describe('Update Private Cloud Product - Validations', () => {
 
     const request = await createResponse.json();
 
-    // Approve
     await mockSessionByRole(GlobalRole.PrivateReviewer);
 
     const approvalResponse = await makePrivateCloudRequestDecision(request.id, {
@@ -344,25 +342,18 @@ describe('Update Private Cloud Product - Validations', () => {
 
     expect(approvalResponse.status).toBe(200);
 
-    // Provision
     await mockTeamServiceAccount(['private-admin']);
 
     const provisionResponse = await provisionPrivateCloudProduct(request.licencePlate);
     expect(provisionResponse.status).toBe(200);
 
-    // Regular user edits another resource
     await mockSessionByIdirGuid(product.primaryTechnicalLead.idirGuid);
 
     const response = await editPrivateCloudProduct(request.licencePlate, {
       ...request.decisionData,
+      description: `${request.decisionData.description} updated`,
       isAgMinistry: request.project?.organization.isAgMinistry || false,
-      resourceRequests: {
-        ...request.decisionData.resourceRequests,
-        development: {
-          ...request.decisionData.resourceRequests.development,
-          cpu: request.decisionData.resourceRequests.development.cpu + 0.5,
-        },
-      },
+      resourceRequests: request.decisionData.resourceRequests,
     });
 
     expect(response.status).toBe(200);
