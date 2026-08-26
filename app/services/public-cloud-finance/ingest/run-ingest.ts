@@ -277,7 +277,13 @@ async function writeUnmatched(
   await mapInBatches(plan.toUpdate, (row) =>
     prisma.unmatchedBillingLine.update({
       where: { id: row.id },
-      data: { amountCad: row.amountCad, ingestionRunId: runId },
+      data: {
+        amountCad: row.amountCad,
+        sourceCurrency: row.sourceCurrency,
+        fxRate: row.fxRate,
+        fxRateDate: row.fxRateDate,
+        ingestionRunId: runId,
+      },
     }),
   );
 }

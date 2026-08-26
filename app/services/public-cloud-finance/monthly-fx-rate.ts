@@ -54,11 +54,14 @@ async function upsertMonthlyUsdCadRate(data: {
       rateDate: data.rateDate,
       source: data.source,
     },
-    update: {
-      rate: data.rate,
-      rateDate: data.rateDate,
-      source: data.source,
-    },
+    update:
+      data.source === 'FINANCE_USD_CAD_RATE'
+        ? {}
+        : {
+            rate: data.rate,
+            rateDate: data.rateDate,
+            source: data.source,
+          },
   });
   return toStored(row);
 }

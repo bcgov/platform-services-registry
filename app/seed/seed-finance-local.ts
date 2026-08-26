@@ -10,22 +10,23 @@ import { Provider } from '../prisma/client';
 import { ingestBillingPeriod } from '../services/public-cloud-finance/ingest/run-ingest';
 import { createSimulatedBillingSource } from '../services/public-cloud-finance/ingest/simulated-source';
 
-function buildActualPeriods(now = new Date()) {
+export function buildActualPeriods(now = new Date()) {
   const month = now.getMonth() + 1;
   const year = now.getFullYear();
   const fyStartYear = month >= 4 ? year : year - 1;
-  // At least Apr–Jul; include months through current when later in the FY.
-  const lastMonthToLoad = month >= 4 ? Math.max(7, month) : 7;
+  // At least Apr–Jul in the current FY; after New Year keep going through today
+  // so prior-year Aug–Dec are not dropped.
+  const throughMonth = month >= 4 ? Math.max(7, month) : month;
+  const throughYear = month >= 4 ? year : year;
   const periods: Array<{ year: number; month: number }> = [];
-
-  for (let m = 4; m <= Math.min(12, lastMonthToLoad); m += 1) {
-    periods.push({ year: fyStartYear, month: m });
-  }
-  if (month < 4) {
-    // We are in Jan–Mar of the next calendar year; still seed prior FY Apr–Jul minimum,
-    // and optionally Jan–current of this calendar year for partial FY demos.
-    for (let m = 1; m <= month; m += 1) {
-      periods.push({ year: year, month: m });
+  let cursorYear = fyStartYear;
+  let cursorMonth = 4;
+  while (cursorYear < throughYear || (cursorYear === throughYear && cursorMonth <= throughMonth)) {
+    periods.push({ year: cursorYear, month: cursorMonth });
+    cursorMonth += 1;
+    if (cursorMonth > 12) {
+      cursorMonth = 1;
+      cursorYear += 1;
     }
   }
   return periods;
@@ -43,6 +44,7 @@ export async function seedFinanceActualsLocal(options?: { reset?: boolean }) {
     await prisma.spendFlag.deleteMany({});
     await prisma.ingestionLock.deleteMany({});
     await prisma.ingestionRun.deleteMany({});
+    await prisma.monthlyFxRate.deleteMany({});
     await prisma.varianceNote.deleteMany({});
   }
 

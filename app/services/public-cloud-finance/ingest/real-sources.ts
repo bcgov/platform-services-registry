@@ -154,7 +154,8 @@ async function fetchAwsCostExplorerRows(
   period: BillingPeriod,
   scope?: BillingFetchScope,
 ): Promise<ExportRow[]> {
-  const region = process.env.FINANCE_AWS_REGION || process.env.AWS_REGION || 'ca-central-1';
+  // Cost Explorer is only in us-east-1. Do not inherit AWS_REGION (often ca-central-1).
+  const region = process.env.FINANCE_AWS_REGION || 'us-east-1';
   const client = await createAwsCostExplorerClient({ region, profile: awsProfileName() || undefined });
   const rows = await fetchAwsCostExplorerPages(client, period, scope?.accountIdentifiers);
 

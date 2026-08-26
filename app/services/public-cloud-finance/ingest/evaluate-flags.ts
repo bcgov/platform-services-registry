@@ -1,6 +1,6 @@
 import prisma from '@/core/prisma';
 import { Provider, SpendFlagRuleId } from '@/prisma/client';
-import { activeActualSpendWhere, unreviewedSpendFlagWhere } from '../active-spend';
+import { activeActualSpendWhere } from '../active-spend';
 import { FINANCE_ANOMALY_THRESHOLDS } from '../constants';
 import type { BillingPeriod } from './types';
 
@@ -174,12 +174,14 @@ export function spendFlagKey(flag: Pick<SpendFlagInput, 'licencePlate' | 'provid
 export function planSpendFlagReconcile(
   existing: Array<{ id: string; currentAmountCad: number; priorAmountCad?: number | null } & SpendFlagInput>,
   next: SpendFlagInput[],
+  reviewedKeys: Iterable<string> = [],
 ) {
   const existingByKey = new Map(existing.map((row) => [spendFlagKey(row), row]));
+  const reviewed = reviewedKeys instanceof Set ? reviewedKeys : new Set(reviewedKeys);
   const nextKeys = new Set(next.map(spendFlagKey));
   return {
     staleIds: existing.filter((row) => !nextKeys.has(spendFlagKey(row))).map((row) => row.id),
-    toCreate: next.filter((flag) => !existingByKey.has(spendFlagKey(flag))),
+    toCreate: next.filter((flag) => !existingByKey.has(spendFlagKey(flag)) && !reviewed.has(spendFlagKey(flag))),
     toUpdate: next.flatMap((flag) => {
       const current = existingByKey.get(spendFlagKey(flag));
       if (!current) return [];
@@ -203,9 +205,11 @@ export async function evaluateSpendFlagsForPeriod(period: BillingPeriod) {
   ];
 
   const existing = await prisma.spendFlag.findMany({
-    where: { year: period.year, month: period.month, AND: [unreviewedSpendFlagWhere] },
+    where: { year: period.year, month: period.month },
   });
-  const plan = planSpendFlagReconcile(existing, flags);
+  const reviewedKeys = existing.filter((row) => row.reviewedAt).map(spendFlagKey);
+  const unreviewed = existing.filter((row) => !row.reviewedAt);
+  const plan = planSpendFlagReconcile(unreviewed, flags, reviewedKeys);
 
   if (plan.staleIds.length > 0) {
     await prisma.spendFlag.deleteMany({ where: { id: { in: plan.staleIds } } });

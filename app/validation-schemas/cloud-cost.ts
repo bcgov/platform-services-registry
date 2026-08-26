@@ -26,7 +26,7 @@ export const financeProviderQuerySchema = z.object({
 });
 
 export const financeRankingsQuerySchema = financeProviderQuerySchema.extend({
-  organizationId: z.string().optional(),
+  organizationId: objectId.optional(),
   period: z.enum(['ytd', 'full-fy']).optional().default('ytd'),
   limit: z.coerce.number().int().min(1).max(100).optional().default(10),
 });

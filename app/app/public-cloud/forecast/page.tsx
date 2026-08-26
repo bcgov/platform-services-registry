@@ -218,7 +218,7 @@ function PlatformForecastGrid({
     : aggregateMonthlyTotalsFromProducts(providerFilteredProducts, group.currency, true);
   const monthlyActuals = useFullGroupTotals
     ? group.monthlyActuals
-    : aggregateMonthlyActualsFromProducts(providerFilteredProducts, monthlyTotals.length);
+    : aggregateMonthlyActualsFromProducts(providerFilteredProducts, monthlyTotals);
 
   const values = monthlyTotals;
   const actuals = monthlyActuals;

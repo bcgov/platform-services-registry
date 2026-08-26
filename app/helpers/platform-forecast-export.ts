@@ -84,7 +84,7 @@ function buildExportSheets(summary: PlatformForecastSummary): ForecastExportShee
       const products = group.products.filter((product) => product.provider === provider && product.hasForecast);
       const allProviderProducts = group.products.filter((product) => product.provider === provider);
       const monthlyTotals = buildFilteredGroupTotals(products, group.currency);
-      const monthlyActuals = aggregateMonthlyActualsFromProducts(allProviderProducts, monthlyTotals.length);
+      const monthlyActuals = aggregateMonthlyActualsFromProducts(allProviderProducts, monthlyTotals);
       const forecastCount = products.length;
 
       sheets.push({

@@ -14,9 +14,25 @@ export function unmatchedLineKey(line: UnmatchedLineKeyParts) {
   }`;
 }
 
+type UnmatchedMoneyFields = {
+  amountCad: number;
+  sourceCurrency?: string;
+  fxRate?: number;
+  fxRateDate?: Date;
+};
+
+function sameUnmatchedMoney(current: UnmatchedMoneyFields, next: UnmatchedMoneyFields) {
+  return (
+    current.amountCad === next.amountCad &&
+    (current.sourceCurrency ?? '') === (next.sourceCurrency ?? '') &&
+    (current.fxRate ?? null) === (next.fxRate ?? null) &&
+    (current.fxRateDate?.getTime() ?? null) === (next.fxRateDate?.getTime() ?? null)
+  );
+}
+
 export function planUnmatchedReconcile<
-  TExisting extends UnmatchedLineKeyParts & { id: string; amountCad: number; resolvedTo?: string | null },
-  TNext extends UnmatchedLineKeyParts & { amountCad: number },
+  TExisting extends UnmatchedLineKeyParts & UnmatchedMoneyFields & { id: string; resolvedTo?: string | null },
+  TNext extends UnmatchedLineKeyParts & UnmatchedMoneyFields,
 >(existing: TExisting[], next: TNext[]) {
   const resolvedKeys = new Set(existing.filter((row) => row.resolvedTo).map((row) => unmatchedLineKey(row)));
   const unresolved = existing.filter((row) => !row.resolvedTo);
@@ -30,8 +46,16 @@ export function planUnmatchedReconcile<
     ),
     toUpdate: next.flatMap((line) => {
       const current = unresolvedByKey.get(unmatchedLineKey(line));
-      if (!current || current.amountCad === line.amountCad) return [];
-      return [{ id: current.id, amountCad: line.amountCad }];
+      if (!current || sameUnmatchedMoney(current, line)) return [];
+      return [
+        {
+          id: current.id,
+          amountCad: line.amountCad,
+          sourceCurrency: line.sourceCurrency,
+          fxRate: line.fxRate,
+          fxRateDate: line.fxRateDate,
+        },
+      ];
     }),
   };
 }

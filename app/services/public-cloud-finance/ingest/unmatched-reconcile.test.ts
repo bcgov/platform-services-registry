@@ -24,7 +24,27 @@ describe('planUnmatchedReconcile', () => {
 
     expect(plan.staleIds).toEqual([]);
     expect(plan.toCreate).toEqual([]);
-    expect(plan.toUpdate).toEqual([{ id: 'open', amountCad: 25 }]);
+    expect(plan.toUpdate).toEqual([
+      { id: 'open', amountCad: 25, sourceCurrency: undefined, fxRate: undefined, fxRateDate: undefined },
+    ]);
+
+    const fxDate = new Date('2026-06-30T00:00:00Z');
+    const fxPlan = planUnmatchedReconcile(
+      [{ ...base, accountIdentifier: 'sub-2', id: 'open-fx', amountCad: 25, sourceCurrency: 'USD', fxRate: 1.3 }],
+      [
+        {
+          ...base,
+          accountIdentifier: 'sub-2',
+          amountCad: 25,
+          sourceCurrency: 'USD',
+          fxRate: 1.35,
+          fxRateDate: fxDate,
+        },
+      ],
+    );
+    expect(fxPlan.toUpdate).toEqual([
+      { id: 'open-fx', amountCad: 25, sourceCurrency: 'USD', fxRate: 1.35, fxRateDate: fxDate },
+    ]);
   });
 
   it('deletes stale unresolved rows and creates new ones', () => {

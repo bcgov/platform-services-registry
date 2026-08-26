@@ -85,4 +85,14 @@ describe('planSpendFlagReconcile', () => {
     expect(plan.toCreate).toEqual([]);
     expect(plan.toUpdate).toEqual([]);
   });
+
+  it('does not recreate a flag that was already reviewed', () => {
+    const plan = planSpendFlagReconcile(
+      [],
+      [{ ...base, currentAmountCad: 200, priorAmountCad: 80 }],
+      ['abc123:AWS::MOM_INCREASE'],
+    );
+
+    expect(plan.toCreate).toEqual([]);
+  });
 });

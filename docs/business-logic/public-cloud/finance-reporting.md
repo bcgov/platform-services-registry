@@ -132,12 +132,12 @@ Subscription / account IDs for joins come from product metadata (`azureSubscript
 
 **Vault keys to add (Test, then Prod):**
 
-| Env var                              | Purpose                                                                          |
-| ------------------------------------ | -------------------------------------------------------------------------------- |
-| `AWS_ACCESS_KEY_ID`                  | LZA billing-read access key                                                      |
-| `AWS_SECRET_ACCESS_KEY`              | Matching secret                                                                  |
-| `AWS_REGION` or `FINANCE_AWS_REGION` | Prefer `ca-central-1`                                                            |
-| `FINANCE_LIVE_BILLING`               | Optional; set `api` to force live adapters (also auto when AWS keys are present) |
+| Env var                 | Purpose                                                                            |
+| ----------------------- | ---------------------------------------------------------------------------------- |
+| `AWS_ACCESS_KEY_ID`     | LZA billing-read access key                                                        |
+| `AWS_SECRET_ACCESS_KEY` | Matching secret                                                                    |
+| `FINANCE_AWS_REGION`    | Cost Explorer endpoint only (`us-east-1`). Do not use `AWS_REGION` for this client |
+| `FINANCE_LIVE_BILLING`  | Optional; set `api` to force live adapters (also auto when AWS keys are present)   |
 
 Cost Explorer ingest is one monthly `GetCostAndUsage` (account × service), paginated, with the AWS SDK adaptive retry mode. Linked-account allowlists are chunked so a live test filter cannot overflow the CE dimension limit.
 

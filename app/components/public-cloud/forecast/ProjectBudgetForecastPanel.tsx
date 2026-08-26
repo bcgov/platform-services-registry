@@ -481,13 +481,14 @@ export default function ProjectBudgetForecastPanel({
                           })}
                           <td className="px-3 py-2 text-center font-semibold bg-amber-50">
                             {(() => {
+                              const expected = expectedPastActualMonths(fyChunk.months, billingStartedDate);
                               const likeForLike = elapsedLikeForLikeTotals(
-                                fyChunk.months,
-                                fyChunk.months.map((month) => {
+                                expected,
+                                expected.map((month) => {
                                   const key = monthKey(month.year, month.month);
                                   return actualByKey.has(key) ? actualByKey.get(key) : null;
                                 }),
-                                fyChunk.months.map((month) => month.amount),
+                                expected.map((month) => month.amount),
                               );
                               return likeForLike.variance == null ? '—' : formatCadAmount(likeForLike.variance.amount);
                             })()}

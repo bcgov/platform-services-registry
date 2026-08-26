@@ -13,6 +13,7 @@ import {
 } from '@/components/public-cloud/forecast/forecast-grid-utils';
 import prisma from '@/core/prisma';
 import { Provider, ProjectStatus } from '@/prisma/client';
+import { loadProductBillingStartByPlate } from '@/services/public-cloud-finance/product-billing-start';
 
 export async function getProductForecast(licencePlate: string) {
   return prisma.cloudCostForecast.findUnique({ where: { licencePlate } });
@@ -35,6 +36,8 @@ export type PlatformForecastProduct = {
   monthlyTotals: MonthlyValue[];
   /** Parallel to monthlyTotals; null when no ingest rollup for that month. */
   monthlyActuals: Array<number | null>;
+  /** ISO timestamp used so estate actuals skip months before the product existed. */
+  billingStartedAt?: string | null;
   forecastTotal: number;
   actualTotal: number;
 };
@@ -177,7 +180,7 @@ export async function getPlatformForecastSummary(options?: { includeActuals?: bo
   });
   const licencePlates = products.map((p) => p.licencePlate);
 
-  const [forecasts, rollups] = await Promise.all([
+  const [forecasts, rollups, billingStartedByPlate] = await Promise.all([
     prisma.cloudCostForecast.findMany({
       where: { licencePlate: { in: licencePlates } },
       select: { licencePlate: true, monthlyValues: true },
@@ -188,6 +191,7 @@ export async function getPlatformForecastSummary(options?: { includeActuals?: bo
           select: { licencePlate: true, year: true, month: true, amountCad: true },
         })
       : Promise.resolve([]),
+    loadProductBillingStartByPlate(licencePlates),
   ]);
 
   const forecastByPlate = new Map(
@@ -230,6 +234,7 @@ export async function getPlatformForecastSummary(options?: { includeActuals?: bo
       hasForecast,
       monthlyTotals,
       monthlyActuals,
+      billingStartedAt: billingStartedByPlate.get(product.licencePlate)?.toISOString() ?? null,
       forecastTotal: sumMonthlyValues(monthlyTotals),
       actualTotal: includeActuals ? sumKnownActuals(monthlyActuals) : 0,
     });
@@ -241,7 +246,7 @@ export async function getPlatformForecastSummary(options?: { includeActuals?: bo
     groups: [...groups.values()].map((group) => {
       const monthlyTotals = mergeMonthlyValuesOntoFiscalHorizon([...group.totalsByMonth.values()], group.currency);
       const monthlyActuals = includeActuals
-        ? aggregateMonthlyActualsFromProducts(group.products, monthlyTotals.length)
+        ? aggregateMonthlyActualsFromProducts(group.products, monthlyTotals)
         : monthlyTotals.map(() => null);
       return {
         currency: group.currency,

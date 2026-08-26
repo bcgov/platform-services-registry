@@ -132,6 +132,7 @@ export async function cleanUp() {
   await prisma.spendFlag.deleteMany();
   await prisma.ingestionLock.deleteMany();
   await prisma.ingestionRun.deleteMany();
+  await prisma.monthlyFxRate.deleteMany();
   await prisma.varianceNote.deleteMany();
   await prisma.cloudCostForecast.deleteMany();
 
