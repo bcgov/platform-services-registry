@@ -124,7 +124,7 @@ Subscription / account IDs for joins come from product metadata (`azureSubscript
 | Item      | Plan                                                                                    |
 | --------- | --------------------------------------------------------------------------------------- |
 | Principal | Dedicated IAM user or role with Cost Explorer / billing-read across LZA linked accounts |
-| Scope     | AWS_LZA estate only (classic AWS is out of scope for scheduled ingest)                  |
+| Scope     | AWS_LZA estate only (classic AWS is out of scope for all real ingest)                   |
 | Local     | `FINANCE_AWS_PROFILE` / SSO                                                             |
 | Test/Prod | Vault-injected keys (or role) on the app pod                                            |
 
@@ -200,7 +200,7 @@ Create a dedicated SA client per environment (do not reuse a personal admin sess
 
 -   Provider credentials in Airflow DAG code or GitHub Actions
 -   Interactive SSO / `az login` inside cluster pods
--   Classic AWS native account storage or scheduled classic-AWS ingest in this prototype
+-   Classic AWS native account storage or any real classic-AWS ingest (Cost Explorer, file export, live CLI)
 
 ## FOIPPA
 

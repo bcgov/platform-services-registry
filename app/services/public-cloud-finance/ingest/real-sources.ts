@@ -322,14 +322,17 @@ async function fetchAzureCostManagementRows(period: BillingPeriod, scope?: Billi
 }
 
 /**
- * Real AWS / AWS_LZA billing adapter.
+ * Real AWS_LZA billing adapter. Classic AWS is out of scope for real ingest.
  * One Cost Explorer query per month (paginated, adaptive retries), optionally chunked
  * by LINKED_ACCOUNT when a live allowlist is set.
  */
-export function createAwsBillingSource(provider: Provider = Provider.AWS): BillingSource {
-  const envKey = provider === Provider.AWS_LZA ? 'FINANCE_AWS_LZA_COST_EXPORT_PATH' : 'FINANCE_AWS_COST_EXPORT_PATH';
+export function createAwsBillingSource(provider: Provider = Provider.AWS_LZA): BillingSource {
+  if (provider !== Provider.AWS_LZA) {
+    throw new Error('Real AWS billing is AWS_LZA only.');
+  }
+  const envKey = 'FINANCE_AWS_LZA_COST_EXPORT_PATH';
   return {
-    name: provider === Provider.AWS_LZA ? 'aws-lza' : 'aws',
+    name: 'aws-lza',
     async fetchBillingLines(period, scope) {
       const path = process.env[envKey] || process.env.FINANCE_AWS_COST_EXPORT_PATH;
       if (preferLiveApi() || hasAwsLiveCredentials() || !path) {

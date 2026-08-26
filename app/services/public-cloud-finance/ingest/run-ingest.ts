@@ -58,7 +58,7 @@ export function resolveBillingSource(provider: Provider, forced?: BillingSource)
   }
   if (provider === Provider.AZURE) return createAzureBillingSource();
   if (provider === Provider.AWS_LZA) return createAwsBillingSource(Provider.AWS_LZA);
-  return createAwsBillingSource(Provider.AWS);
+  throw new Error('Classic AWS ingest is not supported for real billing data. Use AWS_LZA.');
 }
 
 async function loadProductsForAccountMap() {
@@ -312,7 +312,9 @@ async function evaluateFlagsForPeriodAndLater(period: BillingPeriod) {
 
 export async function ingestBillingPeriod(options: IngestOptions): Promise<IngestResult> {
   const { provider, period, triggeredBy } = options;
-  assertClassicAwsRealIngestAllowed(provider, { forcedSource: Boolean(options.source) });
+  const simulated =
+    options.source?.name === 'simulated' || (!options.source && defaultFinanceBillingSource() === 'simulated');
+  assertClassicAwsRealIngestAllowed(provider, { simulated });
   const source = resolveBillingSource(provider, options.source);
   const { periodStart, periodEnd } = periodBounds(period);
   const isScoped = Boolean(options.scope?.licencePlates?.length || options.scope?.accountIdentifiers?.length);

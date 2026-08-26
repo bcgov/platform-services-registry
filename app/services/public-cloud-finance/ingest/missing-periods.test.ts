@@ -45,12 +45,11 @@ describe('missing ingest periods', () => {
     ]);
   });
 
-  it('rejects classic AWS on the real Cost Explorer path unless a source is forced', () => {
+  it('rejects classic AWS for every real ingest path', () => {
     expect(() => assertClassicAwsRealIngestAllowed(Provider.AWS, { billingSource: 'real' })).toThrow(/AWS_LZA/);
-    expect(() =>
-      assertClassicAwsRealIngestAllowed(Provider.AWS, { forcedSource: true, billingSource: 'real' }),
-    ).not.toThrow();
+    expect(() => assertClassicAwsRealIngestAllowed(Provider.AWS, { simulated: false })).toThrow(/AWS_LZA/);
     expect(() => assertClassicAwsRealIngestAllowed(Provider.AWS_LZA, { billingSource: 'real' })).not.toThrow();
+    expect(() => assertClassicAwsRealIngestAllowed(Provider.AWS, { simulated: true })).not.toThrow();
     expect(() => assertClassicAwsRealIngestAllowed(Provider.AWS, { billingSource: 'simulated' })).not.toThrow();
   });
 

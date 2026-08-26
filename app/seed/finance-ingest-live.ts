@@ -24,10 +24,10 @@ function parsePlates() {
     .filter(Boolean);
 }
 
-function resolveLiveSource(provider: Provider): BillingSource {
+function resolveLiveSource(provider: Provider): BillingSource | null {
   if (provider === Provider.AZURE) return createAzureBillingSource();
   if (provider === Provider.AWS_LZA) return createAwsBillingSource(Provider.AWS_LZA);
-  return createAwsBillingSource(Provider.AWS);
+  return null;
 }
 
 type LiveProduct = {
@@ -46,11 +46,15 @@ async function ingestProduct(product: LiveProduct, period: BillingPeriod) {
     return;
   }
 
-  let source: BillingSource;
+  let source: BillingSource | null;
   try {
     source = resolveLiveSource(product.provider);
   } catch (error) {
     console.warn(`  ${product.licencePlate}: ${error instanceof Error ? error.message : error}`);
+    return;
+  }
+  if (!source) {
+    console.warn(`  ${product.licencePlate}: classic AWS is out of scope for live ingest — skip`);
     return;
   }
 

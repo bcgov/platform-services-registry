@@ -27,6 +27,9 @@ export const POST = createApiHandler({
     return BadRequestResponse('Simulated ingest is not allowed when the billing source is real');
   }
   const useSimulated = body.useSimulated ?? defaultSource === 'simulated';
+  if (body.provider === Provider.AWS && !useSimulated) {
+    return BadRequestResponse('Classic AWS ingest is not supported for real billing data. Use AWS_LZA.');
+  }
   const triggeredBy = session.isServiceAccount
     ? 'finance-ingest-sa'
     : session.user?.email || session.userIdirGuid || 'api';

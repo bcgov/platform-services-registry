@@ -63,16 +63,16 @@ export function isScopedAzureFetch(scope?: BillingFetchScope) {
 }
 
 /**
- * Classic AWS shares the LZA Cost Explorer estate. Real ingest must use AWS_LZA
- * so the same dollars are not tagged twice. Simulated or an explicit source
- * (local live CLI) may still ingest AWS.
+ * Real billing is AWS_LZA + Azure only. Classic AWS shares the LZA Cost Explorer
+ * estate and must not be ingested as a second provider. Simulated demo data may
+ * still invent AWS rows.
  */
 export function assertClassicAwsRealIngestAllowed(
   provider: Provider,
-  options: { forcedSource?: boolean; billingSource?: 'simulated' | 'real' } = {},
+  options: { simulated?: boolean; billingSource?: 'simulated' | 'real' } = {},
 ) {
-  const billingSource = options.billingSource ?? defaultFinanceBillingSource();
-  if (provider === Provider.AWS && !options.forcedSource && billingSource === 'real') {
-    throw new Error('Classic AWS ingest is not supported on the real Cost Explorer path. Use AWS_LZA.');
+  const simulated = options.simulated ?? (options.billingSource ?? defaultFinanceBillingSource()) === 'simulated';
+  if (provider === Provider.AWS && !simulated) {
+    throw new Error('Classic AWS ingest is not supported for real billing data. Use AWS_LZA.');
   }
 }
