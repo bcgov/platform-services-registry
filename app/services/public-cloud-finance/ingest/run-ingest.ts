@@ -1,8 +1,9 @@
 import prisma from '@/core/prisma';
-import { FinanceIngestionStatus, Provider, ProjectStatus } from '@/prisma/client';
+import { FinanceIngestionStatus, Provider } from '@/prisma/client';
 import { activeActualSpendWhere } from '../active-spend';
 import { buildAccountToLicencePlateMap } from '../billing-account-links';
 import { defaultFinanceBillingSource } from '../constants';
+import { loadProductBillingStartByPlate, platesToRollupForPeriod } from '../product-billing-start';
 import { evaluateSpendFlagsForPeriod } from './evaluate-flags';
 import { createAwsBillingSource, createAzureBillingSource } from './real-sources';
 import { createSimulatedBillingSource } from './simulated-source';
@@ -134,17 +135,26 @@ function resolveSupersedeLicencePlateFilter(
 
 async function resolveRollupPlates(
   provider: Provider,
+  period: BillingPeriod,
   matchedPlates: string[],
   scope?: BillingFetchScope,
 ): Promise<string[]> {
-  if (matchedPlates.length > 0) return matchedPlates;
-  if (scope?.licencePlates?.length) return scope.licencePlates;
-
   const products = await prisma.publicCloudProduct.findMany({
-    where: { status: ProjectStatus.ACTIVE, provider },
-    select: { licencePlate: true },
+    where: {
+      provider,
+      ...(scope?.licencePlates?.length ? { licencePlate: { in: scope.licencePlates } } : {}),
+    },
+    select: { licencePlate: true, createdAt: true },
   });
-  return products.map((p) => p.licencePlate);
+  const billingStartedByPlate = await loadProductBillingStartByPlate(products.map((product) => product.licencePlate));
+  return platesToRollupForPeriod({
+    products: products.map((product) => ({
+      licencePlate: product.licencePlate,
+      billingStartedAt: billingStartedByPlate.get(product.licencePlate) ?? product.createdAt,
+    })),
+    period,
+    matchedPlates,
+  });
 }
 
 async function writeMatchedAndSupersede(options: {
@@ -284,7 +294,7 @@ export async function ingestBillingPeriod(options: IngestOptions): Promise<Inges
     });
     await writeUnmatched(provider, period, run.id, unmatched);
 
-    const rollupPlates = await resolveRollupPlates(provider, matchedPlates, scope);
+    const rollupPlates = await resolveRollupPlates(provider, period, matchedPlates, scope);
     await refreshRollupsForPeriod(provider, period, rollupPlates);
     const flagsRaised = await evaluateSpendFlagsForPeriod(period);
 

@@ -91,6 +91,7 @@ export default function PublicCloudForecastSection({ licencePlate }: Readonly<{ 
           onSaved={handleForecastSaved}
           showActualVariance={showActualVariance}
           actualsByMonth={financeData?.actuals}
+          billingStartedAt={financeData?.billingStartedAt}
           canEditVarianceNotes={canEditForecast}
         />
       )}

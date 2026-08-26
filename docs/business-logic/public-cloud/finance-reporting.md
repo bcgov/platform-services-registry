@@ -34,6 +34,17 @@ Archiving a product (`ProjectStatus.INACTIVE`) must **not** erase finance or for
 
 Product finance pages keyed by licence plate continue to show historical actuals and variance notes after archive.
 
+## Product existence vs missing actuals
+
+A month with no rollup is missing only if the account or subscription already existed.
+
+| Signal                           | Used as                                                  |
+| -------------------------------- | -------------------------------------------------------- |
+| Create request `provisionedDate` | First month the account/sub could have spend (preferred) |
+| Product `createdAt`              | Fallback when provision date is absent                   |
+
+Months before that start are out of scope (`—`, not incomplete). After a successful provider-month ingest, products that existed in that month get a rollup, including **$0** when they had no billing lines. Estate FYTD coverage only expects elapsed months where at least one in-scope product existed. Scheduled backfill stays at `IngestionRun` grain and still re-runs failed estate months.
+
 ## FX (USD → CAD)
 
 AWS Cost Explorer amounts are typically USD. At ingest time for a billing month (invoice / month-end), the registry:

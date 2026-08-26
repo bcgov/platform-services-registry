@@ -8,6 +8,8 @@ import {
   isLowForecastCoverage,
   sumForecastForMonths,
   sumKnownActualsOrNull,
+  expectedPastActualMonths,
+  productExistedDuringMonth,
   summarizeYtdActuals,
   ytdActualHint,
 } from '@/components/public-cloud/finance/finance-measure-utils';
@@ -74,6 +76,29 @@ describe('finance measure utils', () => {
     );
     expect(summary).toEqual({ fytdActual: 15, presentMonths: 1, expectedMonths: 3 });
     expect(ytdActualHint(summary, { year: 2026, month: 6 })).toBe('incomplete (1 of 3 months)');
+  });
+
+  it('does not treat pre-creation months as missing actuals', () => {
+    const started = new Date('2026-08-15T00:00:00Z');
+    expect(productExistedDuringMonth(started, 2026, 7)).toBe(false);
+    expect(
+      expectedPastActualMonths(
+        [
+          { year: 2026, month: 6 },
+          { year: 2026, month: 7 },
+          { year: 2026, month: 8 },
+          { year: 2026, month: 9 },
+        ],
+        started,
+        new Date('2026-09-15T12:00:00'),
+      ),
+    ).toEqual([{ year: 2026, month: 8 }]);
+  });
+
+  it('explains empty expected months when elapsed FY months exist', () => {
+    expect(ytdActualHint({ presentMonths: 0, expectedMonths: 0, elapsedMonths: 4 }, { year: 2026, month: 7 })).toBe(
+      'No products existed through last complete month',
+    );
   });
 
   it('surfaces a failed ingest after an older success', () => {

@@ -1,5 +1,6 @@
 import {
   formatFiscalYearLabel,
+  isPastMonth,
   monthKey,
   type MonthlyValue,
 } from '@/components/public-cloud/forecast/forecast-grid-utils';
@@ -122,10 +123,41 @@ export function yearOverYearChange(current: number, priorYear: number | null | u
   return ((current - priorYear) / priorYear) * 100;
 }
 
+/** UTC calendar month the account/sub could first have spend (provision, else create). */
+export function billingStartMonth(existedAt: Date) {
+  return { year: existedAt.getUTCFullYear(), month: existedAt.getUTCMonth() + 1 };
+}
+
+/** True when the product existed at any point in that calendar month. */
+export function productExistedDuringMonth(existedAt: Date, year: number, month: number) {
+  const start = billingStartMonth(existedAt);
+  return year > start.year || (year === start.year && month >= start.month);
+}
+
+export function filterMonthsProductExisted<T extends { year: number; month: number }>(
+  months: T[],
+  existedAt: Date | null | undefined,
+) {
+  if (!existedAt) return months;
+  return months.filter((month) => productExistedDuringMonth(existedAt, month.year, month.month));
+}
+
+export function expectedPastActualMonths(
+  months: Array<{ year: number; month: number }>,
+  existedAt: Date | null | undefined,
+  now = new Date(),
+) {
+  return filterMonthsProductExisted(
+    months.filter((month) => isPastMonth(month.year, month.month, now)),
+    existedAt,
+  );
+}
+
 export type YtdActualSummary = {
   fytdActual: number | null;
   presentMonths: number;
   expectedMonths: number;
+  elapsedMonths?: number;
 };
 
 /** Sum YTD rollups. Null when no elapsed month has a rollup (do not treat as CA$0). */
@@ -151,10 +183,12 @@ export function summarizeYtdActuals(
 }
 
 export function ytdActualHint(
-  coverage: Pick<YtdActualSummary, 'presentMonths' | 'expectedMonths'>,
+  coverage: Pick<YtdActualSummary, 'presentMonths' | 'expectedMonths' | 'elapsedMonths'>,
   lastComplete: { year: number; month: number },
 ) {
-  if (coverage.expectedMonths === 0) return 'No complete fiscal-year months yet';
+  const elapsed = coverage.elapsedMonths ?? coverage.expectedMonths;
+  if (elapsed === 0) return 'No complete fiscal-year months yet';
+  if (coverage.expectedMonths === 0) return 'No products existed through last complete month';
   if (coverage.presentMonths < coverage.expectedMonths) {
     return `incomplete (${coverage.presentMonths} of ${coverage.expectedMonths} months)`;
   }
@@ -217,5 +251,4 @@ export function sumKnownActualsOrNull(amounts: Array<number | null | undefined>)
   return any ? sum : null;
 }
 
-export { formatFiscalYearLabel, monthKey };
-export { isPastMonth } from '@/components/public-cloud/forecast/forecast-grid-utils';
+export { formatFiscalYearLabel, monthKey, isPastMonth };

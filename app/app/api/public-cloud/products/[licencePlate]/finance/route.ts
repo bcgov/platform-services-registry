@@ -40,7 +40,8 @@ export const GET = createApiHandler({
           updatedAt: forecast.updatedAt,
         }
       : null,
-    actuals,
+    actuals: actuals.months,
+    billingStartedAt: actuals.billingStartedAt,
     varianceNotes: notes.map((note) => ({
       id: note.id,
       year: note.year,

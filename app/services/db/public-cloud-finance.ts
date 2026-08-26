@@ -13,12 +13,14 @@ import {
   sumForecastForMonths,
   summarizeYtdActuals,
   yearOverYearChange,
+  productExistedDuringMonth,
 } from '@/components/public-cloud/finance/finance-measure-utils';
 import { type MonthlyValue } from '@/components/public-cloud/forecast/forecast-grid-utils';
 import prisma from '@/core/prisma';
 import { FinanceIngestionStatus, Provider, ProjectStatus } from '@/prisma/client';
 import { activeActualSpendWhere } from '@/services/public-cloud-finance/active-spend';
 import { FINANCE_ANOMALY_THRESHOLDS, SPEND_FLAG_RULE_LABELS } from '@/services/public-cloud-finance/constants';
+import { loadProductBillingStartByPlate } from '@/services/public-cloud-finance/product-billing-start';
 
 export type ProviderFilter = 'ALL' | Provider;
 
@@ -182,7 +184,14 @@ export async function getFinanceSnapshot(provider: ProviderFilter = 'ALL') {
     const key = `${row.licencePlate}:${monthKey(row.year, row.month)}`;
     actualByPlateMonth.set(key, (actualByPlateMonth.get(key) ?? 0) + row.amountCad);
   }
-  const { fytdActual, presentMonths, expectedMonths } = summarizeYtdActuals(ytdMonths, rollups);
+  const billingStartedByPlate = await loadProductBillingStartByPlate(plates);
+  const expectedYtdMonths = ytdMonths.filter((month) =>
+    products.some((product) => {
+      const startedAt = billingStartedByPlate.get(product.licencePlate);
+      return startedAt ? productExistedDuringMonth(startedAt, month.year, month.month) : false;
+    }),
+  );
+  const { fytdActual, presentMonths, expectedMonths } = summarizeYtdActuals(expectedYtdMonths, rollups);
 
   // Service-line totals from active lines for current FY YTD
   const serviceLines = await prisma.actualSpend.groupBy({
@@ -259,7 +268,7 @@ export async function getFinanceSnapshot(provider: ProviderFilter = 'ALL') {
   return {
     fiscalYearLabel: fy.label,
     fytdActual,
-    actualsCoverage: { presentMonths, expectedMonths },
+    actualsCoverage: { presentMonths, expectedMonths, elapsedMonths: ytdMonths.length },
     fytdForecast,
     /** FYTD actual vs FYTD forecast (same elapsed months through lastCompleteMonth). */
     fytdVariance,
@@ -543,18 +552,23 @@ export async function resolveUnmatchedBillingLine(id: string, licencePlate: stri
 }
 
 export async function getProductActuals(licencePlate: string) {
-  const rollups = await prisma.monthlyProductSpendRollup.findMany({
-    where: { licencePlate },
-  });
+  const [rollups, billingStartedByPlate] = await Promise.all([
+    prisma.monthlyProductSpendRollup.findMany({
+      where: { licencePlate },
+    }),
+    loadProductBillingStartByPlate([licencePlate]),
+  ]);
   const byMonth = new Map<string, number>();
   for (const row of rollups) {
     const key = monthKey(row.year, row.month);
     byMonth.set(key, (byMonth.get(key) ?? 0) + row.amountCad);
   }
-  return [...byMonth.entries()].map(([key, amountCad]) => {
+  const months = [...byMonth.entries()].map(([key, amountCad]) => {
     const [year, month] = key.split('-').map(Number);
     return { year, month, amountCad };
   });
+  const billingStartedAt = billingStartedByPlate.get(licencePlate)?.toISOString() ?? null;
+  return { months, billingStartedAt };
 }
 
 export async function listVarianceNotes(licencePlate: string, year?: number, month?: number) {

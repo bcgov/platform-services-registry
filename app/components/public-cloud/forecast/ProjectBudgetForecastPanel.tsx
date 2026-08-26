@@ -7,6 +7,7 @@ import {
   calculateVariance,
   formatCadAmount,
   isCurrentCalendarMonth,
+  expectedPastActualMonths,
   sumKnownActualsOrNull,
 } from '@/components/public-cloud/finance/finance-measure-utils';
 import ProductVarianceNotes from '@/components/public-cloud/finance/ProductVarianceNotes';
@@ -53,11 +54,15 @@ function formatVarianceCell(variance: { amount: number; percent: number | null }
   return `${formatCadAmount(variance.amount)}${percentSuffix}`;
 }
 
-function fiscalChunkKnownActuals(months: Array<{ year: number; month: number }>, actualByKey: Map<string, number>) {
-  const expectedPast = months.filter((month) => isPastMonth(month.year, month.month));
+function fiscalChunkKnownActuals(
+  months: Array<{ year: number; month: number }>,
+  actualByKey: Map<string, number>,
+  billingStartedAt?: Date | null,
+) {
+  const expectedPast = expectedPastActualMonths(months, billingStartedAt);
   const presentPast = expectedPast.filter((month) => actualByKey.has(monthKey(month.year, month.month))).length;
   const known = sumKnownActualsOrNull(
-    months.map((month) => {
+    expectedPast.map((month) => {
       const key = monthKey(month.year, month.month);
       return actualByKey.has(key) ? actualByKey.get(key) : null;
     }),
@@ -172,6 +177,8 @@ type ProjectBudgetForecastPanelProps = Readonly<{
   onSaved?: () => void;
   /** Product × month actuals (CAD). When set with showActualVariance, adds Actual and Variance rows. */
   actualsByMonth?: Array<{ year: number; month: number; amountCad: number }>;
+  /** Provisioned date, else product createdAt. Months before this are not missing actuals. */
+  billingStartedAt?: string | null;
   showActualVariance?: boolean;
   canEditVarianceNotes?: boolean;
 }>;
@@ -186,6 +193,7 @@ export default function ProjectBudgetForecastPanel({
   onValuesChange,
   onSaved,
   actualsByMonth,
+  billingStartedAt,
   showActualVariance = false,
   canEditVarianceNotes = false,
 }: ProjectBudgetForecastPanelProps) {
@@ -252,6 +260,11 @@ export default function ProjectBudgetForecastPanel({
     }
     return map;
   }, [actualsByMonth]);
+  const billingStartedDate = (() => {
+    if (!billingStartedAt) return null;
+    const parsed = new Date(billingStartedAt);
+    return Number.isNaN(parsed.getTime()) ? null : parsed;
+  })();
 
   const handleAmountChange = (index: number, amount: number) => {
     const cell = values[index];
@@ -436,6 +449,7 @@ export default function ProjectBudgetForecastPanel({
                               const { known, presentPast, expectedPast } = fiscalChunkKnownActuals(
                                 fyChunk.months,
                                 actualByKey,
+                                billingStartedDate,
                               );
                               return (
                                 <>
@@ -466,7 +480,11 @@ export default function ProjectBudgetForecastPanel({
                           })}
                           <td className="px-3 py-2 text-center font-semibold bg-amber-50">
                             {(() => {
-                              const { known } = fiscalChunkKnownActuals(fyChunk.months, actualByKey);
+                              const { known } = fiscalChunkKnownActuals(
+                                fyChunk.months,
+                                actualByKey,
+                                billingStartedDate,
+                              );
                               const variance = calculateVariance(known, fySummary.total);
                               return variance == null ? '—' : formatCadAmount(variance.amount);
                             })()}
