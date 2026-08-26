@@ -623,6 +623,37 @@ function PlatformForecastGrid({
   );
 }
 
+function ForecastRollupBody({
+  isError,
+  error,
+  onRetry,
+  data,
+  isLoading,
+  showActualVariance,
+}: Readonly<{
+  isError: boolean;
+  error: unknown;
+  onRetry: () => void;
+  data: PlatformForecastSummary | undefined;
+  isLoading: boolean;
+  showActualVariance: boolean;
+}>) {
+  if (isError) {
+    return <FinanceQueryError error={error} onRetry={onRetry} title="Could not load forecast rollup" />;
+  }
+  if (data?.groups.length) {
+    return (
+      <div className="space-y-10">
+        {data.groups.map((group) => (
+          <PlatformForecastGrid key={group.currency} group={group} showActualVariance={showActualVariance} />
+        ))}
+      </div>
+    );
+  }
+  if (isLoading) return null;
+  return <p className="text-sm text-gray-600">No public cloud products found.</p>;
+}
+
 const publicCloudForecastPage = createClientPage({
   permissions: [GlobalPermissions.ViewPublicCloudForecast],
   fallbackUrl: '/login?callbackUrl=/home',
@@ -670,17 +701,14 @@ export default publicCloudForecastPage(({ session }) => {
           </div>
         )}
 
-        {isError ? (
-          <FinanceQueryError error={error} onRetry={() => refetch()} title="Could not load forecast rollup" />
-        ) : data?.groups.length ? (
-          <div className="space-y-10">
-            {data.groups.map((group) => (
-              <PlatformForecastGrid key={group.currency} group={group} showActualVariance={showActualVariance} />
-            ))}
-          </div>
-        ) : (
-          !isLoading && <p className="text-sm text-gray-600">No public cloud products found.</p>
-        )}
+        <ForecastRollupBody
+          isError={isError}
+          error={error}
+          onRetry={() => refetch()}
+          data={data}
+          isLoading={isLoading}
+          showActualVariance={showActualVariance}
+        />
       </div>
     </LoadingBox>
   );

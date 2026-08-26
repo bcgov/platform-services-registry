@@ -3,9 +3,8 @@
 import { Select } from '@mantine/core';
 import { useQuery } from '@tanstack/react-query';
 import { useMemo, useState } from 'react';
-import LoadingBox from '@/components/generic/LoadingBox';
 import FinanceNav from '@/components/public-cloud/finance/FinanceNav';
-import FinanceQueryError from '@/components/public-cloud/finance/FinanceQueryError';
+import FinanceQueryState from '@/components/public-cloud/finance/FinanceQueryState';
 import { GlobalPermissions } from '@/constants';
 import createClientPage from '@/core/client-page';
 import { getFinanceCoverage } from '@/services/backend/public-cloud/finance';
@@ -52,76 +51,78 @@ export default publicCloudFinanceCoveragePage(({ session }) => {
         ]}
       />
 
-      {isError ? (
-        <FinanceQueryError error={error} onRetry={() => refetch()} title="Could not load forecast coverage" />
-      ) : isLoading || !data ? (
-        <LoadingBox isLoading>
-          <div className="min-h-24" />
-        </LoadingBox>
-      ) : (
-        <table className="min-w-full text-sm border bg-white">
-          <thead className="bg-gray-50">
-            <tr>
-              <th scope="col" className="px-3 py-2 text-left">
-                Project identifier
-              </th>
-              <th scope="col" className="px-3 py-2 text-left">
-                Name
-              </th>
-              <th scope="col" className="px-3 py-2 text-left">
-                Coverage
-              </th>
-              <th scope="col" className="px-3 py-2 text-right">
-                Months missing
-              </th>
-              <th scope="col" className="px-3 py-2 text-left">
-                Product Owner
-              </th>
-              <th scope="col" className="px-3 py-2 text-left">
-                Last reminder sent
-              </th>
-              <th scope="col" className="px-3 py-2 text-left">
-                Remind
-              </th>
-            </tr>
-          </thead>
-          <tbody>
-            {rows.map(
-              (row: {
-                licencePlate: string;
-                name: string;
-                coverageState: string;
-                monthsMissing: number;
-                projectOwnerName: string;
-                projectOwnerEmail: string;
-                lastReminderSentAt: string | null;
-              }) => (
-                <tr key={row.licencePlate}>
-                  <td className="px-3 py-2 font-mono text-xs">{row.licencePlate}</td>
-                  <td className="px-3 py-2">{row.name}</td>
-                  <td className="px-3 py-2">{row.coverageState}</td>
-                  <td className="px-3 py-2 text-right">{row.monthsMissing}</td>
-                  <td className="px-3 py-2">
-                    {row.projectOwnerName}
-                    <div className="text-xs text-gray-500">{row.projectOwnerEmail}</div>
-                  </td>
-                  <td className="px-3 py-2 text-gray-500">{row.lastReminderSentAt ?? '—'}</td>
-                  <td className="px-3 py-2">
-                    <button
-                      type="button"
-                      className="text-xs text-gray-400 cursor-not-allowed"
-                      disabled
-                      title="Reminder send is out of scope for the prototype"
-                    >
-                      Send reminder
-                    </button>
-                  </td>
-                </tr>
-              ),
-            )}
-          </tbody>
-        </table>
-      )}
+      <FinanceQueryState
+        isError={isError}
+        error={error}
+        onRetry={() => refetch()}
+        title="Could not load forecast coverage"
+        isReady={Boolean(data) && !isLoading}
+      >
+        {data && (
+          <table className="min-w-full text-sm border bg-white">
+            <thead className="bg-gray-50">
+              <tr>
+                <th scope="col" className="px-3 py-2 text-left">
+                  Project identifier
+                </th>
+                <th scope="col" className="px-3 py-2 text-left">
+                  Name
+                </th>
+                <th scope="col" className="px-3 py-2 text-left">
+                  Coverage
+                </th>
+                <th scope="col" className="px-3 py-2 text-right">
+                  Months missing
+                </th>
+                <th scope="col" className="px-3 py-2 text-left">
+                  Product Owner
+                </th>
+                <th scope="col" className="px-3 py-2 text-left">
+                  Last reminder sent
+                </th>
+                <th scope="col" className="px-3 py-2 text-left">
+                  Remind
+                </th>
+              </tr>
+            </thead>
+            <tbody>
+              {rows.map(
+                (row: {
+                  licencePlate: string;
+                  name: string;
+                  coverageState: string;
+                  monthsMissing: number;
+                  projectOwnerName: string;
+                  projectOwnerEmail: string;
+                  lastReminderSentAt: string | null;
+                }) => (
+                  <tr key={row.licencePlate}>
+                    <td className="px-3 py-2 font-mono text-xs">{row.licencePlate}</td>
+                    <td className="px-3 py-2">{row.name}</td>
+                    <td className="px-3 py-2">{row.coverageState}</td>
+                    <td className="px-3 py-2 text-right">{row.monthsMissing}</td>
+                    <td className="px-3 py-2">
+                      {row.projectOwnerName}
+                      <div className="text-xs text-gray-500">{row.projectOwnerEmail}</div>
+                    </td>
+                    <td className="px-3 py-2 text-gray-500">{row.lastReminderSentAt ?? '—'}</td>
+                    <td className="px-3 py-2">
+                      <button
+                        type="button"
+                        className="text-xs text-gray-400 cursor-not-allowed"
+                        disabled
+                        title="Reminder send is out of scope for the prototype"
+                      >
+                        Send reminder
+                      </button>
+                    </td>
+                  </tr>
+                ),
+              )}
+            </tbody>
+          </table>
+        )}
+      </FinanceQueryState>
     </div>
   );
 });

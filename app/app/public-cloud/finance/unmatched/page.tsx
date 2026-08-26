@@ -3,11 +3,10 @@
 import { Button, TextInput } from '@mantine/core';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { useState } from 'react';
-import LoadingBox from '@/components/generic/LoadingBox';
 import { failure, success } from '@/components/notification';
 import { formatCadAmount } from '@/components/public-cloud/finance/finance-measure-utils';
 import FinanceNav from '@/components/public-cloud/finance/FinanceNav';
-import FinanceQueryError from '@/components/public-cloud/finance/FinanceQueryError';
+import FinanceQueryState from '@/components/public-cloud/finance/FinanceQueryState';
 import { GlobalPermissions } from '@/constants';
 import createClientPage from '@/core/client-page';
 import { getFinanceUnmatched, resolveFinanceUnmatched } from '@/services/backend/public-cloud/finance';
@@ -46,85 +45,89 @@ export default publicCloudFinanceUnmatchedPage(({ session }) => {
       </p>
       <FinanceNav />
 
-      {isError ? (
-        <FinanceQueryError error={error} onRetry={() => refetch()} title="Could not load unmatched billing" />
-      ) : isLoading || !data ? (
-        <LoadingBox isLoading>
-          <div className="min-h-24" />
-        </LoadingBox>
-      ) : (
-        <>
-          <p className="text-sm text-gray-600 mb-3" role="note">
-            {data.note} Period: {data.year}-{String(data.month).padStart(2, '0')}
-          </p>
-          <table className="min-w-full text-sm border bg-white">
-            <thead className="bg-gray-50">
-              <tr>
-                <th scope="col" className="px-3 py-2 text-left">
-                  Provider
-                </th>
-                <th scope="col" className="px-3 py-2 text-left">
-                  Account / subscription
-                </th>
-                <th scope="col" className="px-3 py-2 text-left">
-                  Service line
-                </th>
-                <th scope="col" className="px-3 py-2 text-right">
-                  Amount
-                </th>
-                <th scope="col" className="px-3 py-2 text-left">
-                  Resolve to project identifier
-                </th>
-              </tr>
-            </thead>
-            <tbody>
-              {data.lines.map(
-                (line: {
-                  id: string;
-                  provider: string;
-                  accountIdentifier: string;
-                  serviceLine: string;
-                  amountCad: number;
-                  resolvedTo: string | null;
-                }) => (
-                  <tr key={line.id}>
-                    <td className="px-3 py-2">{line.provider}</td>
-                    <td className="px-3 py-2 font-mono text-xs">{line.accountIdentifier}</td>
-                    <td className="px-3 py-2">{line.serviceLine}</td>
-                    <td className="px-3 py-2 text-right">{formatCadAmount(line.amountCad)}</td>
-                    <td className="px-3 py-2">
-                      {line.resolvedTo ? (
-                        <span className="text-xs text-gray-600">Resolved to {line.resolvedTo}</span>
-                      ) : (
-                        <div className="flex gap-2 items-end">
-                          <TextInput
-                            aria-label={`Resolve ${line.accountIdentifier}`}
-                            placeholder="project identifier"
-                            value={resolvePlate[line.id] ?? ''}
-                            onChange={(e) => setResolvePlate((prev) => ({ ...prev, [line.id]: e.currentTarget.value }))}
-                          />
-                          <Button
-                            size="xs"
-                            loading={resolveMutation.isPending}
-                            onClick={() =>
-                              resolveMutation.mutate({
-                                id: line.id,
-                                licencePlate: resolvePlate[line.id]?.trim() || '',
-                              })
-                            }
-                          >
-                            Resolve
-                          </Button>
-                        </div>
-                      )}
-                    </td>
-                  </tr>
-                ),
-              )}
-            </tbody>
-          </table>
-        </>
-      )}
+      <FinanceQueryState
+        isError={isError}
+        error={error}
+        onRetry={() => refetch()}
+        title="Could not load unmatched billing"
+        isReady={Boolean(data) && !isLoading}
+      >
+        {data && (
+          <>
+            <p className="text-sm text-gray-600 mb-3" role="note">
+              {data.note} Period: {data.year}-{String(data.month).padStart(2, '0')}
+            </p>
+            <table className="min-w-full text-sm border bg-white">
+              <thead className="bg-gray-50">
+                <tr>
+                  <th scope="col" className="px-3 py-2 text-left">
+                    Provider
+                  </th>
+                  <th scope="col" className="px-3 py-2 text-left">
+                    Account / subscription
+                  </th>
+                  <th scope="col" className="px-3 py-2 text-left">
+                    Service line
+                  </th>
+                  <th scope="col" className="px-3 py-2 text-right">
+                    Amount
+                  </th>
+                  <th scope="col" className="px-3 py-2 text-left">
+                    Resolve to project identifier
+                  </th>
+                </tr>
+              </thead>
+              <tbody>
+                {data.lines.map(
+                  (line: {
+                    id: string;
+                    provider: string;
+                    accountIdentifier: string;
+                    serviceLine: string;
+                    amountCad: number;
+                    resolvedTo: string | null;
+                  }) => (
+                    <tr key={line.id}>
+                      <td className="px-3 py-2">{line.provider}</td>
+                      <td className="px-3 py-2 font-mono text-xs">{line.accountIdentifier}</td>
+                      <td className="px-3 py-2">{line.serviceLine}</td>
+                      <td className="px-3 py-2 text-right">{formatCadAmount(line.amountCad)}</td>
+                      <td className="px-3 py-2">
+                        {line.resolvedTo ? (
+                          <span className="text-xs text-gray-600">Resolved to {line.resolvedTo}</span>
+                        ) : (
+                          <div className="flex gap-2 items-end">
+                            <TextInput
+                              aria-label={`Resolve ${line.accountIdentifier}`}
+                              placeholder="project identifier"
+                              value={resolvePlate[line.id] ?? ''}
+                              onChange={(e) =>
+                                setResolvePlate((prev) => ({ ...prev, [line.id]: e.currentTarget.value }))
+                              }
+                            />
+                            <Button
+                              size="xs"
+                              loading={resolveMutation.isPending}
+                              onClick={() =>
+                                resolveMutation.mutate({
+                                  id: line.id,
+                                  licencePlate: resolvePlate[line.id]?.trim() || '',
+                                })
+                              }
+                            >
+                              Resolve
+                            </Button>
+                          </div>
+                        )}
+                      </td>
+                    </tr>
+                  ),
+                )}
+              </tbody>
+            </table>
+          </>
+        )}
+      </FinanceQueryState>
     </div>
   );
 });
