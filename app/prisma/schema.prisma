@@ -842,10 +842,16 @@ model IngestionRun {
   rowsUnmatched Int                    @default(0)
   triggeredBy   String
   errorMessage  String?
-  /// Set only while RUNNING so two ingests cannot share a provider/month.
-  ingestLockKey String?                @unique
   /// True when the run was limited to licence plates / account IDs.
   isScoped      Boolean                @default(false)
+}
+
+/// One row per provider/month while an ingest is RUNNING. Required unique key
+/// so Mongo can enforce the lock (optional uniques are not sparse).
+model IngestionLock {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  key       String   @unique
+  createdAt DateTime @default(now())
 }
 
 /// Month-end FX rate used when converting provider invoices (typically USD→CAD).

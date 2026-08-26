@@ -1,6 +1,7 @@
 import { Provider } from '@/prisma/client';
 import {
   assertClassicAwsRealIngestAllowed,
+  assertScopedAccountsResolved,
   filterMissingIngestPeriods,
   isScopedAzureFetch,
   periodsToIngest,
@@ -51,6 +52,20 @@ describe('missing ingest periods', () => {
     expect(() => assertClassicAwsRealIngestAllowed(Provider.AWS_LZA, { billingSource: 'real' })).not.toThrow();
     expect(() => assertClassicAwsRealIngestAllowed(Provider.AWS, { simulated: true })).not.toThrow();
     expect(() => assertClassicAwsRealIngestAllowed(Provider.AWS, { billingSource: 'simulated' })).not.toThrow();
+  });
+
+  it('rejects scoped ingest when no account IDs resolved', () => {
+    expect(() =>
+      assertScopedAccountsResolved(Provider.AWS_LZA, { licencePlates: ['abc123'] }, { accountIdentifiers: [] }),
+    ).toThrow(/no billing account IDs/);
+    expect(() =>
+      assertScopedAccountsResolved(
+        Provider.AWS_LZA,
+        { licencePlates: ['abc123'] },
+        { accountIdentifiers: ['111122223333'] },
+      ),
+    ).not.toThrow();
+    expect(() => assertScopedAccountsResolved(Provider.AWS_LZA, undefined, undefined)).not.toThrow();
   });
 
   it('does not treat FINANCE_LIVE_TEST_ACCOUNT_IDS as a scoped fetch', () => {

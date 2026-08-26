@@ -8,6 +8,7 @@ import {
   hasForecastValuesForRequiredHorizon,
   indexRollupPlatesByMonth,
   isLowForecastCoverage,
+  likeForLikeMonths,
   monthsWithCompleteRollups,
   sumForecastForMonths,
   sumKnownActualsOrNull,
@@ -194,6 +195,28 @@ describe('complete rollup months and like-for-like totals', () => {
       ]),
     );
     expect(complete).toEqual([{ year: 2026, month: 4 }]);
+  });
+
+  it('returns complete months for an estate the same way snapshot and rankings do', () => {
+    const started = new Date('2026-04-01T00:00:00Z');
+    const { expectedMonths, completeMonths } = likeForLikeMonths(
+      [
+        { year: 2026, month: 4 },
+        { year: 2026, month: 5 },
+      ],
+      [{ licencePlate: 'a' }, { licencePlate: 'b' }],
+      new Map([
+        ['a', started],
+        ['b', started],
+      ]),
+      [
+        { licencePlate: 'a', year: 2026, month: 4 },
+        { licencePlate: 'b', year: 2026, month: 4 },
+        { licencePlate: 'a', year: 2026, month: 5 },
+      ],
+    );
+    expect(expectedMonths).toHaveLength(2);
+    expect(completeMonths).toEqual([{ year: 2026, month: 4 }]);
   });
 
   it('does not treat missing elapsed actuals as zero against a full-year forecast', () => {

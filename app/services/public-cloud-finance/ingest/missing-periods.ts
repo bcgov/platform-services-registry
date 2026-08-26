@@ -62,6 +62,17 @@ export function isScopedAzureFetch(scope?: BillingFetchScope) {
   return Boolean(scope?.licencePlates?.length || scope?.accountIdentifiers?.length);
 }
 
+export function assertScopedAccountsResolved(
+  provider: Provider,
+  requested?: BillingFetchScope,
+  resolved?: BillingFetchScope,
+) {
+  const scoped = Boolean(requested?.licencePlates?.length || requested?.accountIdentifiers !== undefined);
+  if (!scoped) return;
+  if (resolved?.accountIdentifiers?.length) return;
+  throw new Error(`Scoped ${provider} ingest resolved no billing account IDs for the given licence plates.`);
+}
+
 /**
  * Real billing is AWS_LZA + Azure only. Classic AWS shares the LZA Cost Explorer
  * estate and must not be ingested as a second provider. Simulated demo data may

@@ -47,4 +47,15 @@ describe('partitionMatchedUnmatched', () => {
     );
     expect(unmatched).toHaveLength(1);
   });
+
+  it('queues same-provider collisions instead of dropping them', () => {
+    const { matched, unmatched } = partitionMatchedUnmatched(
+      [line({ provider: Provider.AZURE, accountIdentifier: 'aaaa-bbbb' })],
+      new Map(),
+      new Set(['aaaa-bbbb']),
+      ['AZURE:aaaa-bbbb'],
+    );
+    expect(matched).toHaveLength(0);
+    expect(unmatched).toHaveLength(1);
+  });
 });

@@ -248,6 +248,29 @@ export function monthsWithCompleteRollups(
   });
 }
 
+export function likeForLikeMonths(
+  months: Array<{ year: number; month: number }>,
+  products: Array<{ licencePlate: string }>,
+  billingStartedByPlate: Map<string, Date>,
+  rollups: Array<{ licencePlate: string; year: number; month: number }>,
+) {
+  const expectedPlatesByMonth = new Map<string, string[]>();
+  const expectedMonths = months.filter((month) => {
+    const plates = products
+      .filter((product) => {
+        const startedAt = billingStartedByPlate.get(product.licencePlate);
+        return startedAt ? productExistedDuringMonth(startedAt, month.year, month.month) : false;
+      })
+      .map((product) => product.licencePlate);
+    expectedPlatesByMonth.set(monthKey(month.year, month.month), plates);
+    return plates.length > 0;
+  });
+  return {
+    expectedMonths,
+    completeMonths: monthsWithCompleteRollups(expectedMonths, expectedPlatesByMonth, indexRollupPlatesByMonth(rollups)),
+  };
+}
+
 export function indexRollupPlatesByMonth(rollups: Array<{ licencePlate: string; year: number; month: number }>) {
   const byMonth = new Map<string, Set<string>>();
   for (const row of rollups) {

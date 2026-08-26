@@ -93,4 +93,20 @@ describe('POST /api/public-cloud/finance/unmatched/:id/resolve', () => {
     });
     expect(spend?.amountCad).toBe(42);
   });
+
+  it('finishes attach when the line is already claimed for the same product', async () => {
+    await mockSessionByRole(GlobalRole.Admin);
+    const { product, line } = await createResolveFixture();
+    await prisma.unmatchedBillingLine.update({
+      where: { id: line.id },
+      data: { resolvedTo: product.licencePlate, resolvedAt: new Date() },
+    });
+    const res = await postFinanceResolveUnmatched(line.id, product.licencePlate);
+    expect(res.status).toBe(200);
+    const spend = await prisma.actualSpend.findMany({
+      where: { licencePlate: product.licencePlate, ingestionRunId: line.ingestionRunId },
+    });
+    expect(spend).toHaveLength(1);
+    expect(spend[0]?.amountCad).toBe(42);
+  });
 });

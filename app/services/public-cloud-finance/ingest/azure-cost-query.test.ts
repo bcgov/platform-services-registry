@@ -165,6 +165,7 @@ describe('azure cost query helpers', () => {
 describe('aws cost explorer helpers', () => {
   it('chunks linked-account filters and keeps a single unfiltered query', () => {
     expect(chunkLinkedAccountIds(undefined)).toEqual([undefined]);
+    expect(chunkLinkedAccountIds([])).toEqual([]);
     expect(chunkLinkedAccountIds(['1'.repeat(12)])).toHaveLength(1);
     expect(chunkLinkedAccountIds(Array.from({ length: 101 }, (_, i) => String(i).padStart(12, '0')))).toHaveLength(2);
   });

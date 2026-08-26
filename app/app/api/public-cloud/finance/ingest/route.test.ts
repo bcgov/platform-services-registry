@@ -46,6 +46,21 @@ describe('POST /api/public-cloud/finance/ingest', () => {
     }
   });
 
+  it('returns 400 when scoped ingest has no account IDs', async () => {
+    await mockSessionByRole(GlobalRole.Admin);
+    mockIngest.mockRejectedValue(
+      new Error('Scoped AWS_LZA ingest resolved no billing account IDs for the given licence plates.'),
+    );
+    const res = await postFinanceIngest({
+      provider: 'AWS_LZA',
+      year: 2026,
+      month: 7,
+      useSimulated: false,
+      licencePlates: ['abc123'],
+    });
+    expect(res.status).toBe(400);
+  });
+
   it('returns 400 when ingest is already running', async () => {
     await mockSessionByRole(GlobalRole.Admin);
     mockIngest.mockRejectedValue(new Error('Ingest already running for AWS_LZA 2026-7'));

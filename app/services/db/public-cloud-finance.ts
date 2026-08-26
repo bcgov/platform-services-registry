@@ -7,10 +7,9 @@ import {
   hasForecastValuesForRequiredHorizon,
   isCurrentCalendarMonth,
   isLowForecastCoverage,
-  indexRollupPlatesByMonth,
   lastCompleteMonth,
+  likeForLikeMonths,
   monthKey,
-  monthsWithCompleteRollups,
   sumForecastForFiscalYear,
   sumForecastForMonths,
   summarizeYtdActuals,
@@ -27,6 +26,7 @@ import {
 } from '@/services/public-cloud-finance/active-spend';
 import { normalizeBillingAccountLinks } from '@/services/public-cloud-finance/billing-account-links';
 import { FINANCE_ANOMALY_THRESHOLDS, SPEND_FLAG_RULE_LABELS } from '@/services/public-cloud-finance/constants';
+import { evaluateSpendFlagsForPeriod } from '@/services/public-cloud-finance/ingest/evaluate-flags';
 import { loadProductBillingStartByPlate } from '@/services/public-cloud-finance/product-billing-start';
 
 export type ProviderFilter = 'ALL' | Provider;
@@ -190,49 +190,34 @@ export async function getFinanceSnapshot(provider: ProviderFilter = 'ALL') {
     actualByPlateMonth.set(key, (actualByPlateMonth.get(key) ?? 0) + row.amountCad);
   }
   const billingStartedByPlate = await loadProductBillingStartByPlate(plates);
-  const expectedYtdMonths = ytdMonths.filter((month) =>
-    products.some((product) => {
-      const startedAt = billingStartedByPlate.get(product.licencePlate);
-      return startedAt ? productExistedDuringMonth(startedAt, month.year, month.month) : false;
-    }),
-  );
-  const expectedPlatesByMonth = new Map<string, string[]>();
-  for (const month of expectedYtdMonths) {
-    expectedPlatesByMonth.set(
-      monthKey(month.year, month.month),
-      products
-        .filter((product) => {
-          const startedAt = billingStartedByPlate.get(product.licencePlate);
-          return startedAt ? productExistedDuringMonth(startedAt, month.year, month.month) : false;
-        })
-        .map((product) => product.licencePlate),
-    );
-  }
-  const completeYtdMonths = monthsWithCompleteRollups(
-    expectedYtdMonths,
-    expectedPlatesByMonth,
-    indexRollupPlatesByMonth(rollups),
+  const { expectedMonths: expectedYtdMonths, completeMonths: completeYtdMonths } = likeForLikeMonths(
+    ytdMonths,
+    products,
+    billingStartedByPlate,
+    rollups,
   );
   const completeMonthKeys = new Set(completeYtdMonths.map((month) => monthKey(month.year, month.month)));
   const { fytdActual } = summarizeYtdActuals(completeYtdMonths, rollups);
   const presentMonths = completeYtdMonths.length;
   const expectedMonths = expectedYtdMonths.length;
 
-  // Service-line totals from active lines for current FY YTD
-  const serviceLines = await prisma.actualSpend.groupBy({
-    by: ['serviceLine'],
-    where: {
-      AND: [
-        activeActualSpendWhere,
-        { licencePlate: { in: plates } },
-        { OR: ytdMonths.map((m) => ({ year: m.year, month: m.month })) },
-        provider === 'ALL' ? {} : { provider },
-      ],
-    },
-    _sum: { amountCad: true },
-    orderBy: { _sum: { amountCad: 'desc' } },
-    take: 5,
-  });
+  const serviceLines =
+    completeYtdMonths.length === 0
+      ? []
+      : await prisma.actualSpend.groupBy({
+          by: ['serviceLine'],
+          where: {
+            AND: [
+              activeActualSpendWhere,
+              { licencePlate: { in: plates } },
+              { OR: completeYtdMonths.map((m) => ({ year: m.year, month: m.month })) },
+              provider === 'ALL' ? {} : { provider },
+            ],
+          },
+          _sum: { amountCad: true },
+          orderBy: { _sum: { amountCad: 'desc' } },
+          take: 5,
+        });
 
   const { fullYearForecast, fytdForecast, productsWithForecast, excludedFromForecastTotals } =
     accumulateProductForecastTotals(products, forecastByPlate, fy.startYear, completeYtdMonths, actualByPlateMonth);
@@ -363,27 +348,36 @@ export async function getFinanceRankings(options: {
   });
   const plates = products.map((p) => p.licencePlate);
 
-  const rollups = await prisma.monthlyProductSpendRollup.findMany({
-    where: {
-      licencePlate: { in: plates },
-      OR: months.map((m) => ({ year: m.year, month: m.month })),
-      ...(provider === 'ALL' ? {} : { provider }),
-    },
-  });
-
-  const priorYearMonths = months.map((m) => ({ year: m.year - 1, month: m.month }));
-  const priorRollups = await prisma.monthlyProductSpendRollup.findMany({
-    where: {
-      licencePlate: { in: plates },
-      OR: priorYearMonths.map((m) => ({ year: m.year, month: m.month })),
-      ...(provider === 'ALL' ? {} : { provider }),
-    },
-  });
+  const rollups =
+    months.length === 0
+      ? []
+      : await prisma.monthlyProductSpendRollup.findMany({
+          where: {
+            licencePlate: { in: plates },
+            OR: months.map((m) => ({ year: m.year, month: m.month })),
+            ...(provider === 'ALL' ? {} : { provider }),
+          },
+        });
 
   const billingStartedByPlate = await loadProductBillingStartByPlate(plates);
+  const { completeMonths } = likeForLikeMonths(months, products, billingStartedByPlate, rollups);
+  const completeMonthKeys = new Set(completeMonths.map((month) => monthKey(month.year, month.month)));
+  const priorYearMonths = completeMonths.map((m) => ({ year: m.year - 1, month: m.month }));
+  const priorRollups =
+    priorYearMonths.length === 0
+      ? []
+      : await prisma.monthlyProductSpendRollup.findMany({
+          where: {
+            licencePlate: { in: plates },
+            OR: priorYearMonths.map((m) => ({ year: m.year, month: m.month })),
+            ...(provider === 'ALL' ? {} : { provider }),
+          },
+        });
+
   const amountByPlate = new Map<string, number>();
   const priorByPlate = new Map<string, number>();
   for (const row of rollups) {
+    if (!completeMonthKeys.has(monthKey(row.year, row.month))) continue;
     const startedAt = billingStartedByPlate.get(row.licencePlate);
     if (startedAt && !productExistedDuringMonth(startedAt, row.year, row.month)) continue;
     amountByPlate.set(row.licencePlate, (amountByPlate.get(row.licencePlate) ?? 0) + row.amountCad);
@@ -413,32 +407,38 @@ export async function getFinanceRankings(options: {
     .slice(0, limit)
     .map((row, index) => ({ rank: index + 1, ...row }));
 
-  const serviceGroups = await prisma.actualSpend.groupBy({
-    by: ['serviceLine'],
-    where: {
-      AND: [
-        activeActualSpendWhere,
-        { licencePlate: { in: plates } },
-        { OR: months.map((m) => ({ year: m.year, month: m.month })) },
-        provider === 'ALL' ? {} : { provider },
-      ],
-    },
-    _sum: { amountCad: true },
-    orderBy: { _sum: { amountCad: 'desc' } },
-  });
+  const serviceGroups =
+    completeMonths.length === 0
+      ? []
+      : await prisma.actualSpend.groupBy({
+          by: ['serviceLine'],
+          where: {
+            AND: [
+              activeActualSpendWhere,
+              { licencePlate: { in: plates } },
+              { OR: completeMonths.map((m) => ({ year: m.year, month: m.month })) },
+              provider === 'ALL' ? {} : { provider },
+            ],
+          },
+          _sum: { amountCad: true },
+          orderBy: { _sum: { amountCad: 'desc' } },
+        });
 
-  const priorServiceGroups = await prisma.actualSpend.groupBy({
-    by: ['serviceLine'],
-    where: {
-      AND: [
-        activeActualSpendWhere,
-        { licencePlate: { in: plates } },
-        { OR: priorYearMonths.map((m) => ({ year: m.year, month: m.month })) },
-        provider === 'ALL' ? {} : { provider },
-      ],
-    },
-    _sum: { amountCad: true },
-  });
+  const priorServiceGroups =
+    priorYearMonths.length === 0
+      ? []
+      : await prisma.actualSpend.groupBy({
+          by: ['serviceLine'],
+          where: {
+            AND: [
+              activeActualSpendWhere,
+              { licencePlate: { in: plates } },
+              { OR: priorYearMonths.map((m) => ({ year: m.year, month: m.month })) },
+              provider === 'ALL' ? {} : { provider },
+            ],
+          },
+          _sum: { amountCad: true },
+        });
   const priorService = new Map(priorServiceGroups.map((s) => [s.serviceLine, s._sum.amountCad ?? 0]));
   const serviceTotal = serviceGroups.reduce((sum, s) => sum + (s._sum.amountCad ?? 0), 0);
 
@@ -592,10 +592,89 @@ export async function getUnmatchedBilling(options?: { provider?: ProviderFilter;
   };
 }
 
+async function claimUnmatchedLine(id: string, licencePlate: string, alreadyResolvedTo?: string | null) {
+  if (alreadyResolvedTo && alreadyResolvedTo !== licencePlate) {
+    throw new Error('Unmatched line already resolved');
+  }
+  if (alreadyResolvedTo === licencePlate) return;
+
+  const claimed = await prisma.unmatchedBillingLine.updateMany({
+    where: { id, AND: [unresolvedUnmatchedWhere] },
+    data: { resolvedTo: licencePlate, resolvedAt: new Date() },
+  });
+  if (claimed.count > 0) return;
+
+  const current = await prisma.unmatchedBillingLine.findUnique({ where: { id } });
+  if (!current) throw new Error('Unmatched line not found');
+  if (current.resolvedTo && current.resolvedTo !== licencePlate) {
+    throw new Error('Unmatched line already resolved');
+  }
+}
+
+async function attachResolvedSpend(options: {
+  licencePlate: string;
+  provider: Provider;
+  serviceLine: string;
+  year: number;
+  month: number;
+  amountCad: number;
+  sourceCurrency: string;
+  fxRate?: number | null;
+  fxRateDate?: Date | null;
+  ingestionRunId: string;
+}) {
+  const attachedWhere = {
+    AND: [
+      activeActualSpendWhere,
+      {
+        licencePlate: options.licencePlate,
+        provider: options.provider,
+        serviceLine: options.serviceLine,
+        year: options.year,
+        month: options.month,
+        ingestionRunId: options.ingestionRunId,
+      },
+    ],
+  };
+
+  let attached = await prisma.actualSpend.findMany({
+    where: attachedWhere,
+    select: { id: true },
+    orderBy: { id: 'asc' },
+  });
+  if (attached.length === 0) {
+    await prisma.actualSpend.create({
+      data: {
+        licencePlate: options.licencePlate,
+        provider: options.provider,
+        serviceLine: options.serviceLine,
+        year: options.year,
+        month: options.month,
+        amountCad: options.amountCad,
+        sourceCurrency: options.sourceCurrency,
+        fxRate: options.fxRate ?? undefined,
+        fxRateDate: options.fxRateDate ?? undefined,
+        ingestionRunId: options.ingestionRunId,
+        supersededBy: null,
+      },
+    });
+    attached = await prisma.actualSpend.findMany({
+      where: attachedWhere,
+      select: { id: true },
+      orderBy: { id: 'asc' },
+    });
+  }
+  if (attached.length > 1) {
+    await prisma.actualSpend.updateMany({
+      where: { id: { in: attached.slice(1).map((row) => row.id) } },
+      data: { supersededBy: attached[0]?.id },
+    });
+  }
+}
+
 export async function resolveUnmatchedBillingLine(id: string, licencePlate: string) {
   const line = await prisma.unmatchedBillingLine.findUnique({ where: { id } });
   if (!line) throw new Error('Unmatched line not found');
-  if (line.resolvedTo) throw new Error('Unmatched line already resolved');
 
   const product = await prisma.publicCloudProduct.findUnique({
     where: { licencePlate },
@@ -606,53 +685,37 @@ export async function resolveUnmatchedBillingLine(id: string, licencePlate: stri
     throw new Error('Project provider does not match the unmatched line');
   }
 
+  await claimUnmatchedLine(line.id, licencePlate, line.resolvedTo);
+
   const links = normalizeBillingAccountLinks(product.billingAccountLinks);
   const alreadyLinked = links.some(
     (link) =>
       link.provider === line.provider && link.accountIdentifier.toLowerCase() === line.accountIdentifier.toLowerCase(),
   );
-  const nextLinks = alreadyLinked
-    ? links
-    : [...links, { provider: line.provider, accountIdentifier: line.accountIdentifier }];
-
-  await prisma.publicCloudProduct.update({
-    where: { licencePlate },
-    data: { billingAccountLinks: nextLinks as Prisma.InputJsonValue },
-  });
-
-  const alreadyAttached = await prisma.actualSpend.findFirst({
-    where: {
-      AND: [
-        activeActualSpendWhere,
-        {
-          licencePlate,
-          provider: line.provider,
-          serviceLine: line.serviceLine,
-          year: line.year,
-          month: line.month,
-          ingestionRunId: line.ingestionRunId,
-        },
-      ],
-    },
-    select: { id: true },
-  });
-  if (!alreadyAttached) {
-    await prisma.actualSpend.create({
+  if (!alreadyLinked) {
+    await prisma.publicCloudProduct.update({
+      where: { licencePlate },
       data: {
-        licencePlate,
-        provider: line.provider,
-        serviceLine: line.serviceLine,
-        year: line.year,
-        month: line.month,
-        amountCad: line.amountCad,
-        sourceCurrency: line.sourceCurrency,
-        fxRate: line.fxRate,
-        fxRateDate: line.fxRateDate,
-        ingestionRunId: line.ingestionRunId,
-        supersededBy: null,
+        billingAccountLinks: [
+          ...links,
+          { provider: line.provider, accountIdentifier: line.accountIdentifier },
+        ] as Prisma.InputJsonValue,
       },
     });
   }
+
+  await attachResolvedSpend({
+    licencePlate,
+    provider: line.provider,
+    serviceLine: line.serviceLine,
+    year: line.year,
+    month: line.month,
+    amountCad: line.amountCad,
+    sourceCurrency: line.sourceCurrency,
+    fxRate: line.fxRate,
+    fxRateDate: line.fxRateDate,
+    ingestionRunId: line.ingestionRunId,
+  });
 
   const group = await prisma.actualSpend.aggregate({
     where: {
@@ -678,11 +741,9 @@ export async function resolveUnmatchedBillingLine(id: string, licencePlate: stri
     },
     update: { amountCad: group._sum.amountCad ?? 0 },
   });
+  await evaluateSpendFlagsForPeriod({ year: line.year, month: line.month });
 
-  return prisma.unmatchedBillingLine.update({
-    where: { id: line.id },
-    data: { resolvedTo: licencePlate, resolvedAt: new Date() },
-  });
+  return prisma.unmatchedBillingLine.findUniqueOrThrow({ where: { id: line.id } });
 }
 
 export async function getProductActuals(licencePlate: string) {

@@ -18,7 +18,7 @@ Ingestion joins provider billing lines to registry products via account or subsc
 
 Ingestion falls back to LZA `awsAccounts` or Azure `azureSubscriptions` when `billingAccountLinks` is empty.
 
-Billing lines that cannot be matched go to `UnmatchedBillingLine` and are excluded from per-product figures. Never silently dropped.
+Billing lines that cannot be matched go to `UnmatchedBillingLine` and are excluded from per-product figures. Same-provider account collisions stay unmatched. Accounts known only on another provider are skipped so an AWS ingest does not queue LZA IDs; those dollars attach on the LZA ingest.
 
 ## Deleted / archived products
 
@@ -43,7 +43,9 @@ A month with no rollup is missing only if the account or subscription already ex
 | Create request `provisionedDate` | First month the account/sub could have spend (preferred) |
 | Product `createdAt`              | Fallback when provision date is absent                   |
 
-Months before that start are out of scope (`—`, not incomplete). After a successful provider-month ingest, products that existed in that month get a rollup, including **$0** when they had no billing lines. Estate FYTD coverage only expects elapsed months where at least one in-scope product existed. Scheduled backfill stays at `IngestionRun` grain and still re-runs failed estate months.
+Months before that start are out of scope (`—`, not incomplete). After a successful provider-month ingest, products that existed in that month get a rollup, including **$0** when they had no billing lines. Estate FYTD coverage only expects elapsed months where at least one in-scope product existed. Snapshot service-line chips and rankings use the same complete-month set. Scheduled backfill stays at `IngestionRun` grain and still re-runs failed estate months.
+
+Concurrent ingest of the same provider/month is blocked by `IngestionLock` (required unique `key`). Push that model before running ingest; drop any leftover `IngestionRun.ingestLockKey` unique index from the earlier optional-field lock.
 
 ## FX (USD → CAD)
 

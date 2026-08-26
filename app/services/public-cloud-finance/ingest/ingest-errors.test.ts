@@ -6,6 +6,11 @@ describe('ingest error classification', () => {
       isClientIngestError(new Error('Classic AWS ingest is not supported for real billing data. Use AWS_LZA.')),
     ).toBe(true);
     expect(isClientIngestError(new Error('Ingest already running for AWS_LZA 2026-7'))).toBe(true);
+    expect(
+      isClientIngestError(
+        new Error('Scoped AWS_LZA ingest resolved no billing account IDs for the given licence plates.'),
+      ),
+    ).toBe(true);
   });
 
   it('treats credential and network failures as server errors', () => {

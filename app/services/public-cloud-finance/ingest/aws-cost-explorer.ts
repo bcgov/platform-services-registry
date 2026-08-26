@@ -38,7 +38,8 @@ export async function createAwsCostExplorerClient(options: {
 }
 
 export function chunkLinkedAccountIds(accountIds?: string[]) {
-  if (!accountIds?.length) return [undefined];
+  if (accountIds === undefined) return [undefined];
+  if (accountIds.length === 0) return [];
   const chunks: Array<string[] | undefined> = [];
   for (let i = 0; i < accountIds.length; i += AWS_LINKED_ACCOUNT_CHUNK) {
     chunks.push(accountIds.slice(i, i + AWS_LINKED_ACCOUNT_CHUNK));

@@ -61,6 +61,7 @@ async function filterRows(
   period: BillingPeriod,
   scope?: BillingFetchScope,
 ): Promise<NormalizedBillingLine[]> {
+  if (scope?.accountIdentifiers && scope.accountIdentifiers.length === 0) return [];
   const accountFilter = scope?.accountIdentifiers?.length
     ? new Set(scope.accountIdentifiers.map((id) => id.toLowerCase()))
     : null;
