@@ -70,6 +70,7 @@ export function createSamplePublicCloudProduct(args?: {
     archivedAt: new Date(),
     requests: [],
     repositories: [],
+    hasRepositories: null,
     activeRequest: null,
     organizationId: organization.id,
     organization: organization,

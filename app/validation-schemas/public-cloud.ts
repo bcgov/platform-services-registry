@@ -15,7 +15,13 @@ import {
 import { ProductBiliingStatus } from '@/types';
 import { processEnumString } from '@/utils/js';
 import { forecastMonthlyValueSchema } from './cloud-cost';
-import { RequestDecision, optionalCommentSchema, repositoriesSchema } from './shared';
+import {
+  RequestDecision,
+  hasRepositoriesSchema,
+  optionalCommentSchema,
+  repositoriesSchema,
+  validateRepositorySelection,
+} from './shared';
 
 export const getBudgetSchema = (provider: Provider) => {
   if (provider === Provider.AZURE) {
@@ -79,6 +85,7 @@ const publicCloudBaseRequestBodySchema = z.object({
     .refine((value) => !/[^A-Za-z0-9///.:+=@_ ]/g.test(value), 'Only /. : + = @ _ special symbols are allowed'),
   description: z.string().min(1, { message: 'Description is required.' }),
   repositories: repositoriesSchema,
+  hasRepositories: hasRepositoriesSchema,
   provider: z.enum(Provider),
   providerSelectionReasons: z.array(z.string()).min(1, { message: 'Reason for choosing provider is required' }),
   providerSelectionReasonsNote: z
@@ -174,7 +181,8 @@ const applyCommonPublicCloudValidations = <T extends z.ZodTypeAny>(schema: T) =>
         path: ['environmentsEnabled'],
       },
     )
-    .superRefine((data, ctx) => validateNetworking(data as PublicCloudBaseRequestBody, ctx));
+    .superRefine((data, ctx) => validateNetworking(data as PublicCloudBaseRequestBody, ctx))
+    .superRefine((data, ctx) => validateRepositorySelection(data as PublicCloudBaseRequestBody, ctx));
 
 const publicCloudEditBaseRequestBodySchema = publicCloudBaseRequestBodySchema.extend({
   members: publicCloudProductMembers,

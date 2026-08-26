@@ -93,9 +93,45 @@ export default function ProductDetails({ product }: Props) {
                   lineHeight: '24px',
                 }}
               >
-                No repository URLs are currently associated with this product. Please update the product in the Product
-                Registry and add all applicable source-code, infrastructure, and GitOps repository URLs as soon as
-                possible.
+                No repository URLs are currently associated with this product.
+              </Text>
+
+              <Text
+                style={{
+                  margin: '8px 0 0',
+                  color: '#78350f',
+                  fontSize: '14px',
+                  lineHeight: '24px',
+                }}
+              >
+                Please update your product in the Platform Product Registry by doing one of the following:
+              </Text>
+
+              <ul
+                style={{
+                  margin: '8px 0 0',
+                  paddingLeft: '24px',
+                  color: '#78350f',
+                  fontSize: '14px',
+                  lineHeight: '24px',
+                }}
+              >
+                <li style={{ marginBottom: '4px' }}>Add the URL for any repository associated with your product</li>
+                <li>
+                  Select <strong>No</strong> for “Does this product have repositories?” if your product has no
+                  associated repositories
+                </li>
+              </ul>
+
+              <Text
+                style={{
+                  margin: '8px 0 0',
+                  color: '#78350f',
+                  fontSize: '14px',
+                  lineHeight: '24px',
+                }}
+              >
+                You will continue to receive reminders until you complete one of these options.
               </Text>
             </Section>
           )}

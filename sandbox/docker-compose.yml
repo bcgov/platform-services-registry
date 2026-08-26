@@ -58,7 +58,7 @@ services:
   postgres:
     platform: linux/amd64
     container_name: postgres
-    image: postgres:18.4
+    image: postgres:18.6
     healthcheck:
       test: [CMD, pg_isready, -q, -d, keycloak, -U, postgres]
       timeout: 45s
@@ -117,7 +117,7 @@ services:
   nats:
     platform: linux/amd64
     container_name: nats
-    image: nats:2.14.4
+    image: nats:2.14.5
     ports:
     - 4222:4222
 
@@ -152,7 +152,7 @@ services:
 
   mailpit:
     # See https://hub.docker.com/r/axllent/mailpit/tags
-    image: axllent/mailpit:v1.30.7
+    image: axllent/mailpit:v1.31.0
     container_name: mailpit
     restart: unless-stopped
     volumes:

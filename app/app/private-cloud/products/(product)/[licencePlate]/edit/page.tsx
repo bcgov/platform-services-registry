@@ -17,8 +17,9 @@ import TeamContacts from '@/components/private-cloud/sections/TeamContacts';
 import SiloAccordion from '@/components/private-cloud/SiloAccordion';
 import { GlobalRole } from '@/constants';
 import createClientPage from '@/core/client-page';
+import { areOnlyRepositoryFieldsDirty, getRepositoryFormValues } from '@/helpers/repository';
 import { ResourceRequestsEnv } from '@/prisma/client';
-import { getQuotaChangeStatus } from '@/services/backend/private-cloud/products';
+import { getQuotaChangeStatus, updatePrivateCloudProductRepositories } from '@/services/backend/private-cloud/products';
 import { usePrivateProductState } from '@/states/global';
 import { privateCloudEditRequestBodySchema } from '@/validation-schemas/private-cloud';
 
@@ -31,7 +32,8 @@ const privateCloudProductEdit = createClientPage({
   validations: { pathParams: pathParamSchema },
 });
 export default privateCloudProductEdit(({ session }) => {
-  const [, snap] = usePrivateProductState();
+  const [state, snap] = usePrivateProductState();
+  const currentProduct = snap.currentProduct;
   const [isDisabled, setDisabled] = useState(false);
 
   type PrivateCloudEditRequestInput = z.input<typeof privateCloudEditRequestBodySchema>;
@@ -87,23 +89,24 @@ export default privateCloudProductEdit(({ session }) => {
       )(values, context, options);
     },
     defaultValues: {
+      hasRepositories: null,
       repositories: [],
       isAgMinistry: false,
       isAgMinistryChecked: true,
     },
   });
 
-  const { formState } = methods;
+  const { formState, reset } = methods;
 
   useEffect(() => {
-    if (!snap.currentProduct) return;
+    if (!currentProduct) return;
 
-    setDisabled(!snap.currentProduct?._permissions.edit);
+    setDisabled(!currentProduct._permissions.edit);
 
-    methods.reset(
+    reset(
       {
-        ...snap.currentProduct,
-        repositories: snap.currentProduct.repositories ?? [],
+        ...currentProduct,
+        ...getRepositoryFormValues(currentProduct),
         isAgMinistry: false,
         isAgMinistryChecked: true,
       },
@@ -111,11 +114,11 @@ export default privateCloudProductEdit(({ session }) => {
         keepDirtyValues: true,
       },
     );
-  }, [snap.currentProduct]);
+  }, [currentProduct, reset]);
 
   const isSubmitEnabled = Object.keys(formState.dirtyFields).length > 0;
 
-  if (!snap.currentProduct) {
+  if (!currentProduct) {
     return null;
   }
 
@@ -129,7 +132,7 @@ export default privateCloudProductEdit(({ session }) => {
         disabled: isDisabled,
         clusterDisabled: true,
         mode: 'edit',
-        canToggleTemporary: snap.currentProduct._permissions.toggleTemporary,
+        canToggleTemporary: currentProduct._permissions.toggleTemporary,
       },
     },
     {
@@ -139,7 +142,7 @@ export default privateCloudProductEdit(({ session }) => {
       Component: TeamContacts,
       componentArgs: {
         isTeamContactsDisabled: isDisabled,
-        isAdditionalMembersDisabled: isDisabled || !snap.currentProduct._permissions.manageMembers,
+        isAdditionalMembersDisabled: isDisabled || !currentProduct._permissions.manageMembers,
       },
     },
     {
@@ -158,10 +161,10 @@ export default privateCloudProductEdit(({ session }) => {
       Component: Quotas,
       componentArgs: {
         disabled: isDisabled,
-        licencePlate: snap.currentProduct?.licencePlate,
-        cluster: snap.currentProduct?.cluster,
-        isGoldDR: snap.currentProduct?.golddrEnabled ?? false,
-        originalResourceRequests: snap.currentProduct?.resourceRequests,
+        licencePlate: currentProduct.licencePlate,
+        cluster: currentProduct.cluster,
+        isGoldDR: currentProduct.golddrEnabled ?? false,
+        originalResourceRequests: currentProduct.resourceRequests,
         quotaContactRequired: true,
       },
     },
@@ -173,9 +176,30 @@ export default privateCloudProductEdit(({ session }) => {
         <FormErrorNotification />
         <form
           onSubmit={methods.handleSubmit(async (formData) => {
+            const onlyRepositoriesChanged = areOnlyRepositoryFieldsDirty(methods.formState.dirtyFields);
+
+            if (onlyRepositoriesChanged) {
+              await updatePrivateCloudProductRepositories(currentProduct.licencePlate, {
+                hasRepositories: formData.hasRepositories,
+                repositories: formData.repositories,
+              });
+
+              state.currentProduct = {
+                ...currentProduct,
+                hasRepositories: formData.hasRepositories,
+                repositories: formData.repositories,
+              };
+
+              reset({
+                ...methods.getValues(),
+                hasRepositories: formData.hasRepositories,
+                repositories: formData.repositories,
+              });
+              return;
+            }
             await openPrivateCloudProductEditSubmitModal({
               productData: formData,
-              originalProductData: methods.getValues(),
+              originalProductData: currentProduct,
             });
           })}
           autoComplete="off"
@@ -193,7 +217,7 @@ export default privateCloudProductEdit(({ session }) => {
         </form>
       </FormProvider>
 
-      <SiloAccordion className="my-4" product={snap.currentProduct} />
+      <SiloAccordion className="my-4" product={currentProduct} />
     </div>
   );
 });

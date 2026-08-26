@@ -1,10 +1,10 @@
 import { BCGOV_GUID_EXTENSION } from '@/constants';
 import { logger } from '@/core/logging';
 import { parseMinistryFromDisplayName } from '@/helpers/user';
-import { MsUser, AppUser } from '@/types/user';
+import { MsUser, MsGraphAppUser } from '@/types/user';
 import { instance } from './axios';
 
-export function processMsUser(user: MsUser): AppUser | null {
+export function processMsUser(user: MsUser): MsGraphAppUser | null {
   const idir = user.onPremisesSamAccountName;
   const upn = user.userPrincipalName;
   const idirGuid = user[BCGOV_GUID_EXTENSION];

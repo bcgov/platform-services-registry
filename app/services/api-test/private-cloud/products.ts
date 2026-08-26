@@ -8,6 +8,7 @@ import {
   POST as _createPrivateCloudComment,
   GET as _listPrivateCloudComments,
 } from '@/app/api/private-cloud/products/[licencePlate]/comments/route';
+import { PATCH as _updatePrivateCloudProductRepositories } from '@/app/api/private-cloud/products/[licencePlate]/repositories/route';
 import { GET as _listPrivateCloudProductRequests } from '@/app/api/private-cloud/products/[licencePlate]/requests/route';
 import {
   GET as _getPrivateCloudProduct,
@@ -28,6 +29,7 @@ import {
   PrivateCloudProductSimpleDecorated,
   PrivateCloudRequestDetailDecorated,
 } from '@/types/private-cloud';
+import type { RepositoryFormData } from '@/validation-schemas';
 import {
   PrivateCloudCreateRequestBody,
   PrivateCloudEditRequestBody,
@@ -105,6 +107,14 @@ export async function editPrivateCloudProduct(licencePlate: string, data: Privat
     pathParams: { licencePlate },
   });
   return result;
+}
+
+export async function updatePrivateCloudProductRepositories(licencePlate: string, data: RepositoryFormData) {
+  return productCollectionRoute.patch(_updatePrivateCloudProductRepositories, '/{{licencePlate}}/repositories', data, {
+    pathParams: {
+      licencePlate,
+    },
+  });
 }
 
 export async function deletePrivateCloudProduct(licencePlate: string, requestComment: string) {

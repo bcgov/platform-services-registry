@@ -6,7 +6,16 @@ FROM node:24.19.0-alpine AS build
 WORKDIR /workspace
 
 COPY package.json pnpm-lock.yaml pnpm-workspace.yaml ./
+COPY .npmrc ./
+COPY app/.npmrc ./app/.npmrc
+
 COPY app/package.json ./app/package.json
+COPY data-migrations/package.json ./data-migrations/package.json
+COPY sandbox/_packages/keycloak-admin/package.json ./sandbox/_packages/keycloak-admin/package.json
+COPY sandbox/keycloak-provision/package.json ./sandbox/keycloak-provision/package.json
+COPY sandbox/m365mock/package.json ./sandbox/m365mock/package.json
+COPY sandbox/nats-provision/package.json ./sandbox/nats-provision/package.json
+
 COPY app/prisma ./app/prisma
 
 ENV SECURE_HEADERS=true \
@@ -25,7 +34,7 @@ RUN apk add --no-cache \
 ENV CYPRESS_INSTALL_BINARY=0
 
 # Install Node tools and dependencies
-RUN npm install -g turbo pnpm@11.0.8 && \
+RUN npm install -g turbo pnpm@11.23.0 && \
     pnpm install --frozen-lockfile
 
 COPY app ./app

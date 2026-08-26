@@ -1,6 +1,7 @@
 import { POST as _archivePublicCloudProduct } from '@/app/api/public-cloud/products/[licencePlate]/archive/route';
 import { POST as _reviewPublicCloudBilling } from '@/app/api/public-cloud/products/[licencePlate]/billings/[billingId]/review/route';
 import { POST as _signPublicCloudBilling } from '@/app/api/public-cloud/products/[licencePlate]/billings/[billingId]/sign/route';
+import { PATCH as _updatePublicCloudProductRepositories } from '@/app/api/public-cloud/products/[licencePlate]/repositories/route';
 import { GET as _listPublicCloudProductRequests } from '@/app/api/public-cloud/products/[licencePlate]/requests/route';
 import {
   GET as _getPublicCloudProduct,
@@ -27,6 +28,7 @@ import {
   PublicCloudProductSearchBody,
   PublicCloudProductSearchNoPaginationBody,
 } from '@/validation-schemas/public-cloud';
+import type { RepositoryFormData } from '@/validation-schemas/shared';
 import { createRoute, ParamData } from '../core';
 
 const productCollectionRoute = createRoute('/public-cloud/products');
@@ -132,6 +134,14 @@ export async function editPublicCloudProduct(
     pathParams: { licencePlate },
   });
   return result;
+}
+
+export async function updatePublicCloudProductRepositories(licencePlate: string, data: RepositoryFormData) {
+  return productCollectionRoute.patch(_updatePublicCloudProductRepositories, '/{{licencePlate}}/repositories', data, {
+    pathParams: {
+      licencePlate,
+    },
+  });
 }
 
 export async function deletePublicCloudProduct(licencePlate: string, requestComment: string) {

@@ -7,7 +7,7 @@ COPY sandbox/types.ts ./sandbox/types.ts
 COPY sandbox/nats-provision ./sandbox/nats-provision
 COPY sandbox/_packages ./sandbox/_packages
 
-RUN npm install -g turbo pnpm
+RUN npm install -g turbo pnpm@11.23.0
 RUN pnpm install --frozen-lockfile --ignore-scripts
 RUN pnpm --dir sandbox/_packages/keycloak-admin build
 RUN pnpm --dir sandbox/nats-provision build
