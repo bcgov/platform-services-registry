@@ -53,7 +53,11 @@ function addActualsSheet(workbook: ExcelJS.Workbook, snapshot: Snapshot) {
 
 function addVarianceSheet(workbook: ExcelJS.Workbook, snapshot: Snapshot) {
   const sheet = workbook.addWorksheet('Variance summary');
-  sheet.addRow(['FYTD actual', snapshot.fytdActual]);
+  sheet.addRow(['FYTD actual', snapshot.fytdActual ?? 'no data']);
+  sheet.addRow([
+    'FYTD actual months',
+    `${snapshot.actualsCoverage.presentMonths} of ${snapshot.actualsCoverage.expectedMonths}`,
+  ]);
   sheet.addRow(['FYTD forecast', snapshot.fytdForecast]);
   sheet.addRow(['FYTD variance amount', snapshot.fytdVariance?.amount ?? 'no data']);
   sheet.addRow(['FYTD variance percent', snapshot.fytdVariance?.percent ?? 'no data']);

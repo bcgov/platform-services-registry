@@ -122,5 +122,100 @@ export function yearOverYearChange(current: number, priorYear: number | null | u
   return ((current - priorYear) / priorYear) * 100;
 }
 
+export type YtdActualSummary = {
+  fytdActual: number | null;
+  presentMonths: number;
+  expectedMonths: number;
+};
+
+/** Sum YTD rollups. Null when no elapsed month has a rollup (do not treat as CA$0). */
+export function summarizeYtdActuals(
+  ytdMonths: Array<{ year: number; month: number }>,
+  rollups: Array<{ year: number; month: number; amountCad: number }>,
+): YtdActualSummary {
+  const expectedMonths = ytdMonths.length;
+  const ytdKeys = new Set(ytdMonths.map((month) => monthKey(month.year, month.month)));
+  const presentKeys = new Set<string>();
+  let total = 0;
+  for (const row of rollups) {
+    const key = monthKey(row.year, row.month);
+    if (!ytdKeys.has(key)) continue;
+    presentKeys.add(key);
+    total += row.amountCad;
+  }
+  return {
+    fytdActual: presentKeys.size === 0 ? null : total,
+    presentMonths: presentKeys.size,
+    expectedMonths,
+  };
+}
+
+export function ytdActualHint(
+  coverage: Pick<YtdActualSummary, 'presentMonths' | 'expectedMonths'>,
+  lastComplete: { year: number; month: number },
+) {
+  if (coverage.expectedMonths === 0) return 'No complete fiscal-year months yet';
+  if (coverage.presentMonths < coverage.expectedMonths) {
+    return `incomplete (${coverage.presentMonths} of ${coverage.expectedMonths} months)`;
+  }
+  return `Through last complete month ${lastComplete.year}-${String(lastComplete.month).padStart(2, '0')}`;
+}
+
+export type IngestionRunStatus = 'RUNNING' | 'SUCCESS' | 'FAILED';
+
+export type IngestionFreshnessLatest = {
+  status: IngestionRunStatus;
+  completedAt: string | null;
+  errorMessage: string | null;
+};
+
+export type IngestionFreshness = {
+  provider: string;
+  lastSuccessAt: string | null;
+  latest: IngestionFreshnessLatest | null;
+};
+
+export function buildIngestionFreshness(
+  provider: string,
+  latest: { status: IngestionRunStatus; completedAt: Date | string | null; errorMessage: string | null } | null,
+  lastSuccessAt: Date | string | null,
+): IngestionFreshness {
+  return {
+    provider,
+    lastSuccessAt: lastSuccessAt ? new Date(lastSuccessAt).toISOString() : null,
+    latest: latest
+      ? {
+          status: latest.status,
+          completedAt: latest.completedAt ? new Date(latest.completedAt).toISOString() : null,
+          errorMessage: latest.errorMessage,
+        }
+      : null,
+  };
+}
+
+export function formatIngestionFreshnessLine(item: IngestionFreshness) {
+  if (!item.latest) return 'never';
+  const lastSuccess = item.lastSuccessAt ? new Date(item.lastSuccessAt).toLocaleString('en-CA') : 'never';
+  if (item.latest.status === 'FAILED') return `${lastSuccess} · last run failed`;
+  if (item.latest.status === 'RUNNING') return `${lastSuccess} · running`;
+  return lastSuccess;
+}
+
+export function failedIngestProviders(freshness: IngestionFreshness[]) {
+  return freshness.filter((item) => item.latest?.status === 'FAILED').map((item) => item.provider);
+}
+
+/** Known actuals only. Null when none of the amounts are present. */
+export function sumKnownActualsOrNull(amounts: Array<number | null | undefined>): number | null {
+  let any = false;
+  let sum = 0;
+  for (const amount of amounts) {
+    if (amount == null) continue;
+    any = true;
+    sum += amount;
+  }
+  return any ? sum : null;
+}
+
 export { formatFiscalYearLabel, monthKey };
 export { isPastMonth } from '@/components/public-cloud/forecast/forecast-grid-utils';

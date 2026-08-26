@@ -6,6 +6,7 @@ import { useState } from 'react';
 import LoadingBox from '@/components/generic/LoadingBox';
 import { formatCadAmount, formatPercent } from '@/components/public-cloud/finance/finance-measure-utils';
 import FinanceNav from '@/components/public-cloud/finance/FinanceNav';
+import FinanceQueryError from '@/components/public-cloud/finance/FinanceQueryError';
 import { GlobalPermissions } from '@/constants';
 import createClientPage from '@/core/client-page';
 import { Provider } from '@/prisma/client';
@@ -20,7 +21,7 @@ export default publicCloudFinanceRankingsPage(({ session }) => {
   const [period, setPeriod] = useState<'ytd' | 'full-fy'>('ytd');
   const [limit, setLimit] = useState(10);
 
-  const { data, isLoading } = useQuery({
+  const { data, isLoading, isError, error, refetch } = useQuery({
     queryKey: ['finance-rankings', provider, period, limit],
     queryFn: () => getFinanceRankings({ provider, period, limit }),
     enabled: Boolean(session?.previews.publicCloudFinance),
@@ -64,7 +65,9 @@ export default publicCloudFinanceRankingsPage(({ session }) => {
         />
       </div>
 
-      {isLoading || !data ? (
+      {isError ? (
+        <FinanceQueryError error={error} onRetry={() => refetch()} title="Could not load rankings" />
+      ) : isLoading || !data ? (
         <LoadingBox isLoading>
           <div className="min-h-24" />
         </LoadingBox>

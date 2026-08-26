@@ -1,5 +1,6 @@
 import { chunkLinkedAccountIds, collectAwsCostExplorerRows } from './aws-cost-explorer';
 import {
+  AZURE_COST_QUERY_CLIENT_TYPE,
   azureCostQueryBody,
   azureCostQueryUrl,
   azureCostScopeFromEnv,
@@ -114,6 +115,9 @@ describe('azure cost query helpers', () => {
 
     expect(rows.map((row) => row.serviceLine)).toEqual(['Storage', 'Virtual Machines']);
     expect(fetchImpl).toHaveBeenCalledTimes(3);
+    expect(fetchImpl.mock.calls[0]?.[1]?.headers).toEqual(
+      expect.objectContaining({ ClientType: AZURE_COST_QUERY_CLIENT_TYPE }),
+    );
   });
 
   it('reads FINANCE_AZURE_COST_SCOPE with a leading slash', () => {

@@ -5,6 +5,7 @@ import { useQuery } from '@tanstack/react-query';
 import { useMemo, useState } from 'react';
 import LoadingBox from '@/components/generic/LoadingBox';
 import FinanceNav from '@/components/public-cloud/finance/FinanceNav';
+import FinanceQueryError from '@/components/public-cloud/finance/FinanceQueryError';
 import { GlobalPermissions } from '@/constants';
 import createClientPage from '@/core/client-page';
 import { getFinanceCoverage } from '@/services/backend/public-cloud/finance';
@@ -15,7 +16,7 @@ const publicCloudFinanceCoveragePage = createClientPage({
 
 export default publicCloudFinanceCoveragePage(({ session }) => {
   const [stateFilter, setStateFilter] = useState<string>('all');
-  const { data, isLoading } = useQuery({
+  const { data, isLoading, isError, error, refetch } = useQuery({
     queryKey: ['finance-coverage'],
     queryFn: getFinanceCoverage,
     enabled: Boolean(session?.previews.publicCloudFinance),
@@ -51,7 +52,9 @@ export default publicCloudFinanceCoveragePage(({ session }) => {
         ]}
       />
 
-      {isLoading || !data ? (
+      {isError ? (
+        <FinanceQueryError error={error} onRetry={() => refetch()} title="Could not load forecast coverage" />
+      ) : isLoading || !data ? (
         <LoadingBox isLoading>
           <div className="min-h-24" />
         </LoadingBox>

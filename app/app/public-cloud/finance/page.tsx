@@ -1,21 +1,30 @@
 'use client';
 
-import { SegmentedControl } from '@mantine/core';
-import { useQuery } from '@tanstack/react-query';
+import { Button, SegmentedControl } from '@mantine/core';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import Link from 'next/link';
 import { useState } from 'react';
 import LoadingBox from '@/components/generic/LoadingBox';
+import { failure, success } from '@/components/notification';
 import {
-  formatCadAmount,
-  formatPercent,
   calculateVariance,
+  failedIngestProviders,
+  formatCadAmount,
+  formatIngestionFreshnessLine,
+  formatPercent,
+  ytdActualHint,
 } from '@/components/public-cloud/finance/finance-measure-utils';
 import FinanceNav from '@/components/public-cloud/finance/FinanceNav';
+import FinanceQueryError from '@/components/public-cloud/finance/FinanceQueryError';
 import { formatForecastProviderLabel } from '@/components/public-cloud/forecast/forecast-grid-utils';
 import { GlobalPermissions } from '@/constants';
 import createClientPage from '@/core/client-page';
 import { Provider } from '@/prisma/client';
-import { getFinanceSnapshot } from '@/services/backend/public-cloud/finance';
+import {
+  getFinanceIngestPlan,
+  getFinanceSnapshot,
+  triggerFinanceIngest,
+} from '@/services/backend/public-cloud/finance';
 
 type ProviderFilter = 'ALL' | 'AWS_LZA' | 'AZURE' | 'AWS';
 
@@ -41,19 +50,69 @@ function formatVarianceCell(actual: number | null, forecast: number) {
   return `${formatCadAmount(variance.amount)} (${formatPercent(variance.percent, 0)})`;
 }
 
+type IngestJob = { provider: string; year: number; month: number };
+
+function formatIngestJob(job: IngestJob) {
+  return `${formatForecastProviderLabel(job.provider)} ${job.year}-${String(job.month).padStart(2, '0')}`;
+}
+
+function ingestErrorMessage(error: unknown) {
+  const data = (error as { response?: { data?: { message?: string; error?: unknown } } })?.response?.data;
+  if (typeof data?.error === 'string' && data.error.trim()) return data.error;
+  if (data?.message && data.message !== 'Internal Server Error') return data.message;
+  if (error instanceof Error && error.message) return error.message;
+  return 'Ingest failed. Check freshness for the last error.';
+}
+
 const publicCloudFinancePage = createClientPage({
   permissions: [GlobalPermissions.ViewPublicCloudForecast],
 });
 
 export default publicCloudFinancePage(({ session }) => {
   const [provider, setProvider] = useState<ProviderFilter>('ALL');
-  const { data, isLoading } = useQuery({
+  const queryClient = useQueryClient();
+  const { data, isLoading, isError, error, refetch } = useQuery({
     queryKey: ['finance-snapshot', provider],
     queryFn: () => getFinanceSnapshot(provider),
     enabled: Boolean(session?.previews.publicCloudFinance),
   });
+  const [ingestProgress, setIngestProgress] = useState<{ job: IngestJob; current: number; total: number } | null>(null);
+  const ingestMutation = useMutation({
+    mutationFn: async () => {
+      const plan = await getFinanceIngestPlan();
+      const jobs: IngestJob[] = plan.providers.flatMap(
+        (item: { provider: string; periods: Array<{ year: number; month: number }> }) =>
+          item.periods.map((period) => ({
+            provider: item.provider,
+            year: period.year,
+            month: period.month,
+          })),
+      );
+      if (jobs.length === 0) return jobs;
+      const results = [];
+      for (const [index, job] of jobs.entries()) {
+        setIngestProgress({ job, current: index + 1, total: jobs.length });
+        results.push(await triggerFinanceIngest(job));
+      }
+      return jobs;
+    },
+    onSuccess: async (jobs) => {
+      setIngestProgress(null);
+      success({
+        message: jobs.length === 0 ? 'Nothing to ingest.' : `Ingest finished: ${jobs.map(formatIngestJob).join(', ')}.`,
+      });
+      await queryClient.invalidateQueries({ queryKey: ['finance-snapshot'] });
+    },
+    onError: async (error) => {
+      setIngestProgress(null);
+      failure({ message: ingestErrorMessage(error) });
+      await queryClient.invalidateQueries({ queryKey: ['finance-snapshot'] });
+    },
+  });
 
   if (!session?.previews.publicCloudFinance) return null;
+
+  const failedProviders = data ? failedIngestProviders(data.freshness) : [];
 
   return (
     <div className="pt-5">
@@ -79,12 +138,20 @@ export default publicCloudFinancePage(({ session }) => {
         />
       </div>
 
-      {isLoading || !data ? (
+      {isError ? (
+        <FinanceQueryError error={error} onRetry={() => refetch()} title="Could not load finance snapshot" />
+      ) : isLoading || !data ? (
         <LoadingBox isLoading>
           <div className="min-h-24" />
         </LoadingBox>
       ) : (
         <div className="space-y-6">
+          {failedProviders.length > 0 && (
+            <output className="block rounded-md border border-red-300 bg-red-50 px-4 py-3 text-sm text-red-950">
+              {failedProviders.map((name) => formatForecastProviderLabel(name)).join(', ')} ingest failed for the last
+              run. FYTD may be incomplete.
+            </output>
+          )}
           {data.lowCoverage && (
             <output className="block rounded-md border border-amber-300 bg-amber-50 px-4 py-3 text-sm text-amber-950">
               Forecast coverage is {formatPercent(data.coverage.percent, 1)} ({data.coverage.completeCount} of{' '}
@@ -97,9 +164,7 @@ export default publicCloudFinancePage(({ session }) => {
             <SummaryCard
               label={`FYTD actual (${data.fiscalYearLabel})`}
               value={formatCadAmount(data.fytdActual)}
-              hint={`Through last complete month ${data.lastCompleteMonth.year}-${String(
-                data.lastCompleteMonth.month,
-              ).padStart(2, '0')}`}
+              hint={ytdActualHint(data.actualsCoverage, data.lastCompleteMonth)}
             />
             <SummaryCard
               label="FYTD forecast"
@@ -280,17 +345,39 @@ export default publicCloudFinancePage(({ session }) => {
             </Link>
           </section>
 
-          <output className="block text-xs text-gray-500">
-            Data freshness:{' '}
-            {data.freshness
-              .map(
-                (f: { provider: string; completedAt: string | null }) =>
-                  `${formatForecastProviderLabel(f.provider)}: ${
-                    f.completedAt ? new Date(f.completedAt).toLocaleString('en-CA') : 'never'
-                  }`,
-              )
-              .join(' · ')}
-          </output>
+          <div className="space-y-2">
+            <div className="flex flex-wrap items-center gap-3">
+              <output className="block text-xs text-gray-500">
+                Data freshness:{' '}
+                {data.freshness
+                  .map((f) => `${formatForecastProviderLabel(f.provider)}: ${formatIngestionFreshnessLine(f)}`)
+                  .join(' · ')}
+              </output>
+              <Button
+                type="button"
+                size="xs"
+                variant="light"
+                loading={ingestMutation.isPending}
+                disabled={ingestMutation.isPending}
+                onClick={() => ingestMutation.mutate()}
+              >
+                {ingestProgress
+                  ? `Ingesting ${formatIngestJob(ingestProgress.job)} (${ingestProgress.current} of ${
+                      ingestProgress.total
+                    })`
+                  : ingestMutation.isPending
+                    ? 'Preparing ingest…'
+                    : 'Ingest missing months'}
+              </Button>
+            </div>
+            <p className="text-xs text-gray-500">
+              {ingestProgress
+                ? `Re-runs the last complete month and any earlier fiscal-year month with no successful ingest. Can take several minutes. Now ${formatIngestJob(
+                    ingestProgress.job,
+                  )}.`
+                : 'Re-runs the last complete month and any earlier fiscal-year month with no successful ingest. Can take several minutes.'}
+            </p>
+          </div>
         </div>
       )}
     </div>

@@ -60,6 +60,19 @@ export async function downloadFinanceExport(params: {
   return result;
 }
 
+export async function getFinanceIngestPlan(params?: { year?: number; month?: number }) {
+  return financeInstance.get('/ingest/missing', { params }).then((res) => res.data);
+}
+
+export async function triggerFinanceIngest(body: {
+  provider: string;
+  year: number;
+  month: number;
+  useSimulated?: boolean;
+}) {
+  return financeInstance.post('/ingest', body).then((res) => res.data);
+}
+
 export async function getProductFinanceDetail(licencePlate: string) {
   return parentInstance.get(`/products/${licencePlate}/finance`).then((res) => res.data);
 }

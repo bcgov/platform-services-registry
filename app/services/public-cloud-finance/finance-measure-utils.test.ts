@@ -1,9 +1,15 @@
 import {
+  buildIngestionFreshness,
   calculateVariance,
+  failedIngestProviders,
   formatCadAmount,
+  formatIngestionFreshnessLine,
   hasForecastValuesForRequiredHorizon,
   isLowForecastCoverage,
   sumForecastForMonths,
+  sumKnownActualsOrNull,
+  summarizeYtdActuals,
+  ytdActualHint,
 } from '@/components/public-cloud/finance/finance-measure-utils';
 import { Provider } from '@/prisma/client';
 import {
@@ -39,6 +45,52 @@ describe('finance measure utils', () => {
     expect(formatCadAmount(null)).toBe('—');
     expect(formatCadAmount(0)).toBe('CA$0');
     expect(formatCadAmount(1234)).toBe('CA$1,234');
+  });
+
+  it('treats missing YTD rollups as null, not zero', () => {
+    const ytd = [
+      { year: 2026, month: 4 },
+      { year: 2026, month: 5 },
+    ];
+    expect(summarizeYtdActuals(ytd, [])).toEqual({
+      fytdActual: null,
+      presentMonths: 0,
+      expectedMonths: 2,
+    });
+  });
+
+  it('keeps a partial YTD total and reports missing months', () => {
+    const summary = summarizeYtdActuals(
+      [
+        { year: 2026, month: 4 },
+        { year: 2026, month: 5 },
+        { year: 2026, month: 6 },
+      ],
+      [
+        { year: 2026, month: 4, amountCad: 10 },
+        { year: 2026, month: 4, amountCad: 5 },
+        { year: 2026, month: 7, amountCad: 99 },
+      ],
+    );
+    expect(summary).toEqual({ fytdActual: 15, presentMonths: 1, expectedMonths: 3 });
+    expect(ytdActualHint(summary, { year: 2026, month: 6 })).toBe('incomplete (1 of 3 months)');
+  });
+
+  it('surfaces a failed ingest after an older success', () => {
+    const freshness = buildIngestionFreshness(
+      'AZURE',
+      { status: 'FAILED', completedAt: '2026-08-26T13:00:00.000Z', errorMessage: '429' },
+      '2026-08-20T06:15:00.000Z',
+    );
+    expect(freshness.lastSuccessAt).toBe('2026-08-20T06:15:00.000Z');
+    expect(freshness.latest?.status).toBe('FAILED');
+    expect(formatIngestionFreshnessLine(freshness)).toContain('last run failed');
+    expect(failedIngestProviders([freshness, buildIngestionFreshness('AWS_LZA', null, null)])).toEqual(['AZURE']);
+  });
+
+  it('sums only known actuals', () => {
+    expect(sumKnownActualsOrNull([null, undefined])).toBeNull();
+    expect(sumKnownActualsOrNull([null, 10, 5])).toBe(15);
   });
 
   it('counts zero forecast months as present for coverage', () => {

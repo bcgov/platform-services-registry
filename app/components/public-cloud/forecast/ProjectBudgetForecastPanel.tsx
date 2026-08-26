@@ -7,6 +7,7 @@ import {
   calculateVariance,
   formatCadAmount,
   isCurrentCalendarMonth,
+  sumKnownActualsOrNull,
 } from '@/components/public-cloud/finance/finance-measure-utils';
 import ProductVarianceNotes from '@/components/public-cloud/finance/ProductVarianceNotes';
 import { createPublicCloudForecast, updatePublicCloudForecast } from '@/services/backend/public-cloud/forecast';
@@ -50,6 +51,18 @@ function formatVarianceCell(variance: { amount: number; percent: number | null }
   if (variance == null) return '—';
   const percentSuffix = variance.percent == null ? '' : ` (${variance.percent.toFixed(0)}%)`;
   return `${formatCadAmount(variance.amount)}${percentSuffix}`;
+}
+
+function fiscalChunkKnownActuals(months: Array<{ year: number; month: number }>, actualByKey: Map<string, number>) {
+  const expectedPast = months.filter((month) => isPastMonth(month.year, month.month));
+  const presentPast = expectedPast.filter((month) => actualByKey.has(monthKey(month.year, month.month))).length;
+  const known = sumKnownActualsOrNull(
+    months.map((month) => {
+      const key = monthKey(month.year, month.month);
+      return actualByKey.has(key) ? actualByKey.get(key) : null;
+    }),
+  );
+  return { known, presentPast, expectedPast: expectedPast.length };
 }
 
 function CellEditor({ value, currency, status, editable, onChange, onApplyToFuture }: CellEditorProps) {
@@ -419,12 +432,22 @@ export default function ProjectBudgetForecastPanel({
                             );
                           })}
                           <td className="px-3 py-2 text-center font-semibold bg-amber-50">
-                            {formatCadAmount(
-                              fyChunk.months.reduce(
-                                (sum, v) => sum + (actualByKey.get(monthKey(v.year, v.month)) ?? 0),
-                                0,
-                              ),
-                            )}
+                            {(() => {
+                              const { known, presentPast, expectedPast } = fiscalChunkKnownActuals(
+                                fyChunk.months,
+                                actualByKey,
+                              );
+                              return (
+                                <>
+                                  {formatCadAmount(known)}
+                                  {presentPast < expectedPast && known != null && (
+                                    <div className="text-[10px] font-normal text-gray-500">
+                                      incomplete ({presentPast} of {expectedPast} months)
+                                    </div>
+                                  )}
+                                </>
+                              );
+                            })()}
                           </td>
                         </tr>
                         <tr className="border-t border-gray-100">
@@ -443,11 +466,8 @@ export default function ProjectBudgetForecastPanel({
                           })}
                           <td className="px-3 py-2 text-center font-semibold bg-amber-50">
                             {(() => {
-                              const actualTotal = fyChunk.months.reduce(
-                                (sum, v) => sum + (actualByKey.get(monthKey(v.year, v.month)) ?? 0),
-                                0,
-                              );
-                              const variance = calculateVariance(actualTotal, fySummary.total);
+                              const { known } = fiscalChunkKnownActuals(fyChunk.months, actualByKey);
+                              const variance = calculateVariance(known, fySummary.total);
                               return variance == null ? '—' : formatCadAmount(variance.amount);
                             })()}
                           </td>

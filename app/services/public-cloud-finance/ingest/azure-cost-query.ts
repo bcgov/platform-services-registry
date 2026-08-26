@@ -4,8 +4,9 @@ import { periodBounds, type BillingPeriod } from './types';
 
 export const AZURE_COST_MANAGEMENT_SCOPE = 'https://management.azure.com/.default';
 export const AZURE_COST_QUERY_API_VERSION = '2023-11-01';
-/** Stay under typical Cost Management Query quotas (~a few dozen calls / minute). */
-export const AZURE_QUERY_MIN_INTERVAL_MS = 2_000;
+/** Stay under the Cost Management Query tenant cap (~20 calls / minute). */
+export const AZURE_QUERY_MIN_INTERVAL_MS = 4_000;
+export const AZURE_COST_QUERY_CLIENT_TYPE = 'bcgov-platform-services-registry';
 
 export type AzureExportRow = {
   accountIdentifier: string;
@@ -162,6 +163,7 @@ export async function fetchAzureCostQueryPages(options: {
         headers: {
           Authorization: `Bearer ${accessToken}`,
           'Content-Type': 'application/json',
+          ClientType: AZURE_COST_QUERY_CLIENT_TYPE,
         },
         body: JSON.stringify(body),
       },

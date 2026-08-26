@@ -94,7 +94,7 @@ Airflow (schedule)
 ```
 
 -   **Airflow** holds only the Keycloak finance SA id/secret (tools Vault). It does not hold AWS/Azure billing credentials.
--   **Registry app** (Test/Prod) holds provider credentials via the existing Vault injector pattern (`helm/main` vault annotations).
+-   **Registry app** (Test/Prod) holds provider credentials via the existing Vault injector pattern (`helm/_app/templates/deployment.yaml`). Keys must exist in the app Vault path **and** be listed in that inject template or the pod never sees them.
 -   **Dev** stays on simulated actuals; no provider secrets required.
 -   **Local live** still uses CLI creds (`FINANCE_AWS_PROFILE` / `az login`) for `pnpm test:finance-live`.
 -   Never commit secrets, account IDs, or service-principal passwords to git. GitHub Actions does not receive these credentials.
@@ -151,7 +151,7 @@ Optional later: replace static keys with IRSA / assume-role (`AWS_ROLE_ARN`) if 
 
 Subscription IDs come from product metadata (`azureSubscriptions` / `billingAccountLinks`), not from Vault.
 
-**Rate limits.** Azure Cost Management Query is the tight quota. Ingest prefers `FINANCE_AZURE_COST_SCOPE` (one call grouped by `SubscriptionId` + `ServiceName`, then filtered to known products). If that scope is unset or returns 400/401/403/404, it falls back to sequential per-subscription queries paced at 2s, retries 429/5xx, and honors `Retry-After` / `retry-after-ms`. Pages follow `nextLink`. The `az rest` local fallback retries on 429-like errors. Bank of Canada Valet uses the same HTTP retry helper.
+**Rate limits.** Azure Cost Management Query is the tight quota (~20 calls / minute per tenant). Scheduled / estate ingest **requires** `FINANCE_AZURE_COST_SCOPE` (one call grouped by `SubscriptionId` + `ServiceName`, then filtered to known products). If that scope is unset or returns 400/401/403/404, estate ingest fails instead of walking every subscription. Scoped live tests may still fall back to sequential per-subscription queries paced at 4s. Queries send a unique `ClientType` header, retry 429/5xx, and honor `Retry-After` / `retry-after-ms`. Pages follow `nextLink`. Bank of Canada Valet uses the same HTTP retry helper. Airflow waits 600s per provider-month, retries the DAG twice, and backfills any earlier FY month with no successful `IngestionRun`. Admins can run the same plan from the finance snapshot (**Ingest missing months**).
 
 ### Airflow → registry auth
 
@@ -181,7 +181,7 @@ Create a dedicated SA client per environment (do not reuse a personal admin sess
 2. Grant Cost Explorer / Cost Management read on the required accounts and subscriptions.
 3. Add the **app** provider env vars above to Vault for the Test app path; confirm the pod receives them.
 4. Create the Keycloak finance SA (team + `public-admin` roles claim); store id/secret in tools Vault as `TEST_FINANCE_SA_*`.
-5. Unpause `public_cloud_finance_ingest_test` after Airflow can read those env vars.
+5. Unpause `public_cloud_finance_ingest_test` after Airflow can read those env vars and `FINANCE_AZURE_COST_SCOPE` is set.
 6. Repeat for Prod after Test looks healthy.
 7. Rotate SP and SA secrets on the usual platform schedule; update Vault only.
 

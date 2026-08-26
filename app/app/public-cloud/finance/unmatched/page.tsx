@@ -7,6 +7,7 @@ import LoadingBox from '@/components/generic/LoadingBox';
 import { failure, success } from '@/components/notification';
 import { formatCadAmount } from '@/components/public-cloud/finance/finance-measure-utils';
 import FinanceNav from '@/components/public-cloud/finance/FinanceNav';
+import FinanceQueryError from '@/components/public-cloud/finance/FinanceQueryError';
 import { GlobalPermissions } from '@/constants';
 import createClientPage from '@/core/client-page';
 import { getFinanceUnmatched, resolveFinanceUnmatched } from '@/services/backend/public-cloud/finance';
@@ -18,7 +19,7 @@ const publicCloudFinanceUnmatchedPage = createClientPage({
 export default publicCloudFinanceUnmatchedPage(({ session }) => {
   const [resolvePlate, setResolvePlate] = useState<Record<string, string>>({});
   const queryClient = useQueryClient();
-  const { data, isLoading } = useQuery({
+  const { data, isLoading, isError, error, refetch } = useQuery({
     queryKey: ['finance-unmatched'],
     queryFn: () => getFinanceUnmatched(),
     enabled: Boolean(session?.previews.publicCloudFinance),
@@ -45,7 +46,9 @@ export default publicCloudFinanceUnmatchedPage(({ session }) => {
       </p>
       <FinanceNav />
 
-      {isLoading || !data ? (
+      {isError ? (
+        <FinanceQueryError error={error} onRetry={() => refetch()} title="Could not load unmatched billing" />
+      ) : isLoading || !data ? (
         <LoadingBox isLoading>
           <div className="min-h-24" />
         </LoadingBox>

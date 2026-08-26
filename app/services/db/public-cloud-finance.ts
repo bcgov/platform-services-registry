@@ -1,4 +1,5 @@
 import {
+  buildIngestionFreshness,
   calculateVariance,
   countMissingRequiredHorizonMonths,
   currentFiscalYearBounds,
@@ -10,6 +11,7 @@ import {
   monthKey,
   sumForecastForFiscalYear,
   sumForecastForMonths,
+  summarizeYtdActuals,
   yearOverYearChange,
 } from '@/components/public-cloud/finance/finance-measure-utils';
 import { type MonthlyValue } from '@/components/public-cloud/forecast/forecast-grid-utils';
@@ -120,20 +122,23 @@ function buildMonthlyChart(options: {
 
 export async function getDataFreshness() {
   const providers = [Provider.AWS, Provider.AWS_LZA, Provider.AZURE] as const;
-  const result: Array<{ provider: Provider; completedAt: string | null; status: FinanceIngestionStatus | null }> = [];
-  for (const provider of providers) {
-    const run = await prisma.ingestionRun.findFirst({
-      where: { provider, status: FinanceIngestionStatus.SUCCESS },
-      orderBy: { completedAt: 'desc' },
-      select: { completedAt: true, status: true },
-    });
-    result.push({
-      provider,
-      completedAt: run?.completedAt?.toISOString() ?? null,
-      status: run?.status ?? null,
-    });
-  }
-  return result;
+  return Promise.all(
+    providers.map(async (provider) => {
+      const [latest, lastSuccess] = await Promise.all([
+        prisma.ingestionRun.findFirst({
+          where: { provider },
+          orderBy: { startedAt: 'desc' },
+          select: { status: true, completedAt: true, errorMessage: true },
+        }),
+        prisma.ingestionRun.findFirst({
+          where: { provider, status: FinanceIngestionStatus.SUCCESS },
+          orderBy: { completedAt: 'desc' },
+          select: { completedAt: true },
+        }),
+      ]);
+      return buildIngestionFreshness(provider, latest, lastSuccess?.completedAt ?? null);
+    }),
+  );
 }
 
 export async function getFinanceSnapshot(provider: ProviderFilter = 'ALL') {
@@ -173,14 +178,11 @@ export async function getFinanceSnapshot(provider: ProviderFilter = 'ALL') {
   });
 
   const actualByPlateMonth = new Map<string, number>();
-  let fytdActual = 0;
-
   for (const row of rollups) {
     const key = `${row.licencePlate}:${monthKey(row.year, row.month)}`;
     actualByPlateMonth.set(key, (actualByPlateMonth.get(key) ?? 0) + row.amountCad);
-    const inYtd = ytdMonths.some((m) => m.year === row.year && m.month === row.month);
-    if (inYtd) fytdActual += row.amountCad;
   }
+  const { fytdActual, presentMonths, expectedMonths } = summarizeYtdActuals(ytdMonths, rollups);
 
   // Service-line totals from active lines for current FY YTD
   const serviceLines = await prisma.actualSpend.groupBy({
@@ -257,6 +259,7 @@ export async function getFinanceSnapshot(provider: ProviderFilter = 'ALL') {
   return {
     fiscalYearLabel: fy.label,
     fytdActual,
+    actualsCoverage: { presentMonths, expectedMonths },
     fytdForecast,
     /** FYTD actual vs FYTD forecast (same elapsed months through lastCompleteMonth). */
     fytdVariance,

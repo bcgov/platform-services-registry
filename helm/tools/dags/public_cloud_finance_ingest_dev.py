@@ -20,6 +20,7 @@ with DAG(
     start_date=datetime.now() - timedelta(days=1),
     is_paused_upon_creation=True,
     catchup=False,
+    default_args={"retries": 2, "retry_delay": timedelta(minutes=5)},
     tags=["public-cloud", "finance"],
 ) as dag:
     PythonOperator(

@@ -12,6 +12,7 @@ import {
   formatCadAmount,
   isCurrentCalendarMonth,
 } from '@/components/public-cloud/finance/finance-measure-utils';
+import FinanceQueryError from '@/components/public-cloud/finance/FinanceQueryError';
 import {
   aggregateMonthlyActualsFromProducts,
   aggregateMonthlyTotalsFromProducts,
@@ -629,7 +630,7 @@ const publicCloudForecastPage = createClientPage({
 
 export default publicCloudForecastPage(({ session }) => {
   const showActualVariance = Boolean(session?.previews.publicCloudFinance);
-  const { data, isLoading } = useQuery<PlatformForecastSummary>({
+  const { data, isLoading, isError, error, refetch } = useQuery<PlatformForecastSummary>({
     queryKey: ['forecast-platform-forecast'],
     queryFn: () => getPlatformForecast(),
     enabled: Boolean(session?.previews.publicCloudForecast),
@@ -657,17 +658,21 @@ export default publicCloudForecastPage(({ session }) => {
           <ExportButton className="ml-auto shrink-0" onExport={handleExport} />
         </div>
 
-        <div className="grid gap-4 sm:grid-cols-3">
-          <SummaryCard label="Products" value={String(data?.totalProducts ?? 0)} />
-          <SummaryCard label="With forecast" value={String(data?.productsWithForecast ?? 0)} />
-          <SummaryCard
-            label="Forecast coverage"
-            value={`${coverage}%`}
-            hint="Products missing a forecast are not included in the forecast totals below."
-          />
-        </div>
+        {!isError && (
+          <div className="grid gap-4 sm:grid-cols-3">
+            <SummaryCard label="Products" value={String(data?.totalProducts ?? 0)} />
+            <SummaryCard label="With forecast" value={String(data?.productsWithForecast ?? 0)} />
+            <SummaryCard
+              label="Forecast coverage"
+              value={`${coverage}%`}
+              hint="Products missing a forecast are not included in the forecast totals below."
+            />
+          </div>
+        )}
 
-        {data?.groups.length ? (
+        {isError ? (
+          <FinanceQueryError error={error} onRetry={() => refetch()} title="Could not load forecast rollup" />
+        ) : data?.groups.length ? (
           <div className="space-y-10">
             {data.groups.map((group) => (
               <PlatformForecastGrid key={group.currency} group={group} showActualVariance={showActualVariance} />

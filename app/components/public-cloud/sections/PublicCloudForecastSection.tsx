@@ -1,10 +1,10 @@
 'use client';
 
-import { Alert, Button } from '@mantine/core';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { useSession } from 'next-auth/react';
 import { useMemo } from 'react';
 import LoadingBox from '@/components/generic/LoadingBox';
+import FinanceQueryError from '@/components/public-cloud/finance/FinanceQueryError';
 import {
   buildRollingFiscalForecastMonths,
   FISCAL_FORECAST_HORIZON_MONTHS,
@@ -13,15 +13,6 @@ import ProjectBudgetForecastPanel from '@/components/public-cloud/forecast/Proje
 import { getProductFinanceDetail } from '@/services/backend/public-cloud/finance';
 import { getPublicCloudProductForecast } from '@/services/backend/public-cloud/forecast';
 import { usePublicProductState } from '@/states/global';
-
-function getForecastLoadErrorMessage(error: unknown) {
-  const axiosMessage = (error as { response?: { data?: { message?: string } } })?.response?.data?.message;
-  if (axiosMessage) return axiosMessage;
-
-  if (error instanceof Error && error.message) return error.message;
-
-  return 'Failed to load forecast data';
-}
 
 export default function PublicCloudForecastSection({ licencePlate }: Readonly<{ licencePlate: string }>) {
   const { data: session } = useSession();
@@ -40,7 +31,12 @@ export default function PublicCloudForecastSection({ licencePlate }: Readonly<{ 
     retry: 1,
   });
 
-  const { data: financeData } = useQuery({
+  const {
+    data: financeData,
+    isError: isFinanceError,
+    error: financeError,
+    refetch: refetchFinance,
+  } = useQuery({
     queryKey: ['product-finance', licencePlate],
     queryFn: () => getProductFinanceDetail(licencePlate),
     enabled: !!licencePlate && canViewForecast && showActualVariance,
@@ -65,13 +61,14 @@ export default function PublicCloudForecastSection({ licencePlate }: Readonly<{ 
         </LoadingBox>
       )}
 
-      {isError && (
-        <Alert color="red" title="Could not load spend forecast">
-          <p className="mb-3">{getForecastLoadErrorMessage(error)}</p>
-          <Button type="button" size="xs" variant="light" onClick={() => refetch()}>
-            Retry
-          </Button>
-        </Alert>
+      {isError && <FinanceQueryError error={error} onRetry={() => refetch()} title="Could not load spend forecast" />}
+
+      {showActualVariance && isFinanceError && (
+        <FinanceQueryError
+          error={financeError}
+          onRetry={() => refetchFinance()}
+          title="Could not load billing actuals"
+        />
       )}
 
       {showEmptyReadOnly && <p className="text-sm text-gray-600">No forecast yet for this product.</p>}

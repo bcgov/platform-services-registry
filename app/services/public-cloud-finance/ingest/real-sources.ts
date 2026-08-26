@@ -18,6 +18,7 @@ import {
   type AzureExportRow,
 } from './azure-cost-query';
 import { createRequestPacer, retryOnThrow } from './http-retry';
+import { isScopedAzureFetch } from './missing-periods';
 import type { BillingFetchScope, BillingPeriod, BillingSource, NormalizedBillingLine } from './types';
 
 type ExportRow = AwsExportRow | AzureExportRow;
@@ -293,12 +294,31 @@ async function fetchAzureCostManagementRows(period: BillingPeriod, scope?: Billi
     accessToken = null;
   }
 
+  const scoped = isScopedAzureFetch(scope);
+  if (!scoped && !azureCostScopeFromEnv()) {
+    throw new Error(
+      'FINANCE_AZURE_COST_SCOPE is required for estate Azure ingest. Per-subscription fallback is only allowed for scoped live tests.',
+    );
+  }
+
   let rows: ExportRow[] = [];
   if (accessToken) {
     const estateRows = await fetchAzureRowsAtEstateScope(period, accessToken, subscriptionIds);
-    rows = estateRows ?? (await fetchAzureRowsPerSubscription(period, subscriptionIds, accessToken));
-  } else {
+    if (estateRows) {
+      rows = estateRows;
+    } else if (scoped) {
+      rows = await fetchAzureRowsPerSubscription(period, subscriptionIds, accessToken);
+    } else {
+      throw new Error(
+        'Azure estate cost scope is unavailable. Refusing per-subscription fallback for full-estate ingest.',
+      );
+    }
+  } else if (scoped) {
     rows = await fetchAzureRowsPerSubscription(period, subscriptionIds, null);
+  } else {
+    throw new Error(
+      'Unable to acquire an Azure management token for estate ingest. Configure AZURE_CLIENT_ID / AZURE_TENANT_ID / AZURE_CLIENT_SECRET.',
+    );
   }
 
   if (rows.length === 0) {
@@ -337,8 +357,8 @@ export function createAwsBillingSource(provider: Provider = Provider.AWS): Billi
 
 /**
  * Real Azure Cost Management adapter.
- * Prefers one estate-scope Query (FINANCE_AZURE_COST_SCOPE) grouped by subscription + service.
- * Falls back to paced per-subscription queries with 429 retries.
+ * Estate ingest requires FINANCE_AZURE_COST_SCOPE. Scoped live tests may fall back to
+ * paced per-subscription queries with 429 retries.
  */
 export function createAzureBillingSource(): BillingSource {
   return {

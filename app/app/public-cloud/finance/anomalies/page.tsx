@@ -7,6 +7,7 @@ import LoadingBox from '@/components/generic/LoadingBox';
 import { failure, success } from '@/components/notification';
 import { formatCadAmount } from '@/components/public-cloud/finance/finance-measure-utils';
 import FinanceNav from '@/components/public-cloud/finance/FinanceNav';
+import FinanceQueryError from '@/components/public-cloud/finance/FinanceQueryError';
 import { GlobalPermissions } from '@/constants';
 import createClientPage from '@/core/client-page';
 import { getFinanceAnomalies, reviewFinanceAnomaly } from '@/services/backend/public-cloud/finance';
@@ -20,7 +21,7 @@ export default publicCloudFinanceAnomaliesPage(({ session }) => {
   const [notes, setNotes] = useState<Record<string, string>>({});
   const queryClient = useQueryClient();
 
-  const { data, isLoading } = useQuery({
+  const { data, isLoading, isError, error, refetch } = useQuery({
     queryKey: ['finance-anomalies', includeReviewed],
     queryFn: () => getFinanceAnomalies(includeReviewed),
     enabled: Boolean(session?.previews.publicCloudFinance),
@@ -63,7 +64,9 @@ export default publicCloudFinanceAnomaliesPage(({ session }) => {
         onChange={(e) => setIncludeReviewed(e.currentTarget.checked)}
       />
 
-      {isLoading || !data ? (
+      {isError ? (
+        <FinanceQueryError error={error} onRetry={() => refetch()} title="Could not load anomalies" />
+      ) : isLoading || !data ? (
         <LoadingBox isLoading>
           <div className="min-h-24" />
         </LoadingBox>

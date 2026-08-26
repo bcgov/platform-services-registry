@@ -67,3 +67,8 @@ export const financeIngestBodySchema = z.object({
   licencePlates: z.array(z.string()).optional(),
   useSimulated: z.boolean().optional(),
 });
+
+export const financeIngestMissingQuerySchema = z.object({
+  year: z.coerce.number().int().min(2000).max(2100).optional(),
+  month: z.coerce.number().int().min(1).max(12).optional(),
+});
