@@ -20,7 +20,11 @@ import {
 import { type MonthlyValue } from '@/components/public-cloud/forecast/forecast-grid-utils';
 import prisma from '@/core/prisma';
 import { FinanceIngestionStatus, Prisma, Provider, ProjectStatus } from '@/prisma/client';
-import { activeActualSpendWhere, unresolvedUnmatchedWhere } from '@/services/public-cloud-finance/active-spend';
+import {
+  activeActualSpendWhere,
+  unresolvedUnmatchedWhere,
+  unreviewedSpendFlagWhere,
+} from '@/services/public-cloud-finance/active-spend';
 import { normalizeBillingAccountLinks } from '@/services/public-cloud-finance/billing-account-links';
 import { FINANCE_ANOMALY_THRESHOLDS, SPEND_FLAG_RULE_LABELS } from '@/services/public-cloud-finance/constants';
 import { loadProductBillingStartByPlate } from '@/services/public-cloud-finance/product-billing-start';
@@ -280,7 +284,7 @@ export async function getFinanceSnapshot(provider: ProviderFilter = 'ALL') {
 
   const [anomaliesAwaitingReview, unmatchedThisMonth, productsMissingForecast] = await Promise.all([
     prisma.spendFlag.count({
-      where: { reviewedAt: null, ...(provider === 'ALL' ? {} : { provider }) },
+      where: { AND: [unreviewedSpendFlagWhere, provider === 'ALL' ? {} : { provider }] },
     }),
     prisma.unmatchedBillingLine.count({
       where: {
@@ -503,7 +507,7 @@ export async function getForecastCoverageChaseList() {
 
 export async function getAnomalyQueue(options?: { includeReviewed?: boolean }) {
   const flags = await prisma.spendFlag.findMany({
-    where: options?.includeReviewed ? {} : { reviewedAt: null },
+    where: options?.includeReviewed ? {} : unreviewedSpendFlagWhere,
     orderBy: [{ raisedAt: 'desc' }],
   });
   const plates = [...new Set(flags.map((f) => f.licencePlate))];
@@ -538,7 +542,7 @@ export async function getAnomalyQueue(options?: { includeReviewed?: boolean }) {
 
 export async function reviewSpendFlag(id: string, reviewerIdir: string, reviewNote: string) {
   const updated = await prisma.spendFlag.updateMany({
-    where: { id, reviewedAt: null },
+    where: { AND: [{ id }, unreviewedSpendFlagWhere] },
     data: {
       reviewedBy: reviewerIdir,
       reviewedAt: new Date(),

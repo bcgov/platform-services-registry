@@ -69,20 +69,22 @@ async function filterRows(
     .filter((row) => !accountFilter || accountFilter.has(row.accountIdentifier.toLowerCase()));
   const fx = await resolvePeriodFx(period, filtered);
 
-  return filtered.map((row) => {
-    const cad = toCad(row.amount, row.currency, fx);
-    return {
-      provider,
-      accountIdentifier: row.accountIdentifier,
-      serviceLine: row.serviceLine,
-      year: period.year,
-      month: period.month,
-      amountCad: cad.amountCad,
-      sourceCurrency: row.currency ?? 'CAD',
-      fxRate: cad.fxRate,
-      fxRateDate: cad.fxRateDate,
-    };
-  });
+  return filtered
+    .map((row) => {
+      const cad = toCad(row.amount, row.currency, fx);
+      return {
+        provider,
+        accountIdentifier: row.accountIdentifier,
+        serviceLine: row.serviceLine,
+        year: period.year,
+        month: period.month,
+        amountCad: cad.amountCad,
+        sourceCurrency: row.currency ?? 'CAD',
+        fxRate: cad.fxRate,
+        fxRateDate: cad.fxRateDate,
+      };
+    })
+    .filter((row) => row.amountCad !== 0);
 }
 
 async function readExportFile(path: string): Promise<ExportRow[]> {

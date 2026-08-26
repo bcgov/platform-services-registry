@@ -70,18 +70,19 @@ describe('azure cost query helpers', () => {
     expect(parsed.rows[0]?.serviceLine).toBe('Azure App Service');
   });
 
-  it('defaults to CAD when the Currency column is absent', () => {
-    const parsed = parseAzureCostQueryPayload(
-      {
-        properties: {
-          columns: [{ name: 'Cost' }, { name: 'ServiceName' }],
-          rows: [[10, 'Storage']],
+  it('throws when billed rows arrive without a Currency column', () => {
+    expect(() =>
+      parseAzureCostQueryPayload(
+        {
+          properties: {
+            columns: [{ name: 'Cost' }, { name: 'ServiceName' }],
+            rows: [[10, 'Storage']],
+          },
         },
-      },
-      period,
-      'sub-1',
-    );
-    expect(parsed.rows[0]?.currency).toBe('CAD');
+        period,
+        'sub-1',
+      ),
+    ).toThrow(/Currency column/);
   });
 
   it('skips rows with an empty Currency cell', () => {

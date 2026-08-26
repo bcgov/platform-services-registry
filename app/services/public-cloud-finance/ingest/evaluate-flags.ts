@@ -1,6 +1,6 @@
 import prisma from '@/core/prisma';
 import { Provider, SpendFlagRuleId } from '@/prisma/client';
-import { activeActualSpendWhere } from '../active-spend';
+import { activeActualSpendWhere, unreviewedSpendFlagWhere } from '../active-spend';
 import { FINANCE_ANOMALY_THRESHOLDS } from '../constants';
 import type { BillingPeriod } from './types';
 
@@ -190,7 +190,7 @@ export async function evaluateSpendFlagsForPeriod(period: BillingPeriod) {
   ];
 
   const existing = await prisma.spendFlag.findMany({
-    where: { year: period.year, month: period.month, reviewedAt: null },
+    where: { year: period.year, month: period.month, AND: [unreviewedSpendFlagWhere] },
   });
   const plan = planSpendFlagReconcile(existing, flags);
 

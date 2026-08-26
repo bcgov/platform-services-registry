@@ -13,3 +13,8 @@ export const activeActualSpendWhere: Prisma.ActualSpendWhereInput = {
 export const unresolvedUnmatchedWhere: Prisma.UnmatchedBillingLineWhereInput = {
   OR: [{ resolvedTo: null }, { resolvedTo: { isSet: false } }],
 };
+
+/** Unreviewed flags. Missing `reviewedAt` is not the same as `null` on Mongo. */
+export const unreviewedSpendFlagWhere: Prisma.SpendFlagWhereInput = {
+  OR: [{ reviewedAt: null }, { reviewedAt: { isSet: false } }],
+};

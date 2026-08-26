@@ -116,13 +116,17 @@ export function parseAzureCostQueryPayload(
   const subscriptionIdx = columnIndex(columns, 'SubscriptionId', 'SubscriptionID');
   const nextLink = parsed.properties?.nextLink || parsed.nextLink;
   const hasSubscriptionColumn = subscriptionIdx >= 0;
+  const payloadRows = parsed.properties?.rows ?? [];
+  if (payloadRows.length > 0 && currencyIdx < 0) {
+    throw new Error('Azure Cost Management response is missing the Currency column.');
+  }
 
   const rows: AzureExportRow[] = [];
-  for (const row of parsed.properties?.rows ?? []) {
+  for (const row of payloadRows) {
     const amount = Number(row[costIdx] ?? 0);
     const serviceLine = String(row[serviceIdx] ?? '');
     const accountIdentifier = subscriptionIdx >= 0 ? String(row[subscriptionIdx] ?? '') : fallbackSubscriptionId ?? '';
-    const currency = currencyIdx >= 0 ? String(row[currencyIdx] ?? '').trim() : 'CAD';
+    const currency = String(row[currencyIdx] ?? '').trim();
     if (!accountIdentifier || !serviceLine || !Number.isFinite(amount) || amount === 0 || !currency) continue;
     rows.push({
       accountIdentifier,

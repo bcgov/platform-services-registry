@@ -1,8 +1,9 @@
 import { GlobalRole } from '@/constants';
 import createApiHandler from '@/core/api-handler';
-import { BadRequestResponse, OkResponse, UnauthorizedResponse } from '@/core/responses';
+import { BadRequestResponse, InternalServerErrorResponse, OkResponse, UnauthorizedResponse } from '@/core/responses';
 import { Provider } from '@/prisma/client';
 import { defaultFinanceBillingSource } from '@/services/public-cloud-finance/constants';
+import { ingestFailureMessage, isClientIngestError } from '@/services/public-cloud-finance/ingest/ingest-errors';
 import { ingestBillingPeriod } from '@/services/public-cloud-finance/ingest/run-ingest';
 import { createSimulatedBillingSource } from '@/services/public-cloud-finance/ingest/simulated-source';
 import { financeIngestBodySchema } from '@/validation-schemas/cloud-cost';
@@ -44,7 +45,8 @@ export const POST = createApiHandler({
     });
     return OkResponse(result);
   } catch (error) {
-    const message = error instanceof Error ? error.message : 'Ingest failed';
-    return BadRequestResponse(message);
+    const message = ingestFailureMessage(error);
+    if (isClientIngestError(error)) return BadRequestResponse(message);
+    return InternalServerErrorResponse(message);
   }
 });
