@@ -121,11 +121,16 @@ function exportMonthColumns(month: Pick<MonthlyValue, 'year' | 'month'>, fiscalY
   };
 }
 
-function appendProductMonthRows(rows: ForecastExportRow[], product: PlatformForecastProduct, fyChunk: FiscalYearChunk) {
+function appendProductMonthRows(
+  rows: ForecastExportRow[],
+  product: PlatformForecastProduct,
+  fyChunk: FiscalYearChunk,
+  includeActuals: boolean,
+) {
   for (let i = 0; i < fyChunk.months.length; i++) {
     const month = fyChunk.months[i];
     const forecast = product.monthlyTotals[fyChunk.startIndex + i]?.amount ?? 0;
-    const actual = product.monthlyActuals[fyChunk.startIndex + i];
+    const actual = includeActuals ? product.monthlyActuals[fyChunk.startIndex + i] : null;
     rows.push({
       Level: 'Product',
       'Licence plate': product.licencePlate,
@@ -134,8 +139,7 @@ function appendProductMonthRows(rows: ForecastExportRow[], product: PlatformFore
       Providers: formatForecastProviderList([product.provider]),
       ...exportMonthColumns(month, fyChunk.label),
       Forecast: forecast,
-      Actual: actual ?? '',
-      Variance: exportVariance(forecast, actual),
+      ...(includeActuals ? { Actual: actual ?? '', Variance: exportVariance(forecast, actual) } : {}),
     });
   }
 }
@@ -145,10 +149,11 @@ function appendCurrencyTotalRows(
   group: { currency: 'CAD'; monthlyActuals: Array<number | null> },
   providers: string,
   fyChunk: FiscalYearChunk,
+  includeActuals: boolean,
 ) {
   for (let i = 0; i < fyChunk.months.length; i++) {
     const month = fyChunk.months[i];
-    const actual = group.monthlyActuals[fyChunk.startIndex + i];
+    const actual = includeActuals ? group.monthlyActuals[fyChunk.startIndex + i] : null;
     rows.push({
       Level: 'Currency total',
       'Licence plate': '',
@@ -157,13 +162,14 @@ function appendCurrencyTotalRows(
       Providers: providers,
       ...exportMonthColumns(month, fyChunk.label),
       Forecast: month.amount,
-      Actual: actual ?? '',
-      Variance: exportVariance(month.amount, actual),
+      ...(includeActuals ? { Actual: actual ?? '', Variance: exportVariance(month.amount, actual) } : {}),
     });
   }
 }
 
-export async function getPlatformForecastSummary() {
+/** Estate billing actuals stay off unless the caller opts in (finance preview). */
+export async function getPlatformForecastSummary(options?: { includeActuals?: boolean }) {
+  const includeActuals = options?.includeActuals === true;
   // Include ACTIVE and INACTIVE so archived products keep historical forecast rollups.
   const products = await prisma.publicCloudProduct.findMany({
     select: { licencePlate: true, name: true, provider: true, status: true },
@@ -176,10 +182,12 @@ export async function getPlatformForecastSummary() {
       where: { licencePlate: { in: licencePlates } },
       select: { licencePlate: true, monthlyValues: true },
     }),
-    prisma.monthlyProductSpendRollup.findMany({
-      where: { licencePlate: { in: licencePlates } },
-      select: { licencePlate: true, year: true, month: true, amountCad: true },
-    }),
+    includeActuals
+      ? prisma.monthlyProductSpendRollup.findMany({
+          where: { licencePlate: { in: licencePlates } },
+          select: { licencePlate: true, year: true, month: true, amountCad: true },
+        })
+      : Promise.resolve([]),
   ]);
 
   const forecastByPlate = new Map(
@@ -209,10 +217,9 @@ export async function getPlatformForecastSummary() {
       (rawForecast ?? []).map((value) => ({ ...value, currency })),
       currency,
     );
-    const monthlyActuals = alignActualsToHorizon(
-      monthlyTotals,
-      actualByPlateMonth.get(product.licencePlate) ?? new Map(),
-    );
+    const monthlyActuals = includeActuals
+      ? alignActualsToHorizon(monthlyTotals, actualByPlateMonth.get(product.licencePlate) ?? new Map())
+      : monthlyTotals.map(() => null);
 
     group.products.push({
       licencePlate: product.licencePlate,
@@ -224,7 +231,7 @@ export async function getPlatformForecastSummary() {
       monthlyTotals,
       monthlyActuals,
       forecastTotal: sumMonthlyValues(monthlyTotals),
-      actualTotal: sumKnownActuals(monthlyActuals),
+      actualTotal: includeActuals ? sumKnownActuals(monthlyActuals) : 0,
     });
   }
 
@@ -233,7 +240,9 @@ export async function getPlatformForecastSummary() {
     productsWithForecast: forecastByPlate.size,
     groups: [...groups.values()].map((group) => {
       const monthlyTotals = mergeMonthlyValuesOntoFiscalHorizon([...group.totalsByMonth.values()], group.currency);
-      const monthlyActuals = aggregateMonthlyActualsFromProducts(group.products, monthlyTotals.length);
+      const monthlyActuals = includeActuals
+        ? aggregateMonthlyActualsFromProducts(group.products, monthlyTotals.length)
+        : monthlyTotals.map(() => null);
       return {
         currency: group.currency,
         providers: [...group.providers].sort((a, b) => a.localeCompare(b)),
@@ -241,7 +250,7 @@ export async function getPlatformForecastSummary() {
         forecastCount: group.forecastCount,
         monthlyTotals,
         monthlyActuals,
-        hasActuals: monthlyActuals.some((amount) => amount != null),
+        hasActuals: includeActuals && monthlyActuals.some((amount) => amount != null),
         products: group.products,
       };
     }),
@@ -251,8 +260,9 @@ export async function getPlatformForecastSummary() {
 export type PlatformForecastSummary = Awaited<ReturnType<typeof getPlatformForecastSummary>>;
 
 /** Tall CSV-friendly rows: product line items plus currency totals. */
-export async function buildPlatformForecastExportCsvRows() {
-  const summary = await getPlatformForecastSummary();
+export async function buildPlatformForecastExportCsvRows(options?: { includeActuals?: boolean }) {
+  const includeActuals = options?.includeActuals === true;
+  const summary = await getPlatformForecastSummary({ includeActuals });
   const rows: ForecastExportRow[] = [];
 
   for (const group of summary.groups) {
@@ -262,9 +272,9 @@ export async function buildPlatformForecastExportCsvRows() {
 
     for (const fyChunk of fiscalYearChunks) {
       for (const product of lineItemProducts) {
-        appendProductMonthRows(rows, product, fyChunk);
+        appendProductMonthRows(rows, product, fyChunk, includeActuals);
       }
-      appendCurrencyTotalRows(rows, group, providers, fyChunk);
+      appendCurrencyTotalRows(rows, group, providers, fyChunk, includeActuals);
     }
   }
 

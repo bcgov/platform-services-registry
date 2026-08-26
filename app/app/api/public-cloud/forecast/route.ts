@@ -10,6 +10,8 @@ export const GET = createApiHandler({
     return UnauthorizedResponse();
   }
 
-  const summary = await getPlatformForecastSummary();
+  const summary = await getPlatformForecastSummary({
+    includeActuals: session.previews.publicCloudFinance,
+  });
   return OkResponse(summary);
 });
